@@ -30,12 +30,23 @@ P_Tcs::P_Tcs()
 	m_bStatic=				false;
 	m_iGroup=				0;
 	m_bOnGround=			false;
+	m_bActiveMoment =		true;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
 
    m_kRotVel.Set(0,0,0);
 	m_kWalkVel.Set(0,0,0);
+	m_kExternalForces.Set(0,0,0);
+	m_kExternalMoment.Set(0,0,0);
+	
+	m_kVelocity.Set(0,0,0);
+	m_kRotVelocity.Set(0,0,0);
+	m_fAcceleration.Set(0,0,0);
+	m_kForces.Set(0,0,0);
+	m_kMoment.Set(0,0,0);
+	m_kNewPos.Set(0,0,0);
+	m_kNewRotation.Identity();
 }
 
 P_Tcs::~P_Tcs()
@@ -122,6 +133,11 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);						
 	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+	
+	pkPackage->Write((void*)&m_kExternalForces,sizeof(m_kExternalForces),1);									
+	pkPackage->Write((void*)&m_kExternalMoment,sizeof(m_kExternalMoment),1);									
+	pkPackage->Write((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
+	
 }
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
@@ -141,7 +157,9 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
-
+	pkPackage->Read((void*)&m_kExternalForces,sizeof(m_kExternalForces),1);									
+	pkPackage->Read((void*)&m_kExternalMoment,sizeof(m_kExternalMoment),1);									
+	pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
@@ -449,8 +467,20 @@ void P_Tcs::GenerateModelMatrix()
 
 }
 
+void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce)
+{
+	//add motion force
+	m_kExternalForces += kForce;
 
+	//calculate and add momental force
+	kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
+	m_kExternalMoment += kForce.Cross(kAttachPos);
+}
 
+void P_Tcs::ApplyForce(const Vector3& kForce)
+{
+	m_kExternalForces += kForce;
+}
 
 Property* Create_P_Tcs()
 {

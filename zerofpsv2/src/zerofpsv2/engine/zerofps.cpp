@@ -382,8 +382,8 @@ void ZeroFps::Run_Client()
 
 	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
 	//update new super duper rigid body physics engine deluxe
-	m_pkPhysics_Engine->Update(GetFrameTime());	
-	m_pkTcs->Update(GetFrameTime());	
+	//m_pkPhysics_Engine->Update(GetFrameTime());	
+	//m_pkTcs->Update(GetFrameTime());	
 
 
 	if(g_iLogRenderPropertys) {
@@ -434,6 +434,10 @@ void ZeroFps::Update_System(bool bServer)
 		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
 	
 		//client & server code
+		
+		//update new super duper rigid body physics engine deluxe
+		m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
+		m_pkTcs->Update(m_pkObjectMan->GetSimDelta());			
 		
 		//update network for client & server
 		m_pkNetWork->Run();				

@@ -24,6 +24,51 @@ void P_Car::Init()
 
 void P_Car::Update()
 {
+	P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
+	
+	Entity* pkCam = m_pkObjMan->GetObject("A light_red.lua");
+	
+	if(pkTcs)
+	{
+		Vector3 kForce = Vector3(0,0,0);
+		kForce.Set(1,0,0);
+				
+		if(pkCam)
+		{
+			kForce = (pkCam->GetLocalPosV() - GetObject()->GetLocalPosV()).Unit();
+			//kForce *= 1;
+		}
+		
+
+		
+		pkTcs->ApplyForce(Vector3(0,0,1),kForce);
+	
+/*		float t = m_pkObjMan->GetSimDelta();
+		Vector3 kForcePos;
+		Vector3 kForce;
+		Matrix3 kRot = GetObject()->GetLocalRotM();	
+		
+		kForcePos = Vector3(0,0,1);
+		kForce = Vector3(0,0,1);
+		
+		if(pkCam)
+			kForce = (pkCam->GetLocalPosV() - GetObject()->GetLocalPosV()).Unit();
+		
+		kForcePos = kRot.VectorTransform(kForcePos);
+		
+			
+		Vector3 kVV = kForce.Cross(kForcePos);
+		kVV *= t;
+			
+		Vector3 kVel = GetObject()->GetVel();
+		kVel += kForce * t * 10;
+			
+		kRot.RadRotate(kVV);
+		GetObject()->SetLocalRotM(kRot);
+		//pkTcs->SetExternalForces(kForce);
+		pkTcs->ApplyForce(Vector3(0,0,0),kForce);*/
+	}
+/*	
 	UpdateDistance();
 
 	m_pkInputHandle->SetActive(true);
@@ -87,11 +132,11 @@ void P_Car::Update()
 			fTraction = 1;
 
 	}
-	//cout<<"travtion:"<<fTraction<<endl;
+	//cout<<"travtion:"<<fTraction<<endl; 
 
 	//calculate stearing weel force
 	Vector3 kStear = Vector3(0,0,1);
-	kStear *= m_kCurrentVel.Length() * fTraction;
+	kStear *= m_kCurrentVel.Length() * fTraction;	
 	kStear = kStearWeel.VectorTransform(kStear);
 
 	//cacluate rest forward force
@@ -111,6 +156,8 @@ void P_Car::Update()
 
 	//reset controls
 	m_kControls.reset();
+	
+*/	
 }
 
 void P_Car::UpdateDistance()

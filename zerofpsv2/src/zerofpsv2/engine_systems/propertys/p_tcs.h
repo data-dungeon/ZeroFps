@@ -29,21 +29,25 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 	private:
 		Tcs*	m_pkTcs;
 			
-		bool	m_bPolygonTest;
-		bool	m_bStatic;		
-		float	 m_fRadius;						
-		bool	m_bHavePolygonData;
-		bool	m_bGravity;
-		bool	m_bCharacter;
-		int	 m_iGroup;				
-		float  m_fLegLength;		
-		float	 m_fMass;
-      bool	m_bOnGround;
-      
-      Vector3	m_kRotVel;
-		Vector3 m_kWalkVel;
+		bool		m_bPolygonTest;
+		bool		m_bStatic;		
+		float	 	m_fRadius;						
+		bool		m_bHavePolygonData;
+		bool		m_bGravity;
+		bool		m_bCharacter;
+		int	 	m_iGroup;				
+		float 	m_fLegLength;		
+		float		m_fMass;
+      bool		m_bOnGround;
+		bool		m_bActiveMoment;
 		
-		bool						m_bLocalStoredData;
+      Vector3	m_kRotVel;
+		Vector3	m_kWalkVel;
+
+		Vector3	m_kExternalForces;
+		Vector3	m_kExternalMoment;
+				
+		bool		m_bLocalStoredData;
 		
 		//test flags
 		bitset<TCS_GROUPS>	m_akTestGroups;
@@ -61,9 +65,12 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 
 		//temp data
 		Vector3	m_kVelocity;
+		Vector3	m_kRotVelocity;
 		Vector3	m_fAcceleration;
 		Vector3	m_kForces;
+		Vector3	m_kMoment;
 		Vector3	m_kNewPos;
+		Matrix3	m_kNewRotation;
 		
 		Vector3	m_kMSPos;
 		float		m_fMSRadius;	
@@ -90,29 +97,40 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		
+		//collission groups
 		bool CheckFlag(int iFlag) {return m_akTestGroups[iFlag];};
-		void SetGroup(int iGroup) {m_iGroup = iGroup;};
 		void ResetGroupFlags() {m_akTestGroups.reset();};
 		void SetTestGroupFlag(int iFlag,bool bValue) {m_akTestGroups[iFlag] = bValue;};
 		
+		//walk group
 		void ResetWalkGroupFlags() {m_akWalkableGroups.reset();};
 		bool CheckWalkGroupFlag(int iFlag) {return m_akWalkableGroups[iFlag];};
-		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};		
+		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};			
 		
-		Vector3 GetWalkVel() { return m_kWalkVel;}; 
+		//forces
+		void ApplyForce(Vector3 kAttachPos,const Vector3& kForce);
+		void ApplyForce(const Vector3& kForce);
+		
+		//sets 
 		void SetWalkVel(Vector3 kWalkVel) { m_kWalkVel = kWalkVel;};
-		
+		//void SetExternalForces(const Vector3& kForce) { m_kExternalForces = kForce;};
       void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }		
 		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
 		void SetRadius(float t) {m_fRadius = t;};
 		void SetStatic(bool bStatic) {m_bStatic = bStatic;};		
 		void SetRefetchPolygonData() {m_bHavePolygonData = false;};
 		void SetGravity(bool t) {m_bGravity = t;};
-		bool GetOnGround() { return m_bOnGround;};
-		
+		void SetGroup(int iGroup) {m_iGroup = iGroup;};		
 		void SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals , float fRadius);
 		void SetHmap(HeightMap* pkMap) { m_pkHmap = pkMap; }
-
+		
+		//gets		
+		Vector3 GetWalkVel() { return m_kWalkVel;}; 		
+		//Vector3 GetExternalForces() { return m_kExternalForces;};
+		bool GetOnGround() { return m_bOnGround;};
+		
+		
+		//tests
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
