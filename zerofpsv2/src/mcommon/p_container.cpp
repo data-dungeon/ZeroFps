@@ -1,7 +1,6 @@
 #include "p_clientcontrol.h"
 #include "p_container.h"
 #include "../zerofpsv2/engine/entitymanager.h"
-#include "mlcontainer.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include <iomanip>
 
@@ -404,7 +403,7 @@ void P_Container::DropAll(const Vector3& kPos)
 	}
 }
 
-bool P_Container::MoveItem(int iID,MLContainer* pkDest,int iX,int iY)
+bool P_Container::MoveItem(int iID,P_Container* pkDest,int iX,int iY)
 {
 	if(HaveItem(iID))
 	{
@@ -418,7 +417,7 @@ bool P_Container::MoveItem(int iID,MLContainer* pkDest,int iX,int iY)
 	return false;
 }
 
-bool P_Container::MoveItem(int iID,MLContainer* pkDest)
+bool P_Container::MoveItem(int iID,P_Container* pkDest)
 {
 	if(HaveItem(iID))
 	{

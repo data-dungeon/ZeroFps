@@ -103,8 +103,8 @@ class MCOMMON_API P_Container: public Property
 		char GetSizeY()								{return char(m_iSizeY);};
 		
 		bool MoveItem(int iID,int iX,int iY);
-		bool MoveItem(int iID,MLContainer* pkDest,int iX,int iY);
-		bool MoveItem(int iID,MLContainer* pkDest);
+		bool MoveItem(int iID,P_Container* pkDest,int iX,int iY);
+		bool MoveItem(int iID,P_Container* pkDest);
 		
 		bool AddItem(int iID,int iX,int iY);
 		bool AddItem(int iID);
