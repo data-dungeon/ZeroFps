@@ -4,7 +4,7 @@
 
 PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
 {
-	AddProperty(new CollisionProperty(&m_kPos,new float(0.5)));
+	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
 //	AddProperty(new CollisionProperty(&m_kPos));	
 //	AddProperty(new CollisionProperty(&m_kPos));
 	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));

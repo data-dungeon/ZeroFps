@@ -97,20 +97,22 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-/*
 
-	for(int i=0;i<50;i++) {
+
+	for(int i=0;i<1;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
-		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-		float x=rand()%50;
-		float y=rand()%50;
+		//ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+		//float x=rand()%50;
+		//float y=rand()%50;
+		float x = 351;
+		float y = 780;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
-//		ball->GetStatic()=true;
+		ball->GetStatic()=true;
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-*/
+
 
 	glEnable(GL_LIGHTING );
 	
@@ -135,7 +137,7 @@ void Test::OnInit(void) {
 
 
 void Test::OnIdle(void) {
-	m_pkPlayer->GetPos().print();
+//	m_pkPlayer->GetPos().print();
 
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
