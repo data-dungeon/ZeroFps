@@ -1,4 +1,4 @@
-#include "modelproperty.h"
+#include "primitives3d.h"
 #include "cameraproperty.h"
 #include "madproperty.h"
 #include "heightmaprenderproperty.h"

@@ -2,7 +2,7 @@
 #include "netslaveobject.h"
 
 NetSlaveObject::NetSlaveObject() {
-//	AddProperty("ModelProperty");
+//	AddProperty("P_Primitives3D");
 
 }
 

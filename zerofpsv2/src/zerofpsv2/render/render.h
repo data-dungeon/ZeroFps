@@ -127,8 +127,10 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1);//,int iTexture2);
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
+		void DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, float fAngularity=0.5f);
+		void DrawPyramid(Vector3 kCenterPos, Vector3 kSize, Vector3 kColor);
 		void DrawBoundSphere(float fRadius, Vector3);
-		void DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale);
+		void DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );

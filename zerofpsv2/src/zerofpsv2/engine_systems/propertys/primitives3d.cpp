@@ -26,8 +26,31 @@ void P_Primitives3D::Update() {
 //	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 //		return;
 
+	Vector3 min, max;
+	Vector3 pos = m_pkObject->GetIPos();
 
-	m_pkRender->Sphere(m_pkObject->GetIPos(),m_fRadius,m_iSlices,m_kColor,true);
+	switch(m_ePrimType)
+	{
+	case SPHERE:
+		m_pkRender->Sphere(pos,m_fRadius,m_iSlices,m_kColor,true);
+		break;
+	case BBOX:
+		m_pkRender->DrawBoundingBox(pos, Vector3(0,0,1), 
+			Vector3(m_fRadius, m_fRadius, m_fRadius), m_kColor);
+		break;
+	case AABBOX:
+		min = Vector3(pos.x-m_fRadius/2, pos.y-m_fRadius/2, pos.z-m_fRadius/2);
+		max = Vector3(pos.x+m_fRadius/2, pos.y+m_fRadius/2, pos.z+m_fRadius/2);
+		m_pkRender->DrawAABB(min, max, m_kColor);
+		break;
+	case PYRAMID:
+		m_pkRender->DrawPyramid(pos,Vector3(m_fRadius,m_fRadius,m_fRadius),m_kColor);
+		break;
+	case CONE:
+		m_pkRender->DrawCone(pos, m_fRadius, m_fRadius*2, m_kColor);
+		break;
+	}
+	
 
 /*
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );

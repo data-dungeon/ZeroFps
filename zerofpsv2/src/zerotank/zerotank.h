@@ -63,7 +63,7 @@ class ZeroTank :public Application, public GuiApp {
 
 		Heightmap2*			m_pkMap2;
 
-		Mad_Modell			m_pkTestMod;
+		Object*			m_pkTestObject;
 
 		//GuiBuilder*			m_pkGuiBuilder;
 

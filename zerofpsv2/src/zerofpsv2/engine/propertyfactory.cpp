@@ -72,7 +72,7 @@ void PropertyFactory::Display()
 void RegisterPropertys(ZeroFps* zfps)
 {
 	zfps->m_kPropertyFactory.Register("MadProperty", Create_MadProperty);
-	zfps->m_kPropertyFactory.Register("ModelProperty", Create_ModelProperty);
+	zfps->m_kPropertyFactory.Register("P_Primitives3D", Create_Prim3DProperty);
 	zfps->m_kPropertyFactory.Register("LightProperty", Create_LightProperty);
 
 }

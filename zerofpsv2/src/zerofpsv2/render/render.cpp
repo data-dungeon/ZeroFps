@@ -265,11 +265,11 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glDisable(		GL_BLEND						);
-	glDisable(		GL_LIGHTING					);
-	glDisable(		GL_ALPHA_TEST				);
-	glDepthMask(	GL_FALSE						);	
-	glDisable(		GL_CULL_FACE				);
+	glDisable(		GL_BLEND				);
+	glDisable(		GL_LIGHTING				);
+	glDisable(		GL_ALPHA_TEST			);
+	glDepthMask(	GL_FALSE				);	
+	glDisable(		GL_CULL_FACE			);
 	glDisable(		GL_COLOR_MATERIAL 		);
 	glDisable(		GL_FOG);
 
@@ -452,7 +452,85 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
-void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale)
+void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor)
+{
+	glPushMatrix();
+		
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glScalef(kScale.x,kScale.y,kScale.z);
+	
+	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );	
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+
+	glColor4f(kColor.x,kColor.y,kColor.z,1);
+
+	glBegin(GL_LINES);
+
+	// Base
+	glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
+	glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5, 0.5);
+	glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5,-0.5);
+	glVertex3f( 0.5,-0.5,-0.5);	glVertex3f(-0.5,-0.5,-0.5);
+
+	// Left
+	glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
+	glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
+	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5,-0.5);
+
+	// Top
+	glVertex3f(-0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5, 0.5);
+	glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
+	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5, 0.5);
+
+	// Right
+	glVertex3f( 0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5,-0.5);
+	glVertex3f( 0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
+	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5, 0.5);
+
+	// Bottom
+	glVertex3f( 0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5,-0.5);
+	glVertex3f(-0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
+	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5,-0.5);
+
+	glEnd();
+
+	glPopMatrix();
+
+	glPopAttrib();
+}
+
+void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, float fAngularity)
+{
+	glPushMatrix();
+		
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glScalef(fRadie,fHeight,fRadie);
+	
+	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );	
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+
+	glColor4f(kColor.x,kColor.y,kColor.z,1);
+
+	glBegin(GL_LINES);
+
+
+
+	glEnd();
+
+	glPopMatrix();
+
+	glPopAttrib();
+}
+
+void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor)
 {
 	glPushMatrix();
 		
@@ -462,7 +540,14 @@ void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale)
 	glRotatef(kRot.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
-	glColor4f(1,0,0,1);		
+	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+
+	glColor4f(kColor.x,kColor.y,kColor.z,1);		
 		
 	Vector3 a(-0.5f, -0.5f, -0.5f);
 	Vector3 b(-0.5f,  0.5f, -0.5f);
@@ -490,6 +575,8 @@ void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale)
 	Line(a,e); 
 		
 	glPopMatrix();
+
+	glPopAttrib();
 
 }
 
@@ -927,5 +1014,9 @@ RENDER_API void RenderDLL_InitExtGL(void)
 	cout << "extgl_Initialize: "<< res << endl;
 #endif
 }
+
+
+
+
 
 

@@ -163,7 +163,7 @@ void ObjectManager::UpdateGameMessages(void)
 Object* ObjectManager::CreateObject()
 {
 	Object* pkObj = new Object;
-//	pkObj->AddProperty("ModelProperty");
+//	pkObj->AddProperty("P_Primitives3D");
 	return pkObj;
 }
 
@@ -226,7 +226,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	
 	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
-//	pkNew->AddProperty("ModelProperty");
+//	pkNew->AddProperty("P_Primitives3D");
 	return pkNew;
 }
 

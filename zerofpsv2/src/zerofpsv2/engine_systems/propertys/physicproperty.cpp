@@ -1,5 +1,5 @@
 #include "physicproperty.h"
-#include "modelproperty.h"
+#include "primitives3d.h"
 #include "hmrp2.h"
 #include <typeinfo>
 
@@ -55,7 +55,7 @@ float PhysicProperty::GetBoundingRadius()
 		return mp->GetRadius();	
 	}
 	
-	ModelProperty* mop = static_cast<ModelProperty*>(m_pkObject->GetProperty("ModelProperty"));
+	P_Primitives3D* mop = static_cast<P_Primitives3D*>(m_pkObject->GetProperty("P_Primitives3D"));
 	if(mop!=NULL)
 	{
 		return mop->m_fRadius;	

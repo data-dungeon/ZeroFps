@@ -1,5 +1,7 @@
 #include "zerotank.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
+#include "../zerofpsv2/engine_systems/propertys/madproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
 #include "../zerofpsv2/gui/zgui.h"
 
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
@@ -68,6 +70,20 @@ void ZeroTank::Init()
 
 	//register property bös
 	RegisterPropertys();
+
+//	m_pkTestObject = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
+
+	m_pkTestObject = pkObjectMan->CreateObject();
+/*	MadProperty* pkMad = new MadProperty();
+	m_pkTestObject->AddProperty(pkMad);
+	pkMad->SetBase("/data/mad/dog.mad");
+	pkObjectMan->Add(m_pkTestObject);*/
+	
+	m_pkTestObject->SetPos(Vector3(0,0,0));
+	m_pkTestObject->AttachToClosestZone();
+	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
+
+	printf("apa\n\n\n\n\n");
 	
 /*
 	srand( (int) (pkFps->GetGameTime()*1000) );
@@ -289,7 +305,7 @@ void ZeroTank::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
-	pkClient->m_pkObject->AddProperty("ModelProperty");	
+	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	
 	//setup client input
 	pkClient->m_pkObject->AddProperty("P_ClientInput");
