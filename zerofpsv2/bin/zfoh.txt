@@ -61,6 +61,8 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/goblin.mad
 		set MadProperty m_fScale 1
+		Add PSystemProperty
+		set PSystemProperty PSType Waterfall
 
 	class ZeroRTSTestBox
 		parent object
@@ -85,11 +87,6 @@ class object
 		set MadProperty m_kMadFile /data/mad/orc.mad
 		set MadProperty m_fScale 0.1
 		add TrackProperty
-
-	class Node4x
-		parent object
-		set MadProperty m_kMadFile /data/mad/corrx.mad
-		set MadProperty m_fScale 1.3
 
 	class Nodecx
 		parent object
@@ -177,5 +174,44 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/smiley.mad
 		set MadProperty m_fScale 100
+
+============== dungeon bitar
+
+	class Node4x
+		parent object
+		set MadProperty m_kMadFile /data/mad/corrx.mad
+
+	class Cross
+		parent object
+		set MadProperty m_kMadFile /data/mad/cross.mad
+
+	class Cooridor
+		parent object
+		set MadProperty m_kMadFile /data/mad/cooridor.mad
+
+	class Tcross
+		parent object
+		set MadProperty m_kMadFile /data/mad/tcross.mad
+
+	class Turn
+		parent object
+		set MadProperty m_kMadFile /data/mad/turn.mad
+
+	class SmallRoom
+		parent object
+		set MadProperty m_kMadFile /data/mad/small_room.mad
+
+	class LargeRoom_ee
+		parent object
+		set MadProperty m_kMadFile /data/mad/large_room_ee.mad
+
+
+	class LargeRoom_een
+		parent object
+		set MadProperty m_kMadFile /data/mad/large_room_een.mad
+
+
+
+
 
 
