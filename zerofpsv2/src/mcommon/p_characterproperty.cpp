@@ -48,7 +48,7 @@ void CharacterStats::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(string(""));
 	
 	
-	cout<<"saved stats"<<endl;
+// 	cout<<"saved stats"<<endl;
 }
 
 void CharacterStats::Load(ZFIoInterface* pkPackage)
@@ -72,7 +72,7 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 	}
 
 	
-	cout<<"loaded stats"<<endl;
+// 	cout<<"loaded stats"<<endl;
 }
 
 void CharacterStats::SetStat(const string& strName,int iValue)
@@ -280,63 +280,63 @@ void P_CharacterProperty::SetupContainers()
 			switch(pkContainer->GetContainerType())
 			{
 				case eInventory:
-					cout<<"found inventory"<<endl;
+					//cout<<"found inventory"<<endl;
 					m_iInventory = kEntitys[i]->GetEntityID();
 					break;
 				case eBody:
-					cout<<"found body"<<endl;
+					//cout<<"found body"<<endl;
 					m_iBody = kEntitys[i]->GetEntityID();
 					break;
 				case eHead:
-					cout<<"found head"<<endl;
+					//cout<<"found head"<<endl;
 					m_iHead= kEntitys[i]->GetEntityID();
 					break;
 				case eLeftHand:
-					cout<<"found left hand"<<endl;
+					//cout<<"found left hand"<<endl;
 					m_iLeftHand = kEntitys[i]->GetEntityID();
 					break;
 				case eRightHand:
-					cout<<"found right hand"<<endl;
+					//cout<<"found right hand"<<endl;
 					m_iRightHand = kEntitys[i]->GetEntityID();
 					break;			
 				case eGloves:
-					cout<<"found gloves"<<endl;
+					//cout<<"found gloves"<<endl;
 					m_iGloves = kEntitys[i]->GetEntityID();
 					break;
 				case eCape:
-					cout<<"found Cape"<<endl;
+					//cout<<"found Cape"<<endl;
 					m_iCape = kEntitys[i]->GetEntityID();
 					break;										
 				case eNecklace:
-					cout<<"found Necklace"<<endl;
+					//cout<<"found Necklace"<<endl;
 					m_iNecklace = kEntitys[i]->GetEntityID();
 					break;										
 				case eBracers:
-					cout<<"found Bracers"<<endl;
+					//cout<<"found Bracers"<<endl;
 					m_iBracers = kEntitys[i]->GetEntityID();
 					break;										
 				case eBelt:
-					cout<<"found Belt"<<endl;
+					//cout<<"found Belt"<<endl;
 					m_iBelt = kEntitys[i]->GetEntityID();
 					break;										
 				case eFeets:
-					cout<<"found feets"<<endl;
+					//cout<<"found feets"<<endl;
 					m_iFeets = kEntitys[i]->GetEntityID();
 					break;										
 				case eRing1:
-					cout<<"found ring1"<<endl;
+					//cout<<"found ring1"<<endl;
 					m_iRing1= kEntitys[i]->GetEntityID();
 					break;										
 				case eRing2:
-					cout<<"found ring2"<<endl;
+					//cout<<"found ring2"<<endl;
 					m_iRing2 = kEntitys[i]->GetEntityID();
 					break;										
 				case eRing3:
-					cout<<"found ring3"<<endl;
+					//cout<<"found ring3"<<endl;
 					m_iRing3 = kEntitys[i]->GetEntityID();
 					break;										
 				case eRing4:
-					cout<<"found ring4"<<endl;
+					//cout<<"found ring4"<<endl;
 					m_iRing4 = kEntitys[i]->GetEntityID();
 					break;										
 					
