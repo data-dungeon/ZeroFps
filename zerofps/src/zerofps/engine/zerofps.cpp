@@ -11,7 +11,7 @@ static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
-
+ 
 	m_pkFile						= new FileIo;
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkZFVFileSystem			= new ZFVFileSystem;

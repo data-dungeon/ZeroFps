@@ -256,9 +256,13 @@ bool P_ServerUnit::Damage(int iDamage)
 	m_iHealth -= iDamage;
 	cout<<"Damaging unit "<<iDamage<<endl;
 	cout<<"Unit Got "<<m_iHealth<<" health left"<<endl;
-	
+		
 	if(m_iHealth <= 0)
+	{
+		m_pkObject->m_pkObjectMan->Delete(m_pkObject);
+	
 		return false;
+	}
 	else
 		return true;
 }
