@@ -60,6 +60,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("ap_quickstartadress", &m_strQuickStartAddress,	CSYS_STRING);
 
 	m_bGuiCapture = false;
+	m_iNumBuffIcons = 0;
 } 
  
 void MistClient::OnInit() 
@@ -347,6 +348,8 @@ void MistClient::OnIdle()
 			}
 		}
 	}
+
+	UpdateBuffIconList();
 
 // 	if(m_iCharacterID == -1) 
 // 	{
@@ -812,7 +815,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read_Str(strName);							
 			}
 
-			UpdateBuffIconList(&kInfoVector);
+			RebuildBuffIconList(&kInfoVector);
 						
 			break;
 		}

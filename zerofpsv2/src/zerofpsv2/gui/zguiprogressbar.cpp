@@ -131,11 +131,11 @@ bool ZGuiProgressbar::Render( ZGuiRender* pkRenderer )
 	m_pkLabelBkgrd->Render(pkRenderer);
 	m_pkLabelFront->Render(pkRenderer);
 
-	static float oka=100;
-	oka-=0.1f;
-	if(oka<0)
-		oka=100;
-	SetPos((int)oka);
+	//static float oka=100;
+	//oka-=0.1f;
+	//if(oka<0)
+	//	oka=100;
+	//SetPos((int)oka);
 
 	if(m_pkFont && m_bShowText)
 	{

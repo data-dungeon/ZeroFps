@@ -2,6 +2,7 @@
 #include "gui_inventory.h"
 #include "gui_equipwnd.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 extern MistClient	g_kMistClient;
@@ -297,31 +298,41 @@ void MistClient::InitBuffWnd()
 		return;
 
 	char szName[25];
-	int x=0, y=0, w=32, h=32;
+	int x=2, y=0, w=32, h=32;
 	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
 
 	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
 	{
 		sprintf(szName, "BuffIcon%i", i);
 
-		m_kBuffIcons[i].m_pkWnd = CreateWnd(Label, szName, "", pkBuffWnd, x, y, w, h, 0);
+		m_kBuffIcons[i].m_pkWnd = (ZGuiLabel*) CreateWnd(Label, szName, "", pkBuffWnd, x, y, w, h, 0);
 		m_kBuffIcons[i].m_pkWnd->Hide();
+		m_kBuffIcons[i].m_fStartTime = 0;
+		m_kBuffIcons[i].m_fTimeout = 0;
+
+		sprintf(szName, "BuffProgressbar%i", i);
+
+		m_kBuffIcons[i].m_pkProgressBar = (ZGuiProgressbar*) 
+			CreateWnd(Progressbar, szName, "", pkBuffWnd, x, y+h+2, w, 8, 0);
+		m_kBuffIcons[i].m_pkProgressBar->Hide();
+		//m_kBuffIcons[i].m_pkProgressBar->SetFont(
+		g_kMistClient.SetFont(szName, "small7", 255, 255, 255, 0);
 
 		ZGuiSkin* pkSkin = new ZGuiSkin();
 		m_kBuffIcons[i].m_pkWnd->SetSkin(pkSkin);
 
-		x += 32;
-		if(x > pkBuffWnd->GetScreenRect().Width())
+		y += 42;
+		if(y > pkBuffWnd->GetScreenRect().Height())
 		{
-			x = 0;
-			y += 32;
+			x += 34;
+			y = 0;
 		}
 	}
 
 	s_bInitialized = true;
 }
 
-void MistClient::UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList)
+void MistClient::RebuildBuffIconList(vector<BUFF_ICON_INFO>* kList)
 {
 	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
 
@@ -338,24 +349,39 @@ void MistClient::UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList)
 		if(i<kList->size())
 		{
 			m_kBuffIcons[i].m_pkWnd->Show();
+			m_kBuffIcons[i].m_pkProgressBar->Show();
 			m_kBuffIcons[i].m_strIcon = string("buffs/") + (*kList)[i].m_strIcon;			
 			m_kBuffIcons[i].m_strName = (*kList)[i].m_strName;
 			m_kBuffIcons[i].m_cType = (*kList)[i].m_cType;
 			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;
+			m_kBuffIcons[i].m_fStartTime = m_pkZeroFps->GetTicks();
+			m_kBuffIcons[i].m_pkProgressBar->SetRange(0, m_kBuffIcons[i].m_fTimeout);
 
+			((ZGuiLabel*)m_kBuffIcons[i].m_pkWnd)->m_eTextAlignment = ZGLA_TopLeft;
+
+	
 			m_kBuffIcons[i].m_pkWnd->GetSkin()->m_iBkTexAlphaID = 
 				LoadGuiTextureByRes(m_kBuffIcons[i].m_strIcon);	
 		}
 		else
 		{
 			m_kBuffIcons[i].m_pkWnd->Hide();
+			m_kBuffIcons[i].m_pkProgressBar->Hide();
 		}
 	}
 
-	if(kList->size() < pkBuffWnd->GetScreenRect().Width() / 32)
-		pkBuffWnd->SetPos(pkBuffWnd->GetScreenRect().Left, 
-			152+32, true, true);
-	else
-		pkBuffWnd->SetPos(pkBuffWnd->GetScreenRect().Left, 
-			152, true, true);
+	m_iNumBuffIcons = kList->size();
+}
+
+void MistClient::UpdateBuffIconList()
+{
+	for(int i=0; i<m_iNumBuffIcons; i++)
+	{
+		printf("%f - %f - %f\n", m_kBuffIcons[i].m_fStartTime, m_kBuffIcons[i].m_fTimeout, m_pkZeroFps->GetTicks());
+		
+		float fProcentAvTime = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) / m_kBuffIcons[i].m_fTimeout;
+		
+		
+		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)(fProcentAvTime*m_kBuffIcons[i].m_fTimeout));
+	}
 }

@@ -76,14 +76,17 @@ class MistClient :public Application, public ZGuiApp {
 			string m_strName;
 			string m_strIcon;
 			float  m_fTimeout;
+			float  m_fStartTime;
 			char   m_cType;	
-			ZGuiWnd* m_pkWnd;
+			ZGuiLabel* m_pkWnd;
+			ZGuiProgressbar* m_pkProgressBar;
 		};
 
 		void InitBuffWnd();
-		void UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList);
-
+		void RebuildBuffIconList(vector<BUFF_ICON_INFO>* kList);
+		void UpdateBuffIconList();
 		
+		int m_iNumBuffIcons;
 		BUFF_ICON_INFO m_kBuffIcons[MAX_NUM_BUFF_ICONS];
 
 		bool ReadWriteServerList(bool bRead);
