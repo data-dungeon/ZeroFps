@@ -2,6 +2,7 @@
 #include <iostream>
 #include "zeroed.h"
 
+
 bool GUIServerInfo::ConvertFromFullName(string strFullName)
 {
 	strServerName = strFullName;

@@ -1,6 +1,7 @@
 #include "ambientsoundareas.h"
 #include "../zerofpsv2/render/render.h"
 
+
 AmbientSoundAreas::AmbientSoundAreas()
 {
 	m_bAddPointsToSoundArea = false;

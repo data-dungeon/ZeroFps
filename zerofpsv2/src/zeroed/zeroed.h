@@ -16,7 +16,7 @@ class Entity;
 
 /**	\brief	Da ZeroEd
 		\ingroup ZeroEd
-*/
+*/ 
 class ZeroEd :public Application , public ZGuiApp {
 	private:
 

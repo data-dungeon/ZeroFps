@@ -12,6 +12,21 @@ using namespace std;
 class P_Buff;
 
 
+class MCOMMON_API Skill
+{
+	public:
+		string	m_strScriptName;
+		string	m_strName;
+		string	m_strParentSkill;
+		string	m_strIcon;
+		int		m_iLevel;
+		
+		float		m_fReloadTime;
+		float		m_fTimeLeft;
+		
+		void Use(int iCharacterID,int iTargetID,const Vector3& kTarget);
+};
+
 
 class MCOMMON_API CharacterStat
 {

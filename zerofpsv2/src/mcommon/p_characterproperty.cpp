@@ -917,7 +917,7 @@ void P_CharacterProperty::RemoveBuff(const string& strBuffName)
 		}
 	}
 }
-
+ 
 void P_CharacterProperty::RemoveBuff(P_Buff* pkBuff)
 {
 	if(pkBuff->GetCharacter() == this)
