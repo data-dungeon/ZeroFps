@@ -341,7 +341,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 				
 			bool flip=false;	//texture fliper
 			float t=0;
-			float s=0;			 //exture cordinats
+			float s=0;			 //texture cordinats
 			float nt,ns;
 			
 			//start going trouh all vertexes in the slice

@@ -11,7 +11,7 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 void Test::OnInit(void) {
 	pkConsole->Print("MegaUltraSuper Duper Game");
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
-	pkFps->m_pkAudioMan->PlayMusic();
+//	pkFps->m_pkAudioMan->PlayMusic();
 
 	test=new HeightMap(pkFile);
 //	test->Random();
