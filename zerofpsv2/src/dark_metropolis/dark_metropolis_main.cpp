@@ -9,6 +9,7 @@
 #include "gameplay_dlg.h"
 #include "members_dlg.h"
 #include "hq_dlg.h"
+#include "../mcommon/si_dm.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -74,6 +75,9 @@ void DarkMetropolis::OnInit()
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->m_bRender = true;
 
+	//init dm script interface (register script functions for gameplay)
+	DMLua::Init(m_pkObjectMan,m_pkScript);
+
 	//register propertys
 	RegisterPropertys();
 
@@ -84,7 +88,6 @@ void DarkMetropolis::OnInit()
 	GUI_Init();
 	
 	m_pkInput->ShowCursor(true);
-	
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
@@ -226,6 +229,7 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_DMMission",			Create_P_DMMission);
 	m_pkPropertyFactory->Register("P_DMItem", 			Create_P_DMItem);
 	m_pkPropertyFactory->Register("P_DMGun", 				Create_P_DMGun);
 	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);

@@ -38,6 +38,7 @@
 #include "../mcommon/p_shadowblob.h"
 #include "../mcommon/p_dmgun.h"
 #include "../mcommon/p_dmitem.h"
+#include "../mcommon/p_dmmission.h"
 
 #include "playerdatabase.h"
 

@@ -176,6 +176,9 @@
 				RelativePath=".\p_dmitem.cpp">
 			</File>
 			<File
+				RelativePath=".\p_dmmission.cpp">
+			</File>
+			<File
 				RelativePath=".\p_enviroment.cpp">
 			</File>
 			<File
@@ -198,6 +201,9 @@
 			</File>
 			<File
 				RelativePath=".\p_spell.cpp">
+			</File>
+			<File
+				RelativePath=".\si_dm.cpp">
 			</File>
 			<File
 				RelativePath=".\si_mistland.cpp">
@@ -237,6 +243,9 @@
 				RelativePath=".\p_dmitem.h">
 			</File>
 			<File
+				RelativePath=".\p_dmmission.h">
+			</File>
+			<File
 				RelativePath=".\p_enviroment.h">
 			</File>
 			<File
@@ -259,6 +268,9 @@
 			</File>
 			<File
 				RelativePath=".\p_spell.h">
+			</File>
+			<File
+				RelativePath=".\si_dm.h">
 			</File>
 			<File
 				RelativePath=".\si_mistland.h">

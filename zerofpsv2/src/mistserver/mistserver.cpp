@@ -355,6 +355,7 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_DMMission", Create_P_DMMission);
 	m_pkPropertyFactory->Register("P_DMItem", Create_P_DMItem);
 	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
 	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);

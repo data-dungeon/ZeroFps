@@ -24,6 +24,7 @@ using namespace std;
 #include "../mcommon/p_shadowblob.h"
 #include "../mcommon/p_dmgun.h"
 #include "../mcommon/p_dmitem.h"
+#include "../mcommon/p_dmmission.h"
 #include "p_dmgameinfo.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
