@@ -33,6 +33,8 @@ P_DMGun::P_DMGun()
 	m_iBulletsPerAmmo =	1;
 	m_iTeam = 				-1; // belongs to no team
 
+	m_strBarrelFirePS = "data/script/objects/dm/t_bfire_gun.lua";
+
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
 
@@ -59,16 +61,22 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	if ( m_bFireing )
 		return false;
 
-	float t = m_pkObjMan->GetSimTime();
-
-	if(!m_bFireing)
-	{
-		m_bFirstUpdateSinceFireing = true;
-	}
-	
-	
-	m_fTimeFired = t;
+	m_bFirstUpdateSinceFireing = true;
 	m_bFireing = true;
+
+	float t = m_pkObjMan->GetSimTime();
+	m_fTimeFired = t;
+
+	// Barrelfire
+	if ( m_strBarrelFirePS.size() && m_iAmmo )
+	{
+		Entity *pkBF = m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone(m_strBarrelFirePS.c_str(), 
+			m_pkObject->GetWorldPosV());
+		
+		pkBF->SetWorldPosV(Vector3(0,0,0));
+		pkBF->SetRelativeOri(true);
+		pkBF->SetParent(m_pkObject);
+	}
 
 	return true;
 }
@@ -90,9 +98,10 @@ void P_DMGun::Update()
 
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
-		//ugly barelfire test
+		//barellfire
 		if(m_bFireing)
 		{
+			//m_strBarrelFirePS
 			static bool bOn = true;
 			
 			if(bOn)
@@ -103,7 +112,7 @@ void P_DMGun::Update()
 				bOn=true;
 				return;
 			}
-		
+		/*
 			Vector3 kDir = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0,0,1)).Unit();
 			Vector3 kPos = m_pkObject->GetIWorldPosV();
 			
@@ -111,7 +120,7 @@ void P_DMGun::Update()
 			
 			Vector3 kOffset = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0.2,0,0));
 			
-			m_pkZeroFps->m_pkRender->Polygon4(kPos+kOffset,kPos-kOffset,kPos+kDir-kOffset,kPos+kDir+kOffset,m_iGunFireTextureID);
+			m_pkZeroFps->m_pkRender->Polygon4(kPos+kOffset,kPos-kOffset,kPos+kDir-kOffset,kPos+kDir+kOffset,m_iGunFireTextureID);*/
 		}
 		
 		
@@ -141,7 +150,6 @@ void P_DMGun::Update()
 		
 		return;
 	}
-	
 
 
 	if(!m_bFireing)	//firing?

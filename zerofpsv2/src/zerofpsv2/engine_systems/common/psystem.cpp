@@ -297,7 +297,8 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime - fTimeOffset;
 
 	// Randomize lifetime
-	m_kParticles[iParticleIndex].m_fAge *= 1 - (((rand()%m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)/100.f));
+	if (m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)
+		m_kParticles[iParticleIndex].m_fAge *= 1 - (((rand()%m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)/100.f));
 
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	

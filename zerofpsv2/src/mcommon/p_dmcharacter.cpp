@@ -157,8 +157,6 @@ P_DMCharacter::~P_DMCharacter()
 		delete m_pkHand;
 	if(m_pkImplants)
 		delete m_pkImplants;
-
-
 }
 
 void P_DMCharacter::Init()
@@ -199,9 +197,6 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	// oh madness, blood psystem in the nick of time :D
 	if ( m_iTeam != 10 )
 		m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone("data/script/objects/dm/t_blood.lua", m_pkObject->GetWorldPosV());
-
-
-	//cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
 
 	if(m_kStats.m_iLife <= 0)
 	{
@@ -393,10 +388,7 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 
 void P_DMCharacter::Update()
 {
-	UpdateOrders();
-
-	
-	
+	UpdateOrders();	
 	
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{
@@ -444,6 +436,8 @@ void P_DMCharacter::Update()
 			}
 		}
 	}
+
+	// Check which animation to use
 }
 
 // -----------------------------------------------------------------------------------------------

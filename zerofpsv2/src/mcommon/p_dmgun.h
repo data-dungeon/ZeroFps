@@ -31,17 +31,18 @@ class MCOMMON_API P_DMGun: public Property {
 		float 	m_fTargetDist;
 		
 		//gun info
-		string	m_strName;
+		string m_strName;
 		string m_strSound;
+		string m_strBarrelFirePS; // which psystem is used for barrelfire
 
 		float		m_fFireRate;
 		float		m_fDamage;
 		float		m_fRange;		
-		int		m_iAmmo;
-		int		m_iMaxAmmo;		
-		Vector3	m_kDir;
+		int			m_iAmmo;
+		int			m_iMaxAmmo;		
+		Vector3		m_kDir;
 		float		m_fRandom;
-		int		m_iBulletsPerAmmo;
+		int			m_iBulletsPerAmmo;
 		
 		bool		FireBullets(int iAmount);
 
