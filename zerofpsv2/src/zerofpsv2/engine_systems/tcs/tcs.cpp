@@ -11,7 +11,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fMinForce = 		0.2;	
 	m_fSleepVel = 		0.3;
 	m_fMaxVel = 		10.0;
-	m_fTimeSlice = 	1.5;
+	m_fTimeSlice = 	2.0;
 	
 	m_iHandleCollission = 1;
 	m_iDebugGraph = 0;
@@ -993,17 +993,6 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	{
 		return;		
 	}
-	
-	/*
-	//the smalest object shuld be body2 for best result
-	if(pkBody2->m_fRadius > pkBody1->m_fRadius)
-	{
-		P_Tcs* pkBakup = pkBody1;
-	
-		pkBody1 = pkBody2;
-		pkBody2 = pkBakup;
-	}
-	*/
 	
 	while(retry && (fAtime > 0) )
 	{
