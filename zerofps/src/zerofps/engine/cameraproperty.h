@@ -10,21 +10,27 @@
 
 using namespace std;
 
-class ENGINE_API CameraProperty:public Property{
+class ENGINE_API CameraProperty:public Property 
+{
 	public:
 		enum CamType_e
 		{
-			CAM_TYPEFIRSTPERSON,
-			CAM_TYPETOPDOWN,
-			CAM_TYPEISO,
+			CAM_TYPEFIRSTPERSON,	// View from object. 
+			CAM_TYPETOPDOWN,		// Top down view from object.
+			CAM_TYPEISO,			// Isometric view of object.
 			CAM_TYPESIDE,
+			CAM_TYPECHASE,
+			CAM_TYPEDYNAMICISO,		
 			CAM_TYPEMAX,
 		};
 
 	private:
-		Camera*		m_pkCamera;
-		CamType_e	m_eCameraType;
+		Camera*		m_pkCamera;			// Camera to refresh.
+		CamType_e	m_eCameraType;		// How the camera will behave.
+
 		float		m_fFov;
+		Vector3		m_kDynamicIso;
+
 
 	public:
 		CameraProperty();

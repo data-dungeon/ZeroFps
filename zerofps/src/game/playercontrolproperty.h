@@ -37,6 +37,7 @@ class PlayerControlProperty: public Property {
 		
 		CameraProperty*	m_pkCameraProperty;
 		float	m_fFov;	// Sniper Zoom
+		float	m_fCamSwitchTimer;
 
 	public:
 		bool onGround;

@@ -28,6 +28,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	walksound=new Sound();
 	walksound->m_acFile="file:../data/sound/walk.wav";
 	walksound->m_bLoop=false;
+	m_fCamSwitchTimer = m_pkFps->GetTicks();	
 
 	m_fFov = 90;
 };
@@ -162,6 +163,17 @@ void PlayerControlProperty::Update() {
 			m_pkCameraProperty->SetFpFov(m_fFov);
 			}
 		}
+
+	if(m_pkInput->Pressed(KEY_C)) {
+		if(m_fCamSwitchTimer < m_pkFps->GetTicks()) {
+			m_fCamSwitchTimer = m_pkFps->GetTicks() + 0.5;	
+
+			if(m_pkCameraProperty) {
+				m_pkCameraProperty->NextType((CameraProperty::CamType_e) 0);
+				}
+			}
+		}
+
 
 	onGround=false;
 };

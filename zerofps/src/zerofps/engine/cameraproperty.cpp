@@ -1,15 +1,7 @@
 #include "cameraproperty.h"
 
-/*
-CameraProperty::CameraProperty(Camera *pkCamera) 
-{
-	m_pkCamera = pkCamera;
-	m_eCameraType = CAM_TYPEFIRSTPERSON;
-	strcpy(m_acName,"CameraProperty");	
+#define CHASE_CAM_DISTANCE	5
 
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
-}*/
 
 CameraProperty::CameraProperty() 
 {
@@ -29,9 +21,8 @@ void CameraProperty::Update()
 	if(!m_pkCamera)
 		return;
 
-//	float fYawAngle;
-	Vector3 kYawVector;
-	string strCamName;
+	Vector3		kYawVector;
+	string		strCamName;
 
 	MadProperty* madp = dynamic_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
 
@@ -45,6 +36,7 @@ void CameraProperty::Update()
 					madp->m_bIsVisible = false;
 				m_pkCamera->SetFov(m_fFov);
 				break;
+
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
@@ -55,34 +47,50 @@ void CameraProperty::Update()
 				break;
 
 			case CAM_TYPEISO:
+				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(10,10,10));
+				m_pkCamera->SetRot(Vector3(45,-45,0));
+				strCamName = " ISO ";
+				if(madp)
+					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(m_fFov);
+				break;
+
+				
+			case CAM_TYPECHASE:
+				kYawVector = GetYawVector2(m_pkObject->GetRot().y);
+
+				m_pkCamera->SetPos(m_pkObject->GetPos() - (kYawVector * CHASE_CAM_DISTANCE) + 
+					Vector3(0,CHASE_CAM_DISTANCE,0));
+				m_pkCamera->SetRot(Vector3(m_pkObject->GetRot() + Vector3(0,90,0)));
+				strCamName = " Chase ";
+				if(madp)
+					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(m_fFov);
+				break;
+
+			case CAM_TYPEDYNAMICISO:
+				kYawVector = GetYawVector2(m_kDynamicIso.y);
+
+				m_pkCamera->SetPos(m_pkObject->GetPos() - (kYawVector * CHASE_CAM_DISTANCE) + 
+					Vector3(0,CHASE_CAM_DISTANCE,0));
+				m_pkCamera->SetRot(Vector3(m_kDynamicIso + Vector3(0,90,0)));
+				strCamName = " Chase ";
+				if(madp)
+					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(m_fFov);
+				break;
+				
 			case CAM_TYPESIDE:
 				strCamName = " Side ";
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0,10));
-				m_pkCamera->SetRot(Vector3(0,0,0));
+				m_pkCamera->SetRot(Vector3(0,20,0));
 				if(madp)
 					madp->m_bIsVisible = true;
 				m_pkCamera->SetFov(90);
-				/*kYawVector = GetYawVector2(m_pkObject->GetRot().y);
-				fYawAngle  = m_pkObject->GetRot().y;
-				m_pkCamera->SetPos(m_pkObject->GetPos() + kYawVector*10);
-				m_pkCamera->SetRot(Vector3(0,- fYawAngle,0));*/
 				break;
 		
-//			case CAM_TYPESIDE:
-				//m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0,10));
-				//m_pkCamera->SetRot(Vector3(0,0,0));
-//				break;
 		}
 	}
-
-	/*	// FPS
-		//m_pkCamera->SetPos(m_pkObject->GetPos());
-		//m_pkCamera->SetRot(m_pkObject->GetRot());
-
-		// Top Down
-		
-		m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
-		m_pkCamera->SetRot(Vector3(90,0,0));*/
 
 	m_pkCamera->SetName(strCamName);
 }

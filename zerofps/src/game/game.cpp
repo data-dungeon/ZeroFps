@@ -78,12 +78,6 @@ void Game::OnIdle(void) {
 		}
 	}
 
-	if(pkInput->Pressed(KEY_C)) {
-		CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
-		if(pkCam) {
-			pkCam->NextType((CameraProperty::CamType_e) 0);
-			}
-		}
 }
 
 void Game::OnHud(void) 
