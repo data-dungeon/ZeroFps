@@ -336,7 +336,7 @@ void EntityManager::Delete(Entity* pkEntity)
 		{
 			//only add to clients who is suppose to have the entity
 			if(pkEntity->GetExistOnClient(i))
-			{
+			{			
 				AddEntityToClientDeleteQueue(i,pkEntity->GetEntityID());
 			}
 		}

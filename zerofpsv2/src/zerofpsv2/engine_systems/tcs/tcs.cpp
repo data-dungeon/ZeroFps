@@ -15,11 +15,14 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fTimeSlice = 	2.0;
 	m_fGravity =		15.0;
 	
-	m_iHandleCollission = 1;
-	m_iDebugGraph = 0;
+	m_iHandleCollission =1;
+	m_iDebugGraph = 		0;
 	
 	m_iNrOfCollissions = 0;
-	m_iNrOfTests = 0;
+	m_iNrOfTests = 		0;
+	
+	m_pkBodyCopy1 	=	NULL;
+	m_pkBodyCopy2	=	NULL;
 	
 	RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
 	RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
@@ -32,8 +35,10 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 
 Tcs::~Tcs()
 {
-	delete m_pkBodyCopy1;
-	delete m_pkBodyCopy2;
+	if(m_pkBodyCopy1)
+		delete m_pkBodyCopy1;	
+	if(m_pkBodyCopy2)
+		delete m_pkBodyCopy2;
 }
 
 
