@@ -44,6 +44,7 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iEnergy			=100;
 	m_iMaxEnergy		=100;
 	m_iScore				=0;
+	m_iKills				=0;
 	m_iCurrentLevel	=0;
 	m_iStartLevel		=1;
 	m_iLives 			=0;
@@ -185,6 +186,7 @@ void StopEmUp::OnSystem(void)
 					m_iScore = 		pkPlayer->m_iScore;
 					m_strGunName = pkPlayer->m_strGunName;
 					m_iStopers	=	pkPlayer->m_iStopers;
+					m_iKills		=	pkPlayer->m_iKills;
 				}					
 			}	
 		}
@@ -208,10 +210,13 @@ void StopEmUp::OnIdle()
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "LEVEL: %d",m_iCurrentLevel);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "LIVES: %d",m_iCurrentLives);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "SCORE: %d",m_iScore);
-		m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);
-		m_pkZeroFps->DevPrintf("StopEmUp-Client", temp);
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "KILLS: %d",m_iKills);		
+		//m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "-----------------");
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "GUN: %s",m_strGunName.c_str());
-		m_pkZeroFps->DevPrintf("StopEmUp-Client", "STOPERS: %d",m_iStopers);
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "STOPERS: %d",m_iStopers);		
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);		
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", temp);
 	}
 }
 

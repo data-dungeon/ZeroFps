@@ -58,11 +58,11 @@ P_Powerup::P_Powerup()
 			case 5:
 			case 4:
 				m_iPowerupType = 4;
-				m_strPowerupName = "Stoper";
+				m_strPowerupName = "Stopper";
 				break;	
 							
 			case 1:
-				if(iLevel >= 6)
+				if(iLevel >= 7 && iLevel <= 15)
 				{
 					m_iPowerupType = iRand;				
 					m_strPowerupName = "Yber Gun";	
@@ -70,7 +70,7 @@ P_Powerup::P_Powerup()
 				break;
 		
 			case 2:
-				if(iLevel >= 8)
+				if(iLevel >= 12 )
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Flash Gun";	
@@ -78,7 +78,7 @@ P_Powerup::P_Powerup()
 				break;
 
 			case 3:
-				if(iLevel >= 3)
+				if(iLevel >= 4 && iLevel <= 7)
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Mini Gun";	
@@ -133,7 +133,7 @@ void P_Powerup::Touch(int iID)
 						//health
 						case 0:
 						{
-							pkPlayer->m_iEnergy = pkPlayer->m_iMaxEnergy;
+							pkPlayer->m_iEnergy += 25;
 							
 							pkPlayer->SetNetUpdateFlag(true);						
 							break;

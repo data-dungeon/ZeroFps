@@ -46,6 +46,7 @@ class StopEmUp :public Application , public ZGuiApp
 		int			m_iEnergy;
 		int			m_iMaxEnergy;
 		int			m_iScore;
+		int			m_iKills;
 		int			m_iCurrentLevel;
 		int			m_iCurrentLives;
 		int			m_iStopers;

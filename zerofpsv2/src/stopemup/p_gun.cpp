@@ -75,7 +75,7 @@ void P_Gun::FireBullet()
 	//direct hit
 	else
 	{
-		//play hit sound
+		//play fire sound
 		if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
 			pkSound->StartSound(m_strSound,true);
 	
@@ -99,7 +99,11 @@ void P_Gun::FireBullet()
 		{
 			if(kObjects[i] == m_pkEntity)
 				continue;
-		
+					
+			//is it a stoper?
+			if(kObjects[i]->GetType() == "stop.lua")
+				continue;
+				
 			//get mad property and do a linetest		
 			if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
 			{
@@ -126,7 +130,6 @@ void P_Gun::FireBullet()
 		//has target
 		if(pkClosest)
 		{
-			
 			if(P_Walker* pkWalk = (P_Walker*)pkClosest->GetProperty("P_Walker"))
 			{
 			

@@ -17,6 +17,7 @@ class P_Player : public Property
 		int		m_iEnergy;
 		int		m_iMaxEnergy;
 		int		m_iScore;
+		int		m_iKills;
 		string	m_strGunName;
 		bool		m_bSecondary;
 		int		m_iStopers;
@@ -32,6 +33,7 @@ class P_Player : public Property
 		
 		
 		void AddScore(int iScore)			{	m_iScore+= iScore;SetNetUpdateFlag(true);};
+		void AddKill()							{	m_iKills++		  ;SetNetUpdateFlag(true);};
 		void Damage(int iDmg);
 };
 

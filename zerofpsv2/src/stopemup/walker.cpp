@@ -247,7 +247,10 @@ void P_Walker::Damage(int iDmg,int iKiller)
 		
 		//find killer and give him some bonus 
 		if(P_Player* pkPlayer = (P_Player*)m_pkEntityManager->GetPropertyFromEntityID(iKiller,"P_Player"))
+		{
 			pkPlayer->AddScore(m_iMaxLife);
+			pkPlayer->AddKill();
+		}
 	}
 }
 
