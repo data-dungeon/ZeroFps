@@ -66,6 +66,13 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
 	}
 
+	if(m_pkGUI)
+	{
+		int curr_res_x, curr_res_y;
+		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
+		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+	}
+
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 

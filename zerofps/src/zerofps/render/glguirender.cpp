@@ -498,8 +498,8 @@ bool GLGuiRender::SetFont(ZGuiFont* pkFont)
 	return true;
 }
 
-
-
-
-
-
+void GLGuiRender::GetScreenSize(int& cx, int& cy)
+{
+	cx = m_iScreenWidth;
+	cy = m_iScreenHeight;
+}

@@ -136,6 +136,9 @@ public:
 	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 
 protected:
+
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	int m_iResolutionX, m_iResolutionY;
 	
 	ZGuiWnd* m_pkParent;
 	list<ZGuiWnd*> m_kChildList;

@@ -26,6 +26,7 @@ public:
 	bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true);
 	bool SetDisplay(int w, int h);
 	bool SetFont(ZGuiFont* pkFont);
+	void GetScreenSize(int& cx, int& cy);
 
 private:
 

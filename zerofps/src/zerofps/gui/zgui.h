@@ -85,7 +85,7 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
-	bool Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+//	bool Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
 	bool LoadDialog( char* szResourceFile, char* szWndResName, callback cb);
 
@@ -123,10 +123,10 @@ public:
 	void* GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type);
 
 	MAIN_WINDOW* FindMainWnd(int x, int y);
+	void GetResolution(int& x, int& y);
 
 private:
-	bool ResizeWnd(ZGuiWnd* pkWnd, float fScaleX, float fScaleY, int iOldWidth, 
-		int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
 	void FormatKey(int& iKey);

@@ -4,9 +4,13 @@
 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
-ZeroEdit Editor("ZeroEdit",1024,768,24);
+//ZeroEdit Editor("ZeroEdit",1024,768,24);
+ZeroEdit Editor("ZeroEdit",800,600,24);
+//ZeroEdit Editor("ZeroEdit",640,480,24);
+//ZeroEdit Editor("ZeroEdit",320,240,24);
 
-ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
+ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth) 
+	: Application(aName,iWidth,iHeight,iDepth) 
 {
 	
 }

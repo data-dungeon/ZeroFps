@@ -26,6 +26,7 @@ public:
 	virtual bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true) = 0;
 	//virtual bool SetMaskTexture(int iID) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
+	virtual void GetScreenSize(int& x, int& y) = 0;
 };
 
 #endif 

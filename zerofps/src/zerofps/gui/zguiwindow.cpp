@@ -23,6 +23,8 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+	m_iResolutionX = 1024;
+	m_iResolutionY = 768;
 
 	m_ulFlags = 0;
 	m_iZValue = 0;
@@ -238,6 +240,13 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	if(m_bVisible == false)
 		return true;
 
+	if(m_pkGUI)
+	{
+		int curr_res_x, curr_res_y;
+		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
+		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+	}
+
 	pkRenderer->SetSkin(m_pkSkin); 
 
 	pkRenderer->RenderQuad(m_kArea);
@@ -367,6 +376,73 @@ void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 
 	if(bChangeMoveArea)
 		m_kMoveArea = m_kArea;
+}
+
+
+bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGui* pkGui = GetGUI();
+	if(pkGui == NULL)
+		return false;
+
+	// Have resolution been changed for this window?
+	int curr_res_x, curr_res_y;
+	pkGui->GetResolution(curr_res_x, curr_res_y);
+	if(m_iResolutionX == curr_res_x && m_iResolutionY == curr_res_y)
+		return true; // same, break
+
+	// Store the new resoluion
+	m_iResolutionX = iNewWidth;
+	m_iResolutionY = iNewHeight;
+
+	float fScaleX = (float) iNewWidth / (float) iOldWidth;
+	float fScaleY = (float) iNewHeight / (float) iOldHeight;
+
+	Rect rc, rcNew;
+	float fOldXprocentAvSkarm, fOldYprocentAvSkarm;
+
+	// 
+	// Change area
+	// 
+	rc = m_kArea;
+	
+	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
+	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
+
+	rcNew = Rect(
+		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
+		(int) (fOldYprocentAvSkarm * (float) iNewHeight), 0,0);
+
+	rcNew.Right  =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
+	rcNew.Bottom =  rcNew.Top  + (int) (fScaleY * (float) rc.Height());
+	
+	m_kArea = rcNew;
+
+	// 
+	// Change move area
+	// 
+	rc = m_kMoveArea;
+	
+	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
+	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
+
+	rcNew = Rect(
+		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
+		(int) (fOldYprocentAvSkarm * (float) iNewHeight),0,0);
+
+	rcNew.Right  =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
+	rcNew.Bottom =  rcNew.Top  + (int) (fScaleY * (float) rc.Height());
+	
+	m_kMoveArea = rcNew;
+
+	// Also scale childrens
+	for( WINit win = m_kChildList.begin();
+		 win != m_kChildList.end(); win++)
+		 {
+			(*win)->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+		 }
+
+	return true;
 }
 
 void ZGuiWnd::Move(int dx, int dy, bool bScreenSpace, bool bFreeMovement)

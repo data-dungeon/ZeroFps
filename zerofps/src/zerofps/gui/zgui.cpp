@@ -60,11 +60,6 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow, char* szName)
 	strcpy(pkNewWindow->m_szName, szName);
 	m_pkResManager->Add(string(szName), pkNewWindow);
 
-/*	if(GetWindow(pkNewWindow->GetID()))
-	{
-		ZFAssert(0,"Tried to register a window with a ID that already exist.");
-	}*/
-
 	pkNewWindow->SetGUI(this);
 	if(pkNewWindow->GetFont() == NULL)
 	{
@@ -1453,65 +1448,27 @@ bool ZGui::MouseHoverWnd()
 	return m_bHoverWindow;
 }
 
-bool ZGui::Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+/*bool ZGui::Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
 	map<string, ZGuiWnd*> akWindows;
 	m_pkResManager->GetWindows(akWindows);
 
-	float fScaleX = (float) iNewWidth / (float) iOldWidth;
-	float fScaleY = (float) iNewHeight / (float) iOldHeight;
-
-//	float fOldXprocentAvSkarm, fOldYprocentAvSkarm;
-
-	//Rect rc, rcNew;
 	map<string, ZGuiWnd*>::iterator itWindows;
 	for(itWindows = akWindows.begin();
 		itWindows != akWindows.end(); itWindows++)
 		{		
-/*			// 
-			// Change area
-			// 
-			rc = (*itWindows).second->m_kArea;
-			
-			fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-			fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-			rcNew = Rect(
-				(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-				(int) (fOldYprocentAvSkarm * (float) iNewHeight), 0,0);
-
-			rcNew.Right =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-			rcNew.Bottom =  rcNew.Top + (int) (fScaleY * (float) rc.Height());
-			
-			(*itWindows).second->m_kArea = rcNew;
-
-			// 
-			// Change move area
-			// 
-			rc = (*itWindows).second->m_kMoveArea;
-			
-			fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-			fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-			rcNew = Rect(
-				(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-				(int) (fOldYprocentAvSkarm * (float) iNewHeight),0,0);
-
-			rcNew.Right =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-			rcNew.Bottom =  rcNew.Top + (int) (fScaleY * (float) rc.Height());
-			
-			(*itWindows).second->m_kMoveArea = rcNew;*/
-
-			ResizeWnd((*itWindows).second, fScaleX, fScaleY, iOldWidth, iOldHeight, 
+			ResizeWnd((*itWindows).second, iOldWidth, iOldHeight, 
 				iNewWidth, iNewHeight);
 		}
 
 	return true;
 }
 
-bool ZGui::ResizeWnd(ZGuiWnd *pkWnd, float fScaleX, float fScaleY, int iOldWidth, 
-					 int iOldHeight, int iNewWidth, int iNewHeight)
+bool ZGui::ResizeWnd(ZGuiWnd *pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
+
+	float fScaleX = (float) iNewWidth / (float) iOldWidth;
+	float fScaleY = (float) iNewHeight / (float) iOldHeight;
 
 	Rect rc, rcNew;
 	float fOldXprocentAvSkarm, fOldYprocentAvSkarm;
@@ -1556,10 +1513,14 @@ bool ZGui::ResizeWnd(ZGuiWnd *pkWnd, float fScaleX, float fScaleY, int iOldWidth
 		 {
 			 if((*win)->IsInternalControl())
 			 {
-				 ResizeWnd((*win), fScaleX, fScaleY, iOldWidth, 
-					 iOldHeight, iNewWidth, iNewHeight);
+				 ResizeWnd((*win), iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 			 }
 		 }
 
 	return true;
+}*/
+
+void ZGui::GetResolution(int& res_x, int& res_y)
+{
+	m_pkRenderer->GetScreenSize(res_x, res_y);
 }

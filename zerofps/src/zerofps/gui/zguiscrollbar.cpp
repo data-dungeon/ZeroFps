@@ -34,6 +34,13 @@ bool ZGuiScrollbar::Render( ZGuiRender* pkRenderer )
 {
 	if(!IsVisible())
 		return true;
+
+	if(m_pkGUI)
+	{
+		int curr_res_x, curr_res_y;
+		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
+		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+	}
 		
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 

@@ -46,8 +46,8 @@ Gui::~Gui()
 
 }
 
-bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int 
-				   iNumberOfParams, void *pkParams )
+bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
+				   int iNumberOfParams, void *pkParams )
 {
 	Rect rc;
 
@@ -132,7 +132,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int
 				case IDM_LOAD_HEIGHTMAP:
 
 					switch(iItemID)
-					{
+					{	
 					case IDM_LOAD_HEIGHTMAP:
 						m_kSearchTask = MAP;
 						flags = DIRECTORIES_ONLY; 
@@ -151,6 +151,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int
 					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
 						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
 					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
+
 					CaptureInput(true);
 					break;
 
@@ -199,7 +200,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int
 
 bool Gui::CreateWindows()
 {	
-	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,
+	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,1024,20),NULL,
 		true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
 	pkMenu->SetZValue(102321);
@@ -228,6 +229,8 @@ bool Gui::CreateWindows()
 //	m_pkEdit->pkGui->AddKeyCommand(KEY_ESCAPE, pkMenu, pkCloseGuiButton);
 
 	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, "MainMenu", MAINWINPROC, true);
+
+	//m_pkEdit->pkGui->Resize(1024,768,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight);
 
 	return true;
 }

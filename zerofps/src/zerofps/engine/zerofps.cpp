@@ -424,7 +424,7 @@ void ZeroFps::ToggleGui(void)
 
 void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 {
-	m_pkGui->Resize(m_iWidth, m_iHeight, iWidth, iHeight);
+//	m_pkGui->Resize(m_iWidth, m_iHeight, iWidth, iHeight);
 
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;

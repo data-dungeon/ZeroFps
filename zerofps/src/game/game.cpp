@@ -2,8 +2,6 @@
 #include "gamescript.h"
 #include "gamescriptinterface.h"
 
-//Game g_kGame("ZeroFPS game",320,240,24);
-//Game g_kGame("ZeroFPS game",640,480,24);
 Game g_kGame("ZeroFPS game",1024,768,24);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
@@ -349,8 +347,6 @@ void Game::InitGui()
 	pkGuiMan->Wnd("InventoryWnd")->SetSkin(pkSkin);
 
 	pkFps->m_bGuiTakeControl = false;
-
-	pkGui->Resize(1024,768,m_iWidth,m_iHeight);
 }
 
 void Game::InitScript()
