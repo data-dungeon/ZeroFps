@@ -744,7 +744,7 @@ bool ZGResEdit::IsGuiWnd(ZGuiWnd *pkWnd) const
 		"CtrlPropBoxWnd",
 		"SkinBoxWnd",
 		"FileMenu",
-		"FOFileOpenDlg",
+		"FOOpenFileWnd",
 	};
 
 	int i;
