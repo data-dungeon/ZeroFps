@@ -1,22 +1,23 @@
 #include "dmcontainer.h"
 #include <iomanip>
 
-DMContainer::DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY )
+DMContainer::DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bool bDisable)
 {
 	m_pkEntMan = pkEntMan;
 	m_iOwnerID = iOwnerID;
+	m_bDisableItems = bDisable;
 
 	SetSize(iX,iY);
 	
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID) )	
 	{
-		pkOwner->SetUpdateStatus(UPDATE_NOCHILDS);
+		//pkOwner->SetUpdateStatus(UPDATE_NOCHILDS);
 	}
 	else
 		cout<<"ERROR: container could not find its owner entity"<<endl;
 		
 
-	cout<<"Container created whit size:"<< iX <<" x "<<iY<<endl;
+	//cout<<"Container created whit size:"<< iX <<" x "<<iY<<endl;
 }
 
 void DMContainer::SetSize(int iX,int iY)
@@ -127,6 +128,12 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 				
 				pkItem->SetParent(pkOwner);				
 				
+				if(m_bDisableItems)				
+					pkItem->SetUpdateStatus(UPDATE_NONE);
+				else
+					pkItem->SetUpdateStatus(UPDATE_ALL);
+
+				
 				return true;
 			}
 			else
@@ -198,7 +205,8 @@ bool DMContainer::DropItem(int iID)
 			{
 				ClearItem(iID);
 				
-				pkItem->SetParent(pkOwner->GetParent());
+				pkItem->SetUpdateStatus(UPDATE_ALL);				
+				pkItem->SetParent(pkOwner->GetParent());				
 				pkItem->SetWorldPosV( pkOwner->GetWorldPosV() );
 				
 				return true;
@@ -345,10 +353,11 @@ void DMContainer::Print()
 
 void DMContainer::Save(ZFIoInterface* pkPackage)
 {
+	pkPackage->Write(&m_bDisableItems,sizeof(m_bDisableItems),1);
 	
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
-
+	
 	int iSlots = m_kSlots.size();
 	pkPackage->Write(&iSlots,sizeof(iSlots),1);	
 	
@@ -360,6 +369,7 @@ void DMContainer::Save(ZFIoInterface* pkPackage)
 
 void DMContainer::Load(ZFIoInterface* pkPackage)
 {
+	pkPackage->Read(&m_bDisableItems,sizeof(m_bDisableItems),1);	
 	
 	pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);

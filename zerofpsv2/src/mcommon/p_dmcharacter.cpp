@@ -3,6 +3,85 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
+
+
+// ---- DMCharacterStats
+DMCharacterStats::DMCharacterStats()
+{
+	m_strName = 	"NoName";
+	m_strIcon =		"portrait1.bmp";
+			
+	m_iLife = 		100;
+	m_iMaxLife =	100;
+		
+	m_fSpeed =		1;
+	m_fArmour =		10;
+	m_fWage =		10;
+				
+	m_fExperience =0;
+	m_fNextLevel = 1000;
+	m_iLevel =		1;
+}
+
+void DMCharacterStats::Randomize()
+{
+	vector<string>	kNames;
+	kNames.push_back("Dvoid");
+	kNames.push_back("Vim");
+	kNames.push_back("Zeb");
+	kNames.push_back("Zerom");
+	kNames.push_back("Eld");
+	kNames.push_back("Arnold");
+	kNames.push_back("B I G");
+	kNames.push_back("Cobra");
+	kNames.push_back("Captain picard");
+	kNames.push_back("MR Data");
+	kNames.push_back("Lotta");
+
+	m_strName = 		kNames[rand()%kNames.size()];
+	m_strIcon =			"portrait1.bmp";
+
+	m_iMaxLife = 		rand()%20 + 80;
+	m_iLife = 			m_iMaxLife;
+
+	m_fSpeed = 			rand()%5;
+	m_fArmour = 		0;
+	m_fWage =			10;
+	
+	m_fExperience = 	0;
+	m_fNextLevel = 	1000;
+	m_iLevel = 			1;
+} 
+
+void DMCharacterStats::Set(DMCharacterStats& kOther)
+{
+	m_strName = 		kOther.m_strName;
+	m_strIcon = 		kOther.m_strIcon;
+			
+	m_iLife = 			kOther.m_iLife;
+	m_iMaxLife = 		kOther.m_iMaxLife;
+			
+	m_fSpeed = 			kOther.m_fSpeed;
+	m_fArmour = 		kOther.m_fArmour;
+	m_fWage = 			kOther.m_fWage;
+		
+	m_fExperience = 	kOther.m_fExperience;
+	m_fNextLevel = 	kOther.m_fNextLevel;
+	m_iLevel = 			kOther.m_iLevel;
+}
+
+void DMCharacterStats::Print()
+{
+	cout<<"-= character stats =-"<<endl;
+	cout<<"Name:"<<m_strName<<endl;
+	cout<<"Icon:"<<m_strIcon<<endl;
+	
+	cout<<"life:"<<m_iLife<<" / "<<m_iMaxLife<<endl;
+	
+}
+
+// ----------
+
 P_DMCharacter::P_DMCharacter()
 {
 	strcpy(m_acName,"P_DMCharacter");		
@@ -21,6 +100,8 @@ P_DMCharacter::P_DMCharacter()
 	
 	
 	m_iTeam =		0;
+	
+	m_kStats.Randomize();
 }
 
 P_DMCharacter::~P_DMCharacter()
@@ -45,7 +126,7 @@ void P_DMCharacter::Init()
 	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),7,8);
 	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,4);
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
-	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3);
+	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
 	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,3);
 	
 	//cout<< "New character created"<<endl;

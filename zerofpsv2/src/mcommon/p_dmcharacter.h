@@ -33,22 +33,12 @@ class MCOMMON_API DMCharacterStats
 		int		m_fNextLevel;
 		int		m_iLevel;
 			
-		DMCharacterStats()
-		{
-			m_strName = 	"NoName";
-			m_strIcon =		"portrait1.bmp";
-			
-			m_iLife = 		100;
-			m_iMaxLife =	100;
+
+		DMCharacterStats();
 		
-			m_fSpeed =		1;
-			m_fArmour =		10;
-			m_fWage =		10;
-				
-			m_fExperience =0;
-			m_fNextLevel = 1000;
-			m_iLevel =		1;
-		};
+		void Randomize();
+		void Set(DMCharacterStats& kOther);
+		void Print();
 };
 
 class MCOMMON_API P_DMCharacter: public Property {

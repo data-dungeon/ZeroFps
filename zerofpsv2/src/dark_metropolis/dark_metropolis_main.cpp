@@ -259,6 +259,20 @@ void DarkMetropolis::Input()
 				cout<<"There is "<<kChars.size()<< " characters in this hq"<<endl;
 			}
 	
+	
+	if(m_pkInputHandle->Pressed(KEY_N))
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
+			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
+			{
+				if(m_pkFps->GetTicks()-m_fDelayTimer > 1)
+				{
+					m_fDelayTimer = m_pkFps->GetTicks();								
+					pkHQ->SpawnNewCharacter();
+					
+					cout<<"spawning a new character"<<endl;
+				}
+			}
+	
 	if(m_pkInputHandle->Pressed(KEY_O))
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
@@ -271,6 +285,7 @@ void DarkMetropolis::Input()
 			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[0]))
 				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 				{
+					pkHQ->GetStats()->Print();
 					pkHQ->m_pkBackPack->Print();
 				}
 

@@ -5,7 +5,7 @@
 
 CBriefingDlg::CBriefingDlg() : CGameDlg("BriefingWnd", &g_kDM)
 {
-}
+} 
 
 CBriefingDlg::~CBriefingDlg()
 {

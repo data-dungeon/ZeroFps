@@ -49,6 +49,8 @@ class MCOMMON_API P_DMHQ: public Property {
 		bool EjectCharacter(int iID);
 		void EjectAllCharacters();
 		
+		void SpawnNewCharacter();
+		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 

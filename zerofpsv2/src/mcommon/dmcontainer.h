@@ -34,6 +34,8 @@ class MCOMMON_API DMContainer
 		int	m_iSizeY;						//height
 		int	m_iOwnerID;						//owner entity ID, (owner is gona be the parent for all item entitys)
 
+		bool	m_bDisableItems;
+
 		void SetSize(int iX,int iY);
 	
 		
@@ -44,9 +46,12 @@ class MCOMMON_API DMContainer
 	
 	public:
 		
+		DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true);		
+		
 		int GetOwnerID()			{ return m_iOwnerID; }
-
-		DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4);		
+		
+		void SetDisableItems(bool bDisable) {m_bDisableItems = bDisable;};
+		bool GetDisableItems() {return m_bDisableItems;};
 		
 		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
 

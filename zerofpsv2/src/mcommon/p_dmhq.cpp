@@ -32,6 +32,12 @@ void P_DMHQ::Init()
 }
 
 
+void P_DMHQ::SpawnNewCharacter()
+{
+	Entity* pkEnt = m_pkObjMan->CreateObjectFromScript("data/script/objects/dm/t_character.lua");
+	
+	InsertCharacter(pkEnt->GetEntityID());
+}
 
 bool P_DMHQ::InsertCharacter(int iID)
 {
