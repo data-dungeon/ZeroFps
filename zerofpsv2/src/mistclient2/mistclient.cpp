@@ -217,7 +217,30 @@ void MistClient::Say(string strMsg)
 				else				
 					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
 			}									
-			
+			if(strMsg.substr(1,5) == "yawn")
+			{
+				SendTaunt(3);
+				if(strMsg.size() <= 7)
+					SendMessage("yawn",MLCM_TALK,""); 	
+				else				
+					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+			}
+			if(strMsg.substr(1,5) == "donno")
+			{
+				SendTaunt(4);
+				if(strMsg.size() <= 7)
+					SendMessage("donno",MLCM_TALK,""); 	
+				else				
+					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+			}
+			if(strMsg.substr(1,5) == "confused")
+			{
+				SendTaunt(5);
+				if(strMsg.size() <= 7)
+					SendMessage("confused",MLCM_TALK,""); 	
+				else				
+					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+			}	
 		}
 	}
 	else
