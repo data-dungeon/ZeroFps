@@ -46,10 +46,10 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_bDebugGraphs	=		true;
 	m_bShadowMap	=		true;
+	m_iCurrentRenderMode=RENDER_NONE;
 	
 	
-	
-	if(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow"))
+	if( (!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || (!m_pkZShaderSystem->HaveExtension("GL_ARB_depth_texture")) )
 	{
 		cout<<"WARNING: GL_ARB_shadow not supported shadows disabled"<<endl;
 		m_bShadowMap = false;
@@ -545,6 +545,10 @@ void Camera::RenderView()
 	if( (!m_bRender) || (!m_pkZeroFps->GetRenderOn()) || m_pkZeroFps->GetMinimized() )
 		return;
 
+
+	//get root entity		
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+		
 		
 	if(m_bShadowMap && m_pkZeroFps->GetShadowMap())
 	{
@@ -576,43 +580,43 @@ void Camera::RenderView()
 		
 		//create shadow map	
 		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
+		m_iCurrentRenderMode = RENDER_SHADOWMAP;
 		MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
-		
-		
+				
 	
-		//draw ambient light				
+		//draw LIT light				
 		InitView();	
-		m_pkLight->SetAmbientOnly(false);
-			
-		Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		m_pkLight->SetAmbientOnly(false);			
+		m_iCurrentRenderMode = RENDER_NORMAL;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
 		
-		
-		//draw lit scene
-		//m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
-		m_pkLight->SetAmbientOnly(true);
+		//draw shadowed scene
+		m_pkLight->SetAmbientOnly(true);		
+		m_iCurrentRenderMode = RENDER_SHADOW;
 		DrawShadowedScene();
+		m_pkLight->SetAmbientOnly(false);		
 	
-		//update all render propertys that shuld NOT be shadowed
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 		
-		m_pkLight->SetAmbientOnly(false);
+		//Draw unshadows scene
+		m_iCurrentRenderMode = RENDER_NOSHADOWED;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+	
+		m_iCurrentRenderMode = RENDER_NONE;	
 	}
 	else
-	{	
-	
-		//get root entity
-		Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-	
+	{		
 		//update all render propertys that shuld be shadowed
+		m_iCurrentRenderMode = RENDER_NORMAL;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
 		//update shadow map
 		m_pkZShadow->Update();
 	
 		//update all render propertys that shuld NOT be shadowed
+		m_iCurrentRenderMode = RENDER_NOSHADOWED;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 		
+		m_iCurrentRenderMode = RENDER_NONE;	
 	}
 		
 	if(m_bDebugGraphs) 

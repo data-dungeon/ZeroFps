@@ -290,14 +290,14 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
 					{
 						static int s_iPrevMode = m_iEditMode;
-						if(IsButtonChecked("PropertBn1")) // växla över till att editera ambientarea
+						if(IsButtonChecked("PropertBn1")) // vï¿½la ï¿½er till att editera ambientarea
 						{
 							pkProp->SetFreeForm(true);
 
 							s_iPrevMode = m_iEditMode;
 							m_iEditMode = EDIT_AMBIENTSOUNDS;
 						}
-						else // stäng igen polygonen och växla över till tidigare editmode
+						else // stï¿½g igen polygonen och vï¿½la ï¿½er till tidigare editmode
 						{
 							float fFloor, fRoof;
 							vector<Vector2> kPolys;
@@ -305,11 +305,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 							if(!kPolys.empty())
 							{
-								if(kPolys[0] != kPolys.back()) // stäng bara igen en gång!
+								if(kPolys[0] != kPolys.back()) // stï¿½g bara igen en gï¿½g!
 								{
 									kPolys.push_back(kPolys[0]);
 									pkProp->SetArea(kPolys, fFloor, fRoof);
-									printf("stänger igen!\n");
+									printf("stï¿½ger igen!\n");
 								}
 							}
 
@@ -683,7 +683,7 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
 			
 			// Setting new zone modell
-			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
+			if(m_iCurrentMarkedZone != -1)	// ï¿½ nï¿½on zon markerad?
 			{
 				//pkObjectMan->LoadZone(m_iCurrentMarkedZone);
 				//m_pkEntityManager->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
@@ -772,7 +772,7 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			
 			ShowWnd("SelectFileWnd", false); // close window
 
-			AddPropertyVal(); // måste anropa dubbelt, I don't know why...
+			AddPropertyVal(); // mï¿½te anropa dubbelt, I don't know why...
 
 			break;
 
@@ -846,6 +846,7 @@ void ZeroEd::SetupPreviewWnd(const char* szMadFile)
 			(float) GetWnd("PreviewRenderLabel")->GetScreenRect().Height();
 
 		s_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.0025,250);	
+		s_pkCamera->SetShadowMap(false);
 		s_pkCamera->SetDebugGraphs(false);
 		s_pkCamera->SetClearViewPort(false);  
 		s_pkCamera->SetRootEntityID(m_pkPreviewEntity->GetEntityID());

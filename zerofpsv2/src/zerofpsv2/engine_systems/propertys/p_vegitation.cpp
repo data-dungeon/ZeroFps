@@ -1,6 +1,7 @@
 #include "p_vegitation.h"
 #include "p_hmrp2.h"
 #include "../common/heightmap.h"
+#include "../../engine/camera.h"
 
 P_Vegitation::P_Vegitation()
 {
@@ -78,6 +79,9 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 
 void P_Vegitation::Update()
 {
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWMAP)
+		return;
+
 	//frustum culling
 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
 		return;

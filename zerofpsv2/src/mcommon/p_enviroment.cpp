@@ -84,6 +84,9 @@ void P_Enviroment::Update()
 {
 	if(m_bEnabled)
 	{
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NORMAL)
+			return;
+		
 		UpdateTime();
 		
 		DrawSky();

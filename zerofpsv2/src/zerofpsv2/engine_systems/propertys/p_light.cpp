@@ -19,7 +19,7 @@ P_Light::P_Light()
 	
 	m_pkLightSource=new LightSource();
 
-	m_iType = PROPERTY_TYPE_RENDER;
+	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
  
 	m_iMode  = LMODE_DEFAULT;

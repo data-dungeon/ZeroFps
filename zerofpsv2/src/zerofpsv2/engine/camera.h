@@ -18,6 +18,16 @@
 class Render;
 class P_Camera;
 
+
+enum ENGINE_API RENDERMODE
+{
+	RENDER_NORMAL,
+	RENDER_SHADOWMAP,
+	RENDER_SHADOW,	
+	RENDER_NONE,
+	RENDER_NOSHADOWED
+};
+
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
 */
@@ -42,6 +52,8 @@ class ENGINE_API Camera : public I_Camera
 			RENDERTARGET_NONE,		
 		};
 
+
+		
 	private:	
 
 		EntityManager*	m_pkEntityMan;
@@ -110,6 +122,7 @@ class ENGINE_API Camera : public I_Camera
 		//shadow hack
 		unsigned int	m_iShadowTexture;
 		int				m_iShadowSize;
+		int				m_iCurrentRenderMode;
 		
 		Matrix4			m_kLightProjMatrix;
 		Matrix4			m_kLightViewMatrix;
@@ -179,6 +192,11 @@ class ENGINE_API Camera : public I_Camera
 		
 		Frustum*	GetFrustum()						{	return &m_kFrustum;			}
 		bool	   IsRenderOn()						{	return m_bRender;				}
+		
+		int		GetCurrentRenderMode()			{	return m_iCurrentRenderMode;}
+		
+		void		SetShadowMap(bool bSM)			{	m_bShadowMap = bSM;			}		
+		bool		GetShadowMap()						{	return m_bShadowMap;			}
 		bool	   IsSelected()						{	return m_bRender;				}
 		void		SetRender( bool bRenderOn )	{	m_bRender = bRenderOn;		}
 		void		SetSelected( bool bSelected )	{	m_bSelected = bSelected;	}
