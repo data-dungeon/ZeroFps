@@ -25,7 +25,7 @@ void P_AI::Update()
 
    // check if order is finished, and if so, go on to the next one
    if ( m_pkCurrentOrder->m_kOrderType == "MovingTowards" 
-        && m_pkObject->GetWorldPosV().DistanceTo(m_pkCurrentOrder->m_kPosition) < 0.8f )
+        && m_pkObject->GetWorldPosV().DistanceXZTo(m_pkCurrentOrder->m_kPosition) < 0.8f )
    {
       NextOrder();
    }
@@ -69,8 +69,14 @@ void P_AI::Update()
 				Vector3 kdiff = pkEnemy->GetWorldPosV() - kPos;
 				kdiff.y = 0;
 				Matrix4 kRotM;
-				kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
-				kRotM.Transponse();		
+
+            // crashed if vector is null
+            if ( kdiff != Vector3::ZERO )
+            {
+				   kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
+   				kRotM.Transponse();		
+            }
+
 				m_pkObject->SetLocalRotM(kRotM);
 
             // create splattblood PSystem
@@ -99,6 +105,9 @@ void P_AI::Update()
       pkMoveOrd->m_kPosition = m_pkCurrentOrder->m_kPosition;
 
       m_kDynamicOrders.pop_front();
+
+      //NextOrder();
+
       m_kDynamicOrders.push_front ( pkMoveOrd );
 
       NextOrder();
@@ -138,7 +147,7 @@ void P_AI::Update()
 
 void P_AI::NextOrder()
 {
-   // always prioriti dynamic orders
+   // always priority dynamic orders
    if ( m_kDynamicOrders.size() )
    {
       if ( m_pkCurrentOrder == (m_kDynamicOrders.front()) )
@@ -151,20 +160,20 @@ void P_AI::NextOrder()
          m_pkCurrentOrder = (m_kDynamicOrders.front());
       else
          m_pkCurrentOrder = 0;
-
    }
    else if ( m_kStaticOrders.size() )
    {
-      if ( m_pkCurrentOrder == (m_kDynamicOrders.front()) )
-      {
-         // TODO!! Move pointer in orderlist
-      }
+      m_kOrderIte++;
 
-      if ( m_kStaticOrders.size() )
-         m_pkCurrentOrder = (m_kStaticOrders.front());
-      else
-         m_pkCurrentOrder = 0;
+      if ( m_kOrderIte == m_kStaticOrders.end() )
+         m_kOrderIte = m_kStaticOrders.begin();
+
+      m_pkCurrentOrder = (*m_kOrderIte);
+
+      cout << "Chaned sataic order to:" << m_pkCurrentOrder->m_kPosition.x <<  endl;
    }
+   else
+      m_pkCurrentOrder = 0;
 
    
 }
@@ -200,6 +209,8 @@ P_AI::P_AI()
    m_bAIPlayer = false;
 
    m_pkCurrentOrder = 0;
+
+   m_kOrderIte = m_kStaticOrders.begin();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -210,6 +221,8 @@ P_AI::P_AI( string kName )
    m_bAIPlayer = false;
 
 	strcpy(m_acName,"P_AI");
+
+   m_kOrderIte = m_kStaticOrders.begin();
 }
 
 // ------------------------------------------------------------------------------------------

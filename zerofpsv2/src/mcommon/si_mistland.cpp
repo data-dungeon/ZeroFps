@@ -553,7 +553,6 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 	{
 		double dId;
 			
-		double x,y,z;
 		double dVel;
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
@@ -622,7 +621,6 @@ int MistLandLua::MakePathFindLua(lua_State* pkLua)
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;
-		double x,y,z;
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
 		
@@ -678,7 +676,6 @@ int MistLandLua::RotateTowardsLua(lua_State* pkLua)
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;			
-		double x,y,z;
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
 		
@@ -3039,15 +3036,22 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
 
 int MistLandLua::AIMoveToLua(lua_State* pkLua) 
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3)
 	{
 		double dId;
 		double x,y,z;
+      
+      char temp[128] = "dynamic";
+
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		g_pkScript->GetArgTable(pkLua, 2, vkData);
+		
+      if ( g_pkScript->GetNumArgs(pkLua) == 3 )
+         g_pkScript->GetArgString(pkLua, 3, temp);
+
 /*		g_pkScript->GetArgNumber(pkLua, 1, &x);		
 		g_pkScript->GetArgNumber(pkLua, 2, &y);		
 		g_pkScript->GetArgNumber(pkLua, 3, &z);		
@@ -3064,11 +3068,21 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
          P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
 
          // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() )
+         if ( pkAI->PlayerAI() && strcmp(temp,"dynamic") == 0)
             pkAI->ClearDynamicOrders();
+         else if ( pkAI->PlayerAI() && strcmp(temp,"static") == 0)
+         {
+            cout << "Warning! Tried to add static order to player" << endl;
+            return 0;
+         }
 
          if ( pkAI )
-            pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
+         {
+            if ( strcmp(temp,"dynamic") == 0 )
+               pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
+            else
+               pkAI->AddStaticOrder ("MoveTo", 0, 0, kPos, ".");
+         }
 		}
       else
          cout << "Tried to us AIMoveTo on a object without P_AI" << endl;

@@ -34,6 +34,8 @@ class MCOMMON_API P_AI: public Property
       deque<Order*> m_kDynamicOrders;  // pop order once executed
       deque<Order*> m_kConstantOrders; // check order every frame
 
+      deque<Order*>::iterator m_kOrderIte;
+
       int m_eAI_Mode; // attackmode, idlemode...
 
       Order* m_pkCurrentOrder;
