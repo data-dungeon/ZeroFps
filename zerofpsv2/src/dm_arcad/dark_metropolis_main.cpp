@@ -260,7 +260,7 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem()
 {	
-
+/*
 
 	float t = m_pkFps->m_pkObjectMan->GetGameTime();
 
@@ -292,7 +292,7 @@ void DarkMetropolis::OnSystem()
 			((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 		}
 	}
-
+*/
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -344,10 +344,15 @@ void DarkMetropolis::OnServerStart()
 	
 	m_iPlayerEntityID =	-1;
 	m_pkPlayerEntity =	NULL;
-				
+	
+//	for(int i = 0 ;i<10;i++)
+//		m_pkObjectMan->UpdateZones();		
+	
+		
 	if(!CreatePlayer())
 	{
-		cout<<"ERROR: PLAYER NOT CREATED"<<endl;	
+		cout<<"ERROR: PLAYER NOT CREATED"<<endl;
+		exit(1);	
 	}
 	else
 	{
@@ -1073,6 +1078,19 @@ bool DarkMetropolis::CreatePlayer()
 	{
 		if(m_kEntitys[i]->GetType() == "t_playerstart.lua")
 		{
+			ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent());
+			if(dat)
+			{
+				cout<<"ID:"<<dat->m_iZoneID<<endl;
+			
+				if(!dat->m_bActive)
+					cout<<"CPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"<<endl;
+					
+				if(m_kEntitys[i]->GetParent()->GetUpdateStatus() == UPDATE_ALL)
+					cout<<"CSSSSSSSSSSNNNNNNNNNZZZZZZZZZZZZZZ!#¤"<<endl;
+			}
+		
+		
 			Vector3 kStartPos = m_kEntitys[i]->GetWorldPosV();		
 			m_pkObjectMan->Delete(m_kEntitys[i]);
 		

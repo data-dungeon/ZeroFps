@@ -339,6 +339,8 @@ void ZeroFps::Run_EngineShell()
 
 void ZeroFps::Run_Server()
 {
+	
+	
 	//update system
 	Update_System(true);
 
@@ -349,11 +351,9 @@ void ZeroFps::Run_Client()
 	//run application main loop
 	m_pkApp->OnIdle();
 
+		
 	if(!m_bServerMode)
-		Update_System(false);
-	
-	//update zones
-	m_pkObjectMan->UpdateZones();	
+		Update_System(false);	
 
 	//   _---------------------------------- fulhack deluxe 
 	Draw_RenderTargets();
@@ -410,7 +410,8 @@ void ZeroFps::Update_System(bool bServer)
 		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
 	
 		//client & server code
-		
+
+						
 		//update network for client & server
 		m_pkNetWork->Run();				
 		
@@ -420,6 +421,10 @@ void ZeroFps::Update_System(bool bServer)
 		//server only code
 		if(m_bServerMode)
 		{
+			//update zones
+			m_pkObjectMan->UpdateZones();	
+		
+		
 			if(m_bRunWorldSim)
 			{			
 			
@@ -430,7 +435,6 @@ void ZeroFps::Update_System(bool bServer)
 					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 				
 				m_pkObjectMan->UpdateGameMessages();
-
 
 				
 				//update new super duper rigid body physics engine deluxe

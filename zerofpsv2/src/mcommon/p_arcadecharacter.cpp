@@ -33,6 +33,7 @@ void P_ArcadeCharacter::Update()
 {
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
+	
 		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
 		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
 

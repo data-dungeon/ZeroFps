@@ -92,14 +92,15 @@ void Tcs::Update(float fAlphaTime)
 	if(m_kBodys.empty())
 		return;
 	
+/*				
 	//make sure alpha time is not to small
 	if(fAlphaTime > 0.033) 
 	{
 		cout<<"slow:"<<fAlphaTime<<endl;
 		fAlphaTime = 0.033; 
 	}
-			
-	
+*/			
+//		cout<<"slow:"<<fAlphaTime<<endl;
 	
 		
 	float fStartTime = m_pkZeroFps->GetTicks();
@@ -170,10 +171,13 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{		
+		
 		if(m_kBodys[i]->m_bCharacter)
 		{	
 			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{
+
+			
 				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastTestPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
@@ -356,7 +360,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce.y -= 9.82;
+				m_kBodys[i]->m_kLinearForce.y -= 9.00;
 			}
 			
 			//apply some air friction		

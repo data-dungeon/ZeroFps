@@ -1813,6 +1813,8 @@ void EntityManager::UpdateZones()
 	ZoneData* pkZoneRefresh;	
 	for(unsigned int i=0; i<m_kZones.size(); i++) 
 	{
+	//	cout<<"handling zone "<<m_kZones[i].m_iZoneID<<endl;
+	
 		pkZoneRefresh = &m_kZones[i];
 
 		//perform max X operations per frame
@@ -1821,6 +1823,8 @@ void EntityManager::UpdateZones()
 			// Load / Unload zones.
 			if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
 			{
+			//	cout<<"load "<<m_kZones[i].m_iZoneID<<endl;
+				
 				iOperations++;			
 				LoadZone(pkZoneRefresh->m_iZoneID);	
 			}
@@ -1828,24 +1832,28 @@ void EntityManager::UpdateZones()
 			// Zones that need to unload
 			if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) 
 			{
+			
 				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
 				if( (fTime - pkZoneRefresh->m_fInactiveTime) > m_fZoneUnloadTime)
 				{		
+					//cout<<"unload "<<m_kZones[i].m_iZoneID<<endl;
+					
 					iOperations++;
 					UnLoadZone(pkZoneRefresh->m_iZoneID);
 				}
 			}
 		}
-
 		
 		//all active zones 
 		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone)
 		{
+		//	cout<<"setting as active "<<m_kZones[i].m_iZoneID<<endl;
 			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
 			
 			//update zone timer
 			pkZoneRefresh->m_fInactiveTime = fTime;
 		}
+				
 /*
 		//dvoid object loding ...eller nått
 		if(pkZoneRefresh->m_bActive)
@@ -2153,13 +2161,18 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 
 	int iNrOfTrackers;
 	kFile.Read(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
+	cout<<"number of trackers: "<<iNrOfTrackers<<endl;
+	
 	for(int i = 0;i<iNrOfTrackers;i++) 
 	{		
 		int iZone;
 		kFile.Read(&iZone,sizeof(iZone),1);
 		
 		//load the zone in wich theres suppose to be a tracker
-		LoadZone(iZone);	
+		LoadZone(iZone);
+			
+		//cout<<"loaded tracked zone "<<iZone<<endl;
+		
 	}
 	
 	kFile.Close();
@@ -2748,6 +2761,10 @@ bool EntityManager::LoadWorld(string strLoadDir)
 		return false;
 	}
 			
+	
+	//do a zone update
+	UpdateZones();	
+
 	
 	return true;
 }
