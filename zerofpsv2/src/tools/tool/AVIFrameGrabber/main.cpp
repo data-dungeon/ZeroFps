@@ -28,8 +28,8 @@ int preview_size = 256;
 int num_bitmaps = 0;
 int startframe = 0;
 int animationstart = 0;
-int animationend = 1;
-int frames = 1;
+int animationend = 50;
+int frames = 50;
 int* g_pFrameSizesJPG = NULL;
 
 bool print_frame = true;
@@ -233,13 +233,17 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if(print_frame)
 			{
+				frame=0;
 				char text[20];
 				for(int y=0; y<rows; y++)
 					for(int x=0; x<cols; x++)
-					{
-						sprintf(text, "%i", startframe+(cols*y)+x);
-						TextOut(hdc,x*dw,y*dh, text, (int) strlen(text));
-					}
+						if(frame < max)
+						{
+							sprintf(text, "%i", startframe+(cols*y)+x);
+							TextOut(hdc,x*dw,y*dh, text, (int) strlen(text));
+							frame++;
+						}
+
 			}
 
 			bRedraw = false;
@@ -382,6 +386,11 @@ bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 	if(animationstart < 0 || animationend > g_kAVIGrabber.GetNumFrames())
 		return false;
 
+	if(!GetFileName(szFileName, hwnd, true))
+		return false;
+
+	SetDlgItemText(ctrlWnd, IDC_PROCESS_LABEL, "Processing... Please w8");
+
 	FILE* pkFile = fopen(szFileName, "wb");
 
 	int frames_per_second = g_kAVIGrabber.GetFramesPerSecond();
@@ -459,7 +468,8 @@ bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 	//}
 
 	fclose(pkFile);
-	 
+
+	SetDlgItemText(ctrlWnd, IDC_PROCESS_LABEL, "Ready!");
 
 	return true;
 
@@ -527,6 +537,10 @@ void PrintSize()
 	start = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONSTART, NULL, FALSE);
 	end = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONEND, NULL, FALSE);
 	SetDlgItemInt(ctrlWnd, IDC_NUMFRAMES, end-start, 0);
+
+	SetDlgItemInt(ctrlWnd, IDC_WIDTH, w, 0);
+	SetDlgItemInt(ctrlWnd, IDC_HEIGHT, h, 0);
+	
 }
 
 

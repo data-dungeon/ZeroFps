@@ -224,6 +224,9 @@
 			<File
 				RelativePath=".\zguiskin.cpp">
 			</File>
+			<File
+				RelativePath=".\zifanimation.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -326,6 +329,9 @@
 			</File>
 			<File
 				RelativePath=".\zguiskin.h">
+			</File>
+			<File
+				RelativePath=".\zifanimation.h">
 			</File>
 		</Filter>
 		<Filter

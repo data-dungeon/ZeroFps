@@ -6,7 +6,7 @@
 #include "../basic/zguiskin.h"
 #include "texturemanager.h"
 #include "../basic/zfresourcedb.h"
-
+#include "../basic/zifanimation.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -136,13 +136,14 @@ bool GLGuiRender::EndRender()
 
 void GLGuiRender::UpdateAnimation()
 {	
-	if(m_pkSkin->m_pkZIFAnimation->Update())
+	bool bRebuildTexture;
+	if(m_pkSkin->m_pkZIFAnimation->Update(bRebuildTexture))
 	{
 		m_pkSkin->m_iBkTexID = m_pkTextureManger->CreateTextureFromRGB(
 			m_pkSkin->m_pkZIFAnimation->GetTexIDName(), 
 			(color_rgb*)m_pkSkin->m_pkZIFAnimation->GetFramePixels(), 
 			m_pkSkin->m_pkZIFAnimation->m_iWidth, m_pkSkin->m_pkZIFAnimation->m_iHeight, 
-			TextureManager::BGR, m_pkSkin->m_pkZIFAnimation->m_bRebuildTexture);
+			TextureManager::BGR, bRebuildTexture);
 	}
 }
 

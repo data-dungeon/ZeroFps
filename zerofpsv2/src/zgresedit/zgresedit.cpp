@@ -509,9 +509,14 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",READ_EVERY_FRAME_TO_VIDEOMEMORY);
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			m_pkFocusWnd->GetSkin()->SetAnimation("TestAnimation.zif",3,0,true);
+		}
+		break;
+
+	case KEY_A:
+		{
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay = 
+				!m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay;
 		}
 		break;
 
@@ -583,7 +588,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 			{
 				m_pkFocusWnd->Move(0,1,true,false);
 				SetTextInt("PosYTextbox", m_pkFocusWnd->GetParent() ? 
-					m_pkFocusWnd->GetWndRect().Top : m_pkFocusWnd->GetScreenRect().Top); 
+					m_pkFocusWnd->GetWndRect().Top : m_pkFocusWnd->GetScreenRect().Top);
 			}
 		}
 		break;

@@ -28,6 +28,7 @@
 #include "../basic/zfsystem.h"
 #include "../basic/image.h"
 #include "../basic/zguiskin.h"
+#include "../basic/zifanimation.h"
 #include "../basic/zfassert.h"
 #include "../basic/zfini.h"
 

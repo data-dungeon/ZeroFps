@@ -8,101 +8,7 @@
 #include "basic_x.h"
 #include "rect.h"
 
-class JpgDecoder;
-
-enum ZIFAnimationMode
-{
-	/*----------------------------------------------------------------------------
-	 Läs in en bild varje frame till minnet OCH skriv i samma textur varje frame.
-	 [+] Kostar lite texturminne efetrsom den återanvännder samma textur.
-	 [+] Laddas in efter hand, kräver ingen laddningstid.
-	 [-] Kostar CPU eftersom den skriver i en textur varje frame.
-	 [-] Dekryptering görs varje frame, vilket kan slöa ner för jpeg och 8bit.*/
-	READ_EVERY_FRAME_and_WRITE_IN_TEXTURE_EVERY_FRAME = 0,
-	/*--------------------------------------------------------------------------*/
-
-	/*----------------------------------------------------------------------------
-	 Läs in alla bilder till minnet OCH skriv i samma textur varje frame.
-	 [+] Kostar lite texturminne efetrsom den återanvännder samma textur.
-	 [+] Dekryptering görs endast när animationen läses in och ej varje frame (bra för jpeg och 8bit).
-	 [-] Kostar CPU eftersom den skriver i en textur varje frame.
-	 [-] Tar längre tid att ladda in. */
-	READ_ALL_and_WRITE_IN_TEXTURE_EVERY_FRAME = 1,
-	/*--------------------------------------------------------------------------*/
-
-	/*----------------------------------------------------------------------------
-	 Läs in en bild varje frame till minnet OCH spara ner varje bild som en ny
-	 textur allt eftersom den renderar.
-	 Efter första loopvaret behövs ingen läsning göras.
-	 [+] Snabb rendering då varje bild får sin egen textur.
-	 [+] Laddas in efter hand, kräver ingen laddningstid. 
-	 [-] Kostar mycket texturminne .
-	 [-] Dekryptering görs varje frame, vilket kan slöa ner för jpeg och 8bit.*/
-	READ_EVERY_FRAME_TO_VIDEOMEMORY = 2,
-	/*----------------------------------------------------------------------------
-
-	/*----------------------------------------------------------------------------
-	 Läs in alla bilder till minnet OCH spara ner varje bild som en ny 
-	 textur allt eftersom den renderar.
-	 [+] Snabb rendering då varje bild får sin egen textur.
-	 [+] Dekryptering görs endast när animationen läses in och ej varje frame (bra för jpeg och 8bit).
-	 [-] Kostar mycket texturminne .
-	 [-] Tar längre tid att ladda in. */
-	READ_ALL_TO_VIDEOMEMORY = 3
-	/*--------------------------------------------------------------------------*/
-};
-
-class BASIC_API ZIFAnimation
-{
-public:
-	ZIFAnimation(char* szFileName=0, int iMode=0);
-	~ZIFAnimation();
-
-	bool Update();
-	char* GetFramePixels();
-	char* GetTexIDName();
-	
-	int m_iWidth, m_iHeight;
-	bool m_bPlay;
-	bool m_bRebuildTexture; // Använd en och samma textur. OBS! _BÖR_ vara satt till true annars ryker allt texturminne!!! 
-							// Endast små animationer (på typ max: 40 frame) kan dra nytta av att sätta denna till false för att slippa bygga om texturen varje frame.
-
-private:
-
-	enum ZIFFormat
-	{
-		RGB24=0,
-		RGB8=1,
-		JPEG=2,
-	};
-
-	ZIFAnimationMode m_eMode;
-
-	float m_fLastTick;
-	
-	int m_iNumFrames, m_iCurrentFrame;
-	int m_iMsecsPerFrame;
-	int m_iPixelDataSize;
-
-	char* m_pPixelData;
-	bool m_bStream;	// Läs en frame i taget från disk
-	
-	char m_szTexIDName[16]; // unikt TexturID namn för varje zif animation
-	int m_iIDTexArrayStart; // startID, om varje animationsframe har sin egen textur
-	char* m_szFileName;
-
-	bool Read();
-
-	//bool m_b8bitsFormat;
-	ZIFFormat m_eFormat;
-	unsigned int m_iFileOffset; // behövs eftersom paletten kan vara olika stor på 8 bitars animationer
-	int m_iImageFrameWidth, m_iImageFrameHeight;
-
-	JpgDecoder* m_pkJPGDec;
-
-	int* m_pFramesSizesJPG;
-	
-};
+class ZIFAnimation;
 
 class BASIC_API ZGuiSkin  
 {
@@ -176,6 +82,8 @@ public:
 	unsigned char m_ucRots90Degree; // Hur många gången texturen skall roteras åt vänster (0,1,2 eller 3)
 	bool m_bTileBkSkin;
 	bool m_bTransparent; // andvänds bla. av labels som inte skall ha nån bakgrundsfärg.
+
+	void SetAnimation(char* szName, int iMode, int iOptions, bool bPlay);
 
 	ZIFAnimation* m_pkZIFAnimation;
 };

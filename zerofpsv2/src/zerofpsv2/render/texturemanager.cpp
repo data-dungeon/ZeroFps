@@ -347,6 +347,8 @@ int TextureManager::CreateTextureFromRGB(const char* acName, color_rgb* pkPixels
 	glGenTextures(1,&pkTex->index);
 	glBindTexture(GL_TEXTURE_2D,pkTex->index);
 
+	//printf("Creating new texture ID: %i\n", pkTex->index);
+
 	// Set All Options.
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		

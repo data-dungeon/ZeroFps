@@ -21,12 +21,14 @@
 #define IDC_FRAMES_PER_SEC              1012
 #define IDC_PROGRESS1                   1013
 #define IDC_FORMAT8                     1014
+#define IDC_WIDTH                       1014
 #define IDC_COMBO1                      1015
 #define IDC_PREVIEW_SIZE_CB             1015
 #define IDC_FORMAT0                     1016
 #define IDC_FORMAT1                     1017
-#define IDC_RADIO3                      1018
 #define IDC_FORMAT2                     1018
+#define IDC_HEIGHT                      1019
+#define IDC_PROCESS_LABEL               1020
 #define ID_FILE_OPEN40002               40002
 #define ID_FILE_EXIT                    40003
 #define ID_FILE_SETTING                 40004
@@ -37,7 +39,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40005
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
