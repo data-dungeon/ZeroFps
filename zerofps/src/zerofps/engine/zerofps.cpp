@@ -30,7 +30,7 @@ ZeroFps::ZeroFps(void)
 	m_pkNetWork					= new NetWork;
 	m_pkGuiRenderer			= new GLGuiRender();
 	m_pkGuiMan					= new ZGuiResourceManager();
-	m_pkGui						= new ZGui();
+	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
 	m_pkIni						= new ZFIni();
 	m_pkLevelMan				= new LevelManager();
 	m_pkPhysEngine				= new PhysicsEngine();

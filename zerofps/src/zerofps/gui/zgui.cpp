@@ -13,9 +13,14 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+int ZGui::m_iResX = 1024;
+int ZGui::m_iResY = 768;
 
-ZGui::ZGui() : ZFObject("Gui") 
+ZGui::ZGui(int iResX, int iResY) : ZFObject("Gui") 
 {
+	m_iResX = iResX;
+	m_iResY = iResY;
+
 	m_pkCapturedWindow = NULL;
 	m_bHoverWindow = false;
 	m_iHighestZWndValue = 10;

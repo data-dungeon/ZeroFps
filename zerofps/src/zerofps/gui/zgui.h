@@ -91,7 +91,7 @@ public:
 	typedef pair<Point,color_rgb> tRGBPoint;
 	typedef pair<Rect,color_rgb> tRGBRect;
 
-	ZGui();
+	ZGui(int iResX, int iResY);
 	~ZGui();
 
 	bool Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
@@ -145,6 +145,9 @@ public:
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
 
+	static int m_iResX;
+	static int m_iResY;
+
 private:
 	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
@@ -176,8 +179,6 @@ private:
 	ZGuiSkin* m_pkCursorSkin;
 	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
-
-	//ZeroFps* m_pkFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
