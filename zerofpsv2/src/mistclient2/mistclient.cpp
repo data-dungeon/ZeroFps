@@ -385,6 +385,119 @@ void MistClient::OnHud(void)
 			if(!m_bFrontView)
 				DrawCrossHair();
 
+ 	if(m_bDead)
+	{
+ 		DrawHUDEffect(HUD_DEAD);			
+		DrawHUDEffect(HUD_FOG);			
+	}
+}
+
+void MistClient::DrawHUDEffect(int iHUDEffect)
+{
+	static ZMaterial* pkWater = NULL;
+	if(!pkWater)
+	{
+		pkWater = new ZMaterial;
+				
+		pkWater->m_bTextureOffset = true;
+		pkWater->m_faTextureOffset[0] = 0.25;
+		pkWater->m_faTextureOffset[1] = 0;
+		
+		pkWater->GetPass(0)->m_kTUs[0]->SetRes("data/textures/water.tga");	
+		pkWater->GetPass(0)->m_kTUs[1]->SetRes("data/textures/water.tga");	
+		pkWater->GetPass(0)->m_bLighting = 		false;
+		pkWater->GetPass(0)->m_bFog = 			false;	
+		pkWater->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		pkWater->GetPass(0)->m_bDepthMask = false;
+		pkWater->GetPass(0)->m_bBlend = true;
+		pkWater->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkWater->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
+
+
+	}
+
+	static ZMaterial* pkDead = NULL;
+	if(!pkDead)
+	{
+		pkDead = new ZMaterial;
+
+		pkDead->GetPass(0)->m_kTUs[0]->SetRes("data/textures/dead-color.tga");	
+		pkDead->GetPass(0)->m_bLighting = 	false;
+		pkDead->GetPass(0)->m_bFog = 			false;	
+		pkDead->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		pkDead->GetPass(0)->m_bDepthMask = false;
+		pkDead->GetPass(0)->m_bBlend = true;
+ 		pkDead->GetPass(0)->m_iBlendSrc = ONE_MINUS_DST_COLOR_BLEND_SRC;
+ 		pkDead->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_COLOR_BLEND_DST;
+
+	}	
+	
+		static ZMaterial* pkDeadFog = NULL;
+	if(!pkDeadFog)
+	{
+		pkDeadFog = new ZMaterial;
+
+ 		pkDeadFog->m_bTextureOffset = true;
+ 		pkDeadFog->m_faTextureOffset[0] = 0.1;
+ 		pkDeadFog->m_faTextureOffset[1] = 0;
+
+		pkDeadFog->GetPass(0)->m_kTUs[0]->SetRes("data/textures/dead.tga");	
+		pkDeadFog->GetPass(0)->m_kTUs[1]->SetRes("data/textures/dead.tga");	
+		pkDeadFog->GetPass(0)->m_bLighting = 	false;
+		pkDeadFog->GetPass(0)->m_bFog = 			false;	
+		pkDeadFog->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		pkDeadFog->GetPass(0)->m_bDepthMask = false;
+		pkDeadFog->GetPass(0)->m_bBlend = true;
+ 		pkDeadFog->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+ 		pkDeadFog->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_COLOR_BLEND_DST;
+
+
+	}	
+	
+	switch(iHUDEffect)
+	{
+		case HUD_WATER:
+			m_pkZShaderSystem->BindMaterial(pkWater);
+			break;
+		case HUD_DEAD:
+			m_pkZShaderSystem->BindMaterial(pkDead);
+			break;
+	
+		case HUD_FOG:
+			m_pkZShaderSystem->BindMaterial(pkDeadFog);
+			break;
+	
+	}
+	
+	static float fV[12] = {	-1.2	,1	,-1,
+									-1.2	,-1,-1,
+									1.2	,-1,-1,
+									1.2	,1	,-1};
+	
+	static float fUV[8] = {	0,0,
+									0,1,
+									1,1,
+									1,0};
+										
+	//add geometry
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,fV);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,fUV);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,fUV);
+	
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+// 	m_pkZShaderSystem->ClearGeometry();
+// 	m_pkZShaderSystem->AddQuadV(	Vector3(-1.2,1,-1),Vector3(-1.2,-1,-1),
+// 											Vector3(1.2,-1,-1),Vector3(1.2,1,-1));
+// 	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0)	,	Vector2(0,1),
+// 											Vector2(1,1)	,	Vector2(1,0));
+	
+	//draw pointer
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);
+	
 }
 
 void MistClient::DrawCrossHair()

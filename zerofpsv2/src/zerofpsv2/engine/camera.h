@@ -113,7 +113,7 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bSelected;
 		int		m_iRenderTarget;
 		bool		m_bClearViewPort;
-		bool		m_bDebugGraphs;
+		bool		m_bDrawInterface;
 		bool		m_bShadowMap;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
@@ -135,10 +135,11 @@ class ENGINE_API Camera : public I_Camera
 		
 		
 		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
-		void		DrawShadowedScene();
 		int		GetMaxSize(int iRes);
-		
-		void		DrawGrid();
+
+		void		DrawShadowedScene();		
+		void		DrawGrid();		
+		void		DrawWorld();
 		
 	public:
 		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
@@ -197,8 +198,8 @@ class ENGINE_API Camera : public I_Camera
 		void		SetClearViewPort(bool bClear)	{	m_bClearViewPort = bClear;			}
 		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
 		
-		void		SetDebugGraphs(bool bDebug)	{	m_bDebugGraphs = bDebug;			}
-		bool		GetDebugGraphs()					{	return m_bDebugGraphs;				}
+		void		SetDrawInterface(bool bDebug)	{	m_bDrawInterface = bDebug;			}
+		bool		GetDrawInterface()					{	return m_bDrawInterface;			}
 		
 		Frustum*	GetFrustum()						{	return &m_kFrustum;			}
 		bool	   IsRenderOn()						{	return m_bRender;				}

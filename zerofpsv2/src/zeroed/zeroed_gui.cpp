@@ -851,7 +851,7 @@ void ZeroEd::SetupPreviewWnd(const char* szMadFile)
 
 		s_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.0025,250);	
 		s_pkCamera->SetShadowMap(false);
-		s_pkCamera->SetDebugGraphs(false);
+		s_pkCamera->SetDrawInterface(false);
 		s_pkCamera->SetClearViewPort(false);  
 		s_pkCamera->SetRootEntityID(m_pkPreviewEntity->GetEntityID());
 		GetWnd("PreviewRenderLabel")->SetRenderTarget(s_pkCamera);

@@ -17,6 +17,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkLight	=			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 	m_pkTexMan	=			static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	
+	
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
 	SetPos(kPos);
@@ -46,7 +47,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_iForceLighing=		-1;
 	
-	m_bDebugGraphs	=		true;
+	m_bDrawInterface	=	true;
 	m_bShadowMap	=		true;
 	m_iCurrentRenderMode=RENDER_NONE;
 	
@@ -339,13 +340,13 @@ void Camera::SetViewMode(string strName)
 {
 	CamMode eMode = CAMMODE_PERSP;
 
-	if(strcmp(strName.c_str(), "persp") == 0)	eMode = CAMMODE_PERSP;
+	if(strcmp(strName.c_str(), "persp") == 0)		eMode = CAMMODE_PERSP;
 	if(strcmp(strName.c_str(), "top") == 0)		eMode = CAMMODE_ORTHO_TOP;
-	if(strcmp(strName.c_str(), "front") == 0)	eMode = CAMMODE_ORTHO_FRONT;
-	if(strcmp(strName.c_str(), "left") == 0)	eMode = CAMMODE_ORTHO_LEFT;
+	if(strcmp(strName.c_str(), "front") == 0)		eMode = CAMMODE_ORTHO_FRONT;
+	if(strcmp(strName.c_str(), "left") == 0)		eMode = CAMMODE_ORTHO_LEFT;
 	if(strcmp(strName.c_str(), "bot") == 0)		eMode = CAMMODE_ORTHO_BOT;
-	if(strcmp(strName.c_str(), "back") == 0)	eMode = CAMMODE_ORTHO_BACK;
-	if(strcmp(strName.c_str(), "right") == 0)	eMode = CAMMODE_ORTHO_RIGHT;
+	if(strcmp(strName.c_str(), "back") == 0)		eMode = CAMMODE_ORTHO_BACK;
+	if(strcmp(strName.c_str(), "right") == 0)		eMode = CAMMODE_ORTHO_RIGHT;
 	SetViewMode(eMode);
 }
 
@@ -582,6 +583,31 @@ void Camera::RenderView()
 		return;
 
 
+	//draw world
+	DrawWorld();
+	
+		
+	if(m_bDrawInterface) 
+	{
+		//m_pkRender->Sphere(kCenter,1,1,Vector3(1,1,1),true);
+		
+		m_pkEntityMan->DrawZones();				
+		m_pkZeroFps->m_pkApp->RenderInterface();	
+			
+		//draw axes icon
+		if(m_pkZeroFps->GetDrawAxesIcon())
+			m_pkRender->Draw_AxisIcon(5);	
+	}
+		
+	
+	//reset camera
+	m_pkZeroFps->m_pkCamera=NULL;
+
+}
+
+
+void Camera::DrawWorld()
+{
 	//get root entity		
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 		
@@ -664,28 +690,7 @@ void Camera::RenderView()
 		
 		m_iCurrentRenderMode = RENDER_NONE;	
 	}
-	
-	
-	
-		
-	if(m_bDebugGraphs) 
-	{
-		//m_pkRender->Sphere(kCenter,1,1,Vector3(1,1,1),true);
-		
-		m_pkEntityMan->DrawZones();				
-		m_pkZeroFps->m_pkApp->RenderInterface();	
-			
-		//draw axes icon
-		if(m_pkZeroFps->GetDrawAxesIcon())
-			m_pkRender->Draw_AxisIcon(5);	
-	}
-		
-	
-	//reset camera
-	m_pkZeroFps->m_pkCamera=NULL;
-
 }
-
 
 
 void Camera::DrawShadowedScene()

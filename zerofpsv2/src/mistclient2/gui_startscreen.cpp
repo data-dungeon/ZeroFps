@@ -332,7 +332,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 						(float) pkModelWnd->GetScreenRect().Height();
 
 					pkCam = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.01,200);	
-					pkCam->SetDebugGraphs(false);
+					pkCam->SetDrawInterface(false);
 					pkCam->SetClearViewPort(false);  
 					pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
 					pkCam->SetForceLighting(0);

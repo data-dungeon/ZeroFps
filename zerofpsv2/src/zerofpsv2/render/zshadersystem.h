@@ -301,7 +301,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//vertex transform funktions
 		void Waves();	
-		
+		void TextureOffset();
 		
 		
 	public:

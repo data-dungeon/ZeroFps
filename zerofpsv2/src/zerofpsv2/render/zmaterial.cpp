@@ -129,8 +129,9 @@ void ZMaterial::Clear()
 	}
 	m_kPasses.clear();
 
-	m_bRandomMovements = false;
-	m_bWaves = false;	
+	m_bRandomMovements 	= false;
+	m_bWaves 				= false;	
+	m_bTextureOffset 		= false;
 	
 	m_strName = "UnNamed";
 }

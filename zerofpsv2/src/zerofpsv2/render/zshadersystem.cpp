@@ -1099,6 +1099,9 @@ void ZShaderSystem::VertexTransform()
 
 	if(m_pkCurrentMaterial->m_bWaves)
 		Waves();
+		
+	if(m_pkCurrentMaterial->m_bTextureOffset)
+		TextureOffset();		
 }
 
 void ZShaderSystem::CopyData(void** pkData,int iSize)
@@ -1338,6 +1341,31 @@ void ZShaderSystem:: AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const V
 	m_kTexture[iTU].push_back(kPos4);
 }
 
+
+void ZShaderSystem::TextureOffset()
+{	
+
+	CopyPointerData(TEXTURE_POINTER0);
+	CopyPointerData(TEXTURE_POINTER1);
+
+	float fTicks = SDL_GetTicks() / 1000.0;
+	
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		if(m_bTexturePointer0)
+		{
+			m_pkTexturePointer0[i].x += fTicks * m_pkCurrentMaterial->m_faTextureOffset[0];
+			m_pkTexturePointer0[i].y += fTicks * m_pkCurrentMaterial->m_faTextureOffset[1];	
+		}
+	
+		if(m_bTexturePointer1)
+		{
+			m_pkTexturePointer1[i].x -= fTicks * m_pkCurrentMaterial->m_faTextureOffset[0];
+			m_pkTexturePointer1[i].y -= fTicks * m_pkCurrentMaterial->m_faTextureOffset[1];	
+		}
+	
+	}
+}
 
 void ZShaderSystem::Waves()
 {	

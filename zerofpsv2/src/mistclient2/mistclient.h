@@ -22,6 +22,15 @@ enum GUI_SCRIPT
 	GSF_ITEMINFO,
 };
 
+enum HUD_EFFECTS
+{
+	HUD_WATER,
+	HUD_DEAD,
+	HUD_FOG,
+
+};
+
+
 const int MAX_NUM_BUFF_ICONS = 32;
 
 
@@ -153,6 +162,7 @@ class MistClient :public Application, public ZGuiApp {
 		//draw
 		void DrawCrossHair();
 		void DrawTargetMarker();
+		void DrawHUDEffect(int iHUDEffect);
 		
 		//picking
 		Entity* GetTargetObject();
