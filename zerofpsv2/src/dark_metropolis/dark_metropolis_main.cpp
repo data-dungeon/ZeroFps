@@ -31,6 +31,8 @@ void DarkMetropolis::OnInit()
 {
 	SetTitle("Dark Metropolis");
 
+	Register_Cmd("load",FID_LOAD);		
+
 	m_pkFps->m_bClientMode = true;
 
 	m_pkLight->SetLighting(true);
@@ -117,5 +119,49 @@ void DarkMetropolis::RegisterPropertys()
 
 void DarkMetropolis::Input()
 {
+}
+
+void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+//	unsigned int i;
+//	vector<string>	kUsers;
+//	int iMode;
+//	float fTest;
+
+	switch(cmdid) {
+
+		case FID_LOAD:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("load [mapdir]");
+				break;				
+			}
+			
+			cout<<"BLUB:"<<kCommand->m_kSplitCommand.size()<<endl;
+			cout<<"loading world:"<<kCommand->m_kSplitCommand[1]<<endl;
+			
+			if(kCommand->m_kSplitCommand.size() > 2)
+			{
+				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
+				
+				if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
+				{
+					cout<<"Error loading world"<<endl;
+					break;
+				}				
+			}
+			else if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			{
+				cout<<"Error loading world"<<endl;
+				break;
+			}				
+			
+						
+			cout<<"starting server"<<endl;
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			
+			break;		
+
+	}
 }
 

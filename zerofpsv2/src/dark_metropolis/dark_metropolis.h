@@ -25,6 +25,11 @@ class DarkMetropolis : public Application, public ZGuiApp
 		Camera*	m_pkCamera;
 		Entity*	m_pkCameraEntity;
 		
+		enum FuncId_e
+		{
+			FID_LOAD,
+		};
+		
 		void Input();
 		void RegisterPropertys();
 
@@ -48,6 +53,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void OnServerStart();
 		void OnClientStart();
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 		bool StartUp();
 		bool ShutDown();
