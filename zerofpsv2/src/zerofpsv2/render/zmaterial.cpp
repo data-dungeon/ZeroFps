@@ -149,6 +149,20 @@ bool ZMaterial::LoadGlobalSection()
 		else
 			m_bWaves = false;
 
+	// load textureoffset values
+	if(m_kIni.KeyExist("global","textureoffset_u"))
+		m_faTextureOffset[0] = m_kIni.GetFloatValue("global","textureoffset_u");
+	else
+		m_faTextureOffset[0] = 0;
+
+	if(m_kIni.KeyExist("global","textureoffset_v"))
+		m_faTextureOffset[1] = m_kIni.GetFloatValue("global","textureoffset_v");
+	else
+		m_faTextureOffset[1] = 0;
+
+	m_bTextureOffset = m_faTextureOffset[0] + m_faTextureOffset[1];
+
+
 	if(m_kIni.KeyExist("global","randommovements"))
 		if(m_kIni.GetBoolValue("global","randommovements"))
 			m_bRandomMovements = true;

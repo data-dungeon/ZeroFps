@@ -229,12 +229,24 @@ void ZShader::SetupPrerenderStates()
 	if(m_pkCurentMaterial->m_bCopyData)
 		CopyVertexData();		
 		
+	if(m_pkCurentMaterial->m_bTextureOffset)
+		TextureOffset();
+
 	if(m_pkCurentMaterial->m_bRandomMovements)
 		RandomVertexMovements();
 
 	if(m_pkCurentMaterial->m_bWaves)
 		Waves();
 
+}
+
+void ZShader::TextureOffset()
+{
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		m_pkTexturePointer0[i].x += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[0];
+		m_pkTexturePointer0[i].y += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[1];
+	}
 }
 
 void ZShader::RandomVertexMovements()
@@ -344,7 +356,7 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
-	//ful hack deluxe
+	//fulhack deluxe
 	glColor4f(1,1,1,1);
 
 	//polygon mode settings		front
@@ -425,38 +437,38 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 		}
 		
 		//setup blending factors
-		int blendsrc;
-		int blenddst;
+		int iblendsrc;
+		int iblenddst;
 	
 		//setup src blend factor
 		switch(pkSettings->m_iBlendSrc)
 		{
 			case ZERO_BLEND_SRC:
-				blendsrc = GL_ZERO;
+				iblendsrc = GL_ZERO;
 				break;
 			case ONE_BLEND_SRC:
-				blendsrc = GL_ONE;
+				iblendsrc = GL_ONE;
 				break;
 			case DST_COLOR_BLEND_SRC:
-				blendsrc = GL_DST_COLOR;
+				iblendsrc = GL_DST_COLOR;
 				break;
 			case ONE_MINUS_DST_COLOR_BLEND_SRC:
-				blendsrc = GL_ONE_MINUS_DST_COLOR;
+				iblendsrc = GL_ONE_MINUS_DST_COLOR;
 				break;	
 			case SRC_ALPHA_BLEND_SRC:
-				blendsrc = GL_SRC_ALPHA;
+				iblendsrc = GL_SRC_ALPHA;
 				break;
 			case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
-				blendsrc = GL_ONE_MINUS_SRC_ALPHA;
+				iblendsrc = GL_ONE_MINUS_SRC_ALPHA;
 				break;
 			case DST_ALPHA_BLEND_SRC:
-				blendsrc = GL_DST_ALPHA;
+				iblendsrc = GL_DST_ALPHA;
 				break;
 			case ONE_MINUS_DST_ALPHA_BLEND_SRC:
-				blendsrc = GL_ONE_MINUS_DST_ALPHA;
+				iblendsrc = GL_ONE_MINUS_DST_ALPHA;
 				break;
 			case SRC_ALPHA_SATURATE_BLEND_SRC:
-				blendsrc = GL_SRC_ALPHA_SATURATE;
+				iblendsrc = GL_SRC_ALPHA_SATURATE;
 				break;	
 		}
 	
@@ -464,33 +476,33 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 		switch(pkSettings->m_iBlendDst)
 		{
 			case ZERO_BLEND_DST:
-				blenddst = GL_ZERO;
+				iblenddst = GL_ZERO;
 				break;
 			case ONE_BLEND_DST:
-				blenddst = GL_ONE;
+				iblenddst = GL_ONE;
 				break;
 			case SRC_COLOR_BLEND_DST:
-				blenddst = GL_SRC_COLOR;
+				iblenddst = GL_SRC_COLOR;
 				break;
 			case ONE_MINUS_SRC_COLOR_BLEND_DST:
-				blenddst = GL_ONE_MINUS_SRC_COLOR;
+				iblenddst = GL_ONE_MINUS_SRC_COLOR;
 				break;	
 			case SRC_ALPHA_BLEND_DST:
-				blenddst = GL_SRC_ALPHA;
+				iblenddst = GL_SRC_ALPHA;
 				break;
 			case ONE_MINUS_SRC_ALPHA_BLEND_DST:
-				blenddst = GL_ONE_MINUS_SRC_ALPHA;
+				iblenddst = GL_ONE_MINUS_SRC_ALPHA;
 				break;
 			case DST_ALPHA_BLEND_DST:
-				blenddst = GL_DST_ALPHA;
+				iblenddst = GL_DST_ALPHA;
 				break;
 			case ONE_MINUS_DST_ALPHA_BLEND_DST:
-				blenddst = GL_ONE_MINUS_DST_ALPHA;
+				iblenddst = GL_ONE_MINUS_DST_ALPHA;
 				break;
 		}
 	
-		//finaly set opengl blend function
-		glBlendFunc(blendsrc,blenddst);
+		//finally set opengl blend function
+		glBlendFunc(iblendsrc, iblenddst);
 	}
 	else if(	m_iForceBledning == BLEND_FORCE_TRANSPARENT)		//force transparent blend
 	{
@@ -610,14 +622,14 @@ void ZShader::CopyData(void** pkData,int iSize)
 
 void ZShader::CleanCopyedData()
 {
-	delete m_pkVertexPointer;	
-	delete m_pkNormalPointer;		
-	delete m_pkTexturePointer0;		
-	delete m_pkTexturePointer1;			
-	delete m_pkTexturePointer2;			
-	delete m_pkTexturePointer3;			
-	delete m_pkIndexPointer;		
-	delete m_pkColorPointer;		
+	delete []m_pkVertexPointer;	
+	delete []m_pkNormalPointer;		
+	delete []m_pkTexturePointer0;		
+	delete []m_pkTexturePointer1;			
+	delete []m_pkTexturePointer2;			
+	delete []m_pkTexturePointer3;			
+	delete []m_pkIndexPointer;		
+	delete []m_pkColorPointer;		
 	
 	m_pkVertexPointer =	m_pkBakupVertexPointer;	
 	m_pkNormalPointer =	m_pkBakupNormalPointer;		

@@ -32,7 +32,7 @@ class RENDER_API ZMaterialSettings
 	
 		bool	m_bBlend;
 
-      bool m_bDepthTest;
+		bool m_bDepthTest;
 
 		int	m_iBlendSrc;
 		int	m_iBlendDst;
@@ -59,7 +59,9 @@ class RENDER_API ZMaterial : public ZFResource
 	public:		
 		bool	m_bCopyData;
 		bool	m_bRandomMovements;
-		bool	m_bWaves;		
+		bool	m_bWaves;
+		bool	m_bTextureOffset;
+		float	m_faTextureOffset[2];
 				
 		
 		ZMaterial();

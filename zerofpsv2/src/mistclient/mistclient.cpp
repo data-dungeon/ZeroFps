@@ -118,7 +118,7 @@ void MistClient::Init()
 	Register_Cmd("massspawn",FID_MASSSPAWN);			
 
 	//damn "#¤(="%#( lighting fix bös
-	glEnable(GL_LIGHTING );
+	//glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	

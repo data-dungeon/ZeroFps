@@ -5,6 +5,7 @@
 #include "zmaterial.h"
 #include "render_x.h"
 #include "../basic/zfsystem.h"
+#include "../basic/vector2.h"
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
 #include "../ogl/zfpsgl.h"
@@ -61,7 +62,7 @@ enum RENDER_API POLYGON_MODES
 {
 	FILL_POLYGON 	= 0,
 	LINE_POLYGON 	= 1,
-	POINT_POLYGON	= 2,	
+	POINT_POLYGON	= 2,	d
 };
 
 enum RENDER_API DEPTH_FUNC
@@ -149,7 +150,8 @@ class RENDER_API ZShader : public ZFSubSystem
 		
 		//bakup pointes, used when copying data
 		Vector3*			m_pkBakupVertexPointer;
-		Vector3*			m_pkBakupNormalPointer;	
+		Vector3*			m_pkBakupNormalPointer;
+		Vector3*			m_pkBackupTexturePointer;
 		Vector2*			m_pkBakupTexturePointer0;
 		Vector2*			m_pkBakupTexturePointer1;		
 		Vector2*			m_pkBakupTexturePointer2;		
@@ -199,7 +201,8 @@ class RENDER_API ZShader : public ZFSubSystem
 		
 		//effects
 		void RandomVertexMovements();
-		void Waves();		
+		void Waves();	
+		void TextureOffset();
 	
 		bool HaveVertexProgramExt();
 	
