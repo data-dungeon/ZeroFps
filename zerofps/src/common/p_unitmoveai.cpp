@@ -25,6 +25,8 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	
 	m_iCurrentState = -1;
 	m_fSpeedMod = 1;
+
+	m_pkPathFind = NULL; 
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -139,6 +141,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 						
 				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
+
 					cout<<"Hit something trying to find a new way"<<endl;
 					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 					
@@ -153,11 +156,20 @@ AIBase* P_UnitMoveAI::UpdateAI()
 							
 					return this;
 				}
-						
+					
+				float fTerrainCost = (float) m_pkPathFind->GetTerrainCost(iX,iY);
 
-				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);						
-				
-				
+				m_fSpeedMod = 1.0f - (fTerrainCost / 20.0);
+
+				if(fTerrainCost < 0 || fTerrainCost > 10)
+				{
+			/*		printf("Pathfinding returning a strange value\n");
+					printf("iX = %i, iY = %i, fTerrainCost = %f, m_fSpeedMod = %f\n", 
+						iX, iY, fTerrainCost, m_fSpeedMod);
+					m_pkFps->QuitEngine();*/
+
+					//m_fSpeedMod = 0.0f;
+				}
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
@@ -263,7 +275,8 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	m_kStartPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStart.z / HEIGHTMAP_SCALE)));		
 	
 	//temporary remove this unit so path finding
-	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
+		(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 	
 	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact) == false)
 	{

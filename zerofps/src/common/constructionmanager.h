@@ -40,7 +40,6 @@ public:
 	// Funktion som returnerar en ny tech level.
 	int GetPossibleBuildings(unsigned int uiTechLevel, vector<Structure>& akStructures);
 
-
 	const int c_iNumTeams;
 
 private:

@@ -122,6 +122,8 @@ private:
 	bool ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY);
 
 public: 
+
+	void CopyPath(vector<Point>& path);
 	
 	PathFind(int* piMapTerrain, int m_iMapWidth, unsigned int uiBlockedValue);
 	~PathFind();

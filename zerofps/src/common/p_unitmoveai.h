@@ -70,6 +70,8 @@ public:
 	bool MoveTo(Vector3 kPos);
 	bool DoPathFind(Vector3 kStart,Vector3 kStop,bool exact);
 	bool CheckForOrder();
+
+	PathFind* GetPathFind() {return m_pkPathFind;}
 };
 
 COMMON_API Property* Create_P_UnitMoveAI();

@@ -89,7 +89,10 @@ class ZeroRTS :public Application {
 		void UpdateSelectionArea();
 		void SelectObjects(Vector3 p1, Vector3 p2);
 
+		Object* test_path_find_object;
+
 	public:
+		void DrawPath();
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;
 		

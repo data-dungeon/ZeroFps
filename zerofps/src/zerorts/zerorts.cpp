@@ -23,6 +23,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bDisableCameraScroll =	false;
 	m_iGameType =					1;
 	m_kClickPos = m_kDragPos = NO_SELECTION;
+	test_path_find_object =NULL;
 
 /*	COMMENT OUT BY ZEB
 	m_pkTestPath = NULL;
@@ -185,6 +186,8 @@ void ZeroRTS::OnIdle()
 		pkRender->Line(right, bottom);
 		pkRender->Line(bottom, left);
 	}
+
+	DrawPath();
 }
 
 void ZeroRTS::OnSystem() 
@@ -406,6 +409,8 @@ void ZeroRTS::Input()
 		
 		if(info.iObject != -1)
 		{
+			test_path_find_object = pkObjectMan->GetObjectByNetWorkID(info.iObject);
+
 			AddSelectedObject(info.iObject);
 			
 			m_pkUserPanel->OnSelectObjects(pkObjectMan->GetObjectByNetWorkID(
@@ -1135,4 +1140,22 @@ void ZeroRTS::SetupGUI()
 
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
+}
+
+void ZeroRTS::DrawPath()
+{
+	if(test_path_find_object)
+	{
+		P_UnitMoveAI* pkMoveAI = (P_UnitMoveAI*) test_path_find_object->GetProperty("P_UnitMoveAI");
+
+		if(pkMoveAI)
+		{
+			PathFind* pkPath = pkMoveAI->GetPathFind();
+
+			if(pkPath)
+			{
+				printf("APA\n");
+			}
+		}
+	}
 }

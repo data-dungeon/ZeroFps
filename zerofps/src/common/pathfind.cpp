@@ -564,6 +564,7 @@ bool PathFind::FillQueue()
 			Reset();
 			return false;
 		}
+
 /*		while(m_kqClosestPath.size())
 		{
 			m_kqPath.push(m_kqClosestPath.front());
@@ -701,8 +702,7 @@ void PathFind::ReversePath()
 	m_bPathIsReversed = false;
 }
 
-
-
-
-
-
+void PathFind::CopyPath(vector<Point>& path);
+{
+	
+}
