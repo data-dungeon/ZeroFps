@@ -331,7 +331,7 @@ void Object::RemoveChild(Object* pkObject)
 void Object::SetParent(Object* pkObject) 
 {
 	// Check so we don't try to set ourself to be our own parent.
-	ZFAssert(this != pkObject, "SetParent(this)");
+//	ZFAssert(this != pkObject, "SetParent(this)");
 	if(this == pkObject)
 		return;
 

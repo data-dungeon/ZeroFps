@@ -1070,6 +1070,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
 	
 	m_pkObjectMan->Delete( m_kClient[iConnectionID].m_pkObject );
+	m_kClient[iConnectionID].m_pkObject = NULL;
 }
 
 int ZeroFps::GetClientObjectID()
