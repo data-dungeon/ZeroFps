@@ -6,10 +6,11 @@
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include <string.h>
+#include "mcommon_x.h"
 
 using namespace std;
 
-class P_Event: public Property {
+class MCOMMON_API P_Event: public Property {
 	private:
 		ZeroFps* m_pkFps;
 		ZFScript* m_pkScript;

@@ -3,8 +3,6 @@
 
 ZFScript* StdLua::g_pkScript;
 
-ZFScript* 		StdLua::g_pkScript;
-
 void StdLua::Init(ZFScript* pkScript)
 {
 	g_pkScript = pkScript;
