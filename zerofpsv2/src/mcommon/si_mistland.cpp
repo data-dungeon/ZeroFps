@@ -1008,10 +1008,7 @@ int MistLandLua::SetHPLua (lua_State* pkLua)
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
 
          if ( pkCP )
-         {
-            CharacterStats *pkCS = pkCP->GetCharStats();
-            pkCS->SetHP ( string(acType) );
-         }
+            pkCP->GetCharStats()->SetHP ( string(acType) );
       }
    }
 

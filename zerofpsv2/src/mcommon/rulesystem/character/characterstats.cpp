@@ -390,6 +390,21 @@ void CharacterStats::SetHP( string kValue )
 {
    m_kPointStats["hp"] = kValue;
    m_uiVersion++;
+
+   // if character is player, send updated life to client
+   if ( m_bIsPlayer && m_pkServInf )
+   {
+      for ( int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
+         for ( int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
+            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
+            {
+               SendType kNewSend;
+
+               kNewSend.m_iClientID = m_pkServInf->GetPlayers()->at(i).iId;
+               kNewSend.m_kSendType = "hp";
+               ((CharacterProperty*)m_pkParent->GetProperty("P_CharStats"))->AddSendsData (kNewSend);
+            }
+   }
    
    if(m_kPointStats["hp"].Value() <= 0)
    {

@@ -361,8 +361,6 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          // send hp
          pkNetPacket->Write( &iHP, sizeof(int) );
          pkNetPacket->Write( &iMaxHP, sizeof(int) );
-
-          
       }
       else
       {
@@ -458,12 +456,11 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       pkNetPacket->Read ( &iHP, sizeof(int) );
       pkNetPacket->Read ( &iMaxHP, sizeof(int) );
 
-      m_pkCharStats->m_kPointStats["hp"].SetMaxValue(iMaxHP);;
+      m_pkCharStats->m_kPointStats["hp"].SetMaxValue(iMaxHP);
       m_pkCharStats->m_kPointStats["hp"] = iHP;
-
    }
    else
-      cout << "Got unknown data in p_charstats::packfrom" << endl;
+      cout << "Got unknown data in p_charstats::packfrom, type:" << iType << endl;
 }
 
 // ------------------------------------------------------------------------------------------
