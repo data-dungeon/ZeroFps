@@ -37,7 +37,7 @@ function OnMissionStart()
 	SetVar("MobZ", pos5[3]);
 
 	SetVar("MobTimer", 20);
-	SetVar("MobWaitTimer", 5);
+	SetVar("MobWaitTimer", 12);
 	SetVar("MobSuccess", 0); -- number of mobs reached goal
 
 	-- set waypoint vars...gaaaah!
