@@ -1449,7 +1449,6 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	{
 		m_kILocalPosV=m_kLocalPosV;
 		m_bFirstSetPos=false;
-		cout<<"firsttime: "<<m_kILocalPosV.x<<" "<<m_kILocalPosV.y<<" "<<m_kILocalPosV.z<<endl;
 	}
 }
 
