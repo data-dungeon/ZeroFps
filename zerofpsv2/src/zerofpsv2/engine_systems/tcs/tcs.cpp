@@ -208,14 +208,23 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 void Tcs::HandleCollission(Tcs_collission* pkCol)
 {	
+	//if nocolrespons is set in any body just touch them and continue
+	if(pkCol->pkBody1->m_bNoColRespons || pkCol->pkBody2->m_bNoColRespons)
+	{
+		//touch objects
+		pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
+		pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	
+		
+		return;
+	}
 
+	
 	//wake up bodys
 	pkCol->pkBody1->Wakeup();
 	pkCol->pkBody2->Wakeup();
 
 	//cout<<"collission points:"<<pkCol->kPositions.size()<<endl;	
 	int iNrOfPos = pkCol->kPositions.size();
- 	//iNrOfPos = 1;
 	
 	float fMass1 = pkCol->pkBody1->m_fMass;
 	float fMass2 = pkCol->pkBody2->m_fMass;
@@ -317,12 +326,9 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 			
 			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],-pkCol->kNormals[i] * j ,false);							
 			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],kTangent * (j * fFriction) ,false);
-		
-				
 		}					  
 	}
 	
-
 	//touch objects
 	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
 	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	

@@ -48,6 +48,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bCantSleep;
 		bool		m_bDisableOnSleep;
 		bool		m_bRemoveOnSleep;
+		bool		m_bNoColRespons;
 		
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;

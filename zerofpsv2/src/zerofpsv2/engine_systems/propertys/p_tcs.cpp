@@ -39,7 +39,7 @@ P_Tcs::P_Tcs()
 	m_bCantSleep = 		false;
 	m_bDisableOnSleep =	false;
 	m_bRemoveOnSleep =	false;
-	
+	m_bNoColRespons =		false;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
@@ -154,6 +154,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
 	pkPackage->Write((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
 	pkPackage->Write((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);										
+	pkPackage->Write((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);											
 
 }
 
@@ -187,12 +188,13 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	
 	pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
 	pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
-	pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);										
+	pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);											
+	pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);											
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(19);
+	vector<PropertyValues> kReturn(20);
 
 	int dummy;
 
@@ -271,7 +273,11 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[18].kValueName="removeonsleep";
 	kReturn[18].iValueType=VALUETYPE_BOOL;
 	kReturn[18].pkValue=(void*)&m_bRemoveOnSleep;	
-							
+
+	kReturn[19].kValueName="nocolrespons";
+	kReturn[19].iValueType=VALUETYPE_BOOL;
+	kReturn[19].pkValue=(void*)&m_bNoColRespons;	
+								
 	return kReturn;
 }
 
