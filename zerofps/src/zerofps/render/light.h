@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <function.h>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
 #include "../basic/basic.pkg"
@@ -42,14 +43,31 @@ class RENDER_API LightSource {
 	
 		int iType;
 		int iPriority;
+		
+		float fIntensity;
+		
+		
+//		bool operator<(const LightSource& l) const;
+
 };
 
-
+    
+    
 class RENDER_API Light : public ZFObject {
 	private:
+		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
+		} Less_Light;
+		
+		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
+		} More_Light;
+		
+		
 		Vector3 m_kCamPos;
 		int m_iNrOfLights;
 		list<LightSource*> m_kLights;		
+		list<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
 		void TurnOffAll();
@@ -62,7 +80,7 @@ class RENDER_API Light : public ZFObject {
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update();
-
+//		bool Comp(LightSource* l1,LightSource* l2);
 };
 
 

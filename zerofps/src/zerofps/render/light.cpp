@@ -1,5 +1,6 @@
 #include "light.h"
 
+
 LightSource::LightSource() {
 //cout<<"new light"<<endl;
 	//position and rotation
@@ -26,6 +27,18 @@ LightSource::LightSource() {
 	iPriority=0;
 }
 
+
+/*
+bool LightSource::operator<(const LightSource& l) const 
+{
+	return (fIntensity < l.fIntensity)
+		return true;
+	else
+		return false;		
+}
+*/
+
+
 Light::Light() 
 : ZFObject("Light") {
 	m_iNrOfLights=8;
@@ -47,6 +60,7 @@ void Light::Remove(LightSource *kLight) {
 
 void Light::Update() {
 	m_kActiveLights.clear();
+	m_kSorted.clear();	
 	TurnOffAll();
 
 	//loop trough all lightsources and find wich to view
@@ -54,16 +68,15 @@ void Light::Update() {
 		
 		//always add light with priority >10
 		if((*it)->iPriority>=10){
-			if(m_kActiveLights.size()<m_iNrOfLights){
-				m_kActiveLights.push_back(*it);			
-				continue;
-			}
+			(*it)->fIntensity=999999;
+			m_kSorted.push_back(*it);			
+			continue;
 		}
 		
 		//if its a directional light add it if there is space
 		if((*it)->iType==DIRECTIONAL_LIGHT){
-			if(m_kActiveLights.size()<m_iNrOfLights)
-				m_kActiveLights.push_back(*it);		
+			(*it)->fIntensity=999999;
+			m_kSorted.push_back(*it);		
 		//else add the light if it is bright enough
 		} else {
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
@@ -72,12 +85,38 @@ void Light::Update() {
 			float fDistance = (m_kCamPos-kPos).Length();		
 			float fIntensity = min(1, 1 / ((*it)->fConst_Atten + (*it)->fLinear_Atten*fDistance + (*it)->fQuadratic_Atten*fDistance*fDistance));
 		
-			if(fIntensity>0.05)
-				if(m_kActiveLights.size()<m_iNrOfLights)
-					m_kActiveLights.push_back(*it);					
+			if(fIntensity>0.01){
+				(*it)->fIntensity=fIntensity;
+				m_kSorted.push_back(*it);					
+			}
 		}
 	}
 	
+	
+	//Put the first 8 in m_kActiveLights
+	int i=0;
+	m_kSorted.sort(More_Light);
+	for(list<LightSource*>::iterator it=m_kSorted.begin();it!=m_kSorted.end();it++) {
+		if(i >= m_iNrOfLights)
+			break;
+				
+		m_kActiveLights.push_back(*it);				
+		i++;				
+	}
+	
+/*	
+	cout<<"LIGHTS SIZE:"<<m_kActiveLights.size()<<endl;
+	
+	for(int i=0;i<m_kActiveLights.size();i++){
+		cout<<m_kActiveLights[i]->fIntensity<<endl;
+	
+	}
+*/
+	
+	int max=m_kActiveLights.size();
+	if(max>8)
+		max=8;
+		
 	//loop trough selected lightsources and enable them
 	for(int i=0;i<m_kActiveLights.size();i++) {
 		GLenum light;				
@@ -178,7 +217,27 @@ void Light::TurnOffAll() {
 	glDisable(GL_LIGHT7);		
 }
 
+/*
+bool Light::Comp(LightSource* l1,LightSource* l2){
+	if( (*l1) < (*l2) )
+		return true;
+	else
+		return false;
 
+
+}
+*/
+
+/*
+void Light::Sort() 
+{
+	for(list<LightSource*>::iterator it=m_kSorted.begin();it!=m_kSorted.end();it++) {
+
+
+	}
+}
+
+*/
 
 
 
