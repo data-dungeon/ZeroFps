@@ -346,7 +346,7 @@ void ZGuiTextbox::SetFocus()
 				last_row_pos = 100000000;
 
 			int pixel_offset=0;
-			while(1)
+			while(pixel_offset < iClickPosX && m_iCursorPos < last_row_pos)
 			{
 				int cell = m_strText[m_iCursorPos];
 				int font_size = 0;
@@ -359,10 +359,6 @@ void ZGuiTextbox::SetFocus()
 					font_size += m_pkFont->m_cPixelGapBetweenChars;
 
 				pixel_offset += font_size;
-				if( pixel_offset >= iClickPosX ||
-					m_iCursorPos >= last_row_pos)
-					break;
-
 				m_iCursorPos++;
 			}
 		}
@@ -838,29 +834,19 @@ void ZGuiTextbox::MoveDownOneRow()
 			int char_counter  = m_kRowOffsets[i];
 			int curr_row_length = 0; 
 
-			while(1)
+			while(m_strText[char_counter] != '\n' && char_counter < m_iCursorPos)
 			{
-				if(char_counter >= m_iCursorPos)
-				{
-					break;
-				}
-				else
-				{
-					int letter_size = 0;
-					int gap_size = 0;
+				int letter_size = 0;
+				int gap_size = 0;
 
-					int element = m_strText[char_counter];
+				int element = m_strText[char_counter];
+				
+				letter_size = m_pkFont->m_aChars[element].iSizeX;  
 
-					if(element == '\n')
-						break;
-					
-					letter_size = m_pkFont->m_aChars[element].iSizeX;  
+				if(element != ' ')
+					gap_size = m_pkFont->m_cPixelGapBetweenChars;
 
-					if(element != ' ')
-						gap_size = m_pkFont->m_cPixelGapBetweenChars;
-
-					curr_row_length += (letter_size + gap_size);
-				}
+				curr_row_length += (letter_size + gap_size);
 
 				char_counter++;
 			}

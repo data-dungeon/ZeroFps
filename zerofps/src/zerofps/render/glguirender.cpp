@@ -440,6 +440,16 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 
 			offset += kLength.first;
 		}
+
+		// Print cursor outside the loop if last character.
+		if(iCursorPos == characters_totalt)
+		{
+			int x,y;
+			x = rc.Left + xpos - 2;
+			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
+				ypos - iRenderDistFromTop;
+			PrintWord(x, y, "|", 0, 1);
+		}
 		
 	glEnd();
 
@@ -465,14 +475,12 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 
 	pair<int,int> kLength; // first = character, second = pixels.
 
+	// Must calc width if text should be centered.
 	if(iRenderDistFromLeft == ZG_CENTER_TEXT_HORZ)
 	{
 		while(offset < characters_totalt) // antal ord
 		{
 			kLength = GetWordLength(text, offset, max_width);
-
-			int x = rc.Left + xpos - iRenderDistFromLeft;
-			PrintWord(x, y, text, offset, kLength.first);
 
 			offset += kLength.first;
 			xpos += kLength.second;
@@ -505,6 +513,13 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 
 			if(xpos >= max_width)
 				break;
+		}
+
+		// Print cursor outside the loop if last character.
+		if(iCursorPos == characters_totalt)
+		{
+			int x = rc.Left + xpos - iRenderDistFromLeft - 2;
+			PrintWord(x, y, "|", 0, 1);
 		}
 
 	glEnd();
@@ -637,31 +652,5 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 		glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
 
 		x+=iCurrLegth;
-	}
-
-	// Print cursor if last
-	if(i == m_iCursorPos)
-	{
-		int iCursorX = x;
-		int iCursorY = y;
-
-		int index = '|'-32;
-		int fx = m_pkFont->m_aChars[index].iPosX;
-		int fy = m_pkFont->m_aChars[index].iPosY;
-		int fw = m_pkFont->m_aChars[index].iSizeX;
-		int fh = m_pkFont->m_aChars[index].iSizeY;
-
-		float tx = (float) fx / m_pkFont->m_iBMPWidth;
-		float ty = (float) fy / m_pkFont->m_iBMPWidth;
-		float tw = (float) fw / m_pkFont->m_iBMPWidth;
-		float th = (float) fh / m_pkFont->m_iBMPWidth;
-
-		iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
-						// som en kompensation för tecknets egen storlek.
-
-		glTexCoord2f(tx,ty);		glVertex2i(iCursorX,iCursorY+fh);		 
-		glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
-		glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
-		glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
 	}
 }
