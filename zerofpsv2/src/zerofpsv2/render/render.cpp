@@ -141,14 +141,6 @@ void Render::SetDisplay()
 	m_pkTexMan->ClearAll();
 
 
-	/*
-	//turn of opengl
-	SDL_QuitSubSystem(SDL_OPENGL);
-	//reinit opengl with the new configuration
-	SDL_InitSubSystem(SDL_OPENGL);
-	*/
-
-
 	m_iSDLVideoModeFlags = 0;
 
 	if(m_iFullScreen > 0)
