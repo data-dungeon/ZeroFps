@@ -571,10 +571,10 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	//cout<<"BLIB:"<<sizeof(m_kNetUpdateFlags[iConnectionID])<<endl;
 	
 	//send parent
-/*	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
-	{
+//	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
+//	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT,false);		
-*/		
+		
 		int iParentID	=	-1;
 		if(m_pkParent)
 			iParentID = m_pkParent->iNetWorkID;
@@ -731,13 +731,12 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	//get parent
 //	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
-//	{
-		//cout<<"got parent update"<<endl;
-		
+///	{
 		int iParentID	=	-1;
-
-		pkNetPacket->Read( iParentID );
+		
+		pkNetPacket->Read( iParentID );		
 		SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
+		
 //	}
 
    // get update status

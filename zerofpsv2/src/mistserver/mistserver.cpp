@@ -1174,6 +1174,10 @@ void MistServer::DeletePlayer(int iConID)
 				{
 					Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
 					
+					//check if object exist, else just continue
+					if(!pkObj)
+						continue;
+					
 					//save object here
 					m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
 					

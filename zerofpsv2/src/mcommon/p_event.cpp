@@ -24,6 +24,7 @@ P_Event::~P_Event()
 
 void P_Event::Update()
 {
+
 	if(!m_bHaveRunInit)
 	{
 		m_bHaveRunInit = true;		

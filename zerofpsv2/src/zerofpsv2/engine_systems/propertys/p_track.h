@@ -61,6 +61,7 @@ class ENGINE_SYSTEMS_API P_Track : public Property {
 		int					m_iZoneNum;
 		//int				m_iLastZoneIndex;	// Index of last zone we was close to.
 		set<int>			m_iActiveZones;
+		set<int>			m_iNewActiveZones;		
 
 		void Update();
 		void Init();

@@ -26,6 +26,7 @@ NetWork::NetWork()
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
+	RegisterVariable("n_sendsize",			&m_iMaxSendSize,		CSYS_INT);		
 	
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);

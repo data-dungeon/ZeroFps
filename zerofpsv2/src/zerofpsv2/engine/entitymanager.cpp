@@ -970,9 +970,6 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 	if(!pkStatic)
 		return;
 
-	//this zone is new for the client, so all objects in it shuld be sent
-	pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);
-
 	vector<Entity*>	kObjects;
 	m_iForceNetUpdate = 0xFFFFFFFF;
 
@@ -1533,14 +1530,13 @@ void EntityManager::UpdateZones()
 	vector<ZoneData*>	m_kFloodZones;
 	int iZoneIndex;
 
-	//cout<<"nr of trackers:"<<m_kTrackedObjects.size()<<endl;
 	// For each tracker.
 	for(list<Entity*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{
 		// Find Active Zone.
 		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
-		pkTrack->m_iActiveZones.clear();
-
+		set<int>			kNewActiveZones;
+		
 		for(iZ=0;iZ<m_kZones.size();iZ++)
 			m_kZones[iZ].m_iRange							= 1000;
 		
@@ -1559,7 +1555,7 @@ void EntityManager::UpdateZones()
 			pkZone = m_kFloodZones.back();
 			m_kFloodZones.pop_back();
 
-			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
+			kNewActiveZones.insert(pkZone->m_iZoneID);
 
 			pkZone->m_bActive = true;
 			int iRange = pkZone->m_iRange + 1;
@@ -1579,6 +1575,13 @@ void EntityManager::UpdateZones()
 				}				
 			}
 		}
+		
+		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
+		pkTrack->m_iNewActiveZones.clear();
+		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),pkTrack->m_iActiveZones.begin(),pkTrack->m_iActiveZones.end(), inserter(pkTrack->m_iNewActiveZones, pkTrack->m_iNewActiveZones.begin()));
+		
+		//save new active zones in tracker
+		pkTrack->m_iActiveZones = kNewActiveZones;
 	}
 
 
@@ -1605,6 +1608,37 @@ void EntityManager::UpdateZones()
 		if(pkZoneRefresh->m_bActive)
 			pkZoneRefresh->m_pkZone->GetUpdateStatus()		= UPDATE_ALL;
 	}
+
+
+
+	//reset all new loaded zones
+	for(list<Entity*>::iterator iT2=m_kTrackedObjects.begin();iT2!=m_kTrackedObjects.end();iT2++) 
+	{
+		P_Track* pkTrack = (P_Track*)(*iT2)->GetProperty("P_Track");	
+	
+		if(!pkTrack)
+		{
+			cout<<"ERROR tracked object, whitout tracker in trackedobject list"<<endl;
+			continue;
+		}
+	
+		//if therse no connection on this tracker, we cant reset anything
+		if(pkTrack->m_iConnectID == -1)
+			continue;
+	
+		for(set<int>::iterator it3 = pkTrack->m_iNewActiveZones.begin(); it3 != pkTrack->m_iNewActiveZones.end();it3++)
+		{
+			ZoneData* zd = GetZoneData((*it3));
+		
+			if(zd)
+			{
+				if(zd->m_pkZone)
+					zd->m_pkZone->ResetAllNetUpdateFlagsAndChilds(pkTrack->m_iConnectID);
+				cout<<"reseting zone:"<<endl;
+			}
+		}
+	}
+
 }
 
 void EntityManager::Zones_Refresh()
