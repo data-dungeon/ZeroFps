@@ -70,7 +70,7 @@ P_Powerup::P_Powerup()
 				break;	
 							
 			case 1:
-				if(iLevel >= 7 && iLevel <= 15)
+				if(iLevel >= 7 && iLevel <= 13)
 				{
 					m_iPowerupType = iRand;				
 					m_strPowerupName = "Yber Gun";	
@@ -86,7 +86,7 @@ P_Powerup::P_Powerup()
 				break;
 
 			case 3:
-				if(iLevel >= 4 && iLevel <= 7)
+				if(iLevel >= 3 && iLevel <= 9)
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Mini Gun";	
@@ -97,7 +97,7 @@ P_Powerup::P_Powerup()
 	}
 		
 	
-	cout<<"created bonus type:"<<m_iPowerupType<<endl;
+	//cout<<"created bonus type:"<<m_iPowerupType<<endl;
 		
 }
 

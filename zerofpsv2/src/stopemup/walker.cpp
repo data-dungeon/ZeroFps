@@ -25,11 +25,11 @@ P_Walker::P_Walker()
 	float fPlayers = m_pkStopEmUp->GetPlayers();
 	float fLevel =  m_pkStopEmUp->GetLevel();
 	
-	fPlayers *= 0.70;	
+	fPlayers *= 0.80;	
 	if(fPlayers < 1)
 		fPlayers = 1;
 	
-	fLevel *= 0.35;
+	fLevel *= 0.30;
 	if(fLevel < 1)
 		fLevel = 1;
 			
