@@ -262,7 +262,7 @@ void TileEngine::Draw()
 	{
 		for(int x = 0;x<m_iSizeX;x++)
 		{
-			if(!GetTile(x,y)->kUnits.empty() || x ==0)
+			if(!GetTile(x,y)->kUnits.empty())
 			{
 				Vector3 pos;
 				pos.Set(x - ceil(m_iSizeX/2.0) + 0.5,4,y - ceil(m_iSizeY/2.0) + 0.5);

@@ -161,15 +161,15 @@ AIBase* P_UnitMoveAI::UpdateAI()
 
 				m_fSpeedMod = 1.0f - (fTerrainCost / 20.0);
 
-				if(fTerrainCost < 0 || fTerrainCost > 10)
+			/*	if(fTerrainCost < 0 || fTerrainCost > 10)
 				{
-			/*		printf("Pathfinding returning a strange value\n");
+					printf("Pathfinding returning a strange value\n");
 					printf("iX = %i, iY = %i, fTerrainCost = %f, m_fSpeedMod = %f\n", 
 						iX, iY, fTerrainCost, m_fSpeedMod);
-					m_pkFps->QuitEngine();*/
+					m_pkFps->QuitEngine();*
 
 					//m_fSpeedMod = 0.0f;
-				}
+				}*/
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;

@@ -125,6 +125,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
+//	TileEngine::m_pkInstance->Draw();
 
 /* //DVOID
 	PickInfo p = Pick();
@@ -472,8 +473,6 @@ void ZeroRTS::OnHud(void)
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
-/*	if(m_pkMiniMap)
-		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); */
 }
 
 void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -623,8 +622,8 @@ PickInfo ZeroRTS::Pick()
 
 void ZeroRTS::SetCamPos(Vector3 kPos)
 {
-	float wb = 75;	//width border
-	float tb = 74;	//top border
+	float wb = 0;//75;	//width border
+	float tb = 0;//74;	//top border
 	float bb = 10;	//bothom border
 
 	if(kPos.x < (-m_pkMap->GetSize()/2 + wb))
