@@ -126,8 +126,6 @@ ZFResource* Create__EnvSetting()
 
 P_Enviroment::P_Enviroment()
 {
-	cout<<"HORA"<<endl;
-
 	strcpy(m_acName,"P_Enviroment");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;

@@ -135,13 +135,15 @@ void Tcs::Update(float fAlphaTime)
 
 void Tcs::UpdateLineTests()
 {
+	float distance;
+
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{		
 		if(m_kBodys[i]->m_bCharacter)
 		{
 			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{
-				float distance = (m_kBodys[i]->m_kNewPos - m_kLastTestPos).Length();
+				distance = (m_kBodys[i]->m_kNewPos - m_kLastTestPos).Length();
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
 					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0);
@@ -225,6 +227,7 @@ void Tcs::UpdateForces()
 	
 		m_kBodys[i]->m_kForces.Set(0,0,0);
 		
+		//Apply walk force
 		m_kBodys[i]->m_kForces+=m_kBodys[i]->m_kWalkVel;
 		
 		//apply gravity if enabled
@@ -277,7 +280,7 @@ void Tcs::UpdateCollissions(float fAtime)
 	{
 		for(int B2=B1+1;B2<m_kBodys.size();B2++)
 		{
-			bool bDoTest = false;
+/*			bool bDoTest = false;
 		
 			//check collission groups
 			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
@@ -290,8 +293,13 @@ void Tcs::UpdateCollissions(float fAtime)
 					m_kBodys[B2]->m_akWalkableGroups[m_kBodys[B1]->m_iGroup])					
 					bDoTest = true;
 				
-			if(bDoTest)
+			if(bDoTest)*/
+			
+			
+			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
+				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])			
 			{
+			
 				if(m_kBodys[B1]->m_bPolygonTest && m_kBodys[B2]->m_bPolygonTest)
 				{
 					cout<<"unsuported collission mesh VS mesh"<<endl;
@@ -358,6 +366,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	float closest = 99999999;
 	
 	int p1,p2;
+	float d;
 	
 	for(int i = 0;i<3;i++)
 	{
@@ -380,7 +389,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	
 		if(TestLineVSSphere(kVerts[p1], kVerts[p2],pkSphere))
 		{
-			float d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+			d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
 			if( d < closest)
 			{
 				closest = d;
@@ -457,6 +466,7 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 	m_kLastTestPos = kStart;		
 	float closest = 999999999;
 	P_Tcs* pkClosest = NULL;	
+	float d;
 	
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{		
@@ -469,8 +479,7 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 		
 		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
 		{
-			float d = (kStart - m_kLastLineTestColPos).Length();		
-		
+			d = (kStart - m_kLastLineTestColPos).Length();				
 			if(d < closest)
 			{
 				
@@ -564,8 +573,6 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		retry = false;
 		nroftests++;
 		
-		//CopyBody(pkBody1,&m_kBodyCopy1);
-		//CopyBody(pkBody2,&m_kBodyCopy2);		
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));
 		
@@ -615,7 +622,6 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
 		temp.kPos = m_pkBodyCopy1->m_kNewPos - (temp.kNormal * m_pkBodyCopy1->m_fRadius);	
 		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity ) - (m_pkBodyCopy2->m_kVelocity);						
-//		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity + m_pkBodyCopy1->m_kWalkVel) - (m_pkBodyCopy2->m_kVelocity + m_pkBodyCopy2->m_kWalkVel);		
 		temp.fAtime =	fAtime;
 		
 		m_kCollissions.push_back(temp);		
@@ -654,10 +660,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	{
 		retry = false;
 		nroftests++;
-		
-//		CopyBody(pkBody1,&m_kBodyCopy1);
-//		CopyBody(pkBody2,&m_kBodyCopy2);		
-		
+			
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 		
@@ -686,8 +689,6 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 			
 			
 			
-				//kColPos = m_kLastTestPos;
-			
 				didpen = true;			
 				retry = true;
 				fAtime /=1.5;
@@ -709,10 +710,9 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		temp.pkBody1 = pkBody1;
 		temp.pkBody2 = pkBody2;
 	
-		temp.kNormal = m_kLastTestNormal;//(m_pkBodyCopy1->m_kNewPos - kColPos).Unit();
+		temp.kNormal = m_kLastTestNormal;
 		temp.kPos = m_kLastTestPos;	
 		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity ) - (m_pkBodyCopy2->m_kVelocity);				
-//		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity + m_pkBodyCopy1->m_kWalkVel) - (m_pkBodyCopy2->m_kVelocity + m_pkBodyCopy2->m_kWalkVel);		
 		temp.fAtime =	fAtime;
 		
 		m_kCollissions.push_back(temp);		
@@ -729,9 +729,10 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	Vector3 kClosestPos;
 	bool bHaveColided = false;
 	
+	Vector3 verts[3];	
+	float d;
 	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
 	{
-		Vector3 verts[3];
 		
 		verts[0] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
 		verts[1] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
@@ -740,7 +741,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		
 		if(TestSphereVSPolygon(verts,pkSphere))
 		{	
-			float d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+			d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
 		
 			if( d < closest)
 			{
