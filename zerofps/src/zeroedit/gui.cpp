@@ -110,6 +110,11 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		}
 		break;
 
+	case ZGM_KEYDOWN:
+		if( ((int*)pkParams)[0] == KEY_SPACE)
+			m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();
+		break;
+
 	case ZGM_CBN_SELENDOK:
 		{
 			int iID = ((int*)pkParams)[0];
@@ -562,7 +567,7 @@ void Gui::CreateTestWnd()
 	int y = m_pkEdit->m_iHeight/2 - h/2;
 
 	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
-		true,id++);
+		false,id++);
 
 	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
 
@@ -570,5 +575,5 @@ void Gui::CreateTestWnd()
 	sprintf(szText, "This is a log!\nThis row number 2.");
 	pkTextbox->SetText(szText);
 
-	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,true);
+	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 }
