@@ -52,6 +52,7 @@ public:
 
 	void AngleQuaternion( const Vector3 angles );
 	void QuaternionSlerp( Quaternion* from, Quaternion* to, float t);
+	Quaternion conjugate(void);
 
 /*
 	// Assign

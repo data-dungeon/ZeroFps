@@ -499,6 +499,17 @@ void Quaternion::QuaternionSlerp( Quaternion* from, Quaternion* to, float t)
 
 
 
+Quaternion Quaternion::conjugate(void)
+{
+	Quaternion q;
+
+	q.x = -q.x;
+	q.y = -q.y;
+	q.z = -q.z;
+	q.w = w;
+
+	return q;
+}
 
 
 

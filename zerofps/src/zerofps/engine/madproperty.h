@@ -18,12 +18,11 @@ class ENGINE_API MadProperty: public Property {
 	public:
 		MadProperty(Core* pkModell);
 
-
-
 		void Update();
-
 		void SetBase(Core* pkModell);
-
+		void PlayAnimation(int iAnimNum, float fStartTime);
+		void UpdateAnimation(void);
+		void Draw(void);
 };
 
 
