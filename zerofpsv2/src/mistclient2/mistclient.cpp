@@ -31,6 +31,11 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iCharacterID = -1;
 
    RegisterVariable("r_jumpstart", &m_bSkipLoginScreen, CSYS_BOOL);
+
+   RegisterVariable("r_loginstart", &m_strPlayerName, CSYS_STRING);
+   
+
+   
 } 
  
 void MistClient::OnInit() 
