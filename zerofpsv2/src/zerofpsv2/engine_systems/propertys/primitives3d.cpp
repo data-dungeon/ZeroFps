@@ -1,10 +1,11 @@
-#include "modelproperty.h"
+#include "primitives3d.h"
 #include "../../engine/object.h"
 #include "../../basic/zfobjectmanger.h"
  
-ModelProperty::ModelProperty() {
+P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
+{
 	bNetwork = true;
-	strcpy(m_acName,"ModelProperty");
+	strcpy(m_acName,"P_Primitives3D");
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
@@ -18,7 +19,7 @@ ModelProperty::ModelProperty() {
 }
 
 
-void ModelProperty::Update() {
+void P_Primitives3D::Update() {
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
 	
@@ -42,7 +43,7 @@ void ModelProperty::Update() {
 	glPopAttrib();*/
 }
 
-void ModelProperty::PackTo( NetPacket* pkNetPacket ) {
+void P_Primitives3D::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_iType );		
 	pkNetPacket->Write( m_fRadius );		
 	pkNetPacket->Write( m_iSlices );		
@@ -50,7 +51,7 @@ void ModelProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_kColor );		
 }
 
-void ModelProperty::PackFrom( NetPacket* pkNetPacket ) {
+void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_iType );		
 	pkNetPacket->Read( m_fRadius );		
 	pkNetPacket->Read( m_iSlices );		
@@ -59,7 +60,7 @@ void ModelProperty::PackFrom( NetPacket* pkNetPacket ) {
 	
 }
 
-void ModelProperty::Save(ZFMemPackage* pkPackage)
+void P_Primitives3D::Save(ZFMemPackage* pkPackage)
 {	
 	pkPackage->Write((void*)&m_iType,4 );		
 	pkPackage->Write((void*)&m_fRadius,4 );		
@@ -68,7 +69,7 @@ void ModelProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kColor,12 );	
 }
 
-void ModelProperty::Load(ZFMemPackage* pkPackage)
+void P_Primitives3D::Load(ZFMemPackage* pkPackage)
 {
 	pkPackage->Read((void*)&m_iType	,4 );		
 	pkPackage->Read((void*)&m_fRadius,4 );		
@@ -78,7 +79,7 @@ void ModelProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-vector<PropertyValues> ModelProperty::GetPropertyValues()
+vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
 
@@ -91,7 +92,7 @@ vector<PropertyValues> ModelProperty::GetPropertyValues()
 
 
 
-Property* Create_ModelProperty()
+Property* Create_Prim3DProperty()
 {
-	return new ModelProperty;
+	return new P_Primitives3D;
 }

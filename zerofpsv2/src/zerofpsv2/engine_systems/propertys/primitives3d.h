@@ -1,5 +1,5 @@
-#ifndef _ENGINE_MODELPROPERTY_H_
-#define _ENGINE_MODELPROPERTY_H_
+#ifndef _ENGINE_P_PRIMITIVES3D_H_
+#define _ENGINE_P_PRIMITIVES3D_H_
 
 #include "../../engine/property.h"
 #include <iostream>
@@ -8,22 +8,32 @@
 
 using namespace std;
 
+enum PrimType
+{
+	SPHERE,
+	BBOX,
+	AABBOX,
+	CONE,
+	PYRAMID,
+};
+
 /// Used to display basic simple 3d objects.
-class ENGINE_SYSTEMS_API ModelProperty: public Property {
+class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 	private:
 		ZeroFps* m_pkFps;
-		Render*	m_pkRender;		
+		Render*	m_pkRender;
+		PrimType m_ePrimType;
 		
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
-		float		m_fRadius;
+		float	m_fRadius;
 		int		m_iSlices;
 		int		m_iStacks;
 		Vector3	m_kColor;
 		
 		
-		ModelProperty();
+		P_Primitives3D(PrimType eType=SPHERE);
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 
@@ -35,10 +45,10 @@ class ENGINE_SYSTEMS_API ModelProperty: public Property {
 
 };
 
-Property* Create_ModelProperty();
+Property* Create_Prim3DProperty();
 
 
-#endif
+#endif // #ifndef _ENGINE_P_PRIMITIVES3D_H_
 
 
 
