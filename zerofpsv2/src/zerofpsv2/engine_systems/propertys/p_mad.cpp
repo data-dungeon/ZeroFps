@@ -296,9 +296,9 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	if(!pkCoreMesh)
 		return false;
 	
-	pkFaces =	pkCoreMesh->GetFacesPointer();
-	pkVertex = (*pkCoreMesh->GetVertexFramePointer())[0].GetVertexPointer();
-	pkNormal = (*pkCoreMesh->GetVertexFramePointer())[0].GetNormalPointer();
+	pkFaces =	pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
+	pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+	pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
 	
 	GenerateModelMatrix();
 	

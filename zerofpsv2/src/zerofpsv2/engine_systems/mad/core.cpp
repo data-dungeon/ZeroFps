@@ -13,6 +13,7 @@ Vector3		g_TransformedNormal[10000];			// Transformed Skinvertex Normals.
 float const g_fMadFrameTime = 1.0 / MAD_FPS;	// Def time between frames in Mad.
 
 Mad_CoreMesh* g_pkSelectedMesh;
+//Mad_RawMesh*  g_pkSelectedRawMesh;
 
 Mad_Core::Mad_Core()
 {
@@ -126,7 +127,7 @@ void Mad_Core::Save_MAD(const char* filename)
 }
 
  
-
+/*
 void Mad_Core::SetFrameI(int iFrame)
 {
 	if(iFrame >= 0 && iFrame < m_kMesh[0].kHead.iNumOfFrames)
@@ -140,7 +141,7 @@ void Mad_Core::LoopPlayAnim(int iAnim)
 		iActiveKeyFrame = 0;
 
 	iActiveFrame = m_kMesh[0].akAnimation[iAnim].KeyFrame[iActiveKeyFrame].iVertexFrame;
-}
+}*/
 
 
 void Mad_Core::SetFrame_NormalizedTime(float fNormTime)
@@ -165,11 +166,12 @@ float Mad_Core::GetAnimationLengthInS(int iAnim)
 	return (iNumOfKeyFrames * g_fMadFrameTime);
 }
 
+/*
 int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 {
 	return m_kMesh[0].akAnimation[iAnim].KeyFrame.size();
 	return 0;
-}
+}*/
 
 int Mad_Core::GetAnimIndex(char* szName)
 {
@@ -290,6 +292,7 @@ int	Mad_Core::GetNumOfAnimations()
 	return m_kBoneAnim.size();
 }
 
+/*
 void Mad_Core::SetAnimationTime( int iAnim, float fTime )
 {
 	fActiveAnimationTime = fTime;
@@ -299,7 +302,7 @@ void Mad_Core::SetAnimationTime( int iAnim, float fTime )
 	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
 	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
 	SetFrameI(m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iFrame].iVertexFrame);
-}
+}*/
 
 void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime, bool bLoop)
 {
@@ -438,10 +441,10 @@ bool Mad_Core::Create(string MadFileName)
 
 	kZFile.Close();
 
-	if(m_kSkelleton.size() == 1) {
+/*	if(m_kSkelleton.size() == 1) {
 		for(i=0; i<m_kMesh.size(); i++)
-			m_kMesh[i].bNotAnimated = true;
-		}
+			//m_kMesh[i].bNotAnimated = true;
+		}*/
 
 	CalculateRadius();
 
@@ -477,16 +480,16 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 
 Vector3*  Mad_Core::GetVerticesPtr()
 {
-	if(g_pkSelectedMesh->bNotAnimated)
-		return &g_pkSelectedMesh->akFrames[0].akVertex[0];
+//	if(g_pkSelectedMesh->bNotAnimated)
+		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
 
 	return g_TransformedVertex;
 }
 
 Vector3* Mad_Core::GetNormalsPtr()
 {
-	if(g_pkSelectedMesh->bNotAnimated)
-		return &g_pkSelectedMesh->akFrames[0].akNormal[0];
+//	if(g_pkSelectedMesh->bNotAnimated)
+		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
 
 	return g_TransformedNormal;
 }
@@ -494,13 +497,13 @@ Vector3* Mad_Core::GetNormalsPtr()
 
 int* Mad_Core::GetFacesPtr(Mad_CoreMesh* pkMesh,Mad_CoreSubMesh* pkSubMesh)
 {
-	return (int*) &pkMesh->akFaces[pkSubMesh->iFirstTriangle ].iIndex;	
+	return (int*) &pkMesh->GetLODMesh(0)->akFaces[pkSubMesh->iFirstTriangle ].iIndex;	
 		
 }
 
 Mad_TextureCoo* Mad_Core::GetTextureCooPtr(Mad_CoreMesh* pkMesh)
 {
-	return &pkMesh->akTextureCoo[0];
+	return &pkMesh->GetLODMesh(0)->akTextureCoo[0];
 }
 
 int Mad_Core::GetTextureID()
@@ -514,18 +517,20 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	Vector3* pkNormalDst;
 
 	g_pkSelectedMesh = pkMesh;
-	if(pkMesh->bNotAnimated)
-		return;
+	//g_pkSelectedRawMesh = pkMesh->GetLODMesh(0);
+
+//	if(pkMesh->bNotAnimated)
+//		return;
 	
 	int* piBoneConnection;
-	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];
-	Vector3* pkNormal = &pkMesh->akFrames[0].akNormal[0];
+	Vector3* pkVertex = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
+	Vector3* pkNormal = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
  
 	pkVertexDst = g_TransformedVertex;
 	pkNormalDst = g_TransformedNormal;
-	piBoneConnection = &pkMesh->akBoneConnections[0];
+	piBoneConnection = &g_pkSelectedMesh->GetLODMesh(0)->akBoneConnections[0];
 
-	for(int i = 0; i<pkMesh->kHead.iNumOfVertex; i++) {
+	for(int i = 0; i<g_pkSelectedMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
 		//iBoneConnection = pkMesh->akBoneConnections[i];
 		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
 		*pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal );
@@ -628,11 +633,11 @@ void Mad_Core::CalculateRadius()
 	Vector3 CenterPos = GetJointPosition(NULL);
 
 	Mad_CoreMesh* pkMesh = &m_kMesh[0];		
-	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];		
+	Vector3* pkVertex = &pkMesh->GetLODMesh(0)->akFrames[0].akVertex[0];		
 
 	float fDist=0;
 
-	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) 
+	for(unsigned int i=0; i <pkMesh->GetLODMesh(0)->akFrames[0].akVertex.size(); i++) 
 	{
 		float newdist = pkVertex[i].Length();		
 		
@@ -643,6 +648,7 @@ void Mad_Core::CalculateRadius()
 	}
 
 	m_fBoundRadius = fDist;
+	cout << "Bound Radius for '" << GetName() << "' is = " << fDist << endl;
 }
 
 float Mad_Core::GetRadius()

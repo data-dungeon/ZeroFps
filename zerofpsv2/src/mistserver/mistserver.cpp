@@ -725,7 +725,7 @@ void MistServer::OnServerStart(void)
 		
 		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		
-		pe->SetEnviroment("data/enviroments/sun.env");
+		pe->SetEnviroment("data/enviroments/server.env");
 	}
 	
 	//create server info object

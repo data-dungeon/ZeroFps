@@ -201,14 +201,15 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 	Mad_CoreVertexFrame		kFrame;
 	Mad_TextureCoo			kTextureCoo;
 
-	Mad_CoreMesh* pkMesh = GetMesh(szName);
+	Mad_CoreMesh*	pkMesh = GetMesh(szName);
+	Mad_RawMesh*	pkRawMesh = pkMesh->GetLODMesh(0);
 
 
 	bool bMakeTextureCoo = true;
 	bool bMakeTriangles = true;
-	if(pkMesh->SizeTexturesCoo() > 0)
+	if(pkRawMesh->SizeTexturesCoo() > 0)
 		bMakeTextureCoo = false;
-	if(pkMesh->SizeFaces() > 0)
+	if(pkRawMesh->SizeFaces() > 0)
 		bMakeTriangles = false;
 
 	char TextureName[256];
@@ -235,7 +236,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			Error(ErrorMsg);
 			}
 
-		iTexture = pkMesh->AddTexture(TextureName);
+		iTexture = pkRawMesh->AddTexture(TextureName);
 
 		for(int v = 0; v < 3; v++)
 		{
@@ -250,11 +251,11 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 			
 //			pkMesh->akBoneConnections.push_back(iBoneLink);
-			pkMesh->PushBackBoneConnection(iBoneLink);
+			pkRawMesh->PushBackBoneConnection(iBoneLink);
 			
 			if(bMakeTextureCoo)
 //				pkMesh->akTextureCoo.push_back(kTextureCoo);
-				pkMesh->PushBackTextureCoo(kTextureCoo);
+				pkRawMesh->PushBackTextureCoo(kTextureCoo);
 			else {
 				/*diff_s = pkMesh->akTextureCoo[(i*3) + v].s - kTextureCoo.s;
 				diff_t = pkMesh->akTextureCoo[(i*3) + v].t - kTextureCoo.t;
@@ -267,7 +268,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 		if(bMakeTriangles) {
 			//pkMesh->akFaces.push_back(kFace);
-			pkMesh->PushBackFaces(kFace);
+			pkRawMesh->PushBackFaces(kFace);
 			
 			// Skapa en submesh för varje polygon
 			Mad_CoreSubMesh newsub;
@@ -275,14 +276,14 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			newsub.iNumOfTriangles = 1;
 			newsub.iTextureIndex = iTexture;
 			//pkMesh->akSubMeshes.push_back(newsub);
-			pkMesh->PushBackSubMeshes(newsub);
+			pkRawMesh->PushBackSubMeshes(newsub);
 			//int smsize = pkMesh->akSubMeshes.size();
 			}
 	}
 
 //	pkMesh->akFrames.push_back(kFrame);
-	pkMesh->SetTextureFlags();
-	pkMesh->PushBackFrames(kFrame);
+	pkRawMesh->SetTextureFlags();
+	pkRawMesh->PushBackFrames(kFrame);
 
 	cout << "Done Reading Mesh: " <<	pkMesh->m_acName << endl;
 
@@ -674,27 +675,27 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 
 	vector<Mad_CoreMesh>::iterator it;
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
-		it->OptimizeSubMeshes();
+		it->GetLODMesh(0)->OptimizeSubMeshes();
 
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
 	{
 //		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
 //		int iTotalTriangles = it->akFaces.size();
 //		int iAntalFrames = it->akFrames.size();
-		int iTotalNumOfVertex = it->NumOfVertexPerFrame();
-		int iTotalTriangles = it->SizeFaces();
-		int iAntalFrames = it->SizeFrames();
+		int iTotalNumOfVertex = it->GetLODMesh(0)->NumOfVertexPerFrame();
+		int iTotalTriangles = it->GetLODMesh(0)->SizeFaces();
+		int iAntalFrames = it->GetLODMesh(0)->SizeFrames();
 		
-		it->kHead.iVersionNum		= 1;
+		it->GetLODMesh(0)->kHead.iVersionNum		= 1;
 //		it->kHead.iNumOfTextures	= it->akTextures.size();
-		it->kHead.iNumOfTextures	= it->SizeTextures();
-		it->kHead.iNumOfVertex		= iTotalNumOfVertex;
-		it->kHead.iNumOfFaces		= iTotalTriangles;
-		it->kHead.iNumOfFrames		= iAntalFrames;
+		it->GetLODMesh(0)->kHead.iNumOfTextures	= it->GetLODMesh(0)->SizeTextures();
+		it->GetLODMesh(0)->kHead.iNumOfVertex		= iTotalNumOfVertex;
+		it->GetLODMesh(0)->kHead.iNumOfFaces		= iTotalTriangles;
+		it->GetLODMesh(0)->kHead.iNumOfFrames		= iAntalFrames;
 //		it->kHead.iNumOfSubMeshes	= it->akSubMeshes.size();
 //		it->kHead.iNumOfAnimation	= it->akAnimation.size();
-		it->kHead.iNumOfSubMeshes	= it->SizeSubMesh();
-		it->kHead.iNumOfAnimation	= it->SizeAnimations();
+		it->GetLODMesh(0)->kHead.iNumOfSubMeshes	= it->GetLODMesh(0)->SizeSubMesh();
+		it->GetLODMesh(0)->kHead.iNumOfAnimation	= it->GetLODMesh(0)->SizeAnimations();
 	}
 
 //	mad->m_kMesh = m_kMesh;		
@@ -798,6 +799,8 @@ Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
 	Mad_CoreMesh kNewMesh;
 	kNewMesh.Clear();
 	strcpy(kNewMesh.m_acName, ucaName);
+	Mad_RawMesh kRaw;
+	kNewMesh.m_kLodMesh.push_back(kRaw);
 	m_kMesh.push_back(kNewMesh);
 	return &m_kMesh.back();
 }

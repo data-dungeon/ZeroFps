@@ -281,6 +281,8 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 
 bool CSMech::SetUpMech()
 {
+	assert(0);	// Broken by change in .mad.
+
 	//cout<<"setting up mesh:"<<endl;
 	//look for mad property
 	P_Mad* pkMP = static_cast<P_Mad*>(m_pkPP->GetObject()->GetProperty("P_Mad"));	
@@ -295,14 +297,14 @@ bool CSMech::SetUpMech()
 		{
 			//cout<<"found core"<<endl;
 			//look for mech pointer in core
-			m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);					
+			m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);	
 			if(m_pkCoreMech != NULL)		
 			{
 				//cout<<"found mech"<<endl;
 				
-				m_pkFaces = m_pkCoreMech->GetFacesPointer();
-				m_pkVertex = (*m_pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
-				m_pkNormal = (*m_pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
+				//m_pkFaces = m_pkCoreMech->GetFacesPointer();
+				//m_pkVertex = (*m_pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
+				//m_pkNormal = (*m_pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
 				
 				m_fScale = pkMP->m_fScale;
 				

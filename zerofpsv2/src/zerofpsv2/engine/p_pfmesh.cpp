@@ -210,9 +210,9 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	if(pkCoreMesh == NULL)
 		return;
 	
-	vector<Mad_Face>*		pkFace	= pkCoreMesh->GetFacesPointer();
-	vector<Vector3>*		pkVertex = (*pkCoreMesh->GetVertexFramePointer())[0].GetVertexPointer();
-	vector<Vector3>*		pkNormal = (*pkCoreMesh->GetVertexFramePointer())[0].GetNormalPointer();
+	vector<Mad_Face>*		pkFace	= pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
+	vector<Vector3>*		pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+	vector<Vector3>*		pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
 
 	NaviMeshCell kNaviMesh;
 

@@ -202,8 +202,9 @@ float P_Tcs::GetBoundingRadius()
 	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 	if(mp)
 	{
-		//cout<<"got radius from mad"<<endl;
-		return mp->GetRadius();	
+		float frad = mp->GetRadius();
+		cout<<"got radius from mad " << frad << endl;
+		return frad;	
 	}
 	
 	return -1;
@@ -231,19 +232,19 @@ bool P_Tcs::SetupMeshData()
 				//cout<<"found mech"<<endl;
 				
 				m_pkMad = pkMP;
-				m_pkFaces = pkCoreMech->GetFacesPointer();
-				m_pkVertex = (*pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
-				m_pkNormal = (*pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
+				m_pkFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer();
+				m_pkVertex = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+				m_pkNormal = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
 				
 				m_fScale = pkMP->m_fScale;
 				
-				//found the mech return true
+				printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
 				return true;
 			}
 		}	
 	}
 	
-	//cout<<"error mech not found"<<endl;
+	cout<<"TCS: error mech NOT found"<<endl;
 	return false;
 }
 

@@ -222,7 +222,7 @@ int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 	if(kMadHandle.IsValid() == false)
 		return 0;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
-	return pkCore->GetMeshByID(iMeshID)->kHead.iNumOfSubMeshes;
+	return pkCore->GetMeshByID(iMeshID)->GetLODMesh(0)->kHead.iNumOfSubMeshes;
 }
 
 void Mad_Modell::SelectMesh(int iMeshID)
@@ -238,13 +238,13 @@ void Mad_Modell::SelectSubMesh(int iSubMeshID)
 	if(kMadHandle.IsValid() == false)
 		return;
 	m_iSubMesh =  iSubMeshID;
-	m_pkSubMesh = m_pkMesh->GetSubMesh(iSubMeshID);
+	m_pkSubMesh = m_pkMesh->GetLODMesh(0)->GetSubMesh(iSubMeshID);
 }
 
 
 int Mad_Modell::GetNumVertices()
 {
-	return m_pkMesh->kHead.iNumOfVertex;
+	return m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex;
 }
 
 int Mad_Modell::GetNumFaces()
@@ -283,18 +283,18 @@ int Mad_Modell::GetTextureID()
 
 char* Mad_Modell::GetTextureName()
 {
-	return m_pkMesh->GetTextureName(m_pkSubMesh->iTextureIndex);
+	return m_pkMesh->GetLODMesh(0)->GetTextureName(m_pkSubMesh->iTextureIndex);
 }
 
 Mad_CoreTexture* Mad_Modell::GetTextureInfo()
 {
-	return m_pkMesh->GetTextureInfo(m_pkSubMesh->iTextureIndex);
+	return m_pkMesh->GetLODMesh(0)->GetTextureInfo(m_pkSubMesh->iTextureIndex);
 
 }
 
 void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 {
-	if(pkMesh->bNotAnimated == false)
+/*	if(pkMesh->bNotAnimated == false)
 		return;
 	
 	int iListID;
@@ -326,7 +326,7 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 
 	cout << "List Created: " << iListID << endl;
 	pkMesh->SetDisplayID(iListID);
-
+*/
 }
 
 void Mad_Modell::LoadTextures()
@@ -351,7 +351,7 @@ void Mad_Modell::LoadTextures()
 			
 			sprintf(szFullTexName,"data/material/%s.zmt",pkTexInfo->ucTextureName);
 
-			 m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
+			 m_pkMesh->GetLODMesh(0)->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
 			}
 		}
 }
@@ -447,7 +447,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
 					}
 				else {
-					pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
 					}
 				
 				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());				
@@ -486,7 +486,7 @@ void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 
 	// Draw All Normals.
 	glBegin(GL_LINES);
-	for(i=0; i<m_pkMesh->kHead.iNumOfVertex; i++) {
+	for(i=0; i<m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
 		Vector3 Vert = pkVertex[i];
 		Vector3 Norm = pkNormals[i];
 		glVertex3f(Vert.x, Vert.y, Vert.z);
@@ -500,7 +500,7 @@ void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 	glPointSize (3.0f);
 	glBegin(GL_POINTS);
 	glColor3f (0, 0.8, 0);	
-	for(i=0; i<m_pkMesh->kHead.iNumOfVertex; i++) {
+	for(i=0; i<m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
 		Vector3 Vert = pkVertex[i];
 		glVertex3f(Vert.x, Vert.y, Vert.z);
 		}

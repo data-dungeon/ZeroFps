@@ -731,6 +731,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	
 	Vector3 verts[3];	
 	float d;
+
 	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
 	{
 		
@@ -738,7 +739,6 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		verts[1] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
 		verts[2] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 	
-		
 		if(TestSphereVSPolygon(verts,pkSphere))
 		{	
 			d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();

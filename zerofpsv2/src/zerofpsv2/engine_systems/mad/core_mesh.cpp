@@ -1,87 +1,15 @@
 #include "mad_core.h"
 
-
-Mad_CoreMesh::Mad_CoreMesh()
+Mad_RawMesh::Mad_RawMesh()
 {
 	Clear();
 }
 
-Mad_CoreMesh::~Mad_CoreMesh()
-{
-
-}
-
-void Mad_CoreMesh::Clear(void)
-{
-	strcpy(m_acName, "");
-	kHead.iNumOfAnimation = 0;
-	kHead.iNumOfFaces = 0;
-	kHead.iNumOfFrames = 0;
-	kHead.iNumOfSubMeshes = 0;
-	kHead.iNumOfTextures = 0;
-	kHead.iNumOfVertex = 0;
-	kHead.iVersionNum = 0;
-
-	bNotAnimated = false;
-	iDisplayID = -1;
-
-	akTextureCoo.clear();
-	akFaces.clear();
-	akFrames.clear();
-	akSubMeshes.clear();
-	akAnimation.clear();
-	akBoneConnections.clear();
-}
-
-void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
-{
-	strcpy(m_acName, kOther.m_acName);
-	kHead.iNumOfAnimation	= kOther.kHead.iNumOfAnimation;
-	kHead.iNumOfFaces		= kOther.kHead.iNumOfFaces;
-	kHead.iNumOfFrames		= kOther.kHead.iNumOfFrames;
-	kHead.iNumOfSubMeshes	= kOther.kHead.iNumOfSubMeshes;
-	kHead.iNumOfTextures	= kOther.kHead.iNumOfTextures;
-	kHead.iNumOfVertex		= kOther.kHead.iNumOfVertex;
-	kHead.iVersionNum		= kOther.kHead.iVersionNum;
-
-	akTextureCoo = kOther.akTextureCoo;
-	akFaces = kOther.akFaces;
-	akFrames = kOther.akFrames;
-	akSubMeshes = kOther.akSubMeshes;
-	akAnimation = kOther.akAnimation;
-	akBoneConnections = kOther.akBoneConnections;
-}
-
-void Mad_CoreMesh::CreateRigidBoneConnections(int iBoneId)
-{
-	akBoneConnections.resize(kHead.iNumOfVertex);
-	for(unsigned int i=0; i<akBoneConnections.size(); i++)
-		akBoneConnections[i] = iBoneId;
-
-}
-
-
-void Mad_CoreMesh::ShowInfo(void)
-{
-	cout << "Textures: " << kHead.iNumOfTextures << endl;
-	cout << "Vertex: " << kHead.iNumOfVertex << endl;
-	cout << "Triangles: " << kHead.iNumOfFaces << endl;
-	cout << "Frames: " << kHead.iNumOfFrames << endl;
-	cout << "SubMesh: " << kHead.iNumOfSubMeshes << endl;
-	cout << "Animations: " << kHead.iNumOfAnimation << endl;
-
-	for (unsigned int i=0; i<akAnimation.size(); i++) 
-	{
-		cout << " " << i << " : " << akAnimation[i].Name << " : Frames = " << akAnimation[i].KeyFrame.size() << endl;
-	}
-}
-
-
-void Mad_CoreMesh::Save(ZFVFile* pkZFile)
+void Mad_RawMesh::Save(ZFVFile* pkZFile)
 {
 	kHead.iNumOfAnimation = akAnimation.size();
 
-	ShowInfo();
+//	ShowInfo();
 
 	// Write Head.
 	pkZFile->Write(&kHead,sizeof(Mad_CoreMeshHeader),1);
@@ -144,7 +72,7 @@ void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 	
 }
 
-void Mad_CoreMesh::Load(ZFVFile* pkZFile)
+void Mad_RawMesh::Load(ZFVFile* pkZFile)
 {
 	int i,j;
 	// Read head
@@ -254,7 +182,254 @@ void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 
 }
 
-Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName)
+
+void Mad_RawMesh::Clear(void)
+{
+	kHead.iNumOfAnimation = 0;
+	kHead.iNumOfFaces = 0;
+	kHead.iNumOfFrames = 0;
+	kHead.iNumOfSubMeshes = 0;
+	kHead.iNumOfTextures = 0;
+	kHead.iNumOfVertex = 0;
+	kHead.iVersionNum = 0;
+
+//	iDisplayID = -1;
+
+	akTextureCoo.clear();
+	akFaces.clear();
+	akFrames.clear();
+	akSubMeshes.clear();
+	akAnimation.clear();
+	akBoneConnections.clear();
+}
+
+void Mad_RawMesh::operator=(const Mad_RawMesh& kOther)
+{
+	kHead.iNumOfAnimation	= kOther.kHead.iNumOfAnimation;
+	kHead.iNumOfFaces		= kOther.kHead.iNumOfFaces;
+	kHead.iNumOfFrames		= kOther.kHead.iNumOfFrames;
+	kHead.iNumOfSubMeshes	= kOther.kHead.iNumOfSubMeshes;
+	kHead.iNumOfTextures	= kOther.kHead.iNumOfTextures;
+	kHead.iNumOfVertex		= kOther.kHead.iNumOfVertex;
+	kHead.iVersionNum		= kOther.kHead.iVersionNum;
+
+	akTextureCoo = kOther.akTextureCoo;
+	akFaces = kOther.akFaces;
+	akFrames = kOther.akFrames;
+	akSubMeshes = kOther.akSubMeshes;
+	akAnimation = kOther.akAnimation;
+	akBoneConnections = kOther.akBoneConnections;
+}
+
+void Mad_RawMesh::ResizeTextures(int iNewSize)
+{
+	akTextures.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeTexturesCoo(int iNewSize)
+{
+	akTextureCoo.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeFaces(int iNewSize)
+{
+	akFaces.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeFrames(int iNewSize)
+{
+	akFrames.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeSubMesh(int iNewSize)
+{
+	akSubMeshes.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeAnimations(int iNewSize)
+{
+	akAnimation.resize(iNewSize);
+}
+
+void Mad_RawMesh::ResizeBoneConnections(int iNewSize)
+{
+	akBoneConnections.resize(iNewSize);
+}
+
+int Mad_RawMesh::SizeTextures()
+{
+	return akTextures.size();
+}
+
+int Mad_RawMesh::SizeTexturesCoo()
+{
+	return akTextureCoo.size();
+}
+
+int Mad_RawMesh::SizeFaces()
+{
+	return akFaces.size();
+}
+int Mad_RawMesh::SizeFrames()
+{
+	return akFrames.size();
+}
+
+int Mad_RawMesh::SizeSubMesh()
+{
+	return akSubMeshes.size();
+}
+
+int Mad_RawMesh::SizeAnimations()
+{
+	return akAnimation.size();
+}
+
+int Mad_RawMesh::SizeBoneConnections()
+{
+	return akBoneConnections.size();
+}
+
+void Mad_RawMesh::PushBackTexture(Mad_CoreTexture kTexture)
+{
+	akTextures.push_back(kTexture);
+}
+
+void Mad_RawMesh::PushBackTextureCoo(Mad_TextureCoo kTextureCoo)
+{
+	akTextureCoo.push_back(kTextureCoo);
+}
+
+void Mad_RawMesh::PushBackFaces(Mad_Face kFace)
+{
+	akFaces.push_back(kFace);
+}
+
+void Mad_RawMesh::PushBackFrames(Mad_CoreVertexFrame kFrames)
+{
+	akFrames.push_back(kFrames);
+
+}
+
+void Mad_RawMesh::PushBackSubMeshes(Mad_CoreSubMesh kSubMesh)
+{
+	akSubMeshes.push_back(kSubMesh);
+
+}
+
+void Mad_RawMesh::PushBackAnimation(Mad_CoreMeshAnimation kAnimation)
+{
+	akAnimation.push_back(kAnimation);
+
+}
+
+void Mad_RawMesh::PushBackBoneConnection(int iBoneConnection)
+{
+	akBoneConnections.push_back(iBoneConnection);
+
+}
+
+int Mad_RawMesh::NumOfVertexPerFrame()
+{
+	return akFrames[0].akVertex.size();
+}
+
+void Mad_RawMesh::FlipFaces()
+{
+	int i0,i1,i2;
+
+	for(unsigned int i =0; i < akFaces.size(); i++) {
+		i0 = akFaces[i].iIndex[0];
+		i1 = akFaces[i].iIndex[1];
+		i2 = akFaces[i].iIndex[2];
+
+		akFaces[i].iIndex[0] = i2;
+		akFaces[i].iIndex[1] = i1;
+		akFaces[i].iIndex[2] = i0;
+		}
+}
+
+
+
+int Mad_RawMesh::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreMesh);
+
+	iSizeInBytes += sizeof(Mad_CoreTexture) * akTextures.size();
+	iSizeInBytes += sizeof(Mad_TextureCoo)  * akTextureCoo.size();
+	iSizeInBytes += sizeof(Mad_Face)			 * akFaces.size();
+	
+	for(unsigned int iVf = 0; iVf < akFrames.size(); iVf++)
+		iSizeInBytes += akFrames[iVf].GetSizeInBytes();
+
+	iSizeInBytes += sizeof(Mad_CoreSubMesh) * akSubMeshes.size();
+
+	for(unsigned int iMa = 0; iMa < akAnimation.size(); iMa++)
+		iSizeInBytes += akAnimation[iMa].GetSizeInBytes();
+
+	iSizeInBytes += sizeof(int) * akBoneConnections.size();
+
+	return iSizeInBytes;
+}
+
+
+
+Mad_TextureCoo* Mad_RawMesh::GetTexCoo()
+{
+	return &akTextureCoo[0];
+
+}
+
+Mad_CoreSubMesh* Mad_RawMesh::GetSubMesh(int iSubMesh)
+{
+	return &akSubMeshes[iSubMesh];
+}
+
+Mad_Face* Mad_RawMesh::GetFace(int iFace)
+{
+	return &akFaces[iFace];
+}
+
+char* Mad_RawMesh::GetTextureName(int iTextureIndex)
+{
+	return akTextures[iTextureIndex].ucTextureName;
+}
+
+Mad_CoreTexture* Mad_RawMesh::GetTextureInfo(int iTextureIndex)
+{
+	return &akTextures[iTextureIndex];
+}
+
+void Mad_RawMesh::SetTextureID(int iTextureIndex, int iID)
+{
+	iTextureID[iTextureIndex] = iID;
+}
+
+int Mad_RawMesh::GetTextureID(int iTextureIndex)
+{
+	return iTextureID[iTextureIndex];
+}
+
+void Mad_RawMesh::SetTextureHandle(int iTextureIndex, string strName)
+{
+	akTexturesHandles[iTextureIndex].SetRes(strName);
+}
+
+ZFResourceHandle*	Mad_RawMesh::GetTextureHandle(int iTextureIndex)
+{
+	return &	akTexturesHandles[iTextureIndex];
+}
+
+void Mad_RawMesh::CreateRigidBoneConnections(int iBoneId)
+{
+	akBoneConnections.resize(kHead.iNumOfVertex);
+	for(unsigned int i=0; i<akBoneConnections.size(); i++)
+		akBoneConnections[i] = iBoneId;
+
+}
+
+Mad_CoreMeshAnimation*	Mad_RawMesh::GetAnimation(char* ucaName)
 {
 	vector<Mad_CoreMeshAnimation>::iterator it;
 
@@ -272,7 +447,32 @@ Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName)
 	return &akAnimation.back();
 }
 
-void Mad_CoreMesh::CreateVertexNormals()
+
+int	Mad_RawMesh::AddTexture(char* ucpTextureName)
+{
+	vector<Mad_CoreTexture>::iterator itTexture;
+	int iTextureIndex = 0;
+
+	char* ext = strstr(ucpTextureName, ".");
+	ext[0] = 0;
+
+
+	for(itTexture = akTextures.begin(); itTexture != akTextures.end(); itTexture++)
+	{
+		if(strcmp(itTexture->ucTextureName, ucpTextureName) == 0)
+			return iTextureIndex; 
+
+		iTextureIndex++;
+	}
+
+	Mad_CoreTexture madtex;
+	strcpy(madtex.ucTextureName, ucpTextureName);
+	akTextures.push_back(madtex);
+
+	return iTextureIndex; 
+}
+
+void Mad_RawMesh::CreateVertexNormals()
 {
 	Vector3 kSurfNormal;
 	Vector3 kA, kB;
@@ -310,11 +510,11 @@ void Mad_CoreMesh::CreateVertexNormals()
 		}
 }
 
-void Mad_CoreMesh::OptimizeSubMeshes()
+void Mad_RawMesh::OptimizeSubMeshes()
 {
 	if(akSubMeshes.size() < 2)	return;
 
-	cout << "OptimizeSubMeshes '" << m_acName  << "' " << akSubMeshes.size() << endl;
+//	cout << "OptimizeSubMeshes '" << m_acName  << "' " << akSubMeshes.size() << endl;
 
 	vector<Mad_CoreSubMesh>	akOldSubMesh;
 	akOldSubMesh = akSubMeshes;
@@ -352,34 +552,7 @@ void Mad_CoreMesh::OptimizeSubMeshes()
 		}
 }
 
-
-
-
-int	Mad_CoreMesh::AddTexture(char* ucpTextureName)
-{
-	vector<Mad_CoreTexture>::iterator itTexture;
-	int iTextureIndex = 0;
-
-	char* ext = strstr(ucpTextureName, ".");
-	ext[0] = 0;
-
-
-	for(itTexture = akTextures.begin(); itTexture != akTextures.end(); itTexture++)
-	{
-		if(strcmp(itTexture->ucTextureName, ucpTextureName) == 0)
-			return iTextureIndex; 
-
-		iTextureIndex++;
-	}
-
-	Mad_CoreTexture madtex;
-	strcpy(madtex.ucTextureName, ucpTextureName);
-	akTextures.push_back(madtex);
-
-	return iTextureIndex; 
-}
-
-void Mad_CoreMesh::SetTextureFlags(void)
+void Mad_RawMesh::SetTextureFlags(void)
 {
 	char* pkChar;
 
@@ -404,183 +577,307 @@ void Mad_CoreMesh::SetTextureFlags(void)
 }
 
 
-void Mad_CoreMesh::ResizeTextures(int iNewSize)
+
+
+
+
+
+
+
+
+Mad_RawMesh* Mad_CoreMesh::GetLODMesh(int iId)
 {
-	akTextures.resize(iNewSize);
+	return &m_kLodMesh[0];
 }
 
-void Mad_CoreMesh::ResizeTexturesCoo(int iNewSize)
+Mad_CoreMesh::Mad_CoreMesh()
 {
-	akTextureCoo.resize(iNewSize);
+	Clear();
 }
 
-void Mad_CoreMesh::ResizeFaces(int iNewSize)
+Mad_CoreMesh::~Mad_CoreMesh()
 {
-	akFaces.resize(iNewSize);
-}
-
-void Mad_CoreMesh::ResizeFrames(int iNewSize)
-{
-	akFrames.resize(iNewSize);
-}
-
-void Mad_CoreMesh::ResizeSubMesh(int iNewSize)
-{
-	akSubMeshes.resize(iNewSize);
-}
-
-void Mad_CoreMesh::ResizeAnimations(int iNewSize)
-{
-	akAnimation.resize(iNewSize);
-}
-
-void Mad_CoreMesh::ResizeBoneConnections(int iNewSize)
-{
-	akBoneConnections.resize(iNewSize);
-}
-
-int Mad_CoreMesh::SizeTextures()
-{
-	return akTextures.size();
-}
-
-int Mad_CoreMesh::SizeTexturesCoo()
-{
-	return akTextureCoo.size();
-}
-
-int Mad_CoreMesh::SizeFaces()
-{
-	return akFaces.size();
-}
-int Mad_CoreMesh::SizeFrames()
-{
-	return akFrames.size();
-}
-
-int Mad_CoreMesh::SizeSubMesh()
-{
-	return akSubMeshes.size();
-}
-
-int Mad_CoreMesh::SizeAnimations()
-{
-	return akAnimation.size();
-}
-
-int Mad_CoreMesh::SizeBoneConnections()
-{
-	return akBoneConnections.size();
-}
-
-void Mad_CoreMesh::PushBackTexture(Mad_CoreTexture kTexture)
-{
-	akTextures.push_back(kTexture);
-}
-
-void Mad_CoreMesh::PushBackTextureCoo(Mad_TextureCoo kTextureCoo)
-{
-	akTextureCoo.push_back(kTextureCoo);
-}
-
-void Mad_CoreMesh::PushBackFaces(Mad_Face kFace)
-{
-	akFaces.push_back(kFace);
-}
-
-void Mad_CoreMesh::PushBackFrames(Mad_CoreVertexFrame kFrames)
-{
-	akFrames.push_back(kFrames);
 
 }
 
-void Mad_CoreMesh::PushBackSubMeshes(Mad_CoreSubMesh kSubMesh)
+void Mad_CoreMesh::Clear(void)
 {
-	akSubMeshes.push_back(kSubMesh);
+	strcpy(m_acName, "");
+/*	kHead.iNumOfAnimation = 0;
+	kHead.iNumOfFaces = 0;
+	kHead.iNumOfFrames = 0;
+	kHead.iNumOfSubMeshes = 0;
+	kHead.iNumOfTextures = 0;
+	kHead.iNumOfVertex = 0;
+	kHead.iVersionNum = 0;*/
 
+//	bNotAnimated = false;
+//	iDisplayID = -1;
+	m_kLodMesh.clear();
+
+/*	akTextureCoo.clear();
+	akFaces.clear();
+	akFrames.clear();
+	akSubMeshes.clear();
+	akAnimation.clear();
+	akBoneConnections.clear();*/
 }
 
-void Mad_CoreMesh::PushBackAnimation(Mad_CoreMeshAnimation kAnimation)
+void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
 {
-	akAnimation.push_back(kAnimation);
+	strcpy(m_acName, kOther.m_acName);
+	m_kLodMesh = kOther.m_kLodMesh;
 
+/*	kHead.iNumOfAnimation	= kOther.kHead.iNumOfAnimation;
+	kHead.iNumOfFaces		= kOther.kHead.iNumOfFaces;
+	kHead.iNumOfFrames		= kOther.kHead.iNumOfFrames;
+	kHead.iNumOfSubMeshes	= kOther.kHead.iNumOfSubMeshes;
+	kHead.iNumOfTextures	= kOther.kHead.iNumOfTextures;
+	kHead.iNumOfVertex		= kOther.kHead.iNumOfVertex;
+	kHead.iVersionNum		= kOther.kHead.iVersionNum;
+
+	akTextureCoo = kOther.akTextureCoo;
+	akFaces = kOther.akFaces;
+	akFrames = kOther.akFrames;
+	akSubMeshes = kOther.akSubMeshes;
+	akAnimation = kOther.akAnimation;
+	akBoneConnections = kOther.akBoneConnections;*/
 }
 
-void Mad_CoreMesh::PushBackBoneConnection(int iBoneConnection)
-{
-	akBoneConnections.push_back(iBoneConnection);
 
+
+void Mad_CoreMesh::ShowInfo(void)
+{
+	cout << "Mad_CoreMesh::ShowInfo" << endl;
+
+/*	cout << "Textures: " << kHead.iNumOfTextures << endl;
+	cout << "Vertex: " << kHead.iNumOfVertex << endl;
+	cout << "Triangles: " << kHead.iNumOfFaces << endl;
+	cout << "Frames: " << kHead.iNumOfFrames << endl;
+	cout << "SubMesh: " << kHead.iNumOfSubMeshes << endl;
+	cout << "Animations: " << kHead.iNumOfAnimation << endl;
+
+	for (unsigned int i=0; i<akAnimation.size(); i++) 
+	{
+		cout << " " << i << " : " << akAnimation[i].Name << " : Frames = " << akAnimation[i].KeyFrame.size() << endl;
+	}*/
 }
 
-int Mad_CoreMesh::NumOfVertexPerFrame()
+
+void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 {
-	return akFrames[0].akVertex.size();
-}
+	m_kLodMesh[0].Save(pkZFile);
 
-Mad_TextureCoo* Mad_CoreMesh::GetTexCoo()
-{
-	return &akTextureCoo[0];
+/*	kHead.iNumOfAnimation = akAnimation.size();
 
-}
+	ShowInfo();
 
-Mad_CoreSubMesh* Mad_CoreMesh::GetSubMesh(int iSubMesh)
-{
-	return &akSubMeshes[iSubMesh];
-}
+	// Write Head.
+	pkZFile->Write(&kHead,sizeof(Mad_CoreMeshHeader),1);
+	//fwrite(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
 
-Mad_Face* Mad_CoreMesh::GetFace(int iFace)
-{
-	return &akFaces[iFace];
-}
+	// Write SubMesh
+	pkZFile->Write(&akSubMeshes[0],sizeof(Mad_CoreSubMesh),kHead.iNumOfSubMeshes);
+	//fwrite(&akSubMeshes[0],sizeof(Mad_CoreSubMesh),kHead.iNumOfSubMeshes,fp);
 
-char* Mad_CoreMesh::GetTextureName(int iTextureIndex)
-{
-	return akTextures[iTextureIndex].ucTextureName;
-}
 
-Mad_CoreTexture* Mad_CoreMesh::GetTextureInfo(int iTextureIndex)
-{
-	return &akTextures[iTextureIndex];
-}
+	// Write Textures
+	pkZFile->Write((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures);
+	//fwrite((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures,fp);
 
-void Mad_CoreMesh::SetTextureID(int iTextureIndex, int iID)
-{
-	iTextureID[iTextureIndex] = iID;
-}
+	// Write Texture Coo
+	pkZFile->Write((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex);
+	//fwrite((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex,fp);
 
-int Mad_CoreMesh::GetTextureID(int iTextureIndex)
-{
-	return iTextureID[iTextureIndex];
-}
+	// Write Bone Vikter
+	pkZFile->Write((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex);
+	//fwrite((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex,fp);
 
-void Mad_CoreMesh::SetTextureHandle(int iTextureIndex, string strName)
-{
-	akTexturesHandles[iTextureIndex].SetRes(strName);
-}
-
-ZFResourceHandle*	Mad_CoreMesh::GetTextureHandle(int iTextureIndex)
-{
-	return &	akTexturesHandles[iTextureIndex];
-}
-
-void Mad_CoreMesh::FlipFaces()
-{
-	int i0,i1,i2;
-
-	for(unsigned int i =0; i < akFaces.size(); i++) {
-		i0 = akFaces[i].iIndex[0];
-		i1 = akFaces[i].iIndex[1];
-		i2 = akFaces[i].iIndex[2];
-
-		akFaces[i].iIndex[0] = i2;
-		akFaces[i].iIndex[1] = i1;
-		akFaces[i].iIndex[2] = i0;
+	// Write Alla vertex Frames.
+	int size;
+	for(int i=0; i<kHead.iNumOfFrames; i++) {
+		size = akFrames[i].akVertex.size();
+		pkZFile->Write(&akFrames[i].akVertex[0],sizeof(Vector3),kHead.iNumOfVertex);
+		//fwrite(&akFrames[i].akVertex[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
+		size = akFrames[i].akNormal.size();
+		pkZFile->Write(&akFrames[i].akNormal[0],sizeof(Vector3),kHead.iNumOfVertex);
+		//fwrite(&akFrames[i].akNormal[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
 		}
+
+	// Write triangles.
+	pkZFile->Write(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces);
+	//fwrite(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces,fp);
+
+	// Write Animations.
+	int iNumOfAnimations = this->akAnimation.size();
+	pkZFile->Write(&iNumOfAnimations,sizeof(int), 1 );
+	//fwrite(&iNumOfAnimations,sizeof(int), 1 ,fp);
+
+	vector<Mad_CoreMeshAnimation>::iterator		itAnim;
+	vector<Mad_CoreKeyFrame>::iterator		itKeyF;
+
+	for(itAnim = akAnimation.begin(); itAnim != akAnimation.end(); itAnim++)
+	{
+		pkZFile->Write(itAnim->Name,sizeof(char), 64);
+		//fwrite(itAnim->Name,sizeof(char), 64 ,fp);
+		int iNumOfKeyFrames = itAnim->KeyFrame.size();
+		pkZFile->Write(&iNumOfKeyFrames,sizeof(int), 1);
+		//fwrite(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
+		
+		for(itKeyF = itAnim->KeyFrame.begin(); itKeyF != itAnim->KeyFrame.end(); itKeyF++)
+		{
+			pkZFile->Write(&itKeyF->iVertexFrame,sizeof(int), 1);
+			//fwrite(&itKeyF->iVertexFrame,sizeof(int), 1 ,fp);
+		}
+	}*/
+	
 }
+
+void Mad_CoreMesh::Load(ZFVFile* pkZFile)
+{
+	Mad_RawMesh kRMesh;
+	m_kLodMesh.push_back(kRMesh);
+	m_kLodMesh[0].Load(pkZFile);
+
+
+/*	int i,j;
+	// Read head
+	pkZFile->Read(&kHead,sizeof(Mad_CoreMeshHeader),1);
+	//fread(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
+
+	// Read SubMesh
+	for(i = 0; i<kHead.iNumOfSubMeshes; i++) {
+		Mad_CoreSubMesh	kSubMesh;
+		pkZFile->Read(&kSubMesh,sizeof(Mad_CoreSubMesh),1);
+		//fread(&kSubMesh,sizeof(Mad_CoreSubMesh),1,fp);
+		akSubMeshes.push_back(kSubMesh);
+
+		}
+
+	// Read textures
+	for(i = 0; i<kHead.iNumOfTextures; i++) {
+		Mad_CoreTexture	kTexture;
+		pkZFile->Read(&kTexture,sizeof(Mad_CoreTexture),1);
+		//fread(&kTexture,sizeof(Mad_CoreTexture),1,fp);
+		akTextures.push_back(kTexture);
+		}
+//	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
+
+	// Read Texture Coo
+	for(i = 0; i<kHead.iNumOfVertex; i++) {
+		Mad_TextureCoo	kTexCoo;
+		pkZFile->Read(&kTexCoo,sizeof(Mad_TextureCoo),1);
+		//fread(&kTexCoo,sizeof(Mad_TextureCoo),1,fp);
+		akTextureCoo.push_back(kTexCoo);
+		}
+
+	// Read Bone Vikter
+	for(i = 0; i<kHead.iNumOfVertex; i++) {
+		int iBoneVikt;
+		pkZFile->Read(&iBoneVikt,sizeof(int),1);
+		//fread(&iBoneVikt,sizeof(int),1,fp);
+		akBoneConnections.push_back(iBoneVikt);
+		}
+
+
+	// Read Alla vertex Frames.
+	Vector3* pkVector = new Vector3 [kHead.iNumOfVertex];
+	for(i = 0; i<kHead.iNumOfFrames; i++) {
+		Mad_CoreVertexFrame	kVertexFrame;
+
+		pkZFile->Read(pkVector,sizeof(Vector3),kHead.iNumOfVertex);
+		//fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
+		for(j=0; j<kHead.iNumOfVertex; j++)
+			kVertexFrame.akVertex.push_back(pkVector[j]);
+
+		pkZFile->Read(pkVector,sizeof(Vector3),kHead.iNumOfVertex);
+		//fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
+		for(j=0; j<kHead.iNumOfVertex; j++)
+			kVertexFrame.akNormal.push_back(pkVector[j]);
+
+		akFrames.push_back(kVertexFrame);
+	}
+
+	delete [] pkVector;
+
+	// Read triangles.
+	for(i = 0; i<kHead.iNumOfFaces; i++) {
+		Mad_Face	kFace;
+		pkZFile->Read(&kFace, sizeof(Mad_Face),1);
+		//fread(&kFace, sizeof(Mad_Face),1,fp);
+		akFaces.push_back(kFace);
+
+		}
+
+	// Read Animations.
+	int iNumOfAnimations;
+	pkZFile->Read(&iNumOfAnimations,sizeof(int), 1);
+	//fread(&iNumOfAnimations,sizeof(int), 1 ,fp);
+
+	Mad_CoreMeshAnimation kNyAnim;
+	Mad_CoreKeyFrame kNyKey;
+
+	for(int iA = 0; iA < iNumOfAnimations; iA++)
+	{
+		kNyAnim.Clear();
+		pkZFile->Read(kNyAnim.Name,sizeof(char), 64);
+		//fread(kNyAnim.Name,sizeof(char), 64 ,fp);
+
+		int iNumOfKeyFrames;
+		pkZFile->Read(&iNumOfKeyFrames,sizeof(int), 1);
+		//fread(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
+	
+		for(int iK = 0; iK < iNumOfKeyFrames; iK++ )
+		{
+			kNyKey.Clear();
+			pkZFile->Read(&kNyKey.iVertexFrame,sizeof(int), 1);
+			//fread(&kNyKey.iVertexFrame,sizeof(int), 1 ,fp);
+			kNyAnim.KeyFrame.push_back(kNyKey);
+		}
+
+		akAnimation.push_back(kNyAnim);
+	}
+
+/*	// Load Textures
+	char nisse[256];
+	for(i = 0; i< kHead.iNumOfTextures; i++) {
+		sprintf(nisse, "../data/textures/%s.bmp", akTextures[i].ucTextureName);
+//		cout << "Should Load: " << nisse << endl;
+//		aiTextureIndex[i] = pkTextureManger->Load(nisse,0);
+	}
+*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int Mad_CoreMesh::GetSizeInBytes()
 {
-	int iSizeInBytes = 0;
+	cout << "Mad_CoreMesh::GetSizeInBytes - NOT DONE" << endl;
+	return 0;
+
+/*	int iSizeInBytes = 0;
 	iSizeInBytes += sizeof(Mad_CoreMesh);
 
 	iSizeInBytes += sizeof(Mad_CoreTexture) * akTextures.size();
@@ -597,6 +894,6 @@ int Mad_CoreMesh::GetSizeInBytes()
 
 	iSizeInBytes += sizeof(int) * akBoneConnections.size();
 
-	return iSizeInBytes;
+	return iSizeInBytes;*/
 }
 

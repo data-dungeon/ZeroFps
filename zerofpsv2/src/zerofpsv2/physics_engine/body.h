@@ -74,7 +74,9 @@ class PHYSICSENGINE_API Body
 		bool SetMad(Mad_Core* pkMad,int iMesh);
 		void SetScalep(float* pfScale) { m_pfScale = pfScale;};
 		Mad_CoreMesh* GetMeshByID(Mad_Core* pkMad,int iMesh);
-		
+		Mad_RawMesh* GetLODMesh(Mad_CoreMesh* pkCoreMech,int iMesh);
+
+
 		Vector3 CalculateMassCenter();
 		float CalculateRadius();
 		
