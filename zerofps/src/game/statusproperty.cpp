@@ -21,7 +21,7 @@ void StatusProperty::Damage(float fDamage)
 		m_fArmor -= fDamage * m_fArmorModifier;		
 		
 		if(m_fArmor<0)
-			m_fHealth+=m_fArmor;
+			m_fHealth+=(m_fArmor/m_fArmorModifier) * m_fHealthModifier;
 	}
 
 	cout<<"armor "<<m_fArmor<<endl;
