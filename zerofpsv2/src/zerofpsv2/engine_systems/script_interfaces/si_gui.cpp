@@ -41,6 +41,24 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 // (6) int w, 
 // (7) int h, 
 // (8) unsigned long uiFlags
+
+/**	\fn CreateWndLua(iType, szWndName, szParentName, szLabel, iX, iY, iW, iH, iFlags)
+ 	\relates MistLandGuiScript
+	\brief Creates a window.
+
+	\param iType Desc
+	\param szWndName Desc
+	\param szParentName Desc
+	\param szLabel Desc
+	\param iX Desc
+	\param iY Desc
+	\param iW Desc
+	\param iH Desc
+	\param iFlags Desc
+
+	Creates a window in the GUI.	
+*/
+
 int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
@@ -206,6 +224,12 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 // ClearListbox
 // Parameters:
 // (0) char* resName of the Listbox
+
+/**	\fn ClearListbox( resName )
+ 	\relates MistLandGuiScript
+	\brief Clears a Listbox.
+	\param resName resName of the Listbox.
+*/
 int GuiAppLua::ClearListboxLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);

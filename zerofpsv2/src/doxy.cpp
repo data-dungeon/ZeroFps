@@ -1,4 +1,8 @@
-// File For DoxyDoc
+/*	File For DoxyDoc
+
+	This file contains nothing that need to be part of any build. It's only purpose is
+	to setup parameters for DoxyGen.
+*/
 
 /**
 	\defgroup ZeroFPS ZeroFPS
@@ -30,3 +34,21 @@
  
   This is the documentationen for the ZeroFps Engine, Tools and the game MistLand.
 */
+
+
+/**	\brief Class To Collect Script Functions,
+	\ingroup si
+
+*/
+class MistLandScript
+{
+	
+};
+
+/**	\brief Class To Collect Script Gui Functions,
+	\ingroup si
+*/
+class MistLandGuiScript
+{
+	
+};

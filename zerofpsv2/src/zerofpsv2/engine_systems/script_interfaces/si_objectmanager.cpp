@@ -7,14 +7,6 @@
 	Long Desc. 
 */
 
-/**	\brief Class To Collect Script Functions,
-	\ingroup si
-
-*/
-class MistLandScript
-{
-	
-};
 
 
 
@@ -104,12 +96,11 @@ void Pop()
 	g_pkReturnObject = g_pkReturnObjectBak;
 }
 
-/**	\page InitObject InitObject(ScripName)
 
-	Is used to create objects.
-
-   \param ScripName Name of script to be used to create object. If not given a empty object will be
-		created.
+/**	\fn InitObject(ScripName)
+ 	\relates MistLandScript
+   \brief Run a script to create objects.
+   \param ScripName Name of the script to run. If not given a empty object will be created.
 */
 int InitObjectLua(lua_State* pkLua)
 {
@@ -139,6 +130,10 @@ int InitObjectLua(lua_State* pkLua)
 	return 1;
 }	
 
+/**	\fn SetParentObject()
+ 	\relates MistLandScript
+	\brief Sets the last created object to be the active parent object.
+*/
 int SetParentObjectLua(lua_State* pkLua)
 {
 	if(!g_pkLastObject)
@@ -150,6 +145,11 @@ int SetParentObjectLua(lua_State* pkLua)
 
 	return 1;
 }
+
+/**	\fn AttachToParent()
+ 	\relates MistLandScript
+	\brief Sets the last created object to be a child to the active parent object,
+*/
 int AttachToParent(lua_State* pkLua)
 {
 	if(!g_pkLastObject)
@@ -165,6 +165,13 @@ int AttachToParent(lua_State* pkLua)
 	return 1;
 }	
 
+/**	\fn InitProperty(PropertyName)
+ 	\relates MistLandScript
+   \brief Gives a Entity a property.
+   \param PropertyName Name of property to assign to object.
+
+	Assigns the property with the def values to the last created object.	
+*/
 int InitPropertyLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
@@ -177,12 +184,17 @@ int InitPropertyLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 0, acName);
 
 	g_pkLastProperty = g_pkLastObject->AddProperty(acName);
-
-	//cout<<"Creating property in script: "<<acName<<endl;
-	
 	return 1;
 }	
 
+/**	\fn InitParameter(szName, szValue )
+ 	\relates MistLandScript
+   \brief Sets the value of a variable in a property.
+   \param szName Name of variable to set.
+   \param szValue Value to set variable to.
+
+	Sets the variable to a given value on the last created property.	
+*/
 int InitParameterLua(lua_State* pkLua)
 {
 	if(g_pkLastProperty == NULL)
@@ -197,17 +209,15 @@ int InitParameterLua(lua_State* pkLua)
 	char acData[50];
 	g_pkScript->GetArgString(pkLua, 1, (char*)acData);
 	
-
-
 	if(!g_pkLastProperty->SetValue((string)acName,(string)acData))
 		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
-
-	
-	//cout<<"Setting Parameter in script: "<<acName<<" to "<<acData<<endl;
-	
 	return 0;
 }	
 
+/**	\fn SetLocalPos(x,y,z)
+ 	\relates MistLandScript
+	\brief Sets the local pos of the last object.
+*/
 int SetLocalPosLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
@@ -224,21 +234,27 @@ int SetLocalPosLua(lua_State* pkLua)
 	
 	g_pkLastObject->SetLocalPosV(Vector3(x,y,z));
 	
-	//cout<<"Setting pos to "<<x<<" "<<y<<" "<<z<<endl;
 	return 0;
 }
+
+/**	\fn HaveRelativOri()
+ 	\relates MistLandScript
+	\brief Sets the last object to have relative orientation.
+*/
 
 int HaveRelativOriLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
-
 	
 	g_pkLastObject->SetRelativeOri(true);
-
 	return 0;
 }
 
+/**	\fn IsStatic()
+ 	\relates MistLandScript
+	\brief Sets the last created object to be static.
+*/
 int IsStaticLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
@@ -250,6 +266,10 @@ int IsStaticLua(lua_State* pkLua)
 	return 0;
 }
 
+/**	\fn SetReturnObject(x,y,z)
+ 	\relates MistLandScript
+	\brief Sets the last object to be the object to be returned as the new created object.
+*/
 int SetReturnObjectLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
@@ -261,6 +281,10 @@ int SetReturnObjectLua(lua_State* pkLua)
 }
 //----end of create
 
+/**	\fn Delete( Object )
+ 	\relates MistLandScript
+	\brief Delete the object given as a parameter.
+*/
 int DeleteLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -303,6 +327,9 @@ int PlayAnim(lua_State* pkLua)
 /**	\fn SetNextAnim(ObjectID, AnimName)
  	\relates MistLandScript
    \brief Sets the next animation for a object to play.
+
+	Sets the next animation to play on a object. Stops to looping of the currently playing animation
+	(if any) and then play the one given as a parameter. That animation will the loop. 
 */
 int SetNextAnim(lua_State* pkLua)
 {
@@ -352,7 +379,9 @@ int AddMesh(lua_State* pkLua)
    \param VariableName Name of variable.
 	\return Return Return value of variable
 
-	Get value of a double variable stored in Entity.
+	Get value of a double variable stored in Entity. The variable is saved with the object and it
+	can be used to save status flags used by the script. If no variable with the given name is 
+	found a value of 0.0 will be returned.
 */
 int GetLocalDouble(lua_State* pkLua)
 {
@@ -381,7 +410,8 @@ int GetLocalDouble(lua_State* pkLua)
    \param VariableName VariableName Name of variable.
    \param Value New value to set variable to.
 
-	Set value of a double variable stored in Entity.
+	Set value of a double variable stored in Entity. If the variable don't exist it will be
+	created.
 */
 
 
