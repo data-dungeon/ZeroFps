@@ -29,26 +29,32 @@ DMCharacterStats::DMCharacterStats()
 void DMCharacterStats::Randomize()
 {
 	FILE* pkFile;
-	vector<string> kNames;
-	vector<string>	kSNames;
+	static vector<string> kNames;
+	static vector<string> kSNames;
 
 	const int MAX_LINE = 127;
 	char strLine[128];
 
-	if((pkFile = fopen("names1.txt", "r"))) {
-		while (!feof(pkFile)) {
-			fgets(strLine, MAX_LINE, pkFile);
-			kNames.push_back(strLine);
+	if(kNames.empty())
+	{
+		if((pkFile = fopen("names1.txt", "r"))) {
+			while (!feof(pkFile)) {
+				fgets(strLine, MAX_LINE, pkFile);
+				kNames.push_back(strLine);
+			}
+			fclose(pkFile);
 		}
-		fclose(pkFile);
 	}
 
-	if((pkFile = fopen("names2.txt", "r"))) {
-		while (!feof(pkFile)) {
-			fgets(strLine, MAX_LINE, pkFile);
-			kSNames.push_back(strLine);
+	if(kSNames.empty())
+	{
+		if((pkFile = fopen("names2.txt", "r"))) {
+			while (!feof(pkFile)) {
+				fgets(strLine, MAX_LINE, pkFile);
+				kSNames.push_back(strLine);
+			}
+			fclose(pkFile);
 		}
-		fclose(pkFile);
 	}
 
 	if(!(kNames.empty() || kSNames.empty()))
