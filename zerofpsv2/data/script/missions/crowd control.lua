@@ -17,6 +17,15 @@ pos3 = {-17.19, 0.78, 6.0};
 pos4 = {4.82, 0.66, 6.12};
 pos5 = {20.40, 1.58, 20.92};
 
+
+Skin1 = { tex1="dm/map_icons/a.bmp", tex2="0", tex3="0", tex4="0", 
+ tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+ bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+Skin2 = { tex1="dm/map_icons/policestation.bmp", tex2="0", tex3="0", tex4="0", 
+ tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+ bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
 MissionText = 
 { 
 	short = "Crowd control\n\nHelp the police to stop a riot of unhappy people.",
@@ -50,6 +59,12 @@ function OnMissionStart()
 
 	TempDoor[1] = RunScript("data/script/objects/dm/t_door.lua",-1, {-51.37, 1.00, 9.9});
 	TempDoor[2] = RunScript("data/script/objects/dm/t_door.lua",-1, {-51.37, 1.00, 1.7});
+
+	HideAllMapIcons()
+	CreateWnd(4,"AMapLabel","MapWnd","",143,119,16,16,0)
+	ChangeSkin("AMapLabel","Skin1","Label")
+	CreateWnd(4,"PoliceStationMapLabel","MapWnd","",330,164,16,16,0)
+	ChangeSkin("PoliceStationMapLabel","Skin2","Label")
 
 end
 
