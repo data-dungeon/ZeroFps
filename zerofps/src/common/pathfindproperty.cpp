@@ -1,0 +1,30 @@
+// pathfindproperty.cpp: implementation of the PathFindProperty class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "pathfindproperty.h"
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+PathFindProperty::PathFindProperty()
+{
+
+}
+
+PathFindProperty::~PathFindProperty()
+{
+
+}
+
+void PathFindProperty::Update()
+{
+
+}
+
+void PathFindProperty::Init()
+{
+
+}
+
