@@ -28,6 +28,7 @@ struct Structure
 	unsigned char ucGiver;				// vilken struktur som producerad denna struktur
 	unsigned char ucTechLevel;			// vilken teknisk nivå denna ligger på.
 	unsigned char ucParent;				// vilken byggnad i samma tech level som tar en till nästa nivå.
+	unsigned char ucType;				// 0 = building, 1 = unit, 2 = weapon
 };
 
 class COMMON_API ConstructionManager  

@@ -80,6 +80,20 @@ void ConstructionManager::Init(char* szTechTreeINIFile)
 			kNewStructure.ucParent = (unsigned char) atoi(pkIni->GetValue(kSections[i].c_str(), "parent"));
 			kNewStructure.iCost = atoi(pkIni->GetValue(kSections[i].c_str(), "cost"));
 			
+			if(strcmp(pkIni->GetValue(kSections[i].c_str(), "type"), "building") == 0)
+				kNewStructure.ucType = 0;
+			else
+			if(strcmp(pkIni->GetValue(kSections[i].c_str(), "type"), "unit") == 0)
+				kNewStructure.ucType = 1;
+			else
+			if(strcmp(pkIni->GetValue(kSections[i].c_str(), "type"), "weapon") == 0)
+				kNewStructure.ucType = 2;
+			else
+			{
+				kNewStructure.ucType = 255;
+				printf("SOMETHING IS TERRIBLE WRONG!!\n\n\n\n\n\n\n");
+			}
+			
 			unsigned char structur_id = kNewStructure.ucID;
 			for(unsigned int j=0; j<kSections.size(); j++)
 			{

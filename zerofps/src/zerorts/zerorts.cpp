@@ -889,7 +889,6 @@ void ZeroRTS::SetupSpawnPoints()
 		{
 			m_kSpawnPoints.push_back(kObjects[i]->GetPos());
 			pkObjectMan->Delete(kObjects[i]);
-			printf("APAPAPA %i\n", i);
 		}
 	}
 

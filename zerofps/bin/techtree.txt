@@ -5,6 +5,7 @@ giver=-1
 level=0
 parent=0
 cost=100
+type=building
 
 [building1]
 name=ZeroRTSPowerPlant
@@ -13,6 +14,7 @@ giver=0
 level=1
 parent=1
 cost=100
+type=building
 
 [building2]
 name=ZeroRTSRadar
@@ -21,6 +23,7 @@ giver=1
 level=2
 parent=2
 cost=100
+type=building
 
 [building3]
 name=guard tower mg
@@ -29,6 +32,7 @@ giver=2
 level=3
 parent=3
 cost=100
+type=building
 
 [building4]
 name=guard tower heavy
@@ -37,6 +41,7 @@ giver=2
 level=3
 parent=3
 cost=100
+type=building
 	
 [building5]	
 name=guard tower missile
@@ -45,6 +50,7 @@ giver=2
 level=3
 parent=3
 cost=100
+type=building
 
 [building6]
 name=ap shells
@@ -53,6 +59,7 @@ giver=10
 level=6
 parent=11
 cost=100
+type=weapon
 	
 [building7]
 name=hw mg bullets
@@ -61,6 +68,7 @@ giver=10
 level=6
 parent=11
 cost=100 
+type=weapon
 
 [building8]
 name=ZeroRTSHeavyTank
@@ -70,6 +78,7 @@ parent=0
 level=6
 parent=11
 cost=100
+type=unit
 
 [building9]
 name=missile truck
@@ -78,6 +87,7 @@ giver=10
 level=6
 parent=11
 cost=100
+type=unit
 
 [building10]
 name=ZeroRTSWeaponFactory
@@ -86,6 +96,7 @@ giver=9
 level=5
 parent=10
 cost=100
+type=building
 
 [building11]
 name=jeep
@@ -94,6 +105,7 @@ giver=9
 level=5
 parent=10
 cost=100
+type=unit
 
 [building12]
 name=ZeroRTSLightTank
@@ -102,6 +114,7 @@ giver=9
 level=5
 parent=10
 cost=100
+type=unit
 
 [building13]
 name=ZeroRTSFactory
@@ -110,6 +123,7 @@ giver=1
 level=4
 parent=9
 cost=100
+type=building
 
 [building14]
 name=ZeroRTSBarack
@@ -118,6 +132,7 @@ giver=1
 level=7
 parent=17
 cost=100
+type=building
 	
 [building15]
 name=ZeroRTSTraining
@@ -126,6 +141,7 @@ giver=17
 level=8
 parent=18
 cost=100
+type=building
 
 [building16]
 name=navy seals training
@@ -134,6 +150,7 @@ giver=18
 level=9
 parent=19
 cost=100
+type=building
 
 [building17]
 name=officer
@@ -142,6 +159,7 @@ giver=18
 level=9
 parent=19
 cost=100
+type=unit
 
 [building18]
 name=mg infantry
@@ -150,6 +168,7 @@ giver=17
 level=8
 parent=18
 cost=100
+type=unit
 
 [building19]
 name=rocket infantry
@@ -158,6 +177,7 @@ giver=17
 level=8
 parent=18
 cost=100
+type=unit
 
 [building20]
 name=ZeroRTSShipYard
@@ -166,6 +186,7 @@ giver=1
 level=10
 parent=23
 cost=100
+type=building
 
 [building21]
 name=destroyer
@@ -174,6 +195,7 @@ giver=23
 level=11
 parent=24
 cost=100
+type=unit
 
 [building22]
 name=transport ship
@@ -182,6 +204,7 @@ giver=23
 level=11
 parent=24
 cost=100
+type=unit
 
 [building23]
 name=necular prupultion		
@@ -190,6 +213,7 @@ giver=23
 level=11
 parent=24
 cost=100
+type=building
 
 [building24]
 name=ZeroRTSSuply		
@@ -198,6 +222,7 @@ giver=0
 level=1
 parent=1
 cost=100
+type=building
 
 [building25]
 name=ZeroRTSEngineringCrew
@@ -206,6 +231,7 @@ giver=0
 level=1
 parent=1
 cost=100
+type=unit
 
 [building26]
 name=transport truck
@@ -214,3 +240,4 @@ giver=0
 parent=1
 level=1
 cost=100
+type=unit
