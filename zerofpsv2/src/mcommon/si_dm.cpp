@@ -69,6 +69,11 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// lua lua scripts
 	pkScript->ExposeFunction("RunScript", DMLua::RunScriptLua);	
 
+	// entity
+	pkScript->ExposeFunction("SetEntityVar", DMLua::SetEntityVarLua);	
+	pkScript->ExposeFunction("GetEntityVar", DMLua::GetEntityVarLua);
+	pkScript->ExposeFunction("AddToEntityVar", DMLua::AddToEntityVarLua);
+
 	cout << "DM LUA Scripts Loaded" << endl;
 
 }
@@ -832,6 +837,123 @@ int DMLua::RunScriptLua (lua_State* pkLua)
       
    } 
    return 0;  
+
+}
+
+// ------------------------------------------------------------------------------------------------
+
+// takes entityID, Key
+int DMLua::GetEntityVarLua (lua_State* pkLua)
+{
+	char cKey[255];
+	double dValue, dEntID;
+	
+	
+	if ( g_pkScript->GetNumArgs(pkLua) != 2 )
+	{
+		cout << "Warning! DMLua::GetEntityVarLua: Wrong number of arguments! Takes entityID and key(string)." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
+
+	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+
+	if ( pkEntity == 0)
+	{
+		cout << "Warning! DMLua::GetEntityVarLua: No entity found with that ID." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgString(pkLua, 1, cKey);
+
+	EntityVariable* pkEntVar = pkEntity->GetVar(string(cKey));
+
+	if ( pkEntVar == 0 )
+		dValue = 0;
+	else
+		dValue = pkEntVar->m_fValue;
+
+	g_pkScript->AddReturnValue(pkLua, dValue);
+
+	return 1;
+
+}
+
+// ------------------------------------------------------------------------------------------------
+
+// takes entityID, Key, value (double)
+int DMLua::SetEntityVarLua (lua_State* pkLua)
+{
+	char cKey[255];
+	double dValue, dEntID;
+	
+	
+	if ( g_pkScript->GetNumArgs(pkLua) != 3 )
+	{
+		cout << "Warning! DMLua::SetEntityVarLua: Wrong number of arguments! Takes entityID, key(string) and value(double)." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
+
+	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+
+	if ( pkEntity == 0)
+	{
+		cout << "Warning! DMLua::SetEntityVarLua: No entity found with that ID." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgString(pkLua, 1, cKey);
+	g_pkScript->GetArgNumber(pkLua, 2, &dValue);
+
+	pkEntity->SetVarDouble (string(cKey), dValue);
+
+	return 0;
+
+}
+
+// ------------------------------------------------------------------------------------------------
+
+// takes entityID, Key, value (double) to add
+int DMLua::AddToEntityVarLua (lua_State* pkLua)
+{
+	char cKey[255];
+	double dAddValue, dEntID;	
+	
+	if ( g_pkScript->GetNumArgs(pkLua) != 3 )
+	{
+		cout << "Warning! DMLua::AddToEntityVarLua: Wrong number of arguments! Takes entityID, key(string) and value(double)." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
+
+	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+
+	if ( pkEntity == 0)
+	{
+		cout << "Warning! DMLua::AddToEntityVarLua: No entity found with that ID." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgString(pkLua, 1, cKey);
+	g_pkScript->GetArgNumber(pkLua, 2, &dAddValue);
+
+	double dVar;
+
+	EntityVariable* pkEntVar = pkEntity->GetVar(string(cKey));
+
+	if ( pkEntVar == 0 )
+		dVar = dAddValue;
+	else
+		dVar = pkEntVar->m_fValue + dAddValue;
+
+
+	pkEntity->SetVarDouble (string(cKey), dVar);
+
+	return 0;
 
 }
 

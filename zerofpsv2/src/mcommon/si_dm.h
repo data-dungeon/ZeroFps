@@ -73,6 +73,11 @@ namespace DMLua
 	int MCOMMON_API SetVarLua(lua_State* pkLua);
 	int MCOMMON_API GetVarLua(lua_State* pkLua);
 
+	// entity
+	int MCOMMON_API SetEntityVarLua(lua_State* pkLua);
+	int MCOMMON_API GetEntityVarLua(lua_State* pkLua);
+	int MCOMMON_API AddToEntityVarLua(lua_State* pkLua);
+
 	// functions to get less code
 	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
 	Entity* GetHQEntity ();
