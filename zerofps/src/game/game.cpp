@@ -136,10 +136,16 @@ void Game::OnHud(void)
 			const int max_width = 100;
 			float fMod = (float) pkGuiMan->Wnd("helthbar_bk")->GetScreenRect().Width() / max_width;
 
-			if(*m_pfPlayerHealth >= 0)
-				pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*(*m_pfPlayerHealth)),10);
-			if(*m_pfPlayerArmor >= 0)
-				pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*(*m_pfPlayerArmor)),10);
+			float fHelth = *m_pfPlayerHealth;
+			float fArmor = *m_pfPlayerArmor;
+
+			if(fHelth < 0)
+				fHelth = 0;
+			if(fArmor < 0)
+				fArmor = 0;
+
+			pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*fHelth),10);
+			pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*fArmor),10);
 
 			pkFps->m_bGuiMode = false;
 			pkFps->ToggleGui();
