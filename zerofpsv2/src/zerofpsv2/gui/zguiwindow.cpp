@@ -425,8 +425,13 @@ void ZGuiWnd::SetText(char* szText, bool bResizeWnd)
 			usTextLength = m_pkFont->GetLength(szText);
 
 		int usFullsize = usTextLength;
+
+      int height = GetScreenRect().Height();
+
+      if(height < m_pkFont->m_iRowHeight)
+         height = m_pkFont->m_iRowHeight;
 		
-		Resize(usFullsize,16); 
+		Resize(usFullsize,height); 
 	}
 
 	ZGuiWnd* pkParent = GetParent();

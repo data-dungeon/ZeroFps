@@ -123,6 +123,12 @@
 				RelativePath=".\gui.cpp">
 			</File>
 			<File
+				RelativePath=".\gui_ingamescreen.cpp">
+			</File>
+			<File
+				RelativePath=".\gui_startscreen.cpp">
+			</File>
+			<File
 				RelativePath=".\mistclient.cpp">
 			</File>
 		</Filter>
