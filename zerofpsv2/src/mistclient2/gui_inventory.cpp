@@ -62,8 +62,6 @@ InventoryDlg::~InventoryDlg()
 
 void InventoryDlg::Open()
 {	
-	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
-
 	// load inventory
 	if(m_pkInventoryWnd == NULL)
 	{
@@ -146,14 +144,14 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
 			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
+				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
 			{
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
-					m_kPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
-					m_kPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
+					m_kItemWndPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
+					m_kItemWndPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
 
 					m_kMoveSlot.bIsInventoryItem = true;
 					m_kMoveSlot.m_iIndex = i; // select new item
@@ -184,7 +182,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{
 					g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
 					m_iSelItemID = m_vkInventoryItemList[i].iItemID;
-					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
+					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 				}
 
 				s_bRightMouseButtonPressed = true;
@@ -207,14 +205,14 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
 			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
+				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
 			{
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
-					m_kPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
-					m_kPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
+					m_kItemWndPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
+					m_kItemWndPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
 
 					m_kMoveSlot.bIsInventoryItem = false;
 					m_kMoveSlot.m_iIndex = i; // select new item
@@ -383,7 +381,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->GetSkin()->m_afBorderColor[2] = BD_B;
 
 		if(m_iSelItemID == vkItemList[i].m_iItemID)
-			pkNewSlot->GetSkin()->m_unBorderSize = 1;
+			pkNewSlot->GetSkin()->m_unBorderSize = 2;
 
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
@@ -586,13 +584,13 @@ void InventoryDlg::OnDropItem()
 		{
 			if(m_kMoveSlot.bIsInventoryItem)
 			{
-				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kPosBeforeMove.x, 
-					m_kPosBeforeMove.y, false, true);		
+				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+					m_kItemWndPosBeforeMove.y, false, true);		
 			}
 			else
 			{
-				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kPosBeforeMove.x, 
-					m_kPosBeforeMove.y, false, true);	
+				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+					m_kItemWndPosBeforeMove.y, false, true);	
 			}
 		}
 	}

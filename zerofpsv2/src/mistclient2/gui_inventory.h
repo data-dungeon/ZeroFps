@@ -80,11 +80,8 @@ private:
 	int m_iSlotsHorzContainer;
 	int m_iSlotsVertContainer;
 	
-
-	Point m_kPosBeforeMove;
+	Point m_kItemWndPosBeforeMove; // fönster koordinater
 	
-	bool m_bGuiCaptureBeforOpen;
-
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
 
