@@ -1,1 +1,1 @@
-g++ *.o -pg -o ../../bin/game -L../../bin/ -lbasic -lengine -lrender -lscript -lgui -lglut -L/usr/X11R6/lib
+g++ *.o -o ../../bin/game -L../../bin/ -lbasic -lengine -lrender -lscript -lgui -lglut -L/usr/X11R6/lib

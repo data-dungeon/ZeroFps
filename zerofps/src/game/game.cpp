@@ -14,7 +14,7 @@ void Game::OnInit()
 	pkConsole->Printf("--------------------------------");
 	pkConsole->Printf(" Use load [map] to load a map");
 	
-	SetUpMenuScreen();
+	SetUpMenuScreen();			
 }
 
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) 
@@ -168,16 +168,6 @@ void Game::Input()
 		if(!m_pkScript->RunScript(szFile))
 			printf("Failed to run script %s.\n", szFile);
 	}
-
-	/*
-		//Get mouse x,y		
-		int x,z;		
-		pkInput->RelMouseXY(x,z);
-
-		//rotate the camera		
-		pkFps->GetCam()->GetRot().x+=z/5.0;
-		pkFps->GetCam()->GetRot().y+=x/5.0;
-	*/
 }
 
 void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -222,8 +212,7 @@ void Game::RegisterPropertys()
 
 void Game::SetUpMenuScreen()
 {
-//	pkLevelMan->LoadLevel("menu");
-	pkLevelMan->LoadLevel("adaptors");
+	pkLevelMan->LoadLevel("adaptors");	
 	
 	m_pkCamera->GetPos().Set(18,7,-130);	
 	m_pkCamera->GetRot().Set(21,360,0);	
@@ -232,6 +221,7 @@ void Game::SetUpMenuScreen()
 	pkFps->m_pkAudioMan->PlayMusic();
 
 	m_iGameState=GAME_STATE_MENU;
+
 }
 
 
@@ -246,6 +236,7 @@ void Game::SetupLevel()
 	{
 		if((*it)->GetName() == "PLAYER_SPAWN_POINT")
 		{
+			
 			//player
 			m_pkPlayer=new PlayerObject(pkLevelMan->GetHeightMap(),pkInput);
 			m_pkPlayer->GetPos() = (*it)->GetPos();
