@@ -23,8 +23,10 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	
-	Reset();
 	
+	Reset();
+		
+	//create
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
 	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
@@ -34,6 +36,9 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("IsStatic",				ObjectManagerLua::IsStaticLua);		
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
+	//----
+	
+	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
 
 	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
 	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
@@ -213,6 +218,25 @@ int ObjectManagerLua::SetReturnObjectLua(lua_State* pkLua)
 
 	return 0;
 }
+//----end of create
+
+int ObjectManagerLua::DeleteLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+		return 0;
+	
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	
+	
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dTemp);	
+	if(pkObject)
+		g_pkObjMan->Delete(pkObject);
+	
+	
+	return 0;
+}
+
 
 int ObjectManagerLua::PlayAnim(lua_State* pkLua)
 {

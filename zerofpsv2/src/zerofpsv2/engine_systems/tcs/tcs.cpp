@@ -43,7 +43,7 @@ void Tcs::AddBody(P_Tcs* pkPTcs)
 	}
 	
 	m_kBodys.push_back(pkPTcs);
-	cout<<"boddy added"<<endl;
+	//cout<<"boddy added"<<endl;
 }
 void Tcs::RemoveBody(P_Tcs* pkPTcs)
 {
@@ -54,7 +54,7 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 			m_kBodys[i]=m_kBodys.back();			//chacke place whit bak elment 
 			m_kBodys.pop_back();
 			
-			cout<<"body removed"<<endl;			
+			//cout<<"body removed"<<endl;			
 			return;
 		}
 	}

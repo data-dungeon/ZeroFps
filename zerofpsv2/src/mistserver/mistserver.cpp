@@ -384,9 +384,14 @@ void MistServer::Input()
 			{
 				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
+					
 					m_fClickDelay = pkFps->GetTicks();						
 					m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-					RotateActiveZoneObject();
+					
+					ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+					if(zd)
+						if(zd->m_bUnderContruction)					
+							RotateActiveZoneObject();
 				}
 			}
 			
@@ -775,8 +780,12 @@ void MistServer::AddZone()
 	if(id != -1)
 	{
 		pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
+	
+		pkObjectMan->SetUnderConstruction(id);
 	}	
 
+	
+	
 	
 	SetZoneEnviroment(m_strActiveEnviroment.c_str());
 }

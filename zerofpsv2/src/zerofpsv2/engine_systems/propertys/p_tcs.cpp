@@ -111,7 +111,7 @@ float P_Tcs::GetBoundingRadius()
 	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 	if(mp)
 	{
-		cout<<"got radius from mad"<<endl;
+		//cout<<"got radius from mad"<<endl;
 		return mp->GetRadius();	
 	}
 	
@@ -137,7 +137,7 @@ bool P_Tcs::SetupMeshData()
 			Mad_CoreMesh* pkCoreMech = pkCore->GetMeshByID(m_iModelID);					
 			if(pkCoreMech != NULL)		
 			{
-				cout<<"found mech"<<endl;
+				//cout<<"found mech"<<endl;
 				
 				m_pkFaces = pkCoreMech->GetFacesPointer();
 				m_pkVertex = (*pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
@@ -151,7 +151,7 @@ bool P_Tcs::SetupMeshData()
 		}	
 	}
 	
-	cout<<"error mech not found"<<endl;
+	//cout<<"error mech not found"<<endl;
 	return false;
 }
 

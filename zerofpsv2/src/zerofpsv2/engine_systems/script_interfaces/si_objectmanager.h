@@ -29,6 +29,7 @@ namespace ObjectManagerLua
 	extern Property*		g_pkLastPropertyBak;
 	extern Entity*			g_pkReturnObjectBak;
 
+	//create funktions
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);
@@ -41,9 +42,14 @@ namespace ObjectManagerLua
 	
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API IsStaticLua(lua_State* pkLua);		
+	//---
+
+	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);		
 
 	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
+	
+	
 };
 
 #endif // #ifndef _OBJECTMANAGER_SCRIPTINTERFACE_H_
