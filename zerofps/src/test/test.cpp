@@ -25,9 +25,11 @@ void Test::OnInit(void) {
 	test->GenerateNormals();
 	test->GenerateTextures();
 
-	test->SetPosition(Vector3(0,-4,0));
+	test->SetPosition(Vector3(20,-4,0));
 	
-//	pkFps->CamPos()=Vector3(100,5,100);
+
+//	test->Height(1.02,4.99);
+//	exit(0);
 
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
@@ -51,7 +53,6 @@ void Test::OnInit(void) {
   glEnable(GL_LIGHT0);
   
   pkRender->SetFog(Vector4(.2,.2,.6,1),0.50,200,300,true);
-  
 
 }
 
@@ -63,13 +64,21 @@ void Test::OnIdle(void) {
 
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
-
+	
+	float z=pkFps->m_kCamPos->z;
+	float x=pkFps->m_kCamPos->x;	
+	
+	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
+	glPushMatrix();
+		glTranslatef(260,test->Height(260,z),z);
+		glutSolidSphere(1,10,10);
+	glPopMatrix();
 
 //	pkRender->DrawSimpleWater(Vector3(180,3,200),30);
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
 //	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
-	cout<<pkFps->m_iFps<<endl;
+//	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	
@@ -85,28 +94,30 @@ void Test::OnHud(void) {
 
 
 void Test::input() {
+	float speed=0.025;
+
 	if(pkInput->Pressed(RIGHT)){
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.05;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.05;				
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
 	}
 	if(pkInput->Pressed(LEFT)){
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.05;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.05;				
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
 	}
 	
 	if(pkInput->Pressed(UP))	{
-			pkFps->CamPos().x+=cos((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.05;			
-			pkFps->CamPos().z+=sin((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.05;			
+			pkFps->CamPos().x+=cos((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+			pkFps->CamPos().z+=sin((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
 	}					
 	if(pkInput->Pressed(DOWN))	{
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.05;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.05;
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
 
 	if(pkInput->Pressed(HOME))
-		pkFps->CamPos().y+=2*pkFps->GetFrameTime()*0.01;			
+		pkFps->CamPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(END))
-		pkFps->CamPos().y-=2*pkFps->GetFrameTime()*0.01;
+		pkFps->CamPos().y-=2*pkFps->GetFrameTime()*speed;
 
 
 	//Get mouse x,y		

@@ -25,8 +25,49 @@ void HeightMap::SetPosition(Vector3 kNewPos) {
 
 }
 
-float HeightMap::Height(int x,int z) {
-	return verts[z*m_iHmSize+x].height;
+float HeightMap::Height(float x,float z) {
+	
+	x-=m_kPosition.x;
+	z-=m_kPosition.z;
+
+	if(x<0 || x>m_iHmSize || z<0 || z>m_iHmSize) 
+		return 1;
+	
+	bool over;	
+	int lx=int(x);
+	int lz=int(z);
+	float ox=x-float(lx);
+	float oz=z-float(lz);
+	float bp,xp,zp;
+	
+	
+//	cout<<"HEIGHT "<<lx<<" "<<lz<< " "<<ox<<" "<<oz<<endl;
+	
+	
+	//are we on the over or under polygon in the tile
+	float ry=(1.0+ox*-1.0);
+//	cout<< ry<<endl;
+	if(oz>ry){
+		over=true;
+		bp=verts[(lz+1)*m_iHmSize+(lx+1)].height;
+		xp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;
+		zp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;		
+		ox=1.0-ox;
+		oz=1.0-oz;
+	}else{
+		over=false;
+		bp=verts[lz*m_iHmSize+lx].height;
+		xp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;
+		zp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;				
+	}
+	
+
+	float height=bp+(xp*ox)+(zp*oz);
+//	cout<<"::::: > "<<xp<<" "<<zp<<" "<<bp<<" "<<"Hegiht: "<<height<<" x" <<(xp*ox)<<" y"<<(zp*oz)<<endl;
+	return height;
+	
+//	return 0;
+//	return verts[lz*m_iHmSize+lx].height+m_kPosition.y;
 }
 
 void HeightMap::SetTileSet(char* acTileSet) {
@@ -298,7 +339,7 @@ void HeightMap::GenerateTextures() {
 					GetVert(x,z)->color=Vector3(2,1.7,1.2);
 					if(height<0.0001) {
 						GetVert(x,z)->height=-80;
-						GetVert(x,z)->color=Vector3(.001,.001,.001);
+						GetVert(x,z)->color=Vector3(.001,.001,.51);
 						GetVert(x,z)->normal=Vector3(0,0,0);
 					}
 				} else {//else i like som grass
