@@ -98,6 +98,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		Vector3		m_kPickPos;							//exact possition of last cursor pick operation
 		string		m_strSaveDirectory;					//directory in wich savegames are stored
 
+		string		m_kInfoTextBox; // the text in the infobox
+		
 		int 			m_iEnableMusic; 				//if the music should be played or not
 		float			m_fMusicVolume;					// Music volume for Ogg
 		float			m_fBulletTime;

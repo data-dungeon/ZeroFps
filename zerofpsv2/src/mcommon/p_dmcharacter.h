@@ -79,7 +79,7 @@ class MCOMMON_API P_DMCharacter: public Property {
 		bool m_bCharacterIdle;
 		bool m_bPlayWalkSound;
 
-		queue<DMOrder>		m_kOrderQueue;
+		queue<DMOrder>			m_kOrderQueue;
 		bool					m_bNewOrder;
 
 		void MakeStringLowerCase(string& s);
@@ -143,6 +143,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void Update();		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
+
+		bool HasOrders()						{ return m_kOrderQueue.size(); }
 		
 		P_DMCharacter();
 		~P_DMCharacter();

@@ -369,7 +369,6 @@ void DarkMetropolis::MoveCamera(Vector3 pos)
 }
 
 
-// TODO: Inget kommando ska göra en pathfind. Avståndscheck ska istället göras bara.
 void DarkMetropolis::Input()
 {
 	//get mouse
@@ -466,7 +465,7 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle += PI / 4.f; // 90 degrees in rad
+				m_fAngle += PI / 2.f; // 90 degrees in rad
 			}
 
 		// rotate camera to the right
@@ -474,7 +473,7 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle -= PI / 4.f; // 90 degrees in rad
+				m_fAngle -= PI / 2.f; // 90 degrees in rad
 			}
 
 		m_pkCameraProp->Set3PYAngle(m_fAngle);
@@ -725,7 +724,6 @@ void DarkMetropolis::Input()
 				//m_kSelectedEntitys.clear();
 			}
 
-			// TODO: make selected character pick up item. If not maincharacter, use pathfind
 			//pick item
 			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))
 			{
@@ -747,11 +745,14 @@ void DarkMetropolis::Input()
 								pkCh->ClearOrders();
 								pkCh->AddOrder(kOrder);							
 							}
-							// TODO: write "not close enough" message
 							else
 							{
+								// TODO: fix textbox, ask Zeb
 								if ( m_iSelectedEntity == m_iMainAgent )
-									SetText("infotext", "Not close enough.");
+								{
+									m_kInfoTextBox.append("Not close enough");
+									SetText("infotext", (char*)m_kInfoTextBox.c_str());
+								}																		
 
 								pkCh->ClearOrders();
 								

@@ -1,5 +1,6 @@
 #include "si_dm.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
+#include "p_dmcharacter.h"
 
 int DMLua::HavePathLua(lua_State* pkLua)
 {
@@ -241,6 +242,29 @@ int DMLua::PatrolLua(lua_State* pkLua)
 	return 0;
 }
 
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::HaveOrdersLua(lua_State* pkLua)
+{
+	int iHasOrders = 0;
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		if(pkEnt)
+			if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+				iHasOrders = pkDMChar->HasOrders();
+		
+	}
+
+	g_pkScript->AddReturnValue(pkLua, iHasOrders);
+	return 1;
+}
+
+// ------------------------------------------------------------------------------------------------
 
 
 

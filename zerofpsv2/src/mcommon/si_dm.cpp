@@ -58,6 +58,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript,
 	pkScript->ExposeFunction("GetCharStats", DMLua::GetCharStatsLua);
 	pkScript->ExposeFunction("SetCharStats", DMLua::SetCharStatsLua);
 	pkScript->ExposeFunction("SetLeaderOfTeam", DMLua::SetLeaderOfTeamLua);
+	pkScript->ExposeFunction("HaveOrders", DMLua::HaveOrdersLua);
 
 	// item stuff
 	pkScript->ExposeFunction("AddItem", DMLua::AddItemLua);

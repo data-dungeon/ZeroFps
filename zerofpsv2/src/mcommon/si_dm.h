@@ -61,7 +61,7 @@ namespace DMLua
 	int MCOMMON_API GetStateLua(lua_State* pkLua);
 	int MCOMMON_API SetStateLua(lua_State* pkLua);
 	int MCOMMON_API GetWeaponRangeLua(lua_State* pkLua);
-	
+	int MCOMMON_API HaveOrdersLua(lua_State* pkLua);	
 	int MCOMMON_API SetLeaderOfTeamLua(lua_State* pkLua);
 
 	// items
