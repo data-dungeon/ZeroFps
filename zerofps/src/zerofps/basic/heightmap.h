@@ -25,7 +25,7 @@ class BASIC_API HeightMap {
 		void Random();
 		bool Load(char* acFile);
 		void GenerateNormals();
-		
+		float Height(int x,int z);
 };
 
 

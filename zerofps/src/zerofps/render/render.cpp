@@ -226,7 +226,7 @@ void Render::DrawHM(HeightMap *kmap) {
 //	glFrontFace(GL_CCW);
 	
 	//this draw the normals of the heightmap
-/*	
+	
 	SetColor(Vector3(255,0,0));
 	for(int z=0;z<kmap->m_iHmSize;z++)
 		for(int x=0;x<kmap->m_iHmSize;x++) {
@@ -234,7 +234,7 @@ void Render::DrawHM(HeightMap *kmap) {
  			Line(p1,p1+kmap->verts[z*kmap->m_iHmSize+x].normal);
 	
 		}
-*/	
+	
 	glPopMatrix();			
 }
 

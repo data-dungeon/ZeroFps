@@ -15,6 +15,10 @@ void HeightMap::Zero() {
 	}
 }
 
+float HeightMap::Height(int x,int z) {
+	return verts[z*m_iHmSize+x].height;
+}
+
 void HeightMap::GenerateNormals() {
 	Vector3 med;
 	Vector3 v1,v2,v3,n1,n2;
@@ -130,3 +134,4 @@ void HeightMap::Random() {
 		}
 	}
 }
+
