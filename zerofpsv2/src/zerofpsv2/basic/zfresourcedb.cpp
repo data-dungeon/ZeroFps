@@ -174,10 +174,13 @@ bool ZFResourceDB::StartUp()
 
 bool ZFResourceDB::ShutDown() 
 { 
+	cout<<"UNLOADING"<<endl;
+
 	m_bInstantExpire = true;
 
 	printf("Unloading Res: ");
-	do {
+	do 
+	{
 		printf(".");
 	} while( Refresh());
 	printf("\n");
@@ -219,7 +222,6 @@ bool ZFResourceDB::Refresh()
 
 	ZFResourceInfo* pkRes;
 	
-	
 	for(vector<ZFResourceInfo*>::iterator it = m_kResources.begin();it != m_kResources.end();it++)
 	{
 		pkRes = 	*it;
@@ -244,7 +246,10 @@ bool ZFResourceDB::Refresh()
 				m_kResourceFactory[pkRes->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete pkRes;
 												
-				it = m_kResources.erase(it);				
+				//it = m_kResources.erase(it);							//krashar tydligen :(
+				
+				m_kResources.erase(it);
+				it = m_kResources.begin();
 				
 				bWasUnloaded = true;
 			}
