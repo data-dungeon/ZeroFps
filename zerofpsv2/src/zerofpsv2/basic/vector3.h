@@ -33,16 +33,16 @@ class BASIC_API Vector3 {
 
 		// Assign
 		Vector3& operator=(const Vector3 &kOtherV3) {
-			x=kOtherV3.x;
-			y=kOtherV3.y;
-			z=kOtherV3.z;
-			return *this;
+				x=kOtherV3.x;
+				y=kOtherV3.y;
+				z=kOtherV3.z;
+				return *this;
 			}	
 
 		void Set(float fXIn, float fYIn, float fZIn) {
-			x = fXIn;
-			y = fYIn;
-			z = fZIn;
+				x = fXIn;
+				y = fYIn;
+				z = fZIn;
 			}
 
 		float& operator[] (const int i);
@@ -77,61 +77,66 @@ class BASIC_API Vector3 {
 	
 	
 		Vector3 operator /  ( const float  s )	const {
-			float invs = 1/s; 
-			return Vector3( invs*x, invs*y, invs*z );
-		}
+				float invs = 1/s; 
+				return Vector3( invs*x, invs*y, invs*z );
+			}
 
 		Vector3& operator+=(const Vector3 &kOtherV3) {
-			x += kOtherV3.x;
-			y += kOtherV3.y;
-			z += kOtherV3.z;
-			return *this;
+				x += kOtherV3.x;
+				y += kOtherV3.y;
+				z += kOtherV3.z;
+				return *this;
 			}
 
 		Vector3& operator-=(const Vector3 &kOtherV3) {
-			x -= kOtherV3.x;
-			y -= kOtherV3.y;
-			z -= kOtherV3.z;
-			return *this;
+				x -= kOtherV3.x;
+				y -= kOtherV3.y;
+				z -= kOtherV3.z;
+				return *this;
 			}
 
 		Vector3& operator*=(const float &fOther) {
-			x *= fOther;
-			y *= fOther;
-			z *= fOther;
-			return *this;
+				x *= fOther;
+				y *= fOther;
+				z *= fOther;
+				return *this;
 			}
 
 		Vector3& operator/=(const float fOther) {
-			x /= fOther;
-			y /= fOther;
-			z /= fOther;
-			return *this;
+				x /= fOther;
+				y /= fOther;
+				z /= fOther;
+				return *this;
 			}
 
-		Vector3& operator /= ( const float& s )					
-		{
-			float r = 1 / s; x *= r; y *= r; z *= r; 
-			return *this; 
-		}
+		Vector3& operator /= ( const float& s ) {
+				float r = 1 / s; x *= r; y *= r; z *= r; 
+				return *this; 
+			}
 
 		Vector3 operator-() const {
-			return Vector3(-x,-y,-z);
+				return Vector3(-x,-y,-z);
 			}
 
 
 		// Comparison
-		bool operator==(const Vector3 &kOtherV3)	const;			// NC
-		bool operator!=(const Vector3 &kOtherV3)	const;			// NC
+		bool operator==(const Vector3 &kOtherV3)	const {
+				return (	x == kOtherV3.x &&
+							y == kOtherV3.y &&
+							z == kOtherV3.z);
+			}
+		bool operator!=(const Vector3 &kOtherV3)	const {
+				return !(kOtherV3 == *this); 
+			}
 
 		// Vector operations.
 		float Length(void) const {
-			return (float) sqrt( x*x + y*y + z*z );  
+				return (float) sqrt( x*x + y*y + z*z );  
 			}
 
 		// Squared length of vector.
 		float LengthSqr(void) const {
-			return (float)( x*x + y*y + z*z );  
+				return (float)( x*x + y*y + z*z );  
 			}
 
 		// Returns squaredlength length of vector.
@@ -140,7 +145,10 @@ class BASIC_API Vector3 {
 			}
 
 		void Normalize(void);												///< Normalize this to unit vector.
-		float Dot( const Vector3& v  )		const; 					///< Return dot product between this vec and another one.
+		float Dot( const Vector3& v  ) const{		 					///< Return dot product between this vec and another one.
+				return x*v.x + y*v.y + z*v.z; 		
+			}		
+		
 		Vector3 Unit(void)						const;					///< Return unit vector of this.		
 		Vector3 Cross( const Vector3& v )	const;					///< Return cross product between this vector and another one.
 		

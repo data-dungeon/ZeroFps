@@ -183,7 +183,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Draw();
 		Matrix4		m_kModelMatrix;
 		void GenerateModelMatrix();
-		Matrix4 GetModelMatrix();
+		const Matrix4& GetModelMatrix() const;
 
 		int		m_iColFace;
 		Vector3	m_kColPos;

@@ -748,7 +748,8 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			//first do a sphere test			
 			if(!CollideSphereVSSphere(m_kBodys[B1],m_kBodys[B2]))
 				continue;
-				
+			
+			//do aabb test	
 			if(!TestAABB(m_kBodys[B1],m_kBodys[B2]))
 				continue;
 			
@@ -1274,23 +1275,26 @@ bool Tcs::CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 	return false;
 }
 
-bool Tcs::TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
+bool Tcs::TestLineVSSphere(const Vector3& kP1,const Vector3& kP2,P_Tcs* pkB)
 {
-	Vector3 kDir = kP2 - kP1;
+	static Vector3 kDir,c,k;
+	static float d,cdis,kdis,Distance;
+	
 
-	Vector3 c=pkB->m_kNewPos - kP1;		
+	kDir = kP2 - kP1;
+	c=pkB->m_kNewPos - kP1;		
 
-	float d = kDir.Unit().Dot(c);
+	d = kDir.Unit().Dot(c);
 	if(d < 0)
 		return false;
 	if(d > kDir.Length())
 		return false;
 	
 	kDir.Normalize();		
-	Vector3 k=kDir.Proj(c);		
-	float cdis=c.Length();
-	float kdis=k.Length();
-	float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
+	k=kDir.Proj(c);		
+	cdis=c.Length();
+	kdis=k.Length();
+	Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
 	
 
 	if(Distance < pkB->m_fRadius)
@@ -1325,62 +1329,6 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission
 		
 	}		
 		
-/*		
-			//if first penetration do a check at time 0
-			if(!didpen)
-			{
-				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
-			
-				UpdateBodyVelnPos(m_pkBodyCopy1,0);
-				UpdateBodyVelnPos(m_pkBodyCopy2,0);				
-				
-				if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
-				{
-					//cout<<"Stuck sphere VS sphere"<<endl;
-					didpen = true;			
-					fAtime = 0;
-					break;					
-				}
-			}		
-
-			
-			didpen = true;			
-			retry = true;
-			fAtime /= m_fTimeSlice;
-		
-			continue;
-		}
-		else if(didpen)
-			break;
-		else
-		{
-			m_iNrOfTests += nroftests;
-			return;
-		}
-		
-	}	
-	
-	m_iNrOfTests += nroftests;
-	
-	if(didpen)
-	{	
-		if((pkCollission->fAtime > fAtime) || (pkCollission->fAtime == -1))
-		{		
-*
-			//Tcs_collission* temp = new Tcs_collission;
-			pkCollission->Clear();
-			
-			pkCollission->pkBody1 = pkBody1;
-			pkCollission->pkBody2 = pkBody2;
-		
-			pkCollission->kNormals.push_back((m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit());
-			pkCollission->kPositions.push_back(m_pkBodyCopy1->m_kNewPos - (pkCollission->kNormals[0] * m_pkBodyCopy1->m_fRadius));
-			pkCollission->fAtime =	fAtime;
-			
-			//m_kCollissions.push_back(temp);					
-		}
-	}*/
 }
 
 bool Tcs::CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2)
@@ -1428,8 +1376,8 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 
 bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 {
-	if(!CollideSphereVSSphere(pkSphere,pkMesh))
-		return false;
+// 	if(!CollideSphereVSSphere(pkSphere,pkMesh))
+// 		return false;
 	
 	
 	static Matrix4 kModelMatrix;
@@ -1486,11 +1434,15 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 
 bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 {
-	Vector3 kPos1 = pkSphere->m_kNewPos;
+	static Vector3 kPos1,V1,V2,Normal,kColPos;
+	static Plane P;
+	
 
-	Vector3 V1 = kVerts[1] - kVerts[0];
-	Vector3 V2 = kVerts[2] - kVerts[0];		
-	Vector3 Normal= V1.Cross(V2);
+	kPos1 = pkSphere->m_kNewPos;
+
+	V1 = kVerts[1] - kVerts[0];
+	V2 = kVerts[2] - kVerts[0];		
+	Normal= V1.Cross(V2);
 	
 	if(Normal.IsZero())
 	{
@@ -1498,11 +1450,8 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	}
 	
 	Normal.Normalize();
-	Plane P;
 	P.m_fD = -Normal.Dot(kVerts[0]);	
 	P.m_kNormal = Normal;
-
-	Vector3 kColPos;
 	
 	if(P.LineTest(kPos1 + (Normal * pkSphere->m_fRadius),kPos1 - (Normal * pkSphere->m_fRadius) ,&kColPos))
 	{
@@ -1890,80 +1839,110 @@ bool Tcs::TestPolygonAABB(Vector3* pkPolygon1,Vector3* pkPolygon2)
 
 bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol)
 {
+	static Matrix4 kBody1Matrix;
+	static Matrix4 kBody2Matrix;
+ 	
+	static Vector3 kBoxEdges1[24];
+ 	static Vector3 kBoxEdges2[24];
+	static Vector3 kNormals1[6];
+	static Vector3 kNormals2[6];
+	
+	
 	bool bCollided = false;
 
-	Matrix4 kBody1Matrix = pkBody1->GetModelMatrix();
-	Matrix4 kBody2Matrix = pkBody2->GetModelMatrix();
+	kBody1Matrix = pkBody1->GetModelMatrix();
+	kBody2Matrix = pkBody2->GetModelMatrix();
 
-	Vector3 kBoxEdges1[] = {	//top
-									Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
-									Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
-									
-									//bottom
-									Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
-									Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
-									Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
-									Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
-									
-									//sides
-									Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
-									
-									Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
+// 	//top
+// 	kBoxEdges1[0].Set(-0.5,0.5,-0.5);	kBoxEdges1[1].Set(0.5,0.5,-0.5);
+// 	kBoxEdges1[2].Set(0.5,0.5,-0.5);		kBoxEdges1[3].Set(0.5,0.5,0.5);
+// 	kBoxEdges1[4].Set(0.5,0.5,0.5);		kBoxEdges1[5].Set(0.5,0.5,0.5);
+// 	kBoxEdges1[6].Set(-0.5,0.5,0.5);		kBoxEdges1[7].Set(-0.5,0.5,-0.5);
+// 
+// 	//bottom
+// 	kBoxEdges1[8].Set(0.5,-0.5,-0.5);	kBoxEdges1[9].Set(-0.5,-0.5,-0.5);
+// 	kBoxEdges1[10].Set(-0.5,-0.5,-0.5);	kBoxEdges1[11].Set(-0.5,-0.5,0.5);
+// 	kBoxEdges1[12].Set(-0.5,-0.5,0.5);	kBoxEdges1[13].Set( 0.5,-0.5,0.5);
+// 	kBoxEdges1[14].Set(0.5,-0.5,0.5);	kBoxEdges1[15].Set(0.5,-0.5,-0.5);
+// 	
+// 	//sides
+// 	kBoxEdges1[14].Set(-0.5,-0.5,0.5);	kBoxEdges1[15].Set(-0.5,0.5,0.5);
+// 	kBoxEdges1[14].Set(0.5,0.5,0.5);		kBoxEdges1[15].Set(0.5,-0.5,0.5);
+// 	
+// 	kBoxEdges1[14].Set(0.5,-0.5,-0.5);	kBoxEdges1[15].Set(0.5,0.5,-0.5);
+// 	kBoxEdges1[14].Set(-0.5,0.5,-0.5);	kBoxEdges1[15].Set(-0.5,-0.5,-0.5);
+		
+	
+	
+	static Vector3 kOrgBoxEdges1[] = {//top
+												Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+												Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
+												Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
+												Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
+												
+												//bottom
+												Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
+												Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
+												Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
+												Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
+												
+												//sides
+												Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
+												Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
+												
+												Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+												Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
 																										};		
 
-	Vector3 kBoxEdges2[] = {	//top
-									Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
-									Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
-									
-									//bottom
-									Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
-									Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
-									Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
-									Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
-									
-									//sides
-									Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
-									
-									Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
+	static Vector3 kOrgBoxEdges2[] = {	//top
+												Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+												Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
+												Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
+												Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
+												
+												//bottom
+												Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
+												Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
+												Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
+												Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
+												
+												//sides
+												Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
+												Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
+												
+												Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+												Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
 																										};																										
 
-	Vector3 kNormals[6] = {
-									Vector3(0,1,0),		//up
-									Vector3(0,-1,0),		//down
-									Vector3(0,0,1),		//front
-									Vector3(0,0,-1),		//back
-									Vector3(-1,0,0),		//left
-									Vector3(1,0,0)			//right
+	static Vector3 kOrgNormals1[] = {
+												Vector3(0,1,0),		//up
+												Vector3(0,-1,0),		//down
+												Vector3(0,0,1),		//front
+												Vector3(0,0,-1),		//back
+												Vector3(-1,0,0),		//left
+												Vector3(1,0,0)			//right
 														};			
 	
-	Vector3 kNormals2[6] = {
-									Vector3(0,1,0),		//up
-									Vector3(0,-1,0),		//down
-									Vector3(0,0,1),		//front
-									Vector3(0,0,-1),		//back
-									Vector3(-1,0,0),		//left
-									Vector3(1,0,0)			//right
+	static Vector3 kOrgNormals2[] = {
+												Vector3(0,1,0),		//up
+												Vector3(0,-1,0),		//down
+												Vector3(0,0,1),		//front
+												Vector3(0,0,-1),		//back
+												Vector3(-1,0,0),		//left
+												Vector3(1,0,0)			//right
 														};																
 	//transform box edges																										  
 	for(int i = 0;i<24;i++)
 	{
-		kBoxEdges1[i] = kBody1Matrix.VectorTransform((kBoxEdges1[i].PEP(pkBody1->m_kBoxSize)));	
-		kBoxEdges2[i] = kBody2Matrix.VectorTransform((kBoxEdges2[i].PEP(pkBody2->m_kBoxSize)));	
+		kBoxEdges1[i] = kBody1Matrix.VectorTransform((kOrgBoxEdges1[i].PEP(pkBody1->m_kBoxSize)));	
+		kBoxEdges2[i] = kBody2Matrix.VectorTransform((kOrgBoxEdges2[i].PEP(pkBody2->m_kBoxSize)));	
 	}
 	
 	//transform box Normals
 	for(int i = 0;i<6;i++)
 	{
-		kNormals[i] = pkBody1->m_kNewRotation.VectorRotate(kNormals[i]);
-		kNormals2[i] = pkBody2->m_kNewRotation.VectorRotate(kNormals2[i]);
+		kNormals1[i] = pkBody1->m_kNewRotation.VectorRotate(kOrgNormals1[i]);
+		kNormals2[i] = pkBody2->m_kNewRotation.VectorRotate(kOrgNormals2[i]);
 	}																																								
 
 	
@@ -1976,7 +1955,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[0],&kBoxEdges1[2],&kBoxEdges1[4],&kBoxEdges1[6],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[0]);
+			pkTempCol->kNormals.push_back(-kNormals1[0]);
 			bCollided = true;
 		}
 		
@@ -1984,7 +1963,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[8],&kBoxEdges1[10],&kBoxEdges1[12],&kBoxEdges1[14],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[1]);
+			pkTempCol->kNormals.push_back(-kNormals1[1]);
 			bCollided = true;
 		}
 		
@@ -1992,7 +1971,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[6],&kBoxEdges1[4],&kBoxEdges1[14],&kBoxEdges1[12],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[2]);
+			pkTempCol->kNormals.push_back(-kNormals1[2]);
 			bCollided = true;
 		}
 		
@@ -2000,7 +1979,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[2],&kBoxEdges1[0],&kBoxEdges1[10],&kBoxEdges1[8],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[3]);
+			pkTempCol->kNormals.push_back(-kNormals1[3]);
 			bCollided = true;
 		}
 		
@@ -2008,7 +1987,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[0],&kBoxEdges1[6],&kBoxEdges1[12],&kBoxEdges1[10],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[4]);
+			pkTempCol->kNormals.push_back(-kNormals1[4]);
 			bCollided = true;
 		}
 		
@@ -2016,7 +1995,7 @@ bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCo
 		if(TestLineVSQuad(&kBoxEdges1[4],&kBoxEdges1[2],&kBoxEdges1[8],&kBoxEdges1[14],&kBoxEdges2[i],&kBoxEdges2[i+1]))
 		{
 			pkTempCol->kPositions.push_back(m_kLastTestPos);
-			pkTempCol->kNormals.push_back(-kNormals[5]);
+			pkTempCol->kNormals.push_back(-kNormals1[5]);
 			bCollided = true;
 		}
 	}
@@ -2084,50 +2063,52 @@ bool Tcs::CollideBoxVSMesh(P_Tcs* pkBox,P_Tcs* pkMesh,Tcs_collission* pkTempCol)
 	static Plane P2;
 	static Vector3 Normal1;
 	static Vector3 Normal2;
+	static Vector3 kBoxEdges[24];
+	static Vector3 kNormals[6];
+	
 	bool bCollided = false;
-
 	Matrix4 kBoxMatrix = pkBox->GetModelMatrix();
 	Matrix4 kMeshMatrix = pkMesh->GetModelMatrix();
 
-	Vector3 kBoxEdges[] = {	//top
-									Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
-									Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
-									
-									//bottom
-									Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
-									Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
-									Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
-									Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
-									
-									//sides
-									Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
-									Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
-									
-									Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
-									Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
+	static Vector3 kOrgBoxEdges[] = {	//top
+											Vector3(-0.5,0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+											Vector3(0.5,0.5,-0.5)	,Vector3(0.5,0.5,0.5),
+											Vector3(0.5,0.5,0.5)		,Vector3(-0.5,0.5,0.5),
+											Vector3(-0.5,0.5,0.5)	,Vector3(-0.5,0.5,-0.5),
+											
+											//bottom
+											Vector3(0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5),
+											Vector3(-0.5,-0.5,-0.5)	,Vector3(-0.5,-0.5,0.5),
+											Vector3(-0.5,-0.5,0.5)	,Vector3( 0.5,-0.5,0.5),
+											Vector3(0.5,-0.5,0.5)	,Vector3(0.5,-0.5,-0.5),
+											
+											//sides
+											Vector3(-0.5,-0.5,0.5)	,Vector3(-0.5,0.5,0.5),
+											Vector3(0.5,0.5,0.5)		,Vector3(0.5,-0.5,0.5),
+											
+											Vector3(0.5,-0.5,-0.5)	,Vector3(0.5,0.5,-0.5),
+											Vector3(-0.5,0.5,-0.5)	,Vector3(-0.5,-0.5,-0.5)
 																										};
 	
-	Vector3 kNormals[6] = {
-									Vector3(0,1,0),		//up
-									Vector3(0,-1,0),		//down
-									Vector3(0,0,1),		//front
-									Vector3(0,0,-1),		//back
-									Vector3(-1,0,0),		//left
-									Vector3(1,0,0)			//right
-														};																																																				
+	static Vector3 kOrgNormals[] = {
+											Vector3(0,1,0),		//up
+											Vector3(0,-1,0),		//down
+											Vector3(0,0,1),		//front
+											Vector3(0,0,-1),		//back
+											Vector3(-1,0,0),		//left
+											Vector3(1,0,0)			//right
+																};																																																				
 																									
 	//transform box edges																										  
 	for(int i = 0;i<24;i++)
 	{
-		kBoxEdges[i] = kBoxMatrix.VectorTransform((kBoxEdges[i].PEP(pkBox->m_kBoxSize)));	
+		kBoxEdges[i] = kBoxMatrix.VectorTransform((kOrgBoxEdges[i].PEP(pkBox->m_kBoxSize)));	
 	}
 	
 	//transform box Normals
 	for(int i = 0;i<6;i++)
 	{
-		kNormals[i] = pkBox->m_kNewRotation.VectorRotate(kNormals[i]);
+		kNormals[i] = pkBox->m_kNewRotation.VectorRotate(kOrgNormals[i]);
 		
 		//kNormals[i] = Vector3(0,-1,0);
 	}
@@ -2297,11 +2278,10 @@ bool Tcs::TestLineVSQuad(Vector3* pkVertex0,Vector3* pkVertex1,Vector3* pkVertex
 
 bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol) 
 {
-	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
-	Matrix4 kModelMatrix2 = pkBody2->GetModelMatrix();
+	static Matrix4 kModelMatrix1;
+	static Matrix4 kModelMatrix2;
 
-	//bool bHaveCleared = false;		
-	bool bHaveColided = false;	
+	
 	static Vector3 verts1[3];	
 	static Vector3 verts2[3];	
 	static Plane P1;
@@ -2311,7 +2291,13 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 	static int i1,i2;
 
 	static bool bT1,bT2,bT3;
+
+	//bool bHaveCleared = false;		
+	kModelMatrix1 = pkBody1->GetModelMatrix();
+	kModelMatrix2 = pkBody2->GetModelMatrix();	
+	bool bHaveColided = false;	
 	
+		
 	for(unsigned int f=0;f<pkBody1->m_pkFaces->size();f++)
 	{
 		verts1[0] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[0]]);
@@ -2557,9 +2543,12 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 
 Vector3 Tcs::GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,const int& iCurrentFace,P_Tcs* pkBody)
 {
-	Matrix4 kModelMatrix2 = pkBody->GetModelMatrix();
+	static Matrix4 kModelMatrix2;
 	static Vector3 verts[3];
 	static Vector3 kNormal;	
+	
+	kModelMatrix2 = pkBody->GetModelMatrix();
+	
 
 	for(unsigned int g=0;g<pkBody->m_pkFaces->size();g++)
 	{

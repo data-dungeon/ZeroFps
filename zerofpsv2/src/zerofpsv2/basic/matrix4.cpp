@@ -209,10 +209,15 @@ void Matrix4::Zero(void)
 
 void Matrix4::Identity() 
 {
-	*this=Matrix4(1,0,0,0,
-		0,1,0,0,
-		0,0,1,0,
-		0,0,0,1);
+	Set(	1,0,0,0,
+			0,1,0,0,
+			0,0,1,0,
+			0,0,0,1);
+
+// 	*this=Matrix4(1,0,0,0,
+// 		0,1,0,0,
+// 		0,0,1,0,
+// 		0,0,0,1);
 }
 
 void Matrix4::Transponse()

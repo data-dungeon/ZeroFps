@@ -725,9 +725,10 @@ void P_Tcs::GenerateModelMatrix()
 
 }
 
-Matrix4 P_Tcs::GetModelMatrix()
+const Matrix4& P_Tcs::GetModelMatrix() const
 {
-	Matrix4 kMat;
+	static Matrix4 kMat;
+	
 	kMat.Identity();
 	kMat.Scale(m_fScale,m_fScale,m_fScale);	
 	kMat *= m_kNewRotation; 

@@ -15,26 +15,7 @@ const float Vector3::degtorad = float(57.3248);
 
 
 // Comparison
-bool Vector3::operator==(const Vector3 &kOtherV3) const
-{
-	if(x == kOtherV3.x &&
-		y == kOtherV3.y &&
-		z == kOtherV3.z)
 
-		return true;
-
-	return false;
-}
-
-bool Vector3::operator!=(const Vector3 &kOtherV3) const
-{
-	return !(kOtherV3 == *this); 
-}
-
-float Vector3::Dot( const Vector3& v  ) const	
-{
-	return x*v.x + y*v.y + z*v.z; 
-}
 
 Vector3 Vector3::Unit(void) const						
 {
