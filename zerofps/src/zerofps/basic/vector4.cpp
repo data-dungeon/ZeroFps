@@ -30,6 +30,15 @@ Vector4::Vector4(void)
 	w=0;	
 }
 
+Vector4::Vector4(const Vector3 &kOtherV3) 
+{
+	x=kOtherV3.x;
+	y=kOtherV3.y;
+	z=kOtherV3.z;
+	w=1;	
+}
+
+
 // Assign
 Vector4 Vector4::operator=(const Vector4 &kOtherV3) 
 {

@@ -23,6 +23,8 @@ class Test :public Application {
 	int m_iGrass;
 	int m_iGrassVolyme;
 
+	Vector3 *m_kSolpos;
+
 	PmdDraw testa;
 
 	public:

@@ -15,6 +15,7 @@ class BASIC_API Vector4 {
 		float x,y,z,w;
 	
 		Vector4(float fX,float fY,float fZ,float fW);
+		Vector4(const Vector3 &kOtherV3);
 		Vector4(void);
 	
 		// Assign

@@ -44,17 +44,18 @@ class Light {
 	private:
 		Vector3 *m_kCamPos;
 		int m_iNrOfLights;
-		list<LightSource*> m_kLights;
-		
-		LightSource *m_akCurrentLights;
+		list<LightSource*> m_kLights;		
+		vector<LightSource*> m_kActiveLights;
+
+		void TurnOffAll();
 
 	public:
 
-		Light(Vector3 *kCamPos);
+		Light();
 		
 		void Add(LightSource* kNewLight);
 		void Remove(LightSource *kLight);
-		
+		void SetCamera(Vector3 *kCamPos);
 		void Update();
 
 };

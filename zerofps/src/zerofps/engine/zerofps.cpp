@@ -9,7 +9,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkInput=new Input();
 	m_pkModMan=new ModellManager(m_pkFile);
 	m_pkAudioMan=new AudioManager(this);
-	m_pkLight=new Light(m_kCamPos);
+	m_pkLight=new Light();
 	
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
