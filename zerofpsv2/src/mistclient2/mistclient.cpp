@@ -97,9 +97,14 @@ void MistClient::OnInit()
 
       m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerNameEB"), GetWnd("AddNewServerOK"));
       m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerIPName"), GetWnd("AddNewServerOK"));
-
+      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("LoginWnd"), GetWnd("LoginCancel"));
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginWnd"), GetWnd("LoginOK"));
       m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginNameEB"), GetWnd("LoginOK"));
       m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginPWEb"), GetWnd("LoginOK"));
+      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("ConnectWnd"), GetWnd("CloseServerWndBn"));
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("ConnectWnd"), GetWnd("ConnectBn"));
+      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("AddNewServerWnd"), GetWnd("AddNewServerCancelBn"));
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("AddNewServerWnd"), GetWnd("AddNewServerOK"));
    }
 
    // load software cursor

@@ -79,12 +79,12 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "EditServerBn")
          {
-            s_bChangeServerName = true;
-            g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
-
             string strName, strIP;
             if(g_kMistClient.NameIPFromServerList(strName, strIP))
             {
+               s_bChangeServerName = true;
+               g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
+
                g_kMistClient.SetText("NewServerNameEB", (char*)strName.c_str());
                g_kMistClient.SetText("NewServerIPName", (char*)strIP.c_str());
             }
