@@ -8,40 +8,6 @@
 
 using namespace std;
 
-//class ENGINE_SYSTEMS_API P_Sound : public Property
-//{
-//private:
-//	ZFAudioSystem* m_pkAudioSystem;
-//	ZeroFps* m_pkFps;
-//
-//	struct sound
-//	{
-//		string m_strFileName;
-//		bool m_bLoop;
-//		bool m_bPlaying;
-//	};
-//
-//	vector<sound> m_kSounds;
-//
-//public:
-//	P_Sound();
-//	~P_Sound();
-//
-//	void StartSound(string strName, bool bLoop);
-//	void StopSound(string strName);
-//
-//	void Update();
-//	void PackTo(NetPacket* pkNetPacket, int iConnectionID);
-//	void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
-//
-//	void Save(ZFIoInterface* pkFile);
-//	void Load(ZFIoInterface* pkFile,int iVersion);
-//
-//	vector<PropertyValues> GetPropertyValues();
-//};
-
-Property* Create_SoundProperty();
-
 class ENGINE_SYSTEMS_API P_AmbientSound : public Property 
 {
 	private:
