@@ -306,7 +306,7 @@ void ZeroFps::Run_EngineShell()
 	//some devpage stuff
 	DevPrintf("common","ENTITYMAN:");	
 	DevPrintf("common","  Num Objects     : %d", m_pkObjectMan->GetNumOfObjects());
-	DevPrintf("common","  NextObjectID    : %d", m_pkObjectMan->GetNextObjectID());
+	DevPrintf("common","  NextEntityID    : %d", m_pkObjectMan->GetNextEntityID());
 	DevPrintf("common","  Active Propertys: %d",m_pkObjectMan->GetActivePropertys());		
 	
 	DevPrintf("common","RESOURCEMAN:");
@@ -1238,14 +1238,14 @@ void ZeroFps::QuitEngine()
 {
 	vector<string> kPropertyNames;
 	
-	if(m_pkObjectMan->GetWorldObject())
+	if(m_pkObjectMan->GetWorldEntity())
 	{
-		m_pkObjectMan->GetWorldObject()->GetAllVarNames(kPropertyNames);
+		m_pkObjectMan->GetWorldEntity()->GetAllVarNames(kPropertyNames);
 
 		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
 		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
 		{
-			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldObject()->GetVarDouble(kPropertyNames[i]));
+			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
 		}
 	}
 
@@ -1298,7 +1298,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 	
 		// Connect all client objects to top level object,
-		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);
+		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientEntity);
 		
 		m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 		m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass,bIsEditor);

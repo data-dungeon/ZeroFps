@@ -46,7 +46,7 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 	{
 	case HQ:
 		
-		m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
+		m_pkDM->m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects,false);
 		for(i=0;i<kObjects.size();i++)
 		{
 			P_DMHQ* pkHQProperty = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ");

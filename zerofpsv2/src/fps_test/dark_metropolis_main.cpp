@@ -630,7 +630,7 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	
 	//create a new gameinfo entity
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
-	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
+	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
 	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
 	m_pkGameInfoEntity->AddProperty("P_DMMission"); // Lägg till ett mission property oxå...
 
@@ -652,7 +652,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 	
 	//create a new gameinfo entity
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
-	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
+	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
 	
 	
 	//load gameinfo
@@ -768,7 +768,7 @@ Entity* DarkMetropolis::GetTargetObject(bool bZonesOnly)
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
 	
 	float closest = 999999999;
 	float d;
@@ -866,7 +866,7 @@ void DarkMetropolis::PauseGame(bool bPause)
 int DarkMetropolis::FindActiveHQ()
 {
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects,false);
 
 	for(unsigned int i = 0;i<kObjects.size();i++)
 	{
@@ -1025,7 +1025,7 @@ void DarkMetropolis::UpdateAgentsOnField()
 	m_kAgentsOnField.clear();
 
 	vector<Entity*> m_kEntitys;
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&m_kEntitys);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
 	
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
@@ -1116,7 +1116,7 @@ void DarkMetropolis::CheckCameraPos()
 bool DarkMetropolis::CreatePlayer()
 {
 	vector<Entity*> m_kEntitys;
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&m_kEntitys);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
 
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{

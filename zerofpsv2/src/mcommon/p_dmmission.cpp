@@ -137,7 +137,7 @@ void P_DMMission::Update()
 {
 	if(m_pkGameInfoEntity == NULL)
 	{
-		Entity* pkGlobal = m_pkObjectMan->GetGlobalObject();
+		Entity* pkGlobal = m_pkObjectMan->GetGlobalEntity();
 
 		vector<Entity*> kObjects;
 		pkGlobal->GetAllEntitys(&kObjects);

@@ -60,8 +60,8 @@ bool ZoneData::IsInside(Vector3 kPoint)
 EntityManager::EntityManager() 
 : ZFSubSystem("EntityManager") 
 {
-
-	iNextObjectID				= 0;
+	// Set Default values
+	iNextEntityID				= 0;
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
@@ -71,42 +71,43 @@ EntityManager::EntityManager()
 	m_fZoneUnloadTime			= 3;	
 	m_iMaxZoneIO 				= 1;	
 
-	m_pkWorldObject			= NULL;
-	m_pkZoneObject				= NULL;
-	m_pkClientObject			= NULL;
-	m_pkGlobalObject			= NULL;
+	m_pkWorldEntity			= NULL;
+	m_pkZoneEntity				= NULL;
+	m_pkClientEntity			= NULL;
+	m_pkGlobalEntity			= NULL;
 
 	m_fSimTime					= 0;			
 	m_fSimTimeScale			= 1.0;	
 
-	Register_Cmd("o_logtree",FID_LOGOHTREE);	
-	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
-	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
+	// Register Variables
+	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
+	RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
+	RegisterVariable("e_simspeed",			&m_fSimTimeScale,				CSYS_FLOAT);
+	RegisterVariable("l_trackerlos",			&m_iTrackerLOS,				CSYS_INT);	
+	RegisterVariable("l_zoneunloadtime",	&m_fZoneUnloadTime,			CSYS_FLOAT);	
+	RegisterVariable("l_maxzoneio",			&m_iMaxZoneIO,					CSYS_INT);	
+	RegisterVariable("l_objectdistance",	&m_iObjectDistance,			CSYS_FLOAT);		
 
-	Register_Cmd("newworld",FID_NEWWORLD, CSYS_FLAG_SRC_ALL);	
-	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
-	Register_Cmd("saveworld",FID_SAVEWORLD, CSYS_FLAG_SRC_ALL);		
-	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
-	
-
-	RegisterVariable("l_showzones",	&m_bDrawZones,					CSYS_BOOL);
-	RegisterVariable("l_showconn",	&m_bDrawZoneConnections,	CSYS_BOOL);
-	RegisterVariable("e_simspeed",	&m_fSimTimeScale,				CSYS_FLOAT);
-	
-	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
-	RegisterVariable("l_zoneunloadtime", &m_fZoneUnloadTime, CSYS_FLOAT);	
-	RegisterVariable("l_maxzoneio", &m_iMaxZoneIO, CSYS_INT);	
-	RegisterVariable("l_objectdistance", &m_iObjectDistance, CSYS_FLOAT);		
+	// Register Commands
+	Register_Cmd("o_logtree",		FID_LOGOHTREE);	
+	Register_Cmd("o_dumpp",			FID_LOGACTIVEPROPERTYS);	
+	Register_Cmd("sendmsg",			FID_SENDMESSAGE,	CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
+	Register_Cmd("newworld",		FID_NEWWORLD,		CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("loadworld",		FID_LOADWORLD,		CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("saveworld",		FID_SAVEWORLD,		CSYS_FLAG_SRC_ALL);		
+	Register_Cmd("setworlddir",	FID_SETWORLDDIR,	CSYS_FLAG_SRC_ALL);		
 }
 
 bool EntityManager::StartUp()	
 {
-	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
-	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	m_pkScript  = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
-	m_pkBasicFS	=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
-	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
-	m_pkRender = static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	// Get Subsystems.
+	m_pkZeroFps		=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkNetWork		=	static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+	m_pkScript		=	static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
+	m_pkBasicFS		=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
+	m_pkRender		=	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkZShaderSystem		= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -191,14 +192,14 @@ void EntityManager::Link(Entity* pkObject,int iId)
 
 	if(iId == -1)
 	{
-		pkObject->m_iEntityID = iNextObjectID++;
+		pkObject->m_iEntityID = iNextEntityID++;
 	}
 	else
 	{
 		if(GetObjectByNetWorkID(iId))
 		{
-			cout<<"WARNING: "<<GetNumOfObjects()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<iNextObjectID<<endl;
-			pkObject->m_iEntityID = iNextObjectID++;			
+			cout<<"WARNING: "<<GetNumOfObjects()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<iNextEntityID<<endl;
+			pkObject->m_iEntityID = iNextEntityID++;			
 		}
 		else	
 			pkObject->m_iEntityID = iId;
@@ -261,36 +262,36 @@ void EntityManager::Clear()
 */
 void EntityManager::CreateBaseObjects()
 {
-	iNextObjectID = 0;
+	iNextEntityID = 0;
 	
 	//top world object parent to all objects
-	m_pkWorldObject						=	CreateObject();	
-	m_pkWorldObject->SetName("WorldObject");
-	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
+	m_pkWorldEntity						=	CreateObject();	
+	m_pkWorldEntity->SetName("WorldObject");
+	m_pkWorldEntity->m_eRole			= NETROLE_AUTHORITY;
+	m_pkWorldEntity->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
-	m_pkZoneObject							=	CreateObject();	
-	m_pkZoneObject->SetParent(m_pkWorldObject);
-	m_pkZoneObject->SetName("ZoneObject");
-	m_pkZoneObject->m_eRole				= NETROLE_AUTHORITY;
-	m_pkZoneObject->m_eRemoteRole		= NETROLE_NONE;
+	m_pkZoneEntity						=	CreateObject();	
+	m_pkZoneEntity->SetParent(m_pkWorldEntity);
+	m_pkZoneEntity->SetName("ZoneObject");
+	m_pkZoneEntity->m_eRole				= NETROLE_AUTHORITY;
+	m_pkZoneEntity->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
-	m_pkClientObject						=	CreateObject();	
-	m_pkClientObject->SetParent(m_pkWorldObject);
-	m_pkClientObject->SetName("ClientObject");
-	m_pkClientObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkClientObject->m_eRemoteRole	= NETROLE_NONE;
+	m_pkClientEntity						=	CreateObject();	
+	m_pkClientEntity->SetParent(m_pkWorldEntity);
+	m_pkClientEntity->SetName("ClientObject");
+	m_pkClientEntity->m_eRole			= NETROLE_AUTHORITY;
+	m_pkClientEntity->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all global objects (server information etc)
-	m_pkGlobalObject						=	CreateObject();	
-	m_pkGlobalObject->SetParent(m_pkWorldObject);
-	m_pkGlobalObject->SetName("GlobalObject");
-	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkGlobalObject->m_eRemoteRole	= NETROLE_NONE;
+	m_pkGlobalEntity						=	CreateObject();	
+	m_pkGlobalEntity->SetParent(m_pkWorldEntity);
+	m_pkGlobalEntity->SetName("GlobalObject");
+	m_pkGlobalEntity->m_eRole			= NETROLE_AUTHORITY;
+	m_pkGlobalEntity->m_eRemoteRole	= NETROLE_NONE;
 
-	iNextObjectID = 100000;
+	iNextEntityID = 100000;
 }
 
 
@@ -385,14 +386,14 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 		if(pkRootEntity)
 			pkRootEntity->GetPropertys(&m_akPropertys,iType,iSide);
 		else
-			m_pkWorldObject->GetPropertys(&m_akPropertys,iType,iSide);
+			m_pkWorldEntity->GetPropertys(&m_akPropertys,iType,iSide);
 	}
 	else
 	{	
 		if(pkRootEntity)
 			pkRootEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
 		else
-			m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
+			m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
 	}
 	
 	//logg stuff		
@@ -443,7 +444,7 @@ Entity* EntityManager::CreateObjectByNetWorkID(int iNetID)
 //	pkNew->m_iEntityID = iNetID;
 	Link(pkNew,iNetID);
 	
-	pkNew->SetParent(m_pkWorldObject);
+	pkNew->SetParent(m_pkWorldEntity);
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
@@ -542,7 +543,7 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 void EntityManager::GetAllObjects(vector<Entity*> *pakObjects)
 {
 	//m_pkWorldObject->GetAllObjects(pakObjects);
-	m_pkWorldObject->GetAllEntitys(pakObjects,true);	
+	m_pkWorldEntity->GetAllEntitys(pakObjects,true);	
 }
 
 void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
@@ -837,13 +838,13 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 	}
 
 	//dvoids was here ;)
-	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) 
+	for( i=0; i<m_pkZoneEntity->m_akChilds.size(); i++) 
 	{
-		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
+		int iLocalZoneID = m_pkZoneEntity->m_akChilds[i]->m_iEntityID;
 		
 		if(IsInsideVector(iLocalZoneID, kZones)) 
 		{
-			Delete(m_pkZoneObject->m_akChilds[i]);
+			Delete(m_pkZoneEntity->m_akChilds[i]);
 			//cout << "Removing Zone: " << iLocalZoneID << endl;
 		}
 	}
@@ -936,7 +937,7 @@ void EntityManager::PackToClients()
 	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
-		m_pkWorldObject->GetAllEntitys(&kObjects, true);
+		m_pkWorldEntity->GetAllEntitys(&kObjects, true);
 
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -980,10 +981,10 @@ void EntityManager::PackToClients()
 		kObjects.clear();		
 		
 		// Pack and Send all Client Objects
-		m_pkClientObject->GetAllEntitys(&kObjects, true);
+		m_pkClientEntity->GetAllEntitys(&kObjects, true);
 
 		//pack and send global objects
-		m_pkGlobalObject->GetAllEntitys(&kObjects, true);
+		m_pkGlobalEntity->GetAllEntitys(&kObjects, true);
 
 		// Loop all zones activated by client.
 		Entity* pkZoneE;
@@ -1097,7 +1098,7 @@ void EntityManager::GetStaticData(int iEntityID)
 void EntityManager::DisplayTree()
 {
 	GetSystem().Log_Create("fisklins");
-	m_pkWorldObject->PrintTree(0);
+	m_pkWorldEntity->PrintTree(0);
 }
 
 
@@ -1238,10 +1239,10 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LOGACTIVEPROPERTYS:
 			//DumpActiverPropertysToLog("Active propertys");
 
-			for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) 
+			for( i=0; i<m_pkZoneEntity->m_akChilds.size(); i++) 
 			{
-				int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
-				m_pkZoneObject->m_akChilds[i]->SetUpdateStatus(UPDATE_ALL);
+				int iLocalZoneID = m_pkZoneEntity->m_akChilds[i]->m_iEntityID;
+				m_pkZoneEntity->m_akChilds[i]->SetUpdateStatus(UPDATE_ALL);
 			}
 			break;
 
@@ -1773,12 +1774,12 @@ bool EntityManager::LoadZones(string strSaveDir )
 	kFile.Read(&iNumOfZone,sizeof(int),1);
 
    // load latest created entityID
-   kFile.Read(&iNextObjectID,sizeof(int),1);
+   kFile.Read(&iNextEntityID,sizeof(int),1);
 
-	iNextObjectID+=50;  //evil hack
+	iNextEntityID+=50;  //evil hack
 
 	cout<<"Nr of zones  : "<<iNumOfZone<<endl;
-	cout<<"Next objectID: "<<iNextObjectID<<endl;
+	cout<<"Next objectID: "<<iNextEntityID<<endl;
 		
 	ZoneData kZData;
 	
@@ -1852,8 +1853,8 @@ bool EntityManager::SaveZones(string strSaveDir)
 	kFile.Write(&iNumOfZone,sizeof(int),1);
    
    // save latest created entityID
-   cout<<"Next id is:"<<iNextObjectID<<endl;
-   kFile.Write(&iNextObjectID,sizeof(int),1);
+   cout<<"Next id is:"<<iNextEntityID<<endl;
+   kFile.Write(&iNextEntityID,sizeof(int),1);
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{
@@ -2011,7 +2012,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	Entity* kZoneEntity = CreateObject(false);
 	kZoneEntity->m_bZone = true;
 	kZData->m_pkZone = kZoneEntity;
-	kZData->m_pkZone->SetParent(GetZoneObject());	
+	kZData->m_pkZone->SetParent(GetZoneEntity());	
 	kZData->m_pkZone->SetName("ZoneObject");
 	
 	

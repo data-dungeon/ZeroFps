@@ -1,5 +1,5 @@
-#ifndef _ENGINE_OBJECT_H_
-#define _ENGINE_OBJECT_H_
+#ifndef _ENGINE_ENTITY_H_
+#define _ENGINE_ENTITY_H_
 
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
@@ -15,11 +15,10 @@
 #include "../basic/zfvfs.h"
 #include "../script/zfscript.h"
 
-
 using namespace std;
 
 class		EntityManager;
-struct	CollisionData;
+//struct	CollisionData;
 
 enum UpdateStatus 
 {
@@ -49,25 +48,26 @@ enum NetUpdateFlags
 };
 
 /*
-	Describe how a object works in network.
+	Describe how a entity works in network.
 */
 enum NetWorkRole
 {
-	NETROLE_NONE,			// Object don't need to exist on remote nodes.
-	NETROLE_PROXY,			// Object is a rep
-	NETROLE_AUTHORITY,	// This is the master object.
+	NETROLE_NONE,			// Entity don't need to exist on remote nodes.
+	NETROLE_PROXY,			// Entity is a rep
+	NETROLE_AUTHORITY,	// This is the master Entity.
 };
 
-/// GameMessages is messages that can be sent between objects in the game.
+/// GameMessages is messages that can be sent between Entity in the game.
 class GameMessage
 {
 public:
-	int			m_FromObject;		///< ID of object that sent message.
-	int			m_ToObject;			///< ID of target object.
+	int			m_FromObject;		///< ID of Entity that sent message.
+	int			m_ToObject;			///< ID of target Entity.
 	string		m_Name;				///< Name of GameMessage.
 };
 
-class ENGINE_API PropertyDescriptor{
+class ENGINE_API PropertyDescriptor
+{
 	public:
 		string m_kName;
 		ZFMemPackage m_kData;
@@ -124,8 +124,6 @@ public:
 };
 
 
-
-
 /**	\brief	Entity's for things in game 
 	 \ingroup Engine
 
@@ -136,14 +134,13 @@ are also entity's. All entity's are handled by the EntityManger.
 
 All entity's in the game have somethings that are common for all of them. The are all
 stored in the EM, the all have a type, a ID, a name and some other things. The things 
-that make each and every object diffrent are the type of properties they have. 
+that make each and every Entity diffrent are the type of properties they have. 
 */
-
 class ENGINE_API Entity 
 {
 	private:
 		Entity*						m_pkParent;							///< Parent Entity. NULL If None
-		vector<GameMessage>	  m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
+		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
 		vector<int>					m_aiNetDeleteList;				
 
 		vector<EntityVariable>  m_kVariables;
@@ -168,7 +165,7 @@ class ENGINE_API Entity
 		
 		/**	\brief	Entity type name.
 			
-			This is the name of the type of Entity (defults to Object). For entity's created from scripts this is
+			This is the name of the type of Entity (defults to Entity). For entity's created from scripts this is
 			set to the name of the script.
 			*/
 		string						m_strType;							
@@ -181,10 +178,10 @@ class ENGINE_API Entity
 		string						m_strName;
 		
 	
-		bool							m_bZone;
+		bool							m_bZone;								///< True if this entity is a Zone.
 		bool							m_bSave;								///< True if this entity should save to disk.
 	
-		bool							m_bSendChilds;						//shuld childs be sent to clients?
+		bool							m_bSendChilds;						// Should childs be sent to clients?
 		int							m_iUpdateStatus;					
 	
 		// Rotation & Position.
@@ -192,7 +189,7 @@ class ENGINE_API Entity
 		bitset<8>					m_kGotOrientationData;							
 
 		/*	This is the Position and rotation of the Entity. It is stored as a Vector for position and a Matrix for
-			rotation. Local contains the objects transform and World is to total transform including any parent. */
+			rotation. Local contains the Entitys transform and World is to total transform including any parent. */
 		Vector3						m_kLocalPosV;						///< Local position. important
 		Matrix3						m_kLocalRotM;						///< Local rotation important
 		Vector3						m_kWorldPosV;						///< World position.
@@ -235,39 +232,39 @@ class ENGINE_API Entity
 		
 	public:
 
-		EntityManager*				m_pkEntityMan;						///< Ptr to object manger.
-  		ZeroFps*						m_pkZeroFps;								///< Ptr to zerofps. 
+		EntityManager*				m_pkEntityMan;						///< Ptr to Entity manger.
+  		ZeroFps*						m_pkZeroFps;						///< Ptr to zerofps. 
 
-		NetWorkRole					m_eRole;								///< This node power on object.
-		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
-      string                  m_strCreatedFromScript;			// which script the object was created from. used when splitting items
+		NetWorkRole					m_eRole;								///< This node power on Entity.
+		NetWorkRole					m_eRemoteRole;						///< Remote node power on Entity.
+      string                  m_strCreatedFromScript;			// which script the Entity was created from. used when splitting items
 	
 		~Entity();
 		
-		// Object Type Handling
-		bool IsA(string strStringType);								///< Returns true if this object is based on type.
+		// Entity Type Handling
+		bool IsA(string strStringType);									///< Returns true if this Entity is based on type.
 
 		// Property Mangment
-		Property* AddProperty(Property* pkNewProperty);			// Add a propyrty by ptr.
-		Property* AddProperty(const char* acName);				// Create/Add a property by name.
+		Property* AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
+		Property* AddProperty(const char* acName);					// Create/Add a property by name.
 		void 	RemoveProperty(Property* pkProp);						// Remove property by pointer.
-		bool 	DeleteProperty(const char* acName);					// Remove property by name.
+		bool 	DeleteProperty(const char* acName);						// Remove property by name.
 		void 	PropertyLost(Property* pkProp);
-		Property* GetProperty(const char* acName);				// Returns property by name (first one only). 
+		Property* GetProperty(const char* acName);					// Returns property by name (first one only). 
 		void 	GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
 		void 	GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
-		Property* AddProxyProperty(const char* acName);			///< Add a property if not exist.
-		bool 	Update(const char* acName);							///< Run update on property 'name'.
+		Property* AddProxyProperty(const char* acName);				///< Add a property if not exist.
+		bool 	Update(const char* acName);								///< Run update on property 'name'.
 
 		// Child/Parent Entity mangement.
-		void 	AddChild(Entity* pkObject);							// Set a object to be child to this.	
-		void 	RemoveChild(Entity* pkObject);						// Remove a child from this.
-		void 	SetParent(Entity* pkObject);							// Set the parent of this object.
-		Entity* GetParent(){return m_pkParent;};					///< Get parent of this object.
-		bool 	HasChild(Entity* pkObject);							
-		int  	NrOfChilds();												///< Return num of childs to this object.
-		void 	DeleteAllChilds();										// Remove all childs from this object.
-		void 	GetAllEntitys(vector<Entity*> *pakObjects ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
+		void 	AddChild(Entity* pkEntity);								// Set a Entity to be child to this.	
+		void 	RemoveChild(Entity* pkEntity);							// Remove a child from this.
+		void 	SetParent(Entity* pkEntity);								// Set the parent of this Entity.
+		Entity* GetParent(){return m_pkParent;};						///< Get parent of this Entity.
+		bool 	HasChild(Entity* pkEntity);							
+		int  	NrOfChilds();													///< Return num of childs to this Entity.
+		void 	DeleteAllChilds();											// Remove all childs from this Entity.
+		void 	GetAllEntitys(vector<Entity*> *pakEntitys ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
 		
 		void 	AddToDeleteList(int iId);
 		void 	UpdateDeleteList();
@@ -278,10 +275,10 @@ class ENGINE_API Entity
 		bool GetZoneNeighbours(vector<Entity*>* pkZones);
 		
 		// NetWork/Demo/Save/Load Code.
-		bool IsNetWork();															// True if this object has any netactive propertys.
+		bool IsNetWork();															// True if this Entity has any netactive propertys.
 		bool HaveSomethingToSend(int iConnectionID);						// Returns true if there is anything to send for selected connection,
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Entity.
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Entity.
 
 		
 
@@ -292,9 +289,9 @@ class ENGINE_API Entity
 		void GetStaticData(int iEntityID);
 
 		// Collision / Shape.
-		void Touch(Collision* pkCol);								///< Run touch on all properys of this object.
+		void Touch(Collision* pkCol);								///< Run touch on all properys of this Entity.
 		void Touch(int iId);
-		void ZoneChange(int iCurrent,int iNew);				//callback when object changes zone
+		void ZoneChange(int iCurrent,int iNew);				//callback when Entity changes zone
 
 		// Game Messages
 		void	AddGameMessage(GameMessage& Msg);
@@ -302,7 +299,7 @@ class ENGINE_API Entity
 		void	PublishEvent(GameMessage& Msg);
 
 		// Debug
-		void PrintTree(int pos);									///< Debug: Prints object tree from object.
+		void PrintTree(int pos);									///< Debug: Prints Entity tree from Entity.
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
 
 		// Orientation  

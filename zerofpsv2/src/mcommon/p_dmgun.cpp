@@ -226,7 +226,7 @@ bool P_DMGun::FireBullets(int iAmount)
 //	Vector3 kSDir = (m_kDir - kStart).Unit();
 	
 	vector<Entity*> kObjects;		
-	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
+	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);	
 
 
 	for(int i =0;i<iAmount;i++)

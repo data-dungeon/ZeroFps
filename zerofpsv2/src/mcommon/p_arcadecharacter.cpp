@@ -147,7 +147,7 @@ void P_ArcadeCharacter::AutoAim()
 
 
 	vector<Entity*> kObjects;	
-	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
+	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);	
 	
 
 	Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			

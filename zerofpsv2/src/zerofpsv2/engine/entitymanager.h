@@ -1,20 +1,21 @@
-#ifndef _ENGINE_THE_OBJECTMANAGER_H_
-#define _ENGINE_THE_OBJECTMANAGER_H_
+#ifndef _ENGINE_THE_ENTITYMANAGER_H_
+#define _ENGINE_THE_ENTITYMANAGER_H_
 
 #include "entity.h"
 #include "property.h"
 #include <vector>
 #include <list>
 #include "../script/zfscript.h"
+#include "propertyfactory.h"
 
 using namespace std;
 
-class PropertyDescriptor;
-class ObjectDescriptor;
+//class PropertyDescriptor;
+//class ObjectDescriptor;
 class ZeroFps;
 class GameMessage;
 class NetWork;
-class ZoneObject;
+//class ZoneObject;
 class P_Track;
 
 enum EZoneStatus
@@ -87,12 +88,13 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		ZFBasicFS*					m_pkBasicFS;
 		ZShaderSystem*				m_pkZShaderSystem;
 		Render*						m_pkRender;
+		PropertyFactory*			m_pkPropertyFactory;	
 		
-		//base objects
-		Entity*						m_pkWorldObject;											///< Top level entity.
-		Entity*						m_pkZoneObject;											///< Top level entity.
-		Entity*						m_pkClientObject;											///< Top level entity.
-		Entity*						m_pkGlobalObject;											///< Top level entity.
+		// Base Entitys
+		Entity*						m_pkWorldEntity;											///< Top level entity.
+		Entity*						m_pkZoneEntity;											///< Top level entity.
+		Entity*						m_pkClientEntity;											///< Top level entity.
+		Entity*						m_pkGlobalEntity;											///< Top level entity.
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
@@ -103,7 +105,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
 		
-		int							iNextObjectID;												///< Next free object ID.
+		int							iNextEntityID;												///< Next free Entity ID.
 		
 		//debug
 		bool							m_bDrawZones;						//shuld zones be drawed
@@ -180,24 +182,24 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void		SetTimeScale(float fScale)		{	m_fSimTimeScale = fScale;	};
 		float		GetTimeScale()						{	return m_fSimTimeScale;		};
 		
-		// Add/Remove Objects
-		void Link(Entity* pkNewObject,int iId = -1);									///< Link this to the Object manager
-		void UnLink(Entity* pkObject);									///< UnLink this from Object Manger.
+		// Add/Remove Entitys
+		void Link(Entity* pkNewObject,int iId = -1);									///< Link this to the Entity manager
+		void UnLink(Entity* pkObject);									///< UnLink this from Entity Manger.
 		bool IsLinked(Entity* pkObject);
-		void Clear();															///< Delete all objects.
-		void CreateBaseObjects();											/// create all base objects	
+		void Clear();															///< Delete all Entity.
+		void CreateBaseObjects();											/// create all base Entitys	
 
 
 		// Create 
-		Entity* CreateObject(bool bLink = true);												///< Create a empty object.
-		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
+		Entity* CreateObject(bool bLink = true);												///< Create a empty Entity.
+		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create Entity with selected NetworkID
 		Entity* CreateObjectFromScript(const char* acName);
 		Entity* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Delete
-		void Delete(Entity* pkNewObject);								///< Adds an object to delete qeue
-      void Delete(int iNetworkID);								      ///< Adds an object to delete qeue
-		void UpdateDelete();													///< Deletes objects in delete qeue	
+		void Delete(Entity* pkNewObject);								///< Adds an Entity to delete qeue
+      void Delete(int iNetworkID);								      ///< Adds an Entity to delete qeue
+		void UpdateDelete();													///< Deletes Entity in delete qeue	
 
 		// Updates
 		void 	Update(int iType,int iSide,bool bSort,Entity* pkRootEntity = NULL,bool bForceRootOnly = false);					///< Run update on selected propertys.
@@ -206,36 +208,36 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int 	GetCurrentUpdateFlags()	{	return m_iUpdateFlags;	};
 		
 		// Gets
-		Entity* GetWorldObject()	{	return m_pkWorldObject;				};
-		Entity* GetZoneObject()		{	return m_pkZoneObject;				};		
-		Entity* GetClientObject()	{	return m_pkClientObject;			};		
-		Entity* GetGlobalObject()	{	return m_pkGlobalObject;			};				
+		Entity* GetWorldEntity()	{	return m_pkWorldEntity;				};
+		Entity* GetZoneEntity()		{	return m_pkZoneEntity;				};		
+		Entity* GetClientEntity()	{	return m_pkClientEntity;			};		
+		Entity* GetGlobalEntity()	{	return m_pkGlobalEntity;			};				
 		
-		int	GetNextObjectID()		{	return iNextObjectID;				};
+		int	GetNextEntityID()		{	return iNextEntityID;				};
 		int	GetNumOfObjects()		{	return int(m_akEntitys.size());	}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		
 		void 		GetAllObjects(vector<Entity*> *pakObjects);
 		Entity*	GetEntityByType(const char* czType);
-		Entity* 	GetObject(const char* acName);							///< Get a ptr to object by name
-		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
+		Entity* 	GetObject(const char* acName);							///< Get a ptr to Entity by name
+		Entity*	GetObjectByNetWorkID(int iNetID);						///< Get a ptr to Entity by networkID
 
 		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );
-		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
+		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
 		void PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject);
-		void PackToClients();												//Packs and Sends to ALL clients.
+		void PackToClients();																		//Packs and Sends to ALL clients.
 		void SendDeleteEntity(int iClient,int iEntityID);
 		
 		void StaticData(int iClient, NetPacket* pkNetPacket);
 		void GetStaticData(int iEntityID);
 
-		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a object.
+		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a Entity.
 		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.
-		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a object from server.	
+		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a Entity from server.	
 		void OwnerShip_Take(Entity* pkObj);		
 		void OwnerShip_Give(Entity* pkObj);
 

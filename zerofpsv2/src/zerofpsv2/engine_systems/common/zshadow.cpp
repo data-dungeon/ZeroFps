@@ -199,7 +199,7 @@ void ZShadow::Update()
 
 	//get all render propertys
 	vector<Property*>	kRenderPropertys;
-	m_pkEntityMan->GetZoneObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
+	m_pkEntityMan->GetZoneEntity()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
 
 	m_iCurrentShadows = 0;
 	m_iCurrentVerts = 0;

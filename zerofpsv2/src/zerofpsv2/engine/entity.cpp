@@ -1,6 +1,4 @@
 #include "entity.h"
-
-
 #include "../basic/zfsystem.h"
 #include "entitymanager.h"
 #include "zerofps.h"
@@ -21,7 +19,7 @@ typedef list<Property*>::iterator	itListProperty;
 
 Entity::Entity() 
 {
-	// Get Ptrs to some usefull objects.
+	// Get Ptrs to some usefull Subsystems.
 	m_pkEntityMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkZeroFps			   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -297,53 +295,53 @@ bool Entity::Update(const char* acName)
 
 	Checks that we don't have this Entity as a child and if not adds it.
 */
-void Entity::AddChild(Entity* pkObject) 
+void Entity::AddChild(Entity* pkEntity) 
 {
 	// Check so we don't have child already.
-	if(HasChild(pkObject))
+	if(HasChild(pkEntity))
 		return;
 
-	m_akChilds.push_back(pkObject);	
-	pkObject->SetParent(this);
+	m_akChilds.push_back(pkEntity);	
+	pkEntity->SetParent(this);
 }
 
 /**	\brief	Remove a Entity from our list of children.
 
 	Check that we have this Entity as a child and if so removes it.
 */
-void Entity::RemoveChild(Entity* pkObject)
+void Entity::RemoveChild(Entity* pkEntity)
 {
 	// If we don't have Entity as a child return.
-	if(HasChild(pkObject) == false)
+	if(HasChild(pkEntity) == false)
 		return;
 
 	//m_akChilds.remove(pkObject);	// Remove Entity as child.
 	vector<Entity*>::iterator kIt = m_akChilds.begin();
 	while(kIt != m_akChilds.end())
 	{
-		if((*kIt) == pkObject)
+		if((*kIt) == pkEntity)
 		{
 			m_akChilds.erase(kIt);
 			break;
 		}
 		++kIt;
 	}
-	pkObject->SetParent(NULL);		// Set objects parent to NULL.
+	pkEntity->SetParent(NULL);		// Set objects parent to NULL.
 }
 
 /**	\brief	Sets Entity to be our parent.
 */
-void Entity::SetParent(Entity* pkObject) 
+void Entity::SetParent(Entity* pkEntity) 
 {
 	// Check so we don't try to set ourself to be our own parent.
 //	ZFAssert(this != pkObject, "SetParent(this)");
-	if(this == pkObject)
+	if(this == pkEntity)
 		return;
 
 	SetNetUpdateFlag(NETUPDATEFLAG_PARENT,true);
 
 	// Remove Parent
-	if(pkObject == NULL) {
+	if(pkEntity == NULL) {
 		if(m_pkParent == NULL)
 			return;
 		
@@ -353,21 +351,21 @@ void Entity::SetParent(Entity* pkObject)
 		return;
 		}
 
-	if(m_pkParent == pkObject)		// Dont do anything if this parent is already set
+	if(m_pkParent == pkEntity)		// Dont do anything if this parent is already set
 		return;
 	SetParent(NULL);				// Remove Parent.
 	
-	m_pkParent = pkObject;
+	m_pkParent = pkEntity;
 	m_pkParent->AddChild(this);
 }
 
 /**	\brief	Returns true if Entity is our child of this.
 */
-bool Entity::HasChild(Entity* pkObject)
+bool Entity::HasChild(Entity* pkEntity)
 {
 	//check if this Entity is in the child list
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		if((*it)==pkObject) return true;
+		if((*it)==pkEntity) return true;
 	}
 	
 	return false;

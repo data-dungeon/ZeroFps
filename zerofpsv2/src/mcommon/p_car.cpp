@@ -104,7 +104,7 @@ Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 	vector<Entity*> kObjects;
 	kObjects.clear();
 
-	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);
+	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);
 
 	Vector3 kClosest;
 	float closest = 999999999;

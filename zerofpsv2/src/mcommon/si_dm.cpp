@@ -1054,7 +1054,7 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 
 Entity* DMLua::GetGameInfoEntity()
 {
-	Entity* pkGlobal =  g_pkObjMan->GetGlobalObject();
+	Entity* pkGlobal =  g_pkObjMan->GetGlobalEntity();
 
 	vector<Entity*> kObjects;
 

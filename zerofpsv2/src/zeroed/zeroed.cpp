@@ -198,7 +198,7 @@ void ZeroEd::CreateEditCameras()
 		if(m_pkCameraObject[i]) 
 		{
 			if(i == 0)
-				m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );				
+				m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldEntity() );				
 			else
 				m_pkCameraObject[i]->SetParent( m_pkCameraObject[0] );				
 			
@@ -995,11 +995,11 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) {
 					// Unlink
 					cout << "Unlink" << endl;
-					m_pkCameraObject[1]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[1]->SetParent( m_pkObjectMan->GetWorldEntity() );
 					m_pkCameraObject[1]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[2]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[2]->SetParent( m_pkObjectMan->GetWorldEntity() );
 					m_pkCameraObject[2]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[3]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[3]->SetParent( m_pkObjectMan->GetWorldEntity() );
 					m_pkCameraObject[3]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
 					}
 				else {
@@ -1144,7 +1144,7 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 	Vector3 kDir	= Get3DMouseDir(true);
 
 	vector<Entity*> kObjects;		
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
 		
 	float d;	
 	Vector3 cp;

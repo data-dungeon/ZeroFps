@@ -1128,7 +1128,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//pkObjectMan->TestLine(&kObjects,start,dir);
 	
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
@@ -1555,7 +1555,7 @@ bool MistClient::PickZones()
 	Vector3 dir = Get3DMousePos();
 	
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
+	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
 		
 	float closest = 999999999;
 	
