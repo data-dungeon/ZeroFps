@@ -214,6 +214,8 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		sprintf(text, "Agent %i", agent_object);
 		SetText("CurrentMemberNumberLabel", text);
 		SetCharacterStats(GetObject(agent_object));
+
+
 		break;
 
 	case IN_GAME:
@@ -234,6 +236,9 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		SetText("CurrentMemberNumberLabel", text);
 
 		SetCharacterStats(m_kMembersInField[m_iCurrentCharacterPage]);
+
+		((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
+			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
 
 		break;
 
@@ -614,7 +619,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 {
 	int x, y, w, h;
 	char szName[50];
-	const int CELL_SIZE = 32;
+	const int CELL_SIZE = 31;
 
 	P_DMCharacter* pkCharProperty=NULL;
 	

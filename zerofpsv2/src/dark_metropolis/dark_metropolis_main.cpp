@@ -418,7 +418,7 @@ void DarkMetropolis::Input()
 				}
 
 		//	detta också, denna tycks anropa någon egen select funtion och tömmer selection listan helatiden så det går inte välja flera gubbar smatidigt
-				if(last_object_selected != false)
+				if(last_object_selected != -1)
 					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(
 						last_object_selected, false); 
 			

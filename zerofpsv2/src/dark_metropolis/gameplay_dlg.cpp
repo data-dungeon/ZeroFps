@@ -154,6 +154,8 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 
 		m_iSelectedAgent = iAgent;
 	}
+
+	ZFAssert(pkAgentObject, "CGamePlayDlg::SelectAgent - Bad agent ID");
 }
 
 DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
