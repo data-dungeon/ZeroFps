@@ -599,7 +599,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 {	
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
 
-	if(pkScript->m_pkLuaState == NULL)
+	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
 		return false;
 
 	// Försök att hitta sökvägen via det virituella filsystemet.
