@@ -31,6 +31,7 @@ class BASIC_API HeightMap {
 		char m_acTileSet[256];
 		HM_vert *m_kCenter;
 		Vector3 m_kPosition;
+		int m_iError;
 		
 		HeightMap();		
 		void Zero();

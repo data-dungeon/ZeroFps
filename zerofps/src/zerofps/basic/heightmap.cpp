@@ -5,14 +5,15 @@ HeightMap::HeightMap() {
 	m_iHmSize=500;	
 	m_iBoxTresh=2;
 	m_iMaxSteps=5;
+	m_iError=10;
 	m_kPosition=Vector3(-50,0,-50);
-	verts=new HM_vert[(m_iHmSize+1)*m_iHmSize];
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
 	Zero();
 	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
 }
 
 void HeightMap::Zero() {
-	for(int i=0;i<m_iHmSize*m_iHmSize;i++){
+	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
 		verts[i].height=0;
 		verts[i].texture=0;
 	}
@@ -156,7 +157,7 @@ bool HeightMap::Save(char* acFile) {
 
 void HeightMap::Random() {
 	int height=6000;
-	int peaks=3000;
+	int peaks=100;
 	int smooth=6;
 
 	srand(time(0));
@@ -196,8 +197,8 @@ void HeightMap::Random() {
 		}
 	}
 	
-	for(int i=0;i<m_iHmSize*m_iHmSize;i++)
-		verts[i].height+=(rand()%1000)/3000.0;
+//	for(int i=0;i<m_iHmSize*m_iHmSize;i++)
+//		verts[i].height+=(rand()%1000)/5000.0;
 	
 }
 

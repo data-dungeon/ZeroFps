@@ -22,8 +22,8 @@ void Test::OnInit(void) {
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
-	GLfloat light_position[] ={1000,-200,0,1};
-	GLfloat white_light[] = {0.2,0.2,0.2,0.2};
+	GLfloat light_position[] ={100,200,0,1};
+	GLfloat white_light[] = {0.8,0.8,0.8,1};
 	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,1};
 
   glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
@@ -46,8 +46,8 @@ void Test::OnIdle(void) {
 	glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
-
-	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
+//	pkRender->DrawHM(test);		
+//	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
 //	cout<<pkFps->m_iFps<<endl;
 }
@@ -66,21 +66,21 @@ void Test::OnHud(void) {
 
 void Test::input() {
 	if(pkInput->Pressed(RIGHT)){
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.01;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.01;				
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.05;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*0.05;				
 	}
 	if(pkInput->Pressed(LEFT)){
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.01;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.01;				
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.05;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y+180)/degtorad)*pkFps->GetFrameTime()*0.05;				
 	}
 	
 	if(pkInput->Pressed(UP))	{
-			pkFps->CamPos().x+=cos((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.01;			
-			pkFps->CamPos().z+=sin((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.01;			
+			pkFps->CamPos().x+=cos((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.05;			
+			pkFps->CamPos().z+=sin((pkFps->CamRot().y-90)/degtorad)*pkFps->GetFrameTime()*0.05;			
 	}					
 	if(pkInput->Pressed(DOWN))	{
-		pkFps->CamPos().x+=cos((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.01;			
-		pkFps->CamPos().z+=sin((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.01;
+		pkFps->CamPos().x+=cos((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.05;			
+		pkFps->CamPos().z+=sin((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.05;
 	}		
 
 	if(pkInput->Pressed(HOME))

@@ -300,7 +300,7 @@ void Render::Dot(float x,float y,float z) {
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
-	int slicesize=30;	//grid size of lod tiles
+	int slicesize=10;	//grid size of lod tiles
 	int detail=20;//height meens greater detail att longer range
 	
 	glPushMatrix();
@@ -312,7 +312,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 //	glPolygonMode(GL_FRONT,GL_LINE);	
 	
 	GLfloat mat_specular[]={1,1,1,1};
-	GLfloat mat_shininess[]={0};
+	GLfloat mat_shininess[]={10};
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
@@ -322,7 +322,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	Vector3 p1,p2;
 	
 	//calculate number slices depending on the size of the lod tiles size
-	int slices=(kmap->m_iHmSize-1)/slicesize;
+	int slices=(kmap->m_iHmSize)/slicesize;
 	int step=1;
 	
 	for(int sz=0;sz<slices;sz++) {
@@ -332,7 +332,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			if(step<1)//step cant be lower than 1
 				step=1;				
 			if(step>6)//if the step get to high it will look realy bad
-				step=6;
+				step=6;			
 				
 			bool flip=false;	//texture fliper
 			float t=0;
@@ -407,6 +407,18 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			}
 		}
 	}
+	
+		//this draw the normals of the heightmap
+	/*
+	glPolygonMode(GL_FRONT,GL_LINE);
+	SetColor(Vector3(255,0,0));
+	for(int z=0;z<kmap->m_iHmSize;z++)
+		for(int x=0;x<kmap->m_iHmSize;x++) {
+			p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);
+ 			Line(p1,p1+kmap->verts[z*kmap->m_iHmSize+x].normal);
+	
+		}
+	*/
 	
 	glPolygonMode(GL_FRONT,GL_FILL);
 	glPopMatrix();
