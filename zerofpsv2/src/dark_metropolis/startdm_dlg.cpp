@@ -44,8 +44,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		}
 
 		SetText("ClanNameEB", "olle");
-
 		SelListItem("TeamColorCB", "Red");
+
 		m_pkDM->m_itStartBase = m_pkDM->m_vkStartBaseList.begin();
 		GetWnd("StartBaseNameLabel")->SetText((*m_pkDM->m_itStartBase)->szName);
 		GetWnd("StartBaseIconLabel")->SetSkin((*m_pkDM->m_itStartBase)->pkIcon);

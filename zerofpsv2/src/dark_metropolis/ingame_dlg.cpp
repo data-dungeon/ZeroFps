@@ -70,7 +70,7 @@ void CInGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		}
 		else
 		{
-			LoadDlg("data/script/gui/dm_shop.lua");	
+			LoadDlg("data/script/gui/dm_shop.lua");
 		}
 	}
 }

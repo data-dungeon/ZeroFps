@@ -11,7 +11,7 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 	Skin3 = { tex1="black.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin4 = { tex1="cb_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin4 = { tex1="cb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin5 = { tex1="dm/portrait1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -78,25 +78,11 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"GamePlayChar1Wnd","","",8,8,64,73,0)
-	ChangeSkin("GamePlayChar1Wnd","Skin18","Window")
 
-	CreateWnd(0,"GamePlayChar2Wnd","","",8,91,64,73,0)
-	ChangeSkin("GamePlayChar2Wnd","Skin18","Window")
+	CreateWnd(0,"GamePlayScreen","","",0,0,800,600,0)
+	ChangeSkin("GamePlayScreen","Skin2","Window")
 
-	CreateWnd(0,"GamePlayChar3Wnd","","",8,174,64,73,0)
-	ChangeSkin("GamePlayChar3Wnd","Skin18","Window")
-
-	CreateWnd(0,"GamePlayChar4Wnd","","",8,257,64,73,0)
-	ChangeSkin("GamePlayChar4Wnd","Skin18","Window")
-
-	CreateWnd(0,"GamePlayChar5Wnd","","",8,339,64,73,0)
-	ChangeSkin("GamePlayChar5Wnd","Skin18","Window")
-
-	CreateWnd(0,"GamePlayInfoWnd","","",8,461,104,28,0)
-	ChangeSkin("GamePlayInfoWnd","Skin19","Window")
-
-	CreateWnd(0,"GamePlayPanelWnd","","",7,504,789,92,0)
+	CreateWnd(0,"GamePlayPanelWnd","GamePlayScreen","",7,504,789,92,0)
 	ChangeSkin("GamePlayPanelWnd","Skin20","Window")
 
 	CreateWnd(1,"GamePlaySkillBn","GamePlayPanelWnd","Skill",400,18,60,53,0)
@@ -114,19 +100,7 @@ function GUICreate()
 	ChangeSkin("GameplayMoveBn","Skin16","Button down")
 	ChangeSkin("GameplayMoveBn","Skin17","Button focus")
 
-	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
-	ChangeSkin("GuiMainWnd","Skin2","Window")
-
-	CreateWnd(4,"Label358","","",24,104,50,9,0)
-	ChangeSkin("Label358","Skin3","Label")
-
-	CreateWnd(4,"Label464","","",41,110,50,9,0)
-	ChangeSkin("Label464","Skin3","Label")
-
-	CreateWnd(4,"Label962","","",27,102,50,9,0)
-	ChangeSkin("Label962","Skin3","Label")
-
-	CreateWnd(1,"PauseBn","GamePlayInfoWnd","",0,0,32,28,0)
+	CreateWnd(1,"PauseBn","GamePlayInfoWnd","",8,461,32,28,0)
 	ChangeSkin("PauseBn","Skin25","Button up")
 	ChangeSkin("PauseBn","Skin26","Button down")
 	ChangeSkin("PauseBn","Skin27","Button focus")
@@ -156,7 +130,7 @@ function GUICreate()
 	ChangeSkin("RebriefingBn","Skin23","Button down")
 	ChangeSkin("RebriefingBn","Skin24","Button focus")
 
-	CreateWnd(4,"TimeLeftLabel","GamePlayInfoWnd","12:24",42,4,50,20,0)
+	CreateWnd(4,"TimeLeftLabel","GamePlayInfoWnd","12:24",50,465,50,20,0)
 	ChangeSkin("TimeLeftLabel","Skin2","Label")
 
 	CreateWnd(4,"WeaponIcon","GamePlayPanelWnd","",617,9,64,75,0)
@@ -168,57 +142,52 @@ function GUICreate()
 	CreateWnd(4,"AmmoLabel","GamePlayPanelWnd","",647,12,30,20,0)
 	ChangeSkin("AmmoLabel","Skin2","Label")
 
-	CreateWnd(4,"Char1LifeBk1","GamePlayChar1Wnd","",0,64,50,9,0)
+	CreateWnd(4,"Char1LifeFront1","GamePlayScreen","",8,72,32,8,0)
+	ChangeSkin("Char1LifeFront1","Skin4","Label")
+	CreateWnd(4,"Char1LifeBk1","GamePlayScreen","",8,72,64,8,0)
 	ChangeSkin("Char1LifeBk1","Skin3","Label")
 
-	CreateWnd(4,"Char1LifeBk2","GamePlayChar2Wnd","",0,64,50,9,0)
+	CreateWnd(4,"Char1LifeFront2","GamePlayScreen","",8,155,32,8,0)
+	ChangeSkin("Char1LifeFront2","Skin4","Label")
+	CreateWnd(4,"Char1LifeBk2","GamePlayScreen","",8,155,64,8,0)
 	ChangeSkin("Char1LifeBk2","Skin3","Label")
 
-	CreateWnd(4,"Char1LifeBk3","GamePlayChar3Wnd","",0,64,50,9,0)
+	CreateWnd(4,"Char1LifeFront3","GamePlayScreen","",8,238,32,8,0)
+	ChangeSkin("Char1LifeFront3","Skin4","Label")
+	CreateWnd(4,"Char1LifeBk3","GamePlayScreen","",8,238,64,8,0)
 	ChangeSkin("Char1LifeBk3","Skin3","Label")
 
-	CreateWnd(4,"Char1LifeBk4","GamePlayChar4Wnd","",0,64,50,9,0)
+	CreateWnd(4,"Char1LifeFront4","GamePlayScreen","",8,321,32,8,0)
+	ChangeSkin("Char1LifeFront4","Skin4","Label")
+	CreateWnd(4,"Char1LifeBk4","GamePlayScreen","",8,321,64,8,0)
 	ChangeSkin("Char1LifeBk4","Skin3","Label")
 
-	CreateWnd(4,"Char1LifeBk5","GamePlayChar5Wnd","",0,64,50,9,0)
+	CreateWnd(4,"Char1LifeFront5","GamePlayScreen","",8,403,32,8,0)
+	ChangeSkin("Char1LifeFront5","Skin4","Label")
+	CreateWnd(4,"Char1LifeBk5","GamePlayScreen","",8,403,64,8,0)
 	ChangeSkin("Char1LifeBk5","Skin3","Label")
 
-	CreateWnd(4,"Char1LifeFront1","GamePlayChar1Wnd","",13,64,50,8,0)
-	ChangeSkin("Char1LifeFront1","Skin4","Label")
-
-	CreateWnd(4,"Char1LifeFront2","GamePlayChar2Wnd","",13,64,50,8,0)
-	ChangeSkin("Char1LifeFront2","Skin4","Label")
-
-	CreateWnd(4,"Char1LifeFront3","GamePlayChar3Wnd","",13,64,50,8,0)
-	ChangeSkin("Char1LifeFront3","Skin4","Label")
-
-	CreateWnd(4,"Char1LifeFront4","GamePlayChar4Wnd","",13,64,50,8,0)
-	ChangeSkin("Char1LifeFront4","Skin4","Label")
-
-	CreateWnd(4,"Char1LifeFront5","GamePlayChar5Wnd","",13,64,50,8,0)
-	ChangeSkin("Char1LifeFront5","Skin4","Label")
-
-	CreateWnd(1,"CharPortBn1","GamePlayChar1Wnd","",0,0,64,64,0)
+	CreateWnd(1,"CharPortBn1","GamePlayScreen","",8,8,64,64,0)
 	ChangeSkin("CharPortBn1","Skin5","Button up")
 	ChangeSkin("CharPortBn1","Skin6","Button down")
 	ChangeSkin("CharPortBn1","Skin5","Button focus")
 
-	CreateWnd(1,"CharPortBn2","GamePlayChar2Wnd","",0,0,64,64,0)
+	CreateWnd(1,"CharPortBn2","GamePlayScreen","",8,91,64,64,0)
 	ChangeSkin("CharPortBn2","Skin7","Button up")
 	ChangeSkin("CharPortBn2","Skin8","Button down")
 	ChangeSkin("CharPortBn2","Skin7","Button focus")
 
-	CreateWnd(1,"CharPortBn3","GamePlayChar3Wnd","",0,0,64,64,0)
+	CreateWnd(1,"CharPortBn3","GamePlayScreen","",8,174,64,64,0)
 	ChangeSkin("CharPortBn3","Skin9","Button up")
 	ChangeSkin("CharPortBn3","Skin10","Button down")
 	ChangeSkin("CharPortBn3","Skin9","Button focus")
 
-	CreateWnd(1,"CharPortBn4","GamePlayChar4Wnd","",0,0,64,64,0)
+	CreateWnd(1,"CharPortBn4","GamePlayScreen","",8,257,64,64,0)
 	ChangeSkin("CharPortBn4","Skin11","Button up")
 	ChangeSkin("CharPortBn4","Skin12","Button down")
 	ChangeSkin("CharPortBn4","Skin11","Button focus")
 
-	CreateWnd(1,"CharPortBn5","GamePlayChar5Wnd","",0,0,64,64,0)
+	CreateWnd(1,"CharPortBn5","GamePlayScreen","",8,339,64,64,0)
 	ChangeSkin("CharPortBn5","Skin13","Button up")
 	ChangeSkin("CharPortBn5","Skin14","Button down")
 	ChangeSkin("CharPortBn5","Skin13","Button focus")
