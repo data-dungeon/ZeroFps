@@ -1085,8 +1085,6 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 	if(pkListBox != NULL)
 		strListBox = pkListBox->GetName();
 
-	printf("%s\n", strMainWndName.c_str() );
-
 	if(strMainWndName == "EnviromentPage")
 	{
 		if(strListBox == "EnviromentPresetList")
@@ -1130,7 +1128,6 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 				if(strcmp(title, szItem) == 0)
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					printf("%s\n", title);
 					m_pkFps->m_pkConsole->Execute(cmd);
 					break;
 				}
@@ -1200,8 +1197,6 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 				strFullpath += string(szClickNodeText);
 
 			m_strActiveObjectName = strFullpath;
-
-			printf("%s\n", m_strActiveObjectName.c_str());
 		}
 	}
 }
