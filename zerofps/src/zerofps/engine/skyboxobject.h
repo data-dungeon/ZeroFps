@@ -11,6 +11,7 @@ class ENGINE_API SkyBoxObject: public Object {
 	public:
 		SkyBoxObject(const char* acHor,const char* acTop);
 		void SetTexture(const char* acHor,const char* acTop);
+		void SetRotate(Vector3 kRotate);
 };
 
 

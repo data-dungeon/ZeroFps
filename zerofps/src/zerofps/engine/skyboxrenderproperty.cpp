@@ -10,6 +10,8 @@ SkyBoxRenderProperty::SkyBoxRenderProperty(const char* acHor,const char* acTop)
 
 	m_iType=PROPERTY_TYPE_STATIC;
 	
+	m_kRotateSpd.Set(0,0,0);
+	m_kHead.Set(0,0,0);
 	SetTexture(acHor,acTop);
 }
 
@@ -19,10 +21,16 @@ void SkyBoxRenderProperty::SetTexture(const char* acHor,const char* acTop)
 	m_iTop = m_pkTexMan->Load(acTop,T_CLAMP);
 }
 
+void SkyBoxRenderProperty::SetRotate(Vector3 kRotate)
+{
+	m_kRotateSpd = kRotate;
+}
+
 
 void SkyBoxRenderProperty::Update() 
 {	
-//	m_pkHeightMap->SetPosition(m_pkObject->GetPos());
-	m_pkRender->DrawSkyBox(m_pkZeroFps->GetCam()->GetPos(),m_iHor,m_iTop);
-//	m_pkRender->DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
+	m_kHead = m_kHead + m_kRotateSpd * m_pkZeroFps->GetFrameTime();
+	
+	m_pkRender->DrawSkyBox(m_pkZeroFps->GetCam()->GetPos(),m_kHead,m_iHor,m_iTop);
 }
+

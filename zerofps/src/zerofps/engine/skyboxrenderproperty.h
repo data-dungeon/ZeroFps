@@ -18,12 +18,16 @@ class ENGINE_API SkyBoxRenderProperty: public Property {
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	
 	
-		int m_iHor;
+		int m_iHor;		
 		int m_iTop;
 	
+		Vector3 m_kRotateSpd;
+		Vector3 m_kHead;
+		
 	public:
 		SkyBoxRenderProperty(const char* acHor,const char* acTop);
-		void SetTexture(const char* acHor,const char* acTop);
+		void SetTexture(const char* acHor,const char* acTop);			//the skybox textures acHor is the horisontal texture, actop is top and botom texture
+		void SetRotate(Vector3 kRotate);
 		void Update();
 
 };

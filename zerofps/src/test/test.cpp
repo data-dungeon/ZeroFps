@@ -1,7 +1,7 @@
 #include "test.h"
 #include "walker.h"
 
-Test olle("MegaGame",640, 480,16);
+Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -47,8 +47,8 @@ void Test::OnInit(void) {
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
-	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
-
+//	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
+	pkRender->SetFog(Vector4(0,0,0,1),8,100,200,true);
 	
 	LightSource *spot=new LightSource();
 	Vector3 *spotpos=new Vector3(55,50,40);
@@ -85,7 +85,8 @@ void Test::OnInit(void) {
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);
+//		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);	//Dag
+		sol->kDiffuse=Vector4(1,1,1,1);	//natt
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
@@ -134,6 +135,7 @@ void Test::OnInit(void) {
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
+	sky->SetRotate(Vector3(1,1,0));
 	pkObjectMan->Add(sky);	
 	pkCollisionMan->Add(sky);
 	

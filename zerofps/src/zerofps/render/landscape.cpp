@@ -1,14 +1,17 @@
 #include "render.h"
 
-void Render::DrawSkyBox(Vector3 CamPos,int iHor,int iTop) {
+void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT|GL_TEXTURE_BIT);
+	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
 	
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	glRotatef(kHead.x, 1, 0, 0);
+	glRotatef(kHead.y, 0, 1, 0);	
+	glRotatef(kHead.z, 0, 0, 1);
 	glScalef(200,200,200);
 	
 	glColor4f(1,1,1,1);
