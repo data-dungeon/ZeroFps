@@ -1641,7 +1641,7 @@ void EntityManager::UpdateZones()
 			{
 				if(zd->m_pkZone)
 					zd->m_pkZone->ResetAllNetUpdateFlagsAndChilds((*iT2)->m_iConnectID);
-				cout<<"reseting zone:"<<endl;
+				//cout<<"reseting zone:"<<endl;
 			}
 		}
 	}

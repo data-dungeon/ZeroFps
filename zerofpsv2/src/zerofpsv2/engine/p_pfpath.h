@@ -28,6 +28,8 @@ class ENGINE_API P_PfPath : public Property
 	public:
 		P_PfPath();
 		~P_PfPath();
+	
+		void Init();
 
 		void CloneOf(Property* pkProperty) { }
 		void Update();

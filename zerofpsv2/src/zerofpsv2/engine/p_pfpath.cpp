@@ -26,10 +26,15 @@ P_PfPath::~P_PfPath()
 
 }
 
+void P_PfPath::Init()
+{
+
+}
+
 void P_PfPath::Update()
 {
-	if(!m_bHaveOffset)
-		SetupOffset();
+//	if(!m_bHaveOffset)
+//		SetupOffset();
 		
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
@@ -133,12 +138,31 @@ void P_PfPath::Save(ZFIoInterface* pkFile)
 {
 	pkFile->Write((void*)&m_bTilt,sizeof(m_bTilt),1);
 	pkFile->Write((void*)&m_fSpeed,sizeof(m_fSpeed),1);	
+	pkFile->Write((void*)&m_iNextGoal,sizeof(m_iNextGoal),1);	
+	
+	int nodes = m_kPath.size();
+	pkFile->Write((void*)&nodes,sizeof(nodes),1);	
+	for(int i = 0;i<nodes;i++)
+	{
+		pkFile->Write((void*)&(m_kPath[i]),sizeof(m_kPath[i]),1);	
+	}
 }
 
 void P_PfPath::Load(ZFIoInterface* pkFile)
 {
 	pkFile->Read((void*)&m_bTilt,sizeof(m_bTilt),1);
 	pkFile->Read((void*)&m_fSpeed,sizeof(m_fSpeed),1);	
+	pkFile->Read((void*)&m_iNextGoal,sizeof(m_iNextGoal),1);		
+
+	m_kPath.clear();
+	int nodes;
+	pkFile->Read((void*)&nodes,sizeof(nodes),1);			
+	for(int i = 0;i<nodes;i++)
+	{
+		Vector3 pos;
+		pkFile->Read((void*)&pos,sizeof(pos),1);	
+		m_kPath.push_back(pos);
+	}
 }
 
 void P_PfPath::PackTo(NetPacket* pkNetPacket, int iConnectionID )

@@ -95,7 +95,7 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	
 	//create new caracter and save it	
 	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_player.lua");	
-	pkEntity->GetName() = strCharacter;
+	pkEntity->SetName(strCharacter);
 	pkEntity->GetSave() = true;
 	pkEntity->SetUseZones(true);
 	
@@ -135,6 +135,8 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 	pkEntity->GetSave() = false;
 	pkEntity->SetUseZones(true);
 	
+	cout<<"Loaded Character "<<strPlayer<< " -> "<<strCharacter<<endl;
+	
 	return pkEntity;
 }
 
@@ -147,7 +149,7 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 
 	string strCharacterDataFile = m_strPlayerDirectory + (strPlayer + "/") + strCharacter + "/character.dat"; 
 	
-	if(!kFile.Open(strCharacterDataFile.c_str(),0,false))
+	if(!kFile.Open(strCharacterDataFile.c_str(),0,true))
 	{	
 		cout<<"did't find character"<<strPlayer<< " -> "<<strCharacter<<endl;
 		return false;
