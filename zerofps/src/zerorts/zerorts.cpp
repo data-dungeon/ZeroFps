@@ -324,30 +324,27 @@ void ZeroRTS::Input()
 	{
 		if(m_pkClientInput)
 		{
-			PickInfo info2 = Pick();
-			//PickInfo info2;
+			PickInfo info = Pick();
+			UnitCommand cmd;
 
+
+			// Try to get last command from user panel
+			// (the commando generated when the user clicks on a button)
+			if(!m_pkUserPanel->PopLastButtonCommand(cmd.m_acCommandName))
+			{
+				// No commando exist. Use move commando instead,
+				strcpy(cmd.m_acCommandName, "Move");
+			}
+			
 			for(list<int>::iterator it = m_kSelectedObjects.begin(); it != m_kSelectedObjects.end();it++)
 			{
-				UnitCommand bla;
-
-				// Try to get last command from user panel
-				// (the commando generated when the user clicks on a button)
-				if(!m_pkUserPanel->PopLastButtonCommand(bla.m_acCommandName))
-				{
-					// No commando exist. Use move commando instead,
-					strcpy(bla.m_acCommandName, "Move");
-				}
-
-				//bla.m_iXDestinaton = 100;
-				//bla.m_iYDestinaton = 100;			
-				//info2.kSquare.x = 100;
-				//info2.kSquare.y = 100;
-
-				bla.m_iXDestinaton = info2.kSquare.x;
-				bla.m_iYDestinaton = info2.kSquare.y;			
-				bla.m_iUnitID = (*it);
-				m_pkClientInput->AddOrder(bla);
+				cmd.m_iXDestinaton = info.kSquare.x;
+				cmd.m_iYDestinaton = info.kSquare.y;			
+				cmd.m_iTarget = info.iObject;
+				cmd.m_iUnitID = (*it);						
+				
+				m_pkClientInput->AddOrder(cmd);
+				
 			}	
 		}	
 	}
