@@ -53,12 +53,12 @@ void Console::InsertKey(unsigned char ucKey)
 {
 	cout << "InsertKey" << (int )ucKey<<endl;
 
-	if(ucKey == SDLK_BACKSPACE) {
+	if(ucKey == KEY_BACKSPACE) {
 		RemoveKey(false);
 		return;	
 		}
 
-	if(ucKey == SDLK_DELETE) {
+	if(ucKey == KEY_DELETE) {
 		RemoveKey(true);
 		return;	
 		}
