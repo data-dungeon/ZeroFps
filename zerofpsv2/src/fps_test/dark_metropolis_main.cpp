@@ -1179,7 +1179,7 @@ bool DarkMetropolis::CreatePlayer()
 					pkEnv->SetEnviroment("data/enviroments/sun.env");			
 				}					
 				
-				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
+//				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
 				m_pkPlayerEntity->DeleteProperty("P_Mad");
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
@@ -1190,12 +1190,7 @@ bool DarkMetropolis::CreatePlayer()
 					pkL->SetRot(Vector3(0,0,1));
 				}
 				*/
-				
-				if(P_Mad* pkL = (P_Mad*)m_pkCameraEntity->GetProperty(("P_Mad")))
-				{	
-					pkL->SetScale(2);
-				}
-				
+			
 								
 				m_pkCameraEntity->SetInterpolate(true);
 				m_pkPlayerEntity->SetInterpolate(true);

@@ -147,7 +147,7 @@ P_Enviroment::P_Enviroment()
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 
-	m_iSortPlace	=	-10;
+	m_iSortPlace	=	10;
 	
 	bNetwork =		true;
 	m_bEnabled =	false;

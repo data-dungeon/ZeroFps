@@ -288,7 +288,7 @@ void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,c
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
-	//glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 		
 	m_pkTexMan->BindTexture(iTexture);  
 	
@@ -309,6 +309,7 @@ void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,c
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor){
+	glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT);
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -333,9 +334,9 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	glTexCoord2f(0.0,0.0);glVertex3f(-0.5,0.5,0);    
 	glEnd();			
 
-	glDisable(GL_COLOR_MATERIAL);
 
 	glPopMatrix();
+	glPopAttrib();
 }
 
 void Render::PrintChar(unsigned char cChar) 

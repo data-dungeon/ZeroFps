@@ -38,6 +38,7 @@ void P_ArcadeCharacter::Init()
 
 void P_ArcadeCharacter::Update()
 {
+
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
 		Vector3 kDir = m_kCameraRotation.VectorTransform(m_kDir);
@@ -118,13 +119,13 @@ void P_ArcadeCharacter::Update()
 	AutoAim();
 	//m_kAim = kCurrentDir;
 
-				
+
 	//fire gun 
 	if(m_kActions[4])
 	{
 		Fire();
 	}
-	
+
 
 }
 
@@ -177,7 +178,7 @@ void P_ArcadeCharacter::AutoAim()
 					pkClosest = kObjects[i];
 				}
 			}
-		}			
+		}
 	}
 	
 	if(pkClosest == NULL)
@@ -199,8 +200,10 @@ void P_ArcadeCharacter::AutoAim()
 			
 			
 		m_iTarget = pkClosest->GetEntityID();
-		
+	
 	}
+	
+
 }
 
 Property* Create_P_ArcadeCharacter()

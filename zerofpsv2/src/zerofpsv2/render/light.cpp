@@ -96,7 +96,6 @@ bool comp(LightSource* x, LightSource* y)
  
 void Light::Update(Vector3 kRefPos)
 {
-
 	m_kActiveLights.clear();
 	m_kSorted.clear();	
 	TurnOffAll();

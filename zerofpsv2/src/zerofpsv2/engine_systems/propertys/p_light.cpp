@@ -22,7 +22,6 @@ P_Light::P_Light()
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = m_pkZeroFps->GetTicks();
 	
-	TurnOn();
 }
 
 P_Light::~P_Light()
@@ -33,6 +32,7 @@ P_Light::~P_Light()
 
 void P_Light::Init()
 {
+	TurnOn();
 
 }
 

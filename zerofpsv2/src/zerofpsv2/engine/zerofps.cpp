@@ -605,9 +605,15 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	if(pkCamera->IsRenderOn() == false)	return;
 
 	// Save State
-//	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-//		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	//glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
+	//	GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
+
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+		
+	//dvoid fog fix, problem då fog states skall sparas mellan varje frame....någon vettigare lösning kanske kommer =D
+	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | 
+		GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
+	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
