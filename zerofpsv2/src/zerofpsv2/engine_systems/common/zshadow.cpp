@@ -9,19 +9,20 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 {
 	Logf("zerofps","ZShadow system created");
 
-	m_pkLight 		= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
-	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
-}
-
-bool ZShadow::StartUp()
-{
 	m_iNrOfShadows = 2;
  	m_fExtrudeDistance = 10000;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
+}
+
+bool ZShadow::StartUp()
+{
+	m_pkLight 		= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
+
 
 	//EnableShadowGroup(0);
 	EnableShadowGroup(1);
@@ -32,6 +33,10 @@ bool ZShadow::StartUp()
 
 void ZShadow::Update()
 {
+	//do a quick return if no shadows shuld be rendered
+	if(m_iNrOfShadows == 0)
+		return;
+
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	//setup gl states for shadows rendering
