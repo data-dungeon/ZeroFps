@@ -158,6 +158,7 @@ void TextureManager::ClearAll()
 {
 	for(int i=0;i<m_iTextures.size();i++){
 		glDeleteTextures(1,&m_iTextures[i]->index);
+		delete m_iTextures[i];
 	}
 
 	m_iTextures.clear();
