@@ -34,6 +34,8 @@ void HMRP2::Update()
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}
+	
+
 }
 
 void HMRP2::PackTo(NetPacket* pkNetPacket)
@@ -51,7 +53,10 @@ void HMRP2::PackFrom(NetPacket* pkNetPacket)
 
 	LevelManager* pkLev = static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));		
 	pkLev->LoadLevelHmapOnly(temp);
-	m_strMapName = temp;
+	
+	m_strMapName = temp;	
+	SetHeightMap(pkLev->GetHeightMap(),m_strMapName);
+
 }
 
 Property* Create_HMRP2()
