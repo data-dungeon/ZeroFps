@@ -1,0 +1,50 @@
+#ifndef _BODYPROPERTY_H_
+#define _BODYPROPERTY_H_
+
+#include <iostream>
+
+using namespace std;
+
+#include "../../engine/property.h"
+#include "../../engine/zerofps.h"
+
+class ENGINE_API BodyProperty :public Property
+{
+	private:
+		Physics_Engine*	m_pkPhysics_Engine;
+		ZeroFps*				m_pkZeroFps;	
+			
+		Body					m_kBody;
+	
+		bool					m_bHaveSetBody;
+		int					m_iMeshID;
+		bool					m_bHaveSetMesh;
+	
+		vector<PropertyValues> GetPropertyValues();
+		
+	public:
+		BodyProperty();		
+		~BodyProperty();
+		void Init();
+		
+		void Update();
+		
+		void CloneOf(Property* pkProperty) { }
+
+		bool Enable();
+		bool Disable();
+		
+		void SetBodyToObject();
+		void SetObjectToBody();
+
+		void SetBodyPos(Vector3 kPos);
+		Vector3 GetBodyPos();
+		
+		bool SetUpMesh();
+};
+
+Property* Create_BodyProperty();
+
+#endif
+
+
