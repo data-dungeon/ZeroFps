@@ -7,7 +7,6 @@ function Create()
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 		InitProperty("P_DMCharacter");
-		InitProperty("P_DMGun");
 		SetParentObject();
 		SetReturnObject();
 
@@ -26,6 +25,6 @@ function HeartBeat()
 
 
 	if iClosest > 0 then
-		FireAtObject (SIGetSelfID(), iClosest);
-	end		
+		KillCharacter (0);
+	end
 end

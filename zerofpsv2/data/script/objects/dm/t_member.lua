@@ -14,9 +14,12 @@ function Create()
 
 end
 
+
+function Init()
+	SetMoveSpeed (SIGetSelfID(), 6.5);
+end
+
 function FirstRun()
-	SISetHeartRate(SIGetSelfID(),1);
-	PlayAnim(GetSelfID(), "idle");
 end
 
 function HeartBeat()
