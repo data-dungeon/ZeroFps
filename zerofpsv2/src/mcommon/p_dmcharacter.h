@@ -15,7 +15,7 @@
 
 using namespace std;
 
-enum eSTATE { IDLE, DEAD, CROUCH, PANIC };
+enum eSTATE { IDLE, DEAD, CROUCH, PANIC, AGGRESIVE };
 class MCOMMON_API DMCharacterStats
 {
 	public:

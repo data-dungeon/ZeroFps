@@ -29,6 +29,8 @@ function Init()
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
 	SISetHeartRate(SIGetSelfID(),4);
+
+	
 end
 
 function FirstRun()

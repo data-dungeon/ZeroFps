@@ -5,7 +5,7 @@
 --// 
 --///////////////////////////////////////////////////////////////////////////////
 
-MissionInfo = { name="Dr Gun", difficulty=1, xp=100, cash=500, success=0 } -- difficulty = Level
+MissionInfo = { name="Dr Gun", difficulty=1, xp=100, cash=1000, success=0 } -- difficulty = Level
 
 NumCivilians = 0
 NumCiviliansWounded = 0
@@ -18,9 +18,9 @@ HospitalObject = -1
 MissionText = 
 { 
 	short = "Dr Gun",
-	long  = [[Dr Gun\n\nMr. Wilhelm Von Leath wont you to work for him for a while.\n\nYou are hired to damage 5 persons. 
-	 You can pick anyone, he does't care. When you are done return to base. You will get 1000 dollar in cash
-	 when the mission is done]]
+	long  = [[Dr Gun\n\nMr. Wilhelm Von Leath wont you to work for him for a while.\n\nYou are hired to damage 5 persons.
+	 You can pick anyone, he does't care, just don't kill anyone (the undertaker have enough work already). When you are 
+	 done return to base. You will get 1000 dollar in cash when the mission is done (minus 200 dollar for any killed person)]]
 }
 
 function OnMissionStart()
@@ -49,6 +49,11 @@ function OnMissionStart()
 		CivWoundedList[counter] = life
 		counter = counter + 1
 	end
+
+	local pos = GetEntityPos( GetDMObject(0) ) -- hämta objektposition
+
+	pos[1] = pos[1] + 10
+	pos[3] = pos[3] + 10
 
 	HospitalObject = GetDMObject(1)
 
@@ -84,6 +89,12 @@ end
 
 function SendObjectToHospitle(object)
 
+	if HospitalObject == -1 then
+
+		Print( "No hospital found in Dark Metropolis" )
+		return 0
+	end
+
 	local hq_pos = GetEntityPos(HospitalObject)
 	local obj_pos = GetEntityPos(object)
 
@@ -100,7 +111,6 @@ function SendObjectToHospitle(object)
 		NumCiviliansAtDoctor = NumCiviliansAtDoctor + 1
 
 		return 1
-
 	end
 
 	-- Se om en ny pathfind behövs göras mot sjukhuset
@@ -142,15 +152,13 @@ function IsMissionDone()
 				RuningToHospitleList[NumCiviliansWounded] = obj
 
 				NumCiviliansWounded = NumCiviliansWounded + 1 -- öka antalet skadade personer
-
-			--	SendObjectToHospitle(obj)
 			end
 
 		end
 
 	end
 
-	-- Kolla om några har blivit skadeskjutna till döds
+	-- Kolla om några har blivit skadeskjutna till döds, i så fall minska ner antalet skade-skjutna människor.
 	if NumCiviliansWounded > 0 then
 
 		for y = 0, NumCiviliansWounded-1, 1 
@@ -162,6 +170,8 @@ function IsMissionDone()
 				if IsDead(obj_wounded) == 1 then
 
 					Print("--------- YOU ARE NOT SUPPOSED TO KILL PEOPLE! ------------")
+
+					MissionInfo.cash = MissionInfo.cash - 200
 
 					NumCiviliansWounded = NumCiviliansWounded - 1 -- minska antalet skadade personer
 
@@ -183,6 +193,7 @@ function IsMissionDone()
 				local obj_running = RuningToHospitleList[y]
 				local swallowed = SendObjectToHospitle( obj_running )
 
+				-- ta bort dom ur listan som har raderats
 				if swallowed == 1 then
 					RuningToHospitleList[y] = -1
 				end
