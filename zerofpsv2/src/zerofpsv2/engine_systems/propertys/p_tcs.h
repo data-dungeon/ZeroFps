@@ -46,8 +46,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;
 
-		Vector3	m_kExternalForces;
-		Vector3	m_kExternalMoment;
+		Vector3	m_kExternalLinearForce;
+		Vector3	m_kExternalRotForce;
 				
 		bool		m_bLocalStoredData;
 		
@@ -62,15 +62,14 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		P_Mad*					m_pkMad;
 		HeightMap*				m_pkHmap;
 		vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
-		vector<Vector3>*		 m_pkVertex;			// Vertex frames for mesh.
-		vector<Vector3>*		 m_pkNormal;
+		vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
+		vector<Vector3>*		m_pkNormal;
 
 		//temp data
-		Vector3	m_kVelocity;
+		Vector3	m_kLinearVelocity;
 		Vector3	m_kRotVelocity;
-		//Vector3	m_fAcceleration;
-		Vector3	m_kForces;
-		Vector3	m_kMoment;
+		Vector3	m_kLinearForce;
+		Vector3	m_kRotForce;
 		Vector3	m_kNewPos;
 		Matrix3	m_kNewRotation;
 		

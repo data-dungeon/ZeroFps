@@ -39,14 +39,13 @@ P_Tcs::P_Tcs()
 
    m_kRotVel.Set(0,0,0);
 	m_kWalkVel.Set(0,0,0);
-	m_kExternalForces.Set(0,0,0);
-	m_kExternalMoment.Set(0,0,0);
+	m_kExternalLinearForce.Set(0,0,0);
+	m_kExternalRotForce.Set(0,0,0);
 	
-	m_kVelocity.Set(0,0,0);
+	m_kLinearVelocity.Set(0,0,0);
 	m_kRotVelocity.Set(0,0,0);
-	//m_fAcceleration.Set(0,0,0);
-	m_kForces.Set(0,0,0);
-	m_kMoment.Set(0,0,0);
+	m_kLinearForce.Set(0,0,0);
+	m_kRotForce.Set(0,0,0);
 	m_kNewPos.Set(0,0,0);
 	m_kNewRotation.Identity();
 }
@@ -139,8 +138,8 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
-	pkPackage->Write((void*)&m_kExternalForces,sizeof(m_kExternalForces),1);									
-	pkPackage->Write((void*)&m_kExternalMoment,sizeof(m_kExternalMoment),1);									
+	pkPackage->Write((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
+	pkPackage->Write((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
 	pkPackage->Write((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 	
 }
@@ -165,8 +164,8 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
-	pkPackage->Read((void*)&m_kExternalForces,sizeof(m_kExternalForces),1);									
-	pkPackage->Read((void*)&m_kExternalMoment,sizeof(m_kExternalMoment),1);									
+	pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
+	pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
 	pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 }
 
@@ -490,21 +489,17 @@ void P_Tcs::GenerateModelMatrix()
 void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce)
 {
 	//add motion force
-	m_kExternalForces += kForce;
+	m_kExternalLinearForce += kForce;
 
 	//calculate and add momental force
 	kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
-	m_kExternalMoment += kForce.Cross(kAttachPos);
+	m_kExternalRotForce += kForce.Cross(kAttachPos);
 	
-	
-	//add motion force
-	//m_kExternalForces += kForce - kForce.Unit()*m_kExternalMoment.Length();	
-	//cout<<"forcE:"<<m_kExternalMoment.Length()<<endl;
 }
 
 void P_Tcs::ApplyForce(const Vector3& kForce)
 {
-	m_kExternalForces += kForce;
+	m_kExternalLinearForce += kForce;
 }
 
 Property* Create_P_Tcs()

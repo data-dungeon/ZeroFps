@@ -152,7 +152,7 @@ void Tcs::UpdateLineTests()
 				{
 					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0);
 					m_kBodys[i]->m_bOnGround = true;
-					m_kBodys[i]->m_kVelocity.y = 0;
+					m_kBodys[i]->m_kLinearVelocity.y = 0;
 				}			
 				else
 					m_kBodys[i]->m_bOnGround = false;				
@@ -187,12 +187,12 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	//cout<<"handling collission"<<endl;
 	if(!pkCol->pkBody1->m_bStatic)
 	{		
-		pkCol->pkBody1->m_kVelocity += (pkCol->kNormal * j) / pkCol->pkBody1->m_fMass;	
+		pkCol->pkBody1->m_kLinearVelocity += (pkCol->kNormal * j) / pkCol->pkBody1->m_fMass;	
 	}
 
 	if(!pkCol->pkBody2->m_bStatic)
 	{
-		pkCol->pkBody2->m_kVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;			
+		pkCol->pkBody2->m_kLinearVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;			
 	}
 
 
@@ -207,7 +207,7 @@ void Tcs::SyncEntitys()
 	{	
 	
 		m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
-		m_kBodys[i]->GetObject()->SetVel(m_kBodys[i]->m_kVelocity);
+		m_kBodys[i]->GetObject()->SetVel(m_kBodys[i]->m_kLinearVelocity);
 		m_kBodys[i]->GetObject()->SetLocalRotM(m_kBodys[i]->m_kNewRotation);
 	}
 }
@@ -219,7 +219,7 @@ void Tcs::SyncBodys()
 //		m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius,1,Vector3(1,0,0),false);
 		
 		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetObject()->GetWorldPosV();		
-		m_kBodys[i]->m_kVelocity = m_kBodys[i]->GetObject()->GetVel();				
+		m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();				
 		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetObject()->GetLocalRotM();
 	}
 }
@@ -232,41 +232,41 @@ void Tcs::UpdateForces()
 			continue;
 	
 		// LINEAR FORCE / ACCLERERATION			
-			m_kBodys[i]->m_kForces.Set(0,0,0);
+			m_kBodys[i]->m_kLinearForce.Set(0,0,0);
 		
 			//add external forces and clear it
-			m_kBodys[i]->m_kForces += m_kBodys[i]->m_kExternalForces; 
-			m_kBodys[i]->m_kExternalForces.Set(0,0,0);
+			m_kBodys[i]->m_kLinearForce += m_kBodys[i]->m_kExternalLinearForce; 
+			m_kBodys[i]->m_kExternalLinearForce.Set(0,0,0);
 			
 			//Apply walk force
-			m_kBodys[i]->m_kForces+=m_kBodys[i]->m_kWalkVel;
+			m_kBodys[i]->m_kLinearForce+=m_kBodys[i]->m_kWalkVel;
 			
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kForces += Vector3(0,-0.5,0);
+				m_kBodys[i]->m_kLinearForce += Vector3(0,-0.5,0);
 			}
 			
 			//apply some air friction		
-			m_kBodys[i]->m_kForces -= m_kBodys[i]->m_kVelocity * m_kBodys[i]->m_fAirFriction;
+			m_kBodys[i]->m_kLinearForce -= m_kBodys[i]->m_kLinearVelocity * m_kBodys[i]->m_fAirFriction;
 	
 			//Calculate linear acceleration
-			m_kBodys[i]->m_kForces = m_kBodys[i]->m_kForces / m_kBodys[i]->m_fMass;	
+			m_kBodys[i]->m_kLinearForce = m_kBodys[i]->m_kLinearForce / m_kBodys[i]->m_fMass;	
 				
 		
 		
 		// ROTATIONAL FORCE / ACCLERATION		
-			m_kBodys[i]->m_kMoment.Set(0,0,0);
+			m_kBodys[i]->m_kRotForce.Set(0,0,0);
 			
 			//add external moment and clera it
-			m_kBodys[i]->m_kMoment += m_kBodys[i]->m_kExternalMoment; 		
-			m_kBodys[i]->m_kExternalMoment.Set(0,0,0);	
+			m_kBodys[i]->m_kRotForce += m_kBodys[i]->m_kExternalRotForce; 		
+			m_kBodys[i]->m_kExternalRotForce.Set(0,0,0);	
 			
 			//apply some air friction				
-			m_kBodys[i]->m_kMoment -= m_kBodys[i]->m_kRotVelocity * m_kBodys[i]->m_fAirFriction;
+			m_kBodys[i]->m_kRotForce -= m_kBodys[i]->m_kRotVelocity * m_kBodys[i]->m_fAirFriction;
 	
 			//calculate rotation acceleration
-			m_kBodys[i]->m_kMoment = m_kBodys[i]->m_kMoment / m_kBodys[i]->m_fInertia;
+			m_kBodys[i]->m_kRotForce = m_kBodys[i]->m_kRotForce / m_kBodys[i]->m_fInertia;
 		
 	}
 }
@@ -291,13 +291,13 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 
 	
 	//apply linear acceleration
-	pkBody->m_kVelocity += pkBody->m_kForces * fAtime;	
+	pkBody->m_kLinearVelocity += pkBody->m_kLinearForce * fAtime;	
 	//apply rotation acceleration
-	pkBody->m_kRotVelocity += pkBody->m_kMoment * fAtime;
+	pkBody->m_kRotVelocity += pkBody->m_kRotForce * fAtime;
 		
 	
 	//Calculate new position
-	pkBody->m_kNewPos += (pkBody->m_kVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);	
+	pkBody->m_kNewPos += (pkBody->m_kLinearVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);	
 	//calculate new rotation 
 	pkBody->m_kNewRotation.RadRotate(pkBody->m_kRotVelocity * fAtime);
 	
@@ -659,7 +659,7 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	
 		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
 		temp.kPos = m_pkBodyCopy1->m_kNewPos - (temp.kNormal * m_pkBodyCopy1->m_fRadius);	
-		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity ) - (m_pkBodyCopy2->m_kVelocity);						
+		temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);						
 		temp.fAtime =	fAtime;
 		
 		m_kCollissions.push_back(temp);		
@@ -759,7 +759,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	
 		temp.kNormal = m_kLastTestNormal;
 		temp.kPos = m_kLastTestPos;	
-		temp.kRelVel = (m_pkBodyCopy1->m_kVelocity ) - (m_pkBodyCopy2->m_kVelocity);				
+		temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
 		temp.fAtime =	fAtime;
 		
 		m_kCollissions.push_back(temp);		
