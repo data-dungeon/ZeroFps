@@ -21,15 +21,15 @@ private:
 
    static int s_iContainerCounter;
 
-   string m_kItemName;
-   
    int 
       m_iQuantity,
       m_iValue; // gold value
 
    float 
       m_fQuality,
-      m_fWeight;
+      m_fWeight,
+      m_fUseSpeed; // speed modifier. How long it takes before character can execute new action
+                   // after using the item.
 
    // status modifiers
    map<string, int> m_kSkillBonus;
@@ -42,6 +42,8 @@ private:
    EquipmentCategory m_eEquipmentCategory;
    
 public:
+   string m_kItemName;
+
    int m_iContainerID; // id of this container
 	int m_iCurrentContainer; // id to the container where this item is.
 
@@ -79,9 +81,6 @@ public:
 		
 	// hämta ID't till den container där detta föremål ligger
 	int GetCurrentContainer() { return m_iCurrentContainer; } 
-
-	// sätt föremålet i en ny container
-	void PlaceInContainer(int iContainer) { m_iCurrentContainer = iContainer; } 
 
    void SetSkillBonus ( string kSkillName, int iValue );
    void SetAttributeBonus ( string kAttributeName, int iValue );

@@ -102,6 +102,10 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\p_ai.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_charstats.cpp
 # End Source File
 # Begin Source File
@@ -143,6 +147,10 @@ SOURCE=.\si_mistland.cpp
 # Begin Source File
 
 SOURCE=.\mcommon_x.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_ai.h
 # End Source File
 # Begin Source File
 

@@ -31,6 +31,9 @@ bool ItemStats::EquipOn ( CharacterStats *pkCharStat )
    for ( kIte = m_kFightStats.m_kDefence.begin();
          kIte != m_kFightStats.m_kDefence.end(); kIte++ )
       pkCharStat->AddDefenceValue ( (*kIte).first, (*kIte).second );
+
+   // add speed modifier
+   pkCharStat->AddReloadTime ( m_fUseSpeed );
   
    return true;
 }
@@ -60,6 +63,9 @@ bool ItemStats::UnEquip ( CharacterStats *pkCharStat )
    for ( kIte = m_kFightStats.m_kDefence.begin();
          kIte != m_kFightStats.m_kDefence.end(); kIte++ )
       pkCharStat->AddDefenceValue ( (*kIte).first, -(*kIte).second );
+
+   // remove speed modifier
+   pkCharStat->AddReloadTime ( -m_fUseSpeed );
 
    return true;
 }
@@ -319,6 +325,8 @@ ItemStats::ItemStats(P_Item* pkProperty)
 	strcpy(m_szPic, "dummy.bmp");
    m_uiVersion = 0;
    
+   m_fUseSpeed = 0;
+
    m_pkContainer = 0;//new Container (this);
    m_pkIsInContainer = 0;
    m_iContainerID = -1;

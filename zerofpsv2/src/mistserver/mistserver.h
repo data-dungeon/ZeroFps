@@ -29,6 +29,7 @@
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_enviroment.h"
+#include "../mcommon/p_ai.h"
 
 #include "playerdatabase.h"
 

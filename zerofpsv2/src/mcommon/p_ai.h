@@ -1,0 +1,75 @@
+#ifndef _ENGINE_P_AI_H_
+#define _ENGINE_P_AI_H_
+
+#include "../zerofpsv2/engine/property.h"
+#include "p_charstats.h"
+#include "mcommon_x.h"
+#include "../zerofpsv2/basic/zfini.h"
+#include <deque>
+#include <vector>
+#include <string>
+   using namespace std;
+
+struct Order
+{
+   string 
+      m_kOrderType,
+      m_kType;
+   
+   int 
+      m_iTargetID,
+      m_iTargetID2;
+
+   Vector3 m_kPosition;
+};
+
+enum { eIDLEMODE, eATTACKMODE };
+
+
+class MCOMMON_API P_AI: public Property 
+{
+	private:
+      deque<Order*> m_kStaticOrders;   // once list is finished, it is started over..idle orders
+      deque<Order*> m_kDynamicOrders;  // pop order once executed
+      deque<Order*> m_kConstantOrders; // check order every frame
+
+      int m_eAI_Mode; // attackmode, idlemode...
+
+      Order* m_pkCurrentOrder;
+
+      // pointer to the characters charprop.
+      CharacterProperty* m_pkCharProp;
+
+   public:
+
+      void NextOrder();
+
+      void AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition );
+      void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition );
+
+	   void Update();
+		void CloneOf(Property* pkProperty) {}
+		vector<PropertyValues> GetPropertyValues(); 
+
+      void Init();
+
+		P_AI( string kName );
+		P_AI();
+
+      void Save(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage);
+
+      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+
+		bool HandleSetValue( string kValueName, string kValue );
+};
+
+MCOMMON_API Property* Create_P_AI();
+
+#endif
+
+
+
+
+

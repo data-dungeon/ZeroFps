@@ -31,7 +31,6 @@ bool Container::AddObject ( int iAddToContainer )
          return false;
       }
 
-
       // objects in containers doesn't need to be updated
       pkEntity->SetUpdateStatus (UPDATE_NONE);
 
@@ -69,7 +68,7 @@ bool Container::RemoveObject ( int iRemoveFromContainer )
             m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte) );
 
          // Set which container the item is in
-         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = 0;
+         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = -1;
          ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_pkIsInContainer = 0;
 
 
@@ -80,9 +79,8 @@ bool Container::RemoveObject ( int iRemoveFromContainer )
 
          pkEntity->SetUpdateStatus( UPDATE_ALL );
 
-         // do some other fun stuff first...(unparent, and such)
+         // remove from containerlist
          m_kContainedObjects.erase (kIte);
-
 
          return true;
       }
@@ -123,7 +121,7 @@ void Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 
          // if item in container is a container itself, request update to that container...
          if ( pkItem->m_pkItemStats->m_pkContainer )
-            ((P_Item*)m_pkParent)->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );         
+            pkItem->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );         
 
       }
    else

@@ -78,6 +78,8 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 		return bSuccess;
 	}
 
+   return false;
+
 }
 
 

@@ -38,12 +38,7 @@ P_Item::P_Item()
 
 	strcpy(m_acName,"P_Item");
 
-   // TODO!! Move the below code to charstats
-
-   // check if object is on client side, if so, request a containerupdate
-//   if ( m_pkObject->m_pkFps->m_bServerMode )
-//      RequestUpdateFromServer ("container");
-
+   m_pkItemStats->MakeContainer();
 }
 
 // ------------------------------------------------------------------------------------------

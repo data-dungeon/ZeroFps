@@ -161,7 +161,18 @@ namespace MistLandLua
 	
 	//set particle system
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
-   
+
+      
+   // AI stuff
+	int MCOMMON_API AIPickUpLua(lua_State* pkLua);
+	int MCOMMON_API AIUseItemLua(lua_State* pkLua);
+	int MCOMMON_API AIMoveToLua(lua_State* pkLua);
+   int MCOMMON_API AISetCommander(lua_State* pkLua);
+   int MCOMMON_API AISetSlave(lua_State* pkLua);
+	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
+   int MCOMMON_API DistanceToLua(lua_State* pkLua);
+
+
    
    int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
    int MCOMMON_API SetDrawingOrderLua(lua_State* pkLua); // changes the order the object is drawn in(mad function)

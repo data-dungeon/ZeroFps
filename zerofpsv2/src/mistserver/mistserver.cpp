@@ -161,6 +161,7 @@ void MistServer::RegisterPropertys()
 	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
    pkPropertyFactory->Register("P_Item", Create_P_Item);
    pkPropertyFactory->Register("P_Spell", Create_P_Spell);
+   pkPropertyFactory->Register("P_AI", Create_P_AI);
 }
 
 

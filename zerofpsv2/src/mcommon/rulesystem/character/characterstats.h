@@ -60,8 +60,16 @@ private:
 
    string m_kCurrentSkill;
 
+   float m_fReloadTime; // time before next action (attackspeed, shootspeed..etc)
+   float m_fReloadTimer; // how long time has passed before last used action
+
 public:
-   Container* m_pkContainer;   
+   Container* m_pkContainer;
+   
+   // call this when the character has attacker, cast spell or such
+   void ResetActionTimer ()                { m_fReloadTimer = m_fReloadTime; }
+   void SetReloadTime ( float fTime )      { m_fReloadTime = fTime; }
+   void AddReloadTime ( float fTime )      { m_fReloadTime += fTime; }
 	
    unsigned int m_uiVersion; // which version of char the prop. holds. Server always have the latest.
 

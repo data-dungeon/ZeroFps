@@ -674,7 +674,7 @@ void InventoryDlg::AddSlot(const char *szPic, Point sqr,
 
 	kNewSlot.m_eType = eType;
 	kNewSlot.m_pkItemStats = pkItemStats;
-	kNewSlot.m_pkItemStats->PlaceInContainer(iContainer);
+//	kNewSlot.m_pkItemStats->PlaceInContainer(iContainer);
    kNewSlot.m_iNetWorkID = iNetworkID;
 
 	switch(eType)
