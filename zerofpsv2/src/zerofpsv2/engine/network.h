@@ -170,9 +170,9 @@ public:
 	bool Init();
 	bool Close();
 
-	void StartSocket(bool bStartServer);
+	void StartSocket(bool bStartServer,int iPort = 4242);
 	void CloseSocket();
-	void ServerStart(void);
+	void ServerStart(int iPort);
 	void ServerEnd(void);
 	void ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor);
 	void ClientEnd(void);

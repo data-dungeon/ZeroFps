@@ -906,7 +906,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
 
 			//start server
-			StartServer(true,true,kCommand->m_kSplitCommand[1].c_str());
+			StartServer(true,true,4242,kCommand->m_kSplitCommand[1].c_str());
 			break;
 			
 		case FID_ECHO:
@@ -982,13 +982,13 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 }
 
 
-void ZeroFps::StartServer(bool bClient,bool bNetwork,string strServerName)
+void ZeroFps::StartServer(bool bClient,bool bNetwork,int iPort,string strServerName)
 {
 	//reset all first
 	StopAll();
 	
 	if(bNetwork)
-		m_pkNetWork->ServerStart();
+		m_pkNetWork->ServerStart(iPort);
 	
 	m_bServerMode = true;		
 	if(bClient)

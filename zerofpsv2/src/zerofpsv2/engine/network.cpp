@@ -292,7 +292,7 @@ bool NetWork::IsConnected(int iId)
 }
 
 
-void NetWork::StartSocket(bool bStartServer)
+void NetWork::StartSocket(bool bStartServer,int iPort)
 {
 	if(m_pkSocket) 
 	{
@@ -300,8 +300,13 @@ void NetWork::StartSocket(bool bStartServer)
 		return;
 	}
 
+	//client uses socket 0 (none i presume)
 	int iSocketNum = 0;
-	if(bStartServer)	iSocketNum = 4242;
+	
+	//server uses iPort
+	if(bStartServer)	iSocketNum = iPort;
+	
+	//open the socket
 	m_pkSocket = SDLNet_UDP_Open( iSocketNum );
 	
 	if(!m_pkSocket) 
@@ -319,9 +324,9 @@ void NetWork::CloseSocket()
 	m_pkSocket = NULL;
 }
 
-void NetWork::ServerStart(void)
+void NetWork::ServerStart(int iPort)
 {
-	StartSocket(true);
+	StartSocket(true,iPort);
 	m_eNetStatus = NET_SERVER;
 }
 
