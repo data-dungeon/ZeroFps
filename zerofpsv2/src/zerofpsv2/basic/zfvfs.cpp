@@ -113,8 +113,8 @@ bool ZFVFileSystem::StartUp()
 	string strDir;
 	strDir = string(szWorkDir) + string("extdata/zerofps/");
 	AddRootPath(strDir.c_str(),"data/");
-//	strDir = string(szWorkDir) + string("extdata/mistlands/");
-//	AddRootPath(strDir.c_str(),"data/");
+	strDir = string(szWorkDir) + string("extdata/mistlands/");
+	AddRootPath(strDir.c_str(),"data/");
 	strDir = string(szWorkDir) + string("extdata/dm/");
 	AddRootPath(strDir.c_str(),"data/");
 

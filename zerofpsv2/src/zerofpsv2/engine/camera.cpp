@@ -92,6 +92,11 @@ void Camera::Update(int iWidth,int iHeight)
 			iSy = 0;
 			iW = pkRender->GetWidth();
 			iH = pkRender->GetHeight();
+
+			m_kViewPortCorner.x = iSx;
+			m_kViewPortCorner.y = iSy;
+			m_kViewPortSize.x = iW;
+			m_kViewPortSize.y = iH;
 		}
 
 		glScissor  ( iSx, iSy,	iW, iH );
