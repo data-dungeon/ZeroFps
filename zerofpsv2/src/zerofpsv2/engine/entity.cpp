@@ -239,8 +239,6 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
-	int iCurDec=0;
-
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
@@ -486,6 +484,9 @@ void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
 */
 void Entity::GetAllObjects(vector<Entity*> *pakObjects)
 {
+	if(m_iUpdateStatus & UPDATE_NONE)
+		return;
+	
 	pakObjects->push_back(this);	
 	
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
