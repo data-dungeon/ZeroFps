@@ -15,7 +15,7 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	m_iCurrentVerts = 	0;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
-	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
+//	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
 
 }
 
