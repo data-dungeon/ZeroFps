@@ -564,7 +564,13 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 
 	// Textures
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1", szData))
+	{
 		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
+
+		if(pkNewSkin->m_iBkTexID != -1)
+			m_pkGuiSys->CreatePickMapForImage(pkNewSkin->m_iBkTexID, 
+				string("/data/textures/gui/") + string(szData));
+	}
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex2", szData))
 		pkNewSkin->m_iHorzBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex3", szData))

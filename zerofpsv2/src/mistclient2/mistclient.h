@@ -4,7 +4,6 @@
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
 
-
 class OptionsDlg;
 class ActionMenu;
 class InventoryDlg;
@@ -16,8 +15,6 @@ typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, vo
 
 enum GUI_SCRIPT
 {
-//	GSF_INVENTORY,
-//	GSF_EQUIPMENT,
 	GSF_GAMEGUI,
 	GSF_OPTION,
 	GSF_START,

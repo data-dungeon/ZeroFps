@@ -1110,7 +1110,7 @@ void ZGuiResEd::SwitchDesignRes(int w, int h, bool rescale)
 		{
 			ZGuiWnd* pkWnd = (*it).second;
 			
-			if(IsEditorWnd(pkWnd) == false)
+			if(IsEditorWnd(pkWnd) == false /*|| pkWnd == GetWnd("Wnd1234")*/)
 			{
 				GuiType eType = GetWndType(pkWnd);
 

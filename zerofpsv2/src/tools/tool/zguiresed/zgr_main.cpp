@@ -166,7 +166,8 @@ bool ZGuiResEd::IsEditorWnd(ZGuiWnd* pkWnd)
 		strWnd == "GuiEd_NewWnd" ||
 		strWnd == "GuiEd_SelectFileWnd" ||
 		strWnd == "GuiEd_DesignBorder" ||
-		strWnd == "GuiDefMsgBox" )
+		strWnd == "GuiDefMsgBox"/* ||
+		strWnd == "Wnd1234"*/)
 		return true;
 
 	if(ZGuiWnd* pkParent = pkWnd->GetParent())

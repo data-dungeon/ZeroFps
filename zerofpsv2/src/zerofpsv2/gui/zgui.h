@@ -81,6 +81,8 @@ class GUI_API ZGui : public ZFSubSystem
 public:	
 	enum ZndInfo {WNDPROC};
 
+	bool CreatePickMapForImage(int iTexID, string strImageFile);
+
 	void DrawLine(Point p1, Point p2);
 	void DrawPoint(Point pos, unsigned char r, unsigned char g, unsigned char b);
 	void DrawRect(int x, int y, int w, int h, 
@@ -246,6 +248,15 @@ private:
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();
+
+	struct PICK_MAP
+	{
+		string strFile;
+		bool* m_pbAlphaState;
+		int w, h;
+	};
+
+	map<int, PICK_MAP> m_kPickMap; // tex_id, pickmap info
 
 public:
 	void CloseActiveMenu(void);

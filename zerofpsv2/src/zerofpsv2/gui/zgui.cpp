@@ -95,6 +95,12 @@ bool ZGui::StartUp()
 
 bool ZGui::ShutDown() 
 { 
+	map<int, PICK_MAP>::iterator it;
+	for(it=m_kPickMap.begin(); it!=m_kPickMap.end(); it++)
+	{
+		delete[] it->second.m_pbAlphaState;
+	}
+
 	return true; 
 }
 
@@ -977,6 +983,9 @@ void ZGui::SetRes(int iResX, int iResY)
 
 bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 {
+	if(!m_bMouseLeftPressed && !m_bMouseRightPressed) // 2005 feb 26: lägger till för att unvika slöhet!
+		return false;
+
 	if(m_bDisableAlphatest)
 	{
 		printf("Disabled\n");
@@ -999,11 +1008,9 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 			return false;
 		if( typeid(*pkParent)==typeid(ZGuiCheckbox) ) 
 			return false;
-
 	}
 
 	ZGuiSkin* pkSkin = pkWndClicked->GetSkin();
-
 	if(pkSkin == NULL)
 		return false;
 
@@ -1020,83 +1027,43 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 	}
 
 	bool bIsTGA = pkSkin->m_iBkTexAlphaID == -1 ? true : false;
-	int alpha_tex;
 
-	if(bIsTGA)
-		alpha_tex = pkSkin->m_iBkTexID;
-	else
-		alpha_tex = pkSkin->m_iBkTexAlphaID;
+	// Check if in map.
+	map<int, PICK_MAP>::iterator itPick;
+	itPick = m_kPickMap.find(pkSkin->m_iBkTexID);
+	if(itPick == m_kPickMap.end())
+		return false;
 
 	bool bTransparentPixelUnderCursor = false;
-	
-	if(alpha_tex > 0)
+
+	int horz_offset, vert_offset;
+	horz_offset = mx - pkWndClicked->GetScreenRect().Left;
+	vert_offset = my - pkWndClicked->GetScreenRect().Top;
+
+	float x_offset = (float) horz_offset / pkWndClicked->GetScreenRect().Width();
+	float y_offset = (float) vert_offset / pkWndClicked->GetScreenRect().Height();
+
+	float tex_w = (float) itPick->second.w; 
+	float tex_h = (float) itPick->second.h; 
+
+	float dx = (int)(tex_w*x_offset);
+	float dy = (int)(tex_h*y_offset);
+
+	dy = tex_h - dy;
+
+	if(dx < 0) dx = 0;
+	if(dy < 0) dy = 0;
+
+	if( dy < itPick->second.h && dx < itPick->second.w)
 	{
-		m_pkZShaderSystem->Push("ZGui::ClickedOnAlphaPixel");
-		
-		m_pkTexMan->BindTexture( alpha_tex );
-
-		int horz_offset, vert_offset;
-		horz_offset = mx - pkWndClicked->GetScreenRect().Left;
-		vert_offset = my - pkWndClicked->GetScreenRect().Top;
-
-		float x_offset = (float) horz_offset / pkWndClicked->GetScreenRect().Width();
-		float y_offset = (float) vert_offset / pkWndClicked->GetScreenRect().Height();
-
-		m_pkTexMan->EditStart( alpha_tex );
-		Image* pkSurface = m_pkTexMan->EditGetImage( alpha_tex );
-
-		if(pkSurface == NULL)
-		{			
-			printf("Failed to call GetImage from texturemanager!\n");
-			m_pkZShaderSystem->Pop();
-			return false;
-		}
-
-		float tex_w = (float) pkSurface->m_iWidth;
-		float tex_h = (float) pkSurface->m_iHeight;
-
-		float dx = (int)(tex_w*x_offset);
-		float dy = (int)(tex_h*y_offset);
-
-		if(pkSurface->m_bHasAlpha)
-			dy = tex_h - dy;
-		else
-		{
-			m_pkTexMan->EditEnd( alpha_tex );
-			m_pkZShaderSystem->Pop();
-			return false; // f� zeroms skull :) Nu funkar det bara att picka p�p�Alpha pixlar i en tga bild.
-		}
-
-		if(dx < 0) dx = 0;
-		if(dy < 0) dy = 0;
-
-
-		//unsigned long pixel;
-		color_rgba kColor;
-		if(!pkSurface->get_pixel(int(dx), int(dy), kColor))
-		{
-			printf("Image::get_pixel Failed\n");
-		}
-		m_pkTexMan->EditEnd( alpha_tex );
-
-		m_pkZShaderSystem->Pop();
-
-
-		if(pkSurface->m_bHasAlpha) 
-		{
-			if( kColor.a == 0 ) 
-				bTransparentPixelUnderCursor = true;
-			else
-				bTransparentPixelUnderCursor = false;
-		}
-		else
-		{
-			if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0)
-				bTransparentPixelUnderCursor = false;		
-			else 
-				bTransparentPixelUnderCursor = true;
-		}
+		int offset = int(dy) * itPick->second.w + int(dx);
+		bTransparentPixelUnderCursor =  itPick->second.m_pbAlphaState[ offset ];
 	}
+
+	//if(bTransparentPixelUnderCursor)
+	//	printf("Alpha pixel under cursor!\n");	
+	//else
+	//	printf("No Alpha pixel under cursor!\n");
 
 	return bTransparentPixelUnderCursor;
 }
@@ -1790,6 +1757,54 @@ bool ZGui::PlaceWndFrontBack(ZGuiWnd* pkWnd, bool bFront)
 	}
 
 	m_pkMainWindows.sort(SortZCmp);
+
+	return true;
+}
+
+bool ZGui::CreatePickMapForImage(int iTexID, string strImageFile)
+{
+	// Find file exten and skip all files that are not TGA.
+	char *ext = strrchr( strImageFile.c_str(), '.');
+	if(ext == NULL)		
+		return false;
+	if(strcmp(ext,".tga") != 0) 
+		return false;
+
+	// Check if already in map.
+	map<int, PICK_MAP>::iterator itPick;
+	itPick = m_kPickMap.find(iTexID);
+	if(itPick != m_kPickMap.end())
+		return true;
+
+	ZFVFile kFile;
+	if(!kFile.Open(strImageFile.c_str(),0,false))
+	{
+		printf("1: Failed to open image [%s] file for pickmap\n", strImageFile);
+		return false;
+	}
+
+	Image kImage;
+	if(!kImage.load(kFile.m_pkFilePointer, strImageFile.c_str()))
+	{
+		printf("2: Failed to load image [%s] for pickmap\n", strImageFile.c_str());
+		return false;
+	}
+
+	PICK_MAP new_key;
+	new_key.w = kImage.m_iWidth;
+	new_key.h = kImage.m_iHeight;
+	new_key.m_pbAlphaState = new bool[kImage.m_iWidth * kImage.m_iHeight];
+	new_key.strFile = strImageFile;
+	
+	for(int y=0; y<new_key.h; y++)
+		for(int x=0; x<new_key.w; x++)
+		{
+			color_rgba c;
+			kImage.get_pixel(x,y,c);
+			new_key.m_pbAlphaState[ y * new_key.w + x ] = (c.a == 0) ? true : false;
+		}
+
+	m_kPickMap[iTexID] = new_key;
 
 	return true;
 }

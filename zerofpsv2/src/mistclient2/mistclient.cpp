@@ -415,6 +415,13 @@ void MistClient::Input()
 			SendRequestOpenEqipment();
 		}
 	}
+
+	if(m_pkInputHandle->Pressed(KEY_C) && !DelayCommand())
+	{			
+		bool bOpen = !IsWndVisible("ChatDlgMainWnd");
+		SetText("SayTextbox", "");
+		ToogleChatWnd(bOpen);
+	}
 			
 	// taunts
 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
