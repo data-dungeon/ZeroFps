@@ -265,18 +265,22 @@ void Mad_Modell::LoadTextures()
 			SelectSubMesh(iSubM);
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-			pkTexInfo->bClampTexture	= false;
+			sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
+			
+			/*pkTexInfo->bClampTexture	= false;
 			pkTexInfo->bIsAlphaTest		= false;
 			pkTexInfo->bTwoSided		= false;
-			sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
-
+			cout << szFullTexName;
+			cout << " bClampTexture: " << pkTexInfo->bClampTexture;
+			cout << " bIsAlphaTest: " << pkTexInfo->bIsAlphaTest;
+			cout << " bTwoSided: " << pkTexInfo->bTwoSided;
+			cout << endl;
 			//cout << iM << "/" << iSubM << ": " << szFullTexName << endl;
-
 			if(strcmp("../data/textures/pine_branch_color02.tga",szFullTexName) == 0) {
 				pkTexInfo->bClampTexture	= true;
 				pkTexInfo->bIsAlphaTest		= true;
 				pkTexInfo->bTwoSided		= true;
-				}
+				}*/
 
 			if(pkTexInfo->bClampTexture)
 				iTexID = pkTex->Load(szFullTexName,T_CLAMP);
@@ -295,18 +299,16 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 {
 //	return;
 
-/*	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
+	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
 		//cout << "Calling list " << iListID << endl;
 		glCallList(iListID);
 		return;
-		}*/
+		}
 
 
 	if(iDrawFlags == 0)
 		return;
-
-//	cout << "DRAW";
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);
@@ -358,7 +360,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		}
 
 	glDisable(GL_ALPHA_TEST);
-	if(iDrawFlags & MAD_DRAW_BONES)
+//	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
 
 	glPopAttrib();

@@ -355,6 +355,29 @@ int	Mad_CoreMesh::AddTexture(char* ucpTextureName)
 	return iTextureIndex; 
 }
 
+void Mad_CoreMesh::SetTextureFlags(void)
+{
+	char* pkChar;
+
+	for(int i=0; i<akTextures.size(); i++) {
+		char* pszFlags = strstr(akTextures[i].ucTextureName, "-");		
+		
+		if(pszFlags == NULL)
+			continue;
+
+		pkChar = akTextures[i].ucTextureName;
+		while(pkChar < pszFlags) {
+			if(pkChar[0] == 'c') {
+				akTextures[i].bIsAlphaTest = true;
+				akTextures[i].bClampTexture = true;
+				}
+
+			pkChar++;
+			}
+		}
+}
+
+
 void Mad_CoreMesh::ResizeTextures(int iNewSize)
 {
 	akTextures.resize(iNewSize);

@@ -223,6 +223,27 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTe
 	
 }
 
+/*
+void Render::DrawBoundSphere(float fRadius, Vector3)
+{
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glColor3f(1,1,1);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D );
+
+	float x,y;
+	glBegin(GL_LINE_LOOP );
+	for(int i=0; i<360; i+=(int)12.25) {
+		x = cos(DegToRad(i)) * fRadius;
+		y = sin(DegToRad(i)) * fRadius;
+		glVertex3f(x,y,0);
+	}
+	
+	glEnd();
+
+	glPopAttrib();
+}*/
+
 
 
 

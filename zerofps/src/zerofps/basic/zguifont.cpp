@@ -103,7 +103,8 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 	m_aChars[' '-32].iSizeX = m_aChars['t'-32].iSizeX;
 	m_aChars[' '-32].iSizeY = m_cCharCellSize;
 
-	delete pkImage;
+//	delete pkImage;
+	SDL_FreeSurface(pkImage);
 
 	return true;
 }

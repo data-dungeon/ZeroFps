@@ -41,12 +41,20 @@ struct BASIC_API Mad_CoreMeshHeader
 	int		iNumOfAnimation;			// Antal Animationer.
 };
 
-struct BASIC_API Mad_CoreTexture
+class BASIC_API Mad_CoreTexture
 {
+public:
 	bool	bIsAlphaTest;				// True if needs alpha test.
 	bool	bTwoSided;					// True if two sided.
 	bool	bClampTexture;				// True if texture should clamp texture coo.
 	char	ucTextureName[64];			// path/name of texture.
+
+	Mad_CoreTexture() 
+	{
+		bIsAlphaTest = false;
+		bTwoSided = false;
+		bClampTexture = false;
+	}
 };
 
 class BASIC_API Mad_CoreVertexFrame
@@ -180,6 +188,8 @@ public:
 	void CreateVertexNormals();
 	void OptimizeSubMeshes();
 	int	AddTexture(char* ucpTextureName);
+
+	void SetTextureFlags(void);
 
 	friend class Mad_Core;
 

@@ -175,7 +175,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 	float diff_s, diff_t;
 
-	cout << "CoreMesh: " << filename << " ";
+	cout << "CoreMesh: " << filename << endl;
 
 	char tmpstr[256];
 
@@ -239,9 +239,8 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 	}
 
 //	pkMesh->akFrames.push_back(kFrame);
+	pkMesh->SetTextureFlags();
 	pkMesh->PushBackFrames(kFrame);
-
-	cout << endl;
 
 	fclose(fp);
 //	m_akFrames.clear();	
@@ -304,7 +303,7 @@ void ModellXXX::ReadAnimation(const char* filename)
 
 void ModellXXX::ReadExportSD(const char* filename)
 {
-	cout << "Skelleton: " << filename << " ";
+	cout << "Skelleton: " << filename << endl;
 	char tmpstr[256];
 	bool done = false;
 
@@ -409,8 +408,8 @@ void Mad_CoreAnimation::PrintAnimation(void)
 
 void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 {
-	cout << "Animation: " << filename << " ";
-	cout << "m_kBoneAnim: " << m_kBoneAnim.size();
+	cout << "Animation: " << filename << endl;
+//	cout << "m_kBoneAnim: " << m_kBoneAnim.size();
 	char tmpstr[256];
 	bool done = false;
 
@@ -469,12 +468,12 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 
 	fclose(fp);
 
-	cout << "HORA" << endl;
-	cout << "kNewBoneAnim: " << kNewBoneAnim.Size() << endl;
-	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
+//	cout << "HORA" << endl;
+//	cout << "kNewBoneAnim: " << kNewBoneAnim.Size() << endl;
+//	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
 	m_kBoneAnim.push_back(kNewBoneAnim);
-	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
-	cout << "HORA2" << endl;
+//	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
+//	cout << "HORA2" << endl;
 
 /*	kNewAnimation.PrintAnimation();
 
@@ -496,6 +495,8 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 
 }
 
+extern string ucaOutFile;
+
 
 void ModellXXX::Read( const char* filename )
 {
@@ -509,9 +510,17 @@ void ModellXXX::Read( const char* filename )
 
 	while(ucpToken)
 	{
-		if (!strcmp (ucpToken, "!filetype"))
+		if (!strcmp (ucpToken, "!filetype")) {
 			cout << "Command filetype" << endl;
+			}
 		
+		if (!strcmp (ucpToken, "!target"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Target file is: " << ucpToken << endl;
+			ucaOutFile = ucpToken;
+		}
+
 		if (!strcmp (ucpToken, "!add-fd"))
 		{
 			ucpToken = kMMScipt.GetToken();

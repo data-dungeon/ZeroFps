@@ -1135,17 +1135,19 @@ MStatus MadExport::reader( const MFileObject& file, const MString& options, File
 }
 
 #define EXPORT_NONE		0
-
 #define EXPORT_BONES	1
 #define EXPORT_MESH		2
 #define EXPORT_ANIM		3
- 
+#define EXPORT_ALL		4
+
+
 MStatus MadExport::writer( const MFileObject& file, const MString& options, FileAccessMode mode)
 {
 	Clear();
 
 	MString FullPathName = file.fullName();
 	MString FileExt;
+	MString TempName;
 
 	cout << "FileName " << FullPathName.asChar() << "\n";
 	cout << "Options: " << options.asChar() << "\n";
@@ -1178,10 +1180,15 @@ MStatus MadExport::writer( const MFileObject& file, const MString& options, File
 
 				if( theOption[1] == MString("s"))
 					iExportFlag = EXPORT_BONES;
+
 				if( theOption[1] == MString("m"))
 					iExportFlag = EXPORT_MESH;
+
 				if( theOption[1] == MString("a"))
 					iExportFlag = EXPORT_ANIM;
+
+				if( theOption[1] == MString("e"))
+					iExportFlag = EXPORT_ALL;
 			}
 		}
 	}
@@ -1212,6 +1219,16 @@ MStatus MadExport::writer( const MFileObject& file, const MString& options, File
 		case EXPORT_NONE:
 			cout << "Exporting Nothing\n";
 			ShowHelp();
+			break;
+
+		case EXPORT_ALL:
+			TempName = FullPathName + ".sx";
+			//Export_SX(FullPathName.asChar());
+			TempName = FullPathName + ".mx";
+			//Export_MX(FullPathName.asChar());
+			TempName = FullPathName + ".ax";
+			//Export_AX(FullPathName.asChar());
+
 			break;
 		}
 

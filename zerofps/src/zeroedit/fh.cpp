@@ -18,9 +18,10 @@ FHObject::FHObject(const char* szMadName)
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBasePtr(m_pkFps->GetMADPtr(szMadName));
+	madp->SetScale(0.01); 
 	//szMadName
 	GetPos()=Vector3(0,0,0);
-	
+
 	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 }
 

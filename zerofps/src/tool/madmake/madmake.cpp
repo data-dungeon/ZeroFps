@@ -47,12 +47,13 @@ string RemoveExtension(string strFile)
 	return StrNewName;
 }
 
+string ucaInFile;
+string ucaOutFile;
+string ucaTextureNames;
+
 class MadMake
 {
 private:
-	string ucaInFile;
-	string ucaOutFile;
-	string ucaTextureNames;
     bool bQuit;
 
 public:
@@ -154,10 +155,12 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 
 	if(iCurArg < argc)
 		ucaInFile = argv[iCurArg];
+
 	if((iCurArg + 1) < argc)
 		ucaOutFile = argv[iCurArg + 1];
 	else
 		ucaOutFile = "test.mad";
+	
 	if((iCurArg + 2) < argc)
 		ucaTextureNames = argv[iCurArg + 2];
 	else

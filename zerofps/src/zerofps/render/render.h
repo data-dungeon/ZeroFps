@@ -82,6 +82,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2);
 		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
 		void DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTexture);
+
+		void DrawBoundSphere();
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);
