@@ -127,8 +127,8 @@ void Tcs::Update(float fAlphaTime)
 	//fStepSize = fAlphaTime;
 	
 	//minimum time size
-	if(fStepSize > 0.03)
-		fStepSize = 0.03;
+	if(fStepSize > 0.05)
+		fStepSize = 0.05;
 	
 	
 	
