@@ -1,19 +1,24 @@
 #ifndef _ENGINE_NETWORK_H_
 #define _ENGINE_NETWORK_H_
 
+#include "deque"
+
 #include "../basic/zfassert.h"
 #include "engine_x.h"
 #include "console.h"
+#include "netpacket.h"
 #include <SDL/SDL_net.h>
 #include "fh.h"
 
+using namespace std;
 
-#define MAX_PACKET_SIZE					1024				// Max Bytes in each packet.
+
 #define MAX_NETWORKNAME					16					
 
 // Diffrent types of messages the network sends.
 #define ZF_NETTYPE_CONTROL				1	// A Connection controll message
 #define ZF_NETTYPE_UNREL				2	// Unrel message that ZeroFps handles.
+#define ZF_NETTYPE_REL					3	// Rel Udp message that ZeroFps handles.
 
 #define ZF_NETCONTROL_LIST				1	// Req server info. 
 #define ZF_NETCONTROL_JOIN				2	//	Req Join.
@@ -26,8 +31,9 @@
 #define ZF_NETCONTROL_NETSTRINGS		9	//
 #define ZF_NETCONTROL_REQNETSTRING	10	//
 
-#define MAX_NET_CLIENTS					4	// Max number of clients (nodes).
-#define ZF_NET_NOCLIENT					-1	// ID for a non client.
+#define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
+#define ZF_NET_NOCLIENT					-1		// ID for a non client.
+#define ZF_NET_ALLCLIENT				-2		// ID for a all clients.
 
 #define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
 
@@ -38,6 +44,8 @@ enum ClientConnectStatus
 	NETSTATUS_CONNECTED,					// A Connected client
 	NETSTATUS_DISCONNECT					// Unconnected (free).
 };
+
+
 
 /// A Remote Node on the network.
 class RemoteNode
@@ -71,76 +79,11 @@ public:
 	int				m_iOutOfOrderNetFrame;
 
 	int				m_iLastRecvPacket;				// Order num of last recv packet.
+
+	deque<ZFNetPacketData>	m_RelPackages;
 };
 
-//	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
-#pragma pack( 1 )
 
-/// The ZeroFps packet header.
-/// Is added to the start of all network packets sent in zerofps.
-struct ZFNetHeader
-{
-	int				m_iOrder;							//  Order of packet 
-	unsigned char	m_iPacketType;						//  Type of packet.
-};
-
-/// The Full Data in a Network packet.
-struct ZFNetPacketData
-{
-	ZFNetHeader		m_kHeader;							
-	unsigned char	m_acData[MAX_PACKET_SIZE];		
-};
-
-#pragma pack(  )
-
-/// A Packet that is sent over network.
-class ENGINE_API NetPacket
-{
-public:
-	NetPacket();
-	~NetPacket();
-	void Clear();
-	
-	void SetTarget(const char* szIp);
-
-	ZFNetPacketData	m_kData;
-	int					m_iLength;
-	int					m_iPos;
-	IPaddress			m_kAddress;
-	int					m_iClientID;
-	bool					m_bReadError;
-
-	void SetError(bool bError) { m_bReadError = bError;	}
-	bool IsReadError() { return m_bReadError; }
-
-	void Write_Str(const char* szString);
-	void Read_Str(char* szString);
-
-	void Write_NetStr (const char* szString);
-	void Read_NetStr  (char* szString);
-
-	template <class Any> 
-	void Write(Any type) {
-		ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
-
-		unsigned char * add = &m_kData.m_acData[m_iPos];
-		memcpy(add, &type, sizeof(type));
-		m_iPos += sizeof(type);
-		if(m_iPos > m_iLength)	m_iLength = m_iPos;
-		}
-
-	template <class Any> 
-	void Read(Any& type) {
-		unsigned char * add = &m_kData.m_acData[m_iPos];
-		memcpy(&type, add, sizeof(type));
-		m_iPos += sizeof(type);
-		}
-
-	void Write(void* ptr, int iSize);
-	void Read(void* ptr, int iSize);
-
-	void SetType(int iType);
-};
 
 // Status of network layer.
 enum NetWorkStatus
@@ -241,9 +184,10 @@ public:
 	void NetString_Refresh();
 
 	// Send
-	bool Send(NetPacket* pkNetPacket);
-	void SendToAllClients(NetPacket* pkNetPacket);
-	void SendToClient(int iClient, NetPacket* pkNetPacket);
+	bool SendRaw(NetPacket* pkNetPacket);
+	bool Send2(NetPacket* pkNetPacket);
+//	void SendToAllClients(NetPacket* pkNetPacket);
+//	void SendToClient(int iClient, NetPacket* pkNetPacket);
 
 	// Recv
 	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
@@ -251,17 +195,13 @@ public:
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
 
-//	bool CmpNetworkAddress();
-//	bool StrToAddress();
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 
 	// Debug
 	void DrawConnectionGraphs();
 	void DevShow_ClientConnections();
 
-	// Remove ??
-	//void TEST_KeepAliveALL();										// Sends a NOP Controll message to all clients
-	//void RTS_RequestClientObjectID();
+	friend class NetPacket;
 };
 
 #endif

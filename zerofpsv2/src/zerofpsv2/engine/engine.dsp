@@ -207,6 +207,10 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\netpacket.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\network.cpp
 # End Source File
 # Begin Source File
@@ -420,6 +424,10 @@ SOURCE=..\engine_systems\mad\mad_modell.h
 # Begin Source File
 
 SOURCE=.\main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\netpacket.h
 # End Source File
 # Begin Source File
 

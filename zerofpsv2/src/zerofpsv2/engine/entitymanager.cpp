@@ -595,7 +595,9 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 		if(NP.m_iPos >= 512) {
 			NP.Write(iEndOfObject);
 			NP.Write(ZFGP_ENDOFPACKET);
-			m_pkNetWork->SendToClient(iClient, &NP);
+			NP.TargetSetClient(iClient);
+			m_pkNetWork->Send2(&NP);
+			//m_pkNetWork->SendToClient(iClient, &NP);
 
 			NP.Clear();
 			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -609,7 +611,9 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToClient(iClient, &NP);
+	NP.TargetSetClient(iClient);
+	m_pkNetWork->Send2(&NP);
+//	m_pkNetWork->SendToClient(iClient, &NP);
 }
 
 void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
@@ -633,7 +637,9 @@ void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 		
 	NP.Write(-1);
 	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToClient(iClient, &NP);
+	NP.TargetSetClient(iClient);
+	m_pkNetWork->Send2(&NP);
+//	m_pkNetWork->SendToClient(iClient, &NP);
 }
 
 bool IsInsideVector(int iVal, vector<int>& iArray)
@@ -932,7 +938,9 @@ void EntityManager::GetStaticData(int iEntityID)
 	NP.Write((char) ZFGP_GETSTATICDATA);
 	NP.Write(&iEntityID,sizeof(iEntityID));
 	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToClient(0, &NP);
+	NP.TargetSetClient(0);
+	m_pkNetWork->Send2(&NP);
+//	m_pkNetWork->SendToClient(0, &NP);
 }
 
 // Debug / Help Functions		
@@ -1159,7 +1167,9 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.Write(ZFGP_ENDOFPACKET);
 
 	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	net->SendToAllClients(&NP);
+	NP.TargetSetClient(ZF_NET_ALLCLIENT);
+	m_pkNetWork->Send2(&NP);
+//	net->SendToAllClients(&NP);
 	Logf("net", " Sending Own Request for %d\n", pkObj->iNetWorkID);
 	
 }
@@ -1179,7 +1189,9 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 	NP.Write(ZFGP_ENDOFPACKET);
 
 	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	net->SendToAllClients(&NP);
+	NP.TargetSetClient(ZF_NET_ALLCLIENT);
+	m_pkNetWork->Send2(&NP);
+//	net->SendToAllClients(&NP);
 
 	OwnerShip_Give(pkObj);
 	Logf("net", " Gives away ownership of %d\n", pkObj->iNetWorkID);

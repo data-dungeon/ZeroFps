@@ -6,171 +6,6 @@
 //#define	NET_LOGALL	
 
 NetWork* g_pkNetWork;
- 
-
-RemoteNode::RemoteNode()
-{
-	Clear();
-}
-
-
-
-RemoteNode::~RemoteNode()
-{
-	
-}
-
-void RemoteNode::Clear()
-{
-	m_eConnectStatus		=	NETSTATUS_DISCONNECT;
-	m_kAddress.host		=	INADDR_NONE;
-	m_kAddress.port		=  0;
-
-	m_iNumOfPacketsSent	= 0;
-	m_iNumOfPacketsRecv  = 0;
-	m_iNumOfBytesSent    = 0;
-	m_iNumOfBytesRecv    = 0;
-	m_iNumOfBytesRecvNetFrame = 0;
-
-	m_fLastMessageTime   = 0;
-	m_fPing					= 0;								
-	
-	m_iOutOfOrderRecv			= 0;
-	m_iPacketLossRecv			= 0;
-	m_iOutOfOrderNetFrame	= 0;
-	m_iLastRecvPacket			= 0;
-
-	m_kRecvGraph.SetMinMax(0,100000);		
-	m_kRecvGraph.SetSize(100,100,50);
-
-}
-
-void RemoteNode::SetAddress(IPaddress* pkAddress)
-{
-	m_kAddress = *pkAddress;
-
-}
-
-
-
-
-
-
-
-
-
-
-NetPacket::NetPacket()
-{
-	m_iLength = 0;
-	m_iPos = 0;
-}
-
-NetPacket::~NetPacket()
-{
-
-}
-
-void NetPacket::Clear()
-{
-	m_iLength = 0;
-	m_iPos = 0;
-	m_bReadError = false;
-}
-
-void NetPacket::SetTarget(const char* szIp)
-{
-	int ha1, ha2, ha3, ha4, hp;
-	int ip_addr;
-
-	// Scan addr string.
-	sscanf(szIp, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
-
-	// Build host ip.
-	ip_addr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
-	SDLNet_Write32(ip_addr, &m_kAddress.host);	
-	SDLNet_Write16(hp, &m_kAddress.port);	
-}
-
-void NetPacket::Write_Str(const char* szString)
-{
-	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");
-
-	unsigned char * add = &m_kData.m_acData[m_iPos];
-	strcpy((char*)add, szString);
-	m_iPos += strlen(szString) + 1;
-	m_iLength += strlen(szString) + 1;
-	
-}
-
-void NetPacket::Read_Str(char* szString)
-{
-	unsigned char * add = &m_kData.m_acData[m_iPos];
-	strcpy(szString, (char*)add);
-	m_iPos += strlen(szString) + 1;
-}
-
-void NetPacket::Write_NetStr (const char* szString)
-{
-	int iIndex = g_pkNetWork->NetString_GetIndex(szString);
-	
-	Write(iIndex);
-	if(iIndex == ZF_NET_NONETSTRING) {
-		g_pkNetWork->NetString_Add(szString);
-		Write_Str(szString);
-		}
-}
-
-void NetPacket::Read_NetStr  (char* szString)
-{	
-	string strNetString;
-
-	int iIndex;
-	Read(iIndex);
-
-	if(iIndex == ZF_NET_NONETSTRING) 
-		Read_Str(szString);
-	else {
-		strNetString = g_pkNetWork->NetString_GetString(iIndex);
-		strcpy(szString, strNetString.c_str());
-		}
-}
-
-
-void NetPacket::Write(void* ptr, int iSize)
-{
-	ZFAssert((m_iPos + iSize) < MAX_PACKET_SIZE, "NetPacket::Write");
-
-	unsigned char * add = &m_kData.m_acData[m_iPos];
-	memcpy(add, ptr, iSize);
-	m_iPos += iSize;
-	if(m_iPos > m_iLength)	m_iLength = m_iPos;
-}
-
-void NetPacket::Read(void* ptr, int iSize)
-{
-	unsigned char * add = &m_kData.m_acData[m_iPos];
-	memcpy(ptr, add, iSize);
-	m_iPos += iSize;
-
-}
-
-void NetPacket::SetType(int iType)
-{
-	m_kData.m_kHeader.m_iPacketType = iType;
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 NetWork::NetWork()
 : ZFSubSystem("NetWork")
@@ -345,7 +180,9 @@ void NetWork::Send_NetStrings()
 #ifdef NET_LOGALL
 			Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 #endif
-			SendToAllClients(&NP);
+			NP.TargetSetClient(ZF_NET_ALLCLIENT);
+			//SendToAllClients(&NP);
+			Send2(&NP);
 
 			NP.Clear();
 			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
@@ -357,7 +194,9 @@ void NetWork::Send_NetStrings()
 #ifdef NET_LOGALL
 	Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 #endif
-	SendToAllClients(&NP);
+	NP.TargetSetClient(ZF_NET_ALLCLIENT);
+	//SendToAllClients(&NP);
+	Send2(&NP);
 }
 
 bool NetWork::NetStringIsUpdated()
@@ -390,7 +229,9 @@ void NetWork::NetString_Request(int iIndex)
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((char) ZF_NETCONTROL_REQNETSTRING);
 	kNetPRespons.Write( iIndex );
-	SendToAllClients(&kNetPRespons);
+//	SendToAllClients(&kNetPRespons);
+	kNetPRespons.TargetSetClient(ZF_NET_ALLCLIENT);
+	Send2(&kNetPRespons);
 }
 
 int NetWork::GetNumOfClients(void)
@@ -492,7 +333,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
-	Send(&NetP);
+	SendRaw(&NetP);
 }
 
 /**	\brief	Checks for incoming packets and return them.
@@ -521,11 +362,15 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 /**	\brief	Sends a package.
 	
 */
-bool NetWork::Send(NetPacket* pkNetPacket)
+bool NetWork::SendRaw(NetPacket* pkNetPacket)
 {
+	// Check that it is a valid package.
 	if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == 204)
 		assert(0);
 
+	// Update order num of package.
+
+	// Send it.
 	UDPpacket kPacket;
 	kPacket.channel	= -1;
 	kPacket.data		= (unsigned char*)&pkNetPacket->m_kData;
@@ -535,6 +380,7 @@ bool NetWork::Send(NetPacket* pkNetPacket)
 
 	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
 
+	// Update stats.
 	int iClientID;
 	iClientID = GetClientNumber(&pkNetPacket->m_kAddress);
 	if(iClientID != ZF_NET_NOCLIENT) {
@@ -544,6 +390,30 @@ bool NetWork::Send(NetPacket* pkNetPacket)
 
 	return true;
 }
+
+bool NetWork::Send2(NetPacket* pkNetPacket)
+{
+	// If we have any clients to send to.
+	if(pkNetPacket->m_iTargetClients.size()) {
+		for(int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) {
+			if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
+				continue;
+			
+			pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
+			pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
+
+			SendRaw(pkNetPacket);
+			}
+
+		return true;
+		}
+	
+	else {
+		SendRaw(pkNetPacket);
+		return true;
+		}
+}
+
 
 void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 {
@@ -589,7 +459,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
 				kNetPRespons.Write_Str("There server is full.");
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-				Send(&kNetPRespons);
+				SendRaw(&kNetPRespons);
 				}
 			else {
 				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, szText)) {
@@ -599,7 +469,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 					kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
 					kNetPRespons.Write_Str("There server is full.");
 					kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-					Send(&kNetPRespons);
+					SendRaw(&kNetPRespons);
 					break;
 					}
 
@@ -626,7 +496,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.Write( iNetID ); 
 
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-				Send(&kNetPRespons);
+				SendRaw(&kNetPRespons);
 				
 				NetString_ReSendAll();
 				}
@@ -672,7 +542,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_CLIENTID);
 				kNetPRespons.Write((int) m_pkZeroFps->m_kClient[iClientID].m_pkObject->iNetWorkID);
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-				Send(&kNetPRespons);
+				SendRaw(&kNetPRespons);
 				}
 				
 			break;
@@ -740,15 +610,14 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			kNetPRespons.Write_Str(m_kStringTable[ iStringID ].m_NetString.c_str());
 			
 			kNetPRespons.Write( ZF_NET_NONETSTRING );
-			SendToAllClients(&kNetPRespons);
+			kNetPRespons.TargetSetClient(ZF_NET_ALLCLIENT);
+			Send2(&kNetPRespons);
+		//	SendToAllClients(&kNetPRespons);
 
 			break;
 			}
 	}
-
 }
-
-
 
 void NetWork::DevShow_ClientConnections()
 {
@@ -885,9 +754,7 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 	return true;
 }
 
-/**	\brief	Sends package to one of the connected clients..
-	
-*/
+/*
 void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 {
 	if(m_RemoteNodes[iClient].m_eConnectStatus != NETSTATUS_CONNECTED) {
@@ -897,12 +764,12 @@ void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 
 	pkNetPacket->m_kAddress = m_RemoteNodes[iClient].m_kAddress;
 	pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[iClient].m_iNumOfPacketsSent;
-	
+
+	//m_RemoteNodes[iClient].m_RelPackages.push_back( pkNetPacket->m_kData );
 	Send(pkNetPacket);
+	//m_RemoteNodes[iClient].m_RelPackages.pop_front();
 }
 
-/**	\brief	Sends a package to alla connected clients.
-*/
 void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 {
 	if(m_RemoteNodes.size() <= 0)
@@ -915,9 +782,11 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 		pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
 		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
 		
+		//m_RemoteNodes[i].m_RelPackages.push_back( pkNetPacket->m_kData );
 		Send(pkNetPacket);
+		//m_RemoteNodes[i].m_RelPackages.pop_front();
 		}
-}
+}*/
 
 // Force Disconnect on all nodes.
 void NetWork::DisconnectAll()
@@ -929,7 +798,9 @@ void NetWork::DisconnectAll()
 	kNetPRespons.Clear();
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_DISCONNECT);
-	SendToAllClients(&kNetPRespons);
+	kNetPRespons.TargetSetClient(ZF_NET_ALLCLIENT);
+	Send2(&kNetPRespons);
+	//SendToAllClients(&kNetPRespons);
 
 	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
 		m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
