@@ -326,21 +326,32 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{	
 					s_bRightMouseButtonPressed = true;
 
-					if(m_vkContainerItemList[i].bIsContainer)
-					{
-						bool bOpen = true;
-						if(m_iActiveContainerID == m_vkContainerItemList[i].iItemID) // klickat på samma container
-							bOpen = false;															 // som redan är öppnad?
+					//if(m_vkContainerItemList[i].bIsContainer)
+					//{
+					//	bool bOpen = true;
+					//	if(m_iActiveContainerID == m_vkContainerItemList[i].iItemID) // klickat på samma container
+					//		bOpen = false;															 // som redan är öppnad?
 
-						OpenContainerItem(bOpen, i, false);		
+					//	OpenContainerItem(bOpen, i, false);		
+					//}
+					//else
+					//if(m_vkContainerItemList[i].iStackSize > 1)
+					//{
+					//	m_kSplitSlot.m_iIndex = i;
+					//	m_kSplitSlot.bIsInventoryItem = false;
+					//	m_kSplitSlotTarget.m_iIndex = -1;
+					//	OpenSplitStockWnd();
+					//}
+
+					if(m_vkContainerItemList[i].bIsContainer && 
+						m_iActiveContainerID == m_vkContainerItemList[i].iItemID)	
+					{
+						OpenContainerItem(false, i, false);												
 					}
 					else
-					if(m_vkContainerItemList[i].iStackSize > 1)
 					{
-						m_kSplitSlot.m_iIndex = i;
-						m_kSplitSlot.bIsInventoryItem = false;
-						m_kSplitSlotTarget.m_iIndex = -1;
-						OpenSplitStockWnd();
+						g_kMistClient.RequestItemInfo(m_vkContainerItemList[i].iItemID);
+						//OpenItemInfoWnd(true);
 					}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)

@@ -264,7 +264,7 @@ void MistClient::SetupGUI()
 			g_kMistClient.AddListItem("CharGen_ModellList", "goblin_male");
 			
 			
-			((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(2);
+			((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(3);
 
 			g_kMistClient.SelListItemByIndex("CharGen_ModellList", 1);
 
