@@ -177,7 +177,9 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 			// Read PSAge
 			float fAge;
 			pkPackage->Read ( fAge);
-			m_pkPSystem->SetAge (fAge);
+			
+			if(m_pkPSystem)
+				m_pkPSystem->SetAge (fAge);
 		
 		
 			break;
