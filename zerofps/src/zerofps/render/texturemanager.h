@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <list>
 #include <string>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -33,10 +34,10 @@ struct texture{
 
 class RENDER_API TextureManager : public ZFObject {
 	private:
-
-		
 		int m_iCurrentTexture;
 		vector<texture*> m_iTextures;
+//		list<texture*> m_iTextures;
+		
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(const char *filename);	
 		bool LoadTexture(GLuint &iNr,const char* acFilename,int iOption);	

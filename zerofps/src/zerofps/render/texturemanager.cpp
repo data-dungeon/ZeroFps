@@ -178,11 +178,20 @@ void TextureManager::ClearAll()
 
 int TextureManager::GetIndex(const char* szFileName)
 {
+/*	
+	for(list<texture*>::iterator it=m_iTextures.begin();it!=m_iTextures.end();it++)
+	{
+		if((*it)->file == szFileName) {
+			return i;		
+	}
+*/	
+
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
 		if(m_iTextures[i]->file == szFileName) {
 			return i;		
 		}		
 	}
+
 
 	return NO_TEXTURE;
 }

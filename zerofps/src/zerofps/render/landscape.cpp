@@ -773,7 +773,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 {
-	int iPatchSize=32;
+	int iPatchSize=64;
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
