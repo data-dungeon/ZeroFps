@@ -51,7 +51,7 @@ Entity::Entity()
 	m_bInterpolate			= true;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
-	
+	m_fInterPolateFactor = 10;
 
 	//clear child list
 	m_akChilds.clear();	
@@ -1351,12 +1351,19 @@ Vector3 Entity::GetIWorldPosV()
 		m_kILocalPosV = GetWorldPosV() + m_kVel * (m_pkEntityMan->GetSimDelta() * fI);
 		*/
 		
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/15.0;// * (m_pkZeroFps->GetFrameTime()*3);
-		//m_kILocalPosV += (GetWorldPosV() -m_kILocalPosV ) * (1.0 - fI);
-		
-		
-		
+		//m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/15.0;// * (m_pkZeroFps->GetFrameTime()*3);
+		 //m_kILocalPosV += (GetWorldPosV() -m_kILocalPosV ) * (1.0 - fI);
 		//m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV ) / 10.0;
+		/*
+		Vector3 kDir = GetWorldPosV() - m_kILocalPosV;
+		m_kILocalPosV += kDir * m_pkZeroFps->GetFrameTime();
+		*/
+
+		float fFac = m_fInterPolateFactor * m_pkZeroFps->GetFrameTime();
+		if(fFac > 1.0)
+			fFac = 1.0;
+					
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * fFac;
 		
 		return m_kILocalPosV;
 	}

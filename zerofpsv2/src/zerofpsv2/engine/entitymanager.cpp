@@ -421,16 +421,14 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 {
 	Entity *pkNew = CreateEntity(false);
 
-	//	Add(pkNew);
-//	pkNew->m_iEntityID = iNetID;
 	Link(pkNew,iNetID);
 	
 	pkNew->SetParent(m_pkWorldEntity);
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
+	pkNew->SetInterpolateFactor(2.0);
 	
-//	pkNew->AddProperty("P_Primitives3D");
 	return pkNew;
 }
 

@@ -206,7 +206,8 @@ class ENGINE_API Entity
 
 		bool							m_bFirstSetPos;		
 		bool							m_bInterpolate;					//if this is false, GetIWorldPos vill return non inpterpolatet cordinats
-
+		float							m_fInterPolateFactor;		
+		
 		Vector3						m_kVel;								///< Velocity of entity.
 		Vector3						m_kAcc;								///< Acc of entity.
 		float							m_fRadius;							///< Radius of entity.
@@ -336,8 +337,9 @@ class ENGINE_API Entity
 		void			SetRadius(float fRadius);
 
 		void			SetInterpolate(bool bInterpolate);
-		bool			GetInterpolate()						{	return m_bInterpolate;	};
-		
+		bool			GetInterpolate()						{	return m_bInterpolate;		};
+		void			SetInterpolateFactor(float fIF)	{	m_fInterPolateFactor = fIF;};	
+				
 		// Inlines & get/set functions
 		inline bool IsZone() 								{	return m_bZone;			};
 		inline int GetEntityID()							{	return m_iEntityID;		};
