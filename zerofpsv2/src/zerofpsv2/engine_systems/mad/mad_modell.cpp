@@ -25,6 +25,7 @@ Mad_Modell::Mad_Modell()
 	
 	m_iFirstMaterialID= -1;
 
+	m_pkVBO = NULL;
 
 	for(int i = 0;i<256;i++)
 		m_akReplaceTexturesHandles[i] = NULL;
@@ -33,6 +34,9 @@ Mad_Modell::Mad_Modell()
 
 Mad_Modell::~Mad_Modell()
 {
+	if(m_pkVBO)
+		delete m_pkVBO;
+	
 	for(int i = 0;i<256;i++)
 		if(m_akReplaceTexturesHandles[i] != NULL)
 			delete m_akReplaceTexturesHandles[i];
@@ -493,6 +497,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	if(iDrawFlags == 0)
 		return;
 	
+		
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 
@@ -500,8 +505,10 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 
+
 	
-	for(int iM = 0; iM <iNumOfMesh; iM++) {
+	for(int iM = 0; iM <iNumOfMesh; iM++) 
+	{
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
@@ -510,9 +517,9 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 			
 		//setup all texture pointers
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
-		m_pkShader->SetPointer(TEXTURE_POINTER1,GetTextureCooPtr());
-		m_pkShader->SetPointer(TEXTURE_POINTER2,GetTextureCooPtr());
-		m_pkShader->SetPointer(TEXTURE_POINTER3,GetTextureCooPtr());
+// 		m_pkShader->SetPointer(TEXTURE_POINTER1,GetTextureCooPtr());
+// 		m_pkShader->SetPointer(TEXTURE_POINTER2,GetTextureCooPtr());
+// 		m_pkShader->SetPointer(TEXTURE_POINTER3,GetTextureCooPtr());
 		
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
@@ -554,7 +561,29 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
 				
-				m_pkShader->DrawArray();
+				
+				//sutible for VBO ?
+				if( iNumOfMesh == 1 && iNumOfSubMesh == 1 && 	iActiveAnimation == MAD_NOANIMINDEX && GetNumVertices() >500 )
+				{
+					if(!m_pkVBO)
+  						m_pkVBO = m_pkShader->CreateVertexBuffer(); 				
+				}
+				else
+				{
+					if(m_pkVBO)
+					{
+						delete m_pkVBO;
+						m_pkVBO = NULL;
+					}
+				}
+					
+				//VBO or normal rendering
+				if(m_pkVBO)
+					m_pkShader->DrawVertexBuffer(m_pkVBO);
+				else
+					m_pkShader->DrawArray();
+				
+				
 				g_iNumOfMadSurfaces += iNumOfFaces;
 			}
 

@@ -34,6 +34,8 @@ private:
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
+	ZVertexBuffer*		m_pkVBO;
+	
 	ZFResourceHandle*	m_akReplaceTexturesHandles[256];				//ytterst in effektivt, o skapa 256 st res handles varje gång en modell skapas, blir många konstruktor anrop i onödan
 
 	void LoadTextures();

@@ -214,7 +214,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		vector<Vector2>	m_kTexture[4];
 		
 		//pointer to geometry data
-		Vector3*			m_pk2DVertexPointer;
+		Vector2*			m_pk2DVertexPointer;
 		Vector3*			m_pkVertexPointer;
 		Vector3*			m_pkNormalPointer;	
 		Vector2*			m_pkTexturePointer0;
@@ -224,8 +224,19 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int*	m_pkIndexPointer;
 		Vector4*			m_pkColorPointer;		
 		
+		//pointer is set
+		bool			m_b2DVertexPointer;
+		bool			m_bVertexPointer;
+		bool			m_bNormalPointer;	
+		bool			m_bTexturePointer0;
+		bool			m_bTexturePointer1;		
+		bool			m_bTexturePointer2;		
+		bool			m_bTexturePointer3;		
+		bool			m_bIndexPointer;
+		bool			m_bColorPointer;		
+		
 		//bakup pointes, used when copying data
-		Vector3*			m_pkBakup2DVertexPointer;
+		Vector2*			m_pkBakup2DVertexPointer;
 		Vector3*			m_pkBakupVertexPointer;
 		Vector3*			m_pkBakupNormalPointer;
 		Vector2*			m_pkBakupTexturePointer0;
