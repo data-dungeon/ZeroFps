@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -90,7 +90,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -273,6 +273,10 @@ SOURCE=.\input.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\lightproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\madproperty.cpp
 
 !IF  "$(CFG)" == "engine - Win32 Release"
@@ -451,6 +455,10 @@ SOURCE=.\heightmapobject.h
 # Begin Source File
 
 SOURCE=.\input.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\lightproperty.h
 # End Source File
 # Begin Source File
 

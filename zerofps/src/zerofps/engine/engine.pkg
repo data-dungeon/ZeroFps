@@ -17,7 +17,8 @@ class Camera;
 #include "objectmanager.h"
 #include "collisionmanager.h"
 
-
+#include "property.h"
+#include "lightproperty.h"
 
 
 

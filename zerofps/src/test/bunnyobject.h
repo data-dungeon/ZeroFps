@@ -10,7 +10,7 @@
 
 class BunnyObject: public Object {
 	private:
-		ZeroFps *m_pkFps;
+		ZeroFps		*m_pkFps;
 
 	public:
 		bool onGround;
@@ -19,7 +19,6 @@ class BunnyObject: public Object {
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
-//		void ObjectUpdate();
 };
 
 

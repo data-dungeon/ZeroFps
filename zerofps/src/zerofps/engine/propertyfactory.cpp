@@ -1,5 +1,6 @@
 #include "zerofps.h"
 #include "madproperty.h"
+#include "lightproperty.h"
 
 
 Property* PropertyFactory::CreateProperty(char* szName)
@@ -43,6 +44,7 @@ void RegisterPropertys(ZeroFps* zfps)
 {
 	zfps->m_kPropertyFactory.Register("MadProperty", Create_MadProperty);
 	zfps->m_kPropertyFactory.Register("ModelProperty", Create_ModelProperty);
+	zfps->m_kPropertyFactory.Register("LightProperty", Create_LightProperty);
 
 }
 

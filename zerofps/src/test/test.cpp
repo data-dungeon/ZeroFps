@@ -78,7 +78,7 @@ void Test::OnInit(void) {
 		spot2->iPriority=0;
 
 
-	LightSource *sol=new LightSource;	
+/*	LightSource *sol=new LightSource;	
 	Vector3 *solrot=new Vector3(.4,.4,.2);	
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
@@ -86,11 +86,12 @@ void Test::OnInit(void) {
 		sol->kDiffuse=Vector4(2,2,2,2);
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
-		sol->iPriority=10;
+		sol->iPriority=10;*/
 
-	pkLight->Add(spot2);			
+
+/*	pkLight->Add(spot2);			
 	pkLight->Add(spot);	
-	pkLight->Add(sol);
+	pkLight->Add(sol);*/
 	
 	
 	
@@ -105,14 +106,17 @@ void Test::OnInit(void) {
 		pkCollisionMan->Add(ball);
 	}
 
-	for(i=0;i<20;i++) {
-		Object *sussi=new BunnyObject(test);
-		float x=300 + rand()%100;
-		float y=720 + rand()%100;
+	Object *sussi;
+	for(i=0;i<8;i++) {
+		sussi=new BunnyObject(test);
+		float x=340 + rand()%10;
+		float y=780 + rand()%10;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
 	}
+
+
 
 	glEnable(GL_LIGHTING );
 	
