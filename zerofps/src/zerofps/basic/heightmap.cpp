@@ -276,24 +276,26 @@ void HeightMap::GenerateTextures() {
 			for(int q=0;q<2;q++){	
 				for(int w=0;w<2;w++){	
 					diff+=GetVert(x+w,z+q)->normal;
-//					diff = GetVert(x,z)->height - GetVert(x+q,z+w)->height;
 				}
 			}
 			diff.normalize();
-//			cout<<diff.x<<" "<<diff.y<<" "<<diff.z<<endl;
 			slope=diff.dot(Vector3(0,1,0)) *degtorad;
 						
 //			cout<<"Slope:"<<slope<<endl;
-			if(slope<30)
-				GetVert(x,z)->texture=3;
-			else if(slope<50)				
-				GetVert(x,z)->texture=2;
-			else 
-				GetVert(x,z)->texture=1;				
-			
-//			if(GetVert(x,z)->texture==1)
-//				if(slope<40)
-//					cout<<"CP!!!:"<<slope<<endl;
+
+			if(slope<30) {
+				GetVert(x,z)->texture=3;//stone
+				GetVert(x,z)->color=Vector3(.33,.33,.33);			
+			}
+			else if(slope<50){
+				GetVert(x,z)->texture=2;//slope
+				GetVert(x,z)->color=Vector3(.4,.4,.2);				
+			}				
+			else {
+				GetVert(x,z)->texture=1;//grass
+				GetVert(x,z)->color=Vector3(.35,.65,.0);				
+			}
+			GetVert(x,z)->color.normalize();
 		}
 	}
 }

@@ -15,7 +15,7 @@ void Test::OnInit(void) {
 
 	test=new HeightMap(pkFile);
 //	test->Random();
-	test->SetTileSet("file:../data/textures/land.bmp");
+	test->SetTileSet("file:../data/textures/landbw.bmp");
 //	test->GenerateNormals();
 //	test->GenerateTextures();
 	
@@ -30,7 +30,7 @@ void Test::OnInit(void) {
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
-	light_position=Vector4(0.5,0.5,0,0);
+	light_position=Vector4(0.5,0.5,0.2,0);
 	white_light = Vector4(1,1,1,1);
 	lmodel_ambient = Vector4(0.5,0.5,0.5,1);
 
@@ -43,6 +43,7 @@ void Test::OnInit(void) {
   glLightfv(GL_LIGHT0,GL_AMBIENT,&lmodel_ambient[0]);
   glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	  
 //  glLightModelfv(GL_LIGHT_MODEL_AMBIENT,lmodel_ambient);
+  glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -61,11 +62,11 @@ pkRender->DrawHMlod(test,*pkFps->m_kCamPos);
 
 
 //	pkRender->DrawHM(test);		
-	for(int x=0;x<2000;x+=100)
-		for(int z=0;z<2000;z+=100)
-			pkRender->Quad(Vector3(x-50,-7,z-50),Vector3(-90,0,0),Vector3(100,100,100),pkTexMan->Load("file:../data/textures/water.bmp"));
+	for(int x=0;x<1000;x+=100)
+		for(int z=0;z<1000;z+=100)
+			pkRender->Quad(Vector3(x-100,-7,z-100),Vector3(-90,0,0),Vector3(100,100,100),pkTexMan->Load("file:../data/textures/water.bmp"));
 
-//	cout<<pkFps->m_iFps<<endl;
+	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	

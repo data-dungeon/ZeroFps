@@ -3,7 +3,7 @@
 Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
-	m_iSlicesize=20;	//grid size of lod tiles
+	m_iSlicesize=32;	//grid size of lod tiles
 	m_iDetail=30;//height meens greater detail att longer range	
 }
 
@@ -317,7 +317,14 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
+	
+	glEnable(GL_COLOR_MATERIAL);	
+	glColorMaterial(GL_FRONT,GL_DIFFUSE);
+	float black[4]={0.4,0.4,0.4,0};
+	glMaterialfv(GL_FRONT,GL_AMBIENT,black);
+//	glMaterialfv(GL_FRONT,GL_SPECULAR,black);
+	
+	
 	Vector3 p1,p2;
 	
 	//calculate number slices depending on the size of the lod tiles size
@@ -378,11 +385,13 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 							//draw the the new polygons with old cordinat
 							p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);									
 							glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);						
+							glColor3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].color);
 							glTexCoord2f(t+0.01,s-0.01);						
 					 		glVertex3fv((float*)&p1);
 				 			
 							p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
 						 	glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);				 		
+							glColor3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].color);
 					 		glTexCoord2f(t+0.01,s-0.24);				
 							glVertex3fv((float*)&p2); 
 							
@@ -393,6 +402,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 					//vertex down
 					p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);				
 					glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
+					glColor3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].color);
 					
 					if(flip)						
 				 		glTexCoord2f(t+0.01,s-0.01);
@@ -404,12 +414,13 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
  					//vertex up
 					p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
 			 	  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
-			 		
+					glColor3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].color);
+					
 					if(flip)	
 				 		glTexCoord2f(t+0.01,s-0.24);
  					else
  						glTexCoord2f(t+0.24,s-0.24);
-					
+									   
 					glVertex3fv((float*)&p2); //set vertex
 			 		
 				}					
@@ -464,13 +475,15 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 void Render::DrawSkyBox(Vector3 CamPos) {
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
 	
-	glDisable(GL_LIGHTING);
-	Quad(Vector3(0,0,-200),Vector3(0,0,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/front.bmp"));
-	Quad(Vector3(0,200,0),Vector3(90,0,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/top.bmp"));
-	Quad(Vector3(0,0,200),Vector3(180,0,180),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/back.bmp"));
+	int iSize=401;
 	
-	Quad(Vector3(200,0,0),Vector3(0,-90,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/left.bmp"));
-	Quad(Vector3(-200,0,0),Vector3(0,90,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/right.bmp"));
+	glDisable(GL_LIGHTING);
+	Quad(Vector3(0,0,-200),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+	Quad(Vector3(0,200,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
+	Quad(Vector3(0,0,200),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/back.bmp"));
+	
+	Quad(Vector3(200,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
+	Quad(Vector3(-200,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
 	glEnable(GL_LIGHTING);
 }
 

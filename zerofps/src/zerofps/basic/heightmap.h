@@ -19,6 +19,8 @@ struct BASIC_API HM_vert {
 	float height;	//land height
 	Vector3 normal;
 	int texture;	//what texture to use
+	Vector3 color;
+
 //	HM_vert *childs[8];
 };
 
