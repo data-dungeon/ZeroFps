@@ -14,7 +14,7 @@ using namespace std;
 #define NRDEG_IN_ONE_RAD	57.29577951
 #define NRRAD_IN_ONE_DEG	0.0174532952
 
-extern ZFObjectManger g_ZFObjSys;
+extern ZFSystem g_ZFObjSys;
 
 void Gemens(char* aText) 
 {

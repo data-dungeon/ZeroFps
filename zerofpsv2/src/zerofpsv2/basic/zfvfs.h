@@ -49,9 +49,8 @@ The VFS can be set to many root paths. The base one is one step above the exe fi
 class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
-		ZFBasicFS*	m_pkBasicFS;					
+		ZFBasicFS*		m_pkBasicFS;					
 		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
-
 		string			m_kCurentDir;
 
 	public:
@@ -91,6 +90,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 			{
 			FID_CD,
 			FID_DIR,
+			FID_LISTROOT
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);

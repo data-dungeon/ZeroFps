@@ -10,7 +10,7 @@
 
 using namespace std;
 
-ZFObjectManger* ZFObjectManger::pkInstance;
+ZFSystem* ZFSystem::pkInstance;
 
 
 
@@ -88,9 +88,9 @@ void CmdArgument::Set(const char* szCmdArgs)
 
 
 
-ZFObjectManger::ZFObjectManger()
+ZFSystem::ZFSystem()
 {
-	ZFObjectManger::pkInstance = this;
+	ZFSystem::pkInstance = this;
 
 	m_pkLogFile = fopen("zerofps.txt", "wt");	// Open Master Log File.
 	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
@@ -100,7 +100,7 @@ ZFObjectManger::ZFObjectManger()
 #endif
 }
 
-ZFObjectManger::~ZFObjectManger()
+ZFSystem::~ZFSystem()
 {
 #ifdef _DEBUG
 	g_Logf("Closing ZeroFps Object System\n");
@@ -120,16 +120,18 @@ ZFObjectManger::~ZFObjectManger()
 
 	Log_DestroyAll();
 	fclose(m_pkLogFile);						// Close Log Fil
+
+	m_pkConsole = NULL;
 }
 
 
-ZFObjectManger* ZFObjectManger::GetInstance()
+ZFSystem* ZFSystem::GetInstance()
 {
-	return ZFObjectManger::pkInstance;
+	return ZFSystem::pkInstance;
 }
 
 
-void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent)
+void ZFSystem::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent)
 {
 
 #ifdef _DEBUG
@@ -160,7 +162,7 @@ void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* 
 #endif
 }
 
-void ZFObjectManger::UnRegister(ZFSubSystem* pkObject)
+void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 {
 #ifdef _DEBUG
 	g_Logf("UnRegister '%s' ", pkObject->m_strZFpsName.c_str());
@@ -186,7 +188,7 @@ void ZFObjectManger::UnRegister(ZFSubSystem* pkObject)
 #endif
 }
 
-ZFSubSystem* ZFObjectManger::GetObjectPtr(char* acName)
+ZFSubSystem* ZFSystem::GetObjectPtr(char* acName)
 {
 	string Test(acName);
 
@@ -202,13 +204,13 @@ ZFSubSystem* ZFObjectManger::GetObjectPtr(char* acName)
 
 
 
-void ZFObjectManger::Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject)
+void ZFSystem::Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject)
 {
 	pkObject->m_pkParent = pkParent;
 	pkParent->m_akChild.push_back(pkObject);
 }
 
-void ZFObjectManger::UnLink(ZFSubSystem* pkObject)
+void ZFSystem::UnLink(ZFSubSystem* pkObject)
 {
 	if(pkObject->m_pkParent == NULL)	
 		return;
@@ -217,23 +219,23 @@ void ZFObjectManger::UnLink(ZFSubSystem* pkObject)
 	
 }
 
-void ZFObjectManger::PrintObjects(void)
+void ZFSystem::PrintObjects(void)
 {
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
 	}
 }
 
-void ZFObjectManger::LogVariables(void)
+void ZFSystem::LogVariables(void)
 {
 	for(unsigned int i=0; i < m_kCmdDataList.size();i++) {
 		g_Logf(" %s\n", m_kCmdDataList[i].m_strName.c_str());
 	}
 }
 
-void ZFObjectManger::PrintObjectsHer(void)
+void ZFSystem::PrintObjectsHer(void)
 {
-	g_Logf("ZFObjectManger::PrintObjectsHer\n");
+	g_Logf("ZFSystem::PrintObjectsHer\n");
 
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].pkObject->m_pkParent == NULL) {
@@ -243,7 +245,7 @@ void ZFObjectManger::PrintObjectsHer(void)
 
 }
 
-ZFCmdData* ZFObjectManger::FindArea(const char* szName)
+ZFCmdData* ZFSystem::FindArea(const char* szName)
 {
 	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 		if(m_kCmdDataList[i].m_strName == szName)
@@ -254,7 +256,7 @@ ZFCmdData* ZFObjectManger::FindArea(const char* szName)
 }
 
 
-bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int iFlags, char* szHelp, int iNumOfArg)
+bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int iFlags, char* szHelp, int iNumOfArg)
 {
 	// Validate parameters
 	if(szName == NULL)	return false;
@@ -288,7 +290,7 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject
 	return true;
 }
 
-bool ZFObjectManger::UnRegister_Cmd(ZFSubSystem* kObject)
+bool ZFSystem::UnRegister_Cmd(ZFSubSystem* kObject)
 {
 	vector<ZFCmdData>::iterator itCmds;
 	for(itCmds = m_kCmdDataList.begin(); itCmds != m_kCmdDataList.end(); )
@@ -306,7 +308,7 @@ bool ZFObjectManger::UnRegister_Cmd(ZFSubSystem* kObject)
 	return true;
 }
 
-bool ZFObjectManger::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
+bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 {
 	CmdArgument kcmdargs;
 	kcmdargs.Set(szCmdArg);
@@ -330,7 +332,7 @@ bool ZFObjectManger::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 	return true;
 }
 
-bool ZFObjectManger::Log_Create(const char* szName)
+bool ZFSystem::Log_Create(const char* szName)
 {
 	ZFLogFile NewLogFile;
 	NewLogFile.m_strName = szName;
@@ -344,7 +346,7 @@ bool ZFObjectManger::Log_Create(const char* szName)
 	return true;
 }
 
-void ZFObjectManger::Log_Destory(const char* szName)
+void ZFSystem::Log_Destory(const char* szName)
 {
 	vector<ZFLogFile>::iterator it;
 
@@ -356,7 +358,7 @@ void ZFObjectManger::Log_Destory(const char* szName)
 		}
 }
 
-ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
+ZFLogFile*	ZFSystem::Log_Find(const char* szName)
 {
 	string strHataStl;
 
@@ -369,14 +371,14 @@ ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
 	return NULL;
 }
 
-void ZFObjectManger::Log_DestroyAll()
+void ZFSystem::Log_DestroyAll()
 {
 	for(unsigned int i=0; i<m_kLogFiles.size(); i++) {
 		fclose(m_kLogFiles[i].m_pkFilePointer);
 		}
 }
 
-void ZFObjectManger::Log(const char* szMessage)
+void ZFSystem::Log(const char* szMessage)
 {
 	if(!m_pkLogFile)
 		return;
@@ -407,7 +409,7 @@ void ZFObjectManger::Log(const char* szMessage)
 	fprintf(m_pkLogFile, szMessage);
 }
 
-void ZFObjectManger::Log(const char* szName, const char* szMessage)
+void ZFSystem::Log(const char* szName, const char* szMessage)
 {
 	ZFLogFile* pkLog = Log_Find( szName );
 	if(!pkLog)
@@ -418,7 +420,7 @@ void ZFObjectManger::Log(const char* szName, const char* szMessage)
 
 char g_LogFormatTxt2[4096];	
 
-void ZFObjectManger::Logf(const char* szName, const char* szMessageFmt,...)
+void ZFSystem::Logf(const char* szName, const char* szMessageFmt,...)
 {
 	ZFLogFile* pkLog = Log_Find( szName );
 	if(!pkLog)
@@ -441,7 +443,7 @@ void ZFObjectManger::Logf(const char* szName, const char* szMessageFmt,...)
 
 
 
-bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject,int iFlags)
+bool ZFSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject,int iFlags)
 {
 	// Validate parameters
 	if(szName == NULL)		return false;
@@ -469,7 +471,7 @@ bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmd
 	
 }
 
-bool ZFObjectManger::SetVariable(const char* szName, const char* szValue)
+bool ZFSystem::SetVariable(const char* szName, const char* szValue)
 {
 	ZFCmdData* pkArea = FindArea(szName);
 	if(!pkArea)
@@ -484,7 +486,7 @@ bool ZFObjectManger::SetVariable(const char* szName, const char* szValue)
 }
 
 
-void ZFObjectManger::SetValue(ZFCmdData* pkArea, const char* szValue) 
+void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue) 
 {
 	float dData = float(atof(szValue));
 	bool	bValue;
@@ -514,17 +516,17 @@ void ZFObjectManger::SetValue(ZFCmdData* pkArea, const char* szValue)
 	}
 }	
 
-void ZFObjectManger::SetString(ZFCmdData* pkArea, const char* szValue) 
+void ZFSystem::SetString(ZFCmdData* pkArea, const char* szValue) 
 {
 	(*(string*)pkArea->m_vValue)=szValue;
 }
 
-void* ZFObjectManger::GetVar(ZFCmdData* pkArea)
+void* ZFSystem::GetVar(ZFCmdData* pkArea)
  {
 	return (void*)pkArea->m_vValue;
 }
 
-string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
+string ZFSystem::GetVarValue(ZFCmdData* pkArea)
 {
 	char szValue[256];
 	strcpy(szValue, "");
@@ -566,7 +568,7 @@ string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
 /*
 	Print all system variables.
 */
-void ZFObjectManger::PrintVariables()
+void ZFSystem::PrintVariables()
 {
 	BasicConsole*		m_pkCon;
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
@@ -584,7 +586,7 @@ void ZFObjectManger::PrintVariables()
 }
 
 
-void ZFObjectManger::PrintCommands()
+void ZFSystem::PrintCommands()
 {
 	BasicConsole*		m_pkCon;
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
@@ -602,7 +604,7 @@ void ZFObjectManger::PrintCommands()
 
 
 
-bool ZFObjectManger::StartUp()
+bool ZFSystem::StartUp()
 {
 	cout<<"hora"<<endl;
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
@@ -627,7 +629,7 @@ bool ZFObjectManger::StartUp()
 	return true;
 }
 
-bool ZFObjectManger::ShutDown()
+bool ZFSystem::ShutDown()
 {
 	g_Logf("ShutDown Engine SubSystems: \n");
 
@@ -646,7 +648,7 @@ bool ZFObjectManger::ShutDown()
 	return true;
 }
 
-bool ZFObjectManger::IsValid()
+bool ZFSystem::IsValid()
 {
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(!kObjectNames[i].pkObject->IsValid())
@@ -656,7 +658,7 @@ bool ZFObjectManger::IsValid()
 	return true;
 }
 
-void ZFObjectManger::Config_Save(string strFileName)
+void ZFSystem::Config_Save(string strFileName)
 {
 	string strVar;
 	FILE* fp = fopen(strFileName.c_str(), "wt");
@@ -680,7 +682,7 @@ void ZFObjectManger::Config_Save(string strFileName)
 	fclose(fp);
 }
 
-void ZFObjectManger::Config_Load(string strFileName)
+void ZFSystem::Config_Load(string strFileName)
 {
 	ZFIni			m_kIni;
 	if(m_kIni.Open(strFileName.c_str(), 0) == 0) {
@@ -709,7 +711,7 @@ void ZFObjectManger::Config_Load(string strFileName)
 }
 
 
-void ZFObjectManger::HandleArgs(int iNrOfArgs, char** paArgs)
+void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 {
 	string	strFullArg;
 	string	strArg;
@@ -742,4 +744,25 @@ void ZFObjectManger::HandleArgs(int iNrOfArgs, char** paArgs)
 
 		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
 		}
+}
+
+void ZFSystem::Printf(const char* szMessageFmt,...)
+{
+	if(!m_pkConsole) {
+ 		m_pkConsole = static_cast<BasicConsole*>(GetObjectPtr("Console")); 	 	
+		if(!m_pkConsole)
+			return;
+		}
+
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (szMessageFmt == NULL)	return;					
+
+	va_start(ap, szMessageFmt);						// Parses The String For Variables
+		vsprintf(g_LogFormatTxt2, szMessageFmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	m_pkConsole->Print(g_LogFormatTxt2);
 }

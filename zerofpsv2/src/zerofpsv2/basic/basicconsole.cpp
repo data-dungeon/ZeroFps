@@ -4,7 +4,7 @@
 #include "zfobjectmanger.h"
 #include "globals.h"
 
-extern ZFObjectManger g_ZFObjSys;
+extern ZFSystem g_ZFObjSys;
 
 using namespace std;
 

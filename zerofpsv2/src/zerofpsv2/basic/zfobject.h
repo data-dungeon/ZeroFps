@@ -11,7 +11,7 @@ using namespace std;
 #define NOOBJECT_INDEX	-1
 
 class ZFSubSystem;
-class ZFObjectManger;
+class ZFSystem;
 
 /// Type of Command
 enum ZFCmdDataType 
@@ -61,7 +61,7 @@ public:
 
 This class is the base for all engine subsystems. A engine subsystem is a single object 
 in the engine that is used in many other places. All Subsystems can be accessed by using
-the ZFObjectManger. A subsystem can make its variables changeable from the console and
+the ZFSystem. A subsystem can make its variables changeable from the console and
 other places and also respond to commands sent from console, cmd line and init files.
 
 The create a subsystem one need to create the following functions:
@@ -90,9 +90,9 @@ protected:
 			
 
 public:
-	ZFObjectManger*			m_pkSystem;	
+	ZFSystem*			m_pkSystem;	
 	
-	ZFObjectManger&	GetSystem();
+	ZFSystem&	GetSystem();
 
 	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
 
@@ -115,7 +115,7 @@ public:
 
 	virtual ~ZFSubSystem();
 
-	friend class ZFObjectManger;
+	friend class ZFSystem;
 
 	virtual bool StartUp()  = 0;
 	virtual bool ShutDown() = 0;

@@ -11,6 +11,7 @@
 using namespace std;
 
 class ZFSubSystem;
+class BasicConsole;
 
 class ZFLogFile
 {
@@ -62,7 +63,7 @@ public:
 /**	\brief	Tracks all Engine Sub Systems objects.
 
 */
-class BASIC_API ZFObjectManger
+class BASIC_API ZFSystem	/*	ZFSystem	*/
 {
 private:
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
@@ -71,22 +72,23 @@ private:
 	FILE*						m_pkLogFile;
 
 protected:
-		vector<string>	AppArguments;		
+	vector<string>			AppArguments;		
+	BasicConsole*			m_pkConsole;
 
 public:
 	public:
 	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
 
-	//DECLARE_SINGLETON(ZFObjectManger);
+	//DECLARE_SINGLETON(ZFSystem);
 
 	void HandleArgs(int iNrOfArgs, char** paArgs);
 
 
-	static ZFObjectManger* pkInstance;
-	static ZFObjectManger* GetInstance();
+	static ZFSystem* pkInstance;
+	static ZFSystem* GetInstance();
 
-	ZFObjectManger();
-	~ZFObjectManger();
+	ZFSystem();
+	~ZFSystem();
 
 	void Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent);	///< Register a Object.
 	void UnRegister(ZFSubSystem* pkObject);									///< UnRegister a objects.
@@ -127,6 +129,9 @@ public:
 	void Log(const char* szName, const char* szMessage);
 	void Logf(const char* szName, const char* szMessageFmt,...);
 
+	void Printf(const char* szMessageFmt,...);			// Print to console if created.
+
+
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();
@@ -136,7 +141,7 @@ public:
 	void Config_Load(string strFileName);
 };
 
-extern BASIC_API ZFObjectManger g_ZFObjSys;
+extern BASIC_API ZFSystem g_ZFObjSys;
 
 #endif
 

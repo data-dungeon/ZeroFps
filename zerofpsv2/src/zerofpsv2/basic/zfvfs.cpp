@@ -11,7 +11,7 @@
  
 using namespace std;
 
-extern ZFObjectManger g_ZFObjSys;
+extern ZFSystem g_ZFObjSys;
 
 ZFVFile::ZFVFile()
 {
@@ -81,8 +81,9 @@ int ZFVFile::GetSize()
 ZFVFileSystem::ZFVFileSystem()
 : ZFSubSystem("ZFVFileSystem")
 {
-	Register_Cmd("cd", FID_CD);
-	Register_Cmd("dir", FID_DIR);
+	Register_Cmd("cd",	FID_CD);
+	Register_Cmd("root", FID_LISTROOT);
+	Register_Cmd("dir",	FID_DIR);
 	m_kCurentDir = "";
 }
 
@@ -268,6 +269,13 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 				{
 					m_pkConsole->Printf(kFiles[i].c_str());
 				}*/
+			
+			break;
+
+		case FID_LISTROOT:
+			for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
+				GetSystem().Printf(" Root[%d] = %s", i, m_kstrRootPath[i].c_str()); 
+				}
 			
 			break;
 	};

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-BASIC_API ZFObjectManger g_ZFObjSys;
+BASIC_API ZFSystem g_ZFObjSys;
 
  
 ZFSubSystem::ZFSubSystem(char *szName)
@@ -130,7 +130,7 @@ bool ZFSubSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDat
 
 }
 
-ZFObjectManger& ZFSubSystem::GetSystem()
+ZFSystem& ZFSubSystem::GetSystem()
 {
 	return *m_pkSystem;
 }

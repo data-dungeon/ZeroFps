@@ -491,6 +491,10 @@ SOURCE=..\engine_systems\audio\openalsystem.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_clientinput.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_heightmap2.h
 # End Source File
 # Begin Source File
@@ -508,6 +512,10 @@ SOURCE=.\property.h
 # Begin Source File
 
 SOURCE=.\propertyfactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\propertys.pkg
 # End Source File
 # Begin Source File
 
