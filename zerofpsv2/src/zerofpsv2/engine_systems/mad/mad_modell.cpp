@@ -536,6 +536,10 @@ void DrawBone(Vector3 From, Vector3 To, Vector3 Color)
 	glEnable (GL_DEPTH_TEST);
 }
 
+extern Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
+extern Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix.
+
+
 void Mad_Modell::DrawSkelleton()
 {
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
@@ -547,11 +551,19 @@ void Mad_Modell::DrawSkelleton()
 	Vector3 Position;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
+	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+
 	glColor3f(1,1,1);
 	for(unsigned int i=0; i<pkCore->GetNumOfBones(); i++) {
 		if (pkCore->GetBoneParent(i) >= 0) {
 			DrawBone(pkCore->GetBonePosition(pkCore->GetBoneParent(i)),
 				pkCore->GetBonePosition(i),Vector3(1, 0.7f, 0));
+			
+			glMatrixMode(GL_MODELVIEW );
+			glPushMatrix();
+				glMultMatrixf( (float*)&g_Madkbonetransform[i] );
+				pkRender->Draw_AxisIcon(0.1 );
+			glPopMatrix();
 			}
 		else {
 			// Draw marker for parent bone.

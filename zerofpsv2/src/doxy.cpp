@@ -52,3 +52,11 @@ class MistLandGuiScript
 {
 	
 };
+
+/**	\brief Class To Collect Script Gui Functions,
+	\ingroup si
+*/
+class MistLandStdScript
+{
+	
+};

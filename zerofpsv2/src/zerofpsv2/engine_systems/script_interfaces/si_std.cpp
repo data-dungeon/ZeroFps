@@ -23,9 +23,10 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
 
-/**	\page Print Print(Text)
-	Print text to std out device.
-   \param Text	Text to print.
+/**	\fn Print( szText )
+ 		\relates MistLandStdScript
+		\brief Print text to std out device.
+		\param szText Text to print.
 */
 int PrintLua(lua_State* pkLua)
 {
@@ -42,10 +43,11 @@ int PrintLua(lua_State* pkLua)
 	return 1;
 }
 
-/**	\page Sin Sin(Angle)
-	Returns sinus of angle.
-   \param Angle Angle in radians.
-	\return Return Sin of angle.
+/**	\fn Sin( Angle )
+ 		\relates MistLandStdScript
+		\brief Gets sin of angle.
+		\param Angle Angle in radians.
+		\return Return Sin of angle.
 */
 int SinLua(lua_State* pkLua)
 {
@@ -61,10 +63,11 @@ int SinLua(lua_State* pkLua)
 	return 1;
 }
 
-/**	\page Cos Cos(Angle)
-	Returns cosinus of angle.
-   \param Angle Angle in radians.
-	\return Return Cos of angle.
+/**	\fn Cos( Angle )
+ 		\relates MistLandStdScript
+		\brief Gets cos of angle.
+		\param Angle Angle in radians.
+		\return Return cos of angle.
 */
 int CosLua(lua_State* pkLua)
 {
@@ -80,10 +83,11 @@ int CosLua(lua_State* pkLua)
 	return 1;
 }
 
-/**	\page Tan Cos(Angle)
-	Returns tangent of angle.
-   \param Angle Angle in radians.
-	\return Return Tan of angle.
+/**	\fn Tan( Angle )
+ 		\relates MistLandStdScript
+		\brief Gets tan of angle.
+		\param Angle Angle in radians.
+		\return Return tan of angle.
 */
 int TanLua(lua_State* pkLua)
 {
@@ -100,12 +104,11 @@ int TanLua(lua_State* pkLua)
 }
 
 // 1:st argument = Path to folder with files (char*)
-/**	\page GetFilesInFolder GetFilesInFolder(Path)
-	
-	Returns table of all files in the given path.
-   
-	\param Path The path to list the files. 
-	\return Table with filenames.
+/**	\fn GetFilesInFolder( szPath )
+ 		\relates MistLandStdScript
+		\brief Returns table of all files in the given path.
+		\param szPath The path to list the files. 
+		\return Table with filenames.
 */
 int GetFilesInFolderLua(lua_State* pkLua)
 {

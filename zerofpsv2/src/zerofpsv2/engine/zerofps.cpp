@@ -114,6 +114,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("devtog",FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
+	Register_Cmd("mass",FID_MASSSPAWN);	
+	
 }
 
 ZeroFps::~ZeroFps()
@@ -525,6 +527,7 @@ void ZeroFps::MainLoop(void) {
 
 		Draw_EngineShell();
 	}
+
 }
 
 void ZeroFps::SetRenderTarget(Camera* pkCamera)
@@ -913,6 +916,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				page->m_bVisible = !page->m_bVisible;
 			break;
 
+			
+/*		case FID_MASSSPAWN:	
+			for()
+			break;*/
 
 
 		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
@@ -1041,6 +1048,17 @@ void ZeroFps::RegisterPropertys()
 
 void ZeroFps::QuitEngine()
 {
+	vector<string> kPropertyNames;
+	
+	if(m_pkObjectMan->GetWorldObject()) {
+		m_pkObjectMan->GetWorldObject()->GetAllVarNames(kPropertyNames);
+
+		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
+		for(int i=0; i<kPropertyNames.size(); i++) {
+			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldObject()->GetVarDouble(kPropertyNames[i]));
+			}
+	}
+
 	printf("ZeroFps::QuitEngine\n");
 	m_iState = state_exit;
 }

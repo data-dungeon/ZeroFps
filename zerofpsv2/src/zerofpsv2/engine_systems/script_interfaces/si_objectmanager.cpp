@@ -1,15 +1,3 @@
-/**	\fn FuncName(Para1, Para2,...)
- 	\relates MistLandScript
-   \brief A member function.
-   \param Para1 Desc.
-	\return a character pointer.
-
-	Long Desc. 
-*/
-
-
-
-
 #include "../../script/zfscript.h"
 #include "si_objectmanager.h"
 #include "../../engine/entitymanager.h"
@@ -26,14 +14,9 @@ Entity*			 g_pkLastParent;
 Property*		 g_pkLastProperty;
 Entity*			 g_pkReturnObject;
 
-//Object*			 ObjectManagerLua::g_pkLastObjectBak;
 Entity*			 g_pkLastParentBak;
 Property*		 g_pkLastPropertyBak;
 Entity*			 g_pkReturnObjectBak;
-
-
-
-
 
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {

@@ -58,11 +58,6 @@ bool ZoneData::IsInside(Vector3 kPoint)
 	return true;
 }
 
-
-
-
-
-
 EntityManager::EntityManager() 
 : ZFSubSystem("EntityManager") 
 {
@@ -75,6 +70,11 @@ EntityManager::EntityManager()
 	m_bDrawZoneConnections	= false;
 	m_pScriptFileHandle		= NULL;
 	m_iTrackerLOS				= 3;	
+
+	m_pkWorldObject			= NULL;
+	m_pkZoneObject				= NULL;
+	m_pkClientObject			= NULL;
+	m_pkGlobalObject			= NULL;
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	

@@ -113,6 +113,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			FID_DEV_TOGGLE,
 
 			FID_SCREENSHOOT,
+			FID_MASSSPAWN,
 		};
 		
 

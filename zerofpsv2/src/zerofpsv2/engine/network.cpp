@@ -85,7 +85,6 @@ string NetWork::GetLocalIP()
 //	m_kLocalIP kIp;
 //	AddressToStr(kIp, MyIp);
 	return string("ost");
-
 }
 
 // NetStrings are strings that are sent as int's over network. 
@@ -656,7 +655,7 @@ void NetWork::DevShow_ClientConnections()
 			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
 			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iOutOfOrderNetFrame);
 
-		//m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 200);
+		m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 200);
 	}
 }
 	

@@ -8,6 +8,15 @@
 typedef list<Entity*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
  
+#define LOGALL
+
+#ifdef LOGALL
+	#define LOGSIZE(name, size)	m_pkObjectMan->GetWorldObject()->AddVarDouble(string(name), size )
+#else
+	#define LOGSIZE(name, size)	
+#endif
+
+
 
 Entity::Entity() 
 {
@@ -517,6 +526,8 @@ void Entity::GetAllObjects(vector<Entity*> *pakObjects)
 	}	
 }
 
+/**	\brief	Returns true if Entity have any propertys that need to be sent over the net.
+*/
 bool Entity::IsAnyPropertyNetworkActive()
 {
 	bool bNetwork;
@@ -814,7 +825,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		if(!parent)
 			parent = m_pkObjectMan->CreateObjectByNetWorkID(iParentID);
 		SetParent(parent);
-	
+		LOGSIZE("Object::ParentID", 4);
 	}
    
    // get update status
@@ -848,12 +859,14 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
 	{
 		pkNetPacket->Read((int&) m_bRelativeOri );
+		LOGSIZE("Object::RelativePos", 4);
 	}
 
 	//get interpolation flag
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_INTERPOLATE))
 	{
 		pkNetPacket->Read((int&) m_bInterpolate );
+		LOGSIZE("Object::Interpolate", 4);
 	}
 
 
@@ -864,6 +877,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Vector3 kPos;
 		pkNetPacket->Read(kPos);
 		SetLocalPosV(kPos);
+		LOGSIZE("Object::Position", sizeof(kPos) );
 	}
 	
 	//get rotation	
@@ -873,6 +887,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Matrix4 kRot;
 		pkNetPacket->Read(kRot);
 		SetLocalRotM(kRot);
+		LOGSIZE("Object::Rotation", sizeof(kRot));
 	}
 	
 	//get velocity	
@@ -882,6 +897,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Vector3 kVel;
 		pkNetPacket->Read(kVel);
 		GetVel()=kVel;
+		LOGSIZE("Object::Velocity", sizeof(kVel));
 	}
 	
 	//get radius
@@ -889,6 +905,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	{
 		//cout<<"got radius"<<endl;	
 		pkNetPacket->Read(m_fRadius);
+		LOGSIZE("Object::Radius", sizeof(m_fRadius));
 	}
 	
 	//get name
@@ -897,8 +914,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		char szStr[256];
 		pkNetPacket->Read_Str(szStr);
 		m_strName = szStr;		
-	
-		//cout<<"got name "<<m_strName<<endl;		
+		LOGSIZE("Object::Name", strlen(szStr) + 1);
 	}	
 	
 	//get type
@@ -907,15 +923,18 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		char szStr[256];
 		pkNetPacket->Read_Str(szStr);
 		m_strType = szStr;		
-	
-		//cout<<"got type "<<m_strType<<endl;		
+		LOGSIZE("Object::Type", strlen(szStr) + 1);
 	}		
 	
 	
-	//get propertys
-	char szProperty[256];
-	
 	//read first property name
+	int iPropertyStart = pkNetPacket->m_iPos;
+	int iPropettyEnd;
+	//float fSize;
+	
+
+
+	char szProperty[256];
 	pkNetPacket->Read_Str(szProperty);
 
 	while(strcmp(szProperty,"") != 0) 
@@ -931,7 +950,18 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 			return;
 		}
 
+		iPropettyEnd = pkNetPacket->m_iPos;
+		
+		//fSize = m_pkObjectMan->GetWorldObject()->GetVarDouble(string(szProperty));
+		//fSize += (iPropettyEnd - iPropertyStart);
+		//m_pkObjectMan->GetWorldObject()->SetVarDouble(string(szProperty), fSize);
+		//m_pkObjectMan->GetWorldObject()->AddVarDouble(string(szProperty),iPropettyEnd - iPropertyStart);
+
+		LOGSIZE(szProperty, iPropettyEnd - iPropertyStart);
+		//cout << szProperty << " iSize : " << m_pkObjectMan->GetWorldObject()->GetVarDouble(string(szProperty)) << endl;
+
 		//get next property name
+		iPropertyStart = pkNetPacket->m_iPos;
 		pkNetPacket->Read_Str(szProperty);
 	}	
 
@@ -939,7 +969,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
-	
 	
 	
 /*
@@ -1871,6 +1900,16 @@ void Entity::UpdateDeleteList()
 	m_aiNetDeleteList.clear();
 }
 
+void Entity::GetAllVarNames(vector<string>& vkList)
+{
+	vkList.reserve( m_kVariables.size() + 1 );
+
+	for(int i=0; i<m_kVariables.size(); i++) {
+		vkList.push_back( m_kVariables[i].m_strName ); 
+		}	
+}
+
+
 EntityVariable* Entity::CreateVar(string& strName, EntityVariableType eType)
 {
 	EntityVariable kEntVar;
@@ -1924,7 +1963,7 @@ void	 Entity::SetVarDouble(string& strName, double fValue)
 	pkVar->m_fValue = fValue;
 }
 
-void	 Entity::SetVarString(string& strName, string strValue)
+void Entity::SetVarString(string& strName, string strValue)
 {
 	EntityVariable* pkVar = GetVar(strName);
 	
@@ -1933,6 +1972,14 @@ void	 Entity::SetVarString(string& strName, string strValue)
 
 	pkVar->m_strValue = strValue;
 }
+
+void Entity::AddVarDouble(string& strName, double fValueToAdd)
+{
+	double fD = GetVarDouble(strName);
+	fD += fValueToAdd;
+	SetVarDouble(strName, fD);
+}
+
 
 void Entity::SetInterpolate(bool bInterpolate)
 {
