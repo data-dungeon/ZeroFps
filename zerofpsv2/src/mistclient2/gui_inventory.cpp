@@ -436,8 +436,13 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 
 	m_pkContainerWnd->SetZValue(22);
 	
-	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
-	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
+	ZGuiWnd* pkStockWnd = g_kMistClient.GetWnd("SplitStockWnd");
+
+	if(pkStockWnd == NULL || !pkStockWnd->IsVisible()) // dont place on top if stockwnd is visible
+	{
+		g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
+		g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
+	}
 }
 
 void InventoryDlg::CreateContainerGrid()

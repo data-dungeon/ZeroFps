@@ -1436,19 +1436,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
-	// Send a Mouse Move Message...
-	//static int s_iPrevX=-1;
-	//static int s_iPrevY=-1;
-	if(/*(s_iPrevX != x || s_iPrevY != y) && */ZGuiWnd::m_pkFocusWnd != NULL)
-	{
-		int* pkParams = new int[3];
-		pkParams[0] = (int) bLBnPressed; pkParams[1] = x; pkParams[2] = y;
-		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
-			ZGM_MOUSEMOVE,3,pkParams);
-		delete[] pkParams;
-		//s_iPrevX = x;
-		//s_iPrevY = y;
-	}
 
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
 	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
@@ -1458,7 +1445,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{		
 		if(pkFocusWindow)
 		{			
-
 			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
@@ -1595,6 +1581,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	bool bLeftReleased =  (m_bLeftButtonDown  == true && bLeftButtonDown  == false);
 	bool bRightReleased = (m_bRightButtonDown == true && bRightButtonDown == false);
 
+	bool bSentCommandMessage = false;
+
 	// Har vänster musknapp släpts (men inte klickats)?
 	if(bLeftReleased || bRightReleased)
 	{
@@ -1659,6 +1647,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
 							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);
+
+							bSentCommandMessage = true;
 
 							m_bHandledMouse = true;
 						}
@@ -1730,6 +1720,20 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				ZGuiWnd::m_pkPrevWndUnderCursor = ZGuiWnd::m_pkWndUnderCursor;
 			}
 		}
+	}
+
+	// Send a Mouse Move Message...
+	//static int s_iPrevX=-1;
+	//static int s_iPrevY=-1;
+	if(/*(s_iPrevX != x || s_iPrevY != y) && */bSentCommandMessage == false && ZGuiWnd::m_pkFocusWnd != NULL)
+	{
+		int* pkParams = new int[3];
+		pkParams[0] = (int) bLBnPressed; pkParams[1] = x; pkParams[2] = y;
+		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
+			ZGM_MOUSEMOVE,3,pkParams);
+		delete[] pkParams;
+		//s_iPrevX = x;
+		//s_iPrevY = y;
 	}
 
 	m_bLeftButtonDown = bLeftButtonDown;
