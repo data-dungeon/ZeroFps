@@ -12,7 +12,7 @@ P_Car::P_Car()
 
 P_Car::~P_Car()
 {
-	delete m_pkInputHandle;
+
 }
 
 

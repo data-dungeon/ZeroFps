@@ -48,10 +48,6 @@
 class ZeroEd :public Application , public ZGuiApp {
 	private:
 
-		bool UpdatePropertyList(int iID);
-		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
-		char* GetSelEnviromentString();
-
 		//console funktions
 		enum FuncId_e
 		{
@@ -175,6 +171,12 @@ class ZeroEd :public Application , public ZGuiApp {
 		void Input_EditZone();
 		void Input_EditObject(float fMouseX, float fMouseY);
 
+		bool UpdatePropertyList(int iID);
+		bool PlaceObjectOnGround(int iObjectID);
+		char* GetSelEnviromentString();
+
+		
+		
 	public:
 		bool SetViewPort(const char* szVpName);
 

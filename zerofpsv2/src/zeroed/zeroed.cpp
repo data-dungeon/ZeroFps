@@ -737,15 +737,20 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
 
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() && m_iCurrentMarkedZone > -1)
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
+		/*
 		Entity* pkObj = m_pkObjectMan->CreateObjectFromScript(m_strActiveObjectName.c_str());
 		pkObj->SetWorldPosV(m_kObjectMarkerPos);
 		pkObj->SetParent(m_pkObjectMan->GetObjectByNetWorkID(
 			m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
+		*/
+		Entity* pkObj = m_pkObjectMan->CreateObjectFromScriptInZone(m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
 
-		if(m_bPlaceObjectsOnGround)
-			PlaceObjectOnGround(pkObj->GetEntityID(), m_iCurrentMarkedZone);
+		if(pkObj)
+			if(m_bPlaceObjectsOnGround)
+				if(pkObj->GetCurrentZone() != -1)
+					PlaceObjectOnGround(pkObj->GetEntityID());
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
@@ -1756,7 +1761,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				m_bPlaceObjectsOnGround = IsButtonChecked((char*)strWndClicked.c_str());
 				if(m_bPlaceObjectsOnGround)
-					PlaceObjectOnGround(m_iCurrentObject, m_iCurrentMarkedZone);
+					PlaceObjectOnGround(m_iCurrentObject);
 			}
 		}
 		else
@@ -2014,15 +2019,26 @@ char* ZeroEd::GetSelEnviromentString()
 	return NULL;
 }
 
-bool ZeroEd::PlaceObjectOnGround(int iObjectID, int iZoneID)
+bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 {
 	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iObjectID);		
 	if(pkObj) 
 	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);		
+		ZoneData* pkData = m_pkObjectMan->GetZoneData(pkObj->GetCurrentZone());		
 		if(pkData->m_pkZone == NULL)
 			return false;
 
+		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
+		{
+			if(pkMad->TestLine(pkObj->GetWorldPosV(),Vector3(0,-1,0)))
+			{
+				Vector3 kPos = pkMad->GetLastColPos();
+				
+				pkObj->SetWorldPosV(kPos);
+				return true;
+			}
+		}
+/*			
 		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
 		if(pkMesh == NULL)
 			return false;
@@ -2034,7 +2050,7 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID, int iZoneID)
 			pkObj->SetLocalPosV(pos); 
 			m_iCurrentObject = -1;
 		}
-
+*/
 		return true;
 	}
 
