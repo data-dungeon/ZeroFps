@@ -143,6 +143,8 @@ public:
 
 	virtual bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
+	virtual void SetResizeFlags(bool bHorz, bool bVert);
+
 protected:
 
 
@@ -158,14 +160,15 @@ protected:
 	char* m_strText;
 	int m_iTextLength;
 	Rect m_kClipperArea; ///< Pixels outside this area will not be rendered
+	bool m_bResizeHorz, m_bResizeVert; ///< om fönstret skall skall skalas om horizontellt/vertikalt när skärmen byter upplösning
 
-	char m_szName[50]; // Same name as the resource manager use to find the window.
-	unsigned int m_iID; // Kan vara 0 och är i så fall ett statisk fönster.
+	char m_szName[50];	// Same name as the resource manager use to find the window.
+	unsigned int m_iID;	// Kan vara 0 och är i så fall ett statisk fönster.
 
-	virtual ~ZGuiWnd(); // Set the destructor to protected and and let class ZGui
+	virtual ~ZGuiWnd();	// Set the destructor to protected and and let class ZGui
 	friend class ZGui;	// be a friend so that only ZGui can destroy windows
-						// (the only way to destroy a window is with the func.
-						// named 'UnregisterWindow').
+								// (the only way to destroy a window is with the func.
+								// named 'UnregisterWindow').
 
 private:
 	void UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h, bool bFreeMovement);

@@ -34,7 +34,7 @@ void ContainerDlg::Create()
 	m_pkTexMan = static_cast<TextureManager*>(
 		g_ZFObjSys.GetObjectPtr("TextureManager"));
 
-	int screen_w = m_pkApp->GetWidth(); 
+	int screen_w = 800; //m_pkApp->GetWidth(); 
 
 	//
 	// Create main wnd
@@ -182,7 +182,7 @@ void ContainerDlg::OnScroll(int iID, int iPos)
 		prev_pos = iPos;
 	}
 
-	int screen_h = m_pkApp->GetHeight();
+	int screen_h = 600; //m_pkApp->GetHeight();
 	string strScrollbarName = GetWndByID(iID);
 
 	if(strScrollbarName == "ContainerScrollbar")

@@ -55,6 +55,8 @@ public:
 	ZGuiScrollbar* GetScrollbar() { return m_pkScrollbarVertical; }
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
+	void SetResizeFlags(bool bHorz, bool bVert);
+
 private:
 	
 	void UpdateList();

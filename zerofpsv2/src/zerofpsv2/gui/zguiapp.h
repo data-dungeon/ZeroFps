@@ -66,9 +66,9 @@ public:
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
 		ZFScriptSystem* pkScript, ZGuiResourceManager* pkResMan,
 		char* szFontTexture, char* szScriptFile);
-	bool CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
+	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags);
-	bool CreateWnd(GuiType eType, char* szResourceName, char* szText, 
+	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
 	void CloseWindow(char* szResName);
 	ZGuiWnd* GetWnd(int iID);

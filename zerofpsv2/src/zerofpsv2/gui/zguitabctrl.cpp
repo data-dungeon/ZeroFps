@@ -161,7 +161,7 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 	{
 		pkNewPage->SetMoveArea(pkNewPage->GetScreenRect());
 		pkNewPage->SetSkin(s_pkTabPageSkin);
-		pkNewPage->RemoveWindowFlag(WF_CANHAVEFOCUS);
+		pkNewPage->RemoveWindowFlag(WF_CANHAVEFOCUS); 
 
 		// sdfsafd
 		ZGui* pkGui = GetGUI();

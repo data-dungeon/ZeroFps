@@ -788,9 +788,9 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				ZGuiWnd* pkQuickSlotMainWnd = GetWnd("QuickSlotMainWnd");
 
 				if(GetWnd("InfoBoxWnd")->IsVisible() )
-					pkQuickSlotMainWnd->SetPos(0, GetHeight()-21-48-85, true, true);
+					pkQuickSlotMainWnd->SetPos(0, /*GetHeight()*/600-21-48-85, true, true);
 				else
-					pkQuickSlotMainWnd->SetPos(0, GetHeight()-21-44, true, true); 	
+					pkQuickSlotMainWnd->SetPos(0, /*GetHeight()*/600-21-44, true, true); 	
 			}
 			else
 			if(strClickWndName == "SelectSpellBn")
@@ -1242,8 +1242,8 @@ void MistClient::SetActiveCaracter(int iCaracter)
 
 void MistClient::CreateGuiInterface()
 {
-	int screen_w = GetWidth();
-	int screen_h = GetHeight();
+	int screen_w = 800; //GetWidth();
+	int screen_h = 600; //GetHeight();
 
 	ZGuiSkin* pkSkin; 
 
@@ -1595,7 +1595,7 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 
 void MistClient::UpdateManaAndHealthBar(CharacterStats* pkCharacterStats)
 {
-	static float max_size = ((float)GetWidth()-15.0f)/2.0f;
+	static float max_size = ((float)/*GetWidth()*/800-15.0f)/2.0f;
 
 	// update life meter
 	float fHP = pkCharacterStats->GetHPPercent();

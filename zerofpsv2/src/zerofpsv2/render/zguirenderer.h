@@ -23,7 +23,6 @@ class RENDER_API ZGuiRender : public ZFSubSystem
 public:
 	ZGuiRender();
 	virtual ~ZGuiRender();
-
 	virtual bool StartRender() = 0;
 	virtual bool EndRender() = 0;
 	virtual void EnableClipper(bool bEnable) = 0;

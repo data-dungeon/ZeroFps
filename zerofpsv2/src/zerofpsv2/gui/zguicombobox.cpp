@@ -364,3 +364,12 @@ bool ZGuiCombobox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNe
 
 	return true;
 }
+
+void ZGuiCombobox::SetResizeFlags(bool bHorz, bool bVert)
+{
+	m_bResizeHorz = bHorz;
+	m_bResizeVert = bVert;
+
+	m_pkLabel->SetResizeFlags(bHorz, bVert); 
+	m_pkListbox->SetResizeFlags(bHorz, bVert);
+}

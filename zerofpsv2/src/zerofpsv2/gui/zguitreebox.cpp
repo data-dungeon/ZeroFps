@@ -890,10 +890,9 @@ bool ZGuiTreebox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 
 	m_pkSelLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
-	m_pkHorzScrollbar->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkVertScrollbar->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	m_pkHorzScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	m_pkVertScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 	
-
 	m_iButtonSize = (int) ((float) m_iButtonSize * (float) ((float)iNewHeight/(float)iOldHeight));
 	
 	return true;

@@ -111,6 +111,7 @@ class MistServer :public Application , public ZGuiApp {
 				};
 			} SortFiles;
 
+		void CreateGuiInterface();
 		bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
 		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();

@@ -58,16 +58,16 @@ void StatsDlg::Update()
 
 		if((unsigned int) m_pkSkillList->GetItemCount() != kSkillList.size())
 		{
-			int id=1;
+			int id=0;
 			m_pkSkillList->RemoveAllItems();
 			map<string,StatDescriber>::iterator itSkills = kSkillList.begin();
 			for( ; itSkills != kSkillList.end(); itSkills++)
 			{
-				id++;
-
 				char szItemName[50];
 				sprintf(szItemName, "%s %i", itSkills->first.c_str(), itSkills->second.m_iValue);
 				m_pkSkillList->AddItem(szItemName, id, false);
+
+				id++;
 			}
 		}
 	}
@@ -75,8 +75,8 @@ void StatsDlg::Update()
 
 void StatsDlg::Init()
 {
-	int screen_w = m_pkApp->GetWidth(); 
-	int screen_h = m_pkApp->GetHeight();
+	int screen_w = 800; //m_pkApp->GetWidth(); 
+	int screen_h = 600; //m_pkApp->GetHeight();
 
 	// Set textures skills listbox
 	m_pkSkillList = (ZGuiListbox*) m_pkApp->GetWnd("SkillsListbox");

@@ -63,8 +63,6 @@ void ZGuiTest::OnInit()
 
 	CreateUI();
 
-	OnScreenSizeChange(Point(800,600), Point(GetWidth(),GetHeight()));
-
 	pkFps->m_bClientMode = true;
 
 }
@@ -89,29 +87,20 @@ void ZGuiTest::OnHud(void)
 void ZGuiTest::CreateUI()
 {
 	CreateWnd(Wnd, "TestWnd", "", "", 800-200, 600-200, 200, 200, 0);
-	CreateWnd(Combobox, "Testss", "TestWnd", "Apa", 0, 0, 150, 20*8, 0);
-	CreateWnd(Combobox, "Testss2", "TestWnd", "Kossa", 50, 0, 150, 20*8, 0);
+	CreateWnd(Treebox, "Testss", "TestWnd", "Apa", 0, 0, 150, 150, 0);
 
-	((ZGuiCombobox*)GetWnd("Testss"))->SetNumVisibleRows(6);
-	((ZGuiCombobox*)GetWnd("Testss"))->IsMenu(true); 
-	((ZGuiCombobox*)GetWnd("Testss"))->SetLabelText("Apa1"); 
-	
-	char szName[20];
-	for(int i=0; i<5; i++)
-	{
-		sprintf(szName, "apa %i\n", i);
-		AddListItem("Testss", szName);
-	}
+	AddTreeItem("Testss", "idTest", NULL, "label1", 1, 2);
+	AddTreeItem("Testss", "idTest2", "idTest", "label2", 0, 1);
+	AddTreeItem("Testss", "idTest3", "idTest", "label3", 0, 1);
+	AddTreeItem("Testss", "idTest4", "idTest", "label4", 0, 1);
+	AddTreeItem("Testss", "idTest5", "idTest", "label5", 0, 1);
 
-	((ZGuiCombobox*)GetWnd("Testss2"))->SetNumVisibleRows(6);
-	((ZGuiCombobox*)GetWnd("Testss2"))->IsMenu(true); 
-	((ZGuiCombobox*)GetWnd("Testss2"))->SetLabelText("Kossa"); 
-	
-	for(i=0; i<5; i++)
-	{
-		sprintf(szName, "kossa %i\n", i);
-		AddListItem("Testss2", szName);
-	}
+	AddTreeItem("Testss", "idUgga", NULL, "Uga", 1, 2);
+	AddTreeItem("Testss", "idTest12", "idUgga", "label2", 0, 1);
+	AddTreeItem("Testss", "idTest13", "idUgga", "label3", 0, 1);
+	AddTreeItem("Testss", "idTest14", "idUgga", "label4", 0, 1);
+	AddTreeItem("Testss", "idTest15", "idUgga", "label5", 0, 1);
+
 
 	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,600),true);
 

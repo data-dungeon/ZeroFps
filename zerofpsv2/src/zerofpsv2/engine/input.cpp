@@ -73,8 +73,9 @@ void Input::Update(void) {
 					m_aPressedKeys.pop();
 
 				//set button as pressed		
-				m_akButtonList[m_kEvent.key.keysym.sym]=true;					    	
-    		break;			
+				m_akButtonList[m_kEvent.key.keysym.sym]=true;	
+    			break;			
+
 			case SDL_KEYUP:
 				//set  button as unpressed
 				m_akButtonList[m_kEvent.key.keysym.sym]=false;					    	

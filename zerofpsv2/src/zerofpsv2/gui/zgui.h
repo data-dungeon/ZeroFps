@@ -159,6 +159,7 @@ public:
 	
 	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
+	void OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight);
 	void SetWndForeground(ZGuiWnd* pkWnd);
 	void SetRes(int iResX, int iResY); // should only be called one time before app start!
 	static int m_iResX;
@@ -172,9 +173,11 @@ private:
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
 	
+
 	void OnKeyPress(int iKey);
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 
 		bool bRBnPressed, bool bMBnPressed, float fGameTime);
+	void TranslateMousePos(int &x, int &y);
 	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;

@@ -296,8 +296,7 @@ bool ZGui::Render()
 		(*it)->pkWnd->Render(m_pkRenderer);
 
 		 if(pkWnd->m_bUseClipper)
-			 m_pkRenderer->EnableClipper(false);
-		
+			 m_pkRenderer->EnableClipper(false);		
 	 }
 
 	// Draw points
@@ -366,12 +365,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						 bool bRBnPressed, bool bMBnPressed, 
 						 float fGameTime)
 {
-
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
 		m_bHaveInputFocus = false;
 		return true;
 	}
+
+	TranslateMousePos(x,y);
 
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;
@@ -749,6 +749,8 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fGameTime);
 	}
+
+	
 
 /*	m_kPointsToDraw.clear();
 	m_kRectsToDraw.clear(); 
@@ -1312,4 +1314,48 @@ void ZGui::SetWndForeground(ZGuiWnd *pkWnd)
 ZGuiToolTip* ZGui::GetToolTip()
 {
 	return m_pkToolTip; 
+}
+
+void ZGui::OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight)
+{
+	map<string,ZGuiWnd*> kWindows;
+	m_pkResManager->GetWindows(kWindows); 
+
+	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
+	for( ; it != kWindows.end(); it++)
+	{
+		(*it).second->Rescale(iPrevWidth, iPrevHeight, iNewWidth, iNewHeight);
+	}
+}
+
+void ZGui::TranslateMousePos(int &x, int &y)
+{
+	float dif_x=0, dif_y=0;
+
+	if(m_iResX == 1024 && m_iResY == 768)
+	{
+		dif_x = 225.0f * (float)((1.0f/m_iResX) * x); 
+		dif_y = 172.0f * (float)((1.0f/m_iResY) * y); 
+	}
+	else
+	if(m_iResX == 1280 && m_iResY == 960)
+	{
+		dif_x = 480.0f * (float)((1.0f/m_iResX) * x); 
+		dif_y = 362.0f * (float)((1.0f/m_iResY) * y); 
+	}
+	else
+	if(m_iResX == 1280 && m_iResY == 1024)
+	{
+		dif_x = 482.0f * (float)((1.0f/m_iResX) * x); 
+		dif_y = 430.0f * (float)((1.0f/m_iResY) * y); 
+	}
+	else
+	if(m_iResX == 1600 && m_iResY == 1200)
+	{
+		dif_x = 800.0f * (float)((1.0f/m_iResX) * x); 
+		dif_y = 600.0f * (float)((1.0f/m_iResY) * y); 
+	}
+
+	x = x-dif_x;
+	y = y-dif_y;
 }

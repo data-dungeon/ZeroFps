@@ -42,6 +42,8 @@ public:
 	void SetClipperArea(Rect rc);
 
 private:
+
+
 	void PrintWord(int x, int y, char* szWord, int offset, int length);
 	pair<int,int> GetWordLength(char* text, int offset, int max_width);
 

@@ -48,8 +48,8 @@ void SkillDlg::Update()
 
 void SkillDlg::Init()
 {
-	int screen_w = m_pkApp->GetWidth(); 
-	int screen_h = m_pkApp->GetHeight();
+	int screen_w = 800; //m_pkApp->GetWidth(); 
+	int screen_h = 600; //m_pkApp->GetHeight();
 
 	//
 	// Create main window
@@ -199,7 +199,7 @@ void SkillDlg::OnScroll(int iID, int iPos)
 		prev_pos = iPos;
 	}
 
-	int screen_h = m_pkApp->GetHeight();
+	int screen_h = 600; //m_pkApp->GetHeight();
 	string strScrollbarName = GetWndByID(iID);
 
 	if(strScrollbarName == "SelectSkillsScrollbar")

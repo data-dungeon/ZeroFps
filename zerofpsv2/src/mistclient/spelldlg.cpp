@@ -37,8 +37,8 @@ void SpellDlg::Update()
 
 void SpellDlg::Init()
 {
-	int screen_w = m_pkApp->GetWidth(); 
-	int screen_h = m_pkApp->GetHeight();
+	int screen_w = 800; //m_pkApp->GetWidth(); 
+	int screen_h = 600; //m_pkApp->GetHeight();
 
 	//
 	// Create main window

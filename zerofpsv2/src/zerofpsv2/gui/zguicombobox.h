@@ -45,6 +45,7 @@ public:
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void KillFocus();
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	void SetResizeFlags(bool bHorz, bool bVert);
 
 private:
 	ZGuiLabel* m_pkLabel;

@@ -9,6 +9,7 @@
 #include "zguiresourcemanager.h"
 #include "zgui.h"
 #include <typeinfo>
+#include <math.h>
 
 ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;
@@ -67,6 +68,9 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 	m_bUseClipper = false;
 	m_kClipperArea = Rect(0,0,800,600);
+
+	m_bResizeHorz = true;
+	m_bResizeVert = true;
 }
 
 ZGuiWnd::~ZGuiWnd()
@@ -405,7 +409,7 @@ void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 
 bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
-	printf("ZGuiWnd::Rescale %s\n", GetName());
+	printf("Rescaling window = %s\n", GetName());
 
 	int xpos, ypos, width, height;
 	float fXChange = (float) iNewWidth / iOldWidth;
@@ -413,10 +417,18 @@ bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeig
 	Rect rcA = m_kArea, rcM = m_kMoveArea, rcC = m_kClipperArea;
 
 	// Change screen area
-	xpos = (int) ((float) fXChange * (float)rcA.Left);
-	ypos = (int) ((float) fYChange * (float)rcA.Top);
-	width = (int) ((float) fXChange * (float)rcA.Width());
-	height = (int) ((float) fYChange * (float)rcA.Height());
+	xpos = (int) floor(((float) fXChange * (float)rcA.Left));
+	ypos = (int) floor(((float) fYChange * (float)rcA.Top));
+	
+	if(m_bResizeHorz)
+		width = (int) ceil(((float) fXChange * (float)rcA.Width()));
+	else
+		width = rcA.Width();
+
+	if(m_bResizeVert)
+		height = (int) ceil(((float) fYChange * (float)rcA.Height()));
+	else
+		height = rcA.Height();
 
 	m_kArea.Left = xpos;
 	m_kArea.Right = xpos+width;
@@ -424,10 +436,18 @@ bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeig
 	m_kArea.Bottom = ypos+height;
 
 	// Change move area
-	xpos = (int) ((float) fXChange * (float)rcM.Left);
-	ypos = (int) ((float) fYChange * (float)rcM.Top);
-	width = (int) ((float) fXChange * (float)rcM.Width());
-	height = (int) ((float) fYChange * (float)rcM.Height());
+	xpos = (int) floor(((float) fXChange * (float)rcM.Left));
+	ypos = (int) floor(((float) fYChange * (float)rcM.Top));
+	
+	if(m_bResizeHorz)
+		width = (int) ceil(((float) fXChange * (float)rcM.Width()));
+	else
+		width = rcM.Width();
+
+	if(m_bResizeVert)
+		height = (int) ceil(((float) fYChange * (float)rcM.Height()));
+	else
+		height = rcM.Height();
 
 	m_kMoveArea.Left = xpos;
 	m_kMoveArea.Right = xpos+width;
@@ -435,76 +455,23 @@ bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeig
 	m_kMoveArea.Bottom = ypos+height;
 
 	// Change clipper area
-	xpos = (int) ((float) fXChange * (float)rcC.Left);
-	ypos = (int) ((float) fYChange * (float)rcC.Top);
-	width = (int) ((float) fXChange * (float)rcC.Width());
-	height = (int) ((float) fYChange * (float)rcC.Height());
+	xpos = (int) floor(((float) fXChange * (float)rcC.Left));
+	ypos = (int) floor(((float) fYChange * (float)rcC.Top));
+	
+	if(m_bResizeHorz)
+		width = (int) ceil(((float) fXChange * (float)rcC.Width()));
+	else
+		width = rcC.Width();
+
+	if(m_bResizeVert)
+		height = (int) ceil(((float) fYChange * (float)rcC.Height()));
+	else
+		height = rcC.Height();
 
 	m_kClipperArea.Left = xpos;
 	m_kClipperArea.Right = xpos+width;
 	m_kClipperArea.Top = ypos;
 	m_kClipperArea.Bottom = ypos+height;
-
-/*	ZGui* pkGui = GetGUI();
-	if(pkGui == NULL)
-		return false;
-
-	// Have resolution been changed for this window?
-	int curr_res_x, curr_res_y;
-	pkGui->GetResolution(curr_res_x, curr_res_y);
-	if(m_iResolutionX == curr_res_x && m_iResolutionY == curr_res_y)
-		return true; // same, break
-
-	// Store the new resoluion
-	m_iResolutionX = iNewWidth;
-	m_iResolutionY = iNewHeight;
-
-	float fScaleX = (float) iNewWidth / (float) iOldWidth;
-	float fScaleY = (float) iNewHeight / (float) iOldHeight;
-
-	Rect rc, rcNew;
-	float fOldXprocentAvSkarm, fOldYprocentAvSkarm;
-
-	// 
-	// Change area
-	// 
-	rc = m_kArea;
-	
-	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-	rcNew = Rect(
-		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-		(int) (fOldYprocentAvSkarm * (float) iNewHeight), 0,0);
-
-	rcNew.Right  =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-	rcNew.Bottom =  rcNew.Top  + (int) (fScaleY * (float) rc.Height());
-	
-	m_kArea = rcNew;
-
-	// 
-	// Change move area
-	// 
-	rc = m_kMoveArea;
-	
-	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-	rcNew = Rect(
-		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-		(int) (fOldYprocentAvSkarm * (float) iNewHeight),0,0);
-
-	rcNew.Right  =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-	rcNew.Bottom =  rcNew.Top  + (int) (fScaleY * (float) rc.Height());
-	
-	m_kMoveArea = rcNew;
-
-	// Also scale childrens
-	for( WINit win = m_kChildList.begin();
-		 win != m_kChildList.end(); win++)
-		 {
-			(*win)->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-		 }*/
 
 	return true;
 }
@@ -683,4 +650,10 @@ void ZGuiWnd::SetClipperArea(Rect rc, bool bEnable)
 {
 	m_kClipperArea = rc;
 	m_bUseClipper = bEnable;
+}
+
+void ZGuiWnd::SetResizeFlags(bool bHorz, bool bVert)
+{
+	m_bResizeHorz = bHorz;
+	m_bResizeVert = bVert;
 }

@@ -66,13 +66,41 @@ bool GLGuiRender::StartRender()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_FOG);
 
-    glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
-    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
+
+	//
+	// Skala om projektions matrisen.
+	//
+	if(m_iScreenWidth == 1024 && m_iScreenHeight == 768)
+	{
+		glScalef(1.28f, 1.28f, 1.0f);
+		glTranslatef(0,-169, 0);
+	}
+	else
+	if(m_iScreenWidth == 1280 && m_iScreenHeight == 960)
+	{
+		glScalef(1.6f, 1.6f, 1.0f);
+		glTranslatef(0,-360, 0);
+	}
+	else
+	if(m_iScreenWidth == 1280 && m_iScreenHeight == 1024)
+	{
+		glScalef(1.6f, 1.706667f, 1.0f);
+		glTranslatef(0,-430, 0);
+	}
+	else
+	if(m_iScreenWidth == 1600 && m_iScreenHeight == 1200)
+	{
+		glScalef(2.0f, 2.0f, 1.0f);
+		glTranslatef(0,-600, 0);
+	}
+	 
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-    glLoadIdentity();
+	glLoadIdentity();
 
 /*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
@@ -876,3 +904,5 @@ void GLGuiRender::EnableClipper(bool bEnable)
 {
 	m_bClipperEnabled = bEnable;
 }
+
+

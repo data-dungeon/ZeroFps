@@ -78,7 +78,7 @@ ZGuiSkin* ZGuiApp::GetSkin(string strName)
 	return res->second;
 }
 
-bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
+ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
 								int x, int y, int w, int h, unsigned long uiFlags)
 {
 	
@@ -95,7 +95,7 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		pkWnd->Show();
 		m_pkGui->SetFocus(pkWnd);
 		
-		return false;
+		return pkWnd;
 	}
 
 	ZGuiWnd* pkWnd;
@@ -253,7 +253,7 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 		{
 			m_pkGui->SetFocus(pkWnd);
-			return false;
+			return NULL;
 		}
 	}
 	else
@@ -274,13 +274,19 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 	pkWnd->SetGUI(m_pkGui);
 	pkWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
 
+	//
+	// Change position and size on the window according to resolution.
+	//
+
+//	pkWnd->Rescale(800,600, GetWidth(),GetHeight());
+
 	pkWnd->Show(); 
 	
-	return true;
+	return pkWnd;
 }
 
 
-bool ZGuiApp::CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
+ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 								char* szLabel, int x, int y, int w, int h, 
 								unsigned long uiFlags)
 {
@@ -714,7 +720,6 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID,
 			static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(pkSkin);
 	}
 
- 
 	return true;
 }
 

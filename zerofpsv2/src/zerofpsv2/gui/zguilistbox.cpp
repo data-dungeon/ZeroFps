@@ -599,3 +599,16 @@ bool ZGuiListbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 
 	return true;
 }
+
+void ZGuiListbox::SetResizeFlags(bool bHorz, bool bVert)
+{
+	m_bResizeHorz = bHorz;
+	m_bResizeVert = bVert;
+
+	list<ZGuiListitem*>::iterator it;
+	for(  it = m_pkItemList.begin();
+			it != m_pkItemList.end(); it++)
+	 {
+		(*it)->GetButton()->SetResizeFlags(bHorz, bVert);
+	 }
+}

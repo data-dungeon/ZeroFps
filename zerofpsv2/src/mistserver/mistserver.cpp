@@ -20,6 +20,8 @@
 #include <set> 
 #include <algorithm>
 
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
+
 
 MistServer g_kMistServer("MistServer",0,0,0);
 
@@ -136,6 +138,8 @@ void MistServer::Init()
 		"data/script/gui/gui_create_server.lua");
 		//"data/script/gui/test2s.lua");
 
+	CreateGuiInterface();
+
 	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
@@ -143,8 +147,6 @@ void MistServer::Init()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_WM_SetCaption("MistServer", NULL);
-
-	CreateMenu("data/script/gui/menu.txt");
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
@@ -156,8 +158,7 @@ void MistServer::Init()
 	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
 	kSkin.m_unBorderSize = 1;
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
-	pkGui->GetToolTip()->SetSkin(kSkin);
-	
+	pkGui->GetToolTip()->SetSkin(kSkin);	
 }
 
 void MistServer::RegisterResources()
@@ -913,29 +914,21 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "OpenWorkTabButton")
 			{
-				bool bExist = true;
-
-				if(GetWnd("ZonePage") == NULL)
-					bExist = false;
-
-				pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
-				
-				if(!bExist)
+				if( IsWndVisible("WorkTabWnd") )
 				{
-					BuildFileTree("ZoneModelTree", "data/mad/zones");
-					BuildFileTree("ObjectTree", "data/script/objects");
-					//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+					pkAudioSys->StartSound("/data/sound/close_window.wav",pkAudioSys->GetListnerPos());
+					GetWnd("WorkTabWnd")->Hide(); 
+				}
+				else 
+				{
+					pkAudioSys->StartSound("/data/sound/open_window.wav",pkAudioSys->GetListnerPos());
+					GetWnd("WorkTabWnd")->Show(); 
 				}
 			}
 			else
 			if(strWndClicked == "ToogleLight")
 			{
 				ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
-			}
-			else
-			if(strWndClicked == "MainMenu")
-			{
-				printf("oooooo\n");
 			}
 		}
 		else
@@ -976,7 +969,6 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 		}
-
 	}
 
 }
@@ -1809,3 +1801,84 @@ bool MistServer::CreateMenu(char* szFileName)
 
 	return true;
 }
+
+void MistServer::CreateGuiInterface()
+{
+	int w = 800, h = 600;
+
+	ZGuiWnd* pkWnd;
+	
+	pkWnd = CreateWnd(Wnd, "MainWnd", "", "", 0, 0, w, h, 0);
+	ChangeSkin(pkScript, "MainWnd", "NullSkin", "Wnd"); 
+
+	pkWnd = CreateWnd(Button, "OpenWorkTabButton", "MainWnd", "", w-40,h-40,32,32,0);
+	ChangeSkin(pkScript, "OpenWorkTabButton", "WorkButtonSkinUp", "Button up"); 
+	ChangeSkin(pkScript, "OpenWorkTabButton", "WorkButtonSkinDown", "Button down"); 
+	ChangeSkin(pkScript, "OpenWorkTabButton", "WorkButtonSkinFocus", "Button focus"); 
+
+	pkWnd = CreateWnd(Checkbox, "ToogleLight", "MainWnd", "", w-80,h-40,32,32,0);
+	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinUp", "Button up");
+	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinDown", "Button down");
+
+	// Create workwnd
+
+	pkWnd = CreateWnd(TabControl, "WorkTabWnd", "MainWnd", "", w-10-256, h-50-256, 256, 256, 0);
+	pkWnd->Hide();
+
+	AddTabPage("WorkTabWnd", "ZonePage", "Zone");
+	AddTabPage("WorkTabWnd", "ObjectPage", "Object");
+	AddTabPage("WorkTabWnd", "EnviromentPage", "Enviroment");
+
+	//
+	// Page 1
+	//
+	CreateWnd(Button,"RotateZoneModellButton","ZonePage","",256-32,16,16,16,0);
+	ChangeSkin(pkScript, "RotateZoneModellButton", "RotateButtonSkinUp", "Button up");
+	ChangeSkin(pkScript, "RotateZoneModellButton", "RotateButtonSkinDown", "Button down");
+	ChangeSkin(pkScript, "RotateZoneModellButton", "RotateButtonSkinFocus", "Button focus");
+
+	CreateWnd(Button,"DeleteZoneButton","ZonePage","",256-32,36,16,16,0);
+	ChangeSkin(pkScript, "DeleteZoneButton", "DeleteButtonSkinUp", "Button up");
+	ChangeSkin(pkScript, "DeleteZoneButton", "DeleteButtonSkinDown", "Button down");
+	ChangeSkin(pkScript, "DeleteZoneButton", "DeleteButtonSkinFocus", "Button focus");
+
+	CreateWnd(Treebox, "ZoneModelTree", "ZonePage", "", 10,20,200,200,0);
+
+	//
+	// Page 2
+	//
+	
+	CreateWnd(Treebox, "ObjectTree", "ObjectPage", "", 10,20,200,200,0);
+	
+	CreateWnd(Button,"PlaceongroundButton","ObjectPage","",256-32,16,16,16,0);
+	ChangeSkin(pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinUp", "Button up");
+	ChangeSkin(pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinDown", "Button down");
+	ChangeSkin(pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinFocus", "Button focus");
+
+	CreateWnd(Button,"DeleteObjectButton","ObjectPage","",256-32,36,16,16,0);
+	ChangeSkin(pkScript, "DeleteObjectButton", "DeleteButtonSkinUp", "Button up");
+	ChangeSkin(pkScript, "DeleteObjectButton", "DeleteButtonSkinDown", "Button down");
+	ChangeSkin(pkScript, "DeleteObjectButton", "DeleteButtonSkinFocus", "Button focus");
+
+	//
+	// Page 3
+	//
+
+	CreateWnd(Listbox, "EnviromentPresetList", "EnviromentPage", "", 10,20,200,200,0);
+
+	BuildFileTree("ZoneModelTree", "data/mad/zones");
+	BuildFileTree("ObjectTree", "data/script/objects");
+
+	vector<string> vkFileNames;
+	pkZFVFileSystem->ListDir(&vkFileNames, "/data/enviroments", false);
+
+	for(int i=0; i<vkFileNames.size(); i++)
+		AddListItem("EnviromentPresetList", (char*) vkFileNames[i].c_str());
+
+	// 
+	// Create menu
+	//
+	CreateMenu("data/script/gui/menu.txt");
+
+}
+

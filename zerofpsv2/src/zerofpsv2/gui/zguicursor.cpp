@@ -41,7 +41,7 @@ void ZGuiCursor::Render()
 	if(m_pkSkin != NULL)
 		m_pkRenderer->SetSkin(m_pkSkin);
 
-	m_pkRenderer->RenderQuad(m_kRect);
+	m_pkRenderer->RenderQuad(m_kRect);	
 }
 
 void ZGuiCursor::SetSkin(ZGuiSkin *pkSkin)
