@@ -18,25 +18,18 @@ using namespace std;
 */
 class MCOMMON_API P_Ml: public Property {
 	private:
-		ZeroFps* m_pkFps;
-		EntityManager* m_pkEntityMan;
 		Render*				m_pkRender;	
 		
-		vector<string>	m_kActions;	///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
-		
-		int				m_iSpawnZon;
-		int				m_iSpawn;
-
-		bool				m_bJustSaved;
-		
-		bool				m_bShowText;
-		string			m_strText;
+		vector<string>		m_kActions;				///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
+				
+		bool					m_bShowText;
+		string				m_strText;
 
 
 		vector<PropertyValues> GetPropertyValues();
 	public:
 
-		void GetActions(vector<string>& actions) { actions = m_kActions; }
+		void GetActions(vector<string>& actions) {	actions = m_kActions; }
 
 		P_Ml();
 		~P_Ml();
@@ -46,11 +39,9 @@ class MCOMMON_API P_Ml: public Property {
 		
 		void AddAction(const char* csAction);
 		
-		void SetText(string strText) {m_strText = strText;};
-		string GetText() {return m_strText;};
-		
-		void SetSpawnPointer(int iSpawner,int iZon) {m_iSpawn = iSpawner;m_iSpawnZon = iZon;};
-		
+		void SetText(string strText) 					{	m_strText = strText;	};
+		string GetText() 									{	return m_strText;		};
+				
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
