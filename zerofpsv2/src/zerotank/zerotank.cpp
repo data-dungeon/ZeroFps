@@ -156,7 +156,7 @@ void ZeroTank::Input()
 	{
 	}
 
-	float speed = 10;
+	float speed = 20;
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){

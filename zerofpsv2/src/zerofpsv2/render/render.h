@@ -16,6 +16,7 @@
 #include "light.h"
 #include "../engine/fh.h"
 #include "../engine/zfresource.h"
+#include "zshader.h"
 
 class HeightMap;
 class Heightmap2;
@@ -44,6 +45,7 @@ class RENDER_API Render : public ZFObject {
 		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
+		ZShader*				m_pkZShader;
 		
 		char			aCurentFont[256];
 		bool			m_FogEnable;		
@@ -71,12 +73,13 @@ class RENDER_API Render : public ZFObject {
 
 		PolygonMode m_eLandscapePolygonMode;
 	
-		bool StartUp()		{ return true;	}
+		bool StartUp();
 		bool ShutDown()	{ return true;	}
 		bool IsValid()		{ return true;	}
 		Render();
 
 		TextureManager* GetTexMangager()		{	return m_pkTexMan; }		///< Get ptr to texture manger.
+		
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		

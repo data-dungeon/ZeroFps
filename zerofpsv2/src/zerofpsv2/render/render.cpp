@@ -5,11 +5,16 @@
 
 Render::Render()  
 :	ZFObject("Render") , m_eLandscapePolygonMode(FILL) {
+
+}
+
+bool Render::StartUp()
+{
  
  	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
  	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
-//	m_pkTexMan=pkTexMan;
+ 	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
 	
 	m_iSlicesize = 32;		//grid size of lod tiles
 	m_iDetail = 30;				//height meens greater detail att longer range	
@@ -28,6 +33,8 @@ Render::Render()
 	m_iScreenShootNum = 0;
 
 	m_iHmTempList=0;
+
+	return true;
 }
 
 void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)

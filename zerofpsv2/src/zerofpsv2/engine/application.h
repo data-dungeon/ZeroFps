@@ -36,6 +36,8 @@ class ENGINE_API Application : public ZFObject {
 		ZFVFileSystem*			pkZFVFileSystem;
 		
 		Physics_Engine*		pkPhysics_Engine;
+		ZShader*					pkZShader;	
+		
 		
 	public:
 		static Application*	pkApp;								///< The one and Only App Instance.

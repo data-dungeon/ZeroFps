@@ -21,6 +21,7 @@
 #include "../engine_systems/audio/openalsystem.h"
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
+#include "../render/zshader.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -154,7 +155,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Render*					m_pkRender;					///< Renders Graphic primitives
 		Console*					m_pkConsole;				///< ZeroFps Console.
 		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
-//		AudioManager*			m_pkAudioMan;				///< audio manager (sfx,music)		
 		ObjectManager*			m_pkObjectMan;				///< In Game Object System.
 		SoundBufferManager*  m_pkSBM;						///< Sound
 		OpenAlSystem*			m_pkOpenAlSystem;			///< Sound
@@ -169,8 +169,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFScript*				m_pkScript;					///< script
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 		Application*			m_pkApp;						///< Application object.
-//		MechRenderer*			m_pkMechRenderer;			
-
+		ZShader*					m_pkZShader;				///< zerofps shader system
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS

@@ -1215,14 +1215,17 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
 	
-	glPolygonMode(GL_FRONT, GL_LINE);	
+//	glPolygonMode(GL_FRONT, GL_LINE);	
 	
 	int px =  pkMap->m_iWidth / pkMap->m_iPatchWidth;
 	int py =  pkMap->m_iHeight / pkMap->m_iPatchHeight;
 	
 	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
 	
-	
+	ZMaterial bla;
+	bla.GetPass(0)->m_iPolygonModeFront = GL_FILL;
+	m_pkZShader->BindMaterial(&bla);
+	m_pkZShader->SetDrawMode(TRIANGLESTRIP_MODE);
 	
 	for(int y = 0;y<py;y++)
 	{			
@@ -1236,11 +1239,19 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 		
 			HM2_level* pkLevel = &(pkPatch->kLevels[iLevel]);
 		
-			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
-			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
-			glTexCoordPointer(2,GL_FLOAT,0,&pkLevel->kTexCor[0]);
+			m_pkZShader->SetPointer(VERTEX_POINTER,&pkLevel->kVertex[0]);
+			m_pkZShader->SetPointer(NORMAL_POINTER,&pkLevel->kNormal[0]);
+			m_pkZShader->SetPointer(TEXTURE_POINTER,&pkLevel->kTexCor[0]);
 			
-			glDrawArrays(GL_TRIANGLE_STRIP,0,pkLevel->kVertex.size());
+			m_pkZShader->SetNrOfVertexs(pkLevel->kVertex.size());
+			
+			m_pkZShader->Draw();
+			
+//			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
+//			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
+//			glTexCoordPointer(2,GL_FLOAT,0,&pkLevel->kTexCor[0]);
+			
+//			glDrawArrays(GL_TRIANGLE_STRIP,0,pkLevel->kVertex.size());
 		
 		}
 	}
