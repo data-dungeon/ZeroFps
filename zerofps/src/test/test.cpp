@@ -236,9 +236,9 @@ void Test::OnIdle(void) {
 		pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 	pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
 
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.3);
-			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
+//		glEnable(GL_ALPHA_TEST);
+//		glAlphaFunc(GL_GREATER,0.3);
+//			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
 	
 //			pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50,pkTexMan->Load("file:../data/textures/water2.bmp",0));	
 //		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
@@ -280,6 +280,7 @@ void Test::OnHud(void)
 	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkPlayer->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
 	
 	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_LIGHTING);	
 	
 	glPopAttrib();
 }

@@ -1,10 +1,12 @@
+//linux version oc zfbasicfs
+
 #include "zfbasicfs.h"
+
+#ifndef WIN32
 
 bool ZFBasicFS::ListDirectory(vector<string>* pkFiles,const char* acName)
 {
 
-// linux code
-#ifndef WIN32
 	DIR* kDir;
 	
 	kDir=opendir(acName);
@@ -21,33 +23,26 @@ bool ZFBasicFS::ListDirectory(vector<string>* pkFiles,const char* acName)
 	}
 	
 	return true;
-#endif
-
 }
 
 bool ZFBasicFS::CreateDirectory(const char* acName)
 {
-
-//linux code
-#ifndef  WIN32	
 	if(mkdir(acName,S_IRWXU)==-1)
 		return false;
 	
 	return true;
-#endif
-
 }
 
 bool ZFBasicFS::RemoveDirectory(const char* acName)
 {
-	//linux code
-	#ifndef  WIN32		 
 	if(rmdir(acName)==-1)
 		return false;
 
 	return true;
-	#endif
 }
+
+#endif
+
 
 
 

@@ -82,7 +82,7 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);	//Dag
+		sol->kDiffuse=Vector4(1,1,1,1);	//Dag
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
@@ -92,10 +92,6 @@ void ZeroEdit::OnInit(void)
 
 	pkLight->Add(sol);
 
-
-	ObjectDescriptor testobject;
-	testobject.m_kName="tree";
-	
 
 }
 
