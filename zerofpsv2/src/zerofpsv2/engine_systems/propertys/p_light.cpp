@@ -189,17 +189,19 @@ void P_Light::TurnOff()
 
 void P_Light::OnEvent(GameMessage& Msg)
 {
+	Property::OnEvent(Msg);
+
 	if(Msg.m_Name == "on")
 		TurnOn();
 	if(Msg.m_Name == "off")
 		TurnOff();
 
 
-	cout << "[LightProperty]: Recv GM: " << m_acName << ", ";
+/*	cout << "[LightProperty]: Recv GM: " << m_acName << ", ";
 	cout << Msg.m_ToObject << ", ";
 	cout << Msg.m_FromObject << ", ";
 	cout << Msg.m_Name;
-	cout << endl;
+	cout << endl;*/
 	
 }
 

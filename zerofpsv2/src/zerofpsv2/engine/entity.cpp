@@ -1108,6 +1108,10 @@ void Entity::HandleMessages()
 /// Send a GameMessage to all Entity propertys.
 void Entity::PublishEvent(GameMessage& Msg)
 {
+	string strName = string("on") + Msg.m_Name;
+	m_pkEntityManager->CallFunction(this, strName.c_str(), 0);
+
+
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 		(*it)->OnEvent(Msg);
 }

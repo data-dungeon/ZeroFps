@@ -801,8 +801,6 @@ void NetWork::DevShow_ClientConnections()
 	char* pkName = "Die Vim";
 	char szAdress[256];
 
-	int iRelIndex;
-
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		switch(m_RemoteNodes[i].m_eConnectStatus) {
 			case NETSTATUS_CONNECTING:	pkName = "CONNECTING";	break;

@@ -72,7 +72,7 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua);
 
 	// Event
-	//int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
+	int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
 
 	// Physics
 	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
@@ -85,8 +85,6 @@ namespace ObjectManagerLua
 
 	// Common used functions , used together whit P_ScriptInterface
 	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
-	int ENGINE_SYSTEMS_API SISetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object	
-
 	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
 
 };

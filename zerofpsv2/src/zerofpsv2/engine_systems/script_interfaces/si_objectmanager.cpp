@@ -86,8 +86,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// Common used functions , used together whit P_ScriptInterface
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
 	pkScript->ExposeFunction("GetSelfID",				ObjectManagerLua::SIGetSelfIDLua);		
-//	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
-//	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);		
+	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);		
 }
 
 void Reset()
@@ -487,33 +486,24 @@ int SetZoneModelLua(lua_State* pkLua)
 }
 
 
-/*
+/**	\fn SendEvent(EntityID, Name)
+ 	\relates SIEntityManger
+	\brief	Sends the event Name to the choosen entity. Will call entity script function onName for the choosen
+	entity.
+*/
 int SendEventLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 2)
 		return 0;
 	
-	int id;
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-	id = (int)dTemp;
+	int iTargetEntity = (int)dTemp;
 	
-	Entity* pkObject = g_pkObjMan->GetEntityByID(id);
-	if(pkObject)
-	{
-		P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
-		
-		if(pe)
-		{
-			char	acEvent[128];
-			g_pkScript->GetArgString(pkLua, 1, acEvent);
-		
-			pe->SendEvent("useit");
-			return 0;
-		}
-	}
-	
+	char acEvent[128];
+	g_pkScript->GetArgString(pkLua, 1, acEvent);
+	g_pkObjMan->SendMsg(string(acEvent), g_iCurrentObjectID, iTargetEntity);
 	return 0;
-}*/
+}
 
 }
