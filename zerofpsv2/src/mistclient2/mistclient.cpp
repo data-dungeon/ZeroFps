@@ -198,7 +198,6 @@ void MistClient::RenderInterface(void)
 void MistClient::OnIdle() 
 {
 	Input();
-	printf("olle = %i\n", m_bGuiCapture);
 }
 
 bool MistClient::DelayCommand()
