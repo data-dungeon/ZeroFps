@@ -327,7 +327,6 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 		break;
 		}
 	}
-
 }
 
 void ZShadow::SetupStencilBuffer()
@@ -396,8 +395,8 @@ void ZShadow::DrawShadow(float fItensity)
 
 	//stencil buffer settings
 	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_EQUAL, 0, 255);
-	glStencilFunc(GL_ALWAYS, 0, 255);
+	//glStencilFunc(GL_EQUAL, 0, 255);
+	//glStencilFunc(GL_ALWAYS, 0, 255);
 	glStencilFunc(GL_NOTEQUAL, 0, 255);
 	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
 

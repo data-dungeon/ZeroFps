@@ -258,12 +258,13 @@ void ZShaderSystem::SetupPass(int iPass)
 	//enable/disable stenciltest
    if ( pkSettings->m_bStencilTest )
 	{
+		//enable stencil test
       glEnable (GL_STENCIL_TEST);
 		
+		//setup stencil operation
 		int iFail;		
 		int iZFail;
-		int iZPass;
-		
+		int iZPass;		
 		switch(pkSettings->m_iStencilOpFail)
 		{
 			case STENCILOP_KEEP:
@@ -331,6 +332,40 @@ void ZShaderSystem::SetupPass(int iPass)
 		};
 		
 		glStencilOp(iFail,iZFail,iZPass);		
+		
+		//setup stencil function
+		int iStencilFunc;
+		switch(pkSettings->m_iStencilFunc)
+		{
+			case STENCILFUNC_NEVER:
+				iStencilFunc = GL_NEVER;
+				break;
+			case STENCILFUNC_LESS:
+				iStencilFunc = GL_LESS;
+				break;
+			case STENCILFUNC_LEQUAL:
+				iStencilFunc = GL_LEQUAL;
+				break;
+			case STENCILFUNC_GREATER:
+				iStencilFunc = GL_GREATER;
+				break;
+			case STENCILFUNC_GEQUAL:
+				iStencilFunc = GL_GEQUAL;
+				break;
+			case STENCILFUNC_EQUAL:
+				iStencilFunc = GL_EQUAL;
+				break;
+			case STENCILFUNC_NOTEQUAL:
+				iStencilFunc = GL_NOTEQUAL;
+				break;
+			case STENCILFUNC_ALWAYS:
+				iStencilFunc = GL_ALWAYS;
+				break;
+		
+		};
+		
+		glStencilFunc(iStencilFunc,pkSettings->m_iStencilFuncRef,pkSettings->m_iStencilFuncMask);
+		
 	}
    else
       glDisable (GL_STENCIL_TEST);		

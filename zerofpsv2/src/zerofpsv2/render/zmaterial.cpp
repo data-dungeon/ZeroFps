@@ -40,6 +40,10 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iStencilOpZFail=	STENCILOP_KEEP;
 	m_iStencilOpZPass = 	STENCILOP_KEEP;
 	
+	m_iStencilFunc = 		STENCILFUNC_ALWAYS;
+	m_iStencilFuncRef =	0;
+	m_iStencilFuncMask = 255;
+	
 	m_iCullFace =		CULL_FACE_BACK;
 	
 	m_bColorMask=		true;
@@ -223,12 +227,6 @@ bool ZMaterial::LoadPass(int iPass)
 {
 	string passname;
 
-	// Funkar inte i VC7...
-	//passname="pass-";	
-	//char nr; 
-	//IntToChar(&nr,iPass);			
-	//passname+=nr;
-
 	char temp[50];
 	sprintf(temp, "pass-%i", iPass);
 	passname = temp;
@@ -306,14 +304,21 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"stenciltest"))
       newpass->m_bStencilTest = m_kIni.GetBoolValue(passname.c_str(),"stenciltest");
 
-	if(m_kIni.KeyExist(passname.c_str(),"stencilopfail"))
-		newpass->m_iStencilOpFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopfail"));
-	if(m_kIni.KeyExist(passname.c_str(),"stencilopzfail"))
-		newpass->m_iStencilOpZFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopzfail"));
-	if(m_kIni.KeyExist(passname.c_str(),"stencilopzpass"))
-		newpass->m_iStencilOpZPass = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopzpass"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilop-fail"))
+		newpass->m_iStencilOpFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilop-fail"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilopz-fail"))
+		newpass->m_iStencilOpZFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopz-fail"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilopz-pass"))
+		newpass->m_iStencilOpZPass = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopz-pass"));
 		
-			
+	if(m_kIni.KeyExist(passname.c_str(),"stencilfunc"))
+		newpass->m_iStencilFunc = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilfunc"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilfunc-ref"))
+		newpass->m_iStencilFuncRef = m_kIni.GetIntValue(passname.c_str(),"stencilfunc-ref");
+	if(m_kIni.KeyExist(passname.c_str(),"stencilfunc-mask"))
+		newpass->m_iStencilFuncMask = m_kIni.GetIntValue(passname.c_str(),"stencilfunc-mask");
+
+					
 	if(m_kIni.KeyExist(passname.c_str(),"colormaterial"))
       newpass->m_bColorMaterial = m_kIni.GetBoolValue(passname.c_str(),"colormaterial");		
 
@@ -439,6 +444,17 @@ void ZMaterial::SetupEnums()
 	m_kEnums["STENCILOP_DECR"] = 						4;
 	m_kEnums["STENCILOP_INVERT"] = 					5;	
 
+	//stencil functions
+	m_kEnums["STENCILFUNC_NEVER"] = 					0;
+	m_kEnums["STENCILFUNC_LESS"] = 					1;
+	m_kEnums["STENCILFUNC_LEQUAL"] = 				2;
+	m_kEnums["STENCILFUNC_GREATER"] = 				3;
+	m_kEnums["STENCILFUNC_GEQUAL"] = 				4;
+	m_kEnums["STENCILFUNC_EQUAL"] = 					5;	
+	m_kEnums["STENCILFUNC_NOTEQUAL"] = 				6;	
+	m_kEnums["STENCILFUNC_ALWAYS"] = 				7;	
+	
+	
 }
 
 int ZMaterial::GetTranslateEnum(string strEnum)

@@ -24,31 +24,34 @@ class RENDER_API ZMaterialSettings
 		ZFResourceHandle*	m_pkVP;
 		ZFResourceHandle*	m_pkFP;
 		
-		int		m_iTUTexCords[4];
+		int				m_iTUTexCords[4];
 		
-		Vector4	m_kVertexColor;
-		bool		m_bColorMaterial;		
-		float		m_fLineWidth;		
-		int		m_iPolygonModeFront;
-		int		m_iPolygonModeBack;				
-		int		m_iDepthFunc;		
-		bool		m_bLighting;	
-		bool		m_iCullFace;
-		bool		m_bAlphaTest;	
-		bool		m_bFog;		
-		bool		m_bBlend;
-		bool		m_bDepthTest;
-		bool		m_bStencilTest;
-		int		m_iStencilOpFail;
-		int		m_iStencilOpZFail;
-		int		m_iStencilOpZPass;
-		int		m_iBlendSrc;
-		int		m_iBlendDst;
-		bool		m_bColorMask;
-		bool		m_bDepthMask;
+		Vector4			m_kVertexColor;
+		bool				m_bColorMaterial;		
+		float				m_fLineWidth;		
+		int				m_iPolygonModeFront;
+		int				m_iPolygonModeBack;				
+		int				m_iDepthFunc;		
+		bool				m_bLighting;	
+		bool				m_iCullFace;
+		bool				m_bAlphaTest;	
+		bool				m_bFog;		
+		bool				m_bBlend;
+		bool				m_bDepthTest;
+		bool				m_bStencilTest;
+		int				m_iStencilOpFail;
+		int				m_iStencilOpZFail;
+		int				m_iStencilOpZPass;
+		int				m_iStencilFunc;
+		int				m_iStencilFuncRef;
+		unsigned int	m_iStencilFuncMask;
+		int				m_iBlendSrc;
+		int				m_iBlendDst;
+		bool				m_bColorMask;
+		bool				m_bDepthMask;
 				
 		//software effects
-		int		m_iTextureColorEffect;
+		int				m_iTextureColorEffect;
 		
 	
 		ZMaterialSettings();
