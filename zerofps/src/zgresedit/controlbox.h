@@ -1,7 +1,7 @@
 #ifndef _CONTROLBOX_H
 #define _CONTROLBOX_H
 
-#include "DlgBox.h"
+#include "dialogbox.h"
 
 class ControlBox : public DlgBox  
 {

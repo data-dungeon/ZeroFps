@@ -1,7 +1,7 @@
 #ifndef _SKINBOX_H
 #define _SKINBOX_H
 
-#include "dlgbox.h"
+#include "dialogbox.h"
 class ZFBasicFS;
 class TextureManager;
 

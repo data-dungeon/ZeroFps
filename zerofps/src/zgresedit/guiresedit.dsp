@@ -8,12 +8,12 @@ CFG=ZGResEdit - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ZGResEdit.mak".
+!MESSAGE NMAKE /f "guiresedit.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ZGResEdit.mak" CFG="ZGResEdit - Win32 Debug"
+!MESSAGE NMAKE /f "guiresedit.mak" CFG="ZGResEdit - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -92,7 +92,7 @@ SOURCE=.\controlbox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\dlgbox.cpp
+SOURCE=.\dialogbox.cpp
 # End Source File
 # Begin Source File
 
@@ -120,7 +120,7 @@ SOURCE=.\controlbox.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DlgBox.h
+SOURCE=.\dialogbox.h
 # End Source File
 # Begin Source File
 
