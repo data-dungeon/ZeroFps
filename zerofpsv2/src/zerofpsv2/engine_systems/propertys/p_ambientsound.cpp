@@ -3,8 +3,6 @@
 #include "p_ambientsound.h"
 #include "../../engine/entity.h"
 
-const float FADE_TIME_AMBIENT_AREA = 2.5f; // sekunder.
-
 P_AmbientSound::P_AmbientSound()
 {
 	strcpy(m_acName,"P_AmbientSound");
@@ -16,105 +14,91 @@ P_AmbientSound::P_AmbientSound()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
-	m_bDotFileLoaded = false;
-	m_iCurrentAmbientArea = -1;
-
-	m_bChangeSound = false;
 	m_strSound = "";
-	m_iSoundID = -1;
-	m_fGain = 0.0f;
+	m_bSoundStarted = false;
 
-	m_fFadeTimer = -1;
+	m_iAmbientAreaID = -1;
 
-	m_bDotFileDontExist = false;
+	m_kPrevPos = Vector3(0,0,0);
 }
 
 P_AmbientSound::~P_AmbientSound()
 {
+	if(m_iAmbientAreaID != -1)
+		m_pkAudioSystem->RemoveAmbientArea(m_iAmbientAreaID);	
+}
 
+void P_AmbientSound::SetArea(vector<Vector2>& kPolygon) // OBS! Det är lokala coordinater som skall skickas in.
+{
+	m_kPolygon = kPolygon;
+
+	vector<Vector2> kRealArea(m_kPolygon);
+
+	Vector2 objpos(GetEntity()->GetWorldPosV().x, GetEntity()->GetWorldPosV().z);
+	for(int i=0; i<kRealArea.size(); i++)
+		kRealArea[i] += objpos;
+
+	if(m_iAmbientAreaID != -1)
+		m_pkAudioSystem->ChangePntsInAmbientArea(m_iAmbientAreaID, kRealArea);
+}
+
+void P_AmbientSound::SetSound(string strSound)
+{
+	m_strSound = strSound;
+
+	if(m_iAmbientAreaID != -1)
+		m_pkAudioSystem->ChangeAmbientAreaSound(m_iAmbientAreaID, m_strSound);
+
+	printf("P_AmbientSound::SetSound %s\n", strSound.c_str());
+}
+
+void P_AmbientSound::GetArea(vector<Vector2>& kPolygon)
+{
+	kPolygon = m_kPolygon;
+}
+
+string P_AmbientSound::GetSound()
+{
+	return m_strSound;
 }
 
 void P_AmbientSound::Update()
 {
-	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_SERVER))
+	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_CLIENT))
 	{
-		if(m_bDotFileLoaded == false && m_bDotFileDontExist == false)
-		{			
-			if(LoadDotFile(m_pEntityMan->GetLoadDir() + string("/asa.dot")))
-			{
-				m_bDotFileLoaded = true;
-			}
-		}
-		else
+		if(m_bSoundStarted == false)
 		{
-			Vector2 pos(GetEntity()->GetIWorldPosV().x, GetEntity()->GetIWorldPosV().z);
+			vector<Vector2> kRealArea(m_kPolygon);
 
-			int area = -999;
-
-			for(int i=0; i<m_kDotArray.size(); i++)
-				if(PntInPolygon(&pos, m_kDotArray[i].m_kPolygon))
-				{
-					area = i;
-					break;
-				}
-
-			if(m_iCurrentAmbientArea != area)
+			Vector2 objpos(GetEntity()->GetWorldPosV().x, GetEntity()->GetWorldPosV().z);
+			for(int i=0; i<kRealArea.size(); i++)
 			{
-				m_iCurrentAmbientArea = area;
-				SetNetUpdateFlag(true);
+				kRealArea[i] += objpos;
 			}
+
+			m_iAmbientAreaID = m_pkAudioSystem->AddAmbientArea(m_strSound, kRealArea);
+			m_bSoundStarted = true;
 		}
-	}
-	else
-	{
-		if(m_bChangeSound == false && m_iSoundID != -1) // kvar i samma ambientarea, flytta ljudet
-		{																// och ändra velocity.
-			m_pkAudioSystem->MoveSound(m_iSoundID, GetEntity()->GetIWorldPosV(), Vector3(0,0,0), m_fGain);
 
-			if(m_fGain < 1.0f)
-			{
-				FadeGain(false);
-			}
-			else
-			{
-				m_fGain = 1.0f;
-				m_fFadeTimer = -1;
-			}
-		}
-		else
+		if(m_iAmbientAreaID != -1)
 		{
-			if(m_iSoundID != -1)
-			{
-				if(m_fGain > 0)
-				{
-					FadeGain(true);
-					m_pkAudioSystem->MoveSound(m_iSoundID, GetEntity()->GetIWorldPosV(), Vector3(0,0,0), m_fGain);
-					return; // Starta inte det nya ljudet föränn det gamla har fadat ut..
-				}
-				else
-				{
-					m_pkAudioSystem->StopSound(m_iSoundID);
-					m_fGain = 0.0f;
-					m_fFadeTimer = -1;
-				}
-			}
-			
-			m_iSoundID = m_pkAudioSystem->StartSound(m_strSound, 
-				GetEntity()->GetIWorldPosV(), Vector3(0,0,0), true, m_fGain); // och starta ett nytt.
-
-			m_bChangeSound = false;
-		}	
+			if(m_kPrevPos != GetEntity()->GetWorldPosV())
+				SetArea(m_kPolygon);
+		}
 	}
 }
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	if(m_iCurrentAmbientArea >= 0)
-		pkNetPacket->Write_Str(  m_kDotArray[m_iCurrentAmbientArea].m_strFileName );
-	else
+	pkNetPacket->Write_Str(m_strSound.c_str());
+
+	int iNumPoints = m_kPolygon.size();
+	pkNetPacket->Write( iNumPoints );
+
+	for(int i=0; i<iNumPoints; i++)
 	{
-		string strNone = "";
-		pkNetPacket->Write_Str(  strNone );
+		pkNetPacket->Write(m_kPolygon[i].x);
+		pkNetPacket->Write(m_kPolygon[i].y);
 	}
 
 	SetNetUpdateFlag(iConnectionID,false);
@@ -122,110 +106,85 @@ void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-	string strSound;
-	pkNetPacket->Read_Str( strSound );
-	m_strSound = strSound;
-	m_bChangeSound = true;
-}
+	char temp[128];
+	pkNetPacket->Read_Str(temp);
+	m_strSound = temp;
 
-bool P_AmbientSound::LoadDotFile(string strFileName)
-{
-	ZFVFile kZFile;
-	if( !kZFile.Open(string(strFileName),0,false) ) {
-		cout << "Failed to load dot file: " << strFileName.c_str() << endl;
-		m_bDotFileDontExist = true;
-		return false;
-		}
-	
-	int iNumAreas;
-	kZFile.Read(&iNumAreas, sizeof(int), 1);
+	int iNumPoints;
+	pkNetPacket->Read( iNumPoints );
 
-	for(int i=0; i<iNumAreas; i++)
+	m_kPolygon.clear(); 
+
+	for(int i=0; i<iNumPoints; i++)
 	{
-		DOTFILE_INFO di;
-		kZFile.Read_Str(di.m_strAreaName);
-		kZFile.Read_Str(di.m_strFileName);
-
-		int iNumPoints;
-		kZFile.Read(&iNumPoints, sizeof(int), 1);
-
-		for(int i=0; i<iNumPoints; i++)
-		{
-			float x,y;
-			kZFile.Read(&x, sizeof(float), 1);
-			kZFile.Read(&y, sizeof(float), 1);
-			di.m_kPolygon.push_back(new Vector2(x,y)); 
-		}
-
-		m_kDotArray.push_back(di); 
+		float x, y;
+		pkNetPacket->Read(x);
+		pkNetPacket->Read(y);
+		m_kPolygon.push_back(Vector2(x,y)); 
 	}
 
-	return true;
-}
-
-bool P_AmbientSound::PntInPolygon(Vector2 *pt, vector<Vector2*>& kPolygon)
-{
-	int wn = 0;
-
-	vector<Vector2 *>::iterator it;
-
-	// loop through all edges of the polygon
-	for (it=kPolygon.begin(); it<kPolygon.end()-1; it++)
-	{
-		if ((*(it))->y <= pt->y)
-		{         
-			if ((*(it+1))->y > pt->y) 
-				if (IsLeft( *it, *(it+1), pt) > 0)
-					++wn;
-		}
-		else
-		{                       
-			if ((*(it+1))->y <= pt->y)
-				if (IsLeft( *it, *(it+1), pt) < 0)
-					--wn;
-		}
-	}
-	if (wn==0)
-		return false;
-
-	return true;
-}
-
-void P_AmbientSound::FadeGain(bool bOut)
-{
-	float fTime = m_pEntityMan->GetSimTime();
-
-	if(m_fFadeTimer == -1)
-		m_fFadeTimer = fTime;
-
-	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
-	float dif = fTimeSinceLastFrame / FADE_TIME_AMBIENT_AREA;
-
-	if(bOut)
-		m_fGain -= dif;
-	else
-		m_fGain += dif;
-
-	m_fFadeTimer = fTime;
+	m_bSoundStarted = false;
 }
 
 vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName = "filename";
+	kReturn[0].iValueType = VALUETYPE_STRING; 
+	kReturn[0].pkValue    = (void*)&m_strSound;
+
+	SetNetUpdateFlag(true);
+
+	SetSound(m_strSound);
+
+	printf("P_AmbientSound::GetPropertyValues\n");
+	
 	return kReturn;
 }
 
 void P_AmbientSound::Save(ZFIoInterface* pkFile)
 {
+	char temp[128];
+	strcpy(temp,m_strSound.c_str());
+
+	pkFile->Write((void*)temp,128,1);
+
+	int iNumPoints = m_kPolygon.size();
+	pkFile->Write(&iNumPoints, sizeof(int), 1);
+
+	for(int i=0; i<iNumPoints; i++)
+	{
+		pkFile->Write(&m_kPolygon[i].x, sizeof(float), 1);
+		pkFile->Write(&m_kPolygon[i].y, sizeof(float), 1);
+	}
 }
 
 void P_AmbientSound::Load(ZFIoInterface* pkFile,int iVersion)
 {
+	char temp[128];
+	pkFile->Read((void*)temp,128,1);	
+	m_strSound = temp;
+
+	int iNumPoints;
+	pkFile->Read(&iNumPoints, sizeof(int), 1);
+
+	for(int i=0; i<iNumPoints; i++)
+	{ 
+		float x, y;
+		pkFile->Read(&x, sizeof(float), 1);
+		pkFile->Read(&y, sizeof(float), 1);
+		m_kPolygon.push_back(Vector2(x,y));
+	}
+
+	m_bSoundStarted = false;
+
+	SetNetUpdateFlag(true);
+
+	m_kPrevPos = GetEntity()->GetWorldPosV();
 }
 
 Property* Create_AmbientSound()
 {
 	return new P_AmbientSound();
 }
-
-

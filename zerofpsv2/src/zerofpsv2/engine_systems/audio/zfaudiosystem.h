@@ -21,6 +21,7 @@
 #define HEARABLE_DISTANCE 100.0f
 
 class ZFAudioSystem;
+class EntityManager;
 
 /// A Sound in the Resource SubSystem.
 class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
@@ -79,7 +80,19 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 {
 
 public:
-	void ReverbTest();
+
+	//
+	// Ambient sound area
+	//
+
+	int AddAmbientArea(string strName, vector<Vector2>& kArea);
+	void RemoveAmbientArea(int iID);
+	bool ChangePntsInAmbientArea(int iID, vector<Vector2>& kArea);
+	bool ChangeAmbientAreaSound(int iID, string strSound);
+	
+	//
+	// Audiosystem
+	//
 
 	void UnloadAll();
 
@@ -176,6 +189,40 @@ private:
 	int ModifyResHandlePriority(string strFileName, int mod);
 	int GetResHandlePriority(string strFileName);
 	bool GetSoundWithLowestPriority(string& strRes);
+
+	//
+	// Ambient sound area
+	//
+
+	EntityManager* m_pEntityMan;
+
+	class AmbientArea
+	{
+	public:
+
+		AmbientArea();
+		~AmbientArea();
+
+		bool m_bChangeSound;
+		float m_fGain;
+		int m_iSoundID;
+		string m_strSound;
+		float m_fFadeTimer;
+		vector<Vector2*> m_kPolygon;	
+
+		int m_iAmbientAreaID;
+	};
+
+	vector<AmbientArea*> m_kAmbientAreas;
+	
+	inline int IsLeft( Vector2 *P0, Vector2 *P1, Vector2 *P2 ) 
+	{
+		return ( (P1->x - P0->x) * (P2->y - P0->y) - (P2->x - P0->x) * (P1->y - P0->y) );
+	}
+
+	bool PntInPolygon(Vector2 *pt, vector<Vector2*>& vPolygon);
+	void FadeGain(AmbientArea* pkArea, bool bOut);
+	void UpdateAmbientSound();
 
 };
 

@@ -144,15 +144,12 @@ void ZeroEd::AddProperty(int iEntityID,const string& strProperty)
 void ZeroEd::AddPropertyVal()
 {
 	char* item;
-	Entity* pkEnt;
-	Property* pkProp;
 
 	if(item = GetSelItem("PropertyList"))
 	{
 		char* val = GetSelItem("PropertyValList");
 		char* res = GetText("PropertyValEb");
 
-		
 		NetPacket kNp;
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("setvariable");
@@ -169,8 +166,6 @@ void ZeroEd::AddPropertyVal()
 void ZeroEd::RemoveSelProperty()
 {
 	char* item;
-	Entity* pkEnt;
-	Property* pkProp;
 
 	item = GetSelItem("PropertyList");
 	

@@ -9,6 +9,7 @@
 #include <AL/alut.h>
 #include "../../basic/zfvfs.h"
 #include "../script_interfaces/si_audio.h"
+#include "../../engine/entitymanager.h"
 #include "zfaudiosystem.h"
 
 #include "SDL/SDL.h"
@@ -18,6 +19,7 @@
 Vector3 ZFAudioSystem::m_kPos = Vector3(0,0,0);
 
 long g_iIDCounter = 0;
+long g_iAmbientAreaIDCounter = 0;
 				        
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -212,6 +214,8 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 
 	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
 	RegisterVariable("r_ReferenceDistance",&m_fReferenceDistance,CSYS_FLOAT);
+
+	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -484,6 +488,11 @@ bool ZFAudioSystem::StartUp()
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::ShutDown()
 {
+
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+		for(int j=0; j<m_kAmbientAreas[i]->m_kPolygon.size(); j++)
+			delete m_kAmbientAreas[i]->m_kPolygon[j];
+
 	if( OggMusic::m_pkThread != NULL)
 		SDL_KillThread(m_pkMusic->m_pkThread);
 
@@ -578,6 +587,8 @@ void ZFAudioSystem::Update()
 
 	if(m_iEnableSound == 0)
 		return;
+
+	UpdateAmbientSound();
 
 	// Temporär vektor som fylls med det ljud som inte längre kan höras
 	// eller som har stannat.
@@ -1220,4 +1231,231 @@ bool ZFAudioSystem::SetSoundGain(int iID, float fGain)
 
 	return false;
 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ambient Sound Area
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const float FADE_TIME_AMBIENT_AREA = 2.5f; // sekunder.
+
+void ZFAudioSystem::UpdateAmbientSound()
+{
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+	{
+		if(!m_kAmbientAreas[i]->m_strSound.empty())
+		{
+			Vector2 pos(m_kPos.x, m_kPos.z);
+
+			if(PntInPolygon(&pos, m_kAmbientAreas[i]->m_kPolygon))
+			{
+				if(m_kAmbientAreas[i]->m_bChangeSound)
+				{
+					m_kAmbientAreas[i]->m_iSoundID = StartSound(
+						m_kAmbientAreas[i]->m_strSound, m_kPos, Vector3(0,0,0), true, 0); // och starta ett nytt.
+					m_kAmbientAreas[i]->m_bChangeSound = false;
+				}
+				else
+				{
+					if(m_kAmbientAreas[i]->m_fGain < 1)
+					{
+						FadeGain(m_kAmbientAreas[i], false);
+					}
+					else
+					{
+						m_kAmbientAreas[i]->m_fGain = 1.0f;
+						m_kAmbientAreas[i]->m_fFadeTimer = -1;
+					}
+					
+					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, Vector3(0,0,0), m_kAmbientAreas[i]->m_fGain);
+				}
+			}
+			else
+			{
+				if(m_kAmbientAreas[i]->m_iSoundID > 0)
+				{
+					if(m_kAmbientAreas[i]->m_fGain > 0)
+					{
+						FadeGain(m_kAmbientAreas[i], true);
+					}
+					else
+					{
+						StopSound(m_kAmbientAreas[i]->m_iSoundID);
+						m_kAmbientAreas[i]->m_iSoundID = -1;
+						m_kAmbientAreas[i]->m_bChangeSound = true;
+						m_kAmbientAreas[i]->m_fGain = 0.0f;
+						m_kAmbientAreas[i]->m_fFadeTimer = -1;
+					}
+				}
+			}
+		}
+	}
+}
+
+int ZFAudioSystem::AddAmbientArea(string strName, vector<Vector2>& kArea)
+{
+	AmbientArea* pkArea = NULL;
+
+	// Kolla om den redan finns
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+	{
+		if(m_kAmbientAreas[i]->m_strSound == strName)
+			if(m_kAmbientAreas[i]->m_kPolygon.size() == kArea.size())
+			{
+				pkArea = m_kAmbientAreas[i];
+
+				for(int j=0; j<kArea.size(); j++)
+					if((*m_kAmbientAreas[i]->m_kPolygon[i]) != kArea[j])
+					{
+						pkArea = NULL;
+						break;
+					}
+			}
+	}
+
+	// Skape en ny och lägg till i listan.
+	if(pkArea == NULL)
+	{
+		pkArea = new AmbientArea();
+		pkArea->m_iAmbientAreaID = g_iAmbientAreaIDCounter++;
+		pkArea->m_strSound = strName;
+		pkArea->m_bChangeSound = true;
+		pkArea->m_fGain = 0.0f;
+
+		for(int i=0; i<kArea.size(); i++)
+			pkArea->m_kPolygon.push_back(new Vector2( kArea[i] ));	
+			
+		m_kAmbientAreas.push_back(pkArea);
+
+		printf("Adding new ambient area\n");
+	}
+	
+	return pkArea->m_iAmbientAreaID;
+}
+
+bool ZFAudioSystem::ChangePntsInAmbientArea(int iID, vector<Vector2>& kArea)
+{
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+	{
+		if(m_kAmbientAreas[i]->m_iAmbientAreaID == iID)
+		{
+			for(int j=0; j<m_kAmbientAreas[i]->m_kPolygon.size(); j++)
+				delete m_kAmbientAreas[i]->m_kPolygon[j];
+
+			m_kAmbientAreas[i]->m_kPolygon.clear();
+
+			for(int j=0; j<kArea.size(); j++)
+				m_kAmbientAreas[i]->m_kPolygon.push_back(new Vector2( kArea[j] ));	
+			
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ZFAudioSystem::ChangeAmbientAreaSound(int iID, string strSound)
+{
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+	{
+		if(m_kAmbientAreas[i]->m_iAmbientAreaID == iID)
+		{
+			if(m_kAmbientAreas[i]->m_strSound != strSound)
+			{
+				if(m_kAmbientAreas[i]->m_iSoundID != -1)
+					StopSound(m_kAmbientAreas[i]->m_iSoundID);
+
+				m_kAmbientAreas[i]->m_strSound = strSound;	
+
+				m_kAmbientAreas[i]->m_bChangeSound = true;
+				
+				printf("chagninge sound to ambient area\n");
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
+	return false;
+}
+
+void ZFAudioSystem::RemoveAmbientArea(int iID)
+{
+	vector<AmbientArea*>::iterator it = m_kAmbientAreas.begin(); 
+	for( ; it != m_kAmbientAreas.end(); it++) 
+	{
+		if((*it)->m_iAmbientAreaID == iID)
+		{
+			StopSound((*it)->m_iSoundID);
+			delete (*it);
+			m_kAmbientAreas.erase(it);
+			break;
+		}
+	}
+}
+
+void ZFAudioSystem::FadeGain(AmbientArea* pkArea, bool bOut)
+{
+	float fTime = (float) SDL_GetTicks() / 1000.0f;
+
+	if(pkArea->m_fFadeTimer < 0)
+		pkArea->m_fFadeTimer = fTime;
+
+	float fTimeSinceLastFrame = fTime - pkArea->m_fFadeTimer;
+	float dif = fTimeSinceLastFrame / FADE_TIME_AMBIENT_AREA;
+
+	if(bOut)
+		pkArea->m_fGain -= dif;
+	else
+		pkArea->m_fGain += dif;
+
+	pkArea->m_fFadeTimer = fTime;
+}
+
+bool ZFAudioSystem::PntInPolygon(Vector2 *pt, vector<Vector2*>& kPolygon)
+{
+	if(kPolygon.size() < 3)
+		return false;
+
+	int wn = 0;
+
+	vector<Vector2 *>::iterator it;
+
+	// loop through all edges of the polygon
+	for (it=kPolygon.begin(); it<kPolygon.end()-1; it++)
+	{
+		if ((*(it))->y <= pt->y)
+		{         
+			if ((*(it+1))->y > pt->y) 
+				if (IsLeft( *it, *(it+1), pt) > 0)
+					++wn;
+		}
+		else
+		{                       
+			if ((*(it+1))->y <= pt->y)
+				if (IsLeft( *it, *(it+1), pt) < 0)
+					--wn;
+		}
+	}
+	if (wn==0)
+		return false;
+
+	return true;
+}
+
+
+ZFAudioSystem::AmbientArea::AmbientArea()
+{
+	m_iSoundID = -1;
+	m_fGain = 1.0f;
+	m_fFadeTimer = -1;
+};
+
+ZFAudioSystem::AmbientArea::~AmbientArea()
+{
+	for(int i=0; i<m_kPolygon.size(); i++)
+		delete m_kPolygon[i];
 }

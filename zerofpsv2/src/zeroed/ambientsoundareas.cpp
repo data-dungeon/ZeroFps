@@ -48,6 +48,8 @@ void AmbientSoundAreas::Draw(Render* pkRender)
 
 bool AmbientSoundAreas::Save(string strFileName)
 {
+	return 1;
+
 	ZFVFile kZFile;
 	if( !kZFile.Open(string(strFileName),0,true) ) {
 		cout << "Failed to save " << strFileName.c_str() << endl;
@@ -83,6 +85,8 @@ bool AmbientSoundAreas::Save(string strFileName)
 
 bool AmbientSoundAreas::Load(string strFileName, ZGuiListbox* pkList)
 {
+	return 1;
+
 	ZFVFile kZFile;
 	if( !kZFile.Open(string(strFileName),0,false) ) {
 		cout << "Failed to load " << strFileName.c_str() << endl;

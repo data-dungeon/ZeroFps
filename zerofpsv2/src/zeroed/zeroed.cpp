@@ -263,7 +263,7 @@ void ZeroEd::OnInit()
 	//set reference distance
 	m_pkAudioSys->SetReferensDistance(0.5);
 
-	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
+//	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 	
 }
 
@@ -354,8 +354,6 @@ void ZeroEd::Init()
 	m_strWorldDir = "";
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
-
-	m_pkAmbientSoundAreas = new AmbientSoundAreas();
 
 }
 
@@ -635,6 +633,8 @@ void ZeroEd::OnIdle()
 		Input();	
 	}
 
+
+
  	//m_pkFps->UpdateCamera(); 		
 
 	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
@@ -654,24 +654,18 @@ void ZeroEd::OnIdle()
 		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 		}
 
-	if(m_iEditMode == EDIT_ZONES || m_iEditMode == EDIT_AMBIENTSOUNDS)
+	if(m_iEditMode == EDIT_ZONES )
 	{
 		UpdateZoneMarkerPos();		
 		//DrawZoneMarker(m_kZoneMarkerPos);		
 
 	}
 	
-	if(m_iEditMode == EDIT_OBJECTS)
+	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{	
 		UpdateObjectMakerPos();
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
-
-	if(m_iEditMode == EDIT_AMBIENTSOUNDS)
-	{
-		m_pkAmbientSoundAreas->Update(m_pkAudioSys);
-	}
-
 	
 }
 
@@ -685,7 +679,7 @@ void ZeroEd::RenderInterface(void)
 		}
 
 	if(m_iEditMode == EDIT_ZONES) DrawZoneMarker(m_kZoneMarkerPos);
-	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
+	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)	DrawCrossMarker(m_kObjectMarkerPos);		
 	
 	if(m_iEditMode == EDIT_OBJECTS && m_bGrabing)
 	{							
@@ -693,17 +687,34 @@ void ZeroEd::RenderInterface(void)
 		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
 	}
 
-	if(m_iEditMode == EDIT_AMBIENTSOUNDS)
+	if(m_iEditMode == EDIT_AMBIENTSOUNDS || m_iEditMode == EDIT_OBJECTS)
 	{
-		m_pkAmbientSoundAreas->Draw(m_pkRender);
-		
-		if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea)
+		m_pkRender->Line(m_pkAudioSys->GetListnerPos()+Vector3(0,-100,0),m_pkAudioSys->GetListnerPos()+Vector3(0,100,0));
+
+		Entity* pkEnt;
+		P_AmbientSound* pkProp;
+
+		if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 		{
-			Vector3 p = m_kZoneMarkerPos;
-			p.y = 0;
-			p.x+=m_kZoneSize.x/2;
-			p.z-=m_kZoneSize.z/2;
-			m_pkRender->Sphere(p, 0.1f, 4, Vector3(1,0.5,1), true);
+			if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
+			{
+				vector<Vector2> kPoints;
+				pkProp->GetArea(kPoints); // pkProp->m_kPolygon;
+				Vector2 pos =  Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+
+				int size = kPoints.size();
+				if(size > 1)
+				{
+					Vector3 kColor = Vector3(1,1,0);
+
+					for(int i=0; i<size-1; i++)
+					{
+						m_pkRender->Line(
+							Vector3(pos.x+kPoints[i].x,0,pos.y + kPoints[i].y), 
+							Vector3(pos.x+kPoints[i+1].x,0,pos.y + kPoints[i+1].y), kColor);
+					}
+				}
+			}
 		}
 	}
 	
@@ -864,9 +875,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
 			m_kAddedZonePlacement.clear(); 
-			m_pkAmbientSoundAreas->RemoveAllAmbientAreas();
-			((ZGuiListbox*) GetWnd("AmbientSoundList"))->RemoveAllItems();
-			SetText("NewAsAreaNameEb", ""); SetText("NewAsFileNameEb", "");
 			break;
 		
 		case FID_LOAD:
@@ -922,9 +930,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			m_bNeedToRebuildZonePosArray = true;
 
-			
-			m_pkAmbientSoundAreas->Load(m_strWorldDir + string("/asa.dot"), (ZGuiListbox*) GetWnd("AmbientSoundList"));
-
 			break;		
 		
 		case FID_SAVE:
@@ -947,7 +952,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}	
 
-			m_pkAmbientSoundAreas->Save(m_strWorldDir + string("/asa.dot"));
 			break;
 
 		case FID_SAVEAS:
@@ -972,9 +976,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkEntityManager->ForceSave();
 			m_pkEntityManager->SaveZones();			
 			cout<<"saved"<<endl;
-*/			
+*	/
 
-			m_pkAmbientSoundAreas->Save(m_strWorldDir + string("/asa.dot"));
 			break;
 
 		case FID_SNAPSAVE:

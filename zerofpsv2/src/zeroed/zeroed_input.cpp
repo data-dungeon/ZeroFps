@@ -265,15 +265,26 @@ void ZeroEd::Input_EditAmbientSounds()
 {
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea && !m_pkAmbientSoundAreas->m_strAmbientAreaEdited.empty())
-		{
-			Vector3 p = m_kZoneMarkerPos;
-			p.x+=m_kZoneSize.x/2;
-			p.z-=m_kZoneSize.z/2;
+		Entity* pkEnt;
+		P_AmbientSound* pkProp;
 
-			m_pkAmbientSoundAreas->AddPointToAmbientArea(
-				m_pkAmbientSoundAreas->m_strAmbientAreaEdited, Vector2(p.x, p.z));
+		if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
+		{
+			if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
+			{
+				Vector2 localpos = Vector2(m_kObjectMarkerPos.x, m_kObjectMarkerPos.z) - 
+					Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+
+				//pkProp->m_kPolygon.push_back(localpos);	
+
+				vector<Vector2> kArea;
+				pkProp->GetArea(kArea);
+				kArea.push_back(localpos);	
+
+				pkProp->SetArea(kArea);
+			}
 		}
+
 	}
 }
 

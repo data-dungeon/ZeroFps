@@ -193,6 +193,57 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				RemoveSelProperty();
 			}
+			else
+			if(strWndClicked == "PropertBn1")
+			{
+				Entity* pkEnt;
+				P_AmbientSound* pkProp;
+
+				if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
+				{
+					if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
+					{
+						static int s_iPrevMode = m_iEditMode;
+						if(IsButtonChecked("PropertBn1")) // växla över till att editera ambientarea
+						{
+							s_iPrevMode = m_iEditMode;
+							m_iEditMode = EDIT_AMBIENTSOUNDS;
+						}
+						else // stäng igen polygonen och växla över till tidigare editmode
+						{
+							vector<Vector2> kPolys;
+							pkProp->GetArea(kPolys);
+
+							if(!kPolys.empty())
+							{
+								if(kPolys[0] != kPolys.back()) // stäng bara igen en gång!
+								{
+									kPolys.push_back(kPolys[0]);
+									pkProp->SetArea(kPolys);
+									printf("stänger igen!\n");
+								}
+							}
+
+							m_iEditMode = s_iPrevMode;
+						}
+					}
+				}
+			}
+			else
+			if(strWndClicked == "PropertBn2")
+			{
+				Entity* pkEnt;
+				P_AmbientSound* pkProp;
+
+				if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
+				{
+					if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
+					{
+						vector<Vector2> kEmpty;
+						pkProp->SetArea(kEmpty); 
+					}
+				}
+			}
 		}
 		else
 		if(strMainWnd == "EditPropertyWnd")
@@ -215,7 +266,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 							m_iSelectFileState = SELECT_MAD;
 						}
 						else
-						if( string(szProperty) == string("P_Sound") && string(szPropertyVal) == string("filename"))
+						if( (string(szProperty) == string("P_Sound") && string(szPropertyVal) == string("filename")) ||
+							 (string(szProperty) == string("P_AmbientSound") && string(szPropertyVal) == string("filename")) )
 						{
 							ShowWnd("SelectFileWnd", true, true);
 
@@ -228,105 +280,6 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 		}
-      else
-      if(strMainWnd == "AmbientSoundPage")
-      {
-			if(strWndClicked == "AddPointsToSounAreaBn")
-			{            
-				if(IsButtonChecked("AddPointsToSounAreaBn"))
-				{
-					printf("add points\n");
-					m_pkAmbientSoundAreas->m_bAddPointsToSoundArea = true;
-				}
-				else
-				{
-					printf("stop adding points\n");
-					m_pkAmbientSoundAreas->m_bAddPointsToSoundArea = false;
-				}
-			}
-			else
-			if(strWndClicked == "CreateAmbienSounBn")
-			{
-				char* szArea = GetText("NewAsAreaNameEb");
-				char* szFileName = GetText("NewAsFileNameEb");
-
-				if(szArea != NULL && szFileName != NULL)
-				{
-					string strSound = m_pkAmbientSoundAreas->GetAmbientSound(szArea);
-
-					if(strSound.empty())
-					{
-						AddListItem("AmbientSoundList", szArea, false);
-						m_pkAmbientSoundAreas->CreateNewAmbientArea(szArea); 
-						m_pkAmbientSoundAreas->SetAmbientSound(szArea, szFileName);
-					}
-					else
-					{
-						m_pkAmbientSoundAreas->SetAmbientSound(szArea, szFileName);
-					}
-				}
-			}
-			else
-			if(strWndClicked == "RemoveAmbienSounBn")
-			{
-				ZGuiListitem* pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
-				if(pkItem)
-				{
-					m_pkAmbientSoundAreas->RemoveAmbientArea(string(pkItem->GetText()));
-					((ZGuiListbox*)GetWnd("AmbientSoundList"))->RemoveItem(pkItem, false); 
-					SetText("NewAsAreaNameEb", "");
-					SetText("NewAsFileNameEb", "");
-				}
-			}
-			else
-			if(strWndClicked == "ClearAmbienAreaBn")
-			{
-				char* szArea = GetSelItem("AmbientSoundList");
-				if(szArea)
-					m_pkAmbientSoundAreas->ClearAllPointsInAmbientArea(szArea);
-			}
-			else
-			if(strWndClicked == "PlayAmbientSoundBn")
-			{
-				static bool s_bPlay = true;
-				
-				if(s_bPlay)
-				{
-					if(m_pkAmbientSoundAreas->m_iPlayingSoundID > 0)
-						m_pkAudioSys->StopSound(m_pkAmbientSoundAreas->m_iPlayingSoundID);
-
-					m_pkAmbientSoundAreas->m_iPlayingSoundID = m_pkAudioSys->StartSound( GetText("NewAsFileNameEb"), m_pkAudioSys->GetListnerPos(),
-						Vector3(0,0,0), true, 1.0f);
-				}
-				else
-				{
-					if(m_pkAmbientSoundAreas->m_iPlayingSoundID > 0)
-					{
-						m_pkAudioSys->StopSound(m_pkAmbientSoundAreas->m_iPlayingSoundID);
-						m_pkAmbientSoundAreas->m_iPlayingSoundID = -1;
-					}
-				}
-
-				s_bPlay = !s_bPlay;
-			}
-			else
-			if(strWndClicked == "SelectAmbientSoundBn")
-			{
-				if(!IsWndVisible("SelectFileWnd"))
-				{
-					ShowWnd("SelectFileWnd", true);
-
-					if(m_iSelectFileState != SELECT_AMBIENT_SOUND)
-						BuildFileTree("SelectFileTree", "data/sound", ".wav");
-
-					m_iSelectFileState = SELECT_AMBIENT_SOUND;
-				}
-				else
-				{
-					ShowWnd("SelectFileWnd", false);
-				}
-			}
-      }
 		else
 		if(strMainWnd == "AddNewProperyWnd")
 		{
@@ -411,21 +364,6 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				string szFull = "data/enviroments/" + string(szPreset);
 				printf("setting enviroment %s\n", szFull.c_str());
 				SetZoneEnviroment( szFull.c_str()  );  
-			}
-		}
-	}
-	else
-	if(strMainWndName == "AmbientSoundPage")
-	{
-		if(strListBox == "AmbientSoundList")
-		{
-			char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
-			if(szPreset)
-			{
-				m_pkAmbientSoundAreas->m_strAmbientAreaEdited = szPreset;
-				SetText("NewAsAreaNameEb", (char*)m_pkAmbientSoundAreas->m_strAmbientAreaEdited.c_str());
-				SetText("NewAsFileNameEb", (char*)m_pkAmbientSoundAreas->GetAmbientSound(
-					m_pkAmbientSoundAreas->m_strAmbientAreaEdited).c_str());
 			}
 		}
 	}
@@ -564,29 +502,13 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			SetText("PropertyValEb", (char*) strFullpath.c_str());
 
 			AddPropertyVal();
-
+			
 			ShowWnd("SelectFileWnd", false); // close window
 
+			AddPropertyVal(); // måste anropa dubbelt, I don't know why...
+
 			break;
 
-		case SELECT_AMBIENT_SOUND:
-
-			ZGuiListitem* pkItem;
-			pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
-			if(pkItem)
-			{
-				strFullpath = string("data/sound/");
-
-				if(szParentNodeText)
-					strFullpath += string(szParentNodeText);
-
-				if(szClickNodeText)
-					strFullpath += string(szClickNodeText);
-
-				m_pkAmbientSoundAreas->SetAmbientSound(pkItem->GetText(), strFullpath);
-				SetText("NewAsFileNameEb", (char*) strFullpath.c_str());
-			}
-			break;
 		}
 	}
 }

@@ -158,17 +158,17 @@ void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 
 bool P_Sound::HandleSetValue( string kValueName ,string kValue )
 {
-	bool res = false;
+	bool res = true;
 
 	if(strcmp(kValueName.c_str(), "filename") == 0) 
 	{
-		res = true;
+		res = false;
 		m_strFileName = kValue;
 	}
 	
 	if(strcmp(kValueName.c_str(), "loop") == 0) 
 	{
-		res = true;
+		res = false;
 		if(kValue == "true")
 			m_bLoop = 1;
 		else

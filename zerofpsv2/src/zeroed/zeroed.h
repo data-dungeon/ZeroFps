@@ -40,8 +40,6 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
-#include "ambientsoundareas.h"
-
 //const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
 
 /**	\brief	Da ZeroEd
@@ -96,7 +94,6 @@ class ZeroEd :public Application , public ZGuiApp {
 			NONE = 0,
 			SELECT_SOUND,
 			SELECT_MAD,
-			SELECT_AMBIENT_SOUND,
 		};
 		
 		//wierd stuff
@@ -109,11 +106,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		vector< pair<Vector3,Vector3> > m_kAddedZonePlacement;
 		bool m_bNeedToRebuildZonePosArray;
 
-		// ambient sound areas
-		AmbientSoundAreas* m_pkAmbientSoundAreas;
-
 		// gui stuff
-		int m_iSelectFileState;
+		int m_iSelectFileState;		
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -255,7 +249,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool SetViewPort(const char* szVpName);
 
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
-		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
+		void OnClickListbox( int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 									char *szClickNodeText, bool bHaveChilds);
