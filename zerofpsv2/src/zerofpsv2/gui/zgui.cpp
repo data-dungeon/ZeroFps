@@ -42,6 +42,11 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_acLineColor[2] = 0;
 
 	m_bDisableAlphatest = false;
+
+	m_pkFpsLabel = NULL;
+	m_pkFpsWnd = NULL;
+
+	RegisterVariable("r_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
 }
 
 bool ZGui::StartUp()	
@@ -354,19 +359,42 @@ bool ZGui::Render(int fps)
 	if(!m_bUseHardwareMouse && m_pkCursor->IsVisible())
 		m_pkCursor->Render();
 
+	ZGuiWnd* m_pkFpsWnd = m_pkResManager->Wnd("zguiapp_fps_wnd");
+	ZGuiWnd* m_pkFpsLabel = m_pkResManager->Wnd("zguiapp_fps_label");
+
 	// Render fps label (also fix for strange bug with rendering cursor last 
 	// (can't do that, this fuck up the shadowblob)).
-	if(m_pkResManager->Wnd("fps_wnd") != NULL)
+	if(m_iShowFPSCounter)
 	{
-		char szFps[25];
-		sprintf(szFps, "Fps: %i", fps);
-		m_pkResManager->Wnd("fps_label")->SetText(szFps); 
-		m_pkResManager->Wnd("fps_wnd")->Render( m_pkRenderer );
+		if(m_pkFpsWnd != NULL)
+		{
+			char szFps[20];
+			sprintf(szFps, "Fps: %i", fps);
+			m_pkFpsLabel->SetText(szFps); 
+			m_pkFpsWnd->Render( m_pkRenderer );
+		}
 	}
 
 	m_pkRenderer->EndRender(); 
 
 	return true;
+}
+
+void ZGui::ShowFPSCounter(bool bShow)
+{
+	m_iShowFPSCounter = bShow;
+
+	if(m_pkFpsWnd == NULL)
+		return;
+
+	if(m_iShowFPSCounter)
+	{
+		m_pkFpsWnd->Show();
+	}
+	else
+	{
+		m_pkFpsWnd->Hide();
+	}
 }
 
 /*ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)

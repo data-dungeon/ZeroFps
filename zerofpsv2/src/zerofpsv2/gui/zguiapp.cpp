@@ -531,14 +531,13 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	}
 
 	// Create Fps wnd
-	ZGuiWnd* pkFpsWnd = CreateWnd(Wnd, "fps_wnd", "", "", 800-55, 5, 50, 20, 0);
-	ZGuiSkin* fps_skin = new ZGuiSkin();
-	pkFpsWnd->SetSkin(fps_skin);
-
-	ZGuiWnd* pkFpsLabel = CreateWnd(Label, "fps_label", "fps_wnd", "", 0, 0, 50, 20, 0);
-	ZGuiSkin* fps_label_skin = new ZGuiSkin();
-	pkFpsLabel->SetSkin(fps_label_skin);
-
+	m_pkGui->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800-60, 5, 55, 20, 0);
+	m_pkGui->m_pkFpsWnd->SetSkin(new ZGuiSkin());
+	m_pkGui->m_pkFpsLabel = (ZGuiLabel*) CreateWnd(Label, "zguiapp_fps_label", 
+		"zguiapp_fps_wnd", "", 0, 0, 55, 20, 0);
+	m_pkGui->m_pkFpsLabel->SetSkin(new ZGuiSkin());
+	m_pkGui->ShowFPSCounter(m_pkGui->m_iShowFPSCounter);
+	
 }
 
 int ZGuiApp::GetTexID(char *szFile)

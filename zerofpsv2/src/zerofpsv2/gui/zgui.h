@@ -176,6 +176,12 @@ public:
 	static int m_iResY;
 
 	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
+	int m_iShowFPSCounter;
+
+	void ShowFPSCounter(bool bShow);
+
+	ZGuiWnd* m_pkFpsWnd;
+	ZGuiLabel* m_pkFpsLabel;
 
 	bool PlaceWndFrontBack(ZGuiWnd* pkMainWnd, bool bFront);
 

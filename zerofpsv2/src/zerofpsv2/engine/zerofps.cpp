@@ -255,6 +255,8 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	m_iState=state_normal;									// init gamestate to normal		
 	m_pkApp->OnInit();										// call the applications oninit funktion
+
+	m_pkRender->Swap();
 	
 	m_fFrameTime		=0;
 	m_fLastFrameTime	= GetTicks();
