@@ -126,6 +126,13 @@ namespace MistLandLua
    int MCOMMON_API GetRandomAttributeLua (lua_State* pkLua);
    int MCOMMON_API RandomLua(lua_State* pkLua); //takes a number and returns a number between 0-entered number
 
+
+   
+   // container stuff..hmm
+   int MCOMMON_API SetContainerSizeLua (lua_State* pkLua); // takes size
+   int MCOMMON_API PutInContainerLua (lua_State* pkLua); // takes object and containerObject ID (or only container)
+   int MCOMMON_API GetPickedUpByLua (lua_State* pkLua);     // takes character
+   
    
    // spell functions (inte för stavelsekontroll)
    int MCOMMON_API CastSpellLua (lua_State* pkLua);

@@ -228,7 +228,7 @@ class ENGINE_API Entity
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
 
-		void Load(ZFIoInterface* pkFile);		
+		void Load(ZFIoInterface* pkFile);
 		void Save(ZFIoInterface* pkFile);
 
 		void StaticData(int iClient, NetPacket* pkNetPacket);
@@ -289,6 +289,8 @@ class ENGINE_API Entity
 		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
 		inline EntityManager *GetObjectMan()	{	return m_pkObjectMan;	};				
+
+      void SetUpdateStatus(int iUpdateStatus){  m_iUpdateStatus = iUpdateStatus; }
 		
 		void MakeCloneOf(Entity* pkOrginal);
 		

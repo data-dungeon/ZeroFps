@@ -14,6 +14,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/basic/zguifont.h"
+#include "../mcommon/rulesystem/sendtype.h"
 #include <set> 
 #include <algorithm>
 
@@ -1238,10 +1239,11 @@ void MistServer::HandleOrders()
       {
          // type of request
 
-         //unsigned char* strRequest = _mbsninc( (const unsigned char*)order->m_sOrderName.c_str(), 4 );
+         // hmm, not very good..if a request have less than 8 characters, the pointer go nuts
+         char* strRequest = (char*)order->m_sOrderName.c_str() + (sizeof(char)*4);
 
          // item request
-         if ( strncmp(order->m_sOrderName.c_str(), "item", 4) )
+         if ( strncmp(strRequest, "item", 4) )
          {
    			Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 
@@ -1254,7 +1256,11 @@ void MistServer::HandleOrders()
                   // if the items is of the same version, no need to send data
                   if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
                   {
-                     pkItProp->m_kSends.push_back ( order->m_iClientID );
+                     SendType kSendType;
+                     kSendType.m_iClientID = order->m_iClientID;
+                     kSendType.m_kSendType = "itemdata";
+                     
+                     pkItProp->m_kSends.push_back ( kSendType );
                   }
 
                }
@@ -1262,6 +1268,41 @@ void MistServer::HandleOrders()
                   cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
             }
 
+
+         }
+
+         // container request
+         else if ( strncmp(strRequest, "cont", 4) )
+         {
+   			Entity* pkObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+            
+            
+            if ( pkObject )
+            {
+
+               P_Item *pkItProp = (P_Item*) pkObject->GetProperty("P_Item");
+               CharacterProperty *pkChar = (CharacterProperty*) pkObject->GetProperty("P_CharStats");
+
+               // if item wanted updated container
+               if ( pkItProp )
+               {
+                  SendType kSend;
+                  kSend.m_iClientID = order->m_iClientID;
+                  kSend.m_kSendType = "container";
+                  pkItProp->m_kSends.push_back ( kSend );
+               }
+
+               // if characters wanter updated container
+               else if ( pkChar )
+               {
+                  SendType kSend;
+                  kSend.m_iClientID = order->m_iClientID;
+                  kSend.m_kSendType = "container";
+                  pkChar->m_kSends.push_back ( kSend );
+               }
+               else
+                  cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
+            }
 
          }
 

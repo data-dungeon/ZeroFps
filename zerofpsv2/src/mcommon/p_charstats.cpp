@@ -23,15 +23,23 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 
 // ------------------------------------------------------------------------------------------
 
+void CharacterProperty::Init()
+{
+   m_pkCharStats = new CharacterStats( m_pkObject );
+
+   m_pkCharStats->MakeContainer();
+
+}
+// ------------------------------------------------------------------------------------------
+
 CharacterProperty::CharacterProperty()
 {
 	m_iSide = PROPERTY_SIDE_SERVER;
-   
-   m_pkCharStats = new CharacterStats( m_pkObject );
 
 	strcpy(m_acName,"P_CharStats");
 
 	bNetwork = false;
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -40,9 +48,9 @@ CharacterProperty::CharacterProperty( string kName )
 {
 	bNetwork = true;   //
 
-   m_pkCharStats = new CharacterStats ( m_pkObject );
-
 	strcpy(m_acName,"P_CharStats");
+
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -251,7 +259,32 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-   // update life
+   for (vector<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
+   {
+      // get continer data
+      if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "container" )
+      {
+         // if object isn't a container, don't send anything
+         if ( m_pkCharStats->m_pkContainer )
+         {
+            pkNetPacket->Write_NetStr( "cont" );
+
+            // get container vector
+            vector<int>* pkItems = m_pkCharStats->m_pkContainer->GetItemsInContainer();
+
+            // size of container
+            pkNetPacket->Write( (void*)pkItems->size(), sizeof(int) );
+
+            // send itemIDs in container
+            for ( int i = 0; i < pkItems->size(); i++ )
+               pkNetPacket->Write( (void*)pkItems->at(i), sizeof(int) );
+         }
+
+         m_kSends.erase ( kIte );
+
+      }
+
+   }
 
 }
 

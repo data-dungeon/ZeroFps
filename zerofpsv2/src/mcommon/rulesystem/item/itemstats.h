@@ -12,6 +12,8 @@
 #include <string>
 	using namespace std;
 
+class P_Item;
+
 class MCOMMON_API ItemStats
 {
 private:
@@ -46,12 +48,14 @@ public:
    Container* m_pkContainer; // items can contain objects :)
    Container* m_pkIsInContainer; // which container the item (if any) is in
 
+   P_Item* m_pkProperty;
+
 	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
    int m_iIconID[2];
 
    unsigned int m_uiVersion;    // version of the object, server always have lastversion
 
-   ItemStats();
+   ItemStats(P_Item* pkProperty);
 
    void AddToSkillBonus ( string kSkillName, int iValue );
    void AddToAttributeBonus ( string kAttributeName, int iValue );
@@ -108,6 +112,9 @@ public:
 
    void AddAfterName ( string kAddName );
    void AddBeforeName ( string kAddName );
+
+   // returns false if the item isn't a container
+   bool GetAllItemsInContainer( vector<Entity*>* pkItemList );
 
    void Print();
 

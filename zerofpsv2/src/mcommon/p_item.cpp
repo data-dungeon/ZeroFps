@@ -29,7 +29,7 @@ P_Item::P_Item()
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
-   m_pkItemStats = new ItemStats;
+   m_pkItemStats = new ItemStats(this);
 
 	bNetwork = true;
 
@@ -43,7 +43,7 @@ P_Item::P_Item( string kName )
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
-   m_pkItemStats = new ItemStats;
+   m_pkItemStats = new ItemStats(this);
 
 	bNetwork = true;
 
@@ -158,9 +158,6 @@ void P_Item::Load(ZFIoInterface* pkPackage)
    char temp[128];
 
    map<string, int>::iterator kIte;
-
-
-   
    
 	pkPackage->Read((void*)temp,128,1); // save itemname
    m_pkItemStats->m_kItemName = temp;
@@ -229,10 +226,10 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
 void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-   for (vector<int>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
+   for (vector<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
    {
       //  if a object which has requested info was found...
-      if ( (*kIte) == iConnectionID )
+      if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "itemdata" )
       {
          pkNetPacket->Write_NetStr( "data" );
 
@@ -244,8 +241,27 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
          m_kSends.erase ( kIte );
       }
-      else
-         pkNetPacket->Write_NetStr( "null" );
+      else if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "container" )
+      {
+         // if object isn't a container, don't send anything
+         if ( m_pkItemStats->m_pkContainer )
+         {
+            pkNetPacket->Write_NetStr( "cont" );
+
+            // get container vector
+            vector<int>* pkItems = m_pkItemStats->m_pkContainer->GetItemsInContainer();
+
+            // size of container
+            pkNetPacket->Write( (void*)pkItems->size(), sizeof(int) );
+
+            // send itemIDs in container
+            for ( int i = 0; i < pkItems->size(); i++ )
+               pkNetPacket->Write( (void*)pkItems->at(i), sizeof(int) );
+         }
+
+         m_kSends.erase ( kIte );
+
+      }
    }
 }
 
@@ -259,9 +275,7 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 	string kDataType = temp;	
 	
-	if(kDataType == "null")
-		return;
-   else if ( kDataType == "data" )
+   if ( kDataType == "data" )
    {
       cout << "Item got data from server!!! :)" << endl;
       // get icon
@@ -270,6 +284,28 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       // get iconmask
       pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic[1]);
    }
+   else if ( kDataType == "cont" )
+   {
+      cout << "Item got container info from server!!! :)" << endl;
+
+      // if object isn't a container, better make it one, or it crashes!
+      if ( !m_pkItemStats->m_pkContainer )
+         m_pkItemStats->MakeContainer();
+
+      int iContSize, iObjID;
+
+      // size of container
+      pkNetPacket->Read( &iContSize, sizeof(int) );
+
+      // send itemIDs in container
+      for ( int i = 0; i < iContSize; i++ )
+      {
+         pkNetPacket->Read( &iObjID, sizeof(int) );
+         m_pkItemStats->m_pkContainer->AddObject ( iObjID );
+      }
+   }
+   else
+      cout << "Error! Illegal networkdata sent to P_Item:" << kDataType << endl;
 	
 
 }

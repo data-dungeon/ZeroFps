@@ -1630,6 +1630,9 @@ bool EntityManager::LoadZones()
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
 
+   // load latest created entityID
+   kFile.Read(&iNextObjectID,sizeof(int),1);
+
 	cout<<"Nr of zones:"<<iNumOfZone<<endl;
 	ZoneData kZData;
 	kZData.m_bUsed = true;
@@ -1685,7 +1688,9 @@ bool EntityManager::SaveZones()
 	
  	int iNumOfZone = m_kZones.size();
 	kFile.Write(&iNumOfZone,sizeof(int),1);
-
+   
+   // save latest created entityID
+   kFile.Write(&iNextObjectID,sizeof(int),1);
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{

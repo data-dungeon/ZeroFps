@@ -256,6 +256,10 @@ SOURCE=.\rulesystem\rulesystem.h
 
 SOURCE=.\rulesystem\rulesystemx.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\rulesystem\sendtype.h
+# End Source File
 # End Group
 # End Target
 # End Project

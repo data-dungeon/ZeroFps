@@ -13,12 +13,12 @@ Entity::Entity()
 {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkPropertyFactory		= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
-	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkFps				   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
 	ZFAssert(m_pkObjectMan,			"Entity::Entity(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
-	ZFAssert(m_pkFps,				"Entity::Entity(): Failed to find ZeroFps");
+	ZFAssert(m_pkFps,				   "Entity::Entity(): Failed to find ZeroFps");
 
 	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
 
@@ -744,7 +744,7 @@ void Entity::Load(ZFIoInterface* pkFile)
 	//type
 	pkFile->Read(acTemp,128,1);		
 	m_strType = acTemp;
-	
+
 	//load script res
 	pkFile->Read(acTemp,128,1);		
 	
@@ -758,7 +758,7 @@ void Entity::Load(ZFIoInterface* pkFile)
 	//nr of propertys
 	int iProps = 0;
 	pkFile->Read(&iProps,sizeof(iProps),1);	
-	//save all propertys
+	//load all propertys
 	for(i = 0;i< iProps;i++)
 	{
 		char name[50];		
@@ -774,8 +774,8 @@ void Entity::Load(ZFIoInterface* pkFile)
 	int iChilds = 0;		
 	pkFile->Read(&iChilds,sizeof(iChilds),1);		
 	
-	//save all childs
-	for(i = 0;i<iChilds;i++)
+	//load all childs
+	for( i = 0; i < iChilds; i++ )
 	{
 		Entity* newobj = m_pkObjectMan->CreateObject();
 		newobj->SetParent(this);
@@ -819,8 +819,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 	
 	//type
 	strcpy(acTemp,m_strType.c_str());	
-	pkFile->Write(acTemp,128,1);		
-		
+	pkFile->Write(acTemp,128,1);
+
 	//save script file
 	if(m_pScriptFileHandle->IsValid())
 		strcpy(acTemp,m_pScriptFileHandle->GetRes().c_str());	

@@ -8,6 +8,7 @@
 #include "../rulesystem.h"
 #include "statcounter.h"
 #include "../fightstats.h"
+#include "../container.h"
 
 #include <string>
 #include <map>
@@ -60,9 +61,8 @@ private:
    string m_kCurrentSkill;
 
 public:
-   
-	int test_var;
-
+   Container* m_pkContainer;   
+	
    unsigned int m_uiVersion; // which version of char the prop. holds. Server always have the latest.
 
 	CharacterStats( Entity *pkParent );
@@ -127,6 +127,7 @@ public:
    bool Equip ( Entity *pkObject, string kSlot );
    Entity* UnEquip ( string kSlot );
 
+   void MakeContainer();
 
 
    friend class CharacterProperty;

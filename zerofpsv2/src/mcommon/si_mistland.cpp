@@ -118,6 +118,12 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    
    pkScript->ExposeFunction("SetDrawingOrder",	      MistLandLua::SetDrawingOrderLua);
 
+
+   // contianer stuff
+   pkScript->ExposeFunction("SetContinerSize",	      MistLandLua::SetContainerSizeLua);
+   pkScript->ExposeFunction("PutInContainer",	      MistLandLua::PutInContainerLua);
+   pkScript->ExposeFunction("GetPickedUpBy",	         MistLandLua::GetPickedUpByLua);
+
 	// setup ip
 	pkScript->ExposeFunction("AddServer", MistLandLua::AddServerLua);
 	pkScript->ExposeFunction("SetDefaultServer", MistLandLua::SetDefaultServerLua);
@@ -2238,4 +2244,103 @@ int MistLandLua::SetDrawingOrderLua(lua_State* pkLua)
    return 0;
 }
 
+// -----------------------------------------------------------------------------------------------
+
+// takes size of container (how many objects the container can hold )
+int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+      // size
+      double dSize;
+      g_pkScript->GetArgNumber(pkLua, 0, &dSize);
+
+      Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+  		CharacterProperty* pkCP = (CharacterProperty*)pkEntity->GetProperty("P_CharStats");
+      P_Item* pkIP = (P_Item*)pkEntity->GetProperty("P_Item");
+
+      if ( pkCP )
+         pkCP->GetCharStats()->m_pkContainer->m_iCapacity = dSize;
+      if ( pkIP )
+         pkIP->m_pkItemStats->m_pkContainer->m_iCapacity = dSize;
+      
+      if ( !pkCP && !pkIP )
+         cout << "Warning! Tried to set container capacity on a non char. or item object!" << endl;
+ }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+// this function is used only on ordinary items, PICKUP is user for characters
+// takes container and object, or only container
+int MistLandLua::PutInContainerLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+      // the ID if the object who has the container
+      double dContainer, dObject;
+
+      g_pkScript->GetArgNumber(pkLua, 0, &dContainer);
+
+      if ( g_pkScript->GetNumArgs(pkLua) == 2 )
+         // Object to put in container
+         g_pkScript->GetArgNumber(pkLua, 1, &dObject);
+      else
+         dObject = g_iCurrentObjectID;
+
+      Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID(dObject);
+      Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID(dContainer);
+      
+      // check if the object is a item, and the other object really is (has) a container
+      P_Item* pkItemIP = (P_Item*)pkItem->GetProperty("P_Item");
+      P_Item* pkContIP = (P_Item*)pkContObj->GetProperty("P_Item");
+
+      if ( pkItemIP && pkContIP )
+      {
+         // check if the container object has a container
+         if ( pkContIP->m_pkItemStats->m_pkContainer )
+            pkContIP->m_pkItemStats->m_pkContainer->AddObject ( dObject );
+         else
+            cout << "Warning! Tried to put a item into a non-container object!" << endl;
+      }
+      else
+         cout << "Warning! Tried to put a wannabeitemobject into a wannabecontainerobject!" << endl;
+      
+   }
+
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+// takes ObjectID (want a Entity with characterproperty with a container)
+int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+      // the ID if the object who has the container
+      double dChar;
+
+      g_pkScript->GetArgNumber(pkLua, 0, &dChar);
+
+      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID(dChar);
+      
+      // check if the object is a character
+      CharacterProperty* pkCP = (CharacterProperty*)pkCharObj->GetProperty("P_CharStats");
+
+      if ( pkCP )
+         // check if the container object has a container
+         if ( pkCP->GetCharStats()->m_pkContainer )
+            pkCP->GetCharStats()->m_pkContainer->AddObject ( g_iCurrentObjectID );
+         else
+            cout << "Warning! Tried to put a item into a non-container object!" << endl;
+      
+   }
+
+   return 0;
+}
 // -----------------------------------------------------------------------------------------------

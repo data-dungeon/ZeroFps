@@ -1,4 +1,7 @@
 #include "container.h"
+//#include "../../zerofpsv2/engine/entity.h"
+#include "../p_item.h"
+#include "../../zerofpsv2/engine/entitymanager.h"
 
 // -----------------------------------------------------------------------------------------------
 
@@ -11,12 +14,21 @@ Container::Container( Property* pkParent )
 // -----------------------------------------------------------------------------------------------
 
 // returns true if there was room for the object
-bool Container::AddObject ( Entity* pkAddToContainer )
+bool Container::AddObject ( int iAddToContainer )
 {
    if ( m_kContainedObjects.size() < m_iCapacity )
    {
-      // todo: some other stuff, objects in containers are speciall :)
-      m_kContainedObjects.push_back ( pkAddToContainer );
+      m_kContainedObjects.push_back ( iAddToContainer );
+
+      Entity *pkEntity = 
+         m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
+
+      // save down object on HD, objects in containers doesn't need to be updated
+      pkEntity->SetUpdateStatus (UPDATE_NONE);
+
+      // make object child of containers parent
+      pkEntity->SetParent ( m_pkParent->GetObject() );
+
       return true;
    }
    else
@@ -27,14 +39,26 @@ bool Container::AddObject ( Entity* pkAddToContainer )
 // -----------------------------------------------------------------------------------------------
 
 // returns false if the object wasn't found in the container
-bool Container::RemoveObject ( Entity* pkRemoveFromContainer )
+bool Container::RemoveObject ( int iRemoveFromContainer )
 {
-   for ( vector<Entity*>::iterator kIte = m_kContainedObjects.begin(); 
+   for ( vector<int>::iterator kIte = m_kContainedObjects.begin();
          kIte != m_kContainedObjects.end(); kIte++ )
-      if ( (*kIte) == pkRemoveFromContainer )
+      if ( (*kIte) == iRemoveFromContainer )
       {
+         Entity *pkEntity = 
+            m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte) );
+
+
+         // unparent object
+         m_pkParent->GetObject()->RemoveChild (pkEntity );
+
+         pkEntity->AttachToZone();
+
+         pkEntity->SetUpdateStatus( UPDATE_ALL );
+
          // do some other fun stuff first...(unparent, and such)
          m_kContainedObjects.erase (kIte);
+
 
          return true;
       }
@@ -48,12 +72,34 @@ bool Container::RemoveObject ( Entity* pkRemoveFromContainer )
 // throws out all objects in container, or something :)
 void Container::Empty()
 {
+/*
    for ( vector<Entity*>::iterator kIte = m_kContainedObjects.begin(); 
          kIte != m_kContainedObjects.end(); kIte++ )
       // do some other fun stuff first...(unparent, and such)
       m_kContainedObjects.erase (kIte);
+*/
 
+}
 
+// -----------------------------------------------------------------------------------------------
+
+void Container::GetAllItemsInContainer( vector<int>* pkItemList )
+{
+   for ( int i = 0; i < m_kContainedObjects.size(); i++ )
+   {
+      pkItemList->push_back ( m_kContainedObjects[i] );
+
+      Entity *pkEntity = 
+         m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
+
+      // if object also in container, throw in his items into the vector also
+      P_Item *pkItem = (P_Item*)pkEntity->GetProperty("P_Item");
+
+      if ( pkItem )
+         if ( pkItem->m_pkItemStats->m_pkContainer )
+            pkItem->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );
+
+   }
 }
 
 // -----------------------------------------------------------------------------------------------

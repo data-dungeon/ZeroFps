@@ -4,6 +4,7 @@
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
 #include "rulesystem/item/itemstats.h"
+#include "rulesystem/sendtype.h"
 #include "../zerofpsv2/basic/zfini.h"
 #include <vector>
    using namespace std;
@@ -14,7 +15,7 @@ class MCOMMON_API P_Item: public Property
       string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
    public:
-      vector<int> m_kSends;       // the clients to recieve data from this property
+      vector<SendType> m_kSends;       // the clients to recieve data from this property
 
 		ItemStats *m_pkItemStats;
 
@@ -37,6 +38,8 @@ class MCOMMON_API P_Item: public Property
       bool Stock ( Entity *pkObject );
 
       void RequestUpdateFromServer ();
+
+      friend class Container;
 };
 
 MCOMMON_API Property* Create_P_Item();

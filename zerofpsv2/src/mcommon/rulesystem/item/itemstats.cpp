@@ -1,5 +1,7 @@
 #include "itemstats.h"
 #include <iostream>
+#include "../../p_item.h"
+#include "../../../zerofpsv2/engine/entitymanager.h"
    using namespace std;
 
 int ItemStats::s_iContainerCounter = 0;
@@ -303,8 +305,10 @@ EquipmentCategory ItemStats::GetEquipmentCategory()
 
 // ---------------------------------------------------------------------------------------------
 
-ItemStats::ItemStats()
+ItemStats::ItemStats(P_Item* pkProperty)
 {
+   m_pkProperty = pkProperty;
+
    m_kItemName = "nameless item";
    m_iValue = 0;
    m_fWeight = 0;
@@ -511,7 +515,7 @@ bool ItemStats::MakeContainer ()
       return false;
    else
    {
-//      m_pkContainer = new Container (this);
+      m_pkContainer = new Container ((Property*)m_pkProperty);
       return true;
    }
 }
@@ -524,6 +528,27 @@ void ItemStats::RegisterAsContainer()
 
    s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+bool ItemStats::GetAllItemsInContainer( vector<Entity*>* pkItemList )
+{
+   if ( m_pkContainer )   
+   {
+      vector<int> kObjectIDs;
+
+      m_pkContainer->GetAllItemsInContainer ( &kObjectIDs );
+
+      // convert ID:s to entity pointers (easier to handle..)
+      for ( int i = 0; i < kObjectIDs.size(); i++ )
+         pkItemList->push_back( 
+            m_pkProperty->GetObject()->m_pkObjectMan->GetObjectByNetWorkID( kObjectIDs[i] ) );
+
+      return true;
+   }
+
+   return false;
 }
 
 // ---------------------------------------------------------------------------------------------

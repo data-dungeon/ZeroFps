@@ -5,6 +5,7 @@
 #include "mcommon_x.h"
 #include "rulesystem/character/characterstats.h"
 #include "../zerofpsv2/basic/zfini.h"
+#include "rulesystem/sendtype.h"
 
 class MCOMMON_API CharacterProperty: public Property 
 {
@@ -12,6 +13,10 @@ class MCOMMON_API CharacterProperty: public Property
 		CharacterStats *m_pkCharStats;
 
    public:
+      vector<SendType> m_kSends;       // the clients to recieve data from this property
+
+      void Init();
+
 	   void Update();
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 

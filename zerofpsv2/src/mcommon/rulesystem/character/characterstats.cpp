@@ -9,9 +9,9 @@
 
 CharacterStats::CharacterStats( Entity *pkParent )
 {
-	test_var = 44;
-
    m_uiVersion = 0;
+
+   m_pkContainer = 0;
 
    m_pkParent = pkParent;
 
@@ -445,9 +445,6 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
 
-	test_var = 22;
-
-
 	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
 
    if ( !pkP_Item )
@@ -495,6 +492,16 @@ Entity* CharacterStats::UnEquip (string kSlot)
 }
 
 // ---------------------------------------------------------------------------------------------
+
+void CharacterStats::MakeContainer()
+{
+   // if object already isn't a container
+   if ( !m_pkContainer )
+      m_pkContainer = new Container ( m_pkParent->GetProperty("P_CharStats") );
+
+}
+
+// ------------------------------------------------------------------------------------------
 
 // temp rulez:
 
