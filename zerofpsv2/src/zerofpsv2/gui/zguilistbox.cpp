@@ -10,6 +10,7 @@
 #include "zgui.h"
 #include "zguiresourcemanager.h"
 #include <typeinfo>
+#include "../basic/keys.h"
 
 // Static internal IDs for the scrollbars
 const int VERT_SCROLLBAR_ID = 620;
@@ -47,7 +48,8 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 
 	m_kItemArea = GetWndRect();
 
-	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	//RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
@@ -678,4 +680,22 @@ void ZGuiListbox::SendSelItemMsg()
 	ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
 
 	cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);
+}
+
+
+bool ZGuiListbox::ProcessKBInput(int iKey)
+{
+	if(iKey == KEY_DOWN)
+	{
+		int iIndex = m_pkSelectedItem == NULL ? 0 : m_pkSelectedItem->GetIndex()+1;
+		return SelItem(iIndex);
+	}
+	else
+	if(iKey == KEY_UP)
+	{
+		int iIndex = m_pkSelectedItem == NULL ? 0 : m_pkSelectedItem->GetIndex()-1;
+		return SelItem(iIndex);
+	}
+
+	return true;
 }

@@ -31,10 +31,10 @@ const int NCODE_DEFAULT		= 82;
 const int NCODE_MOVE		= 83;
 
 // Window flags
-#define WF_CLOSEABLE		0x0001
-#define WF_CENTER_TEXT		0x0002
-#define WF_CANHAVEFOCUS		0x0003
-#define WF_TOPWINDOW		0x0004	// Kan detta fönster användas som mainwindow?
+#define WF_CLOSEABLE			1 //0x0001
+#define WF_CENTER_TEXT		2 //0x0002
+#define WF_CANHAVEFOCUS		4 //0x0003
+#define WF_TOPWINDOW			8 //0x0004	// Kan detta fönster användas som mainwindow?
 
 /** \brief	This is the basetype for all gui controllers and also the mainwnd type used as a parent for all other gui controllers.
 	 \ingroup Gui

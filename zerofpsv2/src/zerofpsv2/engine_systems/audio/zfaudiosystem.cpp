@@ -182,6 +182,7 @@ ZFSoundInfo::ZFSoundInfo(const char* c_szFile, Vector3 pos,
 	m_bLoop = bLoop;
 	m_kPos = pos;
 	m_kDir = dir;
+	m_b2DSound = false;
 
 	m_pkResource = NULL;
 	m_bLoopingNoLongerHearable = false;
@@ -205,8 +206,7 @@ ZFSoundInfo::~ZFSoundInfo()
 ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem") 
 {
 	m_kPos = Vector3(0,0,0);
-	//m_pkMusic = NULL;
-	m_pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+
 	m_bIsValid = false;
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
@@ -217,6 +217,8 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
 	RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
+
+	m_fMainVolume = 1.0f;
 
 	m_fSoundVolume = 1.0f;
 	RegisterVariable("a_soundvolume",&m_fSoundVolume,CSYS_FLOAT);
@@ -232,42 +234,10 @@ ZFAudioSystem::~ZFAudioSystem()
 
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Skapa ett nytt och lägg till det till systemet.
-///////////////////////////////////////////////////////////////////////////////
-int ZFAudioSystem::StartSound(string strName, Vector3 pos, 
-							   Vector3 dir, bool bLoop, float fGain)
-{
-	ZFSoundInfo *pkSound = new ZFSoundInfo(strName.c_str(), pos, dir, bLoop);
-	
-	if(!InitSound(pkSound))
-	{
-		delete pkSound; // delete sound again.
-	//	printf("Failed to start sound %s\n", strName.c_str());
-		return -1;
-	}
-
-	g_iIDCounter++;
-	pkSound->m_iID = g_iIDCounter;
-	pkSound->m_fGain = fGain;
-	
-	// Lägg till ljudet till vektorn med ljud.
-	m_kSoundList.push_back( pkSound );
-
-	if(bLoop == true)
-		m_kLoopSoundMap.insert(map<int,ZFSoundInfo*>::value_type(pkSound->m_iID, pkSound));
-
-	//printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
-
-	return g_iIDCounter;
-}
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Leta reda på det närmsta ljudet och ta bort det.
 ///////////////////////////////////////////////////////////////////////////////
-bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
+bool ZFAudioSystem::StopAudio(string strName, Vector3 pos, bool bRelease)
 {
 	ZFSoundInfo *pkSound = GetClosest(strName.c_str(), pos);
 
@@ -275,8 +245,32 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 	{
 		if(DeleteSound(pkSound, true))
 		{
-		//	printf("Stoping sound %s\n", strName.c_str());
 			return true;
+		}
+	}
+	else
+	{
+		vector<OggStream*>::iterator it = m_vkOggStreams.begin();
+		for( ; it!=m_vkOggStreams.end(); it++)
+		{
+			OggStream* ogg = (*it);
+			if(ogg->m_strFileName == strName)
+			{
+				ogg->Stop();
+				if( ogg->m_pkThread != NULL) 
+				{
+					SDL_KillThread(ogg->m_pkThread);
+					ogg->m_pkThread = NULL;
+				}
+
+				if(bRelease)
+				{
+					delete ogg;
+					m_vkOggStreams.erase(it); 
+				}
+
+				return true;
+			}
 		}
 	}
 
@@ -288,7 +282,7 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 ///////////////////////////////////////////////////////////////////////////////
 // Leta reda på det närmsta ljudet och ta bort det.
 ///////////////////////////////////////////////////////////////////////////////
-bool ZFAudioSystem::StopSound(int iID)
+bool ZFAudioSystem::StopAudio(int iID, bool bRelease)
 {
 	ZFSoundInfo *pkSound = NULL;
 
@@ -297,6 +291,31 @@ bool ZFAudioSystem::StopSound(int iID)
 	{
 		pkSound = itLoopSound->second;
 		m_kLoopSoundMap.erase(itLoopSound);
+	}
+	else
+	{
+		vector<OggStream*>::iterator it = m_vkOggStreams.begin();
+		for( ; it!=m_vkOggStreams.end(); it++)
+		{
+			OggStream* ogg = (*it);
+			if(ogg->m_iID == iID)
+			{
+				ogg->Stop();
+				if( ogg->m_pkThread != NULL) 
+				{
+					SDL_KillThread(ogg->m_pkThread);
+					ogg->m_pkThread = NULL;
+				}
+
+				if(bRelease)
+				{
+					delete ogg;
+					m_vkOggStreams.erase(it); 
+				}
+
+				return true;
+			}
+		}
 	}
 
 	if(pkSound == NULL)
@@ -320,10 +339,106 @@ bool ZFAudioSystem::StopSound(int iID)
 		}
 	}
 
-//	printf("Failed to stop sound with ID %i\n", iID);
-
 	return false;
 }
+
+int ZFAudioSystem::PlayAudio(string strName, Vector3 kPos, Vector3 kDir, int iFlags, float fGain)
+{
+	if(strName.find(".wav") != string::npos)
+	{
+		ZFSoundInfo *pkSound = new ZFSoundInfo(strName.c_str(), kPos, kDir, iFlags & ZFAUDIO_LOOP);
+		
+		if(!InitSound(pkSound))
+		{
+			delete pkSound; // delete sound again.
+			return -1;
+		}
+
+		g_iIDCounter++;
+		pkSound->m_iID = g_iIDCounter;
+		pkSound->m_fGain = fGain;
+		
+		// Lägg till ljudet till vektorn med ljud.
+		m_kSoundList.push_back( pkSound );
+
+		if(iFlags & ZFAUDIO_2D)
+		{
+			pkSound->m_b2DSound = true;
+			pkSound->m_kPos = Vector3(0,0,0);
+			pkSound->m_kDir = Vector3(0,0,0);
+		}
+
+		if(iFlags & ZFAUDIO_LOOP)
+			m_kLoopSoundMap.insert(map<int,ZFSoundInfo*>::value_type(pkSound->m_iID, pkSound));
+	}
+	else
+	{
+		OggStream* pkOgg;
+
+		bool bExist = false;
+
+		for(int i=0; i<m_vkOggStreams.size(); i++)
+		{
+			if(m_vkOggStreams[i]->m_strFileName == strName)
+			{
+				pkOgg = m_vkOggStreams[i];
+				bExist = true;
+			}
+		}
+
+		if(bExist == false)
+			pkOgg = new OggStream(!(iFlags & ZFAUDIO_3DOGG),12,4096);
+
+		if(!pkOgg->Open(strName))
+		{
+			delete pkOgg;
+			return -1;
+		}
+
+		g_iIDCounter++;
+		pkOgg->m_iID = g_iIDCounter;
+		pkOgg->SetLooping(iFlags & ZFAUDIO_LOOP);
+		if(iFlags & ZFAUDIO_3DOGG) pkOgg->m_kPos = kPos;
+
+		pkOgg->Play();
+
+		if(bExist == false)
+			m_vkOggStreams.push_back(pkOgg);
+
+		m_vkOggStreams.back()->m_pkThread = 
+			SDL_CreateThread(OggStream::ThreadMain, m_vkOggStreams.back());
+	}
+
+	return g_iIDCounter;
+}
+
+/*bool ZFAudioSystem::StopMusic(string strName, bool bRelease)
+{
+	vector<OggStream*>::iterator it = m_vkOggStreams.begin();
+	for( ; it!=m_vkOggStreams.end(); it++)
+	{
+		OggStream* ogg = (*it);
+		if(ogg->m_strFileName == strName)
+		{
+			ogg->Stop();
+			if( ogg->m_pkThread != NULL) 
+			{
+				SDL_KillThread(ogg->m_pkThread);
+				ogg->m_pkThread = NULL;
+			}
+
+			if(bRelease)
+			{
+				delete ogg;
+				m_vkOggStreams.erase(it); 
+			}
+
+			return true;
+		}
+	}
+
+	return false;
+}*/
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -471,23 +586,14 @@ unsigned int ZFAudioSystem::GetNumActiveChannels()
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::StartUp()
 {
-//	m_pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
-	
-
-	m_pkTreadInfo = new THREAD_INFO;
-
-	Register_Cmd("musicload",FID_MUSICLOAD);
-	Register_Cmd("musicplay",FID_MUSICPLAY);
-	Register_Cmd("musicstop",FID_MUSICSTOP);
-	Register_Cmd("musicvolume",FID_MUSICVOLUME);
-	Register_Cmd("soundvolume",FID_SOUNDVOLUME);
-	Register_Cmd("musicbuffers",FID_MUSICBUFFERS);
+	Register_Cmd("audioplay",FID_AUDIOPLAY);
+	Register_Cmd("audiostop",FID_AUDIOSTOP);
 
 	alutInit (0, NULL); 
 	alGetError();
 	alListenerf(AL_GAIN, 1.0f);
-	alDopplerFactor(1.0f);
-	alDopplerVelocity(343); 
+	alDopplerFactor(0.0f);
+	//alDopplerVelocity(343); 
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
@@ -502,6 +608,8 @@ bool ZFAudioSystem::StartUp()
 
 	m_bIsValid = true;
 
+
+
 	return true;
 }
 
@@ -511,16 +619,16 @@ bool ZFAudioSystem::StartUp()
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::ShutDown()
 {
-
 	for(int i=0; i<m_kAmbientAreas.size(); i++)
 		for(int j=0; j<m_kAmbientAreas[i]->m_kPolygon.size(); j++)
 			delete m_kAmbientAreas[i]->m_kPolygon[j];
 
-	if( OggMusic::m_pkThread != NULL)
-		SDL_KillThread(m_pkMusic->m_pkThread);
-
-	if(m_pkMusic)
-		delete m_pkMusic;
+	for(int i=0; i<m_vkOggStreams.size(); i++)
+	{
+		if( m_vkOggStreams[i]->m_pkThread != NULL)  
+			SDL_KillThread(m_vkOggStreams[i]->m_pkThread);
+		delete m_vkOggStreams[i];
+	}
 
 	// Destroy all resources and sounds.
 	UnloadAll();
@@ -548,49 +656,31 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) 
 	{
-		case FID_MUSICLOAD:
+		case FID_AUDIOPLAY:
 			if(kCommand->m_kSplitCommand.size() > 1)
-				m_pkMusic->LoadFile(kCommand->m_kSplitCommand[1]);
+				PlayAudio(kCommand->m_kSplitCommand[1], Vector3(), Vector3(), ZFAUDIO_LOOP | ZFAUDIO_2D);
 			break;
 		
-		case FID_MUSICPLAY:
-			m_pkMusic->Play();
-			break;
-
-		case FID_MUSICSTOP:
-			m_pkMusic->Stop();
+		case FID_AUDIOSTOP:
+			if(kCommand->m_kSplitCommand.size() > 1)
+				StopAudio(kCommand->m_kSplitCommand[1], Vector3(0,0,0));
 			break;
 		
-		case FID_MUSICVOLUME:
-			if(kCommand->m_kSplitCommand.size() > 1)
-			{
-				m_fMusicVolume = (float)strtod( kCommand->m_kSplitCommand[1].c_str(), NULL );
-				m_pkMusic->SetVolume(m_fMusicVolume);
-			}
-			break;
+		//case FID_MUSICVOLUME:
+		//	if(kCommand->m_kSplitCommand.size() > 1)
+		//	{
+		//		m_fMusicVolume = (float)strtod( kCommand->m_kSplitCommand[2].c_str(), NULL );
+		//		m_pkMusic->SetVolume(m_fMusicVolume);
+		//	}
+		//	break;
 
-		case FID_SOUNDVOLUME:
-			if(kCommand->m_kSplitCommand.size() > 1)
-			{
-				m_fSoundVolume = (float)strtod( kCommand->m_kSplitCommand[1].c_str(),NULL );
-				SetSoundVolume(m_fMusicVolume);
-			}
-			break;
-			
-		case FID_MUSICBUFFERS:
-			{
-				if(kCommand->m_kSplitCommand.size() > 1)
-				{
-					int iTemp = atoi((kCommand->m_kSplitCommand[1]).c_str());
-					if(iTemp > 0)
-					{
-						m_pkMusic->Stop();
-						delete m_pkMusic;
-						m_pkMusic = new OggMusic(iTemp, 4096);
-					}
-				}
-			}
-			break;
+		//case FID_SOUNDVOLUME:
+		//	if(kCommand->m_kSplitCommand.size() > 1)
+		//	{
+		//		m_fSoundVolume = (float)strtod( kCommand->m_kSplitCommand[1].c_str(),NULL );
+		//		SetSoundVolume(m_fMusicVolume);
+		//	}
+		//	break;
 	}
 }
 
@@ -610,15 +700,6 @@ bool ZFAudioSystem::SetSoundVolume(float fVolume)
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::Update()
 {
-/*	// Kör igång mainloopen för musiktråden
-	if( OggMusic::m_pkThread == NULL)
-	{
-		m_pkMusic->m_pkThread = SDL_CreateThread(OggMusic::ThreadMain, m_pkMusic);
-	}
-*/
-	if(m_bEnableMusic == true)
-		m_pkMusic->Update(m_kPos);
-
 	if(m_bEnableSound == false)
 		return;
 
@@ -658,12 +739,21 @@ void ZFAudioSystem::Update()
 		case AL_PLAYING: // Spelar.
 			if(bHearable)
 			{
-				alSourcefv(pkSound->m_uiSourceBufferName, 
-					AL_POSITION,&pkSound->m_kPos[0]);	
-				alSourcefv(pkSound->m_uiSourceBufferName, 
-					AL_VELOCITY,&pkSound->m_kDir[0]);
-				alSourcef(pkSound->m_uiSourceBufferName, 
-					AL_GAIN, /*m_fSoundVolume*/pkSound->m_fGain);
+				if(pkSound->m_b2DSound == false)
+				{
+					alSourcefv(pkSound->m_uiSourceBufferName, AL_POSITION,&pkSound->m_kPos[0]);	
+					alSourcefv(pkSound->m_uiSourceBufferName, AL_VELOCITY,&pkSound->m_kDir[0]);
+				}
+				else
+				{
+					alSource3f(pkSound->m_uiSourceBufferName, AL_POSITION,        0.0, 0.0, 0.0);
+					alSource3f(pkSound->m_uiSourceBufferName, AL_VELOCITY,        0.0, 0.0, 0.0);
+					alSource3f(pkSound->m_uiSourceBufferName, AL_DIRECTION,       0.0, 0.0, 0.0);
+					alSourcef (pkSound->m_uiSourceBufferName, AL_ROLLOFF_FACTOR,  0.0          );
+					alSourcei (pkSound->m_uiSourceBufferName, AL_SOURCE_RELATIVE, AL_TRUE      );
+				}
+
+				alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, pkSound->m_fGain);
 			}
 			else
 			{
@@ -681,21 +771,18 @@ void ZFAudioSystem::Update()
 		}
 	}
 
-	unsigned int i;
-
 	// Stoppa färdiga ljud.
-	for( i=0; i<kStopped.size(); i++)
+	for(int i=0; i<kStopped.size(); i++)
 		Stop(kStopped[i]);
 
 	// Start om loopade ljud.
-	for( i=0; i<kRestart.size(); i++)
+	for(int i=0; i<kRestart.size(); i++)
 	{
 		if(Restart(kRestart[i]) == false)
 		{
 			DeleteSound(kRestart[i], true);
 		}
 	}
-
 }
 
 
@@ -1026,24 +1113,27 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		PrintError(error, "ZFAudioSystem::Play, Failed to set gain!");
 		return false;
 	}
-	
-	// Set position.
-	alGetError();
-	alSourcefv(pkSound->m_uiSourceBufferName, AL_POSITION, &pkSound->m_kPos[0]);	
-	if( (error = alGetError()) != AL_NO_ERROR)
+
+	if(pkSound->m_b2DSound)
 	{
-		PrintError(error, "ZFAudioSystem::Play, Failed to set position!");
-		return false;
+		// Set position.
+		alGetError();
+		alSourcefv(pkSound->m_uiSourceBufferName, AL_POSITION, &pkSound->m_kPos[0]);	
+		if( (error = alGetError()) != AL_NO_ERROR)
+		{
+			PrintError(error, "ZFAudioSystem::Play, Failed to set position!");
+			return false;
+		}
+		
+		// Set velocity.
+		alGetError();
+		alSourcefv(pkSound->m_uiSourceBufferName, AL_VELOCITY, &pkSound->m_kDir[0]);
+		if( (error = alGetError()) != AL_NO_ERROR)
+		{
+			PrintError(error, "ZFAudioSystem::Play, Failed to set velocity!");
+			return false;
+		}
 	}
-	
-	// Set velocity.
-	alGetError();
-	alSourcefv(pkSound->m_uiSourceBufferName, AL_VELOCITY, &pkSound->m_kDir[0]);
-	if( (error = alGetError()) != AL_NO_ERROR)
-	{
-		PrintError(error, "ZFAudioSystem::Play, Failed to set velocity!");
-		return false;
-	}	
 
 	// Set loop mode.
 	alGetError();
@@ -1125,11 +1215,61 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 	pkSound->m_pkResource = 
 		reinterpret_cast<ZFSoundRes*>(pkResHandle->GetResourcePtr());
 
+	pkSound->m_uiSourceBufferName = GetNewSource();
+
 	// Generera en ny source buffer.
+	//ALenum error;
+	//alGetError();
+	//alGenSources(1, &pkSound->m_uiSourceBufferName);
+	//if( (error = alGetError()) != AL_NO_ERROR)
+	//{
+	//	ZFSoundInfo* pkFarest = NULL;
+	//	float fFarest = 0.0f;
+
+	//	// Loopa igenom alla aktiva ljud och ta bort det som är längst bort 
+	//	list<ZFSoundInfo*>::iterator it = m_kSoundList.begin();
+	//	for( ; it != m_kSoundList.end(); it++)
+	//	{
+	//		ZFSoundInfo* pkSound = (*it);
+	//		
+	//		float fDistance = (m_kPos - pkSound->m_kPos).LengthSqr();
+	//		if(fDistance > fFarest)
+	//		{
+	//			pkFarest = pkSound;
+	//			fFarest = fDistance;
+	//		}
+	//	}
+
+	//	if(pkFarest != NULL)
+	//	{
+	//		DeleteSound(pkFarest, true);
+	//		return InitSound(pkSound);
+	//	}
+
+	//	PrintError(error, "Failed to generate sound source!\n");
+	//		
+	//	return false;
+	//}
+
+	return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Försök generera en ny "ljudkanal", ta bort det ljud som är längst bort från
+// lyssnaren om alla kanaler redan är använda.
+///////////////////////////////////////////////////////////////////////////////
+
+ALuint ZFAudioSystem::GetNewSource()
+{
+	ALuint uiNewSource = -1;
+
 	ALenum error;
 	alGetError();
-	alGenSources(1, &pkSound->m_uiSourceBufferName);
-	if( (error = alGetError()) != AL_NO_ERROR)
+	alGenSources(1, &uiNewSource);
+	if( (error = alGetError()) == AL_NO_ERROR)
+		return uiNewSource;
+	else
 	{
 		ZFSoundInfo* pkFarest = NULL;
 		float fFarest = 0.0f;
@@ -1151,22 +1291,20 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 		if(pkFarest != NULL)
 		{
 			DeleteSound(pkFarest, true);
-			return InitSound(pkSound);
+			return GetNewSource();
 		}
 
 		PrintError(error, "Failed to generate sound source!\n");
 			
-		return false;
+		return -1;
 	}
-
-	return true;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Leta rätt på det närmsta ljudet med det namnet och flytta på det till ny postion
 ///////////////////////////////////////////////////////////////////////////////
-
+/*
 bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos,
 										Vector3 kNewDir)
 {
@@ -1201,7 +1339,7 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 
 	return false;
 }
-
+*/
 
 
 
@@ -1209,7 +1347,7 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 // Leta rätt på ljudet med det ID:t och flytta på det till ny postion
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir, float fVolume)
+bool ZFAudioSystem::MoveAudio(int iID, Vector3 kNewPos, Vector3 kNewDir, float fVolume)
 {
 	map<int,ZFSoundInfo*>::iterator itLoopSound = m_kLoopSoundMap.find(iID);
 	if(itLoopSound != m_kLoopSoundMap.end())
@@ -1219,6 +1357,21 @@ bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir, float f
 		if(fVolume > 0)
 			itLoopSound->second->m_fGain = fVolume;
 		return true;
+	}
+	else
+	{
+		vector<OggStream*>::iterator it = m_vkOggStreams.begin();
+		for( ; it!=m_vkOggStreams.end(); it++)
+		{
+			OggStream* ogg = (*it);
+			if(ogg->m_iID == iID)
+			{
+				ogg->m_kPos = kNewPos;
+				if(fVolume > 0)
+					ogg->SetVolume(fVolume);
+				return true;
+			}
+		}
 	}
 
 	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
@@ -1311,7 +1464,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 					}
 
 					if(bStartNewSound)
-						m_kAmbientAreas[i]->m_iSoundID = StartSound(m_kAmbientAreas[i]->m_strSound, 
+						m_kAmbientAreas[i]->m_iSoundID = PlayAudio(m_kAmbientAreas[i]->m_strSound, 
 							m_kPos, m_kHead, true, m_kAmbientAreas[i]->m_fGain); // och starta ett nytt.
 					
 					m_kAmbientAreas[i]->m_bChangeSound = false;
@@ -1328,7 +1481,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 						m_kAmbientAreas[i]->m_fFadeTimer = -1;
 					}
 					
-					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead, m_kAmbientAreas[i]->m_fGain);
+					MoveAudio(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead, m_kAmbientAreas[i]->m_fGain);
 				}
 			}
 			else
@@ -1354,7 +1507,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 						}
 
 						if(bStopSound)
-							StopSound(m_kAmbientAreas[i]->m_iSoundID);
+							StopAudio(m_kAmbientAreas[i]->m_iSoundID);
 
 						m_kAmbientAreas[i]->m_iSoundID = -1;
 						m_kAmbientAreas[i]->m_bChangeSound = true;
@@ -1438,7 +1591,7 @@ bool ZFAudioSystem::ChangeAmbientAreaSound(int iID, string strSound)
 			if(m_kAmbientAreas[i]->m_strSound != strSound)
 			{
 				if(m_kAmbientAreas[i]->m_iSoundID != -1)
-					StopSound(m_kAmbientAreas[i]->m_iSoundID);
+					StopAudio(m_kAmbientAreas[i]->m_iSoundID);
 
 				m_kAmbientAreas[i]->m_strSound = strSound;	
 
@@ -1464,7 +1617,7 @@ void ZFAudioSystem::RemoveAmbientArea(int iID)
 	{
 		if((*it)->m_iAmbientAreaID == iID)
 		{
-			StopSound((*it)->m_iSoundID);
+			StopAudio((*it)->m_iSoundID);
 			delete (*it);
 			m_kAmbientAreas.erase(it);
 			break;

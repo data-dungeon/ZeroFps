@@ -354,7 +354,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 //	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(0);
 //	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(1);
 
-	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
+	if(m_pkInputHandle->Pressed(KEY_Z))		{SetViewPort("vp1");m_pkAudioSys->StopMusic("data/music/olle2.ogg");}
 	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");
 	if(m_pkInputHandle->Pressed(KEY_C))		SetViewPort("vp3");
 	if(m_pkInputHandle->Pressed(KEY_V))		SetViewPort("vp4");

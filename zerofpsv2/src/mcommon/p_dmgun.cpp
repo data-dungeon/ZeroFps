@@ -161,8 +161,8 @@ void P_DMGun::Update()
 		if(t - prevAmmoPlayTime > 0.5f) // spela max 2 ljud/ sek
 		{
 			cout<<"IM OUT OF AMMO"<<endl;
-			m_pkAudioSys->StartSound("data/sound/no_ammo.wav",	
-				m_pkEntity->GetWorldPosV(), m_kDir, false);
+			m_pkAudioSys->PlayAudio("data/sound/no_ammo.wav",	
+				m_pkEntity->GetWorldPosV(), m_kDir, ZFAUDIO_LOOP);
 			prevAmmoPlayTime = t;
 		}
 	}
@@ -207,7 +207,7 @@ void P_DMGun::Update()
 	//play sound
 	if(t - prevShotPlayTime > 1.0f) // spela max 1 ljud/ sek (eller när nytt skott avlossas)
 	{
-		m_pkAudioSys->StartSound(m_strSound, m_pkEntity->GetWorldPosV(), m_kDir, false);
+		m_pkAudioSys->PlayAudio(m_strSound, m_pkEntity->GetWorldPosV(), m_kDir);
 		prevShotPlayTime = t;
 	}
 	

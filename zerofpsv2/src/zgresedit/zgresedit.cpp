@@ -155,7 +155,7 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 	{
 		TempSave(true);
 
-		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
+		m_pkAudioSys->PlayAudio("/data/sound/chop_knife.wav");
 
 		if(pkWnd->GetParent())
 		{
@@ -571,7 +571,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			m_pkScene->UpdateOptionsWnd(m_pkFocusWnd);
 		}
 
-		m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+		m_pkAudioSys->PlayAudio("/data/sound/button_press1.wav");
 	}
 	else
 	if(strMainWndName == "WorkSpace")
@@ -626,7 +626,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			TempSave(true);
 
-			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+			m_pkAudioSys->PlayAudio("/data/sound/button_press1.wav");
 
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
@@ -682,7 +682,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			TempSave(true);
 
-			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+			m_pkAudioSys->PlayAudio("/data/sound/button_press1.wav");
 
 			// Ta bort textur på vald kontroll
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
@@ -724,7 +724,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			TempSave(true);
 
-			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+			m_pkAudioSys->PlayAudio("/data/sound/button_press1.wav");
 
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
@@ -763,7 +763,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "CreateWndBn")
 		{
-			m_pkAudioSys->StartSound("/data/sound/smith_hammer4.wav");
+			m_pkAudioSys->PlayAudio("/data/sound/smith_hammer4.wav");
 
 			char* szName = GetText("NewWndNameTextbox");
 			char szParent[100];
@@ -1125,7 +1125,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "SelectedFileUpdate")
 		{
-			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+			m_pkAudioSys->PlayAudio("/data/sound/button_press1.wav");
 
 			((ZGuiTreebox*)GetWnd("FileTree"))->Clear();
 			m_pkScene->BuildFileTree("FileTree", "data", ".lua");
@@ -2262,13 +2262,13 @@ void ZGResEdit::OpenWnd(ZGuiWnd *pkWnd, bool bOpen)
 {
 	if(bOpen)
 	{
-		m_pkAudioSys->StartSound("/data/sound/open_door1.wav");
+		m_pkAudioSys->PlayAudio("/data/sound/open_door1.wav");
 		MoveWndToTop(pkWnd);
       //m_pkGui->PlaceWndFrontBack(pkWnd, true);
 	}
 	else
 	{
-		m_pkAudioSys->StartSound("/data/sound/close_door1.wav");
+		m_pkAudioSys->PlayAudio("/data/sound/close_door1.wav");
 		pkWnd->Hide();
 	}
 }

@@ -20,7 +20,7 @@ struct GUI_API ZGuiTreeboxNode
 
 	unsigned char ucSkinIndex;	
 	unsigned char ucSkinIndexSelected;
-	ZGuiTreeboxNode *pkParent, *pkNext;
+	ZGuiTreeboxNode *pkParent, *pkNext, *pkPrev;
 	list<ZGuiTreeboxNode*> kChilds;
 
 	bool bIsOpen; // samma sak som m_bVisible fast ignoreras av renderingen

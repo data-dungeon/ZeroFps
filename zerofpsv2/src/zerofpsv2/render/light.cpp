@@ -12,6 +12,7 @@ LightSource::LightSource()
 	
 	//light color
 	kDiffuse				=	Vector4(1,1,1,1);
+
 	kAmbient				=	Vector4(0,0,0,1);
 	kSpecular			=	Vector4(0,0,0,1);
 	

@@ -233,7 +233,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZFScriptSystem*		m_pkScript;					///< script
 		Application*			m_pkApp;						///< Application object.
 		ZShaderSystem*			m_pkZShaderSystem;		///< zerofps shader system
-		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
 		AStar*					m_pkAStar;
 		Tcs*						m_pkTcs;

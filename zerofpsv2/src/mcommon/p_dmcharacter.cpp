@@ -204,7 +204,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 		int iNumSounds = m_vkDeathSounds.size();
 		if(iNumSounds > 0)
 		{
-			m_pkAudioSys->StartSound(m_vkDeathSounds[rand() % iNumSounds], 
+			m_pkAudioSys->PlayAudio(m_vkDeathSounds[rand() % iNumSounds], 
 				m_pkEntity->GetWorldPosV());
 		}
 		
@@ -220,7 +220,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 			int iNumSounds = m_vkDefenciveActionQuots.size();
 			if(iNumSounds > 0)
 			{
-				m_pkAudioSys->StartSound(m_vkDefenciveActionQuots[rand() % iNumSounds], 
+				m_pkAudioSys->PlayAudio(m_vkDefenciveActionQuots[rand() % iNumSounds], 
 					m_pkEntity->GetWorldPosV());
 				prevSoundPlayTime = t;
 			}
@@ -248,7 +248,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		int iNumSounds = m_vkOffenciveActionQuots.size();
 		if(iNumSounds > 0)
 		{
-			m_pkAudioSys->StartSound(m_vkOffenciveActionQuots[rand() % iNumSounds], 
+			m_pkAudioSys->PlayAudio(m_vkOffenciveActionQuots[rand() % iNumSounds], 
 				m_pkEntity->GetWorldPosV());
 			prevSoundPlayTime = t;
 		}
@@ -392,7 +392,7 @@ void P_DMCharacter::Update()
 			{
 				if(m_bPlayWalkSound == true)
 				{
-					m_pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
+					m_pkAudioSys->StopAudio("/data/sound/walk_zombie.wav", 
 						m_pkEntity->GetIWorldPosV()); 	
 					m_bPlayWalkSound = false;
 					//printf("stoppa ljud!\n");
@@ -407,9 +407,8 @@ void P_DMCharacter::Update()
 
 				if(m_bPlayWalkSound == false && m_iTeam != 1 && m_iTeam != 2 )
 				{
-					m_pkAudioSys->StartSound("/data/sound/walk_zombie.wav", 
-						m_pkEntity->GetIWorldPosV(), 
-						Vector3(0,0,1), true );
+					m_pkAudioSys->PlayAudio("/data/sound/walk_zombie.wav", 
+						m_pkEntity->GetIWorldPosV(), Vector3(0,0,1), ZFAUDIO_LOOP );
 					m_bPlayWalkSound = true;
 					//printf("starta ljud!\n");
 				}
@@ -419,9 +418,9 @@ void P_DMCharacter::Update()
 				if(m_bPlayWalkSound)
 				{
 					// WARNING! Detta kan bli slött som ASET, kommentera bort i värsta fall :)
-					m_pkAudioSys->MoveSound("/data/sound/walk_zombie.wav", 
+				/*	m_pkAudioSys->MoveSound("/data/sound/walk_zombie.wav", 
 						m_pkEntity->GetIWorldPosV(),
-						m_pkEntity->GetIWorldPosV());
+						m_pkEntity->GetIWorldPosV());*/
 				}
 			}
 		}
@@ -715,7 +714,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 						{	
 							if(m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
 							{	
-								m_pkAudioSys->StartSound("data/sound/pick_up.wav", 
+								m_pkAudioSys->PlayAudio("data/sound/pick_up.wav", 
 									pkPickEnt->GetWorldPosV());
 								return true;
 							}

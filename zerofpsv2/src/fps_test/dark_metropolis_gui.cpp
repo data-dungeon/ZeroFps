@@ -250,8 +250,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadListOKBn")
 		{
-			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-				m_pkAudioSys->GetListnerPos()); 
+			m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 
 			char* szClanName = GetText("SaveLoadFileNameEB");
 			if(szClanName && strlen(szClanName) > 0)
@@ -557,10 +556,9 @@ void DarkMetropolis::GUI_OnMoveSlider(int iID, int iPos, ZGuiWnd* pkMainWnd)
 
 			m_fMusicVolume = fNewVol;
 
-			OggMusic* pkMusic = static_cast<OggMusic*>(
-				g_ZFObjSys.GetObjectPtr("OggMusic")); 
-
-			pkMusic->SetVolume(m_fMusicVolume); 
+			//OggMusic* pkMusic = static_cast<OggMusic*>(
+			//	g_ZFObjSys.GetObjectPtr("OggMusic")); 
+			//pkMusic->SetVolume(m_fMusicVolume); 
 		}
 		else
 		if(strCtrl == "SFXVolumeSlider")

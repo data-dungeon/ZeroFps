@@ -118,7 +118,7 @@ void MistClient::AddStringToChatBox(string strMsg)
 	((ZGuiTextbox*)GetWnd("ChatTextbox"))->ScrollRowIntoView(
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
 
-	m_pkAudioSys->StartSound("data/sound/gui/turn_page.wav");
+	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);
 
 	
 }

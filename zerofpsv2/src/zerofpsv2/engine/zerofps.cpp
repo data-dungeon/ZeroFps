@@ -60,7 +60,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkGuiMan					= new ZGuiResourceManager;
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
-	m_pkMusic					= new OggMusic(24,4096); 
 	m_pkAudioSystem			= new ZFAudioSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;
@@ -221,7 +220,7 @@ bool ZeroFps::StartUp()
 	CreateMaterials();
 	
 	//set captured input as default
-	m_pkInput->ToggleGrab(true);
+	//m_pkInput->ToggleGrab(true);
 	
 	return true;
 }

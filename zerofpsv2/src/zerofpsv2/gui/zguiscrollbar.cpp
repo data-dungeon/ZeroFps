@@ -62,16 +62,26 @@ void ZGuiScrollbar::SetThumbButtonSkins(ZGuiSkin* pkSkinNormal, ZGuiSkin* pkSkin
 
 void ZGuiScrollbar::SetScrollButtonUpSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown)
 {
-	m_pkArrowBnUp->SetButtonUpSkin(pkSkinUp);
-	m_pkArrowBnUp->SetButtonHighLightSkin(pkSkinUp);
-	m_pkArrowBnUp->SetButtonDownSkin(pkSkinDown);	
+	if(pkSkinUp)
+	{
+		m_pkArrowBnUp->SetButtonUpSkin(pkSkinUp);
+		m_pkArrowBnUp->SetButtonHighLightSkin(pkSkinUp);
+	}
+
+	if(pkSkinDown)
+		m_pkArrowBnUp->SetButtonDownSkin(pkSkinDown);	
 }
 
 void ZGuiScrollbar::SetScrollButtonDownSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown)
 {
-	m_pkArrowBnDown->SetButtonUpSkin(pkSkinUp);
-	m_pkArrowBnDown->SetButtonHighLightSkin(pkSkinUp);
-	m_pkArrowBnDown->SetButtonDownSkin(pkSkinDown);	
+	if(pkSkinUp)
+	{
+		m_pkArrowBnDown->SetButtonUpSkin(pkSkinUp);
+		m_pkArrowBnDown->SetButtonHighLightSkin(pkSkinUp);
+	}
+
+	if(pkSkinDown)
+		m_pkArrowBnDown->SetButtonDownSkin(pkSkinDown);	
 }
 
 void ZGuiScrollbar::GetScrollInfo(unsigned int& min, unsigned int& max, 

@@ -815,13 +815,7 @@ void DarkMetropolis::StartSong(char* szName)
 
 	if(m_iEnableMusic == 1 && prev_song != szName)
 	{
-		OggMusic* pkMusic = static_cast<OggMusic*>(
-			g_ZFObjSys.GetObjectPtr("OggMusic")); 
-
-		pkMusic->SetVolume(m_fMusicVolume); 
-		pkMusic->LoadFile(szName);
-		pkMusic->Play();
-
+		m_pkAudioSys->PlayAudio(szName, Vector3(), Vector3(), ZFAUDIO_LOOP);
 		prev_song = szName;
 	}
 }
@@ -928,7 +922,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 			int iNumSelSounds = int(pkCharProp->m_vkSelectSounds.size());
 			if(iNumSelSounds > 0)
 			{
-				m_pkAudioSys->StartSound(
+				m_pkAudioSys->PlayAudio(
 					pkCharProp->m_vkSelectSounds[rand()%iNumSelSounds], 
 					pkEnt->GetIWorldPosV());
 			}

@@ -109,7 +109,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	char szFileName[100];
 	g_pkScript->GetArg(pkLua, 0, szFileName);
 
-	g_pAudioSys->StartSound(string(szFileName));
+	g_pAudioSys->PlayAudio(string(szFileName));
 
 	return 1;
 }

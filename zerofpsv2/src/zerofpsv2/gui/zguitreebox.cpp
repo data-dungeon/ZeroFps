@@ -7,6 +7,7 @@
 #include "zguicheckbox.h"
 #include "zguitreebox.h"
 #include "zgui.h"
+#include "../basic/keys.h"
 
 const int VERT_ROW_SPACE = 1;
 const int HORZ_ROW_SPACE = 1;
@@ -38,6 +39,7 @@ ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_iStartcol = 0;
 
 	m_iID = 33212;
+	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 
 	CreateInternalControls();
@@ -123,6 +125,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 		szText = "";
 	}
 
+	pkNewItem->pkPrev = NULL;
 	pkNewItem->pkNext = NULL;
 	pkNewItem->pkParent = pkParent;
 	pkNewItem->bIsOpen = (pkParent == NULL) ? true : false;
@@ -169,6 +172,20 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 				}
 			}
 	}
+
+	// Set prev item
+	ZGuiTreeboxNode* prevNode = NULL;
+	for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
+		if((*it)->pkNext == pkNewItem)
+		{
+			pkNewItem->pkPrev = *it;
+			break;
+		}
+
+	//if(pkNewItem->pkPrev == NULL)
+	//{
+	//	printf("pkNewItem->pkParent =%s\n", pkNewItem->pkParent->pkButton->GetText()); 
+	//}
 
 	m_kNodeList.push_back(pkNewItem);
 
@@ -413,12 +430,12 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 		// Set focus on selected row if clicked outside 
 		// the nodetree (but inside the controll window).
-		if(m_pkSelectedNode)
+		/*if(m_pkSelectedNode)
 		{
 			ZGui* pkGui = GetGUI();
 			if(pkGui)
 				pkGui->SetFocus(m_pkSelectedNode->pkButton);
-		}
+		}*/
 	}
 	else
 	if(iCode == NCODE_MOVE)
@@ -436,6 +453,8 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 		if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
 			ScrollCols();
 	}
+
+	GetGUI()->SetFocus(this);
 
 	return true;
 }
@@ -934,6 +953,32 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 
 bool ZGuiTreebox::ProcessKBInput(int iKey)
 {
+	if(m_kNodeList.empty())
+		return true;
+
+	if(m_pkSelectedNode == NULL)
+		m_pkSelectedNode = m_kNodeList.front();
+
+	if(iKey == KEY_DOWN)
+	{
+		if(m_pkSelectedNode->pkNext)
+			Notify(m_pkSelectedNode->pkNext->pkButton, NCODE_CLICK_UP);
+	}
+	else
+	if(iKey == KEY_UP)
+	{
+		//ZGuiTreeboxNode* prevNode = NULL;
+		//for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
+		//	if((*it)->pkNext == m_pkSelectedNode)
+		//	{
+		//		prevNode = *it;
+		//		break;
+		//	}
+
+		if(m_pkSelectedNode->pkPrev)
+			Notify(m_pkSelectedNode->pkPrev->pkButton, NCODE_CLICK_UP);
+	}
+
 	return true;
 }
 

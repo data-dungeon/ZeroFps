@@ -66,7 +66,9 @@ class MCOMMON_API P_Enviroment: public Property {
 		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
-		OggMusic*		m_pkMusic;		
+		//OggMusic*		m_pkMusic;		
+		ZFAudioSystem*	m_pkAudioSystem;
+		int				m_iMusicHandle;
 		
 		float				m_fTimer;
 		float				m_fRainUpdateTimer;

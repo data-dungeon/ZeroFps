@@ -40,8 +40,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkGui->SetCaptureToWnd(NULL);
 		m_pkDM->PauseGame(false);
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName == "HQMissionBn")
@@ -50,8 +49,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkGui->SetCaptureToWnd(GetWnd("MissionWnd"));
 		GetGameDlg(MISSION_DLG)->InitDlg();
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName == "HQHireBn") 
@@ -60,8 +58,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		GetGameDlg(HANDLE_AGENTS_DLG)->InitDlg();
 		m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName == "HQInventoryBn") 
@@ -77,14 +74,13 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		SetText("RemoveItemBn", "Sell");
 		SetText("AddItemBn", "Buy");
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 }
 
 void CHQDlg::OpenDlg()
 {
-	m_pkAudioSys->StartSound("data/sound/computer beep 6.wav");
+	m_pkAudioSys->PlayAudio("data/sound/computer beep 6.wav");
 
 	ShowWnd("GamePlayScreen", false);
 	ShowWnd("GamePlayPanelWnd", false);

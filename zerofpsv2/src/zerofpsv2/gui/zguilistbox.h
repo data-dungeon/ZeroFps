@@ -18,6 +18,7 @@ class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:
 
+	bool ProcessKBInput(int iKey); // overloaded
    void SetFont(ZGuiFont* pkFont); // overloaded
 	void SetEnable(bool bEnable);
 	bool SelItem(const char* szText);

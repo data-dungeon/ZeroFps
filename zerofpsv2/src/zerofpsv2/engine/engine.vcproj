@@ -221,7 +221,7 @@
 				RelativePath=".\network.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\audio\OggMusic.cpp">
+				RelativePath="..\engine_systems\audio\oggstream.cpp">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_ambientsound.cpp">
@@ -375,7 +375,7 @@
 				RelativePath=".\network.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\audio\oggmusic.h">
+				RelativePath="..\engine_systems\audio\oggstream.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_ambientsound.h">

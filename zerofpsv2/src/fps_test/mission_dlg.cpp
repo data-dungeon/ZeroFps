@@ -36,8 +36,7 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			m_pkGui->SetCaptureToWnd(GetWnd("BriefingWnd"));
 			GetGameDlg(BRIEFING_DLG)->InitDlg();
 
-			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-				m_pkAudioSys->GetListnerPos()); 
+			m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 		}
 	}
 	else
@@ -47,8 +46,7 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName.find("_Eb") != string::npos && 
@@ -101,8 +99,7 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			{
 				m_strSelMission = vkInfo[i].m_strName;
 
-				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-					m_pkAudioSys->GetListnerPos()); 
+				m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 				break;
 			}
 		}
@@ -207,8 +204,7 @@ void CMissionDlg::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 
 	if(abs(prev_pos - m_iScrollbarPos) == 1)
 	{
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 }
 

@@ -122,9 +122,10 @@ void OptionsDlg::Open()
 			pkTabCtrl->GetPage(i)->Show();
 	}
 
-	float fPos = m_pkAudioSys->GetMusicVolume() * 100.0f; 
-	((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetRange(0,100);
-	((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetPos(fPos, true); 
+	float fPos;
+	//fPos = m_pkAudioSys->GetMusicVolume() * 100.0f; 
+	//((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetRange(0,100);
+	//((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetPos(fPos, true); 
 
 	fPos = m_pkAudioSys->GetSoundVolume() * 100.0f;
 	((ZGuiSlider*)m_pkMC->GetWnd("SoundVolumeSlider"))->SetRange(0,100);
@@ -135,7 +136,7 @@ void OptionsDlg::Open()
 	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetPos(fPos, true);
 
 	m_kOptionsValues.m_fPrevSoundVolume = m_pkAudioSys->GetSoundVolume();
-	m_kOptionsValues.m_fPrevMusicVolume = m_pkAudioSys->GetMusicVolume();
+	//m_kOptionsValues.m_fPrevMusicVolume = m_pkAudioSys->GetMusicVolume();
 	m_kOptionsValues.m_fPrevMouseSens = m_pkInput->GetMouseSens();
 
 	char* szWnds[] =
@@ -161,7 +162,7 @@ void OptionsDlg::Close(bool bSave)
 			m_kOptionsValues.m_fGammaColors[1], m_kOptionsValues.m_fGammaColors[2]);
 
 		m_pkAudioSys->SetSoundVolume(m_kOptionsValues.m_fPrevSoundVolume);
-		m_pkAudioSys->SetMusicVolume(m_kOptionsValues.m_fPrevMusicVolume);
+//		m_pkAudioSys->SetMusicVolume(m_kOptionsValues.m_fPrevMusicVolume);
 		
 		char szCmd[25];
 		sprintf(szCmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
@@ -369,13 +370,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 		else
 		if(strMainWnd == "OptionsPageAudio")
 		{
-			if(strController == "MusicVolumeSlider")
-			{
-				float pos;
-				pos = ((ZGuiSlider*)g_kMistClient.GetWnd("MusicVolumeSlider"))->ZGuiSlider::GetPos();
-				g_kMistClient.m_pkAudioSys->SetMusicVolume(pos / 100.0f);
-			}
-			else
+			//if(strController == "MusicVolumeSlider")
+			//{
+			//	float pos;
+			//	pos = ((ZGuiSlider*)g_kMistClient.GetWnd("MusicVolumeSlider"))->ZGuiSlider::GetPos();
+			//	g_kMistClient.m_pkAudioSys->SetMusicVolume(pos / 100.0f);
+			//}
+			//else
 			if(strController == "SoundVolumeSlider")
 			{
 				float pos;

@@ -24,7 +24,7 @@ P_Sound::~P_Sound()
 	//if(!m_strFileName.empty())
 	//{
 	//	Entity* pkEnt = GetEntity();
-	//	m_pkAudioSystem->StopSound(m_strFileName, pkEnt->GetIWorldPosV());
+	//	m_pkAudioSystem->StopAudio(m_strFileName, pkEnt->GetIWorldPosV());
 	//	m_strStopFileName = "";
 	//	m_strFileName = "";
 
@@ -34,7 +34,7 @@ P_Sound::~P_Sound()
 
 	if(m_iID > 0)
 	{
-		m_pkAudioSystem->StopSound(m_iID);
+		m_pkAudioSystem->StopAudio(m_iID);
 		m_strStopFileName = "";
 		m_strFileName = "";
 		m_iID = -1;
@@ -54,8 +54,8 @@ void P_Sound::Update()
 
 			if(m_bLoop == false)
 			{
-				m_iID = m_pkAudioSystem->StartSound(m_strFileName, 
-					pkEnt->GetIWorldPosV(), pkEnt->GetVel(), false);
+				m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
+					pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 				m_strFileName = "";
 			}
 			else
@@ -64,15 +64,15 @@ void P_Sound::Update()
 
 				if(m_bStarted == false)
 				{
-					m_iID = m_pkAudioSystem->StartSound(m_strFileName, 
-						pkEnt->GetIWorldPosV(), pkEnt->GetVel(), true);
+					m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
+						pkEnt->GetIWorldPosV(), pkEnt->GetVel(), ZFAUDIO_LOOP);
 					m_bStarted = true;
 				}
 				else
 				{
 					if(!m_kPrevpos.NearlyEquals(currpos,0.1f))
 					{
-						m_pkAudioSystem->MoveSound(m_iID, pkEnt->GetIWorldPosV(), pkEnt->GetVel());
+						m_pkAudioSystem->MoveAudio(m_iID, pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 						m_kPrevpos = pkEnt->GetIWorldPosV();
 					}
 				}
@@ -82,7 +82,7 @@ void P_Sound::Update()
 		if(!m_strStopFileName.empty())
 		{
 			Entity* pkEnt = GetEntity();
-			m_pkAudioSystem->StopSound(m_iID);
+			m_pkAudioSystem->StopAudio(m_iID);
 			m_strStopFileName = "";
 			m_strFileName = "";
 
@@ -228,8 +228,8 @@ void P_Sound::Update()
 
 			if(m_bLoop == false)
 			{
-				m_pkAudioSystem->StartSound(m_strFileName, 
-					pkEnt->GetIWorldPosV(), pkEnt->GetVel(), false);
+				m_pkAudioSystem->PlayAudio(m_strFileName, 
+					pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 				m_strFileName = "";
 			}
 			else
@@ -238,8 +238,8 @@ void P_Sound::Update()
 
 				if(m_bStarted == false)
 				{
-					m_pkAudioSystem->StartSound(m_strFileName, 
-						pkEnt->GetIWorldPosV(), pkEnt->GetVel(), true);
+					m_pkAudioSystem->PlayAudio(m_strFileName, 
+						pkEnt->GetIWorldPosV(), pkEnt->GetVel(), ZFAUDIO_LOOP);
 					m_bStarted = true;
 				}
 				else

@@ -55,8 +55,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 					m_pkGui->KillWndCapture();
 					m_pkDM->PauseGame(false); 
 
-					m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-						m_pkAudioSys->GetListnerPos()); 
+					m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 
 					break;
 				}
@@ -76,8 +75,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName == "BriefingCancelBn")
@@ -87,8 +85,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 		((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetText(""); 
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 }
 

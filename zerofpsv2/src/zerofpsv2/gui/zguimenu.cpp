@@ -144,17 +144,14 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 		}
 	}
 
-	if(m_pkParent)
-		m_pkParent->Notify(this, iCode);
+	//if(m_pkParent)
+	//	m_pkParent->Notify(this, iCode);
 
 	return false;
 }
 
 bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 {
-	//if(!IsVisible())
-	//	return true;
-
 	if(m_bNeedToResize == true)
 	{
 		if(m_pkFont != NULL)
@@ -170,11 +167,6 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 
 	if(m_pkLabel && m_bPopup == false)
 		m_pkLabel->Render(pkRenderer); 
-
-	//if(m_bPopup)
-	//{
- //		m_vkItems[0]->pkButton->Hide();
-	//}
 
 	static ZGuiLabel* pkArrow = pkArrow;
 	if(pkArrow == NULL)

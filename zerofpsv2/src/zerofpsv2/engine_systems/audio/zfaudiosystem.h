@@ -13,12 +13,17 @@
 #include "../../basic/vector2.h"
 #include "../../basic/vector3.h"
 #include "../../basic/vector4.h"
-#include "oggmusic.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/matrix3.h"
+#include "oggstream.h"
 
 #define DUMMY_SOUND "/data/sound/dummy.wav"
 #define HEARABLE_DISTANCE 100.0f
+
+// PlayAudio options 
+#define ZFAUDIO_LOOP			1  // loopa ljudet när det har spelat klart
+#define ZFAUDIO_3DOGG		2	// ogg:en har en position i 3d världen OBS! filen måste vara mono
+#define ZFAUDIO_2D			4  // en wav fil skall spelas som ett vanligt 2d ljud
 
 class ZFAudioSystem;
 class EntityManager;
@@ -51,6 +56,7 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		~ZFSoundInfo();
 
 		bool m_bLoop;
+		bool m_b2DSound; // normalt 2d ljud som inte har någon position
 		Vector3 m_kPos;
 		Vector3 m_kDir;
 		char m_acFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
@@ -81,6 +87,19 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 
 public:
 
+	ALuint GetNewSource();
+
+	float GetMainVolume() { return m_fMainVolume; }
+	bool SetMainVolume(float fVolume) 
+	{ 
+		if(fVolume >= 0 && fVolume <= 1) 
+		{
+			m_fMainVolume = fVolume; 
+			return true;
+		}
+		return false;
+	}
+
 	//
 	// Ambient sound area
 	//
@@ -99,18 +118,13 @@ public:
 	bool SetSoundVolume(float fVolume);
 	float GetSoundVolume() { return m_fSoundVolume; }
 
-	bool SetMusicVolume(float fVolume) { return m_pkMusic->SetVolume(fVolume); }
-	float GetMusicVolume() { return m_pkMusic->GetVolume(); }
-
-	int StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false, float fGain=1.0f);
-	bool StopSound(string strName, Vector3 pos);
-	bool StopSound(int iID);
-
+	int PlayAudio(string strName, Vector3 kPos=m_kPos, Vector3 kDir=Vector3(0,0,1), int flags=0, float fGain=1.0f);
+	bool StopAudio(int iID, bool bRelease=true);
+	bool StopAudio(string strName, Vector3 pos, bool bRelease=true);	
+	bool MoveAudio(int iID, Vector3 kNewPos, Vector3 kNewDir = Vector3(0,0,1), float fVolume = -1 ); // if fVolume is -1 then dont change volume
+	
 	bool LoadSound(string strFileName);
 	bool UnLoadSound(string strFileName);
-
-	bool MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos, Vector3 kNewDir=Vector3(0,0,1));
-	bool MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir = Vector3(0,0,1), float fVolume = -1 ); // if fVolume is -1 then dont change volume
 
 	bool SetSoundGain(int iID, float fGain);
 
@@ -130,12 +144,8 @@ public:
 	//
 	enum FuncId_e
 	{
-		FID_MUSICLOAD,
-		FID_MUSICPLAY,
-		FID_MUSICVOLUME,
-		FID_SOUNDVOLUME,
-		FID_MUSICBUFFERS,
-		FID_MUSICSTOP
+		FID_AUDIOPLAY,
+		FID_AUDIOSTOP,
 	};
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -157,6 +167,8 @@ public:
 
 private:
 
+	float m_fMainVolume; // 0-1
+
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
 	
@@ -167,9 +179,6 @@ private:
 	bool m_bIsValid;
 	float m_fSoundVolume, m_fMusicVolume;
 	
-	OggMusic* m_pkMusic;
-	THREAD_INFO* m_pkTreadInfo;
-
 	static Vector3 m_kPos;
 	Vector3 m_kHead;
 	Vector4 m_kUp;
@@ -232,6 +241,8 @@ private:
 	bool PntInPolygon(Vector2 *pt, vector<Vector2*>& vPolygon);
 	void FadeGain(AmbientArea* pkArea, bool bOut);
 	void UpdateAmbientSound();
+
+	vector<OggStream*> m_vkOggStreams;
 
 };
 

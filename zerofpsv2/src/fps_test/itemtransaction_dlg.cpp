@@ -61,8 +61,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 		}
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 
 		P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
 			GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
@@ -151,8 +150,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			}
 		}
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 	else
 	if(strClickName.find("StockRoomItemBn") != string::npos)
@@ -174,8 +172,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			}
 		}
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		m_pkAudioSys->PlayAudio("data/sound/computer beep 5.wav"); 
 	}
 }
 

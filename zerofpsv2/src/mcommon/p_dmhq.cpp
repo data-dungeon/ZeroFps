@@ -114,8 +114,8 @@ bool P_DMHQ::InsertCharacter(int iID)
 				ZFAudioSystem* pkAudioSys = 
 					static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 
-				pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
-					m_pkEntity->GetIWorldPosV()); 
+	/*			pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
+					m_pkEntity->GetIWorldPosV()); */
 			}
 
 			cout<<"character entering HQ"<<endl;

@@ -145,16 +145,17 @@ P_Enviroment::P_Enviroment()
 	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-	m_pkMusic=				static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
-	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));		
-	
+	//m_pkMusic=				static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
+	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_iMusicHandle = -1;
+
 	m_iSortPlace	=	10;
 	
 	bNetwork =		true;
 	m_bEnabled =	false;
 	
 	m_StrCurrentEnviroment = "";
-
 	
 	
 	m_pkSunMat = new ZMaterial;
@@ -185,7 +186,8 @@ P_Enviroment::~P_Enviroment()
 {
 	if(m_bEnabled)
 	{
-		m_pkMusic->Stop();
+		if(m_iMusicHandle != -1)
+			m_pkAudioSystem->StopAudio(m_iMusicHandle);
 	}
 }
 
@@ -320,13 +322,16 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 	m_iRain = es->m_iRain;
 
 	//setup music
-	if(es->m_strMusic == "")
-		m_pkMusic->Stop();
-	else
-	{
-		m_pkMusic->LoadFile(es->m_strMusic.c_str());
-		m_pkMusic->Play();
-	}
+	//if(es->m_strMusic == "")
+	//	m_pkMusic->Stop();
+	//else
+	//{
+	//	m_pkMusic->LoadFile(es->m_strMusic.c_str());
+	//	m_pkMusic->Play();
+	//}
+	if(es->m_strMusic != "")
+		m_iMusicHandle = m_pkAudioSystem->PlayAudio(es->m_strMusic, 
+			Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP);
 	
 
 	//setup skybox property

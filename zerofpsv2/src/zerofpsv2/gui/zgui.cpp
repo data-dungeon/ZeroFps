@@ -486,7 +486,7 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 	if(!pkWnd->GetWindowFlag(WF_CANHAVEFOCUS) || pkWnd == NULL)
 	{
 		// Försök sätta fokus på dess root parent istället.
-		ZGuiWnd* pkRootParent = pkWnd->GetParent(true);
+		ZGuiWnd* pkRootParent = pkWnd->GetParent();
 		if(pkRootParent)
 			SetFocus(pkRootParent);
 		return;
@@ -595,9 +595,11 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
    {
       if( typeid(*ZGuiWnd::m_pkFocusWnd) == typeid(ZGuiTextbox) )
          bIsTextbox = true;
+
+		//printf("ZGuiWnd::m_pkFocusWnd = %s\n", ZGuiWnd::m_pkFocusWnd->GetName());
    }
 
-   if(bIsTextbox)
+   if(/*bIsTextbox*/ZGuiWnd::m_pkFocusWnd)
    {
       static KEY_INFO last_key = {-1,0,0};
       static float last_key_press_time = 0;

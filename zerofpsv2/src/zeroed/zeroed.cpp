@@ -385,6 +385,8 @@ void ZeroEd::Init()
 
 	//enable sun as default
 	ToogleLight();
+
+
 }
 
 void ZeroEd::OnServerStart(void)
@@ -546,6 +548,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end())
 	{
 		Select_Add(iId);
+
 		m_iCurrentObject = iId;
 
       //if(m_iEditMode == EDIT_OBJECTS)
