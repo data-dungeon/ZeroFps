@@ -69,10 +69,10 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 				int y = rc.Top - h;
 
 				if(x + w > screen_w)
-					x -= (rc.Right-screen_w);
+					x = screen_w-w-2;
 
 				if(y + h > screen_h)
-					y -= (rc.Bottom-screen_h);
+					y = screen_h-h-2;
 
 				m_pkToolTipWnd->SetPos( x, y, true, true);
 

@@ -324,7 +324,7 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	m_pkGui->Update(m_pkObjectMan->GetSimTime(),iInputKey,false,
+	m_pkGui->Update(/*m_pkObjectMan->GetSimTime()*/GetTicks(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
