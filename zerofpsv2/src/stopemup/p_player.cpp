@@ -2,9 +2,11 @@
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/engine_systems/propertys/p_sound.h"
+#include "stopemup.h"
 
 P_Player::P_Player()
 {
+	m_pkStopEmUp = (StopEmUp*)(g_ZFObjSys.GetObjectPtr("Application"));
 
 	strcpy(m_acName,"P_Player");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -19,6 +21,7 @@ P_Player::P_Player()
 	m_fInv			= -1;
 	m_strGunName	= "Machine Gun";
 }
+
 
 void P_Player::Touch(int iID)
 {
@@ -59,8 +62,20 @@ void P_Player::Damage(int iDmg)
 	{
 		cout<<"player died"<<endl;
 		m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/playerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
-		m_pkEntityManager->Delete(GetEntity());		
-			
+		
+		//goal game or not
+		if(m_pkStopEmUp->GetGoalEnt() == -1)		
+			m_pkEntityManager->Delete(GetEntity());		
+		else
+		{
+			//set player att 0 0 0  and remove some life
+			GetEntity()->SetWorldPosV(Vector3(0,0,0));
+			m_iEnergy		= 100;
+			m_iMaxEnergy	= 100;
+									
+			m_pkStopEmUp->RemoveLife();
+			m_pkStopEmUp->RemoveLife();
+		}			
 	}
 }
 

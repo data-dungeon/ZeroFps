@@ -490,17 +490,17 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 	}
 
 	
-	pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
-	pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
+	//pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
+	//pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
 	
 	//sync entitys before touching	
-/*	SyncEntitys();
+	SyncEntitys();
 	//touch objects	
 	pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
 	pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
 	//sync bodys after touching
 	SyncBodys();
-*/	
+	
 	//try to put bodys to sleep
 	//TryToSleep(pkCol->pkBody1,pkCol->pkBody2);						
 }

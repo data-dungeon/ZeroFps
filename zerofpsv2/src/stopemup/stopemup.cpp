@@ -290,7 +290,7 @@ void StopEmUp::OnServerStart()
 		
 	m_bServerMode =	true;
 	m_iLevel = 			m_iStartLevel-1;
-	m_iLives =			20;
+	m_iLives =			50;
 	
 	SetTitle("StopEmUp - Server");
 }

@@ -3,13 +3,16 @@
 
 #include "../zerofpsv2/engine/property.h"
 
+class StopEmUp;
 
 class P_Player : public Property
 {
 	private:
+		StopEmUp*	m_pkStopEmUp;
 	
 		float		m_fInv;
 			
+		
 	public:
 		int		m_iEnergy;
 		int		m_iMaxEnergy;
