@@ -1094,14 +1094,21 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//no position, drop item outside this container
 					if(iPosX == -1)
 					{
-						pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV());
+						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+						else
+							SayToClients("Could not drop item",PkNetMessage->m_iClientID);						
+						
 						break;				
 					}
 					//we have a position try to move item there
 					else
 					{
-						if(!pkInContainer->MoveItem(iItemID,iPosX,iPosY))
+						if(pkInContainer->MoveItem(iItemID,iPosX,iPosY))
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+						else
 							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
+							
 						break;
 					}
 				}
@@ -1119,7 +1126,12 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//no position, move anywhere
 					if(iPosX == -1)
 					{
-						if(!pkInContainer->MoveItem(iItemID,pkTargetContainer))
+						if(pkInContainer->MoveItem(iItemID,pkTargetContainer))
+						{
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
+						}
+						else
 							SayToClients("Could not move there",PkNetMessage->m_iClientID);
 						
 						break;				
@@ -1127,8 +1139,14 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//we have a position try to move item there
 					else
 					{
-						if(!pkInContainer->MoveItem(iItemID,pkTargetContainer,iPosX,iPosY))
+						if(pkInContainer->MoveItem(iItemID,pkTargetContainer,iPosX,iPosY))
+						{
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
+						}
+						else
 							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
+							
 						break;
 					}					
 				}
