@@ -29,6 +29,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	/* Create Engine SubSystems 
 		*/
 
+	m_pkAStar				=	new AStar;
 	m_pkZShader					= new ZShader;
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkResourceDB				= new ZFResourceDB;

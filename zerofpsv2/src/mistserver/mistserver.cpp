@@ -134,6 +134,8 @@ void MistServer::RegisterPropertys()
 	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 }
 
+
+
 void MistServer::OnIdle()
 {
 	pkFps->SetCamera(m_pkCamera);		
@@ -148,7 +150,8 @@ void MistServer::OnIdle()
 
  	pkFps->UpdateCamera(); 		
 
-	
+	for(int iPath = 0; iPath < kPath.size(); iPath++)
+		pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
 	
 	if(m_pkServerInfoP)
 	{
@@ -196,12 +199,15 @@ void MistServer::OnIdle()
 			}
 		}
 	}
+
+	PathTest();
 }
 
 void MistServer::OnSystem()
 {
 
 }
+
 
 void MistServer::Input()
 {
@@ -228,6 +234,27 @@ void MistServer::Input()
 
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
+
+	if(pkInput->Pressed(KEY_F5)) {
+		kPathStart = m_kObjectMarkerPos;
+		cout << "Setting Start" << endl;
+		} 
+	if(pkInput->Pressed(KEY_F6)) {
+		kPathEnd = m_kObjectMarkerPos;
+		cout << "Setting end" << endl;
+		} 
+
+	if(pkInput->Pressed(KEY_L)) {
+		kPath.clear();
+		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
+
+		if(bres) {
+			cout << "Path was found. Size " << kPath.size()  << endl;
+			}
+		else {
+			cout << "Path was NOT found" << endl;
+			}
+		}
 
 	if(m_pkCameraObject)	
 	{	
@@ -392,9 +419,12 @@ void MistServer::Input()
 			if(pkInput->Pressed(KEY_PAGEDOWN))
 				pkObj->RotateLocalRotV(Vector3(0,0,-100*pkFps->GetFrameTime()));			
 				
+			cout << "Pos:" << pkObj->GetLocalPosV().x << ", " << pkObj->GetLocalPosV().y << "," << pkObj->GetLocalPosV().z << endl;
 		}		
-	}
 
+	
+	}
+				
 };
 
 void MistServer::OnHud(void)
@@ -405,6 +435,8 @@ void MistServer::OnHud(void)
 		
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
+
+
 }
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -524,7 +556,12 @@ void MistServer::OnClientStart(void)
 {
 }
 
-bool MistServer::StartUp()	{ return true; }
+bool MistServer::StartUp()	
+{ 
+	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
+	return true; 
+}
+
 bool MistServer::ShutDown()	{ return true; }
 bool MistServer::IsValid()	{ return true; }
 
@@ -769,3 +806,27 @@ void MistServer::ToogleLight(bool bEnabled)
 	else
 		pkZShader->SetForceLighting(ALWAYS_OFF);
 }
+
+void MistServer::PathTest()
+{
+	return;
+
+	int iNumOfZones = pkObjectMan->GetNumOfZones();
+	if(iNumOfZones < 10)
+		return;
+
+	int iRuns = 10;
+
+	for(int i=0; i<iRuns; i++) {
+
+		int iStartZone  = 10;
+		int iEndZone	= 1;
+
+		kPathStart = pkObjectMan->GetZoneCenter(iStartZone);
+		kPathEnd   = pkObjectMan->GetZoneCenter(iEndZone);
+
+		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
+		}
+}
+
+

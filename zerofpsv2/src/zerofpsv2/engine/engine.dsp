@@ -107,6 +107,10 @@ SOURCE=.\application.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\astar.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\billboardrenderproperty.cpp
 # End Source File
 # Begin Source File
@@ -332,6 +336,10 @@ SOURCE=..\engine_systems\common\zoneobject.cpp
 # Begin Source File
 
 SOURCE=.\application.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\astar.h
 # End Source File
 # Begin Source File
 

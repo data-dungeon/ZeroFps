@@ -26,6 +26,7 @@
 #include "res_texture.h"
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
+#include "astar.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -180,7 +181,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZShader*					m_pkZShader;				///< zerofps shader system
 		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
-		
+		AStar*				m_pkAStar;
+
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS
 		float		m_fAvrageFps;

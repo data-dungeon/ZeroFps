@@ -12,6 +12,7 @@
 #include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
+#include "../zerofpsv2/engine/astar.h"
 
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
@@ -69,6 +70,14 @@ class MistServer :public Application , public ZGuiApp {
 		void DrawZoneMarker(Vector3 kPos);
 		void DrawCrossMarker(Vector3 kPos);
 		void AddZone();
+
+		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. */
+			AStar*	m_pkAStar;
+			vector<Vector3> kPath;
+			Vector3 kPathStart;
+			Vector3 kPathEnd;
+
+			void PathTest();
 
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
