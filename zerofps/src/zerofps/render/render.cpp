@@ -15,6 +15,8 @@ Render::Render()
 	m_iAutoLod=1;
 	m_iLodUpdate=0;	
 	m_kOldCamPos=Vector3(0,0,0);
+	
+	m_iHmTempList=0;
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){

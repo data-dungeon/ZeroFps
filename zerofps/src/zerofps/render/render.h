@@ -29,7 +29,8 @@ class RENDER_API Render : public ZFObject {
 		int m_iSlicesize;	  //height meens greater detail att longer range		
 		int m_iLodUpdate;		
 		Vector3 m_kOldCamPos;		
-//		Vector4 m_akFrustum[6];
+
+		GLuint m_iHmTempList;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
