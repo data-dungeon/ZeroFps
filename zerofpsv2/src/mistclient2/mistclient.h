@@ -46,6 +46,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SendControlInfo();
 		void Input();
 		
+		//chat system
 		void Say(string strMsg);
 		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void RequestPlayerList();

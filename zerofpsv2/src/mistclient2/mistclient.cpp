@@ -132,7 +132,15 @@ void MistClient::Say(string strMsg)
 
 	if(strMsg[0] == '/')
 	{
-		//handle different chat channels
+		//handle different chatbox funktions		
+		if(strMsg.length() > 1)
+		{
+			if(strMsg.substr(1) == "users")
+			{
+				RequestPlayerList();
+			}
+		
+		}
 	}
 	else
 	{
@@ -366,13 +374,21 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 			PkNetMessage->Read(iPlayers);
 			
-			m_pkConsole->Printf("Listing Players : %d",iPlayers);
+			//m_pkConsole->Printf("Listing Players : %d",iPlayers);
+			AddStringToChatBox("Requesting playerlist");
+			
 			for(int i = 0;i<iPlayers;i++)
 			{
 				PkNetMessage->Read_Str(strName);
-				m_pkConsole->Printf("%d %s",i,strName.c_str());
-				m_kPlayerList.push_back(strName);			
+				//m_pkConsole->Printf("%d %s",i,strName.c_str());
+				AddStringToChatBox(strName);
+				m_kPlayerList.push_back(strName);					
 			}
+			
+			char nr[5];
+			IntToChar(nr,iPlayers);
+			AddStringToChatBox(string(nr) + string(" online"));
+			
 			
 			break;
 		}
