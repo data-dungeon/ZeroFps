@@ -450,28 +450,8 @@ void DarkMetropolis::Input()
 					{
 						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 						{
-							if(P_DMGun* pkGun = (P_DMGun*)pkEnt->GetProperty("P_DMGun"))
-							{
-								// fire gun
-								pkGun->Fire( m_kPickPos );
-
-								// rotate character towards target (move to better place later?)
-								Vector3 kdiff = m_kPickPos - pkEnt->GetWorldPosV();
-								kdiff.y = 0;
-								Matrix4 kRotM;
-
-								kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
-								kRotM.Transponse();
-								pkEnt->SetLocalRotM(kRotM);
-
-
-								// Start shoot animation
-								if(P_Mad* pkMad = (P_Mad*)pkEnt->GetProperty("P_Mad"))
-								{
-									pkMad->SetAnimation ("shoot", 0);
-									pkMad->SetNextAnimation ("idle");
-								}
-							}
+							if(P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+								pkCharacter->Shoot (m_kPickPos);
 						}
 					}
 				}

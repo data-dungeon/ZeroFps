@@ -1,4 +1,6 @@
 #include "p_dmcharacter.h" 
+#include "p_dmgun.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
 P_DMCharacter::P_DMCharacter()
@@ -70,6 +72,35 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 			pkSi->CallFunction("Dead");
 		}
 	}
+}
+
+void P_DMCharacter::Shoot (Vector3 kLocation)
+{
+	P_DMGun* pkGun = (P_DMGun*)m_pkObject->GetProperty ("P_DMGun");
+	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
+
+	if ( pkGun == 0 )
+		return;
+
+	pkGun->Fire (kLocation);
+
+	// rotate character towards target
+	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();
+	kdiff.y = 0;
+	Matrix4 kRotM;
+
+	kRotM.LookDir( kdiff.Unit(), Vector3(0, 1, 0) );
+	kRotM.Transponse();
+	m_pkObject->SetLocalRotM(kRotM);
+
+
+	// Start shoot animation
+	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
+	{
+		pkMad->SetAnimation ("shoot", 0);
+		pkMad->SetNextAnimation ("idle");
+	}
+
 }
 
 

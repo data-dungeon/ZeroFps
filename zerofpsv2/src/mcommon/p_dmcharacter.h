@@ -69,6 +69,9 @@ class MCOMMON_API P_DMCharacter: public Property {
 		
 		DMCharacterStats* GetStats() {return &m_kStats;};
 		void Damage(int iType,int iDmg);
+
+		// Set right animation and calls shoot function i p_dmgun
+		void Shoot (Vector3 kLocation);
 		
 		
 		void Init();		

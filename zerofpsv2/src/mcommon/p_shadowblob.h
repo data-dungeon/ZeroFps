@@ -26,6 +26,8 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		Vector3	m_kScale;
 	
 	public:
+
+		void SetScale (float fWidth, float fLenght);
 		
 		P_ShadowBlob();
 		~P_ShadowBlob();
