@@ -6,7 +6,6 @@ function Create()
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
-		InitProperty("P_Track");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
 		InitProperty("P_ScriptInterface");
@@ -54,7 +53,19 @@ function Dead()
 	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
+
+	PanicArea (SIGetSelfID(), 10);
+
 	if Random(10) < 4 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 	end
 end
+
+function Panic()
+	SetMoveSpeed (SIGetSelfID(), 6);
+	SetRunAnim (SIGetSelfID(), "panic");
+	SetIdleAnim (SIGetSelfID(), "panic_idle");	
+	ClearPathFind(SIGetSelfID());
+	SISetHeartRate(SIGetSelfID(),2);
+end
+

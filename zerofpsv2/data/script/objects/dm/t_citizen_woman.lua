@@ -6,7 +6,6 @@ function Create()
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
-		InitProperty("P_Track");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
 		InitProperty("P_ScriptInterface");
@@ -40,8 +39,8 @@ function HeartBeat()
 	end
 
 	local pos = GetObjectPos(SIGetSelfID());
-	pos[1] = pos[1] + Random(20)-10;
-	pos[3] = pos[3] + Random(20)-10;
+	pos[1] = pos[1] + Random(30)-15;
+	pos[3] = pos[3] + Random(30)-15;
 
 	MakePathFind(SIGetSelfID(),pos);
 
@@ -53,6 +52,8 @@ function Dead()
 	ClearPathFind(SIGetSelfID());
 	PlaySound (SIGetSelfID(), "death/DEATH7.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
+
+	PanicArea(SIGetSelfID, 10);
 
 	if Random(10) < 6 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
