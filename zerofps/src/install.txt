@@ -7,7 +7,7 @@ How to - ZeroFps
 	C1:	SDL		1.2.5	http://www.libsdl.org
 	C2: SDL_image		1.2.2	http://www.libsdl.org/projects/SDL_image/
 	C3: SDL_mixer		1.2.4	http://www.libsdl.org/projects/SDL_mixer/
-	C4: SDL_net			1.2.4	http://www.libsdl.org/projects/SDL_net/
+	C4: SDL_net		1.2.4	http://www.libsdl.org/projects/SDL_net/
  D: OpenALSDK			1.0	http://www.openal.org/
  E: SourceForge Development Tools:
 	Windows:
@@ -15,12 +15,10 @@ How to - ZeroFps
 		SSH:		http://sfsetup.sourceforge.net/#sfsetup
 	Linux:
  F: Lua	4.0.1
-	Windows:
-		Source code		http://www.lua.org/ftp/lua.tar.gz
-		Precompiled binaries	http://www.tecgraf.puc-rio.br/lua/ftp/binaries/Windows/	
-	Linux:
- G: toLua 4.0
-		ftp://ftp.tecgraf.puc-rio.br/pub/users/celes/tolua/tolua-4.0.tar.gz
+	Source code		http://www.lua.org/ftp/lua.tar.gz	
+	Precompiled binaries
+		Windows:	http://www.tecgraf.puc-rio.br/lua/ftp/binaries/Windows/	
+ G: toLua 4.0			ftp://ftp.tecgraf.puc-rio.br/pub/users/celes/tolua/tolua-4.0.tar.gz
 
 2: Installera allt man laddat ned.
 	Windows:
