@@ -855,6 +855,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			//is this and inventory?
 			if(iContainerType == eInventory)
 			{
+				printf("bOpen = %i\n", bOpen);
+
 				//do we want to open the container window?
 				if(bOpen)
 					if(!m_pkInventoryDlg->IsVisible())

@@ -361,7 +361,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 {
-/*	if(m_kMoveSlot.m_iIndex != -1) // return if we already have a moveslot.
+	if(m_kMoveSlot.m_iIndex != -1) // return if we already have a moveslot.
 		return;
 
 	if(bLeftButtonPressed)
@@ -399,7 +399,7 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 			}
 
 		m_iItemUnderCursor = -1;
-	}*/
+	}
 }
 
 void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int my)
@@ -608,7 +608,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
-		// If left mouse button is pressed, hide the icon and set it to be visible under cursor.
+//		 If left mouse button is pressed, hide the icon and set it to be visible under cursor.
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
 		{
 			if(g_kMistClient.m_iPickedEntityID == vkItemList[i].m_iItemID)
