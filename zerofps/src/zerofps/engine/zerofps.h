@@ -45,7 +45,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 	
 		vector<string>	AppArguments;
 
-		PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
+//		PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
 
 	public:
 		Application* m_pkApp;						//application

@@ -17,7 +17,7 @@ void FloatProperty::Update() {
 			m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
 		m_pkObject->GetPos().y+=m_pkObject->GetVel().y * m_pkFps->GetFrameTime();
 		
-		m_pkObject->GetVel().y*0.3;	
+		m_pkObject->GetVel().y *= 0.3;	
 	}
 }
 

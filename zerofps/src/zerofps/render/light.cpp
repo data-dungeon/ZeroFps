@@ -63,8 +63,10 @@ void Light::Update() {
 	m_kSorted.clear();	
 	TurnOffAll();
 
+	list<LightSource*>::iterator it;
+
 	//loop trough all lightsources and find wich to view
-	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++) {
+	for(it=m_kLights.begin();it!=m_kLights.end();it++) {
 		
 		//always add light with priority >10
 		if((*it)->iPriority>=10){
@@ -95,8 +97,8 @@ void Light::Update() {
 	
 	//Put the first 8 in m_kActiveLights
 	int i=0;
-	m_kSorted.sort(More_Light);
-	for(list<LightSource*>::iterator it=m_kSorted.begin();it!=m_kSorted.end();it++) {
+//	m_kSorted.sort(&More_Light);
+	for( it=m_kSorted.begin();it!=m_kSorted.end();it++) {
 		if(i >= m_iNrOfLights)
 			break;
 				
@@ -118,7 +120,7 @@ void Light::Update() {
 		max=8;
 		
 	//loop trough selected lightsources and enable them
-	for(int i=0;i<m_kActiveLights.size();i++) {
+	for( i=0;i<m_kActiveLights.size();i++) {
 		GLenum light;				
 		//wich light to change
   		switch(i) {

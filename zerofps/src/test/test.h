@@ -15,7 +15,7 @@
 #include "playerobject.h"
 #include "bunnyobject.h"
 
-#include <GL/glx.h>
+//#include <GL/glx.h>
 
 class Test :public Application {
 	HeightMap *test;

@@ -136,6 +136,7 @@ void Core::draw()
 	int iMADTextureNum;
 	int iTextureId = aiTextureIndex[0];
 
+//	glCullFace(GL_FRONT);
 	for(int i=0; i<this->kHead.iNumOfSubMeshes; i++)
 	{
 		iMADTextureNum = pkSubMesh[i].iTextureIndex;
@@ -149,6 +150,7 @@ void Core::draw()
 			GL_UNSIGNED_INT,
 			pakFaces[ pkSubMesh[i].iFirstTriangle ].iIndex);
 	}
+//	glCullFace(GL_BACK);
 
 	/*	
 	if(aiReplaceTextureIndex[0] != NO_TEXTURE)

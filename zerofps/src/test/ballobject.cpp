@@ -9,7 +9,7 @@ BallObject::BallObject() {
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cyl.mad"));
+	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cube.mad"));
 //	madp->SetScale(0.02);
 
 	onGround = false;

@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Debug"
@@ -90,7 +90,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -169,32 +169,6 @@ SOURCE=.\mad.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\pmd.cpp
-
-!IF  "$(CFG)" == "render - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "render - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\pmddraw.cpp
-
-!IF  "$(CFG)" == "render - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "render - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\render.cpp
 
 !IF  "$(CFG)" == "render - Win32 Release"
@@ -230,14 +204,6 @@ SOURCE=.\light.h
 # Begin Source File
 
 SOURCE=.\mad.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\pmd.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\pmddraw.h
 # End Source File
 # Begin Source File
 

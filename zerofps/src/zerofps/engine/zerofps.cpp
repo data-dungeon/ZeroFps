@@ -215,8 +215,8 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	extgl_Initialize();
 #endif
 
-	glFogCoordfEXT = NULL;	
-	glFogCoordfEXT  =  (PFNGLFOGCOORDFEXTPROC) glXGetProcAddressARB((const GLubyte *)"glFogCoordfEXT");
+//	glFogCoordfEXT = NULL;	
+//	glFogCoordfEXT  =  (PFNGLFOGCOORDFEXTPROC) glXGetProcAddressARB((const GLubyte *)"glFogCoordfEXT");
 	
 	if(!glFogCoordfEXT){
 		cout<<"No glFogCoordEXT support =("<<endl;

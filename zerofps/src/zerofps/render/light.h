@@ -16,6 +16,7 @@ enum LIGHT_TYPE {
 	SPOT_LIGHT
 };
 
+using namespace std;
 
 class RENDER_API LightSource {
 	public:
@@ -51,7 +52,6 @@ class RENDER_API LightSource {
 
 };
 
-    
     
 class RENDER_API Light : public ZFObject {
 	private:

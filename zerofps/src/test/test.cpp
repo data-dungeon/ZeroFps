@@ -91,16 +91,16 @@ void Test::OnInit(void) {
 
 /*	pkLight->Add(spot2);			
 	pkLight->Add(spot);	*/
-	pkLight->Add(sol);
+//	pkLight->Add(sol);
 	
 	
 	
 	int i;
 	
-	for( i=0;i<20;i++) {
+	for( i=0;i<100;i++) {
 		Object *ball=new BallObject();
-		float x=400 + rand()%200;
-		float y=720 + rand()%100;
+		float x=290 + rand()%100;
+		float y=730 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
