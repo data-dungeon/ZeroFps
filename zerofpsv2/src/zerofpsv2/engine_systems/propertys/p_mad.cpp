@@ -571,6 +571,10 @@ Vector3 P_Mad::GetJointPosition(const char* szJointName)
 	
 	if(pkMc)
 	{
+	
+		//update joint positions
+		UpdateBones();
+	
 		if( pkMc->GetJointID(szJointName) == -1)
 			cout<<"Joint "<<szJointName<<" not found"<<endl;
 		
