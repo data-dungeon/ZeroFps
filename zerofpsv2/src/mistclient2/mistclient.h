@@ -29,7 +29,7 @@ class MistClient :public Application, public ZGuiApp {
 		bitset<6>	m_kCharacterControls;
 		
 		bool			m_bSkipLoginScreen;
-      string     m_strPlayerName;
+      string     m_strLoginName, m_strLoginPW;
 
       vector<pair<string,string> > m_kServerList;
       bool ReadWriteServerList(bool bRead);

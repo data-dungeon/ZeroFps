@@ -103,6 +103,8 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          if(strController == "ConnectBn")
          {
             g_kMistClient.ShowWnd("LoginWnd", true, true, true);
+            g_kMistClient.SetText("LoginNameEB", (char*) g_kMistClient.m_strLoginName.c_str());
+            g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_strLoginPW.c_str());
          }
       }
       else
@@ -166,6 +168,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
                   g_kMistClient.ShowWnd("LoginWnd", false);
 
                   printf("%s connecting to %s.", strLogin.c_str(), strServerIP.c_str());
+
+                  g_kMistClient.m_strLoginName = strLogin;
+                  g_kMistClient.m_strLoginPW = strPassword;
                }
                else
                   printf("Input error, failed to connect.");
