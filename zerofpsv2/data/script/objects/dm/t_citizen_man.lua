@@ -34,11 +34,9 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo2.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/I'm not afraid! I'm going to a world where anything is possible!.wav");
-end
 
-function Exit()
-	PlayAnim(SIGetSelfID(), "open");
-	SetNextAnim(SIGetSelfID(), "idle");
+	PlayAnim(SIGetSelfID(), 
+"idle");
 end
 
 function HeartBeat()

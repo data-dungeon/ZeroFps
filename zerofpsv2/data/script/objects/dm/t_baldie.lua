@@ -41,6 +41,8 @@ function Init()
 	SetTeam (SIGetSelfID(), 4);
 
 	SISetHeartRate(SIGetSelfID(),2);
+
+	PlayAnim(SIGetSelfID(), "idle");
 end
 
 function HeartBeat()
@@ -50,7 +52,8 @@ function HeartBeat()
 
 	-- om skadad, bli aggro
 	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		CallForHelp(SIGetSelfID(), 4) -- aggro
+		SetState(SIGetSelfID(), 4) -- aggro
+		SetVar("HarryWounded", 1);
 	end
 
 	SetEntityVar(SIGetSelfID(), "g_BaldieLife", Life)
@@ -67,6 +70,11 @@ function HeartBeat()
 		end
 	
 		return
+	end
+
+	-- check if harry is wounded, if so, get aggro
+	if GetVar("HarryWounded") == 1 then
+		SetState (SIGetSelfID(), 4);
 	end
 
 	local State = GetState(SIGetSelfID());
@@ -128,9 +136,21 @@ function Aggro() -- attacks player
 end
 
 function SellDrugs() --walk around some
-	local pos = GetObjectPos(SIGetSelfID());
-	pos[1] = pos[1] + Random(12)-6;
-	pos[3] = pos[3] + Random(12)-6;
 
-	MakePathFind(SIGetSelfID(),pos);
+	-- never wander to far away from harry
+	if DistanceTo(SIGetSelfID(), GetVar("HarryID")) > 5 then
+		local pos = GetObjectPos(GetVar("HarryID"));
+		pos[1] = pos[1] + Random(6)-3;
+		pos[3] = pos[3] + Random(6)-3;
+
+		MakePathFind(SIGetSelfID(),pos);		
+	else
+		local pos = GetObjectPos(SIGetSelfID());
+		pos[1] = pos[1] + Random(8)-4;
+		pos[3] = pos[3] + Random(8)-4;
+
+		MakePathFind(SIGetSelfID(),pos);
+	end
+
+
 end

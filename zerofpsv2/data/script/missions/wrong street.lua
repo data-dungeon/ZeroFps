@@ -5,11 +5,12 @@
 --//
 --///////////////////////////////////////////////////////////////////////////////
 
-NumOfBaldies = 1; -- max number of baldies, not numbers left
+NumOfBaldies = 2; -- max number of baldies, not numbers left
 HarryLastLife = 0;
 HarryID = 0; -- Bad guyen man ska döda
 Baldies = {}; -- Harrys goons
 HarryHouseID = 0; -- harrys hus, dör alla hans goons springer han in hit och hämtar fler
+Reinforcments = 0; -- om harry hämtat fler goons, gör det bara en gång
 
 MissionInfo = { name="Wrong street", difficulty=1, xp=900, cash=500, success=0 } -- difficulty = Level
 
@@ -40,8 +41,8 @@ function OnMissionStart()
 	
 	HarryHouseID = GetDMObject (3);
 
-	Print ("HOUSE:");
-	Print(HarryHouseID);
+	SetVar ("HarryWounded", 0);
+	SetVar ("HarryID", HarryID);
 
 end
 
@@ -68,9 +69,10 @@ function IsMissionDone()
 		--kolla om han nått fram till huset
 		if DistanceTo(HarryID, HarryHouseID) < 1 then
 			SetState(HarryID, 4); --agro
-			SwallowPlayer(HarryHouseID, HarryID, 5);
+			SwallowPlayer(HarryHouseID, HarryID, 3);
 			PlayAnim(HarryHouseID, "open");
 			SetNextAnim(HarryHouseID, "idle");
+			Reinforcments = 1;
 		end
 
 
@@ -80,32 +82,30 @@ function IsMissionDone()
 
 	-- kolla om harry blivit skadad, isåfall, gå berserk med alla goons
 	if GetCharStats(HarryID, 0) < HarryLastLife then
-		SetState (HarryID, 2);
-		for i = 0, NumOfBaldies, 1
-		do
-			SetState (Baldies[i], 4);
-		end
+		SetState (HarryID, 4);
+		SetVar ("HarryWounded", 1);
 	end
 
 	HarryLastLife = GetCharStats(HarryID, 0);
 
-	-- kolla hur många baldies som lever, är alla döda, får harry panic och springer och hämtar fler
-	-- i sitt hus
-	BaldLive = NumOfBaldies;
-
-	for i = 0, NumOfBaldies, 1
-	do
-		if IsDead(Baldies[i]) == 1 then
-			BaldLive = BaldLive - 1;
+	if Reinforcments == 0 then
+		-- kolla hur många baldies som lever, är alla döda, får harry panic och springer och hämtar fler
+		-- i sitt hus
+		BaldLive = NumOfBaldies;
+	
+		for i = 0, NumOfBaldies, 1
+		do
+			if IsDead(Baldies[i]) == 1 then
+				BaldLive = BaldLive - 1;
+			end
 		end
-	end
-
-	if BaldLive < 0 then
-		SetState (HarryID, 3); -- panic
-		housepos = GetEntityPos(HarryHouseID);
-		MakePathFind(HarryID, housepos);
-	end
-		
+	
+		if BaldLive < 0 then
+			SetState (HarryID, 3); -- panic
+			housepos = GetEntityPos(HarryHouseID);
+			MakePathFind(HarryID, housepos);
+		end
+	end	
 
 end
 

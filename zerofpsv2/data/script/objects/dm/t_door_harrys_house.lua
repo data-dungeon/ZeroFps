@@ -23,10 +23,12 @@ function Exit()
 	for i = 0, 5, 1
 	do
 		Baldies[i] = RunScript("data/script/objects/dm/t_baldie.lua");
+		SetState(Baldies[i], 4); --aggro
 		local doorpos = GetEntityPos(SIGetSelfID());
 		SetObjectPos (Baldies[i], doorpos);
-		SetState(Baldies[i], 4); --aggro
 	end
+
+	SetVar("HarryWounded", 1);
 
 	PlayAnim(SIGetSelfID(), "open");
 	SetNextAnim(SIGetSelfID(), "idle");

@@ -39,6 +39,7 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/I'm not afraid! I'm going to a world where anything is possible!.wav");
 
 	AddItem(SIGetSelfID(), "data/script/objects/dm/t_shotgun.lua", 1);
+	PlayAnim(SIGetSelfID(), "idle");
 end
 
 
@@ -121,7 +122,6 @@ end
 
 
 function Idle()
-	Print ("MEIdle");
 
 	local pos = GetObjectPos(SIGetSelfID());
 	pos[1] = pos[1] + Random(20)-10;

@@ -43,6 +43,8 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_woman/death/nooo3.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_woman/death/nooo4.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_woman/death/nooo5.wav");
+
+	PlayAnim(SIGetSelfID(), "idle");
 end
 
 function HeartBeat()
