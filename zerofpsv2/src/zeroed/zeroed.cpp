@@ -1450,6 +1450,8 @@ void ZeroEd::UpdateZoneMarkerPos()
 				m_kZoneMarkerPos = temp;
 			else
 			{
+				m_kZoneMarkerPos = GetZonePosAutoSnap();
+				/*
 				m_kZoneMarkerPos = m_kLastZonePos + Vector3(m_kZoneSize.x,0,m_kZoneSize.z) - 
 					Vector3( (m_kZoneSize.x-m_kLastZoneSize.x)/2, -(m_kZoneSize.y-m_kLastZoneSize.y)/2, 
 					(m_kZoneSize.z-m_kLastZoneSize.z)/2 );
@@ -1483,7 +1485,7 @@ void ZeroEd::UpdateZoneMarkerPos()
 				case eNone:
 					m_kZoneMarkerPos = m_kLastZonePos;
 					break;
-				}
+				}*/
 			}
 		}
 		
@@ -1828,4 +1830,44 @@ ZoneData* ZeroEd::GetZoneByEntityID(int iEntityID)
 	}
 	
 	return NULL;
+}
+
+Vector3 ZeroEd::GetZonePosAutoSnap()
+{
+	Vector3 pos = m_kLastZonePos + Vector3(m_kZoneSize.x,0,m_kZoneSize.z) - 
+		Vector3( (m_kZoneSize.x-m_kLastZoneSize.x)/2, -(m_kZoneSize.y-m_kLastZoneSize.y)/2, 
+		(m_kZoneSize.z-m_kLastZoneSize.z)/2 );
+
+	switch(m_iAutoSnapZoneCorner)
+	{
+	case eTop:
+		pos.x += (m_kLastZonePos.x-pos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
+		break;
+	case eTopRight:
+		pos.x += (m_kLastZonePos.x-pos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+		break;
+	case eBottom:
+		pos.x += (m_kLastZonePos.x-pos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
+		pos.z += (m_kLastZonePos.z-pos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+		break;
+	case eBottomRight:
+		pos.x += (m_kLastZonePos.x-pos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+		pos.z += (m_kLastZonePos.z-pos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+		break;
+	case eBottomLeft:
+		pos.z += (m_kLastZonePos.z-pos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+		break;
+	case eLeft:
+		pos.z += - m_kLastZoneSize.z;
+		break;
+	case eRight:
+		pos.x += (m_kLastZonePos.x-pos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+		pos.z += - m_kLastZoneSize.z;
+		break;
+	case eNone:
+		pos = m_kLastZonePos;
+		break;
+	}
+
+	return pos;
 }

@@ -240,6 +240,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		void	UpdateModelMarker(Vector3 kPos,bool bEnabled);
 		void	UpdateZoneMarkerPos();
+		Vector3 GetZonePosAutoSnap();
 		void	UpdateObjectMakerPos();
 		void	DrawZoneMarker(Vector3 kPos);
 		void	DrawCrossMarker(Vector3 kPos);

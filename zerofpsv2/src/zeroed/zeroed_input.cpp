@@ -91,18 +91,13 @@ void ZeroEd::Input_EditZone()
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
-		if(m_iAutoSnapZoneCorner == -1)
-		{
-			m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
-		}
-		else
-		{
-			m_iCurrentMarkedZone = GetZoneID(m_kLastZonePos);
-			m_iAutoSnapZoneCorner = 0;
-		}
-		
+		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+
 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+		{
 			Select_Toggle(pkData->m_iZoneObjectID, m_pkInputHandle->Pressed(KEY_LSHIFT));
+			m_kLastZonePos = pkData->m_kPos;
+		}
 	}
 
 	if(m_pkInputHandle->VKIsDown("rotatesize") && !DelayCommand())
