@@ -1,4 +1,5 @@
 #include "modelproperty.h"
+#include "object.h"
 
 
 ModelProperty::ModelProperty() {

@@ -8,7 +8,7 @@
 //#include "collisionobject.h"
 #include "objects.pkg"
 
-class CollisionSphere:public CollisionObject{
+class ENGINE_API CollisionSphere:public CollisionObject{
 	private:
 		
 	public:

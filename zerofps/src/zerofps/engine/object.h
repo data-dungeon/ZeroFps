@@ -1,14 +1,15 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
-#include "../basic/basic.pkg"
-#include "objects.pkg"
-//#include "property.h"
+#include "../engine/objects.pkg"
 #include <vector>
 #include <list>
 #include <string.h>
+#include "engine_x.h"
 
-class Object {
+using namespace std;
+
+class ENGINE_API Object {
 	protected:
 		Vector3 m_kPos;
 		Vector3 m_kRot;

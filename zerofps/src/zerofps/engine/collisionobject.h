@@ -2,6 +2,7 @@
 #define _COLOSIONOBJECT_H_
 
 //#include "basic.pkg"
+#include "engine_x.h"
 
 enum COLLISION_TYPE {
 	SPHERE_CO,
@@ -9,7 +10,7 @@ enum COLLISION_TYPE {
 	POINT_CO
 };
 
-class CollisionObject {
+class ENGINE_API CollisionObject {
 	protected:
 
 

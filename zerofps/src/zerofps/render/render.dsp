@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                 $(ProjDir)\debug\*.lib                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                  $(ProjDir)\debug\*.lib                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -109,6 +109,10 @@ SOURCE=.\landscape.cpp
 # Begin Source File
 
 SOURCE=.\light.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mad.cpp
 # End Source File
 # Begin Source File
 

@@ -6,7 +6,7 @@
 #include "../basic/basic.pkg"
 #include "collisionobject.h"
 
-class CollisionPoint:public CollisionObject{
+class ENGINE_API CollisionPoint:public CollisionObject{
 	private:
 		
 	public:

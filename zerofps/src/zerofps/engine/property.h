@@ -1,18 +1,15 @@
 #ifndef _OPROPERTY_H_
 #define _OPROPERTY_H_
 
-
-
-//#include "objects.pkg"
-//#include "object.h"
 #include <string.h>
 #include <iostream>
+#include "engine_x.h"
 
 using namespace std;
 
 class Object;
 
-class Property 
+class ENGINE_API Property 
 {
 	protected:
 		Object *m_pkObject;

@@ -27,8 +27,14 @@ class Test :public Application {
 
 	Vector3 *m_kSpotpos;
 
-	Core	CoreTest;
+	//Core		CoreTest;
+	//MadInstans	kBitch;
+
+	vector<Core>		akCoreModells;
+	vector<MadInstans>	akModells;
+
 	int		iCoreFrame;
+	int		TestUpdateSpeedFulHack;
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
@@ -37,6 +43,12 @@ class Test :public Application {
 		void OnHud(void);
 
 		void input();
+
+		void FH_SkapaObject(void);
+		void FH_UpdateraObject(void);
+		void FH_RitaObject(void);
+
+
 };
 
 

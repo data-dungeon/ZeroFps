@@ -42,10 +42,7 @@ void Test::OnInit(void) {
   
   pkRender->SetFog(Vector4(.50,.55,.88,1),2,150,200,true);
 
-//	testa.Load("babe.pmd");
-	CoreTest.Load("bitch.mad");
-	CoreTest.SetTextureManger(pkTexMan);
-	iCoreFrame = 0;
+	FH_SkapaObject();
 
 	pkLight->SetCamera(pkFps->m_kCamPos);
 	
@@ -93,7 +90,7 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
-	
+/*	
 	Object *kul=new Object;
 	kul->AddProperty(new NormalDrawProperty(test,pkRender));	
 	kul->AddProperty(new PlayerControlProperty(pkInput));		
@@ -112,7 +109,8 @@ void Test::OnInit(void) {
 	CollisionPoint *p1=new CollisionPoint(Vector3(1,1,1));
 	
 	p1->Collide(sp1,true);
-	sp1->Collide(sp2,true);	
+	sp1->Collide(sp2,true);	*/
+
 }
 
 
@@ -142,16 +140,9 @@ void Test::OnIdle(void) {
 			for(int iy=0;iy<500;iy+=25)
 				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),25,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
-	glPushMatrix();
-		glTranslatef(50,test->Height(50,60),60);
-		glColor3f(0,0,1);
-		glScalef(.02,.02,.02);
-		CoreTest.SetFrameI(iCoreFrame);
-		iCoreFrame++;
-		if(iCoreFrame >= 289)
-			iCoreFrame = 0;
-		CoreTest.draw();
-	glPopMatrix();
+		FH_UpdateraObject();
+		FH_RitaObject();
+
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
@@ -213,3 +204,127 @@ void Test::input() {
 	pkFps->CamRot().y+=x/5.0;
 }
 
+char *MdlNames[] =
+{
+	"bitch.mad",
+/*	"band.mad",
+	"berserk.mad",
+	"bitch.mad",
+	"body.mad",
+	"boss1.mad",
+	"boss2.mad",
+	"brain.mad",
+	"breath.mad",
+	"bullets.mad",
+	"cells.mad",
+	"chead.mad",
+	"combat.mad",
+	"commandr.mad",
+
+	"datacd.mad",
+	"deadbod.mad",
+	"effect.mad",
+	"enviro.mad",
+	"flipper.mad",
+	"float.mad",
+	"flyer.mad",
+	"gladiatr.mad",
+	"grenades.mad",
+	"gunner.mad",
+	"infantry.mad",
+	"insane.mad",
+	"invulner.mad",
+	"jacket.mad",
+	"key.mad",
+	"large.mad",
+	"medic.mad",
+	"medium.mad",
+	"megah.mad",
+	"mines.mad",
+	"mutant.mad",
+	"nuke.mad",
+	"pack.mad",
+	"pass.mad",
+	"power.mad",
+	"pyramid.mad",
+	"quaddama.mad",
+	"redkey.mad",
+	"rockets.mad",
+	"screen.mad",
+	"shard.mad",
+	"shells.mad",
+	"shield.mad",
+	"silenc.mad",
+	"slugs.mad",
+	"soldier.mad",
+	"spinner.mad",
+	"stim.mad",
+	"target.mad",*/
+};
+
+
+
+
+
+void Test::FH_SkapaObject(void)
+{
+	int iAntalMdl = (sizeof(MdlNames) / 4)  ;
+
+	akCoreModells.reserve(iAntalMdl+ 5);
+	Core CoreAddBitch;
+	Core* pCoreMdl;
+
+
+	int i;
+	for(i=0; i<iAntalMdl; i++)
+	{
+		akCoreModells.push_back(CoreAddBitch);
+		pCoreMdl = &akCoreModells.back();
+		pCoreMdl->Load(MdlNames[i]);
+		pCoreMdl->SetTextureManger(pkTexMan);
+	}
+	
+	MadInstans AddBitch;
+	MadInstans* pMdl;
+
+	float x,z;
+
+	for(i=0; i<iAntalMdl; i++)
+	{
+		akModells.push_back(AddBitch);
+		pMdl = &akModells.back();
+		pCoreMdl = &akCoreModells[i];
+		pMdl->SetBase(pCoreMdl);
+		pMdl->PlayAnimation(0,0.0);
+
+		x = 70 + (i % 10) * 2;
+		z = 55 + (i / 10) * 2;
+		pMdl->FH_Pos.Set(x,test->Height(x,z) + 1,z);
+	}
+
+
+
+	int anim = 0;
+}
+
+void Test::FH_UpdateraObject(void)
+{
+	vector<MadInstans>::iterator itMad;
+	for(itMad=akModells.begin(); itMad != akModells.end(); itMad++)
+	{
+		itMad->UpdateAnimation();
+	}
+}
+
+void Test::FH_RitaObject(void)
+{
+	vector<MadInstans>::iterator itMad;
+	for(itMad=akModells.begin(); itMad != akModells.end(); itMad++)
+	{
+		glPushMatrix();
+		glTranslatef(itMad->FH_Pos.x,itMad->FH_Pos.y,itMad->FH_Pos.z);
+		glScalef(.02,.02,.02);
+		itMad->Draw();
+		glPopMatrix();
+	}
+}

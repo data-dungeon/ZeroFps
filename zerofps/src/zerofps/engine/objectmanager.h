@@ -6,7 +6,7 @@
 using namespace std;
 
 
-class ObjectManager {
+class ENGINE_API ObjectManager {
 	
 	list<Object*> m_akObjects;
 	

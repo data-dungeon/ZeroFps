@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include "render_x.h"
 #include "texturemanager.h"
+#include <vector>
+
+using namespace std;
+
 
 #define MAX_MAD_TEXTURES	256
 
@@ -52,18 +56,6 @@ struct Mad_VertexFrame
 	MadVertex*	pVertex;				// Vertices.
 };
 
-struct Mad_KeyFrame
-{
-	int		iVertexFrame;				// 
-	float	fFrameTime;					// Antal Sekunder denna frame ska vara.
-};
-
-struct Mad_Animation
-{
-	int		iNumOfFrames;				// Antal frames i denna animation.
-};
-
-
 class MadRender
 {
 	public:
@@ -82,10 +74,33 @@ class MadRender
 	int GetFaces(MadFace* pFaceBuffer);
 };
 
+
+class Mad_KeyFrame
+{
+public:
+	void Clear(void);
+	void operator=(const Mad_KeyFrame& kOther);
+
+	int		iVertexFrame;				// 
+	float	fFrameTime;					// Antal Sekunder denna frame ska vara.
+};
+
+class Mad_Animation
+{
+public:
+	void Clear(void);
+	void operator=(const Mad_Animation& kOther);
+
+	char	Name[256];
+	vector<Mad_KeyFrame>	KeyFrame;	
+};
+
 class RENDER_API Core
 {
 public:
-	
+//	void operator=(const Core& kOther);
+	char				Name[256];
+
 	Core();
 	~Core();
 
@@ -98,7 +113,10 @@ public:
 
 	TextureManager*		pkTextureManger;
 	
+	vector<Mad_Animation>	akAnimation;
+
 	int					iActiveFrame;
+	int					iActiveKeyFrame;
 
 	void SetTextureManger(TextureManager* ptex)
 	{
@@ -118,9 +136,15 @@ public:
 	/* Sets animation time as a num of seconds. Values outside current anim length will wrap
 		to valid values. */
 
+	void LoopPlayAnim(int iAnim);
+
 	char* GetName(void);
 
 	void	draw(void);
+
+	float GetAnimationLengthInS(int iAnim);
+	int GetAnimationTimeInFrames(int iAnim);
+
 
 };
 
@@ -133,14 +157,27 @@ class MadManger
 	bool UnLoad(char* MadFileName);
 };
 
-class MadInstans
+class RENDER_API MadInstans
 {
-	public:
-	void SetBase(Core*);	// Väljer vilken bas modell denna instans är.
+private:
+	Core* pkCore;
+
+	int		iActiveAnimation;
+	float	fCurrentTime;
+	float	fLastUpdate;
+
+public:
+//	void operator=(const Core& MadInstans);
+
+	void SetBase(Core* pkModell);	// Väljer vilken bas modell denna instans är.
 
 	void PlayAnimation(int iAnimNum, float fStartTime);
 	/*	Börjar spela vald animation. fStartTime kan väljas för att börja en bit in i
 		vald animation.*/
+
+	void UpdateAnimation(void);
+	void Draw(void);
+
 	
 	void SetNextAnimation(int iAnimNum);
 	/* Väljer nästa animation som ska spelas upp efter att den nuvarande är slut. */
@@ -173,6 +210,8 @@ class MadInstans
 	/* Tell system that we are done rendering this object. */
 
 	void SetPlayBackSpeedScale(float fScale);
+
+	Vector3	FH_Pos;
 };
 
 

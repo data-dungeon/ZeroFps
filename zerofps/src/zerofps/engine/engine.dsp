@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy         $(ProjDir)\debug\*.lib         ..\..\..\bin\ 
+PostBuild_Cmds=copy            $(ProjDir)\debug\*.lib            ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -104,6 +104,14 @@ SOURCE=.\audiomanager.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\collisionpoint.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\collisionsphere.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\console.cpp
 # End Source File
 # Begin Source File
@@ -120,7 +128,23 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\modelproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\music.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\object.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\property.cpp
 # End Source File
 # Begin Source File
 
@@ -169,6 +193,22 @@ SOURCE=.\modellmanager.h
 # Begin Source File
 
 SOURCE=.\music.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\object.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\objects.pkg
+# End Source File
+# Begin Source File
+
+SOURCE=.\playercontrol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\property.h
 # End Source File
 # Begin Source File
 
