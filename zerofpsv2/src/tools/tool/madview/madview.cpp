@@ -170,7 +170,7 @@ void MadView::CreateCamera()
 	m_pkCamera->SetName("persp");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
-	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/cameraedit.lua");
 	m_pkCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );				
 	
 	P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
