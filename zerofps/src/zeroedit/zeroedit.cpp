@@ -862,6 +862,18 @@ void ZeroEdit::Input()
 					
 			break;			
 	}
+
+	///////////////////////////////////// Fulhack, sklla bort
+
+	int key = pkInput->GetQueuedKey();
+
+		if(key == KEY_F10)
+		{
+			m_pkGui->OpenPropHACK();
+		}
+
+		/////////////////////////////////////
+
 }
 
 /*
