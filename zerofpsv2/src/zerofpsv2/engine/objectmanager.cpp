@@ -129,6 +129,49 @@ ObjectManager::~ObjectManager()
 
 }
 
+/**	\brief	Link this to the Object manager
+
+  This function is called by objects as they are created. It assigned a NetWorkID to the object and
+  also put them in the ObjectManger.
+*/
+void ObjectManager::Link(Object* pkObject) 
+{
+	pkObject->iNetWorkID = iNextObjectID++;
+	m_akObjects.push_back(pkObject);
+}
+
+/**	\brief	UnLink this from Object Manger.
+
+  Remvoves object from the Object Manger.
+*/
+void ObjectManager::UnLink(Object* pkObject) 
+{	
+	// If i own object mark so we remove it on clients.
+	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+	//		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
+	m_akObjects.remove(pkObject);
+}
+
+/**	\brief	Delete all objects.
+
+	Clear all data from ObjectManger.
+*/
+void ObjectManager::Clear()
+{
+	//delete all objects in world
+	while(m_akObjects.begin() != m_akObjects.end())
+		delete(*m_akObjects.begin());
+	
+	//clear all zones
+	m_kZones.clear();
+	
+	// Recreate base objects
+	CreateBaseObjects();
+}
+
+/**	\brief	Create the top level objects.
+
+*/
 void ObjectManager::CreateBaseObjects()
 {
 	iNextObjectID = 0;
@@ -140,11 +183,11 @@ void ObjectManager::CreateBaseObjects()
 	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
-	m_pkZoneObject						=	new Object();	
+	m_pkZoneObject							=	new Object();	
 	m_pkZoneObject->SetParent(m_pkWorldObject);
-	m_pkZoneObject->GetName()		= "ZoneObject";
-	m_pkZoneObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkZoneObject->m_eRemoteRole	= NETROLE_NONE;
+	m_pkZoneObject->GetName()			= "ZoneObject";
+	m_pkZoneObject->m_eRole				= NETROLE_AUTHORITY;
+	m_pkZoneObject->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
 	m_pkClientObject						=	new Object();	
@@ -161,161 +204,8 @@ void ObjectManager::CreateBaseObjects()
 	m_pkGlobalObject->m_eRemoteRole	= NETROLE_NONE;
 
 	iNextObjectID = 100000;
-
 }
 
-/**	\brief	Add's a object to the ObjectManger.
-
-  This function is called by objects as they are created. It assigned a NetWorkID to the object and
-  also put them in the ObjectManger.
-*/
-void ObjectManager::Add(Object* pkObject) 
-{
-	pkObject->iNetWorkID = iNextObjectID++;
-	m_akObjects.push_back(pkObject);
-}
-
-/**	\brief	Dont use this..use Delete instead
-*/
-void ObjectManager::Remove(Object* pkObject) 
-{	
-	// If i own object mark so we remove it on clients.
-//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-//		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
-	m_akObjects.remove(pkObject);
-}
-
-/**	\brief	Adds an object to delete qeue
-*/
-
-void ObjectManager::Delete(Object* pkObject) 
-{
-	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
-	{
-		if(pkObject->iNetWorkID == (*it)) {
-			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
-			//cout << "Object already in delete list" << endl;
-			return;
-		}
-	}
-	
-	m_aiDeleteList.push_back(pkObject->iNetWorkID);
-}
-
-void ObjectManager::UpdateDelete()
-{
-	int iSize = m_aiDeleteList.size();
-
-	if(m_aiDeleteList.size()==0)
-		return;
-	
-	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
-	{
-		Object* pkObject = GetObjectByNetWorkID((*it));
-
-		if(pkObject) { // If i own object mark so we remove it on clients.
-			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-				m_aiNetDeleteList.push_back((*it));*/
-			delete pkObject;		
-			}
-	}
-
-	m_aiDeleteList.clear();
-
-}
-
-void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
-{
-	Object* pkNetSlave;
-	int iObjectID;
-	pkNetPacket->Read(iObjectID);
-
-	while(iObjectID != -1) {
-		//Logf("net", "Delete: Object %d\n", iObjectID);
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL) {
-			//Logf("net", " Object '%d' not found.\n", iObjectID);	
-			}
-		else {
-			Delete(pkNetSlave);
-			}
-		pkNetPacket->Read(iObjectID);
-		}	
-}
-
-/**	\brief	Adds an object to delete qeue
-		\todo	Should delete all zones.
-
-	Clear all data from ObjectManger.
-*/
-void ObjectManager::Clear()
-{
-//	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-//		delete(*it);
-	
-/*		if((*it)->CheckLinks(false,0) == false)
-			cout << "Error in object manger" << endl;
-		else
-			cout << "Links ok" << endl;*/
-//	} 
-	
-	
-	//m_pkWorldObject->DeleteAllChilds();
-	
-	//delete all objects in world
-	while(m_akObjects.begin() != m_akObjects.end())
-		delete(*m_akObjects.begin());
-	
-	//clear all zones
-	m_kZones.clear();
-	
-	//recreate base objects
-	CreateBaseObjects();
-}
-
-
-/**	\brief	Run update on selected propertys.
-
-	This function collects all propertys that fit the selected flags, sorts them if it needs to
-	and then runs the update function of each of this propertys.
-
-	
-*/
-
-void ObjectManager::Update(int iType,int iSide,bool bSort)
-{
-	m_iUpdateFlags = iType | iSide;
-
-/*	if(!m_bUpdate)
-		if(iType != PROPERTY_TYPE_RENDER)
-			return;*/
-
-	GetPropertys(iType,iSide);
-	
-	m_iNrOfActivePropertys = m_akPropertys.size();
-	
-	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
-		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
-
-	if(bSort){
-		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-	}
-	
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
-	{
-		(*it)->Update();
-	}
-}
-
-
-
-void ObjectManager::UpdateGameMessages(void)
-{
-	// Let Objects/Propertys handle messages
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		(*it)->HandleMessages();
-	}
-}
 
 
 /**	\brief	Creates a new clean object.
@@ -329,54 +219,42 @@ Object* ObjectManager::CreateObject()
 	return pkObj;
 }
 
+/**	\brief	Creates a object and gives it a specified ID.
+*/
 Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {
-//	Object *pkNew = new NetSlaveObject;
 	Object *pkNew = CreateObject();
 
 	//	Add(pkNew);
-	pkNew->iNetWorkID = iNetID;
+	pkNew->iNetWorkID			= iNetID;
 	pkNew->SetParent(m_pkWorldObject);
-	pkNew->m_eRole			= NETROLE_PROXY;
-	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
+	pkNew->m_eRole				= NETROLE_PROXY;
+	pkNew->m_eRemoteRole		= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
-	
-//	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
-
-//	pkNew->AddProperty("P_Primitives3D");
 	return pkNew;
 }
 
-/**	\brief	Uses a script to create the object.
+/**	\brief	Creates a object from the zfoh.txt file.
 
-	Creates a object from a script and use it to set values and propertys. If script file
-	is not found no object will be created. 
+	Creates a object as described in the zfoh.txt file (poor man script). If a object is
+	not found with the choosen name no object will be created.
 */
-Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
+Object* ObjectManager::CreateObjectByArchType(const char* acName)
 {
-	int id = GetZoneIndex(kPos,iCurrentZone,false);
-	
-	if(id == -1)
-		return NULL;
-	
-	//force loading of this zone
-	LoadZone(id);
-	
-	if(!m_kZones[id].m_pkZone)
-		return NULL;
-		
-		
-	Object* newobj = CreateObjectFromScript(acName);
-	
-	if(newobj)
-	{		
-		newobj->SetUseZones(true);
-		newobj->SetWorldPosV(kPos);	
-		if(newobj->m_iCurrentZone == -1)
-			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
-	}
+	ObjectArcheType* pkAt = GetArcheType(string(acName));
+	if(!pkAt)
+		return false;
 
-	return newobj;
+	Object* pkObj	=	CreateObject();
+	pkObj->m_eRemoteRole	= NETROLE_PROXY;
+	pkObj->m_eRole			= NETROLE_AUTHORITY;
+
+	AddArchPropertys(pkObj, string(acName));
+
+	pkObj->m_strType	= acName;
+	pkObj->m_strName	= string("A ") + pkObj->m_strType;
+
+	return pkObj;
 }
 
 Object* ObjectManager::CreateObjectFromScript(const char* acName)
@@ -426,30 +304,147 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	return pkReturnObj;
 }
 
+/**	\brief	Uses a script to create the object.
 
-
-/**	\brief	Creates a object from the zfoh.txt file.
-
-	Creates a object as described in the zfoh.txt file (poor man script). If a object is
-	not found with the choosen name no object will be created.
+	Creates a object from a script and use it to set values and propertys. If script file
+	is not found no object will be created. 
 */
-Object* ObjectManager::CreateObjectByArchType(const char* acName)
+Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
-	ObjectArcheType* pkAt = GetArcheType(string(acName));
-	if(!pkAt)
-		return false;
+	int id = GetZoneIndex(kPos,iCurrentZone,false);
+	
+	if(id == -1)
+		return NULL;
+	
+	//force loading of this zone
+	LoadZone(id);
+	
+	if(!m_kZones[id].m_pkZone)
+		return NULL;
+		
+		
+	Object* newobj = CreateObjectFromScript(acName);
+	
+	if(newobj)
+	{		
+		newobj->SetUseZones(true);
+		newobj->SetWorldPosV(kPos);	
+		if(newobj->m_iCurrentZone == -1)
+			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	}
 
-	Object* pkObj	=	CreateObject();
-	pkObj->m_eRemoteRole	= NETROLE_PROXY;
-	pkObj->m_eRole			= NETROLE_AUTHORITY;
-
-	AddArchPropertys(pkObj, string(acName));
-
-	pkObj->m_strType	= acName;
-	pkObj->m_strName	= string("A ") + pkObj->m_strType;
-
-	return pkObj;
+	return newobj;
 }
+
+/**	\brief	Adds an object to delete qeue
+*/
+void ObjectManager::Delete(Object* pkObject) 
+{
+	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	{
+		if(pkObject->iNetWorkID == (*it)) {
+			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
+			//cout << "Object already in delete list" << endl;
+			return;
+		}
+	}
+	
+	m_aiDeleteList.push_back(pkObject->iNetWorkID);
+}
+
+/**	\brief	Adds an object to delete qeue
+
+	Walk DeleteList and delete all objects in it.
+*/
+void ObjectManager::UpdateDelete()
+{
+	int iSize = m_aiDeleteList.size();
+
+	if(m_aiDeleteList.size()==0)
+		return;
+	
+	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	{
+		Object* pkObject = GetObjectByNetWorkID((*it));
+
+		if(pkObject) { // If i own object mark so we remove it on clients.
+			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+				m_aiNetDeleteList.push_back((*it));*/
+			delete pkObject;		
+			}
+	}
+
+	m_aiDeleteList.clear();
+
+}
+
+/*
+void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
+{
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+
+	while(iObjectID != -1) {
+		//Logf("net", "Delete: Object %d\n", iObjectID);
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL) {
+			//Logf("net", " Object '%d' not found.\n", iObjectID);	
+			}
+		else {
+			Delete(pkNetSlave);
+			}
+		pkNetPacket->Read(iObjectID);
+		}	
+}*/
+
+
+
+
+/**	\brief	Run update on selected propertys.
+
+	This function collects all propertys that fit the selected flags, sorts them if it needs to
+	and then runs the update function of each of this propertys.
+
+	
+*/
+
+void ObjectManager::Update(int iType,int iSide,bool bSort)
+{
+	m_iUpdateFlags = iType | iSide;
+
+/*	if(!m_bUpdate)
+		if(iType != PROPERTY_TYPE_RENDER)
+			return;*/
+
+	GetPropertys(iType,iSide);
+	
+	m_iNrOfActivePropertys = m_akPropertys.size();
+	
+	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
+		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
+
+	if(bSort){
+		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+	}
+	
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		(*it)->Update();
+	}
+}
+
+
+
+void ObjectManager::UpdateGameMessages(void)
+{
+	// Let Objects/Propertys handle messages
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->HandleMessages();
+	}
+}
+
+
 
 bool ObjectManager::IsA(Object* pkObj, string strStringType)
 {

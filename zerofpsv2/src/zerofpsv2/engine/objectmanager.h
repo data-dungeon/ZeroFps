@@ -124,31 +124,30 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		ObjectManager();
 		~ObjectManager();
 	
-		//create all base objects
-		void CreateBaseObjects();
-
 		// Add/Remove Objects
-		void Add(Object* pkNewObject);									///< Add object to the manager
+		void Link(Object* pkNewObject);									///< Link this to the Object manager
+		void UnLink(Object* pkObject);									///< UnLink this from Object Manger.
 		void Clear();															///< Delete all objects.
+		void CreateBaseObjects();											/// create all base objects	
 
-		// DELETE
+		// Create 
+		Object* CreateObject();												///< Create a empty object.
+//		Object* CreateObject(const char* acName);						///< Create object from template.
+		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
+		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
+		Object* CreateObjectFromScript(const char* acName);
+		Object* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
+
+		// Delete
 		void Delete(Object* pkNewObject);								///< Adds an object to delete qeue
-		void Remove(Object* pkObject);									///< Dont use this..use Delete instead
 		void UpdateDelete();													///< Deletes objects in delete qeue	
-		void UpdateDeleteList(NetPacket* pkNetPacket);
+//		void UpdateDeleteList(NetPacket* pkNetPacket);
 
 		// Updates
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
 		void UpdateGameMessages(void);									///< Update game messages.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 
-		// Create 
-		Object* CreateObject();												///< Create a empty object.
-		Object* CreateObject(const char* acName);						///< Create object from template.
-		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
-		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
-		Object* CreateObjectFromScript(const char* acName);
-		Object* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Arch types
 		bool IsA(Object* pkObj, string strStringType);

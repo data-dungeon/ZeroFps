@@ -19,7 +19,7 @@ Object::Object()
 	ZFAssert(m_pkPropertyFactory,	"Object::Object(): Failed to find PropertyFactory");
 	ZFAssert(m_pkFps,				"Object::Object(): Failed to find ZeroFps");
 
-	m_pkObjectMan->Add(this);		// Add ourself to objectmanger and get a NetID.
+	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
@@ -75,7 +75,7 @@ Object::~Object()
 	}
 
 	// Tell object manger that we are no more.
-	m_pkObjectMan->Remove(this);
+	m_pkObjectMan->UnLink(this);
 	
 	delete(m_pScriptFileHandle);
 }
