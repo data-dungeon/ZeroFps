@@ -809,7 +809,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 			if(pkParent != NULL)
 			{
 				char szTitle[50];
-				strcpy(szTitle, pkIni->GetValue(akSections[i].c_str(), "Title"));
+				sprintf(szTitle, " %s", pkIni->GetValue(akSections[i].c_str(), "Title"));
 				((ZGuiCombobox*) pkParent)->AddItem(szTitle, item_counter++);
 
 				MENU_INFO mi;
