@@ -16,6 +16,7 @@ TileEngine::TileEngine()
 
 void TileEngine::CreateMap()
 {
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkLevelMan=static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));
 	m_pkMap=m_pkLevelMan->GetHeightMap();
@@ -251,4 +252,16 @@ void TileEngine::RemoveUnit(Vector3 kPos,P_ServerUnit* kSu)
 		}
 }
 
+
+void TeleEngine::Draw()
+{
+	for(int y = 0;y<m_iSizeY;y++)
+	{
+		for(int x = 0;x<m_iSizeX;x++)
+		{
+			
+	
+		}
+	}
+}
 
