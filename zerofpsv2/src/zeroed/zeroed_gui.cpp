@@ -287,15 +287,16 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 						}
 						else // stäng igen polygonen och växla över till tidigare editmode
 						{
+							float fFloor, fRoof;
 							vector<Vector2> kPolys;
-							pkProp->GetArea(kPolys);
+							pkProp->GetArea(kPolys, fFloor, fRoof);
 
 							if(!kPolys.empty())
 							{
 								if(kPolys[0] != kPolys.back()) // stäng bara igen en gång!
 								{
 									kPolys.push_back(kPolys[0]);
-									pkProp->SetArea(kPolys);
+									pkProp->SetArea(kPolys, fFloor, fRoof);
 									printf("stänger igen!\n");
 								}
 							}
@@ -316,7 +317,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
 					{
 						vector<Vector2> kEmpty;
-						pkProp->SetArea(kEmpty); 
+						pkProp->SetArea(kEmpty, 0, 0); 
 					}
 				}
 			}

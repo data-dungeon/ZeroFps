@@ -752,9 +752,10 @@ void ZeroEd::RenderInterface(void)
 		{
 			if(pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound"))
 			{
+				float fFloor, fRoof;
 				vector<Vector2> kPoints;
-				pkProp->GetArea(kPoints); // pkProp->m_kPolygon;
-				Vector2 pos =  Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+				pkProp->GetArea(kPoints, fFloor, fRoof); // pkProp->m_kPolygon;
+				Vector3 pos =  pkEnt->GetWorldPosV();
 
 				int size = kPoints.size();
 				if(size > 1)
@@ -763,13 +764,23 @@ void ZeroEd::RenderInterface(void)
 
 					for(int i=0; i<size-1; i++)
 					{
+						// Draw floor
 						m_pkRender->Line(
-							Vector3(pos.x+kPoints[i].x,0,pos.y + kPoints[i].y), 
-							Vector3(pos.x+kPoints[i+1].x,0,pos.y + kPoints[i+1].y), kColor);
+							Vector3(pos.x+kPoints[i].x,pos.y+fFloor,pos.z + kPoints[i].y), 
+							Vector3(pos.x+kPoints[i+1].x,pos.y+fFloor,pos.z + kPoints[i+1].y), kColor);
 
 						m_pkRender->Line(
-							Vector3(pos.x+kPoints[i].x+0.1f,0,pos.y + kPoints[i].y+0.1f), 
-							Vector3(pos.x+kPoints[i+1].x+0.1f,0,pos.y + kPoints[i+1].y+0.1f), kColor);
+							Vector3(pos.x+kPoints[i].x+0.1f,pos.y+fFloor,pos.z + kPoints[i].y+0.1f), 
+							Vector3(pos.x+kPoints[i+1].x+0.1f,pos.y+fFloor,pos.z + kPoints[i+1].y+0.1f), kColor);
+
+						// Draw roof
+						m_pkRender->Line(
+							Vector3(pos.x+kPoints[i].x,pos.y+fRoof,pos.z + kPoints[i].y), 
+							Vector3(pos.x+kPoints[i+1].x,pos.y+fRoof,pos.z + kPoints[i+1].y), kColor);
+
+						m_pkRender->Line(
+							Vector3(pos.x+kPoints[i].x+0.1f,pos.y+fRoof,pos.z + kPoints[i].y+0.1f), 
+							Vector3(pos.x+kPoints[i+1].x+0.1f,pos.y+fRoof,pos.z + kPoints[i+1].y+0.1f), kColor);
 						
 					}
 				}

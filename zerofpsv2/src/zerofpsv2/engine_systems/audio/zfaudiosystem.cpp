@@ -1477,75 +1477,78 @@ void ZFAudioSystem::UpdateAmbientSound()
 		{
 			Vector2 pos(m_kPos.x, m_kPos.z);
 
-			if(PntInPolygon(&pos, m_kAmbientAreas[i]->m_kPolygon))
+			if(m_kPos.y >= m_kAmbientAreas[i]->m_fFloor && m_kPos.y <= m_kAmbientAreas[i]->m_fRoof)
 			{
-				if(m_kAmbientAreas[i]->m_bChangeSound)
+				if(PntInPolygon(&pos, m_kAmbientAreas[i]->m_kPolygon))
 				{
-					bool bStartNewSound = true;
-					for(int j=0; j<m_kAmbientAreas.size(); j++)
+					if(m_kAmbientAreas[i]->m_bChangeSound)
 					{
-						if(i != j && (m_kAmbientAreas[j]->m_strSound == m_kAmbientAreas[i]->m_strSound) )
+						bool bStartNewSound = true;
+						for(int j=0; j<m_kAmbientAreas.size(); j++)
 						{
-							if(m_kAmbientAreas[j]->m_iSoundID > 0)
+							if(i != j && (m_kAmbientAreas[j]->m_strSound == m_kAmbientAreas[i]->m_strSound) )
 							{
-								bStartNewSound = false;
-								m_kAmbientAreas[i]->m_iSoundID = m_kAmbientAreas[j]->m_iSoundID;
-								m_kAmbientAreas[i]->m_fGain = m_kAmbientAreas[j]->m_fGain;
-								break;
+								if(m_kAmbientAreas[j]->m_iSoundID > 0)
+								{
+									bStartNewSound = false;
+									m_kAmbientAreas[i]->m_iSoundID = m_kAmbientAreas[j]->m_iSoundID;
+									m_kAmbientAreas[i]->m_fGain = m_kAmbientAreas[j]->m_fGain;
+									break;
+								}
 							}
 						}
-					}
 
-					if(bStartNewSound)
-						m_kAmbientAreas[i]->m_iSoundID = PlayAudio(m_kAmbientAreas[i]->m_strSound, 
-							m_kPos, m_kHead, true, m_kAmbientAreas[i]->m_fGain); // och starta ett nytt.
-					
-					m_kAmbientAreas[i]->m_bChangeSound = false;
+						if(bStartNewSound)
+							m_kAmbientAreas[i]->m_iSoundID = PlayAudio(m_kAmbientAreas[i]->m_strSound, 
+								m_kPos, m_kHead, true, m_kAmbientAreas[i]->m_fGain); // och starta ett nytt.
+						
+						m_kAmbientAreas[i]->m_bChangeSound = false;
+					}
+					else
+					{
+						if(m_kAmbientAreas[i]->m_fGain < 1)
+						{
+							FadeGain(m_kAmbientAreas[i], false);
+						}
+						else
+						{
+							m_kAmbientAreas[i]->m_fGain = 1.0f;
+							m_kAmbientAreas[i]->m_fFadeTimer = -1;
+						}
+						
+						MoveAudio(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead, m_kAmbientAreas[i]->m_fGain);
+					}
 				}
 				else
 				{
-					if(m_kAmbientAreas[i]->m_fGain < 1)
+					if(m_kAmbientAreas[i]->m_iSoundID > 0)
 					{
-						FadeGain(m_kAmbientAreas[i], false);
-					}
-					else
-					{
-						m_kAmbientAreas[i]->m_fGain = 1.0f;
-						m_kAmbientAreas[i]->m_fFadeTimer = -1;
-					}
-					
-					MoveAudio(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead, m_kAmbientAreas[i]->m_fGain);
-				}
-			}
-			else
-			{
-				if(m_kAmbientAreas[i]->m_iSoundID > 0)
-				{
-					if(m_kAmbientAreas[i]->m_fGain > 0)
-					{
-						FadeGain(m_kAmbientAreas[i], true);
-					}
-					else
-					{
-						bool bStopSound = true;
-
-						// Det kan hända att ett annat ljud spelar med detta ID. Stoppa inte ljudet i så fall.
-						for(int k=0; k<m_kAmbientAreas.size(); k++)
+						if(m_kAmbientAreas[i]->m_fGain > 0)
 						{
-							if((i != k) && m_kAmbientAreas[k]->m_iSoundID == m_kAmbientAreas[i]->m_iSoundID)
-							{
-								bStopSound = false;
-								break;
-							}
+							FadeGain(m_kAmbientAreas[i], true);
 						}
+						else
+						{
+							bool bStopSound = true;
 
-						if(bStopSound)
-							StopAudio(m_kAmbientAreas[i]->m_iSoundID);
+							// Det kan hända att ett annat ljud spelar med detta ID. Stoppa inte ljudet i så fall.
+							for(int k=0; k<m_kAmbientAreas.size(); k++)
+							{
+								if((i != k) && m_kAmbientAreas[k]->m_iSoundID == m_kAmbientAreas[i]->m_iSoundID)
+								{
+									bStopSound = false;
+									break;
+								}
+							}
 
-						m_kAmbientAreas[i]->m_iSoundID = -1;
-						m_kAmbientAreas[i]->m_bChangeSound = true;
-						m_kAmbientAreas[i]->m_fGain = 0.0f;
-						m_kAmbientAreas[i]->m_fFadeTimer = -1;
+							if(bStopSound)
+								StopAudio(m_kAmbientAreas[i]->m_iSoundID);
+
+							m_kAmbientAreas[i]->m_iSoundID = -1;
+							m_kAmbientAreas[i]->m_bChangeSound = true;
+							m_kAmbientAreas[i]->m_fGain = 0.0f;
+							m_kAmbientAreas[i]->m_fFadeTimer = -1;
+						}
 					}
 				}
 			}
@@ -1553,7 +1556,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 	}
 }
 
-int ZFAudioSystem::AddAmbientArea(string strSound, vector<Vector2>& kArea)
+int ZFAudioSystem::AddAmbientArea(string strSound, vector<Vector2>& kArea, float fFloor, float fRoof)
 {
 	AmbientArea* pkArea = NULL;
 
@@ -1568,8 +1571,12 @@ int ZFAudioSystem::AddAmbientArea(string strSound, vector<Vector2>& kArea)
 				for(int j=0; j<kArea.size(); j++)
 					if((*m_kAmbientAreas[i]->m_kPolygon[i]) != kArea[j])
 					{
-						pkArea = NULL;
-						break;
+						if( m_kAmbientAreas[i]->m_fFloor == fFloor && 
+							 m_kAmbientAreas[i]->m_fRoof == fRoof)
+						{
+							pkArea = NULL;
+							break;
+						}
 					}
 			}
 	}
@@ -1582,6 +1589,8 @@ int ZFAudioSystem::AddAmbientArea(string strSound, vector<Vector2>& kArea)
 		pkArea->m_strSound = strSound;
 		pkArea->m_bChangeSound = true;
 		pkArea->m_fGain = 0.0f;
+		pkArea->m_fFloor = fFloor;
+		pkArea->m_fRoof = fRoof;
 
 		for(int i=0; i<kArea.size(); i++)
 			pkArea->m_kPolygon.push_back(new Vector2( kArea[i] ));	
@@ -1608,6 +1617,21 @@ bool ZFAudioSystem::ChangePntsInAmbientArea(int iID, vector<Vector2>& kArea)
 			for(int j=0; j<kArea.size(); j++)
 				m_kAmbientAreas[i]->m_kPolygon.push_back(new Vector2( kArea[j] ));	
 			
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ZFAudioSystem::ChangeAmbientAreaYPos(int iID, float fFloor, float fRoof)
+{
+	for(int i=0; i<m_kAmbientAreas.size(); i++)
+	{
+		if(m_kAmbientAreas[i]->m_iAmbientAreaID == iID)
+		{
+			m_kAmbientAreas[i]->m_fFloor = fFloor;
+			m_kAmbientAreas[i]->m_fRoof = fRoof;
 			return true;
 		}
 	}

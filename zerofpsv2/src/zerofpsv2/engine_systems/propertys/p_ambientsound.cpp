@@ -24,6 +24,9 @@ P_AmbientSound::P_AmbientSound()
 	m_iAmbientAreaID = -1;
 	m_bFreeForm = false;
 
+	m_fFloor = 0;
+	m_fRoof = 1;
+
 	m_kPrevPos = Vector3(0,0,0);
 	
 	m_fWidth = 8;
@@ -36,9 +39,11 @@ P_AmbientSound::~P_AmbientSound()
 		m_pkAudioSystem->RemoveAmbientArea(m_iAmbientAreaID);	
 }
 
-void P_AmbientSound::SetArea(vector<Vector2>& kPolygon) // OBS! Det är lokala coordinater som skall skickas in.
+void P_AmbientSound::SetArea(vector<Vector2>& kPolygon, float fFloor, float fRoof) // OBS! Det är lokala coordinater som skall skickas in.
 {
 	m_kPolygon = kPolygon;
+	m_fFloor = fFloor;
+	m_fRoof = fRoof;
 
 	vector<Vector2> kRealArea(m_kPolygon);
 
@@ -67,9 +72,11 @@ void P_AmbientSound::SetFreeForm(bool bFreeform)
 	m_bFreeForm = bFreeform;
 }
 
-void P_AmbientSound::GetArea(vector<Vector2>& kPolygon)
+void P_AmbientSound::GetArea(vector<Vector2>& kPolygon, float& rfFloor, float& rfRoof)
 {
 	kPolygon = m_kPolygon;
+	rfFloor = m_fFloor;
+	rfRoof = m_fRoof;
 }
 
 string P_AmbientSound::GetSound()
@@ -93,7 +100,10 @@ void P_AmbientSound::Update()
 				kRealArea[i] += objpos;
 			}
 
-			m_iAmbientAreaID = m_pkAudioSystem->AddAmbientArea(m_strSound, kRealArea);
+			float fFloor = m_fFloor + objpos.y;
+			float fRoof = m_fRoof  + objpos.y;
+
+			m_iAmbientAreaID = m_pkAudioSystem->AddAmbientArea(m_strSound, kRealArea, fFloor, fRoof);
 			m_bSoundStarted = true;
 		}
 
@@ -101,7 +111,7 @@ void P_AmbientSound::Update()
 		{
 			if(m_kPrevPos != GetEntity()->GetWorldPosV())
 			{
-				SetArea(m_kPolygon);
+				SetArea(m_kPolygon, m_fFloor, m_fRoof);
 				m_kPrevPos = GetEntity()->GetWorldPosV();
 			}
 
@@ -132,6 +142,9 @@ void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 		pkNetPacket->Write(m_kPolygon[i].y);
 	}
 
+	pkNetPacket->Write(m_fFloor);
+	pkNetPacket->Write(m_fRoof);
+
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
@@ -154,12 +167,15 @@ void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 		m_kPolygon.push_back(Vector2(x,y)); 
 	}
 
+	pkNetPacket->Read(m_fFloor);
+	pkNetPacket->Read(m_fRoof);
+
 	m_bSoundStarted = false;
 }
 
 vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(4);
+	vector<PropertyValues> kReturn(6);
 
 	kReturn[0].kValueName = "filename";
 	kReturn[0].iValueType = VALUETYPE_STRING; 
@@ -176,6 +192,14 @@ vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 	kReturn[3].kValueName = "height";
 	kReturn[3].iValueType = VALUETYPE_FLOAT; 
 	kReturn[3].pkValue    = (void*)&m_fHeight;
+
+	kReturn[4].kValueName = "floor";
+	kReturn[4].iValueType = VALUETYPE_FLOAT; 
+	kReturn[4].pkValue    = (void*)&m_fFloor;
+
+	kReturn[5].kValueName = "roof";
+	kReturn[5].iValueType = VALUETYPE_FLOAT; 
+	kReturn[5].pkValue    = (void*)&m_fRoof;
 
 	Entity* pkEnt = GetEntity();
 	

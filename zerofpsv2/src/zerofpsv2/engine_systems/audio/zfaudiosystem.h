@@ -104,9 +104,10 @@ public:
 	// Ambient sound area
 	//
 
-	int AddAmbientArea(string strName, vector<Vector2>& kArea);
+	int AddAmbientArea(string strName, vector<Vector2>& kArea, float fFloor, float fRoof);
 	void RemoveAmbientArea(int iID);
 	bool ChangePntsInAmbientArea(int iID, vector<Vector2>& kArea);
+	bool ChangeAmbientAreaYPos(int iID, float fFloor, float fRoof);
 	bool ChangeAmbientAreaSound(int iID, string strSound);
 	
 	//
@@ -227,6 +228,7 @@ private:
 		string m_strSound;
 		float m_fFadeTimer;
 		vector<Vector2*> m_kPolygon;	
+		float m_fFloor, m_fRoof;
 
 		int m_iAmbientAreaID;
 	};

@@ -334,11 +334,17 @@ void ZeroEd::Input_EditAmbientSounds()
 
 				//pkProp->m_kPolygon.push_back(localpos);	
 
+				float fRoof, fFloor;
 				vector<Vector2> kArea;
-				pkProp->GetArea(kArea);
+				pkProp->GetArea(kArea, fRoof, fFloor);
 				kArea.push_back(localpos);	
 
-				pkProp->SetArea(kArea);
+				if(localpos.y < fRoof)
+					fRoof = localpos.y;
+				if(localpos.y > fFloor)
+					fFloor = localpos.y;
+
+				pkProp->SetArea(kArea, fRoof, fFloor);
 			}
 		}
 
