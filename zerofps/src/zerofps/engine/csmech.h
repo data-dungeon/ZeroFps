@@ -19,6 +19,9 @@ class ENGINE_API CSMech : public CollisionShape
 
 		bool 									 m_bHavePolygonData;
 		
+		bool 									 m_bOtherGlide;
+		Vector3								 m_kOtherDest;
+		
 		Mad_Core* 							 m_pkCore;
 		Mad_CoreMesh* 						 m_pkCoreMech;
 
@@ -26,6 +29,8 @@ class ENGINE_API CSMech : public CollisionShape
 		vector<Mad_Face>*					m_pkFaces;			// Faces in mesh.
 		vector<Vector3>*					 m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>*					 m_pkNormal;
+
+		list<int>							 m_kCollidedFaces;
 
 	public:		
 		int m_iModelID;	
