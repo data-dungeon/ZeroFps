@@ -8,6 +8,8 @@ using namespace std;
 
 #include "zguiskin.h"
 
+int g_iZIFAnimTexIDCounter=0; // ökas upp för varje animation som skapas och används för att generera ett unikt TexIDName
+
 ///////////////////////////////////////////////////////////////////////////////
 // Everything : 16 parameters
 ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures 
@@ -380,9 +382,12 @@ ZIFAnimation::ZIFAnimation()
 	m_bPlay=false;
 	m_pPixelData=NULL;
 	m_iPixelDataSize=0;
+	m_bStream=true;
+	g_iZIFAnimTexIDCounter++;
+	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
 }
 
-ZIFAnimation::ZIFAnimation(char* szFileName)
+ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream)
 {
 	m_pkFile = NULL;
 	m_fLastTick=0;
@@ -396,6 +401,9 @@ ZIFAnimation::ZIFAnimation(char* szFileName)
 	m_bPlay=false;
 	m_pPixelData=NULL;
 	m_iPixelDataSize=0;
+	m_bStream=bStream;
+	g_iZIFAnimTexIDCounter++;
+	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
 }
 
 ZIFAnimation::~ZIFAnimation()
@@ -419,33 +427,58 @@ bool ZIFAnimation::Update()
 	if(fTick - m_fLastTick > update_time) // har det gått X msek sen sist?
 	{
 		m_fLastTick = fTick;
-		m_pkFile = fopen(m_szFileName, "rb");
 
-		if(m_pkFile == NULL)
-			return false;
-
-		if(m_iNumFrames==0) // not initialized
-		{
-			fread(&m_iWidth, sizeof(int), 1, m_pkFile);
-			fread(&m_iHeight, sizeof(int), 1, m_pkFile);
-			fread(&m_iMsecsPerFrame, sizeof(int), 1, m_pkFile);
-			fread(&m_iNumFrames, sizeof(int), 1, m_pkFile);
-			m_iPixelDataSize = m_iWidth*m_iHeight*3;
-			m_pPixelData = new char[m_iPixelDataSize];
-		}
-
-		fseek(m_pkFile, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
-		fread(m_pPixelData, sizeof(char), m_iPixelDataSize, m_pkFile);
-
+		if(m_bStream || m_iNumFrames==0)
+			Read();
+			
 		m_iCurrentFrame++;
-
 		if(m_iCurrentFrame==m_iNumFrames-1)
 			m_iCurrentFrame=0;
 
-		fclose(m_pkFile);
-
 		return true; // behöver läsa in ny bild till texturen
+
 	}
 
 	return false; // behöver inte uppdatera
+}
+
+char* ZIFAnimation::GetFramePixels()
+{
+	if(m_bStream == true)
+		return m_pPixelData;
+	else
+	{
+		return m_pPixelData+(m_iPixelDataSize*m_iCurrentFrame);
+	}
+}
+
+bool ZIFAnimation::Read()
+{
+	m_pkFile = fopen(m_szFileName, "rb");
+	if(m_pkFile == NULL)
+		return false;
+
+	if(m_iNumFrames==0) // not initialized
+	{
+		fread(&m_iWidth, sizeof(int), 1, m_pkFile);
+		fread(&m_iHeight, sizeof(int), 1, m_pkFile);
+		fread(&m_iMsecsPerFrame, sizeof(int), 1, m_pkFile);
+		fread(&m_iNumFrames, sizeof(int), 1, m_pkFile);
+		m_iPixelDataSize = m_iWidth*m_iHeight*3;
+
+		if(m_bStream)
+			m_pPixelData = new char[m_iPixelDataSize];
+		else
+		{
+			m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
+			fread(m_pPixelData, sizeof(char), m_iPixelDataSize*m_iNumFrames, m_pkFile);
+			fclose(m_pkFile);
+			return true;
+		}
+	}
+
+	fseek(m_pkFile, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
+	fread(m_pPixelData, sizeof(char), m_iPixelDataSize, m_pkFile);
+	fclose(m_pkFile);
+	return true;
 }

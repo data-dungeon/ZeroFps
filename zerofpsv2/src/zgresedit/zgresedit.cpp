@@ -247,7 +247,7 @@ void ZGResEdit::OnInit()
 	//	m_pkTexMan->Load("data/textures/text/syflen16.tga"));
 	//m_pkGuiMan->Add("syflen16", pkNewFont);
 	
-	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 256, 256, 0);
+	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 64, 64, 0);
 
 	//ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 550, 350, 0);
 	//textbox->ToggleMultiLine(true);
@@ -280,7 +280,7 @@ void ZGResEdit::OnInit()
 	ZGuiSkin* pkSkin = new ZGuiSkin();
 	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
 	//pkSkin->m_rcBkTile = Rect(0,48,128,128);
-	pkSkin->m_pkZIFAnimation = new ZIFAnimation("test.zif"); 
+	pkSkin->m_pkZIFAnimation = new ZIFAnimation("apa.zif"); 
 
 	GetWnd("TestWnd")->SetSkin(pkSkin);
 
@@ -509,7 +509,15 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			static int apa = 0;
+
+			if(apa == 0)
+				m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
+			else
+				m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
+
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			//GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;
 

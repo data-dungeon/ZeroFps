@@ -346,7 +346,7 @@ BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message,
 
 void MakeFrame(int frame, FILE* pkFile)
 {
-	const char szFileName[] = "frames/frame.bmp";
+	const char szFileName[] = "frame.bmp";
 
 	char* pixels = g_kAVIGrabber.GetFramePixels(frame);
 

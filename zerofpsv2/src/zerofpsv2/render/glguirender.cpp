@@ -139,8 +139,8 @@ void GLGuiRender::UpdateAnimation()
 	if(m_pkSkin->m_pkZIFAnimation->Update())
 	{
 		m_pkSkin->m_iBkTexID = m_pkTextureManger->CreateTextureFromRGB(
-			m_pkSkin->m_pkZIFAnimation->m_szFileName, 
-			(color_rgb*)m_pkSkin->m_pkZIFAnimation->m_pPixelData, 
+			m_pkSkin->m_pkZIFAnimation->m_szTexIDName, 
+			(color_rgb*)m_pkSkin->m_pkZIFAnimation->GetFramePixels(), 
 			m_pkSkin->m_pkZIFAnimation->m_iWidth, m_pkSkin->m_pkZIFAnimation->m_iHeight, 
 			TextureManager::BGR, true);
 	}

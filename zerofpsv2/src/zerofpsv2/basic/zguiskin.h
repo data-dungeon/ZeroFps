@@ -13,14 +13,15 @@ class BASIC_API ZIFAnimation
 {
 public:
 	ZIFAnimation();
-	ZIFAnimation(char* szFileName);
+	ZIFAnimation(char* szFileName, bool bStream=true);
 	~ZIFAnimation();
 
 	bool Update();
+	char* GetFramePixels();
 	
-	char* m_pPixelData;
 	int m_iWidth, m_iHeight;
 	char* m_szFileName;
+	char m_szTexIDName[16]; // unikt TexturID namn för varje zif animation
 	bool m_bPlay;
 
 private:
@@ -30,6 +31,11 @@ private:
 	int m_iNumFrames, m_iCurrentFrame;
 	int m_iMsecsPerFrame;
 	int m_iPixelDataSize;
+
+	char* m_pPixelData;
+	bool m_bStream;	// Läs en frame i taget från disk
+
+	bool Read();
 };
 
 class BASIC_API ZGuiSkin  
