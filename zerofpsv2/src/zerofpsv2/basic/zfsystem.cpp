@@ -170,7 +170,7 @@ void ZFSystem::Register(ZFSubSystem* pkObject, char* acName)
 	ZFSubSystem* pkCheck = GetObjectPtr(acName,false);
 	if(pkCheck) {
 		g_Logf("Fail\n");
-		Logf("Warning: There was already a object with name '%s'\n", acName);
+		g_Logf("Warning: There was already a object with name '%s'\n", acName);
 		return;
 		}
 
@@ -356,7 +356,7 @@ bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int i
 
 	
 #ifdef _DEBUG
-	Logf("Command '%s' registred to be handled by '%s'\n", szName, kObject->m_strZFpsName);
+	g_Logf("Command '%s' registred to be handled by '%s'\n", szName, kObject->m_strZFpsName.c_str());
 #endif
 	return true;
 }
@@ -496,7 +496,7 @@ bool ZFSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataTy
 	m_kCmdDataList.push_back(kNewCmd);
 
 #ifdef _DEBUG
-	Logf("Variable '%s' registred.\n", szName);
+	g_Logf("Variable '%s' registred.\n", szName);
 #endif
 	return true;
 }
