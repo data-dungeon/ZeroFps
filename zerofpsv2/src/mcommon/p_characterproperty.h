@@ -17,14 +17,14 @@ class MCOMMON_API CharacterStat
 {
 	public:
 		string	m_strName;
-		int		m_iValue;
-		int		m_iMod;
+		float		m_fValue;
+		float		m_fMod;
 	
-		CharacterStat(const string& strName,int iValue,int iMod)
+		CharacterStat(const string& strName,float fValue,float fMod)
 		{
 			m_strName = strName;
-			m_iValue = iValue;
-			m_iMod = iMod;
+			m_fValue = fValue;
+			m_fMod = fMod;
 		};
 				
 };
@@ -33,6 +33,7 @@ class MCOMMON_API CharacterStats
 {
 	private:
 		vector<CharacterStat>	m_kStats;
+		
 
 	public:
 		
@@ -42,13 +43,13 @@ class MCOMMON_API CharacterStats
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		
-		void 	SetStat(const string& strName,int iValue);
-		int 	GetStat(const string& strName);
-		void 	ChangeStat(const string& strName,int iValue);
-		void 	SetMod(const string& strName,int iValue);
-		int 	GetMod(const string& strName);
-		void 	ChangeMod(const string& strName,int iValue);
-		int 	GetTotal(const string& strName);
+		void 	SetStat(const string& strName,float fValue);
+		float GetStat(const string& strName);
+		void 	ChangeStat(const string& strName,float fValue);
+		void 	SetMod(const string& strName,float fValue);
+		float GetMod(const string& strName);
+		void 	ChangeMod(const string& strName,float fValue);
+		float GetTotal(const string& strName);
  
 };
 
@@ -63,7 +64,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Application*	m_pkApp;
 		
 		
+		//stat
+		float			m_fStatTimer;
 		
+			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
 		ZGuiFont*	m_pkFont;		
@@ -96,6 +100,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetupContainers();		
 		vector<PropertyValues> GetPropertyValues();				
 		void SendBuffList();
+		void SendStats();
 		
 		void UpdateStats();
 		

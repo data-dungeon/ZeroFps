@@ -815,6 +815,26 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}
 				
+		case MLNM_SC_CHARACTERSTATS:
+		{
+			float	fStamina;
+			float fStaminaMax;
+			
+			pkNetMessage->Read(fStamina);
+			pkNetMessage->Read(fStaminaMax);
+			
+			//cout<<"stamina:"<<fStamina<<endl;
+			
+			//update stamina bar
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("ManaProgressbar"))
+			{
+				pkPB->SetRange(0,int(fStaminaMax));
+				pkPB->SetPos(int(fStamina));				
+			}
+			
+			break;		
+		}
+				
 		case MLNM_SC_BUFFLIST:
 		{
 			cout<<"got buff list from server"<<endl;

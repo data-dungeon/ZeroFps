@@ -31,6 +31,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_CHARLIST,
 	MLNM_SC_BUFFLIST,
 	MLNM_SC_ITEMINFO,
+	MLNM_SC_CHARACTERSTATS,
 };
 
 //mistlands chatmessages ID's

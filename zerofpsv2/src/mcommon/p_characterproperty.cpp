@@ -19,8 +19,10 @@ CharacterStats::CharacterStats()
 	m_kStats.push_back(CharacterStat("Jump"			,0,0));
 	m_kStats.push_back(CharacterStat("Mana"			,0,0));
 	m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
+	m_kStats.push_back(CharacterStat("ManaRegen"		,0,0));	
 	m_kStats.push_back(CharacterStat("Life"			,0,0));
 	m_kStats.push_back(CharacterStat("LifeMax"		,0,0));
+	m_kStats.push_back(CharacterStat("LifeRegen"		,0,0));
 	m_kStats.push_back(CharacterStat("Strength"		,0,0));
 	m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
 	m_kStats.push_back(CharacterStat("Vitality"		,0,0));
@@ -32,6 +34,8 @@ CharacterStats::CharacterStats()
 	m_kStats.push_back(CharacterStat("DamageMax"		,0,0));
 	m_kStats.push_back(CharacterStat("Attack"			,0,0));
 	m_kStats.push_back(CharacterStat("Stamina"		,0,0));
+	m_kStats.push_back(CharacterStat("StaminaMax"	,0,0));
+	m_kStats.push_back(CharacterStat("StaminaRegen"	,0,0));	
 	m_kStats.push_back(CharacterStat("Load"			,0,0));
 	m_kStats.push_back(CharacterStat("LoadMax"		,0,0));
 }
@@ -41,8 +45,8 @@ void CharacterStats::Save(ZFIoInterface* pkPackage)
 	for(int i = 0;i<m_kStats.size();i++)
 	{
 		pkPackage->Write_Str(m_kStats[i].m_strName);
-		pkPackage->Write(m_kStats[i].m_iValue);
-		pkPackage->Write(m_kStats[i].m_iMod);	
+		pkPackage->Write(m_kStats[i].m_fValue);
+		pkPackage->Write(m_kStats[i].m_fMod);	
 	}
 
 	pkPackage->Write_Str(string(""));
@@ -54,7 +58,7 @@ void CharacterStats::Save(ZFIoInterface* pkPackage)
 void CharacterStats::Load(ZFIoInterface* pkPackage)
 {
 	static string strName;
-	static int iValue,iMod;
+	static float fValue,fMod;
 	
 	
 	m_kStats.clear();
@@ -63,10 +67,10 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read_Str(strName);
 	while(!strName.empty())
 	{
-		pkPackage->Read(iValue);
-		pkPackage->Read(iMod);
+		pkPackage->Read(fValue);
+		pkPackage->Read(fMod);
 		
-		m_kStats.push_back(CharacterStat(strName,iValue,0)); //dont load mod value
+		m_kStats.push_back(CharacterStat(strName,fValue,0)); //dont load mod value
 		
 		pkPackage->Read_Str(strName);
 	}
@@ -75,90 +79,90 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 // 	cout<<"loaded stats"<<endl;
 }
 
-void CharacterStats::SetStat(const string& strName,int iValue)
+void CharacterStats::SetStat(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			m_kStats[i].m_iValue = iValue;
+			m_kStats[i].m_fValue = fValue;
 			return;
 		}
 		
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:SetStat requested stat "<<strName<<" was not found"<<endl;
 }
 
-int CharacterStats::GetStat(const string& strName)
+float CharacterStats::GetStat(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			return m_kStats[i].m_iValue;
+			return m_kStats[i].m_fValue;
 		}		
 
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:GetStat requested stat "<<strName<<" was not found"<<endl;
 	return -1;
 }
 		
-void CharacterStats::ChangeStat(const string& strName,int iValue)
+void CharacterStats::ChangeStat(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			m_kStats[i].m_iValue += iValue;
+			m_kStats[i].m_fValue += fValue;
 			return;
 		}
 		
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:ChangeStat requested stat "<<strName<<" was not found"<<endl;
 }
 
 
-void CharacterStats::SetMod(const string& strName,int iValue)
+void CharacterStats::SetMod(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			m_kStats[i].m_iMod = iValue;
+			m_kStats[i].m_fMod = fValue;
 			return;
 		}
 	
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:SetMod requested stat "<<strName<<" was not found"<<endl;
 }
 
-int CharacterStats::GetMod(const string& strName)
+float CharacterStats::GetMod(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			return m_kStats[i].m_iMod;
+			return m_kStats[i].m_fMod;
 		}		
 
 		
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:GetMod requested stat "<<strName<<" was not found"<<endl;
 	return -1;
 }		
 
-void CharacterStats::ChangeMod(const string& strName,int iValue)
+void CharacterStats::ChangeMod(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			m_kStats[i].m_iMod += iValue;
+			m_kStats[i].m_fMod += fValue;
 			return;	
 		}
 		
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:ChangeMod requested stat "<<strName<<" was not found"<<endl;
 }
 
-int CharacterStats::GetTotal(const string& strName)
+float CharacterStats::GetTotal(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
 		{
-			return m_kStats[i].m_iValue + m_kStats[i].m_iMod;
+			return m_kStats[i].m_fValue + m_kStats[i].m_fMod;
 		}				
 		
 		
-	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:GetTotal requested stat "<<strName<<" was not found"<<endl;
 	return -1;
 }
 
@@ -191,6 +195,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bFirstUpdate			=	true;
 	m_fChatTime				=	0;
 	m_strChatMsg			=	"";
+	m_fStatTimer			=	0;
 	
 	m_iInventory	= -1;		
 	m_iHead			= -1;
@@ -251,15 +256,78 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 
 void P_CharacterProperty::UpdateStats()
 {
-	
-	if(P_CharacterControl* pkCP = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+	//get character control;
+	P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl");
+	if(!pkCC)
 	{
-		//speed
-		pkCP->SetSpeed((float)m_kCharacterStats.GetTotal("Speed"));
-	
-		//jump
-		pkCP->SetJumpForce((float)m_kCharacterStats.GetTotal("Jump"));		
+		cout<<"WARNING: character missing P_CharacterControl"<<endl;
+		return;	
 	}
+	
+	
+	float fTime = m_pkZeroFps->GetTicks();
+	
+	
+	//update stats each seccond	
+	if(fTime > m_fStatTimer + 1.0)
+	{
+		m_fStatTimer = fTime;
+	
+		
+		//stamina
+		int iDrain = 0;
+		if(pkCC->GetCharacterState(eWALKING))
+			iDrain = 2;		
+		if(pkCC->GetCharacterState(eRUNNING))
+			iDrain = 5;
+		if(pkCC->GetCharacterState(eJUMPING))
+			iDrain = 10;
+		if(pkCC->GetCharacterState(eSWIMMING))
+			iDrain = 8;
+
+			
+		m_kCharacterStats.ChangeStat("Stamina",-iDrain);
+		m_kCharacterStats.ChangeStat("Stamina",m_kCharacterStats.GetTotal("StaminaRegen"));
+		if(m_kCharacterStats.GetTotal("Stamina") > m_kCharacterStats.GetTotal("StaminaMax"))
+			m_kCharacterStats.SetStat("Stamina",m_kCharacterStats.GetTotal("StaminaMax"));
+		
+		//life
+		m_kCharacterStats.ChangeStat("Life",m_kCharacterStats.GetTotal("LifeRegen"));
+		if(m_kCharacterStats.GetTotal("Life") > m_kCharacterStats.GetTotal("LifeMax"))
+			m_kCharacterStats.SetStat("Life",m_kCharacterStats.GetTotal("LifeMax"));
+
+		//mana
+		m_kCharacterStats.ChangeStat("Mana",m_kCharacterStats.GetTotal("ManaRegen"));
+		if(m_kCharacterStats.GetTotal("Mana") > m_kCharacterStats.GetTotal("ManaMax"))
+			m_kCharacterStats.SetStat("Mana",m_kCharacterStats.GetTotal("ManaMax"));
+				
+			
+		SendStats();
+	}
+
+
+
+
+
+
+	//setup charactercontrol
+	int iSpeed = m_kCharacterStats.GetTotal("Speed");
+	int iJump = m_kCharacterStats.GetTotal("Jump");
+	
+	if(m_kCharacterStats.GetTotal("Stamina") < 1 )
+	{
+		iSpeed = 0;
+		iJump = 0;
+	}
+	
+	//speed
+	pkCC->SetSpeed(iSpeed);
+	
+	//jump
+	pkCC->SetJumpForce(iJump);		
+	
+	
+	
 	
 }
 
@@ -694,6 +762,23 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 	}
 }
 
+void P_CharacterProperty::SendStats()
+{
+	if(m_iConID == -1)
+		return;
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_CHARACTERSTATS);	
+
+	kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
+	kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
+	
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);
+	m_pkApp->SendAppMessage(&kNp);	
+}
+
 void P_CharacterProperty::SendBuffList()
 {
 	if(m_iConID == -1)
@@ -911,18 +996,18 @@ namespace SI_P_CharacterProperty
 		}
 			
 		int iCharcterID;
-		int iValue;
+		double dValue;
 		char czStat[128];
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,czStat);
-		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.ChangeStat(czStat,iValue);		
+			pkCP->m_kCharacterStats.ChangeStat(czStat,float(dValue));		
 			
-			cout<<"changed stat "<<czStat<<" with "<<iValue<<endl;
+			cout<<"changed stat "<<czStat<<" with "<<dValue<<endl;
 		}
 	
 		return 0;				
@@ -938,18 +1023,18 @@ namespace SI_P_CharacterProperty
 
 			
 		int iCharcterID;
-		int iValue;
+		double dValue;
 		char czStat[128];
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,czStat);
-		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.ChangeMod(czStat,iValue);		
+			pkCP->m_kCharacterStats.ChangeMod(czStat,float(dValue));		
 			
-			cout<<"changed stat mod "<<czStat<<" with "<<iValue<<endl;
+			cout<<"changed stat mod "<<czStat<<" with "<<dValue<<endl;
 		}
 	
 		return 0;			
@@ -964,18 +1049,18 @@ namespace SI_P_CharacterProperty
 		}
 			
 		int iCharcterID;
-		int iValue;
+		double dValue;
 		char czStat[128];
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,czStat);
-		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.SetStat(czStat,iValue);		
+			pkCP->m_kCharacterStats.SetStat(czStat,float(dValue));		
 			
-			cout<<"set stat "<<czStat<<" to "<<iValue<<endl;
+			cout<<"set stat "<<czStat<<" to "<<dValue<<endl;
 		}
 	
 		return 0;				
