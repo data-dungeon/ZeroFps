@@ -302,7 +302,7 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		if(m_kMembersInField.empty() == false)
 		{
 			SetCharacterStats(m_kMembersInField[m_iCurrentCharacterPage]);
-			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
+			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(
 				m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
 		}
 		else
@@ -790,7 +790,7 @@ bool CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 		delete m_pkSelectInfo;
 		m_pkSelectInfo = NULL;
 
-		((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
+		((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(
 			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
 
 		return true;
@@ -1062,6 +1062,6 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 		}
 	}
 
-	((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
+	((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(
 		m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
 }

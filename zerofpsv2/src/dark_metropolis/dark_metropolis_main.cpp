@@ -427,7 +427,7 @@ void DarkMetropolis::Input()
 			m_fAngle *= 0.99;
 			
 			m_pkCameraProp->Set3PYAngle(m_fAngle);	
-		}
+		}s
 		*/
 	}
 		
@@ -461,6 +461,8 @@ void DarkMetropolis::Input()
 	{
 		if(m_bSelectSquare)
 		{
+			int iAgentInFocus = -1;
+
 			m_bSelectSquare = false;
 			if(!m_pkInputHandle->VKIsDown("multiselect"))			
 				SelectAgent(-1,false,true,false);
@@ -478,8 +480,8 @@ void DarkMetropolis::Input()
 						// check if character is on your team
 						if ( ((P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
 						{
-							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);
 							SelectAgent(pkEnt->GetEntityID(), false,false, false);
+							iAgentInFocus = pkEnt->GetEntityID();
 						}
 					}
 					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
@@ -520,7 +522,6 @@ void DarkMetropolis::Input()
 				vector<Entity*> kObjects;	
 				m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 	
-				int last_object_selected = -1;
 				for(unsigned int i=0;i<kObjects.size();i++)
 				{		
 					//objects that should not be clicked on (special cases)
@@ -536,18 +537,17 @@ void DarkMetropolis::Input()
 								// only select characters on your team
 								if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
 								{
-									last_object_selected = kObjects[i]->GetEntityID();								
+									iAgentInFocus = kObjects[i]->GetEntityID();								
 									SelectAgent(kObjects[i]->GetEntityID(), false,false, false);
 								}
 							}
-				}
-
-				if(last_object_selected != -1)
-					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(
-						last_object_selected, false); 
-			
+				}			
 			}
+
+			// Uppdatera GUI:t med den nya agenten i fokus.
+			((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(iAgentInFocus, false); 
 		}
+
 	}
 
 	//check if we want do do any action
@@ -648,10 +648,16 @@ void DarkMetropolis::Input()
 						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
 						{
 							cout<<"entering hq"<<endl;
+						
 							SelectAgent(m_kSelectedEntitys[i], false, false,false); // remove selection
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(-1, false);
+							
+							// Remove selected agent from list
 							((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
+
+							// Uppdatera GUI:t och berätta att ingen agent är i fokus.
+							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
+							
 						}
 						/*else
 						{
@@ -1089,9 +1095,6 @@ int DarkMetropolis::FindActiveHQ()
 void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst, 
 											bool bMoveCamera) 
 { 
-
-	((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateSelAgent(id);
-
 	if(bResetFirst)
 		m_kSelectedEntitys.clear(); 
  
@@ -1161,12 +1164,14 @@ void DarkMetropolis::ValidateSelection()
 		{
 			if(!pkEnt->GetParent()->IsZone())		
 			{	
-				((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
 				i = 0;
 			}		
 		}	
 	}
+
+	if(m_pkGamePlayDlg)
+		((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 }
 
 void DarkMetropolis::ValidateAgentsOnField()

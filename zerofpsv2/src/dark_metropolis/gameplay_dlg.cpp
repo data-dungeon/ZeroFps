@@ -166,7 +166,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				m_pkAudioSys->GetListnerPos()); 
 
 			pkCharacter->UseQuickItem(iItem, false);
-			SelectAgent(m_iSelectedAgent, false);
+			SelectAgentGUI(m_iSelectedAgent, false);
 		}
 		else
 		{
@@ -184,7 +184,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 	for(int i=0; i<5; i++)
 		if(strClickName == icon_name[i])
-			SelectAgent(m_akAgetIcons[i].iAgentObjectID, true);
+			SelectAgentGUI(m_akAgetIcons[i].iAgentObjectID, true);
 }
 
 bool CGamePlayDlg::InitDlg()
@@ -263,7 +263,7 @@ bool CGamePlayDlg::InitDlg()
 
 	if(m_iSelectedAgent != -1)
 	{
-		SelectAgent(m_iSelectedAgent, false);
+		SelectAgentGUI(m_iSelectedAgent, false);
 	}
 
 	m_bInitialized = true;
@@ -272,7 +272,7 @@ bool CGamePlayDlg::InitDlg()
 	return true;
 }
 
-void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
+void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 {
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;
@@ -282,6 +282,13 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 		GetWnd("ActiveCharacterPortraitBn");
 
 	pkActiveCharBn->Hide();
+
+	for(int i=0; i<5; i++)
+	{
+		m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 0; 
+		m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 0; 				
+		m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 0; 
+	}
 
 	if((pkAgentObject = GetObject(iAgent)))
 	{
@@ -406,6 +413,9 @@ DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
 
 void CGamePlayDlg::UpdateAgentList()
 {
+	if(!m_bInitialized)
+		return;
+
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
 	
@@ -445,26 +455,29 @@ void CGamePlayDlg::UpdateAgentList()
 
 void CGamePlayDlg::UpdateSelAgent(int iID)
 {
-	printf("CGamePlayDlg::UpdateSelAgent\n");
+	//printf("CGamePlayDlg::UpdateSelAgent\n");
 
-	if(iID == -1)
-	{
-		for(int i=0; i<5; i++)
-		{
-			if(m_akAgetIcons[i].iAgentObjectID == m_iSelectedAgent)
-			{
-				m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 0; 
-				m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 0; 				
-				m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 0; 
+	//ZGuiButton* pkActiveCharBn = (ZGuiButton*) GetWnd("ActiveCharacterPortraitBn");
+	//pkActiveCharBn->Hide();
+	//m_iSelectedAgent = iID;
 
-				ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
-					GetWnd("ActiveCharacterPortraitBn");
-				pkActiveCharBn->Hide();
+	//for(int i=0; i<5; i++)
+	//{
+	//	m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 0; 
+	//	m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 0; 				
+	//	m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 0; 
+	//}
 
-				m_iSelectedAgent = -1;
-
-				break;
-			}
-		}
-	}
+	//for(int i=0; i<5; i++)
+	//{
+	//	if(m_akAgetIcons[i].iAgentObjectID == iID)
+	//	{
+	//		m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 2; 
+	//		m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 2; 				
+	//		m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 2; 
+	//		//pkActiveCharBn->Show();
+	//		break;
+	//	}
+	//}
+			
 }
