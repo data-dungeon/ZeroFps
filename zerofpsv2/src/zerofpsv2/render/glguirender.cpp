@@ -9,6 +9,9 @@
 //#include "../engine/zfresource.h"
 #include "../basic/zfresourcedb.h"
 
+int g_bLettersPrinted=0;
+int textDL=-1;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 ///////////////////////////////////////////////////////////////////////////////
@@ -339,21 +342,14 @@ bool GLGuiRender::RenderBorder(Rect rc)
 void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
 							  bool bMultiLine, int& chars_printed, int& rows_printed)
 {
+	g_bLettersPrinted = 0;
+
 	if(m_pkFont == NULL)
 		return; // false;
 
 	bool bDrawMasked = true;
 
-/*	ZFResourceHandle m_kConsoleText;
-	m_kConsoleText.SetRes(m_pkFont->m_szFileName.c_str());		
-//	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-//	int fontTexture = pkTexture->m_iTextureID;//m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-	*/
-
 	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
-//	if(!fontTexture)
-//		return; // false;
 
 	m_iCursorPos = iCursorPos;
 
@@ -416,6 +412,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	if(bDrawMasked)
 		glDisable(GL_BLEND);
+
+	//printf("g_bLettersPrinted = %i\n", g_bLettersPrinted);
 
 	//return bFit;
 }
@@ -708,6 +706,8 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 			glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
 			glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
 			glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+
+			g_bLettersPrinted++;
 		}
 
 		x+=iCurrLegth;

@@ -95,10 +95,12 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		if(m_bReadOnly)
 			cursor_pos = -1;
 
-		int iLetters, iRows;
+		int iCharsPrinted, iRowsPrinted;
+
 		pkRenderer->RenderText(m_strText, kRect, cursor_pos, 
-			m_iRenderDistFromTop, m_bMultiLine, iLetters, iRows);
-		m_iNumRows = iRows;
+			m_iRenderDistFromTop, m_bMultiLine, iCharsPrinted, iRowsPrinted);
+
+		m_iNumRows = iRowsPrinted;
 
 	/*	if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
 			m_bTextFit = false;
@@ -115,7 +117,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		memcpy(m_pkSkin->m_afBkColor,afBkColorBuffer,sizeof(float)*3);
 	}
 
-	if(m_bMultiLine && !m_bScrollbarUpdated)
+	if(m_bMultiLine && !m_bScrollbarUpdated) // done only ones..
 		UpdateScrollbar();
 
 	return true;
