@@ -1149,7 +1149,7 @@ bool DarkMetropolis::CreatePlayer()
 			if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 			{
 				pkEnv->SetEnable(true);
-				pkEnv->SetEnviroment("data/enviroments/dm.env");		
+				pkEnv->SetEnviroment("data/enviroments/fps_test.env");		
 				cout<<"setting enviroment"<<endl;	
 			}					
 			

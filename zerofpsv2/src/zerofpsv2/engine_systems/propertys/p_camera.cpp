@@ -289,6 +289,8 @@ float P_Camera::LineTest(const Vector3& kStart,const Vector3& kStop)
 		//	continue;
 			
 		//get mad property and do a linetest
+//		if(!kObjects[i]->IsZone())
+//			continue;
 		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
 		if(mp)
 		{
