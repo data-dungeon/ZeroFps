@@ -481,6 +481,10 @@ void MistServer::Input()
 			if(!pkObj)
 				return;		
 		
+			//return if its a static object
+			if(pkObj->GetParent()->GetName() == "StaticEntity")
+				return;
+		
 			//move left
 			if(pkInput->Pressed(KEY_LEFT))
 					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(-1 * pkFps->GetFrameTime(),0,0));			

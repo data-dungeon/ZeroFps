@@ -1078,7 +1078,7 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	ResetChildsGotData();
 	
 	
-	m_kOldLocalPosV=m_kLocalPosV;				//save old pos for interpolation
+	//m_kOldLocalPosV=m_kLocalPosV;				//save old pos for interpolation
 	m_kLocalPosV = kPos;
 	
 	if(m_fLastSetPos == -1)						//if the pos has never been set, the set oldpos to the new one
@@ -1128,13 +1128,19 @@ Matrix4 Entity::GetLocalRotM()
 
 Vector3 Entity::GetIWorldPosV()
 {
-	float t = m_pkFps->GetTicks() - m_fLastSetPos;	
-	float i = t/m_pkFps->GetGameFrameTime();
+	Vector3 dir = GetWorldPosV() - m_kOldLocalPosV;
+	
+	m_kOldLocalPosV +=dir/12;
+
+
+	return m_kOldLocalPosV;
+//	float t = m_pkFps->GetTicks() - m_fLastSetPos;	
+//	float i = t/m_pkFps->GetGameFrameTime();
 	
 //	if(i>1)
 //		i=1;
 	
-	Vector3 curent = GetLocalPosV();		
+/*	Vector3 curent = GetLocalPosV();		
 	
 	if(m_bRelativeOri)		
 		return GetWorldPosV()+curent*i;
@@ -1143,7 +1149,7 @@ Vector3 Entity::GetIWorldPosV()
 		Vector3 pos;
 		pos.Lerp(m_kOldLocalPosV,curent,i);
 		return pos;
-	}
+	}*/
 }
 
 Vector3 Entity::GetWorldPosV()
