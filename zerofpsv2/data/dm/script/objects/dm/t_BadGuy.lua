@@ -5,7 +5,8 @@ function Create()
 	InitObject();
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/goblin.mad");			
-			InitParameter("m_fScale","1");		
+			InitParameter("m_fScale","1");	
+			InitParameter("m_iShadowGroup","2");	
 
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
@@ -13,7 +14,7 @@ function Create()
 		InitProperty("P_DMCharacter");
 			InitParameter("team",1)
 		InitProperty("P_ScriptInterface");
-		InitProperty("P_ShadowBlob");
+--		InitProperty("P_ShadowBlob");
 
 end
 
