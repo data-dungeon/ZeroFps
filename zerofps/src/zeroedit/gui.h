@@ -22,7 +22,7 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
-
+	
 	enum SEARCH_TASK
 	{
 		MAP,
@@ -30,8 +30,17 @@ private:
 		SAVE_TEMPLATE
 	};
 
+	struct MENU_INFO
+	{
+		ZGuiCombobox* cb;
+		int iIndex;
+		char* szCommando;
+	};
+
 	SEARCH_TASK m_kSearchTask;
 
+	void RunMenuCommand(ZGuiCombobox* pkCombox, int iIndex);
+	bool CreateMenu(ZFIni* pkIni, char* szFileName);
 	bool Register(ZGuiFont* pkFont, char* strName);
 	bool Register(ZGuiSkin* pkSkin, char* strName);
 	bool Register(ZGuiWnd* pkWnd, char* strName);
@@ -53,6 +62,9 @@ private:
 	int m_iScreenCX;
 	int m_iScreenCY;
 	bool m_bGuiHaveFocus;
+
+	unsigned int m_uiNumMenuItems;
+	MENU_INFO* m_pkMenuInfo;
 	
 	Rect GetScreenRect() { return Rect(0,0,m_pkEdit->m_iWidth, m_pkEdit->m_iHeight); }
 
@@ -69,6 +81,7 @@ public:
 	void UpdatePropertybox();
 	void ClosePropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
+	bool MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 	void CaptureInput(bool bCapture);
 	bool HaveFocus();
