@@ -5,7 +5,6 @@
 #include "bitmapmanager.h"
 #include "resource.h"
 #include <stdio.h>
-#include "jpegdec.h"
 
 #define FILE_FILTER_LOAD "AVI (*.avi)\0*.avi\0\0"
 #define FILE_FILTER_SAVE "ZIF (*.zif)\0*.zif\0\0"
@@ -16,7 +15,6 @@ BOOL CALLBACK SettingsDlg (HWND, UINT, WPARAM, LPARAM) ;
 
 AVIFrameGrabber g_kAVIGrabber;
 BitmapManager g_kBitmapManager;
-JpgDecoder g_kJpegDec;
 
 HWND hwnd;
 HDC hdcMem;
@@ -503,7 +501,11 @@ void PrintSize()
 		else
 			size_in_meg = 0.0f;
 
-		sprintf(text, "%.02f", size_in_meg);
+		if(size_in_meg > 0)
+			sprintf(text, "%.01f Mb", size_in_meg);
+		else
+			sprintf(text, "Unknown");
+
 		SetDlgItemText(ctrlWnd, IDC_MEGABYTE, text);
 	}
 	else
@@ -528,7 +530,7 @@ void PrintSize()
 		SetDlgItemText(ctrlWnd, IDC_MEGABYTE, text);
 	}
 
-	sprintf(text, "%.02f", (double)(end-start) / (double)frames_per_sec);
+	sprintf(text, "%.01f (sek)", (double)(end-start) / (double)frames_per_sec);
 	SetDlgItemText(ctrlWnd, IDC_TIME, text);
 
 	sprintf(text, "%i", frames_per_sec);
