@@ -129,13 +129,14 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return NULL;
 				}		
 				
-				cout<<"New destination is "<<iX<<" "<<iY<<endl;
+				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
 				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
 						
 				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
+					TileEngine::m_pkInstance->AddUnit(kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
 					m_pkPathFind->Reset();	
 					m_iCurrentState = -1;
 					return NULL;

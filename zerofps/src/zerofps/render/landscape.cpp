@@ -813,7 +813,7 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 		}
 	}*/
 
-	int iPatchSize = 32;
+	int iPatchSize = 64;
 
 	switch(m_eLandscapePolygonMode)
 	{
