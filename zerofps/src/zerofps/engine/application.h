@@ -1,5 +1,5 @@
-#ifndef _APPLICATION_H_
-#define _APPLICATION_H_
+#ifndef _ENGINE_APPLICATION_H_
+#define _ENGINE_APPLICATION_H_
 
 #include "engine_x.h"
 #include "../basic/basic.pkg"

@@ -1,5 +1,5 @@
-#ifndef _LIGHTUPDATEPROPERTY_H_
-#define _LIGHTUPDATEPROPERTY_H_
+#ifndef _ENGINE_LIGHTUPDATEPROPERTY_H_
+#define _ENGINE_LIGHTUPDATEPROPERTY_H_
 
 #include "../render/render.pkg"
 #include "property.h"

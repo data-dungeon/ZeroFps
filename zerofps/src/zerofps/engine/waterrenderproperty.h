@@ -1,5 +1,5 @@
-#ifndef _WATERRENDERPROPERTY_H_
-#define _WATERRENDERPROPERTY_H_
+#ifndef _ENGINE_WATERRENDERPROPERTY_H_
+#define _ENGINE_WATERRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

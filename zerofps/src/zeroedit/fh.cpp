@@ -18,9 +18,9 @@ FHObject::FHObject(const char* szMadName)
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	if(szMadName) {
-		AddProperty("MadProperty");
-		MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-		madp->SetBasePtr(m_pkFps->GetMADPtr(szMadName));
+//		AddProperty("MadProperty");
+//		MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+//		madp->SetBasePtr(m_pkFps->GetMADPtr(szMadName));
 		//szMadName
 	}
 		

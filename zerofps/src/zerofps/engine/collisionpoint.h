@@ -1,5 +1,5 @@
-#ifndef _COLLISIONPOINT_H_
-#define _COLLISIONPOINT_H_
+#ifndef _ENGINE_COLLISIONPOINT_H_
+#define _ENGINE_COLLISIONPOINT_H_
 
 
 #include <typeinfo>

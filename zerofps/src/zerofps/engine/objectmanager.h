@@ -1,5 +1,5 @@
-#ifndef _OBJECTMANAGER_H_
-#define _OBJECTMANAGER_H_
+#ifndef _ENGINE_OBJECTMANAGER_H_
+#define _ENGINE_OBJECTMANAGER_H_
 
 #include "object.h"
 #include "property.h"

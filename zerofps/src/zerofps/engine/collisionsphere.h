@@ -1,5 +1,5 @@
-#ifndef _COLLISIONSPHERE_H_
-#define _COLLISIONSPHERE_H_
+#ifndef _ENGINE_COLLISIONSPHERE_H_
+#define _ENGINE_COLLISIONSPHERE_H_
 
 
 #include <typeinfo>

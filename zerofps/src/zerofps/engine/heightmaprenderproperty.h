@@ -1,5 +1,5 @@
-#ifndef _HEIGHTMAPRENDERPROPERTY_H_
-#define _HEIGHTMAPRENDERPROPERTY_H_
+#ifndef _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
+#define _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                $(ProjDir)\release\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                  $(ProjDir)\release\*.lib                                   ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -149,26 +149,6 @@ SOURCE=.\basicconsole.cpp
 
 SOURCE=.\cmdsystem.cpp
 # SUBTRACT CPP /YX
-# End Source File
-# Begin Source File
-
-SOURCE=.\core.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\core_bone.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\core_boneanim.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\core_mesh.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\core_meshanim.cpp
 # End Source File
 # Begin Source File
 
@@ -332,10 +312,6 @@ SOURCE=.\heightmap.h
 # Begin Source File
 
 SOURCE=.\image.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\mad_core.h
 # End Source File
 # Begin Source File
 

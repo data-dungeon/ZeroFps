@@ -316,6 +316,14 @@ bool ZGui::OnMouseUpdate()
 	m_pkInput->MouseXY(x,y);
 	m_pkCursor->SetPos(x,y);
 
+	static int cx = -1, cy = -1;
+	if(!(cx == x && cy == y))
+	{
+		//printf("Mouse cursor (%i, %i)\n", x, y);
+		cx = x; cy = y;
+	}
+
+
 	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
 	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
 

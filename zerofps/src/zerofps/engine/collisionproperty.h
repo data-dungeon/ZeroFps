@@ -1,5 +1,5 @@
-#ifndef _COLLISIONPROPERTY_H_
-#define _COLLISIONPROPERTY_H_
+#ifndef _ENGINE_COLLISIONPROPERTY_H_
+#define _ENGINE_COLLISIONPROPERTY_H_
 
 
 #include "../basic/basic.pkg"

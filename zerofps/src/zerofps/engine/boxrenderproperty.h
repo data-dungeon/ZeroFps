@@ -1,5 +1,5 @@
-#ifndef _BOXRENDERPROPERTY_H_
-#define _BOXRENDERPROPERTY_H_
+#ifndef _ENGINE_BOXRENDERPROPERTY_H_
+#define _ENGINE_BOXRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

@@ -938,11 +938,11 @@ void ZeroEdit::DrawMarkers()
 	if(m_pkCurentChild!=NULL){
 		float size=1;
 		
-		MadProperty* mp = static_cast<MadProperty*>(m_pkCurentChild->GetProperty("MadProperty"));
+/*		MadProperty* mp = static_cast<MadProperty*>(m_pkCurentChild->GetProperty("MadProperty"));
 		if( mp != NULL && mp->pkCore != NULL)
 		{
 			 size = mp->GetRadius();	//mp->pkCore->GetRadius();	
-		}		
+		}		*/
 		
 		if(size < 1)
 			size=1;

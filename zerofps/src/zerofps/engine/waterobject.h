@@ -1,5 +1,5 @@
-#ifndef _WATEROBJECT_H_
-#define _WATEROBJECT_H_
+#ifndef _ENGINE_WATEROBJECT_H_
+#define _ENGINE_WATEROBJECT_H_
  
 #include "objects.pkg"
 //#include "../basic/heightmap.h"

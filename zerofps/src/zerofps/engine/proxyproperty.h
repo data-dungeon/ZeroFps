@@ -1,5 +1,5 @@
-#ifndef _PROXYPROPERTY_H_
-#define _PROXYPROPERTY_H_
+#ifndef _ENGINE_PROXYPROPERTY_H_
+#define _ENGINE_PROXYPROPERTY_H_
 
 #include "../basic/basic.pkg"
 //#include "../render/render.pkg"

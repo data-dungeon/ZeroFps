@@ -57,7 +57,6 @@ class ZFIni;
 #include "zguifont.h"
 
 #include "zfini.h"
-#include "mad_core.h"
 
 
 

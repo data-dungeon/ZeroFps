@@ -82,7 +82,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 		}
 			
 		if(m_bOtherGlide){
-			if(newhit){
+	 		if(newhit){
 				
 				//cout<<"diff:"<< (kPos1-kPos2).Length()<<endl;
 				
@@ -289,7 +289,9 @@ bool CSMech::SetUpMech()
 	{
 		//cout<<"found mad property"<<endl;
 		//look for core pointer in mad property
-		m_pkCore = pkMP->pkCore;	
+		//m_pkCore = pkMP->pkCore;	
+		m_pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr()); 
+
 		if(m_pkCore != NULL)
 		{
 			//cout<<"found core"<<endl;

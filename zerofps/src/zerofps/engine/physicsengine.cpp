@@ -114,10 +114,9 @@ void PhysicsEngine::CheckCollisions()
 	for(list<Property*>::iterator it3=m_kPropertys.begin();it3!=m_kPropertys.end();it3++) 
 	{	
 		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it3);			
-		
+	
 		if(PP1->m_bStride)
 			Stride(PP1);		
-	
 	}	
 	
 	

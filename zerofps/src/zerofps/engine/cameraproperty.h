@@ -1,5 +1,5 @@
-#ifndef _CAMERAPROPERTY_H_
-#define _CAMERAPROPERTY_H_
+#ifndef _ENGINE_CAMERAPROPERTY_H_
+#define _ENGINE_CAMERAPROPERTY_H_
 
 #include "property.h"
 #include <iostream>

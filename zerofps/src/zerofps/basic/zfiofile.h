@@ -1,5 +1,5 @@
-#ifndef _ZFIOFILE_H_
-#define _ZFIOFILE_H_
+#ifndef _BASIC_ZFIOFILE_H_
+#define _BASIC_ZFIOFILE_H_
 
 #include "zfio.h"
 #include "basic_x.h"

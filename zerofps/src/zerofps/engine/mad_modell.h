@@ -3,7 +3,10 @@
 
 #include "../../zerofps/basic/basic.pkg"
 #include "../render/render.pkg"
+
+#include "zfresourcedb.h"
 #include "engine_x.h"
+#include "mad_core.h"
 
 #define MAD_DRAW_MESH		1
 #define MAD_DRAW_NORMAL		2
@@ -61,11 +64,16 @@ public:
 
 	bool	m_bActive;			// True if animation system is active.
 
-	Mad_Core*	pkCore;
+	//	Mad_Core*	pkCore;
+	ZFResourceHandle	kMadHandle;
+	
 	Mad_Modell();
-	Mad_Modell(Mad_Core* pkModell);
+//	Mad_Modell(Mad_Core* pkModell);
+	Mad_Modell(string strResName);
 
-	void SetBasePtr(Mad_Core* pkModell);			// Set base modell to use.
+	void SetBasePtr(string strResName);
+
+//	void SetBasePtr(Mad_Core* pkModell);			// Set base modell to use.
 	void UpdateAnimation(float dDelta);		// Move all animations forward.
 	
 	void PlayAnimation(int iAnimNum, float fStartTime);

@@ -1,5 +1,5 @@
-#ifndef _AUDIOMANAGER_H_
-#define _AUDIOMANAGER_H_
+#ifndef _ENGINE_AUDIOMANAGER_H_
+#define _ENGINE_AUDIOMANAGER_H_
 
 #include "../basic/basic.pkg"
 #include "engine.pkg"

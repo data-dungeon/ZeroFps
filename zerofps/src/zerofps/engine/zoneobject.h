@@ -1,5 +1,5 @@
-#ifndef _ZONEOBJECT_H_
-#define _ZONEOBJECT_H_
+#ifndef _ENGINE_ZONEOBJECT_H_
+#define _ENGINE_ZONEOBJECT_H_
  
 #include "objects.pkg"
 #include "zerofps.h"

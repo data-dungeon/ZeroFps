@@ -1,5 +1,5 @@
-#ifndef _SKYBOXOBJECT_H_
-#define _SKYBOXOBJECT_H_
+#ifndef _ENGINE_SKYBOXOBJECT_H_
+#define _ENGINE_SKYBOXOBJECT_H_
  
 #include "objects.pkg"
 //#include "../basic/heightmap.h"

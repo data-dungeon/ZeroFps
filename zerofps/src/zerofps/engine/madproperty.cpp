@@ -18,7 +18,7 @@ MadProperty::MadProperty()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
-MadProperty::MadProperty(Mad_Core* pkModell) 
+MadProperty::MadProperty(string strResName) 
 {
 	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
@@ -27,12 +27,15 @@ MadProperty::MadProperty(Mad_Core* pkModell)
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	pkCore = pkModell;
+	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	pkResDB->GetResource(kMadHandle, strResName);
+
+	//pkCore = pkModell;
 	
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
-	pkCore->ClearReplaceTexture();
+//	pkCore->ClearReplaceTexture();
 }
 
 
@@ -66,6 +69,7 @@ void MadProperty::Update()
 //	if(!m_pkFrustum->SphereInFrustum(sphere))
 //		return;
 
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 
@@ -112,7 +116,8 @@ void MadProperty::Update()
 
 void MadProperty::SetBase(const char* acName)
 {
-	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
+	SetBasePtr(string(acName));
+//	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
 }
 
 void MadProperty::Save(ZFMemPackage* pkPackage)

@@ -35,6 +35,7 @@ ZeroFps::ZeroFps(void)
 	m_pkIni				=	new ZFIni();
 	m_pkLevelMan		=	new LevelManager();
 	m_pkPhysEngine		=	new PhysicsEngine();
+	m_pkResourceDB		=	new ZFResourceDB();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -181,7 +182,8 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::MainLoop(void) {
 
 	while(m_iState!=state_exit) {
-		
+		m_pkResourceDB->Refresh();
+
 		Swap();				//swap buffers n calculate fps
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
@@ -655,6 +657,7 @@ void ZeroFps::ClearLevelData()
 	
 }
 
+/*
 int ZeroFps::LoadMAD(const char* filename)
 {
 	int iMadId = GetMADIndex(filename);
@@ -706,7 +709,7 @@ Mad_Core* ZeroFps::GetMADPtr(const char* filename)
 
 	return NULL;
 }
-
+*/
 
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {

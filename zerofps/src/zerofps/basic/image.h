@@ -1,8 +1,8 @@
 /*
 Image class for OpenGl (mostly).
 */
-#ifndef FILE__IMG_C_H
-#define FILE__IMG_C_H
+#ifndef _BASIC_IMG_H_   
+#define _BASIC_IMG_H_
 
 #include <cstdio>
 #include "basic_x.h"

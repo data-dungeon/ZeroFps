@@ -1,5 +1,5 @@
-#ifndef _PHYSICPROPERTY_H_
-#define _PHYSICPROPERTY_H_
+#ifndef _ENGINE_PHYSICPROPERTY_H_
+#define _ENGINE_PHYSICPROPERTY_H_
 
 #include "property.h"
 #include "collisionshape.h"

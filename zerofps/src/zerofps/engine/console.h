@@ -1,5 +1,5 @@
-#ifndef _CONSOLE_H_
-#define _CONSOLE_H_
+#ifndef _ENGINE_CONSOLE_H_
+#define _ENGINE_CONSOLE_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

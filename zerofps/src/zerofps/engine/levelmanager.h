@@ -1,5 +1,5 @@
-#ifndef _LEVELMANAGER_H_
-#define _LEVELMANAGER_H_
+#ifndef _ENGINE_LEVELMANAGER_H_
+#define _ENGINE_LEVELMANAGER_H_
 
 #include "engine_x.h"
 #include "../basic/basic.pkg"

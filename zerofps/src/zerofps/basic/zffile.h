@@ -1,5 +1,5 @@
-#ifndef _ZFFILE_H_
-#define _ZFFILE_H_
+#ifndef _BASIC_ZFFILE_H_
+#define _BASIC_ZFFILE_H_
 
 #include <string>
 #include "fileio.h"

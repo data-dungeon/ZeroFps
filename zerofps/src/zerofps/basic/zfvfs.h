@@ -1,5 +1,5 @@
-#ifndef _ZFVFS_H_
-#define _ZFVFS_H_
+#ifndef _BASIC_ZFVFS_H_
+#define _BASIC_ZFVFS_H_
 
 #include <vector>
 #include <string>

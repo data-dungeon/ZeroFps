@@ -1,5 +1,5 @@
-#ifndef _COLLISIONSHAPE_H_
-#define _COLLISIONSHAPE_H_
+#ifndef _ENGINE_COLLISIONSHAPE_H_
+#define _ENGINE_COLLISIONSHAPE_H_
 
 #include <typeinfo>
 #include "physicsengine.h"

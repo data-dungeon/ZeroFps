@@ -1,5 +1,5 @@
-#ifndef _SKYBOXRENDERPROPERTY_H_
-#define _SKYBOXRENDERPROPERTY_H_
+#ifndef _ENGINE_SKYBOXRENDERPROPERTY_H_
+#define _ENGINE_SKYBOXRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

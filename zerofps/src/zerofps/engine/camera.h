@@ -1,5 +1,5 @@
-#ifndef _CAMERA_H_
-#define _CAMERA_H_
+#ifndef _ENGINE_CAMERA_H_
+#define _ENGINE_CAMERA_H_
 
 
 #include "../basic/basic.pkg"

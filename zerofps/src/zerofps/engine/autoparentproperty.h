@@ -1,5 +1,5 @@
-#ifndef _AUTOPARENTPROPERTY_H_
-#define _AUTOPARENTPROPERTY_H_
+#ifndef _ENGINE_AUTOPARENTPROPERTY_H_
+#define _ENGINE_AUTOPARENTPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../engine/engine.pkg"

@@ -1,5 +1,5 @@
-#ifndef _WORLDINFOPROPERTY_H_
-#define _WORLDINFOPROPERTY_H_
+#ifndef _ENGINE_WORLDINFOPROPERTY_H_
+#define _ENGINE_WORLDINFOPROPERTY_H_
 
 #include <string>
 

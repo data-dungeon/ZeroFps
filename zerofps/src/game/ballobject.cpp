@@ -3,9 +3,9 @@
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
   
-	AddProperty("MadProperty");
-	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
+//	AddProperty("MadProperty");
+//	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+//	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 	onGround = false;
 }
 

@@ -1,5 +1,5 @@
-#ifndef _MODELPROPERTY_H_
-#define _MODELPROPERTY_H_
+#ifndef _ENGINE_MODELPROPERTY_H_
+#define _ENGINE_MODELPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "property.h"

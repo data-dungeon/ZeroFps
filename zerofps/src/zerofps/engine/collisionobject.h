@@ -1,5 +1,5 @@
-#ifndef _COLOSIONOBJECT_H_
-#define _COLOSIONOBJECT_H_
+#ifndef _ENGINE_COLOSIONOBJECT_H_
+#define _ENGINE_COLOSIONOBJECT_H_
 
 #include "engine_x.h"
 

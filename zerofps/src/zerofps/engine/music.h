@@ -1,5 +1,5 @@
-#ifndef _MUSIC_H
-#define _MUSIC_H
+#ifndef _ENGINE_MUSIC_H
+#define _ENGINE_MUSIC_H
 
 /*		
 		Denna class sköter uppspelingen av musiken.

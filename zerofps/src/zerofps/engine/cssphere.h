@@ -1,5 +1,5 @@
-#ifndef _CSSPHERE_H_
-#define _CSSPHERE_H_
+#ifndef _ENGINE_CSSPHERE_H_
+#define _ENGINE_CSSPHERE_H_
 
 #include "collisionshape.h"
 #include "../basic/basic.pkg"

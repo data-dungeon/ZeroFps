@@ -1,5 +1,5 @@
-#ifndef _CSBOX_H_
-#define _CSBOX_H_
+#ifndef _ENGINE_CSBOX_H_
+#define _ENGINE_CSBOX_H_
 
 #include "collisionshape.h"
 #include "../basic/basic.pkg"

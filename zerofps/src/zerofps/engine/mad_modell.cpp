@@ -21,12 +21,31 @@ Mad_Modell::Mad_Modell()
 	m_bLoop		= 0;
 	m_fScale	= 1.0;
 	m_bActive	= true;
-
-	pkCore = NULL;
-
+//	pkCore = NULL;
 }
 
-Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
+Mad_Modell::Mad_Modell(string strResName)
+{
+	//ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	//kMadHandle = pkResDB->GetResource(strResName);
+	kMadHandle.SetRes(strResName);
+	m_kMadFile = strResName;
+
+	// pkCore = pkModell;
+	// m_kMadFile = pkCore->Name;
+
+	PlayAnimation(0, 0.0);
+	m_fScale = 1.0;
+	m_bActive = true;
+	//pkCore->ClearReplaceTexture();
+	fGameTime = 0;
+
+	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	LoadTextures();
+	AddMesh(0);
+}
+
+/*Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
 {
 	pkCore = pkModell;
 	m_kMadFile = pkCore->Name;
@@ -40,37 +59,24 @@ Mad_Modell::Mad_Modell(Mad_Core* pkModell)
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
 	AddMesh(0);
+}*/
 
-/*	pkCore = pkModell;
-	m_kMadFile = pkCore->Name;
-
-	m_fScale = 1.0;
-	m_bActive = true;
-	fGameTime = 0;
-	pkCore = NULL;
-
-	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-
-	if(pkModell) {
-		LoadTextures();
-		PlayAnimation(0, 0.0);
-		pkCore->ClearReplaceTexture();
-		}*/
-}
-
-void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
+void Mad_Modell::SetBasePtr(string strResName)
 {
-	pkCore = pkModell;
-	m_kMadFile = pkCore->Name;
-
+//	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+//	kMadHandle = pkResDB->GetResource(strResName);
+	kMadHandle.SetRes(strResName);
+	m_kMadFile = strResName;
+//	pkCore = pkModell;
+//	m_kMadFile = pkCore->Name;
 
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
-	pkCore->ClearReplaceTexture();
+//	pkCore->ClearReplaceTexture();
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
-	Create_GLList(pkCore->GetMeshByID(0));
+//	Create_GLList(pkCore->GetMeshByID(0));
 	AddMesh(0);
 
 /*	m_fScale = 1.0;
@@ -103,6 +109,8 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 {
 	if(!m_bActive)
 		return;
+
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
 //	float fDelta = fGameTime - fLastUpdate;
 
@@ -164,15 +172,16 @@ bool Mad_Modell::GetAnimationActive() {
 
 void Mad_Modell::NextCoreAnimation(void)
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+
 	iActiveAnimation++;
 	if(iActiveAnimation >= pkCore->GetNumOfAnimations())
 		iActiveAnimation = 0;
-
-
 }
 
 void Mad_Modell::SetReplaceTexture(char* szName)
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	pkCore->SetReplaceTexture(szName);
 }
 
@@ -187,16 +196,22 @@ void Mad_Modell::End() {}
 
 int Mad_Modell::GetNumOfMesh() 
 {
+	ZFResource* pkres = kMadHandle.GetResourcePtr();
+
+
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkres); 
  	return pkCore->NumOfMeshes();
 }
 
 int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetMeshByID(iMeshID)->kHead.iNumOfSubMeshes;
 }
 
 void Mad_Modell::SelectMesh(int iMeshID)
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	m_pkMesh = pkCore->GetMeshByID(iMeshID);
 }
 
@@ -219,21 +234,25 @@ int Mad_Modell::GetNumFaces()
 
 Vector3*  Mad_Modell::GetVerticesPtr()
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return	pkCore->GetVerticesPtr();
 }
 
 int* Mad_Modell::GetFacesPtr()
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return	pkCore->GetFacesPtr(m_pkMesh, m_pkSubMesh);
 }
 
 Mad_TextureCoo* Mad_Modell::GetTextureCooPtr()
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetTextureCooPtr(m_pkMesh);
 }
 
 Vector3* Mad_Modell::GetNormalsPtr()
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetNormalsPtr();
 }
 
@@ -298,6 +317,7 @@ void Mad_Modell::LoadTextures()
 	int iNumOfSubMesh;
 	int iTexID;
 
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(iM);
@@ -355,6 +375,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 	if(iDrawFlags == 0)
 		return;
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);
@@ -500,6 +521,7 @@ void Mad_Modell::DrawSkelleton()
 	glDisable (GL_DEPTH_TEST);
 	
 	Vector3 Position;
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
 	glColor3f(1,1,1);
 	for(unsigned int i=0; i<pkCore->GetNumOfBones(); i++) {
@@ -525,6 +547,7 @@ void Mad_Modell::DrawSkelleton()
 
 float Mad_Modell::GetRadius()
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return 0;
 
@@ -533,6 +556,7 @@ float Mad_Modell::GetRadius()
 
 bool Mad_Modell::AddMesh(int iSubId)
 {
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(pkCore->GetMeshByID(iSubId) == NULL)
 		return false;
 

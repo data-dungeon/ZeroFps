@@ -1,5 +1,5 @@
-#ifndef _CROSSRENDERPROPERTY_H_
-#define _CROSSRENDERPROPERTY_H_
+#ifndef _ENGINE_CROSSRENDERPROPERTY_H_
+#define _ENGINE_CROSSRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

@@ -1,5 +1,5 @@
-#ifndef _ZFIO_H_
-#define _ZFIO_H_
+#ifndef _BASIC_ZFIO_H_
+#define _BASIC_ZFIO_H_
 
 //#include <stdint.h>
 #include "basic_x.h"

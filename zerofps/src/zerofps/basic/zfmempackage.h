@@ -1,5 +1,5 @@
-#ifndef _ZFMEMPACKAGE_H_
-#define _ZFMEMPACKAGE_H_
+#ifndef _BASIC_ZFMEMPACKAGE_H_
+#define _BASIC_ZFMEMPACKAGE_H_
 
 #include <vector>
 #include "basic_x.h"

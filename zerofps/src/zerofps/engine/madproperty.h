@@ -1,5 +1,5 @@
-#ifndef _MADPROPERTY_H_
-#define _MADPROPERTY_H_
+#ifndef _ENGINE_MADPROPERTY_H_
+#define _ENGINE_MADPROPERTY_H_
 
 #include "mad_modell.h"
 #include "zerofps.h"
@@ -18,7 +18,7 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 
 	public:
 		MadProperty();
-		MadProperty(Mad_Core* pkModell);
+		MadProperty(string strResName);
 		
 		Frustum* m_pkFrustum;
 		ZeroFps* m_pkZeroFps;

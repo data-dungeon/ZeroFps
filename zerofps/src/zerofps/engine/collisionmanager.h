@@ -1,5 +1,5 @@
-#ifndef _COLLISIONMANAGER_H_
-#define _COLLISIONMANAGER_H_
+#ifndef _ENGINE_COLLISIONMANAGER_H_
+#define _ENGINE_COLLISIONMANAGER_H_
 
 
 #include "engine.pkg"

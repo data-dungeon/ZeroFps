@@ -1,5 +1,5 @@
-#ifndef _HEIGHTMAPCS_H_
-#define _HEIGHTMAPCS_H_
+#ifndef _ENGINE_HEIGHTMAPCS_H_
+#define _ENGINE_HEIGHTMAPCS_H_
 
 #include "../basic/basic.pkg"
 #include "collisionshape.h"

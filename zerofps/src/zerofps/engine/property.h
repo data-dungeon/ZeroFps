@@ -1,5 +1,5 @@
-#ifndef _OPROPERTY_H_
-#define _OPROPERTY_H_
+#ifndef _ENGINE_OPROPERTY_H_
+#define _ENGINE_OPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include <string>

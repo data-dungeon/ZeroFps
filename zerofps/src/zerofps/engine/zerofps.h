@@ -1,5 +1,5 @@
-#ifndef _ZEROFPS_H_
-#define _ZEROFPS_H_
+#ifndef _ENGINE_ZEROFPS_H_
+#define _ENGINE_ZEROFPS_H_
 
 /*#include "../basic/basic.pkg"
 #include "../render/render.pkg"*/
@@ -13,7 +13,8 @@
 #include <cstdio>
 #include <cstdarg>
 #include "network.h"
-//#include "zfresourcedb.h"
+#include "zfresourcedb.h"
+#include "mad_core.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -116,17 +117,18 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFIni*					m_pkIni;					///< Ini Files - Zeb
 		LevelManager*			m_pkLevelMan;				///< 
 		PhysicsEngine*			m_pkPhysEngine;				///< 
-//		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
+		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
 
 		Application*			m_pkApp;					///< Application object.
 			
 		vector<Mad_Core*>		akCoreModells;
 				
-		
+/*		
 		int LoadMAD(const char* filename);
 		void ClearMAD(void);
 		int GetMADIndex(const char* filename);
 		Mad_Core* GetMADPtr(const char* filename);
+*/
 
 		int m_iState;										//	curent game state see enum enginestates
 		int m_iFps;											//	curent FPS

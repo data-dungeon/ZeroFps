@@ -1,5 +1,5 @@
-#ifndef _OBJECT_H_
-#define _OBJECT_H_
+#ifndef _ENGINE_OBJECT_H_
+#define _ENGINE_OBJECT_H_
 
 #include "../basic/basic.pkg"
 #include <vector>

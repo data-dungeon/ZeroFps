@@ -1,12 +1,12 @@
-#ifndef _CSMECH_H_
-#define _CSMECH_H_
+#ifndef _ENGINE_CSMECH_H_
+#define _ENGINE_CSMECH_H_
 
 #include "collisionshape.h"
 #include "../basic/basic.pkg"
 #include "engine_x.h"
 #include "cssphere.h"
 #include "madproperty.h"
-#include "../basic/mad_core.h"
+#include "mad_core.h"
 
 using namespace std;
 

@@ -1,5 +1,5 @@
-#ifndef _HEIGHTMAPOBJECT_H_
-#define _HEIGHTMAPOBJECT_H_
+#ifndef _ENGINE_HEIGHTMAPOBJECT_H_
+#define _ENGINE_HEIGHTMAPOBJECT_H_
 
 #include "objects.pkg"
 #include "../basic/heightmap.h"

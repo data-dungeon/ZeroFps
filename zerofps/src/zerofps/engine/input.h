@@ -1,5 +1,5 @@
-#ifndef _INPUT_H_
-#define _INPUT_H_
+#ifndef _ENGINE_INPUT_H_
+#define _ENGINE_INPUT_H_
 
 #include "../basic/basic.pkg"
 #include <iostream>

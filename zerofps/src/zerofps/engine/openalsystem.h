@@ -1,5 +1,5 @@
-#ifndef _OPENALSYSTEM_H_
-#define _OPENALSYSTEM_H_ 
+#ifndef _ENGINE_OPENALSYSTEM_H_
+#define _ENGINE_OPENALSYSTEM_H_ 
 
 //#include "vector3.h"
 #include "../basic/basic.pkg"

@@ -1,5 +1,5 @@
-#ifndef _BILLBOARDRENDERPROPERTY_H_
-#define _BILLBOARDRENDERPROPERTY_H_
+#ifndef _ENGINE_BILLBOARDRENDERPROPERTY_H_
+#define _ENGINE_BILLBOARDRENDERPROPERTY_H_
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"

@@ -1,5 +1,5 @@
-#ifndef _SOUNDBUFFERMANAGER_H_
-#define _SOUNDBUFFERMANAGER_H_ 
+#ifndef _ENGINE_SOUNDBUFFERMANAGER_H_
+#define _ENGINE_SOUNDBUFFERMANAGER_H_ 
 
 #include "../basic/basic.pkg"
 #include <AL/alut.h>
