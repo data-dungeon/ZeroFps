@@ -31,6 +31,30 @@ void Gemens(char* aText)
 	}
 };
 
+// Compares strings and ignore case
+bool IsSameIgnoreCase(const char* szString1,const char* szString2)
+{
+	char szCheck1[256];
+	char szCheck2[256];
+
+/*	if(strlen(szString1) >= 256)
+		assert(0);
+	if(strlen(szString2) >= 256)
+		assert(0);
+*/
+	strcpy(szCheck1, szString1);
+	strcpy(szCheck2, szString2);
+
+	Gemens(szCheck1);
+	Gemens(szCheck2);
+	
+	if(strcmp(szCheck1, szCheck2) == 0)
+		return true;
+
+	return false;
+}
+
+
 void IntToChar(char* aText,int iValue)
 {
 	strcpy(aText,"");

@@ -4,8 +4,8 @@
 #include "../../data/gui_resource_files/inventary_id.h"
 #include "../../data/gui_resource_files/container_id.h"
 #include "../../data/gui_resource_files/log_id.h"
-
-Game g_kGame("ZeroFPS game",1024,768,32);
+ 
+Game g_kGame("ZeroFPS game",1024,768,16);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 

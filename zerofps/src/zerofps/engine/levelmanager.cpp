@@ -28,7 +28,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("l_showzones", &m_bDrawZones, CSYS_INT);
+	g_ZFObjSys.RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 
 //	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		

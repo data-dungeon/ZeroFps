@@ -68,7 +68,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
-	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_INT);	
+	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL);	
 	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);

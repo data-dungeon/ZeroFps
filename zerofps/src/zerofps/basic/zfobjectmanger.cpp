@@ -424,9 +424,9 @@ bool ZFObjectManger::SetVariable(const char* szName, const char* szValue)
 
 void ZFObjectManger::SetValue(ZFCmdData* pkArea, const char* szValue) 
 {
-	
 	float dData = float(atof(szValue));
-	
+	bool	bValue;
+
 	switch(pkArea->m_eType) {
 		case CSYS_INT:
 			*(int*)pkArea->m_vValue = (int)dData;break;
@@ -436,7 +436,19 @@ void ZFObjectManger::SetValue(ZFCmdData* pkArea, const char* szValue)
 			*(double*)pkArea->m_vValue=(double)dData;break;
 		case CSYS_LONG:
 			*(long*)pkArea->m_vValue=(long)dData;break;
-	
+		case CSYS_BOOL:
+			if(IsSameIgnoreCase(szValue, "false"))
+				*(bool*)pkArea->m_vValue = false;
+			else if(IsSameIgnoreCase(szValue, "true"))
+				*(bool*)pkArea->m_vValue = true;
+			else if(IsSameIgnoreCase(szValue, "toggle")) {
+				bValue = *(bool*)pkArea->m_vValue;
+				*(bool*)pkArea->m_vValue = !bValue;
+				}
+			else 
+				*(bool*)pkArea->m_vValue=(bool)dData;
+
+			break;
 	}
 }	
 
@@ -473,6 +485,7 @@ string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
 			//m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
 			break;
 		case CSYS_BOOL:
+			sprintf(szValue, "%d", *(bool*)pkArea->m_vValue);
 			break;
 		case CSYS_INT:
 			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);

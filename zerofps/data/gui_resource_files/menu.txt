@@ -92,25 +92,15 @@ Title=Debug
 Parent=NULL
 Cmd=NULL
 
-[Menu_DebugSimStart]
-Title=Sim Start
+[Menu_DebugSimToggle]
+Title=Sim (T)
 Parent=Menu_Debug
-Cmd=set e_runsim 1
-
-[Menu_DebugSimStop]
-Title=Sim Stop
-Parent=Menu_Debug
-Cmd=set e_runsim 0
+Cmd=set e_runsim toggle
 
 [Menu_DebugShowZones]
-Title=Show Zones
+Title=Visible Zones (T)
 Parent=Menu_Debug
-Cmd=set l_showzones 1
-
-[Menu_DebugHideZones]
-Title=Hide Zones
-Parent=Menu_Debug
-Cmd=set l_showzones 0
+Cmd=set l_showzones toggle
 
 [Menu_DebugLogRP]
 Title=Log RenderP

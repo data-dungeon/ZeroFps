@@ -37,4 +37,6 @@ float BASIC_API GetYawAngle(Vector3 kDir);
 char* BoolStr(bool bFlag);
 void BASIC_API g_Logf(const char *fmt, ...);
 
+bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
+
 #endif
