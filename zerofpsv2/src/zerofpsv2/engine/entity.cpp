@@ -540,12 +540,15 @@ void Entity::GetChilds(vector<Entity*>*	pkEntitys)
 	net update).
 */
 bool Entity::HaveSomethingToSend(int iConnectionID)
-{
-	if( m_eRole != NETROLE_AUTHORITY)		return false;
+{	
+	//do we own this entity?
+	if( m_eRole != NETROLE_AUTHORITY)
+		return false;
 	
 	
 	bool bNeedUpdate = false;
 	bool bHasNetPropertys = false;
+	bool bHasNetChilds = false;
 
 	//check if theres any networked propertys and if any property wants to send data
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
@@ -553,10 +556,52 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		if((*it)->m_bNetwork) 
 		{
 			bHasNetPropertys = true;
-			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);			
+			//bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);			
+			if((*it)->GetNetUpdateFlag(iConnectionID))
+				return true;
 		}
 	}
+	
+	//entity want to send  if theres any point in sending
+	if(IsAnyNetUpdateFlagTrue(iConnectionID))
+	{
+		//did it have any network property
+		if(bHasNetPropertys)
+			return true;
+	
+		//does any child want to send?  
+		if(m_bSendChilds)
+		{
+			for(int i = 0;i<m_akChilds.size();i++)
+			{
+				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
+				{
+					//a child wants to send, thats seems like a good point					
+					return true;
+				}
+			}	
+		}		
+	
+		//check if this entity has any value to an editor, if so send it if client is an editor
+		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
+			return true;		
+	}
+	
+return false;
 
+
+// 	if(!bHasNetPropertys && m_bSendChilds)
+// 	{
+// 		for(int i = 0;i<m_akChilds.size();i++)
+// 		{
+// 			if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
+// 			{
+// 				bHasNetChilds = true;
+// 				break;
+// 			}
+// 		}	
+// 	}	
+/*		
 	//no propertys to send
 	if(!bHasNetPropertys)
 	{
@@ -577,7 +622,7 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
 	
 	
-	return bNeedUpdate;
+	return bNeedUpdate;*/
 }
 
 

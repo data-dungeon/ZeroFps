@@ -895,16 +895,37 @@ void EntityManager::PackToClients()
 	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
-		m_pkWorldEntity->GetAllEntitys(&kObjects, true);
+		
+		if(Entity* pkEnt = GetEntityByID(m_pkZeroFps->GetClientObjectID()))
+		{
+			m_OutNP.Clear();
+			m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
+			m_OutNP.TargetSetClient(0);
+		
+			kObjects.clear();
+			kObjects.push_back(pkEnt);	
+
+ 			PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed());
+					
+			m_OutNP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->Send2(&m_OutNP);
+					
+		}
+	
+/*		//denna koden är EEEEEEVIL , floddar servern med massa entitys,,, nåt fell nånstans men vet i fan vad :(
+		kObjects.clear();	
+		m_pkClientEntity->GetAllEntitys(&kObjects, bForceAll,bCheckSendStatus);
 
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 		m_OutNP.TargetSetClient(0);
 		
-		PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed());
+		cout<<"entitys to send:"<<kObjects.size()<<endl;
+		
+ 		PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed());
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
-		return;
+		return;*/
 	}
 
 	// Server Network send.
