@@ -425,7 +425,9 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 
 	pkNetPacket->Read(kVec);
 	SetPos(kVec);
+	SetPos(kVec);
 	pkNetPacket->Read(kVec);
+	SetRot(kVec);
 	SetRot(kVec);
 	pkNetPacket->Read(fFloat);
 	GetRadius() = fFloat;

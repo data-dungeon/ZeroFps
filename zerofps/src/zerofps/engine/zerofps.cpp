@@ -343,19 +343,17 @@ void ZeroFps::Update_System()
 			
 				//update new super duper rigid body physics engine deluxe
 				m_pkPhysics_Engine->Update(m_fGameFrameTime);
-		
-				//pack objects to clients
-				m_pkObjectMan->PackToClients();		
-
 			}	
 		}
-		
 		
 		//client only code
 		if(m_bClientMode)
 		{
 		
 		}
+
+		//pack objects to clients
+		m_pkObjectMan->PackToClients();		
 
 		//delete objects
 		m_pkObjectMan->UpdateDelete();

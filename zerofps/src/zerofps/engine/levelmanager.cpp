@@ -66,8 +66,8 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 
 void LevelManager::CreateEmptyLevel(int iSize)
 {
-	CreateNew(iSize);
-	CreateZones();
+//	CreateNew(iSize);
+//	CreateZones();
 }
 
 void LevelManager::Clear() 
@@ -181,7 +181,7 @@ bool LevelManager::LoadLevelHmapOnly(const char* acFile)
 	};	
 	
 	//create zoneobjects
-	CreateZones();		
+//	CreateZones();		
 	m_kCurrentMapDir = kBase;
 	return true;
 
