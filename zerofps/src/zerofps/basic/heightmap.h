@@ -31,14 +31,16 @@ struct HM_fileheader {
 
 
 class BASIC_API HeightMap {
-
+	private:		
+		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
+		
 	public:
 		HM_vert* verts;		
 		int m_iHmSize;
-		int m_iBoxTresh;
-		int m_iMaxSteps;
+//		int m_iBoxTresh;
+//		int m_iMaxSteps;
 		char m_acTileSet[256];
-		HM_vert *m_kCenter;
+//		HM_vert *m_kCenter;
 		Vector3 m_kPosition;
 		int m_iError;
 		FileIo *m_pkFile;
@@ -47,7 +49,7 @@ class BASIC_API HeightMap {
 		void Zero();
 		void Random();
 		bool Load(char* acFile);
-		bool Save(char* avFile);
+		bool Save(char* acFile);
 		bool LoadImageHmap(char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
@@ -56,7 +58,7 @@ class BASIC_API HeightMap {
 		void SetPosition(Vector3 kNewPos);
 
 		HM_vert* GetVert(int x,int z);		
-		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
+
 //		void MakeQuadTree();
 //		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
 

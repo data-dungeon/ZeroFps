@@ -27,7 +27,7 @@ class ENGINE_API Music {
 	public:
 		Music(FileIo* pkFile);
 		void Start(void);
-		void Load(char*);
+		void Load(char* nmusicfile);
 		void Stop(void);
 //		void Close(void);
 		

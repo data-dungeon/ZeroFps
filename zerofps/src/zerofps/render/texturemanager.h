@@ -20,13 +20,14 @@ enum OPTIONS {
 
 };
 
+struct texture{
+	string file;
+	GLuint index;
+};
 
 class RENDER_API TextureManager {
 	private:
-		struct texture{
-			string file;
-			GLuint index;
-		};
+
 		
 		int m_iCurrentTexture;
 		vector<texture*> m_iTextures;
