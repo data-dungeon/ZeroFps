@@ -3,7 +3,7 @@
 
 //#include <stdint.h>
 
-class ZFIo {
+class BASIC_API ZFIo {
 	private:
 		
 	

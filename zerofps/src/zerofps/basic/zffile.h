@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class ZFFile {
+class BASIC_API ZFFile {
 	private:
 		bool m_bOpen;
 		bool m_bWritable;

@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <errno.h>
 
-class ZFIoFile : public ZFIo {
+class BASIC_API ZFIoFile : public ZFIo {
 	private:
 		FILE *m_kFile;
 
