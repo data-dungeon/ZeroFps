@@ -81,7 +81,6 @@ void ZeroEdit::OnInit(void)
 	
 	
 	//create a default small world
-//	Clear();
 	pkLevelMan->CreateEmptyLevel(100);
 
 
@@ -93,7 +92,7 @@ void ZeroEdit::OnInit(void)
 		sol->kPos=solpos;		
 		sol->kDiffuse=Vector4(.9,.9,.9,1);	//Dag
 //		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
-//		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
+		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 		sol->fConst_Atten=1;
@@ -106,11 +105,12 @@ void ZeroEdit::OnInit(void)
 
 	pkInput->ToggleGrab();
 
+
 }
 
 
 void ZeroEdit::OnIdle(void) 
-{
+{	
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 

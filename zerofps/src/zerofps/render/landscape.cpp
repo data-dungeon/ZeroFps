@@ -1,6 +1,13 @@
 #include "render.h"
 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
+/*	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glOrtho(-4,4,-4,4,500,1);
+	glMatrixMode(GL_MODELVIEW);		
+*/	
+	
 	glPushMatrix();
 	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
 	
@@ -76,10 +83,16 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
 */	
 	
-//	glEnable(GL_FOG);
 	glPopAttrib();
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();
+
+
+/*
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+*/	
 }
 
 
@@ -167,11 +180,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glDisable(GL_TEXTURE_2D);	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	
-//	if(m_FogEnable)//Disable the fog while drawing the sky box
-//		glEnable(GL_FOG);		
 	glDepthMask(GL_TRUE);
-//	glDisable(GL_BLEND);	
-//	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 
 	glPopAttrib();
@@ -230,6 +239,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
+
 //	glEnable(GL_CULL_FACE);
 	
 	if(m_iAutoLod>0){
@@ -255,6 +265,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 
 	m_pkTexMan->BindTexture(kmap->m_acTileSet,0);
 	
+	
 	GLfloat mat_specular[]={0,0,0,0};
 	GLfloat mat_diffuse[]={1,1,1,1};	
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
@@ -264,9 +275,10 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 
 //	glColorMaterial(GL_FRONT,GL_DIFFUSE);
 //	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
-	float black[4]={0.1,0.1,0.1,0.1};
+//	float black[4]={0.1,0.1,0.1,0.1};
+	float black[4]={0.0,0.0,0.0,0.0};
 	glMaterialfv(GL_FRONT,GL_AMBIENT,black);
-//	glMaterialfv(GL_FRONT,GL_SPECULAR,black);
+	glMaterialfv(GL_FRONT,GL_SPECULAR,black);
 	glEnable(GL_COLOR_MATERIAL);		
 	
 	Vector3 p1,p2;
@@ -415,6 +427,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 		}
 	*/
+	 
 	glColor4f(1,1,1,1);
 	glDisable(GL_COLOR_MATERIAL);
 //	glPolygonMode(GL_FRONT,GL_FILL);

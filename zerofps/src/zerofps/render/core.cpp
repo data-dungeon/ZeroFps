@@ -129,6 +129,7 @@ char* Core::GetName(void)
 
 void Core::draw()
 {
+
 	glColor3f(1,1,1);
 	
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );

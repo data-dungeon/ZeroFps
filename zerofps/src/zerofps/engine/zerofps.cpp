@@ -130,11 +130,6 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
-	// Init Gui
-/*	m_pkGui->Initialize(m_pkApp->m_iWidth, m_pkApp->m_iHeight, m_pkInput);
-	m_pkGuiRenderer = new GLGuiRender(m_pkApp->m_iWidth, m_pkApp->m_iHeight, 
-		m_pkRender->GetTexMangager() );
-	m_pkGui->SetRenderer(m_pkGuiRenderer);	*/	
 
 	m_iState=state_normal;								//init gamestate to normal		
 //	m_pkGameCamera=m_pkDefaultCamera;		
@@ -238,7 +233,8 @@ void ZeroFps::MainLoop(void) {
 		
 		if(m_bConsoleMode)
 		{		
-			SetCamera(m_pkCamera);			
+//			SetCamera(m_pkCamera);			
+			SetCamera(m_pkConsoleCamera);			
 //			m_pkCamera->ClearViewPort();
 			
 			m_pkInput->SetInputEnabled(true);			
@@ -271,15 +267,6 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	extgl_Initialize();
 #endif
 
-//	glFogCoordfEXT = NULL;	
-//	glFogCoordfEXT  =  (PFNGLFOGCOORDFEXTPROC) glXGetProcAddressARB((const GLubyte *)"glFogCoordfEXT");
-/*	
-	if(!glFogCoordfEXT){
-		cout<<"No glFogCoordEXT support =("<<endl;
-		exit(1);	
-	}
-*/
-
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
@@ -298,12 +285,11 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	
-	m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);
+//	m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);
 	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
   
 	glMatrixMode(GL_MODELVIEW);
 
-	cout << "10" << endl;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -380,17 +366,9 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	}
 	
 	//get the frustrum for frustum culling
-//	m_pkRender->GetFrustum();				
 	m_pkFrustum->GetFrustum();				
 	
 	
-	//Lighting needs camera position for light calculation
-	//m_pkLight->SetCamera(m_pkCamera->GetPos());				
-	
-	
-	//update all lights
-	//m_pkLight->Update();	
-		
 }
 static char Devformat_text[4096];	//
 

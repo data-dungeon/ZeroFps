@@ -141,27 +141,6 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-/*
-void Game::CreateZones()
-{
-	int radius=250;
-
-//	HeightMap *m_pkMap=test;
-//	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
-
-	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
-		for(int z=0;z<m_pkMap->m_iHmSize;z+=radius/3){
-			if(m_pkMap->Height(x,z)>-1){
-				ZoneObject *object = new ZoneObject();
-				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
-				object->SetRadius(radius);
-				object->SetParent(pkObjectMan->GetWorldObject());
-				object->DeleteProperty("MadProperty");
-			}
-		}
-	}
-}
-*/
 
 void Game::RegisterPropertys()
 {
@@ -170,110 +149,6 @@ void Game::RegisterPropertys()
 
 }
 
-
-/*
-bool Game::LoadLevel(const char* acFile)
-{
-	for(int i=0;acFile[i]!='\0';i++)
-	{
-		if(acFile[i]=='\\' || acFile[i]=='/')
-		{
-			pkConsole->Print("Bad filename");
-			return false;
-		}
-	}
-		
-	string kHmfile;
-	string kZolfile;
-	string kInifile;
-
-	kHmfile=m_kMapBaseDir;
-	kHmfile+="/";
-	kHmfile+=acFile;
-	kHmfile+="/";	
-	kHmfile+="heightmap.hm";
-
-	kZolfile=m_kMapBaseDir;
-	kZolfile+="/";
-	kZolfile+=acFile;
-	kZolfile+="/";	
-	kZolfile+="objects.zol";
-
-	kInifile=m_kMapBaseDir;
-	kInifile+="/";
-	kInifile+=acFile;
-	kInifile+="/";	
-	kInifile+="config.ini";
-
-	Clear();
-	
-	if(!m_pkMap->Load(kHmfile.c_str())){
-		pkConsole->Printf("Error loading heightmap");
-		return false;
-	};
-	cout<<"heightmap loaded"<<endl;
-	
-	//create zoneobjects
-	CreateZones();		
-	
-	if(!pkObjectMan->LoadAllObjects(kZolfile .c_str())){
-		pkConsole->Printf("Error loading objects");
-		return false;
-	}		
-	cout<<"objects loaded"<<endl;
-
-	if(!pkIni->ExecuteCommands(kInifile.c_str())){
-		cout<<"No ini-file found"<<endl;
-	}
-
-	//setup player aso
-	SetupLevel();
-
-	return true;
-}
-
-void Game::Clear() 
-{
-	CreateNew(100);
-}
-
-void Game::CreateNew(int iSize) 
-{
-	delete m_pkMap;
-	m_pkMap=new HeightMap();	
-	
-	pkObjectMan->Clear();
-//	m_pkCurentChild=NULL;
-
-	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
-	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
-	
-//	pkObjectMan->Add(m_pkHeightMapObject);	
-	pkCollisionMan->Add(m_pkHeightMapObject);
-
-//	m_pkCurentParent=m_pkHeightMapObject;
-	
-	m_pkMap->Create(iSize);
-	m_pkMap->GenerateNormals(); 
-	m_pkMap->GenerateTextures();
-
-	m_pkHeightMapObject->GetPos().Set(0,-4,0);				
-	m_pkMap->SetPosition(Vector3(0,-4,0));
-	
-
-	//skybox
-	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetParent(pkObjectMan->GetWorldObject());	
-	sky->SetRotate(Vector3(.5,0,0));
-
-	//water
-	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
-	water->GetPos().Set(512,0,512);
-	water->SetParent(pkObjectMan->GetWorldObject());
-
-	cout<<"new map"<<endl;
-}
-*/
 
 void Game::SetUpMenuScreen()
 {

@@ -13,8 +13,6 @@
 #include <cstdio>
 #include <cstdarg>
 #include "network.h"
-//#include "propertyfactory.h"
-//#include "zgui/zgui.h"
 
 using namespace std;
 
@@ -30,8 +28,6 @@ enum enginestates
 };
 
 		
-//	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		
-
 #define	ZFGP_OBJECTSTATE	1
 #define	ZFGP_CLIENTSTATE	2
 #define	ZFGP_CLIENTCMD		3
@@ -59,10 +55,10 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		vector<string>	AppArguments;		
 		
-		Camera *m_pkTempCamera;
+//		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
-		Camera *m_pkDefaultCamera;
+//		Camera *m_pkDefaultCamera;
 	
 		string m_kCurentDir;
 
@@ -125,11 +121,10 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline float GetFrameTime() {return float((m_fFrameTime/1000.0));};
 		inline float GetGameTime(void) {return float((SDL_GetTicks()/1000.0));};
 		
-		void SetCamera(Camera* pkCamera);
-	
+		void SetCamera(Camera* pkCamera);	
 		inline Camera *GetCam() {return m_pkCamera;};		
-		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
-		inline Camera *GetConsoleCam() {return m_pkConsoleCamera;};				
+//		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
+//		inline Camera *GetConsoleCam() {return m_pkConsoleCamera;};				
 
 		int	NumberOfArgs(void);	// Return num of arg to app.
 		string GetArg(int iArgIndex);

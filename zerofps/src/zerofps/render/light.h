@@ -59,7 +59,7 @@ class RENDER_API Light : public ZFObject {
 		vector<LightSource*> m_kActiveLights;
 
 		void TurnOffAll();
-
+		
 	public:
 		int m_iNrOfLights;
 		

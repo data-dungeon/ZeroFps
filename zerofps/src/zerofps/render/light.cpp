@@ -5,6 +5,7 @@
 
 LightSource::LightSource() {
 //cout<<"new light"<<endl;
+	
 	//position and rotation
 	kPos=NULL;
 	kRot=NULL;
