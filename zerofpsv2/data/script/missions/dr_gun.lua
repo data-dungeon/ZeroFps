@@ -71,6 +71,12 @@ function OnMissionStart()
 	CreateWnd(4,"HosptialMapLabel","MapWnd","",420,179,16,16,0)
 	ChangeSkin("HosptialMapLabel","Skin1","Label")
 
+	local pos = { 83.4634,1.20561,34.7872 }
+	RunScript("data/script/objects/dm/t_spawner_mechanic_door.lua",-1, pos );
+
+	local pos2 = { 83.8529,1.20561,26.6406 }
+	RunScript("data/script/objects/dm/t_spawner_man_door.lua",-1, pos2 );
+	
 end
 
 function OnMissionSuccess()
