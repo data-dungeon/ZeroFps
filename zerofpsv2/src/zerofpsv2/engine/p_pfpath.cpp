@@ -10,6 +10,7 @@ P_PfPath::P_PfPath()
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
 	m_fSpeed = 1;
 }
@@ -100,6 +101,27 @@ void P_PfPath::SetPath(vector<Vector3> kPath)
 {
 	m_kPath = kPath;
 	m_iNextGoal = 0;
+}
+
+bool P_PfPath::MakePathFind(Vector3 kDestination)
+{
+	vector<Vector3> kPath;
+
+	/* Vim Test Path*/
+	Vector3 kPathStart = m_pkObject->GetWorldPosV();
+	Vector3 kPathEnd   = kDestination;
+	kPath.clear();
+	bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
+
+	if(bres) 
+	{
+		reverse(kPath.begin(), kPath.end());
+		kPath.push_back(kPathEnd);
+		SetPath(kPath);
+		return true;
+	}
+	
+	return false;
 }
 
 

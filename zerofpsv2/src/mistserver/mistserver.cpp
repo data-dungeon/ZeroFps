@@ -1264,7 +1264,7 @@ void MistServer::HandleOrders()
 				pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
 								
 		}
-		else if(order->m_sOrderName == "Move") 		//else ground klick
+/*		else if(order->m_sOrderName == "Move") 		//else ground klick
 		{
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
@@ -1276,7 +1276,7 @@ void MistServer::HandleOrders()
 				}
 			}
 		}
-/*				/* Vim Test Path*
+				/* Vim Test Path*
 				kPathStart = ob->GetWorldPosV();
 				kPathEnd   = order->m_kPos;
 				kPath.clear();

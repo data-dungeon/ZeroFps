@@ -4,6 +4,7 @@
 #include "property.h"
 #include "engine_x.h"
 #include "zerofps.h"
+#include "astar.h"
 
 using namespace std;
 
@@ -11,6 +12,8 @@ class ENGINE_API P_PfPath : public Property
 {
 	private:
 		ZeroFps*				m_pkFps;
+		AStar*				m_pkAStar;
+		
 		vector<Vector3>	m_kPath;
 		int					m_iNextGoal;
 		
@@ -30,6 +33,8 @@ class ENGINE_API P_PfPath : public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		void SetPath(vector<Vector3> kPath);
+
+		bool MakePathFind(Vector3 kDestination);
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

@@ -6,6 +6,7 @@
 #include "p_item.h"
 #include "p_spell.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <cmath>                    // for trigonometry functions
 
@@ -39,6 +40,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
+	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
 
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
@@ -552,6 +554,35 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		}
 		return 0;
 	}
+}
+
+int MistLandLua::MakePathFindLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 4)
+	{
+		double dId;
+		double x,y,z;
+		Vector3 kPos;		
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgNumber(pkLua, 1, &x);		
+		g_pkScript->GetArgNumber(pkLua, 2, &y);		
+		g_pkScript->GetArgNumber(pkLua, 3, &z);		
+				
+		kPos.x = x;
+		kPos.y = y;
+		kPos.z = z;				
+	
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		if(pkEnt)
+		{
+			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+			if(pf)
+				pf->MakePathFind(kPos);
+		}
+	}
+	return 0;
 }
 
 int MistLandLua::BounceLua(lua_State* pkLua)

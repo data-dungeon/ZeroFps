@@ -149,14 +149,16 @@ namespace MistLandLua
    int MCOMMON_API CastSpellLua (lua_State* pkLua);
 
 
-	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
-	
+	//movement
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 	int MCOMMON_API BounceLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
-
-   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
-
+	int MCOMMON_API MakePathFindLua(lua_State* pkLua);				//(int objectid,float x,y,z) do a pathfind for the object
+	
+	//set particle system
+	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
    
+   
+   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
    int MCOMMON_API SetDrawingOrderLua(lua_State* pkLua); // changes the order the object is drawn in(mad function)
 
 

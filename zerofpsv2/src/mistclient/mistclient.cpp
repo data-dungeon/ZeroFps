@@ -417,7 +417,7 @@ void MistClient::Input()
 					{
 						ClientOrder order;
 						
-						order.m_sOrderName = "Move";
+						order.m_sOrderName = "G_Move";
 						order.m_iClientID = pkFps->GetConnectionID();
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 						

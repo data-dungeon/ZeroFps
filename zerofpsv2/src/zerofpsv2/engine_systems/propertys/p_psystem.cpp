@@ -9,7 +9,7 @@ void P_PSystem::Update()
 	if ( m_pkPSystem )
 	{
       // returns true if the PSystem is finished
-		if ( !m_pkPSystem->Update( m_pkObject->GetWorldPosV(), m_pkObject->GetWorldRotM() ) )
+		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), m_pkObject->GetWorldRotM() ) )
  		   m_pkPSystem->Draw();
       else
          glPopAttrib();
