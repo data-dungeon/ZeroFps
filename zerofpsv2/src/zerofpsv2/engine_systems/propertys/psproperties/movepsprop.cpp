@@ -15,14 +15,19 @@ void MovePSProp::Update()
 
 	vector<Particle>* pkParticles = &m_pkParent->m_kParticles;
 
-	int i;
 	// Update velocity
-	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
-		m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kParticles[i].m_kForce * fFrameTime;
+	for ( int i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
+	{
+		// if force inherits direction of PSystem
+		if ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bForceInheritDirection )
+			m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kRotation.VectorRotate(m_pkParent->m_kParticles[i].m_kForce * fFrameTime);
+		else
+			m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kParticles[i].m_kForce * fFrameTime;
+	}
  
 	// Update position
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
-		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime;
+			m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime;
 
 	// get modelviewmatrix
 	float *afM = new float[16];
