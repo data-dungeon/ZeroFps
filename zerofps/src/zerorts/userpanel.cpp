@@ -32,6 +32,12 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	pkMainWndSkin->m_iBkTexAlphaID = m_pkZeroRts->pkTexMan->Load("../data/textures/player_panel_rts_a.bmp", 0);
 	m_pkDlgBox->SetSkin(pkMainWndSkin);
 
+	ZGuiWnd* pkMinimap = new ZGuiWnd(Rect(10,9,10+172,10+172),m_pkDlgBox,true,751489);
+	ZGuiSkin* pkSkin = new ZGuiSkin(255,255,255, 0,0,0, 0, 0);
+	pkSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load("../data/textures/minimap.bmp", 0);
+	pkMinimap->SetSkin(pkSkin);
+	pkMinimap->SetZValue(121212);
+
 	int id = ID_CMDBN1;
 	Rect rc(m_pkZeroRts->m_iWidth-48-10,10,0,0);
 	rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;
@@ -58,6 +64,9 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	}
 
 	m_pkGui->AddMainWindow(15424+1, m_pkDlgBox, "UserPanelDlg", m_oMainWndProc, false);
+
+	m_pkDlgBox->SortChilds(); 
+
 
 
 	return true;

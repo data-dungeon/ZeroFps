@@ -30,6 +30,7 @@ struct PickInfo
 
 class ZeroRTS :public Application {
 	private:
+		void CreateMinimap();
 		Camera*		m_pkCamera;
 		HeightMap*	m_pkMap;
 		UserPanel*	m_pkUserPanel;

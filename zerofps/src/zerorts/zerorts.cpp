@@ -67,6 +67,8 @@ void ZeroRTS::Init()
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
+	//CreateMinimap();
+
 	m_pkGuiBuilder = new GuiBuilder(pkTexMan);
 
 	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
@@ -312,6 +314,68 @@ void ZeroRTS::MoveCam(Vector3 kVel)
 {
 	SetCamPos(GetCamPos() + kVel * pkFps->GetFrameTime());
 }
+
+void ZeroRTS::CreateMinimap()
+{
+	pkTexMan->BindTexture("../data/textures/minimap.bmp", T_NOMIPMAPPING);
+	
+	HeightMap* hm = pkLevelMan->GetHeightMap();
+
+	int size = hm->GetSize();
+
+	float scale = (float) size / 128.0f;
+
+	float fx, fy;
+
+	for(int y=0; y<128; y++)
+	{
+		fy = scale*(float)y;
+
+		for(int x=0; x<128; x++)
+		{
+			fx = scale*(float)x;
+
+			if(fx > size-1) 
+				fx = size -1;
+			if(fy > size-1) 
+				fy = size -1;
+
+			HM_vert* pkVert = hm->GetVert(fx,fy);
+
+			int r,g,b;
+
+			if(pkVert->height < 0)
+			{
+				r = 0; 
+				g = 0; 
+				b = 255; 
+			}
+			else
+			if(pkVert->height > 0)
+			{
+				r = 0; 
+				g = 255; 
+				b = 0; 
+			}
+			else
+			//if(pkVert->height > 30)
+			{
+				r = 255; 
+				g = 255; 
+				b = 0; 
+			}
+
+			pkTexMan->PsetRGB(x,y,r,g,b);
+		}
+	}
+
+	for(int i=100; i<110; i++)
+		for(int j=100; j<110; j++)
+			printf("tex: %f\n", hm->GetVert(i,j)->height);
+
+
+	pkTexMan->SwapTexture();
+}	
 
 bool ZeroRTS::AddSelectedObject(int iID)
 {
