@@ -15,7 +15,7 @@ class BunnyObject: public Object {
 	public:
 		bool onGround;
 	
-		BunnyObject(HeightMap *pkMap);
+		BunnyObject();
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 

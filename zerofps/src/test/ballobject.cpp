@@ -5,7 +5,7 @@ BallObject::BallObject() {
 
 	AddProperty(new CollisionProperty(&m_kPos,new float(.5)));
 	AddProperty(new GravityProperty());
-
+	AddProperty(new FloatProperty());	
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));

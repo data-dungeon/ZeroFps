@@ -1,7 +1,8 @@
 #include "heightmap.h"
 
 
-HeightMap::HeightMap(FileIo* pkFile) {
+HeightMap::HeightMap(FileIo* pkFile) 
+ : ZFObject("HeightMap") {
 	m_pkFile=pkFile;
 	m_iHmSize=500;	
 //	m_iBoxTresh=2;

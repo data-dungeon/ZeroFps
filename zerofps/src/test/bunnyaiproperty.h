@@ -20,7 +20,7 @@ class BunnyAIProperty: public Property {
 
 	public:
 		
-		BunnyAIProperty(HeightMap *pkMap);
+		BunnyAIProperty();
 		
 		void Update();
 

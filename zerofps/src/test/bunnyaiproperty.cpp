@@ -1,10 +1,10 @@
 #include "bunnyaiproperty.h"
 
 
-BunnyAIProperty::BunnyAIProperty(HeightMap *pkMap)
+BunnyAIProperty::BunnyAIProperty()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkMap=pkMap;
+	m_pkMap = static_cast<HeightMap*>(g_ZFObjSys.GetObjectPtr("HeightMap"));	
 
 	m_iState=0;
 

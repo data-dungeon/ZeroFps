@@ -1,13 +1,15 @@
 #include "bunnyobject.h"
 
-BunnyObject::BunnyObject(HeightMap *pkMap)
+BunnyObject::BunnyObject()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+//	m_pkMap = static_cast<HeightMap*>(g_ZFObjSys.GetObjectPtr("HeightMap"));
 
 	AddProperty(new GravityProperty());
-	//AddProperty("GravityProperty");
+	AddProperty(new FloatProperty());	
+
 	AddProperty("ModelProperty");
-	AddProperty(new BunnyAIProperty(pkMap));
+	AddProperty(new BunnyAIProperty());
 
 	Vector3 kColor;
 	kColor.Set(rand()%1000/1000.0,rand()%1000/1000.0,rand()%1000/1000.0);

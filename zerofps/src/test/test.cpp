@@ -97,7 +97,7 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-	for( i=0;i<200;i++) {
+	for( i=0;i<20;i++) {
 		Object *ball=new BallObject();
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
@@ -107,8 +107,8 @@ void Test::OnInit(void) {
 	}
 
 	Object *sussi;
-	for(i=0;i<0;i++) {
-		sussi=new BunnyObject(test);
+	for(i=0;i<20;i++) {
+		sussi=new BunnyObject();
 		float x=340 + rand()%10;
 		float y=780 + rand()%10;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);

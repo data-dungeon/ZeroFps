@@ -12,7 +12,8 @@ FloatProperty::FloatProperty() {
 
 void FloatProperty::Update() {
 	if(m_pkObject->GetPos().y<0) {
-		if(m_pkObject->GetVel().y<0.01) 
+		//if upspeed becomes to great dont add more speed
+		if(m_pkObject->GetVel().y<0.004) 
 			m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
 		m_pkObject->GetPos().y+=m_pkObject->GetVel().y * m_pkFps->GetFrameTime();
 		

@@ -28,8 +28,7 @@ struct HM_fileheader {
 };
 
 
-
-class BASIC_API HeightMap {
+class BASIC_API HeightMap: public ZFObject {
 	private:		
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		

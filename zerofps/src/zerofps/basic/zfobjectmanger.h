@@ -7,19 +7,7 @@
 
 using namespace std;
 
-class ZFObject;
-
-
-
-
-
-
-
-
-
-
-
-
+//class ZFObject;
 
 struct NameObject
 {
