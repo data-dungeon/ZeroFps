@@ -96,6 +96,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			NONE = 0,
 			SELECT_SOUND,
 			SELECT_MAD,
+			SELECT_AMBIENT_SOUND,
 		};
 		
 		//wierd stuff

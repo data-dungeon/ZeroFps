@@ -199,17 +199,31 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "SelectPropertyValBn")
 			{
-				char* item;
-				if((item = GetSelItem("PropertyValList")))
+				char* szProperty;
+				if((szProperty = GetSelItem("PropertyList")))
 				{
-					if(string(item) == string("m_kMadFile"))
+					char* szPropertyVal;
+					if((szPropertyVal = GetSelItem("PropertyValList")))
 					{
-						ShowWnd("SelectFileWnd", true, true);
+						if( string(szProperty) == string("P_Mad") && string(szPropertyVal) == string("m_kMadFile"))
+						{
+							ShowWnd("SelectFileWnd", true, true);
 
-						if(m_iSelectFileState != SELECT_MAD)
-							BuildFileTree("SelectFileTree", "data/mad", ".mad");
+							if(m_iSelectFileState != SELECT_MAD)
+								BuildFileTree("SelectFileTree", "data/mad", ".mad");
 
-						m_iSelectFileState = SELECT_MAD;
+							m_iSelectFileState = SELECT_MAD;
+						}
+						else
+						if( string(szProperty) == string("P_Sound") && string(szPropertyVal) == string("filename"))
+						{
+							ShowWnd("SelectFileWnd", true, true);
+
+							if(m_iSelectFileState != SELECT_SOUND)
+								BuildFileTree("SelectFileTree", "data/sound", ".wav");
+
+							m_iSelectFileState = SELECT_SOUND;
+						}
 					}
 				}
 			}
@@ -302,10 +316,10 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					ShowWnd("SelectFileWnd", true);
 
-					if(m_iSelectFileState != SELECT_SOUND)
+					if(m_iSelectFileState != SELECT_AMBIENT_SOUND)
 						BuildFileTree("SelectFileTree", "data/sound", ".wav");
 
-					m_iSelectFileState = SELECT_SOUND;
+					m_iSelectFileState = SELECT_AMBIENT_SOUND;
 				}
 				else
 				{
@@ -517,25 +531,6 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		switch(m_iSelectFileState)
 		{
-		case SELECT_SOUND:
-
-			ZGuiListitem* pkItem;
-			pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
-			if(pkItem)
-			{
-				strFullpath = string("data/sound/");
-
-				if(szParentNodeText)
-					strFullpath += string(szParentNodeText);
-
-				if(szClickNodeText)
-					strFullpath += string(szClickNodeText);
-
-				m_pkAmbientSoundAreas->SetAmbientSound(pkItem->GetText(), strFullpath);
-				SetText("NewAsFileNameEb", (char*) strFullpath.c_str());
-			}
-			break;
-
 		case SELECT_MAD:
 
 			strFullpath = string("data/mad/");
@@ -552,6 +547,43 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			ShowWnd("SelectFileWnd", false); // close window
 
+			break;
+
+		case SELECT_SOUND:
+
+			strFullpath = string("data/sound/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			SetText("PropertyValEb", (char*) strFullpath.c_str());
+
+			AddPropertyVal();
+
+			ShowWnd("SelectFileWnd", false); // close window
+
+			break;
+
+		case SELECT_AMBIENT_SOUND:
+
+			ZGuiListitem* pkItem;
+			pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
+			if(pkItem)
+			{
+				strFullpath = string("data/sound/");
+
+				if(szParentNodeText)
+					strFullpath += string(szParentNodeText);
+
+				if(szClickNodeText)
+					strFullpath += string(szClickNodeText);
+
+				m_pkAmbientSoundAreas->SetAmbientSound(pkItem->GetText(), strFullpath);
+				SetText("NewAsFileNameEb", (char*) strFullpath.c_str());
+			}
 			break;
 		}
 	}
