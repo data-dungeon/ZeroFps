@@ -71,6 +71,7 @@ void DarkMetropolis::GUI_Init()
 
 	// Load start sceen.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+	pkGui->SetFocus(GetWnd("DMStartWnd"));
 
 	ShowWnd("ContinueGameBn", false);
 	
