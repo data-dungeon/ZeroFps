@@ -7,7 +7,6 @@
 #include <cmath>
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
-#include "../zerofps/render/pmddraw.h"
 
 class Test :public Application {
 	HeightMap *test;
@@ -25,7 +24,8 @@ class Test :public Application {
 
 	Vector3 *m_kSpotpos;
 
-	PmdDraw testa;
+	Core	CoreTest;
+	int		iCoreFrame;
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);

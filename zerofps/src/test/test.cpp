@@ -45,8 +45,11 @@ void Test::OnInit(void) {
   
   pkRender->SetFog(Vector4(.50,.55,.88,1),2,150,200,true);
 
-	testa.Load("babe.pmd");
-	
+//	testa.Load("babe.pmd");
+	CoreTest.Load("bitch.mad");
+	CoreTest.SetTextureManger(pkTexMan);
+	iCoreFrame = 0;
+
 	pkLight->SetCamera(pkFps->m_kCamPos);
 	
 	LightSource *spot=new LightSource();
@@ -92,11 +95,6 @@ void Test::OnInit(void) {
 	pkLight->Add(spot2);			
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
-	
-
-
-
-
 }
 
 
@@ -126,12 +124,15 @@ void Test::OnIdle(void) {
 			for(int iy=0;iy<500;iy+=25)
 				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),25,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
-
 	glPushMatrix();
-		glTranslatef(70,test->Height(70,50),50);
+		glTranslatef(5,test->Height(5,5),5);
 		glColor3f(0,0,1);
 		glScalef(.01,.01,.01);
-		testa.draw();
+		CoreTest.SetFrameI(iCoreFrame);
+		iCoreFrame++;
+		if(iCoreFrame >= 289)
+			iCoreFrame = 0;
+		CoreTest.draw();
 	glPopMatrix();
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
