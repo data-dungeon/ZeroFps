@@ -28,6 +28,8 @@ enum EDIT_MODES{
 
 class ZeroEdit :public Application {
 	private:
+		void ToogleMenu();
+		bool InitGUI();
 		enum FuncId_e
 		{
 			FID_LOADMAP,
@@ -65,6 +67,7 @@ class ZeroEdit :public Application {
 		float m_fDrawRate;
 		bool m_bDrawing;
 		bool m_iRandom;
+		bool m_bMenuActive;
 	
 		string m_kMapBaseDir;
 
@@ -84,6 +87,7 @@ class ZeroEdit :public Application {
 		void RegisterPropertys();
 		
 	public:
+		bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroEdit() {};
 	 	void OnInit(void);
