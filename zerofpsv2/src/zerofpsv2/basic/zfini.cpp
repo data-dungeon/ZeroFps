@@ -200,6 +200,9 @@ bool ZFIni::ProcessINIFile()
 			iLineLength = strlen(m_pstrLines[line]);
 			do
 			{
+				if(m_pstrLines[line][ch] == ';' && (b1stBracketFound == false || b2ndBracketFound == false))
+					break;
+
 				if(m_pstrLines[line][ch] == '[' && b2ndBracketFound == false)
 				{
 					b1=ch+1; b1stBracketFound = true;
