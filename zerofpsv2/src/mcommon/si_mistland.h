@@ -133,6 +133,8 @@ namespace MistLandLua
 
    int MCOMMON_API UseItemOnLua (lua_State* pkLua);
 
+   int MCOMMON_API UsesSkillLua (lua_State* pkLua);
+
    // equip / unequip character
 
    int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);
@@ -188,6 +190,9 @@ namespace MistLandLua
 	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
    int MCOMMON_API GetClosestPlayerLua(lua_State* pkLua);
 	int MCOMMON_API GetClosestObjectOfTypeLua(lua_State* pkLua);
+
+   int MCOMMON_API GetSeenPlayerLua(lua_State* pkLua);
+
    int MCOMMON_API DistanceToLua(lua_State* pkLua);
    int MCOMMON_API SetAIIsPlayerLua(lua_State* pkLua);
 

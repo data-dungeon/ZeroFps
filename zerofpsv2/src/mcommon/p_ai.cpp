@@ -88,8 +88,15 @@ void P_AI::Update()
             ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
             ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
 
-            DealDamage( m_pkCharProp->GetCharStats()->GetFightStats(),
-               ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
+            // roll to hit!
+            if ( m_pkCharProp->GetCharStats()->RollSkillDice(
+               m_pkCharProp->GetCharStats()->m_strPrimSkill, 3) )
+            {
+               DealDamage( m_pkCharProp->GetCharStats()->GetFightStats(),
+                  ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
+            }
+            else
+               cout << "Missed!" << endl;
 
             m_pkCharProp->GetCharStats()->ResetActionTimer();
          }

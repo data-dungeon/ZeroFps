@@ -9,6 +9,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/script/zfscript.h"
+#include "../zerofpsv2/basic/plane.h"
 #include <cmath>                    // for trigonometry functions
 
 
@@ -113,6 +114,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AddItemValue",			   MistLandLua::AddItemValueLua);			
    pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);
    pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
+   pkScript->ExposeFunction("UsesSkill",			      MistLandLua::UsesSkillLua);
 	pkScript->ExposeFunction("SetEquipmentCategory",	MistLandLua::SetEquipmentCategoryLua);
 	pkScript->ExposeFunction("RegisterAsContainer",		MistLandLua::RegisterAsContainerLua);
 
@@ -161,6 +163,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetAIIsPlayer", MistLandLua::SetAIIsPlayerLua);
    pkScript->ExposeFunction("AIMoveTo", MistLandLua::AIMoveToLua);
 
+   pkScript->ExposeFunction("GetSeenPlayer", MistLandLua::GetSeenPlayerLua);
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
    pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
    pkScript->ExposeFunction("GetClosestObjectOfType", MistLandLua::GetClosestObjectOfTypeLua);   
@@ -2194,6 +2197,32 @@ int MistLandLua::SetItemNameLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
+int MistLandLua::UsesSkillLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkCP )
+            pkCP->m_pkItemStats->m_kUsesSkill = string (acType);
+         else
+           cout << "Warning! Tried to use luaFunc UsesSkillLua on a non-item object!" << endl;
+       }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
 int MistLandLua::SetItemWeightLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -3082,8 +3111,11 @@ int MistLandLua::AIFaceDirectionLua(lua_State* pkLua)
 
          if ( pkAI )
          {
-            pkAI->AddDynamicOrder ("Face", 0, 0, Vector3(0, dDirection, 0), ".");
-
+            Vector3 kDir;
+            kDir.x = cos ( dDirection / degtorad );
+            kDir.y = 0;
+            kDir.z = sin ( dDirection / degtorad );
+            pkAI->AddStaticOrder ("Face", 0, 0, kDir, ".");
          }
          else
             cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
@@ -3362,6 +3394,72 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
    }
 
    return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
+{
+ 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+	{
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+      CharacterProperty* pkCP = (CharacterProperty*)pkObj->GetProperty("P_CharStats");
+
+      if ( !pkObj || !pkCP )
+         return 0;
+
+      Entity* pkClosestObject = 0;
+
+      float fDistance = 99999999;      
+      
+      // TODO!!!: check more than the zone the user is in
+      ZoneData* pkZone = pkObj->GetObjectMan()->GetZone( pkObj->GetWorldPosV() );
+
+      vector<Entity*>* pkList = new vector<Entity*>;
+
+      pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
+
+      for ( int i = 0; i < pkList->size(); i++ )
+      {
+         // check if object is character
+         if ( pkList->at(i)->GetType() == "t_player.lua" )
+         {
+            Vector3 kPos = pkList->at(i)->GetWorldPosV();
+
+            float fDist = pkObj->GetWorldPosV().DistanceXZTo(kPos);
+
+            // check if player is seen
+            float fVisionRange = pkCP->GetCharStats()->m_fVision *
+               ((CharacterProperty*)pkList->at(i)->GetProperty("P_CharStats"))->GetCharStats()->m_fVisibility;
+
+            Plane kView;
+
+            // TODO!! Make a triangle with represents vision and test point inside it
+
+            float fAngle = 0;
+
+            // check if distance is smaller that the previos (if any) found
+            if ( fDist < fDistance && fVisionRange >= fDist && fAngle < 45 && fAngle > -45 )
+            {
+               fDistance = fDist;
+               pkClosestObject = pkList->at(i);
+            }
+         }
+      }
+
+      delete pkList;
+
+      if ( pkClosestObject )
+         g_pkScript->AddReturnValue(pkLua, pkClosestObject->iNetWorkID);
+      else
+         g_pkScript->AddReturnValue(pkLua, -1);
+
+
+      return 1;
+   }
+
+   return 0;
+
 }
 
 // -----------------------------------------------------------------------------------------------

@@ -17,8 +17,12 @@ CharacterStats::CharacterStats( Entity *pkParent )
 	m_kRecalPos.Set(0,0,0);
 	
    m_uiVersion = 0;
-
    m_pkContainer = 0;
+
+   m_fHearing = 3;
+   m_fVision = 3;
+   m_fVisibility = 1;
+   m_fLoudness = 1;
 
    m_pkParent = pkParent;
 
@@ -282,6 +286,10 @@ void CharacterStats::TestLevelUp ( StatDescriber *pkStat )
    {
       pkStat->m_iValue++;
       pkStat->m_fExp -= 10;
+
+      cout << "LevelUp!!" << endl;
+
+      Print();
    }
 
 }
@@ -548,7 +556,6 @@ bool CharacterStats::Equip ( Entity *pkObject, int iSlot )
 bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
-
 	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
 
    if ( !pkP_Item )
@@ -577,6 +584,13 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       pkLink->SetJoint( kSlot.c_str() );
 
       cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
+
+      // if equipped primary weapon, set skill!!
+      if ( kSlot == "righthand" || kSlot == "RightHand" || kSlot == "cavetroll_r_u_finger_end")
+      {
+         m_strPrimSkill = pkP_Item->m_pkItemStats->m_kUsesSkill;
+         cout << "SetPrimSkillTo:" << m_strPrimSkill << endl;
+      }
 
       return true;
    }

@@ -103,6 +103,10 @@ SOURCE=.\quickboard.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\mcommon\si_mistland.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\skilldlg.cpp
 # End Source File
 # Begin Source File

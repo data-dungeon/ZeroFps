@@ -76,6 +76,21 @@ private:
 public:
    Container* m_pkContainer;
 
+   float
+      m_fHearing,     // How good the character can hear
+      m_fVision,      // How good the character can see
+      m_fVisibility,  // How easy it is to detect the character
+      m_fLoudness;    // How much noise the character make
+
+   string 
+      m_strPrimSkill, // attack skill
+      m_strSecSkill;  // choosable skill
+
+   bool
+      m_bRider,       // is riding something
+      m_bMounted;     // has a rider
+
+
    // call this when the character has attacked, cast spell or such
    void ResetActionTimer ()                { m_fReloadTimer = m_fReloadTime; }
    void SetReloadTime ( float fTime )      { m_fReloadTime = fTime; }
