@@ -7,6 +7,7 @@
 #include "../zerofpsv2/engine/res_texture.h"
 #include "../zerofpsv2/render/texturemanager.h"
 #include "../zerofpsv2/script/zfscript.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include <typeinfo>
  
 //////////////////////////////////////////////////////////////////////
@@ -63,9 +64,20 @@ ZGuiSkin* GuiApp::GetSkin(string strName)
 }
 
 bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
-					   ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags)
+							  ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags)
 {
-	ZFAssert(GetWnd(iID) == NULL, "GuiApp::CreateWnd: WindowID already exist"); 
+	
+	//ZFAssert(GetWnd(iID) == NULL, "GuiApp::CreateWnd: WindowID already exist"); 
+
+	if(m_pkResMan->Wnd(szResourceName))
+	{
+		printf("GuiApp::CreateWnd: WindowID already exist\n");
+
+		m_pkResMan->Wnd(szResourceName)->Show();
+		
+		return false;
+	}
+
 	ZGuiWnd* pkWnd;
 
 	const int LISTBOX_ITEM_HEIGHT = 20;
@@ -145,7 +157,7 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		static_cast<ZGuiSlider*>(pkWnd)->SetBkSkin(GetSkin("DefSliderBkSkin"));
 		break;
 	case Listbox:
-		static_cast<ZGuiListbox*>(pkWnd)->SetSkin( GetSkin("DefLBBkSkin") );
+		static_cast<ZGuiListbox*>(pkWnd)->SetSkin( GetSkin("DefLBBkSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemNormalSkin(   GetSkin("DefLBitemUSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemSelectedSkin( GetSkin("DefLBitemDSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemHighLightSkin(GetSkin("DefLBitemFSkin"));
@@ -189,6 +201,11 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 			return false;
 	}
+	else
+	{
+		if(szResourceName)
+			m_pkGui->RegisterWindow(pkWnd, szResourceName);
+	}
 
 	if(szText)
 	{
@@ -199,6 +216,8 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 
 	pkWnd->SetGUI(m_pkGui);
 	pkWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
+
+	pkWnd->Show(); 
 	
 	return true;
 }
@@ -212,9 +231,14 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		pkParent, x, y, w, h, uiFlags);
 }
 
-ZGuiSkin* GuiApp::AddSkinFromScript(char *szName, ZFScript *pkScript)
+ZGuiSkin* GuiApp::AddSkinFromScript(char *szName, ZFScript *pkScript, ZGuiSkin* pkSkin)
 {
-	ZGuiSkin* pkNewSkin = new ZGuiSkin();
+	ZGuiSkin* pkNewSkin;
+	
+	if(pkSkin == NULL)
+		pkNewSkin = new ZGuiSkin();
+	else
+		pkNewSkin = pkSkin;
 
 	char szData[250];
 	double dData;
@@ -299,7 +323,8 @@ void GuiApp::InitTextures(ZFScript* pkScript)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i], pkScript) ) );
 }
 
-void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript)
+void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript,
+									ZGuiResourceManager* pkResMan)
 {
 	// Start skript filen för GUI:t.
 	// Läs in tex filnamn på textuerer osv.
@@ -307,6 +332,7 @@ void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkSc
 
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;
+	m_pkResMan = pkResMan;
 
 	InitTextures(pkScript);
 
@@ -315,7 +341,7 @@ void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkSc
 	SDL_ShowCursor(SDL_DISABLE);
 
 	// Låt skriptfilen skapa alla fönster.
-	pkScript->CallScript("InitGUI", 0, 0);
+	pkScript->CallScript("CreateMainWnds", 0, 0);
 }
 
 int GuiApp::GetTexID(char *szFile)
@@ -522,4 +548,86 @@ GuiType GuiApp::GetType(ZGuiWnd *pkWnd)
 	return GuiType_Error;
 }
 
+void GuiApp::CloseWindow(char* szResName)
+{
+	if(szResName == NULL)
+		return;
 
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+	
+	if(pkWnd)
+		pkWnd->Hide();
+}
+
+bool GuiApp::ChangeSkin(ZFScript* pkScript, int iID, char *szSkinName, char* szSkinType)
+{
+	ZGuiWnd* pkWnd = GetWnd(iID);
+
+	if(pkWnd == NULL)
+		return false;
+
+	ZGuiSkin* pkSkin = new ZGuiSkin;
+
+	if(pkSkin)
+		AddSkinFromScript(szSkinName, pkScript, pkSkin);
+	else
+	{
+		printf("Failed to change skin!\n");
+		return false;
+	}
+
+	GuiType eType = GetType(pkWnd);
+
+	if( eType == Wnd || eType == Label )
+		pkWnd->SetSkin(pkSkin);
+	if( eType == Button )
+	{
+		if(strcmp(szSkinType, "Button up") == 0)
+			static_cast<ZGuiButton*>(pkWnd)->SetButtonUpSkin(pkSkin);
+		else
+		if(strcmp(szSkinType, "Button down") == 0)
+			static_cast<ZGuiButton*>(pkWnd)->SetButtonDownSkin(pkSkin);
+		else
+		if(strcmp(szSkinType, "Button focus") == 0)
+			static_cast<ZGuiButton*>(pkWnd)->SetButtonHighLightSkin(pkSkin);
+	}
+ 
+	//printf("Changing skin to %s\n", szSkinName);
+
+	return true;
+}
+
+void GuiApp::ResizeWnd(char *szResName, int w, int h)
+{
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+	if(pkWnd)
+	{
+		Rect rc = pkWnd->GetScreenRect();
+
+		if(w == -1)
+			w = rc.Right - rc.Left;
+
+		if(h)
+			h = rc.Bottom - rc.Top;
+
+		pkWnd->Resize(w, h); 
+	}
+	else
+	{
+		printf("Failed to find window to resize!\n");
+	}
+}
+
+bool GuiApp::IsWndVisible(char* szResName)
+{
+	int apa = 0;
+
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+	if(pkWnd != NULL)
+	{
+		if(pkWnd->IsVisible())
+			return true;
+	}
+	
+	return false;
+}

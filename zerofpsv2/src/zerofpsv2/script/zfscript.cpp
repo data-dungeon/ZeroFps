@@ -269,6 +269,34 @@ bool ZFScript::GetArg(lua_State* state, int iIndex, void* data)
 	return false;
 }
 
+const int ZFScript::GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_getglobal(state, szName);
+
+	int data;
+
+	if(lua_isnumber(state, 1))
+	{
+		data = (int) lua_tonumber(state, 1);
+		lua_pop (state, 1);
+
+		if(bSuccess)
+			bSuccess = false;
+
+		return data;
+	}
+
+	lua_pop (state, 1);
+
+	if(bSuccess)
+		bSuccess = false;
+
+	return -1;
+}
+
 bool ZFScript::GetGlobal(lua_State* state, char* szName, double& data)
 {
 	if(state == NULL)
@@ -370,4 +398,20 @@ bool ZFScript::GetGlobal(lua_State* state, char* szTable, char* szVar, double& d
 	lua_pop (state, 1);
 
 	return true;
+}
+
+void ZFScript::AddReturnValue(lua_State* state, double dValue)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_pushnumber(state, dValue); 
+}
+
+void ZFScript::AddReturnValue(lua_State* state,char *szValue, int legth)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_pushlstring(state, szValue, legth); 
 }

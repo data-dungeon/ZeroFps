@@ -11,6 +11,7 @@ using namespace std;
 
 class TextureManager;
 class ZFScript;
+class ZGuiResourceManager;
 
 #define EB_IS_MULTILINE   0x1
 
@@ -34,7 +35,11 @@ enum GuiType
 class GuiApp
 {
 public:
-	ZGuiSkin* AddSkinFromScript(char* szName, ZFScript* pkScript);
+	bool IsWndVisible(char* szResName);
+	void ResizeWnd(char* szResName, int w, int h);
+	bool ChangeSkin(ZFScript* pkScript, int iWndID, char* szSkinName, char* szSkinType);
+	
+	ZGuiSkin* AddSkinFromScript(char* szName, ZFScript* pkScript, ZGuiSkin* pkSkin=NULL);
 	bool IsButtonChecked(int iWndID);
 	float GetTextFloat(int iWndID, bool* pkSuccess);
 	int GetTextInt(int iWndID, bool* pkSuccess);
@@ -49,11 +54,12 @@ public:
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
-	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript);
+	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript, ZGuiResourceManager* pkResMan);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
 	bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
+	void CloseWindow(char* szResName);
 
 	GuiApp(ZGui::callback oMainWndProc);
 	~GuiApp();
@@ -66,6 +72,7 @@ private:
 	ZGuiSkin* GetSkin(string strName);
 
 	ZGui* m_pkGui;
+	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;

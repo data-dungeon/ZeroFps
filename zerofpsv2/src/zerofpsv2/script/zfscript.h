@@ -38,7 +38,10 @@ enum ScripObjectType
 class SCRIPT_API ZFScript  
 {
 public:
+	void AddReturnValue(lua_State* state,char *szValue, int legth);
+	void AddReturnValue(lua_State* state, double dValue);
 
+	const int GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const;
 	bool GetGlobal(lua_State* state, char* szName, double& data);
 	bool GetGlobal(lua_State* state, char* szTable, char* szVar, char* data);
 	bool GetGlobal(lua_State* state, char* szTable, char* szVar, double& data);

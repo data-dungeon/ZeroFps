@@ -82,6 +82,8 @@ class ZeroTank :public Application, public GuiApp {
 		float m_fConePosY;
 
 	public:
+		bool InitializeScript();
+		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		
 		ZeroTank(char* aName,int iWidth,int iHeight,int iDepth);
 	 	
@@ -95,7 +97,6 @@ class ZeroTank :public Application, public GuiApp {
 		void RegisterActions();		
 		void RegisterPropertys();
 		void Input();
-		void SetupGUI();
 		void OnServerStart(void);
 		void OnClientStart(void);
 		

@@ -502,6 +502,10 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth)
 
 	SetDisplay();
 
+	// Set w and h for appliction
+	m_pkApp->m_iWidth = m_iWidth;
+	m_pkApp->m_iHeight = m_iHeight;
+
 #ifdef _WIN32
 	RenderDLL_InitExtGL();
 	extgl_Initialize();

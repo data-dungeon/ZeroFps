@@ -200,6 +200,7 @@ bool ZFIni::ProcessINIFile()
 			iLineLength = strlen(m_pstrLines[line]);
 			do
 			{
+				// Skipp lineswith ';' characters..
 				if(m_pstrLines[line][ch] == ';' && (b1stBracketFound == false || b2ndBracketFound == false))
 					break;
 

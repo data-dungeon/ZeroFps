@@ -275,16 +275,21 @@ bool ZGui::Render()
 
 	m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 	
-	// Blit windows	with lowest z order first.
+	// Blit windows with lowest z order first.
 	for(list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
 	 it != m_pkMainWindows.rend(); it++)
 			(*it)->pkWnd->Render(m_pkRenderer);
 
-	// Render a yellow frame around the window that have focus.
+	// Render a yellow frame around the window that have focus if the bk texture isn't hollow.
 	if(ZGuiWnd::m_pkFocusWnd)
 	{
-		m_pkRenderer->SetSkin(m_pkFocusBorderSkin);
-		m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
+		ZGuiSkin* pkSkin = ZGuiWnd::m_pkFocusWnd->GetSkin();
+
+		if(pkSkin && pkSkin->m_bTransparent == false)
+		{
+			m_pkRenderer->SetSkin(m_pkFocusBorderSkin);	
+			m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
+		}
 	}
 
 	// Draw points

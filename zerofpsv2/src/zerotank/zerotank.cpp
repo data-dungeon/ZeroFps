@@ -10,14 +10,23 @@ Object* g_pkTower;
 Object* g_pkGun;
 Vector3 g_kRotTower = Vector3(0,0,0);;
 
-static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) {return true;}
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		g_kZeroTank.OnCommand(((int*)params)[0], win);
+		break;
+	}
+	return true;
+}
 
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), GuiApp(GUIPROC)
 { 
 
-	m_iSelfObjectID				= -1;
-	m_HaveFoundHMapObject		= false;
+	m_iSelfObjectID			= -1;
+	m_HaveFoundHMapObject	= false;
 	m_iGameType					= 1;
 	
 	g_ZFObjSys.Log_Create("zerorts");
@@ -100,11 +109,9 @@ void ZeroTank::Init()
 	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
 */
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
-
-	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
-	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
 	
-	InitializeGui(pkGui, pkTexMan, pkScript);
+	InitializeScript();
+	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
 //	SetupGUI();
 	
@@ -146,7 +153,10 @@ void ZeroTank::OnIdle()
 
 	
 	m_pkMap2->SetPos(Vector3(0,0,0));
+
 	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+
+
 
 
 /*
@@ -301,7 +311,12 @@ void ZeroTank::Input()
 			m_pkZeroTank_Modify->SetLocalRotV(kRotate);
 		}
 	
-	
+	if(pkInput->Pressed(KEY_R))
+	{
+		static int w = 0;
+		if(w++ > 400-16) w = 0;
+		ResizeWnd("ManaBarProgress", w, -1);		
+	}	
 
 	
 /*	
@@ -577,7 +592,6 @@ void ZeroTank::OnServerStart(void)
 	}
 
 
-
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
@@ -598,10 +612,30 @@ bool ZeroTank::ShutDown()	{ return true; }
 bool ZeroTank::IsValid()	{ return true; }
 
 
-
-void ZeroTank::SetupGUI()
+void ZeroTank::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
-/*	CreateWnd(Wnd, "TestWnd", NULL,  10, -1, 0, 0, 300, 300, 0);
-	CreateWnd(Textbox, "TestTextBox", "Apa", 11, 10, 100, 100, 50, 20, 0);
-	CreateWnd(Button, "TestButton", "Apa", 12, 10, 100, 140, 50, 20, 0);*/
+/*	static const int apA = GetApa();
+	if(pkScript->GetGlobalInt(NULL,  
+	pkScript->CallScript("OnClickOK", 0, 0);*/
+
+	if(iID == 5)
+		pkScript->CallScript("OnClickBackpack", 0, 0); 
+	if(iID == 6)
+		pkScript->CallScript("OnClickStats", 0, 0);
+	if(iID == 4)
+		pkScript->CallScript("OnClickMap", 0, 0);
+
+}
+
+bool ZeroTank::InitializeScript()
+{
+	// Script functions for using the gui
+	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
+	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
+	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
+	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
+	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 
+	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
+	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua);
+	return true;
 }
