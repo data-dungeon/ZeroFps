@@ -38,6 +38,8 @@ class ZeroRTS :public Application {
 		MiniMap*			m_pkMiniMap;
 		P_FogRender*	m_pkFogRender;
 		P_ClientInput* m_pkClientInput;
+		
+		TileEngine*		m_pkTileEngine;
 		Vector3			m_kClickPos, m_kDragPos;
 		bool m_bDisableCameraScroll;
 
@@ -95,7 +97,7 @@ class ZeroRTS :public Application {
 		void OnHud(void);
 		void OnSystem();
 		
-		/* COMMENT OUT BY ZEB
+		// uncommented out by dvoid =P
 		// Pathfind test //////////////////////////////////////
 		PathFind* m_pkTestPath;
 		Point m_pkStart, m_pkEnd;
@@ -103,7 +105,7 @@ class ZeroRTS :public Application {
 		void BuildPath();
 		bool MovePath(Object* pkObject);
 		void SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject);
-		//////////////////////////////////////////////////////*/
+		//////////////////////////////////////////////////////
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
@@ -118,7 +120,9 @@ class ZeroRTS :public Application {
 		Object* PickObject();
 		HM_vert* PickMap(Vector3& kHitPos);
 		PickInfo Pick();
-				
+		Point GetSqrFromPos(Vector3 pos);				
+		Vector3 GetPosFromSqr(Point square)				;
+
 		//camera
 		void SetCamPos(Vector3 kPos);
 		Vector3 GetCamPos();

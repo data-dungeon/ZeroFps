@@ -13,6 +13,9 @@ static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *p
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
+	m_pkTileEngine=new TileEngine();
+
+	
 	m_pkMiniMap = NULL;
 	m_pkClientInput = NULL;
 	m_iSelfObjectID = -1;
@@ -168,6 +171,19 @@ void ZeroRTS::OnIdle()
 
 	Vector3 mpos = Get3DMousePos();
 	
+	Point bla = GetSqrFromPos(mpos);
+	
+	cout<<"square "<<bla.x<<" "<<bla.y<<endl;
+	
+	Tile* t = m_pkTileEngine->GetTile(bla.x,bla.y);
+	if(t)
+	{
+		cout<<"angle:"<<t->fAngle<<endl;
+		cout<<"terra:"<<t->iTerrainType<<endl;
+			
+	}
+	
+	
 /*	glDisable(GL_LIGHTING);
 		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
 		pkRender->Line(mpos-Vector3(0,1,0),mpos+Vector3(0,1,0));		
@@ -237,7 +253,6 @@ void ZeroRTS::OnSystem()
 					if(m_pkClientInput != NULL)
 					{
 						cout<<"Found client input property"<<endl;					
-						cout<<"Assuming that server has started,executing client init"<<endl;
 						
 						//run client init
 						cout << "My Num: " << m_pkClientInput->m_iPlayerID;
@@ -248,15 +263,18 @@ void ZeroRTS::OnSystem()
 			}
 		}
 
-		if(m_pkClientInput && m_HaveFoundHMapObject == false) {
+		if(m_pkClientInput && m_HaveFoundHMapObject == false) 
+		{
 			Object* pkHmap = pkObjectMan->GetObject("HeightMapObject");
 	
-			if(pkHmap) {
+			if(pkHmap) 
+			{
 				m_HaveFoundHMapObject = true;
+				
+				cout<<"Assuming that server has started,executing client init"<<endl;
 				ClientInit();
-				cout << "UGH =)" << endl;
-				}
 			}
+		}		
 	};
 	
 	//if server is running
@@ -500,6 +518,9 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			SetupSpawnPoints();
 		/*	BuildPath();*/
 			
+			//setup tile engine
+			m_pkTileEngine->CreateMap();
+			
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			g_ZFObjSys.RunCommand("server Default server");
 			
@@ -704,6 +725,81 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
 
+
+void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
+{	
+	if(pkObject == NULL)
+		return;
+
+	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
+
+	pkObject->SetPos(newp);
+	pkObject->SetPos(newp);
+}
+
+void ZeroRTS::BuildPath()
+{
+	static bool bDone = false;
+	if(bDone == false)
+		bDone = true;
+	else
+		return;
+
+	int aiCost[5];
+	aiCost[0] = 15; // gräs (grön nyans)
+	aiCost[1] = 1; // väg (röd nyans)
+	aiCost[2] = 7; // sten (blå nyans)
+	aiCost[3] = 10; // öken (röd nyans)
+	aiCost[4] = 999; // vatten
+
+	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
+	kPathBuilder.Build(aiCost);
+}
+
+Point ZeroRTS::GetSqrFromPos(Vector3 pos)
+{
+	int iSquareX = m_pkMap->m_iHmSize/2+floor(pos.x / HEIGHTMAP_SCALE);
+	int iSquareY = m_pkMap->m_iHmSize/2+floor(pos.z / HEIGHTMAP_SCALE);
+
+	return Point(iSquareX,iSquareY);
+}
+
+Vector3 ZeroRTS::GetPosFromSqr(Point square)
+{
+	float x = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+
+	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
+	z -= HEIGHTMAP_SCALE/2;	// of square.*/
+
+	float y = m_pkMap->Height(x,z);
+
+	return Vector3(x,y,z);
+}
+
+bool ZeroRTS::MovePath(Object* pkObject)
+{
+	static float prev_time = 0;
+
+	float time = pkFps->GetGameTime();
+
+	if(time - prev_time > 0.125f)
+	{
+		int x=-1, y=-1;
+		if(!m_pkTestPath->GetNextStep(x,y))
+		{
+			return true; // do nothing
+		}
+		
+		if(!(x==-1&&y==-1))
+			SetObjDstPos(x, y, pkObject);
+
+		prev_time = time;
+	}
+
+	return true;
+}
+
 void ZeroRTS::Explore()
 {
 	vector<Object*> kObject;
@@ -779,8 +875,7 @@ void ZeroRTS::ClientInit()
 	//setup minimap
 	m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
 	m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
-	
-	
+		
 	cout<<"Join Complete"<<endl;
 }
 

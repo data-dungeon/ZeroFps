@@ -998,6 +998,7 @@ int HeightMap::GetMostVisibleTexture(float x,float y)
 		return -1;
 	}	
 
+
 	int t=-1;
 	float v=0;
 	
