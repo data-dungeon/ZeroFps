@@ -27,7 +27,7 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb,
 	m_szSearchPath = pkBasicFS->GetCWD();
 
 	m_oGuiCallback = cb;
-	m_bListDirOnly = false;
+	m_bListDirOnly = true;
 	m_bNoChangeDir = false;
 	m_pkGui = pkGui;
 	m_pkZGui = m_pkGui->GetGUI(); 
@@ -209,8 +209,20 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 		char name[450];
 		for( unsigned int i=0; i<vkFiles.size(); i++)
 		{
-			sprintf(name, "%s", vkFiles[i].c_str());
-			pkListbox->AddItem(name, i); 
+			if(m_bListDirOnly == false)
+			{
+				sprintf(name, "%s", vkFiles[i].c_str());	
+				pkListbox->AddItem(name, i); 
+			}
+			else
+			{
+				if( vkFiles[i].find(".") == string::npos ||
+					vkFiles[i].find("..") != string::npos)
+				{
+					sprintf(name, "%s", vkFiles[i].c_str());	
+					pkListbox->AddItem(name, i); 
+				}
+			}
 		}
 	}
 	else
