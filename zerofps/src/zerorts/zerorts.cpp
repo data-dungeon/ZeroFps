@@ -46,7 +46,14 @@ void ZeroRTS::Init()
 
 	//register actions
 	RegisterActions();
-
+	
+	//register property
+	RegisterPropertys();
+	
+	//set clicktimer
+	m_fClickTimer = pkFps->GetTicks();
+	m_fClickDelay = 0.2;
+	
 	// Show cursor
 	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
@@ -80,7 +87,10 @@ void ZeroRTS::RegisterActions()
 
 }
 
-
+void ZeroRTS::RegisterPropertys()
+{
+	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
+}
 
 void ZeroRTS::OnIdle(void) 
 {
@@ -121,34 +131,19 @@ void ZeroRTS::Input()
 
 	if(pkInput->Action(m_iActionSelect))
 	{
-		PickInfo hocker = Pick();
-		Vector3 pos = hocker.kHitPos;
+		if(pkFps->GetTicks() - m_fClickTimer < m_fClickDelay)
+			return;
+			
+		m_fClickTimer = pkFps->GetTicks();
 	
-		glDisable(GL_LIGHTING);
-			pkRender->Sphere(Vector3(pos.x,m_pkMap->Height(pos.x,pos.z),pos.z),1,20,Vector3(1,0,0),false);
-		glEnable(GL_LIGHTING);	
-	
-		//m_pkMap->GetVert((int)pos.x,(int)pos.z)->height =0;
-	
-
-	/*
-		HM_vert* bla = PickMap();
+		PickInfo info = Pick();
 		
-		if(bla != NULL)
-		{
-			bla->height -= 1;
+		ClearSelected();
 		
-		}
-		*/
-		
-		Object* bla=hocker.pkObject;
-		
-		if(bla != NULL)
-		{	
-			pkObjectMan->Delete(bla);
-			cout<<"diiiiiiiiie object from hell"<<endl;
-		}
+		if(info.iObject != -1)
+			AddSelectedObject(info.iObject);			
 	}
+	
 	if(pkInput->Action(m_iActionScroll))
 	{
 		int x,y;
@@ -242,7 +237,10 @@ Object* ZeroRTS::PickObject()
 	{
 		if(obs[i]->GetName() == "ZoneObject")
 			continue;
-		
+			
+		if(!obs[i]->GetProperty("P_ClientUnit"))			
+			continue;
+			
 		float d = (m_pkCamera->GetPos() - obs[i]->GetPos()).Length();
 		if(d < dist)
 		{
@@ -269,8 +267,14 @@ PickInfo ZeroRTS::Pick()
 {
 	PickInfo temp;
 	
-	temp.pkVert = PickMap(temp.kHitPos);
-	temp.pkObject = PickObject();	
+	temp.pkVert = PickMap(temp.kHitPos);	
+	
+	Object* pkPicked = PickObject();	
+	
+	if(pkPicked != NULL)	
+		temp.iObject = pkPicked->iNetWorkID;
+	else		
+		temp.iObject = -1;
 
 	return temp;
 }
@@ -309,9 +313,49 @@ void ZeroRTS::MoveCam(Vector3 kVel)
 	SetCamPos(GetCamPos() + kVel * pkFps->GetFrameTime());
 }
 
+bool ZeroRTS::AddSelectedObject(int iID)
+{
+	if(AlreadySelected(iID))
+		return false;
+		
+	GetClientUnit(iID)->m_bSelected = true;
+	
+	m_kSelectedObjects.push_back(iID);
+
+}
+
+bool ZeroRTS::AlreadySelected(int iID)
+{
+	for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)		
+		if((*it) == iID)
+			return true;
+	
+	
+	return false;
+}
+
+bool ZeroRTS::RemoveSelectedObject(int iID)
+{
+	GetClientUnit(iID)->m_bSelected = false;	
+	m_kSelectedObjects.remove(iID);	
+	
+	return true;
+}
+
+void ZeroRTS::ClearSelected()
+{
+	for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)		
+	{	
+		GetClientUnit((*it))->m_bSelected = false;			
+	}
+
+	m_kSelectedObjects.clear();
+}
 
 
-
-
-
-
+P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
+{
+	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(iID);
+	
+	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
+}

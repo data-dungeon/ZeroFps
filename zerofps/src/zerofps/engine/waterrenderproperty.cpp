@@ -47,14 +47,14 @@ void WaterRenderProperty::Update()
 
 void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)
 {
-//	pkNetPacket->Write((int) m_iSize);
-//	pkNetPacket->Write((int) m_iStep);
+	pkNetPacket->Write(m_iSize);
+	pkNetPacket->Write(m_iStep);
 }
  
 void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket)
 {
-	//pkNetPacket->Read((int) m_iSize);
-	//pkNetPacket->Read((int) m_iStep);
+	pkNetPacket->Read(m_iSize);
+	pkNetPacket->Read(m_iStep);
 }
 
 

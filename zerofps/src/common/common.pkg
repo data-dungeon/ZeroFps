@@ -20,7 +20,11 @@
 #include "doorproperty.h"
 #include "logproperty.h"
 #include "dialogbox.h"
+
+//for ZeroRTS
 #include "pathfindproperty.h"
+#include "p_clientunit.h"
+
 
 
 
