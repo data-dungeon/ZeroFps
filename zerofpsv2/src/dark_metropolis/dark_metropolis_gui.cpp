@@ -78,22 +78,35 @@ void DarkMetropolis::GUI_OnIdle()
 		}
 		else
 		{
-
-
 			m_pkGamePlayInfoLabel->Show();
 			m_pkGamePlayInfoLabel->SetText((char*)m_strGameInfoText.c_str(), true);
 
 			Rect rc = m_pkGamePlayInfoLabel->GetScreenRect();
 
-			int x,y;
-			m_pkInputHandle->MouseXY(x,y);
-			x-=rc.Width()/2;
-			y+=rc.Height()+32;
+			int mx,my;
+			m_pkInputHandle->MouseXY(mx,my);
 
-			m_pkGamePlayInfoLabel->SetPos(x,y,true, true);
+			my+=rc.Height()+16;
+			mx-=rc.Width()/2;
+
+			if(my + rc.Height() > m_iHeight)
+				my = m_iHeight-rc.Height()-1;
+			else
+			if(my < 0)
+				my = 0;
+			
+			if(mx + rc.Width() > m_iWidth)
+				mx = m_iWidth-rc.Width()-1;
+			else
+			if(mx < 0)
+				mx = 0;
+
+			m_pkGamePlayInfoLabel->SetPos(mx,my,true, true);
 		}
 	}
 }
+
+// testa kommentera bort m_pkGamePlayInfoLabel från rad 74 till rad 93 i dark_metropolis_gui.cpp
 
 void DarkMetropolis::GUI_Init()
 {
@@ -524,4 +537,58 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	StartSong("data/music/dm ingame.ogg");	
 
 	return true;
+}
+
+void DarkMetropolis::LoadResourcesOnStartup()
+{
+	printf("----- start loading resources ---\n");
+
+	char* path_list[7] =
+	{
+		"data/textures/gui/dm/",
+		"data/textures/gui/dm/portraits/",
+		"data/textures/gui/dm/intro/",
+		"data/textures/gui/dm/items/",
+		"data/textures/gui/dm/final/",
+		"data/textures/gui/dm/final/window/",
+		"data/textures/gui/dm/final/members/"
+	};
+
+	vector<string> t;
+	char complete_path[1024];
+
+	for(int j=0; j<7; j++)
+	{	
+		m_pkZFVFileSystem->ListDir(&t, path_list[j]);
+		const int antal = t.size();
+
+		for(unsigned int i=0; i<antal; i++)
+			if(t[i].find(".bmp") != string::npos)
+			{
+				sprintf(complete_path, "%s%s", path_list[j], t[i].c_str());
+				pkTexMan->Load(complete_path, 0);
+			}
+
+		t.clear();
+	}
+
+	m_pkAudioSys->LoadSound("data/sound/computer beep 2.wav");
+	m_pkAudioSys->LoadSound("data/sound/computer beep 3.wav");
+	m_pkAudioSys->LoadSound("data/sound/computer beep 5.wav");
+	m_pkAudioSys->LoadSound("data/sound/computer beep 6.wav");
+	m_pkAudioSys->LoadSound("data/sound/panel_out.wav");
+	m_pkAudioSys->LoadSound("data/sound/panel_in.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_ahh_that_fuckin_hurt.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_careful.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_damn.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_didnt_do_nothin.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_dont_shoot.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_fuck.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_please_dont_shoot_me.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_shit.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/defensive/daq_you_shootin_at_me_for.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/death/death1.wav");
+	m_pkAudioSys->LoadSound("data/sound/mechanic/death/death2.wav");
+
+	printf("----- end loading resources ---\n");
 }

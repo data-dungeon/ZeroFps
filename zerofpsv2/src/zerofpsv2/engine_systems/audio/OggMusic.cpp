@@ -15,7 +15,7 @@
 OggMusic::OggMusic() : 
 	ZFSubSystem("OggMusic")  
 {
-	OggMusic(4,4096);
+	//OggMusic(4,4096);
 }
 
 OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) : 

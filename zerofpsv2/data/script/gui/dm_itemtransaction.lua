@@ -5,11 +5,9 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	-- Skins.
 	-------------------------------------------------------------------------
-	Skin1 = { tex1="dm/bn1u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin1 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin2 = { tex1="dm/bn1d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin3 = { tex1="dm/bn1f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin2 = { tex1="dm/misc_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin4 = { tex1=0, tex2="0", tex3="0", tex4="0", tex1a=0, tex2a="0", tex3a="0", tex4a="0", bkR=0, bkG=0,
 	 bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -97,12 +95,12 @@ function GUICreate()
 	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-70/2,400,70,20,0)
 	ChangeSkin("RemoveItemBn","Skin1","Button up")
 	ChangeSkin("RemoveItemBn","Skin2","Button down")
-	ChangeSkin("RemoveItemBn","Skin3","Button focus")
+	ChangeSkin("RemoveItemBn","Skin1","Button focus")
 
 	CreateWnd(1,"AddItemBn","ItemTransactionWnd","Buy",40+256/2-64/2,400,64,20,0)
 	ChangeSkin("AddItemBn","Skin1","Button up")
 	ChangeSkin("AddItemBn","Skin2","Button down")
-	ChangeSkin("AddItemBn","Skin3","Button focus")
+	ChangeSkin("AddItemBn","Skin1","Button focus")
 
 	CreateWnd(1,"ItemTransactionCloseBn","ItemTransactionWnd","",670-32,0,32,32,0)
 	ChangeSkin("ItemTransactionCloseBn","Skin15","Button up")

@@ -181,6 +181,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 
 		void RenderInterface();
 
+		void LoadResourcesOnStartup(); // Ladda in alla feta texturer på en gång för att minimera lagg i musiken.
+
 		// Gui
 		void GUI_OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd);
 		void GUI_OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);

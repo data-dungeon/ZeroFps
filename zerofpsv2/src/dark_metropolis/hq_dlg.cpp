@@ -84,7 +84,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 void CHQDlg::OpenDlg()
 {
-	m_pkAudioSys->StartSound("data/sound/computer beep 6.WAV");
+	m_pkAudioSys->StartSound("data/sound/computer beep 6.wav");
 
 	ShowWnd("GamePlayScreen", false);
 	ShowWnd("GamePlayPanelWnd", false);

@@ -11,8 +11,8 @@ function GUICreate()
 	Skin2 = { tex1="dm/final/members/armor.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/armor_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin3 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
+--	Skin3 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+--	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 	Skin4 = { tex1="dm/final/members/belt.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/belt_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }

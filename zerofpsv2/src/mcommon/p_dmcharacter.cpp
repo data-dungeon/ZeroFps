@@ -169,7 +169,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	m_kStats.m_iLife -= iDmg;
 
 	if ( m_kStats.m_iLife < 0 )
-		m_kStats.m_iLife == 0;
+		m_kStats.m_iLife = 0; // m_kStats.m_iLife == 0; // zeb: ändrar detta uppenbara fel.
 	
 	cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
 
