@@ -238,6 +238,10 @@ SOURCE=.\floatproperty.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gravityproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\normaldrawproperty.h
 # End Source File
 # Begin Source File

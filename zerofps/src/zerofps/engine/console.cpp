@@ -1,7 +1,8 @@
 #include "console.h"
 #include "../engine/zerofps.h"
 
-Console::Console(ZeroFps* pkEngine) {
+Console::Console(ZeroFps* pkEngine)
+  : ZFObject("Console") {
 	m_pkEngine=pkEngine;	
 	m_pkCmd=pkEngine->m_pkCmd;
 	m_pkRender=pkEngine->m_pkRender;

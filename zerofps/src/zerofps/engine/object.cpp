@@ -43,9 +43,14 @@ void Object::AddProperty(Property* pkNewProperty) {
 
 void Object::AddProperty(char* acName)
 {
-	Property* pProp = m_pkPropFactory->CreateProperty(acName);
+/*	Property* pProp = m_pkPropFactory->CreateProperty(acName);
 	if(!pProp)
-		return;
+		return;*/
+
+	PropertyFactory* pkPropFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
+	Property* pProp = pkPropFactory->CreateProperty(acName);
+	
+
 	AddProperty(pProp);
 }
 

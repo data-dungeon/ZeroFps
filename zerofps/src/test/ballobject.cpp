@@ -4,11 +4,11 @@ BallObject::BallObject(HeightMap *pkMap,ZeroFps *pkFps) {
 	SetPropertyFactory(&pkFps->m_kPropertyFactory);
 
 	AddProperty(new CollisionProperty(&m_kPos,new float(.5)));
-	AddProperty(new GravityProperty(pkFps));
+	AddProperty(new GravityProperty());
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(pkFps->GetMADPtr("cube.mad"));
+	madp->SetBase(pkFps->GetMADPtr("sphere.mad"));
 //	madp->SetScale(0.02);
 
 //	AddProperty("ModelProperty");

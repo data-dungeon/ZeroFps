@@ -2,10 +2,9 @@
 
 BunnyObject::BunnyObject(HeightMap *pkMap,ZeroFps *pkFps)
 {
-	SetPropertyFactory(&pkFps->m_kPropertyFactory);
-
-	AddProperty(new GravityProperty(pkFps));
-	AddProperty(new ModelProperty());
+	AddProperty(new GravityProperty());
+	//AddProperty("GravityProperty");
+	AddProperty("ModelProperty");
 	AddProperty(new BunnyAIProperty(pkFps,pkMap));
 	
 	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));

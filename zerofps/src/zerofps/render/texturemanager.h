@@ -25,7 +25,7 @@ struct texture{
 	GLuint index;
 };
 
-class RENDER_API TextureManager {
+class RENDER_API TextureManager : public ZFObject {
 	private:
 
 		

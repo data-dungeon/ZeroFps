@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                    $(ProjDir)\debug\*.lib                    ..\..\..\bin\ 
+PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                    $(ProjDir)\debug\*.lib                    ..\..\..\bin\ 
+PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -233,6 +233,14 @@ SOURCE=.\vector4.cpp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\zfobject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfobjectmanger.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -300,6 +308,14 @@ SOURCE=.\vector3.h
 # Begin Source File
 
 SOURCE=.\vector4.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfobjectmanger.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

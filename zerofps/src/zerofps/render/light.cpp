@@ -26,7 +26,8 @@ LightSource::LightSource() {
 	iPriority=0;
 }
 
-Light::Light() {
+Light::Light() 
+: ZFObject("Light") {
 	m_iNrOfLights=8;
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
 	glEnable(GL_LIGHTING);

@@ -27,13 +27,13 @@ public:
 	}
 };
 
-class ENGINE_API PropertyFactory 
+class ENGINE_API PropertyFactory : public ZFObject
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
 
 public:
-	PropertyFactory() { }
+	PropertyFactory() : ZFObject("PropertyFactory") { }
 	~PropertyFactory() { }
 
 	Property*	CreateProperty(char* szName);

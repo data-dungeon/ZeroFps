@@ -7,12 +7,15 @@
 using namespace std;
 
 
-class ENGINE_API ObjectManager {
+class ENGINE_API ObjectManager : public ZFObject{
 	
 	list<Object*> m_akObjects;
 	vector<Object*> m_akDeleteList;
 	
 	public:
+		ObjectManager() : ZFObject("ObjectManager") { };
+		~ObjectManager() { }
+
 		void Add(Object* pkNewObject);			//add object to the manager
 		void Delete(Object* pkNewObject);		//adds an object to delete qeue
 		void Remove(Object* pkObject);			//dont use this..use Delete instead

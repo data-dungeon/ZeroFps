@@ -2,7 +2,8 @@
 #include "../ogl/zfpsgl.h"
 
 
-TextureManager::TextureManager(FileIo* pkFile) {
+TextureManager::TextureManager(FileIo* pkFile)
+ : ZFObject("TextureManager") {
 	m_pkFile=pkFile;
 }	
 

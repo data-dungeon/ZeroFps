@@ -10,6 +10,7 @@ class Matrix4;
 
 #include "os.h"
 #include "basic_x.h"
+#include "zfobjectmanger.h"
 
 #include "heightmap.h"
 #include "cmdsystem.h"

@@ -1,6 +1,7 @@
 #include "zerofps.h"
 
-ZeroFps::ZeroFps(void) {
+ZeroFps::ZeroFps(void) 
+ : ZFObject("ZeroFps") {
 	m_pkFile=new FileIo;
 	m_pkCmd=new CmdSystem;
 	m_pkTexMan=new TextureManager(m_pkFile);

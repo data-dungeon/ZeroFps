@@ -94,8 +94,8 @@ void Test::OnInit(void) {
 	
 	
 	
-/*	
 	
+/*	
 	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test,pkFps);
 		float x=300 + rand()%100;
@@ -210,8 +210,10 @@ void Test::input() {
 	if(pkInput->Pressed(END))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
-	//if(pkInput->Pressed(HOME))
-	//	pkFps->m_kPropertyFactory.Display();
+	if(pkInput->Pressed(HOME)) {
+		//pkFps->m_kPropertyFactory.Display();
+		g_ZFObjSys.PrintObjects();
+		}
 		
 		
 	//Get mouse x,y		

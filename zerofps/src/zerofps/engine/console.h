@@ -14,7 +14,7 @@ class ZeroFps;
 //max lenght of an entered command
 #define COMMAND_LENGHT 37
 
-class ENGINE_API Console {
+class ENGINE_API Console : public ZFObject {
 	private:
 		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;

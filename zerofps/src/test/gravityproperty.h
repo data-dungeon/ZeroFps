@@ -11,7 +11,7 @@ class GravityProperty: public Property {
 	public:
 		float m_fGravity;		
 	
-		GravityProperty(ZeroFps *pkFps);
+		GravityProperty();
 		void Update();
 
 

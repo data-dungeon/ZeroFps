@@ -45,7 +45,7 @@ class RENDER_API LightSource {
 };
 
 
-class RENDER_API Light {
+class RENDER_API Light : public ZFObject {
 	private:
 		Vector3 m_kCamPos;
 		int m_iNrOfLights;
