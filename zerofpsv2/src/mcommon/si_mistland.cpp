@@ -2787,10 +2787,11 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
             // check if item is of right type
             if ( pkItemProp->m_pkItemStats->m_kItemName == acType )
             {
+            	Vector3 kPos = pkList->at(i)->GetWorldPosV();
                // check if distance is smaller that the previos (if any) found
-               if ( pkObj->GetWorldPosV().DistanceTo(pkList->at(i)->GetWorldPosV()) < fDistance )
+               if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
                {
-                  fDistance = pkObj->GetWorldPosV().DistanceTo(pkList->at(i)->GetWorldPosV());
+                  fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
                   pkClosestItem = pkList->at(i);
                }
             }

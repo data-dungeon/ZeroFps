@@ -41,9 +41,10 @@ void P_AI::Update()
    else if ( m_pkCurrentOrder->m_kOrderType == "PickUp" )
    {
       Entity* pkEnt = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
-
+	
+		Vector3 kPos = m_pkObject->GetWorldPosV();
       // if character has reacher object position
-      if ( m_pkCurrentOrder->m_kPosition.DistanceTo (m_pkObject->GetWorldPosV()) > 0.5f )
+      if ( m_pkCurrentOrder->m_kPosition.DistanceTo(kPos) > 0.5f )
       {
 
          // check if object still exists!!
