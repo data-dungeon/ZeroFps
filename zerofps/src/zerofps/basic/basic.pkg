@@ -17,6 +17,7 @@ class ZFFile;
 class ZFBasicFS;
 
 class ZFMemPackage;
+class ZFIni;
 
 #include "zfassert.h"
 
@@ -47,6 +48,8 @@ class ZFMemPackage;
 #include "zfmempackage.h"
 #include "rect.h"
 #include "zguiskin.h"
+
+#include "zfini.h"
 
 
 

@@ -22,7 +22,6 @@ class BASIC_API ZFBasicFS
 {
 	char m_acDir[2048];
 
-	
 	public:
 		char* GetCWD();		
 		bool CreateDir(const char* acName);
