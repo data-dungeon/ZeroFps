@@ -28,8 +28,5 @@ void Test::OnIdle(void) {
 }
 
 
-int main(int iNrOfArgs, char* paArgs[])
-{
-	return EngineStart(iNrOfArgs, paArgs);
-}
+
 
