@@ -1,5 +1,6 @@
 #include "dark_metropolis.h"
 #include "startdm_dlg.h"
+#include <ctime>
 
 char* CStartDMDlg::Labels[] =
 {
@@ -19,6 +20,8 @@ CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
 	m_bPlayIntro = false;
 	m_fFadeOffset = 0;
 	m_iNumPictures = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
+
+	srand(time(0)); // så ett slumpfrö för rättvisans skull
 }
 
 CStartDMDlg::~CStartDMDlg()
