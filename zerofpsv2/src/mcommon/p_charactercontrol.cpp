@@ -7,7 +7,7 @@ P_CharacterControl::P_CharacterControl()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = 			true;
-	m_iVersion = 			2;
+	m_iVersion = 			3;
 		
 	
 	m_fLockTime = 			-1;
@@ -82,6 +82,9 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 
 void P_CharacterControl::Update()
 {	
+	if(!m_bEnabled)
+		return;
+
 	if(m_fLockTime != -1)
 	{
 		if(m_pkEntityManager->GetSimTime() < m_fLockTime)
@@ -339,6 +342,9 @@ void P_CharacterControl::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_fJumpForce);
 	pkPackage->Write_Str(m_strRunForward);
 	
+	pkPackage->Write(m_bEnabled);
+	
+	
 }
 
 void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -350,7 +356,13 @@ void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read_Str(m_strRunForward);
 	
 	}
-
+	if(iVersion == 3)
+	{
+		pkPackage->Read(m_fSpeed);
+		pkPackage->Read(m_fJumpForce);
+		pkPackage->Read_Str(m_strRunForward);
+		pkPackage->Read(m_bEnabled);
+	}
 }
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

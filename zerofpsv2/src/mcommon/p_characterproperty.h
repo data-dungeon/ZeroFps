@@ -121,6 +121,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fLegLength;
 		float			m_fMarkerSize;
 		
+		bool			m_bDead;
+		
 		vector<Skill*>	m_kSkills;
 		float				m_fSkillTimer;
 			
@@ -164,6 +166,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void UpdateStats();		
 		void SetupCharacterStats();
 		
+		void OnDeath();
+		
 	public:
 		Stats	m_kCharacterStats;
 
@@ -192,8 +196,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void Init();
 		void Update();
 		
-		void SetClient(int iConID)									{	m_iConID = iConID;				}
-	
+		void SetClient(int iConID)									{	m_iConID = iConID;				}	
+		void MakeAlive();
+		
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}

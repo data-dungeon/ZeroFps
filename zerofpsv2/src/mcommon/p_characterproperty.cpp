@@ -401,7 +401,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	7;
+	m_iVersion = 	8;
 	
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
@@ -422,6 +422,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bWalkSound			=	true;
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
+	m_bDead					=	false;
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -562,8 +563,16 @@ void P_CharacterProperty::UpdateStats()
 	}
 	
 	
-	float fTime = m_pkZeroFps->GetTicks();
+	//check if character is dead
+	if(m_kCharacterStats.GetTotal("Health") <= 0)
+	{
+		cout<<"Character is soooo dead"<<endl;
+		OnDeath();
+		return;
+	}
+		
 	
+	float fTime = m_pkZeroFps->GetTicks();
 	
 	//update stats each seccond	
 	if(fTime > m_fStatTimer + 1.0)
@@ -636,6 +645,43 @@ void P_CharacterProperty::UpdateStats()
 	
 	
 	
+}
+
+void P_CharacterProperty::MakeAlive()
+{
+	m_bDead = false;
+
+	//make sure character has some life
+	if(m_kCharacterStats.GetTotal("Health") <= 0)
+		m_kCharacterStats.SetStat("Health",1);
+	
+	
+	//disable character movement
+	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+	{
+		pkCC->SetEnabled(true);	
+	}
+}
+
+
+void P_CharacterProperty::OnDeath()
+{
+	m_bDead = true;
+	
+	m_pkEntityManager->CallFunction(m_pkEntity, "Death");
+	
+	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+	{
+		pkMad->SetAnimation("Death",0);
+		pkMad->SetNextAnimation(MAD_NOLOOP);	
+	}
+	
+	
+	//disable character movement
+	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+	{
+		pkCC->SetEnabled(false);	
+	}
 }
 
 void P_CharacterProperty::UpdateSkills()
@@ -980,11 +1026,14 @@ void P_CharacterProperty::Update()
 				}				
 			}
 		
-			//update stats
-			UpdateStats();
+			if(!m_bDead)
+			{
+				//update stats
+				UpdateStats();
 			
-			//update skills
-			UpdateSkills();
+				//update skills
+				UpdateSkills();
+			}
 		}
 			
 		//CLIENT
@@ -1165,6 +1214,9 @@ void P_CharacterProperty::SendBuffList()
 
 void P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir)
 {
+	if(m_bDead)
+		return;
+
 	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 	{
 		pkSkill->Use(iTarget,kPos,kDir);	
@@ -1324,8 +1376,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_bIsPlayerCharacter);
 	pkPackage->Write(m_iFaction);
 	pkPackage->Write(m_bWalkSound);
-	pkPackage->Write(m_fMarkerSize);
-		
+	pkPackage->Write(m_fMarkerSize);		
+	pkPackage->Write(m_bDead);	
 	
 	m_kCharacterStats.Save(pkPackage);
 	
@@ -1480,6 +1532,45 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			
 			break;
 		}			
+		
+		case 8:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			pkPackage->Read(m_bDead); 
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
+			float		fTimeLeft;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				pkPackage->Read(fTimeLeft);
+				
+				AddSkill(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+				
+				if(Skill* pkSkill = GetSkillPointer(strSkill))
+					pkSkill->SetTimeLeft(fTimeLeft);
+			}
+			
+			break;
+		}				
 	}
 }
 

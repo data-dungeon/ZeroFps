@@ -48,6 +48,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		int								m_iDirection;
 		
 		float			m_fLockTime;
+		bool			m_bEnabled;
 		
 		float			m_fSpeed;
 		float			m_fJumpForce;
@@ -121,6 +122,7 @@ class MCOMMON_API P_CharacterControl: public Property
 			
 		void DoEmote(int iEmoteID);	
 		void Lock(float fTime);
+		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		}
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();
