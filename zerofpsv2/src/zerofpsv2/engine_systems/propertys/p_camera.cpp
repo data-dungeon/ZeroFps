@@ -19,8 +19,9 @@ P_Camera::P_Camera()
 	m_kDynamicIso.Set(0,0,0);
 	m_kInterPos.Set(0,0,0);
 	m_f3PYAngle = 0;
-	m_f3PYPos = 1;
-	m_f3PDistance = 4;
+	m_f3PPAngle = 0;
+	m_f3PDistance = 3;
+	m_kOffset.Set(0,1.5,0);
 
 }
 
@@ -40,6 +41,7 @@ void P_Camera::Update()
 		switch(m_eCameraType) {
 			case CAM_TYPE3PERSON:
 			{
+				/*
 				Matrix4 r;
 				r.Identity();
 				r.Rotate(Vector3(-90,0,0));
@@ -51,16 +53,28 @@ void P_Camera::Update()
 				
 				float xp = sin(m_f3PYAngle);
 				float zp = cos(m_f3PYAngle);				
+				float yp = cos(m_f3PPAngle);								
 				
-				Vector3 campos = m_kInterPos + Vector3(xp,m_f3PYPos,zp).Unit() * m_f3PDistance;
+				Vector3 campos = m_kInterPos + Vector3(xp,yp,zp).Unit() * m_f3PDistance;
 				
 				LookAt(campos, m_kInterPos,Vector3(0,1,0));
+				*/
+				Vector3 dir = m_pkObject->GetIWorldPosV() - m_kInterPos;
+				m_kInterPos +=dir/8;
 				
+				
+				Matrix4 kRot;
+				kRot.Identity();
+				kRot.Rotate(RadToDeg(m_f3PPAngle),RadToDeg(m_f3PYAngle),0);
+				
+				m_pkCamera->SetRotM(kRot);
+				
+				Vector3 offset = Vector3(0,0,1);
+				kRot.Transponse();
+				Vector3 pos = m_kInterPos + m_kOffset + kRot.VectorRotate(offset)*m_f3PDistance;
+				m_pkCamera->SetPos(pos);
 				
 				strCamName = " 3P ";
-				/*if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(m_fFov);				
 				break;
 			}	
 			case CAM_TYPEFIRSTPERSON:

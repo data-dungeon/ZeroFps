@@ -15,6 +15,7 @@ struct MCOMMON_API PlayerInfo
 {
 	int		iId;
 	string	sPlayerName;
+	int		iCharacterObjectID;
 	vector<pair<int,int> >	kControl; // objekt id, rättigheter
 	queue<string>	kMessages;
 	queue<pair<int,string> > kSounds; // objekt id på objektet som genererar ljudet, filnamn på ljudet
@@ -50,6 +51,9 @@ class MCOMMON_API P_ServerInfo: public Property {
 		
 		void Update();
 		
+		int  GetPlayer(int iObjID);
+		int  GetCharacterID(int id);
+		void SetCharacterID(int id,int iObjID);
 		void AddObject(int id,int iObjID,int iRights);
 		void RemoveObject(int id,int iObjID);		
 		void AddPlayer(int id,string sName);

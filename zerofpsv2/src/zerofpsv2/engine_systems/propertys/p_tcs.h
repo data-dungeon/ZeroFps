@@ -6,12 +6,13 @@
 #include "../engine_systems_x.h"
 
 #include "../tcs/tcs.h"
+#include "p_mad.h"
 
 #define TCS_GROUPS 10
 
 using namespace std;
 class Tcs;
-
+class P_Mad;
 
 /*
 	GROUPS USED IN MISTLANDS
@@ -20,9 +21,7 @@ class Tcs;
 	1:	 normal characters
 	2:	 spells fireballs etc
 	3:   non important visual effect objects
-
-
-
+	4:   enviroment objects (stones trees etc)
 */
 
 class ENGINE_SYSTEMS_API P_Tcs : public Property
@@ -34,13 +33,18 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float	 m_fRadius;						
 		bool	m_bHavePolygonData;
 		bool	m_bGravity;
+		bool	m_bCharacter;
+		int	 m_iGroup;				
+		float  m_fLegLength;
 		
-		int	 m_iGroup;		
 		bitset<TCS_GROUPS>	m_akTestGroups;
+		bitset<TCS_GROUPS>	m_akWalkableGroups;		
+		
 
 		//mesh data
 		int						m_iModelID;
 		float 					m_fScale;
+		P_Mad*					m_pkMad;
 		vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		vector<Vector3>*		 m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>*		 m_pkNormal;
@@ -77,8 +81,13 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		bool CheckFlag(int iFlag) {return m_akTestGroups[iFlag];};
 		void SetGroup(int iGroup) {m_iGroup = iGroup;};
-		void ResetGroupFlags() {m_akTestGroups.set();};
+		void ResetGroupFlags() {m_akTestGroups.reset();};
 		void SetTestGroupFlag(int iFlag,bool bValue) {m_akTestGroups[iFlag] = bValue;};
+		
+		void ResetWalkGroupFlags() {m_akWalkableGroups.reset();};
+		bool CheckWalkGroupFlag(int iFlag) {return m_akWalkableGroups[iFlag];};
+		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};		
+		
 		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
 		void SetRadius(float t) {m_fRadius = t;};
 		void SetRefetchPolygonData() {m_bHavePolygonData = false;};

@@ -17,8 +17,10 @@ P_Tcs::P_Tcs()
 	m_bPolygonTest=		false;
 	m_fRadius=				0.5;	
 	m_bGravity=				false;
-	
+	m_bCharacter=			false;
+	m_fLegLength=			1;
 	m_fScale=				1;
+	m_pkMad=					NULL;
 	m_pkFaces =				NULL;
 	m_pkVertex =			NULL;	
 	m_pkNormal =			NULL;	
@@ -27,6 +29,7 @@ P_Tcs::P_Tcs()
 	m_iGroup=				0;
 	
 	ResetGroupFlags();
+	ResetWalkGroupFlags();
 
    m_kRotVel = Vector3(0,0,0);
 	
@@ -69,6 +72,7 @@ void P_Tcs::Update()
 		if(m_fRadius == -1)
 		{	
 			m_fRadius = GetBoundingRadius();
+			m_bHavePolygonData = SetupMeshData();
 		}
 	}
 }
@@ -80,8 +84,11 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);	
 	pkPackage->Write((void*)&m_iGroup,sizeof(m_iGroup),1);	
 	pkPackage->Write((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
+	pkPackage->Write((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
 	pkPackage->Write((void*)&m_iModelID,sizeof(m_iModelID),1);		
 	pkPackage->Write((void*)&m_bGravity,sizeof(m_bGravity),1);			
+	pkPackage->Write((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
+	pkPackage->Write((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 }
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
@@ -90,13 +97,16 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
 	pkPackage->Read((void*)&m_iGroup,sizeof(m_iGroup),1);	
 	pkPackage->Read((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
+	pkPackage->Read((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
 	pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
 	pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
+	pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
+	pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(6);
+	vector<PropertyValues> kReturn(9);
 
 	int dummy;
 
@@ -120,9 +130,21 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[4].iValueType=VALUETYPE_BOOL;
 	kReturn[4].pkValue=(void*)&m_bGravity;
 	
-	kReturn[5].kValueName="group";
-	kReturn[5].iValueType=VALUETYPE_INT;
-	kReturn[5].pkValue=(void*)&m_iGroup;
+	kReturn[5].kValueName="character";
+	kReturn[5].iValueType=VALUETYPE_BOOL;
+	kReturn[5].pkValue=(void*)&m_bCharacter;
+		
+	kReturn[6].kValueName="group";
+	kReturn[6].iValueType=VALUETYPE_INT;
+	kReturn[6].pkValue=(void*)&m_iGroup;
+	
+	kReturn[7].kValueName="leglength";
+	kReturn[7].iValueType=VALUETYPE_FLOAT;
+	kReturn[7].pkValue=(void*)&m_fLegLength;
+	
+	kReturn[8].kValueName="walkablegroupflag";
+	kReturn[8].iValueType=VALUETYPE_INT;
+	kReturn[8].pkValue=(void*)&dummy;
 	
 	return kReturn;
 }
@@ -132,12 +154,23 @@ bool P_Tcs::HandleSetValue( string kValueName, string kValue )
 	if( strcmp(kValueName.c_str(), "groupflag") == 0 ) 
 	{
 		int flag = atoi(kValue.c_str());
-		//cout << "unsetting flag:" << flag << endl;
+		//cout << "setting flag:" << flag << endl;
 
-		SetTestGroupFlag(flag,false);
+		SetTestGroupFlag(flag,true);
 		
 		return true;
 	}
+	
+	if( strcmp(kValueName.c_str(), "walkablegroupflag") == 0 ) 
+	{
+		int flag = atoi(kValue.c_str());
+		cout << "setting walkable group flag:" << flag << endl;
+
+		SetWalkGroupFlag(flag,true);
+		
+		return true;
+	}
+
 
 	return false;
 }
@@ -175,6 +208,7 @@ bool P_Tcs::SetupMeshData()
 			{
 				//cout<<"found mech"<<endl;
 				
+				m_pkMad = pkMP;
 				m_pkFaces = pkCoreMech->GetFacesPointer();
 				m_pkVertex = (*pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
 				m_pkNormal = (*pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();

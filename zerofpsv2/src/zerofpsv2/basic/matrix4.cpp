@@ -274,14 +274,18 @@ void Matrix4::OldTranslate(float x, float y, float z)
 	SetPos(Vector3(x,y,z));
 }
 
-
 void Matrix4::Rotate(float fX, float fY, float fZ)
 {
-	fX=DegToRad(fX);
-	fY=DegToRad(fY);
-	fZ=DegToRad(fZ);	
+	RadRotate(DegToRad(fX),DegToRad(fY),DegToRad(fZ));
+}
 
-	
+void Matrix4::Rotate(Vector3 kRot){
+	RadRotate(DegToRad(kRot.x), DegToRad(kRot.y), DegToRad(kRot.z));
+}
+
+void Matrix4::RadRotate(float fX, float fY, float fZ)
+{
+
 	float cx = float(cos(fX));
 	float sx = float(sin(fX));
 	
@@ -331,8 +335,8 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 
 }
 
-void Matrix4::Rotate(Vector3 kRot){
-	Rotate(kRot.x, kRot.y, kRot.z);
+void Matrix4::RadRotate(Vector3 kRot){
+	RadRotate(kRot.x, kRot.y, kRot.z);
 }
 
 void Matrix4::Scale(float fX, float fY, float fZ)

@@ -16,19 +16,29 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 	
 		vector<P_Tcs*>		m_kBodys;		
 		Matrix4				m_kModelMatrix;
-
-
+		Vector3				m_kLastLineTestColPos;
+		Vector3				m_kLastTestPos;
+		
 		void UpdateVel();
 		void UpdateMotion();
 		void UpdateCollissions();
+
+		void UpdateLineTests();
+		
 
 		void GenerateModelMatrix(P_Tcs* pkMesh);
 		void CalcMotionSpheres();
 		
 		Vector3 GetNewPos(P_Tcs* pkBody);
 		
+		void HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody);
+		
 		bool TestMotionSpheres(P_Tcs* pkB1,P_Tcs* pkB2);
 		bool TestMotionSphereVSMesh(P_Tcs* pkB1,P_Tcs* pkB2);
+		
+		P_Tcs* TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
+		bool TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB);
+		//bool LineVSSphere(Vector3 &kPos,Vector3 &kDir,P_Tcs* pkB);
 		
 		
 		bool MeshVSSphereTest(P_Tcs* pkMesh,P_Tcs* pkSphere);

@@ -67,11 +67,33 @@ void Tcs::Update()
 	if(m_kBodys.empty())
 		return;
 	
+	UpdateVel();					//calculate new vel
+	CalcMotionSpheres();			//calculate motionspheres and new pos	
+	UpdateCollissions();			//check for collissions
+	UpdateMotion();				//move bodys
+	
+	UpdateLineTests();	
+}
 
-	UpdateVel();					//	calculate new vel
-	CalcMotionSpheres();		//calculate motionspheres and new pos	
-	UpdateCollissions();		//check for collissions
-	UpdateMotion();			//move bodys
+void Tcs::UpdateLineTests()
+{
+	for(unsigned int i=0;i<m_kBodys.size();i++)
+	{		
+		if(m_kBodys[i]->m_bCharacter)
+		{
+			if(TestLine(m_kBodys[i]->GetObject()->GetWorldPosV(),Vector3(0,-1,0),m_kBodys[i]))
+			{
+				float distance = (m_kBodys[i]->GetObject()->GetWorldPosV() - m_kLastTestPos).Length();
+				if(distance < m_kBodys[i]->m_fLegLength)
+				{
+					m_kBodys[i]->GetObject()->SetWorldPosV(m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0));
+					Vector3 kVel  = m_kBodys[i]->GetObject()->GetVel();
+					kVel.y = 0;
+					m_kBodys[i]->GetObject()->SetVel(kVel);
+				}			
+			}		
+		}
+	}
 }
 
 void Tcs::UpdateVel()
@@ -92,9 +114,11 @@ void Tcs::UpdateMotion()
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
 //		if(!m_kBodys[i]->m_bStatic)
-			m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
-
-         m_kBodys[i]->GetObject()->RotateLocalRotV (m_kBodys[i]->m_kRotVel * m_pkZeroFps->GetGameFrameTime() );
+		m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
+		m_kBodys[i]->GetObject()->RotateLocalRotV (m_kBodys[i]->m_kRotVel * m_pkZeroFps->GetGameFrameTime() );
+		
+		
+//		m_pkRender->Sphere(m_kBodys[i]->GetObject()->GetWorldPosV(),m_kBodys[i]->m_fRadius,2,Vector3(1,0,0),false);
 	}
 }
 
@@ -105,35 +129,60 @@ void Tcs::UpdateCollissions()
 	{
 		for(int B2=B1+1;B2<m_kBodys.size();B2++)
 		{
+			bool bDoTest = false;
+		
 			//dont check collission groups
-			if(!m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup])
-				continue;
-			if(!m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])
-				continue;
-			
-			//if(m_kBodys[B1]->m_bStatic && m_kBodys[B2]->m_bStatic)
-			//	continue;
-			
-			bool bCollission=false;
-			
-			if(TestMotionSpheres(m_kBodys[B1],m_kBodys[B2]))
+			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
+				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])
+				bDoTest = true;
+				
+			if(m_kBodys[B1]->m_bCharacter || m_kBodys[B2]->m_bCharacter)
+				if(m_kBodys[B1]->m_akWalkableGroups[m_kBodys[B2]->m_iGroup] ||
+					m_kBodys[B2]->m_akWalkableGroups[m_kBodys[B1]->m_iGroup])					
+					bDoTest = true;
+				
+			if(bDoTest)
 			{
-				if(m_kBodys[B1]->m_bPolygonTest || m_kBodys[B2]->m_bPolygonTest)
+			
+				bool bCollission=false;
+			
+				if(TestMotionSpheres(m_kBodys[B1],m_kBodys[B2]))
 				{
-					if(TestMotionSphereVSMesh(m_kBodys[B1],m_kBodys[B2]))
+					if(m_kBodys[B1]->m_bPolygonTest || m_kBodys[B2]->m_bPolygonTest)
+					{
+						if(TestMotionSphereVSMesh(m_kBodys[B1],m_kBodys[B2]))
+							bCollission=true;
+					}
+					else
 						bCollission=true;
 				}
-				else
-					bCollission=true;
-			}
 			
-			if(bCollission)
-			{
-				m_kBodys[B1]->GetObject()->Touch(m_kBodys[B2]->GetObject()->iNetWorkID);
-				m_kBodys[B2]->GetObject()->Touch(m_kBodys[B1]->GetObject()->iNetWorkID);				
-				//cout<<"collission detected:"<<endl;
+				if(bCollission)
+				{
+					m_kBodys[B1]->GetObject()->Touch(m_kBodys[B2]->GetObject()->iNetWorkID);
+					m_kBodys[B2]->GetObject()->Touch(m_kBodys[B1]->GetObject()->iNetWorkID);				
+					//cout<<"collission detected:"<<endl;
+					
+					//character handling
+					if(m_kBodys[B1]->m_bCharacter)
+						HandleCharacterCollission(m_kBodys[B1],m_kBodys[B2]);
+					if(m_kBodys[B2]->m_bCharacter)
+						HandleCharacterCollission(m_kBodys[B2],m_kBodys[B1]);
+						
+				}
 			}
 		}
+	}
+}
+
+void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
+{
+	if(pkCharacter->m_akWalkableGroups[pkBody->m_iGroup])
+	{
+			
+		Vector3 dir = (m_kLastTestPos - pkCharacter->GetObject()->GetWorldPosV()).Unit();
+		
+		pkCharacter->m_kNewPos = pkCharacter->GetObject()->GetWorldPosV() - dir * 0.05;
 	}
 }
 
@@ -283,6 +332,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 
 		if(TestSides(kVerts,&Normal,kColPos,pkSphere->m_fRadius))
 		{
+			m_kLastTestPos = kColPos;
 			return true;				
 		}
 	}
@@ -337,4 +387,74 @@ void Tcs::GenerateModelMatrix(P_Tcs* pkMesh)
 	m_kModelMatrix*=pkMesh->GetObject()->GetWorldOriM();
 
 }
+
+
+P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
+{
+//		m_pkObject->SetWorldPosV(m_pkObject->GetWorldPosV() + Vector3(0,-1,0) * m_pkFps->GetFrameTime());					
+	
+	m_kLastTestPos = kStart;		
+	float closest = 999999999;
+	P_Tcs* pkClosest = NULL;	
+	
+	for(unsigned int i=0;i<m_kBodys.size();i++)
+	{		
+		if(m_kBodys[i] == pkTester)
+			continue;
+			
+		if(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup])
+			continue;			
+		
+		
+		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
+		{
+			float d = (kStart - m_kLastLineTestColPos).Length();		
+		
+			if(d < closest)
+			{
+				
+				m_kLastTestPos = m_kLastLineTestColPos;
+				closest = d;
+				pkClosest = m_kBodys[i];
+			}				
+		}		
+	}		
+	
+	return pkClosest;
+}
+
+bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
+{
+	if(pkB->m_pkMad)
+	{	
+		if(pkB->m_pkMad->TestLine(kStart,kDir))
+		{
+			m_kLastLineTestColPos = pkB->m_pkMad->GetLastColPos();
+			return true;
+		}
+	}
+
+
+
+	return false;	
+}
+/*
+bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir,P_Tcs* pkB)
+{
+	Vector3 c = pkB->GetObject()->GetWorldPosV() - kPos;		
+	kDir.Normalize();		
+	Vector3 k = kDir.Proj(c);		
+	
+	float cdis=c.Length();
+	float kdis=k.Length();
+	float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+	
+	if(Distance < pkB->m_fRadius)
+		return true;
+
+	return false;
+}
+*/
+
+
 

@@ -88,6 +88,67 @@ void P_Ml::Update()
 	if(m_pkObject != pkEnt)
 		cout<<"SOMETHING IS FUCKING WRONG!!!!"<<endl;
 */
+
+/*
+	//test
+		m_pkObject->SetWorldPosV(m_pkObject->GetWorldPosV() + Vector3(0,-1,0) * m_pkFps->GetFrameTime());					
+	
+	vector<Entity*> kObjects;
+	Vector3 start = m_pkObject->GetWorldPosV();
+	Vector3 dir = Vector3(0,-1,0);
+	Vector3 pos = start;	
+	
+	m_pkObjMan->GetZoneObject()->GetAllObjects(&kObjects);
+	
+	//cout<<"nr of targets: "<<kObjects.size()<<endl;
+	
+	float closest = 999999999;
+
+	Entity* pkClosest = NULL;	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{	
+		//get mad property and do a linetest
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		if(mp)
+		{
+			if(mp->TestLine(start,dir))
+			{	
+				
+				float d = (start - mp->GetLastColPos()).Length();
+	
+				if(d < closest)
+				{
+					pos = mp->GetLastColPos();
+					closest = d;
+					pkClosest = kObjects[i];
+				}				
+			}
+		}					
+	}	
+	
+	if(pkClosest)
+	{
+		static Vector3 oldpos;
+	
+		if(closest < 0.8)
+			m_pkObject->SetWorldPosV(oldpos);
+		else
+		{
+			oldpos = start;
+		
+			if(closest < 1)
+			{	
+				m_pkObject->SetWorldPosV(pos + Vector3(0,1,0));		
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	//end of test
+*/	
 	
 	
 	if(m_pkFps->m_bServerMode)

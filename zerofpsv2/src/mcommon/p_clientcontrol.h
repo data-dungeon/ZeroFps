@@ -9,7 +9,32 @@
 #include "mcommon_x.h"
 #include <queue>
 
+#include "p_serverinfo.h"
+
 using namespace std;
+
+enum MCOMMON_API Control
+{
+	CTRL_UP = 0,
+	CTRL_DOWN = 1,
+	CTRL_LEFT = 2,
+	CTRL_RIGHT = 3,	
+};
+
+
+class MCOMMON_API Controls
+{
+	public:
+		bitset<4> m_akControls;
+		float     m_fYRot;
+		
+		
+		Controls()
+		{
+			m_akControls.reset();		
+		}
+	
+};
 
 class MCOMMON_API ClientOrder
 {
@@ -28,18 +53,24 @@ class MCOMMON_API ClientOrder
 
 class MCOMMON_API P_ClientControl: public Property {
 	private:
-		ZeroFps* m_pkFps;
-
-		int	m_iMaxOrders;
+		ZeroFps* 		m_pkFps;
+		P_ServerInfo*	m_pkServerInfo;
+		
+		int				m_iMaxOrders;
+		
 	
 		queue<ClientOrder>			 m_kClientOrders;		
 		static queue<ClientOrder>	m_kServerOrders;
 		
 
+		void UpdateCharacter();
+		bool CheckValidOrder(ClientOrder* temporder);
+		void SetupServerinfoP();
+
 	public:
-		int m_iClientID, m_iActiveCaracterObjectID;
-	
-	
+		int 		m_iClientID, m_iActiveCaracterObjectID;
+		Controls m_kControls;
+		
 		void CloneOf(Property* pkProperty) { }
 		P_ClientControl();
 		
@@ -50,11 +81,12 @@ class MCOMMON_API P_ClientControl: public Property {
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 		
-		bool CheckValidOrder(ClientOrder* temporder);
 		
-		static ClientOrder* GetNextOrder();		
-		static int NrOfOrders(){return m_kServerOrders.size();};				
+		
+		static ClientOrder* GetNextOrder();				
 		static void PopOrder(){m_kServerOrders.pop();};
+		static int NrOfOrders(){return m_kServerOrders.size();};				
+
 };
 
 MCOMMON_API Property* Create_P_ClientControl();

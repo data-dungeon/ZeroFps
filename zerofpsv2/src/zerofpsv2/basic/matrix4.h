@@ -60,8 +60,14 @@ class BASIC_API Matrix4
 		void Transponse();
 
 		void OldTranslate(float x, float y, float z);
+		
+		
+		void RadRotate(float fX, float fY, float fZ);
+		void RadRotate(Vector3 kRot);
+		
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(Vector3 kRot);
+		
 		void Scale(float fX, float fY, float fZ);
 		void Scale(Vector3 kScale);
 		void Translate(float fX, float fY, float fZ);

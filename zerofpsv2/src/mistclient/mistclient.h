@@ -61,8 +61,8 @@ class MistClient :public Application, public ZGuiApp {
 		};
 
 		//selected caracter
-		int					m_iActiveCaracter;
 		int					m_iActiveCaracterObjectID;
+		Entity* 				m_pkActiveCharacter;
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
@@ -77,6 +77,7 @@ class MistClient :public Application, public ZGuiApp {
 		Entity*				m_pkTestobj;
 		P_Camera*			m_pkCamProp;		
 		float					m_fAngle;
+		float					m_fPAngle;		
 		float					m_fDistance;		
 		float 				m_fClickDelay;
 		
@@ -105,7 +106,6 @@ class MistClient :public Application, public ZGuiApp {
 
 		void CreateGuiInterface();
 
-		Entity* m_pkActiveCharacter;
 
 		vector<HenchmanButton*> m_vkHenchmanIcons;
 		HenchmanButton* m_pkSelHenchmanIcon;
@@ -147,8 +147,8 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientStart(void);
 		
 		
-		void SetActiveCaracter(int iCaracter);
-		
+//		void SetActiveCaracter(int iCaracter);
+		void SetActiveCaracter(bool bEnabled);
 		
 		//init client
 		void ClientInit();

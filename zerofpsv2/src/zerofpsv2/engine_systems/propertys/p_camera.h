@@ -36,8 +36,9 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		Vector3	m_kDynamicIso;		
 		Vector3	m_kInterPos;
 		float		m_f3PYAngle;
-		float		m_f3PYPos;
+		float		m_f3PPAngle;
 		float		m_f3PDistance;
+		Vector3	m_kOffset;
 
 		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
 		void Look(Vector3 kCamPosision,Vector3 kLookDir,Vector3 kCamUp);
@@ -52,8 +53,9 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		void SetCamera(Camera *pkCamera) { m_pkCamera = pkCamera; };
 		
 		void Set3PYAngle(float fA) { m_f3PYAngle = fA;};
-		void Set3PYPos(float fP) { m_f3PYPos = fP;};
+		void Set3PPAngle(float fP) { m_f3PPAngle = fP;};
 		void Set3PDistance(float fD) { m_f3PDistance = fD;};
+		void SetOffset(Vector3 kOffset) { m_kOffset = kOffset;};
 		void SetType(CamType_e kType);
 		void NextType(CamType_e kType);
 		void SetFpFov(float fFov);		

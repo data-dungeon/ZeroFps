@@ -7,7 +7,7 @@ P_ClientControl::P_ClientControl()
 {
 	strcpy(m_acName,"P_ClientControl");		
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=0;//PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
+	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	bNetwork = true;
 	
@@ -16,11 +16,17 @@ P_ClientControl::P_ClientControl()
 	m_iMaxOrders = 1;
 
    m_iActiveCaracterObjectID = -1; // I guess -1 equals no character...// Zerom
+	m_pkServerInfo = NULL;
 }
 
 void P_ClientControl::Update()
 {
-	//cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
+	// try getting serverinfo property pointer
+	if(!m_pkServerInfo)
+		SetupServerinfoP();
+
+	//update character controls
+	UpdateCharacter();
 }
 
 
@@ -28,7 +34,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 {
 	int iNrOO = m_kClientOrders.size();
 	
-	//make sure we dont send more orders than allowed
+	//make sure we dont send more orders than allowed 
 	if(iNrOO > m_iMaxOrders)
 		iNrOO = m_iMaxOrders;
 	
@@ -44,6 +50,10 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Write(&m_kClientOrders.front().m_iUseLess,sizeof(m_kClientOrders.front().m_iUseLess));										
 		m_kClientOrders.pop(); 
 	}
+	
+	//client controls
+	pkNetPacket->Write(&m_iActiveCaracterObjectID,sizeof(m_iActiveCaracterObjectID));										
+	pkNetPacket->Write(&m_kControls,sizeof(m_kControls));											
 } 
 
 void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
@@ -75,6 +85,19 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 			else
 				cout<<"Client :"<<m_iClientID<<" is trying to cheat"<<endl;
 	}
+
+	//client controls
+	pkNetPacket->Read(&m_iActiveCaracterObjectID,sizeof(m_iActiveCaracterObjectID));										
+	pkNetPacket->Read(&m_kControls,sizeof(m_kControls));											
+	
+	if(m_pkServerInfo)
+	{
+		if(m_pkServerInfo->GetCharacterID(m_iClientID) != m_iActiveCaracterObjectID)
+		{
+			cout<<"invalid controls from connection:"<<m_iClientID<<endl;
+			m_iActiveCaracterObjectID = -1;
+		}	
+	}
 }
 
 bool P_ClientControl::CheckValidOrder(ClientOrder* temporder)
@@ -99,6 +122,60 @@ ClientOrder* P_ClientControl::GetNextOrder()
 	}
 	
 	return NULL;
+}
+
+void P_ClientControl::UpdateCharacter()
+{
+	if(m_iActiveCaracterObjectID == -1)
+		return;
+	
+	//hack
+	Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+	
+	if(pkEnt)
+	{
+		//setup rotation
+		Matrix3 temp;
+		temp.Identity();
+		temp.RadRotate(0,m_kControls.m_fYRot,0);
+		pkEnt->SetLocalRotM(temp);
+		
+		
+//		Vector3 kVel  pkEnt->GetVel();
+		
+		Vector3 kVel;
+		kVel.Set(0,0,0);
+		
+		if(m_kControls.m_akControls[CTRL_UP])
+			kVel.z = 1;
+		
+		if(m_kControls.m_akControls[CTRL_DOWN])
+			kVel.z = -1;
+
+		if(m_kControls.m_akControls[CTRL_LEFT])
+			kVel.x = 1;
+
+		if(m_kControls.m_akControls[CTRL_RIGHT])
+			kVel.x = -1;
+
+		kVel = temp.VectorTransform(kVel) * 4;
+		
+		//setup y spd
+		kVel.y = pkEnt->GetVel().y;
+		
+		pkEnt->SetVel(kVel);
+	}
+}
+
+
+void P_ClientControl::SetupServerinfoP()
+{
+	Entity* pkEnt = m_pkObjMan->GetObject("A t_serverinfo.lua");
+	
+	if(pkEnt)
+	{
+		m_pkServerInfo = (P_ServerInfo*)pkEnt->GetProperty("P_ServerInfo");
+	}
 }
 
 

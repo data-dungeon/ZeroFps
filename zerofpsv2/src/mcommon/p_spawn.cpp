@@ -33,7 +33,7 @@ void P_Spawn::Update()
 	//draw a ball on the server
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		//m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
+		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
 	}
 	
@@ -78,8 +78,8 @@ void P_Spawn::Update()
 						/***************
 							HACK FOR DEMO: No Spawn radius
 						****************/
-						Vector3 kPos = m_pkObject->GetLocalPosV();
-						//Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
+						//Vector3 kPos = m_pkObject->GetLocalPosV();
+						Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
 						SpawnEntity(kPos);				
 					}
 				}				

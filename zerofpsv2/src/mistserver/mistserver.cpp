@@ -682,10 +682,11 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(m_pkServerInfoP)
 	{	
 		//wich rights shuld a client have on its player caracter
-		int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
+		//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
 		
 		m_pkServerInfoP->AddPlayer(iConID,strPlayer.c_str());
-		m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
+		m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
+		//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
 	}
 }
 
@@ -784,7 +785,7 @@ Entity* MistServer::GetTargetObject()
 	pkObjectMan->TestLine(&kObjects,start,dir);
 	
 	
-	float closest = 9999999999;
+	float closest = 999999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
@@ -1225,20 +1226,22 @@ void MistServer::DeletePlayer(int iConID)
 		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
 		if(pi)
 		{
+			//first save and delete the player character
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->iCharacterObjectID);
+			if(pkObj)
+			{
+				m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
+				pkObjectMan->Delete(pkObj);
+			}
+		
+			//then walk trough all characters in his control list and delete the ones the player have spawned
 			for(unsigned int i = 0;i<pi->kControl.size();i++)
 			{
 				if(pi->kControl[i].second & PR_OWNER)
 				{
 					Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
 					
-					//check if object exist, else just continue
-					if(!pkObj)
-						continue;
-					
-					//save object here
-					m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
-					
-					
+										
 					//delete it
 					if(pkObj)
 						pkObjectMan->Delete(pkObj);
@@ -1536,6 +1539,10 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 		
 	if(m_pkServerInfoP)
 	{
+		if(pkOrder->m_iCharacter  == m_pkServerInfoP->GetCharacterID(pkOrder->m_iClientID))
+			return true;
+		
+/*	
 		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(pkOrder->m_iClientID);
 		
 		if(pi)
@@ -1548,6 +1555,7 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 						return true;				
 			}
 		}
+*/		
 	}
 	
 	return false;

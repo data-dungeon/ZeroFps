@@ -94,6 +94,43 @@ bool P_ServerInfo::PlayerExist(int id)
 	return false;
 }
 
+void P_ServerInfo::SetCharacterID(int id,int iObjID)
+{
+	SetNetUpdateFlag(true);		
+	
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			(*it).iCharacterObjectID = iObjID;
+		}
+	}
+}
+
+int P_ServerInfo::GetCharacterID(int id)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			return (*it).iCharacterObjectID;
+		}
+	}
+	
+	return -1;
+}
+
+int P_ServerInfo::GetPlayer(int iObjID)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iCharacterObjectID == iObjID)
+		{
+			return (*it).iId;
+		}
+	}
+	return -1;
+}
 
 void P_ServerInfo::AddObject(int id,int iObjID,int iRights)
 {
@@ -147,6 +184,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	{
 		pkNetPacket->Write(&m_kPlayers[i].iId,sizeof(m_kPlayers[i].iId));
 		pkNetPacket->Write_Str(m_kPlayers[i].sPlayerName.c_str());		
+		pkNetPacket->Write(&m_kPlayers[i].iCharacterObjectID,sizeof(m_kPlayers[i].iCharacterObjectID));		
 		
 		int objects = m_kPlayers[i].kControl.size();
 		pkNetPacket->Write(&objects,sizeof(objects));
@@ -208,6 +246,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	   char tm[120];		   
 		pkNetPacket->Read_Str(tm);		
 		temp.sPlayerName = tm;
+		pkNetPacket->Read(&temp.iCharacterObjectID,sizeof(temp.iCharacterObjectID));			
 			
 		//read kControl vector
 		temp.kControl.clear();		
@@ -282,6 +321,12 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 	cout<<"number of players"<<m_kPlayers.size()<<endl;
 	
 
+	int iPlayer = GetPlayer(iObjectID);
+	
+	if(iPlayer != -1)
+		m_kPlayers[iPlayer].kMessages.push(strMessage);	
+	
+/*
 	for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		cout<<"player "<<i<<" controls "<<m_kPlayers[i].kControl.size()<<"characters"<<endl;
@@ -302,6 +347,7 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 			}		
 		}
 	}
+*/	
 }
 
 

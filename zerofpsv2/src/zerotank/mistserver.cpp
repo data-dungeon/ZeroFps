@@ -522,7 +522,7 @@ Entity* MistServer::GetTargetObject()
 	pkObjectMan->TestLine(&kObjects,start,dir);
 	
 	
-	float closest = 9999999999;
+	float closest = 999999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{

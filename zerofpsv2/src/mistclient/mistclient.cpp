@@ -71,7 +71,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC), MAX_NUM_ACTION_BUTTONS(8)
 { 
 	m_iActiveCaracterObjectID = -1;
-	m_iActiveCaracter			= -1;
 	m_iSelfObjectID			= -1;
 	m_pkClientObject			= NULL;
 	m_pkClientControlP		= NULL;
@@ -87,6 +86,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkInventDlg				= NULL;
 	m_pkSpellDlg				= NULL;
 	m_pkSkillDlg				= NULL;
+	
+	m_fAngle 					= 0;
+	m_fPAngle 					= 0;
 	
 	g_ZFObjSys.Log_Create("mistclient");
 } 
@@ -220,20 +222,12 @@ void MistClient::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-/*	if(m_pkMap2) {
-		m_pkMap2->SetPos(Vector3(0,0,0));
-		//pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
-		}*/
 
 	Vector3 pos = Get3DMousePos();
 	pos+=pkFps->GetCam()->GetPos();
 	
-/*	pkRender->Line(pos,pos+Vector3(10,0,0));
-	pkRender->Line(pos,pos+Vector3(0,10,0));	
-	pkRender->Line(pos,pos+Vector3(0,0,10));	
-*/	
 	// FULHACK Tm Vim
-		pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
+	pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
 	
 
 	if(m_pkServerInfo)
@@ -259,8 +253,7 @@ void MistClient::OnIdle()
 
 	if(m_pkActiveCharacter)
 	{
-		pkCharacterProperty = static_cast<CharacterProperty*>(
-			m_pkActiveCharacter->GetProperty("P_CharStats"));
+		pkCharacterProperty = static_cast<CharacterProperty*>(m_pkActiveCharacter->GetProperty("P_CharStats"));
 	}
 
 	if(pkCharacterProperty)
@@ -268,14 +261,15 @@ void MistClient::OnIdle()
 		CharacterStats* pkCharacterStats = pkCharacterProperty->GetCharStats();
 		
 		UpdateManaAndHealthBar(pkCharacterStats);
-
-		//pkCharacterProperty->GetProperty("P_ServerInfo")
 	}
 
 }
 
 void MistClient::OnSystem() 
 {
+	if ( m_pkClientControlP )
+   	m_pkClientControlP->m_iActiveCaracterObjectID = m_iActiveCaracterObjectID;
+
 	UpdateCullObjects();
 
 	//setup client
@@ -297,6 +291,7 @@ void MistClient::OnSystem()
 					if(m_pkClientControlP)
 					{
 						pkConsole->Printf("Got client control");				
+						
 					}				
 				}
 			}
@@ -334,29 +329,6 @@ void MistClient::OnSystem()
 		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
 		if(pi)
 		{
-/*				FAN ÄR DETTA FÖR DJÄVLA KRAP KÅD, INTE KONSTIGT ATT KAMERAN CPAR SIG IBLAND		
-
-			int id = pi->kControl[m_iActiveCaracter].first;	
-			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
-			
-			//setup camera for active caracter
-			if(pkObj)
-			{
-				P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
-			
-				if(!cp)
-					P_Camera* cp = (P_Camera*)pkObj->AddProperty("P_Camera");
-		
-				if(cp)
-				{
-					cp->SetCamera(m_pkCamera);
-					cp->SetType(CAM_TYPE3PERSON);
-					m_pkCamProp = cp;
-				}
-
-				m_pkActiveCharacter = pkObj;
-			}	
-*/			
 			//print server messages
 			while(!m_pkServerInfo->m_kMyMessages.empty())
 			{
@@ -387,7 +359,11 @@ void MistClient::OnSystem()
 			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
 	}
 
-	SetActiveCaracter(0);
+	
+	//try to activate character
+	if(m_iActiveCaracterObjectID == -1)
+		SetActiveCaracter(true);							
+
 }
 
 void MistClient::Input()
@@ -396,6 +372,37 @@ void MistClient::Input()
 	
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
+		
+	//setup player controls
+	if(m_pkClientControlP)
+	{
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP] = pkInput->Pressed(KEY_W);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = pkInput->Pressed(KEY_S)	;
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = pkInput->Pressed(KEY_A)		;
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = pkInput->Pressed(KEY_D)		;
+
+		if(m_pkCamProp)
+		{
+			m_fAngle -=x/300.0;
+			m_fPAngle -= z/300.0;
+			
+			if(m_fPAngle > 0.9)
+				m_fPAngle = 0.9;
+			
+			if(m_fPAngle < -0.9)
+				m_fPAngle = -0.9;
+			
+			
+			m_pkCamProp->Set3PYAngle(m_fAngle);			
+			m_pkCamProp->Set3PPAngle(m_fPAngle);
+			
+			m_pkClientControlP->m_kControls.m_fYRot = -m_fAngle + 3.14;
+		}
+	}
+	
+	
+	
+		
 		
 	if(pkInput->Pressed(MOUSEMIDDLE))
 	{
@@ -413,11 +420,11 @@ void MistClient::Input()
 				
 			m_pkCamProp->Set3PYAngle(m_fAngle);
 			m_pkCamProp->Set3PDistance(m_fDistance);
-			m_pkCamProp->Set3PYPos(1.5);
+			//m_pkCamProp->Set3PYPos(1.5);
 		}
 	}
 
-	
+/*	
 	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 
@@ -470,7 +477,7 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();					
 		}
 	}
-
+*/
 	if(pkInput->Pressed(MOUSERIGHT)  && (pkInput->Pressed(KEY_RSHIFT) || pkInput->Pressed(KEY_LSHIFT)) )
 	{
 		//attack ground
@@ -623,7 +630,7 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 		m_pkCamProp->Set3PDistance(m_fMinCamDistance);	
-		m_pkCamProp->Set3PYPos(1.5);	
+		//m_pkCamProp->Set3PYPos(1.5);	
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
@@ -1016,7 +1023,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
-	float closest = 9999999999;
+	float closest = 999999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
@@ -1138,8 +1145,90 @@ void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 	}
 }
 
-void MistClient::SetActiveCaracter(int iCaracter)
+//void MistClient::SetActiveCaracter(int iCaracter)
+void MistClient::SetActiveCaracter(bool bEnabled)
 {
+	if(bEnabled)
+	{
+		if(m_pkServerInfo)
+		{			
+			int id = m_pkServerInfo->GetCharacterID(pkFps->GetConnectionID());
+		
+			if(id != -1)
+			{
+				cout<<"enabling charactercontrol of:"<<id<<endl;
+				
+				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+	
+				//object found
+				if(pkObj)
+				{
+					//get camera and enviroment propertys
+					P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
+					P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
+				
+					if(!cp) 
+						cp = (P_Camera*)pkObj->AddProperty("P_Camera");
+		
+					//enable camera
+					if(cp)
+					{
+						cp->SetCamera(m_pkCamera);
+						cp->SetType(CAM_TYPE3PERSON);								
+						m_pkCamProp = cp;					
+					}				
+						
+					//enable enviroment for this caracter
+					if(ep)
+					{
+						ep->SetEnable(true);						
+					}
+					
+					//set current active character
+					//m_iActiveCaracter = iCaracter;
+					m_iActiveCaracterObjectID = id;
+         	            
+					// set active character in clientcontrol property also
+	            if(m_pkClientControlP)
+	   	        	m_pkClientControlP->m_iActiveCaracterObjectID = id;
+						
+					m_pkActiveCharacter = pkObj;
+				}
+				else
+					cout<<"your character does not exist"<<endl;
+			}		
+			else
+				cout<<"you are not in database"<<endl;				
+		}
+	}
+	else
+	{	//disable active character
+		if(m_iActiveCaracterObjectID != -1)
+		{
+			cout<<"disabling charactercontrol of:"<<m_iActiveCaracterObjectID<<endl;
+			
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+			
+			if(pkObj)
+			{
+				//disable camera
+				pkObj->DeleteProperty("P_Camera");
+				m_pkCamProp = NULL;
+				
+				//disable enviroment for this character				
+				P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
+				if(ep)
+				{
+					ep->SetEnable(false);						
+				}				
+			}		
+			m_iActiveCaracterObjectID = -1;
+			m_pkActiveCharacter = NULL;
+		}
+	}
+
+/*
+
 	//dont try to set if caracter is already active
 	if(m_iActiveCaracter == iCaracter)
 		return;
@@ -1238,6 +1327,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 		else
 			cout<<"Error: cant find player info, You dont exist"<<endl;
 	} 
+*/	
 }	
 
 void MistClient::CreateGuiInterface()
@@ -1352,7 +1442,7 @@ bool MistClient::PickZones()
 	vector<Entity*> kObjects;	
 	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 		
-	float closest = 9999999999;
+	float closest = 999999999;
 	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
@@ -1380,7 +1470,7 @@ bool MistClient::PickZones()
 		}
 	}
 	
-	if(closest != 9999999999)
+	if(closest != 999999999)
 		return true;
 	
 	return false;
