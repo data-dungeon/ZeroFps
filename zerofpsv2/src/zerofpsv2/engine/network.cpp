@@ -418,9 +418,9 @@ void NetWork::StartSocket(bool bStartServer)
 		return;
 		}
 
-	int iSocketNum = 4242;
+	int iSocketNum = 0;
 	if(bStartServer)	iSocketNum = 4242;
-	m_pkSocket = SDLNet_UDP_Open(4242);
+	m_pkSocket = SDLNet_UDP_Open( iSocketNum );
 	if(!m_pkSocket) {
 		cout << "SDLNet_UDP_Open: " <<  SDLNet_GetError() << endl;
 		return;
