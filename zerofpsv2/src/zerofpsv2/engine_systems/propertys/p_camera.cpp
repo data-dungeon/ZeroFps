@@ -58,7 +58,7 @@ void P_Camera::Update()
 				strCamName = " 3P ";
 				/*if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(m_fFov);				
+				//m_pkCamera->SetFov(m_fFov);				
 				break;
 			}	
 			case CAM_TYPEFIRSTPERSON:
@@ -72,7 +72,7 @@ void P_Camera::Update()
 				strCamName = " 1P ";
 	/*			if(madp)
 					madp->m_bIsVisible = false;*/
-				m_pkCamera->SetFov(m_fFov);
+				//m_pkCamera->SetFov(m_fFov);
 				break;
 			}
 			case CAM_TYPETOPDOWN:
@@ -81,7 +81,7 @@ void P_Camera::Update()
 				strCamName = " TD ";
 /*				if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(90);
+				//m_pkCamera->SetFov(90);
 				break;
 
 			case CAM_TYPEISO:
@@ -90,7 +90,7 @@ void P_Camera::Update()
 				strCamName = " ISO ";
 	/*			if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(m_fFov);
+				//m_pkCamera->SetFov(m_fFov);
 				break;
 
 				
@@ -103,7 +103,7 @@ void P_Camera::Update()
 				strCamName = " Chase ";
 /*				if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(m_fFov);
+				//m_pkCamera->SetFov(m_fFov);
 				break;
 
 			case CAM_TYPEDYNAMICISO:
@@ -115,7 +115,7 @@ void P_Camera::Update()
 				strCamName = " Dyn ISO ";
 /*				if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(m_fFov);
+				//m_pkCamera->SetFov(m_fFov);
 				break;
 				
 			case CAM_TYPESIDE:
@@ -124,7 +124,7 @@ void P_Camera::Update()
 				m_pkCamera->SetRot(Vector3(0,20,0));
 	/*			if(madp)
 					madp->m_bIsVisible = true;*/
-				m_pkCamera->SetFov(90);
+				//m_pkCamera->SetFov(90);
 				break;
 		
 		}

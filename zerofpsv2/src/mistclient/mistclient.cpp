@@ -110,7 +110,7 @@ void MistClient::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),60,1.333,0.25,100);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
 	
 	//register actions bös
 	RegisterActions();
@@ -142,9 +142,6 @@ void MistClient::Init()
 
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
-
-	// Zeb: Tar bort detta, det görs ju i OnServerStart!
-	//pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
 
 	// Varde ljus!
 	pkLight->SetLighting(true);
@@ -766,9 +763,10 @@ Vector3 MistClient::Get3DMousePos()
 	//screen propotions
 	float xp=4;
 	float yp=3;
+	float fovshit=-2.15;
 	
 	pkInput->UnitMouseXY(x,y);	
-	dir.Set(x*xp,-y*yp,-1.5);
+	dir.Set(x*xp,-y*yp,fovshit);
 	dir.Normalize();
 	
 	Matrix4 rm = m_pkCamera->GetRotM();

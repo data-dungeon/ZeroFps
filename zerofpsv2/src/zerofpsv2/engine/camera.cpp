@@ -13,6 +13,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_kRotM.Identity();
 	
 	m_strName = "A Camera";
+	
 }
 
 void Camera::UpdateAll(int iWidth,int iHeight) 
@@ -81,7 +82,6 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	glPushMatrix();
 	 	glLoadIdentity();													
 		gluPerspective(fFov, fAspect,fNear,fFar);	
-		//cout<<"fov:"<<fFov<<endl;
 		//get projection matrix
 		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();
