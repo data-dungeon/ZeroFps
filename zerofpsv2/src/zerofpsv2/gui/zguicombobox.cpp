@@ -334,6 +334,10 @@ void ZGuiCombobox::Resize(int iWidth,int iHeight,bool bChangeMoveArea)
 			m_pkListbox->GetItemCount()*
 			m_pkListbox->GetItemHeight());
 	}
+   else
+   {
+      
+   }
 }
 
 void ZGuiCombobox::CopyNonUniqueData(const ZGuiWnd* pkSrc)

@@ -179,7 +179,12 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Checkbox, "StretchTextureCB", "WorkSpace", "Stretch", 2, 484, 16, 16, 0);
 	m_pkApp->CreateWnd(Checkbox, "TransparentTextureCB", "WorkSpace", "Transparent", 100, 484, 16, 16, 0);
 
-	m_pkApp->CreateWnd(Button, "RemoveTextureBn",  "WorkSpace",  "No tex", 120,  440, 50, 16, 0);
+   m_pkApp->CreateWnd(Textbox, "SkinTypeLongDesc",  "WorkSpace",  "Skin type", 2, 460, 190, 19*3, 0);
+   ((ZGuiTextbox*)GetWnd("SkinTypeLongDesc"))->SetReadOnly(false);
+   ((ZGuiTextbox*)GetWnd("SkinTypeLongDesc"))->ToggleMultiLine(true);
+   ((ZGuiTextbox*)GetWnd("SkinTypeLongDesc"))->Hide();
+   
+	m_pkApp->CreateWnd(Button, "RemoveTextureBn",  "WorkSpace",  "No tex", 105,  440, 50, 16, 0);
 	
 	((ZGuiButton*)m_pkApp->GetWnd("RemoveTextureBn"))->SetButtonUpSkin(new ZGuiSkin());
 	((ZGuiButton*)m_pkApp->GetWnd("RemoveTextureBn"))->SetButtonDownSkin(new ZGuiSkin());
@@ -190,6 +195,8 @@ void Scene::CreateUI()
 	((ZGuiButton*)m_pkApp->GetWnd("RemoveTextureBn"))->GetButtonHighLightSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/bn_f.bmp", 0);
 
 	((ZGuiRadiobutton*) m_pkApp->GetWnd("TextureBK"))->GetButton()->CheckButton(); 
+
+   m_pkApp->CreateWnd(Button, "ResizeSkinTypeListBn",  "WorkSpace",  "S", 162,  440, 30, 16, 0);
 
 	//
 	// Create Def.Properties Wnd

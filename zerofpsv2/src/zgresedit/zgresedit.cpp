@@ -745,6 +745,37 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					break;
 				}
 		}
+      else
+      if(strClickWndName == "ResizeSkinTypeListBn")
+      {
+         /*GetWnd("SkinTypeLongDesc")->Resize(290, 20);
+         GetWnd("SkinTypeLongDesc")->SetPos(2-110, 460, false, true);*/
+
+         if(GetWnd("SkinTypeLongDesc")->IsVisible()) 
+         {
+            GetWnd("StretchTextureCB")->Show();
+            GetWnd("TransparentTextureCB")->Show();
+            GetWnd("SkinTypeCB")->Show();
+
+            GetWnd("SkinTypeLongDesc")->Hide();
+         }
+         else
+         {
+            GetWnd("StretchTextureCB")->Hide();
+            GetWnd("TransparentTextureCB")->Hide();
+            GetWnd("SkinTypeCB")->Hide();
+
+            GetWnd("SkinTypeLongDesc")->Show();
+
+            char* text = GetSelItem("SkinTypeCB");
+
+            if(text)
+            {
+               GetWnd("SkinTypeLongDesc")->SetText(text, false);
+            }
+            
+         }
+      }
 		else
 		if(strClickWndName == "RemoveTextureBn" && m_pkFocusWnd)
 		{
@@ -1549,6 +1580,8 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
 
 	                  UpdateSkin(m_pkFocusWnd, (*vkSkinDesc[i].first), szSkinType);
+
+                     
 						}
 						break;
 					}

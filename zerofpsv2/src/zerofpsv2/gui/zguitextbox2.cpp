@@ -286,6 +286,9 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 	{
 		BuildTagList();
 		BuildTextStrings();
+
+      m_bUseDisplayList = true;  // lade till 0408226
+	   m_iDisplayListID = -1; // lade till 0408226
 	}
 
 	//int* piParams = new int[1];
