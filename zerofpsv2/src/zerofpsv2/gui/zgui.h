@@ -17,6 +17,7 @@
 #include "zguitreebox.h"
 #include "zguitabctrl.h"
 #include "zguislider.h"
+#include "zguiapp.h"
 
 #include "../basic/zfobjectmanger.h"
 #include "../basic/image.h"

@@ -23,7 +23,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 }
 
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth), GuiApp(GUIPROC)
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 
 	m_iSelfObjectID			= -1;

@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 basic.lib render.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\gui.dll" /pdbtype:sept /libpath:"..\..\..\bin"
+# ADD LINK32 script.lib basic.lib render.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\gui.dll" /pdbtype:sept /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
@@ -103,6 +103,10 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin
 # Begin Source File
 
 SOURCE=.\zgui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguiapp.cpp
 # End Source File
 # Begin Source File
 
@@ -175,6 +179,10 @@ SOURCE=.\gui_x.h
 # Begin Source File
 
 SOURCE=.\zgui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguiapp.h
 # End Source File
 # Begin Source File
 

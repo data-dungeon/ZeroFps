@@ -3,11 +3,12 @@
 #ifndef _GUIBUILDER_H
 #define _GUIBUILDER_H
 
+#include "gui_x.h"
 #include <map>
 #include <string>
 using namespace std;
 
-#include "../zerofpsv2/gui/zgui.h"
+#include "zgui.h"
 
 class TextureManager;
 class ZFScript;
@@ -33,7 +34,7 @@ enum GuiType
 	GuiType_Error
 };
 
-class GuiApp
+class GUI_API ZGuiApp
 {
 public:
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
@@ -66,12 +67,14 @@ public:
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript, ZGuiResourceManager* pkResMan);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
-	bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
+	bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
 	void CloseWindow(char* szResName);
 
-	GuiApp(ZGui::callback oMainWndProc);
-	~GuiApp();
+	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
+
+	ZGuiApp(callback oMainWndProc);
+	~ZGuiApp();
 
 private:
 	GuiType GetType(ZGuiWnd* pkWnd);
@@ -86,7 +89,7 @@ private:
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;
 	
-	ZGui::callback m_oMainWndProc;
+	callback m_oMainWndProc;
 	ZGuiRadiobutton* m_pkLastRadiobutton;
 
 	char* m_szLastRadioBGroup;
