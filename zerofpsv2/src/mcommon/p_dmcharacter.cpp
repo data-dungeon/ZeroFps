@@ -167,8 +167,11 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 		return;
 
 	m_kStats.m_iLife -= iDmg;
+
+	if ( m_kStats.m_iLife < 0 )
+		m_kStats.m_iLife == 0;
 	
-	cout<<"damaged:"<<m_kStats.m_iLife<<endl;
+	cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
 
 	if(m_kStats.m_iLife <= 0)
 	{
@@ -602,7 +605,7 @@ vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 
 void P_DMCharacter::UpdateOrders()
 {
-	if(m_kOrderQueue.empty())
+	if(m_kOrderQueue.empty() || m_iState == DEAD)
 		return;
 
 	if(HandleOrder(&m_kOrderQueue.front(),m_bNewOrder))
@@ -720,8 +723,23 @@ void P_DMCharacter::ChangeState (int iState)
 	{
 		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
 			pkSi->CallFunction("Dead");
+
+		// clear orders
+		while ( !m_kOrderQueue.empty() )
+			m_kOrderQueue.pop();
+
+		DropAllItems();
 	}
 
+}
+
+void P_DMCharacter::DropAllItems()
+{
+	m_pkBackPack->DropAll();
+	m_pkBody->DropAll();
+	m_pkBelt->DropAll();
+	m_pkHand->DropAll();
+	m_pkImplants->DropAll();
 }
 
 Property* Create_P_DMCharacter()

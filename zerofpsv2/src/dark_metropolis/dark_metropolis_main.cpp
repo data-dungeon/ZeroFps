@@ -1178,7 +1178,7 @@ void DarkMetropolis::ValidateSelection()
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 		{
 			if(!pkEnt->GetParent()->IsZone())		
-			{	
+			{
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
 
 				// Uppdatera GUI:t och berätta att ingen agent är i fokus.

@@ -102,6 +102,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void AddOrder(DMOrder kOrder) {m_kOrderQueue.push(kOrder);};
 		void ClearOrders() {while(!m_kOrderQueue.empty()) m_kOrderQueue.pop();m_bNewOrder = true;};
 
+		void DropAllItems();
+
 		// Set right animation and calls shoot function i p_dmgun
 		void Shoot (Vector3 kLocation);
 		bool WalkSoundIsPlaying() { return m_bPlayWalkSound; }

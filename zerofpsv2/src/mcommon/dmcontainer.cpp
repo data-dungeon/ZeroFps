@@ -273,7 +273,10 @@ bool DMContainer::DropItem(int iID)
 				pkItem->SetUseZones(true);
 				pkItem->SetParent(pkOwner->GetParent());				
 				
-				pkItem->SetWorldPosV( pkOwner->GetWorldPosV() );
+
+				pkItem->SetWorldPosV( Vector3( pkOwner->GetWorldPosV().x + ((rand()%200)-100)/100.f,
+											   pkOwner->GetWorldPosV().y,
+											   pkOwner->GetWorldPosV().z + ((rand()%200)-100)/100.f) );
 				
 				return true;
 			}
