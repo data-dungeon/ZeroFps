@@ -111,7 +111,7 @@ void NetPacket::Read_Str(char* szString)
 void NetPacket::Write_NetStr (const char* szString)
 {
 	int iIndex = g_pkNetWork->NetString_GetIndex(szString);
-	g_ZFObjSys.Logf("net", "Write_NetStr: %d, %s\n", iIndex, szString);
+//	g_ZFObjSys.Logf("net", "Write_NetStr: %d, %s\n", iIndex, szString);
 	
 	Write(iIndex);
 	if(iIndex == ZF_NET_NONETSTRING) {
