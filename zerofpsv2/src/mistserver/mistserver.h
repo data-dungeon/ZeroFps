@@ -43,6 +43,8 @@
 #include "../mcommon/p_dmshop.h"
 #include "../mcommon/p_car.h"
 
+#include "../mcommon/p_arcadecharacter.h"
+
 #include "playerdatabase.h"
 
 

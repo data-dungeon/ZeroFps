@@ -120,7 +120,7 @@ void DarkMetropolis::OnInit()
 void DarkMetropolis::OnIdle() 
 {
 	m_pkFps->SetCamera(m_pkCamera);		
-	m_pkFps->GetCam()->ClearViewPort();	
+	m_pkFps->GetCam()->ClearViewPort();
 
 	if(m_eGameMode != PAUSED)
 	{
