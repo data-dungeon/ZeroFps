@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../common/p_fogrender.h"
+#include "../common/p_clientunit.h"
 #include "../zerofps/render/texturemanager.h"
 #include "../zerofps/engine/levelmanager.h"
 #include "../zerofps/gui/zgui.h"
@@ -203,11 +204,11 @@ void MiniMap::Show(bool bVisible)
 
 void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, float wnd_sz)
 {
-	static float s_fPrevTime = -1;
-
-/*	// Är det dags att uppdatera grafiken?
+/*	static float s_fPrevTime = -1;
+	// Är det dags att uppdatera grafiken?
 	if(fTime - s_fPrevTime < 1.00f)
-		return;*/
+		return;
+	s_fPrevTime = fTime;*/
 
 	vector<Object*> akAllObjs;
 	m_pkObjectMan->GetAllObjects(&akAllObjs);
@@ -218,8 +219,23 @@ void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, floa
 	const int antal = akAllObjs.size();
 	for(int i=0; i<antal; i++)
 	{
-		if(akAllObjs[i]->GetProperty("P_ClientUnit"))
+		P_ClientUnit* pkCInfo = (P_ClientUnit*) akAllObjs[i]->GetProperty("P_ClientUnit");
+		if(pkCInfo)
 		{
+			unsigned char acColor[3] = {0,0,0};
+			
+			switch(pkCInfo->m_kInfo.m_cTeam)
+			{
+			case 0: acColor[0] = 255;
+				break;
+			case 1: acColor[1] = 255;
+				break;
+			case 2: acColor[2] = 255;
+				break;
+			case 3: acColor[0] = acColor[2] = 255;
+				break;
+			}
+
 			Vector3 kObjPos = akAllObjs[i]->GetPos();
 
 			Point p;
@@ -229,15 +245,12 @@ void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, floa
 			p.x = wnd_x  + procent_av_bredd*wnd_sz;
 			p.y = wnd_y  + procent_av_hojd*wnd_sz;
 
-			pkGui->DrawPoint(p, 255, 128, 0); p.x += 1;
-			pkGui->DrawPoint(p, 255, 128, 0); p.y += 1;
-			pkGui->DrawPoint(p, 255, 128, 0); p.x -= 1;
-			pkGui->DrawPoint(p, 255, 128, 0); 
+			pkGui->DrawPoint(p, acColor[0], acColor[1], acColor[2]); p.x += 1;
+			pkGui->DrawPoint(p, acColor[0], acColor[1], acColor[2]); p.y += 1;
+			pkGui->DrawPoint(p, acColor[0], acColor[1], acColor[2]); p.x -= 1;
+			pkGui->DrawPoint(p, acColor[0], acColor[1], acColor[2]); 
 		}
 	}
-
-
-	s_fPrevTime = fTime;
 
 /*	static bool init = false;
 	static Point array[800];

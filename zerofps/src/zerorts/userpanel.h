@@ -16,6 +16,7 @@
 class ZeroRTS;
 class GuiBuilder;
 struct UnitCommandInfo;
+class Object;
 
 const int CMD_BN_SIZE = 48;
 const int MAX_NUM_CMD_BNS = 18;
@@ -23,8 +24,8 @@ const int MAX_NUM_CMD_BNS = 18;
 class UserPanel : public DlgBox
 {
 public:
+	void OnSelectObjects(Object* pkObjectInFocus);
 	bool PopLastButtonCommand(char* szCommand);
-	void UpdateCmdButtons();
 	
 	bool Click();
 	UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc);
@@ -38,6 +39,7 @@ public:
 	map<string, int> m_kCmdIconIDMap;
 	
 private:
+	void UpdateCmdButtons();
 	void HideAllCmdButtons();
 	int GetNumVisibleCmdButtons();
 	void OnClickMinimap(int x, int y);
@@ -52,6 +54,8 @@ private:
 	vector<ZGuiButton*> m_akCommandBns;
 	map<ZGuiButton*, UnitCommandInfo*> m_kClickInfoMap;
 	UnitCommandInfo* m_pkLastCmd; // command when the user presses a button.
+
+	float m_fOriginalHealthbarSize;
 };
 
 #endif // !defined(AFX_USERPANEL_H__A8A3CF47_3B60_4C3E_9EB6_42353E9A8A2E__INCLUDED_)

@@ -17,6 +17,7 @@ UserPanel::UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc)
 	m_pkZeroRts = pkZeroRts;
 	m_pkGuiBuilder = pkZeroRts->m_pkGuiBuilder;
 	m_pkLastCmd = NULL;
+	m_fOriginalHealthbarSize = 123.0f;
 }
 
 UserPanel::~UserPanel()
@@ -64,9 +65,15 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 		rc = rc.Move(CMD_BN_SIZE+2,0);
 	}
 
-	ZGuiLabel* pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox, 123456, 
+	// Button tooltip
+	ZGuiLabel* pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox, 0, 
 		m_pkZeroRts->m_iWidth-310, 160, 300, 20, "", "CmdButtonTipLB");
 	pkLabel->SetZValue(m_akCommandBns.back()->m_iZValue+1);
+
+	// Unit health progress bar
+	pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox, 0, 
+		195, 153, 315-195, 178-153, "", "UnitHealthLB");
+	pkLabel->SetSkin(new ZGuiSkin(0,0,255, 0,0,0, 0));
 
 	m_pkGui->AddMainWindow(15424+1, m_pkDlgBox, "UserPanelDlg", 
 		m_oMainWndProc, false);
@@ -353,6 +360,26 @@ bool UserPanel::PopLastButtonCommand(char* szCommand)
 	}
 
 	return false;
+}
+
+void UserPanel::OnSelectObjects(Object* pkObjectInFocus)
+{
+	UpdateCmdButtons();
+
+	P_ClientUnit* pkClientUnit = (P_ClientUnit*) pkObjectInFocus->GetProperty("P_ClientUnit");
+
+	if(pkClientUnit)
+	{
+		int w, h;
+		Rect rc = m_pkGuiBuilder->Get("UnitHealthLB")->GetScreenRect();
+		float fHelth = (float) pkClientUnit->m_kInfo.m_cHealth / 255.0f;
+
+		h = rc.Height();
+		w = (int) (float) ( fHelth * m_fOriginalHealthbarSize );
+
+		m_pkGuiBuilder->Get("UnitHealthLB")->Resize(w,h);
+		printf("%s\n", (int) pkClientUnit->m_kInfo.m_cName);
+	}
 }
 
 /* COMMENT OUT BY ZEB

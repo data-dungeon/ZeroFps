@@ -407,9 +407,12 @@ void ZeroRTS::Input()
 			ClearSelected();
 		
 		if(info.iObject != -1)
-			AddSelectedObject(info.iObject);		
-		
-		m_pkUserPanel->UpdateCmdButtons();
+		{
+			AddSelectedObject(info.iObject);
+			
+			m_pkUserPanel->OnSelectObjects(pkObjectMan->GetObjectByNetWorkID(
+				info.iObject));
+		}
 	}
 	
 	if(pkInput->Action(m_iActionScroll))
@@ -1054,6 +1057,8 @@ void ZeroRTS::SelectObjects(Vector3 p1, Vector3 p2)
 	float fMinZ = p1.z < p2.z ? p1.z : p2.z;
 	float fMaxZ = p1.z > p2.z ? p1.z : p2.z;
 
+	Object* pkObjectInFocus = NULL;
+
 	const int antal = akAllObjs.size();
 	for(int i=0; i<antal; i++)
 	{
@@ -1062,9 +1067,18 @@ void ZeroRTS::SelectObjects(Vector3 p1, Vector3 p2)
 			pos.z >= fMinZ && pos.z <= fMaxZ)
 		{
 			if(GetClientUnit(akAllObjs[i]->iNetWorkID))
+			{
+				if( pkObjectInFocus == NULL)
+					pkObjectInFocus = pkObjectMan->GetObjectByNetWorkID(
+						akAllObjs[i]->iNetWorkID);
+
 				AddSelectedObject(akAllObjs[i]->iNetWorkID);
+			}
 		}
 	}
+
+	if(pkObjectInFocus)
+		m_pkUserPanel->OnSelectObjects(pkObjectInFocus);
 }
 
 
