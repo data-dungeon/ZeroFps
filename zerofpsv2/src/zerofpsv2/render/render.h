@@ -96,17 +96,21 @@ class RENDER_API Render : public ZFSubSystem {
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
 		
-		void PrintChar(char cChar);
+		void PrintChar(unsigned char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
 
-		void PrintChar2(char cChar);
-		void Print2(Vector3 kPos, char* aText);
+		void Mode2D_Start();
+		void Mode2D_End();
+
 
 		void SetFont(char* aFont);
+		void PrintChar2(char cChar);
+		void Print2(Vector3 kPos, char* aText);
+		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
+
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
-		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
 
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos,bool bBorders);

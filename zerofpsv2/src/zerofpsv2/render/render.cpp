@@ -99,7 +99,8 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glPopMatrix();
 }
 
-void Render::PrintChar(char cChar) {
+void Render::PrintChar(unsigned char cChar) 
+{
 
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
@@ -248,9 +249,7 @@ void Render::Dot(float x,float y,float z)
 //	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
 }
 
-
-
-void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
+void Render::Mode2D_Start()
 {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -265,13 +264,32 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glDisable(		GL_BLEND				);
+	glDisable(		GL_BLEND					);
 	glDisable(		GL_LIGHTING				);
 	glDisable(		GL_ALPHA_TEST			);
-	glDepthMask(	GL_FALSE				);	
+	glDepthMask(	GL_FALSE					);	
 	glDisable(		GL_CULL_FACE			);
-	glDisable(		GL_COLOR_MATERIAL 		);
-	glDisable(		GL_FOG);
+	glDisable(		GL_COLOR_MATERIAL 	);
+	glDisable(		GL_FOG					);
+}
+
+void Render::Mode2D_End()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glPopAttrib();
+}
+
+
+
+void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
+{
+	Mode2D_Start();
+
+	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
 
 	Print2(Vector3(8,8,0),m_aCommand);		
 	
@@ -282,8 +300,6 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	if(iEndLine >= (*m_kText).size())
 		iEndLine = (*m_kText).size();
 
-	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
-
 	for(int i=iStartLine;	i<iEndLine;	i++) 
 	{
 		if((*m_kText)[i] != NULL)
@@ -292,12 +308,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 		}
 	}
 	
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-
-	glPopAttrib();
+	Mode2D_End();
 }
 
 void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) {
