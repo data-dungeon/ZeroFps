@@ -336,6 +336,9 @@ void MistServer::SetupGuiEnviroment()
 	// Create from script.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/server.lua");
 	GetWnd("worktab")->Hide();
+
+	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
 	
 	// Fill zone- and object treebox.
 	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");

@@ -525,8 +525,6 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	
 	if(m_pkGuiSys->m_bUseHardwareMouse == false)
 	{
-		m_pkGuiSys->SetCursor(0,0, m_pkTextureMan->Load("data/textures/gui/cursor.bmp", 0),
-			m_pkTextureMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 		m_pkGuiSys->ShowCursor(true);
 	}
 

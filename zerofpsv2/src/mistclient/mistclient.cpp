@@ -157,8 +157,8 @@ void MistClient::Init()
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
 	
-//	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-//		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+//	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
+//		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
 
 	// Varde ljus!
 	m_pkLight->SetLighting(true);
