@@ -74,7 +74,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	// Set Default values
 	m_bEditSun		= false;
 	m_bSoloMode     = true;
-	m_bPlaceObjectsOnGround = true;
+	m_bPlaceObjectsOnGround = false;
+	m_bDisableFreeZonePlacement = false;
 
 	// Register Variables
 	
@@ -372,6 +373,8 @@ void ZeroEd::SetupGuiEnviroment()
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
 
 	CheckButton("PlaceongroundButton", m_bPlaceObjectsOnGround);
+	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
+	
 }
 
 
@@ -507,6 +510,16 @@ void ZeroEd::DeleteSelected()
 		if(pkEntity->GetName() == string("ZoneObject"))
 		{
 			int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->GetEntityID() );
+
+			// Remove zoneplacement element in array
+			ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);
+			vector< pair<Vector3,Vector3> >::iterator it = m_kAddedZonePlacement.begin();
+			for( ; it != m_kAddedZonePlacement.end(); it++)
+				if(it->first == pkData->m_kPos && it->second == pkData->m_kSize) {
+					m_kAddedZonePlacement.erase(it);
+					break;
+				}
+
 			m_pkObjectMan->DeleteZone(iZoneID);
 			cout << "Delete zone " << iZoneID << endl;
 		}
@@ -1642,7 +1655,10 @@ void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 {
 	if(m_pkObjectMan->IsInsideZone(kPos, kSize))
 		return;
-		
+
+	if(m_bDisableFreeZonePlacement && !ZoneHaveNeighbour(kPos, kSize))
+		return;
+
 	int id = m_pkObjectMan->CreateZone(kPos, kSize);
 
 	//force loading of this zone
@@ -1802,6 +1818,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 				m_pkObjectMan->DeleteZone(id);
+			}
+			else
+			if(strWndClicked == "DisableFreeZoneBuildBn")
+			{
+				m_bDisableFreeZonePlacement = IsButtonChecked((char*)strWndClicked.c_str());
 			}
 		}
 		else
@@ -2185,4 +2206,50 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 	}
 
 	return false;
+}
+
+
+bool ZeroEd::ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize)
+{
+	const int size = m_kAddedZonePlacement.size();
+
+	if(size > 0)
+	{
+		bool bOkidoki = false;
+
+		Vector3 sLeft(kPos);
+		Vector3 sRight(kPos.x + kSize.x, kPos.y, kPos.z);
+		Vector3 sTop(kPos.x, kPos.y, kPos.z + kSize.z);
+		Vector3 sBottom(kPos.x + kSize.x, kPos.y, kPos.z + kSize.z);
+
+		for(int i=0; i<size; i++)
+		{
+			Vector3 pos = m_kAddedZonePlacement[i].first;
+			Vector3 sz = m_kAddedZonePlacement[i].second;
+
+			Vector3 dLeft(pos);
+			Vector3 dRight(pos.x + sz.x, pos.y, pos.z);
+			Vector3 dTop(pos.x, kPos.y, pos.z + sz.z);
+			Vector3 dBottom(pos.x + sz.x, pos.y, pos.z + sz.z);
+
+			if(sLeft == dLeft || sLeft == dRight || sLeft == dTop || sLeft == dBottom) {
+				bOkidoki = true; break;
+			}
+			if(sRight == dLeft || sRight == dRight || sRight == dTop || sRight == dBottom) {
+				bOkidoki = true; break;
+			}
+			if(sTop == dLeft || sTop == dRight || sTop == dTop || sTop == dBottom) {
+				bOkidoki = true; break;
+			}
+			if(sBottom == dLeft || sBottom == dRight || sBottom == dTop || sBottom == dBottom) {
+				bOkidoki = true; break;
+			}
+		}
+
+		if(bOkidoki == false)
+			return false;
+	}
+
+	m_kAddedZonePlacement.push_back( pair<Vector3,Vector3>(kPos, kSize) );
+	return true;	
 }

@@ -1689,7 +1689,7 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 		pkZone->m_bNew = true;					
 		pkZone->m_iStatus = EZS_UNLOADED;
 		pkZone->m_kSize = kSize;
-		pkZone->m_kPos = kPos;
+		pkZone->m_kPos = kPos; 
 		pkZone->m_iZoneID = id;
 	}
 	else

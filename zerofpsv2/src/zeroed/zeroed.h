@@ -45,6 +45,7 @@
 class ZeroEd :public Application , public ZGuiApp {
 	private:
 
+		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
 		void FillPropertyValList();
 		bool FillPropertyList();
 		bool UpdatePropertyList(int iID);
@@ -96,6 +97,8 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		bool m_bEditSun;
 		bool m_bPlaceObjectsOnGround;
+		bool m_bDisableFreeZonePlacement;
+		vector< pair<Vector3,Vector3> > m_kAddedZonePlacement;
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		
