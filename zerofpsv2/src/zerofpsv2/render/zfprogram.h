@@ -7,7 +7,7 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfresource.h"
 #include "../basic/zfvfs.h"
-#include "zshader.h"
+#include "zshadersystem.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ in the rendering.
 class RENDER_API ZFProgram : public ZFResource
 {
 	private:
-		ZShader*	m_pkShader;
+		ZShaderSystem*	m_pkShader;
 	
 		bool	SetupShaderPointer();
 		

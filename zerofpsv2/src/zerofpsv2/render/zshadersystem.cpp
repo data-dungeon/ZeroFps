@@ -255,6 +255,86 @@ void ZShaderSystem::SetupPass(int iPass)
    else
       glDisable (GL_DEPTH_TEST);
 	
+	//enable/disable stenciltest
+   if ( pkSettings->m_bStencilTest )
+	{
+      glEnable (GL_STENCIL_TEST);
+		
+		int iFail;		
+		int iZFail;
+		int iZPass;
+		
+		switch(pkSettings->m_iStencilOpFail)
+		{
+			case STENCILOP_KEEP:
+				iFail = GL_KEEP;
+				break;
+			case STENCILOP_ZERO:
+				iFail = GL_ZERO;
+				break;
+			case STENCILOP_REPLACE:
+				iFail = GL_REPLACE;
+				break;
+			case STENCILOP_INCR:
+				iFail = GL_INCR;
+				break;
+			case STENCILOP_DECR:
+				iFail = GL_DECR;
+				break;		
+			case STENCILOP_INVERT:
+				iFail = GL_INVERT;
+				break;				
+		};
+
+		switch(pkSettings->m_iStencilOpZFail)
+		{
+			case STENCILOP_KEEP:
+				iZFail = GL_KEEP;
+				break;
+			case STENCILOP_ZERO:
+				iZFail = GL_ZERO;
+				break;
+			case STENCILOP_REPLACE:
+				iZFail = GL_REPLACE;
+				break;
+			case STENCILOP_INCR:
+				iZFail = GL_INCR;
+				break;
+			case STENCILOP_DECR:
+				iZFail = GL_DECR;
+				break;		
+			case STENCILOP_INVERT:
+				iZFail = GL_INVERT;
+				break;		
+		};
+		
+		switch(pkSettings->m_iStencilOpZPass)
+		{
+			case STENCILOP_KEEP:
+				iZPass = GL_KEEP;
+				break;
+			case STENCILOP_ZERO:
+				iZPass = GL_ZERO;
+				break;
+			case STENCILOP_REPLACE:
+				iZPass = GL_REPLACE;
+				break;
+			case STENCILOP_INCR:
+				iZPass = GL_INCR;
+				break;
+			case STENCILOP_DECR:
+				iZPass = GL_DECR;
+				break;		
+			case STENCILOP_INVERT:
+				iZPass = GL_INVERT;
+				break;					
+		};
+		
+		glStencilOp(iFail,iZFail,iZPass);		
+	}
+   else
+      glDisable (GL_STENCIL_TEST);		
+		
 		
 	//depthfunction settings
 	switch(pkSettings->m_iDepthFunc)
@@ -291,7 +371,18 @@ void ZShaderSystem::SetupPass(int iPass)
 	else
 		glDisable(GL_FOG);
 	
-	
+	//enable/disable colormask
+	if(pkSettings->m_bColorMask)
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	else
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+	//enable/disable depthmask
+	if(pkSettings->m_bDepthMask)
+		glDepthMask(GL_TRUE);
+	else
+		glDepthMask(GL_FALSE);
+			
 	
 	//enable /disable blending
 	if(pkSettings->m_bBlend)
@@ -378,11 +469,25 @@ void ZShaderSystem::SetupPass(int iPass)
 		glDisable(GL_LIGHTING);	
 		
 	//cullface setting
-	if(pkSettings->m_bCullFace)
-		glEnable(GL_CULL_FACE);
-	else
-		glDisable(GL_CULL_FACE);
-	
+	switch(pkSettings->m_iCullFace)
+	{
+		case CULL_FACE_NONE:
+			glDisable(GL_CULL_FACE);
+			break;
+		case CULL_FACE_BACK:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			break;
+		case CULL_FACE_FRONT:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			break;
+		case CULL_FACE_ALL:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT_AND_BACK);
+			break;
+	}
+		
 	//alphatest setting
 	if(pkSettings->m_bAlphaTest)
 	{
@@ -841,21 +946,6 @@ void ZShaderSystem::ClearGeometry()
 	m_kTexture[3].clear();
 }
 
-void ZShaderSystem::SetColorMask(const bool& bColorMask)
-{
-	if(bColorMask)
-		glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-	else
-		glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
-};
-
-void ZShaderSystem::SetDepthMask(const bool& bDepthMask)
-{
-	if(bDepthMask)
-		glDepthMask(GL_TRUE);
-	else
-		glDepthMask(GL_FALSE);	
-}
 
 void ZShaderSystem::AddLineV(const Vector3& kPos1,const Vector3& kPos2)
 {
@@ -944,6 +1034,14 @@ bool ZShaderSystem::HaveExtension(const string& strExt)
 	}
 	
 	return false;
+}
+
+int ZShaderSystem::GetStencilBits()
+{
+	int iBits = 0;
+	glGetIntegerv(GL_STENCIL_BITS, &iBits);
+	
+	return iBits;
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()
@@ -1045,4 +1143,21 @@ void ZShaderSystem::SetFragmentProgram(const int& iFPID)
 }
 
 
-
+void ZShaderSystem::ClearBuffer(const int& iBuffer)
+{
+	switch(iBuffer)
+	{
+		case COLOR_BUFFER:
+			glClear(GL_COLOR_BUFFER_BIT);					
+			break;
+		case DEPTH_BUFFER:
+			glClear(GL_DEPTH_BUFFER_BIT);					
+			break;
+		case ACCUM_BUFFER:
+			glClear(GL_ACCUM_BUFFER_BIT);						
+			break;
+		case STENCIL_BUFFER:			
+			glClear(GL_STENCIL_BUFFER_BIT);			
+			break;
+	}
+}

@@ -18,6 +18,33 @@
 
 using namespace std;
 
+enum RENDER_API STENCILOP
+{
+	STENCILOP_KEEP=		0,
+	STENCILOP_ZERO=		1,
+	STENCILOP_REPLACE=	2,
+	STENCILOP_INCR=		3,
+	STENCILOP_DECR=		4,
+	STENCILOP_INVERT=		5,
+};
+
+
+enum RENDER_API BUFFERS
+{
+	COLOR_BUFFER=		0,
+	DEPTH_BUFFER=		1,
+	ACCUM_BUFFER=		2,
+	STENCIL_BUFFER=	3,
+};
+
+enum RENDER_API CULL_FACE
+{
+	CULL_FACE_NONE=	0,
+	CULL_FACE_BACK=	1,
+	CULL_FACE_FRONT=	2,
+	CULL_FACE_ALL=		3,
+};
+
 enum RENDER_API MATRIX_MODE
 {
 	MATRIX_MODE_MODEL			= 0,
@@ -199,6 +226,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void UpdateVertexProgramParameters();		
 		void SetVertexProgram(const int& iVPID);
 		void SetFragmentProgram(const int& iFPID);		
+		int GetCurrentVertexProgram() 					{return m_iCurrentVertexProgram;};
+		int GetCurrentFragmentProgram()					{return m_iCurrentFragmentProgram;};
 		
 		//vertex transform
 		void VertexTransform();
@@ -228,19 +257,21 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 											m_iSavedReloads = 	0;
 											m_iGLupdates = 		0;
 											m_iTotalVertises = 	0;};
-		
-		//gl states that is not included in the material
-		void SetColorMask(const bool& bColorMask);
-		void SetDepthMask(const bool& bDepthMask);
-													
+															
 		//basic
 		void Push(const char* czNote);
 		void Pop();		
 		void BindMaterial(ZMaterial* pkMaterial);
 		void ReloadMaterial();
 		
+		//other stuff
+		void ClearBuffer(const int& iBuffert);
+		
 		//information
 		bool HaveExtension(const string& strExt);
+		int GetStencilBits();
+		bool SupportVertexProgram() 		{return m_bSupportVertexProgram;};
+		bool SupportFragmentProgram() 	{return m_bSupportFragmentProgram;};
 		
 		//arrays
 		void ResetPointers();
@@ -284,6 +315,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void MatrixMult(const Matrix4& kMatrix)		{glMultMatrixf((float*)&kMatrix);};
 		void MatrixPop()										{glPopMatrix();};
 		void MatrixPush()										{glPushMatrix();};
+		
+		
+		friend class ZFProgram;
+		friend class ZVProgram;
 };
 
 

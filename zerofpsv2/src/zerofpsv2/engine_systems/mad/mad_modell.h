@@ -6,7 +6,6 @@
 #include "mad_core.h"
 #include <vector>
 #include "../../render/texturemanager.h"
-#include "../../render/zshader.h"
 #include "../../render/zshadersystem.h"
 
 #define MAD_DRAW_MESH		1

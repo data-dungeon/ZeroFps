@@ -1,6 +1,5 @@
 
 #include "zmaterial.h"
-#include "zshader.h"
 #include "../basic/globals.h"
 #include "zshadersystem.h" 
 
@@ -31,11 +30,20 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_bColorMaterial= false;
 	m_bLighting =		true;
-	m_bCullFace = 		true;
 	m_bAlphaTest =		false;
    m_bDepthTest = 	true;
+	m_bStencilTest=	false;
 	m_iDepthFunc =		LESS_DEPTH;
 	m_bFog=				true;
+	
+	m_iStencilOpFail=		STENCILOP_KEEP;
+	m_iStencilOpZFail=	STENCILOP_KEEP;
+	m_iStencilOpZPass = 	STENCILOP_KEEP;
+	
+	m_iCullFace =		CULL_FACE_BACK;
+	
+	m_bColorMask=		true;
+	m_bDepthMask=		true;
 	
 	m_bBlend	= 			false;
 	m_iBlendSrc = 		ONE_BLEND_SRC; 
@@ -236,8 +244,10 @@ bool ZMaterial::LoadPass(int iPass)
 	
 	if(m_kIni.KeyExist(passname.c_str(),"lighting"))
 		newpass->m_bLighting = m_kIni.GetBoolValue(passname.c_str(),"lighting");
+		
 	if(m_kIni.KeyExist(passname.c_str(),"cullface"))
-		newpass->m_bCullFace = m_kIni.GetBoolValue(passname.c_str(),"cullface");
+		newpass->m_iCullFace = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"cullface"));
+		
 	if(m_kIni.KeyExist(passname.c_str(),"alphatest"))
 		newpass->m_bAlphaTest = m_kIni.GetBoolValue(passname.c_str(),"alphatest");
 	
@@ -278,6 +288,10 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"fog"))
 		newpass->m_bFog = m_kIni.GetBoolValue(passname.c_str(),"fog");
 	
+	if(m_kIni.KeyExist(passname.c_str(),"colormask"))
+		newpass->m_bColorMask = m_kIni.GetBoolValue(passname.c_str(),"colormask");
+	if(m_kIni.KeyExist(passname.c_str(),"depthmask"))
+		newpass->m_bDepthMask = m_kIni.GetBoolValue(passname.c_str(),"depthmask");
 	
 	if(m_kIni.KeyExist(passname.c_str(),"blend"))
 		newpass->m_bBlend = m_kIni.GetBoolValue(passname.c_str(),"blend");
@@ -288,7 +302,18 @@ bool ZMaterial::LoadPass(int iPass)
 	
    if(m_kIni.KeyExist(passname.c_str(),"depthtest"))
       newpass->m_bDepthTest = m_kIni.GetBoolValue(passname.c_str(),"depthtest");
-	
+   
+	if(m_kIni.KeyExist(passname.c_str(),"stenciltest"))
+      newpass->m_bStencilTest = m_kIni.GetBoolValue(passname.c_str(),"stenciltest");
+
+	if(m_kIni.KeyExist(passname.c_str(),"stencilopfail"))
+		newpass->m_iStencilOpFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopfail"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilopzfail"))
+		newpass->m_iStencilOpZFail = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopzfail"));
+	if(m_kIni.KeyExist(passname.c_str(),"stencilopzpass"))
+		newpass->m_iStencilOpZPass = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"stencilopzpass"));
+		
+			
 	if(m_kIni.KeyExist(passname.c_str(),"colormaterial"))
       newpass->m_bColorMaterial = m_kIni.GetBoolValue(passname.c_str(),"colormaterial");		
 
@@ -399,6 +424,21 @@ void ZMaterial::SetupEnums()
 	m_kEnums["DIABLED"] = 								-1;
 	m_kEnums["FLICKERING"] = 							1;
 	m_kEnums["PULSATING"] = 							2;		
+	
+	//cullface
+	m_kEnums["CULL_FACE_NONE"] = 						0;
+	m_kEnums["CULL_FACE_BACK"] = 						1;
+	m_kEnums["CULL_FACE_FRONT"] = 					2;		
+	m_kEnums["CULL_FACE_ALL"] = 						3;		
+	
+	//stencil operations
+	m_kEnums["STENCILOP_KEEP"] = 						0;
+	m_kEnums["STENCILOP_ZERO"] = 						1;
+	m_kEnums["STENCILOP_REPLACE"] = 					2;
+	m_kEnums["STENCILOP_INCR"] = 						3;
+	m_kEnums["STENCILOP_DECR"] = 						4;
+	m_kEnums["STENCILOP_INVERT"] = 					5;	
+
 }
 
 int ZMaterial::GetTranslateEnum(string strEnum)

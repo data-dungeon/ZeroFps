@@ -63,7 +63,6 @@ bool Render::StartUp()
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
- 	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader"));
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
@@ -179,9 +178,8 @@ void Render::Swap(void) {
 
 	glLoadIdentity();
 	
-	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
-//	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_ACCUM_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT);	
 }
 
 
@@ -543,7 +541,7 @@ void Render::Line(Vector3 kPos1,Vector3 kPos2)
 	{
 		pkLine = new ZMaterial;
 		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
-		pkLine->GetPass(0)->m_bCullFace = true;		
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
 		pkLine->GetPass(0)->m_bLighting = false;
 	}
 
@@ -646,7 +644,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 		pkConsole = new ZMaterial;
 		pkConsole->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/devstr.bmp");
 		pkConsole->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkConsole->GetPass(0)->m_bCullFace = true;		
+		pkConsole->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
 		pkConsole->GetPass(0)->m_bLighting = false;		
 		pkConsole->GetPass(0)->m_bColorMaterial = true;
 		pkConsole->GetPass(0)->m_bFog = false;		
@@ -1301,7 +1299,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSiz
 	{
 		pkLine = new ZMaterial;
 		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
-		pkLine->GetPass(0)->m_bCullFace = false;		
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
 		pkLine->GetPass(0)->m_bLighting = false;
 		pkLine->GetPass(0)->m_bColorMaterial = true;
 		

@@ -36,10 +36,9 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZFResourceDB*			m_pkResourceDB;
 		ZFScriptSystem*		m_pkScript;
 		FileIo*					m_pkFile;
-		ZShader*					m_pkZShader;
 		ZShadow*					m_pkZShadow;
 		ZeroFps*					m_pkFps;
-		
+		ZShaderSystem*			m_pkZShaderSystem;
 		
 	public:
 		static Application*	m_pkApp;												///< The one and Only App Instance.

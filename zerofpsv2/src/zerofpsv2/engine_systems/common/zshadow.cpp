@@ -332,7 +332,9 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 
 void ZShadow::SetupStencilBuffer()
 {
-	glGetIntegerv(GL_STENCIL_BITS, &m_iStencilBits);
+	m_iStencilBits = m_pkZShaderSystem->GetStencilBits();
+
+	//glGetIntegerv(GL_STENCIL_BITS, &m_iStencilBits);
 
 	if(m_iStencilBits == 0)
 	{
@@ -388,22 +390,22 @@ void ZShadow::DrawShadow(float fItensity)
 
 	//depth buffer settings
 	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LEQUAL);
-	glDepthFunc(GL_EQUAL);
+	//glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_EQUAL);
 	glDisable(GL_DEPTH_TEST);
 
 	//stencil buffer settings
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_EQUAL, 0, 255);
 	glStencilFunc(GL_ALWAYS, 0, 255);
-	glStencilFunc(GL_NOTEQUAL, 0x0, 0xff);
+	glStencilFunc(GL_NOTEQUAL, 0, 255);
 	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	//blending
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ZERO);
+	//glBlendFunc(GL_ONE, GL_ZERO);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
 
@@ -455,7 +457,7 @@ void ZShadow::DrawGradedShadow(float fItensity,Vector3 kPos,Vector3 kDir)
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_EQUAL, 0, 255);
 	glStencilFunc(GL_ALWAYS, 0, 255);
-	glStencilFunc(GL_NOTEQUAL, 0x0, 0xff);
+	glStencilFunc(GL_NOTEQUAL, 0, 255);
 	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);

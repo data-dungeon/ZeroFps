@@ -126,7 +126,7 @@ bool ZFProgram::SetupShaderPointer()
 	if(m_pkShader)
 		return true;
 		
- 	m_pkShader	= static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 		
+ 	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 		
 
 	if(m_pkShader)
 		return true;

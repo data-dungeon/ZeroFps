@@ -467,10 +467,10 @@ void ZeroEd::Input()
 		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
 		if(m_pkInputHandle->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
 
-		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
+/*		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
-	
+*/	
 		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
 		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));

@@ -256,7 +256,7 @@ void ZeroEd::Init()
 	m_strActiveZoneName = "";
 	m_strActiveEnviroment = "data/enviroments/sun.env";
 
-	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
+//	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
 	m_pkFps->SetDebugGraph(true);
@@ -1010,13 +1010,13 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
-
+/*
 			iMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 			if(iMode == 0)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);		
 			if(iMode == 1)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);		
 			if(iMode == 2)	m_pkZShader->SetForceLighting(LIGHT_MATERIAL);		
 			break;
-
+*/
 
 
 		case FID_LOCALORDER:
@@ -1345,10 +1345,11 @@ void ZeroEd::RotateActive()
 
 void ZeroEd::ToogleLight(bool bEnabled)
 {
-	if(bEnabled)
+/*	if(bEnabled)
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
 	else
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
+*/		
 }
 
 void ZeroEd::UpdateStartLocatons()

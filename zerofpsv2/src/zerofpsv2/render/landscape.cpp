@@ -659,7 +659,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 		pkGrass->GetPass(0)->m_kTUs[0]->SetRes("data/textures/grassp.tga");	
 		pkGrass->GetPass(0)->m_iPolygonModeBack = FILL_POLYGON;
 		pkGrass->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkGrass->GetPass(0)->m_bCullFace = true;		
+		pkGrass->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
 		pkGrass->GetPass(0)->m_bAlphaTest = true;
 		pkGrass->GetPass(0)->m_bLighting = true;
 	}
@@ -741,12 +741,14 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_COLOR_MATERIAL);
 
+	/*
 	int iLightMode = m_pkZShader->GetForceLighting();
 	if(iLightMode == LIGHT_ALWAYS_OFF)
 		glDisable(GL_LIGHTING);
 	else 
 		glEnable(GL_LIGHTING);
-
+	*/
+		
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
 	glColor4f(1,1,1,1);
 	if(kMap->m_bInverted) glCullFace(GL_FRONT);

@@ -14,7 +14,6 @@
 #include "render_x.h"
 #include "texturemanager.h"
 #include "light.h"
-#include "zshader.h"
 #include "zshadersystem.h"
 
 class PSystem;
@@ -67,7 +66,6 @@ class RENDER_API Render : public ZFSubSystem {
 
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
-		ZShader*				m_pkZShader;
 		BasicConsole*		m_pkConsole;
 		ZShaderSystem*		m_pkZShaderSystem;
 		

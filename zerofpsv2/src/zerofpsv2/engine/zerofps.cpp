@@ -52,7 +52,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
-	m_pkZShader					= new ZShader;
 	m_pkZShaderSystem			= new ZShaderSystem;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
@@ -165,7 +164,6 @@ ZeroFps::~ZeroFps()
 	delete m_pkBasicFS;
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 	delete m_pkPSystemManager;
-	delete m_pkZShader;
 	delete m_pkScript;
 	delete m_pkAStar;
 }
