@@ -20,6 +20,7 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		Vector3		m_kDir;
 		Vector3		m_kAim;
 		int			m_iTarget;
+		Matrix4		m_kCameraRotation;
 		
 		P_ArcadeCharacter();
 		~P_ArcadeCharacter();

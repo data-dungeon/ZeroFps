@@ -18,19 +18,20 @@ P_DMGun::P_DMGun()
 	m_bFireing =						false;
 	m_bFirstUpdateSinceFireing =	false;
 	m_kGunOffset.Set(0,0,0);
-	
-	//default gun
-	m_strName = 	"YberGun";
-	m_strSound =	"data/sound/auto_gun.wav";
-	m_fFireRate = 	30;
-	m_fRange = 		10;
-	m_iAmmo = 		10000;
-	m_iMaxAmmo = 	10000;
+
 	m_kDir.Set(0,0,-1);
-	m_fRandom = 	10.0;
-	m_fDamage =		50;
-	m_iBulletsPerAmmo = 1;
-	m_iTeam = 		-1; // belongs to no team
+		
+	//default gun
+	m_strName = 			"YberGun";
+	m_strSound =			"data/sound/auto_gun.wav";
+	m_fFireRate = 			30;
+	m_fRange = 				10;
+	m_iAmmo = 				10000;
+	m_iMaxAmmo = 			10000;
+	m_fRandom = 			10.0;
+	m_fDamage =				50;
+	m_iBulletsPerAmmo =	1;
+	m_iTeam = 				-1; // belongs to no team
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }

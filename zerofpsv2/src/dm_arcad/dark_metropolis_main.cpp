@@ -52,7 +52,7 @@ void DarkMetropolis::OnInit()
 	m_fMinCamDistance =			0.1f;
 	m_fMaxCamDistance =			8;
 	m_fDistance =					m_fMaxCamDistance;	
-	m_fAngle =						0;
+	m_fAngle =						-45;
 	m_strSaveDirectory =			"savegames/";
 	m_pkGameInfoProperty = 		NULL;
 	m_pkGameInfoEntity =			NULL;
@@ -233,7 +233,7 @@ void DarkMetropolis::RenderInterface(void)
 	{
 		if(P_ArcadeCharacter* pkAC = (P_ArcadeCharacter*)m_pkPlayerEntity->GetProperty("P_ArcadeCharacter"))
 		{
-			//m_pkRender->Line(m_pkPlayerEntity->GetWorldPosV(),m_pkPlayerEntity->GetWorldPosV() + pkAC->m_kAim);
+			m_pkRender->Line(m_pkPlayerEntity->GetWorldPosV(),m_pkPlayerEntity->GetWorldPosV() + pkAC->m_kAim*10);
 		
 			if(pkAC->m_iTarget != -1)
 			{
@@ -442,8 +442,10 @@ void DarkMetropolis::Input()
 	{	
 		if(P_ArcadeCharacter* pkChar = (P_ArcadeCharacter*)m_pkPlayerEntity->GetProperty("P_ArcadeCharacter"))
 		{
+			//reset all character action keys
 			pkChar->m_kActions.reset();
 					
+			//movement
 			if(m_pkInputHandle->VKIsDown("cam_up"))
 				pkChar->m_kActions[0] = true;;
 			if(m_pkInputHandle->VKIsDown("cam_down"))
@@ -453,15 +455,19 @@ void DarkMetropolis::Input()
 			if(m_pkInputHandle->VKIsDown("cam_right"))
 				pkChar->m_kActions[3] = true;;
 
+			//fUre
 			if(m_pkInputHandle->VKIsDown("select"))
 				pkChar->m_kActions[4] = true;;
 				
-						
+
+			//sett camera rotation
+			//pkChar->m_kCameraRotation = m_pkFps->GetCam()->GetRotM();				
+							
+			//set rotation
 			float x;
 			float y;
 			m_pkInputHandle->UnitMouseXY(x,y);	
 			pkChar->m_kDir.Set(x,0,y);
-		
 		}
 		
 		

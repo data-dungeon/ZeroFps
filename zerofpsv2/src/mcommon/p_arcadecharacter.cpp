@@ -14,7 +14,14 @@ P_ArcadeCharacter::P_ArcadeCharacter()
 	m_kAim.Set(0,0,-1);
 	m_iTarget	= -1;
 	m_kActions.reset();
+
+
+	m_kCameraRotation.Identity();
+	m_kCameraRotation.Rotate(0,58,0);
+
 }
+
+
 
 P_ArcadeCharacter::~P_ArcadeCharacter()
 {
@@ -31,23 +38,24 @@ void P_ArcadeCharacter::Init()
 
 void P_ArcadeCharacter::Update()
 {
-
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
+		Vector3 kDir = m_kCameraRotation.VectorTransform(m_kDir);
 	
-		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
+		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
+//		kCurrentDir = m_kCameraRotation.VectorTransform(kCurrentDir);		
 		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
 
-		if(m_kDir.Length() == 0)
-			m_kDir = Vector3(0,0,-1);		
+		if(kDir.Length() == 0)
+			kDir = Vector3(0,0,-1);		
 		
-		m_kDir.Normalize();				
+		kDir.Normalize();				
 		kCurrentDir.Normalize();
 		
-		float fS = m_kDir.Dot(kSide);		
-		float fAng = kCurrentDir.Angle(m_kDir);
+		float fS = kDir.Dot(kSide);		
+		float fAng = kCurrentDir.Angle(kDir);
 
-	//	cout<<fAng<<"  "<<kCurrentDir.Length()<<endl;
+		//cout<<fAng<<"  "<<kCurrentDir.Length()<<endl;
 		
 		if(fAng > 0.01)
 		{
@@ -56,7 +64,8 @@ void P_ArcadeCharacter::Update()
 			else
 				GetObject()->RotateLocalRotV(Vector3(0,-15 * fAng ,0));
 		}
-
+		
+		
 /*		
 		
 		Vector3 kNewDir = m_kDir  ;
@@ -84,14 +93,18 @@ void P_ArcadeCharacter::Update()
 		if(m_kActions[3])
 			kVel.x =  1;
 
-						
+								
 		if(kVel.Length() == 0)			
 			pkTcs->SetWalkVel(Vector3(0,0,0));
 		else
 		{
+		
+			kVel = m_kCameraRotation.VectorTransform(kVel);			
+			kVel.y = 0;		
+			kVel.Normalize();
+			
 			float fWalkRatio = (kVel.Unit().Dot(kCurrentDir.Unit()) / 2.0) + 0.5 ;
 			
-			kVel.Normalize();
 			kVel *= ( (m_fSpeed/2.0)*fWalkRatio) + (m_fSpeed/2.0);					
 				
 			pkTcs->SetWalkVel(kVel);
