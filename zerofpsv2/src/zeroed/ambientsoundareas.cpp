@@ -12,6 +12,8 @@ AmbientSoundAreas::~AmbientSoundAreas()
 
 void AmbientSoundAreas::Draw(Render* pkRender)
 {
+	Vector3 kColor;
+
 	for(int i=0; i<m_kAmbientAreas.size(); i++)
 	{
 		vector<Vector3> kPoints;
@@ -20,18 +22,23 @@ void AmbientSoundAreas::Draw(Render* pkRender)
 		int size = kPoints.size();
 		if(size > 1)
 		{
+			if(m_strAmbientAreaEdited == m_kAmbientAreas[i].m_strAreaName)
+				kColor = Vector3(0.5f,0,0.25f);
+			else
+				kColor = Vector3(1,1,0);
+
 			for(int i=0; i<size; i++)
 			{
 				if(i+1==size)
 				{ 
 					pkRender->Line(
 						Vector3(kPoints[i].x,0,kPoints[i].z), 
-						Vector3(kPoints[0].x,0,kPoints[0].z));
+						Vector3(kPoints[0].x,0,kPoints[0].z), kColor);
 				}
 				else
 					pkRender->Line(
 						Vector3(kPoints[i].x,0,kPoints[i].z), 
-						Vector3(kPoints[i+1].x,0,kPoints[i+1].z));
+						Vector3(kPoints[i+1].x,0,kPoints[i+1].z), kColor);
 			}
 		}
 	}
