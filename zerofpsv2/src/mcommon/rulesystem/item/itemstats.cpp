@@ -510,3 +510,15 @@ void ItemStats::RegisterAsContainer()
 }
 
 // ---------------------------------------------------------------------------------------------
+
+void ItemStats::SetIcon ( char* kIcon, char* kIconMask )
+{
+   strcpy( m_szPic[0], kIcon );
+   strcpy( m_szPic[1], kIconMask );
+
+   m_uiVersion++;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+   

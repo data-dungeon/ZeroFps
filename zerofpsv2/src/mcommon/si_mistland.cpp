@@ -1233,10 +1233,7 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkIP )
-         {
-            strcpy(pkIP->m_pkItemStats->m_szPic[0], acPic);
-            strcpy(pkIP->m_pkItemStats->m_szPic[1], acPicMask);
-         }
+            pkIP->m_pkItemStats->SetIcon ( acPic, acPicMask );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  
@@ -2433,13 +2430,13 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
       P_Item* pkCP = (P_Item*)pkCharObj->GetProperty("P_Item");
 
       if ( pkCP )
+      {
          // check if the container object has a container
          if ( pkCP->m_pkItemStats->m_pkContainer )
             pkCP->m_pkItemStats->m_pkContainer->AddObject ( g_iCurrentObjectID );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
-      
-   
+      }
    }
 
    return 0;

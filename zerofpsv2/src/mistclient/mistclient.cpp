@@ -595,43 +595,17 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			{
 				bool bExist = GetWnd("BackPackWnd") != NULL;
 				
-				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
+				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0);
 
 				if(bExist == false)
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
-			/*		const int ANTAL = 5;
-
-					ItemStats* pkTestItems = new ItemStats[ANTAL];
-
-					typedef pair<EquipmentCategory, pair<string,string> > tInfo;
-
-					tInfo info[ANTAL] =
-					{
-						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
-						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
-						tInfo(Belt, pair<string, string>("spellbook.bmp", "spellbook_a.bmp")),
-						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
-						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
-					};
-
-					vector<InventoryDlg::itItem> kItems;
-
-					for( int i=0; i<ANTAL; i++)
-					{
-						pkTestItems[i].SetEquipmentCategory(info[i].first); 
-						kItems.push_back( InventoryDlg::itItem(
-							pair<string,string>(info[i].second.first, 
-							info[i].second.second), &pkTestItems[i]) );
-					}
-
-					kItems[3].second->RegisterAsContainer(); 
-					kItems[4].second->RegisterAsContainer(); 
-					*/
-
-
-            // tell itemcontainer to begin gather iteminfo from server
-            ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+            // order itemcontainer to begin gather iteminfo from server
+            if ( GetWnd("BackPackWnd")->IsVisible() )
+               ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+            // cancel order from server
+            else
+               ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->CancelOrder(m_pkInventDlg->m_pkAddItemList);
 		
 			}
 			if(strClickWndName == "StatsButton")

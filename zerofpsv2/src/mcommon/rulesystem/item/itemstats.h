@@ -51,6 +51,7 @@ public:
 
    P_Item* m_pkProperty;
 
+   // do NOT change these manually, use the function SetIcon instead
 	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
 
    unsigned int m_uiVersion;    // version of the object, server always have lastversion
@@ -70,6 +71,8 @@ public:
 
 	// gör detta föremål till en container
    void RegisterAsContainer();
+
+   void SetIcon ( char* kIcon, char* kIconMask );
 
 	//	returns -1 if item isn't a container 
 	// OBS! Blanda inte ihop denna funktion och GetCurrentContainer

@@ -493,9 +493,20 @@ void P_Item::GetAllItemsInContainer( vector<Entity*>* pkContainerList )
       m_kWaitingForRequest.push_back (kNewWait);
 
       RequestUpdateFromServer ( "container" );
-
    }
 
+}
+
+// ---------------------------------------------------------------------------------------------
+
+void P_Item::CancelOrder( vector<Entity*>* pkContainerList )
+{
+   list<WaitingFor>::iterator kIte = m_kWaitingForRequest.begin();
+
+   for ( ; kIte != m_kWaitingForRequest.end(); kIte++ )
+      // order found
+      if ( (*kIte).m_pkData == pkContainerList )
+         m_kWaitingForRequest.erase ( kIte++ );
 }
 
 // ---------------------------------------------------------------------------------------------

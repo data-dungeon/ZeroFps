@@ -66,7 +66,7 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 
 bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 {
-	vector<Entity*>::iterator it = vkItems.begin(); 
+	vector<Entity*>::iterator it = vkItems.begin();
 
 	for( ; it != vkItems.end(); it++)
 	{
@@ -565,6 +565,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
          {
             cout << "Changed icon to:" << szPic << endl;
          }
+
          return;
       }
    }
