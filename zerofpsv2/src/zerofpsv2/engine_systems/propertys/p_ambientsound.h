@@ -4,6 +4,7 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../audio/zfaudiosystem.h"
+#include "../../engine/zerofps.h"
 
 using namespace std;
 
@@ -17,11 +18,15 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		bool m_bLoop;
 		bool m_bStarted;
 		bool m_bSoundHaveBeenSaved; ///< when the sound loads
+		bool m_bManagedByAudioSystem; ///< sätt till true om du vill att ljudet 
+												///< skall stoppas/ startas automatiskt av systemet
 
 		ZFAudioSystem* m_pkAudioSystem;
+		ZeroFps* m_pkFps;
 
 	public:
-		void Stop(); ///< OBS! Måste anropas innan ett objekt med detta property förstörs, annars 
+		void Stop(); ///< OBS! Ifall detta property har flaggan m_bManagedByAudioSystem satt till true
+						 ///< så måste ett anrop till denna funktion göras innan ett objektet förstörs, annars 
 						 ///< forstätter ljudet att spelas upp! Detta eftersom ljud i normala fall skall
 						 ///< fortsätta spelas (hanteras av audio systmet) efter det att zonsystemet har 
 						 ///< tagit bort objektet.

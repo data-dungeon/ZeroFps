@@ -436,6 +436,16 @@ void MistClient::Input()
 		pkInput->MouseXY(mx,my);
 		OpenActionMenu(mx, my); 
 	}
+
+	int pressed_key = pkInput->GetQueuedKey();
+
+	if(pressed_key == KEY_F1)
+	{
+		int iNumSounds = pkAudioSys->GetNumSounds(); 
+		int iNumActiveChannels = pkAudioSys->GetNumActiveChannels(); 
+
+		printf("sounds =%i, channels =%i\n",  iNumSounds, iNumActiveChannels);
+	}
 }
 
 void MistClient::OnHud(void) 
