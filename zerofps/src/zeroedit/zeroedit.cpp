@@ -106,6 +106,7 @@ void ZeroEdit::OnHud(void)
 	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
 	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
+	pkFps->DevPrintf("Mode: %d",m_iMode);
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
@@ -344,6 +345,10 @@ void ZeroEdit::Input()
 			if(pkInput->Pressed(SPACE))
 			{
 				SelectParent();
+			}
+			if(pkInput->Pressed(KEY_C))
+			{
+				m_pkCurentParent=m_pkHeightMapObject;
 			}
 			
 			break;
