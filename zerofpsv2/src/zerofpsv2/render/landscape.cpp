@@ -651,8 +651,28 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 
 
-void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) //,int iTexture2) 
+void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1) //,int iTexture2) 
 {
+	static Vector3 pointdata[8] = { Vector3(-0.5,0.5,0),
+												Vector3(-0.5,-0.5,0),
+												Vector3(0.5,-0.5,0),
+												Vector3(0.5,0.5,0),
+										
+												Vector3(0,0.5,-0.5),
+												Vector3(0,0.5,0.5),
+												Vector3(0,-0.5,0.5),
+												Vector3(0,-0.5,-0.5)};
+
+	static Vector2 texdata[8] = { Vector2(0,1),
+											Vector2(0,0),
+											Vector2(1,0),
+											Vector2(1,1),
+											
+											Vector2(1,1),
+											Vector2(0,1),
+											Vector2(0,0),
+											Vector2(1,0)};
+
 	glPushMatrix();
 	
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -661,56 +681,39 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 	glRotatef(kHead.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
-//	glDisable(GL_COLOR_MATERIAL);		
-//	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
-
-//	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
-	glDisable(GL_CULL_FACE);	
 	
-	
+	glDisable(GL_CULL_FACE);			
 	glAlphaFunc(GL_GREATER,0.3);
    glEnable(GL_ALPHA_TEST);
-	
-	
-//	Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),iTexture1);
-//	Quad(Vector3(0,0,0),Vector3(0,90,0),Vector3(1,1,1),iTexture1);	
-/*	
+
 	m_pkTexMan->BindTexture(iTexture1);  	
-	glBegin(GL_TRIANGLES);
 	
-		glNormal3f(0,1,0);
-		glTexCoord2f(.5,-1);glVertex3f(0,1,0); 
-		glTexCoord2f(-1,1);glVertex3f(-1,-0.5,0); 
-		glTexCoord2f(2,1);glVertex3f(1,-0.5,0); 	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,texdata);						
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,pointdata);					
 	
-		//glNormal3f(0,1,0);
-		glTexCoord2f(.5,-1);glVertex3f(0,1,0); 
-		glTexCoord2f(-1,1);glVertex3f(0,-0.5,-1); 
-		glTexCoord2f(2,1);glVertex3f(0,-0.5,1); 
-	
-	glEnd();
-*/	
-	
-	
-	m_pkTexMan->BindTexture(iTexture1);  	
 	glBegin(GL_QUADS);
+		glNormal3f(0,1,0);
+	glEnd();	
 	
+	glDrawArrays(GL_QUADS,0,8);
+	
+/*	glBegin(GL_QUADS);
 		glNormal3f(0,1,0);
 		glTexCoord2f(0,1);glVertex3f(-0.5,0.5,0); 
 		glTexCoord2f(0,0);glVertex3f(-0.5,-0.5,0); 
 		glTexCoord2f(1,0);glVertex3f(0.5,-0.5,0); 
 		glTexCoord2f(1,1);glVertex3f(0.5,0.5,0); 
-
-		//glNormal3f(0,1,0);
+		
 		glTexCoord2f(1,1);glVertex3f(0,0.5,-0.5); 
 		glTexCoord2f(0,1);glVertex3f(0,0.5,0.5); 
 		glTexCoord2f(0,0);glVertex3f(0,-0.5,0.5); 
 		glTexCoord2f(1,0);glVertex3f(0,-0.5,-0.5); 
-
 	glEnd();
+*/		
 	
-//	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
-
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_CULL_FACE);
 	glPopMatrix();
@@ -1083,7 +1086,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 							  kMap->GetPos().z-(kMap->GetScale()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);*/
 
 
-	DrawCross(PatchCenter,Vector3::ZERO, Vector3(1,1,1),-1);
+	//DrawCross(PatchCenter,Vector3::ZERO, Vector3(1,1,1),-1);
 	return;
 
 	// Distance Cull Patch

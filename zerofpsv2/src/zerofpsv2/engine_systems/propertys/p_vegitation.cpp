@@ -81,7 +81,6 @@ void P_Vegitation::Update()
 //	cout<<"step "<<iStep<<endl;
 //	cout<<"grass "<<m_akPositions.size()<<endl;
 
-	float t=m_pkFps->GetTicks();
 
 	ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr();
 	int iTexture;
@@ -93,12 +92,16 @@ void P_Vegitation::Update()
 	else
 		iTexture = (pkRt)->m_iTextureID;
 	
+	
+	float t=m_pkFps->GetTicks();
 
 //	for(unsigned int i=0;i<m_akPositions.size();i += iStep){
-	for(unsigned int i=0;i<m_akPositions.size();i++){
-		Vector3 rot = m_akPositions[i].kRot; 
+	for(unsigned int i=0;i<m_akPositions.size();i++)
+	{
+		Vector3 rot = m_akPositions[i].kRot;  
 		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
-		m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,iTexture);			
+		Vector3 kPos = m_akPositions[i].kPos + ObjectPos;
+		m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
 	}
 }
 

@@ -148,7 +148,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
 		void GiveTexCor(float &iX,float &iY,int iNr);
-		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1);//,int iTexture2);
+		void DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1);//,int iTexture2);
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
 		void DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, bool bSolid, int iNumSegments=20);
