@@ -27,6 +27,8 @@ P_Tcs::P_Tcs()
 	m_pkNormal =			NULL;	
 	m_iModelID=				0;
 	m_fMass=					1;
+	m_fAirFriction	=		1;
+	m_fInertia =			1;
 	m_bStatic=				false;
 	m_iGroup=				0;
 	m_bOnGround=			false;
@@ -42,7 +44,7 @@ P_Tcs::P_Tcs()
 	
 	m_kVelocity.Set(0,0,0);
 	m_kRotVelocity.Set(0,0,0);
-	m_fAcceleration.Set(0,0,0);
+	//m_fAcceleration.Set(0,0,0);
 	m_kForces.Set(0,0,0);
 	m_kMoment.Set(0,0,0);
 	m_kNewPos.Set(0,0,0);
@@ -130,7 +132,10 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 	
 	pkPackage->Write((void*)&m_fMass,sizeof(m_fMass),1);						
-	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);						
+	pkPackage->Write((void*)&m_fInertia,sizeof(m_fInertia),1);						
+	pkPackage->Write((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
+	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);					
+			
 	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
@@ -153,7 +158,10 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 
 	pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
-	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);						
+	pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
+	pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
+	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
+					
 	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
@@ -164,7 +172,7 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(11);
+	vector<PropertyValues> kReturn(14);
 
 	int dummy;
 
@@ -211,7 +219,19 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[10].kValueName="static";
 	kReturn[10].iValueType=VALUETYPE_BOOL;
 	kReturn[10].pkValue=(void*)&m_bStatic;	
-	
+
+	kReturn[11].kValueName="airfriction";
+	kReturn[11].iValueType=VALUETYPE_FLOAT;
+	kReturn[11].pkValue=(void*)&m_fAirFriction;	
+
+	kReturn[12].kValueName="inertia";
+	kReturn[12].iValueType=VALUETYPE_FLOAT;
+	kReturn[12].pkValue=(void*)&m_fInertia;	
+
+	kReturn[13].kValueName="activemoment";
+	kReturn[13].iValueType=VALUETYPE_BOOL;
+	kReturn[13].pkValue=(void*)&m_bActiveMoment;	
+				
 	return kReturn;
 }
 
@@ -475,6 +495,11 @@ void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce)
 	//calculate and add momental force
 	kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
 	m_kExternalMoment += kForce.Cross(kAttachPos);
+	
+	
+	//add motion force
+	//m_kExternalForces += kForce - kForce.Unit()*m_kExternalMoment.Length();	
+	//cout<<"forcE:"<<m_kExternalMoment.Length()<<endl;
 }
 
 void P_Tcs::ApplyForce(const Vector3& kForce)

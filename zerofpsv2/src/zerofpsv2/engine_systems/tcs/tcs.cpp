@@ -72,7 +72,6 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 
 void Tcs::Update(float fAlphaTime)
 {
-	//cout<<"blub"<<endl;
 
 	if(m_kBodys.empty())
 		return;
@@ -232,31 +231,43 @@ void Tcs::UpdateForces()
 		if(m_kBodys[i]->m_bStatic)
 			continue;
 	
-		m_kBodys[i]->m_kForces.Set(0,0,0);
+		// LINEAR FORCE / ACCLERERATION			
+			m_kBodys[i]->m_kForces.Set(0,0,0);
 		
-		//add external forces and clear it
-		m_kBodys[i]->m_kForces += m_kBodys[i]->m_kExternalForces; 
-		m_kBodys[i]->m_kExternalForces.Set(0,0,0);
+			//add external forces and clear it
+			m_kBodys[i]->m_kForces += m_kBodys[i]->m_kExternalForces; 
+			m_kBodys[i]->m_kExternalForces.Set(0,0,0);
+			
+			//Apply walk force
+			m_kBodys[i]->m_kForces+=m_kBodys[i]->m_kWalkVel;
+			
+			//apply gravity if enabled
+			if(m_kBodys[i]->m_bGravity)
+			{
+				m_kBodys[i]->m_kForces += Vector3(0,-0.5,0);
+			}
+			
+			//apply some air friction		
+			m_kBodys[i]->m_kForces -= m_kBodys[i]->m_kVelocity * m_kBodys[i]->m_fAirFriction;
+	
+			//Calculate linear acceleration
+			m_kBodys[i]->m_kForces = m_kBodys[i]->m_kForces / m_kBodys[i]->m_fMass;	
+				
 		
-		//Apply walk force
-		m_kBodys[i]->m_kForces+=m_kBodys[i]->m_kWalkVel;
 		
-		//apply gravity if enabled
-		if(m_kBodys[i]->m_bGravity)
-		{
-			m_kBodys[i]->m_kForces += Vector3(0,-10,0);
-		}
+		// ROTATIONAL FORCE / ACCLERATION		
+			m_kBodys[i]->m_kMoment.Set(0,0,0);
+			
+			//add external moment and clera it
+			m_kBodys[i]->m_kMoment += m_kBodys[i]->m_kExternalMoment; 		
+			m_kBodys[i]->m_kExternalMoment.Set(0,0,0);	
+			
+			//apply some air friction				
+			m_kBodys[i]->m_kMoment -= m_kBodys[i]->m_kRotVelocity * m_kBodys[i]->m_fAirFriction;
+	
+			//calculate rotation acceleration
+			m_kBodys[i]->m_kMoment = m_kBodys[i]->m_kMoment / m_kBodys[i]->m_fInertia;
 		
-		
-		//reset moment
-		m_kBodys[i]->m_kMoment.Set(0,0,0);
-		
-		//add external moment and clera it
-		//cout<<"X:"<<m_kBodys[i]->m_kExternalMoment.x<<" "<<m_kBodys[i]->m_kExternalMoment.y<<" "<<m_kBodys[i]->m_kExternalMoment.z<<endl;		
-		m_kBodys[i]->m_kMoment += m_kBodys[i]->m_kExternalMoment; 		
-		m_kBodys[i]->m_kExternalMoment.Set(0,0,0);	
-		
-
 	}
 }
 
@@ -278,28 +289,17 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 	if(pkBody->m_bStatic)
 		return;
 
-	Vector3 kAe;
 	
-	//apply some air friction		
-	pkBody->m_kForces -=	pkBody->m_kVelocity*4;
-	pkBody->m_kMoment -= pkBody->m_kRotVelocity*4;
-		
-	//Calculate acceleration in world space
-	kAe = pkBody->m_kForces / pkBody->m_fMass;
-	pkBody->m_fAcceleration = kAe;
-		
-	//Calculate velocity in world space
-	pkBody->m_kVelocity += kAe * fAtime;
-	
-	//apply moment to rotation velocity
+	//apply linear acceleration
+	pkBody->m_kVelocity += pkBody->m_kForces * fAtime;	
+	//apply rotation acceleration
 	pkBody->m_kRotVelocity += pkBody->m_kMoment * fAtime;
 		
-		
-	//Calculate position in world space
-	pkBody->m_kNewPos += (pkBody->m_kVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);
 	
+	//Calculate new position
+	pkBody->m_kNewPos += (pkBody->m_kVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);	
 	//calculate new rotation 
-	pkBody->m_kNewRotation.RadRotate(pkBody->m_kRotVelocity);
+	pkBody->m_kNewRotation.RadRotate(pkBody->m_kRotVelocity * fAtime);
 	
 }
 

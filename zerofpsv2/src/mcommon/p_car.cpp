@@ -15,8 +15,8 @@ void P_Car::Init()
 {
 	cout<< "New car created"<<endl;
 
-	m_pkInputHandle = new InputHandle("CarControl");
-	m_pkInputHandle->SetActive(true);
+	//m_pkInputHandle = new InputHandle("CarControl");
+	//m_pkInputHandle->SetActive(true);
 
 	m_kAcceleration.Set(0,0,0);
 	m_kCurrentVel.Set(0,0,0);
@@ -26,22 +26,42 @@ void P_Car::Update()
 {
 	P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
 	
+	Vector3 kForce = Vector3(0,0,0);
+	
+	if(GetObject()->GetParent()->IsZone())
+	{
+		Entity* pkCam = m_pkObjMan->GetObject("A light_red.lua");
+		if(pkCam)				
+			kForce = (pkCam->GetLocalPosV() - GetObject()->GetLocalPosV());	
+	}
+	else
+	{
+		Vector3 ap = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,0.3));
+		kForce = (GetObject()->GetParent()->GetLocalPosV() - (GetObject()->GetLocalPosV()+ap));	
+		
+		//kForce*=1;
+	}
+
+	
+	pkTcs->ApplyForce(Vector3(0,0,1),kForce);
+	
+	/*
 	Entity* pkCam = m_pkObjMan->GetObject("A light_red.lua");
 	
 	if(pkTcs)
 	{
 		Vector3 kForce = Vector3(0,0,0);
-		kForce.Set(1,0,0);
+
 				
 		if(pkCam)
 		{
-			kForce = (pkCam->GetLocalPosV() - GetObject()->GetLocalPosV()).Unit();
+			kForce = (pkCam->GetLocalPosV() - GetObject()->GetLocalPosV());
 			//kForce *= 1;
 		}
 		
 
 		
-		pkTcs->ApplyForce(Vector3(0,0,1),kForce);
+		pkTcs->ApplyForce(Vector3(0,0,2),kForce);
 	
 /*		float t = m_pkObjMan->GetSimDelta();
 		Vector3 kForcePos;
@@ -67,7 +87,7 @@ void P_Car::Update()
 		GetObject()->SetLocalRotM(kRot);
 		//pkTcs->SetExternalForces(kForce);
 		pkTcs->ApplyForce(Vector3(0,0,0),kForce);*/
-	}
+//	}
 /*	
 	UpdateDistance();
 

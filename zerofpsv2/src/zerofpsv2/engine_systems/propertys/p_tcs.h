@@ -38,6 +38,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		int	 	m_iGroup;				
 		float 	m_fLegLength;		
 		float		m_fMass;
+		float		m_fInertia;
+		float		m_fAirFriction;
       bool		m_bOnGround;
 		bool		m_bActiveMoment;
 		
@@ -66,7 +68,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		//temp data
 		Vector3	m_kVelocity;
 		Vector3	m_kRotVelocity;
-		Vector3	m_fAcceleration;
+		//Vector3	m_fAcceleration;
 		Vector3	m_kForces;
 		Vector3	m_kMoment;
 		Vector3	m_kNewPos;
