@@ -334,8 +334,8 @@ void DarkMetropolis::Input()
 					pkHQ->m_pkBackPack->DropAll();				
 				
 
-	if(m_pkInputHandle->Pressed(KEY_H))
-		m_pkHQDlg->OpenDlg(); // Open the HQ dialog
+	//if(m_pkInputHandle->Pressed(KEY_H))
+	//	m_pkHQDlg->OpenDlg(); // Open the HQ dialog
 
 	if(m_pkInputHandle->Pressed(KEY_F))
 	{
