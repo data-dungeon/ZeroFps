@@ -71,7 +71,8 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetIdleAnim", DMLua::SetIdleAnimLua);
 	pkScript->ExposeFunction("AddPatrolPoint", DMLua::AddPatrolPointLua);
 	pkScript->ExposeFunction("Patrol", DMLua::PatrolLua);
-
+	pkScript->ExposeFunction("ClearPatrolPath", DMLua::ClearPatrolPathLua);
+	
 	// math
 	pkScript->ExposeFunction("Random", DMLua::RandomLua);
 

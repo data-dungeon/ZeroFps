@@ -131,6 +131,29 @@ int DMLua::SetIdleAnimLua(lua_State* pkLua)
 
 // ------------------------------------------------------------------------------------------------
 //
+// Tar 1 argument: Entity ID of patroling object
+//
+
+int DMLua::ClearPatrolPathLua(lua_State* pkLua)
+{
+	double dEntID;
+	Vector3 kPatrolPos;
+
+	if( g_pkScript->GetArgNumber(pkLua, 0, &dEntID) )
+	{
+		map<int, PATROL_POINTS>::iterator it = m_kPatrolPoints.find(int(dEntID));
+		if(it != m_kPatrolPoints.end())
+		{
+			it->second.m_vkPoints.clear();
+			it->second.m_iCurrent = 0;
+		}
+	}
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+//
 // Tar 2 argument: Entity ID of patroling object and a Table with 3 double (x,y,z)
 //
 int DMLua::AddPatrolPointLua(lua_State* pkLua)

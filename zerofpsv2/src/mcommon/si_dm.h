@@ -100,6 +100,7 @@ namespace DMLua
 	int MCOMMON_API SetIdleAnimLua(lua_State* pkLua);
 	int MCOMMON_API AddPatrolPointLua(lua_State* pkLua);
 	int MCOMMON_API PatrolLua(lua_State* pkLua);
+	int MCOMMON_API ClearPatrolPathLua(lua_State* pkLua);
 
 	// math
 	int MCOMMON_API RandomLua(lua_State* pkLua);
