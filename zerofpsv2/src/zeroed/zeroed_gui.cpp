@@ -254,6 +254,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 		}
 		else
+		if(strMainWnd == "EnviromentPage")
+		{
+			SendSetZoneEnviroment("",GetZoneID(m_kZoneMarkerPos));
+		}
+		else
 		if(strMainWnd == "PropertyPage")
 		{
 			if(strWndClicked == "OpenAllPropertyWnd")
