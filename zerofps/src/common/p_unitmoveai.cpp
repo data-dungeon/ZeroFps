@@ -6,6 +6,8 @@
 #include "tileengine.h"
 #include <cmath>
 
+#include <math.h>
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -284,18 +286,19 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	Vector3 kNewPos = m_pkObject->GetPos() + kMoveV * (fVel * m_pkFps->GetGameFrameTime());
 
 	kMoveV.y = 0;
+	kMoveV.Normalize();
+
 	//set rotation   this rotation sux
-	Vector3 rot = kMoveV.Angels();
-	rot.x =0;
-	rot.z =0;
-	rot.y = -rot.y;
+	Vector3 rot;
+	rot.Set(0,0,0);
 	
-	
-	//	rot.y = atan2(kMoveV.z,kMoveV.x) * degtorad;
+	rot.y = atan2(kMoveV.z,kMoveV.x) * degtorad;	
+	rot.y -= 90;
 	
 	
 	m_pkObject->SetRot(rot);		
 	m_pkObject->SetRot(rot);			
+	
 	m_pkObject->SetPos(kNewPos);	
 	
 	return true;
