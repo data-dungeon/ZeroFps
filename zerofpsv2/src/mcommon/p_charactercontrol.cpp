@@ -238,6 +238,53 @@ namespace SI_P_CharacterControl
 		return 0;
 	}
 	
+	int GetCharacterYAngleLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 1)
+			return 0;
+		
+		int id;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;			
+
+		double dAngle=0;
+			
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+			{
+				g_pkScript->AddReturnValue(pkLua, pkCC->GetYAngle());					
+				return 1;
+			}
+			
+		return 0;
+	}
+	
+	int SetCharacterYAngleLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		double dTemp;
+		double dAngle;
+				
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;			
+
+		g_pkScript->GetArgNumber(pkLua, 1, &dAngle);
+
+					
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->SetYAngle(dAngle);
+
+											
+		return 0;
+	}
+	
+	
+	
 	int ClearCharacterControlsLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -270,8 +317,11 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("SetCharacterControl",	SI_P_CharacterControl::SetCharacterControlLua);
+	g_pkScript->ExposeFunction("SetCharacterControl",		SI_P_CharacterControl::SetCharacterControlLua);
 	g_pkScript->ExposeFunction("ClearCharacterControls",	SI_P_CharacterControl::ClearCharacterControlsLua);
+	
+	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
+	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
 
 }
 

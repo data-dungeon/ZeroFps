@@ -71,6 +71,9 @@ class MCOMMON_API P_CharacterControl: public Property
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
 																			m_fPAngle = fPAngle;			}
+		float GetYAngle()											{	return m_fYAngle;				};
+		void  SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			};
+																			
 		void SetMoveDirection(int iDir);
 		int  GetMovedirection()									{	return m_iDirection;			}
 		void SetCharacterState(int iState,bool bValue);
