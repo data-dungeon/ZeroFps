@@ -19,7 +19,7 @@ public:
 	char*	cBufferEnd;
 	int		iLine;
 
-	void	Load(char* ucFileName);
+	void	Load(const char* ucFileName);
 };
 
 class ScriptFile
@@ -33,7 +33,7 @@ public:
 	char*	ucpScript;
 	char*	ucpScriptEnd;
 
-	void LoadScript(char* ucpFileName);
+	void LoadScript(const char* ucpFileName);
 	
 	char* GetToken(void);
 	void UnGetToken();

@@ -3,7 +3,7 @@
 #include "qpack.h"
 
 // Returns mdl version for quake mdl (1-3) or 0 if not a quake series mdl.
-int GetQuakeModellVersion(PAKFileFp *mdlfp, char* filename)
+int GetQuakeModellVersion(PAKFileFp *mdlfp, const char* filename)
 {
 	int	name_version = 0;	// Version from file ext.
 	int head_version = 0;	// Version from file header.
@@ -53,7 +53,7 @@ void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame)
 	Frame = AnimAndFrame;
 }
 
-void ModellMD2::Read( char* filename )
+void ModellMD2::Read( const char* filename )
 {
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
@@ -199,7 +199,7 @@ bool ModellMD2::Export(pmd_c* pmd)
 }
 */
 
-bool ModellMD2::Export(MadExporter* mad)
+bool ModellMD2::Export(MadExporter* mad, const char* filename)
 {
 	int i,f;
 
@@ -216,8 +216,13 @@ bool ModellMD2::Export(MadExporter* mad)
 	if(mad->kHead.iNumOfTextures == 0)
 		mad->kHead.iNumOfTextures = 1;
 
+	char ucSkinName[64];
+	strcpy(ucSkinName, "skin_");
+	if(strcmp(filename, "none") != 0)
+		strcpy(ucSkinName, filename);
+
 	for(i=0; i<mad->kHead.iNumOfTextures; i++) {
-		sprintf(NewSkinName,"skin_%d", i);
+		sprintf(NewSkinName,"%s%d", ucSkinName, i);
 		strcpy(mad->akTextures[i].ucTextureName, NewSkinName);
 		if(i < m_kHead.num_skins)
 			g_PakFileSystem.Unpack(g_skins[i], NewSkinName);

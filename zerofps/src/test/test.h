@@ -39,6 +39,8 @@ class Test :public Application {
 
 
 	public:
+		Core	m_kTestCore;
+
 		enum FuncId_e
 		{
 			FID_LOADMAP,

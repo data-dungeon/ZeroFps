@@ -36,7 +36,9 @@ public:
 
 	void Print(FILE *file)
 	{
-		fprintf(file, " %d %s %d\n", m_iId, m_ucpName, m_iParentId);
+		fprintf(file, " %d %s %d ", m_iId, m_ucpName, m_iParentId);
+		m_kTrans.Print(file);
+		m_kOrient.PrintLf(file);
 	}
 
 	void PrintPose(FILE *file)

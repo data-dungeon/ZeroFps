@@ -55,11 +55,9 @@ void MadProperty::Update() {
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
 		glScalef(m_fScale,m_fScale,m_fScale);
-		//glRotatef(0,1,0,0);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
 		glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		glRotatef(m_pkObject->GetRot().y ,0,1,0);		
-		//glRotatef(0,0,0,1);
 		
 		Vector4 sphere=m_pkObject->GetPos();
 		sphere.w=4;

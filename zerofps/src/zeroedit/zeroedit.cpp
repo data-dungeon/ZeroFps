@@ -248,7 +248,7 @@ void ZeroEdit::Input()
 		if(pkInput->Pressed(INSERT)) {
 			m_pkCurentChild->GetRot().x+=pkFps->GetFrameTime()*childrotatespeed;
 		}
-		if(pkInput->Pressed(DELETE)) {
+		if(pkInput->Pressed(KEY_DELETE)) {
 			m_pkCurentChild->GetRot().x-=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(PAGEUP)) {

@@ -37,6 +37,7 @@
 #include <maya/MItGeometry.h>
 #include <maya/MAnimControl.h>
 #include <maya/MPxFileTranslator.h>
+#include <maya/MFnIkJoint.h>
 
 using namespace std;
 

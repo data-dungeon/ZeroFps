@@ -24,7 +24,6 @@ Input::Input()
 };
 
 void Input::Update(void) {
-	SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);	
 	
 	
 	while(SDL_PollEvent(&m_kEvent)) {
@@ -76,6 +75,7 @@ void Input::MouseXY(int &iX,int &iY) {
 }
 
 void Input::RelMouseXY(int &iX,int &iY) {		
+	SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);	
 	iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
 	iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
 }

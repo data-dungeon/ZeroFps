@@ -570,7 +570,7 @@ int Modell3DS::MatNameToIndex(pmd_c* pmd, char* name)
 	return 0;
 }*/
 
-bool Modell3DS::Export(MadExporter* mad)
+bool Modell3DS::Export(MadExporter* mad, const char* filename)
 //void transfer_to_part(pmd_c *to)
 {
 	int i;
@@ -651,7 +651,7 @@ bool Modell3DS::Export(MadExporter* mad)
 	return 0;
 }
 
-void Modell3DS::Read( char* filename )
+void Modell3DS::Read( const char* filename )
 {
 	FILE *fp;
 	long FileSize;

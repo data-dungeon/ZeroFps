@@ -101,13 +101,26 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	int i;
-	for( i=0;i<1;i++) {
+	float waterlevel;
+	
+	for( i=0;i<5000;i++) {
 		Object *ball=new BallObject();
-		float x=289;	// + rand()%200;
-		float y=828;	// + rand()%100;
-		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
+		
+		// Place this tree somewere on land.
+		float x=0 + rand()%1000;
+		float y=0 + rand()%1000;
+		waterlevel = -20;
+		while(waterlevel < 0) {
+			x=0 + rand()%1000;
+			y=0 + rand()%1000;
+			waterlevel = test->Height(x,y);
+			}
+
+		ball->GetPos()=Vector3(x,waterlevel,y);
+		ball->GetRot().y = i;
+		pkObjectMan->GetWorldObject()->AddChild(ball);
 		pkObjectMan->Add(ball);
-		pkCollisionMan->Add(ball);
+		//pkCollisionMan->Add(ball);
 	}
 
 	glEnable(GL_LIGHTING );
@@ -168,7 +181,6 @@ void Test::OnInit(void) {
 	pkAlSys->AddSound(welcome);
 
 	ZFObjectManger::GetInstance()->PrintObjects();
-
 }
 
 void Test::OnServerStart(void)
@@ -230,7 +242,7 @@ void Test::OnIdle(void) {
 	
 
 	
-	
+//	DrawTest(400,25,705);
 	
 	input();
 	float z=pkFps->GetCam()->GetPos().z;

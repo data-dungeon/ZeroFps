@@ -6,6 +6,22 @@
 
 #include "madexport.h"
 
+#define NRDEG_IN_ONE_RAD	57.29577951
+#define NRRAD_IN_ONE_DEG	0.0174532952
+
+float DegToRad(float fAngle)
+{
+	return fAngle;
+//	return (fAngle * NRRAD_IN_ONE_DEG);
+}
+
+float RadToDeg(float fAngle)
+{
+	return fAngle;
+//	return (fAngle * NRDEG_IN_ONE_RAD);
+}
+
+
 #pragma warning ( disable : 4786 )
 
 MObject findShader( MObject& setNode )
@@ -285,7 +301,9 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 			{
 				pt = rgpt[v];
 				CalculateTriangleVertex (rgint[v], pt, normal, ucoo, vcoo, meshPoly, ptMap);
-				fprintf(m_pkOutFile, "<%f,%f,%f,%f,%f> ", pt[0] ,pt[1] ,pt[2],ucoo, vcoo );
+				fprintf(m_pkOutFile, "<%f,%f,%f,%f,%f,%f,%f,%f> ", pt[0] ,pt[1] ,pt[2],
+					normal[0], normal[1], normal[2], 
+					ucoo, vcoo );
 			}
 			fprintf(m_pkOutFile, "\n");
 			} 
@@ -321,7 +339,7 @@ MStatus MadExport::CalculateTriangleVertex (int vt, MVector &pt, MVector &n, flo
 	}
 
 	// move U & V into the -1 <= {U,V} <= 1 space for compatibility with engine
-	int offset;
+/*	int offset;
 	offset = u;
 	if (offset >= 1 || offset <= -1) {
 		u = u - offset;
@@ -336,7 +354,7 @@ MStatus MadExport::CalculateTriangleVertex (int vt, MVector &pt, MVector &n, flo
 	}
 	if (v < 0) {
 		v = v + 1;
-	}
+	}*/
 
 	return MS::kSuccess;
 }
@@ -445,28 +463,39 @@ MStatus MadExport::UpdateBoneList (void)
 	
 	for (itBones = m_kBoneList.begin(); itBones != m_kBoneList.end(); itBones++)
 	{
-		MFnTransform fnJoint = (*itBones)->m_kPath.node(&status);
+		MFnIkJoint fnJoint = (*itBones)->m_kPath.node(&status);
 		if (!status) {
 			status.perror("Unable to cast as Transform!");
 			return status;
 		}
 
 		// Get rotation/translation from the transformation matrix
-		MTransformationMatrix mat = fnJoint.transformationMatrix(&status);
-		if (!status) {
-			status.perror("Unable to get transformation matrix!");
-			return status;
-		}
+		MTransformationMatrix::RotationOrder rotOrder = MTransformationMatrix::kXYZ;
 
+		double adRotateAxis[3];
+		double adRotate[3];
+		double adJointOrient[3];
+		fnJoint.getScaleOrientation ( adRotateAxis, rotOrder );
+		fnJoint.getRotation ( adRotate, rotOrder );
+		fnJoint.getRotation ( adJointOrient, rotOrder );
+	
+		MTransformationMatrix Local;
+		Local.addRotation (adRotateAxis, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		Local.addRotation (adRotate, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		Local.addRotation (adJointOrient, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		
 		MEulerRotation kRot;
-
+		//kRot = Local.eulerRotation();
+		MTransformationMatrix mat = fnJoint.transformationMatrix(&status);
 		kRot = mat.eulerRotation();
-		(*itBones)->m_kOrient.x = kRot.x;
-		(*itBones)->m_kOrient.y = kRot.y;
-		(*itBones)->m_kOrient.z = kRot.z;
-
+	  
 		MVector kTrans;
-		kTrans = mat.translation(MSpace::kTransform);
+		kTrans = fnJoint.translation(MSpace::kTransform);	//kTransform
+
+		(*itBones)->m_kOrient.x = RadToDeg(kRot.x);
+		(*itBones)->m_kOrient.y = RadToDeg(kRot.y);
+		(*itBones)->m_kOrient.z = RadToDeg(kRot.z);
+
 
 		(*itBones)->m_kTrans.x = kTrans.x;
 		(*itBones)->m_kTrans.y = kTrans.y;
@@ -503,6 +532,7 @@ MStatus	MadExport::WriteBonePose(void)
 
 MStatus	MadExport::Export_SX(char* filename)
 {
+
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
 		cout << "unable to open file " << filename << " for writing\n";
@@ -510,13 +540,29 @@ MStatus	MadExport::Export_SX(char* filename)
 	}
 
 	GetBoneList();
+
+	int		frameFirst;
+	int		frameLast;
+	MTime	tmNew;
+	MStatus	status;
+	// Remember the frame the scene was at so we can restore it later.
+	MTime currentFrame	= MAnimControl::currentTime();
+	MTime startFrame	= MAnimControl::minTime();
+	MTime endFrame		= MAnimControl::maxTime();
+
+	frameFirst	= (int) startFrame.as( MTime::uiUnit() );
+	frameLast	= (int) endFrame.as( MTime::uiUnit() );
+
+	tmNew.setUnit (MTime::uiUnit() );
+	
+	tmNew.setValue (frameFirst);
+	MGlobal::viewFrame( tmNew );
+	UpdateBoneList();
 	WriteBoneList();
 
 	fclose(m_pkOutFile);
 	return MStatus::kSuccess;
 }
-
-
 
 MStatus	MadExport::Export_AX(char* filename)
 {

@@ -15,8 +15,10 @@ class IMadImport
 {
 public:
 	virtual ~IMadImport() {};
-	virtual	void Read( char* filename )	= 0;	// Read data in own format to this.
-	virtual	bool Export(MadExporter* mad) = 0;	// Export this to mad.
+	// Read data in own format to this.
+	virtual	void Read( const char* filename )	= 0;	
+	// Export this to mad.
+	virtual	bool Export(MadExporter* mad, const char* filename) = 0;
 };
 
 // MAD FILE STRUCTURES.
@@ -66,6 +68,8 @@ public:
 
 	void operator=(const Mad_VertexFrame& kOther);
 	vector<MadVertex>	akVertex;
+	vector<MadVertex>	akNormal;
+	
 };
 
 class Mad_KeyFrame
@@ -103,8 +107,8 @@ public:
 	MadExporter();
 	~MadExporter();
 
-	void Save(char* filename);
-	void Load(char* filename);
+	void Save(const char* filename);
+	void Load(const char* filename);
 
 //	void ImportPMD(pmd_c* pmd);
 

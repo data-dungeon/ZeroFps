@@ -61,7 +61,7 @@ bool PAKFile::GetDir(void)
 	return true;
 }
 
-bool PAKFile::FindFile(char* cFileName)
+bool PAKFile::FindFile(const char* cFileName)
 {
 	vector<PAKEntry>::iterator pentry;
 
@@ -72,7 +72,7 @@ bool PAKFile::FindFile(char* cFileName)
 	return false;
 }
 
-bool PAKFile::Open(char* cFileName, PAKFileFp* pkPakFp)
+bool PAKFile::Open(const char* cFileName, PAKFileFp* pkPakFp)
 {
 	vector<PAKEntry>::iterator pentry;
 
@@ -96,7 +96,7 @@ PAKFile_Manger::PAKFile_Manger()
 	iNumOfPaks = 0;
 }
 
-bool PAKFile_Manger::IsValid(char* filename)
+bool PAKFile_Manger::IsValid(const char* filename)
 {
 	FILE* fp = fopen(filename,"rb");
 	if(!fp)		return false;
@@ -113,7 +113,7 @@ bool PAKFile_Manger::IsValid(char* filename)
 	return true;
 }
 
-bool PAKFile_Manger::RegisterPak(char* filename)
+bool PAKFile_Manger::RegisterPak(const char* filename)
 {
 	if(!IsValid(filename)) {
 //		Log << "Error: Failed to reg " << filename << "\n";	
@@ -129,7 +129,7 @@ bool PAKFile_Manger::RegisterPak(char* filename)
 	return true;
 }
 
-bool PAKFile_Manger::FindFile(char* filename)
+bool PAKFile_Manger::FindFile(const char* filename)
 {
 	vector<PAKFile>::iterator pd;
 	vector<PAKEntry>::iterator pentry;
@@ -143,7 +143,7 @@ bool PAKFile_Manger::FindFile(char* filename)
 	return false;
 }
 
-bool PAKFile_Manger::Open(char* filename, PAKFileFp* pakfp)
+bool PAKFile_Manger::Open(const char* filename, PAKFileFp* pakfp)
 {
 	vector<PAKFile>::iterator pd;
 	vector<PAKEntry>::iterator pentry;
@@ -170,7 +170,7 @@ void PAKFile_Manger::RemoveAll(void)
 	iNumOfPaks = 0;
 }
 
-void PAKFile_Manger::Unpack(char* ucPakFileName, char* ucNewFileName)
+void PAKFile_Manger::Unpack(const char* ucPakFileName, const char* ucNewFileName)
 {
 	PAKFileFp pakfile;
 	pakfile.Open(ucPakFileName);
@@ -208,7 +208,7 @@ void PAKFileFp::Close(void)
 	pkFp = NULL;
 }
 
-bool PAKFileFp::Open(char* cFileName)
+bool PAKFileFp::Open(const char* cFileName)
 {
 	if(g_PakFileSystem.Open(cFileName,this))
 		return true;
@@ -221,7 +221,7 @@ bool PAKFileFp::Open(char* cFileName)
 	return false;
 }
 
-bool PAKFileFp::Open(char* cFileName, char* cMode)
+bool PAKFileFp::Open(const char* cFileName, char* cMode)
 {
 	assert(cFileName);
 	assert(cMode);

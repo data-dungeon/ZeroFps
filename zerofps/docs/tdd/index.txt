@@ -64,27 +64,14 @@ Control Loop:
 
 	Remove Engine();
 
-Game Object Data: 
-
-Data Flow: 
-
 Game Physics and Statistics:
 
 Artificial Intelligence:
 
-Multiplayer: 
-
-User Interface
-
-Game Shell: 
-
-Main Play Screen(s): 
-
 Art and Video
-
-Graphics Engine: 
-
 Artist Instructions: 
+
 Sound and Music
 Sound Engineering Instructions: 
-Level Specific Code
+
+

@@ -41,8 +41,8 @@ public:
 	vector<PAKEntry>	akFiles;
 
 	bool GetDir(void);
-	bool FindFile(char* cFileName);
-	bool Open(char* cFileName, PAKFileFp* pkPakFp);
+	bool FindFile(const char* cFileName);
+	bool Open(const char* cFileName, PAKFileFp* pkPakFp);
 
 };
 
@@ -56,9 +56,9 @@ public:
 	long	lBase;		// Base offset of file.
 	long	lSize;		// Size of file.
 
-	bool	Open(char* cFileName);
+	bool	Open(const char* cFileName);
 	void	Close(void);
-	bool	Open(char* cFileName, char* cMode);
+	bool	Open(const char* cFileName, char* cMode);
 
 	size_t	Write(void* pvBuffer, size_t iSize,size_t iCount);
 	size_t	Read(void* pvBuffer, size_t iSize,size_t iCount);
@@ -74,13 +74,13 @@ public:
 	vector<PAKFile> akPaks;
 	int iNumOfPaks;
 
-	bool IsValid(char* filename);		
-	bool RegisterPak(char* filename);
+	bool IsValid(const char* filename);		
+	bool RegisterPak(const char* filename);
 
-	bool FindFile(char* filename);
-	bool Open(char* filename, PAKFileFp* pakfp);
+	bool FindFile(const char* filename);
+	bool Open(const char* filename, PAKFileFp* pakfp);
 	void RemoveAll(void);
-	void Unpack(char* ucPakFileName, char* ucNewFileName);
+	void Unpack(const char* ucPakFileName, const char* ucNewFileName);
 
 
 };

@@ -1,3 +1,11 @@
+4int numofbones
+
+Bone:
+ Name:
+ Parent:
+ Defualt Pos	[X, Y, Z, XR, YR, ZR]
+
+
 TÄNK 
 Attatchements:	Punkter för vapen och liknande.
 
@@ -37,12 +45,13 @@ BodyGroups:		Växlingsbara meshes stödjs direkt genom att man använder mallar för
 
 
 FILTYPER:
-In:		Format som modeller skapas i.
-	Mb:		Maya binary.
+In:		Format som modeller skapas/exporteras ifrån.
+	Mb:	Maya binary.
 	3DS.	3D Studio filer.
+	MDL:	Quake / Hexen 2.
 	MD2:	Quake 2 modeller.
 
-	Kommande Format:	MDL (Quake),MDL(Half Life), MD3.
+	Kommande Format:	MDL(Half Life), MD3.
 
 Temp:	Tillfälliga filer som skapas av tools eller görs för tools.
 	XS:		Skellet.
@@ -170,10 +179,15 @@ Tar informationen i ett MM-script och skapar modeller. Förljande argument finns.
 
 	Inget		Utan argument så skrivs version och en kort hjälptext ut.
 
-	pname.mm	Gör det som skrivits i MM filen.
+	*.mm		Gör det som skrivits i MM filen.
 
 	mm name		Med denna parameter så skapas en standard mm med namnet name.mm i samma katalog där MADMAKE körs.
 				Alla filer i nuvarande katalogen som stödjs länkas in i denna mm fil.
+	
+	*.3ds *.mad	Exportera från 3ds till mad.
+	*.mdl *.mad	Exportera från mdl till mad.
+	*.md2 *.mad	Exportera från md2 till mad.
+	
 				
 MAD:
 För att skapa en modell i spelet så skapar man ett MAD object först och anger ett skellet att använda. Sen
@@ -197,7 +211,10 @@ add-md f f.md
 
 
 
-
+C:\Projects\zerofps\src\tool\madmake\madmake.cpp(58) : fatal error C1001: INTERNAL COMPILER ERROR
+        (compiler file 'msc1.cpp', line 1794) 
+         Please choose the Technical Support command on the Visual C++ 
+         Help menu, or open the Technical Support help file for more information
 
 
 

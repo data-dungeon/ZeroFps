@@ -54,6 +54,7 @@ struct Mad_SubMesh
 struct Mad_VertexFrame
 {
 	MadVertex*	pVertex;				// Vertices.
+	MadVertex*	pNormal;				// Vertices.
 };
 
 class MadRender

@@ -108,8 +108,8 @@ public:
     int					new_skinwidth;		// New skinsize after resampling to power of 2.
 	int					new_skinheight;		
 	
-	void Read( char* filename );			// Read data in own format to this.
-	bool Export(MadExporter* mad);			// Export this to mad.
+	void Read( const char* filename );			// Read data in own format to this.
+	bool Export(MadExporter* mad, const char* filename);			// Export this to mad.
 };
 
 // Quake 2
@@ -183,8 +183,8 @@ public:
 	md2_dtriangle_t*	m_pakTris;
 	q2frame_t*			m_pakFrames;
 
-	void Read( char* filename );	// Read data in own format to this.
-	bool Export(MadExporter* mad);	// Export this to mad.
+	void Read( const char* filename );	// Read data in own format to this.
+	bool Export(MadExporter* mad, const char* filename);	// Export this to mad.
 };
 
 // Quake 3:

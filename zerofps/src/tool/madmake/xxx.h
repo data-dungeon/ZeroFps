@@ -15,8 +15,8 @@ public:
 	ModellXXX() {};
 	~ModellXXX() {};
 
-	void Read( char* filename );	// Read data in own format to this.
-	bool Export(MadExporter* mad);	// Export this to mad.
+	void Read( const char* filename );	// Read data in own format to this.
+	bool Export(MadExporter* mad, const char* filename);	// Export this to mad.
 
 //	vector<MadVertex>	m_akVertex;
 	vector<MadFace>		m_akFace;
@@ -29,6 +29,7 @@ public:
 	vector<Mad_Animation>		akAnimation;
 
 private:
+	void OptimizeSubMeshes(void);
 	int	AddTexture(char* ucpTextureName);
 
 	void ReadVertexFrame(FILE* fp,int iNumTriangles);
@@ -37,6 +38,8 @@ private:
 	void ReadAnimation(char* filename);		// Position Data.
 	void ReadAnimationFrame(FILE* fp, int iNumTriangles);
 
+	void ReadExportSD(char* filename);
+	void ReadExportAD(char* filename);
 };
 
 #endif

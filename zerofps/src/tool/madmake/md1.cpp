@@ -2,7 +2,7 @@
 #include "mdl.h"
 #include "qpack.h"
 
-int GetQuakeModellVersion(PAKFileFp *mdlfp, char* filename);
+int GetQuakeModellVersion(PAKFileFp *mdlfp, const char* filename);
 
 void ModellMD1::PrintInfo()
 {
@@ -102,7 +102,7 @@ bool ModellMD1::ReadFrames(void)
 	return true;
 }
 
-void ModellMD1::Read( char* filename )
+void ModellMD1::Read( const char* filename )
 {
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake\\id1\\pak0.pak");
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake\\id1\\pak1.pak");
@@ -128,7 +128,7 @@ void ModellMD1::Read( char* filename )
 
 extern void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame);
 
-bool ModellMD1::Export(MadExporter* mad)
+bool ModellMD1::Export(MadExporter* mad, const char* filename)
 {
 	// Transfer to pmd struct.
 	mad->kHead.iVersionNum		= 1;
@@ -140,6 +140,9 @@ bool ModellMD1::Export(MadExporter* mad)
 	mad->kHead.iNumOfAnimation	= 1;
 
 	strcpy(mad->akTextures[0].ucTextureName, "mdlskin");
+	if(strcmp(filename, "none") != 0)
+		strcpy(mad->akTextures[0].ucTextureName, filename);
+
 
 	vector<pmd_triangle_s>	akPmdTriangles;
 	vector<Mad_VertexFrame>	akVertexFrames;

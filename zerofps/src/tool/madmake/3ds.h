@@ -108,8 +108,8 @@ public:
 	Modell3DS() {};
 	~Modell3DS() {};
 
-	void Read( char* filename );	// Read data in own format to this.
-	bool Export(MadExporter* mad);	// Export this to mad.
+	void Read( const char* filename );	// Read data in own format to this.
+	bool Export(MadExporter* mad, const char* filename);	// Export this to mad.
 
 	int Read3DSChunk(FILE *fp, Chunk3DS &chunk);
 	int Chunk_CHUNK3DS_POINT_ARRAY(FILE *fp, part_c *part);

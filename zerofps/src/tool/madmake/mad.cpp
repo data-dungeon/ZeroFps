@@ -183,7 +183,7 @@ void MadExporter::ShowInfo(void)
 	}
 }
 
-void MadExporter::Save(char* filename)
+void MadExporter::Save(const char* filename)
 {
 	kHead.iNumOfAnimation = akAnimation.size();
 
@@ -205,8 +205,13 @@ void MadExporter::Save(char* filename)
 	fwrite((void *)&akTextureCoo[0],sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
 
 	// Write Alla vertex Frames.
-	for(int i=0; i<kHead.iNumOfFrames; i++)
+	int size;
+	for(int i=0; i<kHead.iNumOfFrames; i++) {
+		size = akFrames[i].akVertex.size();
 		fwrite(&akFrames[i].akVertex[0],sizeof(MadVertex),kHead.iNumOfVertex,fp);
+		size = akFrames[i].akNormal.size();
+		fwrite(&akFrames[i].akNormal[0],sizeof(MadVertex),kHead.iNumOfVertex,fp);
+		}
 
 	// Write triangles.
 	fwrite(&akFaces[0],sizeof(MadFace),kHead.iNumOfFaces,fp);
@@ -292,4 +297,5 @@ Mad_VertexFrame::~Mad_VertexFrame()
 void Mad_VertexFrame::operator=(const Mad_VertexFrame& kOther)
 {
 	akVertex = kOther.akVertex;
+	akNormal = kOther.akNormal;
 }

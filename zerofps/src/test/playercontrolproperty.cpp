@@ -27,7 +27,7 @@ public:
 */
 
 void PlayerControlProperty::Update() {
-	float speed=6;
+	float speed=25;
 	walking=false;
 	
 	//cant move fast while in air
@@ -66,11 +66,17 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Pressed(KEY_Q)){
 		Object *test = new BunnyObject();
 		test->GetPos()=m_pkObject->GetPos();
+		m_pkObjectMan->Add(test);
+		m_pkCollisionMan->Add(test);	
+	}	
+	if(m_pkInput->Pressed(KEY_E)){
+		Object *test = new BallObject();
+		test->GetPos()=m_pkObject->GetPos();
 		m_pkObjectMan->GetWorldObject()->AddChild(test);
 		m_pkObjectMan->Add(test);
 		m_pkCollisionMan->Add(test);	
 	}	
-	if(m_pkInput->Pressed(KEY_E))
+/*	if(m_pkInput->Pressed(KEY_E))
 	{
 		float height=m_pkMap->GetVert(int(m_pkObject->GetPos().x),int(m_pkObject->GetPos().z))->height;
 		for(int xp=-1;xp<2;xp++){
@@ -80,7 +86,7 @@ void PlayerControlProperty::Update() {
 				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->height=height;				
 			}
 		}
-	}
+	}*/
 	
 //	cout<<"WALK:"<<walk<<endl;
 	//camera tilting when walking

@@ -30,6 +30,7 @@ int	ModellXXX::AddTexture(char* ucpTextureName)
 void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 {
 	MadVertex	kVertex;
+	MadVertex	kNormal;
 	MadFace		kFace;
 
 	Mad_VertexFrame kFrame;
@@ -39,9 +40,12 @@ void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 	{
 		for(int v = 0; v < 3; v++)
 		{
-			fscanf(fp, " <%f,%f,%f,%f,%f>",&kVertex.x,&kVertex.y,&kVertex.z,&kTextureCoo.s,&kTextureCoo.t);
+			fscanf(fp, " <%f,%f,%f,%f,%f,%f,%f,%f>",&kVertex.x,&kVertex.y,&kVertex.z, 
+				&kNormal.x,&kNormal.y,&kNormal.z,
+				&kTextureCoo.s,&kTextureCoo.t);
 			kFace.iIndex[v] = kFrame.akVertex.size();
 			kFrame.akVertex.push_back(kVertex);
+			kFrame.akNormal.push_back(kNormal);
 		}
 	}
 
@@ -51,6 +55,7 @@ void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 {
 	MadVertex	kVertex;
+	MadVertex	kNormal;
 	MadFace		kFace;
 
 	Mad_VertexFrame kFrame;
@@ -67,6 +72,8 @@ void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 	char TextureName[256];
 	int iTexture;
 
+	float diff_s, diff_t;
+
 	for(int i=0; i< iNumTriangles; i++)
 	{
 		fscanf(fp, "%s", TextureName);
@@ -74,11 +81,22 @@ void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 
 		for(int v = 0; v < 3; v++)
 		{
-			fscanf(fp, " <%f,%f,%f,%f,%f>",&kVertex.x,&kVertex.y,&kVertex.z,&kTextureCoo.s,&kTextureCoo.t);
+			fscanf(fp, " <%f,%f,%f,%f,%f,%f,%f,%f>",&kVertex.x,&kVertex.y,&kVertex.z,
+				&kNormal.x,&kNormal.y,&kNormal.z,
+				&kTextureCoo.s,&kTextureCoo.t);
 			kFace.iIndex[v] = kFrame.akVertex.size();
 			kFrame.akVertex.push_back(kVertex);
+			
 			if(bMakeTextureCoo)
 				m_akTextureCoo.push_back(kTextureCoo);
+			else {
+				diff_s = m_akTextureCoo[(i*3) + v].s - kTextureCoo.s;
+				diff_t = m_akTextureCoo[(i*3) + v].t - kTextureCoo.t;
+				if(diff_s != 0.0 || diff_t != 0.0 ) {
+					cout << "Err: " << i << ", " << v << "  ";
+					cout << "<" << diff_s << ","<< diff_t << ">" << endl;
+					}
+				}
 		}
 
 		if(bMakeTriangles) {
@@ -121,8 +139,8 @@ void ModellXXX::ReadBaseFrame(char* filename)
 			fscanf(fp, "%s",tmpstr);
 			iNumTris = atoi(tmpstr);
 
+			cout << "Frame: " << iFrame << endl;
 			ReadVertexFrame(fp, iNumTris);
-			cout << ".";
 		}
 		else 
 			done = true;
@@ -187,7 +205,193 @@ void ModellXXX::ReadAnimation(char* filename)
 	fclose(fp);
 }
 
-void ModellXXX::Read( char* filename )
+struct BoneData
+{
+	int			m_iParent;
+	char		m_szName[64];
+	MadVertex	m_kPosition;
+	MadVertex	m_kRotation;
+};
+
+/*
+ 0 left_ankle -1  3.663815 -46.230229 -2.260499  -0.000000 0.000000 -0.000000 
+ 1 left_ball 0  0.000000 -1.410943 6.541643  0.000000 0.000000 0.000000 
+
+*/
+void ModellXXX::ReadExportSD(char* filename)
+{
+	cout << "Skelleton: " << filename << " ";
+	char tmpstr[256];
+	bool done = false;
+
+	FILE* fp = fopen(filename,"rt");
+
+	vector<BoneData>	Bones;
+	BoneData NewBone;
+	int res;
+	int iBoneId;
+
+	while(!done) {
+		res = fscanf(fp, "%s",tmpstr);
+		iBoneId = atoi(tmpstr);
+
+		if(res ==  EOF)
+			break;
+
+		fscanf(fp, "%s",NewBone.m_szName);
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_iParent = atoi(tmpstr);
+
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kPosition.x = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kPosition.y = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kPosition.z = atof(tmpstr);
+
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kRotation.x = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kRotation.y = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		NewBone.m_kRotation.z = atof(tmpstr);
+
+		Bones.push_back(NewBone);
+	}
+
+	fclose(fp);
+
+
+	// Write Down SD
+	fp = fopen("test.sd","wb");
+	int iNumOfBones = Bones.size();
+
+	fwrite(&iNumOfBones,1,sizeof(int),fp);
+	for(int i=0; i<Bones.size(); i++) {
+		fwrite(&Bones[i],1,sizeof(BoneData),fp);
+		}
+
+	fclose(fp);
+
+
+}
+
+class Mad_BoneKeyFrame
+{
+public:
+	MadVertex	m_kPosition;
+	MadVertex	m_kRotation;
+};
+
+class Mad_CoreTrack
+{
+public:
+	int							m_iBoneID;
+	vector<Mad_BoneKeyFrame>	m_kKeyFrames;
+};
+
+class Mad_CoreAnimation
+{
+public:
+	vector<Mad_CoreTrack>	m_kTracks;
+	Mad_CoreTrack* GetTrackForBone(int iBoneId);
+	void PrintAnimation(void);
+};
+
+Mad_CoreTrack* Mad_CoreAnimation::GetTrackForBone(int iBoneId) {
+	for(int i=0; i<m_kTracks.size(); i++) {
+		if(m_kTracks[i].m_iBoneID == iBoneId)
+			return &m_kTracks[i];
+		}
+
+	// Bone not found. Create it and add it.
+	Mad_CoreTrack kNewTrack;
+	kNewTrack.m_iBoneID = iBoneId;
+	m_kTracks.push_back(kNewTrack);
+	return &m_kTracks[m_kTracks.size() - 1];
+}
+
+void Mad_CoreAnimation::PrintAnimation(void)
+{
+	cout << "Animation has " << m_kTracks.size() << "tracks." << endl;
+
+	for(int a=0; a < m_kTracks.size(); a++) {
+		cout << "Track for bone " << m_kTracks[a].m_iBoneID << " has " << m_kTracks[a].m_kKeyFrames.size() << " frames. " << endl;
+		
+		}
+}
+
+
+void ModellXXX::ReadExportAD(char* filename)
+{
+	cout << "Animation: " << filename << " ";
+	char tmpstr[256];
+	bool done = false;
+
+	FILE* fp = fopen(filename,"rt");
+
+	int res;
+	int iBoneId;
+	int iFrameNum;
+
+	Mad_CoreAnimation	kNewAnimation;
+	Mad_CoreTrack*		kNewTrack;
+	Mad_BoneKeyFrame	kNewBoneKey;
+
+	while(!done) {
+		res = fscanf(fp, "%s",tmpstr);
+		if(res ==  EOF)
+			break;
+		
+		if(strcmp(tmpstr, "Frame") == 0) {
+			res = fscanf(fp, "%s",tmpstr);
+			iFrameNum = atoi(tmpstr);
+			res = fscanf(fp, "%s",tmpstr);
+			}
+
+		iBoneId = atoi(tmpstr);
+	
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kPosition.x = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kPosition.y = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kPosition.z = atof(tmpstr);
+
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kRotation.x = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kRotation.y = atof(tmpstr);
+		fscanf(fp, "%s",tmpstr);
+		kNewBoneKey.m_kRotation.z = atof(tmpstr);
+
+		kNewTrack = kNewAnimation.GetTrackForBone(iBoneId);
+		kNewTrack->m_kKeyFrames.push_back(kNewBoneKey);
+	}
+
+	fclose(fp);
+
+	kNewAnimation.PrintAnimation();
+
+	// Write Down SD
+	fp = fopen("test.ad","wb");
+	int iNumOfTracks = kNewAnimation.m_kTracks.size();
+	int iNumOfKeyFrames = kNewAnimation.m_kTracks[0].m_kKeyFrames.size();
+
+	fwrite(&iNumOfTracks,1,sizeof(int),fp);
+	fwrite(&iNumOfTracks,1,sizeof(int),fp);
+	for(int i=0; i<kNewAnimation.m_kTracks.size(); i++) {
+		fwrite(&kNewAnimation.m_kTracks[i].m_iBoneID, 1, sizeof(int), fp);
+		for(int t=0; t<iNumOfKeyFrames; t++) 
+			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kPosition,1,sizeof(MadVertex),fp);
+			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kRotation,1,sizeof(MadVertex),fp);
+		}
+
+	fclose(fp);
+
+}
+
+void ModellXXX::Read( const char* filename )
 {
 	ScriptFile kMMScipt;
 	kMMScipt.LoadScript(filename);
@@ -214,13 +418,28 @@ void ModellXXX::Read( char* filename )
 			ReadAnimation(ucpToken);
 		}
 
+		if (!strcmp (ucpToken, "!sd-export"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command sd-export: " << ucpToken << endl;
+			ReadExportSD(ucpToken);
+		}
+
+		if (!strcmp (ucpToken, "!ad-export"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command ad-export: " << ucpToken << endl;
+			ReadExportAD(ucpToken);
+		}
 
 		ucpToken = kMMScipt.GetToken();
 	}
 }
 
-bool ModellXXX::Export(MadExporter* mad)
+bool ModellXXX::Export(MadExporter* mad, const char* filename)
 {
+	OptimizeSubMeshes();
+
 	int iTotalNumOfVertex = m_akFrames[0].akVertex.size();
 	int iTotalTriangles = m_akFace.size();
 	int iAntalFrames = m_akFrames.size();
@@ -264,3 +483,45 @@ bool ModellXXX::Export(MadExporter* mad)
 	return true;
 }
 
+void ModellXXX::OptimizeSubMeshes(void)
+{
+	if(m_akSubMesh.size() < 2)	return;
+	
+	cout << "Start OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
+
+	vector<Mad_SubMesh>	akOldSubMesh;
+	akOldSubMesh = m_akSubMesh;
+	m_akSubMesh.clear();
+
+	Mad_SubMesh newsub;
+	newsub.iFirstTriangle	= 0;
+	newsub.iNumOfTriangles	= 1;
+	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;
+
+	int i;
+
+	for(i=1; i<akOldSubMesh.size(); i++) {
+		if(newsub.iTextureIndex != akOldSubMesh[i].iTextureIndex) {
+			cout << "/" << endl;
+			m_akSubMesh.push_back(newsub);
+			newsub.iFirstTriangle	= i;
+			newsub.iNumOfTriangles	= 1;
+			newsub.iTextureIndex	= akOldSubMesh[i].iTextureIndex;
+			}
+		else {
+			cout << ".";
+			newsub.iNumOfTriangles++;
+			}
+		}
+
+	m_akSubMesh.push_back(newsub);
+	cout << "End OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
+
+	for(i=0; i<m_akSubMesh.size(); i++) {
+		cout << "SubMesh[" << i << "]:" << m_akSubMesh[i].iFirstTriangle;
+		cout << " / " << m_akSubMesh[i].iNumOfTriangles;
+		cout << " / " << m_akSubMesh[i].iTextureIndex << endl;
+
+		}
+
+}

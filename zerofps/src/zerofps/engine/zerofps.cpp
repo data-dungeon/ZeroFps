@@ -270,6 +270,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 }
 
 void ZeroFps::Swap(void) {

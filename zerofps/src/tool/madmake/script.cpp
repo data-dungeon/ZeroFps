@@ -27,7 +27,7 @@ int GetLengthOfFile (FILE* fp)
 }
 
 
-void Script::Load(char* ucFileName)
+void Script::Load(const char* ucFileName)
 {
 	FILE*	fp;
 	int		iSize;
@@ -44,7 +44,7 @@ void Script::Load(char* ucFileName)
  
 
 
-void ScriptFile::LoadScript(char* ucpFileName)
+void ScriptFile::LoadScript(const char* ucpFileName)
 {
 	ActiveScript.Load(ucpFileName);
 	bIsTokenReady = false;
