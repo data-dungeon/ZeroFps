@@ -107,8 +107,6 @@ class RENDER_API ZMaterial : public ZFResource
 		
 	public:		
 		//global material settings
-		bool	m_bCopyData;
-		
 		bool	m_bRandomMovements;
 		bool	m_bWaves;
 		bool	m_bTextureOffset;

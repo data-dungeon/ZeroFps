@@ -129,7 +129,6 @@ void ZMaterial::Clear()
 	}
 	m_kPasses.clear();
 
-	m_bCopyData = false;
 	m_bRandomMovements = false;
 	m_bWaves = false;	
 	
@@ -186,12 +185,6 @@ bool ZMaterial::LoadGlobalSection()
 	}
 
 	//read shader global settings
-
-	if(m_kIni.KeyExist("global","copydata"))
-		if(m_kIni.GetBoolValue("global","copydata"))
-			m_bCopyData = true;
-		else
-			m_bCopyData = false;		
 
 	if(m_kIni.KeyExist("global","waves"))
 		if(m_kIni.GetBoolValue("global","waves"))

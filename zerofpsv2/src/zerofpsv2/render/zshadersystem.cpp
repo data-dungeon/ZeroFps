@@ -41,6 +41,9 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iForceColorMask = 	-1;
 	m_iForceAlphaTest =	-1;
 	m_iForceLighting	=	-1;
+	
+	//reset all pointers
+	ResetPointers();
 };
 
 bool ZShaderSystem::StartUp()
@@ -807,6 +810,7 @@ void ZShaderSystem::ResetPointers()
 	m_iNrOfVertexs = 				0;
 	m_iNrOfIndexes = 				0;
 
+	//reset buffert pointers
 	m_pk2DVertexPointer =		NULL;
 	m_pkVertexPointer =			NULL;
 	m_pkNormalPointer =			NULL;
@@ -816,6 +820,17 @@ void ZShaderSystem::ResetPointers()
 	m_pkTexturePointer3 = 		NULL;
 	m_pkIndexPointer = 			NULL;
 	m_pkColorPointer = 			NULL;
+	
+	//reset bakup buffert pointers
+	m_pkBakup2DVertexPointer =	NULL;
+	m_pkBakupVertexPointer =	NULL;
+	m_pkBakupNormalPointer =	NULL;
+	m_pkBakupTexturePointer0 = NULL;
+	m_pkBakupTexturePointer1 = NULL;
+	m_pkBakupTexturePointer2 = NULL;
+	m_pkBakupTexturePointer3 = NULL;
+	m_pkBakupIndexPointer = 	NULL;
+	m_pkBakupColorPointer = 	NULL;	
 	
 	
 	m_b2DVertexPointer =			false;
@@ -973,7 +988,7 @@ void ZShaderSystem::DrawArray()
 	}
 	
 	//if vertextransform has done any vertex copies , delete the copys and restore pointers
-	if(m_bCopyedData)
+ 	if(m_bCopyedData)
  		CleanCopyedData();
 }
 
@@ -1093,52 +1108,9 @@ void ZShaderSystem::DrawGeometry()
 
 void ZShaderSystem::VertexTransform()
 {
-	if(m_pkCurrentMaterial->m_bCopyData)
-		CopyVertexData();		
 
 	if(m_pkCurrentMaterial->m_bWaves)
 		Waves();
-}
-
-void ZShaderSystem::CopyVertexData()
-{
-	m_bCopyedData = true;	
-	
-	m_pkBakup2DVertexPointer = m_pk2DVertexPointer;
-	m_pkBakupVertexPointer = 	m_pkVertexPointer;
-	m_pkBakupNormalPointer = 	m_pkNormalPointer;	
-	m_pkBakupTexturePointer0 = m_pkTexturePointer0;
-	m_pkBakupTexturePointer1 = m_pkTexturePointer1;		
-	m_pkBakupTexturePointer2 = m_pkTexturePointer2;		
-	m_pkBakupTexturePointer3 = m_pkTexturePointer3;		
-	m_pkBakupIndexPointer = 	m_pkIndexPointer;
-	m_pkBakupColorPointer = 	m_pkColorPointer;
-	
-	if(m_b2DVertexPointer)
-		CopyData((void**)&m_pk2DVertexPointer,sizeof(Vector2)*m_iNrOfVertexs);	
-		
-	if(m_bVertexPointer)
-		CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
-
-	if(m_bNormalPointer)
-		CopyData((void**)&m_pkNormalPointer,sizeof(Vector3)*m_iNrOfVertexs);
-	
-	if(m_bIndexPointer)
-		CopyData((void**)&m_pkIndexPointer,sizeof(unsigned int)*m_iNrOfVertexs);
-	
-	if(m_bColorPointer)
-		CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
-	
-	
-	if(m_bTexturePointer0)
-		CopyData((void**)&m_pkTexturePointer0,sizeof(Vector2)*m_iNrOfVertexs);
-	if(m_bTexturePointer1)
-		CopyData((void**)&m_pkTexturePointer1,sizeof(Vector2)*m_iNrOfVertexs);
-	if(m_bTexturePointer2)
-		CopyData((void**)&m_pkTexturePointer2,sizeof(Vector2)*m_iNrOfVertexs);
-	if(m_bTexturePointer3)
-		CopyData((void**)&m_pkTexturePointer3,sizeof(Vector2)*m_iNrOfVertexs);
-	
 }
 
 void ZShaderSystem::CopyData(void** pkData,int iSize)
@@ -1146,33 +1118,135 @@ void ZShaderSystem::CopyData(void** pkData,int iSize)
 	void* pkNewData = new char[iSize];
 	memcpy(pkNewData,*pkData,iSize);
 	
-	*pkData = pkNewData;
-	
+	*pkData = pkNewData;	
+}
+
+void ZShaderSystem::CopyPointerData(int iPointer)
+{
+	m_bCopyedData = true;
+
+	switch(iPointer)
+	{
+		case VERTEX_POINTER:
+			m_pkBakupVertexPointer = m_pkVertexPointer;
+			CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
+			break;
+		case NORMAL_POINTER:
+			m_pkBakupNormalPointer = m_pkNormalPointer;
+			CopyData((void**)&m_pkNormalPointer,sizeof(Vector3)*m_iNrOfVertexs);
+			break;			
+		case TEXTURE_POINTER0:
+			m_pkBakupTexturePointer0 = m_pkTexturePointer0;
+			CopyData((void**)&m_pkTexturePointer0,sizeof(Vector2)*m_iNrOfVertexs);
+			break;		
+		case TEXTURE_POINTER1:
+			m_pkBakupTexturePointer1 = m_pkTexturePointer1;
+			CopyData((void**)&m_pkTexturePointer1,sizeof(Vector2)*m_iNrOfVertexs);
+			break;	
+		case TEXTURE_POINTER2:
+			m_pkBakupTexturePointer2 = m_pkTexturePointer2;
+			CopyData((void**)&m_pkTexturePointer2,sizeof(Vector2)*m_iNrOfVertexs);
+			break;	
+		case TEXTURE_POINTER3:
+			m_pkBakupTexturePointer3 = m_pkTexturePointer3;
+			CopyData((void**)&m_pkTexturePointer3,sizeof(Vector2)*m_iNrOfVertexs);
+			break;	
+		case INDEX_POINTER:
+			m_pkBakupIndexPointer = m_pkIndexPointer;
+			CopyData((void**)&m_pkIndexPointer,sizeof(unsigned int)*m_iNrOfIndexes);
+			break;	
+		case COLOR_POINTER:
+			m_pkBakupColorPointer = m_pkColorPointer;
+			CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
+			break;	
+		case VERTEX2D_POINTER:
+			m_pkBakup2DVertexPointer = m_pk2DVertexPointer;
+			CopyData((void**)&m_pk2DVertexPointer,sizeof(Vector2)*m_iNrOfVertexs);
+			break;	
+																								
+	}
 }
 
 void ZShaderSystem::CleanCopyedData()
 {
-	delete []m_pk2DVertexPointer;	
-	delete []m_pkVertexPointer;	
-	delete []m_pkNormalPointer;		
-	delete []m_pkTexturePointer0;		
-	delete []m_pkTexturePointer1;			
-	delete []m_pkTexturePointer2;			
-	delete []m_pkTexturePointer3;			
-	delete []m_pkIndexPointer;		
-	delete []m_pkColorPointer;		
+	if(m_pkBakup2DVertexPointer)
+	{
+		delete[] m_pk2DVertexPointer;
+		m_pk2DVertexPointer =		m_pkBakup2DVertexPointer;
+		m_pkBakup2DVertexPointer = NULL;
+	}
+	if(m_pkBakupVertexPointer)
+	{
+ 		delete[] m_pkVertexPointer;
+		m_pkVertexPointer =		m_pkBakupVertexPointer;
+		m_pkBakupVertexPointer = NULL;
+	}
+	if(m_pkBakupNormalPointer)
+	{
+		delete[] m_pkNormalPointer;
+		m_pkNormalPointer =		m_pkBakupNormalPointer;
+		m_pkBakupNormalPointer = NULL;
+	}	
+	if(m_pkBakupTexturePointer0)
+	{
+		delete[] m_pkTexturePointer0;
+		m_pkTexturePointer0 =		m_pkBakupTexturePointer0;
+		m_pkBakupTexturePointer0 = NULL;
+	}		
+	if(m_pkBakupTexturePointer1)
+	{
+		delete[] m_pkTexturePointer1;
+		m_pkTexturePointer1 =		m_pkBakupTexturePointer1;
+		m_pkBakupTexturePointer1 = NULL;
+	}
+	if(m_pkBakupTexturePointer2)
+	{
+		delete[] m_pkTexturePointer2;
+		m_pkTexturePointer2 =		m_pkBakupTexturePointer2;
+		m_pkBakupTexturePointer2 = NULL;
+	}		
+	if(m_pkBakupTexturePointer3)
+	{
+		delete[] m_pkTexturePointer3;
+		m_pkTexturePointer3 =		m_pkBakupTexturePointer3;
+		m_pkBakupTexturePointer3 = NULL;
+	}			
+	if(m_pkBakupIndexPointer)
+	{
+		delete[] m_pkIndexPointer;
+		m_pkIndexPointer =		m_pkBakupIndexPointer;
+		m_pkBakupIndexPointer = NULL;
+	}			
+	if(m_pkBakupColorPointer)
+	{
+		delete[] m_pkColorPointer;
+		m_pkColorPointer =		m_pkBakupColorPointer;
+		m_pkBakupColorPointer = NULL;
+	}				
 	
-	m_pk2DVertexPointer =	m_pkBakup2DVertexPointer;	
-	m_pkVertexPointer =	m_pkBakupVertexPointer;	
-	m_pkNormalPointer =	m_pkBakupNormalPointer;		
-	m_pkTexturePointer0 = m_pkBakupTexturePointer0;		
-	m_pkTexturePointer1 = m_pkBakupTexturePointer1;			
-	m_pkTexturePointer2 = m_pkBakupTexturePointer2;			
-	m_pkTexturePointer3 = m_pkBakupTexturePointer3;			
-	m_pkIndexPointer =	m_pkBakupIndexPointer;		
-	m_pkColorPointer =	m_pkBakupColorPointer;
-	
+		
 	m_bCopyedData = false;
+// 	delete []m_pk2DVertexPointer;	
+// 	delete []m_pkVertexPointer;	
+// 	delete []m_pkNormalPointer;		
+// 	delete []m_pkTexturePointer0;		
+// 	delete []m_pkTexturePointer1;			
+// 	delete []m_pkTexturePointer2;			
+// 	delete []m_pkTexturePointer3;			
+// 	delete []m_pkIndexPointer;		
+// 	delete []m_pkColorPointer;		
+// 	
+// 	m_pk2DVertexPointer =	m_pkBakup2DVertexPointer;	
+// 	m_pkVertexPointer =		m_pkBakupVertexPointer;	
+// 	m_pkNormalPointer =		m_pkBakupNormalPointer;		
+// 	m_pkTexturePointer0 = 	m_pkBakupTexturePointer0;		
+// 	m_pkTexturePointer1 = 	m_pkBakupTexturePointer1;			
+// 	m_pkTexturePointer2 = 	m_pkBakupTexturePointer2;			
+// 	m_pkTexturePointer3 = 	m_pkBakupTexturePointer3;			
+// 	m_pkIndexPointer =		m_pkBakupIndexPointer;		
+// 	m_pkColorPointer =		m_pkBakupColorPointer;
+// 	
+// 	m_bCopyedData = false;
 
 }
 
@@ -1278,7 +1352,9 @@ void ZShaderSystem:: AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const V
 
 
 void ZShaderSystem::Waves()
-{
+{	
+	CopyPointerData(VERTEX_POINTER);
+
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		//float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);

@@ -292,6 +292,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void CopyVertexData();
 		void CopyData(void** pkData,int iSize);
 		void CleanCopyedData();
+		void CopyPointerData(int iPointer);
 		
 		//vertex transform funktions
 		void Waves();	

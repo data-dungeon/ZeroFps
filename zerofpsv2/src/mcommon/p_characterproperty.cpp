@@ -1141,13 +1141,10 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(m_iCurrentCharacterState != eWALKING)
 			{
-				cout<<"starting to walk"<<endl;
-				//m_pkAudioSystem->StopAudio(m_iWalkSoundID);
 				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 			{
-				cout<<"is walking"<<endl;
 				m_pkAudioSystem->MoveAudio(m_iWalkSoundID, GetEntity()->GetIWorldPosV());
 			}
 		}
@@ -1155,7 +1152,6 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(m_iCurrentCharacterState == eWALKING)
 			{
-				cout<<"stoped walking"<<endl;
 				m_pkAudioSystem->StopAudio(m_iWalkSoundID);
 			}
 		}	
@@ -1163,11 +1159,8 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		//run sound
 		if(iState == eRUNNING)
 		{
-			cout<<"is runnting"<<endl;
-			
 			if(m_iCurrentCharacterState != eRUNNING)
 			{
-				//m_pkAudioSystem->StopSound(m_iRunSoundID);
 				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
@@ -1186,7 +1179,6 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(m_iCurrentCharacterState != eSWIMMING)
 			{	
-				//m_pkAudioSystem->StopAudio(m_iSwimSoundID);
 				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
