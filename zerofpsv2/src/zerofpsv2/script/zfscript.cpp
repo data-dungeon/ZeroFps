@@ -550,12 +550,12 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 		
 	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
 	
-	// Mï¿½te kolla sï¿½att den global funktion finns. 
-	// Lï¿½er sig fett om den int gï¿½ det!
+	// Måste kolla så att den global funktion finns. 
+	// Låser sig fett om den int gör det!
 	
 	int iType = lua_type(pkScript->m_pkLuaState, 1);
 	
-	//cout<<"rÃ¶va:"<<iType<<endl;
+	//cout<<"röva:"<<iType<<endl;
 	//cout<<"name:"<<lua_typename(pkScript->m_pkLuaState,iType)<<endl;	
 	//cout<<"blub:"<<lua_isnil( pkScript->m_pkLuaState, 1)<<endl;
 	
@@ -611,7 +611,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	*/
 	//cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;
 	
-	//dvoids ultra mega super fix som lÃ¶ser alla jorens problem o kanske problemen pÃ¥ mÃ¥nen ocksÃ¥ men vem vet.
+	//dvoids ultra mega super fix som löser alla jorens problem o kanske problemen på månen också men vem vet.
 	lua_pop(pkScript->m_pkLuaState,  lua_gettop ( pkScript->m_pkLuaState ));
 	
 	//onda vim, dvoid fick cp buffertar om detta togs bort

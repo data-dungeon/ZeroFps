@@ -145,7 +145,7 @@ void MistClient::OnInit()
 
  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
- 		m_pkAudioSys->SetMainVolume(0); // tempgrej fÃ¶r att stÃ¤ga av all audio, finns inget vettigt sett fÃ¶ tillfÃ¤let
+ 		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
 
 }
 

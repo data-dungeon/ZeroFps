@@ -983,7 +983,7 @@ void ZGui::SetRes(int iResX, int iResY)
 
 bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 {
-	if(!m_bMouseLeftPressed && !m_bMouseRightPressed) // 2005 feb 26: lÃ¤gger till fÃ¶r att unvika slÃ¶het!
+	if(!m_bMouseLeftPressed && !m_bMouseRightPressed) // 2005 feb 26: lägger till för att unvika slöhet!
 		return false;
 
 	if(m_bDisableAlphatest)
