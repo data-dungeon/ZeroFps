@@ -27,6 +27,8 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
+
+		m_pkDM->PauseGame(true); 
 	}	
 	else
 	if(strClickName == "HQBn")

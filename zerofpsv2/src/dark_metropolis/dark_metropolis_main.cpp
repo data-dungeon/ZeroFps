@@ -645,7 +645,7 @@ void DarkMetropolis::Input()
 					{
 						if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{					
-							if(i==0)
+							if(i==0 && pkCharProp->GetStats()->m_iLife > 0)
 							{
 								int iNumMoveSounds = pkCharProp->m_vkMoveSounds.size();
 								if(iNumMoveSounds > 0)
@@ -1172,12 +1172,10 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 
 	if(pkEnt)
 	{
-		
-
 		P_DMCharacter* pkCharProp = 
 			(P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter");
 		
-		if(pkCharProp)
+		if(pkCharProp && pkCharProp->GetStats()->m_iLife > 0)
 		{
 			int iNumSelSounds = pkCharProp->m_vkSelectSounds.size();
 			if(iNumSelSounds > 0)

@@ -84,6 +84,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 		ShowWnd("StartNewGameWnd", true);
 		m_pkGui->PlaceWndFrontBack(GetWnd("StartNewGameWnd"), true);
+
+		m_pkDM->PauseGame(false);
 	}
 	else
 	if(strClickName == "LoadNewGameBn")
@@ -116,6 +118,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
+
+		m_pkDM->PauseGame(false);
 	}
 	else
 	if(strClickName == "CreditsBn")

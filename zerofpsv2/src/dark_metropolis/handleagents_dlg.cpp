@@ -20,8 +20,6 @@ CHandleAgents::~CHandleAgents()
 void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 										bool bRMouseBnClick)
 {
-	//InitDlg();
-
 	if(strClickName == "AgentsClose")
 	{
 		LoadDlg("data/script/gui/dm_hq.lua");
@@ -87,6 +85,17 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	else
 	if(strClickName == "SendOutAgentBn")
 	{
+		int MAX_NUM_AGENTS = 5;
+		vector<Entity*> kMemberList;
+		GetAllAgentsInField(kMemberList);
+		if(kMemberList.size() >= MAX_NUM_AGENTS)
+		{
+			// TODO: släng upp någon messagebox här
+			printf("Can't send out agent, already have %i on the field!\n", 
+				MAX_NUM_AGENTS);
+			return;
+		}
+
 		for(unsigned int i=0; i<m_vkCharsInBaseBns.size(); i++)
 		{
 			if(m_vkCharsInBaseBns[i].first->IsChecked())

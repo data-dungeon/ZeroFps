@@ -92,6 +92,20 @@ function GUICreate()
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
+
+	Skin26 = { tex1="dm/final/win_tile.bmp", 
+	 tex2="dm/final/window/win_edge_ver.bmp", 
+	 tex3="dm/final/window/win_edge_hor.bmp", 
+	 tex4="dm/final/window/dm_win_corn.bmp", tex1a="0", 
+	 tex2a="dm/final/window/win_edge_ver_a.bmp", 
+	 tex3a="dm/final/window/win_edge_hor_a.bmp", 
+	 tex4a="dm/final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
+	 borderR=255, borderG=255, borderB=255, bd_size=32, tile=1, trans=0 }
+
+
+	Skin27 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
+	 bkB=92, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -284,15 +298,15 @@ function GUICreate()
 
 
 	CreateWnd(0,"MissionInfoWnd","GamePlayScreen","",800/2-256/2,600/2-256/2,256,256,0)
-	ChangeSkin("MissionInfoWnd","Skin1","Window")
+	ChangeSkin("MissionInfoWnd","Skin26","Window")
 
-	CreateWnd(10,"MissionInfoLabel","MissionInfoWnd","",10,10,200,200,0)
-	ChangeSkin("MissionInfoLabel","Skin4","Label")
+	CreateWnd(10,"MissionInfoLabel","MissionInfoWnd","",10,10,235,190,0)
+	ChangeSkin("MissionInfoLabel","Skin27","Textbox")
 
-	CreateWnd(1,"MissionInfoOK","MissionInfoWnd","OK",256/2-40/2,256-40,40,20,0)
+	CreateWnd(1,"MissionInfoOK","MissionInfoWnd","OK",256/2-96/2,256-40,96,40,0)
 	ChangeSkin("MissionInfoOK","Skin1","Button up")
 	ChangeSkin("MissionInfoOK","Skin2","Button down")
-	ChangeSkin("MissionInfoOK","Skin3","Button focus")
+	ChangeSkin("MissionInfoOK","Skin1","Button focus")
 
 end
 

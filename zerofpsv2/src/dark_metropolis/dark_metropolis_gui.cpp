@@ -237,6 +237,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					ShowWnd("DMStartWnd", false);
 					GUI_NewGame(pkMainWnd);		
 					((CGamePlayDlg*)m_pkGamePlayDlg)->InitDlg();
+					PauseGame(false);
 				}
 			}
 
