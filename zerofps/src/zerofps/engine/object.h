@@ -80,7 +80,7 @@ class ENGINE_API ObjectDescriptor{
 class ENGINE_API Object 
 {
 	private:
-		Object*				m_pkParent;							///< Parent Object.
+		Object*					 m_pkParent;							///< Parent Object.
 		vector<GameMessage>	m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 		
 
@@ -95,8 +95,8 @@ class ENGINE_API Object
 
 		ObjectType			m_iObjectType;						
 		int					m_iUpdateStatus;					
-		int*				m_piDecorationStep;
-		bool				m_bSave;							///< True if this object should save to disk.
+		int*					m_piDecorationStep;
+		bool					m_bSave;							///< True if this object should save to disk.
 		
 		ObjectManager*		m_pkObjectMan;						///< Ptr to object manger.
 		LevelManager* 		m_pkLevelMan;		

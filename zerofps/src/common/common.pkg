@@ -16,7 +16,7 @@
 #include "teleportproperty.h"
 #include "treeidleproperty.h"
 #include "itemproperty.h"
-
+#include "containerproperty.h"
 
 
 

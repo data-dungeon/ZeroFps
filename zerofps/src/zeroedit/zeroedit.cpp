@@ -794,6 +794,7 @@ void ZeroEdit::Input()
 						break;
 					
 					object->GetPos()=m_kDrawPos;
+					object->GetVel().Set(0,0,0);
 					
 					if(m_iRandom){
 						object->GetRot().y=rand()%360;					
@@ -1040,6 +1041,8 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("ContainerProperty", Create_ContainerProperty);
+	pkPropertyFactory->Register("ItemProperty", Create_ItemProperty);
 	pkPropertyFactory->Register("TreeIdleProperty", Create_TreeIdleProperty);
 	pkPropertyFactory->Register("AdaptorSniper", Create_AdaptorSniper);
 	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);

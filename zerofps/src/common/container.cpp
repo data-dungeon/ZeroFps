@@ -1,0 +1,216 @@
+#include "container.h"
+
+Container::Container()
+{
+	m_piGrid	=	NULL;
+	
+	SetSize(8,8);
+
+}
+
+int& Container::GetID(int iX,int iY)
+{
+	return m_piGrid[ (iY * m_iSizeX) + iX ];
+
+}
+
+
+void Container::Clean()
+{
+	m_kObjects.clear();
+	
+	for(int x=0;x<m_iSizeX;x++)
+		for(int y=0;y<m_iSizeY;y++)
+			GetID(x,y) = 0;
+
+}
+
+
+bool Container::CheckFreeSlot(int iX,int iY,int iSizeX,int iSizeY)
+{
+	for(int x=iX;x<(iX+iSizeX);x++)
+		for(int y=iY;y<(iY+iSizeY);y++)
+			if(GetID(x,y) != 0)
+				return false;
+	
+	return true;
+}
+
+
+void Container::SetID(int iX,int iY,int iSizeX,int iSizeY,int iID)
+{
+	for(int x=iX;x<(iX+iSizeX);x++)
+		for(int y=iY;y<(iY+iSizeY);y++)
+			GetID(x,y) = iID;
+}
+
+
+int Container::GetItemPos(Object* pkObject)
+{
+	for(int i=0;i<m_kObjects.size();i++)
+		if(m_kObjects[i] == pkObject)
+			return i;
+			
+	return -1;
+}
+
+
+void Container::SetSize(int iX,int iY)
+{
+	m_iSizeX = iX;
+	m_iSizeY = iY;
+	
+	delete m_piGrid;
+	
+	m_piGrid = new int[iX * iY];
+	
+	Clean();
+	
+	PrintContainer();
+}
+
+
+ItemProperty*	Container::GetItemProperty(Object* pkObject)
+{
+	return static_cast<ItemProperty*>(pkObject->GetProperty("ItemProperty"));
+}
+
+
+bool Container::CheckIfAdded(Object* pkObject)
+{
+	for(int i=0;i<m_kObjects.size();i++)
+		if(m_kObjects[i] == pkObject)
+			return true;
+			
+	return false;
+}
+
+bool Container::GetFreeSlot(int iSizeX,int iSizeY,int& iX,int&iY)
+{
+	for(int x=0;x<m_iSizeX;x++)
+	{
+		for(int y=0;y<m_iSizeY;y++)
+		{
+			if(CheckFreeSlot(x,y,iSizeX,iSizeY))
+			{
+				iX = x;
+				iY = y;
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+
+bool Container::AddItem(Object* pkObject)
+{
+	//dont add if already added
+	if(CheckIfAdded(pkObject))
+		return false;	
+
+	ItemProperty* pkIP = GetItemProperty(pkObject);
+	
+	//dont add if object does not have any itemproperty
+	if(pkIP == NULL)
+		return false;
+	
+	int iX=0;	
+	int iY=0;
+	
+	//get a free slot to put the item
+	if(!GetFreeSlot(pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,iX,iY))
+		return false;
+	
+	//add item to item list
+	m_kObjects.push_back(pkObject);
+
+	//set slot to item ID
+	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
+
+	return true;
+}
+
+bool Container::AddItem(Object* pkObject,int iX,int iY)	
+{
+	//dont add if already added
+	if(CheckIfAdded(pkObject))
+		return false;	
+
+	ItemProperty* pkIP = GetItemProperty(pkObject);
+	
+	//dont add if object does not have any itemproperty
+	if(pkIP == NULL)
+		return false;
+	
+	//check if the slot iX,iY is free
+	if(!CheckFreeSlot(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX))
+		return false;
+	
+	//add item to item list
+	m_kObjects.push_back(pkObject);
+
+	//set slot iX,iY to ID
+	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
+
+	return true;
+}
+
+
+bool Container::RemoveItem(Object* pkObject)
+{
+	//check if added, return false if not
+	if(!CheckIfAdded(pkObject))
+		return false;
+
+	int iID = GetItemPos(pkObject);
+	vector<Object*>::iterator kOit = m_kObjects.begin();
+	
+	//loop trough item list to find the right one
+	for(vector<Object*>::iterator it=m_kObjects.begin();it!=m_kObjects.end();it++)
+	{
+		if( (*it) == pkObject)
+		{
+			kOit = it;
+			break;		
+		}
+	}
+	
+	if(kOit == m_kObjects.end())
+	{
+		cout<<" ERROR THIS SHULD NOT HAPEN"<<endl;
+		return false;
+	}
+	
+	//remove item from item list
+	m_kObjects.erase(kOit);	
+	
+	//loop trough the grid and erase the item
+	for(int x=0;x<m_iSizeX;x++)
+	{
+		for(int y=0;y<m_iSizeY;y++)
+		{
+			if(GetID(x,y) == iID)
+				GetID(x,y) = 0;		
+		}
+	}
+}
+
+
+void Container::PrintContainer()
+{
+	cout<<"-= Container =-"<<endl;
+
+	for(int y=0;y<m_iSizeY;y++)
+	{
+		for(int x=0;x<m_iSizeX;x++)
+		{
+			cout<<GetID(x,y);
+		}
+		cout<<endl;
+	}
+}
+
+
+
