@@ -410,29 +410,24 @@ void DarkMetropolis::Input()
 
 	//check for camera movment
 	float fMx,fMy;
-	bool bMouseMove[4];
 	m_pkInputHandle->UnitMouseXY(fMx,fMy);
-	if(fMx == -0.5) bMouseMove[0] = true; else bMouseMove[0] = false;
-	if(fMx ==  0.5) bMouseMove[1] = true; else bMouseMove[1] = false;
-	if(fMy == -0.5) bMouseMove[2] = true; else bMouseMove[2] = false;
-	if(fMy ==  0.5) bMouseMove[3] = true; else bMouseMove[3] = false;
 
 	if(m_pkCameraEntity)
 	{
 		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
 
 		float s = m_pkFps->GetFrameTime() * 10;
-		
-		if(m_pkInputHandle->VKIsDown("cam_up") || bMouseMove[2] )
+
+		if(m_pkInputHandle->VKIsDown("cam_up") || (fMy == -0.5) )
 			pos += Vector3(-1 * sin(m_fAngle), 0, -1 * cos(m_fAngle)) * s;
 		
-		if(m_pkInputHandle->VKIsDown("cam_down") || bMouseMove[3] )
+		if(m_pkInputHandle->VKIsDown("cam_down") || (fMy ==  0.5) )
 			pos += Vector3(1 * sin(m_fAngle), 0, 1 * cos(m_fAngle)) * s;
 		
-		if(m_pkInputHandle->VKIsDown("cam_left") || bMouseMove[0] )
+		if(m_pkInputHandle->VKIsDown("cam_left") || (fMx == -0.5) )
 			pos += Vector3(-1 * cos((PI*2)-m_fAngle), 0, -1 * sin((PI*2)-m_fAngle)) * s;
 		
-		if(m_pkInputHandle->VKIsDown("cam_right") || bMouseMove[1] )
+		if(m_pkInputHandle->VKIsDown("cam_right") || (fMx ==  0.5) )
 			pos += Vector3(1 * cos((PI*2)-m_fAngle), 0, 1 * sin((PI*2)-m_fAngle)) * s;
 		
 		m_pkCameraEntity->SetWorldPosV(pos);
