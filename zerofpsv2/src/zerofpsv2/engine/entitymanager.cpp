@@ -1972,9 +1972,20 @@ void EntityManager::DeleteZone(int iId)
 bool EntityManager::LoadZones()
 {
 	ZFVFile kFile;
-	if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
+	
+	//if theres a tempworlddirectory try to load zones from there first
+	if(!m_kTempWorldDirectory.empty())
 	{
-		cout<<"Error loading zones"<<endl;
+		if(!kFile.Open((m_kTempWorldDirectory + "/zones.dat").c_str(),0,false))
+			if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
+			{
+				cout<<"Error loading zones"<<endl;				
+				return false;
+			}
+	}	
+	else if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
+	{
+		cout<<"Error loading zones"<<endl;						
 		return false;
 	}
 
@@ -2031,8 +2042,15 @@ bool EntityManager::LoadZones()
 
 bool EntityManager::SaveZones()
 {
-	
-	string filename(m_kWorldDirectory + "/zones.dat");
+	string filename;
+
+	//save in temporary or not?
+	if(!m_kTempWorldDirectory.empty())
+		filename = m_kTempWorldDirectory;
+	else
+		filename = m_kWorldDirectory;	
+		
+	filename+="/zones.dat";
 	
 	cout<<"saving to :"<<filename<<endl;
 	

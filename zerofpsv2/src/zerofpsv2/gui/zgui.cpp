@@ -11,7 +11,7 @@
 #include <queue>
 #include "../basic/globals.h"
 #include "../basic/keys.h"
-#include ".\zgui.h"
+#include "./zgui.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
