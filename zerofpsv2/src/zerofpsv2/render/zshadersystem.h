@@ -269,6 +269,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iForceColorMask;
 		int			m_iForceAlphaTest;
 		int			m_iForceLighting;
+		bool			m_bDisableTU3;
 		
 		//basic		
 		void SetupOpenGL();
@@ -352,6 +353,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void ForceColorMask(int iMask)						{	m_iForceColorMask = iMask;				}
 		void ForceAlphaTest(int iAlphaTest)					{	m_iForceAlphaTest = iAlphaTest;		}		
 		void ForceLighting(int iLight)						{	m_iForceLighting = iLight;				}
+		void ForceTU3Disabled(bool bDisableTU3)			{	m_bDisableTU3 = bDisableTU3;			}
 		
 		//information
 		bool HaveExtension(const string& strExt);

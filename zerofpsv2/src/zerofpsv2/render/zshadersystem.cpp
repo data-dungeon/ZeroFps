@@ -42,6 +42,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iForceColorMask = 	-1;
 	m_iForceAlphaTest =	-1;
 	m_iForceLighting	=	-1;
+	m_bDisableTU3 		=	false;
 	
 	//reset all pointers
 	ResetPointers();
@@ -631,8 +632,10 @@ void ZShaderSystem::SetupPass(int iPass)
 
 void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
-	if(iTU == 3)
-		return;
+	//reserved for shadow's 
+	if(m_bDisableTU3)
+		if(iTU == 3)
+			return;
 		
 
 	switch(iTU)

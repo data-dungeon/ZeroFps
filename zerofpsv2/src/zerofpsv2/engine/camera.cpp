@@ -690,24 +690,31 @@ void Camera::RenderView()
 
 void Camera::DrawShadowedScene()
 {
+	m_pkZShaderSystem->ForceTU3Disabled(true);
+
 	//setup some textures
 	glActiveTextureARB(GL_TEXTURE3_ARB);
+	
 
 	static Matrix4 biasMatrix(	0.5f, 0.0f, 0.0f, 0.0f,
 										0.0f, 0.5f, 0.0f, 0.0f,
 										0.0f, 0.0f, 0.5f, 0.0f,
 										0.5f, 0.5f, 0.5f, 1.0f); //bias from [-1, 1] to [0, 1]
 
-
-	Matrix4 Proj = m_kLightProjMatrix;
-	Matrix4 View = m_kLightViewMatrix;
-	Matrix4 Bias = biasMatrix;	
+	static Matrix4 Proj;
+	static Matrix4 View;
+	static Matrix4 Bias;
+	static Matrix4 textureMatrix;
+	
+	Proj = m_kLightProjMatrix;
+	View = m_kLightViewMatrix;
+	Bias = biasMatrix;	
 
 	View.Transponse();
 	Proj.Transponse();
 	Bias.Transponse();
 
-	Matrix4 textureMatrix=Bias*(Proj*View);									
+	textureMatrix=Bias*(Proj*View);									
 
 	
 	
@@ -775,6 +782,8 @@ void Camera::DrawShadowedScene()
 	//Restore other states
 	//glDisable(GL_LIGHTING);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
+	
+	m_pkZShaderSystem->ForceTU3Disabled(false);
 }
 
 
