@@ -1,4 +1,5 @@
 #include "p_enviroment.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 const float MAX_VOL = 0.25f;
 

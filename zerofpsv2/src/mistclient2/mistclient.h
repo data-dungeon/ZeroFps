@@ -1,22 +1,15 @@
 #ifndef _MISTCLIENT_H_
 #define _MISTCLIENT_H_
 
-#include <iostream>
-#include <cmath>
-#include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
-#include "../zerofpsv2/gui/zguiresourcemanager.h"
-#include "../zerofpsv2/basic/zguifont.h"
 
-#include "../mcommon/si_mistland.h"
-#include "../mcommon/p_enviroment.h"
-#include "../mcommon/p_charactercontrol.h"
-//#include "../mcommon/mlcontainer.h"
 
 class OptionsDlg;
 class ActionMenu;
 class InventoryDlg;
+class Camera;
+class Entity;
 
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 

@@ -6,47 +6,18 @@
 	#define _DONT_MAIN
 #endif
 
-#include <iostream>
-#include <cmath>
-#include <list>
-#include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/engine_systems/mad/mad_modell.h"
-#include "../zerofpsv2/engine/astar.h"
-
-#include "../zerofpsv2/engine_systems/propertys/p_camera.h"
-#include "../zerofpsv2/gui/zgui.h"
 
 #include <vector>
 
-
-#include "../mcommon/p_event.h"
-#include "../mcommon/si_mistland.h"
-#include "../mcommon/p_ml.h"
-#include "../mcommon/p_charstats.h"
-#include "../mcommon/p_item.h"
-#include "../mcommon/p_container.h"
-#include "../mcommon/p_spell.h"
-#include "../mcommon/p_serverinfo.h"
-#include "../mcommon/p_clientcontrol.h"
-#include "../mcommon/p_enviroment.h"
-#include "../mcommon/p_ai.h"
-#include "../mcommon/p_spawn.h"
-
-#include "../mcommon/p_dmhq.h"
-#include "../mcommon/p_dmcharacter.h"
-#include "../mcommon/p_shadowblob.h"
-#include "../mcommon/p_dmgun.h"
-#include "../mcommon/p_dmitem.h"
-#include "../mcommon/p_dmmission.h"
-#include "../mcommon/p_dmclickme.h"
-#include "../mcommon/p_dmshop.h"
-#include "../mcommon/p_car.h"
-
-#include "../mcommon/p_arcadecharacter.h"
-
+#include "../zerofpsv2/engine/application.h"
+#include "../zerofpsv2/gui/zgui.h"
 #include "playerdatabase.h"
 
 
+class Camera;
+class ZSSEnviroment;
+class ZSSMLTime;
+class Entity;
 
 /**	\brief	Da MistServer
 		\ingroup MistServer
@@ -80,7 +51,7 @@ class MistServer :public Application , public ZGuiApp
 		
 		//server stuff
 		Entity*								m_pkServerInfo;
-		P_ServerInfo*						m_pkServerInfoP;
+		//P_ServerInfo*						m_pkServerInfoP;
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		

@@ -1,6 +1,9 @@
 
 #include "mistclient.h"
 #include "gui_optionsdlg.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/engine_systems/common/zshadow.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 extern MistClient	g_kMistClient;
 

@@ -6,6 +6,11 @@
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "guiserverinfo.h"
+#include "../zerofpsv2/engine/entitymanager.h"
+
+
+class Camera;
+class Entity;
 
 //const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
 

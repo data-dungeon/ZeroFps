@@ -5,27 +5,28 @@
   MistServer is the Server of the game MistLands.
 */ 
  
-#include <set> 
-#include <algorithm>
   
 #include "mistserver.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-#include "../zerofpsv2/basic/zguifont.h"
-#include "../mcommon/rulesystem/sendtype.h"
-#include "../zerofpsv2/engine/inputhandle.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
-#include "../zerofpsv2/render/glguirender.h"
-#include "../mcommon/si_dm.h"
-#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
+#include "../mcommon/si_mistland.h"
 #include "../mcommon/ml_netmessages.h"
-#include "../mcommon/p_charactercontrol.h"
-#include "../mcommon/p_characterproperty.h"
-#include "../mcommon/p_fogplane.h"
 #include "../mcommon/zssmltime.h"
+#include "../mcommon/zssenviroment.h"
+#include "../mcommon/p_characterproperty.h"
+#include "../mcommon/p_container.h"
+#include "../mcommon/p_item.h"
+
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+#include "../zerofpsv2/engine_systems/tcs/tcs.h"
+#include "../zerofpsv2/engine/inputhandle.h"
+
 #include "../mcommon/mainmcommon.h"
+
+
 
 using namespace ObjectManagerLua;
  
@@ -44,7 +45,6 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.SetPreLogName("mistserver");
 	g_ZFObjSys.Log_Create("mistserver");
-	m_pkServerInfoP = NULL;
 
 	m_pkEnviroment =	new ZSSEnviroment;
 	m_pkTime = 			new ZSSMLTime;
@@ -244,12 +244,6 @@ void MistServer::OnIdle()
 
  	//m_pkZeroFps->UpdateCamera(); 		
 
-	if(m_pkServerInfoP)
-	{
-		m_pkZeroFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
-		m_pkZeroFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
-	}
-
 	
 	//print current mistlands time
 	m_pkTime->AddTime(m_pkZeroFps->GetFrameTime());	
@@ -411,7 +405,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	NetPacket kNp;
 	Vector3 kStartPos;
-	ClientOrder kOrder;
 
 	unsigned int i;
 	vector<string>	kUsers;
@@ -554,25 +547,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */
 
 
-		case FID_LOCALORDER:
-			string strSo;
-			strSo = kCommand->m_strFullCommand;
-			strSo.erase(0, kCommand->m_kSplitCommand[0].length() + 1);
-			//SendOrder( strSo );	
-			//m_pkConsole->Printf("SO is = %s", strSo.c_str());
-
-			//char szFullCmd[1024];
-			//sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
-			//	m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
-			//cout << "FullCmd " << szFullCmd << endl;
-			
-			P_ClientControl pkClient;
-			string strOrder;
-			kOrder.m_sOrderName = strSo;
-			kOrder.m_iCharacter = -1;
-			cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
-			pkClient.AddServerOrder(kOrder);
-			break;		
+	
 
 	}
 

@@ -2,6 +2,9 @@
 
 #include "mistclient.h"
 #include "gui_optionsdlg.h"
+#include "../zerofpsv2/engine/entitymanager.h"
+#include "../zerofpsv2/engine/inputhandle.h"
+#include "../mcommon/p_ml.h"
 
 extern MistClient	g_kMistClient;
 

@@ -3,6 +3,7 @@
 #include "astar.h"
 #include "zerofps.h"
 #include "../engine_systems/propertys/p_mad.h"
+#include "../engine_systems/propertys/p_tcs.h"
 
 
 P_PfPath::P_PfPath()

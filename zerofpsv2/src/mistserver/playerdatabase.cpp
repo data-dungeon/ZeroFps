@@ -1,8 +1,9 @@
 #include "playerdatabase.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
+#include "../zerofpsv2/basic/zfsystem.h"
+#include "../zerofpsv2/engine/entitymanager.h"
 
 #include "../mcommon/p_characterproperty.h"
-#include "../zerofpsv2/engine_systems/propertys/p_light.h"
 
 PlayerDatabase::PlayerDatabase()
 {
@@ -245,14 +246,7 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 		cp->SetIsPlayerCharacter(true);
 	}
 	
-	/*
-	if(strCharacter == "dvoid")
-	{
-		P_Light* pkLight = (P_Light*)pkEntity->AddProperty("P_Light");
-		pkLight->SetDiffuse(Vector4(-0.5,-0.5,-0.5,1));
-	}
-	*/	
-	 
+ 
 	//save it
 	pkEntity->Save(&kFile);
 	

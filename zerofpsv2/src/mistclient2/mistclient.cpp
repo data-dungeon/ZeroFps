@@ -18,7 +18,8 @@
 #include "../mcommon/p_characterproperty.h"
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
-#include "../mcommon/p_fogplane.h"
+#include "../mcommon/p_enviroment.h"
+#include "../mcommon/p_ml.h"
 #include "../mcommon/p_shadowblob.h"
 #include "actionmenu.h"
 #include "gui_inventory.h"
@@ -83,7 +84,7 @@ void MistClient::OnInit()
 	m_pkAudioSys->SetReferensDistance(0.25);
 
 	//init mistland script intreface
-	MistLandLua::Init(m_pkEntityManager,m_pkScript);
+	//MistLandLua::Init(m_pkEntityManager,m_pkScript);
 
    // init gui script intreface
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);

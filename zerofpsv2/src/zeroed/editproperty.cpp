@@ -1,5 +1,7 @@
 #include "zeroed.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
+#include "../zerofpsv2/engine/zerofps.h"
+#include "../zerofpsv2/engine/inputhandle.h"
 
 bool ZeroEd::UpdatePropertyList(int iID)
 {

@@ -1,5 +1,7 @@
 #include	"mistclient.h"
 #include "gui_inventory.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 extern MistClient	g_kMistClient;
 

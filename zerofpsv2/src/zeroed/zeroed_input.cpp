@@ -2,6 +2,8 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../zerofpsv2/engine/inputhandle.h"
+#include "../zerofpsv2/engine/zerofps.h"
 
 vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 {

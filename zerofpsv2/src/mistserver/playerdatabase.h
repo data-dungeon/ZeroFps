@@ -2,9 +2,11 @@
 #define _PLAYERDATABASE_H_
 
 
-#include "../zerofpsv2/engine/entitymanager.h"
-#include "../zerofpsv2/basic/zfsystem.h"
 #include <vector>
+#include <string>
+
+class EntityManager;
+class Entity;
 
 using namespace std;
 

@@ -1,5 +1,6 @@
 #include "mistclient.h"
 #include "gui_optionsdlg.h"
+#include "../zerofpsv2/engine/zerofps.h"
 #include "gui_inventory.h"
 
 extern MistClient g_kMistClient;

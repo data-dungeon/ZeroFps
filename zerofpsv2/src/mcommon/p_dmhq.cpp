@@ -1,5 +1,6 @@
 #include "p_dmhq.h" 
 #include "../zerofpsv2/engine/p_pfpath.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 P_DMHQ::P_DMHQ()
 {

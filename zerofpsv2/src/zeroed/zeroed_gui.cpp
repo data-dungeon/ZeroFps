@@ -1,6 +1,7 @@
 #include "zeroed.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/engine/zerofps.h"
 
 void ZeroEd::SetupGuiEnviroment()
 {

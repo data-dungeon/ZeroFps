@@ -2,6 +2,7 @@
 #include "gui_optionsdlg.h"
 #include "actionmenu.h"
 #include "gui_inventory.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 extern MistClient	g_kMistClient;
 

@@ -7,6 +7,8 @@
 #include "p_dmhq.h"
 #include "p_dmclickme.h"
 
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+
 // ---- DMCharacterStats
 DMCharacterStats::DMCharacterStats()
 {

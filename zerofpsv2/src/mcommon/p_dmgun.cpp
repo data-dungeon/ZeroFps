@@ -1,6 +1,8 @@
 #include "p_dmgun.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 
 P_DMGun::P_DMGun()
 {

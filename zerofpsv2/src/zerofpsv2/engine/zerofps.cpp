@@ -23,7 +23,7 @@
 
 
 // #include "../engine_systems/common/zshadow.h"
-// #include "../engine_systems/tcs/tcs.h"
+#include "../engine_systems/tcs/tcs.h"
 
 #define	ZF_MIN_PLAYERS	1
 #define	ZF_DEF_PLAYERS	8

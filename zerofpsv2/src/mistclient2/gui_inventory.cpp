@@ -2,6 +2,9 @@
 #include "mistclient.h"
 #include "gui_inventory.h"
 #include "../mcommon/p_characterproperty.h"
+#include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/engine/inputhandle.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 extern MistClient	g_kMistClient;
 

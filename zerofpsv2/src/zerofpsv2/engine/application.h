@@ -2,12 +2,9 @@
 #define _ENGINE_APPLICATION_H_
 
 #include "engine_x.h"
-#include "zerofps.h"
-#include "entitymanager.h"
-#include "../engine_systems/tcs/tcs.h"
-#include "../basic/zfvfs.h"
-#include "inputhandle.h"
-#include "../engine_systems/audio/zfaudiosystem.h"
+
+#include "../basic/zfsubsystem.h"
+#include "network.h"
 
 using namespace std;
 
@@ -21,6 +18,26 @@ class ZShadow;
 class Tcs;
 class ZGuiResourceManager;
 class ZGui;
+class ZFAudioSystem;
+class ZFBasicFS;
+class ZFVFileSystem;
+class TextureManager;
+class PropertyFactory;
+class Console;
+class ZGui;
+class FileIo;
+class Light;
+class EntityManager;
+class Render;
+class ZFIni;
+class ZFResourceDB;
+class ZShadow;
+class ZFScriptSystem;
+class ZShaderSystem;
+class InputHandle;
+
+//class IPaddress;
+class NetPacket;
 
 /** \brief	The application object.
 	 \ingroup Engine
@@ -51,34 +68,30 @@ class ENGINE_API Application : public ZFSubSystem {
 	public:
 		static Application*	m_pkApp;												///< The one and Only App Instance.
 		
-		int m_iWidth,m_iHeight,m_iDepth;
-		char* m_pTitle;																///< Windows Title.
-		
+		int				m_iWidth,m_iHeight,m_iDepth;
+		char*				m_pTitle;																///< Windows Title.		
 		InputHandle*	m_pkInputHandle;
-		bool	m_bIsEditor;
+		bool				m_bIsEditor;
 
 		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
 		void SetTitle(string strTitle);		
 		
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
 
-		virtual void OnInit(void)			{};
-		virtual void OnIdle(void)			{};
-		virtual void OnHud(void)			{};
-		virtual void OnSystem(void)		{};
-
-		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy) 				{return true;};
+		virtual void OnInit(void)		{};
+		virtual void OnIdle(void)		{};
+		virtual void OnHud(void)		{};
+		virtual void OnSystem(void)	{};
+		virtual void RenderInterface(void) {};		
+		
+		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy) {return true;};
 		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)	{};
-		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)			{};
-		virtual void OnClientConnected()			{};
-		virtual void OnDisconnect(int iConnectionID)				{};
-
-		virtual void RenderInterface(void)		{};
-
-		virtual void OnServerStart(void)			{};
-		virtual void OnClientStart(void)			{};
-
-		virtual void OnNetworkMessage(NetPacket *PkNetMessage) 			{};
+		virtual void OnServerClientPart(ZFClient* pkClient,int iConID) {};
+		virtual void OnClientConnected() {};
+		virtual void OnDisconnect(int iConnectionID) {};
+		virtual void OnServerStart(void) {};
+		virtual void OnClientStart(void)	{};
+		virtual void OnNetworkMessage(NetPacket *PkNetMessage) {};
 
 		void SendAppMessage(NetPacket* pkNet);
 };
