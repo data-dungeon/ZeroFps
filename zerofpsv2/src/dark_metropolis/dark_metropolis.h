@@ -102,7 +102,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);		
-		Entity*	GetTargetObject();			
+		Entity*	GetTargetObject(bool bZonesOnly=false);			
 		
 		void Input();
 		void RegisterPropertys();

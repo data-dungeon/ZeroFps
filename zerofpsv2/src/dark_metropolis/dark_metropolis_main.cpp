@@ -173,7 +173,7 @@ void DarkMetropolis::RenderInterface(void)
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GEQUAL, 0.1);
 
-			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
+			m_pkRender->Quad (pkEnt->GetIWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
 
 			glDisable(GL_ALPHA_TEST);
 		}	
@@ -193,7 +193,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw select square
 	if(m_bSelectSquare)
 	{				
-		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.2,m_kSelectSquareStop.z),Vector3(0,1,0));								
+		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.5,m_kSelectSquareStop.z),Vector3(0,1,0));								
 	}
 }
 
@@ -467,7 +467,7 @@ void DarkMetropolis::Input()
 	{
 		if(!m_bSelectSquare)
 		{
-			Entity* pkEnt = GetTargetObject();
+			Entity* pkEnt = GetTargetObject(true);
 		
 			if(pkEnt)
 			{
@@ -478,7 +478,7 @@ void DarkMetropolis::Input()
 		}
 		else
 		{
-			Entity* pkEnt = GetTargetObject();
+			Entity* pkEnt = GetTargetObject(true);
 			
 			if(pkEnt)
 			{
@@ -1016,7 +1016,7 @@ Vector3 DarkMetropolis::Get3DMousePos(bool m_bMouse=true)
 	return dir;
 }
 
-Entity* DarkMetropolis::GetTargetObject()
+Entity* DarkMetropolis::GetTargetObject(bool bZonesOnly)
 {
 	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir;
@@ -1038,6 +1038,10 @@ Entity* DarkMetropolis::GetTargetObject()
 		//objects that should not be clicked on (special cases)
 		if(kObjects[i]->GetEntityID() <100000)
 			continue;
+		
+		if(bZonesOnly)  //zones only, skip if its not a zone
+			if(!kObjects[i]->IsZone())
+				continue;
 		
 		//-------------
 		
