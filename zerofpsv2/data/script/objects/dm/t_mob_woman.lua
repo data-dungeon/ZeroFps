@@ -17,13 +17,14 @@ end
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
 	SetEntityVar(SIGetSelfID(), "g_WomenLife", life)
+	SetEntityVar(SIGetSelfID(), "Waypoint", 0);
 end
 
 function Init()
 	SetCharStats(SIGetSelfID(), 0, 20);
 	SetCharStats(SIGetSelfID(), 1, 20);
 
-	SetMoveSpeed (SIGetSelfID(), 6);
+	SetMoveSpeed (SIGetSelfID(), 6.5);
 	SetTeam (SIGetSelfID(), 4);
 	SetRunAnim (SIGetSelfID(), "panic");
 	PlayAnim(SIGetSelfID(), "idle");
@@ -32,37 +33,37 @@ function Init()
 	pos[1] = pos[1] + Random(6)-3;
 	pos[3] = pos[3] + Random(6)-3;
 
-	MakePathFind(SIGetSelfID(),pos);
+	MakePathFind(SIGetSelfID(),GetNextWaypoint());
 end
 
 function HeartBeat()
 
-	if HavePath(SIGetSelfID()) == 1 then
+	SelfID = SIGetSelfID();
+
+	if HavePath(SelfID) == 1 then
 		return
 	end
 
 
-	if ( IsDead(SIGetSelfID()) == 1) then
-		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
+	if ( IsDead(SelfID) == 1) then
+		AddToEntityVar (SelfID, "deadtime", 1);
 
-		if GetEntityVar(SIGetSelfID(), "deadtime") > 9 then
-			Delete(SIGetSelfID());
+		if GetEntityVar(SelfID, "deadtime") > 9 then
+			Delete(SelfID);
 		end
 	
 		return
 	end
 
-	-- have no pathfind, see if person has arrived at location
-	local pos = {GetVar("MobX"), 0, GetVar("MobZ")};
 
-	if 2 == 1 then
+	AddToEntityVar(SelfID, "Waypoint", 1);
+
+
+	if GetEntityVar(SelfID, "Waypoint") == 5 then
 		AddToVar("MobSuccess", 1);
-		Delete (SIGetSelfID());	
+		Delete (SelfID);	
 	else
-		pos[1] = pos[1] + Random(6)-3;
-		pos[3] = pos[3] + Random(6)-3;
-
-		MakePathFind(SIGetSelfID(),pos);
+		MakePathFind(SelfID, GetNextWaypoint());
 	end
 	
 
@@ -77,4 +78,33 @@ function Dead()
 end
 
 function Panic()
+end
+
+function GetNextWaypoint()
+	local pos = {0,0,0};
+	local waypoint = GetEntityVar(SIGetSelfID(), "Waypoint");
+
+	if waypoint == 0 then
+		pos[1] = GetVar("Mob_WP1_X");
+		pos[2] = GetVar("Mob_WP1_Y");
+		pos[3] = GetVar("Mob_WP1_Z");
+	elseif waypoint == 1 then
+		pos[1] = GetVar("Mob_WP2_X");
+		pos[2] = GetVar("Mob_WP2_Y");
+		pos[3] = GetVar("Mob_WP2_Z");
+	elseif waypoint == 2 then
+		pos[1] = GetVar("Mob_WP3_X");
+		pos[2] = GetVar("Mob_WP3_Y");
+		pos[3] = GetVar("Mob_WP3_Z");
+	elseif waypoint == 3 then
+		pos[1] = GetVar("Mob_WP4_X");
+		pos[2] = GetVar("Mob_WP4_Y");
+		pos[3] = GetVar("Mob_WP4_Z");
+	elseif waypoint == 4 then
+		pos[1] = GetVar("Mob_WP5_X");
+		pos[2] = GetVar("Mob_WP5_Y");
+		pos[3] = GetVar("Mob_WP5_Z");
+	end
+
+	return pos;
 end
