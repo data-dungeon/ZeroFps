@@ -215,6 +215,14 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	extgl_Initialize();
 #endif
 
+	glFogCoordfEXT = NULL;	
+	glFogCoordfEXT  =  (PFNGLFOGCOORDFEXTPROC) glXGetProcAddressARB((const GLubyte *)"glFogCoordfEXT");
+	
+	if(!glFogCoordfEXT){
+		cout<<"No glFogCoordEXT support =("<<endl;
+		exit(1);	
+	}
+
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);

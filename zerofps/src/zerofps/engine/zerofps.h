@@ -25,6 +25,8 @@ enum enginestates
 	state_pause
 };
 
+
+
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
 		SDL_Surface* m_pkScreen;		
@@ -43,6 +45,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 	
 		vector<string>	AppArguments;
 
+		PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
+
 	public:
 		Application* m_pkApp;						//application
 		CmdSystem* m_pkCmd;							//realtime variable handler
@@ -57,6 +61,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		CollisionManager*  m_pkCollisionMan;
 
 		vector<Core>		akCoreModells;
+				
 		
 		int LoadMAD(const char* filename);
 		void ClearMAD(void);

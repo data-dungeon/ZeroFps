@@ -123,7 +123,7 @@ void Test::OnInit(void) {
 	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);	
 	
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(340,250,780);		
+	m_pkPlayer->GetPos()=Vector3(340,25,780);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
@@ -131,11 +131,29 @@ void Test::OnInit(void) {
 	//add a collisionproperty for our heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
 	pkCollisionMan->Add(hm);
+
+
+/*	  
+	float fogColor[4] = {0.8f, 0.8f, 0.8f, 1.0f};
+
+  glEnable(GL_FOG);                       // Turn on fog
+  glFogi(GL_FOG_MODE, GL_LINEAR);         // Set the fog mode to LINEAR (Important)
+  glFogfv(GL_FOG_COLOR, fogColor);        // Give OpenGL our fog color
+  glFogf(GL_FOG_START, 0.0);              // Set the start position for the depth at 0
+  glFogf(GL_FOG_END, 50.0);               // Set the end position for the detph at 50
+*/
+
 }
+
+
 
 
 void Test::OnIdle(void) {
 //	m_pkPlayer->GetPos().print();
+
+//	glFogCoordfEXT(-20);
+	
+
 
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
@@ -157,8 +175,8 @@ void Test::OnIdle(void) {
 	}
 
 	//pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
-	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
-
+	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
+//	pkRender->DrawSimpleWater(Vector3(0,-5,0),Vector4(.5,.5,.5,.99),1024,pkTexMan->Load("file:../data/textures/water3.bmp",0));	
 	
 	input();
 	float z=pkFps->GetCam()->GetPos().z;
@@ -170,6 +188,10 @@ void Test::OnIdle(void) {
 }
 
 void Test::OnHud(void) {	
+	glPushAttrib(GL_LIGHTING_BIT);
+	
+	glDisable(GL_LIGHTING);
+
 	pkRender->SetFont("file:../data/textures/text/console.tga");
 	fpsupdate++;
 	if(fpsupdate>100){	
@@ -185,6 +207,8 @@ void Test::OnHud(void) {
 	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkPlayer->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
 	
 	glDisable(GL_ALPHA_TEST);
+	
+	glPopAttrib();
 }
 
 

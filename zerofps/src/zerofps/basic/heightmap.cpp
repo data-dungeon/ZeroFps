@@ -41,12 +41,9 @@ float HeightMap::Height(float x,float z) {
 	float bp,xp,zp;
 
 	
-//	cout<<"HEIGHT "<<lx<<" "<<lz<< " "<<ox<<" "<<oz<<endl;
-	
-	
 	//are we on the over or under polygon in the tile
 	float ry=(1.0+ox*-1.0);
-//	cout<< ry<<endl;
+
 	if(oz>ry){//over left
 		bp=verts[(lz+1)*m_iHmSize+(lx+1)].height;
 		xp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;
@@ -59,10 +56,7 @@ float HeightMap::Height(float x,float z) {
 		zp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;				
 	}	
 
-//	float height=bp+m_kPosition.y+(xp*ox)+(zp*oz);
-//	cout<<"::::: > "<<xp<<" "<<zp<<" "<<bp<<" "<<"Hegiht: "<<height<<" x" <<(xp*ox)<<" y"<<(zp*oz)<<endl;
-	return bp+m_kPosition.y+(xp*ox)+(zp*oz);
-	
+	return bp+m_kPosition.y+(xp*ox)+(zp*oz);	
 }
 
 Vector3 HeightMap::Tilt(float x,float z) {
@@ -85,23 +79,17 @@ Vector3 HeightMap::Tilt(float x,float z) {
 	
 	float ry=(1.0+ox*-1.0);
 	if(oz>ry){
-		
+//		cout<<"UPP"<<endl;		
 		v1=Vector3(1,(verts[(lz+1)*m_iHmSize+(lx+1)].height)	-(verts[(lz+1)*m_iHmSize+(lx)].height) ,0);
 		v2=Vector3(0,(verts[(lz+1)*m_iHmSize+(lx+1)].height)	-(verts[(lz)*m_iHmSize+(lx+1)].height) ,1);	
 		
-//		v1=Vector3(1,(verts[(lz+1)*m_iHmSize+(lx)].height)	-(verts[(lz+1)*m_iHmSize+(lx+1)].height) ,0);		
-//		v2=Vector3(0,(verts[(lz)*m_iHmSize+(lx+1)].height)	-(verts[(lz+1)*m_iHmSize+(lx+1)].height) ,1);	
 		n1=v2.Cross(v1);			
-//		cout<<"UPP"<<endl;
 	}else {
-//		v1=Vector3(0,(verts[(lz)*m_iHmSize+(lx)].height)	-(verts[(lz+1)*m_iHmSize+(lx)].height) ,1);
-//		v2=Vector3(1,(verts[(lz)*m_iHmSize+(lx)].height)	-(verts[(lz)*m_iHmSize+(lx+1)].height) ,0);	
-		
+//		cout<<"DOWN"<<endl;		
 		v1=Vector3(0,(verts[(lz+1)*m_iHmSize+(lx)].height)	-(verts[(lz)*m_iHmSize+(lx)].height) ,1);
 		v2=Vector3(1,(verts[(lz)*m_iHmSize+(lx+1)].height)	-(verts[(lz)*m_iHmSize+(lx)].height) ,0);		
 	
 		n1=v1.Cross(v2);			
-//		cout<<"DOWN"<<endl;
 	}
 	
 	n1.Normalize();
@@ -113,86 +101,6 @@ void HeightMap::SetTileSet(char* acTileSet) {
 	strcpy(m_acTileSet,acTileSet);
 	
 }
-
-/*
-void HeightMap::MakeQuadTree() {
-	m_kCenter=CreateQuad(m_iHmSize/2,m_iHmSize/2,m_iHmSize,0,true);
-	
-	cout<<"Generation of Quad-tree is complete"<<endl;
-
-}
-
-
-HM_vert* HeightMap::CreateQuad(int x,int z,int width,int step,bool more) {
-	if(more==true)		
-		cout<<"adding quad "<<x<<" "<<z;
-	else
-		cout<<"adding vertex "<<x<<" "<<z;
-	cout<<" step:"<<step<<endl;
-
-
-	step++;
-	HM_vert *nVert=new HM_vert;	
-	nVert->height=GetVert(x,z)->height;
-	nVert->normal=GetVert(x,z)->normal;
-	for(int i=0;i<8;i++) 				
-		nVert->childs[i]=NULL;
-	
-	//check if we are on an edge
-	if(x<1 || x>m_iHmSize-1 || z<0 || z>m_iHmSize-1){
-		cout<<"neer edge"<<endl;
-		return nVert;   
-	}	
-	
-	//check if we have reached max child steps
-	if(step>m_iMaxSteps) {
-		cout<<"max steps reached"<<endl;
-		return nVert;
-	}
-	
-	
-	if(more) {
-		int i=0;
-		for(int q=-1;q<2;q++){
-			for(int w=-1;w<2;w++) {
-				if(q==0 && w==0) {
-//					nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,false);
-				} else {			
-					if(BoxTest(x+(width/4)*w,z+(width/4)*q,width))
-						nVert->childs[i]=CreateQuad(x+(width/4)*w,z+(width/44)*q,width/2,step,true);
-					else
-						nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,step,false);
-					i++;
-				}
-			}
-		}		
-	}
-	return nVert;
-}
-
-bool HeightMap::BoxTest(int x,int z,int width) {
-	float total=0;
-	for(int q=-1;q<2;q++){
-		for(int w=-1;w<2;w++) {
-			if(q==0 && w==0) {
-			
-			}else {
-				if((GetVert(x,z)->height-GetVert(x+w,z+w)->height)<0)
-					total-=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);					
-				else
-					total+=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);
-			}
-		}
-	}
-	cout<<"TOTAL FOR "<<x<<" "<<z<<" is "<<total<<endl;
-	
-	//check if the diference is more then the treshold
-	if(total>m_iBoxTresh)
-		return true;
-	else
-		return false;
-}
-*/
 
 
 void HeightMap::GenerateNormals() {
@@ -258,6 +166,7 @@ bool HeightMap::Load(char* acFile) {
 	return true;
 }
 
+
 bool HeightMap::Save(char* acFile) {
 	cout<<"Save heightmap to file "<<acFile<<endl;
 	
@@ -313,8 +222,6 @@ void HeightMap::Random() {
 		verts[y*m_iHmSize+x].height=(rand()%height*4)/10.0;
 	}
 	
-	
-	
 	float med;
 	for(int l=0;l<smooth;l++) {
 		for(int y=1;y<m_iHmSize-1;y++) {
@@ -334,11 +241,8 @@ void HeightMap::Random() {
 			}
 		}
 	}
-	
-//	for(int i=0;i<m_iHmSize*m_iHmSize;i++)
-//		verts[i].height+=(rand()%1000)/5000.0;
-	
 }
+
 
 HM_vert* HeightMap::GetVert(int x,int z) {
 //	cout<<"hora:"<<z*m_iHmSize+x<<endl;
@@ -377,10 +281,10 @@ void HeightMap::GenerateTextures() {
 				if(height<5) {  //if we are very low draw nice sand =)
 					GetVert(x,z)->texture=0;
 					GetVert(x,z)->color=Vector3(.80,.70,.60);
-					if(height<0.00005) {//Make a bix bad hole
-						GetVert(x,z)->height=-80;
-						GetVert(x,z)->color=Vector3(.001,.001,.51);
-						GetVert(x,z)->normal=Vector3(0,0,0);
+					if(height<2) {//Make a big bad hole
+						GetVert(x,z)->height-=10 + (1 - GetVert(x,z)->height)*10;
+//						GetVert(x,z)->color=Vector3(.001,.001,.51);
+						GetVert(x,z)->normal=Vector3(0,1,0);
 					}
 				} else {//else i like som grass
 					GetVert(x,z)->texture=1;
@@ -470,3 +374,82 @@ Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
     }
 }
 
+/*
+void HeightMap::MakeQuadTree() {
+	m_kCenter=CreateQuad(m_iHmSize/2,m_iHmSize/2,m_iHmSize,0,true);
+	
+	cout<<"Generation of Quad-tree is complete"<<endl;
+
+}
+
+
+HM_vert* HeightMap::CreateQuad(int x,int z,int width,int step,bool more) {
+	if(more==true)		
+		cout<<"adding quad "<<x<<" "<<z;
+	else
+		cout<<"adding vertex "<<x<<" "<<z;
+	cout<<" step:"<<step<<endl;
+
+
+	step++;
+	HM_vert *nVert=new HM_vert;	
+	nVert->height=GetVert(x,z)->height;
+	nVert->normal=GetVert(x,z)->normal;
+	for(int i=0;i<8;i++) 				
+		nVert->childs[i]=NULL;
+	
+	//check if we are on an edge
+	if(x<1 || x>m_iHmSize-1 || z<0 || z>m_iHmSize-1){
+		cout<<"neer edge"<<endl;
+		return nVert;   
+	}	
+	
+	//check if we have reached max child steps
+	if(step>m_iMaxSteps) {
+		cout<<"max steps reached"<<endl;
+		return nVert;
+	}
+	
+	
+	if(more) {
+		int i=0;
+		for(int q=-1;q<2;q++){
+			for(int w=-1;w<2;w++) {
+				if(q==0 && w==0) {
+//					nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,false);
+				} else {			
+					if(BoxTest(x+(width/4)*w,z+(width/4)*q,width))
+						nVert->childs[i]=CreateQuad(x+(width/4)*w,z+(width/44)*q,width/2,step,true);
+					else
+						nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,step,false);
+					i++;
+				}
+			}
+		}		
+	}
+	return nVert;
+}
+
+bool HeightMap::BoxTest(int x,int z,int width) {
+	float total=0;
+	for(int q=-1;q<2;q++){
+		for(int w=-1;w<2;w++) {
+			if(q==0 && w==0) {
+			
+			}else {
+				if((GetVert(x,z)->height-GetVert(x+w,z+w)->height)<0)
+					total-=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);					
+				else
+					total+=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);
+			}
+		}
+	}
+	cout<<"TOTAL FOR "<<x<<" "<<z<<" is "<<total<<endl;
+	
+	//check if the diference is more then the treshold
+	if(total>m_iBoxTresh)
+		return true;
+	else
+		return false;
+}
+*/

@@ -33,7 +33,7 @@ void MadProperty::Update() {
 	UpdateAnimation();
 
 	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
-	int iFrame = fCurrentTime / 0.1;
+	int iFrame = int(fCurrentTime / 0.1);
 	
 	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
 	pkCore->ClearReplaceTexture();

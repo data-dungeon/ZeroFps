@@ -2,11 +2,13 @@
 #define _ZFPSGL_H_
 
 #ifdef _WIN32
+// Bloody Windows
 #include <GL/extgl.h>
 
 #else
-// Bloody Linux.
+// Sweet Linux.
 #include <GL/gl.h>
+#include <GL/glx.h>
 #endif
 
 #include "GL/glu.h"

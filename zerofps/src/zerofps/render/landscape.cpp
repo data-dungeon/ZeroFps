@@ -131,7 +131,9 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glPopMatrix();
 }
 
-void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
+void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture) {
+	//recomended color  .3,.3,.4,.99;
+	
 	glPushMatrix();
 	
 	glDisable(GL_FOG);	
@@ -142,11 +144,13 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	glEnable(GL_BLEND);
 		
-	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp",0);
+//	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp",0);
+	m_pkTexMan->BindTexture(iTexture);
 
 	float tx=SDL_GetTicks()/60000.0;
 	glBegin(GL_QUADS);
-		glColor4f(.3,.3,.4,.99);
+		glColor4fv(&kColor[0]);
+//		glColor4f(.3,.3,.4,.99);
 		glNormal3f(0,1,0);
 		glTexCoord2f(tx,0);
 		glVertex3f(kPosition.x,kPosition.y,kPosition.z);
