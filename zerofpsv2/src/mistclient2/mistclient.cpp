@@ -834,13 +834,15 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				m_pkInventoryDlg->UpdateContainer(kItemList);
 			}
 			else
-			if(iContainerType == eHead)  //head 
+			//if(iContainerType == eHead)  //head 
 			{
 				if(bOpen)
 				{
 					// this is the first container in the eqipment screen, lets open eqipment
 					m_pkEquipmentDlg->Open(); 			
 				}
+
+				m_pkEquipmentDlg->Update(iContainerID, iContainerType, kItemList );
 			}
 				
 			break;

@@ -14,6 +14,14 @@ class Entity;
 #include <string>
 using namespace std;
 
+enum InventoryDropTarget
+{
+	DropTarget_Inventory,
+	DropTarget_Container,
+	DropTarget_Ground,
+	DropTarget_EquipmentSlot,
+};
+
 class InventoryDlg
 {
 public:
@@ -34,9 +42,13 @@ public:
 		return m_pkInventoryWnd->IsVisible(); 
 	}
 	
+	int GetInventoryContainerID();
+	int GetActiveContainerID();
+	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);
 	void OpenContainerWnd(int id, char slots_x, char slots_y);
 	void CloseContainerWnd();
 	void CloseSplitStockWnd(bool bExecuteSplit=false);
+	Point SlotFromScreenPos(int x, int y, bool bInventory);
 
 	int m_iItemUnderCursor; // används av inventoryt för att avgöra vilket item som finns under 
 									// cursorn efter att ha klickat på ett object i världen.
@@ -48,13 +60,7 @@ public:
 	
 private:
 
-	enum InventoryDropTarget
-	{
-		DropTarget_Inventory,
-		DropTarget_Container,
-		DropTarget_Ground,
-		DropTarget_EquipmentSlot,
-	};
+
 
 	struct ITEM_SLOT
 	{	
@@ -75,7 +81,7 @@ private:
 	void RebuidContainerGrid(char slots_horz, char slots_vert);
 	int TestForCollision(int iTestSlot, bool bInventory); // returns -1 if no collision or index to list eitherwise
 	int TestForCollision(Point test_slot, Point test_size, bool bInventory); // returns -1 if no collision or index to list eitherwise
-	Point SlotFromScreenPos(int x, int y, bool bInventory);
+	
 	Point SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory);
 	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
 	pair<int, bool> GetItemFromScreenPos(int x, int y); // Returns a index and a bool, 
@@ -84,8 +90,7 @@ private:
 	void PickUpFromGround(bool bLeftButtonPressed, int mx, int my);
 	void PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int my);
 	void OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory);
-	int GetInventoryContainerID();
-	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);
+	
 	void SetSelectionBorder(int iIndex, bool bInventory, bool bRemove);
 	void OpenSplitStockWnd();
 	

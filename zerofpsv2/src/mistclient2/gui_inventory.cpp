@@ -346,6 +346,13 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	
 	(*m_ppCursorSkin)->m_unBorderSize = 0;
 
+
+	if(bLeftButtonPressed)
+	{
+		if(g_kMistClient.m_pkEquipmentDlg->GetSlotContainerID(mx, my) != -1)
+			(*m_ppCursorSkin)->m_unBorderSize = 1;
+	}
+
 	if(m_kMoveSlot.m_iIndex != -1)
 		if( (m_pkInventoryWnd->IsVisible() && m_pkInventoryWnd->GetScreenRect().Inside(mx,my) ||
 		    (m_pkContainerWnd->IsVisible() && m_pkContainerWnd->GetScreenRect().Inside(mx,my) )) ) 
@@ -707,7 +714,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	pkVector = (m_kMoveSlot.bIsInventoryItem) ? &m_vkInventoryItemList : &m_vkContainerItemList;	
 	iItemID = (*pkVector)[m_kMoveSlot.m_iIndex].iItemID;
 	bool bIsSplitSlot = (*pkVector)[m_kMoveSlot.m_iIndex].iStackSize > 1;
-	bool bTryExecuteSlplit = false;
+	bool bTryExecuteSlplit = false, bEquip = false;
 
 	ZGuiWnd* pkMoveWnd = (*pkVector)[m_kMoveSlot.m_iIndex].pkWnd;
 
@@ -725,6 +732,16 @@ void InventoryDlg::OnDropItem(int mx, int my)
 			iTarget = m_iActiveContainerID;
 		else
 			iTarget = -1;
+
+		if(eDropTarget == DropTarget_EquipmentSlot)
+		{
+			int iTarget = g_kMistClient.m_pkEquipmentDlg->GetSlotContainerID(mx, my);
+			if(iTarget != -1)
+			{
+				g_kMistClient.SendMoveItem(iItemID, iTarget, 0, 0, -1);
+				bEquip = true;
+			}
+		}
 	}
 	else
 	{
@@ -761,19 +778,22 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		}
 	}
 
-	if(bTryExecuteSlplit == false)
+	if(bEquip == false)
 	{
-		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
-	}
-	else
-	{		
-		// Show icon again and move back before split.
-		pkMoveWnd->Show();
-		pkMoveWnd->SetPos(m_kItemWndPosBeforeMove.x, 
-			m_kItemWndPosBeforeMove.y, false, true);
+		if(bTryExecuteSlplit == false)
+		{
+			g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
+		}
+		else
+		{		
+			// Show icon again and move back before split.
+			pkMoveWnd->Show();
+			pkMoveWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+				m_kItemWndPosBeforeMove.y, false, true);
 
-		// Open split window.
-		OpenSplitStockWnd();
+			// Open split window.
+			OpenSplitStockWnd();
+		}
 	}
 
 	// Show normal cursor again.
@@ -932,17 +952,25 @@ int InventoryDlg::GetInventoryContainerID()
 	return -1;
 }
 
-InventoryDlg::InventoryDropTarget InventoryDlg::GetDropTargetFromScreenPos(int mx, int my)
+int InventoryDlg::GetActiveContainerID()
 {
-	bool bDropInInventory = m_pkInventoryWnd->IsVisible() && 
+	return m_iActiveContainerID;
+}
+
+InventoryDropTarget InventoryDlg::GetDropTargetFromScreenPos(int mx, int my)
+{
+	bool bDropInInventory = m_pkInventoryWnd && m_pkInventoryWnd->IsVisible() && 
 		m_pkInventoryWnd->GetScreenRect().Inside(mx, my);
 
-	bool bDropInContainer = m_pkContainerWnd->IsVisible() && 
+	bool bDropInContainer = m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
 		m_pkContainerWnd->GetScreenRect().Inside(mx, my);
 
-	int iSlotType = g_kMistClient.m_pkEquipmentDlg->GetSlot(mx, my, true);
+	int iSlotType = -1;
+	
+	if(g_kMistClient.m_pkEquipmentDlg)
+		iSlotType = g_kMistClient.m_pkEquipmentDlg->GetSlotType(mx, my);
 
-	bool bDropInEuipmentDlg = (iSlotType == EqS_None) ? false : true;
+	bool bDropInEuipmentDlg = (iSlotType == -1) ? false : true;
 	
 	if(bDropInInventory == true && bDropInContainer == false)
 		return DropTarget_Inventory;

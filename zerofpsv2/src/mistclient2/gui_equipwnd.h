@@ -14,27 +14,6 @@ class Entity;
 #include <string>
 using namespace std;
 
-enum EquipmentSlot
-{
-	EqS_Helm				= 0,
-	EqS_Gloves			= 1,
-	EqS_Amulett			= 2,
-	EqS_Cloak			= 3,
-	EqS_WeaponHand		= 4,
-	EqS_Body				= 5,
-	EqS_ShieldHand		= 6,
-	EqS_Bracer1			= 7,
-	EqS_Bracer2			= 8,
-	EqS_Belt				= 9,
-	EqS_Ring1			= 10,
-	EqS_Ring2			= 11,
-	EqS_Ring3			= 12,
-	EqS_Ring4			= 13,
-	EqS_Boots			= 14,
-
-	EqS_None				= 99
-};
-
 class EquipmentDlg
 {
 public:
@@ -43,65 +22,82 @@ public:
 
 	void Open();
 	void Close();
-	void Update(vector<MLContainerInfo>& vkItemList);
+	void Update(int iContainerID, int iContainerType, vector<MLContainerInfo>& vkItemList);
 
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
 	bool IsVisible() 
 	{ 
-		if(m_pkEquipmentWnd == NULL) 
+		if(m_pkMainWnd == NULL) 
 			return false; 
-		return m_pkEquipmentWnd->IsVisible(); 
+		return m_pkMainWnd->IsVisible(); 
 	}
-	void OnDrop(int mx, int my);
-	EquipmentSlot GetSlot(int mx, int my, bool bScreenPos);
-	Rect GetRect(EquipmentSlot eSlot, bool bScreenPos);
+	
+	int GetSlotType(int mx, int my);
+	int GetSlotContainerID(int mx, int my);
 		
 private:
 
 	struct EQUIPMENT_SLOT
 	{	
-		EquipmentSlot eSlotType;
-		ZGuiWnd* pkWnd;
-		int iItemID;
-		int iStackSize;
+		EQUIPMENT_SLOT() {m_eSlotType = m_iItemID = m_iStackSize = m_iSlotWidthMax = m_iSlotHeightMax = m_iContainerID = -1; m_pkWnd = NULL; };
+		EQUIPMENT_SLOT(ContainerTypes eType, ZGuiWnd* pkWnd, int iContainerID, int iSlotsX, int iSlotsY, int iItemID, int iStackSize)
+		{
+			m_eSlotType = eType;
+			m_pkWnd = pkWnd;
+			m_iItemID = iItemID;
+			m_iStackSize = iStackSize;
+			m_iSlotHeightMax = iSlotsY;
+			m_iSlotWidthMax = iSlotsX;
+			m_iSlotsW = m_iSlotsH = -1;
+			m_iContainerID = iContainerID;
+
+			m_rcOriginal = m_pkWnd->GetScreenRect();
+		};
+
+		Rect m_rcOriginal;
+		ZGuiWnd* m_pkWnd;
+		int m_eSlotType;
+		int m_iItemID;
+		int m_iContainerID;
+		int m_iStackSize;
+		int m_iSlotsW, m_iSlotsH;
+		int m_iSlotWidthMax;
+		int m_iSlotHeightMax;
 	};
 
-	struct SPECIAL_SLOT
-	{
-		int m_iIndex; // index in item list
-	};
-
-	vector<EQUIPMENT_SLOT> m_vkEquipmentItemList;
-
-	SPECIAL_SLOT m_kMoveSlot; 
+	void RescaleSlotIcon(EQUIPMENT_SLOT& r_kSlot, int iSlotsX, int iSlotsY);
+	void GetEquipmentSlotFromContainerType(int iContainerType, EquipmentDlg::EQUIPMENT_SLOT*& ppSlot);
+	EQUIPMENT_SLOT* GetSlot(int mx, int my);
+	void PickUpFromSlot(EQUIPMENT_SLOT* pkSlot, int mx, int my);
+	void OnDropItem(int mx, int my);
 
 	Point m_kCursorRangeDiff;
 	Point m_kItemWndPosBeforeMove; // fönster koordinater
 	
 	TextureManager* m_pkTexMan;
 	
-	ZGuiWnd* m_pkEquipmentWnd;	
+	ZGuiWnd* m_pkMainWnd;	
 
 	bool m_bSkillWndOpen;
 	bool m_bStatsWndOpen;
 
-	// Kollisionsrektanglar för olika itemslots i fönsterkoordinater.
-	const Rect m_rcHelm;
-	const Rect m_rcGloves;
-	const Rect m_rcAmulett;
-	const Rect m_rcCloak;
-	const Rect m_rcWeaponHand;
-	const Rect m_rcBody;
-	const Rect m_rcShieldHand;
-	const Rect m_rcBracer1;
-	const Rect m_rcBracer2;
-	const Rect m_rcBelt;
-	const Rect m_rcRing1;
-	const Rect m_rcRing2;
-	const Rect m_rcRing3;
-	const Rect m_rcRing4;
-	const Rect m_rcBoots;
+	EQUIPMENT_SLOT m_kHead;
+	EQUIPMENT_SLOT m_kGloves;
+	EQUIPMENT_SLOT m_kAmulett;
+	EQUIPMENT_SLOT m_kCloak;
+	EQUIPMENT_SLOT m_kRightHand;
+	EQUIPMENT_SLOT m_kBody;
+	EQUIPMENT_SLOT m_kLeftHand;
+	EQUIPMENT_SLOT m_kBracers;
+	EQUIPMENT_SLOT m_kBelt;
+	EQUIPMENT_SLOT m_kRing1;
+	EQUIPMENT_SLOT m_kRing2;
+	EQUIPMENT_SLOT m_kRing3;
+	EQUIPMENT_SLOT m_kRing4;
+	EQUIPMENT_SLOT m_kBoots;
+
+	EQUIPMENT_SLOT* m_pkMoveSlot; 
 };
 
 #endif // _GUI_EQUIPMENTDLG_H_
