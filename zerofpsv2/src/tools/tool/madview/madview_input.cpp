@@ -1,6 +1,7 @@
 #include "madview.h"
 #include "../../../zerofpsv2/engine/inputhandle.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
+#include "../../../zerofpsv2/engine/zerofps.h"
 
 void MadView::Input()
 {

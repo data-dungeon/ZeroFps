@@ -1,6 +1,10 @@
 #include "p_camera.h"
 #include "p_mad.h"
 
+#include <iostream>
+#include "../../engine/camera.h"
+#include "../../engine/zerofps.h"
+
 #define CHASE_CAM_DISTANCE	5 
 
  

@@ -1,16 +1,15 @@
 #ifndef _ENGINE_CAMERAPROPERTY_H_
 #define _ENGINE_CAMERAPROPERTY_H_
 
-#include "../../engine/property.h"
-#include <iostream>
-
-#include "../../engine/camera.h"
-#include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"
+#include "../../engine/property.h"
+
+
 
 using namespace std;
 
 class Camera;
+class ZeroFps;
 
 enum ENGINE_SYSTEMS_API CamType_e
 {
