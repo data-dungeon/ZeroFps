@@ -274,10 +274,9 @@ bool AABBNode::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 			static float	fDistance;
 			static Vector3	kTempPos;
 			static bool		bHaveCollided;
-			static Vector3 kClosestPos;	
 			
-			bHaveCollided = false;
-			fClosest = 999999999;
+			bHaveCollided 	= false;
+			fClosest 		= 999999999;
 			
 			int iSize = m_kTriangles.size();
 			for(int i = 0;i<iSize;i++)
@@ -290,21 +289,13 @@ bool AABBNode::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 					{
 						bHaveCollided = true;
 						fClosest = fDistance;
-// 						*pkTestPos = kTempPos;
-						kClosestPos	 = kTempPos;
+ 						*pkTestPos = kTempPos;
 					}
 				}			
 			}
 
-			if(bHaveCollided)
-			{
-				*pkTestPos = kClosestPos;
-				return true;
 			
-			}
-			else
-				return false;
-// 			return bHaveCollided;
+ 			return bHaveCollided;
 		}
 	}
 	else
@@ -346,12 +337,12 @@ void AABB::Set(vector<Triangle>*	pkTriangles)
 	}
 	
 	//setup side planes
-	m_kSide[0].Set(Vector3(0,0,1),m_kMax.z);
-	m_kSide[1].Set(Vector3(0,0,-1),m_kMin.z);
-	m_kSide[2].Set(Vector3(1,0,0),m_kMax.x);
-	m_kSide[3].Set(Vector3(-1,0,0),m_kMin.x);
-	m_kSide[4].Set(Vector3(0,1,0),m_kMax.y);
-	m_kSide[5].Set(Vector3(0,-1,0),m_kMin.y);
+	m_kSide[0].Set(Vector3(0,0,1),	m_kMax.z);
+	m_kSide[1].Set(Vector3(0,0,-1),	m_kMin.z);
+	m_kSide[2].Set(Vector3(1,0,0),	m_kMax.x);
+	m_kSide[3].Set(Vector3(-1,0,0),	m_kMin.x);
+	m_kSide[4].Set(Vector3(0,1,0),	m_kMax.y);
+	m_kSide[5].Set(Vector3(0,-1,0),	m_kMin.y);
 }
 
 int AABB::LongestAxis()
@@ -384,11 +375,6 @@ bool AABB::TestSphere(const Vector3& kPos,float fRadius)
 bool AABB::TestLine(const Vector3& kP1,const Vector3& kP2)
 {
 	static Vector3 kColPos;
-
-// 	if(kP1.x < m_kMin.x && kP2.x < m_kMin.x || kP1.x > m_kMax.x && kP2.x > m_kMax.x ) return false;
-// 	if(kP1.y < m_kMin.y && kP2.y < m_kMin.y || kP1.y > m_kMax.y && kP2.y > m_kMax.y ) return false;
-// 	if(kP1.z < m_kMin.z && kP2.z < m_kMin.z || kP1.z > m_kMax.z && kP2.z > m_kMax.z ) return false;
-	
 	
 	//test against planes
 	for(int i = 0;i<6;i++)
@@ -434,24 +420,21 @@ bool Triangle::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 	
 	kDistance = m_kPlane.m_kNormal * fRadius;
 
+	//test against polygon plane
 	if(m_kPlane.LineTest(kPos + kDistance,kPos - kDistance,pkTestPos))
-	{
 		if(TestSides(*pkTestPos))
-		{
 			return true;
-		}
-	}
 
 	
 	//do edge tests
-	static bool didcollide;
-	static float closest;
+	static bool bDidcollide;
 	static int p1,p2;
-	static float d;
+	static float fClosest;	
+	static float fDistance;
 	static Vector3 kTempPos;
 	
-	didcollide = false;
-	closest = 99999999;	
+	bDidcollide 	= false;
+	fClosest 		= 99999999;	
 	
 	for(int i = 0;i<3;i++)
 	{
@@ -471,41 +454,41 @@ bool Triangle::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 				break;
 		}		
 	
-		if(TestLineVSSphere(kPos,fRadius,m_kVerts[p1], m_kVerts[p2],pkTestPos))
+ 		if(TestLineVSSphere(kPos,fRadius,m_kVerts[p1], m_kVerts[p2],&kTempPos))
 		{
-			d = kPos.DistanceTo(*pkTestPos);
-			if( d < closest)
+ 			fDistance = kPos.DistanceTo(kTempPos);
+			if( fDistance < fClosest)
 			{
-				closest = d;
-				didcollide = true;
+				fClosest = fDistance;
+				*pkTestPos = kTempPos;
+				bDidcollide = true;
 			}
 		}		
 	}
 	
-	if(didcollide)
+	if(bDidcollide)
 		return true;
 	
 	
 	//test verts
-	d = 99999999;
-	didcollide = false;
+	fClosest 	= 99999999;
+	bDidcollide = false;
+	
 	for(int i = 0;i< 3;i++)
 	{
-		d = kPos.DistanceTo(m_kVerts[i]);
-		if(d < fRadius)
-			if(d < closest)
+		fDistance = kPos.DistanceTo(m_kVerts[i]);
+		if(fDistance < fRadius)
+			if(fDistance < fClosest)
 			{
 				*pkTestPos = m_kVerts[i];
-				didcollide = true;
+				bDidcollide = true;
+				fClosest		= fDistance;
 			}	
 	}
 	
-	if(didcollide)
-	{
-		return true;
-	}	
 	
-	return false;	
+	
+	return bDidcollide;
 
 }
 
@@ -544,21 +527,24 @@ bool Triangle::TestSides(const Vector3& kPos)
 	static Vector3 e10,e20,vp;
 	static float a,b,c,ac_bb,d,e;	
 	
-	e10=m_kVerts[1]-m_kVerts[0];
-	e20=m_kVerts[2]-m_kVerts[0];
-	a = e10.Dot(e10);
-	b = e10.Dot(e20);
-	c = e20.Dot(e20);
+	e10= m_kVerts[1]-m_kVerts[0];
+	e20= m_kVerts[2]-m_kVerts[0];
+	
+	a 	= e10.Dot(e10);
+	b 	= e10.Dot(e20);
+	c 	= e20.Dot(e20);	
 	ac_bb=(a*c)-(b*b);
+		
 	vp.Set(kPos.x-m_kVerts[0].x, kPos.y-m_kVerts[0].y, kPos.z-m_kVerts[0].z);
+	
 	d = vp.Dot(e10);
 	e = vp.Dot(e20);
 	
 	float x = (d*c)-(e*b);
 	float y = (e*a)-(d*b);
 	float z = x+y-ac_bb;
+	
 	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
-
 }
 
 bool Triangle::TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* pkTestPos)
