@@ -125,3 +125,38 @@ settings in [pass-x]
 	fragmentprogram = string [none]
 		set what hardware ARB fragment program to use, (.zfp files)
 		
+		
+		
+EXAMPLES:
+
+	//---- a simple one pass grass material
+	[global]
+
+	[pass-0]
+	polygonmodefront=0
+	tu0=data/textures/grass.tga
+
+	//----	
+	
+	//---- a more advance material whit a motion texture blended whit a overlay texture whit to passes
+	[global]
+	copydata=true
+	textureoffset_v=0.001
+
+	[pass-0]
+	polygonmodefront=0
+	tu0=data/textures/dm/pillar_glow.tga
+
+	[pass-1]
+	polygonmodefront=0
+	tu1=data/textures/dm/pillar.tga
+	depthfunc=2
+	blend=true
+	blendsrc=4
+	blenddst=5end=true
+	blendsrc=4
+	blenddst=5
+	
+	//----
+	
+	
