@@ -31,13 +31,14 @@ ZGuiTabCtrl::ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkPrevTabBn = NULL;
 	m_pkNextEndSkin = NULL;
 	m_pkPrevEndSkin = NULL;
+	m_iPrevCurrentPage = -1;
 	CreateInternalControls();
 	SetWindowFlag(WF_TOPWINDOW);
 }
 
 ZGuiTabCtrl::~ZGuiTabCtrl()
 {
-
+	DeleteAllPages();
 }
 
 void ZGuiTabCtrl::CreateInternalControls()
@@ -180,11 +181,89 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 
 bool ZGuiTabCtrl::DeletePage(unsigned int uiIndex)
 {
+	ZGui* pkGui = GetGUI();
+
+	if(pkGui == NULL)
+		return false;
+
+	if(uiIndex == m_iPrevCurrentPage)
+		m_iPrevCurrentPage = -1;
+
+	unsigned int counter = 0;
+	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+	for( ; it != m_kPageList.end(); it++)
+	{
+		if(counter == uiIndex)
+		{
+			pkGui->UnregisterWindow((*it));
+			m_kPageList.erase(it);
+			break;
+		}
+		counter++;
+	}
+
+	int iMoveOffset;
+
+	counter = 0; // reset
+	list<ZGuiButton*>::iterator it2 = m_kTabList.begin();
+	for( ; it2 != m_kTabList.end(); it2++)
+	{
+		if(counter == uiIndex)
+		{
+			iMoveOffset = (*it2)->GetScreenRect().Width();
+			break;
+		}
+
+		counter++;
+	}
+
+	int Min = GetScreenRect().Left+m_uiMarg;
+	int Max = m_pkPrevTabBn->GetScreenRect().Left-m_uiMarg;
+
+	counter = 0; // reset
+	list<ZGuiButton*>::iterator it3 = m_kTabList.begin();
+	for( ; it3 != m_kTabList.end(); it3++)
+	{
+		if(counter > uiIndex)
+		{
+			// Move all button to the left at offset pkFirst.Width()
+
+			(*it3)->Move(-iMoveOffset,0,true,true); 
+			(*it3)->SetMoveArea((*it3)->GetScreenRect(),true);
+			if( (*it3)->GetScreenRect().Left < Min || 
+				(*it3)->GetScreenRect().Right > Max)
+				(*it3)->Hide();
+			else
+				(*it3)->Show();
+		}
+
+		counter++;
+	}
+
+	counter = 0; // reset
+	list<ZGuiButton*>::iterator it4 = m_kTabList.begin();
+	for( ; it4 != m_kTabList.end(); it4++)
+	{
+		if(counter == uiIndex)
+		{
+			delete (*it4);
+			m_kTabList.erase(it4);
+			break;
+		}
+
+		counter++;
+	}
+
 	return true;
 }
 
 bool ZGuiTabCtrl::DeleteAllPages()
 {
+	int iNumPages = GetNumPages();
+
+	for(int i=0; i<iNumPages; i++)
+		DeletePage(0); // skall stå 0 här eftersom antalet sidor minskar...
+
 	return true;
 }
 
@@ -277,7 +356,7 @@ unsigned int ZGuiTabCtrl::GetCurrentPage()
 
 void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 {
-	static int iPrevCurrentPage = -1;
+	//static int iPrevCurrentPage = -1;
 	unsigned int uiPages = GetNumPages();
 
 	if(index < uiPages)
@@ -302,7 +381,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 
 			int* piParams = new int[3];
 			piParams[0] = m_uiCurrentPage;
-			piParams[1] = iPrevCurrentPage;
+			piParams[1] = m_iPrevCurrentPage;
 			piParams[2] = (int) this;
 			SendNotifyMessage(ZGM_TCN_SELCHANGE, 3, piParams);
 			delete[] piParams;
@@ -314,7 +393,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 		}
 
 		// Lower the previus selected tab back again.
-		if(iPrevCurrentPage == (int) i)
+		if(m_iPrevCurrentPage == (int) i)
 		{
 			Rect rc = (*itButton)->GetScreenRect();
 			(*itButton)->Resize(rc.Width(), rc.Height()-5);
@@ -329,7 +408,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 
 	if(IsVisible())
 	{
-		bool bMoveLeft = (iPrevCurrentPage < index);
+		bool bMoveLeft = (m_iPrevCurrentPage < index);
 		bool stop = false;
 
 		while(1)
@@ -361,7 +440,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 	}
 	
 
-	iPrevCurrentPage = index;
+	m_iPrevCurrentPage = index;
 }
 
 void ZGuiTabCtrl::ShowPage(unsigned int index, bool bVisible)
@@ -454,10 +533,10 @@ bool ZGuiTabCtrl::MoveTabs(bool bLeft)
 	int Max = m_pkPrevTabBn->GetScreenRect().Left-m_uiMarg;
 
 	// Move all button to the left at offset pkFirst.Width()
-	int iOffset = pkFirst->GetScreenRect().Width();
+	int iMoveOffset = pkFirst->GetScreenRect().Width();
 	for(itButton = m_kTabList.begin(); itButton != m_kTabList.end(); itButton++)
 	{
-		(*itButton)->Move(bLeft ? -iOffset : iOffset,0,true,true); 
+		(*itButton)->Move(bLeft ? -iMoveOffset : iMoveOffset,0,true,true); 
 		(*itButton)->SetMoveArea((*itButton)->GetScreenRect(),true);
 		if( (*itButton)->GetScreenRect().Left < Min || 
 			(*itButton)->GetScreenRect().Right > Max)
@@ -529,7 +608,19 @@ void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	iStart = pkSkinDesc.size(); 
 	m_pkPrevTabBn->GetWndSkinsDesc(pkSkinDesc);
 	for( i=iStart; i<pkSkinDesc.size(); i++)
-		pkSkinDesc[i].second.insert(0, "Tabctrl: prevtab: ");	
+		pkSkinDesc[i].second.insert(0, "Tabctrl: prevtab: ");
+	
+	int counter=0;
+	list<ZGuiSkin*>::const_iterator itSkin = m_kTabSkinList.begin();
+	for( ; itSkin != m_kTabSkinList.end(); itSkin++)
+	{
+		char szText[50];
+		if(counter++ == 0)
+			sprintf(szText, "Tabctrl: UnSeltab");
+		else
+			sprintf(szText, "Tabctrl: Seltab");
+		pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)(*itSkin), string(szText)) );
+	}
 }
 
 void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
@@ -562,4 +653,100 @@ void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
 
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
+}
+
+void ZGuiTabCtrl::OnChangeWndText(ZGuiWnd *pkWnd)
+{
+	char* szText = pkWnd->GetText();
+
+	int iIndex = -1, counter = 0;
+
+	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+	for( ; it != m_kPageList.end(); it++)
+	{
+		if(pkWnd == (*it))
+		{
+			iIndex = counter;
+			break;
+		}
+
+		counter++;
+	}
+
+	unsigned int width_change;
+
+	counter = 0; //reset
+	list<ZGuiButton*>::iterator itButton = m_kTabList.begin();
+	for( ; itButton != m_kTabList.end(); itButton++)
+	{
+		if(iIndex == counter)
+		{
+			ZGuiButton* pkButton = (*itButton);
+			pkButton->SetText(szText);
+
+			Rect rc = pkButton->GetWndRect(); 
+
+			width_change = rc.Width();
+			int y_pos = rc.Top;
+			int height = rc.Height();
+
+			pkButton->SetPos(rc.Left, y_pos, false, true); 
+			pkButton->Resize(m_pkFont->GetLength(szText)+5, height); 
+
+			width_change = pkButton->GetWndRect().Width() - width_change;
+
+			break;
+		}
+
+		counter++;
+	}
+
+	// Flytta alla andra knappar horizontellt om knappens storlek har ändrats
+	if(width_change != 0)
+	{
+		counter = 0; //reset
+		itButton = m_kTabList.begin();
+		for( ; itButton != m_kTabList.end(); itButton++)
+		{
+			if(counter > iIndex)
+			{
+				ZGuiButton* pkButton = (*itButton);
+				pkButton->Move(width_change, 0);
+			}
+
+			counter++;
+		}
+	}
+}
+
+ZGuiButton* ZGuiTabCtrl::GetTabFromPage(ZGuiWnd* pkPage)
+{
+	int iIndex = -1, counter = 0;
+
+	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+	for( ; it != m_kPageList.end(); it++)
+	{
+		if(pkPage == (*it))
+		{
+			iIndex = counter;
+			break;
+		}
+
+		counter++;
+	}
+
+	counter = 0; //reset
+	list<ZGuiButton*>::iterator itButton = m_kTabList.begin();
+	for( ; itButton != m_kTabList.end(); itButton++)
+	{
+		if(iIndex == counter)
+		{
+			return (*itButton);
+			break;
+		}
+
+		counter++;
+	}	
+
+	return NULL;
 }

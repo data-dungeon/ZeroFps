@@ -386,6 +386,20 @@ void ZGuiWnd::SetText(char* szText, bool bResizeWnd)
 		
 		Resize(usFullsize,16); 
 	}
+
+	ZGuiWnd* pkParent = GetParent();
+
+	if(pkParent)
+	{
+		const type_info& t = typeid(*pkParent);
+		const type_info& t2 = typeid(*this);
+
+		if(t==typeid(ZGuiTabCtrl) && t2 == typeid(ZGuiWnd))
+		{
+			ZGuiTabCtrl* pkTabCtrl = ((ZGuiTabCtrl*)pkParent);
+			pkTabCtrl->OnChangeWndText(this);
+		}
+	}
 }
 
 // Get the windows area, relative to it´s parent.

@@ -111,21 +111,29 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 		r=0, g=0, b=0, r2=0, g2=0, b2=0, bds=0, tile=0, trans=0;
 
-		if(pkSkin->m_iBkTexID != -1)						strcpy(tex[0], m_pkTexMan->GetFileName(pkSkin->m_iBkTexID)); else strcpy(tex[0], "0");
+		if(pkSkin->m_iBkTexID != -1)					strcpy(tex[0], m_pkTexMan->GetFileName(pkSkin->m_iBkTexID)); else strcpy(tex[0], "0");
 		if(pkSkin->m_iHorzBorderTexID != -1)			strcpy(tex[1], m_pkTexMan->GetFileName(pkSkin->m_iHorzBorderTexID)); else strcpy(tex[1], "0");
 		if(pkSkin->m_iVertBorderTexID != -1)			strcpy(tex[2], m_pkTexMan->GetFileName(pkSkin->m_iVertBorderTexID)); else strcpy(tex[2], "0");
 		if(pkSkin->m_iBorderCornerTexID != -1)			strcpy(tex[3], m_pkTexMan->GetFileName(pkSkin->m_iBorderCornerTexID)); else strcpy(tex[3], "0");
 		if(pkSkin->m_iBkTexAlphaID != -1)				strcpy(tex[4], m_pkTexMan->GetFileName(pkSkin->m_iBkTexAlphaID)); else strcpy(tex[4], "0");
 		if(pkSkin->m_iHorzBorderTexAlphaID != -1)		strcpy(tex[5], m_pkTexMan->GetFileName(pkSkin->m_iHorzBorderTexAlphaID)); else strcpy(tex[5], "0");
 		if(pkSkin->m_iVertBorderTexAlphaID != -1)		strcpy(tex[6], m_pkTexMan->GetFileName(pkSkin->m_iVertBorderTexAlphaID)); else strcpy(tex[6], "0");
-		if(pkSkin->m_iBorderCornerTexAlphaID != -1)	strcpy(tex[7], m_pkTexMan->GetFileName(pkSkin->m_iBorderCornerTexAlphaID)); else strcpy(tex[7], "0");
+		if(pkSkin->m_iBorderCornerTexAlphaID != -1)		strcpy(tex[7], m_pkTexMan->GetFileName(pkSkin->m_iBorderCornerTexAlphaID)); else strcpy(tex[7], "0");
 
+		// Ta bort sökvägen "/textures/gui/" eftersom alla texturer måste ligga här
+		// eller i submappar härifrån.
+		// ZGuiApp::GetTexID lägger nämligen på "/data/textures/gui/" när texturerna
+		// sedan skall laddas in från skriptfilen.
 		for(int j=0; j<8; j++)
 		{
 			string temp(tex[j]);
-			temp.erase(0,temp.find_last_of("/")+1); 
-			strcpy(tex[j],temp.c_str());
-		}
+			int pos = temp.find("/textures/gui/");
+			if(pos != string::npos)
+			{
+				temp.erase(0,pos+strlen("/textures/gui/")); 
+				strcpy(tex[j],temp.c_str());
+			}
+		}	
 		
 		r = (int) (pkSkin->m_afBkColor[0] * 255.0f);
 		g = (int) (pkSkin->m_afBkColor[1] * 255.0f);

@@ -10,6 +10,7 @@
 class GUI_API ZGuiTabCtrl : public ZGuiWnd 
 {
 public:
+	void OnChangeWndText(ZGuiWnd* pkWnd);
 	ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTabCtrl();
 
@@ -35,6 +36,8 @@ public:
 
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 
+	ZGuiButton* GetTabFromPage(ZGuiWnd* pkPage);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
@@ -58,6 +61,8 @@ private:
 
 	unsigned int m_uiMarg;
 	unsigned int m_uiTabHeight;
+
+	int m_iPrevCurrentPage;
 };
 
 #endif // #ifndef _GUI_ZGUITABCTRL_H

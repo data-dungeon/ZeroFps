@@ -994,17 +994,38 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 {
+
+	bool bLegalMoveWnd = true;
+	ZGuiWnd* pkParent = pkWnd->GetParent();
+
+	if(pkParent)
+	{
+		GuiType parent_type = GetType(pkParent);
+		if(parent_type == TabControl)
+		{
+			bLegalMoveWnd = false;
+		}
+	}
+
+	if(bLegalMoveWnd == false)
+		return;
+
 	Rect rc = pkWnd->GetScreenRect();
 
 	bool bScreenSpace = false;
 
 	if(pkWnd->GetParent() == NULL)
 	{
-		if(x < 0) x = 0;
-		if(x + rc.Width() > 800) x -= x + rc.Width() - 800;
+		int bd_size = 0;
+		
+		if(pkWnd->GetSkin())
+			bd_size = pkWnd->GetSkin()->m_unBorderSize;
 
-		if(y < 0) y = 0;
-		if(y + rc.Height() > 600) y -= y + rc.Height() - 600;
+		if(x < 0+bd_size) x = bd_size;
+		if(x + rc.Width() > 800-bd_size) x -= x + rc.Width() - 800 + bd_size;
+
+		if(y < 0+bd_size) y = bd_size;
+		if(y + rc.Height() > 600-bd_size) y -= y + rc.Height() - 600 + bd_size;
 
 		bScreenSpace = true;
 	}
@@ -1012,13 +1033,18 @@ void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 	{
 		Rect rcParent = pkWnd->GetParent()->GetScreenRect();
 
-		if(x > rcParent.Width() - rc.Width()) 
-			x = rcParent.Width() - rc.Width();
-		if(x < 0) x = 0;
+		int bd_size = 0;
+		
+		if(pkWnd->GetSkin())
+			bd_size = pkWnd->GetSkin()->m_unBorderSize;
 
-		if(y > rcParent.Height() - rc.Height()) 
-			y = rcParent.Height() - rc.Height();
-		if(y < 0) y = 0;
+		if(x > rcParent.Width() - rc.Width()-bd_size) 
+			x = rcParent.Width() - rc.Width()-bd_size;
+		if(x < 0+bd_size) x = bd_size;
+
+		if(y > rcParent.Height() - rc.Height()-bd_size) 
+			y = rcParent.Height() - rc.Height()-bd_size;
+		if(y < 0+bd_size) y = bd_size;
 	}
 
 	pkWnd->SetPos(x, y, bScreenSpace, true); 
@@ -1026,6 +1052,22 @@ void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 
 void ZGResEdit::Resize(ZGuiWnd *pkWnd, int w, int h)
 {
+
+	bool bLegalResizeWnd = true;
+	ZGuiWnd* pkParent = pkWnd->GetParent();
+
+	if(pkParent)
+	{
+		GuiType parent_type = GetType(pkParent);
+		if(parent_type == TabControl)
+		{
+			bLegalResizeWnd = false;
+		}
+	}
+
+	if(bLegalResizeWnd == false)
+		return;
+
 	Rect rc = pkWnd->GetScreenRect();
 
 	if(pkWnd->GetParent() == NULL)
@@ -1073,21 +1115,21 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 
 			int x, y, w, h;
 
-			if(strWndType == "Wnd")						{ x=0; y=0; w=200; h=150; }
+			if(strWndType == "Wnd")					{ x=8; y=8; w=200; h=150; }
 			else if(strWndType == "Button")			{ x=20; y=20; w=20;  h=20; } 
-			else if(strWndType == "Checkbox")		{ x=0; y=0; w=20;  h=20; }
-			else if(strWndType == "Combobox")		{ x=0; y=0; w=100; h=20; }
-			else if(strWndType == "Label")			{ x=0; y=0; w=50;  h=20; }
-			else if(strWndType == "Listbox")			{ x=0; y=0; w=100; h=100; }
-			else if(strWndType == "Radiobutton")	{ x=0; y=0; w=20;  h=20; }
+			else if(strWndType == "Checkbox")		{ x=8; y=8; w=20;  h=20; }
+			else if(strWndType == "Combobox")		{ x=8; y=8; w=100; h=20; }
+			else if(strWndType == "Label")			{ x=8; y=8; w=50;  h=20; }
+			else if(strWndType == "Listbox")		{ x=8; y=8; w=100; h=100; }
+			else if(strWndType == "Radiobutton")	{ x=8; y=8; w=20;  h=20; }
 			else if(strWndType == "Radiobn.group")	{ m_bHaveAskedForDefProp = false; x=0; y=0; w=20;  h=20; }
-			else if(strWndType == "H.Scrollbar")	{ x=0; y=0; w=100; h=20; }
-			else if(strWndType == "V.Scrollbar")	{ x=0; y=0; w=20;	 h=100; }
-			else if(strWndType == "Slider")			{ x=0; y=0; w=100; h=20; }
-			else if(strWndType == "TabControl")		{ x=0; y=0; w=150; h=100; }
-			else if(strWndType == "S.Textbox")		{ x=0; y=0; w=100; h=20; }
-			else if(strWndType == "M.Textbox")		{ x=0; y=0; w=100; h=50; }
-			else if(strWndType == "Treebox")			{ x=0; y=0; w=100; h=100; }
+			else if(strWndType == "H.Scrollbar")	{ x=8; y=8; w=100; h=20; }
+			else if(strWndType == "V.Scrollbar")	{ x=8; y=8; w=20;	 h=100; }
+			else if(strWndType == "Slider")			{ x=8; y=8; w=100; h=20; }
+			else if(strWndType == "TabControl")		{ x=8; y=8; w=150; h=100; }
+			else if(strWndType == "S.Textbox")		{ x=8; y=8; w=100; h=20; }
+			else if(strWndType == "M.Textbox")		{ x=8; y=8; w=100; h=50; }
+			else if(strWndType == "Treebox")		{ x=8; y=8; w=100; h=100; }
 
 			m_iXPos = x; m_iYPos = y;
 			m_iWidth = w; m_iHeight = h;
@@ -1144,11 +1186,43 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 				break;
 		}*/
 
+		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
+
 		if(pkWnd->GetParent())
 		{
+			m_pkScene->RemoveAlias(pkWnd);
+
 			m_pkFocusWnd = pkWnd->GetParent();
 			pkGui->SetFocus(m_pkFocusWnd);
 			m_pkMainWnd = m_pkFocusWnd;
+
+			if(GetType(pkWnd->GetParent()) == TabControl)
+			{
+				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
+
+				unsigned int current_page = pkTabCtrl->GetCurrentPage(); 
+				pkTabCtrl->DeletePage(current_page);
+
+				if(pkTabCtrl->GetNumPages() != 0)
+				{
+					int new_page = current_page-1;
+					if(new_page < 0)
+						new_page = 0;
+					
+					pkTabCtrl->SetCurrentPage(new_page); 	
+					ZGuiWnd* pkPage = pkTabCtrl->GetPage(new_page);
+					pkGui->SetFocus(pkPage);
+					m_pkFocusWnd = pkPage;
+					m_pkMainWnd = pkPage;
+				}
+				else
+				{
+					m_pkFocusWnd = pkTabCtrl;
+					m_pkMainWnd = pkTabCtrl;
+				}
+				
+				return;
+			}
 		}
 		else
 		{
@@ -1156,12 +1230,8 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 			m_pkMainWnd = NULL;
 		}
 
-		m_pkScene->RemoveAlias(pkWnd);
-
 		pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
-
-		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
 	}
 }
 
@@ -1298,7 +1368,13 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 	GetWnd("WndTitleTextbox")->SetText( (char*) m_pkFocusWnd->GetText() );
 
 	if(m_pkFocusWnd->GetParent())
-		GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
+	{
+		char* szName = (char*) m_pkScene->GetAlias(m_pkFocusWnd->GetParent());
+		if(szName)
+			GetWnd("ParentLabel")->SetText( szName );
+		else
+			GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
+	}
 	else
 		GetWnd("ParentLabel")->SetText( "-" );
 
