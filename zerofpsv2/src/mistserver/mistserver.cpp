@@ -1695,9 +1695,9 @@ Entity* MistServer::GetTargetObject()
 //	dir.Set(0,1,0);
 
 	start.Print();
-	cout << " - "; 
+	//cout << " - "; 
 	dir.Print();
-	cout << endl; 
+	//cout << endl; 
 
 	vector<Entity*> kObjects;
 	kObjects.clear();
@@ -1709,7 +1709,7 @@ Entity* MistServer::GetTargetObject()
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
-		cout << " Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
+		//cout << "Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
 
 		if(kObjects[i] == m_pkCameraObject[0])	continue;
 		if(kObjects[i] == m_pkCameraObject[1])	continue;

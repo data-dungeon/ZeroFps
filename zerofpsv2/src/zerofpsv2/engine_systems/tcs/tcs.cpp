@@ -248,10 +248,13 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 					  ( (pkCol->kNormals[i] * pkCol->kNormals[i]) *
 					  ( 1/fMass1 + 1/fMass2)); 	
 
-		if(j  <0)
-			continue;
-					  					  
-		//j = fabs(j);					  					  
+		//if(j  <0)
+		//	continue;					  					  
+		//j = fabs(j);	
+						  					  
+		if(j < 0)
+			cout<<"negativ force"<<endl;
+		
 				  
 		//make sure the impact force is not to small					  
 		if(j < m_fMinForce)

@@ -1288,7 +1288,7 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 		float fRadius=(*it).second->GetRadius();
 		
 		//make sure theres a radius to test against  0.2 seems like a nice vallue =)
-		if(fRadius <= 0.2)
+		if(fRadius < 0.2)
 			fRadius = 0.2;
 		
 		if(Distance < fRadius)
