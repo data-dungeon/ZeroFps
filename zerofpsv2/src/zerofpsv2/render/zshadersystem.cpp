@@ -998,44 +998,30 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
 		return;
 	}
 
+	//set vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER_ARB,pkBuffer->m_iBufferID);
+
+
 	//reset all pointers
 	ResetPointers();
 	
-// 	//disable all client states
-// 	glDisableClientState(GL_VERTEX_ARRAY);	
-// 	glDisableClientState(GL_NORMAL_ARRAY);	
-// 	glDisableClientState(GL_INDEX_ARRAY);	
-// 	glDisableClientState(GL_COLOR_ARRAY);
-// 	glDisableClientState(GL_EDGE_FLAG_ARRAY);		
-
-	//set vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER_ARB,pkBuffer->m_iBufferID);
 	
-// 	if(pkBuffer->m_iVertexType == VERTEXTYPE_3)
-// 	{
-// 		m_pkVertexPointer = 0;
-// 		glEnableClientState(GL_VERTEX_ARRAY);
-// 		glVertexPointer(3,GL_FLOAT,0,m_pkVertexPointer);		
-// 	}	
-
-
-/* 	if(pkBuffer->m_b2DVertexPointer)
-  		SetPointer(VERTEX2D_POINTER, (void*)pkBuffer->m_i2DVertexPointer);	*/			
+ 	if(pkBuffer->m_b2DVertexPointer)
+  		SetPointer(VERTEX2D_POINTER, (void*)pkBuffer->m_i2DVertexPointer);		
  	if(pkBuffer->m_bVertexPointer)
  		SetPointer(VERTEX_POINTER, (void*)pkBuffer->m_iVertexPointer);				
  	if(pkBuffer->m_bNormalPointer)
  		SetPointer(NORMAL_POINTER, (void*)pkBuffer->m_iNormalPointer);	
  	if(pkBuffer->m_bTexturePointer0)
  		SetPointer(TEXTURE_POINTER0, (void*)pkBuffer->m_iTexturePointer0);
-/* 	if(pkBuffer->m_bTexturePointer1)
+ 	if(pkBuffer->m_bTexturePointer1)
  		SetPointer(TEXTURE_POINTER1, (void*)pkBuffer->m_iTexturePointer1);		
  	if(pkBuffer->m_bTexturePointer2)
  		SetPointer(TEXTURE_POINTER2, (void*)pkBuffer->m_iTexturePointer2);		
  	if(pkBuffer->m_bTexturePointer3)
- 		SetPointer(TEXTURE_POINTER3, (void*)pkBuffer->m_iTexturePointer3);	*/	
-
-//  	if(pkBuffer->m_bColorPointer)
-//  		SetPointer(COLOR_POINTER, (void*)pkBuffer->m_iColorPointer);		
+ 		SetPointer(TEXTURE_POINTER3, (void*)pkBuffer->m_iTexturePointer3);	
+  	if(pkBuffer->m_bColorPointer)
+  		SetPointer(COLOR_POINTER, (void*)pkBuffer->m_iColorPointer);		
 
 		
  	if(pkBuffer->m_bIndexPointer)
@@ -1052,33 +1038,6 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
   	DrawArray(pkBuffer->m_iDrawMode);
  	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-
-/*	
-	//we have to reset opengls data pointers
-	SetupArrayClientStates();
-
- 	//update shader parameters
-	UpdateFragmentProgramParameters();
-	UpdateVertexProgramParameters();
-
-	
-	if(m_pkCurrentMaterial->GetNrOfPasses() == 1)
-	{
-		SetupTUClientStates(0);
-		
-		if(m_pkIndexPointer)
-		{
-			m_iTotalVertises += m_iNrOfIndexes;
-			glDrawElements(pkBuffer->m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
-		}
-		else
-		{			
-			m_iTotalVertises += pkBuffer->m_iVertises;
-			glDrawArrays(pkBuffer->m_iDrawMode,0,pkBuffer->m_iVertises);
-		}
-	}
-		
-	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);		*/
 }
 
 void ZShaderSystem::DrawGeometry(const int& iDrawMode)
