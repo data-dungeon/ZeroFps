@@ -536,13 +536,18 @@ void ZGuiTextbox::CreateInternalControls()
 
 void ZGuiTextbox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
 								   ZGuiSkin* pkSkinThumbButton, 
-								   ZGuiSkin* pkSkinThumbButtonHighLight)
+								   ZGuiSkin* pkSkinThumbButtonHighLight,
+									ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+									ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown)
 {
 	if(m_pkScrollbarVertical)
 	{
 		m_pkScrollbarVertical->SetSkin(pkSkinScrollArea);
 		m_pkScrollbarVertical->SetThumbButtonSkins(pkSkinThumbButton, 
 			pkSkinThumbButtonHighLight);
+
+		m_pkScrollbarVertical->SetScrollButtonDownSkins(pkSkinBottomBnUp, pkSkinBottomBnDown);
+		m_pkScrollbarVertical->SetScrollButtonUpSkins(pkSkinTopBnUp, pkSkinTopBnDown);
 	}
 }
 

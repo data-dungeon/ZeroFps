@@ -30,7 +30,9 @@ public:
 	void KillFocus();
 	void SetText(char* strText, bool bResizeWnd=false); //överlagrad
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
-		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight,
+		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void SetFont(ZGuiFont* pkFont); //överlagrad

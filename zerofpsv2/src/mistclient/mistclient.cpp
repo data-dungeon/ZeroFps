@@ -13,6 +13,7 @@
 #include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../mcommon/si_mistland.h"
+#include "../zerofpsv2/basic/zguifont.h"
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -372,7 +373,8 @@ void MistClient::Input()
 
 				if(pkMistLandProp)
 				{
-					vector<string> vkActionNames = pkMistLandProp->GetActions();
+					vector<string> vkActionNames;
+					pkMistLandProp->GetActions(vkActionNames);
 
 					if(m_pkClientControlP && !vkActionNames.empty())
 					{
@@ -830,6 +832,42 @@ void MistClient::CreateGuiInterface()
 	
 	GetWnd("ScrollPortraitsUp")->Hide();
 	GetWnd("ScrollPortraitsDown")->Hide();
+
+	CreateWnd(Textbox, "InfoBox", "MainWnd", "", 4, 505, 380, 50, EB_IS_MULTILINE | READ_ONLY);
+	CreateWnd(Textbox, "InputBox", "MainWnd", "", 4, 558, 360, 20, 0);
+	CreateWnd(Button, "SendInputBoxBn", "MainWnd", "", 365, 558, 20, 20, 0);
+	CreateWnd(Button, "HideInfoBoxBn", "MainWnd", "", 385, 558, 20, 20, 0);
+	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonUpSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_u.bmp", 0), 0));
+	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonDownSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_d.bmp", 0), 0));
+	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonHighLightSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_f.bmp", 0), 0));
+	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonUpSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_u.bmp", 0), 0));
+	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonDownSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_d.bmp", 0), 0));
+	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonHighLightSkin(
+		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_f.bmp", 0), 0));
+
+	string szText;
+
+	for(int i=0; i<20; i++)
+	{
+		szText += "MistLand debug print! XYZ.. Rad: ";
+
+		char t[5];
+		sprintf(t, "%i\n", i);
+
+		szText += t;
+	}
+
+	GetWnd("InfoBox")->SetText((char*)szText.c_str());
+
+	ZGuiFont* pkFont = new ZGuiFont();
+	pkFont->CreateFromFile("/data/textures/text/georgia_bold8.bmp"); 
+	GetWnd("InfoBox")->SetFont( pkFont);
+	GetWnd("InputBox")->SetFont( pkFont);
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)

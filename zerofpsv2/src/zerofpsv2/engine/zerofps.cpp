@@ -257,7 +257,18 @@ void ZeroFps::Run_EngineShell()
 	m_pkInput->MouseXY(mx,my);
 
 	map<int,int>::iterator itKeyPressed;
-	int iInputKey = 'a'; //m_pkInput->GetQueuedKey(); // wtf
+
+	int iInputKey = -1; // = m_pkInput->GetQueuedKey(); // wtf
+
+	for(int i=0; i<255; i++)
+	{
+		if(m_pkInput->Pressed(i))
+		{
+			iInputKey = i;
+			break;
+		}
+	}
+
 	static int iPrevKey = iInputKey;
 	m_pkInput->FormatKey(iInputKey);
 
@@ -282,8 +293,6 @@ void ZeroFps::Run_EngineShell()
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
-
-
 
 	if(m_pkInput->Pressed(KEY_F8))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
 

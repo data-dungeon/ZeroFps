@@ -762,8 +762,19 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 	if(m_bActive == true)
 	{
 		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, m_fGameTime);
-		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
-		//Render();
+
+		static float s_fClickTime = m_fGameTime;
+		static bool bOK = true;
+
+		if( iKeyPressed != -1 && m_fGameTime - s_fClickTime > 0.05f && bOK == true)
+		{
+			OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
+			s_fClickTime = m_fGameTime;
+			bOK = false;
+		}
+
+		if( iKeyPressed == -1)
+			bOK = true;
 	}
 
 	m_kPointsToDraw.clear();
@@ -1306,7 +1317,8 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 					if(bMultiLine)
 					{
 						((ZGuiTextbox*) pkNewWnd)->SetScrollbarSkin(
-							new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+							new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),
+							new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
 					}
 				}
 				break;
