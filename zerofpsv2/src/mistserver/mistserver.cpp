@@ -229,6 +229,8 @@ void MistServer::CreateEditCameras()
 
 void MistServer::OnInit() 
 {
+	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+
 	m_pkConsole->Printf(" MistServer (mistland dedicated server)");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");

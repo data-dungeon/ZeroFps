@@ -108,15 +108,20 @@ bool ZFVFileSystem::StartUp()
 		szDiv[1] = 0;
 
 	AddRootPath(szWorkDir,"");
-	
+
 	// Add Base / Rip to root also.
-	string strDir;
-	strDir = string(szWorkDir) + string("extdata/zerofps/");
-	AddRootPath(strDir.c_str(),"data/");
+	//string strDir;
+	//strDir = string(szWorkDir) + string("extdata/zerofps/");
+	//AddRootPath(strDir.c_str(),"data/");
 	//strDir = string(szWorkDir) + string("extdata/mistlands/");
 	//AddRootPath(strDir.c_str(),"data/");
-	strDir = string(szWorkDir) + string("extdata/dm/");
-	AddRootPath(strDir.c_str(),"data/");
+
+	//strDir = string(szWorkDir) + string("extdata/dm/");
+	//AddRootPath(strDir.c_str(),"data/");
+
+	AddRootPath( string(szWorkDir) + string("data/sysdata/") ,"data/");
+	AddRootPath( string(szWorkDir) + string("data/extdata/") ,"data/");
+	//AddRootPath("data/extdata","data/");
 
 //	AddRootPath("h:/");
 	////////////////////////////////////////////////// [/zeb]
@@ -259,8 +264,10 @@ string ZFVFileSystem::GetFullPath(string strFileName)
 void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 {
 	g_Logf("Mapping system %s to VFS %s\n", strRootPath.c_str(),strVfsPath.c_str());
+	cout<<"Adding:"<<strRootPath<<endl;
 	//m_kstrRootPath.push_back(strRootPath);
-	m_kRootPath.push_back( VfsRootPath(strRootPath, strVfsPath) );
+	//m_kRootPath.push_back( VfsRootPath(strRootPath, strVfsPath) );
+	m_kRootPath.insert(m_kRootPath.begin(),VfsRootPath(strRootPath, strVfsPath));
 	//int iSize = m_kstrRootPath.size();
 }
 

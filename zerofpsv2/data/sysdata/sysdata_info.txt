@@ -1,0 +1,2 @@
+this directory contains vital datafiles for the zerofps engine
+none vital engine datafiles shuld be placed in either extdata or an application specific directory
