@@ -276,7 +276,7 @@ int NetWork::NetString_GetIndex(const char* szString)
 
 string NetWork::NetString_GetString(int iIndex)
 {
-	if(iIndex < 0 || iIndex >= m_kStringTable.size())
+	if(iIndex < 0 || iIndex >= int(m_kStringTable.size()))
 		return string("nons");
 
 	if(m_kStringTable[iIndex].m_bInUse)

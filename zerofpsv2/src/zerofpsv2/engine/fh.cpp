@@ -53,7 +53,7 @@ void DebugGraph::PushValue(float fValue)
 {
 	m_kValues[m_iWritePos] = fValue;
 	m_iWritePos++;
-	if(m_iWritePos >= m_kValues.size())
+	if(m_iWritePos >= int(m_kValues.size()))
 		m_iWritePos = 0;
 }
 

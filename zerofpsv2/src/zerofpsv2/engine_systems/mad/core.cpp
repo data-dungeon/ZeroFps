@@ -157,7 +157,7 @@ void Mad_Core::SetFrameI(int iFrame)
 void Mad_Core::LoopPlayAnim(int iAnim)
 {
 	iActiveKeyFrame++;
-	if(iActiveKeyFrame >= m_kMesh[0].akAnimation[iAnim].KeyFrame.size())
+	if(iActiveKeyFrame >= int(m_kMesh[0].akAnimation[iAnim].KeyFrame.size()))
 		iActiveKeyFrame = 0;
 
 	iActiveFrame = m_kMesh[0].akAnimation[iAnim].KeyFrame[iActiveKeyFrame].iVertexFrame;
@@ -402,7 +402,7 @@ void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime )
 	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
 	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
 	iBoneFrame = iFrame;
-	if(iBoneFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() )
+	if(iBoneFrame >= int(m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size()) )
 		iBoneFrame = 0;
 }
 
@@ -549,7 +549,7 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 {
 	if(iMesh < 0)	
 		return NULL;
-	if(iMesh >= m_kMesh.size())
+	if(iMesh >= int(m_kMesh.size()))
 		return NULL;
 
 	return &m_kMesh[iMesh];
@@ -833,7 +833,7 @@ void Mad_Core::SetControll(char* szName, float fValue)
 	if(fValue > 1.0)
 		fValue = 1.0;
 
-	for(int i=0; i<m_kControllers.size(); i++) {
+	for(unsigned int i=0; i<m_kControllers.size(); i++) {
 		if(strcmp(szName,m_kControllers[i].m_szName) == 0) {
 			m_kControllers[i].m_fValue = fValue;
 			return;
@@ -845,7 +845,7 @@ void Mad_Core::SetControll(char* szName, float fValue)
 
 int	Mad_Core::GetMeshIDByName(char* szName)
 {
-	for(int i=0; i<m_kMesh.size(); i++) {
+	for(unsigned int i=0; i<m_kMesh.size(); i++) {
 		if(strcmp(m_kMesh[i].m_acName, szName) == 0)
 			return i;
 		}

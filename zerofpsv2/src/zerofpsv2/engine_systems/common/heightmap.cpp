@@ -454,7 +454,7 @@ bool HeightMap::Save(const char* acFile) {
 	//save texture masks
 	if(m_kSets.size() > 1)
 	{
-		for(int i=1;i<m_kSets.size();i++)
+		for(unsigned int i=1;i<m_kSets.size();i++)
 		{
 			string file=acFile;
 			file += ".mask.";
@@ -583,7 +583,7 @@ bool HeightMap::LoadImageHmap(const char* acFile)
 
 	Image kImage;
 	Uint8 data;
-	Uint32 pixel;
+//	Uint32 pixel;
 	
 	bool bSuccess = kImage.load(acFile);
 	if(!bSuccess)
@@ -788,7 +788,7 @@ void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
 
 void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int b,int a)
 {
-	if(iMask <= 0 || iMask >= m_kSets.size())
+	if(iMask <= 0 || iMask >= int(m_kSets.size()))
 		return;
 	
 	
@@ -1041,7 +1041,7 @@ float HeightMap::GetAlpha(float x,float y,int iTexture)
 	}
 
 	//return -1 if texture does not extist
-	if(iTexture >= m_kSets.size())
+	if(iTexture >= int(m_kSets.size()))
 		return -1;
 	
 	//texture 0 dont have any alpha mask, therefor alpha is always 1
@@ -1090,7 +1090,7 @@ int HeightMap::GetMostVisibleTexture(float x,float y)
 	int t=-1;
 	float v=0;
 	
-	for(int i=0;i<m_kSets.size();i++)
+	for(unsigned int i=0;i<m_kSets.size();i++)
 	{
 		float a=GetAlpha(x,y,i);
 		
