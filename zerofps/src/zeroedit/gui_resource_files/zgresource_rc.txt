@@ -128,27 +128,6 @@ transparent=0
 
 [Skin7]
 window_name=PropertyValuesCB
-wnd_desc=Combobox: Listbox
-bk_tex=(null)
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=214
-bk_g=211
-bk_b=206
-bd_r=128
-bd_g=128
-bd_b=128
-bd_size=1
-tile_skin=0
-transparent=0
-
-[Skin8]
-window_name=PropertyValuesCB
 wnd_desc=Combobox: Listbox: Button up
 bk_tex=(null)
 horz_bd_tex=(null)
@@ -168,9 +147,30 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin9]
+[Skin8]
 window_name=PropertyValuesCB
 wnd_desc=Combobox: Listbox: Button down
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=0
+bk_g=0
+bk_b=128
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin9]
+window_name=PropertyValuesCB
+wnd_desc=Combobox: Listbox: Button focus
 bk_tex=(null)
 horz_bd_tex=(null)
 vert_bd_tex=(null)
@@ -191,27 +191,6 @@ transparent=0
 
 [Skin10]
 window_name=PropertyValuesCB
-wnd_desc=Combobox: Listbox: Button focus
-bk_tex=(null)
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=0
-bk_g=0
-bk_b=128
-bd_r=0
-bd_g=0
-bd_b=0
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin11]
-window_name=PropertyValuesCB
 wnd_desc=Combobox: Listbox: Scrollbar
 bk_tex=file:../data/textures/button_up.bmp
 horz_bd_tex=(null)
@@ -231,9 +210,30 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin12]
+[Skin11]
 window_name=PropertyValuesCB
 wnd_desc=Combobox: Listbox: Scrollbar: Button up
+bk_tex=file:../data/textures/button_up.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=0
+bk_b=0
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin12]
+window_name=PropertyValuesCB
+wnd_desc=Combobox: Listbox: Scrollbar: Button down
 bk_tex=file:../data/textures/button_up.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
@@ -254,27 +254,6 @@ transparent=0
 
 [Skin13]
 window_name=PropertyValuesCB
-wnd_desc=Combobox: Listbox: Scrollbar: Button down
-bk_tex=file:../data/textures/button_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=0
-bk_b=0
-bd_r=0
-bd_g=0
-bd_b=0
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin14]
-window_name=PropertyValuesCB
 wnd_desc=Combobox: Listbox: Scrollbar: Button focus
 bk_tex=file:../data/textures/button_up.bmp
 horz_bd_tex=(null)
@@ -294,7 +273,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin15]
+[Skin14]
 window_name=PropertyCB
 wnd_desc=Combobox
 bk_tex=(null)
@@ -315,7 +294,7 @@ bd_size=1
 tile_skin=0
 transparent=1
 
-[Skin16]
+[Skin15]
 window_name=PropertyCB
 wnd_desc=Combobox: Label
 bk_tex=(null)
@@ -336,28 +315,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin17]
-window_name=PropertyCB
-wnd_desc=Combobox: Listbox
-bk_tex=(null)
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=214
-bk_g=0
-bk_b=0
-bd_r=128
-bd_g=128
-bd_b=128
-bd_size=1
-tile_skin=0
-transparent=0
-
-[Skin18]
+[Skin16]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Button up
 bk_tex=(null)
@@ -378,7 +336,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin19]
+[Skin17]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Button down
 bk_tex=(null)
@@ -399,7 +357,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin20]
+[Skin18]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Button focus
 bk_tex=(null)
@@ -420,7 +378,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin21]
+[Skin19]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Scrollbar
 bk_tex=file:../data/textures/button_up.bmp
@@ -441,7 +399,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin22]
+[Skin20]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Scrollbar: Button up
 bk_tex=file:../data/textures/button_up.bmp
@@ -462,7 +420,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin23]
+[Skin21]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Scrollbar: Button down
 bk_tex=file:../data/textures/button_up.bmp
@@ -483,7 +441,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin24]
+[Skin22]
 window_name=PropertyCB
 wnd_desc=Combobox: Listbox: Scrollbar: Button focus
 bk_tex=file:../data/textures/button_up.bmp
@@ -504,7 +462,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin25]
+[Skin23]
 window_name=Label75
 wnd_desc=Label
 bk_tex=(null)
@@ -525,7 +483,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin26]
+[Skin24]
 window_name=ObjectPropCloseButton
 wnd_desc=Button up
 bk_tex=file:../data/textures/button_up.bmp
@@ -546,7 +504,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin27]
+[Skin25]
 window_name=ObjectPropCloseButton
 wnd_desc=Button down
 bk_tex=file:../data/textures/button_down.bmp
@@ -567,7 +525,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin28]
+[Skin26]
 window_name=ObjectPropCloseButton
 wnd_desc=Button focus
 bk_tex=file:../data/textures/button_focus.bmp
@@ -588,7 +546,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin29]
+[Skin27]
 window_name=Label77
 wnd_desc=Label
 bk_tex=(null)
@@ -609,7 +567,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin30]
+[Skin28]
 window_name=Label78
 wnd_desc=Label
 bk_tex=(null)
@@ -630,7 +588,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin31]
+[Skin29]
 window_name=Label79
 wnd_desc=Label
 bk_tex=(null)
@@ -651,7 +609,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin32]
+[Skin30]
 window_name=Label80
 wnd_desc=Label
 bk_tex=(null)
@@ -672,7 +630,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin33]
+[Skin31]
 window_name=Label81
 wnd_desc=Label
 bk_tex=(null)
@@ -693,7 +651,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin34]
+[Skin32]
 window_name=Label82
 wnd_desc=Label
 bk_tex=(null)
@@ -714,7 +672,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin35]
+[Skin33]
 window_name=ObTypeDynamicRb
 wnd_desc=Radiobutton: Checkbox: Button up
 bk_tex=file:../data/textures/radiobn_up.bmp
@@ -735,10 +693,52 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin36]
+[Skin34]
 window_name=ObTypeDynamicRb
 wnd_desc=Radiobutton: Checkbox: Button down
 bk_tex=file:../data/textures/radiobn_down.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=file:../data/textures/radiobn_a.bmp
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin35]
+window_name=ObTypeDynamicRb
+wnd_desc=Radiobutton: Checkbox: Label
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=0
+bk_g=0
+bk_b=0
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=0
+tile_skin=0
+transparent=1
+
+[Skin36]
+window_name=ObTypeStaticRb
+wnd_desc=Radiobutton: Checkbox: Button up
+bk_tex=file:../data/textures/radiobn_up.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -757,7 +757,28 @@ tile_skin=0
 transparent=0
 
 [Skin37]
-window_name=ObTypeDynamicRb
+window_name=ObTypeStaticRb
+wnd_desc=Radiobutton: Checkbox: Button down
+bk_tex=file:../data/textures/radiobn_down.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=file:../data/textures/radiobn_a.bmp
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin38]
+window_name=ObTypeStaticRb
 wnd_desc=Radiobutton: Checkbox: Label
 bk_tex=(null)
 horz_bd_tex=(null)
@@ -777,31 +798,10 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin38]
-window_name=ObTypeStaticRb
+[Skin39]
+window_name=ObTypePlayerRb
 wnd_desc=Radiobutton: Checkbox: Button up
 bk_tex=file:../data/textures/radiobn_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=file:../data/textures/radiobn_a.bmp
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin39]
-window_name=ObTypeStaticRb
-wnd_desc=Radiobutton: Checkbox: Button down
-bk_tex=file:../data/textures/radiobn_down.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -820,7 +820,28 @@ tile_skin=0
 transparent=0
 
 [Skin40]
-window_name=ObTypeStaticRb
+window_name=ObTypePlayerRb
+wnd_desc=Radiobutton: Checkbox: Button down
+bk_tex=file:../data/textures/radiobn_down.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=file:../data/textures/radiobn_a.bmp
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin41]
+window_name=ObTypePlayerRb
 wnd_desc=Radiobutton: Checkbox: Label
 bk_tex=(null)
 horz_bd_tex=(null)
@@ -840,31 +861,10 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin41]
-window_name=ObTypePlayerRb
+[Skin42]
+window_name=ObTypeStaticDynamicRb
 wnd_desc=Radiobutton: Checkbox: Button up
 bk_tex=file:../data/textures/radiobn_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=file:../data/textures/radiobn_a.bmp
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin42]
-window_name=ObTypePlayerRb
-wnd_desc=Radiobutton: Checkbox: Button down
-bk_tex=file:../data/textures/radiobn_down.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -883,7 +883,28 @@ tile_skin=0
 transparent=0
 
 [Skin43]
-window_name=ObTypePlayerRb
+window_name=ObTypeStaticDynamicRb
+wnd_desc=Radiobutton: Checkbox: Button down
+bk_tex=file:../data/textures/radiobn_down.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=file:../data/textures/radiobn_a.bmp
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin44]
+window_name=ObTypeStaticDynamicRb
 wnd_desc=Radiobutton: Checkbox: Label
 bk_tex=(null)
 horz_bd_tex=(null)
@@ -903,31 +924,10 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin44]
-window_name=ObTypeStaticDynamicRb
+[Skin45]
+window_name=ObTypeDecorationRb
 wnd_desc=Radiobutton: Checkbox: Button up
 bk_tex=file:../data/textures/radiobn_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=file:../data/textures/radiobn_a.bmp
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin45]
-window_name=ObTypeStaticDynamicRb
-wnd_desc=Radiobutton: Checkbox: Button down
-bk_tex=file:../data/textures/radiobn_down.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -946,48 +946,6 @@ tile_skin=0
 transparent=0
 
 [Skin46]
-window_name=ObTypeStaticDynamicRb
-wnd_desc=Radiobutton: Checkbox: Label
-bk_tex=(null)
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=0
-bk_g=0
-bk_b=0
-bd_r=0
-bd_g=0
-bd_b=0
-bd_size=0
-tile_skin=0
-transparent=1
-
-[Skin47]
-window_name=ObTypeDecorationRb
-wnd_desc=Radiobutton: Checkbox: Button up
-bk_tex=file:../data/textures/radiobn_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=file:../data/textures/radiobn_a.bmp
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin48]
 window_name=ObTypeDecorationRb
 wnd_desc=Radiobutton: Checkbox: Button down
 bk_tex=file:../data/textures/radiobn_down.bmp
@@ -1008,7 +966,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin49]
+[Skin47]
 window_name=ObTypeDecorationRb
 wnd_desc=Radiobutton: Checkbox: Label
 bk_tex=(null)
@@ -1029,7 +987,7 @@ bd_size=0
 tile_skin=0
 transparent=1
 
-[Skin50]
+[Skin48]
 window_name=ObjectNameEB
 wnd_desc=Textbox
 bk_tex=(null)
@@ -1050,7 +1008,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin51]
+[Skin49]
 window_name=ObjectPosXEB
 wnd_desc=Textbox
 bk_tex=(null)
@@ -1071,7 +1029,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin52]
+[Skin50]
 window_name=PropertyValueSetEB
 wnd_desc=Textbox
 bk_tex=(null)
@@ -1092,7 +1050,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin53]
+[Skin51]
 window_name=ObjectPosYEB
 wnd_desc=Textbox
 bk_tex=(null)
@@ -1113,7 +1071,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin54]
+[Skin52]
 window_name=ObjectPosZEB
 wnd_desc=Textbox
 bk_tex=(null)
@@ -1134,7 +1092,7 @@ bd_size=1
 tile_skin=0
 transparent=0
 
-[Skin55]
+[Skin53]
 window_name=AddPropertiesBn
 wnd_desc=Button up
 bk_tex=file:../data/textures/button_up.bmp
@@ -1155,7 +1113,7 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin56]
+[Skin54]
 window_name=AddPropertiesBn
 wnd_desc=Button down
 bk_tex=file:../data/textures/button_down.bmp
@@ -1176,10 +1134,52 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin57]
+[Skin55]
 window_name=AddPropertiesBn
 wnd_desc=Button focus
 bk_tex=file:../data/textures/button_focus.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin56]
+window_name=RemovePropertyBn
+wnd_desc=Button up
+bk_tex=file:../data/textures/button_up.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin57]
+window_name=RemovePropertyBn
+wnd_desc=Button down
+bk_tex=file:../data/textures/button_down.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -1199,6 +1199,27 @@ transparent=0
 
 [Skin58]
 window_name=RemovePropertyBn
+wnd_desc=Button focus
+bk_tex=file:../data/textures/button_focus.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin59]
+window_name=ObjectPropOK
 wnd_desc=Button up
 bk_tex=file:../data/textures/button_up.bmp
 horz_bd_tex=(null)
@@ -1218,31 +1239,10 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin59]
-window_name=RemovePropertyBn
+[Skin60]
+window_name=ObjectPropOK
 wnd_desc=Button down
 bk_tex=file:../data/textures/button_down.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin60]
-window_name=RemovePropertyBn
-wnd_desc=Button focus
-bk_tex=file:../data/textures/button_focus.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -1262,6 +1262,27 @@ transparent=0
 
 [Skin61]
 window_name=ObjectPropOK
+wnd_desc=Button focus
+bk_tex=file:../data/textures/button_focus.bmp
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=255
+bd_g=255
+bd_b=255
+bd_size=0
+tile_skin=0
+transparent=0
+
+[Skin62]
+window_name=ObjectPropertiesCancel
 wnd_desc=Button up
 bk_tex=file:../data/textures/button_up.bmp
 horz_bd_tex=(null)
@@ -1281,31 +1302,10 @@ bd_size=0
 tile_skin=0
 transparent=0
 
-[Skin62]
-window_name=ObjectPropOK
+[Skin63]
+window_name=ObjectPropertiesCancel
 wnd_desc=Button down
 bk_tex=file:../data/textures/button_down.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin63]
-window_name=ObjectPropOK
-wnd_desc=Button focus
-bk_tex=file:../data/textures/button_focus.bmp
 horz_bd_tex=(null)
 vert_bd_tex=(null)
 corner_bd_tex=(null)
@@ -1325,48 +1325,6 @@ transparent=0
 
 [Skin64]
 window_name=ObjectPropertiesCancel
-wnd_desc=Button up
-bk_tex=file:../data/textures/button_up.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin65]
-window_name=ObjectPropertiesCancel
-wnd_desc=Button down
-bk_tex=file:../data/textures/button_down.bmp
-horz_bd_tex=(null)
-vert_bd_tex=(null)
-corner_bd_tex=(null)
-bk_a_tex=(null)
-horz_bd_a_tex=(null)
-vert_bd_a_tex=(null)
-corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
-bd_r=255
-bd_g=255
-bd_b=255
-bd_size=0
-tile_skin=0
-transparent=0
-
-[Skin66]
-window_name=ObjectPropertiesCancel
 wnd_desc=Button focus
 bk_tex=file:../data/textures/button_focus.bmp
 horz_bd_tex=(null)
@@ -1386,25 +1344,185 @@ bd_size=0
 tile_skin=0
 transparent=0
 
+[Skin65]
+window_name=Label100
+wnd_desc=Label
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=0
+bk_g=0
+bk_b=0
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=0
+tile_skin=0
+transparent=1
+
+[Skin66]
+window_name=ObjectRotX
+wnd_desc=Textbox
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=1
+tile_skin=0
+transparent=0
+
+[Skin67]
+window_name=ObjectRotY
+wnd_desc=Textbox
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=1
+tile_skin=0
+transparent=0
+
+[Skin68]
+window_name=ObjectRotZ
+wnd_desc=Textbox
+bk_tex=(null)
+horz_bd_tex=(null)
+vert_bd_tex=(null)
+corner_bd_tex=(null)
+bk_a_tex=(null)
+horz_bd_a_tex=(null)
+vert_bd_a_tex=(null)
+corner_bd_a_tex=(null)
+bk_r=255
+bk_g=255
+bk_b=255
+bd_r=0
+bd_g=0
+bd_b=0
+bd_size=1
+tile_skin=0
+transparent=0
+
 [Window1]
 type=Window
 id=67
 name=PropertyDlg
 parent_id=-1
 parent_name=NULL
-text=(null)
+text=
 visible=1
 enabled=1
 area_left=313
 area_top=298
 area_right=711
-area_bottom=591
+area_bottom=609
 move_area_left=0
 move_area_top=0
 move_area_right=1024
 move_area_bottom=768
 tab_order=0
 mainwnd_id=68
+
+[Textbox1]
+type=Textbox
+id=103
+name=ObjectRotZ
+parent_id=67
+parent_name=PropertyDlg
+text=
+visible=1
+enabled=1
+area_left=268
+area_top=77
+area_right=328
+area_bottom=97
+move_area_left=581
+move_area_top=375
+move_area_right=641
+move_area_bottom=395
+tab_order=28
+
+[Textbox2]
+type=Textbox
+id=102
+name=ObjectRotY
+parent_id=67
+parent_name=PropertyDlg
+text=
+visible=1
+enabled=1
+area_left=198
+area_top=78
+area_right=258
+area_bottom=98
+move_area_left=511
+move_area_top=376
+move_area_right=571
+move_area_bottom=396
+tab_order=27
+
+[Textbox3]
+type=Textbox
+id=101
+name=ObjectRotX
+parent_id=67
+parent_name=PropertyDlg
+text=
+visible=1
+enabled=1
+area_left=128
+area_top=78
+area_right=188
+area_bottom=98
+move_area_left=441
+move_area_top=376
+move_area_right=501
+move_area_bottom=396
+tab_order=26
+
+[Label1]
+type=Label
+id=100
+name=Label100
+parent_id=67
+parent_name=PropertyDlg
+text=Rotation
+visible=1
+enabled=1
+area_left=8
+area_top=76
+area_right=108
+area_bottom=96
+move_area_left=321
+move_area_top=374
+move_area_right=421
+move_area_bottom=394
+tab_order=25
 
 [Button1]
 type=Button
@@ -1416,13 +1534,13 @@ text=Cancel
 visible=1
 enabled=1
 area_left=340
-area_top=274
+area_top=292
 area_right=398
-area_bottom=293
+area_bottom=311
 move_area_left=653
-move_area_top=572
+move_area_top=590
 move_area_right=711
-move_area_bottom=591
+move_area_bottom=609
 tab_order=24
 
 [Button2]
@@ -1435,13 +1553,13 @@ text=OK
 visible=1
 enabled=1
 area_left=274
-area_top=274
+area_top=292
 area_right=332
-area_bottom=293
+area_bottom=311
 move_area_left=587
-move_area_top=572
+move_area_top=590
 move_area_right=645
-move_area_bottom=591
+move_area_bottom=609
 tab_order=23
 
 [Button3]
@@ -1454,13 +1572,13 @@ text=Remove
 visible=1
 enabled=1
 area_left=334
-area_top=105
+area_top=130
 area_right=392
-area_bottom=124
+area_bottom=149
 move_area_left=647
-move_area_top=403
+move_area_top=428
 move_area_right=705
-move_area_bottom=422
+move_area_bottom=447
 tab_order=22
 
 [Button4]
@@ -1473,16 +1591,16 @@ text=Add
 visible=1
 enabled=1
 area_left=334
-area_top=78
+area_top=103
 area_right=392
-area_bottom=97
+area_bottom=122
 move_area_left=647
-move_area_top=376
+move_area_top=401
 move_area_right=705
-move_area_bottom=395
+move_area_bottom=420
 tab_order=21
 
-[Textbox1]
+[Textbox4]
 type=Textbox
 id=92
 name=ObjectPosZEB
@@ -1492,16 +1610,16 @@ text=(null)
 visible=1
 enabled=1
 area_left=268
-area_top=53
+area_top=52
 area_right=328
-area_bottom=73
+area_bottom=72
 move_area_left=581
-move_area_top=351
+move_area_top=350
 move_area_right=641
-move_area_bottom=371
+move_area_bottom=370
 tab_order=20
 
-[Textbox2]
+[Textbox5]
 type=Textbox
 id=91
 name=ObjectPosYEB
@@ -1520,7 +1638,7 @@ move_area_right=571
 move_area_bottom=371
 tab_order=19
 
-[Textbox3]
+[Textbox6]
 type=Textbox
 id=90
 name=PropertyValueSetEB
@@ -1530,35 +1648,35 @@ text=(null)
 visible=1
 enabled=1
 area_left=128
-area_top=132
+area_top=157
 area_right=328
-area_bottom=152
+area_bottom=177
 move_area_left=441
-move_area_top=430
+move_area_top=455
 move_area_right=641
-move_area_bottom=450
+move_area_bottom=475
 tab_order=18
 
-[Textbox4]
+[Textbox7]
 type=Textbox
 id=89
 name=ObjectPosXEB
 parent_id=67
 parent_name=PropertyDlg
-text=(null)
+text=
 visible=1
 enabled=1
-area_left=127
+area_left=128
 area_top=53
-area_right=187
+area_right=188
 area_bottom=73
-move_area_left=440
+move_area_left=441
 move_area_top=351
-move_area_right=500
+move_area_right=501
 move_area_bottom=371
 tab_order=17
 
-[Textbox5]
+[Textbox8]
 type=Textbox
 id=88
 name=ObjectNameEB
@@ -1587,13 +1705,13 @@ text=Decoration
 visible=1
 enabled=1
 area_left=8
-area_top=262
+area_top=280
 area_right=24
-area_bottom=278
+area_bottom=296
 move_area_left=321
-move_area_top=560
+move_area_top=578
 move_area_right=337
-move_area_bottom=576
+move_area_bottom=594
 tab_order=15
 radio_group=10171
 radio_group_name=ObjectTypeRadioGroup
@@ -1608,13 +1726,13 @@ text=Static-Dynamic
 visible=1
 enabled=1
 area_left=8
-area_top=242
+area_top=260
 area_right=24
-area_bottom=258
+area_bottom=276
 move_area_left=321
-move_area_top=540
+move_area_top=558
 move_area_right=337
-move_area_bottom=556
+move_area_bottom=574
 tab_order=14
 radio_group=10171
 radio_group_name=ObjectTypeRadioGroup
@@ -1629,13 +1747,13 @@ text=Player
 visible=1
 enabled=1
 area_left=8
-area_top=224
+area_top=242
 area_right=24
-area_bottom=240
+area_bottom=258
 move_area_left=321
-move_area_top=522
+move_area_top=540
 move_area_right=337
-move_area_bottom=538
+move_area_bottom=556
 tab_order=13
 radio_group=10171
 radio_group_name=ObjectTypeRadioGroup
@@ -1650,13 +1768,13 @@ text=Static
 visible=1
 enabled=1
 area_left=8
-area_top=205
+area_top=223
 area_right=24
-area_bottom=221
+area_bottom=239
 move_area_left=321
-move_area_top=503
+move_area_top=521
 move_area_right=337
-move_area_bottom=519
+move_area_bottom=537
 tab_order=12
 radio_group=10171
 radio_group_name=ObjectTypeRadioGroup
@@ -1671,18 +1789,18 @@ text=Dynamic
 visible=1
 enabled=1
 area_left=8
-area_top=185
+area_top=203
 area_right=24
-area_bottom=201
+area_bottom=219
 move_area_left=321
-move_area_top=483
+move_area_top=501
 move_area_right=337
-move_area_bottom=499
+move_area_bottom=517
 tab_order=11
 radio_group=10171
 radio_group_name=ObjectTypeRadioGroup
 
-[Label1]
+[Label2]
 type=Label
 id=82
 name=Label82
@@ -1692,16 +1810,16 @@ text=Object type
 visible=1
 enabled=1
 area_left=9
-area_top=165
+area_top=183
 area_right=109
-area_bottom=185
+area_bottom=203
 move_area_left=322
-move_area_top=463
+move_area_top=481
 move_area_right=422
-move_area_bottom=483
+move_area_bottom=501
 tab_order=10
 
-[Label2]
+[Label3]
 type=Label
 id=81
 name=Label81
@@ -1711,16 +1829,16 @@ text=Change
 visible=1
 enabled=1
 area_left=9
-area_top=133
+area_top=158
 area_right=109
-area_bottom=153
+area_bottom=178
 move_area_left=322
-move_area_top=431
+move_area_top=456
 move_area_right=422
-move_area_bottom=451
+move_area_bottom=476
 tab_order=9
 
-[Label3]
+[Label4]
 type=Label
 id=80
 name=Label80
@@ -1730,16 +1848,16 @@ text=Values
 visible=1
 enabled=1
 area_left=8
-area_top=106
+area_top=131
 area_right=108
-area_bottom=126
+area_bottom=151
 move_area_left=321
-move_area_top=404
+move_area_top=429
 move_area_right=421
-move_area_bottom=424
+move_area_bottom=449
 tab_order=8
 
-[Label4]
+[Label5]
 type=Label
 id=79
 name=Label79
@@ -1749,16 +1867,16 @@ text=Props
 visible=1
 enabled=1
 area_left=8
-area_top=80
+area_top=105
 area_right=108
-area_bottom=100
+area_bottom=125
 move_area_left=321
-move_area_top=378
+move_area_top=403
 move_area_right=421
-move_area_bottom=398
+move_area_bottom=423
 tab_order=7
 
-[Label5]
+[Label6]
 type=Label
 id=78
 name=Label78
@@ -1777,7 +1895,7 @@ move_area_right=421
 move_area_bottom=372
 tab_order=6
 
-[Label6]
+[Label7]
 type=Label
 id=77
 name=Label77
@@ -1815,7 +1933,7 @@ move_area_right=711
 move_area_bottom=318
 tab_order=4
 
-[Label7]
+[Label8]
 type=Label
 id=75
 name=Label75
@@ -1844,13 +1962,13 @@ text=(null)
 visible=1
 enabled=1
 area_left=128
-area_top=79
+area_top=104
 area_right=327
-area_bottom=99
+area_bottom=124
 move_area_left=441
-move_area_top=377
+move_area_top=402
 move_area_right=640
-move_area_bottom=397
+move_area_bottom=422
 tab_order=2
 is_menu=0
 num_visible_rows=4
@@ -1865,13 +1983,13 @@ text=(null)
 visible=1
 enabled=1
 area_left=128
-area_top=106
+area_top=131
 area_right=327
-area_bottom=126
+area_bottom=151
 move_area_left=441
-move_area_top=404
+move_area_top=429
 move_area_right=640
-move_area_bottom=424
+move_area_bottom=449
 tab_order=1
 is_menu=0
 num_visible_rows=4
@@ -1886,11 +2004,11 @@ text=Change
 visible=1
 enabled=1
 area_left=334
-area_top=132
+area_top=157
 area_right=392
-area_bottom=151
+area_bottom=176
 move_area_left=647
-move_area_top=430
+move_area_top=455
 move_area_right=705
-move_area_bottom=449
+move_area_bottom=474
 tab_order=0

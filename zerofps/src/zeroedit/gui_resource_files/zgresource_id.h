@@ -29,6 +29,10 @@ enum WindowID
 	RemovePropertyBn = 96,
 	ObjectPropOK = 98,
 	ObjectPropertiesCancel = 99,
+	Label100 = 100,
+	ObjectRotX = 101,
+	ObjectRotY = 102,
+	ObjectRotZ = 103,
 
 	ObjectTypeRadioGroup = 10171,
 };

@@ -8,6 +8,7 @@
 #include "../zerofps/render/texturemanager.h"
 #include <typeinfo>
 #include "../zerofps/basic/zfini.h"
+#include "../zerofps/basic/zfassert.h"
 #include <set>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -356,8 +357,12 @@ void ControlBox::PrintWindowRC(Serialization *pkFile, TextureManager* pkTexMan)
 {
 	ZGuiWnd* pkWnd, *pkParent;
 
+	printf("apa fore\n");
+
 	// Print all skins.
 	PrintSkins(pkFile, pkTexMan);
+
+	printf("apa efter\n");
 
 	unsigned int number = m_pkCreatedWindows.size();
 	unsigned int aiCounter[11] = {1,1,1,1,1,1,1,1,1,1,1};
@@ -436,6 +441,14 @@ void ControlBox::PrintSkins(Serialization *pkFile, TextureManager* pkTexMan)
 		for(unsigned int j=0; j<kWndSkins.size(); j++)
 		{
 			ZGuiSkin* pkSkin = kWndSkins[j].first;
+
+			if(pkSkin == NULL)
+				continue;
+
+			
+			ZFAssert(pkSkin, "No skin!");
+				
+
 
 			// Section
 			pkFile->Outputa("[Skin%i]\n", uiSkinCounter++);
@@ -807,7 +820,8 @@ void ControlBox::SelectSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWn
 			if( kAllSkinsTempArray[j].first.first == strWndName &&
 				kAllSkinsTempArray[j].first.second == strDesc )
 			{
-				*pkSkin = *kAllSkinsTempArray[j].second;
+				if(pkSkin != NULL)
+					*pkSkin = *kAllSkinsTempArray[j].second;
 				break;
 			}
 		}

@@ -182,6 +182,10 @@ void EditPropertyDlg::OnOpenEditProperty()
 	ZGuiWnd* pkPosYEB = m_pkGui->Get("ObjectPosYEB");
 	ZGuiWnd* pkPosZEB = m_pkGui->Get("ObjectPosZEB");
 
+	ZGuiWnd* pkRotXEB = m_pkGui->Get("ObjectRotX");
+	ZGuiWnd* pkRotYEB = m_pkGui->Get("ObjectRotY");
+	ZGuiWnd* pkRotZEB = m_pkGui->Get("ObjectRotZ");
+
 	if(pkPropertysCB == NULL)
 	{
 		cout << "Failed to find combox named [PropertyCB]" << endl;
@@ -208,12 +212,18 @@ void EditPropertyDlg::OnOpenEditProperty()
 	{
 		char text[50];
 		Vector3 p = m_pkCurrentChild->GetPos();
-		
+
 		((ZGuiTextbox*) pkNameEB)->SetText((char*)m_pkCurrentChild->GetName().c_str());
 
 		sprintf(text, "%0.3f", p.x); ((ZGuiTextbox*) pkPosXEB)->SetText(text);
 		sprintf(text, "%0.3f", p.y); ((ZGuiTextbox*) pkPosYEB)->SetText(text);
 		sprintf(text, "%0.3f", p.z); ((ZGuiTextbox*) pkPosZEB)->SetText(text);
+
+		p = m_pkCurrentChild->GetRot();
+
+		sprintf(text, "%0.3f", p.x); ((ZGuiTextbox*) pkRotXEB)->SetText(text);
+		sprintf(text, "%0.3f", p.y); ((ZGuiTextbox*) pkRotYEB)->SetText(text);
+		sprintf(text, "%0.3f", p.z); ((ZGuiTextbox*) pkRotZEB)->SetText(text);
 
 		list<Property*> akPropertys;
 		vector<string> akPropertyNames;
@@ -301,6 +311,10 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 	ZGuiWnd* pkYPosEB = m_pkGui->Get("ObjectPosYEB");
 	ZGuiWnd* pkZPosEB = m_pkGui->Get("ObjectPosZEB");
 
+	ZGuiWnd* pkXRotEB = m_pkGui->Get("ObjectRotX");
+	ZGuiWnd* pkYRotEB = m_pkGui->Get("ObjectRotY");
+	ZGuiWnd* pkZRotEB = m_pkGui->Get("ObjectRotZ");
+
 	if(bSave)
 	{
 		char* strName = pkNameEB->GetText();
@@ -308,14 +322,22 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 		char* strYPos = pkYPosEB->GetText();
 		char* strZPos = pkZPosEB->GetText();
 
+		char* strXRot = pkXRotEB->GetText();
+		char* strYRot = pkYRotEB->GetText();
+		char* strZRot = pkZRotEB->GetText();
+
 		if( strName != NULL && strXPos != NULL && 
 			strYPos != NULL && strZPos != NULL)
 		{
-			float x,y,z;
+			float x,y,z,rx,ry,rz;
 
 			x = atof(strXPos);
 			y = atof(strYPos);
 			z = atof(strZPos);
+
+			rx = atof(strXRot);
+			ry = atof(strYRot);
+			rz = atof(strZRot);
 
 			char strText[512];
 			strcpy(strText, pkNameEB->GetText());
@@ -324,6 +346,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 			{
 				m_pkCurrentChild->GetName() = string(strText);
 				m_pkCurrentChild->GetPos() = Vector3(x,y,z);
+				m_pkCurrentChild->GetRot() = Vector3(rx,ry,rz);
 			}
 		}
 	}
