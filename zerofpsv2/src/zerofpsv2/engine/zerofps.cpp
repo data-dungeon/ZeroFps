@@ -701,6 +701,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 
 						
+
+
 			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim") == 0) {
 				strcpy(g_szIpPort, "192.168.0.153:4242");
 				}
@@ -718,6 +720,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "gubb") == 0) {
 				strcpy(g_szIpPort, "192.168.0.176:4242");
+				}
+			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "dvhome") == 0) {
+				strcpy(g_szIpPort, "81.225.139.132:4242");
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "lh") == 0) {
 				strcpy(g_szIpPort, "127.0.0.1:4242");

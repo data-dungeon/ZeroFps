@@ -603,8 +603,12 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 		pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
 
-		if(pkPackObj->NeedToPack() == false)				continue;
-		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)		continue;
+		if(pkPackObj->NeedToPack() == false)						continue;
+		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)				continue;
+		if(pkPackObj->HaveSomethingToSend(iClient) == false) {
+			//cout << "No need to send object" << endl;
+			continue;
+			}
 
 		NP.Write(pkPackObj->iNetWorkID);
 		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );

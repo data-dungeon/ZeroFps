@@ -189,6 +189,7 @@ class ENGINE_API Entity
 		void	SetNetUpdateFlagAndChilds(int iFlagID,bool bValue);		
 		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
 		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
+		bool	IsAnyNetUpdateFlagTrue(int iConID);					
 		void	ResetAllNetUpdateFlags();											//reset all update flags to true
 		void	ResetAllNetUpdateFlags(int iConID);											//reset all update flags to true		
 		void	ResetAllNetUpdateFlagsAndChilds(int iConID);											//reset all update flags to true				
@@ -244,6 +245,7 @@ class ENGINE_API Entity
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();															// True if this object has any netactive propertys.
 		bool NeedToPack();														// Returns true if there is any netactive properys in object
+		bool HaveSomethingToSend(int iConnectionID);						// Returns true if there is anything to send for selected connection,
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
 

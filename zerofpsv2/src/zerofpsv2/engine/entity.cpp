@@ -555,6 +555,23 @@ bool Entity::NeedToPack()
 }
 
 
+bool Entity::HaveSomethingToSend(int iConnectionID)
+{
+	bool bNeedUpdate = false;
+
+	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
+
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		if((*it)->bNetwork) 
+		{
+			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
+		}
+	}
+	
+	return bNeedUpdate;
+}
+
 
 /**	\brief	Pack Entity.
 */
@@ -1638,6 +1655,18 @@ bool	Entity::GetNetUpdateFlag(int iConID,int iFlagID)
 	return m_kNetUpdateFlags[iConID][iFlagID];
 }
 
+bool	Entity::IsAnyNetUpdateFlagTrue(int iConID)
+{
+	bool bValue = false;
+
+	for(int i = 0; i<9; i++)
+	{
+		bValue |= m_kNetUpdateFlags[iConID][i];
+	}
+	
+	return bValue;
+}
+
 void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 {
 	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
@@ -1648,13 +1677,15 @@ void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 
 void Entity::SetNetUpdateFlagAndChilds(int iFlagID,bool bValue)
 {
-	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	int i;
+
+	for(i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i][iFlagID] = bValue;
 	}
 	
 	//reset all childs
-	for(int i = 0;i<m_akChilds.size();i++)
+	for(i = 0;i<m_akChilds.size();i++)
 	{
 		m_akChilds[i]->SetNetUpdateFlagAndChilds(iFlagID,bValue);
 	}	
