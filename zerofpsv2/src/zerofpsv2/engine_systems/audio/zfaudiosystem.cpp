@@ -10,6 +10,7 @@
 #include "../../basic/zfvfs.h"
 #include "../script_interfaces/si_audio.h"
 #include "../../engine/entitymanager.h"
+#include "../../engine/zerofps.h"
 #include "zfaudiosystem.h"
 
 #include "SDL/SDL.h"
@@ -227,6 +228,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	RegisterVariable("a_musicvolume",&m_fMusicVolume,CSYS_FLOAT);
 
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -1684,7 +1686,7 @@ void ZFAudioSystem::RemoveAmbientArea(int iID)
 
 void ZFAudioSystem::FadeGain(AmbientArea* pkArea, bool bOut)
 {
-	float fTime = (float) SDL_GetTicks() / 1000.0f;
+	float fTime = m_pkZeroFps->GetTicks();
 
 	if(pkArea->m_fFadeTimer < 0)
 		pkArea->m_fFadeTimer = fTime;

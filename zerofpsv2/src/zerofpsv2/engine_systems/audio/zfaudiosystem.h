@@ -214,6 +214,7 @@ private:
 	//
 
 	EntityManager* m_pEntityMan;
+	ZeroFps* 		m_pkZeroFps;
 
 	class AmbientArea
 	{

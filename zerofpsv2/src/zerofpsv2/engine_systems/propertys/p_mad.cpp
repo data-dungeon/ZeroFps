@@ -36,7 +36,8 @@ P_Mad::P_Mad()
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
 	
-	m_fLastAnimationUpdateTime = m_pkEntityManager->GetSimTime();
+  	m_fLastAnimationUpdateTime = m_pkZeroFps->GetTicks();
+//  	m_fLastAnimationUpdateTime = m_pkEntityManager->GetSimTime();
 	m_iLastAnimationUpdateFrame = -1;
 
 	
@@ -244,8 +245,9 @@ void P_Mad::DoAnimationUpdate()
 {
 	if(m_iLastAnimationUpdateFrame != m_pkZeroFps->GetCurrentFrame())
 	{
-		//float fCurrentTime = m_pkZeroFps->GetTicks();
-		float fCurrentTime = m_pkEntityManager->GetSimTime();
+//    		float fCurrentTime = m_pkEntityManager->GetSimTime();		
+  		float fCurrentTime = m_pkZeroFps->GetTicks();
+				
 		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);
 	
 		m_iLastAnimationUpdateFrame = m_pkZeroFps->GetCurrentFrame();

@@ -127,25 +127,33 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool							m_bDevPagesVisible;
 		vector<DevStringPage>	m_DevStringPage;					
 		
+		//time and fps
 		float 			m_fLastFrameTime;
 		float 			m_fAvrageFpsTime;
 		int				m_iAvrageFrameCount;
 		unsigned int	m_iCurrentFrame;
-
+		float				m_fEngineTime;						// Time since engine start.
+		float				m_fCurrentTime;					// this frames time
 		bool				m_bLockFps;
 		float 			m_fLockFrameTime;
-
 		float 			m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
 		float				m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 			m_fSystemUpdateTime;				// last system update
 		
+		//network
 		bool				m_bSyncNetwork;
 		float				m_fNetworkUpdateFps;				// number of network updates each second
 		float				m_fNetworkUpdateFpsDelta;		// time between each network update
 		float 			m_fNetworkUpdateTime;			// last system update
 		int				m_iConnectionSpeed;				// speed of outgoing connections
-		
-		float				m_fEngineTime;						// Time since engine start.
+
+		int				m_iServerConnection;				// The Connection num we have on the server.		
+		int				m_iClientEntityID;						
+		int				m_iMaxPlayers;
+				
+		bool				m_bClientLoginState;				// True if loginstate is used for clients.
+				
+		//rendering and such
 		bool				m_bRenderOn;
 		bool				m_bMinimized;
 		bool				m_bDrawAxisIcon;
@@ -155,11 +163,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 				
 		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
-		int				m_iServerConnection;				// The Connection num we have on the server.		
-		int				m_iClientEntityID;						
-		int				m_iMaxPlayers;
-				
-		bool				m_bClientLoginState;				// True if loginstate is used for clients.
 
 
 		//profile information
@@ -291,7 +294,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
 		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
 				
-		float GetTicks()						{	return float((SDL_GetTicks()/1000.0));		}
+// 		float GetTicks()						{	return float((SDL_GetTicks()/1000.0));		}
+ 		float GetTicks()						{	return m_fEngineTime;							}
 		float GetFrameTime()					{	return float((m_fFrameTime/1000.0));		}
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}

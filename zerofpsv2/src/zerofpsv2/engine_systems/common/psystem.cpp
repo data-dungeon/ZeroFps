@@ -37,8 +37,8 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 	// Get Frametime
 	m_fFrameTime = m_pkFps->GetFrameTime();// - m_fLastTime;//GetTicks() - m_fLastTime;
-	m_fLastTime =  SDL_GetTicks();// m_pkFps->m_pkObjectMan->GetSimTime();
-
+	// 	m_fLastTime =  SDL_GetTicks();// m_pkFps->m_pkObjectMan->GetSimTime();
+ 	m_fLastTime = m_pkFps->GetTicks() * 1000.0;
 
 	// Update particlesystem lifetime
 	if ( m_fAge != -9999999 )

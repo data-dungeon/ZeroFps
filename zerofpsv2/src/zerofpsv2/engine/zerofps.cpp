@@ -89,6 +89,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_iCurrentFrame			= 0;
+	m_fCurrentTime				= 0;
 	
 	m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateTime		= 0;
@@ -739,7 +740,8 @@ void ZeroFps::MainLoop(void)
 		else
 		{
 			//current time
-			m_fEngineTime = GetTicks();
+// 			m_fEngineTime = GetTicks();
+			m_fEngineTime = float((SDL_GetTicks()/1000.0));
 			 			 
 			//check if application is minimized
 			m_bMinimized = ( !(SDL_GetAppState() & SDL_APPACTIVE) );	
