@@ -23,7 +23,8 @@ class MistClient :public Application, public ZGuiApp {
 		};
 
 		Camera*				m_pkCamera;
-		
+		int					m_iViewFrom;
+
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
@@ -45,7 +46,7 @@ class MistClient :public Application, public ZGuiApp {
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
-		void OnNetworkMessage(NetPacket *PkNetMessage) {}
+		void OnNetworkMessage(NetPacket *PkNetMessage);
 		
 		void RegisterPropertys();
 		void RegisterResources();

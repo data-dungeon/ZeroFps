@@ -12,6 +12,7 @@ enum MLNM_ClientToServer
 enum MLNM_ServerToClient
 {
 	MLNM_SC_MADDRAW,
+	MLNM_SC_SETVIEW,
 	MLNM_SC_MAX
 };
 

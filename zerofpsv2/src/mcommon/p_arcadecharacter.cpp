@@ -127,7 +127,7 @@ void P_ArcadeCharacter::Update()
 		Fire();
 	}
 
-
+	m_kActions.reset();
 }
 
 void P_ArcadeCharacter::Fire()

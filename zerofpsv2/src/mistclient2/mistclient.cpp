@@ -14,7 +14,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/p_arcadecharacter.h"
- 
+#include "../mcommon/ml_netmessages.h"
+
 MistClient g_kMistClient("MistClient",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -27,7 +28,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistclient2");
-
+	m_iViewFrom = -1;
 } 
  
 void MistClient::OnInit() 
@@ -97,7 +98,7 @@ void MistClient::OnIdle()
 
 void MistClient::OnSystem() 
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID()))
+/*	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID()))
 	{
 		if(!pkEnt->GetProperty("P_Camera"))
 		{
@@ -107,7 +108,7 @@ void MistClient::OnSystem()
 				cout<<"attached camera to client property"<<endl;
 			}
 		}
-	}
+	}*/
 }
 
 
@@ -140,7 +141,41 @@ void MistClient::OnClientStart(void)
 	m_pkConsole->Printf("Trying to connect");
 }
 
+void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
+{
+	unsigned char ucType;
 
+	// Read Type of Message.
+	PkNetMessage->Read(ucType);
+	//int iJiddra = ucType;
+	//m_pkConsole->Printf("AppMessageType: %d", iJiddra );
+
+	switch(ucType)
+	{
+		case MLNM_SC_SETVIEW:
+			int iEntityID;
+			PkNetMessage->Read(iEntityID);
+
+			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID( iEntityID ))
+			{
+				if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
+				{
+					//pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+					pkCam->SetCamera(m_pkCamera);
+
+					cout<<"attached camera to client property"<<endl;
+				}
+			}
+
+
+			break;
+
+		default:
+			cout << "Error in game packet : " << (int) ucType << endl;
+			PkNetMessage->SetError(true);
+			return;
+	}
+}
 
 
 

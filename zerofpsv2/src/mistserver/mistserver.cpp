@@ -28,6 +28,8 @@
 #include "../mcommon/ml_netmessages.h"
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
+Entity* pkEntTestArc;
+
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -344,6 +346,20 @@ void MistServer::Input()
 	if(m_pkInputHandle->Pressed(KEY_8))	assert(0);
 	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
 
+	if(pkEntTestArc)
+	{
+		P_ArcadeCharacter* pkArc = dynamic_cast<P_ArcadeCharacter*>( pkEntTestArc->GetProperty("P_ArcadeCharacter"));
+		if(pkArc)
+		{
+			if(m_pkInputHandle->Pressed(KEY_I))	pkArc->m_kActions[2] = 1;
+			if(m_pkInputHandle->Pressed(KEY_K))	pkArc->m_kActions[3] = 1;
+			if(m_pkInputHandle->Pressed(KEY_J))	pkArc->m_kActions[1] = 1;
+			if(m_pkInputHandle->Pressed(KEY_L))	pkArc->m_kActions[0] = 1;
+			
+		}
+	}
+	
+
 	Input_Camera(float(x),float(z));
 /*
 	if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
@@ -370,7 +386,6 @@ void MistServer::OnHud(void)
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	NetPacket kNp;
-	Entity* pkEntity;
 	Vector3 kStartPos;
 	ClientOrder kOrder;
 
@@ -491,17 +506,17 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 
 		case FID_TEST_JIDDRA:
-			pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
+			/*pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
 			//pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/BadGuy.lua");		// t_player
 			pkEntity->SetUseZones(true);
 			kStartPos = Vector3(0,0.5,0);
-			pkEntity->SetWorldPosV(kStartPos);
+			pkEntity->SetWorldPosV(kStartPos);*/
 
-			/*kNp.Clear();
-			kNp.Write((char) MLNM_SC_MADDRAW);
-			kNp.Write((int) 5);
+			kNp.Clear();
+			kNp.Write((char) MLNM_SC_SETVIEW);
+			kNp.Write((int) pkEntTestArc->GetEntityID());
 			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);*/			
+			SendAppMessage(&kNp);			
 
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
@@ -809,7 +824,8 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	}
 			
 	cout<<"created character entity "<<csPlayer<<" -> "<<csCharacter<<endl;
-			
+	pkEntTestArc = pkObject;
+
 	return pkObject->GetEntityID();
 }
 
