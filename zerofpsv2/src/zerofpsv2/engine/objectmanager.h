@@ -61,50 +61,52 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-		ZeroFps*	m_pkZeroFps;
-		ZFScriptSystem* m_pkScript;
-		ZFResourceHandle* m_pScriptFileHandle;
+		ZeroFps*						m_pkZeroFps;
+		ZFScriptSystem* 			m_pkScript;
+		ZFResourceHandle* 		m_pScriptFileHandle;
+		NetWork*						m_pkNetWork;
 
-		Object*	m_pkWorldObject;											///< Top level object.
+		Object*						m_pkWorldObject;											///< Top level object.
+		
+		string						m_kWorldDirectory;
 		
 		// Object ArcheTypes
 		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
-		ObjectArcheType*	GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
-		void AddArchPropertys(Object* pkObj, string strName);
 
-		list<Object*>		m_akObjects;									///< List of all objects.
-		//vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
-		vector<int>			m_aiDeleteList;
-		vector<int>			m_aiNetDeleteList;
-
-		vector<Property*>	m_akPropertys;									///< List of Active Propertys.	
-		int					m_iNrOfActivePropertys;						///> Size of akProperty list.
+		list<Object*>				m_akObjects;									///< List of all objects.
+		vector<int>					m_aiDeleteList;
+		vector<int>					m_aiNetDeleteList;
+		
+		// Zones
+		vector<ZoneData>			m_kZones;
+		
+		// Trackers
+		list<Object*> 				m_kTrackedObjects;	
 
 		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
+		vector<Property*>			m_akPropertys;									///< List of Active Propertys.	
+		int							m_iNrOfActivePropertys;						///> Size of akProperty list.
 
+		int							iNextObjectID;													///< Next free object ID.
+		bool							m_bUpdate;														///< Disable all updates except RENDER.	
+		bool							m_bDrawZones;
 
-		int	iNextObjectID;													///< Next free object ID.
-		bool	m_bUpdate;														///< Disable all updates except RENDER.
-	
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
-
 		void TESTVIM_LoadArcheTypes(char* szFileName);
+		ObjectArcheType* GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
+		void AddArchPropertys(Object* pkObj, string strName);
 
-		NetWork*				m_pkNetWork;
-
-		bool					m_bDrawZones;
 
 	public:
-		int	m_iForceNetUpdate;					
-		float	m_fEndTimeForceNet;
+		int		m_iForceNetUpdate;					
+		float		m_fEndTimeForceNet;
 
-		int	m_iUpdateFlags;												///< Flags of active update.
-		int	m_iRole;															///< I'm i a server or a client or both.
+		int		m_iUpdateFlags;												///< Flags of active update.
+		int		m_iRole;															///< I'm i a server or a client or both.
 
-		int	m_iTotalNetObjectData;
-		int	m_iNumOfNetObjects;
+		int		m_iTotalNetObjectData;
+		int		m_iNumOfNetObjects;
 
 		ObjectManager();
 		~ObjectManager();
@@ -129,7 +131,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Object* CreateObjectFromScript(const char* acName);
-//		Object* CloneObject(int iNetID);									
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
@@ -186,16 +187,9 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void OwnerShip_Take(Object* pkObj);		
 		void OwnerShip_Give(Object* pkObj);
 		
-		friend class Object;
-
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
-
-		// Zones
-		//vector<ZoneObject*> 	m_kZones;
-		vector<ZoneData>			m_kZones;
-		
 
 		int GetNumOfZones();
 		void Test_CreateZones();
@@ -208,9 +202,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void AutoConnectZones();
 		Vector3 GetZoneCenter(int iZoneNum);
 
-		// Trackers
-		list<Object*> 			m_kTrackedObjects;	
-
 		void AddTracker(Object* kObject);
 		void RemoveTracker(Object* kObject);
 		int GetNrOfTrackedObjects();
@@ -220,19 +211,19 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 		void LoadZones();
 		void SaveZones();
-
 		void LoadZone(int iId);
 		void UnLoadZone(int iId);
 		void LinkZones(int iFromId, int iToId);
 		ZoneData*	GetZoneData(int iID);
-	
 		int CreateZone();
 		void DeleteZone(int iId);
-		int GetUnusedZoneID();
-		
-		void NewWorld();
-		
+		int GetUnusedZoneID();		
+		void NewWorld();		
 		void Zones_Refresh();
+
+
+		friend class Object;
+		friend class ZeroFps;		
 };
 
 #endif

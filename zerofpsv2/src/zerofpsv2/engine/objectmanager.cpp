@@ -73,6 +73,8 @@ bool ObjectManager::StartUp()
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
+	m_kWorldDirectory = "data/testmap/";
+
 	m_pkWorldObject						=	new Object();	
 	m_pkWorldObject->GetName()			= "WorldObject";
 	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
@@ -1546,7 +1548,7 @@ void ObjectManager::DeleteZone(int iId)
 void ObjectManager::LoadZones()
 {
 	ZFVFile kFile;
-	kFile.Open("data/zones.dat",0,false);
+	kFile.Open((m_kWorldDirectory + "zones.dat").c_str(),0,false);
 
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
@@ -1588,12 +1590,18 @@ void ObjectManager::LoadZones()
 
 void ObjectManager::SaveZones()
 {
+	
 	ZFVFile kFile;
-	kFile.Open("data/zones.dat",0,true);
-
+	if(!kFile.Open((m_kWorldDirectory + "zones.dat").c_str(),0,true))
+	{	
+		cout<<"Could not open zone save file"<<endl;
+		return;
+	}
+	
  	int iNumOfZone = m_kZones.size();
 	kFile.Write(&iNumOfZone,sizeof(int),1);
 
+	
 	for(int i=0; i<iNumOfZone; i++) {
 		//m_kZones[i].m_iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
 		int iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
@@ -1710,4 +1718,6 @@ void ObjectManager::NewWorld()
 	m_kZones.clear();
 
 	CreateZone();
+	
+	SaveZones();
 }
