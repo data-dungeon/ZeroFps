@@ -407,7 +407,7 @@ void Scene::CreateUI()
 	m_pkGui->ShowMainWindow(m_pkSelectFileWnd, false);
 
 	((ZGuiTreebox*)m_pkApp->GetWnd("FileTree"))->Clear();
-	BuildFileTree("FileTree", "datafiles", ".lua");
+	BuildFileTree("FileTree", "data", ".lua");
 	m_pkApp->SetText("SelectedFileEB", "");
 
 	m_pkApp->CreateWnd(Label, "OwerwriteWarning", "SelectFileWnd", "", 400-240, 16+400-16-64+24+15, 100, 20, 0);
@@ -453,7 +453,13 @@ bool Scene::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtensi
 		vector<string> t;
 		pkZFVFileSystem->ListDir(&t, currentFolder);
 		for(unsigned int i=0; i<t.size(); i++)
+      {
+         if(t[i].find(".") == string::npos && t[i].find("gui") != string::npos)
+            printf("%s\n", t[i].c_str());
+
 			vkFileNames.push_back(t[i]); 
+         
+      }
 		t.clear(); vkFileNames.sort(SortFiles);
 
 		// Lägg till alla filer
@@ -479,8 +485,8 @@ bool Scene::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtensi
 					bool bCorectExt = true;
 
 					if(szExtension != NULL)
-						if(strLabel.find(szExtension) == string::npos && 
-							strLabel.find(".tga") == string::npos )
+						if(strLabel.find(szExtension) == string::npos/* && 
+							strLabel.find(".tga") == string::npos*/ )
 							bCorectExt = false;
 
 					if(bCorectExt)

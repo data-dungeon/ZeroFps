@@ -364,13 +364,13 @@ bool Serialization::WndHaveBeenSaved(ZGuiWnd *pkParent)
 
 void Serialization::TempSave(Scene* pkScene)
 {
-	string strTempFileName = "../data/guires_temp.lua";
+	string strTempFileName = "../datafiles/guires_temp.lua";
 	SaveGUI((char*)strTempFileName.c_str(), pkScene);
 }
 
 ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 {
-	string strTempFileName = "../data/guires_temp.lua";
+	string strTempFileName = "../datafiles/guires_temp.lua";
 
 	ZGuiWnd* pkReturnWnd = NULL;
 
