@@ -17,7 +17,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_bVisibleZones		=	true;
 	m_iShowDecorations	=	1;
 	m_iDecorationStep		=	1;
-	m_fZoneRadius			=	100;	
+	m_fZoneRadius			=	150;	
 	m_iZpr					=	2;
 	m_fZoneDistance		=	64;
 	m_kMapBaseDir			=	"../data/maps";
