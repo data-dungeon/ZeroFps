@@ -42,7 +42,7 @@ extern MCOMMON_API vector<string> g_kData;
 extern MCOMMON_API vector<string> g_kCounters;
 extern MCOMMON_API map<string, vector<string> > g_kSkillGroups;
 
-class MCOMMON_API CharacterStats
+class MCOMMON_API OldCharacterStats
 {
 private:
 
@@ -108,7 +108,7 @@ public:
 	
    unsigned int m_uiVersion; // which version of char the prop. holds. Server always have the latest.
 
-	CharacterStats( Entity *pkParent );
+	OldCharacterStats( Entity *pkParent );
 
    FightStats* GetFightStats()             { return &m_kFightStats; }
 

@@ -11,6 +11,37 @@ using namespace std;
 
 class P_Buff;
 
+
+
+
+class MCOMMON_API CharacterStats
+{
+	public:
+		int	m_iSpeed;
+		int	m_iSpeedMod;
+		
+		int	m_iMana;
+		int	m_iManaMax;
+		int	m_iManaMaxMod;
+		
+		int	m_iLife;
+		int	m_iLifeMax;
+		int	m_iLifeMaxMod;
+		
+		int	m_iStrength;
+		int	m_iStrengthMod;
+		int	m_iDexterity;
+		int	m_iDexterityMod;
+		int	m_iConstitution;
+		int	m_iConstitutionMod;
+		
+		int	m_iArmor;
+		int	m_iArmorMod;
+		
+		int	m_iLevel;
+};
+
+
 class MCOMMON_API P_CharacterProperty: public Property
 {
 	private:
@@ -84,7 +115,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void Update();
 		
 		void SetClient(int iConID)									{	m_iConID = iConID;				}
-		
+	
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
