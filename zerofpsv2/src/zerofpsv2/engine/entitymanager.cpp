@@ -2830,16 +2830,17 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 	if(pkEntity->m_bZone)
 		return false;
 
+			
 	ObjectManagerLua::Push();
 	//set self id before calling the funktion
 	ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = pkEntity->m_iEntityID;	
-
 	bool bRes;
 
+		
 	if(pkParams)
 		bRes = m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
 	else
-		bRes =  m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
+		bRes =  m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);
 	
 	ObjectManagerLua::Pop();
 	return bRes;

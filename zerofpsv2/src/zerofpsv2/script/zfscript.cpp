@@ -41,8 +41,8 @@ bool ZFScriptSystem::IsValid()	{ return true; }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		OpenLua
-// Description:	Starta lua, öppna vissa hjälpfunktioner och skapa ett alla de
-//				tag metoder som krävs för att kunna registrera globala variabler
+// Description:	Starta lua, ï¿½pna vissa hjï¿½pfunktioner och skapa ett alla de
+//				tag metoder som krï¿½s fï¿½ att kunna registrera globala variabler
 //				till Lua.
 //
 bool ZFScriptSystem::Open()
@@ -458,7 +458,7 @@ bool ZFScript::Create(string strName)
 		return false;
 	}
 
-	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded. (SKALL FÖRSTÖRAS MEN GÖRS EJ EFTERSOM EXPIRE KITTET INTE FUNKAR ÄN)
+	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded. (SKALL Fï¿½STï¿½AS MEN Gï¿½S EJ EFTERSOM EXPIRE KITTET INTE FUNKAR ï¿½)
 	strcpy(m_szScriptName, strName.c_str());
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
@@ -487,7 +487,7 @@ int ZFScript::CalculateSize()
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
 
-	// Försök att hitta sökvägen via det virituella filsystemet.
+	// Fï¿½sï¿½ att hitta sï¿½vï¿½en via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
 
 	char szError[150];
@@ -543,13 +543,14 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 {
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
 
-	if(pkScript->m_pkLuaState == NULL)
-		return false;
+	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
+		return false;	
+	
 
 	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
 
-	// Måste kolla så att den global funktion finns. 
-	// Låser sig fett om den int gör det!
+	// Mï¿½te kolla sï¿½att den global funktion finns. 
+	// Lï¿½er sig fett om den int gï¿½ det!
 	if(lua_isnil( pkScript->m_pkLuaState, 1) )
 	{
 		lua_pop(pkScript->m_pkLuaState, 1);
@@ -606,19 +607,21 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
+		
+
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
 
 	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
 		return false;
 
-	// Försök att hitta sökvägen via det virituella filsystemet.
+	// Fï¿½sï¿½ att hitta sï¿½vï¿½en via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
 
 	//printf("SCRIPT_API: Calling script function %s\n", szFuncName);
 	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
 	
-	// Måste kolla så att den global funktion finns. 
-	// Låser sig fett om den int gör det!
+	// Mï¿½te kolla sï¿½att den global funktion finns. 
+	// Lï¿½er sig fett om den int gï¿½ det!
 	if(lua_isnil( pkScript->m_pkLuaState, 1) )
 	{
 		lua_pop(pkScript->m_pkLuaState, 1);
@@ -657,7 +660,7 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 {
 	string temp;
 
-	// Ta först bort Lua's alla radtecken.
+	// Ta fï¿½st bort Lua's alla radtecken.
 	for(int j=0; j<strLuaText.size(); j++)
 	{
 		if(strLuaText[j] != '\n')
@@ -667,7 +670,7 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 	strLuaText = temp;
 	temp.clear();
 
-	// Lägg sedan till radtecken där ett '\n' finns.
+	// Lï¿½g sedan till radtecken dï¿½ ett '\n' finns.
 	for(int j=0; j<strLuaText.size(); j++)
 	{
 		if(j!=(int)strLuaText.size()-1 && j!=0)
