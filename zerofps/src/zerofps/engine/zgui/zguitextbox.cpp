@@ -107,14 +107,14 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		return true;
 	}
 
-	if(nKey == KEY_RIGHT)
+	if(nKey == KEY_RIGHT && m_strText)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 			m_iCursorPos++;	
 		return true;
 	}
 
-	if(nKey == KEY_END)
+	if(nKey == KEY_END && m_strText)
 	{
 		m_iCursorPos = strlen(m_strText);
 		return true;
@@ -436,7 +436,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	pkScrollbar->m_iScrollChange = 0;
 }
 
-void ZGuiTextbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiTextbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, string("Textbox")) );
 

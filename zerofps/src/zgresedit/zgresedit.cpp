@@ -40,6 +40,11 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kMouseState = IDLE;
 	m_pnCursorRangeDiffX=m_pnCursorRangeDiffY=-1;
 	m_iGridPrec = 5;
+
+	m_pkFileOpenDlg = NULL;
+	m_pkControlBox = NULL;
+	m_pkPropertyBox = NULL;
+	m_pkSkinBox = NULL;
 }
 
 ZGResEdit::~ZGResEdit()
@@ -137,27 +142,25 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 
 				Serialization kLoadRC(szFile, m_pkINI, false);
 				m_pkControlBox->LoadGUI(m_pkINI, pkTexMan);
+
+				sprintf(szFile, "ZeroFps Resource Editor [%s/%s]", 
+					m_pkFileOpenDlg->m_szSearchPath.c_str(),
+					m_pkFileOpenDlg->m_szCurrentFile.c_str());
+				SDL_WM_SetCaption(szFile,"mainicon.ico"); 
 			}
 			// Save File
 			else
 			{
-				char szFile[512];
-				sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
-					"zgresource_id.h");
-
-				Serialization kSaveIDs(szFile, m_pkINI, true);
-				kSaveIDs.Output("#ifndef _ZGRESOURCE_ID_H\n#define _ZGRESOURCE_ID_H\n\nenum WindowID\n{\n");
-				m_pkControlBox->PrintWindowIDs(&kSaveIDs);
-				kSaveIDs.Outputa("};\n\n#endif // #ifndef _ZGRESOURCE_ID_H");
-
-				sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
-					"zgresource_rc.txt");
-
-				Serialization kSaveRC(szFile, m_pkINI, true);
-				kSaveRC.Output("; ZGui resource script.\n\n");
-				m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
+				SaveFile();
 			}
 			break;
+		
+		// This message is sent from the ControlBox object
+		// and most work is already done.
+		case ID_CTRLBOX_COPY_BN:
+			m_pkPropertyBox->Update(SelectWnd::GetInstance()->m_pkWnd);
+			break;
+
 		}
 		break;
 
@@ -326,6 +329,46 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				}
 			}
 			break;
+		case KEY_UP:
+		case KEY_DOWN:
+			{
+				if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
+					!m_pkPropertyBox->IsOpen())
+				{
+					int offset = 1;
+					if(m_bUseGrid)
+						offset = m_iGridPrec;
+
+					if(((int*)pkParams)[0] == KEY_UP)
+						offset = -offset;
+					
+					Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
+					MoveWnd(SelectWnd::GetInstance()->m_pkWnd,
+						rc.Left,rc.Top+offset);
+					pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+				}
+			}
+			break;
+		case KEY_LEFT:
+		case KEY_RIGHT:
+			{
+				if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
+					!m_pkPropertyBox->IsOpen())
+				{
+					int offset = 1;
+					if(m_bUseGrid)
+						offset = m_iGridPrec;
+
+					if(((int*)pkParams)[0] == KEY_LEFT)
+						offset = -offset;
+
+					Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
+					MoveWnd(SelectWnd::GetInstance()->m_pkWnd,rc.Left+offset,
+						rc.Top);
+					pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+				}
+			}
+			break;
 		}
 		break;
 	// Editbox Typing Message
@@ -335,6 +378,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		case ID_GRID_PRECISION:
 			m_iGridPrec = m_pkGuiBuilder->GetTextInt("GridPrecEB");
 			break;
+		// detta meddelande har skickats fron propertybox objektet.
 		}
 		break;
 	// Combobox select ok.
@@ -354,6 +398,10 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				// Switch Menu Item
 				switch(pkSelItem->GetIndex())
 				{	
+				case IDM_NEW:
+					m_pkControlBox->ClearAll(); 
+					break;
+
 				case IDM_EXIT:
 					pkFps->QuitEngine();
 					break;
@@ -365,6 +413,12 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 					m_pkFileOpenDlg->Create(100,100,500,500,OPENFILEPROC);
 					break;
 				case IDM_SAVEFILE:
+					if(m_pkFileOpenDlg)
+					{
+						SaveFile();
+					}
+					break;
+				case IDM_SAVEFILE_AS:
 					flags = SAVE_FILES;
 					if(m_pkFileOpenDlg)
 						delete m_pkFileOpenDlg;
@@ -409,10 +463,12 @@ bool ZGResEdit::Create()
 	ZGuiCombobox* pkFileMenuCB = m_pkGuiBuilder->CreateCombobox(pkMenu,
 		ID_FILE_MENU,"FileMenuCB",2,2,20,20,true);
 
-	pkFileMenuCB->SetNumVisibleRows(3);
+	pkFileMenuCB->SetNumVisibleRows(5);
 	pkFileMenuCB->SetLabelText("File");
+	pkFileMenuCB->AddItem("New", IDM_NEW);
 	pkFileMenuCB->AddItem("Open...", IDM_OPENFILE);
-	pkFileMenuCB->AddItem("Save...", IDM_SAVEFILE);
+	pkFileMenuCB->AddItem("Save", IDM_SAVEFILE);
+	pkFileMenuCB->AddItem("Save as...", IDM_SAVEFILE_AS);
 	pkFileMenuCB->AddItem("Exit", IDM_EXIT);
 
 	return true;
@@ -518,13 +574,11 @@ void ZGResEdit::ResizeWnd(ZGuiWnd* pkWnd,int x,int y) const
 //
 void ZGResEdit::MoveWnd(ZGuiWnd* pkWnd,int x,int y) const
 {
-	printf("hej\n");
-
 	Rect rc = pkWnd->GetScreenRect();
 	
-	switch(m_kMouseState)
+/*	switch(m_kMouseState)
 	{
-	case MOVING:
+	case MOVING:*/
 		ZGuiWnd* pkParent = pkWnd->GetParent(true);
 
 		// Make sure that the window stays inside the parent frame.
@@ -542,9 +596,9 @@ void ZGResEdit::MoveWnd(ZGuiWnd* pkWnd,int x,int y) const
 
 		// Fönstret utan parent skall oxå gå att flytta...
 		pkWnd->SetPos(x,y,true,true);
-		m_pkPropertyBox->Update(SelectWnd::GetInstance()->m_pkWnd);
-		break;
-	}
+	//	m_pkPropertyBox->Update(SelectWnd::GetInstance()->m_pkWnd);
+	/*	break;
+	}*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -594,5 +648,27 @@ void ZGResEdit::EnableClickWnd()
 	for(unsigned int i=0; i<m_pkControlBox->m_pkCreatedWindows.size(); i++)
 	{
 		m_pkControlBox->m_pkCreatedWindows[i].m_pkWnd->Enable();
+	}
+}
+
+void ZGResEdit::SaveFile()
+{
+	if(m_pkFileOpenDlg)
+	{
+		char szFile[512];
+		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
+			"zgresource_id.h");
+
+		Serialization kSaveIDs(szFile, m_pkINI, true);
+		kSaveIDs.Output("#ifndef _ZGRESOURCE_ID_H\n#define _ZGRESOURCE_ID_H\n\nenum WindowID\n{\n");
+		m_pkControlBox->PrintWindowIDs(&kSaveIDs);
+		kSaveIDs.Outputa("};\n\n#endif // #ifndef _ZGRESOURCE_ID_H");
+
+		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
+			"zgresource_rc.txt");
+
+		Serialization kSaveRC(szFile, m_pkINI, true);
+		kSaveRC.Output("; ZGui resource script.\n\n");
+		m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
 	}
 }

@@ -34,7 +34,7 @@ public:
 	void SetText(char* strText, bool bResizeWnd=false); //överlagrad
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
 		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 
 private:
 	int GetNumRows(char* szText);

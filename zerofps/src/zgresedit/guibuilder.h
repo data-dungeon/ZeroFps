@@ -82,7 +82,6 @@ public:
 	~GuiBuilder();
 
 private:
-	bool GenUniqueWndName(ZGuiWnd* pkWnd, char szName[50]);
 	bool Register(ZGuiWnd *pkWnd, char* szName);
 	bool Register(ZGuiSkin *pkSkin, char* szName);
 	bool Register(ZGuiFont *pkFont, char* szName);
@@ -94,6 +93,7 @@ private:
 	TextureManager* m_pkTexMan;
 	
 public:
+	bool RenameWnd(ZGuiWnd* pkWndToRename, const char* szNewName);
 	void SetScrollPos(const char*szScrollbar, float fPos);
 	void SetColor(float afColor[3], const unsigned char r, const unsigned char g,
 		const unsigned char b);
@@ -103,6 +103,7 @@ public:
 	int GetTextInt(const char *szWindow);
 	bool SetTextString(const char *szWindow, char* szString);
 	bool SetTextInt(const char* szWindow, int iValue);
+	bool GenUniqueWndName(ZGuiWnd* pkWnd, char szName[50]);
 	Rect m_rcScreen;
 	ZGui* m_pkGui;
 	bool m_bAllocateNewSkins;

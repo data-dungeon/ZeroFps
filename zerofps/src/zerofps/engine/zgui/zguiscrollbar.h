@@ -34,7 +34,7 @@ public:
 	void SetThumbButtonSkins(ZGuiSkin* pkSkinNormal, ZGuiSkin* pkSkinHighLight);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	int GetPos() { return m_nPos; }
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	int m_iScrollChange;
 

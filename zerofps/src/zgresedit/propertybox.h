@@ -18,10 +18,11 @@ public:
 				  int iNumberOfParams,void *pkParams );
 
 	bool OnOpen(int x=-1, int y=-1);
+	bool OnClose(bool bSave);
 	
 private:
+	bool IsResNameLegal(char* szResName);
 	void UpdateUniquePropertyText(ZGuiWnd* pkControl, CtrlType eWndType);
-	bool OnClose(bool bSave);
 	void CreateUniqueProperites();
 
 	vector<pair<CtrlType, ZGuiWnd*> > m_kSpecCtrls;

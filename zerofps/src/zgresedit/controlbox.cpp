@@ -71,9 +71,15 @@ bool ControlBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	}
 
 	// Create open skins button.
-	w = 60; h = 20; x = 10; y += 10;
+	w = 60; h = 20; x = 10; y += 5;
 	ZGuiWnd* pkOpenSkinsBn = m_pkGuiBuilder->CreateButton(m_pkDlgBox,
-		ID_CTRLBOX_OPENSKINDLG_BN,NULL,x,y,w,h,"Skins...");
+		ID_CTRLBOX_OPENSKINDLG_BN,NULL,x,y,w,h," Skins...");
+	pkOpenSkinsBn->SetWindowFlag(WF_CENTER_TEXT | WF_CANHAVEFOCUS);
+
+	// Create clone button.
+	w = 60; h = 20; x = 80;
+	ZGuiWnd* pkCloneBn = m_pkGuiBuilder->CreateButton(m_pkDlgBox,
+		ID_CTRLBOX_COPY_BN,NULL,x,y,w,h," Copy");
 	pkOpenSkinsBn->SetWindowFlag(WF_CENTER_TEXT | WF_CANHAVEFOCUS);
 
 	// Create grid checkbox
@@ -215,6 +221,39 @@ bool ControlBox::CreateNewType(CtrlType eType, ZGuiWndProc oWndProc)
 	return true;
 }
 
+void ControlBox::CreateCopy()
+{
+	if(SelectWnd::GetInstance()->m_pkWnd)
+	{
+		// Must register selected window because CreateNewType change it
+		// and we need to look at it later.
+		ZGuiWnd* pkPrevSelWnd = SelectWnd::GetInstance()->m_pkWnd;
+
+		CreateNewType(m_pkGuiBuilder->GetWndType(
+			SelectWnd::GetInstance()->m_pkWnd),
+			(ZGuiWnd::callbackfunc)
+			m_pkGui->GetSpecialWndData(
+			SelectWnd::GetInstance()->m_pkWnd, 
+			ZGui::ZndInfo::WNDPROC));
+
+		ZGuiWnd* pkNewWnd = m_pkCreatedWindows.back().m_pkWnd; // id = last-1
+
+		int id = pkNewWnd->GetID();
+		char name[50]; 
+
+		// copy data
+		*pkNewWnd = *pkPrevSelWnd;
+
+		// change some values
+		pkNewWnd->SetID(id);
+
+		sprintf(name, "%s%i\n", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
+		m_pkGuiBuilder->RenameWnd(pkNewWnd, name);
+
+		pkNewWnd->Move(0,pkPrevSelWnd->GetScreenRect().Height());
+	}
+}
+
 bool ControlBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 					      int iNumberOfParams,void *pkParams ) 
 {
@@ -237,6 +276,12 @@ bool ControlBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		// let the main proc process this messages
 		case ID_GRID_CB:
 		case ID_CTRLBOX_OPENSKINDLG_BN: 
+			return m_oMainWndProc(pkWnd,uiMessage,iNumberOfParams,pkParams);
+			break;
+
+		case ID_CTRLBOX_COPY_BN: 
+			CreateCopy();
+			// let the main proc update the property box
 			return m_oMainWndProc(pkWnd,uiMessage,iNumberOfParams,pkParams);
 			break;
 		}

@@ -161,7 +161,7 @@ bool ZGuiCheckbox::IsChecked()
 // Name: GetWndSkinsDesc
 // Description: 
 //
-void ZGuiCheckbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiCheckbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnUp, string("Checkbox: Button up")) );
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnDown, 

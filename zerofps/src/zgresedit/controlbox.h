@@ -21,6 +21,7 @@ public:
 	vector<CreateWnd> m_pkCreatedWindows;
 
 private:
+	void CreateCopy();
 	typedef bool (*ZGuiWndProc) (ZGuiWnd* a, unsigned int b, int c, void* d) ;
 	typedef pair<pair<string,string>, ZGuiSkin*> tSkinInf; //window_name, wnd_desc, skin
 

@@ -777,7 +777,7 @@ CtrlType GuiBuilder::GetType(char* szTypeName)
 //
 bool GuiBuilder::GenUniqueWndName(ZGuiWnd *pkWnd, char szName[50])
 {
-	sprintf(szName, "%s%i", GetTypeName(pkWnd), m_iLastID);
+	sprintf(szName, "%s%i", GetTypeName(pkWnd), pkWnd->GetID());
 	return true;
 }
 
@@ -850,4 +850,28 @@ CtrlType GuiBuilder::GetWndType(ZGuiWnd* pkWnd)
 		return COMBOBOX;
 
 	return NONE;
+}
+
+bool GuiBuilder::RenameWnd(ZGuiWnd* pkWndToRename, const char *szNewName)
+{
+	bool bSuccess;
+
+	if(pkWndToRename == NULL)
+		bSuccess = false;
+	else
+		bSuccess = m_pkGui->ChangeWndRegName(pkWndToRename, szNewName);
+
+	if(!bSuccess)
+	{
+		char error[50];
+
+		if(pkWndToRename)
+			sprintf(error, "Failed to rename window [%s] to [%s]\n",
+				pkWndToRename->GetName(), szNewName);
+		else
+			sprintf(error, "Failed to rename window, window is null!\n");
+		printf(error);
+	}
+
+	return bSuccess;
 }

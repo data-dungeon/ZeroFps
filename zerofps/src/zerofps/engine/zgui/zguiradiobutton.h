@@ -19,7 +19,7 @@ public:
 		int iGroupID=-1, ZGuiRadiobutton* pkPrev=NULL, bool bVisible=true);
 	virtual ~ZGuiRadiobutton();
 	bool Render( ZGuiRender* pkRenderer );
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	void SetButtonSelectedSkin(ZGuiSkin* pkSkin);
 	void SetButtonUnselectedSkin(ZGuiSkin* pkSkin);
 	ZGuiCheckbox* GetButton() { return m_pkCheckbox; }

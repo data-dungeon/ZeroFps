@@ -196,6 +196,23 @@ ZGuiResourceManager* ZGui::GetResMan()
 	return m_pkResManager;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name:		GetSpecialWndData
+// Description: To get special protected data from ZGuiWnd and to avoid 
+//				creating alot of functions in ZGuiWnd (that is a virtual baseclass).
+//
+void* ZGui::GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type)
+{
+	switch(type)
+	{
+	case WNDPROC:
+		return (ZGuiWnd::callbackfunc) pkWnd->m_pkCallback;
+		break;
+	}
+
+	return NULL;
+}
+
 ZGuiWnd* ZGui::GetWindow(unsigned int iID)
 {
 	if(iID == 0) // statiskt fönster
@@ -853,7 +870,6 @@ void ZGui::CreateDefaultSkins()
 
 	//int piss = pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, vet inte varför...
 	
-	
 	int bn_down = pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
 	int rbn_up = pkTexMan->Load("file:../data/textures/radiobn_up.bmp", 0);
@@ -894,8 +910,17 @@ void ZGui::FormatKey(int &iKey)
 		if(iKey == '.')
 			iKey = ':';
 		else
-		if(iKey == '-')
+		if(iKey == '/')
 			iKey = '_';
+		else
+		if(iKey == '=')
+			iKey = '`';
+		else
+		if(iKey == '-')
+			iKey = '?';
+		else
+		if(iKey == '\\')
+			iKey = '*';
 		else
 		if(iKey > 48 && iKey < 58)
 			iKey -= 16;
@@ -903,6 +928,17 @@ void ZGui::FormatKey(int &iKey)
 		if(iKey > 96 && iKey < 123)
 			iKey -= 32;
 	}
+	else
+	{
+		if(iKey == '-')
+			iKey = '+';
+		if(iKey == '/')
+			iKey = '-';
+		if(iKey == '\\')
+			iKey = '\'';
+		if(iKey == '=')
+			iKey = '´';
+	}	
 }
 
 bool ZGui::RunKeyCommand(int iKey)
@@ -1289,4 +1325,25 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 	}
 
 	return true;
+}
+
+bool ZGui::ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName)
+{
+	// Om det inte redan finns ett fönster med det namnet...
+	if(m_pkResManager->Wnd(pkNewName) == NULL) 
+	{
+		// Radera (ej deallokera) fönstret i guimanagern.
+		if(m_pkResManager->RemoveWnd(pkWndToRename->GetName()) == false)
+			return false;
+
+		// Lägg till fönstret på nytt, fast med ett annat namn.
+		strcpy(pkWndToRename->m_szName, pkNewName);
+		return m_pkResManager->Add(string(pkNewName), pkWndToRename) != NULL;
+	}
+
+	// Namnet är inte ändrat.
+	if(m_pkResManager->Wnd(pkNewName) == pkWndToRename) 
+		return true;
+
+	return false;
 }

@@ -42,6 +42,8 @@ class ENGINE_API ZGuiWnd
 
 public:
 
+	virtual const ZGuiWnd& operator= (const ZGuiWnd& src);
+
 	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
 		int iID=0);
 	//virtual ~ZGuiWnd();
@@ -136,7 +138,7 @@ public:
 
 	typedef pair<ZGuiSkin*, string> SKIN_DESC;
 
-	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc);
+	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 
 protected:
 	

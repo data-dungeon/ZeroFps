@@ -163,7 +163,7 @@ void ZGuiRadiobutton::ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour)
 	m_iGroupID = iGroupID;
 }
 
-void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	int iStart = pkSkinDesc.size(); 
 	m_pkCheckbox->GetWndSkinsDesc(pkSkinDesc);

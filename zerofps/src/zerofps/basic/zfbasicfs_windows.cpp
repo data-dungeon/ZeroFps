@@ -27,7 +27,10 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyM
 		bIsDir = (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);                 
 
 		if(!(bOnlyMaps == true && bIsDir == false))
-			pkFiles->push_back(string(finddata.cFileName));
+		{
+			if( !(strlen(finddata.cFileName) == 1 && finddata.cFileName[0] == '.') )
+				pkFiles->push_back(string(finddata.cFileName));
+		}
              
 		bMore = FindNextFile(hFind, &finddata);         
 	}

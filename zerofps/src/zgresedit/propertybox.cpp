@@ -55,7 +55,7 @@ bool PropertyBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	ZGuiWnd* pkIDNameField = m_pkGuiBuilder->CreateTextbox(m_pkDlgBox,
 		ID_CTRLNAME_EB,"CtrlPropIDName",x2,y2,w2,h2,false);
 	pkIDNameField->SetWindowFlag(WF_CANHAVEFOCUS);
-	pkIDNameField->Disable();
+	//pkIDNameField->Disable();
 
 	// Caption
 	x2 = 10; y2 = 90; w2 = 100; h2 = 20;
@@ -242,7 +242,39 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		switch(((int*)pkParams)[0]) // control id
 		{
 		case ID_CTRLOK_BN:
-			OnClose(true);
+			
+			if(SelectWnd::GetInstance()->m_pkWnd)
+			{
+				bool bLegal = false;
+				char* szNewRegName;
+				szNewRegName = m_pkGuiBuilder->GetWnd("CtrlPropIDName")->GetText();
+				if(szNewRegName)
+				{
+					bLegal = true;
+
+					// Kolla först om namnet är giltligt
+					if(IsResNameLegal(szNewRegName) == false)
+						bLegal = false;
+
+					// Försök byta namn på fönstret.
+					// Avbryt om det redan finns ett fönster med det namnet.
+					if(!m_pkGuiBuilder->RenameWnd(
+						SelectWnd::GetInstance()->m_pkWnd, szNewRegName))
+					{
+						bLegal = false;
+					}	
+				}
+
+				if(bLegal)
+				{
+					OnClose(true);
+				}
+				else
+				{
+					m_pkGuiBuilder->SetTextString("CtrlPropIDName", "NAME_NOT_ALLOWED!");
+					return false;
+				}
+			}
 			break;
 		case ID_CTRLCANCEL_BN:
 		case ID_CTRLCLOSE_BN:
@@ -265,6 +297,8 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				SelectWnd::GetInstance()->m_pkWnd->Enable();
 			break;
 		}
+		break;
+
 	// Editbox Typing Message
 	case ZGM_EN_CHANGE:
 		
@@ -394,4 +428,31 @@ void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWn
 		}
 		break;
 	}*/
+}
+
+bool PropertyBox::IsResNameLegal(char *szResName)
+{
+	if(szResName == NULL)
+		return false;
+
+	int iLength = strlen(szResName);
+
+	if(iLength < 1)
+		return false;
+
+	for(int i=0; i<iLength; i++)
+	{
+		if(szResName[i] >= 48 && szResName[i] <= 57)  // numbers
+			continue;
+		if(szResName[i] >= 65 && szResName[i] <= 90)  // big letters
+			continue;
+		if(szResName[i] >= 97 && szResName[i] <= 122) // small letters
+			continue;
+		if(szResName[i] == '_' || szResName[i] == '#')
+			continue;
+
+		return false;
+	}
+
+	return true;
 }

@@ -39,7 +39,7 @@ public:
 	const bool IsMenu() { return m_bIsMenu; }
 	void SetNumVisibleRows(unsigned short iNumVisibleRows);
 	bool RemoveAllItems(); // välj denna istället för den i listboxen annars rensas inte textboxen...
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	void SetZValue(int iValue); // överlagrad
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	ZGuiListbox* GetListbox() { return m_pkListbox; }

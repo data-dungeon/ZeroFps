@@ -483,7 +483,7 @@ bool ZGuiListbox::SelItem(int iIndex)
 	return true;
 }
 
-void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, string("Listbox")) );
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnUp, string("Listbox: Button up")) );

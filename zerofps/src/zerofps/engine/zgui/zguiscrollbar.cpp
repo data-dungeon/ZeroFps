@@ -194,7 +194,7 @@ void ZGuiScrollbar::SetZValue(int iValue)
 	m_pkThumbButton->SetZValue(iValue-1);
 }
 
-void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, string("Scrollbar")) );
 	

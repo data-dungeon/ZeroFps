@@ -33,7 +33,7 @@ public:
 	ZGuiSkin* GetCheckedSkin() { return m_pkSkinBnDown; }
 	ZGuiSkin* GetUncheckedSkin() { return m_pkSkinBnUp; }
 	char* GetText();// overloaded
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 
 	void CheckButton();
 	void UncheckButton();

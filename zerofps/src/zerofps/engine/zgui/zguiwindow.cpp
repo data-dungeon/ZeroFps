@@ -456,7 +456,7 @@ void ZGuiWnd::ResetStaticClickWnds(ZGuiWnd* pkWnd)
 		ZGuiWnd::m_pkWndClicked = NULL;
 }
 
-void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	string strType = "Error";
 	const type_info& t = typeid(*this);
@@ -516,4 +516,44 @@ void ZGuiWnd::Disable()
 		m_pkSkin->m_afBkColor[1] = 0.827f; // (1.0f / 255) * 211;
 		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
 	}*/
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: operator= (ZGuiWnd)
+// Description: Deep copy all data from one window to another.
+//				Function is virtual and should be overloaded!
+//
+const ZGuiWnd& ZGuiWnd::operator= (const ZGuiWnd& src)
+{
+	vector<SKIN_DESC> kDstSkins;
+	vector<SKIN_DESC> kSrcSkins;
+	
+	GetWndSkinsDesc(kDstSkins);
+	src.GetWndSkinsDesc(kSrcSkins);
+	
+	for(unsigned int i=0; i<kDstSkins.size(); i++)
+	{
+		*kDstSkins[i].first = *kSrcSkins[i].first;
+	}
+
+	m_iZValue = src.m_iZValue;
+	m_ulFlags = src.m_ulFlags;
+	m_bEnabled = src.m_bEnabled;
+	m_iID = src.m_iID;
+	m_iTextLength = src.m_iTextLength;
+	
+	if(m_strText)
+		m_strText = strdup(src.m_strText);
+
+	m_pkFont = src.m_pkFont;
+	strcpy(m_szName, src.m_szName);
+	m_iTabOrderNumber = src.m_iTabOrderNumber;
+	m_kArea = src.m_kArea;
+	m_kMoveArea = src.m_kMoveArea;
+	m_pkGuiMan = src.m_pkGuiMan;
+	m_pkParent = src.m_pkParent;
+	m_pkGUI =src.m_pkGUI;
+	m_pkCallback = src.m_pkCallback;
+	
+	return *this;
 }

@@ -27,7 +27,7 @@ public:
 		int iID=0, int iItemHeight=20, ZGuiSkin* pkSkinItem=NULL, 
 		ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL);
 	virtual ~ZGuiListbox();
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	int Find(char* strString);
 	void Resize(int Width, int Height);
 	bool RemoveAllItems();

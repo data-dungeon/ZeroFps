@@ -61,7 +61,8 @@ class ZGuiResourceManager;
 class ENGINE_API ZGui  
 {
 public:	
-
+	
+	bool ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName);
 	ZGuiSkin* GetFocusBorderSkin() { return m_pkFocusBorderSkin; }
 	void SetDefaultFont(ZGuiFont* pkFont);
 	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
@@ -119,6 +120,9 @@ public:
 			return x->iZValue > y->iZValue; 
 		};
 	} SortZCmp;
+
+	enum ZndInfo {WNDPROC};
+	void* GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type);
 
 private:
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);

@@ -43,6 +43,7 @@ public:
 	FileOpenDlg* m_pkFileOpenDlg;
 
 private:
+	void SaveFile();
 	void EnableClickWnd();
 	void DisableClickWnd();
 

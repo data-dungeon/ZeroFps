@@ -27,7 +27,7 @@ public:
 	bool Render( ZGuiRender* renderer );
 	ZGuiSkin* GetButtonUpSkin() { return m_pkSkinBnUp; }
 	ZGuiSkin* GetButtonDownSkin() { return m_pkSkinBnDown; }
-	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc);
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
