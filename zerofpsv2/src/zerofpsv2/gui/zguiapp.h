@@ -72,6 +72,7 @@ public:
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
 	void CloseWindow(char* szResName);
 	ZGuiWnd* GetWnd(int iID);
+	ZGuiWnd* GetWnd(string strName);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 

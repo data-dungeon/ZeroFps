@@ -20,15 +20,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	switch(msg)
 	{
 	case ZGM_COMMAND:
+		printf("ZGui::OnCommand()\n");
 		g_kMistServer.OnCommand(((int*)params)[0], win);
 		break;
 
 	case ZGM_SELECTLISTITEM:
-
 		g_kMistServer.OnClickListbox(
 			g_kMistServer.GetWnd(((int*)params)[0]), 
 			((int*)params)[1]);
-
 		break;
 	}
 	return true;
@@ -110,7 +109,9 @@ void MistServer::OnIdle()
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 
-	Input();	
+	if(pkGui->m_bHaveInputFocus == false)
+		Input();	
+
  	pkFps->UpdateCamera(); 		
 
 	UpdateZoneMarkerPos();
@@ -146,9 +147,6 @@ void MistServer::OnSystem()
 
 void MistServer::Input()
 {
-	if(m_bGuiHaveFocus)
-		return;
-
 	float speed = 20;
 
 	int x,z;		
@@ -205,6 +203,7 @@ void MistServer::Input()
 	
 		if(pkInput->Pressed(MOUSELEFT))
 		{
+			printf("MistServer::Input\n");
 			AddZone();	
 		}
 		
@@ -476,8 +475,6 @@ void MistServer::UpdateZoneMarkerPos()
 //	m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
 //	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
 
-
-
 }
 
 void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
@@ -535,5 +532,4 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 		}
 	}
 }
-
 

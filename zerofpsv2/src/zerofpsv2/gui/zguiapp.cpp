@@ -64,6 +64,12 @@ ZGuiWnd* ZGuiApp::GetWnd(int iID)
 	return res->second;
 }
 
+ZGuiWnd* ZGuiApp::GetWnd(string strName)
+{
+	return m_pkResMan->Wnd(strName);
+}
+
+
 ZGuiSkin* ZGuiApp::GetSkin(string strName)
 {
 	map<string, ZGuiSkin*>::iterator res = m_kSkins.find(strName);
@@ -236,7 +242,9 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 	else
 	{
 		if(szResourceName)
+		{
 			m_pkGui->RegisterWindow(pkWnd, szResourceName);
+		}
 	}
 
 	if(szText)
@@ -758,3 +766,5 @@ ZFScript* ZGuiApp::GetGuiScript()
 {
 	return (ZFScript*) m_pkScriptResHandle->GetResourcePtr();  
 }
+
+

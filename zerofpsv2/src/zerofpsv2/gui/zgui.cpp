@@ -26,6 +26,8 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_iHighestZWndValue = 10;
 
 	m_bActive = false;
+
+	m_bHaveInputFocus = false;
 }
 
 bool ZGui::StartUp()	
@@ -347,8 +349,9 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 }
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
-						 bool bRBnPressed, float fGameTime)
+								 bool bRBnPressed, float fGameTime)
 {
+
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;
 	m_bMouseLeftPressed = bLBnPressed;
@@ -437,6 +440,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				
 				if(bLeftPressed)
 				{
+					SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
 				}
@@ -471,6 +475,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == 
 			ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
+			SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
+
 			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,NCODE_MOVE);
 			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-
 				m_pnCursorRangeDiffY,true,false);
@@ -499,6 +505,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
+			m_bHaveInputFocus = false;
+
 			// Informera fönstret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor && bLeftReleased)
 			{
@@ -520,7 +528,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(bLeftReleased)
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_UP);
-				
+
 				int* pkParams = new int[1];
 
 				// Notify the main window that the window have been clicked
@@ -532,7 +540,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 						m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
 							ZGM_COMMAND,1,pkParams);
-
 					}
 					delete[] pkParams;
 				}
@@ -751,7 +758,7 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 	{
 		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, m_fGameTime);
 		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
-		Render();
+		//Render();
 	}
 
 	m_kPointsToDraw.clear();
@@ -1536,4 +1543,11 @@ void ZGui::SetRes(int iResX, int iResY)
 {
 	m_iResX = iResX;
 	m_iResY = iResY;
+}
+
+void ZGui::SetInputFocus(ZGuiWnd* pkClikWnd, bool bSet)
+{
+	if(pkClikWnd->GetSkin())
+		if(!pkClikWnd->GetSkin()->m_bTransparent) 
+			m_bHaveInputFocus = true;
 }

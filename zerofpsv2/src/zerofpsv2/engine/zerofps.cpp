@@ -271,14 +271,17 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
 
 	// Update GUI
-	m_pkInput->SetInputEnabled(true);
+//	m_pkInput->SetInputEnabled(true);
+
+	// Update Local Input.
+	m_pkInput->Update();
 
 	int mx, my;
 	m_pkInput->MouseXY(mx,my);
 
 	map<int,int>::iterator itKeyPressed;
-	int iInputKey = m_pkInput->GetQueuedKey();
-	int iPrevKey = iInputKey;
+	int iInputKey = 'a'; //m_pkInput->GetQueuedKey(); // wtf
+	static int iPrevKey = iInputKey;
 	m_pkInput->FormatKey(iInputKey);
 
 	bool bGlobalFormat = (iPrevKey == iInputKey) ? true : false;
@@ -303,8 +306,7 @@ void ZeroFps::Run_EngineShell()
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
 
-	// Update Local Input.
-	m_pkInput->Update();
+
 
 	if(m_pkInput->Pressed(KEY_F8))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
 

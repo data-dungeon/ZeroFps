@@ -153,12 +153,15 @@ public:
 
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
+	
+	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
 	void SetRes(int iResX, int iResY); // should only be called one time before app start!
 	static int m_iResX;
 	static int m_iResY;
 
 private:
+	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
 	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
