@@ -138,7 +138,8 @@ void AdaptorSniper::Fire(Vector3 kAim)
 	firesound->m_kPos=m_pkObject->GetPos();
 	m_pkAlSys->AddSound(firesound);
 	
-	Object* Bullet=new Object;
+//	Object* Bullet=new Object;
+	Object* Bullet	=	m_pkObjectMan->CreateObject();
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=kAim*25;
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		

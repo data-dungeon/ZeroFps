@@ -10,7 +10,9 @@ ObjectManager::ObjectManager()
 	m_bUpdate			= true;
 	
 	m_pkWorldObject	=	new Object();	
-	m_pkWorldObject->GetName() = "WorldObject";
+	m_pkWorldObject->GetName()			= "WorldObject";
+	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
 
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	TESTVIM_LoadArcheTypes("zfoh.txt");
@@ -128,6 +130,11 @@ void ObjectManager::UpdateGameMessages(void)
 
 
 // Create 
+Object* ObjectManager::CreateObject()
+{
+	return new Object;
+}
+
 Object* ObjectManager::CreateObject(const char* acName)
 {	
 	ObjectDescriptor *objtemplate = GetTemplate(acName);
@@ -141,19 +148,23 @@ Object* ObjectManager::CreateObject(const char* acName)
 
 Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 {
-	Object* tempobject=new Object;
+//	Object* tempobject=new Object;
+	Object* tempobject	=	CreateObject();
 
-	tempobject->GetName()=pkObjDesc->m_kName;
+	tempobject->GetName()	=	pkObjDesc->m_kName;
 	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
 	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
 	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
 	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
-	tempobject->GetVel()=pkObjDesc->m_kVel;
-	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
-	tempobject->GetRadius()=pkObjDesc->m_fRadius;		
+	tempobject->GetVel()		=	pkObjDesc->m_kVel;
+	tempobject->GetAcc()		=	pkObjDesc->m_kAcc;	
+	tempobject->GetRadius()	=	pkObjDesc->m_fRadius;		
 	
-	tempobject->GetSave()=pkObjDesc->m_bSave;
-	tempobject->GetObjectType()=pkObjDesc->m_iObjectType;	
+	tempobject->GetSave()			=	pkObjDesc->m_bSave;
+	tempobject->GetObjectType()	=	pkObjDesc->m_iObjectType;
+	
+	tempobject->m_eRole			= NETROLE_AUTHORITY;
+	tempobject->m_eRemoteRole	= NETROLE_PROXY;
 	
 	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
 	{
@@ -172,10 +183,15 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 
 Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {
-	Object *pkNew = new NetSlaveObject;
+//	Object *pkNew = new NetSlaveObject;
+	Object *pkNew = CreateObject();
+
 	//	Add(pkNew);
 	pkNew->iNetWorkID = iNetID;
 	pkNew->SetParent(m_pkWorldObject);
+	pkNew->m_eRole			= NETROLE_PROXY;
+	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
+	
 	g_ZFObjSys.Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
 	return pkNew;
@@ -187,7 +203,11 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 	if(!pkAt)
 		return false;
 
-	Object* pkObj =	new Object;
+//	Object* pkObj			= new Object;
+	Object* pkObj	=	CreateObject();
+	pkObj->m_eRole			= NETROLE_PROXY;
+	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
+
 	AddArchPropertys(pkObj, string(acName));
 
 	pkObj->m_strType	= acName;
@@ -554,6 +574,8 @@ void ObjectManager::PackToClients()
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
 	net->SendToAllClients(&NP);
+
+	m_aiNetDeleteList.clear();
 }
 
 // Debug / Help Functions		
@@ -1068,7 +1090,8 @@ Object* ObjectManager::CloneObject(int iNetID)
 	if(pkObjOrginal == NULL)
 		return NULL;
 
-	Object* pkObjClone = new Object;
+//	Object* pkObjClone = new Object;
+	Object* pkObjClone =	CreateObject();
 	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
 }

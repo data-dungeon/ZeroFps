@@ -321,7 +321,8 @@ bool LevelManager::SaveLevel(const char* acFile)
 
 Object* LevelManager::AddWorldInfoObject()
 {
-	Object *temp = new Object;
+	Object *temp = m_pkObjectMan->CreateObject();
+
 	temp->GetName()="WorldInfoObject";
 	temp->AddProperty(&m_kWIP);
 	temp->SetParent(m_pkObjectMan->GetWorldObject());
@@ -446,7 +447,8 @@ void LevelManager::Water(bool bWater)
 		if(m_pkObjectMan->GetObject("WorldWaterObject") == NULL)
 		{	
 			//water
-			Object* water = new Object();
+			Object* water = m_pkObjectMan->CreateObject();
+			
 			water->GetSave()=false;			
 			water->AddProperty("WaterRenderProperty");
 			WaterRenderProperty* wrp= static_cast<WaterRenderProperty*>(water->GetProperty("WaterRenderProperty"));
@@ -477,7 +479,7 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	//check if there already is a SkyBoxObject else create one
 	if(m_pkObjectMan->GetObject("SkyBoxObject") == NULL)
 	{	
-		pkSkybox=new Object();//SkyBoxObject(acHor,acTop);
+		pkSkybox	=	m_pkObjectMan->CreateObject();
 		pkSkybox->GetSave()=false;
 		pkSkybox->SetParent(m_pkObjectMan->GetWorldObject());	
 		pkSkybox->AddProperty("SkyBoxRenderProperty");
@@ -626,7 +628,7 @@ Object* LevelManager::GetClosestZone(Vector3 &kPos)
 
 Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 {
-	Object* ob= new Object;
+	Object* ob= m_pkObjectMan->CreateObject();
 	
 	ob->GetName()="HeightMapObject";
 	ob->GetSave()=false;	

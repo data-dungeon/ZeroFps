@@ -6,7 +6,7 @@ P_ClientUnit::P_ClientUnit()
 	strcpy(m_acName,"P_ClientUnit");
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_ALL;
+	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	

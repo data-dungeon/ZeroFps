@@ -35,6 +35,16 @@ enum ObjectType {
 	OBJECT_TYPE_DECORATION,
 };
 
+/*
+	Describe how a object works in network.
+*/
+enum NetWorkRole
+{
+	NETROLE_NONE,			// Object don't need to exist on remote nodes.
+	NETROLE_PROXY,			// Object is a rep
+	NETROLE_AUTHORITY,	// This is the master object.
+};
+
 /// GameMessages is messages that can be sent between objects in the game.
 class GameMessage
 {
@@ -130,39 +140,43 @@ public:
 class ENGINE_API Object 
 {
 	private:
-		Object*						m_pkParent;						///< Parent Object.
-		vector<GameMessage>		m_kGameMessages;				///< Messages that are waiting to be handled by this object.
+		Object*						m_pkParent;							///< Parent Object.
+		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 
 	protected:
-		Vector3					m_kPos;								///< Position of object in world.
-		Vector3					m_kRot;								///< Rotation of object in world.
-		Vector3					m_kVel;								///< Velocity of object.
-		Vector3					m_kAcc;								///< Acc of object.
-		float						m_fRadius;		
-		
-		Vector3					m_kOldPos;
-		Vector3					m_kOldRot;
-		
-		string					m_kName;								///< Object name
-		string					m_strType;							///< Object type name.
+		Object();		
 
-		ObjectType				m_iObjectType;						
-		int						m_iUpdateStatus;					
-		int*						m_piDecorationStep;
-		bool						m_bSave;								///< True if this object should save to disk.
+		Vector3						m_kPos;								///< Position of object in world.
+		Vector3						m_kRot;								///< Rotation of object in world.
+		Vector3						m_kVel;								///< Velocity of object.
+		Vector3						m_kAcc;								///< Acc of object.
+		float							m_fRadius;		
 		
-		LevelManager* 			m_pkLevelMan;		
-		PropertyFactory*		m_pkPropertyFactory;	
-		ZeroFps*					m_pkFps;
+		Vector3						m_kOldPos;
+		Vector3						m_kOldRot;
+		
+		string						m_kName;								///< Object name
+		string						m_strType;							///< Object type name.
 
-		list<Object*>			m_akChilds;							///< List of child objects.
-		list<Property*>		m_akPropertys;						///< List of propertys of object.
+		ObjectType					m_iObjectType;						
+		int							m_iUpdateStatus;					
+		int*							m_piDecorationStep;
+		bool							m_bSave;								///< True if this object should save to disk.
+		
+		LevelManager* 				m_pkLevelMan;		
+		PropertyFactory*			m_pkPropertyFactory;	
+		ZeroFps*						m_pkFps;
+
+		list<Object*>				m_akChilds;							///< List of child objects.
+		list<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 	public:
-		int						iNetWorkID;								///< ID used by network state code.
-		ObjectManager*			m_pkObjectMan;						///< Ptr to object manger.
+		int							iNetWorkID;							///< ID used by network state code.
+		ObjectManager*				m_pkObjectMan;						///< Ptr to object manger.
+	
+		NetWorkRole					m_eRole;								///< This node power on object.
+		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
 
-		Object();		
 		~Object();
 		
 		// Object Type Handling

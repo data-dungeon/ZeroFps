@@ -170,9 +170,9 @@ void Console::Update(void) {
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
 
 	// Scroll console text
-	static float PREVTIME = m_pkEngine->GetGameTime();
+	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
 	static float TIME = 0.10f;
-	float fCurrTime = m_pkEngine->GetGameTime();
+	float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 
 	bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
 
@@ -199,8 +199,8 @@ void Console::Update(void) {
 	
 	static bool s_bKeyrepeatActivated = false;
 	static int s_iLastKeyPressed;
-	static float s_fKeyrepeatCheckTime = m_pkEngine->GetGameTime();
-	static float s_fLastRepeatTime = m_pkEngine->GetGameTime();
+	static float s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();		//GetGameTime();
+	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
 
 	int iKeyPressed = m_pkInput->GetQueuedKey();
 		
@@ -277,7 +277,7 @@ void Console::Update(void) {
 		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
 		if(m_pkInput->Pressed(s_iLastKeyPressed))
 		{
-			float fCurrTime = m_pkEngine->GetGameTime();
+			float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 
 			const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
 
@@ -309,8 +309,8 @@ void Console::Update(void) {
 		else
 		{
 			s_bKeyrepeatActivated = false;
-			s_fKeyrepeatCheckTime = m_pkEngine->GetGameTime();
-			s_fLastRepeatTime = m_pkEngine->GetGameTime();
+			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
 		}	
 	}	
 }
@@ -437,7 +437,7 @@ void Console::FormatKey(int& r_iKey)
 
 void Console::Toggle()
 {
-	float fTime = m_pkEngine->GetGameTime();
+	float fTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 	if(fTime < m_fToggleTime)
 		return;
 

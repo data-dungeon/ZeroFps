@@ -97,6 +97,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		float 	m_fSystemUpdateTime;
 		float 	m_fGameTime;
 		float 	m_fGameFrameTime;
+		float		m_fEngineTime;						// Time since engine start.
 		
 		vector<string>	AppArguments;		
 		
@@ -178,7 +179,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline float GetGameTime() {return m_fGameTime;};
 		inline float GetGameFrameTime() {return m_fGameFrameTime;};
 		inline float GetLastGameUpdateTime(){return m_fSystemUpdateTime;};
-		
+		inline float GetEngineTime() { return m_fEngineTime; }
+
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();
 		inline Camera *GetCam() {return m_pkCamera;};		

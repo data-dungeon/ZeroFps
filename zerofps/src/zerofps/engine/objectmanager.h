@@ -77,6 +77,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 
 			// Create 
+		Object* CreateObject();												///< Create a empty object.
 		Object* CreateObject(const char* acName);						///< Create object from template.
 		Object* CreateObject(ObjectDescriptor* pkObjDesc);			///< Create object from ObjectDescriptor
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID

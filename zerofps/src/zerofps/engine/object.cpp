@@ -31,6 +31,9 @@ Object::Object() {
 	m_kName = "Object";	
 	m_strType = "Object";
 
+	m_eRole			= NETROLE_AUTHORITY;
+	m_eRemoteRole	= NETROLE_PROXY;
+
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		=	UPDATE_ALL;
 	m_piDecorationStep 	=	m_pkLevelMan->GetDecorationStepPointer();

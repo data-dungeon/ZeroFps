@@ -42,8 +42,8 @@ ZeroFps::ZeroFps(void)
 	m_fLastFrameTime=		0;
 	m_fSystemUpdateFps=	25;
 	m_fSystemUpdateTime= 0;
-	m_bServerMode = 		true;
-	m_bClientMode = 		true;
+	m_bServerMode = 		false;
+	m_bClientMode = 		false;
 	m_bGuiMode=				false;
 	m_iMadDraw = 			1;
 	g_fMadLODScale = 		1.0;
@@ -249,6 +249,7 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();							
+	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 		
 
 	//update zones
@@ -337,7 +338,7 @@ void ZeroFps::Update_System()
 		
 		if(m_bRunWorldSim) {
 			//update all normal propertys
-			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 			m_pkObjectMan->UpdateGameMessages();
 
 			//update physicsengine
@@ -362,8 +363,10 @@ void ZeroFps::Update_System()
 void ZeroFps::Draw_EngineShell()
 {
 	// Describe Active Cam.
-	string strCamDesc = GetCam()->GetCameraDesc();
-	DevPrintf("common",strCamDesc.c_str());
+	if(GetCam()) {
+		string strCamDesc = GetCam()->GetCameraDesc();
+		DevPrintf("common",strCamDesc.c_str());
+		}
 	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 
 	m_iNumOfMadRender = 0;
@@ -416,6 +419,7 @@ void ZeroFps::Draw_EngineShell()
 
 void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {
+		m_fEngineTime = GetTicks();
 
 		Swap();											//swap buffers n calculate fps
 		 
@@ -524,6 +528,8 @@ void ZeroFps::Swap(void) {
 //		m_iState = state_exit;
 
 #endif
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+
 }
 
 
@@ -747,6 +753,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
 			m_pkConsole->Printf("FID_CONNECT");
 			m_pkApp->OnClientStart();
+			m_bClientMode = true;
 			break;
 
 		case FID_SERVER:
@@ -759,6 +766,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkNetWork->ServerStart();
 
 			m_pkApp->OnServerStart();
+			m_bServerMode = true;
+			m_bClientMode = true;
 			break;
 	
 		case FID_DIR:

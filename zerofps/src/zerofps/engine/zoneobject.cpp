@@ -9,7 +9,8 @@ ZoneObject::ZoneObject()
 
 	AddProperty("LightUpdateProperty");
 
-
+	m_eRole			= NETROLE_AUTHORITY;
+	m_eRemoteRole	= NETROLE_NONE;
 }
 
 

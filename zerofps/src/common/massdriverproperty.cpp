@@ -88,7 +88,8 @@ void MassDriverProperty::Use()
 	
 	m_kAim=m_pkObject->GetRot().AToU();	
 	
-	Object* Bullet=new Object;
+//	Object* Bullet=new Object;
+	Object* Bullet	=	m_pkObjectMan->CreateObject();
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=m_kAim*m_fBulletVel;
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.95,0) + Bullet->GetVel().Unit();		

@@ -45,9 +45,8 @@ void WaterRenderProperty::SetTexture(const char* acTexture)
 
 void WaterRenderProperty::Update() 
 {	
-
-//	cout << "m_iUpdateFlags: "<< m_pkObject->m_pkObjectMan->m_iUpdateFlags << endl;
-	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL) {
+	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL &&
+		m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_SIDE_CLIENT) {
 		if(m_bBlendDirUp) {
 			m_fBlendValue += 0.05;
 			if(m_fBlendValue > 1.0)
