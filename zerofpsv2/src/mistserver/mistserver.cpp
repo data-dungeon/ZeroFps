@@ -704,6 +704,11 @@ void MistServer::Input_EditZone()
 		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
 	}
 	
+	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
+	{
+		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
+	}	
+	
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
