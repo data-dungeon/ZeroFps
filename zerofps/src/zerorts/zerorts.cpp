@@ -12,13 +12,14 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
 	m_pkMiniMap = NULL;
-	m_pkTestPath = NULL;
 	m_pkClientInput = NULL;
-	m_pkStart = Point(-1,-1);
-	m_pkEnd = Point(-1,-1);
 	m_iSelfObjectID = -1;
-
 	m_HaveFoundHMapObject = false;
+
+/*	COMMENT OUT BY ZEB
+	m_pkTestPath = NULL;
+	m_pkStart = Point(-1,-1);
+	m_pkEnd = Point(-1,-1);*/
 }
 
 void ZeroRTS::OnInit() 
@@ -169,7 +170,8 @@ void ZeroRTS::OnIdle()
 	glEnable(GL_LIGHTING);
 */
 //	m_pkFogRender->Explore(mpos.x,mpos.z,30);		
-/*
+
+/* COMMENT OUT BY ZEB
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
@@ -235,13 +237,8 @@ void ZeroRTS::OnSystem()
 				cout << "UGH =)" << endl;
 				}
 			}
-
-		
-		
 	};
 	
-	
-
 	//if server is running
 	if(pkFps->m_bServerMode)	
 		HandleOrders();
@@ -266,11 +263,11 @@ void ZeroRTS::Input()
 		Right, 
 		Up, 
 		Down, 
-		Nothing
+		Center
 	};
 	
 	MOUSEDIR eMouseDir; 
-	eMouseDir = Nothing;
+	eMouseDir = Center;
 
 	if(mx == 0) {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_l.bmp", 0);
@@ -291,7 +288,7 @@ void ZeroRTS::Input()
 	else {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-		eMouseDir = Nothing; }
+		eMouseDir = Center; }
 
 	// swap cursor image
 	if(s_iCursorTex != iNewCursorTex)
@@ -320,7 +317,6 @@ void ZeroRTS::Input()
 	{
 		m_pkFogRender->ExploreAll();
 		
-		
 		if(m_pkClientInput)
 		{
 			PickInfo info2 = Pick();
@@ -335,6 +331,7 @@ void ZeroRTS::Input()
 				//bla.m_iYDestinaton = 100;			
 				//info2.kSquare.x = 100;
 				//info2.kSquare.y = 100;
+
 
 				bla.m_iXDestinaton = info2.kSquare.x;
 				bla.m_iYDestinaton = info2.kSquare.y;			
@@ -355,7 +352,8 @@ void ZeroRTS::Input()
 		m_fClickTimer = pkFps->GetTicks();
 	
 		PickInfo info = Pick();
-/*
+		
+		/* COMMENT OUT BY ZEB
 		// Test pathfind
 		if(info.iObject != -1)
 		{
@@ -385,7 +383,8 @@ void ZeroRTS::Input()
 			float angle = sqrnorm.Angle(ground_plane);
 			//printf("Angle: %f\n", RadToDeg(angle));
 		}
-*/
+		*/
+
 		//do we want to clear?
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
@@ -422,8 +421,6 @@ void ZeroRTS::Input()
 			pkConsole->Printf("No server info found");		
 	}
 
-
-
 	if(pkInput->Pressed(KEY_W))
 		pkLevelMan->ChangeLandscapeFillMode(LINE);
 	if(pkInput->Pressed(KEY_F))
@@ -435,7 +432,6 @@ void ZeroRTS::Input()
 		m_pkMiniMap->Show((s_bToggle=!s_bToggle));
 	}			
 }
-
 
 void ZeroRTS::OnHud(void) 
 {	
@@ -474,7 +470,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Level loaded");
 
 			SetupSpawnPoints();
-			BuildPath();
+		/*	BuildPath();*/
 			
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			g_ZFObjSys.RunCommand("server Default server");
@@ -485,12 +481,12 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_MASSSPAWN:
-			pkConsole->Printf("Nu tar vi det lite lungt va.");				
+			pkConsole->Printf("Nu fettar vi på igen.");				
 			int x,y;
 			x = y = 0;
 			int iAntal = 0;
-			for( x=-200; x < 200; x+=100) {
-				for(y=-200; y < 200; y+=100) {
+			for( x=-200; x < 200; x+=10) {
+				for(y=-200; y < 200; y+=10) {
 					pkmad = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
 					if(pkmad) {
 						Vector3 kPos = Vector3(x,0,y);
@@ -633,6 +629,14 @@ bool ZeroRTS::AddSelectedObject(int iID)
 
 	cout<<"object Added to selection"<<endl;
 
+	printf("%Propertys:\n");
+		vector<Property*> akProps;
+		pkObjectMan->GetObjectByNetWorkID(iID)->GetPropertys(&akProps, 
+			PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
+		for(int i=0; i<akProps.size(); i++)
+			printf("%s\n", akProps[i]->m_acName);
+	printf("\n");
+
 	return true;
 }
 
@@ -669,37 +673,6 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
 
-
-void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
-{	
-	if(pkObject == NULL)
-		return;
-
-	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
-
-	pkObject->SetPos(newp);
-	pkObject->SetPos(newp);
-}
-
-void ZeroRTS::BuildPath()
-{
-	static bool bDone = false;
-	if(bDone == false)
-		bDone = true;
-	else
-		return;
-
-	int aiCost[5];
-	aiCost[0] = 15; // gräs (grön nyans)
-	aiCost[1] = 1; // väg (röd nyans)
-	aiCost[2] = 7; // sten (blå nyans)
-	aiCost[3] = 10; // öken (röd nyans)
-	aiCost[4] = 999; // vatten
-
-	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
-	kPathBuilder.Build(aiCost);
-}
-
 Point ZeroRTS::GetSqrFromPos(Vector3 pos)
 {
 	int iSquareX = m_pkMap->m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
@@ -719,29 +692,6 @@ Vector3 ZeroRTS::GetPosFromSqr(Point square)
 	float y = m_pkMap->Height(x,z);
 
 	return Vector3(x,y,z);
-}
-
-bool ZeroRTS::MovePath(Object* pkObject)
-{
-	static float prev_time = 0;
-
-	float time = pkFps->GetGameTime();
-
-	if(time - prev_time > 0.125f)
-	{
-		int x=-1, y=-1;
-		if(!m_pkTestPath->GetNextStep(x,y))
-		{
-			return true; // do nothing
-		}
-		
-		if(!(x==-1&&y==-1))
-			SetObjDstPos(x, y, pkObject);
-
-		prev_time = time;
-	}
-
-	return true;
 }
 
 void ZeroRTS::Explore()
@@ -888,9 +838,6 @@ void ZeroRTS::OnClientStart(void)
 
 void ZeroRTS::CreateClientUnits(int iID)
 {
-	
-	
-	
 	//create player start object	
 	Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");
 	
