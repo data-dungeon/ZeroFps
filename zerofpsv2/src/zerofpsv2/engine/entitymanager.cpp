@@ -1721,6 +1721,7 @@ bool EntityManager::LoadZones(string strSaveDir )
 		kFile.Read(&kZData.m_kSize, 	sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);
 		
+		
 		if ( iVersion > 0 )
 			kFile.Read(&kZData.m_kTestPos, 		sizeof(kZData.m_kTestPos), 1);
 		else
@@ -1786,6 +1787,7 @@ bool EntityManager::SaveZones(string strSaveDir)
    // save latest created entityID
    cout<<"Next id is:"<<m_iNextEntityID<<endl;
    kFile.Write(&m_iNextEntityID,sizeof(int),1);
+	
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{

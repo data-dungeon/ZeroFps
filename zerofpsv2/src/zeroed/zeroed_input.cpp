@@ -109,7 +109,7 @@ void ZeroEd::Input_EditZone()
 	}
 	
 	//some default zone sizes, a hack kind of =D
-	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(3,3,3);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
@@ -636,12 +636,13 @@ Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
 	else
 	{
 		dir.Set(0,0,-1.5);
-		dir.Normalize();	
+		//dir.Normalize();	
 	}
 	
 	Matrix4 rm = m_pkActiveCamera->GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
+
 	
 	return dir;
 }

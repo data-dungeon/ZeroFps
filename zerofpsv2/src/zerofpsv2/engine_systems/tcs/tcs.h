@@ -101,6 +101,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB);
 		bool TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB);
 
+		P_Tcs TestLine2(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
+		
 		bool TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3&);
 		bool TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane,const Vector3& pkNormal1,const Vector3& pkNormal2);

@@ -393,36 +393,40 @@ bool P_Mad::TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly ,bool bIgnoreY )
 	return false;
 }
 
-bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir,bool bIgnoreY )
+bool P_Mad::LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY )
 {
-	kDir.Normalize();		
+	static Plane P;
+	static Vector3 k;
+
+	StartProfileTimer("P_Mad::LineVSSphere");		
 	
-	Plane P;
-	P.Set(kDir,kPos);
-	
+	P.Set(kDir,kPos);	
 	if(!P.SphereInside( m_pkEntity->GetWorldPosV(),GetRadius()))
+	{
+		StopProfileTimer("P_Mad::LineVSSphere");				
 		return false;
-	
-	
+	}
+
+	kDir.Normalize();					
 	Vector3 c = m_pkEntity->GetWorldPosV() - kPos;
 	
 	if(bIgnoreY)
 		c.y = 0;
 			
-	Vector3 k = kDir.Proj(c);		
-	
+	k = kDir.Proj(c);			
 	float cdis=c.Length();
 	float kdis=k.Length();
 	float Distance = float( sqrt((cdis*cdis)-(kdis*kdis)) );
 	
-	if(Distance < GetRadius())
-		return true;
-
-	return false;
+	StopProfileTimer("P_Mad::LineVSSphere");		
+	
+	return (Distance < GetRadius());	
 }
 
-bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
+bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 {
+	StartProfileTimer("P_Mad::LineVSMesh");		
+
 	vector<Mad_Face>*			pkFaces;			// Faces in mesh.
 	vector<Vector3>*			pkVertex;			// Vertex frames for mesh.
 	vector<Vector3>*			pkNormal;
@@ -433,12 +437,18 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	//setup all pointers
 	pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
+	{
+		StopProfileTimer("P_Mad::LineVSMesh");				
 		return false;
-	
+	}
+		
 	pkCoreMesh = pkCore->GetMeshByID(m_iCollisionMeshID);		
 	if(!pkCoreMesh)
+	{
+		StopProfileTimer("P_Mad::LineVSMesh");						
 		return false;
-	
+	}
+		
 	pkCore->PrepareMesh(	pkCoreMesh );	
 		
 	pkFaces =	pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
@@ -485,9 +495,12 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	{
 		m_kColPos=kClosestColPos; 
 		//m_pkZeroFps->m_pkRender->Sphere(m_kColPos,0.1,5,Vector3(1,0,0),true);					
+		
+		StopProfileTimer("P_Mad::LineVSMesh");				
 		return true;
 	}
 	
+	StopProfileTimer("P_Mad::LineVSMesh");				
 	return false;
 }
 

@@ -93,13 +93,14 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bRemoteEditing			=	false;
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
-	
+		
 	strcpy(szCoolName , "Guldfisk");	
 
 	int olle = 2;
 
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
+
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
@@ -151,6 +152,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_kSnapSize.Set(2,2,2);
 	m_kSnapOffset.Set(0,0,0);
+	
 	m_kLastZonePos = Vector3(0,0,0);
 
 	m_kTestGraph.SetSize(60,60,100);
@@ -1487,6 +1489,14 @@ void ZeroEd::UpdateZoneMarkerPos()
 			m_kZoneMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
 			m_kZoneMarkerPos.y = round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
 			m_kZoneMarkerPos.z = round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
+			
+			/*
+			m_kZoneMarkerPos.x = (temp.x/m_kSnapSize.x ) * m_kSnapSize.x;
+			m_kZoneMarkerPos.y = (temp.y/m_kSnapSize.y ) * m_kSnapSize.y;
+			m_kZoneMarkerPos.z = (temp.z/m_kSnapSize.z ) * m_kSnapSize.z;			
+			*/
+			
+			//m_kZoneMarkerPos = temp;
 		}
 		else
 		{

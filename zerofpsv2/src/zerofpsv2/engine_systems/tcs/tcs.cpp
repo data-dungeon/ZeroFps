@@ -153,7 +153,9 @@ void Tcs::Update(float fAlphaTime)
 	}
 	
 	//update all character ground line tests
+	StartProfileTimer("tcs-linetests");		
 	UpdateLineTests(fAlphaTime);
+	StopProfileTimer("tcs-linetests");		
 	
 	//synd all entitys to bodys
 	SyncEntitys();
@@ -165,7 +167,7 @@ void Tcs::Update(float fAlphaTime)
 	StopProfileTimer("tcs");			
 }
 
-void Tcs::UpdateLineTests(float fAlphaTime)
+void Tcs::UpdateLineTests(float fAlphaTime) 
 {
 	float distance;
 
@@ -579,11 +581,29 @@ bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)
 	
 }
 
+P_Tcs Tcs::TestLine2(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
+{
+	m_kLastTestPos = kStart;		
+	
+	for(unsigned int i=0;i<m_kBodys.size();i++)
+	{		
+		if( (m_kBodys[i] == pkTester) || (!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) )
+			continue;
+			
+/*		if(TestLineVSSphere2(Vector3 kStart,Vector3 kDir,P_Tcs* pkBody)
+		{
+			
+		}
+	*/	
+/*		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
+		{
+
+		}	*/
+	}
+}
 
 P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 {
-	
-	
 	m_kLastTestPos = kStart;		
 	float closest = 999999999;
 	P_Tcs* pkClosest = NULL;	
@@ -616,8 +636,6 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 
 bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 {
-	Vector3 kColPos;
-
 	if(pkB->m_pkMad)
 	{	
 		if(pkB->m_pkMad->TestLine(kStart,kDir))

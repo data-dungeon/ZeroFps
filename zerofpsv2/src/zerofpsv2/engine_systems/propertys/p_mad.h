@@ -35,8 +35,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int			m_iColFace;
 
 		//line test
-		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir,bool bIgnoreY = false);
-		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);		
+		bool LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY = false);
+		bool LineVSMesh(const Vector3& kPos,const Vector3& kDir);		
 		void GenerateModelMatrix();		
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);

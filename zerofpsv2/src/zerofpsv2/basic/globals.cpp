@@ -208,7 +208,17 @@ float round2(float val)
 		return (float) lower + 1.0f;
 	return (float) lower;*/
 
-	return (float) (int) (val + 0.5f);
+/*	if(val < 0)
+		return -((float) (int) (fabs(val) + 0.5f));
+	else
+		return (float) (int) (val + 0.5f);
+*/		
+
+	if(val < 0)
+		return (float) (int) (val - 0.5f);
+	else
+		return (float) (int) (val + 0.5f);
+
 }
 
 
