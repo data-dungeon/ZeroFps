@@ -125,6 +125,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	Register_Cmd("snapsave",	FID_SNAPSAVE);
 	Register_Cmd("snapload",	FID_SNAPLOAD);
+	Register_Cmd("findent",		FID_FINDENT);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -947,6 +948,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 	vector<string>	kUsers;
 	float fTest;
 	string strNewTitle;
+	int iMode;
 
 	switch(cmdid) {
 		case FID_NEW:
@@ -1183,9 +1185,19 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_COPY:			EditRunCommand(FID_COPY);		break;
 		case FID_PASTE:		EditRunCommand(FID_PASTE);		break;
 
+		case FID_FINDENT:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				break;
+			iMode = atoi(kCommand->m_kSplitCommand[1].c_str());
+		
+			Select_None();
+			Select_Add( iMode );
+			break;
+
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
+
 /*
 			iMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 			if(iMode == 0)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);		

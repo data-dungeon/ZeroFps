@@ -83,6 +83,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
 			FID_SNAPSIZE,
+			FID_FINDENT,
 		};
 			
 		enum EditMode_e
