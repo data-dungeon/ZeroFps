@@ -181,6 +181,7 @@ void MistClient::Input()
 	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
 	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
 	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
+	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
 	
 	//update camera
 	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))

@@ -60,6 +60,9 @@ void P_CharacterControl::Update()
 		if(kVel.Length() > 0)
 			kVel = kVel.Unit() * m_fSpeed;
 		
+		if(m_kControls[eCRAWL])
+			kVel *= 0.5;
+			
 		//character moves slower while in the air
 		if(!pkTcs->GetOnGround())
 			kVel *= 0.25;
@@ -76,17 +79,17 @@ void P_CharacterControl::Update()
 				}		
 	}
 
-		
+	//setup entity rotation
 	Matrix4 kRot;
 	kRot.Identity();
 	kRot.Rotate(0,m_fYAngle,0);
 	kRot.Transponse();				
 	GetEntity()->SetLocalRotM(kRot);	
 
-	Entity* pkEnt = GetEntity();
 
 	// Spela upp ett walkljud
 	// OBS! Detta skall flyttas till en kommande Characterklass.
+	Entity* pkEnt = GetEntity();	
 	if(P_Sound* pkSound = (P_Sound*)pkEnt->GetProperty("P_Sound"))
 	{
 		if(bHoppa)

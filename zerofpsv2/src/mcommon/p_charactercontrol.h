@@ -9,11 +9,12 @@ using namespace std;
 
 enum ControlKeys
 {
-	eUP = 0,
-	eDOWN = 1,
-	eLEFT = 2,
+	eUP = 	0,
+	eDOWN = 	1,
+	eLEFT = 	2,
 	eRIGHT = 3,
-	eJUMP = 4,
+	eJUMP = 	4,
+	eCRAWL = 5,
 };
 
 enum MOVE_STATE { idle, moving };
