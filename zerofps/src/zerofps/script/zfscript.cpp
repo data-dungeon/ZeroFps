@@ -19,9 +19,18 @@ ZFScript::~ZFScript()
 	lua_close(m_pkLua);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name:		OpenLua
+// Description:	Starta lua, öppna vissa hjälpfunktioner och skapa ett alla de
+//				tag metoder som krävs för att kunna registrera globala variabler
+//				till Lua.
+//
 bool ZFScript::OpenLua()
 {
+	// Open Lua
 	m_pkLua = lua_open(0);
+
+	// Open base lib for access to some useful functions.
 	lua_baselibopen(m_pkLua);
 
 	// Create Lua tag for Int type.
@@ -51,17 +60,25 @@ bool ZFScript::OpenLua()
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "getglobal");
 	lua_pushcfunction(m_pkLua, GetTypeString); 
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
-
 	return true;	
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name:		RunScript
+// Description:	Kör ett script från en fil.
+//
 bool ZFScript::RunScript(char* szFileName)
 {
 	printf("SCRIPT_API: Executing script %s\n", szFileName);
 	return (lua_dofile(m_pkLua, szFileName) == 0);
 }
 
-bool ZFScript::ExposeVariable(const char* szName, void* pkData, VarType eVariableType)
+///////////////////////////////////////////////////////////////////////////////
+// Name:		ExposeVariable
+// Description:	Registrera en C++ variabel som Lua kan se.
+//
+bool ZFScript::ExposeVariable(const char* szName, void* pkData, 
+							  VarType eVariableType)
 {
 	switch(eVariableType)
 	{
@@ -86,6 +103,10 @@ bool ZFScript::ExposeVariable(const char* szName, void* pkData, VarType eVariabl
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Ett gäng statiska funktioner som triggas från Lua när man behöver komma åt
+// en global c++ variabel från skript (som i förväg har blivit exponerad).
+//
 // Int
 int ZFScript::SetTypeInt(lua_State* pkLua) {
 	int* var=(int*) lua_touserdata(pkLua,2);
@@ -98,7 +119,6 @@ int ZFScript::GetTypeInt(lua_State* pkLua) {
 	lua_pushnumber(pkLua,*var);
 	return 1;
 }
-
 // Double
 int ZFScript::SetTypeDouble(lua_State* pkLua) {
 	double* var=(double*) lua_touserdata(pkLua,2);
@@ -111,7 +131,6 @@ int ZFScript::GetTypeDouble(lua_State* pkLua) {
 	lua_pushnumber(pkLua,*var);
 	return 1;
 }
-
 // Float
 int ZFScript::SetTypeFloat(lua_State* pkLua) {
 	float* var=(float*) lua_touserdata(pkLua,2);
@@ -124,7 +143,6 @@ int ZFScript::GetTypeFloat(lua_State* pkLua) {
 	lua_pushnumber(pkLua,*var);
 	return 1;
 }
-
 // String
 int ZFScript::SetTypeString(lua_State* pkLua) {
 	char* var= (char*) lua_touserdata(pkLua,2);
@@ -138,4 +156,7 @@ int ZFScript::GetTypeString(lua_State* pkLua) {
 	return 1;
 }
 
-
+bool ZFScript::ExposeFunction(const char *szName)
+{
+	return true;
+}
