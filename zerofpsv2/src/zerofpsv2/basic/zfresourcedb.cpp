@@ -32,7 +32,6 @@ ZFResourceHandle::ZFResourceHandle()
 ZFResourceHandle& ZFResourceHandle::operator=(const ZFResourceHandle& kOther)
 {
 	SetRes(kOther.m_strName);
-	cout<<"COPYING !!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 	return *this;
 }
 

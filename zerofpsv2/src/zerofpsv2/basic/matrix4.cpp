@@ -493,6 +493,17 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 	fY=DegToRad(fY);
 	fZ=DegToRad(fZ);	
 
+	
+	float cx = cos(fX);
+	float sx = sin(fX);
+	
+	float cy = cos(fY);
+	float sy = sin(fY);	
+	
+	float cz = cos(fZ);
+	float sz = sin(fZ);
+	/*
+	
 	Matrix4 rotatez=Matrix4(float(cos(fZ))	,float(-sin(fZ))  ,0				,0,
 									float(sin(fZ))	,float(cos(fZ))	,0				,0,
 									0			,0			,1				,0,
@@ -507,9 +518,24 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 									0			,1			,0				,0,
 									float(-sin(fY))	 ,0			,float(cos(fY))		,0,
 									0			,0			,0				,1);	
+											*/
+	Matrix4 rotatez=Matrix4(cz			 ,-sz			,0				,0,
+									sz			 ,cz	 		,0				,0,
+									0			,0			,1				,0,
+									0			,0			,0				,1);	
+	
+	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
+									0			,cx		  ,-sx			,0,
+									0			,sx	 		,cx	  		,0,
+									0			,0			,0				,1);	
+												 
+	Matrix4 rotatey=Matrix4(cy			 ,0			,sy		   ,0,
+									0			,1			,0				,0,
+									-sy	 	,0			,cy			,0,
+									0			,0			,0				,1);	
 												 
 						 
-	*this *=rotatex*rotatez*rotatey;
+	*this *=rotatex*rotatey*rotatez;
 
 }
 

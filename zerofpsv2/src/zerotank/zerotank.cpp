@@ -288,6 +288,7 @@ void ZeroTank::Input()
 
 		m_pkZeroTank_Modify->SetLocalPosV(newpos);		
 	
+		kRotate = m_pkZeroTank_Modify->GetLocalRotV();
 		// Rotate
 		if(pkInput->Pressed(KEY_J))	kRotate.x += fSpeedScale;			
 		if(pkInput->Pressed(KEY_U))	kRotate.x -= fSpeedScale;			
@@ -296,7 +297,8 @@ void ZeroTank::Input()
 		if(pkInput->Pressed(KEY_O))	kRotate.z += fSpeedScale;			
 		if(pkInput->Pressed(KEY_L))	kRotate.z -= fSpeedScale;			
 
-		m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
+		//m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
+			m_pkZeroTank_Modify->SetLocalRotV(kRotate);
 		}
 	
 	
