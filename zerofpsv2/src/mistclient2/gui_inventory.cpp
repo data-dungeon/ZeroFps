@@ -207,9 +207,7 @@ void InventoryDlg::OnCommand(string strController)
 	if(strController == "SplitStockOKBn")
 		CloseSplitStockWnd(true);
 	if(strController == "SplitStockCancelBn")
-	{
 		CloseSplitStockWnd(false);
-	}
 }
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
@@ -235,8 +233,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				if(bLeftButtonPressed)
 				{								
-//					CloseSplitStockWnd();
-
 					if(m_kMoveSlot.m_iIndex == -1)
 						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
 				}
@@ -294,8 +290,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				if(bLeftButtonPressed)
 				{				
-					//CloseSplitStockWnd();
-
 					if(m_kMoveSlot.m_iIndex == -1) // inget slot under cursorn, plocka upp.
 						PickUpFromGrid(i,false,mx,my); 
 				}
@@ -751,7 +745,8 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		else
 		if(bIsSplitSlot)
 		{
-			bTryExecuteSlplit = true;
+			if(g_kMistClient.m_pkInputHandle->Pressed(KEY_LCTRL))  
+				bTryExecuteSlplit = true;
 		
 			m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
 			m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;
@@ -1017,7 +1012,7 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 {
 	m_pkSplitStockWnd->Hide();
 
-	bool bUpdate = true;
+	bool bUpdate = false;
 
 	if(bExecuteSplit && m_kSplitSlot.m_iIndex != -1)
 	{

@@ -755,6 +755,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					if(!m_pkInventoryDlg->IsVisible())
 						m_pkInventoryDlg->Open(); 
 					
+				printf("Updating inventory\n");
 				m_pkInventoryDlg->UpdateInventory(kItemList);
 			}
 			else
