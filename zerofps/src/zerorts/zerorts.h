@@ -98,7 +98,7 @@ class ZeroRTS :public Application {
 		UserPanel*	m_pkUserPanel;
 		
 		ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth);
-		~ZeroRTS() {};
+		~ZeroRTS() { PathBuilder::DestroyGlobal(); }
 	 	
 	 	void OnInit(void);
 		void OnIdle(void);

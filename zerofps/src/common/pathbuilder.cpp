@@ -167,3 +167,21 @@ Vector3 PathBuilder::GetPosFromSqr(Point square)
 
 	return Vector3(x,y,z);
 }
+
+// Called ones when the game is over...
+void PathBuilder::DestroyGlobal()
+{
+	map< string, int* >::iterator it = m_akCostMaps.begin();
+	for( ; it != m_akCostMaps.end(); it++)
+	{
+		if(it->second != NULL)
+		{
+			delete[] it->second;
+			it->second = NULL;
+		}
+	}
+
+	m_akCostMaps.clear();
+
+	delete[] m_piTerrain;
+}
