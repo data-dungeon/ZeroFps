@@ -41,7 +41,7 @@ class MistServer :public Application , public ZGuiApp {
 
 		void UpdateZoneMarkerPos();
 		void DrawZoneMarker(Vector3 kPos);
-		void AddZone(Vector3 Pos );
+		void AddZone();
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);

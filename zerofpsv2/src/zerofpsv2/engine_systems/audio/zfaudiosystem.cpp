@@ -596,15 +596,15 @@ void ZFAudioSystem::PrintError(ALenum error, char *szDesc)
 	case AL_INVALID_NAME:
 		printf(" AL_INVALID_NAME\n");
 		break;
-	case AL_INVALID_ENUM:
-		printf(" AL_INVALID_ENUM\n");
-		break;
+//	case AL_INVALID_ENUM:
+//		printf(" AL_INVALID_ENUM\n");
+//		break;
 	case AL_INVALID_VALUE:
 		printf(" AL_INVALID_VALUE\n");
 		break;
-	case AL_INVALID_OPERATION:
-		printf(" AL_INVALID_OPERATION\n");
-		break;
+//	case AL_INVALID_OPERATION:
+//		printf(" AL_INVALID_OPERATION\n");
+//		break;
 	case AL_OUT_OF_MEMORY:
 		printf(" AL_OUT_OF_MEMORY\n");
 		break;

@@ -981,6 +981,9 @@ void ObjectManager::Test_DrawZones()
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
 	for(unsigned int i=0;i<m_kZones.size();i++) {
+		if(!m_kZones[i].m_bUsed)
+			continue;
+			
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 
@@ -1067,6 +1070,9 @@ void ObjectManager::ClearTrackers()
 ZoneData* ObjectManager::GetZone(Vector3 kPos)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(!m_kZones[iZ].m_bUsed)
+			continue;
+
 		if(m_kZones[iZ].IsInside(kPos))
 			return &m_kZones[iZ];
 		}
@@ -1078,6 +1084,9 @@ ZoneData* ObjectManager::GetZone(Vector3 kPos)
 ZoneData* ObjectManager::GetZone(Object* PkObject)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(!m_kZones[iZ].m_bUsed)
+			continue;
+		
 		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
 			return &m_kZones[iZ];
 		}
@@ -1114,6 +1123,9 @@ int ObjectManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 
 	//seccond go trough all zones in the world
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(!m_kZones[iZ].m_bUsed)
+			continue;
+		
 		if(m_kZones[iZ].IsInside(kMyPos))
 		{
 			return iZ;
@@ -1127,6 +1139,9 @@ int ObjectManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 		int id = -1;
 	
 		for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+			if(!m_kZones[iZ].m_bUsed)
+				continue;
+			
 			float dis = (m_kZones[iZ].m_kPos - kMyPos).Length();
 		
 			if(dis < d)
@@ -1533,9 +1548,12 @@ bool ObjectManager::LoadWorld(const char* acDir)
 void ObjectManager::ClearZoneLinks(int iId)
 {
 	//loop trough all connected zones
-	for(int i = 0;m_kZones[iId].m_iZoneLinks.size();i++)
+	for(int i = 0;i < m_kZones[iId].m_iZoneLinks.size();i++)
 	{
 		ZoneData* zone = GetZoneData( m_kZones[iId].m_iZoneLinks[i] );
+		
+		if(!zone)
+			continue;
 		
 		//loop trough the connected zones connected zones
 		for(vector<int>::iterator it=zone->m_iZoneLinks.begin();it!=zone->m_iZoneLinks.end();it++)
@@ -1543,8 +1561,7 @@ void ObjectManager::ClearZoneLinks(int iId)
 			if((*it) == iId)
 			{
 				zone->m_iZoneLinks.erase(it);
-				it = zone->m_iZoneLinks.begin();
-				continue;
+				break;
 			}
 		}
 	}
@@ -1559,6 +1576,9 @@ bool ObjectManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 {
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+
 		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize-0.1))
 			return true;
 	}
@@ -1582,6 +1602,9 @@ void ObjectManager::UpdateZoneLinks(int iId)
 	//go trough all zones and check if they are to be connected
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+	
 		if(i == iId)
 			continue;
 			

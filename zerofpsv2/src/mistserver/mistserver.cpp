@@ -134,26 +134,37 @@ void MistServer::Input()
 
 		kRm.Transponse();		
 		kRm.Rotate(rot);
-
 		kRm.Transponse();		
-
 		Vector3 bla = Vector3(0,0,1);
 		bla = kRm.VectorTransform(bla);
-		
 		kRm.LookDir(bla,Vector3(0,1,0));
 
-
 		m_pkCameraObject->SetLocalPosV(newpos);
-//		m_pkCameraObject->RotateLocalRotV(rot);	
 		m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
-		if(pkInput->Pressed(KEY_SPACE))
+		if(pkInput->Pressed(MOUSELEFT))
 		{
-			AddZone(m_pkCameraObject->GetWorldPosV());
+			AddZone();
+	
+		}
+		if(pkInput->Pressed(MOUSERIGHT))
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->DeleteZone(id);
 	
 		}
 	
+		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+		if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+		if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+		if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+		if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
+		if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
+		if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
+		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
+		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
+		
 	}
 
 
@@ -324,19 +335,12 @@ Object* MistServer::GetTargetObject()
 }
 
 
-void MistServer::AddZone(Vector3 kPos )
+void MistServer::AddZone()
 {
-	Vector3 kSnap;
-	
-	kSnap.x = round(kPos.x/4.0) * 4.0;
-	kSnap.y = round(kPos.y/4.0) * 4.0;
-	kSnap.z = round(kPos.z/4.0) * 4.0;
-
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
 		
 	int id = pkObjectMan->CreateZone(m_kZoneMarkerPos,m_kZoneSize);
-//	pkObjectMan->UpdateZoneLinks(id);
 }
 
 
@@ -350,9 +354,18 @@ void MistServer::UpdateZoneMarkerPos()
 {
 	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
 
-	m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0;
-	m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
-	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
+	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0;
+		else  m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0 + 2;						
+
+	if(m_kZoneSize.y != 4) m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
+		else  m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0 + 2;						
+
+	if(m_kZoneSize.z != 4) m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
+		else  m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0 + 2;						
+
+//	m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
+//	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
+
 
 }
 
