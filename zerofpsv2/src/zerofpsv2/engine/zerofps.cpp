@@ -536,7 +536,7 @@ void ZeroFps::Update_System()
 			
 	}
 	frames+=iLoops;
-	/*
+	*/
 		
 	for(int i=0;i<iLoops;i++)
 	{	
