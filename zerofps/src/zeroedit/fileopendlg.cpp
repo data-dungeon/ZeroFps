@@ -112,7 +112,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 					{
 						printf("Switching dir\n");
 
-						int new_path_length = m_szSearchPath.find_last_of("\\"); 
+						int new_path_length = m_szSearchPath.find_last_of("/"); 
 
 						if(new_path_length != string::npos)
 						{
@@ -132,7 +132,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 						{
 							if(vkDirectories[i] == szFileName)
 							{
-								m_szSearchPath.append("\\");
+								m_szSearchPath.append("/");
 								m_szSearchPath.append(szFileName);
 								bFillPathlist = true;
 								bFoundDir = true;
@@ -154,7 +154,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 					if(bFillPathlist && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
 					{
 						int size = m_szSearchPath.length();  
-						int pos = m_szSearchPath.find_last_of("\\");
+						int pos = m_szSearchPath.find_last_of("/");
 						if(string::npos != pos)
 							m_szCurrentDir = m_szSearchPath.substr(pos+1, size-pos);
 						FillPathList(pkListbox, m_szSearchPath);
