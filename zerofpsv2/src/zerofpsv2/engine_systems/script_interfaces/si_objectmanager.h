@@ -8,6 +8,7 @@ class EntityManager;
 class ZFScriptSystem;
 class Entity;
 class Property;
+class Vector3;
 
 /**	Script Functions for ObjectManger.
 
@@ -15,6 +16,8 @@ class Property;
 */
 namespace ObjectManagerLua
 {
+	Vector3 ENGINE_SYSTEMS_API GetVectorArg(lua_State* pkLua, int iIndex);
+
 	void ENGINE_SYSTEMS_API Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript);
 	void ENGINE_SYSTEMS_API Reset();
 	void ENGINE_SYSTEMS_API Push();

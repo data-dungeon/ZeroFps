@@ -746,6 +746,81 @@ int ApplyImpulsLua(lua_State* pkLua)
    return 0;	
 
 }
+
+int SetObjectRotVelLua (lua_State* pkLua)
+{
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs != 2)
+		return 0;
+
+	double dID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
+
+	if(pkObject)
+	{
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+
+      // Get physic-property
+      P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs");
+
+      if ( pkTcs )
+      {
+		   pkTcs->SetRotVel (  Vector3(
+			   (float) (*(double*) vkData[0].pData),
+			   (float) (*(double*) vkData[1].pData),
+			   (float) (*(double*) vkData[2].pData)) );
+      }
+      else
+         cout << "Warning! Tried to set RotVel on a object without P_Tcs!" << endl;
+
+		g_pkScript->DeleteTable(vkData);
+	}
+
+	return 1;
+}
+
+int BounceLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+		return 0;
+	
+	double id;	
+	g_pkScript->GetArgNumber(pkLua, 0, &id);		
+
+
+	Entity* ent = g_pkObjMan->GetEntityByID((int)id);
+	
+	if(ent)
+	{
+		Vector3 vel = ent->GetVel();
+		
+		if(vel.y > 0)
+			return 0;
+		
+		if(abs((int)vel.y) < 1)
+		{
+			ent->SetVel(Vector3(0,0,0));
+			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
+			if(ts)
+				ts->SetGravity(false);
+			
+			return 0;
+		}
+		
+		vel.y = (float) abs((int)vel.y);
+	
+		vel*=0.9;			//dämpnings faktor
+		
+		ent->SetVel(vel);
+	}
+	
+	return 0;
+}
+
 }
 
 
@@ -761,4 +836,6 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
+	g_pkScript->ExposeFunction("SetRotVel",	SI_PTcs::SetObjectRotVelLua);
+	g_pkScript->ExposeFunction("Bounce",		SI_PTcs::BounceLua);				
 }

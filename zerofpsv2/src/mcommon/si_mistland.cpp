@@ -35,17 +35,18 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_iLastCollidedID = -1;
 	g_pkServerInfo = NULL;
 	
-	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
+//	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
 	pkScript->ExposeFunction("GetCurrentPCID",			MistLandLua::GetCurrentPCIDLua);		
 	pkScript->ExposeFunction("GetLastCollidedObject",	MistLandLua::GetLastCollidedObjectLua);		
 	pkScript->ExposeFunction("GetClosestObject",			MistLandLua::GetClosestObjectLua);		
-	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
-	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
-	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
 	pkScript->ExposeFunction("HavePath",					MistLandLua::HavePathLua);					
 	pkScript->ExposeFunction("RotateTowards",				MistLandLua::RotateTowardsLua);					
 	
+	// MOVE
+	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
+	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
+
 	
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
@@ -173,12 +174,13 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 }
 
+/*
 int MistLandLua::GetSelfIDLua(lua_State* pkLua)
 {
 	g_pkScript->AddReturnValue(pkLua,ObjectManagerLua::g_iCurrentObjectID);
 	
 	return 1;
-}
+}*/
 
 int MistLandLua::GetCurrentPCIDLua(lua_State* pkLua)
 {
@@ -567,43 +569,7 @@ int MistLandLua::RotateTowardsLua(lua_State* pkLua)
 }
 
 
-int MistLandLua::BounceLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
-		return 0;
-	
-	double id;	
-	g_pkScript->GetArgNumber(pkLua, 0, &id);		
 
-
-	Entity* ent = g_pkObjMan->GetEntityByID((int)id);
-	
-	if(ent)
-	{
-		Vector3 vel = ent->GetVel();
-		
-		if(vel.y > 0)
-			return 0;
-		
-		if(abs((int)vel.y) < 1)
-		{
-			ent->SetVel(Vector3(0,0,0));
-			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
-			if(ts)
-				ts->SetGravity(false);
-			
-			return 0;
-		}
-		
-		vel.y = (float) abs((int)vel.y);
-	
-		vel*=0.9;			//dämpnings faktor
-		
-		ent->SetVel(vel);
-	}
-	
-	return 0;
-}
 
 // ----------------------------------------------------------------------------------------------
 

@@ -1,3 +1,4 @@
+#include "../script/zfscript.h"
 #include "entity.h"
 #include "../basic/zfsystem.h"
 #include "entitymanager.h"
@@ -1932,12 +1933,372 @@ int SetParameterLua(lua_State* pkLua)
 	if(!pkProp->SetValue((string)acName,(string)acData))
 		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
 	return 0;
-}	
+}
+
+/**	\fn GetObjectType( Entity )
+ 		\relates SIEntity
+		\param Entity Id of entity to get type of.
+		\brief Returns the type of the entity
+*/
+int GetObjectTypeLua(lua_State* pkLua)
+{
+	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+	}
+	
+	//get object
+	Entity*	pkObj = g_pkObjMan->GetEntityByID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetType().c_str(),pkObj->GetType().size());
+	
+	return 1;
+}
+
+/**	\fn GetObjectName( Entity )
+ 		\relates SIEntity
+		\param Entity Id of entity to get name of.
+		\brief Returns the name of the entity.
+*/
+int GetObjectNameLua(lua_State* pkLua)
+{
+	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+	}
+	
+	//get object
+	Entity*	pkObj = g_pkObjMan->GetEntityByID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetName().c_str(),pkObj->GetName().size());
+	
+	return 1;
+}
+
+/**	\fn GetLocalDouble( Entity, VariableName)
+ 	\relates SIEntity
+   \brief Get value of a double variable stored in Entity.
+   \param Entity Entity to get variable from.
+   \param VariableName Name of variable.
+	\return Return Return value of variable
+
+	Get value of a double variable stored in Entity. The variable is saved with the object and it
+	can be used to save status flags used by the script. If no variable with the given name is 
+	found a value of 0.0 will be returned.
+*/
+int GetLocalDouble(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	string arne = acName;
+	double dValue = o1->GetVarDouble(arne);
+	//printf("GetLocalDouble Entity[%d] = %s is %f\n", iId1, acName, dValue);
+	g_pkScript->AddReturnValue(pkLua, dValue);
+	return 1;
+
+}
+
+/**	\fn SetLocalDouble(Entity, VariableName, Value)
+ 	\relates SIEntity
+   \brief Set value of a double variable stored in Entity.
+   \param Entity Entity to get variable from.
+   \param VariableName VariableName Name of variable.
+   \param Value New value to set variable to.
+
+	Set value of a double variable stored in Entity. If the variable don't exist it will be
+	created.
+*/
+int SetLocalDouble(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
+	float fValue = (float) dTemp;
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
+	string arne = acName;
+	o1->SetVarDouble(arne, fValue);
+	return 1;	
+}
+
+/**	\fn GetLocalString( Entity, VariableName)
+ 	\relates SIEntity
+   \brief Get value of a double variable stored in Entity.
+   \param Entity Entity to get variable from.
+   \param VariableName Name of variable.
+	\return Return Return value of variable
+
+	Get value of a string variable stored in Entity. The variable is saved with the object and it
+	can be used to save status flags used by the script. If no variable with the given name is 
+	found a empty string will be returned.
+*/
+int GetLocalString(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	string arne = acName;
+	string strValue = o1->GetVarString(arne);
+
+	g_pkScript->AddReturnValue(pkLua,(char*)strValue.c_str(),strValue.size());
+	return 1;
+}
+
+
+/**	\fn SetLocalString(Entity, VariableName, Value)
+ 	\relates SIEntity
+   \brief Set value of a double variable stored in Entity.
+   \param Entity Entity to get variable from.
+   \param VariableName VariableName Name of variable.
+   \param Value New value to set variable to.
+
+	Set value of a string variable stored in Entity. If the variable don't exist it will be
+	created.
+*/
+int SetLocalString(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	char acValue[100];
+	g_pkScript->GetArg(pkLua, 2, acValue);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	string arne = acName;
+	o1->SetVarString(arne, string(acValue));
+	return 1;	
+}
+
+/**	\fn SetObjectPos( Entity, Pos)
+ 	\relates SIEntity
+   \brief Sets the position of the Entity
+   \param Entity Entity to set position on
+   \param Pos Name of variable.
+*/
+int SetObjectPosLua(lua_State* pkLua)
+{
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs != 2)
+	{
+		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
+		return 0;
+	}
+
+	double dID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
+
+	if(pkObject)
+	{
+		Vector3 kPos;
+		kPos = GetVectorArg(pkLua, 2);
+		/*vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+
+		pkObject->SetWorldPosV( Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)) );*/
+		pkObject->SetWorldPosV(kPos);
+		//g_pkScript->DeleteTable(vkData);
+	}
+
+	return 1;
+}
+
+/**	\fn SetVelTo( Entity)
+ 	\relates SIEntity
+   \brief Sets velocity of entity
+*/
+int SetVelToLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 3)
+	{
+		double dId;
+
+		double dVel;
+		Vector3 kPos;
+		vector<TABLE_DATA> vkData;
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+		g_pkScript->GetArgNumber(pkLua, 2, &dVel);
+
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));
+
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
+
+		if(pkEnt)
+		{
+			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
+
+			pkEnt->SetVel(dir*(float) dVel);
+		}
+		return 0;
+	}
+
+   return 0;
+}
+
+/**	\fn GetObjectPos( Entity)
+ 	\relates SIEntity
+   \brief Returns position of entity
+*/
+int GetObjectPosLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectPos failed! Expects 1 arguments.\n");
+		return 0;
+	}
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
+
+	if(pkObject)
+	{
+		Vector3 pos = pkObject->GetWorldPosV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
+}
+
+/**	\fn SetObjectPos( Entity)
+ 	\relates SIEntity
+   \brief Returns rotation of entity
+*/
+int GetObjectRotLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectRot failed! Expects 1 arguments.\n");
+		return 0;
+	}
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
+
+	if(pkObject)
+	{
+		Vector3 kRot = pkObject->GetWorldRotV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
+}
+
 }
 
 void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 {
+	cout << "Add SI: Entity" << endl;
+
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("AddProperty", SI_Entity::AddPropertyLua);
-	g_pkScript->ExposeFunction("SetParameter",			SI_Entity::SetParameterLua);
+	g_pkScript->ExposeFunction("AddProperty",			SI_Entity::AddPropertyLua);
+	g_pkScript->ExposeFunction("SetParameter",		SI_Entity::SetParameterLua);
+	g_pkScript->ExposeFunction("GetObjectType",		SI_Entity::GetObjectTypeLua);		
+	g_pkScript->ExposeFunction("GetObjectName",		SI_Entity::GetObjectNameLua);		
+
+	g_pkScript->ExposeFunction("GetLocalDouble",		SI_Entity::GetLocalDouble);
+	g_pkScript->ExposeFunction("SetLocalDouble",		SI_Entity::SetLocalDouble);
+	g_pkScript->ExposeFunction("GetLocalString",		SI_Entity::GetLocalString);
+	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
+	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
+	g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
+	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);
+	g_pkScript->ExposeFunction("GetObjectRot",		SI_Entity::GetObjectRotLua);
+
 }
