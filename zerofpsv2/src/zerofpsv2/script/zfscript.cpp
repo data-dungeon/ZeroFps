@@ -96,7 +96,7 @@ bool ZFScriptSystem::Open()
 	return true;	
 }
 
-void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
+void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
 {
 	//*ppkState = lua_open();
 
@@ -108,14 +108,14 @@ void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 	for(i=0; i<iNumFunctions;  i++)
 		ExposeFunction(m_vkGlobalFunctions[i]->szName,
 			m_vkGlobalFunctions[i]->pkFunction, 
-			*ppkState);
+			pkState);
 
 	// Add global variables
 	for(i=0; i<iNumVars; i++)
 		ExposeVariable(m_vkGlobalVariables[i]->szName,
 			m_vkGlobalVariables[i]->pvData,
 			m_vkGlobalVariables[i]->eType,
-			*ppkState);
+			pkState);
 }
 
 void ZFScriptSystem::Close()
@@ -477,7 +477,7 @@ bool ZFScript::Create(string strName)
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 
 	pkScriptSys->CreateMetatables(m_pkLuaState);
-	pkScriptSys->CopyGlobalData(&m_pkLuaState);
+	pkScriptSys->CopyGlobalData(m_pkLuaState);
 
 	return pkScriptSys->Run(this);
 }

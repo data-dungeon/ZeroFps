@@ -113,7 +113,7 @@ public:
 	bool ShutDown();
 	bool IsValid();	
 
-	void CopyGlobalData(lua_State** ppkState);
+	void CopyGlobalData(lua_State* pkState);
 	
 	string FormatMultiLineTextFromLua(string strLuaText);
 	
