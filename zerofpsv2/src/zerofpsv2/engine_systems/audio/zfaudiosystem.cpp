@@ -1120,7 +1120,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 
-	if(pkSound->m_b2DSound)
+	if(!pkSound->m_b2DSound)
 	{
 		// Set position.
 		alGetError();
