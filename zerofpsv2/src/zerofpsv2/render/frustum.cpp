@@ -74,7 +74,7 @@ bool Frustum::PointInFrustum( const Vector3& kPoint)
 
 bool Frustum::SphereInFrustum(const Vector4& kPoint)
 {
-	float d;
+	static float d;
 
 	for(int p = 0; p < 6; p++ )
 	{
@@ -90,7 +90,7 @@ bool Frustum::SphereInFrustum(const Vector4& kPoint)
 
 bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 {
-	float d;
+	static float d;
 
 	for(int p = 0; p < 6; p++ )
 	{
@@ -105,12 +105,13 @@ bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 
 bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez )
 {
-	int p;
+	static Vector3 kCubeNeg;
+	static Vector3 kCubePos;
+	
+	kCubeNeg.Set(x - sizex, y - sizey, z - sizez); 
+	kCubePos.Set(x + sizex, y + sizey, z + sizez); 
 
-	Vector3 kCubeNeg(x - sizex, y - sizey, z - sizez); 
-	Vector3 kCubePos(x + sizex, y + sizey, z + sizez); 
-
-	for( p = 0; p < 6; p++ )
+	for(int p = 0; p < 6; p++ )
 	{
 		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
 			continue;
@@ -136,7 +137,7 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 
 bool Frustum::CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation )
 {
-	int p;
+	static int p;
 	static Vector3 kEdge[8];
 
 

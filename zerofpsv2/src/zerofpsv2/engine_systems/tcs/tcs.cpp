@@ -833,8 +833,7 @@ void Tcs::UpdateAABBs()
 			
 			//save new aabb rotation	
 			pkBody->m_kAABBRotation = pkBody->m_kNewRotation;				
-		}
-		
+		}		
 		
 		switch(pkBody->m_iTestType)
 		{
