@@ -58,11 +58,13 @@ void ZeroFps::MainLoop(void) {
 					m_pkInput->Reset();
 					break;
 				}
-				if(m_pkInput->Pressed(F12)){
-					m_pkInput->ToggleGrab();
-				}
+				if(m_pkInput->Pressed(F12))
+					m_pkInput->ToggleGrab();				
+				if(m_pkInput->Pressed(F11))
+					ToggleFullScreen();				
+
 //				m_pkApp->OnHud();
-				Camera();//camera translations/rotations				
+				Camera();
 				m_pkApp->OnIdle();		
 				m_pkRender->DrawSkyBox(*m_kCamPos);
 				Swap();
@@ -163,6 +165,10 @@ void ZeroFps::Camera(void) {
 			break;
 		}
 //	}
+}
+
+void ZeroFps::ToggleFullScreen(void){
+	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
 

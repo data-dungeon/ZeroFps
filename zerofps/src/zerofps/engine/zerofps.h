@@ -65,8 +65,11 @@ class ZeroFps {
 		void Swap(void);								//swap gl buffers
 		void Camera(void);
 		
+		void ToggleFullScreen(void);
+		
 		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 		inline float GetFrameTime() {return m_fFrameTime;};
+		
 		
 		inline Vector3& CamPos(Vector3 kCamPos){*m_kCamPos=kCamPos;return *m_kCamPos;};
 		inline Vector3& CamPos(void){return *m_kCamPos;};
