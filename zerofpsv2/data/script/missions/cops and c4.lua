@@ -5,7 +5,7 @@
 --//
 --///////////////////////////////////////////////////////////////////////////////
 
-MissionInfo = { name="cops and c4", difficulty=1, xp=100, cash=500 } -- difficulty = Level
+MissionInfo = { name="cops and c4", difficulty=1, xp=100, cash=500, success=0 } -- difficulty = Level
 
 MissionText = 
 { 

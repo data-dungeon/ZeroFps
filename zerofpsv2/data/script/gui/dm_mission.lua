@@ -20,9 +20,12 @@ function GUICreate()
 	 borderR=255, borderG=255, borderB=255, bd_size=8, tile=0, trans=0 }
 	Skin7 = { tex1="sb_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
-	Skin8 = { tex1="sb_n.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+
+
+	Skin8 = { tex1="dm/final/members/up_arrow.bmp", 
+	tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin9 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin9 = { tex1="dm/final/members/up_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 	Skin2 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
@@ -40,6 +43,16 @@ function GUICreate()
 	 tex4a="dm/final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=32, tile=1, trans=0 }
 
+	Skin11 = { tex1="dm/final/members/thumb_bn.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+	Skin12 = { tex1="dm/final/members/down_arrow.bmp", 
+	tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+	Skin13 = { tex1="dm/final/members/down_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -50,10 +63,21 @@ function GUICreate()
 	ChangeSkin("MissionWnd","Skin10","Window")
 
 	CreateWnd(7,"MissionScrollbar","MissionWnd","",248,14,20,260,0)
-	ChangeSkin("MissionScrollbar","Skin7","Scrollbar")
-	ChangeSkin("MissionScrollbar","Skin8","Scrollbar: Button up")
-	ChangeSkin("MissionScrollbar","Skin9","Scrollbar: Button down")
-	ChangeSkin("MissionScrollbar","Skin9","Scrollbar: Button focus")
+	ChangeSkin("MissionScrollbar","Skin5","Scrollbar")
+
+	ChangeSkin("MissionScrollbar","Skin11","Scrollbar: Button up")
+	ChangeSkin("MissionScrollbar","Skin11","Scrollbar: Button down")
+	ChangeSkin("MissionScrollbar","Skin11","Scrollbar: Button focus")
+
+	ChangeSkin("MissionScrollbar","Skin8","Scrollbar: Top: Button up")
+	ChangeSkin("MissionScrollbar","Skin9","Scrollbar: Top: Button down")
+	ChangeSkin("MissionScrollbar","Skin8","Scrollbar: Top: Button focus")
+
+	ChangeSkin("MissionScrollbar","Skin12","Scrollbar: Bottom: Button up")
+	ChangeSkin("MissionScrollbar","Skin13","Scrollbar: Bottom: Button down")
+	ChangeSkin("MissionScrollbar","Skin12","Scrollbar: Bottom: Button focus")
+
+
 
 	CreateWnd(1,"BriefingBn","MissionWnd","Briefing",28,286,93,20,0)
 	ChangeSkin("BriefingBn","Skin2","Button up")
