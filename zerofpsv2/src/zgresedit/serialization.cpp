@@ -448,7 +448,7 @@ bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
 	else
 		rc = pkWnd->GetWndRect();
 
-	fprintf(m_pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0)\n", iType, 
+	fprintf(m_pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0,0,3)\n", iType, 
 		szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height());
 
 	m_kSavedWnds.push_back(pkWnd);
