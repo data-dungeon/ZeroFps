@@ -1,5 +1,5 @@
 #include <cmath>
-#include <cassert>
+#include "zfassert.h"
 #include "vector4.h"
 #include "matrix4.h"
 #include "vector3.h"
@@ -154,6 +154,10 @@ float &Vector4::operator[](const int i)
 			return z;
 		case 3:
 			return w;
+		default:
+			ZFAssert(0, "Vector4::operator[]: Index out of range");
+			return x;
+		
 	}
 }
 
@@ -188,7 +192,8 @@ float Vector4::Dot( const Vector4& v  ) const
 void Vector4::Normalize(void)						
 {
 	float invlen = Length();
-	assert(invlen != 0.0);
+	ZFAssert(invlen != 0.0, "Vector4::Normalize: Vector has zero length ");
+		//assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	x *= invlen;
 	y *= invlen;
@@ -199,7 +204,8 @@ void Vector4::Normalize(void)
 void Vector4::PlainNormalize(void)						
 {
 	float invlen = PlainLength();
-	assert(invlen != 0.0);
+	ZFAssert(invlen != 0.0, "Vector4::PlainNormalize: Vector has zero length ");
+	//	assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	x *= invlen;
 	y *= invlen;

@@ -1,11 +1,11 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
-#include <iostream>
-#include <vector>
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
 #include "engine_x.h"
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -27,10 +27,19 @@ class ENGINE_API Console : public ZFObject {
 		int m_iBufferSize;
 		bool m_bShift;
 
+		
+		enum FuncId_e
+			{
+			FID_VERSION,
+			FID_HELP
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
 	public:
 		Console();
 		
-		void Print(char* aText);
+		void Print(const char* aText);
 //		void Gemens(char* aTexT);
 		
 		void Update(void);

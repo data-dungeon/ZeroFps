@@ -1,5 +1,5 @@
 #include <cmath>
-#include <cassert>
+#include "zfassert.h"
 #include "vector3.h"
 
 using namespace std;
@@ -130,7 +130,8 @@ float Vector3::Dot( const Vector3& v  ) const
 Vector3 Vector3::Unit(void) const						
 {
 	float invlen = Length();
-	assert(invlen != 0.0);
+	ZFAssert(invlen != 0.0, "Vector3::Unit: Vector has zero length");
+		//assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	return Vector3(x * invlen, y * invlen, z * invlen);
 	return *this;
@@ -139,7 +140,8 @@ Vector3 Vector3::Unit(void) const
 void Vector3::Normalize(void)						
 {
 	float invlen = Length();
-	assert(invlen != 0.0);
+	ZFAssert(invlen != 0.0, "Vector3::Normalize: Vector has zero length");
+		//assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	x *= invlen;
 	y *= invlen;

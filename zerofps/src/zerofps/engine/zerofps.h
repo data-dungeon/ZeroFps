@@ -1,16 +1,16 @@
 #ifndef _ZEROFPS_H_
 #define _ZEROFPS_H_
 
-#include <iostream>
-#include <cstdlib>
-#include <SDL/SDL.h>
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
-#include "engine.pkg"
-#include "../ogl/zfpsgl.h"
-#include "propertyfactory.h"
 #include <string>
 #include <vector>
+#include <SDL/SDL.h>
+#include "../ogl/zfpsgl.h"
+#include <iostream>
+#include <cstdlib>
+#include "engine.pkg"
+#include "propertyfactory.h"
 
 
 using namespace std;
@@ -26,7 +26,7 @@ enum enginestates
 };
 
 		
-	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		
+//	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		
 
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
@@ -46,6 +46,15 @@ class ENGINE_API ZeroFps : public ZFObject {
 		vector<string>	AppArguments;
 
 
+
+		enum FuncId_e
+			{
+			FID_SETDISPLAY,
+			FID_QUIT,
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		
 
 	public:
 		Application* m_pkApp;						//application

@@ -4,6 +4,7 @@ Music::Music(FileIo* pkFile) {
 //m_audio_open=audio_open;
 	m_pkFile=pkFile;
 	
+
 };
 
 void Music::Start() {				//detta startar spela den valda musiken
@@ -25,6 +26,7 @@ void Music::Load(char* nmusicfile) {	//detta laddar låten i filen nmusicfile
 //		exit(2);
 	}                            
 };
+
 
 /*
 void Music::Close() {

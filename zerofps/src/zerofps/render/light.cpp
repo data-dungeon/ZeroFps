@@ -1,4 +1,6 @@
 #include "light.h"
+#include <algorithm>
+
 
 
 LightSource::LightSource() {
@@ -58,6 +60,11 @@ void Light::Remove(LightSource *kLight) {
 	m_kLights.remove(kLight);
 }
 
+bool comp(LightSource* x, LightSource* y)
+{
+	return x->fIntensity > y->fIntensity; 
+}
+
 void Light::Update() {
 	m_kActiveLights.clear();
 	m_kSorted.clear();	
@@ -97,7 +104,9 @@ void Light::Update() {
 	
 	//Put the first 8 in m_kActiveLights
 	int i=0;
-	m_kSorted.sort(More_Light);
+// BM-NOTE: Vim: Vrווווווווווווווווlll hata ljus.
+	//m_kSorted.sort(More_Light);
+
 	for( it=m_kSorted.begin();it!=m_kSorted.end();it++) {
 		if(i >= m_iNrOfLights)
 			break;

@@ -1,6 +1,6 @@
 #include "zerofps.h"
 
-	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
+//	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
 
 
 ZeroFps::ZeroFps(void) 
@@ -37,7 +37,13 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
 	
+
+	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
+	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
+
 	RegisterPropertys(this);
+
+
 }
 
 ZeroFps::~ZeroFps()
@@ -323,6 +329,21 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 		
 }
 
+void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_SETDISPLAY:
+			SetDisplay();
+			break;
+
+		case FID_QUIT:
+			m_iState = state_exit;
+			break;
+
+			
+
+	}	
+}
 
 
 

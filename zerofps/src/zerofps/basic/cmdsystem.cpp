@@ -1,6 +1,13 @@
+#include "basic_x.h"
+#include "os.h"
 #include "cmdsystem.h"
+#include "zfobjectmanger.h"
+#include "globals.h"
 
-CmdSystem::CmdSystem(void) {
+CmdSystem::CmdSystem(void)
+: ZFObject("CmdSystem") {
+	g_ZFObjSys.Register_Cmd("set",FID_SET,this);
+	g_ZFObjSys.Register_Cmd("varlist",FID_VARLIST,this);
 
 }
 
@@ -108,3 +115,63 @@ bool CmdSystem::Run(char* aName) {
 	return found;
 }	
 
+void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+//	Console* pkCon = static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+//		Need to move console to basic.
+	char name[256]="";
+	char value[20]="";
+	int i=4;		
+	char text[255]="";
+
+	switch(cmdid) {
+		case FID_SET:
+
+			if(kCommand->m_kSplitCommand[1].size()==0) {
+				//Print("Please Supply a varible name");
+				cout << "Please Supply a varible name" << endl;
+				return;
+			}
+
+			if(kCommand->m_kSplitCommand[2].size()==0) {
+				//Print("Please Supply a value");
+				cout << "Please Supply a value" << endl;
+				return;
+			}
+			
+			
+			strcpy(text,"Setting ");
+			strcat(text,kCommand->m_kSplitCommand[1].c_str());
+			strcat(text,"=");
+			strcat(text,kCommand->m_kSplitCommand[2].c_str());
+			cout << text << endl;
+			
+			strcat(name,kCommand->m_kSplitCommand[1].c_str());
+			
+			if(!Set(name,atof(kCommand->m_kSplitCommand[2].c_str()))){
+				//Print("Variable not found");
+				cout << "Variable not found" << endl;
+				return;
+			}
+			
+			break;
+
+		case FID_VARLIST:
+//			Print("");
+			cout << endl;
+			//Print("### variable list ###");
+			cout << "### variable list ###" <<endl;
+			for(int i=0;i<GetList().size();i++){
+				strcpy(text,GetList()[i]->aName);
+				strcat(text," = ");
+				IntToChar(value,(int)GetVar(i));
+				strcat(text,value);
+	//			strcat(text,atoi(m_pkCmd->GetVar(i)))
+	//			cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
+				//Print(text);	
+				cout << text << endl;
+			}
+
+			break;
+	}
+}

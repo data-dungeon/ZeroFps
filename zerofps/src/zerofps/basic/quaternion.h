@@ -1,6 +1,8 @@
 #ifndef _QUATERNION_H_
 #define _QUATERNION_H_
 
+#include "basic_x.h"
+#include "os.h"
 #include "vector3.h"
 #include "matrix4.h"
 #include "matrix3.h"

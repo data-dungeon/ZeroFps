@@ -1,7 +1,8 @@
 #ifndef _PROPERTYFACTORY_H_
 #define _PROPERTYFACTORY_H_
 
-#include <string.h>
+#include "../basic/basic.pkg"
+#include <string>
 #include <iostream>
 #include <vector>
 
@@ -31,6 +32,8 @@ class ENGINE_API PropertyFactory : public ZFObject
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
+
+	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
 public:
 	PropertyFactory() : ZFObject("PropertyFactory") { }

@@ -1,3 +1,4 @@
+
 class CmdSystem;
 class FileIo;
 class Vector3;
@@ -8,7 +9,8 @@ class ZFObjectManger;
 class ZFObject;
 class HeightMap;
 
-#include <cassert>
+
+#include "zfassert.h"
 
 #include "os.h"
 #include "basic_x.h"
@@ -16,16 +18,16 @@ class HeightMap;
 #include "zfobject.h"
 #include "zfobjectmanger.h"
 
+#include "vector3.h"
+#include "vector4.h"
+#include "matrix3.h"
+#include "matrix4.h"
+#include "quaternion.h"
 #include "heightmap.h"
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"
-#include "vector3.h"
 #include "halfedge.h"
-#include "matrix4.h"
-#include "matrix3.h"
-#include "vector4.h"
-#include "quaternion.h"
 
 
 

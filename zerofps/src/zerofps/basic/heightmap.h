@@ -3,16 +3,13 @@
 #ifndef _HEIGHTMAP_H_
 #define _HEIGHTMAP_H_
 
-#include <cstdlib>
-#include <ctime>
-#include <cmath>
-#include <cstring>
-#include <cstdio>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include "basic.pkg"
-
-using namespace std;
+#include "basic_x.h"
+#include "os.h"
+#include "vector3.h"
+#include "fileio.h"
+#include "globals.h"
 
 struct BASIC_API HM_vert {
 	float height;	//land height
@@ -27,12 +24,15 @@ struct HM_fileheader {
 	int m_iHmSize;
 };
 
+#include "zfobject.h"
 
 class BASIC_API HeightMap: public ZFObject {
 	private:		
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		
 	public:
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
 		HM_vert* verts;		
 		int m_iHmSize;
 //		int m_iBoxTresh;

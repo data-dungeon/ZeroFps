@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "basic_x.h"
+#include "os.h"
 #include "vector3.h"
 
 using namespace std;

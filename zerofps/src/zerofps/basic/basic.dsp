@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
+PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
+PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -106,140 +106,78 @@ PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                  
 # Begin Source File
 
 SOURCE=.\cmdsystem.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\fileio.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\globals.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\halfedge.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\heightmap.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\matrix3.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\matrix4.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\quaternion.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\vector3.cpp
-
-!IF  "$(CFG)" == "basic - Win32 Release"
-
 # SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\vector4.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfobject.cpp
 
 !IF  "$(CFG)" == "basic - Win32 Release"
 
-# SUBTRACT CPP /YX
-
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
+
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=.\zfobject.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfobjectmanger.cpp
+
+!IF  "$(CFG)" == "basic - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
+
+# SUBTRACT CPP /YX
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -308,6 +246,10 @@ SOURCE=.\vector3.h
 # Begin Source File
 
 SOURCE=.\vector4.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfassert.h
 # End Source File
 # Begin Source File
 

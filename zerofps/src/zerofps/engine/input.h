@@ -1,6 +1,7 @@
 #ifndef _INPUT_H_
 #define _INPUT_H_
 
+#include "../basic/basic.pkg"
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>
@@ -61,7 +62,7 @@ enum Buttons {
 
 };
 
-class ENGINE_API Input {
+class ENGINE_API Input : public ZFObject {
 	private:
 		bool m_akButtonList[400];
 		SDL_Event m_kEvent;
@@ -72,6 +73,12 @@ class ENGINE_API Input {
 		void GrabInput(void);
 		void ReleaseInput(void);
 	
+		enum FuncId_e
+			{
+			FID_TOGGLEGRAB,
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 	
 	public:
 		float m_fMouseSensitivity;

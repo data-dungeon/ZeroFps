@@ -4,7 +4,9 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
-#include "basic.pkg"
+#include "basic_x.h"
+#include "os.h"
+#include "zfobject.h"
 
 using namespace std;
 
@@ -27,12 +29,20 @@ struct funktion
 	void (*pAddress) (void);	// Address to function.
 };
 
-class BASIC_API CmdSystem {
+class BASIC_API CmdSystem : public ZFObject  {
 	private:
 		vector<variable*> kVars;		
 		vector<funktion*> kFunks;		
 				
 	public:
+		enum FuncId_e
+			{
+			FID_SET,
+			FID_VARLIST
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
 		CmdSystem(void);
 		
 		void Add(void* pAddress,char* aName,int iType);		//add new ingame variable

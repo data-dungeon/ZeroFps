@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include "basic_x.h"
+#include "os.h"
 
 using namespace std;
 

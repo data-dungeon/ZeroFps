@@ -31,6 +31,40 @@ Object Data:
 
 */
 
+void CmdArgument::Set(const char* szCmdArgs)
+{
+	m_strFullCommand = string(szCmdArgs);
+	m_kSplitCommand.clear();
+	string	kNewArg;
+
+	if(strlen(szCmdArgs) == 0) {
+		m_kSplitCommand.push_back("");
+		return;
+	}
+
+	int args = 0;	// Number of arguments
+	kNewArg = "";
+
+	for(int i=0; i<strlen(szCmdArgs); i++) {
+
+		while(int(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
+			kNewArg.append(1,szCmdArgs[i]);						//add to argument nr args
+			i++;
+		}
+
+		if(kNewArg.size() !=0 ) {
+		//if nothing was added to the argument use it in the next loop
+			m_kSplitCommand.push_back(kNewArg);		
+			kNewArg = "";
+		}
+			args++;
+	}
+}
+
+
+
+
+
 
 
 ZFObjectManger::ZFObjectManger()
@@ -98,6 +132,8 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 #ifdef _DEBUG
 	cout << "Ok" << endl;
 #endif
+
+	UnRegister_Cmd(pkObject);
 }
 
 ZFObject* ZFObjectManger::GetObjectPtr(char* acName)
@@ -152,3 +188,61 @@ void ZFObjectManger::PrintObjectsHer(void)
 	}
 
 }
+
+ZFCmdData* ZFObjectManger::FindArea(const char* szName)
+{
+	for(int i=0; i<m_kCmdDataList.size(); i++) {
+		if(m_kCmdDataList[i].m_strName == szName)
+			return &m_kCmdDataList[i];
+	}
+
+	return NULL;
+}
+
+
+bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject)
+{
+	// Validate parameters
+	if(szName == NULL)	return false;
+	if(kObject == NULL)	return false;
+
+	// Check if there is already something with this name.
+	if(FindArea(szName)) 
+		return false;
+
+	ZFCmdData kNewCmd;
+	kNewCmd.m_strName	= string(szName);
+	kNewCmd.m_eType		= CSYS_FUNCTION;
+	kNewCmd.m_iFlags	= 0;
+	kNewCmd.m_vValue	= NULL;
+	kNewCmd.m_pkObject	= kObject;
+	kNewCmd.m_iCmdID	= iCmdID;
+
+	m_kCmdDataList.push_back(kNewCmd);
+	return true;
+}
+
+bool ZFObjectManger::UnRegister_Cmd(ZFObject* kObject)
+{
+	cout << "ZFObjectManger::UnRegister: " << kObject->m_strZFpsName << endl;
+	return true;
+}
+
+bool ZFObjectManger::RunCommand(const char* szCmdArg)
+{
+	CmdArgument kcmdargs;
+	kcmdargs.Set(szCmdArg);
+
+	ZFCmdData* kCmdData = FindArea(kcmdargs.m_kSplitCommand[0].c_str());
+
+	if(!kCmdData)	return false;
+
+	switch(kCmdData->m_eType) {
+		case CSYS_FUNCTION:	
+			kCmdData->m_pkObject->RunCommand(kCmdData->m_iCmdID, &kcmdargs);
+			break;
+	}
+
+	return true;
+}
+

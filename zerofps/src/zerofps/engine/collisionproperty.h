@@ -1,10 +1,10 @@
 #ifndef _COLLISIONPROPERTY_H_
 #define _COLLISIONPROPERTY_H_
 
-#include "property.h"
-#include <iostream>
 
 #include "../basic/basic.pkg"
+#include "property.h"
+#include <iostream>
 #include "objects.pkg"
 #include "collisionmanager.h"
 

@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <string>
-#include "basic.pkg"
+#include "basic_x.h"
+#include "os.h"
 
 class BASIC_API FileIo {
 	private:

@@ -1,7 +1,8 @@
 #include "input.h"
 
 
-Input::Input() {
+Input::Input() 
+ : ZFObject("Input") {
 	cout<<"Sdl_Input initializing"<<endl;	
 	
 	/*
@@ -17,6 +18,9 @@ Input::Input() {
 	
 	m_fMouseSensitivity=1;	
 	m_iGrabtime=SDL_GetTicks();
+
+	g_ZFObjSys.Register_Cmd("togglegrab",FID_TOGGLEGRAB,this);
+	
 };
 
 void Input::Update(void) {
@@ -120,4 +124,14 @@ void Input::Reset(void) {
 
 
 
+
+void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_TOGGLEGRAB:
+			ToggleGrab();
+			break;
+
+		}
+}
 

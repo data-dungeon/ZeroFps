@@ -1,6 +1,7 @@
 #include "test.h"
 
-Test olle("MegaGame",1024,768,16);
+
+Test olle("MegaGame",640,480,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -10,8 +11,8 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 void Test::OnInit(void) {
 	
 	pkConsole->Print("MegaUltraSuper Duper Game");
-	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/test.mp3");		
-//	pkFps->m_pkAudioMan->PlayMusic();
+	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
+	pkFps->m_pkAudioMan->PlayMusic();
 
 
 //------------Map---------
@@ -93,18 +94,16 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	*/
 	pkLight->Add(sol);
 	
-	
-	
 	int i;
 	
-	for( i=0;i<40;i++) {
+	/*for( i=0;i<40;i++) {
 		Object *ball=new BallObject();
 		float x=290 + rand()%200;
 		float y=730 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}
+	}*/
 
 	Object *sussi;
 	for(i=0;i<30;i++) {
@@ -153,7 +152,6 @@ void Test::OnIdle(void) {
 
 //	glFogCoordfEXT(-20);
 	
-
 
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;

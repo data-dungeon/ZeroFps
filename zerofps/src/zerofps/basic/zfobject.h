@@ -1,17 +1,25 @@
-#ifndef _ZFOBJECT_H_
-#define _ZFOBJECT_H_
+#ifndef _ZFOBJECT_H_XXXX
+#define _ZFOBJECT_H_XXXX
 
 #include <string>
 #include <vector>
-//#include "basic.pkg"
 #include "basic_x.h"
+#include "os.h"
 
 using namespace std;
 
-//class ZFObjectManger;
-//class ZFObject;
-
 #define NOOBJECT_INDEX	-1
+
+class ZFObject;
+
+class BASIC_API CmdArgument
+{
+public:
+	string				m_strFullCommand;
+	vector<string>		m_kSplitCommand;
+
+	void Set(const char* szCmdArgs);
+};
 
 class BASIC_API ZFObject
 {
@@ -26,7 +34,7 @@ protected:
 	ZFObject(char *szName);					
 
 public:
-	virtual void RunCommand(int cmdid, char* szCommand) { }
+	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
 
 	ZFObject*	GetParent() const;			// Get ptr to object parent.
 

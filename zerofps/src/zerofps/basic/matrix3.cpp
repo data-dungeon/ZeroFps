@@ -1,7 +1,7 @@
 
 #include "matrix3.h"
 #include "matrix4.h"
-#include "cassert"
+#include "zfassert.h"
 
 using namespace std;
 
@@ -28,7 +28,8 @@ Matrix3::Matrix3(float f00,float f01,float f02,
 
 Vector3 Matrix3::GetColumn (int iCol) const
 {
-	assert( 0 <= iCol && iCol < 3);
+	ZFAssert(0 <= iCol && iCol < 3, "Matrix3::GetColumn: Index out of range");
+		// assert( );
 	return Vector3(m_aafRowCol[0][iCol], m_aafRowCol[1][iCol], m_aafRowCol[2][iCol]);
 }
 

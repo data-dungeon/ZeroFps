@@ -1,13 +1,13 @@
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
+#include "../basic/basic.pkg"
 #include <iostream>
 #include <vector>
 #include <list>
 #include <functional>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
-#include "../basic/basic.pkg"
 
 using namespace std;
 enum LIGHT_TYPE {
@@ -52,16 +52,9 @@ class RENDER_API LightSource {
 
 };
 
-    
+
 class RENDER_API Light : public ZFObject {
 	private:
-		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
-			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
-		} Less_Light;
-
-      struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
-			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
-      } More_Light;
 
 
 		
@@ -74,7 +67,16 @@ class RENDER_API Light : public ZFObject {
 
 		void TurnOffAll();
 
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 	public:
+		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
+		} Less_Light;
+
+		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
+		} More_Light;
 
 		Light();
 		

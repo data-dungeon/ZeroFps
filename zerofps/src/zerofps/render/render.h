@@ -4,12 +4,12 @@
 #ifndef _RENDER_H_
 #define _RENDER_H_
 
+#include "../basic/basic.pkg"
 #include <cstring>
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include "render_x.h"
-#include "../basic/basic.pkg"
 #include "../engine/engine.pkg"
 #include "texturemanager.h"
 
@@ -25,7 +25,9 @@ class RENDER_API Render : public ZFObject {
 		int m_iLodUpdate;		
 		Vector3 m_kOldCamPos;		
 		Vector4 m_akFrustum[6];
-		
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 	public:
 		int m_iDetail;			//grid size of lod tiles for the terran
 		int m_iViewDistance;	//how far until we cut the landscape	

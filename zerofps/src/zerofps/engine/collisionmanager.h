@@ -17,6 +17,8 @@ class ENGINE_API CollisionManager : public ZFObject{
 	private:
 		list<CollisionProperty*> m_akColPropertys;
 		
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 	public:
 		CollisionManager() : ZFObject("CollisionManager") { };
 	

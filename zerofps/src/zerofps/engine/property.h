@@ -1,7 +1,8 @@
 #ifndef _OPROPERTY_H_
 #define _OPROPERTY_H_
 
-#include <string.h>
+#include "../basic/basic.pkg"
+#include <string>
 #include <iostream>
 #include "engine_x.h"
 

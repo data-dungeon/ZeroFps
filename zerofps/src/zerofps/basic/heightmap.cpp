@@ -1,3 +1,8 @@
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <cstring>
+#include <cstdio>
 #include "heightmap.h"
 
 
@@ -372,6 +377,11 @@ Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
     default:
         return 0;       /* shouldn't happen, but avoids warnings */
     }
+}
+
+void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+
 }
 
 /*

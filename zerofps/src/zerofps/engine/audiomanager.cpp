@@ -1,10 +1,13 @@
 #include "audiomanager.h"
 
-AudioManager::AudioManager(ZeroFps* pkZeroFps){
+AudioManager::AudioManager(ZeroFps* pkZeroFps)
+: ZFObject("AudioManager"){
 	m_pkFile = pkZeroFps->m_pkFile;	
 	m_pkZeroFps =pkZeroFps;
 	m_pkMusic= new Music(m_pkFile);
 	InitAudio();
+
+	g_ZFObjSys.Register_Cmd("music",FID_MUSICSET,this);
 }
 
 void AudioManager::LoadMusic(char* acFile) {
@@ -45,6 +48,25 @@ void AudioManager::InitAudio(){																//denna funktion initierar ljudet
 	}
 }
 	
+void AudioManager::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_MUSICSET:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				//Print("Syntax: music 1/0");
+				return;
+				}
+			
+			if(kCommand->m_kSplitCommand[1]=="1") {
+				cout << "Run music CMD: PlayMusic" << endl;
+				PlayMusic();
+			}
+			if(kCommand->m_kSplitCommand[1]=="0")
+				StopMusic();
+			break;
+
+		}
+}
 	
 	
 	

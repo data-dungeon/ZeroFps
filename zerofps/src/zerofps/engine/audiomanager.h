@@ -1,15 +1,15 @@
 #ifndef _AUDIOMANAGER_H_
 #define _AUDIOMANAGER_H_
 
-#include <iostream>
-#include <SDL/SDL_mixer.h>		
 #include "../basic/basic.pkg"
 #include "engine.pkg"
 #include "music.h"
+#include <iostream>
+#include <SDL/SDL_mixer.h>		
 
 class Music;
 
-class ENGINE_API AudioManager {
+class ENGINE_API AudioManager  : public ZFObject{
 	private:
 		Music		*m_pkMusic;
 		FileIo	*m_pkFile;
@@ -24,6 +24,13 @@ class ENGINE_API AudioManager {
 		void InitAudio();
 		
 	public:
+		enum FuncId_e
+			{
+			FID_MUSICSET,
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
 		AudioManager(ZeroFps* pkZeroFps);
 	
 		void LoadMusic(char* acFile);

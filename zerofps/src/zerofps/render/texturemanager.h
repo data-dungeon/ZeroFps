@@ -1,6 +1,7 @@
 #ifndef _TEXTUREMANAGER_H_
 #define _TEXTUREMANAGER_H_
 
+#include "../basic/basic.pkg"
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -9,7 +10,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "render_x.h"
-#include "../basic/basic.pkg"
 #include "../ogl/zfpsgl.h"
 
 using namespace std;
@@ -40,7 +40,8 @@ class RENDER_API TextureManager : public ZFObject {
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(char *filename);	
 		bool LoadTexture(GLuint &iNr,char* acFilename,int iOption);	
-	
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 	public:
 		TextureManager(FileIo* pkFile);
 		int Load(char* acFileName,int iOption);		

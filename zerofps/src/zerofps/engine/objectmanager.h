@@ -11,7 +11,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 	
 	list<Object*> m_akObjects;
 	vector<Object*> m_akDeleteList;
-	
+
+	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 	public:
 		ObjectManager() : ZFObject("ObjectManager") { };
 		~ObjectManager() { }

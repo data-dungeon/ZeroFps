@@ -1,18 +1,15 @@
 #include <iostream>
 #include <string>
 
-#include "zfobject.h"
-#include "zfobjectmanger.h"
-
-using namespace std;
-
-
 #include <iostream>
 #include <string>
-using namespace std;
 
+#include "basic_x.h"
+#include "os.h"
 #include "zfobject.h"
 #include "zfobjectmanger.h"
+
+using namespace std;
 
 BASIC_API ZFObjectManger g_ZFObjSys;
 
@@ -119,3 +116,4 @@ void ZFObject::DestroyChildren()
 	}
 
 }
+
