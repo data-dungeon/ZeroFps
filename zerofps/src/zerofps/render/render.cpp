@@ -195,9 +195,11 @@ void Render::DrawHM(HeightMap *kmap) {
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	SetColor(Vector3(255,255,255));
 
-	int step=1;
-	
+	glPolygonMode(GL_FRONT,GL_LINE);
+
+	int step=1;	
 	int x;	
 //	glFrontFace(GL_CW);// jag ritar medsols så d så
 	for(int z=0;z<kmap->m_iHmSize-step;z+=step){
@@ -222,9 +224,11 @@ void Render::DrawHM(HeightMap *kmap) {
 		  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x+step].normal);  			
   		glTexCoord2f(x/step,1);glVertex3fv((float*)&p4);    				
 	
-		}
+		}		
 		glEnd();
+
 	}
+	glPolygonMode(GL_FRONT,GL_FILL);			
 //	glFrontFace(GL_CCW);
 	
 	//this draw the normals of the heightmap
