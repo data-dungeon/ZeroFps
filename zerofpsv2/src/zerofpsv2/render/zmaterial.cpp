@@ -437,7 +437,7 @@ void ZMaterial::SetupEnums()
 	m_kEnums["TEX_ARAY_3"] = 						3;
 	m_kEnums["AUTO_OBJLIN"] = 						4;
 	m_kEnums["AUTO_EYELIN"] = 						5;
-	m_kEnums["AUTP_SPHERE"] = 						6;
+	m_kEnums["AUTO_SPHERE"] = 						6;
 	
 	//polygon mode
 	m_kEnums["FILL"] = 								0;
