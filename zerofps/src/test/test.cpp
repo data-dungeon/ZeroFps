@@ -143,6 +143,7 @@ void Test::OnInit(void) {
 	welcome->m_bLoop=true;
 	
 	pkAlSys->AddSound(welcome);
+	
 
 }
 

@@ -9,6 +9,9 @@ class ZFObjectManger;
 class ZFObject;
 class HeightMap;
 
+class ZFIo;
+class ZFIoFile;
+class ZFFile;
 
 #include "zfassert.h"
 
@@ -30,6 +33,6 @@ class HeightMap;
 #include "fileio.h"
 #include "halfedge.h"
 
-
-
-
+#include "zfio.h"
+#include "zfiofile.h"
+#include "zffile.h"
