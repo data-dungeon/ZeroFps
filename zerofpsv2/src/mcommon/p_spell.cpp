@@ -103,8 +103,8 @@ void P_Spell::Update()
       if ( m_fAge >= m_pkSpellType->m_fLifeTime )
       {
          // remove&delete PSystems spell used
-//         for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
-//            m_pkObject->m_pkObjectMan->Delete( m_kPSystems[i] );
+         for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
+            m_pkObject->m_pkObjectMan->Delete( m_kPSystems[i] );
 
          // delete spell-object or property
 //         if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
