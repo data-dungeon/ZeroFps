@@ -50,6 +50,9 @@ public:
 	int GetNumArgs(lua_State* state);
 	bool GetArg(lua_State* state, int iNumber, void* data);
 
+	bool GetArgNumber(lua_State* state, int iIndex, double* data);
+	bool GetArgString(lua_State* state, int iIndex, char* data);
+
 	bool ExposeClass(char *szName, ScripObjectType eType, 
 		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);

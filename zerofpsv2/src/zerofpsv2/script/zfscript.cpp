@@ -269,6 +269,44 @@ bool ZFScript::GetArg(lua_State* state, int iIndex, void* data)
 	return false;
 }
 
+bool ZFScript::GetArgNumber(lua_State* state, int iIndex, double* data)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_isnumber(state, iLuaIndex))
+	{
+		double val = lua_tonumber(state, iLuaIndex);
+		double* number = (double*) data;
+		*number = val;
+		return true;
+	}
+
+	if(lua_isstring(state, iLuaIndex))
+	{
+		const char* val = lua_tostring(state, iLuaIndex);
+		char* text = (char*) data;
+		strcpy(text, val);
+		return true;
+	}
+
+	return false;
+}
+
+bool ZFScript::GetArgString(lua_State* state, int iIndex, char* data)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_isstring(state, iLuaIndex))
+	{
+		const char* val = lua_tostring(state, iLuaIndex);
+		char* text = (char*) data;
+		strcpy(text, val);
+		return true;
+	}
+
+	return false;
+}
+
 const int ZFScript::GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const
 {
 	if(state == NULL)
