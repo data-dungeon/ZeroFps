@@ -120,7 +120,7 @@ void EffectSystem::Update()
 				break;
 		
 			case PART_SMOKE:
-				m_kParts[i].kVel += Vector3(0,0.3,0) * m_pkFps->GetGameFrameTime();
+				m_kParts[i].kVel += Vector3(0,0.5,0) * m_pkFps->GetGameFrameTime();
 				m_kParts[i].kPos += m_kParts[i].kVel * m_pkFps->GetGameFrameTime(); 			
 				break;
 		
@@ -142,13 +142,13 @@ void EffectSystem::AddPart(int iType,Vector3 kPos)
 			switch(iType)			
 			{
 				case PART_DEBRI:
-					m_kParts[i].kVel = Vector3((rand()% 100)-50,rand()% 100,(rand()% 100-50)).Unit();
+					m_kParts[i].kVel = Vector3((rand()% 100)-50,rand()% 100+1,(rand()% 100-50)).Unit();
 					m_kParts[i].fTTL = 2;
 					break;		
-			
+
 				case PART_SMOKE:
-					m_kParts[i].kVel = Vector3((rand()% 10)-5,rand()% 10,(rand()% 10-5)).Unit();
-					m_kParts[i].fTTL = 1;
+					m_kParts[i].kVel = Vector3((rand()% 3)-1.5,rand()% 2+1,(rand()% 3-1.5)).Unit();
+					m_kParts[i].fTTL = 0.5;
 					break;					
 			}
 			
