@@ -103,6 +103,8 @@ void DarkMetropolis::OnIdle()
 
 	m_pkFps->UpdateCamera(); 	
 
+	GUI_OnIdle();
+
 	if(m_pkMembersDlg)
 		((CMembersDlg*)m_pkMembersDlg)->UpdateCamera();
 }

@@ -3,7 +3,7 @@
 
 CNewGameDlg::CNewGameDlg() : CGameDlg("DMStartWnd", &g_kDM)
 {
-
+	m_fFadeOffset = 0.0f;
 }
 
 CNewGameDlg::~CNewGameDlg()
@@ -88,4 +88,91 @@ void CNewGameDlg::AddContinueButton()
 		ShowWnd("ContinueGameBn", true);
 		GetWnd("ContinueGameBn")->SetPos(365,122,false,true);
 	}
+}
+
+void CNewGameDlg::StartFade(float fGameTime)
+{
+	m_fTimeCheck = fGameTime;
+
+	m_fFadeOffset=0;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[0] = 0;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[1] = 0;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[2] = 0;
+
+	list<ZGuiWnd*> kChilds;
+	GetWnd("DMStartWnd")->GetChildrens(kChilds);
+
+	list<ZGuiWnd*>::iterator it = kChilds.begin();
+	for( ; it != kChilds.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+
+		pkWnd->GetSkin()->m_afBkColor[0] = 0;
+		pkWnd->GetSkin()->m_afBkColor[1] = 0;
+		pkWnd->GetSkin()->m_afBkColor[2] = 0;
+	}
+}
+
+void CNewGameDlg::EndFade()
+{
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[0] = 1;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[1] = 1;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[2] = 1;
+
+	list<ZGuiWnd*> kChilds;
+	GetWnd("DMStartWnd")->GetChildrens(kChilds);
+
+	list<ZGuiWnd*>::iterator it = kChilds.begin();
+	for( ; it != kChilds.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+
+		pkWnd->GetSkin()->m_afBkColor[0] = 1;
+		pkWnd->GetSkin()->m_afBkColor[1] = 1;
+		pkWnd->GetSkin()->m_afBkColor[2] = 1;
+	}
+}
+
+void CNewGameDlg::UpdateFade(float fFrameTime)
+{
+	static float FADE_TIME = 1.5f;
+
+	static bool first = true;
+
+	if(first)
+	{
+		first = false;
+		return;
+	}
+
+	float procent = (fFrameTime) / FADE_TIME;
+
+	if(m_fFadeOffset < FADE_TIME)
+		m_fFadeOffset += procent;
+		
+	if(m_fFadeOffset > 1)
+		m_fFadeOffset = 1;
+
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[0] = m_fFadeOffset;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[1] = m_fFadeOffset;
+	GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[2] = m_fFadeOffset;
+
+	list<ZGuiWnd*> kChilds;
+	GetWnd("DMStartWnd")->GetChildrens(kChilds);
+
+	list<ZGuiWnd*>::iterator it = kChilds.begin();
+	for( ; it != kChilds.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+
+		pkWnd->GetSkin()->m_afBkColor[0] = m_fFadeOffset;
+		pkWnd->GetSkin()->m_afBkColor[1] = m_fFadeOffset;
+		pkWnd->GetSkin()->m_afBkColor[2] = m_fFadeOffset;
+	}
+}
+
+bool CNewGameDlg::InitDlg()
+{
+	StartFade(0);
+	return true;
 }

@@ -8,6 +8,13 @@ public:
 	~CNewGameDlg();
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
 
+	void StartFade(float fGameTime);
+	void EndFade();
+	void UpdateFade(float fGameTime);
+	bool InitDlg();
+
 private:
 	void AddContinueButton();
+	float m_fFadeOffset;
+	float m_fTimeCheck;
 };

@@ -180,6 +180,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd);
 		void GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd);
 		void GUI_Init();
+		void GUI_OnIdle();
 
 		void GUI_InGameDlg_OnCommand(ZGuiWnd* pkMainWnd, string strClickName);
 

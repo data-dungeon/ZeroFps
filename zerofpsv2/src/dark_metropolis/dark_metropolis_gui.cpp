@@ -60,6 +60,16 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	return true;
 }
 
+void DarkMetropolis::GUI_OnIdle()
+{
+	ZGuiWnd* pkStartWnd = GetWnd("DMStartWnd");
+
+	if(pkStartWnd && pkStartWnd->IsVisible() )
+	{
+		((CNewGameDlg*) m_pkNewGameDlg)->UpdateFade(m_pkFps->GetFrameTime()); 
+	}
+}
+
 void DarkMetropolis::GUI_Init()
 {
 	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
@@ -93,6 +103,8 @@ void DarkMetropolis::GUI_Init()
 	m_pkItemTransactionDlg = new CItemTransactionDlg();
 	m_pkMembersDlg = new CMembersDlg();
 	m_pkHandleAgents = new CHandleAgents();	
+
+	((CNewGameDlg*) m_pkNewGameDlg)->InitDlg(); 
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
@@ -177,6 +189,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		{
 			pkGui->KillWndCapture();
 			ShowWnd("LoadListWnd", false);
+			pkGui->SetFocus(GetWnd("DMStartWnd"));
 		}
 		else
 		if(strClickName == "LoadListOKBn")
