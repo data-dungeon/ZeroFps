@@ -738,8 +738,8 @@ int DMLua::SetCharStatsLua(lua_State* pkLua)
 	case 3: pkChar->GetStats()->m_fArmour = float(dStatsValue); break;
 	case 4: pkChar->GetStats()->m_fWage = float(dStatsValue); break;
 	case 5: pkChar->GetStats()->m_fAim = float(dStatsValue); break; 
-	case 6: pkChar->GetStats()->m_fExperience = float(dStatsValue); break;
-	case 7: pkChar->GetStats()->m_fNextLevel = float(dStatsValue); break; 
+	case 6: pkChar->GetStats()->m_fExperience = int(dStatsValue); break;
+	case 7: pkChar->GetStats()->m_fNextLevel = int(dStatsValue); break; 
 	case 8: pkChar->GetStats()->m_iLevel = int(dStatsValue); break;
 	}																			 
 

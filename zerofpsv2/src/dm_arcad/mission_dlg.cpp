@@ -117,7 +117,7 @@ bool CMissionDlg::InitDlg()
 		const int STEPS = 5; // rymmer 15 uppdrag... borde räcka :)
 
 		ZGuiScrollbar* pkScrollbar =  (ZGuiScrollbar*) GetWnd("MissionScrollbar");
-		int bn_size = (float) pkScrollbar->GetArrowButtonHeight();
+		int bn_size = pkScrollbar->GetArrowButtonHeight();
 		float fPageSize = 0.20f; 
 		if(fPageSize > 1.0f)
 			fPageSize = 1.0f;

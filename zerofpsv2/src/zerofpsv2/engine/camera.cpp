@@ -11,7 +11,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkRender = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 
 	SetView(fFov,fAspect,fNear,fFar);
-	SetViewPort(0,0,m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
 	SetPos(kPos);
 	SetRot(kRot);
 	m_kRotM.Identity();
@@ -38,8 +38,8 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 
 void Camera::Update(int iWidth,int iHeight) 
 {
-	m_fAppWidth  = iWidth;
-	m_fAppHeight = iHeight;
+	m_fAppWidth  = float(iWidth);
+	m_fAppHeight = float(iHeight);
 
 	if(m_bViewChange)   
 	{
@@ -57,10 +57,10 @@ void Camera::Update(int iWidth,int iHeight)
 		if(m_pkWnd) 
 		{
 			Rect kJagVillSpelUT2k4 = m_pkWnd->GetScreenRect();
-			m_kViewPortCorner.x = kJagVillSpelUT2k4.Left;
-			m_kViewPortCorner.y = 600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height();
-			m_kViewPortSize.x  = kJagVillSpelUT2k4.Width(); 
-			m_kViewPortSize.y  = kJagVillSpelUT2k4.Height(); 
+			m_kViewPortCorner.x = float(kJagVillSpelUT2k4.Left);
+			m_kViewPortCorner.y = float(600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height());
+			m_kViewPortSize.x  = float(kJagVillSpelUT2k4.Width()); 
+			m_kViewPortSize.y  = float(kJagVillSpelUT2k4.Height()); 
 		
 			m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ 800.0 * m_pkRender->GetWidth();
 			m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / 600.0 * m_pkRender->GetHeight();
@@ -72,8 +72,8 @@ void Camera::Update(int iWidth,int iHeight)
 		{
 			m_kViewPortCorner.x = 0;
 			m_kViewPortCorner.y = 0;
-			m_kViewPortSize.x = m_pkRender->GetWidth();
-			m_kViewPortSize.y = m_pkRender->GetHeight();
+			m_kViewPortSize.x = float(m_pkRender->GetWidth());
+			m_kViewPortSize.y = float(m_pkRender->GetHeight());
 		}
 
 		glScissor  ( m_kViewPortCorner.x, m_kViewPortCorner.y,	m_kViewPortSize.x, m_kViewPortSize.y );

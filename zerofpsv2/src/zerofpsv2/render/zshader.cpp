@@ -758,18 +758,18 @@ void ZShader::ColorEffect(ZMaterialSettings* pkSettings)
 		case 1:	
 		{
 			//float fV = ((rand() % 500)  + 500)  / 1000.0  ;			
-			float fV = (rand() % 500)  / 1000.0   + 0.2;
-
+			float fV = (rand() % 500)  / float(1000.0) + float(0.2);
+ 
 			pkSettings->m_kVertexColor.x = fV;
 			pkSettings->m_kVertexColor.y = fV;
 			pkSettings->m_kVertexColor.z = fV;	
 			break;
 		}
-
+ 
 		case 2:
 		{
 
-			float fV = sin((float)SDL_GetTicks() / 300.0)*0.25 + 0.2;
+			float fV = sin((float)SDL_GetTicks() / float(300.0)) * float(0.25) + float(0.2);
 			//float fV = ((rand() % 500)  + 500)  / 1000.0  ;
 
 			pkSettings->m_kVertexColor.x = fV;

@@ -972,7 +972,7 @@ void MistServer::Input()
 		int mx,my;
 		m_pkInputHandle->SDLMouseXY(mx,my);
 		my = m_iHeight - my; 
-		int iClickedViewPort = GetView(mx, my);
+		int iClickedViewPort = GetView(float(mx), float(my));
 		if(SetCamera(iClickedViewPort))
 			m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
 	}
@@ -1015,7 +1015,7 @@ void MistServer::Input()
 
 	if(m_pkCameraObject)	
 	{	
-		Input_Camera(x,z);
+		Input_Camera(float(x),float(z));
 	
 		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
@@ -1027,7 +1027,7 @@ void MistServer::Input()
 	
 		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
-		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(x,z);
+		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));
 
 		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
 	}

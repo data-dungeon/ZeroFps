@@ -322,7 +322,7 @@ bool TextureManager::ValidIndex(int iTextureID)
 		return false;
 	if(iTextureID < 0)
 		return false;
-	if(iTextureID > m_iTextures.size())
+	if((unsigned int)iTextureID > m_iTextures.size())  
 		return false;
 	if(m_iTextures[iTextureID] == NULL)
 		return false;

@@ -325,15 +325,15 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 			x -= GetWnd("MapWnd")->GetScreenRect().Left;
 			y -= GetWnd("MapWnd")->GetScreenRect().Top;
 
-			float picture_w = GetWnd("MapWnd")->GetScreenRect().Width();
-			float picture_h = GetWnd("MapWnd")->GetScreenRect().Height();
+			float picture_w = float(GetWnd("MapWnd")->GetScreenRect().Width());
+			float picture_h = float(GetWnd("MapWnd")->GetScreenRect().Height());
 
 			float fx = m_fWorldMinX + ( ( (float) x / picture_w ) *  fWorldWidth );
 			float fy = m_fWorldMinY + ( ( (float) y / picture_h ) *  fWorldHeight );
 
 			Vector3 kClickPos = Vector3(fx,0,fy);
 
-			for(int i=0; i<m_kSelectedEntitys.size(); i++)
+			for(unsigned int i=0; i<m_kSelectedEntitys.size(); i++)
 			{
 				Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 					

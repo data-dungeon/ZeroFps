@@ -325,8 +325,8 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 			x -= GetWnd("MapWnd")->GetScreenRect().Left;
 			y -= GetWnd("MapWnd")->GetScreenRect().Top;
 
-			float picture_w = GetWnd("MapWnd")->GetScreenRect().Width();
-			float picture_h = GetWnd("MapWnd")->GetScreenRect().Height();
+			float picture_w = float(GetWnd("MapWnd")->GetScreenRect().Width());
+			float picture_h = float(GetWnd("MapWnd")->GetScreenRect().Height());
 
 			float fx = m_fWorldMinX + ( ( (float) x / picture_w ) *  fWorldWidth );
 			float fy = m_fWorldMinY + ( ( (float) y / picture_h ) *  fWorldHeight );

@@ -76,7 +76,7 @@ class MCOMMON_API P_DMGun: public Property {
 		void SetSound		 (string strSound)	{ m_strSound = strSound; }
 		void SetAmmo		 (int iAmmo);
 
-		bool HasAmmo		 ()					{ return m_iAmmo; }
+		bool HasAmmo		 ()					{ return m_iAmmo != 0; }
 		bool ReadyToFire	 ()					{ return !m_bFireing; }
 
 		void Reload();

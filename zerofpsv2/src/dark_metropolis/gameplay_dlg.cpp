@@ -33,8 +33,8 @@ void CGamePlayDlg::UpdatateMap()
 	float	fWorldWidth = m_pkDM->m_fWorldMaxX-m_pkDM->m_fWorldMinX;
 	float	fWorldHeight = m_pkDM->m_fWorldMaxY-m_pkDM->m_fWorldMinY;
 
-	float picture_w = GetWnd("MapWnd")->GetScreenRect().Width();
-	float picture_h = GetWnd("MapWnd")->GetScreenRect().Height();
+	float picture_w = float(GetWnd("MapWnd")->GetScreenRect().Width());
+	float picture_h = float(GetWnd("MapWnd")->GetScreenRect().Height());
 
 	for(int i=0; i<agent_list.size(); i++)
 	{
@@ -45,7 +45,7 @@ void CGamePlayDlg::UpdatateMap()
 		float y = (fy - m_pkDM->m_fWorldMinY) / fWorldHeight;
 
 		akWnds[i]->Show();
-		akWnds[i]->SetPos(picture_w*x, picture_h*y, false, true); 
+		akWnds[i]->SetPos(int(picture_w*x), int(picture_h*y), false, true); 
 
 		if(m_iSelectedAgent != agent_list[i]->GetEntityID())
 		{
