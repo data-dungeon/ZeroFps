@@ -13,7 +13,8 @@ public:
 	ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTabCtrl();
 
-	bool InsertPage(unsigned int iIndex, char* szTabText, unsigned int iTabSkinIndex);
+	bool InsertPage(char* szResWndName, unsigned int iIndex, 
+		char* szTabText, unsigned int iTabSkinIndex);
 	bool DeletePage(unsigned int iIndex);
 	bool DeleteAllPages();
 	bool InsertTabSkin(unsigned int iIndex, ZGuiSkin* pkSkin);

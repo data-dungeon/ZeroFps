@@ -79,7 +79,9 @@ void ZeroTank::Init()
 	RegisterPropertys();
 
 	GuiAppLua::Init(&g_kZeroTank, GetScript());
-	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan,
+		"data/textures/text/paternoster8.bmp",
+		"data/script/gui/gui_create_client.lua");
 
 	// Set SDL Options.
 	SDL_ShowCursor(SDL_DISABLE);

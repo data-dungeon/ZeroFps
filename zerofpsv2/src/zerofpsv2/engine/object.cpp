@@ -955,7 +955,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 {
 	
 	//check new zone
-	if(m_bUseZones)
+/*	if(m_bUseZones)
 	{
 		if(!m_bZone)
 		{
@@ -986,7 +986,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 			}
 		}
 	}
-
+*/
 	
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();

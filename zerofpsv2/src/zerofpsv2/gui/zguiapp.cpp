@@ -10,6 +10,7 @@
 #include "../script/zfscript.h"
 #include "zguiresourcemanager.h"
 #include <typeinfo>
+#include "../basic/zguifont.h"
  
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -17,6 +18,7 @@
 
 ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 {
+	m_uiWindowIDCounter = 1;
 	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
 	m_szLastRadioBGroup = NULL;
@@ -69,11 +71,13 @@ ZGuiSkin* ZGuiApp::GetSkin(string strName)
 	return res->second;
 }
 
-bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
-							  ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags)
+bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
+								int x, int y, int w, int h, unsigned long uiFlags)
 {
 	
-	//ZFAssert(GetWnd(iID) == NULL, "ZGuiApp::CreateWnd: WindowID already exist"); 
+	int iID = m_uiWindowIDCounter;
+
+	m_uiWindowIDCounter++;
 
 	if(m_pkResMan->Wnd(szResourceName))
 	{
@@ -91,6 +95,17 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int i
 
 	const int LISTBOX_ITEM_HEIGHT = 20;
 	const int COMBOBOX_ITEM_HEIGHT = 20;
+
+	// Om parent fönstret är en TabControl så är uiFlags = sidnummret och parent fönstret
+	// måste då tas fram på nytt.
+	if( GetType(pkParent) == TabControl)
+	{
+		pkParent = ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+		if(pkParent == NULL)
+		{
+			printf("Failed to create window! No such tab page\n");
+		}
+	}
 	
 	switch(eType)
 	{
@@ -238,13 +253,13 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int i
 	return true;
 }
 
-bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
-					   int parentID, int x, int y, int w, int h, unsigned long uiFlags)
-{
-	ZGuiWnd* pkParent = GetWnd(parentID);
 
-	return CreateWnd(eType, szResourceName, szText, iID, 
-		pkParent, x, y, w, h, uiFlags);
+bool ZGuiApp::CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
+								char* szLabel, int x, int y, int w, int h, 
+								unsigned long uiFlags)
+{
+	ZGuiWnd* pkParent = m_pkResMan->Wnd(string(szParentName)); // GetWnd(parentID);
+	return CreateWnd(eType, szWndName, szLabel, pkParent, x, y, w, h, uiFlags);
 }
 
 ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGuiSkin* pkSkin)
@@ -343,8 +358,26 @@ void ZGuiApp::InitTextures(ZFScriptSystem* pkScript)
 
 void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
 									 ZFScriptSystem* pkScript,
-									 ZGuiResourceManager* pkResMan)
+									 ZGuiResourceManager* pkResMan,
+									 char* szFontTexture, 
+									 char* szScriptFile)
 {
+
+	m_pkGui = pkGui;
+	m_pkTexMan = pkTexMan;
+	m_pkResMan = pkResMan;
+
+	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+
+	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
+
+//	char defFontPath[] = szFontTexture; //"data/textures/text/paternoster8.bmp";
+	
+	pkDefaultFont->CreateFromFile(szFontTexture);		
+
+	m_pkGui->SetDefaultFont(pkDefaultFont);
+
 	// Start skript filen för GUI:t.
 	// Läs in tex filnamn på textuerer osv.
 
@@ -352,17 +385,13 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 		delete m_pkScriptResHandle;
 
 	m_pkScriptResHandle = new ZFResourceHandle;
-	if(!m_pkScriptResHandle->SetRes("data/script/gui/gui_create.lua"))
+	if(!m_pkScriptResHandle->SetRes(szScriptFile))
+	{
 		printf("Failed to load gui_create.lua\n");
-
-	m_pkGui = pkGui;
-	m_pkTexMan = pkTexMan;
-	m_pkResMan = pkResMan;
+		return;
+	}
 
 	InitTextures(pkScript);
-
-	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// Låt skriptfilen skapa alla fönster.
 	pkScript->Call(m_pkScriptResHandle, "CreateMainWnds", 0, 0);
@@ -390,7 +419,7 @@ bool ZGuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 	return true;
 }
 
-void ZGuiApp::AddListItem(int iListboxID, char *szText)
+/*void ZGuiApp::AddListItem(int iListboxID, char *szText)
 {
 	ZGuiWnd* pkWnd = GetWnd(iListboxID);
 
@@ -407,7 +436,7 @@ void ZGuiApp::AddListItem(int iListboxID, char *szText)
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
 		pkComboBox->AddItem(szText, -1, false); 
 	}
-}
+}*/
 
 void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 {
@@ -428,10 +457,11 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 	}
 }
 
-void ZGuiApp::AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
-						 unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected)
+void ZGuiApp::AddTreeItem(char* szTreeBox, const char* szID, 
+								  const char* szIDParent, char* szText, 
+								  unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected)
 {
-	ZGuiTreebox* pkTreeBox = static_cast<ZGuiTreebox*>(GetWnd(iTreeboxID));
+	ZGuiTreebox* pkTreeBox = static_cast<ZGuiTreebox*>(m_pkResMan->Wnd(string(szTreeBox)));
 
 	if(szIDParent != NULL)
 	{
@@ -444,16 +474,16 @@ void ZGuiApp::AddTreeItem(int iTreeboxID, const char* szID, const char* szIDPare
 	}
 }
 
-void ZGuiApp::AddTabPage(int iTabCtrlID, char* szName)
+void ZGuiApp::AddTabPage(char* szTabBox, char* szPageResName, char* szPageLabel)
 {
-	ZGuiTabCtrl* pkTreeBox = static_cast<ZGuiTabCtrl*>(GetWnd(iTabCtrlID)); 
-	pkTreeBox->InsertPage(pkTreeBox->GetNumPages(), szName, 0);
-	pkTreeBox->SetCurrentPage(0); 
+	ZGuiTabCtrl* pkTabBox = static_cast<ZGuiTabCtrl*>(m_pkResMan->Wnd(string(szTabBox))); 
+	pkTabBox->InsertPage(szPageResName, pkTabBox->GetNumPages(), szPageLabel, 0);
+	pkTabBox->SetCurrentPage(0); 
 }
 
-ZGuiWnd* ZGuiApp::GetTabPage(int iTabCtrlID, int iPage)
+ZGuiWnd* ZGuiApp::GetTabPage(char* szTabBox, int iPage)
 {
-	ZGuiWnd* pkWnd = GetWnd(iTabCtrlID);
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(string(szTabBox));
 
 	bool bIsTabCtrl = (GetType(pkWnd) == TabControl);
 
@@ -462,17 +492,17 @@ ZGuiWnd* ZGuiApp::GetTabPage(int iTabCtrlID, int iPage)
 	return static_cast<ZGuiTabCtrl*>(pkWnd)->GetPage(iPage);	
 }
 
-void ZGuiApp::SetText(int iWndID, char* szText, bool bResize)
+void ZGuiApp::SetText(char* szWnd, char* szText, bool bResize)
 {
 	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 		pkWnd->SetText(szText, bResize);
 }
 
-void ZGuiApp::SetTextInt(int iWndID, int iNumber, bool bResize)
+void ZGuiApp::SetTextInt(char* szWnd, int iNumber, bool bResize)
 {
 	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		char szText[25];
 		sprintf(szText, "%i", iNumber);
@@ -480,10 +510,10 @@ void ZGuiApp::SetTextInt(int iWndID, int iNumber, bool bResize)
 	}
 }
 
-void ZGuiApp::SetTextFloat(int iWndID, float fNumber, bool bResize)
+void ZGuiApp::SetTextFloat(char* szWnd, float fNumber, bool bResize)
 {
 	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		char szText[25];
 		sprintf(szText, "%f", fNumber);
@@ -491,52 +521,23 @@ void ZGuiApp::SetTextFloat(int iWndID, float fNumber, bool bResize)
 	}
 }
 
-void ZGuiApp::SetText(char* szResName, char* szText, bool bResize)
+char* ZGuiApp::GetText(char* szWnd)
 {
 	ZGuiWnd* pkWnd;
-	if((pkWnd = m_pkResMan->Wnd(szResName)))
-		pkWnd->SetText(szText, bResize);
-}
-
-void ZGuiApp::SetTextInt(char* szResName, int iNumber, bool bResize)
-{
-	ZGuiWnd* pkWnd;
-	if((pkWnd = m_pkResMan->Wnd(szResName)))
-	{
-		char szText[25];
-		sprintf(szText, "%i", iNumber);
-		pkWnd->SetText(szText, bResize);
-	}
-}
-
-void ZGuiApp::SetTextFloat(char* szResName, float fNumber, bool bResize)
-{
-	ZGuiWnd* pkWnd;
-	if((pkWnd = m_pkResMan->Wnd(szResName)))
-	{
-		char szText[25];
-		sprintf(szText, "%f", fNumber);
-		pkWnd->SetText(szText, bResize);
-	}
-}
-
-char* ZGuiApp::GetText(int iWndID)
-{
-	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 		return pkWnd->GetText(); 	
 	
 	return NULL;
 }
 
-int ZGuiApp::GetTextInt(int iWndID, bool* pkSuccess)
+int ZGuiApp::GetTextInt(char* szWnd, bool* pkSuccess)
 {
 	ZGuiWnd* pkWnd;
 
 	if(pkSuccess)
 		*pkSuccess = false;
 
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		char* szText = pkWnd->GetText();
 		if(szText != NULL)
@@ -550,13 +551,13 @@ int ZGuiApp::GetTextInt(int iWndID, bool* pkSuccess)
 	return 0;
 }
 
-float ZGuiApp::GetTextFloat(int iWndID, bool *pkSuccess)
+float ZGuiApp::GetTextFloat(char* szWnd, bool *pkSuccess)
 {
 	if(pkSuccess)
 		*pkSuccess = false;
 
 	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		char* szText = pkWnd->GetText();
 		if(szText != NULL)
@@ -570,10 +571,10 @@ float ZGuiApp::GetTextFloat(int iWndID, bool *pkSuccess)
 	return 0;
 }
 
-bool ZGuiApp::IsButtonChecked(int iWndID)
+bool ZGuiApp::IsButtonChecked(char* szWnd)
 {
 	ZGuiWnd* pkWnd;
-	if((pkWnd = GetWnd(iWndID)))
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		if(GetType(pkWnd) == Radiobutton)
 			return true;
@@ -584,6 +585,9 @@ bool ZGuiApp::IsButtonChecked(int iWndID)
 
 GuiType ZGuiApp::GetType(ZGuiWnd *pkWnd)
 {
+	if(pkWnd == NULL)
+		return GuiType_Error;
+
 	const type_info& t = typeid(*pkWnd);
 
 	if(t==typeid(ZGuiTextbox))
@@ -636,10 +640,10 @@ void ZGuiApp::CloseWindow(char* szResName)
 		pkWnd->Hide();
 }
 
-bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, int iID, 
+bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID, 
 								 char *szSkinName, char* szSkinType)
 {
-	ZGuiWnd* pkWnd = GetWnd(iID);
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(string(szID));
 
 	if(pkWnd == NULL)
 		return false;

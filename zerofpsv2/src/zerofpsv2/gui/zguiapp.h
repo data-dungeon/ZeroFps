@@ -42,38 +42,36 @@ public:
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
 	void AddListItem(char* szListboxResName, char* szText);
-	void AddListItem(int iListboxID, char* szText);
+//	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
-	bool ChangeSkin(ZFScriptSystem* pkScript, int iWndID, char* szSkinName, 
+	bool ChangeSkin(ZFScriptSystem* pkScript, char* szID, char* szSkinName, 
 		char* szSkinType);
 	
 	ZGuiSkin* AddSkinFromScript(char* szName, ZFScriptSystem* pkScript, ZGuiSkin* pkSkin=NULL);
-	bool IsButtonChecked(int iWndID);
-	float GetTextFloat(int iWndID, bool* pkSuccess);
-	int GetTextInt(int iWndID, bool* pkSuccess);
-	char* GetText(int iWndID);
-
-	void SetTextFloat(int iWndID, float fNumber, bool bResize=false);
-	void SetTextInt(int iWndID, int iNumber, bool bResize=false);
-	void SetText(int iWndID, char* szText, bool bResize=false);
+	bool IsButtonChecked(char* szWnd);
+	float GetTextFloat(char* szWnd, bool* pkSuccess);
+	int GetTextInt(char* szWnd, bool* pkSuccess);
+	char* GetText(char* szWnd);
 
 	void SetTextFloat(char* szWndResName, float fNumber, bool bResize=false);
 	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);
 	void SetText(char* szWndResName, char* szText, bool bResize=false);
 
-	ZGuiWnd* GetTabPage(int iTabCtrlID, int iPage);
-	void AddTabPage(int iTabCtrlID, char* szName);
-	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
+	ZGuiWnd* GetTabPage(char* szTabBox, int iPage);
+	void AddTabPage(char* szTabboxID, char* szPageResName, char* szName);
+	void AddTreeItem(char* szTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
-		ZFScriptSystem* pkScript, ZGuiResourceManager* pkResMan);
-	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
-		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
-	bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
+		ZFScriptSystem* pkScript, ZGuiResourceManager* pkResMan,
+		char* szFontTexture, char* szScriptFile);
+	bool CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
+		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags);
+	bool CreateWnd(GuiType eType, char* szResourceName, char* szText, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
 	void CloseWindow(char* szResName);
+	ZGuiWnd* GetWnd(int iID);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
@@ -88,10 +86,10 @@ public:
 	ZFResourceHandle* m_pkScriptResHandle;
 
 private:
+	unsigned int m_uiWindowIDCounter;
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
 	void InitTextures(ZFScriptSystem* pkScript);
-	ZGuiWnd* GetWnd(int iID);
 	ZGuiSkin* GetSkin(string strName);
 
 	ZGui* m_pkGui;

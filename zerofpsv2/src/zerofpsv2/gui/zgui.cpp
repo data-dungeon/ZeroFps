@@ -44,13 +44,21 @@ bool ZGui::StartUp()
 	m_pkCursor->SetSize(16,16);
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
-	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
+/*	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
 
 	char defFontPath[] = "data/textures/text/paternoster8.bmp";
 	
 	pkDefaultFont->CreateFromFile(defFontPath);		
 	m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkDefaultFont->m_iID,
-		pkDefaultFont)); 
+		pkDefaultFont)); */
+
+	/*ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
+
+	char defFontPath[] = "data/textures/text/paternoster8.bmp";
+	
+	pkDefaultFont->CreateFromFile(defFontPath);		
+
+	SetDefaultFont(pkDefaultFont);*/
 
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
 
@@ -885,6 +893,11 @@ void ZGui::SetDefaultFont(ZGuiFont* pkFont)
 		m_pkFonts.erase(itFont);
 		m_pkFonts.insert(map<int,ZGuiFont*>::value_type(
 			pkFont->m_iID,pkFont)); 
+	}
+	else
+	{
+		m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkFont->m_iID,
+				pkFont));
 	}
 }
 

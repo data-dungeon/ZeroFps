@@ -26,36 +26,42 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 
 // Name: CreateWndLua
 // Parameters:
-// (0) int iType, (1) char* szResourceName, (2) char* szText, (3) int iID, 
-// (4) int parentID, (5) int x, (6) int y, (7) int w, (8) int h, 
-// (9) unsigned long uiFlags
+// (0) int iType, 
+// (1) char* szWndName, 
+// (2) char* szParentName
+// (3) char* szLabel, 
+// (4) int x, 
+// (5) int y, 
+// (6) int w, 
+// (7) int h, 
+// (8) unsigned long uiFlags
 int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 10)
+	if(iNumArgs != 9)
 	{
-		printf("Failed to create window! : to few arguments\n");
+		char szWindowName[50];
+		g_pkScript->GetArg(pkLua, 1, szWindowName);
+		printf("Failed to create window: %s! : not correct number of arguments\n", 
+			szWindowName);
 		return 0;
 	}
 
 	double dType;
 	g_pkScript->GetArg(pkLua, 0, &dType);
 
-	char szResName[50], szText[50];
-	g_pkScript->GetArg(pkLua, 1, szResName);
-	g_pkScript->GetArg(pkLua, 2, szText);
-
-	double dID, dParentID;
-	g_pkScript->GetArg(pkLua, 3, &dID);
-	g_pkScript->GetArg(pkLua, 4, &dParentID);
+	char szWindowName[50], szParentName[50], szText[50];
+	g_pkScript->GetArg(pkLua, 1, szWindowName);
+	g_pkScript->GetArg(pkLua, 2, szParentName);
+	g_pkScript->GetArg(pkLua, 3, szText);
 
 	double x, y, w, h, f;
-	g_pkScript->GetArg(pkLua, 5, &x);
-	g_pkScript->GetArg(pkLua, 6, &y);
-	g_pkScript->GetArg(pkLua, 7, &w);
-	g_pkScript->GetArg(pkLua, 8, &h);
-	g_pkScript->GetArg(pkLua, 9, &f);
+	g_pkScript->GetArg(pkLua, 4, &x);
+	g_pkScript->GetArg(pkLua, 5, &y);
+	g_pkScript->GetArg(pkLua, 6, &w);
+	g_pkScript->GetArg(pkLua, 7, &h);
+	g_pkScript->GetArg(pkLua, 8, &f);
 
 	GuiType eType = GuiType_Error;
 
@@ -80,7 +86,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 		}
 	}
 
-	g_pkGuiApp->CreateWnd(eType, szResName, szText, (int) dID, (int) dParentID, 
+	g_pkGuiApp->CreateWnd(eType, szWindowName, szParentName, szText,
 		(int) x, (int) y, (int) w, (int) h, (unsigned long) f);
 
 	return 1;
@@ -88,28 +94,33 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 
 // Name: AddTabPageLua
 // Parameters:
-// (0) int iParentID, (1) int iID
+// (0) char* szTabboxResName 
+// (1) char* szPageResName
+// (1) char* szPageLabel
 int GuiAppLua::AddTabPageLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 2)
+	if(iNumArgs != 3)
 		return 0;
 
-	double dType;
-	g_pkScript->GetArg(pkLua, 0, &dType);
+	char szTabboxResName[100];
+	g_pkScript->GetArg(pkLua, 0, szTabboxResName);
 
-	char szResName[100];
-	g_pkScript->GetArg(pkLua, 1, szResName);
+	char szPageResName[100];
+	g_pkScript->GetArg(pkLua, 1, szPageResName);
 
-	g_pkGuiApp->AddTabPage((int)dType, szResName);
+	char szPageLabel[100];
+	g_pkScript->GetArg(pkLua, 2, szPageLabel);
+
+	g_pkGuiApp->AddTabPage(szTabboxResName, szPageResName, szPageLabel);
 
 	return 1;
 }
 
 // Close window
 // Parameters:
-// (0) int iID to wnd
+// (0) char* id to wnd
 int GuiAppLua::CloseWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
@@ -127,7 +138,7 @@ int GuiAppLua::CloseWndLua(lua_State* pkLua)
 
 // Close window
 // Parameters:
-// (0) int iID to wnd
+// (0) char* Name of the window
 // (1) char* Name of the skin declared in the script file
 // (2) char* Name of the type of skin.
 // Like: "Window", "Button up", "Button down" (look inside the function GetWndSkinsDesc)
@@ -138,8 +149,8 @@ int GuiAppLua::ChangeSkinLua(lua_State* pkLua)
 	if(iNumArgs != 3)
 		return 0;
 
-	double wndID;
-	g_pkScript->GetArg(pkLua, 0, &wndID);
+	char szID[50];
+	g_pkScript->GetArg(pkLua, 0, szID);
 
 	char szSkinName[50];
 	g_pkScript->GetArg(pkLua, 1, szSkinName);
@@ -147,7 +158,7 @@ int GuiAppLua::ChangeSkinLua(lua_State* pkLua)
 	char szSkinType[50];
 	g_pkScript->GetArg(pkLua, 2, szSkinType);
 
-	g_pkGuiApp->ChangeSkin(g_pkScript, (int) wndID, szSkinName, szSkinType);
+	g_pkGuiApp->ChangeSkin(g_pkScript, szID, szSkinName, szSkinType);
 
 	return 1;
 }

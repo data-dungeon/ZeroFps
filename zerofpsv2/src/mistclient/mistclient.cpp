@@ -84,13 +84,17 @@ void MistClient::Init()
 	GuiAppLua::Init(&g_kMistClient, GetScript());
 
 	// init gui
-	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
+		"data/textures/text/paternoster8.bmp",
+		"data/script/gui/gui_create_client.lua");
 
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
 	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
+
+	
 }
 
 void MistClient::RegisterActions()
@@ -388,12 +392,19 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
-	if(iID == 5)
-		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
-	if(iID == 6)
-		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
-	if(iID == 4)
-		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+	ZGuiWnd* pkWndClicked = GetWnd(iID);
+
+	if(pkWndClicked)
+	{
+		string strName = pkWndClicked->GetName();
+
+		if(strName == "BackPackButton")
+			pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
+		if(strName == "StatsButton")
+			pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
+		if(strName == "MapButton")
+			pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+	}
 }
 
 

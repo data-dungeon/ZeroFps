@@ -7,6 +7,7 @@
 #include "../basic/zguifont.h"
 #include "../basic/zguiskin.h"
 #include "zgui.h"
+#include "zguiresourcemanager.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -56,8 +57,8 @@ void ZGuiTabCtrl::CreateInternalControls()
 		this, true, ID_TABCTRL_PREV);	
 }
 
-bool ZGuiTabCtrl::InsertPage(unsigned int uiIndex, char* szTabText, 
-							 unsigned int iTabSkinIndex)
+bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex, 
+									  char* szTabText, unsigned int iTabSkinIndex)
 {
 	unsigned int iNumTabs = m_kPageList.size();
 
@@ -158,6 +159,18 @@ bool ZGuiTabCtrl::InsertPage(unsigned int uiIndex, char* szTabText,
 		pkNewPage->SetMoveArea(pkNewPage->GetScreenRect());
 		pkNewPage->SetSkin(s_pkTabPageSkin);
 		pkNewPage->RemoveWindowFlag(WF_CANHAVEFOCUS);
+
+		// sdfsafd
+		ZGui* pkGui = GetGUI();
+
+		if(pkGui)
+		{
+			pkGui->RegisterWindow(pkNewPage, szResWndName);
+		}
+		else
+		{
+			printf("Failed to register window for tabpage\n");
+		}
 	}
 
 	return true;

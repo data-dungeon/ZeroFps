@@ -11,6 +11,7 @@
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
 MistServer g_kMistServer("MistServer",0,0,0);
 
@@ -59,23 +60,30 @@ void MistServer::Init()
 	//initiate our camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 
-	
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
+	
+	// create gui script funktions
+	GuiAppLua::Init(&g_kMistServer, pkScript);
 
+	// init gui
+	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
+		"data/textures/text/ms_sans_serif8.bmp",
+		"data/script/gui/gui_create_server.lua");
+
+	// hide cursor
+	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 }
 
 void MistServer::RegisterPropertys()
 {
-
 	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
-
 }
 
-void MistServer::OnIdle() 
+void MistServer::OnIdle()
 {
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
@@ -87,7 +95,7 @@ void MistServer::OnIdle()
 	DrawZoneMarker(m_kZoneMarkerPos);
 }
 
-void MistServer::OnSystem() 
+void MistServer::OnSystem()
 {
 
 }
