@@ -21,7 +21,7 @@ CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
 	m_fFadeOffset = 0;
 	m_iNumPictures = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
 
-	srand(time(0)); // så ett slumpfrö för rättvisans skull
+//	srand(time(0)); // sï¿½ett slumpfrï¿½fï¿½ rï¿½tvisans skull
 }
 
 CStartDMDlg::~CStartDMDlg()
@@ -286,14 +286,14 @@ void CStartDMDlg::CancelIntro()
 
 int CStartDMDlg::GetNextPicture()
 {
-	// Kör alltid första bilden först
+	// Kï¿½ alltid fï¿½sta bilden fï¿½st
 	if(m_vkPlayedPictures.empty())
 	{
 		m_vkPlayedPictures.push_back(0);
 		return 0;
 	}
 
-	// Kör alltid sista bilden sist
+	// Kï¿½ alltid sista bilden sist
 	if(m_vkPlayedPictures.size() == m_iNumPictures-1)
 	{
 		m_vkPlayedPictures.push_back(m_iNumPictures-1);

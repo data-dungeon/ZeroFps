@@ -26,6 +26,7 @@ class P_Walker : public Property
 		
 		void Paralize(float fTime);
 		int ClosestPlayer();
+		void CreateBonus();
 		
 	public:
 		int 	m_iState;

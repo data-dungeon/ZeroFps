@@ -27,9 +27,10 @@ class StopEmUp :public Application , public ZGuiApp
 		Entity*	m_pkCameraEntity;
 		Camera*	m_pkCamera;
 		
-		string	m_strMap;
-		int		m_iLevel;
-		float		m_fLevelWait;
+		int							m_iStartLevel;
+		string						m_strMap;
+		int							m_iLevel;
+		float							m_fLevelWait;
 		vector<pair<int,int> >	m_kPlayers;
 		vector<int> 				m_kSpawners;
 		
@@ -43,6 +44,7 @@ class StopEmUp :public Application , public ZGuiApp
 		int			m_iMaxEnergy;
 		int			m_iScore;
 		int			m_iCurrentLevel;
+		string		m_strGunName;
 		
 		
 		void CreateCamera();

@@ -18,6 +18,7 @@ class P_Gun : public Property
 		float 	m_fBulletVel;
 		int		m_iDamage;
 		string 	m_strProjectile;
+		string	m_strDirectHitObject;
 		string	m_strSound;
 		
 		P_Gun();

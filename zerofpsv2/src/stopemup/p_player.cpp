@@ -17,6 +17,7 @@ P_Player::P_Player()
 	m_iMaxEnergy	= 100;
 	m_iScore			= 0;	
 	m_fInv			= -1;
+	m_strGunName	= "Machine Gun";
 }
 
 void P_Player::Touch(int iID)
@@ -62,6 +63,8 @@ void P_Player::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Write(m_iEnergy);
 	pkNetPacket->Write(m_iMaxEnergy);
 	pkNetPacket->Write(m_iScore);
+	pkNetPacket->Write_Str(m_strGunName);
+	
 
 	SetNetUpdateFlag(iConnectionID,false);
 } 
@@ -71,6 +74,7 @@ void P_Player::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_iEnergy);
 	pkNetPacket->Read(m_iMaxEnergy);
 	pkNetPacket->Read(m_iScore);
+	pkNetPacket->Read_Str(m_strGunName);
 }
 
 

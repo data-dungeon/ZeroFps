@@ -51,6 +51,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	
 
+	//set randomseed
+	srand(time(0));
+	
    int iScreenWidth=800, iScreenHeight=600;
 
 	// Create Engine SubSystems 

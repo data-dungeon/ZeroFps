@@ -18,6 +18,7 @@
 #include "p_gun.h"
 #include "walker.h"
 #include "p_player.h"
+#include "p_powerup.h"
 
 StopEmUp g_kStopEmUp("StopEmUp",0,0,0);
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -41,7 +42,8 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iEnergy			=100;
 	m_iMaxEnergy		=100;
 	m_iScore				=0;
-	m_iCurrentLevel	=1;	
+	m_iCurrentLevel	=0;
+	m_iStartLevel		=1;
 	
 	m_strMap				="../datafiles/stopemup/maps/woods";
 }
@@ -67,6 +69,7 @@ void StopEmUp::OnInit()
 	m_pkPropertyFactory->Register("P_Gun",	Create_P_Gun);
 	m_pkPropertyFactory->Register("P_Walker",	Create_P_Walker);
 	m_pkPropertyFactory->Register("P_Player",	Create_P_Player);
+	m_pkPropertyFactory->Register("P_Powerup",	Create_P_Powerup);
 	
 	//create camera
 	m_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -108,7 +111,6 @@ void StopEmUp::OnSystem(void)
 //	cout<<"rand 2:"<<Randomi(2)<<endl;
 //	cout<<"rand 3:"<<Randomi(3)<<endl;
 //	cout<<"rand 1:"<<Randomi)<<endl;
-
 
 	if(m_bServerMode)
 	{
@@ -165,6 +167,7 @@ void StopEmUp::OnSystem(void)
 					m_iEnergy = 	pkPlayer->m_iEnergy;
 					m_iMaxEnergy = pkPlayer->m_iMaxEnergy;
 					m_iScore = 		pkPlayer->m_iScore;
+					m_strGunName = pkPlayer->m_strGunName;
 				}					
 			}	
 		}
@@ -189,7 +192,7 @@ void StopEmUp::OnIdle()
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "SCORE: %d",m_iScore);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", temp);
-		m_pkZeroFps->DevPrintf("StopEmUp-Client", "GUN: YberGun");
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "GUN: %s",m_strGunName.c_str());
 		
 	}
 }
@@ -267,7 +270,7 @@ void StopEmUp::OnServerStart()
 	CreateCamera();
 	
 	m_bServerMode =	true;
-	m_iLevel = 			0;
+	m_iLevel = 			m_iStartLevel-1;
 	
 	SetTitle("StopEmUp - Server");
 }

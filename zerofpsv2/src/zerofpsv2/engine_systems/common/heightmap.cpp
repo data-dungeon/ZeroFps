@@ -510,7 +510,7 @@ void HeightMap::Random()
 	int peaks=25;
 	int smooth=1;
 
-	srand(time(0));
+//	srand(time(0));
 	
 	int i;
 
@@ -836,7 +836,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 			pb		=	b;			
 			pa		+=	a;
 			
-			//fula men nödvändiga =P
+			//fula men nï¿½vï¿½diga =P
 			if(pr >255)
 				pr = 255;
 			if(pg	 >255)

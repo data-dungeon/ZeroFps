@@ -14,7 +14,7 @@ class P_Player : public Property
 		int		m_iEnergy;
 		int		m_iMaxEnergy;
 		int		m_iScore;
-		
+		string	m_strGunName;
 					
 		P_Player();
 

@@ -27,7 +27,7 @@ P_Walker::P_Walker()
 	if(fPlayers < 1)
 		fPlayers = 1;
 	
-	fLevel *= 0.75;
+	fLevel *= 0.5;
 	if(fLevel < 1)
 		fLevel = 1;
 			
@@ -191,7 +191,9 @@ void P_Walker::Touch(int iID)
 		//hit by bullet
 		if(pkEnt->GetType() == "bullet.lua")
 		{
-			Damage(1,-1);
+			int iOwner = pkEnt->GetVarDouble("owner");
+		
+			Damage(50,iOwner);
 			m_pkEntityManager->Delete(pkEnt);
 		}
 	}
@@ -202,7 +204,7 @@ void P_Walker::Damage(int iDmg,int iKiller)
 {
 	//Paralize(0.1);
 	
-	m_iLife--;
+	m_iLife-=iDmg;
 				
 	if(m_iLife <= 0)
 	{
@@ -217,10 +219,22 @@ void P_Walker::Damage(int iDmg,int iKiller)
 		if(P_Player* pkPlayer = (P_Player*)m_pkEntityManager->GetPropertyFromEntityID(iKiller,"P_Player"))
 		{
 			pkPlayer->AddScore(m_iMaxLife);
-		}
-					
+			CreateBonus();
+		}					
 	}
+}
 
+void P_Walker::CreateBonus()
+{
+	int i = Randomi(10);
+
+	if(i <= 0)
+	{
+		Entity* pkEnt = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/powerup.lua",	GetEntity()->GetWorldPosV() ,GetEntity()->GetCurrentZone());				
+
+		if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+			pkTcs->ApplyImpulsForce(Vector3(0,5,0));
+	}
 }
 
 Property* Create_P_Walker()

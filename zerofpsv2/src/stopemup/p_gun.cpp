@@ -16,12 +16,13 @@ P_Gun::P_Gun()
 	
 	m_bFire = false;
 	
-	m_fFireDelay = 0.1;
+	m_fFireDelay = 0.2;
 	m_fLastFire = 0;
 	m_fBulletVel = 20;
 	m_strProjectile = "";
 	m_iDamage = 1;
 	m_strSound = "data/sound/auto_gun.wav";
+	m_strDirectHitObject = "data/script/objects/bullethit.lua";
 }
 
 
@@ -57,14 +58,19 @@ void P_Gun::FireBullet()
 	//projectile weapon
 	if(!m_strProjectile.empty())
 	{
-		Entity* pkBullet = m_pkEntityManager->CreateEntityFromScriptInZone(m_strProjectile.c_str(),GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());
-		if(P_Tcs* pkTcs = (P_Tcs*)pkBullet->GetProperty("P_Tcs"))
+		if(Entity* pkBullet = m_pkEntityManager->CreateEntityFromScriptInZone(m_strProjectile.c_str(),GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone()))
 		{
-		
-			Vector3 kDir = GetEntity()->GetWorldRotM().VectorTransform(Vector3(0,0,1));
-		
-			pkTcs->SetLinVel(kDir*m_fBulletVel);	
+			pkBullet->SetVarDouble("owner",GetEntity()->GetEntityID());
+			
+			if(P_Tcs* pkTcs = (P_Tcs*)pkBullet->GetProperty("P_Tcs"))
+			{
+			
+				Vector3 kDir = GetEntity()->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+			
+				pkTcs->SetLinVel(kDir*m_fBulletVel);	
+			}
 		}
+		
 	}
 	//direct hit
 	else
@@ -126,11 +132,11 @@ void P_Gun::FireBullet()
 			
 				pkWalk->Damage(m_iDamage,GetEntity()->GetEntityID());
 				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Randomf(0.5)-0.25,-Randomf(0.5),Randomf(0.5)-0.25);
-				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/bullethit.lua",kHitPos,GetEntity()->GetCurrentZone());				
+				m_pkEntityManager->CreateEntityFromScriptInZone(m_strDirectHitObject.c_str(),kHitPos,GetEntity()->GetCurrentZone());				
 			
 			}
 			else
-				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/bullethit.lua",	kPickPos,GetEntity()->GetCurrentZone());				
+				m_pkEntityManager->CreateEntityFromScriptInZone(m_strDirectHitObject.c_str(),	kPickPos,GetEntity()->GetCurrentZone());				
 
 		}	
 	
