@@ -32,9 +32,6 @@ bool ZShadow::StartUp()
 	//EnableShadowGroup(1);
 	EnableShadowGroup(2);
 
-
-
-
 	return true;
 }
 
@@ -87,7 +84,6 @@ void ZShadow::Update()
 							continue;
 
 						MakeStencilShadow(kLights[i]->kPos);
-
 						m_iCurrentShadows++;
 					}
 
@@ -159,6 +155,42 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 	return false;
 }
 
+void ZShadow::FindFrontCaping(Vector3 kSourcePos)
+{
+	int iVerts = m_iNrOfFaces*3;
+	m_iCurrentVerts += iVerts;
+	Vector3 v[3];
+	Vector3 ev[3];
+
+	for(int i = 0;i<iVerts; i+=3)
+	{
+		v[0] = m_kTransFormedVertexs[ m_pkFaces[i] ];
+		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
+		v[2] = m_kTransFormedVertexs[ m_pkFaces[i+2]];
+
+
+		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
+		Vector3 RefV = ( kSourcePos - (v[0]) );
+
+		if(Normal.Dot(RefV) < 0)
+		{
+
+
+			ev[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
+			ev[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
+			ev[2] = v[2] + ( kSourcePos - v[2]).Unit() * 0.01;
+
+
+
+			glBegin(GL_TRIANGLES);
+				glVertex3f(ev[2].x,ev[2].y,ev[2].z);
+				glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+				glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+			glEnd();
+		}
+	}
+}
+
 void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 {
 	Vector3 v[3];
@@ -180,6 +212,7 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
 		Vector3 RefV = ( kSourcePos - (v[0]) );
 
+		//
 		if(Normal.Dot(RefV) > 0)
 		{
 			pair<int,int> p;
@@ -242,6 +275,9 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 		v[0] = m_kTransFormedVertexs[m_kTowardsEdges[i].first];
 		v[1] = m_kTransFormedVertexs[m_kTowardsEdges[i].second];
 
+		v[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
+		v[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
+
 		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
 		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
 
@@ -250,6 +286,7 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 			glVertex3f(v[1].x,v[1].y,v[1].z);
 		glEnd();
 */
+
 		glBegin(GL_QUADS);
 			glVertex3f(v[0].x,v[0].y,v[0].z);
 			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
@@ -265,6 +302,24 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	m_kTowardsEdges.clear();
 	FindSiluetEdges(kSourcePos);
 
+/*
+	//carmac inverse (zfail)
+	//back
+	glCullFace(GL_FRONT);
+	glStencilOp(GL_KEEP, GL_INCR, GL_KEEP);
+	ExtrudeSiluet(kSourcePos);
+	FindFrontCaping(kSourcePos);
+
+
+	//front
+ 	glCullFace(GL_BACK);
+	glStencilOp(GL_KEEP, GL_DECR, GL_KEEP);
+	ExtrudeSiluet(kSourcePos);
+	FindFrontCaping(kSourcePos);
+*/
+
+
+	//the other one ;)
 	//draw front
 	glCullFace(GL_BACK);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
@@ -293,14 +348,12 @@ void ZShadow::SetupStencilBuffer()
 
 void ZShadow::SetupGL()
 {
-
-
 	//clear stencil buffert
 	glClear(GL_STENCIL_BUFFER_BIT);
 
 	//setop
 	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_ALWAYS, 0, ~0);
+	glStencilFunc(GL_ALWAYS, 0, 255);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -328,9 +381,11 @@ void ZShadow::DrawShadow(float fItensity)
 
 	//stencil buffer settings
 	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_EQUAL, 0, ~0);
-	glStencilFunc(GL_ALWAYS, 0, ~0);
+	glStencilFunc(GL_EQUAL, 0, 255);
+	glStencilFunc(GL_ALWAYS, 0, 255);
 	glStencilFunc(GL_NOTEQUAL, 0x0, 0xff);
+	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
+
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	//blending

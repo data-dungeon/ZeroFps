@@ -29,6 +29,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		//vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>			m_kTransFormedVertexs;
 		vector<pair<int,int> >	m_kTowardsEdges;
+//		vector<Vector3>
 
 		int			m_iCurrentShadows;
 		int			m_iCurrentVerts;
@@ -41,7 +42,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
 		bitset<8>	m_kShadowGroups;
 
-
+		void FindFrontCaping(Vector3 kSourcePos);
 		void FindSiluetEdges(Vector3 kSourcePos);
 		void ExtrudeSiluet(Vector3 kSourcePos);
 		void MakeStencilShadow(Vector3 kSourcePos);
