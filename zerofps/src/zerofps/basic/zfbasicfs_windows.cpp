@@ -8,7 +8,7 @@
 #include "Shlwapi.h"
 #include <iostream>
 
-bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName)
+bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps)
 {  
 	WIN32_FIND_DATA finddata;
 
@@ -25,11 +25,9 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName)
 	while (bMore) 
 	{                  
 		bIsDir = (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);                 
-              
-		if (!bIsDir)
-		{
+
+		if(!(bOnlyMaps == true && bIsDir == false))
 			pkFiles->push_back(string(finddata.cFileName));
-		}
              
 		bMore = FindNextFile(hFind, &finddata);         
 	}

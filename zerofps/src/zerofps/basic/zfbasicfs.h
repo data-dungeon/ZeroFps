@@ -31,7 +31,7 @@ class BASIC_API ZFBasicFS : public ZFObject
 		char* GetCWD();		
 		bool CreateDir(const char* acName);
 		bool RemoveDir(const char* acName);
-		bool ListDir(vector<string>* pkFiles,const char* acName);
+		bool ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps=false);
 		bool DirExist(const char* acName);
 		
 };
