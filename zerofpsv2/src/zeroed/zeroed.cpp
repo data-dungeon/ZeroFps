@@ -364,7 +364,6 @@ void ZeroEd::Init()
 void ZeroEd::OnServerStart(void)
 {		
 	CreateEditCameras();
-
 	
 	// Create and setup the Env on the server.
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
@@ -374,10 +373,6 @@ void ZeroEd::OnServerStart(void)
 	SoloToggleView();
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	SoloToggleView();
-	GetWnd("vp1")->SetZValue(0);
-	GetWnd("vp2")->SetZValue(0);
-	GetWnd("vp3")->SetZValue(0);
-	GetWnd("vp4")->SetZValue(0);
 	
 	//enable sun as default
 	ToogleLight(true);
@@ -1146,10 +1141,10 @@ void ZeroEd::SoloToggleView()
 		int w = m_pkGui->m_iResX / 2 - 2;
 		int h = (m_pkGui->m_iResY-20) / 2 - 2;
 
-		GetWnd("vp2")->Show(); GetWnd("vp2")->SetPos(1,21,true,true); GetWnd("vp2")->Resize(w,h,false);
-		GetWnd("vp1")->Show(); GetWnd("vp1")->SetPos(w+3,21,true,true); GetWnd("vp1")->Resize(w,h,false);
-		GetWnd("vp3")->Show(); GetWnd("vp3")->SetPos(1,h+21+2,true,true); GetWnd("vp3")->Resize(w,h,false);
-		GetWnd("vp4")->Show(); GetWnd("vp4")->SetPos(w+3,h+21+2,true,true); GetWnd("vp4")->Resize(w,h,false);
+		GetWnd("vp2")->Show(); GetWnd("vp2")->SetPos(1,21,true,true); GetWnd("vp2")->Resize(w,h,true);
+		GetWnd("vp1")->Show(); GetWnd("vp1")->SetPos(w+3,21,true,true); GetWnd("vp1")->Resize(w,h,true);
+		GetWnd("vp3")->Show(); GetWnd("vp3")->SetPos(1,h+21+2,true,true); GetWnd("vp3")->Resize(w,h,true);
+		GetWnd("vp4")->Show(); GetWnd("vp4")->SetPos(w+3,h+21+2,true,true); GetWnd("vp4")->Resize(w,h,true);
 } 
 	else
 	{

@@ -42,6 +42,8 @@ void ZeroEd::SetupGuiEnviroment()
 	CreateWnd(Label, "vp2Label", "Top", GetWnd("vp2"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp3Label", "Left", GetWnd("vp3"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp4Label", "Front", GetWnd("vp4"), 2, 0, 100, 20, 0);
+
+	CreateWnd(Button, "asdasdfeee", "Front", GetWnd("vp4"), 50, 50, 100, 20, 0);
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
