@@ -713,6 +713,8 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	bool bIsSplitSlot = (*pkVector)[m_kMoveSlot.m_iIndex].iStackSize > 1;
 	bool bTryExecuteSlplit = false;
 
+	ZGuiWnd* pkMoveWnd = (*pkVector)[m_kMoveSlot.m_iIndex].pkWnd;
+
 	m_kSplitSlotTarget.m_iIndex = -1;
 
 	if(kTargetSlot.first == -1) // no collision
@@ -750,8 +752,12 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		if(bIsSplitSlot)
 		{
 			bTryExecuteSlplit = true;
+		
+			m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
+			m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;
+
 			m_kSplitSlotTarget.m_iIndex = kTargetSlot.first;
-			m_kSplitSlotTarget.bIsInventoryItem = kTargetSlot.second;
+			m_kSplitSlotTarget.bIsInventoryItem = kTargetSlot.second;	
 		}
 	}
 
@@ -759,30 +765,24 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	{
 		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
 	}
+	else
+	{		
+		// Show icon again and move back before split.
+		pkMoveWnd->Show();
+		pkMoveWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+			m_kItemWndPosBeforeMove.y, false, true);
 
-	// denna ska inte behövas, servern skickar automatiskt uppdates på containers när den fått move paketet
-	//g_kMistClient.RequestOpenInventory();
-	//if(m_iActiveContainerID)
-	//	g_kMistClient.SendRequestContainer(m_iActiveContainerID);
-	
-		
+		// Open split window.
+		OpenSplitStockWnd();
+	}
+
+	// Show normal cursor again.
 	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
-	if(bTryExecuteSlplit)
-	{		
-		m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
-		(*pkVector)[m_kSplitSlot.m_iIndex].pkWnd->Show();
-
-		(*pkVector)[m_kSplitSlot.m_iIndex].pkWnd->SetPos(
-			m_kItemWndPosBeforeMove.x, m_kItemWndPosBeforeMove.y, false, true);
-
-		m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;	
-		OpenSplitStockWnd();
-	}
 }
 
 int InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
