@@ -8,10 +8,38 @@
 
 using namespace std;
 
-/**	\brief	Da PlayerDatabase
+/**	\brief	PlayerDatabase
 		\ingroup MistServer
+
+	The part of the server that stores all logins and their rights with what they can do on the server.
+	All users are stored in dir /logins and each user get there own dir. In each user dir are a data file
+	with things like passwords and user rights.
+
 */
 
+
+/*
+	Sköter logins och hanteringen av karaktärer. Alla som kan ansluta har ett login
+	som innehåller information, password, rättigheter och karaktärer.
+
+		Info:	Namn, osv.
+		Rätt:	Vad denna login kan göra.
+		Kar:	Alla karaktärer kopplade till detta login.
+
+	Login(Name, Password):	Logs in a user.
+	Logout(Name):			Logs out a user.
+	
+	GetOnline(List)			Get a list of users loged in.
+*/
+
+class	LoginData
+{
+public:
+	char		szName[128];		// Name of this login.
+	char		szPass[128];		// Password of this login.
+
+
+};
 
 class PlayerDatabase
 {

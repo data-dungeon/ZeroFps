@@ -2,24 +2,7 @@
 #include "../zerofpsv2/basic/zfbasicfs.h"
 
 
-/*
-	Sköter logins och hanteringen av karaktärer. Alla som kan ansluta har ett login
-	som innehåller information, password, rättigheter och karaktärer.
 
-		Info:	Namn, osv.
-		Rätt:	Vad denna login kan göra.
-		Kar:	Alla karaktärer kopplade till detta login.
-
-	Login(Name, Password):	Logs in a user.
-	Logout(Name):			Logs out a user.
-	
-	GetOnline(List)			Get a list of users loged in.
-
-
-
-	
-
-*/
 
 PlayerDatabase::PlayerDatabase()
 {
@@ -50,10 +33,13 @@ bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 		return false;
 	}
 	
+	LoginData kLogin;
+	
+
 	//writing password
-	char czPwd[128];
-	strcpy(czPwd,strPassword.c_str());
-	kFile.Write(czPwd,128,1);
+	strcpy(kLogin.szPass, strPassword.c_str());
+	strcpy(kLogin.szName, strPlayer.c_str());
+	kFile.Write(&kLogin,sizeof(kLogin),1);
 	
 	kFile.Close();
 	return true;
@@ -123,13 +109,14 @@ bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)
 		
 	//cout<<"player found verrifying password"<<endl;	
 	
+	LoginData kLogin;
+	kFile.Read(&kLogin,sizeof(kLogin),1);
+	
 	//read password
-	char czPwd[128];
-	kFile.Read(czPwd,128,1);
 	kFile.Close();
 		
 	//is the password valid ?
-	if(strPassword == czPwd)
+	if(strPassword == kLogin.szName)
 		return true;
 		
 	return false;

@@ -50,6 +50,8 @@
 
 /**	\brief	Da MistServer
 		\ingroup MistServer
+
+The main class for the Server of ZeroFps. 
 */
 class MistServer :public Application , public ZGuiApp 
 {
@@ -74,7 +76,7 @@ class MistServer :public Application , public ZGuiApp
 		vector<pair<string,Vector3> >	m_kLocations;
 		
 		PlayerDatabase*					m_pkPlayerDB;
-		bool							m_AcceptNewLogins;
+		bool									m_AcceptNewLogins;
 
 		//edit stuff
 		Entity*	m_pkCameraObject;

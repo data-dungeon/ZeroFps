@@ -578,6 +578,10 @@ void ZeroEd::OnSystem()
 
 void ZeroEd::OnIdle()
 {	
+	// FULHACK Tm Vim
+	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetObjectByNetWorkID( m_pkFps->GetClientObjectID() ) );
+
+
 	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
