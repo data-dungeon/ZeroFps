@@ -15,6 +15,8 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fTimeSlice = 	2.0;
 	m_fGravity =		9.84;
 	
+	m_fSleepTime = 	1.0;
+	
 	m_iCollisionIterations	= 4;
 	m_iContactIterations		= 4;
 	
@@ -30,12 +32,13 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	
 	RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
 	RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
-	RegisterVariable("p_tcsdelay",		&m_fMaxDelay,CSYS_FLOAT);
-	RegisterVariable("p_tcsminforce",	&m_fMinForce,CSYS_FLOAT);
-	RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
-	RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
+	//RegisterVariable("p_tcsdelay",		&m_fMaxDelay,CSYS_FLOAT);
+	//RegisterVariable("p_tcsminforce",	&m_fMinForce,CSYS_FLOAT);
+	//RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
+	//RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
 	RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
 	
+	RegisterVariable("p_tcssleeptime",	&m_fSleepTime,CSYS_FLOAT);
 	RegisterVariable("p_tcscolit",		&m_iCollisionIterations,CSYS_INT);
 	RegisterVariable("p_tcsconit",		&m_iContactIterations,CSYS_INT);
 }
@@ -203,7 +206,7 @@ void Tcs::Update(float fAlphaTime)
 	
 	//check for resting bodys
 	static float fLastRestFind = 0;	
-	if(m_pkZeroFps->GetTicks() - fLastRestFind > 1.0)
+	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
 	{
 		fLastRestFind = m_pkZeroFps->GetTicks();
 		FindRestingBodys();
@@ -288,25 +291,13 @@ void Tcs::Shock()
 			if(	m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic
 				||	m_kCollissions[i]->pkBody2->m_bStatic || m_kCollissions[i]->pkBody2->m_bTempStatic)
 			{
-			
-				//HandleCollission(kCollissions[i],false,true);
+				HandleCollission(m_kCollissions[i],true,false);
+				
 				if(m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic)
-				{
-					HandleCollission(m_kCollissions[i],true,false);
-					//kCollissions[i]->pkBody2->m_kNewPos += Vector3(0,0.5,0);
-					//m_kCollissions[i]->pkBody2->ApplyImpulsForce(-kForce);
 					m_kCollissions[i]->pkBody2->m_bTempStatic = true;
-				}
-
-				if(m_kCollissions[i]->pkBody2->m_bStatic || m_kCollissions[i]->pkBody2->m_bTempStatic)
-				{
-					HandleCollission(m_kCollissions[i],true,false);
-					//kCollissions[i]->pkBody1->m_kNewPos += Vector3(0,0.5,0);
-					//m_kCollissions[i]->pkBody1->ApplyImpulsForce(kForce );
-					m_kCollissions[i]->pkBody1->m_bTempStatic = true;	
-				}
-									
-				//cout<<"static"<<endl;
+				else
+					m_kCollissions[i]->pkBody1->m_bTempStatic = true;
+			
 			}
 		}			
 	}
@@ -1853,6 +1844,43 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 	return false;
 }
 
+bool Tcs::TestPolygonAABB(Vector3* pkPolygon1,Vector3* pkPolygon2)
+{
+	static Vector3 kMin1,kMin2,kMax1,kMax2;
+	
+	kMin1.x = Min(Min(pkPolygon1[0].x,pkPolygon1[1].x),pkPolygon1[2].x);
+	kMin1.y = Min(Min(pkPolygon1[0].y,pkPolygon1[1].y),pkPolygon1[2].y);
+	kMin1.z = Min(Min(pkPolygon1[0].z,pkPolygon1[1].z),pkPolygon1[2].z);
+	
+	kMin2.x = Min(Min(pkPolygon2[0].x,pkPolygon2[1].x),pkPolygon2[2].x);
+	kMin2.y = Min(Min(pkPolygon2[0].y,pkPolygon2[1].y),pkPolygon2[2].y);
+	kMin2.z = Min(Min(pkPolygon2[0].z,pkPolygon2[1].z),pkPolygon2[2].z);
+	
+	kMax1.x = Max(Max(pkPolygon1[0].x,pkPolygon1[1].x),pkPolygon1[2].x);
+	kMax1.y = Max(Max(pkPolygon1[0].y,pkPolygon1[1].y),pkPolygon1[2].y);
+	kMax1.z = Max(Max(pkPolygon1[0].z,pkPolygon1[1].z),pkPolygon1[2].z);
+
+	kMax2.x = Max(Max(pkPolygon2[0].x,pkPolygon2[1].x),pkPolygon2[2].x);
+	kMax2.y = Max(Max(pkPolygon2[0].y,pkPolygon2[1].y),pkPolygon2[2].y);
+	kMax2.z = Max(Max(pkPolygon2[0].z,pkPolygon2[1].z),pkPolygon2[2].z);
+		
+	if(kMin2.x > kMax1.x)
+		return false; 
+	if(kMin2.y > kMax1.y)
+		return false; 
+	if(kMin2.z > kMax1.z)
+		return false; 
+
+	if(kMin1.x > kMax2.x)
+		return false; 
+	if(kMin1.y > kMax2.y)
+		return false; 
+	if(kMin1.z > kMax2.z)
+		return false; 
+
+	return true;			
+}
+
 bool Tcs::CollideBoxVSBox(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol)
 {
 	bool bCollided = false;
@@ -2316,6 +2344,11 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 			if(verts2[1] == verts2[2])
 				continue;					
 
+			if(!TestPolygonAABB(verts1,verts2))
+				continue;
+				
+				
+				
 			if(m_iDebugGraph == 2)
 			{
 				//debug stuff

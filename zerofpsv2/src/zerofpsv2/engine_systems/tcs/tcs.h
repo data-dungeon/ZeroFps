@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fTimeSlice;
 		float					m_fGravity;
 		
+		float					m_fSleepTime;
 		int					m_iCollisionIterations;
 		int					m_iContactIterations;
 		
@@ -98,6 +99,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void PushVelPos();
 		void PopVelPos();
 		
+		//chock test
 		void Shock();
 		
 		void FindRestingBodys();
@@ -126,10 +128,11 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 
 		void TestBoxVsBox(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pkCollissions);
 		bool CollideBoxVSBox(P_Tcs* pkBox,P_Tcs* pkMesh,Tcs_collission* pkTempCol);
-
 		
+		//AABB tests
 		void UpdateAABBs();
 		bool TestAABB(P_Tcs* pkBody1,P_Tcs* pkBody2);
+		bool TestPolygonAABB(Vector3* pkPolygon1,Vector3* pkPolygon2);
 				
 		//line tests
 		void UpdateLineTests(float fAlphaTime);		
