@@ -3,8 +3,8 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
-#include "../zerofpsv2/basic/zfini.h"
-#include <list>
+//#include "../zerofpsv2/basic/zfini.h"
+//#include <list>
    using namespace std;
 
 /**	\brief	Da P_Item

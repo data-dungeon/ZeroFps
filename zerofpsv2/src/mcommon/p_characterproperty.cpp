@@ -1,6 +1,7 @@
 #include "p_characterproperty.h"
 #include "p_charactercontrol.h"
 #include "p_container.h"
+#include "p_item.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
@@ -716,7 +717,7 @@ namespace SI_P_CharacterProperty
 				if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(pkCP->m_iInventory))
 					if(P_Container* pkContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
 					{
-						if(pkContainer->AddItem(iItemID))
+						if(pkContainer->AddMove(iItemID,-1,-1,-1))
 						{
 							cout<<"sucessfully picked up item"<<endl;
 							return 0;

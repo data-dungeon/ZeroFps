@@ -1020,31 +1020,16 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					{
 						SayToClients("target container is not yours",PkNetMessage->m_iClientID);
 						break;					
-					}				
-				
+					}								
 		
-					//no target position given assuming free position
-					if(iPosX == -1)
-					{
-						//try adding item on a free position in character inventory
-						if(pkTargetContainer->AddItem(iItemID))											
-							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
-						else
-							SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-
-						
-						break;
-					}
+					//try adding item on a free position in character inventory										
+					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
+						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
 					else
-					{
-						//try adding item on target position in character inventory
-						if(pkTargetContainer->AddItem(iItemID,iPosX,iPosY))											
-							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
-						else
-							SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-																	
-						break;																	
-					}
+						SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+						
+					break;
+
 				}
 				else
 				{
@@ -1066,31 +1051,30 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//do we have a target container 
 				if(!pkTargetContainer)
 				{
-					//no position, drop item outside this container
-					if(iPosX == -1)
+					//if we have a position, try moving there
+					if(iPosX != -1)
 					{
-						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+						if(pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
-							SayToClients("Could not drop item",PkNetMessage->m_iClientID);						
-						
-						break;				
+							SayToClients("Could not move item",PkNetMessage->m_iClientID);				
+							
+						break;		
 					}
-					//we have a position try to move item there
+					//no position, try drop
 					else
 					{
-						if(pkInContainer->MoveItem(iItemID,iPosX,iPosY))
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
+							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
-							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
+							SayToClients("Could not drop item",PkNetMessage->m_iClientID);														
 							
 						break;
 					}
+
 				}
 				else
 				{
-					//we have a target container, lets try to move item to it
-			
 					//first do we own this container?						
 					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
 					{
@@ -1098,34 +1082,19 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						break;					
 					}				
 				
-					//no position, move anywhere
-					if(iPosX == -1)
+					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 					{
-						if(pkInContainer->MoveItem(iItemID,pkTargetContainer))
-						{
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
-							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
-						}
-						else
-							SayToClients("Could not move there",PkNetMessage->m_iClientID);
-						
-						break;				
+						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);						
 					}
-					//we have a position try to move item there
 					else
-					{
-						if(pkInContainer->MoveItem(iItemID,pkTargetContainer,iPosX,iPosY))
-						{
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
-							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
-						}
-						else
-							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
-							
-						break;
-					}					
+						SayToClients("Could not move item to that container",PkNetMessage->m_iClientID);	
+					
+					break;	
+		
 				}
 			}
+			
 
 			cout<<"WARNING: bad item movement"<<endl;
 			SayToClients("Bad item movement",PkNetMessage->m_iClientID);

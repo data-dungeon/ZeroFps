@@ -3,6 +3,9 @@
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h" 
+
+#include "p_item.h"
+
 #include <iomanip>
 
 // -----------------------------------------------------------------------------------------------
@@ -140,8 +143,82 @@ int* P_Container::GetItem(int iX,int iY)
 		return NULL;
 }
 
-bool P_Container::SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH)
+bool P_Container::StackItem(P_Item* pkItem,int iX,int iY,int iCount)
 {
+	//set correct count
+	if(iCount < 1)
+	{
+		iCount = pkItem->m_iStackSize;
+	}
+
+
+	int* i = GetItem(iX,iY);
+
+	//get target item
+	if(P_Item* pkTargetItem = (P_Item*)m_pkEntMan->GetPropertyFromEntityID(*i,"P_Item"))
+	{
+		//check if its the same item
+		if(pkTargetItem->m_strName == pkItem->m_strName)
+		{
+			//check if stackable
+			if(pkTargetItem->m_iStackMax > 1)
+			{
+				//get free stack		
+				int iFree = pkTargetItem->m_iStackMax - pkTargetItem->m_iStackSize;
+				if(iFree <= 0)
+				{
+					cout<<"no free space"<<endl;
+					return true;
+				}
+				
+				//not enough space
+				if(iCount > iFree)
+				{
+					cout<<"not enough free space, adding to full"<<endl;
+					pkTargetItem->m_iStackSize += iFree;
+					pkItem->m_iStackSize -= iFree;
+				}
+				else //enough space
+				{
+					pkTargetItem->m_iStackSize += iCount;
+					pkItem->m_iStackSize -= iCount;					
+				}
+				
+				//check if item is totaly moved
+				if(pkItem->m_iStackSize <= 0)
+				{
+					//remove from world
+					
+					//in container?
+					if(pkItem->m_iInContainerID != -1)
+					{
+						//get container and remove item
+						if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
+						{
+							pkContainer->RemoveItem(pkItem->GetEntity()->GetEntityID());
+						}
+					}
+					else
+					{
+						//not in a container, just remove it from the face of the earth
+						m_pkEntMan->Delete(pkItem->GetEntity());
+					}
+				}
+				
+				//have now handled the stacking
+				return true;
+			}
+		}
+	}
+		
+	return false;
+}
+
+bool P_Container::SetItem(P_Item* pkItem,int iX,int iY)
+{
+	int iW = pkItem->m_iSizeX;
+	int iH = pkItem->m_iSizeY;
+
 	//check if this space is free
 	for(int iYP = iY ;iYP < iY+iH;iYP++)
 	{	
@@ -238,139 +315,199 @@ bool P_Container::GetItemPos(int iID,int& iRX,int& iRY)
 	return false;
 }
 
-bool P_Container::AddItem(int iID,int iX,int iY)
+bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 {
-	if(HaveItem(iID))
-	{
-		cout<<"Item already in container"<<endl;
+	P_Item* pkItem = NULL;
+	P_Container* pkContainer = NULL;
+	
+	//get item
+	if(!(pkItem = (P_Item*)m_pkEntMan->GetPropertyFromEntityID(iID,"P_Item")))
+	{		
+		cout<<"WARNING: entity "<<iID<<" does not have P_Item"<<endl;
 		return false;
 	}
-		
-	if(m_iMaxItems != 0)
-		if(GetNrOfItems() >= m_iMaxItems)
-		{
-			//cout<<":"<<GetNrOfItems()<<endl;
-			cout<<"max nr of items already in container"<<endl;
-			return false;
-		}
-		
-	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+	
+	//check if *this is the item
+	if(GetEntity() == pkItem->GetEntity())
+		return false;
+	
+	//get item's current container, if any
+	//pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container");
+	
+	
+	//place on free slot?
+	if(iX == -1)
 	{
-		if(pkItem == GetEntity())
-		{
-			cout<<"Tried to add self to self"<<endl;
+		int iTargetPosX = -1;
+		int iTargetPosY = -1;
+								
+		//try to find a place to put item
+		if(!FindFreePos(pkItem,iTargetPosX,iTargetPosY))
 			return false;
-		}
 		
-		
-		if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
-		{
-			if(!ItemTypeOK(pkPItem->m_iType))
-			{
-				cout<<"Item type not allowed in this container"<<endl;
-				return false;
-			}
-
-			if(!SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
-			{
-				cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
-				return false;
-			}
-			
-			pkItem->SetUseZones(false);				
-			pkItem->SetParent(GetEntity());				
-			
-			
-			//setup joint
-			if(m_strAttachToJoint.empty())
-			{
-				pkItem->SetUpdateStatus(UPDATE_NONE);									
-				//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
-				m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
-			}
-			else
-			{
-				pkItem->SetUpdateStatus(UPDATE_ALL);
-			
-				if(!pkItem->GetProperty("P_LinkToJoint"))
-					pkItem->AddProperty("P_LinkToJoint");
-			
-				if(P_LinkToJoint* pkLTJ = (P_LinkToJoint*)pkItem->GetProperty("P_LinkToJoint"))
-				{
-					pkLTJ->SetLinkEntity(GetEntity()->GetParent()->GetEntityID());
-					pkLTJ->SetJoint(m_strAttachToJoint);
-				}					
-			}
-			
-			//set item's owned by setting
-			pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
-			
-			//set container owner setting
-			if(P_Container* pkCon = (P_Container*)pkItem->GetProperty("P_Container"))
-			{
-				pkCon->SetOwnerID(m_iOwnerID);
-			}
-			//Print();
-			
+		if(AddItemAtPos(pkItem,iTargetPosX,iTargetPosY,iCount))
 			return true;
-		}
-		else
-			cout<<"WARNING: trying to add item that does not have any P_DMItem property"<<endl;
 	}
 	else
-		cout<<"WARNING: trying to add item that does not exist"<<endl;			
+	{
+		if(AddItemAtPos(pkItem,iX,iY,iCount))
+			return true;			
+	}
 
 	
 	return false;
 }
 
-bool P_Container::AddItem(int iID)
+bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 {
-	if(HaveItem(iID))
+	Entity* pkItemEnt = pkItem->GetEntity();
+
+	//stack and return if possible
+	if(StackItem(pkItem,iX,iY,iCount))
+		return true;			
+
+
+	//no stacking, lets add item here	
+	if(!IsFree(iX,iY,pkItem->m_iSizeX,pkItem->m_iSizeY))
 	{
-		cout<<"Item already in container"<<endl;
+		cout<<"position not free"<<endl;
 		return false;
 	}
 		
-	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+	//get current container, if any, and clear item from its current position
+	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
 	{
-		if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+		pkContainer->ClearItem(pkItemEnt->GetEntityID());
+	}
+	
+	//set item on its new position
+	SetItem(pkItem,iX,iY);
+	
+		
+	//setup item ----------------------------------
+	
+	//set item's owned by setting
+	pkItem->m_iInContainerID = GetEntity()->GetEntityID();	
+	
+	//rebind entity
+	pkItemEnt->SetUseZones(false);				
+	pkItemEnt->SetParent(GetEntity());				
+	
+	
+	//setup joint
+	if(m_strAttachToJoint.empty())
+	{
+		pkItemEnt->SetUpdateStatus(UPDATE_NONE);									
+		//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
+		m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItemEnt->GetEntityID());
+	}
+	else
+	{
+		pkItemEnt->SetUpdateStatus(UPDATE_ALL);
+	
+		if(!pkItemEnt->GetProperty("P_LinkToJoint"))
+			pkItemEnt->AddProperty("P_LinkToJoint");
+	
+		if(P_LinkToJoint* pkLTJ = (P_LinkToJoint*)pkItemEnt->GetProperty("P_LinkToJoint"))
 		{
-			int iW = pkPItem->m_iSizeX;
-			int iH = pkPItem->m_iSizeY;			
-			
-			//go trough all possible possitions
-			for( int iCY = 0;iCY<m_iSizeY;iCY++)
+			pkLTJ->SetLinkEntity(GetEntity()->GetParent()->GetEntityID());
+			pkLTJ->SetJoint(m_strAttachToJoint);
+		}					
+	}
+	
+	//set container owner setting
+	if(P_Container* pkCon = (P_Container*)pkItemEnt->GetProperty("P_Container"))
+	{
+		pkCon->SetOwnerID(m_iOwnerID);
+	}
+	
+	
+	return true;
+}
+
+bool P_Container::IsFree(int iX,int iY,int iW,int iH)
+{
+	for(int y = iY ;y < iY+iH;y++)
+	{	
+		for(int x = iX ;x< iX+iW;x++)
+		{
+			if(int* i = GetItem(x,y))
 			{
-				for( int iCX = 0;iCX<m_iSizeX;iCX++)
-				{
-					bool bFree=true;
-					//check if this space is free + W & H
-					for(int iYP = iCY ;iYP < iCY+iH;iYP++)
-					{	
-						for(int iXP = iCX ;iXP< iCX+iW;iXP++)
-						{
-							if(int* i = GetItem(iXP,iYP))
-							{
-								if(*i != -1)
-									bFree = false;
-							}		
-							else
-								bFree = false;				
-						}
-					}	
-					
-					//looks like this space is free lets try to add the item here
-					if(bFree)
-					{
-						return AddItem(iID,iCX,iCY);
-					}
-				}
+				if(*i != -1)
+					return false;
 			}
+			else
+				return false;
 		}
 	}
 	
-	cout<<"no free space"<<endl;
+	return true;
+}	
+	
+
+
+bool P_Container::FindFreePos(P_Item* pkItem,int& iX,int& iY)
+{	
+	int iW = pkItem->m_iSizeX;
+	int iH = pkItem->m_iSizeY;			
+	bool bStackable = false;	
+	
+	if(pkItem->m_iStackMax > 1)
+		bStackable = true;
+	
+	
+	//frist try to find a stackable position	
+	if(bStackable)
+	{
+		set<int>	kItemIDs;
+	
+		//find all individual item ids
+		for( int i = 0;i<m_kSlots.size();i++)
+		{
+			if(m_kSlots[i] != -1)
+				kItemIDs.insert(m_kSlots[i]);
+		}
+		
+		for(set<int>::iterator it=kItemIDs.begin();it!=kItemIDs.end();it++)
+		{
+			if(P_Item* pkSlotItem = (P_Item*)m_pkEntMan->GetPropertyFromEntityID(*it,"P_Item"))
+			{
+				if(CanStack(pkSlotItem,pkItem))
+				{
+					iX = pkSlotItem->m_iInContainerPosX;
+					iY = pkSlotItem->m_iInContainerPosY;
+					return true;
+				}		
+			}				
+		}
+	}
+		
+		
+	//go trough all possible possitions
+	for( int iCY = 0;iCY<m_iSizeY;iCY++)
+	{
+		for( int iCX = 0;iCX<m_iSizeX;iCX++)
+		{
+			if(IsFree(iCX,iCY,iW,iH))
+			{
+				iX = iCX;
+				iY = iCY;
+				return true;				
+			}		
+		}
+	}
+		
+
+	return false;
+}
+
+
+bool P_Container::CanStack(P_Item* pkTarget,P_Item* pkItem)
+{
+	if(pkTarget->m_strName == pkItem->m_strName)
+		if(pkTarget->m_iStackMax - pkTarget->m_iStackSize > 0)
+			return true;
+	
 	
 	return false;
 }
@@ -384,15 +521,6 @@ bool P_Container::RemoveItem(int iID)
 	m_pkEntMan->Delete(iID);
 	
 	return true;
-}
-
-bool P_Container::RemoveItem(int iX,int iY)
-{
-	int* i = GetItem(iX,iY);
-	if(i)
-		return RemoveItem(*i);
-	
-	return false;
 }
 
 bool P_Container::DropItem(int iID,const Vector3& kPos)
@@ -432,80 +560,7 @@ bool P_Container::DropItem(int iID,const Vector3& kPos)
 	return false;
 }
 
-void P_Container::DropAll(const Vector3& kPos)
-{
-	for( int iY = 0;iY<m_iSizeY;iY++)
-	{
-		for( int iX = 0;iX<m_iSizeX;iX++)
-		{	
-			int* i = GetItem(iX,iY);
-		
-			if(*i != -1)
-			{
-				DropItem(*i,kPos);
-			}
-		}
-	}
-}
 
-bool P_Container::MoveItem(int iID,P_Container* pkDest,int iX,int iY)
-{
-	if(HaveItem(iID))
-	{
-		if(pkDest->AddItem(iID,iX,iY))
-		{
-			ClearItem(iID);
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-bool P_Container::MoveItem(int iID,P_Container* pkDest)
-{
-	if(HaveItem(iID))
-	{
-		if(pkDest->AddItem(iID))
-		{
-			ClearItem(iID);
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-bool P_Container::MoveItem(int iID,int iX,int iY)
-{
-	if(HaveItem(iID))
-	{
-		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
-		{
-			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
-			{	
-				int oldx,oldy;
-				GetItemPos(iID,oldx,oldy);
-		
-				ClearItem(iID);
-		
-				if(SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
-				{
-					return true;				
-				}
-				else
-				{
-					if(!SetItem(pkPItem,oldx,oldy,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
-						cout<<"ERROR: item's size has changed since added to container"<<endl;
-				
-					return false;
-				}
-			}
-		}
-	}
-	
-	return false;
-}
 
 void P_Container::GetItemList(vector<MLContainerInfo>* pkItemList)
 {
@@ -702,19 +757,22 @@ void P_Container::FindMyItems()
 				}
 			
 			
-				if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
+				if(!AddMove(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY,-1))
 				{
 					cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
-					AddItem(kEntitys[i]->GetEntityID());					
+					AddMove(kEntitys[i]->GetEntityID(),-1,-1,-1);									
 				}
+				
+				/*	
+					if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
+					{
+						cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
+						AddItem(kEntitys[i]->GetEntityID());					
+				}*/
 			}			
 		}
 	}
 }
-
-
-
-
 
 
 
@@ -749,7 +807,7 @@ namespace SI_P_Container
 				if(Entity* pkEnt = g_pkObjMan->CreateEntityFromScript(czItemName))
 				{
 					//try adding it to the container
-					if(pkCP->AddItem(pkEnt->GetEntityID()))
+					if(pkCP->AddMove(pkEnt->GetEntityID(),-1,-1,-1))
 					{
 						//cout<<"created "<<czItemName<<" in container "<<iContainerID<<endl;
 						return 0;

@@ -4,9 +4,8 @@
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
 #include <vector>
-#include "p_container.h"
-#include "p_item.h"
 
+class P_Item;
 
 using namespace std;
 
@@ -58,27 +57,31 @@ class MCOMMON_API P_Container: public Property
 		EntityManager*	m_pkEntMan;
 	
 		vector<int>		m_kSlots;				//slots
-		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
+		vector<int>		m_kItemTypes;			//contains item types that can be put in this container, empty = all 
 				
 		int				m_iSizeX;				//width
 		int				m_iSizeY;				//height
-		int				m_iMaxItems;
-		int				m_iContainerType;
-		
-		int				m_iOwnerID;
-		bool				m_bStaticOwner;
-		
-		string			m_strAttachToJoint;
-		
-		bool				m_bFirstUpdate;
+		int				m_iMaxItems;			//max number of items that can fit in container
+		int				m_iContainerType;		//type of container
+		int				m_iOwnerID;				//wich character, if any, owns this container
+		bool				m_bStaticOwner;		//shuld owner change?
+		string			m_strAttachToJoint;	//want items in container to be attached to any coint on the container owner
+		bool				m_bFirstUpdate;		//first update, hack to load items
 		
 				
-		bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
+		bool StackItem(P_Item* pkItem,int iX,int iY,int iCount);		
+		bool SetItem(P_Item* pkItem,int iX,int iY);
+		void ClearItem(int iID);			
+		bool IsFree(int iX,int iY,int iW,int iH);
+		bool AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount);
+		
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
-		void ClearItem(int iID);	
 		bool ItemTypeOK(int iType);				
 	
+		bool FindFreePos(P_Item* pkItem,int& iX,int& iY);		
+		bool CanStack(P_Item* pkTarget,P_Item* pkItem);
+		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 		
@@ -98,35 +101,23 @@ class MCOMMON_API P_Container: public Property
 		void SetSize(int iX,int iY);
 		char GetSizeX()								{return char(m_iSizeX);};
 		char GetSizeY()								{return char(m_iSizeY);};
-
 		int  GetOwnerID()								{return m_iOwnerID;};
-		void SetOwnerID(int iOwner)				{m_iOwnerID = iOwner;};						
-		
+		void SetOwnerID(int iOwner)				{m_iOwnerID = iOwner;};								
 		void SetStaticOwner(bool bStatic)		{m_bStaticOwner = bStatic;};
-
 		void SetJoint(const string& strBone)	{m_strAttachToJoint = strBone;};
 		string GetJoint()								{return m_strAttachToJoint;};
-						
-		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
-		void ClearItemTypes() 						{m_kItemTypes.clear();};		
-		
 		void SetMaxItems(int iItems) 				{m_iMaxItems = iItems;}; 
-		
 		void SetContainerType(int iType)			{m_iContainerType = iType;};
 		int  GetContainerType()						{return m_iContainerType;};
-		
+						
+		//type management
+		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
+		void ClearItemTypes() 						{m_kItemTypes.clear();};				
 		
 		//item management
-		bool MoveItem(int iID,int iX,int iY);
-		bool MoveItem(int iID,P_Container* pkDest,int iX,int iY);
-		bool MoveItem(int iID,P_Container* pkDest);
-		
-		bool AddItem(int iID,int iX,int iY);
-		bool AddItem(int iID);
-		bool DropItem(int iID,const Vector3& kPos);
-		void DropAll(const Vector3& kPos);		
+		bool AddMove(int iID,int iX,int iY,int iCount);
+		bool DropItem(int iID,const Vector3& kPos);		
 		bool RemoveItem(int iID);
-		bool RemoveItem(int iX,int iY);
 		
 		int HaveItem(const string strItemName);		
 				

@@ -1,9 +1,9 @@
 #include "p_item.h"
-#include "p_clientcontrol.h"
-#include "../zerofpsv2/engine/entity.h"
-#include "../zerofpsv2/engine/entitymanager.h"
-#include "../zerofpsv2/engine/zerofps.h"
-#include "p_charstats.h"
+
+//#include "../zerofpsv2/engine/entity.h"
+//#include "../zerofpsv2/engine/entitymanager.h"
+//#include "../zerofpsv2/engine/zerofps.h"
+//#include "p_charstats.h"
 
 
 P_Item::P_Item()
