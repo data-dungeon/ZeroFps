@@ -823,6 +823,8 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 	if(!bSkip)
 	{
+      int test = 2;
+
 		unsigned int uiSzLength=0;
 		if(m_strText)
 			uiSzLength = strlen(m_strText); 
