@@ -127,8 +127,9 @@ void Test::OnInit(void) {
 	pkCollisionMan->Add(kul);
 	
 	
-	CollisionHeightMap *testcmap=new CollisionHeightMap(test);
-//	pkCollisionMan->Add(testcmap);
+	CollisionProperty *hmcolprop=new CollisionProperty(test);
+//	CollisionHeightMap *testcmap=new CollisionHeightMap(test);
+	pkCollisionMan->Add(hmcolprop);
 	
 
 }

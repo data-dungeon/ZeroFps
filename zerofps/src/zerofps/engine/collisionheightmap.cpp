@@ -26,7 +26,6 @@ bool CollisionHeightMap::Collide(CollisionObject *kOther,bool bContinue)
 
 bool CollisionHeightMap::CollideSphere(CollisionSphere *pkCs){
 
-
 	return false;
 }
 

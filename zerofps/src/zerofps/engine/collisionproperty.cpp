@@ -24,6 +24,14 @@ CollisionProperty::CollisionProperty(Vector3 *kPos)
 	Init();
 }
 
+CollisionProperty::CollisionProperty(HeightMap *pkHeightMap) 
+{	
+	m_pkColObject=new CollisionHeightMap(pkHeightMap);
+	Init();
+}
+
+
+
 CollisionProperty::~CollisionProperty() {
 //	cout<<"tarbort collision property"<<endl;
 	if(m_pkCollisionMan!=NULL){

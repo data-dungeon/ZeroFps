@@ -4,6 +4,7 @@
 #include "property.h"
 #include <iostream>
 
+#include "../basic/basic.pkg"
 #include "objects.pkg"
 #include "collisionmanager.h"
 
@@ -19,6 +20,7 @@ class ENGINE_API CollisionProperty:public Property{
 		CollisionProperty(Vector3 kPos);
 		CollisionProperty(Vector3 *kPos,float *iRadius);
 		CollisionProperty(Vector3 *kPos);
+		CollisionProperty(HeightMap *pkHeightMap);
 	
 		~CollisionProperty();
 
