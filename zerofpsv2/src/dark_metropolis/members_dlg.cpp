@@ -45,6 +45,8 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 
 	Entity* pkHQObject = GetDMObject(HQ);
 
+	SetText("CurrentMemberNumberLabel", "");
+
 	switch(eType)
 	{
 		case HQ_EQUIP_MEMBERS:
@@ -76,6 +78,19 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 		case IN_GAME:
 			ShowWnd("MembersEquipBn", false); // dölj equip knappen
 			ShowWnd("MembersDropItemBn", true); // visa drop knappen
+
+			m_kMembersInField.clear(); 
+			GetAllAgentsInField(m_kMembersInField);
+
+			m_iCurrentCharacterPage = 0;
+
+			if(!m_kMembersInField.empty())
+			{
+				char text[50];
+				sprintf(text, "Agent %i", m_kMembersInField[0]->iNetWorkID);
+				SetText("CurrentMemberNumberLabel", text);
+			}
+
 			break;
 	}
 }
@@ -83,7 +98,9 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 void CMembersDlg::SwitchCharacter(bool bNext)
 {
 	Entity* pkHQObject = GetDMObject(HQ);
-	
+	vector<int> vkCharsInBase;
+	char text[50];
+
 	switch(m_eWidowMode)
 	{
 	case HQ_EQUIP_MEMBERS:
@@ -93,9 +110,8 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 			return;
 		}
 
-		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
-
-		vector<int> vkCharsInBase;
+		P_DMHQ* pkHQ;
+		pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
 		pkHQ->GetCharacters(&vkCharsInBase);
 
 		printf("There are %i chars in the base\n",
@@ -115,10 +131,27 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 				m_iCurrentCharacterPage--;
 		}
 
-		char text[50];
 		sprintf(text, "Agent %i", vkCharsInBase[m_iCurrentCharacterPage]);
 		SetText("CurrentMemberNumberLabel", text);
-
 		break;
+
+	case IN_GAME:
+
+		if(bNext)
+		{
+			if(m_iCurrentCharacterPage < m_kMembersInField.size()-1)
+				m_iCurrentCharacterPage++;
+		}
+		else
+		{
+			if(m_iCurrentCharacterPage > 0)
+				m_iCurrentCharacterPage--;
+		}
+
+		sprintf(text, "Agent %i", 
+			m_kMembersInField[m_iCurrentCharacterPage]->iNetWorkID);
+		SetText("CurrentMemberNumberLabel", text);
+		break;
+
 	}
 }

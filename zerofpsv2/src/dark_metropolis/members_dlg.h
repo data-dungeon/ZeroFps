@@ -34,5 +34,7 @@ private:
 
 	int m_iCurrentCharacterPage;
 
+	vector<Entity*> m_kMembersInField;
+
 	// void AddSlot(int 
 };
