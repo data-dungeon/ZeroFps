@@ -584,7 +584,10 @@ int DMLua::SetVarLua (lua_State* pkLua)
 	Entity* pkHQ = GetHQEntity();
 
 	if ( pkHQ != 0 )
-		pkHQ->SetVarDouble(string(cKey), dValue);
+	{
+		string strTemp = cKey;
+		pkHQ->SetVarDouble(strTemp, dValue);
+	}
 	else
 		cout << "Warning! DMLua::SetVarLua: No HQ object found." << endl;
 
@@ -621,7 +624,8 @@ int DMLua::GetVarLua (lua_State* pkLua)
 
 	if ( pkHQ != 0 )
 	{
-		EntityVariable* pkEV = pkHQ->GetVar(string(cKey));
+		string strTemp = cKey;
+		EntityVariable* pkEV = pkHQ->GetVar(strTemp);
 		dValue = pkEV->m_fValue;
 	}
 	else
@@ -659,7 +663,10 @@ int DMLua::AddToVarLua (lua_State* pkLua)
 	Entity* pkHQ = GetHQEntity();
 
 	if ( pkHQ != 0 )
-		pkHQ->SetVarDouble(string(cKey), pkHQ->GetVar(string(cKey))->m_fValue + dValue);
+	{
+		string strTemp = cKey;
+		pkHQ->SetVarDouble(strTemp, pkHQ->GetVar(strTemp)->m_fValue + dValue);
+	}
 	else
 		cout << "Warning! DMLua::AddToVarLua: No HQ object found." << endl;
 

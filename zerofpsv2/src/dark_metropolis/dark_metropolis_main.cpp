@@ -410,7 +410,13 @@ void DarkMetropolis::Input()
 
 	//check for camera movment
 	float fMx,fMy;
-	m_pkInputHandle->UnitMouseXY(fMx,fMy);
+	if(!m_pkInputHandle->VKIsDown("camera"))
+		m_pkInputHandle->UnitMouseXY(fMx,fMy);
+	else
+	{
+		fMx = 0;
+		fMy = 0;
+	}
 
 	if(m_pkCameraEntity)
 	{
