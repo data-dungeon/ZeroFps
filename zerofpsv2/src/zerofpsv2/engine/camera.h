@@ -94,7 +94,7 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bSelected;
 		int		m_iRenderTarget;
 		bool		m_bClearViewPort;
-		
+		bool		m_bDebugGraphs;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
 		int		m_iEntity;							// ID Of entity that this camera is connected to.
@@ -157,6 +157,9 @@ class ENGINE_API Camera : public I_Camera
 		bool		GetRootOnly()						{	return m_bRootOnly;					}
 		void		SetClearViewPort(bool bClear)	{	m_bClearViewPort = bClear;			}
 		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
+		
+		void		SetDebugGraphs(bool bDebug)	{	m_bDebugGraphs = bDebug;			}
+		bool		GetDebugGraphs()					{	return m_bDebugGraphs;				}
 		
 		Frustum*	GetFrustum()						{	return &m_kFrustum;			}
 		bool	   IsRenderOn()						{	return m_bRender;				}

@@ -661,6 +661,7 @@ void ZeroEd::SetupPreviewWnd(const char* szMadFile)
 	if(m_pkPreviewEntity == NULL)
 	{
 		m_pkPreviewEntity = m_pkEntityManager->CreateEntity();
+		m_pkPreviewEntity->SetSave(false);
 		m_pkPreviewEntity->SetWorldPosV(Vector3(0,0,0));
 		m_pkPreviewEntity->AddProperty("P_LightUpdate");
 		m_pkPreviewEntity->AddProperty("P_Mad");
@@ -669,6 +670,7 @@ void ZeroEd::SetupPreviewWnd(const char* szMadFile)
 			(float) GetWnd("PreviewRenderLabel")->GetScreenRect().Height();
 
 		s_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.0025,250);	
+		s_pkCamera->SetDebugGraphs(false);
 		s_pkCamera->SetClearViewPort(false);  
 		s_pkCamera->SetRootEntityID(m_pkPreviewEntity->GetEntityID());
 		GetWnd("PreviewRenderLabel")->SetRenderTarget(s_pkCamera);
