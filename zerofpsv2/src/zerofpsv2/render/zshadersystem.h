@@ -178,6 +178,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iMaterialBinds;
 		int			m_iSavedReloads;
 		int			m_iGLupdates;
+		int			m_iTotalVertises;
 		
 		//basic
 		void SetupGlobalSettings();
@@ -206,10 +207,12 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int GetMaterialBinds() 		{return m_iMaterialBinds;};
 		int GetSavedReloads() 		{return m_iSavedReloads;};
 		int GetGLupdates() 			{return m_iGLupdates;};
+		int GetTotalVertises() 		{return m_iTotalVertises;};
 		void ResetStatistics() 		{m_iMaterialReloads = 0;
 											m_iMaterialBinds =	0;
 											m_iSavedReloads = 	0;
-											m_iGLupdates = 		0;};
+											m_iGLupdates = 		0;
+											m_iTotalVertises = 	0;};
 		
 		//gl states that is not included in the material
 		void SetColorMask(const bool& bColorMask);

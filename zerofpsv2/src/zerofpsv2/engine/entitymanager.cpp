@@ -106,6 +106,7 @@ bool EntityManager::StartUp()
 	m_pkScript  = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
 	m_pkBasicFS	=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
+	m_pkRender = static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 	
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -1486,10 +1487,6 @@ void EntityManager::Test_DrawZones()
 	if(!m_bDrawZones)
 		return;
 
-	//fuuuuuuuult ..men vem orkar ändra
-	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-
-			
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
 	{
@@ -1501,6 +1498,42 @@ void EntityManager::Test_DrawZones()
 		pkLine->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zonebuild");
 	}		
 		
+	static ZMaterial* pkMatZoneOn = NULL;
+	if(!pkMatZoneOn)
+	{
+		pkMatZoneOn = new ZMaterial;
+		pkMatZoneOn->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOn->GetPass(0)->m_bCullFace = false;		
+		pkMatZoneOn->GetPass(0)->m_bLighting = false;
+		pkMatZoneOn->GetPass(0)->m_bFog = false;
+		pkMatZoneOn->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneOn->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneon");
+	}			
+
+	static ZMaterial* pkMatZoneOff = NULL;
+	if(!pkMatZoneOff)
+	{
+		pkMatZoneOff = new ZMaterial;
+		pkMatZoneOff->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOff->GetPass(0)->m_bCullFace = false;		
+		pkMatZoneOff->GetPass(0)->m_bLighting = false;
+		pkMatZoneOff->GetPass(0)->m_bFog = false;
+		pkMatZoneOff->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneOff->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneoff");
+	}				
+	
+	static ZMaterial* pkMatZoneCache = NULL;	
+	if(!pkMatZoneCache)
+	{
+		pkMatZoneCache = new ZMaterial;
+		pkMatZoneCache->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneCache->GetPass(0)->m_bCullFace = false;		
+		pkMatZoneCache->GetPass(0)->m_bFog = false;
+		pkMatZoneCache->GetPass(0)->m_bLighting = false;
+		pkMatZoneCache->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneCache->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneunloading");
+	}					
+	
 	//draw zones
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
@@ -1513,15 +1546,18 @@ void EntityManager::Test_DrawZones()
 		switch(m_kZones[i].m_iStatus)
 		{
 			case EZS_LOADED:
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
+				m_pkZShaderSystem->BindMaterial(pkMatZoneOn);
+				m_pkRender->DrawAABB( kMin,kMax);
 				break;
 		
 			case EZS_UNLOADED:
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
+				m_pkZShaderSystem->BindMaterial(pkMatZoneOff);
+				m_pkRender->DrawAABB( kMin,kMax);
 				break;
 
 			case EZS_CACHED:
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
+				m_pkZShaderSystem->BindMaterial(pkMatZoneCache);
+				m_pkRender->DrawAABB( kMin,kMax);
 				break;								
 		}
 	}

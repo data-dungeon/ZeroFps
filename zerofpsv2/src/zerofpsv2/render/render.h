@@ -192,6 +192,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
 		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize = 1.0 );
+		void DrawAABB( Vector3 kMin,Vector3 kMax);
 		void DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
 
 		void DrawCircle(vector<Vector3> kCircel, Vector3 kColor);

@@ -18,6 +18,7 @@ bool ZShaderSystem::StartUp()
 	m_iMaterialBinds = 		0;
 	m_iSavedReloads = 		0;
 	m_iGLupdates =				0;
+	m_iTotalVertises = 		0;
 	
 	m_bCopyedData =			false;
 	
@@ -655,9 +656,15 @@ void ZShaderSystem::DrawArray()
 		SetupTUClientStates(0);
 		
 		if(m_pkIndexPointer)
+		{
+			m_iTotalVertises += m_iNrOfIndexes;
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
+		}
 		else
+		{
+			m_iTotalVertises += m_iNrOfVertexs;
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
+		}
 	}
 	else
 	{	
@@ -668,10 +675,15 @@ void ZShaderSystem::DrawArray()
 			SetupTUClientStates(i);
 	
 			if(m_pkIndexPointer)
+			{
+				m_iTotalVertises += m_iNrOfIndexes;
 				glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
+			}
 			else
+			{
+				m_iTotalVertises += m_iNrOfVertexs;
 				glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
-	
+			}	
 		}
 	}
 	

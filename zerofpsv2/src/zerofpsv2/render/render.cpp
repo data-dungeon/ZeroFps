@@ -1268,6 +1268,31 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 	glPopMatrix();
 	
 }
+void Render::DrawAABB( Vector3 kMin,Vector3 kMax)
+{
+	Vector3 kCubeNeg = kMin; 
+	Vector3 kCubePos = kMax; 
+
+	m_pkZShaderSystem->ClearGeometry();
+	
+
+	//botom
+	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMax.x,kMin.y,kMin.z),
+										 Vector3(kMax.x,kMin.y,kMax.z),Vector3(kMin.x,kMin.y,kMax.z));
+	//top
+	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMax.x,kMax.y,kMin.z),
+										 Vector3(kMin.x,kMax.y,kMin.z),Vector3(kMin.x,kMax.y,kMax.z));
+
+	//front
+	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMin.x,kMax.y,kMin.z),
+										 Vector3(kMax.x,kMax.y,kMin.z),Vector3(kMax.x,kMin.y,kMin.z));
+	
+	//back									 										 
+	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMin.x,kMax.y,kMax.z),
+										 Vector3(kMin.x,kMin.y,kMax.z),Vector3(kMax.x,kMin.y,kMax.z));
+										 										 
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+}
 
 void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize )
 {

@@ -85,6 +85,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		NetWork*						m_pkNetWork;
 		ZFBasicFS*					m_pkBasicFS;
 		ZShaderSystem*				m_pkZShaderSystem;
+		Render*						m_pkRender;
 		
 		//base objects
 		Entity*						m_pkWorldObject;											///< Top level entity.

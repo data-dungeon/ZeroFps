@@ -268,12 +268,6 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 /* Code that need to run on both client/server. */
 void ZeroFps::Run_EngineShell()
 {
-
-	/*
-	m_pkObjectMan->PackToClients();
-	m_pkNetWork->Run();
-	*/
-
 	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) 
 	{
@@ -290,6 +284,7 @@ void ZeroFps::Run_EngineShell()
 		}
 	}
 
+	//some devpage stuff
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
@@ -307,6 +302,9 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","MaterialReloads: %d", m_pkZShaderSystem->GetMaterialReloads());
 	DevPrintf("common","SavedReloads   : %d", m_pkZShaderSystem->GetSavedReloads());
 	DevPrintf("common","GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
+	DevPrintf("common","Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
+	DevPrintf("common","Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
+	
 	m_pkZShaderSystem->ResetStatistics();
 	
 	// Update Local Input.
