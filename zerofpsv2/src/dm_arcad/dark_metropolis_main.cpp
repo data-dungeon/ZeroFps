@@ -78,7 +78,7 @@ void DarkMetropolis::OnInit()
 
 	//setup system speed
 	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->m_fSimTimeScale = 1.0;
+	m_pkObjectMan->m_fSimTimeScale = 0.5;
 	
 	//set tracker los
 	m_pkObjectMan->SetTrackerLos(5);
@@ -802,14 +802,14 @@ void DarkMetropolis::PauseGame(bool bPause)
 {
 	if(bPause)
 	{
-		GetSystem().RunCommand("set e_runsim 0",CSYS_SRC_SUBSYS);
-		GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
+//		GetSystem().RunCommand("set e_runsim 0",CSYS_SRC_SUBSYS);
+//		GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
 		m_eGameMode = PAUSED;
 	}
 	else
 	{
-		GetSystem().RunCommand("set e_runsim 1",CSYS_SRC_SUBSYS);
-		GetSystem().RunCommand("set e_simspeed 1.0",CSYS_SRC_SUBSYS);
+//		GetSystem().RunCommand("set e_runsim 1",CSYS_SRC_SUBSYS);
+//		GetSystem().RunCommand("set e_simspeed 1.0",CSYS_SRC_SUBSYS);
 		m_eGameMode = ACTIVE;
 	}
 }

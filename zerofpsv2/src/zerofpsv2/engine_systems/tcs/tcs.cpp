@@ -93,9 +93,12 @@ void Tcs::Update(float fAlphaTime)
 		return;
 	
 	//make sure alpha time is not to small
-	if(fAlphaTime > 0.1) 
-		fAlphaTime = 0.1; 
-			
+/*	if(fAlphaTime > 0.02) 
+	{
+		cout<<"slow:"<<fAlphaTime<<endl;
+		fAlphaTime = 0.02; 
+	}
+	*/		
 		
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
@@ -176,6 +179,8 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 					m_kBodys[i]->m_bOnGround = true;
 					m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
+					//if(m_kBodys[i]->m_kWalkVel.Length() == 0)
+					//	m_kBodys[i]->m_kLinearVelocity.Set(0,0,0);
 				}			
 				else
 					m_kBodys[i]->m_bOnGround = false;			
@@ -183,8 +188,11 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 				//add breaks to character :D					
 				float fOld = m_kBodys[i]->m_kLinearVelocity.y;
-				m_kBodys[i]->m_kLinearVelocity -= 5*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
+				m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
+				
+				//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
 				m_kBodys[i]->m_kLinearVelocity.y = fOld;
+				
 			}
 		}
 	}

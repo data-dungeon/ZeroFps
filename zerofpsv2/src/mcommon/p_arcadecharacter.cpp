@@ -9,7 +9,7 @@ P_ArcadeCharacter::P_ArcadeCharacter()
 
 	bNetwork = true;
 
-	m_fSpeed = 20;
+	m_fSpeed = 100;
 	m_kDir.Set(0,0,-1);
 	m_kAim.Set(0,0,-1);
 	m_iTarget	= -1;
@@ -25,7 +25,7 @@ P_ArcadeCharacter::~P_ArcadeCharacter()
 void P_ArcadeCharacter::Init()
 {
 	cout<< "New character created"<<endl;
-
+	GetObject()->SetInterpolate(true);
 
 }
 
@@ -70,7 +70,7 @@ void P_ArcadeCharacter::Update()
 		kRot.Transponse();
 		GetObject()->SetLocalRotM(kRot);
 */		
-			
+
 		//move character
 		Vector3 kVel(0,0,0);	
 		if(m_kActions[0])
@@ -109,6 +109,8 @@ void P_ArcadeCharacter::Update()
 	{
 		Fire();
 	}
+	
+
 }
 
 void P_ArcadeCharacter::Fire()
@@ -125,7 +127,7 @@ void P_ArcadeCharacter::Fire()
 
 Vector3 P_ArcadeCharacter::AutoAim()
 {
-	vector<Entity*> kObjects;		
+	vector<Entity*> kObjects;	
 	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
 	
 
@@ -171,12 +173,16 @@ Vector3 P_ArcadeCharacter::AutoAim()
 		Vector3 kPos = kStart+kDir * closest;
 		kPos.y = pkClosest->GetWorldPosV().y;
 	
-		//float fY = (pkClosest->GetWorldPosV() - kStart).Unit();
-	
-		m_kAim = (kPos - m_pkObject->GetWorldPosV()).Unit();
+		m_kAim = kPos - m_pkObject->GetWorldPosV();
+		
+		if(m_kAim.Length() == 0)
+			m_kAim.Set(0,0,1);
+		else
+			m_kAim.Unit();
+			
+			
 		m_iTarget = pkClosest->GetEntityID();
 		
-	//	cout<<"found"<<endl;
 	}
 }
 
