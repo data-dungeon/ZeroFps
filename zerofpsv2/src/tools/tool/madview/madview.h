@@ -24,6 +24,8 @@ class MadView :public Application , public ZGuiApp
 			FID_OPENMAD,
 			FID_OBJECTROTATIONMODE,
 			FID_OBJECTROTATIONSPEED,
+			FID_MAD_DRAW_MODE,
+			FID_CHANGE_BKCOLOR_INFOWND,
 		};
 
 		enum ObjectRotationMode_e
@@ -85,6 +87,7 @@ class MadView :public Application , public ZGuiApp
 		// common
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void CreateViewObject();
+		void ChangeMad(string strName);
 				
 	public:
 

@@ -124,6 +124,8 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
+	ZGuiWnd* GetMenu() { return m_pkActiveMenu; }
+
 	void SetLineColor(int r, int g, int b);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
 	bool UnregisterWindow(ZGuiWnd* pkWindow);

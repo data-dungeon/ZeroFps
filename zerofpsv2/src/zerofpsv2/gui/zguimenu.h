@@ -44,6 +44,9 @@ public:
 
 	void ResizeMenu();
 
+	bool IsOpen();
+	bool IsMenuItem(ZGuiWnd* pkButton);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
@@ -69,6 +72,8 @@ private:
 	static int s_iMenuIDCounter;
 
 	bool m_bNeedToResize;
+
+	bool m_bIsOpen;
 
 };
 

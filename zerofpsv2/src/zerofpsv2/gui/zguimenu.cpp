@@ -18,6 +18,7 @@ const int MENU_ITEM_HEIGHT = 20;
 ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_bIsOpen = false;
 	m_bEnabled = true;
 	m_bNeedToResize = true;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
@@ -40,7 +41,7 @@ ZGuiMenu::~ZGuiMenu()
 
 bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 {
-	if(iCode == NCODE_CLICK_UP) // NCODE_OVER_CTRL
+	if(iCode == NCODE_CLICK_DOWN) // NCODE_OVER_CTRL
 	{
 		int iMenuID = pkWindow->GetID();
 
@@ -50,6 +51,8 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 			{
 				if(m_vkItems[i]->bOpenSubMenu)
 				{
+					m_bIsOpen = true;
+
 					if(m_vkItems[i]->pkParent == NULL)
 						HideAll();
 
@@ -60,9 +63,38 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 							res->second = !res->second;
 
 					OpenSubMenu(pkSubMenu, res->second);
+
+					Resize(GetScreenRect().Width(), 500);
+					/*GetGUI()->PlaceWndFrontBack(m_vkItems[i]->pkButton->GetParent(), true);
+					GetGUI()->PlaceWndFrontBack(this, true);*/
+
 				}
 				else
 				{
+
+					Resize(GetScreenRect().Width(), 20);
+
+					m_bIsOpen = false;
+
+
+		// Skicka ett Command medelande till valt fönster.
+		int* pkParams = new int[2];
+		int id = iMenuID; // control id
+		pkParams[0] = id;
+		pkParams[1] = 0;
+
+		ZGuiWnd* pkMain = this;
+
+		if(pkMain == NULL)
+			pkMain = GetGUI()->GetActiveMainWnd();
+
+		GetGUI()->GetActiveCallBackFunc()(pkMain,ZGM_COMMAND, 2, pkParams);
+
+		delete[] pkParams;
+
+
+
+
 					HideAll();
 				}
 
@@ -234,6 +266,7 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 	new_item->pkButton->SetText((char*) szText, false); 
 	new_item->pkButton->m_bCenterTextHorz = false;
 
+
 	new_item->pkButton->SetID(s_iMenuIDCounter++);
 
 	new_item->bOpenSubMenu = bOpenSubMenu;
@@ -326,7 +359,10 @@ void ZGuiMenu::OpenSubMenu(ZGuiMenuItem* pkSubMenu, bool bOpen)
 		}
 
 		if(bShow)
+		{			
+			
 			m_vkItems[i]->pkButton->Show();
+		}
 		else
 		{
 			m_vkItems[i]->pkButton->Hide();
@@ -503,8 +539,18 @@ void ZGuiMenu::ResizeMenu()
 
 
 
+bool ZGuiMenu::IsOpen()
+{
+	return m_bIsOpen;
+}	
 
+bool ZGuiMenu::IsMenuItem(ZGuiWnd* pkButton)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkButton == pkButton)
+			return true;
+	}
 
-
-
-
+	return false;
+}

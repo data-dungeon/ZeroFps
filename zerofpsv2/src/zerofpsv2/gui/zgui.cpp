@@ -312,7 +312,6 @@ bool ZGui::Render(int fps)
 	if(!m_bRenderEnabled)
 		return true;
 
-
 	m_pkRenderer->StartRender();
 	
 	// Blit windows with lowest z order first.
@@ -357,6 +356,10 @@ bool ZGui::Render(int fps)
 		 if(pkWnd && pkWnd->IsVisible() ) 
 			 pkWnd->Render(m_pkRenderer);
 	 }
+
+	 // Draw active menu on top
+	 if(m_pkActiveMenu)
+		 m_pkActiveMenu->Render(m_pkRenderer); 
 
 	// Draw cursor
 	if(!m_bUseHardwareMouse && m_pkCursor->IsVisible())

@@ -61,7 +61,9 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
-	
+	Register_Cmd("mad_draw_mode", FID_MAD_DRAW_MODE);	
+	Register_Cmd("change_bkcolor_infownd", FID_CHANGE_BKCOLOR_INFOWND);	
+
 	m_strMadFile = "data/mad/cube.mad";
 	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING);
 	
@@ -206,9 +208,7 @@ void MadView::CreateViewObject()
 	m_pkViewObject = m_pkEntityManager->CreateEntity();
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
 
-	P_Mad* pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
-	pkMad->SetBase(m_strMadFile.c_str());
-	pkMad->SetScale(1);
+	ChangeMad(m_strMadFile.c_str());
 
 	m_pkViewObject->AddProperty("P_LightUpdate");
 
@@ -220,6 +220,8 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_OPENMAD:
+			GetWnd("MadViewInfoWnd")->Hide();
+			GetWnd("AnimationFileTree")->Hide();
 			ShowWnd("SelectFileWnd", true);
 			break;
 
@@ -244,6 +246,38 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(speed == 1) m_fObjRotDelay = 0.100f;
 			if(speed == 2) m_fObjRotDelay = 0.009f;
 			if(speed == 3) m_fObjRotDelay = 0.002f;
+			break;
+
+		case FID_MAD_DRAW_MODE:
+			int mode;
+			mode = atoi(kCommand->m_kSplitCommand[1].c_str());		
+
+			if(m_pkZeroFps->m_iMadDraw & mode)
+				m_pkZeroFps->m_iMadDraw ^= mode;
+			else
+				m_pkZeroFps->m_iMadDraw |= mode;
+
+			break;
+
+		case FID_CHANGE_BKCOLOR_INFOWND:
+			
+			static bool toogle = true;
+
+			if(toogle)
+			{
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[0] = 0.25f;
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[1] = 0.25f;
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[2] = 0.25f;
+			}
+			else
+			{
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[0] = 0.0f;
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[1] = 0.0f;
+				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[2] = 0.0f;		
+			}
+
+			toogle = !toogle;
+			
 			break;
 	}
 }

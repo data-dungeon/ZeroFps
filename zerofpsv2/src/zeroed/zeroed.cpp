@@ -356,6 +356,11 @@ void ZeroEd::Init()
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
 
+	//Entity* test = m_pkEntityManager->CreateEntityFromScript("data/script/objects/weapons/t_sword.lua");
+	//test->SetWorldPosV(Vector3(0,2,2)); 
+	//test->SetParent( m_pkEntityManager->GetWorldEntity() ); 
+	//test->AddProperty("P_LightUpdate");
+
 }
 
 void ZeroEd::OnServerStart(void)

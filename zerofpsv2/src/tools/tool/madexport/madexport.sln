@@ -1,13 +1,13 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "madexport", "madexport.vcproj", "{C5C2EDA9-F3F2-4EFF-ADC3-A1EC982D1076}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug Maya 5
-		ConfigName.2 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		Debug = Debug
+		Debug Maya 5 = Debug Maya 5
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{C5C2EDA9-F3F2-4EFF-ADC3-A1EC982D1076}.Debug.ActiveCfg = Debug|Win32

@@ -21,6 +21,7 @@ void MadView::SetupGuiEnviroment()
 		m_pkTexMan->Load("data/textures/gui/tn_po.tga", 0);
 
 	GetWnd("SelectFileWnd")->m_bUseAlhpaTest = false;
+	GetWnd("MadViewInfoBkWnd")->Disable();
 }
 
 void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -63,6 +64,8 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 		if(strMainWnd == "MainMenu")
 		{
+			GetWnd("MadViewInfoWnd")->Disable();
+
 			if(!m_pkIni->Open("data/script/gui/menu_madview.txt", false))
 			{
 				cout << "Failed to load ini file for menu!\n" << endl;
@@ -79,12 +82,16 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
 					m_pkZeroFps->m_pkConsole->Execute(cmd);
-
+					GetWnd("MadViewInfoWnd")->Enable();
 					break;
 				}
 			}
 
 			m_pkIni->Close();
+		}
+		else
+		{
+			GetWnd("MadViewInfoWnd")->Enable();
 		}
 	}
 }
@@ -134,18 +141,73 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		if(strFullpath.find(".mad") != string::npos)
 		{
-			m_strMadFile = strFullpath;
-
-			P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
-			pkMad->SetBase(m_strMadFile.c_str());
-			pkMad->SetScale(1);
-
+			ChangeMad(strFullpath);
 			ShowWnd("SelectFileWnd", false); // close window
+			GetWnd("MadViewInfoWnd")->Show();
+			GetWnd("AnimationFileTree")->Show();
 		}
+	}
+	else
+	if(strcmp(szTreeBox, "AnimationFileTree") == 0)
+	{
+		P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");		
+		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+
+		if(szClickNodeText)
+			pkMad->SetAnimation(szClickNodeText, 0);
 	}
 }
 
 void MadView::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 {
 	
+}
+
+void MadView::ChangeMad(string strName)
+{
+	m_strMadFile = strName;
+
+	P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
+
+	if(pkMad == NULL)
+	{
+		pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
+	}
+
+	pkMad->SetBase(m_strMadFile.c_str());
+	pkMad->SetScale(1);
+
+	char szText[100];
+
+	sprintf(szText, "Name: %s", m_strMadFile.c_str());
+	SetText("MadNameLabel", szText);
+
+	sprintf(szText, "Vertices: %i", pkMad->GetNumVertices());
+	SetText("NumVertsLabel", szText);
+
+	sprintf(szText, "Faces: %i", pkMad->GetNumFaces());
+	SetText("NumFacesLabel", szText);
+
+	((ZGuiTreebox*)GetWnd("AnimationFileTree"))->Clear(); 
+
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+	int iNumAnimations = pkCore->GetNumOfAnimations();
+
+	sprintf(szText, "Bones: %i", pkCore->GetNumOfBones());
+	SetText("NumBonesLabel", szText);
+	
+	sprintf(szText, "Animations (%i)", iNumAnimations);
+	AddTreeItem("AnimationFileTree", "Animations", "RootNode", szText, 1, 2);
+
+	if(iNumAnimations > 0)
+	{
+		printf("Num animations = %i\n", pkCore->GetNumOfAnimations());
+
+		for(int i=0; i<pkCore->GetNumOfAnimations(); i++)
+		{
+			string strName = pkCore->GetAnimationName(i); 
+			AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
+		}
+	}
+
 }

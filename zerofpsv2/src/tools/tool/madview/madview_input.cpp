@@ -53,8 +53,12 @@ void MadView::Input()
 	}
 	
 	m_pkCameraObject->SetWorldPosV(kCamerPos);
+	
+	char szText[100];
+	sprintf(szText, "Camera: X:%.2f, Y:%.2f, Z:%.2f", kCamerPos.x, kCamerPos.y, kCamerPos.z);
 
-	//printf("kCamerPos = %f, %f, %f\n", kCamerPos.x, kCamerPos.y, kCamerPos.z);
+	SetText("CameraPosLabel", szText);
+
 };
 
 //	Return 3D postion of mouse in world.
