@@ -944,7 +944,7 @@ void ZGui::FormatKey(int &iKey)
 
 	#endif // #ifdef WIN32
 
-	#ifdef LINUX
+	#ifndef WIN32
 
 		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
 		{
@@ -990,7 +990,7 @@ void ZGui::FormatKey(int &iKey)
 				iKey = '´';
 		}	
 
-	#endif // #ifdef LINUX
+	#endif // #ifndef LINUX
 }
 
 bool ZGui::RunKeyCommand(int iKey)
