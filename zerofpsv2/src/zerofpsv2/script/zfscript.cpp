@@ -641,12 +641,7 @@ bool ZFScript::Create(string strName)
 
 	pkScriptSys->CopyGlobalData(&m_pkLuaState);
 
-	return pkScriptSys->Run(this); 
-
-/*	if(!pkScriptSys->RunScript(m_szScriptName))
-		return false;*/
-
-	return true;
+	return pkScriptSys->Run(this);
 }
 
 

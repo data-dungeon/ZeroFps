@@ -52,6 +52,7 @@ ObjectManager::ObjectManager()
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
+	m_pScriptFileHandle		= NULL;
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
@@ -102,6 +103,9 @@ ObjectManager::~ObjectManager()
 		}
 
 	Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
+
+	// Obs! Här skall resursen laddas ur, går dock inte pga timeout expire.
+	//delete m_pScriptFileHandle;
 
 }
 
@@ -323,14 +327,20 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 
 Object* ObjectManager::CreateObjectFromScript(const char* acName)
 {
+	if(m_pScriptFileHandle)
+		delete m_pScriptFileHandle;
+
+	m_pScriptFileHandle = new ZFResourceHandle;
+	if(!m_pScriptFileHandle->SetRes(acName))
+		printf("Failed to load object script %s\n", acName);
+
 	ObjectManagerLua::Reset();
 
-	if(!m_pkScript->RunScript((char*)acName))
+	if(!m_pkScript->Run(GetObjectManagerScript()))
 		return NULL;
 		
-	if(!m_pkScript->CallScript("Create", 0, 0))
+	if(!m_pkScript->Call(GetObjectManagerScript(), "Create", 0, 0))
 		return NULL;
-	
 	
 	ObjectManagerLua::g_pkReturnObject->m_strType	= acName;
 	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + acName;
@@ -1533,3 +1543,7 @@ void ObjectManager::UnLoadZone(int iId)
 }
 
 
+ZFScript* ObjectManager::GetObjectManagerScript()
+{
+	return (ZFScript*) m_pScriptFileHandle->GetResourcePtr();  
+}

@@ -276,16 +276,6 @@ void MistClient::Input()
 
 	case KEY_L:
 		{
-/*			lua_State* pState1 = pkScript->GetNewState();
-			lua_State* pState2 = pkScript->GetNewState();
-
-			pkScript->RunScript("data/script/gui/test1.lua", pState1);
-			pkScript->RunScript("data/script/gui/test2.lua", pState2);
-
-			pkScript->CallScript("Test", 0, 0, pState1);
-			pkScript->CallScript("Test", 0, 0, pState2);*/
-
-
 			ZFResourceHandle kResHandle;
 			if(!kResHandle.SetRes("data/script/gui/test1.lua"))
 				printf("Failed to load test script\n");
@@ -423,10 +413,6 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
-/*	static const int apA = GetApa();
-	if(pkScript->GetGlobalInt(NULL,  
-	pkScript->CallScript("OnClickOK", 0, 0);*/
-
 	if(iID == 5)
 		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
 	if(iID == 6)

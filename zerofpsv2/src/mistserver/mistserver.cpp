@@ -119,15 +119,11 @@ bool MistServer::IsValid()	{ return true; }
 
 void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
-/*	static const int apA = GetApa();
-	if(pkScript->GetGlobalInt(NULL,  
-	pkScript->CallScript("OnClickOK", 0, 0);*/
-
 	if(iID == 5)
-		pkScript->CallScript("OnClickBackpack", 0, 0); 
+		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
 	if(iID == 6)
-		pkScript->CallScript("OnClickStats", 0, 0);
+		pkScript->Call(GetGuiScript(), "OnClickStats", 0, 0);
 	if(iID == 4)
-		pkScript->CallScript("OnClickMap", 0, 0);
+		pkScript->Call(GetGuiScript(), "OnClickMap", 0, 0);
 
 }

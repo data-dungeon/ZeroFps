@@ -363,8 +363,6 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// Låt skriptfilen skapa alla fönster.
-	//pkScript->CallScript("CreateMainWnds", 0, 0);
-
 	pkScript->Call(GetGuiScript(), "CreateMainWnds", 0, 0);
 
 }
