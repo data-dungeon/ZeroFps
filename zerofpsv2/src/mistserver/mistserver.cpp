@@ -666,6 +666,9 @@ void MistServer::Input_EditZone()
 // Handles input for EditMode Object.
 void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 {
+	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
+	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
+
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
 		m_pkObjectMan->CreateObjectFromScriptInZone(
@@ -973,15 +976,45 @@ bool MistServer::DelayCommand()
 
 void MistServer::EditRunCommand(FuncId_e eEditCmd)
 {
+	Entity* pkActiveEntity = m_pkObjectMan->GetObjectByNetWorkID( m_iCurrentObject );
+	if(pkActiveEntity == NULL)
+		return;
+
 	if(eEditCmd == FID_CLONE)
 	{
 		m_pkObjectMan->CloneObject(m_iCurrentObject);	// Select_Toggle
 	}
 
-	if(eEditCmd == FID_CUT)		cout << "Edit/Cut is not done yet" << endl;
-	if(eEditCmd == FID_COPY)	cout << "Edit/Copy is not done yet" << endl;
-	if(eEditCmd == FID_PASTE)	cout << "Edit/Paste is not done yet" << endl;
+	ZFVFile kFile;
+
+	if(eEditCmd == FID_CUT)
+	{
+		kFile.Open("copybuffer.dat",0,true);
+		pkActiveEntity->Save(&kFile);
+		kFile.Close();
+	}
+
+	if(eEditCmd == FID_COPY)
+	{
+		kFile.Open("copybuffer.dat",0,true);
+		pkActiveEntity->Save(&kFile);
+		kFile.Close();
+	}
+	
+	if(eEditCmd == FID_PASTE)
+	{
+		if( kFile.Open("copybuffer.dat",0,false) ) 
+		{
+			Entity* pkObjNew = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
+
+			Vector3 kPos = pkObjNew->GetLocalPosV();
+			pkObjNew->Load(&kFile,false);
+			kFile.Close();
+			pkObjNew->SetLocalPosV(kPos);
+		}
+	}
 }
+
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
