@@ -197,7 +197,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	
 	// oh madness, blood psystem in the nick of time :D
 	if ( m_iTeam != 10 )
-		m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone("data/script/objects/dm/t_blood.lua", m_pkObject->GetWorldPosV());
+		m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone("data/script/objects/t_blood.lua", m_pkObject->GetWorldPosV());
 
 	if(m_kStats.m_iLife <= 0)
 	{

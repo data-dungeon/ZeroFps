@@ -57,8 +57,8 @@ function OnMissionStart()
 	SetVar("Mob_WP4_Y", 1.58)
 	SetVar("Mob_WP4_Z", 20.92)
 
-	TempDoor[1] = RunScript("data/script/objects/dm/t_door.lua",-1, {-51.37, 1.00, 9.9});
-	TempDoor[2] = RunScript("data/script/objects/dm/t_door.lua",-1, {-51.37, 1.00, 1.7});
+	TempDoor[1] = RunScript("data/script/objects/t_door.lua",-1, {-51.37, 1.00, 9.9});
+	TempDoor[2] = RunScript("data/script/objects/t_door.lua",-1, {-51.37, 1.00, 1.7});
 
 	HideAllMapIcons()
 	CreateWnd(4,"AMapLabel","MapWnd","",143,119,16,16,0,0,0)
@@ -126,15 +126,15 @@ end
 
 function CreateStuff()
 	--create mob-spawners
-	Spawners[1] = RunScript("data/script/objects/dm/t_crowd_spawner.lua",-1, {-51.37, 1.00, 9.9});
-	Spawners[2] = RunScript("data/script/objects/dm/t_crowd_spawner2.lua",-1, {-51.37, 1.00, 1.7});
+	Spawners[1] = RunScript("data/script/objects/t_crowd_spawner.lua",-1, {-51.37, 1.00, 9.9});
+	Spawners[2] = RunScript("data/script/objects/t_crowd_spawner2.lua",-1, {-51.37, 1.00, 1.7});
 
 	--create trackers needed
-	Trackers[1] = RunScript("data/script/objects/dm/t_tracker.lua", -1, pos1);
-	Trackers[2] = RunScript("data/script/objects/dm/t_tracker.lua", -1, pos2);
-	Trackers[3] = RunScript("data/script/objects/dm/t_tracker.lua", -1, pos3);
-	Trackers[4] = RunScript("data/script/objects/dm/t_tracker.lua", -1, pos4);
-	Trackers[5] = RunScript("data/script/objects/dm/t_tracker.lua", -1, pos5);
+	Trackers[1] = RunScript("data/script/objects/t_tracker.lua", -1, pos1);
+	Trackers[2] = RunScript("data/script/objects/t_tracker.lua", -1, pos2);
+	Trackers[3] = RunScript("data/script/objects/t_tracker.lua", -1, pos3);
+	Trackers[4] = RunScript("data/script/objects/t_tracker.lua", -1, pos4);
+	Trackers[5] = RunScript("data/script/objects/t_tracker.lua", -1, pos5);
 
 	Delete (TempDoor[1]);
 	Delete (TempDoor[2]);
