@@ -16,8 +16,6 @@ void Test::OnInit(void) {
 	test=new HeightMap(pkFile);
 //	test->Random();
 	test->SetTileSet("file:../data/textures/landbw.bmp");
-//	test->GenerateNormals();
-//	test->GenerateTextures();
 	
 //	test->Save("test.hm");
 //	test->Load("file:test.hm");
@@ -27,15 +25,11 @@ void Test::OnInit(void) {
 
 	test->SetPosition(Vector3(20,-4,0));
 	
-
-//	test->Height(1.02,4.99);
-//	exit(0);
-
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	float b=1.5;
+	float b=2;
 	white_light = Vector4(b,b,b,b);
 	lmodel_ambient = Vector4(0.5*b,0.5*b,0.5*b,0.5*b);
 
@@ -82,10 +76,10 @@ void Test::OnIdle(void) {
 
 //		cout<<"you se it=)"<<endl;
 
-	glPushMatrix();
-		glTranslatef(100,0,100);
-		glutSolidSphere(10,10,10);
-	glPopMatrix();
+//	glPushMatrix();
+//		glTranslatef(100,0,100);
+//		glutSolidSphere(10,10,10);
+//	glPopMatrix();
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
