@@ -45,6 +45,8 @@ bool P_Event::SendEvent(const char* acEvent)
 
 		return true;
 	}
+
+	return false;
 }
 
 Property* Create_P_Event()

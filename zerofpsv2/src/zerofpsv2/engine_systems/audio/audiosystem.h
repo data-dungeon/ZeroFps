@@ -22,6 +22,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem : public ZFSubSystem
 {		
 	public:
 		ZFResourceHandle* GetResHandle(string strFileName);
+		ZFSound* GetFreeSound(string strFileName);
 		void AddSound(ZFSound* pkSound);
 		void RemoveSound(ZFSound* pkSound);
 		void Update();

@@ -1,6 +1,9 @@
 #include "audiosystem.h"
 #include <stdlib.h>
 #include "../../basic/zfvfs.h"
+#include "../../engine/objectmanager.h"
+#include "../../script/zfscript.h"
+#include "../script_interfaces/si_audio.h"
  
 ZFSound::ZFSound()
 {
@@ -159,6 +162,16 @@ bool ZFAudioSystem::StartUp()
 
 	Init();
 	GenerateSources(MAX_NUM_SOURCES);
+
+	ObjectManager* pkObjectMan = static_cast<ObjectManager*>(
+		g_ZFObjSys.GetObjectPtr("ObjectManager"));
+
+	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(
+		GetSystem().GetObjectPtr("ZFScriptSystem"));
+
+	//setup script interface
+	AudioLua::Init(this,pkObjectMan,pkScriptSys);
+
 	return true; 
 }
 
@@ -421,4 +434,44 @@ ZFResourceHandle* ZFAudioSystem::GetResHandle(string strFileName)
 		strFileName, pkNewRes)); 
 	
 	return pkNewRes;
+}
+
+
+ZFSound* ZFAudioSystem::GetFreeSound(string strFileName)
+{
+	ZFSound* pkSound;
+
+	// Check if resource handle exist.
+	map<string,ZFResourceHandle*>::iterator itRes;
+	itRes = m_mkResHandles.find(strFileName);
+	if(itRes != m_mkResHandles.end())
+	{
+		pkSound = static_cast<ZFSound*>(itRes->second->GetResourcePtr()); 
+		return pkSound; // return if exist.
+	}
+
+	// Add resource if not.
+	ZFResourceHandle* pkNewRes = new ZFResourceHandle;
+	m_mkResHandles.insert(map<string,ZFResourceHandle*>::value_type(
+		strFileName, pkNewRes)); 
+
+	if(!pkNewRes->IsValid())
+	{
+		// Try to create
+		if(!pkNewRes->SetRes(strFileName))
+		{
+			// Remove again if failed
+			map<string,ZFResourceHandle*>::iterator itRes;
+			itRes = m_mkResHandles.find(strFileName);
+			if(itRes != m_mkResHandles.end())
+			{
+				m_mkResHandles.erase(itRes);
+				delete pkNewRes;
+				return false; // return false
+			}
+		}
+	}
+	
+	pkSound = static_cast<ZFSound*>(pkNewRes->GetResourcePtr()); 
+	return pkSound; // return if exist.
 }

@@ -169,8 +169,7 @@ void MistClient::Input()
 		
 			if(m_fDistance > 35)
 				m_fDistance = 35;
-		
-		
+				
 			m_pkCamProp->Set3PYAngle(m_fAngle);
 			m_pkCamProp->Set3PDistance(m_fDistance);
 		}
@@ -244,35 +243,23 @@ void MistClient::Input()
 	switch(iPressedKey)
 	{
 	case KEY_P:
-		
-		ZFSound* pkSound1;
-		ZFSound* pkSound2;
-		static ZFResourceHandle res1; 
-		static ZFResourceHandle res2; 
-
-		if(!res1.IsValid())
 		{
-			res1.SetRes("data/sound/dummy.wav");
-			pkSound1 = static_cast<ZFSound*>(res1.GetResourcePtr()); 
-			if(pkSound1) {
-				pkSound1->m_kPos = Vector3(0,0,0);
-				pkSound1->m_kVel = Vector3(0,0,1);
-				pkSound1->Create("data/sound/dummy.wav");
-				pkSound1->m_bLoop = true;
-				pkAudioSys->AddSound(pkSound1);
-			}
+			ZFSound* pkSound1 = pkAudioSys->GetFreeSound("data/sound/dummy.wav");
+			pkSound1->m_kPos = Vector3(0,0,0);
+			pkSound1->m_kVel = Vector3(0,0,1);
+			pkSound1->m_bLoop = true;
+			pkAudioSys->AddSound(pkSound1);
 		}
+		break;
 
-		res2.SetRes("data/sound/test.wav");
-		pkSound2 = static_cast<ZFSound*>(res2.GetResourcePtr()); 
-		if(pkSound2) {
-			pkSound2->m_kPos = Vector3(1,0,0);
+	case KEY_O:
+		{
+			ZFSound* pkSound2 = pkAudioSys->GetFreeSound("data/sound/test.wav");
+			pkSound2->m_kPos = Vector3(0,0,0);
 			pkSound2->m_kVel = Vector3(0,0,1);
-			pkSound2->Create("data/sound/test.wav");
 			pkSound2->m_bLoop = false;
 			pkAudioSys->AddSound(pkSound2);
 		}
-
 		break;
 	}
 

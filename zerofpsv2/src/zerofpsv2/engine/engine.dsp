@@ -303,6 +303,10 @@ SOURCE=.\res_texture.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\script_interfaces\si_audio.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\script_interfaces\si_gui.cpp
 # End Source File
 # Begin Source File
@@ -536,6 +540,10 @@ SOURCE=..\engine_systems\propertys\psystemproperty.h
 # Begin Source File
 
 SOURCE=.\res_texture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_audio.h
 # End Source File
 # Begin Source File
 

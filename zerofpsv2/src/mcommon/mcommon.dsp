@@ -98,6 +98,10 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\bin
 
 SOURCE=.\p_event.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\si_mistland.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -109,6 +113,10 @@ SOURCE=.\mcommon_x.h
 # Begin Source File
 
 SOURCE=.\p_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\si_mistland.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
