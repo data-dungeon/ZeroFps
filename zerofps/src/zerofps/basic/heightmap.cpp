@@ -290,12 +290,17 @@ void HeightMap::GenerateTextures() {
 			}
 			else if(slope<50){
 				GetVert(x,z)->texture=2;//slope
-				GetVert(x,z)->color=Vector3(.6,.6,.0);				
+				GetVert(x,z)->color=Vector3(.5,.4,.0);				
 			}				
 			else {
 				if(height<6) {  //if we are very low draw nice sand =)
 					GetVert(x,z)->texture=0;
-					GetVert(x,z)->color=Vector3(2,1.7,1.2);												
+					GetVert(x,z)->color=Vector3(2,1.7,1.2);
+					if(height<0.0001) {
+						GetVert(x,z)->height=-80;
+						GetVert(x,z)->color=Vector3(.001,.001,.001);
+						GetVert(x,z)->normal=Vector3(0,0,0);
+					}
 				} else {//else i like som grass
 					GetVert(x,z)->texture=1;
 					GetVert(x,z)->color=Vector3(.35,.65,.0);				
@@ -328,8 +333,7 @@ bool HeightMap::LoadImageHmap(char* acFile) {
 			pixel=GetPixel(image,x,y);			
 		
 			SDL_GetRGB(pixel, image->format, &data,&data, &data);
-			verts[y*m_iHmSize+x].height=data/3;
-
+			verts[y*m_iHmSize+x].height=data/3;			
 		}
 			
 

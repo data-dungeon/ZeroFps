@@ -19,7 +19,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize) {
 	glPushMatrix();
 	
-
+	glDisable(GL_CULL_FACE);
 	
 	glRotatef(kHead.x, 1, 0, 0);
 	glRotatef(kHead.y, 0, 1, 0);	
@@ -38,7 +38,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 	for(int z=0;z<kSize;z+=step){
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);		
-		glColor4f(.7,.7,.9,.9);
+		glColor4f(.7,.7,.7,.9);
 		for(int x=0;x<kSize;x+=step) {
 			float y=sin((SDL_GetTicks()+x*300)/1000.0);
 			
@@ -56,6 +56,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
+	glEnable(GL_CULL_FACE);
 	glPopMatrix();
 }
 
