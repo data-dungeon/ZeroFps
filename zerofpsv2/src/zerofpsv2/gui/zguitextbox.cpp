@@ -24,6 +24,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 						 int iID, bool bMultiLine) : 
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_kHorzOffset = 0;
 	m_bNumberOnly = false;
 	m_bReadOnly = false;
 	m_iCursorRow = 1	;
@@ -87,6 +88,8 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 	if(m_strText != NULL)
 	{
 		Rect kRect = GetScreenRect();
+		kRect.Top += 4; 
+		//kRect.Left += m_kHorzOffset;
 
 		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
 		if(m_bReadOnly)
@@ -97,9 +100,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			m_iRenderDistFromTop, m_bMultiLine, iLetters, iRows);
 		m_iNumRows = iRows;
 
-		if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
+	/*	if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
 			m_bTextFit = false;
-		else
+		else*/
 			m_bTextFit = true;
 	}
 
@@ -175,6 +178,27 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		if(y_pos <= m_pkFont->m_cCharCellSize)
 			ScrollText( cursor_row );
 
+		if(m_bMultiLine == false)
+		{
+			m_iRenderDistFromTop = 0;
+
+			int length_counter = 0;
+			int length = m_iCursorPos; //strlen(m_strText);
+
+			for(int i=0; i<length; i++)
+			{
+				int index = m_strText[i]-32;
+				if(!(index < 0 || index > 255))
+					length_counter += m_pkFont->m_aChars[index].iSizeX;
+			}
+
+			if(length_counter >= GetScreenRect().Width())
+			{
+				int dif = length_counter-GetScreenRect().Width();
+				m_iRenderDistFromTop = dif; 
+			}
+		}
+
 		return true;
 	}
 
@@ -192,6 +216,28 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		if(y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
 			ScrollText( cursor_row );
 
+		if(m_bMultiLine == false)
+		{
+			m_iRenderDistFromTop = 0;
+
+			int length_counter = 0;
+			int length = m_iCursorPos; //strlen(m_strText);
+
+			for(int i=0; i<length; i++)
+			{
+				int index = m_strText[i]-32;
+				if(!(index < 0 || index > 255))
+					length_counter += m_pkFont->m_aChars[index].iSizeX;
+			}
+
+			if(length_counter >= GetScreenRect().Width())
+			{
+				int dif = length_counter-GetScreenRect().Width();
+				m_iRenderDistFromTop = dif; 
+			}
+		}
+		
+
 		return true;
 	}
 
@@ -205,11 +251,36 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
 			m_pkScrollbarVertical->SetScrollPos(max-1);
 		}
+
+		if(m_bMultiLine == false)
+		{
+			m_iRenderDistFromTop = 0;
+
+			int length_counter = 0;
+			int length = m_iCursorPos; //strlen(m_strText);
+
+			for(int i=0; i<length; i++)
+			{
+				int index = m_strText[i]-32;
+				if(!(index < 0 || index > 255))
+					length_counter += m_pkFont->m_aChars[index].iSizeX;
+			}
+
+			if(length_counter >= GetScreenRect().Width())
+			{
+				int dif = length_counter-GetScreenRect().Width();
+				m_iRenderDistFromTop = dif; 
+			}
+		}
+
 		return true;
 	}
 
 	if(iKey == gKEY_HOME)
 	{
+		if(m_bMultiLine == false)
+			m_iRenderDistFromTop = 0;
+
 		m_iCursorPos = 0;
 
 		if(m_pkScrollbarVertical)
@@ -304,7 +375,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		}
 	}
 
-	int iRows = GetNumRows(m_strText);
+/*	int iRows = GetNumRows(m_strText);
 	if(!bSkip && iRows > 1 && m_bMultiLine == false && m_iCursorPos != 0)
 	{
 		// Remove last character put.
@@ -312,6 +383,30 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		strLazy.erase(m_iCursorPos-1,1);
 		strcpy(m_strText, strLazy.c_str());
 		m_iCursorPos--;
+	}*/
+
+	if(m_bMultiLine == false)
+	{
+		m_iRenderDistFromTop = 0;
+
+		int length_counter = 0;
+		int length = strlen(m_strText);
+
+		if(m_iCursorPos >= length)
+		{
+			for(int i=0; i<length; i++)
+			{
+				int index = m_strText[i]-32;
+				if(!(index < 0 || index > 255))
+					length_counter += m_pkFont->m_aChars[index].iSizeX;
+			}
+
+			if(length_counter >= GetScreenRect().Width())
+			{
+				int dif = length_counter-GetScreenRect().Width();
+				m_iRenderDistFromTop = dif; 
+			}
+		}
 	}
 
 	// Send a message to the main winproc...
@@ -331,8 +426,15 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 void ZGuiTextbox::SetFocus()
 {
-	m_iCursorPos = 0;
+/*	m_iCursorPos = 0;
+
+	if(m_strText)
+	{
+		m_iCursorPos = strlen(m_strText);
+	}*/
 	m_bBlinkCursor = true;
+
+	return; //
 
 //	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 
@@ -519,7 +621,7 @@ void ZGuiTextbox::CreateInternalControls()
 		m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 			this,true,VERT_SCROLLBAR_TEXBOX_ID);
 		m_pkScrollbarVertical->SetAutoHide(false);  
-		m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
+		m_pkScrollbarVertical->SetScrollInfo(0,100,1.0f,0); 
 		m_pkScrollbarVertical->Show();
 		m_pkScrollbarVertical->GetButton()->Show();
 	}
@@ -564,7 +666,15 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 			return true;
 		}
 	}
-
+	else
+	if(iCode == NCODE_CLICK_UP)
+	{
+		if(m_pkScrollbarVertical)
+		{
+			ScrollText(m_pkScrollbarVertical);
+		}
+	}
+	
 	if(pkWnd == m_pkScrollbarVertical)
 	{
 		ZGui* pkGui = GetGUI();
@@ -829,15 +939,13 @@ bool ZGuiTextbox::UpdateScrollbar()
 		return false;
 
 	int rows_to_much = rows-max_visible_row;
-
-	int iRows = rows;
 	
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
-	int iRowSize = m_pkFont->m_cCharCellSize * iRows;
+	int iRowSize = m_pkFont->m_cCharCellSize * rows;
 	int iTextboxSize = GetScreenRect().Height();
 	if(iRowSize <= 0) iRowSize = 1; // don´t devide by zero
 	float fThumbSize = (float) iTextboxSize / (float) iRowSize;
-	m_pkScrollbarVertical->SetScrollInfo(0,iRows,fThumbSize,0);
+	m_pkScrollbarVertical->SetScrollInfo(0,rows,fThumbSize,0);
 
 	m_pkScrollbarVertical->Show();
 
@@ -1086,4 +1194,12 @@ bool ZGuiTextbox::SetCursorRow(int row, bool bUpdate)
 		ScrollText(m_iCursorRow);
 
 	return true;
+}
+
+void ZGuiTextbox::ScrollRowIntoView(int row)
+{
+	if(row < 0)
+		row = 0;
+
+	ScrollText(row);
 }

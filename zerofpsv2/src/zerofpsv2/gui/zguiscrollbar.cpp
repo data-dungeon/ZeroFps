@@ -99,6 +99,8 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 	if(pos < min) pos = min;
 
 	Rect rc = GetWndRect();
+	rc.Top += SCROLL_BUTTON_HEIGHT;
+	rc.Bottom -= SCROLL_BUTTON_HEIGHT;
 
 	int real_bn_height = m_pkThumbButton->GetWndRect().Height(); 
 
@@ -131,7 +133,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 		float size = (float) (max - min);
 		if(size <= 0) size = 1; // don´t devide by zero
 
-		y = ((float) pos / (float) (size)) * (rc.Height()-SCROLL_BUTTON_HEIGHT*2)  - bn_width/2;	
+		y = ((float) pos / (float) (size)) * (rc.Height()/*-SCROLL_BUTTON_HEIGHT*2*/)  - bn_width/2;	
 	}
 
 	Rect rcMove = GetScreenRect();
@@ -196,8 +198,6 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 	{
 		if(pkWnd->GetID() == SCROLLUP_ID)
 		{
-			printf("jugge\n");
-
 			if(m_nPos > m_nMin)
 			{
 				m_nPos--;
@@ -266,7 +266,7 @@ void ZGuiScrollbar::CreateInternalControls()
 	rcThumb.Bottom	= SCROLL_BUTTON_HEIGHT+m_usThumbSize;
 
 	rcUp.Left	= 0;
-	rcUp.Top		= 0;
+	rcUp.Top	= 0;
 	rcUp.Right	= GetWndRect().Width();
 	rcUp.Bottom	= SCROLL_BUTTON_HEIGHT;
 

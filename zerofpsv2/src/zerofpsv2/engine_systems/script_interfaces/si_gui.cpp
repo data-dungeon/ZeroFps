@@ -16,11 +16,12 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
 	pkScript->ExposeFunction("ClearListbox", GuiAppLua::ClearListboxLua);
 	pkScript->ExposeFunction("GetWnd", GuiAppLua::GetWndLua);
-	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
+	pkScript->ExposeFunction("ShowWnd", GuiAppLua::ShowWndLua); 
 	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
 	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 
 	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
+	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua); 
 
@@ -177,26 +178,6 @@ int GuiAppLua::GetScreenHeightLua(lua_State* pkLua)
 	return 1;
 }
 
-int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
-{
-	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
-
-	if(iNumArgs != 1)
-		return 0;
-
-	char szName[100];
-	g_pkScript->GetArg(pkLua, 0, szName);
-
-	int ret = 0;
-
-	if(g_pkGuiApp->IsWndVisible(szName)) 
-		ret = 1;
-
-	g_pkScript->AddReturnValue(pkLua, ret);
-
-	return 1;
-}
-
 // Close window
 // Parameters:
 // (0) char* resName of the Listbox
@@ -311,5 +292,51 @@ int GuiAppLua::AddTreeItemLua(lua_State* pkLua)
 	else
 		g_pkGuiApp->AddTreeItem(szTreeboxName, szNodeName, szParentName, szNodeLabel, 1, 2);
 
+	return 1;
+}
+
+
+int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 1)
+		return 0;
+
+	char szName[100];
+	g_pkScript->GetArg(pkLua, 0, szName);
+
+	int ret = 0;
+
+	if(g_pkGuiApp->IsWndVisible(szName)) 
+		ret = 1;
+
+	g_pkScript->AddReturnValue(pkLua, ret);
+
+	return 1;
+}
+
+int GuiAppLua::ShowWndLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 2)
+		return 0;
+
+	char szName[100];
+	g_pkScript->GetArg(pkLua, 0, szName);
+
+	double show;
+	g_pkScript->GetArg(pkLua, 1, &show);
+
+	ZGuiWnd* pkWnd;
+	if((pkWnd = g_pkGuiApp->GetWnd(szName)) != NULL)
+	{
+		if(show > 0)
+			pkWnd->Show();
+		else
+			pkWnd->Hide();
+	}
+		
 	return 1;
 }

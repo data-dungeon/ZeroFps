@@ -118,7 +118,7 @@ void MistClient::Init()
 	SDL_WM_SetCaption("MistClient", NULL);
 	 
 	// create gui script
-	GuiAppLua::Init(&g_kMistClient, GetScript());
+	GuiAppLua::Init(&g_kMistClient, pkScript);
 
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
@@ -313,7 +313,7 @@ void MistClient::Input()
 		Vector3 newpos;// = m_pkME->GetLocalPosV();
 		newpos.Set(0,0,0);
 	
-		if(pkInput->Pressed(KEY_D)){
+/*		if(pkInput->Pressed(KEY_D)){
 			//newpos.x+=fSpeedScale;			
 			newpos.x = 10;
 		}
@@ -335,7 +335,7 @@ void MistClient::Input()
 			//newpos.y+=2*fSpeedScale;			
 		if(pkInput->Pressed(KEY_E))
 			newpos.y = -10;
-			//newpos.y-=2*fSpeedScale;
+			//newpos.y-=2*fSpeedScale;*/
 		
 		//gubbe rotation
 
@@ -514,15 +514,17 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
-	string strName = pkMainWnd->GetName();
+	if(pkWndClicked == NULL)
+		return;
 
-	if(strName == "MainWnd")
+	string strMainWndName = pkMainWnd->GetName();
+	string strClickWndName = pkWndClicked->GetName();
+
+	if(strMainWndName == "PanelBkWnd")
 	{
 		if(pkWndClicked)
 		{
-			string strName = pkWndClicked->GetName();
-
-			if(strName == "BackPackButton")
+			if(strClickWndName == "BackPackButton")
 			{
 				bool bExist = GetWnd("BackPackWnd") != NULL;
 				
@@ -563,24 +565,48 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					m_pkInventDlg->AddItems(kItems);	*/
 				}
 			}
-			if(strName == "StatsButton")
+			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
-			if(strName == "MapButton")
+			else
+			if(strClickWndName == "MapButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
-
-			for(unsigned int i=0; i<m_vkHenchmanIcons.size(); i++)
-			{
-				bool IsClicked = (m_vkHenchmanIcons[i]->GetName() == strName);
-				m_vkHenchmanIcons[i]->Check(IsClicked);
-
-				if(IsClicked)
-					m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
-			}
-	
+			else
+			if(strClickWndName == "ToggleInputBoxBn")
+				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
+			else
+			if(strClickWndName == "ToggleInfoBoxBn")
+				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
 		}
 	}
-	//else
-	//if(strName == "BackPackWnd")
+	else
+	if(strMainWndName == "MainWnd")
+	{
+		for(unsigned int i=0; i<m_vkHenchmanIcons.size(); i++)
+		{
+			bool IsClicked = (m_vkHenchmanIcons[i]->GetName() == strClickWndName);
+			m_vkHenchmanIcons[i]->Check(IsClicked);
+
+			if(IsClicked)
+				m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
+		}
+	}
+	else
+	if(strMainWndName == "InputWnd")
+	{
+		if(strClickWndName == "SendInputBoxBn")
+		{
+			//GetWnd("InputWnd")->Hide();
+			//pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());  
+
+			static int oka=0; 
+			char szText[50];
+			sprintf(szText, "%i What's up doc? This is Laura Parmer...", oka);
+
+			oka++;
+
+			PrintInfoBox(szText);
+		}
+	}
 
 	if(m_pkInventDlg)
 	{
@@ -657,46 +683,34 @@ Object* MistClient::GetTargetObject()
 
 void MistClient::OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain)
 {
-	if(pkMain == NULL)
-		return;
+	if(pkMain == NULL) return;
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
-	{
 		m_pkInventDlg->OnClick(x,y,bMouseDown,bLeftButton);
-	}
 }
 
 void MistClient::OnDClick(int x, int y, bool bLeftButton, ZGuiWnd *pkMain)
 {
-	if(pkMain == NULL)
-		return;
+	if(pkMain == NULL) return;
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
-	{
 		m_pkInventDlg->OnDClick(x,y,bLeftButton);
-	}
 }
 
 void MistClient::OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
 {
-	if(pkMain == NULL)
-		return;
+	if(pkMain == NULL) return;
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
-	{
-		m_pkInventDlg->OnMouseMove(x,y,bMouseDown);
-	}	
+		m_pkInventDlg->OnMouseMove(x,y,bMouseDown);	
 }
 
 void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 {
-	if(pkMain == NULL)
-		return;
+	if(pkMain == NULL) return;
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
-	{
-		m_pkInventDlg->OnScroll(iID,iPos);
-	}	
+		m_pkInventDlg->OnScroll(iID,iPos);	
 }
 
 void MistClient::SetActiveCaracter(int iCaracter)
@@ -833,41 +847,37 @@ void MistClient::CreateGuiInterface()
 	GetWnd("ScrollPortraitsUp")->Hide();
 	GetWnd("ScrollPortraitsDown")->Hide();
 
-	CreateWnd(Textbox, "InfoBox", "MainWnd", "", 4, 505, 380, 50, EB_IS_MULTILINE | READ_ONLY);
-	CreateWnd(Textbox, "InputBox", "MainWnd", "", 4, 558, 360, 20, 0);
-	CreateWnd(Button, "SendInputBoxBn", "MainWnd", "", 365, 558, 20, 20, 0);
-	CreateWnd(Button, "HideInfoBoxBn", "MainWnd", "", 385, 558, 20, 20, 0);
-	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonUpSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_u.bmp", 0), 0));
-	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonDownSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_d.bmp", 0), 0));
-	static_cast<ZGuiButton*>(GetWnd("SendInputBoxBn"))->SetButtonHighLightSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/sendinputboxbn_f.bmp", 0), 0));
-	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonUpSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_u.bmp", 0), 0));
-	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonDownSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_d.bmp", 0), 0));
-	static_cast<ZGuiButton*>(GetWnd("HideInfoBoxBn"))->SetButtonHighLightSkin(
-		new ZGuiSkin(pkTexMan->Load("/data/textures/gui/hideinfoboxbn_f.bmp", 0), 0));
+	static_cast<ZGuiTextbox*>(GetWnd("InfoBox"))->SetReadOnly(true); 
 
-	string szText;
+/*	string szText = string("The Alchemist\n\nIt was in one of the vast and gloomy chambers of this remaining tower that I, ") + 
+		string("Antoine, last of the unhappy and accursed Counts de C-, first saw the light of day, ninety long ") +
+		string("years ago. Within these walls and amongst the dark and shadowy forests, the wild ravines and grottos ") +
+		string("of the hillside below, were spent the first years of my troubled life. My parents I never knew. My ") +
+		string("father had been killed at the age of thirty-two, a month before I was born, by the fall of a stone ") +
+		string("somehow dislodged from one of the deserted parapets of the castle. And my mother having died at my ") +
+		string("birth, my care and education devolved solely upon one remaining servitor, an old and trusted man of ") +
+		string("considerable intelligence, whose name I remember as Pierre. I was an only child and the lack of ") +
+		string("companionship which this fact entailed upon me was augmented by the strange care exercised by my ") +
+		string("aged guardian, in excluding me from the society of the peasant children whose abodes were scattered ") +
+		string("here and there upon the plains that surround the base of the hill. At that time, Pierre said that ") +
+		string("this restriction was imposed upon me because my noble birth placed me above association with such ") +
+		string("plebeian company. Now I know tht its real object was to keep from my ears the idle tales of the dread ") +
+		string("curse upon our line that were nightly told and magnified by the simple tenantry as they conversed in ") +
+		string("hushed accents in the glow of their cottage hearths. ");
 
-	for(int i=0; i<20; i++)
-	{
-		szText += "MistLand debug print! XYZ.. Rad: ";
+	GetWnd("InfoBox")->SetText((char*)szText.c_str());*/
+	GetWnd("InfoBox")->GetSkin()->m_bTileBkSkin = true; 
 
-		char t[5];
-		sprintf(t, "%i\n", i);
-
-		szText += t;
-	}
-
-	GetWnd("InfoBox")->SetText((char*)szText.c_str());
-
-	ZGuiFont* pkFont = new ZGuiFont();
-	pkFont->CreateFromFile("/data/textures/text/georgia_bold8.bmp"); 
+	ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);
+	pkFont->CreateFromFile("/data/textures/text/small.bmp"); 
 	GetWnd("InfoBox")->SetFont( pkFont);
 	GetWnd("InputBox")->SetFont( pkFont);
+	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
+
+	// tillfällig Fulhack delux (ta bort sen)
+	pkFps->DevPrintf("common", "=)");
+	pkFps->DevPrint_FindPage("common")->m_bVisible = true;
+	pkFps->DevPrint_Show(true);
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
@@ -882,4 +892,38 @@ void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
 
 		m_vkHenchmanIcons.back()->Check(true);  
 	}
+}
+
+void MistClient::PrintInfoBox(char *szText)
+{
+	if(!szText)
+		return;
+
+//	char* szFormat = new char(strlen(szText)+10);
+	
+	ZGuiTextbox* pkInfoBoxWnd = static_cast<ZGuiTextbox*>(GetWnd("InfoBox"));
+
+	string strText = pkInfoBoxWnd->GetText();
+
+	int rows = pkInfoBoxWnd->GetRowCount();
+
+	if(rows > 20)
+	{
+		int offset_to_first_linebreak = strText.find("\n");
+
+		if(offset_to_first_linebreak > string::npos || offset_to_first_linebreak > 60)
+			offset_to_first_linebreak = 60;
+
+		strText.erase( 0, offset_to_first_linebreak);
+	}
+	
+	strText.append(szText);
+
+	strText.append("\n");
+
+	pkInfoBoxWnd->SetText((char*)strText.c_str());
+
+	pkInfoBoxWnd->ScrollRowIntoView(rows-3);
+
+//	delete[] szFormat;
 }

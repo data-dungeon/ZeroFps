@@ -255,11 +255,20 @@ void ZeroFps::Run_EngineShell()
 	m_pkInput->MouseXY(mx,my);
 
 	int iInputKey = -1;
-	for(int i=0; i<255; i++)
+	for(int i=0; i<256; i++)
 		if(m_pkInput->Pressed(i)) {
 			iInputKey = i; break;
 		}
+
+	if(m_pkInput->Pressed(KEY_LEFT)) iInputKey = gKEY_LEFT;
+	else if(m_pkInput->Pressed(KEY_RIGHT)) iInputKey = gKEY_RIGHT;
+	else if(m_pkInput->Pressed(KEY_HOME)) iInputKey = gKEY_HOME;
+	else if(m_pkInput->Pressed(KEY_END)) iInputKey = gKEY_END;
+	else if(m_pkInput->Pressed(KEY_DELETE)) iInputKey = gKEY_DELETE;
+	else if(m_pkInput->Pressed(KEY_INSERT)) iInputKey = gKEY_INSERT;
+	
 	m_pkInput->FormatKey(iInputKey);
+
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));

@@ -40,7 +40,6 @@ bool ZGuiButton::Notify(ZGuiWnd* pkWindow, int iCode)
 	{
 		if(GetMoveArea() == GetScreenRect())
 		{
-			printf("ZGuiButton::Notify()\n");
 			m_pkSkin = m_pkSkinBnDown;
 		}
 		else

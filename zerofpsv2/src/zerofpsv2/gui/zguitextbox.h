@@ -12,6 +12,7 @@ class ZGuiScrollbar;
 class GUI_API ZGuiTextbox : public ZGuiWnd
 {
 public:
+	void ScrollRowIntoView(int row);
 	bool SetCursorRow(int row, bool bUpdate);
 	void ToggleMultiLine(bool bMultiLine);
 	int GetCursorRow();
@@ -38,6 +39,7 @@ public:
 	void SetFont(ZGuiFont* pkFont); //överlagrad
 
 	void SetReadOnly(bool bReadOnly);
+	int GetRowCount() { return m_iNumRows; }
 
 	bool m_bNumberOnly;
 
@@ -67,6 +69,8 @@ private:
 	int m_iNumRows;
 	int m_iCursorRow;
 	int m_iRenderDistFromTop;
+	
+	int m_kHorzOffset;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
 };

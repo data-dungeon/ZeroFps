@@ -13,6 +13,9 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
+#include <set>
+#include <algorithm>
+
 MistServer g_kMistServer("MistServer",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -765,8 +768,18 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 		if(strName == "OpenWorkTabButton")
 		{
+			bool bExist = true;
+
+			if(GetWnd("ZonePage") == NULL)
+				bExist = false;
+
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
-			GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+			
+			if(!bExist)
+			{
+				BuildZoneTree();
+				GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+			}
 		}
 
 		if(strName == "RotateZoneModellButton")
@@ -1017,4 +1030,100 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 	}
 	
 	return false;
+}
+
+struct SORT_NODE : public binary_function<string, string, bool> {
+	bool operator()(string x, string y) { 
+		return (x.find(".") == string::npos);
+	};
+} SortNode;
+
+void MistServer::BuildZoneTree()
+{
+	set<string> kSearchedFiles;
+	list<string> dir_list;
+	string strPrevNode;
+
+	dir_list.push_back(string("data/mad/zones"));
+	strPrevNode = "RootNode";
+int oka = 0;		
+	while(1)
+	{
+		list<string> vkFileNames;
+		string currentFolder = dir_list.back();
+
+		printf("currentFolder = %s\n", currentFolder.c_str() );
+
+		// Hämta filerna i den aktuella katalogen och sortera listan.
+		vector<string> t;
+		pkZFVFileSystem->ListDir(&t, currentFolder);
+		for(int i=0; i<t.size(); i++)
+			vkFileNames.push_back(t[i]); 
+		t.clear(); vkFileNames.sort(SortNode);
+
+		printf("vkFileNames.size() = %i\n", vkFileNames.size() );
+
+		// Lägg till alla filer
+		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
+		{
+			string strLabel = (*it);
+			string id = currentFolder + strLabel;
+
+			bool bIsFolder = strLabel.find(".") == string::npos;
+
+			if(kSearchedFiles.find(strLabel) == kSearchedFiles.end())
+			{			
+				if(bIsFolder)
+				{
+					string olle = currentFolder+string("/")+strLabel;
+
+				//	printf("olle = %s\n", olle.c_str());
+					dir_list.push_back(olle);
+
+					AddTreeItem("ZoneModelTree", id.c_str(), 
+						strPrevNode.c_str(), (char*) strLabel.c_str(), 1, 2);
+				}
+				else
+					AddTreeItem("ZoneModelTree", id.c_str(), 
+						strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
+
+				kSearchedFiles.insert(strLabel);
+
+				//printf("APA = %s, %s, %s\n", id.c_str(), strPrevNode.c_str(), (char*) strLabel.c_str());
+			}
+		}
+
+		// ej klivit in i ett nytt dir? gå tillbaks
+		if(dir_list.back() == currentFolder)
+		{
+			// sista?
+			if(currentFolder == "data/mad/zones/")
+				break;
+
+			dir_list.pop_back();
+		}
+		else
+		{
+
+		}
+		
+		strPrevNode = dir_list.back();
+
+		oka++;
+	}
+
+	printf("oka = %i\n", oka);
+
+/*	AddTreeItem("ZoneModelTree", "data/mad/zones/", "RootNode", "zones", 1, 2);
+	AddTreeItem("ZoneModelTree", "data/mad/zones/cooridor.mad", "data/mad/zones/", "cooridor.mad", 0, 1);
+	AddTreeItem("ZoneModelTree", "data/mad/zones/rooms", "data/mad/zones/", "rooms", 1, 2);
+	AddTreeItem("ZoneModelTree", "data/mad/zones/large_room_een.mad", "data/mad/zones/rooms", "large_room_een.mad", 0, 1);
+*/
+	// Algorithm:
+	// 1. Lista alla kataloger i dir X     
+	//		?: Finns det kataloger i dir X?
+ 	//			Y: Gå in i första katalogen i dir X. Upprepa 1:an		
+	//			N: Gå till 2.
+	// 2. Lista alla filer i dir X. Markera att katalogen är genomsökt. Hoppa tillbaks 1:steg.
+
 }

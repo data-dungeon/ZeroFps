@@ -30,6 +30,7 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
+		void BuildZoneTree();
 		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();
 		//console funktions

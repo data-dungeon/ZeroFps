@@ -52,6 +52,8 @@ private:
 		int iRenderDistFromLeft, int& chars_printed);
 	TextureManager* m_pkTextureManger;
 	int m_iCursorPos;
+
+	Rect m_rcTextBox;
 };
 
 #endif
