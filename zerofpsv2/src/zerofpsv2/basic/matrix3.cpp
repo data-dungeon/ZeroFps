@@ -46,7 +46,7 @@ void Matrix3::Set(float f00,float f01,float f02,
 	m_aafRowCol[2][2] = f22;
 };
 
-void Matrix3::SetAxis(int iAxisNum, Vector3 kNewAxis)
+void Matrix3::SetAxis(int iAxisNum, const Vector3& kNewAxis)
 {
         m_aafRowCol[iAxisNum][0] = kNewAxis.x;
         m_aafRowCol[iAxisNum][1] = kNewAxis.y;
@@ -85,7 +85,8 @@ void Matrix3::operator= (const Quaternion& rkQuaternion)
 // Operators	-	Arithmetic operations
 Matrix3 Matrix3::operator+ (const Matrix3& rkMatrix) const
 {
-    Matrix3 kSum;
+    static Matrix3 kSum;
+	 
     for (int iRow = 0; iRow < 3; iRow++)
     {
         for (int iCol = 0; iCol < 3; iCol++)
@@ -111,7 +112,8 @@ Matrix3 Matrix3::operator+= (const Matrix3& rkMatrix)
 
 Matrix3 Matrix3::operator- (const Matrix3& rkMatrix) const
 {
-    Matrix3 kDiff;
+    static Matrix3 kDiff;
+	 
     for (int iRow = 0; iRow < 3; iRow++)
     {
         for (int iCol = 0; iCol < 3; iCol++)
@@ -137,7 +139,8 @@ Matrix3 Matrix3::operator-= (const Matrix3& rkMatrix)
 
 Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const
 {
-    Matrix3 kProd;
+    static Matrix3 kProd;
+	 
     for (int iRow = 0; iRow < 3; iRow++)
     {
         for (int iCol = 0; iCol < 3; iCol++)
@@ -153,7 +156,8 @@ Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const
 
 Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix)
 {
-    Matrix3 kProd;
+    static Matrix3 kProd;
+	 
     for (int iRow = 0; iRow < 3; iRow++)
     {
         for (int iCol = 0; iCol < 3; iCol++)
@@ -171,9 +175,9 @@ Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix)
 
 Matrix3 Matrix3::operator*(const float &f) const
 {
-	return Matrix3(m_afData[0]*f,m_afData[1]*f,m_afData[2]*f,m_afData[3]*f,
-      					 m_afData[4]*f,m_afData[5]*f,m_afData[6]*f,m_afData[7]*f,
-      					 m_afData[8]*f);
+	return Matrix3(	m_afData[0]*f,m_afData[1]*f,m_afData[2]*f,m_afData[3]*f,
+      					m_afData[4]*f,m_afData[5]*f,m_afData[6]*f,m_afData[7]*f,
+      					m_afData[8]*f);
       					
 }
 
@@ -195,9 +199,13 @@ void Matrix3::Zero(void)
 
 void Matrix3::Identity() 
 {
-	*this=Matrix3( 1,0,0,
+	Set(1,0,0,
+		 0,1,0,
+		 0,0,1);
+
+/*	*this=Matrix3( 1,0,0,
 						0,1,0,
-						0,0,1);
+						0,0,1);*/
 }
 
 void Matrix3::Transponse()
@@ -214,7 +222,9 @@ void Matrix3::Transponse()
 
 Matrix3 Matrix3::GetTransponse() const
 {
-	Matrix3 kMat3 = *this;
+	static Matrix3 kMat3;
+	
+	kMat3 = *this;
 	kMat3.Transponse();
 	return kMat3;
 }
@@ -255,12 +265,24 @@ float Matrix3::Determinant(void)	 const
 
 void Matrix3::Scale(float fX, float fY, float fZ)
 {
-	*this *= Matrix3(fX		,0 	,0		,
-						  0		,fY	,0		,
-						  0		,0		,fZ	);;
+	static Matrix3 kMatrix(	0,0,0,
+									0,0,0,
+									0,0,0);
+	
+	kMatrix.m_aafRowCol[0][0] = fX;		
+	kMatrix.m_aafRowCol[1][1] = fY;		
+	kMatrix.m_aafRowCol[2][2] = fZ;			
+	
+	*this *= kMatrix;	
+
+
+// 	*this *= Matrix3(fX		,0 	,0		,
+// 						  0		,fY	,0		,
+// 						  0		,0		,fZ	);;
 }
 
-void Matrix3::Scale(Vector3 kScale){
+void Matrix3::Scale(const Vector3& kScale)
+{
 	Scale(kScale.x, kScale.y, kScale.z);
 }
 
@@ -271,22 +293,24 @@ void Matrix3::Rotate(float fX, float fY, float fZ)
 }
 
 
-void Matrix3::Rotate(Vector3 kRot){
+void Matrix3::Rotate(const Vector3& kRot)
+{
 	RadRotate(DegToRad(kRot.x), DegToRad(kRot.y), DegToRad(kRot.z));
 }
 
 void Matrix3::RadRotate(float fX, float fY, float fZ)
 {
 	static Matrix3 rotatex,rotatey,rotatez;
+	static float cx,sx,cy,sy,cz,sz;
 	
-	float cx = float(cos(fX));
-	float sx = float(sin(fX));
+	cx = float(cos(fX));
+	sx = float(sin(fX));
 	
-	float cy = float(cos(fY));
-	float sy = float(sin(fY));	
+	cy = float(cos(fY));
+	sy = float(sin(fY));	
 	
-	float cz = float(cos(fZ));
-	float sz = float(sin(fZ));
+	cz = float(cos(fZ));
+	sz = float(sin(fZ));
 
 	 rotatex.Set(1		,0		,0,
 					0		,cx	,-sx,
@@ -304,7 +328,7 @@ void Matrix3::RadRotate(float fX, float fY, float fZ)
 	 *this *= rotatez*rotatey*rotatex;
 }
 
-void Matrix3::RadRotate(Vector3 kRot){
+void Matrix3::RadRotate(const Vector3& kRot){
 	RadRotate(kRot.x, kRot.y, kRot.z);
 }
 

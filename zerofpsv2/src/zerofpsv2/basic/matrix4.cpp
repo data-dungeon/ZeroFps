@@ -63,7 +63,7 @@ void Matrix4::operator=(const Matrix3 &rkMatrix)
 
 void Matrix4::operator= (const Quaternion& rkQuaternion)
 {
-	Matrix3 mat3;
+	static Matrix3 mat3;
 	mat3 = Matrix3::IDENTITY;
 	mat3 = rkQuaternion;
 	Identity();
@@ -74,7 +74,8 @@ void Matrix4::operator= (const Quaternion& rkQuaternion)
 // Operators	-	Arithmetic operations
 Matrix4 Matrix4::operator+ (const Matrix4& rkMatrix) const
 {
-    Matrix4 kSum;
+    static Matrix4 kSum;
+	 
     for (int iRow = 0; iRow < 4; iRow++)
     {
         for (int iCol = 0; iCol < 4; iCol++)
@@ -101,7 +102,8 @@ Matrix4 Matrix4::operator+= (const Matrix4& rkMatrix)
 
 Matrix4 Matrix4::operator- (const Matrix4& rkMatrix) const
 {
-    Matrix4 kDiff;
+    static Matrix4 kDiff;
+	 
     for (int iRow = 0; iRow < 4; iRow++)
     {
         for (int iCol = 0; iCol < 4; iCol++)
@@ -128,7 +130,8 @@ Matrix4 Matrix4::operator-= (const Matrix4& rkMatrix)
 
 Matrix4 Matrix4::operator*(const Matrix4 &kOther) const 
 {
-    Matrix4 kProd;
+    static Matrix4 kProd;
+	 
     for (int iRow = 0; iRow < 4; iRow++)
     {
         for (int iCol = 0; iCol < 4; iCol++)
@@ -145,7 +148,8 @@ Matrix4 Matrix4::operator*(const Matrix4 &kOther) const
 
 Matrix4 Matrix4::operator*= (const Matrix4& rkMatrix)
 {
-    Matrix4 kProd;
+    static Matrix4 kProd;
+	 
     for (int iRow = 0; iRow < 4; iRow++)
     {
         for (int iCol = 0; iCol < 4; iCol++)
@@ -165,10 +169,10 @@ Matrix4 Matrix4::operator*= (const Matrix4& rkMatrix)
 
 Matrix4 Matrix4::operator*(const float &f) const
 {
-	return Matrix4(data[0]*f,data[1]*f,data[2]*f,data[3]*f,
-      					 data[4]*f,data[5]*f,data[6]*f,data[7]*f,
-      					 data[8]*f,data[9]*f,data[10]*f,data[11]*f,
-      					 data[12]*f,data[13]*f,data[14]*f,data[15]*f);
+	return Matrix4(	data[0]*f,data[1]*f,data[2]*f,data[3]*f,
+      					data[4]*f,data[5]*f,data[6]*f,data[7]*f,
+      					data[8]*f,data[9]*f,data[10]*f,data[11]*f,
+      					data[12]*f,data[13]*f,data[14]*f,data[15]*f);
       					
 }
 
@@ -182,7 +186,7 @@ Matrix4 Matrix4::operator*=(const float &f)
 
 Vector4 Matrix4::operator*(const Vector4 &f)
 {
-	Vector4 ny;
+	static Vector4 ny;
 	
 	ny.x=data[0]*f.x + data[1]*f.y + data[2]*f.z + data[3]*f.w;
 	ny.y=data[4]*f.x + data[5]*f.y + data[6]*f.z + data[7]*f.w;
@@ -235,23 +239,24 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 	RadRotate(DegToRad(fX),DegToRad(fY),DegToRad(fZ));
 }
 
-void Matrix4::Rotate(Vector3 kRot){
+void Matrix4::Rotate(const Vector3& kRot)
+{
 	RadRotate(DegToRad(kRot.x), DegToRad(kRot.y), DegToRad(kRot.z));
 }
 
 void Matrix4::RadRotate(float fX, float fY, float fZ)
 {
 	static Matrix4 rotatex,rotatey,rotatez;	
+	static float cx,sx,cy,sy,cz,sz;
 
-
-	float cx = float(cos(fX));
-	float sx = float(sin(fX));
+	cx = float(cos(fX));
+	sx = float(sin(fX));
 	
-	float cy = float(cos(fY));
-	float sy = float(sin(fY));	
+	cy = float(cos(fY));
+	sy = float(sin(fY));	
 	
-	float cz = float(cos(fZ));
-	float sz = float(sin(fZ));
+	cz = float(cos(fZ));
+	sz = float(sin(fZ));
 
 
 	rotatex.Set(1			,0			,0				,0,
@@ -273,39 +278,63 @@ void Matrix4::RadRotate(float fX, float fY, float fZ)
 	 *this *= rotatez*rotatey*rotatex;
 }
 
-void Matrix4::RadRotate(Vector3 kRot){
+void Matrix4::RadRotate(const Vector3& kRot)
+{
 	RadRotate(kRot.x, kRot.y, kRot.z);
 }
 
 void Matrix4::Scale(float fX, float fY, float fZ)
 {
-	*this *= Matrix4(fX		,0 	,0		,0,
-						  0		,fY	,0		,0,
-						  0		,0		,fZ	,0,
-						  0		,0		,0		,1);;
+	static Matrix4 kMatrix(	0,0,0,0,
+									0,0,0,0,
+									0,0,0,0,
+									0,0,0,1);
+	
+	kMatrix.RowCol[0][0] = fX;		
+	kMatrix.RowCol[1][1] = fY;		
+	kMatrix.RowCol[2][2] = fZ;			
+	
+	*this *= kMatrix;
+	
+// 	*this *= Matrix4(fX		,0 	,0		,0,
+// 						  0		,fY	,0		,0,
+// 						  0		,0		,fZ	,0,
+// 						  0		,0		,0		,1);;
 }
 
-void Matrix4::Scale(Vector3 kScale){
+void Matrix4::Scale(const Vector3& kScale)
+{
 	Scale(kScale.x, kScale.y, kScale.z);
 }
 
 
 void Matrix4::Translate(float fX, float fY, float fZ)
 {
-	*this *= Matrix4(	1		,0 	,0		,0		,
+	static Matrix4 kMatrix(	1,0,0,0,
+									0,1,0,0,
+									0,0,1,0,
+									0,0,0,1);
+	
+	kMatrix.RowCol[3][0] = fX;		
+	kMatrix.RowCol[3][1] = fY;		
+	kMatrix.RowCol[3][2] = fZ;			
+	
+	*this *= kMatrix;
+
+/*	*this *= Matrix4(	1		,0 	,0		,0		,
 							0		,1		,0		,0		,
 							0		,0		,1		,0		,
-							fX		,fY	,fZ	,1		);
+							fX		,fY	,fZ	,1		);*/
 }
 
-void Matrix4::Translate(Vector3 kTrans)
+void Matrix4::Translate(const Vector3& kTrans)
 {
 	Translate(kTrans.x, kTrans.y, kTrans.z);
 }
 
 void Matrix4::LookDir(Vector3 kDir,Vector3 kUp)
 {
-	Vector3 kRight;
+	static Vector3 kRight;
 	
 	kDir.Normalize();
 	kUp.Normalize();
@@ -327,7 +356,7 @@ void Matrix4::LookDir(Vector3 kDir,Vector3 kUp)
 
 Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
 {
-	Vector3 res;
+	static Vector3 res;
 	
 	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
 	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
@@ -351,8 +380,9 @@ void Matrix4::SetZeroDelta(float delta)
 
 float Matrix4::Determinant(void)
 {
+	static Matrix3 msub;
+
 	float det, result = 0, i = 1;
-	Matrix3 msub;
 	int n;
 
 	for(n=0; n<4; n++, i*= -1) {
@@ -366,7 +396,7 @@ float Matrix4::Determinant(void)
 
 Matrix3 Matrix4::submat(int i, int j)
 {
-	Matrix3 b;
+	static Matrix3 b;
 	
 	int ti, tj, idst=0, jdst=0;
 	
@@ -389,7 +419,7 @@ Matrix3 Matrix4::submat(int i, int j)
 
 Matrix4 Matrix4::Inverse( )
 {
-	Matrix4	inverse;
+	static Matrix4	inverse;
 
 	float *mat = data;
 	float *dst = inverse.data;
@@ -521,7 +551,7 @@ float &Matrix4::operator[](const int i)
 	return data[i];
 }
 
-void Matrix4::SetAxis(int iAxisNum, Vector3 kNewAxis)
+void Matrix4::SetAxis(int iAxisNum, const Vector3& kNewAxis)
 {
         RowCol[iAxisNum][0] = kNewAxis.x;
         RowCol[iAxisNum][1] = kNewAxis.y;

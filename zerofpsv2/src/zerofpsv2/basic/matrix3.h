@@ -71,7 +71,7 @@ class BASIC_API Matrix3
 		Matrix3 operator*=(const float &f);		
 
 // Methods
-		void SetAxis(int iAxisNum, Vector3 kNewAxis);
+		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
 		Vector3 GetAxis(int iAxisNum);
 		
 		void Zero();								// Set whole matrix to zero.
@@ -83,23 +83,33 @@ class BASIC_API Matrix3
 		Matrix3 GetTransponse() const;
 		
 		void Scale(float fX, float fY, float fZ);
-		void Scale(Vector3 kScale);		
+		void Scale(const Vector3& kScale);		
 				
 		void RadRotate(float fX, float fY, float fZ);
-		void RadRotate(Vector3 kRot);
+		void RadRotate(const Vector3& kRot);
 		void Rotate(float fX, float fY, float fZ);
-		void Rotate(Vector3 kRot);
+		void Rotate(const Vector3& kRot);
 		
 		
 		Vector3 GetRotVector();
 
-		Vector3 VectorTransform (const Vector3& kVec) 
+		const Vector3& VectorTransform (const Vector3& kVec) const
 		{
-			return Vector3 (
+			static Vector3 kV3;
+			
+			kV3.Set(
 				kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
 				kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
 				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
 				);
+		
+			return kV3;
+				
+			/*return Vector3 (
+				kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
+				kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
+				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
+				);*/
 		}
 		
 		

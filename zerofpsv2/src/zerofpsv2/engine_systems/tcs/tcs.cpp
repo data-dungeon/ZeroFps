@@ -980,7 +980,7 @@ bool Tcs::IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2)
 	return false;
 }
 
-bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)
+bool Tcs::TestSides(const Vector3* kVerts,const Vector3* pkNormal,const Vector3& kPos)
 {
 /*  
   // first way to do it :D
@@ -998,19 +998,21 @@ bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)
 
 
 	//one way to do it
-  Vector3 e10=kVerts[1]-kVerts[0];
-  Vector3 e20=kVerts[2]-kVerts[0];
-  float a = e10.Dot(e10);
-  float b = e10.Dot(e20);
-  float c = e20.Dot(e20);
-  float ac_bb=(a*c)-(b*b);
-  Vector3 vp(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
-  float d = vp.Dot(e10);
-  float e = vp.Dot(e20);
-  float x = (d*c)-(e*b);
-  float y = (e*a)-(d*b);
-  float z = x+y-ac_bb;
-  return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+	static Vector3 e10,e20,vp;
+	
+	e10=kVerts[1]-kVerts[0];
+	e20=kVerts[2]-kVerts[0];
+	float a = e10.Dot(e10);
+	float b = e10.Dot(e20);
+	float c = e20.Dot(e20);
+	float ac_bb=(a*c)-(b*b);
+	vp.Set(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
+	float d = vp.Dot(e10);
+	float e = vp.Dot(e20);
+	float x = (d*c)-(e*b);
+	float y = (e*a)-(d*b);
+	float z = x+y-ac_bb;
+	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
 
 	
 
@@ -1141,18 +1143,21 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 	return pkClosest;
 }
 
-bool Tcs::CharacterTestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkMesh)
+bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tcs* pkMesh)
 {
-	Matrix4 kModelMatrix = pkMesh->GetModelMatrix();
-
+	static Matrix4 kModelMatrix;
+	static float closest;
+	static bool bHaveColided;
+	static Vector3 kClosestNormal;
+	static Vector3 kClosestPos;
+	static Vector3 verts[3];	
+	static Vector3 kPoint2;
 	
-	float closest = 		99999999;
-	bool bHaveColided = 	false;	
-	Vector3 kClosestNormal;
-	Vector3 kClosestPos;
+	kModelMatrix = pkMesh->GetModelMatrix();
 	
-	Vector3 kPoint2 = kStart + kDir * 1000;
-	Vector3 verts[3];	
+	closest = 		99999999;
+	bHaveColided = 	false;		
+	kPoint2 = kStart + kDir * 1000;
 	float d;
 	
 	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
@@ -1194,7 +1199,7 @@ bool Tcs::CharacterTestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkMesh)
 	return false;	
 }
 
-bool Tcs::TestLineVSPolygon(Vector3* pkVerts,Vector3* pkPos1,Vector3* pkPos2)
+bool Tcs::TestLineVSPolygon(const Vector3* pkVerts,const Vector3* pkPos1,const Vector3* pkPos2)
 {
 	static Plane P;
 	static Vector3 V1,V2,Normal;
@@ -1203,7 +1208,7 @@ bool Tcs::TestLineVSPolygon(Vector3* pkVerts,Vector3* pkPos1,Vector3* pkPos2)
 	V2 = pkVerts[2] - pkVerts[0];		
 	Normal= V1.Cross(V2);
 	
-	if(Normal.Length() == 0)
+	if(Normal.IsZero())
 		return false;
 	
 	Normal.Normalize();
@@ -1418,71 +1423,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 					
 		pkCollissions->push_back(temp);				
 	}
-		
-/*	while(retry && (fAtime >0.0) )
-	{
-		retry = false;
-		nroftests++;
 
-		if(fAtime < m_fAlmostZero)
-			fAtime = 0;
-					
-		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));				
-		UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
-		UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
-	
-		if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
-		{
-			//if first penetration do a check at time 0
-			if(!didpen)
-			{
-				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));				
-				UpdateBodyVelnPos(m_pkBodyCopy1,0);
-				UpdateBodyVelnPos(m_pkBodyCopy2,0);	
-						
-				if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
-				{
-					didpen = true;			
-					fAtime = 0;
-					break;
-				}
-			}
-							
-			didpen = true;			
-			retry = true;
-			fAtime /=m_fTimeSlice;
-		}
-		else if(didpen)
-			break;
-		else
-		{
-			m_iNrOfTests += nroftests;
-			return;		
-		}
-	}	
-
-	
-	m_iNrOfTests += nroftests;	
-	if(didpen)
-	{
-		if((pkCollission->fAtime > fAtime) || (pkCollission->fAtime == -1))
-		{
-				
-			//Tcs_collission* temp = new Tcs_collission ;
-			pkCollission->Clear();
-			
-			pkCollission->pkBody1 = pkBody1;
-			pkCollission->pkBody2 = pkBody2;	
-			pkCollission->kNormals.push_back((m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit());
-			pkCollission->kPositions.push_back(m_kLastTestPos);
-			
-			pkCollission->fAtime =	fAtime;
-			
-			//m_kCollissions.push_back(temp);				
-		}
-	}	*/
 }
 
 bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
@@ -1491,15 +1432,18 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		return false;
 	
 	
-	Matrix4 kModelMatrix = pkMesh->GetModelMatrix();
+	static Matrix4 kModelMatrix;
+	static Vector3 kClosestNormal;
+	static Vector3 kClosestPos;
+	static Vector3 verts[3];		 
+	static float closest,d;
+	static bool bHaveColided;
+	 
 	
-	float closest = 99999999;
-	Vector3 kClosestNormal;
-	Vector3 kClosestPos;
-	bool bHaveColided = false;
-	
-	Vector3 verts[3];	
-	float d;
+	kModelMatrix = pkMesh->GetModelMatrix();	
+	closest = 99999999;
+	bHaveColided = false;	
+	d;
 
 
 	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
@@ -1548,7 +1492,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	Vector3 V2 = kVerts[2] - kVerts[0];		
 	Vector3 Normal= V1.Cross(V2);
 	
-	if(Normal.Length() == 0)
+	if(Normal.IsZero())
 	{
 		return false;
 	}

@@ -161,8 +161,8 @@ class BASIC_API Vector3 {
 		Vector3 Angels(void);
 		Vector3 AToU();												///< convert Angel Vector to a Unit Vector
 
-      double DistanceTo (const Vector3& to);
-		double DistanceTo (const Vector4& to);
+      double DistanceTo (const Vector3& to) const;
+		double DistanceTo (const Vector4& to) const;
       double DistanceXZTo (const Vector3& to);
 
 		void Print(void);

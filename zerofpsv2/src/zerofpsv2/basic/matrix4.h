@@ -62,15 +62,15 @@ class BASIC_API Matrix4
 		
 		// Arithmetic operations
 		Matrix4 operator+ (const Matrix4& rkMatrix) const;
-		Matrix4 operator+= (const Matrix4& rkMatrix);
+		Matrix4 operator+=(const Matrix4& rkMatrix);
 		Matrix4 operator- (const Matrix4& rkMatrix) const;
-		Matrix4 operator-= (const Matrix4& rkMatrix);
+		Matrix4 operator-=(const Matrix4& rkMatrix);
 		Matrix4 operator* (const Matrix4& kOther) const;
-		Matrix4 operator*= (const Matrix4& rkMatrix);
-
-		Matrix4 operator*(const float &f) const;
+		Matrix4 operator*=(const Matrix4& rkMatrix);
+		
+		Matrix4 operator* (const float &f) const;
 		Matrix4 operator*=(const float &f);		
-		Vector4 operator*(const Vector4 &f);
+		Vector4 operator* (const Vector4 &f);
 	
 		
 // Methods
@@ -84,17 +84,17 @@ class BASIC_API Matrix4
 
 				
 		void RadRotate(float fX, float fY, float fZ);
-		void RadRotate(Vector3 kRot);
+		void RadRotate(const Vector3& kRot);
 		
 		void Rotate(float fX, float fY, float fZ);
-		void Rotate(Vector3 kRot);
+		void Rotate(const Vector3& kRot);
 		
 		void Scale(float fX, float fY, float fZ);
-		void Scale(Vector3 kScale);
+		void Scale(const Vector3& kScale);
 		
 		void OldTranslate(float x, float y, float z);		
 		void Translate(float fX, float fY, float fZ);
-		void Translate(Vector3 kPos);
+		void Translate(const Vector3& kPos);
 		
 		void LookDir(Vector3 kDir,Vector3 kUp);
 
@@ -102,29 +102,47 @@ class BASIC_API Matrix4
 		
 		Vector3 VectorIRotate (const Vector3& kVec);
 		
-		Vector3 VectorRotate (const Vector3& kVec)
+		const Vector3& VectorRotate (const Vector3& kVec)
 		{
-			return Vector3 (
+			static Vector3 kV3;
+			
+			kV3.Set(	kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0],
+						kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1],
+						kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2]
+						);
+			
+			return kV3;
+						
+			/*return Vector3 (
 				kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0],
 				kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1],
 				kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2]
-				);
+				);*/
 		}
 
-		Vector3 VectorTransform (const Vector3& kVec) 
+		const Vector3& VectorTransform (const Vector3& kVec) const
 		{
-			return Vector3 (
+			static Vector3 kV3;
+			
+			kV3.Set(	kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0],
+						kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1],
+						kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2]
+						);
+			
+			return kV3;
+						
+			/*return Vector3 (
 				kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0],
 				kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1],
 				kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2]
-				);
+				);*/
 		}
 
 
 // Accessors 
 		Vector3 GetRotVector();
 		Vector3 GetPosVector();
-		void SetAxis(int iAxisNum, Vector3 kNewAxis);
+		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
 		Vector3 GetAxis(int iAxisNum);
 
 				
@@ -133,7 +151,7 @@ class BASIC_API Matrix4
 			return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
 		}
 
-		void SetPos(Vector3 kPos)
+		void SetPos(const Vector3& kPos)
 		{
 			RowCol[3][0] = kPos.x;
 			RowCol[3][1] = kPos.y;
