@@ -21,14 +21,10 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
 		HeightMapObject *kO=dynamic_cast<HeightMapObject*>(pkOther);
 	
-	GetPos()=kPos+Vector3(0,.5,0);
-	m_kVel.y=0;
-	onGround=true;
-	GetStatic()=true;
-		
-	} else if(typeid(*pkOther)==typeid(PlayerBallObject)){
-		PlayerBallObject *kO=dynamic_cast<PlayerBallObject*>(pkOther);
-		Remove();	
+		GetPos()=kPos+Vector3(0,.5,0);
+		m_kVel.y=0;
+		onGround=true;
+		GetStatic()=true;
 		
 	} else if(bContinue){
 		pkOther->HandleCollision(this,kPos,false);

@@ -12,6 +12,10 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 void PlayerControlProperty::Update() {
 	float speed=0.006;
 	
+	//cant move fast while in air
+//	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround==false)
+//		speed*=0.5;
+	
 	if(m_pkInput->Pressed(KEY_D)){
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
@@ -48,6 +52,12 @@ void PlayerControlProperty::Update() {
 	//rotate the camera		
 	m_pkObject->GetRot().x+=z/5.0;
 	m_pkObject->GetRot().y+=x/5.0;
+	
+	if(m_pkObject->GetRot().x>90)
+		m_pkObject->GetRot().x=90;
+	
+	if(m_pkObject->GetRot().x<-90)
+		m_pkObject->GetRot().x=-90;
 	
 	
 	dynamic_cast<PlayerObject*>(m_pkObject)->onGround=false;
