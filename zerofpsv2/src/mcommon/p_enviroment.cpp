@@ -67,7 +67,7 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 		{
 			pl->SetType(DIRECTIONAL_LIGHT);
 			pl->SetRot(Vector3(0.5,0.5,0));
-			pl->SetDiffuse(Vector4(2,2,2,1));		
+			pl->SetDiffuse(Vector4(1.6,1.6,1.6,1));		
 			pl->SetAmbient(Vector4(0.8,0.8,0.8,1.0));					
 		}
 	}
