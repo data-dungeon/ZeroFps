@@ -210,7 +210,7 @@ vector<PropertyValues> P_PfPath::GetPropertyValues()
 void P_PfPath::SetPath(vector<Vector3> kPath)
 {
 	m_kPath = kPath;
-	m_iNextGoal = 0;
+	m_iNextGoal = 1;
 }
 
 /**	\brief	Makes a pathfind to a choosen postition.
@@ -230,10 +230,13 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 		m_kRawPath = kPath;
 		SetPath( m_pkAStar->OptimizePath(kPath) );
 		
+		
+		
 		//play run animation
 		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 		if(pm)
-			pm->SetAnimation((char*)m_kRunAnim.c_str(),0);
+			if(pm->GetCurrentAnimationName() != m_kRunAnim)
+				pm->SetAnimation((char*)m_kRunAnim.c_str(),0);
 	}
 	
 	return bPathFound;
