@@ -78,7 +78,7 @@ void MistClient::OnInit()
 		
 	
 	//initiate our mainview camera
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),85,1.333,0.25,250);	
 	m_pkCamera->SetName("Main camera");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
@@ -331,6 +331,12 @@ void MistClient::RenderInterface(void)
 {
 	if(m_iTargetID != -1)
 		DrawTargetMarker();
+		
+		
+// 	Vector3 kPos = m_pkCamera->GetPos() + Get3DMouseDir(true);
+// 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
+// 	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
+// 	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));			
 }
 
 void MistClient::OnIdle() 
@@ -366,6 +372,10 @@ void MistClient::OnIdle()
 // 		kNp.TargetSetClient(0);
 // 		SendAppMessage(&kNp);	
 // 	}
+
+	// Set Color here.
+
+
 }
 
 void MistClient::OnHud(void) 
@@ -1485,7 +1495,8 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 		
 		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
 		{
-			dir.Set(x*xp,-y*yp,-2.15);
+ 			//dir.Set(x*xp,-y*yp,-2.15);			//for 75 deg fov
+ 			dir.Set(x*xp,-y*yp,-1.64);				//for 85 deg fov
 			dir.Normalize();
 		}
 		else
