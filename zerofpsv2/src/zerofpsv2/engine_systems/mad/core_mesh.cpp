@@ -557,8 +557,17 @@ void Mad_CoreMesh::SetTextureHandle(int iTextureIndex, string strName)
 {
 
 	//hack deluxe av dvoid
-	strName.resize(strName.size() -3);
-	strName = "../"+strName+"zmt";
+	string temp = "";	
+	strName.resize(strName.size() -3);	
+	for(int i=strName.size()-1;i>=0;i--)
+	{
+		if(strName[i] == '/')
+			break; 
+			
+		temp = strName[i]+temp;
+	}
+	strName = "../data/material/"+temp+"zmt";
+	
 	
 	akTexturesHandles[iTextureIndex].SetRes(strName);
 }
