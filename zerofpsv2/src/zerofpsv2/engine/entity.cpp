@@ -1016,7 +1016,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 		m_pkObjectMan->Link(this,iNewID);
 	}
 	else
-		m_pkObjectMan->Link(this,iNewID);	
+		m_pkObjectMan->Link(this);	
 
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	

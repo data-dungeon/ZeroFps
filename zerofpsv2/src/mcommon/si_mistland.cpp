@@ -1234,13 +1234,19 @@ int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
 
 	   if (pkObject)
 		{
+		
      		char	acScript[128];
 			g_pkScript->GetArgString(pkLua, 0, acScript);
 
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+			
 
          if ( pkCP )
-            pkCP->GetCharStats()->m_strScriptWhenHit = acScript;
+         {
+            CharacterStats* pkc = pkCP->GetCharStats();
+            if(pkc)
+            	pkc->m_strScriptWhenHit = acScript;
+         }
          else
             cout << "Warning! Tried to use SetScriptWhenHitLua on a non-character object!" << endl; 
       }

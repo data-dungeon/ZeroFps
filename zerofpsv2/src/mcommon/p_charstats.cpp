@@ -49,6 +49,7 @@ CharacterProperty::CharacterProperty()
 
 	bNetwork = true;
 
+	m_pkCharStats = NULL;
 }
 
 // ------------------------------------------------------------------------------------------

@@ -19,6 +19,8 @@ CharacterStats::CharacterStats( Entity *pkParent )
 
    m_pkParent = pkParent;
 
+	m_strScriptWhenHit = "";
+
 	// if stat-types isn't loaded
 	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
       LoadStatTypes();
