@@ -308,10 +308,10 @@ void MistClient::OnSystem()
 			}	
 			
 			//print server messages
-			while(!pi->kMessages.empty())
+			while(!m_pkServerInfo->m_kMyMessages.empty())
 			{
-				PrintInfoBox(pi->kMessages.front().c_str());
-				pi->kMessages.pop();
+				PrintInfoBox(m_pkServerInfo->m_kMyMessages.front().c_str());
+				m_pkServerInfo->m_kMyMessages.pop();
 			}
 			
 		}else

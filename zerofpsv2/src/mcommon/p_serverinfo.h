@@ -30,13 +30,10 @@ class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;
 
-
-
-		vector<PlayerInfo>	m_kPlayers;
-		
-
+		vector<PlayerInfo>	m_kPlayers;		
 	public:
-		string m_sServerName;				
+		string 					m_sServerName;				
+		queue<string>			m_kMyMessages;					//messages recived is put in this queue		
 		
 		void CloneOf(Property* pkProperty) { }
 		P_ServerInfo();

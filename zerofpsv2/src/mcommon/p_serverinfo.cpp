@@ -141,6 +141,8 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 			pkNetPacket->Write(&messages,sizeof(messages));
 			while(!m_kPlayers[i].kMessages.empty())
 			{
+				cout<<"sent message:"<<m_kPlayers[i].kMessages.front()<<endl;				
+				
 				pkNetPacket->Write_Str(m_kPlayers[i].kMessages.front().c_str());
 				m_kPlayers[i].kMessages.pop();		
 			}
@@ -186,17 +188,18 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		}
 		
 		//read messages
-		while(!temp.kMessages.empty())			//clean message queue
-			temp.kMessages.pop();
+		//while(!temp.kMessages.empty())			//clean message queue
+		//	temp.kMessages.pop();
 
 		int messages; 
 		pkNetPacket->Read(&messages,sizeof(messages));		
-			
+		
 		for(int i2 =0;i2<messages;i2++)
 		{	
 			char tempstr[256];
 			pkNetPacket->Read_Str(tempstr);
-			temp.kMessages.push(tempstr);
+			m_kMyMessages.push(tempstr);
+			//temp.kMessages.push(tempstr);
 			
 		}
 		
@@ -226,7 +229,9 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 			{
 				//check rights 
 				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+				{
 					m_kPlayers[i].kMessages.push(strMessage);	
+				}
 			}		
 		}
 	}
@@ -239,7 +244,7 @@ void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 	{	
 		if(m_kPlayers[i].sPlayerName == czName)
 		{	
-			cout<<"found player"<<endl;
+			//cout<<"found player"<<endl;
 			m_kPlayers[i].kMessages.push(strMessage);	
 			return;
 		}
