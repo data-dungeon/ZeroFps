@@ -1,4 +1,5 @@
 #include "container.h"
+#include "containerproperty.h"
 
 Container::Container()
 {
@@ -133,6 +134,12 @@ bool Container::AddItem(Object* pkObject)
 	if(pkIP == NULL)
 		return false;
 	
+	//check if trying to put in self
+	ContainerProperty* cp = static_cast<ContainerProperty*>(pkObject->GetProperty("ContainerProperty"));
+	if(cp != NULL)
+		if(&cp->m_kContainer == this)
+			return false;
+	
 	int iX=0;	
 	int iY=0;
 	
@@ -169,6 +176,13 @@ bool Container::AddItem(Object* pkObject,int iX,int iY)
 	//dont add if object does not have any itemproperty
 	if(pkIP == NULL)
 		return false;
+	
+	//check if trying to put in self
+	ContainerProperty* cp = static_cast<ContainerProperty*>(pkObject->GetProperty("ContainerProperty"));
+	if(cp != NULL)
+		if(&cp->m_kContainer == this)
+			return false;	
+	
 	
 	//check if the slot iX,iY is free
 	if(!CheckFreeSlot(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY))

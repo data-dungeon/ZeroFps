@@ -420,5 +420,8 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 
 void PlayerControlProperty::Drop(Object *pkObject)
 {
+	pkObject->GetPos() = m_pkObject->GetPos();
+	pkObject->SetPos(m_pkObject->GetPos());	
+	pkObject->AttachToClosestZone();
 
 }
