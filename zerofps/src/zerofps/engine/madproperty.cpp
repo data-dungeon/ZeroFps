@@ -1,5 +1,6 @@
 #include "madproperty.h"
 #include "object.h"
+#include "../render/render.h"
 
 MadProperty::MadProperty()
 {
@@ -27,6 +28,8 @@ MadProperty::MadProperty(Mad_Core* pkModell) {
 
 void MadProperty::Update() 
 {
+//	Render* spya = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+
 	if(!pkCore)
 		return;
 
@@ -40,10 +43,12 @@ void MadProperty::Update()
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
-		glScalef(m_fScale,m_fScale,m_fScale);
+//		glScalef(m_fScale,m_fScale,m_fScale);
+		glScalef(0.01,0.01,0.01);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
 		glRotatef(m_pkObject->GetRot().x ,1,0,0);
-		glRotatef(m_pkObject->GetRot().y ,0,1,0);		
+		glRotatef(m_pkObject->GetRot().y ,0,1,0);	
+//		spya->DrawBoundSphere(sphere.w *100, m_pkObject->GetPos());
 		Draw_All();
 	glPopMatrix();
 

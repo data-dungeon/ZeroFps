@@ -225,11 +225,11 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTe
 	
 }
 
-/*
+
 void Render::DrawBoundSphere(float fRadius, Vector3)
 {
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-	glColor3f(1,1,1);
+	glColor3f(1,0,0);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D );
 
@@ -244,7 +244,7 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 	glEnd();
 
 	glPopAttrib();
-}*/
+}
 
 
 

@@ -797,6 +797,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	int iStep;
 	float fDistance;
 	
+	// See if we can Cull away this patch.
 	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->GetSize()/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
 							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
 							  kMap->m_kPosition.z-(kMap->GetSize()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
@@ -805,14 +806,11 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		
 	if(fDistance > m_iViewDistance)
 		return;
-		
-	//cull
 	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
 		
 		
 	iStep=PowerOf2(int(fDistance / m_iDetail));
-		
 		
 //	iStep=32;	
 //	cout<<iStep<<endl;
@@ -822,30 +820,85 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		m_pkLight->Update(PatchCenter);
 	glPopMatrix();
 
-
-
 //	glPolygonMode(GL_FRONT,GL_LINE);
+	
+	// Draw the Terrain Patch.
+	float fXDivTexScale;
+	float fZDivTexScale;
+	float fXDivHmSize;
+	float fZDivHmSize;
+	int	  iVertexIndex;
+	float fScaleX, fScaleZ;
+
+	HM_vert* pkHmVertex = kMap->verts;
 	int z,x;
 	
 	for(z = zp ; z < zp+iSize; z+=iStep){
-		if(z>=kMap->m_iHmSize-iStep)
+		if(z >= kMap->m_iHmSize-iStep)
+			break;			
+			
+		fZDivTexScale	= (float) z / TEX_SCALE;
+		fZDivHmSize		= (float) z / kMap->m_iHmSize;
+
+		glBegin(GL_TRIANGLE_STRIP);
+		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
+			fXDivTexScale	= (float) x / TEX_SCALE;
+			fXDivHmSize		= (float) x / kMap->m_iHmSize;
+
+			fScaleX = x * HEIGHTMAP_SCALE;
+			fScaleZ = z * HEIGHTMAP_SCALE;
+
+			float fZStepDivHmSize = ((float)z+iStep) / kMap->m_iHmSize;
+			float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
+
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize , fZDivHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale , fZDivTexScale);
+			iVertexIndex = z*kMap->m_iHmSize+x;
+			glNormal3fv((float*)&pkHmVertex[ iVertexIndex ].normal);			
+			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);					
+			
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize, fZStepDivHmSize);		 		 			 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale ,fZStepDivTexScale);		
+			
+			iVertexIndex = (z+iStep)*kMap->m_iHmSize+x;
+			glNormal3fv((float*)&pkHmVertex[iVertexIndex].normal);			
+			glVertex3f( fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE,(z+iStep)*HEIGHTMAP_SCALE);			
+		}		
+		glEnd();		
+	}
+	
+/*	float fXDivTexScale;
+	float fZDivTexScale;
+	float fXDivHmSize;
+	float fZDivHmSize;
+
+
+	int z,x;
+	
+	for(z = zp ; z < zp+iSize; z+=iStep){
+		if(z >= kMap->m_iHmSize-iStep)
 			break;			
 			
 		glBegin(GL_TRIANGLE_STRIP);
 		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
+			fXDivTexScale = (float)x / TEX_SCALE;
+			fZDivTexScale = (float)z / TEX_SCALE;
+			fXDivHmSize = (float) x / kMap->m_iHmSize;
+			fZDivHmSize = (float) z / kMap->m_iHmSize;
+
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale , fZDivTexScale);						
 			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
 			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
 			
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,((float)z+iStep)/kMap->m_iHmSize);		 		 			 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,((float)z+iStep)/TEX_SCALE);						
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale ,((float)z+iStep)/TEX_SCALE);						
 			glNormal3fv((float*)&kMap->verts[(z+iStep)*kMap->m_iHmSize+x].normal);			
 			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[(z+iStep)*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,(z+iStep)*HEIGHTMAP_SCALE);			
 		}		
 		glEnd();		
 	}
-	
+*/	
 
 	//damn ulgly lod fix
 	 

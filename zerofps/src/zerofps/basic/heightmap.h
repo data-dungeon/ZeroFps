@@ -44,7 +44,11 @@ class BASIC_API HeightMap: public ZFObject {
 	public:
 		vector<TileSet> m_kSets;
 		
-		HM_vert* verts;		
+		HM_vert* verts;	
+		
+		Vector3* m_pkVertex;	// Precalc vertex coo. Created at load time.
+		void RebuildVertex();
+
 		int m_iHmSize;
 		char m_acTileSet[256];
 		Vector3 m_kPosition;

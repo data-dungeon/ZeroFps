@@ -649,7 +649,7 @@ void Mad_Core::CalculateRadius()
 
 float Mad_Core::GetRadius()
 {
-	return m_fBoundRadius;
+	return m_fBoundRadius * 0.01;
 }
 
 int Mad_Core::GetJointID(char* szJointName)

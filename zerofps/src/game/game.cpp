@@ -83,6 +83,8 @@ void Game::OnHud(void)
 	glDisable(GL_LIGHTING);
 	
 	
+	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
+	
 	switch(m_iGameState)
 	{
 		case GAME_STATE_MENU:
@@ -90,7 +92,7 @@ void Game::OnHud(void)
 //			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 //			glEnable(GL_BLEND);
 				
-			pkRender->Quad(Vector3(-.5,-.5,-.5),Vector3(0,0,0),Vector3(1,1,1),pkTexMan->Load("file:../data/textures/logo_menu.tga",0));		
+//			pkRender->Quad(Vector3(-.5,-.5,-.5),Vector3(0,0,0),Vector3(1,1,1),pkTexMan->Load("file:../data/textures/logo_menu.tga",0));		
 					
 //			glDisable(GL_BLEND);	
 			break;
@@ -100,7 +102,6 @@ void Game::OnHud(void)
 		{
 			pkRender->SetFont("file:../data/textures/text/console.tga");
 
-			pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
 
 
 			glAlphaFunc(GL_GREATER,0.3);

@@ -294,18 +294,14 @@ void Mad_Modell::LoadTextures()
 
 Mad_CoreMesh* g_pkLastMesh;
 
-
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
-//	return;
-
 	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
 		//cout << "Calling list " << iListID << endl;
 		glCallList(iListID);
 		return;
 		}
-
 
 	if(iDrawFlags == 0)
 		return;
@@ -360,7 +356,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		}
 
 	glDisable(GL_ALPHA_TEST);
-//	if(iDrawFlags & MAD_DRAW_BONES)
+	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
 
 	glPopAttrib();

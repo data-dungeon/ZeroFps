@@ -12,7 +12,9 @@ HeightMap::HeightMap()
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_iError=4;
 	
-	verts=NULL;
+	verts =NULL;
+	m_pkVertex = NULL;
+
 	Create(128);
 	
 
@@ -26,8 +28,12 @@ void HeightMap::Create(int iHmSize)
 {
 	m_iHmSize=iHmSize;
 	m_kPosition.Set(0,0,0);
+
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
+	delete[] m_pkVertex;
+	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+
 	Zero();
 	SetTileSet("file:../data/textures/landbw.bmp");
 	
@@ -39,6 +45,7 @@ void HeightMap::Zero() {
 	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
 		verts[i].height=5;
 		verts[i].texture=0;
+		m_pkVertex[i].Set(0,0,0);
 	}
 }
 
@@ -216,7 +223,9 @@ bool HeightMap::Load(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
-	
+	delete[] m_pkVertex;
+	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+
 	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 	
 	int i;
@@ -438,6 +447,9 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
+	delete[] verts;
+	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+	 
 
 	for(int y=0;y<m_iHmSize;y++)
 		for(int x=0;x<m_iHmSize;x++){						
@@ -519,6 +531,13 @@ void HeightMap::ClearSet()
 }
 
 
+void HeightMap::RebuildVertex()
+{
+	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
+		m_pkVertex[i].Set(0,0,0);
+	}
+
+}
 
 
 
