@@ -28,8 +28,6 @@ void ModelProperty::Update() {
 }
 
 void ModelProperty::PackTo( NetPacket* pkNetPacket ) {
-	cout << "????????????" << endl;
-
 	pkNetPacket->Write( m_iType );		
 	pkNetPacket->Write( m_fRadius );		
 	pkNetPacket->Write( m_iSlices );		

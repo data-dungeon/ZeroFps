@@ -106,25 +106,11 @@ void Test::OnInit(void) {
 		pkCollisionMan->Add(ball);
 	}*/
 
-
-	int i;
-
-	Object *sussi;
-	for(i=0;i<1;i++) {
-		sussi=new BunnyObject();
-		float x=300 + rand()%100;
-		float y=750 + rand()%100;
-		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
-		pkObjectMan->Add(sussi);
-		pkCollisionMan->Add(sussi);
-	}
-
-
-
 	glEnable(GL_LIGHTING );
 	
 	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),90,1.333,0.25,400);	
 	
+
 	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos()=Vector3(300,25,785);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
@@ -144,7 +130,18 @@ void Test::OnInit(void) {
 }
 
 void Test::OnServerStart(void)
-{
+{	
+	int i;
+
+	Object *sussi;
+	for(i=0;i<1;i++) {
+		sussi=new BunnyObject();
+		float x=300 + rand()%100;
+		float y=750 + rand()%100;
+		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+		pkObjectMan->Add(sussi);
+		pkCollisionMan->Add(sussi);
+	}
 }
 
 void Test::OnClientStart(void)

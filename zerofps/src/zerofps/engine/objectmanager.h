@@ -31,7 +31,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void PackToClients();						//Packs and Sends to ALL clients.
 
 		Object*	GetObjectByNetWorkID(int iNetID);
-		Object* CreateObjectByNetWorkID(int iNetID);		
+		Object* CreateObjectByNetWorkID(int iNetID);	
+		int	GetNumOfObjects();
 
 };
 

@@ -12,7 +12,6 @@ BunnyObject::BunnyObject()
 
 	Vector3 kColor;
 	kColor.Set(rand()%1000/1000.0,rand()%1000/1000.0,rand()%1000/1000.0);
-	kColor.Set(0.1,0.2,0.3);
 
 	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));
 	if(mod) {

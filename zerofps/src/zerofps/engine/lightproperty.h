@@ -21,6 +21,8 @@ class ENGINE_API LightProperty: public Property {
 		~LightProperty();
 
 		void Update();
+		void PackTo(NetPacket* pkNetPacket) ;
+		void PackFrom(NetPacket* pkNetPacket) ;
 
 		inline void SetPos(Vector3 kPos){*spot->kPos=kPos;};	
 		inline void SetRot(Vector3 kRot){*spot->kRot=kRot;};	

@@ -21,8 +21,6 @@ ZeroFps::ZeroFps(void)
 	m_pkOpenAlSystem= new OpenAlSystem();
 	m_pkNetWork = new NetWork;
 
-//	m_pkNetWork->ServerStart();
-
 	m_iFullScreen=0;
 	m_fFrameTime=0;
 	m_fLastFrameTime=SDL_GetTicks();
@@ -50,10 +48,6 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 
 	RegisterPropertys(this);
-
-
-//	Property* ptest = new ModelProperty;
-
 }
 
 ZeroFps::~ZeroFps()
@@ -170,6 +164,8 @@ void ZeroFps::MainLoop(void) {
 						
 				//update all objects
 				m_pkObjectMan->Update();
+				DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+
 
 				//update all collisions
 				m_pkCollisionMan->Update();				

@@ -5,6 +5,7 @@
 
 LightProperty::LightProperty()
 {
+	bNetwork = true;
 	strcpy(m_acName,"LightProperty");
 
 	spot=new LightSource();
@@ -44,6 +45,14 @@ void LightProperty::Update()
 //	spot->kPos->Set(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
 }
 
+void LightProperty::PackTo( NetPacket* pkNetPacket ) {
+	pkNetPacket->Write( spot->kDiffuse );		
+}
+
+void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
+	pkNetPacket->Read( spot->kDiffuse );		
+
+}
 
 Property* Create_LightProperty()
 {

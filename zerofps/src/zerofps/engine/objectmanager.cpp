@@ -129,4 +129,8 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	return pkNew;
 }
 
+int	ObjectManager::GetNumOfObjects()
+{
+	return m_akObjects.size();
+}
 

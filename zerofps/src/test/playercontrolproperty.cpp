@@ -10,6 +10,16 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 	strcpy(m_acName,"PlayerControlProperty");
 };
 
+/*
+class	ClientMoveCommand
+{
+public:
+	Vector3 kTranslate;
+	Vector3 kRotate;
+	int		iJump;
+};
+*/
+
 void PlayerControlProperty::Update() {
 	float speed=6;
 	
@@ -17,6 +27,7 @@ void PlayerControlProperty::Update() {
 //	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround==false)
 //		speed*=0.5;
 	
+
 	if(m_pkInput->Pressed(KEY_D)){
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
