@@ -612,6 +612,23 @@ void Gui::ClosePropertybox()
 	}
 }
 
+void Gui::OpenPropertybox()
+{
+	if(m_pkEditPropDlgBox)
+	{
+		if(m_pkEditPropDlgBox->IsOpen())
+			return;
+	}
+
+	delete m_pkEditPropDlgBox;
+	m_pkEditPropDlgBox = NULL;
+
+	m_pkEditPropDlgBox = new EditPropertyDlg(this, 
+		m_pkEdit->pkPropertyFactory, 
+		m_pkEdit->pkObjectMan, 
+		m_pkEdit->m_pkCurentChild, MAINWINPROC);
+}
+
 bool Gui::HaveFocus()
 {
 	static bool bGiveGuiFocus = false;

@@ -956,6 +956,11 @@ void ZeroEdit::Input()
 					
 			break;			
 	}
+
+	if(pkInput->Pressed(KEY_SPACE))
+	{
+		m_pkGui->OpenPropertybox();
+	}
 }
 
 /*

@@ -86,6 +86,7 @@ public:
 	void CreateTestWnd();
 	void UpdatePropertybox();
 	void ClosePropertybox();
+	void OpenPropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
