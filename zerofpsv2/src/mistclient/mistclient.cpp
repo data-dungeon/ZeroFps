@@ -321,6 +321,7 @@ void MistClient::Input()
 				
 			m_pkCamProp->Set3PYAngle(m_fAngle);
 			m_pkCamProp->Set3PDistance(m_fDistance);
+			m_pkCamProp->Set3PYPos(1.5);
 		}
 	}
 	
@@ -464,6 +465,7 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 		m_pkCamProp->Set3PDistance(m_fMinCamDistance);	
+		m_pkCamProp->Set3PYPos(1.5);	
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
@@ -644,8 +646,13 @@ Object* MistClient::GetTargetObject()
 	Object* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
+		
+		//objects that shuld not be clicked on (special cases)
 		if(kObjects[i]->iNetWorkID <100000)
 			continue;
+		
+		if(kObjects[i]->iNetWorkID == m_iActiveCaracterObjectID)
+			continue;		
 		
 		if(kObjects[i]->GetName() == "ZoneObject")
 			continue;
@@ -655,6 +662,7 @@ Object* MistClient::GetTargetObject()
 		
 		if(kObjects[i]->GetProperty("P_Ml")==NULL)
 			continue;
+		//-------------
 		
 		float d = (start - kObjects[i]->GetWorldPosV()).Length();
 	
