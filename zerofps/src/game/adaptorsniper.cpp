@@ -16,7 +16,7 @@ AdaptorSniper::AdaptorSniper()
 	
 	m_fChangeTime=m_pkFps->GetTicks();
 	m_fDirUpdate=4;
-	m_fRotateSpeed=4;
+	m_fRotateSpeed=2;
 	m_fWalkSpeed=3;	
 }
 
@@ -40,24 +40,31 @@ void AdaptorSniper::Update()
 		m_kDir.Set(0,rand()%360,0);
 	}
 	
+	
+	if(m_pkObject->GetRot().y>360)
+		m_pkObject->GetRot().y-=360;
+	
+	if(m_pkObject->GetRot().y<0)
+		m_pkObject->GetRot().y+=360;
+	
+	
 	m_pkObject->GetRot().y = BestYawTurnDir(m_pkObject->GetRot().y,m_kDir.y,m_fRotateSpeed);
 	
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
-	vel += GetYawVector(m_pkObject->GetRot().y) * m_fWalkSpeed;
+	vel += GetYawVector2(m_pkObject->GetRot().y) * m_fWalkSpeed;
 	m_pkObject->GetVel()=vel;
 	
 
 }
 
-
-
-Vector3 AdaptorSniper::GetYawVector(float fAngleDeg)
+void AdaptorSniper::Touch(Object* pkObject)
 {
-	Vector3 kYaw;
-	kYaw.x = cos(DegToRad(fAngleDeg));	
-	kYaw.y = 0;
-	kYaw.z = sin(DegToRad(fAngleDeg));	
-	return kYaw;
+//	m_fChangeTime=0;
+	if(pkObject->GetName() != "HeightMapObject")
+	{		
+		m_pkObject->GetRot().y+=180;
+	}
+
 }
 
 float AdaptorSniper::BestYawTurnDir(float fStart, float fEnd, float fSpeed)
@@ -98,3 +105,14 @@ Property* Create_AdaptorSniper()
 }
 
 
+/*
+
+Vector3 AdaptorSniper::GetYawVector(float fAngleDeg)
+{
+	Vector3 kYaw;
+	kYaw.x = cos(DegToRad(fAngleDeg));	
+	kYaw.y = 0;
+	kYaw.z = sin(DegToRad(fAngleDeg));	
+	return kYaw;
+}
+*/

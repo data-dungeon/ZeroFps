@@ -21,13 +21,13 @@ class AdaptorSniper: public Property {
 		float m_fRotateSpeed;
 		float m_fWalkSpeed;
 		
-		Vector3 GetYawVector(float fAngleDeg);
+//		Vector3 GetYawVector(float fAngleDeg);
 		
 		float BestYawTurnDir(float fStart, float fEnd, float fSpeed);
 
 	public:
 		AdaptorSniper();
-	
+		void Touch(Object* pkObject);
 		void Update();
 };
 

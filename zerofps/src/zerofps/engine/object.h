@@ -31,6 +31,7 @@ enum ObjectType {
 	OBJECT_TYPE_DYNAMIC,
 	OBJECT_TYPE_STATIC,
 	OBJECT_TYPE_PLAYER,
+	OBJECT_TYPE_STATDYN,	
 };
 
 class ENGINE_API PropertyDescriptor{

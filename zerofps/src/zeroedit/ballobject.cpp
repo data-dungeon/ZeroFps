@@ -19,6 +19,7 @@ BallObject::BallObject() {
 
 	
 //	m_iObjectType=OBJECT_TYPE_STATIC;
+	m_iObjectType=OBJECT_TYPE_STATDYN;
 
 //	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
