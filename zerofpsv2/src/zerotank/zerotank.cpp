@@ -1,4 +1,5 @@
 #include "zerotank.h"
+#include "scriptinterfaces.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
@@ -9,11 +10,7 @@ Object* g_pkTower;
 Object* g_pkGun;
 Vector3 g_kRotTower = Vector3(0,0,0);;
 
- 
-static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{ 	
-	return true;
-}
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) {return true;}
 
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), GuiApp(GUIPROC)
@@ -29,7 +26,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTankTower	= NULL;
 	m_pkZeroTankGun	= NULL;
 	m_pkZeroTank_Modify = NULL;
-
+	m_fConePosY = 0.0f;
 } 
 
 void ZeroTank::OnInit() 
@@ -103,9 +100,12 @@ void ZeroTank::Init()
 */
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 
-	InitializeGui(pkGui, pkTexMan);
+	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
+	
+	InitializeGui(pkGui, pkTexMan, pkScript);
 
-	SetupGUI();
+//	SetupGUI();
+	
 }
 
 void ZeroTank::RegisterActions()
@@ -168,6 +168,11 @@ void ZeroTank::OnIdle()
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
 		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
+	}
+
+	if(m_pkTestObject)
+	{
+		m_pkTestObject->SetWorldPosV(Vector3(0,-10+m_fConePosY,0)); 
 	}
 
 }

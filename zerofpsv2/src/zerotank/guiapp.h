@@ -10,27 +10,28 @@ using namespace std;
 #include "../zerofpsv2/gui/zgui.h"
 
 class TextureManager;
+class ZFScript;
 
 #define EB_IS_MULTILINE   0x1
 
 enum GuiType
 {
-	Wnd,
-	Button,
-	Checkbox,
-	Combobox,
-	Label,
-	Listbox,
-	Radiobutton,
-	Scrollbar,
-	Slider,
-	TabControl,
-	Textbox,
-	Treebox,
+	Wnd,				// 0
+	Button,			// 1
+	Checkbox,		// 2
+	Combobox,		// 3
+	Label,			// 4
+	Listbox,			// 5
+	Radiobutton,	// 6
+	Scrollbar,		// 7
+	Slider,			// 8
+	TabControl,		// 9
+	Textbox,			// 10
+	Treebox,			// 11
 	GuiType_Error
 };
 
-class GuiApp  
+class GuiApp
 {
 public:
 	bool IsButtonChecked(int iWndID);
@@ -47,7 +48,7 @@ public:
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
-	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan);
+	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
 	bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
@@ -57,9 +58,10 @@ public:
 	~GuiApp();
 
 private:
+	char* GetTexName(ZFScript* pkScript, char* szName);
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
-	void InitTextures();
+	void InitTextures(ZFScript* pkScript);
 	ZGuiWnd* GetWnd(int iID);
 	ZGuiSkin* GetSkin(string strName);
 
@@ -73,6 +75,7 @@ private:
 
 	char* m_szLastRadioBGroup;
 	int m_iLastRadioBGroup;
+	char m_szTexName[250];
 };
 
 #endif // #ifndef _GUIBUILDER_H

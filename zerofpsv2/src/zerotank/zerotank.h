@@ -78,6 +78,8 @@ class ZeroTank :public Application, public GuiApp {
 
 		//GuiBuilder*			m_pkGuiBuilder;
 
+		float m_fConePosY;
+
 	public:
 		
 		ZeroTank(char* aName,int iWidth,int iHeight,int iDepth);
@@ -113,6 +115,8 @@ class ZeroTank :public Application, public GuiApp {
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+		ZFScript* GetScript() { return pkScript; }
 
 };
 

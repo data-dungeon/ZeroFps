@@ -6,6 +6,7 @@
 #include "../zerofpsv2/basic/zfassert.h"
 #include "../zerofpsv2/engine/res_texture.h"
 #include "../zerofpsv2/render/texturemanager.h"
+#include "../zerofpsv2/script/zfscript.h"
 #include <typeinfo>
  
 //////////////////////////////////////////////////////////////////////
@@ -211,7 +212,15 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		pkParent, x, y, w, h, uiFlags);
 }
 
-void GuiApp::InitTextures()
+char* GuiApp::GetTexName(ZFScript* pkScript, char* szName)
+{
+	if(!pkScript->GetGlobal(NULL, szName, m_szTexName))
+		strcpy(m_szTexName, "\0");
+
+	return m_szTexName;
+}
+
+void GuiApp::InitTextures(ZFScript* pkScript)
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
 	int crap = m_pkTexMan->Load("/data/textures/gui/crap.bmp", 0);
@@ -220,18 +229,18 @@ void GuiApp::InitTextures()
 
 	ZGuiSkin* skin;
 
-	m_kSkins.insert(strSkin("DefWndSkin", new ZGuiSkin(GetTexID("defwnd.bmp"),0)));
-	m_kSkins.insert(strSkin("DefBnUSkin", new ZGuiSkin(GetTexID("bn_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefBnDSkin", new ZGuiSkin(GetTexID("bn_d.bmp"),0)));
-	m_kSkins.insert(strSkin("DefBnFSkin", new ZGuiSkin(GetTexID("bn_f.bmp"),0)));
-	m_kSkins.insert(strSkin("DefRBnUSkin", new ZGuiSkin(GetTexID("rbn_u.bmp"),GetTexID("rbn_a.bmp"),0)));
-	m_kSkins.insert(strSkin("DefRBnDSkin", new ZGuiSkin(GetTexID("rbn_d.bmp"),GetTexID("rbn_a.bmp"),0)));
-	m_kSkins.insert(strSkin("DefCBnUSkin", new ZGuiSkin(GetTexID("cbn_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefCBnDSkin", new ZGuiSkin(GetTexID("cbn_d.bmp"),0)));
-	m_kSkins.insert(strSkin("DefSBrNSkin", new ZGuiSkin(GetTexID("sb_n.bmp"),0)));
-	m_kSkins.insert(strSkin("DefSBrFSkin", new ZGuiSkin(GetTexID("sb_f.bmp"),0)));
-	m_kSkins.insert(strSkin("DefSBrBkSkin", new ZGuiSkin(GetTexID("sb_bk.bmp"),1)));
-	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID("slider.bmp"),
+	m_kSkins.insert(strSkin("DefWndSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefWndSkin")),0)));
+	m_kSkins.insert(strSkin("DefBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnUSkin")),0)));
+	m_kSkins.insert(strSkin("DefBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnDSkin")),0)));
+	m_kSkins.insert(strSkin("DefBnFSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnFSkin")),0)));
+	m_kSkins.insert(strSkin("DefRBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefRBnUSkin")),GetTexID("rbn_a.bmp"),0)));
+	m_kSkins.insert(strSkin("DefRBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefRBnDSkin")),GetTexID("rbn_a.bmp"),0)));
+	m_kSkins.insert(strSkin("DefCBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefCBnUSkin")),0)));
+	m_kSkins.insert(strSkin("DefCBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefCBnDSkin")),0)));
+	m_kSkins.insert(strSkin("DefSBrNSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrNSkin")),0)));
+	m_kSkins.insert(strSkin("DefSBrFSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrFSkin")),0)));
+	m_kSkins.insert(strSkin("DefSBrBkSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrBkSkin")),1)));
+	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSliderSkin")),
 		GetTexID("slider_a.bmp"), 0)));
 	m_kSkins.insert(strSkin("DefSliderBkSkin", new ZGuiSkin(255,0,0,  0,0,255, 0)));
 
@@ -289,16 +298,23 @@ void GuiApp::InitTextures()
 	m_kSkins.insert(strSkin("DefTabPageFrontSkin", new ZGuiSkin(214,211,206,0,0,0,0)));
 }
 
-void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan)
+void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript)
 {
+	// Start skript filen för GUI:t.
+	// Läs in tex filnamn på textuerer osv.
+	pkScript->RunScript("gui_script.lua");
+
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;
 
-	InitTextures();
+	InitTextures(pkScript);
 
 	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("/data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/cursor_a.bmp", 0), 32, 32);
 	SDL_ShowCursor(SDL_DISABLE);
+
+	// Låt skriptfilen skapa alla fönster.
+	pkScript->CallScript("InitGUI", 0, 0);
 }
 
 int GuiApp::GetTexID(char *szFile)

@@ -18,6 +18,8 @@ using namespace std;
 
 #include "script_x.h"
 
+#pragma warning (disable : 4251)
+
 enum ScripVarType
 {
 	tINT,
@@ -36,6 +38,13 @@ enum ScripObjectType
 class SCRIPT_API ZFScript  
 {
 public:
+
+	bool GetGlobal(lua_State* state, char* szName, double& data);
+	bool GetGlobal(lua_State* state, char* szName, char* data);
+
+	int GetNumArgs(lua_State* state);
+	bool GetArg(lua_State* state, int iNumber, void* data);
+
 	bool ExposeClass(char *szName, ScripObjectType eType, 
 		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);

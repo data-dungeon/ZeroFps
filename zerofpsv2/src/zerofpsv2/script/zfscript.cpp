@@ -80,8 +80,8 @@ bool ZFScript::RunScript(char* szFileName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		RunScript
-// Description:	Kör ett script från en fil.
+// Name:		CallScript
+// Description:	Kör en skript funktion från en fil som redan är inladdad.
 //
 bool ZFScript::CallScript(char* szFuncName, int iNumParams, int iNumResults)
 {
@@ -114,7 +114,7 @@ bool ZFScript::ExposeClass(char *szName, ScripObjectType eType,
 	lua_pushcfunction(m_pkLua, o_LuaGet);
 	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "getglobal");
 
-	lua_pushcfunction(m_pkLua, o_LuaSet); 
+	lua_pushcfunction(m_pkLua, o_LuaSet);
 	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "setglobal");
  
 	m_kExposedClasses.insert(string(szName));
@@ -228,7 +228,7 @@ int ZFScript::GetTypeFloat(lua_State* pkLua) {
 	lua_pushnumber(pkLua,*var);
 	return 1;
 }
-// String
+// C-String
 int ZFScript::SetTypeString(lua_State* pkLua) {
 	char* var= (char*) lua_touserdata(pkLua,2);
 	char* val= (char*) lua_tostring(pkLua,3);
@@ -241,4 +241,66 @@ int ZFScript::GetTypeString(lua_State* pkLua) {
 	return 1;
 }
 
+int ZFScript::GetNumArgs(lua_State* state)
+{
+	return lua_gettop(state);
+}
 
+bool ZFScript::GetArg(lua_State* state, int iIndex, void* data)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_isnumber(state, iLuaIndex))
+	{
+		double val = lua_tonumber(state, iLuaIndex);
+		double* number = (double*) data;
+		*number = val;
+		return true;
+	}
+
+	if(lua_isstring(state, iLuaIndex))
+	{
+		const char* val = lua_tostring(state, iLuaIndex);
+		char* text = (char*) data;
+		strcpy(text, val);
+		return true;
+	}
+
+	return false;
+}
+
+bool ZFScript::GetGlobal(lua_State* state, char* szName, double& data)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_getglobal(state, szName);
+
+	if(lua_isnumber(state, 1))
+	{
+		data = lua_tonumber(state, 1);
+		return true;
+	}
+
+	return false;
+}
+
+bool ZFScript::GetGlobal(lua_State* state, char* szName, char* data)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_getglobal(state, szName);
+
+	if(lua_isstring(state, 1))
+	{
+		const char* d = lua_tostring(state, 1);
+		if(d)
+		{
+			strcpy(data, d);
+			return true;
+		}
+	}
+
+	return false;
+}
