@@ -32,7 +32,6 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-int		g_iNumOfVBOs;
 float		g_fMadLODScale;
 int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
@@ -388,7 +387,6 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common","  shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
 	DevPrintf("common",  "MAD:");	
-	DevPrintf("common" , "  Mad VBOs: %d", g_iNumOfVBOs);
 	DevPrintf("common" , "  NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 	DevPrintf("common" , "  Zone: %d", this->m_pkEntityManager->m_kZones.size());
 	
@@ -400,6 +398,7 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common","  ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
 	
 	DevPrintf("common","ZSHADER:");
+	DevPrintf("common","  RenderedVBOs   : %d", m_pkZShaderSystem->GetRenderedVBOs());
 	DevPrintf("common","  MaterialBinds  : %d", m_pkZShaderSystem->GetMaterialBinds());
 	DevPrintf("common","  MaterialReloads: %d", m_pkZShaderSystem->GetMaterialReloads());
 	DevPrintf("common","  SavedReloads   : %d", m_pkZShaderSystem->GetSavedReloads());
@@ -431,7 +430,6 @@ void ZeroFps::UpdateDevPages()
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
-	g_iNumOfVBOs = 0;
 		
 
 		

@@ -9,6 +9,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iSavedReloads = 		0;
 	m_iGLupdates =				0;
 	m_iTotalVertises = 		0;
+	m_iRenderedVBOs =			0;
 	
 	m_bCopyedData =			false;
 	
@@ -1034,6 +1035,9 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
   	DrawArray(pkBuffer->m_iDrawMode);
  	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	
+	
+	m_iRenderedVBOs++;
 }
 
 void ZShaderSystem::DrawGeometry(const int& iDrawMode)

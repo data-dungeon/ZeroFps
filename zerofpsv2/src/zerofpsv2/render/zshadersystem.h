@@ -262,6 +262,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iSavedReloads;
 		int			m_iGLupdates;
 		int			m_iTotalVertises;
+		int			m_iRenderedVBOs;
 		
 		//force settings
 		int			m_iForceCullFace;
@@ -310,6 +311,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		
 		//statistics
+		int GetRenderedVBOs()		{return m_iRenderedVBOs;};
 		int GetMaterialReloads() 	{return m_iMaterialReloads;};
 		int GetMaterialBinds() 		{return m_iMaterialBinds;};
 		int GetSavedReloads() 		{return m_iSavedReloads;};
@@ -319,7 +321,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 											m_iMaterialBinds =	0;
 											m_iSavedReloads = 	0;
 											m_iGLupdates = 		0;
-											m_iTotalVertises = 	0;};
+											m_iTotalVertises = 	0;
+											m_iRenderedVBOs =		0;
+											};
 															
 		//basic
 		void Push(const char* czNote);
