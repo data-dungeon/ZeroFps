@@ -63,7 +63,8 @@ void ZeroRTS::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,CAMERA_HEIGHT,0),Vector3(70,0,0),90,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,CAMERA_HEIGHT,0),Vector3(70,0,0),90,1.6,0.25,250);	
+	m_pkCamera->SetViewPort(0,0.24,1,0.76);
 	
 	//disable zones modells bös
 	pkLevelMan->SetVisibleZones(false);
