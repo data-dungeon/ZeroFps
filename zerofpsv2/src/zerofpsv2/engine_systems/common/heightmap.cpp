@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cstdio>
 #include "heightmap.h"
+#include "../../render/frustum.h"
 
 #include "../../engine/res_texture.h"
 //#include "../../engine/zfresource.h"

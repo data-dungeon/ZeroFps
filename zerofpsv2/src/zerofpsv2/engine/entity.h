@@ -127,23 +127,23 @@ public:
 
 
 
-/**	\brief	Game Object for things in game 
+/**	\brief	Entity's for things in game 
 
-A Object is the lowest level of something that exist in the gameworld. All things like
-players, npcs, weapons, explosions, buildings and the ground are objects. Objects don't
+A entity is the lowest level of something that exist in the gameworld. All things like
+players, npcs, weapons, explosions, buildings and the ground are entity's. Entity don't
 have to be something visible that one can see, things like mission goals and triggers
-are also objects. All objects are handled by the ObjectManger.
+are also entity's. All entity's are handled by the EntityManger.
 
-All objects in the game have somethings that are common for all of them. The are all
-stored in the OM, the all have a type, a ID, a name and some other things. The things that make
-each and every object diffrent are the type of properties they have. 
+All entity's in the game have somethings that are common for all of them. The are all
+stored in the EM, the all have a type, a ID, a name and some other things. The things 
+that make each and every object diffrent are the type of properties they have. 
 */
 
 class ENGINE_API Entity 
 {
 	private:
-		Entity*						m_pkParent;							///< Parent Object. NULL If None
-		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
+		Entity*						m_pkParent;							///< Parent Entity. NULL If None
+		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
 		vector<int>					m_aiNetDeleteList;				
 
 		vector<EntityVariable>	m_kVariables;
@@ -164,32 +164,32 @@ class ENGINE_API Entity
 	
 		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.
 			
-		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this object if any.
+		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this entity if any.
 		
-		/**	\brief	Object type name.
+		/**	\brief	Entity type name.
 			
-			This is the name of the type of object (defults to Object). For objects created from scripts this is
-			set to the name of the script and for zfoh.txt it sets i to the name of the archobject.
+			This is the name of the type of Entity (defults to Object). For entity's created from scripts this is
+			set to the name of the script.
 			*/
 		string						m_strType;							
 		
-		/**	\brief	Object Name.
+		/**	\brief	Entity Name.
 			
-			The name of the object. This is not unik so many objects can (and will) have the same name. The name will
+			The name of the entity. This is not unik so many entity can (and will) have the same name. The name will
 			be set to 'A' + m_strType by defualt.
 			*/
 		string						m_strName;
 		
 	
 		bool							m_bZone;
-		bool							m_bSave;								///< True if this object should save to disk.
+		bool							m_bSave;								///< True if this entity should save to disk.
 	
 		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
 		int							m_iUpdateStatus;					
 		ObjectType					m_iObjectType;						
 	
 		// Rotation & Position.
-		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
+		bool							m_bRelativeOri;					///< True if this entity transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
 		/*	This is the Position and rotation of the Entity. It is stored as a Vector for position and a Matrix for
@@ -211,14 +211,14 @@ class ENGINE_API Entity
 		bool							m_bFirstSetPos;		
 		bool							m_bInterpolate;					//if this is false, GetIWorldPos vill return non inpterpolatet cordinats
 
-		Vector3						m_kVel;								///< Velocity of object.
-		Vector3						m_kAcc;								///< Acc of object.
-		float							m_fRadius;							///< Radius of object.
+		Vector3						m_kVel;								///< Velocity of entity.
+		Vector3						m_kAcc;								///< Acc of entity.
+		float							m_fRadius;							///< Radius of entity.
 
 		bool							m_bUseZones;
 		int							m_iCurrentZone;
-		vector<Entity*>			m_akChilds;							///< List of child objects.
-		vector<Property*>			m_akPropertys;						///< List of propertys of object.
+		vector<Entity*>			m_akChilds;							///< List of child entitys.
+		vector<Property*>			m_akPropertys;						///< List of propertys of entity.
 		
 		//network
 		vector<bitset <MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;

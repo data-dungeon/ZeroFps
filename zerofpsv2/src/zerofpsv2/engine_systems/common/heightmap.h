@@ -9,11 +9,11 @@
 #include <string>
 #include "../../basic/vector3.h"
 #include "../../basic/rect.h"
-//#include "../engine_systems_x.h"
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"
-#include "../../render/frustum.h"
-#include "../../basic/globals.h"
+
+//#include "../../basic/globals.h"
+//#include "../engine_systems_x.h"
 
 #define HEIGHTMAP_SCALE 2
 

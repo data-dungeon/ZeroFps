@@ -43,9 +43,10 @@ public:
 	ZoneData();
 };
 
-/**	\brief	SubSystem that handles all objects in the world.
-Handles the mangment of all objects that make up the game world. The OM are used to
-create, update and destroy objects. It also handles to operation of replicating objects
+/**	\brief	SubSystem that handles all entity's in the world.
+
+Handles the mangment of all entity's that make up the game world. The EM are used to
+create, update and destroy entity's. It also handles to operation of replicating entity's
 to other connected users that need to now about them.
 */
 
@@ -75,10 +76,10 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		NetWork*						m_pkNetWork;
 
 		//base objects
-		Entity*						m_pkWorldObject;											///< Top level object.
-		Entity*						m_pkZoneObject;											///< Top level object.
-		Entity*						m_pkClientObject;											///< Top level object.
-		Entity*						m_pkGlobalObject;											///< Top level object.
+		Entity*						m_pkWorldObject;											///< Top level entity.
+		Entity*						m_pkZoneObject;											///< Top level entity.
+		Entity*						m_pkClientObject;											///< Top level entity.
+		Entity*						m_pkGlobalObject;											///< Top level entity.
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
