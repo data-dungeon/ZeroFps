@@ -790,7 +790,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 			//if no staticentity was found, complain
 			if(!pkStaticEntity) {
 				GetStaticData(pkZone->iNetWorkID);
-				printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
+				//printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
 				return;
 				}
 		}
@@ -842,7 +842,14 @@ void EntityManager::PackToClients()
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
 		m_pkWorldObject->GetAllObjects(&kObjects);
+
+		m_OutNP.Clear();
+		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+		m_OutNP.TargetSetClient(0);
+		
 		PackToClient(0, kObjects,false);
+		m_OutNP.Write(ZFGP_ENDOFPACKET);
+		m_pkNetWork->Send2(&m_OutNP);
 		return;
 	}
 
