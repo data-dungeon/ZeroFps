@@ -138,6 +138,7 @@ ZFSystem::~ZFSystem()
 
 	Log_DestroyAll();
 	fclose(m_pkLogFile);						// Close Log Fil
+	m_pkLogFile = NULL;
 
 	m_pkConsole = NULL;
 }

@@ -148,6 +148,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkPSystemManager;
 	delete m_pkZShader;
 	delete m_pkScript;
+	delete m_pkAStar;
 }
 
 bool ZeroFps::StartUp()	

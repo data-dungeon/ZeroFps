@@ -31,7 +31,7 @@ ZGuiApp::~ZGuiApp()
 	map<string, ZGuiSkin*>::iterator itSkins = m_kSkins.begin();
 	while(itSkins != m_kSkins.end())
 	{
-		delete itSkins->second;
+//		delete itSkins->second;
 		itSkins++;
 	}
 
