@@ -56,15 +56,19 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 	
 	//add object acceleration
 	Vector3 Acc=pkObject->GetAcc();
+	Vector3 Vel=pkObject->GetVel();
 	
 	if(pkPP->m_bGravity)
 		Acc+=Vector3(0,-9.82,0);
 	
 	if(pkPP->m_bFloat)
-		if(pkObject->GetPos().y < 0)
-			Acc+=Vector3(0,12,0);
+		if(pkObject->GetPos().y < 0) 
+		{
+			Acc+=Vector3(0,11,0);
+			Acc+= (Vel*-1) *0.3;			//simulate water friktion		
+		}
 		
-	return pkObject->GetVel() + (Acc *  m_fFrameTime);
+	return Vel + (Acc *  m_fFrameTime);;//pkObject->GetVel() + (Acc *  m_fFrameTime);
 }
 
 
