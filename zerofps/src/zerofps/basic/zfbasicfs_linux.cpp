@@ -4,6 +4,21 @@
 
 #ifndef WIN32
 
+bool ZFBasicFS::DirExist(const char* acName)
+{
+	vector<string> pkFiles;
+	pkFiles.clear();
+	
+	if(ListDir(&pkFiles,acName))
+	{
+		pkFiles.clear();
+		return true;
+	}
+	
+	pkFiles.clear();
+	return false;
+}
+
 bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName)
 {
 

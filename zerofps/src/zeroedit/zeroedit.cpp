@@ -24,8 +24,11 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("listtemplates",FID_LISTTEMPLATES,this);
 	g_ZFObjSys.Register_Cmd("savetemplate",FID_SAVETEMPLATE,this);
 	g_ZFObjSys.Register_Cmd("loadtemplate",FID_LOADTEMPLATE,this);	
+	g_ZFObjSys.Register_Cmd("saveobjects",FID_SAVEOBJECTS,this);	
+	g_ZFObjSys.Register_Cmd("loadobjects",FID_LOADOBJECTS,this);		
 	g_ZFObjSys.Register_Cmd("save",FID_SAVE,this);	
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
+
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -45,6 +48,8 @@ void ZeroEdit::OnInit(void)
 	m_pkCurentChild=NULL;
 	
 	m_fPointerHeight=1;
+	
+	m_kMapBaseDir="../data/maps";
 	
 	m_kCurentTemplate="null";
 	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
@@ -152,8 +157,12 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			
 			Clear();		//clear objects
-			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str()))
+			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
+			} else {
+				CreateZones();			
+			}
+				
 			break;
 			
 		case FID_LOADIMAGEMAP:
@@ -251,9 +260,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
 			break;
-		case FID_SAVE:
+		case FID_SAVEOBJECTS:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("save [file]");
+				pkConsole->Printf("saveobjects [file]");
 				break;				
 			}
 			
@@ -266,9 +275,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 			
-		case FID_LOAD:
+		case FID_LOADOBJECTS:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("load [file]");
+				pkConsole->Printf("loadobjects [file]");
 				break;				
 			}
 			
@@ -281,6 +290,35 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 			
+		case FID_LOAD:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("load [mapname]");
+				break;				
+			}
+			if(!LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			{
+				pkConsole->Printf("Error loading level");
+				break;			
+			}		
+			
+			pkConsole->Printf("Level loaded");
+			
+			break;	
+			
+		case FID_SAVE:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("load [mapname]");
+				break;				
+			}
+			if(!SaveLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			{
+				pkConsole->Printf("Error saving level");
+				break;			
+			}		
+				
+			pkConsole->Printf("Level saved");				
+			
+			break;
 	}
 }
 
@@ -570,10 +608,12 @@ void ZeroEdit::DrawMarkers()
 	
 	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
 	
+/*	
 	if(m_pkCurentParent!=NULL){
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentParent->GetPos(),m_pkCurentParent->GetBoundingRadius()*2,pkTexMan->Load("file:../data/textures/parentmarker.tga",T_NOMIPMAPPING));	
 	}
-	
+*/	
+
 	if(m_pkCurentChild!=NULL){
 		float size=m_pkCurentChild->GetBoundingRadius();
 		if(size < .5)
@@ -665,6 +705,108 @@ void ZeroEdit::ListTemplates()
 
 	akNames.clear();
 }
+
+bool ZeroEdit::LoadLevel(const char* acFile)
+{
+	for(int i=0;acFile[i]!='\0';i++)
+	{
+		if(acFile[i]=='\\' || acFile[i]=='/')
+		{
+			pkConsole->Print("Bad filename");
+			return false;
+		}
+	}
+		
+	string kHmfile;
+	string kZolfile;
+
+	kHmfile=m_kMapBaseDir;
+	kHmfile+="/";
+	kHmfile+=acFile;
+	kHmfile+="/";	
+	kHmfile+="heightmap.hm";
+
+	kZolfile=m_kMapBaseDir;
+	kZolfile+="/";
+	kZolfile+=acFile;
+	kZolfile+="/";	
+	kZolfile+="objects.zol";
+
+	Clear();
+	
+	if(!m_pkMap->Load(kHmfile.c_str())){
+		pkConsole->Printf("Error loading heightmap");
+		return false;
+	};
+	
+	cout<<"heightmap loaded"<<endl;
+	
+	//create zoneobjects
+	CreateZones();		
+	
+	if(!pkObjectMan->LoadAllObjects(kZolfile .c_str())){
+		pkConsole->Printf("Error loading objects");
+		return false;
+	}	
+	
+	cout<<"objects loaded"<<endl;
+
+	return true;
+}
+
+bool ZeroEdit::SaveLevel(const char* acFile)
+{
+	for(int i=0;acFile[i]!='\0';i++)
+	{
+		if(acFile[i]=='\\' || acFile[i]=='/')
+		{
+			pkConsole->Print("Bad filename");
+			return false;
+		}
+	}
+	
+	string dir;
+	dir=m_kMapBaseDir+"/";
+	dir+=acFile;
+	
+	if(pkBasicFS->DirExist(dir.c_str()))
+		pkConsole->Printf("Overwriting old %s",acFile);
+	else
+		pkBasicFS->CreateDir(dir.c_str());
+		
+	string kHmfile;
+	string kZolfile;
+
+	kHmfile=m_kMapBaseDir;
+	kHmfile+="/";
+	kHmfile+=acFile;
+	kHmfile+="/";	
+	kHmfile+="heightmap.hm";
+
+	kZolfile=m_kMapBaseDir;
+	kZolfile+="/";
+	kZolfile+=acFile;
+	kZolfile+="/";	
+	kZolfile+="objects.zol";
+
+	if(!m_pkMap->Save(kHmfile.c_str())){
+		pkConsole->Printf("Error saving heightmap");
+		return false;
+	};
+	
+	cout<<"heightmap saved"<<endl;
+	
+	if(!pkObjectMan->SaveAllObjects(kZolfile .c_str())){
+		pkConsole->Printf("Error saving objects");
+		return false;
+	}	
+	
+	cout<<"objects saved"<<endl;
+
+	return true;
+}
+
+
 
 
 

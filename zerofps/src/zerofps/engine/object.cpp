@@ -45,7 +45,7 @@ bool ObjectDescriptor::LoadFromFile(ZFFile* pkFile)
 	ZFMemPackage temp;
 	
 	if(!temp.LoadFromFile(pkFile)){
-		cout<<"Error Loading"<<endl;
+		cout<<"Error Loading from file (EOF)"<<endl;
 		return false;
 	}
 		

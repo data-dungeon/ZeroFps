@@ -39,8 +39,10 @@ class ZeroEdit :public Application {
 			FID_LOADTEMPLATE,
 			FID_LISTTEMPLATES,
 			FID_MAKETEMPLATE,
+			FID_SAVEOBJECTS,
+			FID_LOADOBJECTS,
 			FID_SAVE,
-			FID_LOAD
+			FID_LOAD,
 		};	
 	
 		Camera *m_pkCamera;
@@ -63,6 +65,8 @@ class ZeroEdit :public Application {
 		float m_fDrawRate;
 		bool m_bDrawing;
 		bool m_iRandom;
+	
+		string m_kMapBaseDir;
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
@@ -83,6 +87,9 @@ class ZeroEdit :public Application {
 		void SelectChild();
 		void SelectParent();		
 		void CreateZones();
+				
+		bool LoadLevel(const char* acFile);				
+		bool SaveLevel(const char* acFile);								
 				
 		void ListTemplates();
 		
