@@ -150,6 +150,8 @@ AIBase* P_UnitAttackAI::UpdateAI()
 						m_fLastFireTime =m_pkFps->GetGameTime(); 
 					else 
 					{
+						if(m_pkAi)
+							m_pkAi = m_pkAi->UpdateAI();
 						return this;
 					}
 					
