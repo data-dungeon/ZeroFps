@@ -266,6 +266,7 @@ public:
 
 	friend class NetPacket;
 	friend class EntityManager;	
+	friend class ZeroFps;					//dvoids was here =)
 };
 
 

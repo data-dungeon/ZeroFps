@@ -1120,6 +1120,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 
 void ZeroFps::StopAll()
 {
+	m_pkNetWork->DisconnectAll();
 	m_pkNetWork->CloseSocket();
 	
 	m_bServerMode = false;

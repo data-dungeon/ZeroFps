@@ -884,6 +884,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					else
 						cout<<"character has no controls ...WHYYYYYYYY!!!!!!!!"<<endl;
 				}
+				else
+					cout<<"missing player character entity:"<<pkData->m_iCharacterID<<endl;
 			}
 			break;
 		}

@@ -214,6 +214,7 @@ void MistClient::Input()
 			if(fDistance < 0.2)
 				fDistance = 0.2;
 
+				
 			//select first or 3d view camera
 			if(fDistance < 0.3)	
 			{	
@@ -241,8 +242,8 @@ void MistClient::Input()
 			kRot.Transponse();				
 			pkCharacter->SetLocalRotM(kRot);			
 
-		}			
-	}	
+		}
+	}
 }
 
 void MistClient::OnSystem() 
