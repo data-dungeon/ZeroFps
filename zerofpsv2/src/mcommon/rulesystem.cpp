@@ -108,14 +108,14 @@ void RuleSystem::Attack(int iAttacker,int iDefender)
 								Randomi(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1);
 			
 			//absorb
-// 			iSlashing 	-= pkStatsD->GetTotal("AbsorbSlashing");
-// 			iCrushing 	-= pkStatsD->GetTotal("AbsorbCrushing");
-// 			iPiercing 	-= pkStatsD->GetTotal("AbsorbPiercing");
-// 			iFire 		-= pkStatsD->GetTotal("AbsorbFire");
-// 			iIce 			-= pkStatsD->GetTotal("AbsorbIce");
-// 			iLightning 	-= pkStatsD->GetTotal("AbsorbLightning");
-// 			iMagic 		-= pkStatsD->GetTotal("AbsorbMagic");
-// 			iPoison 		-= pkStatsD->GetTotal("AbsorbPoison");
+			iSlashing 	-= pkStatsD->GetTotal("AbsorbSlashing");
+			iCrushing 	-= pkStatsD->GetTotal("AbsorbCrushing");
+			iPiercing 	-= pkStatsD->GetTotal("AbsorbPiercing");
+			iFire 		-= pkStatsD->GetTotal("AbsorbFire");
+			iIce 			-= pkStatsD->GetTotal("AbsorbIce");
+			iLightning 	-= pkStatsD->GetTotal("AbsorbLightning");
+			iMagic 		-= pkStatsD->GetTotal("AbsorbMagic");
+			iPoison 		-= pkStatsD->GetTotal("AbsorbPoison");
 		
 			int iTotal = iSlashing + iCrushing + iPiercing + iFire + iIce + iLightning + iMagic + iPoison;
 			
