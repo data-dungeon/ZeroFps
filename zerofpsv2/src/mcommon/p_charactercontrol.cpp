@@ -47,7 +47,7 @@ P_CharacterControl::P_CharacterControl()
 	m_strJump				=	"jump";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"riding";
-	m_strIdleSwimming		=	"idle";
+	m_strIdleSwimming		=	"swim-idle";
 	m_strEmote				=	"taunt";		
 }
 
@@ -123,7 +123,10 @@ void P_CharacterControl::Update()
 			
 			//disable gravity if in water
 			if(m_bInWater)
+			{
 				pkTcs->SetGravity(false);
+				SetCharacterState(eSWIMMING,true);
+			}
 			else
 				pkTcs->SetGravity(true);
 						
@@ -355,8 +358,31 @@ void P_CharacterControl::UpdateAnimation()
 		//swiming
 		else if(GetCharacterState(eSWIMMING))
 		{
-			if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
-				pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);
+			switch(GetMovedirection())
+			{
+				case eMOVE_FORWARD:
+					if(pkMad->GetCurrentAnimationName() != m_strSwimForward)
+						pkMad->SetAnimation(m_strSwimForward.c_str(), 0);
+					break;
+				case eMOVE_BACKWARD:
+					if(pkMad->GetCurrentAnimationName() != m_strWalkBackward)
+						pkMad->SetAnimation(m_strWalkBackward.c_str(), 0);
+					break;
+				case eMOVE_LEFT:
+					if(pkMad->GetCurrentAnimationName() != m_strSwimLeft)
+						pkMad->SetAnimation(m_strSwimLeft.c_str(), 0);
+					break;
+				case eMOVE_RIGHT:
+					if(pkMad->GetCurrentAnimationName() != m_strSwimRight)
+						pkMad->SetAnimation(m_strSwimRight.c_str(), 0);
+					break;										
+					
+				default:
+					if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
+					pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);
+					break;					
+			}					
+			
 			
 		}
 		//sitting
