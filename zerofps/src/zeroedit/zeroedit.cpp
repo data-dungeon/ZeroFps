@@ -1,8 +1,7 @@
 #include "zeroedit.h"
 #include "gui.h"
 #include "fh.h"
-
-
+#include "../zerofps/script/zfscript.h"
 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
@@ -110,6 +109,10 @@ void ZeroEdit::OnInit(void)
 
 	pkFps->m_bGuiTakeControl = true; 
 	pkFps->ToggleGui(); 
+
+	m_pkScript = new ZFScript();
+	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
+	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
 
 /*	
 	Sound *welcome=new Sound();
@@ -617,12 +620,6 @@ void ZeroEdit::Input()
 	float childmovespeed=2;
 	float childrotatespeed=15;
 	float speed=40;
-
-/*	if(pkInput->GetQueuedKey() == KEY_F10)
-	{
-		pkFps->ToggleGui();
-	}*/
-	
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){

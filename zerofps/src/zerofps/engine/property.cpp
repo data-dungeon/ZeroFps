@@ -406,7 +406,7 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 	switch(pkPropertyValue->iValueType)
 	{	
 	case VALUETYPE_INT:
-		//itoa(*((int*)pkValue),pk_chBuffer,10); 
+		//itoa(*((int*)pkValue),pk_chsBuffer,10); 
 		IntToChar(pk_chBuffer,*((int*)pkValue));
 		return (kBuffer=pk_chBuffer);
 		

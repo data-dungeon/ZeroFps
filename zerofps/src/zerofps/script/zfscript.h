@@ -18,6 +18,11 @@ extern "C"  {
 
 #include <tolua.h>
 
+#pragma warning (disable :4786)
+#include <set>
+#include <string>
+using namespace std;
+
 enum VarType
 {
 	tINT,
@@ -62,6 +67,8 @@ private:
 	int m_iLuaTagDouble;
 	int m_iLuaTagFloat;
 	int m_iLuaTagString;
+
+	set<string> m_kExposedClasses;
 };
 
 #endif // !defined(AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_)

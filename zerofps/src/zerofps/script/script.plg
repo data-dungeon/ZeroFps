@@ -6,11 +6,20 @@
 --------------------Configuration: script - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP5E.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /FR"Debug/" /Fp"Debug/script.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Programming\My projects\zerofps\src\zerofps\script\zfscript.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP5E.tmp" 
+<h3>Output Window</h3>
+Compiling...
+zfscript.cpp
 
 
 
 <h3>Results</h3>
-script.dll - 0 error(s), 0 warning(s)
+zfscript.obj - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

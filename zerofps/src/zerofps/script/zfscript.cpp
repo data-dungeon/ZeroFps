@@ -97,12 +97,25 @@ bool ZFScript::RunScript(char* szFileName)
 bool ZFScript::ExposeClass(char *szName, lua_CFunction o_LuaGet, 
 						   lua_CFunction o_LuaSet)
 {
+	// check if type is already registered
+	bool bAlreadyExist = true;
+	if(m_kExposedClasses.find(string(szName)) == m_kExposedClasses.end())
+		bAlreadyExist = false;
+
+	if(bAlreadyExist)
+	{
+		printf("SCRIPT_API: Class [%s] already exposed %s\n", szName);
+		return true;
+	}
+
 	// Create Lua tag for Test type.
 	lua_pushcfunction(m_pkLua, o_LuaGet);
 	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "getglobal");
 
 	lua_pushcfunction(m_pkLua, o_LuaSet); 
 	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "setglobal");
+ 
+	m_kExposedClasses.insert(string(szName));
 	return true;
 }
 
