@@ -71,6 +71,7 @@ void ZeroTank::Init()
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
+		
 	//register actions bös
 	RegisterActions();
 
@@ -107,6 +108,7 @@ void ZeroTank::Init()
 
 //	SetupGUI();
 	
+	
 }
 
 void ZeroTank::RegisterActions()
@@ -132,6 +134,7 @@ void ZeroTank::RegisterPropertys()
 
 void ZeroTank::OnIdle() 
 {
+		
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 			
@@ -139,8 +142,11 @@ void ZeroTank::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
+	
+
+	
 	m_pkMap2->SetPos(Vector3(0,0,0));
-//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 
 /*

@@ -16,6 +16,8 @@ Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 	m_bLoaded = false;
 	
 	m_kHeightmapMaterial.SetRes("data/material/landshader.zmt");		
+	
+
 }
 
 bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
@@ -43,6 +45,7 @@ bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
 	delete kImage;
 	
 	cout<<"Loaded heightmap data "<<m_iWidth<<" "<<m_iHeight<< " Vertexs,"<<endl;
+
 
 	return true;
 }
@@ -213,6 +216,7 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 	float fHeight;
 	Vector3 kNormal;
 	Vector2 kTexCor;
+	Vector2 kMaskTexCor;
 	
 	for(int y = iStartY;y < iStopY; y++)
 	{	
@@ -222,24 +226,32 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 			
 			for(int x = iStartX;x <= iStopX; x++)
 			{
+				//top
 				fHeight = GetVert(x,y)->fHeight;
 				kNormal = GetVert(x,y)->kNormal;
 				kTexCor.x = (float) x;
-				kTexCor.y = (float) y;
+				kTexCor.y = (float) y;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = float(y) / float(m_iHeight);
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y));
 				temp.kNormal.push_back(kNormal);	
 				temp.kTexCor.push_back(kTexCor);	
+				temp.kMaskTexCor.push_back(kMaskTexCor);					
 					
+				//botom
 				fHeight = GetVert(x,y+1)->fHeight;
 				kNormal = GetVert(x,y+1)->kNormal;
 				kTexCor.x = (float) x;
-				kTexCor.y = (float) y+1.0f;
+				kTexCor.y = (float) y+1.0f;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0/float(m_iHeight);
+				
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y+1.0f));
 				temp.kNormal.push_back(kNormal);	
 				temp.kTexCor.push_back(kTexCor);				
-			
+				temp.kMaskTexCor.push_back(kMaskTexCor);					
 			}	
 		} 
 		else
@@ -252,19 +264,25 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 				kNormal = GetVert(x,y+1)->kNormal;
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y+1.0f;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0/float(m_iHeight);
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y+1.0f));
 				temp.kNormal.push_back(kNormal);	
 				temp.kTexCor.push_back(kTexCor);	
+				temp.kMaskTexCor.push_back(kMaskTexCor);	
 					
 				fHeight = GetVert(x,y)->fHeight;
 				kNormal = GetVert(x,y)->kNormal;
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = float(y) / float(m_iHeight);				
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y));
 				temp.kNormal.push_back(kNormal);	
 				temp.kTexCor.push_back(kTexCor);	
+				temp.kMaskTexCor.push_back(kMaskTexCor);				
 			}	
 			
 		
@@ -297,6 +315,7 @@ void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 	float fHeight; 
 	Vector3 kNormal;	
 	Vector2 kTexCor;
+	Vector2 kMaskTexCor;
 	for(int y = sy; y < sy+pkPatch->iHeight;y+=iStep)	
 	{	
 		if(y+iStep >= m_iHeight)
@@ -315,23 +334,29 @@ void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 				kNormal = GetVert( x, y)->kNormal;				
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y;
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = float(y) / float(m_iHeight);
 				newlevel.kTexCor.push_back(kTexCor);	
 				newlevel.kVertex.push_back(Vector3((float) x,fHeight,(float) y));
 				newlevel.kNormal.push_back(kNormal);	
+				newlevel.kMaskTexCor.push_back(kMaskTexCor);					
 		
 				fHeight = GetVert(x,y+iStep)->fHeight;
 				kNormal = GetVert(x,y+iStep)->kNormal;				
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y+(float) iStep;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + float(iStep)/float(m_iHeight);				
 				newlevel.kTexCor.push_back(kTexCor);					
 				newlevel.kVertex.push_back(Vector3((float) x,fHeight,(float) y+(float) iStep));
 				newlevel.kNormal.push_back(kNormal);				
-			
+				newlevel.kMaskTexCor.push_back(kMaskTexCor);			
 			}
 				
 			
 			//add the last vertex twice else itill get messy
 			newlevel.kTexCor.push_back(kTexCor);				
+			newlevel.kMaskTexCor.push_back(kMaskTexCor);							
 			newlevel.kVertex.push_back(Vector3((float) x-(float) iStep,fHeight,(float) y+(float) iStep));
 			newlevel.kNormal.push_back(kNormal);				
 			
@@ -347,22 +372,29 @@ void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 				kNormal = GetVert(x,y)->kNormal;				
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = float(y) / float(m_iHeight);				
 				newlevel.kTexCor.push_back(kTexCor);					
 				newlevel.kVertex.push_back(Vector3((float) x,fHeight,(float) y));
 				newlevel.kNormal.push_back(kNormal);			
+				newlevel.kMaskTexCor.push_back(kMaskTexCor);				
 				
 				fHeight = GetVert(x,y+iStep)->fHeight;
 				kNormal = GetVert(x,y+iStep)->kNormal;				
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y+iStep;				
+				kMaskTexCor.x = float(x) / float(m_iWidth);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + float(iStep)/float(m_iHeight);						
 				newlevel.kTexCor.push_back(kTexCor);					
 				newlevel.kVertex.push_back(Vector3((float) x,fHeight,(float) y+(float) iStep));
 				newlevel.kNormal.push_back(kNormal);					
+				newlevel.kMaskTexCor.push_back(kMaskTexCor);	
 				
 			}
 						 
 			//add the last vertex twice
 			newlevel.kTexCor.push_back(kTexCor);	
+			newlevel.kMaskTexCor.push_back(kMaskTexCor);
 			newlevel.kVertex.push_back(Vector3((float) x + (float) iStep,fHeight,(float) y+(float) iStep));
 			newlevel.kNormal.push_back(kNormal);							
 			

@@ -36,6 +36,7 @@ private:
 public:
 	ZFResourceHandle();
 	~ZFResourceHandle();
+	ZFResourceHandle& operator=(const ZFResourceHandle& kOther);
 
 	bool SetRes(string strName);
 	void FreeRes();

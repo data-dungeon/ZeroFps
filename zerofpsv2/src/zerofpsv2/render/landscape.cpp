@@ -1219,10 +1219,13 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 
 	ZMaterial* test = (ZMaterial*)pkMap->GetMaterial()->GetResourcePtr();
 	
-		
-//	test->GetPass(0)->m_kTUs[0].SetRes("bla.tga");// = m_pkTexMan->Load("bla.tga",0);		
-//	test->GetPass(0)->m_iTUs[1] = m_pkTexMan->Load("mask.tga",0);			
-		
+	//cout<<"hora loading material"<<endl;
+	//ZMaterial* test = (ZMaterial*)m_pkMap2->GetMaterial()->GetResourcePtr();		
+	/*ResTexture*  bla = (ResTexture*)test->GetPass(0)->m_kTUs[0].GetResourcePtr();
+	if(bla)
+		cout<<"tu0: "<<bla->strTextureName<<endl;		
+*/
+	
 	m_pkZShader->Reset();
 	m_pkZShader->SetMaterial(test);
 	m_pkZShader->SetDrawMode(TRIANGLESTRIP_MODE);
@@ -1241,21 +1244,17 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 		
 			m_pkZShader->SetPointer(VERTEX_POINTER,&pkLevel->kVertex[0]);
 			m_pkZShader->SetPointer(NORMAL_POINTER,&pkLevel->kNormal[0]);
-			m_pkZShader->SetPointer(TEXTURE_POINTER0,&pkLevel->kTexCor[0]);
+			m_pkZShader->SetPointer(TEXTURE_POINTER0,&pkLevel->kMaskTexCor[0]);						
+			m_pkZShader->SetPointer(TEXTURE_POINTER1,&pkLevel->kTexCor[0]);
+
 			
 			m_pkZShader->SetNrOfVertexs(pkLevel->kVertex.size());
 			
 			m_pkZShader->Draw();
 			
-//			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
-//			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
-//			glTexCoordPointer(2,GL_FLOAT,0,&pkLevel->kTexCor[0]);
-			
-//			glDrawArrays(GL_TRIANGLE_STRIP,0,pkLevel->kVertex.size());
 		
 		}
 	}
 	
-//	glPopAttrib();
 	glPopMatrix();
 }

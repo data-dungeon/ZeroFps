@@ -10,10 +10,10 @@ LightProperty::LightProperty()
 	strcpy(m_acName,"LightProperty");
 	
 	m_pkLightSource=new LightSource();
-	pkPos=new Vector3(0,0,0);
-	pkRot=new Vector3(0,0,0);
-	m_pkLightSource->kPos=pkPos;
-	m_pkLightSource->kRot=pkRot;
+	//pkPos=new Vector3(0,0,0);
+	//pkRot=new Vector3(0,0,0);
+	m_pkLightSource->kPos=&kPos;
+	m_pkLightSource->kRot=&kRot;
 	
 /*	
 	spot->kDiffuse=Vector4(0,0,0,1.0);
@@ -39,21 +39,24 @@ LightProperty::~LightProperty()
 {
 	m_pkLight->Remove(m_pkLightSource);
 	delete m_pkLightSource;
-	delete pkPos;
-	delete pkRot;
+	//delete pkPos;
+	//delete pkRot;
 }
 
 void LightProperty::Init()
 {
 	
-	m_pkLightSource->kPos= m_pkObject->GetPosPointer();
-	m_pkLightSource->kRot= m_pkObject->GetRotPointer();
+//	m_pkLightSource->kPos= m_pkObject->GetPosPointer();
+//	m_pkLightSource->kRot= m_pkObject->GetRotPointer();
 }
 
 void LightProperty::Update() 
 {
-	//SetPos(m_pkObject->GetPos());
-//	spot->kPos->Set(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
+	Vector3 kPos = m_pkObject->GetWorldPosV(); 
+	Vector3 kRot = m_pkObject->GetWorldRotV();
+
+	//m_pkLightSource->kPos->Set(pos.x,pos.y,pos.z);
+	//m_pkLightSource->kRot->Set(rot.x,rot.y,rot.z);	
 }
 
 void LightProperty::PackTo( NetPacket* pkNetPacket ) {
@@ -158,8 +161,8 @@ void LightProperty::Load(ZFMemPackage* pkPackage)
 	
 
 
-	m_pkLightSource->kPos= m_pkObject->GetPosPointer();
-	m_pkLightSource->kRot= m_pkObject->GetRotPointer();
+	//m_pkLightSource->kPos= m_pkObject->GetPosPointer();
+	//pkLightSource->kRot= m_pkObject->GetRotPointer();
 	//delete pkPos;
 	//delete pkRot;
 	//cout<<"m_pkObject->GetPos():" <<m_pkObject->GetPos().x <<endl;

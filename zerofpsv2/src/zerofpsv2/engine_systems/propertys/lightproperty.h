@@ -8,10 +8,10 @@ using namespace std;
 class ENGINE_SYSTEMS_API LightProperty: public Property {
 	private:
 		LightSource*	m_pkLightSource;
-		Vector3* pkPos;
-		Vector3* pkRot;
+		Vector3			kPos;
+		Vector3			kRot;
 
-		Light*	m_pkLight;
+		Light*			m_pkLight;
 		
 
 		vector<PropertyValues> GetPropertyValues();

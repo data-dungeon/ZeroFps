@@ -14,7 +14,7 @@ using namespace std;
 class RENDER_API ZMaterialSettings
 {
 	public:
-		ZFResourceHandle	m_kTUs[4];		
+		ZFResourceHandle*	m_kTUs[4];		
 		
 		int	m_iTUTexCords[4];
 		
@@ -33,14 +33,14 @@ class RENDER_API ZMaterialSettings
 		int	m_iBlendDst;
 	
 		ZMaterialSettings();
-
+		~ZMaterialSettings();
 };
 
 
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:
-		vector<ZMaterialSettings> m_kPasses;
+		vector<ZMaterialSettings*> m_kPasses;
 		ZFIni		m_kIni;
 		
 		bool LoadGlobalSection();
@@ -53,6 +53,7 @@ class RENDER_API ZMaterial : public ZFResource
 				
 		
 		ZMaterial();
+		~ZMaterial();
 		bool Create(string strName);	//for resource system
 	
 		int GetNrOfPasses() {return m_kPasses.size();};

@@ -21,14 +21,14 @@ Object::Object() {
 	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
 
 	// SetDefault Values.
-	m_kPos		= Vector3::ZERO;
-	m_kRot		= Vector3::ZERO;
+//	m_kPos		= Vector3::ZERO;
+//	m_kRot		= Vector3::ZERO;
 	m_kVel		= Vector3::ZERO;
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
 	
-	m_kOldPos	= Vector3::ZERO;
-	m_kOldRot	= Vector3::ZERO;	
+//	m_kOldPos	= Vector3::ZERO;
+//	m_kOldRot	= Vector3::ZERO;	
 	
 	m_kName		= "Object";	
 	m_strType	= "Object";
@@ -376,7 +376,7 @@ void Object::AttachToClosestZone()
 			//dont attach this object to this object ;)
 			if((*it)==this)
 				continue;
-			float distance = abs(((*it)->GetWorldPosV() - m_kPos).Length());
+			float distance = abs(((*it)->GetWorldPosV() - GetWorldPosV()).Length());
 			if(distance<mindistance){
 				mindistance=distance;
 				minobject=(*it);
@@ -461,10 +461,10 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	Vector3 kPos;
 	kPos = GetLocalPosV();
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
-		pkNetPacket->Write(kPos);
+		pkNetPacket->Write(GetWorldPosV());
 	
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
-		pkNetPacket->Write(m_kRot);
+		pkNetPacket->Write(GetWorldRotV());
 
 	pkNetPacket->Write(m_fRadius);
 
@@ -690,8 +690,8 @@ void Object::PrintTree(int pos)
 
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", GetName().c_str() );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "ObjType = %s\n", m_strType.c_str() );
-	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Pos = <%f,%f,%f>\n", m_kPos.x, m_kPos.y, m_kPos.z );
-	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Rot = <%f,%f,%f>\n", m_kRot.x, m_kRot.y, m_kRot.z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Pos = <%f,%f,%f>\n", GetWorldPosV().x, GetWorldPosV().y, GetWorldPosV().z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Rot = <%f,%f,%f>\n", GetWorldRotV().x, GetWorldRotV().y, GetWorldRotV().z );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Vel = <%f,%f,%f>\n", m_kVel.x, m_kVel.y, m_kVel.z );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "m_kAcc = <%f,%f,%f>\n", m_kAcc.x, m_kAcc.y, m_kAcc.z );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", m_strType.c_str() );
@@ -727,11 +727,11 @@ void Object::MakeCloneOf(Object* pkOrginal)
 {
 	SetParent(m_pkParent);
 
-	m_kPos		= pkOrginal->m_kPos;
-	m_kRot		= pkOrginal->m_kRot;
+//	m_kPos		= pkOrginal->m_kPos;
+//	m_kRot		= pkOrginal->m_kRot;
 	m_kVel		= pkOrginal->m_kVel;
-	m_kOldPos	= pkOrginal->m_kOldPos;
-	m_kOldRot	= pkOrginal->m_kOldRot;
+//	m_kOldPos	= pkOrginal->m_kOldPos;
+//	m_kOldRot	= pkOrginal->m_kOldRot;
 	m_kName		= pkOrginal->m_kName;
 	m_strType	= pkOrginal->m_strType;
 	m_iObjectType			= pkOrginal->m_iObjectType;

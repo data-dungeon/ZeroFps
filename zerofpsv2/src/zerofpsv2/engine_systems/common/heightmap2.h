@@ -12,13 +12,6 @@
 #include "../../engine/zerofps.h"
 #include "../../basic/vector2.h"
 
-/*class ENGINE_SYSTEMS_API HM2_texcor
-{
-	public:
-		float x;
-		float y;
-};*/
-
 class ENGINE_SYSTEMS_API HM2_vert
 {
 	public:
@@ -38,6 +31,8 @@ class ENGINE_SYSTEMS_API HM2_level
 		vector<Vector3>	kVertex;
 		vector<Vector3>	kNormal;
 		vector<Vector2> 	kTexCor;
+
+		vector<Vector2>	kMaskTexCor;
 };
 
 class ENGINE_SYSTEMS_API HM2_patch

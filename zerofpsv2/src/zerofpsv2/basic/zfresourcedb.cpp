@@ -29,6 +29,13 @@ ZFResourceHandle::ZFResourceHandle()
 	m_iID = -1;
 }
 
+ZFResourceHandle& ZFResourceHandle::operator=(const ZFResourceHandle& kOther)
+{
+	SetRes(kOther.m_strName);
+	cout<<"COPYING !!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	return *this;
+}
+
 ZFResourceHandle::~ZFResourceHandle()
 {
 	FreeRes();

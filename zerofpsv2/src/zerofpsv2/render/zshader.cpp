@@ -204,6 +204,9 @@ void ZShader::SetupClientStates()
 void ZShader::SetMaterial(ZMaterial* pkMaterial)
 {
 	m_pkCurentMaterial = pkMaterial;
+	
+	
+	
 }
 
 void ZShader::SetupPrerenderStates()
@@ -242,8 +245,11 @@ void ZShader::Waves()
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
+	//cout<<"trying to enable tu: "<<iTU<<endl;
+
 	int iTexture;
-	ResTexture* pkRt = (ResTexture*)pkSettings->m_kTUs[iTU].GetResourcePtr();
+	ResTexture* pkRt = (ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr();
+
 	
 	if(!pkRt)
 		iTexture = -1;
@@ -254,6 +260,8 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 	{	
 		glEnable(GL_TEXTURE_2D);
 		m_pkTexMan->BindTexture(iTexture);
+		
+		//cout<<"TU: "<<iTU<<" using texture: "<<pkRt->strTextureName<<endl;
 		
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 			
@@ -570,9 +578,24 @@ void ZShader::Draw()
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
 	{	
+		/*
+		if(!m_pkCurentMaterial->GetPass(i))
+			cout<<"HORA"<<endl;*/
+/*		cout<<"pass: "<<i<<endl;
+		ResTexture*  bla = (ResTexture*)m_pkCurentMaterial->GetPass(i)->m_kTUs[0].GetResourcePtr();
+		if(bla)
+			cout<<"tu0: "<<bla->strTextureName<<endl;
+		
+		if(m_pkCurentMaterial->GetPass(i)->m_bLighting)
+			cout<<"lighting is enabled:"<<endl;
+		else
+			cout<<"no light"<<endl;
+		*/
+
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
 		
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
+		
 		
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
