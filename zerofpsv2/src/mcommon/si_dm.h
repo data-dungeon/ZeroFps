@@ -46,6 +46,7 @@ namespace DMLua
 	// Path finding
 	int MCOMMON_API HavePathLua(lua_State* pkLua);
 	int MCOMMON_API MakePathFindLua(lua_State* pkLua);
+	int MCOMMON_API ClearPathFindLua(lua_State* pkLua);
 
 	// math
 	int MCOMMON_API RandomLua(lua_State* pkLua);

@@ -25,7 +25,7 @@ P_DMGun::P_DMGun()
 	m_iMaxAmmo = 	100;
 	m_kDir.Set(0,0,-1);
 	m_fRandom = 	0.5;
-	m_fDamage =		5;
+	m_fDamage =		25;
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
@@ -53,7 +53,8 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 
 	m_pkAudioSys->StartSound("data/sound/9m_pistol.wav",
-		m_pkObject->GetWorldPosV(), m_kDir, false);
+
+	m_pkObject->GetWorldPosV(), m_kDir, false);
 	
 	return true;
 }
@@ -95,7 +96,7 @@ void P_DMGun::Update()
 		return;
 	
 	
-	if( t - m_fTimeFired > m_fBurstLength)   //shuld we stop fireing
+	if( t - m_fTimeFired > m_fBurstLength)   //should we stop fireing
 	{	
 		m_bFireing = false;
 		return;

@@ -39,6 +39,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// path finding
 	pkScript->ExposeFunction("HavePath", DMLua::HavePathLua);					
 	pkScript->ExposeFunction("MakePathFind", DMLua::MakePathFindLua);
+	pkScript->ExposeFunction("ClearPathFind", DMLua::ClearPathFindLua);
 
 	// math
 	pkScript->ExposeFunction("Random", DMLua::RandomLua);
@@ -457,6 +458,26 @@ int DMLua::MakePathFindLua(lua_State* pkLua)
 }
 
 
+int DMLua::ClearPathFindLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		if(pkEnt)
+		{
+			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+			if(pf)
+				pf->ClearPath();
+		}
+	}
+
+	return 0;
+}
+
 int DMLua::RandomLua (lua_State* pkLua)
 {
  	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -467,8 +488,9 @@ int DMLua::RandomLua (lua_State* pkLua)
       if ( dTemp < 0 )
          dTemp = 1;
 
+	  dTemp = rand()%int(dTemp);
 
-      g_pkScript->AddReturnValue(pkLua, rand()%int(dTemp) );
+      g_pkScript->AddReturnValue(pkLua, dTemp );
 
       return 1;
    }

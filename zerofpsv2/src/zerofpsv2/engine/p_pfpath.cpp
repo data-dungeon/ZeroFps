@@ -121,6 +121,8 @@ void P_PfPath::Update()
 		{
 			//m_kPath.clear();
 			//m_kRawPath.clear();
+
+			m_kPath.clear(); // added again by zerom, havepath didn't work else
 			
 			
 			//play idle
