@@ -19,24 +19,37 @@ public:
 	Quaternion(const Quaternion& rkQ);
 
 // Arithmetic operations
-	Quaternion& operator= ( Quaternion& rkQ );
+	Quaternion& operator= (const Quaternion& rkQ )
+	{
+	    w = rkQ.w;
+   	 x = rkQ.x;
+	    y = rkQ.y;
+   	 z = rkQ.z;
+		return *this;	
+	}
 	Quaternion operator+ (const Quaternion& rkQ ) const;
 	Quaternion operator- (const Quaternion& rkQ ) const;
 	Quaternion operator+= (const Quaternion& rkQ );
 	Quaternion operator-= (const Quaternion& rkQ );
 	Quaternion operator* (const Quaternion& rkQ ) const;
 	Quaternion operator*= (const Quaternion& rkQ );
-    Quaternion operator* (float fScalar) const;
-    friend Quaternion operator* (float fScalar, const Quaternion& rkQ);
-    Quaternion operator- () const;
+   Quaternion operator* (float fScalar) const;
+   friend Quaternion operator* (float fScalar, const Quaternion& rkQ);
+   Quaternion operator- () const;
+    
+	Quaternion operator/=(float s);
 
 // Functions
+	void Set( float fW, float fX, float fY, float fZ);	
+	
 	float Dot (const Quaternion& q) const;
 	float Norm(void);
 	float Length(void);
 	Quaternion Inverse (void);
 	Quaternion UnitInverse (void);
 	void Normalize(void);
+	
+	Vector3 RotateVector3(Vector3 v);
 
 // Compare
 	int operator == ( const Quaternion& rkQ ) const; 
@@ -53,6 +66,7 @@ public:
     float& operator[] (int i);
 
 	void AngleQuaternion( const Vector3 angles );
+	Vector3 GetVector3();
 	void QuaternionSlerp( Quaternion* from, Quaternion* to, float t);
 	Quaternion conjugate(void);
 
@@ -76,5 +90,8 @@ public:
 	static Quaternion ZERO;
 	static Quaternion IDENTITY;
 };
+
+BASIC_API Quaternion operator*(Quaternion q,Vector3 v);
+BASIC_API Quaternion operator*(Vector3 v,Quaternion q);
 
 #endif

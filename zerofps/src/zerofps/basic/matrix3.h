@@ -51,11 +51,21 @@ class BASIC_API Matrix3 {
 		Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const;
 		Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix);
 		
+		
 		bool inverse (Matrix3& inv, float tolerance) const;
 		float determinant(void)	 const;
 		void Identity();
 		void Print();
 
+
+		Vector3 VectorTransform (const Vector3& kVec) 
+		{
+			return Vector3 (
+				kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
+				kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
+				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
+				);
+		}
 };
 
 

@@ -18,6 +18,8 @@ struct PHYSICSENGINE_API Collission
 	
 	Vector3	kPos;					//collission point
 	Vector3	kNormal;				//pkBody2's normal
+	Vector3	kMassCenterToPos1;
+	Vector3	kMassCenterToPos2;	
 	
 	Vector3	kRelVelocity;			//relative velocity 
 	Vector3	kRelAcceleration;	//relative acceleration

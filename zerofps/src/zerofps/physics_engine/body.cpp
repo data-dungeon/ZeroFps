@@ -22,7 +22,12 @@ void Body::Reset()
 	
 	m_fMass =				1;
 	m_kInertia.Identity();
-	m_kInertiaInverse.Identity();
+	m_kInertia.m_afData[0] = 0.5;
+	m_kInertia.m_afData[4] = 0.5;
+	m_kInertia.m_afData[8] = 0.5;
+	
+	m_kInertia.inverse(m_kInertiaInverse,0.1);
+//	m_kInertiaInverse 
 	m_kMassCenter.Set(0,0,0);
 	
 	m_kPosition.Set(0,0,0);
@@ -30,10 +35,10 @@ void Body::Reset()
 	m_kBodyVelocity.Set(0,0,0);	
 	m_kAcceleration.Set(0,0,0);
 	
-	m_kAngles.Identity();
+	m_kAngles.Set(0,0,0);
 	m_kAngleVel.Set(0,0,0);
 	m_kAngleAcceleration.Set(0,0,0);									
-	m_kOrientation.Identity();
+	m_kOrientation.Set(0,0,0,0);
 	
 	m_kForces.Set(0,0,0);
 	m_kMoment.Set(0,0,0);
@@ -59,6 +64,18 @@ Vector3 Body::GetPos()
 	return m_kPosition;
 }
 
+Vector3 Body::SetRot(Vector3 kRot)
+{
+	m_kAngles = kRot;
+	m_kOrientation.FromAxes(&kRot); 
+}
+
+Vector3 Body::GetRot()
+{
+	return m_kAngles;
+}
+
+
 
 void Body::Rest(Body* pkBody)
 {
@@ -79,7 +96,17 @@ void Body::Awaken()
 
 Vector3 Body::TransRot(Vector3 kVert)
 {
-	return (kVert * (*m_pfScale)) + m_kPosition;
+	Matrix3 rot;
+	m_kOrientation.ToRotationMatrix(rot);
+
+
+	Vector3 temp = kVert;
+	
+	kVert *=(*m_pfScale);	
+	kVert = rot.VectorTransform(kVert);
+	kVert += m_kPosition;
+
+	return kVert;
 
 }
 

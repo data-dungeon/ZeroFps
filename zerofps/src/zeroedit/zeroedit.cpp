@@ -953,6 +953,9 @@ void ZeroEdit::Input()
 					object->SetPos(m_kDrawPos);					
 					object->GetVel().Set(0,0,0);
 					
+					object->SetRot(Vector3(30,0,0));
+					object->SetRot(Vector3(30,0,0));					
+					
 					if(m_iRandom){
 						object->GetRot().y=rand()%360;					
 						object->GetRot().x=((rand()%20000)-10000)/1000.0;

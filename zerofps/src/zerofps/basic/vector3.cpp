@@ -1,5 +1,6 @@
 #include "zfassert.h"
 #include "vector3.h"
+#include "matrix3.h"
 
 using namespace std;
 
@@ -203,6 +204,34 @@ Vector3 Vector3::PEP(const Vector3 &fOther)		const {
 	return Vector3(x * fOther.x,y * fOther.y,z * fOther.z);
 }
 
+
+Vector3 operator* (const Vector3& v, const Matrix3 m) 
+{
+	return Vector3(v.x*m.m_afData[0] + v.y*m.m_afData[1] + v.z*m.m_afData[2],
+						v.x*m.m_afData[3] + v.y*m.m_afData[4] + v.z*m.m_afData[5],
+						v.x*m.m_afData[6] + v.y*m.m_afData[7] + v.z*m.m_afData[8]);
+}	
+
+Vector3 operator* ( const Matrix3 m,const Vector3& v) 
+{
+	return Vector3(m.m_afData[0]*v.x + m.m_afData[1]*v.y + m.m_afData[2]*v.z,
+						m.m_afData[3]*v.x + m.m_afData[4]*v.y + m.m_afData[5]*v.z,
+						m.m_afData[6]*v.x + m.m_afData[7]*v.y + m.m_afData[8]*v.z);
+}	
+
+Vector3 operator/ ( const Matrix3 m,const Vector3& v) 
+{
+	return Vector3(m.m_afData[0]/v.x + m.m_afData[1]/v.y + m.m_afData[2]/v.z,
+						m.m_afData[3]/v.x + m.m_afData[4]/v.y + m.m_afData[5]/v.z,
+						m.m_afData[6]/v.x + m.m_afData[7]/v.y + m.m_afData[8]/v.z);
+}	
+
+Vector3 operator/ ( const Vector3& v ,const Matrix3 m) 
+{
+	return Vector3(v.x/m.m_afData[0] + v.y/m.m_afData[1] + v.z/m.m_afData[2],
+						v.x/m.m_afData[3] + v.y/m.m_afData[4] + v.z/m.m_afData[5],
+						v.x/m.m_afData[6] + v.y/m.m_afData[7] + v.z/m.m_afData[8]);
+}	
 /*
 Vector3 Vector3::operator*(const Matrix4 &f) const 
 {

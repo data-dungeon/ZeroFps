@@ -8,6 +8,8 @@
 
 using namespace std;
 
+class Matrix3;
+
 /// A Class for vector math operations in 3D.
 class BASIC_API Vector3 {
 	public:
@@ -113,6 +115,7 @@ class BASIC_API Vector3 {
 			return Vector3(-x,-y,-z);
 			}
 
+
 		// Comparison
 		bool operator==(const Vector3 &kOtherV3)	const;			// NC
 		bool operator!=(const Vector3 &kOtherV3)	const;			// NC
@@ -158,7 +161,13 @@ class BASIC_API Vector3 {
 
 };
 
-BASIC_API Vector3 operator * ( const float& s, const Vector3& v );
+BASIC_API Vector3 operator* ( const float& s, const Vector3& v );
+
+BASIC_API Vector3 operator* (const Vector3& v, const Matrix3 m) ;
+BASIC_API Vector3 operator* ( const Matrix3 m,const Vector3& v) ;
+
+BASIC_API Vector3 operator/ (const Vector3& v, const Matrix3 m) ;
+BASIC_API Vector3 operator/ ( const Matrix3 m,const Vector3& v) ;
 
 #endif
 

@@ -29,10 +29,12 @@ class PHYSICSENGINE_API Body
 		Vector3		m_kBodyVelocity;		//Velocity in body coordinats		
 		Vector3		m_kAcceleration;		//acceleration of (Center of gravity) in body coordinats
 		
-		Matrix4		m_kAngles;				//Angle in body coordinats
+		Vector3		m_kAngles;				//Euler Angle's in body coordinats
 		Vector3		m_kAngleVel;			 //angle velocity in body coordinats
 		Vector3		m_kAngleAcceleration; //angle acclereration in body coordinats		
-		Matrix4		m_kOrientation;		 //orientatiojn in world cordinats
+		Quaternion	m_kOrientation;		 //orientatiojn in world cordinats
+		
+		float			m_fSpeed;
 		
 		Vector3		m_kForces;				//total force on body
 		Vector3		m_kMoment;				//total moment(torque) on body
@@ -58,6 +60,9 @@ class PHYSICSENGINE_API Body
 		void Reset();
 		void SetPos(Vector3 kPos);
 		Vector3 GetPos();								
+		Vector3 GetRot();
+		Vector3 SetRot(Vector3 kRot);
+		
 		void Rest(Body* pkBody);				//set object to rest against pkBody
 		void Awaken();
 		Vector3 TransRot(Vector3 kVert);

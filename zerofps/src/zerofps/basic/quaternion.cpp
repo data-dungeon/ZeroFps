@@ -31,8 +31,8 @@ Quaternion::Quaternion(const Quaternion& rkQ)
     y = rkQ.y;
     z = rkQ.z;
 }
-
-Quaternion& Quaternion::operator= ( Quaternion& rkQ )
+/*
+Quaternion& Quaternion::operator= (Quaternion& rkQ )
 {
     w = rkQ.w;
     x = rkQ.x;
@@ -40,7 +40,7 @@ Quaternion& Quaternion::operator= ( Quaternion& rkQ )
     z = rkQ.z;
 	return *this;
 }
-
+*/
 
 Quaternion Quaternion::operator + (const Quaternion& rkQ ) const 
 {
@@ -409,51 +409,6 @@ void Quaternion::AngleQuaternion( const Vector3 angles )
 
 void Quaternion::QuaternionSlerp( Quaternion* from, Quaternion* to, float t)
 {
-/*	int i;
-	float omega, cosom, sinom, sclp, sclq;
-
-	// decide if one of the quaternions is backwards
-	float a = 0;
-	float b = 0;
-	for (i = 0; i < 4; i++) {
-		a += (p[i]-q[i])*(p[i]-q[i]);
-		b += (p[i]+q[i])*(p[i]+q[i]);
-	}
-	if (a > b) {
-		for (i = 0; i < 4; i++) {
-			q[i] = -q[i];
-		}
-	}
-
-	cosom = p[0]*q[0] + p[1]*q[1] + p[2]*q[2] + p[3]*q[3];
-
-	if ((1.0 + cosom) > 0.00000001) {
-		if ((1.0 - cosom) > 0.00000001) {
-			omega = acos( cosom );
-			sinom = sin( omega );
-			sclp = sin( (1.0 - t)*omega) / sinom;
-			sclq = sin( t*omega ) / sinom;
-		}
-		else {
-			sclp = 1.0 - t;
-			sclq = t;
-		}
-		for (i = 0; i < 4; i++) {
-			qt[i] = sclp * p[i] + sclq * q[i];
-		}
-	}
-	else {
-		qt[0] = -p[1];
-		qt[1] = p[0];
-		qt[2] = -p[3];
-		qt[3] = p[2];
-		sclp = sin( (1.0 - t) * 0.5 * Q_PI);
-		sclq = sin( t * 0.5 * Q_PI);
-		for (i = 0; i < 3; i++) {
-			qt[i] = sclp * p[i] + sclq * qt[i];
-		}
-	}*/
-
 	float	to1[4];
 	double  omega, cosom, sinom, scale0, scale1;
 
@@ -509,20 +464,58 @@ Quaternion Quaternion::conjugate(void)
 		-y,
 		-z,
 		w);
-/*	Quaternion q;
-
-	q.x = -q.x;
-	q.y = -q.y;
-	q.z = -q.z;
-	q.w = w;
-
-	return q;*/
 }
 
 
+void Quaternion::Set( float fW, float fX, float fY , float fZ)
+{
+	w = fW;
+	x = fX;
+	y = fY;
+	z = fZ;
+}
 
+Quaternion Quaternion::operator/=(float s)
+{
+	w /= s;
+	x /= s;
+	y /= s;
+	z /= s;
+	
+	return *this;
+}
 
+Vector3 Quaternion::RotateVector3(Vector3 v)
+{
+	Quaternion t,bla;
+	
+	t = (*this) * v * conjugate();
+	
+	return t.GetVector3();
+}
 
+Vector3 Quaternion::GetVector3()
+{
+	return Vector3(x,y,z);
+
+}
+
+//globals--
+Quaternion operator*(Quaternion q,Vector3 v)
+{
+	return Quaternion(	-(q.x*v.x + q.y*v.y + q.z*v.z),
+								  q.w*v.x + q.y*v.z - q.z*v.y,
+								  q.w*v.y + q.z*v.x - q.x*v.z,
+								  q.w*v.z + q.x*v.y - q.y*v.x);
+}
+
+Quaternion operator*(Vector3 v,Quaternion q)
+{
+	return Quaternion(	-(q.x*v.x + q.y*v.y + q.z*v.z),
+								  q.w*v.x + q.z*v.y - q.y*v.z,
+								  q.w*v.y + q.x*v.z - q.z*v.x,
+								  q.w*v.z + q.y*v.x - q.x*v.y);
+}
 
 
 /*
