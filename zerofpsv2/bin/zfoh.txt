@@ -172,3 +172,9 @@ class object
 		add P_ServerInfo=======
 
 
+	class VimTest1
+		parent object
+		set MadProperty m_kMadFile /data/mad/smiley.mad
+		set MadProperty m_fScale 100
+
+

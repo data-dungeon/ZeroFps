@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "ENGINE_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "ENGINE_SYSTEMS_EXPORTS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
 # ADD RSC /l 0x41d /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 basic.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../bin/madmake.exe" /pdbtype:sept /libpath:"../../../bin"
+# ADD LINK32 basic.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../bin/madmake.exe" /pdbtype:sept /libpath:"../../../../bin"
 
 !ENDIF 
 
@@ -92,23 +92,23 @@ SOURCE=.\3ds.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\core.cpp
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\core.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\core_bone.cpp
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\core_bone.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\core_boneanim.cpp
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\core_boneanim.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\core_mesh.cpp
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\core_mesh.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\core_meshanim.cpp
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\core_meshanim.cpp
 # End Source File
 # Begin Source File
 
@@ -129,14 +129,6 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\md1.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\md2.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\qpack.cpp
 # End Source File
 # Begin Source File
@@ -151,10 +143,6 @@ SOURCE=.\xxx.cpp
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\zerofps\engine\zfresource.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -174,7 +162,7 @@ SOURCE=.\halflife.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zerofps\engine\mad_core.h
+SOURCE=..\..\..\zerofpsv2\engine_systems\mad\mad_core.h
 # End Source File
 # Begin Source File
 
@@ -195,10 +183,6 @@ SOURCE=.\qpack.h
 # Begin Source File
 
 SOURCE=.\xxx.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\zerofps\engine\zfresource.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

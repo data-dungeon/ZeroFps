@@ -4,7 +4,8 @@
 #include "qpack.h"
 #include "madexport.h"
 
-#include "../../zerofps/basic/basicmath.pkg"
+//#include "../../zerofps/basic/basicmath.pkg"
+#include "../../../zerofpsv2/engine_systems/mad/mad_core.h"
 
 struct pmd_triangle_s
 {

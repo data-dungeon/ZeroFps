@@ -9,19 +9,20 @@
 #include <stdarg.h>
 
 #include "madexport.h"
-#include "mdl.h"
+//#include "mdl.h"
 //#include "3ds.h"
 #include "xxx.h"
 //#include "halflife.h"
 //#include "script.h"
 
+/*
 ZFResourceHandle::ZFResourceHandle() {	}
 ZFResourceHandle::~ZFResourceHandle() {	}
 bool ZFResourceHandle::SetRes(string strName) { return true;	}
 void ZFResourceHandle::FreeRes(){}
 bool  ZFResourceHandle::IsValid(){return true;}
 ZFResource* ZFResourceHandle::GetResourcePtr() {return NULL;}
-
+*/
 using namespace std;
 
 #define PATHSEPARATOR(c) ( (c) == '\\'  ||  (c)  ==  '/')
@@ -107,11 +108,11 @@ IMadImport* MadMake::GetImportObject(string FileName)
 
 	string strExt = GetFileExt(ucaInFile);
 	
-	if( strExt == ".md2" )
-		pkImport = new ModellMD2;
+//	if( strExt == ".md2" )
+//		pkImport = new ModellMD2;
 
-		if( strExt == ".mdl" )
-		pkImport = new ModellMD1;
+//		if( strExt == ".mdl" )
+//		pkImport = new ModellMD1;
 		//pkImport = new ModellHalfLife;
 
 /*

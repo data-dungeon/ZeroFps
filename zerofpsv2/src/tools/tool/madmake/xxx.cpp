@@ -1,6 +1,6 @@
 #include <iostream>
 #include "xxx.h"
-//#include "script.h"
+#include "../../../zerofpsv2/basic/simplescript.h"
 
 float g_fExportScale;	
 float g_fUnitsMeter;	// Num of units to be one meter in real scale.
