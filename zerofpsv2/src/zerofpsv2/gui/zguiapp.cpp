@@ -31,6 +31,8 @@ ZGuiApp::~ZGuiApp()
 		itSkins++;
 	}
 
+	delete m_kResHandle;
+
 /*	map<int, ZGuiWnd*>::iterator itWnds = m_kWindows.begin();
 	while(itWnds != m_kWindows.end())
 	{
@@ -253,7 +255,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGu
 	double dData;
 	double dColMult = 1.0 / 255.0;
 
-	lua_State* pkLuaState = ((ZFScript*) m_kResHandle->GetResourcePtr())->m_pkLuaState;
+	lua_State* pkLuaState = GetGuiScript()->m_pkLuaState;
 
 	// Textures
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex1", szData))
@@ -360,7 +362,7 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 	// Låt skriptfilen skapa alla fönster.
 	//pkScript->CallScript("CreateMainWnds", 0, 0);
 
-	pkScript->Call(((ZFScript*) m_kResHandle->GetResourcePtr()), "CreateMainWnds", 0, 0);
+	pkScript->Call(GetGuiScript(), "CreateMainWnds", 0, 0);
 
 }
 
@@ -741,4 +743,9 @@ int ZGuiApp::GetWidth()
 int ZGuiApp::GetHeight()
 {
 	return m_pkGui->m_iResY;
+}
+
+ZFScript* ZGuiApp::GetGuiScript()
+{
+	return (ZFScript*) m_kResHandle->GetResourcePtr();  
 }

@@ -63,6 +63,7 @@ class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 public:
 	bool Call(ZFScript *pkScript, char* szFuncName, int iNumParams, int iNumResults);
 	bool Run(ZFScript* pkScript);
+
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
 	void AddReturnValue(lua_State* state, double dValue);
 
@@ -90,7 +91,7 @@ public:
 	bool ShutDown();
 	bool IsValid();	
 
-	void CopyGlobalData(lua_State* pkState);
+	void CopyGlobalData(lua_State** ppkState);
 	
 	ZFScriptSystem();
 	virtual ~ZFScriptSystem();
@@ -127,8 +128,6 @@ private:
 	bool Open();
 	
 	lua_State* m_pkLua;
-
-	vector<lua_State*> m_vkStates;
 
 	int m_iLuaTagInt;
 	int m_iLuaTagDouble;

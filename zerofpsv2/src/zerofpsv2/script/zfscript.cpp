@@ -85,37 +85,37 @@ bool ZFScriptSystem::Open()
 	return true;	
 }
 
-void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
+void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 {
-	pkState = lua_open(0);
+	*ppkState = lua_open(0);
 
 	// Create Lua tag for Int type.
-	m_iLuaTagInt = lua_newtag(pkState);
-	lua_pushcfunction(pkState, GetTypeInt);
-	lua_settagmethod(pkState, m_iLuaTagInt, "getglobal");
-	lua_pushcfunction(pkState, SetTypeInt); 
-	lua_settagmethod(pkState, m_iLuaTagInt, "setglobal");
+	m_iLuaTagInt = lua_newtag(*ppkState);
+	lua_pushcfunction(*ppkState, GetTypeInt);
+	lua_settagmethod(*ppkState, m_iLuaTagInt, "getglobal");
+	lua_pushcfunction(*ppkState, SetTypeInt); 
+	lua_settagmethod(*ppkState, m_iLuaTagInt, "setglobal");
 
 	// Create Lua tag for Double type.
-	m_iLuaTagDouble = lua_newtag(pkState);
-	lua_pushcfunction(pkState, GetTypeDouble);
-	lua_settagmethod(pkState, m_iLuaTagDouble, "getglobal");
-	lua_pushcfunction(pkState, SetTypeDouble); 
-	lua_settagmethod(pkState, m_iLuaTagDouble, "setglobal");
+	m_iLuaTagDouble = lua_newtag(*ppkState);
+	lua_pushcfunction(*ppkState, GetTypeDouble);
+	lua_settagmethod(*ppkState, m_iLuaTagDouble, "getglobal");
+	lua_pushcfunction(*ppkState, SetTypeDouble); 
+	lua_settagmethod(*ppkState, m_iLuaTagDouble, "setglobal");
 
 	// Create Lua tag for Float type.
-	m_iLuaTagFloat = lua_newtag(pkState);
-	lua_pushcfunction(pkState, GetTypeFloat);
-	lua_settagmethod(pkState, m_iLuaTagFloat, "getglobal");
-	lua_pushcfunction(pkState, SetTypeFloat); 
-	lua_settagmethod(pkState, m_iLuaTagFloat, "setglobal");
+	m_iLuaTagFloat = lua_newtag(*ppkState);
+	lua_pushcfunction(*ppkState, GetTypeFloat);
+	lua_settagmethod(*ppkState, m_iLuaTagFloat, "getglobal");
+	lua_pushcfunction(*ppkState, SetTypeFloat); 
+	lua_settagmethod(*ppkState, m_iLuaTagFloat, "setglobal");
 
 	// Create Lua tag for String type.
-	m_iLuaTagString = lua_newtag(pkState);
-	lua_pushcfunction(pkState, GetTypeString);
-	lua_settagmethod(pkState, m_iLuaTagString, "getglobal");
-	lua_pushcfunction(pkState, SetTypeString); 
-	lua_settagmethod(pkState, m_iLuaTagString, "setglobal");
+	m_iLuaTagString = lua_newtag(*ppkState);
+	lua_pushcfunction(*ppkState, GetTypeString);
+	lua_settagmethod(*ppkState, m_iLuaTagString, "getglobal");
+	lua_pushcfunction(*ppkState, SetTypeString); 
+	lua_settagmethod(*ppkState, m_iLuaTagString, "setglobal");
 
 	unsigned int i;
 	unsigned int iNumFunctions = m_vkGlobalFunctions.size();
@@ -125,14 +125,14 @@ void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
 	for(i=0; i<iNumFunctions;  i++)
 		ExposeFunction(m_vkGlobalFunctions[i]->szName,
 			m_vkGlobalFunctions[i]->pkFunction, 
-			pkState);
+			*ppkState);
 
 	// Add global variables
 	for(i=0; i<iNumVars; i++)
 		ExposeVariable(m_vkGlobalVariables[i]->szName,
 			m_vkGlobalVariables[i]->pvData,
 			m_vkGlobalVariables[i]->eType, 
-			pkState);
+			*ppkState);
 }
 
 void ZFScriptSystem::Close()
@@ -611,15 +611,16 @@ ZFScript::ZFScript()
 
 ZFScript::~ZFScript()
 {
-	if(m_szScriptName)
+	if(m_szScriptName != NULL)
 	{
 		delete[] m_szScriptName;
 		m_szScriptName = NULL;
 	}
 
-	if(m_pkLuaState)
+	if(m_pkLuaState != NULL)
 	{
 		lua_close(m_pkLuaState);
+		m_pkLuaState = NULL;
 	}
 }
 
@@ -633,12 +634,12 @@ bool ZFScript::Create(string strName)
 		return false;
 	}
 
-	m_szScriptName = new char[strName.size()];
+	m_szScriptName = new char[strName.size()+1];
 	strcpy(m_szScriptName, strName.c_str());
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 
-	pkScriptSys->CopyGlobalData(m_pkLuaState);
+	pkScriptSys->CopyGlobalData(&m_pkLuaState);
 
 	return pkScriptSys->Run(this); 
 
@@ -680,6 +681,8 @@ bool ZFScriptSystem::Call(ZFScript *pkScript, char* szFuncName, int iNumParams, 
 {	
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
+
+	int size = lua_gettop(pkScript->m_pkLuaState);
 
 	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);

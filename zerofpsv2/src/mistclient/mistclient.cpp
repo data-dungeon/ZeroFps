@@ -286,12 +286,19 @@ void MistClient::Input()
 			pkScript->CallScript("Test", 0, 0, pState2);*/
 
 
-			static ZFResourceHandle kResHandle;
-			if(!kResHandle.SetRes("data/script/gui/test2.lua"))
+			ZFResourceHandle kResHandle;
+			if(!kResHandle.SetRes("data/script/gui/test1.lua"))
 				printf("Failed to load test script\n");
 
-			pkScript->Run( (ZFScript*) kResHandle.GetResourcePtr() );
-			pkScript->Call( (ZFScript*) kResHandle.GetResourcePtr(), "Test", 0, 0);
+			if(!pkScript->Run( (ZFScript*) kResHandle.GetResourcePtr() ))
+				printf("Failed to run test1.lua\n");
+			else
+				printf("Succeeded to run test1.lua\n");
+
+			if(!pkScript->Call( (ZFScript*) kResHandle.GetResourcePtr(), "Test", 0, 0))
+				printf("Failed to run call \"Test\" in test1.lua\n");
+			else
+				printf("Succeeded to run call \"Test\" in test1.lua\n");
 
 		}
 		break;
@@ -421,11 +428,11 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	pkScript->CallScript("OnClickOK", 0, 0);*/
 
 	if(iID == 5)
-		pkScript->CallScript("OnClickBackpack", 0, 0); 
+		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
 	if(iID == 6)
-		pkScript->CallScript("OnClickStats", 0, 0);
+		pkScript->Call(GetGuiScript(), "OnClickStats", 0, 0);
 	if(iID == 4)
-		pkScript->CallScript("OnClickMap", 0, 0);
+		pkScript->Call(GetGuiScript(), "OnClickMap", 0, 0);
 }
 
 

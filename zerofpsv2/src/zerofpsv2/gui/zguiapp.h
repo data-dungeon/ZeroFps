@@ -14,6 +14,7 @@ class TextureManager;
 class ZFScriptSystem;
 class ZGuiResourceManager;
 class ZFResourceHandle;
+class ZFScript;
 
 #define EB_IS_MULTILINE   0x1
 #define READ_ONLY			  0x2
@@ -78,6 +79,8 @@ public:
 
 	int GetWidth();
 	int GetHeight();
+
+	ZFScript* GetGuiScript();
 
 	ZGuiApp(callback oMainWndProc);
 	~ZGuiApp();
