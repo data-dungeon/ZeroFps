@@ -768,7 +768,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			{
 				pkNetPacket->Read( iRelID ); 
 				m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
-				m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.erase( pkNetPacket->m_kData.m_kHeader.m_iOrder );
+				m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.erase( iRelID );
 
 
 				if( m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == iRelID )
