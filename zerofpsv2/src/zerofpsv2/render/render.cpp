@@ -527,7 +527,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 		pkConsole->GetPass(0)->m_bLighting = 				false;		
 		pkConsole->GetPass(0)->m_bColorMaterial = 		true;
 		pkConsole->GetPass(0)->m_bFog = 						false;		
-
+		pkConsole->GetPass(0)->m_bDepthTest = 				false;				//needs to disable z-test , else marker wont work
 		//uncomment these for a more funny looking console =D
 		//pkConsole->m_bCopyData = true;
 		//pkConsole->m_bWaves = true;
