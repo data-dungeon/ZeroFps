@@ -4,24 +4,20 @@
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
 	SetView(fFov,fAspect,fNear,fFar);
+	SetViewPort(0,0,1,1);
 	SetPos(kPos);
 	SetRot(kRot);
-		
-	m_fX=0;
-	m_fY=0;
-	m_fWidth=1;
-	m_fHeight=1;
-	
+
 }
 
-void Camera::UpdateAll() 
+void Camera::UpdateAll(int iWidth,int iHeight) 
 {
 	m_bViewChange=true;
-	Update();
-
+	m_bViewPortChange=true;
+	Update(iWidth,iHeight);
 }
 
-void Camera::Update() {
+void Camera::Update(int iWidth,int iHeight) {
 	
 	if(m_bViewChange){
 		m_bViewChange=false;
@@ -33,6 +29,17 @@ void Camera::Update() {
 		glLoadMatrixf((float*)&m_kCamMatrix[0]);
 	}
 	
+	if(m_bViewPortChange){	
+		m_bViewPortChange=false;
+		
+
+		glViewport( int(iWidth*m_fX), 
+						int(iHeight*m_fY),
+						int(iWidth*m_fWidth),
+						int(iHeight*m_fHeight));		
+	
+	}
+
 	
 	//reset modelview matrix and setup the newone
 	glMatrixMode(GL_MODELVIEW);
@@ -60,6 +67,9 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 
 void Camera::SetViewPort(float fX,float fY,float fW,float fH) 
 {
+
+	m_bViewPortChange=true;
+
 	m_fX=fX;
 	m_fY=fY;
 	

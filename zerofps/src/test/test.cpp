@@ -101,6 +101,7 @@ void Test::OnInit(void) {
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
 
+/*
 	for(int i=0;i<20;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
@@ -111,7 +112,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-
+*/
 
 	glEnable(GL_LIGHTING );
 	
@@ -128,19 +129,29 @@ void Test::OnInit(void) {
 
 
 void Test::OnIdle(void) {
+//	pkFps->SetCamera(cam2);	
+	
+	OnHud();
+	pkFps->SetCamera(cam1);		
+	
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->y=50;
 
 
 
+
+	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+	
+
 	pkFps->SetCamera(cam2);
 	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+	
+//	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	pkFps->SetCamera(cam1);
-	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-
+	
+	
 	
 	if(m_iGrass>0){
 		for(int ix=0;ix<1000;ix+=30)

@@ -13,17 +13,18 @@ class Camera {
 		
 			
 		bool m_bViewChange;
-		bool m_bViewPortChange;		
-	public:
+		bool m_bViewPortChange;				
 		
 		float m_fX;
 		float m_fY;
 		float m_fWidth;
 		float m_fHeight;
+
+	public:
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
-		void Update();
-		void UpdateAll();
+		void Update(int iWidth,int iHeight);
+		void UpdateAll(int iWidth,int iHeight);
 		void SetView(float fFov,float fAspect,float fNear,float fFar);
 		void SetViewPort(float iX,float iY,float iW,float iH);
 		void SetPos(Vector3 kPos){ m_kPos=kPos;};
