@@ -49,6 +49,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_DIR,
 			FID_CD,
 			FID_LISTMAD,
+			FID_PRINTOBJECT,
 		};
 		
 		SDL_Surface* m_pkScreen;		

@@ -77,7 +77,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		int	GetNumOfObjects();
 		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
 		
-
+		void DisplayTree();
 };
 
 

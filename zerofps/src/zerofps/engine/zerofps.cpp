@@ -64,6 +64,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
 	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
 	g_ZFObjSys.Register_Cmd("listmad",FID_LISTMAD,this);	
+	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
 
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
@@ -551,6 +552,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 					
 			break;
 
+		case FID_PRINTOBJECT:
+			m_pkObjectMan->DisplayTree();
+			break;
+
 		case FID_LISTMAD:
 			int iSize = akCoreModells.size();
 			m_pkConsole->Printf("Loaded Mads: ");
@@ -558,7 +563,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf(" %d: %s", i, akCoreModells[i]->Name);
 				}
 			break;
-
 	}	
 }
 

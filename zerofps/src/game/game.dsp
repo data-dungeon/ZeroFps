@@ -195,6 +195,14 @@ SOURCE=.\game.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\massdriverprojectile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\massdriverproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\playercontrolproperty.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -252,6 +260,14 @@ SOURCE=.\bunnyobject.h
 # Begin Source File
 
 SOURCE=.\game.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\massdriverprojectile.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\massdriverproperty.h
 # End Source File
 # Begin Source File
 

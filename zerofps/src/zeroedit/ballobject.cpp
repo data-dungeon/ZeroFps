@@ -34,11 +34,13 @@ BallObject::BallObject() {
 	pp->m_bFloat=false;
 
 
+
 //	m_kAcc.Set(0,0,0);
 
 	onGround = false;
 }
 
+/*
 void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	
 	//if a ball colides with the player destroy it
@@ -54,5 +56,5 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 		pkOther->HandleCollision(this,kPos,false);
 	}
 
-}
+}*/
 

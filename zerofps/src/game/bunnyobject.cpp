@@ -29,7 +29,7 @@ BunnyObject::BunnyObject()
 	onGround=false;
 }
 
-
+/*
 void BunnyObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue)
 {
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
@@ -48,7 +48,7 @@ void BunnyObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue)
 		pkOther->HandleCollision(this,kPos,false);
 	}
 
-}
+}*/
 
 
 

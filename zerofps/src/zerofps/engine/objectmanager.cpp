@@ -21,14 +21,23 @@ void ObjectManager::Add(Object* pkObject) {
 
 void ObjectManager::Clear()
 {
-//	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-//		Delete(*it);
-//	}
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->CheckLinks(false,0) == false)
+			cout << "Error in object manger" << endl;
+		else
+			cout << "Links ok" << endl;
+	} 
 	
 	m_pkWorldObject->DeleteAllChilds();
 //	cout << "ObjectManager::Clear" << endl;
 //	UpdateDelete();
 }
+
+void ObjectManager::DisplayTree()
+{
+	m_pkWorldObject->PrintTree(0);
+}
+
 
 
 void ObjectManager::Remove(Object* pkObject) {	
@@ -130,6 +139,8 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 
 	return NULL;
 }
+
+
 
 Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {

@@ -27,7 +27,7 @@ class ENGINE_API CollisionManager : public ZFObject{
 		void Remove(Object* kObject);
 		void Remove(CollisionProperty* kColProperty);
 		
-		void Update();
+//		void Update();
 
 
 };

@@ -215,12 +215,9 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 	if(pkMesh->bNotAnimated == false)
 		return;
 	
-//	cout << "Creating list for " << pkMesh->m_acName;
-
 	int iListID;
 	iListID = pkMesh->GetDisplayID();
 	if(iListID != -1) {
-//		cout << "List already done" << endl;
 		return;
 		}
 

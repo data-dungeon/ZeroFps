@@ -31,8 +31,11 @@ void CollisionManager::Remove(CollisionProperty* pkColProperty)
 	m_akColPropertys.remove(pkColProperty);
 }
 
+/*
 void CollisionManager::Update() 
 {
+	cout << "Collision Update" << endl;
+
 	for(list<CollisionProperty*>::iterator itx=m_akColPropertys.begin();itx!=m_akColPropertys.end();itx++) 
 	{
 		//if the object is static dont test collisions with it
@@ -52,5 +55,5 @@ void CollisionManager::Update()
 			}
 		}
 	}
-}
+}*/
 
