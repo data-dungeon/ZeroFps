@@ -212,7 +212,7 @@ void MistClient::OnIdle()
 		{
 			P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera");
 			float fAngle = pkCam->Get3PYAngle();
-			printf("fAngle = %f\n", fAngle);
+			//printf("fAngle = %f\n", fAngle);
 			pkCompass->GetSkin()->m_fRotDegree = (1.0f/57.5f) * fAngle; 
 		}
 	}

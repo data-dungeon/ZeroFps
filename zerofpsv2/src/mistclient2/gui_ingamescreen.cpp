@@ -231,4 +231,6 @@ void MistClient::LoadInGameGui()
 	((ZGuiTextbox*)GetWnd("ChatTextbox"))->UpdateText();
 	((ZGuiTextbox*)GetWnd("ChatTextbox"))->ScrollRowIntoView(
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
+
+	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
 }

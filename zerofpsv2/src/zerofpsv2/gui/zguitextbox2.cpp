@@ -354,9 +354,9 @@ void ZGuiTextbox::CreateInternalControls()
 	if(m_bMultiLine)
 	{
 		Rect rc = GetWndRect();
-		int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-20;
+		int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-16;
 		int y = 0;
-		int w = 20;
+		int w = 16;
 		int h = rc.Height();
 
 		if(m_pkScrollbarVertical)
@@ -581,8 +581,8 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 	if(m_pkScrollbarVertical)
 	{
-		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-20, 0, false, true);
-		m_pkScrollbarVertical->Resize(20,Height);
+		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-16, 0, false, true);
+		m_pkScrollbarVertical->Resize(16,Height);
 	}
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
@@ -1341,7 +1341,7 @@ void ZGuiTextbox::BuildTextStrings()
 	if(m_bLeftAlignedScrollbar && m_pkScrollbarVertical->IsVisible() )
 		LEFT += m_pkScrollbarVertical->GetScreenRect().Width();
 
-	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
+	const int WIDTH = GetWndRect().Width() - 16 - (LEFT*2);
 
 	int xPos = LEFT;
 	int iRow = 0;//, iLettersProcessed=0;
@@ -1539,9 +1539,9 @@ void ZGuiTextbox::SetLeftAlignedScrollbar(bool bLeftAligned)
 
 	Rect rc = GetWndRect();
 
-	int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-20;
+	int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-16;
 	int y = 0;
-	int w = 20;
+	int w = 16;
 	int h = rc.Height();
 
 	m_pkScrollbarVertical->SetPos(x,y, false, true);
