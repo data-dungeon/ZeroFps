@@ -10,6 +10,11 @@
 #include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../../../zerofpsv2/gui/zgui.h"
 
+// Remove the console window in windows
+#ifdef WIN32
+	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+#endif 
+
 /**	\brief	Da MadView
 		\ingroup MadView
 */

@@ -265,6 +265,11 @@ void Input::Update(void)
 	{
 		switch(m_kEvent.type) 
 		{
+			// quit message
+			case SDL_QUIT: // pushing the close button
+				m_pkZeroFps->QuitEngine();
+				break;
+
 			//keyboard
 			case SDL_KEYDOWN:
 				kNewKey = TranslateKey(&m_kEvent.key.keysym);
