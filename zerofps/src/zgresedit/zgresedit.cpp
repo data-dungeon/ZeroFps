@@ -583,7 +583,6 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				case IDM_NEW:
 					m_pkControlBox->ClearAll(); 
 					break;
-
 				case IDM_EXIT:
 					pkFps->QuitEngine();
 					break;
@@ -871,6 +870,14 @@ void ZGResEdit::SaveFile(const char* szFileName)
 			{
 				szName[i] = 0;
 			}
+		}
+
+		char* remove  = strstr(szName, "_rc");
+		if(remove != NULL)
+		{
+			int ch = strlen(szName) - strlen(remove);
+			szName[ch] = '\0';
+			//strset(szName+strlen(remove), 0);
 		}
 
 		char szIDName[50]; sprintf(szIDName, "%s_id.h", szName);

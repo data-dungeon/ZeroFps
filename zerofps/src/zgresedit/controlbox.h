@@ -21,6 +21,7 @@ public:
 	vector<CreateWnd> m_pkCreatedWindows;
 
 private:
+	bool RaiseNumberAtEnd(char* szName);
 	void CreateCopy();
 	typedef pair<pair<string,string>, ZGuiSkin*> tSkinInf; //window_name, wnd_desc, skin
 

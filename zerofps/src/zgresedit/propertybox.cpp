@@ -176,6 +176,12 @@ bool PropertyBox::OnClose(bool bSave)
 		pkSelWnd->SetTabOrderNr(atoi(
 			m_pkGuiBuilder->GetWnd("CtrlTabOrderEB")->GetText()));
 
+		char* szNewName = m_pkGuiBuilder->GetWnd("CtrlPropIDName")->GetText();
+		if(strcmp(szNewName, pkSelWnd->GetName()) != 0)
+		{
+			m_pkGui->ChangeWndRegName(pkSelWnd, szNewName);
+		}
+
 		switch(m_pkGuiBuilder->GetWndType(
 			pkSelWnd))
 		{

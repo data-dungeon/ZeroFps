@@ -227,6 +227,9 @@ void ControlBox::CreateCopy()
 {
 	if(SelectWnd::GetInstance()->m_pkWnd)
 	{
+		char name[150]; 
+		strcpy(name, SelectWnd::GetInstance()->m_pkWnd->GetName());
+
 		// Must register selected window because CreateNewType change it
 		// and we need to look at it later.
 		ZGuiWnd* pkPrevSelWnd = SelectWnd::GetInstance()->m_pkWnd;
@@ -241,7 +244,7 @@ void ControlBox::CreateCopy()
 		ZGuiWnd* pkNewWnd = m_pkCreatedWindows.back().m_pkWnd; // id = last-1
 
 		int id = pkNewWnd->GetID();
-		char name[50]; 
+		
 
 		// copy data
 		pkNewWnd->CopyNonUniqueData(pkPrevSelWnd);
@@ -249,11 +252,73 @@ void ControlBox::CreateCopy()
 		// change some values
 		pkNewWnd->SetID(id);
 
-		sprintf(name, "%s%i", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
-		m_pkGui->ChangeWndRegName(pkNewWnd, name);
+		char szNewName[100];
+		strcpy(szNewName, name);
+
+		if(!RaiseNumberAtEnd(szNewName))
+			sprintf(szNewName, "%s%i", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
+
+		bool bSuccess = m_pkGui->ChangeWndRegName(pkNewWnd, szNewName);
+
+		if(!bSuccess)
+		{
+			sprintf(szNewName, "%s%i", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
+			bSuccess = m_pkGui->ChangeWndRegName(pkNewWnd, szNewName);
+			if(!bSuccess)
+			{
+				printf("Failed to rename window!\n");
+			}
+		}
 
 		pkNewWnd->Move(0,pkPrevSelWnd->GetScreenRect().Height());
 	}
+}
+
+bool ControlBox::RaiseNumberAtEnd(char *szName)
+{
+	int length = strlen(szName);
+	int i=length-1, l=0;
+
+	char szNumber[50];
+
+	int offset = 0;
+
+	while(1)
+	{
+		if(i==0)
+			return false;
+		
+		if(szName[i] < 48 || szName[i] > 57)
+		{
+			if(strlen(szNumber) < 1)
+				return false;
+
+			offset = i+1;
+			break;
+		}
+
+		szNumber[l] = szName[i];
+		i--; l++;
+	}
+
+	if(strlen(szNumber) < 1)
+		return false;
+
+	szNumber[l] = '\0';
+	strrev(szNumber);
+
+	int number = atoi(szNumber);
+	sprintf(szNumber, "%i", number+1);
+
+	char copy[150];
+
+	strncpy(copy, szName, offset);
+	copy[offset] = '\0';
+	strcat(copy, szNumber);
+
+	strcpy(szName, copy);
+
+	return true;
 }
 
 bool ControlBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
