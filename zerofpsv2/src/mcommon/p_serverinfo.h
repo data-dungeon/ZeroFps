@@ -32,6 +32,9 @@ class MCOMMON_API P_ServerInfo: public Property {
 		ZeroFps* m_pkFps;
 		string 					m_sServerName;				
 		vector<PlayerInfo>	m_kPlayers;		
+		
+		float m_fTimer;
+		
 	public:
 		void AddSound(int iObjectGenSoundID, char* szFileName);
 		void AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char* szFileName);
@@ -42,6 +45,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		P_ServerInfo();
 		
 		PlayerInfo* GetPlayerInfo(int id);
+		
+		void Update();
 		
 		void AddObject(int id,int iObjID,int iRights);
 		void RemoveObject(int id,int iObjID);		

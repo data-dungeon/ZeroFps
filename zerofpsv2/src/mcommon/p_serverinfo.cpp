@@ -10,9 +10,17 @@ P_ServerInfo::P_ServerInfo()
 
 	bNetwork = true;
 	m_sServerName	= 	"NoName";
-	
+	m_fTimer = m_pkFps->GetGameTime();
 }
 
+void P_ServerInfo::Update()
+{
+	if(m_pkFps->GetTicks() - m_fTimer > 10)
+	{
+		m_fTimer = m_pkFps->GetTicks();
+		SetNetUpdateFlag(true);
+	}
+}
 
 void P_ServerInfo::AddPlayer(int id,string sName)
 {
