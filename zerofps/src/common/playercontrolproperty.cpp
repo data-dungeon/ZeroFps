@@ -8,6 +8,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
+	m_pkPhyEngine	= static_cast<PhysicsEngine*>(g_ZFObjSys.GetObjectPtr("PhysicsEngine"));			
 
 	m_pkStatusProperty=NULL;
 
@@ -29,6 +30,8 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
 	m_iActionBack=m_pkInput->RegisterAction("backward");
 	m_iActionJump=m_pkInput->RegisterAction("jump");
+	
+	m_iActionUse=m_pkInput->RegisterAction("use");
 	
 	m_iActionUseItem=m_pkInput->RegisterAction("useitem");
 	m_iActionNextItem=m_pkInput->RegisterAction("nextitem");
@@ -116,6 +119,18 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Action(m_iActionUseItem))
 	{
 		UseInvItem();	
+	}
+	
+	if(m_pkInput->Action(m_iActionUse))
+	{
+		Object* bla = GetObject();
+		
+		if(bla != NULL){
+			ItemProperty* ip = static_cast<ItemProperty*>(bla->GetProperty("ItemProperty"));
+			cout << "OBJECT :"<<ip->m_kItemName<<endl;
+			
+			PickUp(bla);
+		}
 	}
 	
 	
@@ -318,6 +333,64 @@ bool PlayerControlProperty::UseInvItem()
 	}
 	
 	return false;
+}
+
+
+Object* PlayerControlProperty::GetObject()
+{
+	list<Object*> pkObjects;	
+	
+	Vector3 kPos= m_pkObject->GetPos()+Vector3(0,0.95,0);
+	Vector3 kVec= m_pkObject->GetRot().AToU();
+	
+	if(!m_pkPhyEngine->TestLine(&pkObjects,kPos,kVec))
+		return NULL;
+	
+	float distance = 3;
+	Object* pkObject = NULL;
+	
+	for(list<Object*>::iterator it=pkObjects.begin();it!=pkObjects.end();it++)
+	{
+		if((*it) == m_pkObject)
+			continue;
+			
+		if((*it)->GetProperty("ItemProperty") == NULL)
+			continue;
+	
+		float bla = ((*it)->GetPos() - kPos).Length();
+		if( bla < distance)
+		{
+			distance = bla;
+			pkObject = (*it);
+		}		
+	}
+	
+	return pkObject;
+}
+
+
+bool PlayerControlProperty::PickUp(Object* pkObject)
+{
+	ContainerProperty* CP = static_cast<ContainerProperty*>(m_pkObject->GetProperty("ContainerProperty"));
+	ItemProperty* IP = static_cast<ItemProperty*>(pkObject->GetProperty("ItemProperty"));	
+	
+	if(CP == NULL)
+		return false;
+		
+	if(IP == NULL)
+		return false;
+		
+	if(!IP->m_bPickable)
+		return false;
+		
+	cout<<"picking up object"<<endl;
+
+	if(!CP->m_kContainer.AddItem(pkObject))
+		return false;
+	
+	pkObject->SetParent(pkObject);
+
+	return true;
 }
 
 

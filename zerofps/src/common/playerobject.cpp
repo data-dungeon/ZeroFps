@@ -9,6 +9,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	
 	GetName()="Player";
 	
+	AddProperty("ContainerProperty");
 	AddProperty("StatusProperty");	
 	AddProperty("MassDriverProperty");	
 	AddProperty("MachineGunProperty");		

@@ -18,12 +18,12 @@ using namespace std;
 
 class COMMON_API ContainerProperty: public Property {
 	private:
-		Container	m_kContainer;
-		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
 	public:
+		Container	m_kContainer;
+		
 		ContainerProperty();
 
 		void Save(ZFMemPackage* pkPackage);

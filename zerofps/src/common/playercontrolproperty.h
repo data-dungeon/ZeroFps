@@ -10,6 +10,8 @@
 #include "statusproperty.h"
 
 #include "inventoryproperty.h"
+#include "containerproperty.h"
+#include "itemproperty.h"
 #include "common_x.h"
 
 using namespace std;
@@ -21,10 +23,8 @@ class COMMON_API PlayerControlProperty: public Property {
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;
 		OpenAlSystem* m_pkAlSys;
-
-
+		PhysicsEngine* m_pkPhyEngine;
 		ObjectManager *m_pkObjectMan;
-		CollisionManager *m_pkCollisionMan;
 		
 		StatusProperty* m_pkStatusProperty;
 		
@@ -37,6 +37,7 @@ class COMMON_API PlayerControlProperty: public Property {
 		int m_iActionNextItem;
 		int m_iActionZoomIn;
 		int m_iActionZoomOut;		
+		int m_iActionUse;
 
 		float m_fNextTime;
 	
@@ -59,6 +60,10 @@ class COMMON_API PlayerControlProperty: public Property {
 		CameraProperty*	m_pkCameraProperty;
 		float	m_fFov;	// Sniper Zoom
 		float	m_fCamSwitchTimer;
+		
+		Object* GetObject();
+		
+		bool PickUp(Object* pkObject);
 
 	public:
 

@@ -204,6 +204,9 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Game::RegisterPropertys()
 {
+	pkPropertyFactory->Register("ContainerProperty", Create_ContainerProperty);
+	pkPropertyFactory->Register("ItemProperty", Create_ItemProperty);
+
 	pkPropertyFactory->Register("TreeIdleProperty", Create_TreeIdleProperty);
 	pkPropertyFactory->Register("AdaptorSniper", Create_AdaptorSniper);
 	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);

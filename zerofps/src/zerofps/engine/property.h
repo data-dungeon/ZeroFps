@@ -123,13 +123,13 @@ class ENGINE_API Property
 		
 		Property();
 		virtual ~Property(){};
-		virtual void Touch(Collision* pkCol){};
-		virtual void Init(){};
-		virtual void Update(){};			
+		virtual void Touch(Collision* pkCol){};		//executet when collision occurs
+		virtual void Init(){};								//executet when property is added to an object
+		virtual void Update(){};							//executet once every game loop
 		virtual void PackTo(NetPacket* pkNetPacket){} ;
 		virtual void PackFrom(NetPacket* pkNetPacket){} ;
-		virtual void Save(ZFMemPackage* pkPackage);
-		virtual void Load(ZFMemPackage* pkPackage);
+		virtual void Save(ZFMemPackage* pkPackage);	//save property
+		virtual void Load(ZFMemPackage* pkPackage);	//load property
 		
 		virtual void HandleGameMessage(GameMessage& Msg);
 

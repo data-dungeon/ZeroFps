@@ -21,7 +21,7 @@ void Container::Clean()
 	
 	for(int x=0;x<m_iSizeX;x++)
 		for(int y=0;y<m_iSizeY;y++)
-			GetID(x,y) = 0;
+			GetID(x,y) = -1;
 
 }
 
@@ -30,7 +30,7 @@ bool Container::CheckFreeSlot(int iX,int iY,int iSizeX,int iSizeY)
 {
 	for(int x=iX;x<(iX+iSizeX);x++)
 		for(int y=iY;y<(iY+iSizeY);y++)
-			if(GetID(x,y) != 0)
+			if(GetID(x,y) != -1)
 				return false;
 	
 	return true;
@@ -87,9 +87,9 @@ bool Container::CheckIfAdded(Object* pkObject)
 
 bool Container::GetFreeSlot(int iSizeX,int iSizeY,int& iX,int&iY)
 {
-	for(int x=0;x<m_iSizeX;x++)
+	for(int y=0;y<m_iSizeY;y++)
 	{
-		for(int y=0;y<m_iSizeY;y++)
+		for(int x=0;x<m_iSizeX;x++)
 		{
 			if(CheckFreeSlot(x,y,iSizeX,iSizeY))
 			{
@@ -128,6 +128,8 @@ bool Container::AddItem(Object* pkObject)
 
 	//set slot to item ID
 	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
+
+	PrintContainer();
 
 	return true;
 }
@@ -192,7 +194,7 @@ bool Container::RemoveItem(Object* pkObject)
 		for(int y=0;y<m_iSizeY;y++)
 		{
 			if(GetID(x,y) == iID)
-				GetID(x,y) = 0;		
+				GetID(x,y) = -1;		
 		}
 	}
 }
@@ -200,13 +202,16 @@ bool Container::RemoveItem(Object* pkObject)
 
 void Container::PrintContainer()
 {
-	cout<<"-= Container =-"<<endl;
+	cout<<"-= Container =- "<<m_iSizeX<<" * "<<m_iSizeY<<endl;
 
 	for(int y=0;y<m_iSizeY;y++)
 	{
 		for(int x=0;x<m_iSizeX;x++)
 		{
-			cout<<GetID(x,y);
+			if(GetID(x,y) == -1)
+				cout<<" ";
+			else
+				cout<<GetID(x,y);
 		}
 		cout<<endl;
 	}
