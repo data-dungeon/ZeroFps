@@ -15,8 +15,11 @@ OggMusic::OggMusic()
 
 
 OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) : 
-m_bFileOK(false),m_bPlaying(false),
-m_uiBufferSize(uiBufferSize),m_uiNrOfBuffers(uiNrOfBuffers) 
+	m_bFileOK(false),
+	m_bPlaying(false),
+	m_uiBufferSize(uiBufferSize),
+	m_uiNrOfBuffers(uiNrOfBuffers),
+	m_bLooping(true)
 {
 	
 	m_pcTempBuffer = new char[uiBufferSize]; 
@@ -74,13 +77,17 @@ bool OggMusic::LoadFile(string kFileName)
 				<<"File info for: " <<kFileName <<endl;
 			long nrstreams = ov_streams(&m_kOggFile);
 			cout<<"number of bitstreams:" <<nrstreams <<endl;
+			
 			vorbis_info* info = ov_info(&m_kOggFile, 0);
 			cout<<"sampling rate:"<<info->rate <<endl
 				<<"channels:" <<info->channels <<endl
-				<<"bitrate:" <<info->bitrate_nominal <<endl 
-				//// << "upper:" <<info->bitrate_upper
-				///  << "lower:" <<info->bitrate_lower	<<endl;
-				<<"------------------------" <<endl;
+				<<"bitrate:" <<info->bitrate_nominal <<endl; 
+			if(ov_seekable(&m_kOggFile) > 0) 
+				 cout<<"seekable" <<endl;
+			else 
+				cout<<"not seekable" <<endl;
+				
+			cout	<<"------------------------" <<endl;
 			//check if i want to use the file..
 			if(nrstreams != 1) 
 			{
@@ -107,6 +114,7 @@ bool OggMusic::LoadFile(string kFileName)
 	}
 }
 
+/*
 bool OggMusic::InitPlay()
 {
 	char *TempBuffer = new char[44096];
@@ -136,7 +144,7 @@ bool OggMusic::InitPlay()
 		return true;
 	}
 	return false;
-}
+}*/
 
 bool OggMusic::Play()
 {
@@ -196,6 +204,10 @@ bool OggMusic::Update()
 
 bool OggMusic::Stop()
 {
+	alSourceStop(m_ALuiSource);
+	//rewind
+	if (ov_pcm_seek(&m_kOggFile,0) != 0)
+		return false;
 	return true;
 }
 
@@ -203,8 +215,19 @@ bool OggMusic::QueueBuffer(ALuint *pALuiBuffer)
 {
 	int current_section;
 	long bytes_read = ov_read(&m_kOggFile, m_pcTempBuffer, m_uiBufferSize,0,2,1, &current_section); 
-	if(!(bytes_read == 0|| bytes_read==OV_HOLE || bytes_read==OV_EBADLINK ))
+	if(!(bytes_read==OV_HOLE || bytes_read==OV_EBADLINK ))
 	{
+		if(bytes_read == 0)
+		{
+			if(m_bLooping)
+			{
+				if (ov_pcm_seek(&m_kOggFile,0) == 0)
+					return QueueBuffer(pALuiBuffer);
+				else 
+					cout<<"faild to loop OGG!" <<endl;
+			}
+			return false;
+		}
 		alBufferData(*pALuiBuffer, AL_FORMAT_STEREO16, m_pcTempBuffer, bytes_read, m_uiSamplingRate);  
 		if (alGetError()!=AL_NO_ERROR)
 		{
@@ -221,3 +244,13 @@ bool OggMusic::QueueBuffer(ALuint *pALuiBuffer)
 	else 
 		return false;
 }
+
+bool OggMusic::SetVolume(float fVolume)
+{
+	if(fVolume<=1.0)
+	{
+		alSourcef(m_ALuiSource, AL_GAIN, fVolume);
+		return true;
+	}
+	return false;
+};

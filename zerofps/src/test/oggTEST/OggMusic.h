@@ -31,12 +31,16 @@ public:
 	virtual ~OggMusic();
 	bool LoadFile(string kFileName);
 	bool Play();
+	bool SetVolume(float fVolume);
+	inline void SetLooping(bool bState) {m_bLooping=bState;};
+
 private:
-	bool InitPlay();
+	//bool InitPlay();
 
 	OggVorbis_File m_kOggFile;
 	bool m_bFileOK;
 	bool m_bPlaying;
+	bool m_bLooping;
 	unsigned int m_uiNrOfBuffers;
 	unsigned int m_uiBufferSize;
 	unsigned int m_uiSamplingRate;
