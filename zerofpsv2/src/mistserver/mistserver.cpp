@@ -1209,7 +1209,9 @@ namespace SI_MistServer
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(iCharacter))
 		{
 			g_kMistServer.OpenContainer(iContainer,pkData->m_iConnectionID);
-		}										
+		}
+
+		return 0;
 	}
 	
 	
@@ -1224,6 +1226,8 @@ namespace SI_MistServer
 		g_pkScript->GetArgInt(pkLua, 0, &iCharacter);		
 		g_pkScript->GetArgNumber(pkLua, 1, &dDamage);
 
-		g_kMistServer.m_pkRuleSystem->Damage(iCharacter,float(dDamage));				
+		g_kMistServer.m_pkRuleSystem->Damage(iCharacter,float(dDamage));
+
+		return 0;
 	}	
 }

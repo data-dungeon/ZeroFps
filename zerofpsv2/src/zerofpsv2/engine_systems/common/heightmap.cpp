@@ -504,6 +504,7 @@ bool HeightMap::Save(ZFIoInterface* pkFile)
 	// Write VertexData
 	pkFile->Write((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
 
+	return true;
 }
 
 bool HeightMap::Load(ZFIoInterface* pkFile) 
@@ -539,6 +540,8 @@ bool HeightMap::Load(ZFIoInterface* pkFile)
 
 	// Read VertexData
 	pkFile->Read((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
+
+	return true;
 }
 
 

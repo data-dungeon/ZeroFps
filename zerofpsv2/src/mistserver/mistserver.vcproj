@@ -145,7 +145,13 @@
 				RelativePath=".\mistserver.rc">
 			</File>
 			<File
+				RelativePath=".\networkmessage.cpp">
+			</File>
+			<File
 				RelativePath=".\playerdatabase.cpp">
+			</File>
+			<File
+				RelativePath=".\rulesystem.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -159,6 +165,9 @@
 			</File>
 			<File
 				RelativePath=".\resource.h">
+			</File>
+			<File
+				RelativePath=".\rulesystem.h">
 			</File>
 		</Filter>
 		<Filter

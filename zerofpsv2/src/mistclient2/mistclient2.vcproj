@@ -148,6 +148,9 @@
 			<File
 				RelativePath=".\mistclient.cpp">
 			</File>
+			<File
+				RelativePath=".\pointtext.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -167,6 +170,9 @@
 			</File>
 			<File
 				RelativePath=".\mistclient.h">
+			</File>
+			<File
+				RelativePath=".\pointtext.h">
 			</File>
 			<File
 				RelativePath=".\resource.h">
