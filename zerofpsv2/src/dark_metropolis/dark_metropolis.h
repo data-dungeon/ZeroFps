@@ -32,6 +32,13 @@ class DarkMetropolis : public Application, public ZGuiApp
 			ZGuiSkin* pkIcon;
 			char* szName;
 		};
+		
+		struct GameInfo 
+		{
+			string strClanName;
+			string strClanColor;		
+		} m_kGameInfo;
+		
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
 
@@ -45,10 +52,16 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMinCamDistance;
 		float		m_fMaxCamDistance;
 		
+		//picking
+		Vector3	Get3DMousePos(bool m_bMouse);		
+		Entity*	GetTargetObject();			
+		
 		void Input();
 		void RegisterPropertys();
-
-
+		
+		void StartNewGame(string strClanName,string strClanColor);
+		void SaveGame();
+	
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
 		
@@ -68,7 +81,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool ShutDown();
 		bool IsValid();
 
-		void RenderInterface() { }
+		void RenderInterface();
 
 		// Gui
 		void GUI_OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd);

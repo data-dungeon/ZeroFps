@@ -118,9 +118,15 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	{
 		if(strClickName == "StartNewGameDone")
 		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_ingame.lua");
-			pkMainWnd->Hide();
+			if(!strlen(GetWnd("ClanNameEB")->GetText()) == 0)
+			{
+				LoadGuiFromScript(m_pkScript, 
+					"data/script/gui/dm_ingame.lua");
+				pkMainWnd->Hide();
+			
+				//start game
+				StartNewGame(GetWnd("ClanNameEB")->GetText(),GetWnd("TeamColorCB")->GetText());
+			}
 		}
 		else
 		if(strClickName == "StartNewGameBack")

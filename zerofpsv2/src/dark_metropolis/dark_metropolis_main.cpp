@@ -74,6 +74,10 @@ void DarkMetropolis::OnInit()
 	m_pkLight->Add(&m_kSun);
 
 	
+	
+	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
+		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
+	
 }
 
 void DarkMetropolis::OnIdle() 
@@ -84,6 +88,23 @@ void DarkMetropolis::OnIdle()
 	Input();
 
 	m_pkFps->UpdateCamera(); 	
+
+	
+
+}
+
+void DarkMetropolis::RenderInterface(void)
+{
+	
+	if(m_pkCameraEntity)
+	{
+		Vector3 kPos = m_pkCamera->GetPos() + Get3DMousePos(true)*4;
+		
+		m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
+		m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
+		m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));		
+	}
+	
 }
 
 void DarkMetropolis::OnSystem() 
@@ -101,8 +122,6 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
-	cout<<"STarting server"<<endl;
-
 	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
 	if(m_pkCameraEntity)
 	{
@@ -132,6 +151,7 @@ bool DarkMetropolis::StartUp()
 
 bool DarkMetropolis::ShutDown()
 {
+	SaveGame();
 	return true;
 }
 
@@ -155,7 +175,7 @@ void DarkMetropolis::Input()
 		
 
 	//setup player controls
-	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))	//do we want to zoom?
+	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
 	{
 
 		if(m_pkCameraProp)
@@ -172,6 +192,17 @@ void DarkMetropolis::Input()
 			m_pkCameraProp->Set3PDistance(m_fDistance);
 			m_pkCameraProp->Set3PYAngle(m_fAngle);
 			
+		}
+	}
+
+	if(m_pkInputHandle->VKIsDown("click"))
+	{
+		Entity* pkEnt = GetTargetObject();	
+	
+		if(pkEnt)
+		{
+			cout<<"you clicked on a:"<<pkEnt->GetName()<<endl;
+		
 		}
 	}
 
@@ -211,3 +242,101 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+void DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
+{
+	m_kGameInfo.strClanName = strClanName;
+	m_kGameInfo.strClanColor = strClanColor;
+	
+	string strBlub = "load dmworld "+strClanName;
+
+	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);
+
+
+}
+
+void DarkMetropolis::SaveGame()
+{
+	if(!m_kGameInfo.strClanName.empty())
+	{
+		m_pkObjectMan->ForceSave();
+		m_pkObjectMan->SaveZones();	
+	
+		cout<<"game "<<m_kGameInfo.strClanName<< " saved"<<endl;
+	}
+}
+
+Vector3 DarkMetropolis::Get3DMousePos(bool m_bMouse=true)
+{
+	Vector3 dir;
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+	float fovshit=-2.15;
+	
+	if(m_bMouse)
+	{
+		float x;
+		float y;
+		
+		m_pkInputHandle->UnitMouseXY(x,y);
+		
+		dir.Set(x*xp,-y*yp,fovshit);
+		dir.Normalize();
+	}
+	else
+	{
+		dir.Set(0,0,fovshit);
+		dir.Normalize();
+	}	
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+	return dir;
+}
+
+Entity* DarkMetropolis::GetTargetObject()
+{
+	Vector3 start = m_pkCamera->GetPos();
+	Vector3 dir;
+
+	dir = Get3DMousePos(true);		
+
+	vector<Entity*> kObjects;
+	kObjects.clear();
+	
+	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	
+	float closest = 999999999;
+	Entity* pkClosest = NULL;	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		
+		//objects that should not be clicked on (special cases)
+		if(kObjects[i]->iNetWorkID <100000)
+			continue;
+		
+		//-------------
+		
+		//get mad property and do a linetest
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		if(mp)
+		{
+			if(mp->TestLine(start,dir))
+			{	
+				float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+				if(d < closest)
+				{
+					closest = d;
+					pkClosest = kObjects[i];
+				}				
+			}
+		}		
+		
+	}
+	
+	return pkClosest;
+}
