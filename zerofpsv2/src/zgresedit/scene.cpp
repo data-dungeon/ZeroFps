@@ -228,6 +228,12 @@ void Scene::CreateUI()
          iRots=0;
          iNameCounter++;
          break;
+      case 2:
+         iRots=3;
+         break;
+      case 3:
+         iRots=2;
+         break;
       }
 
       m_pkApp->CreateWnd(Radiobutton, szNames[i],  "WorkSpace",  "", 58+x,  504, 16, 16, 0);

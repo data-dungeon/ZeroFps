@@ -76,6 +76,9 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_bResizeVert = true;
 
 	m_pkCamera = NULL;
+
+   m_iWndAlignment = 0;
+   m_iResizeType = 0;
 }
 
 ZGuiWnd::~ZGuiWnd()

@@ -6,7 +6,7 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "scene.h"
-
+#include "../zerofpsv2/render/zguirenderer.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/basic/zguifont.h"
 
@@ -208,6 +208,9 @@ void ZGResEdit::OnInit()
 	m_pkLight->SetLighting(true);
 
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
+
+   ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	pkRenderer->SetScaleMode(GUIScaleManually);
 
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);
@@ -461,6 +464,9 @@ void ZGResEdit::OnIdle()
 
 	if(m_pkMainWnd)
 		DrawSelectionRect(m_pkMainWnd);	
+
+   m_pkGui->DrawLine(Point(0,600), Point(800,600)); 
+   m_pkGui->DrawLine(Point(800,0), Point(800,600)); 
 }
 
 void ZGResEdit::OnHud(void) 
