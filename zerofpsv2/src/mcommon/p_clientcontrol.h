@@ -27,7 +27,7 @@ class MCOMMON_API Controls
 	public:
 		bitset<4> m_akControls;
 		float     m_fYRot;
-		
+		float     m_fXRot;
 		
 		Controls()
 		{
@@ -58,9 +58,10 @@ class MCOMMON_API P_ClientControl: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
 		P_ServerInfo*	m_pkServerInfo;
+		Render*			m_pkRender;	
 		
 		int				m_iMaxOrders;
-		
+		Vector3			m_kDirV;
 	
 		queue<ClientOrder>			 m_kClientOrders;		
 		static queue<ClientOrder>	m_kServerOrders;
@@ -83,7 +84,6 @@ class MCOMMON_API P_ClientControl: public Property {
 		
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
-		
 		
 		
 		static ClientOrder* GetNextOrder();				

@@ -14,10 +14,11 @@ P_ClientControl::P_ClientControl()
 	bNetwork = true;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	
 	m_iMaxOrders = 1;
 
-   m_iActiveCaracterObjectID = -1; // I guess -1 equals no character...// Zerom
+   m_iActiveCaracterObjectID = -1; // I guess -1 equals no character...// Zerom...i think so //dvoid
 	m_pkServerInfo = NULL;
 }
 
@@ -29,6 +30,7 @@ void P_ClientControl::Update()
 
 	//update character controls
 	UpdateCharacter();
+
 }
 
 
@@ -144,8 +146,8 @@ void P_ClientControl::UpdateCharacter()
 			temp.Identity();
 			temp.RadRotate(0,m_kControls.m_fYRot,0);
 			pkEnt->SetLocalRotM(temp);
-		
-		
+
+			//setup movement
 			Vector3 kVel(0,0,0);
 
 			if(m_kControls.m_akControls[CTRL_UP])
@@ -170,6 +172,7 @@ void P_ClientControl::UpdateCharacter()
 			
 			kVel = temp.VectorTransform(kVel) * fSpeed;
 		
+			//update walk velocity on the body
 			tcs->SetWalkVel(kVel);
 		}
 	}

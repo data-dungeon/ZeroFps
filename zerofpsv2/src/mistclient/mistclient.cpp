@@ -80,7 +80,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkTargetObject			= NULL;
 	
 	m_fMaxCamDistance			= 10;
-	m_fMinCamDistance			= 4;
+	m_fMinCamDistance			= 3;
+	m_fDistance					= 3;
 
 	m_bActionMenuIsOpen		= false;
 	m_pkQuickBoard				= NULL;
@@ -373,18 +374,33 @@ void MistClient::OnSystem()
 
 void MistClient::Input()
 {
-	float speed = 20;
-	
+	//get mous
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 		
 	//setup player controls
-	if(m_pkClientControlP)
+	if(pkInput->Pressed(MOUSEMIDDLE))	//do we want to zoom?
+	{
+
+		if(m_pkCamProp)
+		{
+			m_fDistance += z/60.0;
+	
+			if(m_fDistance < m_fMinCamDistance)
+				m_fDistance = m_fMinCamDistance;
+		
+			if(m_fDistance > m_fMaxCamDistance)
+				m_fDistance = m_fMaxCamDistance;
+				
+			m_pkCamProp->Set3PDistance(m_fDistance);
+		}
+	}
+	else if(m_pkClientControlP)			//else rotate camera
 	{
 		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP] = pkInput->Pressed(KEY_W);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = pkInput->Pressed(KEY_S)	;
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = pkInput->Pressed(KEY_A)		;
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = pkInput->Pressed(KEY_D)		;
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = pkInput->Pressed(KEY_S);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = pkInput->Pressed(KEY_A);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = pkInput->Pressed(KEY_D);
 
 		if(m_pkCamProp)
 		{
@@ -400,34 +416,15 @@ void MistClient::Input()
 			
 			m_pkCamProp->Set3PYAngle(m_fAngle);			
 			m_pkCamProp->Set3PPAngle(m_fPAngle);
+			m_pkCamProp->Set3PDistance(m_fDistance);
 			
+			m_pkClientControlP->m_kControls.m_fXRot = m_fPAngle;			
 			m_pkClientControlP->m_kControls.m_fYRot = -m_fAngle + 3.14;
 		}
 	}
-	
-	
-	
 		
-		
-	if(pkInput->Pressed(MOUSEMIDDLE))
-	{
 
-		if(m_pkCamProp)
-		{
-			m_fAngle +=x/100.0;
-			m_fDistance += z/60.0;
-	
-			if(m_fDistance < m_fMinCamDistance)
-				m_fDistance = m_fMinCamDistance;
-		
-			if(m_fDistance > m_fMaxCamDistance)
-				m_fDistance = m_fMaxCamDistance;
-				
-			m_pkCamProp->Set3PYAngle(m_fAngle);
-			m_pkCamProp->Set3PDistance(m_fDistance);
-			//m_pkCamProp->Set3PYPos(1.5);
-		}
-	}
+
 
 /*	if(pkInput->Pressed(MOUSELEFT))
 	{
@@ -501,7 +498,7 @@ void MistClient::Input()
 		}
 	}
 */
-	if(pkInput->Pressed(MOUSERIGHT)  && (pkInput->Pressed(KEY_RSHIFT) || pkInput->Pressed(KEY_LSHIFT)) )
+/*	if(pkInput->Pressed(MOUSERIGHT)  && (pkInput->Pressed(KEY_RSHIFT) || pkInput->Pressed(KEY_LSHIFT)) )
 	{
 		//attack ground
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
@@ -535,7 +532,7 @@ void MistClient::Input()
 		pkInput->MouseXY(mx,my);
 		OpenActionMenu(mx, my); 
 	}
-
+*/
 	int pressed_key = pkInput->GetQueuedKey();
 
 	if(pressed_key == KEY_F1)
