@@ -186,6 +186,7 @@ class ENGINE_API Entity
 					
 		Entity();				
 		void	SetNetUpdateFlag(int iFlagID,bool bValue);
+		void	SetNetUpdateFlagAndChilds(int iFlagID,bool bValue);		
 		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
 		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
 		void	ResetAllNetUpdateFlags();											//reset all update flags to true

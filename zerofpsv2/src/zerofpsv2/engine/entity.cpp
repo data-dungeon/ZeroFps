@@ -1335,7 +1335,7 @@ void Entity::SetLocalRotM(Matrix4 kNewRot)
 		return;
 
 	ResetChildsGotData();
-	SetNetUpdateFlag(1,true);	
+	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);	
 	
 	m_kLocalRotM = kNewRot;
 
@@ -1393,7 +1393,7 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	
 	
 	m_kLocalPosV = kPos;
-	SetNetUpdateFlag(0,true);
+	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
 	
 	if(m_bFirstSetPos)						//if the pos has never been set, the set oldpos to the new one
 	{
@@ -1645,6 +1645,21 @@ void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 	{
 		m_kNetUpdateFlags[i][iFlagID] = bValue;
 	}
+}
+
+void Entity::SetNetUpdateFlagAndChilds(int iFlagID,bool bValue)
+{
+	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		m_kNetUpdateFlags[i][iFlagID] = bValue;
+	}
+	
+	//reset all childs
+	for(int i = 0;i<m_akChilds.size();i++)
+	{
+		m_akChilds[i]->SetNetUpdateFlagAndChilds(iFlagID,bValue);
+	}	
+	
 }
 
 void	Entity::SetNetUpdateFlag(int iConID,int iFlagID,bool bValue)

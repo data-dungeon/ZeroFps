@@ -471,7 +471,7 @@ void MistServer::Input()
 				
 			//hack for collisions test
 			if(pkInput->Pressed(KEY_SPACE))
-					pkObj->GetVel()=Vector3(1,0,0);
+					pkObj->SetVel(Vector3(1,0,0));
 		
 			//move left
 			if(pkInput->Pressed(KEY_LEFT))

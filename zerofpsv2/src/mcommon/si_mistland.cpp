@@ -540,7 +540,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		{
 			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
 			
-			pkEnt->GetVel() = dir*dVel;
+			pkEnt->SetVel(dir*dVel);
 		}
 		return 0;
 	}
@@ -573,7 +573,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		
 			Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
 			
-			o1->GetVel() = dir*fVel;
+			o1->SetVel(dir*fVel);
 		
 		}
 		return 0;
@@ -629,7 +629,7 @@ int MistLandLua::BounceLua(lua_State* pkLua)
 		
 		if(abs(vel.y) < 1)
 		{
-			ent->GetVel()=Vector3(0,0,0);
+			ent->SetVel(Vector3(0,0,0));
 			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
 			if(ts)
 				ts->SetGravity(false);
@@ -641,7 +641,7 @@ int MistLandLua::BounceLua(lua_State* pkLua)
 	
 		vel*=0.9;			//dämpnings faktor
 		
-		ent->GetVel() = vel;	
+		ent->SetVel(vel);
 	}
 	
 	return 0;

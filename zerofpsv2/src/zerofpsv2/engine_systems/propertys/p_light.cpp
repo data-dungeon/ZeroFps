@@ -36,8 +36,6 @@ void P_Light::Init()
 
 void P_Light::Update() 
 {
-	m_pkLightSource->kPos = m_pkObject->GetWorldPosV(); 
-	//m_pkLightSource->kRot = m_pkObject->GetWorldRotV();
 
 	switch(m_iMode)
 	{
