@@ -69,15 +69,27 @@ void P_Enviroment::Update()
 
 void P_Enviroment::UpdateEnviroment()
 {
+	float fIf = m_pkZeroFps->GetFrameTime()*0.5;
+	
+	if(fIf > 1.0)
+		fIf = 1.0;
+
 
 	//light
+	static Vector4 kCurrentDiffuse(0,0,0,0);
+	static Vector4 kCurrentAmbient(0,0,0,0);
+	
 	P_Light* pkLight;
 	if( !(pkLight = (P_Light*)GetEntity()->GetProperty("P_Light")) )
 		pkLight = (P_Light*)GetEntity()->AddProperty("P_Light");
 	
+	
+	kCurrentDiffuse.Lerp(kCurrentDiffuse,m_kCurrentEnvSetting.m_kSunDiffuseColor,fIf);
+	kCurrentAmbient.Lerp(kCurrentAmbient,m_kCurrentEnvSetting.m_kSunAmbientColor,fIf);
+	
 	pkLight->SetType(DIRECTIONAL_LIGHT);
-	pkLight->SetDiffuse(m_kCurrentEnvSetting.m_kSunDiffuseColor);
-	pkLight->SetAmbient(m_kCurrentEnvSetting.m_kSunAmbientColor);		
+	pkLight->SetDiffuse(kCurrentDiffuse);
+	pkLight->SetAmbient(kCurrentAmbient);		
 	pkLight->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
 			
 	//sky box
@@ -128,8 +140,19 @@ void P_Enviroment::UpdateEnviroment()
 	}
 	
 	//fog
-	m_pkZeroFps->GetCam()->SetClearColor(m_kCurrentEnvSetting.m_kFogColor);
-	m_pkZeroFps->GetCam()->SetFog(m_kCurrentEnvSetting.m_kFogColor,m_kCurrentEnvSetting.m_fFogStart,m_kCurrentEnvSetting.m_fFogStop,true);			
+	static Vector4 kCurrentFogColor(0,0,0,0);
+	static float fCurrentStart = 0;
+	static float fCurrentStop = 0;
+	
+	//kCurrentFogColor = (kCurrentFogColor + m_kCurrentEnvSetting.m_kFogColor) * 0.5;
+	//fCurrentStart = (fCurrentStart + m_kCurrentEnvSetting.m_fFogStart) * 0.5;
+	//fCurrentStop = (fCurrentStop + m_kCurrentEnvSetting.m_fFogStop) * 0.5;
+	kCurrentFogColor.Lerp(kCurrentFogColor,m_kCurrentEnvSetting.m_kFogColor,fIf);	
+	fCurrentStart = fCurrentStart*(1-fIf) + m_kCurrentEnvSetting.m_fFogStart*fIf;
+	fCurrentStop =  fCurrentStop*(1-fIf) +  m_kCurrentEnvSetting.m_fFogStop*fIf;				
+		
+	m_pkZeroFps->GetCam()->SetClearColor(kCurrentFogColor);
+	m_pkZeroFps->GetCam()->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
 	
 		
 }
