@@ -48,11 +48,15 @@ public:
 
 	void DrawGraph(int x, int y);
 	void DrawSolidBox(int x, int y, int x2, int y2);
+	void DrawAvgLine();
 	
 	void SetBackColor(float r, float g, float b)	{ m_kBackColor.Set(r,g,b); }
 
 	float	GetSampleHeight(float fValue);
 	void	SetSampleColor(float fValue);
+
+	void AddValue(float fValue);
+	void NextValue( );
 };
 
 class MazeGen

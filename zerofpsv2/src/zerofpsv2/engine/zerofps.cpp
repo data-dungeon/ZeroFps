@@ -79,7 +79,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_iLogRenderPropertys		= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount			= 0;
-	m_iRenderOn					= 1;
+	m_bRenderOn					= true;
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 
@@ -90,7 +90,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
 	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);	
-	RegisterVariable("r_render",			&m_iRenderOn,				CSYS_INT);	
+	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);	
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
 
 	// Register Commands
@@ -343,7 +343,7 @@ void ZeroFps::Run_Client()
 	
 	m_pkRender->Draw_AxisIcon(5);
  
-	if(m_iRenderOn == 1)
+	if(m_bRenderOn == 1)
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 	
 

@@ -198,6 +198,11 @@ private:
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
 public:
+		enum FuncId_e
+		{
+			FID_NETGMAX
+		};
+
 	string	GetLocalIP();			
 	NetWorkStatus			m_eNetStatus;
 	vector<RemoteNode>	m_akClients;
@@ -244,6 +249,7 @@ public:
 	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
 	void Run(); 
 
+	void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 //	bool CmpNetworkAddress();
 //	bool StrToAddress();

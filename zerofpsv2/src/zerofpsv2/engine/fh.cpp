@@ -58,6 +58,19 @@ void DebugGraph::PushValue(float fValue)
 		m_iWritePos = 0;
 }
 
+void DebugGraph::AddValue(float fValue)
+{
+	m_kValues[m_iWritePos] += fValue;
+}
+
+void DebugGraph::NextValue( )
+{
+	m_iWritePos++;
+	if(m_iWritePos >= int(m_kValues.size()))
+		m_iWritePos = 0;
+	m_kValues[m_iWritePos] = 0;
+}
+
 void DebugGraph::DrawSolidBox(int x, int y, int x2, int y2)
 {
 	glColor3f(m_kBackColor.x, m_kBackColor.y, m_kBackColor.z);
@@ -73,10 +86,15 @@ void DebugGraph::DrawSolidBox(int x, int y, int x2, int y2)
 
 float	DebugGraph::GetSampleHeight(float fValue)
 {
-	if(fValue >= m_fMax)
+/*	if(fValue >= m_fMax)
 		m_fMax = fValue;
 	if(fValue <= m_fMin)
-		m_fMin = fValue;
+		m_fMin = fValue;*/
+
+/*	if(fValue >= m_fMax)
+		m_fMax = fValue;
+	if(fValue <= m_fMin)
+		m_fMin = fValue;*/
 
 	float fDiff = m_fMax - m_fMin;
 	float fP = (fValue - m_fMin) / fDiff;
@@ -112,6 +130,9 @@ void DebugGraph::DrawGraph(int x, int y)
 	int iValueIndex = m_iWritePos;
 	int iOffset = 0;
 	float fSize;
+
+	DrawAvgLine();
+
 	glColor3f(1, 0, 0);
 
 	glBegin(GL_LINES);
@@ -132,14 +153,30 @@ void DebugGraph::DrawGraph(int x, int y)
 
 	DrawSolidBox(0,0, m_iWidth, m_iHeight);
 
+
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
 	glPopAttrib();
-
 }
+
+void DebugGraph::DrawAvgLine()
+{
+	float fAvg = 0;
+	for(int i=0; i<m_kValues.size(); i++)
+		fAvg += m_kValues[i];
+
+	fAvg /= m_kValues.size();
+
+	glColor3f(0, 1, 0);
+	glBegin(GL_LINES);
+		glVertex3i(0,GetSampleHeight(fAvg),0);
+		glVertex3i(m_iWidth, GetSampleHeight(fAvg) ,0);
+	glEnd();
+}
+
 
 /*** End: Vim ***/
 
