@@ -350,7 +350,8 @@ void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 }
 
 
-bool HeightMap::Load(const char* acFile) {
+bool HeightMap::Load(const char* acFile) 
+{
 	cout<<"Loading heightmap from file "<<acFile<<endl;
 	
 	//hm file
@@ -360,12 +361,12 @@ bool HeightMap::Load(const char* acFile) {
 	//header	
 	HM_fileheader k_Fh;
 	
-	ZFFile savefile;
-	if(!savefile.Open(hmfile.c_str(),false)){
+	ZFVFile savefile;
+	if(!savefile.Open(hmfile.c_str(),0,false)){
 		cout<<"Could not Load heightmap"<<endl;
 		return false;
 	}
-	savefile.Read((void*)&k_Fh, sizeof(HM_fileheader));
+	savefile.Read((void*)&k_Fh, sizeof(HM_fileheader),1);
 	
 	m_iHmSize		=	k_Fh.m_iHmSize;
 	m_iHmScaleSize =	GetSize();
@@ -378,7 +379,7 @@ bool HeightMap::Load(const char* acFile) {
 	int i;
 	for(i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
-		savefile.Read((void*)&verts[i],sizeof(HM_vert));
+		savefile.Read((void*)&verts[i],sizeof(HM_vert),1);
 	}
 	
 	savefile.Close();
@@ -437,16 +438,16 @@ bool HeightMap::Save(const char* acFile) {
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize=m_iHmSize;
 	
-	ZFFile savefile;
-	if(!savefile.Open(hmfile.c_str(),true)){
+	ZFVFile savefile;
+	if(!savefile.Open(hmfile.c_str(),0,true)){
 		cout<<"Could not save heightmap"<<endl;
 		return false;
 	}
-	savefile.Write((void*)&k_Fh, sizeof(HM_fileheader));
+	savefile.Write((void*)&k_Fh, sizeof(HM_fileheader),1);
 	
 	for(int i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
-		savefile.Write((void*)&verts[i],sizeof(HM_vert));
+		savefile.Write((void*)&verts[i],sizeof(HM_vert),1);
 	}
 	
 	savefile.Close();

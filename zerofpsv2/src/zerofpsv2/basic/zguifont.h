@@ -5,8 +5,12 @@
 #ifndef _BASIC_ZGUIFONT_H_
 #define _BASIC_ZGUIFONT_H_
  
+#include <string>
+#include "zfio.h"
 #include "basic_x.h"
-#include "zffile.h"
+using namespace std;
+
+//#include "zffile.h"
 
 class BASIC_API ZGuiFont  
 {

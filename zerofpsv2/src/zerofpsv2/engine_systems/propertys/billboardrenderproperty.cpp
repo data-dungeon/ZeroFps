@@ -71,9 +71,9 @@ void BillBoardRenderProperty::Save(ZFMemPackage* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTexture.c_str());	
-	pkPackage->Write((void*)&temp,128);
+	pkPackage->Write((void*)&temp,128,1);
 
-	pkPackage->Write((void*)&m_fScale,4);
+	pkPackage->Write((void*)&m_fScale,4,1);
 
 }
 
@@ -81,10 +81,10 @@ void BillBoardRenderProperty::Load(ZFMemPackage* pkPackage)
 {
 	char temp[128];
 	
-	pkPackage->Read((void*)&temp,128);
+	pkPackage->Read((void*)&temp,128,1);
 	m_kTexture=temp;
 
-	pkPackage->Read((void*)&m_fScale,4);
+	pkPackage->Read((void*)&m_fScale,4,1);
 	
 	UpdateSet();
 }

@@ -38,27 +38,27 @@ void WorldInfoProperty::Save(ZFMemPackage* pkPackage)
 	char data[100];
 
 	strcpy(data,m_kSkyBoxHor.c_str());
-	pkPackage->Write((void*)&data,100);	
+	pkPackage->Write((void*)&data,100,1);	
 	
 	strcpy(data,m_kSkyBoxTop.c_str());
-	pkPackage->Write((void*)&data,100);
+	pkPackage->Write((void*)&data,100,1);
 	
-	pkPackage->Write((void*)&m_kSkyBoxRotate,12);	
+	pkPackage->Write((void*)&m_kSkyBoxRotate,12,1);	
 	
 	//fog
-	pkPackage->Write((void*)&m_kFogColor,12);	
-	pkPackage->Write((void*)&m_fFogStart,4);
-	pkPackage->Write((void*)&m_fFogStop,4);
+	pkPackage->Write((void*)&m_kFogColor,12,1);	
+	pkPackage->Write((void*)&m_fFogStart,4,1);
+	pkPackage->Write((void*)&m_fFogStop,4,1);
 	
 	//water
-	pkPackage->Write((void*)&m_bWater,4);
+	pkPackage->Write((void*)&m_bWater,4,1);
 	
 	//suncolor
-	pkPackage->Write((void*)&m_kSunColor,12);			
+	pkPackage->Write((void*)&m_kSunColor,12,1);			
 	//mooncolor
-	pkPackage->Write((void*)&m_kMoonColor,12);			
+	pkPackage->Write((void*)&m_kMoonColor,12,1);			
 	//sun ambient color
-	pkPackage->Write((void*)&m_kAmbientColor,12);				
+	pkPackage->Write((void*)&m_kAmbientColor,12,1);				
 }
 
 void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
@@ -66,28 +66,28 @@ void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
 	//skybox
 	char data[100];
 	
-	pkPackage->Read((void*)&data,100);
+	pkPackage->Read((void*)&data,100,1);
 	m_kSkyBoxHor=data;
 	
-	pkPackage->Read((void*)&data,100);
+	pkPackage->Read((void*)&data,100,1);
 	m_kSkyBoxTop=data;	
 	
-	pkPackage->Read((void*)&m_kSkyBoxRotate,12);	
+	pkPackage->Read((void*)&m_kSkyBoxRotate,12,1);	
 	
 	//fog
-	pkPackage->Read((void*)&m_kFogColor,12);
-	pkPackage->Read((void*)&m_fFogStart,4);
-	pkPackage->Read((void*)&m_fFogStop,4);
+	pkPackage->Read((void*)&m_kFogColor,12,1);
+	pkPackage->Read((void*)&m_fFogStart,4,1);
+	pkPackage->Read((void*)&m_fFogStop,4,1);
 	
 	//water
-	pkPackage->Read((void*)&m_bWater,4);
+	pkPackage->Read((void*)&m_bWater,4,1);
 
 	//suncolor
-	pkPackage->Read((void*)&m_kSunColor,12);			
+	pkPackage->Read((void*)&m_kSunColor,12,1);			
 	//mooncolor
-	pkPackage->Read((void*)&m_kMoonColor,12);			
+	pkPackage->Read((void*)&m_kMoonColor,12,1);			
 	//sun ambient color
-	pkPackage->Read((void*)&m_kAmbientColor,12);				
+	pkPackage->Read((void*)&m_kAmbientColor,12,1);				
 
 }
 

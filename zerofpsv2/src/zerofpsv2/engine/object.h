@@ -10,7 +10,9 @@
 #include "propertyfactory.h"
 #include "network.h"
 #include "../basic/quaternion.h"
+#include "../basic/zfvfs.h"
 #include "../script/zfscript.h"
+
 
 using namespace std;
 
@@ -81,8 +83,8 @@ class ENGINE_API ObjectDescriptor{
 		
 		~ObjectDescriptor();
 		void Clear();
-		bool SaveToFile(ZFFile* pkFile);
-		bool LoadFromFile(ZFFile* pkFile);		
+		bool SaveToFile(ZFVFile* pkFile);
+		bool LoadFromFile(ZFVFile* pkFile);		
 		void SaveToMem(ZFMemPackage* pkPackage);
 		void LoadFromMem(ZFMemPackage* pkPackage);		
 };

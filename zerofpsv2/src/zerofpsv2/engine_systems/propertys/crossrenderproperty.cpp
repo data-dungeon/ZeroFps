@@ -87,12 +87,12 @@ void CrossRenderProperty::Save(ZFMemPackage* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTex1.c_str());	
-	pkPackage->Write((void*)&temp,128);
+	pkPackage->Write((void*)&temp,128,1);
 
 //	strcpy(temp,m_kTex2.c_str());	
 //	pkPackage->Write((void*)&temp,128);
 
-	pkPackage->Write((void*)&m_kScale,12);
+	pkPackage->Write((void*)&m_kScale,12,1);
 
 }
 
@@ -100,13 +100,13 @@ void CrossRenderProperty::Load(ZFMemPackage* pkPackage)
 {
 	char temp[128];
 	
-	pkPackage->Read((void*)&temp,128);
+	pkPackage->Read((void*)&temp,128,1);
 	m_kTex1=temp;
 
 //	pkPackage->Read((void*)&temp,128);
 //	m_kTex2=temp;
 
-	pkPackage->Read((void*)&m_kScale,12);
+	pkPackage->Read((void*)&m_kScale,12,1);
 	
 	UpdateSet();
 }

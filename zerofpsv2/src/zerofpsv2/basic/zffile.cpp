@@ -1,6 +1,6 @@
-#include "zffile.h"
+//#include "zffile.h"
 
-
+/*
 ZFFile::ZFFile(const char* acName,bool bWritable)
 {
 	m_bOpen=false;
@@ -69,5 +69,5 @@ int ZFFile::GetPos()
 bool ZFFile::SetPos(int iPos)
 {
 	return m_kIo->SetPos(iPos);
-}
+}*/
 

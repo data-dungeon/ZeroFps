@@ -6,6 +6,7 @@
 #include "basic_x.h"
 #include "zfobject.h"
 #include "zfbasicfs.h"
+#include "zfio.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class ZFIni;
 This class is used to describe a file in the ZFPS Virtual File Systems (VFS).
 It should be used to open all files the ZeroFPS uses. 
 */
-class BASIC_API ZFVFile
+class BASIC_API ZFVFile : public ZFIoInterface
 {
 private:
 	ZFVFileSystem*	m_pkFileSystem;

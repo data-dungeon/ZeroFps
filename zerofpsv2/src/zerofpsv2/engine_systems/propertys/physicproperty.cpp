@@ -73,13 +73,13 @@ float PhysicProperty::GetBoundingRadius()
 
 void PhysicProperty::Save(ZFMemPackage* pkPackage)
 {
-	pkPackage->Write((void*)&m_bGravity,4);
-	pkPackage->Write((void*)&m_bFloat,4);	
-	pkPackage->Write((void*)&m_bSolid,4);		
-	pkPackage->Write((void*)&m_bGlide,4);			
-	pkPackage->Write((void*)&m_bStride,4);				
-	pkPackage->Write((void*)&m_bStrideHeight,4);
-	pkPackage->Write((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);	
+	pkPackage->Write((void*)&m_bGravity,4,1);
+	pkPackage->Write((void*)&m_bFloat,4,1);	
+	pkPackage->Write((void*)&m_bSolid,4,1);		
+	pkPackage->Write((void*)&m_bGlide,4,1);			
+	pkPackage->Write((void*)&m_bStride,4,1);				
+	pkPackage->Write((void*)&m_bStrideHeight,4,1);
+	pkPackage->Write((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4,1);	
 
 
 	int type;
@@ -101,20 +101,20 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	}
 		
 		
-	pkPackage->Write((void*)&type,4);		
+	pkPackage->Write((void*)&type,4,1);		
 	
 
 	switch(type)
 	{
 		case 1:
-			pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);						
+			pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);						
 			break;
 		case 2:
-			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
+			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);						
 			break;
 		case 3:
-			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4);										
-			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4);													
+			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
+			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);													
 //			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
 			break;
 			
@@ -124,17 +124,17 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 
 void PhysicProperty::Load(ZFMemPackage* pkPackage)
 {
-	pkPackage->Read((void*)&m_bGravity,4);
-	pkPackage->Read((void*)&m_bFloat,4);
-	pkPackage->Read((void*)&m_bSolid,4);	
-	pkPackage->Read((void*)&m_bGlide,4);		
-	pkPackage->Read((void*)&m_bStride,4);				
-	pkPackage->Read((void*)&m_bStrideHeight,4);	
-	pkPackage->Read((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);		
+	pkPackage->Read((void*)&m_bGravity,4,1);
+	pkPackage->Read((void*)&m_bFloat,4,1);
+	pkPackage->Read((void*)&m_bSolid,4,1);	
+	pkPackage->Read((void*)&m_bGlide,4,1);		
+	pkPackage->Read((void*)&m_bStride,4,1);				
+	pkPackage->Read((void*)&m_bStrideHeight,4,1);	
+	pkPackage->Read((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4,1);		
 
 
 	int type;
-	pkPackage->Read((void*)&type,4);
+	pkPackage->Read((void*)&type,4,1);
 	
 	m_fColShape=type;
 	
@@ -142,16 +142,16 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 	{
 		case 1:
 			SetColShape(new CSSphere(0));	
-			pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);
+			pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);
 			break;
 		case 2:
 			SetColShape(new CSBox(Vector3(1,1,1)));	
-			pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);
+			pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);
 			break;
 		case 3:
 			SetColShape(new CSMech());	
-			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4);										
-			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4);																			
+			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
+			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);																			
 			break;		
 	}		
 }

@@ -83,11 +83,11 @@ void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
 
 	char data[256];	
 	
-	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize));
-	pkPackage->Write((void*)&m_iStep,sizeof(m_iStep));
+	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize),1);
+	pkPackage->Write((void*)&m_iStep,sizeof(m_iStep),1);
 	
 	strcpy(data,m_sTexture.c_str());		
-	pkPackage->Write((void*)&data,256);
+	pkPackage->Write((void*)&data,256,1);
 
 }
 
@@ -95,11 +95,11 @@ void WaterRenderProperty::Load(ZFMemPackage* pkPackage)
 {
 	char data[300];	
 	
-	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize));
-	pkPackage->Read((void*)&m_iStep,sizeof(m_iStep));
+	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize),1);
+	pkPackage->Read((void*)&m_iStep,sizeof(m_iStep),1);
 	
 	strcpy(data,m_sTexture.c_str());		
-	pkPackage->Read((void*)&data,256);
+	pkPackage->Read((void*)&data,256,1);
 	m_sTexture = data;
 	
 	SetTexture(m_sTexture.c_str());

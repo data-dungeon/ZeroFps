@@ -92,20 +92,20 @@ void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) {
 
 void P_Primitives3D::Save(ZFMemPackage* pkPackage)
 {	
-	pkPackage->Write((void*)&m_iType,4 );		
-	pkPackage->Write((void*)&m_fRadius,4 );		
-	pkPackage->Write((void*)&m_iSlices,4 );		
-	pkPackage->Write((void*)&m_iStacks,4 );		
-	pkPackage->Write((void*)&m_kColor,12 );	
+	pkPackage->Write((void*)&m_iType,4 ,1);		
+	pkPackage->Write((void*)&m_fRadius,4 ,1);		
+	pkPackage->Write((void*)&m_iSlices,4,1 );		
+	pkPackage->Write((void*)&m_iStacks,4,1);		
+	pkPackage->Write((void*)&m_kColor,12,1 );	
 }
 
 void P_Primitives3D::Load(ZFMemPackage* pkPackage)
 {
-	pkPackage->Read((void*)&m_iType	,4 );		
-	pkPackage->Read((void*)&m_fRadius,4 );		
-	pkPackage->Read((void*)&m_iSlices,4 );		
-	pkPackage->Read((void*)&m_iStacks,4 );		
-	pkPackage->Read((void*)&m_kColor	,12 );	
+	pkPackage->Read((void*)&m_iType	,4 ,1);		
+	pkPackage->Read((void*)&m_fRadius,4,1 );		
+	pkPackage->Read((void*)&m_iSlices,4 ,1);		
+	pkPackage->Read((void*)&m_iStacks,4 ,1);		
+	pkPackage->Read((void*)&m_kColor	,12 ,1);	
 }
 
 

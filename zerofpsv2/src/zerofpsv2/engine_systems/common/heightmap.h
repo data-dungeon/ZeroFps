@@ -14,7 +14,7 @@
 #include "../../basic/zfobjectmanger.h"
 #include "../../render/texturemanager.h"
 #include "../../render/frustum.h"
-#include "../../basic/zffile.h"
+//#include "../../basic/zffile.h"
 #include "../../basic/globals.h"
 
 #define HEIGHTMAP_SCALE 2

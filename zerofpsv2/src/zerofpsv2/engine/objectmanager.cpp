@@ -302,7 +302,7 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 		if(tempobject->AddProperty((*it)->m_kName.c_str()))
 		{
 			//cout<<"Added property "<<(*it)->m_kName.c_str()<<endl;
-			(*it)->m_kData.SetPos(0);
+			(*it)->m_kData.Seek(0,0);
 			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
 			//cout<<"Loaded "<<(*it)->m_kName.c_str()<<endl;
 		}
@@ -482,8 +482,8 @@ bool ObjectManager::LoadTemplate(const char* acFile)
 {
 	cout<<"loading template"<<endl;
 	
-	ZFFile fil;
-	if(!fil.Open(acFile,false)){
+	ZFVFile fil;
+	if(!fil.Open(acFile,0, false)){
 		return false;
 	}
 		
@@ -506,8 +506,8 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 	if(objtemplate==NULL)
 		return false;
 	
-	ZFFile kFile;
-	if(!kFile.Open(acFile,true))
+	ZFVFile kFile;
+	if(!kFile.Open(acFile,0,true))
 		return false;
 	
 	objtemplate->SaveToFile(&kFile);	
@@ -545,8 +545,8 @@ bool ObjectManager::IsA(Object* pkObj, string strStringType)
 // Load/Save Objects
 bool ObjectManager::SaveAllObjects(const char* acFile)
 {
-	ZFFile kFile;
-	if(!kFile.Open(acFile,true))
+	ZFVFile kFile;
+	if(!kFile.Open(acFile,0,true))
 		return false;
 	
 	ObjectDescriptor kObd;
@@ -575,8 +575,8 @@ bool ObjectManager::SaveAllObjects(const char* acFile)
 
 bool ObjectManager::LoadAllObjects(const char* acFile)
 {
-	ZFFile kFile;
-	if(!kFile.Open(acFile,false))
+	ZFVFile kFile;
+	if(!kFile.Open(acFile,0,false))
 		return false;
 	
 	ObjectDescriptor kObd;

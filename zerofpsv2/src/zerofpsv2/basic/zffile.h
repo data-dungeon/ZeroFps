@@ -1,13 +1,16 @@
 #ifndef _BASIC_ZFFILE_H_
 #define _BASIC_ZFFILE_H_
 
+/*
 #include <string>
 #include "zfio.h"
 #include "zfiofile.h"
 #include "basic_x.h"
 
 using namespace std;
+*/
 
+/*
 class BASIC_API ZFFile {
 	private:
 		bool m_bOpen;
@@ -45,7 +48,7 @@ class BASIC_API ZFFile {
 		ZFIo *GetIo() {return m_kIo;};
 		
 };
-
+*/
 
 
 #endif

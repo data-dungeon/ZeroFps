@@ -1,6 +1,6 @@
-#include "zfiofile.h"
+//#include "zfiofile.h"
 
-
+/*
 bool ZFIoFile::Open(const char* file,bool bWritable) 
 {
 	errno=0;
@@ -55,3 +55,4 @@ bool ZFIoFile::SetPos(int iPos)
 	fseek(m_kFile,iPos,SEEK_SET);
 	return true;
 }
+*/

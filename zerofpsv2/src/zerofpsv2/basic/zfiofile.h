@@ -1,12 +1,15 @@
 #ifndef _BASIC_ZFIOFILE_H_
 #define _BASIC_ZFIOFILE_H_
 
+/*
 #include "zfio.h"
 #include "basic_x.h"
 #include <cstdio>
 #include <errno.h>
 #include "basic_x.h"
+*/
 
+/*
 class BASIC_API ZFIoFile : public ZFIo {
 	private:
 		FILE *m_kFile;
@@ -21,7 +24,7 @@ class BASIC_API ZFIoFile : public ZFIo {
 		int GetPos();
 		bool SetPos(int iPos);
 };
-
+*/
 
 #endif
 

@@ -167,19 +167,19 @@ void VegitationProperty::Save(ZFMemPackage* pkPackage)
 	char data[256];
 	
 	strcpy(data,m_kTexture.c_str());		
-	pkPackage->Write((void*)&data,256);
+	pkPackage->Write((void*)&data,256,1);
 	
-	pkPackage->Write((void*)&m_kScale,sizeof(m_kScale));
-	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius));
-	pkPackage->Write((void*)&m_fWind,sizeof(m_fWind));
+	pkPackage->Write((void*)&m_kScale,sizeof(m_kScale),1);
+	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);
+	pkPackage->Write((void*)&m_fWind,sizeof(m_fWind),1);
 	
 	
 	int nrofpos = m_akPositions.size();
-	pkPackage->Write((void*)&nrofpos,sizeof(nrofpos));
+	pkPackage->Write((void*)&nrofpos,sizeof(nrofpos),1);
 	
 	for(int i=0;i<nrofpos;i++)
 	{			
-		pkPackage->Write((void*)&m_akPositions[i],sizeof(vegitation));			
+		pkPackage->Write((void*)&m_akPositions[i],sizeof(vegitation),1);			
 	}
 
 }
@@ -189,28 +189,28 @@ void VegitationProperty::Load(ZFMemPackage* pkPackage)
 
 	char data[256];
 	
-	pkPackage->Read((void*)&data,256);
+	pkPackage->Read((void*)&data,256,1);
 	m_kTexture = data;
 	
 
 	
-	pkPackage->Read((void*)&m_kScale,12);
-	pkPackage->Read((void*)&m_fRadius,4);
-	pkPackage->Read((void*)&m_fWind,4);
+	pkPackage->Read((void*)&m_kScale,12,1);
+	pkPackage->Read((void*)&m_fRadius,4,1);
+	pkPackage->Read((void*)&m_fWind,4,1);
 	
 
 	Clear();
 	
 	int nrofpos;
 
-	pkPackage->Read((void*)&nrofpos,sizeof(nrofpos));
+	pkPackage->Read((void*)&nrofpos,sizeof(nrofpos),1);
 	
 	//cout<<"grass found :"<<nrofpos<<endl;	
 	
 	for(int i=0;i<nrofpos;i++)
 	{			
 		vegitation temp;
-		pkPackage->Read((void*)&temp,sizeof(vegitation));			
+		pkPackage->Read((void*)&temp,sizeof(vegitation),1);			
 		
 		m_akPositions.push_back(temp);
 		
