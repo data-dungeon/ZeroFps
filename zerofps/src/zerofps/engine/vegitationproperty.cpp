@@ -11,6 +11,8 @@ VegitationProperty::VegitationProperty()
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+		
+	m_iSortPlace=9;
 	
 	Clear();
 	
@@ -41,33 +43,29 @@ void VegitationProperty::Update()
 	Vector3 ObjectPos = m_pkObject->GetPos();			
 			
 	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
-	if(fDistance > 40)
+	if(fDistance > 50)
 		return;
-	
-	if(fDistance < 0)
-		fDistance = 0;	
-		
-	int iStep = int(fDistance / 10.0);
+					
+	int iStep = int(fDistance / 11.0);
 	if(iStep < 1)
 		iStep = 1;
 
 //	cout<<"step "<<iStep<<endl;
 //	cout<<"grass "<<m_akPositions.size()<<endl;
 
-
-
 	float t=m_pkFps->GetTicks();
 
+	
 
 	for(int i=0;i<m_akPositions.size();i += iStep){
-		if(m_fWind == 0)
-			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,m_akPositions[i].kRot,m_kScale,m_iTexture);
-		else
-		{
+//		if(m_fWind == 0)
+//			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,m_akPositions[i].kRot,m_kScale,m_iTexture);
+//		else
+//		{
 			Vector3 rot = m_akPositions[i].kRot; 
 			rot.x = sin(t + m_akPositions[i].fWindStart) * m_fWind;
 			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,m_iTexture);			
-		}
+//		}
 	}
 
 }
