@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                      $(ProjDir)\debug\*.lib                                      ..\..\..\bin\ 
+PostBuild_Cmds=copy                                          $(ProjDir)\debug\*.lib                                          ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -89,7 +89,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"../../../bin/basic.dll"
-# SUBTRACT LINK32 /nodefaultlib
+# SUBTRACT LINK32 /verbose /nodefaultlib
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                      $(ProjDir)\debug\*.lib                                      ..\..\..\bin\ 
+PostBuild_Cmds=copy                                          $(ProjDir)\debug\*.lib                                          ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -149,6 +149,26 @@ SOURCE=.\basicconsole.cpp
 
 SOURCE=.\cmdsystem.cpp
 # SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\core.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\core_bone.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\core_boneanim.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\core_mesh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\core_meshanim.cpp
 # End Source File
 # Begin Source File
 
@@ -300,6 +320,10 @@ SOURCE=.\heightmap.h
 # Begin Source File
 
 SOURCE=.\image.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\mad_core.h
 # End Source File
 # Begin Source File
 

@@ -50,6 +50,7 @@ class ZFIni;
 #include "zguiskin.h"
 
 #include "zfini.h"
+#include "mad_core.h"
 
 
 
