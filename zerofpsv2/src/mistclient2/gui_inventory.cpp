@@ -129,6 +129,9 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+
+	static bool s_bRightMouseButtonPressed = false;
+
 	if(m_iItemUnderCursor)
 	{
 		const float WAIT_TIME_PICKUP = 0.25f;
@@ -148,6 +151,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					}
 
 					m_vkInventoryItemList[i].pkWnd->Show();
+					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					m_pkInventoryWnd->SortChilds(); 
 					break;
 				}
 			}
@@ -189,11 +194,17 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				m_kMoveSlot.m_iIndex = -1;
 			}	
 
-			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+			
+			if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
 			{	
 				g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
-				return;
+				s_bRightMouseButtonPressed = true;
 			}
+			else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
+			{
+				s_bRightMouseButtonPressed = false;
+			}
+
 		}
 		else
 		{

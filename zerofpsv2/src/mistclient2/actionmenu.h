@@ -18,6 +18,8 @@ public:
 	ActionMenu();
 	~ActionMenu();
 
+	bool IsOpen();
+
 	void Open();
 	void Close();
 	void OnCommand(string strController);

@@ -68,6 +68,15 @@ Vector2 ActionMenu::RotateXY(float angle, Vector2 size)
 	return newpoint;
 }
 
+bool ActionMenu::IsOpen() 
+{ 
+	if(m_pkMainWnd)
+		if(m_pkMainWnd->IsVisible())
+			return true;
+
+	return false;
+}
+
 void ActionMenu::Open()
 {
 	if(m_pkMainWnd->IsVisible())
