@@ -11,6 +11,7 @@
 #include <queue>
 #include "../basic/globals.h"
 #include "../basic/keys.h"
+#include ".\zgui.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -27,6 +28,8 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_pkCapturedWindow = NULL;
 	m_bHoverWindow = false;
 	m_iHighestZWndValue = 10;
+	m_pkActiveMenu = NULL;
+	m_bClickedMenu = false;
 
 	m_bActive = false;
 
@@ -409,12 +412,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						 bool bRBnPressed, bool bMBnPressed, 
 						 float fGameTime)
 {
-
-/*	if(bLBnPressed)
-		printf("nere\n");
-	else
-		printf("uppe\n");
-*/
+	m_bClickedMenu = false;
 
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
@@ -434,7 +432,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	bool bRightButtonDown = bRBnPressed;
 
 	if(m_pkActiveMainWin == NULL)
+	{
 		return false;
+	}
 
 	if(m_pkCapturedWindow == NULL)
 	{
@@ -472,7 +472,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	if(!m_pkActiveMainWin->pkWnd) 
 		return false; 
-
 	
 	ZGuiWnd* pkFocusWindow;
 	
@@ -517,6 +516,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
 				{
 					m_bHaveInputFocus = false;
+
+					// Stäng eventuell meny
+					CloseActiveMenu();
+
 					return true;
 				}
 			}
@@ -545,6 +548,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
 
+					ZGuiWnd* pkClickDownParent = ZGuiWnd::m_pkWndClicked->GetParent();
+
+					if( pkClickDownParent)
+					{
+						if(typeid(*pkClickDownParent)==typeid(ZGuiMenu))
+						{
+							m_pkActiveMenu = (ZGuiMenu*) pkClickDownParent;
+							m_bClickedMenu = true;
+						}
+					}
+						
 					m_bHandledMouse = true;
 					//printf("m_bHandledMouse = true\n");
 				}
@@ -572,6 +586,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			ZGuiWnd::m_pkWndClicked = NULL;
 			ZGuiWnd::m_pkFocusWnd = NULL;
 		}
+
+		CloseActiveMenu();
 	}
 
 	// Är vänster musknapp nertryckt?
@@ -620,7 +636,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			//m_bHaveInputFocus = false;
 
 			// Informera fönstret innan att det har tappat fokus.
-			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
+			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || 
+				(pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
 			{
 				if(ZGuiWnd::m_pkPrevWndClicked && 
 					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
@@ -694,7 +711,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			}
 			else
 			{
-				if(ZGuiWnd::m_pkPrevWndUnderCursor && (bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased)))
+				if(ZGuiWnd::m_pkPrevWndUnderCursor && (bLeftReleased || 
+					(pkFocusWindow->m_bAcceptRightClicks && bRightReleased)))
 					ZGuiWnd::m_pkWndClicked->Notify(
 						ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_RELEASE);
 
@@ -731,6 +749,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	m_bLeftButtonDown = bLeftButtonDown;
 	m_bRightButtonDown = bRightButtonDown;
+
+
 
 	return true;
 }
@@ -818,10 +838,9 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 	if(m_bActive == true)
 	{
 		m_bHaveInputFocus = false;
-	
+		
 		if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
-
 
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 
@@ -1580,4 +1599,14 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 		}	
 
 	#endif // #ifndef LINUX
+}
+
+void ZGui::CloseActiveMenu(void)
+{
+	if(m_pkActiveMenu && m_bClickedMenu == false)
+	{
+		m_pkActiveMenu->HideAll(); 
+		m_pkActiveMenu = NULL;
+		m_bClickedMenu = true;
+	}
 }

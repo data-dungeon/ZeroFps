@@ -11,12 +11,24 @@
 // Construction/Destruction
 //////////// //////////////////////////////////////////////////////////
 
+int ZGuiMenu::s_iMenuIDCounter = 0;
+
 ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	m_bEnabled = true;
+	m_bNeedToResize = true;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
+
+	CreateInternalControls();
+
+	m_pkFont = GetGUI()->GetBitmapFont(ZG_DEFAULT_GUI_FONT); 
+	if(m_pkFont)
+	{
+		ResizeMenu(m_pkFont);
+		m_bNeedToResize = false;
+	}
 }
 
 ZGuiMenu::~ZGuiMenu()
@@ -26,6 +38,39 @@ ZGuiMenu::~ZGuiMenu()
 
 bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 {
+	if(iCode == NCODE_CLICK_UP) // NCODE_OVER_CTRL
+	{
+		int iMenuID = pkWindow->GetID();
+
+		for(int i=0; i<m_vkItems.size(); i++)
+		{
+			if(m_vkItems[i]->pkButton->GetID() == iMenuID)
+			{
+				if(m_vkItems[i]->bOpenSubMenu)
+				{
+					if(m_vkItems[i]->pkParent == NULL)
+					{
+						HideAll();
+					}
+
+					ZGuiMenuItem* pkSubMenu = m_vkItems[i];
+
+					map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkSubMenu );
+					if ( res != m_mkSubMenuStateMap.end() )
+							res->second = !res->second;
+
+					OpenSubMenu(pkSubMenu, res->second);
+				}
+				else
+				{
+					HideAll();
+				}
+
+				break;
+			}
+		}
+	}
+
 	return false;
 }
 
@@ -33,6 +78,27 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 {
 	if(!IsVisible())
 		return true;
+
+	if(m_bNeedToResize == true)
+	{
+		if(m_pkFont != NULL)
+		{
+			ResizeMenu(m_pkFont);
+			m_bNeedToResize = false;
+		}
+		else
+		{
+			m_pkFont = GetGUI()->GetBitmapFont(ZG_DEFAULT_GUI_FONT); 
+		}
+	}
+
+	if(m_pkLabel)
+		m_pkLabel->Render(pkRenderer); 
+
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		m_vkItems[i]->pkButton->Render(pkRenderer); 
+	}
 
 	return true;
 }
@@ -43,7 +109,390 @@ void ZGuiMenu::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 }
 
 
+void ZGuiMenu::CreateInternalControls()
+{
+	Rect rc = GetWndRect();
+	rc.Left = 0;
+	rc.Top = 0;
+	rc.Right = rc.Width();
+	rc.Bottom = 20;
+	
+	m_pkLabel = new ZGuiLabel(rc, this, true);
+
+	ZGuiSkin* pkSkin = new ZGuiSkin();
+	
+	pkSkin->m_afBkColor[0] = pkSkin->m_afBkColor[1] = pkSkin->m_afBkColor[2] = 0.55;
+	m_pkLabel->SetSkin(pkSkin);
+
+	m_pkItemSkinUp = new ZGuiSkin();
+	m_pkItemSkinFocus = new ZGuiSkin();
+	m_pkSkinDown = new ZGuiSkin();
+
+	int Ru = 153;
+	int Gu = 134;
+	int Bu = 117;
+
+	int Rf = 199;
+	int Gf = 178;
+	int Bf = 153;
+
+	int Rdf = 19;
+	int Gdf = 17;
+	int Bdf = 15;
+
+	m_pkItemSkinUp->m_afBkColor[0] = (1.0f / 255) * Ru;
+	m_pkItemSkinUp->m_afBkColor[1] = (1.0f / 255) * Gu ;
+	m_pkItemSkinUp->m_afBkColor[2] = (1.0f / 255) * Bu ;
+
+	m_pkItemSkinFocus->m_afBkColor[0] = (1.0f / 255) * Rf ;
+	m_pkItemSkinFocus->m_afBkColor[1] = (1.0f / 255) * Gf ;
+	m_pkItemSkinFocus->m_afBkColor[2] =(1.0f / 255) * Bf ;
+
+	m_pkItemSkinFocus->m_afBorderColor[0] = (1.0f / 255) * Rdf ;
+	m_pkItemSkinFocus->m_afBorderColor[1] = (1.0f / 255) * Gdf ;
+	m_pkItemSkinFocus->m_afBorderColor[2] = (1.0f / 255) * Bdf ;
+
+	m_pkItemSkinFocus->m_unBorderSize = 1;
+
+	m_pkSkinDown->m_afBkColor[0] = (1.0f / 255) * Rf ;
+	m_pkSkinDown->m_afBkColor[1] = (1.0f / 255) * Gf ;
+	m_pkSkinDown->m_afBkColor[2] = (1.0f / 255) * Bf ;
+
+	AddItem("File", "Menu_File", NULL, true);
+	
+	AddItem("New", "Menu_File_New", "Menu_File");
+	AddItem("Open ->", "Menu_File_Open", "Menu_File", true);
+	AddItem("Close", "Menu_File_Close", "Menu_File");
+	AddItem("Add New Item", "Menu_File_Add_New_Item", "Menu_File");
+
+	AddItem("Project", "Menu_File_Open_Project", "Menu_File_Open", true);
+	AddItem("File", "Menu_File_Open_File", "Menu_File_Open");
+
+	AddItem("Edit", "Menu_Edit", NULL, true);
+	AddItem("Undo", "Menu_Edit_Undo", "Menu_Edit");
+	AddItem("Cut", "Menu_Edit_Cut", "Menu_Edit");
+
+	AddItem("C++ Project", "Menu_File_Open_C++_Project", "Menu_File_Open_Project");
+	AddItem("Visual Basic Project", "Menu_File_Open_Visual_Basic_Project", "Menu_File_Open_Project");
+	AddItem("Java Project", "Menu_File_Open_Java_Project", "Menu_File_Open_Project");
+
+	OpenSubMenu(GetItem("Menu_File_Open_Java_Project"), true);
+}
+
+bool ZGuiMenu::AddItem(const char* szText, const char* szNameID, 
+							  const char* szParentID, bool bOpenSubMenu)
+{
+	ZGuiMenuItem* new_item = new ZGuiMenuItem();
+
+	new_item->szNameID = new char[strlen(szNameID)+1];
+	strcpy(new_item->szNameID, szNameID);
+
+	new_item->pkParent = GetItem(szParentID);	
+
+	if(szParentID != NULL && new_item->pkParent == NULL)
+	{
+		delete new_item;
+		return false;
+	}
+
+	int x = 0;
+	int y = 0;
+	int w = 100;
+	int h = 20;
+
+	ZGuiMenuItem* pkParent = GetItem(szParentID);
+
+	bool bShow = false;
+
+	if(pkParent)
+	{
+		if(pkParent->bOpenSubMenu && pkParent->pkParent != NULL)
+		{
+			x = pkParent->pkButton->GetWndRect().Right;
+			y = pkParent->pkButton->GetWndRect().Top;
+		}
+		else
+		{
+			x = pkParent->pkButton->GetWndRect().Left;
+			y = pkParent->pkButton->GetWndRect().Bottom;
+		}
+
+		y += GetNumChilds((char*)szParentID) * 20;
+	}
+	else
+	{
+		ZGuiMenuItem* pkLeftParent = GetRightParent();
+		if(pkLeftParent)
+			x = pkLeftParent->pkButton->GetScreenRect().Right; 
+
+		bShow = true;
+	}
+
+	new_item->pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),this,bShow,0);
+	new_item->pkButton->SetButtonUpSkin(m_pkItemSkinUp); 
+	new_item->pkButton->SetButtonHighLightSkin(m_pkItemSkinFocus); 
+	new_item->pkButton->SetButtonDownSkin(m_pkSkinDown); 
+	new_item->pkButton->SetText((char*) szText, false); 
+	new_item->pkButton->m_bCenterTextHorz = false;
+
+	new_item->pkButton->SetID(s_iMenuIDCounter++);
+
+	new_item->bOpenSubMenu = bOpenSubMenu;
+
+	m_vkItems.push_back(new_item); 
+
+	if(new_item->bOpenSubMenu)
+	{
+		m_mkSubMenuStateMap.insert( 
+			map<ZGuiMenuItem*,bool>::value_type( new_item, false ) );
+	}
+
+	return true;
+}
+
+ZGuiMenuItem* ZGuiMenu::GetItem(const char* szNameID)
+{
+	if(szNameID == NULL)
+		return NULL;
+
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(strcmp(m_vkItems[i]->szNameID, szNameID) == 0)
+			return m_vkItems[i];
+	}
+
+	return NULL;
+}
+
+int ZGuiMenu::GetNumChilds(char* szNameID)
+{
+	int antalChilds = 0;
+
+	if(szNameID != NULL)
+	{
+		for(int i=0; i<m_vkItems.size(); i++)
+		{
+			if(m_vkItems[i]->pkParent)
+			{
+				if(strcmp(m_vkItems[i]->pkParent->szNameID, szNameID) == 0)
+					antalChilds++;
+			}
+		}
+	}
+
+	return antalChilds;
+}
+
+ZGuiMenuItem* ZGuiMenu::GetRightParent()
+{
+	ZGuiMenuItem* right_parent = NULL;
+
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkParent == NULL)
+		{
+			if(right_parent == NULL || 
+				m_vkItems[i]->pkButton->GetScreenRect().Right > 
+				right_parent->pkButton->GetScreenRect().Right)
+			{
+				right_parent = m_vkItems[i];
+			}
+		}
+	}	
+
+	return right_parent;
+}
 
 
+void ZGuiMenu::OpenSubMenu(ZGuiMenuItem* pkSubMenu, bool bOpen)
+{
+	vector<ZGuiMenuItem*> test;
 
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		ZGuiMenuItem* s = m_vkItems[i]->pkParent;
+		bool bShow = true;
 
+		while(1)
+		{
+			if(s == NULL)
+				break;
+
+			if(MenuIsOpen(s) == false) 
+				bShow = false;
+
+			s = s->pkParent;
+		}
+
+		if(bShow)
+			m_vkItems[i]->pkButton->Show();
+		else
+		{
+			m_vkItems[i]->pkButton->Hide();
+
+			if(m_vkItems[i]->bOpenSubMenu)
+			{
+				test.push_back( m_vkItems[i] );
+			}
+		}
+	}
+
+	vector<ZGuiMenuItem*> temp = m_vkItems;
+
+	if(bOpen == false)
+	{
+		for(int i=0; i<test.size(); i++)
+		{
+			map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
+			for( ; it != m_mkSubMenuStateMap.end(); it++)
+			{
+				if(it->first == test[i])
+				{
+					it->second = false;
+				}
+			}
+		}
+	}
+}
+
+bool ZGuiMenu::MenuIsOpen(ZGuiMenuItem* pkMenu)
+{
+	map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkMenu );
+	if ( res != m_mkSubMenuStateMap.end() )
+		return res->second;
+
+	return false;
+}
+
+bool ZGuiMenu::IsChildOf(ZGuiMenuItem* pkSubMenu)
+{
+	return false;
+}
+
+void ZGuiMenu::HideAll()
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkParent != NULL)
+			m_vkItems[i]->pkButton->Hide();
+	}
+
+	map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
+	for( ; it != m_mkSubMenuStateMap.end(); it++)
+	{
+		it->second = false;
+	}
+}
+
+void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
+{
+	if(pkFont == NULL)
+		return;
+
+	// Börja med att skala om alla utan parent till sin rätta storlek.
+	int iPrevIndex;
+
+	for(int j=0; j<m_vkItems.size(); j++)
+	{
+		if(m_vkItems[j]->pkParent == NULL)
+		{
+			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
+			pkButton->SetFont(pkFont); 
+
+			int width = pkFont->GetLength( pkButton->GetText() ); 
+			pkButton->Resize(width, 20);
+
+			if( j > 0 )
+			{
+				int x = m_vkItems[iPrevIndex]->pkButton->GetWndRect().Right + 4; 
+				int y = pkButton->GetWndRect().Top; 
+				
+				pkButton->SetPos(x, y, false, true);
+				pkButton->SetMoveArea(pkButton->GetScreenRect(), false); 				
+			}
+
+			iPrevIndex = j;
+		}
+	}
+
+	// skala om en gång till eftersom x postionen har ändrats
+	for(int j=0; j<m_vkItems.size(); j++)
+	{
+		if(m_vkItems[j]->pkParent == NULL)
+		{
+			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
+			int width = pkFont->GetLength( pkButton->GetText() ); 
+			pkButton->Resize(width+4, 20);
+		}
+	}
+
+	vector<int> kMaxWidths(m_mkSubMenuStateMap.size());
+
+	for(int i=0; i<kMaxWidths.size(); i++)
+		kMaxWidths[i] = -1;
+
+	// Leta rätt på storleken för att items
+	int iIndex=0;
+	map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
+	for( ; it != m_mkSubMenuStateMap.end(); it++)
+	{
+		int max = -1;
+		for(int j=0; j<m_vkItems.size(); j++)
+		{
+			if(m_vkItems[j]->pkParent == it->first)
+			{
+				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
+				pkButton->SetFont(pkFont); 
+
+				int width = 4 + pkFont->GetLength( pkButton->GetText() ); 
+
+				if(max < width)
+					max = width;
+			}
+		}
+
+		kMaxWidths[iIndex] = max;
+		iIndex++;
+	}
+
+	// Skala om bredden på alla items
+	iIndex = 0;
+	it = m_mkSubMenuStateMap.begin();
+	for( ; it != m_mkSubMenuStateMap.end(); it++)
+	{
+		for(int j=0; j<m_vkItems.size(); j++)
+		{
+			if(m_vkItems[j]->pkParent == it->first)
+			{
+				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
+				pkButton->Resize(kMaxWidths[iIndex], 20);
+			}
+		}
+
+		iIndex++;
+	}
+
+	// Sätt korrekt x postion
+	it = m_mkSubMenuStateMap.begin();
+	for( ; it != m_mkSubMenuStateMap.end(); it++)
+	{
+		for(int j=0; j<m_vkItems.size(); j++)
+		{
+			if(m_vkItems[j]->pkParent == it->first)
+			{
+				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
+
+				int x; 
+
+				if(m_vkItems[j]->pkParent->pkParent == NULL)
+					x = m_vkItems[j]->pkParent->pkButton->GetWndRect().Left;
+				else
+					x = m_vkItems[j]->pkParent->pkButton->GetWndRect().Right;
+
+				int y = pkButton->GetWndRect().Top; 
+
+				pkButton->SetPos(x, y, false, true);
+			}
+		}
+	}
+}

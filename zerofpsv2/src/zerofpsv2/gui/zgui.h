@@ -19,6 +19,7 @@
 #include "zguislider.h"
 #include "zguiapp.h"
 #include "zguitooltip.h"
+#include "zguimenu.h"
 
 #include "../basic/zfsystem.h"
 #include "../basic/image.h"
@@ -193,6 +194,8 @@ private:
 	ZGuiResourceManager* m_pkResManager;
 	TextureManager* m_pkTexMan;
 	ZGuiToolTip* m_pkToolTip;
+	ZGuiMenu* m_pkActiveMenu; // den meny som senast klickades
+	bool m_bClickedMenu;
 	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
@@ -223,6 +226,8 @@ private:
 
 
 
+public:
+	void CloseActiveMenu(void);
 };
 
 #endif 
