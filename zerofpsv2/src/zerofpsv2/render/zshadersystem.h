@@ -321,6 +321,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		bool SetGamma(float fGamma);
 		bool SetGamma(float fRed,float fGreen,float fBlue);
+		void GetGamma(float& fRed,float& fGreen,float& fBlue)	{	fRed =   m_fRedGamma;
+																					fGreen = m_fGreenGamma;
+																					fBlue =  m_fBlueGamma;	}
 		
 		//ucculusion
 		void OcculusionBegin();
@@ -330,15 +333,15 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//information
 		bool HaveExtension(const string& strExt);
 		int GetStencilBits();
-		bool SupportVertexProgram() 		{return m_bSupportVertexProgram;		}
-		bool SupportFragmentProgram() 	{return m_bSupportFragmentProgram;	}
-		bool SupportOcculusion()			{return m_bOcclusion;					}
+		bool SupportVertexProgram() 							{	return m_bSupportVertexProgram;		}
+		bool SupportFragmentProgram() 						{	return m_bSupportFragmentProgram;	}
+		bool SupportOcculusion()								{	return m_bOcclusion;						}
 		
 		//arrays
 		void ResetPointers();
 		void SetPointer(int iType,void* pkPointer);
-		void SetNrOfVertexs(const int& iNr)					{m_iNrOfVertexs = iNr;};
-		void SetNrOfIndexes(const int& iNr)					{m_iNrOfIndexes = iNr;};
+		void SetNrOfVertexs(const int& iNr)					{	m_iNrOfVertexs = iNr;	};
+		void SetNrOfIndexes(const int& iNr)					{	m_iNrOfIndexes = iNr;	};
 		void SetDrawMode(const int& iDrawMode);
 		void DrawArray();
 		void DrawArray(const int& iDrawMode);
