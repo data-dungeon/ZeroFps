@@ -93,12 +93,14 @@ void Tcs::Update(float fAlphaTime)
 		return;
 	
 	//make sure alpha time is not to small
-/*	if(fAlphaTime > 0.02) 
+	if(fAlphaTime > 0.033) 
 	{
 		cout<<"slow:"<<fAlphaTime<<endl;
-		fAlphaTime = 0.02; 
+		fAlphaTime = 0.033; 
 	}
-	*/		
+			
+	
+	
 		
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
