@@ -79,8 +79,9 @@ void Test::OnIdle(void) {
 
 
 	glPushMatrix();
-		glTranslatef(200,test->Height(200,300),300);
-		glScalef(.05,.05,.05);
+		glTranslatef(390,test->Height(390,410),410);
+		glColor3f(0,0,1);
+		glScalef(.025,.025,.025);
 		testa.draw();
 	glPopMatrix();
 //	cout<<pkFps->m_kCamPos->x<<" "<<pkFps->m_kCamPos->y<<" "<<pkFps->m_kCamPos->z<<endl;

@@ -1,6 +1,8 @@
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
+#include <vector>
+#include <list>
 #include "../basic/basic.pkg"
 
 
@@ -27,8 +29,11 @@ struct LightSource {
 
 class Light {
 	private:
-		Vector3 *kCamPos;
-
+		Vector3 *m_kCamPos;
+		int m_iNrOfLights;
+		list<LightSource*> m_kLights;
+		
+		LightSource *m_akCurrentLights;
 
 	public:
 
