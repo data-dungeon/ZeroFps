@@ -21,6 +21,8 @@ enum GUI_SCRIPT
 	GSF_START,
 };
 
+const int MAX_NUM_BUFF_ICONS = 14;
+
 
 /**	\brief	Da MistClient
 		\ingroup MistClient
@@ -68,6 +70,21 @@ class MistClient :public Application, public ZGuiApp {
 		ActionMenu* 	m_pkActionDlg;
 		InventoryDlg* 	m_pkInventoryDlg;
 		EquipmentDlg* 	m_pkEquipmentDlg;
+
+		struct BUFF_ICON_INFO
+		{
+			string m_strName;
+			string m_strIcon;
+			float  m_fTimeout;
+			char   m_cType;	
+			ZGuiWnd* m_pkWnd;
+		};
+
+		void InitBuffWnd();
+		void UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList);
+
+		
+		BUFF_ICON_INFO m_kBuffIcons[MistClient::MAX_NUM_BUFF_ICONS];
 
 		bool ReadWriteServerList(bool bRead);
 

@@ -29,6 +29,7 @@ public:
 	bool IsValid()		{return true;}
 	
 	void OnCommand(int wmId, int wmEvent);
+	void GetCursor(int& x, int& y, bool& down);
 
 private:
 

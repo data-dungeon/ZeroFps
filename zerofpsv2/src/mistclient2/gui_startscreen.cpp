@@ -501,6 +501,8 @@ void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 	ShowWnd("AddNewServerWnd", false);
 	ShowWnd("LoginWnd", false);
 	ShowWnd("OptionsWnd", false);
+	ShowWnd("CharGen_CreateCharWnd", false);
+	ShowWnd("CharGen_SelectCharWnd", false);
 
 	ShowWnd("MLStartWnd", true);
 	

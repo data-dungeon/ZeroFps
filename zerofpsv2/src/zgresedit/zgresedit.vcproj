@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="zgresedit"
+	ProjectGUID="{582EF419-94C4-4F1B-B245-76D8E8E025A5}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

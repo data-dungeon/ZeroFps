@@ -243,15 +243,6 @@ void MistClient::SetupGUI()
 	SetGuiCapture(true);
 
 	
-
-
-
-
-
-
-
-
-
 	if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_CHARGEN].c_str()))
 	{
 		printf("failed to load character generation screen\n");

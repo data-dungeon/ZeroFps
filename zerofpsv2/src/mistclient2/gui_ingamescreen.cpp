@@ -6,6 +6,8 @@
 
 extern MistClient	g_kMistClient;
 
+
+
 void GuiMsgIngameScreen( string strMainWnd, string	strController,	
 								 unsigned int msg, int numparms,	void *params )	
 {
@@ -252,6 +254,8 @@ void MistClient::LoadInGameGui()
 		return;
 	}
 
+	InitBuffWnd();
+
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->Resize((int)(16.0f*GetScaleX()), -1);  
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetReadOnly(true); 
@@ -283,6 +287,71 @@ void MistClient::LoadInGameGui()
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
 
 	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
+}
 
+void MistClient::InitBuffWnd()
+{
+	static bool s_bInitialized = false;
 
+	if(s_bInitialized == true)
+		return;
+
+	char szName[50];
+	int x=0, y=0, w=32, h=32;
+	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
+
+	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
+	{
+		sprintf(szName, "BuffIcon%i", i);
+
+		m_kBuffIcons[i].m_pkWnd = CreateWnd(Label, szName, "", pkBuffWnd, x, y, w, h, 0);
+
+		ZGuiSkin* pkSkin = new ZGuiSkin();
+		pkSkin->m_bTransparent = true;
+
+		m_kBuffIcons[i].m_pkWnd->SetSkin(pkSkin);
+
+		x += 32;
+		if(x > 238)
+		{
+			x = 0;
+			y += 32;
+		}
+	}
+
+	s_bInitialized = true;
+}
+
+void MistClient::UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList)
+{
+	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
+
+	if(pkBuffWnd == NULL)
+	{
+		printf("!!!Tried to update buff icon list when parentwnd dont exist!!!\n");
+		return;
+	}
+
+	string strImageFile;
+
+	printf("kList->size()=%i\n", kList->size());
+
+	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
+	{
+		if(i<kList->size())
+		{
+			m_kBuffIcons[i].m_pkWnd->Show();
+			m_kBuffIcons[i].m_strIcon = string("buffs/") + string("default.bmp"); //kList[i].m_strIcon;			
+			m_kBuffIcons[i].m_strName = (*kList)[i].m_strName;
+			m_kBuffIcons[i].m_cType = (*kList)[i].m_cType;
+			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;
+
+			m_kBuffIcons[i].m_pkWnd->GetSkin()->m_iBkTexAlphaID = 
+				LoadGuiTextureByRes(m_kBuffIcons[i].m_strIcon);	
+		}
+		else
+		{
+			m_kBuffIcons[i].m_pkWnd->Hide();
+		}
+	}
 }
