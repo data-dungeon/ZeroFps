@@ -146,6 +146,8 @@ public:
 
 	bool m_bGuiHaveFocus;
 
+   bool m_bDisableGuiScaleMode;
+
 private:
 
 	struct MENU_INFO

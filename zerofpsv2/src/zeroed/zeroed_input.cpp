@@ -142,7 +142,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	{		
 		Entity* pkObj =  GetTargetObject();
 		if(pkObj)
-			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
+      {
+			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));  
+      }
 	}
 
 	if(m_pkInputHandle->VKIsDown("applyforce") )

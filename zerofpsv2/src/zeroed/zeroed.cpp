@@ -454,6 +454,8 @@ void ZeroEd::DrawSelectedEntity()
 
 void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 {
+   char szInfoText[100];
+
 	if(!bMultiSelect && m_iCurrentObject != iId)		
 		Select_None();
 	
@@ -476,7 +478,14 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 				m_iCurrentObject = -1;
 		}
 	}
+ 
+   if(m_iCurrentObject != -1)
+      sprintf(szInfoText, "Object selected: %s", m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)->GetName());
+   else
+      sprintf(szInfoText, "");
 
+   SetText("ZeroEdInfoLabel", szInfoText, true);
+   
    UpdatePropertyList(m_iCurrentObject);
 }
 

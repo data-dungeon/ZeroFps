@@ -24,6 +24,7 @@ ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
 	m_szLastRadioBGroup = NULL;
+   m_bDisableGuiScaleMode = false;
 	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
 }
 
@@ -107,7 +108,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	GUIScaleMode eScaleMode;
 	m_pkRenderer->GetScaleMode(eScaleMode);
 
-	if(eScaleMode == GUIScaleManually)
+	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
 	{
 		int iNewWidth = -1, iNewHeight = -1;
 
@@ -339,7 +340,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	if(uiFlags & CREATE_WND_HIDDEN) 
 		pkWnd->Hide();
 
-	if(eScaleMode == GUIScaleManually)
+	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
 	{
 		float parent_width = 800, parent_height = 600;
 

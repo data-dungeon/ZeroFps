@@ -220,6 +220,8 @@ void ZGResEdit::OnInit()
 		"data/script/gui/gui_res_edit.lua",
 		NULL, true);
 
+   m_bDisableGuiScaleMode = true;
+
 	SetTitle("ZeroFps GUI Editor");
 	m_pkInput->ShowCursor(true);
 
@@ -1267,6 +1269,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 		m_pkResizeWnd = NULL;
 
 		m_pkMainWnd = GetWnd("GuiMainWnd");
+      m_pkFocusWnd = m_pkMainWnd;
 		return;
 	}
 

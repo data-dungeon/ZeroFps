@@ -214,7 +214,6 @@ void Scene::CreateUI()
    int iRots = 0;
    int iNameCounter = 0, x = 0;
 
-   
    m_pkApp->CreateNewRadiobuttonGroup("WndAlignentLabelRadioGroup",25142);
 
    m_pkApp->CreateWnd(Label, "WndAlignentLabel",  "WorkSpace",  "Alignent", 2, 506, 58-2, 16, 0);
