@@ -46,7 +46,8 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_pkFpsLabel = NULL;
 	m_pkFpsWnd = NULL;
 
-	RegisterVariable("r_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
+	m_iShowFPSCounter = 1;
+	//RegisterVariable("r_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
 }
 
 bool ZGui::StartUp()	
