@@ -48,14 +48,14 @@ end
 
 function IsMissionFailed()
 
-	local num_of_living_agents = GetNumOfLivingAgents()
+--	local num_of_living_agents = GetNumOfLivingAgents()
 
 	-----------------------------------------------------------------------
 	-- Om alla agenter är döda så har uppdraget misslyckats.
 	-----------------------------------------------------------------------
-	if num_of_living_agents == 0 then
-		OnMissionFailed()
-	end
+--	if num_of_living_agents == 0 then
+--		OnMissionFailed()
+--	end
 
 
 end

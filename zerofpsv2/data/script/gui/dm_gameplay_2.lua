@@ -270,15 +270,16 @@ function GUICreate()
 
 
 
+	CreateWnd(0,"MissionInfoWnd","GamePlayScreen","",800/2-256/2,600/2-256/2,256,256,0)
+	ChangeSkin("MissionInfoWnd","Skin1","Window")
 
+	CreateWnd(10,"MissionInfoLabel","MissionInfoWnd","",10,10,200,200,0)
+	ChangeSkin("MissionInfoLabel","Skin4","Label")
 
---	CreateWnd(0,"fps_wnd","","",2,2,50,20,0)
---	ChangeSkin("fps_wnd","Skin4","Window")
-
---	CreateWnd(4,"fps_label","fps_wnd","fps: 240",0,0,50,20,0)
---	ChangeSkin("fps_label","Skin19","Label")
-
-
+	CreateWnd(1,"MissionInfoOK","MissionInfoWnd","OK",256/2-40/2,256-40,40,20,0)
+	ChangeSkin("MissionInfoOK","Skin1","Button up")
+	ChangeSkin("MissionInfoOK","Skin2","Button down")
+	ChangeSkin("MissionInfoOK","Skin3","Button focus")
 
 end
 

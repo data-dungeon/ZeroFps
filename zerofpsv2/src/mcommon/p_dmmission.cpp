@@ -2,6 +2,8 @@
 #include "si_dm.h"
 #include "p_dmgameinfo.h"
 #include "p_dmcharacter.h" 
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/gui/zguiwindow.h"
 
 P_DMMission::P_DMMission()
 {
@@ -357,11 +359,19 @@ void P_DMMission::OnMissionSuccess()
 					"P_DMCharacter"))->AddXP(iXPEachMember);
 			}
 
-	printf("Mission %s success!\nRaising cash for (%i) agents, with %i and xp with %i\n%s%f",
+	char text[150];
+	sprintf(text, "Mission %s success!\nRaising cash for (%i) agents, with %i and xp with %i\n%s%f",
 		m_pkCurrentMission->m_strName.c_str(), 
 		iAntal,
 		m_pkCurrentMission->m_iCash,
 		m_pkCurrentMission->m_iXP,
 		"The groups reputation is now:",
 		m_pkGameInfoEntity->m_fReputation);
+
+
+	ZGuiResourceManager* pkGuiResMan = (ZGuiResourceManager*) 
+		static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
+
+	pkGuiResMan->Wnd("MissionInfoWnd")->Show();
+	pkGuiResMan->Wnd("MissionInfoLabel")->SetText(text); 
 }

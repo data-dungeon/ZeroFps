@@ -147,6 +147,11 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->GetListnerPos() ); 
 	}
 	else
+	if(strClickName == "MissionInfoOK")
+	{
+		GetWnd("MissionInfoWnd")->Hide();
+	}
+	else
 	if(strClickName.find("GamePlayDlgQuickItem") != string::npos && m_iSelectedAgent != -1)
 	{
 		char number[] = { strClickName.c_str()[strClickName.size()-1], '\0' };
@@ -160,7 +165,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->StartSound("data/sound/computer beep 6.wav", 
 				m_pkAudioSys->GetListnerPos()); 
 
-			pkCharacter->UseQuickItem(DMITEM_MEDKIT, true);
+			pkCharacter->UseQuickItem(iItem, false);
 			SelectAgent(m_iSelectedAgent, false);
 		}
 		else
@@ -212,7 +217,12 @@ bool CGamePlayDlg::InitDlg()
 		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
 			GetWnd("ActiveCharacterPortraitBn");
 		pkActiveCharBn->Hide();
+
+		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->ToggleMultiLine(true);
+		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->SetReadOnly(true);	
 	}
+ 
+	GetWnd("MissionInfoWnd")->Hide();
 
 	if(m_bSkillbarIsOut) 
 	{

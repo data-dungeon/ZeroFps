@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="glu32.lib opengl32.lib engine.lib render.lib script.lib basic.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="gui.lib glu32.lib opengl32.lib engine.lib render.lib script.lib basic.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mcommon.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
