@@ -84,6 +84,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("selnone", FID_SELNONE);
 	Register_Cmd("gridsize", FID_GRIDSIZE);
 	Register_Cmd("gridsnap", FID_GRIDSNAP);
+	Register_Cmd("camfollow", FID_CAMFOLLOW);
 
 
 	m_kDrawPos.Set(0,0,0);
@@ -104,15 +105,14 @@ void MistServer::SetCamera(int iNum)
 
 	if(m_bSoloMode) 
 	{
-		m_pkCamera[0]->SetViewPort(0,0,0,0);
-		m_pkCamera[1]->SetViewPort(0,0,0,0);
-		m_pkCamera[2]->SetViewPort(0,0,0,0);
-		m_pkCamera[3]->SetViewPort(0,0,0,0);
+		m_pkCamera[0]->SetViewPort(0,0,0,0);	m_pkCamera[0]->m_bRender = false;
+		m_pkCamera[1]->SetViewPort(0,0,0,0);	m_pkCamera[1]->m_bRender = false;
+		m_pkCamera[2]->SetViewPort(0,0,0,0);	m_pkCamera[2]->m_bRender = false;
+		m_pkCamera[3]->SetViewPort(0,0,0,0);	m_pkCamera[3]->m_bRender = false;
 		m_pkActiveCamera->SetViewPort(0,0,1,1);
+		m_pkActiveCamera->m_bRender = true;
 	}
 }
-
-
 
 void MistServer::OnInit() 
 {
@@ -722,9 +722,6 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		m_pkActiveCameraObject->SetLocalPosV(newpos);		
 		if(m_pkInputHandle->VKIsDown("pancam"))
 			m_pkActiveCameraObject->SetLocalRotM(kRm);	
-
-		if(m_pkInputHandle->Pressed(KEY_F6))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
-		if(m_pkInputHandle->Pressed(KEY_F7))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_PERSP);	
 	}
 
 	else 
@@ -750,7 +747,8 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		else 
 		{
 			P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
-			pkCam->OrthoMove(kMove);
+			if(pkCam)
+				pkCam->OrthoMove(kMove);
 		}
 	}
 }
@@ -785,6 +783,23 @@ void MistServer::Input()
 		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
 		m_pkFps->AddHMProperty(pkObj, pkObj->iNetWorkID,m_kZoneSize);
 	}  
+
+	if(m_pkInputHandle->Pressed(KEY_F6)) 
+	{
+		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+
+		//m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		//ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		//if(pkData && pkData->m_pkZone) 
+		//{
+			pkEnt->AddProperty("P_PfMesh");
+			P_PfMesh* pkMesh = (P_PfMesh*)pkEnt->GetProperty("P_PfMesh");
+			pkMesh->AutoMakeNaviMesh();
+			//P_HMRP2* pkHmap = (P_HMRP2*)pkEnt->GetProperty("P_HMRP2");
+			//if(pkHmap)
+			//	pkMesh->SetHmap(pkHmap);
+		//}
+	}
 
 	Vector3 kMove(0,0,0);
 //	Vector3 kRotate(0,0,0);
@@ -950,6 +965,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 
 		case FID_CAMSOLO:		SoloToggleView();	break;
+		case FID_CAMFOLLOW:	CamFollow();		break;
 		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
 		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
 		case FID_SELNONE:		Select_None();		break;
@@ -996,21 +1012,39 @@ void MistServer::SoloToggleView()
 
 	if(m_bSoloMode) {
 		m_bSoloMode = false;
-		m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
-		m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
-		m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
-		m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
+		m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);	m_pkCamera[0]->m_bRender = true;
+		m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5); m_pkCamera[1]->m_bRender = true;
+		m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5); m_pkCamera[2]->m_bRender = true;
+		m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5); m_pkCamera[3]->m_bRender = true;
 		}
 	else {
 		m_bSoloMode = true;
-		m_pkCamera[0]->SetViewPort(0,0,0,0);
-		m_pkCamera[1]->SetViewPort(0,0,0,0);
-		m_pkCamera[2]->SetViewPort(0,0,0,0);
-		m_pkCamera[3]->SetViewPort(0,0,0,0);
+		m_pkCamera[0]->SetViewPort(0,0,0,0); m_pkCamera[0]->m_bRender = false;
+		m_pkCamera[1]->SetViewPort(0,0,0,0); m_pkCamera[1]->m_bRender = false;
+		m_pkCamera[2]->SetViewPort(0,0,0,0); m_pkCamera[2]->m_bRender = false;
+		m_pkCamera[3]->SetViewPort(0,0,0,0); m_pkCamera[3]->m_bRender = false;
 		m_pkActiveCamera->SetViewPort(0,0,1,1);
+		m_pkActiveCamera->m_bRender = true;
 		}
 }
 
+void MistServer::CamFollow()
+{
+	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+	if(!pkObj)
+		return;
+
+	P_Camera* m_pkCamProp;
+
+	// Remov old
+	m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+	m_pkCamProp->SetCamera(NULL);
+
+	// Add new.
+	pkObj->AddProperty("P_Camera");
+	m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
+	m_pkCamProp->SetCamera(m_pkCamera[1]);
+}
 
 
 void MistServer::ClientInit()

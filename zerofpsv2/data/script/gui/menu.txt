@@ -115,6 +115,11 @@ Title=Cam - Right
 Parent=Menu_View
 Cmd=setcam right
 
+[Menu_ViewFollow]
+Title=Cam - Follow (T)
+Parent=Menu_View
+Cmd=camfollow
+
 [Menu_ViewLink]
 Title=Cam - Link (T)
 Parent=Menu_View

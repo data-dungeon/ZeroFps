@@ -56,6 +56,8 @@ class ENGINE_API Camera
 		float m_fAppHeight;
 
 		void	DrawGrid();
+		
+
 
 	public:
 		Frustum m_kFrustum;
@@ -65,6 +67,7 @@ class ENGINE_API Camera
 		Vector3	m_kOrthoAxisZ;
 
 		Vector3	m_kOrthoSize;
+		bool		m_bRender;			// False if no need to render from this camera (not visible on screen).
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		void Update(int iWidth,int iHeight);

@@ -63,6 +63,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_SELNONE,
 			FID_GRIDSIZE,
 			FID_GRIDSNAP,
+			FID_CAMFOLLOW,
 
 		};
 
@@ -114,6 +115,7 @@ class MistServer :public Application , public ZGuiApp {
 		Entity*	GetTargetObject();		
 
 		void SetCamera(int iNum);
+		void CamFollow();
 
 		// Selection of Entitys.
 		set<int>	m_SelectedEntitys;

@@ -378,6 +378,8 @@ void EntityManager::Update(int iType,int iSide,bool bSort)
 	
 	m_iNrOfActivePropertys = m_akPropertys.size();
 	
+//	Logf("net","OM::Update(%s, %s,%d) = %d\n",
+//		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
 		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 

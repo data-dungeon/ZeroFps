@@ -211,6 +211,11 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 	/* Vim Test Path*/
 	Vector3 kPathStart = m_pkObject->GetWorldPosV();
 	Vector3 kPathEnd   = kDestination;
+	cout << "Making PathFind: ";
+	kPathStart.Print();
+	kPathEnd.Print();
+	cout << endl;
+
 	kPath.clear();
 	bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
 

@@ -6,6 +6,7 @@
 #include "../basic/line2d.h"
 
 class P_Mad;
+class P_HMRP2;
 
 using namespace std;
 
@@ -57,6 +58,7 @@ public:
 };
 
 class AStar;
+struct Mad_Face;
 
 class ENGINE_API P_PfMesh : public Property 
 {
@@ -80,7 +82,11 @@ class ENGINE_API P_PfMesh : public Property
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
+		void BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal);
 		void SetMad(P_Mad* pkMad);
+		void SetHmap(P_HMRP2* pkHmap);
+		void AutoMakeNaviMesh();
+		
 		void CalcNaviMesh();
 
 		void DrawNaviMesh();

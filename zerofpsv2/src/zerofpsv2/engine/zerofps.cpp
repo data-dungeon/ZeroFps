@@ -572,8 +572,11 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 
 void ZeroFps::Draw_RenderTargets()
 {
+//	cout << "Render: ";
 	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
 	{
+		if(m_kRenderTarget[i]->m_bRender == false)	continue;
+
 		SetCamera(m_kRenderTarget[i]);
 		GetCam()->ClearViewPort();	
 		
@@ -584,7 +587,10 @@ void ZeroFps::Draw_RenderTargets()
 			m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		m_pkObjectMan->Test_DrawZones();
 		m_pkApp->RenderInterface();
+		//cout << i;
 	}
+
+	//cout << endl;
 }
 
 void ZeroFps::Swap(void) {
@@ -710,10 +716,11 @@ void ZeroFps::DrawDevStrings()
 
 	string strPageName;
 		
-	glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT );
+	glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT );
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
-
+	glDisable(GL_DEPTH_TEST);
+ 
 	m_pkRender->SetFont("data/textures/text/devstr.bmp");
 
 	glColor3f(1,1,1);

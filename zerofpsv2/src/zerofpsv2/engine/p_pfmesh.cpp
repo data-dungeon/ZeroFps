@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "astar.h"
 #include "../engine_systems/propertys/p_mad.h"
+#include "../engine_systems/propertys/p_hmrp2.h"
 #include "../engine_systems/mad/mad_core.h"
 #include "../render/render.h"
 
@@ -165,13 +166,21 @@ P_PfMesh::~P_PfMesh()
 
 void P_PfMesh::Update()
 {
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) {
-		if(m_pkMad == NULL) {
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
+	{
+		cout << "P_PfMesh::Update" << endl;
+	
+		if(m_NaviMesh.size() == 0)
+		{
 			m_pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+			P_HMRP2* pkHmap = (P_HMRP2*)m_pkObject->GetProperty("P_HMRP2");
+
 			if(m_pkMad)
 				SetMad(m_pkMad);
-			}
+			if(pkHmap)
+				SetHmap(pkHmap);
 		}
+	}
 
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		if(m_pkAStar->m_bDrawNaviMesh)
@@ -199,21 +208,9 @@ void P_PfMesh::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 }
 
-void P_PfMesh::SetMad(P_Mad* pkMad)
+void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal)
 {
 	m_NaviMesh.clear();
-
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
-	if(pkCore == NULL)
-		return;
-	Mad_CoreMesh* pkCoreMesh = pkCore->GetMeshByID(0);
-	if(pkCoreMesh == NULL)
-		return;
-	
-	vector<Mad_Face>*		pkFace	= pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
-	vector<Vector3>*		pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
-	vector<Vector3>*		pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
-
 	NaviMeshCell kNaviMesh;
 
 	kNaviMesh.m_kVertex[0].Set(0,0,0);
@@ -229,14 +226,18 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
+	cout << "BuildNavMesh: Create Faces" << endl;
 	for(unsigned int i=0; i<pkFace->size(); i++) {
-		kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
-		kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
-		kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
-		
-		kNaviMesh.m_kVertex[0] = kMat.VectorTransform(kNaviMesh.m_kVertex[0]);
-		kNaviMesh.m_kVertex[1] = kMat.VectorTransform(kNaviMesh.m_kVertex[1]);
-		kNaviMesh.m_kVertex[2] = kMat.VectorTransform(kNaviMesh.m_kVertex[2]);
+			kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
+			kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
+			kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
+
+		if(!bWorldCoo) 
+		{
+			kNaviMesh.m_kVertex[0] = kMat.VectorTransform(kNaviMesh.m_kVertex[0]);
+			kNaviMesh.m_kVertex[1] = kMat.VectorTransform(kNaviMesh.m_kVertex[1]);
+			kNaviMesh.m_kVertex[2] = kMat.VectorTransform(kNaviMesh.m_kVertex[2]);
+		}
 
 		kNormal = CalcNormal(kNaviMesh.m_kVertex[0], kNaviMesh.m_kVertex[1], kNaviMesh.m_kVertex[2]);
 		if(kNormal.y <= 0.8)	continue;
@@ -251,8 +252,56 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 		}
 
 	LinkCells();
+}
+
+void P_PfMesh::SetMad(P_Mad* pkMad)
+{
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+	if(pkCore == NULL)
+		return;
+	Mad_CoreMesh* pkCoreMesh = pkCore->GetMeshByID(0);
+	if(pkCoreMesh == NULL)
+		return;
+	
+	vector<Mad_Face>*		pkFace	= pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
+	vector<Vector3>*		pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+	vector<Vector3>*		pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
+
+	BuildNavMesh(false, pkFace, pkVertex, pkNormal);
 //	m_pkSelected = &m_NaviMesh[0];
 }
+
+void P_PfMesh::SetHmap(P_HMRP2* pkHmap)
+{
+	vector<Mad_Face>		kFace;
+	vector<Vector3>		kVertex;
+	vector<Vector3>		kNormal;
+	
+	pkHmap->m_pkHeightMap->GetCollData(&kFace,&kVertex,&kNormal);
+
+	// Transform all vertex from Local to World.
+	for(unsigned int i=0; i<kVertex.size(); i++) 
+		kVertex[i] += pkHmap->m_pkHeightMap->m_kCornerPos;;
+
+	BuildNavMesh(true, &kFace, &kVertex, &kNormal);
+	
+
+	cout << "P_PfMesh::SetHmap " << endl;
+}
+
+void P_PfMesh::AutoMakeNaviMesh()
+{
+	// Try to find a Hmap or Mad to build mesh from.
+	P_HMRP2* pkHmap = (P_HMRP2*)m_pkObject->GetProperty("P_HMRP2");
+	if(pkHmap)
+		SetHmap(pkHmap);
+	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+	if(pkMad)
+		SetMad(pkMad);
+
+}
+
+
 
 void P_PfMesh::CalcNaviMesh()
 {
@@ -286,9 +335,9 @@ void P_PfMesh::DrawNaviMesh()
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
-		if(&m_NaviMesh[i] == m_pkSelected)	kColor.Set(0,0,1);
-			else										kColor.Set(1,1,1);
-		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
+//		if(&m_NaviMesh[i] == m_pkSelected)	kColor.Set(0,0,1);
+//			else										kColor.Set(1,1,1);
+//		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
 
 		glLineWidth(3.0);
 		glBegin(GL_LINES);
@@ -303,7 +352,7 @@ void P_PfMesh::DrawNaviMesh()
 		glEnd();
 		glLineWidth(1.0);
 
-		kColor.Set(1,0,0);
+/*		kColor.Set(1,0,0);
 		for(int e=0; e<3; e++) {
 			//Vector2 kCen2 = m_NaviMesh[i].m_kEdges[e].GetMidPoint( );
 			//Vector3 kCenter(kCen2.x,-1,kCen2.y);
@@ -317,8 +366,7 @@ void P_PfMesh::DrawNaviMesh()
 				glVertex3fv( (float*) &kCenter );	
 				glVertex3f( kCenter.x + kNormal.x, kCenter.y, kCenter.z + kNormal.y);
 			glEnd();
-			
-			}
+			}*/
 		}
 
 	glEnable(GL_TEXTURE_2D);
@@ -354,9 +402,18 @@ void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 
 void P_PfMesh::LinkCells()
 {
-	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
+	cout << "LinkCells: " << m_NaviMesh.size() << endl;
+	int iTest = 0;
+
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++, iTest++) 
+	{
+		if(iTest >= 1000) {
+         cout << ".";
+			iTest = 0;
+			}
 		LinkToConnectedCells( &m_NaviMesh[i] );
-		}
+		
+	}
 
 //	FlagExternalLinks();
 }

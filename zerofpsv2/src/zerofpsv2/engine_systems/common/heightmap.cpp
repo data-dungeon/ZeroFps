@@ -53,7 +53,7 @@ HeightMap::HeightMap()
 	m_iNumOfHMVertex	= 0;
 	m_iID					= -1;
 	m_bInverted			= false;
-	m_fTileSize			= 8;
+	m_fTileSize			= 1;
 
 	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	m_pkBasicFS			= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
@@ -918,14 +918,14 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 
 	for(int z=0; z<m_iTilesSide; z++) {
 		for(int x=0; x<m_iTilesSide; x++) {
-			pkVertex->push_back( Vector3((float)x, verts[z*m_iTilesSide+x].height, (float)z) );				kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iTilesSide+(x+1)].height, (float)z + 1.0f) );		kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iTilesSide+(x+1)].height, (float)z) );			kFace.iIndex[2] = iIndex++;	
+			pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z) );				kFace.iIndex[2] = iIndex++;	
 			pkFace->push_back(kFace);
 
-			pkVertex->push_back( Vector3((float)x, verts[z*m_iTilesSide+x].height, (float)z) );				kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iTilesSide+x].height, (float)z + 1.0f) );			kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iTilesSide+(x+1)].height, (float)z + 1.0f) );			kFace.iIndex[2] = iIndex++;	
+			pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f) );				kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[2] = iIndex++;	
 			pkFace->push_back(kFace);
 			}
 		}
