@@ -172,6 +172,17 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket )
 	}
 }
 
+PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
+{
+	for(int i=0;i<m_kPlayers.size();i++)
+	{
+		if(m_kPlayers[i].iId == id)
+			return &m_kPlayers[i];
+	}
+	
+	return NULL;
+}
+
 
 Property* Create_P_ServerInfo()
 {

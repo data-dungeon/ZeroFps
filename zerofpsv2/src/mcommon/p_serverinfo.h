@@ -10,16 +10,18 @@
 
 using namespace std;
 
+struct MCOMMON_API PlayerInfo
+{
+	int		iId;
+	string	sPlayerName;
+	vector<int>	kControl;
+};
+
 class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;
 
-		struct PlayerInfo
-		{
-			int		iId;
-			string	sPlayerName;
-			vector<int>	kControl;
-		};
+
 
 		vector<PlayerInfo>	m_kPlayers;
 		
@@ -29,6 +31,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		
 		void CloneOf(Property* pkProperty) { }
 		P_ServerInfo();
+		
+		PlayerInfo* GetPlayerInfo(int id);
 		
 		void AddObject(int id,int iObjID);
 		void RemoveObject(int id,int iObjID);		

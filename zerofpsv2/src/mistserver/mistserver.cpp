@@ -424,7 +424,7 @@ void MistServer::Input()
 			if(pkInput->Pressed(KEY_PAGEDOWN))
 				pkObj->RotateLocalRotV(Vector3(0,0,-100*pkFps->GetFrameTime()));			
 				
-			cout << "Pos:" << pkObj->GetLocalPosV().x << ", " << pkObj->GetLocalPosV().y << "," << pkObj->GetLocalPosV().z << endl;
+			//cout << "Pos:" << pkObj->GetLocalPosV().x << ", " << pkObj->GetLocalPosV().y << "," << pkObj->GetLocalPosV().z << endl;
 		}		
 
 	
@@ -506,14 +506,9 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
-	//pkClient->m_pkObject->AddProperty("P_ClientControl");	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
-	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-
-
 	pkClient->m_pkObject->AddProperty("P_ClientControl");
-
 		
 	UpdateStartLocatons();
 	int iPlayerID  = CreatePlayer("Olle","Start",iConID);
@@ -828,7 +823,7 @@ void MistServer::UpdateStartLocatons()
 {
 	m_kLocations.clear();
 
-	pair<string,Vector3> temp("Start",Vector3(10,0,0));
+	pair<string,Vector3> temp("Start",Vector3(0,1,0));
 	m_kLocations.push_back(temp);
 }
 
@@ -839,7 +834,7 @@ Vector3 MistServer::GetPlayerStartLocation(const char* csName)
 		if(m_kLocations[i].first == csName)
 		{	
 			cout<<"found location: "<<csName<<endl;
-			return m_kLocations[i].second;
+			return m_kLocations[i].second+Vector3((rand()%1000)/1000.0,0,(rand()%1000)/1000.0);
 		}
 	
 	return Vector3(0,0,0);

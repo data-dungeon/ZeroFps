@@ -52,6 +52,9 @@ class MistClient :public Application, public ZGuiApp {
 			FID_MASSSPAWN,
 		};
 
+		//selected caracter
+		int					m_iActiveCaracter;
+
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 		Object*				m_pkClientObject;

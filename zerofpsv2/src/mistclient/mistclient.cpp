@@ -31,6 +31,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 
+	m_iActiveCaracter			= 0;
 	m_iSelfObjectID			= -1;
 	m_pkClientObject			= NULL;
 	m_pkClientControlP		= NULL;
@@ -196,6 +197,24 @@ void MistClient::OnSystem()
 		}
 	};
 
+
+	if(m_pkServerInfo)
+	{
+		int id = m_pkServerInfo->GetPlayerInfo(0)->kControl[m_iActiveCaracter];	
+		Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+		
+		if(pkObj)
+		{
+			CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+			
+			if(!cp)
+				CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+		
+			if(cp)
+				cp->SetCamera(m_pkCamera);
+		
+		}		
+	}
 
 }
 
@@ -386,8 +405,8 @@ void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
-	cout << "Now adding tracker to client" << endl;
-	pkClient->m_pkObject->AddProperty("TrackProperty");	
+	cout << "Now adding er to client" << endl;
+//	pkClient->m_pkObject->AddProperty("TrackProperty");	
 	
 }
 
