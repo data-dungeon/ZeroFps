@@ -163,6 +163,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		void GetEngineCredits(vector<string>& kCreditsStrings);
 		 
+		void ClearLevelData();
 };
 
 

@@ -31,17 +31,23 @@ void CameraProperty::Update()
 	Vector3 kYawVector;
 	string strCamName;
 
+	MadProperty* madp = dynamic_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
+
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
 			case CAM_TYPEFIRSTPERSON:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.6,0));
 				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				strCamName = " 1P ";
+				if(madp)
+					madp->m_bIsVisible = false;
 				break;
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
 				strCamName = " TD ";
+				if(madp)
+					madp->m_bIsVisible = true;
 				break;
 
 			case CAM_TYPEISO:
@@ -49,6 +55,8 @@ void CameraProperty::Update()
 				strCamName = " Side ";
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0,10));
 				m_pkCamera->SetRot(Vector3(0,0,0));
+				if(madp)
+					madp->m_bIsVisible = true;
 				/*kYawVector = GetYawVector2(m_pkObject->GetRot().y);
 				fYawAngle  = m_pkObject->GetRot().y;
 				m_pkCamera->SetPos(m_pkObject->GetPos() + kYawVector*10);

@@ -4,11 +4,12 @@
 
 MadProperty::MadProperty()
 {
-	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
-	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
+	
+	bNetwork		= true;
+	m_bIsVisible	= true;
 
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -58,7 +59,9 @@ void MadProperty::Update()
 		return;
 
 	UpdateAnimation(m_pkZeroFps->GetFrameTime());
-	
+	if(!m_bIsVisible)
+		return;
+
 	Vector4 sphere=m_pkObject->GetPos();
 	sphere.w = GetRadius();
 

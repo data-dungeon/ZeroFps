@@ -15,20 +15,21 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
-
 	public:
-
 		MadProperty();
 		MadProperty(Mad_Core* pkModell);
- 
+		
 		Frustum* m_pkFrustum;
 		ZeroFps* m_pkZeroFps;
+
+		bool	m_bIsVisible;
 
 		void SetBase(const char* acName);
 		void Update();
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
+
 
 
 };

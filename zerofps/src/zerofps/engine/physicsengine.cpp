@@ -28,7 +28,7 @@ void PhysicsEngine::Update()
 	//get all physicpropertys
 	m_pkObjectMan->GetWorldObject()->GetAllPropertys(&m_kPropertys,PROPERTY_TYPE_PHYSIC,PROPERTY_SIDE_SERVER);
 
-
+	int iSize = m_kPropertys.size();
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);		

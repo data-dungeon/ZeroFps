@@ -583,6 +583,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}	
 }
 
+void ZeroFps::ClearLevelData()
+{
+	
+}
 
 int ZeroFps::LoadMAD(const char* filename)
 {

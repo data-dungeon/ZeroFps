@@ -127,10 +127,6 @@ SOURCE=.\adaptorsniper.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\adaptorsniper.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\ballobject.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -257,6 +253,10 @@ SOURCE=.\teleportproperty.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\adaptorsniper.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\ballobject.h

@@ -66,10 +66,10 @@ void LevelManager::CreateNew(int iSize)
 {
 	ClearTrackers();
 	m_pkObjectMan->Clear();
+	m_kZones.clear();
 	
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
-	
 	m_pkCollisionMan->Add(m_pkHeightMapObject);
 
 	m_pkMap->Create(iSize);
@@ -127,7 +127,6 @@ void LevelManager::CreateZones()
 
 bool LevelManager::LoadLevel(const char* acFile)
 {
-
 	for(int i=0;acFile[i]!='\0';i++)
 	{
 		if(acFile[i]=='\\' || acFile[i]=='/')
@@ -461,6 +460,8 @@ void LevelManager::UpdateZones()
 
 
 //	cout<<"TOT"<<tot<<endl;
+	if(m_kZones.size() <= 0)
+		return;
 
 	for(unsigned int i=0;i<m_kZones.size();i++)
 		m_kZones[i]->GetUpdateStatus()=UPDATE_DYNAMIC;	
