@@ -130,14 +130,12 @@ AIBase* P_UnitAttackAI::UpdateAI()
 					cout<<"Error while getting weapon"<<endl;
 					return NULL;
 				}
-						
 			
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
 				float TempDist = (kDistVec.x * kDistVec.x) + (kDistVec.y * kDistVec.y) + (kDistVec.z * kDistVec.z);
 				if(TempDist<m_fRange)
 				{
 					//cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
-					
 					
 					//set rotation   this rotation sux
 					Vector3 rot = kDistVec.Angels();
@@ -150,9 +148,10 @@ AIBase* P_UnitAttackAI::UpdateAI()
 
 					if(m_pkFps->GetGameTime() - m_fLastFireTime >= (1.0/pkWep->fFireRate))
 						m_fLastFireTime =m_pkFps->GetGameTime(); 
-					else
+					else 
+					{
 						return this;
-					
+					}
 					
 					if(m_pkAi)
 					{
@@ -196,7 +195,7 @@ AIBase* P_UnitAttackAI::UpdateAI()
 				
 				else
 				{
-					cout<<"P_UnitAttackAI : Target not in Range : "<<TempDist <<">" <<m_fRange <<endl;
+					//cout<<"P_UnitAttackAI : Target not in Range : "<<TempDist <<">" <<m_fRange <<endl;
 					if(!m_pkAi)// || ((m_pkTargetObject->GetPos() - m_kTargetPrevPos) > 300))
 					{
 						UnitCommand TempCommand;

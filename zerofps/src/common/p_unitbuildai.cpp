@@ -19,12 +19,15 @@ P_UnitBuildAI::P_UnitBuildAI()
 
 P_UnitBuildAI::~P_UnitBuildAI()
 {
-	vector<ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
-	while(kItor != m_kExternalCommands.end())
+	if(!m_kExternalCommands.empty())
 	{
-		delete *kItor;
+		vector<ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
+		while(kItor != m_kExternalCommands.end())
+		{
+			delete *kItor;
+		}
+		m_kExternalCommands.clear();
 	}
-	m_kExternalCommands.clear();
 }
 
 
