@@ -43,11 +43,11 @@ EditPropertyDlg::~EditPropertyDlg()
 
 ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 {
-/*	if( m_pkZGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
+	if( m_pkZGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
 	{
 		m_pkZGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
 		return NULL;
-	}*/
+	}
 
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
 	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"), -1, m_pkGui->GetTexture("border_corner_a"));
