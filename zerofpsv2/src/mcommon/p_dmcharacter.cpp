@@ -282,6 +282,7 @@ void P_DMCharacter::Update()
 			if(m_bCharacterIdle)
 			{
 				m_bCharacterIdle = false;
+
 				if(m_bPlayWalkSound == false)
 				{
 					m_pkAudioSys->StartSound("/data/sound/walk_zombie.wav", 
@@ -289,6 +290,16 @@ void P_DMCharacter::Update()
 						Vector3(0,0,1), true );
 					m_bPlayWalkSound = true;
 					//printf("starta ljud!\n");
+				}
+			}
+			else
+			{
+				if(m_bPlayWalkSound)
+				{
+					// WARNING! Detta kan bli slött som ASET, kommentera bort i värsta fall :)
+					m_pkAudioSys->MoveSound("/data/sound/walk_zombie.wav", 
+						m_pkObject->GetIWorldPosV(),
+						m_pkObject->GetIWorldPosV());
 				}
 			}
 		}
