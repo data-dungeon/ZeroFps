@@ -203,6 +203,20 @@ bool MistServer::SetViewPort(const char* szVpName)
 
 void MistServer::CreateEditCameras()
 {
+	m_pkActiveCameraObject = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	if(m_pkActiveCameraObject) 
+	{
+		m_pkActiveCameraObject->SetParent( m_pkObjectMan->GetWorldObject() );
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera[0]);
+		m_pkActiveCameraObject->GetSave() = false;
+	}
+
+	GetWnd("vp1")->SetRenderTarget(m_pkCamera[0]);
+	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
+	SetViewPort("vp1");
+	SoloToggleView();
+/*		
 	for(int i=0; i<4; i++) 
 	{
 		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
@@ -229,6 +243,7 @@ void MistServer::CreateEditCameras()
 	GetWnd("vp4")->SetMoveArea(Rect(0,0,800,600), false);
 
 	SetViewPort("vp1");
+*/
 }
 
 
@@ -283,26 +298,20 @@ void MistServer::Init()
 	//initiate our camera
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[0]->SetName("persp");
-	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
-	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
 
+	/*
 	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[1]->SetName("top");
-	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
-	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[2]->SetName("front");
-	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
-	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[3]->SetName("right");
-	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
-	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
+	*/
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -1574,9 +1583,9 @@ void MistServer::OnServerStart(void)
 	CreateEditCameras();
 
 	// Create and setup the Env on the server.
-	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
+	/*P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
-	pe->SetEnviroment("data/enviroments/server.env");
+	pe->SetEnviroment("data/enviroments/server.env");*/
 
 	//create server info object
 	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
@@ -1592,13 +1601,13 @@ void MistServer::OnServerStart(void)
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
 
-	SoloToggleView();
+	//SoloToggleView();
 	m_fDelayTime = m_pkFps->GetEngineTime();
-	SoloToggleView();
-	GetWnd("vp1")->SetZValue(0);
+	//SoloToggleView();
+	/*GetWnd("vp1")->SetZValue(0);
 	GetWnd("vp2")->SetZValue(0);
 	GetWnd("vp3")->SetZValue(0);
-	GetWnd("vp4")->SetZValue(0);
+	GetWnd("vp4")->SetZValue(0);*/
 }
 
 void MistServer::OnClientStart(void)

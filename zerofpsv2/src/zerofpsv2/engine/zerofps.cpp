@@ -875,13 +875,13 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//password
 			if(kCommand->m_kSplitCommand.size() >= 4)
 				strPass = kCommand->m_kSplitCommand[3];
-
+			
+			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
+			
 			m_pkConsole->Printf("Connect: %s, %s, %s", g_szIpPort, 
 				strLogin.c_str(), strPass.c_str());
 			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
 			m_pkConsole->Printf("FID_CONNECT");
-			
-			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
 			
 			/*
 			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
@@ -1058,7 +1058,7 @@ void ZeroFps::StartServer(bool bClient,bool bNetwork,string strServerName)
 
 void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,int iPort)
 {
-	sprintf(g_szIpPort, "%s:%d", strServerIP,iPort);
+	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
 	
 	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str());
 	m_bClientMode = true;

@@ -334,6 +334,8 @@ void NetWork::ServerEnd(void)
 
 void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass)
 {
+	//szIp = "127.0.0.1:4242";
+
 	if(m_eNetStatus == NET_SERVER)
 		return;
 
