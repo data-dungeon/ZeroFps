@@ -1,0 +1,26 @@
+//#include "../engine/ZeroFps.h"
+#include "../engine/engine.pkg"
+#include "application.h"
+
+Application* Application::pkApp;
+
+Application::Application(char* pName,int iWidth,int iHeight,int iDepth) {
+	Application::pkApp=this;
+	
+	m_pTitle=pName;
+	m_iWidth=iWidth;
+	m_iHeight=iHeight;
+	m_iDepth=iDepth;
+}
+	
+void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
+{
+	pkFps=pkZeroFps;
+	pkConsole=pkFps->m_pkConsole;
+
+}
+	
+	
+	
+	
+

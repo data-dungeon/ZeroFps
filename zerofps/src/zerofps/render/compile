@@ -1,0 +1,1 @@
+g++ *.cpp -o ../../../bin/librender.so --shared -O3 -lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`

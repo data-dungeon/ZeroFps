@@ -1,0 +1,1 @@
+g++ *.cpp -o ../../../bin/libengine.so --shared

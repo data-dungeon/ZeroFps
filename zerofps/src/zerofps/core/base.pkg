@@ -1,0 +1,9 @@
+class Application;
+class CmdSystem;
+
+
+#include "application.h"
+#include "cmdsystem.h"
+#include "globals.h"
+
+
