@@ -27,6 +27,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
+		m_pkGui->SetCaptureToWnd(NULL);
 		m_pkDM->PauseGame(false);
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
@@ -42,20 +43,20 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 	}
-	else
-	if(strClickName == "HQMembersBn") // the folder button
-	{
-		LoadDlg("data/script/gui/dm_members_2.lua");
-		m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
+	//else
+	//if(strClickName == "HQMembersBn") // the folder button
+	//{
+	//	LoadDlg("data/script/gui/dm_members_2.lua");
+	//	m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
 
-		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+	//	CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
 
-		if(pkMembersDlg)
-			pkMembersDlg->SetWindowMode(CMembersDlg::HQ_EQUIP_MEMBERS); 
+	//	if(pkMembersDlg)
+	//		pkMembersDlg->SetWindowMode(CMembersDlg::HQ_EQUIP_MEMBERS); 
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
-	}
+	//	m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+	//		m_pkAudioSys->GetListnerPos()); 
+	//}
 	else
 	if(strClickName == "HQHireBn") // the telephone button
 	{
@@ -69,6 +70,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "HQInventoryBn") // the rifle on the wall
 	{
+		
 		LoadDlg("data/script/gui/dm_itemtransaction.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("ItemTransactionWnd"));
 
@@ -77,6 +79,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
+		
 	}
 
 	/*if(strClickName == "MenuBn")

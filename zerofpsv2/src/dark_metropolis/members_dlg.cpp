@@ -51,7 +51,8 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(m_eWidowMode == HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING)
 		{
 			m_pkGui->KillWndCapture(); 
-			//m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
+			m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
+			printf("APA APA APA\n");
 		}
 		else
 		{
@@ -64,14 +65,14 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "MembersEquipBn")
 	{
-		m_pkGui->KillWndCapture(); 
-		LoadDlg("data/script/gui/dm_itemtransaction.lua");
-		ShowWnd("ItemTransactionWnd", true/*, true*/);
-		SetText("RemoveItemBn", "Unequip");
-		SetText("AddItemBn", "Equip");
+		//m_pkGui->KillWndCapture(); 
+		//LoadDlg("data/script/gui/dm_itemtransaction.lua");
+		//ShowWnd("ItemTransactionWnd", true/*, true*/);
+		//SetText("RemoveItemBn", "Unequip");
+		//SetText("AddItemBn", "Equip");
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		//m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+		//	m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "PrevMemberBn")
@@ -127,9 +128,6 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 {
-
-
-
 	m_eWidowMode = eType;
 
 	Entity* pkHQObject = GetDMObject(HQ);
@@ -209,7 +207,7 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 			int iSelAgentObject = 
 				((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
 
-			if(!m_kMembersInField.empty())
+			if(!m_kMembersInField.empty() && iSelAgentObject != -1)
 			{				
 				SetCharacterStats(GetObject(iSelAgentObject));
 			

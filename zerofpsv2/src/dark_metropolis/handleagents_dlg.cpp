@@ -8,7 +8,7 @@ CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 	m_iSelAgent = -1;
 	m_iStartAgent = 0;
 	m_iStartHireAgent = 0;
-	m_iAgentToHire = -1;
+	m_iSelAgentToHire = -1;
 }
 
 CHandleAgents::~CHandleAgents()
@@ -146,13 +146,39 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		}
 	}
 	else
-	if(strClickName == "HireAgentBn")
+	if(strClickName == "HireAgentBn" && m_iSelAgentToHire != -1)
 	{
-		((P_DMHQ*)GetDMObject(HQ)->GetProperty("P_DMHQ"))->SpawnNewCharacter(m_iAgentToHire);
+		((P_DMHQ*)GetDMObject(HQ)->GetProperty("P_DMHQ"))->SpawnNewCharacter(m_iSelAgentToHire);
 		UpdateAgentToHireList(m_iStartHireAgent);
 		UpdateAgentInBaseList(m_iStartAgent);
 	}
+	else
+	if(strClickName == "AgentsEquip" && m_iSelAgent != -1) 
+	{
+		LoadDlg("data/script/gui/dm_itemtransaction.lua");
+		GetGameDlg(ITEMTRANSACTION_DLG)->InitDlg();
 
+		m_pkGui->KillWndCapture(); 
+		m_pkGui->SetCaptureToWnd(GetWnd("ItemTransactionWnd"));
+
+		SetText("RemoveItemBn", "Unequip");
+		SetText("AddItemBn", "Equip");
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
+	}
+
+	char* szAgentsInBaseBns[] = {
+		"AgentsInHQBn1", "AgentsInHQBn2", "AgentsInHQBn3",
+		"AgentsInHQBn4", "AgentsInHQBn5", "AgentsInHQBn6",
+		"AgentsInHQBn7"
+	};
+
+	char* szAgentsToHireBns[] = {
+		"AgentsToHireBn1", "AgentsToHireBn2", "AgentsToHireBn3",
+		"AgentsToHireBn4", "AgentsToHireBn5", "AgentsToHireBn6",
+		"AgentsToHireBn7"
+	};
 
 	int pos;
 	if((pos=strClickName.find("AgentsInHQBn")) != string::npos)
@@ -160,20 +186,19 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		string temp(strClickName);
 		temp.erase(0,pos+strlen("AgentsInHQBn"));
 		
-		char* szButtons[] = {
-			"AgentsInHQBn1", "AgentsInHQBn2", "AgentsInHQBn3",
-			"AgentsInHQBn4", "AgentsInHQBn5", "AgentsInHQBn6",
-			"AgentsInHQBn7"
-		};
-
 		for(int i=0; i<7; i++)
 		{
-			if(strClickName != szButtons[i])
+			if(strClickName != szAgentsInBaseBns[i])
 			{
-				((ZGuiCheckbox*)GetWnd(szButtons[i]))->UncheckButton();
+				((ZGuiCheckbox*)GetWnd(szAgentsInBaseBns[i]))->UncheckButton();
 			}
 			else
 			{
+				m_iSelAgentToHire = -1;
+
+				for(int j=0; j<7; j++)
+					((ZGuiCheckbox*)GetWnd(szAgentsToHireBns[j]))->UncheckButton();
+
 				m_iSelAgent = m_vkCharsInBaseBns[i].second;
 
 				DMCharacterStats* pkStats = 
@@ -186,6 +211,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 					m_pkAudioSys->GetListnerPos()); 
+
+				PrintStats(pkStats);
 			}
 		}
 	}
@@ -195,28 +222,29 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		string temp(strClickName);
 		temp.erase(0,pos+strlen("AgentsToHireBn"));
 		
-		char* szButtons[] = {
-			"AgentsToHireBn1", "AgentsToHireBn2", "AgentsToHireBn3",
-			"AgentsToHireBn4", "AgentsToHireBn5", "AgentsToHireBn6",
-			"AgentsToHireBn7"
-		};
-
 		for(int i=0; i<7; i++)
 		{
-			if(strClickName != szButtons[i])
-				((ZGuiCheckbox*)GetWnd(szButtons[i]))->UncheckButton();
+			if(strClickName != szAgentsToHireBns[i])
+				((ZGuiCheckbox*)GetWnd(szAgentsToHireBns[i]))->UncheckButton();
 			else
 			{
+				m_iSelAgent = -1;
+
+				for(int j=0; j<7; j++)
+					((ZGuiCheckbox*)GetWnd(szAgentsInBaseBns[j]))->UncheckButton();
+
 				DMCharacterStats kStats = m_vkAgentsToHireBns[i].second;
 				char szText[150];
 				sprintf(szText, "Your agent %i/%i - %s", i+m_iStartHireAgent+1, 
 					GetNumAgentsToHire(), kStats.m_strName.c_str() );
 				SetText("CurrentAgentToHireLabel", szText);
 
-				m_iAgentToHire = i+m_iStartHireAgent;
+				m_iSelAgentToHire = i+m_iStartHireAgent;
 
 				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 					m_pkAudioSys->GetListnerPos()); 
+
+				PrintStats(&kStats);
 			}
 		}
 	}
@@ -226,7 +254,7 @@ bool CHandleAgents::InitDlg()
 {
 	m_iStartAgent = 0;
 	m_iStartHireAgent = 0;
-	m_iAgentToHire = -1;
+	m_iSelAgentToHire = -1;
 
 	if(!m_bInitialized)
 	{
@@ -438,4 +466,27 @@ void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
 	{
 		printf("Failed to get HQ entiry\n");
 	}
+}
+
+void CHandleAgents::PrintStats(DMCharacterStats* pkStats)
+{
+	char szText[150];
+
+	sprintf(szText, "Name: %s\n", pkStats->m_strName.c_str());
+	SetText("AgentInFocusMemberName", szText);
+
+	sprintf(szText, "Armor: %i\n", (int)pkStats->m_fArmour);
+	SetText("AgentInFocusMemberArmor", szText);
+
+	sprintf(szText, "Speed: %i\n", (int)pkStats->m_fSpeed);
+	SetText("AgentInFocusMemberSpeed", szText);
+
+	sprintf(szText, "Wage: %i\n", (int)pkStats->m_fWage);
+	SetText("AgentInFocusMemberWage", szText);
+
+	sprintf(szText, "Level: %i\n", pkStats->m_iLevel);
+	SetText("AgentInFocusMemberLevel", szText);
+
+	sprintf(szText, "HP: %i\n", pkStats->m_iLife);
+	SetText("AgentInFocusMemberHP", szText);
 }

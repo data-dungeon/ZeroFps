@@ -116,8 +116,8 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
-	if(strClickName == "char_panel_button" || 
-		strClickName.find("CharPortBn") != string::npos)
+	if(strClickName == "char_panel_button" /*|| 
+		strClickName.find("CharPortBn") != string::npos*/)
 	{
 		ShowWnd("panel_char", false);
 		ShowWnd("char_panel_button_ext", true);
@@ -220,6 +220,13 @@ bool CGamePlayDlg::InitDlg()
 
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->ToggleMultiLine(true);
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->SetReadOnly(true);	
+	}
+
+	if(m_iSelectedAgent == -1)
+	{
+		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
+			GetWnd("ActiveCharacterPortraitBn");
+		pkActiveCharBn->Hide();
 	}
  
 	GetWnd("MissionInfoWnd")->Hide();
@@ -400,7 +407,13 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 		m_iSelectedAgent = iAgent;
 	}
 
-	ZFAssert(pkAgentObject, "CGamePlayDlg::SelectAgent - Bad agent ID");
+	if(pkAgentObject == NULL)
+	{
+		m_iSelectedAgent = -1;
+		pkActiveCharBn->Hide();
+	}
+
+	//ZFAssert(pkAgentObject, "CGamePlayDlg::SelectAgent - Bad agent ID");
 }
 
 DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)

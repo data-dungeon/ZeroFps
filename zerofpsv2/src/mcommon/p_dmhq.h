@@ -58,8 +58,7 @@ class MCOMMON_API P_DMHQ: public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
-		//void ChangeReputation(int mod) { m_iReputation += mod; }
-		//int  GetReputation() { return m_iReputation; }
+		DMContainer*		m_pkStockroom;
 		
 };
 

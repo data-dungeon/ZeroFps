@@ -601,6 +601,7 @@ void DarkMetropolis::Input()
 							cout<<"entering hq"<<endl;
 							SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
+							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(-1, false);
 						}
 						else
 						{

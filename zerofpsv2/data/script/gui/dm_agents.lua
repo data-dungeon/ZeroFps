@@ -19,9 +19,8 @@ function GUICreate()
 	
 	Skin6 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin7 = { tex1="dm/handle_agent.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255,
-	 bd_size=8, tile=1, trans=0 }
+	Skin7 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=0, bkG=0, 
+	 bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
 	Skin8 = { tex1="dm/next_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin9 = { tex1="dm/next_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
@@ -112,10 +111,10 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"AgentsWnd","","",57,197,512,256,0)
+	CreateWnd(0,"AgentsWnd","","",800/2-512/2,50,512,456,0)
 	ChangeSkin("AgentsWnd","Skin7","Window")
 
-	CreateWnd(1,"NextAgentInHQ","AgentsWnd","",484,91,16,16,0)
+	CreateWnd(1,"NextAgentInHQ","AgentsWnd","",484,90,16,16,0)
 	ChangeSkin("NextAgentInHQ","Skin8","Button up")
 	ChangeSkin("NextAgentInHQ","Skin9","Button down")
 	ChangeSkin("NextAgentInHQ","Skin10","Button focus")
@@ -156,10 +155,10 @@ function GUICreate()
 	ChangeSkin("SendOutAgentBn","Skin2","Button down")
 	ChangeSkin("SendOutAgentBn","Skin3","Button focus")
 
-	CreateWnd(1,"AgentsInfoBn","AgentsWnd","Info",228,216,64,33,0)
-	ChangeSkin("AgentsInfoBn","Skin1","Button up")
-	ChangeSkin("AgentsInfoBn","Skin2","Button down")
-	ChangeSkin("AgentsInfoBn","Skin3","Button focus")
+	CreateWnd(1,"AgentsEquip","AgentsWnd","Equip",228,216,64,33,0)
+	ChangeSkin("AgentsEquip","Skin1","Button up")
+	ChangeSkin("AgentsEquip","Skin2","Button down")
+	ChangeSkin("AgentsEquip","Skin3","Button focus")
 
 	CreateWnd(1,"AgentsClose","AgentsWnd","Close",300,216,64,33,0)
 	ChangeSkin("AgentsClose","Skin1","Button up")
@@ -235,6 +234,27 @@ function GUICreate()
 	ChangeSkin("AgentsToHireBn7","Skin42","Checkbox: Button up")
 	ChangeSkin("AgentsToHireBn7","Skin43","Checkbox: Button down")
 	ChangeSkin("AgentsToHireBn7","Skin6","Checkbox: Label")
+
+
+
+	CreateWnd(4,"AgentInFocusMemberName","AgentsWnd","Name:",10,300,400,20,0)
+	ChangeSkin("AgentInFocusMemberName","Skin14","Label")
+
+	CreateWnd(4,"AgentInFocusMemberArmor","AgentsWnd","Armor:",10,320,400,20,0)
+	ChangeSkin("AgentInFocusMemberArmor","Skin14","Label")
+
+	CreateWnd(4,"AgentInFocusMemberSpeed","AgentsWnd","Speed:",10,340,400,20,0)
+	ChangeSkin("AgentInFocusMemberSpeed","Skin14","Label")
+
+	CreateWnd(4,"AgentInFocusMemberWage","AgentsWnd","Wage:",10,360,400,20,0)
+	ChangeSkin("AgentInFocusMemberWage","Skin14","Label")
+
+	CreateWnd(4,"AgentInFocusMemberLevel","AgentsWnd","Level:",10,380,400,20,0)
+	ChangeSkin("AgentInFocusMemberLevel","Skin14","Label")
+
+	CreateWnd(4,"AgentInFocusMemberHP","AgentsWnd","HP:",10,400,400,20,0)
+	ChangeSkin("AgentInFocusMemberHP","Skin14","Label")
+
 
 end
 

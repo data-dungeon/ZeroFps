@@ -177,7 +177,9 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
-	if(strMainWnd == "ItemTransactionWnd")
+	if(strMainWnd == "ItemTransactionWnd" ||
+		strMainWnd == "ItemRemoveWnd" ||
+		strMainWnd == "ItemAddWnd" )
 	{
 		m_pkItemTransactionDlg->OnCommand(pkMainWnd, strClickName);
 	}
@@ -236,8 +238,8 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 		m_pkMembersDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
 	}
 
-	if(strMainWnd == "DMIntroWnd" || 
-		strMainWnd == "StartNewGameWnd")
+	if(strMainWnd == "DMIntroWnd" /*|| 
+		strMainWnd == "StartNewGameWnd"*/)
 	{
 		m_pkStartDMDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
 	}
@@ -289,9 +291,38 @@ void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 	}
 }
 
-void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex, 
+void DarkMetropolis::GUI_OnSelectCB(int iListBoxID, int iItemIndex, 
 												ZGuiWnd *pkMain)
 {
+	if(pkMain == NULL)
+		return;
+
+	ZGuiCombobox* pkComboBox = NULL;
+	list<ZGuiWnd*> childs;
+	pkMain->GetChildrens(childs);
+
+	list<ZGuiWnd*>::iterator it = childs.begin();
+	for(; it != childs.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+		if(pkWnd->GetID() == (unsigned int) iListBoxID)
+		{
+			if(typeid(*pkWnd)==typeid(ZGuiCombobox))
+			{
+				pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
+				break;
+			}
+		}
+	}
+
+	string strMainWnd = pkMain->GetName();
+
+	printf("strMainWnd = %s\n", strMainWnd.c_str());
+
+	if(strMainWnd == "ItemTransactionWnd" && pkComboBox != NULL)
+	{
+		m_pkItemTransactionDlg->OnSelectCB(pkComboBox, iItemIndex);
+	}
 }
 
 void DarkMetropolis::GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd)

@@ -194,44 +194,44 @@ function GUICreate()
 	--  karaktärer..
 
 
-	CreateWnd(1,"CharPortBn1","panel_char","",13,64,64,64,0)
+	CreateWnd(1,"CharPortBn1","panel_char","",12,64-4,64,64,0)
 	ChangeSkin("CharPortBn1","Skin8","Button up")
 	ChangeSkin("CharPortBn1","Skin2","Button down")
 	ChangeSkin("CharPortBn1","Skin3","Button focus")
 
-	CreateWnd(4,"Char1LifeBk1","panel_char","",13,127,16,16,0)
+	CreateWnd(4,"Char1LifeBk1","panel_char","",13,127-3,16,16,0)
 	ChangeSkin("Char1LifeBk1","Skin18","Label")
 
-	CreateWnd(1,"CharPortBn2","panel_char","",13,145,64,64,0)
+	CreateWnd(1,"CharPortBn2","panel_char","",12,145-4,64,64,0)
 	ChangeSkin("CharPortBn2","Skin8","Button up")
 	ChangeSkin("CharPortBn2","Skin2","Button down")
 	ChangeSkin("CharPortBn2","Skin3","Button focus")
 
-	CreateWnd(4,"Char1LifeBk2","panel_char","",12,208,64,16,0)
+	CreateWnd(4,"Char1LifeBk2","panel_char","",12,208-3,64,16,0)
 	ChangeSkin("Char1LifeBk2","Skin18","Label")
 
-	CreateWnd(1,"CharPortBn3","panel_char","",18,226,64,64,0)
+	CreateWnd(1,"CharPortBn3","panel_char","",12,226-4,64,64,0)
 	ChangeSkin("CharPortBn3","Skin8","Button up")
 	ChangeSkin("CharPortBn3","Skin2","Button down")
 	ChangeSkin("CharPortBn3","Skin3","Button focus")
 
-	CreateWnd(4,"Char1LifeBk3","panel_char","",12,289,48,16,0)
+	CreateWnd(4,"Char1LifeBk3","panel_char","",12,289-3,48,16,0)
 	ChangeSkin("Char1LifeBk3","Skin18","Label")
 
-	CreateWnd(1,"CharPortBn4","panel_char","",18,307,64,64,0)
+	CreateWnd(1,"CharPortBn4","panel_char","",12,307-4,64,64,0)
 	ChangeSkin("CharPortBn4","Skin8","Button up")
 	ChangeSkin("CharPortBn4","Skin2","Button down")
 	ChangeSkin("CharPortBn4","Skin3","Button focus")
 
-	CreateWnd(4,"Char1LifeBk4","panel_char","",12,370,64,16,0)
+	CreateWnd(4,"Char1LifeBk4","panel_char","",12,370-3,64,16,0)
 	ChangeSkin("Char1LifeBk4","Skin18","Label")
 
-	CreateWnd(1,"CharPortBn5","panel_char","",18,388,64,64,0)
+	CreateWnd(1,"CharPortBn5","panel_char","",12,388-4,64,64,0)
 	ChangeSkin("CharPortBn5","Skin8","Button up")
 	ChangeSkin("CharPortBn5","Skin2","Button down")
 	ChangeSkin("CharPortBn5","Skin3","Button focus")
 	
-	CreateWnd(4,"Char1LifeBk5","panel_char","",12,451,32,16,0)
+	CreateWnd(4,"Char1LifeBk5","panel_char","",12,451-3,32,16,0)
 	ChangeSkin("Char1LifeBk5","Skin18","Label")
 
 

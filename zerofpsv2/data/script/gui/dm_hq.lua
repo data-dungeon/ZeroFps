@@ -6,11 +6,8 @@ function GUICreate()
 	-- Skins.
 	-------------------------------------------------------------------------
 
-	Skin1 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin2 = { tex1="dm/hqwnd.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-
+	Skin1 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=0, bkG=0,
+	 bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 	Skin3 = { tex1="dm/hq_inventory_bn_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -52,42 +49,48 @@ function GUICreate()
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 
+	Skin18 = { tex1="dm/bn1u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin19 = { tex1="dm/bn1d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin20 = { tex1="dm/bn1f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+
 
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
-	ChangeSkin("GuiMainWnd","Skin1","Window")
 
-	CreateWnd(0,"HQWnd","","",0,0,800,600,0)
-	ChangeSkin("HQWnd","Skin2","Window")
+	CreateWnd(0,"HQWnd","","",200,150,400,300,0)
+	ChangeSkin("HQWnd","Skin1","Window")
 
-	CreateWnd(1,"HQInventoryBn","HQWnd","",28,224,68,128,0)
-	ChangeSkin("HQInventoryBn","Skin3","Button up")
-	ChangeSkin("HQInventoryBn","Skin4","Button down")
-	ChangeSkin("HQInventoryBn","Skin5","Button focus")
+	CreateWnd(1,"HQMissionBn","HQWnd","Mission",400/2-200/2,64,200,25,0)
+	ChangeSkin("HQMissionBn","Skin18","Button up")
+	ChangeSkin("HQMissionBn","Skin19","Button down")
+	ChangeSkin("HQMissionBn","Skin20","Button focus")
 
-	CreateWnd(1,"HQMembersBn","HQWnd","",212,494,93,48,0)
-	ChangeSkin("HQMembersBn","Skin6","Button up")
-	ChangeSkin("HQMembersBn","Skin7","Button down")
-	ChangeSkin("HQMembersBn","Skin8","Button focus")
+	CreateWnd(1,"HQInventoryBn","HQWnd","Shop",400/2-200/2,64+30,200,25,0)
+	ChangeSkin("HQInventoryBn","Skin18","Button up")
+	ChangeSkin("HQInventoryBn","Skin19","Button down")
+	ChangeSkin("HQInventoryBn","Skin20","Button focus")
 
-	CreateWnd(1,"HQMissionBn","HQWnd","",127,230,61,110,0)
-	ChangeSkin("HQMissionBn","Skin9","Button up")
-	ChangeSkin("HQMissionBn","Skin10","Button down")
-	ChangeSkin("HQMissionBn","Skin11","Button focus")
+--	CreateWnd(1,"HQMembersBn","HQWnd","Members",400/2-200/2,64+60,200,25,0)
+--	ChangeSkin("HQMembersBn","Skin18","Button up")
+--	ChangeSkin("HQMembersBn","Skin19","Button down")
+--	ChangeSkin("HQMembersBn","Skin20","Button focus")
 
-	CreateWnd(1,"HQHireBn","HQWnd","",581,499,105,84,0)
-	ChangeSkin("HQHireBn","Skin12","Button up")
-	ChangeSkin("HQHireBn","Skin13","Button down")
-	ChangeSkin("HQHireBn","Skin14","Button focus")
+	CreateWnd(1,"HQHireBn","HQWnd","Agents",400/2-200/2,64+60,200,25,0)
+	ChangeSkin("HQHireBn","Skin18","Button up")
+	ChangeSkin("HQHireBn","Skin19","Button down")
+	ChangeSkin("HQHireBn","Skin20","Button focus")
 
-	CreateWnd(1,"HQCloseBn","HQWnd","",739,370,32,128,0)
-	ChangeSkin("HQCloseBn","Skin15","Button up")
-	ChangeSkin("HQCloseBn","Skin16","Button down")
-	ChangeSkin("HQCloseBn","Skin17","Button focus")
+	CreateWnd(1,"HQCloseBn","HQWnd","Continue",400/2-200/2,64+90,200,25,0)
+	ChangeSkin("HQCloseBn","Skin18","Button up")
+	ChangeSkin("HQCloseBn","Skin19","Button down")
+	ChangeSkin("HQCloseBn","Skin20","Button focus")
 
 end
 

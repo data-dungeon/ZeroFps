@@ -8,6 +8,7 @@ P_DMHQ::P_DMHQ()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 
+	m_pkStockroom = NULL;
 	bNetwork = true;
 	
 	// Start with 1000$$$$$$
@@ -24,7 +25,8 @@ P_DMHQ::P_DMHQ()
 
 P_DMHQ::~P_DMHQ()
 {
-
+	if(m_pkStockroom)
+		delete m_pkStockroom;
 
 }
 
@@ -32,7 +34,16 @@ void P_DMHQ::Init()
 {
 	//cout<< "New HQ created"<<endl;
 	m_pkObject->SetUpdateStatus(UPDATE_NOCHILDS);
-//	m_iReputation = 1;
+
+	m_pkStockroom = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),8,10);
+	m_pkStockroom->AddItemType(DMITEM_ARMOUR);
+	m_pkStockroom->AddItemType(DMITEM_GRENADE);
+	m_pkStockroom->AddItemType(DMITEM_CLIP);
+	m_pkStockroom->AddItemType(DMITEM_MEDKIT);
+	m_pkStockroom->AddItemType(DMITEM_GRENADE);
+	m_pkStockroom->AddItemType(DMITEM_WEAPON);
+	m_pkStockroom->AddItemType(DMITEM_IMPLANT);
+
 }
 
 

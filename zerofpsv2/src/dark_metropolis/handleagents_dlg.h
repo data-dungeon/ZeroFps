@@ -17,14 +17,17 @@ private:
 
 	vector<pair<ZGuiCheckbox*, int> > m_vkCharsInBaseBns; // button, agent object id
 	vector<pair<ZGuiCheckbox*, DMCharacterStats> > m_vkAgentsToHireBns; // button, agent object id
+	
 	int m_iSelAgent;
+	int m_iSelAgentToHire;
+	
 	int m_iStartAgent;
 	int m_iStartHireAgent;
-	int m_iAgentToHire;
-
+	
 	bool SendOutAgent(int iID);
 	void UpdateAgentInBaseList(int iStartAgent);
 	void UpdateAgentToHireList(int iStartAgent);
 	int GetNumAgentsInBase();
 	int GetNumAgentsToHire();
+	void PrintStats(DMCharacterStats* pkStats);
 };
