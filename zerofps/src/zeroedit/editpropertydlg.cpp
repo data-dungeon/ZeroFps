@@ -58,14 +58,15 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20), "ObjectNameEB" );
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 
+		16*6+16*7*2, 20), "ObjectNameEB" );
 
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 60, 16*4, 20, "Pos:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 60, 16*6, 20), "ObjectPosXEB");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 16*6+16*7, 60, 16*6, 20), "ObjectPosYEB"); 
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 16*6+16*7*2, 60, 16*6, 20), "ObjectPosZEB");
+	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 50, 16*4, 20, "Pos:");
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 50, 16*6, 20), "ObjectPosXEB");
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 16*6+16*7, 50, 16*6, 20), "ObjectPosYEB"); 
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 16*6+16*7*2, 50, 16*6, 20), "ObjectPosZEB");
 
-	y_pos = 100;
+	y_pos = 80;
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Props:");
 
@@ -95,8 +96,9 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Change:");
 	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_PROPERTY_NEW_VALUE_EB, 
-		16*6, y_pos, 100, 20), "PropertyValueSetEB" );
-	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_SET_NEW_VALUE_BN, 16*6+120, y_pos, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
+		16*6, y_pos, 16*6+16*7*2, 20), "PropertyValueSetEB" );
+	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_SET_NEW_VALUE_BN, 16*6+16*6+16*7*2+10, 
+		y_pos, 70, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
 
 	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
 	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, w-100, h-25, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);

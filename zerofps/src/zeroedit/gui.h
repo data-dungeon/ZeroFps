@@ -22,6 +22,15 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
+
+	enum SEARCH_TASK
+	{
+		MAP,
+		TEMPLATE
+	};
+
+	SEARCH_TASK m_kSearchTask;
+
 	bool Register(ZGuiFont* pkFont, char* strName);
 	bool Register(ZGuiSkin* pkSkin, char* strName);
 	bool Register(ZGuiWnd* pkWnd, char* strName);

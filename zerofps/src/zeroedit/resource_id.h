@@ -41,5 +41,6 @@ const int ID_REMOVEPROPERTY_BN			= 9034;
 const int ID_PROPERTY_VALUES_CB			= 9035;
 const int ID_PROPERTY_NEW_VALUE_EB		= 9036;
 const int ID_PROPERTY_SET_NEW_VALUE_BN	= 9037;
+const int IDM_LOAD_TEMPLATE				= 9038;
  
 #endif

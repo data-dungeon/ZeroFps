@@ -64,9 +64,14 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 		case ID_FILEPATH_OPEN_BN:
 			char cmd[512];
 			sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
-			m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
-			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-			m_pkEdit->pkFps->ToggleGui();
+
+			switch(m_kSearchTask)
+			{
+			case MAP:
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
+				m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+				m_pkEdit->pkFps->ToggleGui();
+			}
 			break;
 		}
 		break;
@@ -88,7 +93,18 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					m_pkEdit->pkFps->QuitEngine();
 					break;
 
+				case IDM_LOAD_TEMPLATE:
 				case IDM_LOAD_HEIGHTMAP:
+
+					switch(iItemID)
+					{
+					case IDM_LOAD_HEIGHTMAP:
+						m_kSearchTask = MAP;
+						break;
+					case IDM_LOAD_TEMPLATE:
+						m_kSearchTask = TEMPLATE;
+						break;
+					}
 
 					if(m_pkFileDlgbox)
 					{
@@ -134,9 +150,10 @@ bool Gui::CreateWindows()
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
-	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
 	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
+	pkMenuCBox->AddItem("Load template...", IDM_LOAD_TEMPLATE);
 	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
+	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
 
 	ZGuiButton* pkCloseButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
 		m_pkEdit->m_iWidth-20, 0, 20, 20, "x");
