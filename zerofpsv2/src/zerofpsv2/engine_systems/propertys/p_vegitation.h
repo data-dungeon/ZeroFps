@@ -21,22 +21,19 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
-		vector<vegitation>	m_akPositions;
-
-		ZFResourceHandle* m_pkTexture;	
-
 		TextureManager*	m_pkTexMan;
 		Render*				m_pkRender;	
 		ZeroFps*				m_pkFps;
-			
+
+		vector<vegitation>	m_akPositions;
+
+		ZFResourceHandle* m_pkTexture;	
 		string				m_kTexture; 		
-		int					m_iTexture;	
+			
 		Vector3				m_kScale;
-		float					m_fRadius;
-		
+		float					m_fRadius;		
 		int					m_iAmount;
-		int					m_iSize;
-		
+		int					m_iSize;		
 		float					m_fWind;
 		
 		vector<PropertyValues> GetPropertyValues();

@@ -1,143 +1,329 @@
-#include "p_waterrender.h"
- 
-P_WaterRender::P_WaterRender()
-{
-	strcpy(m_acName,"P_WaterRender");		
+#include "p_vegitation.h"
 
-//	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+P_Vegitation::P_Vegitation()
+{
+	strcpy(m_acName,"P_Vegitation");
+	
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+	
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
-
-	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL ;
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+		
+	m_iSortPlace=9;
+	bNetwork = true;
 	
-	SetProperty(100,10,"data/textures/water2.bmp");
-	m_iSortPlace	=	10;
-	m_fBlendValue	=	0.7;
-	m_bBlendDirUp	=  false;
-
-	bNetwork	=	true;
-}
-
-void P_WaterRender::CloneOf(Property* pkProperty)
-{
-	bNetwork				= pkProperty->bNetwork;
-	m_iType				= pkProperty->m_iType;
-	m_iSide				= pkProperty->m_iSide;
-	m_iSortPlace		= pkProperty->m_iSortPlace;
-	m_bSortDistance	= pkProperty->m_bSortDistance;
-}
-
-void P_WaterRender::SetProperty(int iSize,int iStep,const char* acTexture)
-{
-	m_iSize=iSize;
-	m_iStep=iStep;
+	m_pkTexture = new ZFResourceHandle;
 	
-	SetTexture(acTexture);
-}
-
-void P_WaterRender::SetTexture(const char* acTexture)
-{
-	m_iTexture = m_pkTexMan->Load(acTexture,0);
-	m_sTexture = acTexture;
-}
-
-void P_WaterRender::Update() 
-{	
-	m_fBlendValue = 1.0f; // Disable blend effect...
-
-	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL &&
-		m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_SIDE_CLIENT) {
-		if(m_bBlendDirUp) {
-			m_fBlendValue += 0.05;
-			if(m_fBlendValue > 1.0)
-				m_bBlendDirUp = false;
-			}
-		else {
-			m_fBlendValue -= 0.05;
-			if(m_fBlendValue < 0.0)
-				m_bBlendDirUp = true;
-			}
-		}
-	else {
-		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
-		}
-}
-
-void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )
-{
-	pkNetPacket->Write(m_iSize);
-	pkNetPacket->Write(m_iStep);
-}
- 
-void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
-{
-	pkNetPacket->Read(m_iSize);
-	pkNetPacket->Read(m_iStep);
-}
-
-
-void P_WaterRender::Save(ZFIoInterface* pkPackage)
-{
-
-	char data[256];	
+	Clear();
 	
-	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize),1);
-	pkPackage->Write((void*)&m_iStep,sizeof(m_iStep),1);
+	SetTexture("data/textures/grassp.tga");	
+	SetScale(Vector3(1,1,1));
+	m_fWind = 10;	
 	
-	strcpy(data,m_sTexture.c_str());		
-	pkPackage->Write((void*)&data,256,1);
+	
+	m_iAmount = 400;
+	m_iSize = 10;
+}
+
+P_Vegitation::~P_Vegitation()
+{
+	delete m_pkTexture;
 
 }
 
-void P_WaterRender::Load(ZFIoInterface* pkPackage)
+void P_Vegitation::Init()
 {
-	char data[300];	
+	Random();
 	
-	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize),1);
-	pkPackage->Read((void*)&m_iStep,sizeof(m_iStep),1);
-	
-	strcpy(data,m_sTexture.c_str());		
-	pkPackage->Read((void*)&data,256,1);
-	m_sTexture = data;
-	
-	SetTexture(m_sTexture.c_str());
 }
 
-vector<PropertyValues> P_WaterRender::GetPropertyValues()
+void P_Vegitation::Random()
 {
-	vector<PropertyValues> kReturn(3);
+	int size = m_iSize * 100;
+
+	Clear();
+	for(int i=0;i<m_iAmount;i++)
+	{
+		AddPos(Vector3( (rand()%size -(size/2)) /100.0,0, (rand()%size -(size/2)) /100.0));
+	}
+}
+
+void P_Vegitation::Update()
+{
+	//frustum culling
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
+		return;
 			
-	kReturn[0].kValueName="m_iSize";
-	kReturn[0].iValueType=VALUETYPE_INT;
-	kReturn[0].pkValue=(void*)&m_iSize;
+	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
+			
+	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
+	if(fDistance > 50)
+		return;
+					
+	if(m_pkFps->m_bServerMode)
+	{		
+		m_pkRender->Sphere(ObjectPos,0.5,5,Vector3(1,1,1),true);
 	
-	kReturn[1].kValueName="m_iStep";
-	kReturn[1].iValueType=VALUETYPE_INT;
-	kReturn[1].pkValue=(void*)&m_iStep;
+	}
+					
+					
+/*	int iStep = int(fDistance / 8.0);
+	if(iStep < 1)
+		iStep = 1;
+
+	iStep = PowerOf2(iStep);
+*/
+//	cout<<"step "<<iStep<<endl;
+//	cout<<"grass "<<m_akPositions.size()<<endl;
+
+	float t=m_pkFps->GetTicks();
+
+	ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr();
+	int iTexture;
+		
+	if(!pkRt)	
+	{
+		cout<<"HORA2"<<endl;
+		return;
+	}
+	else
+		iTexture = (pkRt)->m_iTextureID;
 	
-	kReturn[2].kValueName="m_sTexture";
-	kReturn[2].iValueType=VALUETYPE_STRING;
-	kReturn[2].pkValue=(void*)&m_sTexture;
+
+//	for(unsigned int i=0;i<m_akPositions.size();i += iStep){
+	for(unsigned int i=0;i<m_akPositions.size();i++){
+		Vector3 rot = m_akPositions[i].kRot; 
+		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
+		m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,iTexture);			
+	}
+}
+
+vector<PropertyValues> P_Vegitation::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(5);
+		
+	kReturn[0].kValueName = "m_kTexture";
+	kReturn[0].iValueType = VALUETYPE_STRING;
+	kReturn[0].pkValue    = (void*)&m_kTexture;
+
+	kReturn[1].kValueName = "m_kScale";
+	kReturn[1].iValueType = VALUETYPE_VECTOR3;
+	kReturn[1].pkValue    = (void*)&m_kScale;
+
+	kReturn[2].kValueName = "m_fWind";
+	kReturn[2].iValueType = VALUETYPE_FLOAT;
+	kReturn[2].pkValue    = (void*)&m_fWind;
+
+	kReturn[3].kValueName = "amount";
+	kReturn[3].iValueType = VALUETYPE_INT;
+	kReturn[3].pkValue    = (void*)&m_iAmount;
+	
+	kReturn[4].kValueName = "size";
+	kReturn[4].iValueType = VALUETYPE_INT;
+	kReturn[4].pkValue    = (void*)&m_iSize;
+
 
 	return kReturn;
 }
 
-bool P_WaterRender::HandleSetValue( string kValueName ,string kValue )
+bool P_Vegitation::HandleSetValue( string kValueName ,string kValue )
 {
-	if(strcmp(kValueName.c_str(), "m_sTexture") == 0) {
-		SetTexture(kValue.c_str());		
+	if(strcmp(kValueName.c_str(), "m_kTexture") == 0) {
+		SetTexture(kValue.c_str());
 		return true;
 	}
-
+		
+	if(strcmp(kValueName.c_str(), "amount") == 0) {
+		m_iAmount = atoi(kValue.c_str());
+		Random();
+		return true;
+	}
+		
+	if(strcmp(kValueName.c_str(), "size") == 0) {
+		m_iSize = atoi(kValue.c_str());
+		Random();
+		return true;
+	}
+		
+		
 	return false;
 }
 
-
-
-Property* Create_WaterRenderProperty()
+void P_Vegitation::SetTexture(const char* acNewTex)//,const char* acTex2)
 {
-	return new P_WaterRender;
+	m_pkTexture->SetRes(acNewTex);
+	
+	m_kTexture=acNewTex;	
 }
+
+void P_Vegitation::UpdateSet()
+{
+	SetTexture(m_kTexture.c_str());
+}
+
+void P_Vegitation::SetScale(Vector3 kScale)
+{
+	m_kScale=kScale;
+ 
+ 	CalculateRadius();
+}
+
+void P_Vegitation::Clear()
+{
+	m_akPositions.clear();
+}
+
+void P_Vegitation::CalculateRadius()
+{
+	float maxDist = 0;
+
+	for(unsigned int i=0;i<m_akPositions.size();i++)
+	{
+		float Distance = (m_akPositions[i].kPos).Length();
+		
+		
+		
+		if(Distance > maxDist)
+			maxDist = Distance;
+	}
+	
+	float maxscale =0;
+	
+	if(m_kScale.x > maxscale)
+		maxscale = m_kScale.x;
+	if(m_kScale.y > maxscale)
+		maxscale = m_kScale.y;
+	if(m_kScale.z > maxscale)
+		maxscale = m_kScale.z;
+	
+	
+	m_fRadius = maxDist + (maxscale /2);
+	
+
+}
+
+void P_Vegitation::AddPos(Vector3 kPos)
+{
+	vegitation temp;
+	temp.kPos = kPos;
+	temp.kRot = Vector3( float((rand() % 20) -10.0) ,float(rand() % 320),float((rand() % 20) -10.0));
+	temp.fWindStart = float((rand() % 2000) / 1000.0);
+
+	m_akPositions.push_back(temp);
+
+	CalculateRadius();
+}
+
+
+
+
+void P_Vegitation::Save(ZFIoInterface* pkPackage)
+{
+	char data[256];
+	
+	strcpy(data,m_kTexture.c_str());		
+	pkPackage->Write((void*)&data,256,1);
+	
+	pkPackage->Write((void*)&m_kScale,sizeof(m_kScale),1);
+	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);
+	pkPackage->Write((void*)&m_fWind,sizeof(m_fWind),1);
+	
+	pkPackage->Write((void*)&m_iAmount,sizeof(m_iAmount),1);
+	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize),1);	
+	
+/*	int nrofpos = m_akPositions.size();
+	pkPackage->Write((void*)&nrofpos,sizeof(nrofpos),1);
+	
+	for(int i=0;i<nrofpos;i++)
+	{			
+		pkPackage->Write((void*)&m_akPositions[i],sizeof(vegitation),1);			
+	}*/
+
+}
+
+void P_Vegitation::Load(ZFIoInterface* pkPackage)
+{
+
+	char data[256];
+	
+	pkPackage->Read((void*)&data,256,1);
+	m_kTexture = data;
+	
+
+	
+	pkPackage->Read((void*)&m_kScale,12,1);
+	pkPackage->Read((void*)&m_fRadius,4,1);
+	pkPackage->Read((void*)&m_fWind,4,1);
+	
+	pkPackage->Read((void*)&m_iAmount,sizeof(m_iAmount),1);
+	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize),1);	
+
+
+	Random();
+
+	UpdateSet();
+
+/*	Clear();
+	
+	int nrofpos;
+
+	pkPackage->Read((void*)&nrofpos,sizeof(nrofpos),1);
+	
+	//cout<<"grass found :"<<nrofpos<<endl;	
+	
+	for(int i=0;i<nrofpos;i++)
+	{			
+		vegitation temp;
+		pkPackage->Read((void*)&temp,sizeof(vegitation),1);			
+		
+		m_akPositions.push_back(temp);
+		
+	}
+*/
+
+
+}
+
+void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+{
+	pkNetPacket->Write_NetStr(m_kTexture.c_str());
+	
+	//pkNetPacket->Write(&m_kScale,sizeof(m_kScale));
+	//pkNetPacket->Write(&m_fRadius,sizeof(m_fRadius));
+	//pkNetPacket->Write(&m_fWind,sizeof(m_fWind));	
+	pkNetPacket->Write(&m_iAmount,sizeof(m_iAmount));
+	pkNetPacket->Write(&m_iSize,sizeof(m_iSize));	
+}
+ 
+void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+{
+	char texture[255];
+	pkNetPacket->Read_NetStr(texture);	
+	m_kTexture=texture;
+	
+	int oldamount = m_iAmount;
+	int oldsize = m_iSize;
+	
+	//pkNetPacket->Read(&m_kScale,sizeof(m_kScale));
+	//pkNetPacket->Read(&m_fRadius,sizeof(m_fRadius));
+	//pkNetPacket->Read(&m_fWind,sizeof(m_fWind));	
+	pkNetPacket->Read(&m_iAmount,sizeof(m_iAmount));
+	pkNetPacket->Read(&m_iSize,sizeof(m_iSize));	
+	
+	if(m_iAmount != oldamount || m_iSize != oldsize)
+	{
+		Random();
+	}
+}
+
+
+
+Property* Create_VegitationProperty()
+{
+	return new P_Vegitation();
+}
+
+
 
