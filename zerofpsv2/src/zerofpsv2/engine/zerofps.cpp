@@ -303,10 +303,14 @@ void ZeroFps::Run_EngineShell()
 	}
 
 	//some devpage stuff
-	DevPrintf("common","Num Objects : %d", m_pkObjectMan->GetNumOfObjects());
-	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
-	DevPrintf("common","Res Size    : %d", m_pkResourceDB->GetResSizeInBytes());
+	DevPrintf("common","ENTITYMAN:");	
+	DevPrintf("common","  Num Objects     : %d", m_pkObjectMan->GetNumOfObjects());
+	DevPrintf("common","  NextObjectID    : %d", m_pkObjectMan->GetNextObjectID());
+	DevPrintf("common","  Active Propertys: %d",m_pkObjectMan->GetActivePropertys());		
 	
+	DevPrintf("common","RESOURCEMAN:");
+	DevPrintf("common","  Res Size    : %d", m_pkResourceDB->GetResSizeInBytes());
+		
 	DevPrintf("common","ZSHADOW:");
 	DevPrintf("common","  shadows       : %d", m_pkZShadow->GetCurrentShadows());
 	DevPrintf("common","  active shadows: %d", m_pkZShadow->GetCurrentActiveShadows());
@@ -325,6 +329,11 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","  GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
 	DevPrintf("common","  Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
 	DevPrintf("common","  Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
+	
+	DevPrintf("common","FPS:");
+	DevPrintf("common","  Fps       : %f",m_fFps);	
+	DevPrintf("common","  Avrage Fps: %f",m_fAvrageFps);			
+	
 	
 	m_pkZShaderSystem->ResetStatistics();
 	
@@ -670,6 +679,8 @@ void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 		return;
 	}
 
+	//cout<<"rendering camera:"<<pkCamera->GetName()<<endl;
+	
 	//render camera view
 	pkCamera->RenderView();
 

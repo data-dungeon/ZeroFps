@@ -355,9 +355,6 @@ void MistServer::Input()
 
 void MistServer::OnHud(void)
 {
-	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
-	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
-	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
 		
 	if(m_pkActiveCamera) {
 		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			

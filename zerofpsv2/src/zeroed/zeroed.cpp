@@ -737,18 +737,15 @@ void ZeroEd::HMModifyCommand(float fSize)
 
 void ZeroEd::OnHud(void)
 {
-	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
-	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
-	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
-		
-	if(m_pkActiveCamera) {
+	if(m_pkActiveCamera) 
+	{
 		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
 		/*m_pkRender->DrawAABB(m_pkActiveCamera->GetViewPortCorner(),
 			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
 			Vector3(1,1,1),1);*/
-		}
+	}
 }
 
 bool ZeroEd::DelayCommand()
