@@ -1428,8 +1428,8 @@ void ZGui::TranslateMousePos(int &x, int &y)
 		dif_y = 600.0f * (float)((1.0f/m_iResY) * y); 
 	}
 
-	x = x-dif_x;
-	y = y-dif_y;
+	x = x-(int)dif_x;
+	y = y-(int)dif_y;
 }
 
 void ZGui::SetLineColor(int r, int g, int b)

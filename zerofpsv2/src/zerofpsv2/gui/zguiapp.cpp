@@ -354,19 +354,19 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGu
 
 	// Color Bk
 	if(pkScript->GetGlobal(pkLuaState, szName, "bkR", dData))
-		pkNewSkin->m_afBkColor[0] = dColMult * dData;
+		pkNewSkin->m_afBkColor[0] = (float) (dColMult * dData);
 	if(pkScript->GetGlobal(pkLuaState, szName, "bkG", dData))
-		pkNewSkin->m_afBkColor[1] = dColMult * dData;
+		pkNewSkin->m_afBkColor[1] = (float) (dColMult * dData);
 	if(pkScript->GetGlobal(pkLuaState, szName, "bkB", dData))
-		pkNewSkin->m_afBkColor[2] = dColMult * dData;
+		pkNewSkin->m_afBkColor[2] = (float) (dColMult * dData);
 
 	// Color Border
 	if(pkScript->GetGlobal(pkLuaState, szName, "borderR", dData))
-		pkNewSkin->m_afBorderColor[0] = dColMult * dData;
+		pkNewSkin->m_afBorderColor[0] = (float) (dColMult * dData);
 	if(pkScript->GetGlobal(pkLuaState, szName, "borderG", dData))
-		pkNewSkin->m_afBorderColor[1] = dColMult * dData;
+		pkNewSkin->m_afBorderColor[1] = (float) (dColMult * dData);
 	if(pkScript->GetGlobal(pkLuaState, szName, "borderB", dData))
-		pkNewSkin->m_afBorderColor[2] = dColMult * dData;
+		pkNewSkin->m_afBorderColor[2] = (float) (dColMult * dData);
 
 	// Border size, Tile texture, Transparency
 	if(pkScript->GetGlobal(pkLuaState, szName, "bd_size", dData))

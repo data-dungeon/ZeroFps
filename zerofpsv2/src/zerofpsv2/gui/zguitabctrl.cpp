@@ -408,7 +408,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 
 	if(IsVisible())
 	{
-		bool bMoveLeft = (m_iPrevCurrentPage < index);
+		bool bMoveLeft = ((unsigned int) m_iPrevCurrentPage < index);
 		bool stop = false;
 
 		while(1)

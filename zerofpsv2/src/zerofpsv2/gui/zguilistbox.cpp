@@ -441,7 +441,7 @@ void ZGuiListbox::UpdateList()
 
 	// Resize all items
 	int iNewWidth = GetScreenRect().Width();
-	if(m_pkItemList.size()*m_unItemHeight > GetScreenRect().Height())
+	if(m_pkItemList.size()*m_unItemHeight > (unsigned int) GetScreenRect().Height())
 		iNewWidth -= m_iScrollbarWidth;
 
 	list<ZGuiListitem*>::iterator it;
