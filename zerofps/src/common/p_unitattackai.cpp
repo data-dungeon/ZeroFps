@@ -106,8 +106,7 @@ AIBase* P_UnitAttackAI::UpdateAI()
 				UnitCommand TempCommand;
 				strcpy(TempCommand.m_acCommandName, "Stop");
 				return m_pkUnit->RunExternalCommand(&TempCommand);
-			}
-				
+			}				
 			else
 			{
 				if(!m_pkUnitSystem)

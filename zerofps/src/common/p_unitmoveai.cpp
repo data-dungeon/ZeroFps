@@ -31,6 +31,7 @@ P_UnitMoveAI::P_UnitMoveAI()
 
 	m_pkPathFind = NULL; 
 	m_pkSu = NULL;
+	
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -115,12 +116,17 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 		}
 	case UNIT_STOP:
 		{
+			
 			m_pkPathFind->Reset();
 			//Vector3 kTempVect = m_pkObject->GetPos();
 			//m_pkObject->SetPos(kTempVect);					
 			//m_pkObject->SetPos(kTempVect);	
 			//move.x = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().x / HEIGHTMAP_SCALE)));
 			//move.y = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().z / HEIGHTMAP_SCALE)));
+			
+			//ful hack deluxe..så att enheter in blir rädda o springer iväg
+			m_kCurretDestination=m_pkObject->GetPos();
+			
 			m_iCurrentState = UNIT_MOVE;
 			//m_fSpeedMod = 1;
 			return this;

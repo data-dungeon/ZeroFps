@@ -240,7 +240,7 @@ void ControlBox::CreateCopy()
 			(ZGuiWnd::callbackfunc)
 			m_pkGui->GetSpecialWndData(
 			SelectWnd::GetInstance()->m_pkWnd, 
-			ZGui::ZndInfo::WNDPROC));
+			WNDPROC));
 
 		ZGuiWnd* pkNewWnd = m_pkCreatedWindows.back().m_pkWnd; // id = last-1
 
@@ -306,7 +306,7 @@ bool ControlBox::RaiseNumberAtEnd(char *szName)
 		return false;
 
 	szNumber[l] = '\0';
-	strrev(szNumber);
+//	strrev(szNumber);
 
 	int number = atoi(szNumber);
 	sprintf(szNumber, "%i", number+1);
@@ -619,7 +619,8 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 	vector<tSkinInf> kAllSkinsTempArray;
 
 	// Load all skins to a temp array.
-	for(unsigned int i=0; i<vkSections.size(); i++)
+	unsigned int i;
+	for(i=0; i<vkSections.size(); i++)
 	{
 		tSkinInf kNewSkinInfo;
 

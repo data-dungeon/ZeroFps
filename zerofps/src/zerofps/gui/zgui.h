@@ -58,6 +58,8 @@ class ZGuiResourceManager;
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
+enum GUI_API ZndInfo {WNDPROC};
+
 class GUI_API ZGui : public ZFObject 
 {
 public:	
@@ -136,7 +138,7 @@ public:
 		};
 	} SortZCmp;
 
-	enum ZndInfo {WNDPROC};
+
 	void* GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type);
 
 	MAIN_WINDOW* FindMainWnd(int x, int y);
