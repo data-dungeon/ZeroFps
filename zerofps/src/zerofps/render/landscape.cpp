@@ -219,10 +219,22 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 			float s=0;			 //texture cordinats
 			float nt,ns;
 			
+	
 			//start going trouh all vertexes in the slice
-			for(int z=sz*m_iSlicesize;z<sz*m_iSlicesize+m_iSlicesize;z+=step){
+			for(int z = sz*m_iSlicesize; z <= sz*m_iSlicesize+m_iSlicesize; z+=step){
+				
+//				if( z+step > sz*m_iSlicesize+m_iSlicesize )
+//					z=(sz*m_iSlicesize+m_iSlicesize-step);
+				
+				
 				glBegin(GL_TRIANGLE_STRIP);						
-				for(int x=sx*m_iSlicesize;x<sx*m_iSlicesize+m_iSlicesize+step+1;x+=step){
+				for(int x = sx*m_iSlicesize; x <= sx*m_iSlicesize+m_iSlicesize+step; x+=step){
+					
+//					if( x+step > sx*m_iSlicesize+m_iSlicesize )
+//						x=(sx*m_iSlicesize+m_iSlicesize-step);
+//						continue;
+//
+					
 					
 					//fulhack ultradeluxe to make sure that we dont go outside the grid
 					if(x>=kmap->m_iHmSize)

@@ -20,6 +20,9 @@ Input::Input() {
 };
 
 void Input::Update(void) {
+	SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);	
+	
+	
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
 			
@@ -69,9 +72,8 @@ void Input::MouseXY(int &iX,int &iY) {
 }
 
 void Input::RelMouseXY(int &iX,int &iY) {		
-	SDL_GetRelativeMouseState(&iX, &iY);
-	iX=int(float(iX)*m_fMouseSensitivity);	
-	iY=int(float(iY)*m_fMouseSensitivity);		
+	iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
+	iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
 }
 
 void Input::ToggleGrab(void) {	

@@ -35,7 +35,7 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
-	speed=0.025;
+	speed=0.1;
   	
 	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	

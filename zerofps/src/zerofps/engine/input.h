@@ -67,6 +67,8 @@ class ENGINE_API Input {
 		SDL_Event m_kEvent;
 		unsigned int m_iGrabtime;
 			
+		int m_iMouseX,m_iMouseY;
+			
 		void GrabInput(void);
 		void ReleaseInput(void);
 	
