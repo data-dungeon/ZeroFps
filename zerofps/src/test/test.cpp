@@ -20,7 +20,7 @@ void Test::OnInit(void) {
 //	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 //	pkFps->m_pkAudioMan->PlayMusic();
 
-
+          
 //------------Map---------
 	test=new HeightMap(pkFile);
 	test->SetTileSet("file:../data/textures/landbw.bmp");
@@ -36,7 +36,7 @@ void Test::OnInit(void) {
 //----------------------------
 	
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
-	speed=30;
+	speed=30; 
   	
 	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
