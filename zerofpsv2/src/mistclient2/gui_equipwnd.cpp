@@ -246,7 +246,7 @@ void EquipmentDlg::HighlightSlot(int iItemType)
 	for(int i=0; i<m_vkHighLightslots.size(); i++)
 	{
 		m_vkHighLightslots[i]->m_pkWnd->Show();
-		m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_bTransparent = true;
+		//m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_bTransparent = true;
 		m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_unBorderSize = 4;  
 	}
 }
@@ -434,6 +434,9 @@ void EquipmentDlg::PickUpFromSlot(EQUIPMENT_SLOT* pkSlot, int mx, int my)
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
 	HighlightSlot(pkSlot->m_iItemType); 
+
+	m_pkMoveSlot->m_pkWnd->GetSkin()->m_bTransparent = true;
+	m_pkMoveSlot->m_pkWnd->GetSkin()->m_unBorderSize = 4;
 
 }
 
