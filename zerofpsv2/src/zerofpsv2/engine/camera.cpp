@@ -37,9 +37,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_kClearColor	=		Vector4(0.5,0.5,0.5,0);
 	m_kFogColor		=		Vector4(0.5,0.5,0.5,0);
-	m_fFogNear		=		10;
-	m_fFogFar		=		10;
-	m_bFogEnabled	=		true;
+	m_fFogNear		=		50;
+	m_fFogFar		=		100;
+	m_bFogEnabled	=		false;
 }
 
 
