@@ -89,6 +89,7 @@ private:
 	
 protected:
 	vector<string>			AppArguments;			///< Arguments sent to app at startup.
+	vector<string>			m_kRawArguments;
 	BasicConsole*			m_pkConsole;			///< Ptr to ZeroFps Console.
 
 public:
@@ -109,6 +110,10 @@ public:
 	bool ShutDown();
 	bool IsValid();
 
+	//program arguments
+	int GetNumberOfArguments()			{	return m_kRawArguments.size();	};
+	string GetArgument(int iArg)		{	return m_kRawArguments[iArg];		};
+	
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);	// GALLA
 	/// Register a Cmd and object that will handle it.

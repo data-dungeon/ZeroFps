@@ -9,7 +9,7 @@
 #include "../../../zerofpsv2/engine_systems/mad/mad_modell.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../../../zerofpsv2/gui/zgui.h"
-#include "../../../mcommon/p_enviroment.h"
+//#include "../../../mcommon/p_enviroment.h"
 
 /**	\brief	Da MadView
 		\ingroup MadView

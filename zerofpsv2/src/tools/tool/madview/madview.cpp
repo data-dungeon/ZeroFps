@@ -59,11 +59,20 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_strMadFile = "data/mad/cube.mad";
 	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING);
-	
 } 
 
 void MadView::OnInit() 
 {
+m_strMadFile = "data/mad/cube.mad";
+
+	//open mad from command line
+	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
+	{
+		cout<<"open mad file:"<<g_ZFObjSys.GetArgument(1)<<endl;
+		m_strMadFile = g_ZFObjSys.GetArgument(1);
+	}
+
+	//m_pkZFVFileSystem->AddRootPath( "/" , "/");
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
 
@@ -76,6 +85,9 @@ void MadView::OnInit()
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("/zeroed_autoexec.ini"))
 		m_pkConsole->Printf("No zeroed_autoexec.ini found");
+		
+	
+	
 }
 
 void MadView::Init()
@@ -97,10 +109,12 @@ void MadView::Init()
 	CreateCamera();
 	CreateViewObject();
 	
+	/*
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
 	pe->SetEnviroment("data/enviroments/madview.env");
 	pe->SetEnable(true);		
-
+	*/
+	
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	
 	ToogleLight(true);
@@ -110,12 +124,12 @@ void MadView::Init()
 
 void MadView::RegisterResources()
 {
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MadView::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+	//m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 }
 
 void MadView::OnIdle()
@@ -228,8 +242,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_iCurrRotAngle = m_iObjRotMode-1;
 			else
 				m_iCurrRotAngle = 0;
-
-			GetWnd("MadViewInfoWnd")->Show();
 			break;
 
 		case FID_OBJECTROTATIONSPEED:
@@ -238,7 +250,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(speed == 1) m_fObjRotDelay = 0.100f;
 			if(speed == 2) m_fObjRotDelay = 0.009f;
 			if(speed == 3) m_fObjRotDelay = 0.002f;
-			GetWnd("MadViewInfoWnd")->Show();
 			break;
 
 		case FID_MAD_DRAW_MODE:
@@ -249,7 +260,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkZeroFps->m_iMadDraw ^= mode;
 			else
 				m_pkZeroFps->m_iMadDraw |= mode;
-			GetWnd("MadViewInfoWnd")->Show();
+
 			break;
 
 		case FID_CHANGE_BKCOLOR_INFOWND:
@@ -270,7 +281,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 
 			toogle = !toogle;
-			GetWnd("MadViewInfoWnd")->Show();
+			
 			break;
 	}
 }

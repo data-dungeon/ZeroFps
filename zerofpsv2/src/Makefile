@@ -11,6 +11,7 @@ all:
 #	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
+	cd tools/tool/madview/; $(MAKE) $@
 	./gengdbinit.sh
 clean:
 	cd zerofpsv2/; $(MAKE) $@
@@ -22,3 +23,5 @@ clean:
 #	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
+	cd tools/tool/madview/; $(MAKE) $@
+

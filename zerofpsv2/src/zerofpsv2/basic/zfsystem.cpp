@@ -75,10 +75,15 @@ void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 	string	strArg;
 	bool		bFoundArg = false;
 
-	for(int i = 0; i < iNrOfArgs; i++) {
+	for(int i = 0; i < iNrOfArgs; i++) 
+	{
 		strArg = string(paArgs[i]);
 
-		if(strArg.c_str()[0] == '-') {
+		//add to raw argumentlist
+		m_kRawArguments.push_back(strArg);
+		
+		if(strArg.c_str()[0] == '-') 
+		{
 			bFoundArg = true;
 			// Start of new argument.
 			if(strFullArg.size())
@@ -86,20 +91,21 @@ void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 	
 			strFullArg = "";
 			strArg.erase(0,1);
-			}
+		}
 
 		if(bFoundArg)
 			strFullArg = strFullArg + " " + strArg;
-		}
+	}
 
 	if(strFullArg.size())
 		AppArguments.push_back(strFullArg);
 
 	//cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
-	for(unsigned int ia = 0; ia < AppArguments.size(); ia++) {
+	for(unsigned int ia = 0; ia < AppArguments.size(); ia++) 
+	{
 		//cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
 		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
-		}
+	}
 }
 
 ZFSystem::ZFSystem()
