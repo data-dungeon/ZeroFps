@@ -556,7 +556,11 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
-		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, szItemName, "", 
+		char text[20] = "";
+		if(vkItemList[i].m_iStackSize > 1)
+			sprintf(text, "%i", vkItemList[i].m_iStackSize);
+
+		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, szItemName, text, 
 			m_pkContainerWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 		pkNewSlot->SetZValue(12121);
