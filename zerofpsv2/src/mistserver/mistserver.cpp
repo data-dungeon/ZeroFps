@@ -1115,6 +1115,10 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	
 	if(pkObject)
 	{	
+		//make sure zone is loaded
+		int zid = pkObjectMan->GetZoneIndex(kStartPos,-1,false);
+		pkObjectMan->LoadZone(zid);
+	
 		//set position in world
 		pkObject->SetWorldPosV(kStartPos);
 		

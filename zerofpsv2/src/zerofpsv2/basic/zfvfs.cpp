@@ -172,7 +172,8 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 				dir  = strFileName.substr(0,i);
 				
 				//create directory
-				m_pkBasicFS->CreateDir(dir.c_str());
+				if(!m_pkBasicFS->CreateDir(dir.c_str()))
+					cout<<"ERROR: creating directory "<<dir<<" failed"<<endl;
 				
 				//try to open the file now			
 				pkFp = fopen(strFileName.c_str(), szOptions);

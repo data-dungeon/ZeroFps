@@ -18,7 +18,7 @@ bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 		
 		if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
 		{
-			cout<<"Error creating player file "<<strPlayer<<endl;
+			cout<<"Error creating player file "<<strPlayerDataFile<<endl;
 			return false;
 		}
 		
