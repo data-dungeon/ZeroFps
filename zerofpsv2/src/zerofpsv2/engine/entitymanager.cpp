@@ -693,7 +693,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 
 
 
-void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
+void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject,int iSendSize)
 {
 	int iPacketSize = 	0;
 	int iEndOfObject = 	-1;
@@ -702,8 +702,9 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	unsigned int iObj = 	0;	
 	
 	Entity* pkPackObj;
-	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
-
+	//int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
+	int iMaxSendSize = iSendSize;
+		
 	//if max allowed sendsize is less then the package size, shrink the package
 	if(bZoneObject)
 		if(iMaxSendSize < iMaxPacketSize)
@@ -824,10 +825,10 @@ void EntityManager::PackToClients()
 	bool bForceAll = false;
 
 	//calculate max send size
-	if(m_pkZeroFps->GetSyncNetwork())
-		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps());
-	else	
-		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetNetworkFps());
+// 	if(m_pkZeroFps->GetSyncNetwork())
+// 		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps());
+// 	else	
+// 		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetNetworkFps());
 		
 
 	// If no clients we don't send anything.
@@ -864,7 +865,7 @@ void EntityManager::PackToClients()
 	}		
 
 
-	// Client Network send.
+/*	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
 		m_pkWorldEntity->GetAllEntitys(&kObjects, true);
@@ -873,26 +874,32 @@ void EntityManager::PackToClients()
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 		m_OutNP.TargetSetClient(0);
 		
-		PackEntityToClient(0, kObjects,false);
+		PackEntityToClient(0, kObjects,false,GetClientNetSpeed(0));
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
 		return;
 	}
-
+*/
 	// Server Network send.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) 
 	{
 		//if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
 		if(!m_pkNetWork->IsConnected(iClient))	
 			continue;
-					
+		
+		//connection speed
+	 	int iSendSize;		
+		if(m_pkZeroFps->GetSyncNetwork())
+			iSendSize = m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetSystemFps();
+ 		else	
+			iSendSize = m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetNetworkFps();		
 			
+		
+		
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;	
 		m_OutNP.TargetSetClient(iClient);
 
-		//PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iUnloadZones);		
-//		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
 
 		// Loop and clear send data flag for those zone to this client
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
@@ -909,10 +916,10 @@ void EntityManager::PackToClients()
 		{
 			if((*it)->m_iConnectID == (int) iClient)
 				(*it)->GetEntity()->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
-		}		
-		PackEntityToClient(iClient, kObjects,false);
+		}				
+		PackEntityToClient(iClient, kObjects,false,iSendSize);		
 		
-		//collect objects
+		//clear list and start sending normal entitys
 		kObjects.clear();		
 		
 		// Pack and Send all Client Objects
@@ -941,7 +948,7 @@ void EntityManager::PackToClients()
 		}
 		
 		//send all entitys in zones data
-		PackEntityToClient(iClient, kObjects,true);			//send in true to packtoclient 
+		PackEntityToClient(iClient, kObjects,true,iSendSize);			//send in true to packtoclient 
 		
 		//pack and send clients delete list
 		SendDeleteQueue(iClient);
@@ -961,39 +968,7 @@ void EntityManager::PackToClients()
 		(*it).second->UpdateDeletePropertyList();
 	}
 
-	
-/*	if(m_aiNetDeleteList.size() == 0)
-		return;
 
-	// Pack delete data.
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_DELETEOBJECT);
-
-	// cout << "Delete List Size:"  << m_aiNetDeleteList.size() << endl;
-
-	for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++) {
-		NP.Write((int) m_aiNetDeleteList[i] );
-
-		if(NP.m_iPos >= 512) {
-			NP.Write(iEndOfObject);
-			NP.Write(ZFGP_ENDOFPACKET);
-			m_pkNetWork->SendToAllClients(&NP);
-
-			NP.Clear();
-			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			NP.Write((char) ZFGP_DELETEOBJECT);
-
-			iPacketSize = 0;
-			}
-	
-		}
-	
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToAllClients(&NP);
-
-	m_aiNetDeleteList.clear();*/
 }
 
 
@@ -1014,7 +989,7 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 
 	kObjects.clear();
 	pkStatic->GetAllEntitys(&kObjects);
-	PackEntityToClient(iClient, kObjects,false);
+	PackEntityToClient(iClient, kObjects,false,100);
 	
 }
 

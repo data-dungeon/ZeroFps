@@ -151,6 +151,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float		m_fNetworkUpdateFps;				// number of network updates each second
 		float		m_fNetworkUpdateFpsDelta;		// time between each network update
 		float 	m_fNetworkUpdateTime;			// last system update
+		int		m_iConnectionSpeed;				// speed of outgoing connections
 		
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
@@ -287,19 +288,22 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void PrintToClient(int iConnectionID, const char* szMsg);
 		void AddHMProperty(Entity* pkEntity,int iNetWorkId, Vector3 kZoneSize);
 		
-		// Timer Functions.
+		
+		// gets
+		bool GetSyncNetwork()				{	return m_bSyncNetwork;							}
+		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
+		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
+				
 		float GetTicks()						{	return float((SDL_GetTicks()/1000.0));		}
 		float GetFrameTime()					{	return float((m_fFrameTime/1000.0));		}
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}
-		void SetSystemFps(int iFps) 		{	m_fSystemUpdateFps = float(iFps);			}
-		void SetNetworkFps(int iFps) 		{	m_fNetworkUpdateFps = float(iFps);			}
-		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
-		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
-		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
+		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}		
 		
-		// gets
-		bool GetSyncNetwork()				{	return m_bSyncNetwork;							}
+		//sets
+		void  SetSyncNetwork(bool bSync)	{	m_bSyncNetwork = bSync;							}
+		void  SetSystemFps(int iFps) 		{	m_fSystemUpdateFps = float(iFps);			}
+		void  SetNetworkFps(int iFps)		{	m_fNetworkUpdateFps = float(iFps);			}
 		
 		//camera
 		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can be NULL

@@ -45,6 +45,7 @@ void RemoteNode::Clear()
 	m_iOutOfOrderNetFrame	= 0;
 	m_iLastRecvPacket			= 0;
 	m_iCurrentObject			= 0;
+	m_iNetSpeed					= 3000;
 
 	m_kRecvGraph.SetMinMax(0,5000);		
 	m_kRecvGraph.SetSize(100,100,25);

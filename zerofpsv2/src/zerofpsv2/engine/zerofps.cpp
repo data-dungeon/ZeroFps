@@ -93,6 +93,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fNetworkUpdateTime		= 0;
 	m_fNetworkUpdateFpsDelta= 0;	
 	m_bSyncNetwork				= true;
+	m_iConnectionSpeed		= 3000;
 		
 	m_bEditMode					= false;
 	m_bServerMode				= false;
@@ -120,22 +121,25 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iProfileTotalTime		= 0;
 	
 	// Register Variables
+	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
+	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
+	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);		
+	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);		
+	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
+	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
+	
+	RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
+	RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
+	RegisterVariable("n_netspeed",		&m_iConnectionSpeed,		CSYS_INT);
+	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);			
+	
+	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
+	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
 	RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
-	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
-	RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
-	RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
-	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
-	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
-	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
-	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
-	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
-	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
-	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
-	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);	
 	
 	
 	// Register Commands
@@ -1189,7 +1193,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 //	cout << "g_szIpPort = " << g_szIpPort << endl;
 
 	
-	m_pkNetWork->ClientStart(strServerIP.c_str(), strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor);
+	m_pkNetWork->ClientStart(strServerIP.c_str(), strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor,m_iConnectionSpeed);
 	m_bClientMode = true;
 
 	m_pkApp->OnClientStart();

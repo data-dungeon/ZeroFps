@@ -94,7 +94,8 @@ void StopEmUp::OnInit()
 
 	m_pkZeroFps->SetSystemFps(20);
 	m_pkZeroFps->SetNetworkFps(15);
-	m_pkNetwork->SetNetSpeed(20000);
+	m_pkZeroFps->SetSyncNetwork(true);
+	//m_pkNetwork->SetNetSpeed(20000);
 	
 	//setup physics
 	m_pkTcs->SetColIt(2);

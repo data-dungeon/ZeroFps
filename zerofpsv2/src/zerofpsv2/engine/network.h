@@ -95,7 +95,8 @@ public:
 
 	int				m_iLastRecvPacket;				// Order num of last recv packet.
 
-	unsigned int	m_iCurrentObject;							//current position in zoneobject list, for packtoclient
+	unsigned int	m_iCurrentObject;					//current position in zoneobject list, for packtoclient
+	int				m_iNetSpeed;						//clients wantet netspeed in bytes/second
 	
 	ZFNetPacketData	m_akRelPack[ZF_NET_MAXREL];
 	float					m_akRelPackSendTime[ZF_NET_MAXREL];
@@ -161,7 +162,7 @@ private:
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
 
-	int						m_iNetSpeed;							// Max amount of bytes to send on a connection. 
+	//int						m_iNetSpeed;							// Max amount of bytes to send on a connection. 
 	int						m_iMaxSendSize;						// Max bytes to send to client per frame
 
 
@@ -210,7 +211,7 @@ public:
 	void CloseSocket();
 	void ServerStart(int iPort);
 	void ServerEnd(void);
-	void ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor);
+	void ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed);
 	void ClientEnd(void);
 
 	void	SetMaxNodes(int iMaxNode);			
@@ -220,10 +221,11 @@ public:
 	
 	int GetMaxSendSize() 					{	return m_iMaxSendSize;		} 
 	void SetMaxSendSize(int iMaxSend) 	{	m_iMaxSendSize = iMaxSend; }
-	int GetNetSpeed() 						{	return m_iNetSpeed; 			}
-	void SetNetSpeed(int iSpeed)			{	m_iNetSpeed = iSpeed;		}
-
-	void UpdateNetSpeed();
+	
+	int GetClientNetSpeed(int iId);
+	//int GetNetSpeed() 						{	return m_iNetSpeed; 			}
+	//void SetNetSpeed(int iSpeed)			{	m_iNetSpeed = iSpeed;		}
+	//void UpdateNetSpeed();
 
 
 	bool IsConnected(int iId);

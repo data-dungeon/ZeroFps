@@ -155,6 +155,10 @@ void MistServer::Init()
 	m_pkTcs->SetColIt(2);
 	m_pkTcs->SetConIt(2);	
 	
+	//system ant network
+	m_pkZeroFps->SetSystemFps(20);
+	m_pkZeroFps->SetNetworkFps(15);
+	m_pkZeroFps->SetSyncNetwork(false);
 	
 	//enable debug graphics
 	m_pkZeroFps->SetDebugGraph(true);

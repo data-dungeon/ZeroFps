@@ -133,12 +133,12 @@ void MistClient::Init()
 
 
 
-	//initiate our camera bös
+	//initiate our camera bï¿½
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
 	
-	//register property bös
+	//register property bï¿½
 	RegisterPropertys();
 
 	//register resources
@@ -165,13 +165,13 @@ void MistClient::Init()
 
 	// Varde ljus!
 	m_pkLight->SetLighting(true);
-	//pkZShader->SetForceLighting(ALWAYS_OFF);   //GE FAN I DENNA "#¤%)"#?=&(?!"=#(&!?#¤%)! =)
+	//pkZShader->SetForceLighting(ALWAYS_OFF);   //GE FAN I DENNA "#%)"#?=&(?!"=#(&!?#%)! =)
 
 	m_pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
 
 	m_pkGui->SetFocus(GetWnd("IntroWnd")); 
 
-	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
+	// Fulhack sï¿½lï¿½ge fï¿½ att kunna styra gui:t innan man har kopplat upp mot serven.
 	m_pkZeroFps->m_bClientMode = true;
 
 	ZFResourceHandle kIpSetupScript;
@@ -502,7 +502,7 @@ void MistClient::Input()
 
 		m_pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
 
-		//DVOID här behövs en fix för att sätta menyn i mitten oavset skärmupplösning,samt frigöra musmarkören
+		//DVOID hï¿½ behï¿½s en fix fï¿½ att sï¿½ta menyn i mitten oavset skï¿½mupplï¿½ning,samt frigï¿½a musmarkï¿½en
 		int mx, my;
 
 		// use mouse pointer as center of action menu
@@ -963,7 +963,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 									printf("selected order = %s\n", res->second.c_str());
 
-									// öppna en container...
+									// ï¿½pna en container...
 									if(order.m_sOrderName == "Open")
 									{
 										P_Container* m_pkContainer =  static_cast<P_Container*>(
@@ -1044,8 +1044,9 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 			char* szLoginName = GetWnd("UserEditbox")->GetText();
 			char* szPassName = GetWnd("PasswordEditbox")->GetText();
-			m_pkZeroFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName, m_pkApp->m_bIsEditor);
-			m_pkApp->OnClientStart();
+			//m_pkZeroFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName, m_pkApp->m_bIsEditor);
+			//m_pkApp->OnClientStart();
+			m_pkZeroFps->StartClient(szLoginName,szPassName,szIpName,m_pkApp->m_bIsEditor);
 		}
 	}
 	else
@@ -1087,10 +1088,10 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 	
 	if(m_bMouse)
 	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda det inputsystemet.
+		// Zeb was here! Nu kï¿½ vi med operativsystemets egna snabba musmarkï¿½
+		// alltsï¿½mï¿½te vi anvï¿½da det inputsystemet.
 		//	m_pkInputHandle->UnitMouseXY(x,y); 
-		// Dvoid was here to . måste o måste, vill man ha lite kontroll över saker o ting så =D
+		// Dvoid was here to . mï¿½te o mï¿½te, vill man ha lite kontroll ï¿½er saker o ting sï¿½=D
 		int x;
 		int y;
 		
@@ -1683,7 +1684,7 @@ bool MistClient::OpenActionMenu(int mx, int my)
 			map<ZGuiButton*,string>::iterator res =
 				m_kActionBnTranslator.find(pkButton);
 
-			if(res != m_kActionBnTranslator.end()) // om den fanns, ta bort den gamla först
+			if(res != m_kActionBnTranslator.end()) // om den fanns, ta bort den gamla fï¿½st
 				m_kActionBnTranslator.erase(res); 
 	
 			m_kActionBnTranslator.insert(

@@ -25,14 +25,13 @@ NetWork::NetWork()
 	// Set Default values
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
-	m_iNetSpeed				= 4000;
-	m_iMaxSendSize			= m_iNetSpeed / 20;
+	//m_iNetSpeed				= 4000;
+	//m_iMaxSendSize			= m_iNetSpeed / 20;
 	m_iDefPort				= 4242;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
 	RegisterVariable("n_sendsize",			&m_iMaxSendSize,		CSYS_INT);		
-	RegisterVariable("n_netspeed",			&m_iNetSpeed,			CSYS_INT);		
 	
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
@@ -302,6 +301,10 @@ bool NetWork::IsConnected(int iId)
 		return false;
 }
 
+int NetWork::GetClientNetSpeed(int iId)
+{
+	return m_RemoteNodes[iId].m_iNetSpeed;
+}
 
 void NetWork::StartSocket(bool bStartServer,int iPort)
 {
@@ -348,7 +351,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor)
+void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;
@@ -403,6 +406,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
 	NetP.Write((int) bConnectAsEditor);
+	NetP.Write(iNetSpeed);
 	SendRaw(&NetP);
 
 	m_kServerAddress = NetP.m_kAddress;
@@ -587,10 +591,11 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	NetPacket kNetPRespons;
 	RemoteNode kNewNode;
 
-	char szLogin[64];
-	char szPass[64];
-	int  iConnectAsEditor;
-	int iNetID;
+	char	szLogin[64];
+	char	szPass[64];
+	int 	iConnectAsEditor;
+	int	iNetSpeed;
+	int	iNetID;
 
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
@@ -611,20 +616,36 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			pkNetPacket->Read_Str(szLogin);
 			pkNetPacket->Read_Str(szPass);
 			pkNetPacket->Read(iConnectAsEditor);
+			pkNetPacket->Read(iNetSpeed);
 
 			m_pkConsole->Printf("'%s' try to join as '%s' in editmode '%d'", m_szAddressBuffer, szLogin, iConnectAsEditor);
 
+			//wanted speed to low
+			if( (iNetSpeed<1000) || (iNetSpeed>100000) ) 
+			{
+				m_pkConsole->Printf("Join Ignored: invalid netspeed.");
+				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
+				kNetPRespons.Write_Str( string("Invalid netspeed.") );
+				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
+				SendRaw(&kNetPRespons);
+				break;
+			}
+			
+			
+			//max connections
 			if(GetNumOfClients() == m_iMaxNumberOfNodes) 
 			{
 				m_pkConsole->Printf("Join Ignored: To many connected clients.");
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-				kNetPRespons.Write_Str( string("There server is full.") );
+				kNetPRespons.Write_Str( string("The server is full.") );
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				SendRaw(&kNetPRespons);
 				break;
 			}
 
+			//failed preconnect
 			if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, strNoMessage))
 			{
 				m_pkConsole->Printf("Join Ignored: Preconnect no.");
@@ -644,7 +665,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
 			m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
 			m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
-
+			m_RemoteNodes[iClientID].m_iNetSpeed = iNetSpeed;
+			
 			//kNewNode.m_kAddress = pkNetPacket->m_kAddress;
 			//kNewNode.m_eConnectStatus = NETSTATUS_CONNECTED;
 			//RemoteNodes.push_back(kNewNode);
