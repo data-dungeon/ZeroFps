@@ -1472,12 +1472,14 @@ void Entity::SetLocalPosV(Vector3 kPos)
 			return;
 	}
 
+	//return if pos is the same
+	if(kPos == m_kLocalPosV)
+		return;
+
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	
-	//only update clients if position has changed
-	if(kPos != m_kLocalPosV)
-		SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
+	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
 	
 	m_kLocalPosV = kPos;
 	
