@@ -79,7 +79,9 @@ void P_Vegitation::Update()
 	//frustum culling
 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
 		return;
-			
+
+	StartProfileTimer("P_Vegitation");	
+							
 	if(!m_CheckedForHM)
 	{
 		m_CheckedForHM = true;
@@ -127,6 +129,7 @@ void P_Vegitation::Update()
 		
 	if(!pkRt)	
 	{
+		StopProfileTimer("P_Vegitation");
 		return;
 	}
 	else
@@ -158,6 +161,7 @@ void P_Vegitation::Update()
 	}
 
 
+	StopProfileTimer("P_Vegitation");	
 
 /*	for(unsigned int i=0;i<m_akPositions.size();i += iStep)
 //	for(unsigned int i=0;i<m_akPositions.size();i++)

@@ -159,6 +159,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iClientEntityID;						
 		int		m_iMaxPlayers;
 				
+		//profile information
+		vector<pair<string,int> > 	m_kProfileData;		
+		int								m_iProfileTotalTime;
+		
 		//materials
 		ZMaterial*	m_pkDevPageMaterial;
 		
@@ -192,6 +196,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void RegisterResources();
 		void GetEngineCredits(vector<string>& kCreditsStrings);
 		void DrawDevStrings();		
+		
 		
 		void DevPrint_Show(bool bVisible);
 		DevStringPage*	DevPrint_FindPage(const char* szName);		

@@ -7,6 +7,8 @@
 #include <vector>
 #include "zfsubsystem.h"
 #include "cstdio"
+#include <map>
+#include <SDL/SDL.h>
 
 using namespace std;
 
@@ -52,6 +54,19 @@ public:
 };
 
 
+class BASIC_API ProfileTimer
+{
+	public:
+		int			m_iTotalTime;		
+		int			m_iStartime;
+		
+		ProfileTimer()
+		{
+			m_iTotalTime = 0;
+			m_iStartime	=	-1;
+		}
+};
+
 #define DECLARE_SINGLETON( TClass)	\
 	static TClass* pkInstance;		\
 	static TClass* GetInstance();	\
@@ -72,7 +87,12 @@ class BASIC_API ZFSystem	/*	ZFSystem	*/
 private:
 	CmdSystem*				m_pkCmdSystem;
 
-
+	//profileing
+	bool								m_bProfileEnabled;
+	map<string,ProfileTimer>	m_kTimers;
+	int								m_iTotalTime;
+	
+	
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
 	FILE*						m_pkLogFile;			///< Master Log File (zerofps.txt).
@@ -112,11 +132,19 @@ public:
 	bool ShutDown();
 	bool IsValid();
 
-	//program arguments
-	int GetNumberOfArguments()			{	return m_kRawArguments.size();	};
-	string GetArgument(int iArg)		{	return m_kRawArguments[iArg];		};
+	//profiling
+	void DontUseStartProfileTimer(const char* czName);
+	void DontUseStopProfileTimer(const char* czName);
+	void ClearProfileTimers();
+	void GetProfileTimers(vector<pair<string,int> >* pkTimers);
+	int GetTotalTime()					{	return SDL_GetTicks() - m_iTotalTime;	};
+	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
 	
-// Cmd / Functions.
+	//program arguments
+	int GetNumberOfArguments()			{	return m_kRawArguments.size();			};
+	string GetArgument(int iArg)		{	return m_kRawArguments[iArg];				};
+	
+	// Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);	// GALLA
 	/// Register a Cmd and object that will handle it.
 	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, int iFlags, char* szHelp = NULL, int iNumOfArg = 0);	

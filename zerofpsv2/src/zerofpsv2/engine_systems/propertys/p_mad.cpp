@@ -39,7 +39,7 @@ void P_Mad::Update()
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
-
+		
 // TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
 // find lowpoly mesh, if exist
 
@@ -81,6 +81,8 @@ void P_Mad::Update()
 		g_fMadLODScale = m_fLod;
 		*/
 
+		StartProfileTimer("p_mad");
+		
 		//always update bones
 		UpdateBones();
 		
@@ -110,8 +112,12 @@ void P_Mad::Update()
 			//glPopMatrix();
 		}
 		
+		StopProfileTimer("p_mad");		
+		
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
+		
+		
 	}
 }
 

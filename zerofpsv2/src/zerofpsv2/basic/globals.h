@@ -84,5 +84,21 @@ int BASIC_API Randomi(int iiMax);
 //strange funktions =D
 Vector3 BASIC_API RndColor();												//randomize a colorvector...i think
 
+//profiling
+//#define NOPROFILE
+#ifdef NOPROFILE
+	#define StartProfileTimer(czName)	((void)0)
+	#define StopProfileTimer(czName)	((void)0)
+#else
+	#define StartProfileTimer(czName) {\
+		g_ZFObjSys.DontUseStartProfileTimer(czName);\
+		}
+
+	#define StopProfileTimer(czName) {\
+		g_ZFObjSys.DontUseStopProfileTimer(czName);\
+		}	
+#endif
+
+
 
 #endif

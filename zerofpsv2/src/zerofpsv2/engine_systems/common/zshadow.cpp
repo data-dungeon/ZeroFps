@@ -201,6 +201,8 @@ void ZShadow::Update()
 	if( (m_iNrOfShadows == 0) || m_bDisabled)
 		return;
 
+	StartProfileTimer("ZShadow");
+		
 	//setup stencil buffert
 	if(!m_bHaveCheckedBits)
 		SetupStencilBuffer();
@@ -263,6 +265,8 @@ void ZShadow::Update()
 	{
 		DrawShadow(m_fShadowIntensity);
 	}	
+	
+	StopProfileTimer("ZShadow");
 }
 
 bool ZShadow::SetupMesh(P_Mad* pkMad)

@@ -120,6 +120,9 @@ ZFSystem::ZFSystem()
 #endif
 
 	m_pkCmdSystem = new CmdSystem;
+	
+	m_bProfileEnabled =	true;
+	m_iTotalTime = 		0;	
 }
 
 ZFSystem::~ZFSystem()
@@ -865,6 +868,61 @@ void CmdArgument::Set(const char* szCmdArgs)
 		}
 			args++;
 	}
+}
+
+
+void ZFSystem::DontUseStartProfileTimer(const char* czName)
+{
+	if(!m_bProfileEnabled)
+		return;
+
+	m_kTimers[czName].m_iStartime = SDL_GetTicks();
+}
+
+void ZFSystem::DontUseStopProfileTimer(const char* czName)
+{
+	if(!m_bProfileEnabled)
+		return;
+		
+		
+	ProfileTimer* pkTimer = &m_kTimers[czName];
+	
+	if(pkTimer->m_iStartime == -1)
+	{
+		cout<<"WARNING: tried to stop , already stoped profile timer"<<endl;
+		return;
+	}
+
+	//add time to total time	
+	pkTimer->m_iTotalTime += (SDL_GetTicks() - pkTimer->m_iStartime);
+	pkTimer->m_iStartime = -1;
+}
+
+void ZFSystem::ClearProfileTimers() 
+{
+	if(!m_bProfileEnabled)
+		return;
+
+	m_kTimers.clear();
+	m_iTotalTime = SDL_GetTicks(); 
+}
+
+void ZFSystem::GetProfileTimers(vector<pair<string,int> >* pkTimers)
+{
+	if(!m_bProfileEnabled)
+		return;
+
+	pair<string,int> kPair;
+	
+	map<string,ProfileTimer>::iterator it;
+	for(it = m_kTimers.begin(); it != m_kTimers.end(); it++ )
+	{
+		//cout<<(*it).first<< " : "<<(*it).second.m_iTotalTime<<endl;
+		kPair.first = (*it).first;
+		kPair.second = (*it).second.m_iTotalTime;
+		pkTimers->push_back( kPair );
+	}
+	
 }
 
 

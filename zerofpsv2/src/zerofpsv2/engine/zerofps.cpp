@@ -103,6 +103,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
 	m_bTcsFullframe			= false;
+	m_iProfileTotalTime		= 0;
 	
 	// Register Variables
 	RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
@@ -117,6 +118,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
+	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),			CSYS_BOOL);	
+	
+	
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -329,6 +333,7 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common","  GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
 	DevPrintf("common","  Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
 	DevPrintf("common","  Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
+	m_pkZShaderSystem->ResetStatistics();	
 	
 	DevPrintf("common","FPS:");
 	DevPrintf("common","  Fps       : %f",m_fFps);	
@@ -358,9 +363,21 @@ void ZeroFps::UpdateDevPages()
 	g_iNumOfMadSurfaces = 0;
 		
 		
-	m_pkZShaderSystem->ResetStatistics();
 
-
+	if(m_iProfileTotalTime != 0)
+	{
+		//profiling
+		for(int i = 0;i<m_kProfileData.size();i++)
+		{
+			char temp[3];
+			temp[0] = '#';
+			temp[1] = int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0);
+			temp[2] = '/0';		
+			DevPrintf("profile","%s : %dms / %d%",	m_kProfileData[i].first.c_str(),m_kProfileData[i].second, int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0));			
+			DevPrintf("profile",temp);
+		}	
+	}
+	
 }
 
 void ZeroFps::UpdateGuiInput()
@@ -500,7 +517,9 @@ void ZeroFps::Update_System()
 		m_pkEntityManager->UpdateSimTime();
 		
 		//update network for client & server
+		StartProfileTimer("network");	
 		m_pkNetWork->Run();				
+		StopProfileTimer("network");	
 		
 		//update application systems
 		m_pkApp->OnSystem();
@@ -521,8 +540,11 @@ void ZeroFps::Update_System()
 				
 				//update Tiny Collission system
 				if(!m_bTcsFullframe)
+				{
+					StartProfileTimer("tcs");		
 					m_pkTcs->Update(m_pkEntityManager->GetSimDelta());	
-				
+					StopProfileTimer("tcs");		
+				}
 			}	
 		}
 		
@@ -541,8 +563,10 @@ void ZeroFps::Update_System()
 		//client & server code
 		
 		//pack objects to clients
+		StartProfileTimer("network");		
 		m_pkEntityManager->PackToClients();		
-
+		StopProfileTimer("network");		
+		
 		//delete objects
 		m_pkEntityManager->UpdateDelete();
 		
@@ -557,11 +581,16 @@ void ZeroFps::Update_System()
 
 void ZeroFps::Draw_EngineShell()
 {
-	//render cameras
+	
+	//render cameras	
+	StartProfileTimer("Draw_RenderCameras");	
 	Draw_RenderCameras();
+	StopProfileTimer("Draw_RenderCameras");		
 	
 	//render gui
+	StartProfileTimer("gui");	
 	m_pkGui->Render((int)m_fAvrageFps);
+	StopProfileTimer("gui");	
 	
 	//set console kamera matrisses, and clear depthbuffer
 	m_pkConsoleCamera->InitView();
@@ -575,6 +604,7 @@ void ZeroFps::Draw_EngineShell()
 	//draw console	
 	if(m_pkConsole->IsActive()) 
 		m_pkConsole->Draw();
+
 }
 
 void ZeroFps::MainLoop(void) 
@@ -602,18 +632,25 @@ void ZeroFps::MainLoop(void)
 			//update basic engine systems			
 			Run_EngineShell();
 
+			
 			//update server only systems
+			StartProfileTimer("System");			
 			if(m_bServerMode)
 				Run_Server();
 
 			//update client only systems
 			if(m_bClientMode)
 				Run_Client();		
-			
+			StopProfileTimer("System");
+				
 			//render stuff
+			StartProfileTimer("Render");				
 			Draw_EngineShell();
+			StopProfileTimer("Render");
 
 		}
+		
+
 	}
 }
 
@@ -715,12 +752,24 @@ void ZeroFps::Swap(void) {
 
 	m_iAvrageFrameCount++;
 	
+	//each 1 seccond
 	if( (GetTicks() - m_fAvrageFpsTime) >1)
 	{
+		//update avrage fps
 		m_fAvrageFps = (float) m_iAvrageFrameCount;
 		m_iAvrageFrameCount = 0;
 		m_fAvrageFpsTime = GetTicks();
+				
+		//update profile information
+		m_kProfileData.clear();					
+		g_ZFObjSys.GetProfileTimers(&m_kProfileData);
+		m_iProfileTotalTime = g_ZFObjSys.GetTotalTime();		
+		g_ZFObjSys.ClearProfileTimers();	
+
 	}
+	 
+		
+	
 	
 #ifdef RUNPROFILE
 	g_iNumOfFrames++;
@@ -845,7 +894,22 @@ void ZeroFps::DrawDevStrings()
 
 			for(unsigned int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
 			{
-				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),fSize);
+				//is this a graph?
+				if(m_DevStringPage[page].m_akDevString[i][0] == '#')
+				{
+					if(m_DevStringPage[page].m_akDevString[i].length() >= 2)
+					{
+						int iVal = int(m_DevStringPage[page].m_akDevString[i][1]);
+											
+						float fPos = -1.1 + (iVal/100.0);
+						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),m_pkTexMan->Load("data/textures/graph.bmp") );
+					}
+				}
+				else
+				{			
+					m_pkRender->Print(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),fSize);
+				}
+				//increse position
 				fYOffset -= fSize;
 			}		
 		}

@@ -15,7 +15,9 @@ P_LightUpdate::P_LightUpdate()
 
 void P_LightUpdate::Update()
 {
+	StartProfileTimer("P_LightUpdate");	
 	m_pkLight->Update(m_pkEntity->GetWorldPosV());
+	StopProfileTimer("P_LightUpdate");	
 }
 
 
