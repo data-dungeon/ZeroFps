@@ -77,6 +77,7 @@ public:
 
 	float m_afBkColor[3];
 	float m_afBorderColor[3];
+	float m_fRotDegree;
 
 	unsigned short m_unBorderSize; // Bredden och höjden på ramen kring fönstret.
 	unsigned char m_ucRots90Degree; // Hur många gången texturen skall roteras åt vänster (0,1,2 eller 3)

@@ -199,6 +199,23 @@ void MistClient::RenderInterface(void)
 void MistClient::OnIdle() 
 {
 	Input();
+
+	// Degree To Compass Angle
+	// 0.0		= Norr
+	// PI/2		= East
+	// PI			= South
+	// PI+PI/2	= West
+	ZGuiLabel* pkCompass = (ZGuiLabel*) GetWnd("CompassLabel");
+	if(pkCompass)
+	{
+		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+		{
+			P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera");
+			float fAngle = pkCam->Get3PYAngle();
+			printf("fAngle = %f\n", fAngle);
+			pkCompass->GetSkin()->m_fRotDegree = (1.0f/57.5f) * fAngle; 
+		}
+	}
 }
 
 bool MistClient::DelayCommand()

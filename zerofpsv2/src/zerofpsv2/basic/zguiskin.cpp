@@ -14,6 +14,7 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 					int bsz,bool tile_texture,		// Border size, tile tex.
 					bool transparent)
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= t1;		
 	m_iHorzBorderTexID			= t2;
 	m_iVertBorderTexID			= t3;
@@ -47,6 +48,7 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 					int a1,int a2,int a3,int a4,	// Alpha Textures
 					int bsz, bool tile_texture)		// Border size, tile tex.
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= t1;		
 	m_iHorzBorderTexID			= t2;
 	m_iVertBorderTexID			= t3;
@@ -81,6 +83,7 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 					int bsz,						// Border size
 					bool bTransparent)				// Transparent
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= -1;		
 	m_iHorzBorderTexID			= -1;
 	m_iVertBorderTexID			= -1;
@@ -113,6 +116,7 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 					int r2,int g2,int b2,			// Border color
 					int bsz)						// Border size
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= -1;		
 	m_iHorzBorderTexID			= -1;
 	m_iVertBorderTexID			= -1;
@@ -145,6 +149,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 					bool tile_texture)				// Tile textures.
 {
+	m_fRotDegree = 0;
+
 	m_iBkTexID					= t1;		
 	m_iHorzBorderTexID			= t2;
 	m_iVertBorderTexID			= t3;
@@ -177,6 +183,7 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 ZGuiSkin::ZGuiSkin(	int t1,	int a1,				// Textures
 					bool tile_texture)			// Tile textures.
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= t1;		
 	m_iHorzBorderTexID			= -1;
 	m_iVertBorderTexID			= -1;
@@ -209,6 +216,7 @@ ZGuiSkin::ZGuiSkin(	int t1,	int a1,				// Textures
 ZGuiSkin::ZGuiSkin(	int t1,						// Textures
 					bool tile_texture)			// Tile textures.
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= t1;		
 	m_iHorzBorderTexID			= -1;
 	m_iVertBorderTexID			= -1;
@@ -241,6 +249,7 @@ ZGuiSkin::ZGuiSkin(	int t1,						// Textures
 // Default : 0 parameter
 ZGuiSkin::ZGuiSkin()			
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= -1;		
 	m_iHorzBorderTexID			= -1;
 	m_iVertBorderTexID			= -1;
@@ -270,6 +279,7 @@ ZGuiSkin::ZGuiSkin()
 
 const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 {
+	m_fRotDegree = 0;
 	m_iBkTexID					= pkSkinSrc.m_iBkTexID;
 	m_iHorzBorderTexID			= pkSkinSrc.m_iHorzBorderTexID;
 	m_iVertBorderTexID			= pkSkinSrc.m_iVertBorderTexID;
@@ -302,6 +312,7 @@ const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 
 ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 {
+	m_fRotDegree					= pkCopy->m_fRotDegree;
 	m_iBkTexID						= pkCopy->m_iBkTexID;
 	m_iHorzBorderTexID			= pkCopy->m_iHorzBorderTexID;
 	m_iVertBorderTexID			= pkCopy->m_iVertBorderTexID;

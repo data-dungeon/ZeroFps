@@ -577,6 +577,10 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
 		pkNewSkin->m_ucRots90Degree = dData;
 
+	// Number of 90 degree rots on bk skin
+	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "degree", dData))
+		pkNewSkin->m_fRotDegree = dData;
+
 	return pkNewSkin;
 }
 

@@ -172,6 +172,22 @@ void GLGuiRender::UpdateAnimation()
 	}
 }
 
+
+
+Vector2 RotateXY(float angle, Vector2 point)
+{ 
+	float xold,yold;
+	Vector2 newpoint(0,0);
+
+	xold=point.x;
+	yold=point.y;
+	newpoint.x= xold*cosf(angle)-yold*sinf(angle);
+	newpoint.y= xold*sinf(angle)+yold*cosf(angle);
+	return newpoint;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name: RenderQuad
 //
@@ -266,6 +282,36 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	float txs[] = {tx,tx,tx+tw,tx+tw};
 	float tys[] = {ty,th,th,ty};
 
+	Vector2 akVertices[4];
+
+	if(m_pkSkin->m_fRotDegree != 0)
+	{
+		Vector2 akBuffer[4] =
+		{
+			Vector2(rc.Left, rc.Bottom),
+			Vector2(rc.Left, rc.Top),
+			Vector2(rc.Right, rc.Top),
+			Vector2(rc.Right, rc.Bottom)
+		};		
+
+		float fCenterPosX = (float) rc.Left + ((float)(rc.Width()))/2.0f;
+		float fCenterPosY = (float) rc.Top + ((float)(rc.Height()))/2.0f;
+
+		for(int i=0; i<4; i++)
+		{
+			akBuffer[i].x -= fCenterPosX;
+			akBuffer[i].y -= fCenterPosY;
+
+			akBuffer[i] = RotateXY(m_pkSkin->m_fRotDegree, akBuffer[i]);
+
+			akVertices[i].x = akBuffer[i].x;
+			akVertices[i].y = akBuffer[i].y;
+
+			akVertices[i].x += fCenterPosX;
+			akVertices[i].y += fCenterPosY;
+		}
+	}
+
 	if(m_pkSkin->m_ucRots90Degree != 0) 
 		RotateVertexCoords90deg(txs, tys, m_pkSkin->m_ucRots90Degree);
 
@@ -297,7 +343,6 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	{
 		glEnable(GL_TEXTURE_2D);
 
-
 		m_pkTextureManger->BindTexture( texture );
 
 		if(bDrawMasked)
@@ -326,10 +371,20 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 		if(bIsTGA)
 		{
-			glTexCoord2f(txs[0],tys[2]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(txs[1],tys[3]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(txs[2],tys[0]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(txs[3],tys[1]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			if(m_pkSkin->m_fRotDegree == 0)
+			{
+				glTexCoord2f(txs[0],tys[2]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+				glTexCoord2f(txs[1],tys[3]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+				glTexCoord2f(txs[2],tys[0]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+				glTexCoord2f(txs[3],tys[1]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			}
+			else
+			{
+				glTexCoord2f(txs[0],tys[2]);	glVertex2i(akVertices[0].x,m_iScreenHeight-akVertices[0].y);		 
+				glTexCoord2f(txs[1],tys[3]);	glVertex2i(akVertices[1].x,m_iScreenHeight-akVertices[1].y);		
+				glTexCoord2f(txs[2],tys[0]);	glVertex2i(akVertices[2].x,m_iScreenHeight-akVertices[2].y);    
+				glTexCoord2f(txs[3],tys[1]);	glVertex2i(akVertices[3].x,m_iScreenHeight-akVertices[3].y);  	
+			}
 		}
 		else
 		{
@@ -349,7 +404,6 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			}
 
 		}
-
 
 	glEnd();
 
