@@ -29,23 +29,23 @@ bool Input::StartUp()
 	m_pkRender = 	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 	GetConsole();	
 
-	m_bKeyRepeat	= true;
-	m_iQueueLength	= 100;
-	m_iGrabtime		= SDL_GetTicks();
+	m_bKeyRepeat	= 	true;
+	m_iQueueLength	= 	100;
+	m_iGrabtime		= 	SDL_GetTicks();
 
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
+	m_iAbsMouseX = 	0;
+	m_iAbsMouseY = 	0;
 	
-	m_iAbsMouseX = 0;
-	m_iAbsMouseY = 0;
-	
-	m_bHaveReleasedMWUP = false;
+	m_bHaveReleasedMWUP = 	false;
 	m_bHaveReleasedMWDOWN = false;
 	
+	//reset key states
 	for(int i =0; i<MAX_KEYS; i++) 
 	{
 		m_akKeyState[i].m_bDown = false;
 	};
-	
+
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);		
 	SetupMapToKeyState();	
 
 	return true;
@@ -225,6 +225,7 @@ void Input::Update(void)
 		switch(m_kEvent.type) {
 			//keyboard
 			case SDL_KEYDOWN:
+			
 				//add key to queuedkeys
 				AddQueuedKey(&m_kEvent.key.keysym,true);
 
@@ -234,8 +235,8 @@ void Input::Update(void)
 				//linux backquote hack deluxe
 				if(m_kEvent.key.keysym.sym == 167)
 					iZfKey = KEY_BACKQUOTE;
-								
-				//set status up
+				
+				//set status down
 				m_akKeyState[iZfKey].m_bDown = true;	
 
 				if(m_bBindMode)
@@ -308,10 +309,25 @@ void Input::AddQueuedKey(SDL_keysym* kKey,bool bPressed)
 		iModifier = iModifier | MODIFIER_ALT;
 	if(kKey->mod & KMOD_META)
 		iModifier = iModifier | MODIFIER_META;
-		
 
+	int iKey = kKey->sym;
+	//1cout<<"blub:"<<iKey<<"    "<<int(kKey->scancode)<<endl;
+	switch(iKey)
+	{
+		case 229:
+			iKey = 97;
+			break;
+		case 228:
+			iKey = 97;
+			break;
+		case 246:
+			iKey = 111;
+			break;
+			
+	}
+	
 	//put key in list
-	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(kKey->sym),iModifier,bPressed)  );	
+	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(iKey),iModifier,bPressed)  );	
 	//cout << "Key Qued: " << kKey->sym <<"  modifiers:"<<iModifier<< endl;
 
 
