@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                $(ProjDir)\debug\*.lib                ..\..\..\bin\ 
+PostBuild_Cmds=copy                 $(ProjDir)\debug\*.lib                 ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -94,6 +94,10 @@ PostBuild_Cmds=copy                $(ProjDir)\debug\*.lib                ..\..\.
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\core.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\OglLoad\extgl.c
@@ -132,6 +136,10 @@ SOURCE=.\light.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\mad.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\pmd.h
 # End Source File
 # Begin Source File
@@ -145,6 +153,10 @@ SOURCE=.\primitives.h
 # Begin Source File
 
 SOURCE=.\render.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\render.pkg
 # End Source File
 # Begin Source File
 

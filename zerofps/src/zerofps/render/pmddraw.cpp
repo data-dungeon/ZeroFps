@@ -23,6 +23,7 @@ void PmdDraw::draw()
 	glColor3f(1,1,1);
 	
 	glPushMatrix();
+	glCullFace(GL_FRONT);
 
 	for(int i=0; i<head.num_of_triangles; i++)
 	{
@@ -38,6 +39,7 @@ void PmdDraw::draw()
 	glEnd();
 
 	}
+	glCullFace(GL_BACK);
 
 	glPopMatrix();
 }

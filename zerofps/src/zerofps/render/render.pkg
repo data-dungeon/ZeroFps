@@ -6,6 +6,7 @@ class TextureManager;
 #include "light.h"
 #include "render.h"
 #include "texturemanager.h"
+#include "mad.h"
 
 
 

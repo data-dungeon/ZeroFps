@@ -136,7 +136,11 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_kCamPos=new Vector3(0,0,0);
 	m_kCamRot=new Vector3(0,0,0);
   
-  glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);
+
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void ZeroFps::Swap(void) {
