@@ -17,7 +17,7 @@ class TextureManager;
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:
-	GLGuiRender(int w=0, int h=0, TextureManager* pkTextureManger=NULL, int iFontID=-1);
+	GLGuiRender(int w=0, int h=0, TextureManager* pkTextureManger=NULL);
 	virtual ~GLGuiRender();
 
 	bool EndRender();
@@ -30,7 +30,7 @@ public:
 
 private:
 	GLvoid glPrint(GLint x, GLint y, char *string, int set, int bind_texture_id);	// Where The Printing Happens;
-	void BuildFont(int iFontID);
+	void BuildFont();
 	ZGuiSkin* m_pkSkin; // current skin
 	int m_iMaskTexture;
 	int m_iScreenWidth, m_iScreenHeight;

@@ -2,10 +2,21 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+/*
+
+  	int x, y;
+	m_pkInput->MouseXY(x, y);
+
+	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
+	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
+
+  */
+
 #include "../../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
 #include "../../render/zguirenderer.h"
+#include "../input.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -14,8 +25,9 @@
 
 ZGui::ZGui(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
 {
-//	m_pkInput = pkInput;
+	m_pkInput = pkInput;
 	m_pkActiveMainWin = NULL;
+	m_pkFocusWnd = NULL;
 	m_uiScreenWidth = uiScreenWidth;
 	m_uiScreenHeight = uiScreenHeight;
 	m_pkWndClicked = NULL;
@@ -28,6 +40,26 @@ ZGui::ZGui(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
 ZGui::~ZGui()
 {
 
+}
+
+bool ZGui::Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
+{
+	m_uiScreenWidth = uiScreenWidth;
+	m_uiScreenHeight = uiScreenHeight;
+	m_pkInput = pkInput;
+	return true;
+}
+
+bool ZGui::Update()
+{
+	if(!OnMouseUpdate())
+		return false;
+	if(!OnKeyUpdate())
+		return false;
+
+	Render();
+
+	return true;
 }
 
 bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
@@ -72,6 +104,8 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	{ 
 		RegisterWindow((*w));
 	}
+
+	m_pkFocusWnd = pkWindow;
 
 	return true;
 }
@@ -131,7 +165,7 @@ bool ZGui::Render()
 				break;
 	}
 
-	m_pkRenderer->EndRender();
+	m_pkRenderer->EndRender(); 
 
 	return true;
 }
@@ -162,8 +196,66 @@ bool ZGui::SetMainWindowCallback( int iMainWindowID, callback cb )
 	return true;	
 }
 
-bool ZGui::OnMouseUpdate(int x, int y, bool bLeftButtonDown, bool bRightButtonDown)
+ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
 {
+	MAIN_WINDOW* best = m_pkActiveMainWin;
+
+	// Find the window
+	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		 it != m_pkMainWindows.end(); it++ )
+		 {
+			if( (*it)->pkWin->GetScreenRect().Inside(x,y) )
+			{
+				if( best->pkWin->GetScreenRect().Inside(x,y) )
+				{
+					if( (*it)->iZValue > best->iZValue )
+						best = (*it);
+				}
+				else
+				{
+					best = (*it);
+				}
+			}
+		 }	
+
+	return best;
+}
+
+
+void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
+{
+	// Har samma fönster valts är det bara att returnera.
+	if(m_pkActiveMainWin->iID == p_iIDWndToSelect->iID)
+		return;
+
+	MAIN_WINDOW* pActiveWnd = m_pkActiveMainWin;
+	MAIN_WINDOW* pWndToBeActivated = p_iIDWndToSelect;
+
+	// Minska Z-order på alla fönster som har högre z-order än pWndToBeActivated
+	int Min = pWndToBeActivated->iZValue;	
+
+	for( list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
+		 it != m_pkMainWindows.rend(); it++ )
+		 {
+			if((*it)->iZValue > Min)
+				(*it)->iZValue = (*it)->iZValue-1;
+		 }
+
+	m_pkActiveMainWin = p_iIDWndToSelect;
+
+	// Sätt z-order till max på det fönster som har valts.
+	m_pkActiveMainWin->iZValue = m_pkMainWindows.size()-1;
+}
+
+bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButtonDown*/)
+{
+
+  	int x, y;
+	m_pkInput->MouseXY(x, y);
+
+	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
+	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
+
 	if(m_pkActiveMainWin == NULL)
 		return false;
 
@@ -246,6 +338,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLeftButtonDown, bool bRightButtonDo
 				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
 				delete[] pkParams;
 
+				SetFocus(m_pkWndClicked);
+				
 				m_pkWndClicked->Notify(m_pkWndClicked, NCODE_CLICK_UP);
 				m_pkWndClicked = NULL;
 			}
@@ -280,58 +374,26 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLeftButtonDown, bool bRightButtonDo
 	return true;
 }
 
-ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
+bool ZGui::OnKeyUpdate(/*unsigned long nKey*/)
 {
-	MAIN_WINDOW* best = m_pkActiveMainWin;
+	unsigned long nKey = m_pkInput->GetQueuedKey();
 
-	// Find the window
-	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++ )
-		 {
-			if( (*it)->pkWin->GetScreenRect().Inside(x,y) )
-			{
-				if( best->pkWin->GetScreenRect().Inside(x,y) )
-				{
-					if( (*it)->iZValue > best->iZValue )
-						best = (*it);
-				}
-				else
-				{
-					best = (*it);
-				}
-			}
-		 }	
+	if(m_pkFocusWnd != NULL)
+	{
+		m_pkFocusWnd->ProcessKBInput(nKey);
+		return true;
+	}
 
-	return best;
+	return true;
 }
 
-
-void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
+void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {
-	// Har samma fönster valts är det bara att returnera.
-	if(m_pkActiveMainWin->iID == p_iIDWndToSelect->iID)
-		return;
-
-	MAIN_WINDOW* pActiveWnd = m_pkActiveMainWin;
-	MAIN_WINDOW* pWndToBeActivated = p_iIDWndToSelect;
-
-	// Minska Z-order på alla fönster som har högre z-order än pWndToBeActivated
-	int Min = pWndToBeActivated->iZValue;	
-
-	for( list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
-		 it != m_pkMainWindows.rend(); it++ )
-		 {
-			if((*it)->iZValue > Min)
-				(*it)->iZValue = (*it)->iZValue-1;
-		 }
-
-	m_pkActiveMainWin = p_iIDWndToSelect;
-
-	// Sätt z-order till max på det fönster som har valts.
-	m_pkActiveMainWin->iZValue = m_pkMainWindows.size()-1;
+	// Hitta det fönster som tidigare hade fokus och 
+	// ta bort fokuset från denna.
+	if(m_pkFocusWnd)
+	{		
+		if(m_pkFocusWnd)
+			m_pkFocusWnd->KillFocus();
+	}
 }
-
-
-
-
-

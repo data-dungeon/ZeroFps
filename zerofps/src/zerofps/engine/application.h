@@ -27,13 +27,13 @@ class ENGINE_API Application : public ZFObject {
 		PropertyFactory* pkPropertyFactory;
 		CollisionManager* pkCollisionMan;
 		OpenAlSystem* pkAlSys;
+		ZGui* pkGui;
 		
 	public:
 		static Application* pkApp;
 		
 		int m_iWidth,m_iHeight,m_iDepth;
 		char* m_pTitle;												//title text
-		
 		
 		void SetEnginePointer(ZeroFps* pkZeroFps);
 		Application(char* pName,int iWidth,int iHeight,int iDepth);

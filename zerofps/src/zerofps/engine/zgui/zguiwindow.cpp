@@ -10,6 +10,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
 	m_pkGUI = NULL;
@@ -362,8 +363,3 @@ ZGui* ZGuiWnd::GetGUI()
 
 	return pkGui;
 }
-
-
-
-
-

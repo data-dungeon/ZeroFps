@@ -36,11 +36,10 @@ class Test :public Application {
 		Camera *cam2;
 	
 		PlayerObject *m_pkPlayer;
-		ZGui* m_pkGui;
-		GLGuiRender* m_pkGuiRender; // gui render*/
+
+		//ZGui* m_pkGui;
+//		GLGuiRender* m_pkGuiRender; // gui render*/
 	
-
-
 
 	public:
 		Core	m_kTestCore;

@@ -28,6 +28,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkCollisionMan=pkFps->m_pkCollisionMan;
 	pkAlSys=pkFps->m_pkOpenAlSystem;
 	pkPropertyFactory=pkFps->m_pkPropertyFactory;
+	pkGui=pkFps->m_pkGui;
 }
 	
 	

@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include "network.h"
+#include "zgui/zgui.h"
 
 using namespace std;
 
@@ -86,6 +87,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		OpenAlSystem* m_pkOpenAlSystem;
 		NetWork* m_pkNetWork;
 		Frustum* m_pkFrustum;
+		ZGui* m_pkGui;
+		GLGuiRender* m_pkGuiRenderer;
 
 
 		vector<Core>		akCoreModells;

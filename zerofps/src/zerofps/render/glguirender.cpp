@@ -13,7 +13,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-GLGuiRender::GLGuiRender(int w, int h, TextureManager* pkTextureManger, int iFontID)
+GLGuiRender::GLGuiRender(int w, int h, TextureManager* pkTextureManger)
 {
 	m_pkSkin = NULL;
 	m_iScreenWidth = w;
@@ -21,7 +21,7 @@ GLGuiRender::GLGuiRender(int w, int h, TextureManager* pkTextureManger, int iFon
 	m_iMaskTexture = -1;
 	m_pkTextureManger = pkTextureManger;
 	m_iFontDisplaylistID = 0;
-	BuildFont(iFontID);
+	BuildFont();
 }
 
 GLGuiRender::~GLGuiRender()
@@ -31,10 +31,8 @@ GLGuiRender::~GLGuiRender()
 
 bool GLGuiRender::StartRender()
 {
-	
-
 	//glPushMatrix();
-	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
@@ -400,20 +398,19 @@ void GLGuiRender::PrintChar(char cChar, int xoffset, int yoffset, int iFontSize)
 }
 
 
-void GLGuiRender::BuildFont(int iFontID)
+void GLGuiRender::BuildFont()
 {
 	float	cx;											// Holds Our X Character Coord
 	float	cy;											// Holds Our Y Character Coord
 
 	m_iFontDisplaylistID=glGenLists(256);				// Creating 256 Display Lists
-	m_pkTextureManger->BindTexture(iFontID);		// Select Our Font Texture
-	for (GLuint loop=0; loop<256; loop++)						// Loop Through All 256 Lists
+
+	for (GLuint loop=0; loop<256; loop++)				// Loop Through All 256 Lists
 	{
 		cx=float(loop%16)/16.0f;						// X Position Of Current Character
 		cy=float(loop/16)/16.0f;						// Y Position Of Current Character
 
-		glNewList(m_iFontDisplaylistID+loop,GL_COMPILE);				// Start Building A List
-		//glColor3f(1.0f,1.0f,1.0f);
+		glNewList(m_iFontDisplaylistID+loop,GL_COMPILE);// Start Building A List
 			glBegin(GL_QUADS);							// Use A Quad For Each Character
 				glTexCoord2f(cx,1-cy-0.0625f);			// Texture Coord (Bottom Left)
 				glVertex2i(0,0);						// Vertex Coord (Bottom Left)

@@ -32,7 +32,7 @@ class ENGINE_API ZGuiWnd
 public:
 	void Resize(int Width, int Height);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
-	virtual void SetSkin(ZGuiSkin* pkSkin, int iMaskTexture = -1, int iBorderMaskTexture = -1);
+	virtual void SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture = -1, int iBorderMaskTexture = -1);
 	virtual void SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture = -1);
 
 	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
@@ -52,7 +52,6 @@ public:
 	virtual bool Notify(ZGuiWnd* pkWnd, int iCode) {return false;}
 	unsigned int GetID() {return m_iID;}
 	void SetGUI(ZGui* pkGui);
-	ZGui* GetGUI();
 
 	void Enable()	{ m_bEnabled = true;  }
 	void Disable()	{ m_bEnabled = false; }
@@ -60,12 +59,14 @@ public:
 	void Show()		{ m_bVisible = true;  }
 	void Hide()		{ m_bVisible = false; }
 
+	virtual void SetFocus()	 { m_bHaveFocus = true;  }
+	virtual void KillFocus() { m_bHaveFocus = false; }
+	virtual bool ProcessKBInput(unsigned long nKey) { return false; }
+
 	bool IsVisible()	{ return m_bVisible; }
 	void Move(int dx, int dy);
 
 	virtual void CreateInternalControls() { /* do nothing */ }
-
-	callbackfunc GetCallBack() { return m_pkCallback; }
 
 	Rect GetMoveArea() { return m_kMoveArea; }
 	Rect GetWndRect();		// Get the windows area, relative to it´s parent.
@@ -74,7 +75,8 @@ public:
 	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); // the rect is in screen space.
 	void GetChildrens(list<ZGuiWnd*>& kList);
 	virtual void SetText(char* strText);
-	char* GetText() { return m_strText; }
+	virtual char* GetText() { return m_strText; }
+	ZGui* GetGUI();
 
 protected:
 	
@@ -96,6 +98,7 @@ protected:
 private:
 	void UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h, bool bFreeMovement);
 	Rect m_kArea, m_kMoveArea;
+	bool m_bHaveFocus;
 
 };
 

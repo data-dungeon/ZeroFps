@@ -10,6 +10,7 @@
 #include "zguiscrollbar.h"
 #include "../../engine/input.h"
 #include <stdio.h>
+#include "../Input.h"
 
 #define VERT_SCROLLBAR_TEXBOX_ID 22
 #define HORZ_SCROLLBAR_TEXBOX_ID 23
@@ -59,7 +60,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 			pkRenderer->SetSkin(m_pkTextSkin); 
 
-			if(m_bBlinkCursor)
+/*			if(m_bBlinkCursor)
 			{
 				static int oka;
 				static char ch = '|';
@@ -79,7 +80,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 				m_strText[strlen(m_strText)-1] = ch;
 			}
 			else
-				m_strText[strlen(m_strText)-1] = ' ';
+				m_strText[strlen(m_strText)-1] = ' ';*/
 
 			Rect apa = GetScreenRect();
 			apa.Right -= m_pkScrollbarVertical->GetScreenRect().Width();
@@ -88,8 +89,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 			int dd = m_iStartrow-m_iMaxVisibleRows+1;
 			if(dd<0) dd=0;
+
 			pkRenderer->RenderText(m_strText+(m_iMaxCharsOneRow*(dd)), 
-				apa, 12, -1, (m_iTextMaskTexture > 0));
+				apa, 12, m_bBlinkCursor ? m_iCursorPos : -1, (m_iTextMaskTexture > 0));
 		}
 	}
 
@@ -109,7 +111,7 @@ bool ZGuiTextbox::ProcessKBInput(unsigned long nKey)
 		if(m_iCursorPos > 0)
 		{
 			m_iCursorPos--;
-			m_strText[m_iCursorPos+1] = '\0';
+			m_strText[m_iCursorPos] = '\0';
 		}
 	}
 	else
@@ -127,9 +129,6 @@ bool ZGuiTextbox::ProcessKBInput(unsigned long nKey)
 
 	if(nKey == DOWN)
 		m_iCursorPos += m_iMaxCharsOneRow;
-
-	if(nKey != '\b')
-		strcat(m_strText, "|");
 
 	// Scroll scrollbar
 	int iCurrRow = m_iCursorPos / m_iMaxCharsOneRow;

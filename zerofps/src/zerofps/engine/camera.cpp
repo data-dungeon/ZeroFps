@@ -17,7 +17,8 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 	Update(iWidth,iHeight);
 }
 
-void Camera::Update(int iWidth,int iHeight) {
+void Camera::Update(int iWidth,int iHeight) 
+{
 
 	if(m_bViewChange)
 	{

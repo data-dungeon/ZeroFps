@@ -1,15 +1,12 @@
 #include "test.h"
 #include "walker.h"
 
-
 #define ID_MAINWND1 100
 #define ID_CLOSE_BUTTON 102
 
 Test olle("MegaGame",1024,768,16);
 
-Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
-
-}
+Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
 void Test::OnInit(void) 
 {
@@ -160,21 +157,17 @@ void Test::OnInit(void)
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
 	
-	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
 	sky->SetParent(hm);	
 	sky->SetRotate(Vector3(.5,0,0));
 	pkObjectMan->Add(sky);	
 
-	
 	//water
 	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
 	water->GetPos().Set(512,0,512);
 	water->SetParent(hm);
 	pkObjectMan->Add(water);	
-
-
 
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
@@ -182,12 +175,8 @@ void Test::OnInit(void)
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
 
-
 	// Gui
 	InitUI();
-
-
-
 
 	ZFObjectManger::GetInstance()->PrintObjects();
 }
@@ -261,10 +250,9 @@ void Test::OnIdle(void) {
 	if(pkFps->GetCam()->GetPos().y<test->Height(x,z)+1)
 		pkFps->GetCam()->GetPos().y=test->Height(x,z)+1;
 	
-	int mx, my;
+/*	int mx, my;
 	pkInput->MouseXY(mx, my);
-	
-	m_pkGui->OnMouseUpdate(mx, my, pkInput->Pressed(MOUSELEFT), pkInput->Pressed(MOUSERIGHT));
+	pkGui->OnMouseUpdate(mx, my, pkInput->Pressed(MOUSELEFT), pkInput->Pressed(MOUSERIGHT));*/
 }
 
 void Test::OnHud(void) 
@@ -289,16 +277,10 @@ void Test::OnHud(void)
 	glDisable(GL_ALPHA_TEST);
 	
 	glPopAttrib();
-
-	m_pkGui->Render();
-
-	
 }
 
 
 void Test::input() {
-
-
 
 	if(pkInput->Pressed(RIGHT)){
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
@@ -373,8 +355,6 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 
 
-
-
 bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {
 	Rect rc;
@@ -406,9 +386,9 @@ bool Test::InitUI()
 	int font = pkRender->GetTexMangager()->Load("file:../data/textures/font.bmp", 0);
 	int font_a = pkRender->GetTexMangager()->Load("file:../data/textures/font_a.bmp", 0);
 
-	m_pkGui = new ZGui(1024, 768, pkInput);
-	m_pkGuiRender = new GLGuiRender(1024, 768, pkRender->GetTexMangager(), font);
-	m_pkGui->SetRenderer(m_pkGuiRender);
+/*	pkGui = new ZGui(1024, 768, pkInput);*/
+/*	m_pkGuiRender = new GLGuiRender(1024, 768, pkRender->GetTexMangager(), font);
+	pkGui->SetRenderer(m_pkGuiRender);*/
 
 /*	ZGuiSkin( const long iBkTexID=-1, 
 			  const long iHorzBorderTex=-1, 
@@ -448,25 +428,10 @@ bool Test::InitUI()
 
 	ZGuiScrollbar* pkScrollbar = new ZGuiScrollbar(Rect(350,0,370,200),pkMainWindow,true,40);
 	pkScrollbar->SetSkin(sn_sb1);
-	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sn_bn1_focus); ; 
-	pkScrollbar->SetScrollInfo(0,100,0.15f,0);
-
-	ZGuiRadiobutton* pkRadiobutton;
-
-	Rect rect(10,60,26,76);
-	for(int i=0; i<5; i++)
-	{
-		pkRadiobutton = new ZGuiRadiobutton(rect, pkMainWindow2, i, 50);
-		pkRadiobutton->SetButtonSelectedSkin(sn_radio_bn_sel, radiobn_a);
-		pkRadiobutton->SetButtonUnselectedSkin(sn_radio_bn_unsel, radiobn_a);
-		char text[50]; sprintf(text, "Button nr: %i", i);
-		pkRadiobutton->SetText(text); 
-		pkRadiobutton->SetTextSkin(sn_font, font_a);
-		rect = rect.Move(0,16);
-	}
+	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sk_bn1_up);
 	
-	m_pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
-	m_pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow2, ZGWinProc, true);
+	pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
+	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow2, ZGWinProc, true);
 
 	return true;
 }

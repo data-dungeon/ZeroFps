@@ -48,18 +48,19 @@ public:
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WIN;
 
-	ZGui(int uiScreenWidth, int uiScreenHeight, Input* pkInput);
+	ZGui(int uiScreenWidth=800, int uiScreenHeight=600, Input* pkInput=NULL);
 	~ZGui();
 
-	bool OnMouseUpdate(int x, int y, bool bLeftButtonDown, bool bRightButtonDown);
+	bool Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput);
+	bool Update();
+
 	ZGuiWnd* GetWindow(unsigned int iID);
 
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
 	bool SetActiveMainWindow(int iID);									// Select a new active main window
 	bool SetRenderer( ZGuiRender* pkRender );							// Set a new gui render object
 	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
-	bool Render();														// Render the active main window
-
+	
 	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWin; return NULL; }
 	callback GetActiveCallBackFunc() 
 	{ 
@@ -79,13 +80,16 @@ public:
 
 private:
 
+	bool Render(); // Render the active main window
+	void SetFocus(ZGuiWnd* pkWnd);
+	bool OnKeyUpdate(/*unsigned long nKey*/);
+	bool OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButtonDown*/);
 	void RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect);
 	MAIN_WINDOW* ChangeMainWindow(int x, int y);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow);
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
+	Input* m_pkInput;
 	
-
-
 	bool WindowSortCmp(MAIN_WINDOW* a, MAIN_WINDOW* b);
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window
@@ -96,6 +100,7 @@ private:
 	bool m_bRightButtonDown; // previus state of the left mouse button.
 
 	ZGuiWnd* m_pkWndClicked, *m_pkWndUnderCursor;
+	ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
 
 	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
 };

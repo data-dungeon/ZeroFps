@@ -22,7 +22,7 @@ ZeroFps::ZeroFps(void)
 	m_pkSBM=new SoundBufferManager(m_pkFile);	
 	m_pkOpenAlSystem= new OpenAlSystem();
 	m_pkNetWork = new NetWork;
-
+	m_pkGui = new ZGui();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -118,7 +118,13 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	HandleArgs(iNrOfArgs,paArgs);					//handle arguments
 	SetApp();										//setup class pointers	
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
-	
+
+	// Init Gui
+	m_pkGui->Initialize(m_pkApp->m_iWidth, m_pkApp->m_iHeight, m_pkInput);
+	m_pkGuiRenderer = new GLGuiRender(m_pkApp->m_iWidth, m_pkApp->m_iHeight, 
+		m_pkRender->GetTexMangager() );
+	m_pkGui->SetRenderer(m_pkGuiRenderer);		
+
 	m_iState=state_normal;								//init gamestate to normal		
 //	m_pkGameCamera=m_pkDefaultCamera;		
 //	m_pkCamera=m_pkGameCamera;
@@ -142,8 +148,7 @@ void ZeroFps::MainLoop(void) {
 
 		//handle input
 		m_pkInput->Update();
-
-
+		 
 		if(m_bServerMode)
 		{
 		
@@ -214,6 +219,9 @@ void ZeroFps::MainLoop(void) {
 			//run application Head On Display 
 			SetCamera(m_pkConsoleCamera);
 			m_pkApp->OnHud();
+
+			// Update GUI
+			m_pkGui->Update();
 
 		}
 		
