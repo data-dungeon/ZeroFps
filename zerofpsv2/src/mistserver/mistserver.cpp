@@ -875,6 +875,9 @@ void MistServer::Input()
 
 	if(m_pkInputHandle->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
 
+	if(m_pkInputHandle->Pressed(KEY_8))	assert(0);
+	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
+
 
 	if(m_pkCameraObject)	
 	{	

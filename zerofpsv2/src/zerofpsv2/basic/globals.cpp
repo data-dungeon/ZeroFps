@@ -6,6 +6,7 @@
 
 #include "globals.h"
 #include "zfsystem.h"
+#include "zfassert.h"
 #include <cstdio>
 #include <cstdarg>
 //#include <conio.h>
@@ -242,3 +243,62 @@ void ZFWarning(const char *fmt, ...)
 	cout << "Warning: " <<  g_szFormatText << endl;
 }
 
+#ifdef WIN32
+#include <windows.h>
+
+ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErrorDesc, char* szErrorFileName,
+									  int iLineNumber)
+{
+	// Create Error Message.
+	const int iMaxMessageSize = 1024;
+	char acErrMessage[iMaxMessageSize];
+
+	sprintf(acErrMessage, 
+		" File: %s\n Line: %d\n Error: %s\n Comment: %s\n\n Abort to exit (or debug), Retry to continue, Ignore to disregard all occurrences of this error.",
+		szErrorFileName, iLineNumber, szErrorText, szErrorDesc);
+
+	// Find the top most window.
+	HWND hWndParent = GetActiveWindow();
+	if( NULL != hWndParent) 
+	{
+		hWndParent = GetLastActivePopup( hWndParent );
+	}
+
+	int iRet = MessageBox(hWndParent, acErrMessage, szErrorTitle, MB_TASKMODAL | MB_SETFOREGROUND | 
+		MB_ABORTRETRYIGNORE | MB_ICONERROR);
+
+	if(iRet == IDRETRY)
+		return ZFA_CONTINUE;
+
+	if(iRet == IDIGNORE)
+		return ZFA_IGNORE;
+
+	iRet = MessageBox(hWndParent, "Debug last Error", "Debug or exit?", MB_TASKMODAL | MB_SETFOREGROUND |
+		MB_YESNO | MB_ICONQUESTION);
+
+	if(iRet == IDYES)
+		return ZFA_BREAKPOINT;
+
+	exit(-1);
+	return ZFA_ABORT;
+}
+
+#endif // Win32
+
+
+
+#ifndef WIN32
+
+ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErrorDesc, char* szErrorFileName,
+									  int iLineNumber)
+{
+	cout << "szErrorTitle: " << szErrorTitle << endl;
+	cout << "szErrorText: " << szErrorText << endl;
+	cout << "szErrorDesc: " << szErrorDesc << endl;
+	cout << "szErrorFileName: " << szErrorFileName << endl;
+	cout << "iLineNumber: " << iLineNumber << endl;
+
+	exit(-1);
+	return ZFA_ABORT;
+}
+#endif // !WIN32
