@@ -116,9 +116,6 @@ void DarkMetropolis::OnIdle()
 
 	GUI_OnIdle();
 
-	//update camera position
-	CheckCameraPos();
-
 }
 
 void DarkMetropolis::RenderInterface(void)
@@ -201,6 +198,9 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem() 
 {	
+	//update camera position
+	CheckCameraPos();
+
 
 
 	float t = m_pkFps->m_pkObjectMan->GetGameTime();
@@ -261,6 +261,7 @@ void DarkMetropolis::OnServerStart()
 		{
 			m_pkCameraProp->SetCamera(m_pkCamera);
 			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
+			m_pkCameraProp->Set3PPAngle(1.04);
 			m_pkCameraEntity->GetSave() = false;
 		}
 		

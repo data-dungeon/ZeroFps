@@ -21,7 +21,7 @@ P_Camera::P_Camera()
 	m_f3PYAngle = 0;
 	m_f3PPAngle = 0;
 	m_f3PDistance = 3;
-	m_kOffset.Set(0,1.5,0);
+	m_kOffset.Set(0,2.5,0);
 
 }
 
@@ -52,7 +52,7 @@ void P_Camera::Update()
 				
 				float xp = sin(m_f3PYAngle);
 				float zp = cos(m_f3PYAngle);				
-				float yp = cos(m_f3PPAngle);								
+				float yp = tan(m_f3PPAngle);								
 				
 				Vector3 campos = m_kInterPos + Vector3(xp,yp,zp).Unit() * m_f3PDistance;
 				
