@@ -579,25 +579,28 @@ void Gui::CreateTestWnd()
 
 	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
 
-/*	int words = 50;
-	string text;
-	for(int i=0; i<words; i++)
+	FILE* pkFile = fopen("../src/filehead.txt", "r+t");
+	if(pkFile)
 	{
-		//char oka[20]; 
-		//sprintf(oka, "%i\n", i);
-		text += "apfett apfett ";
-		//text += oka;
-	}*/
+		int length = 0;
+		while(1)
+		{
+			int ret = getc(pkFile);
 
-	char* szText = new char[1000+1]; //text.length()+1];
+			if(ret == EOF)
+				break;
+			else
+				length++;
+		}
 
-	FILE* pkFile = fopen("textbox.txt", "r+t");
-	fread(szText, sizeof(char), 1000, pkFile);
-	szText[1000] = '\0';
+		fseek(pkFile, 0, SEEK_SET);
 
-	//sprintf(szText, text.c_str());
-	pkTextbox->SetText(szText);//"Hej din tjockis,\nvill du ha smisk? Inte det??? Kan du multiplikationstabellen eller inte?");
-	delete[] szText;
+		char* szText = new char[length+1];
+		fread(szText, sizeof(char), length, pkFile);
+		szText[length] = '\0';
+		pkTextbox->SetText(szText);
+		delete[] szText;
+	}
 
 
 	
