@@ -547,9 +547,10 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
    UpdatePropertyList(m_iCurrentObject);
 }
 
-void ZeroEd::DeleteSelected()
+void ZeroEd::SendDeleteSelected()
 {
-	if(m_SelectedEntitys.size() == 0)	return;
+	if(m_SelectedEntitys.size() == 0)	
+		return;
 
 	NetPacket kNp;
 	kNp.Clear();
@@ -557,12 +558,10 @@ void ZeroEd::DeleteSelected()
 	kNp.Write_Str("del");
 	kNp.Write((int) m_SelectedEntitys.size());
 
-	cout << "Delete Selected: ID, Type, Name" << endl;
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
 		int iId = (*itEntity);
 		kNp.Write((int)iId);
-
 	}
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
@@ -1071,7 +1070,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
 		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
 		case FID_SELNONE:		Select_None();		break;
-		case FID_DELETE:		DeleteSelected();	break;
+		case FID_DELETE:		SendDeleteSelected();	break;
 
 		case FID_CLONE:		EditRunCommand(FID_CLONE);		break;
 		case FID_CUT:			EditRunCommand(FID_CUT);		break;
@@ -1290,30 +1289,17 @@ Entity* ZeroEd::GetTargetObject()
 }
 
 
-void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
+void ZeroEd::SendAddZone(Vector3 kPos, Vector3 kSize, string strName)
 {
-	if(m_pkEntityManager->IsInsideZone(kPos, kSize))
-		return;
+	NetPacket kNp;
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("create_zone");
+	kNp.Write_Str(strName);
+	kNp.Write(kPos);
+	kNp.Write(kSize);		
+	m_pkZeroFps->RouteEditCommand(&kNp);		
 
-	if(m_bDisableFreeZonePlacement && !ZoneHaveNeighbour(kPos, kSize))
-		return;
-
-	int id = m_pkEntityManager->CreateZone(kPos, kSize);
-
-	//force loading of this zone
-	m_pkEntityManager->LoadZone(id);
-
-	//set to active
-	m_iCurrentMarkedZone = id;
-
-	if(id != -1)
-	{
-		if(!bEmpty)
-			m_pkEntityManager->SetZoneModel(strName.c_str(),id);
-		//pkObjectMan->SetUnderConstruction(id);
-	}	
-
-	SetZoneEnviroment(m_strActiveEnviroment.c_str());
+	//SetZoneEnviroment(m_strActiveEnviroment.c_str());	
 }
  
 

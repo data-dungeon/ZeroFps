@@ -60,29 +60,16 @@ void ZeroEd::Input_EditZone()
 
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		//AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);
-		NetPacket kNp;
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("create_zone");
-		kNp.Write_Str(m_strActiveZoneName);
-		kNp.Write(m_kZoneMarkerPos);
-		kNp.Write(m_kZoneSize);		
-		m_pkZeroFps->RouteEditCommand(&kNp);					
-	
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
+		
 		//request a new zone list
 		SendZoneListRequest();	
 	}
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
 	{
-		NetPacket kNp;
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("create_zone");
-		kNp.Write_Str(string(""));
-		kNp.Write(m_kZoneMarkerPos);
-		kNp.Write(m_kZoneSize);		
-		m_pkZeroFps->RouteEditCommand(&kNp);						
-	
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,string(""));
+		
 		//request a new zone list
 		SendZoneListRequest();
 	}	
@@ -90,7 +77,7 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->VKIsDown("remove"))	
 	{	
 		//delete selected entity ( the server cheks if its a zone or an normal entity)
-		DeleteSelected();
+		SendDeleteSelected();
 		SendZoneListRequest();
 	}
 		
@@ -187,7 +174,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	
 			
 	//remove			
-	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
+	if(m_pkInputHandle->VKIsDown("remove"))	
+		SendDeleteSelected();
 
 	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 	if(!pkObj)

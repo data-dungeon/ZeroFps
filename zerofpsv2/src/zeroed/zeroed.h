@@ -204,7 +204,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	DrawSelectedEntity();
 		void	Select_Toggle(int iId, bool bMultiSelect);
 
-		void	DeleteSelected();			// Removes selected entitys.
 
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);
@@ -225,7 +224,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	UpdateObjectMakerPos();
 		void	DrawZoneMarker(Vector3 kPos);
 		void	DrawCrossMarker(Vector3 kPos);
-		void	AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
 
 		void	SetupGuiEnviroment();
 		void	ToogleLight(bool bEnabled);
@@ -248,6 +246,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendSetZoneModel(string strModel,int iZoneID);
 		void	SendRotateZoneModel(int iZoneID);
 		void	SendZoneListRequest();
+		void	SendDeleteSelected();			// Removes selected entitys.
+		void	SendAddZone(Vector3 kPos, Vector3 kSize, string strName);		
 		void	DrawZoneList();
 		
 		
