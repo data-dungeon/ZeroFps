@@ -43,6 +43,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistserver");
 	m_pkServerInfoP = NULL;
 
+	m_pkEnviroment = new ZSSEnviroment;
+	
 	// Set Default values
 	m_AcceptNewLogins = true;
 
@@ -80,10 +82,10 @@ void MistServer::CreateEditCameras()
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkActiveCameraObject->SetSave(false);
 		
-		P_Enviroment* pe = (P_Enviroment*)m_pkActiveCameraObject->AddProperty("P_Enviroment");
+/*		P_Enviroment* pe = (P_Enviroment*)m_pkActiveCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		
 		pe->SetEnviroment("data/enviroments/server.env");
-
+*/
 	}
 
 /* mega över super evil
@@ -166,6 +168,14 @@ void MistServer::Init()
 	// hide cursor
 	m_pkInput->ShowCursor(true);
 
+	// Setup the Edit Sun that are used for simple lightning in the editor.
+	m_kSun.kRot = Vector3(2,2,1);
+	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
+	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
+	m_kSun.iType=DIRECTIONAL_LIGHT;			
+	m_pkLight->Add(&m_kSun);
+		
+	
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
@@ -188,7 +198,7 @@ void MistServer::SetupGuiEnviroment()
 
 void MistServer::RegisterResources()
 {
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 
@@ -250,7 +260,7 @@ void MistServer::RenderInterface(void)
 
 void MistServer::OnSystem()
 {
-
+	m_pkEnviroment->Update();
 	
 }
 

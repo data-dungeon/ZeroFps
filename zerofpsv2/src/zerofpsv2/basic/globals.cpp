@@ -222,16 +222,16 @@ float round2(float val)
 }
 
 
-float Randomf(float fMax)
+float Randomf(float fInterval)
 {
 	float r = (float)rand() / (float)(RAND_MAX);
-	return r*fMax;
+	return r*(fInterval-1);
 }
 
-int Randomi(int iMax)
+int Randomi(int iInterval)
 {
 	float r = (float)rand() / (float)(RAND_MAX);
-	return (r*iMax) + 0.5;
+	return int(r*iInterval);
 }
 
 

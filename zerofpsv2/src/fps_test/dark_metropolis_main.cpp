@@ -30,6 +30,9 @@ DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("r_enablemusic",&m_iEnableMusic,CSYS_INT);
 
 	pkTreadInfo = new THREAD_INFO;
+	
+	
+	m_pkEnviroment = new ZSSEnviroment;
 } 
 
 void DarkMetropolis::OnHud() 
@@ -44,6 +47,7 @@ void DarkMetropolis::OnInit()
 
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
+	
 	
 
 	//initiate variables
@@ -93,7 +97,7 @@ void DarkMetropolis::OnInit()
 
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
-	m_pkCamera->SetClearViewPort(false);
+	//m_pkCamera->SetClearViewPort(false);
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
 
@@ -106,7 +110,7 @@ void DarkMetropolis::OnInit()
 	RegisterPropertys();
 
 	//registering resources
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 
 	ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	pkRenderer->SetScaleMode(GUIScaleManually);
@@ -293,6 +297,8 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem()
 {	
+	m_pkEnviroment->Update();
+
 	if(m_pkPlayerEntity)
 		if(P_Tcs* pkTcs = (P_Tcs*)m_pkPlayerEntity->GetProperty("P_Tcs"))
 			pkTcs->ApplyForce(Vector3(0,0,0),m_kPlayerwalkforce);	
@@ -616,7 +622,7 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	*/
 		
 	//load world
-	if(!m_pkEntityManager->LoadWorld("dmworld"))
+	if(!m_pkEntityManager->LoadWorld("blub"))
 	{
 		cout<<"ERROR: default world dmworld not found"<<endl;
 		return false;
@@ -1138,14 +1144,15 @@ bool DarkMetropolis::CreatePlayer()
 				m_pkCameraProp->Set3PDistance(4);							
 			}
 						
-			//create enviroment
-			
+			/*
+			//create enviroment			
 			if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 			{
 				pkEnv->SetEnable(true);
 				pkEnv->SetEnviroment("data/enviroments/fps_test.env");		
 				cout<<"setting enviroment"<<endl;	
 			}					
+			*/
 			
 			//m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
 			//m_pkPlayerEntity->DeleteProperty("P_Controller");

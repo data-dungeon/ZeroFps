@@ -184,8 +184,8 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		ShowWnd("action_button_ext", false);
 		m_bActionbarIsOut = true;
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
-			m_pkAudioSys->GetListnerPos()); 
+//		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+//			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "action_button")

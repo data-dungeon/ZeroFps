@@ -42,7 +42,7 @@ public:
 	void Save(const char* szFileName);
 	
 	bool SectionExist(const char* acSection);
-	bool KeyExist(const char* strSection, char* strKey);
+	bool KeyExist(const char* strSection,const char* strKey);
 	
 	bool Open(const char* strFileName, bool bCommandFile);
 	

@@ -309,7 +309,7 @@ void ZeroEd::Init()
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
 	m_strActiveZoneName = "";
-	m_strActiveEnviroment = "data/enviroments/sun.env";
+	m_strActiveEnviroment = "";
 
 //	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
@@ -424,7 +424,7 @@ void ZeroEd::OnClientStart()
 
 void ZeroEd::RegisterResources()
 {
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void ZeroEd::RegisterPropertys()

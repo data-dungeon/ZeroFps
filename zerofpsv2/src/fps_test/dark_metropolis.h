@@ -27,6 +27,7 @@ using namespace std;
 #include "../mcommon/p_dmitem.h"
 #include "../mcommon/p_dmmission.h"
 #include "../mcommon/p_dmgameinfo.h"
+#include "../mcommon/zssenviroment.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
@@ -63,9 +64,11 @@ class DarkMetropolis : public Application, public ZGuiApp
 	
 		int		m_iMarkerTextureID;
 	
+		ZSSEnviroment*	m_pkEnviroment;
+		
 		P_DMGameInfo*	m_pkGameInfoProperty;
 		Entity*			m_pkGameInfoEntity;
-
+		
 		LightSource m_kSun;
 
 		Camera*		m_pkCamera;

@@ -10,9 +10,10 @@ all:
 #	cd dark_metropolis/; $(MAKE) $@
 #	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
-#	cd fps_test/; $(MAKE) $@
+	cd fps_test/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	./gengdbinit.sh
+
 clean:
 	cd zerofpsv2/; $(MAKE) $@
 	cd mcommon/; $(MAKE) $@
@@ -22,6 +23,6 @@ clean:
 #	cd dark_metropolis/; $(MAKE) $@
 #	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
-#	cd fps_test/; $(MAKE) $@
+	cd fps_test/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 

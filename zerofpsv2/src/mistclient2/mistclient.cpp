@@ -167,7 +167,7 @@ void MistClient::SendMessage(string strMsg,int iChannel,string strToWho)
 
 void MistClient::RegisterResources()
 {
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MistClient::RegisterPropertys()
@@ -417,13 +417,18 @@ void MistClient::UpdateCharacter()
 			pkCP->SetOverHeadText(false);					
 		
 		//setup enviroment
-		if(!pkEnt->GetProperty("P_Enviroment"))
+/*		if(!pkEnt->GetProperty("P_Enviroment"))
 		{
 			if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
 			{
 				pkEnv->SetEnable(true);				
 				pkEnv->SetEnviroment("data/enviroments/sun.env");
 			}
+		}*/
+		
+		if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->GetProperty("P_Enviroment"))
+		{
+			pkEnv->SetEnable(true);				
 		}		
 	}
 }

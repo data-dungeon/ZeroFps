@@ -38,7 +38,7 @@ void ZoneData::Clear()
 	m_kSize.Set(0,0,0);
 	
 		
-	m_strEnviroment = "Default";
+	m_strEnviroment = "";
 }
 
 bool ZoneData::IsInside(Vector3 kPoint)

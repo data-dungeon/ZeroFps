@@ -161,7 +161,6 @@ public:
 
 		float GetMouseSens() 				{	return m_fMouseSensitivity; 	}
 		bool	GetGrabInput()					{	return m_bGrabInput;				}
-		//void	SetGrabInput(bool bGrab)	{	m_bGrabInput = m_bGrab;			}
 		
 		//virtual keys
 		void StartBindMode(string strBindKey, int iBindIndex);

@@ -453,7 +453,7 @@ bool ZFIni::SectionExist(const char* acSection)
 	return false;
 }
 
-bool ZFIni::KeyExist(const char* strSection, char* strKey)
+bool ZFIni::KeyExist(const char* strSection,const char* strKey)
 {
 	if(GetValue(strSection,strKey) == NULL)
 		return false;

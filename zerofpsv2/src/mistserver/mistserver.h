@@ -71,6 +71,10 @@ class MistServer :public Application , public ZGuiApp
 			FID_SAY,
 		};
 
+		//enviroment system
+		ZSSEnviroment*					m_pkEnviroment;
+		LightSource						m_kSun;
+		
 		//server stuff
 		Entity*							m_pkServerInfo;
 		P_ServerInfo*					m_pkServerInfoP;

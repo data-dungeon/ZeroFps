@@ -1,218 +1,224 @@
 #include "p_enviroment.h"
 
 
-//--------start of envsetting
-
-EnvSetting::EnvSetting()
+Property* Create_P_Enviroment()
 {
-	Clear();
-
+	return new P_Enviroment;
 }
-
-EnvSetting::~EnvSetting()
-{
-
-}
-
-bool EnvSetting::LoadEnviroment(const char* czName)
-{
-	Clear();
-	
-	if(m_kIni.Open(czName,false))
-	{
-	
-		//music
-		if(m_kIni.KeyExist("enviroment","music"))
-			m_strMusic = m_kIni.GetValue("enviroment","music");
-
-		//---------------RAIN SPLASHES
-		if(m_kIni.KeyExist("enviroment","rain"))
-			m_iRain = m_kIni.GetIntValue("enviroment","rain");
-		
-			
-		//---------------PARTICLES
-		//particle effect
-		if(m_kIni.KeyExist("enviroment","particles"))
-			m_strParticles = m_kIni.GetValue("enviroment","particles");
-	
-		//--------------Skybox
-		if(m_kIni.KeyExist("enviroment","skybox1"))
-			m_strSkybox1 = m_kIni.GetValue("enviroment","skybox1");	
-		if(m_kIni.KeyExist("enviroment","skybox2"))
-			m_strSkybox2 = m_kIni.GetValue("enviroment","skybox2");	
-	
-		//---------------FOG
-		//fog start/stop
-		if(m_kIni.KeyExist("enviroment","fogstart"))
-			m_fFogStart = m_kIni.GetFloatValue("enviroment","fogstart");
-		if(m_kIni.KeyExist("enviroment","fogstop"))
-			m_fFogStop = m_kIni.GetFloatValue("enviroment","fogstop");
-		
-		//fog color
-		if(m_kIni.KeyExist("enviroment","fogcolorR"))
-			m_kFogColor.x = m_kIni.GetFloatValue("enviroment","fogcolorR");
-		if(m_kIni.KeyExist("enviroment","fogcolorG"))
-			m_kFogColor.y = m_kIni.GetFloatValue("enviroment","fogcolorG");
-		if(m_kIni.KeyExist("enviroment","fogcolorB"))
-			m_kFogColor.z = m_kIni.GetFloatValue("enviroment","fogcolorB");		
-		
-		m_kFogColor.w = 1;
-	
-		//---------------SUN
-		//diffuse sunlight
-		if(m_kIni.KeyExist("enviroment","sundiffuseR"))
-			m_kSunDiffuseColor.x = m_kIni.GetFloatValue("enviroment","sundiffuseR");
-		if(m_kIni.KeyExist("enviroment","sundiffuseG"))
-			m_kSunDiffuseColor.y = m_kIni.GetFloatValue("enviroment","sundiffuseG");
-		if(m_kIni.KeyExist("enviroment","sundiffuseB"))
-			m_kSunDiffuseColor.z = m_kIni.GetFloatValue("enviroment","sundiffuseB");		
-		
-		m_kSunDiffuseColor.w = 1;
-		
-		//ambient sunlight
-		if(m_kIni.KeyExist("enviroment","sunambientR"))
-			m_kSunAmbientColor.x = m_kIni.GetFloatValue("enviroment","sunambientR");
-		if(m_kIni.KeyExist("enviroment","sunambientG"))
-			m_kSunAmbientColor.y = m_kIni.GetFloatValue("enviroment","sunambientG");
-		if(m_kIni.KeyExist("enviroment","sunambientB"))
-			m_kSunAmbientColor.z = m_kIni.GetFloatValue("enviroment","sunambientB");
-		
-		m_kSunAmbientColor.w = 1;
-		
-		//sun pos/directon
-		if(m_kIni.KeyExist("enviroment","sunposX"))
-			m_kSunPos.x = m_kIni.GetFloatValue("enviroment","sunposX");
-		if(m_kIni.KeyExist("enviroment","sunposY"))
-			m_kSunPos.y = m_kIni.GetFloatValue("enviroment","sunposY");
-		if(m_kIni.KeyExist("enviroment","sunposZ"))
-			m_kSunPos.z = m_kIni.GetFloatValue("enviroment","sunposZ");
-		
-		
-		m_kIni.Close();
-		return true;
-	}
-	else
-	{
-		cout<<"Error loading enviroment:"<<czName<<endl;
-		return false;		
-	}
-	
-//	return true;
-}
-
-void EnvSetting::Clear()
-{
-	m_strMusic		= "";
-	m_strParticles = "";
-	m_strSkybox1	= "";
-	m_strSkybox2	= "";
-	
-	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1);					
-	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
-	m_kSunPos.Set(0.5,0.5,0);		
-	m_iRain = 0;
-	
-	m_fFogStart = 2;
-	m_fFogStop = 10;	
-	m_kFogColor.Set(1,1,1,1);
-}
-
-bool EnvSetting::Create(string strName)
-{
-	return LoadEnviroment(strName.c_str());
-}
-
-int EnvSetting::CalculateSize()
-{
-
-	return sizeof(EnvSetting);
-}
-
-
-ZFResource* Create__EnvSetting()
-{
-	return new EnvSetting;						// LEAK - MistClient, Level loaded.
-}
-
-//---------end of envsetting
 
 P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
-	m_iType=PROPERTY_TYPE_RENDER_NOSHADOW;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iType=			PROPERTY_TYPE_RENDER;
+	m_iSide=			PROPERTY_SIDE_CLIENT;
+	m_iSortPlace=	10;	
+	bNetwork =		true;
 	
 	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-	//m_pkMusic=				static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
-	m_iMusicHandle = -1;
+	m_pkAudioSystem =		static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkEnviroment =		static_cast<ZSSEnviroment*>(g_ZFObjSys.GetObjectPtr("ZSSEnviroment"));
 
-	m_iSortPlace	=	10;
 	
-	bNetwork =		true;
-	m_bEnabled =	false;
+	m_bEnabled = 						false;	
+	m_strCurrentZoneEnviroment =	"Default";
+	m_strLastSetEnviroment=			"";	
+	m_pkZoneEnvSetting = 			NULL;
 	
-	m_StrCurrentEnviroment = "";
 	
-	
-	m_pkSunMat = new ZMaterial;
-		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
-		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
-		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
-		m_pkSunMat->GetPass(0)->m_bFog = 					false;		
-		m_pkSunMat->GetPass(0)->m_bDepthTest = 			true;		
-		m_pkSunMat->GetPass(0)->m_bBlend = 					true;		
-		m_pkSunMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
-		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
+	if(!m_pkEnviroment)
+	{
+		cout<<"WARNING: no enviroment subsystem found in application, enviroments will be disabled"<<endl;	
+	}
 
-	m_pkSunFlareMat = new ZMaterial;
-		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sunflare.tga");
-		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
-		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
-		m_pkSunFlareMat->GetPass(0)->m_bFog = 						false;		
-		m_pkSunFlareMat->GetPass(0)->m_bDepthTest = 				true;		
-		m_pkSunFlareMat->GetPass(0)->m_bBlend = 					true;		
-		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
-		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
-
+	
 }
 
 P_Enviroment::~P_Enviroment()
 {
-	if(m_bEnabled)
+	if(m_pkEnviroment)
 	{
-		if(m_iMusicHandle != -1)
-			m_pkAudioSystem->StopAudio(m_iMusicHandle);
+		m_pkEnviroment->UnRegister(this);
 	}
+	
 }
 
 
 void P_Enviroment::Init()
 {
-	ResetEnviroment();
-	m_fTimer=m_pkFps->GetTicks();
-	m_fRainUpdateTimer = m_pkFps->GetTicks();
-	
-	m_kCurrentFogColor.Set(0,0,0,1);	
-	m_fCurrentFogStart=2;
-	m_fCurrentFogStop=20;	
-	
-	m_iRain = 0;
-	
-	m_iRainTextureID = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/rainsplash.tga", 0);
+	SetNetUpdateFlag(false);
+
+	if(m_pkEnviroment)
+	{
+		m_pkEnviroment->Register(this);
+	}
+
 }
 
 void P_Enviroment::Update()
 {
+	if(m_bEnabled)
+	{
+		UpdateEnviroment();
+	
+	
+	}
+}
 
+void P_Enviroment::UpdateEnviroment()
+{
+
+	//light
+	P_Light* pkLight;
+	if( !(pkLight = (P_Light*)GetEntity()->GetProperty("P_Light")) )
+		pkLight = (P_Light*)GetEntity()->AddProperty("P_Light");
+	
+	pkLight->SetType(DIRECTIONAL_LIGHT);
+	pkLight->SetDiffuse(m_kCurrentEnvSetting.m_kSunDiffuseColor);
+	pkLight->SetAmbient(m_kCurrentEnvSetting.m_kSunAmbientColor);		
+	pkLight->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
+			
+	//sky box
+	//setup skybox property
+	static string strCurrentSkyBox1;
+	static string strCurrentSkyBox2;
+	if(m_kCurrentEnvSetting.m_strSkybox1 != "" && m_kCurrentEnvSetting.m_strSkybox2 != "")
+	{
+		if( (strCurrentSkyBox1 != m_kCurrentEnvSetting.m_strSkybox1) || (strCurrentSkyBox2 != m_kCurrentEnvSetting.m_strSkybox2) )
+		{
+			strCurrentSkyBox1 = m_kCurrentEnvSetting.m_strSkybox1;
+			strCurrentSkyBox2 = m_kCurrentEnvSetting.m_strSkybox2;
+		
+			P_SkyBoxRender* pkSB;
+			if( !(pkSB = (P_SkyBoxRender*)m_pkEntity->GetProperty("P_SkyBoxRender") ) )		
+				pkSB = (P_SkyBoxRender*)GetEntity()->AddProperty("P_SkyBoxRender");
+			
+			pkSB->SetTexture(m_kCurrentEnvSetting.m_strSkybox1.c_str(),m_kCurrentEnvSetting.m_strSkybox2.c_str());
+		}
+	}
+	else
+	{
+		strCurrentSkyBox1 = "";
+		strCurrentSkyBox2 = "";	
+		GetEntity()->DeleteProperty("P_SkyBoxRender");
+	}
+	
+	//particles
+	//setup particle property
+	static string strCurrentParticles;
+	if(m_kCurrentEnvSetting.m_strParticles != "")
+	{	
+		if(m_kCurrentEnvSetting.m_strParticles != strCurrentParticles)
+		{	
+			strCurrentParticles = m_kCurrentEnvSetting.m_strParticles;
+		
+			P_PSystem* pkPS;
+			if( !(pkPS = (P_PSystem*)GetEntity()->GetProperty("P_PSystem")) )
+				pkPS = (P_PSystem*)GetEntity()->AddProperty("P_PSystem");
+		
+			pkPS->SetPSType(m_kCurrentEnvSetting.m_strParticles);			
+		}		
+	}
+	else
+	{
+		strCurrentParticles = "";
+		GetEntity()->DeleteProperty("P_PSystem");
+	}
+	
+	//fog
+	m_pkZeroFps->GetCam()->SetClearColor(m_kCurrentEnvSetting.m_kFogColor);
+	m_pkZeroFps->GetCam()->SetFog(m_kCurrentEnvSetting.m_kFogColor,m_kCurrentEnvSetting.m_fFogStart,m_kCurrentEnvSetting.m_fFogStop,true);			
+	
+		
+}
+
+void P_Enviroment::UpdateEnvSetting(EnvSetting* pkEnvSetting)
+{
+	m_pkZoneEnvSetting = pkEnvSetting;	
+	
+	
+	//cout<<"got new enviroment setting"<<endl;
+	if(m_pkZoneEnvSetting)
+		SetNetUpdateFlag(true);
+}
+
+void P_Enviroment::ZoneChange(int iCurrent,int iNew)
+{
+	if(ZoneData* zd = m_pkEntityManager->GetZoneData(iNew))	
+	{	
+		//cout<<"current enviroment:"<<zd->m_strEnviroment<<endl;
+		if(zd->m_strEnviroment == "" || zd->m_strEnviroment == "Default")
+			return;
+		
+		m_strCurrentZoneEnviroment = zd->m_strEnviroment;
+	}
+}
+
+
+
+void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+{
+	if(!m_pkZoneEnvSetting)
+		cout<<"ERROR: tried to send unset zone"<<endl;
+
+	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strMusic);
+	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strParticles);
+	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strSkybox1);
+	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strSkybox2);
+
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunDiffuseColor);	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunAmbientColor);	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunPos);	
+		
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStart);	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStop);	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_kFogColor);		
+	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_iRain);			
+	
+	SetNetUpdateFlag(iConnectionID,false);
+}
+
+void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
+{
+
+	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strMusic);
+	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strParticles);
+	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strSkybox1);
+	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strSkybox2);
+
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunDiffuseColor);	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunAmbientColor);	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunPos);	
+		
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStart);	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStop);	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_kFogColor);		
+	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_iRain);	
+	
+}
+
+void P_Enviroment::SetEnable(bool bNew)
+{
+	if(bNew == m_bEnabled)
+		return;
+
+	m_bEnabled = bNew;
+
+}
+
+
+
+
+
+
+/*
 	DrawSun();
 
-	if(m_bEnabled)
+	if(m_bEnabled) 
 	{
 			
 		//interpolate light and fog 
@@ -281,21 +287,150 @@ void P_Enviroment::Update()
 		}
 		
 	}
-}
+*/	
 
-void P_Enviroment::ZoneChange(int iCurrent,int iNew)
+
+/*
+void P_Enviroment::MakeRainSplashes()
 {
-//	cout<<"zonechange"<<endl;
-	ZoneData* zd = m_pkEntityManager->GetZoneData(iNew);
+	m_kDrops.clear();
 
-	if(zd)	
-	{	
-		m_StrCurrentEnviroment = zd->m_strEnviroment;
-		SetNetUpdateFlag(true);
+	vector<Entity*> kObjects;		
+	if(ZoneData* pkZD = m_pkEntityManager->GetZone(m_pkEntity->GetWorldPosV()))
+	{
+		if(pkZD->m_pkZone)
+		{
+			vector<Entity*> m_kZones;				
+		
+			if(pkZD->m_pkZone->GetZoneNeighbours(&m_kZones))
+			{
+				for(unsigned int i = 0;i<m_kZones.size();i++)
+				{
+					m_kZones[i]->GetAllEntitys(&kObjects);
+				}
+				
+			}
+			else
+				return;
+		}
+		else
+			return;
+	}
+	else
+		return;
+	
+	
+	for(int j = 0;j < m_iRain;j++)
+	{
+		Vector3 kDropStart = m_pkEntity->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
+		
+		float fTop = -999999;
+		Vector3 kPos;
+		for(unsigned int i = 0;i < kObjects.size() ;i++)
+		{
+			if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+			{	
+				if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
+				{	
+					if(pkMad->GetLastColPos().y > fTop)
+					{
+						fTop = pkMad->GetLastColPos().y;
+						kPos = pkMad->GetLastColPos();
+					}
+				
+//					break;
+				}
+			}
+		}
+		
+		if(fTop != -999999)
+		{
+			kPos.y += 0.1;
+			m_kDrops.push_back(kPos);	
+		}
+		
+	}
+}
+*/
+
+/*
+void P_Enviroment::DrawRainSplashes()
+{
+	static Vector3 v1(-0.1,0,0.1);
+	static Vector3 v2( 0.1,0,0.1);
+	static Vector3 v3( 0.1,0,-0.1);
+	static Vector3 v4(-0.1,0,-0.1);
+
+	for(unsigned int i = 0 ;i<m_kDrops.size();i++)
+	{
+		m_pkRender->Polygon4(m_kDrops[i] + v1,
+									m_kDrops[i] + v2,
+									m_kDrops[i] + v3,
+									m_kDrops[i] + v4,
+									m_iRainTextureID);
+		//m_pkRender->Quad(m_kDrops[i],Vector3(-90,0,0),Vector3(0.3,0.3,0.3),m_iRainTextureID);
 	}
 }
 
 
+void P_Enviroment::DrawSun()
+{
+	//textures
+	static int iSunTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
+	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
+	
+	//max number of samples 
+	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
+	static float fMaxAngle = 45.0;
+	static float fFlareSize = 1.5;
+	
+	//positions for sun and flare
+	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos * 100;
+	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos;
+	
+	//calculate angle betwen sun and camera center
+	Matrix4 kRot = m_pkZeroFps->GetCam()->GetRotM();
+	kRot.Transponse();
+	Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));	
+	float fAmp = 0;
+	float fAngle = RadToDeg(kDir.Angle(m_kSunPos.Unit()));
+	
+	//check if  angle is lower than maxangle
+	if( fAngle < fMaxAngle)
+		fAmp = 1.0 - fAngle / fMaxAngle;
+	
+	
+	if(m_pkZShaderSystem->SupportOcculusion())
+	{
+		//do occulusion test	
+		m_pkZShaderSystem->OcculusionBegin();
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);
+		int iSamples = m_pkZShaderSystem->OcculusionEnd();
+		
+		float fSize = float(iSamples) / float(iMaxSamples);
+		if(fSize > 1.0)
+			fSize = 1.0;
+			
+		//draw flare
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fSize*fAmp,m_pkSunFlareMat);
+	}
+	else
+	{
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);	
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fAmp,m_pkSunFlareMat);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
+	}
+}
+*/
+
+
+
+
+
+/*
 void P_Enviroment::SetEnviroment(const char* csEnviroment )
 {
 	//reset everything
@@ -397,194 +532,28 @@ void P_Enviroment::ResetEnviroment()
 	m_fFogStart=2;
 	m_fFogStop=20;
 
-}
+}*/
 
-void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
-{
-	pkNetPacket->Write_Str(m_StrCurrentEnviroment.c_str());	
-	
-	if(m_StrCurrentEnviroment != "")
-		SetNetUpdateFlag(iConnectionID,false);
-}
+	/*
+	m_pkSunMat = new ZMaterial;
+		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
+		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunMat->GetPass(0)->m_bFog = 					false;		
+		m_pkSunMat->GetPass(0)->m_bDepthTest = 			true;		
+		m_pkSunMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
-void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
-{
-	char temp[128];
-	
-	pkNetPacket->Read_Str(temp);
-	
-	if(m_StrCurrentEnviroment  == temp)
-		return;
-			
-	m_StrCurrentEnviroment = temp;
-	
-	if(m_bEnabled)
-		SetEnviroment(m_StrCurrentEnviroment.c_str());
-	else
-		SetEnviroment("");
-		
-		
-}
-
-void P_Enviroment::SetEnable(bool bNew)
-{
-	if(bNew == m_bEnabled)
-		return;
-
-	m_bEnabled = bNew;
-
-	if(bNew)
-	{
-		SetEnviroment(m_StrCurrentEnviroment.c_str());
-	}	
-	else
-	{
-		SetEnviroment("");
-	}
-}
-
-void P_Enviroment::MakeRainSplashes()
-{
-	m_kDrops.clear();
-
-	vector<Entity*> kObjects;		
-	if(ZoneData* pkZD = m_pkEntityManager->GetZone(m_pkEntity->GetWorldPosV()))
-	{
-		if(pkZD->m_pkZone)
-		{
-			vector<Entity*> m_kZones;				
-		
-			if(pkZD->m_pkZone->GetZoneNeighbours(&m_kZones))
-			{
-				for(unsigned int i = 0;i<m_kZones.size();i++)
-				{
-					m_kZones[i]->GetAllEntitys(&kObjects);
-				}
-				
-			}
-			else
-				return;
-		}
-		else
-			return;
-	}
-	else
-		return;
-	
-	
-	for(int j = 0;j < m_iRain;j++)
-	{
-		Vector3 kDropStart = m_pkEntity->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
-		
-		float fTop = -999999;
-		Vector3 kPos;
-		for(unsigned int i = 0;i < kObjects.size() ;i++)
-		{
-			if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
-			{	
-				if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
-				{	
-					if(pkMad->GetLastColPos().y > fTop)
-					{
-						fTop = pkMad->GetLastColPos().y;
-						kPos = pkMad->GetLastColPos();
-					}
-				
-//					break;
-				}
-			}
-		}
-		
-		if(fTop != -999999)
-		{
-			kPos.y += 0.1;
-			m_kDrops.push_back(kPos);	
-		}
-		
-	}
-}
-
-void P_Enviroment::DrawRainSplashes()
-{
-	static Vector3 v1(-0.1,0,0.1);
-	static Vector3 v2( 0.1,0,0.1);
-	static Vector3 v3( 0.1,0,-0.1);
-	static Vector3 v4(-0.1,0,-0.1);
-
-	for(unsigned int i = 0 ;i<m_kDrops.size();i++)
-	{
-		m_pkRender->Polygon4(m_kDrops[i] + v1,
-									m_kDrops[i] + v2,
-									m_kDrops[i] + v3,
-									m_kDrops[i] + v4,
-									m_iRainTextureID);
-		//m_pkRender->Quad(m_kDrops[i],Vector3(-90,0,0),Vector3(0.3,0.3,0.3),m_iRainTextureID);
-	}
-}
-
-void P_Enviroment::DrawSun()
-{
-	//textures
-	static int iSunTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
-	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
-	
-	//max number of samples 
-	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
-	static float fMaxAngle = 45.0;
-	static float fFlareSize = 1.5;
-	
-	//positions for sun and flare
-	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos * 100;
-	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos;
-	
-	//calculate angle betwen sun and camera center
-	Matrix4 kRot = m_pkZeroFps->GetCam()->GetRotM();
-	kRot.Transponse();
-	Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));	
-	float fAmp = 0;
-	float fAngle = RadToDeg(kDir.Angle(m_kSunPos.Unit()));
-	
-	//check if  angle is lower than maxangle
-	if( fAngle < fMaxAngle)
-		fAmp = 1.0 - fAngle / fMaxAngle;
-	
-	
-	if(m_pkZShaderSystem->SupportOcculusion())
-	{
-		//do occulusion test	
-		m_pkZShaderSystem->OcculusionBegin();
-		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);
-		int iSamples = m_pkZShaderSystem->OcculusionEnd();
-		
-		float fSize = float(iSamples) / float(iMaxSamples);
-		if(fSize > 1.0)
-			fSize = 1.0;
-			
-		//draw flare
-		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fSize*fAmp,m_pkSunFlareMat);
-	}
-	else
-	{
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);	
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fAmp,m_pkSunFlareMat);
-		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
-		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
-	}
-}
-
-
-Property* Create_P_Enviroment()
-{
-	return new P_Enviroment;
-}
-
-
-
-
-
-
-
-
-
+	m_pkSunFlareMat = new ZMaterial;
+		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sunflare.tga");
+		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunFlareMat->GetPass(0)->m_bFog = 						false;		
+		m_pkSunFlareMat->GetPass(0)->m_bDepthTest = 				true;		
+		m_pkSunFlareMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
+	*/

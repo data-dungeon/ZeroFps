@@ -10,55 +10,18 @@
 #include <string>
 #include <vector>
 
-#include "../zerofpsv2/basic/zfresource.h"
-#include "../zerofpsv2/basic/zfini.h"
 
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "../zerofpsv2/engine_systems/propertys/p_light.h"
 #include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 
+#include "zssenviroment.h"
+
 using namespace std;
 
-/**	\brief	Da EnvSetting
-		\ingroup Common
-*/
 
-class MCOMMON_API EnvSetting : public ZFResource
-{
-	private:
-		ZFIni		m_kIni;
-	
-		string	m_strMusic;
-		string	m_strParticles;
-		string	m_strSkybox1;		
-		string	m_strSkybox2;				
-		
-		Vector4	m_kSunDiffuseColor;
-		Vector4	m_kSunAmbientColor;		
-		Vector3	m_kSunPos;
-		
-		float		m_fFogStart;
-		float		m_fFogStop;		
-		Vector4	m_kFogColor;
-		
-		int 		m_iRain;
-	
-	public:
-		EnvSetting();
-		~EnvSetting();	
-	
-		bool LoadEnviroment(const char* czName);
-		void Clear();
-		bool Create(string strName);	//	for resource system
-		int  CalculateSize();		
-
-	friend class P_Enviroment;
-};
-
-MCOMMON_API ZFResource* Create__EnvSetting();
-
-//---end of EnvSetting
-
+class ZSSEnviroment;
+class EnvSetting;
 
 class MCOMMON_API P_Enviroment: public Property {
 	private:
@@ -66,15 +29,54 @@ class MCOMMON_API P_Enviroment: public Property {
 		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
-		//OggMusic*		m_pkMusic;		
+		ZSSEnviroment*	m_pkEnviroment;
 		ZFAudioSystem*	m_pkAudioSystem;
+		
+		bool				m_bEnabled;		
+		string			m_strCurrentZoneEnviroment;
+		string			m_strLastSetEnviroment;
+				
+		EnvSetting*		m_pkZoneEnvSetting;
+		EnvSetting		m_kCurrentEnvSetting;
+		
+		
+		void UpdateEnviroment();
+						
+	public:
+
+		P_Enviroment();
+		~P_Enviroment();
+		
+		void Init();
+		void Update();
+		void ZoneChange(int iCurrent,int iNew);
+
+		void UpdateEnvSetting(EnvSetting* pkEnvSetting);
+		
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+
+		void SetEnable(bool bNew);
+		
+		friend class ZSSEnviroment;
+};
+
+MCOMMON_API Property* Create_P_Enviroment();
+
+
+
+		/*
+		void SetEnviroment(const char* csEnviroment);
+		void ResetEnviroment();
+		*/
+		
+		/*
 		int				m_iMusicHandle;
 		
 		float				m_fTimer;
 		float				m_fRainUpdateTimer;
 		
-		
-		bool				m_bEnabled;		
+				
 		string			m_StrCurrentEnviroment;
 		
 		
@@ -104,25 +106,15 @@ class MCOMMON_API P_Enviroment: public Property {
 		void DrawRainSplashes();		
 
 		void DrawSun();
-				
-	public:
-
-		P_Enviroment();
-		~P_Enviroment();
-		
-		void Init();
-		void Update();
-		void ZoneChange(int iCurrent,int iNew);
-
-		void SetEnviroment(const char* csEnviroment);
-		void ResetEnviroment();
-
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
-
-		void SetEnable(bool bNew);
-};
-
-MCOMMON_API Property* Create_P_Enviroment();
+		*/
 
 #endif
+
+
+
+
+
+
+
+
+
