@@ -5,7 +5,7 @@ function Create()
 			InitParameter("Mode",0);
 			InitParameter("Quadratic_Atten",0.05);
 		InitProperty("P_PSystem");
-			InitParameter("PSType", "explosion");
+			InitParameter("PSType", "big_explosion");
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_Sound");
 		SetParentObject();
