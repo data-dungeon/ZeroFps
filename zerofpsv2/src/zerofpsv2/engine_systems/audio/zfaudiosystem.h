@@ -95,7 +95,9 @@ public:
 	Vector3 GetListnerDir() { return m_kHead; }
 
 private:
-	bool RestartLoopSound(SoundInfo* pkSound);
+
+	bool m_bIsValid;
+	
 	OggMusic* m_pkMusic;
 
 	Vector3 m_kPos, m_kHead;
@@ -113,7 +115,7 @@ private:
 	bool GenerateSourcePool();
 	ZFResourceHandle* GetResHandle(string strFileName);
 	bool Hearable(SoundInfo* pkSound);
-
+	bool RestartLoopSound(SoundInfo* pkSound);
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_

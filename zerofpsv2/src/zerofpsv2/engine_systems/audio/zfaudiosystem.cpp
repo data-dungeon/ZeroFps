@@ -25,10 +25,9 @@ ZFSoundRes::~ZFSoundRes()
 		m_szFileName = NULL;
 	}
 
+	// Låt OpenAL förstöra bufferten
 	if(m_uiBufferIndexName != 0)
-	{
 		alDeleteBuffers(1, &m_uiBufferIndexName);
-	}
 }
 
 bool ZFSoundRes::Create(string strName)
@@ -45,9 +44,7 @@ bool ZFSoundRes::Create(string strName)
 	m_szFileName = new char[strFull.size()+1];
 	strcpy(m_szFileName, strFull.c_str());
 	
-	bool bSuccess = Load();
-
-	return true;
+	return Load();
 }
 
 bool ZFSoundRes::Load()
@@ -113,7 +110,7 @@ ZFResource* Create__WavSound()
 // SoundInfo
 ///////////////////////////////////////////////////////////////////////////////
 
- SoundInfo::SoundInfo()
+SoundInfo::SoundInfo()
 {
 	m_bLoop = false;
 	m_kPos = Vector3(0,0,0);
@@ -135,6 +132,7 @@ SoundInfo::~SoundInfo()
 ZFAudioSystem::ZFAudioSystem() : ZFSubSystem("ZFAudioSystem") 
 {
 	m_pkMusic = NULL;
+	m_bIsValid = false;
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -157,6 +155,8 @@ bool ZFAudioSystem::StartUp()
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
+	m_bIsValid = true;
+
 	return true;
 }
 
@@ -173,19 +173,26 @@ bool ZFAudioSystem::GenerateSourcePool()
 
 bool ZFAudioSystem::ShutDown()
 {
+	if(m_pkMusic)
+		delete m_pkMusic;
+
 	// Remove resurce files
 	map<string,ZFResourceHandle*>::iterator itRes = m_mkResHandles.begin();
 	for( ; itRes != m_mkResHandles.end(); itRes++)
 		if(itRes->second)
 			delete itRes->second;
 
+	// Remove all sounds.
+	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
+	for( ; itSound != m_kActiveSounds.end(); itSound++)
+		delete (*itSound);
+
 	return true;
 }
 
 bool ZFAudioSystem::IsValid()
 {
-
-	return true;
+	return m_bIsValid;
 }
 
 void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
