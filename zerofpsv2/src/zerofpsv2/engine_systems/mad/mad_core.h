@@ -12,21 +12,20 @@
 
 using namespace std;
 
-#define MAD_MAX_ANIMATIONNAME	256		 
-#define MAD_MAX_NAME			64		
+#define MAD_MAX_ANIMATIONNAME		256		 
+#define MAD_MAX_NAME					64		
 #define MAD_MAX_TEXTURENAME		64		// Max Size på texturename/path.
-#define MAD_MAX_TEXTURES		64		// Max textures in one Mesh.
-//#define MAX_MAD_TEXTURES		256		// Max textures in one Mesh.
-#define MAX_BONES				256		// Max Bones in skelleton.
-#define MAX_JOINTNAME			32		// Max Joint Name Size.
-#define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
+#define MAD_MAX_TEXTURES			64		// Max textures in one Mesh.
+#define MAX_BONES						256	// Max Bones in skelleton.
+#define MAX_JOINTNAME				32		// Max Joint Name Size.
+#define MAX_MAX_VERTEX				8192	// Max Vertex per mesh.
 
-#define MAD_VERSION				1		// Current Versions.
-#define MAD_SD_VERSION			1
-#define MAD_AD_VERSION			1
-#define MAD_MD_VERSION			1
+#define MAD_VERSION					1		// Current Versions.
+#define MAD_SD_VERSION				1
+#define MAD_AD_VERSION				1
+#define MAD_MD_VERSION				1
 
-#define MAD_NOANIMINDEX			-1
+#define MAD_NOANIMINDEX				-1
 
 // MAD - MD (Mesh Data)
 

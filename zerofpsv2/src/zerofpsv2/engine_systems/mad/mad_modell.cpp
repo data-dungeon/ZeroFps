@@ -713,6 +713,11 @@ float Mad_Modell::GetRadius()
 	return pkCore->GetRadius() * m_fScale;	
 }
 
+void Mad_Modell::ClearAllMesh()
+{
+	m_kActiveMesh.clear();
+}
+
 bool Mad_Modell::AddMesh(int iSubId)
 {
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 

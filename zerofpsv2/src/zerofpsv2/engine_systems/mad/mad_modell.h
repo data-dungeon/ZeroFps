@@ -19,7 +19,6 @@
 class ENGINE_SYSTEMS_API Mad_Modell 
 {
 private:
-	vector<int>				m_kActiveMesh;
 	
 	TextureManager*		m_pkTex;
 	ZShader*					m_pkShader;
@@ -55,6 +54,8 @@ private:
 
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
+protected:
+	vector<int>				m_kActiveMesh;
 	
 
 public:
@@ -108,12 +109,14 @@ public:
 	
 	float GetRadius();
 
-	bool AddMesh(int iSId);
 	bool RemoveMesh(int iId);	
 	bool AddMesh(char* szName);	
 	bool RemoveMesh(char* szName);	
 	bool IsMeshActive(int iId);	
 	bool IsMeshActive(char* szName);
+
+	void ClearAllMesh();
+	virtual bool AddMesh(int iSId);
 };
 
 

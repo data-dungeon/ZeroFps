@@ -8,8 +8,8 @@ extern float g_fMadLODScale;
  
 P_Mad::P_Mad()
 {
-	m_pkZeroFps  =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkRender =		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
 	
 	strcpy(m_acName,"P_Mad");
@@ -21,7 +21,6 @@ P_Mad::P_Mad()
 	SetVisible(true);
 	m_bCanBeInvisible = false;
 	m_fScale	 = 1.0;
-	
 }
 
 void P_Mad::Update() 
@@ -138,8 +137,15 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_bCanBeInvisible );	
 	pkNetPacket->Write( iActiveAnimation );
 	
-	//m_iNetUpdateFlags = 0;
-	
+	unsigned char ucNumOfMesh = m_kActiveMesh.size();
+	int iMesh;
+
+	pkNetPacket->Write( ucNumOfMesh );
+	for(int i=0; i<ucNumOfMesh; i++) {
+		iMesh = m_kActiveMesh[i] ;
+		pkNetPacket->Write( iMesh );
+		}
+
 	SetNetUpdateFlag(iConnectionID,false);
 }
  
@@ -157,7 +163,20 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	if(iNewAnim != iActiveAnimation)
 		PlayAnimation(iNewAnim, 0);
 
-	//cout<<"got mad data---------------"<<endl;
+	unsigned char ucNumOfMesh;
+	int iMesh;
+
+	pkNetPacket->Read( ucNumOfMesh );
+	for(int i=0; i<ucNumOfMesh; i++) {
+		pkNetPacket->Read( iMesh );
+		AddMesh(iMesh);
+		}
+}
+
+bool P_Mad::AddMesh(int iSId)
+{
+	SetNetUpdateFlag(true);	
+	return Mad_Modell::AddMesh(iSId);
 }
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
@@ -430,84 +449,6 @@ Property* Create_MadProperty()
 }
 
 
-//-------------LinkToJoinit
-
-P_LinkToJoint::P_LinkToJoint() 
-{
-	strcpy(m_acName,"P_LinkToJoint");		
-	m_iType = PROPERTY_TYPE_NORMAL;
-	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
-
-	m_strToJoint = "joint0";
-}
-
-P_LinkToJoint::~P_LinkToJoint()		{ }
-void P_LinkToJoint::Init()		{ }
-
-void P_LinkToJoint::Update() 
-{
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetParent()->GetProperty("P_Mad"));
-	if(!pkMad)
-		return;
-
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
-	if(!pkCore)
-		return;
-
- 	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
-	pkCore->SetupBonePose();
-	
-	/*
-		Vector3 kPos = pkCore->GetBonePosition(pkCore->GetJointID("joint12"));	// s_Goblin_joint12
-		cout << "Joint Pos: <" << kPos.x << "," << kPos.y << "," << kPos.z << ">" << endl;
-		m_pkObject->SetLocalPosV(kPos);
-	*/
-
-	Matrix4 kMat;
-	Vector3 kPos;
-	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
-	kPos = kMat.GetPos() * pkMad->m_fScale;
-	kMat.SetPos(Vector3(0,0,0));
-	m_pkObject->SetLocalRotM(kMat);
-	m_pkObject->SetLocalPosV( kPos );
-}
-
-vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-	
-	kReturn[0].kValueName = "m_strToJoint";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strToJoint;
-
-	return kReturn;
-}
-
-void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
-{	
-	char temp[50];
-	strcpy(temp,m_strToJoint.c_str());
-
-	pkPackage->Write((void*)temp,50,1);
-}
-
-void P_LinkToJoint::Load(ZFIoInterface* pkPackage)
-{
-	char temp[50];
-	pkPackage->Read((void*)temp,50,1);	
-	m_strToJoint = temp;
-
-}
-
-
-
-
-
-
-Property* Create_LinkToJoint()
-{
-	return new P_LinkToJoint;
-}
 
 
 

@@ -60,33 +60,12 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool TestLine(Vector3 kPos,Vector3 kDir);
 		Vector3 GetLastColPos() {return m_kColPos;};
 		int GetLastColFace() { return m_iColFace;};
+
+		bool AddMesh(int iSId);
+
 };
 
 Property* Create_MadProperty();
-
-
-/// Property to link a object to a MAD.Joint of the parent.
-class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
-{
-	private:
-		vector<PropertyValues> GetPropertyValues();
-
-
-	public:
-		string	m_strToJoint;
-
-		P_LinkToJoint();
-		~P_LinkToJoint();
-		void Init();
-
-		void CloneOf(Property* pkProperty) { }
-		void Update();
-		
-		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
-};
-
-Property* Create_LinkToJoint();
 
 
 #endif

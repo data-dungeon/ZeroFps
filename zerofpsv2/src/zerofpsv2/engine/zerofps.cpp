@@ -25,6 +25,8 @@ static char Devformat_text[4096];	//
 
 Property* Create_P_PfPath();
 Property* Create_P_PfMesh();
+Property* Create_LinkToJoint();
+
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {

@@ -259,6 +259,10 @@ SOURCE=..\engine_systems\propertys\p_lightupdate.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_linktojoint.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_mad.cpp
 # End Source File
 # Begin Source File
@@ -480,6 +484,10 @@ SOURCE=..\engine_systems\propertys\p_light.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\p_lightupdate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_linktojoint.h
 # End Source File
 # Begin Source File
 
