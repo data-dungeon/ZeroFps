@@ -10,24 +10,24 @@ Render::Render(TextureManager* pkTexMan) {
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glPushMatrix();
 		
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
-		glRotatef(kHead.x, 1, 0, 0);
-		glRotatef(kHead.y, 0, 1, 0);	
-		glRotatef(kHead.z, 0, 0, 1);
-		glScalef(kScale.x,kScale.y,kScale.z);
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kHead.x, 1, 0, 0);
+	glRotatef(kHead.y, 0, 1, 0);	
+	glRotatef(kHead.z, 0, 0, 1);
+	glScalef(kScale.x,kScale.y,kScale.z);
 
- 		glBlendFunc(GL_ONE,GL_ZERO);
+//	glBlendFunc(GL_ONE,GL_ZERO);
  		
   	m_pkTexMan->BindTexture(iTexture);  
 
-    glBegin(GL_QUADS);			
-			glColor4f(1.0,1.0,1.0,1.0);  	  
-  	  glNormal3f(0,1,0);
-    	glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
-    	glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
- 		  glTexCoord2f(1.0,1.0);glVertex3f(.5,0.5,0);    
-	  	glTexCoord2f(0.0,1.0);glVertex3f(-0.5,0.5,0);    
-		glEnd();			
+   glBegin(GL_QUADS);			
+	glColor4f(1.0,1.0,1.0,1.0);  	  
+  	glNormal3f(0,1,0);
+   glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
+   glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
+ 	glTexCoord2f(1.0,1.0);glVertex3f(.5,0.5,0);    
+	glTexCoord2f(0.0,1.0);glVertex3f(-0.5,0.5,0);    
+	glEnd();			
 
 	glPopMatrix();
 }
@@ -304,8 +304,6 @@ void Render::Dot(float x,float y,float z) {
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
-
-	
 	glPushMatrix();
 	
 	//translate to map position
@@ -316,13 +314,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	
 	GLfloat mat_specular[]={0,0,0,0};
 	GLfloat mat_diffuse[]={1,1,1,1};	
-//	GLfloat mat_shininess[]={10};
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
-//	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-//	SetColor(Vector3(255,255,255));
 
 	Vector3 p1,p2;
 	
@@ -333,7 +327,13 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
 			//set lop steps depending on the distance to the center of the lod tile
-			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,kmap->m_kPosition.y,kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)).length()/m_iDetail);
+			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
+											//this distance realy sux..
+											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
+											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
+											).length()/m_iDetail);
+													
+											
 			if(step<1)//step cant be lower than 1
 				step=1;				
 			if(step>6)//if the step get to high it will look realy bad
