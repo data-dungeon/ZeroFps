@@ -133,7 +133,12 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//current selected material
 		ZMaterial*			m_pkCurrentMaterial;
 
-
+		//hardware shader data
+		bool				m_bSupportVertexProgram;
+		bool				m_bSupportFragmentProgram;
+		int				m_iCurrentVertexProgram;
+		int				m_iCurrentFragmentProgram; 
+		
 		
 		//temporary geometry data		
 		vector<Vector3>	m_kVerties;
@@ -187,6 +192,14 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetupPass(int iPass);
 		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
 		
+		//hardware shaders
+		void SetupVertexProgram(ZMaterialSettings* pkSettings);
+		void SetupFragmentProgram(ZMaterialSettings* pkSettings);
+		void UpdateFragmentProgramParameters();		
+		void UpdateVertexProgramParameters();		
+		void SetVertexProgram(const int& iVPID);
+		void SetFragmentProgram(const int& iFPID);		
+		
 		//vertex transform
 		void VertexTransform();
 		void CopyVertexData();
@@ -195,6 +208,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//vertex transform funktions
 		void Waves();	
+		
+		
 		
 	public:
 		ZShaderSystem();
@@ -223,6 +238,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void Pop();		
 		void BindMaterial(ZMaterial* pkMaterial);
 		void ReloadMaterial();
+		
+		//information
+		bool HaveExtension(const string& strExt);
 		
 		//arrays
 		void ResetPointers();

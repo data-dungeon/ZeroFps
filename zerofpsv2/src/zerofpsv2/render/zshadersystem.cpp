@@ -22,6 +22,16 @@ bool ZShaderSystem::StartUp()
 	
 	m_bCopyedData =			false;
 	
+	m_bSupportVertexProgram = 		false;
+	m_bSupportFragmentProgram = 	false;
+	m_iCurrentVertexProgram = 		-1;
+	m_iCurrentFragmentProgram = 	-1;
+	
+	
+	//check for vertex and fragment program support
+	m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program");
+	m_iCurrentFragmentProgram = HaveExtension("GL_ARB_fragment_program");
+	
 	return true;
 }
 
@@ -60,6 +70,9 @@ void ZShaderSystem::Push(const char* czNote)
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);		
 	glEnable(GL_TEXTURE_2D);	
 	
+	//disable gpu programs
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
 	
 	m_iPushPop ++;		
 }
@@ -385,15 +398,12 @@ void ZShaderSystem::SetupPass(int iPass)
 		
 
 	//want TU 0 to be active when exiting
-
 	
-	glDisable(GL_VERTEX_PROGRAM_ARB);
-	glDisable(GL_FRAGMENT_PROGRAM_ARB);			
 	//setup vertex program
-	//SetupVertexProgram(pkSettings);
+	SetupVertexProgram(pkSettings);
 
 	//setup fragment program
-	//SetupFragmentProgram(pkSettings);		
+	SetupFragmentProgram(pkSettings);		
 }
 
 void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
@@ -647,6 +657,10 @@ void ZShaderSystem::DrawArray()
 
 	//do software vertex transformations
 	VertexTransform();
+	
+	//update shader parameters
+	UpdateFragmentProgramParameters();
+	UpdateVertexProgramParameters();
 	
 	//we have to reset opengls data pointers
 	SetupArrayClientStates();
@@ -919,3 +933,116 @@ void ZShaderSystem::Waves()
 
 	}
 }
+
+bool ZShaderSystem::HaveExtension(const string& strExt)
+{
+	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
+
+	if(strstr((const char*)pcExt,strExt.c_str()) != NULL)
+	{
+		return true;	
+	}
+	
+	return false;
+}
+
+void ZShaderSystem::UpdateFragmentProgramParameters()
+{
+	if(m_iCurrentFragmentProgram != -1)
+	{
+		float fTime = (float(SDL_GetTicks()) /1000.0);		
+		
+		// parameter 0  (time,time,0,0)
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,0,
+											fTime	, fTime, 0 ,0);
+
+		// parameter 1  (time,time,time,time)
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,1,
+											fTime	, fTime, fTime ,fTime);
+	
+											
+		// parameter 2  (sin(time),sin(time),sin(time),sin(time))
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,2,
+											sin(fTime)	, sin(fTime), sin(fTime) ,sin(fTime));
+																																		
+	}
+}
+
+void ZShaderSystem::UpdateVertexProgramParameters()
+{
+	if(m_iCurrentVertexProgram != -1)
+	{
+		//float fTime = (float(SDL_GetTicks()) /1000.0);		
+																																				
+	}
+}
+
+void ZShaderSystem::SetupVertexProgram(ZMaterialSettings* pkSettings)
+{
+	if(!m_bSupportVertexProgram)
+		return;
+	
+	ZVProgram* pkRt = (ZVProgram*)pkSettings->m_pkVP->GetResourcePtr();
+	
+	if(!pkRt)
+		SetVertexProgram(-1);
+	else
+		SetVertexProgram(pkRt->m_iId);		
+}
+
+void ZShaderSystem::SetupFragmentProgram(ZMaterialSettings* pkSettings)
+{
+	if(!m_bSupportFragmentProgram)
+		return;
+
+	ZFProgram* pkRt = (ZFProgram*)pkSettings->m_pkFP->GetResourcePtr();
+
+	
+	if(!pkRt)
+		SetFragmentProgram(-1);
+	else
+		SetFragmentProgram(pkRt->m_iId);
+			
+}
+
+void ZShaderSystem::SetVertexProgram(const int& iVPID)
+{
+		
+	if(iVPID == -1)
+	{
+		glDisable(GL_VERTEX_PROGRAM_ARB);
+	}
+	else
+	{
+		glEnable(GL_VERTEX_PROGRAM_ARB);
+
+		if(m_iCurrentVertexProgram != iVPID)
+			glBindProgramARB(GL_VERTEX_PROGRAM_ARB, iVPID);
+	}
+
+
+	m_iCurrentVertexProgram=iVPID;
+}
+
+void ZShaderSystem::SetFragmentProgram(const int& iFPID)
+{
+    
+	if(iFPID == -1)
+	{
+		glDisable(GL_FRAGMENT_PROGRAM_ARB);
+	}
+	else 
+	{
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+
+		if(m_iCurrentFragmentProgram != iFPID)
+			glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, iFPID);
+	}
+
+
+	m_iCurrentFragmentProgram=iFPID;
+
+}
+
+
+
