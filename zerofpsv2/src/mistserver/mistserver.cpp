@@ -893,6 +893,41 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 			break;
 		}
+
+		case MLNM_CS_ANIM:
+		{
+			int iTauntID;
+			PkNetMessage->Read(iTauntID);
+
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+				{
+					P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl");
+					P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad");
+					if(pkMad && pkCC) 
+					{
+						char strTauntName[6] = "taunt";
+						switch (iTauntID)
+						{
+							case 1:
+								strTauntName[5] = '1'; break;
+							case 2:
+								strTauntName[5] = '2'; break;
+							case 3:
+								strTauntName[5] = '3'; break;
+							case 4:
+								strTauntName[5] = '4'; break;
+							case 5:
+								strTauntName[5] = '5'; break;
+						}
+						pkMad->SetAnimation(strTauntName, 0);
+						pkMad->SetNextAnimation("idle");
+					}
+				}
+			}
+			break;
+		}
 		
 		case MLNM_CS_SAY:
 		{

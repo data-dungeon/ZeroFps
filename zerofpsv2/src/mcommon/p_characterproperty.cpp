@@ -49,8 +49,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strJump				=	"jump";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"riding";
-	m_strIdleSWIMMING		=	"idle";
-	
+	m_strIdleSwimming		=	"idle";
+	m_strTaunt				=	"taunt";	
 	
 	//setup material
 	m_pkTextMaterial = new ZMaterial;
@@ -175,8 +175,8 @@ void P_CharacterProperty::UpdateAnimation()
 			//swiming
 			else if(pkCC->GetCharacterState(eSWIMMING))
 			{
-				if(pkMad->GetCurrentAnimationName() != m_strIdleSWIMMING)
-					pkMad->SetAnimation(m_strIdleSWIMMING.c_str(), 0);
+				if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
+					pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);
 				
 			}
 			//sitting
@@ -188,9 +188,9 @@ void P_CharacterProperty::UpdateAnimation()
 			//idle standing
 			else
 			{
-				if(pkMad->GetCurrentAnimationName() != m_strIdleStanding)
-					pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);
-				
+				if( pkMad->GetCurrentAnimationName() != m_strIdleStanding
+				 && pkMad->GetCurrentAnimationName().compare(0,5,m_strTaunt) )
+					pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);				
 			}		
 		}
 	}

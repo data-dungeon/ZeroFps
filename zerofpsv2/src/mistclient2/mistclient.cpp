@@ -211,6 +211,37 @@ void MistClient::Input()
 		m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
 	}
 
+	// taunts
+	if ( (!IsWndVisible("MLStartWnd")) && !DelayCommand() )
+	{
+		if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
+			m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
+			m_pkInputHandle->VKIsDown("taunt5") )
+		{
+			int iTauntID = 0;
+			if (m_pkInputHandle->VKIsDown("taunt1"))
+				iTauntID = 1;
+			if (m_pkInputHandle->VKIsDown("taunt2"))
+				iTauntID = 2;
+			if (m_pkInputHandle->VKIsDown("taunt3"))
+				iTauntID = 3;
+			if (m_pkInputHandle->VKIsDown("taunt4"))
+				iTauntID = 4;
+			if (m_pkInputHandle->VKIsDown("taunt5"))
+				iTauntID = 5;
+
+			NetPacket kNp;	
+			kNp.Clear();
+			kNp.Write((char) MLNM_CS_ANIM);
+
+			kNp.Write(iTauntID);
+			
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);
+		}
+	}
+
+
 	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
 	{
 		if(IsWndVisible("ChatDlgMainWnd"))
@@ -295,7 +326,7 @@ void MistClient::SendControlInfo()
 		if(P_Camera* pkCam = (P_Camera*)pkEnt->GetProperty("P_Camera"))
 		{
 			//request character entityID
-			NetPacket kNp;				
+			NetPacket kNp;	
 			kNp.Clear();
 			kNp.Write((char) MLNM_CS_CONTROLS);
 			

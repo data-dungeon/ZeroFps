@@ -52,7 +52,8 @@ class P_CharacterProperty: public Property
 		string	m_strJump;
 		string	m_strIdleStanding;
 		string	m_strIdleSitting;
-		string	m_strIdleSWIMMING;
+		string	m_strIdleSwimming;
+		string  m_strTaunt;
 		
 		void PlayCharacterMovementSounds();
 		void UpdateAnimation();
