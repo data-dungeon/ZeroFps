@@ -3,7 +3,7 @@
 
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+ 
 //	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
@@ -16,7 +16,7 @@ BallObject::BallObject() {
 	madp->SetScale(0.5);
 */
 	
-	m_iObjectType=OBJECT_TYPE_STATIC;
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 
 	AddProperty("ModelProperty");
 	AddProperty("LightProperty");
@@ -27,8 +27,8 @@ BallObject::BallObject() {
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
 //	pp->SetColShape(new CSSphere(0.2));		
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.5;
-	pp->m_bGravity=false;
-	pp->m_bFloat=false;
+//	pp->m_bGravity=false;
+//	pp->m_bFloat=false;
 
 
 //	m_kAcc.Set(0,0,0);
