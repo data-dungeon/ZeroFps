@@ -176,8 +176,8 @@ class ENGINE_API Object
 		bool DeleteProperty(const char* acName);				///< Remove property by name.
 
 		Property* GetProperty(const char* acName);											///< Returns property by name (first one only). 
-		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
-		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
+		void GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
+		void GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
 
 		Property* AddProxyProperty(const char* acName);		///< Add a property if not exist.
 		bool Update(const char* acName);							///< Run update on property 'name'.

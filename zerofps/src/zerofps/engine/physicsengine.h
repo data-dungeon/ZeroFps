@@ -89,7 +89,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		bool m_bChanged;
 	
 		//curent physicpropertys
-		list<Property*> m_kPropertys;		
+		vector<Property*> m_kPropertys;		
 		
 		//collisions
 		vector<Collision*> m_kCollisions;

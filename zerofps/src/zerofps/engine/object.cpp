@@ -116,7 +116,7 @@ Property* Object::GetProperty(const char* acName)
 	return NULL;
 }
 
-void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
+void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
 		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
@@ -127,7 +127,7 @@ void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
-void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
+void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
@@ -443,11 +443,11 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	ObjDesc->m_bSave = m_bSave;
 	ObjDesc->m_iObjectType=m_iObjectType;
 	
-	list<Property*> pkPropertys;
+	vector<Property*> pkPropertys;
 	
 	GetPropertys(&pkPropertys,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
 	
-	for(list<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
+	for(vector<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
 	{
 		PropertyDescriptor* pkP=new PropertyDescriptor;
 		pkP->m_kName=(*it)->m_acName;

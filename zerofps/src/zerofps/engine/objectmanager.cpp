@@ -80,10 +80,11 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 
 
 	if(bSort){
-		m_akPropertys.sort(Less_Property);	
+		sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+		//m_akPropertys.sort(Less_Property);	
 	}
 	
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		(*it)->Update();
 	}
@@ -524,7 +525,7 @@ void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
 {
 	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		g_ZFObjSys.Logf("net", "%s", (*it)->m_acName );
 		if((*it)->GetObject()->m_pkParent)

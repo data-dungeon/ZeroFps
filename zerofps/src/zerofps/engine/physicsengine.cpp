@@ -31,7 +31,7 @@ void PhysicsEngine::Update()
 	m_pkZeroFps->DevPrintf("om", "Phy::Update(%s, %s,%d) = %d",
 		"PROPERTY_TYPE_PHYSIC","PROPERTY_SIDE_SERVER",0,iSize);
 
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
+	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		static_cast<PhysicProperty*>(*it)->Update();		
 	}
 
@@ -97,7 +97,7 @@ Collision* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
 
 void PhysicsEngine::CalcNewPos()
 {
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
@@ -115,7 +115,7 @@ void PhysicsEngine::CheckCollisions()
 	ClearCollisions();	
 	
 	
-	for(list<Property*>::iterator it3=m_kPropertys.begin();it3!=m_kPropertys.end();it3++) 
+	for(vector<Property*>::iterator it3=m_kPropertys.begin();it3!=m_kPropertys.end();it3++) 
 	{	
 		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it3);			
 	
@@ -124,12 +124,12 @@ void PhysicsEngine::CheckCollisions()
 	}	
 	
 	
-	for(list<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
+	for(vector<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
 	{	
 		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
 		
 		
-		for(list<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
+		for(vector<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
 		{	
 			//dont collide with our self 
 			if(it1==it2)
@@ -302,7 +302,7 @@ void PhysicsEngine::HandleCollisions()
 	}
 	
 
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 //		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
 		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kOldPos);	
@@ -368,7 +368,7 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 {
 	pkPPList->clear();
 
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 		Vector3 c=(*it)->GetObject()->GetPos() - kPos;		
 		kVec.Normalize();		
@@ -507,7 +507,7 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 	
 	PhysicProperty* PP1 = pkPP;			
 	
-	for(list<Property*>::iterator it2 = m_kPropertys.begin();it2!=m_kPropertys.end();it2++) 
+	for(vector<Property*>::iterator it2 = m_kPropertys.begin();it2!=m_kPropertys.end();it2++) 
 	{	
 		//dont collide with our self 
 		if(PP1==*it2)

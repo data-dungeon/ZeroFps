@@ -39,7 +39,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		list<Object*>		m_akObjects;									///< List of all objects.
 		vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
 
-		list<Property*>	m_akPropertys;									///< List of Active Propertys.	
+		vector<Property*>	m_akPropertys;									///< List of Active Propertys.	
 		int					m_iNrOfActivePropertys;						///> Size of akProperty list.
 
 		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
