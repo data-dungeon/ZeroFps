@@ -91,7 +91,7 @@ void P_Vegitation::Update()
 			P_HMRP2* pkhmrp = (P_HMRP2*)hme->GetProperty("P_HMRP2");
 			if(pkhmrp)
 			{
-				cout<<"this zone has a heightmap, using it to get Y values"<<endl;
+				//cout<<"this zone has a heightmap, using it to get Y values"<<endl;
 				
 				Random(pkhmrp);
 			}

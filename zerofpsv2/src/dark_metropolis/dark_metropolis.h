@@ -11,6 +11,7 @@ using namespace std;
 
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 
 #include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_serverinfo.h"
@@ -22,6 +23,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 {
 	private:
 		Camera*	m_pkCamera;
+		Entity*	m_pkCameraEntity;
+		
 		void Input();
 		void RegisterPropertys();
 

@@ -27,16 +27,6 @@ void DarkMetropolis::OnHud()
 	m_pkFps->ToggleGui();
 }
 
-void DarkMetropolis::OnIdle() 
-{
-	m_pkFps->SetCamera(m_pkCamera);		
-	m_pkFps->GetCam()->ClearViewPort();	
-
-	Input();
-
-	m_pkFps->UpdateCamera(); 	
-}
-
 void DarkMetropolis::OnInit() 
 {
 	SetTitle("Dark Metropolis");
@@ -45,6 +35,19 @@ void DarkMetropolis::OnInit()
 
 	m_pkLight->SetLighting(true);
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkFps->SetRenderTarget(m_pkCamera);
+	m_pkCamera->m_bRender = true;
+
+	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
+	if(m_pkCameraEntity)
+	{
+		cout<<"settign cmaera"<<endl;
+		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
+		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera);
+		m_pkCameraEntity->GetSave() = false;
+	}
 
 	// create gui script
 	GuiAppLua::Init(&g_kDM, m_pkScript);
@@ -57,6 +60,16 @@ void DarkMetropolis::OnInit()
 
 	m_pkInput->ShowCursor(true);
 	m_pkLight->SetLighting(true);
+}
+
+void DarkMetropolis::OnIdle() 
+{
+	m_pkFps->SetCamera(m_pkCamera);		
+	m_pkFps->GetCam()->ClearViewPort();	
+
+	Input();
+
+	m_pkFps->UpdateCamera(); 	
 }
 
 void DarkMetropolis::OnSystem() 

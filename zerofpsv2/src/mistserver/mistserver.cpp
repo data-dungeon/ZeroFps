@@ -544,11 +544,11 @@ void MistServer::Input_EditTerrain()
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 			if(hmrp == NULL)		continue;
 			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			//hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-			if(m_iEditLayer == 1)
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+/*			if(m_iEditLayer == 1)
 				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
 			else
-				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);
+				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);*/
 			}
 		}
 

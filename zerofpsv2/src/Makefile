@@ -6,11 +6,11 @@ all:
 	cd mcommon/; $(MAKE) $@
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
-#	cd zerotank/; $(MAKE) $@
+	cd dark_metropolis/; $(MAKE) $@
 	
 clean:
 	cd zerofpsv2/; $(MAKE) $@
 	cd mcommon/; $(MAKE) $@
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
-#	cd zerotank/; $(MAKE) $@	
+	cd dark_metropolis/; $(MAKE) $@
