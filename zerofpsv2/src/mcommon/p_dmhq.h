@@ -19,6 +19,9 @@ class MCOMMON_API P_DMHQ: public Property {
 		string	m_strName;
 		Vector3	m_kExitOffset;
 		bool		m_bActiveHQ;	
+
+		int		m_iReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
+									   // ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
 			
 		void Eject(Entity* pkEnt);
 	
@@ -42,6 +45,9 @@ class MCOMMON_API P_DMHQ: public Property {
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
+
+		void ChangeReputation(int mod) { m_iReputation += mod; }
+		int  GetReputation() { return m_iReputation; }
 		
 };
 

@@ -9,7 +9,7 @@ MissionInfo = { name="Kill XXX", difficulty=1, xp=1000, cash=2000 } -- difficult
 
 MissionText = 
 { 
-	short = "Kill XXX",
+	short = "mission 1",
 	long = "Find the evil maffia boss XXX and kill him. He is somewhere in the park at night and is very angry!. You will get 1000 xp and some money if you kill him"
 }
 
@@ -28,8 +28,6 @@ function IsMissionDone()
 	if object == -1 then
 		g_iMissionStatus = 1; -- success
 	end
-
-	Print("APA");
 
 end
 

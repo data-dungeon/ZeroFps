@@ -17,5 +17,5 @@ protected:
 	
 private:
 	int m_iScrollbarPos;
-	void UpdateMessageboxes(int iVectorOffset, int iLevel);
+	void UpdateMessageboxes(int iVectorOffset);
 };

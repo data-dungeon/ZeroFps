@@ -29,7 +29,8 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				pkHQ->GetProperty("P_DMMission");
 
 			vector<DMMissionInfo> vkInfo;
-			pkMissionProperty->GetPossibleMissions(1, vkInfo); 
+			pkMissionProperty->GetPossibleMissions(
+				((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
 
 			for(int i=0; i<vkInfo.size(); i++)
 			{
@@ -70,7 +71,8 @@ bool CBriefingDlg::InitDlg()
 			pkHQ->GetProperty("P_DMMission");
 
 		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(1, vkInfo); 
+		pkMissionProperty->GetPossibleMissions(
+			((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
 
 		for(int i=0; i<vkInfo.size(); i++)
 		{
@@ -78,7 +80,7 @@ bool CBriefingDlg::InitDlg()
 			{
 				((ZGuiTextbox*)GetWnd("MissionDetailEb"))->ToggleMultiLine(true);
 				((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetReadOnly(true);
-				SetText("MissionDetailEb", (char*) vkInfo[0].m_strInfoTextLong.c_str());		
+				SetText("MissionDetailEb", (char*) vkInfo[i].m_strInfoTextLong.c_str());		
 				break;
 			}
 		}

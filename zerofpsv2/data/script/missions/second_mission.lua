@@ -1,10 +1,16 @@
 
-MissionInfo = { name="Another mission", difficulty=3, xp=100, cash=500 } -- difficulty = Level
+--///////////////////////////////////////////////////////////////////////////////
+--//
+--// Mission: Another mission
+--//
+--///////////////////////////////////////////////////////////////////////////////
+
+MissionInfo = { name="Another mission", difficulty=1, xp=100, cash=500 } -- difficulty = Level
 
 MissionText = 
 { 
-	short = "Just another advanture",
-	long = "Do wtf you want, I don't fucking care u stinking fucking fuck"
+	short = "Another mission",
+	long = "Walk around in the town and collect XX number of XXX, when you have collected all XXX return to base."
 }
 
 function OnMissionSuccess()

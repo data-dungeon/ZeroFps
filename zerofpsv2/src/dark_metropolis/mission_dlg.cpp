@@ -1,5 +1,6 @@
 #include "dark_metropolis.h"
 #include "mission_dlg.h"
+#include <algorithm>
 
 CMissionDlg::CMissionDlg() : CGameDlg("MissionWnd", &g_kDM)
 {
@@ -66,7 +67,6 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 
 		}
 
-
 		Entity* pkHQ = GetDMObject(HQ);
 
 		if(pkHQ)
@@ -75,7 +75,8 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				pkHQ->GetProperty("P_DMMission");
 
 			vector<DMMissionInfo> vkInfo;
-			pkMissionProperty->GetPossibleMissions(1, vkInfo); 
+			pkMissionProperty->GetPossibleMissions(
+				((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
 
 			char* szShortText = GetWnd((char*)strClickName.c_str())->GetText();
 
@@ -115,7 +116,7 @@ bool CMissionDlg::InitDlg()
 	// Hämta information om alla utillgänliga uppdrag
 	//
 
-	UpdateMessageboxes(m_iScrollbarPos, 1);
+	UpdateMessageboxes(m_iScrollbarPos);
 
 	m_pkGui->SetCaptureToWnd(GetWnd("MissionWnd"));
 
@@ -123,9 +124,19 @@ bool CMissionDlg::InitDlg()
 }
 
 
-void CMissionDlg::UpdateMessageboxes(int iVectorOffset, int iLevel)
+void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 {
 	Entity* pkHQ = GetDMObject(HQ);
+
+	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 1; 
+	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 1; 
+	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 1; 
 
 	if(pkHQ)
 	{
@@ -133,9 +144,10 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset, int iLevel)
 			pkHQ->GetProperty("P_DMMission");
 
 		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(iLevel, vkInfo); 
+		pkMissionProperty->GetPossibleMissions(
+			((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
 
-		int start_index = iVectorOffset - vkInfo.size();
+		int start_index = iVectorOffset;// - vkInfo.size();
 
 		if(start_index < 0)
 			start_index = 0;
@@ -148,7 +160,16 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset, int iLevel)
 			((ZGuiTextbox*)GetWnd("Mission_A_Eb"))->SetReadOnly(true);
 			SetText("Mission_A_Eb", (char*) 
 				vkInfo[start_index].m_strInfoTextShort.c_str() );
+
+			if(m_strSelMission == vkInfo[start_index].m_strName)
+			{
+				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+			}
 		}
+		else
+			SetText("Mission_A_Eb", "");
 
 		if(vkInfo.size() > start_index+1)
 		{
@@ -156,7 +177,16 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset, int iLevel)
 			((ZGuiTextbox*)GetWnd("Mission_B_Eb"))->SetReadOnly(true);
 			SetText("Mission_B_Eb", (char*) 
 				vkInfo[start_index+1].m_strInfoTextShort.c_str() );
+
+			if(m_strSelMission == vkInfo[start_index+1].m_strName)
+			{
+				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+			}
 		}
+		else
+			SetText("Mission_B_Eb", "");
 
 		if(vkInfo.size() > start_index+2)
 		{
@@ -164,12 +194,21 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset, int iLevel)
 			((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->SetReadOnly(true);
 			SetText("Mission_C_Eb", (char*) 
 				vkInfo[start_index+2].m_strInfoTextShort.c_str() );
+
+			if(m_strSelMission == vkInfo[start_index+2].m_strName)
+			{
+				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+			}
 		}
+		else
+			SetText("Mission_C_Eb", "");
 	}
 }
 
 void CMissionDlg::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 {
 	m_iScrollbarPos = iPos;
-	UpdateMessageboxes(m_iScrollbarPos, 1);
+	UpdateMessageboxes(m_iScrollbarPos);
 }
