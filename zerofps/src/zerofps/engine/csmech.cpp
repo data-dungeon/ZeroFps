@@ -7,7 +7,7 @@ CSMech::CSMech()
 	m_bHavePolygonData = false;
 	m_pkCore = 	NULL;
 	m_iModelID = 0;
-	m_fScale = 	20;
+	m_fScale = 	5;
 }
 
 Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
@@ -109,8 +109,17 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane P;
 	
 	//add objects possition to vertexs
-	for(int i=0;i<3;i++)
-		kNLVerts[i] = (kVerts[i]*m_fScale) + m_pkPP->GetObject()->GetPos();
+	for(int i=0;i<3;i++){
+		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
+		
+		
+		
+//		cout<<"vertex "<<kNLVerts[i].x<<" "<<kNLVerts[i].y<<" "<<kNLVerts[i].z<<endl;
+		
+		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);
+		
+	}
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
@@ -126,8 +135,8 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	P.m_kNormal = Normal;
 
 
-	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
-	cout<<"D "<<P.m_fD<<endl;	
+//	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
+//	cout<<"D "<<P.m_fD<<endl;	
 	
 	if(P.LineTest(kPos1 + (-Normal * fR), kPos2 + (-Normal * fR),&m_kColPos)){
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
