@@ -89,7 +89,7 @@ ZFVFileSystem::ZFVFileSystem()
 	m_pkBasicFS = static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 	
 	m_strCurentDir = "";
-	m_bCaseSensitive = true;
+	m_bCaseSensitive = false;
 	
 	Register_Cmd("cd",		FID_CD);
 	Register_Cmd("root",	 	FID_LISTROOT);
