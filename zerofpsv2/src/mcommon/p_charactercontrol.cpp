@@ -307,7 +307,7 @@ void P_CharacterControl::UpdateAnimation()
 		{
 			if( pkMad->GetCurrentAnimationName() != m_strIdleStanding
 				&& pkMad->GetCurrentAnimationName().compare(0,5,m_strEmote) )
-				pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);				
+				pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);			// walk_foward	 m_strIdleStanding "taunt1"
 		}		
 	}
 }

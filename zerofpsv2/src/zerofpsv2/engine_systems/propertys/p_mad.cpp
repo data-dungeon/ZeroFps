@@ -36,7 +36,7 @@ P_Mad::P_Mad()
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
 	
-	m_fLastAnimationUpdateTime = 0;
+	m_fLastAnimationUpdateTime = m_pkEntityManager->GetSimTime();
 	m_iLastAnimationUpdateFrame = -1;
 
 	

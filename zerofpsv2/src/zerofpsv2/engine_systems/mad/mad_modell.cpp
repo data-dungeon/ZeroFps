@@ -2,6 +2,7 @@
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
 #include "../../engine/res_texture.h"
+#include "../../basic/zfassert.h"
 
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
@@ -68,7 +69,7 @@ void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 	// Save data for old animation.
 	m_kLastAnim.m_iAnimationIndex   = iActiveAnimation;
 	m_kLastAnim.m_fAnimationTime    = fCurrentTime;
-	m_kLastAnim.m_fAnimationLength  = fCurrentTime + pkCore->GetAnimationLengthInS(iActiveAnimation);
+	m_kLastAnim.m_fAnimationLength  = pkCore->GetAnimationLengthInS(iActiveAnimation);
 	m_fAnimTrans = 0.0;
 
 	iActiveAnimation	=	iAnimNum;
@@ -93,7 +94,7 @@ void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 	// Save data for old animation.
 	m_kLastAnim.m_iAnimationIndex   = iActiveAnimation;
 	m_kLastAnim.m_fAnimationTime    = fCurrentTime;
-	m_kLastAnim.m_fAnimationLength  = fCurrentTime + pkCore->GetAnimationLengthInS(iActiveAnimation);
+	m_kLastAnim.m_fAnimationLength  = pkCore->GetAnimationLengthInS(iActiveAnimation);
 	m_fAnimTrans = 0.0;
 
 	iActiveAnimation	=	iAnimNum;
@@ -134,7 +135,10 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	{
 		// If this is a looping anim we simply wrap around.
 		if(m_bLoop)
-			fCurrentTime -= fAnimLength;
+		{
+			while(fCurrentTime >= fAnimLength)
+				fCurrentTime -= fAnimLength;
+		}
 		else 
 		{
 			fCurrentTime = fAnimLength;
@@ -473,7 +477,7 @@ void Mad_Modell::UpdateBones()
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 	pkCore->SetupBonePose(kAnim2);
 
-	if(m_kLastAnim.m_iAnimationIndex == MAD_NOANIMINDEX)
+	if(m_kLastAnim.m_iAnimationIndex <= MAD_NOANIMINDEX)
 	{
 		pkCore->GenerateBoneMatris(kAnim2);
 	}

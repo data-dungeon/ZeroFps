@@ -254,10 +254,12 @@ void Mad_Core::SetupBonePose(BoneTransform* pkBones)
 	// NÅTT CP CPCP CPCPPPPPPPPPPPP här...när en animation körs när maden sparas, och när man sedan laddar in den igen så blir dessa två värden helt cp
 	//DVOID FUL HACK...
 	if(iStartFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
-		iStartFrame = 0;
+		assert(0);
+		//iStartFrame = 0;
 
 	if(iEndFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
-		iEndFrame = 0;
+		assert(0);
+		//iEndFrame = 0;
 		
 		
 
