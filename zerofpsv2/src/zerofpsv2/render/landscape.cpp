@@ -811,7 +811,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);*/
 
 	m_pkTexMan->BindTexture(kMap->m_kLayer[0].m_strTexture.c_str(),0);
-	m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[0].m_strTexture.c_str());	
+//	m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[0].m_strTexture.c_str());	
 	
 //	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
 //	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
@@ -838,7 +838,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strTexture.c_str(),0);		
-		m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[i].m_strTexture.c_str());					
+//		m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[i].m_strTexture.c_str());					
 		
 		DrawAllHM(kMap,CamPos,true);	
 	}

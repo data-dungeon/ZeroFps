@@ -731,6 +731,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 	GameMessage gm;
 
+	Entity*	pkEnt;
+	P_Mad*	pkMad;
+	string	strMad("/data/mad/");
 
 	switch(cmdid) {
 		case FID_SETDISPLAY:
@@ -904,9 +907,19 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf("Debug: %%s");
 				return;
 				}
+			
+			pkEnt = this->m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
+			pkEnt->AddProperty("P_Event");
+			pkEnt->AddProperty("P_Item");
+			pkEnt->AddProperty("P_Ml");
 
+			pkMad = dynamic_cast<P_Mad*>(pkEnt->GetProperty("P_Mad"));
+			strMad += kCommand->m_kSplitCommand[1];
+			pkMad->SetBase(strMad.c_str());
+			pkMad->SetScale(1.0);
 			m_pkConsole->Printf("Para1 %s", kCommand->m_kSplitCommand[1].c_str());
 			break;
+
 
 
 		case FID_DEV_SHOWPAGE:
@@ -1220,7 +1233,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
 	pkMap->SetID(iNetWorkId);
-	pkMap->Create( (int)kZoneSize.x );
+	pkMap->Create( (int)kZoneSize.x / HEIGHTMAP_SCALE );
 	//pkMap->Random();
 
 	// Create a new Hmrp and set hmap and add it to Entity.
