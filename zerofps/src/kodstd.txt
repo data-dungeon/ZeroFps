@@ -73,6 +73,14 @@ Kommentarer
 		BM-BUG "namn" "beskrivning"
 			Anger att en bug har hittats och ska rättas till.
 
+	Kommentarer ska anges i format som förstås av DoxyGen. 
+
+		För klasser och structs så använder man /// för att skapa kommentaret.
+			Dessa placeras ovanför det man ska dokumentera.
+		Korta kommentarer för medlemar i klassdeklarationer angers med /// på en enda
+			rad ovanför deklarationen eller med ///< på samma rad efter.
+		Detaljerade kommentarer anges för funktioner med /// ovanför implentationen.
+
 Names:
 	Klass / Struct / Unions
 		Skrivs i MixedCase.
