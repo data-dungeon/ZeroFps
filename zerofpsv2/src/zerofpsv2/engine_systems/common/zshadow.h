@@ -27,8 +27,11 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 
 		//vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		//vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
-		vector<Vector3>		m_kTransFormedVertexs;
+		vector<Vector3>			m_kTransFormedVertexs;
 		vector<pair<int,int> >	m_kTowardsEdges;
+
+		int			m_iCurrentShadows;
+		int			m_iCurrentVerts;
 
 
 		int			m_iNrOfShadows;		//number of shadows calculated per model
@@ -52,6 +55,9 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 
 		void EnableShadowGroup(int i) {m_kShadowGroups[i] = true;};
 		void DisableShadowGroup(int i) {m_kShadowGroups[i] = false;};
+
+		int GetCurrentShadows() {return m_iCurrentShadows;};
+		int GetCurrentVerts() 	{return m_iCurrentVerts;};
 
 
 		bool StartUp();

@@ -284,17 +284,20 @@ void ZeroFps::Run_EngineShell()
 		for(int i=0; i<4; i++) {
 			DevPrintf("conn","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
 			// Server gives upp object a time after connection
-			
+
 			if(m_kClient[i].m_pkObject) {
 				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 5))
 					m_pkObjectMan->OwnerShip_Give( m_kClient[i].m_pkObject );
 				}
 			}
 		}
-	
+
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
+
+	DevPrintf("common","shadows: %d", m_pkZShadow->GetCurrentShadows());
+	DevPrintf("common","shadow verts: %d", m_pkZShadow->GetCurrentVerts());
 
 	// Update Local Input.
 	m_pkInput->Update();
@@ -602,7 +605,7 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	if(pkCamera->IsRenderOn() == false)	return;
 
 	SetCamera(pkCamera);
-	GetCam()->ClearViewPort();	
+	GetCam()->ClearViewPort();
 	
 	UpdateCamera();
 	if(m_bDrawAxisIcon)

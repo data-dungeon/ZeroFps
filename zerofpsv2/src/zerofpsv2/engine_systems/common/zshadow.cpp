@@ -9,8 +9,10 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 {
 	Logf("zerofps","ZShadow system created");
 
-	m_iNrOfShadows = 2;
+	m_iNrOfShadows =		2;
  	m_fExtrudeDistance = 10000;
+	m_iCurrentShadows = 	0;
+	m_iCurrentVerts = 	0;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
@@ -47,7 +49,8 @@ void ZShadow::Update()
 	vector<Property*>	kRenderPropertys;
 	m_pkEntityMan->GetWorldObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
 
-	int iNrOfShadows = 0;
+	m_iCurrentShadows = 0;
+	m_iCurrentVerts = 0;
 
 	for(int i = 0;i<kRenderPropertys.size();i++)
 	{
@@ -76,13 +79,13 @@ void ZShadow::Update()
 
 						MakeStencilShadow(kLights[i]->kPos);
 
-						iNrOfShadows++;
+						m_iCurrentShadows++;
 					}
 
 					if(kLights[i]->iType == DIRECTIONAL_LIGHT)
 					{
 						MakeStencilShadow(kLights[i]->kRot * 10000);
-						iNrOfShadows++;
+						m_iCurrentShadows++;
 					}
 				}
 			}
@@ -94,7 +97,7 @@ void ZShadow::Update()
 	}
 
 	//draw shadow
-	if(iNrOfShadows != 0)
+	if(m_iCurrentShadows != 0)
 	{
 		DrawShadow(0.3);
 	}
@@ -139,6 +142,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 			for(int i = 0;i<m_iNrOfVerts;i++)
 				m_kTransFormedVertexs.push_back( m_kModelMatrix.VectorTransform(m_pkVertex[i]) );
 
+
 			return true;
 		}
 	}
@@ -150,7 +154,10 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 {
 	Vector3 v[3];
 
+
 	int iVerts = m_iNrOfFaces*3;
+	m_iCurrentVerts += iVerts;
+
 	for(int i = 0;i<iVerts; i+=3)
 	{
 		v[0] = m_kTransFormedVertexs[ m_pkFaces[i] ];
