@@ -10,12 +10,12 @@
 #endif // _MSC_VER > 1000
 
 
-#include <al/alut.h>
-#include <al/alc.h>
+#include <AL/alut.h>
+#include <AL/alc.h>
 #include <vorbis/vorbisfile.h>
 #include <string>
 #include <iostream>
-#include <conio.h>
+//#include <conio.h>
 //#include <sdl.h>
 #include "../basic/basic.pkg"
 #include "engine_x.h"

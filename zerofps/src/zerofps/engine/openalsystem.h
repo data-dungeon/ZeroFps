@@ -11,7 +11,7 @@
 #include "engine_x.h"
 #include <AL/al.h>
 #include <AL/alut.h>
-#include "OggMusic.h"
+#include "oggmusic.h"
 
 class ENGINE_API Sound {
 	public:
