@@ -845,19 +845,24 @@ void InventoryDlg::DropItems()
          int iClientObjectID = m_pkZeroFps->GetClientObjectID();
          Entity* pkClientObj = m_pkEntityMan->GetObjectByNetWorkID(iClientObjectID);
 
-         // get ClientControlProperty
-         P_ClientControl* pkCC = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
+         if ( pkClientObj != 0)
+         {
+            // get ClientControlProperty
+            P_ClientControl* pkCC = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
 
-         ClientOrder kOrder;
+            ClientOrder kOrder;
 
-         // get client object
-         kOrder.m_sOrderName = "DropItem";
-         kOrder.m_iObjectID = (*it).m_iNetWorkID;
-         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
-         kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
-         kOrder.m_iUseLess = 0;
+            // get client object
+            kOrder.m_sOrderName = "DropItem";
+            kOrder.m_iObjectID = (*it).m_iNetWorkID;
+            kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+            kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
+            kOrder.m_iUseLess = 0;
 
-         pkCC->AddOrder ( kOrder );
+            pkCC->AddOrder ( kOrder );
+         }
+         else            
+            cout << "Error!! No ClientControlObject found on clientside!" << endl;
       }
 
 		m_pkGui->UnregisterWindow((*it).m_pkLabel);

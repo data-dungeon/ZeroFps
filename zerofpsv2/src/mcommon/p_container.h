@@ -2,7 +2,6 @@
 #define _ENGINE_P_CONTAINER_H_
 
 #include "../zerofpsv2/engine/property.h"
-#include "rulesystem/sendtype.h"
 #include "mcommon_x.h"
 #include <vector>
    using namespace std;
@@ -15,7 +14,6 @@ class MCOMMON_API P_Container: public Property
 {
 private:
    vector<int> m_kContainedObjects;
-   list<SendType> m_kSends;       // the clients to recieve data from this property
 
 public:
    int m_iCapacity; // number of objets, change to weight??
@@ -53,7 +51,7 @@ public:
 
    void Init();
 
-   void AddSendsData ( SendType kData );
+   void AddSendsData ( int iClientID );
 
    void RequestUpdateFromServer();
 

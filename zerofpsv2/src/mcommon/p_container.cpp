@@ -128,12 +128,14 @@ void P_Container::Empty()
 
 void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 {
+   // do a request to server for update
+   RequestUpdateFromServer();
+
    if ( pkItemList )
       for ( int i = 0; i < m_kContainedObjects.size(); i++ )
       {
          Entity *pkEntity = 
             m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
-
 
          // add item to container list
          pkItemList->push_back ( pkEntity );
@@ -174,18 +176,16 @@ void P_Container::RequestUpdateFromServer()
       kOrder.m_iUseLess = m_uiVersion;
 
       pkCP->AddOrder (kOrder);
-   }
 
-   SetNetUpdateFlag(true);
+      cout << "SENT CONT REQUEST" << endl;
+   }
 }
 
 // -----------------------------------------------------------------------------------------------
 
-void P_Container::AddSendsData ( SendType kData )
+void P_Container::AddSendsData ( int iClientID )
 {
 	SetNetUpdateFlag(true);		
-	
-	m_kSends.push_back( kData );
 }
 
 // -----------------------------------------------------------------------------------------------

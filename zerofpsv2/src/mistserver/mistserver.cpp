@@ -1395,6 +1395,8 @@ void MistServer::HandleOrders()
       // container request
       else if ( order->m_sOrderName == "(rq)cont" )
       {
+         cout << "Sever hgot cont req" << endl;
+
    		Entity* pkObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
          
          if ( pkObject )
@@ -1406,17 +1408,11 @@ void MistServer::HandleOrders()
             {
                // check versions...
                if ( pkC->m_uiVersion != order->m_iUseLess )
-               {
-                  SendType kSend;
-                  kSend.m_iClientID = order->m_iClientID;
-                  kSend.m_kSendType = "all";
-                  pkC->AddSendsData ( kSend );
-               }
+                  pkC->AddSendsData(order->m_iClientID);
             }            
             else
                cout << "Error! Non-P_Container requested for updated containerinfo!" << endl;
          }
-
       }
       // request character skills
       else if ( order->m_sOrderName == "(rq)skil" )
