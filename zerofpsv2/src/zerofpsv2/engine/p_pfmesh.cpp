@@ -168,7 +168,7 @@ void P_PfMesh::Update()
 {
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
-		cout << "P_PfMesh::Update" << endl;
+		//cout << "P_PfMesh::Update" << endl;
 	
 		if(m_NaviMesh.size() == 0)
 		{

@@ -30,6 +30,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 			FID_LOAD,
 		};
 		
+		LightSource	m_kSun;
+		
 		void Input();
 		void RegisterPropertys();
 

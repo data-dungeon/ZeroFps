@@ -33,23 +33,13 @@ void DarkMetropolis::OnInit()
 
 	Register_Cmd("load",FID_LOAD);		
 
-	m_pkFps->m_bClientMode = true;
+	//m_pkFps->m_bClientMode = true;
 
 	m_pkLight->SetLighting(true);
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->m_bRender = true;
 
-	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
-	if(m_pkCameraEntity)
-	{
-		cout<<"settign cmaera"<<endl;
-		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
-		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera);
-		m_pkCameraEntity->GetSave() = false;
-	}
 
 	// create gui script
 	GuiAppLua::Init(&g_kDM, m_pkScript);
@@ -62,6 +52,20 @@ void DarkMetropolis::OnInit()
 
 	m_pkInput->ShowCursor(true);
 	m_pkLight->SetLighting(true);
+	
+	
+	m_kSun.kRot = Vector3(1,2,1);
+	m_kSun.kDiffuse=Vector4(1,1,1,0);
+	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
+	m_kSun.iType=DIRECTIONAL_LIGHT;			
+	m_kSun.iPriority=10;
+	m_kSun.fConst_Atten=1;
+	m_kSun.fLinear_Atten=0;
+	m_kSun.fQuadratic_Atten=0;	
+	
+	m_pkLight->Add(&m_kSun);
+
+	
 }
 
 void DarkMetropolis::OnIdle() 
@@ -89,6 +93,19 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
+	cout<<"STarting server"<<endl;
+
+	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
+	if(m_pkCameraEntity)
+	{
+		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
+		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera);
+		m_pkCameraEntity->GetSave() = false;
+	}
+			
+
 }
 
 void DarkMetropolis::OnClientStart()
@@ -155,10 +172,12 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 				cout<<"Error loading world"<<endl;
 				break;
 			}				
-			
-						
+
 			cout<<"starting server"<<endl;
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			
+
+			
 			
 			break;		
 
