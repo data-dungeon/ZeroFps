@@ -497,11 +497,14 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	
 	for(vector<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
 	{
-		PropertyDescriptor* pkP=new PropertyDescriptor;
-		pkP->m_kName=(*it)->m_acName;
-		(*it)->Save(&pkP->m_kData);
+		if((*it)->m_bSave)
+		{
+			PropertyDescriptor* pkP=new PropertyDescriptor;
+			pkP->m_kName=(*it)->m_acName;
+			(*it)->Save(&pkP->m_kData);
 		
-		ObjDesc->m_acPropertyList.push_back(pkP);
+			ObjDesc->m_acPropertyList.push_back(pkP);
+		}
 	}
 }
 

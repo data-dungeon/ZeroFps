@@ -8,6 +8,8 @@ Property::Property()
 	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));			
 	
 	bNetwork = false;
+	m_bSave = true;
+	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_pkObject=NULL;
@@ -32,17 +34,17 @@ void Property::HandleGameMessage(GameMessage& Msg)
 // Virtuals
 void Property::Save(ZFMemPackage* pkPackage)
 {
-	int i=1234;
-	pkPackage->Write((void*)&i,4);
+//	int i=1234;
+//	pkPackage->Write((void*)&i,4);
 }
 
 void Property::Load(ZFMemPackage* pkPackage)
 {  
-	int i=0;
-	pkPackage->Read((void*)&i,4);
+//	int i=0;
+//	pkPackage->Read((void*)&i,4);
 	
-	if(i != 1234)
-		cout<<"ERROR Loading property"<<endl;
+//	if(i != 1234)
+//		cout<<"ERROR Loading property"<<endl;
 }
 
 bool Property::operator<(Property& kOther)

@@ -20,7 +20,7 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_pkClientUnit = NULL;
 	m_bHaveSetRadius = false;
 
-	
+	m_bClient = true;
 }
 
 
@@ -32,9 +32,12 @@ void P_ServerUnit::Update()
 	if(m_pkCurrentAIState)
 		m_pkCurrentAIState=m_pkCurrentAIState->UpdateAI();
 			
-	
-	GetClientUnitP();
-	UpdateClient();
+	if(m_bClient)
+	{
+		GetClientUnitP();		
+		UpdateClient();
+	}
+		
 	//cout<<"external com:" <<m_kExternalCommands.size() <<endl;
 	/*if(!m_pkClientUnit->m_kCommandsPending.empty())
 	{
@@ -109,17 +112,17 @@ void P_ServerUnit::SetRadius()
 
 void P_ServerUnit::Save(ZFMemPackage* pkPackage)
 {
-
+	pkPackage->Write(&m_bClient,sizeof(m_bClient));
 }
 
 void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 {
-
+	pkPackage->Read(&m_bClient,sizeof(m_bClient));
 }
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(8);
+	vector<PropertyValues> kReturn(9);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_INT;
@@ -153,6 +156,9 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[7].iValueType=VALUETYPE_INT;
 	kReturn[7].pkValue=(void*)&m_kInfo.m_Info2.m_cHeight;
 	
+	kReturn[8].kValueName="m_bClient";
+	kReturn[8].iValueType=VALUETYPE_BOOL;
+	kReturn[8].pkValue=(void*)&m_bClient;
 
 	return kReturn;
 }

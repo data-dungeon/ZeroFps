@@ -49,6 +49,7 @@ class COMMON_API P_ServerUnit: public Property {
 		P_ClientUnit*		m_pkClientUnit;	
 		bool					m_bHaveSetRadius;
 		bool					m_bUpdateCommands;
+		bool					m_bClient;
 		map<string, ExternalCommand*> m_kExternalCommands;
 		vector<PropertyValues> GetPropertyValues();		
 		AIBase* m_pkCurrentAIState;

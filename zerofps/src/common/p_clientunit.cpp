@@ -12,6 +12,7 @@ P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 	//m_pkClientInput =static_cast<P_ClientInput*>(m_pkObject->GetProperty("P_ClientInput"));
 
 	bNetwork = true;
+	m_bSave = false;
 
 	m_kInfo.m_Info2.m_cTeam =			255;
 	m_kInfo.m_Info2.m_cHealth =		255;

@@ -132,7 +132,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return this;
 				}
 				
-				cout<<"New destination is "<<iX<<" "<<iY<<endl;
+				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
 				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							

@@ -97,6 +97,7 @@ class ENGINE_API Property
 		int	m_iSide;				// server or client property
 		
 		bool	bNetwork;		
+		bool	m_bSave;
 		char	m_acName[50];		
 
 
