@@ -1,2 +1,2 @@
-g++ *.cpp -o ../../../bin/libbasic.so --shared -O3 
+g++ *.cpp -o ../../../bin/libbasic.so --shared -O3 -lSDL -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`
 #-lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`

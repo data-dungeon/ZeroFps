@@ -1,12 +1,13 @@
 #include "heightmap.h"
 
 
-HeightMap::HeightMap() {
+HeightMap::HeightMap(FileIo* pkFile) {
+	m_pkFile=pkFile;
 	m_iHmSize=500;	
 //	m_iBoxTresh=2;
 //	m_iMaxSteps=5;
 	m_iError=10;
-	m_kPosition=Vector3(-50,0,-50);
+	m_kPosition=Vector3(0,0,0);
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
 	Zero();
 	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
@@ -151,7 +152,7 @@ bool HeightMap::Load(char* acFile) {
 	HM_fileheader k_Fh;
 	
 	//open file
-	FILE* fp=fopen(acFile,"rb");
+	FILE* fp=fopen(m_pkFile->File(acFile),"rb");
 	if(fp==NULL)
 		return false;
 	
@@ -185,7 +186,7 @@ bool HeightMap::Save(char* acFile) {
 	k_Fh.m_iHmSize=m_iHmSize;
 	
 	//open file
-	FILE* fp=fopen(acFile,"wb");
+	FILE* fp=fopen(m_pkFile->File(acFile),"wb");
 	if(fp==NULL)
 		return false;
 	
@@ -295,7 +296,79 @@ void HeightMap::GenerateTextures() {
 	}
 }
 
+bool HeightMap::LoadImage(char* acFile) {
+	int smooth=1;
 
+	SDL_Surface *image;
+	Uint8 data;
+	Uint32 pixel;
+	
+	image=IMG_Load(m_pkFile->File(acFile));
+	if(!image)
+		return false;
+		
+	m_iHmSize=image->w;
+	cout<<"Image Size is:"<<m_iHmSize<<endl;
+	
+	delete[] verts;
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
 
+	for(int y=0;y<m_iHmSize;y++)
+		for(int x=0;x<m_iHmSize;x++){						
+			pixel=GetPixel(image,x,y);			
+		
+			SDL_GetRGB(pixel, image->format, &data,&data, &data);
+			verts[y*m_iHmSize+x].height=data/3;
 
+		}
+			
+
+	float med;
+	for(int l=0;l<smooth;l++) {
+		for(int y=1;y<m_iHmSize-1;y++) {
+			for(int x=1;x<m_iHmSize-1;x++) {
+				med=0;
+				for(int q=-1;q<2;q++)
+					for(int w=-1;w<2;w++){
+						if(q==0 && w==0) {							
+
+						} else {
+							med+=verts[(y+q)*m_iHmSize+(x+w)].height;							
+						}
+					}
+				med=med/8;
+				
+				verts[y*m_iHmSize+x].height=med;
+			}
+		}
+	}
+	
+}
+
+Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1:
+        return *p;
+
+    case 2:
+        return *(Uint16 *)p;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+
+    case 4:
+        return *(Uint32 *)p;
+
+    default:
+        return 0;       /* shouldn't happen, but avoids warnings */
+    }
+}
 

@@ -9,6 +9,8 @@
 #include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include "basic.pkg"
 
 using namespace std;
@@ -39,12 +41,14 @@ class BASIC_API HeightMap {
 		HM_vert *m_kCenter;
 		Vector3 m_kPosition;
 		int m_iError;
+		FileIo *m_pkFile;
 		
-		HeightMap();		
+		HeightMap(FileIo* pkFile);		
 		void Zero();
 		void Random();
 		bool Load(char* acFile);
 		bool Save(char* avFile);
+		bool LoadImage(char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
 		float Height(int x,int z);
@@ -52,7 +56,7 @@ class BASIC_API HeightMap {
 		void SetPosition(Vector3 kNewPos);
 
 		HM_vert* GetVert(int x,int z);		
-		
+		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 //		void MakeQuadTree();
 //		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
 

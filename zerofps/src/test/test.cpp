@@ -13,16 +13,17 @@ void Test::OnInit(void) {
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 	pkFps->m_pkAudioMan->PlayMusic();
 
-	test=new HeightMap();
-	test->Random();
+	test=new HeightMap(pkFile);
+//	test->Random();
 	test->SetTileSet("file:../data/textures/land.bmp");
-	test->GenerateNormals();
-	test->GenerateTextures();
-	
-//	test->Save("test.hm");
-//	test->Load("test.hm");
 //	test->GenerateNormals();
 //	test->GenerateTextures();
+	
+//	test->Save("test.hm");
+//	test->Load("file:test.hm");
+	test->LoadImage("file:test.bmp");
+	test->GenerateNormals();
+	test->GenerateTextures();
 
 	test->SetPosition(Vector3(-50,-10,-50));
 
@@ -62,7 +63,7 @@ pkRender->DrawHMlod(test,*pkFps->m_kCamPos);
 //	pkRender->DrawHM(test);		
 	pkRender->Quad(Vector3(0,-9,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
-	cout<<pkFps->m_iFps<<endl;
+//	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	

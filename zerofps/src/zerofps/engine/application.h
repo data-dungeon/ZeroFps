@@ -12,6 +12,7 @@ class ZeroFps;
 class Console;
 class Render;
 class Input;
+class FileIo;
 
 class ENGINE_API Application {	
 	protected:
@@ -20,6 +21,7 @@ class ENGINE_API Application {
 		Render* pkRender;
 		Input* pkInput;
 		TextureManager* pkTexMan;
+		FileIo* pkFile;
 		
 	public:
 		static Application* pkApp;
