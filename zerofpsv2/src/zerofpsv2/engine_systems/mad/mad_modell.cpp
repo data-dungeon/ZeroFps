@@ -510,7 +510,6 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		return;
 		}*/
 
-
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 	pkCore->SetupBonePose();

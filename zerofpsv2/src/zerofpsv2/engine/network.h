@@ -186,25 +186,44 @@ private:
 	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
-	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
-
-	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
-
-	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
-
-	void DisconnectAll();											// Send disconenct message to all nodes.
-
 	float						m_fStatsUpdate;
 	
 	// Console Variables
 	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.
 
+	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
+	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
+	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
+	void DisconnectAll();											// Send disconenct message to all nodes.
+
 public:
+	string	GetLocalIP();			
 	NetWorkStatus			m_eNetStatus;
 	vector<RemoteNode>	m_akClients;
 
+	NetWork();
+	~NetWork();
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
+
+	bool Init();
+	bool Close();
+
+	void StartSocket(bool bStartServer);
+	void CloseSocket();
+	void ServerStart(void);
+	void ServerEnd(void);
+	void ClientStart(const char* szIp);
+	void ClientEnd(void);
+
 	void	SetMaxNodes(int iMaxNode);			
+	int GetNumOfClients(void);
+	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
+	int GetFreeClientNum();
+	
+	// NetStrings
 	vector<ZFNet_String>		m_kStringTable;
 	int NetString_GetFree();
 	int NetString_Add(const char* szString);
@@ -216,48 +235,27 @@ public:
 	void NetString_Request(int iIndex);
 	void NetString_Refresh();
 
-	bool Init();
-	bool Close();
-
-	NetWork();
-	~NetWork();
-
-	void DevShow_ClientConnections();
-
-	int GetNumOfClients(void);
-	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
-	int GetFreeClientNum();
-
-	void StartSocket(bool bStartServer);
-	void CloseSocket();
-	void ServerStart(void);
-	void ServerEnd(void);
-	void ClientStart(const char* szIp);
-	void ClientEnd(void);
-
-	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
-	void Run(); 
-
+	// Send
 	bool Send(NetPacket* pkNetPacket);
 	void SendToAllClients(NetPacket* pkNetPacket);
 	void SendToClient(int iClient, NetPacket* pkNetPacket);
 
-	void TEST_KeepAliveALL();										// Sends a NOP Controll message to all clients
-	
-	void RTS_RequestClientObjectID();
+	// Recv
+	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
+	void Run(); 
 
 
-	bool CmpNetworkAddress();
-	bool StrToAddress();
+//	bool CmpNetworkAddress();
+//	bool StrToAddress();
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 
-//	void ServerList(void);
+	// Debug
 	void DrawConnectionGraphs();
-	
-	bool StartUp();
-	bool ShutDown();
-	bool IsValid();
+	void DevShow_ClientConnections();
 
+	// Remove ??
+	//void TEST_KeepAliveALL();										// Sends a NOP Controll message to all clients
+	//void RTS_RequestClientObjectID();
 };
 
 #endif

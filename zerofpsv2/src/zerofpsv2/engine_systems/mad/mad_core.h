@@ -26,6 +26,8 @@ using namespace std;
 #define MAD_AD_VERSION			1
 #define MAD_MD_VERSION			1
 
+#define MAD_NOANIMINDEX			-1
+
 // MAD - MD (Mesh Data)
 
 //! Texture coo.

@@ -3,6 +3,8 @@
 
 #include "../basic/zfsystem.h"
 
+//#define	NET_LOGALL	
+
 NetWork* g_pkNetWork;
  
 
@@ -111,7 +113,6 @@ void NetPacket::Read_Str(char* szString)
 void NetPacket::Write_NetStr (const char* szString)
 {
 	int iIndex = g_pkNetWork->NetString_GetIndex(szString);
-//	g_ZFObjSys.Logf("net", "Write_NetStr: %d, %s\n", iIndex, szString);
 	
 	Write(iIndex);
 	if(iIndex == ZF_NET_NONETSTRING) {
@@ -189,7 +190,6 @@ NetWork::NetWork()
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
-//	RegisterVariable("n_maxplayers",			&m_iMaxNumberOfNodes,	CSYS_FLOAT);	
 	
 	// Register Commands
 
@@ -200,7 +200,6 @@ NetWork::NetWork()
 		m_kStringTable[i].m_bNeedUpdate	= false;
 		m_kStringTable[i].m_NetString = "";
 		}
-
 }
 
 bool NetWork::StartUp()	
@@ -208,37 +207,47 @@ bool NetWork::StartUp()
 	m_pkConsole	= static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
 	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 
-	GetSystem().Log("net",		"NetWork SubSystem Startup:\n");
-	GetSystem().Log("netpac",	"NetWork Packet Log:\n");
-
-	g_pkNetWork = this;
+	g_pkNetWork  = this;
 
 	int iInitRes = SDLNet_Init();
+
+#ifdef NET_LOGALL
+	GetSystem().Log("net",		"NetWork SubSystem Startup:\n");
+	GetSystem().Log("netpac",	"NetWork Packet Log:\n");
 	Logf("net", "SDLNet_Init(): %d\n", iInitRes);
-
-//	SetMaxNodes( m_iMaxNumberOfNodes );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
+#endif
 
 	return true; 
 }
 
-bool NetWork::ShutDown() 
-{ 
-	return true; 
-}
-
-bool NetWork::IsValid()	{ return true; }
+bool NetWork::ShutDown() {	return true;	}
+bool NetWork::IsValid()	 { return true;	}
 
 NetWork::~NetWork()
 {
+#ifdef NET_LOGALL
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		if(m_kStringTable[i].m_bInUse)
 			Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
 		}
+#endif
 
 	DisconnectAll();
 	CloseSocket();
 	SDLNet_Quit();
+
+#ifdef NET_LOGALL
 	GetSystem().Log("net", "NetWork SubSystem ShutDown:\n");
+#endif
+}
+
+string NetWork::GetLocalIP()
+{
+//	char MyIp[256];
+//	m_kLocalIP kIp;
+//	AddressToStr(kIp, MyIp);
+	return string("ost");
+
 }
 
 // NetStrings are strings that are sent as int's over network. 
@@ -255,7 +264,9 @@ int NetWork::NetString_Add(const char* szString)
 {
 	string strTest;
 	strTest = /*string("A Cool ") +*/ string(szString);
+#ifdef NET_LOGALL
 	Logf("net", "NetString Add: = %s\n", strTest.c_str());
+#endif
 
 	if( m_eNetStatus == NET_CLIENT )	return ZF_NET_NONETSTRING;
 
@@ -322,13 +333,17 @@ void NetWork::Send_NetStrings()
 			NP.Write( i );
 			NP.Write_Str(m_kStringTable[i].m_NetString.c_str());
 			m_kStringTable[i].m_bUpdated = false;
+#ifdef NET_LOGALL
 			Logf("net", "Write NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+#endif
 			}
 
 		// Send if packet to large.
 		if(NP.m_iPos >= 512) {
 			NP.Write( ZF_NET_NONETSTRING );
+#ifdef NET_LOGALL
 			Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
+#endif
 			SendToAllClients(&NP);
 
 			NP.Clear();
@@ -338,7 +353,9 @@ void NetWork::Send_NetStrings()
 		}
 
 	NP.Write( ZF_NET_NONETSTRING );
+#ifdef NET_LOGALL
 	Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
+#endif
 	SendToAllClients(&NP);
 }
 
@@ -476,6 +493,10 @@ void NetWork::ClientStart(const char* szIp)
 	Send(&NetP);
 }
 
+/**	\brief	Checks for incoming packets and return them.
+	
+	Checks if any packet have arrived and if so puts it in the netpacket,
+*/
 bool NetWork::Recv(NetPacket* pkNetPacket)
 {
 	pkNetPacket->Clear();
@@ -495,6 +516,9 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 	return false;
 }
 
+/**	\brief	Sends a package.
+	
+*/
 bool NetWork::Send(NetPacket* pkNetPacket)
 {
 	if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == 204)
@@ -634,7 +658,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_REQCLIENTID:
-			GetSystem().Log("net", "*** *** ZF_NETCONTROL_REQCLIENTID *** ***\n");
 			iClientID = GetClientNumber( &pkNetPacket->m_kAddress );
 			if(iClientID != ZF_NET_NOCLIENT) {
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
@@ -648,10 +671,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_CLIENTID:
-			GetSystem().Log("net", "*** *** ZF_NETCONTROL_CLIENTID *** ***\n");
 			pkNetPacket->Read(iObjId);
 			m_pkZeroFps->m_iRTSClientObject = iObjId;
-			Logf("net", "ZF_NETCONTROL_CLIENTID: %d\n",m_pkZeroFps->m_iRTSClientObject );
 			break;
 
 		case ZF_NETCONTROL_DISCONNECT:
@@ -672,7 +693,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_NETSTRINGS:
 			{
+#ifdef NET_LOGALL
 			GetSystem().Log("net", "*** *** ZF_NETCONTROL_NETSTRINGS *** ***\n");
+#endif
 			int iStringID;
 			pkNetPacket->Read(iStringID);
 			Logf("net", " NetString[%d]\n", iStringID);
@@ -684,8 +707,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_kStringTable[iStringID].m_bUpdated	= false;
 				m_kStringTable[iStringID].m_NetString	= szText;
 
+#ifdef NET_LOGALL
 				Logf("net", " NetString[%d] = %s\n",iStringID, m_kStringTable[iStringID].m_NetString.c_str());
-				cout << "Recv NetString[" << iStringID <<    "] = " << szText << endl;
+#endif
 
 				pkNetPacket->Read(iStringID);
 				}
@@ -696,12 +720,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_REQNETSTRING:
 			{
-			GetSystem().Log("net", "*** *** ZF_NETCONTROL_REQNETSTRING *** ***\n");
-
 			// When we get a req for a netstring we make a packet with it and send it to all connected clients.
 			int iStringID;
 			pkNetPacket->Read(iStringID);
-			Logf("net", " Request for NetString[%d]\n", iStringID);
 
 			NetPacket kNetPRespons;
 			kNetPRespons.Clear();
@@ -755,6 +776,11 @@ void NetWork::DrawConnectionGraphs()
 	}
 }
 
+/**	\brief	Checks for incoming packets and return them.
+	
+	Updates the network by looking for incoming packages and sending them
+	the the right place and also checking for timeouts on all connections.
+*/
 void NetWork::Run()
 {	
 	int iRecvBytes = 0;
@@ -801,7 +827,6 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
-				//Logf("net", "Recv: ZF_NETTYPE_UNREL: Order = %d\n", NetP.m_kData.m_kHeader.m_iOrder);
 				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
 
@@ -853,6 +878,9 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 	return true;
 }
 
+/**	\brief	Sends package to one of the connected clients..
+	
+*/
 void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 {
 	if(m_RemoteNodes[iClient].m_eConnectStatus != NETSTATUS_CONNECTED) {
@@ -862,12 +890,12 @@ void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 
 	pkNetPacket->m_kAddress = m_RemoteNodes[iClient].m_kAddress;
 	pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[iClient].m_iNumOfPacketsSent;
-//	Logf("net", "SendToClient[%d] : Order = %d", iClient, m_RemoteNodes[iClient].m_iNumOfPacketsSent );
 	
 	Send(pkNetPacket);
 }
 
-
+/**	\brief	Sends a package to alla connected clients.
+*/
 void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 {
 	if(m_RemoteNodes.size() <= 0)
@@ -879,12 +907,12 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 
 		pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
 		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
-//		Logf("net", "SendToAllClients[%d] : Order = %d", i, m_RemoteNodes[i].m_iNumOfPacketsSent );
 		
 		Send(pkNetPacket);
 		}
 }
 
+/*
 void NetWork::RTS_RequestClientObjectID()
 {
 	cout << "TRYING TO REQUEST CLIENT OBJECT" << endl;
@@ -898,7 +926,7 @@ void NetWork::RTS_RequestClientObjectID()
 	NPacket.Write((unsigned char) ZF_NETCONTROL_REQCLIENTID);
 
 	SendToAllClients(&NPacket);
-}
+}*/
 
 // Force Disconnect on all nodes.
 void NetWork::DisconnectAll()
@@ -917,6 +945,7 @@ void NetWork::DisconnectAll()
 	}
 }
 
+/*
 void NetWork::TEST_KeepAliveALL()
 {
 	if(m_RemoteNodes.size() <= 0)
@@ -934,45 +963,4 @@ void NetWork::TEST_KeepAliveALL()
 		NetPacket.m_kAddress = m_RemoteNodes[i].m_kAddress;
 		Send(&NetPacket);
 		}
-}
-
-
-/*
-void NetWork::ServerList(void)
-{
-	int iTest = 5433;
-	char cTest = 12;
-	unsigned char ucTest = 168;
-	string strTest("Gaaaa liksom :)");
-	Vector3 vTest(1,1.5,3);
-
-	NetPacket NetP;
-	NetP.Write(iTest);
-	NetP.Write_Str(strTest.c_str());
-	NetP.Write(ucTest);
-	NetP.Write(cTest);
-	NetP.Write(vTest);
- 	
-	int iTest2;
-	char cTest2;
-	unsigned char ucTest2;
-	char szTest2[256];
-	Vector3 vTest2;
-
-	NetP.m_iPos = 0;
-	NetP.Read(iTest2);
-	NetP.Read_Str(szTest2);
-	NetP.Read(ucTest2);
-	NetP.Read(cTest2);
-	NetP.Read(vTest2);
-
-	cout << "iTest2 : " << iTest2 << endl;
-	cout << "szTest2 : " << szTest2 << endl;
-	cout << "ucTest2 : " << (int) ucTest2 << endl;
-	cout << "cTest2 : " << (int) cTest2 << endl;
-	cout << "vTest2 : ";
-	vTest2.Print();
 }*/
-
-
-

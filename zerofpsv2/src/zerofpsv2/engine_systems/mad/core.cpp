@@ -200,7 +200,7 @@ int Mad_Core::GetAnimIndex(char* szName)
 			return i;
 		}
 	
-	return -1;
+	return MAD_NOANIMINDEX;
 }
 	
 void Mad_Core::SetReplaceTexture(char* szFileName)
@@ -304,7 +304,7 @@ void Mad_Core::SetupBonePose()
 {
 	unsigned int i;
 
-	if( iActiveAnimation == -1) {
+	if( iActiveAnimation == MAD_NOANIMINDEX) {
 		for (i = 0; i < m_kSkelleton.size(); i++)
 			g_FullBoneTransform[i].Identity();
 	
@@ -422,6 +422,13 @@ void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime, bool bLoop)
 {
 	iActiveAnimation		= iAnim;
 	fActiveAnimationTime = fTime;
+
+	if(iActiveAnimation == -1) {
+		iStartFrame = 0;
+		iEndFrame = 0;
+		fFrameOffs = 0.0;
+		return;
+		}
 
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
 	
