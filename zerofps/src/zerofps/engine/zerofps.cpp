@@ -16,7 +16,9 @@ ZeroFps::ZeroFps(void) {
 //	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
 	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
-	
+	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
+	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
+	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
 }
 
 

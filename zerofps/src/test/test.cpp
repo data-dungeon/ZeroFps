@@ -62,7 +62,7 @@ void Test::OnIdle(void) {
 	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
-	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 
 
 //	pkRender->DrawSimpleWater(Vector3(180,3,200),30);

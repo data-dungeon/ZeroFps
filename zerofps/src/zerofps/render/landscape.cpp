@@ -4,8 +4,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	glPushMatrix();
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
-	if(m_FogEnable)//Disable the fog while drawing the sky box
-		glDisable(GL_FOG);
+	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox	
 	
 	int iSize=801;	
@@ -19,7 +18,6 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	
 	if(m_FogEnable)//enable the fog again
 		glEnable(GL_FOG);
-
 	glEnable(GL_LIGHTING);//turn the lighting back on =)
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();
@@ -32,7 +30,6 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	glPushMatrix();
 	
-	glDisable(GL_CULL_FACE);
 	
 	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glRotatef(kHead.x, 1, 0, 0);
@@ -40,11 +37,15 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glRotatef(kHead.z, 0, 0, 1);
 	glTranslatef(-iSize/2,0,-iSize/2);
 	
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_FOG);		
 	glDisable(GL_LIGHTING);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-		
+	glEnable(GL_BLEND);	
+	
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		
+	
 	glDepthMask(GL_FALSE);
+	
 	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnable(GL_TEXTURE_2D);	
@@ -54,10 +55,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);	
 	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp"));
-
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD);
-//	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp");
-	
 	
 	float tx=SDL_GetTicks()/80000.0;	
 	
@@ -82,6 +80,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glDisable(GL_TEXTURE_2D);	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	
+	if(m_FogEnable)//Disable the fog while drawing the sky box
+		glEnable(GL_FOG);		
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
@@ -92,8 +92,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 	glPushMatrix();
 	
+	glDisable(GL_FOG);	
 	glDisable(GL_CULL_FACE);	
-//	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glDisable(GL_LIGHTING);
 	glDepthMask(GL_FALSE);	
 //	glDisable(GL_COLOR_MATERIAL);	
@@ -115,8 +115,6 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 		glTexCoord2f(tx+2,1);		
 		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z);
 	
-	
-//		glColor4f(.5,.5,.5,0.5);
 		glTexCoord2f(-tx,0);
 		glVertex3f(kPosition.x,kPosition.y,kPosition.z);
 		glTexCoord2f(-tx,1);		
@@ -125,10 +123,11 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z+iSize);
 		glTexCoord2f(-tx+2,1);		
 		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z);
-	
-	
 	glEnd();
 
+
+	if(m_FogEnable)//Disable the fog while drawing the sky box
+		glEnable(GL_FOG);
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
@@ -137,14 +136,25 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 }
 
 
-void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
+void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
+	if(m_iAutoLod>0){
+//		cout<<"BLA:"<<m_iLodUpdate<<endl;
+		if(SDL_GetTicks()>(m_iLodUpdate+500)){
+			m_iLodUpdate=SDL_GetTicks();
+			if(iFps<(m_iFpsLock-5) && m_iDetail>5){
+				m_iDetail--;	
+			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
+				m_iDetail++;		
+			}
+		}
+	}
+	
 	glPushMatrix();
 	
 	//translate to map position
 	glTranslatef(kmap->m_kPosition.x,kmap->m_kPosition.y,kmap->m_kPosition.z);
 
 	m_pkTexMan->BindTexture(kmap->m_acTileSet);
-//	glPolygonMode(GL_FRONT,GL_LINE);	
 	
 	GLfloat mat_specular[]={0,0,0,0};
 	GLfloat mat_diffuse[]={1,1,1,1};	
@@ -173,15 +183,17 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 											CamPos.y,//this is nice =)
 //											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
 											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
-											).Length()/m_iDetail);																
+											).Length());///m_iDetail);																
 //	cout<<"STEP"<<step<<endl;
-			if(step>13)
+			if(step>m_iViewDistance)
 				continue;
+				
+			step/=m_iDetail;
 			
 			if(step<1)//step cant be lower than 1
 				step=1;				
-			if(step>6)//if the step get to high it will look realy bad
-				step=6;			
+			if(step>8)//if the step get to high it will look realy bad
+				step=8;			
 			
 			bool flip=false;	//texture fliper
 			float t=0;

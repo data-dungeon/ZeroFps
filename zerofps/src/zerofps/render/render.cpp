@@ -4,7 +4,11 @@ Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=32;	//grid size of lod tiles
-	m_iDetail=25;//height meens greater detail att longer range	
+	m_iDetail=30;//height meens greater detail att longer range	
+	m_iViewDistance=300;
+	m_iFpsLock=60;
+	m_iAutoLod=1;
+	m_iLodUpdate=0;
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){

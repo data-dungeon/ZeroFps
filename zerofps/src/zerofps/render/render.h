@@ -23,9 +23,12 @@ class RENDER_API Render {
 		bool m_FogEnable;		
 
 		int m_iSlicesize;	  //height meens greater detail att longer range
-	
+		int m_iLodUpdate;
 	public:
 		int m_iDetail;			//grid size of lod tiles	
+		int m_iViewDistance;	//how far until we cut the landscape	
+		int m_iFpsLock;
+		int m_iAutoLod;
 	
 		Render(TextureManager* pkTexMan);
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
@@ -37,7 +40,7 @@ class RENDER_API Render {
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
 		void DrawHM(HeightMap* kmap);
-		void DrawHMlod(HeightMap* kmap,Vector3 CamPos);
+		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);
 //		void DrawHMQT(HeightMap* kmap);		
 //		void DrawQuad(HM_vert* vert,int width);
 		void DrawSkyBox(Vector3 CamPos);
