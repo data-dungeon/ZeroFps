@@ -139,30 +139,16 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	Vector3 kNLVerts[3];
 	Plane P;
 	
-	
-//	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-	
-	
+
+	if(kPos1 == kPos2)
+		return false;
+
 	//add objects possition to vertexs
 	for(int i=0;i<3;i++){
-//		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
 		kNLVerts[i] = m_kModelMatrix.VectorTransform(kVerts[i]);
 	
-//		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);			
 	}
 
-/*	//Render kollision mesh
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-	glColor3f(rand()%1000/1000.0,rand()%1000/1000.0 ,rand()%1000/1000.0);
-	glBegin(GL_TRIANGLES);
-		glVertex3fv(&kNLVerts[0].x);
-		glVertex3fv(&kNLVerts[1].x);				
-		glVertex3fv(&kNLVerts[2].x);					
-	glEnd();
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-*/
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
@@ -172,7 +158,6 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	if(Normal.Length() == 0)
 	{
 		return false;
-		//Normal.Set(0,1,0);
 	}
 	
 	Normal.Normalize();
@@ -183,19 +168,24 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 //	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
 //	cout<<"D "<<P.m_fD<<endl;	
 	
-	if(P.LineTest(kPos1 - (Normal * (fR*0.8)), kPos2 - (Normal * fR),&m_kColPos)){
+	
+	
+	if(P.LineTest(kPos1 - (Normal * (fR*0.95)), kPos2 - (Normal * fR),&m_kColPos)){
 //	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){	
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
 			//cout<<"Collision with "<<endl;
 			m_kColNormal = Normal;			
 			
+			
+			Vector3 coloffset = Normal  * m_fcoloffset;// -((kPos2 - kPos1).Unit() * m_fcoloffset);
+			
 			Vector3 bla1=m_kOtherDest -m_kColPos;
 			Vector3 bla2=Normal.Proj(bla1);
 			m_kGlideColPos=m_kColPos + (bla1-bla2);
 							
-			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);						
-			m_kGlideColPos += (Normal*m_fcoloffset) + (Normal * fR);
+			m_kColPos += coloffset + (Normal * fR);						
+			m_kGlideColPos += coloffset + (Normal * fR);
 			
 /*			
 			Vector3 NewPos=m_kOtherDest + (Normal * fR);	

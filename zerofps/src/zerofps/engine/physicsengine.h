@@ -144,18 +144,11 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		void HandleCollisions();
 		void ClearCollisions();	
 		
+		bool Stride(PhysicProperty* pkPP);
+		Collision* CheckIfColliding(PhysicProperty* pkPP);
+		
 		bool TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec);
 		
-		/*
-		void CalcMotionSpheres();
-		void TestCollisions();
-		bool TestSphere(Sphere* S1,Sphere* S2);
-
-		
-		void MoveObject(PhysicProperty* pkPP);
-		*/
-
-
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};
 };

@@ -52,7 +52,7 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 	Vector3 Vel=pkObject->GetVel();
 	
 	if(pkPP->m_bGravity)
-		Acc+=Vector3(0,-9.82,0);
+		Acc+=Vector3(0,-11,0);
 	
 	if(pkPP->m_bFloat)
 		if(pkObject->GetPos().y < 0) 
@@ -115,22 +115,38 @@ void PhysicsEngine::CheckCollisions()
 	{	
 		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
 		
+		if(PP1->m_bStride)
+			Stride(PP1);		
+	
+	}	
+	
+	
+	for(list<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
+	{	
+		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
+		
+		
 		for(list<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
 		{	
 			//dont collide with our self 
 			if(it1==it2)
 				continue;
-				PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
+				
+			PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
 	
 			//dont collide two static objects =)
 			if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
 				PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
 				continue;
 	
+
+	
 			if(TestMotionSpheres(PP1,PP2))
 			{
+										
 				Collision* pkCD=NULL;
 				pkCD=DeepTest(PP1,PP2);
+		
 				
 				if(pkCD!=NULL)
 				{
@@ -294,8 +310,6 @@ void PhysicsEngine::HandleCollisions()
 
 	for(i=0;i<kCols.size();i++) 
 	{	
-//		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]->m_pkPP2->GetObject());
-//		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]->m_pkPP1->GetObject());
 		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]);
 		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]);	
 	}
@@ -358,90 +372,106 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 }
 
 
-/*
 
-
-void PhysicsEngine::MoveObject(PhysicProperty* pkPP)
+bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 {
-	pkPP->GetObject()->GetVel() = GetNewVel(pkPP);
-	pkPP->GetObject()->GetPos() += pkPP->GetObject()->GetVel()*m_fFrameTime;
+	float fStep = 0.05;
+
+	Vector3 kOldNewPos = pkPP->m_kNewPos;
+	Vector3 kOldPos = pkPP->GetObject()->GetPos();
+	Collision *pkCD = NULL;
 	
-//	pkObject->GetVel() += pkObject->GetAcc() * m_fFrameTime;
-//	pkObject->GetPos() += pkObject->GetVel() * m_fFrameTime;;
-}
-
-
-void PhysicsEngine::CalcMotionSpheres()
-{
-	m_kMotionSpheres.clear();
 	
-	Sphere sp;		
-	Vector3 kPos1;	
-	Vector3 kPos2;
-		
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
-		CSSphere *csp = static_cast<CSSphere*>((static_cast<PhysicProperty*>(*it))->GetColSphere());
-		
-		kPos1=(*it)->GetObject()->GetPos();
-		kPos2=GetNewPos(static_cast<PhysicProperty*>(*it));	
-		
-		sp.m_kPos.Lerp(kPos1,kPos2,0.5);
-		sp.m_fRadius= (abs((kPos1-kPos2).Length()) / 2) + csp->m_fRadius;
-		sp.m_pkPP=static_cast<PhysicProperty*>(*it);
-		
-		m_kMotionSpheres.push_back(sp);
-				
-//		cout<<"RADIUS: "<<sp.m_fRadius<<endl;
-	}
-}
-
-void PhysicsEngine::TestCollisions()
-{	
-	for(int i=0;i<m_kMotionSpheres.size();i++)
+	pkPP->m_kNewPos = kOldPos ;//+ Vector3(0,pkPP->m_bStrideHeight,0);
+	pkPP->m_kNewPos.y = kOldNewPos.y + pkPP->m_bStrideHeight;
+	
+	
+	if(pkCD = CheckIfColliding(pkPP))
 	{
-		for(int j=i+1;j<m_kMotionSpheres.size();j++)		
-		{
-			
-			
-			if(m_kMotionSpheres[i].m_pkPP->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
-				m_kMotionSpheres[j].m_pkPP->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
-				continue;
-			
-			
-/*			
-			if(m_kMotionSpheres[i].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0) &&
-				m_kMotionSpheres[j].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0))
-				continue;
-*		
+		pkPP->m_kNewPos = kOldNewPos;
+		pkPP->GetObject()->GetPos() = kOldPos;
 		
-			if(TestSphere(&m_kMotionSpheres[i],&m_kMotionSpheres[j]))
-				DeepTest(&m_kMotionSpheres[i],&m_kMotionSpheres[j]);	
-			
+		//cout<<"up krock"<<endl;
+		delete pkCD;
+		return false;
+	}
+
+	
+	if((kOldNewPos - kOldPos).Length() == 0)
+		return false;
+	
+	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos;
+	pkPP->m_kNewPos = kOldNewPos + (kOldNewPos - kOldPos).Unit() * fStep;
+	pkPP->m_kNewPos.y = pkPP->GetObject()->GetPos().y;
+	
+	if(pkCD = CheckIfColliding(pkPP))
+	{
+		pkPP->m_kNewPos = kOldNewPos;
+		pkPP->GetObject()->GetPos() = kOldPos;
+		
+		//cout<<"blocked forward"<<endl;		
+		delete pkCD;
+		return false;		
+	}
+
+	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos ; 
+	pkPP->m_kNewPos = kOldNewPos;
+
+	if(pkCD = CheckIfColliding(pkPP))
+	{
+		//cout<<"bla:"<<pkCD->m_kPos2.x<<" "<<pkCD->m_kPos2.y<<" "<<pkCD->m_kPos2.z<<endl;
+		//cout<<"asd:"<<kOldNewPos.x<<" "<<kOldNewPos.y<<" "<<kOldNewPos.z<<endl;						
+		if(!(pkCD->m_kPos2 - kOldNewPos).NearlyZero(0.05))
+		{	
+			Vector3 diff = kOldNewPos - kOldPos;
+			if(diff.Length() != 0){
+				pkPP->GetObject()->GetPos() += diff.Unit() * fStep;
+				pkPP->m_kNewPos += diff.Unit() * fStep;
+			}
+			delete pkCD;			
+			return true;		
 		}
 	}
+
+	delete pkCD;
+	//cout<<"climing stair"<<endl;	
+
+	return false;
 }
 
-
-bool PhysicsEngine::TestSphere(Sphere* S1,Sphere* S2)
+Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 {
-	float Dist= abs((S1->m_kPos-S2->m_kPos).Length());
+	Collision* pkCD;
+			
+	PhysicProperty* PP1 = pkPP;			
+	
+	for(list<Property*>::iterator it2 = m_kPropertys.begin();it2!=m_kPropertys.end();it2++) 
+	{	
+		//dont collide with our self 
+		if(PP1==*it2)
+			continue;
+			
+			
+		PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
 
-	if(Dist < (S1->m_fRadius + S2->m_fRadius))
-		return true;
-	else 		
-		return false;
+		//dont collide two static objects =)
+		if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
+			PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+			continue;
 
+		if(TestMotionSpheres(PP1,PP2))
+		{
+			pkCD=DeepTest(PP1,PP2);				
+				
+			if(pkCD != NULL){
+				return pkCD;
+			}
+		
+		}
+	}
+	
+	return NULL;
 }
-*/
-
-
-
-
-
-
-
-
-
 
 
 

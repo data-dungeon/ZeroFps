@@ -102,6 +102,7 @@ void MachineGunProperty::Use()
 	pp->m_bGravity=false;
 	pp->m_bFloat=false;
 	pp->m_bGlide=false;
+	pp->m_bStride=false;	
 	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.01;	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());

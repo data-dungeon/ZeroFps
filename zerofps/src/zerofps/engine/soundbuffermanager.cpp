@@ -23,17 +23,12 @@ int SoundBufferManager::Load(char* acFile)
    
 	ALsizei size=0;
 	ALsizei freq;
-//	ALsizei bits;
    ALenum format;
    ALvoid *data;
-//   ALboolean err;
 	ALboolean loop;   //we dont use this
 	
-//   err = alutLoadWAV(io->File(acFile), &data, &format, &size, &bits, &freq);
-
    alutLoadWAVFile((ALbyte*)io->File(acFile),&format,&data, &size, &freq,&loop);
    
-//   if(err == AL_FALSE) {
 	if(size==0){
 	   cout<<"cold not load file "<<acFile<<", Loading Dummy"<<endl;		
 		char DummyFile[]="file:../data/sound/dummy.wav";
