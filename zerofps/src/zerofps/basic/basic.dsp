@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy   $(ProjDir)\release\*.lib                    ..\..\..\bin\ 
+PostBuild_Cmds=copy     $(ProjDir)\release\*.lib                      ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -124,11 +124,11 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../../bin/basic.dll" /libpath:"..\..\..\bin"
 # SUBTRACT BASE LINK32 /profile
-# ADD LINK32 sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /machine:I386 /out:"../../../bin/basic.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /map /machine:I386 /out:"../../../bin/basic.dll" /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                              $(ProjDir)\debug\*.lib                                              ..\..\..\bin\ 
+PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.lib ..\..\..\bin\	copy $(ProjDir)\releaseprofile\*.map  ..\..\..\bin
 # End Special Build Tool
 
 !ENDIF 
