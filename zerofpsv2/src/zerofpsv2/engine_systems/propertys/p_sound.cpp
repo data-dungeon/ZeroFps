@@ -74,6 +74,13 @@ void P_Sound::StartSound(string strName, bool bLoop)
 {
 	for(int i=0; i<MAX_NUM_PROPERTY_SOUND; i++)
 	{
+		if(m_akSounds[i].m_strFileName == strName)
+		{
+			m_akSounds[i].m_bStarted = false;
+			m_akSounds[i].m_bLoop = bLoop;
+			break;
+		}
+		else
 		if(m_akSounds[i].m_strFileName.empty())
 		{
 			m_akSounds[i].m_strFileName = strName;
@@ -130,7 +137,7 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 				}
 				else
 				{
-					m_akSounds[i].m_strFileName = "";
+					m_akSounds[i].m_strFileName = ""; // markera att inget ljud längre finns.
 				}
 			}
 		}
