@@ -90,6 +90,9 @@ void ZeroEd::SetupGuiEnviroment()
 
 void ZeroEd::OnKeyPress(int iID, ZGuiWnd* win)
 {
+	if(win == NULL)
+		win = GetWnd("GuiMainWnd");
+
 	if(iID == KEY_RETURN)
 	{
 		if(strcmp("PropertyValEb", win->GetName()) == 0)
