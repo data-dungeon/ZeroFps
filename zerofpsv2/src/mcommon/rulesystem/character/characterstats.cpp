@@ -552,8 +552,6 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
    }
 
    return false;
-
-
 }
 
 // ---------------------------------------------------------------------------------------------

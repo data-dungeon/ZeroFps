@@ -36,6 +36,7 @@ class InventoryDlg// : public ZFSubSystem
 public:
 	typedef pair<pair<string, string>, InvType> itItem;
 
+	bool EquipSpecialSlot(ItemStats *pkItemStats, int iNetworkID);
 	bool AddItems(vector<Entity*>&vkItems);
 	bool AddItem(Entity* pkItemStats);
 	void OnScroll(int iID, int iPos);

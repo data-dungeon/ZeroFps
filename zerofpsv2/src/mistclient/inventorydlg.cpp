@@ -623,6 +623,11 @@ void InventoryDlg::AddSlot(const char *szPic, Point sqr,
 	{
 		sx = sqr.x;
 		sy = sqr.y;
+
+		if(!EquipSpecialSlot(pkItemStats, iNetworkID))
+		{
+			printf("Failed to eqip item\n");
+		}
 	}
 	else
 	{
@@ -949,4 +954,17 @@ void InventoryDlg::SetCurrentContainer(int iContainerID)
 void InventoryDlg::SetMainContainer(int iContainerID)
 {
 	m_iMainContainer = iContainerID;
+}
+
+//
+// Equip a special slot on the character
+// 
+bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID)
+{
+	if(pkItemStats == NULL)
+		return false;
+
+	EquipmentCategory pkCategory = pkItemStats->GetEquipmentCategory();
+
+	return true;
 }
