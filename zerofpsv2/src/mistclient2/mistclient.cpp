@@ -383,13 +383,13 @@ void MistClient::DrawCrossHair()
 		pkNormalPointer->GetPass(0)->m_bFog = 			false;	
 		pkNormalPointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
 		//for alpha instead
-		pkNormalPointer->GetPass(0)->m_bAlphaTest = true;
+		//pkNormalPointer->GetPass(0)->m_bAlphaTest = true;
 				
 		//blending is much nicer thou =)
-/*		pkNormalPointer->GetPass(0)->m_bDepthMask = false;
+		pkNormalPointer->GetPass(0)->m_bDepthMask = false;
 		pkNormalPointer->GetPass(0)->m_bBlend = true;
 		pkNormalPointer->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
-		pkNormalPointer->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;	*/		
+		pkNormalPointer->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
 	}
 
 	static ZMaterial* pkActivePointer = NULL;
@@ -400,7 +400,13 @@ void MistClient::DrawCrossHair()
 		pkActivePointer->GetPass(0)->m_bLighting = 	false;
 		pkActivePointer->GetPass(0)->m_bFog = 			false;	
 		pkActivePointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkActivePointer->GetPass(0)->m_bAlphaTest = true;
+		//pkActivePointer->GetPass(0)->m_bAlphaTest = true;
+		
+		//blending is much nicer thou =)
+		pkActivePointer->GetPass(0)->m_bDepthMask = false;
+		pkActivePointer->GetPass(0)->m_bBlend = true;
+		pkActivePointer->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkActivePointer->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;		
 	}	
 
 	//add geometry
