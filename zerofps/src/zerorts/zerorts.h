@@ -1,7 +1,10 @@
 #ifndef _ZERORTS_H_
 #define _ZERORTS_H_
 
-#define _MAINAPPLICATION_
+#ifndef _DONT_MAIN
+	#define _MAINAPPLICATION_
+	#define _DONT_MAIN
+#endif
 
 #include <iostream>
 #include <cmath>
@@ -10,6 +13,7 @@
 
 #include "../common/common.pkg"
 
+class UserPanel;
 
 
 class ZeroRTS :public Application {
@@ -31,7 +35,10 @@ class ZeroRTS :public Application {
 			FID_LOAD,
 			FID_UNLOAD,
 		};
+
+		UserPanel* m_pkUserPanel;
 		
+		friend class UserPanel;
 		
 	public:
 		ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth);

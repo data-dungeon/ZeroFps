@@ -16,7 +16,7 @@
 #include <queue>
 using namespace std;
 
-class PathFindBuilder;
+class PathBuilder;
 
 enum TerrainType
 {
@@ -29,7 +29,7 @@ enum TerrainType
 
 const int BLOCKED = 999;	// Unpassable square
 
-class PathFind : public ZFObject 
+class ENGINE_API PathFind : public ZFObject 
 {
 private:
 
@@ -128,7 +128,7 @@ public:
 
 	static int s_iMapWidth;
 
-	friend class PathFindBuilder;
+	friend class PathBuilder;
 };
 
 #endif // !defined(AFX_PATHFIND_H__0D886B99_D642_4951_A610_AA69537A7DBC__INCLUDED_)

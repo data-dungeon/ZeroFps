@@ -1,8 +1,12 @@
 #include "zerorts.h"
+#include "userpanel.h"
 
 ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
+
+static bool USERPANELPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, 
+						  int iNumberOfParams, void *pkParams ) { return true; }
 
 void ZeroRTS::OnInit() 
 {
@@ -54,7 +58,10 @@ void ZeroRTS::Init()
 
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
-	
+
+	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
+	m_pkUserPanel->Create(100,100,NULL,NULL);
+	m_pkUserPanel->Open();
 }
 
 void ZeroRTS::RegisterActions()

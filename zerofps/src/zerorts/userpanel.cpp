@@ -26,10 +26,8 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 		m_pkZeroRts->m_iHeight), NULL,false,15424);
 
 	ZGuiSkin* pkMainWndSkin = new ZGuiSkin(0,0,0, 0,0,0, 0, 0);
-
-	//pkMainWndSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load("piss.bmp", 0); // först misslyckas, vet inte varför...
 	pkMainWndSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load("../data/textures/player_panel_rts.bmp", 0);
-	pkMainWndSkin->m_iBkTexAlphaID = m_pkZeroRts->pkTexMan->Load("../data/textures/player_panel_a.bmp", 0);
+	pkMainWndSkin->m_iBkTexAlphaID = m_pkZeroRts->pkTexMan->Load("../data/textures/player_panel_rts_a.bmp", 0);
 	m_pkDlgBox->SetSkin(pkMainWndSkin);
 
 	m_pkGui->AddMainWindow(15424+1, m_pkDlgBox, "UserPanelDlg", m_oMainWndProc, false);

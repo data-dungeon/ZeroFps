@@ -11,11 +11,10 @@ class PropertyFactory;
 class LevelManager;
 class PhysicsEngine;
 class HeightMap;
+class PathBuilder;
 class PathFind;
-class PathFindBuilder;
 
-#include "pathfind.h"
-#include "pathfindbuilder.h"
+
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
 #include "camera.h"
@@ -34,6 +33,10 @@ class PathFindBuilder;
 #include "physicsengine.h"
 
 #include "heightmap.h"
+
+#include "pathbuilder.h"
+#include "pathfind.h"
+
 
 
 
