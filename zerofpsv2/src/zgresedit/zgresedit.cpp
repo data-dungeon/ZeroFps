@@ -67,10 +67,10 @@ void ZGResEdit::OnInit()
 		"data/script/gui/gui_res_edit.lua");
 
 	SetTitle("The Migthy GUI Editor!");
-	m_pkInput->ShowCursor(false);
+	m_pkInput->ShowCursor(true);
 
-	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+//	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+//		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	m_pkScene = new Scene();
 	m_pkScene->Init(this);
