@@ -14,6 +14,7 @@
 //using namespace std;
 
 class PropertyFactory;
+class Property;
 
 class EditPropertyDlg  
 {
@@ -45,6 +46,8 @@ private:
 	Object* m_pkCurrentChild;
 	ObjectManager* m_pkObjectManager;
 	PropertyFactory* m_pkPropFactory;
+	Property* m_pkSelProperty;
+	string m_kSelPropValue;
 
 	bool m_bAdd;
 };
