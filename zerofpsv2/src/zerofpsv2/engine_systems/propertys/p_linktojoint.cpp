@@ -12,7 +12,7 @@ P_LinkToJoint::P_LinkToJoint()
 
 	SetJoint("joint0");
 	
-	bNetwork = true;
+	m_bNetwork = true;
 }
 
 P_LinkToJoint::~P_LinkToJoint()	

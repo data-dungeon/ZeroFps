@@ -198,7 +198,7 @@ class ENGINE_API Property
 		int		m_iType;					// property type
 		int		m_iSide;					// server or client property
 		
-		bool		bNetwork;				// True if property needs to be sent o network.
+		bool		m_bNetwork;				// True if property needs to be sent o network.
 		bool		m_bSave;					// True if propertys should be saved with entity.
 		char		m_acName[50];			// Name of Property. Set when property is created.	
 

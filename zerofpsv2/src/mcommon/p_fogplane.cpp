@@ -7,7 +7,7 @@ P_FogPlane::P_FogPlane()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
-	bNetwork = true;	
+	m_bNetwork = true;	
 	m_iVersion = 2;
 	m_iSortPlace=10;
 	

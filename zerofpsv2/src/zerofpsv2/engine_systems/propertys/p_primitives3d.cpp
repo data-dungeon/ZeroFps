@@ -8,7 +8,7 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 
 	strcpy(m_acName,"P_Primitives3D");
-	bNetwork = true;
+	m_bNetwork = true;
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	

@@ -8,7 +8,7 @@ P_DMGun::P_DMGun()
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
-	bNetwork = true;
+	m_bNetwork = true;
 	
 	m_iSortPlace	=	10;
 	

@@ -43,7 +43,7 @@ CharacterProperty::CharacterProperty()
 
 	strcpy(m_acName,"P_CharStats");
 
-	bNetwork = true;
+	m_bNetwork = true;
 
 	m_pkCharStats = NULL;
 }
@@ -54,7 +54,7 @@ CharacterProperty::CharacterProperty( string kName )
 {
    m_iSide = PROPERTY_SIDE_SERVER;
    
-   bNetwork = true;
+   m_bNetwork = true;
 
 	strcpy(m_acName,"P_CharStats");
 }

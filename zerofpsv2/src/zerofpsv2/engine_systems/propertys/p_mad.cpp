@@ -17,7 +17,7 @@ P_Mad::P_Mad()
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
 	
 	strcpy(m_acName,"P_Mad");
-	bNetwork	 = true;
+	m_bNetwork	 = true;
 	m_iVersion = 4;
 	
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;

@@ -15,7 +15,7 @@ P_HMRP2::P_HMRP2()
 	
 	m_iType	=	PROPERTY_TYPE_RENDER;
 	m_iSide	=	PROPERTY_SIDE_CLIENT;
-	bNetwork	=	true;
+	m_bNetwork	=	true;
 }
 
 P_HMRP2::~P_HMRP2()

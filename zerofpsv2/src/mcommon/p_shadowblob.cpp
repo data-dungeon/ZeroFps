@@ -9,7 +9,7 @@ P_ShadowBlob::P_ShadowBlob()
 	
 	m_pkZShaderSystem=static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 	
-	bNetwork = true;
+	m_bNetwork = true;
 	m_iSortPlace	=	11;
 	
 	m_kOffset.Set(0,0.01,0);

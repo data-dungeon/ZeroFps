@@ -15,7 +15,7 @@ P_Tcs::P_Tcs()
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 		
-	bNetwork		= false;
+	m_bNetwork		= false;
 	m_iVersion	= 3;
 	
 	

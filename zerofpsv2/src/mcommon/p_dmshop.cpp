@@ -6,7 +6,7 @@ P_DMShop::P_DMShop()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	bNetwork = true;
+	m_bNetwork = true;
 	m_fTradeRate = 1.0f;
 	m_strShopName = "Unnamed shop";
 

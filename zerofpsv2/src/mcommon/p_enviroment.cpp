@@ -15,7 +15,7 @@ P_Enviroment::P_Enviroment()
 	m_iSide=			PROPERTY_SIDE_CLIENT;
 		
 	m_iSortPlace=	-10;	
-	bNetwork =		true;
+	m_bNetwork =		true;
 	
 	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));

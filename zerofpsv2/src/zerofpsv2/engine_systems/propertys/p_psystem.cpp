@@ -65,7 +65,7 @@ vector<PropertyValues> P_PSystem::GetPropertyValues()
 
 P_PSystem::P_PSystem()
 {
-   bNetwork = true;
+   m_bNetwork = true;
 
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
@@ -84,7 +84,7 @@ P_PSystem::P_PSystem()
 
 P_PSystem::P_PSystem( string kPSType )
 {
-   bNetwork = true;
+   m_bNetwork = true;
 
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;	

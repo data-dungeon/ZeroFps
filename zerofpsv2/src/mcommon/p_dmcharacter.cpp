@@ -124,7 +124,7 @@ P_DMCharacter::P_DMCharacter()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 
-	bNetwork = true;
+	m_bNetwork = true;
 	m_bNewOrder = true;
 	
 	m_pkBackPack = NULL;

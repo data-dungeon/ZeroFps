@@ -14,7 +14,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
-	bNetwork = 		true;
+	m_bNetwork = 		true;
 	m_iVersion = 	1;
 	
 	m_kCurrentCharacterStates.reset();

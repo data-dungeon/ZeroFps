@@ -530,7 +530,7 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 	//check if theres any networked propertys and if any property wants to send data
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		if((*it)->bNetwork) 
+		if((*it)->m_bNetwork) 
 		{
 			bHasNetPropertys = true;
 			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);			
@@ -565,9 +565,11 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 */
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
+	//cout<<"sending entity "<<GetEntityID()<<" to "<<iConnectionID<<endl;
+	
+	
 	SetExistOnClient(iConnectionID,true);
 
-	
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 
@@ -674,7 +676,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	//send propertys
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		if((*it)->bNetwork) 
+		if((*it)->m_bNetwork) 
 		{
 			if((*it)->GetNetUpdateFlag(iConnectionID))
 			{	
@@ -695,6 +697,8 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
+	//cout<<"got entity "<<GetEntityID()<<endl;
+
 	int iStart = pkNetPacket->m_iPos;
 
 	//read update flags

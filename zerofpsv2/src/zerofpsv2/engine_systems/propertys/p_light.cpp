@@ -13,7 +13,7 @@ P_Light::P_Light()
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	
 	strcpy(m_acName,"P_Light");
-	bNetwork = true;
+	m_bNetwork = true;
 	m_iVersion = 4;
 	m_iSortPlace=10;
 	

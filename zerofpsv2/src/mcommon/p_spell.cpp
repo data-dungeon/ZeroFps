@@ -35,7 +35,7 @@ P_Spell::P_Spell()
    m_fAge = 0;
    m_iPSIndex = 0;
 
-   bNetwork = false;
+   m_bNetwork = false;
 
 }
 

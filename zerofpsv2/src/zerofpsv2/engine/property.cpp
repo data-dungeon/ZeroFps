@@ -12,7 +12,7 @@ Property::Property()
 	
 	m_iType=				PROPERTY_TYPE_NORMAL;
 	m_iSide=				PROPERTY_SIDE_SERVER;	
-	bNetwork = 			false;
+	m_bNetwork = 		false;
 	m_bSave = 			true;	
 	m_pkEntity=			NULL;	
 	m_iSortPlace=		0;

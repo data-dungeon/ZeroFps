@@ -12,7 +12,7 @@ P_Item::P_Item()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
-	bNetwork = true;
+	m_bNetwork = true;
 	m_iVersion = 2;
 
 	m_strName = "Unnamed Item";

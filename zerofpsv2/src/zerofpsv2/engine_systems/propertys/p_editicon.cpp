@@ -12,7 +12,8 @@ P_EditIcon::P_EditIcon()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	m_bSave = false;
+	m_bSave = false;	
+	m_bNetwork = true;
 	
 	m_kTexture="NONE";
 	m_fScale=1;	

@@ -8,7 +8,7 @@ P_ServerInfo::P_ServerInfo()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	bNetwork = true;
+	m_bNetwork = true;
 	m_sServerName	= 	"NoName";
 	m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
 }

@@ -286,7 +286,7 @@ P_AI::P_AI()
 
 	strcpy(m_acName,"P_AI");
 
-	bNetwork = false;
+	m_bNetwork = false;
    m_bAIPlayer = false;
 
    m_pkCurrentOrder = 0;
@@ -301,7 +301,7 @@ P_AI::P_AI()
 
 P_AI::P_AI( string kName )
 {
-	bNetwork = true;
+	m_bNetwork = true;
    m_bAIPlayer = false;
 
 	strcpy(m_acName,"P_AI");

@@ -15,7 +15,7 @@ P_Vegitation::P_Vegitation()
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
 	m_iSortPlace=9;
-	bNetwork = true;
+	m_bNetwork = true;
 	
 	m_CheckedForHM = false;
 	m_pkMaterial = new ZFResourceHandle;

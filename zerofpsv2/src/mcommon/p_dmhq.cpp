@@ -9,7 +9,7 @@ P_DMHQ::P_DMHQ()
 	
 
 	m_pkStockroom = NULL;
-	bNetwork = true;
+	m_bNetwork = true;
 	
 	m_strName = "Unnamed HQ";
 	m_kExitOffset.Set(0,0,2);

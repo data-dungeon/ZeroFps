@@ -17,7 +17,7 @@ P_WaterRender::P_WaterRender()
 	m_fBlendValue	=	0.7;
 	m_bBlendDirUp	=  false;
 
-	bNetwork	=	true;
+	m_bNetwork	=	true;
 }
 
 void P_WaterRender::SetProperty(int iSize,int iStep,const char* acTexture)

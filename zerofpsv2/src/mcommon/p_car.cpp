@@ -6,7 +6,7 @@ P_Car::P_Car()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	bNetwork = true;
+	m_bNetwork = true;
 
 }
 

@@ -4,7 +4,7 @@
 
 P_Sound::P_Sound()
 {
-	bNetwork = true;
+	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 

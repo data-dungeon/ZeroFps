@@ -62,7 +62,7 @@ P_DMClickMe::P_DMClickMe()
 {
 	strcpy(m_acName,"P_DMClickMe");
 
-	bNetwork = true;
+	m_bNetwork = true;
 }
 
 // ------------------------------------------------------------------------------------------

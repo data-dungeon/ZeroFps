@@ -12,7 +12,7 @@ P_Ml::P_Ml()
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
-	bNetwork = true;	
+	m_bNetwork = true;	
 	m_iVersion = 3;
 	
 	m_bShowText =	false;	
