@@ -248,7 +248,7 @@ void MistClient::Input()
 		static ZFSound* s = new ZFSound;
 		s->m_kPos = Vector3(0,0,0);
 		//s.m_kVel = Vector3(0,0,1);
-		s->Create("/data/sound/walk.wav");
+		s->Create("walk.wav");
 		s->m_bLoop = false;
 		pkAudioSys->AddSound(s);
 		break;
