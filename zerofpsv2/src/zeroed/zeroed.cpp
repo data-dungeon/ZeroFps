@@ -138,28 +138,7 @@ bool ZeroEd::SetCamera(int iNum)
 	}
 
 	return false;
-
-/*	if(iNum == -1)	return false;
-	if(m_pkActiveCamera == m_pkCamera[iNum])	return false;
-
-	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
-	m_pkActiveCameraObject	= m_pkCameraObject[iNum];
-	m_pkActiveCamera			= m_pkCamera[iNum];
-	m_pkActiveCamera->m_bSelected = true;
-
-	if(m_bSoloMode) 
-	{
-		m_pkCamera[0]->SetViewPort(0,0,0,0);	m_pkCamera[0]->m_bRender = false;
-		m_pkCamera[1]->SetViewPort(0,0,0,0);	m_pkCamera[1]->m_bRender = false;
-		m_pkCamera[2]->SetViewPort(0,0,0,0);	m_pkCamera[2]->m_bRender = false;
-		m_pkCamera[3]->SetViewPort(0,0,0,0);	m_pkCamera[3]->m_bRender = false;
-		m_pkActiveCamera->SetViewPort(0,0,1,1);
-		m_pkActiveCamera->m_bRender = true;
-	}
-
-	return true;*/
 }
-
 
 bool ZeroEd::SetViewPort(const char* szVpName)
 {
@@ -177,7 +156,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 
 	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
 	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->m_iEntity );
-	m_pkActiveCamera			= pkCam;
+	m_pkActiveCamera		= pkCam;
 	m_pkActiveCamera->SetSelected(true);
 
 	m_strActiveViewPort  = szVpName;
@@ -471,6 +450,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 	{
 		Select_Add(iId);
 		m_iCurrentObject = iId;
+		UpdatePropertyList(iId);
 	}
 	else 
 	{
@@ -2044,4 +2024,32 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID, int iZoneID)
 	}
 
 	return false;
+}
+
+bool ZeroEd::UpdatePropertyList(int iID)
+{
+	ZGuiListbox* pkProperyList = (ZGuiListbox*) GetWnd("PropertyList");
+	if(pkProperyList == NULL)
+		return false;
+
+	pkProperyList->RemoveAllItems();
+
+	vector<string> vkProperties;
+	PropertyFactory* pkPropFuck = 
+		static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
+
+	list<string> temp;
+	pkPropFuck->GetAllProperties(vkProperties);
+	for(int i=0; i<vkProperties.size(); i++)
+		temp.push_back(vkProperties[i]);
+
+	temp.sort(); 
+
+	int i=0;
+
+	list<string>::iterator it = temp.begin();
+	for( ; it!=temp.end(); it++) 
+		pkProperyList->AddItem((char*)(*it).c_str(), i++, false);
+
+	return true;
 }

@@ -179,6 +179,11 @@ function GUICreate()
 	ChangeSkin("ZoneModelTree","Skin11","Treebox: H.Scrollbar: Button down")
 	ChangeSkin("ZoneModelTree","Skin11","Treebox: H.Scrollbar: Button focus")
 
+	CreateWnd(0,"PropertyPage","WorkTabWnd","Properties",2,27,252,227,0,0,0)
+	ChangeSkin("PropertyPage","Skin4","Window")
+
+	CreateWnd(5,"PropertyList","PropertyPage","",10,9,200,200,0,0,0)
+
 	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0,0,0)
 	ChangeSkin("EnviromentPage","Skin4","Window")
 
@@ -191,6 +196,8 @@ function GUICreate()
 	ChangeSkin("EnviromentPresetList","Skin10","Listbox: Scrollbar: Button up")
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button down")
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button focus")
+
+
 
 end
 

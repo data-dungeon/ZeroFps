@@ -48,6 +48,7 @@
 class ZeroEd :public Application , public ZGuiApp {
 	private:
 
+		bool UpdatePropertyList(int iID);
 		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
 		char* GetSelEnviromentString();
 
