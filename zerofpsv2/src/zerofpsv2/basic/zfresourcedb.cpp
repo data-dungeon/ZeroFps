@@ -92,7 +92,8 @@ ZFResource* ZFResourceHandle::GetResourcePtr()
 ZFResourceDB::ZFResourceDB()
  : ZFSubSystem("ZFResourceDB") 
 {
-	m_iNextID = 0;
+	m_iNextID			= 0;
+	m_bInstantExpire	= false;
 
 	Register_Cmd("res_list",	FID_LISTRES,	CSYS_FLAG_SRC_ALL);
 	Register_Cmd("res_types",	FID_LISTTYPES,	CSYS_FLAG_SRC_ALL);
@@ -108,13 +109,21 @@ bool ZFResourceDB::StartUp()
 
 bool ZFResourceDB::ShutDown() 
 { 
+	m_bInstantExpire = true;
+	printf("Unloading Res: ");
+	do {
+		printf(".");
+	} while( Refresh());
+	printf("\n");
+
+	
 	if(m_kResources.size()) {
-		Logf("zerofps", "ZFResourceDB::ShutDown: There are res left\n");
+		Logf("resdb", "ZFResourceDB::ShutDown: There are res left\n");
 		
 		list<ZFResourceInfo*>::iterator it;
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
-			Logf("zerofps", " [] = %s\n", (*it)->m_strName.c_str() );
+			Logf("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
 		}
 
 
@@ -129,8 +138,10 @@ ZFResourceDB::~ZFResourceDB()
 	
 }
 
-void ZFResourceDB::Refresh()
+bool ZFResourceDB::Refresh()
 {
+	bool bWasUnloaded = false;
+
 	float fTime = float(SDL_GetTicks()/1000.0);
 
 	list<ZFResourceInfo*>::iterator it;
@@ -140,17 +151,18 @@ void ZFResourceDB::Refresh()
 		if((*it)->m_iNumOfUsers != 0)	continue;
 
 		// No one is using it. Check for expire time.
-		if((*it)->m_fExpireTimer == 0) {
+		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) {
 			(*it)->m_fExpireTimer = fTime + RES_EXPIRE_TIME;
 			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
 			}
 		else {
-			if((*it)->m_fExpireTimer < fTime) {
+			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) {
 				// Time to die.
 				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
 				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
 				delete (*it);
 				it = m_kResources.erase(it);
+				bWasUnloaded = true;
 				}
 			}
 		}
@@ -158,6 +170,8 @@ void ZFResourceDB::Refresh()
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
 //		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
 		}
+
+	return bWasUnloaded;
 }
 
 

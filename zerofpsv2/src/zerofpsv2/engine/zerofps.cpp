@@ -31,6 +31,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
 	m_pkPhysics_Engine		= new Physics_Engine;
+	m_pkObjectMan				= new ObjectManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
@@ -40,7 +41,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
 	m_pkAudioSystem			= new ZFAudioSystem;
-	m_pkObjectMan				= new ObjectManager;
+
+
+
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;

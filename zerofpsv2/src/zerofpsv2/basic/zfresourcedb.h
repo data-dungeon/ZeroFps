@@ -53,6 +53,8 @@ public:
 */
 class BASIC_API ZFResourceDB : public ZFSubSystem {
 	private:
+		bool	m_bInstantExpire;		
+
 		enum FuncId_e
 		{
 			FID_LISTRES,
@@ -85,7 +87,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		//ZFResourceHandle GetResource(string strResName);
 		void FreeResource(ZFResourceHandle& kResHandle);
 
-		void Refresh();
+		bool Refresh();
 
 		ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle);
 

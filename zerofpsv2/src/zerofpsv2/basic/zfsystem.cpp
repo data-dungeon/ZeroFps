@@ -253,10 +253,13 @@ bool ZFSystem::StartUp()
 */
 bool ZFSystem::ShutDown()
 {
+	char szName[256];
+
 	g_Logf("ShutDown Engine SubSystems: \n");
 
 	// Engine Systems Shutdown backwards.
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		strcpy(szName, kObjectNames[i].m_strName.c_str());
 		if(kObjectNames[i].m_bStarted == false)	continue;
 
 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
