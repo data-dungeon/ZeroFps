@@ -246,7 +246,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendZoneListRequest();
 		void	SendDeleteSelected();			// Removes selected entitys.
 		void	SendAddZone(Vector3 kPos, Vector3 kSize, string strName);		
-		void	DrawZoneList();
 		
 		
 	public:

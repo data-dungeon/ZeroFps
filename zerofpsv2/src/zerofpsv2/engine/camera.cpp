@@ -456,7 +456,7 @@ void Camera::RenderView()
 
 		
 		
-	m_pkEntityMan->Test_DrawZones();
+	m_pkEntityMan->DrawZones();
 	m_pkZeroFps->m_pkApp->RenderInterface();
 	
 	//draw axes icon

@@ -47,13 +47,14 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_pkFpsWnd = NULL;
 
 	m_iShowFPSCounter = 1;
+	m_bRenderEnabled = true;
+	
 	//RegisterVariable("r_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
    RegisterVariable("r_drawgui",			&m_bRenderEnabled,				CSYS_BOOL);
 }
 
 bool ZGui::StartUp()	
 { 
-	//m_bRenderEnabled = true;
 
 	//RegisterVariable("r_drawgui",			&m_bRenderEnabled,				CSYS_BOOL);	
 	

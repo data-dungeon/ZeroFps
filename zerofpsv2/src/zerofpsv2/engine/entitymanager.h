@@ -107,9 +107,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int						m_iNextEntityID;								///< Next free Entity ID.		
 		vector<int>				m_aiDeleteList;								// contains object that are going to be deleted
 				
-		//debug
-		bool						m_bDrawZones;						//shuld zones be drawed
-		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
 						
 		// Network 	
 		float						m_fEndTimeForceNet;
@@ -124,8 +121,12 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int						m_iRole;															///< I'm i a server or a client or both.
 				
 		// Zones
-		vector<ZoneData>			m_kZones;
-
+		vector<ZoneData>		m_kZones;
+		
+		//debug
+		bool						m_bDrawZones;						//shuld zones be drawed
+		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
+		
 		// sim time system
 		float		m_fSimTime;				// Time in the virtual world.
 		float		m_fSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 		
@@ -251,7 +252,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		// Debug / Help Functions		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
-		void Test_DrawZones();
+		void DrawZones();
+		void DrawZones(const vector<ZoneData>* pkZoneList);
 
 		
 		// Message System.

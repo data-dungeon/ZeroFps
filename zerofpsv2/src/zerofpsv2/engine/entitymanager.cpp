@@ -1317,7 +1317,13 @@ Entity* EntityManager::CloneEntity(int iNetID)
 		Active:		Green.
 		EditMode:	Blue.
 eeeeeeereere*/
-void EntityManager::Test_DrawZones()
+void EntityManager::DrawZones()
+{
+	DrawZones(&m_kZones);
+}
+
+
+void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 {
 	if(!m_bDrawZones)
 		return;
@@ -1374,15 +1380,15 @@ void EntityManager::Test_DrawZones()
 	}					
 	
 	//draw zones
-	for(unsigned int i=0;i<m_kZones.size();i++) 
+	for(unsigned int i=0;i<pkZoneList->size();i++) 
 	{
-		if(m_kZones[i].m_iStatus == EZS_UNUSED)
+		if((*pkZoneList)[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
-		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
+		Vector3 kMin = (*pkZoneList)[i].m_kPos - (*pkZoneList)[i].m_kSize/2;
+		Vector3 kMax = (*pkZoneList)[i].m_kPos + (*pkZoneList)[i].m_kSize/2;
 	
-		switch(m_kZones[i].m_iStatus)
+		switch((*pkZoneList)[i].m_iStatus)
 		{
 			case EZS_LOADED:
 				m_pkZShaderSystem->BindMaterial(pkMatZoneOn);
@@ -1406,21 +1412,20 @@ void EntityManager::Test_DrawZones()
 		m_pkZShaderSystem->BindMaterial(pkLine);		
 		m_pkZShaderSystem->ClearGeometry();
 	
-		for(unsigned int i=0;i<m_kZones.size();i++) 
+		for(unsigned int i=0;i<pkZoneList->size();i++) 
 		{
-			if(m_kZones[i].m_iStatus == EZS_UNUSED)
+			if((*pkZoneList)[i].m_iStatus == EZS_UNUSED)
 				continue;
 	
-			for(unsigned int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
+			for(unsigned int j = 0 ;j< (*pkZoneList)[i].m_iZoneLinks.size();j++)
 			{	
-				m_pkZShaderSystem->AddLineV(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
+				m_pkZShaderSystem->AddLineV((*pkZoneList)[i].m_kPos,(*pkZoneList)[m_kZones[i].m_iZoneLinks[j]].m_kPos);
 			}
 		}
 		
 		m_pkZShaderSystem->DrawGeometry(LINES_MODE);				
-	}
+	}	
 }
-
 
 
 Vector3 EntityManager::GetZoneCenter(int iZoneNum)
