@@ -123,7 +123,7 @@ void P_PfPath::Update()
 	
 	// Check if we are so close to the goal that we will reach it in this frame. If so move to it and go for the next one.
 	float fdist = kdiff.Length();
-	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
+	if(fdist < (m_fSpeed) * m_pkFps->m_pkEntityManager->GetSimDelta() ) 
 	{
 		if(!pkTcs)
 			m_pkEntity->SetWorldPosV(kGoal);
@@ -158,7 +158,7 @@ void P_PfPath::Update()
 	if(kdiff.Length() != 0)
 		kdiff.Normalize();
 		
-	kPos += (kdiff * m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta();
+	kPos += (kdiff * m_fSpeed) * m_pkFps->m_pkEntityManager->GetSimDelta();
 	
 	//TCS TEST
 	if(pkTcs)

@@ -9,7 +9,7 @@ P_Track::P_Track()
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER;
 
-	m_fNextMove			= m_pkFps->m_pkObjectMan->GetSimTime() + 1.0f;
+	m_fNextMove			= m_pkFps->m_pkEntityManager->GetSimTime() + 1.0f;
 	m_iZoneNum			= 0;
 	//m_iLastZoneIndex	= -1;
 	m_bClosestZone		= true;

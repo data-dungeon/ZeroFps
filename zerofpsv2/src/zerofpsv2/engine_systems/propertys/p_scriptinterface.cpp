@@ -16,7 +16,7 @@ P_ScriptInterface::P_ScriptInterface()
 	m_bFirstRun=true;
 	m_fHeartRate=-1;
 
-	m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
+	m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
 	
 	
 	//cout<<"P_ScriptInterface created"<<endl;
@@ -45,11 +45,11 @@ void P_ScriptInterface::Update()
 	}
 
 	if(m_fHeartRate != -1)
-		if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer > m_fHeartRate)
+		if(m_pkFps->m_pkEntityManager->GetSimTime() - m_fTimer > m_fHeartRate)
 		{
 			m_pkEntityManager->CallFunction(m_pkEntity, "HeartBeat");
 			
-			m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
+			m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
 		}
 }
 

@@ -40,7 +40,7 @@ class MCOMMON_API P_DMMission: public Property {
 		vector<DMMissionInfo*> m_vkMissions;
 		DMMissionInfo* m_pkCurrentMission;
 
-		EntityManager* m_pkObjectMan;
+		EntityManager* m_pkEntityManager;
 		P_DMGameInfo* m_pkGameInfoEntity;
 		
 	public:

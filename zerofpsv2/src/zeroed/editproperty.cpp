@@ -30,7 +30,7 @@ bool ZeroEd::UpdatePropertyList(int iID)
 	// Add for the entity variables display.
 	pkProperyList->AddItem("Variables", j++, false);
 
-	Entity* pkEnt = m_pkObjectMan->GetEntityByID(iID);
+	Entity* pkEnt = m_pkEntityManager->GetEntityByID(iID);
    if(pkEnt)
    {
 	   list<string>::iterator it = temp.begin();
@@ -88,7 +88,7 @@ void ZeroEd::FillPropertyValList()
 
 	pkProperyValList->RemoveAllItems();
 
-	if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
+	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 		if((item = GetSelItem("PropertyList"))) 
 		{
 
@@ -135,7 +135,7 @@ void ZeroEd::AddPropertyVal()
 	Entity* pkEnt;
 	Property* pkProp;
 
-	if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
+	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 		if((item = GetSelItem("PropertyList")))
 		{
 			char* val = GetSelItem("PropertyValList");
@@ -164,7 +164,7 @@ void ZeroEd::RemoveSelProperty()
 	Entity* pkEnt;
 	Property* pkProp;
 
-	if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
+	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 		if((item = GetSelItem("PropertyList")))
 			if((pkProp = pkEnt->GetProperty(item)))
 			{
@@ -187,7 +187,7 @@ bool ZeroEd::SaveCurrentToScript()
    
 	if((pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"))) &&
       (pkPropFuck = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
-      (pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)) && !strFileName.empty())
+      (pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)) && !strFileName.empty())
    {
       if( strFileName.find(".lua") == string::npos )
          strFileName += string(".lua");

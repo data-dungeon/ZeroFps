@@ -181,7 +181,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	if(m_pkActiveCamera == pkCam)	return false;
 
 	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
-	m_pkActiveCameraObject	= m_pkObjectMan->GetEntityByID( pkCam->GetEntityID() );
+	m_pkActiveCameraObject	= m_pkEntityManager->GetEntityByID( pkCam->GetEntityID() );
 	m_pkActiveCamera		= pkCam;
 	m_pkActiveCamera->SetSelected(true);
 
@@ -194,11 +194,11 @@ void ZeroEd::CreateEditCameras()
 {
 	for(int i=0; i<4; i++) 
 	{
-		m_pkCameraObject[i] = m_pkObjectMan->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+		m_pkCameraObject[i] = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
 		if(m_pkCameraObject[i]) 
 		{
 			if(i == 0)
-				m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldEntity() );				
+				m_pkCameraObject[i]->SetParent( m_pkEntityManager->GetWorldEntity() );				
 			else
 				m_pkCameraObject[i]->SetParent( m_pkCameraObject[0] );				
 			
@@ -238,7 +238,7 @@ void ZeroEd::OnInit()
 	Init();
 
 	//init dm script interface (register script functions for gameplay)
-	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
+	DMLua::Init(m_pkEntityManager,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("/zeroed_autoexec.ini"))
@@ -270,7 +270,7 @@ void ZeroEd::Init()
 //	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
-	m_pkFps->SetDebugGraph(true);
+	m_pkZeroFps->SetDebugGraph(true);
 	
 	//register property bös
 	RegisterPropertys();
@@ -305,7 +305,7 @@ void ZeroEd::Init()
 
 
 	//init mistland script intreface
-	MistLandLua::Init(m_pkObjectMan,m_pkScript);
+	MistLandLua::Init(m_pkEntityManager,m_pkScript);
 	
 	// create gui script funktions
 	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
@@ -332,8 +332,8 @@ void ZeroEd::Init()
 	SetupGuiEnviroment();
 
 	//start a clean world
-	m_pkObjectMan->Clear();
-	m_pkFps->StartServer(true,false);
+	m_pkEntityManager->Clear();
+	m_pkZeroFps->StartServer(true,false);
 	m_strWorldDir = "";
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
@@ -351,7 +351,7 @@ void ZeroEd::OnServerStart(void)
 	pe->SetEnviroment("data/enviroments/zeroed.env");
 
 	SoloToggleView();
-	m_fDelayTime = m_pkFps->GetEngineTime();
+	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	SoloToggleView();
 	GetWnd("vp1")->SetZValue(0);
 	GetWnd("vp2")->SetZValue(0);
@@ -366,7 +366,7 @@ void ZeroEd::OnClientStart()
 {
 	char szIpPort[256];
 	char szTitle[256];
-	m_pkFps->m_pkNetWork->AddressToStr( &m_pkFps->m_pkNetWork->m_kServerAddress, szIpPort);
+	m_pkZeroFps->m_pkNetWork->AddressToStr( &m_pkZeroFps->m_pkNetWork->m_kServerAddress, szIpPort);
 	sprintf(szTitle, "ZeroEd - %s", szIpPort);
 	SetTitle(szTitle);
 
@@ -409,7 +409,7 @@ void ZeroEd::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRa
 {
 	if(pkHmap == NULL)	return;
 
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
+	m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
 		m_pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
 
 	Vector3	kVertex;
@@ -447,7 +447,7 @@ void ZeroEd::DrawSelectedEntity()
 {
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEnt = m_pkObjectMan->GetEntityByID((*itEntity));
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID((*itEntity));
 	
 		if(pkEnt) 
 		{
@@ -496,7 +496,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
  
    if(m_iCurrentObject != -1)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject))
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
       	sprintf(szInfoText, "Enity selected: ID[%d] Name[%s]", pkEnt->GetEntityID(), pkEnt->GetName().c_str());
 	}
    else
@@ -523,16 +523,16 @@ void ZeroEd::DeleteSelected()
 		int iId = (*itEntity);
 		kNp.Write((int)iId);
 
-	/*	Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+	/*	Entity* pkEntity = m_pkEntityManager->GetObjectByNetWorkID((*itEntity));
 		if(!pkEntity)	continue;
 	
 		cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
 		if(pkEntity->GetName() == string("ZoneObject"))
 		{
-			int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->GetEntityID() );
+			int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
 
 			// Remove zoneplacement element in array
-			ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);
+			ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID);
 			vector< pair<Vector3,Vector3> >::iterator it = m_kAddedZonePlacement.begin();
 			for( ; it != m_kAddedZonePlacement.end(); it++)
 				if(it->first == pkData->m_kPos && it->second == pkData->m_kSize) {
@@ -540,13 +540,13 @@ void ZeroEd::DeleteSelected()
 					break;
 				}
 
-			m_pkObjectMan->DeleteZone(iZoneID);
+			m_pkEntityManager->DeleteZone(iZoneID);
 			cout << "Delete zone " << iZoneID << endl;
 		}
 		else
-			m_pkObjectMan->Delete(pkEntity->GetEntityID());		*/
+			m_pkEntityManager->Delete(pkEntity->GetEntityID());		*/
 	}
-	m_pkFps->RouteEditCommand(&kNp);
+	m_pkZeroFps->RouteEditCommand(&kNp);
 
 	m_SelectedEntitys.clear();
 	m_iCurrentObject = -1;
@@ -564,7 +564,7 @@ void ZeroEd::OnSystem()
 {
 	if(m_bGrabing)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iGrabEntity))
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iGrabEntity))
 		{
 			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 			{
@@ -587,7 +587,7 @@ void ZeroEd::OnSystem()
 	}
 
 	
-	Entity* pkClient = m_pkObjectMan->GetEntityByID(m_pkFps->GetClientObjectID());
+	Entity* pkClient = m_pkEntityManager->GetEntityByID(m_pkZeroFps->GetClientObjectID());
 	if(pkClient)
 	{
 		if(!m_pkActiveCameraObject)
@@ -601,7 +601,7 @@ void ZeroEd::OnSystem()
 			m_pkCamProp->SetCamera(m_pkCamera[0]);
 		
 			SoloToggleView();
-			m_fDelayTime = m_pkFps->GetEngineTime();
+			m_fDelayTime = m_pkZeroFps->GetEngineTime();
 			SoloToggleView();
 			GetWnd("vp1")->SetZValue(0);
 			GetWnd("vp2")->SetZValue(0);
@@ -615,7 +615,7 @@ void ZeroEd::OnSystem()
 void ZeroEd::OnIdle()
 {	
 	// FULHACK Tm Vim
-	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetEntityByID( m_pkFps->GetClientObjectID() ) );
+	m_pkEntityManager->OwnerShip_Take( m_pkEntityManager->GetEntityByID( m_pkZeroFps->GetClientObjectID() ) );
 
 
 	//m_pkFps->SetCamera(m_pkActiveCamera);		
@@ -681,7 +681,7 @@ HeightMap* ZeroEd::SetPointer()
 {
 	m_kDrawPos.Set(0,0,0);
 
-	Entity* pkEntity = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
+	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 	if(!pkEntity)	return NULL;
 	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
@@ -721,11 +721,11 @@ HeightMap* ZeroEd::SetPointer()
 
 void ZeroEd::HMModifyCommand(float fSize)
 {
-	float fTime = m_pkFps->m_pkObjectMan->GetSimDelta();
+	float fTime = m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEntity = m_pkObjectMan->GetEntityByID((*itEntity));
+		Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 		if(!pkEntity)			continue;
 		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
@@ -747,9 +747,9 @@ void ZeroEd::OnHud(void)
 {
 	if(m_pkActiveCamera) 
 	{
-		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
-		m_pkFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
-		m_pkFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
+		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
+		m_pkZeroFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
+		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
 		/*m_pkRender->DrawAABB(m_pkActiveCamera->GetViewPortCorner(),
 			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
 			Vector3(1,1,1),1);*/
@@ -758,22 +758,22 @@ void ZeroEd::OnHud(void)
 
 bool ZeroEd::DelayCommand()
 {
-	if(m_pkFps->GetEngineTime() < m_fDelayTime)
+	if(m_pkZeroFps->GetEngineTime() < m_fDelayTime)
 		return true;
 
-	m_fDelayTime = m_pkFps->GetEngineTime() + float(0.3);
+	m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.3);
 	return false;
 }
 
 void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 {
-	Entity* pkActiveEntity = m_pkObjectMan->GetEntityByID( m_iCurrentObject );
+	Entity* pkActiveEntity = m_pkEntityManager->GetEntityByID( m_iCurrentObject );
 	if(pkActiveEntity == NULL)
 		return;
 
 	if(eEditCmd == FID_CLONE)
 	{
-		m_pkObjectMan->CloneEntity(m_iCurrentObject);	// Select_Toggle
+		m_pkEntityManager->CloneEntity(m_iCurrentObject);	// Select_Toggle
 	}
 
 	ZFVFile kFile;
@@ -796,7 +796,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 	{
 		if( kFile.Open("copybuffer.dat",0,false) ) 
 		{
-			Entity* pkObjNew = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
+			Entity* pkObjNew = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
 
 			Vector3 kPos = pkObjNew->GetLocalPosV();
 			pkObjNew->Load(&kFile,false);
@@ -821,9 +821,9 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(m_bSoloMode)
 				SoloToggleView();		
 		
-			m_pkObjectMan->Clear();
+			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkFps->StartServer(true,false);
+			m_pkZeroFps->StartServer(true,false);
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
 			m_kAddedZonePlacement.clear(); 
@@ -839,7 +839,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(m_bSoloMode)
 				SoloToggleView();
 
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -863,13 +863,13 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
 				
-				if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
+				if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
 				{
 					cout<<"Error loading world"<<endl;
 					break;
 				}				
 			}
-			else if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			else if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -878,7 +878,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 */						
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkFps->StartServer(true,false);
+			m_pkZeroFps->StartServer(true,false);
 			
 			m_bNeedToRebuildZonePosArray = true;
 			break;		
@@ -897,7 +897,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 
-			if(!m_pkObjectMan->SaveWorld(m_strWorldDir,true))
+			if(!m_pkEntityManager->SaveWorld(m_strWorldDir,true))
 			{
 				m_pkConsole->Printf("Error saving world");
 				break;
@@ -911,7 +911,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			if(!m_pkObjectMan->SaveWorld(kCommand->m_kSplitCommand[1],true))
+			if(!m_pkEntityManager->SaveWorld(kCommand->m_kSplitCommand[1],true))
 			{
 				m_pkConsole->Printf("Error saving world");
 				break;
@@ -923,23 +923,23 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			SetTitle(strNewTitle);
 
 /*			cout<<"saving world:"<<endl;
-			m_pkObjectMan->ForceSave();
-			m_pkObjectMan->SaveZones();			
+			m_pkEntityManager->ForceSave();
+			m_pkEntityManager->SaveZones();			
 			cout<<"saved"<<endl;
 */			
 			break;
 
 		case FID_SNAPSAVE:
-			m_pkObjectMan->SaveWorld("snapshot",true);
+			m_pkEntityManager->SaveWorld("snapshot",true);
 			break;
 
 		case FID_SNAPLOAD:
 			if(m_bSoloMode)
 				SoloToggleView();
 			GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
-			m_pkObjectMan->LoadWorld("snapshot");
+			m_pkEntityManager->LoadWorld("snapshot");
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkFps->StartServer(true,false);
+			m_pkZeroFps->StartServer(true,false);
 			break;
 
 		/*case FID_USERS:
@@ -995,11 +995,11 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) {
 					// Unlink
 					cout << "Unlink" << endl;
-					m_pkCameraObject[1]->SetParent( m_pkObjectMan->GetWorldEntity() );
+					m_pkCameraObject[1]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[1]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[2]->SetParent( m_pkObjectMan->GetWorldEntity() );
+					m_pkCameraObject[2]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[2]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[3]->SetParent( m_pkObjectMan->GetWorldEntity() );
+					m_pkCameraObject[3]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[3]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
 					}
 				else {
@@ -1074,7 +1074,7 @@ void ZeroEd::SoloToggleView()
 	if(m_bSoloMode) 
 	{
 		//m_pkFps->RemoveRenderTarget(NULL);
-		m_pkFps->ClearRenderCameras();
+		m_pkZeroFps->ClearRenderCameras();
 		pkCam->m_bForceFullScreen = false;
 		m_bSoloMode = false;
 		GetWnd("vp1")->Show();	GetWnd("vp1")->SetPos(400,0,true,true);		GetWnd("vp1")->Resize(400,300,false);
@@ -1093,7 +1093,7 @@ void ZeroEd::SoloToggleView()
 		// Add Active as ZeroFps Fullscreen Render Target.
 		if(pkCam) 
 		{
-			m_pkFps->AddRenderCamera(pkCam);
+			m_pkZeroFps->AddRenderCamera(pkCam);
 			pkCam->m_bForceFullScreen = true;
 		}
 	}
@@ -1104,7 +1104,7 @@ void ZeroEd::CamFollow(bool bFollowMode)
 	if(bFollowMode)
 	{
 		// Start Follow mode.
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);		
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);		
 		if(!pkObj)
 			return;
 
@@ -1122,7 +1122,7 @@ void ZeroEd::CamFollow(bool bFollowMode)
 	else
 	{
 		// End Follow Mode
-		Entity* pkObj = m_pkObjectMan->GetEntityByID( m_pkActiveCamera->GetEntityID() );		
+		Entity* pkObj = m_pkEntityManager->GetEntityByID( m_pkActiveCamera->GetEntityID() );		
 		if(!pkObj)
 			return;	// Hey we are not following anyone.
 
@@ -1144,7 +1144,7 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 	Vector3 kDir	= Get3DMouseDir(true);
 
 	vector<Entity*> kObjects;		
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
 		
 	float d;	
 	Vector3 cp;
@@ -1198,7 +1198,7 @@ Entity* ZeroEd::GetTargetObject()
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	m_pkObjectMan->TestLine(&kObjects,start,dir);
+	m_pkEntityManager->TestLine(&kObjects,start,dir);
 	
 	
 	float closest = 999999999;
@@ -1240,16 +1240,16 @@ Entity* ZeroEd::GetTargetObject()
 
 void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 {
-	if(m_pkObjectMan->IsInsideZone(kPos, kSize))
+	if(m_pkEntityManager->IsInsideZone(kPos, kSize))
 		return;
 
 	if(m_bDisableFreeZonePlacement && !ZoneHaveNeighbour(kPos, kSize))
 		return;
 
-	int id = m_pkObjectMan->CreateZone(kPos, kSize);
+	int id = m_pkEntityManager->CreateZone(kPos, kSize);
 
 	//force loading of this zone
-	m_pkObjectMan->LoadZone(id);
+	m_pkEntityManager->LoadZone(id);
 
 	//set to active
 	m_iCurrentMarkedZone = id;
@@ -1257,7 +1257,7 @@ void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 	if(id != -1)
 	{
 		if(!bEmpty)
-			m_pkObjectMan->SetZoneModel(strName.c_str(),id);
+			m_pkEntityManager->SetZoneModel(strName.c_str(),id);
 		//pkObjectMan->SetUnderConstruction(id);
 	}	
 
@@ -1326,7 +1326,7 @@ void ZeroEd::RotateActive()
 {
 	if(m_iCurrentObject != -1 && m_iEditMode == EDIT_OBJECTS)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject);
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
 		if(pkEnt) 
 		{
 			pkEnt->RotateLocalRotV( Vector3(0,90.0f,0) ); 
@@ -1340,7 +1340,7 @@ void ZeroEd::RotateActive()
 	else
 	if(m_iCurrentMarkedZone != -1 && m_iEditMode == EDIT_ZONES)
 	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData) 
 		{
 			if(pkData->m_pkZone)
@@ -1403,8 +1403,8 @@ void ZeroEd::SetZoneEnviroment(const char* csEnviroment)
 	//set default enviroment
 	m_strActiveEnviroment=csEnviroment;
 	
-	m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-	ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+	ZoneData* z = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
 	{
@@ -1417,8 +1417,8 @@ string ZeroEd::GetZoneEnviroment()
 {
 	string env;
 	
-	m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-	ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+	ZoneData* z = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
 		env = z->m_strEnviroment;
@@ -1428,10 +1428,10 @@ string ZeroEd::GetZoneEnviroment()
 
 bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 {
-	Entity* pkObj = m_pkObjectMan->GetEntityByID(iObjectID);		
+	Entity* pkObj = m_pkEntityManager->GetEntityByID(iObjectID);		
 	if(pkObj) 
 	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(pkObj->GetCurrentZone());		
+		ZoneData* pkData = m_pkEntityManager->GetZoneData(pkObj->GetCurrentZone());		
 		if(pkData->m_pkZone == NULL)
 			return false;
 
@@ -1518,14 +1518,14 @@ void ZeroEd::RebuildZonePosArray()
 {
 	m_kAddedZonePlacement.clear();
 	vector<Entity*> vkEntList;
-	m_pkObjectMan->GetAllEntitys(&vkEntList);
+	m_pkEntityManager->GetAllEntitys(&vkEntList);
 	for(int i=0; i<vkEntList.size(); i++)
 	{
 		if(vkEntList[i]->IsZone()) 
 		{
-			int zone = m_pkObjectMan->GetZoneIndex(vkEntList[i]->GetWorldPosV(),-1, false);
+			int zone = m_pkEntityManager->GetZoneIndex(vkEntList[i]->GetWorldPosV(),-1, false);
 
-			ZoneData* pkData = m_pkObjectMan->GetZoneData(zone);
+			ZoneData* pkData = m_pkEntityManager->GetZoneData(zone);
 			if(pkData)
 				m_kAddedZonePlacement.push_back( pair<Vector3,
 					Vector3>(pkData->m_kPos, pkData->m_kSize) );

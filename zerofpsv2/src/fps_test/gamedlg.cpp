@@ -46,7 +46,7 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 	{
 	case HQ:
 		
-		m_pkDM->m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects,false);
+		m_pkDM->m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects,false);
 		for(i=0;i<kObjects.size();i++)
 		{
 			P_DMHQ* pkHQProperty = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ");
@@ -69,7 +69,7 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 	}
 
 	if(iID != -1)
-		return m_pkDM->m_pkObjectMan->GetEntityByID(iID);
+		return m_pkDM->m_pkEntityManager->GetEntityByID(iID);
 
 	return NULL;
 }
@@ -125,7 +125,7 @@ bool CGameDlg::LoadDlg(char* szScriptName)
 void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 {
 	//vector<Entity*> kObjects;	
-	//m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
+	//m_pkDM->m_pkEntityManager->GetZoneObject()->GetAllEntitys(&kObjects,false);
 	//for(unsigned int i=0;i<kObjects.size();i++)
 	//	if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
 	//	{
@@ -141,7 +141,7 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 	for(unsigned int i=0;i<m_pkDM->m_kAgentsOnField.size();i++)
 	{
 		kList.push_back(
-			m_pkDM->m_pkObjectMan->GetEntityByID(
+			m_pkDM->m_pkEntityManager->GetEntityByID(
 				m_pkDM->m_kAgentsOnField[i]));	
 	}
 

@@ -10,7 +10,7 @@ P_Spawn::P_Spawn()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkObjectMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
 
@@ -22,7 +22,7 @@ P_Spawn::P_Spawn()
 	m_fSpawnRadius = 5;
 	m_strTemplate = "";
 	
-	m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();
+	m_fTimer  = m_pkFps->m_pkEntityManager->GetSimTime();
 }
 
 
@@ -46,22 +46,22 @@ void P_Spawn::Update()
 	{
 		case POINT_SPAWN:
 		{
-			if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer >= m_fSpawnDelay)
+			if(m_pkFps->m_pkEntityManager->GetSimTime() - m_fTimer >= m_fSpawnDelay)
 			{				
 				//dont do anything if spawnded objects is at max
 				if(m_iEntityCounter < m_iMaxEntitys)
 					SpawnEntity(m_pkEntity->GetLocalPosV());				
 			
-				m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();			
+				m_fTimer  = m_pkFps->m_pkEntityManager->GetSimTime();			
 			}
 		
 			break;
 		}
 		case AREA_SPAWN:
 		{			
-			float fAtime = m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer;
+			float fAtime = m_pkFps->m_pkEntityManager->GetSimTime() - m_fTimer;
 			if(fAtime < 0)
-				m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
+				m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
 			
 			if(fAtime >= m_fSpawnDelay)
 			{				
@@ -84,7 +84,7 @@ void P_Spawn::Update()
 						SpawnEntity(kPos);				
 					}
 				}				
-				m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();				
+				m_fTimer  = m_pkFps->m_pkEntityManager->GetSimTime();				
 			}
 		
 			break;
@@ -113,7 +113,7 @@ void P_Spawn::RemoveEntity(Entity* pkEnt)
 
 void P_Spawn::SpawnEntity(Vector3 kPos)
 {
-	m_pkObjectMan->CreateEntityFromScriptInZone(m_strTemplate.c_str(),kPos,-1);
+	m_pkEntityManager->CreateEntityFromScriptInZone(m_strTemplate.c_str(),kPos,-1);
 	m_iEntityCounter++;
 
 /*	if(ent)
@@ -130,7 +130,7 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 		{
 			cout<<"Error spawning:"<<m_strTemplate<<endl;
 			cout<<"Does not contain an P_Ml"<<endl;
-			m_pkObjectMan->Delete(ent);			
+			m_pkEntityManager->Delete(ent);			
 		}
 	}*/
 

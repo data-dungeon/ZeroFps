@@ -53,7 +53,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShaderSystem			= new ZShaderSystem;
-	m_pkObjectMan				= new EntityManager;
+	m_pkEntityManager				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(iScreenWidth, iScreenHeight);
@@ -155,7 +155,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkGuiRenderer;
 	delete m_pkNetWork;
 	delete m_pkAudioSystem;
-	delete m_pkObjectMan;
+	delete m_pkEntityManager;
 	delete m_pkConsole;
 	delete m_pkRender;
 	delete m_pkLight;
@@ -298,16 +298,16 @@ void ZeroFps::Run_EngineShell()
 			if(m_kClient[i].m_pkObject) 
 			{
 				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 5))
-					m_pkObjectMan->OwnerShip_Give( m_kClient[i].m_pkObject );
+					m_pkEntityManager->OwnerShip_Give( m_kClient[i].m_pkObject );
 			}
 		}
 	}
 
 	//some devpage stuff
 	DevPrintf("common","ENTITYMAN:");	
-	DevPrintf("common","  Num Objects     : %d", m_pkObjectMan->GetNumOfEntitys());
-	DevPrintf("common","  NextEntityID    : %d", m_pkObjectMan->GetNextEntityID());
-	DevPrintf("common","  Active Propertys: %d",m_pkObjectMan->GetActivePropertys());		
+	DevPrintf("common","  Num Objects     : %d", m_pkEntityManager->GetNumOfEntitys());
+	DevPrintf("common","  NextEntityID    : %d", m_pkEntityManager->GetNextEntityID());
+	DevPrintf("common","  Active Propertys: %d",m_pkEntityManager->GetActivePropertys());		
 	
 	DevPrintf("common","RESOURCEMAN:");
 	DevPrintf("common","  Res Size    : %d", m_pkResourceDB->GetResSizeInBytes());
@@ -359,7 +359,7 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	m_pkGui->Update(/*m_pkObjectMan->GetSimTime()*/GetTicks(),iInputKey,false,
+	m_pkGui->Update(/*m_pkEntityManager->GetSimTime()*/GetTicks(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
@@ -417,7 +417,7 @@ void ZeroFps::Run_Client()
 
 	if(g_iLogRenderPropertys) 
 	{
-		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
+		m_pkEntityManager->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;
 	}
 
@@ -430,7 +430,7 @@ void ZeroFps::Run_Client()
 	
 	
 	
-	m_pkObjectMan->UpdateDelete();
+	m_pkEntityManager->UpdateDelete();
 
 	m_pkNetWork->DevShow_ClientConnections();
 
@@ -467,7 +467,7 @@ void ZeroFps::Update_System(bool bServer)
 	for(int i=0;i<iLoops;i++)
 	{	
 		//update sim time for this systemupdate
-		m_pkObjectMan->UpdateSimTime();
+		m_pkEntityManager->UpdateSimTime();
 		
 		//client & server code
 
@@ -482,24 +482,24 @@ void ZeroFps::Update_System(bool bServer)
 		if(m_bServerMode)
 		{
 			//update zones
-			m_pkObjectMan->UpdateZoneSystem();
+			m_pkEntityManager->UpdateZoneSystem();
 		
 			if(m_bRunWorldSim)
 			{			
 			
 				//update all normal propertys
 				if(bServer)					
-					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
+					m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 				else
-					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+					m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 				
 				
 				//update game message system
-				m_pkObjectMan->UpdateGameMessages();
+				m_pkEntityManager->UpdateGameMessages();
 				
 				//update Tiny Collission system
 				if(!m_bTcsFullframe)
-					m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+					m_pkTcs->Update(m_pkEntityManager->GetSimDelta());	
 				
 			}	
 		}
@@ -514,10 +514,10 @@ void ZeroFps::Update_System(bool bServer)
 		//client & server code
 		
 		//pack objects to clients
-		m_pkObjectMan->PackToClients();		
+		m_pkEntityManager->PackToClients();		
 
 		//delete objects
-		m_pkObjectMan->UpdateDelete();
+		m_pkEntityManager->UpdateDelete();
 		
 		//update the resource manager
 		m_pkResourceDB->Refresh();
@@ -537,13 +537,13 @@ void ZeroFps::Draw_EngineShell()
 		}
 
 	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
-	DevPrintf("common" , "Zone: %d", this->m_pkObjectMan->m_kZones.size());
+	DevPrintf("common" , "Zone: %d", this->m_pkEntityManager->m_kZones.size());
 
 	// TIME
 	DevPrintf("time","Ticks: %f",							GetTicks());
 	DevPrintf("time","FrameTime: %f",					GetFrameTime());
-	DevPrintf("time","SimTime: %f",						m_pkObjectMan->GetSimTime());
-	DevPrintf("time","SimDelta: %f",						m_pkObjectMan->GetSimDelta());
+	DevPrintf("time","SimTime: %f",						m_pkEntityManager->GetSimTime());
+	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
 	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
 	DevPrintf("time","EngineTime: %f",					GetEngineTime());
 	DevPrintf("time","Run: %i", m_bRunWorldSim);
@@ -607,7 +607,7 @@ void ZeroFps::MakeDelay()
 {
 	if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
 	{
-		float fDelay = m_pkObjectMan->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
+		float fDelay = m_pkEntityManager->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
 	
 		if(fDelay < 0)
 			fDelay = 0;
@@ -890,7 +890,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_PRINTOBJECT:
-			m_pkObjectMan->DisplayTree();
+			m_pkEntityManager->DisplayTree();
 			break;
 
 		case FID_VERSION:
@@ -909,7 +909,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 				}
 			
-			pkEnt = this->m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
+			pkEnt = this->m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
 			pkEnt->AddProperty("P_Event");
 			pkEnt->AddProperty("P_Item");
 			pkEnt->AddProperty("P_Ml");
@@ -979,7 +979,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	StopAll();
 
 	//clear world   ---detta kan vara ganska evil ibland =D, 
-	m_pkObjectMan->Clear();
+	m_pkEntityManager->Clear();
 	
 	
 	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
@@ -1031,15 +1031,15 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
 				int iID=-1;
 				pkNetPacket->Read(iID);
-				m_pkObjectMan->Delete(iID);
+				m_pkEntityManager->Delete(iID);
 				cout<<"Got delete packate from server , deleting entity:"<<iID<<endl;
-				//m_pkObjectMan->UpdateDeleteList(pkNetPacket);
+				//m_pkEntityManager->UpdateDeleteList(pkNetPacket);
 				break;
 			}
 				
 			case ZFGP_OBJECTSTATE: 
 				//Logf("netpac", "  HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
-				m_pkObjectMan->UpdateState(pkNetPacket);
+				m_pkEntityManager->UpdateState(pkNetPacket);
 				break;
 
 			case ZFGP_CLIENTSTATE: 
@@ -1058,21 +1058,21 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 			case ZFGP_REQOWNOBJECT: 
 				pkNetPacket->Read(m_iObjectID);
-				m_pkObjectMan->OwnerShip_OnRequest(m_pkObjectMan->GetEntityByID( m_iObjectID ));
+				m_pkEntityManager->OwnerShip_OnRequest(m_pkEntityManager->GetEntityByID( m_iObjectID ));
 				break;
 
 			case ZFGP_GIVEOWNOBJECT: 
 				pkNetPacket->Read(m_iObjectID);
-				m_pkObjectMan->OwnerShip_OnGrant(m_pkObjectMan->GetEntityByID( m_iObjectID ));
+				m_pkEntityManager->OwnerShip_OnGrant(m_pkEntityManager->GetEntityByID( m_iObjectID ));
 				break;
 
 			case ZFGP_ZONELIST: 
 				//Logf("netpac", "  HandleNetworkPacket(ZFGP_ZONELIST)\n");
-				m_pkObjectMan->UpdateZoneList(pkNetPacket);
+				m_pkEntityManager->UpdateZoneList(pkNetPacket);
 				break;
 
 			case ZFGP_GETSTATICDATA: 
-				m_pkObjectMan->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
+				m_pkEntityManager->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
 				break;
 
 			case ZFGP_EDIT:
@@ -1105,14 +1105,14 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read_Str(szCmd);
 		pkNetPacket->Read(kPos);
-		m_pkObjectMan->CreateEntityFromScriptInZone( szCmd, kPos);
+		m_pkEntityManager->CreateEntityFromScriptInZone( szCmd, kPos);
 	}
 
 	if( szCmd == string("move"))
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
@@ -1122,7 +1122,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->SetLocalPosV(kMove);
@@ -1132,7 +1132,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->RotateLocalRotV(kMove);
@@ -1142,7 +1142,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		int iNumOfId;
 		pkNetPacket->Read(iNumOfId);
-//		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+//		Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(iEntId);								
 //		if(!pkObj)
 //			return;	
 		iEntId = 0;
@@ -1150,17 +1150,17 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		for(int i=0; i<iNumOfId; i++) 
 		{
 			pkNetPacket->Read(iEntId);
-			Entity* pkEntity = m_pkObjectMan->GetEntityByID(iEntId);
+			Entity* pkEntity = m_pkEntityManager->GetEntityByID(iEntId);
 			if(!pkEntity)	continue;
 			cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
 			if(pkEntity->GetName() == string("ZoneObject"))
 			{
-				int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->GetEntityID() );
-				m_pkObjectMan->DeleteZone(iZoneID);
+				int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
+				m_pkEntityManager->DeleteZone(iZoneID);
 				cout << "Delete zone " << iZoneID << endl;
 			}
 			else
-				m_pkObjectMan->Delete(pkEntity->GetEntityID());	
+				m_pkEntityManager->Delete(pkEntity->GetEntityID());	
 		}
 	}
 }
@@ -1238,14 +1238,14 @@ void ZeroFps::QuitEngine()
 {
 	vector<string> kPropertyNames;
 	
-	if(m_pkObjectMan->GetWorldEntity())
+	if(m_pkEntityManager->GetWorldEntity())
 	{
-		m_pkObjectMan->GetWorldEntity()->GetAllVarNames(kPropertyNames);
+		m_pkEntityManager->GetWorldEntity()->GetAllVarNames(kPropertyNames);
 
 		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
 		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
 		{
-			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
+			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
 		}
 	}
 
@@ -1290,19 +1290,19 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 	{
 			
 		//reset all netupdate flags in the world
-		m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
+		m_pkEntityManager->ResetNetUpdateFlags(iConnectionID);
 	
 		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
-		m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateEntity();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
+		m_kClient[iConnectionID].m_pkObject = m_pkEntityManager->CreateEntity();//m_pkEntityManager->CreateObjectByArchType("ZeroRTSPlayer");
 		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
 		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 	
 		// Connect all client objects to top level object,
-		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientEntity);
+		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkEntityManager->m_pkClientEntity);
 		
 		m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 		m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass,bIsEditor);
-		m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
+		m_pkEntityManager->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
 	
 		
 	//	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());	
@@ -1328,7 +1328,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 	
 	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
 	
-	m_pkObjectMan->Delete( m_kClient[iConnectionID].m_pkObject );
+	m_pkEntityManager->Delete( m_kClient[iConnectionID].m_pkObject );
 	m_kClient[iConnectionID].m_pkObject = NULL;
 }
 
@@ -1352,7 +1352,7 @@ int ZeroFps::GetClientObjectID()
 void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.
-	//Entity* pkEntity = this->m_pkObjectMan->GetObjectByNetWorkID(iNetWorkId);
+	//Entity* pkEntity = this->m_pkEntityManager->GetObjectByNetWorkID(iNetWorkId);
 	if(!pkEntity)										return;
 	if(pkEntity->GetProperty("P_HMRP2"))		return;
 

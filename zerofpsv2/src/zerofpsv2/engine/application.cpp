@@ -21,24 +21,24 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 */
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
 {
-	m_pkFps					=	pkZeroFps;	
-	m_pkConsole				=	m_pkFps->m_pkConsole;
-	m_pkRender				=	m_pkFps->m_pkRender;
-	m_pkInput				=	m_pkFps->m_pkInput;
-	m_pkTexMan				=	m_pkFps->m_pkTexMan;
-	m_pkBasicFS				=	m_pkFps->m_pkBasicFS;
-	m_pkLight				=	m_pkFps->m_pkLight;
-	m_pkObjectMan			=	m_pkFps->m_pkObjectMan;
-	m_pkAudioSys			=	m_pkFps->m_pkAudioSystem;
-	m_pkPropertyFactory	=	m_pkFps->m_pkPropertyFactory;
-	m_pkGui					=	m_pkFps->m_pkGui;
-	m_pkGuiMan				=	m_pkFps->m_pkGuiMan;
-	m_pkIni					=	m_pkFps->m_pkIni;
-	m_pkScript				=	m_pkFps->m_pkScript;
-	m_pkZFVFileSystem		=	m_pkFps->m_pkZFVFileSystem;
-	m_pkResourceDB			=	m_pkFps->m_pkResourceDB;
-	m_pkZShadow				=	m_pkFps->m_pkZShadow;
-	m_pkZShaderSystem		=	m_pkFps->m_pkZShaderSystem;
+	m_pkZeroFps				=	pkZeroFps;	
+	m_pkConsole				=	m_pkZeroFps->m_pkConsole;
+	m_pkRender				=	m_pkZeroFps->m_pkRender;
+	m_pkInput				=	m_pkZeroFps->m_pkInput;
+	m_pkTexMan				=	m_pkZeroFps->m_pkTexMan;
+	m_pkBasicFS				=	m_pkZeroFps->m_pkBasicFS;
+	m_pkLight				=	m_pkZeroFps->m_pkLight;
+	m_pkEntityManager			=	m_pkZeroFps->m_pkEntityManager;
+	m_pkAudioSys			=	m_pkZeroFps->m_pkAudioSystem;
+	m_pkPropertyFactory	=	m_pkZeroFps->m_pkPropertyFactory;
+	m_pkGui					=	m_pkZeroFps->m_pkGui;
+	m_pkGuiMan				=	m_pkZeroFps->m_pkGuiMan;
+	m_pkIni					=	m_pkZeroFps->m_pkIni;
+	m_pkScript				=	m_pkZeroFps->m_pkScript;
+	m_pkZFVFileSystem		=	m_pkZeroFps->m_pkZFVFileSystem;
+	m_pkResourceDB			=	m_pkZeroFps->m_pkResourceDB;
+	m_pkZShadow				=	m_pkZeroFps->m_pkZShadow;
+	m_pkZShaderSystem		=	m_pkZeroFps->m_pkZShaderSystem;
 
 
 	m_pkInputHandle = new InputHandle("Application");
@@ -60,7 +60,7 @@ void Application::SendAppMessage(NetPacket* pkNet)
 
 	kNp.Write(ZFGP_ENDOFPACKET);
 	kNp.m_iTargetClients = pkNet->m_iTargetClients;
-	m_pkFps->m_pkNetWork->Send2(&kNp);
+	m_pkZeroFps->m_pkNetWork->Send2(&kNp);
 }
 
 

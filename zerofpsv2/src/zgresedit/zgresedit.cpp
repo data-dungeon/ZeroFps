@@ -222,7 +222,7 @@ void ZGResEdit::OnInit()
 	m_pkScene = new Scene();
 	m_pkScene->Init(this);
 
-	m_pkFps->m_bClientMode = true;
+	m_pkZeroFps->m_bClientMode = true;
 
 	//m_pkInputHandle->ToggleGrab(); // koppla på grab mode
 
@@ -237,7 +237,7 @@ void ZGResEdit::OnInit()
    	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetClearViewPort(true);
-	m_pkFps->AddRenderCamera(m_pkCamera);
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
 	//ZGuiFont* pkNewFont = new ZGuiFont("arial26");
 	//pkNewFont->Create("data/textures/text/arial26.fnt",
@@ -302,11 +302,11 @@ void ZGResEdit::OnInit()
 
 void ZGResEdit::OnIdle()
 {
-	//m_pkFps->SetCamera(m_pkCamera);		
-	//m_pkFps->GetCam()->ClearViewPort();	
-	//m_pkFps->UpdateCamera(); 	
+	//m_pkZeroFps->SetCamera(m_pkCamera);		
+	//m_pkZeroFps->GetCam()->ClearViewPort();	
+	//m_pkZeroFps->UpdateCamera(); 	
 
-   //m_pkFps->GetCam()->ClearViewPort(true);
+   //m_pkZeroFps->GetCam()->ClearViewPort(true);
 
 
 	OnKeyDown(m_pkInputHandle->GetQueuedKey().m_iKey);
@@ -319,7 +319,7 @@ void ZGResEdit::OnIdle()
 		//static int anim = 0;
 		//static float fPrevTick = 0;
 
-		//float fTick = m_pkFps->GetTicks();
+		//float fTick = m_pkZeroFps->GetTicks();
 
 		//if(fTick - fPrevTick > 0.04f) // har det gått 40 msek sen sist?
 		//{
@@ -478,12 +478,12 @@ void ZGResEdit::OnIdle()
 
 void ZGResEdit::OnHud(void) 
 {	
-	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
-	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
-	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
+	m_pkZeroFps->DevPrintf("common","Active Propertys: %d",m_pkEntityManager->GetActivePropertys());	
+	m_pkZeroFps->DevPrintf("common", "Fps: %f",m_pkZeroFps->m_fFps);	
+	m_pkZeroFps->DevPrintf("common","Avrage Fps: %f",m_pkZeroFps->m_fAvrageFps);			
 	
-	m_pkFps->m_bGuiMode = false;
-	m_pkFps->ToggleGui();
+	m_pkZeroFps->m_bGuiMode = false;
+	m_pkZeroFps->ToggleGui();
 }
 
 void ZGResEdit::OnKeyDown(int iKey)

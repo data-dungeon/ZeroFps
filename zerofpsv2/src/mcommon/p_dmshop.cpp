@@ -28,7 +28,7 @@ P_DMShop::~P_DMShop()
 
 void P_DMShop::Init()
 {
-	m_pkObjectMan = 
+	m_pkEntityManager = 
 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
 	m_pkItems = new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),8,10);
@@ -148,7 +148,7 @@ int P_DMShop::GetSellPrice(int iObjectToBuy)
 {
 	if(iObjectToBuy)
 	{
-		Entity* pkObject = m_pkObjectMan->GetEntityByID(iObjectToBuy);
+		Entity* pkObject = m_pkEntityManager->GetEntityByID(iObjectToBuy);
 
 		P_DMItem* pkItemProperty = (P_DMItem*)pkObject->GetProperty("P_DMItem");
 
@@ -174,7 +174,7 @@ int P_DMShop::GetSellPrice(int iObjectToBuy)
 
 int P_DMShop::GetBuyPrice(int iObjectToSell) 
 {
-	Entity* pkObjectToAppreciate = m_pkObjectMan->GetEntityByID(iObjectToSell);
+	Entity* pkObjectToAppreciate = m_pkEntityManager->GetEntityByID(iObjectToSell);
 
 	if(pkObjectToAppreciate == NULL)
 		return -1;

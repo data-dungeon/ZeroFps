@@ -949,7 +949,7 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 	m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 		m_pkAudioSys->GetListnerPos()); 
 
-	Entity* pkEntity = m_pkFps->m_pkObjectMan->GetEntityByID ( iItemID );
+	Entity* pkEntity = m_pkFps->m_pkEntityManager->GetEntityByID ( iItemID );
 
 	if ( !pkEntity )
 		return;
@@ -964,7 +964,7 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 		if ( pkItemTypes->at(i) == DMITEM_WEAPON )
 		{
 			// Get owner object
-			Entity* pkOwner = m_pkFps->m_pkObjectMan->GetEntityByID ( pkDestContainer->GetOwnerID() ); 
+			Entity* pkOwner = m_pkFps->m_pkEntityManager->GetEntityByID ( pkDestContainer->GetOwnerID() ); 
 			pkEntity->SetLocalPosV ( Vector3(0,0,0) );
 
 			P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
@@ -973,7 +973,7 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 
 		if ( pkItemTypes->at(i) == DMITEM_ARMOUR || pkItemTypes->at(i) == DMITEM_IMPLANT )
 		{
-			Entity* pkOwner = m_pkFps->m_pkObjectMan->GetEntityByID ( pkDestContainer->GetOwnerID() );
+			Entity* pkOwner = m_pkFps->m_pkEntityManager->GetEntityByID ( pkDestContainer->GetOwnerID() );
 			((P_DMCharacter*)pkOwner->GetProperty("P_DMCharacter"))->Equip ( (P_DMItem*)pkEntity->GetProperty("P_DMItem") );
 		}
 	}

@@ -42,7 +42,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "QuitBn")
          {
-            g_kMistClient.m_pkFps->QuitEngine();
+            g_kMistClient.m_pkZeroFps->QuitEngine();
          }
       }
       else
@@ -165,7 +165,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
             if(!strLogin.empty() && !strPassword.empty() && !strServerIP.empty())
             {
-               g_kMistClient.m_pkFps->StartClient(strLogin, strPassword, strServerIP);
+               g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
             
                g_kMistClient.ShowWnd("MLStartWnd", false);
                g_kMistClient.ShowWnd("ConnectWnd", false);

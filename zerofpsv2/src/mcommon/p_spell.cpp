@@ -50,7 +50,7 @@ void P_Spell::Update()
 
       // update lived time if spell isn't permanent
       if ( m_pkSpellType->m_fLifeTime != -1 )
-	      m_fAge += m_pkZeroFps->m_pkObjectMan->GetSimDelta();
+	      m_fAge += m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 
 
       // TODO!!! Only test for damage if spell MAKES damage and is stuck on CharacterObject
@@ -110,7 +110,7 @@ void P_Spell::Update()
 //            m_pkObject->RemoveProperty ( this );
 //         else
 
-         //m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
+         //m_pkObject->m_pkEntityManager->Delete( m_pkObject ); 
       }
 
 
@@ -405,7 +405,7 @@ void P_Spell::DoCollisions()
                                                                            kObjects[i]->GetWorldPosV() );
                   pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
                   /*
-                  Object *pkNewSpellObject = m_pkObject->m_pkObjectMan->CreateObject();
+                  Object *pkNewSpellObject = m_pkObject->m_pkEntityManager->CreateObject();
             
                   P_Spell *pkNewSpell = new P_Spell;
                   pkNewSpellObject->AddProperty( pkNewSpell );

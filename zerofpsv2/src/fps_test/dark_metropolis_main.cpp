@@ -34,8 +34,8 @@ DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth)
 
 void DarkMetropolis::OnHud() 
 {	
-	//m_pkFps->m_bGuiMode = false;
-	//m_pkFps->ToggleGui();
+	//m_pkZeroFps->m_bGuiMode = false;
+	//m_pkZeroFps->ToggleGui();
 }
 
 void DarkMetropolis::OnInit()
@@ -49,7 +49,7 @@ void DarkMetropolis::OnInit()
 	//initiate variables
 	m_pkCameraProp	= 				NULL;
 	m_pkCameraEntity = 			NULL;
-	m_pkFps->m_bClientMode =	true;
+	m_pkZeroFps->m_bClientMode =	true;
 	m_fMinCamDistance =			0.1f;
 	m_fMaxCamDistance =			8;
 	m_fDistance =					m_fMaxCamDistance;	
@@ -79,11 +79,11 @@ void DarkMetropolis::OnInit()
 	Register_Cmd("save",FID_SAVE);	
 
 	//setup system speed
-	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->SetTimeScale(1.0);
+	m_pkZeroFps->SetSystemFps(30);
+	m_pkEntityManager->SetTimeScale(1.0);
 	
 	//set tracker los
-	m_pkObjectMan->SetTrackerLos(5);
+	m_pkEntityManager->SetTrackerLos(5);
 	
 	//enable light
 	m_pkLight->SetLighting(true);
@@ -94,13 +94,13 @@ void DarkMetropolis::OnInit()
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetClearViewPort(false);
-	m_pkFps->AddRenderCamera(m_pkCamera);
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
 
 	LoadResourcesOnStartup();
 
 	//init dm script interface (register script functions for gameplay)
-	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
+	DMLua::Init(m_pkEntityManager,m_pkScript,m_pkGuiMan);
 
 	//register propertys
 	RegisterPropertys();
@@ -118,7 +118,7 @@ void DarkMetropolis::OnInit()
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
 
 	// load marker texture
-	m_iMarkerTextureID = this->m_pkFps->m_pkTexMan->Load("data/textures/dm/marker.tga", 0);
+	m_iMarkerTextureID = this->m_pkZeroFps->m_pkTexMan->Load("data/textures/dm/marker.tga", 0);
 
 }
 
@@ -137,8 +137,8 @@ void DarkMetropolis::OnIdle()
 	ShowWnd("panel_char", false);
 
 	
-	//m_pkFps->SetCamera(m_pkCamera);		
-	//m_pkFps->GetCam()->ClearViewPort();
+	//m_pkZeroFps->SetCamera(m_pkCamera);		
+	//m_pkZeroFps->GetCam()->ClearViewPort();
 
 	if(m_eGameMode != PAUSED)
 	{
@@ -152,7 +152,7 @@ void DarkMetropolis::OnIdle()
 	
 	
 
-//	m_pkFps->UpdateCamera(); 	
+//	m_pkZeroFps->UpdateCamera(); 	
 	GUI_OnIdle();
 
 	ShowWnd("DMInGameScreen", false);
@@ -174,7 +174,7 @@ void DarkMetropolis::RenderInterface(void)
 
 //	m_strGameInfoText = "";
 
-	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentPickedEntity))
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentPickedEntity))
 	{
 		P_DMItem* pkItem;
 		if((pkItem=(P_DMItem*)pkEnt->GetProperty("P_DMItem")))
@@ -239,7 +239,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw markers for selected entitys
 	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]);
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_kSelectedEntitys[i]);
 		if(pkEnt)
 		{
 			glEnable(GL_ALPHA_TEST);
@@ -254,7 +254,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw HQ marker
 	if(m_iHQID != -1)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iHQID);
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iHQID);
 		if(pkEnt)
 		{
 			float r = 1;//pkEnt->GetBoundingRadius();
@@ -270,7 +270,7 @@ void DarkMetropolis::RenderInterface(void)
 		
 			if(pkAC->m_iTarget != -1)
 			{
-				if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(pkAC->m_iTarget))
+				if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(pkAC->m_iTarget))
 				{
 					glEnable(GL_ALPHA_TEST);
 					glAlphaFunc(GL_GEQUAL, 0.1);
@@ -299,7 +299,7 @@ void DarkMetropolis::OnSystem()
 
 /*
 
-	float t = m_pkFps->m_pkObjectMan->GetSimTime();
+	float t = m_pkZeroFps->m_pkEntityManager->GetSimTime();
 
 	//if no hq has been found, try to find it
 	if(m_iActiveHQ == -1)
@@ -457,9 +457,9 @@ void DarkMetropolis::Input()
 				
 			if(m_pkInputHandle->Pressed(MOUSERIGHT))
 				if(pkTcs->GetOnGround())
-					if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
+					if( (m_pkZeroFps->GetTicks() - m_fDelayTimer) > 0.1)
 					{
-						m_fDelayTimer = m_pkFps->GetTicks();
+						m_fDelayTimer = m_pkZeroFps->GetTicks();
 						pkTcs->ApplyImpulsForce(Vector3(0,4,0));
 					}
 			
@@ -542,11 +542,11 @@ void DarkMetropolis::Input()
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
 		{
-			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
+			if( (m_pkZeroFps->GetTicks() - m_fDelayTimer) > 0.1)
 			{
-				m_fDelayTimer = m_pkFps->GetTicks();
+				m_fDelayTimer = m_pkZeroFps->GetTicks();
 								
-				Entity* pkEnt = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
+				Entity* pkEnt = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
 					if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
@@ -610,13 +610,13 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 {
 	/*
-	float t = m_pkFps->GetTicks();
-	while( (m_pkFps->GetTicks() - t )  < 2.0)
+	float t = m_pkZeroFps->GetTicks();
+	while( (m_pkZeroFps->GetTicks() - t )  < 2.0)
 		int i = 0;
 	*/
 		
 	//load world
-	if(!m_pkObjectMan->LoadWorld("dmworld"))
+	if(!m_pkEntityManager->LoadWorld("dmworld"))
 	{
 		cout<<"ERROR: default world dmworld not found"<<endl;
 		return false;
@@ -626,11 +626,11 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	
 	//start server
 	//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-	m_pkFps->StartServer(true,false);
+	m_pkZeroFps->StartServer(true,false);
 	
 	//create a new gameinfo entity
-	m_pkGameInfoEntity = m_pkObjectMan->CreateEntity();
-	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
+	m_pkGameInfoEntity = m_pkEntityManager->CreateEntity();
+	m_pkGameInfoEntity->SetParent(m_pkEntityManager->GetGlobalEntity());
 	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
 	m_pkGameInfoEntity->AddProperty("P_DMMission"); // Lägg till ett mission property oxå...
 
@@ -644,15 +644,15 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 
 bool DarkMetropolis::LoadGame(string strClanName)
 {
-	if(!m_pkObjectMan->LoadWorld(m_strSaveDirectory+strClanName))
+	if(!m_pkEntityManager->LoadWorld(m_strSaveDirectory+strClanName))
 	{
 		cout<<"could not load world from savegame"<<endl;
 		return false;	
 	}
 	
 	//create a new gameinfo entity
-	m_pkGameInfoEntity = m_pkObjectMan->CreateEntity();
-	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
+	m_pkGameInfoEntity = m_pkEntityManager->CreateEntity();
+	m_pkGameInfoEntity->SetParent(m_pkEntityManager->GetGlobalEntity());
 	
 	
 	//load gameinfo
@@ -679,7 +679,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 	
 	//start server
 	//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-	m_pkFps->StartServer(true,false);
+	m_pkZeroFps->StartServer(true,false);
 	
 	//set camera position
 	if(m_pkCameraEntity)
@@ -717,7 +717,7 @@ bool DarkMetropolis::SaveGame(string strsavegame)
 		blub.Close();	
 	}
 	
-	if(!m_pkObjectMan->SaveWorld(m_strSaveDirectory+strsavegame,true))
+	if(!m_pkEntityManager->SaveWorld(m_strSaveDirectory+strsavegame,true))
 	{
 		cout<<"ERROR: could not save world"<<endl;
 		return false;
@@ -768,7 +768,7 @@ Entity* DarkMetropolis::GetTargetObject(bool bZonesOnly)
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
 	
 	float closest = 999999999;
 	float d;
@@ -866,7 +866,7 @@ void DarkMetropolis::PauseGame(bool bPause)
 int DarkMetropolis::FindActiveHQ()
 {
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects,false);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects,false);
 
 	for(unsigned int i = 0;i<kObjects.size();i++)
 	{
@@ -916,7 +916,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		}
 	}
 
-	Entity* pkEnt = m_pkObjectMan->GetEntityByID(id);
+	Entity* pkEnt = m_pkEntityManager->GetEntityByID(id);
 
 	if(pkEnt)
 	{
@@ -953,7 +953,7 @@ void DarkMetropolis::ValidateSelection()
 
 	for(int i = 0;i < m_kSelectedEntitys.size();i++)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]))
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_kSelectedEntitys[i]))
 		{
 			if(!pkEnt->GetParent()->IsZone())		
 			{
@@ -983,7 +983,7 @@ void DarkMetropolis::ValidateAgentsOnField()
 {
 	for( vector<int>::iterator it = m_kAgentsOnField.begin(); it!=m_kAgentsOnField.end(); it++)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(*it))
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(*it))
 		{
 			//character was found but not in a zone, remove it
 			if(!pkEnt->GetParent()->IsZone())
@@ -1025,7 +1025,7 @@ void DarkMetropolis::UpdateAgentsOnField()
 	m_kAgentsOnField.clear();
 
 	vector<Entity*> m_kEntitys;
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
 	
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
@@ -1068,7 +1068,7 @@ void DarkMetropolis::CheckCameraPos()
 	Vector3 kPos;
 	float d = 0;
 
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveHQ))
+	if(Entity* pkEnt = m_pkEntityManager->GetObjectByNetWorkID(m_iActiveHQ))
 	{
 		kPos = pkEnt->GetWorldPosV();
 		kPos.y = 0;
@@ -1078,7 +1078,7 @@ void DarkMetropolis::CheckCameraPos()
 	
 	for(int i = 0;i < m_kAgentsOnField.size(); i++)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kAgentsOnField[i]))
+		if(Entity* pkEnt = m_pkEntityManager->GetObjectByNetWorkID(m_kAgentsOnField[i]))
 		{
 			kPos = pkEnt->GetWorldPosV();
 			kPos.y = 0;			
@@ -1105,8 +1105,8 @@ void DarkMetropolis::CheckCameraPos()
 		Vector3 kNewPos = kTemp + kDir;
 		kNewPos.y = m_pkCameraEntity->GetWorldPosV().y;
 		
-//		kNewCamPos += kDir * m_pkObjectMan->GetSimDelta() * (dist * 3) ;
-//		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
+//		kNewCamPos += kDir * m_pkEntityManager->GetSimDelta() * (dist * 3) ;
+//		kNewCamPos += kDir * m_pkZeroFps->GetFrameTime() * dist  ;
 		//kNewCamPos += kDir;
 		m_pkCameraEntity->SetWorldPosV(kNewPos);
 	}
@@ -1116,14 +1116,14 @@ void DarkMetropolis::CheckCameraPos()
 bool DarkMetropolis::CreatePlayer()
 {
 	vector<Entity*> m_kEntitys;
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
 
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(m_kEntitys[i]->GetType() == "playerstart.lua")
 		{		
 			
-			if(ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent()))
+			if(ZoneData* dat = m_pkEntityManager->GetZone(m_kEntitys[i]->GetParent()))
 			{
 				cout<<"ID:"<<dat->m_iZoneID<<endl;
 				cout<<"m_iZoneObjectID:"<<dat->m_iZoneObjectID<<endl;
@@ -1142,17 +1142,17 @@ bool DarkMetropolis::CreatePlayer()
 
 			Vector3 kStartPos = m_kEntitys[i]->GetWorldPosV();	
 			
-			m_pkObjectMan->Delete(m_kEntitys[i]);
+			m_pkEntityManager->Delete(m_kEntitys[i]);
 		
 			
 			//create entity
-			if(m_pkPlayerEntity = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
+			if(m_pkPlayerEntity = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
 			{			
 				//save id
 				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
 				
 				//create camera entity and attach it to the player
-				m_pkCameraEntity = m_pkObjectMan->CreateEntity();
+				m_pkCameraEntity = m_pkEntityManager->CreateEntity();
 				m_pkCameraEntity->SetRelativeOri(true);
 				m_pkCameraEntity->SetParent(m_pkPlayerEntity);
 								

@@ -68,7 +68,7 @@ public:
 class ENGINE_API AStar : public ZFSubSystem 
 {
 private:
-	EntityManager*	m_pkObjectManger;
+	EntityManager*	m_pkEntityManager;
 
 	Vector3			m_kStart;
 	Vector3			m_kGoal;

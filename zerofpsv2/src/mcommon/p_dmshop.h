@@ -17,7 +17,7 @@ class MCOMMON_API P_DMShop: public Property {
 		vector<PropertyValues> GetPropertyValues();
 		map<string, int> m_kPricemap; // name, price
 
-		EntityManager* m_pkObjectMan;
+		EntityManager* m_pkEntityManager;
 
 		float m_fTradeRate; // 1.0f = samma pris som varan kostar, <1 = billigare, >1 = dyrare
 		string m_strShopName;

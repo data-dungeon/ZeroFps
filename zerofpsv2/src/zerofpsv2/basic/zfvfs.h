@@ -85,7 +85,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
-		int GetNumOfRootPaths()	{return m_kRootPath.size();};						///< Get num of active rootpaths
+		int GetNumOfRootPaths()	{return int(m_kRootPath.size());};						///< Get num of active rootpaths
 
 		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
 

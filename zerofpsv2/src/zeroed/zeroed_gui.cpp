@@ -124,8 +124,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "DeleteZoneButton")
 			{
-				int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-				m_pkObjectMan->DeleteZone(id);
+				int id = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+				m_pkEntityManager->DeleteZone(id);
 			}
 			else
 			if(strWndClicked == "DisableFreeZoneBuildBn")
@@ -144,10 +144,10 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "DeleteObjectButton")
 			{		
-				Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);		
+				Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);		
 				if(pkObj) 
 				{
-					m_pkObjectMan->Delete(pkObj);
+					m_pkEntityManager->Delete(pkObj);
 					m_iCurrentObject = -1;
 				}
 			}
@@ -214,7 +214,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "AddPropertyBn")
 			{
 				if((item = GetSelItem("AllPropertyList")))
-					if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
+					if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 						if(pkEnt->AddProperty(item))
 							UpdatePropertyList(pkEnt->GetEntityID());
 			}
@@ -237,7 +237,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(strWndClicked == string(akSections[i].c_str()))
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					m_pkFps->m_pkConsole->Execute(cmd);
+					m_pkZeroFps->m_pkConsole->Execute(cmd);
 
 					break;
 				}
@@ -305,7 +305,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 		Property* pkProp;
 
 		if((szProperty=GetSelItem("PropertyList")))
-			if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
+			if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 				if((item = GetSelItem("PropertyValList")))
 				{
 					if(string("Variables") == string(szProperty))
@@ -336,12 +336,12 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			m_strActiveZoneName = strFullpath;
 
-			m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			// Setting new zone modell
 			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
 			{
 				//pkObjectMan->LoadZone(m_iCurrentMarkedZone);
-				m_pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+				m_pkEntityManager->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
 				printf("Setting new zone modell to %s\n", strFullpath.c_str());
 			}
 

@@ -63,7 +63,7 @@ MCOMMON_API ZFResource* Create__EnvSetting();
 class MCOMMON_API P_Enviroment: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
-		EntityManager* m_pkObjectMan;
+		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
 		OggMusic*		m_pkMusic;		
 		

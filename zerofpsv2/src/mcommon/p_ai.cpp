@@ -155,7 +155,7 @@ void P_AI::Update()
          NextOrder();
       }
       else
-         m_pkCurrentOrder->m_iTargetID -= int(m_pkZeroFps->m_pkObjectMan->GetSimDelta() * 10000);
+         m_pkCurrentOrder->m_iTargetID -= int(m_pkZeroFps->m_pkEntityManager->GetSimDelta() * 10000);
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Face" )
    {

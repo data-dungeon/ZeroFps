@@ -44,7 +44,7 @@ void MistClient::OnInit()
 	//initiate our mainview camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetName("Main camera");
-	m_pkFps->AddRenderCamera(m_pkCamera);
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
 	//register property bös
 	RegisterPropertys();
@@ -53,7 +53,7 @@ void MistClient::OnInit()
 	RegisterResources();
 		
 	//init mistland script intreface
-	MistLandLua::Init(m_pkObjectMan,m_pkScript);
+	MistLandLua::Init(m_pkEntityManager,m_pkScript);
 
    // init gui script intreface
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
@@ -62,7 +62,7 @@ void MistClient::OnInit()
    SetTitle("MistClient - Hacka och slå");
 	
 	//set client in server mode to show gui etc
-	m_pkFps->StartServer(true,false);
+	m_pkZeroFps->StartServer(true,false);
 
    // initialize gui system with default skins, font etc
 	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
@@ -161,7 +161,7 @@ void MistClient::Input()
 	m_kCharacterControls[eJUMP] = m_pkInputHandle->Pressed(MOUSERIGHT);
 	
 	//update camera
-	if(Entity* pkCharacter = m_pkObjectMan->GetEntityByID(m_iCharacterID))
+	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
 		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
 		{			
@@ -211,7 +211,7 @@ void MistClient::OnSystem()
 
 void MistClient::SendControlInfo()
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCharacterID))
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
 		//if theres no camera property, create one and set it up
 		if(P_Camera* pkCam = (P_Camera*)pkEnt->GetProperty("P_Camera"))
@@ -233,7 +233,7 @@ void MistClient::SendControlInfo()
 
 void MistClient::UpdateCharacter()
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCharacterID))
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
 		//if theres no camera property, create one and set it up
 		if(!pkEnt->GetProperty("P_Camera"))
@@ -289,7 +289,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			int iEntityID;
 			PkNetMessage->Read(iEntityID);
 
-			if(Entity* pkEnt = m_pkObjectMan->GetEntityByID( iEntityID ))
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID( iEntityID ))
 			{
 				if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
 				{

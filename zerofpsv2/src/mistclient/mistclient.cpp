@@ -129,13 +129,13 @@ void MistClient::OnInit()
 
 void MistClient::Init()
 {	
-	m_fClickDelay = m_pkFps->GetTicks();
+	m_fClickDelay = m_pkZeroFps->GetTicks();
 
 
 
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
-	m_pkFps->AddRenderCamera(m_pkCamera);
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
 	
 	//register property bös
@@ -158,7 +158,7 @@ void MistClient::Init()
 	InitGui(m_pkScript, "defguifont", "data/script/gui/gui_create_client.lua", NULL, true, false);
 
 	//init mistland script intreface
-	MistLandLua::Init(m_pkObjectMan,m_pkScript);
+	MistLandLua::Init(m_pkEntityManager,m_pkScript);
 	
 //	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
 //		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
@@ -172,7 +172,7 @@ void MistClient::Init()
 	m_pkGui->SetFocus(GetWnd("IntroWnd")); 
 
 	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
-	m_pkFps->m_bClientMode = true;
+	m_pkZeroFps->m_bClientMode = true;
 
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
@@ -211,8 +211,8 @@ void MistClient::RegisterPropertys()
 
 void MistClient::OnIdle() 
 {
-	//m_pkFps->SetCamera(m_pkCamera);		
-	//m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkZeroFps->SetCamera(m_pkCamera);		
+	//m_pkZeroFps->GetCam()->ClearViewPort();	
 		
 	if(m_pkGui->m_bHandledMouse == false)
 	{
@@ -223,22 +223,22 @@ void MistClient::OnIdle()
    if ( m_pkInventDlg )
       m_pkInventDlg->Update();
 	
-	//m_pkFps->UpdateCamera();
+	//m_pkZeroFps->UpdateCamera();
 	
 	
 	// FULHACK Tm Vim
-	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetEntityByID( m_pkFps->GetClientObjectID() ) );
+	m_pkEntityManager->OwnerShip_Take( m_pkEntityManager->GetEntityByID( m_pkZeroFps->GetClientObjectID() ) );
 	
 
 	//printouts
 	if(m_pkServerInfo)
 	{
-		m_pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
-		m_pkFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
+		m_pkZeroFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
+		m_pkZeroFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
 	
-		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkFps->GetConnectionID());
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkZeroFps->GetConnectionID());
 		if(pi)
-			m_pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
+			m_pkZeroFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
 	}	
 
 	//gui
@@ -275,16 +275,16 @@ void MistClient::OnSystem()
 	UpdateCullObjects();
 
 	//setup client
-	if(m_pkFps->m_bClientMode && !m_pkFps->m_bServerMode)
+	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode)
 	{
 		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
 		if(!m_pkClientControlP)
 		{
-			m_iSelfObjectID = m_pkFps->GetClientObjectID();	
+			m_iSelfObjectID = m_pkZeroFps->GetClientObjectID();	
 			if(m_iSelfObjectID != -1)
 			{		
-				m_pkClientObject = m_pkObjectMan->GetEntityByID(m_iSelfObjectID);		
+				m_pkClientObject = m_pkEntityManager->GetEntityByID(m_iSelfObjectID);		
 				if(m_pkClientObject)
 				{			
 					m_pkConsole->Printf("Got client object, Trying to get client control");
@@ -301,7 +301,7 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			Entity* pkServerI = m_pkObjectMan->GetEntityByName("A t_serverinfo.lua");
+			Entity* pkServerI = m_pkEntityManager->GetEntityByName("A t_serverinfo.lua");
 			if(pkServerI)
 			{
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
@@ -328,7 +328,7 @@ void MistClient::OnSystem()
 
 	if(m_pkServerInfo)
 	{		
-		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkFps->GetConnectionID());
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkZeroFps->GetConnectionID());
 		if(pi)
 		{
 			//print server messages
@@ -343,7 +343,7 @@ void MistClient::OnSystem()
 			{
 				pair<int,string> sound_info = pi->kSounds.front();
 
-				Entity* pkGenerator = m_pkObjectMan->GetEntityByID(sound_info.first);
+				Entity* pkGenerator = m_pkEntityManager->GetEntityByID(sound_info.first);
 
 				if(pkGenerator)
 				{
@@ -358,7 +358,7 @@ void MistClient::OnSystem()
 			}
 			
 		}else
-			cout<<"cant find player object id "<< m_pkFps->GetConnectionID() <<endl;
+			cout<<"cant find player object id "<< m_pkZeroFps->GetConnectionID() <<endl;
 	}
 
 	
@@ -446,7 +446,7 @@ void MistClient::Input()
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
 
-		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		if(m_pkZeroFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
 			m_pkTargetObject = GetTargetObject();
 			
@@ -464,7 +464,7 @@ void MistClient::Input()
 						ClientOrder order;
 						
 						order.m_sOrderName = vkActionNames[0]; //"Klicka";
-						order.m_iClientID = m_pkFps->GetConnectionID();
+						order.m_iClientID = m_pkZeroFps->GetConnectionID();
 						order.m_iObjectID = m_pkTargetObject->GetEntityID();				
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 												
@@ -481,7 +481,7 @@ void MistClient::Input()
 						ClientOrder order;
 						
 						order.m_sOrderName = "G_Move";
-						order.m_iClientID = m_pkFps->GetConnectionID();
+						order.m_iClientID = m_pkZeroFps->GetConnectionID();
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 						
 						order.m_kPos = m_kTargetPos;
@@ -490,7 +490,7 @@ void MistClient::Input()
 					} 
 				}			
 			}
-			m_fClickDelay = m_pkFps->GetTicks();					
+			m_fClickDelay = m_pkZeroFps->GetTicks();					
 		}
 	}
 	
@@ -583,16 +583,16 @@ void MistClient::Input()
 
 void MistClient::OnHud(void) 
 {	
-	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
-	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
-	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
-	m_pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
+	m_pkZeroFps->DevPrintf("common","Active Propertys: %d",m_pkEntityManager->GetActivePropertys());	
+	m_pkZeroFps->DevPrintf("common", "Fps: %f",m_pkZeroFps->m_fFps);	
+	m_pkZeroFps->DevPrintf("common","Avrage Fps: %f",m_pkZeroFps->m_fAvrageFps);			
+	m_pkZeroFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
 	if ( m_iMouseMode == eCAMERA_MODE )
 		DrawCrossHair();
 	
-	m_pkFps->m_bGuiMode = false;
-	m_pkFps->ToggleGui();
+	m_pkZeroFps->m_bGuiMode = false;
+	m_pkZeroFps->ToggleGui();
 
 }
 
@@ -624,7 +624,7 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			cout<<"loading world:"<<kCommand->m_kSplitCommand[1].c_str()<<endl;
 			
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
+			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -669,7 +669,7 @@ void MistClient::SendOrder(string strOrder)
 {
 	ClientOrder order;
 	order.m_sOrderName	= strOrder;
-	order.m_iClientID		= m_pkFps->GetConnectionID();
+	order.m_iClientID		= m_pkZeroFps->GetConnectionID();
 	order.m_iObjectID		= -1;				
 	order.m_iCharacter	= -1;
 	m_pkClientControlP->AddOrder(order);
@@ -952,7 +952,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 									ClientOrder order;
 
 									order.m_sOrderName = res->second;
-									order.m_iClientID = m_pkFps->GetConnectionID();
+									order.m_iClientID = m_pkZeroFps->GetConnectionID();
 									
 									order.m_iObjectID = m_pkTargetObject->GetEntityID();				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
@@ -1042,7 +1042,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 			char* szLoginName = GetWnd("UserEditbox")->GetText();
 			char* szPassName = GetWnd("PasswordEditbox")->GetText();
-			m_pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName, m_pkApp->m_bIsEditor);
+			m_pkZeroFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName, m_pkApp->m_bIsEditor);
 			m_pkApp->OnClientStart();
 		}
 	}
@@ -1128,7 +1128,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//pkObjectMan->TestLine(&kObjects,start,dir);
 	
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
@@ -1261,13 +1261,13 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 	{
 		if(m_pkServerInfo)
 		{			
-			int id = m_pkServerInfo->GetCharacterID(m_pkFps->GetConnectionID());
+			int id = m_pkServerInfo->GetCharacterID(m_pkZeroFps->GetConnectionID());
 		
 			if(id != -1)
 			{
 				cout<<"enabling charactercontrol of:"<<id<<endl;
 				
-				Entity* pkObj = m_pkObjectMan->GetEntityByID(id);
+				Entity* pkObj = m_pkEntityManager->GetEntityByID(id);
 	
 				//object found
 				if(pkObj)
@@ -1319,7 +1319,7 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 		{
 			cout<<"disabling charactercontrol of:"<<m_iActiveCaracterObjectID<<endl;
 			
-			Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iActiveCaracterObjectID);
+			Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iActiveCaracterObjectID);
 			
 			if(pkObj)
 			{
@@ -1555,7 +1555,7 @@ bool MistClient::PickZones()
 	Vector3 dir = Get3DMousePos();
 	
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetZoneEntity()->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
 		
 	float closest = 999999999;
 	
@@ -1603,7 +1603,7 @@ void MistClient::OnClientInputSend(char *szText)
 	ClientOrder order;
 						
 	order.m_sOrderName = message; 
-	order.m_iClientID = m_pkFps->GetConnectionID();
+	order.m_iClientID = m_pkZeroFps->GetConnectionID();
 	order.m_iCharacter = m_iActiveCaracterObjectID;				
 						
 	m_pkClientControlP->AddOrder(order);
@@ -1729,7 +1729,7 @@ void MistClient::UpdateCullObjects()
 	static vector<P_Mad*> mads;	
 	static float fAddRadius = 1;
 	
-	Entity* pkCar = m_pkObjectMan->GetEntityByID(m_iActiveCaracterObjectID);
+	Entity* pkCar = m_pkEntityManager->GetEntityByID(m_iActiveCaracterObjectID);
 	
 	if(!pkCar)
 		return;
@@ -1745,7 +1745,7 @@ void MistClient::UpdateCullObjects()
 	float d = (pkCar->GetWorldPosV() - kStart).Length() + fAddRadius ;
 
 	vector<Entity*> kEntitys;
-	m_pkObjectMan->TestLine(&kEntitys,kStart,kDir);
+	m_pkEntityManager->TestLine(&kEntitys,kStart,kDir);
 	
 	unsigned int i;
 

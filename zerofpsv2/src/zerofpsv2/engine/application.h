@@ -31,7 +31,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		Light*					m_pkLight;
 		Render*					m_pkRender;
 		Console*					m_pkConsole;
-		EntityManager*			m_pkObjectMan;
+		EntityManager*			m_pkEntityManager;
 		ZFAudioSystem*			m_pkAudioSys;
 		ZGuiResourceManager*	m_pkGuiMan;
 		ZGui*						m_pkGui;
@@ -40,7 +40,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZFScriptSystem*		m_pkScript;
 		FileIo*					m_pkFile;
 		ZShadow*					m_pkZShadow;
-		ZeroFps*					m_pkFps;
+		ZeroFps*					m_pkZeroFps;
 		ZShaderSystem*			m_pkZShaderSystem;
 		
 	public:

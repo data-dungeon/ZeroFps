@@ -4,14 +4,10 @@
 #include "zerofps.h"
 #include "../engine_systems/propertys/p_track.h"
  
-
-typedef list<Entity*>::iterator		itListObject;
-typedef list<Property*>::iterator	itListProperty;
- 
 //#define LOGALL
 
 #ifdef LOGALL
-	#define LOGSIZE(name, size)	m_pkObjectMan->GetWorldObject()->AddVarDouble(string(name), size )
+	#define LOGSIZE(name, size)	m_pkEntityManager->GetWorldEntity()->AddVarDouble(string(name), size )
 #else
 	#define LOGSIZE(name, size)	
 #endif
@@ -315,7 +311,9 @@ void Entity::RemoveChild(Entity* pkEntity)
 	if(HasChild(pkEntity) == false)
 		return;
 
-	//m_akChilds.remove(pkObject);	// Remove Entity as child.
+	//m_akChilds.remove(pkEntity);	
+	
+	// Remove Entity as child.
 	vector<Entity*>::iterator kIt = m_akChilds.begin();
 	while(kIt != m_akChilds.end())
 	{
@@ -334,7 +332,6 @@ void Entity::RemoveChild(Entity* pkEntity)
 void Entity::SetParent(Entity* pkEntity) 
 {
 	// Check so we don't try to set ourself to be our own parent.
-//	ZFAssert(this != pkObject, "SetParent(this)");
 	if(this == pkEntity)
 		return;
 
@@ -383,15 +380,13 @@ int Entity::NrOfChilds()
 */
 void Entity::DeleteAllChilds()
 {
-	Entity* pkChildObject;
+	Entity* pkChildEntity;
 
 	while(m_akChilds.size()) 
 	{
-		pkChildObject = (*m_akChilds.begin());
-
-		//cout << "Child " << pkChildObject->m_kName << endl; 
-		pkChildObject->DeleteAllChilds();
-		delete pkChildObject;
+		pkChildEntity = (*m_akChilds.begin());
+		pkChildEntity->DeleteAllChilds();
+		delete pkChildEntity;
 	}
 
 	m_akChilds.clear();
@@ -495,13 +490,13 @@ bool Entity::GetZoneNeighbours(vector<Entity*>* pkZones)
 /**	\brief	return entity + childs , fForceAll = always send all entitys, bCheckSendStatus = check m_bSendChilds
 */
 
-void Entity::GetAllEntitys(vector<Entity*> *pakObjects,bool bForceAll,bool bCheckSendStatus )
+void Entity::GetAllEntitys(vector<Entity*> *pakEntitys,bool bForceAll,bool bCheckSendStatus )
 {
 	//add this entity?
 	if(m_iUpdateStatus & UPDATE_NONE && !bForceAll)
 		return;
 	
-	pakObjects->push_back(this);	
+	pakEntitys->push_back(this);	
 	
 	//add this entitys childs?
 	if( (m_iUpdateStatus & UPDATE_NOCHILDS) && !bForceAll)
@@ -511,7 +506,7 @@ void Entity::GetAllEntitys(vector<Entity*> *pakObjects,bool bForceAll,bool bChec
 		return;
 	
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) 
-		(*it)->GetAllEntitys(pakObjects,bForceAll);
+		(*it)->GetAllEntitys(pakEntitys,bForceAll);
 }
 
 
@@ -682,7 +677,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		if(!parent)
 			parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
 		SetParent(parent);
-		LOGSIZE("Object::ParentID", 4);
+		LOGSIZE("Entity::ParentID", 4);
 	}
    
    // get update status
@@ -694,16 +689,16 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get delete list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
 	{	
-		int iNumDelObjects;
+		int iNumDelEntitys;
 		Entity* pkNetSlave;	
 		
-		pkNetPacket->Read(iNumDelObjects);
+		pkNetPacket->Read(iNumDelEntitys);
 		
-		for(int i=0; i<iNumDelObjects; i++) 
+		for(int i=0; i<iNumDelEntitys; i++) 
 		{
-			int iDelObjectID;
-			pkNetPacket->Read(iDelObjectID );
-			pkNetSlave = m_pkEntityManager->GetEntityByID(iDelObjectID);
+			int iDelEntityID;
+			pkNetPacket->Read(iDelEntityID );
+			pkNetSlave = m_pkEntityManager->GetEntityByID(iDelEntityID);
 			m_pkEntityManager->Delete(pkNetSlave);
 		}
 	}
@@ -712,14 +707,14 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
 	{
 		pkNetPacket->Read((int&) m_bRelativeOri );
-		LOGSIZE("Object::RelativePos", 4);
+		LOGSIZE("Entity::RelativePos", 4);
 	}
 
 	//get interpolation flag
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_INTERPOLATE))
 	{
 		pkNetPacket->Read((int&) m_bInterpolate );
-		LOGSIZE("Object::Interpolate", 4);
+		LOGSIZE("Entity::Interpolate", 4);
 	}
 
 	//get position
@@ -728,7 +723,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Vector3 kPos;
 		pkNetPacket->Read(kPos);
 		SetLocalPosV(kPos);
-		LOGSIZE("Object::Position", sizeof(kPos) );
+		LOGSIZE("Entity::Position", sizeof(kPos) );
 	}
 	
 	//get rotation	
@@ -737,7 +732,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Matrix3 kRot;
 		pkNetPacket->Read(kRot);
 		SetLocalRotM(kRot);
-		LOGSIZE("Object::Rotation", sizeof(kRot));
+		LOGSIZE("Entity::Rotation", sizeof(kRot));
 	}
 	
 	//get velocity	
@@ -746,7 +741,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Vector3 kVel;
 		pkNetPacket->Read(kVel);
 		SetVel(kVel);
-		LOGSIZE("Object::Velocity", sizeof(kVel));
+		LOGSIZE("Entity::Velocity", sizeof(kVel));
 	}
 	
 	//get acceleration	
@@ -755,14 +750,14 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Vector3 kAcc;
 		pkNetPacket->Read(kAcc);
 		SetAcc(kAcc);
-		LOGSIZE("Object::Acceleration", sizeof(kAcc));
+		LOGSIZE("Entity::Acceleration", sizeof(kAcc));
 	}	
 	
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
 	{
 		pkNetPacket->Read(m_fRadius);
-		LOGSIZE("Object::Radius", sizeof(m_fRadius));
+		LOGSIZE("Entity::Radius", sizeof(m_fRadius));
 	}
 	
 	//get name
@@ -771,7 +766,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		char szStr[256];
 		pkNetPacket->Read_Str(szStr);
 		m_strName = szStr;		
-		LOGSIZE("Object::Name", strlen(szStr) + 1);
+		LOGSIZE("Entity::Name", strlen(szStr) + 1);
 	}	
 	
 	//get type
@@ -780,7 +775,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		char szStr[256];
 		pkNetPacket->Read_Str(szStr);
 		m_strType = szStr;		
-		LOGSIZE("Object::Type", strlen(szStr) + 1);
+		LOGSIZE("Entity::Type", strlen(szStr) + 1);
 	}		
 	
 	// Read first property name
@@ -929,7 +924,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		}
 	}
 	
-	//reset alla update flags for this object
+	//reset alla update flags for this Entity
 	ResetAllNetUpdateFlags();
 }
 
@@ -1538,8 +1533,6 @@ void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
 	{
 		m_akChilds[i]->ResetAllNetUpdateFlagsAndChilds(iConID);
 	}	
-	//cout<<"reseting object"<<endl;
-	
 }
 
 bool	Entity::GetNetUpdateFlag(int iConID,int iFlagID)
@@ -1736,172 +1729,3 @@ void Entity::SetInterpolate(bool bInterpolate)
 
 	SetNetUpdateFlag(NETUPDATEFLAG_INTERPOLATE,true);	
 }
-
-//retired functions ...dont forget to pay your taxes
-
-/*
-Entity* Entity::GetStaticEntity()
-{
-	Entity* pkStaticEntity=NULL;		
-	vector<Entity*> kEntitys;				
-	GetAllObjects(&kEntitys);
-	
-	for(unsigned int i=0;i<kEntitys.size();i++)
-	{
-		if(kEntitys[i]->GetName()=="StaticEntity")
-		{
-			pkStaticEntity=kEntitys[i]; 
-			break;
-		}		
-	}
-	
-	return pkStaticEntity;
-}
-*/
-
-
-/*
-void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
-{
-	if( GetName() == "StaticEntity" )
-		return;
-
-	pakObjects->push_back(this);	
-	
-	//shuld childs be sent to client?
-	if(m_bSendChilds)	
-	{
-		for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-			(*it)->GetAllDynamicEntitys(pakObjects);
-		}	
-	}
-}
-*
-
-/**	\brief	Adds ourself and all our children to the list of objects.
-*/
-/*
-void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll,bool bUpdateStatus)
-{
-	if(m_iUpdateStatus & UPDATE_NONE && !bForceSendAll)
-		return;
-	
-	pakObjects->push_back(this);	
-	
-	if( bUpdateStatus && (m_iUpdateStatus & UPDATE_NOCHILDS))
-		return;
-	
-	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->GetAllObjects(pakObjects, bForceSendAll,bUpdateStatus);
-	}	
-}
-*/
-
-
-
-
-/*
-bool Entity::NeedToPack()
-{
-	// We can only send data for Entity we own.
-	if( m_eRole != NETROLE_AUTHORITY)			return false;
-	// We only send Entity that the other side need to know about
-	if( m_eRemoteRole	== NETROLE_NONE)		return false;
-
-	int iUpdateFlags = m_iNetUpdateFlags | m_pkEntityMan->m_iForceNetUpdate;
-
-	if(IsNetWork()) {
-		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-			iUpdateFlags |= (*it)->m_iNetUpdateFlags; 
-			}
-	
-		if(iUpdateFlags)
-			return true;
-		}
-
-	return false;
-}
-*/ 
-/**	\brief	Returns true if Entity is one that need to be sent over network.
-*/
-/*
-bool Entity::IsNetWork()
-{
-	m_bIsNetWork = false;
-
-	if(m_strName == "ZoneObject")
-	{
-		m_bIsNetWork = true;
-	}
-	else if(m_strName == "StaticEntity")
-	{
-		m_bIsNetWork = true;
-	}
-
-	m_bIsNetWork |= m_bHaveNetPropertys;
-	
-	return m_bIsNetWork;
-}
-*/
-
-/**	\brief	Returns true if Entity have any propertys that need to be sent over the net.
-*/
-/*
-bool Entity::IsAnyPropertyNetworkActive()
-{
-	bool bNetwork;
-	bNetwork = false;
-
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->bNetwork == true) {
-			bNetwork = true;
-			break;
-		}
-	}
-
-	return bNetwork;
-}
-*/
-
-/*
-void Entity::MakeCloneOf(Entity* pkOrginal)
-{
-	SetParent(pkOrginal->m_pkParent);
-
-	SetUseZones(true);
-
-	m_kLocalPosV = pkOrginal->m_kLocalPosV;		
-	m_kLocalRotM = pkOrginal->m_kLocalRotM;			
-	SetWorldPosV(GetWorldPosV());	
-
-
-	m_kVel				= pkOrginal->m_kVel;
-	m_strName			= pkOrginal->m_strName;
-	m_strType			= pkOrginal->m_strType;
-//	m_iObjectType		= pkOrginal->m_iObjectType;
-	m_iUpdateStatus	= pkOrginal->m_iUpdateStatus;
-	m_bSave				= pkOrginal->m_bSave;
-	m_kAcc				= pkOrginal->m_kAcc;
-
-	Property* pkProp;
-	vector<string> akPropertyNames;
-
-	for(vector<Property*>::iterator it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
-		pkProp = AddProperty((*it)->m_acName);
-		
-		// Get Values
-		akPropertyNames = (*it)->GetValueNames();
-
-		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
-			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
-			}
-		}
-	m_fRadius			= pkOrginal->m_fRadius;	
-}*/
-
-
-
-
-
-
-

@@ -147,7 +147,7 @@ class ENGINE_API Property
 		void PropertyLost(Property* pkProperty); 
 		///////////////////////////////////////////
 	protected:
-		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
+		ZeroFps*				m_pkZeroFps;			
 		Entity*				m_pkEntity;
 		EntityManager*    m_pkEntityManager;
 	

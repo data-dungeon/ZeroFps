@@ -16,7 +16,7 @@ AStar::AStar()
 
 bool AStar::StartUp()
 {
-	m_pkObjectManger	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
+	m_pkEntityManager	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
 
 	return true;
 }
@@ -56,7 +56,7 @@ void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 void AStar::CalcCoset(AStarCellNode* pkNode)
 {
 //	ZoneData* pkZone;
-//	pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+//	pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
 	
 	pkNode->m_fGValue = pkNode->m_pParent->m_fFValue + 1;
 	Vector3 kDist		= m_kStart - pkNode->pkNaviCell->m_kCenter;
@@ -76,7 +76,7 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 	// loop all connected zones
 	for(unsigned int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) 
 	{
-		pkOtherZone = m_pkObjectManger->GetZoneData(pkZoneData->m_iZoneLinks[i]);
+		pkOtherZone = m_pkEntityManager->GetZoneData(pkZoneData->m_iZoneLinks[i]);
 		if(pkOtherZone == NULL)					continue;
 		if(pkOtherZone->m_pkZone == NULL)	continue;	
 
@@ -127,8 +127,8 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 
 	m_kStart			= kStart;
 	m_kGoal			= kEnd;
-	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
-	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
+	m_iStartZone	= m_pkEntityManager->GetZoneIndex(m_kStart,-1, false);
+	m_iEndZone		= m_pkEntityManager->GetZoneIndex(m_kGoal,-1, false);
 
 	Vector3 kA, kB;
 
@@ -144,13 +144,13 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 		return false;
 	}
 
-	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL) 
+	if(m_pkEntityManager->GetZoneData(m_iStartZone) == NULL) 
 	{
 		printf("Failed to get data for start zone\n");
 		return false;
 	}
 
-	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	
+	if(m_pkEntityManager->GetZoneData(m_iEndZone) == NULL)	
 	{
 		printf("Failed to get data for end zone\n");
 		return false;
@@ -165,7 +165,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	P_PfMesh* pkPfEndMesh;
 
 	// Get Ptr to End Cell.
-	pkZone = m_pkObjectManger->GetZoneData(m_iEndZone);
+	pkZone = m_pkEntityManager->GetZoneData(m_iEndZone);
 	if(pkZone->m_pkZone == NULL)
 		return false;
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
@@ -181,7 +181,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	Vector3 kRealEnd = pkEndCell->MapToCellHeight( m_kGoal );
 
 	// 1: Let P = the starting point.
-	pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
+	pkZone = m_pkEntityManager->GetZoneData(m_iStartZone);
 	if(pkZone->m_pkZone == NULL)
 		return false;
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
@@ -237,7 +237,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 			return true;
 			}
 
-		//pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+		//pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
 		pkCell = pkNode->pkNaviCell;
 
 		// 5: Let C be a node connected to B.
@@ -298,10 +298,10 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 
 P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
 {
-	m_pkObjectManger->GetZoneIndex(kPos,-1, false);
+	m_pkEntityManager->GetZoneIndex(kPos,-1, false);
 	if(m_iStartZone < 0)	return NULL;
 
-	ZoneData* pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
+	ZoneData* pkZone = m_pkEntityManager->GetZoneData(m_iStartZone);
 	if(pkZone->m_pkZone == NULL)
 		return false;
 
@@ -387,8 +387,8 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 {
 	m_kStart		= kStart;
 	m_kGoal			= kEnd;
-	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
-	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
+	m_iStartZone	= m_pkEntityManagerger->GetZoneIndex(m_kStart,-1, false);
+	m_iEndZone		= m_pkEntityManagerger->GetZoneIndex(m_kGoal,-1, false);
 
 	kPath.clear();
 
@@ -429,7 +429,7 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 			return true;
 			}
 
-		pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+		pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
 
 		// 5: Let C be a node connected to B.
 		for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
@@ -472,7 +472,7 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 void AStar::CalcCoset(AStarNode* pkNode)
 {
 	ZoneData* pkZone;
-	pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+	pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
 
 	pkNode->m_fGValue = pkNode->m_pParent->m_fFValue + 1;
 	Vector3 kDist = m_kStart - pkZone->m_kPos;
@@ -484,7 +484,7 @@ void AStar::CalcCoset(AStarNode* pkNode)
 void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
 {
 	do {
-		kPath.push_back(m_pkObjectManger->GetZoneData(pkNode->m_iZoneID)->m_kPos);
+		kPath.push_back(m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID)->m_kPos);
 		pkNode = pkNode->m_pParent;
 	} while(pkNode);
 }

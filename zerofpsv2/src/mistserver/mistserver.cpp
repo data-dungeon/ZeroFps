@@ -71,10 +71,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistServer::CreateEditCameras()
 {
-	m_pkActiveCameraObject = m_pkObjectMan->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+	m_pkActiveCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
 	if(m_pkActiveCameraObject) 
 	{
-		m_pkActiveCameraObject->SetParent( m_pkObjectMan->GetWorldEntity() );
+		m_pkActiveCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkActiveCameraObject->GetSave() = false;
@@ -91,7 +91,7 @@ void MistServer::CreateEditCameras()
 	m_pkActiveCamera = m_pkCamera;
 	m_pkActiveCamera->SetSelected(true);
 
-	m_pkFps->AddRenderCamera(m_pkCamera);
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	m_pkCamera->m_bForceFullScreen = true;
 }
 
@@ -108,7 +108,7 @@ void MistServer::OnInit()
 	Init();
 
 	//init dm script interface (register script functions for gameplay)
-	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
+	DMLua::Init(m_pkEntityManager,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
@@ -123,7 +123,7 @@ void MistServer::Init()
 	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
-	m_pkFps->SetDebugGraph(true);
+	m_pkZeroFps->SetDebugGraph(true);
 	
 	//register property bös
 	RegisterPropertys();
@@ -136,7 +136,7 @@ void MistServer::Init()
 	m_pkCamera->SetName("persp");
 
 	//init mistland script intreface
-	MistLandLua::Init(m_pkObjectMan,m_pkScript);
+	MistLandLua::Init(m_pkEntityManager,m_pkScript);
 
 	//ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	//pkRenderer->SetScaleMode(GUIScaleManually);
@@ -209,19 +209,19 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {	
-	//m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkZeroFps->GetCam()->ClearViewPort();	
 
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}
 
- 	//m_pkFps->UpdateCamera(); 		
+ 	//m_pkZeroFps->UpdateCamera(); 		
 
 	if(m_pkServerInfoP)
 	{
-		m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
-		m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
+		m_pkZeroFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
+		m_pkZeroFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	}
 }
 
@@ -238,7 +238,7 @@ void MistServer::OnSystem()
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
-	float fSpeedScale = m_pkFps->GetFrameTime()*20;
+	float fSpeedScale = m_pkZeroFps->GetFrameTime()*20;
 
 	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 	{
@@ -375,13 +375,13 @@ void MistServer::OnHud(void)
 {
 		
 	if(m_pkActiveCamera) {
-		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
-		m_pkFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
-		m_pkFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
+		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
+		m_pkZeroFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
+		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
 		}
 
-	m_pkFps->m_bGuiMode = false;
-	m_pkFps->ToggleGui();
+	m_pkZeroFps->m_bGuiMode = false;
+	m_pkZeroFps->ToggleGui();
 
 
 }
@@ -398,9 +398,9 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	switch(cmdid) {
 		case FID_NEW:
-			m_pkObjectMan->Clear();
+			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkFps->StartServer(true,true);
+			m_pkZeroFps->StartServer(true,true);
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -412,7 +412,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -436,13 +436,13 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
 				
-				if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
+				if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
 				{
 					cout<<"Error loading world"<<endl;
 					break;
 				}				
 			}
-			else if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			else if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -451,7 +451,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */						
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkFps->StartServer(true,true);
+			m_pkZeroFps->StartServer(true,true);
 			
 			break;		
 		
@@ -469,7 +469,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 
-			if(!m_pkObjectMan->SaveWorld(m_strWorldDir,true))
+			if(!m_pkEntityManager->SaveWorld(m_strWorldDir,true))
 			{
 				m_pkConsole->Printf("Error saving world");
 				break;
@@ -483,7 +483,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			if(!m_pkObjectMan->SaveWorld(kCommand->m_kSplitCommand[1],true))
+			if(!m_pkEntityManager->SaveWorld(kCommand->m_kSplitCommand[1],true))
 			{
 				m_pkConsole->Printf("Error saving world");
 				break;
@@ -495,8 +495,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			SetTitle(strNewTitle);
 
 /*			cout<<"saving world:"<<endl;
-			m_pkObjectMan->ForceSave();
-			m_pkObjectMan->SaveZones();			
+			m_pkEntityManager->ForceSave();
+			m_pkEntityManager->SaveZones();			
 			cout<<"saved"<<endl;
 */			
 			break;
@@ -526,8 +526,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 
 		case FID_TEST_JIDDRA:
-			/*pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
-			//pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/BadGuy.lua");		// t_player
+			/*pkEntity = this->m_pkEntityManager->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
+			//pkEntity = this->m_pkEntityManager->CreateObjectFromScript("data/script/objects/characters/BadGuy.lua");		// t_player
 			pkEntity->SetUseZones(true);
 			kStartPos = Vector3(0,0.5,0);
 			pkEntity->SetWorldPosV(kStartPos);*/
@@ -672,7 +672,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(strPlayer))
 	{
 		pkNewPlayer->m_iConnectionID = iConID;		
-		pkNewPlayer->m_fLoginTime = m_pkFps->GetTicks();	
+		pkNewPlayer->m_fLoginTime = m_pkZeroFps->GetTicks();	
 	}
 	
 	
@@ -695,9 +695,9 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 void MistServer::SpawnPlayer(int iConID)
 {
 	cout << "MistServer::SpawnPlayer" << endl;
-	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) 
+	if(m_pkZeroFps->m_kClient[iConID].m_strCharacter.size() == 0) 
 	{
-		m_pkFps->PrintToClient(iConID, "You must select a character before you can join" );
+		m_pkZeroFps->PrintToClient(iConID, "You must select a character before you can join" );
 		return;
 	}
 
@@ -705,7 +705,7 @@ void MistServer::SpawnPlayer(int iConID)
 	UpdateStartLocatons();
 
 	//create player object
-	int iPlayerID  = CreatePlayer(m_pkFps->m_kClient[iConID].m_strLogin.c_str(),m_pkFps->m_kClient[iConID].m_strCharacter.c_str(),"Start",iConID);
+	int iPlayerID  = CreatePlayer(m_pkZeroFps->m_kClient[iConID].m_strLogin.c_str(),m_pkZeroFps->m_kClient[iConID].m_strCharacter.c_str(),"Start",iConID);
 	
 	if(iPlayerID == -1)
 	{
@@ -736,10 +736,10 @@ void MistServer::OnServerStart(void)
 
 /*	
 	//create server info object
-	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
+	m_pkServerInfo = m_pkEntityManager->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
 	if(m_pkServerInfo)
 	{
-		m_pkServerInfo->SetParent(m_pkObjectMan->GetGlobalObject());
+		m_pkServerInfo->SetParent(m_pkEntityManager->GetGlobalObject());
 		m_pkServerInfoP = (P_ServerInfo*)m_pkServerInfo->GetProperty("P_ServerInfo");		
 		if(m_pkServerInfoP)
 		{
@@ -811,16 +811,16 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		Vector3 kStartPos = Vector3(0,3,0);
 					
 		//make sure position is valid and zone is loaded
-		int zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);
+		int zid = m_pkEntityManager->GetZoneIndex(kStartPos,-1,false);
 		if(zid == -1)
 		{
 			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
 			kStartPos = Vector3(0,1,0);
-			zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
+			zid = m_pkEntityManager->GetZoneIndex(kStartPos,-1,false);						
 		}				
 		
 		//force loading of zone
-		m_pkObjectMan->LoadZone(zid);
+		m_pkEntityManager->LoadZone(zid);
 		*/
 		
 		//finaly set objects position
@@ -848,11 +848,11 @@ void MistServer::DeletePlayerCharacter(int iConID)
 	if(PlayerData* pkPD = m_pkPlayerDB->GetPlayerData(	iConID ))
 	{
 		//first save and delete the player character
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(pkPD->m_iCharacterID);
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(pkPD->m_iCharacterID);
 		if(pkObj)
 		{
 			m_pkPlayerDB->SaveCharacter(pkObj,pkPD->m_strPlayerName);
-			m_pkObjectMan->Delete(pkObj);
+			m_pkEntityManager->Delete(pkObj);
 		}
 	}
 
@@ -863,11 +863,11 @@ void MistServer::DeletePlayerCharacter(int iConID)
 		if(pi)
 		{
 			//first save and delete the player character
-			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pi->iCharacterObjectID);
+			Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(pi->iCharacterObjectID);
 			if(pkObj)
 			{
 				m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
-				m_pkObjectMan->Delete(pkObj);
+				m_pkEntityManager->Delete(pkObj);
 			}
 		
 			//then walk trough all characters in his control list and delete the ones the player have spawned
@@ -875,12 +875,12 @@ void MistServer::DeletePlayerCharacter(int iConID)
 			{
 				if(pi->kControl[i].second & PR_OWNER)
 				{
-					Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
+					Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(pi->kControl[i].first);
 					
 										
 					//delete it
 					if(pkObj)
-						m_pkObjectMan->Delete(pkObj);
+						m_pkEntityManager->Delete(pkObj);
 				}
 			}		
 		}
@@ -904,14 +904,14 @@ void MistServer::HSO_Character(ClientOrder* pkOrder)
 	{
 		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to know what char he have." << endl;
 		vector<string> kChars;
-		kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strLogin.c_str() );
+		kChars = m_pkPlayerDB->GetLoginCharacters( m_pkZeroFps->m_kClient[pkOrder->m_iConnectID].m_strLogin.c_str() );
 		for(unsigned int i=0; i<kChars.size(); i++)
-			m_pkFps->PrintToClient(pkOrder->m_iConnectID, kChars[i].c_str());
+			m_pkZeroFps->PrintToClient(pkOrder->m_iConnectID, kChars[i].c_str());
 	}
 	else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
 	{
 		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
-		m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
+		m_pkZeroFps->m_kClient[pkOrder->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
 	}
 
 	// WHO:		Kolla vilken karaktär man är.
@@ -966,7 +966,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				PkNetMessage->Read(fYAngle);
 				PkNetMessage->Read(fPAngle);
 				
-				if(Entity* pkCharacter = m_pkObjectMan->GetEntityByID(pkData->m_iCharacterID))
+				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 				{
 					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
 					{
@@ -1015,7 +1015,7 @@ void MistServer::SayToClients(const string& strMsg)
 
 Vector3 MistServer::GetPlayerStartPos()
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetEntityByType("hosstartpos.lua"))
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByType("hosstartpos.lua"))
 	{
 		return pkEnt->GetWorldPosV();	
 	}
@@ -1111,7 +1111,7 @@ void MistServer::HandleOrders()
 		{
 			cout<<"Got ground click order"<<endl;
 		
-			Entity* ob = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
+			Entity* ob = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);			
 		
 			if(ob)
 			{
@@ -1124,12 +1124,12 @@ void MistServer::HandleOrders()
       // equip
       else if ( order->m_sOrderName == "equip" )
       {
-   		Entity* pkChar = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
+   		Entity* pkChar = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);
 
          if ( pkChar )
          {
             // get item to equip
-            Entity* pkItem = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+            Entity* pkItem = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 
             CharacterProperty* pkCP = (CharacterProperty*)pkChar->GetProperty ("P_CharStats");
             P_Item* pkIP = (P_Item*)pkItem->GetProperty("P_Item");
@@ -1142,7 +1142,7 @@ void MistServer::HandleOrders()
 	  // request orders
       else if ( order->m_sOrderName == "(rq)item" )    
       {
-   		Entity* pkItemObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+   		Entity* pkItemObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 
          if ( pkItemObject )
          {
@@ -1171,7 +1171,7 @@ void MistServer::HandleOrders()
       {
          cout << "Sever hgot cont req" << endl;
 
-   		Entity* pkObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+   		Entity* pkObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
          
          if ( pkObject )
          {
@@ -1192,7 +1192,7 @@ void MistServer::HandleOrders()
       else if ( order->m_sOrderName == "(rq)skil" )
       {
            // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 
          if ( pkCharObject  )
          {
@@ -1219,7 +1219,7 @@ void MistServer::HandleOrders()
       else if ( order->m_sOrderName == "(rq)cdat" )
       {
            // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 
          if ( pkCharObject  )
          {
@@ -1246,7 +1246,7 @@ void MistServer::HandleOrders()
       else if ( order->m_sOrderName == "(rq)attr" )
       {
            // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 
          if ( pkCharObject  )
          {
@@ -1274,8 +1274,8 @@ void MistServer::HandleOrders()
       // drop item from inventory to ground
       else if ( order->m_sOrderName == "DropItem" )
       {
-         Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-         Entity* pkPlayer = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
+         Entity* pkEntity = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
+         Entity* pkPlayer = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);
 
          if ( pkEntity && pkPlayer )
          {
@@ -1294,7 +1294,7 @@ void MistServer::HandleOrders()
 		//normal orders
 		else if(order->m_iObjectID != -1)
 		{
-			Entity* ob = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+			Entity* ob = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
 			if(ob)
 			{
 			

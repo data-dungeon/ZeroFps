@@ -30,7 +30,7 @@ P_DMMission::~P_DMMission()
 
 void P_DMMission::Init()
 {
-	m_pkObjectMan = 
+	m_pkEntityManager = 
 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
 	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(
@@ -137,7 +137,7 @@ void P_DMMission::Update()
 {
 	if(m_pkGameInfoEntity == NULL)
 	{
-		Entity* pkGlobal = m_pkObjectMan->GetGlobalEntity();
+		Entity* pkGlobal = m_pkEntityManager->GetGlobalEntity();
 
 		vector<Entity*> kObjects;
 		pkGlobal->GetAllEntitys(&kObjects);
@@ -163,7 +163,7 @@ void P_DMMission::Update()
 		// Kolla om uppdraget har slutförts 1 gång var 3:e sekund
 		// 
 
-		float fTimeCheck = m_pkZeroFps->m_pkObjectMan->GetSimTime();
+		float fTimeCheck = m_pkZeroFps->m_pkEntityManager->GetSimTime();
 
 		if(fTimeCheck - m_fMissionDoneCheckTime > 3.0f)
 		{
@@ -342,7 +342,7 @@ void P_DMMission::OnMissionSuccess()
 	
 	unsigned int iAntal=0, i;
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetAllEntitys(&kObjects);
 
 	// Kolla hur många agenter som finns.
 	for(i=0;i<kObjects.size();i++)

@@ -143,7 +143,7 @@ P_Enviroment::P_Enviroment()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkObjectMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 
@@ -247,7 +247,7 @@ void P_Enviroment::Update()
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
 //	cout<<"zonechange"<<endl;
-	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
+	ZoneData* zd = m_pkEntityManager->GetZoneData(iNew);
 
 	if(zd)	
 	{	
@@ -408,7 +408,7 @@ void P_Enviroment::MakeRainSplashes()
 	m_kDrops.clear();
 
 	vector<Entity*> kObjects;		
-	if(ZoneData* pkZD = m_pkObjectMan->GetZone(m_pkEntity->GetWorldPosV()))
+	if(ZoneData* pkZD = m_pkEntityManager->GetZone(m_pkEntity->GetWorldPosV()))
 	{
 		if(pkZD->m_pkZone)
 		{

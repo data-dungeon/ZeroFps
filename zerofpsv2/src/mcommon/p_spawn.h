@@ -25,7 +25,7 @@ class MCOMMON_API P_Spawn: public Property {
 		
 		
 		ZeroFps* 		m_pkFps;
-		EntityManager* m_pkObjectMan;
+		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
 		
 		vector<int>	m_kEntitys;

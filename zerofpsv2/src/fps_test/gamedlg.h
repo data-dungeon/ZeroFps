@@ -55,7 +55,7 @@ protected:
 	};
 
 
-	Entity* GetObject(int iID){return m_pkDM->m_pkObjectMan->GetEntityByID(iID);}
+	Entity* GetObject(int iID){return m_pkDM->m_pkEntityManager->GetEntityByID(iID);}
 	Entity* GetDMObject(DM_OBJECT eDmObject);
 	void GetAllAgentsInField(vector<Entity*>& kList);
 

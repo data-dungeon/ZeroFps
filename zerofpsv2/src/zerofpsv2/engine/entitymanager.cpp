@@ -7,7 +7,6 @@
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/propertys/p_mad.h"
 #include "../engine_systems/propertys/p_tcs.h"
-//#include "../engine_systems/propertys/p_physic.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "../engine_systems/script_interfaces/si_properties.h"
@@ -113,7 +112,7 @@ bool EntityManager::StartUp()
 
 	m_kWorldDirectory = "worldtemp";
 
-	//create all base objects
+	//create all base Entitys
 	Clear();
 
 	//setup script interface
@@ -160,10 +159,10 @@ void EntityManager::UpdateSimTime()
 
 Entity* EntityManager::GetEntityByType(const char* czType)
 {
-	vector<Entity*> kObjects;		
-	GetAllEntitys(&kObjects);
+	vector<Entity*> kEntitys;		
+	GetAllEntitys(&kEntitys);
 	
-	for(vector<Entity*>::iterator it=kObjects.begin();it!=kObjects.end();it++) 
+	for(vector<Entity*>::iterator it=kEntitys.begin();it!=kEntitys.end();it++) 
 	{
 		if((*it)->GetType() == czType)
 		{
@@ -174,76 +173,68 @@ Entity* EntityManager::GetEntityByType(const char* czType)
 }
 
 
-/**	\brief	Link this to the Object manager
+/**	\brief	Link this to the Entity manager
 
-  This function is called by objects as they are created. It assigned a NetWorkID to the object and
-  also put them in the ObjectManger.
+  This function is called by Entitys as they are created. It assigned a EntityID to the Entity and
+  also put them in the EntityManager.
 */
-void EntityManager::Link(Entity* pkObject,int iId) 
+void EntityManager::Link(Entity* pkEntity,int iId) 
 {
-	if(pkObject->m_iEntityID != -1)
+	if(pkEntity->m_iEntityID != -1)
 	{
-		if(IsLinked(pkObject))
+		if(IsLinked(pkEntity))
 		{
-			cout<<"WARNING: Object is already linked"<<endl;
+			cout<<"WARNING: Entity is already linked"<<endl;
 			return;	
 		}
 	}
 
 	if(iId == -1)
 	{
-		pkObject->m_iEntityID = m_iNextEntityID++;
+		pkEntity->m_iEntityID = m_iNextEntityID++;
 	}
 	else
 	{
 		if(GetEntityByID(iId))
 		{
 			cout<<"WARNING: "<<GetNumOfEntitys()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<m_iNextEntityID<<endl;
-			pkObject->m_iEntityID = m_iNextEntityID++;			
+			pkEntity->m_iEntityID = m_iNextEntityID++;			
 		}
 		else	
-			pkObject->m_iEntityID = iId;
+			pkEntity->m_iEntityID = iId;
 	}
 		
-	//m_akObjects.push_back(pkObject);
-	m_akEntitys[pkObject->m_iEntityID] = pkObject; 
+	m_akEntitys[pkEntity->m_iEntityID] = pkEntity; 
 }
 
-bool EntityManager::IsLinked(Entity* pkObject)
+bool EntityManager::IsLinked(Entity* pkEntity)
 {
-	if(m_akEntitys.find(pkObject->m_iEntityID) == m_akEntitys.end())
+	if(m_akEntitys.find(pkEntity->m_iEntityID) == m_akEntitys.end())
 		return false;
 	else
 		return true;
-
-/*	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++)
-		if((*it) == pkObject)
-			return true;
-		
-	return false;*/
 }
 
-/**	\brief	UnLink this from Object Manger.
+/**	\brief	UnLink this from EntityManager.
 
-  Remvoves object from the Object Manger.
+  Remvoves Entity from the EntityManager.
 */
-void EntityManager::UnLink(Entity* pkObject) 
+void EntityManager::UnLink(Entity* pkEntity) 
 {	
-	// If i own object mark so we remove it on clients.
+	// If i own Entity mark so we remove it on clients.
 	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
 	//		m_aiNetDeleteList.push_back(pkObject->m_iEntityID);
 	//m_akObjects.remove(pkObject);
-	m_akEntitys.erase(pkObject->m_iEntityID);
+	m_akEntitys.erase(pkEntity->m_iEntityID);
 }
 
-/**	\brief	Delete all objects.
+/**	\brief	Delete all Entitys.
 
-	Clear all data from ObjectManger.
+	Clear all data from EntityManager.
 */
 void EntityManager::Clear()
 {
-
-	//delete all objects in world
+	//delete all Entitys in world
 	while(m_akEntitys.begin() != m_akEntitys.end())
 		delete((*m_akEntitys.begin()).second);
 	
@@ -252,39 +243,39 @@ void EntityManager::Clear()
 	//clear all zones
 	m_kZones.clear();
 	
-	// Recreate base objects
+	// Recreate base Entitys
 	CreateBaseEntitys();
 	
 }
 
-/**	\brief	Create the top level objects.
+/**	\brief	Create the top level Entitys.
 
 */
 void EntityManager::CreateBaseEntitys()
 {
 	m_iNextEntityID = 0;
 	
-	//top world object parent to all objects
+	//top world Entity parent to all Entitys
 	m_pkWorldEntity						=	CreateEntity();	
 	m_pkWorldEntity->SetName("WorldObject");
 	m_pkWorldEntity->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldEntity->m_eRemoteRole	= NETROLE_NONE;
 
-	//object that is parent to all zones
+	//Entity that is parent to all zones
 	m_pkZoneEntity						=	CreateEntity();	
 	m_pkZoneEntity->SetParent(m_pkWorldEntity);
 	m_pkZoneEntity->SetName("ZoneObject");
 	m_pkZoneEntity->m_eRole				= NETROLE_AUTHORITY;
 	m_pkZoneEntity->m_eRemoteRole		= NETROLE_NONE;
 
-	//object that is parent to all client objects
+	//Entity that is parent to all client Entity
 	m_pkClientEntity						=	CreateEntity();	
 	m_pkClientEntity->SetParent(m_pkWorldEntity);
 	m_pkClientEntity->SetName("ClientObject");
 	m_pkClientEntity->m_eRole			= NETROLE_AUTHORITY;
 	m_pkClientEntity->m_eRemoteRole	= NETROLE_NONE;
 
-	//object that is parent to all global objects (server information etc)
+	//Entity that is parent to all global Entity (server information etc)
 	m_pkGlobalEntity						=	CreateEntity();	
 	m_pkGlobalEntity->SetParent(m_pkWorldEntity);
 	m_pkGlobalEntity->SetName("GlobalObject");
@@ -296,9 +287,9 @@ void EntityManager::CreateBaseEntitys()
 
 
 
-/**	\brief	Creates a new clean object.
+/**	\brief	Creates a new clean Entity.
 
-	Creates a basic object without any propertys and all values set to defualt. 
+	Creates a basic Entity without any propertys and all values set to defualt. 
 */
 Entity* EntityManager::CreateEntity(bool bLink)
 {
@@ -310,7 +301,7 @@ Entity* EntityManager::CreateEntity(bool bLink)
 	return pkObj;
 }
 
-/**	\brief	Adds an object to delete qeue
+/**	\brief	Adds an Entity to delete qeue
 */
 void EntityManager::Delete(int iNetworkID) 
 {
@@ -321,26 +312,26 @@ void EntityManager::Delete(int iNetworkID)
 }
 
 
-void EntityManager::Delete(Entity* pkObject) 
+void EntityManager::Delete(Entity* pkEntity) 
 {
-	if(pkObject == NULL)
+	if(pkEntity == NULL)
 		return;
 
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
-		if(pkObject->m_iEntityID == (*it)) {
-			Logf("net", "Object [%d] already in delete list\n", pkObject->m_iEntityID);
-			//cout << "Object already in delete list" << endl;
+		if(pkEntity->m_iEntityID == (*it)) {
+			Logf("net", "Entity [%d] already in delete list\n", pkEntity->m_iEntityID);
+			//cout << "Entity already in delete list" << endl;
 			return;
 		}
 	}
 	
-	m_aiDeleteList.push_back(pkObject->m_iEntityID);
+	m_aiDeleteList.push_back(pkEntity->m_iEntityID);
 }
  
-/**	\brief	Adds an object to delete qeue
+/**	\brief	
 
-	Walk DeleteList and delete all objects in it.
+	Walk DeleteList and delete all Entitys in it.
 */
 void EntityManager::UpdateDelete()
 {
@@ -351,12 +342,12 @@ void EntityManager::UpdateDelete()
 	
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
-		Entity* pkObject = GetEntityByID((*it));
+		Entity* pkEntity = GetEntityByID((*it));
 
-		if(pkObject) { // If i own object mark so we remove it on clients.
+		if(pkEntity) { // If i own object mark so we remove it on clients.
 			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
 				m_aiNetDeleteList.push_back((*it));*/
-			delete pkObject;		
+			delete pkEntity;		
 			}
 	}
 
@@ -369,10 +360,7 @@ void EntityManager::UpdateDelete()
 
 	This function collects all propertys that fit the selected flags, sorts them if it needs to
 	and then runs the update function of each of this propertys.
-
-	
 */
-
 void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly)
 {
 	m_iUpdateFlags = iType | iSide;
@@ -429,15 +417,8 @@ void EntityManager::UpdateGameMessages(void)
 	}*/
 }
 
-
-/**	\brief	Creates a new clean object.
-
-	Creates a basic object without any propertys and all values set to defualt. 
-*/
-
 Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 {
-//	Object *pkNew = new NetSlaveObject;
 	Entity *pkNew = CreateEntity(false);
 
 	//	Add(pkNew);
@@ -449,16 +430,14 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
 	
-//	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
-
 //	pkNew->AddProperty("P_Primitives3D");
 	return pkNew;
 }
 
-/**	\brief	Uses a script to create the object.
+/**	\brief	Uses a script to create the Entity.
 
-	Creates a object from a script and use it to set values and propertys. If script file
-	is not found no object will be created. 
+	Creates a Entity from a script and use it to set values and propertys. If script file
+	is not found no Entity will be created. 
 */
 Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
@@ -480,7 +459,7 @@ Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 k
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
 		if(newobj->m_iCurrentZone == -1)
-			cout<<"Error! Tried to create a object outside zones."<<endl;
+			cout<<"Error! Tried to create a Entity outside zones."<<endl;
 	}
 
 	
@@ -540,10 +519,9 @@ Entity* EntityManager::CreateEntityFromScript(const char* acName)
 
 
 // Gets
-void EntityManager::GetAllEntitys(vector<Entity*> *pakObjects)
+void EntityManager::GetAllEntitys(vector<Entity*> *pakEntitys)
 {
-	//m_pkWorldObject->GetAllObjects(pakObjects);
-	m_pkWorldEntity->GetAllEntitys(pakObjects,true);	
+	m_pkWorldEntity->GetAllEntitys(pakEntitys,true);	
 }
 
 void EntityManager::GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
@@ -619,24 +597,12 @@ Entity*	EntityManager::GetEntityByID(int iNetID)
 	if(iNetID == -1)
 		return NULL;
 
-//	cout<<"requested object:"<<iNetID<<endl;
-
 	map<int,Entity*>::iterator it = m_akEntitys.find(iNetID);
 	
 	if(it != m_akEntitys.end())
 		return (*it).second;
 	else
 		return NULL;
-
-/*	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->m_iEntityID == iNetID)
-		{	
-			return (*it);
-		}
-	}
-
-
-	return NULL;*/
 }
 
 // NetWork
@@ -2777,609 +2743,3 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
 }
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-bool EntityManager::LoadWorld(string strWDir, string strTempWDir)
-{
-	SetWorldDir(strWDir);
-	//SetTempWorldDir(strTempWDir);	
-	
-	//clear the world
-	Clear();
-
-	//load zones in acDir
-	return LoadZones();
-}
-*/
-
-/*
-void EntityManager::SetUnderConstruction(int iId)
-{
-	unsigned int i;
-
-	ZoneData* zd = GetZoneData(iId);	
-	if(zd)
-	{
-		if(zd->m_bUnderContruction)
-		{
-			//cout<<"Zone is already under construction"<<endl;
-			return;
-		}
-		
-		//make sure zone is loaded
-		if(!zd->m_pkZone)
-		{
-			cout<<"cant construct unloaded zone"<<endl;
-			return;
-		}
-		
-		
-		//reattach static entitys to zoneobject
-		
-		//first find the staticentity
-		Entity* pkStaticEntity=NULL;		
-		vector<Entity*> kEntitys;				
-		zd->m_pkZone->GetAllObjects(&kEntitys);
-		for(i=0;i<kEntitys.size();i++)
-		{
-			if(kEntitys[i]->GetName()=="StaticEntity")
-			{
-				pkStaticEntity=kEntitys[i]; 
-				break;
-			}		
-		}
-		
-		//if no staticentity was found, complain
-		if(!pkStaticEntity)
-		{
-			cout<<"Error zone has no staticentity"<<endl;
-			return;
-		}
-		
-		int nrofstatic=0;
-/*		//find all static objects and attach them to zoneobject
-
-		for(i=0;i<kEntitys.size();i++)
-			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
-			{
-				kEntitys[i]->SetParent(zd->m_pkZone);
-				nrofstatic++;
-			}
-*	
-		//update zonedata		
-		zd->m_bUnderContruction = true;
-		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<< " static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
-		
-	}
-}
-
-void EntityManager::CommitZone(int iId)
-{
-	unsigned int i;
-
-	ZoneData* zd = GetZoneData(iId);	
-	if(zd)
-	{
-		if(!zd->m_bUnderContruction)
-		{
-			//cout<<"Zone is not underconstruction"<<endl;
-			return;
-		}
-		
-		//make sure zone is loaded		
-		if(!zd->m_pkZone)
-		{
-			cout<<"cant commit unloaded zone"<<endl;
-			return;
-		}
-	
-		// Update PFind Mesh
-		P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
-		if(pkMesh) {
-			pkMesh->CalcNaviMesh();
-			}
-
-		
-
-		
-		//reattach static entitys to staticentity entity		
-		
-		
-		//first find the staticentity
-		Entity* pkStaticEntity=NULL;		
-		vector<Entity*> kEntitys;				
-		zd->m_pkZone->GetAllObjects(&kEntitys);
-		for(i=0;i<kEntitys.size();i++)
-		{
-			if(kEntitys[i]->GetName()=="StaticEntity")
-			{
-				pkStaticEntity=kEntitys[i]; 
-				break;
-			}		
-		}
-		
-		//if no staticentity was found, complain
-		if(!pkStaticEntity)
-		{
-			cout<<"Error zone has no staticentity"<<endl;
-			return;
-		}
-		
-		
-		int nrofstatic=0;		
-/		//find all static objects and attach them to staticentity
-		for(i=0;i<kEntitys.size();i++)
-			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
-			{	
-				kEntitys[i]->SetParent(pkStaticEntity);
-				nrofstatic++;
-			}
-*
-	
-		//update zone data
-		zd->m_bUnderContruction = false;
-		zd->m_iRevision++;		
-		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<" static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
-	}
-}
-*/
-
-/*
-void EntityManager::Zones_Refresh()
-{
-	for(unsigned int i=0; i<m_kZones.size(); i++) {
-		// Zones that need to load.
-		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone == NULL) 
-		{
-			LoadZone(m_kZones[i].m_iZoneID);
-			cout << "Load Zone: " << m_kZones[i].m_iZoneID << endl;
-		}
-
-		// Zones that need to unload
-		if(m_kZones[i].m_bActive == false && m_kZones[i].m_pkZone) 
-		{
-			UnLoadZone(m_kZones[i].m_iZoneID);
-			cout << "UnLoad Zone: " << m_kZones[i].m_iZoneID << endl;
-		}
-
-	}
-}
-*/
-
-
-/*
-void EntityManager::UpdateDeleteList(NetPacket* pkNetPacket)
-{
-	Object* pkNetSlave;
-	int iObjectID;
-	pkNetPacket->Read(iObjectID);
-
-	while(iObjectID != -1) {
-		//Logf("net", "Delete: Object %d\n", iObjectID);
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL) {
-			//Logf("net", " Object '%d' not found.\n", iObjectID);	
-			}
-		else {
-			Delete(pkNetSlave);
-			}
-		pkNetPacket->Read(iObjectID);
-		}	
-}*/
-
-
-
-/*
-bool EntityManager::IsA(Entity* pkObj, string strStringType)
-{
-	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
-	if(!pkAt)
-		return false;	// Object not created from archtype at all :(.
-	
-	ObjectArcheType* pkParentAt;
-
-
-	bool bDone = false;
-	while(bDone){
-		if(pkAt->m_strName == strStringType)
-			return true;
-
-		pkParentAt = GetArcheType(pkAt->m_strParentName);
-		if(!pkParentAt)
-			return false;
-		else
-			pkAt = pkParentAt;
-		}
-
-	return false;
-}*/
-
-/*
-void EntityManager::AutoConnectZones()
-{
-	Vector3 kCenterPos;
-	Vector3 kCheckPos;
-	ZoneData* pkZone;
-	
-	vector<Vector3>	kAutoConnectDirs;
-	kAutoConnectDirs.push_back(Vector3(10,0,0));
-	kAutoConnectDirs.push_back(Vector3(-10,0,0));
-	kAutoConnectDirs.push_back(Vector3(0,10,0));
-	kAutoConnectDirs.push_back(Vector3(0,-10,0));
-	kAutoConnectDirs.push_back(Vector3(0,0,10));
-	kAutoConnectDirs.push_back(Vector3(0,0,-10));
-
-	// For each Zone.
-	for(unsigned int i=0;i<m_kZones.size();i++) {
-		kCenterPos = m_kZones[i].m_kPos;
-
-		// For each possible zone around this one.
-		for(unsigned int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
-			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
-			pkZone = GetZone(kCheckPos);
-			// If a zone add a link.
-			if(pkZone && (i != pkZone->m_iZoneID)) {
-				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
-			}
-		}
-	}
-}*/
-
-/*
-void EntityManager::Test_CreateZones()
-{
-	
-
-	m_kZones.clear();
-	int y = 0;
-	int iZonesSize = 10;
-	int iZonesSide = 100;
-	
-	Vector3 kPos;
-	Vector3 kRandOffset;
-
-	MazeGen GaaMaze;
-	GaaMaze.Load("./maze.bmp");
-
-
-	for(int x=0; x<iZonesSide; x++) 
-	{
-		for(int z=0; z<iZonesSide; z++) 
-		{
-			if(GaaMaze.aaiMaze[x][z] == 1) 
-			{
-				
-				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);								
-				CreateZone(kPos,Vector3(iZonesSize,iZonesSize,iZonesSize));//GetUnusedZoneID();
-			}
-		}
-	}
-
-//	AutoConnectZones();
-//	int ispya = 2;
-}*/
-
-/*
-int EntityManager::CreateZone()
-{
-	return CreateZone(Vector3(0,0,0),Vector3(8,8,8));
-}
-*/
-
-/*
-void EntityManager::UpdateZones()
-{
-
-
-	float fTime = m_pkZeroFps->GetEngineTime();
-	ZoneData* pkZone;
-	ZoneData* pkStartZone;
-	unsigned int iZ;
-
-
-	//int iTrackerLOS = 3;
-
-	// Set All Zones as inactive.
-	for(iZ=0;iZ<m_kZones.size();iZ++) 
-	{
-		m_kZones[iZ].m_bTracked		= false;
-		m_kZones[iZ].m_iRange		= 10000;
-		
-		if(m_kZones[iZ].m_pkZone)
-			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
-	}
-
-	vector<ZoneData*>	m_kFloodZones;
-	int iZoneIndex;
-
-	// For each tracker.
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
-	{
-		// Find Active Zone.
-		set<int>			kNewActiveZones;
-		
-		for(iZ=0;iZ<m_kZones.size();iZ++)
-			m_kZones[iZ].m_iRange							= 10000;
-		
-		//get current zone
-		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
-		
-		if(iZoneIndex >= 0) 
-		{
-			pkStartZone = &m_kZones[iZoneIndex];
-			pkStartZone->m_iRange = 0;
-			
-			
-			m_kFloodZones.push_back(pkStartZone);
-		}
-
-		// Flood Zones in rage to active.
-		while(m_kFloodZones.size()) 
-		{
-			pkZone = m_kFloodZones.back();
-			m_kFloodZones.pop_back();
-
-			kNewActiveZones.insert(pkZone->m_iZoneID);
-
-			pkZone->m_bTracked = true;
-			int iRange = pkZone->m_iRange + 1;
-
-			if(iRange < m_iTrackerLOS) 
-			{
-				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
-				{
-					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
-
-					//if zone has already been checked continue whit the next one
-					if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
-					
-					//set new range 
-					pkOtherZone->m_iRange = iRange;
-					
-					
-					
-					//add zone to flooded zones list
-					m_kFloodZones.push_back(pkOtherZone);
-				}				
-			}
-		}
-		
-		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
-		(*iT)->m_iNewActiveZones.clear();
-		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
-		
-		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
-		if((*iT)->m_iConnectID != -1)
-			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
-		
-		//if((*iT)->m_iNewActiveZones.size() != 0) cout<<"loaded:"<<(*iT)->m_iNewActiveZones.size()<<endl;
-		//if((*iT)->m_iUnloadZones.size() != 0) cout<<"unloaded:"<<(*iT)->m_iUnloadZones.size()<<endl;
-				
-		//save new active zones in tracker
-		(*iT)->m_iActiveZones = kNewActiveZones;
-	}
-
-
-	//loop trough all zones and load/unload them	
-	int iOperations = 0;
-	ZoneData* pkZoneRefresh;	
-	for(unsigned int i=0; i<m_kZones.size(); i++) 
-	{
-	//	cout<<"handling zone "<<m_kZones[i].m_iZoneID<<endl;
-	
-		pkZoneRefresh = &m_kZones[i];
-
-		//perform max X operations per frame
-		if(iOperations < m_iMaxZoneIO)
-		{
-			// Load / Unload zones.
-			if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone == NULL) 
-			{
-			//	cout<<"load "<<m_kZones[i].m_iZoneID<<endl;
-				
-				iOperations++;			
-				LoadZone(pkZoneRefresh->m_iZoneID);	
-			}
-	
-			// Zones that need to unload
-			if(pkZoneRefresh->m_bTracked == false && pkZoneRefresh->m_pkZone) 
-			{
-			
-				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
-				if( (fTime - pkZoneRefresh->m_fInactiveTime) > m_fZoneUnloadTime)
-				{		
-					//cout<<"unload "<<m_kZones[i].m_iZoneID<<endl;
-					
-					iOperations++;
-					UnLoadZone(pkZoneRefresh->m_iZoneID);
-				}
-			}
-		}
-		
-		//all active zones 
-		if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone)
-		{
-		//	cout<<"setting as active "<<m_kZones[i].m_iZoneID<<endl;
-			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
-			
-			//update zone timer
-			pkZoneRefresh->m_fInactiveTime = fTime;
-		}
-				
-/
-		//dvoid object loding ...eller nått
-		if(pkZoneRefresh->m_bActive)
-		{
-			if(pkZoneRefresh->m_pkZone)
-			{
-				//cout<<"range:"<<pkZoneRefresh->m_iRange<<endl;
-			
-				if(pkZoneRefresh->m_fDistance < m_iObjectDistance)
-				//if(pkZoneRefresh->m_iRange < m_iTrackerLOS / 2)
-				{
-					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
-					pkZoneRefresh->m_pkZone->m_bSendChilds = true;					
-					//cout<<"whit childs"<<endl;					
-				}
-				else
-				{
-					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_NOCHILDS);
-					pkZoneRefresh->m_pkZone->m_bSendChilds = false;
-					//cout<<"no childs"<<endl;
-				}
-			}
-		}
-*	
-	}
-
-
-
-	//reset all new loaded zones
-	for(list<P_Track*>::iterator iT2=m_kTrackedObjects.begin();iT2!=m_kTrackedObjects.end();iT2++) 
-	{
-		//if therse no connection on this tracker, we cant reset anything
-		if((*iT2)->m_iConnectID == -1)
-			continue;
-	
-		for(set<int>::iterator it3 = (*iT2)->m_iNewActiveZones.begin(); it3 != (*iT2)->m_iNewActiveZones.end();it3++)
-		{
-			ZoneData* zd = GetZoneData((*it3));
-		
-			if(zd)
-			{
-				if(zd->m_pkZone)
-					zd->m_pkZone->ResetAllNetUpdateFlagsAndChilds((*iT2)->m_iConnectID);
-				//cout<<"reseting zone:"<<endl;
-			}
-		}
-	}
-}
-*/
-
-
-/*
-char* EntityManager::GetObjectTypeName(int eType)
-{
-	char* pkName = "";
-
-	switch(eType) {
-//		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
-//		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
-/*		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
-		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
-//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*
-		}
-
-	return pkName;
-}
-*/
-
-
-
-
-
-
-
-
-/*
-void EntityManager::PackToClients()
-{
-	if(m_pkNetWork->GetNumOfClients() == 0)
-		return;
-
-	Logf("net", " *** EntityManager::PackToClients() *** \n");
-
-
-	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
-		m_iForceNetUpdate = 0xFFFFFFFF;
-		cout << "Forcing Object network updates" << endl;
-		}
-	else {
-		m_iForceNetUpdate  = 0x0;					
-		}
-
-	NetPacket NP;
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_OBJECTSTATE);
-
-	int iNumOfObjects = m_akObjects.size();
-	int iPacketSize = 0;
-	int iEndOfObject = -1;
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		//Logf("net", "Check Object [%d]\n",(*it)->m_iEntityID );
-
-		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
-		
-		if((*it)->NeedToPack() == false)					continue;
-		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
-
-		NP.Write((*it)->m_iEntityID);
-		Logf("net", "Object [%d]\n",(*it)->m_iEntityID );
-		(*it)->PackTo(&NP);
-		iPacketSize++;
-
-		Logf("net", " Size: %d\n\n",NP.m_iPos );
-
-		if(NP.m_iPos >= 512) {
-			NP.Write(iEndOfObject);
-			NP.Write(ZFGP_ENDOFPACKET);
-			m_pkNetWork->SendToAllClients(&NP);
-
-			NP.Clear();
-			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			NP.Write((char) ZFGP_OBJECTSTATE);
-
-			iPacketSize = 0;
-			}
-	}
-
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToAllClients(&NP);
-
-	if(m_aiNetDeleteList.size() == 0)
-		return;
-
-	// Pack delete data.
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_DELETEOBJECT);
-
-	cout << "Delete List Size:"  << m_aiNetDeleteList.size() << endl;
-
-	for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++) {
-		NP.Write((int) m_aiNetDeleteList[i] );
-
-		if(NP.m_iPos >= 512) {
-			NP.Write(iEndOfObject);
-			NP.Write(ZFGP_ENDOFPACKET);
-			m_pkNetWork->SendToAllClients(&NP);
-
-			NP.Clear();
-			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			NP.Write((char) ZFGP_DELETEOBJECT);
-
-			iPacketSize = 0;
-			}
-	
-		}
-	
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToAllClients(&NP);
-
-	m_aiNetDeleteList.clear();
-}
-*/

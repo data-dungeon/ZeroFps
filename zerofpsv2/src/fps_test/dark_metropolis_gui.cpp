@@ -69,8 +69,8 @@ void DarkMetropolis::GUI_OnIdle()
 
 	if(pkStartWnd && pkStartWnd->IsVisible() )
 	{
-		((CNewGameDlg*) m_pkNewGameDlg)->UpdateFade(m_pkFps->GetFrameTime()); 
-		((CStartDMDlg*) m_pkStartDMDlg)->Update(m_pkFps->GetFrameTime());
+		((CNewGameDlg*) m_pkNewGameDlg)->UpdateFade(m_pkZeroFps->GetFrameTime()); 
+		((CStartDMDlg*) m_pkStartDMDlg)->Update(m_pkZeroFps->GetFrameTime());
 	}
 
 	if(m_pkGamePlayDlg) 
@@ -333,7 +333,7 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 
 			for(unsigned int i=0; i<m_kSelectedEntitys.size(); i++)
 			{
-				Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]);
+				Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_kSelectedEntitys[i]);
 					
 				if(pkEnt)
 				{
@@ -703,12 +703,12 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	
 	StartSong("data/music/dm ingame.ogg");	
 
-	int num_zones = m_pkObjectMan->GetNumOfZones();
+	int num_zones = m_pkEntityManager->GetNumOfZones();
 	float min_x = 99999, min_z = 9999999;
 	float max_x = -99999, max_z = -9999999;
 	for(int i=0; i<num_zones; i++)
 	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(i);
+		ZoneData* pkData = m_pkEntityManager->GetZoneData(i);
 		if(min_x > pkData->m_kPos.x) min_x = pkData->m_kPos.x;
 		if(min_z > pkData->m_kPos.z) min_z = pkData->m_kPos.z;
 		if(max_x < pkData->m_kPos.x) max_x = pkData->m_kPos.x;

@@ -5,10 +5,10 @@
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()
 {
-	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 
@@ -20,7 +20,7 @@ void ZeroEd::Input_EditTerrain()
 	{
 		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 		{
-			Entity* pkEntity = m_pkObjectMan->GetEntityByID((*itEntity));
+			Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 			if(!pkEntity)			continue;
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 			if(hmrp == NULL)		continue;
@@ -39,7 +39,7 @@ void ZeroEd::Input_EditTerrain()
 
 	if(m_pkInputHandle->Pressed(KEY_4))
 	{
-		Entity* pkEntity = m_pkObjectMan->GetEntityByID(m_iCurrentObject);
+		Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
 		if(pkEntity)
 		{
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
@@ -67,7 +67,7 @@ void ZeroEd::Input_EditZone()
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		
 		/*
 		ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
@@ -79,20 +79,20 @@ void ZeroEd::Input_EditZone()
 	/*
 	if(m_pkInputHandle->VKIsDown("buildmodeon") && !DelayCommand())
 	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
+		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		m_pkEntityManager->SetUnderConstruction(m_iCurrentMarkedZone);
 	}
 	
 	if(m_pkInputHandle->VKIsDown("buildmodeoff") && !DelayCommand())
 	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
+		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		m_pkEntityManager->CommitZone(m_iCurrentMarkedZone);
 	}	
 	*/
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
-		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		m_iCurrentMarkedZone =  m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData && pkData->m_pkZone)
 			Select_Toggle(pkData->m_pkZone->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
@@ -117,16 +117,16 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
 		/*
-		Entity* pkObj = m_pkObjectMan->CreateObjectFromScript(m_strActiveObjectName.c_str());
+		Entity* pkObj = m_pkEntityManager->CreateObjectFromScript(m_strActiveObjectName.c_str());
 		pkObj->SetWorldPosV(m_kObjectMarkerPos);
-		pkObj->SetParent(m_pkObjectMan->GetObjectByNetWorkID(
-			m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
+		pkObj->SetParent(m_pkEntityManager->GetObjectByNetWorkID(
+			m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
 		*/
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("spawn");
 		kNp.Write_Str(m_strActiveObjectName.c_str());
 		kNp.Write(m_kObjectMarkerPos);
-		m_pkFps->RouteEditCommand(&kNp);
+		m_pkZeroFps->RouteEditCommand(&kNp);
 
       if(m_bPlaceObjectsOnGround)
       {
@@ -156,7 +156,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			{
 				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
 				
-				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetEntityByID(m_iGrabEntity)->GetWorldPosV();			
+				m_kLocalGrabPos = m_kGrabPos - m_pkEntityManager->GetEntityByID(m_iGrabEntity)->GetWorldPosV();			
 				m_bGrabing = true;
 				m_fArmLength = m_pkActiveCamera->GetPos().DistanceTo(m_kGrabPos);
 				m_kGrabCurrentPos = m_kGrabPos;				
@@ -171,7 +171,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	//remove			
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 
-	Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
+	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 	if(!pkObj)
 		return;		
 
@@ -214,18 +214,18 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write_Str("setpos");
 		kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
-		m_pkFps->RouteEditCommand(&kNp);
+		m_pkZeroFps->RouteEditCommand(&kNp);
 		//pkObj->SetLocalPosV( m_pkActiveCamera->SnapToGrid(kMove) );
 	}
 	else 
 	{
 		kMove.Set(0,0,0);
-		if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
-		if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
+		if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkZeroFps->GetFrameTime(),0,0);			
+		if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkZeroFps->GetFrameTime(),0,0);			
+		if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkZeroFps->GetFrameTime());			
+		if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkZeroFps->GetFrameTime());			
+		if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkZeroFps->GetFrameTime(),0);			
+		if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkZeroFps->GetFrameTime(),0);
 
 		if(m_pkInputHandle->VKIsDown("moveent")) 
 		{
@@ -237,7 +237,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write_Str("move");
 		kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
-		m_pkFps->RouteEditCommand(&kNp);
+		m_pkZeroFps->RouteEditCommand(&kNp);
 
 		//pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
@@ -257,19 +257,19 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
 	*/
 	kMove.Set(0,0,0);
-	if(m_pkInputHandle->VKIsDown("rotx+"))			kMove.x = 100*m_pkFps->GetFrameTime();		
-	if(m_pkInputHandle->VKIsDown("rotx-"))			kMove.x = -100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty+"))			kMove.y = 100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty-"))			kMove.y = -100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz+"))			kMove.z = 100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz-"))			kMove.z = -100*m_pkFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotx+"))			kMove.x = 100*m_pkZeroFps->GetFrameTime();		
+	if(m_pkInputHandle->VKIsDown("rotx-"))			kMove.x = -100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty+"))			kMove.y = 100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty-"))			kMove.y = -100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz+"))			kMove.z = 100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz-"))			kMove.z = -100*m_pkZeroFps->GetFrameTime();			
 
 	kNp.Clear();
 	kNp.Write((char) ZFGP_EDIT);
 	kNp.Write_Str("rot");
 	kNp.Write(m_iCurrentObject);
 	kNp.Write(kMove);
-	m_pkFps->RouteEditCommand(&kNp);
+	m_pkZeroFps->RouteEditCommand(&kNp);
 
 }
 
@@ -294,7 +294,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		m_CamMoveSpeed *= 0.25;
 	}
 
-	float fSpeedScale = m_pkFps->GetFrameTime()*m_CamMoveSpeed;
+	float fSpeedScale = m_pkZeroFps->GetFrameTime()*m_CamMoveSpeed;
 
 	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 	{
@@ -412,7 +412,7 @@ void ZeroEd::Input()
 		my = m_iHeight - my; 
 		int iClickedViewPort = GetView(float(mx), float(my));
 		if(SetCamera(iClickedViewPort))
-			m_fDelayTime = m_pkFps->GetEngineTime() + float(0.5);
+			m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.5);
 	}
 
    //int key = m_pkInputHandle->GetQueuedKey().m_iKey;
@@ -425,21 +425,21 @@ void ZeroEd::Input()
 
 
 	if(m_pkInputHandle->VKIsDown("makeland")) {
-		Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
+		Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 		if(!pkObj)
 			return;		
-		//int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* z = m_pkObjectMan->GetZoneData(id);
+		//int id = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		//ZoneData* z = m_pkEntityManager->GetZoneData(id);
 		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
-		m_pkFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
+		m_pkZeroFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
 	}  
 	/*
 	if(m_pkInputHandle->Pressed(KEY_F6)) 
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+		Entity* pkEnt = m_pkEntityManager->GetObjectByNetWorkID(m_iCurrentObject);
 
-		//m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		//m_iCurrentMarkedZone =  m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		//ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		//if(pkData && pkData->m_pkZone) 
 		//{
 			pkEnt->AddProperty("P_PfMesh");
