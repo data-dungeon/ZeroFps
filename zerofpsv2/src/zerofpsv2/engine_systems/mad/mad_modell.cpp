@@ -514,6 +514,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 	pkCore->SetupBonePose();
 
+
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
 	glColor3f(1,1,1);
