@@ -9,33 +9,21 @@
 	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
 	#define _DONT_MAIN
 #endif
- 
-#include <set> 
-#include <algorithm>
+
+#include "../mcommon/si_mistland.h"
+#include "../mcommon/si_dm.h"
 
 #include "zeroed.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
-#include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
-#include "../zerofpsv2/engine_systems/propertys/p_track.h"
-#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
+
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-#include "../zerofpsv2/basic/zguifont.h"
-#include "../mcommon/rulesystem/sendtype.h"
-#include "../zerofpsv2/engine/inputhandle.h"
-#include "../zerofpsv2/gui/zguiresourcemanager.h"
-#include "../zerofpsv2/render/glguirender.h"
-#include "../mcommon/si_dm.h"
-#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
+
 #include "../mcommon/ml_netmessages.h"
-#include "../mcommon/p_charactercontrol.h"
-#include "../mcommon/p_characterproperty.h"
-#include "../mcommon/p_fogplane.h"
-#include "../mcommon/p_container.h"
-#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../mcommon/mainmcommon.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
@@ -926,7 +914,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	NetPacket kNp;
-	ClientOrder kOrder;
+//	ClientOrder kOrder;
 
 	vector<string>	kUsers;
 	float fTest;
@@ -1183,29 +1171,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 */
 
-
-		case FID_LOCALORDER:
-			{
-				string strSo;
-				strSo = kCommand->m_strFullCommand;
-				strSo.erase(0, kCommand->m_kSplitCommand[0].length() + 1);
-				//SendOrder( strSo );	
-				//m_pkConsole->Printf("SO is = %s", strSo.c_str());
-
-				//char szFullCmd[1024];
-				//sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
-				//	m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
-				//cout << "FullCmd " << szFullCmd << endl;
-				
-				P_ClientControl pkClient;
-				string strOrder;
-				kOrder.m_sOrderName = strSo;
-				kOrder.m_iCharacter = -1;
-				cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
-				pkClient.AddServerOrder(kOrder);
-				
-			}
-			break;		
+	
 
 	}
 

@@ -1,46 +1,10 @@
 #ifndef _MISTSERVER_H_
 #define _MISTSERVER_H_
 
-#include <iostream>
-#include <cmath>
-#include <list>
 #include <vector>
+
 #include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/engine_systems/mad/mad_modell.h"
-#include "../zerofpsv2/engine/astar.h"
-
-#include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/gui/zgui.h"
-#include "../zerofpsv2/gui/zguiresourcemanager.h"
-
-#include "../mcommon/si_mistland.h"
-#include "../mcommon/si_dm.h"
-
-#include "../mcommon/p_event.h"
-#include "../mcommon/p_ml.h"
-#include "../mcommon/p_charstats.h"
-#include "../mcommon/p_item.h"
-#include "../mcommon/p_container.h"
-#include "../mcommon/p_spell.h"
-#include "../mcommon/p_serverinfo.h"
-#include "../mcommon/p_clientcontrol.h"
-#include "../mcommon/p_enviroment.h"
-#include "../mcommon/p_ai.h"
-#include "../mcommon/p_spawn.h"
-
-#include "../mcommon/p_dmhq.h"
-#include "../mcommon/p_dmcharacter.h"
-#include "../mcommon/p_shadowblob.h"
-#include "../mcommon/p_dmgun.h"
-#include "../mcommon/p_dmitem.h"
-#include "../mcommon/p_dmmission.h"
-#include "../mcommon/p_dmclickme.h"
-#include "../mcommon/p_dmshop.h"
-#include "../mcommon/p_car.h"
-#include "../zerofpsv2/engine/fh.h"
-
-#include "../mcommon/p_arcadecharacter.h"
-
 #include "guiserverinfo.h"
 
 //const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";

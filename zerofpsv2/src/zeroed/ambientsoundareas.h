@@ -2,11 +2,13 @@
 #include "../zerofpsv2/basic/vector2.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
-#include "../zerofpsv2/render/render.h"
 
 #include <vector>
 #include <string>
+
 using namespace std;
+
+class Render;
 
 class AmbientSoundAreas
 {
