@@ -202,7 +202,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void DrawDevStrings();		
 		
 
-		DevStringPage*	DevPrint_FindPage(const char* szName);		
+		DevStringPage*	DevPrint_FindPage(const string& strName);		
 		
 		//zeroed network stuff
 		void SendZoneList(bool bRemove,int iClientID,int iZoneID = -1);

@@ -934,11 +934,11 @@ bool ZeroFps::DevPrintPageVisible(const char* szName)
 	return false;
 }
 
-DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
+DevStringPage*	ZeroFps::DevPrint_FindPage(const string& strName)
 {
 	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 
 	{
-		if(string(szName) == m_DevStringPage[i].m_kName) 
+		if(strName == m_DevStringPage[i].m_kName) 
 		{
 			return &m_DevStringPage[i];
 		}

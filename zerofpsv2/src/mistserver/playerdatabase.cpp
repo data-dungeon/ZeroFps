@@ -251,9 +251,9 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, s
 		return false;
 	}
 	
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
-	if(!pkMad)
-		return false;
+// 	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
+// 	if(!pkMad)
+// 		return false;
 /*
 	if(strModell == "Good guy")
       pkMad->SetBase("/data/mad/player.mad");

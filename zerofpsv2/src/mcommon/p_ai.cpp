@@ -277,7 +277,11 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 			if(kPropertys[i] == m_pkCharacterProperty)
 				continue;
 		
-			if(P_CharacterProperty* pkCP = dynamic_cast<P_CharacterProperty*>(kPropertys[i]))
+			//we only care about character propertys
+ 			if(!kPropertys[i]->IsPropertyType("P_CharacterProperty"))
+ 				continue;
+				
+			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(kPropertys[i]))
 			{
 				//found character
 				

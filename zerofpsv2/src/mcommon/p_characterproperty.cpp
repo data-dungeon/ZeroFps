@@ -505,27 +505,30 @@ void P_CharacterProperty::UpdateStats()
 			iDrain = 8;
 
 			
-		m_kCharacterStats.ChangeStat("Stamina",-iDrain);
-		m_kCharacterStats.ChangeStat("Stamina",m_kCharacterStats.GetTotal("StaminaRegen"));
-		if(m_kCharacterStats.GetTotal("Stamina") > m_kCharacterStats.GetTotal("StaminaMax"))
-			m_kCharacterStats.SetStat("Stamina",m_kCharacterStats.GetTotal("StaminaMax"));
-		if(m_kCharacterStats.GetTotal("Stamina") < 0)
-			m_kCharacterStats.SetStat("Stamina",0);
+		string strStamina("Stamina");		
+		m_kCharacterStats.ChangeStat(strStamina,-iDrain);
+		m_kCharacterStats.ChangeStat(strStamina,m_kCharacterStats.GetTotal("StaminaRegen"));
+		if(m_kCharacterStats.GetTotal(strStamina) > m_kCharacterStats.GetTotal("StaminaMax"))
+			m_kCharacterStats.SetStat(strStamina,m_kCharacterStats.GetTotal("StaminaMax"));
+		if(m_kCharacterStats.GetTotal(strStamina) < 0)
+			m_kCharacterStats.SetStat(strStamina,0);
 			
 			
 		//health
-		m_kCharacterStats.ChangeStat("Health",m_kCharacterStats.GetTotal("HealthRegen"));
-		if(m_kCharacterStats.GetTotal("Health") > m_kCharacterStats.GetTotal("HealthMax"))
-			m_kCharacterStats.SetStat("Health",m_kCharacterStats.GetTotal("HealthMax"));
-		if(m_kCharacterStats.GetTotal("Health") < 0)
-			m_kCharacterStats.SetStat("Health",0);
+		string strHealth("Health");
+		m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen"));
+		if(m_kCharacterStats.GetTotal(strHealth) > m_kCharacterStats.GetTotal("HealthMax"))
+			m_kCharacterStats.SetStat(strHealth,m_kCharacterStats.GetTotal("HealthMax"));
+		if(m_kCharacterStats.GetTotal(strHealth) < 0)
+			m_kCharacterStats.SetStat(strHealth,0);
 
 		//mana
-		m_kCharacterStats.ChangeStat("Mana",m_kCharacterStats.GetTotal("ManaRegen"));
-		if(m_kCharacterStats.GetTotal("Mana") > m_kCharacterStats.GetTotal("ManaMax"))
-			m_kCharacterStats.SetStat("Mana",m_kCharacterStats.GetTotal("ManaMax"));
-		if(m_kCharacterStats.GetTotal("Mana") < 0)
-			m_kCharacterStats.SetStat("Mana",0);
+		string strMana("Mana");
+		m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen"));
+		if(m_kCharacterStats.GetTotal(strMana) > m_kCharacterStats.GetTotal("ManaMax"))
+			m_kCharacterStats.SetStat(strMana,m_kCharacterStats.GetTotal("ManaMax"));
+		if(m_kCharacterStats.GetTotal(strMana) < 0)
+			m_kCharacterStats.SetStat(strMana,0);
 				
 			
 		SendStats();
@@ -1058,7 +1061,11 @@ void P_CharacterProperty::SendBuffList()
 
 	for(int i = 0;i<kProps.size();i++)
 	{
-		if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
+		//if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
+		if(!kProps[i]->IsPropertyType("P_Buff"))
+			continue;
+		
+		if(P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]))			
 		{
 			if(pkBuff->m_bShow)
 			{
@@ -1206,7 +1213,10 @@ void P_CharacterProperty::RemoveBuff(const string& strBuffName)
 
 	for(int i = 0;i<kProps.size();i++)
 	{
-		if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
+		if(!kProps[i]->IsPropertyType("P_Buff"))
+			continue;
+		
+		if(P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]))			
 		{
 			if(pkBuff->m_strName == strBuffName)
 			{

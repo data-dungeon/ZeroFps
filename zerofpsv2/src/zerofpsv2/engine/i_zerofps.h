@@ -30,7 +30,7 @@ public:
 
 	virtual Camera* GetCam()= 0;		
 						
-	virtual DevStringPage* DevPrint_FindPage(const char* szName)= 0;	
+	virtual DevStringPage* DevPrint_FindPage(const string& strName)= 0;	
 	virtual	void DrawDevStrings()= 0;
 	virtual	void DevPrintf(const char* szName, const char *fmt, ...)= 0;
 	virtual	void DevPrint_Show(bool bVisible)= 0;
