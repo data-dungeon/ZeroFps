@@ -30,6 +30,7 @@ class ENGINE_API ZeroFps {
 		float m_fLastFrameTime;
 
 		int m_iWidth,m_iHeight,m_iDepth;
+		int m_iFullScreen;
 		
 		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;

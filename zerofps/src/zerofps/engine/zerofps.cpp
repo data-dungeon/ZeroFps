@@ -12,7 +12,8 @@ ZeroFps::ZeroFps(void) {
 	m_pkObjectMan=new ObjectManager();
 	m_pkCollisionMan=new CollisionManager();	
 
-	m_fFrameTime=0;	
+	m_fFrameTime=0;
+	m_iFullScreen=0;
 
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
@@ -27,6 +28,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
+	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);			
 }
 
 
@@ -75,6 +77,7 @@ void ZeroFps::MainLoop(void) {
 					m_iState=state_console;
 					m_pkInput->Reset();
 //					m_pkTempCamera=m_pkCamera;										
+					
 					
 					SetCamera(m_pkConsoleCamera);					
 					break;
@@ -216,7 +219,12 @@ void ZeroFps::SetDisplay()
 	
 	//reinit opengl with the new configuration
 	SDL_InitSubSystem(SDL_OPENGL);
-	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
+	
+	if(m_iFullScreen > 0)
+		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL|SDL_FULLSCREEN);	
+	else
+		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
+	
 	glViewport(0, 0,m_iWidth,m_iHeight);	
 }
 
