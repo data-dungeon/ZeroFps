@@ -273,7 +273,7 @@ void DarkMetropolis::OnServerStart()
 		}
 		
 		//add tracker to camera
-		m_pkCameraEntity->AddProperty("P_Track");
+		//m_pkCameraEntity->AddProperty("P_Track");
 	}
 			
 	//m_kAgentsOnField.clear();			
@@ -1335,13 +1335,14 @@ void DarkMetropolis::CheckCameraPos()
 	if(dist > m_fCameraMaxDistanceFromAgent)
 	{
 		//cout<<"camera to far away"<<endl;
-		Vector3 kTemp = pkClosestEnt->GetWorldPosV();
+		Vector3 kTemp = pkClosestEnt->GetIWorldPosV();
 		kTemp.y = 0;
 		Vector3 kDir = (kTemp - kCamPos).Unit();
 		
 		Vector3 kNewCamPos = m_pkCameraEntity->GetWorldPosV();
 //		kNewCamPos += kDir * m_pkObjectMan->GetSimDelta() * (dist * 3) ;
-		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
+//		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
+		kNewCamPos += kDir ;//m_pkFps->GetFrameTime()*100;
 		m_pkCameraEntity->SetWorldPosV(kNewCamPos);
 	}
 }
