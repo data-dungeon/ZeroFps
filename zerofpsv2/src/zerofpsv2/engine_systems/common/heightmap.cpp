@@ -9,7 +9,7 @@
 #include "../../render/render.h"
 #include "../mad/mad_core.h"
 
-void HM_Layer::Load(ZFVFile* pkFile)
+void HM_Layer::Load(ZFIoInterface* pkFile)
 {
 	char szString[256];
 
@@ -23,12 +23,12 @@ void HM_Layer::Load(ZFVFile* pkFile)
 	m_strMask = szString;
 
 	//m_kAlphaImage.load(m_strMask.c_str());
-	m_kAlphaImage.load_tga(pkFile->m_pkFilePointer);
+	m_kAlphaImage.load_tga( ((ZFVFile*)pkFile)->m_pkFilePointer);
 
 	//cout << "Load Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
 }
 
-void HM_Layer::Save(ZFVFile* pkFile)
+void HM_Layer::Save(ZFIoInterface* pkFile)
 {
 	char szString[256];
 
@@ -42,7 +42,7 @@ void HM_Layer::Save(ZFVFile* pkFile)
 	pkFile->Write(szString, 256,1);
 
 	//m_kAlphaImage.Save(m_strMask.c_str(),true);
-	m_kAlphaImage.Save(pkFile->m_pkFilePointer, true);
+	m_kAlphaImage.Save(((ZFVFile*)pkFile)->m_pkFilePointer, true);
 
 	//cout << "Save Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
 }
@@ -474,6 +474,71 @@ bool HeightMap::Load(const char* acFile)
 	savefile.Read((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
 	savefile.Close();
 	return true;
+}
+
+bool HeightMap::Save(ZFIoInterface* pkFile) 
+{
+
+	// Setup FileHeader
+	HM_fileheader k_Fh;
+	k_Fh.m_iHmSize			= m_iVertexSide;
+	k_Fh.m_iNumOfLayers	= m_kLayer.size();
+	k_Fh.m_fTileSize 		= m_fTileSize;
+	k_Fh.m_bInverted 		= m_bInverted;
+
+	
+	// Write FileHeader.
+	pkFile->Write((void*)&k_Fh, sizeof(HM_fileheader),1);
+
+	// Write Layer Table
+	for(int i=0; i<m_kLayer.size(); i++) 
+	{
+		m_kLayer[i]->Save(pkFile);
+// 		pkFile->Write( &savefile );
+	}
+	
+	
+	//write tileflags
+	pkFile->Write((void*)m_pkTileFlags,sizeof(unsigned char), m_iTilesSide*m_iTilesSide);		
+
+	// Write VertexData
+	pkFile->Write((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
+
+}
+
+bool HeightMap::Load(ZFIoInterface* pkFile) 
+{
+	int i;
+
+	HM_fileheader k_Fh;
+	
+	// Read File Header
+	pkFile->Read((void*)&k_Fh, sizeof(HM_fileheader),1);
+	
+	// Alloc Memory
+	m_iVertexSide		= k_Fh.m_iHmSize;
+	m_iTilesSide      = m_iVertexSide - 1;
+	m_fTileSize       = k_Fh.m_fTileSize;
+	m_bInverted       = k_Fh.m_bInverted;
+	//m_iHmScaleSize		=	GetSize();
+
+	AllocHMMemory(m_iVertexSide);
+	
+	// Read Layer Data.
+// 	HM_Layer kLayer;
+// 	m_kLayer.clear();
+	for(i=0; i<k_Fh.m_iNumOfLayers; i++) 
+	{
+		HM_Layer* pkLayer = new HM_Layer;
+		pkLayer->Load( pkFile );
+		m_kLayer.push_back(pkLayer);
+	}
+
+	//read tileflags
+	pkFile->Read((void*)m_pkTileFlags,sizeof(unsigned char), m_iTilesSide*m_iTilesSide);			
+
+	// Read VertexData
+	pkFile->Read((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
 }
 
 

@@ -86,8 +86,12 @@ void P_HMRP2::Save(ZFIoInterface* pkPackage)
 	char hmapname[256];
 	sprintf(hmapname, "%s/hm%d",m_pkEntity->m_pkEntityManager->GetWorldDir().c_str() ,m_pkEntity->GetEntityID());
 
+/*	if(m_pkHeightMap)
+		m_pkHeightMap->Save(hmapname);*/
+
+	//dvoid haxa in så det sparas i propertyt istället *EEEEEEEVIL* =D
 	if(m_pkHeightMap)
-		m_pkHeightMap->Save(hmapname);
+		m_pkHeightMap->Save(pkPackage);
 }
 
 void P_HMRP2::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -97,7 +101,10 @@ void P_HMRP2::Load(ZFIoInterface* pkPackage,int iVersion)
 	cout << "Should Load HMRP2: " << hmapname << endl;
 
 	m_pkHeightMap = new HeightMap;
-	m_pkHeightMap->Load(hmapname);
+ 	m_pkHeightMap->Load(pkPackage);
+
+// 	m_pkHeightMap->Load(hmapname);
+
 }
 
 float P_HMRP2::GetRadius()

@@ -56,8 +56,8 @@ public:
 // 		return *this;
 // 	}	
 
-	void Load(ZFVFile* pkFile);
-	void Save(ZFVFile* pkFile);
+	void Load(ZFIoInterface* pkFile);
+	void Save(ZFIoInterface* pkFile);
 };
 
 class ENGINE_SYSTEMS_API HMSelectVertex
@@ -112,7 +112,11 @@ class ENGINE_SYSTEMS_API HeightMap
 		// Load/Save
 		bool Load(const char* acFile);
 		bool Save(const char* acFile);
+		bool Load(ZFIoInterface* pkFile);
+		bool Save(ZFIoInterface* pkFile);
 
+		
+		
 		// Set/Get Function
 		void 		SetPosition(Vector3 kNewPos);
 		Vector3&	GetPos(){return m_kPosition;};
