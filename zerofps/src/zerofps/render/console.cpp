@@ -11,6 +11,7 @@ Console::Console(ZeroFps* pkEngine) {
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
 	m_bShift=false;
+	strcpy(m_aCommand,"");
 	
 	Print("ZeroFps engine started");
 	Print("ZeroFps (C) Dvoid & Vim");
@@ -56,21 +57,21 @@ void Console::Update(void) {
 				if(m_bShift) {
 					if(code>96 && code<123){
 						code-=32;
-						strncat(m_aCommand,&(char)(code),1);
+						strncat(m_aCommand,(char*)&(code),1);
 						break;
 					}
 					if(code=='-'){
 						code='_';
-						strncat(m_aCommand,&(char)(code),1);
+						strncat(m_aCommand,(char*)&(code),1);
 						break;
 					}
 					if(code=='7'){
 						code='/';
-						strncat(m_aCommand,&(char)(code),1);
+						strncat(m_aCommand,(char*)&(code),1);
 						break;
 					}					
 				}
-				strncat(m_aCommand,&(char)(code),1);
+				strncat(m_aCommand,(char*)&(code),1);
 			}
 		}
 		

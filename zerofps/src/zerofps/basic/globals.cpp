@@ -28,7 +28,7 @@ void IntToChar(char* aText,int iValue)
 			iValue-=i*nr;
 			found=true;
 			nr+=48;
-			strncat(aText,&(char)nr,1);
+			strncat(aText,(char*)&(nr),1);
 		} else {
 			if(found==true)
 				strcat(aText,"0");			
