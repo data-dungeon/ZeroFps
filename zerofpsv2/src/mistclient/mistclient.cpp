@@ -1081,8 +1081,8 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda det inputsystemet.
 		//	m_pkInput->UnitMouseXY(x,y);
-		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / 800.0f;
-		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / 600.0f;
+		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
 		
 		dir.Set(x*xp,-y*yp,fovshit);
 		dir.Normalize();
