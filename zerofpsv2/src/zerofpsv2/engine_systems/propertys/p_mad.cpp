@@ -31,7 +31,7 @@ void P_Mad::Update()
 		return;
 
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL ) /* &  m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER)*/ ) {
-		UpdateAnimation(m_pkZeroFps->GetGameFrameTime());
+		UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		return;
 		}
 	
