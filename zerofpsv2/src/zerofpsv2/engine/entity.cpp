@@ -58,6 +58,7 @@ Entity::Entity()
 	m_bInterpolate			= true;
 	iNetWorkID				= -1;
 	m_bSendChilds			= true;
+	m_bIsNetWork			= false;
 //	m_kVariables.clear();
 
 	//clear child list

@@ -262,7 +262,8 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 				if(pkPrevSkin)
 				{
-					ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);
+//WARNING!!!!!!!!!!   VALGRIND KLAGAR PÅ ATT DENNA INTE AVALOKERAS!!!					
+					ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);		
 					*vkSkinDesc[i].first = pkNewSkin;
 				}
 				else

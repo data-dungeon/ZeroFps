@@ -11,6 +11,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_kRotM.Identity();
 	
 	m_strName = "A Camera";
+	
+	
+	m_eMode = CAMMODE_PERSP; //just initiating it
 }
 
 void Camera::UpdateAll(int iWidth,int iHeight) 

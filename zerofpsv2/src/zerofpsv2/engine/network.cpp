@@ -18,6 +18,7 @@ NetWork::NetWork()
 	m_bAcceptClientConnections = false;
 	m_pkSocket						= NULL;
 	m_eNetStatus					= NET_NONE;
+	m_fStatsUpdate					= 0;
 
 	// Set Default values
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;

@@ -85,7 +85,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 	m_bLockFps					= false;
 	m_bDrawAxisIcon			= true;
-	
+	m_fEngineTime				= 0;
+	m_fGameTime					= 0;
+	m_fGameFrameTime			= 0;
 
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);

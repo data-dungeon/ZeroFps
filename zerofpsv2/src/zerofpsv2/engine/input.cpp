@@ -43,7 +43,9 @@ bool Input::StartUp()
 	
 //	m_iNrActions=0;
 
-	bool m_bInputEnabled = true;
+	m_bInputEnabled = true;
+	m_iAbsMouseX = 0;
+	m_iAbsMouseY = 0;
 	
 	for(int i =0;i<400;i++) 
 	{
