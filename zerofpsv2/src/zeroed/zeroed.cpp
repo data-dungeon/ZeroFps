@@ -1489,6 +1489,9 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 
 bool ZeroEd::ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize)
 {
+	if(m_bDisableFreeZonePlacement == false)
+		return true;
+
 	if(m_bNeedToRebuildZonePosArray)
 		RebuildZonePosArray();
 

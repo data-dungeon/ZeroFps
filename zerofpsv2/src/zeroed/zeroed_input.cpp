@@ -60,7 +60,8 @@ void ZeroEd::Input_EditZone()
 
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
+		if(ZoneHaveNeighbour(m_kZoneMarkerPos, m_kZoneSize))
+			SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
 		
 		//request a new zone list
 		SendZoneListRequest();	
