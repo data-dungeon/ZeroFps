@@ -28,7 +28,6 @@ OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) :
 	ZFSubSystem("OggMusic")
 {
 	
-	
     	
 }
 
@@ -57,7 +56,8 @@ int OggMusic::ThreadMain(void *v)
 		while(1)
 		{
 			pkOgg->Update(ZFAudioSystem::GetListnerPos());
-			SDL_Delay(10);
+			
+			SDL_Delay(50);
 		}
 	}
 
@@ -210,10 +210,12 @@ bool OggMusic::Play()
 
 bool OggMusic::Update(Vector3 kListerPos)
 {
+
+
 	if(m_bPlaying)
 	{
 		//update position of sound
-		alSourcefv(m_ALuiSource, AL_POSITION,&kListerPos[0]);		
+		alSourcefv(m_ALuiSource, AL_POSITION,&kListerPos[0]);				
 	
 		int iPlaying=AL_PLAYING;
 		alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);

@@ -527,13 +527,13 @@ bool ZFAudioSystem::SetVolume(float fVolume)
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::Update()
 {
-	// Kör igång mainloopen för musiktråden
+/*	// Kör igång mainloopen för musiktråden
 	if( OggMusic::m_pkThread == NULL)
 	{
 		m_pkMusic->m_pkThread = SDL_CreateThread(OggMusic::ThreadMain, m_pkMusic);
 	}
-
-	//m_pkMusic->Update(m_kPos);
+*/
+	m_pkMusic->Update(m_kPos);
 
 	if(m_iEnableSound == 0)
 		return;
@@ -617,7 +617,7 @@ void ZFAudioSystem::Update()
 // Sätt en ny position och orientering på lysnaren.
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix4 kOri)
-{
+{	
 	kOri.Transponse();
 	Vector3 up = -kOri.GetAxis(1);
 	Vector3 dir = Vector3(0,0,1);
@@ -628,6 +628,7 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix4 kOri)
 
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 
 {
+
 	m_kPos=kPos;
 	m_kHead=kHead;
 	m_kUp=kUp;

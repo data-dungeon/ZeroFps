@@ -43,7 +43,7 @@ struct THREAD_INFO
 class ENGINE_SYSTEMS_API OggMusic: public ZFSubSystem  
 {
 public:
-	
+
 	bool Stop();
 	bool Update(Vector3 kListerPos);
 	OggMusic(); 
@@ -56,6 +56,7 @@ public:
 
 	static int OggMusic::ThreadMain(void *);
 	static SDL_Thread* m_pkThread;
+
 	
 private:
 	//bool InitPlay();
