@@ -96,7 +96,7 @@ private:
 	ZGuiScrollbar* m_pkVertScrollbar;
 	ZGuiScrollbar* m_pkHorzScrollbar;
 	ZGuiLabel* m_pkSelLabel;
-	int m_iStartrow;
+	int m_iStartrow, m_iStartcol;
 	int m_iItemWidth, m_iItemHeight;
 	map<string,ZGuiTreeboxNode*> m_kNodeMap;
 };

@@ -89,6 +89,8 @@ void ZGuiScrollbar::GetScrollInfo(unsigned int& min, unsigned int& max,
 void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, 
 											 float page_size, unsigned int pos)
 {
+
+
 	m_nMax = max, m_nMin = min, m_nPos = pos;
 	m_fPageSize = page_size;
 

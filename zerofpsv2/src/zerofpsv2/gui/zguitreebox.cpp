@@ -35,6 +35,7 @@ ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkVertScrollbar = NULL;
 	m_pkHorzScrollbar = NULL;
 	m_iStartrow = 0;
+	m_iStartcol = 0;
 
 	m_iID = 33212;
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
@@ -422,7 +423,7 @@ void ZGuiTreebox::CreateInternalControls()
 	h = SCROLLBAR_WIDTH;
 	m_pkHorzScrollbar = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,HORZ_SCROLLBAR_ID); 
-	m_pkHorzScrollbar->SetScrollInfo(0,100,1.0f,0); 
+	m_pkHorzScrollbar->SetScrollInfo(0,100,0.5f,0); 
 
 	// Create root node.
 	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
@@ -506,7 +507,28 @@ void ZGuiTreebox::ScrollRows()
 
 void ZGuiTreebox::ScrollCols()
 {
+	static int PREV_HORZ_SCROLLCOL = -1000;
 
+	m_iStartcol = m_pkVertScrollbar->GetPos();
+	if(m_iStartcol < 0)
+		m_iStartcol = 0;
+
+	if(PREV_HORZ_SCROLLCOL != m_iStartcol)
+	{
+		int offset = m_iStartcol;
+		if(PREV_HORZ_SCROLLCOL != -1000)
+			offset -= PREV_HORZ_SCROLLCOL;
+
+		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
+		{
+			(*it)->pkButton->Move(-offset, 0, true, true);
+			(*it)->pkButton->SetMoveArea((*it)->pkButton->GetScreenRect());
+		}
+
+		PREV_HORZ_SCROLLCOL = m_iStartcol;
+
+		printf("olle\n");
+	}
 }
 
 bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
