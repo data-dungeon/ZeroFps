@@ -81,9 +81,9 @@ class ZeroRTS :public Application {
 		vector<Vector3>	m_kSpawnPoints;
 
 		void UpdateSelectionArea();
+		void SelectObjects(Vector3 p1, Vector3 p2);
 
 	public:
-		
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;
 		

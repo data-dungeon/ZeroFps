@@ -8,6 +8,8 @@ ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) { 
 	return g_kZeroRTS.m_pkUserPanel->DlgProc(win,msg,numparms,params); }
 
+#define NO_SELECTION Vector3(9000,0,9000)
+
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
@@ -17,7 +19,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_HaveFoundHMapObject = false;
 	m_bDisableCameraScroll = false;
 
-	m_kClickPos = m_kDragPos = Vector3(9000,0,9000);
+	m_kClickPos = m_kDragPos = NO_SELECTION;
 
 /*	COMMENT OUT BY ZEB
 	m_pkTestPath = NULL;
@@ -72,7 +74,7 @@ void ZeroRTS::Init()
 	
 	//set clicktimer bös
 	m_fClickTimer = pkFps->GetTicks();
-	m_fClickDelay = 0.2;
+	m_fClickDelay = 0.4;
 	
 	//set fog timer
 	m_fFogTimer = pkFps->GetTicks();
@@ -196,19 +198,20 @@ void ZeroRTS::OnIdle()
 	if(m_pkMiniMap)
 		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); 
 
-//	Vector3 left(-10,0,-10), top(-10,0,10), right(10,0,10), bottom(10,0,-10);
-
-	//m_kClickPos = Vector3(0,0,0);
-	Vector3 
-		left(m_kClickPos.x,m_kClickPos.y+1,m_kDragPos.z), 
-		top(m_kClickPos.x,m_kClickPos.y+1,m_kClickPos.z), 
-		right(m_kDragPos.x,m_kClickPos.y+1,m_kClickPos.z), 
-		bottom(m_kDragPos.x,m_kClickPos.y+1,m_kDragPos.z);
-	
-	pkRender->Line(left, top);
-	pkRender->Line(top, right);
-	pkRender->Line(right, bottom);
-	pkRender->Line(bottom, left);
+	// Draw selection rectangle
+	if(m_kClickPos != NO_SELECTION)
+	{
+		Vector3 left(m_kClickPos.x,m_kClickPos.y+1,m_kDragPos.z), 
+			top(m_kClickPos.x,m_kClickPos.y+1,m_kClickPos.z), 
+			right(m_kDragPos.x,m_kClickPos.y+1,m_kClickPos.z), 
+			bottom(m_kDragPos.x,m_kClickPos.y+1,m_kDragPos.z);
+		
+		pkRender->SetColor(Vector3(1,0,0));
+		pkRender->Line(left, top);
+		pkRender->Line(top, right);
+		pkRender->Line(right, bottom);
+		pkRender->Line(bottom, left);
+	}
 }
 
 void ZeroRTS::OnSystem() 
@@ -657,13 +660,13 @@ bool ZeroRTS::AddSelectedObject(int iID)
 
 	cout<<"object Added to selection"<<endl;
 
-	printf("%Propertys:\n");
+/*	printf("%Propertys:\n");
 		vector<Property*> akProps;
 		pkObjectMan->GetObjectByNetWorkID(iID)->GetPropertys(&akProps, 
 			PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
 		for(int i=0; i<akProps.size(); i++)
 			printf("%s\n", akProps[i]->m_acName);
-	printf("\n");
+	printf("\n");*/
 
 	return true;
 }
@@ -932,8 +935,33 @@ void ZeroRTS::UpdateSelectionArea()
 	{
 		if(s_bClicked == true)
 		{
-			m_kDragPos = m_kClickPos = Vector3(9000,0,9000);
+			SelectObjects(m_kClickPos, m_kDragPos);
+			m_kDragPos = m_kClickPos = NO_SELECTION;
 			m_bDisableCameraScroll = s_bClicked = false;
+		}
+	}
+}
+
+void ZeroRTS::SelectObjects(Vector3 p1, Vector3 p2)
+{
+	vector<Object*> akAllObjs;
+	pkObjectMan->GetAllObjects(&akAllObjs);
+
+	float fMinX = p1.x < p2.x ? p1.x : p2.x;
+	float fMaxX = p1.x > p2.x ? p1.x : p2.x;
+
+	float fMinZ = p1.z < p2.z ? p1.z : p2.z;
+	float fMaxZ = p1.z > p2.z ? p1.z : p2.z;
+
+	const int antal = akAllObjs.size();
+	for(int i=0; i<antal; i++)
+	{
+		Vector3 pos = akAllObjs[i]->GetPos();
+		if( pos.x >= fMinX && pos.x <= fMaxX &&
+			pos.z >= fMinZ && pos.z <= fMaxZ)
+		{
+			if(GetClientUnit(akAllObjs[i]->iNetWorkID))
+				AddSelectedObject(akAllObjs[i]->iNetWorkID);
 		}
 	}
 }
