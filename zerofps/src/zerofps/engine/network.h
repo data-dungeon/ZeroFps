@@ -72,6 +72,8 @@ public:
 		m_iPos += sizeof(type);
 		}
 
+	void Write(void* ptr, int iSize);
+	void Read(void* ptr, int iSize);
 };
 
 enum NetWorkStatus

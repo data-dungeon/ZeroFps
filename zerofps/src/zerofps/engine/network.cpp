@@ -51,6 +51,21 @@ void NetPacket::Read_Str(char* szString)
 
 }
 
+void NetPacket::Write(void* ptr, int iSize)
+{
+	unsigned char * add = &m_acData[m_iPos];
+	memcpy(add, ptr, iSize);
+	m_iPos += iSize;
+	if(m_iPos > m_iLength)	m_iLength = m_iPos;
+}
+
+void NetPacket::Read(void* ptr, int iSize)
+{
+	unsigned char * add = &m_acData[m_iPos];
+	memcpy(ptr, add, iSize);
+	m_iPos += iSize;
+
+}
 
 
 

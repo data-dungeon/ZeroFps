@@ -211,7 +211,6 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glTranslatef( float(-iSize/2), 0, float(-iSize/2) );
 	
 	glDisable(GL_CULL_FACE);
-//	glDisable(GL_FOG);		
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);	
 	
@@ -285,6 +284,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 
 	glPopAttrib();
 	glPopMatrix();
+
+	glColor4f(1,1,1, 1);	
 }
 
 void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture) {

@@ -657,7 +657,7 @@ void ZeroFps::DrawDevStrings()
 
 	string strPageName;
 		
-	glPushAttrib(GL_LIGHTING_BIT);
+	glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT );
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
 

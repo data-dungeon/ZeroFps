@@ -1,6 +1,22 @@
 ZFPS NETWORK MODELL:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	Client/Server system där servern alltid har rätt.
-	Varje deltagare i ett nätverkspel benämns en Node.
+	Varje deltagare i ett Nätverkspel benämns en Node.
 	Den Node som startar spelet kallas Host Node.
 	Host Node blir även server.
 	Allt i spelet hanteras som objekt. Ex object är spelare, vapen, monster, hissar, fordon och spelvärlden man är i.
@@ -61,14 +77,17 @@ ZFPS NETWORK MODELL:
 		InitServer()	Används när en server startar.
 		InitClient()	Används när en client startar.
 		PreLogin()		Anropas när en client försöker ansluta till servern. Kan anropas flera gånger för att 
-						avgöra om client ska få ansluta. Slutar med att client inte får joina eller att han får
-						joina och då kommer Login vara nästa funktion att anropas. Denna funktion ska användas till
-						player limits, passwords och liknande.
+							avgöra om client ska få ansluta. Slutar med att client inte får joina eller att han får
+							joina och då kommer Login vara nästa funktion att anropas. Denna funktion ska användas till
+							player limits, passwords och liknande.
 		Login()			
 		PostLogin()		
 
 	Shutdown:
 	
+
+
+
 	NetDriver:	
 		Är den lägsta nätverks nivån i ZeroFps. Den skapar/förstör connections och sänder/tar emot data. 
 		Den bryr sig inte om innehåller i dom paket den får / ger till ZeroFps. Den grunläggande drivern
@@ -77,7 +96,7 @@ ZFPS NETWORK MODELL:
 
 			Ansvarsområden:
 			*	Connections:	Hanterar connections med timeouts och liknande.
-			*	Packets:		Allt som sänds/tas emot sker i packet med en bestämd max size.
+			*	Packets:			Allt som sänds/tas emot sker i packet med en bestämd max size.
 			*	Checksums:		Kollar att paket som/sänds tas emot är korrekta. 
 			*	Unreliable:		Ingen garanti på att dom kommer fram eller ordning dom kommer fram i.
 			*	Stats:			Håller reda på ping, packetloss och liknande för varje anslutning.
@@ -85,13 +104,9 @@ ZFPS NETWORK MODELL:
 	ZeroFps Protocol:
 		Är det nätverkspaket som används av ZeroFps engine.
 
-			Skapa Object:		
-			Förstöra Object:	
-			Update Object:		
-			Transfer Files:		
-			Object:				
-			Propertys:			
-			Resurser:			
+			Object:				Skapa, förstöra samt updatera object. 		
+			Propertys:			Skapa, förstöra samt updatera propertys.
+			
 
 	Spelare som äventyrar på egen hand äger oftast området omkring sig själva.
 	När två spelare möts så förs området omkring dom över till en av dom så att han blir server för deras område.		

@@ -61,7 +61,7 @@ class PHYSICSENGINE_API Body
 		void SetPos(Vector3 kPos);
 		Vector3 GetPos();								
 		Vector3 GetRot();
-		Vector3 SetRot(Vector3 kRot);
+		void SetRot(Vector3 kRot);
 		
 		void Rest(Body* pkBody);				//set object to rest against pkBody
 		void Awaken();

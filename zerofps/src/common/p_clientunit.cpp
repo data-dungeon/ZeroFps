@@ -91,12 +91,12 @@ void P_ClientUnit::Load(ZFMemPackage* pkPackage)
 
 void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Write(m_kInfo);
+	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
 }
  
 void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Read(m_kInfo);
+	pkNetPacket->Read(&m_kInfo, sizeof(m_kInfo));
 }
 
 

@@ -58,8 +58,9 @@ void WaterRenderProperty::Update()
 				m_bBlendDirUp = true;
 			}
 		}
-	else
+	else {
 		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
+		}
 }
 
 void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)
