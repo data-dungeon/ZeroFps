@@ -990,7 +990,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				
 					vector<ScriptFuncArg> args(2);
 					args[0].m_kType.m_eType = tINT;
-					args[0].m_pData = &pkData->m_iCharacterID;
+					args[0].m_pData = &(pkData->m_iCharacterID);
 					args[1].m_kType.m_eType = tSTLSTRING;
 					args[1].m_pData = &strAction;
 					
@@ -1060,7 +1060,8 @@ void MistServer::SayToClients(const string& strMsg,int iClientID)
 	kNp.Write((char) MLNM_SC_SAY);
 	kNp.Write_Str(strMsg);
 	kNp.TargetSetClient(iClientID);
-	SendAppMessage(&kNp);	
+	SendAppMessage(&kNp);
+	
 }
 
 
@@ -1089,12 +1090,15 @@ int SI_MistServer::SayToCharacterLua(lua_State* pkLua)
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	id = (int)dTemp;
-
+	
 	char	acMessage[256];
 	g_pkScript->GetArgString(pkLua, 1, acMessage);		
 	
 	if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
 		g_kMistServer.SayToClients(acMessage,pkData->m_iConnectionID);
-		
+	else
+		cout<<"WARNING: could not find character ID:"<<id<<endl;
+	
+			
 	return 0;
 }
