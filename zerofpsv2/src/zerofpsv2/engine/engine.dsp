@@ -175,14 +175,6 @@ SOURCE=..\engine_systems\physicsengine\heightmapcs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\heightmaprenderproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\hmrp2.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\common\i_heightmap2.cpp
 # End Source File
 # Begin Source File
@@ -255,6 +247,14 @@ SOURCE=..\engine_systems\propertys\p_heightmap2.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_heightmaprender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_hmrp2.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_light.cpp
 # End Source File
 # Begin Source File
@@ -275,7 +275,19 @@ SOURCE=..\engine_systems\propertys\p_physic.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_primitives3d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_psystem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_skyboxrender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_track.cpp
 # End Source File
 # Begin Source File
 
@@ -295,23 +307,11 @@ SOURCE=..\engine_systems\physicsengine\physicsengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\primitives3d.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\property.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\propertyfactory.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\proxyproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\psystemproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -384,14 +384,6 @@ SOURCE=..\engine_systems\common\heightmap2.h
 # Begin Source File
 
 SOURCE=..\engine_systems\physicsengine\heightmapcs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\heightmaprenderproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\hmrp2.h
 # End Source File
 # Begin Source File
 
@@ -471,6 +463,14 @@ SOURCE=..\engine_systems\propertys\p_heightmap2.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_heightmaprender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_hmrp2.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_light.h
 # End Source File
 # Begin Source File
@@ -491,7 +491,19 @@ SOURCE=..\engine_systems\propertys\p_physic.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_primitives3d.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_psystem.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_skyboxrender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_track.h
 # End Source File
 # Begin Source File
 
@@ -511,10 +523,6 @@ SOURCE=..\engine_systems\physicsengine\physicsengine.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\primitives3d.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\property.h
 # End Source File
 # Begin Source File
@@ -524,14 +532,6 @@ SOURCE=.\propertyfactory.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\propertys.pkg
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\proxyproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\psystemproperty.h
 # End Source File
 # Begin Source File
 

@@ -1,4 +1,4 @@
-#include "heightmaprenderproperty.h"
+#include "p_heightmaprender.h"
 #include "../../engine/zerofps.h"
 
 P_HeightMapRender::P_HeightMapRender(HeightMap* pkHeightMap) 

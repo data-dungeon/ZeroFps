@@ -1,5 +1,5 @@
 #include "../../engine/psystemmanager.h"
-#include "psystemproperty.h"
+#include "p_psystem.h"
 #include "../../engine/object.h"
 
 // ------------------------------------------------------------------------------------------
