@@ -16,12 +16,12 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkTileEngine=TileEngine::m_pkInstance;
 
 	
-	m_pkMiniMap = NULL;
-	m_pkClientInput = NULL;
-	m_iSelfObjectID = -1;
-	m_HaveFoundHMapObject = false;
-	m_bDisableCameraScroll = false;
-
+	m_pkMiniMap = 					NULL;
+	m_pkClientInput = 			NULL;
+	m_iSelfObjectID =				-1;
+	m_HaveFoundHMapObject =		false;
+	m_bDisableCameraScroll =	false;
+	m_iGameType =					1;
 	m_kClickPos = m_kDragPos = NO_SELECTION;
 
 /*	COMMENT OUT BY ZEB
@@ -50,9 +50,13 @@ void ZeroRTS::OnInit()
 
 void ZeroRTS::Init()
 {	
+
 	//get heightmap pointer bös
 	m_pkMap = pkLevelMan->GetHeightMap();	
 
+	//register variables
+	g_ZFObjSys.RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT);
+	
 	//register commmands bös
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
@@ -156,10 +160,6 @@ void ZeroRTS::OnIdle()
 
 */
 
-	if(pkFps->m_bServerMode == false) {
-		int iObjID = pkFps->GetClientObjectID();
-		m_iSelfObjectID = iObjID;
-		}
 
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
@@ -233,6 +233,11 @@ void ZeroRTS::OnSystem()
 				ClientInit();
 			}
 		}		
+	
+		//try to get self id
+		if(m_iSelfObjectID == -1)
+			m_iSelfObjectID = pkFps->GetClientObjectID();
+
 	};
 	
 	//if server is running
@@ -923,29 +928,46 @@ void ZeroRTS::OnClientStart(void)
 
 void ZeroRTS::CreateClientUnits(int iID)
 {
-	//create player start object	
-	Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");
+	if(m_iGameType == 1)		
+	{		
+		//create player start object	
+		Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");
 	
-	if(ob)
-	{
-		cout<<"setting object pos to "<<m_kSpawnPoints[iID].x<<" "<<m_kSpawnPoints[iID].y<<" "<<m_kSpawnPoints[iID].z<<endl;
-		ob->SetPos(m_kSpawnPoints[iID]);
-		ob->SetPos(m_kSpawnPoints[iID]);		
-		
-		ob->AttachToClosestZone();
-		
-		P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
-		
-		if(su)
+		if(ob)
 		{
-			su->m_kInfo.m_cTeam = iID;		
+			cout<<"setting object pos to "<<m_kSpawnPoints[iID].x<<" "<<m_kSpawnPoints[iID].y<<" "<<m_kSpawnPoints[iID].z<<endl;
+			ob->SetPos(m_kSpawnPoints[iID]);
+			ob->SetPos(m_kSpawnPoints[iID]);		
+		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
+		
+			if(su)
+			{
+				su->m_kInfo.m_cTeam = iID;		
+			}
+			else
+				cout<<"error unit did not create correctly"<<endl;
 		}
 		else
-			cout<<"error unit did not create correctly"<<endl;
+			cout<<"error could not create client units"<<endl;
 	}
-	else
-		cout<<"error could not create client units"<<endl;
-
+	
+	if(m_iGameType == 2)
+	{
+		for(int i=0;i<20;i++)
+		{
+			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");	
+			Vector3 pos = m_kSpawnPoints[iID] + (Vector3(rand()%20,0,rand()%20)-Vector3(10,0,10));
+			ob->SetPos(pos);
+			ob->SetPos(pos);		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
+			su->m_kInfo.m_cTeam = iID;		
+		}			
+	}
 }
 
 void ZeroRTS::RemoveClientUnits(int iID)

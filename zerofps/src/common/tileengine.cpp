@@ -212,8 +212,6 @@ void TileEngine::ClearUnits()
 
 void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
-	cout<<"adding unit on tile"<<endl;
-	
 	Point pos = GetSqrFromPos(kPos);
 		
 	int w = kSu->m_kInfo.m_cWidth;

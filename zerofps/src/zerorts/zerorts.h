@@ -37,11 +37,11 @@ class ZeroRTS :public Application {
 		HeightMap*		m_pkMap;
 		MiniMap*			m_pkMiniMap;
 		P_FogRender*	m_pkFogRender;
-		P_ClientInput* m_pkClientInput;
-		
+		P_ClientInput* m_pkClientInput;		
 		TileEngine*		m_pkTileEngine;
+		
 		Vector3			m_kClickPos, m_kDragPos;
-		bool m_bDisableCameraScroll;
+		bool 				m_bDisableCameraScroll;
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -82,6 +82,9 @@ class ZeroRTS :public Application {
 
 		//list of possible spawn points
 		vector<Vector3>	m_kSpawnPoints;
+
+		//wich gametype for server to use
+		int					m_iGameType;
 
 		void UpdateSelectionArea();
 		void SelectObjects(Vector3 p1, Vector3 p2);
