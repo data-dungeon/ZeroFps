@@ -3,24 +3,17 @@
 #ifndef _DARK_METROPOLIS_H_
 #define _DARK_METROPOLIS_H_
 
-#ifndef _DONT_MAIN
-	#define _MAINAPPLICATION_
-	#define _DONT_MAIN
-#endif
-
 #include <iostream>
 #include <cmath>
 #include <list>
-#include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/gui/zgui.h"
 
 /**	\brief	Daz DaaaaarkMetropolis
 		\ingroup DarkMetropolis
 */
+
 class DarkMetropolis : public Application, public ZGuiApp 
 {
 	private:
-
 		Camera*	m_pkCamera;
 
 	public:
@@ -53,7 +46,6 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void OnKeyPress(int iKey, ZGuiWnd *pkWnd);
-
 };
 
 #endif
