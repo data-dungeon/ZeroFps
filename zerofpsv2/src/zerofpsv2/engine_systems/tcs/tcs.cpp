@@ -241,9 +241,9 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		if(m_iDebugGraph)
 		{		
 			//m_pkRender->Sphere(pkCol->kPositions[i],0.2,1,Vector3(0,1,0),false);			
-			m_pkRender->SetColor(Vector3(1,0,1));
+			//m_pkRender->SetColor(Vector3(1,0,1));
 			m_pkRender->Line(pkCol->kPositions[i],pkCol->kPositions[i] + pkCol->kNormals[i]);		
-			m_pkRender->SetColor(Vector3(1,1,1));		
+			//m_pkRender->SetColor(Vector3(1,1,1));		
 		}
 		
 		//collission handling is disabled

@@ -161,8 +161,8 @@ void P_Ml::Update()
 	{
 		if(m_bShowText)
 		{
-			m_pkRender->SetFont("data/textures/text/objecttext.tga");
-			m_pkRender->Print(m_pkObject->GetIWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2f,0),Vector3(.2f,.2f,.2f),(char*)m_strText.c_str());				
+		//	m_pkRender->SetFont("data/textures/text/objecttext.tga");
+		//	m_pkRender->Print(m_pkObject->GetIWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2f,0),Vector3(.2f,.2f,.2f),(char*)m_strText.c_str());				
 		}
 	}
 }

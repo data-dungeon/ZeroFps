@@ -130,22 +130,17 @@ class RENDER_API Render : public ZFSubSystem {
 		
 		bool HaveExtension(string strExt);										//check if thers support for a specefic opengl extension
 		
-		void PrintChar(unsigned char cChar);
-		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
-		void Print(Vector3 kPos,Vector3 kScale,char* aText);		
-
+		
 		void Mode2D_Start();
 		void Mode2D_End();
 
 
-		void SetFont(char* aFont);
-		void PrintChar2(char cChar,float fPos,float fScale = 1.0);
-		void Print2(Vector3 kPos, const char* aText,float fScale = 1.0);
+		
+		void PrintChar(char cChar,float fPos,float fScale = 1.0);
+		void Print(Vector3 kPos, const char* aText,float fScale = 1.0);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
 		void Line(Vector3 kPos1,Vector3 kPos2);
-		void Dot(float x,float y,float z);
-		void SetColor(Vector3 kColor);
 		void SetClearColor(Vector4 kColor);
 
 		// LandScape
@@ -157,7 +152,6 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		void DrawHMVertex(HeightMap* kMap);
 		void DrawBlocks(HeightMap* kmap);
-		//void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
 		void GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 );
 
 		// SkyBox
@@ -210,6 +204,19 @@ class RENDER_API Render : public ZFSubSystem {
 		void Setup_EditColors();
 		Vector3	GetEditColor(string strName);
 
+		
+		
+		//old stuff
+		//void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
+		//void Dot(float x,float y,float z);
+		//void SetColor(Vector3 kColor);
+		/*
+		void PrintChar(unsigned char cChar);
+		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
+		void Print(Vector3 kPos,Vector3 kScale,char* aText);		
+		void SetFont(char* aFont);
+		*/
+		
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

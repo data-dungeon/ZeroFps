@@ -3,7 +3,7 @@
 #include "../basic/basicconsole.h"
 #include "../engine_systems/common/psystem.h"
 #include "../engine/psystemmanager.h"
- 
+  
 FILE* pkGlDumpLog;
  
 Render::Render()  
@@ -53,7 +53,7 @@ Render::Render()
 	Register_Cmd("shot",			FID_SHOT);
 
 
-	SetFont("data/textures/text/devstr.bmp");
+//	SetFont("data/textures/text/devstr.bmp");
 
 	Setup_EditColors();
 }
@@ -372,45 +372,7 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	
 	m_pkZShaderSystem->Pop();
 }
-
-void Render::PrintChar(unsigned char cChar) 
-{
-	int texwidth=FONTWIDTH*16;	
-	int pos=int(cChar)*FONTWIDTH;		
-	float glu = float(1.0/texwidth);				//opengl texture cordinats is 0-1
-	float width=glu*FONTWIDTH;
-	
-	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
-	float x=float(pos%texwidth)*glu;//+width/2;
-	
-	glPushAttrib(GL_LIGHTING_BIT);
-	glDisable(GL_LIGHTING);
-	glAlphaFunc(GL_GREATER,0.1);
-	glEnable(GL_ALPHA_TEST);
- 	
- 	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
-//	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
-
-	glPushMatrix();
-	glBegin(GL_QUADS);		
-//			glColor4f(1.0,1.0,1.0,1.0);  	  
-	glNormal3f(0,0,1);
- 	  
-	glTexCoord2f(x,y);				glVertex3f(-.5,-0.5,0);		 
-	glTexCoord2f(x+width,y);		glVertex3f(.5,-0.5,0);		
-	glTexCoord2f(x+width,y-width);glVertex3f(.5,0.5,0);    
-	glTexCoord2f(x,y-width);		glVertex3f(-0.5,0.5,0);    
-	glEnd();				
-	glPopMatrix();
-	
-	glDisable(GL_ALPHA_TEST);
-
-	glPopAttrib();
-}
-
-void Render::PrintChar2(char cChar,float fPos,float fScale)
+void Render::PrintChar(char cChar,float fPos,float fScale)
 {
 	int texwidth	=	FONTWIDTH*16;	
 	int pos			=	int(cChar)*FONTWIDTH;		
@@ -431,80 +393,7 @@ void Render::PrintChar2(char cChar,float fPos,float fScale)
 					
 }
 
-
-void Render::Print(Vector3 kPos,Vector3 kScale,char* aText) {
-	char paText[TEXT_MAX_LENGHT];
-	// VIM: Check for maxlen
-	strcpy(paText,aText);
-	
-	glPushMatrix();
-		
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
-
-		//make billboard		
-		Matrix4 kModelMatrix;
-		glGetFloatv(GL_MODELVIEW_MATRIX, &kModelMatrix[0]);		
-		
-		kModelMatrix.data[0] = 1;
-		kModelMatrix.data[4] = 0;		
-		kModelMatrix.data[8] = 0;		
-		
-		kModelMatrix.data[1] = 0;		
-		kModelMatrix.data[5] = 1;		
-		kModelMatrix.data[9] = 0;				
-		
-		kModelMatrix.data[2] = 0;		
-		kModelMatrix.data[6] = 0;		
-		kModelMatrix.data[10] = 1;				
-				
-		glLoadMatrixf(&kModelMatrix[0]);		
-		//blub
-		
-		//scale
-		glScalef(kScale.x,kScale.y,kScale.z);
-		
-		//center text
-		int offset = strlen(paText)/2;		
-		glTranslatef(float(-offset),0,0);
-		
-		
-		int i=0;
-		while(paText[i]!='\0') {
-			PrintChar(paText[i]);
-			glTranslatef(1,0,0);
-		
-			i++;
-		}
-
-	glPopMatrix();
-}
-
-
-void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
-	char paText[TEXT_MAX_LENGHT];
-	// VIM: Check for maxlen
-	strcpy(paText,aText);
-	
-	glPushMatrix();
-		
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
-		glRotatef(kHead.x, 1, 0, 0);
-		glRotatef(kHead.y, 0, 1, 0);	
-		glRotatef(kHead.z, 0, 0, 1);
-		glScalef(kScale.x,kScale.y,kScale.z);
-		
-		int i=0;
-		while(paText[i]!='\0') {
-			PrintChar(paText[i]);
-			glTranslatef(1,0,0);
-		
-			i++;
-		}
-
-	glPopMatrix();
-}
-
-void Render::Print2(Vector3 kPos,const char* aText,float fScale) 
+void Render::Print(Vector3 kPos,const char* aText,float fScale) 
 {
 	float fSize = 1;
 	
@@ -519,7 +408,7 @@ void Render::Print2(Vector3 kPos,const char* aText,float fScale)
 	int i=0;
 	while(aText[i]!='\0') 
 	{
-		PrintChar2(aText[i],float(i*1.0));
+		PrintChar(aText[i],float(i*1.0));
 		i++;
 	}
 
@@ -528,11 +417,12 @@ void Render::Print2(Vector3 kPos,const char* aText,float fScale)
 	m_pkZShaderSystem->MatrixPop();		
 }
 
-
+/*
 void Render::SetFont(char* aFont) {
 	strcpy(aCurentFont,aFont);
 // RES	m_kConsoleText.SetRes(aFont);
 }
+*/
 
 void Render::Line(Vector3 kPos1,Vector3 kPos2)
 {
@@ -567,25 +457,18 @@ void Render::Line(Vector3 kPos1,Vector3 kPos2)
 	glEnable(GL_LIGHTING);
 */
 }
-
+/*
 void Render::SetColor(Vector3 kColor)
 {
 	//glColor3f(kColor.x,kColor.y,kColor.z);
 }
-
+*/
 void Render::SetClearColor(Vector4 kColor)
 {
 	glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
 
 }
 
-void Render::Dot(float x,float y,float z) 
-{
-	Vector3 kStart(x,y,z);
-	Vector3 kEnd = kStart + Vector3(0.05,0.05,0.05);
-	Line(kStart, kEnd);
-//	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
-}
 
 void Render::Mode2D_Start()
 {
@@ -668,14 +551,14 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	//glClear(GL_COLOR_BUFFER_BIT);	
 	//glPolygonMode(GL_FRONT, GL_FILL);
 	
-	Print2(Vector3(8,8,0),m_aCommand,8.0);		
+	Print(Vector3(8,8,0),m_aCommand,8.0);		
 	
 	char kMarker[3];
 	if(iMarker >= 0) {
 		kMarker[0] = iMarker;
 		kMarker[1] = 0;
 		//if(m_bShowInputToken)
-		Print2(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker,8.0);		
+		Print(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker,8.0);		
 		//m_bShowInputToken = !m_bShowInputToken;
 		}
 
@@ -690,7 +573,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	{
 		if((*m_kText)[i] != NULL)
 		{
-			Print2(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i],8.0);		
+			Print(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i],8.0);		
 		}
 	}
 	
@@ -2257,7 +2140,127 @@ RENDER_API void RenderDLL_InitExtGL(void)
 }
 
 
+/*
+void Render::Dot(float x,float y,float z) 
+{
+	Vector3 kStart(x,y,z);
+	Vector3 kEnd = kStart + Vector3(0.05,0.05,0.05);
+	Line(kStart, kEnd);
+//	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
+}
+*/
 
 
 
+/*
+void Render::PrintChar(unsigned char cChar) 
+{
+	int texwidth=FONTWIDTH*16;	
+	int pos=int(cChar)*FONTWIDTH;		
+	float glu = float(1.0/texwidth);				//opengl texture cordinats is 0-1
+	float width=glu*FONTWIDTH;
+	
+	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
+	float x=float(pos%texwidth)*glu;//+width/2;
+	
+	glPushAttrib(GL_LIGHTING_BIT);
+	glDisable(GL_LIGHTING);
+	glAlphaFunc(GL_GREATER,0.1);
+	glEnable(GL_ALPHA_TEST);
+ 	
+ 	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+//	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
 
+	glPushMatrix();
+	glBegin(GL_QUADS);		
+//			glColor4f(1.0,1.0,1.0,1.0);  	  
+	glNormal3f(0,0,1);
+ 	  
+	glTexCoord2f(x,y);				glVertex3f(-.5,-0.5,0);		 
+	glTexCoord2f(x+width,y);		glVertex3f(.5,-0.5,0);		
+	glTexCoord2f(x+width,y-width);glVertex3f(.5,0.5,0);    
+	glTexCoord2f(x,y-width);		glVertex3f(-0.5,0.5,0);    
+	glEnd();				
+	glPopMatrix();
+	
+	glDisable(GL_ALPHA_TEST);
+
+	glPopAttrib();
+}
+*/
+
+/*
+void Render::Print(Vector3 kPos,Vector3 kScale,char* aText) {
+	char paText[TEXT_MAX_LENGHT];
+	// VIM: Check for maxlen
+	strcpy(paText,aText);
+	
+	glPushMatrix();
+		
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+
+		//make billboard		
+		Matrix4 kModelMatrix;
+		glGetFloatv(GL_MODELVIEW_MATRIX, &kModelMatrix[0]);		
+		
+		kModelMatrix.data[0] = 1;
+		kModelMatrix.data[4] = 0;		
+		kModelMatrix.data[8] = 0;		
+		
+		kModelMatrix.data[1] = 0;		
+		kModelMatrix.data[5] = 1;		
+		kModelMatrix.data[9] = 0;				
+		
+		kModelMatrix.data[2] = 0;		
+		kModelMatrix.data[6] = 0;		
+		kModelMatrix.data[10] = 1;				
+				
+		glLoadMatrixf(&kModelMatrix[0]);		
+		//blub
+		
+		//scale
+		glScalef(kScale.x,kScale.y,kScale.z);
+		
+		//center text
+		int offset = strlen(paText)/2;		
+		glTranslatef(float(-offset),0,0);
+		
+		
+		int i=0;
+		while(paText[i]!='\0') {
+			PrintChar(paText[i]);
+			glTranslatef(1,0,0);
+		
+			i++;
+		}
+
+	glPopMatrix();
+}
+
+
+void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
+	char paText[TEXT_MAX_LENGHT];
+	// VIM: Check for maxlen
+	strcpy(paText,aText);
+	
+	glPushMatrix();
+		
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+		glRotatef(kHead.x, 1, 0, 0);
+		glRotatef(kHead.y, 0, 1, 0);	
+		glRotatef(kHead.z, 0, 0, 1);
+		glScalef(kScale.x,kScale.y,kScale.z);
+		
+		int i=0;
+		while(paText[i]!='\0') {
+			PrintChar(paText[i]);
+			glTranslatef(1,0,0);
+		
+			i++;
+		}
+
+	glPopMatrix();
+}
+*/

@@ -654,7 +654,7 @@ void ZeroEd::RenderInterface(void)
 	
 	if(m_iEditMode == EDIT_OBJECTS && m_bGrabing)
 	{							
-		m_pkRender->SetColor(Vector3(1,1,1));
+		//m_pkRender->SetColor(Vector3(1,1,1));
 		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
 	}
 }
