@@ -174,7 +174,7 @@ void EditPropertyDlg::OnOpenEditProperty()
  
 		for(int i=0 ; s != e; s++, i++ )
 		{
-			m_pkGui->AddItemToList(pkPropertysCB, true, (*s)->m_acName, i++, (i+1 == antal));
+			m_pkGui->AddItemToList(pkPropertysCB, true, (*s)->m_acName, i, (i == 0));
 		}	
 
 		// Send a message to the main winproc...
@@ -473,7 +473,7 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 			for( ; s != e; s++ )
 			{
 				m_pkGui->AddItemToList(pkPValueCB, true, (char*)(*s).c_str(), 
-					counter, (counter+1 == antal)); // Select the last item in the combox
+					counter, (counter == 0)); // Select the last item in the combox
 
 				counter++;
 			}
