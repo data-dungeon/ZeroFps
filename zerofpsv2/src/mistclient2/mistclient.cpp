@@ -738,7 +738,12 @@ void MistClient::Input()
 	if(m_pkInputHandle->Pressed(KEY_2))
 		if(!DelayCommand() )
 			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-	
+
+	if(m_pkInputHandle->Pressed(KEY_3))
+		if(!DelayCommand() )
+			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			
+				
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
