@@ -129,8 +129,6 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	else
 		szOptions = "rb";
 	
-	cout<<"trying to open: "<<strFileName<<endl;
-	
 	// Try to open file directly.
 	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)

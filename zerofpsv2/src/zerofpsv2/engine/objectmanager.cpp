@@ -73,7 +73,7 @@ bool ObjectManager::StartUp()
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
-	m_kWorldDirectory = "data/testmap/";
+	m_kWorldDirectory = "../data/testmap/";
 
 	m_pkWorldObject						=	new Object();	
 	m_pkWorldObject->GetName()			= "WorldObject";
@@ -1591,8 +1591,12 @@ void ObjectManager::LoadZones()
 void ObjectManager::SaveZones()
 {
 	
+	string filename(m_kWorldDirectory + "zones.dat");
+	
+	cout<<"saving to :"<<filename<<endl;
+	
 	ZFVFile kFile;
-	if(!kFile.Open((m_kWorldDirectory + "zones.dat").c_str(),0,true))
+	if(!kFile.Open(filename.c_str(),0,true))
 	{	
 		cout<<"Could not open zone save file"<<endl;
 		return;
@@ -1616,7 +1620,11 @@ void ObjectManager::SaveZones()
 			kFile.Write(&m_kZones[i].m_iZoneLinks[zl], sizeof(m_kZones[i].m_iZoneLinks[zl]), 1);
 		}
 
+
+
 	kFile.Close();
+
+	cout<<"zones saved"<<endl;
 }
 
 void ObjectManager::LinkZones(int iFromId, int iToId)
