@@ -20,9 +20,9 @@ CharacterStats::CharacterStats()
 	m_kStats.push_back(CharacterStat("Mana"			,0,0));
 	m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
 	m_kStats.push_back(CharacterStat("ManaRegen"		,0,0));	
-	m_kStats.push_back(CharacterStat("Life"			,0,0));
-	m_kStats.push_back(CharacterStat("LifeMax"		,0,0));
-	m_kStats.push_back(CharacterStat("LifeRegen"		,0,0));
+	m_kStats.push_back(CharacterStat("Health"			,0,0));
+	m_kStats.push_back(CharacterStat("HealthMax"		,0,0));
+	m_kStats.push_back(CharacterStat("HealthRegen"	,0,0));
 	m_kStats.push_back(CharacterStat("Strength"		,0,0));
 	m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
 	m_kStats.push_back(CharacterStat("Vitality"		,0,0));
@@ -301,12 +301,13 @@ void P_CharacterProperty::UpdateStats()
 			m_kCharacterStats.SetStat("Stamina",0);
 			
 			
-		//life
-		m_kCharacterStats.ChangeStat("Life",m_kCharacterStats.GetTotal("LifeRegen"));
-		if(m_kCharacterStats.GetTotal("Life") > m_kCharacterStats.GetTotal("LifeMax"))
-			m_kCharacterStats.SetStat("Life",m_kCharacterStats.GetTotal("LifeMax"));
-		if(m_kCharacterStats.GetTotal("Life") < 0)
-			m_kCharacterStats.SetStat("Life",0);
+		//health
+		cout<<"health "<<m_kCharacterStats.GetTotal("Health")<<endl;
+		m_kCharacterStats.ChangeStat("Health",m_kCharacterStats.GetTotal("HealthRegen"));
+		if(m_kCharacterStats.GetTotal("Health") > m_kCharacterStats.GetTotal("HealthMax"))
+			m_kCharacterStats.SetStat("Health",m_kCharacterStats.GetTotal("HealthMax"));
+		if(m_kCharacterStats.GetTotal("Health") < 0)
+			m_kCharacterStats.SetStat("Health",0);
 
 		//mana
 		m_kCharacterStats.ChangeStat("Mana",m_kCharacterStats.GetTotal("ManaRegen"));
@@ -787,6 +788,11 @@ void P_CharacterProperty::SendStats()
 	kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
 	kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
 	
+	kNp.Write(m_kCharacterStats.GetTotal("Health"));
+	kNp.Write(m_kCharacterStats.GetTotal("HealthMax"));
+	
+	kNp.Write(m_kCharacterStats.GetTotal("Mana"));
+	kNp.Write(m_kCharacterStats.GetTotal("ManaMax"));
 	
 	//send package
 	kNp.TargetSetClient(m_iConID);
@@ -1008,20 +1014,18 @@ namespace SI_P_CharacterProperty
 			cout<<"WARNING: ChangeStat - wrong number of arguments"<<endl;
 			return 0;		
 		}
-			
+					
 		int iCharcterID;
 		double dValue;
-		char czStat[128];
+		string strStat;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgString(pkLua, 1,strStat);
 		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.ChangeStat(czStat,float(dValue));		
-			
-			cout<<"changed stat "<<czStat<<" with "<<dValue<<endl;
+			pkCP->m_kCharacterStats.ChangeStat(strStat,float(dValue));		
 		}
 	
 		return 0;				
@@ -1038,17 +1042,15 @@ namespace SI_P_CharacterProperty
 			
 		int iCharcterID;
 		double dValue;
-		char czStat[128];
+		string strStat;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgString(pkLua, 1,strStat);
 		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.ChangeMod(czStat,float(dValue));		
-			
-			cout<<"changed stat mod "<<czStat<<" with "<<dValue<<endl;
+			pkCP->m_kCharacterStats.ChangeMod(strStat,float(dValue));		
 		}
 	
 		return 0;			
@@ -1064,17 +1066,15 @@ namespace SI_P_CharacterProperty
 			
 		int iCharcterID;
 		double dValue;
-		char czStat[128];
+		string strStat;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgString(pkLua, 1,strStat);
 		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			pkCP->m_kCharacterStats.SetStat(czStat,float(dValue));		
-			
-			cout<<"set stat "<<czStat<<" to "<<dValue<<endl;
+			pkCP->m_kCharacterStats.SetStat(strStat,float(dValue));		
 		}
 	
 		return 0;				
@@ -1088,14 +1088,14 @@ namespace SI_P_CharacterProperty
 
 			
 		int iCharcterID;
-		char czBuff[128];
+		string strBuff;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,czBuff);
+		g_pkScript->GetArgString(pkLua, 1,strBuff);
 		
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
-			pkCP->AddBuff(czBuff);		
+			pkCP->AddBuff(strBuff);		
 	
 		return 0;			
 	}
@@ -1107,14 +1107,14 @@ namespace SI_P_CharacterProperty
 
 			
 		int iCharcterID;
-		char czBuff[128];
+		string strBuff;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,czBuff);
+		g_pkScript->GetArgString(pkLua, 1,strBuff);
 		
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
-			pkCP->RemoveBuff(czBuff);		
+			pkCP->RemoveBuff(strBuff);		
 	
 		return 0;			
 	}
@@ -1164,18 +1164,18 @@ namespace SI_P_CharacterProperty
 		int iCharcterID;
 		double dTemp;
 		double dItemID = -1;
-		char czItemName[64];
+		string strItemName;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 		iCharcterID = (int)dTemp;
 		
-		g_pkScript->GetArgString(pkLua, 1,czItemName);
+		g_pkScript->GetArgString(pkLua, 1,strItemName);
 		
 		if(Entity* pkEnt = g_pkObjMan->GetEntityByID(iCharcterID))
 			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 				if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(pkCP->m_iInventory))
 					if(P_Container* pkContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
-						dItemID = pkContainer->HaveItem(czItemName);
+						dItemID = pkContainer->HaveItem(strItemName);
 			
 
 		g_pkScript->AddReturnValue(pkLua, dItemID);							

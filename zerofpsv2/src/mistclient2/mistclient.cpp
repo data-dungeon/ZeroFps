@@ -819,10 +819,20 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			float	fStamina;
 			float fStaminaMax;
+			float	fHealth;
+			float fHealthMax;
+			float	fMana;
+			float fManaMax;
 			
 			pkNetMessage->Read(fStamina);
 			pkNetMessage->Read(fStaminaMax);
-			
+
+			pkNetMessage->Read(fHealth);
+			pkNetMessage->Read(fHealthMax);
+
+			pkNetMessage->Read(fMana);
+			pkNetMessage->Read(fManaMax);
+									
 			//cout<<"stamina:"<<fStamina<<endl;
 			
 			//update stamina bar
@@ -831,7 +841,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkPB->SetRange(0,int(fStaminaMax));
 				pkPB->SetPos(int(fStamina));				
 			}
-			
+
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("LifeProgressbar"))
+			{
+				pkPB->SetRange(0,int(fHealthMax));
+				pkPB->SetPos(int(fHealth));				
+			}
+						
 			break;		
 		}
 				
