@@ -1397,3 +1397,4 @@ void MistClient::UpdateCullObjects()
 //	cout<<"Nrof object betwen camera and player:"<<mads.size()<<endl;
 		
 }
+

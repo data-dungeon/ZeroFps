@@ -35,6 +35,7 @@ using namespace std;
 
 class ZGuiRender;
 class ZGuiResourceManager;
+class TextureManager;
 
 /*
  * Window Messages
@@ -151,6 +152,7 @@ public:
 
 	MAIN_WINDOW* FindMainWnd(int x, int y);
 	void GetResolution(int& x, int& y);
+	bool ClickedWndAlphaTex(int mx, int my, ZGuiWnd* pkWndClicked);
 
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
@@ -178,6 +180,7 @@ private:
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
+	TextureManager* m_pkTexMan;
 	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows

@@ -38,6 +38,8 @@ bool ZGui::StartUp()
 		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkResManager = static_cast<ZGuiResourceManager*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
+	m_pkTexMan = static_cast<TextureManager*>(
+		g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkActiveMainWin = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
@@ -444,6 +446,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{		
 		if(pkFocusWindow)
 		{
+			if(!ClickedWndAlphaTex(x,y,pkFocusWindow))
+			{
+				m_bHaveInputFocus = false;
+				printf("clicked on alpha\n");
+				return true;
+			}
+
 			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
 			SetFocus(ZGuiWnd::m_pkWndClicked);
 
@@ -1596,4 +1605,66 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 	}
 
 	OnKeyPress(key);
+}
+
+bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
+{
+	if(pkWndClicked == NULL)
+		return false;
+
+	// Ignore some controlls...
+	ZGuiWnd* pkParent = pkWndClicked->GetParent();
+	if(pkParent)
+	{
+		if( typeid(*pkParent)!=typeid(ZGuiListbox) )
+			return true;
+		if( typeid(*pkParent)!=typeid(ZGuiTreebox) )
+			return true;
+		if( typeid(*pkParent)!=typeid(ZGuiCheckbox) )
+			return true;
+	}
+
+	ZGuiSkin* pkSkin = pkWndClicked->GetSkin();
+
+	if(pkSkin == NULL)
+		return false;
+
+	if(pkSkin->m_bTransparent)
+		return false;
+
+	int alpha_tex = pkSkin->m_iBkTexAlphaID;
+	
+	if(alpha_tex > 0)
+	{
+		printf("bind texture %i\n", alpha_tex);
+
+		m_pkTexMan->BindTexture( alpha_tex );
+
+		int horz_offset, vert_offset;
+		horz_offset = mx - pkWndClicked->GetScreenRect().Left;
+		vert_offset = my - pkWndClicked->GetScreenRect().Top;
+
+		float x_offset = (float) horz_offset / pkWndClicked->GetScreenRect().Width();
+		float y_offset = (float) vert_offset / pkWndClicked->GetScreenRect().Height();
+
+		SDL_Surface* pkSurface = m_pkTexMan->GetImage();
+
+		float tex_w = (float) pkSurface->w;
+		float tex_h = (float) pkSurface->h;
+
+		unsigned long pixel;
+		
+		pixel = m_pkTexMan->GetPixel((int)(tex_w*x_offset),(int)(tex_h*y_offset));
+
+		if(pixel == 0)
+			return true;
+		else 
+			return false;
+	}
+	else
+	{
+		return true;
+	}
+
+	return false;
 }
