@@ -23,6 +23,7 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+
 	m_ulFlags = 0;
 	m_iZValue = 0;
 	m_pkGUI = NULL;

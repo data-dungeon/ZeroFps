@@ -15,6 +15,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+
 ZGui::ZGui()
 {
 	m_bHoverWindow = false;
@@ -44,6 +45,7 @@ ZGui::ZGui()
 
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
 }
+
 
 ZGui::~ZGui()
 {
@@ -677,6 +679,7 @@ bool ZGui::IsActive()
 
 bool ZGui::Update()
 {
+
 	if(m_bActive == true)
 	{
 		m_pkInput->SetInputEnabled(true);
