@@ -19,6 +19,11 @@ using namespace std;
 
 /*	Actions
 	
+	When a property recives the message Register_Actions it is
+	suppose so use the RegisterAction in itemproperty to register
+	any actions it might have.
+	
+	
 	some HandUse actions are hardcoded
 	
 	Action_UsePrimary

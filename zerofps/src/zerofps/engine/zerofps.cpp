@@ -241,9 +241,14 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();							
+	
 	//update zones
 	m_pkLevelMan->UpdateZones();			
 
+	//   _---------------------------------- fulhack deluxe 
+	SetCamera(m_pkCamera);
+	
+	
 	GetCam()->ClearViewPort();	
 	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 

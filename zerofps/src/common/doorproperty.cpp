@@ -13,6 +13,18 @@ DoorProperty::DoorProperty()
 
 }
 
+void DoorProperty::RegisterActions()
+{
+	ItemProperty* pkIP = static_cast<ItemProperty*>(m_pkObject->GetProperty("ItemProperty"));
+
+	if(pkIP != NULL)
+	{
+		pkIP->RegisterAction(NORMALUSE,"Open the door","OpenDoor");
+		pkIP->RegisterAction(NORMALUSE,"Close the door","CloseDoor");	
+	}
+}	
+
+
 void DoorProperty::OpenDoor()
 {
 	if(!m_bOpen)
@@ -46,11 +58,14 @@ void DoorProperty::CloseDoor()
 
 void DoorProperty::HandleGameMessage(GameMessage& Msg)
 {
-	if(Msg.m_Name == "Open")
+	if(Msg.m_Name == "OpenDoor")
 		OpenDoor();
 		
-	if(Msg.m_Name == "Close")
+	if(Msg.m_Name == "CloseDoor")
 		CloseDoor();
+		
+	if(Msg.m_Name == "Register_Actions")
+		RegisterActions();
 }
 
 vector<PropertyValues> DoorProperty::GetPropertyValues()

@@ -14,6 +14,7 @@
 #include <iostream>
 #include "common_x.h"
 
+#include "itemproperty.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ class COMMON_API DoorProperty: public Property {
 	private:
 		void OpenDoor();
 		void CloseDoor();
+		void RegisterActions();
 		
 		vector<PropertyValues> GetPropertyValues();		
 		
