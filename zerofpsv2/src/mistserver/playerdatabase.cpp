@@ -209,7 +209,7 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	}	
 	
 	//create new caracter and save it	
-	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/game objects/hosplayer.lua");		// t_player
+	Entity* pkEntity = m_pkEntityMan->CreateEntityFromScript("data/script/objects/game objects/hosplayer.lua");		// t_player
 	if(!pkEntity)
 	{
 		cout<<"could not create character entity"<<endl;
@@ -248,7 +248,7 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 		return false;
 	}	
 	
-	Entity* pkEntity = m_pkEntityMan->CreateObject(false);
+	Entity* pkEntity = m_pkEntityMan->CreateEntity(false);
 	pkEntity->Load(&kFile,false);
 	kFile.Close();
 	

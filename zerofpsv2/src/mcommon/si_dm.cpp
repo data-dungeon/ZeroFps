@@ -147,7 +147,7 @@ int DMLua::GetNumOfLivingAgentsLua(lua_State* pkLua)
 	P_DMCharacter* pkCharacter;
 
 	vector<Entity*> kObjects;		
-	g_pkObjMan->GetAllObjects(&kObjects);
+	g_pkObjMan->GetAllEntitys(&kObjects);
 
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if((pkCharacter=(P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter")) != NULL)
@@ -460,7 +460,7 @@ int DMLua::RunScriptLua (lua_State* pkLua)
 			double temp;
 			g_pkScript->GetArgNumber(pkLua, 1, &temp);
 			int objectid = (int) temp;
-			Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(objectid);
+			Entity* pkObject = g_pkObjMan->GetEntityByID(objectid);
 
 			if(!pkObject)
 			{// if we sent i a vector, we don't want to know this
@@ -486,7 +486,7 @@ int DMLua::RunScriptLua (lua_State* pkLua)
 			
 		}	
 		// create the new object
-		Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
+		Entity* pkNewObj = g_pkObjMan->CreateEntityFromScriptInZone(acType, 
 							kPos );
 
 		// return everything the way it was
@@ -520,7 +520,7 @@ int DMLua::GetEntityVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkEntity == 0)
 	{
@@ -561,7 +561,7 @@ int DMLua::SetEntityVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkEntity == 0)
 	{
@@ -596,7 +596,7 @@ int DMLua::AddToEntityVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkEntity == 0)
 	{
@@ -727,7 +727,7 @@ Entity* DMLua::TestScriptInput (int iArgs, lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkEntity )
 		return pkEntity;
@@ -740,7 +740,7 @@ Entity* DMLua::TestScriptInput (int iArgs, lua_State* pkLua)
 Entity* DMLua::GetHQEntity()
 {
 	vector<Entity*> kObjects;		
-	g_pkObjMan->GetAllObjects(&kObjects);
+	g_pkObjMan->GetAllEntitys(&kObjects);
 
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if( (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ") != 0 )
@@ -866,7 +866,7 @@ int DMLua::SwallowPlayerLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 1, &dVisiter);
 	g_pkScript->GetArgNumber(pkLua, 2, &dTime);
 
-	Entity* pkInhabit = g_pkObjMan->GetObjectByNetWorkID( int(dVisiter) );
+	Entity* pkInhabit = g_pkObjMan->GetEntityByID( int(dVisiter) );
 
 	if ( pkInhabit == 0 )
 	{
@@ -939,7 +939,7 @@ int DMLua::ExplosionLua(lua_State* pkLua)
 
 	vector<Entity*> kObj;
 
-	g_pkObjMan->GetAllObjects(&kObj);
+	g_pkObjMan->GetAllEntitys(&kObj);
 
 	Vector3 kBla = pkExpl->GetWorldPosV();
 
@@ -992,7 +992,7 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 2, &dPrice);
 
    // create the new object
-	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acScript,
+	Entity* pkNewObj = g_pkObjMan->CreateEntityFromScriptInZone(acScript,
 		pkShop->GetWorldPosV() );
 
 	if(pkNewObj == NULL)
@@ -1082,7 +1082,7 @@ int DMLua::PanicAreaLua(lua_State* pkLua)
 
 	vector<Entity*> kObj;
 
-	g_pkObjMan->GetAllObjects(&kObj);
+	g_pkObjMan->GetAllEntitys(&kObj);
 
 	double dRadie;
 
@@ -1114,7 +1114,7 @@ int DMLua::CallForHelpLua(lua_State* pkLua)
 	double dEntIDCalling;
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntIDCalling);
 
-	Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dEntIDCalling));
+	Entity* pkEnt = g_pkObjMan->GetEntityByID(int(dEntIDCalling));
 	if(pkEnt != NULL)
 	{
 		bool bFound = false;
@@ -1151,7 +1151,7 @@ int DMLua::GetClosestCallerLua(lua_State* pkLua)
 
  	if(g_pkScript->GetArgNumber(pkLua, 0, &dPoliceEntityID))
 	{
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dPoliceEntityID));
+		Entity* pkEnt = g_pkObjMan->GetEntityByID(int(dPoliceEntityID));
 		if(pkEnt != NULL)
 		{
 			float fClosestDist = 99999.9f;
@@ -1160,7 +1160,7 @@ int DMLua::GetClosestCallerLua(lua_State* pkLua)
 			vector<int>::iterator it = m_kCallsForHelp.begin();
 			for( ; it != m_kCallsForHelp.end(); it++)
 			{
-				Entity* pkCaller = g_pkObjMan->GetObjectByNetWorkID((*it));
+				Entity* pkCaller = g_pkObjMan->GetEntityByID((*it));
 
 				if(pkCaller)
 				{
@@ -1207,7 +1207,7 @@ int DMLua::GetCharsByFractionLua(lua_State* pkLua)
 	{
 		int iAntal = 0;
 		vector<Entity*> kObj;
-		g_pkObjMan->GetAllObjects(&kObj);
+		g_pkObjMan->GetAllEntitys(&kObj);
 
 		for ( unsigned int i = 0; i < kObj.size(); i++ )
 		{
@@ -1250,7 +1250,7 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 	{
 		if( g_pkScript->GetArgNumber(pkLua, 0, &dEntID) )
 		{
-			Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dEntID));
+			Entity* pkEnt = g_pkObjMan->GetEntityByID(int(dEntID));
 
 			if(pkEnt != NULL)
 			{
@@ -1302,7 +1302,7 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 		if( g_pkScript->GetArgNumber(pkLua, 0, &dObjectType) )
 		{
 			vector<Entity*> kObjs;
-			g_pkObjMan->GetAllObjects(&kObjs);
+			g_pkObjMan->GetAllEntitys(&kObjs);
 
 			unsigned int i;
 
@@ -1402,7 +1402,7 @@ int DMLua::AddItemLua(lua_State* pkLua)
 		return 0;
 	}
 
-	Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID( int(dEntityID) );
+	Entity* pkEnt = g_pkObjMan->GetEntityByID( int(dEntityID) );
 	if ( pkEnt == NULL )
 	{
 		cout << "Warning! DMLua::EquipLua: ObjectID not found." << endl;
@@ -1410,7 +1410,7 @@ int DMLua::AddItemLua(lua_State* pkLua)
 	}
 
    // create the new object
-	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acScript,
+	Entity* pkNewObj = g_pkObjMan->CreateEntityFromScriptInZone(acScript,
 		pkEnt->GetWorldPosV() );
 
 	if(pkNewObj == NULL)
@@ -1454,7 +1454,7 @@ int DMLua::AddItemLua(lua_State* pkLua)
 	}
 
 	vector<Entity*> kObjs;
-	g_pkObjMan->GetAllObjects(&kObjs);
+	g_pkObjMan->GetAllEntitys(&kObjs);
 
 	for ( int i = 0; i < kObjs.size(); i++ )
 	{
@@ -1490,7 +1490,7 @@ int DMLua::GetItemByNameLua(lua_State* pkLua)
 		strItemToFind = temp;
 	
 		vector<Entity*> kObjs;
-		g_pkObjMan->GetAllObjects(&kObjs);
+		g_pkObjMan->GetAllEntitys(&kObjs);
 
 		printf("--- ALL ITEMS ---\n");
 

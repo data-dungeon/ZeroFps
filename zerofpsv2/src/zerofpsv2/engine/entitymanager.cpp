@@ -61,9 +61,9 @@ EntityManager::EntityManager()
 : ZFSubSystem("EntityManager") 
 {
 	// Set Default values
-	iNextEntityID				= 0;
-	m_iTotalNetObjectData	= 0;
-	m_iNumOfNetObjects		= 0;
+	m_iNextEntityID			= 0;
+	m_iTotalNetEntityData	= 0;
+	m_iNumOfNetEntitys		= 0;
 	m_bDrawZones				= false;
 	m_bDrawZoneConnections	= false;
 	m_iTrackerLOS				= 3;	
@@ -136,8 +136,8 @@ EntityManager::~EntityManager()
 {
 	float fAvgObjSize = -1;
 
-	if(m_iNumOfNetObjects) {
-		fAvgObjSize = float(m_iTotalNetObjectData / m_iNumOfNetObjects);
+	if(m_iNumOfNetEntitys) {
+		fAvgObjSize = float(m_iTotalNetEntityData / m_iNumOfNetEntitys);
 		}
 
 	Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
@@ -161,7 +161,7 @@ void EntityManager::UpdateSimTime()
 Entity* EntityManager::GetEntityByType(const char* czType)
 {
 	vector<Entity*> kObjects;		
-	GetAllObjects(&kObjects);
+	GetAllEntitys(&kObjects);
 	
 	for(vector<Entity*>::iterator it=kObjects.begin();it!=kObjects.end();it++) 
 	{
@@ -192,14 +192,14 @@ void EntityManager::Link(Entity* pkObject,int iId)
 
 	if(iId == -1)
 	{
-		pkObject->m_iEntityID = iNextEntityID++;
+		pkObject->m_iEntityID = m_iNextEntityID++;
 	}
 	else
 	{
-		if(GetObjectByNetWorkID(iId))
+		if(GetEntityByID(iId))
 		{
-			cout<<"WARNING: "<<GetNumOfObjects()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<iNextEntityID<<endl;
-			pkObject->m_iEntityID = iNextEntityID++;			
+			cout<<"WARNING: "<<GetNumOfEntitys()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<m_iNextEntityID<<endl;
+			pkObject->m_iEntityID = m_iNextEntityID++;			
 		}
 		else	
 			pkObject->m_iEntityID = iId;
@@ -253,45 +253,45 @@ void EntityManager::Clear()
 	m_kZones.clear();
 	
 	// Recreate base objects
-	CreateBaseObjects();
+	CreateBaseEntitys();
 	
 }
 
 /**	\brief	Create the top level objects.
 
 */
-void EntityManager::CreateBaseObjects()
+void EntityManager::CreateBaseEntitys()
 {
-	iNextEntityID = 0;
+	m_iNextEntityID = 0;
 	
 	//top world object parent to all objects
-	m_pkWorldEntity						=	CreateObject();	
+	m_pkWorldEntity						=	CreateEntity();	
 	m_pkWorldEntity->SetName("WorldObject");
 	m_pkWorldEntity->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldEntity->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
-	m_pkZoneEntity						=	CreateObject();	
+	m_pkZoneEntity						=	CreateEntity();	
 	m_pkZoneEntity->SetParent(m_pkWorldEntity);
 	m_pkZoneEntity->SetName("ZoneObject");
 	m_pkZoneEntity->m_eRole				= NETROLE_AUTHORITY;
 	m_pkZoneEntity->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
-	m_pkClientEntity						=	CreateObject();	
+	m_pkClientEntity						=	CreateEntity();	
 	m_pkClientEntity->SetParent(m_pkWorldEntity);
 	m_pkClientEntity->SetName("ClientObject");
 	m_pkClientEntity->m_eRole			= NETROLE_AUTHORITY;
 	m_pkClientEntity->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all global objects (server information etc)
-	m_pkGlobalEntity						=	CreateObject();	
+	m_pkGlobalEntity						=	CreateEntity();	
 	m_pkGlobalEntity->SetParent(m_pkWorldEntity);
 	m_pkGlobalEntity->SetName("GlobalObject");
 	m_pkGlobalEntity->m_eRole			= NETROLE_AUTHORITY;
 	m_pkGlobalEntity->m_eRemoteRole	= NETROLE_NONE;
 
-	iNextEntityID = 100000;
+	m_iNextEntityID = 100000;
 }
 
 
@@ -300,7 +300,7 @@ void EntityManager::CreateBaseObjects()
 
 	Creates a basic object without any propertys and all values set to defualt. 
 */
-Entity* EntityManager::CreateObject(bool bLink)
+Entity* EntityManager::CreateEntity(bool bLink)
 {
 	Entity* pkObj = new Entity;
 	
@@ -314,7 +314,7 @@ Entity* EntityManager::CreateObject(bool bLink)
 */
 void EntityManager::Delete(int iNetworkID) 
 {
-   Entity* pkE = GetObjectByNetWorkID(iNetworkID);
+   Entity* pkE = GetEntityByID(iNetworkID);
 
    if ( pkE )
       Delete (pkE);
@@ -351,7 +351,7 @@ void EntityManager::UpdateDelete()
 	
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
-		Entity* pkObject = GetObjectByNetWorkID((*it));
+		Entity* pkObject = GetEntityByID((*it));
 
 		if(pkObject) { // If i own object mark so we remove it on clients.
 			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
@@ -435,10 +435,10 @@ void EntityManager::UpdateGameMessages(void)
 	Creates a basic object without any propertys and all values set to defualt. 
 */
 
-Entity* EntityManager::CreateObjectByNetWorkID(int iNetID)
+Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 {
 //	Object *pkNew = new NetSlaveObject;
-	Entity *pkNew = CreateObject(false);
+	Entity *pkNew = CreateEntity(false);
 
 	//	Add(pkNew);
 //	pkNew->m_iEntityID = iNetID;
@@ -460,7 +460,7 @@ Entity* EntityManager::CreateObjectByNetWorkID(int iNetID)
 	Creates a object from a script and use it to set values and propertys. If script file
 	is not found no object will be created. 
 */
-Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
+Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
 	int id = GetZoneIndex(kPos,iCurrentZone,false);
 	
@@ -473,7 +473,7 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	if(m_kZones[id].m_iStatus != EZS_LOADED)
 		return NULL;
 	
-	Entity* newobj = CreateObjectFromScript(acName);
+	Entity* newobj = CreateEntityFromScript(acName);
 	
 	if(newobj)
 	{      
@@ -487,7 +487,7 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	return newobj;
 }
 
-Entity* EntityManager::CreateObjectFromScript(const char* acName)
+Entity* EntityManager::CreateEntityFromScript(const char* acName)
 {
 	ZFResourceHandle	kScriptFileHandle;
 	
@@ -540,13 +540,13 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 
 
 // Gets
-void EntityManager::GetAllObjects(vector<Entity*> *pakObjects)
+void EntityManager::GetAllEntitys(vector<Entity*> *pakObjects)
 {
 	//m_pkWorldObject->GetAllObjects(pakObjects);
 	m_pkWorldEntity->GetAllEntitys(pakObjects,true);	
 }
 
-void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
+void EntityManager::GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
 {
 	ZoneData* pkZone = GetZone(kPos);
 	
@@ -599,10 +599,10 @@ void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRad
 	}
 }
 
-Entity* EntityManager::GetObject(const char* acName)
+Entity* EntityManager::GetEntityByName(const char* acName)
 {
 	vector<Entity*> kObjects;		
-	GetAllObjects(&kObjects);
+	GetAllEntitys(&kObjects);
 	
 	for(vector<Entity*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName() == acName)
@@ -614,7 +614,7 @@ Entity* EntityManager::GetObject(const char* acName)
 	return NULL;
 }
 
-Entity*	EntityManager::GetObjectByNetWorkID(int iNetID)
+Entity*	EntityManager::GetEntityByID(int iNetID)
 {
 	if(iNetID == -1)
 		return NULL;
@@ -652,12 +652,12 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 	while(iObjectID != -1) 
 	{
 		//check if entity exist
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		pkNetSlave = GetEntityByID(iObjectID);
 		
 		//if not try to create it
 		if(!pkNetSlave) 
 		{
-			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
+			pkNetSlave = CreateEntityByNetWorkID(iObjectID);
 			//cout << "Creating Entity: " << iObjectID << endl;
 		}
 				
@@ -698,7 +698,7 @@ void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 
 
 	//if this entity is going to be deleted on the client only, we want ot resets its flags 
-	if(Entity* pkEnt = GetObjectByNetWorkID(iEntityID))
+	if(Entity* pkEnt = GetEntityByID(iEntityID))
 	{
 		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);
 	
@@ -1062,7 +1062,7 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 	int iEntityID;
 	pkNetPacket->Read(&iEntityID,sizeof(iEntityID));
 	
-	Entity* pkEnt = GetObjectByNetWorkID( iEntityID );
+	Entity* pkEnt = GetEntityByID( iEntityID );
 	if(!pkEnt)
 		return;
 
@@ -1128,7 +1128,7 @@ void EntityManager::SendMsg(string strName, int iFrom, int iTo)
 
 void EntityManager::RouteMessage(GameMessage& Msg)
 {
-	Entity*	pkObject = GetObjectByNetWorkID(Msg.m_ToObject);
+	Entity*	pkObject = GetEntityByID(Msg.m_ToObject);
 
 	if(pkObject == NULL) {
 		cout << "No Valid object for message" << endl;		
@@ -1385,13 +1385,13 @@ void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
 	Logf("net", " This node now own %d\n", pkObj->m_iEntityID);
 }
 
-Entity* EntityManager::CloneObject(int iNetID)
+Entity* EntityManager::CloneEntity(int iNetID)
 {
-	Entity* pkObjOrginal = GetObjectByNetWorkID(iNetID);
+	Entity* pkObjOrginal = GetEntityByID(iNetID);
 	if(pkObjOrginal == NULL)
 		return NULL;
 
-	Entity* pkObjClone =	CreateObject();
+	Entity* pkObjClone =	CreateEntity();
 
 	ZFVFile kFile;
 	kFile.Open("tclone.dat",0,true);
@@ -1774,12 +1774,12 @@ bool EntityManager::LoadZones(string strSaveDir )
 	kFile.Read(&iNumOfZone,sizeof(int),1);
 
    // load latest created entityID
-   kFile.Read(&iNextEntityID,sizeof(int),1);
+   kFile.Read(&m_iNextEntityID,sizeof(int),1);
 
-	iNextEntityID+=50;  //evil hack
+	m_iNextEntityID+=50;  //evil hack
 
 	cout<<"Nr of zones  : "<<iNumOfZone<<endl;
-	cout<<"Next objectID: "<<iNextEntityID<<endl;
+	cout<<"Next objectID: "<<m_iNextEntityID<<endl;
 		
 	ZoneData kZData;
 	
@@ -1853,8 +1853,8 @@ bool EntityManager::SaveZones(string strSaveDir)
 	kFile.Write(&iNumOfZone,sizeof(int),1);
    
    // save latest created entityID
-   cout<<"Next id is:"<<iNextEntityID<<endl;
-   kFile.Write(&iNextEntityID,sizeof(int),1);
+   cout<<"Next id is:"<<m_iNextEntityID<<endl;
+   kFile.Write(&m_iNextEntityID,sizeof(int),1);
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{
@@ -2009,7 +2009,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	kZData->m_iStatus = EZS_LOADED;
 
 	// Create Object.
-	Entity* kZoneEntity = CreateObject(false);
+	Entity* kZoneEntity = CreateEntity(false);
 	kZoneEntity->m_bZone = true;
 	kZData->m_pkZone = kZoneEntity;
 	kZData->m_pkZone->SetParent(GetZoneEntity());	

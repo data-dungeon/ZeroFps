@@ -46,7 +46,7 @@ void P_DMHQ::Init()
 
 void P_DMHQ::SpawnNewCharacter(int iNr)
 {
-	Entity* pkEnt = m_pkObjMan->CreateObjectFromScript("data/script/objects/characters/member.lua");
+	Entity* pkEnt = m_pkObjMan->CreateEntityFromScript("data/script/objects/characters/member.lua");
 	
 	if(iNr != -1)
 	{
@@ -102,7 +102,7 @@ void P_DMHQ::RandomizeHireList(int iNr)
 
 bool P_DMHQ::InsertCharacter(int iID)
 {
-	Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(iID);
+	Entity* pkEnt = m_pkObjMan->GetEntityByID(iID);
 	if(pkEnt)
 	{
 		P_DMCharacter* pkCharProp;
@@ -154,7 +154,7 @@ bool P_DMHQ::EjectCharacter(int iID)
 	{
 		if(m_kEntitys[i] == iID)	
 		{
-			if(Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_kEntitys[i]))
+			if(Entity* pkEnt = m_pkObjMan->GetEntityByID(m_kEntitys[i]))
 			{				
 				Eject(pkEnt);
 				return true;
@@ -172,7 +172,7 @@ void P_DMHQ::EjectAllCharacters()
 	
 	for(unsigned int i = 0;i<m_kEntitys.size();i++)
 	{
-		if(Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_kEntitys[i]))
+		if(Entity* pkEnt = m_pkObjMan->GetEntityByID(m_kEntitys[i]))
 		{
 			Eject(pkEnt);
 		}

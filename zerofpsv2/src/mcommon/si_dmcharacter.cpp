@@ -17,7 +17,7 @@ int DMLua::GetDMCharacterByNameLua(lua_State* pkLua)
 	g_pkScript->GetArgString(pkLua, 0, szName);
 
 	vector<Entity*> kObjects;		
-	g_pkObjMan->GetAllObjects(&kObjects);
+	g_pkObjMan->GetAllEntitys(&kObjects);
 
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if((pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) != NULL)
@@ -97,10 +97,10 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 		if(g_pkScript->GetArgNumber(pkLua, 0, &dFromObjectID))
 		{
 			// if it crashed here sometime, give zerom a kick
-			Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(int(dFromObjectID))->GetWorldPosV();
+			Vector3 kFrom = g_pkObjMan->GetEntityByID(int(dFromObjectID))->GetWorldPosV();
 
 			vector<Entity*> kObjects;		
-			g_pkObjMan->GetAllObjects(&kObjects);
+			g_pkObjMan->GetAllEntitys(&kObjects);
 
 			for(unsigned int i=0;i<kObjects.size();i++)
 				if( dFromObjectID != kObjects[i]->GetEntityID() &&
@@ -264,8 +264,8 @@ int DMLua::BeamToObjectLua(lua_State* pkLua)
 
 //	cout << "MoveID:" << dMoveID << " ToID:" << dToID << endl;
 
-	pkMovEnt = g_pkObjMan->GetObjectByNetWorkID (int(dMoveID));
-	pkToEnt = g_pkObjMan->GetObjectByNetWorkID (int(dToID));
+	pkMovEnt = g_pkObjMan->GetEntityByID (int(dMoveID));
+	pkToEnt = g_pkObjMan->GetEntityByID (int(dToID));
 
 	if ( pkMovEnt == 0 || pkToEnt == 0 )
 	{
@@ -414,7 +414,7 @@ int DMLua::FireAtLocationLua(lua_State* pkLua)
 	Vector3 kPos;
 	kPos = GetVectorArg(pkLua, 2);
 
-	if ( Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) ) )
+	if ( Entity* pkChar = g_pkObjMan->GetEntityByID( int(dEntID) ) )
 		if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkShotEnt->GetProperty("P_DMCharacter"))
 			pkDMChar->Shoot ( kPos );
 
@@ -434,7 +434,7 @@ int DMLua::FireAtCharacterLua(lua_State* pkLua)
 	double dEntID;
 	g_pkScript->GetArgNumber(pkLua, 1, &dEntID);
 
-	Entity* pkShotTar = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkShotTar = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkShotTar == 0)
 		return 0;
@@ -677,7 +677,7 @@ int DMLua::GetWeaponRangeLua(lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dEntID) );
 
 	if ( pkEntity == 0 )
 	{

@@ -71,7 +71,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistServer::CreateEditCameras()
 {
-	m_pkActiveCameraObject = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	m_pkActiveCameraObject = m_pkObjectMan->CreateEntityFromScript("data/script/objects/t_camedit.lua");
 	if(m_pkActiveCameraObject) 
 	{
 		m_pkActiveCameraObject->SetParent( m_pkObjectMan->GetWorldEntity() );
@@ -848,7 +848,7 @@ void MistServer::DeletePlayerCharacter(int iConID)
 	if(PlayerData* pkPD = m_pkPlayerDB->GetPlayerData(	iConID ))
 	{
 		//first save and delete the player character
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pkPD->m_iCharacterID);
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(pkPD->m_iCharacterID);
 		if(pkObj)
 		{
 			m_pkPlayerDB->SaveCharacter(pkObj,pkPD->m_strPlayerName);
@@ -966,7 +966,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				PkNetMessage->Read(fYAngle);
 				PkNetMessage->Read(fPAngle);
 				
-				if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(pkData->m_iCharacterID))
+				if(Entity* pkCharacter = m_pkObjectMan->GetEntityByID(pkData->m_iCharacterID))
 				{
 					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
 					{

@@ -39,7 +39,7 @@ int BindKeyLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 2, &dAxis);
 		g_pkScript->GetArgNumber(pkLua, 3, &dForce);
 
-		Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dObjectID) );
+		Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dObjectID) );
 		if ( !pkEntity )
 			return 0;
 
@@ -66,7 +66,7 @@ int RotWithCamYAxisLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dObjectID);
 	g_pkScript->GetArgNumber(pkLua, 1, &dBool);
 
-	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dObjectID) );
+	Entity* pkEntity = g_pkObjMan->GetEntityByID( int(dObjectID) );
 
 	if ( !pkEntity )
 		return 0;

@@ -143,7 +143,7 @@ void MistClient::Input()
 	m_kCharacterControls[eJUMP] = m_pkInputHandle->Pressed(MOUSERIGHT);
 	
 	//update camera
-	if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
+	if(Entity* pkCharacter = m_pkObjectMan->GetEntityByID(m_iCharacterID))
 	{
 		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
 		{			
@@ -193,7 +193,7 @@ void MistClient::OnSystem()
 
 void MistClient::SendControlInfo()
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
+	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCharacterID))
 	{
 		//if theres no camera property, create one and set it up
 		if(P_Camera* pkCam = (P_Camera*)pkEnt->GetProperty("P_Camera"))
@@ -215,7 +215,7 @@ void MistClient::SendControlInfo()
 
 void MistClient::UpdateCharacter()
 {
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
+	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCharacterID))
 	{
 		//if theres no camera property, create one and set it up
 		if(!pkEnt->GetProperty("P_Camera"))
@@ -271,7 +271,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			int iEntityID;
 			PkNetMessage->Read(iEntityID);
 
-			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID( iEntityID ))
+			if(Entity* pkEnt = m_pkObjectMan->GetEntityByID( iEntityID ))
 			{
 				if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
 				{

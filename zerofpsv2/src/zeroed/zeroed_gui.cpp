@@ -144,7 +144,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "DeleteObjectButton")
 			{		
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+				Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);		
 				if(pkObj) 
 				{
 					m_pkObjectMan->Delete(pkObj);
@@ -214,7 +214,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "AddPropertyBn")
 			{
 				if((item = GetSelItem("AllPropertyList")))
-					if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
+					if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
 						if(pkEnt->AddProperty(item))
 							UpdatePropertyList(pkEnt->GetEntityID());
 			}
@@ -305,7 +305,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 		Property* pkProp;
 
 		if((szProperty=GetSelItem("PropertyList")))
-			if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
+			if((pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject)))
 				if((item = GetSelItem("PropertyValList")))
 				{
 					if(string("Variables") == string(szProperty))

@@ -227,7 +227,7 @@ void MistClient::OnIdle()
 	
 	
 	// FULHACK Tm Vim
-	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetObjectByNetWorkID( m_pkFps->GetClientObjectID() ) );
+	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetEntityByID( m_pkFps->GetClientObjectID() ) );
 	
 
 	//printouts
@@ -284,7 +284,7 @@ void MistClient::OnSystem()
 			m_iSelfObjectID = m_pkFps->GetClientObjectID();	
 			if(m_iSelfObjectID != -1)
 			{		
-				m_pkClientObject = m_pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);		
+				m_pkClientObject = m_pkObjectMan->GetEntityByID(m_iSelfObjectID);		
 				if(m_pkClientObject)
 				{			
 					m_pkConsole->Printf("Got client object, Trying to get client control");
@@ -301,7 +301,7 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			Entity* pkServerI = m_pkObjectMan->GetObject("A t_serverinfo.lua");
+			Entity* pkServerI = m_pkObjectMan->GetEntityByName("A t_serverinfo.lua");
 			if(pkServerI)
 			{
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
@@ -343,7 +343,7 @@ void MistClient::OnSystem()
 			{
 				pair<int,string> sound_info = pi->kSounds.front();
 
-				Entity* pkGenerator = m_pkObjectMan->GetObjectByNetWorkID(sound_info.first);
+				Entity* pkGenerator = m_pkObjectMan->GetEntityByID(sound_info.first);
 
 				if(pkGenerator)
 				{
@@ -1267,7 +1267,7 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 			{
 				cout<<"enabling charactercontrol of:"<<id<<endl;
 				
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(id);
+				Entity* pkObj = m_pkObjectMan->GetEntityByID(id);
 	
 				//object found
 				if(pkObj)
@@ -1319,7 +1319,7 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 		{
 			cout<<"disabling charactercontrol of:"<<m_iActiveCaracterObjectID<<endl;
 			
-			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+			Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iActiveCaracterObjectID);
 			
 			if(pkObj)
 			{
@@ -1729,7 +1729,7 @@ void MistClient::UpdateCullObjects()
 	static vector<P_Mad*> mads;	
 	static float fAddRadius = 1;
 	
-	Entity* pkCar = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+	Entity* pkCar = m_pkObjectMan->GetEntityByID(m_iActiveCaracterObjectID);
 	
 	if(!pkCar)
 		return;

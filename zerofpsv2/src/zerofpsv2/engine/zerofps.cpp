@@ -305,7 +305,7 @@ void ZeroFps::Run_EngineShell()
 
 	//some devpage stuff
 	DevPrintf("common","ENTITYMAN:");	
-	DevPrintf("common","  Num Objects     : %d", m_pkObjectMan->GetNumOfObjects());
+	DevPrintf("common","  Num Objects     : %d", m_pkObjectMan->GetNumOfEntitys());
 	DevPrintf("common","  NextEntityID    : %d", m_pkObjectMan->GetNextEntityID());
 	DevPrintf("common","  Active Propertys: %d",m_pkObjectMan->GetActivePropertys());		
 	
@@ -909,7 +909,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 				}
 			
-			pkEnt = this->m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
+			pkEnt = this->m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
 			pkEnt->AddProperty("P_Event");
 			pkEnt->AddProperty("P_Item");
 			pkEnt->AddProperty("P_Ml");
@@ -1058,12 +1058,12 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 			case ZFGP_REQOWNOBJECT: 
 				pkNetPacket->Read(m_iObjectID);
-				m_pkObjectMan->OwnerShip_OnRequest(m_pkObjectMan->GetObjectByNetWorkID( m_iObjectID ));
+				m_pkObjectMan->OwnerShip_OnRequest(m_pkObjectMan->GetEntityByID( m_iObjectID ));
 				break;
 
 			case ZFGP_GIVEOWNOBJECT: 
 				pkNetPacket->Read(m_iObjectID);
-				m_pkObjectMan->OwnerShip_OnGrant(m_pkObjectMan->GetObjectByNetWorkID( m_iObjectID ));
+				m_pkObjectMan->OwnerShip_OnGrant(m_pkObjectMan->GetEntityByID( m_iObjectID ));
 				break;
 
 			case ZFGP_ZONELIST: 
@@ -1105,14 +1105,14 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read_Str(szCmd);
 		pkNetPacket->Read(kPos);
-		m_pkObjectMan->CreateObjectFromScriptInZone( szCmd, kPos);
+		m_pkObjectMan->CreateEntityFromScriptInZone( szCmd, kPos);
 	}
 
 	if( szCmd == string("move"))
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
@@ -1122,7 +1122,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->SetLocalPosV(kMove);
@@ -1132,7 +1132,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
 		pkObj->RotateLocalRotV(kMove);
@@ -1150,7 +1150,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		for(int i=0; i<iNumOfId; i++) 
 		{
 			pkNetPacket->Read(iEntId);
-			Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(iEntId);
+			Entity* pkEntity = m_pkObjectMan->GetEntityByID(iEntId);
 			if(!pkEntity)	continue;
 			cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
 			if(pkEntity->GetName() == string("ZoneObject"))
@@ -1293,7 +1293,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 		m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
 	
 		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
-		m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
+		m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateEntity();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
 		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 	

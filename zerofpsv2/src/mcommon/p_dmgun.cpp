@@ -71,7 +71,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	// Barrelfire
 	if ( m_strBarrelFirePS.size() && m_iAmmo )
 	{
-		Entity *pkBF = m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone(m_strBarrelFirePS.c_str(), 
+		Entity *pkBF = m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone(m_strBarrelFirePS.c_str(), 
 			m_pkObject->GetWorldPosV());
 		
 		pkBF->SetWorldPosV(Vector3(0,0,0));
@@ -293,7 +293,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			
 			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/weapons/gunsmoke.lua");
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 
@@ -327,7 +327,7 @@ bool P_DMGun::FireBullets(int iAmount)
 		else
 		{			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/weapons/gunsmoke.lua");
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 

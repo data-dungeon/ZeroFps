@@ -678,9 +678,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		int iParentID	=	-1;
 		
 		pkNetPacket->Read( iParentID );		
-		Entity* parent = m_pkEntityMan->GetObjectByNetWorkID(iParentID);
+		Entity* parent = m_pkEntityMan->GetEntityByID(iParentID);
 		if(!parent)
-			parent = m_pkEntityMan->CreateObjectByNetWorkID(iParentID);
+			parent = m_pkEntityMan->CreateEntityByNetWorkID(iParentID);
 		SetParent(parent);
 		LOGSIZE("Object::ParentID", 4);
 	}
@@ -703,7 +703,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		{
 			int iDelObjectID;
 			pkNetPacket->Read(iDelObjectID );
-			pkNetSlave = m_pkEntityMan->GetObjectByNetWorkID(iDelObjectID);
+			pkNetSlave = m_pkEntityMan->GetEntityByID(iDelObjectID);
 			m_pkEntityMan->Delete(pkNetSlave);
 		}
 	}
@@ -813,8 +813,8 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	int iEnd = pkNetPacket->m_iPos;
 	
-	m_pkEntityMan->m_iTotalNetObjectData += (iEnd - iStart);
-	m_pkEntityMan->m_iNumOfNetObjects ++;
+	m_pkEntityMan->m_iTotalNetEntityData += (iEnd - iStart);
+	m_pkEntityMan->m_iNumOfNetEntitys ++;
 }
 
 /**	\brief	Load Entity.
@@ -923,7 +923,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		//load all childs
 		for( i = 0; i < iChilds; i++ )
 		{
-			Entity* newobj = m_pkEntityMan->CreateObject(false);
+			Entity* newobj = m_pkEntityMan->CreateEntity(false);
 			newobj->SetParent(this);
 			newobj->Load(pkFile,bLoadID);		
 		}

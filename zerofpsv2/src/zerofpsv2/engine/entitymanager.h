@@ -10,12 +10,9 @@
 
 using namespace std;
 
-//class PropertyDescriptor;
-//class ObjectDescriptor;
 class ZeroFps;
 class GameMessage;
 class NetWork;
-//class ZoneObject;
 class P_Track;
 
 enum EZoneStatus
@@ -105,7 +102,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
 		
-		int							iNextEntityID;												///< Next free Entity ID.
+		int							m_iNextEntityID;												///< Next free Entity ID.
 		
 		//debug
 		bool							m_bDrawZones;						//shuld zones be drawed
@@ -114,11 +111,11 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		// DELETE
 		vector<int>					m_aiDeleteList;
 		
-		//notwork
+		// Network 
 		int			m_iForceNetUpdate;					
 		float			m_fEndTimeForceNet;
-		int			m_iTotalNetObjectData;
-		int			m_iNumOfNetObjects;
+		int			m_iTotalNetEntityData;
+		int			m_iNumOfNetEntitys;
 		NetPacket	m_OutNP;		// Used to create/send updates to clients.		
 
 		//other strange variables =D
@@ -183,21 +180,21 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		float		GetTimeScale()						{	return m_fSimTimeScale;		};
 		
 		// Add/Remove Entitys
-		void Link(Entity* pkNewObject,int iId = -1);									///< Link this to the Entity manager
-		void UnLink(Entity* pkObject);									///< UnLink this from Entity Manger.
-		bool IsLinked(Entity* pkObject);
+		void Link(Entity* pkNewEntity,int iId = -1);					///< Link this to the Entity manager
+		void UnLink(Entity* pkEntity);									///< UnLink this from Entity Manger.
+		bool IsLinked(Entity* pkEntity);
 		void Clear();															///< Delete all Entity.
-		void CreateBaseObjects();											/// create all base Entitys	
+		void CreateBaseEntitys();											/// create all base Entitys	
 
 
 		// Create 
-		Entity* CreateObject(bool bLink = true);												///< Create a empty Entity.
-		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create Entity with selected NetworkID
-		Entity* CreateObjectFromScript(const char* acName);
-		Entity* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
+		Entity* CreateEntity(bool bLink = true);						///< Create a empty Entity.
+		Entity* CreateEntityByNetWorkID(int iNetID);					///< Create Entity with selected NetworkID
+		Entity* CreateEntityFromScript(const char* acName);
+		Entity* CreateEntityFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Delete
-		void Delete(Entity* pkNewObject);								///< Adds an Entity to delete qeue
+		void Delete(Entity* pkEntity);									///< Adds an Entity to delete qeue
       void Delete(int iNetworkID);								      ///< Adds an Entity to delete qeue
 		void UpdateDelete();													///< Deletes Entity in delete qeue	
 
@@ -213,22 +210,22 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity* GetClientEntity()	{	return m_pkClientEntity;			};		
 		Entity* GetGlobalEntity()	{	return m_pkGlobalEntity;			};				
 		
-		int	GetNextEntityID()		{	return iNextEntityID;				};
-		int	GetNumOfObjects()		{	return int(m_akEntitys.size());	}
+		int	GetNextEntityID()		{	return m_iNextEntityID;				};
+		int	GetNumOfEntitys()		{	return int(m_akEntitys.size());	}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		
-		void 		GetAllObjects(vector<Entity*> *pakObjects);
+		void 		GetAllEntitys(vector<Entity*> *pakEntity);
 		Entity*	GetEntityByType(const char* czType);
-		Entity* 	GetObject(const char* acName);							///< Get a ptr to Entity by name
-		Entity*	GetObjectByNetWorkID(int iNetID);						///< Get a ptr to Entity by networkID
+		Entity* 	GetEntityByName(const char* acName);							///< Get a ptr to Entity by name
+		Entity*	GetEntityByID(int iNetID);						///< Get a ptr to Entity by networkID
 
-		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
+		void GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );
 		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
-		void PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject);
+		void PackToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject);
 		void PackToClients();																		//Packs and Sends to ALL clients.
 		void SendDeleteEntity(int iClient,int iEntityID);
 		
@@ -258,9 +255,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 
-		Entity* EntityManager::CloneObject(int iNetID);
+		Entity* CloneEntity(int iNetID);
 
-		//picking of objects
+		//picking of Entitys
 		bool TestLine(vector<Entity*>* pkObList,Vector3 kPos,Vector3 kVec);
 		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
       
@@ -287,8 +284,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int 			GetUnusedZoneID();		
 		Vector3 		GetZoneCenter(int iZoneNum);
 		void 			SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};		
-		int 			GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
-		ZoneData* 	GetZone(Entity* PkObject);
+		int 			GetZoneIndex(Entity* PkEntity,int iCurrentZone,bool bClosestZone);
+		ZoneData* 	GetZone(Entity* PkEntity);
 		
 		
 		//trackers

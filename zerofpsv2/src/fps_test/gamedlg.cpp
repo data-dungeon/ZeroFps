@@ -69,7 +69,7 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 	}
 
 	if(iID != -1)
-		return m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(iID);
+		return m_pkDM->m_pkObjectMan->GetEntityByID(iID);
 
 	return NULL;
 }
@@ -141,7 +141,7 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 	for(unsigned int i=0;i<m_pkDM->m_kAgentsOnField.size();i++)
 	{
 		kList.push_back(
-			m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(
+			m_pkDM->m_pkObjectMan->GetEntityByID(
 				m_pkDM->m_kAgentsOnField[i]));	
 	}
 

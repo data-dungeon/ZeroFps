@@ -113,7 +113,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 
 	//printf("Play Sound '%s' on object %d\n", acName,  iObjectID);
 
-	Entity* pkObject = g_pkObjectMan->GetObjectByNetWorkID(iObjectID);
+	Entity* pkObject = g_pkObjectMan->GetEntityByID(iObjectID);
 	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
 
 	if(pkSound)
@@ -184,7 +184,7 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 	case 3:
 		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
 		Entity* pkObject;
-		pkObject = g_pkObjectMan->GetObjectByNetWorkID((int)dValue);
+		pkObject = g_pkObjectMan->GetEntityByID((int)dValue);
 		if(pkObject == NULL)
 		{
 			char szFileName[100];

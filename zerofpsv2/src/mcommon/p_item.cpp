@@ -328,7 +328,7 @@ Entity* P_Item::Split ( int iTookens )
       m_pkItemStats->AddQuantity( -iTookens );      
 
       // in zone???
-      Entity *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
+      Entity *pkNewObject = m_pkObjMan->CreateEntityFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
 
       // copy all object data
       P_Item *pkNewItemProp = (P_Item*)pkNewObject->GetProperty("P_Item");
@@ -369,7 +369,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 {
    
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID);
+   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {

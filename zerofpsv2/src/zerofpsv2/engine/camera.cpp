@@ -439,7 +439,7 @@ void Camera::RenderView()
 	
 	
 	//get root entity
-	Entity* pkRootEntity = m_pkEntityMan->GetObjectByNetWorkID(m_iRootEntity);
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 		
 	//update all render propertys that shuld be shadowed
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);

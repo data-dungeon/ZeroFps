@@ -35,7 +35,7 @@ void P_DMClickMe::Update()
 		// visit time is over, get out of the house
 		if ( (*kIte).m_fVisitTime <= 0 )
 		{
-			Entity* pkVisiter = m_pkObjMan->GetObjectByNetWorkID ( (*kIte).m_iVisiter );
+			Entity* pkVisiter = m_pkObjMan->GetEntityByID ( (*kIte).m_iVisiter );
 
 			if ( pkVisiter == 0 )
 			{

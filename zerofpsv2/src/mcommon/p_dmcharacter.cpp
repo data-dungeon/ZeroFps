@@ -197,7 +197,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	
 	// oh madness, blood psystem in the nick of time :D
 	if ( m_iTeam != 10 )
-		m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone("data/script/objects/particles/blood.lua", m_pkObject->GetWorldPosV());
+		m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone("data/script/objects/particles/blood.lua", m_pkObject->GetWorldPosV());
 
 	if(m_kStats.m_iLife <= 0)
 	{
@@ -518,7 +518,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 					if( iObjectID != -1)
 					{
-						pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iObjectID );
+						pkWeapon = m_pkObjMan->GetEntityByID ( iObjectID );
 
 						string strGunItemName = 
 							((P_DMItem*)pkWeapon->GetProperty("P_DMItem"))->GetName();
@@ -546,7 +546,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 	// default, run scriptfunction, item itself decides what happens
 	default:
-		Entity* pkQItem = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID(kItemList[iBeltIndex].m_iItemID);
+		Entity* pkQItem = m_pkObject->m_pkEntityMan->GetEntityByID(kItemList[iBeltIndex].m_iItemID);
 
 		if ( pkQItem == 0 )
 			break;
@@ -712,7 +712,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 			
 		case ePickup:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
 				{
 					if( pkPickEnt->GetWorldPosV().DistanceTo(m_pkObject->GetWorldPosV()) < 1) 
 					{
@@ -736,7 +736,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 			
 		case eEnterHQ:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
 				{
 					if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 					{
@@ -764,7 +764,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 
 		case eClickMe:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
 				{
 					if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
 					{
@@ -849,7 +849,7 @@ P_DMGun* P_DMCharacter::GetGun()
 			if ( *m_pkHand->GetItem(x,y) != -1 )
 				iWeapID = *m_pkHand->GetItem(x,y);
 
-	if ( Entity* pkGun = m_pkObjMan->GetObjectByNetWorkID(iWeapID) )
+	if ( Entity* pkGun = m_pkObjMan->GetEntityByID(iWeapID) )
 		if ( P_DMGun* pkGunP = (P_DMGun*)pkGun->GetProperty("P_DMGun") )
 			return pkGunP;
 

@@ -154,7 +154,7 @@ void P_Controller::SpringTrigger (int iAxis, float fValue)
 	{
       Camera* pkCamera = m_pkZeroFps->GetRenderCamera("AppView");
 
-		if ( Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(pkCamera->GetEntityID()) )
+		if ( Entity* pkEnt = m_pkObjMan->GetEntityByID(pkCamera->GetEntityID()) )
 		{
 			Vector3 kTemp = kVel;
 

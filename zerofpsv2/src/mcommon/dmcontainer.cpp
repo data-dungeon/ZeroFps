@@ -11,7 +11,7 @@ DMContainer::DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 	
 	SetSize(iX,iY);
 	
-	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID) )	
+	if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID) )	
 	{
 		//pkOwner->SetUpdateStatus(UPDATE_NOCHILDS);
 	}
@@ -137,9 +137,9 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 			return false;
 		}
 		
-	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))
+	if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID))
 	{
-		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 		{
 			if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
 			{
@@ -190,7 +190,7 @@ bool DMContainer::AddItem(int iID)
 	if(HaveItem(iID))
 		return false;
 
-	if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
+	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 	{
 		if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
 		{
@@ -253,9 +253,9 @@ bool DMContainer::RemoveItem(int iX,int iY)
 
 bool DMContainer::DropItem(int iID)
 {
-	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))
+	if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID))
 	{
-		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 		{
 			if(HaveItem(iID))
 			{
@@ -334,7 +334,7 @@ bool DMContainer::MoveItem(int iID,int iX,int iY)
 {
 	if(HaveItem(iID))
 	{
-		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 		{
 			if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
 			{	
@@ -380,7 +380,7 @@ void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
 
 	for(set<int>::iterator it=kItemIDs.begin();it!=kItemIDs.end();it++)
 	{
-		if(Entity* pkEnt = m_pkEntMan->GetObjectByNetWorkID(*it))
+		if(Entity* pkEnt = m_pkEntMan->GetEntityByID(*it))
 		{		
 			if(P_DMItem* pkItem = (P_DMItem*)pkEnt->GetProperty("P_DMItem"))
 			{		

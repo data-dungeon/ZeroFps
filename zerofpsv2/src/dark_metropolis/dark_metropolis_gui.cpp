@@ -332,7 +332,7 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 
 			Vector3 kClickPos = Vector3(fx,0,fy);
 
-			Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity);
+			Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iSelectedEntity);
 				
 			if(pkEnt)
 			{

@@ -342,7 +342,7 @@ void P_DMMission::OnMissionSuccess()
 	
 	unsigned int iAntal=0, i;
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetAllEntitys(&kObjects);
 
 	// Kolla hur många agenter som finns.
 	for(i=0;i<kObjects.size();i++)

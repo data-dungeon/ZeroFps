@@ -11,7 +11,7 @@ int DMLua::HavePathLua(lua_State* pkLua)
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -47,7 +47,7 @@ int DMLua::MakePathFindLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)); 
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -74,7 +74,7 @@ int DMLua::ClearPathFindLua(lua_State* pkLua)
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -208,7 +208,7 @@ int DMLua::PatrolLua(lua_State* pkLua)
 		{
 			if(!it->second.m_vkPoints.empty())
 			{
-				Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dEntID));
+				Entity* pkEnt = g_pkObjMan->GetEntityByID(int(dEntID));
 
 				if(pkEnt)
 				{
@@ -254,7 +254,7 @@ int DMLua::HaveOrdersLua(lua_State* pkLua)
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 			if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 				iHasOrders = pkDMChar->HasOrders();
@@ -275,7 +275,7 @@ int DMLua::GetTargetLua(lua_State* pkLua)
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 			if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 			{

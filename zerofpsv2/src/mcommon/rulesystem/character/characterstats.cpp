@@ -36,7 +36,7 @@ CharacterStats::CharacterStats( Entity *pkParent )
    if ( m_pkParent->m_pkZeroFps->m_bServerMode )
    {
       // find serverInfoObject
-      Entity* pkEnt = m_pkParent->m_pkEntityMan->GetObject("A t_serverinfo.lua");
+      Entity* pkEnt = m_pkParent->m_pkEntityMan->GetEntityByName("A t_serverinfo.lua");
 
       if ( !pkEnt )
       {

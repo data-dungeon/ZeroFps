@@ -39,7 +39,7 @@ bool P_Container::AddObject ( int iAddToContainer )
    if ( (int) m_kContainedObjects.size() < m_iCapacity )
    {
 
-      Entity *pkEntity = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( iAddToContainer );
+      Entity *pkEntity = m_pkObject->m_pkEntityMan->GetEntityByID ( iAddToContainer );
 
       if ( !pkEntity )
       {
@@ -87,7 +87,7 @@ bool P_Container::RemoveObject ( int iRemoveFromContainer )
          m_uiVersion++;
 
          Entity *pkEntity = 
-            m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( (*kIte) );
+            m_pkObject->m_pkEntityMan->GetEntityByID ( (*kIte) );
 
          // Set which container the item is in
          ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = -1;
@@ -132,7 +132,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
       for ( unsigned int i = 0; i < m_kContainedObjects.size(); i++ )
       {
          Entity *pkEntity = 
-            m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
+            m_pkObject->m_pkEntityMan->GetEntityByID ( m_kContainedObjects[i] );
 
          // add item to container list
          pkItemList->push_back ( pkEntity );
@@ -154,7 +154,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 void P_Container::RequestUpdateFromServer()
 {
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID);
+   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {
@@ -291,7 +291,7 @@ void P_Container::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       AddObject (iID);
 
       // request update for item at the same time
-      Entity* pkObj = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID(iID);
+      Entity* pkObj = m_pkObject->m_pkEntityMan->GetEntityByID(iID);
 
       cout << "GOT ITEM IN CONT" << endl;
 

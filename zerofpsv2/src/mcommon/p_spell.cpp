@@ -72,7 +72,7 @@ void P_Spell::Update()
          if ( m_fAge >= m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_fStartTime )
          {
             // can't have more than one PSystem/object, so create a new object for each new PS *sigh*
-            Entity *pkNewObject = m_pkObject->m_pkEntityMan->CreateObject();
+            Entity *pkNewObject = m_pkObject->m_pkEntityMan->CreateEntity();
 
             // create and attach PS to new object
             P_PSystem *pkPSProp =  (P_PSystem*)pkNewObject->AddProperty ("P_PSystem");
@@ -375,7 +375,7 @@ void P_Spell::DoCollisions()
                if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkEntityMan->CreateObjectFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
+                  m_pkObject->m_pkEntityMan->CreateEntityFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
 
                   if ( pkNewSpell )
                   {
@@ -401,7 +401,7 @@ void P_Spell::DoCollisions()
                if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
+                  m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
                                                                            kObjects[i]->GetWorldPosV() );
                   pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
                   /*
@@ -423,7 +423,7 @@ void P_Spell::DoCollisions()
                // creates a psystem at the hit location and removes the spell
                if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
                {
-                  Entity *pkNewPSystem = m_pkObject->m_pkEntityMan->CreateObject();
+                  Entity *pkNewPSystem = m_pkObject->m_pkEntityMan->CreateEntity();
             
                   P_PSystem *pkNewPSProp = new P_PSystem;
                   kObjects[i]->AddProperty( pkNewPSProp );

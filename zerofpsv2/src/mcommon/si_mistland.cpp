@@ -208,7 +208,7 @@ int MistLandLua::RemoveObjectLua(lua_State* pkLua)
 	}
 	
 	//get object
-	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	Entity*	pkObj = g_pkObjMan->GetEntityByID(iId);
 	
 	if(pkObj)
 		g_pkObjMan->Delete(pkObj);
@@ -228,7 +228,7 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 		iThisId = (int)dTemp;
 	}
 
-	Entity* pkME = g_pkObjMan->GetObjectByNetWorkID(iThisId);
+	Entity* pkME = g_pkObjMan->GetEntityByID(iThisId);
 
 	//check that the object is valid
 	if(!pkME)
@@ -238,7 +238,7 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 
 
 	vector<Entity*> kObjects;
-	g_pkObjMan->GetAllObjects(&kObjects);
+	g_pkObjMan->GetAllEntitys(&kObjects);
 	
 	
 	
@@ -285,7 +285,7 @@ int MistLandLua::AddActionLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	id = (int)dTemp;
 	
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
+	Entity* pkObject = g_pkObjMan->GetEntityByID(id);
 	if(pkObject)
 	{
 		P_Ml* pe = (P_Ml*)pkObject->GetProperty("P_Ml");	
@@ -312,7 +312,7 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 	
 	if(!g_pkServerInfo)
 	{	
-		Entity* pkServerI = g_pkObjMan->GetObject("A t_serverinfo.lua");
+		Entity* pkServerI = g_pkObjMan->GetEntityByName("A t_serverinfo.lua");
 		if(pkServerI)
 			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 		
@@ -370,7 +370,7 @@ int MistLandLua::StartPrivateSoundLua(lua_State* pkLua)
 
 	if(!g_pkServerInfo)
 	{	
-		Entity* pkServerI = g_pkObjMan->GetObject("A t_serverinfo.lua");
+		Entity* pkServerI = g_pkObjMan->GetEntityByName("A t_serverinfo.lua");
 		if(pkServerI)
 			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 		
@@ -406,7 +406,7 @@ int MistLandLua::StartSoundLua(lua_State* pkLua)
 
 	if(!g_pkServerInfo)
 	{	
-		Entity* pkServerI = g_pkObjMan->GetObject("A t_serverinfo.lua");
+		Entity* pkServerI = g_pkObjMan->GetEntityByName("A t_serverinfo.lua");
 		if(pkServerI)
 			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 		
@@ -440,7 +440,7 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 		int iId = (int)dTemp;
 		
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
 		
 		if(pkObject)
 			pkObject->DeleteProperty("P_PSystem");
@@ -454,7 +454,7 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 		int iId = (int)dTemp;
 		
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
 		if(pkObject)
 		{
 			P_PSystem* ps = (P_PSystem*)pkObject->GetProperty("P_PSystem");
@@ -497,7 +497,7 @@ int MistLandLua::MakePathFindLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)); 
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -515,7 +515,7 @@ int MistLandLua::HavePathLua(lua_State* pkLua)
 		double dId;		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -548,7 +548,7 @@ int MistLandLua::RotateTowardsLua(lua_State* pkLua)
 			(float) (*(double*) vkData[2].pData)); 
 
 
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 			
 		if(pkEnt)
 		{
@@ -574,7 +574,7 @@ int MistLandLua::BounceLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &id);		
 
 
-	Entity* ent = g_pkObjMan->GetObjectByNetWorkID((int)id);
+	Entity* ent = g_pkObjMan->GetEntityByID((int)id);
 	
 	if(ent)
 	{
@@ -613,7 +613,7 @@ int MistLandLua::RollSkillDiceLua (lua_State* pkLua)
    else
 	{
 
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 		if(pkObject)
 		{
@@ -655,7 +655,7 @@ int MistLandLua::RollAttributeDiceLua (lua_State* pkLua)
       return 0;
    else
 	{
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 		if(pkObject)
 		{
@@ -684,7 +684,7 @@ int MistLandLua::SetCurrentSkillLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -707,7 +707,7 @@ int MistLandLua::AddSkillValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -734,7 +734,7 @@ int MistLandLua::AddAttributeValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -761,7 +761,7 @@ int MistLandLua::SetSkillValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -790,7 +790,7 @@ int MistLandLua::SetAttributeValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -819,7 +819,7 @@ int MistLandLua::SetDataValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -847,7 +847,7 @@ int MistLandLua::SetDefenceValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -879,7 +879,7 @@ int MistLandLua::SetAttackValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -907,7 +907,7 @@ int MistLandLua::SetHPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -932,7 +932,7 @@ int MistLandLua::SetMPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -958,7 +958,7 @@ int MistLandLua::SetMaxHPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -983,7 +983,7 @@ int MistLandLua::SetMaxMPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1006,7 +1006,7 @@ int MistLandLua::GetHPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1028,7 +1028,7 @@ int MistLandLua::GetMPLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1051,7 +1051,7 @@ int MistLandLua::GetHpPercentLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1074,7 +1074,7 @@ int MistLandLua::GetMpPercentLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1097,7 +1097,7 @@ int MistLandLua::AddHpLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1121,7 +1121,7 @@ int MistLandLua::AddMpLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1146,7 +1146,7 @@ int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1178,7 +1178,7 @@ int MistLandLua::SetReloadTimeLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1206,7 +1206,7 @@ int MistLandLua::AddReloadTimeLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1233,7 +1233,7 @@ int MistLandLua::SetMoveSpeedLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1262,7 +1262,7 @@ int MistLandLua::AddMoveSpeedLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1291,7 +1291,7 @@ int MistLandLua::PrintStatsLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1317,7 +1317,7 @@ int MistLandLua::SetRecalPositionLua (lua_State* pkLua)
 		double dID;
 		g_pkScript->GetArgNumber(pkLua, 0, &dID);		
 
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
 
 		if(pkObject)
 		{
@@ -1353,7 +1353,7 @@ int MistLandLua::GetQuantityLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1383,7 +1383,7 @@ int MistLandLua::SetQuantityLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1410,7 +1410,7 @@ int MistLandLua::AddQuantityLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1436,7 +1436,7 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1463,7 +1463,7 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 ) // ändra till 1 och ändra alla skriptfiler...
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1490,7 +1490,7 @@ int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 ) 
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1536,14 +1536,14 @@ int MistLandLua::UseItemOnLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
          double dCharacterID;
          g_pkScript->GetArgNumber(pkLua, 0, &dCharacterID);
 
-         Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID( (int) dCharacterID);
+         Entity* pkChar = g_pkObjMan->GetEntityByID( (int) dCharacterID);
 
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
@@ -1566,7 +1566,7 @@ int MistLandLua::SetSkillBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1597,7 +1597,7 @@ int MistLandLua::SetAttributeBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1628,7 +1628,7 @@ int MistLandLua::SetAttackBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1659,7 +1659,7 @@ int MistLandLua::SetDefenceBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1690,7 +1690,7 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1716,7 +1716,7 @@ int MistLandLua::GetSkillBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1749,7 +1749,7 @@ int MistLandLua::GetAttributeBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1781,7 +1781,7 @@ int MistLandLua::GetAttackBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1813,7 +1813,7 @@ int MistLandLua::GetDefenceBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1846,7 +1846,7 @@ int MistLandLua::AddSkillBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1880,7 +1880,7 @@ int MistLandLua::AddAttributeBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1913,7 +1913,7 @@ int MistLandLua::AddAttackBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1947,7 +1947,7 @@ int MistLandLua::AddDefenceBonusLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -1981,7 +1981,7 @@ int MistLandLua::PrintItemStatsLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2009,7 +2009,7 @@ int MistLandLua::SetItemNameLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2039,7 +2039,7 @@ int MistLandLua::UsesSkillLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2065,7 +2065,7 @@ int MistLandLua::SetItemWeightLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2095,7 +2095,7 @@ int MistLandLua::SetItemValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2125,7 +2125,7 @@ int MistLandLua::GetItemValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2158,7 +2158,7 @@ int MistLandLua::AddItemValueLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2188,7 +2188,7 @@ int MistLandLua::AddBeforeItemNameLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2215,7 +2215,7 @@ int MistLandLua::AddAfterItemNameLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2242,7 +2242,7 @@ int MistLandLua::UnEquipLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2270,7 +2270,7 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2290,7 +2290,7 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
             ZFScriptSystem* pkZFScriptSys = g_pkScript;
 
             // create the new object
-            Entity* pkNewObj = g_pkObjMan->CreateObjectFromScript( acItem );
+            Entity* pkNewObj = g_pkObjMan->CreateEntityFromScript( acItem );
 
             if ( pkNewObj )
             {
@@ -2329,7 +2329,7 @@ int MistLandLua::EquipLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2339,7 +2339,7 @@ int MistLandLua::EquipLua (lua_State* pkLua)
          char	acSlot[128];
 			g_pkScript->GetArgString(pkLua, 1, acSlot);
 
-         Entity* pkCharProp = g_pkObjMan->GetObjectByNetWorkID ( int(dTemp) );
+         Entity* pkCharProp = g_pkObjMan->GetEntityByID ( int(dTemp) );
 
          if ( pkCharProp )
          {
@@ -2486,7 +2486,7 @@ int MistLandLua::RunScriptLua (lua_State* pkLua)
 
       ZFScriptSystem* pkZFScriptSys = g_pkScript;
 	   
-	   Entity* object = g_pkObjMan->GetObjectByNetWorkID(objectid);
+	   Entity* object = g_pkObjMan->GetEntityByID(objectid);
 	   if(!object)
 	   {
 		   cout<<"parend object does not exist"<<endl;
@@ -2494,7 +2494,7 @@ int MistLandLua::RunScriptLua (lua_State* pkLua)
 	   }
    
       // create the new object
-      Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
+      Entity* pkNewObj = g_pkObjMan->CreateEntityFromScriptInZone(acType, 
                          object->GetWorldPosV() );
 
       // return everything the way it was
@@ -2516,7 +2516,7 @@ int MistLandLua::SetPropertyValueLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 3 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2549,7 +2549,7 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 3 )
    {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
@@ -2565,14 +2565,14 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
          double dTarget;
          g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
 
-			Entity* me = g_pkObjMan->GetObjectByNetWorkID((int) dCaster);
+			Entity* me = g_pkObjMan->GetEntityByID((int) dCaster);
 			if(!me)
 				return 0;
 
 			//cout<<"pos:"<<me.x<<endl;
 
          Entity* pkSpell = 
-                 g_pkObjMan->CreateObjectFromScriptInZone(acValue,me->GetWorldPosV());
+                 g_pkObjMan->CreateEntityFromScriptInZone(acValue,me->GetWorldPosV());
 
          P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
          pkSpellProp->SetCaster ( (int) dCaster );
@@ -2662,7 +2662,7 @@ int MistLandLua::SetDrawingOrderLua(lua_State* pkLua)
       double dOrder;
       g_pkScript->GetArgNumber(pkLua, 0, &dOrder);
 
-      Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
   		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
 
@@ -2686,7 +2686,7 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
       double dSize;
       g_pkScript->GetArgNumber(pkLua, 0, &dSize);
 
-      Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
   		P_Container* pkC = (P_Container*)pkEntity->GetProperty("P_Container");
 
@@ -2718,8 +2718,8 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
       else
          dObject = ObjectManagerLua::g_iCurrentObjectID;
 
-      Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID((int)dObject);
-      Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID((int)dContainer);
+      Entity* pkItem = g_pkObjMan->GetEntityByID((int)dObject);
+      Entity* pkContObj = g_pkObjMan->GetEntityByID((int)dContainer);
 
       if ( !pkItem )
       {
@@ -2767,7 +2767,7 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 
       g_pkScript->GetArgNumber(pkLua, 0, &dChar);
 
-      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID((int)dChar);
+      Entity* pkCharObj = g_pkObjMan->GetEntityByID((int)dChar);
   
       if(!pkCharObj)
       	return 0;
@@ -2804,12 +2804,12 @@ int MistLandLua::AIUseActionOnLua(lua_State* pkLua)
       else
          dUser = ObjectManagerLua::g_iCurrentObjectID;
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dUser);
+      Entity* pkObj = g_pkObjMan->GetEntityByID((int)dUser);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID((int)dTarget);
+      Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
 
       if ( !pkTarget )
          return 0;
@@ -2849,12 +2849,12 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
       else
          dAttacker = ObjectManagerLua::g_iCurrentObjectID;
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dAttacker);
+      Entity* pkObj = g_pkObjMan->GetEntityByID((int)dAttacker);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID((int)dTarget);
+      Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
 
       if ( !pkTarget )
          return 0;
@@ -2888,7 +2888,7 @@ int MistLandLua::AIIdleLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 1, &dWaitTime);
 		
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 
       if(pkEnt)
 		{
@@ -2923,7 +2923,7 @@ int MistLandLua::AIFaceDirectionLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dDirection);
 		
-		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
 
       if(pkObj)
 		{
@@ -2956,8 +2956,8 @@ int MistLandLua::AIFaceObjectLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
 		
-		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dId);
-      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID((int)dObjectFaceID);
+		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
+      Entity* pkFaceObj = g_pkObjMan->GetEntityByID((int)dObjectFaceID);
 
       if(pkObj && pkFaceObj)
 		{
@@ -3002,7 +3002,7 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)); 
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 		if(pkEnt)
 		{
          // check if object has AI
@@ -3054,7 +3054,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
      	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);	
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;
@@ -3120,7 +3120,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
   		double dRadius;
   		g_pkScript->GetArgNumber(pkLua, 0, &dRadius);				
       
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;
@@ -3134,7 +3134,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
 
       vector<Entity*>* pkList = new vector<Entity*>;
 
-      g_pkObjMan->GetAllObjectsInArea(pkList,pkObj->GetWorldPosV(),(float)dRadius);
+      g_pkObjMan->GetAllEntitysInArea(pkList,pkObj->GetWorldPosV(),(float)dRadius);
 
       for ( unsigned int i = 0; i < pkList->size(); i++ )
       {
@@ -3176,7 +3176,7 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
 		g_pkScript->GetArgString(pkLua, 0, acType);		
 		g_pkScript->GetArgNumber(pkLua, 1, &dRadius);				
 	
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;
@@ -3187,7 +3187,7 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
       
       vector<Entity*> kList;
 
-      g_pkObjMan->GetAllObjectsInArea(&kList,pkObj->GetWorldPosV(),(float)dRadius);
+      g_pkObjMan->GetAllEntitysInArea(&kList,pkObj->GetWorldPosV(),(float)dRadius);
 
       for ( unsigned int i = 0; i <kList.size(); i++ )
       {
@@ -3223,7 +3223,7 @@ int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
 {
  	if( g_pkScript->GetNumArgs(pkLua) == 0 )
 	{
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
       CharacterProperty* pkCP = (CharacterProperty*)pkObj->GetProperty("P_CharStats");
 
       if ( !pkObj || !pkCP )
@@ -3289,7 +3289,7 @@ int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;
@@ -3321,7 +3321,7 @@ int MistLandLua::AIHaveTargetLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
 	{
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;

@@ -507,7 +507,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
 {
  
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID);
+   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {

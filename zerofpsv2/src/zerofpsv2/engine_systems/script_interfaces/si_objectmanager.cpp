@@ -151,7 +151,7 @@ int CreateEntityLua (lua_State* pkLua)
 		Vector3 kPos;
 		kPos = GetVectorArg(pkLua, 2);
 
-		if(Entity* pkEntity = g_pkObjMan->CreateObjectFromScriptInZone(acType,kPos))
+		if(Entity* pkEntity = g_pkObjMan->CreateEntityFromScriptInZone(acType,kPos))
 		{
 			g_pkScript->AddReturnValue( pkLua, pkEntity->GetEntityID() );
 			return 1;
@@ -177,7 +177,7 @@ int DeleteLua(lua_State* pkLua)
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dTemp);	
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
 	if(pkObject)
 		g_pkObjMan->Delete(pkObject);
 	return 0;
@@ -202,7 +202,7 @@ int InitObjectLua(lua_State* pkLua)
 		char acName[256];
 		g_pkScript->GetArg(pkLua, 0, acName);
 		
-		g_pkLastObject = g_pkObjMan->CreateObjectFromScript(acName);
+		g_pkLastObject = g_pkObjMan->CreateEntityFromScript(acName);
 		
 		//set return object of there is none
 		if(!g_pkReturnObject)
@@ -212,7 +212,7 @@ int InitObjectLua(lua_State* pkLua)
 	}
 		
 	//else create an empty object
-	g_pkLastObject = g_pkObjMan->CreateObject();
+	g_pkLastObject = g_pkObjMan->CreateEntity();
 	
 	//set return object of there is none	
 	if(!g_pkReturnObject)
@@ -373,7 +373,7 @@ int SetObjectPosLua(lua_State* pkLua)
 	double dID;
 	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
 
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
 
 	if(pkObject)
 	{
@@ -405,7 +405,7 @@ int GetObjectPosLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 	int iId = (int) dTemp;
 
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+	Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
 
 	if(pkObject)
 	{
@@ -449,7 +449,7 @@ int GetObjectRotLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 	int iId = (int) dTemp;
 
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+	Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
 
 	if(pkObject)
 	{
@@ -505,7 +505,7 @@ int PlayAnim(lua_State* pkLua)
 
 //	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetAnimation(acName,0);
 	
@@ -529,7 +529,7 @@ int SetNextAnim(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, acName);
 //	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetNextAnimation(acName);
 	return 1;
@@ -546,7 +546,7 @@ int AddMesh(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
 	int iId2 = (int)dTemp;
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 
 	mp->AddMesh( iId2 );
@@ -575,7 +575,7 @@ int GetLocalDouble(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
 	double dValue = o1->GetVarDouble(arne);
 	//printf("GetLocalDouble Entity[%d] = %s is %f\n", iId1, acName, dValue);
@@ -610,7 +610,7 @@ int SetLocalDouble(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
 	float fValue = (float) dTemp;
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
 	string arne = acName;
 	o1->SetVarDouble(arne, fValue);
@@ -628,7 +628,7 @@ int GetLocalString(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
 	string strValue = o1->GetVarString(arne);
 
@@ -650,7 +650,7 @@ int SetLocalString(lua_State* pkLua)
 	char acValue[100];
 	g_pkScript->GetArg(pkLua, 2, acValue);
 
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
 	o1->SetVarString(arne, string(acValue));
 	return 1;	
@@ -666,7 +666,7 @@ int SetObjectRotVelLua (lua_State* pkLua)
 	double dID;
 	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
 
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
 
 	if(pkObject)
 	{
@@ -709,7 +709,7 @@ int SISetHeartRateLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
 
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dId);
 		
 		if(pkObject)
 		{	
@@ -739,8 +739,8 @@ int DistanceToLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dID1);
 	g_pkScript->GetArgNumber(pkLua, 1, &dID2);
 
-	Entity* pkObject1 = g_pkObjMan->GetObjectByNetWorkID((int)dID1);
-	Entity* pkObject2 = g_pkObjMan->GetObjectByNetWorkID((int)dID2);
+	Entity* pkObject1 = g_pkObjMan->GetEntityByID((int)dID1);
+	Entity* pkObject2 = g_pkObjMan->GetEntityByID((int)dID2);
 
 	if( pkObject1 != 0 && pkObject2!= 0 )
 	{
@@ -780,7 +780,7 @@ int SetVelToLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData));
 
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
 
 		if(pkEnt)
 		{
@@ -808,7 +808,7 @@ int ApplyImpulsLua(lua_State* pkLua)
 						(float) (*(double*) vkData[1].pData),
 						(float) (*(double*) vkData[2].pData));
 
-		if(Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId))
+		if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
 		{
 			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 			{
@@ -832,7 +832,7 @@ int GetZoneIDLua(lua_State* pkLua)
 
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 
-		if(Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId))
+		if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
 		{
 			Vector3 kPos = pkEnt->GetWorldPosV();
 
@@ -905,7 +905,7 @@ int GetObjectTypeLua(lua_State* pkLua)
 	}
 	
 	//get object
-	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	Entity*	pkObj = g_pkObjMan->GetEntityByID(iId);
 	
 	if(pkObj)
 		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetType().c_str(),pkObj->GetType().size());
@@ -926,7 +926,7 @@ int GetObjectNameLua(lua_State* pkLua)
 	}
 	
 	//get object
-	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	Entity*	pkObj = g_pkObjMan->GetEntityByID(iId);
 	
 	if(pkObj)
 		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetName().c_str(),pkObj->GetName().size());
@@ -944,7 +944,7 @@ int SendEventLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	id = (int)dTemp;
 	
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
+	Entity* pkObject = g_pkObjMan->GetEntityByID(id);
 	if(pkObject)
 	{
 		P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	

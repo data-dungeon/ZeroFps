@@ -839,7 +839,7 @@ void InventoryDlg::DropItems()
 		else
 		{
          int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-         Entity* pkClientObj = m_pkEntityMan->GetObjectByNetWorkID(iClientObjectID);
+         Entity* pkClientObj = m_pkEntityMan->GetEntityByID(iClientObjectID);
 
          if ( pkClientObj != 0)
          {
@@ -949,7 +949,7 @@ void InventoryDlg::UpdateSkin(Slot slot)
 
 	if(pkObjectMan) 
 	{
-		Entity* pkObject = pkObjectMan->GetObjectByNetWorkID( slot.m_iNetWorkID );
+		Entity* pkObject = pkObjectMan->GetEntityByID( slot.m_iNetWorkID );
 
 		if(pkObject)
 		{
@@ -1005,7 +1005,7 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 	EquipmentCategory pkCategory = pkItemStats->GetEquipmentCategory();
 
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkEntityMan->GetObjectByNetWorkID(iClientObjectID);
+   Entity* pkClientObj = m_pkEntityMan->GetEntityByID(iClientObjectID);
 
    // get ClientControlProperty
    P_ClientControl* pkCC = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");

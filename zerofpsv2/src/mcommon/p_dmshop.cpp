@@ -148,7 +148,7 @@ int P_DMShop::GetSellPrice(int iObjectToBuy)
 {
 	if(iObjectToBuy)
 	{
-		Entity* pkObject = m_pkObjectMan->GetObjectByNetWorkID(iObjectToBuy);
+		Entity* pkObject = m_pkObjectMan->GetEntityByID(iObjectToBuy);
 
 		P_DMItem* pkItemProperty = (P_DMItem*)pkObject->GetProperty("P_DMItem");
 
@@ -174,7 +174,7 @@ int P_DMShop::GetSellPrice(int iObjectToBuy)
 
 int P_DMShop::GetBuyPrice(int iObjectToSell) 
 {
-	Entity* pkObjectToAppreciate = m_pkObjectMan->GetObjectByNetWorkID(iObjectToSell);
+	Entity* pkObjectToAppreciate = m_pkObjectMan->GetEntityByID(iObjectToSell);
 
 	if(pkObjectToAppreciate == NULL)
 		return -1;

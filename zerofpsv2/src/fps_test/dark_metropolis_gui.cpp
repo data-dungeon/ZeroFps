@@ -333,7 +333,7 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 
 			for(unsigned int i=0; i<m_kSelectedEntitys.size(); i++)
 			{
-				Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
+				Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]);
 					
 				if(pkEnt)
 				{

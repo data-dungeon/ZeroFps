@@ -20,7 +20,7 @@ void ZeroEd::Input_EditTerrain()
 	{
 		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 		{
-			Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+			Entity* pkEntity = m_pkObjectMan->GetEntityByID((*itEntity));
 			if(!pkEntity)			continue;
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 			if(hmrp == NULL)		continue;
@@ -39,7 +39,7 @@ void ZeroEd::Input_EditTerrain()
 
 	if(m_pkInputHandle->Pressed(KEY_4))
 	{
-		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+		Entity* pkEntity = m_pkObjectMan->GetEntityByID(m_iCurrentObject);
 		if(pkEntity)
 		{
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
@@ -156,7 +156,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			{
 				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
 				
-				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity)->GetWorldPosV();			
+				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetEntityByID(m_iGrabEntity)->GetWorldPosV();			
 				m_bGrabing = true;
 				m_fArmLength = m_pkActiveCamera->GetPos().DistanceTo(m_kGrabPos);
 				m_kGrabCurrentPos = m_kGrabPos;				
@@ -171,7 +171,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	//remove			
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 
-	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
 	if(!pkObj)
 		return;		
 
@@ -425,7 +425,7 @@ void ZeroEd::Input()
 
 
 	if(m_pkInputHandle->VKIsDown("makeland")) {
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
 		if(!pkObj)
 			return;		
 		//int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);

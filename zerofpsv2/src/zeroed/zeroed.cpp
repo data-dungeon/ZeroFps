@@ -181,7 +181,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	if(m_pkActiveCamera == pkCam)	return false;
 
 	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
-	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->GetEntityID() );
+	m_pkActiveCameraObject	= m_pkObjectMan->GetEntityByID( pkCam->GetEntityID() );
 	m_pkActiveCamera		= pkCam;
 	m_pkActiveCamera->SetSelected(true);
 
@@ -194,7 +194,7 @@ void ZeroEd::CreateEditCameras()
 {
 	for(int i=0; i<4; i++) 
 	{
-		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+		m_pkCameraObject[i] = m_pkObjectMan->CreateEntityFromScript("data/script/objects/t_camedit.lua");
 		if(m_pkCameraObject[i]) 
 		{
 			if(i == 0)
@@ -447,7 +447,7 @@ void ZeroEd::DrawSelectedEntity()
 {
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+		Entity* pkEnt = m_pkObjectMan->GetEntityByID((*itEntity));
 	
 		if(pkEnt) 
 		{
@@ -496,7 +496,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
  
    if(m_iCurrentObject != -1)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject))
+		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject))
       	sprintf(szInfoText, "Enity selected: ID[%d] Name[%s]", pkEnt->GetEntityID(), pkEnt->GetName().c_str());
 	}
    else
@@ -564,7 +564,7 @@ void ZeroEd::OnSystem()
 {
 	if(m_bGrabing)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity))
+		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iGrabEntity))
 		{
 			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 			{
@@ -587,7 +587,7 @@ void ZeroEd::OnSystem()
 	}
 
 	
-	Entity* pkClient = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID());
+	Entity* pkClient = m_pkObjectMan->GetEntityByID(m_pkFps->GetClientObjectID());
 	if(pkClient)
 	{
 		if(!m_pkActiveCameraObject)
@@ -615,7 +615,7 @@ void ZeroEd::OnSystem()
 void ZeroEd::OnIdle()
 {	
 	// FULHACK Tm Vim
-	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetObjectByNetWorkID( m_pkFps->GetClientObjectID() ) );
+	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetEntityByID( m_pkFps->GetClientObjectID() ) );
 
 
 	//m_pkFps->SetCamera(m_pkActiveCamera);		
@@ -681,7 +681,7 @@ HeightMap* ZeroEd::SetPointer()
 {
 	m_kDrawPos.Set(0,0,0);
 
-	Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	Entity* pkEntity = m_pkObjectMan->GetEntityByID(m_iCurrentObject);								
 	if(!pkEntity)	return NULL;
 	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
@@ -725,7 +725,7 @@ void ZeroEd::HMModifyCommand(float fSize)
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+		Entity* pkEntity = m_pkObjectMan->GetEntityByID((*itEntity));
 		if(!pkEntity)			continue;
 		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
@@ -767,13 +767,13 @@ bool ZeroEd::DelayCommand()
 
 void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 {
-	Entity* pkActiveEntity = m_pkObjectMan->GetObjectByNetWorkID( m_iCurrentObject );
+	Entity* pkActiveEntity = m_pkObjectMan->GetEntityByID( m_iCurrentObject );
 	if(pkActiveEntity == NULL)
 		return;
 
 	if(eEditCmd == FID_CLONE)
 	{
-		m_pkObjectMan->CloneObject(m_iCurrentObject);	// Select_Toggle
+		m_pkObjectMan->CloneEntity(m_iCurrentObject);	// Select_Toggle
 	}
 
 	ZFVFile kFile;
@@ -796,7 +796,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 	{
 		if( kFile.Open("copybuffer.dat",0,false) ) 
 		{
-			Entity* pkObjNew = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
+			Entity* pkObjNew = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
 
 			Vector3 kPos = pkObjNew->GetLocalPosV();
 			pkObjNew->Load(&kFile,false);
@@ -1104,7 +1104,7 @@ void ZeroEd::CamFollow(bool bFollowMode)
 	if(bFollowMode)
 	{
 		// Start Follow mode.
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+		Entity* pkObj = m_pkObjectMan->GetEntityByID(m_iCurrentObject);		
 		if(!pkObj)
 			return;
 
@@ -1122,7 +1122,7 @@ void ZeroEd::CamFollow(bool bFollowMode)
 	else
 	{
 		// End Follow Mode
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID( m_pkActiveCamera->GetEntityID() );		
+		Entity* pkObj = m_pkObjectMan->GetEntityByID( m_pkActiveCamera->GetEntityID() );		
 		if(!pkObj)
 			return;	// Hey we are not following anyone.
 
@@ -1326,7 +1326,7 @@ void ZeroEd::RotateActive()
 {
 	if(m_iCurrentObject != -1 && m_iEditMode == EDIT_OBJECTS)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentObject);
 		if(pkEnt) 
 		{
 			pkEnt->RotateLocalRotV( Vector3(0,90.0f,0) ); 
@@ -1428,7 +1428,7 @@ string ZeroEd::GetZoneEnviroment()
 
 bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 {
-	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iObjectID);		
+	Entity* pkObj = m_pkObjectMan->GetEntityByID(iObjectID);		
 	if(pkObj) 
 	{
 		ZoneData* pkData = m_pkObjectMan->GetZoneData(pkObj->GetCurrentZone());		
@@ -1518,7 +1518,7 @@ void ZeroEd::RebuildZonePosArray()
 {
 	m_kAddedZonePlacement.clear();
 	vector<Entity*> vkEntList;
-	m_pkObjectMan->GetAllObjects(&vkEntList);
+	m_pkObjectMan->GetAllEntitys(&vkEntList);
 	for(int i=0; i<vkEntList.size(); i++)
 	{
 		if(vkEntList[i]->IsZone()) 

@@ -174,7 +174,7 @@ void DarkMetropolis::RenderInterface(void)
 
 //	m_strGameInfoText = "";
 
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentPickedEntity))
+	if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iCurrentPickedEntity))
 	{
 		P_DMItem* pkItem;
 		if((pkItem=(P_DMItem*)pkEnt->GetProperty("P_DMItem")))
@@ -239,7 +239,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw markers for selected entitys
 	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
+		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]);
 		if(pkEnt)
 		{
 			glEnable(GL_ALPHA_TEST);
@@ -254,7 +254,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw HQ marker
 	if(m_iHQID != -1)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID);
+		Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_iHQID);
 		if(pkEnt)
 		{
 			float r = 1;//pkEnt->GetBoundingRadius();
@@ -270,7 +270,7 @@ void DarkMetropolis::RenderInterface(void)
 		
 			if(pkAC->m_iTarget != -1)
 			{
-				if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(pkAC->m_iTarget))
+				if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(pkAC->m_iTarget))
 				{
 					glEnable(GL_ALPHA_TEST);
 					glAlphaFunc(GL_GEQUAL, 0.1);
@@ -546,7 +546,7 @@ void DarkMetropolis::Input()
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 								
-				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
+				Entity* pkEnt = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
 					if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
@@ -629,7 +629,7 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_pkFps->StartServer(true,false);
 	
 	//create a new gameinfo entity
-	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
+	m_pkGameInfoEntity = m_pkObjectMan->CreateEntity();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
 	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
 	m_pkGameInfoEntity->AddProperty("P_DMMission"); // Lägg till ett mission property oxå...
@@ -651,7 +651,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 	}
 	
 	//create a new gameinfo entity
-	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
+	m_pkGameInfoEntity = m_pkObjectMan->CreateEntity();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalEntity());
 	
 	
@@ -916,7 +916,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		}
 	}
 
-	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(id);
+	Entity* pkEnt = m_pkObjectMan->GetEntityByID(id);
 
 	if(pkEnt)
 	{
@@ -953,7 +953,7 @@ void DarkMetropolis::ValidateSelection()
 
 	for(int i = 0;i < m_kSelectedEntitys.size();i++)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(m_kSelectedEntitys[i]))
 		{
 			if(!pkEnt->GetParent()->IsZone())		
 			{
@@ -983,7 +983,7 @@ void DarkMetropolis::ValidateAgentsOnField()
 {
 	for( vector<int>::iterator it = m_kAgentsOnField.begin(); it!=m_kAgentsOnField.end(); it++)
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(*it))
+		if(Entity* pkEnt = m_pkObjectMan->GetEntityByID(*it))
 		{
 			//character was found but not in a zone, remove it
 			if(!pkEnt->GetParent()->IsZone())
@@ -1146,13 +1146,13 @@ bool DarkMetropolis::CreatePlayer()
 		
 			
 			//create entity
-			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
+			if(m_pkPlayerEntity = m_pkObjectMan->CreateEntityFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
 			{			
 				//save id
 				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
 				
 				//create camera entity and attach it to the player
-				m_pkCameraEntity = m_pkObjectMan->CreateObject();
+				m_pkCameraEntity = m_pkObjectMan->CreateEntity();
 				m_pkCameraEntity->SetRelativeOri(true);
 				m_pkCameraEntity->SetParent(m_pkPlayerEntity);
 								
