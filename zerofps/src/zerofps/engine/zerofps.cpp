@@ -118,7 +118,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
   glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
-	glFrustum(-0.10,0.10,-0.10,0.10,0.10,340.0);				//
+	glFrustum(-0.10,0.10,-0.10,0.10,0.10,700.0);				//
 	
 	//set camera mode
 	m_iCamMode=cam_look;
