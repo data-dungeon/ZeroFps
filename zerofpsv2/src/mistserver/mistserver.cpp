@@ -1146,8 +1146,6 @@ Vector3 MistServer::GetPlayerStartLocation(const char* csName)
 int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID)
 {
 
-	//Vector3 kStartPos = GetPlayerStartLocation(csLocation);
-		
 	//try to create character entity
 	Entity* pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
 	
@@ -1165,14 +1163,14 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	
 	if(pkObject)
 	{	
-		Vector3 kStartPos = Vector3(0,1,0);
+		Vector3 kStartPos = Vector3(0,0,0);
 				
 		//try to get recal position from characterstats
 		CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
       if(pkCP)
   	   {
    	   CharacterStats *pkCS = pkCP->GetCharStats();	
-			kStartPos = pkCS->GetRecalPos()+ Vector3(0,1,0);		
+			kStartPos = pkCS->GetRecalPos();		
 		}	
 		
 		//make sure position is valid and zone is loaded
@@ -1180,17 +1178,18 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		if(zid == -1)
 		{
 			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
-			kStartPos = Vector3(0,1,0);
-			zid = pkObjectMan->GetZoneIndex(kStartPos,-1,false);			
+			kStartPos = Vector3(0,0,0);
+			zid = pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
 		}		
+		
 		
 		//force loading of zone
 		pkObjectMan->LoadZone(zid);
 		
-		
 		//finaly set objects position
 		pkObject->SetWorldPosV(kStartPos);
 		
+		cout<<"setting pos:"<<kStartPos.x<<" "<<kStartPos.y<<" "<<kStartPos.z<<endl;
 		
 		//setup tracker to correct tracker id
 		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	

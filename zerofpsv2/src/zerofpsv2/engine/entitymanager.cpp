@@ -1502,23 +1502,31 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 	//if theres a last visited zone
 	if(iCurrentZone >= 0 )
 	{
-		//first check current zone
-		if(m_kZones[iCurrentZone].IsInside( kMyPos ))
-			return iCurrentZone;
+		ZoneData* pkZd = GetZoneData(iCurrentZone);
+		
+		if(pkZd) 
+		{	
+			if(pkZd->m_bUsed)
+			{
+				//first check current zone
+				if(m_kZones[iCurrentZone].IsInside( kMyPos ))
+					return iCurrentZone;
 	
 	
-		//check zones connected to the last visited zone
-		ZoneData* pkZone = GetZoneData(iCurrentZone);
-		for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
-		{
-			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
-			{	
-				//cout<<"moved to nearby zone"<<endl;
-				return pkZone->m_iZoneLinks[i];						
+				//check zones connected to the last visited zone
+				ZoneData* pkZone = GetZoneData(iCurrentZone);
+				for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
+				{
+					if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
+					{	
+						//cout<<"moved to nearby zone"<<endl;
+						return pkZone->m_iZoneLinks[i];						
+					}
+				}
 			}
 		}
 	}
-
+	
 	//seccond go trough all zones in the world
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(!m_kZones[iZ].m_bUsed)

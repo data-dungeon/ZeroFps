@@ -443,6 +443,7 @@ bool Entity::AttachToZone(Vector3 kPos)
 		if(!m_bRelativeOri)
 		{		
 			int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+
 			if(nZ == -1)
 			{
 				//cout<<"Entity tried to move outside zone"<<endl;
@@ -1036,7 +1037,6 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 	
 	pkFile->Read(&m_bZone,sizeof(m_bZone),1);			
 	pkFile->Read(&m_bUseZones,sizeof(m_bUseZones),1);				
-	pkFile->Read(&m_iCurrentZone,sizeof(m_iCurrentZone),1);						
 	
 	pkFile->Read(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
@@ -1129,7 +1129,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 	
 	pkFile->Write(&m_bZone,sizeof(m_bZone),1);			
 	pkFile->Write(&m_bUseZones,sizeof(m_bUseZones),1);				
-	pkFile->Write(&m_iCurrentZone,sizeof(m_iCurrentZone),1);					
 	
 	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
@@ -1466,9 +1465,6 @@ void Entity::SetWorldRotV(Vector3 kRot)
 
 void Entity::SetLocalPosV(Vector3 kPos)
 {
-	if(kPos == m_kLocalPosV)
-		return;
-
 	//check new zone
 	if(m_bUseZones)
 	{
@@ -1479,9 +1475,11 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	
+	//only update clients if position has changed
+	if(kPos != m_kLocalPosV)
+		SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
 	
 	m_kLocalPosV = kPos;
-	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
 	
 	if(m_bFirstSetPos)						//if the pos has never been set, the set oldpos to the new one
 	{
