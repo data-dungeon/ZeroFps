@@ -310,6 +310,8 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		return false;
 	}
 	
+	cout<<"CLAN NAME:"<<m_pkGameInfoProperty->m_strClanName<<endl;
+	
 	
 	//start server
 	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
@@ -319,8 +321,6 @@ bool DarkMetropolis::LoadGame(string strClanName)
 
 bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 {
-	m_kGameInfo.strClanName = strClanName;
-	m_kGameInfo.strClanColor = strClanColor;
 	
 	//GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
 	
@@ -334,6 +334,12 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
 	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
+
+
+	//setup startup gamesettings
+	m_pkGameInfoProperty->m_strClanName = strClanName;
+	m_pkGameInfoProperty->m_strClanColor = strClanColor;
+
 
 	return true;
 }

@@ -6,12 +6,15 @@ P_DMGameInfo::P_DMGameInfo()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
-//	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-//	m_pkEntityMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-//	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
-
 	bNetwork = true;
 	
+	
+	
+	m_strClanName = "unnamed";
+	m_strClanColor = "blue";
+	m_strClanLogo = "";
+	
+	m_iMoney = 0;
 }
 
 P_DMGameInfo::~P_DMGameInfo()
@@ -33,6 +36,42 @@ vector<PropertyValues> P_DMGameInfo::GetPropertyValues()
 		
 
 	return kReturn;
+}
+
+
+
+void P_DMGameInfo::Save(ZFIoInterface* pkPackage)
+{	
+	char temp[128];
+	
+	strcpy(temp,m_strClanName.c_str());
+	pkPackage->Write(temp,128,1);
+	
+	strcpy(temp,m_strClanColor.c_str());
+	pkPackage->Write(temp,128,1);
+	
+	strcpy(temp,m_strClanLogo.c_str());
+	pkPackage->Write(temp,128,1);
+	
+	pkPackage->Write(&m_iMoney,sizeof(m_iMoney),1);	
+	
+}
+
+void P_DMGameInfo::Load(ZFIoInterface* pkPackage)
+{
+	char temp[128];
+
+	pkPackage->Read(temp,128,1);
+	m_strClanName = temp;
+
+	pkPackage->Read(temp,128,1);
+	m_strClanColor = temp;
+	
+	pkPackage->Read(temp,128,1);
+	m_strClanLogo = temp;
+
+	pkPackage->Read(&m_iMoney,sizeof(m_iMoney),1);	
+
 }
 
 

@@ -17,17 +17,24 @@ class P_DMGameInfo: public Property {
 	
 	
 	public:
+		//clan name and logo info
+		string	m_strClanName;
+		string	m_strClanColor;
+		string	m_strClanLogo;		
+		
+		int		m_iMoney;
+				
+				
+		
+		
 		
 		P_DMGameInfo();
 		~P_DMGameInfo();
 
-		void CloneOf(Property* pkProperty) { }
-		
-//		void Update();
-		void Init();
-		
-//		void Save(ZFIoInterface* pkPackage);
-//		void Load(ZFIoInterface* pkPackage);
+		void CloneOf(Property* pkProperty) { }		
+		void Init();		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 };
 

@@ -36,12 +36,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 			char* szName;
 		};
 		
-		struct GameInfo 
-		{
-			string strClanName;
-			string strClanColor;		
-		} m_kGameInfo;
-		
+	
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
 
