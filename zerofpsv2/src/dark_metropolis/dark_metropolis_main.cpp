@@ -43,7 +43,7 @@ void DarkMetropolis::OnInit()
 	m_pkCameraEntity = 			NULL;
 	m_pkFps->m_bClientMode =	true;
 	m_fMinCamDistance =			2;
-	m_fMaxCamDistance =			10;
+	m_fMaxCamDistance =			50;
 	m_fDistance =					0;	
 	m_fAngle =						0;
 	m_strSaveDirectory =			"clans/";

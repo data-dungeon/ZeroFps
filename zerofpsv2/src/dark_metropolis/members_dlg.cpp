@@ -975,11 +975,12 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 		//pkEntity->SetUseZones(false);
 		//pkEntity->SetWorldPosV ( Vector3(0,1.4,0.7) );
 
-		pkEntity->SetLocalPosV ( Vector3(0,1.4,0.7) );
-		pkEntity->SetRelativeOri (true);
+		//pkEntity->SetLocalPosV ( Vector3(0,1.4,0.7) );
+		pkEntity->SetLocalPosV ( Vector3(0,0,0) );
+		//pkEntity->SetRelativeOri (true);
 
-		//P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
-		//pkLink->SetJoint( "righthand" );
+		P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
+		pkLink->SetJoint( "righthand" );
+
 	}
-
 }

@@ -60,7 +60,8 @@ void P_LinkToJoint::Update()
 	
 	m_pkObject->SetLocalPosV(kPos);
 	
-	
+//	cout << "P_LinkToJoint LocalPosV: " << kPos.x << ", " << kPos.y << ", " << kPos.z << endl;
+
 //	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_POS,false);
 //	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_ROT,false);	
 }
