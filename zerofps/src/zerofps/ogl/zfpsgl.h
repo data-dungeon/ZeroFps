@@ -14,6 +14,11 @@
 
 #include "GL/glu.h"
 
+
+#define FOG_DISTANCE_MODE_NV 	0x855A
+#define EYE_RADIAL_NV			0x855B
+#define EYE_PLANE_ABSOLUTE_NV	0x855C
+
 #endif
 
 

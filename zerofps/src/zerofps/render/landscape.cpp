@@ -1,4 +1,5 @@
 #include "render.h"
+#include "GL/glext.h"
 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	float fYpos;
@@ -496,6 +497,7 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 	}	
 	
 	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
 	glHint(GL_FOG_HINT,GL_NICEST);	
 	
 	glFogfv(GL_FOG_COLOR,(float*)&kFogColor[0]);
