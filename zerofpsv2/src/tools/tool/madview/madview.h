@@ -107,9 +107,11 @@ class MadView :public Application , public ZGuiApp
 		void Init();
 		void Input();
 
-		bool StartUp()		{ return true; }
-		bool ShutDown()	{ return true; }
+		
 		bool IsValid()		{ return true; }
+		
+		bool StartUp();
+		bool ShutDown();
 };
 
 #endif // _MADVIEW_H_

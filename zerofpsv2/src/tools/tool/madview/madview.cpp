@@ -6,8 +6,8 @@
  
 #include "madview.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
-#include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
+#include "../../../zerofpsv2/basic/zfvfs.h"
 
 MadView g_kZeroEd("MadView", 0, 0, 0);
 
@@ -43,10 +43,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iObjRotMode = OBJ_ROT_NONE;
 	m_fObjRotDelay = 0.005f;
 
-	m_fObjRotX=0;
-	m_fObjRotY=0;
-	m_fObjRotZ=0;
 	m_iCurrRotAngle = 0;
+	m_fObjRotX=m_fObjRotY=m_fObjRotZ=0;
 	m_apObjRotAngles[0] = &m_fObjRotX;
 	m_apObjRotAngles[1] = &m_fObjRotY;
 	m_apObjRotAngles[2] = &m_fObjRotZ;
@@ -59,7 +57,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
 
 	m_strMadFile = "data/mad/cube.mad";
-	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING);
+
+	RegisterVariable("data/mad/cube.mad", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
 } 
 
 void MadView::OnInit() 
@@ -70,12 +69,6 @@ void MadView::OnInit()
 		cout<<"open mad file:"<<g_ZFObjSys.GetArgument(1)<<endl;
 		m_strMadFile = g_ZFObjSys.GetArgument(1);
 	}
-
-	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
-
-	m_pkConsole->Printf(" MadView ");
-	m_pkConsole->Printf("--------------------------------");
-	m_pkConsole->Printf("");
 
 	if(!m_pkIni->ExecuteCommands("/madview_autoexec.ini"))
 		m_pkConsole->Printf("No madview_autoexec.ini found");
@@ -90,20 +83,34 @@ void MadView::Init()
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 		"data/script/gui/menu_madview.txt", true, true); 
 
+	SetupGuiEnviroment();
+
 	SetTitle("MadView");
 
 	m_pkInput->ShowCursor(true);
 
-	SetupGuiEnviroment();
-
 	CreateCamera();
 	CreateViewObject();
-	
-	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	
 	ToogleLight(true);
 
 	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
+	
+	m_fDelayTime = m_pkZeroFps->GetEngineTime();
+
+	ZFVFile kFile;
+	if(kFile.Open("madviewsettings.dot", 0, false))
+	{
+		Vector3 kCamerPos, kObjectPos;
+		kFile.Read(&kCamerPos, sizeof(kCamerPos), 1);
+		kFile.Read(&kObjectPos, sizeof(kCamerPos), 1);
+		kFile.Read(&m_fObjRotX, sizeof(m_fObjRotX), 1);
+		kFile.Read(&m_fObjRotY, sizeof(m_fObjRotY), 1);
+		kFile.Read(&m_fObjRotZ, sizeof(m_fObjRotZ), 1);
+		m_pkCameraObject->SetWorldPosV(kCamerPos);
+		m_pkViewObject->SetWorldPosV(kObjectPos);
+		m_pkViewObject->SetWorldRotV(Vector3(m_fObjRotX,m_fObjRotY,m_fObjRotZ));
+	}
 }
 
 void MadView::OnIdle()
@@ -172,7 +179,6 @@ void MadView::CreateCamera()
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->m_bForceFullScreen = true;
 	m_pkCamera->SetName("persp");
-	//m_pkCamera->SetClearViewPort(true);
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
 	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
@@ -182,7 +188,7 @@ void MadView::CreateCamera()
 	m_pkCamProp->SetCamera(m_pkCamera);
 	m_pkCameraObject->SetSave(false);	
 
-	m_pkCameraObject->SetWorldPosV(Vector3(0,-2	,-10)); 
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2,-10)); 
 }
 
 void MadView::CreateViewObject()
@@ -253,4 +259,25 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			toogle = !toogle;		
 			break;
 	}
+}
+
+bool MadView::StartUp()
+{
+	return true; 
+}
+
+bool MadView::ShutDown()	
+{ 
+	Vector3 kCamerPos = m_pkCameraObject->GetWorldPosV();
+	Vector3 kObjectPos = m_pkViewObject->GetWorldPosV();
+
+	ZFVFile kFile;
+	kFile.Open("madviewsettings.dot", 0, true);
+	kFile.Write(&kCamerPos, sizeof(kCamerPos), 1);
+	kFile.Write(&kObjectPos, sizeof(kCamerPos), 1);
+	kFile.Write(&m_fObjRotX, sizeof(m_fObjRotX), 1);
+	kFile.Write(&m_fObjRotY, sizeof(m_fObjRotY), 1);
+	kFile.Write(&m_fObjRotZ, sizeof(m_fObjRotZ), 1);
+
+	return true; 
 }
