@@ -23,6 +23,11 @@ MissionText =
 	 done return to base. You will get 1000 dollar in cash when the mission is done (minus 200 dollar for any killed person)]]
 }
 
+
+Skin1 = { tex1="dm/map_icons/hq.bmp", tex2="0", tex3="0", tex4="0", tex1a="0",
+ tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
+ }
+
 function OnMissionStart()
 
 	Print("Starting mission Dr Gun")
@@ -58,6 +63,9 @@ function OnMissionStart()
 	HospitalObject = GetDMObject(1)
 
 	Print("Hospital object = ", HospitalObject)
+
+--	CreateWnd(4,"HQIcon","MapWnd","",303,96,16,16,0)
+--	ChangeSkin("HQIcon","Skin1","Label")
 
 end
 
