@@ -618,11 +618,21 @@ bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
 	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
 
-	if(strPath.empty())
-		ZFAssert(0, "Failed to run scrip! Bad path.\n");
+	char szError[150];
 
-	if(lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0)
-		ZFAssert(0, "Failed to run scrip! Script does not exist.\n");	
+	if( strPath.empty() )
+	{
+		sprintf(szError, "Failed to run scrip: \"%s\"! Bad path.\n", strPath.c_str());
+		printf(szError);
+		ZFAssert(0, szError);
+	}
+
+	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
+	{
+		sprintf(szError, "Failed to run scrip! \"%s\" does not exist.\n", strPath.c_str());
+		printf(szError);
+		ZFAssert(0, szError);	
+	}	
 
 	return true;
 }
@@ -635,11 +645,21 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
 
-	if(strPath.empty())
-		ZFAssert(0, "Failed to run scrip! Bad path.\n");
+	char szError[150];
 
-	if(lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0)
-		ZFAssert(0, "Failed to run scrip! Script does not exist.\n");	
+	if( strPath.empty() )
+	{
+		sprintf(szError, "Failed to run scrip: \"%s\"! Bad path.\n", strPath.c_str());
+		printf(szError);
+		ZFAssert(0, szError);
+	}
+
+	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
+	{
+		sprintf(szError, "Failed to run scrip! \"%s\" does not exist.\n", strPath.c_str());
+		printf(szError);
+		ZFAssert(0, szError);	
+	}
 
 	return true;
 }

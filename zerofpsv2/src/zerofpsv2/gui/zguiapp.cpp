@@ -352,8 +352,8 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 		delete m_pkScriptResHandle;
 
 	m_pkScriptResHandle = new ZFResourceHandle;
-	if(!m_pkScriptResHandle->SetRes("data/script/gui/gui_script.lua"))
-		printf("Failed to load gui_script.lua\n");
+	if(!m_pkScriptResHandle->SetRes("data/script/gui/gui_create.lua"))
+		printf("Failed to load gui_create.lua\n");
 
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;
