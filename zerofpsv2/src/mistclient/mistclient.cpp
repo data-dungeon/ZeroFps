@@ -255,59 +255,25 @@ void MistClient::Input()
 		}
 	}
 
-	int iPressedKey = pkInput->GetQueuedKey();
-
-	static int OKA = 0;
+		int iPressedKey = pkInput->GetQueuedKey();
 
 	switch(iPressedKey)
 	{
 	case KEY_F1:
-		{
-			ZFSoundInfo kSound;
-			kSound.m_bLoop = true;
-			kSound.m_kDir = Vector3(0,0,-1);
-			kSound.m_kPos = pkFps->GetCam()->GetPos();
-			strcpy(kSound.m_acFile, "data/sound/dummy.wav");
-			pkAudioSys->StartSound(kSound);
-		}
+		pkAudioSys->StartSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
 		break;
 	case KEY_F5:
-		{
-			ZFSoundInfo kSound;
-			kSound.m_kDir = Vector3(0,0,-1);
-			kSound.m_kPos = pkFps->GetCam()->GetPos();
-			kSound.m_bLoop = true;
-			strcpy(kSound.m_acFile, "data/sound/dummy.wav");
-			pkAudioSys->RemoveSound(kSound);
-		}
+		pkAudioSys->StopSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
 		break;
 	case KEY_F2:
-		{
-			ZFSoundInfo kSound;
-			kSound.m_bLoop = true;
-			kSound.m_kDir = Vector3(0,0,-1);
-			kSound.m_kPos = pkFps->GetCam()->GetPos();
-			strcpy(kSound.m_acFile, "data/sound/walk.wav");
-			pkAudioSys->StartSound(kSound);
-		}
+		pkAudioSys->StartSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
 		break;
 	case KEY_F6:
-		{
-			ZFSoundInfo kSound;
-			kSound.m_kDir = Vector3(0,0,-1);
-			kSound.m_kPos = pkFps->GetCam()->GetPos();
-			kSound.m_bLoop = true;
-			strcpy(kSound.m_acFile, "data/sound/walk.wav");
-			pkAudioSys->RemoveSound(kSound);
-		}
+		pkAudioSys->StopSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
 		break;
-
 	case KEY_F9:
-
-		printf("Num active sounds = %i\nNum active channels = %i\n",
-			pkAudioSys->GetNumActiveSounds(),
-			pkAudioSys->GetNumActiveChannels());
-
+		printf("Num sounds in system = %i\nNum active channels = %i\n",
+			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
 		break;
 	}
 

@@ -68,16 +68,18 @@ Importent: Only mono wav files should be used as resources!
 
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
+
 public:
-	
-	bool StartSound(ZFSoundInfo kSound);
-	bool RemoveSound(ZFSoundInfo kSound, float fMaxSearchRange = 1000000.0f);
 
-	unsigned int GetNumActiveSounds();
+	bool StartSound(string strName, Vector3 pos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
+	bool StopSound(string strName, Vector3 pos);
+
+	bool LoadSound(string strFileName);
+	bool UnLoadSound(string strFileName);
+
+	unsigned int GetNumSounds();
 	unsigned int GetNumActiveChannels();
-
-	ZFAudioSystem();
-	virtual ~ZFAudioSystem();
+	unsigned int GetCurrentCachSize() { return m_uiCurrentCachSize; }
 
 	//
 	// Pure virtual functions derived from ZFSubSystem
@@ -107,9 +109,15 @@ public:
 	void SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp);
 	Vector3 GetListnerPos() { return m_kPos;  }
 	Vector3 GetListnerDir() { return m_kHead; }
+	static void PrintError(ALenum error, char* szDesc);
+
+	ZFAudioSystem();
+	virtual ~ZFAudioSystem();
 
 private:
-	
+
+	unsigned int m_uiCurrentCachSize; // bytes
+
 	bool m_bIsValid;
 	
 	OggMusic* m_pkMusic;
@@ -117,25 +125,22 @@ private:
 	Vector3 m_kPos, m_kHead;
 	Vector4 m_kUp;
 	
-	typedef pair<ALuint, bool> SOURCE_POOL; // source index name, is used
-
-	unsigned int m_uiSourcePoolSize;
-	SOURCE_POOL* m_pkSourcePool;
-
 	map<string, ZFResourceHandle*> m_mkResHandles;
 	map<string, unsigned short> m_mkResHandleCounter;
 
 	list<ZFSoundInfo*> m_kSoundList;
 
 	// Common
-	bool GenerateSourcePool();
 	ZFResourceHandle* GetResHandle(string strFileName);
 	bool Hearable(ZFSoundInfo* pkSound);
-	bool RestartLoopSound(ZFSoundInfo* pkSound);
-	bool LoadRes(ZFSoundInfo* pkSound);
-	bool UnLoadRes(ZFSoundInfo* pkSound);
-	unsigned short ChangeResCounter(string strFileName, unsigned short modification);
-	int GetFreeChannel();
+	ZFSoundInfo* GetClosest(const char* szName, Vector3 kPos);
+	bool ResourceIsUnused(ZFSoundInfo* pkSound);
+	bool InitSound(ZFSoundInfo* pkSound);
+	bool Restart(ZFSoundInfo *pkSound);
+	void Stop(ZFSoundInfo* pkSound);
+	bool Play(ZFSoundInfo* pkSound);
+	void DeleteSound(ZFSoundInfo* pkSound, bool bRemoveFromSystem);
+	void DeleteSoundsUsingResource(ZFSoundRes* pkResource);
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_

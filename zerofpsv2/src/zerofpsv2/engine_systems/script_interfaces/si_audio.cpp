@@ -88,8 +88,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	strFileName = "data/sound/";
 	strFileName.append(szFileName);
 
-	ZFSoundInfo sound(strFileName.c_str(), pos, dir, bLoop);
-	g_pAudioSys->StartSound(sound);
+	g_pAudioSys->StartSound(strFileName, pos, dir, bLoop);
 
 	return 1;
 }
@@ -124,8 +123,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	string strFileName = "data/sound/";
 	strFileName.append(szFileName);
 
-	ZFSoundInfo sound(strFileName.c_str(), pos, dir, bLoop);
-	g_pAudioSys->StartSound(sound);
+	g_pAudioSys->StartSound(strFileName, pos, dir, bLoop);
 
 	return 1;
 }
@@ -191,11 +189,11 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 	strFileName = "data/sound/";
 	strFileName.append(szFileName);
 
-	ZFSoundInfo sound(strFileName.c_str(), pos, Vector3(0,0,1), false);
+/*	ZFSoundInfo sound(strFileName.c_str(), pos, Vector3(0,0,1), false);
 	if(!g_pAudioSys->RemoveSound(sound, fMaxSearchRange))
 	{
 		printf("Failed to stop sound!\n");
-	}
+	}*/
 
 	return 1;
 }
