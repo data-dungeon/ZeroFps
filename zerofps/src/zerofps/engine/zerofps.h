@@ -206,6 +206,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void SetRenderTarget(Camera* pkCamera);
 		void RemoveRenderTarget(Camera* pkCamera);
 		
+		int GetWidth(){return m_iWidth;};
+		int GetHeight(){return m_iHeight;};		
+		int GetDepth(){return m_iDepth;};		
 
 };
 

@@ -138,6 +138,8 @@ void ZeroEdit::OnInit(void)
 	m_iCopyNetWorkID = -1;
 
 
+
+/*
 	pkTexMan->BindTexture("grass2.tga",0);			
 	
 	for(int x=0;x<100;x++)
@@ -146,21 +148,7 @@ void ZeroEdit::OnInit(void)
 			
 	pkTexMan->SwapTexture();					
 	pkTexMan->SaveTexture("nisse.tga",0);
-
-/*
-	for(int x=0;x<10;x++)
-		for(int y=0;y<10;y++)
-			pkTexMan->PsetRGB(x,y,255,255,255);
-/*
-	for(int x2=2;x2<5;x2++)
-		for(int y2=2;y2<5;y2++)
-			pkTexMan->PsetRGB(x2,y2,255,0,0);*/
-			
-//	pkTexMan->SwapTexture();				
-
-//	pkTexMan->BindTexture("grass2.tga",0);			
-//	pkTexMan->SaveTexture("fuck.tga",0);			
-//	pkTexMan->SwapTexture();				
+*/
 }
 
 
@@ -886,7 +874,23 @@ void ZeroEdit::Input()
 				
 				HeightMapDraw(m_kDrawPos);			
 			}
+			if(pkInput->Pressed(MOUSERIGHT))
+			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();	
+				
+				
+				//invert alpha
+				m_iMaskColorA*=-1;
+				
+				HeightMapDraw(m_kDrawPos);			
+				
+				//invert back
+				m_iMaskColorA*=-1;
+			}
 			break;
+			
 		case ADDOBJECT:
 			if(pkInput->Pressed(KEY_LSHIFT)) {
 				// Movment Command

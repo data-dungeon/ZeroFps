@@ -9,7 +9,9 @@
 #include <map>
 #include <string>
 #include "engine_x.h"
+
 //#include "console.h"
+class ZeroFps;
 
 using namespace std;
 
@@ -151,19 +153,6 @@ class Console;
 
 class ENGINE_API Input : public ZFObject {
 	private:
-		bool GetConsole();
-		void ListActions();
-		bool m_akButtonList[400];
-		//int m_aiActionToButton[400];
-		bool m_bInputEnabled;
-		SDL_Event m_kEvent;
-		unsigned int m_iGrabtime;			
-		int m_iMouseX,m_iMouseY;
-		unsigned int m_iQueueLength;
-		bool m_bKeyRepeat;
-
-		queue<int> m_aPressedKeys;
-	
 		enum FuncId_e
 		{
 			FID_TOGGLEGRAB,
@@ -171,7 +160,23 @@ class ENGINE_API Input : public ZFObject {
 			FID_UNBINDALL,
 			FID_LISTACTIONS,
 			FID_MOUSESENS,
-		};
+		};		
+		
+		//Console* m_pkConsole;
+		BasicConsole* m_pkConsole;
+		ZeroFps* m_pkZeroFps;
+			
+		bool				m_akButtonList[400];
+		bool				m_bInputEnabled;
+		SDL_Event		m_kEvent;
+		unsigned int	m_iGrabtime;			
+		int				m_iMouseX,m_iMouseY;
+		int				m_iAbsMouseX,m_iAbsMouseY;
+		unsigned int	m_iQueueLength;
+		bool 				m_bKeyRepeat;
+
+		queue<int>		m_aPressedKeys;
+	
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);
@@ -183,8 +188,10 @@ class ENGINE_API Input : public ZFObject {
 		int m_iNrActions;
 		bool Bind(const string kKey, const string kAction);
 		
-		//Console* m_pkConsole;
-		BasicConsole* m_pkConsole;
+		void SetupButtons();
+		bool GetConsole();
+		void ListActions();
+		
 
 	public:
 		void SetCursorInputPos(int x, int y);
@@ -198,6 +205,7 @@ class ENGINE_API Input : public ZFObject {
 		bool Pressed(int iButton);
 		int GetQueuedKey();
 		int SizeOfQueue();
+		void UpdateMousePos();
 		void MouseXY(int &iX,int &iY);
 		void RelMouseXY(int &iX,int &iY);
 		void ToggleGrab(void);
@@ -205,7 +213,7 @@ class ENGINE_API Input : public ZFObject {
 		void Reset(void);
 		void SetInputEnabled(bool bInputEnabled) { m_bInputEnabled=bInputEnabled ;};
 		bool GetInputEnabled() { return m_bInputEnabled;};
-//		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
+
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}

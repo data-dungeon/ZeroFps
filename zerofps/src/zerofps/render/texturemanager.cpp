@@ -291,7 +291,10 @@ bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
 	//check if level already is loaded then return false
 	if(m_iTextures[m_iCurrentTexture]->m_abLevels.test(iLevel))
 		return false;
-
+		
+	if(!m_iTextures[m_iCurrentTexture]->m_bMipMapping)
+		if(iLevel != 0)
+			return false;
 		
 	GLint iInternalFormat=GL_RGB;
 	GLint iFormat=GL_BGR;
@@ -420,7 +423,7 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 }
 
 
-bool TextureManager::PutTexture(SDL_Surface* pkImage)
+bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 {
 	int iInternalFormat;
 	int iFormat=-1;
@@ -449,12 +452,24 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage)
 	
 	
 	//load texture to opengl from sdl surface *image
-	if(iFormat == GL_RGB)
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  		
-			
-	if(iFormat == GL_RGBA)
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
-//	cout << "Skriiiiiiiiiikkkk:" << GetOpenGLErrorName(glGetError()) << "\n";
+	
+	if(bMipMaping)
+	{
+		//cout<<"rebuilding mipmaps"<<endl;	
+		if(iFormat == GL_RGB)
+			gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
+		if(iFormat == GL_RGBA)
+			gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
+	}
+	else
+	{
+		//cout<<"no mipmaps"<<endl;		
+		if(iFormat == GL_RGB)
+			glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
+		if(iFormat == GL_RGBA)
+			glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  								
+	}
+	
 
 	return true;
 }
@@ -464,8 +479,7 @@ bool TextureManager::SwapTexture()
 	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
 		return false;
 		
-	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage);	
-	
+	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage,m_iTextures[m_iCurrentTexture]->m_bMipMapping);
 	
 	if(works)
 	{

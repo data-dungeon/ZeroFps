@@ -1,5 +1,6 @@
 #include "input.h"
 
+#include "zerofps.h"
 
 Input::Input() 
  : ZFObject("Input") {
@@ -11,11 +12,8 @@ Input::Input()
 		cout<<"Sdl_Input dont want to work =("<<endl;
 		exit(1);
 	}*/
-	
-	//reset all buttons to false
-	//for(int i =0;i<400;i++) 
-	//	m_akButtonList[i]=false;
-
+	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+		
 	m_bKeyRepeat = true;
 	
 	m_iQueueLength=100;
@@ -40,134 +38,7 @@ Input::Input()
 		m_aiActionToButton[i]=NULL;
 	};
 	
-	
-//	m_kActions.insert(map<const char*, int>::value_type("attack",ATTACK));
-//	m_kActions.insert(map<const char*, int>::value_type("forward",FORWARD));
-//	m_kActions.insert(map<const char*, int>::value_type("jump",JUMP));
-
-	//m_kButtons.insert(map<char*, int>::value_type("key1",1));
-	//m_kButtons.insert(map<char*, int>::value_type("key2",2));
-	//m_kButtons.insert(map<char*, int>::value_type("key3",3));
-	m_kButtons.insert(map<char*, int>::value_type("escape",SDLK_ESCAPE));
-	m_kButtons.insert(map<char*, int>::value_type("left",SDLK_LEFT));
-	m_kButtons.insert(map<char*, int>::value_type("right",SDLK_RIGHT));
-	m_kButtons.insert(map<char*, int>::value_type("up",SDLK_UP));
-	m_kButtons.insert(map<char*, int>::value_type("down",SDLK_DOWN));
-	m_kButtons.insert(map<char*, int>::value_type("space",SDLK_SPACE));
-	m_kButtons.insert(map<char*, int>::value_type("backspace",SDLK_BACKSPACE));
-	m_kButtons.insert(map<char*, int>::value_type("return",SDLK_RETURN));
-	
-	m_kButtons.insert(map<char*, int>::value_type("rshift",SDLK_RSHIFT));
-	m_kButtons.insert(map<char*, int>::value_type("rctrl",SDLK_RCTRL));
-	m_kButtons.insert(map<char*, int>::value_type("lshift",SDLK_LSHIFT));
-	m_kButtons.insert(map<char*, int>::value_type("lctrl",SDLK_LCTRL));
-	
-	m_kButtons.insert(map<char*, int>::value_type("f12",SDLK_F12));
-	m_kButtons.insert(map<char*, int>::value_type("f11",SDLK_F11));
-	m_kButtons.insert(map<char*, int>::value_type("f10",SDLK_F10));
-	m_kButtons.insert(map<char*, int>::value_type("f9",SDLK_F9));	
-	m_kButtons.insert(map<char*, int>::value_type("f8",SDLK_F8));	
-	m_kButtons.insert(map<char*, int>::value_type("f7",SDLK_F7));	
-	m_kButtons.insert(map<char*, int>::value_type("f6",SDLK_F6));
-	m_kButtons.insert(map<char*, int>::value_type("f5",SDLK_F5));	
-	m_kButtons.insert(map<char*, int>::value_type("f4",SDLK_F4));	
-	m_kButtons.insert(map<char*, int>::value_type("f3",SDLK_F3));	
-	m_kButtons.insert(map<char*, int>::value_type("f2",SDLK_F2));
-	m_kButtons.insert(map<char*, int>::value_type("f1",SDLK_F1));
-	
-	m_kButtons.insert(map<char*, int>::value_type("pageup",SDLK_PAGEUP));
-	m_kButtons.insert(map<char*, int>::value_type("pagedown",SDLK_PAGEDOWN));
-	m_kButtons.insert(map<char*, int>::value_type("home",SDLK_HOME));
-	m_kButtons.insert(map<char*, int>::value_type("end",SDLK_END));
-	m_kButtons.insert(map<char*, int>::value_type("tab",SDLK_TAB));
-	m_kButtons.insert(map<char*, int>::value_type("key_delete",SDLK_DELETE));
-	m_kButtons.insert(map<char*, int>::value_type("insert",SDLK_INSERT));	
-	
-	m_kButtons.insert(map<char*, int>::value_type("1",SDLK_1));
-	m_kButtons.insert(map<char*, int>::value_type("2",SDLK_2));
-	m_kButtons.insert(map<char*, int>::value_type("3",SDLK_3));
-	m_kButtons.insert(map<char*, int>::value_type("4",SDLK_4));
-	m_kButtons.insert(map<char*, int>::value_type("5",SDLK_5));
-	m_kButtons.insert(map<char*, int>::value_type("6",SDLK_6));
-	m_kButtons.insert(map<char*, int>::value_type("7",SDLK_7));
-	m_kButtons.insert(map<char*, int>::value_type("8",SDLK_8));
-	m_kButtons.insert(map<char*, int>::value_type("9",SDLK_9));
-	m_kButtons.insert(map<char*, int>::value_type("0",SDLK_0));
-	
-	m_kButtons.insert(map<char*, int>::value_type("q",SDLK_q));
-	m_kButtons.insert(map<char*, int>::value_type("w",SDLK_w));	
-	m_kButtons.insert(map<char*, int>::value_type("e",SDLK_e));	
-	
-	m_kButtons.insert(map<char*, int>::value_type("r",SDLK_r));	
-	m_kButtons.insert(map<char*, int>::value_type("t",SDLK_t));	
-	m_kButtons.insert(map<char*, int>::value_type("y",SDLK_y));	
-	m_kButtons.insert(map<char*, int>::value_type("u",SDLK_u));	
-	m_kButtons.insert(map<char*, int>::value_type("i",SDLK_i));	
-	m_kButtons.insert(map<char*, int>::value_type("o",SDLK_o));	
-	m_kButtons.insert(map<char*, int>::value_type("p",SDLK_p));	
-
-	m_kButtons.insert(map<char*, int>::value_type("a",SDLK_a));	
-	m_kButtons.insert(map<char*, int>::value_type("s",SDLK_s));	
-	m_kButtons.insert(map<char*, int>::value_type("d",SDLK_d));	
-	m_kButtons.insert(map<char*, int>::value_type("f",SDLK_f));	
-	m_kButtons.insert(map<char*, int>::value_type("g",SDLK_g));	
-	m_kButtons.insert(map<char*, int>::value_type("h",SDLK_h));	
-	m_kButtons.insert(map<char*, int>::value_type("j",SDLK_j));	
-	m_kButtons.insert(map<char*, int>::value_type("k",SDLK_k));	
-	m_kButtons.insert(map<char*, int>::value_type("l",SDLK_l));
-	m_kButtons.insert(map<char*, int>::value_type("z",SDLK_z));	
-	m_kButtons.insert(map<char*, int>::value_type("x",SDLK_x));	
-	m_kButtons.insert(map<char*, int>::value_type("c",SDLK_c));	
-	m_kButtons.insert(map<char*, int>::value_type("v",SDLK_v));	
-	m_kButtons.insert(map<char*, int>::value_type("b",SDLK_b));	
-	m_kButtons.insert(map<char*, int>::value_type("n",SDLK_n));	
-	m_kButtons.insert(map<char*, int>::value_type("m",SDLK_m));
-	
-	m_kButtons.insert(map<char*,int>::value_type("exclaim",SDLK_EXCLAIM));
-	m_kButtons.insert(map<char*,int>::value_type("quotedbl",SDLK_QUOTEDBL));
-	m_kButtons.insert(map<char*,int>::value_type("hash",SDLK_HASH));
-	m_kButtons.insert(map<char*,int>::value_type("dollar",SDLK_DOLLAR));
-	m_kButtons.insert(map<char*,int>::value_type("ampersand",SDLK_AMPERSAND));
-	m_kButtons.insert(map<char*,int>::value_type("quote",SDLK_QUOTE));
-	m_kButtons.insert(map<char*,int>::value_type("left_parenthesis",SDLK_LEFTPAREN));
-	m_kButtons.insert(map<char*,int>::value_type("right_parenthesis",SDLK_RIGHTPAREN));
-	m_kButtons.insert(map<char*,int>::value_type("asterisk",SDLK_ASTERISK));
-	m_kButtons.insert(map<char*,int>::value_type("plus_sign",SDLK_PLUS));
-	m_kButtons.insert(map<char*,int>::value_type("comma",SDLK_COMMA));
-	m_kButtons.insert(map<char*,int>::value_type("minus_sign",SDLK_MINUS));
-	m_kButtons.insert(map<char*,int>::value_type("period",SDLK_PERIOD));
-	m_kButtons.insert(map<char*,int>::value_type("forward_slash",SDLK_SLASH));
-
-	m_kButtons.insert(map<char*,int>::value_type("colon",SDLK_COLON));
-	m_kButtons.insert(map<char*,int>::value_type("semicolon",SDLK_SEMICOLON));
-	m_kButtons.insert(map<char*,int>::value_type("less_than_sign",SDLK_LESS));
-	m_kButtons.insert(map<char*,int>::value_type("equals_sign",SDLK_EQUALS));
-	m_kButtons.insert(map<char*,int>::value_type("greater_than_sign",SDLK_GREATER));
-	m_kButtons.insert(map<char*,int>::value_type("question_mark",SDLK_QUESTION));
-	m_kButtons.insert(map<char*,int>::value_type("at",SDLK_AT));
-	m_kButtons.insert(map<char*,int>::value_type("left_bracket",SDLK_LEFTBRACKET));
-	m_kButtons.insert(map<char*,int>::value_type("backslash",SDLK_BACKSLASH));
-	m_kButtons.insert(map<char*,int>::value_type("right_bracket",SDLK_RIGHTBRACKET));
-	m_kButtons.insert(map<char*,int>::value_type("caret",SDLK_CARET));
-	m_kButtons.insert(map<char*,int>::value_type("underscore",SDLK_UNDERSCORE));
-	m_kButtons.insert(map<char*,int>::value_type("grave",SDLK_BACKQUOTE));
-
-	m_kButtons.insert(map<char*,int>::value_type("keypad_period",SDLK_KP_PERIOD));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_divide",SDLK_KP_DIVIDE));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_multiply",SDLK_KP_MULTIPLY));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_minus",SDLK_KP_MINUS));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_plus",SDLK_KP_PLUS));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_enter",SDLK_KP_ENTER));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_equals",SDLK_KP_EQUALS));
-	
-	m_kButtons.insert(map<char*,int>::value_type("numlock",SDLK_NUMLOCK));
-	m_kButtons.insert(map<char*,int>::value_type("capslock",SDLK_CAPSLOCK));
-	m_kButtons.insert(map<char*,int>::value_type("scrollock",SDLK_SCROLLOCK));
-
-	
-	m_kButtons.insert(map<char*,int>::value_type("mouseleft",MOUSELEFT));
-	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
-	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
+	SetupButtons();	
 
 
 };
@@ -175,6 +46,8 @@ Input::Input()
 void Input::Update(void) {
 	m_iMouseX=-1;	
 	m_iMouseY=-1;
+	
+	UpdateMousePos();
 	
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
@@ -227,7 +100,10 @@ void Input::Update(void) {
 }
 
 void Input::MouseXY(int &iX,int &iY) {		
-	if(m_bInputEnabled) {
+	iX=m_iAbsMouseX;
+	iY=m_iAbsMouseY;
+
+/*	if(m_bInputEnabled) {
 		SDL_PumpEvents();
 		SDL_GetMouseState(&iX, &iY);
 		iX=int(float(iX)*m_fMouseSensitivity);	
@@ -235,7 +111,34 @@ void Input::MouseXY(int &iX,int &iY) {
 	} else {
 		iX=0;	
 		iY=0;			
-	}
+	}*/
+}
+
+void Input::UpdateMousePos()
+{		
+	int width=m_pkZeroFps->GetWidth();
+	int height=m_pkZeroFps->GetHeight();
+
+	int relx;
+	int rely;
+	
+	RelMouseXY(relx,rely);
+	
+	m_iAbsMouseX+=int(float(relx)*m_fMouseSensitivity);
+	m_iAbsMouseY+=int(float(rely)*m_fMouseSensitivity);	
+	
+	
+	if(m_iAbsMouseX <0)
+		m_iAbsMouseX = 0;	
+	if(m_iAbsMouseY <0)
+		m_iAbsMouseY = 0;
+		
+	if(m_iAbsMouseX > width)
+		m_iAbsMouseX = width;
+	
+	if(m_iAbsMouseY >height)
+		m_iAbsMouseY = height;
+		
 }
 
 void Input::RelMouseXY(int &iX,int &iY) {		
@@ -501,5 +404,142 @@ bool Input::Action(int iAction)
 
 void Input::SetCursorInputPos(int x, int y)
 {
-	SDL_WarpMouse(x,y);
+	m_iAbsMouseX=x;
+	m_iAbsMouseY=y;
+
+//	SDL_WarpMouse(x,y);
 }
+
+
+void Input::SetupButtons()
+{
+	m_kButtons.insert(map<char*, int>::value_type("escape",SDLK_ESCAPE));
+	m_kButtons.insert(map<char*, int>::value_type("left",SDLK_LEFT));
+	m_kButtons.insert(map<char*, int>::value_type("right",SDLK_RIGHT));
+	m_kButtons.insert(map<char*, int>::value_type("up",SDLK_UP));
+	m_kButtons.insert(map<char*, int>::value_type("down",SDLK_DOWN));
+	m_kButtons.insert(map<char*, int>::value_type("space",SDLK_SPACE));
+	m_kButtons.insert(map<char*, int>::value_type("backspace",SDLK_BACKSPACE));
+	m_kButtons.insert(map<char*, int>::value_type("return",SDLK_RETURN));
+	
+	m_kButtons.insert(map<char*, int>::value_type("rshift",SDLK_RSHIFT));
+	m_kButtons.insert(map<char*, int>::value_type("rctrl",SDLK_RCTRL));
+	m_kButtons.insert(map<char*, int>::value_type("lshift",SDLK_LSHIFT));
+	m_kButtons.insert(map<char*, int>::value_type("lctrl",SDLK_LCTRL));
+	
+	m_kButtons.insert(map<char*, int>::value_type("f12",SDLK_F12));
+	m_kButtons.insert(map<char*, int>::value_type("f11",SDLK_F11));
+	m_kButtons.insert(map<char*, int>::value_type("f10",SDLK_F10));
+	m_kButtons.insert(map<char*, int>::value_type("f9",SDLK_F9));	
+	m_kButtons.insert(map<char*, int>::value_type("f8",SDLK_F8));	
+	m_kButtons.insert(map<char*, int>::value_type("f7",SDLK_F7));	
+	m_kButtons.insert(map<char*, int>::value_type("f6",SDLK_F6));
+	m_kButtons.insert(map<char*, int>::value_type("f5",SDLK_F5));	
+	m_kButtons.insert(map<char*, int>::value_type("f4",SDLK_F4));	
+	m_kButtons.insert(map<char*, int>::value_type("f3",SDLK_F3));	
+	m_kButtons.insert(map<char*, int>::value_type("f2",SDLK_F2));
+	m_kButtons.insert(map<char*, int>::value_type("f1",SDLK_F1));
+	
+	m_kButtons.insert(map<char*, int>::value_type("pageup",SDLK_PAGEUP));
+	m_kButtons.insert(map<char*, int>::value_type("pagedown",SDLK_PAGEDOWN));
+	m_kButtons.insert(map<char*, int>::value_type("home",SDLK_HOME));
+	m_kButtons.insert(map<char*, int>::value_type("end",SDLK_END));
+	m_kButtons.insert(map<char*, int>::value_type("tab",SDLK_TAB));
+	m_kButtons.insert(map<char*, int>::value_type("key_delete",SDLK_DELETE));
+	m_kButtons.insert(map<char*, int>::value_type("insert",SDLK_INSERT));	
+	
+	m_kButtons.insert(map<char*, int>::value_type("1",SDLK_1));
+	m_kButtons.insert(map<char*, int>::value_type("2",SDLK_2));
+	m_kButtons.insert(map<char*, int>::value_type("3",SDLK_3));
+	m_kButtons.insert(map<char*, int>::value_type("4",SDLK_4));
+	m_kButtons.insert(map<char*, int>::value_type("5",SDLK_5));
+	m_kButtons.insert(map<char*, int>::value_type("6",SDLK_6));
+	m_kButtons.insert(map<char*, int>::value_type("7",SDLK_7));
+	m_kButtons.insert(map<char*, int>::value_type("8",SDLK_8));
+	m_kButtons.insert(map<char*, int>::value_type("9",SDLK_9));
+	m_kButtons.insert(map<char*, int>::value_type("0",SDLK_0));
+	
+	m_kButtons.insert(map<char*, int>::value_type("q",SDLK_q));
+	m_kButtons.insert(map<char*, int>::value_type("w",SDLK_w));	
+	m_kButtons.insert(map<char*, int>::value_type("e",SDLK_e));	
+	
+	m_kButtons.insert(map<char*, int>::value_type("r",SDLK_r));	
+	m_kButtons.insert(map<char*, int>::value_type("t",SDLK_t));	
+	m_kButtons.insert(map<char*, int>::value_type("y",SDLK_y));	
+	m_kButtons.insert(map<char*, int>::value_type("u",SDLK_u));	
+	m_kButtons.insert(map<char*, int>::value_type("i",SDLK_i));	
+	m_kButtons.insert(map<char*, int>::value_type("o",SDLK_o));	
+	m_kButtons.insert(map<char*, int>::value_type("p",SDLK_p));	
+
+	m_kButtons.insert(map<char*, int>::value_type("a",SDLK_a));	
+	m_kButtons.insert(map<char*, int>::value_type("s",SDLK_s));	
+	m_kButtons.insert(map<char*, int>::value_type("d",SDLK_d));	
+	m_kButtons.insert(map<char*, int>::value_type("f",SDLK_f));	
+	m_kButtons.insert(map<char*, int>::value_type("g",SDLK_g));	
+	m_kButtons.insert(map<char*, int>::value_type("h",SDLK_h));	
+	m_kButtons.insert(map<char*, int>::value_type("j",SDLK_j));	
+	m_kButtons.insert(map<char*, int>::value_type("k",SDLK_k));	
+	m_kButtons.insert(map<char*, int>::value_type("l",SDLK_l));
+	m_kButtons.insert(map<char*, int>::value_type("z",SDLK_z));	
+	m_kButtons.insert(map<char*, int>::value_type("x",SDLK_x));	
+	m_kButtons.insert(map<char*, int>::value_type("c",SDLK_c));	
+	m_kButtons.insert(map<char*, int>::value_type("v",SDLK_v));	
+	m_kButtons.insert(map<char*, int>::value_type("b",SDLK_b));	
+	m_kButtons.insert(map<char*, int>::value_type("n",SDLK_n));	
+	m_kButtons.insert(map<char*, int>::value_type("m",SDLK_m));
+	
+	m_kButtons.insert(map<char*,int>::value_type("exclaim",SDLK_EXCLAIM));
+	m_kButtons.insert(map<char*,int>::value_type("quotedbl",SDLK_QUOTEDBL));
+	m_kButtons.insert(map<char*,int>::value_type("hash",SDLK_HASH));
+	m_kButtons.insert(map<char*,int>::value_type("dollar",SDLK_DOLLAR));
+	m_kButtons.insert(map<char*,int>::value_type("ampersand",SDLK_AMPERSAND));
+	m_kButtons.insert(map<char*,int>::value_type("quote",SDLK_QUOTE));
+	m_kButtons.insert(map<char*,int>::value_type("left_parenthesis",SDLK_LEFTPAREN));
+	m_kButtons.insert(map<char*,int>::value_type("right_parenthesis",SDLK_RIGHTPAREN));
+	m_kButtons.insert(map<char*,int>::value_type("asterisk",SDLK_ASTERISK));
+	m_kButtons.insert(map<char*,int>::value_type("plus_sign",SDLK_PLUS));
+	m_kButtons.insert(map<char*,int>::value_type("comma",SDLK_COMMA));
+	m_kButtons.insert(map<char*,int>::value_type("minus_sign",SDLK_MINUS));
+	m_kButtons.insert(map<char*,int>::value_type("period",SDLK_PERIOD));
+	m_kButtons.insert(map<char*,int>::value_type("forward_slash",SDLK_SLASH));
+
+	m_kButtons.insert(map<char*,int>::value_type("colon",SDLK_COLON));
+	m_kButtons.insert(map<char*,int>::value_type("semicolon",SDLK_SEMICOLON));
+	m_kButtons.insert(map<char*,int>::value_type("less_than_sign",SDLK_LESS));
+	m_kButtons.insert(map<char*,int>::value_type("equals_sign",SDLK_EQUALS));
+	m_kButtons.insert(map<char*,int>::value_type("greater_than_sign",SDLK_GREATER));
+	m_kButtons.insert(map<char*,int>::value_type("question_mark",SDLK_QUESTION));
+	m_kButtons.insert(map<char*,int>::value_type("at",SDLK_AT));
+	m_kButtons.insert(map<char*,int>::value_type("left_bracket",SDLK_LEFTBRACKET));
+	m_kButtons.insert(map<char*,int>::value_type("backslash",SDLK_BACKSLASH));
+	m_kButtons.insert(map<char*,int>::value_type("right_bracket",SDLK_RIGHTBRACKET));
+	m_kButtons.insert(map<char*,int>::value_type("caret",SDLK_CARET));
+	m_kButtons.insert(map<char*,int>::value_type("underscore",SDLK_UNDERSCORE));
+	m_kButtons.insert(map<char*,int>::value_type("grave",SDLK_BACKQUOTE));
+
+	m_kButtons.insert(map<char*,int>::value_type("keypad_period",SDLK_KP_PERIOD));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_divide",SDLK_KP_DIVIDE));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_multiply",SDLK_KP_MULTIPLY));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_minus",SDLK_KP_MINUS));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_plus",SDLK_KP_PLUS));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_enter",SDLK_KP_ENTER));
+	m_kButtons.insert(map<char*,int>::value_type("keypad_equals",SDLK_KP_EQUALS));
+	
+	m_kButtons.insert(map<char*,int>::value_type("numlock",SDLK_NUMLOCK));
+	m_kButtons.insert(map<char*,int>::value_type("capslock",SDLK_CAPSLOCK));
+	m_kButtons.insert(map<char*,int>::value_type("scrollock",SDLK_SCROLLOCK));
+
+	
+	m_kButtons.insert(map<char*,int>::value_type("mouseleft",MOUSELEFT));
+	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
+	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
+
+
+}
+
+
+
+
+
+
+

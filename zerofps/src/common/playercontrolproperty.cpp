@@ -20,7 +20,7 @@ PlayerControlProperty::PlayerControlProperty(/*Input *pkInput ,HeightMap *pkMap*
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	m_fSpeed=5;
+	m_fSpeed=8;
 	walk=0;
 	walking=false;
 	m_bAlive=true;
