@@ -51,16 +51,16 @@ class ENGINE_SYSTEMS_API LinkToJoint : public Property
 
 	public:
 		string	m_strToJoint;
-		float		f_anka;
-
 
 		LinkToJoint();
 		~LinkToJoint();
 		void Init();
 
 		void CloneOf(Property* pkProperty) { }
-		
 		void Update();
+		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 };
 
 Property* Create_LinkToJoint();

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "../basic/globals.h"
 
+#include "render.h"
  
 LightSource::LightSource() 
 {
@@ -111,10 +112,11 @@ void Light::Update(Vector3 kRefPos)
 			 
 			Vector3 kPos = (*it)->kPos;		
 			float fDistance = (kRefPos-kPos).Length();		
-			float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
-			//float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+			//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
+			float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
 			
 			(*it)->fIntensity=fIntensity; 
+			//(*it)->fIntensity=-fDistance; 
 			m_kSorted.push_back(*it);					
 		}  
 	} 
@@ -130,6 +132,12 @@ void Light::Update(Vector3 kRefPos)
 	{
 		EnableLight(m_kSorted[i],i);							
 		//cout<<"inte: "<<m_kSorted[i]->fIntensity<<endl;
+		
+		/* //draw some debuging graph
+		static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+		pkRender->Sphere(m_kSorted[i]->kPos,0.1,10,Vector3(0,0,1),true);
+		pkRender->Line(m_kSorted[i]->kPos,kRefPos);
+		*/
 	}
 
 } 

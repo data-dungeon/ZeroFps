@@ -29,7 +29,7 @@ int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[])
 
 	delete kEngine;
 	
-	MemMan::m_pkInstance->Print();
+	//MemMan::m_pkInstance->Print();
 
 	// This leave console window on screen.
 	exit(1);

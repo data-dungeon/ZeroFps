@@ -306,6 +306,21 @@ vector<PropertyValues> LinkToJoint::GetPropertyValues()
 	return kReturn;
 }
 
+void LinkToJoint::Save(ZFIoInterface* pkPackage)
+{	
+	char temp[50];
+	strcpy(temp,m_strToJoint.c_str());
+
+	pkPackage->Write((void*)temp,50,1);
+}
+
+void LinkToJoint::Load(ZFIoInterface* pkPackage)
+{
+	char temp[50];
+	pkPackage->Read((void*)temp,50,1);	
+	m_strToJoint = temp;
+
+}
 
 Property* Create_LinkToJoint()
 {

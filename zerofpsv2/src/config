@@ -1,6 +1,6 @@
 CC = g++									#compiler to use
-#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g			  #compiler flags
-#C_ARGS = -O3 -g #-pg -g				#linker flags
-CXXFLAGS= -O3 -g -DNDEBUG -include memman.h
-C_ARGS = -O3 -g -lmemman
+CXXFLAGS= -O3 -g -DNDEBUG #-pg -g			  #compiler flags
+C_ARGS = -O3 -g #-pg -g				#linker flags
+#CXXFLAGS= -O3 -g -DNDEBUG -include memman.h
+#C_ARGS = -O3 -g -lmemman
 MAKE = make								#make to use
