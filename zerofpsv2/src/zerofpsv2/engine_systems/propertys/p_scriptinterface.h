@@ -19,6 +19,8 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		float 	m_fTimer;
 		bool		m_bFirstRun;
 		//bool	m_bHaveRunInit;
+		
+		int		m_iLastTouchFrame;
 
 	public:
 		P_ScriptInterface();
