@@ -35,7 +35,7 @@ void MassDriverProperty::Update()
 
 void MassDriverProperty::Fire()
 {
-	if(m_pkFps->GetTicks()-m_fLastShot <0.2)
+	if(m_pkFps->GetTicks()-m_fLastShot <0.01)
 		return;		
 	m_fLastShot=m_pkFps->GetTicks();
 
@@ -45,7 +45,7 @@ void MassDriverProperty::Fire()
 		return;
 	}
 	
-	m_iAmmo--;
+//	m_iAmmo--;
 
 	
 	Object* Bullet=new Object;

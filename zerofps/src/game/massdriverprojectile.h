@@ -13,11 +13,14 @@ class MassDriverProjectile: public Property {
 	private:
 	
 		ObjectManager *m_pkObjectMan;
+		ZeroFps *m_pkFps;
 			
+		float m_fCreateTime;
 			
 	public:
 		MassDriverProjectile();
 	
+		void Update();
 		void Touch(Object* pkObject);
 
 };
