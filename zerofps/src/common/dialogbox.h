@@ -9,8 +9,9 @@
 class Input;
 
 #include <vector>
+#include "common_x.h"
 
-class DlgBox  
+class COMMON_API DlgBox  
 {
 public:
 	static int GetNumVisibleDialogs();

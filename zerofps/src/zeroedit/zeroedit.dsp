@@ -118,10 +118,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\game\dialogbox.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\editpropertydlg.cpp
 # End Source File
 # Begin Source File
@@ -144,14 +140,6 @@ SOURCE=.\zeroedit.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\ballobject.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\game\dialogbox.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\editpropertydlg.h

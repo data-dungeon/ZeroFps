@@ -298,6 +298,11 @@ ZGuiWnd* EditPropertyDlg::CreateAddPropertyDlg(int x, int y, int w, int h)
 	h = iHeight+5;
 	pkDlg->Resize(w,h);
 
+	if(y+h > m_pkGui->GetScreenRect().Height())
+	{
+		pkDlg->Move(0, -((y+h)-m_pkGui->GetScreenRect().Height()) );
+	}
+
 	ZGuiWnd* pkAddPropCloseBn = m_pkGui->CreateButton(pkDlg, ID_ADDPROPERTY_CLOSE, 
 		w-20, 0, 20, 20, "x");
 	pkAddPropCloseBn->SetWindowFlag(WF_CENTER_TEXT);
@@ -396,8 +401,9 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 			}
 			break;
 		case AddPropertiesBn:
-			int w; w = 200;
-			CreateAddPropertyDlg(m_pkGui->GetScreenRect().Width()-w,20,w,520);
+			int w, h; w = 200; h = 520;
+			CreateAddPropertyDlg(m_pkGui->GetScreenRect().Width()-w,
+				m_pkGui->GetScreenRect().Height()-h,w,h);
 			break;
 		case ID_ADDPROPERTY_CLOSE:
 			m_bAdd = false;
