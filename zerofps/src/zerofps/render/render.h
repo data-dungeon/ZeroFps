@@ -59,7 +59,7 @@ class RENDER_API Render {
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		void DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2);
 		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
-		
+		void DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iTexture);
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

@@ -514,6 +514,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 //CamPos=Vector3(150,8,100);
 
 
+//	glPushAttrib();
 
 	if(!CubeInFrustum(kPos.x,kMap->m_kPosition.y+42,kPos.z,fW/2,42,fW/2))
 		return;
@@ -521,14 +522,21 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	float fDistance=(kCamPos-Vector3(kPos.x,kCamPos.y,kPos.z)).Length();
 //	cout<<"AVSTÅND:"<<fDistance<<endl;
 	if(fDistance>fW)
-		return;			
+		return;				
 	
-//f(fDistance>fW/2)
-//iNr/=3;
+	if(fDistance>fW/2){
+		glColor4f(1,1,1,0.01);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE);	
+	} else {
+		glColor4f(1,1,1,1);
+		glDisable(GL_BLEND);
+	}
 
-	
 
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
+
+
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);	
 
 	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
 	glDisable(GL_CULL_FACE);	
@@ -543,12 +551,13 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,mat_ambient);		
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 	
+	
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
 	
 	m_pkTexMan->BindTexture(iTexture); 	
-	
 	srand(1);
+
 	for(int i=0;i<iNr;i++){
 		float x=(rand()%(fW*1000))/1000.0 + (kPos.x-fW/2);
 		float z=(rand()%(fW*1000))/1000.0 + (kPos.z-fW/2);
@@ -581,12 +590,14 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 		glPopMatrix();
 	}
 	
-	glPopMatrix();
+
 	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);	
 //	glPopMatrix();
 	glDisable(GL_ALPHA_TEST);	
+	glPopMatrix();	
+//	glPopAttrib();
 };
 
 

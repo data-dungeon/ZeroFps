@@ -136,11 +136,15 @@ void Test::OnIdle(void) {
 		*/
 		
 	
-	if(m_iGrass>0)
-		for(int ix=0;ix<500;ix+=25)
-			for(int iy=0;iy<500;iy+=25)
-				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),25,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+	if(m_iGrass>0){
+		for(int ix=0;ix<1000;ix+=30)
+			for(int iy=0;iy<1000;iy+=30){
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),30,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1,.5,1),30,m_iGrassVolyme/4,test,pkTexMan->Load("file:../data/textures/grass3.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+			}
+	}
 
+	pkRender->DrawBillboard(*pkFps->m_kCamPos,Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
 
 	
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	

@@ -336,6 +336,53 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 	return true;
 }
 
+void Render::DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iTexture){
+	glPushMatrix();
+	glPushAttrib(GL_LIGHTING_BIT);
+	
+	glDisable(GL_CULL_FACE);	
+	glDisable(GL_LIGHTING);
+
+
+	glDisable(GL_COLOR_MATERIAL);
+	glColor4f(1,1,1,1);
+
+	Vector3 kRot=Vector3(0,0,0);
+	
+	Vector3 kDis=kCamPos-kPos;
+	
+	kRot.y=atan(kDis.x/kDis.z) * degtorad;
+	kRot.x=-atan(kDis.y/kDis.x) * degtorad;	
+//	kRot.z=atan(kDis.x/kDis.y) * degtorad;		
+	cout<<"ROT:"<<kRot.y<<endl;
+	
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kRot.x, 1, 0, 0);
+	glRotatef(kRot.y, 0, 1, 0);	
+	glRotatef(kRot.z, 0, 0, 1);	
+	glScalef(kScale.x,kScale.y,kScale.z);	
+	
+	m_pkTexMan->BindTexture(iTexture); 	
+	
+	glAlphaFunc(GL_GREATER,0.3);
+	glEnable(GL_ALPHA_TEST);
+	
+	
+	glBegin(GL_QUADS);
+		glNormal3f(0,0,1);
+		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
+		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
+		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
+		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 			
+	glEnd();
+		
+	
+	glPopMatrix();
+	glEnable(GL_CULL_FACE);	
+//	glEnable(GL_LIGHTING);		
+	glPopAttrib();
+}
+
 
 
 
