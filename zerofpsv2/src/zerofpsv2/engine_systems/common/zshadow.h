@@ -93,8 +93,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int			m_iNrOfShadows;			//number of shadows calculated per model
 		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
 		float			m_fFrontCapOffset;
-		bitset<8>	m_kShadowGroups;
-		bool			m_abSaveGroups[8];
+		vector<bool>	m_kShadowGroups;
 		
 		
 		void DrawCapings(ShadowMesh* pkShadowMesh);

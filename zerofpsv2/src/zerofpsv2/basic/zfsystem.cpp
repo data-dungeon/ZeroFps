@@ -540,6 +540,33 @@ void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue)
 				}
 
 			break;
+		case CSYS_BOOLVECTOR:
+		{
+			vector<bool>* pkBoolVec = 	(vector<bool>*)pkArea->m_vValue;
+			int iBVL = pkBoolVec->size();
+			int iStrLen = strlen(szValue);
+						
+			if(iStrLen != iBVL)
+			{
+				Printf("Wrong size of input bool vector");
+				break;
+			}					
+			
+			for(int i = 0;i<iStrLen;i++)
+			{
+				if(szValue[i] == '1')
+					(*pkBoolVec)[i] = true;
+				else if(szValue[i] == '0')
+					(*pkBoolVec)[i] = false;
+				else
+				{
+					Printf("Bad value, shuld be 1/0");
+					break;
+				}									
+			}				
+				
+			break;
+		}
 	}
 }	
 
@@ -559,36 +586,55 @@ string ZFSystem::GetVarValue(ZFCmdData* pkArea)
 	strcpy(szValue, "");
 	string strValue;
 
-	switch(pkArea->m_eType) {
+	switch(pkArea->m_eType) 
+	{
 		case CSYS_FUNCTION:
 			sprintf(szValue, "(%s)", pkArea->m_strHelpText.c_str());
+			strValue = szValue;
 			break;
 		case CSYS_FLOAT:
 			sprintf(szValue, "%.3f", *(float*)pkArea->m_vValue);
-			//m_pkCon->Printf(" %s = [%.3f]",kVars[i]->aName,*(float*)GetVar(i));break;
+			strValue = szValue;
 			break;
 		case CSYS_DOUBLE:
 			sprintf(szValue, "%.3d", *(double*)pkArea->m_vValue);
-			//	m_pkCon->Printf(" %s = [%.3d]",kVars[i]->aName,*(double*)GetVar(i));break;
+			strValue = szValue;
 			break;
 		case CSYS_LONG:
 			sprintf(szValue, "%l", *(long*)pkArea->m_vValue);
-			//m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
+			strValue = szValue;
 			break;
 		case CSYS_BOOL:
 			sprintf(szValue, "%d", *(bool*)pkArea->m_vValue);
+			strValue = szValue;
 			break;
 		case CSYS_INT:
 			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);
+			strValue = szValue;
 			break;
 		case CSYS_STRING:
+		{
 			string* pstrValue = (string*)pkArea->m_vValue;
-			sprintf(szValue, "%s", pstrValue->c_str());
-			//m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
+			sprintf(szValue, "%s", pstrValue->c_str());		
 			break;
 		}
+		case CSYS_BOOLVECTOR:
+		{
+			vector<bool>* pkBoolVec = 	(vector<bool>*)pkArea->m_vValue;
+			
+			for(int i = 0;i< pkBoolVec->size();i++)
+			{
+				if((*pkBoolVec)[i])
+					strValue += "1";
+				else
+					strValue += "0";
+			}			
+			
+			break;	
+		}
+	}
 
-	strValue = szValue;
+	
 	return strValue;
 }
 

@@ -27,6 +27,7 @@ enum ZFCmdDataType
 	CSYS_LONG,						///< float.
 	CSYS_BOOL,						///< bool.
 	CSYS_STRING,					///< /0 terminated string.
+	CSYS_BOOLVECTOR,				///< vector<bool>
 };
 
 /**	\brief	The src of a command.

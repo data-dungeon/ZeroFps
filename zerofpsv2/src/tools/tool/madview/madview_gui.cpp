@@ -216,6 +216,8 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 void MadView::ChangeMad(string strName)
 {
+	cout<<"loading mad:"<<strName<<endl;
+
 	P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
 	if(pkMad == NULL)
 		pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
