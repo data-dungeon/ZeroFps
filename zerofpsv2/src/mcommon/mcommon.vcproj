@@ -149,19 +149,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\dmcontainer.cpp">
-			</File>
-			<File
 				RelativePath=".\mainmcommon.cpp">
 			</File>
 			<File
 				RelativePath=".\p_ai.cpp">
-			</File>
-			<File
-				RelativePath=".\p_arcadecharacter.cpp">
-			</File>
-			<File
-				RelativePath=".\p_car.cpp">
 			</File>
 			<File
 				RelativePath=".\p_charactercontrol.cpp">
@@ -179,34 +170,7 @@
 				RelativePath=".\p_container.cpp">
 			</File>
 			<File
-				RelativePath=".\p_dmcharacter.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmclickme.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmgameinfo.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmgun.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmhq.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmitem.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmmission.cpp">
-			</File>
-			<File
-				RelativePath=".\p_dmshop.cpp">
-			</File>
-			<File
 				RelativePath=".\p_enviroment.cpp">
-			</File>
-			<File
-				RelativePath=".\p_event.cpp">
 			</File>
 			<File
 				RelativePath=".\p_fogplane.cpp">
@@ -230,15 +194,6 @@
 				RelativePath=".\p_spell.cpp">
 			</File>
 			<File
-				RelativePath=".\si_dm.cpp">
-			</File>
-			<File
-				RelativePath=".\si_dmai.cpp">
-			</File>
-			<File
-				RelativePath=".\si_dmcharacter.cpp">
-			</File>
-			<File
 				RelativePath=".\si_mistland.cpp">
 			</File>
 			<File
@@ -252,9 +207,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath=".\dmcontainer.h">
-			</File>
-			<File
 				RelativePath=".\mainmcommon.h">
 			</File>
 			<File
@@ -265,12 +217,6 @@
 			</File>
 			<File
 				RelativePath=".\p_ai.h">
-			</File>
-			<File
-				RelativePath=".\p_arcadecharacter.h">
-			</File>
-			<File
-				RelativePath=".\p_car.h">
 			</File>
 			<File
 				RelativePath=".\p_charactercontrol.h">
@@ -288,34 +234,7 @@
 				RelativePath=".\p_container.h">
 			</File>
 			<File
-				RelativePath=".\p_dmcharacter.h">
-			</File>
-			<File
-				RelativePath=".\p_dmclickme.h">
-			</File>
-			<File
-				RelativePath=".\p_dmgameinfo.h">
-			</File>
-			<File
-				RelativePath=".\p_dmgun.h">
-			</File>
-			<File
-				RelativePath=".\p_dmhq.h">
-			</File>
-			<File
-				RelativePath=".\p_dmitem.h">
-			</File>
-			<File
-				RelativePath=".\p_dmmission.h">
-			</File>
-			<File
-				RelativePath=".\p_dmshop.h">
-			</File>
-			<File
 				RelativePath=".\p_enviroment.h">
-			</File>
-			<File
-				RelativePath=".\p_event.h">
 			</File>
 			<File
 				RelativePath=".\p_fogplane.h">
@@ -337,9 +256,6 @@
 			</File>
 			<File
 				RelativePath=".\p_spell.h">
-			</File>
-			<File
-				RelativePath=".\si_dm.h">
 			</File>
 			<File
 				RelativePath=".\si_mistland.h">

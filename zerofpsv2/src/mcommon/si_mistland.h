@@ -12,7 +12,6 @@ class PSystemProperty;
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
-#include "p_event.h"
 #include "p_ml.h"
 #include <map>
 #include <string>
