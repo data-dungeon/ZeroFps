@@ -14,6 +14,7 @@
 
 using namespace std;
 
+/*
 enum PROXYPROPERTY_AKTIONS
 {
 	UPDATESTATUS,
@@ -45,9 +46,10 @@ class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 };
 
 Property* Create_ProxyProperty();
+*/
 
 /// Property to track objects to activate zones.
-class ENGINE_SYSTEMS_API TrackProperty: public Property {
+class ENGINE_SYSTEMS_API P_Track : public Property {
 	private:
 		ObjectManager*		m_pkOBjM;
 		ZeroFps*			m_pkFps;
@@ -64,8 +66,8 @@ class ENGINE_SYSTEMS_API TrackProperty: public Property {
 		void Init();
 		void SetClient(int iId);
 		
-		TrackProperty();
-		~TrackProperty();
+		P_Track();
+		~P_Track();
 		void CloneOf(Property* pkProperty) { }
 };
 

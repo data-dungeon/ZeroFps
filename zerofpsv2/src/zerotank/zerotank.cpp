@@ -111,7 +111,7 @@ void ZeroTank::OnIdle()
 			if(m_pkZeroTankClientObject) {
 				cout << "Create Client Object" << m_iSelfObjectID << endl;
 				m_pkZeroTankClientObject->AddProperty("CameraProperty");
-				CameraProperty* cam = (CameraProperty*)m_pkZeroTankClientObject->GetProperty("CameraProperty");
+				P_Camera* cam = (P_Camera*)m_pkZeroTankClientObject->GetProperty("CameraProperty");
 				cam->SetCamera(m_pkCamera);
 				}
 			}
@@ -264,7 +264,7 @@ void ZeroTank::OnHud(void)
 	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
 	if(m_pkZeroTankTrack) {
-		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroTankTrack->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>(m_pkZeroTankTrack->GetProperty("TrackProperty"));
 
 		for(set<int>::iterator it = pkTrack->m_iActiveZones.begin(); it != pkTrack->m_iActiveZones.end(); it++) {
 			pkFps->DevPrintf("common"," %d", (*it));	
@@ -343,7 +343,7 @@ void ZeroTank::OnServerStart(void)
 		m_pkCameraObject->AddProperty("TrackProperty");
 		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
 		//m_pkCameraObject->AttachToClosestZone();
-		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
+		P_Camera* cam = (P_Camera*)m_pkCameraObject->GetProperty("CameraProperty");
 		cam->SetCamera(m_pkCamera);
 	}
 

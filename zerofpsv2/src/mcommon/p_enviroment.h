@@ -65,7 +65,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		string			m_StrCurrentEnviroment;
 		
 		
-		LightProperty* m_pkCurrentLP;
+		P_Light*			m_pkCurrentLP;
 		
 		Vector4			m_kSunDiffuseColor;
 		Vector4			m_kSunAmbientColor;		

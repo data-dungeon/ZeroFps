@@ -1,6 +1,7 @@
 #include "proxyproperty.h"
 #include "../common/zoneobject.h"
 
+/*
 ProxyProperty::ProxyProperty() 
 {
 	strcpy(m_acName,"ProxyProperty");		
@@ -51,7 +52,7 @@ float ProxyProperty::GetDistance()
 		fDistance = abs(((*it)->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length());		
 		if(fDistance < fShortestDistance)
 			fShortestDistance = fDistance;
-	}*/
+	}
 
 	return fShortestDistance;
 }
@@ -61,7 +62,7 @@ float ProxyProperty::GetDistance()
 Property* Create_ProxyProperty()
 {
 	return new ProxyProperty;
-}
+}*/
 
 
 
@@ -82,7 +83,7 @@ Property* Create_ProxyProperty()
 
 
 
-TrackProperty::TrackProperty() 
+P_Track::P_Track() 
 {
 	m_pkOBjM			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -99,25 +100,25 @@ TrackProperty::TrackProperty()
 	m_iConnectID		= -1;	// No Client.
 }
 
-TrackProperty::~TrackProperty() 
+P_Track::~P_Track() 
 {
 	m_pkOBjM->RemoveTracker(m_pkObject);
 }
 
 
-void TrackProperty::Init() 
+void P_Track::Init() 
 {
 	cout << "Trackerproperty Init" << endl;
 	m_pkOBjM->AddTracker(m_pkObject);
 }
 
-void TrackProperty::SetClient(int iId)
+void P_Track::SetClient(int iId)
 {
 	m_iConnectID = iId;
 }
 
 
-void TrackProperty::Update() 
+void P_Track::Update() 
 {
 /*	if(m_pkFps->GetGameTime() < m_fNextMove)
 		return;
@@ -141,7 +142,7 @@ void TrackProperty::Update()
 
 Property* Create_TrackProperty()
 {
-	return new TrackProperty;
+	return new P_Track;
 }
 
 

@@ -11,7 +11,7 @@ using namespace std;
 #define NO_ANIMATION_ID	-1
 
 /// Property to add a Modell (MAD) to a object.
-class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
+class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
@@ -31,7 +31,7 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);
 
 	public:
-		MadProperty();
+		P_Mad();
 		//MadProperty(string strResName);
 		void CloneOf(Property* pkProperty) { }
 		
@@ -59,7 +59,7 @@ Property* Create_MadProperty();
 
 
 /// Property to link a object to a MAD.Joint of the parent.
-class ENGINE_SYSTEMS_API LinkToJoint : public Property
+class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 {
 	private:
 		vector<PropertyValues> GetPropertyValues();
@@ -68,8 +68,8 @@ class ENGINE_SYSTEMS_API LinkToJoint : public Property
 	public:
 		string	m_strToJoint;
 
-		LinkToJoint();
-		~LinkToJoint();
+		P_LinkToJoint();
+		~P_LinkToJoint();
 		void Init();
 
 		void CloneOf(Property* pkProperty) { }

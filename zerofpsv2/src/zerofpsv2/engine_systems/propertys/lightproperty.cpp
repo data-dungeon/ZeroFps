@@ -4,7 +4,7 @@
 #include "../../engine/object.h"
 #include "../../basic/zfsystem.h"
  
-LightProperty::LightProperty()
+P_Light::P_Light()
 {
 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -23,18 +23,18 @@ LightProperty::LightProperty()
 	TurnOn();
 }
 
-LightProperty::~LightProperty()
+P_Light::~P_Light()
 {
 	TurnOff();
 	delete m_pkLightSource;
 }
 
-void LightProperty::Init()
+void P_Light::Init()
 {
 
 }
 
-void LightProperty::Update() 
+void P_Light::Update() 
 {
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV(); 
 	//m_pkLightSource->kRot = m_pkObject->GetWorldRotV();
@@ -55,7 +55,7 @@ void LightProperty::Update()
 	}
 }
 
-void LightProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
+void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
 	pkNetPacket->Write( m_pkLightSource->kDiffuse);
 	pkNetPacket->Write( m_pkLightSource->kSpecular);	
@@ -69,7 +69,7 @@ void LightProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_iMode);			
 }
 
-void LightProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
+void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
 	pkNetPacket->Read( m_pkLightSource->kSpecular );			
@@ -83,7 +83,7 @@ void LightProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read( m_iMode);				
 }
 
-vector<PropertyValues> LightProperty::GetPropertyValues()
+vector<PropertyValues> P_Light::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(11);
 
@@ -136,33 +136,33 @@ vector<PropertyValues> LightProperty::GetPropertyValues()
 
 Property* Create_LightProperty()
 {
-	return new LightProperty;
+	return new P_Light;
 }
 
-void LightProperty::Save(ZFIoInterface* pkPackage)
+void P_Light::Save(ZFIoInterface* pkPackage)
 {
 	
 	pkPackage->Write((void*)m_pkLightSource,sizeof(LightSource),1);
 	pkPackage->Write((void*)&m_iMode,sizeof(m_iMode),1);	
 }
 
-void LightProperty::Load(ZFIoInterface* pkPackage)
+void P_Light::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
 	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	
 }
 
-void LightProperty::TurnOn()
+void P_Light::TurnOn()
 {
 	m_pkLight->Add(m_pkLightSource);
 }
 
-void LightProperty::TurnOff()
+void P_Light::TurnOff()
 {
 	m_pkLight->Remove(m_pkLightSource);
 }
 
-void LightProperty::HandleGameMessage(GameMessage& Msg)
+void P_Light::HandleGameMessage(GameMessage& Msg)
 {
 	if(Msg.m_Name == "on")
 		TurnOn();

@@ -282,7 +282,7 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 bool CSMech::SetUpMech()
 {
 	//look for mad property
-	MadProperty* pkMP = static_cast<MadProperty*>(m_pkPP->GetObject()->GetProperty("MadProperty"));	
+	P_Mad* pkMP = static_cast<P_Mad*>(m_pkPP->GetObject()->GetProperty("MadProperty"));	
 	if(pkMP != NULL)
 	{
 		//cout<<"found mad property"<<endl;

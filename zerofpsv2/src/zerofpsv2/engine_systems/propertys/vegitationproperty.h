@@ -11,7 +11,7 @@
 using namespace std;
 
 /// Property to create bushes / trees.
-class ENGINE_SYSTEMS_API VegitationProperty: public Property {
+class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 	private:
 		struct vegitation
 		{
@@ -37,7 +37,7 @@ class ENGINE_SYSTEMS_API VegitationProperty: public Property {
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
 	public:
-		VegitationProperty();
+		P_Vegitation();
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Init();

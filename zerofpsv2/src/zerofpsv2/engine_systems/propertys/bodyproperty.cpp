@@ -117,7 +117,7 @@ vector<PropertyValues> BodyProperty::GetPropertyValues()
 
 bool BodyProperty::SetUpMesh()
 {
-	MadProperty* pkMP = static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));	
+	P_Mad* pkMP = static_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));	
 	if(pkMP != NULL)
 	{
 		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr());

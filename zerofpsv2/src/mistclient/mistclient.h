@@ -70,7 +70,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		Camera*				m_pkCamera;
 		Object*				m_pkTestobj;
-		CameraProperty*	m_pkCamProp;		
+		P_Camera*			m_pkCamProp;		
 		float					m_fAngle;
 		float					m_fDistance;		
 		float 				m_fClickDelay;

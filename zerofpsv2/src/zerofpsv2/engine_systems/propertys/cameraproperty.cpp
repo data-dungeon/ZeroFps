@@ -4,7 +4,7 @@
 #define CHASE_CAM_DISTANCE	5 
 
  
-CameraProperty::CameraProperty() 
+P_Camera::P_Camera() 
 {
 	m_pkCamera = NULL;
 	m_eCameraType = CAM_TYPEFIRSTPERSON;
@@ -24,7 +24,7 @@ CameraProperty::CameraProperty()
 }
 
 
-void CameraProperty::Update() 
+void P_Camera::Update() 
 {
 	if(!m_pkCamera)
 		return;
@@ -32,7 +32,7 @@ void CameraProperty::Update()
 	Vector3		kYawVector;
 	string		strCamName;
 
-	MadProperty* madp = dynamic_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
+	P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
@@ -133,12 +133,12 @@ void CameraProperty::Update()
 	m_pkCamera->SetName(strCamName);
 }
 
-void CameraProperty::SetType(CamType_e kType)
+void P_Camera::SetType(CamType_e kType)
 {
 	m_eCameraType = kType;
 }
 
-void CameraProperty::NextType(CamType_e kType)
+void P_Camera::NextType(CamType_e kType)
 {
 	int iType = m_eCameraType;
 	iType++;
@@ -148,19 +148,19 @@ void CameraProperty::NextType(CamType_e kType)
 	SetType((CamType_e)iType);
 }
 
-void CameraProperty::SetFpFov(float fFov)
+void P_Camera::SetFpFov(float fFov)
 {
 	m_fFov = fFov;
 	
 }
 
 
-void CameraProperty::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp) {
+void P_Camera::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp) {
 	Vector3 kLookDir = kCamPosition - kCamTarget;
 	Look(kCamPosition, kLookDir, kCamUp);
 }
 
-void CameraProperty::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
+void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
 	Matrix4 kCamera;
 
 	kCamera.LookDir(kLookDir,kCamUp);
@@ -189,7 +189,7 @@ void CameraProperty::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp)
 
 Property* Create_CameraProperty()
 {
-	return new CameraProperty();
+	return new P_Camera();
 }
 
 

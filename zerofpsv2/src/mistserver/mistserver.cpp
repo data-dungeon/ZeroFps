@@ -253,10 +253,10 @@ void MistServer::Input()
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 
-	MadProperty* mp;
+	P_Mad* mp;
 	Object* pkAnimObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 	if(pkAnimObj)
-		mp = (MadProperty*)pkAnimObj->GetProperty("MadProperty");
+		mp = (P_Mad*)pkAnimObj->GetProperty("MadProperty");
 	
 	if(pkInput->Pressed(KEY_F5) && mp) {
 		mp->SetAnimationActive(false);
@@ -603,7 +603,7 @@ void MistServer::OnServerStart(void)
 	if(m_pkCameraObject)
 	{	
 		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
-		CameraProperty* m_pkCamProp = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		
 	}
@@ -983,7 +983,7 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	{	
 		pkObject->GetSave() = false;
 		pkObject->AddProperty("TrackProperty");	
-		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkObject->GetProperty("TrackProperty"));	
+		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("TrackProperty"));	
 		if(pkTrack)
 			pkTrack->SetClient(iConID);	
 

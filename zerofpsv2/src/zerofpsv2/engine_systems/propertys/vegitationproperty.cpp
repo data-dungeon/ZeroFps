@@ -1,6 +1,6 @@
 #include "vegitationproperty.h"
 
-VegitationProperty::VegitationProperty()
+P_Vegitation::P_Vegitation()
 {
 	strcpy(m_acName,"VegitationProperty");
 	
@@ -23,7 +23,7 @@ VegitationProperty::VegitationProperty()
 	
 }
 
-void VegitationProperty::Init()
+void P_Vegitation::Init()
 {
 /*
 	for(int i=0;i<100;i++)
@@ -33,7 +33,7 @@ void VegitationProperty::Init()
 */	
 }
 
-void VegitationProperty::Update()
+void P_Vegitation::Update()
 {
 	//frustum culling
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
@@ -65,7 +65,7 @@ void VegitationProperty::Update()
 	}
 }
 
-vector<PropertyValues> VegitationProperty::GetPropertyValues()
+vector<PropertyValues> P_Vegitation::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(3);
 		
@@ -84,7 +84,7 @@ vector<PropertyValues> VegitationProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool VegitationProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_Vegitation::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kTexture") == 0) {
 		SetTexture(kValue.c_str());
@@ -94,30 +94,30 @@ bool VegitationProperty::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
-void VegitationProperty::SetTexture(const char* acNewTex)//,const char* acTex2)
+void P_Vegitation::SetTexture(const char* acNewTex)//,const char* acTex2)
 {
 	m_kTexture=acNewTex;	
 	m_iTexture=m_pkTexMan->Load(acNewTex,0);
 }
 
-void VegitationProperty::UpdateSet()
+void P_Vegitation::UpdateSet()
 {
 	SetTexture(m_kTexture.c_str());
 }
 
-void VegitationProperty::SetScale(Vector3 kScale)
+void P_Vegitation::SetScale(Vector3 kScale)
 {
 	m_kScale=kScale;
  
  	CalculateRadius();
 }
 
-void VegitationProperty::Clear()
+void P_Vegitation::Clear()
 {
 	m_akPositions.clear();
 }
 
-void VegitationProperty::CalculateRadius()
+void P_Vegitation::CalculateRadius()
 {
 	float maxDist = 0;
 
@@ -147,7 +147,7 @@ void VegitationProperty::CalculateRadius()
 //	cout<<"Setting radius to "<<m_fRadius<<endl;
 }
 
-void VegitationProperty::AddPos(Vector3 kPos)
+void P_Vegitation::AddPos(Vector3 kPos)
 {
 	vegitation temp;
 	temp.kPos = kPos;
@@ -162,7 +162,7 @@ void VegitationProperty::AddPos(Vector3 kPos)
 
 
 
-void VegitationProperty::Save(ZFIoInterface* pkPackage)
+void P_Vegitation::Save(ZFIoInterface* pkPackage)
 {
 	char data[256];
 	
@@ -184,7 +184,7 @@ void VegitationProperty::Save(ZFIoInterface* pkPackage)
 
 }
 
-void VegitationProperty::Load(ZFIoInterface* pkPackage)
+void P_Vegitation::Load(ZFIoInterface* pkPackage)
 {
 
 	char data[256];
@@ -223,7 +223,7 @@ void VegitationProperty::Load(ZFIoInterface* pkPackage)
 
 Property* Create_VegitationProperty()
 {
-	return new VegitationProperty();
+	return new P_Vegitation();
 }
 
 

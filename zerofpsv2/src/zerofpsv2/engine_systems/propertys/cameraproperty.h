@@ -24,7 +24,7 @@ enum ENGINE_SYSTEMS_API CamType_e
 };
 
 /// Connects a Object to a Camera.
-class ENGINE_SYSTEMS_API CameraProperty:public Property 
+class ENGINE_SYSTEMS_API P_Camera : public Property 
 {
 	private:
 		Camera*		m_pkCamera;			// Camera to refresh.
@@ -44,7 +44,7 @@ class ENGINE_SYSTEMS_API CameraProperty:public Property
 		
 
 	public:
-		CameraProperty();
+		P_Camera();
 		void CloneOf(Property* pkProperty) { }
 	
 		void Update();

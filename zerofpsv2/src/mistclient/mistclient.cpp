@@ -277,10 +277,10 @@ void MistClient::OnSystem()
 			
 			if(pkObj)
 			{
-				CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+				P_Camera* cp = (P_Camera*)pkObj->GetProperty("CameraProperty");
 			
 				if(!cp)
-					CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+					P_Camera* cp = (P_Camera*)pkObj->AddProperty("CameraProperty");
 		
 				if(cp)
 				{
@@ -459,7 +459,7 @@ void MistClient::OnServerStart(void)
 	
 		m_pkTestobj->AddProperty("TrackProperty");	
 
-		m_pkCamProp = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
+		m_pkCamProp = (P_Camera*)m_pkTestobj->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 	
@@ -748,11 +748,11 @@ void MistClient::SetActiveCaracter(int iCaracter)
 					if(pkObj)
 					{
 						//get camera and enviroment propertys
-						CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+						P_Camera* cp = (P_Camera*)pkObj->GetProperty("CameraProperty");
 						P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
 				
 						if(!cp)
-							CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+							P_Camera* cp = (P_Camera*)pkObj->AddProperty("CameraProperty");
 		
 						if(cp)
 						{
@@ -944,7 +944,7 @@ bool MistClient::PickZones()
 		{
 			iNrOfZones++;
 		
-			MadProperty* mp = (MadProperty*)kObjects[i]->GetProperty("MadProperty");
+			P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("MadProperty");
 			if(mp)
 			{
 				if(mp->TestLine(start,dir))

@@ -6,7 +6,7 @@
 extern int g_iMadLODLock;
 extern float g_fMadLODScale;
  
-MadProperty::MadProperty()
+P_Mad::P_Mad()
 {
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
@@ -20,7 +20,7 @@ MadProperty::MadProperty()
 	m_fScale	 = 1.0;
 }
 
-void MadProperty::Update() 
+void P_Mad::Update() 
 {
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
@@ -76,13 +76,13 @@ void MadProperty::Update()
 		}
 }
 
-void MadProperty::SetBase(const char* acName)
+void P_Mad::SetBase(const char* acName)
 {
 	SetBasePtr(string(acName));
 	m_iNetUpdateFlags = 1;
 }
 
-void MadProperty::Save(ZFIoInterface* pkPackage)
+void P_Mad::Save(ZFIoInterface* pkPackage)
 {	
 	char temp[50];
 	strcpy(temp,m_kMadFile.c_str());
@@ -91,7 +91,7 @@ void MadProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fScale,4,1);
 }
 
-void MadProperty::Load(ZFIoInterface* pkPackage)
+void P_Mad::Load(ZFIoInterface* pkPackage)
 {
 	char temp[50];
 	pkPackage->Read((void*)temp,50,1);	
@@ -105,7 +105,7 @@ void MadProperty::Load(ZFIoInterface* pkPackage)
 	m_pkObject->GetRadius() = GetRadius();
 }
 
-void MadProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
 	pkNetPacket->Write( m_fScale );
@@ -114,7 +114,7 @@ void MadProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	m_iNetUpdateFlags = 0;
 }
  
-void MadProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char temp[50];
 	pkNetPacket->Read_NetStr(temp);
@@ -128,7 +128,7 @@ void MadProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 }
 
-vector<PropertyValues> MadProperty::GetPropertyValues()
+vector<PropertyValues> P_Mad::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
 	
@@ -143,7 +143,7 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool MadProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
 		SetBase(kValue.c_str());
@@ -159,7 +159,7 @@ bool MadProperty::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
-bool MadProperty::TestLine(Vector3 kPos,Vector3 kDir)
+bool P_Mad::TestLine(Vector3 kPos,Vector3 kDir)
 {
 	if(LineVSSphere(kPos,kDir))
 	{
@@ -169,7 +169,7 @@ bool MadProperty::TestLine(Vector3 kPos,Vector3 kDir)
 	return false;
 }
 
-bool MadProperty::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
+bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
 {
 	Vector3 c=m_pkObject->GetWorldPosV() - kPos;		
 	kDir.Normalize();		
@@ -185,7 +185,7 @@ bool MadProperty::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
 	return false;
 }
 
-bool MadProperty::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
+bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 {
 	vector<Mad_Face>*			pkFaces;			// Faces in mesh.
 	vector<Vector3>*			pkVertex;			// Vertex frames for mesh.
@@ -251,7 +251,7 @@ bool MadProperty::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	return false;
 }
 
-bool MadProperty::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
+bool P_Mad::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 {		
 	Plane P;
 	
@@ -283,7 +283,7 @@ bool MadProperty::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 	return false;
 }
 
-bool MadProperty::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
+bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 {
 	Plane side[6];
 	
@@ -331,7 +331,7 @@ bool MadProperty::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 }
 
 
-void MadProperty::GenerateModelMatrix()
+void P_Mad::GenerateModelMatrix()
 {
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
@@ -343,13 +343,13 @@ void MadProperty::GenerateModelMatrix()
 
 Property* Create_MadProperty()
 {
-	return new MadProperty;
+	return new P_Mad;
 }
 
 
 //-------------LinkToJoinit
 
-LinkToJoint::LinkToJoint() 
+P_LinkToJoint::P_LinkToJoint() 
 {
 	strcpy(m_acName,"LinkToJoint");		
 	m_iType = PROPERTY_TYPE_NORMAL;
@@ -358,12 +358,12 @@ LinkToJoint::LinkToJoint()
 	m_strToJoint = "joint0";
 }
 
-LinkToJoint::~LinkToJoint()		{ }
-void LinkToJoint::Init()		{ }
+P_LinkToJoint::~P_LinkToJoint()		{ }
+void P_LinkToJoint::Init()		{ }
 
-void LinkToJoint::Update() 
+void P_LinkToJoint::Update() 
 {
-	MadProperty* pkMad = dynamic_cast<MadProperty*>(m_pkObject->GetParent()->GetProperty("MadProperty"));
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetParent()->GetProperty("MadProperty"));
 	if(!pkMad)
 		return;
 
@@ -389,7 +389,7 @@ void LinkToJoint::Update()
 	m_pkObject->SetLocalPosV( kPos );
 }
 
-vector<PropertyValues> LinkToJoint::GetPropertyValues()
+vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
 	
@@ -400,7 +400,7 @@ vector<PropertyValues> LinkToJoint::GetPropertyValues()
 	return kReturn;
 }
 
-void LinkToJoint::Save(ZFIoInterface* pkPackage)
+void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
 {	
 	char temp[50];
 	strcpy(temp,m_strToJoint.c_str());
@@ -408,7 +408,7 @@ void LinkToJoint::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)temp,50,1);
 }
 
-void LinkToJoint::Load(ZFIoInterface* pkPackage)
+void P_LinkToJoint::Load(ZFIoInterface* pkPackage)
 {
 	char temp[50];
 	pkPackage->Read((void*)temp,50,1);	
@@ -421,7 +421,7 @@ void LinkToJoint::Load(ZFIoInterface* pkPackage)
 
 Property* Create_LinkToJoint()
 {
-	return new LinkToJoint;
+	return new P_LinkToJoint;
 }
 
 

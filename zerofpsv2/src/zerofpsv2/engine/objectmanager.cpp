@@ -733,7 +733,7 @@ void ObjectManager::PackToClients()
 	
 	// Refresh list of active Zones for each client.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
-		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("TrackProperty"));
 		if(pkTrack->m_iConnectID != -1)
 				m_pkZeroFps->m_kClient[pkTrack->m_iConnectID].m_iActiveZones.insert(
 					pkTrack->m_iActiveZones.begin(),pkTrack->m_iActiveZones.end());
@@ -1556,7 +1556,7 @@ void ObjectManager::UpdateZones()
 	// For each tracker.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
-		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("TrackProperty"));
 		pkTrack->m_iActiveZones.clear();
 
 		for(iZ=0;iZ<m_kZones.size();iZ++)
@@ -2086,11 +2086,11 @@ void ObjectManager::SetZoneModel(const char* szName,int iId)
 		return;
 	}	
 
-	MadProperty* mp = (MadProperty*)zd->m_pkZone->GetProperty("MadProperty");
+	P_Mad* mp = (P_Mad*)zd->m_pkZone->GetProperty("MadProperty");
 	
 	if(!mp)
 	{
-		mp = (MadProperty*)zd->m_pkZone->AddProperty("MadProperty");
+		mp = (P_Mad*)zd->m_pkZone->AddProperty("MadProperty");
 	}
 		
 	if(mp)

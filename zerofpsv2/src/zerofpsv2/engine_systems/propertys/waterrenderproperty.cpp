@@ -1,6 +1,6 @@
 #include "waterrenderproperty.h"
  
-WaterRenderProperty::WaterRenderProperty()
+P_WaterRender::P_WaterRender()
 {
 	strcpy(m_acName,"WaterRenderProperty");		
 
@@ -20,7 +20,7 @@ WaterRenderProperty::WaterRenderProperty()
 	bNetwork	=	true;
 }
 
-void WaterRenderProperty::CloneOf(Property* pkProperty)
+void P_WaterRender::CloneOf(Property* pkProperty)
 {
 	bNetwork				= pkProperty->bNetwork;
 	m_iType				= pkProperty->m_iType;
@@ -29,7 +29,7 @@ void WaterRenderProperty::CloneOf(Property* pkProperty)
 	m_bSortDistance	= pkProperty->m_bSortDistance;
 }
 
-void WaterRenderProperty::SetProperty(int iSize,int iStep,const char* acTexture)
+void P_WaterRender::SetProperty(int iSize,int iStep,const char* acTexture)
 {
 	m_iSize=iSize;
 	m_iStep=iStep;
@@ -37,13 +37,13 @@ void WaterRenderProperty::SetProperty(int iSize,int iStep,const char* acTexture)
 	SetTexture(acTexture);
 }
 
-void WaterRenderProperty::SetTexture(const char* acTexture)
+void P_WaterRender::SetTexture(const char* acTexture)
 {
 	m_iTexture = m_pkTexMan->Load(acTexture,0);
 	m_sTexture = acTexture;
 }
 
-void WaterRenderProperty::Update() 
+void P_WaterRender::Update() 
 {	
 	m_fBlendValue = 1.0f; // Disable blend effect...
 
@@ -65,20 +65,20 @@ void WaterRenderProperty::Update()
 		}
 }
 
-void WaterRenderProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write(m_iSize);
 	pkNetPacket->Write(m_iStep);
 }
  
-void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Read(m_iSize);
 	pkNetPacket->Read(m_iStep);
 }
 
 
-void WaterRenderProperty::Save(ZFIoInterface* pkPackage)
+void P_WaterRender::Save(ZFIoInterface* pkPackage)
 {
 
 	char data[256];	
@@ -91,7 +91,7 @@ void WaterRenderProperty::Save(ZFIoInterface* pkPackage)
 
 }
 
-void WaterRenderProperty::Load(ZFIoInterface* pkPackage)
+void P_WaterRender::Load(ZFIoInterface* pkPackage)
 {
 	char data[300];	
 	
@@ -105,7 +105,7 @@ void WaterRenderProperty::Load(ZFIoInterface* pkPackage)
 	SetTexture(m_sTexture.c_str());
 }
 
-vector<PropertyValues> WaterRenderProperty::GetPropertyValues()
+vector<PropertyValues> P_WaterRender::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(3);
 			
@@ -124,7 +124,7 @@ vector<PropertyValues> WaterRenderProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool WaterRenderProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_WaterRender::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_sTexture") == 0) {
 		SetTexture(kValue.c_str());		
@@ -138,6 +138,6 @@ bool WaterRenderProperty::HandleSetValue( string kValueName ,string kValue )
 
 Property* Create_WaterRenderProperty()
 {
-	return new WaterRenderProperty;
+	return new P_WaterRender;
 }
 

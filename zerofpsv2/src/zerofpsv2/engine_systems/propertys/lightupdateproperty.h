@@ -9,14 +9,14 @@
 using namespace std;
 
 /// Property that updates lightning.
-class ENGINE_SYSTEMS_API LightUpdateProperty: public Property
+class ENGINE_SYSTEMS_API P_LightUpdate : public Property
 {
 	private:
 		Light* m_pkLight;
 
 
 	public:
-	LightUpdateProperty();
+	P_LightUpdate();
 		void CloneOf(Property* pkProperty) { }
 	void Update();
 };

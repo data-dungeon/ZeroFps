@@ -15,7 +15,7 @@ class ZeroFps;
 class GameMessage;
 class NetWork;
 class ZoneObject;
-class TrackProperty;
+class P_Track;
 
 
 /// Data about a Zone in the World.

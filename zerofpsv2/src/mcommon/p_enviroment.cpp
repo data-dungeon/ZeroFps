@@ -248,9 +248,9 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 	
 	//setup light property
 	
-	LightProperty* pl = (LightProperty*)m_pkObject->GetProperty("LightProperty");		
+	P_Light* pl = (P_Light*)m_pkObject->GetProperty("LightProperty");		
 	if(!pl)
-		pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+		pl = (P_Light*)m_pkObject->AddProperty("LightProperty");	
 	
 	if(pl)
 	{	

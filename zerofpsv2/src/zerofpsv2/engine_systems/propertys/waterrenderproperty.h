@@ -12,7 +12,7 @@
 using namespace std;
 
 /// Property to render a watersurface.
-class ENGINE_SYSTEMS_API WaterRenderProperty: public Property {
+class ENGINE_SYSTEMS_API P_WaterRender : public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render*	m_pkRender;	
@@ -29,7 +29,7 @@ class ENGINE_SYSTEMS_API WaterRenderProperty: public Property {
 		bool HandleSetValue( string kValueName ,string kValue );		
 		
 	public:
-		WaterRenderProperty();
+		P_WaterRender();
 		void CloneOf(Property* pkProperty);
 
 		void SetProperty(int iSize,int iStep,const char* acTexture);
