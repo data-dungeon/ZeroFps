@@ -17,6 +17,8 @@ void Test::OnInit(void) {
 	test->Random();
 	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
+	test->GenerateTextures();
+//	exit(0);
 
 /*
 	test2=new HeightMap();
@@ -26,7 +28,7 @@ void Test::OnInit(void) {
 */
 //	float x,y;
 //	pkRender->GiveTexCor(x,y,4);
-//	exit(1);
+//s	exit(1);
 
 
 	GLfloat light_position[] ={0,60,0,1};

@@ -207,7 +207,33 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 }
 
 
-
+void HeightMap::GenerateTextures() {
+	float slope;
+	float diff;
+	for(int z=0;z<m_iHmSize-1;z++) {
+		for(int x=0;x<m_iHmSize-1;x++) {
+			slope=0;
+			
+			for(int q=0;q<2;q++){	
+				for(int w=0;w<2;w++){	
+					diff = GetVert(x,z)->height - GetVert(x+q,z+w)->height;
+					if(diff<0)
+						slope-=diff;
+					else
+						slope+=diff;
+				}
+			}
+//			cout<<"Slope:"<<slope<<endl;
+			if(slope<1)
+				GetVert(x,z)->texture=1;
+			else if(slope<3)				
+				GetVert(x,z)->texture=2;
+			else 
+				GetVert(x,z)->texture=3;				
+			
+		}
+	}
+}
 
 
 

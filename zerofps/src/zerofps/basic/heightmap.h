@@ -38,9 +38,11 @@ class BASIC_API HeightMap {
 		bool Load(char* acFile);
 		bool Save(char* avFile);
 		void GenerateNormals();
+		void GenerateTextures();
 		float Height(int x,int z);
 		void SetTileSet(char* acTileSet);
 		void SetPosition(Vector3 kNewPos);
+
 		
 		void MakeQuadTree();
 		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
