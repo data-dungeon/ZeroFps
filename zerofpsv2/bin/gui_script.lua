@@ -55,28 +55,42 @@ BackPackWndSkin = { tex1= "backpack_wnd.bmp" }
 StatsWndSkin	= { tex1= "stats_wnd.bmp" }
 MapWndSkin	= { tex1= "map_wnd.bmp", tex1a= "map_wnd_a.bmp" }
 
+-- Constants to use to identify controlls
+Wnd		= 0
+Button		= 1
+Checkbox	= 2
+Combobox	= 3
+Label		= 4
+Listbox		= 5
+Radiobutton	= 6
+Scrollbar	= 7
+Slider		= 8
+TabControl	= 9
+Textbox		= 10
+Treebox		= 11
+
+-- Unique ID numbers for Windows
+MainWnd			= 1
+LifeBarProgress		= 2
+ManabarProgress		= 3
+MapButton		= 4
+BackpackButton		= 5
+StatsButton		= 6
+BackPackWnd		= 7
+StatisticWnd		= 8
+AbilityList		= 9
+MapWnd			= 10
+StyTextbox		= 11
+ConTextbox		= 12
+DexTextbox		= 13
+IntTextbox		= 14
+PieTextbox		= 15
+
+-- Window Flags
+MultiLine		= 1
+ReanOnly		= 2
+
 function CreateMainWnds()
-
-	-- Constants to use to identify controlls
-	local Wnd		= 0
-	local Button		= 1
-	local Checkbox		= 2
-	local Combobox		= 3
-	local Label		= 4
-	local Listbox		= 5
-	local Radiobutton	= 6
-	local Scrollbar		= 7
-	local Slider		= 8
-	local TabControl	= 9
-	local Textbox		= 10
-	local Treebox		= 11
-
-	local MainWnd		= 1;
-	local LifeBarProgress   = 2;
-	local ManabarProgress   = 3;
-	local MapButton		= 4;
-	local BackpackButton	= 5;
-	local StatsButton	= 6;
 
 	local w = GetScreenWidth()
 	local h = GetScreenHeight()
@@ -123,11 +137,6 @@ function OnClickBackpack()
 	local w = GetScreenWidth()
 	local h = GetScreenHeight()
 
-	local Wnd	= 0
-
-	local MainWnd	  = 1
-	local BackPackWnd = 100
-
 	if IsWndVisible("BackPackWnd") == 1 then 
 		CloseWnd("BackPackWnd")
 	else 
@@ -141,22 +150,35 @@ function OnClickStats()
 	local w = GetScreenWidth()
 	local h = GetScreenHeight()
 
-	local Wnd	= 0
-	local Listbox	= 5
-
-	local MainWnd	  = 1
-	local StatisticWnd = 101
-	local AbilityList  = 102
-
 	if IsWndVisible("StatsWnd") == 1 then 
 		CloseWnd("StatsWnd")
 	else 
-		CreateWnd(Wnd, "StatsWnd", "",StatisticWnd,MainWnd,0,0,400,570,0)
-		CreateWnd(Listbox, "AbilityList", "",AbilityList,StatisticWnd,20,50,168,225,0)
-		ChangeSkin(StatisticWnd, "StatsWndSkin", "Window")
+		local wnd_exist = GetWnd("StatsWnd")
 
-		AddListItem("AbilityList", "Jump 10", 0)
-		AddListItem("AbilityList", "Hide 19", 0)
+		CreateWnd(Wnd, "StatsWnd", "",StatisticWnd,MainWnd,0,0,400,570,0)
+
+		-- Only create controlls ones
+		if wnd_exist == -1 then
+			CreateWnd(Listbox, "AbilityList", "",AbilityList,StatisticWnd,20,50,168,225,0)
+			ChangeSkin(StatisticWnd, "StatsWndSkin", "Window")
+
+			ClearListbox("AbilityList")
+			AddListItem("AbilityList", "Jump 10")
+			AddListItem("AbilityList", "Hide 19")
+
+			CreateWnd(Textbox,"StyTextbox","14",StyTextbox,StatisticWnd,300,45,50,20,ReanOnly)
+			CreateWnd(Textbox,"ConTextbox","10",ConTextbox,StatisticWnd,300,45+25*1,50,20,ReanOnly)
+			CreateWnd(Textbox,"DexTextbox","18",DexTextbox,StatisticWnd,300,45+25*2,50,20,ReanOnly)
+			CreateWnd(Textbox,"IntTextbox","12",IntTextbox,StatisticWnd,300,45+25*3,50,20,ReanOnly)
+			CreateWnd(Textbox,"PieTextbox","4", PieTextbox,StatisticWnd, 300,45+25*4,50,20,ReanOnly)
+
+			SetTextInt("StyTextbox", 12)
+			SetTextInt("ConTextbox", 15)
+			SetTextInt("DexTextbox", 11)
+			SetTextInt("IntTextbox", 18)
+			SetTextInt("PieTextbox", 13)
+
+		end 
 	end
 end
 
@@ -164,11 +186,6 @@ function OnClickMap()
 
 	local w = GetScreenWidth()
 	local h = GetScreenHeight()
-
-	local Wnd	= 0
-
-	local MainWnd	= 1
-	local MapWnd	= 103
 
 	if IsWndVisible("MapWnd") == 1 then 
 		CloseWnd("MapWnd")

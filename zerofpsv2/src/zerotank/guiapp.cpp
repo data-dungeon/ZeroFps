@@ -121,6 +121,8 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	case Textbox:
 		pkWnd = new ZGuiTextbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
 			uiFlags & EB_IS_MULTILINE);
+		if(uiFlags & READ_ONLY) 
+			((ZGuiTextbox*) pkWnd)->SetReadOnly(true);
 		break;
 	case Treebox:
 		pkWnd = new ZGuiTreebox( Rect(x,y,x+w,y+h), pkParent, true, iID);
@@ -371,17 +373,40 @@ bool GuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 	return true;
 }
 
-void GuiApp::AddListItem(int iListboxID, char *szText, bool bCombobox)
+void GuiApp::AddListItem(int iListboxID, char *szText)
 {
+	ZGuiWnd* pkWnd = GetWnd(iListboxID);
+
+	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+
 	if(bCombobox == false)
 	{
-		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(GetWnd(iListboxID));
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
 		int iIndex = pkListBox->GetItemCount(); 
 		pkListBox->AddItem(szText, iIndex, false); 
 	}
 	else
 	{
-		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(GetWnd(iListboxID));
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
+		pkComboBox->AddItem(szText, -1, false); 
+	}
+}
+
+void GuiApp::AddListItem(char *szListboxResName, char *szText)
+{
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szListboxResName);
+
+	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+
+	if(bCombobox == false)
+	{
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
+		int iIndex = pkListBox->GetItemCount(); 
+		pkListBox->AddItem(szText, iIndex, false); 
+	}
+	else
+	{
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
 		pkComboBox->AddItem(szText, -1, false); 
 	}
 }
@@ -442,6 +467,35 @@ void GuiApp::SetTextFloat(int iWndID, float fNumber, bool bResize)
 {
 	ZGuiWnd* pkWnd;
 	if((pkWnd = GetWnd(iWndID)))
+	{
+		char szText[25];
+		sprintf(szText, "%f", fNumber);
+		pkWnd->SetText(szText, bResize);
+	}
+}
+
+void GuiApp::SetText(char* szResName, char* szText, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szResName)))
+		pkWnd->SetText(szText, bResize);
+}
+
+void GuiApp::SetTextInt(char* szResName, int iNumber, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szResName)))
+	{
+		char szText[25];
+		sprintf(szText, "%i", iNumber);
+		pkWnd->SetText(szText, bResize);
+	}
+}
+
+void GuiApp::SetTextFloat(char* szResName, float fNumber, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szResName)))
 	{
 		char szText[25];
 		sprintf(szText, "%f", fNumber);
@@ -638,17 +692,30 @@ bool GuiApp::IsWndVisible(char* szResName)
 	return false;
 }
 
-void GuiApp::AddListItem(char *szListboxResName, char *szItemText, bool bCombobox)
+void GuiApp::ClearListbox(char *szResName)
 {
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+
+	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+
 	if(bCombobox == false)
 	{
-		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(m_pkResMan->Wnd(szListboxResName));
-		int iIndex = pkListBox->GetItemCount(); 
-		pkListBox->AddItem(szItemText, iIndex, false); 
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
+		pkListBox->RemoveAllItems();
 	}
 	else
 	{
-		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(m_pkResMan->Wnd(szListboxResName));
-		pkComboBox->AddItem(szItemText, -1, false); 
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
+		pkComboBox->RemoveAllItems();
 	}
+
+}
+
+int GuiApp::GetWndID(char* szResName)
+{
+	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+	if(pkWnd)
+		return pkWnd->GetID();
+	
+	return -1;
 }

@@ -14,6 +14,7 @@ class ZFScript;
 class ZGuiResourceManager;
 
 #define EB_IS_MULTILINE   0x1
+#define READ_ONLY			  0x2
 
 enum GuiType
 {
@@ -35,7 +36,10 @@ enum GuiType
 class GuiApp
 {
 public:
-	void AddListItem(char* szListboxResName, char* szItemText, bool bCombobox);
+	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
+	void ClearListbox(char* szName);
+	void AddListItem(char* szListboxResName, char* szText);
+	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
 	bool ChangeSkin(ZFScript* pkScript, int iWndID, char* szSkinName, char* szSkinType);
@@ -49,11 +53,15 @@ public:
 	void SetTextFloat(int iWndID, float fNumber, bool bResize=false);
 	void SetTextInt(int iWndID, int iNumber, bool bResize=false);
 	void SetText(int iWndID, char* szText, bool bResize=false);
+
+	void SetTextFloat(char* szWndResName, float fNumber, bool bResize=false);
+	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);
+	void SetText(char* szWndResName, char* szText, bool bResize=false);
+
 	ZGuiWnd* GetTabPage(int iTabCtrlID, int iPage);
 	void AddTabPage(int iTabCtrlID, char* szName);
 	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
-	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript, ZGuiResourceManager* pkResMan);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,

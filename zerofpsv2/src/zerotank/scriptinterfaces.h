@@ -17,6 +17,9 @@ namespace GuiAppLua
 	int GetScreenWidthLua(lua_State* pkLua);
 	int GetScreenHeightLua(lua_State* pkLua);
 	int AddListboxItemLua(lua_State* pkLua);
+	int ClearListboxLua(lua_State* pkLua);
+	int GetWndLua(lua_State* pkLua);
+	int SetTextInt(lua_State* pkLua);
 };
 
 #endif // #ifndef _SCRIPTINTERFACES_H

@@ -215,6 +215,8 @@ void ZeroTank::OnSystem()
 
 void ZeroTank::Input()
 {
+	const int PRESSED_KEY = pkInput->GetQueuedKey();
+
 	int mx,my;
 	pkInput->MouseXY(mx,my);
 
@@ -314,12 +316,19 @@ void ZeroTank::Input()
 		//m_pkZeroTank_Modify->SetLocalRotV(kRotate);
 	}
 	
-	if(pkInput->Pressed(KEY_R))
+	if(PRESSED_KEY == KEY_R)
 	{
 		static int w = 0;
 		if(w++ > 400-16) w = 0;
 		ResizeWnd("ManaBarProgress", w, -1);		
 	}	
+
+	if(PRESSED_KEY == KEY_1)
+		pkScript->CallScript("OnClickBackpack", 0, 0); 
+	if(PRESSED_KEY == KEY_2)
+		pkScript->CallScript("OnClickStats", 0, 0);
+	if(PRESSED_KEY == KEY_3)
+		pkScript->CallScript("OnClickMap", 0, 0);
 
 	
 /*	
@@ -671,10 +680,14 @@ bool ZeroTank::InitializeScript()
 	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
 	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
 	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
+	pkScript->ExposeFunction("ClearListbox", GuiAppLua::ClearListboxLua);
+	pkScript->ExposeFunction("GetWnd", GuiAppLua::GetWndLua);
 	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
 	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
 	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 
 	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
-	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua);
+	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
+	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
+
 	return true;
 }

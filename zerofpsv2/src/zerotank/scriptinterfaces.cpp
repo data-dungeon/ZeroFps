@@ -30,8 +30,8 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	pkScript->GetArg(pkLua, 0, &dType);
 
 	char szResName[50], szText[50];
-	pkScript->GetArg(pkLua, 1, &szResName);
-	pkScript->GetArg(pkLua, 2, &szText);
+	pkScript->GetArg(pkLua, 1, szResName);
+	pkScript->GetArg(pkLua, 2, szText);
 
 	double dID, dParentID;
 	pkScript->GetArg(pkLua, 3, &dID);
@@ -43,18 +43,6 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	pkScript->GetArg(pkLua, 7, &w);
 	pkScript->GetArg(pkLua, 8, &h);
 	pkScript->GetArg(pkLua, 9, &f);
-
-/*	printf("NumArgs = %i\n", iNumArgs); 
-	printf("First argument   = %i\n", (int) dType);
-	printf("Second argument  = %s\n", szResName);
-	printf("Third argument   = %s\n", szText);
-	printf("Fourth argument  = %i\n", (int) dID);
-	printf("Fifth argument   = %i\n", (int) dParentID);
-	printf("Sixth argument   = %i\n", (int) x);
-	printf("Seventh argument = %i\n", (int) y);
-	printf("Eight argument   = %i\n", (int) w);
-	printf("Ninth argument   = %i\n", (int) h);
-	printf("Tenth argument	 = %i\n", (int) f);*/
 
 	GuiType eType = GuiType_Error;
 
@@ -79,7 +67,8 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 		}
 	}
 
-	g_kZeroTank.CreateWnd(eType, szResName, szText, dID, dParentID, x, y, w, h, f);
+	g_kZeroTank.CreateWnd(eType, szResName, szText, (int) dID, dParentID, 
+		(int) x, (int) y, (int) w, (int) h, (unsigned long) f);
 
 	return 1;
 }
@@ -194,16 +183,15 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 
 // Close window
 // Parameters:
-// (0) int iID to wnd
+// (0) char* resName of the Listbox
 // (1) char* Item name
-// (2) int 0 = Listbox, 1 = Combobox
 int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 {
 	ZFScript* pkScript = g_kZeroTank.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 3)
+	if(iNumArgs != 2)
 		return 0;
 
 	char szWndName[100];
@@ -212,10 +200,76 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 	char szItemName[100];
 	pkScript->GetArg(pkLua, 1, szItemName);
 
-	double dComboBox;
-	pkScript->GetArg(pkLua, 2, &dComboBox);
-
-	g_kZeroTank.AddListItem(szWndName, szItemName, ((int)dComboBox == 1) ? true : false);
+	g_kZeroTank.AddListItem(szWndName, szItemName);
 	
 	return 1;
+}
+
+// ClearListbox
+// Parameters:
+// (0) char* resName of the Listbox
+int GuiAppLua::ClearListboxLua(lua_State* pkLua)
+{
+	ZFScript* pkScript = g_kZeroTank.GetScript();
+
+	int iNumArgs = pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 1)
+		return 0;
+
+	char szWndName[100];
+	pkScript->GetArg(pkLua, 0, szWndName);
+
+	g_kZeroTank.ClearListbox(szWndName);
+
+	return 1;
+}
+
+// GetWndLua
+// Description: Check to if a Window exist. Returns -1 if the window does not exist 
+// or a possitive value that is the ID number of the window if it exist.
+// Parameters:
+// (0) char* resName of the Listbox
+int GuiAppLua::GetWndLua(lua_State* pkLua)
+{
+	ZFScript* pkScript = g_kZeroTank.GetScript();
+
+	int iNumArgs = pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 1)
+		return 0;
+
+	char szWndName[100];
+	pkScript->GetArg(pkLua, 0, szWndName);
+
+	int ret = g_kZeroTank.GetWndID(szWndName);
+
+	pkScript->AddReturnValue(pkLua, ret);
+
+	return 1;
+}
+
+// SetText
+// Parameters:
+// (0) char* resName of the Listbox
+// (1) 
+int GuiAppLua::SetTextInt(lua_State* pkLua)
+{
+	ZFScript* pkScript = g_kZeroTank.GetScript();
+
+	int iNumArgs = pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 2)
+		return 0;
+
+	char szWndName[100];
+	pkScript->GetArg(pkLua, 0, szWndName);
+
+	double dValue;
+	pkScript->GetArg(pkLua, 1, &dValue);
+
+	g_kZeroTank.SetTextInt(szWndName, (int) dValue);
+
+	return 1;
+
 }
