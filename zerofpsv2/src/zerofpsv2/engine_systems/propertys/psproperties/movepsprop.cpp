@@ -53,28 +53,28 @@ void MovePSProp::Update()
 	if ( !m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bBillBoardY )
 	{
 		a.x = 0;
-		a.z = 0;
 		a.y = 1;
+		a.z = 0;
 	}
 
 	for ( i = m_pkParent->Start() * 9; i < m_pkParent->End() * 9; i += 9 )
 	{
 		int iPartIndex = i / 9;
 
-		float fWidth =  pkParticles->at(iPartIndex).m_kSize.x;
-		float fHeight = pkParticles->at(iPartIndex).m_kSize.y;
-
-		pfVertices[i + 0] = pkParticles->at(iPartIndex).m_kCenter.x + a.x * fWidth; 
-		pfVertices[i + 1] = pkParticles->at(iPartIndex).m_kCenter.y + a.y * fHeight;//(fHeight / 2.333f);
-		pfVertices[i + 2] = pkParticles->at(iPartIndex).m_kCenter.z + a.z * fHeight;
+		float fWidth =  pkParticles->at(iPartIndex).m_kSize.x/2.f;
+		float fHeight = pkParticles->at(iPartIndex).m_kSize.y/2.f;
+		
+		pfVertices[i + 0] = pkParticles->at(iPartIndex).m_kCenter.x + a.x * fWidth;
+		pfVertices[i + 1] = pkParticles->at(iPartIndex).m_kCenter.y + a.y * fHeight;
+		pfVertices[i + 2] = pkParticles->at(iPartIndex).m_kCenter.z + a.z * fWidth;
 
 		pfVertices[i + 6] = pkParticles->at(iPartIndex).m_kCenter.x + b.x * fWidth;
 		pfVertices[i + 7] = pkParticles->at(iPartIndex).m_kCenter.y + b.y * fHeight;
-		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fHeight;
+		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fWidth;
 
 		pfVertices[i + 3] = pkParticles->at(iPartIndex).m_kCenter.x + c.x * fWidth;
 		pfVertices[i + 4] = pkParticles->at(iPartIndex).m_kCenter.y + c.y * fHeight;
-		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fHeight;
+		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fWidth;
 	}
 	
 	delete [] afM;
