@@ -682,11 +682,14 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	// Låser sig fett om den int gör det!
 	if(lua_isnil( pkScript->m_pkLuaState, 1) )
 	{
-		lua_pop(pkScript->m_pkLuaState, 1);    
-
-		//printf("Failed to find Lua function: %s\n", szFuncName);
+		lua_pop(pkScript->m_pkLuaState, 1);
+		printf("Failed to find Lua function: %s\n", szFuncName);
 		return false;
 	}
 
-	return (lua_call(pkScript->m_pkLuaState, iNumParams, iNumResults) == 0);
+	bool bSuccess = (lua_call(pkScript->m_pkLuaState, iNumParams, iNumResults) == 0);
+
+	lua_pop(pkScript->m_pkLuaState, 1);
+
+	return bSuccess;
 }
