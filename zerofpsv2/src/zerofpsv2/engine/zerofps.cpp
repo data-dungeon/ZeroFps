@@ -92,6 +92,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fNetworkUpdateFps		= 20;
 	m_fNetworkUpdateTime		= 0;
 	m_fNetworkUpdateFpsDelta= 0;	
+	m_bSyncNetwork				= true;
 		
 	m_bEditMode					= false;
 	m_bServerMode				= false;
@@ -124,7 +125,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
 	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
-	RegisterVariable("e_networkfps",		&m_fNetworkUpdateFps,		CSYS_FLOAT);	
+	RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
+	RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
 	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
@@ -519,23 +521,22 @@ void ZeroFps::Run_Client()
 }
 
 void ZeroFps::Update_Network()
-{
-
+{	
 	//calculate new system delta time
 	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
-
+	
 	//shuld we run a network update
 	if( (GetTicks() - m_fNetworkUpdateTime) > m_fNetworkUpdateFpsDelta)
 	{
-		
+	
 		//update last network update time
-		m_fNetworkUpdateTime = GetTicks();;
+		m_fNetworkUpdateTime = GetTicks();
 		
 		//pack objects to clients
 		m_pkEntityManager->PackToClients();		
 		
 	}
-	
+
 }
 
 void ZeroFps::Update_System()
@@ -623,6 +624,10 @@ void ZeroFps::Update_System()
 		
 		//client & server code
 
+		//pack objects to clients
+		//m_pkEntityManager->PackToClients();		
+		
+		
 		//update game message system				
 		m_pkEntityManager->UpdateGameMessages();		
 		
@@ -638,6 +643,12 @@ void ZeroFps::Update_System()
 
 	//finaly add rest time
 	m_fSystemUpdateTime -= fRestTime;
+	
+	
+	//update network only when a systemupdate has been done, to keep things in sync
+	if(m_bSyncNetwork)
+		m_pkEntityManager->PackToClients();		
+
 }
 
 void ZeroFps::Draw_EngineShell()
@@ -703,7 +714,8 @@ void ZeroFps::MainLoop(void)
 			if(m_bClientMode) Run_Client();		
 			
 			//Update network:  sends entitydata to clients
-			Update_Network();			
+			if(!m_bSyncNetwork)
+				Update_Network();			
 			
 			
 			//render stuff			

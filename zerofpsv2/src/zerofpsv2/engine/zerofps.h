@@ -147,6 +147,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 	m_fSystemUpdateTime;				// last system update
 		
+		bool		m_bSyncNetwork;
 		float		m_fNetworkUpdateFps;				// number of network updates each second
 		float		m_fNetworkUpdateFpsDelta;		// time between each network update
 		float 	m_fNetworkUpdateTime;			// last system update
