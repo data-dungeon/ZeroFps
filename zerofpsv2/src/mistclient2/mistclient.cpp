@@ -571,7 +571,7 @@ void MistClient::Input()
 		}
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_C) && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("chat") && !DelayCommand())
 	{			
 		bool bOpen = !IsWndVisible("ChatDlgMainWnd");
 		SetText("SayTextbox", "");
