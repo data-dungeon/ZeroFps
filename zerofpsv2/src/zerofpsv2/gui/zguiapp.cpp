@@ -27,7 +27,7 @@ ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
 	m_szLastRadioBGroup = NULL;
-   m_iScaleMode = false;
+   m_iScaleMode = 0;
 	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
 }
 
@@ -709,7 +709,8 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 
 	FindGuiTextureByResolution();
 
-	m_iScaleMode = iScaleMode;
+	//m_iScaleMode = iScaleMode;
+	m_iScaleMode = m_pkGuiSys->m_iScaleMode; // Sätt till scale mode i ZGui eftersom den får sin data från INI fil.
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 

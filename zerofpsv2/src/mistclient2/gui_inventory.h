@@ -26,7 +26,6 @@ struct ITEM_INFO
 {
 	string	strInfo;
 	string	strImage;
-	string	strName;
 	int		m_iValue;
 	float		m_fWeight;
 };
@@ -41,8 +40,6 @@ public:
 
 	void UpdateInventory(vector<MLContainerInfo>& vkItemList);
 	void UpdateContainer(vector<MLContainerInfo>& vkItemList);
-
-	string GetNameFromID(int iID);
 
 	void Open();
 	void Close();

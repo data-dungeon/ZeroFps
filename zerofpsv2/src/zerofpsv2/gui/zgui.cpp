@@ -49,9 +49,12 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 
 	m_iShowFPSCounter = 1;
 	m_bRenderEnabled = true;
+
+	m_iScaleMode = 0;
 	
 	RegisterVariable("g_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
    RegisterVariable("g_drawgui",			&m_bRenderEnabled, CSYS_BOOL);
+	RegisterVariable("g_scalemode",		&m_iScaleMode, CSYS_INT);
 }
 
 bool ZGui::StartUp()	

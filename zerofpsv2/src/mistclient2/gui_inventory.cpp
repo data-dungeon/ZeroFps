@@ -1296,19 +1296,3 @@ void InventoryDlg::OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo)
 			g_kMistClient.LoadGuiTextureByRes(string("item_images/") + kInfo.strImage);
 	}
 }
-
-string InventoryDlg::GetNameFromID(int iID)
-{
-	vector<ITEM_SLOT> m_vkInventoryItemList;
-	vector<ITEM_SLOT> m_vkContainerItemList;
-
-	for(int i=0; i<m_vkInventoryItemList.size(); i++)
-		if(m_vkInventoryItemList[i].iItemID == iID)
-			return m_vkInventoryItemList[i].strName;
-
-	for(int i=0; i<m_vkContainerItemList.size(); i++)
-		if(m_vkContainerItemList[i].iItemID == iID)
-			return m_vkContainerItemList[i].strName;
-
-	return string("");
-}

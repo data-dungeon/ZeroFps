@@ -164,6 +164,13 @@ void OptionsDlg::Open()
 	{
 		m_pkMC->GetWnd(szWnds[i])->SetTextColor(255,255,255); 
 	}
+
+	if(g_kMistClient.m_pkGui->m_iScaleMode == AUTO_SCALE)
+		m_pkMC->CheckButton("ScaleGUICheckbox", true);
+
+	if(g_kMistClient.m_pkGui->m_iScaleMode == MANUALLY_SCALE)
+		m_pkMC->CheckButton("ScaleGUICheckbox", false);
+	
 }
 
 void OptionsDlg::Close(bool bSave)
@@ -213,6 +220,18 @@ void OptionsDlg::Close(bool bSave)
 			(m_pkMC->IsButtonChecked("ColorDepth32Checkbox") && m_pkRender->GetDepth() != 32) ||
 			(m_pkMC->IsButtonChecked("FullscreenCheckbox") && !m_pkRender->GetFullscreen()) ||
 			(m_pkMC->IsButtonChecked("WindowCheckbox") && m_pkRender->GetFullscreen()))
+		{
+			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+		}
+
+		if(m_pkMC->m_iScaleMode == AUTO_SCALE && !m_pkMC->IsButtonChecked("ScaleGUICheckbox"))
+		{
+			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+		}
+
+		if(m_pkMC->m_iScaleMode == MANUALLY_SCALE && m_pkMC->IsButtonChecked("ScaleGUICheckbox"))
 		{
 			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
 			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
@@ -353,6 +372,11 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 					g_kMistClient.m_pkRender->SetDisplay(1280,1024,d,fullscreen);
 				if(g_kMistClient.IsButtonChecked("ScreenSize1600x1200Rb")) 
 					g_kMistClient.m_pkRender->SetDisplay(1600,1200,d,fullscreen);
+
+				if(g_kMistClient.IsButtonChecked("ScaleGUICheckbox"))
+					g_kMistClient.m_pkGui->m_iScaleMode = 0;
+				else
+					g_kMistClient.m_pkGui->m_iScaleMode = 1;
 
 				g_kMistClient.ShowWnd("RestartMsgBox",	false);
 				g_kMistClient.m_pkZeroFps->QuitEngine();

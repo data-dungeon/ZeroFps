@@ -186,6 +186,7 @@ public:
 	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
 	bool m_bForceGUICapture; // Anropas av textboxen
 	int m_iShowFPSCounter;
+	int m_iScaleMode;
 
 	bool m_bClearScreen; // Sätt till true om ingen main kamera finns och guit då måste rensa skärmen själv.
 

@@ -95,6 +95,9 @@ void MistClient::InitGUIFonts()
 	if(w >= 1280 && h >= 1024) eResMode = very_big;
 	if(w >= 1600 && h >= 1200) eResMode = extra_big;
 
+	if(m_iScaleMode == MANUALLY_SCALE)
+		eResMode = normal;
+
 	// Init default font
 	switch(eResMode)
 	{
@@ -163,7 +166,7 @@ void MistClient::SetupGUI()
 {
 	// initialize gui system with default skins, font etc
 	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		NULL, false, AUTO_SCALE); 
+		NULL, false, MANUALLY_SCALE/*AUTO_SCALE*/); 
 
 	// Create new font based on resolution.
 	InitGUIFonts();
