@@ -64,8 +64,8 @@ class ENGINE_SYSTEMS_API ZFAudioSystem2  : public ZFSubSystem
 {
 public:
 	unsigned int GetNumActiveSounds();
-	bool DeActivateSound(ZFActiveSound* pkSound);
-	bool ActivateSound(ZFActiveSound* pkSound);
+	bool StopSound(ZFActiveSound kSound);
+	bool ActivateSound(ZFActiveSound kSound);
 
 	ZFAudioSystem2();
 	virtual ~ZFAudioSystem2();

@@ -332,6 +332,7 @@ void ZFAudioSystem2::Update()
 				alSourceStop(pkSound->m_uiSourceBufferName);
 				pkSound->m_uiSourceBufferName = 0;
 				m_kActiveSounds.remove( pkSound ) ;
+				delete pkSound; // radera
 				break;
 			}
 		}
@@ -350,8 +351,11 @@ void ZFAudioSystem2::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 
-bool ZFAudioSystem2::ActivateSound(ZFActiveSound *pkSound)
+bool ZFAudioSystem2::ActivateSound(ZFActiveSound kSound)
 {
+	ZFActiveSound *pkSound = new ZFActiveSound;
+	memcpy(pkSound, &kSound, sizeof(ZFActiveSound));
+
 	if(pkSound == NULL || pkSound->m_szFileName == NULL)
 	{
 		printf("ZFAudioSystem2::ActivateSound: Bad argument.\n");
@@ -399,7 +403,7 @@ bool ZFAudioSystem2::ActivateSound(ZFActiveSound *pkSound)
 	return true;
 }
 
-bool ZFAudioSystem2::DeActivateSound(ZFActiveSound *pkSound)
+bool ZFAudioSystem2::StopSound(ZFActiveSound kSound)
 {
 	return true;
 }

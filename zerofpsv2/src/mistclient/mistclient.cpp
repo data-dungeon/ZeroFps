@@ -269,25 +269,36 @@ void MistClient::Input()
 		{
 			static int COUNTER = 0;
 
-			if(COUNTER != 20)
+			ZFActiveSound kSound;
+			kSound.m_bLoop = false;
+			kSound.m_kDir = Vector3(0,0,1);
+			kSound.m_kPos = Vector3(0,0,0);
+			kSound.m_szFileName = new char[100];
+
+			if(COUNTER==0)
 			{
-				static ZFActiveSound kSound[21];
-
-				kSound[COUNTER].m_bLoop = false;
-				kSound[COUNTER].m_kDir = Vector3(0,0,1);
-				kSound[COUNTER].m_kPos = Vector3(0,0,0);
-				kSound[COUNTER].m_szFileName = new char[100];
-
-				if(COUNTER==0)
-					strcpy(kSound[COUNTER].m_szFileName, "data/sound/dummy.wav");
-				else
-					strcpy(kSound[COUNTER].m_szFileName, "data/sound/test.wav");
-				
-				pkAudioSys->ActivateSound(&kSound[COUNTER]);
-				
+				strcpy(kSound.m_szFileName, "data/sound/test.wav");
 				COUNTER++;
-				printf("COUNTER = %i\n", COUNTER);
 			}
+			else
+			if(COUNTER==1)
+			{
+				strcpy(kSound.m_szFileName, "data/sound/dummy.wav");
+				COUNTER++;
+			}
+			else
+			if(COUNTER==2)
+			{
+				strcpy(kSound.m_szFileName, "data/sound/walk.wav");
+				COUNTER = 0;
+			}
+			
+			pkAudioSys->ActivateSound(kSound);
+			
+			
+			printf("COUNTER = %i\n", COUNTER);
+			printf("ANTAL LJUD = %i\n", pkAudioSys->GetNumActiveSounds());
+
 			
 		}
 		break;
