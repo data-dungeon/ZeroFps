@@ -473,8 +473,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 	if(pkCol->pkBody2 != NULL)
 	{
 		//body awake from your slumber =)	
-//		pkCol->pkBody1->Awaken();
-//		pkCol->pkBody2->Awaken();
+		pkCol->pkBody1->Awaken();
+		pkCol->pkBody2->Awaken();
 		
 		float bounce = pkCol->pkBody1->m_fBounce*pkCol->pkBody2->m_fBounce;
 		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
@@ -496,8 +496,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody2->m_fMass;
 
 		//chevk if anybody wants to rest
-//		UpdateResting(pkCol->pkBody1);				
-//		UpdateResting(pkCol->pkBody2);				
+		UpdateResting(pkCol->pkBody1);				
+		UpdateResting(pkCol->pkBody2);				
 	
 	}	
 	else //body vs plane collission
@@ -580,12 +580,15 @@ bool Physics_Engine::BodyCollides(Body* pkBody)
 
 int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 {
+	if(pkBody->m_pkVertex == NULL)
+		return NOT;
+	
 	bool clear=false;
 	
 		
-	for(int i=0;i<2;i++)	
+	for(int i=0;i<pkBody->m_pkVertex->size();i++)	
 	{
-		Vector3 point = pkBody->TransRot(pkBody->m_kVertex[i]);
+		Vector3 point = pkBody->TransRot((*pkBody->m_pkVertex)[i]);
 		
 	
 		if(!pkPlane->PointInside(point))

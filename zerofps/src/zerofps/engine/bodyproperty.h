@@ -18,6 +18,8 @@ class ENGINE_API BodyProperty :public Property
 		Body					m_kBody;
 	
 		bool					m_bHaveSetBody;
+		int					m_iMeshID;
+		bool					m_bHaveSetMesh;
 	
 		vector<PropertyValues> GetPropertyValues();
 		
@@ -38,6 +40,8 @@ class ENGINE_API BodyProperty :public Property
 
 		void SetBodyPos(Vector3 kPos);
 		Vector3 GetBodyPos();
+		
+		bool SetUpMesh();
 };
 
 Property* Create_BodyProperty();

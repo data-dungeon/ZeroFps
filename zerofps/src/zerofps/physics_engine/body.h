@@ -14,7 +14,11 @@ using namespace std;
 class PHYSICSENGINE_API Body
 {
 	private:
-		Mad_Core*	m_pkMad;
+		vector<Mad_Face>*	  m_pkFaces;
+		vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
+		vector<Vector3>*		m_pkNormal;
+
+		float*		m_pfScale;
 
 		Matrix3		m_kInertia;				//Mass moment of inertia in body coordinats
 		Matrix3		m_kInertiaInverse;	//inverse of mass moment of inertia matrix
@@ -57,6 +61,9 @@ class PHYSICSENGINE_API Body
 		void Rest(Body* pkBody);				//set object to rest against pkBody
 		void Awaken();
 		Vector3 TransRot(Vector3 kVert);
+		
+		bool SetMad(Mad_Core* pkMad,int iMesh);
+		void SetScalep(float* pfScale) { m_pfScale = pfScale;};
 		
 		friend class Physics_Engine;
 };

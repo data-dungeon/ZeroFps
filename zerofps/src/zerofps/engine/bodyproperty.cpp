@@ -13,7 +13,8 @@ BodyProperty::BodyProperty()
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	
 	m_bHaveSetBody = false;
-	
+	m_bHaveSetMesh = false;
+	m_iMeshID		= 0;
 }
 
 BodyProperty::~BodyProperty()
@@ -39,6 +40,10 @@ void BodyProperty::Update()
 		SetBodyToObject();
 	}
 	
+	if(!m_bHaveSetMesh)
+	{
+		m_bHaveSetMesh = SetUpMesh();
+	}
 
 	if(m_pkZeroFps->m_bRunWorldSim)
 		SetObjectToBody();
@@ -73,7 +78,7 @@ void BodyProperty::SetBodyPos(Vector3 kPos)
 
 vector<PropertyValues> BodyProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(6);
+	vector<PropertyValues> kReturn(7);
 		
 	kReturn[0].kValueName = "m_bPolygonCheck";
 	kReturn[0].iValueType = VALUETYPE_BOOL;
@@ -99,17 +104,34 @@ vector<PropertyValues> BodyProperty::GetPropertyValues()
 	kReturn[5].iValueType = VALUETYPE_FLOAT;
 	kReturn[5].pkValue    = (void*)&m_kBody.m_fRadius;
 	
+	kReturn[6].kValueName = "m_iMeshID";
+	kReturn[6].iValueType = VALUETYPE_INT;
+	kReturn[6].pkValue    = (void*)&m_iMeshID;
 	
 
 	return kReturn;
 }
 
+bool BodyProperty::SetUpMesh()
+{
+	MadProperty* pkMP = static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));	
+	if(pkMP != NULL)
+	{
+		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr());
+		if(pkCore != NULL)		
+		{	
+			m_kBody.SetScalep(&pkMP->m_fScale);
+			return m_kBody.SetMad(pkCore,m_iMeshID);		
+		}
+	}
+	
+	return false;
+}
 
 Property* Create_BodyProperty()
 {
 	return new BodyProperty;
 }
-
 
 
 
