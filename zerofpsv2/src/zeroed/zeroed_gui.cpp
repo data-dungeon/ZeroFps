@@ -490,39 +490,42 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(pkMenu)
 			{
 				ZGuiMenuItem* pkItem = pkMenu->GetItem(strWndClicked.c_str());
-				ZGuiMenuItem* pkParentItem = pkItem->pkParent;
-
-				if(strWndClicked == "Menu_File_Connect_Manage")
+				if(pkItem)
 				{
-					bool bFistTime = GetWnd("ManageConnectionsWnd") == NULL;
+					ZGuiMenuItem* pkParentItem = pkItem->pkParent;
 
-					LoadGuiFromScript("data/script/gui/manageconnection.lua");
-					GUIFillServerList();
-
-					if(bFistTime)
+					if(strWndClicked == "Menu_File_Connect_Manage")
 					{
-						GetWnd("UserNameTextbox")->Disable();
-						GetWnd("PasswordTextbox")->Disable();
+						bool bFistTime = GetWnd("ManageConnectionsWnd") == NULL;
 
-						SetText("UserNameTextbox", "anonymous");
-						SetText("PasswordTextbox", "nopass");
+						LoadGuiFromScript("data/script/gui/manageconnection.lua");
+						GUIFillServerList();
+
+						if(bFistTime)
+						{
+							GetWnd("UserNameTextbox")->Disable();
+							GetWnd("PasswordTextbox")->Disable();
+
+							SetText("UserNameTextbox", "anonymous");
+							SetText("PasswordTextbox", "nopass");
+						}
 					}
-				}
-				else
-				if(pkParentItem && !strcmp(pkParentItem->szNameID, "Menu_File_Connect"))
-				{
-					ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+					else
+					if(pkParentItem && !strcmp(pkParentItem->szNameID, "Menu_File_Connect"))
+					{
+						ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
 
-					GUIServerInfo item;
-					item.ConvertFromFullName(strWndClicked);
-					printf("------------------------------------\n");
-					printf("strServerName = %s\n", item.strServerName.c_str());
-					printf("strServerIP = %s\n", item.strServerIP.c_str());
-					printf("strUserName = %s\n", item.strUserName.c_str());
-					printf("strPassword = %s\n", item.strPassword.c_str());
-					printf("------------------------------------\n");
-					m_pkZeroFps->StartClient(item.strUserName, item.strPassword, item.strServerIP);
-				}				
+						GUIServerInfo item;
+						item.ConvertFromFullName(strWndClicked);
+						printf("------------------------------------\n");
+						printf("strServerName = %s\n", item.strServerName.c_str());
+						printf("strServerIP = %s\n", item.strServerIP.c_str());
+						printf("strUserName = %s\n", item.strUserName.c_str());
+						printf("strPassword = %s\n", item.strPassword.c_str());
+						printf("------------------------------------\n");
+						m_pkZeroFps->StartClient(item.strUserName, item.strPassword, item.strServerIP);
+					}				
+				}
 			}
 
 		}
