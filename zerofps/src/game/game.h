@@ -46,9 +46,8 @@ class Game :public Application {
 
 		enum FuncId_e
 		{
-			FID_LOADMAP,
-			FID_SAVEMAP,
 			FID_LOAD,
+			FID_UNLOAD,
 		};
 	
 		Game(char* aName,int iWidth,int iHeight,int iDepth);

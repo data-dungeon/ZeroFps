@@ -25,6 +25,7 @@ void Game::Init()
 
 	//register commmands
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
+	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
 	
 	//damn "#¤(="%#( lighting fix
 	glEnable(GL_LIGHTING );
@@ -129,6 +130,10 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Level loaded");
 			
 			break;		
+		
+		case FID_UNLOAD:
+			SetUpMenuScreen();			
+			break;
 	}
 }
 
