@@ -270,6 +270,8 @@ void MistServer::OnServerStart(void)
 {		
 	//create a camera for the server
 	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camera.lua");
+
+	pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
 	
 	if(m_pkCameraObject)
 	{	
@@ -368,7 +370,17 @@ Object* MistServer::GetTargetObject()
 
 void MistServer::AddZone()
 {
+
+// wtf? (zerom)
+/* Vector3 kSnap;
+	
+	kSnap.x = int(kPos.x/4.0) * 4.0;
+	kSnap.y = int(kPos.y/4.0) * 4.0;
+	kSnap.z = int(kPos.y/4.0) * 4.0;
+
 //	printf("%f,%f,%f\n", m_kZoneSize.x, m_kZoneSize.y, m_kZoneSize.z);
+*/
+
 
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
@@ -387,6 +399,11 @@ void MistServer::UpdateZoneMarkerPos()
 {
 	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
 
+
+	m_kZoneMarkerPos.x = int(temp.x/4.0) * 4.0;
+	m_kZoneMarkerPos.y = int(temp.y/4.0) * 4.0;
+	m_kZoneMarkerPos.z = int(temp.z/4.0) * 4.0;
+
 	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0;
 		else  m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0 + 2;						
 
@@ -398,6 +415,7 @@ void MistServer::UpdateZoneMarkerPos()
 
 //	m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
 //	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
+
 
 
 }

@@ -96,6 +96,10 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\p_charstats.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_event.cpp
 # End Source File
 # Begin Source File
@@ -116,6 +120,10 @@ SOURCE=.\mcommon_x.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_charstats.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_event.h
 # End Source File
 # Begin Source File
@@ -130,6 +138,62 @@ SOURCE=.\si_mistland.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# End Group
+# Begin Group "RuleSystem"
+
+# PROP Default_Filter ""
+# Begin Group "character"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\rulesystem\character\characterfactory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\character\characterfactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\character\characterstats.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\character\characterstats.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\character\statcounter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\character\statcounter.h
+# End Source File
+# End Group
+# Begin Group "item"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\rulesystem\item\itemdatabase.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\item\itemstats.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\rulesystem\rulesystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\rulesystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\rulesystem\rulesystemx.h
+# End Source File
 # End Group
 # End Target
 # End Project

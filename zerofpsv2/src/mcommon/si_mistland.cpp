@@ -1,4 +1,6 @@
 #include "si_mistland.h"
+#include "../rulesystem/character/characterstats.h"
+#include "p_charstats.h"
 #include <cmath>                    // for trigonometry functions
 
 
@@ -8,6 +10,7 @@ int					MistLandLua::g_iCurrentObjectID;
 int					MistLandLua::g_iLastCollidedID;
 int		MCOMMON_API			MistLandLua::g_iCurrentPCID;
 
+
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
@@ -16,7 +19,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_iLastCollidedID = -1;
 	
 	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
-	pkScript->ExposeFunction("GetCurrentPCID",					MistLandLua::GetCurrentPCIDLua);		
+	pkScript->ExposeFunction("GetCurrentPCID",			MistLandLua::GetCurrentPCIDLua);		
 	pkScript->ExposeFunction("GetObjectType",				MistLandLua::GetObjectTypeLua);		
 	pkScript->ExposeFunction("GetObjectName",				MistLandLua::GetObjectNameLua);		
 	pkScript->ExposeFunction("GetLastCollidedObject",	MistLandLua::GetLastCollidedObjectLua);		
@@ -26,8 +29,26 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);		
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 
-}
+   // char.stats-scipts
+   pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
+   pkScript->ExposeFunction("RollAttributeDice",		MistLandLua::RollAttributeDiceLua);			
+   pkScript->ExposeFunction("SetCurrentSkill",			MistLandLua::SetCurrentSkillLua);			
+   pkScript->ExposeFunction("AddToSkillValue",			MistLandLua::AddSkillValueLua);			
+   pkScript->ExposeFunction("AddToAttributeValue",		MistLandLua::AddAttributeValueLua);			
+   pkScript->ExposeFunction("SetSkillValueTo", 			MistLandLua::SetSkillValueLua);			
+   pkScript->ExposeFunction("SetAttributeValueTo",		MistLandLua::SetAttributeValueLua);			
+   pkScript->ExposeFunction("SetDataValueTo",			MistLandLua::SetDataValueLua);			
+   // hp/mp stuff
+   pkScript->ExposeFunction("SetHP",      				MistLandLua::SetHPLua);			
+   pkScript->ExposeFunction("SetMP",            		MistLandLua::SetMPLua);			
+   pkScript->ExposeFunction("HP",   			         MistLandLua::GetHPLua);			
+   pkScript->ExposeFunction("MP",			            MistLandLua::GetMPLua);			
+   pkScript->ExposeFunction("HPPercent",		         MistLandLua::GetHpPercentLua);			
+   pkScript->ExposeFunction("MPPercent", 			      MistLandLua::GetMpPercentLua);			
+   pkScript->ExposeFunction("AddHP",		            MistLandLua::AddHpLua);			
+   pkScript->ExposeFunction("AddMP",			         MistLandLua::AddMpLua);			
 
+}
 
 int MistLandLua::GetSelfIDLua(lua_State* pkLua)
 {
@@ -284,3 +305,422 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 	}
 	return 0;
 }
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::RollSkillDiceLua (lua_State* pkLua)
+{
+    // error
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+      return 0;
+   else
+	{
+
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+		if(pkObject)
+		{
+         char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+         double dTemp;
+     		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iDiffuculty = (int)dTemp;
+
+			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         if ( pkCS )
+         {
+            double dRoll = pkCS->RollSkillDice ( (string)acType, iDiffuculty );
+            g_pkScript->AddReturnValue(pkLua, dRoll);
+            return 1;
+         }
+         else
+         {
+            cout << "Error! Scipt tried to use a charstat-function on a non-charstat object!" << endl;
+            return 0;
+         }
+
+         
+		}
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::RollAttributeDiceLua (lua_State* pkLua)
+{
+   // error
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+      return 0;
+   else
+	{
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+		if(pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+         
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iDiffuculty = (int)dTemp;
+
+			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         g_pkScript->AddReturnValue(pkLua, pkCS->RollAttributeDice ( (string)acType, iDiffuculty ) );
+
+         return 1;
+		}
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetCurrentSkillLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+         
+			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetCurrentSkill ( (string)acType );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddSkillValueLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iValue = (int)dTemp;
+         
+ 			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->AddSkillValue ( (string)acType, iValue );
+      }
+   }
+   
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddAttributeValueLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+         
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iValue = (int)dTemp;
+         
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->AddAttributeValue ( (string)acType, iValue );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetSkillValueLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iValue = (int)dTemp;
+         
+ 			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetSkill ( (string)acType, iValue );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetAttributeValueLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+   		int iValue = (int)dTemp;
+         
+ 			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetAttribute ( (string)acType, iValue );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+int MistLandLua::SetDataValueLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+     		char	acType2[128];
+			g_pkScript->GetArgString(pkLua, 1, acType2);
+         
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetData ( (string)acType, (string)acType2 );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetHPLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetHP ( string(acType) );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetMPLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->SetMP ( string(acType) );
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetHPLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         g_pkScript->AddReturnValue(pkLua, pkCS->GetHP () );
+      }
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetMPLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         g_pkScript->AddReturnValue(pkLua, pkCS->GetMP () );
+      }
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetHpPercentLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         g_pkScript->AddReturnValue(pkLua, pkCS->GetHPPercent () );
+      }
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetMpPercentLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         g_pkScript->AddReturnValue(pkLua, pkCS->GetMPPercent () );
+      }
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddHpLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->AddHP ( dTemp );
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddMpLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->AddMP ( dTemp );
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+

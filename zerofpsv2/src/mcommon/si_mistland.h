@@ -33,6 +33,27 @@ namespace MistLandLua
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
 	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
 	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
+
+
+   // character status
+   int MCOMMON_API RollSkillDiceLua (lua_State* pkLua);       // returns failed/suceeded
+   int MCOMMON_API RollAttributeDiceLua (lua_State* pkLua);   // returns failed/suceeded
+   int MCOMMON_API SetCurrentSkillLua (lua_State* pkLua);
+   int MCOMMON_API AddSkillValueLua (lua_State* pkLua);
+   int MCOMMON_API AddAttributeValueLua (lua_State* pkLua);
+   int MCOMMON_API SetSkillValueLua (lua_State* pkLua);
+   int MCOMMON_API SetAttributeValueLua (lua_State* pkLua);
+   int MCOMMON_API SetDataValueLua (lua_State* pkLua);
+   int MCOMMON_API SetHPLua (lua_State* pkLua);
+   int MCOMMON_API SetMPLua (lua_State* pkLua);
+   int MCOMMON_API GetHPLua (lua_State* pkLua);
+   int MCOMMON_API GetMPLua (lua_State* pkLua);
+   int MCOMMON_API GetHpPercentLua (lua_State* pkLua);
+   int MCOMMON_API GetMpPercentLua (lua_State* pkLua);
+   int MCOMMON_API AddHpLua (lua_State* pkLua);
+   int MCOMMON_API AddMpLua (lua_State* pkLua);
+
+
 	
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
 

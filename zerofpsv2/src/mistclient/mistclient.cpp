@@ -116,6 +116,7 @@ void MistClient::RegisterPropertys()
 {
 	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
+	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 }
 
 

@@ -20,6 +20,7 @@
 
 #include "../mcommon/p_event.h"
 #include "../mcommon/p_ml.h"
+#include "../mcommon/p_charstats.h"
 #include "../mcommon/si_mistland.h"
 
 class MistClient :public Application, public ZGuiApp {

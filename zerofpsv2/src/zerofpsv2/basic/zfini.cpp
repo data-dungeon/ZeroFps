@@ -200,7 +200,7 @@ bool ZFIni::ProcessINIFile()
 			iLineLength = strlen(m_pstrLines[line]);
 			do
 			{
-				// Skipp lineswith ';' characters..
+				// Skipp lines with ';' characters..
 				if(m_pstrLines[line][ch] == ';' && (b1stBracketFound == false || b2ndBracketFound == false))
 					break;
 
@@ -248,7 +248,7 @@ bool ZFIni::ProcessINIFile()
 		}
 	}
 
-	// Kopiera in datat från texten till en strukur.
+	// Kopiera in datat från texten till en struktur.
 	m_pkSectionData = new SectionData[m_iNumSections+1];
 
 	for(int sec=0; sec<m_iNumSections; sec++)
@@ -290,7 +290,7 @@ bool ZFIni::ProcessINIFile()
 					break;
 				}
 
-			// Skall alldrig hända...
+			// Skall aldrig hända...
 			if(iValueEndPos == -1 || iNameEndPos == -1)
 			{
 				key--;
@@ -534,4 +534,26 @@ void ZFIni::Close()
 	}
 
 	m_bFileReady = false;
+}
+
+
+
+bool ZFIni::GetKeyNames(const char* strSection, vector<string>& kSectionList)
+{
+	if(m_bFileReady == false)
+		return NULL;
+
+	const char* pFindSec;
+
+	for ( int sec = 0; sec < m_iNumSections; sec++ )
+   {
+		if ( (pFindSec = strstr(m_pstrSections[sec], strSection) ) != NULL)
+		{
+			if(strcmp(pFindSec, strSection) == 0)
+	   		for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
+   	         kSectionList.push_back(m_pkSectionData[sec].strKeyName[key]);
+		}
+   }
+
+	return true;
 }
