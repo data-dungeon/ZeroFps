@@ -81,8 +81,8 @@ class ZeroEdit :public Application {
 				
 			FID_MASSSPAWN,
 		
-			FID_VFS_SAVE,
-			FID_VFS_LOAD,
+//			FID_VFS_SAVE,
+//			FID_VFS_LOAD,
 
 		};	
 	

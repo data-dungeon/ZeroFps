@@ -1,4 +1,5 @@
 #include "mad_modell.h"
+#include "../render/render.h"
 
 float fGameTime;
 char szFullTexName[256];
@@ -72,6 +73,8 @@ void Mad_Modell::SetBasePtr(string strResName)
 //	pkCore->ClearReplaceTexture();
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
+
+//	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 //	Create_GLList(pkCore->GetMeshByID(0));
 	AddMesh(0);
 
@@ -297,7 +300,7 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 
 	GLenum iError = glGetError();
 	if(iError != GL_NO_ERROR) {
-//		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
+		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
 		return;
 		}
 
@@ -307,7 +310,7 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 
 	iError = glGetError();
 	if(iError != GL_NO_ERROR) {
-//		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
+		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
 		return;
 		}
 
@@ -372,17 +375,19 @@ Mad_CoreMesh* g_pkLastMesh;
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
-/*	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
-	if(iListID != -1) {
-		glCallList(iListID);
-		g_iNumOfMadSurfaces += pkCore->GetMeshByID(0)->kHead.iNumOfFaces;
-		return;
-		}*/
-	
-
 	if(iDrawFlags == 0)
 		return;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+
+	/*	
+	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
+	if(iListID != -1) {
+		glCallList(iListID);
+		g_iNumOfMadSurfaces += pkCore->GetMeshByID(0)->kHead.iNumOfFaces;
+		//cout << "Rendering display list " << iListID << endl;
+		return;
+		}*/
+
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);

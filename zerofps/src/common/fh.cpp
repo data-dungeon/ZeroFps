@@ -1,6 +1,6 @@
 /*
 	Offical FulHack.cpp fil =).
-	For Engine.h.
+	For Common.DLL.
 
 	All code in this file have to be inside name tags that state the name of he who dares to write
 	code in this file.
@@ -9,17 +9,3 @@
 /*** Start: Your Name ***/
 	// Ugly Code From Hell Here...
 /*** End: Your Name ***/
-
-#ifndef _ENGINE_FH_H_
-#define _ENGINE_FH_H_
-#include "zerofps.h"
-
-/*** Start: Vim ***/
-void ENGINE_API DrawTest(float x, float y, float z);
-/*** End: Vim ***/
-
-
-#endif
-
-
-

@@ -1,5 +1,19 @@
+/*
+	Offical FulHack.cpp fil =).
+	For Engine.DLL.
+
+	All code in this file have to be inside name tags that state the name of he who dares to write
+	code in this file.
+*/
+
+/*** Start: Your Name ***/
+	// Ugly Code From Hell Here...
+/*** End: Your Name ***/
+
 #include "fh.h"
 
+/*** Start: Vim ***/
+/*
 class BoneAnim
 {
 public:
@@ -17,7 +31,7 @@ class BoneAnimFrame
 public:
 	vector<BoneAnim>	BonePositions;
 };
-
+*/
 /*
 void CreateAnim()
 {
@@ -27,7 +41,7 @@ void CreateAnim()
 
 	BoneFrames.BonePositions.push_back(NewBone);
 }*/
-
+/*
 void DrawTest(float x, float y, float z)
 {
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
@@ -46,15 +60,12 @@ void DrawTest(float x, float y, float z)
 
 
  
-/* 0 joint1 -1  -0.023717 0.008030 0.000000  3.141593 0.000000 1.541102 
- 1 joint2 0  1.303530 0.000000 0.000000  -3.141593 -0.000000 0.672710 
- 2 joint3 1  1.535219 -0.000000 -0.000000  0.000000 0.000000 -2.197444 
-*/
 	glutSolidSphere(0.1, 8, 8);
 	glPopMatrix();
 	glPopAttrib();
-}
+}*/
 
+/*** End: Vim ***/
 
 
 

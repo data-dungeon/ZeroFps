@@ -54,8 +54,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
 
 	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
-	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
-	g_ZFObjSys.Register_Cmd("fs_load",FID_VFS_LOAD,this);			
+//	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
+//	g_ZFObjSys.Register_Cmd("fs_load",FID_VFS_LOAD,this);			
 
 	
 	//start text =)
@@ -560,11 +560,10 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_NEXTOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
 		case FID_PREVOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
 
-		case FID_VFS_SAVE:	TestFS_Write();	break;
-		case FID_VFS_LOAD:	TestFS_Read();	break;
+//		case FID_VFS_SAVE:	TestFS_Write();	break;
+//		case FID_VFS_LOAD:	TestFS_Read();	break;
 
 		case FID_VIEWMAD:
-			
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("madview [filename]");
 				break;
@@ -572,10 +571,16 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Loading MAD %s", kCommand->m_kSplitCommand[1].c_str());				
 
-			pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
-			pkmad->GetPos() = m_kDrawPos + Vector3(0,0,0);
-			pkmad->AttachToClosestZone();
+			//pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
 
+			pkmad = pkObjectMan->CreateObjectByArchType("object");
+			if(pkmad) {
+				pkmad->AddProperty("MadProperty");
+				MadProperty* madp = dynamic_cast<MadProperty*>(pkmad->GetProperty("MadProperty"));
+				madp->SetBasePtr(kCommand->m_kSplitCommand[1].c_str());
+				pkmad->GetPos() = m_kDrawPos + Vector3(0,0,0);
+				pkmad->AttachToClosestZone();
+				}
 			break;
 
 		case FID_MASSSPAWN:
@@ -853,8 +858,8 @@ void ZeroEdit::Input()
 						break;			
 					m_fTimer=pkFps->GetTicks();
 				
-					Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-					//Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+					//Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+					Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
 
 					if(object==NULL)
 						break;

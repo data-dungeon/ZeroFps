@@ -1,12 +1,11 @@
 class object
-	set ModelProperty Radius 1
 
 	class physics
 		parent object
 
 		set PhysicProperty m_bGravity 	false
-			set 	PhysicProperty 	ColShape 	1
-
+		set PhysicProperty ColShape 	1
+		add AutoParentProperty
 
 		class ships
 			parent	physics
@@ -18,6 +17,16 @@ class object
 				set MadProperty m_kMadFile /data/mad/xw.mad
 				set MadProperty m_fScale 1
 	
+		class byggnad
+			parent physical
+			set PhysicProperty ColShape 	3
+	
+			class az3
+				parent byggnad
+				set MadProperty m_kMadFile /data/mad/az3.mad
+				set PhysicProperty ColShape 	3
+	
+
 	class weapons
 		parent	physics
 
