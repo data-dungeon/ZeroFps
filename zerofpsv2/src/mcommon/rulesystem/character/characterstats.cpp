@@ -9,6 +9,8 @@
 
 CharacterStats::CharacterStats( Object *pkParent )
 {
+	test_var = 44;
+
    m_pkParent = pkParent;
 
 	// if stat-types isn't loaded
@@ -408,7 +410,11 @@ bool CharacterStats::Equip ( Object *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
 
-	int apa;
+	test_var = 22;
+
+	int apa; 
+	
+	apa= 2;
 	
 	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
 

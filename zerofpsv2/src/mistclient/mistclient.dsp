@@ -86,7 +86,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\hencheman_button.cpp
+SOURCE=.\henchman_button.cpp
 # End Source File
 # Begin Source File
 
@@ -102,7 +102,7 @@ SOURCE=.\mistclient.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\hencheman_button.h
+SOURCE=.\henchman_button.h
 # End Source File
 # Begin Source File
 

@@ -31,8 +31,6 @@ CharacterProperty::CharacterProperty()
    
    m_pkCharStats = new CharacterStats( m_pkObject );
 
-	bNetwork = true;
-
 	strcpy(m_acName,"P_CharStats");
 
 	bNetwork = true;

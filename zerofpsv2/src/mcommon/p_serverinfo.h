@@ -14,7 +14,7 @@ struct MCOMMON_API PlayerInfo
 {
 	int		iId;
 	string	sPlayerName;
-	vector<pair<int,int> >	kControl;
+	vector<pair<int,int> >	kControl; // objekt id, rättigheter
 };
 
 enum PlayerRights

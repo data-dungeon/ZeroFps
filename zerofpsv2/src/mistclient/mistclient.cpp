@@ -124,8 +124,12 @@ void MistClient::Init()
 		"data/textures/text/paternoster8.bmp",
 		"data/script/gui/gui_create_client.lua");
 
+	CreateGuiInterface();
+
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
+
+	HenchmanButton::s_iHenchemanAlphaTex = pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
@@ -522,11 +526,11 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				
 				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 
-	/*			if(bExist == false)
+				if(bExist == false)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
-					const int ANTAL = 5;
+			/*		const int ANTAL = 5;
 
 					ItemStats* pkTestItems = new ItemStats[ANTAL];
 
@@ -554,17 +558,29 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					kItems[3].second->RegisterAsContainer(); 
 					kItems[4].second->RegisterAsContainer(); 
 					
-				m_pkInventDlg->AddItems(kItems);	
-				}*/
+					m_pkInventDlg->AddItems(kItems);	*/
+				}
 			}
 			if(strName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
 			if(strName == "MapButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+
+			for(unsigned int i=0; i<m_vkHenchmanIcons.size(); i++)
+			{
+				bool IsClicked = (m_vkHenchmanIcons[i]->GetName() == strName);
+				m_vkHenchmanIcons[i]->Check(IsClicked);
+
+				if(IsClicked)
+					m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
+			}
+	
 		}
 	}
 	//else
 	//if(strName == "BackPackWnd")
+
+	if(m_pkInventDlg)
 	{
 		m_pkInventDlg->OnCommand(iID); 
 	}
@@ -733,11 +749,19 @@ void MistClient::SetActiveCaracter(int iCaracter)
 							//set current active caracter
 							m_iActiveCaracter = iCaracter;
 							m_iActiveCaracterObjectID = id;
-							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;													
+							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;
 						}
 					}
 				}		
 			}
+			
+			static unsigned int s_iPrevNrOfObject = -1;
+
+			if(s_iPrevNrOfObject != pi->kControl.size())
+			{
+				UpdateObjectList(pi);
+			}
+			
 		}
 		else
 			cout<<"Error: cant find player info, You dont exist"<<endl;
@@ -760,9 +784,11 @@ void MistClient::PickUp()
 			{
 				map<string, Object*>* vkEquipmentList = stats->GetEquippedList();
 
-				printf("%i\n", stats->GetEquippedList()->size());
+				int size = vkEquipmentList->size();
 
-		/*		map<string, Object*>::iterator it;
+				printf("Num of objects in inventory = %i\n", size);
+
+				map<string, Object*>::iterator it;
 				for( it=vkEquipmentList->begin(); it!=vkEquipmentList->end(); it++)
 				{
 					P_Item* pkItemProp = static_cast<P_Item*>(it->second->GetProperty("P_Item"));
@@ -774,8 +800,48 @@ void MistClient::PickUp()
 						if(pkStats)
 							m_pkInventDlg->AddItem(pkStats);
 					}
-				}*/
+				}
 			}
 		}
+	}
+}
+
+void MistClient::CreateGuiInterface()
+{
+	ZGuiSkin* pkSkin; 
+
+	CreateWnd(Button, "ScrollPortraitsUp", "MainWnd", "", 800-51-9, 4, 8,8, 0);
+
+	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_u.bmp", 0), 0);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonUpSkin(pkSkin);
+
+	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_d.bmp", 0), 0);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonDownSkin(pkSkin);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonHighLightSkin(pkSkin);
+
+	CreateWnd(Button, "ScrollPortraitsDown", "MainWnd", "", 800-51-9, 12, 8,8, 0);
+
+	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_u.bmp", 0), 0);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonUpSkin(pkSkin);
+
+	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_d.bmp", 0), 0);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonDownSkin(pkSkin);
+	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonHighLightSkin(pkSkin);
+	
+	GetWnd("ScrollPortraitsUp")->Hide();
+	GetWnd("ScrollPortraitsDown")->Hide();
+}
+
+void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
+{
+	int iNumHenchmans = pkPlayerInfo->kControl.size();
+	int iNumHenchmanIcons = m_vkHenchmanIcons.size();
+
+	if(iNumHenchmanIcons < iNumHenchmans)
+	{
+		m_vkHenchmanIcons.push_back( new HenchmanButton(this, 
+			pkTexMan->Load("/data/textures/gui/portraits/gubbe1.bmp", 0), iNumHenchmanIcons) );
+
+		m_vkHenchmanIcons.back()->Check(true);  
 	}
 }

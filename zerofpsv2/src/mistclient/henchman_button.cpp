@@ -1,4 +1,4 @@
-#include "hencheman_button.h"
+#include "henchman_button.h"
 
 int HenchmanButton::s_iHenchemanAlphaTex = 0;
 

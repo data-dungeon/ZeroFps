@@ -58,7 +58,11 @@ bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect());
 
+	if(m_pkSkin)
+		pkRenderer->RenderBorder(GetScreenRect().Contract(m_pkSkin->m_unBorderSize));
+
 	m_pkLabel->Render(pkRenderer); 
+	
 	return false;
 }
 

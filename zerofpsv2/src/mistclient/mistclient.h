@@ -27,7 +27,7 @@
 #include "../mcommon/p_clientcontrol.h"
 
 #include "inventorydlg.h"
-#include "hencheman_button.h"
+#include "henchman_button.h"
 
 class MistClient :public Application, public ZGuiApp {
 	private:

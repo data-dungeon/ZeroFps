@@ -56,7 +56,11 @@ private:
    void TestLevelUp ( StatDescriber *pkStat );
 
    string m_kCurrentSkill;
+
 public:
+
+	int test_var;
+
 	CharacterStats( Object *pkParent );
 
    // Get stat.
