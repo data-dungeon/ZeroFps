@@ -94,7 +94,7 @@ Input::Input()
 	m_kButtons.insert(map<char*, int>::value_type("9",SDLK_9));
 	m_kButtons.insert(map<char*, int>::value_type("0",SDLK_0));
 	
-	m_kButtons.insert(map<char*, int>::value_type("Q",SDLK_q));
+	m_kButtons.insert(map<char*, int>::value_type("q",SDLK_q));
 	m_kButtons.insert(map<char*, int>::value_type("w",SDLK_w));	
 	m_kButtons.insert(map<char*, int>::value_type("e",SDLK_e));	
 	
@@ -455,12 +455,12 @@ int Input::RegisterAction(const char *pcAction)
 	{
 		map<const string, pair<const string, int>*>::iterator kIt = m_kPendingActions.find(kAction);
 		
-//		if(kIt != m_kButtons.end())
-//		{
+		if(kIt != m_kPendingActions.end())
+		{
 			m_aiActionToButton[m_iNrActions]=&(*kIt->second);
 			m_kPendingActions.erase(kIt);
-//		}
-//		else m_aiActionToButton[m_iNrActions]=NULL;
+		}
+		else m_aiActionToButton[m_iNrActions]=NULL;
 		
 	}
 	else m_aiActionToButton[m_iNrActions]=NULL;

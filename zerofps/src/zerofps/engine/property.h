@@ -107,7 +107,6 @@ class ENGINE_API Property
 		virtual void Load(ZFMemPackage* pkPackage);
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
-		
 
 		bool operator<(Property& kOther);
 

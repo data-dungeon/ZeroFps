@@ -1,18 +1,22 @@
 #ifndef _MASSDRIVERPROPERTY_H_
 #define _MASSDRIVERPROPERTY_H_
 
+#include "inventoryproperty.h"
+
+/*
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "massdriverprojectile.h"
 //#include "playerobject.h"
+*/
 
 using namespace std;
 
 #define PROJECTILE_SPEED 150
 
-class MassDriverProperty: public Property {
+class MassDriverProperty: public InventoryProperty {
 
 	private:
 		Input *m_pkInput;
@@ -30,12 +34,17 @@ class MassDriverProperty: public Property {
 	
 		Sound *firesound;					
 	
+		bool m_bAdded;
+		bool m_bFiring;
+	
 	public:
 		MassDriverProperty();
+		~MassDriverProperty();
+		
 		
 		void Update();
 		
-		void Fire();
+		void Use();
 
 };
 

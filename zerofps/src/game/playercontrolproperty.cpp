@@ -19,11 +19,24 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 
 	walk=0;
 	walking=false;
+	m_fNextTime=m_pkFps->GetTicks();
+	
 
 	m_iActionForward=m_pkInput->RegisterAction("forward");
 	m_iActionStrafeRight=m_pkInput->RegisterAction("strafe_right");
 	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
 	m_iActionBack=m_pkInput->RegisterAction("backward");
+	m_iActionJump=m_pkInput->RegisterAction("jump");
+	
+	m_iActionUseItem=m_pkInput->RegisterAction("useitem");
+	m_iActionNextItem=m_pkInput->RegisterAction("nextitem");
+	
+	m_iActionZoomIn=m_pkInput->RegisterAction("zoomin");
+	m_iActionZoomOut=m_pkInput->RegisterAction("zoomout");
+	
+	
+	m_kCurentInv=m_kInventory.begin();	
+//	NextInvItem();
 	
 	walksound=new Sound();
 	walksound->m_acFile="file:../data/sound/walk.wav";
@@ -103,12 +116,29 @@ void PlayerControlProperty::Update() {
 		//vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
 		vel += GetYawVector2(m_pkObject->GetRot().y + 180) * speed;
 	}
-	if(m_pkInput->Pressed(MOUSERIGHT) ){
+	if(m_pkInput->Action(m_iActionNextItem))
+	{
+		if(m_pkFps->GetTicks() - m_fNextTime >=1)
+		{
+			m_fNextTime=m_pkFps->GetTicks();
+	
+			NextInvItem();
+		}
+	}
+
+	if(m_pkInput->Action(m_iActionUseItem))
+	{
+		UseInvItem();	
+	}
+	
+	if(m_pkInput->Action(m_iActionJump))
+	{
 		if(onGround){
 			vel.y=5;
 			walking=false;
 		}
 	}
+	
 	
 	m_pkObject->GetVel()=vel;
 	
@@ -138,25 +168,25 @@ void PlayerControlProperty::Update() {
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
 	
+	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();
 
 	if(walking && onGround)
 		m_pkAlSys->AddSound(walksound);
-//	else
-//		m_pkAlSys->RemoveSound(walksound);
+
 
 // Set FOV
 	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	if(m_pkCameraProperty) {
-		if(m_pkInput->Pressed(KEY_W)) {
+		if(m_pkInput->Action(m_iActionZoomIn)) {
 			m_fFov -= 5;
 			if(m_fFov < 2)
 				m_fFov = 2;
 			m_pkCameraProperty->SetFpFov(m_fFov);
 			}
 
-		if(m_pkInput->Pressed(KEY_R)) {
+		if(m_pkInput->Action(m_iActionZoomOut)) {
 			m_fFov += 5;
 			if(m_fFov > 90)
 				m_fFov = 90;
@@ -185,5 +215,66 @@ void PlayerControlProperty::Touch(Object* pkObject)
 	if(Dis.y<0)
 		onGround=true;
 }
+
+void PlayerControlProperty::AddObject(InventoryProperty* pkProperty)
+{
+	cout<<"Adding "<<pkProperty->m_acName<<" to players inventory"<<endl;	
+	m_kInventory.push_back(pkProperty);
+
+	NextInvItem();
+}
+
+void PlayerControlProperty::RemoveObject(InventoryProperty* pkProperty)
+{
+	cout<<"Removing "<<pkProperty->m_acName<<" from players inventory"<<endl;
+
+	//check if trying to remove active item
+	if(pkProperty == (*m_kCurentInv))
+	{
+		//if active try chaning
+		NextInvItem();
+		
+		//if still active set pointer to begin and cross your fingers
+		if(pkProperty == (*m_kCurentInv))
+			m_kCurentInv=m_kInventory.begin();
+	}
+	
+	m_kInventory.remove(pkProperty);	
+}
+
+void PlayerControlProperty::NextInvItem()
+{
+	if(m_kCurentInv==m_kInventory.end())
+	{
+		m_kCurentInv=m_kInventory.begin();
+	}
+	else
+	{
+		m_kCurentInv++;
+	}
+	
+	if((*m_kCurentInv) != NULL)
+	{
+		cout<<"Curent selected item "<<(*m_kCurentInv)->m_acName<<endl;	
+	}
+	else
+	{
+		cout<<"No item selected"<<endl;
+	}
+	
+}
+
+bool PlayerControlProperty::UseInvItem()
+{
+	if((*m_kCurentInv)!=NULL)
+	{
+		(*m_kCurentInv)->m_bUse=true;	
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 

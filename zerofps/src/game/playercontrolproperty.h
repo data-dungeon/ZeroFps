@@ -9,6 +9,8 @@
 //#include "bunnyobject.h"
 #include "statusproperty.h"
 
+#include "inventoryproperty.h"
+
 using namespace std;
 
 class PlayerControlProperty: public Property {
@@ -29,11 +31,21 @@ class PlayerControlProperty: public Property {
 		int m_iActionStrafeRight;
 		int m_iActionStrafeLeft;
 		int m_iActionBack;
+		int m_iActionJump;		
+		int m_iActionUseItem;
+		int m_iActionNextItem;
+		int m_iActionZoomIn;
+		int m_iActionZoomOut;		
 
+		float m_fNextTime;
+	
 		float walk;
 		bool walking;
 		
 		Sound *walksound;		
+		
+		list<InventoryProperty*>::iterator m_kCurentInv;
+		list<InventoryProperty*> m_kInventory;
 		
 		CameraProperty*	m_pkCameraProperty;
 		float	m_fFov;	// Sniper Zoom
@@ -47,6 +59,11 @@ class PlayerControlProperty: public Property {
 
 		void Update();
 		void Touch(Object* pkObject);		
+		
+		void AddObject(InventoryProperty* pkProperty);
+		void RemoveObject(InventoryProperty* pkProperty);
+		void NextInvItem();		
+		bool UseInvItem();
 };
 
 

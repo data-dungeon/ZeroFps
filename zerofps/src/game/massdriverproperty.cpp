@@ -1,6 +1,7 @@
 #include "massdriverproperty.h"
 #include "../zerofps/engine/modelproperty.h"
 #include "../zerofps/engine/cssphere.h"
+#include "playercontrolproperty.h"
 
 MassDriverProperty::MassDriverProperty()
 {
@@ -20,6 +21,8 @@ MassDriverProperty::MassDriverProperty()
 	m_fFireRate=0.1;
 	m_iAmmo=100;
 	m_kAim.Set(0,0,1);
+	m_bAdded=false;
+	m_bFiring=false;
 	
 	m_fLastShot=m_pkFps->GetTicks();
 	
@@ -29,26 +32,44 @@ MassDriverProperty::MassDriverProperty()
 
 }
 
+MassDriverProperty::~MassDriverProperty()
+{
+	if(m_bAdded)
+	{
+		PlayerControlProperty* pc=static_cast<PlayerControlProperty*>(m_pkObject->GetProperty("PlayerControlProperty"));
+		
+		if(pc!=NULL)
+		{
+			pc->RemoveObject(this);
+			m_bAdded=false;
+		}
+	}
+
+}
 
 void MassDriverProperty::Update()
 {
-
-
-	if(m_pkInput->Action(m_iActionFire))
+	if(!m_bAdded)
 	{
-		Fire();
+		PlayerControlProperty* pc=static_cast<PlayerControlProperty*>(m_pkObject->GetProperty("PlayerControlProperty"));
 		
-		//play sound
-		firesound->m_kPos=m_pkObject->GetPos();
-		m_pkAlSys->AddSound(firesound);
-	
-	}else
-	{
-		m_pkAlSys->RemoveSound(firesound);
+		if(pc!=NULL)
+		{
+			pc->AddObject(this);
+			m_bAdded=true;
+		}
 	}
+
+
+	if(m_bUse)
+		Use();
+	else
+		m_pkAlSys->RemoveSound(firesound);
+		
+	m_bUse=false;		
 }
 
-void MassDriverProperty::Fire()
+void MassDriverProperty::Use()
 {
 	if(m_pkFps->GetTicks()-m_fLastShot < m_fFireRate)
 		return;		
@@ -68,18 +89,19 @@ void MassDriverProperty::Fire()
 	Object* Bullet=new Object;
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=m_kAim*PROJECTILE_SPEED;
-//	Vector3 bla=Bullet->GetVel().Unit();
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
 	Bullet->AddProperty("MassDriverProjectile");	
-//	static_cast<MassDriverProjectile*>(Bullet->AddProperty("MassDriverProjectile"));//->shoterid = m_pkObject->iNetWorkID;
 	
 //	Bullet->AddProperty("ModelProperty");
 //	ModelProperty* mp = dynamic_cast<ModelProperty*>(Bullet->GetProperty("ModelProperty"));
 //	mp->m_fRadius=0.01;
-
 	static_cast<CSSphere*>(static_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"))->GetColSphere())->m_fRadius=0.01;	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
+
+	//play sound
+	firesound->m_kPos=m_pkObject->GetPos();
+	m_pkAlSys->AddSound(firesound);
 
 }
 
