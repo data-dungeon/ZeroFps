@@ -122,8 +122,8 @@ bool CMissionDlg::InitDlg()
 		if(fPageSize > 1.0f)
 			fPageSize = 1.0f;
 
-		ZGuiSkin* pkSkin1 = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0);	// thumb button		
-		ZGuiSkin* pkSkin2 = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0);	// thumb button focus
+		ZGuiSkin* pkSkin1 = new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_u.bmp"),0);	// thumb button		
+		ZGuiSkin* pkSkin2 = new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_f.bmp"),0);	// thumb button focus
 
 		((ZGuiScrollbar*) GetWnd("MissionScrollbar"))->SetThumbButtonSkins(pkSkin1, pkSkin2);
 

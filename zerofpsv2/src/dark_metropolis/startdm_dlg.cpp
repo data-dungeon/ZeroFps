@@ -54,8 +54,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 			int id[] =
 			{
-				GetTexID("data/textures/gui/dm/start_base1.bmp"),
-				GetTexID("data/textures/gui/dm/start_base2.bmp"),
+				GetTexID("data/textures/gui/start_base1.bmp"),
+				GetTexID("data/textures/gui/start_base2.bmp"),
 			};
 
 			char* acBaseName[] =

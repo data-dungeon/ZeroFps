@@ -5,66 +5,66 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	-- Skins.
 	-------------------------------------------------------------------------
-	Skin1 = { tex1="dm/final/members/abilities.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/members/abilities_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin1 = { tex1="final/members/abilities.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/members/abilities_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin2 = { tex1="dm/final/members/armor.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/armor_a.bmp",
+	Skin2 = { tex1="final/members/armor.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/armor_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
 --	Skin3 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 --	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin4 = { tex1="dm/final/members/belt.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/belt_a.bmp",
+	Skin4 = { tex1="final/members/belt.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/belt_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
-	Skin5 = { tex1="dm/final/members/panel.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/panel_a.bmp",
+	Skin5 = { tex1="final/members/panel.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/panel_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin6 = { tex1="dm/final/win_tile.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
+	Skin6 = { tex1="final/win_tile.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
-	Skin7 = { tex1="dm/final/members/character.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/members/character_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin7 = { tex1="final/members/character.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/members/character_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin8 = { tex1="dm/final/members/x-button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/x-button_a.bmp",
+	Skin8 = { tex1="final/members/x-button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/x-button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin9 = { tex1="dm/final/members/x-button_d.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/members/x-button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin9 = { tex1="final/members/x-button_d.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/members/x-button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin10 = { tex1="dm/final/members/cybernetics.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/members/cybernetics_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin10 = { tex1="final/members/cybernetics.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/members/cybernetics_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin11 = { tex1="dm/final/members/inventory.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/members/inventory_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin11 = { tex1="final/members/inventory.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/members/inventory_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin12 = { tex1="dm/final/big_corner_270.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/big_corner_270_a.bmp",
+	Skin12 = { tex1="final/big_corner_270.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/big_corner_270_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin13 = { tex1="dm/final/big_corner_180.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/big_corner_180_a.bmp",
+	Skin13 = { tex1="final/big_corner_180.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/big_corner_180_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin14 = { tex1="dm/final/members/right_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
+	Skin14 = { tex1="final/members/right_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
 	 tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin15 = { tex1="dm/final/members/right_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
+	Skin15 = { tex1="final/members/right_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
 	 tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin16 = { tex1="dm/final/members/left_arrow.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
+	Skin16 = { tex1="final/members/left_arrow.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
 	 tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin17 = { tex1="dm/final/members/left_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
+	Skin17 = { tex1="final/members/left_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0",
 	 tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin18 = { tex1="dm/final/big_corner.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/big_corner_a.bmp", tex2a="0",
+	Skin18 = { tex1="final/big_corner.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/big_corner_a.bmp", tex2a="0",
 	 tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin19 = { tex1="dm/final/big_corner_90.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/big_corner_90_a.bmp",
+	Skin19 = { tex1="final/big_corner_90.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/big_corner_90_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin20 = { tex1="dm/final/members/weapon.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/weapon_a.bmp",
+	Skin20 = { tex1="final/members/weapon.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/weapon_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
 
 	Skin22 = { tex1="lb_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin23 = { tex1="dm/final/members/drop_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/drop_button_a.bmp", 
+	Skin23 = { tex1="final/members/drop_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/drop_button_a.bmp", 
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin24 = { tex1="dm/final/members/drop_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/drop_button_a.bmp", 
+	Skin24 = { tex1="final/members/drop_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/members/drop_button_a.bmp", 
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 

@@ -292,7 +292,7 @@ bool CItemTransactionDlg::InitDlg()
 				pkButton->SetPos(x,y,false,true);
 				pkButton->SetMoveArea(pkButton->GetScreenRect()); 
 
-				string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
+				string strIcon = "data/textures/gui/items/" + kItemList[i].m_strIcon;
 
 				SetButtonIcon(pkButton, strIcon, true, true);
 

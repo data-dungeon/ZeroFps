@@ -420,7 +420,7 @@ void CHandleAgents::UpdateAgentInBaseList(int iStartAgent)
 				ZFAssert(pkCharProperty, 
 					"CMembersDlg::SetCharacterStats - No character property\n");
 
-				string szTexName = string("data/textures/gui/dm/portraits/") +
+				string szTexName = string("data/textures/gui/portraits/") +
 					pkCharProperty->GetStats()->m_strIcon;
 
 				int tex_id = GetTexID((char*) szTexName.c_str());
@@ -502,7 +502,7 @@ void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
 			{
 				DMCharacterStats stats = (*vkAgetsToHire)[i+iStartAgent];
 
-				string szTexName = string("data/textures/gui/dm/portraits/") +
+				string szTexName = string("data/textures/gui/portraits/") +
 					stats.m_strIcon;
 
 				int tex_id = GetTexID((char*) szTexName.c_str());

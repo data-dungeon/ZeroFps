@@ -337,13 +337,13 @@ bool CGamePlayDlg::InitDlg()
 		((ZGuiTextbox*)GetWnd("HelpTextEb"))->ToggleMultiLine(true);
 		((ZGuiTextbox*)GetWnd("HelpTextEb"))->SetReadOnly(true);	
 		((ZGuiTextbox*)GetWnd("HelpTextEb"))->SetScrollbarSkin( 
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/label_bk_a.bmp"),1),	// scroll area	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0),	// thumb button		
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0),	// thumb button focus	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0),			// top button up	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0),			// top button down	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0),		// bottom button up		
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0)		// bottom button down	
+			new ZGuiSkin(GetTexID("data/textures/gui/label_bk_a.bmp"),1),	// scroll area	
+			new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_u.bmp"),0),	// thumb button		
+			new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_f.bmp"),0),	// thumb button focus	
+			new ZGuiSkin(GetTexID("data/textures/gui/top_u.bmp"),0),			// top button up	
+			new ZGuiSkin(GetTexID("data/textures/gui/top_d.bmp"),0),			// top button down	
+			new ZGuiSkin(GetTexID("data/textures/gui/bottom_u.bmp"),0),		// bottom button up		
+			new ZGuiSkin(GetTexID("data/textures/gui/bottom_d.bmp"),0)		// bottom button down	
 			);
 
 		GetWnd("HQBn")->m_bAcceptRightClicks = true;
@@ -437,7 +437,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 
 		pkCharacterStats = pkCharProperty->GetStats();
 
-		string szTexName = string("data/textures/gui/dm/portraits/") +
+		string szTexName = string("data/textures/gui/portraits/") +
 			pkCharacterStats->m_strIcon;
 
 		pkActiveCharBn->Show();
@@ -457,7 +457,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 
 			if((pkItemProperty=(P_DMItem*)pkEntity->GetProperty("P_DMItem")))
 			{
-				szTexName = string("data/textures/gui/dm/items/") +
+				szTexName = string("data/textures/gui/items/") +
 					pkItemProperty->GetIcon();
 				ZGuiButton* pkActiveWeaponBn = (ZGuiButton*) 
 					GetWnd("GamePlayDlgWeaponBn");
@@ -487,7 +487,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 
 				if((pkItemProperty=(P_DMItem*)pkEntity->GetProperty("P_DMItem")))
 				{
-					szTexName = string("data/textures/gui/dm/items/") +
+					szTexName = string("data/textures/gui/items/") +
 						pkItemProperty->GetIcon();
 
 					pkQuickItemBn->Show();
@@ -567,7 +567,7 @@ void CGamePlayDlg::UpdateAgentList()
 			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->GetEntityID();
 
 			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
-			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
+			string szTexName = string("data/textures/gui/portraits/") + icon;
 			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName, false);
 
 			DMCharacterStats* pkStats = GetAgentStats(m_akAgetIcons[i].iAgentObjectID);

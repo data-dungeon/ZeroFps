@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>
+#include <SDL/SDL_thread.h>
 #include <queue>
 #include <map>
 #include <string>
@@ -99,6 +100,8 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool 				m_bKeyRepeat;
 
 		int				m_iSDLMouseX, m_iSDLMouseY;
+
+		SDL_Thread*		m_pkInputThread;
 		
 	
 		void SetupMapToKeyState();

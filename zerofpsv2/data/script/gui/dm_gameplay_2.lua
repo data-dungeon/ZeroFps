@@ -12,59 +12,59 @@ function GUICreate()
 --	Skin3 = { tex1="bn_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 --	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin1 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin1 = { tex1="misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin2 = { tex1="dm/misc_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin2 = { tex1="misc_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 	Skin4 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=0, bkG=0,
 	 bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin5 = { tex1="dm/final/action_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/action_bar_a.bmp", tex2a="0",
+	Skin5 = { tex1="final/action_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/action_bar_a.bmp", tex2a="0",
 	 tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin6 = { tex1="dm/final/action_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/action_button_a.bmp",
+	Skin6 = { tex1="final/action_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/action_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
-	Skin7 = { tex1="dm/final/character_bar_button.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/character_bar_button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin7 = { tex1="final/character_bar_button.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/character_bar_button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
-	Skin8 = { tex1="dm/final/portrait.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
+	Skin8 = { tex1="final/portrait.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
-	Skin9 = { tex1="dm/final/item_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/item_bar_a.bmp", tex2a="0",
+	Skin9 = { tex1="final/item_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/item_bar_a.bmp", tex2a="0",
 	 tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
-	Skin10 = { tex1="dm/final/item_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/item_button_a.bmp",
+	Skin10 = { tex1="final/item_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/item_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
---	Skin11 = { tex1="dm/final/character_bar.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
---	 tex4="wndborder_corner.bmp", tex1a="dm/final/character_bar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
+--	Skin11 = { tex1="final/character_bar.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
+--	 tex4="wndborder_corner.bmp", tex1a="final/character_bar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
 --	 borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
 
-	Skin11 = { tex1="dm/final/character_bar.bmp", tex2="0", tex3="0",
-	 tex4="0", tex1a="dm/final/character_bar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
+	Skin11 = { tex1="final/character_bar.bmp", tex2="0", tex3="0",
+	 tex4="0", tex1a="final/character_bar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin12 = { tex1="dm/final/skill_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/skill_bar_a.bmp", tex2a="0",
+	Skin12 = { tex1="final/skill_bar.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/skill_bar_a.bmp", tex2a="0",
 	 tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin13 = { tex1="dm/final/skill_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/skill_button_a.bmp",
+	Skin13 = { tex1="final/skill_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/skill_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
-	Skin14 = { tex1="dm/final/corner_char_blob.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
-	 tex4="wndborder_corner.bmp", tex1a="dm/final/corner_char_blob_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
+	Skin14 = { tex1="final/corner_char_blob.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
+	 tex4="wndborder_corner.bmp", tex1a="final/corner_char_blob_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
 
-	Skin15 = { tex1="dm/final/corner_piece.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
-	 tex4="wndborder_corner.bmp", tex1a="dm/final/corner_piece_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
+	Skin15 = { tex1="final/corner_piece.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
+	 tex4="wndborder_corner.bmp", tex1a="final/corner_piece_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin16 = { tex1="dm/final/quick_item.bmp", tex2="0", tex3="0",
+	Skin16 = { tex1="final/quick_item.bmp", tex2="0", tex3="0",
 	 tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	
-	Skin17 = { tex1="dm/final/weapon.bmp", tex2="0", tex3="0",
+	Skin17 = { tex1="final/weapon.bmp", tex2="0", tex3="0",
 	 tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin18 = { tex1="dm/final/healthbar.bmp", tex2="0", tex3="0",
-	 tex4="0", tex1a="dm/final/healthbar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
+	Skin18 = { tex1="final/healthbar.bmp", tex2="0", tex3="0",
+	 tex4="0", tex1a="final/healthbar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
 
 	Skin19 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
@@ -72,56 +72,56 @@ function GUICreate()
 
 
 
-	Skin20 = { tex1="dm/final/action_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/action_button_a.bmp",
+	Skin20 = { tex1="final/action_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/action_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
 	 trans=0 }
 
-	Skin21 = { tex1="dm/final/skill_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/skill_button_a.bmp",
+	Skin21 = { tex1="final/skill_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/skill_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
-	Skin22 = { tex1="dm/final/character_bar_button.bmp", tex2="0", tex3="0", tex4="0",
-	 tex1a="dm/final/character_bar_button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0,
+	Skin22 = { tex1="final/character_bar_button.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="final/character_bar_button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0,
 	 tile=0, trans=0 }
 
-	Skin23 = { tex1="dm/final/item_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/item_button_a.bmp",
+	Skin23 = { tex1="final/item_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="final/item_button_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
-	Skin25 = { tex1="dm/label_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/label_bk_a.bmp",
+	Skin25 = { tex1="label_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="label_bk_a.bmp",
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
-	Skin26 = { tex1="dm/final/win_tile.bmp", 
-	 tex2="dm/final/window/win_edge_ver.bmp", 
-	 tex3="dm/final/window/win_edge_hor.bmp", 
-	 tex4="dm/final/window/dm_win_corn.bmp", tex1a="0", 
-	 tex2a="dm/final/window/win_edge_ver_a.bmp", 
-	 tex3a="dm/final/window/win_edge_hor_a.bmp", 
-	 tex4a="dm/final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
+	Skin26 = { tex1="final/win_tile.bmp", 
+	 tex2="final/window/win_edge_ver.bmp", 
+	 tex3="final/window/win_edge_hor.bmp", 
+	 tex4="final/window/dm_win_corn.bmp", tex1a="0", 
+	 tex2a="final/window/win_edge_ver_a.bmp", 
+	 tex3a="final/window/win_edge_hor_a.bmp", 
+	 tex4a="final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=32, tile=1, trans=0 }
 
 	Skin27 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
 	 bkB=92, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
 
-	Skin28 = { tex1="dm/active_agent_border.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/active_agent_border_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin28 = { tex1="active_agent_border.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="active_agent_border_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=0, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin29 = { tex1="dm/pause_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin29 = { tex1="pause_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin30 = { tex1="dm/pause_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin30 = { tex1="pause_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin31 = { tex1="dm/map.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/map_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin31 = { tex1="map.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="map_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin32 = { tex1="dm/map_icons/agent_map_icon.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/map_icons/agent_map_icon_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin32 = { tex1="map_icons/agent_map_icon.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="map_icons/agent_map_icon_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 	Skin33 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=128, bkG=128,
@@ -136,40 +136,40 @@ function GUICreate()
 
 
 
-	Skin37 = { tex1="dm/menubn_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin37 = { tex1="menubn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin38 = { tex1="dm/menubn_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
-
-
-	Skin39 = { tex1="dm/helpbn_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
-
-	Skin40 = { tex1="dm/helpbn_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin38 = { tex1="menubn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 
-	Skin41 = { tex1="dm/mapbn_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin39 = { tex1="helpbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin42 = { tex1="dm/mapbn_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin40 = { tex1="helpbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
+	Skin41 = { tex1="mapbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin42 = { tex1="mapbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 
 
-	Skin43 = { tex1="dm/hqbn_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin43 = { tex1="hqbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-	Skin44 = { tex1="dm/hqbn_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="dm/hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin44 = { tex1="hqbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 
@@ -449,7 +449,22 @@ function GUICreate()
 	ChangeSkin("HelpTextOK","Skin1","Button focus")
 
 
-	HelpText = [[Dark Metropolis - Help text\n----------------------------------\n\nMove camera:\n a,d,w,s buttons or move the mouse to the end of the screen.\n\nRotate and zoom camera:\n Press space or third mouse button and move mouse.\n\nSelect a character:\n Left click on the character you want to select. A green circle appears under the characters you can select if you hold the mouse over one.\nYou can also select a character by left clicking on his portrait.\n\nSelecting multiple characters:\n You can select many characters at once by dragging out a select box. Also, if you have shift pressed while selecting a character, the previous selected character(s) wont be deselected.\n\nMoving characters:\n Right click anywhere on the ground while having a character selected will make him move there. You can also move characters by right clicking on the map.\n\nShooting:\n Pressing shift and the right mouse button will make the character shoot. A weapon must be equipped to shoot. Different weapons have different ranges. Also, if the weapon doesn't fire, it could be that the weapon must be reloaded.\n\nPicking up items:\n Items that can be picked up gets a yellow circle around them when pointed at. Right click on an item to pick it up.\n\nHire agents:\n Click on the HQ icon (bottom to the right), select agents. Then click on the agent you want to hire.\nTo use the agent in a mission, click on him and press send out.\n\nBuy items:\n You can buy items from the same screen as you hire agents. Click on the HQ button, and on agents. Click on a agent in the HQ, and press shop. Then click on the item you want and press buy.\n\nEquip items:\n Select a character, and left click on the large portrait of him. Drag and drop an item from the inventory to a slot to equip something. Items such as bombs and ammo must be dragged to the belt to be used.\n\nUsing quickitems:\n Equip items to the belt. Close the character window, and then click on the item in the belt to use it.\n\nMissions:\n To get a mission, click on the HQ button and select mission. You will get a brief description on each mission. Click on briefing to get a more detailed description. Click accept to start the mission. If you want to get a rebriefing during the mission, just click HQ-mission-briefing again.\n\nTips:\n By right-dubbel clicking on a portrait of a character the camera will move to that character.\nSome doors can be entered, just right click on them.\n\n\n\n ]]
+	HelpText = [[Dark Metropolis - Help text\n----------------------------------\n\nMove camera:\na,d,w,s buttons or move the mouse to the end of the screen.
+	\n\nRotate and zoom camera:\nPress space or third mouse button and move mouse.\n\nSelect a character:\nLeft click on the character you want to select. 
+	A green circle appears under the characters you can select if you hold the mouse over one.\nYou can also select a character by left clicking on his portrait.
+	\n\nSelecting multiple characters:\nYou can select many characters at once by dragging out a select box. Also, if you have shift pressed while selecting a 
+	character, the previous selected character(s) wont be deselected.\n\nMoving characters:\nRight click anywhere on the ground while having a character selected 
+	will make him move there. You can also move characters by right clicking on the map.\n\nShooting:\nPressing shift and the right mouse button will make the 
+	character shoot. A weapon must be equipped to shoot. Different weapons have different ranges. Also, if the weapon doesn't fire, it could be that the weapon 
+	must be reloaded.\n\nPicking up items:\nItems that can be picked up gets a yellow circle around them when pointed at. Right click on an item to pick it up.
+	\n\nHire agents:\nClick on the HQ icon (bottom to the right), select agents. Then click on the agent you want to hire.\nTo use the agent in a mission, click 
+	on him and press send out.\n\nBuy items:\nYou can buy items from the same screen as you hire agents. Click on the HQ button, and on agents. Click on a agent 
+	in the HQ, and press shop. Then click on the item you want and press buy.\n\nEquip items:\nSelect a character, and left click on the large portrait of him. 
+	Drag and drop an item from the inventory to a slot to equip something. Items such as bombs and ammo must be dragged to the belt to be used.\n\nUsing quickitems:\n
+	Equip items to the belt. Close the character window, and then click on the item in the belt to use it.\n\nMissions:\nTo get a mission, click on the HQ button 
+	and select mission. You will get a brief description on each mission. Click on briefing to get a more detailed description. Click accept to start the mission. 
+	If you want to get a rebriefing during the mission, just click HQ-mission-briefing again.\n\nTips:\nBy right-dubbel clicking on a portrait of a character the 
+	camera will move to that character.\nSome doors can be entered, just right click on them.\n\n\n\n ]]
 
 
 	SetTextString("HelpTextEb", HelpText)

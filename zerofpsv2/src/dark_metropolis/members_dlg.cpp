@@ -374,7 +374,7 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 
 	//UpdateLevelbar(pkCharacterObject);
 
-	//string szTexName = string("data/textures/gui/dm/portraits/") +
+	//string szTexName = string("data/textures/gui/portraits/") +
 	//	pkCharacterStats->m_strIcon;
 
 	//GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
@@ -849,7 +849,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 				pkButton->SetButtonUpSkin(pkSkinUp);
 				pkButton->SetSkin(pkSkinUp);
 
-				string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
+				string strIcon = "data/textures/gui/items/" + kItemList[i].m_strIcon;
 
 				SetButtonIcon(pkButton, strIcon, true, false);
 				pkButton->m_bUseAlhpaTest = false;

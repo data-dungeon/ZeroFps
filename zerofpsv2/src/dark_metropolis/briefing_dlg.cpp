@@ -98,13 +98,13 @@ bool CBriefingDlg::InitDlg()
 
 	if(m_bInitialized == false)
 	{
-		pkSkin[0] = new ZGuiSkin(GetTexID("data/textures/gui/dm/label_bk_a.bmp"),1);	// scroll area	
-		pkSkin[1] = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0);	// thumb button		
-		pkSkin[2] = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0);	// thumb button focus
-		pkSkin[3] = new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0);	// top button up	
-		pkSkin[4] = new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0);	// top button down	
-		pkSkin[5] = new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0);	// bottom button up		
-		pkSkin[6] = new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0);  // bottom button down	
+		pkSkin[0] = new ZGuiSkin(GetTexID("data/textures/gui/label_bk_a.bmp"),1);	// scroll area	
+		pkSkin[1] = new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_u.bmp"),0);	// thumb button		
+		pkSkin[2] = new ZGuiSkin(GetTexID("data/textures/gui/thumbbn_f.bmp"),0);	// thumb button focus
+		pkSkin[3] = new ZGuiSkin(GetTexID("data/textures/gui/top_u.bmp"),0);	// top button up	
+		pkSkin[4] = new ZGuiSkin(GetTexID("data/textures/gui/top_d.bmp"),0);	// top button down	
+		pkSkin[5] = new ZGuiSkin(GetTexID("data/textures/gui/bottom_u.bmp"),0);	// bottom button up		
+		pkSkin[6] = new ZGuiSkin(GetTexID("data/textures/gui/bottom_d.bmp"),0);  // bottom button down	
 
 		m_bInitialized = true;
 	}
