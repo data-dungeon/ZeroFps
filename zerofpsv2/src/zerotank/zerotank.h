@@ -20,18 +20,15 @@
 
 #include "../zerofpsv2/gui/zgui.h"
 
-//#include "../common/common.pkg"
-
-
 class ZeroTank :public Application, public ZGuiApp {
 	private:
 		
 		Camera*			m_pkCamera;
-		HeightMap*		m_pkMap;
+		//HeightMap*		m_pkMap;
 		Object*		m_pkCameraObject;
 		
 		// actions
-		int 			m_iActionCamLeft;
+/*		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
 		int 			m_iActionCamUp;
 		int 			m_iActionCamDown;
@@ -41,7 +38,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		int			m_iActionExploreAll;
 		int			m_iActionUnExploreAll;		
 //		int			m_iActionPrintServerInfo;				
-		int			m_iActionDoOrder;
+		int			m_iActionDoOrder;*/
 		
 		//this is true when client has got heightmap from server
 		bool			m_HaveFoundHMapObject;
@@ -58,13 +55,13 @@ class ZeroTank :public Application, public ZGuiApp {
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 
 		//list of possible spawn points
-		vector<Vector3>	m_kSpawnPoints;
+//		vector<Vector3>	m_kSpawnPoints;
 
 		//wich gametype for server to use
-		int					m_iGameType;
+//		int					m_iGameType;
 
 
-		Heightmap2*			m_pkMap2;
+//		Heightmap2*			m_pkMap2;
 
 		Mad_Modell			m_pkTestMod;
 		
@@ -79,8 +76,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		Object*				m_pkZeroTank_Modify;
 
 		//GuiBuilder*			m_pkGuiBuilder;
-
-		float m_fConePosY;
+		//float m_fConePosY;
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
@@ -94,7 +90,7 @@ class ZeroTank :public Application, public ZGuiApp {
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
-		void RegisterActions();		
+		//void RegisterActions();		
 		void RegisterPropertys();
 		void Input();
 		void OnServerStart(void);
@@ -108,7 +104,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		void HandleOrders();
 
 		//Setup spawn points
-		void SetupSpawnPoints();
+		//void SetupSpawnPoints();
 
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
