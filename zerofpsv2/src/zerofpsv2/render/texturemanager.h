@@ -119,7 +119,8 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		void Debug_TestTexturesLoader(void);
 
 		bool StartUp();
-		bool ShutDown()	{ return true;	}
+		bool ShutDown();
+
 		bool IsValid()	{ return true;	}
 
 		

@@ -26,6 +26,20 @@ bool TextureManager::StartUp()
 	return true;
 }	
 
+bool TextureManager::ShutDown()
+{
+	if(m_iTextures.size()) {
+		Logf("zerofps", "TextureManager::ShutDown: There are loaded textures left\n");
+		
+		for(int i=0; i < m_iTextures.size(); i++) {
+			if(m_iTextures[i])
+				Logf("zerofps", " [%d] = %s\n", i, m_iTextures[i]->file.c_str());
+			}
+		}
+	
+	return true;
+}
+
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
 {

@@ -108,6 +108,15 @@ bool ZFResourceDB::StartUp()
 
 bool ZFResourceDB::ShutDown() 
 { 
+	if(m_kResources.size()) {
+		Logf("zerofps", "ZFResourceDB::ShutDown: There are res left\n");
+		
+		list<ZFResourceInfo*>::iterator it;
+
+		for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
+			Logf("zerofps", " [] = %s\n", (*it)->m_strName.c_str() );
+		}
+
 
 	return true; 
 }
