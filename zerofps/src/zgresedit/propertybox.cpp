@@ -64,10 +64,6 @@ bool PropertyBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
 	pkSkinbox->SetGUI(m_pkGui);
 	m_pkGuiBuilder->Register(pkSkinbox, "CtrlPropSkinCB");
 
-	pkSkinbox->AddItem("Apa 1",331,true);
-	pkSkinbox->AddItem("Apa 2",332);
-	pkSkinbox->AddItem("Apa 3",333);
-
 	m_pkGui->ShowMainWindow(ID_CTRLPROPERTYBOX_MAIN_WND, false);
 
 	return true;

@@ -21,7 +21,8 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 
 	m_pkLabel = new ZGuiLabel(Rect(0, 0, kRectangle.Width(), kRectangle.Height()), this, true, 0);
 	m_pkLabel->RemoveWindowFlag(WF_CANHAVEFOCUS);
-	m_pkLabel->Move(20,0); 
+	m_pkLabel->Enable();
+	m_pkLabel->Move(20,0);
 }
 
 ZGuiCheckbox::~ZGuiCheckbox()

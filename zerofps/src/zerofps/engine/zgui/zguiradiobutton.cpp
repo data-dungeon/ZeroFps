@@ -24,6 +24,11 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, in
 	SetWindowFlag(WF_CANHAVEFOCUS);
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
+
+	list<ZGuiWnd*> pkChilds;
+	m_pkCheckbox->GetChildrens(pkChilds); 
+
+	(*pkChilds.begin())->SetZValue(m_iZValue+1);
 }
 
 ZGuiRadiobutton::~ZGuiRadiobutton()

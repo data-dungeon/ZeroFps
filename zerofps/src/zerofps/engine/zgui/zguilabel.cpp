@@ -15,7 +15,7 @@ ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
 	m_bEnabled = false; // labels are static by default
-	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	//RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 }
 
 ZGuiLabel::~ZGuiLabel()
@@ -47,7 +47,10 @@ bool ZGuiLabel::Notify(ZGuiWnd* pkWnd, int iCode)
 	// Notify the parent...
 	if(m_bEnabled)
 	{
-		m_pkParent->Notify(this, iCode); 
+		if(iCode == NCODE_CLICK_UP)
+		{
+			m_pkParent->Notify(this, iCode); 
+		}
 	}
 	return false;
 }

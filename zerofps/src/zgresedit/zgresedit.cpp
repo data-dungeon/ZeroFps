@@ -42,18 +42,18 @@ ZGResEdit::~ZGResEdit()
 
 }
 
-void ClearConsol() 
-{   
+void ClearConsol()
+{
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD coordScreen = { 0, 0 };
-	DWORD cCharsWritten;   
-	CONSOLE_SCREEN_BUFFER_INFO csbi;   
-	DWORD dwConSize;  
-	GetConsoleScreenBufferInfo(hConsole, &csbi);   
+	DWORD cCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD dwConSize;
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
 	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-	FillConsoleOutputCharacter(hConsole, (TCHAR) ' ', dwConSize, coordScreen, &cCharsWritten);    
-	GetConsoleScreenBufferInfo(hConsole, &csbi);     
-	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);      
+	FillConsoleOutputCharacter(hConsole, (TCHAR) ' ', dwConSize, coordScreen, &cCharsWritten);
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
 	SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
@@ -162,12 +162,10 @@ void ZGResEdit::OnIdle()
 	}
 
 	pkInput->SetInputEnabled(false);
-
-
 }
 
-bool ZGResEdit::WinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
-						 int iNumberOfParams, void *pkParams ) 
+bool ZGResEdit::WinProc(ZGuiWnd* pkWindow, unsigned int uiMessage, 
+						int iNumberOfParams, void *pkParams ) 
 {
 	switch(uiMessage)
 	{

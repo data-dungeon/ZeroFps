@@ -257,6 +257,10 @@ SOURCE=..\zeroedit\statusproperty.cpp
 
 SOURCE=.\teleportproperty.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\treeidleproperty.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -316,6 +320,10 @@ SOURCE=.\statusproperty.h
 # Begin Source File
 
 SOURCE=.\teleportproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\treeidleproperty.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
