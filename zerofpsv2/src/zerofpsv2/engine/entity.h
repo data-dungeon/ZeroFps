@@ -39,12 +39,11 @@ enum NetUpdateFlags
 	NETUPDATEFLAG_NAME =				5,		
 	NETUPDATEFLAG_TYPE =				6,			
 	NETUPDATEFLAG_UPDATESTATUS =	7,			
-	NETUPDATEFLAG_DELETE =			8,		
-	NETUPDATEFLAG_RELPOS =			9,		
-	NETUPDATEFLAG_INTERPOLATE =	10,			
-	NETUPDATEFLAG_ACC =				11,
-	NETUPDATEFLAG_DELETEPROPLIST=	12,					
-	NETUPDATEFLAG_ISZONE=			13,					
+	NETUPDATEFLAG_RELPOS =			8,		
+	NETUPDATEFLAG_INTERPOLATE =	9,			
+	NETUPDATEFLAG_ACC =				10,
+	NETUPDATEFLAG_DELETEPROPLIST=	11,					
+	NETUPDATEFLAG_ISZONE=			12,					
 };
 
 /*
@@ -81,7 +80,7 @@ public:
 };
 
 
-#define MAX_NETUPDATEFLAGS	14
+#define MAX_NETUPDATEFLAGS	13
 #define MAX_ENTITY_VARIABLENAME	64
 
 enum EntityVariableType
@@ -129,7 +128,7 @@ class ENGINE_API Entity
 	private:
 		Entity*						m_pkParent;							///< Parent Entity. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
-		vector<int>					m_aiNetDeleteList;				
+//		vector<int>					m_aiNetDeleteList;				
 		vector<string>				m_kNetDeletePropertyList;
 		
 		vector<EntityVariable>  m_kVariables;
@@ -261,8 +260,8 @@ class ENGINE_API Entity
 		void 	DeleteAllChilds();											// Remove all childs from this Entity.
 		void 	GetAllEntitys(vector<Entity*> *pakEntitys ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
 		
-		void 	AddToDeleteList(int iId);
-		void 	UpdateDeleteList();
+//		void 	AddToDeleteList(int iId);
+//		void 	UpdateDeleteList();
 		
 		void	AddToDeletePropertyList(const string& strName);
 		void	UpdateDeletePropertyList();

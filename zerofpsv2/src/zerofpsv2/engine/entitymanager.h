@@ -231,7 +231,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
-		void PackZoneListToClient(int iClient, set<int>& iZones );
 		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
 		void HandleDeleteQueue(NetPacket* pkNetPacket);		
 		void PackEntityToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject);

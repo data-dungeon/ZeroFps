@@ -1058,24 +1058,10 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 			return;
 
 		switch(ucGamePacketType) 
-		{
-			case ZFGP_DELETEOBJECT:
-			{
-				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
-				int iID=-1;
-				pkNetPacket->Read(iID);
-				m_pkEntityManager->Delete(iID);
-				cout<<"Got delete packate from server , deleting entity:"<<iID<<endl;
-				//m_pkEntityManager->UpdateDeleteList(pkNetPacket);
-				break;
-			}
-			
+		{			
 			case ZPGP_DELETELIST:
-			{
 				m_pkEntityManager->HandleDeleteQueue(pkNetPacket);
-			
 				break;			
-			}
 				
 			case ZFGP_OBJECTSTATE: 
 				//Logf("netpac", "  HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
@@ -1105,16 +1091,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				pkNetPacket->Read(m_iObjectID);
 				m_pkEntityManager->OwnerShip_OnGrant(m_pkEntityManager->GetEntityByID( m_iObjectID ));
 				break;
-
-			case ZFGP_ZONELIST: 
-				//Logf("netpac", "  HandleNetworkPacket(ZFGP_ZONELIST)\n");
-				m_pkEntityManager->UpdateZoneList(pkNetPacket);
-				break;
-
-			case ZFGP_GETSTATICDATA: 
-				m_pkEntityManager->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
-				break;
-
+				
 			case ZFGP_EDIT:
 				HandleEditCommand(pkNetPacket);
 				break;
@@ -1123,6 +1100,29 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				m_pkApp->OnNetworkMessage( pkNetPacket );
 				break;
 
+			
+			/*
+			case ZFGP_ZONELIST: 
+				//Logf("netpac", "  HandleNetworkPacket(ZFGP_ZONELIST)\n");
+				m_pkEntityManager->UpdateZoneList(pkNetPacket);
+				break;
+
+			case ZFGP_GETSTATICDATA: 
+				m_pkEntityManager->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
+				break;
+			
+			case ZFGP_DELETEOBJECT:
+			{
+				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
+				int iID=-1;
+				pkNetPacket->Read(iID);
+				m_pkEntityManager->Delete(iID);
+				cout<<"Got delete packate from server , deleting entity:"<<iID<<endl;
+				//m_pkEntityManager->UpdateDeleteList(pkNetPacket);
+				break;
+			}
+			*/			
+			
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;

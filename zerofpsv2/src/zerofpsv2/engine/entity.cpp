@@ -68,17 +68,6 @@ Entity::~Entity()
 	// First we remove all childs
 	DeleteAllChilds();
 
-	// Add Ourself to our Net.DeletList
-	AddToDeleteList(m_iEntityID);
-	
-	// Add our Net.DeleteList to our parent.
-	if(m_pkParent != NULL)
-	{
-		for(unsigned int i=0;i<m_aiNetDeleteList.size();i++)
-		{
-			m_pkParent->AddToDeleteList(m_aiNetDeleteList[i]);
-		}
-	}
 
 	// Then we remove ourself from our master.
 	if(m_pkParent != NULL)
@@ -587,22 +576,6 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	   pkNetPacket->Write( m_iUpdateStatus );		   
 	}
 
-	//send delete list
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE))
-	{
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,false);
-		/*
-		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
-
-		for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++)
-		{
-			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
-			
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_aiNetDeleteList[i]))
-				pkEnt->SetExistOnClient(iConnectionID,false);
-		}
-		*/
-	}
 
 	//send deleteproperty list
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST))
@@ -731,23 +704,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	   pkNetPacket->Read( m_iUpdateStatus );		   
 	}
 
-	//get delete list
-	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
-	{	/*
-		int iNumDelEntitys;
-		Entity* pkNetSlave;	
-		
-		pkNetPacket->Read(iNumDelEntitys);
-		
-		for(int i=0; i<iNumDelEntitys; i++) 
-		{
-			int iDelEntityID;
-			pkNetPacket->Read(iDelEntityID );
-			pkNetSlave = m_pkEntityManager->GetEntityByID(iDelEntityID);
-			m_pkEntityManager->Delete(pkNetSlave);
-		}
-		*/
-	}
 
 	//get deleteproperty list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETEPROPLIST))
@@ -761,7 +717,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		{
 			pkNetPacket->Read_Str(strPropertyName);
 			
-			cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
+			//cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
 			DeleteProperty(strPropertyName.c_str());
 		}
 	}	
@@ -1574,9 +1530,6 @@ void	Entity::SetExistOnClient(int iConID,bool bStatus)
 		return;
 		
 	//cout<<"E:"<<m_iEntityID<<" con:"<<iConID<<" "<<bStatus<<endl;
-	if(bStatus == false)
-		cout<<"setting false entity:"<<m_iEntityID<<endl;
-		
 	m_kExistOnClient[iConID] = bStatus;
 }
 
@@ -1701,12 +1654,6 @@ void Entity::SetUpdateStatus(int iUpdateStatus)
 }
 
 
-void Entity::AddToDeleteList(int iId)
-{
-	m_aiNetDeleteList.push_back(iId);
-	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
-
-}
 
 void	Entity::AddToDeletePropertyList(const string& strName)
 {
@@ -1714,45 +1661,7 @@ void	Entity::AddToDeletePropertyList(const string& strName)
 	SetNetUpdateFlag(NETUPDATEFLAG_DELETEPROPLIST,true);
 }
 
-void Entity::UpdateDeleteList()
-{	
-	if(m_aiNetDeleteList.empty())
-		return;
-	
-	/*	
-	//make sure that all clients have gotten the delete list
-	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
-	{
-		if(m_pkEntityManager->m_pkNetWork->IsConnected(i))
-		{
-			//cout<<"testing con "<<i<<endl;
-			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
-			{	
-				return;
-			}
-		}
-	}
-	*/
-	
-	for(int i = 0;i<m_kExistOnClient.size();i++)
-	{
-		if(m_kExistOnClient[i])
-		{
-			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
-				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
-		
-			//if this client has not gotten the delete list , return
-			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
-			{	
-				return;
-			}			
-		}
-	}
-	
-	
-	//clear delete list 
-	m_aiNetDeleteList.clear();
-}
+
 
 void	Entity::UpdateDeletePropertyList()
 {
@@ -1785,7 +1694,7 @@ void Entity::GetAllVarNames(vector<string>& vkList)
 		vkList.push_back( m_kVariables[i].m_strName ); 
 		}	
 }
-
+ 
 
 EntityVariable* Entity::CreateVar(const string& strName, EntityVariableType eType)
 {
@@ -1883,3 +1792,68 @@ void Entity::SetInterpolate(bool bInterpolate)
 
 	SetNetUpdateFlag(NETUPDATEFLAG_INTERPOLATE,true);	
 }
+
+
+
+
+
+
+
+
+
+
+
+/*
+void Entity::AddToDeleteList(int iId)
+{
+	m_aiNetDeleteList.push_back(iId);
+	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
+
+}
+
+
+void Entity::UpdateDeleteList()
+{	
+	if(m_aiNetDeleteList.empty())
+		return;
+	
+	/*	
+	//make sure that all clients have gotten the delete list
+	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
+	{
+		if(m_pkEntityManager->m_pkNetWork->IsConnected(i))
+		{
+			//cout<<"testing con "<<i<<endl;
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}
+		}
+	}
+	/
+	
+	for(int i = 0;i<m_kExistOnClient.size();i++)
+	{
+		if(m_kExistOnClient[i])
+		{
+			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
+				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
+		
+			//if this client has not gotten the delete list , return
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}			
+		}
+	}
+	
+	
+	//clear delete list 
+	m_aiNetDeleteList.clear();
+}
+
+*/
+
+
+
+

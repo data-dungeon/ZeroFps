@@ -317,7 +317,7 @@ void EntityManager::Delete(Entity* pkEntity)
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
 		if(pkEntity->m_iEntityID == (*it)) {
-			Logf("net", "Entity [%d] already in delete list\n", pkEntity->m_iEntityID);
+			//Logf("net", "Entity [%d] already in delete list\n", pkEntity->m_iEntityID);
 			//cout << "Entity already in delete list" << endl;
 			return;
 		}
@@ -773,21 +773,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	}
 }
 
-void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
-{
-	//if(iZones.size() != 0)
-	//	cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
-		
-	m_OutNP.Write((char) ZFGP_ZONELIST);
 
-
-	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) 
-	{
-		m_OutNP.Write(m_kZones[ (*itActiveZone) ].m_iZoneObjectID);
-	}
-	
-	m_OutNP.Write(-1);
-}
 
 bool IsInsideVector(int iVal, vector<int>& iArray)
 {
@@ -800,62 +786,6 @@ bool IsInsideVector(int iVal, vector<int>& iArray)
 	return false;
 }
 
-void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
-{
-	unsigned int i;
-
-	vector<int>	kZones;
-	int iZoneID;
-
-	pkNetPacket->Read(iZoneID);
-	while(iZoneID != -1) 
-	{
-		kZones.push_back(iZoneID);
-		pkNetPacket->Read(iZoneID);
-	}
-
-	//dvoids was here ;)
-	for( i=0; i<m_pkZoneEntity->m_akChilds.size(); i++) 
-	{
-		int iLocalZoneID = m_pkZoneEntity->m_akChilds[i]->m_iEntityID;
-		
-		if(IsInsideVector(iLocalZoneID, kZones)) 
-		{
-			Delete(m_pkZoneEntity->m_akChilds[i]);
-			//cout << "Removing Zone: " << iLocalZoneID << endl;
-		}
-	}
-
-
-
-/*
-//	LOGSIZE("EntityManager::ZoneList", kZones.size() * 4 + 4);
-
-
-	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
-		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
-		
-		if(IsInsideVector(iLocalZoneID, kZones) == false) {
-			Delete(m_pkZoneObject->m_akChilds[i]);
-			//cout << "Removing Zone: " << iLocalZoneID << endl;
-			}
-		}
-
-	Entity* pkStaticEntity=NULL;		
-
-	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
-			// First find the staticentity	
-			Entity* pkZone = m_pkZoneObject->m_akChilds[i];
-			pkStaticEntity = pkZone->GetStaticEntity();
-
-			//if no staticentity was found, complain
-			if(!pkStaticEntity) {
-				GetStaticData(pkZone->m_iEntityID);
-//				printf("Need Static Ents for Zone - %d\n", pkZone->m_iEntityID);
-				return;
-				}
-		}*/
-}
 
 
 void EntityManager::PackToClients()
@@ -988,13 +918,14 @@ void EntityManager::PackToClients()
 		m_pkNetWork->Send2(&m_OutNP);
 	}
 		
-
+/*
 	for(map<int,Entity*>::iterator it = m_akEntitys.begin(); it != m_akEntitys.end(); it++) 
 	{
 		//(*it)->m_aiNetDeleteList.clear();
 		(*it).second->UpdateDeleteList();
 	}
-
+*/
+	
 /*	if(m_aiNetDeleteList.size() == 0)
 		return;
 
@@ -2786,7 +2717,7 @@ void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 		pkEnt->SetExistOnClient(iClient,false);	
 	}
 	
-	cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
+	//cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
 }
 
 
@@ -2795,8 +2726,7 @@ void EntityManager::SendDeleteQueue(int iClient)
 	if(m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
 		return;
 		
-
-	cout<<"sending delete list to client:"<<iClient<<" size:"<<m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.size()<<endl;
+	//cout<<"sending delete list to client:"<<iClient<<" size:"<<m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.size()<<endl;
 		
 	m_OutNP.Write((char) ZPGP_DELETELIST);
 	
@@ -2822,7 +2752,7 @@ void EntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
 		if(Entity* pkEnt = GetEntityByID(iEntityID))
 			if(pkEnt->m_eRole == NETROLE_PROXY)
 			{
-				cout<<"deleting entity:"<<iEntityID<<endl;
+				//cout<<"deleting entity:"<<iEntityID<<endl;
 				Delete(iEntityID);		
 			}
 			else
@@ -2841,3 +2771,89 @@ void EntityManager::DeleteUnloadedZones(int iClient)
 }
 
 
+
+
+
+
+
+
+
+
+
+/*
+void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
+{
+	//if(iZones.size() != 0)
+	//	cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
+		
+	m_OutNP.Write((char) ZFGP_ZONELIST);
+
+
+	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) 
+	{
+		m_OutNP.Write(m_kZones[ (*itActiveZone) ].m_iZoneObjectID);
+	}
+	
+	m_OutNP.Write(-1);
+}
+*/
+
+
+/*
+void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
+{
+	unsigned int i;
+
+	vector<int>	kZones;
+	int iZoneID;
+
+	pkNetPacket->Read(iZoneID);
+	while(iZoneID != -1) 
+	{
+		kZones.push_back(iZoneID);
+		pkNetPacket->Read(iZoneID);
+	}
+
+	//dvoids was here ;)
+	for( i=0; i<m_pkZoneEntity->m_akChilds.size(); i++) 
+	{
+		int iLocalZoneID = m_pkZoneEntity->m_akChilds[i]->m_iEntityID;
+		
+		if(IsInsideVector(iLocalZoneID, kZones)) 
+		{
+			Delete(m_pkZoneEntity->m_akChilds[i]);
+			//cout << "Removing Zone: " << iLocalZoneID << endl;
+		}
+	}
+
+
+
+/*
+//	LOGSIZE("EntityManager::ZoneList", kZones.size() * 4 + 4);
+
+
+	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
+		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
+		
+		if(IsInsideVector(iLocalZoneID, kZones) == false) {
+			Delete(m_pkZoneObject->m_akChilds[i]);
+			//cout << "Removing Zone: " << iLocalZoneID << endl;
+			}
+		}
+
+	Entity* pkStaticEntity=NULL;		
+
+	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
+			// First find the staticentity	
+			Entity* pkZone = m_pkZoneObject->m_akChilds[i];
+			pkStaticEntity = pkZone->GetStaticEntity();
+
+			//if no staticentity was found, complain
+			if(!pkStaticEntity) {
+				GetStaticData(pkZone->m_iEntityID);
+//				printf("Need Static Ents for Zone - %d\n", pkZone->m_iEntityID);
+				return;
+				}
+		}*
+}
+*/
