@@ -13,6 +13,8 @@ static int TEMP_TERRAIN[65536];
 
 static Point g_kFrom, g_kTo;
 
+int g_test = 0;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -33,6 +35,11 @@ PathFind::~PathFind()
 bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
 	//vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
+
+
+	// Börja med att tömma kön.
+	while(m_kqClosestPath.size())
+		m_kqClosestPath.pop();
 
 	if(m_bPathIsReversed == false)
 	{
@@ -76,6 +83,7 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 
 	m_pkStartNode = new Node(iStartPosX, iStartPosY);
 	m_pkDestNode = new Node(iDestPosX, iDestPosY);
+	m_pkClosestNode = m_pkStartNode;
 
 	m_eState = ACTIVE;
 
@@ -301,6 +309,15 @@ PathFind::SEARCH_STATE PathFind::SearchStep()
 			push_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
 		}
 
+		// Kolla om detta är den närmsta noden.
+		if( pkNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos) <
+			m_pkClosestNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos))
+		{
+			g_test++;
+			m_pkClosestNode = pkNode;
+			m_kqClosestPath.push(Point(m_pkClosestNode->m_kSqrPos.x, m_pkClosestNode->m_kSqrPos.y));
+		}
+
 		// push pkNode onto Closed, as we have expanded it now
 		m_kvClosedList.push_back( pkNode );
 
@@ -492,17 +509,17 @@ bool PathFind::FillQueue()
 
 	SEARCH_STATE uiSearchState;
 
-	static int counter=0, max=(m_siMapWidth/6)*(m_siMapWidth/6);
+	unsigned int c_iCounter=0, c_iMaxSteps=(m_siMapWidth/4)*(m_siMapWidth/4);
 
 	do
 	{
-		if(counter++ > max)
+		if(c_iCounter++ >= c_iMaxSteps)
 		{
-			counter=0;
-			Reset();
+		/*	Reset();
 			m_bPathIsReversed = true;
 			printf("Swaping startpoint and endpoint and searching again\n");
-			return Rebuild(g_kFrom.x, g_kFrom.y, g_kTo.x, g_kTo.y);
+			return Rebuild(g_kFrom.x, g_kFrom.y, g_kTo.x, g_kTo.y);*/
+			break;
 		}
 
 		uiSearchState = SearchStep();
@@ -530,7 +547,43 @@ bool PathFind::FillQueue()
 	}
 	else
 	{
-		return false;
+		printf("Unit have not found end node, going to closest one..\n", g_test);
+
+		// Kopiera över kön till en vektor
+		vector<Point> kPath(m_kqClosestPath.size());
+		while(m_kqClosestPath.size())
+		{
+			kPath.push_back(m_kqClosestPath.front());
+			m_kqClosestPath.pop();
+		}
+
+		// Kopiera över vektorn till kön som skall användas
+		// och hoppa över onödiga mellansteg som kan undvikas
+		// genom att gö diagonalt.
+		unsigned int iSize = kPath.size();
+		for(int i=0; i<iSize; i++)
+		{
+			if(i < iSize-2)
+			{
+				int iXPos = kPath[i].x, iYPos = kPath[i].y;
+				Point kNextNext = kPath[i+2];
+				if(kNextNext.x == iXPos+1 && kNextNext.y == iYPos+1 ||
+				   kNextNext.x == iXPos-1 && kNextNext.y == iYPos+1 ||
+				   kNextNext.x == iXPos-1 && kNextNext.y == iYPos-1 ||
+				   kNextNext.x == iXPos+1 && kNextNext.y == iYPos-1)
+				{
+					m_kqPath.push(kNextNext);
+					i+=2;
+					continue;
+				}
+			}
+
+			m_kqPath.push(kPath[i]); 
+		}
+
+		FreeAllNodes();
+
+		return true;
 	}
 
 	if(m_bPathIsReversed)
@@ -584,8 +637,8 @@ PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
 bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
 	// Är rutan i sig blockerad
-	if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
-		return true;
+/*	if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
+		return true;*/
 /*
 	if( GetTerrainCost(iDestPosX+1, iDestPosY) == BLOCKED_VALUE
 		&& GetTerrainCost(iDestPosX, iDestPosY+1) == BLOCKED_VALUE

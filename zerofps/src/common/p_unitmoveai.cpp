@@ -120,7 +120,11 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					
 					m_iCurrentState = -1;
 					return NULL;
-				}		
+				}	
+				else
+				{
+					//m_kEndPoint = m_kEndPos = m_pkPathFind->GetEnd();
+				}
 				
 				//check if any new move order has been given
 				if(CheckForOrder())

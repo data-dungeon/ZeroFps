@@ -32,7 +32,7 @@ const int BLOCKED = 999;	// Unpassable square
 class COMMON_API PathFind : public ZFObject 
 {
 private:
-
+	
 	// A node represents a possible state in the search
 	// The user provided state type is included inside this type
 	class Node
@@ -84,6 +84,7 @@ private:
 	vector<NodePtr> m_kvClosedList; 
 	vector<NodePtr> m_kvNeighbours;
 	queue<Point> m_kqPath;
+	queue<Point> m_kqClosestPath;
 	bool m_bPathIsReversed;
 
 	// State
@@ -92,6 +93,7 @@ private:
 	NodePtr m_pkStartNode;
 	NodePtr m_pkDestNode;
 	NodePtr m_pkSearchNode;
+	NodePtr m_pkClosestNode;
 	
 	int* m_piMapTerrain;
 	const unsigned int BLOCKED_VALUE;
@@ -122,6 +124,8 @@ public:
 	
 	PathFind(int* piMapTerrain, int m_iMapWidth, unsigned int uiBlockedValue);
 	~PathFind();
+
+	//Point GetEnd() { if(m_eState == 
 
 	void Reset();
 	bool GetNextStep(int &riSquareX, int &riSquareY);
