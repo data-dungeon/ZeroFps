@@ -549,8 +549,8 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	
 	srand(1);
 	for(int i=0;i<iNr;i++){
-		float x=(rand()%fW*1000)/1000.0 + (kPos.x-fW/2);
-		float z=(rand()%fW*1000)/1000.0 + (kPos.z-fW/2);
+		float x=(rand()%(fW*1000))/1000.0 + (kPos.x-fW/2);
+		float z=(rand()%(fW*1000))/1000.0 + (kPos.z-fW/2);
 		float y=kMap->Height(x,z)+kScale.y/2;
 	
 		if(kMap->GetVert(int(x-kMap->m_kPosition.x),int(z-kMap->m_kPosition.z))->texture!=1)

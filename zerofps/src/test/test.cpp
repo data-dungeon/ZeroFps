@@ -102,9 +102,9 @@ void Test::OnIdle(void) {
 		
 	
 	if(m_iGrass>0)
-		for(int ix=0;ix<500;ix+=10)
-			for(int iy=0;iy<500;iy+=10)
-				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1,.1,1),10,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+		for(int ix=0;ix<500;ix+=20)
+			for(int iy=0;iy<500;iy+=20)
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),20,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
 
 	glPushMatrix();
