@@ -52,7 +52,14 @@ void P_AmbientSound::SetArea(vector<Vector2>& kPolygon, float fFloor, float fRoo
 		kRealArea[i] += objpos;
 
 	if(m_iAmbientAreaID != -1)
+	{
 		m_pkAudioSystem->ChangePntsInAmbientArea(m_iAmbientAreaID, kRealArea);
+
+		if(fFloor != -1 && fRoof != -1)
+		{
+			m_pkAudioSystem->ChangeAmbientAreaYPos(m_iAmbientAreaID, fFloor, fRoof);
+		}
+	}
 }
 
 void P_AmbientSound::SetSound(string strSound)
