@@ -26,6 +26,7 @@ function Init()
 	SetGunMaxAmmo (SIGetSelfID(), 10);
 	SetGunAmmo (SIGetSelfID(), 10);
 	SetGunShootAnim(SIGetSelfID(), "fire_shotgun");
+	SetGunBurstLenght(SIGetSelfID(), 2);
 end
 
 function FirstRun()

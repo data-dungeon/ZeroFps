@@ -114,7 +114,6 @@ function Dead()
 end
 
 function Aggro() -- attacks player
-
 	local closest_agent = GetDMCharacterClosest(SIGetSelfID())
 
 	if closest_agent == -1 then
@@ -129,8 +128,8 @@ function Aggro() -- attacks player
 		FireAtObject(SIGetSelfID(), closest_agent)
 	else
 		agent_pos = GetEntityPos(closest_agent);
-		agent_pos[1] = agent_pos[1] + Random(4)-2;
-		agent_pos[3] = agent_pos[3] + Random(4)-2;
+		agent_pos[1] = agent_pos[1] + Random(3)-1.5;
+		agent_pos[3] = agent_pos[3] + Random(3)-1.5;
 		MakePathFind(SIGetSelfID(),agent_pos);
 	end
 

@@ -18,13 +18,14 @@ end
 
 function Init()
 	SetGunSound (SIGetSelfID(), "data/sound/9m_pistol.wav");
-	SetGunFireRate (SIGetSelfID(), 1);
+	SetGunFireRate (SIGetSelfID(), 0.5);
 	SetGunDamage (SIGetSelfID(), 35);
 	SetGunRange (SIGetSelfID(), 20);
 	SetGunRandom (SIGetSelfID(), 4);
 	SetGunMaxAmmo (SIGetSelfID(), 70);
 	SetGunAmmo (SIGetSelfID(), 70);
 	SetGunShootAnim (SIGetSelfID(), "fire_gun");
+	SetGunBurstLenght (SIGetSelfID(), 0.8);
 end
 
 function FirstRun()

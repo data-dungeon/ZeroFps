@@ -3,7 +3,7 @@ function Create()
 	InitObject();
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/dm/iron_bar.mad");			
-			InitParameter("m_fScale","1");		
+			InitParameter("m_fScale","0.01");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","Iron bar");
 			InitParameter("sizex",3);
@@ -24,6 +24,7 @@ function Init()
 	SetGunRandom (SIGetSelfID(), 1);
 	SetGunMaxAmmo (SIGetSelfID(), 9999999);
 	SetGunAmmo (SIGetSelfID(), 9999999);
+	SetGunShootAnim (SIGetSelfID(), "unarmed");
 end
 
 function FirstRun()
