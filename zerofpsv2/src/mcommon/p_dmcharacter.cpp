@@ -27,29 +27,41 @@ DMCharacterStats::DMCharacterStats()
 
 void DMCharacterStats::Randomize()
 {
-	vector<string>	kNames;
-		kNames.push_back("Dvoid");
-		kNames.push_back("Vim");
-		kNames.push_back("Zeb");
-		kNames.push_back("Zerom");
-		kNames.push_back("Eld");
-		kNames.push_back("Arnold");
-		kNames.push_back("BIG");
-		kNames.push_back("Cobra");
-		kNames.push_back("Captain");
-		kNames.push_back("Data");
-		kNames.push_back("Lotta");
-
+	FILE* pkFile;
+	vector<string> kNames;
 	vector<string>	kSNames;
-		kSNames.push_back("Larsson");
-		kSNames.push_back("Andersson");
-		kSNames.push_back("Svensson");
-		kSNames.push_back("Kallsong");
-		kSNames.push_back("Blubbson");
-		kSNames.push_back("Arnoldsson");
 
+	char strLine[128];
 
-	m_strName = 		kNames[rand()%kNames.size()] + string(" ") + kSNames[rand()%kSNames.size()];
+	if((pkFile = fopen("names1.txt", "r"))) {
+		while (!feof(pkFile)) {
+			fgets(strLine, MAX_LINE_LENGTH, pkFile);
+			kNames.push_back(strLine);
+		}
+		fclose(pkFile);
+	}
+
+	if((pkFile = fopen("names2.txt", "r"))) {
+		while (!feof(pkFile)) {
+			fgets(strLine, MAX_LINE_LENGTH, pkFile);
+			kSNames.push_back(strLine);
+		}
+		fclose(pkFile);
+	}
+
+	if(!(kNames.empty() || kSNames.empty()))
+	{
+		int iFirstName = rand()%kNames.size();
+		int iSureName = rand()%kSNames.size();
+		kNames[iFirstName].erase(kNames[iFirstName].size()-1);
+		kSNames[iSureName].erase(kSNames[iSureName].size()-1);
+		m_strName = kNames[iFirstName] + string(" ") + kSNames[iSureName];
+	}
+	else
+	{
+		m_strName = "hoda";
+	}
+
 	m_strIcon =			"portrait1.bmp";
 
 	m_iMaxLife = 		rand()%20 + 80;

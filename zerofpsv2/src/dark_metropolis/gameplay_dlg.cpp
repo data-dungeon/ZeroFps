@@ -16,6 +16,52 @@ CGamePlayDlg::~CGamePlayDlg()
 {
 }
 
+void CGamePlayDlg::UpdatateMap()
+{
+	vector<Entity*> agent_list;
+	GetAllAgentsInField(agent_list);
+
+	ZGuiWnd* akWnds[5] = {
+		GetWnd("AgentMapIcon1"), GetWnd("AgentMapIcon2"),
+		GetWnd("AgentMapIcon3"), GetWnd("AgentMapIcon4"),
+		GetWnd("AgentMapIcon5"),
+	};
+
+	for(int i=0; i<5; i++)
+		akWnds[i]->Hide();
+
+	float	fWorldWidth = m_pkDM->m_fWorldMaxX-m_pkDM->m_fWorldMinX;
+	float	fWorldHeight = m_pkDM->m_fWorldMaxY-m_pkDM->m_fWorldMinY;
+
+	float picture_w = GetWnd("MapWnd")->GetScreenRect().Width();
+	float picture_h = GetWnd("MapWnd")->GetScreenRect().Height();
+
+	for(int i=0; i<agent_list.size(); i++)
+	{
+		float fx = agent_list[i]->GetWorldPosV().x; 
+		float fy = agent_list[i]->GetWorldPosV().z;
+
+		float x = (fx - m_pkDM->m_fWorldMinX) / fWorldWidth;
+		float y = (fy - m_pkDM->m_fWorldMinY) / fWorldHeight;
+
+		akWnds[i]->Show();
+		akWnds[i]->SetPos(picture_w*x, picture_h*y, false, true); 
+
+		if(m_iSelectedAgent != agent_list[i]->GetEntityID())
+		{
+			akWnds[i]->GetSkin()->m_afBkColor[0] =
+			akWnds[i]->GetSkin()->m_afBkColor[1] =
+			akWnds[i]->GetSkin()->m_afBkColor[2] = 0.5f;
+		}
+		else
+		{
+			akWnds[i]->GetSkin()->m_afBkColor[0] =
+			akWnds[i]->GetSkin()->m_afBkColor[1] =
+			akWnds[i]->GetSkin()->m_afBkColor[2] = 1.0f;
+		}
+	}
+}
+
 void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 									  bool bRMouseBnClick)
 {
@@ -35,50 +81,14 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	else
 	if(strClickName == "MapBn")
 	{
-		GetWnd("MapWnd")->Show(); // -107.912,-2.05,-41.9017
-
-		vector<Entity*> agent_list;
-		GetAllAgentsInField(agent_list);
-
-		ZGuiWnd* akWnds[5] = {
-			GetWnd("AgentMapIcon1"), GetWnd("AgentMapIcon2"),
-			GetWnd("AgentMapIcon3"), GetWnd("AgentMapIcon4"),
-			GetWnd("AgentMapIcon5"),
-		};
-
-		for(int i=0; i<5; i++)
-			akWnds[i]->Hide();
-
-		for(int i=0; i<agent_list.size(); i++)
+		if(GetWnd("MapWnd")->IsVisible())
 		{
-			float fx = agent_list[i]->GetWorldPosV().x; 
-			float fy = agent_list[i]->GetWorldPosV().z;
-
-			float	fWorldWidth = m_pkDM->m_fWorldMaxX-m_pkDM->m_fWorldMinX;
-			float	fWorldHeight = m_pkDM->m_fWorldMaxY-m_pkDM->m_fWorldMinY;
-
-			float x = (fx - m_pkDM->m_fWorldMinX) / fWorldWidth;
-			float y = (fy - m_pkDM->m_fWorldMinY) / fWorldHeight;
-
-			float picture_w = 600;
-			float picture_h = 448;
-
-			akWnds[i]->Show();
-			akWnds[i]->SetPos(picture_w*x, picture_h*y, false, true); 
-
-			if(m_iSelectedAgent != agent_list[i]->GetEntityID())
-			{
-				akWnds[i]->GetSkin()->m_afBkColor[0] =
-				akWnds[i]->GetSkin()->m_afBkColor[1] =
-				akWnds[i]->GetSkin()->m_afBkColor[2] = 0.5f;
-			}
-			else
-			{
-				akWnds[i]->GetSkin()->m_afBkColor[0] =
-				akWnds[i]->GetSkin()->m_afBkColor[1] =
-				akWnds[i]->GetSkin()->m_afBkColor[2] = 1.0f;
-			}
+			GetWnd("MapWnd")->Hide();
+			return;
 		}
+		
+		GetWnd("MapWnd")->Show();
+		UpdatateMap();
 	}
 	else
 	if(strClickName == "HQBn")
@@ -311,10 +321,9 @@ bool CGamePlayDlg::InitDlg()
 
 		// Enable the round alpha border to use apha test (labels are disabled by default)
 		GetWnd("ActiveCharacterPortraitLabel")->Enable();
-
-		ShowWnd("MapWnd", false);
 	}
 
+	ShowWnd("MapWnd", false);
 	GetWnd("GamePlayDlgQuickItem1")->Hide();
 	GetWnd("GamePlayDlgQuickItem2")->Hide();
 	GetWnd("GamePlayDlgQuickItem3")->Hide();

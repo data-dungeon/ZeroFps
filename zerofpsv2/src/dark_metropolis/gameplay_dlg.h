@@ -13,6 +13,7 @@ public:
 	
 	bool InitDlg();
 	void UpdateAgentList();
+	void UpdatateMap();
 
 protected:
 	

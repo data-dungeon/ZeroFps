@@ -73,6 +73,12 @@ void DarkMetropolis::GUI_OnIdle()
 		((CStartDMDlg*) m_pkStartDMDlg)->Update(m_pkFps->GetFrameTime());
 	}
 
+	if(m_pkGamePlayDlg) 
+	{
+		if(GetWnd("MapWnd") && GetWnd("MapWnd")->IsVisible())
+			((CGamePlayDlg*) m_pkGamePlayDlg)->UpdatateMap();
+	}
+
 	if(m_pkGamePlayInfoLabel)
 	{
 		if(m_strGameInfoText.empty())
@@ -285,14 +291,6 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 		strMainWnd = pkMain->GetName();
 	}
 
-	if(strMainWnd != "MapBn")
-	{
-		if(GetWnd("MapWnd") && GetWnd("MapWnd")->IsVisible())
-		{
-			GetWnd("MapWnd")->Hide();
-		}
-	}
-
 	if(strMainWnd == "MembersWnd")
 	{
 		m_pkMembersDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
@@ -315,7 +313,43 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 		}
 	}
 
+	if(strMainWnd == "MapWnd")
+	{
+		if(m_kSelectedEntitys.empty() == false)
+		{
+			float	fWorldWidth = m_fWorldMaxX-m_fWorldMinX;
+			float	fWorldHeight = m_fWorldMaxY-m_fWorldMinY;
 
+			x -= GetWnd("MapWnd")->GetScreenRect().Left;
+			y -= GetWnd("MapWnd")->GetScreenRect().Top;
+
+			float picture_w = GetWnd("MapWnd")->GetScreenRect().Width();
+			float picture_h = GetWnd("MapWnd")->GetScreenRect().Height();
+
+			float fx = m_fWorldMinX + ( ( (float) x / picture_w ) *  fWorldWidth );
+			float fy = m_fWorldMinY + ( ( (float) y / picture_h ) *  fWorldHeight );
+
+			Vector3 kClickPos = Vector3(fx,0,fy);
+
+			Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(
+				((CGamePlayDlg*)m_pkGamePlayDlg)->GetSelAgentObject());
+
+			if(pkEnt)
+			{
+				if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+				{	
+					DMOrder kWalkOrder;
+					kWalkOrder.m_iEntityID = ((CGamePlayDlg*)m_pkGamePlayDlg)->GetSelAgentObject();
+					kWalkOrder.m_iOrderType = eWalk;							 
+					kWalkOrder.m_kPosition = kClickPos;
+					kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
+
+					pkCharProp->ClearOrders();
+					pkCharProp->AddOrder(kWalkOrder);		
+				}
+			}
+		}
+	}
 	
 }
 
