@@ -1,4 +1,4 @@
-		#include "heightmap.h"
+#include "heightmap.h"
 
 
 HeightMap::HeightMap() {
@@ -16,11 +16,34 @@ void HeightMap::Zero() {
 }
 
 void HeightMap::GenerateNormals() {
-
-
-	int x=1;
-	int z=1;
-
+	Vector3 med;
+	Vector3 v1,v2,v3,n1,n2;
+	
+	
+	for(int z=1;z<m_iHmSize-1;z++){
+		for(int x=1;x<m_iHmSize-1;x++) {
+			med=Vector3(0,0,0);  //reset medium vector
+			for(int q=-1;q<1;q++){
+				for(int w=-1;w<1;w++){
+					v1=Vector3(1,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);
+					v2=Vector3(1,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),1);		
+					v3=Vector3(0,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);	
+	
+					n1=v2.cross(v1);			
+					n2=v3.cross(v2);				
+//					n1.normalize();
+//					n2.normalize();
+	
+					med=med+n1+n2;
+				}	
+			}
+			med=med*0.125;
+			med.normalize();
+			verts[z*m_iHmSize+x].normal=med;
+		}
+	}
+	
+/*	
 	for(int z=1;z<m_iHmSize-1;z++) {
 		for(int x=1;x<m_iHmSize-1;x++) {
 
@@ -28,13 +51,9 @@ void HeightMap::GenerateNormals() {
 			Vector3 v2=Vector3(1,(verts[(z-1)*m_iHmSize+(x-1)].height)-(verts[(z)*m_iHmSize+(x)].height) ,1);	
 			Vector3 n1=v2.cross(v1);			
 			n1.normalize();
-			
-//			Vector3 v3=Vector3(1, (verts[(z)*m_iHmSize+(x+1)].height) - (verts[z*m_iHmSize+x].height) ,0);
-//			Vector3 v4=Vector3(1, (verts[(z+1)*m_iHmSize+(x+1)].height) - (verts[z*m_iHmSize+x].height) ,1);	
-			
+						
 			Vector3 v3=Vector3(1,  (verts[(z+1)*m_iHmSize+(x)].height)-(verts[(z+1)*m_iHmSize+(x+1)].height) ,0);
-			Vector3 v4=Vector3(1,(verts[(z+1)*m_iHmSize+(x+1)].height)-(verts[(z)*m_iHmSize+(x)].height) ,1);	
-			
+			Vector3 v4=Vector3(1,(verts[(z+1)*m_iHmSize+(x+1)].height)-(verts[(z)*m_iHmSize+(x)].height) ,1);				
 			Vector3 n2=v4.cross(v3);			
 			n2.normalize();
 			
@@ -45,7 +64,7 @@ void HeightMap::GenerateNormals() {
 			verts[z*m_iHmSize+x].normal=n1;//n1;//(n1+n2)*0.5;	
 		}
 	}
-	
+*/	
 /*
 		for(int y=1;y<m_iHmSize-1;y++) {
 			for(int x=1;x<m_iHmSize-1;x++) {
@@ -110,5 +129,4 @@ void HeightMap::Random() {
 			}
 		}
 	}
-
 }

@@ -46,7 +46,7 @@ void Test::OnIdle(void) {
 	pkRender->DrawHM(test);		
 	pkRender->
 	SetFont("file:../data/textures/text/console.bmp");	
-	pkRender->Print(Vector3(40,15,-30),Vector3(0,0,0),Vector3(1,1,1),"HEJ JULLE");
+	pkRender->Print(Vector3(40,20,-30),Vector3(0,0,0),Vector3(5,5,5),"HEJ JULLE");
 
 	cout<<pkFps->m_iFps<<endl;
 	
