@@ -1453,20 +1453,22 @@ void EntityManager::UpdateZones()
 	//int iTrackerLOS = 3;
 
 	// Set All Zones as inactive.
-	for(iZ=0;iZ<m_kZones.size();iZ++) {
+	for(iZ=0;iZ<m_kZones.size();iZ++) 
+	{
 		m_kZones[iZ].m_bActive							= false;
 		m_kZones[iZ].m_fInactiveTime					= fTime;
 		m_kZones[iZ].m_iRange							= 1000;
 		if(m_kZones[iZ].m_pkZone)
 			m_kZones[iZ].m_pkZone->GetUpdateStatus()	= UPDATE_NONE;
-		}
+	}
 
 	vector<ZoneData*>	m_kFloodZones;
 	int iZoneIndex;
 
 	//cout<<"nr of trackers:"<<m_kTrackedObjects.size()<<endl;
 	// For each tracker.
-	for(list<Entity*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
+	for(list<Entity*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	{
 		// Find Active Zone.
 		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
 		pkTrack->m_iActiveZones.clear();
@@ -1484,7 +1486,8 @@ void EntityManager::UpdateZones()
 		}
 
 		// Flood Zones in rage to active.
-		while(m_kFloodZones.size()) {
+		while(m_kFloodZones.size()) 
+		{
 			pkZone = m_kFloodZones.back();
 			m_kFloodZones.pop_back();
 
@@ -1493,39 +1496,43 @@ void EntityManager::UpdateZones()
 			pkZone->m_bActive = true;
 			int iRange = pkZone->m_iRange + 1;
 
-			if(iRange < m_iTrackerLOS) {
-				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+			if(iRange < m_iTrackerLOS) 
+			{
+				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
+				{
 					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 
 					if(pkOtherZone->m_iRange < iRange)	continue;
 					pkOtherZone->m_iRange = iRange;
 					if(pkOtherZone->m_iRange < m_iTrackerLOS)
+					{
 						m_kFloodZones.push_back(pkOtherZone);
 					}
-				}
+				}				
 			}
 		}
+	}
 
 
-	// Age Inactive Zones.
-
-	// If Inactive Zone to old let it die.
-	ZoneData* pkZoneRefresh;
-
-	for(unsigned int i=0; i<m_kZones.size(); i++) {
+	//loop trough all zones and load/unload them
+	ZoneData* pkZoneRefresh;	
+	for(unsigned int i=0; i<m_kZones.size(); i++) 
+	{
 		pkZoneRefresh = &m_kZones[i];
 
 		// Zones that need to load.
-		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) {
+		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
+		{
 			LoadZone(pkZoneRefresh->m_iZoneID);
 			//cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
-			}
+		}
 
 		// Zones that need to unload
-		if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) {
+		if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) 
+		{
 			UnLoadZone(pkZoneRefresh->m_iZoneID);
 			//cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
-			}
+		}
 
 		if(pkZoneRefresh->m_bActive)
 			pkZoneRefresh->m_pkZone->GetUpdateStatus()		= UPDATE_ALL;

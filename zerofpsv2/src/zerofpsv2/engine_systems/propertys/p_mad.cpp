@@ -87,17 +87,17 @@ void P_Mad::SetBase(const char* acName)
 
 void P_Mad::Save(ZFIoInterface* pkPackage)
 {	
-	char temp[50];
+	char temp[128];
 	strcpy(temp,m_kMadFile.c_str());
 
-	pkPackage->Write((void*)temp,50,1);
+	pkPackage->Write((void*)temp,128,1);
 	pkPackage->Write((void*)&m_fScale,4,1);
 }
 
 void P_Mad::Load(ZFIoInterface* pkPackage)
 {
-	char temp[50];
-	pkPackage->Read((void*)temp,50,1);	
+	char temp[128];
+	pkPackage->Read((void*)temp,128,1);	
 	SetBase(temp);
 	
 	float scale;
@@ -119,7 +119,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
  
 void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-	char temp[50];
+	char temp[128];
 	pkNetPacket->Read_NetStr(temp);
 	SetBase(temp);
 	pkNetPacket->Read(m_fScale);

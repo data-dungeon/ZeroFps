@@ -793,7 +793,7 @@ void MistServer::DrawCrossMarker(Vector3 kPos)
 
 void MistServer::UpdateZoneMarkerPos()
 {
-	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*10;
+	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*15;
 
 	float fStep = 2.0;
 
@@ -823,7 +823,7 @@ void MistServer::UpdateZoneMarkerPos()
 
 void MistServer::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = pkFps->GetCam()->GetPos() + Get3DMousePos(true)*1;
+	m_kObjectMarkerPos = pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
 }
 
 
