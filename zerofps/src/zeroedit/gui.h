@@ -64,9 +64,10 @@ private:
 		int h, char* strText);
 	ZGui* GetGUI() { return m_pkEdit->pkGui; }
 	ZGuiTabCtrl* CreateTabbedDialog(char* szName, int iWndID, int iMainWndID, 
-		int x, int y, int w, int h, vector<string> kNames);
+		int x, int y, int w, int h, vector<string> kNames, ZGuiCallBack pkProc);
 	
 	ZeroEdit* m_pkEdit;
+	ZGui* m_pkGui;
 	
 	map<string, ZGuiSkin*> m_kSkinMap;
 	map<string, int> m_kTextureMap;
@@ -115,7 +116,6 @@ public:
 
 	ZGuiTabCtrl* m_pkWorkPanel;
 	FileOpenDlg* m_pkFileDlgbox;
-//	EditPropertyDlg* m_pkEditPropDlgBox;
 
 	friend class FileOpenDlg;
 	friend class EditPropertyDlg;

@@ -33,6 +33,7 @@ Gui::Gui(ZeroEdit* pkEdit)
 	m_iScreenCX = pkEdit->m_iWidth / 2;
 	m_iScreenCY = pkEdit->m_iHeight / 2;
 	m_pkEdit = pkEdit;
+	m_pkGui = m_pkEdit->pkGui;
 	m_pkFileDlgbox = NULL;
 	m_pkWorkPanel = NULL;
 	m_uiNumMenuItems = 0;
@@ -158,7 +159,7 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 	case ZGM_CBN_SELENDOK:
 		{
 			int iID = ((int*)pkParams)[0];
-			ZGuiWnd *win = ((ZGuiWnd*)m_pkEdit->pkGui->GetWindow(iID));
+			ZGuiWnd *win = ((ZGuiWnd*)m_pkGui->GetWindow(iID));
 
 			if(win)
 			{
@@ -302,11 +303,12 @@ int Gui::GetTexture(char* strName)
 
 ZGuiTabCtrl* Gui::CreateTabbedDialog(char* szName, int iWndID, int iMainWndID, 
 									int x, int y, int w, int h, 
-									vector<string> kTabNames)
+									vector<string> kTabNames, 
+									ZGuiCallBack pkProc)
 {
 	ZGuiTabCtrl* pkTab = new ZGuiTabCtrl(Rect(x,y,x+w,y+h),NULL,true,iWndID);
 	pkTab->SetSkin(GetSkin("menu"));
-	pkTab->SetFont(m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+	pkTab->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 	pkTab->SetNextButtonSkin( GetSkin("arrow_next_up"), 
 		GetSkin("arrow_next_down"), GetSkin("arrow_next_up"));
 	pkTab->SetPrevButtonSkin( GetSkin("arrow_prev_up"), 
@@ -319,7 +321,7 @@ ZGuiTabCtrl* Gui::CreateTabbedDialog(char* szName, int iWndID, int iMainWndID,
 
 	pkTab->SetCurrentPage(0);
 
-	m_pkEdit->pkGui->AddMainWindow(iMainWndID,pkTab,szName,MAINWINPROC,false);
+	m_pkGui->AddMainWindow(iMainWndID,pkTab,szName,pkProc,false);
 
 	return pkTab;
 }
@@ -332,7 +334,7 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkButton->SetButtonDownSkin(GetSkin("bn_down"));
 	pkButton->SetButtonUpSkin(GetSkin("bn_up"));
 	pkButton->SetText(pkName);
-	pkButton->SetGUI(m_pkEdit->pkGui);
+	pkButton->SetGUI(m_pkGui);
 
 	return pkButton;
 }
@@ -355,7 +357,7 @@ int Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 			start_id+i,start_id,strRadioGroupName,pkPrev,true);
 		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"));
 		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"));
-		pkGroupbutton->SetGUI(m_pkEdit->pkGui);
+		pkGroupbutton->SetGUI(m_pkGui);
 		pkGroupbutton->SetText((char*)vkNames[i].c_str(),true);
 		
 		if(pkPrev == NULL)
@@ -377,7 +379,7 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkListbox->SetSkin( GetSkin("dark_blue") );
 	pkListbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
-	pkListbox->SetGUI(m_pkEdit->pkGui);
+	pkListbox->SetGUI(m_pkGui);
 	return pkListbox;
 }
 
@@ -393,7 +395,7 @@ ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int 
 			GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 	}
 
-	pkCombobox->SetGUI(m_pkEdit->pkGui);
+	pkCombobox->SetGUI(m_pkGui);
 
 	return pkCombobox;
 }
@@ -406,7 +408,7 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
-	pkTextbox->SetGUI(m_pkEdit->pkGui);
+	pkTextbox->SetGUI(m_pkGui);
 
 	return pkTextbox;
 }
@@ -419,7 +421,7 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	if(strText)
 		pkLabel->SetText(strText);
 
-	pkLabel->SetGUI(m_pkEdit->pkGui);
+	pkLabel->SetGUI(m_pkGui);
 
 	return pkLabel;
 }
@@ -489,7 +491,7 @@ void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int in
 
 bool Gui::Register(ZGuiWnd *pkWnd, char* strName)
 {
-	return m_pkEdit->pkGui->RegisterWindow(pkWnd, strName);
+	return m_pkGui->RegisterWindow(pkWnd, strName);
 }
 
 bool Gui::Register(ZGuiSkin *pkSkin, char* strName)
@@ -533,7 +535,7 @@ void Gui::ClosePropertybox()
 
 	if(pkPropDlg && pkPropDlg->IsOpen())
 	{
-		m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
+		m_pkGui->ShowMainWindow( Get("PropertyDlg"), false);
 	}
 }
 
@@ -549,7 +551,7 @@ void Gui::OpenPropertybox()
 			return;
 	}
 
-	m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
+	m_pkGui->ShowMainWindow( Get("PropertyDlg"), false);
 }
 
 bool Gui::HaveFocus()
@@ -557,7 +559,7 @@ bool Gui::HaveFocus()
 	static bool bGiveGuiFocus = false;
 	static bool bWindowClicked = false;
 	
-	bool bMouseHoverWnd = m_pkEdit->pkGui->MouseHoverWnd();
+	bool bMouseHoverWnd = m_pkGui->MouseHoverWnd();
 
 	// Move window?
 	if(bMouseHoverWnd && m_pkEdit->pkInput->Pressed(MOUSELEFT) && !bWindowClicked)
@@ -606,7 +608,7 @@ void Gui::CreateTestWnd()
 
 	pkWnd->SetMoveArea(Rect(0,0,1024,768));
 
-	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
+	m_pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 
 	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(50,50,50+300,50+400), 
 		pkWnd, true, id++);
@@ -615,12 +617,12 @@ void Gui::CreateTestWnd()
 
 	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,0));
 
-	m_pkEdit->pkGui->RegisterWindow(pkTreebox, "TestTreeBox");
+	m_pkGui->RegisterWindow(pkTreebox, "TestTreeBox");
 }
 
 bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 {
-	ZGuiFont* pkFont = m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	ZGuiFont* pkFont = m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
 	if(pkFont == NULL)
 	{
 		printf("Failed to find font for menu!\n");
@@ -631,7 +633,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	pkMenu->SetSkin(GetSkin("menu"));
 	pkMenu->SetZValue(102321);
 
-	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, "MainMenu", MENUPROC, true);
+	m_pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, "MainMenu", MENUPROC, true);
 
 	if(!pkIni->Open(szFileName, false))
 	{
@@ -671,7 +673,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 				true,iMenuIDCounter++,20,GetSkin("menu"),GetSkin("dark_blue"),
 				GetSkin("dark_blue"), GetSkin("menu"));
 
-			pkMenuCBox->SetGUI(m_pkEdit->pkGui);
+			pkMenuCBox->SetGUI(m_pkGui);
 			pkMenuCBox->SetLabelText(szTitle);
 			pkMenuCBox->SetNumVisibleRows(1);
 			pkMenuCBox->IsMenu(true);
@@ -679,7 +681,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 			iMenuOffset += iMenuWidth;
 			rcMenu = rcMenu.Move(iMenuOffset,0);
 
-			m_pkEdit->pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
+			m_pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
 		}
 	}
 
@@ -817,7 +819,7 @@ bool Gui::OpenFileDlg(SEARCH_TASK eTask)
 		break;
 	}
 
-	m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
+	m_pkFileDlgbox = new FileOpenDlg(m_pkGui, 
 		m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
 	m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
 
@@ -835,7 +837,7 @@ bool Gui::CreateWorkPanel()
 	akTabNames.push_back("Elevation tool");
 
 	m_pkWorkPanel = CreateTabbedDialog("WorkPanel",12314124,2321323,
-		x,y,w,h,akTabNames);
+		x,y,w,h,akTabNames,WORKPANELPROC);
 
 	ZGuiWnd* pkPage1 = m_pkWorkPanel->GetPage(0);
 
