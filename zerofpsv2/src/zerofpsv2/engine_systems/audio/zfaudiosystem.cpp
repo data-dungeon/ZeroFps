@@ -692,7 +692,7 @@ bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
 	int iLowestPriority = DONT_EXIST;
 	string strLowest;
 
-	// Loopa igen alla resurser och hitta den resurs som har lägst prioritet (hehe)
+	// Loopa igen alla resurser och hitta den resurs som har lägst prioritet
 	for( ; it != m_mkResHandles.end(); it++)
 	{
 		if( it->second.second < iLowestPriority )
@@ -984,7 +984,31 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 	alGenSources(1, &pkSound->m_uiSourceBufferName);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
-		PrintError(error, "Failed to generate sound source!");
+		ZFSoundInfo* pkFarest = NULL;
+		float fFarest = 0.0f;
+
+		// Loopa igenom alla aktiva ljud och ta bort det som är längst bort 
+		list<ZFSoundInfo*>::iterator it = m_kSoundList.begin();
+		for( ; it != m_kSoundList.end(); it++)
+		{
+			ZFSoundInfo* pkSound = (*it);
+			
+			float fDistance = (m_kPos - pkSound->m_kPos).LengthSqr();
+			if(fDistance > fFarest)
+			{
+				pkFarest = pkSound;
+				fFarest = fDistance;
+			}
+		}
+
+		if(pkFarest != NULL)
+		{
+			DeleteSound(pkFarest, true);
+			return InitSound(pkSound);
+		}
+
+		PrintError(error, "Failed to generate sound source!\n");
+			
 		return false;
 	}
 
