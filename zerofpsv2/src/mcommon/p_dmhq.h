@@ -25,11 +25,7 @@ class MCOMMON_API P_DMHQ: public Property {
 		vector<DMCharacterStats>	m_kForHireList;
 
 		int m_iMoney;
-		int		m_iReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
-									   // ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
-		
-		
-		
+
 		void Eject(Entity* pkEnt);
 	
 	public:
@@ -62,8 +58,8 @@ class MCOMMON_API P_DMHQ: public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
-		void ChangeReputation(int mod) { m_iReputation += mod; }
-		int  GetReputation() { return m_iReputation; }
+		//void ChangeReputation(int mod) { m_iReputation += mod; }
+		//int  GetReputation() { return m_iReputation; }
 		
 };
 

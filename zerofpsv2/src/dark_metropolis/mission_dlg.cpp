@@ -72,11 +72,13 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(pkHQ)
 		{
 			P_DMMission* pkMissionProperty = (P_DMMission*) 
-				pkHQ->GetProperty("P_DMMission");
+				GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
+			int reputation = ((P_DMGameInfo*)
+				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
 
 			vector<DMMissionInfo> vkInfo;
-			pkMissionProperty->GetPossibleMissions(
-				((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
+			pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
 			char* szShortText = GetWnd((char*)strClickName.c_str())->GetText();
 
@@ -141,11 +143,15 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 	if(pkHQ)
 	{
 		P_DMMission* pkMissionProperty = (P_DMMission*) 
-			pkHQ->GetProperty("P_DMMission");
+			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
+		Entity* pkGameInfoObj = GetDMObject(GAME_INFO);
+		P_DMGameInfo* pkGameInfo = (P_DMGameInfo*) pkGameInfoObj->GetProperty("P_DMGameInfo");
+
+		int reputation = pkGameInfo->GetReputation();
 
 		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(
-			((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
+		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
 		int start_index = iVectorOffset;// - vkInfo.size();
 

@@ -45,7 +45,8 @@ protected:
 	
 	enum DM_OBJECT
 	{
-		HQ
+		HQ,
+		GAME_INFO
 	};
 
 	Entity* GetObject(int iID){return m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(iID);}

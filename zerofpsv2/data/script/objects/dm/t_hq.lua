@@ -9,10 +9,10 @@ function Create()
 		InitProperty("P_DMHQ");
 			InitParameter("active","true");					
 		InitProperty("P_ScriptInterface");
-		InitProperty("P_DMMission");
-			InitParameter("name","kill a man");
-			InitParameter("difficulty",0);
-			InitParameter("missionscript","data/script/missions/first_mission.lua");
+	--	InitProperty("P_DMMission");
+		--	InitParameter("name","kill a man");
+		--	InitParameter("difficulty",0);
+		--	InitParameter("missionscript","data/script/missions/first_mission.lua");
 
 end
 

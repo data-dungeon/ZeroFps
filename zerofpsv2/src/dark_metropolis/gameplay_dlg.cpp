@@ -60,6 +60,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("skill_bar", true);
 		ShowWnd("skill_button_ext", false);
 		m_bSkillbarIsOut = true;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "skill_button")
@@ -67,6 +70,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("skill_bar", false);
 		ShowWnd("skill_button_ext", true);
 		m_bSkillbarIsOut = false;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "action_button_ext")
@@ -74,6 +80,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("action_bar", true);
 		ShowWnd("action_button_ext", false);
 		m_bActionbarIsOut = true;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "action_button")
@@ -81,6 +90,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("action_bar", false);
 		ShowWnd("action_button_ext", true);
 		m_bActionbarIsOut = false;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "char_panel_button_ext")
@@ -88,6 +100,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("panel_char", true);
 		ShowWnd("char_panel_button_ext", false);
 		m_bCharbarIsOut = true;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "char_panel_button" || 
@@ -96,6 +111,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("panel_char", false);
 		ShowWnd("char_panel_button_ext", true);
 		m_bCharbarIsOut = false;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "item_button_ext")
@@ -103,6 +121,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("item_bar", true);
 		ShowWnd("item_button_ext", false);
 		m_bItembarIsOut=true;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "item_button")
@@ -110,6 +131,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("item_bar", false);
 		ShowWnd("item_button_ext", true);
 		m_bItembarIsOut=false;
+
+		m_pkAudioSys->StartSound("data/sound/computer beep.wav",
+			m_pkAudioSys->GetListnerPos() ); 
 	}
 	
 

@@ -161,9 +161,6 @@
 				RelativePath=".\newgame_dlg.cpp">
 			</File>
 			<File
-				RelativePath=".\p_dmgameinfo.cpp">
-			</File>
-			<File
 				RelativePath=".\startdm_dlg.cpp">
 			</File>
 		</Filter>
@@ -200,9 +197,6 @@
 			</File>
 			<File
 				RelativePath=".\newgame_dlg.h">
-			</File>
-			<File
-				RelativePath=".\p_dmgameinfo.h">
 			</File>
 			<File
 				RelativePath=".\startdm_dlg.h">

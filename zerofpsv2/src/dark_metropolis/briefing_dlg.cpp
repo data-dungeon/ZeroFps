@@ -25,12 +25,17 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		if(pkHQ)
 		{
+	//		P_DMMission* pkMissionProperty = (P_DMMission*) 
+	//			pkHQ->GetProperty("P_DMMission");
+
 			P_DMMission* pkMissionProperty = (P_DMMission*) 
-				pkHQ->GetProperty("P_DMMission");
+				GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
+			int reputation = ((P_DMGameInfo*)
+				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
 
 			vector<DMMissionInfo> vkInfo;
-			pkMissionProperty->GetPossibleMissions(
-				((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
+			pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
 			for(int i=0; i<vkInfo.size(); i++)
 			{
@@ -67,12 +72,17 @@ bool CBriefingDlg::InitDlg()
 
 	if(pkHQ)
 	{
+		//P_DMMission* pkMissionProperty = (P_DMMission*) 
+		//	pkHQ->GetProperty("P_DMMission");
+
 		P_DMMission* pkMissionProperty = (P_DMMission*) 
-			pkHQ->GetProperty("P_DMMission");
+			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
+		int reputation = ((P_DMGameInfo*)
+			GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
 
 		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(
-			((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetReputation(), vkInfo); 
+		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
 		for(int i=0; i<vkInfo.size(); i++)
 		{

@@ -124,8 +124,23 @@ int DMLua::SetNewMissionLua(lua_State* pkLua)
 	
 		g_pkScript->GetArgString(pkLua, 0, szName);
 
-		vector<Entity*> kObjects;		
-		g_pkObjMan->GetAllObjects(&kObjects);
+		//vector<Entity*> kObjects;		
+		//g_pkObjMan->GetAllObjects(&kObjects);
+
+		////
+		//// PROBLEM!
+		//// 
+		//for(unsigned int i=0;i<kObjects.size();i++)
+		//	if(kObjects[i]->GetProperty("P_DMHQ"))
+		//	{
+		//		pkMissionProp = (P_DMMission*) kObjects[i]->GetProperty("P_DMMission");
+		//		break;
+		//	}
+
+		Entity* pkGlobal = g_pkObjMan->GetGlobalObject();
+
+		vector<Entity*> kObjects;
+		pkGlobal->GetAllEntitys(&kObjects);
 
 		for(unsigned int i=0;i<kObjects.size();i++)
 			if(kObjects[i]->GetProperty("P_DMHQ"))

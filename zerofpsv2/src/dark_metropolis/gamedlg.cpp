@@ -39,12 +39,16 @@ void CGameDlg::ShowWnd(char* szWndResName, bool bShow, bool bToogleCapture)
 Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject) 
 { 
 	int iID = -1;
+	unsigned int i;
+
+	vector<Entity*> kObjects;	
+
 	switch(eDmObject)
 	{
 	case HQ:
-		vector<Entity*> kObjects;	
+		
 		m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
-		for(unsigned int i=0;i<kObjects.size();i++)
+		for(i=0;i<kObjects.size();i++)
 		{
 			P_DMHQ* pkHQProperty = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ");
 
@@ -57,6 +61,11 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 				}
 			}
 		}
+		break;
+
+		// // gameinfo entity
+	case GAME_INFO:
+		return m_pkDM->m_pkGameInfoEntity;
 		break;
 	}
 

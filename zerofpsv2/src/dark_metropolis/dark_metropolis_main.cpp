@@ -692,7 +692,8 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
 	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
-
+	m_pkGameInfoEntity->AddProperty("P_DMMission"); // Lägg till ett mission property oxå...
+	((P_DMMission*)m_pkGameInfoEntity->GetProperty("P_DMMission"))->Init();
 
 	//setup startup gamesettings
 	m_pkGameInfoProperty->m_strClanName = strClanName;

@@ -141,9 +141,6 @@ function GUICreate()
 	ChangeSkin("weapon","Skin2","Button down")
 	ChangeSkin("weapon","Skin3","Button focus")
 
-
-
-
 	
 
 	CreateWnd(0,"skill_bar","GamePlayScreen","",-51,552,512,64,0)
