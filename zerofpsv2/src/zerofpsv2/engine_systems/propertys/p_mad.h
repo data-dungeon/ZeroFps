@@ -55,6 +55,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
+		Vector3 GetJointPosition(char* szJointName);
 
 		bool TestLine(Vector3 kPos,Vector3 kDir);
 		Vector3 GetLastColPos() {return m_kColPos;};

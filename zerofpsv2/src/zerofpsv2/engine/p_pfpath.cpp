@@ -15,6 +15,9 @@ P_PfPath::P_PfPath()
 
 	m_fSpeed = 3;
 	m_iNavMeshCell = 0;
+	
+	m_kOffset.Set(0,0,0);
+	m_bHaveOffset = false;
 }
 
 P_PfPath::~P_PfPath()
@@ -24,6 +27,9 @@ P_PfPath::~P_PfPath()
 
 void P_PfPath::Update()
 {
+	if(!m_bHaveOffset)
+		SetupOffset();
+		
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
 	ZoneData* pkZone;
@@ -71,12 +77,10 @@ void P_PfPath::Update()
 
 		return;
 		}
-
-	static Vector3 kOffset = Vector3(0,0,0);;
-	
+	//m_kOffset = Vector3(0,1,0);
 
 	// Get Distance to next goal.
-	Vector3 kGoal = m_kPath[m_iNextGoal] + kOffset;
+	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
@@ -175,9 +179,24 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 }
 
 
+void P_PfPath::SetupOffset()
+{
+	P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+	if(pm)
+	{	
+		m_kOffset = pm->GetJointPosition("fem_run_c_root");
+		m_bHaveOffset = true;
+		
+		cout<<"Got offset: "<<m_kOffset.x<<" "<<m_kOffset.y<<" "<<m_kOffset.z<<endl;
+	}
+}
+
+
 
 Property* Create_P_PfPath()
 {
 	return new P_PfPath;
 }
+
+
 

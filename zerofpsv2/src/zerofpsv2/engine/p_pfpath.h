@@ -15,11 +15,14 @@ class ENGINE_API P_PfPath : public Property
 		AStar*				m_pkAStar;
 		
 		vector<Vector3>	m_kPath;				// The path we are following (if any).
-		int					m_iNextGoal;		// The point we are going to.
-		
+		int					m_iNextGoal;		// The point we are going to.		
 		float					m_fSpeed;			// Our walking speed.
-
 		int					m_iNavMeshCell;	// The cell we are in. 0 if unknown.
+
+		Vector3				m_kOffset;
+		bool					m_bHaveOffset;
+		
+		void					SetupOffset();
 
 	public:
 		P_PfPath();
@@ -37,6 +40,7 @@ class ENGINE_API P_PfPath : public Property
 		void SetPath(vector<Vector3> kPath);
 
 		bool MakePathFind(Vector3 kDestination);
+		
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

@@ -390,6 +390,37 @@ void P_Mad::SetVisible(bool bVisible)
 		m_iSortPlace = 10;
 }
 
+Vector3 P_Mad::GetJointPosition(char* szJointName)
+{
+	Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr();
+	
+	if(pkMc)
+	{
+	 	//animate object
+	 	//pkMc->SetBoneAnimationTime(0, 0, 0);
+		//pkMc->SetupBonePose();
+	
+	
+		if( pkMc->GetJointID(szJointName) == -1)
+			cout<<"Joint "<<szJointName<<" not found"<<endl;
+		
+		
+		Matrix4 kMat;
+		Vector3 kPos;
+		
+		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
+		kPos = kMat.GetPos() * m_fScale;
+		
+		//kPos = pkMc->GetJointPosition(szJointName);
+		
+		return kPos;	
+	}
+	cout<<"Error: No Model loaded when trying to get joint position"<<endl;
+	
+	return Vector3(0,0,0);
+}
+
+
 Property* Create_MadProperty()
 {
 	return new P_Mad;
@@ -464,6 +495,8 @@ void P_LinkToJoint::Load(ZFIoInterface* pkPackage)
 	m_strToJoint = temp;
 
 }
+
+
 
 
 
