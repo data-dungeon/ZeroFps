@@ -5,6 +5,9 @@ class object
 		
 		add P_ClientInput
 		
+	class ServerInfoObject
+		parent object
+		add P_ServerInfo
 
 	class physics
 		parent object
