@@ -25,6 +25,13 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void Input();
 		void RegisterPropertys();
 
+		struct StartBaseInfo {
+			ZGuiSkin* pkIcon;
+			char* szName;
+		};
+		vector<StartBaseInfo*> m_vkStartBaseList;
+		vector<StartBaseInfo*>::iterator m_itStartBase;
+
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
 		

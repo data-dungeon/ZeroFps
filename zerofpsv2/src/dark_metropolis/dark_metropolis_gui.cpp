@@ -73,7 +73,38 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		{
 			LoadGuiFromScript(m_pkScript, 
 				"data/script/gui/dm_start_new_game.lua");
+
 			pkMainWnd->Hide();
+
+			if(m_vkStartBaseList.empty())
+			{
+				StartBaseInfo* info;
+
+				int id[] =
+				{
+					pkTexMan->Load("data/textures/gui/dm/start_base1.bmp", 0),
+					pkTexMan->Load("data/textures/gui/dm/start_base2.bmp", 0),
+				};
+
+				char* acBaseName[] =
+				{
+					"Old warehouse",
+					"The Library of Death",
+				};
+
+				for(int i=0; i<2; i++)
+				{
+					info = new StartBaseInfo;
+					info->pkIcon = new ZGuiSkin(id[i], false);
+					info->szName = new char[25];
+					strcpy(info->szName, acBaseName[i]);
+					m_vkStartBaseList.push_back(info);
+				}
+
+				m_itStartBase = m_vkStartBaseList.begin(); 
+			}
+
+			SelListItem("TeamColorCB", "Red");
 		}
 		else
 		if(strClickName == "QuitBn")
@@ -95,6 +126,29 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 				"data/script/gui/dm_start.lua");
 			pkMainWnd->Hide();
 		}		
+		else
+		if(strClickName == "SelectNextBaseBn")
+		{
+			vector<StartBaseInfo*>::iterator n = m_itStartBase;
+			n++;
+
+			if(n != m_vkStartBaseList.end())
+			{
+				m_itStartBase++;
+				GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
+				GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
+			}
+		}
+		else
+		if(strClickName == "SelectPrevBaseBn")
+		{
+			if(m_itStartBase != m_vkStartBaseList.begin())
+			{
+				m_itStartBase--;
+				GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
+				GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
+			}
+		}
 	}
 
 }

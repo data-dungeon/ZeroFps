@@ -560,16 +560,38 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szListboxResName);
 
+	if(pkWnd == NULL)
+	{
+		printf("Failed to Add list item %s to listbox %s (no such window?)\n", 
+			szText, szListboxResName);
+		return;
+	}
+
 	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
 
 	if(bCombobox == false)
 	{
+		if(GetWndType(pkWnd) != Listbox)
+		{
+			printf("Failed to Add list item %s to listbox %s. Wrong window type.\n", 
+				szText, szListboxResName);
+			return;			
+		}
+
 		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
 		int iIndex = pkListBox->GetItemCount(); 
 		pkListBox->AddItem(szText, iIndex, false); 
 	}
 	else
 	{
+
+		if(GetWndType(pkWnd) != Combobox)
+		{
+			printf("Failed to Add list item %s to combobox %s. Wrong window type.\n", 
+				szText, szListboxResName);
+			return;			
+		}
+
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
 		pkComboBox->AddItem(szText, -1, false); 
 	}

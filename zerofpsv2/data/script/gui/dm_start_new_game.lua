@@ -15,7 +15,7 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 	Skin5 = { tex1="cb_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
-	Skin6 = { tex1="backpack_wnd.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin6 = { tex1="dm/start_base1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin7 = { tex1="dm/city2.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
 	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
@@ -71,12 +71,12 @@ function GUICreate()
 	CreateWnd(4,"ColorLabel","StartNewGameWnd","Color",610,65,38,20,0)
 	ChangeSkin("ColorLabel","Skin4","Label")
 
-	CreateWnd(1,"SelectNextBaseBn","StartNewGameWnd",")",769,203,20,20,0)
+	CreateWnd(1,"SelectNextBaseBn","StartNewGameWnd",">",769,203,20,20,0)
 	ChangeSkin("SelectNextBaseBn","Skin1","Button up")
 	ChangeSkin("SelectNextBaseBn","Skin2","Button down")
 	ChangeSkin("SelectNextBaseBn","Skin3","Button focus")
 
-	CreateWnd(1,"SelectPrevBaseBn","StartNewGameWnd","(",604,202,20,20,0)
+	CreateWnd(1,"SelectPrevBaseBn","StartNewGameWnd","<",604,202,20,20,0)
 	ChangeSkin("SelectPrevBaseBn","Skin1","Button up")
 	ChangeSkin("SelectPrevBaseBn","Skin2","Button down")
 	ChangeSkin("SelectPrevBaseBn","Skin3","Button focus")
@@ -87,13 +87,19 @@ function GUICreate()
 	CreateWnd(4,"StartBaseIconLabel","StartNewGameWnd","",634,151,128,128,0)
 	ChangeSkin("StartBaseIconLabel","Skin6","Label")
 
-	CreateWnd(4,"StartBaseLabel","StartNewGameWnd","Old warehouse",655,289,109,20,0)
-	ChangeSkin("StartBaseLabel","Skin4","Label")
+	CreateWnd(4,"StartBaseNameLabel","StartNewGameWnd","Old warehouse",634,289,128,20,0)
+	ChangeSkin("StartBaseNameLabel","Skin4","Label")
 
 	CreateWnd(1,"StartNewGameDone","StartNewGameWnd","Done",723,569,62,20,0)
 	ChangeSkin("StartNewGameDone","Skin1","Button up")
 	ChangeSkin("StartNewGameDone","Skin2","Button down")
 	ChangeSkin("StartNewGameDone","Skin3","Button focus")
+
+	AddListItem("TeamColorCB", "Red")
+	AddListItem("TeamColorCB", "Green")
+	AddListItem("TeamColorCB", "Blue")
+	AddListItem("TeamColorCB", "White")
+	AddListItem("TeamColorCB", "Black")
 
 end
 
