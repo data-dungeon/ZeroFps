@@ -571,13 +571,12 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
 	//cout<<"sending entity "<<GetEntityID()<<" to "<<iConnectionID<<endl;
-	
-	
 	SetExistOnClient(iConnectionID,true);
 
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 
+		
 	//send parent
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
 	{
@@ -674,7 +673,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 				pkNetPacket->Write_Str((*it)->m_acName);
 				(*it)->PackTo(pkNetPacket,iConnectionID);
 				
-				//dvoid test, sätter automatiskt nätverks flaggan till false för propertyt
+				//dvoid test, sï¿½ter automatiskt nï¿½verks flaggan till false fï¿½ propertyt
 				(*it)->SetNetUpdateFlag(iConnectionID,false);
 			}
 		}
@@ -688,12 +687,12 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST))
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST,false);
-	
-		pkNetPacket->Write((int) m_kNetDeletePropertyList.size() );
+		
+		//cout<<"sending delete property list do client:"<<iConnectionID<<" for entity:"<<GetEntityID()<<endl;		
+		
+		pkNetPacket->Write((char) m_kNetDeletePropertyList.size() );		
 		for(unsigned int i=0; i<m_kNetDeletePropertyList.size(); i++)
-		{
 			pkNetPacket->Write_Str(	m_kNetDeletePropertyList[i]);
-		}
 	}	
 	
 }
@@ -837,16 +836,14 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get deleteproperty list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETEPROPLIST))
 	{
-		int iSize; 
+		char cSize; 
 		string strPropertyName;
 		
-		pkNetPacket->Read(iSize );
-
-		for(unsigned int i=0; i<iSize; i++)
+		pkNetPacket->Read(cSize );
+		for(unsigned int i=0; i<cSize; i++)
 		{
 			pkNetPacket->Read_Str(strPropertyName);
 			
-			//cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
 			DeleteProperty(strPropertyName.c_str());
 		}
 	}		
@@ -2393,7 +2390,7 @@ int SetObjectPosLua(lua_State* pkLua)
 		Vector3 kPos;
 		kPos = GetVectorArg(pkLua, 2);
 		/*vector<TABLE_DATA> vkData;
-		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // fï¿½sta argumetet startar pï¿½1
 
 		pkObject->SetWorldPosV( Vector3(
 			(float) (*(double*) vkData[0].pData),

@@ -1779,7 +1779,7 @@ bool ZGui::CreatePickMapForImage(int iTexID, string strImageFile)
 	ZFVFile kFile;
 	if(!kFile.Open(strImageFile.c_str(),0,false))
 	{
-		printf("1: Failed to open image [%s] file for pickmap\n", strImageFile);
+		printf("1: Failed to open image [%s] file for pickmap\n", strImageFile.c_str());
 		return false;
 	}
 
