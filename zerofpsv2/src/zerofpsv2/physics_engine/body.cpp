@@ -26,7 +26,7 @@ void Body::Reset()
 	m_kInertia.m_afData[4] = 0.5;
 	m_kInertia.m_afData[8] = 0.5;
 	
-	m_kInertia.inverse(m_kInertiaInverse,0.1);
+	m_kInertia.Inverse(m_kInertiaInverse,0.1);
 //	m_kInertiaInverse 
 	m_kMassCenter.Set(0,0,0);
 	

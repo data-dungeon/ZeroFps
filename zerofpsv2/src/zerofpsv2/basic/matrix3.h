@@ -57,8 +57,8 @@ class BASIC_API Matrix3
 		void Zero();								// Set whole matrix to zero.
 		void Identity();							// Set matrix to the identity matrix.
 
-		bool inverse (Matrix3& inv, float tolerance) const;
-		float determinant(void)	 const;
+		bool Inverse (Matrix3& inv, float tolerance) const;
+		float Determinant(void)	 const;
 
 		Vector3 VectorTransform (const Vector3& kVec) 
 		{
@@ -68,6 +68,10 @@ class BASIC_API Matrix3
 				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
 				);
 		}
+
+		void Rotate(float fX, float fY, float fZ);
+		void Rotate(Vector3 kRot);
+		Vector3 GetRotVector();
 
 // Accessors 
 		Vector3 GetColumn (int iCol) const;

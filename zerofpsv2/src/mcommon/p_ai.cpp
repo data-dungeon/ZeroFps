@@ -155,7 +155,8 @@ void P_AI::Update()
       }
       else
       {
-         Matrix4 kM = m_pkObject->GetLocalRotM();
+         Matrix4 kM;
+			kM= m_pkObject->GetLocalRotM();
          kM.LookDir ( m_pkCurrentOrder->m_kPosition, Vector3(0,1,0) );
          m_pkObject->SetLocalRotM ( kM );
       }

@@ -192,11 +192,13 @@ class ENGINE_API Entity
 		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
+		/*	This is the Position and rotation of the Entity. It is stored as a Vector for position and a Matrix for
+			rotation. Local contains the objects transform and World is to total transform including any parent. */
 		Vector3						m_kLocalPosV;						///< Local position. important
+		Matrix3						m_kLocalRotM;						///< Local rotation important
 		Vector3						m_kWorldPosV;						///< World position.
-
-		Matrix4						m_kLocalRotM;						///< Local rotation important
-		Matrix4						m_kWorldRotM;
+		Matrix3						m_kWorldRotM;						///< World rotation
+	
 		Matrix4						m_kWorldOriM;
 		Matrix4						m_kLocalOriM;
 		Quaternion					m_kWorldRotQ;
@@ -321,8 +323,8 @@ class ENGINE_API Entity
 		bool			GetRelativeOri()				{	return m_bRelativeOri;		};
 		void			SetRelativeOri(bool bRO);
 		
-		Matrix4		GetLocalRotM();					
-		Matrix4		GetWorldRotM();
+		Matrix3		GetLocalRotM();					
+		Matrix3		GetWorldRotM();
 		Matrix4		GetWorldOriM();								//parent * rot * pos
 		Matrix4		GetLocalOriM();
 		Vector3		GetWorldRotV();
@@ -333,6 +335,7 @@ class ENGINE_API Entity
 		Vector3		GetIWorldPosV();
 		
 		//set oritentation data
+		void			SetLocalRotM(Matrix3 kNewRot);
 		void			SetLocalRotM(Matrix4 kNewRot);
 		void			SetLocalRotV(Vector3);
 		void			SetLocalPosV(Vector3);

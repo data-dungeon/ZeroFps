@@ -42,14 +42,20 @@ void P_LinkToJoint::Update()
 	
 	//dvoid ultra hax deluxe  ..dont mess whit this code
 	Matrix4 kMat;
+	Matrix4 kParentMat;
 	Vector3 kPos;
 	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
 	kPos = kMat.GetPos() * pkMad->m_fScale;
 	kMat.SetPos(Vector3(0,0,0));
-	kMat *= m_pkObject->GetParent()->GetWorldRotM();	//add parents rotation , cos where not using realtive orientation anymore
-	m_pkObject->SetLocalRotM(kMat);
+	kParentMat = m_pkObject->GetParent()->GetWorldRotM();
+	kMat *= kParentMat;	//add parents rotation , cos where not using realtive orientation anymore
+
+	Matrix3 kMat3;
+	kMat3 = kMat;
+	m_pkObject->SetLocalRotM(kMat3);
 	
-	kPos = m_pkObject->GetParent()->GetWorldRotM().VectorRotate(kPos);	//apply object rotation to joint offset
+	kMat = m_pkObject->GetParent()->GetWorldRotM();
+	kPos = kMat.VectorRotate(kPos);	//apply object rotation to joint offset
 	kPos += m_pkObject->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
 	
 	m_pkObject->SetLocalPosV(kPos);

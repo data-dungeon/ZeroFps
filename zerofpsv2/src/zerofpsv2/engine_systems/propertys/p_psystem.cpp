@@ -9,11 +9,12 @@ void P_PSystem::Update()
 {
 	if ( m_pkPSystem )
 	{
-		
+		Matrix4 kMat;
+		kMat = m_pkObject->GetWorldRotM();
 		
 	
       // returns true if the PSystem is finished
-		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), m_pkObject->GetWorldRotM() ) )
+		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), kMat ) )
 		{
  		   if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	 		   m_pkPSystem->Draw();

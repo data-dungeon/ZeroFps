@@ -33,6 +33,8 @@ Matrix4 Matrix4::operator=(const Matrix4 &kOther)
 
 void Matrix4::operator=(const Matrix3 &rkMatrix)
 {
+	Identity();
+
 	RowCol[0][0] = rkMatrix.m_aafRowCol[0][0];
 	RowCol[0][1] = rkMatrix.m_aafRowCol[0][1];
 	RowCol[0][2] = rkMatrix.m_aafRowCol[0][2];
@@ -436,9 +438,10 @@ Vector3 Matrix4::VectorTransform (const Vector3& kVec)
 	return res;
 }*/
 
-bool Matrix4::inv(void)
+/*
+bool Matrix4::Inverse(void)
 {
-	float d = det();
+	float d = Determinant();
 	Matrix3 mtmp;
 	Matrix4	calc;
 
@@ -450,14 +453,14 @@ bool Matrix4::inv(void)
 		for(j=0; j<4; j++) {
 			sign = 1 - ((i+j) % 2) * 2;
 			mtmp = submat(i,j);
-		    calc.RowCol[i][j] = (mtmp.determinant() * sign) / d;
+		    calc.RowCol[i][j] = (mtmp.Determinant() * sign) / d;
 			}
 		}
 
 	return true;
-}
+}*/
 
-float Matrix4::det(void)
+float Matrix4::Determinant(void)
 {
 	float det, result = 0, i = 1;
 	Matrix3 msub;
@@ -465,7 +468,7 @@ float Matrix4::det(void)
 
 	for(n=0; n<4; n++, i*= -1) {
 		msub = submat(0,n);
-		det = msub.determinant();
+		det = msub.Determinant();
 		result += RowCol[0][n] * det * i;
 		}
 
@@ -495,7 +498,7 @@ Matrix3 Matrix4::submat(int i, int j)
 	return b;
 }
 
-Matrix4 Matrix4::Invert2( )
+Matrix4 Matrix4::Inverse( )
 {
 	Matrix4	inverse;
 

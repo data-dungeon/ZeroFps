@@ -791,7 +791,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get rotation	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ROT))
 	{
-		Matrix4 kRot;
+		Matrix3 kRot;
 		pkNetPacket->Read(kRot);
 		SetLocalRotM(kRot);
 		LOGSIZE("Object::Rotation", sizeof(kRot));
@@ -870,7 +870,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 {
 	Vector3 pos;
-	Matrix4 rot;
+	Matrix3 rot;
 
 	int iNewID;
 	pkFile->Read(&iNewID,sizeof(iNewID),1);	
@@ -974,7 +974,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 void Entity::Save(ZFIoInterface* pkFile)
 {
 	Vector3 pos = GetLocalPosV();
-	Matrix4 rot = GetLocalRotM();
+	Matrix3 rot = GetLocalRotM();
 
 	pkFile->Write(&iNetWorkID,sizeof(iNetWorkID),1);	
 	
@@ -1279,7 +1279,7 @@ void Entity::ResetChildsGotData()
 	}	
 }
 
-void Entity::SetLocalRotM(Matrix4 kNewRot)
+void Entity::SetLocalRotM(Matrix3 kNewRot)
 {
 	if(kNewRot == m_kLocalRotM)
 		return;
@@ -1287,10 +1287,17 @@ void Entity::SetLocalRotM(Matrix4 kNewRot)
 	ResetChildsGotData();
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);	
 	
+//	kNewRot.Identity();
 	m_kLocalRotM = kNewRot;
-
-
 }
+
+void Entity::SetLocalRotM(Matrix4 kNewRot)
+{
+	Matrix3 kMat;
+	kMat = kNewRot;
+	SetLocalRotM(kMat);
+}
+
 
 void Entity::SetLocalRotV(Vector3 kRot)
 {
@@ -1369,6 +1376,7 @@ void Entity::RotateLocalRotV(Vector3 kRot)
 	ResetChildsGotData();
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);
 	
+	//m_kLocalRotM.Identity();
 	m_kLocalRotM.Rotate(kRot);
 	
 }
@@ -1390,7 +1398,7 @@ Vector3 Entity::GetLocalPosV()
 	return m_kLocalPosV;
 }
 
-Matrix4 Entity::GetLocalRotM()
+Matrix3 Entity::GetLocalRotM()
 {
 	return m_kLocalRotM;
 }
@@ -1442,7 +1450,7 @@ Vector3 Entity::GetWorldPosV()
 	return m_kWorldPosV;
 }
 
-Matrix4 Entity::GetWorldRotM()
+Matrix3 Entity::GetWorldRotM()
 {
 	if(!m_kGotData[WORLD_ROT_M])
 	{	

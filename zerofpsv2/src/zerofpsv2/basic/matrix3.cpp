@@ -195,9 +195,9 @@ void Matrix3::Identity()
 						0,0,1);
 }
 
-bool Matrix3::inverse (Matrix3& inv, float tolerance) const
+bool Matrix3::Inverse (Matrix3& inv, float tolerance) const
 {
-	float det = determinant();
+	float det = Determinant();
 	
 	if(fabs(det) <= tolerance)	return false;
 
@@ -218,7 +218,7 @@ bool Matrix3::inverse (Matrix3& inv, float tolerance) const
 	return true;
 }
 
-float Matrix3::determinant(void)	 const					
+float Matrix3::Determinant(void)	 const					
 {
 	float det;
 
@@ -227,6 +227,89 @@ float Matrix3::determinant(void)	 const
 		+ m_aafRowCol[2][0] * (m_aafRowCol[0][1] * m_aafRowCol[1][2] - m_aafRowCol[0][2] * m_aafRowCol[1][1]);
 
 	return det;
+}
+
+
+void Matrix3::Rotate(float fX, float fY, float fZ)
+{
+	fX=DegToRad(fX);
+	fY=DegToRad(fY);
+	fZ=DegToRad(fZ);	
+
+	
+	float cx = float(cos(fX));
+	float sx = float(sin(fX));
+	
+	float cy = float(cos(fY));
+	float sy = float(sin(fY));	
+	
+	float cz = float(cos(fZ));
+	float sz = float(sin(fZ));
+
+	Matrix3 rotatex = Matrix3(1			,0			,0,
+									0			,cx		  ,-sx,
+									0			,sx	 		,cx);	
+												 
+	Matrix3 rotatey = Matrix3(cy			 ,0			,sy,
+									0			,1			,0	,
+									-sy	 	,0			,cy);	
+												 
+	Matrix3 rotatez = Matrix3(cz			 ,-sz			,0,
+									sz			 ,cz	 		,0,
+									0			,0			,1);	
+						 
+	// *this = (rotatex*rotatey*rotatez) * (*this); 						 
+	// *this = (rotatex*rotatey*rotatez) * (*this); 
+	 *this *= rotatez*rotatey*rotatex;
+}
+
+void Matrix3::Rotate(Vector3 kRot){
+	Rotate(kRot.x, kRot.y, kRot.z);
+}
+
+// Accessors 
+Vector3 Matrix3::GetRotVector()
+{
+	float D;
+	float C;
+	float angle_x;
+	float angle_y;				
+	float angle_z;
+	float ftrx;
+	float ftry;
+	
+	
+	angle_y = D = -asin( m_afData[2]);
+	C           =  cos( angle_y );
+	angle_y    *= degtorad;
+    
+//	if ( fabs( angle_y ) > 0.0005 )
+//   {
+		ftrx      =  m_afData[7] / C;
+		ftry      = -m_afData[6]  / C;
+		angle_x  = atan2( ftry, ftrx ) * degtorad;
+		ftrx      =  m_afData[0] / C;
+		ftry      = -m_afData[1] / C;
+   	angle_z  = atan2( ftry, ftrx ) * degtorad;
+/*   }
+	else
+	{
+   	angle_x  = 0;
+      ftrx      = data[5];
+      ftry      = data[4];
+      angle_z  = atan2( ftry, ftrx ) * degtorad;
+	}
+*/
+/*	ftrx = data[10];
+	ftry = data[8];	
+	angle_y = atan2(ftry,ftrx) * degtorad;
+	*/
+
+	angle_x = Clamp( angle_x, 0, 360 );
+	angle_y = Clamp( angle_y, 0, 360 );
+	angle_z = Clamp( angle_z, 0, 360 );
+
+	return Vector3(angle_x,angle_y,angle_z);
 }
 
 // Accessors 

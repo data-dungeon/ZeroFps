@@ -218,7 +218,7 @@ void Mad_Core::SetUpBindPose()
 	}
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
-		m_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
+		m_MadkbonetransformI[i] = g_Madkbonetransform[i].Inverse();
 		}	
 }
 

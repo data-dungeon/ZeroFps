@@ -312,7 +312,8 @@ void MistServer::Input()
 
 		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
 		
-		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
+		Matrix4 kRm;
+		kRm = m_pkCameraObject->GetLocalRotM();
 
 		kRm.Transponse();
 	

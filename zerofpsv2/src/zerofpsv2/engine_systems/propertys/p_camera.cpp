@@ -33,6 +33,7 @@ void P_Camera::Update()
 	Vector3		kYawVector;
 	string		strCamName;
 
+
 	P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 
 	if(m_pkCamera!=NULL) {
@@ -68,7 +69,9 @@ void P_Camera::Update()
 //				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0.95,0));
 				//m_pkCamera->SetRot(m_pkObject->GetWorldRotV() + Vector3(0,90,0));
-				m_pkCamera->SetRotM(m_pkObject->GetWorldRotM());
+				Matrix4 kMat4;
+				kMat4 = m_pkObject->GetWorldRotM();
+				m_pkCamera->SetRotM(kMat4);
 				
 				strCamName = " 1P ";
 	/*			if(madp)

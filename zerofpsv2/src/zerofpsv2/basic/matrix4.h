@@ -99,10 +99,10 @@ class BASIC_API Matrix4
 
 		void SetZeroDelta(float delta);
 
-		bool inv(void);
-		float det(void);
+//		bool Inverse(void);
+		float Determinant(void);
 		Matrix3 submat(int i, int j);
-		Matrix4 Invert2( );
+		Matrix4 Inverse( );
 
 // Accessors 
 		Vector3 GetRotVector();

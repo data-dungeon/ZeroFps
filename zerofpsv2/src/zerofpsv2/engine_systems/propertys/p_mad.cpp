@@ -81,7 +81,8 @@ void P_Mad::Update()
 				
 			glTranslatef(pos.x,pos.y,pos.z);
 		
-			Matrix4 ori = m_pkObject->GetWorldRotM();
+			Matrix4 ori;
+			ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
 			glScalef(m_fScale, m_fScale, m_fScale);
 			Draw_All(m_pkZeroFps->m_iMadDraw);
@@ -423,7 +424,9 @@ void P_Mad::GenerateModelMatrix()
 {
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-	m_kModelMatrix*=m_pkObject->GetWorldRotM();	
+	Matrix4 kMat;
+	kMat = m_pkObject->GetWorldRotM();
+	m_kModelMatrix *= kMat;	
 	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
 
 }
