@@ -415,15 +415,6 @@ void ZeroEd::Input()
 			m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.5);
 	}
 
-   //int key = m_pkInputHandle->GetQueuedKey().m_iKey;
-   //if(key == KEY_O) 
-   //{
-   //   int screen_x = ZGui::m_iResX, screen_y = ZGui::m_iResY;
-   //   GetWnd("ZoneModelTree")->Resize(500,500);
-   //   GetWnd("ZoneModelTree")->SetPos(200,200,true,true);
-   //}
-
-
 	if(m_pkInputHandle->VKIsDown("makeland")) {
 		Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 		if(!pkObj)
