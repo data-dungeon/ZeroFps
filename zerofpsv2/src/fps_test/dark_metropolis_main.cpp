@@ -1114,19 +1114,23 @@ bool DarkMetropolis::CreatePlayer()
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(m_kEntitys[i]->GetType() == "t_playerstart.lua")
-		{			
-/*			if(ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent()))
+		{		
+			/*	
+			if(ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent()))
 			{
 				cout<<"ID:"<<dat->m_iZoneID<<endl;
-			
-				if(!dat->m_bTracked)
-					cout<<"CPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"<<endl;
-					
-				if(m_kEntitys[i]->GetParent()->GetUpdateStatus() == UPDATE_ALL)
-					cout<<"CSSSSSSSSSSNNNNNNNNNZZZZZZZZZZZZZZ!#¤"<<endl;
+				cout<<"m_iZoneObjectID:"<<dat->m_iZoneObjectID<<endl;
+				if(!dat->m_pkZone)
+					cout<<"rövhålE"<<endl;
+				
+				if(dat->m_iStatus != EZS_LOADED)
+					cout<<"WHAT THE FUCK!!!!!!!!!!"<<endl;
+
 			}
-*/		
+			*/		
+			
 		
+
 			Vector3 kStartPos = m_kEntitys[i]->GetWorldPosV();	
 			
 			m_pkObjectMan->Delete(m_kEntitys[i]);

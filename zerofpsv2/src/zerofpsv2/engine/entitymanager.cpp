@@ -1555,13 +1555,30 @@ ZoneData* EntityManager::GetZone(Vector3 kPos)
 
 ZoneData* EntityManager::GetZone(Entity* PkObject)
 {
-	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
+	{
 		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 			continue;
 		
 		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
+		{
+			if(m_kZones[iZ].m_iZoneID != iZ)
+				cout<<"error id does not match "<<	iZ <<" "<<m_kZones[iZ].m_iZoneID<<endl;
+		
+			if(m_kZones[iZ].m_iStatus == EZS_LOADED)
+				cout<<"EZS_LOADED"<<endl;
+			if(m_kZones[iZ].m_iStatus == EZS_UNLOADED)
+				cout<<"EZS_UNLOADED"<<endl;
+			if(m_kZones[iZ].m_iStatus == EZS_CACHED)
+				cout<<"EZS_CACHED"<<endl;
+			if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
+				cout<<"EZS_UNUSED"<<endl;
+
+				
+								
 			return &m_kZones[iZ];
 		}
+	}
 
 	return NULL;
 }
@@ -1670,12 +1687,14 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	
 	if(ZoneData* pkZone = GetZoneData(id))
 	{
+		//warnig this realy clears all zone data, make sure that the folowing code sets it up correctly again
 		pkZone->Clear();
 	
 		pkZone->m_bNew = true;					
 		pkZone->m_iStatus = EZS_UNLOADED;
 		pkZone->m_kSize = kSize;
 		pkZone->m_kPos = kPos;
+		pkZone->m_iZoneID = id;
 	}
 	else
 	{
@@ -1762,40 +1781,45 @@ bool EntityManager::LoadZones(string strSaveDir )
 	cout<<"Next objectID: "<<iNextObjectID<<endl;
 		
 	ZoneData kZData;
-	kZData.m_iStatus = EZS_UNLOADED;
-
 	
 	int i,zl;
 	int iLink;
 
 	for( i=0; i<iNumOfZone; i++) 
 	{
-		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
-		kFile.Read(&kZData.m_iRevision, sizeof(kZData.m_iRevision), 1);								
-		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
-		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
-		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
+		kFile.Read(&kZData.m_iStatus, 	sizeof(kZData.m_iStatus), 1);
+		kFile.Read(&kZData.m_bNew, 		sizeof(kZData.m_bNew), 1);
+		kFile.Read(&kZData.m_iRevision,	sizeof(kZData.m_iRevision), 1);								
+		kFile.Read(&kZData.m_iZoneID, 	sizeof(kZData.m_iZoneID), 1);
+		kFile.Read(&kZData.m_kSize, 		sizeof(kZData.m_kSize), 1);
+		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);
 
+		//make sure a zone is iether unused or unloaded
+		if(kZData.m_iStatus != EZS_UNUSED)
+			kZData.m_iStatus = EZS_UNLOADED;
+		
 		char temp[128];
 		kFile.Read(temp, 128, 1);
 		kZData.m_strEnviroment = temp;
 
-
 		int iNumOfLinks;	
 		kFile.Read(&iNumOfLinks, sizeof(iNumOfLinks), 1);
 
-		for(zl=0; zl < iNumOfLinks; zl++) {
+		for(zl=0; zl < iNumOfLinks; zl++) 
+		{
 			kFile.Read(&iLink, sizeof(iLink), 1);
 			kZData.m_iZoneLinks.push_back(iLink);
-			}
+		}
 		
 		kZData.m_pkZone = NULL;
 		m_kZones.push_back(kZData);
 		kZData.m_iZoneLinks.clear();
-		}
+	}
 
 	kFile.Close();
 
+	
+	
 	return true;
 }
 
@@ -1833,13 +1857,14 @@ bool EntityManager::SaveZones(string strSaveDir)
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{
+		kFile.Write(&m_kZones[i].m_iStatus, 	sizeof(m_kZones[i].m_iStatus), 1);
+		kFile.Write(&m_kZones[i].m_bNew, 		sizeof(m_kZones[i].m_bNew), 1);
+		kFile.Write(&m_kZones[i].m_iRevision,	sizeof(m_kZones[i].m_iRevision), 1);										
+		kFile.Write(&m_kZones[i].m_iZoneID, 	sizeof(m_kZones[i].m_iZoneID), 1);
+		kFile.Write(&m_kZones[i].m_kSize, 		sizeof(m_kZones[i].m_kSize), 1);		
+		kFile.Write(&m_kZones[i].m_kPos, 		sizeof(m_kZones[i].m_kPos), 1);
 
-		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
-		kFile.Write(&m_kZones[i].m_iRevision, sizeof(m_kZones[i].m_iRevision), 1);										
-		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
-		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
-		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
-
+		
 		char temp[128];
 		strcpy(temp,m_kZones[i].m_strEnviroment.c_str());
 		kFile.Write(temp, 128, 1);
@@ -1976,7 +2001,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		cout<<"zone is not unloaded"<<endl;
 		return;
 	}
-	 
+	
 	//set status as loaded
 	kZData->m_iStatus = EZS_LOADED;
 
@@ -2072,13 +2097,13 @@ void EntityManager::UnLoadZone(int iId)
 	if(kZData->m_pkZone == NULL)
 		return;	
 
-	kZData->m_iStatus = EZS_UNLOADED;
 			
 	SaveZone(iId);
 	
 	Delete(kZData->m_pkZone);
 	kZData->m_pkZone = NULL;
-	
+
+	kZData->m_iStatus = EZS_UNLOADED;		
 }
 
 void EntityManager::SaveZone(int iId,string strSaveDir )
@@ -2135,6 +2160,9 @@ int EntityManager::GetUnusedZoneID()
 	ZoneData newzone;
 	newzone.m_iZoneID = m_kZones.size();	
 	m_kZones.push_back(newzone);
+	
+	
+	cout<<"creating "<<newzone.m_iZoneID<<" "<<m_kZones[newzone.m_iZoneID].m_iZoneID<<endl;
 	
 	return newzone.m_iZoneID;
 }
@@ -2536,7 +2564,8 @@ bool EntityManager::LoadWorld(string strLoadDir)
 	//make sure all entitys created in the load process is deleted. this may caus problem if the load funkction is called from whitin a property etc
 	UpdateDelete();
 	
-	
+
+		
 	//finaly load the tracker list
 	if(!LoadTrackers(strLoadDir))
 	{
@@ -2544,7 +2573,8 @@ bool EntityManager::LoadWorld(string strLoadDir)
 		return false;
 	}
 			
-	
+
+		
 	//do a zone update
 //	UpdateZones();	
 	UpdateZoneSystem();
@@ -2555,8 +2585,8 @@ bool EntityManager::LoadWorld(string strLoadDir)
 
 void EntityManager::UpdateZoneSystem()
 {
-	UpdateTrackers();
 
+	UpdateTrackers();
 	UpdateZoneStatus();
 }
 
@@ -2658,7 +2688,7 @@ void EntityManager::UpdateZoneStatus()
 				//zone is cached , lets activate it
 				if(m_kZones[i].m_iStatus == EZS_CACHED)
 				{
-					cout<<"activating cached zone"<<endl;															
+					cout<<"activating cached zone "<<i<<endl;															
 					m_kZones[i].m_iStatus = EZS_LOADED;					
 					
 					if(m_kZones[i].m_pkZone)
@@ -2670,7 +2700,7 @@ void EntityManager::UpdateZoneStatus()
 				//zone is unloaded , lests load it
 				if(m_kZones[i].m_iStatus == EZS_UNLOADED)
 				{
-					cout<<"Loading zone"<<endl;
+					cout<<"Loading zone "<<i<<endl;
 					
 					//m_kZones[i].m_iStatus = EZS_LOADED;
 					// zone status is set in loadzone()
@@ -2688,7 +2718,7 @@ void EntityManager::UpdateZoneStatus()
 				//zone is loaded, set it as cached
 				if(m_kZones[i].m_iStatus == EZS_LOADED)
 				{
-					cout<<"zone is no longer tracked, setting as cached and starting timout"<<endl;
+					cout<<"zone is no longer tracked, setting as cached and starting timout "<<i<<endl;
 					
 					m_kZones[i].m_iStatus = EZS_CACHED;
 					
@@ -2706,7 +2736,7 @@ void EntityManager::UpdateZoneStatus()
 					{
 						m_kZones[i].m_iStatus = EZS_UNLOADED;
 						
-						cout<<"cached zone timed out, unloading"<<endl;
+						cout<<"cached zone timed out, unloading "<<i<<endl;
 						UnLoadZone(i);		
 						
 						continue;
