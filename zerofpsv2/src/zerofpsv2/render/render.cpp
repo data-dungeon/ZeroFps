@@ -662,13 +662,17 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	if(iEndLine >= (*m_kText).size())
 		iEndLine = (*m_kText).size();
 
+
+	int iPos = 0;
 	for(unsigned int i=iStartLine;	i<iEndLine;	i++) 
 	{
 		if((*m_kText)[i] != NULL)
 		{
-			Print(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i],8.0);		
+			Print(Vector3( 8.0, float(16.0 + 8.0 * float(iPos) ),0),(*m_kText)[i],8.0);		
 		}
+		iPos++;
 	}
+				
 	
 	Mode2D_End();
 }

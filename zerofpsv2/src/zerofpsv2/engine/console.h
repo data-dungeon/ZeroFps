@@ -29,6 +29,7 @@ class ENGINE_API Console : public BasicConsole
 			CONCMD_RUN,					// Run a cmd, remove it from input line, print it to console and send it to cmdsystem.
 			CONCMD_SCROLLUP,			// Scroll console text up.
 			CONCMD_SCROLLDOWN,		// Scroll console text down.
+			CONCMD_SCROLLEND,
 			CONCMD_HISTORYUP,			// Scroll up in console input history
 			CONCMD_HISTORYDOWN,		// Scroll down in console inut history.
 			CONCMD_MARKERLEFT,		// Move input cursor to the left.

@@ -221,6 +221,12 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 			m_pkInputHandle->GetQueuedKey(); // remove latest
 
 			break;
+			
+		case CONCMD_SCROLLEND:
+			m_nStartLine = 0;		
+			m_pkInputHandle->GetQueuedKey(); // remove latest
+			break;
+		
 
 		case CONCMD_HISTORYUP:		
 			if( !m_kCommandHistory.empty() ) 
@@ -304,6 +310,7 @@ void Console::Update(void)
 		if(kKey.m_iKey == KEY_PAGEDOWN)	eCmd = CONCMD_SCROLLDOWN;
 		if(kKey.m_iKey == KEY_UP)			eCmd = CONCMD_HISTORYUP;
 		if(kKey.m_iKey == KEY_DOWN)		eCmd = CONCMD_HISTORYDOWN;
+		if(kKey.m_iKey == KEY_END)			eCmd = CONCMD_SCROLLEND;
 		if(kKey.m_iKey == KEY_LEFT)		eCmd = CONCMD_MARKERLEFT;
 		if(kKey.m_iKey == KEY_RIGHT)		eCmd = CONCMD_MARKERRIGHT;
 		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
