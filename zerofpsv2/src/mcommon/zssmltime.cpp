@@ -13,7 +13,7 @@ ZSSMLTime::ZSSMLTime() : ZFSubSystem("ZSSMLTime")
 	
 	m_dTotalTimeMT	=	0;
 	m_dTotalTimeRT =	0;
-	m_fScale 		=	6.0;	
+	m_fScale 		=	12.0;	
 
 	
 	RegisterVariable("mltimescale",&m_fScale,CSYS_FLOAT);			
