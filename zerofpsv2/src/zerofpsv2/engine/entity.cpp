@@ -1746,6 +1746,35 @@ void Entity::SetUpdateStatus(int iUpdateStatus)
 
 void Entity::AddToDeleteList(int iId)
 {
+	if(!m_bIsNetWork)
+		return;
+
 	m_aiNetDeleteList.push_back(iId);
 	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
+
+}
+
+void Entity::UpdateDeleteList()
+{
+	if(!m_bIsNetWork)
+		return;
+		
+	if(m_aiNetDeleteList.empty())
+		return;
+		
+	//make sure that all clients have gotten the delete list
+	for(int i = 0;i < m_kNetUpdateFlags.size();i++)
+	{
+		if(m_pkObjectMan->m_pkNetWork->IsConnected(i))
+		{
+			//cout<<"testing con "<<i<<endl;
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}
+		}
+	}
+	
+	//clear delete list 
+	m_aiNetDeleteList.clear();
 }

@@ -241,6 +241,7 @@ class ENGINE_API Entity
 		Entity* GetStaticEntity();
 		
 		void AddToDeleteList(int iId);
+		void UpdateDeleteList();
 
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		

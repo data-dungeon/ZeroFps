@@ -40,6 +40,9 @@ void P_PfPath::Update()
 
 	int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
 	pkZone = m_pkObjMan->GetZoneData(iStartZone);
+	if(!pkZone)
+		return;
+	
 	if(pkZone->m_pkZone == NULL)
 		return ;
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
@@ -195,6 +198,14 @@ void P_PfPath::SetupOffset()
 	}
 }
 
+
+bool P_PfPath::HavePath()
+{
+	if(m_kPath.size() == 0 )
+		return false;
+	else
+		return true;
+}
 
 
 Property* Create_P_PfPath()

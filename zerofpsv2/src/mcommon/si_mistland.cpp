@@ -41,7 +41,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
-
+	pkScript->ExposeFunction("HavePath",					MistLandLua::HavePathLua);					
+	
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
 	
@@ -613,6 +614,31 @@ int MistLandLua::MakePathFindLua(lua_State* pkLua)
 			if(pf)
 				pf->MakePathFind(kPos);
 		}
+	}
+	return 0;
+}
+
+int MistLandLua::HavePathLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+		int ret = 0;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		if(pkEnt)
+		{
+			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+			if(pf)
+				if(pf->HavePath())
+				{
+					g_pkScript->AddReturnValue(pkLua,1);
+					return 1;		
+				}
+		}
+		
 	}
 	return 0;
 }

@@ -178,6 +178,8 @@ public:
 	int GetFreeClientNum();
 	int GetMaxSendSize() {return m_iMaxSendSize;};
 	
+	bool IsConnected(int iId);
+	
 	// NetStrings
 	vector<ZFNet_String>		m_kStringTable;
 	int NetString_GetFree();

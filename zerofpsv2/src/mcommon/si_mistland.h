@@ -156,7 +156,8 @@ namespace MistLandLua
 	//movement
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 	int MCOMMON_API BounceLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
-	int MCOMMON_API MakePathFindLua(lua_State* pkLua);				//(int objectid,float x,y,z) do a pathfind for the object
+	int MCOMMON_API MakePathFindLua(lua_State* pkLua);				//(int objectid,table (x,y,z)) do a pathfind for the object
+	int MCOMMON_API HavePathLua(lua_State* pkLua);				//(int objectid) returns 1 if object has a path to walk
 	
 	//set particle system
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters

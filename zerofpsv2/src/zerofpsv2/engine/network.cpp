@@ -281,6 +281,14 @@ int NetWork::GetFreeClientNum()
 	return ZF_NET_NOCLIENT;
 }
 
+bool NetWork::IsConnected(int iId)
+{
+	if(m_RemoteNodes[iId].m_eConnectStatus == NETSTATUS_CONNECTED)
+		return true;
+	else
+		return false;
+}
+
 
 void NetWork::StartSocket(bool bStartServer)
 {

@@ -40,7 +40,7 @@ class ENGINE_API P_PfPath : public Property
 		void SetPath(vector<Vector3> kPath);
 
 		bool MakePathFind(Vector3 kDestination);
-		
+		bool HavePath();		
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

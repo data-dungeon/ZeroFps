@@ -841,7 +841,8 @@ void EntityManager::PackToClients()
 
 	for(list<Entity*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) 
 	{
-		(*it)->m_aiNetDeleteList.clear();
+		//(*it)->m_aiNetDeleteList.clear();
+		(*it)->UpdateDeleteList();
 	}
 
 /*	if(m_aiNetDeleteList.size() == 0)
