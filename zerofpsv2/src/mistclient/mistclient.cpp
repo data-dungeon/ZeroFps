@@ -398,9 +398,9 @@ void MistClient::Input()
 	}
 	else if(m_pkClientControlP)			//else rotate camera
 	{
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP] = m_pkInput->Pressed(KEY_W);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = m_pkInput->Pressed(KEY_S);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = m_pkInput->Pressed(KEY_A);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP]		= m_pkInput->Pressed(KEY_W);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN]	= m_pkInput->Pressed(KEY_S);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT]	= m_pkInput->Pressed(KEY_A);
 		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInput->Pressed(KEY_D);
 
 		if(m_pkCamProp && m_iMouseMode == eCAMERA_MODE)

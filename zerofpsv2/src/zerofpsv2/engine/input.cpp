@@ -96,6 +96,8 @@ void Input::Update(void)
     		
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
+				cout << "MouseDown: " <<  (int) m_kEvent.button.button << endl;
+
     			switch(m_kEvent.button.button){
     				case SDL_BUTTON_LEFT:
     					m_akKeyState[MOUSELEFT].m_bDown=true;
@@ -631,12 +633,12 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_0].m_strName = "0";
 	m_akKeyState[KEY_BACKSPACE].m_strName = "bckspc";
 
-	m_akKeyState[KEY_INSERT].m_strName = "ins";
-	m_akKeyState[KEY_HOME].m_strName = "home";
-	m_akKeyState[KEY_PAGEUP].m_strName = "pageup";
-	m_akKeyState[KEY_DELETE].m_strName = "del";
-	m_akKeyState[KEY_END].m_strName = "end";
-	m_akKeyState[KEY_PAGEDOWN].m_strName = "pgdown";
+	m_akKeyState[KEY_INSERT].m_strName		= "ins";
+	m_akKeyState[KEY_HOME].m_strName			= "home";
+	m_akKeyState[KEY_PAGEUP].m_strName		= "pageup";
+	m_akKeyState[KEY_DELETE].m_strName		= "del";
+	m_akKeyState[KEY_END].m_strName			= "end";
+	m_akKeyState[KEY_PAGEDOWN].m_strName	= "pagedown";
 
 	m_akKeyState[KEY_TAB].m_strName = "tab";
 	m_akKeyState[KEY_Q].m_strName = "q";

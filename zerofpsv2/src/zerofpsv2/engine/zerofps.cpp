@@ -262,6 +262,8 @@ void ZeroFps::Run_EngineShell()
 	m_pkNetWork->Run();
 	*/
 
+	
+	DevPrintf("common","Run: %i", m_bRunWorldSim);
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) {
 		for(int i=0; i<4; i++) {
@@ -309,6 +311,7 @@ void ZeroFps::Run_EngineShell()
 	else if(m_pkInput->Pressed(KEY_INSERT))	iInputKey = gKEY_INSERT;
 	
 	m_pkInput->FormatKey(iInputKey);
+	if(iInputKey != -1) cout << "Gui Char " <<(char)iInputKey << endl;
 
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),

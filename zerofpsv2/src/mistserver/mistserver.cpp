@@ -293,7 +293,7 @@ void MistServer::Input()
 	if(pkAnimObj)
 		mp = (P_Mad*)pkAnimObj->GetProperty("P_Mad");
 	
-	if(m_pkInput->Pressed(KEY_F5)) {
+	if(m_pkInput->VKIsDown("makeland")) {
 		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		ZoneData* z = m_pkObjectMan->GetZoneData(id);
 		m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
@@ -326,7 +326,7 @@ void MistServer::Input()
 
 	if(m_pkCameraObject)	
 	{	
-		if(m_pkInput->Pressed(KEY_X)){
+		if(m_pkInput->VKIsDown("slow")){
 			speed*=0.25;
 		}
 	
@@ -374,18 +374,12 @@ void MistServer::Input()
 			m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
-		if(m_pkInput->Pressed(KEY_F1))
-			m_iEditMode = EDIT_ZONES;
-		
-		if(m_pkInput->Pressed(KEY_F2))
-			m_iEditMode = EDIT_OBJECTS;		
+		if(m_pkInput->VKIsDown("modezone"))		m_iEditMode = EDIT_ZONES;
+		if(m_pkInput->VKIsDown("modeobj"))		m_iEditMode = EDIT_OBJECTS;		
 	
-		if(m_pkInput->Pressed(KEY_I))
-			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-		if(m_pkInput->Pressed(KEY_O))
-			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-		if(m_pkInput->Pressed(KEY_P))
-			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
+		if(m_pkInput->VKIsDown("lighton"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
+		if(m_pkInput->VKIsDown("lightoff"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
+		if(m_pkInput->VKIsDown("lightstd"))		m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
 	
 		//edit zone  mode
@@ -401,14 +395,14 @@ void MistServer::Input()
 				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
 			}
 	
-			if(m_pkInput->Pressed(KEY_R))
+			if(m_pkInput->VKIsDown("remove"))
 			{
 				int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 				
 				m_pkObjectMan->DeleteZone(id);
 			}
 			
-			if(m_pkInput->Pressed(KEY_F))
+			if(m_pkInput->VKIsDown("rotate"))
 			{
 				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
@@ -424,7 +418,7 @@ void MistServer::Input()
 				}
 			}
 			
-			if(m_pkInput->Pressed(KEY_C))
+			if(m_pkInput->VKIsDown("buildmodeon"))
 			{
 				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
@@ -434,7 +428,7 @@ void MistServer::Input()
 				}
 			}
 			
-			if(m_pkInput->Pressed(KEY_V))
+			if(m_pkInput->VKIsDown("buildmodeoff"))
 			{
 				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
@@ -493,7 +487,7 @@ void MistServer::Input()
 			}
 			
 			//remove			
-			if(m_pkInput->Pressed(KEY_R))
+			if(m_pkInput->VKIsDown("remove"))
 			{
 				
 				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
@@ -526,42 +520,26 @@ void MistServer::Input()
 				
 				
 			//hack for collisions test
-			if(m_pkInput->Pressed(KEY_SPACE))
-					pkObj->SetVel(Vector3(1,0,0));
+			if(m_pkInput->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
 		
-
-			//move left
+			// Move Selected Entity
 			kMove.Set(0,0,0);
-			if(m_pkInput->Pressed(KEY_LEFT))
-				kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
-			if(m_pkInput->Pressed(KEY_RIGHT))
-				kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
-			if(m_pkInput->Pressed(KEY_UP))
-				kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
-			if(m_pkInput->Pressed(KEY_DOWN))
-				kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
-			if(m_pkInput->Pressed(KEY_RSHIFT))
-				kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
-			if(m_pkInput->Pressed(KEY_RCTRL))
-				kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
+			if(m_pkInput->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
+			if(m_pkInput->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
+			if(m_pkInput->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
+			if(m_pkInput->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
+			if(m_pkInput->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
+			if(m_pkInput->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
 
 			pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 
-			//rotation		
-			if(m_pkInput->Pressed(KEY_INSERT))
-				pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
-			if(m_pkInput->Pressed(KEY_DELETE))
-				pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
-			if(m_pkInput->Pressed(KEY_HOME))
-				pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
-			if(m_pkInput->Pressed(KEY_END))
-				pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
-			if(m_pkInput->Pressed(KEY_PAGEUP))
-				pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
-			if(m_pkInput->Pressed(KEY_PAGEDOWN))
-				pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
-				
-			//cout << "Pos:" << pkObj->GetLocalPosV().x << ", " << pkObj->GetLocalPosV().y << "," << pkObj->GetLocalPosV().z << endl;
+			// Rotate Selected Entity
+			if(m_pkInput->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
+			if(m_pkInput->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
+			if(m_pkInput->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
+			if(m_pkInput->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
+			if(m_pkInput->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
+			if(m_pkInput->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
 		}		
 
 	

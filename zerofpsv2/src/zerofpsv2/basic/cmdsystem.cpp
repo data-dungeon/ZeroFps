@@ -3,16 +3,18 @@
 #include "cmdsystem.h"
 #include "zfsystem.h"
 #include "globals.h"
+#include "zfini.h"
 
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
 {
 	m_pkCon = NULL;
 
-	Register_Cmd("set",			FID_SET,			CSYS_FLAG_SRC_ALL,	"set name value", 2);
-	Register_Cmd("varlist",		FID_VARLIST,	CSYS_FLAG_SRC_ALL);
-	Register_Cmd("commands",	FID_COMMANDS,	CSYS_FLAG_SRC_ALL);
-	Register_Cmd("sys",			FID_SYS,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("set",			FID_SET,						CSYS_FLAG_SRC_ALL,	"set name value", 2);
+	Register_Cmd("varlist",		FID_VARLIST,				CSYS_FLAG_SRC_ALL);
+	Register_Cmd("commands",	FID_COMMANDS,				CSYS_FLAG_SRC_ALL);
+	Register_Cmd("sys",			FID_SYS,						CSYS_FLAG_SRC_ALL);
+	Register_Cmd("exec",			FID_EXECUTECOMMANDS,		CSYS_FLAG_SRC_ALL);
 }
 
 bool CmdSystem::StartUp()	
@@ -62,23 +64,13 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 
 			break;
+
+		case FID_EXECUTECOMMANDS:
+			ZFIni kCfgFile;
+			if(kCommand->m_kSplitCommand.size() > 1) {
+				kCfgFile.ExecuteCommands( kCommand->m_kSplitCommand[1].c_str() );
+				}
+			break;
+
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

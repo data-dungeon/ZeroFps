@@ -26,7 +26,8 @@ class BASIC_API CmdSystem : public ZFSubSystem
 			FID_SET,	
 			FID_VARLIST,
 			FID_COMMANDS,
-			FID_SYS
+			FID_SYS,
+			FID_EXECUTECOMMANDS, // Run Commands from Ini file
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);

@@ -21,10 +21,10 @@ class BASIC_API ZFIni /*: public ZFSubSystem*/
 {
 public:
 	void Close();
-	enum FuncId_e
+/*	enum FuncId_e
 	{
 		FID_EXECUTECOMMANDS, // Run Commands from Ini file
-	};
+	};*/
 
 //	void RunCommand(int cmdid, const CmdArgument* kCommand);
 	void GetCommandStrings(vector<string>* pkCommands);
