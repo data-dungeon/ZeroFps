@@ -187,12 +187,15 @@ bool OggMusic::Play()
 	return true;
 }
 
-bool OggMusic::Update()
+bool OggMusic::Update(Vector3 kListerPos)
 {
 
 	
 	if(m_bPlaying)
 	{
+		//update position of sound
+		alSourcefv(m_ALuiSource, AL_POSITION,&kListerPos[0]);		
+	
 		int iPlaying=AL_PLAYING;
 		alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
 		if(iPlaying!=AL_PLAYING)

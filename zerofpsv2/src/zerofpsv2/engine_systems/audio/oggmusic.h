@@ -20,6 +20,7 @@
 #include "../engine_systems_x.h"
 //#include "zerofps.h"
 #include "../../basic/zfsystem.h"
+#include "../../basic/vector3.h"
 
 /*using std::cout;
 using std::endl;
@@ -34,7 +35,7 @@ class ENGINE_SYSTEMS_API OggMusic: public ZFSubSystem
 public:
 	
 	bool Stop();
-	bool Update();
+	bool Update(Vector3 kListerPos);
 	OggMusic(); 
 	OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize); 
 	virtual ~OggMusic();

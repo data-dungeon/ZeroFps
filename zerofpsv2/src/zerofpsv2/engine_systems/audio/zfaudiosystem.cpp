@@ -494,7 +494,7 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 void ZFAudioSystem::Update()
 {
 	// Spela upp ogg music.
-	m_pkMusic->Update();
+	m_pkMusic->Update(m_kPos);
 
 	// Temporär vektor som fylls med det ljud som inte längre kan höras
 	// eller som har stannat.
