@@ -76,7 +76,8 @@ class RENDER_API Render : public ZFSubSystem {
 		SDL_Surface* m_pkScreen;			
 		int			m_iWidth,m_iHeight,m_iDepth;
 		int			m_iFullScreen;
-		bool  		m_bCapture;							
+		bool  		m_bCapture;		
+		int			m_iSDLVideoModeFlags;
 		
 		void		GlInfo();						// Print info about opengl driver to console.
 		

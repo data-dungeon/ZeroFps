@@ -147,11 +147,14 @@ void Render::SetDisplay()
 	SDL_InitSubSystem(SDL_OPENGL);
 
 //	m_pkScreen= SDL_SetVideoMode(800,600,16,SDL_OPENGL);
-	if(m_iFullScreen > 0)
-		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL|SDL_FULLSCREEN);	
-	else
-		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
+	m_iSDLVideoModeFlags = 0;
 
+	if(m_iFullScreen > 0)
+		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;	
+	else
+		m_iSDLVideoModeFlags = SDL_OPENGL;
+
+	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags);	
 
 	glViewport(0, 0,m_iWidth,m_iHeight);
 	

@@ -54,6 +54,7 @@ HeightMap::HeightMap()
 	verts					= NULL;
 	m_iNumOfHMVertex	= 0;
 	m_iID					= -1;
+	m_bInverted			= false;
 
 	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	m_pkBasicFS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
@@ -88,10 +89,10 @@ void HeightMap::Create(int iTilesSide)
 	//m_iHmSize		=	iTilesSide;
 
 	// AddTestLayers
-	Layer_Create(string("layer0"), string("../data/textures/nodetail1.bmp"));
-	Layer_Create(string("layer1"), string("../data/textures/nodetail2.bmp"));
-	Layer_Create(string("layer2"), string("../data/textures/nodetail3.bmp"));
-	Layer_Create(string("layer3"), string("../data/textures/nodetail4.bmp"));
+	Layer_Create(string("layer0"), string("../data/textures/tgrass.bmp"));
+	Layer_Create(string("layer1"), string("../data/textures/tdirt.bmp"));
+	Layer_Create(string("layer2"), string("../data/textures/trock.bmp"));
+	Layer_Create(string("layer3"), string("../data/textures/tsand.bmp"));
 }
 
 void HeightMap::Zero() 
