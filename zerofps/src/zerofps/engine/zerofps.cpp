@@ -269,7 +269,7 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-	/*float fATime = GetTicks() - m_fSystemUpdateTime; 	
+	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 
 
@@ -278,13 +278,13 @@ void ZeroFps::Update_System()
 
 	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
 	
-	float m_fLU = m_fSystemUpdateTime;*/
+	float m_fLU = m_fSystemUpdateTime;
 	
-	m_fGameTime = GetTicks();
+	//m_fGameTime = GetTicks();
 
-//	for(int i=0;i<iLoops;i++)
-//	{
-//		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
+	for(int i=0;i<iLoops;i++)
+	{
+		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
 		if(m_bRunWorldSim) {
 			//update all normal propertys
@@ -302,7 +302,7 @@ void ZeroFps::Update_System()
 		m_pkResourceDB->Refresh();
 
 		m_fSystemUpdateTime = GetTicks();
-//	}
+	}
 	
 
 }
