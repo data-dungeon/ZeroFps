@@ -145,54 +145,54 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				{
 					printf("failed to load character generation screen\n");
 
-ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
+					ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
 
-				Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget());
+					Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget());
 
-				if(pkCam == NULL)
-				{
-					g_kMistClient.AddListItem("CharGen_ModellList", "Good guy");
-					g_kMistClient.AddListItem("CharGen_ModellList", "Bad guy");
-					((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(2);
+					if(pkCam == NULL)
+					{
+						g_kMistClient.AddListItem("CharGen_ModellList", "Good guy");
+						g_kMistClient.AddListItem("CharGen_ModellList", "Bad guy");
+						((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(2);
 
-					g_kMistClient.SelListItemByIndex("CharGen_ModellList", 1);
+						g_kMistClient.SelListItemByIndex("CharGen_ModellList", 1);
 
-					Entity* pkModellEnt = g_kMistClient.m_pkEntityManager->CreateEntity();
-					pkModellEnt->SetSave(false);
-					pkModellEnt->SetWorldPosV(Vector3(0,0,0));
-					pkModellEnt->AddProperty("P_LightUpdate");
-					pkModellEnt->AddProperty("P_Mad");
+						Entity* pkModellEnt = g_kMistClient.m_pkEntityManager->CreateEntity();
+						pkModellEnt->SetSave(false);
+						pkModellEnt->SetWorldPosV(Vector3(0,0,0));
+						pkModellEnt->AddProperty("P_LightUpdate");
+						pkModellEnt->AddProperty("P_Mad");
 
-					Vector4 kCurrentDiffuse(1,1,1,1);
-					Vector4 kCurrentAmbient(1,1,1,1);
-					Vector3 kSunPos(0,0,0);
+						Vector4 kCurrentDiffuse(1,1,1,1);
+						Vector4 kCurrentAmbient(1,1,1,1);
+						Vector3 kSunPos(0,0,0);
 
-					P_Light* pkLight = (P_Light*)pkModellEnt->AddProperty("P_Light");
+						P_Light* pkLight = (P_Light*)pkModellEnt->AddProperty("P_Light");
 
-					pkLight->SetType(DIRECTIONAL_LIGHT);
-					pkLight->SetDiffuse(kCurrentDiffuse);
-					pkLight->SetAmbient(kCurrentAmbient);		
-					pkLight->SetRot(kSunPos);	
+						pkLight->SetType(DIRECTIONAL_LIGHT);
+						pkLight->SetDiffuse(kCurrentDiffuse);
+						pkLight->SetAmbient(kCurrentAmbient);		
+						pkLight->SetRot(kSunPos);	
 
-					string szMadFile = string("data/mad/") + string("player2.mad");
-					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
+						string szMadFile = string("data/mad/") + string("player2.mad");
+						((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
 
-					float aspect = (float) pkModelWnd->GetScreenRect().Width() /
-						(float) pkModelWnd->GetScreenRect().Height();
+						float aspect = (float) pkModelWnd->GetScreenRect().Width() /
+							(float) pkModelWnd->GetScreenRect().Height();
 
-					pkCam = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.01,200);	
-					pkCam->SetDebugGraphs(false);
-					pkCam->SetClearViewPort(false);  
-					pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
+						pkCam = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.01,200);	
+						pkCam->SetDebugGraphs(false);
+						pkCam->SetClearViewPort(false);  
+						pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
 
-					pkModelWnd->SetRenderTarget(pkCam);
+						pkModelWnd->SetRenderTarget(pkCam);
 
-					P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));					
-					pkModellEnt->SetWorldPosV(Vector3(0,-1.0f,-pkMad->GetRadius()));
+						P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));					
+						pkModellEnt->SetWorldPosV(Vector3(0,-1.0f,-pkMad->GetRadius()));
 
-					//Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 					
-					//pkMad->SetAnimation(pkCore->GetAnimationName(1).c_str(), 0);				
-				}
+						//Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 					
+						//pkMad->SetAnimation(pkCore->GetAnimationName(1).c_str(), 0);				
+					}
 				}
 
 				g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
@@ -307,7 +307,11 @@ ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
 				g_kMistClient.ShowWnd("CharGen_CreateCharWnd", false);
 				g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
 				g_kMistClient.m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));
-				g_kMistClient.AddListItem("CharGen_CharList", g_kMistClient.GetText("CharGen_CharNameEb"), true);				
+				g_kMistClient.AddListItem("CharGen_CharList", g_kMistClient.GetText("CharGen_CharNameEb"), true);	
+
+				int iItem = ((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->GetListbox()->GetItemCount();
+				if(iItem > 20) iItem = 20;
+				((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->SetNumVisibleRows(iItem);
 			}
 			else
 			if(strController == "CharGen_NewCharCancel")
