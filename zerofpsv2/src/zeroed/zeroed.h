@@ -125,12 +125,21 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		Vector3	m_kObjectMarkerPos;
 		int		m_iCurrentObject;
-		int 	m_iCurrentMarkedZone;
+		int 		m_iCurrentMarkedZone;
+		
+		//physics stuff
+		Vector3	m_kLocalGrabPos;
+		Vector3	m_kGrabPos;
+		Vector3	m_kGrabCurrentPos;
+		int		m_iGrabEntity;
+		float		m_fArmLength;
+		bool		m_bGrabing;
 		
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3 Get3DMouseDir(bool bMouse);
 
 		Entity*	GetTargetObject();		
+		int		GetTargetTCS(Vector3* pkPos);
 
 		string	m_strActiveViewPort;
 		void  CreateEditCameras();

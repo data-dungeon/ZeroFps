@@ -124,6 +124,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkActiveCamera	= NULL;
 
 	m_strActiveViewPort = "none";
+	
+	m_bGrabing = false;
 } 
 
 
@@ -533,6 +535,31 @@ void ZeroEd::DeleteSelected()
 
 void ZeroEd::OnSystem()
 {
+	if(m_bGrabing)
+	{
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity))
+		{
+			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+			{
+				Vector3 kRotatedGrabPos = pkEnt->GetWorldRotM().VectorTransform(m_kLocalGrabPos);
+				Vector3 kNewGrabPos = pkEnt->GetWorldPosV() + kRotatedGrabPos;
+									
+				m_kGrabPos = kNewGrabPos;
+				
+				m_kGrabCurrentPos = m_pkActiveCamera->GetPos() + Get3DMousePos(true)*m_fArmLength;
+				Vector3 kForce = (m_kGrabCurrentPos - m_kGrabPos)*20;
+
+				pkTcs->ApplyForce(m_kGrabPos,kForce,false);
+
+			}
+			else
+				m_bGrabing = false;			
+		}
+		else
+			m_bGrabing = false;			
+	}
+
+	
 	Entity* pkClient = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID());
 	if(pkClient)
 	{
@@ -554,7 +581,7 @@ void ZeroEd::OnSystem()
 			GetWnd("vp3")->SetZValue(0);
 			GetWnd("vp4")->SetZValue(0);		
 		}
-	}	
+	}
 }
 
 
@@ -612,6 +639,12 @@ void ZeroEd::RenderInterface(void)
 
 	if(m_iEditMode == EDIT_ZONES)		DrawZoneMarker(m_kZoneMarkerPos);
 	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
+	
+	if(m_iEditMode == EDIT_OBJECTS && m_bGrabing)
+	{							
+		m_pkRender->SetColor(Vector3(1,1,1));
+		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
+	}
 }
 
 HeightMap* ZeroEd::SetPointer()
@@ -1071,6 +1104,52 @@ void ZeroEd::CamFollow(bool bFollowMode)
 		
 		m_pkActiveCameraObject->SetWorldPosV(pkObj->GetWorldPosV());
 	}
+}
+
+int	ZeroEd::GetTargetTCS(Vector3* pkPos)
+{
+	Vector3 kStart	= m_pkActiveCamera->GetPos();// + Get3DMousePos(true)*2;
+	Vector3 kDir	= Get3DMouseDir(true);
+
+	vector<Entity*> kObjects;		
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
+		
+	float d;	
+	Vector3 cp;
+	float closest = 999999999;
+	Entity* pkClosest = NULL;
+	Vector3 kPickPos;		
+	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		//get mad property and do a linetest		
+		if(kObjects[i]->GetProperty("P_Tcs"))
+		{
+			if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+			{
+				if(mp->TestLine(kStart,kDir))
+				{	
+					cp = mp->GetLastColPos();
+					d = kStart.DistanceTo(cp);
+	
+					if(d < closest)
+					{
+						closest = d;
+						pkClosest = kObjects[i];
+						kPickPos = cp;					
+					}
+				}
+			}
+		}
+	}
+	
+	if(pkClosest)
+	{
+		*pkPos = kPickPos;
+		return pkClosest->GetEntityID();
+	}
+		
+	return -1;
 }
 
 Entity* ZeroEd::GetTargetObject()

@@ -114,7 +114,7 @@ class BASIC_API Vector3 {
 			return *this; 
 		}
 
-		Vector3 operator-() {
+		Vector3 operator-() const {
 			return Vector3(-x,-y,-z);
 			}
 

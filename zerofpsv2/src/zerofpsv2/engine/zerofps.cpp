@@ -450,12 +450,7 @@ void ZeroFps::Update_System(bool bServer)
 				
 				//update game message system
 				m_pkObjectMan->UpdateGameMessages();
-
 				
-				//update new super duper rigid body physics engine deluxe
-				//m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
-				
-	
 				//update Tiny Collission system
 				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				

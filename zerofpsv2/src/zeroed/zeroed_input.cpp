@@ -144,7 +144,27 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		if(pkObj)
 			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
-	
+
+	if(m_pkInputHandle->VKIsDown("applyforce") )
+	{	
+		if(!m_bGrabing)
+		{
+			m_iGrabEntity = GetTargetTCS(&m_kGrabPos);
+			if(m_iGrabEntity != -1)
+			{
+				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity)->GetWorldPosV();
+			
+				m_bGrabing = true;
+				m_fArmLength = m_pkFps->GetCam()->GetPos().DistanceTo(m_kGrabPos);
+				m_kGrabCurrentPos = m_kGrabPos;
+				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
+			
+			}
+		}
+	}
+	else
+		m_bGrabing = false;	
+		
 	//remove			
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 

@@ -103,7 +103,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane,const Vector3& pkNormal1,const Vector3& pkNormal2);
 		bool TestLineVSPolygonNoNormal(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane);
 
-		Vector3 GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,const Vector3& kOldNormal,P_Tcs* pkBody);
+		Vector3 GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,const int& iCurrentFace ,P_Tcs* pkBody);
 				
 		bool TestPolygonVSPolygon(Vector3* pkPolgyon1,Vector3* pkPolygon2);
 		float LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePos1,Vector3* pkLinePos2,Vector3* pkColPos);

@@ -639,12 +639,13 @@ void P_Tcs::Sleep()
 {
 	if(m_bStatic || m_bCantSleep)
 		return;
-			
+/*		
+	ClearExternalForces();
 		
 	m_kLinearVelocity.Set(0,0,0);
 	m_kRotVelocity.Set(0,0,0);		
 	m_kLinearForce.Set(0,0,0);
-	m_kRotForce.Set(0,0,0);
+	m_kRotForce.Set(0,0,0);*/
 	m_bSleeping = true;
 	
 		
@@ -668,6 +669,7 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 {
 	if( !m_bSleeping)
 		return;
+		
 		
 //	cout<<"wakup"<<endl;
 		
