@@ -20,6 +20,7 @@ class ZGuiScrollbar;
 class ENGINE_API ZGuiListbox : public ZGuiControl
 {
 public:
+	void SelNone();
 	ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0, int iItemHeight=20, 
 		ZGuiSkin* pkTextSkin=NULL, int iTextureMask=-1, ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, 
 		ZGuiSkin *pkSkinItemHighLight=NULL);

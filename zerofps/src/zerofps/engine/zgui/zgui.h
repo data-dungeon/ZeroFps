@@ -91,6 +91,7 @@ public:
 	};
 
 private:
+	bool IgnoreKey(int Key);
 	bool Render(); // Render the active main window
 	void SetFocus(ZGuiWnd* pkWnd);
 	bool OnKeyUpdate(/*unsigned long nKey*/);

@@ -482,7 +482,9 @@ void ZeroEdit::Input()
 	float speed=40;
 
 	if(pkInput->GetQueuedKey() == KEY_F10)
-		m_pkGui->ToogleMenu();
+	{
+		pkFps->ToggleGui();
+	}
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){
@@ -579,7 +581,7 @@ void ZeroEdit::Input()
 	pkInput->RelMouseXY(x,z);
 
 	//rotate the camera		
-	if(!m_pkGui->IsMenuActive())
+	//if(!pkGui->IsActive())
 	{
 		pkFps->GetCam()->GetRot().x+=z/5.0;
 		pkFps->GetCam()->GetRot().y+=x/5.0;	

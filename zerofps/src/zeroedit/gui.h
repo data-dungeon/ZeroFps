@@ -20,7 +20,7 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
-	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
+	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
 	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y, char* pkName);
 	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText);

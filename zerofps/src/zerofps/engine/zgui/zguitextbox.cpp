@@ -19,9 +19,10 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
+ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool bMultiLine) :
 	ZGuiControl(kArea, pkParent, bVisible, iID)
 {
+	m_bMultiLine = bMultiLine;
 	m_iStartrow = 0;
 	m_iCursorPos = 0;
 	m_bBlinkCursor = false;
@@ -30,11 +31,14 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) 
 
 	CreateInternalControls();
 
-	int Width = kArea.Width() - m_pkScrollbarVertical->GetScreenRect().Width() - m_iFontSize;
+	int Width = kArea.Width() - m_iFontSize;
 	int Height = kArea.Height() - 10;
 
 	m_iMaxCharsOneRow = Width / m_iFontSize;
 	m_iMaxVisibleRows = Height / m_iFontSize;
+
+	if(m_iMaxVisibleRows < 1)
+		m_iMaxVisibleRows = 1;
 }
 
 ZGuiTextbox::~ZGuiTextbox()
@@ -60,42 +64,22 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 			pkRenderer->SetSkin(m_pkTextSkin); 
 
-/*			if(m_bBlinkCursor)
-			{
-				static int oka;
-				static char ch = '|';
-
-				if(oka == 50)
-				{
-					if(ch == '|')
-						ch = ' ';
-					else
-						ch = '|';
-
-					oka = 0;
-				}
-
-				oka++;
-
-				m_strText[strlen(m_strText)-1] = ch;
-			}
-			else
-				m_strText[strlen(m_strText)-1] = ' ';*/
-
-			Rect apa = GetScreenRect();
-			apa.Right -= m_pkScrollbarVertical->GetScreenRect().Width();
-			apa.Top += 5;
-			apa.Bottom -= 5;
+			Rect kRect = GetScreenRect();
+			kRect.Right -= m_iFontSize;
+			kRect.Top += 5;
+			kRect.Bottom -= 5;
 
 			int dd = m_iStartrow-m_iMaxVisibleRows+1;
 			if(dd<0) dd=0;
 
 			pkRenderer->RenderText(m_strText+(m_iMaxCharsOneRow*(dd)), 
-				apa, 12, m_bBlinkCursor ? m_iCursorPos : -1, (m_iTextMaskTexture > 0));
+				kRect, 12, m_bBlinkCursor ? m_iCursorPos : -1, (m_iTextMaskTexture > 0),
+				false);
 		}
 	}
 
-	m_pkScrollbarVertical->Render(pkRenderer);
+	if(m_bMultiLine)
+		m_pkScrollbarVertical->Render(pkRenderer);
 
 	return true;
 }
@@ -103,8 +87,6 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 bool ZGuiTextbox::ProcessKBInput(int nKey)
 {
-	printf("%i\n", nKey);
-
 	if(m_iCursorPos >= m_iCurrMaxText-2 || m_iCursorPos == 0)
 		ResizeTextBuffer(10);
 
@@ -122,36 +104,35 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		m_iCursorPos++;
 	}
 
-	if(nKey == KEY_UP)
-	{
-		m_iCursorPos -= m_iMaxCharsOneRow;
-		if(m_iCursorPos < 0)
-			m_iCursorPos = 0;
-	}
-
-	if(nKey == KEY_DOWN)
-		m_iCursorPos += m_iMaxCharsOneRow;
-
 	// Scroll scrollbar
-	int iCurrRow = m_iCursorPos / m_iMaxCharsOneRow;
-	if(iCurrRow >= m_iMaxVisibleRows-1)
+	if(m_bMultiLine == false)
 	{
-		m_iStartrow = iCurrRow;
-		if(m_iStartrow < 0)
-			m_iStartrow = 0;
+		if(m_iCursorPos > m_iMaxCharsOneRow)
+			m_iCursorPos = m_iMaxCharsOneRow;
+	}
+	else
+	if(m_pkScrollbarVertical)
+	{
+		int iCurrRow = m_iCursorPos / m_iMaxCharsOneRow;
+		if(iCurrRow >= m_iMaxVisibleRows-1)
+		{
+			m_iStartrow = iCurrRow;
+			if(m_iStartrow < 0)
+				m_iStartrow = 0;
 
-		Rect apa = GetScreenRect();
-		apa.Right -= m_pkScrollbarVertical->GetScreenRect().Width();
-		apa.Top += 5;
-		apa.Bottom -= 5;
+			Rect kRect = GetScreenRect();
+			kRect.Right -= m_pkScrollbarVertical->GetScreenRect().Width();
+			kRect.Top += 5;
+			kRect.Bottom -= 5;
 
-		int iMax = iCurrRow;
-		int iMin = 0;
-		int iElementSize = m_iFontSize * iMax;
-		int iEditboxSize = apa.Height() - m_iFontSize; // lägg på lite extra för att slippa avrundingsfel...
-		float fThumbSize = (float) iEditboxSize / (float) iElementSize;
+			int iMax = iCurrRow;
+			int iMin = 0;
+			int iElementSize = m_iFontSize * iMax;
+			int iEditboxSize = kRect.Height() - m_iFontSize; // lägg på lite extra för att slippa avrundingsfel...
+			float fThumbSize = (float) iEditboxSize / (float) iElementSize;
 
-		m_pkScrollbarVertical->SetScrollInfo(iMin,iMax,fThumbSize,iMax); 
+			m_pkScrollbarVertical->SetScrollInfo(iMin,iMax,fThumbSize,iMax); 
+		}
 	}
 	
 	return true;
@@ -222,7 +203,14 @@ void ZGuiTextbox::SetText(char* strText)
 	}
 	
 	m_iCurrMaxText = strlen(strText)-1;
+
+	if(m_iCurrMaxText < 0)
+		m_iCurrMaxText = 0;
+
 	m_iCursorPos = strlen(strText)-1;
+
+	if(m_iCursorPos < 0)
+		m_iCursorPos = 0;
 }
 
 void ZGuiTextbox::CreateInternalControls()
@@ -233,17 +221,26 @@ void ZGuiTextbox::CreateInternalControls()
 	int w = 20;
 	int h = rc.Height();
 
-	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
-		this,true,VERT_SCROLLBAR_TEXBOX_ID); 
-
-	m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
+	if(m_bMultiLine)
+	{
+		m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
+			this,true,VERT_SCROLLBAR_TEXBOX_ID); 
+		m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
+	}
+	else
+	{
+		m_pkScrollbarVertical = NULL;
+	}
 }
 
 void ZGuiTextbox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
 								   ZGuiSkin* pkSkinThumbButtonHighLight)
 {
-	m_pkScrollbarVertical->SetSkin(pkSkinScrollArea);
-	m_pkScrollbarVertical->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
+	if(m_pkScrollbarVertical)
+	{
+		m_pkScrollbarVertical->SetSkin(pkSkinScrollArea);
+		m_pkScrollbarVertical->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
+	}
 }
 
 bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
@@ -252,7 +249,8 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 	{
 		if(pkWnd->GetID() == VERT_SCROLLBAR_TEXBOX_ID)
 		{
-			ScrollText(m_pkScrollbarVertical);
+			if(m_pkScrollbarVertical)
+				ScrollText(m_pkScrollbarVertical);
 			return true;
 		}
 	}

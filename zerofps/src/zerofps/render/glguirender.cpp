@@ -288,7 +288,7 @@ bool GLGuiRender::SetSkin(ZGuiSkin* pkSkin)
 	m_pkSkin = pkSkin;
 	return true;
 }
-
+/*
 GLvoid GLGuiRender::glPrint(GLint x, GLint y, char *string, int set, int bind_texture_id)	// Where The Printing Happens
 {
 	if (set>1)
@@ -301,8 +301,20 @@ GLvoid GLGuiRender::glPrint(GLint x, GLint y, char *string, int set, int bind_te
 	glListBase(m_iFontDisplaylistID-32+(128*set));		// Choose The Font Set (0 or 1)
 	glCallLists(strlen(string),GL_BYTE,string);			// Write The Text To The Screen
 }
+*/
 
-bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, int iCursorPos, bool bMask)
+GLvoid GLGuiRender::glPrint(GLint x, GLint y, char *string, int RowWidth, int bind_texture_id)	// Where The Printing Happens
+{
+	int set = 0;
+	//glBindTexture(GL_TEXTURE_2D, bind_texture_id);		// Select Our Font Texture
+	glLoadIdentity();									// Reset The Modelview Matrix
+	glTranslated(x,y,0);								// Position The Text (0,0 - Bottom Left)
+	glListBase(m_iFontDisplaylistID-32+(128*set));						// Choose The Font Set (0 or 1)
+	glCallLists(RowWidth,GL_BYTE,string);			// Write The Text To The Screen
+}
+
+bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, int iCursorPos, 
+							  bool bMask, bool bCenterTextVertically)
 {
 	bool bDrawMasked = (bMask == true && m_iMaskTexture > 0) ? true : false;
 
@@ -313,9 +325,18 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 
 	//glLoadIdentity();
 
+	unsigned int iCharsOneRow = (kScreenRect.Width()-5) / iFontSize;
 	int iTextWidth = strlen(strText) * iFontSize;
-	int iYPos = m_iScreenHeight-kScreenRect.Top - kScreenRect.Height()/2 - iFontSize/2; 
+	int iMaxRows = kScreenRect.Height() / iFontSize;
+	if(iMaxRows < 1)
+		iMaxRows = 1;
 	int iXPos = kScreenRect.Left/* + kScreenRect.Width()/2 - iTextWidth/2*/; 
+	int iYPos;
+	
+	if(bCenterTextVertically)
+		iYPos = m_iScreenHeight-kScreenRect.Top - kScreenRect.Height()/2 - iFontSize/2; 
+	else
+		iYPos = m_iScreenHeight-kScreenRect.Top-iFontSize;
 
 	if(bDrawMasked)
 	{
@@ -327,7 +348,8 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 		glDisable(GL_TEXTURE_2D);
 
 		glColor3f(1,1,1);
-		glPrint(iXPos, iYPos, strText, 1, m_iMaskTexture);							
+		//glPrint(iXPos, iYPos, strText, 1, m_iMaskTexture);							
+		PrintRows(strText, iXPos, iYPos, iFontSize, iCharsOneRow, iMaxRows, iCursorPos);
 	}
 
 	int texture = m_pkSkin->m_iBkTexID;
@@ -347,7 +369,8 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 	}
 
 	glColor3f(1,1,1);
-	glPrint(iXPos, iYPos, strText, 0, m_pkSkin->m_iBkTexID);
+	//glPrint(iXPos, iYPos, strText, 0, m_pkSkin->m_iBkTexID);
+	PrintRows(strText, iXPos, iYPos, iFontSize, iCharsOneRow, iMaxRows, iCursorPos);
 
 	if(bDrawMasked)
 	{
@@ -441,5 +464,56 @@ bool GLGuiRender::SetDisplay(int w, int h)
 	return true;
 }
 
+void GLGuiRender::PrintRows(char* text, unsigned int iXPos, unsigned int iYPos, 
+							unsigned int nFontSize, unsigned int iCharsOneRow, 
+							unsigned int nMaxRows, int iCursorPos) 
+{
+	// Print cursor
+	if(iCursorPos != -1)
+	{
+		int iCursorRow = iCursorPos / iCharsOneRow;
 
+		if(iCursorRow >= nMaxRows) 
+			iCursorRow = nMaxRows-1;
 
+		int iCursorCol = strlen(text) - (iCursorRow * iCharsOneRow);
+		if(iCursorCol > iCharsOneRow)
+			iCursorCol = iCharsOneRow;
+
+		glPrint(iXPos+iCursorCol*nFontSize, iYPos-iCursorRow*nFontSize, 
+			"|", 1, m_iMaskTexture);
+	}
+
+	unsigned int iRow = 0, iPrintedChars = 0;
+	while(1)
+	{
+		int chars_to_print = iCharsOneRow;
+		if( strlen(text) - iPrintedChars  < iCharsOneRow)
+			chars_to_print = strlen(text) - iPrintedChars;
+
+		bool skip = false;
+		for(int i=0; i<iCharsOneRow; i++)
+		{
+			if(text[iPrintedChars]=='\r')
+			{
+				skip =true;
+				glPrint(iXPos, iYPos-iRow*nFontSize, text+iRow*iCharsOneRow, i, m_iMaskTexture);		
+			}
+		}
+
+		if(skip)
+		{
+			iRow++;
+			iPrintedChars += i;
+			continue;
+		}
+
+		glPrint(iXPos, iYPos-iRow*nFontSize, text+iRow*iCharsOneRow, chars_to_print, m_iMaskTexture);
+		
+		iPrintedChars += iCharsOneRow;
+		iRow++;
+
+		if(iPrintedChars >= strlen(text) || nMaxRows <= iRow)
+			break;
+	}
+}

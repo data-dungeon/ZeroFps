@@ -113,10 +113,17 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 		{
 			if(pkWnd != m_pkListbox->GetVScrollbar()->GetButton())
 			{
-				ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
+				if(m_bIsMenu)
+				{
+					m_pkListbox->SelNone();
+				}
+				else
+				{
+					ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
  
-				if(pkSelItem && m_bIsMenu == false)
-					m_pkLabel->SetText(pkSelItem->GetText());
+					if(pkSelItem && m_bIsMenu == false)
+						m_pkLabel->SetText(pkSelItem->GetText());
+				}
 
 				m_pkListbox->Hide();
 		

@@ -414,3 +414,8 @@ void ZGuiListbox::Resize(int Width, int Height)
 
 	UpdateList();
 }
+
+void ZGuiListbox::SelNone()
+{
+	m_pkSelectedItem = NULL;
+}

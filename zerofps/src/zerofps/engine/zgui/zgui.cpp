@@ -440,8 +440,17 @@ bool ZGui::OnKeyUpdate()
 {
 	int iKey = m_pkInput->GetQueuedKey();
 
+	if(IgnoreKey(iKey))
+		return true;
+
 	if(iKey >= 0)
 	{
+		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		{
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+
 		if(iKey == KEY_F10)
 		{
 			m_pkZeroFps->ToggleGui();
@@ -539,4 +548,39 @@ void ZGui::ShowMainWindow(int iID, bool bShow)
 				break;
 			}
 		 }
+}
+
+bool ZGui::IgnoreKey(int Key)
+{
+	switch(Key) 
+	{
+		case KEY_RSHIFT:
+		case KEY_RCTRL:
+		case KEY_LSHIFT:
+		case KEY_LCTRL:
+		case KEY_F12:
+		case KEY_F11:
+		case KEY_F10:
+		case KEY_F9:
+		case KEY_F8:
+		case KEY_F7:
+		case KEY_F6:
+		case KEY_F5:
+		case KEY_F4:
+		case KEY_F3:
+		case KEY_F2:
+		case KEY_F1:
+		case KEY_PAGEUP:
+		case KEY_PAGEDOWN:
+		case KEY_HOME:
+		case KEY_END:
+		case KEY_TAB:
+		case KEY_DELETE:
+		case KEY_INSERT:
+			return true;
+
+		default:
+			return false;
+	};
+
 }

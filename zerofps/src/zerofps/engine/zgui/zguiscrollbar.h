@@ -34,6 +34,7 @@ public:
 private:
 	ZGuiButton* m_pkThumbButton;
 	bool m_bHorzintal;
+	bool m_bAutoHideScrollbar;
 	unsigned int m_nMax, m_nMin, m_nPos;
 	
 };

@@ -14,7 +14,7 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 {
 	m_iScreenCX = pkEdit->m_iWidth / 2;
 	m_iScreenCY = pkEdit->m_iHeight / 2;
-	m_bMenuActive = true;
+	//m_bMenuActive = true;
 	m_pkEdit = pkEdit;
 
 	m_pkWndProc = cb;
@@ -26,7 +26,7 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
 //	pkEdit->pkInput->ToggleGrab();
-	ToogleMenu();
+	//ToogleMenu();
 }
 
 Gui::~Gui()
@@ -157,7 +157,7 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 
 void Gui::ToogleMenu()
 {
-	m_bMenuActive = m_pkEdit->pkGui->ToogleGui();
+	//m_bMenuActive = m_pkEdit->pkGui->ToogleGui();
 
 	if(m_bMenuActive)
 	{	
@@ -299,13 +299,15 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	return pkListbox;
 }
 
-ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
+ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine)
 {
-	h += (20 % h); // avrunda till närmsta 20 tal
+/*	h += (20 % h); // avrunda till närmsta 20 tal*/
 
-	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID);
+	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID, bMulitLine);
 	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
+	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
+		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 
 	return pkTextbox;
 }

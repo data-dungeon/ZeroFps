@@ -20,6 +20,7 @@ ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int i
 	CreateInternalControls();
 	m_bEnabled = true;
 	m_iScrollChange = 0;
+	m_bAutoHideScrollbar = true;
 }
 
 ZGuiScrollbar::~ZGuiScrollbar()
@@ -29,6 +30,9 @@ ZGuiScrollbar::~ZGuiScrollbar()
 
 bool ZGuiScrollbar::Render( ZGuiRender* pkRenderer )
 {
+	if(!IsVisible())
+		return true;
+		
 	if(m_iBkMaskTexture > 0)
 		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
 
@@ -91,6 +95,21 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, float page
 	m_pkThumbButton->SetPos((int)x,(int)y, false, false);
 
 	m_nMax = max, m_nMin = min, m_nPos = pos;
+
+	if(m_bAutoHideScrollbar)
+	{
+		if(page_size > 0.99f)
+		{
+			Hide();
+			m_pkThumbButton->Hide();
+		}
+		else
+		{
+			Show();
+			m_pkThumbButton->Show();
+		}
+	}
+
 }
 
 bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)

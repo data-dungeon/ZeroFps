@@ -167,6 +167,9 @@ bool ZGuiButton::Notify(ZGuiWnd* pkWindow, int iCode)
 
 bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 {
+	if(!IsVisible())
+		return true;
+
 	if(m_iBkMaskTexture > 0)
 		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
 
