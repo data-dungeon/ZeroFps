@@ -502,7 +502,12 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	//GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
 	
 	//load world
-	m_pkObjectMan->LoadWorld("dmworld");
+	if(!m_pkObjectMan->LoadWorld("dmworld"))
+	{
+		cout<<"ERROR: default world dmworld not found"<<endl;
+		return false;
+	
+	}
 	
 	//start server
 	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
