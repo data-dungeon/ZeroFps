@@ -258,7 +258,9 @@ void ZShaderSystem::SetupPass(int iPass)
 	{
 		glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
 		glEnable(GL_COLOR_MATERIAL);	
-		glColor4f(1,1,1,1);		
+		//glColor4f(1,1,1,1);		
+		glColor4fv(&(pkSettings->m_kVertexColor.x));		
+		
 		glDisable(GL_COLOR_MATERIAL);	
 	}
 

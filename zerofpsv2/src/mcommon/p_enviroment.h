@@ -50,9 +50,17 @@ class MCOMMON_API P_Enviroment: public Property {
 		int				m_iCurrentSecond;				//current second of a day
 		float				m_fTimeScale;				
 		
+		int				m_iPartOfDay;		//0-3  night,morning,day,evening
+		int				m_iNextPart;		//0-3  night,morning,day,evening
+		float				m_fPosOfDay;		//0-1 interpolated factor
+		float				m_fPosOfPart;		//0-1 interpolated factor, position in part, 
+		
+		
 		void UpdateEnviroment();		
 		void DrawSky();
-						
+
+		void UpdateTime();
+								
 	public:
 
 		P_Enviroment();

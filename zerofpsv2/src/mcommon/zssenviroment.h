@@ -31,7 +31,7 @@ class MCOMMON_API EnvSetting
 		string	m_strParticles;
 		
 		string	m_strSpace;		
-		string	m_strSky;		
+		string	m_strSky[4];		//4 skys day,evening,night,morning (only used when sun deffuse color R is -1 (day / night cycles active) )
 		string	m_strCloudLow;				
 		string	m_strCloudHi;				
 		
@@ -41,7 +41,7 @@ class MCOMMON_API EnvSetting
 		
 		float		m_fFogStart;
 		float		m_fFogStop;		
-		Vector4	m_kFogColor;
+		Vector4	m_kFogColor[4];
 		
 		int 		m_iRain;
 	

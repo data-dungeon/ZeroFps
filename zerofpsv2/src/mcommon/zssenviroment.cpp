@@ -108,8 +108,16 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		//--------------Skybox
 		if(m_kIni.KeyExist("enviroment","space"))
 			m_strSpace = m_kIni.GetValue("enviroment","space");	
-		if(m_kIni.KeyExist("enviroment","sky"))
-			m_strSky = m_kIni.GetValue("enviroment","sky");	
+		
+		if(m_kIni.KeyExist("enviroment","sky-day"))
+			m_strSky[2] = m_kIni.GetValue("enviroment","sky-day");	
+		if(m_kIni.KeyExist("enviroment","sky-evening"))
+			m_strSky[3] = m_kIni.GetValue("enviroment","sky-evening");	
+		if(m_kIni.KeyExist("enviroment","sky-night"))
+			m_strSky[0] = m_kIni.GetValue("enviroment","sky-night");	
+		if(m_kIni.KeyExist("enviroment","sky-morning"))
+			m_strSky[1] = m_kIni.GetValue("enviroment","sky-morning");	
+						
 		if(m_kIni.KeyExist("enviroment","cloudhi"))
 			m_strCloudHi = m_kIni.GetValue("enviroment","cloudhi");	
 		if(m_kIni.KeyExist("enviroment","cloudlow"))
@@ -123,14 +131,24 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 			m_fFogStop = m_kIni.GetFloatValue("enviroment","fogstop");
 		
 		//fog color
-		if(m_kIni.KeyExist("enviroment","fogcolorR"))
-			m_kFogColor.x = m_kIni.GetFloatValue("enviroment","fogcolorR");
-		if(m_kIni.KeyExist("enviroment","fogcolorG"))
-			m_kFogColor.y = m_kIni.GetFloatValue("enviroment","fogcolorG");
-		if(m_kIni.KeyExist("enviroment","fogcolorB"))
-			m_kFogColor.z = m_kIni.GetFloatValue("enviroment","fogcolorB");		
-		
-		m_kFogColor.w = 1;
+		if(m_kIni.KeyExist("enviroment","fogcolor-nightR")) m_kFogColor[0].x = m_kIni.GetFloatValue("enviroment","fogcolor-nightR");
+		if(m_kIni.KeyExist("enviroment","fogcolor-nightG")) m_kFogColor[0].y = m_kIni.GetFloatValue("enviroment","fogcolor-nightG");
+		if(m_kIni.KeyExist("enviroment","fogcolor-nightB")) m_kFogColor[0].z = m_kIni.GetFloatValue("enviroment","fogcolor-nightB");		
+		if(m_kIni.KeyExist("enviroment","fogcolor-morningR")) m_kFogColor[1].x = m_kIni.GetFloatValue("enviroment","fogcolor-morningR");
+		if(m_kIni.KeyExist("enviroment","fogcolor-morningG")) m_kFogColor[1].y = m_kIni.GetFloatValue("enviroment","fogcolor-morningG");
+		if(m_kIni.KeyExist("enviroment","fogcolor-morningB")) m_kFogColor[1].z = m_kIni.GetFloatValue("enviroment","fogcolor-morningB");		
+		if(m_kIni.KeyExist("enviroment","fogcolor-dayR")) m_kFogColor[2].x = m_kIni.GetFloatValue("enviroment","fogcolor-dayR");
+		if(m_kIni.KeyExist("enviroment","fogcolor-dayG")) m_kFogColor[2].y = m_kIni.GetFloatValue("enviroment","fogcolor-dayG");
+		if(m_kIni.KeyExist("enviroment","fogcolor-dayB")) m_kFogColor[2].z = m_kIni.GetFloatValue("enviroment","fogcolor-dayB");		
+		if(m_kIni.KeyExist("enviroment","fogcolor-eveningR")) m_kFogColor[3].x = m_kIni.GetFloatValue("enviroment","fogcolor-eveningR");
+		if(m_kIni.KeyExist("enviroment","fogcolor-eveningG")) m_kFogColor[3].y = m_kIni.GetFloatValue("enviroment","fogcolor-eveningG");
+		if(m_kIni.KeyExist("enviroment","fogcolor-eveningB")) m_kFogColor[3].z = m_kIni.GetFloatValue("enviroment","fogcolor-eveningB");		
+
+				
+		m_kFogColor[0].w = 1;
+		m_kFogColor[1].w = 1;
+		m_kFogColor[2].w = 1;
+		m_kFogColor[3].w = 1;
 	
 		//---------------SUN
 		//diffuse sunlight
@@ -182,7 +200,11 @@ void EnvSetting::Clear()
 	m_strParticles = "";
 	
 	m_strSpace		= "";
-	m_strSky			= "";		
+	m_strSky[0]		= "";		
+	m_strSky[1]		= "";		
+	m_strSky[2]		= "";		
+	m_strSky[3]		= "";		
+	
 	m_strCloudLow	= "";				
 	m_strCloudHi	= "";			
 	
@@ -196,7 +218,10 @@ void EnvSetting::Clear()
 	
 	m_fFogStart = 10;
 	m_fFogStop = 30;	
-	m_kFogColor.Set(1,1,1,1);
+	m_kFogColor[0].Set(1,1,1,1);
+	m_kFogColor[1].Set(1,1,1,1);
+	m_kFogColor[2].Set(1,1,1,1);
+	m_kFogColor[3].Set(1,1,1,1);
 }
 
 
