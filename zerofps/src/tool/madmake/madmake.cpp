@@ -6,6 +6,8 @@
 #include "mad.h"
 #include "mdl.h"
 #include "3ds.h"
+#include "xxx.h"
+#include "script.h"
 
 using namespace std;
 
@@ -65,6 +67,11 @@ IMadImport* GetImportObject(char *filename)
 		pkImport = new Modell3DS;
 	}
 
+	if(strcmp(ext, ".mm") == 0) 
+	{
+		pkImport = new ModellXXX;
+	}
+
 	return pkImport;
 }
 
@@ -118,8 +125,8 @@ int main(int argc, char* argv[])
 	strcpy(ucaInFile, argv[iCurArg]);
 	strcpy(ucaOutFile, argv[iCurArg + 1]);
 	
-//	strcpy(ucaInFile, "ship.3ds");
-//	strcpy(ucaOutFile, "ship.mad");
+	/*strcpy(ucaInFile, "test.mm");
+	strcpy(ucaOutFile, "gordo.mad");*/
 	strcpy(ucaTextureNames, "testtex.tga");
 
 	cout << "InFile: " << ucaInFile << endl;

@@ -58,8 +58,13 @@ struct Mad_SubMesh
 	int		iNumOfTriangles;			// Num of triangles that use texture.
 };
 
-struct Mad_VertexFrame
+class Mad_VertexFrame
 {
+public:
+	Mad_VertexFrame() ;
+	~Mad_VertexFrame();
+
+	void operator=(const Mad_VertexFrame& kOther);
 	vector<MadVertex>	akVertex;
 };
 
@@ -104,6 +109,7 @@ public:
 //	void ImportPMD(pmd_c* pmd);
 
 	Mad_Animation*	GetAnimation(char* ucaName);
+	void ShowInfo(void);
 };
 
 #endif

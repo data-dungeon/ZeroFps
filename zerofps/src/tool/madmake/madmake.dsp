@@ -103,6 +103,23 @@ SOURCE=.\md2.cpp
 
 SOURCE=.\qpack.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\script.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\xxx.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# SUBTRACT CPP /YX
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -127,10 +144,22 @@ SOURCE=.\mdl.h
 
 SOURCE=.\qpack.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\script.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\xxx.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\Debug\test.mm
+# End Source File
 # End Target
 # End Project

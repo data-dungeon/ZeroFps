@@ -168,11 +168,33 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 }
 */
 
+void MadExporter::ShowInfo(void)
+{
+	cout << "Textures: " << kHead.iNumOfTextures << endl;
+	cout << "Vertex: " << kHead.iNumOfVertex << endl;
+	cout << "Triangles: " << kHead.iNumOfFaces << endl;
+	cout << "Frames: " << kHead.iNumOfFrames << endl;
+	cout << "SubMesh: " << kHead.iNumOfSubMeshes << endl;
+	cout << "Animations: " << kHead.iNumOfAnimation << endl;
+
+	for (int i=0; i<akAnimation.size(); i++) 
+	{
+		cout << " " << i << " : " << akAnimation[i].Name << " : Frames = " << akAnimation[i].KeyFrame.size() << endl;
+	}
+}
+
 void MadExporter::Save(char* filename)
 {
+	cout << "Save " << filename << endl;
+	ShowInfo();
+
 	FILE* fp = fopen(filename, "wb");
 	// Write Head.
 	fwrite(&kHead,sizeof(Mad_Header),1,fp);
+
+	// Write SubMesh
+	fwrite(&akSubMeshes[0],sizeof(Mad_SubMesh),kHead.iNumOfSubMeshes,fp);
+
 
 	// Write Textures
 	fwrite((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
@@ -205,7 +227,7 @@ void MadExporter::Save(char* filename)
 			fwrite(&itKeyF->iVertexFrame,sizeof(int), 1 ,fp);
 		}
 	}
-
+		
 	fclose(fp);
 }
 
@@ -252,3 +274,20 @@ void Mad_Animation::operator=(const Mad_Animation& kOther)
 	KeyFrame = kOther.KeyFrame;
 }
 
+
+
+
+Mad_VertexFrame::Mad_VertexFrame()
+{
+
+}
+
+Mad_VertexFrame::~Mad_VertexFrame()
+{
+
+}
+
+void Mad_VertexFrame::operator=(const Mad_VertexFrame& kOther)
+{
+	akVertex = kOther.akVertex;
+}
