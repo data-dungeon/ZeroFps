@@ -39,18 +39,33 @@ void P_UnitSystem::SetupSystems()
 	//setup weapons
 	
 	Weapon Gun80mm;
-	Gun80mm.sName = 			"Gun80mm";
-	Gun80mm.iType = 			WT_DIRECT;
-	Gun80mm.iDamage = 		30;
-	Gun80mm.afModifiers[0] =0.5;
-	Gun80mm.afModifiers[1] =0.8;	
-	Gun80mm.afModifiers[2] =1.0;	
-	Gun80mm.afModifiers[3] =1.0;	
-	Gun80mm.fRange = 			6;
-	Gun80mm.fFireRate =		2;
-	Gun80mm.iHit = 			0;
+		Gun80mm.sName = 			"Gun80mm";
+		Gun80mm.iType = 			WT_DIRECT;
+		Gun80mm.iDamage = 		30;
+		Gun80mm.afModifiers[0] =0.5;
+		Gun80mm.afModifiers[1] =0.8;	
+		Gun80mm.afModifiers[2] =1.0;	
+		Gun80mm.afModifiers[3] =1.0;	
+		Gun80mm.fRange = 		  6;
+		Gun80mm.fFireRate =	  1;
+		Gun80mm.iHit = 			FX_88MMHIT;
+		Gun80mm.iFire = 			FX_88MMFIRE;	
+	
+	Weapon HeavyMG;
+		HeavyMG.sName = 			"HeavyMG";
+		HeavyMG.iType = 			WT_DIRECT;
+		HeavyMG.iDamage = 		5;
+		HeavyMG.afModifiers[0] =1.0;
+		HeavyMG.afModifiers[1] =0.5;	
+		HeavyMG.afModifiers[2] =0.3;	
+		HeavyMG.afModifiers[3] =0.5;	
+		HeavyMG.fRange = 		  3;
+		HeavyMG.fFireRate =	  5;
+		HeavyMG.iHit = 			FX_HEAVYMGHIT;
+		HeavyMG.iFire = 			FX_88MMFIRE;	
 											
 	m_kBaseSystems.kWeapons.push_back(Gun80mm);
+	m_kBaseSystems.kWeapons.push_back(HeavyMG);	
 
 	//setup armors
 
@@ -107,7 +122,8 @@ Armor* P_UnitSystem::GetArmorPointer(int iPlayer,int iArmor)
 
 bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 {
-	Weapon* pkWeapon = GetWeaponPointer((int)pkSu->m_kInfo.m_Info2.m_cTeam,iWeapon);
+
+	Weapon* pkWeapon = GetWeaponPointer((int)pkSu->m_kInfo.m_Info2.m_cTeam,(int)pkSu->m_kInfo.m_Info2.m_cWeapon);
 	if(!pkWeapon)
 	{
 		cout<<"FireWeapon: no weapon!" <<endl;
@@ -156,12 +172,12 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 						if(m_pkServerInfo)
 						{
 							Event temp;
-							temp.m_iType = FX_88MMHIT;
+							temp.m_iType = pkWeapon->iHit;
 							temp.m_kPos = ob->GetPos();
 							
 							m_pkServerInfo->AddEvent(temp);
 									
-							temp.m_iType = FX_88MMFIRE;
+							temp.m_iType = pkWeapon->iFire;
 							temp.m_kPos = pkSu->GetObject()->GetPos();							
 							m_pkServerInfo->AddEvent(temp);							
 						}

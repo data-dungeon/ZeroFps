@@ -37,16 +37,26 @@ void EffectSystem::AddFX(int iType,Vector3 kPos)
 	{
 		case FX_88MMHIT:
 		{
-			for(int i= 0;i< 10;i++)
+			for(int i= 0;i< 6;i++)
 			{
 				AddPart(PART_DEBRI,kPos);			
 			}
 			
-			for(int j= 0;j< 4;j++)
+			for(int j= 0;j< 2;j++)
 			{
 				AddPart(PART_SMOKE,kPos);			
 			}
 	
+			break;
+		}
+		
+		case FX_HEAVYMGHIT:
+		{
+			for(int i= 0;i< 2;i++)
+			{
+				AddPart(PART_SMALLDEBRI,kPos);			
+			}
+			
 			break;
 		}
 		
@@ -55,6 +65,26 @@ void EffectSystem::AddFX(int iType,Vector3 kPos)
 			for(int i= 0;i< 4;i++)
 			{
 				AddPart(PART_SMOKE,kPos);			
+			}
+	
+			break;
+		}
+		
+		case FX_EXPLOSION1:
+		{
+			for(int i= 0;i< 20;i++)
+			{
+				AddPart(PART_SMOKE,kPos);			
+			}
+			
+			for(int i= 0;i< 40;i++)
+			{
+				AddPart(PART_DEBRI,kPos);			
+			}
+			
+			for(int i= 0;i< 20;i++)
+			{
+				AddPart(PART_SMALLDEBRI,kPos);			
 			}
 	
 			break;
@@ -80,14 +110,21 @@ void EffectSystem::Draw()
 			case PART_DEBRI:
 				m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),
 													m_kParts[i].kPos,
-													2,
+													1,
+													m_pkTexMan->Load("../data/textures/fire.tga",0));
+				break;
+			
+			case PART_SMALLDEBRI:
+				m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),
+													m_kParts[i].kPos,
+													0.4,
 													m_pkTexMan->Load("../data/textures/fire.tga",0));
 				break;
 			
 			case PART_SMOKE:
 				m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),
 													m_kParts[i].kPos,
-													1,
+													0.5,
 													m_pkTexMan->Load("../data/textures/smoke.tga",0));
 				break;
 
@@ -114,11 +151,12 @@ void EffectSystem::Update()
 		switch(m_kParts[i].iType)
 		{			
 		
+			case PART_SMALLDEBRI:
 			case PART_DEBRI:
 				m_kParts[i].kVel += Vector3(0,-0.3,0) * m_pkFps->GetGameFrameTime();
 				m_kParts[i].kPos += m_kParts[i].kVel * m_pkFps->GetGameFrameTime(); 			
 				break;
-		
+					
 			case PART_SMOKE:
 				m_kParts[i].kVel += Vector3(0,0.5,0) * m_pkFps->GetGameFrameTime();
 				m_kParts[i].kPos += m_kParts[i].kVel * m_pkFps->GetGameFrameTime(); 			
@@ -144,6 +182,11 @@ void EffectSystem::AddPart(int iType,Vector3 kPos)
 				case PART_DEBRI:
 					m_kParts[i].kVel = Vector3((rand()% 100)-50,rand()% 100+1,(rand()% 100-50)).Unit();
 					m_kParts[i].fTTL = 2;
+					break;		
+				
+				case PART_SMALLDEBRI:
+					m_kParts[i].kVel = Vector3((rand()% 100)-50,rand()% 100+1,(rand()% 100-50)).Unit();
+					m_kParts[i].fTTL = 1;
 					break;		
 
 				case PART_SMOKE:

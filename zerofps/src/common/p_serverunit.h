@@ -18,6 +18,7 @@
 #include "externalcommand.h"
 #include "unitcommand.h"
 
+#include "p_serverinfo.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ struct COMMON_API UnitInfo2
 	unsigned char		m_cPropultion;
 	unsigned char		m_cViewDistance;	
 	unsigned char		m_cWidth;			//used for buildings
-	unsigned char		m_cHeight;		  //used for buildings	
+	unsigned char		m_cHeight;		  //used for buildings		
 };
 
 struct COMMON_API UnitInfo
@@ -43,17 +44,21 @@ struct COMMON_API UnitInfo
 #include "p_clientunit.h"
 
 class P_ClientUnit;
+class P_ServerInfo;
 
 class COMMON_API P_ServerUnit: public Property {
 	private:
+		P_ServerInfo*		m_pkServerInfo;	
 		P_ClientUnit*		m_pkClientUnit;	
 		bool					m_bHaveSetRadius;
 		bool					m_bUpdateCommands;
 		bool					m_bClient;
 		bool					m_bHaveSetPos;
+		
 		map<string, ExternalCommand*> m_kExternalCommands;
-		vector<PropertyValues> GetPropertyValues();		
-		AIBase* m_pkCurrentAIState;
+		AIBase* 								m_pkCurrentAIState;
+		
+		vector<PropertyValues> GetPropertyValues();				
 		
 	public:
 		UnitInfo				m_kInfo;
@@ -61,7 +66,7 @@ class COMMON_API P_ServerUnit: public Property {
 	
 		int					m_iMaxHealth;
 		int					m_iHealth;
-	
+		int					m_iDieEffect;
 	
 		P_ServerUnit();
 		~P_ServerUnit();

@@ -43,6 +43,7 @@ class COMMON_API Weapon
 	
 		int		iProjectile;
 		int		iHit;
+		int		iFire;
 	
 		float		fEffectArea;
 };

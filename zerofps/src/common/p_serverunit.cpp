@@ -20,10 +20,12 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	
 	m_iMaxHealth = 1000;
 	m_iHealth = 	1000;
+	m_iDieEffect = 0;	
 	
 	
 	
 	m_pkClientUnit = NULL;
+	m_pkServerInfo = NULL;
 	m_bHaveSetRadius = false;
 
 	m_bClient = true;
@@ -38,7 +40,7 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 
 P_ServerUnit::~P_ServerUnit()
 {
-	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),this);
+
 }	
 
 void P_ServerUnit::Init()
@@ -65,6 +67,14 @@ void P_ServerUnit::Update()
 		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),this);						
 		m_bHaveSetPos = true;
 	}
+	
+	if(!m_pkServerInfo)
+	{
+		Object* sio = m_pkObject->m_pkObjectMan->GetObject("A ServerInfoObject");
+		
+		if(sio)
+			m_pkServerInfo =  (P_ServerInfo*)sio->GetProperty("P_ServerInfo");		
+	}		
 }
 
 
@@ -155,7 +165,7 @@ void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(11);
+	vector<PropertyValues> kReturn(12);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_CHARVAL;
@@ -200,6 +210,10 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[10].kValueName="m_iHealth";
 	kReturn[10].iValueType=VALUETYPE_INT;
 	kReturn[10].pkValue=(void*)&m_iHealth;
+
+	kReturn[11].kValueName="m_iDieEffect";
+	kReturn[11].iValueType=VALUETYPE_INT;
+	kReturn[11].pkValue=(void*)&m_iDieEffect;
 
 	return kReturn;
 }
@@ -272,6 +286,20 @@ bool P_ServerUnit::Damage(int iDamage)
 		
 	if(m_iHealth <= 0)
 	{
+		if(m_iDieEffect != -1)
+		{
+			if(m_pkServerInfo)
+			{
+				cout<<"bom"<<endl;
+				Event fx;
+					fx.m_iType = m_iDieEffect;
+					fx.m_kPos = m_pkObject->GetPos();
+			
+				m_pkServerInfo->AddEvent(fx);
+			}
+		}
+		
+		TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),this);		
 		m_pkObject->m_pkObjectMan->Delete(m_pkObject);
 	
 		return false;
