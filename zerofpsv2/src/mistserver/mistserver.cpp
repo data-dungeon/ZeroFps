@@ -777,7 +777,8 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			
 			if(!bExist)
 			{
-				BuildZoneTree();
+				BuildFileTree("ZoneModelTree", "data/mad/zones");
+				BuildFileTree("ObjectTree", "data/script/objects2");
 				GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
 			}
 		}
@@ -1032,45 +1033,40 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 	return false;
 }
 
-struct SORT_NODE : public binary_function<string, string, bool> {
-	bool operator()(string x, string y) { 
-		return (x.find(".") == string::npos);
-	};
-} SortNode;
-
-void MistServer::BuildZoneTree()
+bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 {
-	return; // not done yet
+	// kolla inparametrar
+	if(szRootPath == NULL || szTreeBoxName == NULL)
+		return false;
 
+	// sista tecknet får inte vara ett '/' tecken
+	if(szRootPath[strlen(szRootPath)] == '/')
+		szRootPath[strlen(szRootPath)] = '\0';
 
 	set<string> kSearchedFiles;
 	list<string> dir_list;
 	string strPrevNode;
 
-	dir_list.push_back(string("data/mad/zones"));
+	dir_list.push_back(string(szRootPath));
 	strPrevNode = "RootNode";
-int oka = 0;		
+	
 	while(1)
 	{
 		list<string> vkFileNames;
 		string currentFolder = dir_list.back();
-
-		printf("currentFolder = %s\n", currentFolder.c_str() );
 
 		// Hämta filerna i den aktuella katalogen och sortera listan.
 		vector<string> t;
 		pkZFVFileSystem->ListDir(&t, currentFolder);
 		for(int i=0; i<t.size(); i++)
 			vkFileNames.push_back(t[i]); 
-		t.clear(); vkFileNames.sort(SortNode);
-
-		printf("vkFileNames.size() = %i\n", vkFileNames.size() );
+		t.clear(); vkFileNames.sort(SortFiles);
 
 		// Lägg till alla filer
 		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
 		{
 			string strLabel = (*it);
-			string id = currentFolder + strLabel;
+			string id = currentFolder + string("/") + strLabel;
 
 			bool bIsFolder = strLabel.find(".") == string::npos;
 
@@ -1078,21 +1074,17 @@ int oka = 0;
 			{			
 				if(bIsFolder)
 				{
-					string olle = currentFolder+string("/")+strLabel;
+					string d = currentFolder + string("/") + strLabel;
+					dir_list.push_back(d);
 
-				//	printf("olle = %s\n", olle.c_str());
-					dir_list.push_back(olle);
-
-					AddTreeItem("ZoneModelTree", id.c_str(), 
+					AddTreeItem(szTreeBoxName, id.c_str(), 
 						strPrevNode.c_str(), (char*) strLabel.c_str(), 1, 2);
 				}
 				else
-					AddTreeItem("ZoneModelTree", id.c_str(), 
+					AddTreeItem(szTreeBoxName, id.c_str(), 
 						strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
 
 				kSearchedFiles.insert(strLabel);
-
-				//printf("APA = %s, %s, %s\n", id.c_str(), strPrevNode.c_str(), (char*) strLabel.c_str());
 			}
 		}
 
@@ -1100,21 +1092,15 @@ int oka = 0;
 		if(dir_list.back() == currentFolder)
 		{
 			// sista?
-			if(currentFolder == "data/mad/zones/")
+			if(currentFolder == szRootPath)
 				break;
 
 			dir_list.pop_back();
 		}
-		else
-		{
 
-		}
-		
 		strPrevNode = dir_list.back();
-
-		oka++;
 	}
 
-	printf("oka = %i\n", oka);
+	return true;
 
 }
