@@ -87,6 +87,7 @@ enum EntityVariableType
 {
 	EVAR_DOUBLE,
 	EVAR_STRING,
+	EVAR_VECTOR,
 };
 
 /**	\brief	A EntityVariable is a variable saved in a entity with a name and a value.
@@ -101,6 +102,7 @@ public:
 		m_eType		= kIn.m_eType;
 		m_fValue		= kIn.m_fValue;
 		m_strValue	= kIn.m_strValue;
+		m_kVector   = kIn.m_kVector;
 		return *this;
 	}
 
@@ -108,6 +110,7 @@ public:
 	EntityVariableType	m_eType;			 
 	double					m_fValue;		// Value if double
 	string					m_strValue;		// Value if string.
+	Vector3					m_kVector;
 };
 
 
@@ -366,8 +369,10 @@ class ENGINE_API Entity
 		void GetAllVarNames(vector<string>& vkList);
 		double GetVarDouble(const string& strName);
 		string GetVarString(const string& strName);
+		Vector3 GetVarVector(const string& strName);
 		void	 SetVarDouble(const string& strName, double fValue);
 		void	 SetVarString(const string& strName, string strValue);		
+		void	 SetVarVector(const string& strName, Vector3 kVec);		
 		void	 AddVarDouble(const string& strName, double fValueToAdd);
 
 		// Temporary Place For this Functions - Vim

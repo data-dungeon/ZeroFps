@@ -904,6 +904,8 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		pkFile->Read(&kEntVar.m_fValue ,sizeof(kEntVar.m_fValue), 1);		
 		pkFile->Read(acTemp,128,1);		
 		kEntVar.m_strValue = acTemp;
+		if(kEntVar.m_eType == EVAR_VECTOR)
+			pkFile->Read(&kEntVar.m_kVector ,sizeof(Vector3), 1);		
 		m_kVariables.push_back(kEntVar);
 	}
 
@@ -1009,6 +1011,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 		pkFile->Write(&m_kVariables[i].m_fValue ,sizeof(m_kVariables[i].m_fValue), 1);		
 		strcpy(acTemp,m_kVariables[i].m_strValue.c_str());
 		pkFile->Write(acTemp,128,1);		
+		if(m_kVariables[i].m_eType == EVAR_VECTOR)
+			pkFile->Write(&m_kVariables[i].m_kVector ,sizeof(Vector3), 1);		
 	}
 
 	//name
@@ -1717,6 +1721,7 @@ EntityVariable* Entity::CreateVar(const string& strName, EntityVariableType eTyp
 	kEntVar.m_eType		= eType;
 	kEntVar.m_strName		= strName;
 	kEntVar.m_fValue		= 0.0;
+	kEntVar.m_kVector    = Vector3::ZERO;
 	kEntVar.m_strValue	= "";
 	m_kVariables.push_back(kEntVar);
 
@@ -1760,8 +1765,30 @@ string Entity::GetVarString(const string& strName)
 		sprintf(szValue,"%f",dValue);
 		return string(szValue);
 	}
+	if(pkVar->m_eType == EVAR_VECTOR)
+	{
+		char szValue[128];
+		sprintf(szValue,"%f %f %f",pkVar->m_kVector.x,pkVar->m_kVector.y,pkVar->m_kVector.z);
+		return string(szValue);
+	}
+
 
 	return string("");
+}
+
+Vector3 Entity::GetVarVector(const string& strName)
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		return Vector3::ZERO;
+
+	if(pkVar->m_eType == EVAR_STRING)
+		return Vector3::ZERO;
+	if(pkVar->m_eType == EVAR_DOUBLE)
+		return Vector3::ZERO;
+
+	return pkVar->m_kVector;
 }
 
 void	 Entity::SetVarDouble(const string& strName, double fValue)
@@ -1788,6 +1815,27 @@ void Entity::SetVarString(const string& strName, string strValue)
 	{
 		pkVar->m_fValue = atof(strValue.c_str());
 	}
+
+	if(pkVar->m_eType == EVAR_VECTOR)
+	{
+		sscanf(strValue.c_str(),"%f %f %f",&pkVar->m_kVector.x, &pkVar->m_kVector.y, &pkVar->m_kVector.z);
+	}
+}
+
+void Entity::SetVarVector(const string& strName, Vector3 kVec)	
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		pkVar = CreateVar(strName, EVAR_VECTOR);
+
+	if(pkVar->m_eType == EVAR_STRING)
+		return;
+	if(pkVar->m_eType == EVAR_DOUBLE)
+		return;
+
+	if(pkVar->m_eType == EVAR_VECTOR)
+		pkVar->m_kVector = kVec;
 }
 
 void Entity::AddVarDouble(const string& strName, double fValueToAdd)
@@ -2211,6 +2259,66 @@ int SetLocalString(lua_State* pkLua)
 	return 1;	
 }
 
+int SetLocalVector(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	o1->SetVarVector(acName, Vector3(0,0,10));
+	return 1;	
+}
+
+int GetLocalVector(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	Vector3 pos = o1->GetVarVector(acName);
+
+	cout << "Local Vec: ";
+	pos.Print();
+	cout << endl;
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+	return 1;	
+}
+
+
+
 /**	\fn SetObjectPos( Entity, Pos)
  	\relates SIEntity
    \brief Sets the position of the Entity
@@ -2402,5 +2510,8 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
 	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);
 	g_pkScript->ExposeFunction("GetObjectRot",		SI_Entity::GetObjectRotLua);
+
+	g_pkScript->ExposeFunction("SetLocalVector",		SI_Entity::SetLocalVector);
+	g_pkScript->ExposeFunction("GetLocalVector",		SI_Entity::GetLocalVector);
 
 }

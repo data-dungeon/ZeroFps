@@ -73,6 +73,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// entity management
 	pkScript->ExposeFunction("CreateEntity", 			ObjectManagerLua::CreateEntityLua);
 	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
+	pkScript->ExposeFunction("IsEntityValid",  		ObjectManagerLua::IsEntityValid);
 
 	// entity orientation
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
@@ -165,6 +166,32 @@ int DeleteLua(lua_State* pkLua)
 		g_pkObjMan->Delete(pkObject);
 	return 0;
 }
+
+/**	\fn IsEntityValid( Entity )
+ 		\relates SIEntityManger
+		\param EntityID to check.
+		\brief Returns 1 if entity exist/is loaded and 0 if not.
+*/
+int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+		return 0;
+	
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
+
+	int iRetValue = 0;
+
+	if(pkObject)
+		iRetValue = 1;
+   
+	g_pkScript->AddReturnValue( pkLua, iRetValue );
+	
+	return 1;
+}
+
 
 /**	\fn InitObject(ScripName)
  	\relates SIEntityManger

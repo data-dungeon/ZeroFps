@@ -69,6 +69,7 @@ namespace ObjectManagerLua
 	// Entity Information
 	int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
 	int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+	int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua);
 
 	// Event
 	//int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
