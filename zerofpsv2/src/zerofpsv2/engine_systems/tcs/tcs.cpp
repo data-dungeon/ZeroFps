@@ -388,6 +388,18 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 {	
+	//if no collission respons is wanted, just do touch and return 
+	if(pkCol->pkBody1->m_bNoColRespons || pkCol->pkBody2->m_bNoColRespons)
+	{
+		SyncEntitys();
+		pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
+		pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
+		SyncBodys();	
+		return;
+	}
+	
+	
+	
 	//wake up bodys
 	pkCol->pkBody1->Wakeup();
 	pkCol->pkBody2->Wakeup();

@@ -17,6 +17,7 @@
 #include "p_buff.h"
 #include "p_fogplane.h"
 #include "p_container.h"
+#include "p_projectile.h"
 /*
 #include "p_dmclickme.h"
 #include "p_dmgun.h"
@@ -35,6 +36,7 @@ void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFa
 	Register_P_Buff(pkZeroFps);	
 	Register_P_CharacterControl(pkZeroFps);	
 	Register_P_CharacterProperty(pkZeroFps);
+	Register_P_Projectile(pkZeroFps);
 	pkPropertyFactory->Register("P_ClientControl",		Create_P_ClientControl);
 	pkPropertyFactory->Register("P_Container",			Create_P_Container);
 	Register_P_Container(pkZeroFps);

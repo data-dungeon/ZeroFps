@@ -1092,6 +1092,10 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							SayToClients("You need to look at the target","Server",-1,PkNetMessage->m_iClientID);break;							
 						case 5:
 							SayToClients("You need to target an item","Server",-1,PkNetMessage->m_iClientID);break;										
+						case 6:
+							SayToClients("You are to faar away","Server",-1,PkNetMessage->m_iClientID);break;										
+							
+							
 					}
 					
 				}

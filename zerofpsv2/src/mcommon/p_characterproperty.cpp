@@ -36,8 +36,9 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_fTimeLeft 		=	1;
 	m_fLastUpdate 		= 	-1;
 	m_strSchool 		=	"UnkownSchool";
-	m_iType				=	0;
-	
+	m_iTargetType		=	0;	
+	m_iSkillType		=	0;
+	m_fRange				=	0;
 }
 
 Skill::~Skill()
@@ -144,28 +145,31 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	
 	
 	//character target  check if a character is targeted
-	if(m_iType == eCHARACTER_TARGET)
+	if(m_iTargetType == eCHARACTER_TARGET)
 	{
 		if(!m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty"))
 			return 3;
+						
 	 
 		if(Entity* pkOwner = m_pkEntityManager->GetEntityByID(m_iOwnerID))
 		{
 			if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(iTargetID))
 			{
-				Vector3 kOwnerDir = pkOwner->GetWorldRotM().VectorTransform(Vector3(0,0,1));
-				Vector3 kDir = (pkTarget->GetWorldPosV() - pkOwner->GetWorldPosV()).Unit();
-		
-				if(RadToDeg(kOwnerDir.Angle(kDir)) > 30)
-					return 4;
+				//check range
+				if(pkOwner->GetWorldPosV().DistanceTo(pkTarget->GetWorldPosV()) > m_fRange)
+					return 6;
 				
-				//cout<<"angle "<<RadToDeg(kOwnerDir.Angle(kDir))<<endl;
+				//check rotation
+				Vector3 kOwnerDir = pkOwner->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+				Vector3 kDir = (pkTarget->GetWorldPosV() - pkOwner->GetWorldPosV()).Unit();		
+				if(RadToDeg(kOwnerDir.Angle(kDir)) > 30)
+					return 4;				
 			}
 		}
 	}
 	
 	//item target  check that an item is targeted
-	if(m_iType == eITEM_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_Item")) 
+	if(m_iTargetType == eITEM_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_Item")) 
 		return 5;
 		
 		
@@ -714,7 +718,8 @@ void P_CharacterProperty::OnDeath()
 	
 	
 	//send death info to client
-	SendDeathInfo();
+	SendStats();
+	SendDeathInfo();	
 }
 
 void P_CharacterProperty::UpdateSkills()
@@ -1744,7 +1749,7 @@ namespace SI_P_CharacterProperty
 	
 	int SetupSkillLua(lua_State* pkLua)
 	{
-		if(g_pkScript->GetNumArgs(pkLua) != 7)
+		if(g_pkScript->GetNumArgs(pkLua) != 9)
 			return 0;		
 
 			
@@ -1754,7 +1759,9 @@ namespace SI_P_CharacterProperty
 		string strSchool;
 		string strIcon;
 		double dReloadTime;
+		int	iTargetType;
 		int	iSkillType;
+		double dRange;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
 		
@@ -1763,7 +1770,9 @@ namespace SI_P_CharacterProperty
 		g_pkScript->GetArgString(pkLua, 3, strSchool);		
 		g_pkScript->GetArgString(pkLua, 4, strIcon);		
 		g_pkScript->GetArgNumber(pkLua, 5, &dReloadTime);		
-		g_pkScript->GetArgInt(pkLua, 6, &iSkillType);		
+		g_pkScript->GetArgInt(pkLua, 6, &iTargetType);		
+		g_pkScript->GetArgInt(pkLua, 7, &iSkillType);		
+		g_pkScript->GetArgNumber(pkLua, 8, &dRange);		
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
@@ -1773,8 +1782,9 @@ namespace SI_P_CharacterProperty
 				pkSkill->m_strSchool = 		strSchool;
 				pkSkill->m_strIcon = 		strIcon;
 				pkSkill->m_fReloadTime = 	float(dReloadTime);
-				pkSkill->m_iType =			iSkillType;
-				//pkSkill->m_fTimeLeft = 		float(dReloadTime);
+				pkSkill->m_iTargetType =	iTargetType;
+				pkSkill->m_iSkillType =		iSkillType;
+				pkSkill->m_fRange =			float(dRange);
 				
 				cout<<"skill setup complete"<<endl;
 			}

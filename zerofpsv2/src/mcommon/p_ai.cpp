@@ -24,8 +24,8 @@ P_AI::P_AI()
 	
 	m_iState = 1;
 
-	m_fSeeDistance = 		10;
-	m_fAttackDistance =	5;
+	m_fSeeDistance = 		15;
+	m_fAttackDistance =	10;
 	m_fStrikeRange = 		2;
 	
 	m_bWalk 		= true;
@@ -77,6 +77,8 @@ void P_AI::Update()
 	}
 	
 			
+	m_fStrikeRange = GetOffensiveRange();
+	
 	switch(m_iState)
 	{
 		//guard
@@ -187,7 +189,7 @@ void P_AI::Update()
 				}
 			
 				
-				if(fDistance < m_fStrikeRange)
+				if(fDistance < m_fStrikeRange )
 				{
 					m_iState = 5;
 					break;				
@@ -216,16 +218,17 @@ void P_AI::Update()
 			{
 				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
 			
-				if(fDistance > m_fStrikeRange)
+				if(fDistance > m_fStrikeRange && m_fStrikeRange != -1)
 				{
 					m_iState = 3;
 					break;
 				}
-		
+						
 				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 				m_pkCharacterControl->SetControl(eUP,false);
 				
-				m_pkCharacterControl->DoEmote(1);				
+				UseOffensiveSkill();
+	
 			}
 			else
 			{
@@ -245,6 +248,45 @@ void P_AI::Touch(int iID)
 	fRot +=180;
 	m_pkCharacterControl->SetYAngle(fRot);								
 
+
+}
+
+float P_AI::GetOffensiveRange()
+{
+	float fRange = -1;
+
+	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
+	
+	for(int i =0;i<kSkills->size();i++)
+	{
+		if((*kSkills)[i]->m_iSkillType == eOFFENSIVE)
+		{
+			if((*kSkills)[i]->m_fTimeLeft == 0)
+			{
+				if((*kSkills)[i]->m_fRange > fRange)
+					fRange = (*kSkills)[i]->m_fRange;
+			}
+		}
+	}	
+
+	return fRange;
+}
+
+void P_AI::UseOffensiveSkill()
+{
+	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
+	
+	for(int i =0;i<kSkills->size();i++)
+	{
+		if((*kSkills)[i]->m_iSkillType == eOFFENSIVE)
+		{
+			if((*kSkills)[i]->m_fTimeLeft == 0)
+			{
+				(*kSkills)[i]->Use(m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
+				return;
+			}
+		}
+	}
 
 }
 

@@ -53,16 +53,16 @@ void P_ScriptInterface::SetHeartRate(float blub)
 
 void P_ScriptInterface::Touch(int iId)
 {  
-	//only do one touch per frame
-	if(m_pkZeroFps->GetCurrentFrame() == m_iLastTouchFrame)
-		return;
-	m_iLastTouchFrame = m_pkZeroFps->GetCurrentFrame();
-
-	vector<ScriptFuncArg> kArgs(1);
-	kArgs[0].m_kType.m_eType = tINT;
-	kArgs[0].m_pData = &iId;
-
-	m_pkEntityManager->CallFunction(m_pkEntity, "Touch",&kArgs);
+// 	//only do one touch per frame
+// 	if(m_pkZeroFps->GetCurrentFrame() == m_iLastTouchFrame)
+// 		return;
+// 	m_iLastTouchFrame = m_pkZeroFps->GetCurrentFrame();
+// 
+// 	vector<ScriptFuncArg> kArgs(1);
+// 	kArgs[0].m_kType.m_eType = tINT;
+// 	kArgs[0].m_pData = &iId;
+// 
+// 	m_pkEntityManager->CallFunction(m_pkEntity, "Touch",&kArgs);
 }
 
 void P_ScriptInterface::OnEvent(GameMessage& Msg)

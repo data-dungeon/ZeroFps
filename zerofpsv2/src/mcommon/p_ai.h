@@ -41,6 +41,8 @@ class MCOMMON_API P_AI: public Property
  		bool HandleSetValue( string kValueName, string kValue );
    
 		int FindClosestEnemy(float fMaxRange);
+		void UseOffensiveSkill();
+		float GetOffensiveRange();
 		
 	public:
 

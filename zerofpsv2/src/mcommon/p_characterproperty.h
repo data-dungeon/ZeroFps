@@ -11,6 +11,23 @@ using namespace std;
 
 class P_Buff;
 
+enum MCOMMON_API TargetType
+{
+	ePASSIVE				=	0,
+	eCHARACTER_TARGET =	1,
+	eGROUND_TARGET 	=	2,
+	eDIRECTION 			=	3,						
+	eITEM_TARGET		=	4,
+	eSELF					=	5,
+};
+
+enum MCOMMON_API SkillType
+{
+	eMISC			=	0,
+	eOFFENSIVE	=	1,
+	eDEFENSIVE	=	2,
+	eTRADE		=	3,
+};	
 
 class MCOMMON_API Skill
 {
@@ -32,17 +49,7 @@ class MCOMMON_API Skill
 		void UpdateFromScript();			
 
 	public:
-		enum SkillType
-		{
-			ePASSIVE				=	0,
-			eCHARACTER_TARGET =	1,
-			eGROUND_TARGET 	=	2,
-			eDIRECTION 			=	3,						
-			eITEM_TARGET		=	4,
-			eSELF					=	5,
-		};
-		
-		
+			
 		string	m_strInGameName;
 		string	m_strSchool;
 		string	m_strIcon;
@@ -51,7 +58,11 @@ class MCOMMON_API Skill
 		float		m_fReloadTime;
 		float		m_fTimeLeft;
 		float		m_fLastUpdate;
-		int		m_iType;;
+		
+		int		m_iTargetType;
+		int		m_iSkillType;
+		
+		float		m_fRange;
 		
 		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
 		~Skill();
@@ -236,14 +247,14 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void RemoveBuff(const string& strBuffName);
 		
 		//skills
-		bool AddSkill(const string& strSkillScript,const string& strParentSkill);
-		bool ChangeSkill(const string& strSkillScript,int iValue);
-		void SetSkill(const string& strSkillScript,int iLevel);
+		bool	AddSkill(const string& strSkillScript,const string& strParentSkill);
+		bool	ChangeSkill(const string& strSkillScript,int iValue);
+		void	SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
-		int UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
-		void RemoveAllSkills();
-		
-		void UpdateSkills();
+		int	UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
+		void	RemoveAllSkills();		
+		void	UpdateSkills();
+		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;	};
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);
