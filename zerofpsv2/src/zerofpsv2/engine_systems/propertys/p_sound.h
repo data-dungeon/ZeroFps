@@ -20,6 +20,7 @@ private:
 
 	string m_strFileName;
 	bool m_bLoop;
+	float m_fGain;
 	
 	string m_strStopFileName;
 
@@ -31,7 +32,7 @@ public:
 	P_Sound();
 	~P_Sound();
 
-	void StartSound(string strName, bool bLoop);
+	void StartSound(string strName, bool bLoop, float fGain=1.0f);
 	void StopSound(string strName);
 
 	void Update();
