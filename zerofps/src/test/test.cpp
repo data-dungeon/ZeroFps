@@ -40,7 +40,7 @@ void Test::OnInit(void) {
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
-  pkRender->SetFog(Vector4(.50,.55,.88,1),2,150,200,true);
+  pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 
 	FH_SkapaObject();
 
@@ -91,32 +91,23 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-	Object *kul=new Object;
-	kul->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-	kul->AddProperty(new ModelProperty());
-	kul->AddProperty(new CollisionProperty(&kul->GetPos(),new float(1)));		
+	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
 	kul->GetPos()=Vector3(5,5,5);		
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
-	
-	Object *kul2=new Object;
-	kul2->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-	kul2->AddProperty(new ModelProperty());
-	kul2->AddProperty(new CollisionProperty(&kul2->GetPos(),new float(1)));		
-	kul2->GetPos()=Vector3(6,5,5);		
-	pkObjectMan->Add(kul2);
-	pkCollisionMan->Add(kul2);	
+
 
 	
 	
-	for(int i=0;i<500;i++) {
-		Object *ball=new Object;
+	for(int i=0;i<200;i++) {
+		Object *ball=new BallObject(test);
 //		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-		ball->AddProperty(new ModelProperty());
-		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(1)));		
+//		ball->AddProperty(new ModelProperty());
+//		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(1)));		
 		float x=rand()%100;
 		float y=rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
+		ball->GetStatic()=true;
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}

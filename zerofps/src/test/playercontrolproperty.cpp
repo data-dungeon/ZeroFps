@@ -42,8 +42,8 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetPos().y=m_pkMap->Height(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
 	}
 
-	if(m_pkObject->GetPos().x>100)
-		m_pkObject->Remove();
+//	if(m_pkObject->GetPos().x>100)
+//		m_pkObject->Remove();
 
 };
 

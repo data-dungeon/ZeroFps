@@ -17,7 +17,6 @@ class ENGINE_API Object {
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		bool m_bStatic;	
-		bool m_bDelete;
 
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
@@ -38,10 +37,11 @@ class ENGINE_API Object {
 		
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
-//		inline bool &GetDelete(){return m_bDelete;};
-		inline bool &Static(){return m_bStatic;};		
+		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
+		
+		virtual void HandleCollision(Object* pkObject,bool bContinue);
 		
 };
 

@@ -72,3 +72,30 @@ void Object::Remove() {
 	}
 }
 
+void Object::HandleCollision(Object* pkObject,bool bContinue){
+//	cout<<"This Object Has not Collision handler"<<endl;
+	if(bContinue)
+		pkObject->HandleCollision(this,false);
+		
+		
+		
+	
+/*			EXAMPLE of how the collisionhandler may look like in a subclass of Object
+			
+
+	//if a ball colides with the player destroy it
+	if(typeid(*pkOther)==typeid(PlayerBallObject)){
+		PlayerBallObject *kO=dynamic_cast<PlayerBallObject*>(pkOther);
+		Remove();	
+		
+	} else if(bContinue){
+		pkOther->HandleCollision(this,false);
+	}
+*/
+}
+
+
+
+
+
+

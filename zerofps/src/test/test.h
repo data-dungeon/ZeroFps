@@ -10,6 +10,8 @@
 
 #include "normaldrawproperty.h"
 #include "playercontrolproperty.h"
+#include "ballobject.h"
+#include "playerballobject.h"
 
 class Test :public Application {
 	HeightMap *test;
