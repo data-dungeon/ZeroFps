@@ -30,7 +30,7 @@ class BASIC_API CmdSystem : public ZFSubSystem  {
 		
 		bool Set(const char* aName,const char* acData);							//set variable aName to dData
 
-		friend ZFObjectManger;
+		friend class ZFObjectManger;
 
 
 		bool StartUp();

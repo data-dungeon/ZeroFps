@@ -1,7 +1,7 @@
 class object	
 	class ZeroRTSSpawnPoint
 		parent object
-		set MadProperty m_kMadFile /data/mad/bush1.mad
+		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 		set MadProperty m_fScale 5
 	
 	class ZeroRTSTestBox
