@@ -9,19 +9,26 @@
 class DlgBox  
 {
 public:
-	DlgBox(GuiBuilder* pkGuiBuilder);
+	
+	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
+	
+	DlgBox(GuiBuilder* pkGuiBuilder, ZGuiWndProc oMainWndProc);
 	virtual ~DlgBox();
 
-	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
-
 	virtual bool Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc) = 0;
+
+	virtual bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
+		int iNumberOfParams,void *pkParams ) = 0;
+
+protected:
+
 	virtual bool OnOpen(int x=-1, int y=-1) = 0;
 	virtual bool OnClose(bool bSave) = 0;
 
-protected:
 	GuiBuilder* m_pkGuiBuilder;	
 	ZGui* m_pkGui;
 	ZGuiWnd* m_pkDlgBox;
+	ZGuiWndProc m_oMainWndProc;
 };
 
 #endif // #ifndef _DLGBOX_H

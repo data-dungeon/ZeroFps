@@ -23,12 +23,12 @@ public:
 
 	virtual bool StartRender() = 0;
 	virtual bool EndRender() = 0;
-	virtual bool RenderQuad(Rect kScreenRect, bool bMask=false) = 0;
-	virtual bool RenderBorder(Rect kScreenRect, bool bMask=false) = 0;
+	virtual bool RenderQuad(Rect kScreenRect/*, bool bMask=false*/) = 0;
+	virtual bool RenderBorder(Rect kScreenRect/*, bool bMask=false*/) = 0;
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;
 	virtual bool SetFont(ZGuiFont* pkFont) = 0;
 	virtual bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true) = 0;
-	virtual bool SetMaskTexture(int iID) = 0;
+	//virtual bool SetMaskTexture(int iID) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
 };
 

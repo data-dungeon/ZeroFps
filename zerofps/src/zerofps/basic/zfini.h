@@ -19,8 +19,6 @@ using namespace std;
 #include "zfobject.h"
 #include "basic_x.h"
 
-class ZFBasicFS;
-
 class BASIC_API ZFIni : public ZFObject
 {
 public:
@@ -32,6 +30,7 @@ public:
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
 	void GetCommandStrings(vector<string>* pkCommands);
 	char* GetValue(char* strSection, char* strKey);
+	void GetSectionNames(vector<string>& kSectionList);
 	bool Open(const char* strFileName, bool bCommandFile);
 	bool ExecuteCommands(const char* strName);
 	ZFIni();
@@ -66,8 +65,6 @@ private:
 	char** m_pstrSections;
 	SectionData* m_pkSectionData;
 	CommandData* m_pkCommandData;
-
-	//ZFBasicFS* m_pkBasicFS;
 };
 
 #endif // !defined(AFX_ZFINI_H__3DD9DED9_3B35_455C_B1FB_B5D7BD87B819__INCLUDED_)

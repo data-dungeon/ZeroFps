@@ -8,6 +8,7 @@
 #include "../../basic/zguifont.h"
 #include "zguiresourcemanager.h"
 #include "zgui.h"
+#include <typeinfo>
 
 ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;
@@ -28,15 +29,17 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkCallback = NULL;
 	m_kArea = kRectangle; 
 	m_iID = iID;
+	
+	strcpy(m_szName, "None");
+
 	m_strText = NULL;
 	m_iTextLength = 0;
 	m_pkSkin = NULL;
-	m_iBkMaskTexture = -1;
-	m_iBorderMaskTexture = -1;
 	m_bVisible = bVisible;
 	m_bInternalControl = false;
 	m_bEnabled = true;
 	m_pkFont = NULL;
+	m_iTabOrderNumber = 0;
 
 	m_pkGuiMan=static_cast<ZGuiResourceManager*>
 		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));			
@@ -52,38 +55,34 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_kMoveArea = m_kArea;
 
 	SetWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+
+	afBkColorBuffer[0]=afBkColorBuffer[1]=afBkColorBuffer[2]=-1.0f;
 }
 
 ZGuiWnd::~ZGuiWnd()
 {
-	printf("deleting window with id: %i\n", m_iID);
-
 	// Om detta fönster har en förälder,
 	// låt denna förälder ta bort detta barn.
+	
 	ZGuiWnd* pkParent = GetParent();
-	if(pkParent)
+
+	while(pkParent)
 	{
-		pkParent->RemoveChild(this);
-		pkParent->SetFocus();
-		ZGuiWnd::m_pkFocusWnd = pkParent;
+		if(pkParent)
+		{
+			pkParent->RemoveChild(this);
+			pkParent->SetFocus();
+			ZGuiWnd::m_pkFocusWnd = pkParent;
+			pkParent = pkParent->GetParent();
+		}
+		else
+		{
+			break;
+		}
 	}
 
 	// Nollställ eventuella statiska pekare.
 	ResetStaticClickWnds(this);
-
-	// Ta bort alla barn fönster som tillhör detta fönster.
-	for( WINit w = m_kChildList.begin(); w != m_kChildList.end(); w++)
-	{
-		ZGuiWnd* pkChild = (*w);
-		if(pkChild)
-		{
-			ResetStaticClickWnds(pkChild);
-			/*delete pkChild;
-			pkChild = NULL;*/
-			m_pkGUI->UnregisterWindow(pkChild);
-		}
-	}
-	m_kChildList.clear();
 }
 
 // Används tex. för att lägga till en textbox till en listbox.
@@ -141,10 +140,10 @@ bool ZGuiWnd::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 		iPrevPosY = m_kArea.Top;
 
 	ZGuiWnd* pkParent = GetParent();
-	if(pkParent != NULL && bScreenSpace == false)
+	if(pkParent && bScreenSpace == false)
 	{
-		x += GetParent()->m_kArea.Left;
-		y += GetParent()->m_kArea.Top;
+		x += pkParent->m_kArea.Left;
+		y += pkParent->m_kArea.Top;
 	}
 
 	int w = m_kArea.Width();
@@ -240,21 +239,8 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 
 	pkRenderer->SetSkin(m_pkSkin); 
 
-	if(m_iBkMaskTexture != -1)
-	{
-		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
-		pkRenderer->RenderQuad(m_kArea, true);
-	}
-	else
-		pkRenderer->RenderQuad(m_kArea);
-
-	if(m_iBorderMaskTexture != -1)
-	{
-		pkRenderer->SetMaskTexture(m_iBorderMaskTexture);
-		pkRenderer->RenderBorder(m_kArea, true);
-	}
-	else
-		pkRenderer->RenderBorder(m_kArea);
+	pkRenderer->RenderQuad(m_kArea);
+	pkRenderer->RenderBorder(m_kArea);
 
 	// Render childrens back to front
 	for( WINrit w = m_kChildList.rbegin();
@@ -274,7 +260,7 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	ZGuiWnd *pkFind = NULL;
 
 	WINit child = m_kChildList.begin();
-	while( (pkFind == NULL)&&(child!=m_kChildList.end()) )
+	while( (pkFind == NULL) && (child!=m_kChildList.end()) )
 	{
 		pkFind = (*child)->Find(x, y);
 		child++;
@@ -296,12 +282,9 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	return NULL;
 }
 
-void ZGuiWnd::SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture, 
-					  int iBorderMaskTexture)
+void ZGuiWnd::SetSkin(ZGuiSkin* pkSkin)
 {
 	m_pkSkin = pkSkin;
-	m_iBkMaskTexture = iBkMaskTexture;
-	m_iBorderMaskTexture = iBorderMaskTexture;
 }
 
 void ZGuiWnd::SetFont(ZGuiFont* pkFont)
@@ -314,17 +297,16 @@ void ZGuiWnd::SetGUI(ZGui* pkGui)
 	m_pkGUI = pkGui;
 }
 
-void ZGuiWnd::SetText(char* strText)
+void ZGuiWnd::SetText(char* szText, bool bResizeWnd)
 {
-	if(strText == NULL)
+	if(szText == NULL)
 	{
 		delete[] m_strText;
 		m_iTextLength = 1;
 		m_strText = new char[m_iTextLength];
 		m_strText[0] = '\0';
+		return;
 	}
-
-	int iLength = strlen(strText);
 
 	if(m_strText != NULL)
 	{
@@ -332,9 +314,25 @@ void ZGuiWnd::SetText(char* strText)
 		m_iTextLength = 0;
 	}
 
-	m_iTextLength = iLength;
+	m_iTextLength = strlen(szText)+1;
 	m_strText = new char[m_iTextLength+1];
-	strcpy(m_strText, strText);
+	strcpy(m_strText, szText);
+
+	if(bResizeWnd)
+	{
+		ZGui* pkGui = GetGUI();
+		if(!m_pkFont && pkGui)
+			m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+
+		int usTextLength = 0;
+
+		if(m_pkFont != NULL)
+			usTextLength = m_pkFont->GetLength(szText);
+
+		int usFullsize = usTextLength;
+		
+		Resize(usFullsize,16); 
+	}
 }
 
 // Get the windows area, relative to it´s parent.
@@ -344,7 +342,7 @@ void ZGuiWnd::SetText(char* strText)
 Rect ZGuiWnd::GetWndRect()		
 {
 	Rect kArea = m_kArea;
-	if(m_pkParent != NULL)
+	if(m_pkParent)
 	{
 		kArea.Left	 -= m_pkParent->m_kArea.Left; 
 		kArea.Top	 -= m_pkParent->m_kArea.Top;
@@ -363,7 +361,6 @@ Rect ZGuiWnd::GetScreenRect()
 
 void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 {
-
 	m_kArea.Right = m_kArea.Left + Width;
 	m_kArea.Bottom = m_kArea.Top + Height;
 
@@ -457,4 +454,66 @@ void ZGuiWnd::ResetStaticClickWnds(ZGuiWnd* pkWnd)
 		ZGuiWnd::m_pkWndUnderCursor = NULL;
 	if(pkWnd == ZGuiWnd::m_pkWndClicked)
 		ZGuiWnd::m_pkWndClicked = NULL;
+}
+
+void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+{
+	string strType = "Error";
+	const type_info& t = typeid(*this);
+
+	if(t==typeid(ZGuiTextbox))
+		strType = "TextBox";
+	else
+	if(t==typeid(ZGuiScrollbar))
+		strType = "Scrollbar";
+	else
+	if(t==typeid(ZGuiRadiobutton))
+		strType = "RadioButton";
+	else
+	if(t==typeid(ZGuiListbox))
+		strType = "ListBox";
+	else
+	if(t==typeid(ZGuiLabel))
+		strType = "Label";
+	else
+	if(t==typeid(ZGuiCheckbox))
+		strType = "CheckBox";
+	else
+	if(t==typeid(ZGuiButton))
+		strType = "Button";
+	else
+	if(t==typeid(ZGuiWnd))
+		strType = "Window";
+	else
+	if(t==typeid(ZGuiCombobox))
+		strType = "ComboBox";
+
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, strType) );
+}
+
+void ZGuiWnd::Enable()
+{
+/*	if(m_pkSkin)
+	{
+		if(afBkColorBuffer[0] > 0)
+			memcpy(m_pkSkin->m_afBkColor,afBkColorBuffer,sizeof(float)*3);
+	}
+*/
+	m_bEnabled = true;
+}
+
+void ZGuiWnd::Disable()
+{
+	m_bEnabled = false;
+/*
+	if(m_pkSkin)
+	{
+		// Copy the current background color to a buffer.
+		memcpy(afBkColorBuffer,m_pkSkin->m_afBkColor,sizeof(float)*3);
+
+		// Set current background color to gray (disabled).
+		m_pkSkin->m_afBkColor[0] = 0.839f; // (1.0f / 255) * 214;
+		m_pkSkin->m_afBkColor[1] = 0.827f; // (1.0f / 255) * 211;
+		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
+	}*/
 }

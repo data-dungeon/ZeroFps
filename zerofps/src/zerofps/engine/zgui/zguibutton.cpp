@@ -15,10 +15,10 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiControl(kArea, pkParent, bVisible, iID)
 {
 	m_bEnabled = true;
-	m_kSkinUp=NULL;
-	m_kSkinDown=NULL;
-	m_kSkinHighLight=NULL;
-	m_iMaskTextureUp = -1;
+	m_pkSkinBnUp=NULL;
+	m_pkSkinBnDown=NULL;
+	m_pkSkinBnHLight=NULL;
+//	m_iMaskTextureUp = -1;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
 }
 
@@ -33,20 +33,20 @@ bool ZGuiButton::Notify(ZGuiWnd* pkWindow, int iCode)
 	{
 		if(GetMoveArea() == GetScreenRect())
 		{
-			m_pkSkin = m_kSkinDown;
+			m_pkSkin = m_pkSkinBnDown;
 		}
 		else
 		{
-			m_iBkMaskTexture = m_iMaskTextureUp;
-			m_pkSkin = m_kSkinUp;
+//			m_iBkMaskTexture = m_iMaskTextureUp;
+			m_pkSkin = m_pkSkinBnUp;
 		}
 	}
 	else
 	if(iCode == NCODE_OVER_CTRL)
-		m_pkSkin = m_kSkinHighLight;
+		m_pkSkin = m_pkSkinBnHLight;
 	else
 	{
-		m_pkSkin = m_kSkinUp;
+		m_pkSkin = m_pkSkinBnUp;
 	}
 
 	if(iCode == NCODE_CLICK_UP)
@@ -65,14 +65,14 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	if(!IsVisible())
 		return true;
 
-	if(m_iBkMaskTexture > 0)
-		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
+//	if(m_iBkMaskTexture > 0)
+//		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
 
 	if(m_pkFont)
 		pkRenderer->SetFont(m_pkFont);
 
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect(), (m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderQuad(GetScreenRect()/*, (m_iBkMaskTexture > 0)*/); 
 
 	if(m_pkSkin)
 		pkRenderer->RenderBorder(GetScreenRect().Contract(m_pkSkin->m_unBorderSize));
@@ -103,22 +103,26 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	return true;
 }
 
-void ZGuiButton::SetButtonUpSkin(ZGuiSkin* pkSkin, int iMaskTexture)
+void ZGuiButton::SetButtonUpSkin(ZGuiSkin* pkSkin/*, int iMaskTexture*/)
 {
-	m_pkSkin = m_kSkinUp = pkSkin;
-	m_iMaskTextureUp = iMaskTexture;
-	m_iBkMaskTexture = m_iMaskTextureUp;
+	m_pkSkin = m_pkSkinBnUp = pkSkin;
+//	m_iMaskTextureUp = iMaskTexture;
+//	m_iBkMaskTexture = m_iMaskTextureUp;
 }
 
 void ZGuiButton::SetButtonDownSkin(ZGuiSkin* pkSkin)
 {
-	m_kSkinDown = pkSkin;
+	m_pkSkinBnDown = pkSkin;
 }
 
 void ZGuiButton::SetButtonHighLightSkin(ZGuiSkin* pkSkin)
 {
-	m_kSkinHighLight = pkSkin;
+	m_pkSkinBnHLight = pkSkin;
 }
 
-
-
+void ZGuiButton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+{
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnUp, string("Button up")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnDown, string("Button down")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnHLight, string("Button focus")) );
+}

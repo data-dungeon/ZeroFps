@@ -186,13 +186,13 @@ void ZeroFps::MainLoop(void) {
 					m_pkInput->Reset();
 				}
 				
-				if(m_bGuiTakeControl)
+        /*        if(m_bGuiTakeControl)
 				{
 					if(m_bGuiMode)
 						m_pkInput->SetInputEnabled(false);
 					else
 						m_pkInput->SetInputEnabled(true);
-				}
+                }*/
 			}
 			
 				

@@ -1,26 +1,27 @@
 // Check box.cpp: implementation of the Checkbox class.
 //
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 #include "zguicheckbox.h"
 #include "../../render/zguirenderer.h"
 #include "zguilabel.h"
 #include "../../basic/zguifont.h"
 #include "zguiradiobutton.h"
+#include "zgui.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID) :
+///////////////////////////////////////////////////////////////////////////////
+// Name: Construction/Destruction
+// Description: 
+//
+ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, 
+						   bool bVisible, int iID) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
 	m_bChecked = false;
 	m_bEnabled = true;
-	m_iMaskTexUnchecked = -1; 
-	m_iMaskTexChecked = -1;
 
-	m_pkLabel = new ZGuiLabel(Rect(0, 0, kRectangle.Width(), kRectangle.Height()), this, true, 0);
+	m_pkLabel = new ZGuiLabel(Rect(0, 0, kRectangle.Width(), 
+		kRectangle.Height()), this, true, 0);
 	m_pkLabel->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	m_pkLabel->Enable();
 	m_pkLabel->Move(20,0);
@@ -28,38 +29,61 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 
 ZGuiCheckbox::~ZGuiCheckbox()
 {
-	ResetStaticClickWnds(m_pkLabel);
-	delete m_pkLabel;
-	m_pkLabel = NULL;
+	if(m_pkLabel)
+	{
+		ResetStaticClickWnds(m_pkLabel);
+		delete m_pkLabel;
+		m_pkLabel = NULL;
+	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: Render
+// Description: 
+//
 bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 {
 	if(m_pkFont)
 		pkRenderer->SetFont(m_pkFont);
 
-	if(m_iBkMaskTexture > 0)
-		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
-
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect(), (m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderQuad(GetScreenRect()); 
 
 	m_pkLabel->Render(pkRenderer); 
 	return false;
 }
 
-void ZGuiCheckbox::SetButtonCheckedSkin(ZGuiSkin* pkSkin, int iMaskTexture)
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetButtonCheckedSkin
+// Description: 
+//
+void ZGuiCheckbox::SetButtonCheckedSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkinButtonChecked = pkSkin;
-	m_iMaskTexChecked = iMaskTexture;
+	m_pkSkinBnDown = pkSkin;
 }
 
-void ZGuiCheckbox::SetButtonUncheckedSkin(ZGuiSkin* pkSkin, int iMaskTexture)
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetButtonUncheckedSkin
+// Description: 
+//
+void ZGuiCheckbox::SetButtonUncheckedSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkin = m_pkSkinButtonUnchecked = pkSkin;
-	m_iBkMaskTexture = m_iMaskTexUnchecked = iMaskTexture;
+	m_pkSkin = m_pkSkinBnUp = pkSkin;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetButtonUncheckedSkin
+// Description: 
+//
+void ZGuiCheckbox::SetLabelSkin(ZGuiSkin* pkSkin)
+{
+	m_pkLabel->SetSkin(pkSkin);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: Notify
+// Description: 
+//
 bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_CLICK_UP)
@@ -68,13 +92,11 @@ bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 		if(m_bChecked == false)
 		{
-			m_pkSkin = m_pkSkinButtonUnchecked;
-			m_iBkMaskTexture = m_iMaskTexUnchecked;
+			m_pkSkin = m_pkSkinBnUp;
 		}
 		else
 		{
-			m_pkSkin = m_pkSkinButtonChecked;
-			m_iBkMaskTexture = m_iMaskTexChecked;
+			m_pkSkin = m_pkSkinBnDown;
 		}
 	}
 
@@ -83,54 +105,78 @@ bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 	return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: CheckButton
+// Description: 
+//
 void ZGuiCheckbox::CheckButton()
 {
 	m_bChecked = true;
-	m_pkSkin = m_pkSkinButtonChecked;
-	m_iBkMaskTexture = m_iMaskTexChecked;
+	m_pkSkin = m_pkSkinBnDown;
 }
  
+///////////////////////////////////////////////////////////////////////////////
+// Name: UncheckButton
+// Description: 
+//
 void ZGuiCheckbox::UncheckButton()
 {
 	m_bChecked = false;
-	m_pkSkin = m_pkSkinButtonUnchecked;
-	m_iBkMaskTexture = m_iMaskTexUnchecked;
+	m_pkSkin = m_pkSkinBnUp;
 }
 
-void ZGuiCheckbox::SetText(char* strText)
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetText
+// Description: 
+//
+void ZGuiCheckbox::SetText(char* szText, bool bResizeWnd)
 {
-	int iWidth = 0;
-
-	ZGuiFont* pkFont = m_pkFont;
-
-	if(pkFont)
-	{
-		for(int i=0; i<strlen(strText); i++)
-		{
-			char letter = strText[i];
-			iWidth += ( pkFont->m_aChars[letter].iSizeX + 
-				pkFont->m_cPixelGapBetweenChars );
-		}
-	}
-	else
-	{
-		for(int i=0; i<strlen(strText); i++)
-			iWidth += 16;
-	}
-
-	iWidth += 10;
-
-	m_pkLabel->SetText(strText);
-	m_pkLabel->Resize(iWidth,16); 
+	ZGui* pkGui = GetGUI();
+	if(!m_pkFont && pkGui)
+		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	
+	m_pkLabel->SetText(szText, true);
 	m_pkLabel->Enable();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: GetText
+// Description: 
+//
 char* ZGuiCheckbox::GetText() 
 { 
 	return m_pkLabel->GetText(); 
 } 
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: IsChecked
+// Description: 
+//
 bool ZGuiCheckbox::IsChecked()
 {
 	return m_bChecked;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: GetWndSkinsDesc
+// Description: 
+//
+void ZGuiCheckbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+{
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnUp, string("Checkbox: Button up")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnDown, 
+		string("Checkbox: Button down")) );
+
+	int iStart = pkSkinDesc.size(); 
+	m_pkLabel->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Checkbox: ");
+}
+
+void ZGuiCheckbox::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
+{
+	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+	iWidth = GetScreenRect().Width(); // dont allow horizontal resize
+
+	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 }

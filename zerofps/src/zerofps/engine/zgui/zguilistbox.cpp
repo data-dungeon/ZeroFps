@@ -8,6 +8,7 @@
 #include "zguiscrollbar.h"
 #include "zguibutton.h"
 #include "zgui.h"
+#include <typeinfo>
 
 // Static internal IDs for the scrollbars
 const int VERT_SCROLLBAR_ID = 620;
@@ -26,9 +27,9 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 	m_bIsMenu = false;
 
 	m_pkSelectedItem = NULL;
-	m_pkSkinItem = pkSkinItem;
-	m_pkSkinItemSelected = pkSkinItemSelected;
-	m_pkSkinItemHighLight = pkSkinItemHighLight;
+	m_pkSkinBnUp = pkSkinItem;
+	m_pkSkinBnDown = pkSkinItemSelected;
+	m_pkSkinBnHLight = pkSkinItemHighLight;
 
 	m_unItemHeight = iItemHeight;
 
@@ -40,10 +41,6 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 	CreateInternalControls();
 
 	m_kItemArea = GetWndRect();
-
-	if(m_pkScrollbarVertical != NULL)
-		m_kItemArea.Right -= m_pkScrollbarVertical->GetWndRect().Width(); 
-
 	m_unOriginalHeight = GetScreenRect().Height();
 
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
@@ -54,11 +51,15 @@ ZGuiListbox::~ZGuiListbox()
 	for( itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
 	{
 		delete (*it);
+		(*it) = NULL;
 	}
 
 	m_pkItemList.clear(); 
 
+	m_pkSelectedItem = NULL;
+
 	delete m_pkScrollbarVertical;
+	m_pkScrollbarVertical = NULL;
 }
 
 bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
@@ -66,48 +67,38 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 	if(!IsVisible())
 		return true;
 
-	if(m_iBkMaskTexture > 0)
-		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
-
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
-	pkRenderer->RenderBorder(GetScreenRect(),(m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderQuad(GetScreenRect()); 
+	pkRenderer->RenderBorder(GetScreenRect()); 
 
 	if(m_pkScrollbarVertical->IsVisible())
 		m_pkScrollbarVertical->Render( pkRenderer );
 
 	if(m_pkSelectedItem)
-		m_pkSelectedItem->Select();
+	{
+		if(m_bIsMenu == false)
+			m_pkSelectedItem->Select();
+	}
 
 	for( itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
-		{
-			Rect rc = (*it)->GetButton()->GetWndRect();
-
-			if(m_pkScrollbarVertical->IsVisible() == false)
-				(*it)->GetButton()->Resize(rc.Width()+20, rc.Height());
-
-			(*it)->GetButton()->Render( pkRenderer );
-
-			if(m_pkScrollbarVertical->IsVisible() == false)
-				(*it)->GetButton()->Resize(rc.Width(), rc.Height());
-		}
+		(*it)->GetButton()->Render( pkRenderer );
 
 	return true;
 }
 
 void ZGuiListbox::SetItemNormalSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkinItem = pkSkin;
+	m_pkSkinBnUp = pkSkin;
 }
 
 void ZGuiListbox::SetItemSelectedSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkinItemSelected = pkSkin;
+	m_pkSkinBnDown = pkSkin;
 }
 
 void ZGuiListbox::SetItemHighLightSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkinItemHighLight = pkSkin;
+	m_pkSkinBnHLight = pkSkin;
 }
 
 void ZGuiListbox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
@@ -125,7 +116,6 @@ void ZGuiListbox::CreateInternalControls()
 	int w = m_iScrollbarWidth;
 	int h = rc.Height();
 
-
 	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,0,x+w,GetScreenRect().Height()),
 		this,true,VERT_SCROLLBAR_ID); 
 
@@ -135,21 +125,9 @@ void ZGuiListbox::CreateInternalControls()
 ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSelect)
 {
 	ZGuiListitem* pkNewItem;
-	
-	if(m_bIsMenu == false)
-	{
-		pkNewItem = new ZGuiListitem(this, strText, iIndex, 
-			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight);
-		pkNewItem->GetButton()->SetGUI(GetGUI());
-		pkNewItem->m_bMenuItem = false;
-	}
-	else
-	{
-		pkNewItem = new ZGuiListitem(this, strText, iIndex, 
-			m_pkSkinItem, m_pkSkinItem, m_pkSkinItemSelected);
-		pkNewItem->GetButton()->SetGUI(GetGUI());
-		pkNewItem->m_bMenuItem = true;
-	}
+	pkNewItem = new ZGuiListitem(this, strText, iIndex, 
+		m_pkSkinBnUp, m_pkSkinBnDown, m_pkSkinBnHLight);
+	pkNewItem->GetButton()->SetGUI(GetGUI());
 
 	m_pkItemList.push_back(pkNewItem);
 
@@ -164,13 +142,22 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 
 	UpdateList();
 
+	ZGui* pkGui = GetGUI();
+	if(m_pkFont == NULL && pkGui)
+		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+
 	int iWidth = GetScreenRect().Width();
 	int iHeight = GetScreenRect().Height();
-	int iNewWidth = FONT_SIZE * (strlen(strText)+1);
+	int iNewWidth = m_pkFont->GetLength(strText) + 25;
 
 	if(iNewWidth > iWidth && m_bIsMenu == true)
 	{
 		ZGuiWnd::Resize( iNewWidth, iHeight);
+		
+		// Also resize combobox if that is the parent
+		ZGuiWnd* pkParent = GetParent();
+		if(pkParent && typeid(*pkParent)==typeid(ZGuiCombobox))
+			pkParent->Resize( iNewWidth, iHeight);
 
 		list<ZGuiListitem*>::iterator it;
 		for( it = m_pkItemList.begin();
@@ -246,12 +233,13 @@ bool ZGuiListbox::RemoveAllItems()
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
-			delete (*it);
+			ZGuiListitem* pkListItem = (*it);
+			delete pkListItem;
 		 }
 
-	m_pkSelectedItem = NULL;
-
 	m_pkItemList.clear();
+
+	m_pkSelectedItem = NULL;
 	UpdateList();
 
 	return true;
@@ -322,8 +310,8 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 			(*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
 
 			Rect rc = (*it)->GetButton()->GetScreenRect();
-			if( rc.Bottom > m_pkScrollbarVertical->GetScreenRect().Top && 
-				rc.Top < m_pkScrollbarVertical->GetScreenRect().Bottom)
+			if( rc.Bottom > GetScreenRect().Top && 
+				rc.Top < GetScreenRect().Bottom)  
 			{
 				(*it)->GetButton()->Show();
 			}
@@ -358,6 +346,16 @@ ZGuiListitem* ZGuiListbox::GetItem(unsigned int iIndex)
 void ZGuiListbox::IsMenu(bool bMenu)
 {
 	m_bIsMenu = bMenu;
+
+	if(bMenu == true)
+		m_pkScrollbarVertical->Hide();
+
+	// must de-activte autohide because we dont
+	// want the scrollbar to show it self if the
+	// listbox is a menu.
+	m_pkScrollbarVertical->SetAutoHide(!bMenu); 
+
+	UpdateList();
 }
 
 void ZGuiListbox::UpdateList()
@@ -371,26 +369,45 @@ void ZGuiListbox::UpdateList()
 	float fThumbSize = (float) iListboxSize / (float) iElementSize;
 
 	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);
-	ScrollItems(m_pkScrollbarVertical);
-
+	
 	if(fThumbSize >= 0.99f || iElements == 0)
 	{
 		m_pkScrollbarVertical->Hide();
 	}
 	else
 	{
-		m_pkScrollbarVertical->Show();
+		if(m_bIsMenu == false) // don't show scrollbar if menu
+			m_pkScrollbarVertical->Show();
 	}
+
+	// Resize all items
+	int iNewWidth = GetScreenRect().Width();
+	if(m_pkScrollbarVertical->IsVisible())
+		iNewWidth -= m_iScrollbarWidth;
+
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+			(*it)->Resize( iNewWidth, m_unItemHeight);
+
+
+	ScrollItems(m_pkScrollbarVertical);
 }
 
 void ZGuiListbox::Resize(int Width, int Height)
 {
-	if(Height > m_unOriginalHeight)
-		Height = m_unOriginalHeight;
+/*	if(Height > m_unOriginalHeight)
+		Height = m_unOriginalHeight;*/
 
 	Rect rc = GetWndRect();
 	rc.Bottom = rc.Top + Height;
-	rc.Right = rc.Left + Width-m_iScrollbarWidth;
+	rc.Right = rc.Left + Width;
+
+	if(m_pkScrollbarVertical)
+	{
+		if(m_pkScrollbarVertical->IsVisible())
+			rc.Right -= m_iScrollbarWidth;	
+	}
 
 	ZGuiWnd::Resize(Width, Height); 
 
@@ -405,6 +422,9 @@ void ZGuiListbox::Resize(int Width, int Height)
 
 void ZGuiListbox::SelNone()
 {
+	if(m_pkSelectedItem)
+		m_pkSelectedItem->Deselect();
+
 	m_pkSelectedItem = NULL;
 }
 
@@ -436,7 +456,42 @@ int ZGuiListbox::Find(char* strString)
 	return -1;
 }
 
+bool ZGuiListbox::SelItem(int iIndex)
+{
+	if(iIndex < 0 || iIndex > m_pkItemList.size()-1)
+		return false;
 
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 if((*it)->GetIndex() == iIndex)
+			 {
+				 if(m_pkSelectedItem)
+					m_pkSelectedItem->Deselect();
 
+				 m_pkSelectedItem = (*it);
 
+				 if(m_bIsMenu == false)
+					m_pkSelectedItem->Select();
 
+				 //ZGuiWnd::m_pkFocusWnd = m_pkSelectedItem->GetButton();
+				 break;
+			 }
+		 }
+
+	return true;
+}
+
+void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+{
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, string("Listbox")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnUp, string("Listbox: Button up")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnDown, string("Listbox: Button down")) );
+	pkSkinDesc.push_back( SKIN_DESC(m_pkSkinBnHLight, string("Listbox: Button focus")) );
+
+	int iStart = pkSkinDesc.size(); 
+	m_pkScrollbarVertical->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Listbox: ");
+}

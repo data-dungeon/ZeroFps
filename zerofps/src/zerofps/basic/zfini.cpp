@@ -194,7 +194,7 @@ char* ZFIni::GetValue(char *strSection, char *strKey)
 bool ZFIni::ProcessINIFile()
 {
 	m_iNumSections=0;
-
+	
 	// Kolla hur många sektioner som finns i filen.
 	// och kopiera dess position sammt dess namn.
 	int iCurrSection=0, iLineLength=0;
@@ -234,7 +234,9 @@ bool ZFIni::ProcessINIFile()
 						length = 0;
 					m_pstrSections[iCurrSection] = new char[length+1];
 					memset(m_pstrSections[iCurrSection], 0, length);
-					strncpy(m_pstrSections[iCurrSection++], m_pstrLines[line]+b1, b2-b1);
+					strncpy(m_pstrSections[iCurrSection], m_pstrLines[line]+b1, length);
+					m_pstrSections[iCurrSection][length] = '\0'; // null-terminate string
+					iCurrSection++;
 				}
 			}
 		}
@@ -323,6 +325,8 @@ bool ZFIni::ProcessINIFile()
 				m_pkSectionData[sec].strKeyValue[key][value_length] = 0;
 		}
 	}
+
+	printf("Num sections=%i\n", m_iNumSections);
 
 	return true;
 }
@@ -425,4 +429,10 @@ bool ZFIni::ExecuteCommands(const char* strName)
 	}
 
 	return false;
+}
+
+void ZFIni::GetSectionNames(vector<string>& kSectionList)
+{
+	for(int i=0; i<m_iNumSections; i++)
+		kSectionList.push_back(m_pstrSections[i]);
 }

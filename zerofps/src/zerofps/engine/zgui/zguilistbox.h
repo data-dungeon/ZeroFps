@@ -20,22 +20,23 @@ class ZGuiScrollbar;
 class ENGINE_API ZGuiListbox : public ZGuiControl
 {
 public:
+	bool SelItem(int iIndex);
 	int GetItemCount();
 	void SelNone();
-	ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0, int iItemHeight=20, 
-		ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL);
+	ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
+		int iID=0, int iItemHeight=20, ZGuiSkin* pkSkinItem=NULL, 
+		ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL);
 	virtual ~ZGuiListbox();
-
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
 	int Find(char* strString);
 	void Resize(int Width, int Height);
-	void UpdateList();
 	bool RemoveAllItems();
 	bool RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev);
 	void IsMenu(bool bMenu=true);
 	ZGuiListitem* GetItem(unsigned int iIndex);
 	ZGuiListitem* AddItem(char* strText, unsigned int iIndex, bool bSelect); 
-	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
-		ZGuiSkin* pkSkinThumbButtonHighLight);
+	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
 	void SetItemNormalSkin(ZGuiSkin* pkSkin);
 	void SetItemSelectedSkin(ZGuiSkin* pkSkin);
 	void SetItemHighLightSkin(ZGuiSkin* pkSkin);
@@ -55,11 +56,12 @@ public:
 
 private:
 	
+	void UpdateList();
 	void ScrollItems(ZGuiScrollbar* pkScrollbar);
 	void CreateInternalControls();
 
-	ZGuiSkin* m_pkSkinItem, *m_pkSkinItemSelected, *m_pkSkinItemHighLight;
-	ZGuiScrollbar* m_pkScrollbarVertical, *m_pkScrollbarHorizontal;
+	ZGuiSkin* m_pkSkinBnUp, *m_pkSkinBnDown, *m_pkSkinBnHLight;
+	ZGuiScrollbar* m_pkScrollbarVertical;
 	list<ZGuiListitem*> m_pkItemList;
 	unsigned short m_unItemHeight;
 	unsigned short m_unOriginalHeight;

@@ -21,17 +21,18 @@ public:
 	ZGuiButton(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
 	virtual ~ZGuiButton();
 
-	void SetButtonUpSkin(ZGuiSkin* kSkin, int iMaskTexture=-1);
+	void SetButtonUpSkin(ZGuiSkin* kSkin/*, int iMaskTexture=-1*/);
 	void SetButtonDownSkin(ZGuiSkin* kSkin);
 	void SetButtonHighLightSkin(ZGuiSkin* kSkin);
 	bool Render( ZGuiRender* renderer );
-	ZGuiSkin* GetButtonUpSkin() { return m_kSkinUp; }
-	ZGuiSkin* GetButtonDownSkin() { return m_kSkinDown; }
+	ZGuiSkin* GetButtonUpSkin() { return m_pkSkinBnUp; }
+	ZGuiSkin* GetButtonDownSkin() { return m_pkSkinBnDown; }
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc);
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
-	ZGuiSkin* m_kSkinUp, *m_kSkinDown, *m_kSkinHighLight;
-	int m_iMaskTextureUp;
+	ZGuiSkin* m_pkSkinBnUp, *m_pkSkinBnDown, *m_pkSkinBnHLight;
+//	int m_iMaskTextureUp;
 };
 
 #endif // !defined(AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_)

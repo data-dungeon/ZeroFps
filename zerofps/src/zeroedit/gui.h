@@ -49,9 +49,10 @@ private:
 	map<string, int> m_kTextureMap;
 	ZGuiSkin* GetSkin(char* strName);
 	int GetTexture(char* strName);
-	bool m_bMenuActive;
+
 	int m_iScreenCX;
 	int m_iScreenCY;
+	bool m_bGuiHaveFocus;
 	
 	Rect GetScreenRect() { return Rect(0,0,m_pkEdit->m_iWidth, m_pkEdit->m_iHeight); }
 
@@ -65,7 +66,9 @@ private:
 
 public:
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
-	bool IsMenuActive() { return m_bMenuActive; }
+
+	void CaptureInput(bool bCapture);
+	bool HaveFocus() { return m_bGuiHaveFocus; }
 
 	Gui(ZeroEdit* pkEdit);
 	virtual ~Gui();

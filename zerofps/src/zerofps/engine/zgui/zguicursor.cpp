@@ -13,7 +13,7 @@ ZGuiCursor::ZGuiCursor()
 {
 	m_bVisible = true;
 	m_pkSkin = NULL;
-	m_iMaskTexture = -1;
+	//m_iMaskTexture = -1;
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_kRect = Rect(0,0,16,16);
 }
@@ -42,18 +42,18 @@ void ZGuiCursor::Render()
 	if(m_pkSkin != NULL)
 		m_pkRenderer->SetSkin(m_pkSkin);
 
-	bool bMask = (m_iMaskTexture == -1) ? false : true;
+//	bool bMask = (m_iMaskTexture == -1) ? false : true;
 
-	if(bMask)
-		m_pkRenderer->SetMaskTexture(m_iMaskTexture);
+/*	if(bMask)
+		m_pkRenderer->SetMaskTexture(m_iMaskTexture);*/
 
-	m_pkRenderer->RenderQuad(m_kRect, bMask);
+	m_pkRenderer->RenderQuad(m_kRect/*, bMask*/);
 }
 
-void ZGuiCursor::SetSkin(ZGuiSkin *pkSkin, int iMaskTexture)
+void ZGuiCursor::SetSkin(ZGuiSkin *pkSkin/*, int iMaskTexture*/)
 {
 	m_pkSkin = pkSkin;
-	m_iMaskTexture = iMaskTexture;
+	//m_iMaskTexture = iMaskTexture;
 }
 
 void ZGuiCursor::SetSize(int Width, int Height)

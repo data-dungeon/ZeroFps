@@ -7,14 +7,18 @@
 #include "editpropertydlg.h"
 #include "resource_id.h"
 #include <algorithm>
+#include <typeinfo>
 
 extern ZeroEdit Editor;
 
 // Window proc wrappers
 //////////////////////////
 
-static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
+static bool MAINWINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return Editor.m_pkGui->WndProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
+
+static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
+	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
 
 //////////////////////////
 
@@ -33,6 +37,8 @@ Gui::Gui(ZeroEdit* pkEdit)
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
 	pkEdit->pkFps->m_bGuiTakeControl = true;
+
+	m_bGuiHaveFocus = false;
 }
 
 Gui::~Gui()
@@ -51,19 +57,27 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 	switch(uiMessage)
 	{
+	case ZGM_SETFOCUS:
+		if(pkWindow)
+		{
+			//if(typeid(*pkWindow)==typeid(ZGuiTextbox))
+	/*		{
+				m_bKeyboardCaptured = true;		
+			}
+			else
+			{
+				m_bKeyboardCaptured = false;
+			}*/
+
+//			m_bKeyboardCaptured = true;
+		}
+		break;
+
 	case ZGM_COMMAND:
 		iControllID = ((int*)pkParams)[0];
 
 		switch(iControllID)
 		{
-		case ID_CLOSE:
-			m_pkEdit->pkFps->QuitEngine();
-			break;
-
-		case ID_CLOSE_GUI_BN:
-			m_pkEdit->pkFps->ToggleGui();
-			break;
-
 		case ID_FILEPATH_OPEN_BN:
 			char cmd[512];
 			char path[512];
@@ -76,7 +90,6 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				break;
 
 			case LOAD_TEMPLATE:
-				
 				// Som det är nu så letar den alltid i BIN katalagen.
 				// Egentligen skall man även skicka med m_pkFileDlgbox->m_szSearchPath.c_str(),
 				// men detta går nämligen inte eftersom Execute klipper strängen när den 
@@ -91,9 +104,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				break;
 
 			case SAVE_TEMPLATE:
-
 				sprintf(path, "%s", m_pkFileDlgbox->m_szCurrentFile.c_str());
-
 				sprintf(cmd, "maketemplate %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
@@ -102,9 +113,13 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				break;
 			}
 
-			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-			m_pkEdit->pkFps->ToggleGui();	
+			CaptureInput(false);
 			break;
+
+			case ID_FILEPATH_WND_CLOSE:
+			case ID_FILEPATH_CANCEL_BN:
+				CaptureInput(false);
+				break;
 		}
 		break;
 
@@ -122,7 +137,8 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				switch(iItemID)
 				{
 				case IDM_CLOSE:
-					m_pkEdit->pkFps->QuitEngine();
+					if(cbox == m_pkEdit->pkGuiMan->Wnd("MainMenuCB1"))
+						m_pkEdit->pkFps->QuitEngine();
 					break;
 
 				case IDM_LOAD_TEMPLATE:
@@ -145,7 +161,10 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						m_pkFileDlgbox = NULL;
 					}
 
-					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, flags);
+					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
+						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
+					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
+					CaptureInput(true);
 					break;
 
 				case IDM_SAVE_TEMPLATE:
@@ -164,7 +183,10 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						m_pkFileDlgbox = NULL;
 					}
 
-					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, flags);
+					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
+						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
+					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
+					CaptureInput(true);
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
@@ -178,8 +200,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					m_pkEditPropDlgBox = new EditPropertyDlg(this, 
 						m_pkEdit->pkPropertyFactory, 
 						m_pkEdit->pkObjectMan, 
-						m_pkEdit->m_pkCurentChild, WINPROC);
-
+						m_pkEdit->m_pkCurentChild, MAINWINPROC);
 					break;
 				}
 			}
@@ -197,9 +218,10 @@ bool Gui::CreateWindows()
 
 	Rect rc = Rect(0,0,128,32);
 
-	rc = Rect(0,0,200,200);
+	rc = Rect(0,0,200,20);
 	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMenu, true, ID_MAINWND_MENU_CB, 20,
-		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
+		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
+	pkMenuCBox->SetGUI(m_pkEdit->pkGui);
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
@@ -207,16 +229,16 @@ bool Gui::CreateWindows()
 	pkMenuCBox->AddItem("Save template...", IDM_SAVE_TEMPLATE);
 	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
+	Register(pkMenuCBox, "MainMenuCB1");
 
-	ZGuiButton* pkCloseGuiButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
+/*	ZGuiButton* pkCloseGuiButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
 		m_pkEdit->m_iWidth-20, 0, 20, 20, "x");
-
 	pkCloseGuiButton->SetWindowFlag(WF_CENTER_TEXT);
-	Register( pkCloseGuiButton, "CloseGuiBN");
+	Register( pkCloseGuiButton, "CloseGuiBN");*/
 
-	m_pkEdit->pkGui->AddKeyCommand(KEY_ESCAPE, pkMenu, pkCloseGuiButton);
+//	m_pkEdit->pkGui->AddKeyCommand(KEY_ESCAPE, pkMenu, pkCloseGuiButton);
 
-	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, WINPROC, true);
+	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, "MainMenu", MAINWINPROC, true);
 
 	return true;
 }
@@ -229,44 +251,43 @@ bool Gui::InitSkins()
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
 	int rbn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_up.bmp", 0);
 	int rbn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_down.bmp", 0);
+	int rbn_a = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_a.bmp",0);
 	int bk1 = m_pkEdit->pkTexMan->Load("file:../data/textures/bk1.bmp", 0);
-	int bd1 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_horz.bmp", 0);
-	int bd2 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_vert.bmp", 0);
+	int bd1 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_vert.bmp", 0);
+	int bd2 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_horz.bmp", 0);
 	int bd3 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner.bmp", 0);
 	int bda = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner_a.bmp", 0);
 
-	m_kTextureMap.insert( map<string, int>::value_type(string("border_corner_a"), bda)); 
-
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
-		new ZGuiSkin(bk1, bd1, bd2, bd3, 255, 255, 255, 255, 255, 255, 8, true)) ); 
+		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("blue"), 
-		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 255, 0, 0, 128, 4)) ); 
+		new ZGuiSkin(255, 0, 0, 128, 4)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("red"), 
-		new ZGuiSkin(-1, -1, -1, -1, 255, 0, 0, 128, 0, 0, 4)) ); 
+		new ZGuiSkin(255, 0, 0, 128, 0, 0, 4)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_up"), 
-		new ZGuiSkin(bn_up, -1, -1, -1) ) ); 
+		new ZGuiSkin(bn_up, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_down"), 
-		new ZGuiSkin(bn_down, -1, -1, -1) ) ); 
+		new ZGuiSkin(bn_down, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_focus"), 
-		new ZGuiSkin(bn_focus, -1, -1, -1) ) ); 
+		new ZGuiSkin(bn_focus, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item"), 
-		new ZGuiSkin(bn_up, -1, -1, -1) ) ); 
+		new ZGuiSkin(bn_up, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item_hl"), 
-		new ZGuiSkin(bn_up, -1, -1, -1, 255, 0, 0) ) ); 
+		new ZGuiSkin(bn_up,-1,-1,-1,-1,-1,-1,-1,255,0,0,0,0,0,0,false,false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item_sel"), 
-		new ZGuiSkin(bn_up, -1, -1, -1, 128, 0, 0) ) ); 
+		new ZGuiSkin(bn_up,-1,-1,-1, -1,-1,-1,-1, 128,0,0, 0,0,0, 0, false,false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu"), 
-		new ZGuiSkin(-1, -1, -1, -1, 128, 128, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(128, 128, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("dark_blue"), 
-		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(0, 0, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("white"), 
-		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(255, 255, 255, 0, 0, 0, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("titlebar"), 
-		new ZGuiSkin(-1, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(64, 64, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_down"), 
-		new ZGuiSkin(rbn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(rbn_up, rbn_a, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_up"), 
-		new ZGuiSkin(rbn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(rbn_down, rbn_a, false)) ); 
 
 	return true;
 }
@@ -317,6 +338,7 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, i
 	pkButton->SetButtonDownSkin(GetSkin("bn_down"));
 	pkButton->SetButtonUpSkin(GetSkin("bn_up"));
 	pkButton->SetText(pkName);
+	pkButton->SetGUI(m_pkEdit->pkGui);
 
 	return pkButton;
 }
@@ -335,10 +357,11 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 	{
 		ZGuiRadiobutton* pkGroupbutton = new ZGuiRadiobutton(rc,pkParent,
 			start_id+i,start_id,pkPrev,true);
-		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"),rbn_a);
-		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"),rbn_a);
-		pkGroupbutton->SetText((char*)vkNames[i].c_str());
-
+		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"));
+		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"));
+		pkGroupbutton->SetGUI(m_pkEdit->pkGui);
+		pkGroupbutton->SetText((char*)vkNames[i].c_str(),true);
+		
 		if(pkPrev == NULL)
 		{
 			Register(pkGroupbutton, strRadioGroupName);
@@ -356,19 +379,23 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkListbox->SetSkin( GetSkin("dark_blue") );
 	pkListbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
+	pkListbox->SetGUI(m_pkEdit->pkGui);
 	return pkListbox;
 }
 
 ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu)
 {
 	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 20,
-		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
+		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
 
 	if(bMenu == false)
 	{
 		pkCombobox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 			GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 	}
+
+	pkCombobox->SetGUI(m_pkEdit->pkGui);
+
 	return pkCombobox;
 }
 
@@ -378,6 +405,7 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
+	pkTextbox->SetGUI(m_pkEdit->pkGui);
 
 	return pkTextbox;
 }
@@ -388,6 +416,8 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	
 	if(strText)
 		pkLabel->SetText(strText);
+
+	pkLabel->SetGUI(m_pkEdit->pkGui);
 
 	return pkLabel;
 }
@@ -426,7 +456,8 @@ void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int in
 
 bool Gui::Register(ZGuiWnd *pkWnd, char* strName)
 {
-	return (m_pkEdit->pkGuiMan->Add(string(strName), pkWnd) != NULL);
+	//return (m_pkEdit->pkGuiMan->Add(string(strName), pkWnd) != NULL);
+	return m_pkEdit->pkGui->RegisterWindow(pkWnd, strName);
 }
 
 bool Gui::Register(ZGuiSkin *pkSkin, char* strName)
@@ -444,5 +475,7 @@ ZGuiWnd* Gui::Get(char* strName)
 	return m_pkEdit->pkGuiMan->Wnd(string(strName));
 }
 
-
-
+void Gui::CaptureInput(bool bCapture)
+{
+	m_bGuiHaveFocus = bCapture;
+}

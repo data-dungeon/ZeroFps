@@ -2,20 +2,29 @@
 #define _PROPERTYBOX_H
 
 #include "dialogbox.h"
+#include <vector>
+using namespace std;
 
 class PropertyBox : public DlgBox  
 {
 public:
-	void SetEditWnd(ZGuiWnd* pkWnd);
-	PropertyBox(GuiBuilder* pkGuiBuilder);
+	bool IsOpen();
+	void Update(ZGuiWnd* pkWnd);
+	PropertyBox(GuiBuilder* pkGuiBuilder, ZGuiWndProc oMainWndProc);
 	virtual ~PropertyBox();
 
 	bool Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc);
-	bool OnOpen(int x=-1, int y=-1);
-	bool OnClose(bool bSave);
+	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
+				  int iNumberOfParams,void *pkParams );
 
+	bool OnOpen(int x=-1, int y=-1);
+	
 private:
-	ZGuiWnd* m_pkWndEdit;
+	void UpdateUniquePropertyText(ZGuiWnd* pkControl, CtrlType eWndType);
+	bool OnClose(bool bSave);
+	void CreateUniqueProperites();
+
+	vector<pair<CtrlType, ZGuiWnd*> > m_kSpecCtrls;
 };
 
 #endif // #ifndef _PROPERTYBOX_H

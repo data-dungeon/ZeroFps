@@ -103,7 +103,8 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 	m_aChars[' '-32].iSizeX = m_aChars['t'-32].iSizeX;
 	m_aChars[' '-32].iSizeY = m_cCharCellSize;
 
-//	delete pkImage;
+	//delete pkImage;
+
 	SDL_FreeSurface(pkImage);
 
 	return true;
@@ -170,3 +171,23 @@ Uint32 ZGuiFont::GetPixel(SDL_Surface *surface, int x, int y)
 30 . 62 > 94 ^ 126 ~ 
 31 . 63 ? 95 _ 127 
 */
+
+unsigned short ZGuiFont::GetLength(const char *c_szText) const
+{
+	unsigned short usLength = 0;
+	const int c_iTextLegth = strlen(c_szText);
+
+	for(int i=0; i<c_iTextLegth; i++)
+	{
+		int pos = c_szText[i]-32;
+		if(pos >= 0 && pos < 256)
+		{
+			usLength += m_aChars[pos].iSizeX;
+
+			if(c_szText[i] != ' ')
+				usLength += (unsigned short) m_cPixelGapBetweenChars;
+		}
+	}
+
+	return usLength;
+}

@@ -7,6 +7,7 @@
 #include "../../basic/zguifont.h"
 #include "../../basic/zfassert.h"
 #include "zguiwindow.h"
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -22,79 +23,106 @@ ZGuiResourceManager::~ZGuiResourceManager()
 
 }
 
-ZGuiWnd* ZGuiResourceManager::Wnd(string szName)
+ZGuiWnd* ZGuiResourceManager::Wnd(string strName)
 {
-	map<string, ZGuiWnd*>::iterator it;
-	it = m_kWindows.find(szName);
+	map<string, ZGuiWnd* >::iterator it;
+	it = m_kWindows.find(strName);
 	if(it != m_kWindows.end())
 		return it->second;
 	return NULL;
 }
 
-ZGuiSkin* ZGuiResourceManager::Skin(string szName)
+ZGuiSkin* ZGuiResourceManager::Skin(string strName)
 {
-	map<string, ZGuiSkin*>::iterator it;
-	it = m_kSkins.find(szName);
+	map<string, ZGuiSkin* >::iterator it;
+	it = m_kSkins.find(strName);
 	if(it != m_kSkins.end())
-		return it->second;
+		return (*it).second;
 	return NULL;
 }
 
-ZGuiFont* ZGuiResourceManager::Font(string szName)
+ZGuiFont* ZGuiResourceManager::Font(string strName)
 {
-	map<string, ZGuiFont*>::iterator it;
-	it = m_kFonts.find(szName);
+	map<string, ZGuiFont* >::iterator it;
+	it = m_kFonts.find(strName);
 	if(it != m_kFonts.end())
 		return it->second;
 	return NULL;
 }
 
-ZGuiWnd* ZGuiResourceManager::Add(string szName, ZGuiWnd* pkNewWnd)
+ZGuiWnd* ZGuiResourceManager::Add(string strName, ZGuiWnd* pkNewWnd)
 {
-	ZGuiWnd* pkExisting = Wnd(szName);
+	ZGuiWnd* pkExisting = Wnd(strName);
 	if( pkExisting == NULL) 
 	{
-		m_kWindows.insert( map<string, ZGuiWnd*>::value_type(szName, pkNewWnd));
-		return Wnd(szName);
+		m_kWindows.insert( map<string, ZGuiWnd*>::value_type(strName, pkNewWnd));
+		return Wnd(strName);
 	}
 
 	return pkExisting;
 }
 
-ZGuiSkin* ZGuiResourceManager::Add(string szName, ZGuiSkin* pkNewSkin)
+ZGuiSkin* ZGuiResourceManager::Add(string strName, ZGuiSkin* pkNewSkin)
 {
-	ZGuiSkin* pkExisting = Skin(szName);
+	ZGuiSkin* pkExisting = Skin(strName);
+	if( pkExisting != NULL)
+		return pkExisting;
+	else
+	{
+		m_kSkins.insert( map<string, ZGuiSkin*>::value_type(strName, pkNewSkin));
+		return Skin(strName);
+	}
+
+	//return pkExisting;
+}
+
+ZGuiFont* ZGuiResourceManager::Add(string strName, ZGuiFont* pkNewFont)
+{
+	ZGuiFont* pkExisting = Font(strName);
 	if( pkExisting == NULL) 
 	{
-		m_kSkins.insert( map<string, ZGuiSkin*>::value_type(szName, pkNewSkin));
-		return Skin(szName);
+		m_kFonts.insert( map<string, ZGuiFont*>::value_type(strName, pkNewFont));
+		return Font(strName);
 	}
 
 	return pkExisting;
 }
 
-ZGuiFont* ZGuiResourceManager::Add(string szName, ZGuiFont* pkNewFont)
+bool ZGuiResourceManager::RemoveWnd(string strName)
 {
-	ZGuiFont* pkExisting = Font(szName);
-	if( pkExisting == NULL) 
+	map<string, ZGuiWnd*>::iterator it;
+	it = m_kWindows.find(strName);
+	if(it != m_kWindows.end())
 	{
-		m_kFonts.insert( map<string, ZGuiFont*>::value_type(szName, pkNewFont));
-		return Font(szName);
+		m_kWindows.erase(it);
+		return true;
 	}
 
-	return pkExisting;
+	return false;
 }
 
+bool ZGuiResourceManager::RemoveSkin(string strName)
+{
+	map<string, ZGuiSkin*>::iterator it;
+	it = m_kSkins.find(strName);
+	if(it != m_kSkins.end())
+	{
+		m_kSkins.erase(it);
+		return true;
+	}
 
+	return false;
+}
 
+bool ZGuiResourceManager::RemoveFont(string strName)
+{
+	map<string, ZGuiFont*>::iterator it;
+	it = m_kFonts.find(strName);
+	if(it != m_kFonts.end())
+	{
+		m_kFonts.erase(it);
+		return true;
+	}
 
-
-
-
-
-
-
-
-
-
-
+	return false;
+}

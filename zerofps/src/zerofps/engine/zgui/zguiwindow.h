@@ -15,6 +15,8 @@
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
 #include <list>
+#include <string>
+#include <vector>
 using namespace std;
 
 class ZGui;
@@ -40,17 +42,19 @@ class ENGINE_API ZGuiWnd
 
 public:
 
-	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
-	virtual ~ZGuiWnd();
+	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
+		int iID=0);
+	//virtual ~ZGuiWnd();
 
 	virtual void SetFont(ZGuiFont* pkFont);
 	ZGuiFont* GetFont() { return m_pkFont; }
 
-	void Resize(int Width, int Height, bool bChangeMoveArea=true);
+	virtual void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
-	virtual void SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture = -1, int iBorderMaskTexture = -1);
+	virtual void SetSkin(ZGuiSkin* pkSkin/*, int iBkMaskTexture = -1, int iBorderMaskTexture = -1*/);
 	
-	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
+	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, 
+		int iNumParams, void *pParams);
 
 	ZGuiWnd* Find(int x, int y);
 	typedef list<ZGuiWnd*>::iterator WINit;
@@ -59,16 +63,19 @@ public:
 	bool RemoveChild( ZGuiWnd *pkWindow );
 	bool AddChild(ZGuiWnd *pkWindow);					// Add a new childwindow
 	bool SetParent(ZGuiWnd *pkWindow);					// Set the parent window
-	ZGuiWnd* GetParent(bool bRootParent=false);								// Get the parent window
+	ZGuiWnd* GetParent(bool bRootParent=false);		// Get the parent window
 	bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false);	// Move the window and change the size
-	virtual bool Render(ZGuiRender* pkRender);						// Render this window
+	virtual bool Render(ZGuiRender* pkRender);			// Render this window
 	virtual bool Notify(ZGuiWnd* pkWnd, int iCode) {return false;}
 	unsigned int GetID() {return m_iID;}
 	void SetID(int iID) {m_iID = iID;}
 	void SetGUI(ZGui* pkGui);
 
-	void Enable()	{ m_bEnabled = true;  }
-	void Disable()	{ m_bEnabled = false; }
+	int GetTabOrderNr() { return m_iTabOrderNumber; }
+	void SetTabOrderNr(int iNumber) { m_iTabOrderNumber = iNumber; }
+
+	void Enable();
+	void Disable();
 
 	void Show();
 	void Hide();
@@ -76,10 +83,12 @@ public:
 	virtual void SetFocus()	 { m_bHaveFocus = true;  }
 	virtual void KillFocus() { m_bHaveFocus = false; }
 	virtual bool ProcessKBInput(int nKey) { return false; }
-	virtual bool IsInternalControl() { return m_bInternalControl; } // tex knappen på en scrollbar.
+	virtual bool IsInternalControl() { return m_bInternalControl; } 
+		// tex knappen på en scrollbar.
 	virtual void CreateInternalControls() { /* do nothing */ }
 
-	bool IsVisible()	{ return m_bVisible; }
+	const bool Enabled()	{ return m_bEnabled; }
+	const bool IsVisible()	{ return m_bVisible; }
 	void Move(int dx, int dy, bool bScreenSpace=false, bool bFreeMovement=false);
 
 	Rect GetMoveArea() { return m_kMoveArea; }
@@ -93,11 +102,17 @@ public:
 	bool GetWindowFlag(unsigned long ulValue);
 	void SetWindowFlag(unsigned long ulValue);
 	void RemoveWindowFlag(unsigned long ulValue);
+	const char* GetName() { return m_szName; }; 
 
-	void SetInternalControlState(bool IsInternalControl) { m_bInternalControl = IsInternalControl; }
-	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); // the rect is in screen space.
+	void SetInternalControlState(bool IsInternalControl) 
+	{ 
+		m_bInternalControl = IsInternalControl; 
+	}
+	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); 
+		// the rect is in screen space.
+
 	void GetChildrens(list<ZGuiWnd*>& kList);
-	virtual void SetText(char* strText);
+	virtual void SetText(char* strText, bool bResizeWnd=false);
 	virtual char* GetText() { return m_strText; }
 	ZGui* GetGUI();
 	static void ResetStaticClickWnds(ZGuiWnd* pkWnd);
@@ -119,6 +134,10 @@ public:
 		};
 	} SortZCmp;
 
+	typedef pair<ZGuiSkin*, string> SKIN_DESC;
+
+	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc);
+
 protected:
 	
 	ZGuiWnd* m_pkParent;
@@ -126,23 +145,30 @@ protected:
 	ZGui* m_pkGUI;
 	bool m_bVisible, m_bEnabled;
 	callbackfunc m_pkCallback;
-	ZGuiSkin* m_pkSkin;//, *m_pkTextSkin;
+	ZGuiSkin* m_pkSkin;
 	ZGuiFont* m_pkFont;
 	char* m_strText;
 	int m_iTextLength;
 
-	// Kan vara 0 och är i så fall ett statisk fönster.
-	unsigned int m_iID;
-	int m_iBkMaskTexture; // -1 innebär att det inte finns någon alpha textur
-	int m_iBorderMaskTexture; // -1 innebär att det inte finns någon alpha textur
+	char m_szName[50]; // Same name as the resource manager use to find the window.
+	unsigned int m_iID; // Kan vara 0 och är i så fall ett statisk fönster.
+	//int m_iBkMaskTexture; // -1 innebär att det inte finns någon alpha textur
+	//int m_iBorderMaskTexture; // -1 innebär att det inte finns någon alpha textur
+
+	virtual ~ZGuiWnd(); // Set the destructor to protected and and let class ZGui
+	friend class ZGui;	// be a friend so that only ZGui can destroy windows
+						// (the only way to destroy a window is with the func.
+						// named 'UnregisterWindow').
 
 private:
 	void UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h, bool bFreeMovement);
 	Rect m_kArea, m_kMoveArea;
 	bool m_bHaveFocus;
 	bool m_bInternalControl;
+	int m_iTabOrderNumber;
 
 	ZGuiResourceManager* m_pkGuiMan;
+	float afBkColorBuffer[3];
 
 };
 

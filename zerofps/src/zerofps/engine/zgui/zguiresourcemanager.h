@@ -18,6 +18,7 @@ using namespace std;
 class ZGuiWnd;
 class ZGuiFont;
 class ZGuiSkin;
+class ZGui;
 
 class ENGINE_API ZGuiResourceManager : public ZFObject
 {
@@ -25,18 +26,28 @@ public:
 	ZGuiResourceManager();
 	~ZGuiResourceManager();
 
-	ZGuiWnd* Wnd(string szName);
-	ZGuiFont* Font(string szName);
-	ZGuiSkin* Skin(string szName);
+	ZGuiWnd* Wnd(string strName);
+	ZGuiFont* Font(string strName);
+	ZGuiSkin* Skin(string strName);
 
-	ZGuiWnd* Add(string szName, ZGuiWnd* pkWnd);
-	ZGuiFont* Add(string szName, ZGuiFont* pkWnd);
-	ZGuiSkin* Add(string szName, ZGuiSkin* pkWnd);
+	ZGuiFont* Add(string strName, ZGuiFont* pkFont);
+	ZGuiSkin* Add(string strName, ZGuiSkin* pkSkin);
+
+	bool RemoveFont(string strName); // does not delete it, just erase it from list
+	bool RemoveSkin(string strName); // does not delete it, just erase it from list
+
+	void GetWindows( map<string, ZGuiWnd*>& kWindows )	{ kWindows=m_kWindows;	}
+	void GetSkins  ( map<string, ZGuiSkin*>& kSkins  )	{ kSkins=m_kSkins;		}
+	void GetFonts  ( map<string, ZGuiFont*>& kFonts  )	{ kFonts=m_kFonts;		}
 	
 private:
 	map<string, ZGuiWnd*> m_kWindows;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<string, ZGuiFont*> m_kFonts;
+
+	ZGuiWnd* Add(string strName, ZGuiWnd* pkWnd);
+	bool RemoveWnd(string strName); // does not delete it, just erase it from list
+	friend class ZGui;
 
 };
 

@@ -22,27 +22,29 @@ public:
 	ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
 	virtual ~ZGuiCheckbox();
 
-	void SetButtonCheckedSkin(ZGuiSkin* pkSkin, int iMaskTexture);
-	void SetButtonUncheckedSkin(ZGuiSkin* pkSkin, int iMaskTexture);
+	void SetButtonCheckedSkin(ZGuiSkin* pkSkin);
+	void SetButtonUncheckedSkin(ZGuiSkin* pkSkin);
+	void SetLabelSkin(ZGuiSkin* pkSkin);
+	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
+
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool Render( ZGuiRender* renderer );
 
-	ZGuiSkin* GetCheckedSkin() { return m_pkSkinButtonChecked; }
-	ZGuiSkin* GetUncheckedSkin() { return m_pkSkinButtonUnchecked; }
-	int GetTexUnchecked() { return m_iMaskTexUnchecked; }
-	int GetTexChecked() { return m_iMaskTexChecked; }
+	ZGuiSkin* GetCheckedSkin() { return m_pkSkinBnDown; }
+	ZGuiSkin* GetUncheckedSkin() { return m_pkSkinBnUp; }
 	char* GetText();// overloaded
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
 
 	void CheckButton();
 	void UncheckButton();
-	void SetText(char* strText);
+	void SetText(char* strText, bool bResizeWnd=false); // overloaded
 
 	bool IsChecked();
 
 protected:
-	ZGuiSkin* m_pkSkinButtonChecked, *m_pkSkinButtonUnchecked;
+	ZGuiSkin* m_pkSkinBnDown, *m_pkSkinBnUp;
 	ZGuiLabel* m_pkLabel;
-	int m_iMaskTexUnchecked, m_iMaskTexChecked;
+	//int m_iMaskTexUnchecked, m_iMaskTexChecked;
 	bool m_bChecked;
 };
 

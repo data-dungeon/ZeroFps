@@ -21,7 +21,7 @@ public:
 
 	void Show(bool bShow);
 	bool IsVisible();
-	void SetSkin(ZGuiSkin* pkSkin, int iMaskTexture=-1);
+	void SetSkin(ZGuiSkin* pkSkin/*, int iMaskTexture=-1*/);
 	void SetSize(int Width, int Height);
 	void SetPos(int x, int y);
 	void Render();
@@ -29,7 +29,7 @@ public:
 private:
 	Rect m_kRect;
 	ZGuiSkin* m_pkSkin;
-	int m_iMaskTexture;
+//	int m_iMaskTexture;
 	ZGuiRender* m_pkRenderer;
 	bool m_bVisible;
 };

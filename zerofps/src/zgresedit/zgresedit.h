@@ -16,13 +16,14 @@ class GuiBuilder;
 class PropertyBox;
 class ControlBox;
 class SkinBox;
+class FileOpenDlg;
 
 class ZGResEdit :public Application  
 {
 public:
 	
-	bool WinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
-		int iNumberOfParams, void *pkParams ) ;
+	bool WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
+				 int iNumberOfParams,void *pkParams ) ;
 	void OnServerStart() {}
 	void OnClientStart() {}
 	void OnHud() {}
@@ -32,13 +33,18 @@ public:
 	ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth);
 	virtual ~ZGResEdit();
 
-	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
+	typedef bool (*ZGuiWndProc)(const ZGuiWnd*,const unsigned int,
+		const int,const void*);
 	typedef list<ZGuiWnd*>::iterator WINit;
 
+	SkinBox* m_pkSkinBox;
+	PropertyBox* m_pkPropertyBox;
+	ControlBox* m_pkControlBox;
+	FileOpenDlg* m_pkFileOpenDlg;
+
 private:
-	//void CloseControlPropertyBox(bool bSave);
-	//void OpenControlPropertyBox(ZGuiWnd* pkWnd, int x, int  y);
-	bool IsGuiWnd(ZGuiWnd* pkWnd);
+	void EnableClickWnd();
+	void DisableClickWnd();
 
 	enum MouseState
 	{
@@ -49,22 +55,24 @@ private:
 		IDLE,
 	} m_kMouseState;
 
-	void MoveWnd(ZGuiWnd* pkWnd, int x, int y);
-	void ResizeWnd(ZGuiWnd* pkWnd, int x, int y);
-	//ZGuiWnd* CreateControlPropertyBox(int x, int y, int w, int h);
-	//ZGuiWnd* CreateControlBox(int x, int y, int w, int h);
-	void SetCursor(char* szFileNameBitmap, char* szFileNameBitmapAlpha);
+	bool IsGuiWnd(ZGuiWnd* pkWnd) const;
+	void MoveWnd(ZGuiWnd* pkWnd,int x,int y) const;
+	void ResizeWnd(ZGuiWnd* pkWnd,int x,int y) const;
+	void SetCursor(const char* szFileNameBitmap,
+		const char* szFileNameBitmapAlpha) const;
 	bool Create();
 
 	Camera* m_pkCamera;
 	GuiBuilder* m_pkGuiBuilder;
-	PropertyBox* m_pkPropertyBox;
-	ControlBox* m_pkControlBox;
-	SkinBox* m_pkSkinBox;
 	
-	int m_iClickPosX, m_iClickPosY;
-	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
-	int m_iResizewnd_old_x, m_iResizewnd_old_y;
+	int m_iClickPosX,m_iClickPosY;
+	int m_pnCursorRangeDiffX,m_pnCursorRangeDiffY;
+	int m_iResizewnd_old_x,m_iResizewnd_old_y;
+	bool m_bUseGrid;
+	int m_iGridPrec;
+
+	ZFFile* m_pkFile;
+	ZFIni* m_pkINI;
 };
 
 #endif // #ifndef _ZGRESEDIT_H

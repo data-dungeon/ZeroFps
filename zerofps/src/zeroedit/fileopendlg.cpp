@@ -4,53 +4,40 @@
 
 #include "fileopendlg.h"
 #include "../zerofps/engine/zgui/zgui.h"
+#include "../zerofps/engine/zgui/zguiresourcemanager.h"
 #include "../zerofps/basic/zfbasicfs.h"
-#include "resource_id.h"
+#include "../zerofps/engine/input.h"
+//#include "resource_id.h"
 
-// Window proc wrappers
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-extern ZeroEdit Editor;
-
-static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ){
-	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
-						 unsigned long flags, string szSearchPath)
+FileOpenDlg::FileOpenDlg(ZGui* pkGui,ZFBasicFS* pkBasicFS,
+						 ZGuiWndProc pkMainWndProc,unsigned long flags,
+						 string szSearchPath)
 {
-
 	m_szSearchPath.reserve(1024);
 	m_szCurrentDir.reserve(128);
 	m_szCurrentFile.reserve(128);
-	m_szSearchPath = pkBasicFS->GetCWD();
+	m_szSearchPath=pkBasicFS->GetCWD();
 
-	m_oGuiCallback = cb;
-	m_pkGui = pkGui;
-	m_pkZGui = m_pkGui->GetGUI(); 
-	m_pkBasicFS = pkBasicFS;
-
+	m_pkGui=pkGui;
+	m_pkBasicFS=pkBasicFS;
+	m_oMainWndProc=pkMainWndProc;
+	m_pkResMan=pkGui->GetResMan();
+	
 	m_vkBitParams.reset();
 
-	if( ((flags & DIRECTORIES_ONLY) == DIRECTORIES_ONLY) )
+	if( ((flags & DIRECTORIES_ONLY)==DIRECTORIES_ONLY) )
 	{
 		m_vkBitParams.set(DIRECTORIES_ONLY);
-		printf("hhhhh\n");
 	}
 
-	if( ((flags & SAVE_FILES) == SAVE_FILES) )
+	if( ((flags & SAVE_FILES)==SAVE_FILES) )
 		m_vkBitParams.set(SAVE_FILES);
 
-	if( ((flags & DISALLOW_DIR_CHANGE) == DISALLOW_DIR_CHANGE) )
+	if( ((flags & DISALLOW_DIR_CHANGE)==DISALLOW_DIR_CHANGE) )
 	{
 		m_vkBitParams.set(DISALLOW_DIR_CHANGE);
-		m_szSearchPath = szSearchPath; // search path is only valid if flag DISALLOW_DIR_CHANGE is true...
+		m_szSearchPath=szSearchPath; // search path is only valid if flag DISALLOW_DIR_CHANGE is true...
 	}
-
-	m_pkWindow = Create(100,100,500,500);
-
-	//ZGuiWnd::m_pkFocusWnd = pkMainWindow;
 }
 
 FileOpenDlg::~FileOpenDlg()
@@ -58,33 +45,32 @@ FileOpenDlg::~FileOpenDlg()
 
 }
 
-bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow,unsigned int uiMessage,
+						   int iNumberOfParams,void *pkParams )
 {
 	int iControllID;
 
 	switch(uiMessage)
 	{
 		case ZGM_COMMAND:
-			iControllID = ((int*)pkParams)[0];
+			iControllID=((int*)pkParams)[0];
 
 			switch(iControllID)
 			{
 			case ID_FILEPATH_WND_CLOSE:
 			case ID_FILEPATH_CANCEL_BN:
 				{
-					m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),false);
+					return m_oMainWndProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
 				}
 				break;
 
 			case ID_FILEPATH_OPEN_BN:
 				{
-					if(m_pkGui->Get("FilePathSelFileEB")->GetText())
-						m_szCurrentFile = m_pkGui->Get("FilePathSelFileEB")->GetText();
-
-					int* pkParams = new int[1];
-					pkParams[0] = ID_FILEPATH_OPEN_BN;
-					m_oGuiCallback(m_pkWindow, ZGM_COMMAND, 1, pkParams);
-					delete[] pkParams;
+					if(m_pkResMan->Wnd("FOFilePathSelFileEB")->GetText())
+						m_szCurrentFile=m_pkResMan->Wnd("FOFilePathSelFileEB")->GetText();
+					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),false);
+					return m_oMainWndProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
 				}
 				break;
 			}
@@ -92,80 +78,80 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 		case ZGM_SELECTLISTITEM:
 		{
-			int iIDListBox = ((int*)pkParams)[0];
-			int iIDListItem = ((int*)pkParams)[1];
+			int iIDListBox=((int*)pkParams)[0];
+			int iIDListItem=((int*)pkParams)[1];
 
-			ZGuiWnd* pkWnd = m_pkZGui->GetWindow(iIDListBox);
+			ZGuiWnd* pkWnd=m_pkResMan->Wnd("FOFilePathLB");
 
-			if(pkWnd != NULL)
+			if(pkWnd !=NULL)
 			{			
-				ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
-				ZGuiListitem* pkItem = pkListbox->GetItem(iIDListItem);
+				ZGuiListbox* pkListbox=(ZGuiListbox*) pkWnd;
+				ZGuiListitem* pkItem=pkListbox->GetItem(iIDListItem);
 
-				if(pkItem != NULL)
+				if(pkItem !=NULL)
 				{
-					string szFileName = pkItem->GetText();
+					string szFileName=pkItem->GetText();
 
-					bool bFillPathlist = false;
+					bool bFillPathlist=false;
 
-					if(szFileName == string("..") && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
+					if(szFileName==string("..") && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
 					{
 						printf("Switching dir\n");
 
-						int new_path_length = m_szSearchPath.find_last_of("/"); 
+						int new_path_length=m_szSearchPath.find_last_of("/"); 
 
-						if(new_path_length != string::npos)
+						if(new_path_length !=string::npos)
 						{
 							m_szSearchPath.resize(new_path_length); 
-							bFillPathlist = true;
+							bFillPathlist=true;
 						}
 					}
 					else
-					if(szFileName.find(".") == string::npos)
+					if(szFileName.find(".")==string::npos)
 					{
 						vector<string> vkDirectories;
-						m_pkBasicFS->ListDir(&vkDirectories, m_szSearchPath.c_str(), true);
+						m_pkBasicFS->ListDir(&vkDirectories,m_szSearchPath.c_str(),true);
 
-						bool bFoundDir = false;
+						bool bFoundDir=false;
 
 						for(unsigned int i=0; i<vkDirectories.size(); i++)
 						{
-							if(vkDirectories[i] == szFileName)
+							if(vkDirectories[i]==szFileName)
 							{
 								m_szSearchPath.append("/");
 								m_szSearchPath.append(szFileName);
-								bFillPathlist = true;
-								bFoundDir = true;
+								bFillPathlist=true;
+								bFoundDir=true;
 								break;
 							}
 						}
 					}
 					else
 					{
-						ZGuiWnd* pkWnd = m_pkZGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
+						ZGuiWnd* pkWnd=m_pkGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
 
 						if(pkWnd)
 						{
-							ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
+							ZGuiTextbox* pkTextbox=(ZGuiTextbox*) pkWnd;
 							pkTextbox->SetText((char*)szFileName.c_str()); 
 						}
 					}
 
 					if(bFillPathlist && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
 					{
-						int size = m_szSearchPath.length();  
-						int pos = m_szSearchPath.find_last_of("/");
-						if(string::npos != pos)
-							m_szCurrentDir = m_szSearchPath.substr(pos+1, size-pos);
-						FillPathList(pkListbox, m_szSearchPath);
+						int size=m_szSearchPath.length();  
+						int pos=m_szSearchPath.find_last_of("/");
+						if(string::npos !=pos)
+							m_szCurrentDir=m_szSearchPath.substr(pos+1,size-pos);
+						FillPathList(pkListbox,m_szSearchPath);
 					}
 					else
 					{
-						ZGuiWnd* pkWnd = m_pkZGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
+						ZGuiWnd* pkWnd=m_pkGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
 
 						if(pkWnd && !szFileName.empty())
 						{
-							ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
+							ZGuiTextbox* pkTextbox=(ZGuiTextbox*) pkWnd;
 							pkTextbox->SetText((char*)szFileName.c_str()); 
 						}							
 					}
@@ -174,122 +160,189 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 		}
 		break;
+	default:
+		return m_oMainWndProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
 	}
 	return true;
 }
 
-ZGuiWnd* FileOpenDlg::Create(int x, int y, int w, int h)
+bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 {
-	ZGuiWnd* pkMainWindow = m_pkZGui->GetMainWindow(ID_FILEPATH_WND_MAIN);
+	ZGuiWnd* pkMainWindow=m_pkResMan->Wnd("FOFileOpenDlg");
 
 	if( pkMainWindow )
 	{
-		m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, true);
-		FillPathList((ZGuiListbox*)m_pkGui->Get("FilePathLB"), m_szSearchPath);
+		m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),true);
+		FillPathList((ZGuiListbox*)m_pkResMan->Wnd("FOFilePathLB"),
+			m_szSearchPath);
 
 		if(m_vkBitParams.test(SAVE_FILES))
 		{
-			m_pkGui->Get("FileOpenBN")->SetText("Save");
-			m_pkGui->Get("FileOpenLabel")->SetText("Save");
+			m_pkResMan->Wnd("FOFileOpenBN")->SetText("Save");
+			m_pkResMan->Wnd("FOFileOpenLabel")->SetText("Save");
 		}
 		else
 		{
-			m_pkGui->Get("FileOpenBN")->SetText("Open");
-			m_pkGui->Get("FileOpenLabel")->SetText("Open");
+			m_pkResMan->Wnd("FOFileOpenBN")->SetText("Open");
+			m_pkResMan->Wnd("FOFileOpenLabel")->SetText("Open");
 		}
 
-		return pkMainWindow;
+		return true;
 	}
 
-	pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_FILEPATH_WND);
-	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"), -1, m_pkGui->GetTexture("border_corner_a"));
-	pkMainWindow->SetMoveArea(m_pkGui->GetScreenRect());
+	pkMainWindow=new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_FILEPATH_WND);
+	pkMainWindow->SetSkin(m_pkResMan->Skin(string("DEF_WND_SKIN")));
+	pkMainWindow->SetMoveArea(Rect(0,0,1024,768));
 	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
 
-	ZGuiListbox* pkListbox = m_pkGui->CreateListbox(pkMainWindow, ID_FILEPATH_WND_LB, 0, 21, w, h-80);
+	ZGuiListbox* pkListbox=CreateListbox(pkMainWindow,ID_FILEPATH_WND_LB,0,21,
+		w,h-80);
+	m_pkGui->RegisterWindow(pkListbox,"FOFilePathLB");
 
-	m_pkGui->Register( pkListbox, "FilePathLB");
-
-	FillPathList(pkListbox, m_szSearchPath);
+	FillPathList(pkListbox,m_szSearchPath);
 
 	char strTitle[50];
 	char strBnName[50];
 
 	if(m_vkBitParams.test(SAVE_FILES))
 	{
-		strcpy(strBnName, "Save");
-		strcpy(strTitle, "Save");
+		strcpy(strBnName,"Save");
+		strcpy(strTitle,"Save");
 	}
 	else
 	{
-		strcpy(strBnName, "Open");
-		strcpy(strTitle, "Open");
+		strcpy(strBnName,"Open");
+		strcpy(strTitle,"Open");
 	}
 
-	ZGuiWnd* pkCloseBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, 20, 20, "x");
+	ZGuiWnd* pkCloseBn=CreateButton(pkMainWindow,ID_FILEPATH_WND_CLOSE,w-20,0,
+		20,20,"x");
 	pkCloseBn->SetWindowFlag(WF_CENTER_TEXT);
 
-	ZGuiWnd* pkOKBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_OPEN_BN, w-80, h-44, 80, 20, strBnName);
-	m_pkGui->Register(pkOKBn, "FileOpenBN" );
-	m_pkGui->Get("FileOpenBN")->SetWindowFlag(WF_CENTER_TEXT);
-	ZGuiWnd* pkCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_CANCEL_BN, 
-		w-80, h-22, 80, 20, "Cancel");
+	ZGuiWnd* pkOKBn=CreateButton(pkMainWindow,ID_FILEPATH_OPEN_BN,w-80,h-44,
+		80,20,strBnName);
+	m_pkGui->RegisterWindow(pkOKBn,"FOFileOpenBN");
+	m_pkResMan->Wnd("FOFileOpenBN")->SetWindowFlag(WF_CENTER_TEXT);
+	ZGuiWnd* pkCancelBn=CreateButton(pkMainWindow,ID_FILEPATH_CANCEL_BN,
+		w-80,h-22,80,20,"Cancel");
 	pkCancelBn->SetWindowFlag(WF_CENTER_TEXT);
 
-	ZGuiLabel* pkLabel = m_pkGui->CreateLabel(pkMainWindow, 0, 0, 0, w, 22, strTitle);
-	pkLabel->SetSkin(m_pkGui->GetSkin("titlebar"));
-	m_pkGui->Register(pkLabel, "FileOpenLabel");
-	m_pkGui->CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, h-44, w-80, 20, NULL)->SetText((char*)m_szCurrentDir.c_str());
-	ZGuiWnd* pkTextbox = m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20);
-	m_pkGui->Register(pkTextbox, "FilePathSelFileEB");
+	ZGuiLabel* pkLabel=CreateLabel(pkMainWindow,0,0,0,w,22,strTitle);
+	pkLabel->SetSkin(m_pkResMan->Skin(string("DEF_TITLEBAR_SKIN")));
+	m_pkGui->RegisterWindow(pkLabel,"FOFileOpenLabel");
 
-	m_pkZGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, OPENFILEPROC, true);
+	CreateLabel(pkMainWindow,ID_FILEPATH_WND_LABEL_PATH,0,h-44,w-80,20,
+		NULL)->SetText((char*)m_szCurrentDir.c_str());
 
-	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkCancelBn);
-	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkCloseBn);
-	m_pkZGui->AddKeyCommand(KEY_RETURN, pkMainWindow, pkOKBn);
-	return pkMainWindow;
+	ZGuiWnd* pkTextbox=CreateTextbox(pkMainWindow,ID_FILEPATH_WND_FILE_EB,0,
+		h-22,w-200,20);
+	m_pkGui->RegisterWindow(pkTextbox,"FOFilePathSelFileEB");
+
+	m_pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN,pkMainWindow,"FOFileOpenDlg",
+		pkDlgProc,true);
+
+	m_pkGui->AddKeyCommand(KEY_ESCAPE,pkMainWindow,pkCancelBn);
+	m_pkGui->AddKeyCommand(KEY_ESCAPE,pkMainWindow,pkCloseBn);
+	m_pkGui->AddKeyCommand(KEY_RETURN,pkMainWindow,pkOKBn);
+
+	return true;
 }
 
-bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
+bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox,string strDir)
 {
-	ZGuiWnd* pkWnd = m_pkZGui->GetWindow(ID_FILEPATH_WND_LABEL_PATH);
-	if(pkWnd != NULL)
+	ZGuiWnd* pkWnd=m_pkGui->GetWindow(ID_FILEPATH_WND_LABEL_PATH);
+	if(pkWnd !=NULL)
 	{
-		const int MAX_LENGTH = 35;
+		const int MAX_LENGTH=35;
 
-		ZGuiLabel* pkLabel = (ZGuiLabel*) pkWnd;
+		ZGuiLabel* pkLabel=(ZGuiLabel*) pkWnd;
 		
-		int length = m_szSearchPath.length(); 
-		int start = length - MAX_LENGTH;
+		int length=m_szSearchPath.length(); 
+		int start=length - MAX_LENGTH;
 		
 		string szLabelText;
 
 		if(start < 0)
-			start = 0;
+			start=0;
 		else
-			szLabelText = "...";
+			szLabelText="...";
 
-		szLabelText = m_szSearchPath;
-		szLabelText += start;
+		szLabelText=m_szSearchPath;
+		szLabelText +=start;
 		
 		pkLabel->SetText((char*)m_szSearchPath.c_str());
 	}
 
 	vector<string> vkFiles;
 	if(m_vkBitParams.test(DIRECTORIES_ONLY))
-		m_pkBasicFS->ListDir(&vkFiles, strDir.c_str(), true );
+		m_pkBasicFS->ListDir(&vkFiles,strDir.c_str(),true );
 	else
-		m_pkBasicFS->ListDir(&vkFiles, strDir.c_str() );
+		m_pkBasicFS->ListDir(&vkFiles,strDir.c_str() );
 
 	pkListbox->RemoveAllItems();
 
 	char name[450];
 	for( unsigned int i=0; i<vkFiles.size(); i++)
 	{
-		sprintf(name, "%s", vkFiles[i].c_str());	
-		pkListbox->AddItem(name, i, false); 
+		sprintf(name,"%s",vkFiles[i].c_str());	
+		pkListbox->AddItem(name,i,false); 
 	}
 
 	return true;
+}
+
+ZGuiButton* FileOpenDlg::CreateButton(ZGuiWnd* pkParent,int iID,int x,int y,
+									  int w,int h,char *pkName)
+{
+	ZGuiButton* pkButton=new ZGuiButton(Rect(x,y,x+w,y+h),pkParent,true,iID);
+	pkButton->SetButtonHighLightSkin(m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")));
+	pkButton->SetButtonDownSkin(m_pkResMan->Skin(string("DEF_BN_DOWN_SKIN")));
+	pkButton->SetButtonUpSkin(m_pkResMan->Skin(string("DEF_BN_UP_SKIN")));
+	pkButton->SetText(pkName);
+	pkButton->SetGUI(m_pkGui);
+	return pkButton;
+}
+
+ZGuiListbox* FileOpenDlg::CreateListbox(ZGuiWnd* pkParent,int iID,int x,int y,
+										int w,int h)
+{
+	ZGuiListbox* pkListbox=new ZGuiListbox(Rect(x,y,x+w,y+h),pkParent,true,iID,20,
+		m_pkResMan->Skin(string("DEF_BN_UP_SKIN")),m_pkResMan->Skin(string("DEF_BN_DOWN_SKIN")),
+		m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")));
+	pkListbox->SetSkin( m_pkResMan->Skin("DEF_LISTBOX_SKIN") );
+	pkListbox->SetScrollbarSkin(m_pkResMan->Skin(string("DEF_SCROLLBAR_SKIN")),
+		m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")),m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")));
+	pkListbox->SetGUI(m_pkGui);
+	return pkListbox;
+}
+
+ZGuiLabel* FileOpenDlg::CreateLabel(ZGuiWnd* pkParent,int iID,int x,int y,int w,
+									int h,char* strText)
+{
+	ZGuiLabel* pkLabel=new ZGuiLabel(Rect(x,y,x+w,y+h),pkParent,true,iID);
+	
+	if(strText)
+		pkLabel->SetText(strText);
+
+	pkLabel->SetGUI(m_pkGui);
+
+	return pkLabel;
+}
+
+ZGuiTextbox* FileOpenDlg::CreateTextbox(ZGuiWnd* pkParent,int iID,int x,int y,
+										int w,int h,bool bMulitLine)
+{
+	ZGuiTextbox* pkTextbox=new ZGuiTextbox(Rect(x,y,x+w,y+h),pkParent,true,iID,
+		bMulitLine);
+	pkTextbox->SetSkin(m_pkResMan->Skin(string("DEF_TEXTBOX_SKIN")));
+	pkTextbox->SetScrollbarSkin(m_pkResMan->Skin(string("DEF_SCROLLBAR_SKIN")),
+		m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")),m_pkResMan->Skin(string("DEF_BN_FOCUS_SKIN")));
+	pkTextbox->SetGUI(m_pkGui);
+
+	return pkTextbox;
+}
+
+bool FileOpenDlg::GetFlag(FileOpenFlags eFlag)
+{
+	return m_vkBitParams.test(eFlag);
 }

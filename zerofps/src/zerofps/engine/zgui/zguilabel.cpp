@@ -25,11 +25,8 @@ ZGuiLabel::~ZGuiLabel()
 
 bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 {
-	if(m_iBkMaskTexture > 0)
-		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
-
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 
 	if(m_strText != NULL)
@@ -37,7 +34,7 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		if(m_pkFont)
 			pkRenderer->SetFont(m_pkFont);
 
-		pkRenderer->RenderText(m_strText, GetScreenRect(), -1);
+		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, false);
 	}
 	return true;
 } 

@@ -96,7 +96,15 @@ SOURCE=.\dialogbox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\zeroedit\fileopendlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\guibuilder.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\msgbox.cpp
 # End Source File
 # Begin Source File
 
@@ -104,7 +112,19 @@ SOURCE=.\propertybox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\selectwnd.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\serialization.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\skinbox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\skintexinfo.cpp
 # End Source File
 # Begin Source File
 
@@ -124,7 +144,15 @@ SOURCE=.\dialogbox.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\zeroedit\fileopendlg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\guibuilder.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\msgbox.h
 # End Source File
 # Begin Source File
 
@@ -136,7 +164,19 @@ SOURCE=.\resource_id.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\selectwnd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\serialization.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\skinbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\skintexinfo.h
 # End Source File
 # Begin Source File
 

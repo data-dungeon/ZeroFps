@@ -101,6 +101,9 @@ void ZeroEdit::OnInit(void)
 
 	SDL_ShowCursor(SDL_DISABLE);
 
+	pkFps->m_bGuiTakeControl = true; 
+	pkFps->ToggleGui(); 
+
 /*	
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
@@ -587,14 +590,17 @@ void ZeroEdit::OnClientStart(void)
 
 void ZeroEdit::Input() 
 {
+	if(m_pkGui->HaveFocus()) 
+		pkInput->SetInputEnabled(false); 
+
 	float childmovespeed=2;
 	float childrotatespeed=15;
 	float speed=40;
 
-	if(pkInput->GetQueuedKey() == KEY_F10)
+/*	if(pkInput->GetQueuedKey() == KEY_F10)
 	{
 		pkFps->ToggleGui();
-	}
+	}*/
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){
@@ -706,10 +712,13 @@ void ZeroEdit::Input()
 
 	//rotate the camera		
 	//if(!pkGui->IsActive())
-	if(pkInput->Pressed(KEY_LSHIFT) == false)
+    if(pkInput->Pressed(MOUSELEFT))
 	{
-		pkFps->GetCam()->GetRot().x+=z/5.0;
-		pkFps->GetCam()->GetRot().y+=x/5.0;	
+		if(pkInput->Pressed(KEY_LSHIFT) == false)
+		{
+			pkFps->GetCam()->GetRot().x+=z/5.0;
+			pkFps->GetCam()->GetRot().y+=x/5.0;	
+		}
 	}
 
 	switch(m_iMode){
@@ -754,7 +763,8 @@ void ZeroEdit::Input()
 					}
 				}
 			else {
-				if(pkInput->Pressed(MOUSELEFT))
+                if( pkInput->Pressed(MOUSELEFT) && 
+                    ( pkInput->Pressed(KEY_LCTRL) | pkInput->Pressed(KEY_RCTRL) ) )
 				{
 					if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
 						break;			

@@ -28,7 +28,10 @@ ZGuiListitem::ZGuiListitem(ZGuiWnd* pkParent, char* strText, unsigned int iIndex
 ZGuiListitem::~ZGuiListitem()
 {
 	if(m_pkButton)
+	{
 		delete m_pkButton;
+		m_pkButton = NULL;
+	}
 }
 
 void ZGuiListitem::SetText(char* strText)
@@ -47,7 +50,7 @@ void ZGuiListitem::Resize(int w, int h)
 {
 	if(m_pkButton)
 	{
-		w = m_pkButton->GetParent()->GetWndRect().Width()-20;
+		//w = m_pkButton->GetParent()->GetWndRect().Width();
 		m_pkButton->Resize(w, h); 
 		m_pkButton->SetMoveArea(m_pkButton->GetScreenRect()); 
 	}
@@ -61,7 +64,7 @@ void ZGuiListitem::Deselect()
 
 void ZGuiListitem::Select()
 {
-	if(m_bMenuItem == false)
+	//if(m_bMenuItem == false)
 	{
 		if(m_pkButton)
 			m_pkButton->SetSkin(m_pkButton->GetButtonDownSkin());

@@ -196,5 +196,13 @@ int TextureManager::GetIndex(const char* szFileName)
 	return NO_TEXTURE;
 }
 
+const char* TextureManager::GetFileName(unsigned int uiIndex)
+{
+    for(unsigned int i=0; i<m_iTextures.size(); i++){
+        if(m_iTextures[i]->index == uiIndex+1) { // måste lägga till 1!
+            return m_iTextures[i]->file.c_str();        
+        }        
+	}
 
-
+    return NULL;
+}

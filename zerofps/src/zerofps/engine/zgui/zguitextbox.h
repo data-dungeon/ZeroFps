@@ -18,7 +18,11 @@ class ZGuiScrollbar;
 class ENGINE_API ZGuiTextbox : public ZGuiControl
 {
 public:
-	ZGuiTextbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0, bool m_bMultiLine=false);
+	int GetRowLength(int iRow);
+	int GetNumRows();
+
+	ZGuiTextbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
+		int iID=0, bool m_bMultiLine=false);
 	virtual ~ZGuiTextbox();
 
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
@@ -27,11 +31,14 @@ public:
 	bool ProcessKBInput(int nKey);
 	void SetFocus();
 	void KillFocus();
-	void SetText(char* strText);
-	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
-		ZGuiSkin* pkSkinThumbButtonHighLight);
+	void SetText(char* strText, bool bResizeWnd=false); //överlagrad
+	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
 
 private:
+	int GetNumRows(char* szText);
+	bool IgnoreKey(int Key);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ResizeTextBuffer( int nCharacters );
 	bool m_bBlinkCursor;

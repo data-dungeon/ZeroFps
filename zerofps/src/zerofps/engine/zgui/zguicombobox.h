@@ -23,7 +23,7 @@ class ENGINE_API ZGuiCombobox : public ZGuiControl
 public:
 	ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0, int iItemHeight=20, 
 		ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL, 
-		ZGuiSkin* pkTopItemSkin=NULL, int iTopItemTextureMask=-1);
+		ZGuiSkin* pkTopItemSkin=NULL/*, int iTopItemTextureMask=-1*/);
 	virtual ~ZGuiCombobox();
 
 	virtual bool Render( ZGuiRender* renderer );
@@ -36,11 +36,14 @@ public:
 	void SetLabelText(char* strText);
 	void SetLabelWidth(int iWidth);
 	void IsMenu(bool bIsMenu);
+	const bool IsMenu() { return m_bIsMenu; }
 	void SetNumVisibleRows(unsigned short iNumVisibleRows);
 	bool RemoveAllItems(); // välj denna istället för den i listboxen annars rensas inte textboxen...
-
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
 	void SetZValue(int iValue); // överlagrad
+	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	ZGuiListbox* GetListbox() { return m_pkListbox; }
+	const int GetNumVisibleRows() { return m_unNumVisibleRows; }
 
 private:
 	ZGuiLabel* m_pkLabel;

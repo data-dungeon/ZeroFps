@@ -51,6 +51,7 @@ class RENDER_API TextureManager : public ZFObject {
 		void ClearAll();
 
 		int GetIndex(const char* szFileName);
+		const char* GetFileName(unsigned int uiIndex);
 };
 
 

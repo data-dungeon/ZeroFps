@@ -20,6 +20,7 @@ using namespace std;
 class BASIC_API ZGuiFont  
 {
 public:
+	unsigned short GetLength(const char* c_szText) const;
 	ZGuiFont(char m_sCharsOneRow=16, char cCharacterCellSize=16, char cPixelGapBetweenChars=0, int iID=0);
 	~ZGuiFont();
 

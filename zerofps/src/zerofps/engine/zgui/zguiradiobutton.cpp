@@ -4,6 +4,7 @@
 
 #include "zguiradiobutton.h"
 #include "../../render/zguirenderer.h"
+#include "zgui.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -18,9 +19,10 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, in
 	m_pkPrev = NULL;
 	m_pkNext = NULL;
 	m_iGroupID = -1;
-	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,kRectangle.Width(),
+	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,/*kRectangle.Width()*/kRectangle.Height(),
 		kRectangle.Height()), this, true, iID);
 	m_pkCheckbox->Disable();
+	RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
@@ -64,20 +66,20 @@ bool ZGuiRadiobutton::Render( ZGuiRender* pkRenderer )
 		pkRenderer->SetFont(m_pkFont);
 
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderQuad(GetScreenRect()/*,(m_iBkMaskTexture > 0)*/); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 	m_pkCheckbox->Render(pkRenderer);
 	return false;
 }
 
-void ZGuiRadiobutton::SetButtonSelectedSkin(ZGuiSkin* pkSkin, int iMaskTex)
+void ZGuiRadiobutton::SetButtonSelectedSkin(ZGuiSkin* pkSkin/*, int iMaskTex*/)
 {
-	m_pkCheckbox->SetButtonCheckedSkin(pkSkin, iMaskTex);
+	m_pkCheckbox->SetButtonCheckedSkin(pkSkin/*, iMaskTex*/);
 }
 
-void ZGuiRadiobutton::SetButtonUnselectedSkin(ZGuiSkin* pkSkin, int iMaskTex)
+void ZGuiRadiobutton::SetButtonUnselectedSkin(ZGuiSkin* pkSkin/*, int iMaskTex*/)
 {
-	m_pkCheckbox->SetButtonUncheckedSkin(pkSkin, iMaskTex);
+	m_pkCheckbox->SetButtonUncheckedSkin(pkSkin/*, iMaskTex*/);
 }
 
 bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
@@ -110,13 +112,29 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 	return true;
 }
 
-void ZGuiRadiobutton::SetText(char* strText)
+void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 {
 	m_pkCheckbox->SetText(strText);
 
+	ZGui* pkGui = GetGUI();
+	if(!m_pkFont && pkGui)
+		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+
+	int usTextLength = strlen(strText)*12+25;
+
+	if(m_pkFont != NULL)
+		usTextLength = m_pkFont->GetLength(strText);
+
+	int usFullsize = GetScreenRect().Width() + usTextLength;
+
 	// Ändra storlek på radiobutton kontrollen.
 	// (så att man även träffar knappen när man klickar på texten)
-	Resize(strlen(strText)*12+25, GetScreenRect().Height());
+	Resize(usTextLength+20, GetScreenRect().Height());
+}
+
+char* ZGuiRadiobutton::GetText()
+{
+	return m_pkCheckbox->GetText(); 
 }
 
 void ZGuiRadiobutton::ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour)
@@ -145,6 +163,18 @@ void ZGuiRadiobutton::ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour)
 	m_iGroupID = iGroupID;
 }
 
+void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc)
+{
+	int iStart = pkSkinDesc.size(); 
+	m_pkCheckbox->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Radiobutton: ");
+}
 
+void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
+{
+	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+	iWidth = GetScreenRect().Width(); // dont allow vertcal resize
 
-
+	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+}

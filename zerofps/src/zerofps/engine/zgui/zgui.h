@@ -42,30 +42,39 @@ class ZGuiResourceManager;
 #define ZGM_NULL                         0x0000
 #define ZGM_DESTROY                      0x0002
 #define ZGM_SETFOCUS					 0x0007
-#define ZGM_SHOWWINDOW					 0x0018
-#define ZGM_MOVING						 0x0216
+#define ZGM_CBN_SELENDOK				 0x0009
+#define ZGM_KEYDOWN						 0x0100
+#define ZGM_KEYUP						 0x0101
 #define ZGM_COMMAND						 0x0111
+#define ZGM_SHOWWINDOW					 0x0018
+#define ZGM_MOUSEMOVE					 0x0200
+#define ZGM_LBUTTONDOWN					 0x0201
+#define ZGM_LBUTTONUP					 0x0202
+#define ZGM_LBUTTONDBLCLK				 0x0203
+#define ZGM_MOVING						 0x0216
 #define ZGM_SCROLL						 0x0222
+#define ZGM_EN_CHANGE					 0x0300
 #define ZGM_SELECTLISTITEM				 0x0311
-#define ZGM_CBN_SELENDOK				 9
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
 class ENGINE_API ZGui  
 {
 public:	
+
+	ZGuiSkin* GetFocusBorderSkin() { return m_pkFocusBorderSkin; }
 	void SetDefaultFont(ZGuiFont* pkFont);
 	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
 	ZGuiFont* AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID);
 	ZGuiFont* GetBitmapFont(int iID);
 
-	void ShowMainWindow(int iID, bool bShow);
+	void ShowMainWindow(/*int iID*/ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
-	typedef list<ZGuiWnd*>::iterator WIN;
+	typedef list<ZGuiWnd*>::iterator WINit;
 
 	ZGui();
 	~ZGui();
@@ -73,14 +82,16 @@ public:
 	bool Update();
 	bool IsActive();
 
+	ZGuiResourceManager* GetResMan();
+
 	ZGuiWnd* GetWindow(unsigned int iID);
 
-	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
-	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
+	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
 
 	bool UnregisterWindow(ZGuiWnd* pkWindow);
-	bool RegisterWindow(ZGuiWnd* pkNewWindow); // must be called if the window are created after the parent are created...
+	bool RegisterWindow(ZGuiWnd* pkNewWindow, char* szName); // must be called if the window are created after the parent are created...
 	ZGuiWnd* GetMainWindow(int iID);
+	int GetMainWindowID(char* strWindowName);
 	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWnd; return NULL; }
 	callback GetActiveCallBackFunc() 
 	{ 
@@ -97,11 +108,6 @@ public:
 		callback pkCallback;
 		int iID;
 		int iZValue;
-
-	/*	bool operator<(const MAIN_WINDOW* x)
-		{
-			return this->iZValue < x->iZValue;
-		}*/
 	};
 
 	struct SORTZ_CMP : public binary_function<MAIN_WINDOW*, MAIN_WINDOW*, bool> 
@@ -113,9 +119,14 @@ public:
 	} SortZCmp;
 
 private:
+	bool RunKeyCommand(int iKey);
+	void FormatKey(int& iKey);
+	void CreateDefaultSkins();
+	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
 	bool IgnoreKey(int Key);
 	bool Render(); // Render the active main window
+	void OnKeyPress(int iKey);
 	bool OnKeyUpdate();
 	bool OnMouseUpdate();
 	MAIN_WINDOW* FindMainWnd(int x, int y);
@@ -126,7 +137,6 @@ private:
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window
-	MAIN_WINDOW* m_pkPrevMainWnd;
 
 	map<int, ZGuiWnd*> m_pkWindows;
 
@@ -135,9 +145,10 @@ private:
 
 	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
 	ZGuiSkin* m_pkCursorSkin;
+	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
 
-	ZeroFps* m_pkZeroFps;
+	ZeroFps* m_pkFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;

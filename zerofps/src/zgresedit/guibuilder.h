@@ -17,90 +17,99 @@ class ZGuiFont;
 
 #pragma warning( disable : 4786 )
 
+#include "selectwnd.h"
 #include "../zerofps/engine/zgui/zgui.h"
 #include <map>
 #include <string>
 using namespace std;
 
+enum CtrlType
+{
+	WINDOW,					// 1
+	LABEL,					// 2
+	TEXTBOX,				// 3
+	BUTTON,					// 4
+	CHECKBOX,				// 5
+	RADIOBUTTON,			// 6
+	RADIOBUTTON_NEW_GROUP,	// 7
+	COMBOBOX,				// 8
+	LISTBOX,				// 9
+	SCROLLBAR,				// 10
+	NONE
+};
+
 class GuiBuilder  
 {
 public:
-
-	enum CtrlType
-	{
-		WINDOW,
-		LABEL,
-		TEXTBOX,
-		BUTTON,
-		CHECKBOX,
-		RADIOBUTTON,
-		COMBOBOX,
-		LISTBOX,
-		SCROLLBAR,
-	};
-
 	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
-
-	bool CreateNewType(CtrlType eType, ZGuiWndProc oWndProc);
 	
-	ZGuiButton* CreateCancelButton(ZGuiWnd* pkParent, int iID, 
-		bool bOKButtonExist);
-	ZGuiButton* CreateOKButton(ZGuiWnd* pkParent, int iID, int x=-1, int y=-1);
-	ZGuiButton* CreateCloseButton(ZGuiWnd* pkParent, int iID);
-	ZGuiScrollbar* CreateScrollbar(ZGuiWnd* pkParent, int iID, int x, int y, 
-		int w, int h);
-	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, 
-		int w, int h, bool bMenu);
-	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
-		int h);
-	ZGuiCheckbox* CreateCheckbox(ZGuiWnd* pkParent, int iID, int x, int y, 
-		int w, int h, char *pkName);
-	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, 
-		int w, int h, bool bMulitLine, char* szSkin="white");
-	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
-		int h, char* szText, char* szSkin="");
-	ZGuiWnd* CreateMainWindow(int iMainWndID, int iID, int x, int y, int w, 
-		int h, ZGuiWndProc oWndProc, char* szSkin="gray" );
-	ZGuiRadiobutton* CreateRadioButton(ZGuiWnd* pkParent, int iID, int GroupID,
-		int x, int y, int w, int h, char *szName);
-	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, 
-		int w, int h, char *szName);
+	ZGuiButton* CreateCancelButton(ZGuiWnd* pkParent, int iID, char* szRegName,
+		bool bOKButtonExist=false,int TabOrderNr=-1);
+	ZGuiButton* CreateOKButton(ZGuiWnd* pkParent, int iID, char* szRegName,
+		bool bExistbuttonExist=false, int TabOrderNr=-1);
+	ZGuiButton* CreateCloseButton(ZGuiWnd* pkParent, int iID,char* szRegName,
+		int TabOrderNr=-1);
+	ZGuiScrollbar* CreateScrollbar(ZGuiWnd* pkParent, int iID, char* szRegName,
+		int x, int y, int w, int h, int TabOrderNr=-1);
+	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, char* szRegName, 
+		int x, int y, int w, int h, bool bMenu, int TabOrderNr=-1);
+	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, char* szRegName,
+		int x, int y, int w, int h, int TabOrderNr=-1);
+	ZGuiCheckbox* CreateCheckbox(ZGuiWnd* pkParent, int iID, char* szRegName, 
+		int x, int y, int w, int h, char *pkName, bool bCheck=false, int TabOrderNr=-1);
+	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, char* szRegName, int x, 
+		int y, int w, int h, bool bMulitLine, char* szSkin="white", int TabOrderNr=-1);
+	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, char* szRegName, int x, 
+		int y, int w, int h, char* szText, char* szSkin="Label", int TabOrderNr=-1);
+	ZGuiWnd* CreateMainWindow(int iMainWndID, int iID, char* szRegName, int x, int y, 
+		int w, int h, ZGuiWndProc oWndProc, char* szSkin="gray", int TabOrderNr=-1);
+	ZGuiRadiobutton* CreateRadioButton(ZGuiWnd* pkParent, int iID, char* szRegName,
+		int GroupID, bool bCreateNewGroup, int x, int y, int w, int h, char *szName, 
+		bool bCheck=false, int TabOrderNr=-1);
+	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, char* szRegName, int x, int y, 
+		int w, int h, char *szName, int TabOrderNr=-1);
 
-	bool Register(ZGuiWnd *pkWnd, char* strName);
-	bool Register(ZGuiSkin *pkSkin, char* strName);
-	bool Register(ZGuiFont *pkFont, char* strName);
-
-	ZGuiWnd* GetWnd(char* strName);
-	ZGuiSkin* GetSkin(char* strName);
-	int GetTexture(char* strName);
+	ZGuiWnd* GetWnd(const char* szName);
+	ZGuiSkin* GetSkin(const char* szName, bool bAllocateNew=false);
+	int GetTexture(const char* szName);
+	CtrlType GetWndType(ZGuiWnd* pkWnd);
 	
 	bool InitSkins();
 
 	GuiBuilder(ZGui* pkGui, TextureManager* pkTexMan, 
 		ZGuiResourceManager* pkGuiMan, Rect rcScreen);
 
-	virtual ~GuiBuilder();
-
+	~GuiBuilder();
 
 private:
+	bool GenUniqueWndName(ZGuiWnd* pkWnd, char szName[50]);
+	bool Register(ZGuiWnd *pkWnd, char* szName);
+	bool Register(ZGuiSkin *pkSkin, char* szName);
+	bool Register(ZGuiFont *pkFont, char* szName);
+
 	map<string, ZGuiSkin*> m_kSkinMap;
 	map<string, int> m_kTextureMap;
 
 	ZGuiResourceManager* m_pkGuiMan;
 	TextureManager* m_pkTexMan;
-
-	CtrlType m_kSelectedCtrType;
-	int m_iLastID;
-
-	int m_iNewCtrPosX;
-	int m_iNewCtrPosY;
-
-	ZGuiWnd* m_pkLastWndCreated;
-
+	
 public:
+	void SetScrollPos(const char*szScrollbar, float fPos);
+	void SetColor(float afColor[3], const unsigned char r, const unsigned char g,
+		const unsigned char b);
+	char* GetTypeName(ZGuiWnd *pkWnd);
+	CtrlType GetType(char* szTypeName);
+	bool IsButtonChecked(const char* szCheckBox);
+	int GetTextInt(const char *szWindow);
+	bool SetTextString(const char *szWindow, char* szString);
+	bool SetTextInt(const char* szWindow, int iValue);
 	Rect m_rcScreen;
 	ZGui* m_pkGui;
-
+	bool m_bAllocateNewSkins;
+	int m_iLastID;
+	int m_iUniqueSkinCounter;
+	int m_iLastRadioGroup;
+	int m_iLastTabNr;
 };
 
 #endif // #ifndef _GUIBUILDER_H

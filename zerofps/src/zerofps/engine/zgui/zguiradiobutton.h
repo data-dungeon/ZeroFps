@@ -15,21 +15,23 @@
 class ENGINE_API ZGuiRadiobutton : public ZGuiControl
 {
 public:
-	ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID=0, int iGroupID=-1, 
-		ZGuiRadiobutton* pkPrev=NULL, bool bVisible=true);
+	ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID=0, 
+		int iGroupID=-1, ZGuiRadiobutton* pkPrev=NULL, bool bVisible=true);
 	virtual ~ZGuiRadiobutton();
 	bool Render( ZGuiRender* pkRenderer );
-
-	void SetButtonSelectedSkin(ZGuiSkin* pkSkin, int iMaskSkin);
-	void SetButtonUnselectedSkin(ZGuiSkin* pkSkin, int iMaskSkin);
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc); // overloaded
+	void SetButtonSelectedSkin(ZGuiSkin* pkSkin);
+	void SetButtonUnselectedSkin(ZGuiSkin* pkSkin);
 	ZGuiCheckbox* GetButton() { return m_pkCheckbox; }
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
-	void SetText(char* strText);
+	void SetText(char* strText, bool bResizeWnd=false); // överlagrad
 	ZGuiRadiobutton* GetNext() { return m_pkNext; }
+	char* GetText();// overloaded
+	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
+	int GetGroupID() {return m_iGroupID;}
 
 private:
 
-	int GetGroupID() {return m_iGroupID;}
 	void ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour);
 	ZGuiRadiobutton* GetPrev() { return m_pkPrev; }
 	void SetNext(ZGuiRadiobutton* pkNext) { m_pkNext = pkNext; }

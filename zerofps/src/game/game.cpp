@@ -272,16 +272,20 @@ void Game::SetupLevel()
 	m_iGameState=GAME_STATE_INGAME;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: InitGUI
+// Description:
+//
 void Game::InitGUI()
 {
 	int id = 1;
 	int x = m_iWidth-200, y = m_iHeight-200;
 
-	ZGuiSkin* pkMainSkin =		new ZGuiSkin(-1, -1, -1, -1, 192, 192, 192, 0,   0,   0,   2);
-	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(-1, -1, -1, -1, 255, 0,   0,   0,   0,   128, 4);
-	ZGuiSkin* pkHealthSkin =	new ZGuiSkin(-1, -1, -1, -1, 0,   0,   255, 0,   0,   128, 4);
-	ZGuiSkin* pkArmorBkSkin =	new ZGuiSkin(-1, -1, -1, -1, 255, 0,   0,   0,   0,   128, 4);
-	ZGuiSkin* pkArmorSkin =		new ZGuiSkin(-1, -1, -1, -1, 0,   255, 0,   0,   0,   128, 4);
+	ZGuiSkin* pkMainSkin =		new ZGuiSkin(192, 192, 192, 0,   0,   0,   2);
+	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
+	ZGuiSkin* pkHealthSkin =	new ZGuiSkin(0,   0,   255, 0,   0,   128, 4);
+	ZGuiSkin* pkArmorBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
+	ZGuiSkin* pkArmorSkin =		new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
 
 	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(x,y,x+190,y+190),NULL,true,id++);
 	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);
@@ -298,12 +302,12 @@ void Game::InitGUI()
 	pkArmorbarBk->SetSkin(pkArmorBkSkin);
 	pkArmorbar->SetSkin(pkArmorSkin);
 
-	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, WINPROC, true);
+	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, "PlayerStatusMainWnd", WINPROC, true);
 
-	pkGuiMan->Add(string("helthbar"), pkHelthbar);
-	pkGuiMan->Add(string("armorbar"), pkArmorbar);
-	pkGuiMan->Add(string("helthbar_bk"), pkHelthbarBk);
-	pkGuiMan->Add(string("armorbar_bk"), pkArmorbarBk);
+	pkGui->RegisterWindow(pkHelthbar, "helthbar");
+	pkGui->RegisterWindow(pkArmorbar, "armorbar");
+	pkGui->RegisterWindow(pkHelthbarBk, "helthbar_bk");
+	pkGui->RegisterWindow(pkArmorbarBk, "armorbar_bk");
 
 	pkFps->m_bGuiTakeControl = false;
 }
