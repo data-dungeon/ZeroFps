@@ -60,7 +60,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		};
 	
-
+		int		m_iMarkerTextureID;
 	
 		P_DMGameInfo*	m_pkGameInfoProperty;
 		Entity*			m_pkGameInfoEntity;

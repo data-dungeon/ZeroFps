@@ -280,7 +280,7 @@ void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
 }
 
 
-void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
+void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor){
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -289,18 +289,23 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glRotatef(kHead.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 
+	glEnable(GL_COLOR_MATERIAL);
+
 //	glBlendFunc(GL_ONE,GL_ZERO);
  		
   	m_pkTexMan->BindTexture(iTexture);  
 
+	glColor4f(kColor.x, kColor.y, kColor.z ,1.0);  	  
+
 	glBegin(GL_QUADS);			
-	glColor4f(1.0,1.0,1.,1.0);  	  
 	glNormal3f(0,0,1);
    glTexCoord2f(0.0,1.0);glVertex3f(-.5,-0.5,0);		 
    glTexCoord2f(1.0,1.0);glVertex3f(.5,-0.5,0);		
  	glTexCoord2f(1.0,0.0);glVertex3f(.5,0.5,0);    
 	glTexCoord2f(0.0,0.0);glVertex3f(-0.5,0.5,0);    
 	glEnd();			
+
+	glDisable(GL_COLOR_MATERIAL);
 
 	glPopMatrix();
 }

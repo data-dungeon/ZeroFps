@@ -92,6 +92,10 @@ void DarkMetropolis::OnInit()
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
+
+	// load marker texture
+	m_iMarkerTextureID = this->m_pkFps->m_pkTexMan->Load("data/textures/dm/marker.tga", 0);
+
 }
 
 void DarkMetropolis::OnIdle() 
@@ -114,25 +118,39 @@ void DarkMetropolis::OnIdle()
 
 void DarkMetropolis::RenderInterface(void)
 {
-	/*
-	//draw a ugly 3D marker
-	if(m_pkCameraEntity)
-	{
-		Vector3 kPos = m_pkCamera->GetPos() + Get3DMousePos(true)*4;
-		
-		m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
-		m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
-		m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));		
-	}
-	*/
-	
+
 	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentPickedEntity))
 	{
 		if(pkEnt->GetProperty("P_DMItem"))
-			m_pkRender->Sphere(pkEnt->GetWorldPosV(),0.5,1,Vector3(0.5,0.5,0.5),false);					
+		{
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GEQUAL, 0.1);
+			
+			glColor3f (0, 0, 1);
+
+			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.5, 0.5, 0.5), m_iMarkerTextureID, Vector3(1,1,0) );
+
+			glDisable(GL_ALPHA_TEST);
+		}
 	
-		if(pkEnt->GetProperty("P_DMCharacter"))
-			m_pkRender->Sphere(pkEnt->GetWorldPosV() + Vector3(0,1,0),0.8,1,Vector3(0.5,0.5,0.5),false);					
+		if(P_DMCharacter* pkChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+		{
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GEQUAL, 0.1);
+			
+			Vector3 kColor;
+
+			if ( pkChar->m_iTeam == 0 )
+				kColor = Vector3 (0,255,0);
+			else if ( pkChar->m_iTeam == 1 )
+				kColor = Vector3 (0,0,255);
+			else
+				kColor = Vector3 (255,255,255);
+
+			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, kColor );
+
+			glDisable(GL_ALPHA_TEST);
+		}
 	
 	}
 	
@@ -142,7 +160,12 @@ void DarkMetropolis::RenderInterface(void)
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 		if(pkEnt)
 		{
-			m_pkRender->Sphere(pkEnt->GetWorldPosV() + Vector3(0,2,0),0.1,1,Vector3(0,1,0),false);		
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GEQUAL, 0.1);
+
+			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
+
+			glDisable(GL_ALPHA_TEST);
 		}	
 	}
 	
@@ -618,6 +641,27 @@ void DarkMetropolis::Input()
 				{					
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
 					{
+						
+						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						{
+							cout<<"entering hq"<<endl;
+							SelectAgent(m_kSelectedEntitys[i], false, false,false); // remove selection
+							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
+							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(-1, false);
+						}
+						/*else
+						{
+							P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+							if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
+							{					
+						
+								//randomize position a bit if theres many characters selected
+								if(m_kSelectedEntitys.size() > 1)
+									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+								else
+									pkPF->MakePathFind(m_kPickPos);
+								}
+*/
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{														
 							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
