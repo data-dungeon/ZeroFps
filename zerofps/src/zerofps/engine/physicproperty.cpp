@@ -136,7 +136,7 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 
 	kReturn[3].kValueName="m_fRadius";
 	kReturn[3].iValueType=VALUETYPE_FLOAT;
-	kReturn[3].pkValue=(void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius);
+	kReturn[3].pkValue=(void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
 
 
 	return kReturn;
