@@ -24,6 +24,9 @@
 //for ZeroRTS
 #include "pathfindproperty.h"
 #include "p_clientunit.h"
+#include "p_renderselection.h"
+
+
 
 
 

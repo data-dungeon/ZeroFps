@@ -91,6 +91,7 @@ void ZeroRTS::RegisterActions()
 
 void ZeroRTS::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
 }
 
@@ -386,6 +387,7 @@ bool ZeroRTS::AddSelectedObject(int iID)
 	
 	m_kSelectedObjects.push_back(iID);
 
+	cout<<"object Added to selection"<<endl;
 }
 
 bool ZeroRTS::AlreadySelected(int iID)

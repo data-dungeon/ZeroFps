@@ -19,6 +19,8 @@ using namespace std;
 
 class COMMON_API P_ClientUnit: public Property {
 	private:
+		bool					m_bCurrentSelectionRenderState;
+	
 	
 	public:
 		unsigned char		m_cTeam;
@@ -32,6 +34,10 @@ class COMMON_API P_ClientUnit: public Property {
 	
 		P_ClientUnit();
 		void CloneOf(Property* pkProperty) { }
+		void Update();
+
+		void EnableSelectionRender();
+		void DisableSelectionRender();		
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

@@ -16,6 +16,9 @@ void Physics_Engine::Clear()
 
 void Physics_Engine::Update(float fAlphaTime)
 {	
+	if(m_kBodys.size() == 0)
+		return;
+
 	m_fAlphaTime = fAlphaTime;
 	m_fRTime = m_fAlphaTime;
 	
