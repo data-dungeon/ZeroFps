@@ -12,8 +12,8 @@ class CollisionShape;
 class ENGINE_API PhysicProperty :public Property
 {
 	private:
-		CollisionShape* m_kColSphere;
-		CollisionShape* m_kColObject;
+		CollisionShape* m_pkColSphere;
+		CollisionShape* m_pkColObject;
 
 	public:
 		bool m_bGravity;
@@ -23,6 +23,8 @@ class ENGINE_API PhysicProperty :public Property
 
 		CollisionData* Test(PhysicProperty* kOther);
 
+		CollisionShape* GetColSphere(){return m_pkColSphere;};
+		CollisionShape* GetColShape(){return m_pkColObject;};
 };
 
 Property* Create_PhysicProperty();

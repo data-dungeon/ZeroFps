@@ -47,7 +47,7 @@ void DrawBoundSphere(float fRadius)
 
 	float x,y;
 	glBegin(GL_LINE_LOOP );
-	for(int i=0; i<360; i+=12.25) {
+	for(int i=0; i<360; i+=(int)12.25) {
 		x = cos(DegToRad(i)) * fRadius;
 		y = sin(DegToRad(i)) * fRadius;
 		glVertex3f(x,y,0);

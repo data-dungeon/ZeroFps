@@ -8,11 +8,16 @@
 #include "zerofps.h"
 #include "engine_x.h"
 #include "object.h"
+//#include "physicproperty.h"
+
 #include <list>
+#include <vector>
+
 
 using namespace std;
 
 class Object;
+class PhysicProperty;
 
 struct ENGINE_API CollisionData
 {
@@ -25,6 +30,11 @@ struct ENGINE_API CollisionData
 
 };
 
+struct Sphere{
+	PhysicProperty* m_pkPP;
+	float m_fRadius;
+	Vector3 m_kPos;
+};
 
 class ENGINE_API PhysicsEngine : public ZFObject
 {
@@ -35,6 +45,12 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		float m_fFrameTime;
 
 		bool m_bUpdate;
+	
+		//curent physicpropertys
+		list<Property*> m_kPropertys;		
+		
+		//curent motionspheres
+		vector<Sphere> m_kMotionSpheres;
 
 	public:
 		PhysicsEngine();
@@ -42,6 +58,12 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		void Update();
 
 		Vector3 GetNewPos(Object* pkObject,float fTime);
+		
+		void CalcMotionSpheres();
+		void TestCollisions();
+		bool TestSphere(Sphere* S1,Sphere* S2);
+		void DeepTest(Sphere* S1,Sphere* S2);
+		
 		void MoveObject(Object* pkObject);
 
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};

@@ -23,7 +23,7 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
-	pkEdit->pkInput->ToggleGrab();
+//	pkEdit->pkInput->ToggleGrab();
 	ToogleMenu();
 }
 
@@ -315,7 +315,8 @@ bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
 		else
 			szLabelText = "...";
 
-		szLabelText += m_szSearchBoxPath.begin()+start;
+		szLabelText += m_szSearchBoxPath;
+		szLabelText += start;
 		
 		pkLabel->SetText((char*)szLabelText.c_str());
 	}

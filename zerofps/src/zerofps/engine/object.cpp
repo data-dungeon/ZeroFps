@@ -16,8 +16,9 @@ void ObjectDescriptor::Clear()
 	m_kPos.Set(0,0,0);
 	m_kRot.Set(0,0,0);
 	m_kVel.Set(0,0,0);			
-	m_kAcc.Set(0,0,0);				
+	m_kAcc.Set(0,0,0);	
 	
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 	m_bSave=true;
 	
 	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
@@ -249,8 +250,8 @@ Object::Object() {
 	
 	m_kName="Object";
 		
-//	m_iObjectType=OBJECT_TYPE_DYNAMIC;
-	m_iObjectType=OBJECT_TYPE_STATIC;	
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+//	m_iObjectType=OBJECT_TYPE_STATIC;	
 	
 	m_bLockedChilds=false;
 	m_iUpdateStatus=UPDATE_ALL;
@@ -640,6 +641,10 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	ObjDesc->m_kPos=GetPos();
 	ObjDesc->m_kRot=GetRot();
 	ObjDesc->m_kVel=GetVel();
+	ObjDesc->m_kAcc=GetAcc();	
+	
+	ObjDesc->m_bSave=m_bSave;
+	ObjDesc->m_iObjectType=m_iObjectType;
 	
 	list<Property*> pkPropertys;
 	

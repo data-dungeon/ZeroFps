@@ -9,6 +9,7 @@ AutoParentProperty::AutoParentProperty()
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
 
 	m_fUpdateTime=1;
+	//add a random time so we dont get that many updates at the same frame
 	m_fLastUpdate=m_pkFps->GetTicks() + ((rand()%1) /1000.0);
 }
 
@@ -18,7 +19,7 @@ void AutoParentProperty::Update()
 
 	if(fCurentTime - m_fLastUpdate >= m_fUpdateTime)
 	{
-		m_fLastUpdate=fCurentTime;
+		m_fLastUpdate=fCurentTime + m_pkFps->GetTicks() + ((rand()%1) /1000.0);
 
 		m_pkObject->AttachToClosestZone();
 	}

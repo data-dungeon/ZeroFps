@@ -284,6 +284,10 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 	tempobject->GetPos()=pkObjDesc->m_kPos;
 	tempobject->GetRot()=pkObjDesc->m_kRot;
 	tempobject->GetVel()=pkObjDesc->m_kVel;
+	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
+	
+	tempobject->GetSave()=pkObjDesc->m_bSave;
+	tempobject->GetObjectType()=pkObjDesc->m_iObjectType;	
 	
 	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
 	{

@@ -14,7 +14,7 @@ class ENGINE_API CollisionShape
 		
 	public:
 		PhysicProperty* m_pkPP;			
-		Vector3 *m_pkPos;		
+//		Vector3 *m_pkPos;		
 		
 		void SetPPPointer(PhysicProperty* pkPP);
 		

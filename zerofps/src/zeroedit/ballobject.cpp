@@ -22,7 +22,7 @@ BallObject::BallObject() {
 	AddProperty("AutoParentProperty");	
 	AddProperty("PhysicProperty");
 
-	m_kAcc.Set(5,0,0);
+//	m_kAcc.Set(5,0,0);
 
 	onGround = false;
 }
