@@ -1561,23 +1561,7 @@ ZoneData* EntityManager::GetZone(Entity* PkObject)
 			continue;
 		
 		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
-		{
-			if(m_kZones[iZ].m_iZoneID != iZ)
-				cout<<"error id does not match "<<	iZ <<" "<<m_kZones[iZ].m_iZoneID<<endl;
-		
-			if(m_kZones[iZ].m_iStatus == EZS_LOADED)
-				cout<<"EZS_LOADED"<<endl;
-			if(m_kZones[iZ].m_iStatus == EZS_UNLOADED)
-				cout<<"EZS_UNLOADED"<<endl;
-			if(m_kZones[iZ].m_iStatus == EZS_CACHED)
-				cout<<"EZS_CACHED"<<endl;
-			if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
-				cout<<"EZS_UNUSED"<<endl;
-
-				
-								
 			return &m_kZones[iZ];
-		}
 	}
 
 	return NULL;
@@ -2690,7 +2674,7 @@ void EntityManager::UpdateZoneStatus()
 				//zone is cached , lets activate it
 				if(m_kZones[i].m_iStatus == EZS_CACHED)
 				{
-					cout<<"activating cached zone "<<i<<endl;															
+					//cout<<"activating cached zone "<<i<<endl;															
 					m_kZones[i].m_iStatus = EZS_LOADED;					
 					
 					if(m_kZones[i].m_pkZone)
@@ -2702,9 +2686,9 @@ void EntityManager::UpdateZoneStatus()
 				//zone is unloaded , lests load it
 				if(m_kZones[i].m_iStatus == EZS_UNLOADED)
 				{
-					cout<<"Loading zone "<<i<<endl;
+					//cout<<"Loading zone "<<i<<endl;
 					
-					//m_kZones[i].m_iStatus = EZS_LOADED;
+					//m_kZones[i].m_iStatus = EZS_LOADED;					
 					// zone status is set in loadzone()
 					LoadZone(i);
 					
@@ -2720,7 +2704,7 @@ void EntityManager::UpdateZoneStatus()
 				//zone is loaded, set it as cached
 				if(m_kZones[i].m_iStatus == EZS_LOADED)
 				{
-					cout<<"zone is no longer tracked, setting as cached and starting timout "<<i<<endl;
+					//cout<<"zone is no longer tracked, setting as cached and starting timout "<<i<<endl;
 					
 					m_kZones[i].m_iStatus = EZS_CACHED;
 					
@@ -2736,9 +2720,9 @@ void EntityManager::UpdateZoneStatus()
 				{
 					if( (fCurrentTime - m_kZones[i].m_fInactiveTime) > m_fZoneUnloadTime)
 					{
-						m_kZones[i].m_iStatus = EZS_UNLOADED;
+						//cout<<"cached zone timed out, unloading "<<i<<endl;
 						
-						cout<<"cached zone timed out, unloading "<<i<<endl;
+						m_kZones[i].m_iStatus = EZS_UNLOADED;						
 						UnLoadZone(i);		
 						
 						continue;
