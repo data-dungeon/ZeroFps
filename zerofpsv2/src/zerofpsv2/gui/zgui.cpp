@@ -1332,22 +1332,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				{
 					SetFocus(wnd->pkWnd);
 
-					//if(m_pkActiveMainWin->pkWnd->GetSkin()->m_bTransparent == true)
-					//{
-					//	m_bHandledMouse = false;
-					//}
-					//else
-					//{
-					//	m_bHandledMouse = true;
-					//}
+					ZGuiWnd* test = wnd->pkWnd->Find(x,y);
 
 					m_bHandledMouse = true;
 
-		/*			if(wnd->pkWnd->GetSkin()->m_bTransparent == true)
+					if(test)
 					{
-						printf("wnd->pkWnd = %s\n", wnd->pkWnd->GetName());
-						m_bHandledMouse = false;
-					}*/
+						if(test->GetSkin() && test->GetSkin()->m_bTransparent == true)
+						{
+							m_bHandledMouse = false;
+						}
+					}
 
 					return true;					
 				}

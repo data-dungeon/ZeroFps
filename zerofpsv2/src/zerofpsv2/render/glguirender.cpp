@@ -97,6 +97,9 @@ bool GLGuiRender::StartRender()
 		glScalef(2.0f, 2.0f, 1.0f);
 		glTranslatef(0,-600, 0);
 	}
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
