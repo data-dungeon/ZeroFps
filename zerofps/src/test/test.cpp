@@ -17,8 +17,9 @@ void Test::OnInit(void) {
 	test->Random();
 //	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
+//	test->MakeQuadTree();
 
-
+//	exit(1);
 	GLfloat light_position[] ={0,60,0,1};
 	GLfloat white_light[] = {0.5,0.5,0.5,0.5};
 	GLfloat lmodel_ambient[] = {0.5,0.5,0.5,0.5};
@@ -51,7 +52,7 @@ void Test::OnIdle(void) {
 	pkRender->SetFont("file:../data/textures/text/console.bmp");	
 	pkRender->Print(Vector3(x,20,z),Vector3(0,0,0),Vector3(5,5,5),"HEJ JULLE");
 
-	cout<<pkFps->m_iFps<<endl;
+//	cout<<pkFps->m_iFps<<endl;
 	
 //	for(int i=2;i<60;i++)
 //		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);

@@ -187,7 +187,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p4;
 	
 	glTranslatef(-50,-10,-50);
-	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+//	m_pkTexMan->BindTexture(kmap->m_acTileSet);
 	
 	GLfloat mat_specular[]={1,1,1,1};
 	GLfloat mat_shininess[]={10};
@@ -242,6 +242,52 @@ void Render::DrawHM(HeightMap *kmap) {
 		}
 	*/
 	glPopMatrix();			
+}
+
+void Render::DrawHMQT(HeightMap *kmap) {
+	glPushMatrix();
+	glTranslatef(-50,-10,-50);
+	SetColor(Vector3(255,255,255));
+	
+	DrawQuad(kmap->m_kCenter,kmap->m_iHmSize/2);
+//	Dot(kmap->m_iHmSize/2,kmap->m_kCenter->height,kmap->m_iHmSize/2);	
+	
+	glPopMatrix();
+}
+
+void Render::DrawQuad(HM_vert* vert,int width) {
+	Dot(0,vert->height,0);
+
+
+	int i=0;
+	for(int q=-1;q<2;q++){
+		for(int w=-1;w<2;w++) {
+			if(q==0 && w==0) {
+			}else {
+				if(vert->childs[i]!=NULL){
+				glPushMatrix();
+					glTranslatef(width*q,0,width*w);
+					DrawQuad(vert->childs[i],width/2);
+				glPopMatrix();				
+				}
+			}
+		}
+	}
+	
+
+/*
+	for(int i=0;i<8;i++) {
+		if(vert->childs[i]!=NULL){
+			glPushMatrix();	
+				
+				DrawQuad
+		}	
+	}*/
+}
+
+void Render::Dot(float x,float y,float z) {
+	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
+
 }
 
 

@@ -3,7 +3,9 @@
 
 HeightMap::HeightMap() {
 	m_iHmSize=100;	
-	verts=new HM_vert[m_iHmSize*m_iHmSize];
+	m_iBoxTresh=2;
+	m_iMaxSteps=5;
+	verts=new HM_vert[(m_iHmSize+1)*m_iHmSize];
 	Zero();
 	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
 }
@@ -22,6 +24,84 @@ float HeightMap::Height(int x,int z) {
 void HeightMap::SetTileSet(char* acTileSet) {
 	strcpy(m_acTileSet,acTileSet);
 	
+}
+
+void HeightMap::MakeQuadTree() {
+	m_kCenter=CreateQuad(m_iHmSize/2,m_iHmSize/2,m_iHmSize,0,true);
+	
+	cout<<"Generation of Quad-tree is complete"<<endl;
+
+}
+
+
+HM_vert* HeightMap::CreateQuad(int x,int z,int width,int step,bool more) {
+	if(more==true)		
+		cout<<"adding quad "<<x<<" "<<z;
+	else
+		cout<<"adding vertex "<<x<<" "<<z;
+	cout<<" step:"<<step<<endl;
+
+
+	step++;
+	HM_vert *nVert=new HM_vert;	
+	nVert->height=GetVert(x,z)->height;
+	nVert->normal=GetVert(x,z)->normal;
+	for(int i=0;i<8;i++) 				
+		nVert->childs[i]=NULL;
+	
+	//check if we are on an edge
+	if(x<1 || x>m_iHmSize-1 || z<0 || z>m_iHmSize-1){
+		cout<<"neer edge"<<endl;
+		return nVert;   
+	}	
+	
+	//check if we have reached max child steps
+	if(step>m_iMaxSteps) {
+		cout<<"max steps reached"<<endl;
+		return nVert;
+	}
+	
+	
+	if(more) {
+		int i=0;
+		for(int q=-1;q<2;q++){
+			for(int w=-1;w<2;w++) {
+				if(q==0 && w==0) {
+//					nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,false);
+				} else {			
+					if(BoxTest(x+(width/4)*w,z+(width/4)*q,width))
+						nVert->childs[i]=CreateQuad(x+(width/4)*w,z+(width/44)*q,width/2,step,true);
+					else
+						nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,step,false);
+					i++;
+				}
+			}
+		}		
+	}
+	return nVert;
+}
+
+bool HeightMap::BoxTest(int x,int z,int width) {
+	float total=0;
+	for(int q=-1;q<2;q++){
+		for(int w=-1;w<2;w++) {
+			if(q==0 && w==0) {
+			
+			}else {
+				if((GetVert(x,z)->height-GetVert(x+w,z+w)->height)<0)
+					total-=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);					
+				else
+					total+=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);
+			}
+		}
+	}
+	cout<<"TOTAL FOR "<<x<<" "<<z<<" is "<<total<<endl;
+	
+	//check if the diference is more then the treshold
+	if(total>m_iBoxTresh)
+		return true;
+	else
+		return false;
 }
 
 
@@ -104,7 +184,7 @@ bool HeightMap::Load(char* acFile) {
 void HeightMap::Random() {
 	int height=3000;
 	int peaks=500;
-	int smooth=5;
+	int smooth=4;
 
 //   nice terrain
 //	int height=30000000;
@@ -140,4 +220,16 @@ void HeightMap::Random() {
 		}
 	}
 }
+
+HM_vert* HeightMap::GetVert(int x,int z) {
+//	cout<<"hora:"<<z*m_iHmSize+x<<endl;
+	return &verts[z*m_iHmSize+x];
+}
+
+
+
+
+
+
+
 

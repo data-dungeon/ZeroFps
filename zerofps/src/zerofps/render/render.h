@@ -29,8 +29,11 @@ class RENDER_API Render {
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
 		void SetFont(char* aFont);
 		void Line(Vector3 kPos1,Vector3 kPos2);
+		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
 		void DrawHM(HeightMap* kmap);
+		void DrawHMQT(HeightMap* kmap);		
+		void DrawQuad(HM_vert* vert,int width);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
 		void GiveTexCor(float &iX,float &iY,int iNr);
