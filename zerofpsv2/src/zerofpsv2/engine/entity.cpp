@@ -256,16 +256,23 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 */
 void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
+	//return if no updates shuld be done
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
+	//return if no child updates shuld be done
+	if(m_iUpdateStatus & UPDATE_NOCHILDS)
+		return;
+	
+	//go trough all childs and get propertys
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
 	{	
 		(*it)->GetAllPropertys(akPropertys,iType,iSide);		
 	}		
+
 	
 /*		if(m_iUpdateStatus & UPDATE_ALL)
 		{
@@ -883,7 +890,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 /**	\brief	Load Entity.
 */
-void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
+void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 {
 	Vector3 pos;
 	Matrix3 rot;
@@ -969,16 +976,20 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 			prop->Load(pkFile);
 	}
 		
-	//nr of childs
-	int iChilds = 0;		
-	pkFile->Read(&iChilds,sizeof(iChilds),1);		
-	
-	//load all childs
-	for( i = 0; i < iChilds; i++ )
+	//Do we want to load the entitys attached childs?
+	if(bLoadChilds)
 	{
-		Entity* newobj = m_pkObjectMan->CreateObject(false);
-		newobj->SetParent(this);
-		newobj->Load(pkFile,bLoadID);		
+		//nr of childs
+		int iChilds = 0;		
+		pkFile->Read(&iChilds,sizeof(iChilds),1);		
+	
+		//load all childs
+		for( i = 0; i < iChilds; i++ )
+		{
+			Entity* newobj = m_pkObjectMan->CreateObject(false);
+			newobj->SetParent(this);
+			newobj->Load(pkFile,bLoadID);		
+		}
 	}
 	
 	//reset alla update flags for this object
@@ -1684,6 +1695,9 @@ void	Entity::SetNetUpdateFlag(int iConID,int iFlagID,bool bValue)
 
 void Entity::SetUpdateStatus(int iUpdateStatus)
 {
+	if(m_iUpdateStatus == iUpdateStatus)
+		return;
+
 	m_iUpdateStatus = iUpdateStatus; 
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_UPDATESTATUS,true);
 }

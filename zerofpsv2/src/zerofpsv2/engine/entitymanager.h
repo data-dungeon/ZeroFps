@@ -37,6 +37,7 @@ public:
 	float					m_fInactiveTime;
 	bool					m_bActive;
 	int					m_iRange;						// Range to tracker i num of zones.
+	float					m_fDistance;					// distance to tracker in units
 
 	ZoneData& operator=(const ZoneData &kOther);
 	bool IsInside(Vector3 kPoint);
@@ -99,6 +100,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		// Trackers
 		list<P_Track*>				m_kTrackedObjects;	
 		int							m_iTrackerLOS;												//tracker line of sight
+		float							m_iObjectDistance;											//tracker line of sight		
 
 		//list<ObjectDescriptor*> m_akTemplates;											///< List of templates.
 			

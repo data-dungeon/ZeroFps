@@ -37,6 +37,7 @@ ZoneData::ZoneData()
 	m_fInactiveTime = 0;
 	m_bActive = false;
 	m_iRange = 0;		
+	m_fDistance = 0;	
 	m_bUnderContruction = false;
 	m_iRevision = 0;
 	
@@ -71,6 +72,7 @@ EntityManager::EntityManager()
 	m_bDrawZoneConnections	= false;
 	m_pScriptFileHandle		= NULL;
 	m_iTrackerLOS				= 3;	
+	m_iObjectDistance			= 50;		
 
 	m_pkWorldObject			= NULL;
 	m_pkZoneObject				= NULL;
@@ -93,6 +95,7 @@ EntityManager::EntityManager()
 	RegisterVariable("l_showconn",  &m_bDrawZoneConnections,		CSYS_BOOL);
 	
 	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
+	RegisterVariable("l_objectdistance", &m_iObjectDistance, CSYS_FLOAT);		
 }
 
 bool EntityManager::StartUp()	
@@ -1684,9 +1687,11 @@ void EntityManager::UpdateZones()
 	{
 		m_kZones[iZ].m_bActive							= false;
 		m_kZones[iZ].m_fInactiveTime					= fTime;
-		m_kZones[iZ].m_iRange							= 1000;
+		m_kZones[iZ].m_iRange							 = 10000;
+		m_kZones[iZ].m_fDistance						 = 10000;		
+		
 		if(m_kZones[iZ].m_pkZone)
-			m_kZones[iZ].m_pkZone->GetUpdateStatus()	= UPDATE_NONE;
+			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
 	}
 
 	vector<ZoneData*>	m_kFloodZones;
@@ -1699,7 +1704,7 @@ void EntityManager::UpdateZones()
 		set<int>			kNewActiveZones;
 		
 		for(iZ=0;iZ<m_kZones.size();iZ++)
-			m_kZones[iZ].m_iRange							= 1000;
+			m_kZones[iZ].m_iRange							= 10000;
 		
 		//get current zone
 		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
@@ -1707,6 +1712,11 @@ void EntityManager::UpdateZones()
 		if(iZoneIndex >= 0) {
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
+			
+			float f = (pkStartZone->m_kPos - (*iT)->GetObject()->GetWorldPosV()).Length();  
+			if(f < pkStartZone->m_fDistance)
+				pkStartZone->m_fDistance = f;			
+			
 			m_kFloodZones.push_back(pkStartZone);
 		}
 
@@ -1727,12 +1737,20 @@ void EntityManager::UpdateZones()
 				{
 					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 
-					if(pkOtherZone->m_iRange < iRange)	continue;
+					//if zone has already been checked continue whit the next one
+					if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
+					
+					//set new range 
 					pkOtherZone->m_iRange = iRange;
-					if(pkOtherZone->m_iRange < m_iTrackerLOS)
-					{
-						m_kFloodZones.push_back(pkOtherZone);
-					}
+					
+					//calculate distance from zone to current tracker, if the current tracker is closer then change value in zone
+					float f = (pkOtherZone->m_kPos - (*iT)->GetObject()->GetWorldPosV()).Length();  
+					if(f < pkOtherZone->m_fDistance)
+						pkOtherZone->m_fDistance = f;
+					
+					
+					//add zone to flooded zones list
+					m_kFloodZones.push_back(pkOtherZone);
 				}				
 			}
 		}
@@ -1756,6 +1774,7 @@ void EntityManager::UpdateZones()
 		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
 		{
 			LoadZone(pkZoneRefresh->m_iZoneID);
+			
 			//cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
 		}
 
@@ -1766,8 +1785,30 @@ void EntityManager::UpdateZones()
 			//cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
 		}
 
+//		if(pkZoneRefresh->m_bActive)
+//			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
+
+
+		//dvoid object loding ...eller nått
 		if(pkZoneRefresh->m_bActive)
-			pkZoneRefresh->m_pkZone->GetUpdateStatus()		= UPDATE_ALL;
+		{
+			if(pkZoneRefresh->m_pkZone)
+			{
+				//cout<<"range:"<<pkZoneRefresh->m_iRange<<endl;
+			
+				if(pkZoneRefresh->m_fDistance < m_iObjectDistance)
+				//if(pkZoneRefresh->m_iRange < m_iTrackerLOS / 2)
+				{
+					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					//cout<<"whit childs"<<endl;					
+				}
+				else
+				{
+					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_NOCHILDS);
+					//cout<<"no childs"<<endl;
+				}
+			}
+		}
 	}
 
 
@@ -2048,7 +2089,7 @@ void EntityManager::LoadZone(int iId)
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
-		//object->GetUpdateStatus()=UPDATE_DYNAMIC;
+
 		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
 		//SetZoneModel("data/mad/zones/emptyzone.mad",iId);
@@ -2064,8 +2105,9 @@ void EntityManager::LoadZone(int iId)
 
 		return;
 	}
- 
+	
 	kZData->m_pkZone->Load(&kFile);
+	
 	kFile.Close();
 	
 }

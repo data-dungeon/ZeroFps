@@ -25,6 +25,7 @@ enum UpdateStatus
 	UPDATE_ALL				= 2,
 	UPDATE_STATIC			= 4,
 	UPDATE_DYNAMIC 		= 8,
+	UPDATE_NOCHILDS		= 16,
 };
 
 enum ObjectType 
@@ -302,7 +303,7 @@ class ENGINE_API Entity
 
 		
 
-		void Load(ZFIoInterface* pkFile,bool bLoadID = true);
+		void Load(ZFIoInterface* pkFile,bool bLoadID = true,bool bLoadChilds = true);
 		void Save(ZFIoInterface* pkFile);
 
 		void StaticData(int iClient, NetPacket* pkNetPacket);
@@ -359,7 +360,7 @@ class ENGINE_API Entity
 		void			SetInterpolate(bool bInterpolate);
 		
 		// Inlines
-		inline int &GetUpdateStatus()				{	return m_iUpdateStatus;	};
+		inline int GetUpdateStatus()				{	return m_iUpdateStatus;	};
 		inline ObjectType &GetObjectType()		{	return m_iObjectType;	};
 		inline bool& GetSave()						{	return m_bSave;			};
 		inline string GetName()					{	return m_strName;			};

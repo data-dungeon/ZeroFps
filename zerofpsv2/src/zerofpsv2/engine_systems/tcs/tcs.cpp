@@ -141,6 +141,7 @@ void Tcs::UpdateLineTests()
 	{		
 		if(m_kBodys[i]->m_bCharacter)
 		{
+			
 			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{
 				distance = (m_kBodys[i]->m_kNewPos - m_kLastTestPos).Length();
@@ -152,7 +153,7 @@ void Tcs::UpdateLineTests()
 				}			
 				else
 					m_kBodys[i]->m_bOnGround = false;				
-			}		
+			}
 		}
 	}
 }
