@@ -273,6 +273,8 @@ int NetWork::GetClientNumber(IPaddress* pkAddress)
 
 void NetWork::SetMaxNodes(int iMaxNode)
 {
+	int spya = 2;
+
 	m_RemoteNodes.resize(iMaxNode);
 	m_iMaxNumberOfNodes = iMaxNode;
 }
