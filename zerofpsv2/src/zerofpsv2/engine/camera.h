@@ -142,7 +142,8 @@ class ENGINE_API Camera : public I_Camera
 
 				
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
-	
+		~Camera();
+		
 		void 	InitView();	
 		void	RenderView();	
 		void 	SetView(float fFov,float fAspect,float fNear,float fFar);

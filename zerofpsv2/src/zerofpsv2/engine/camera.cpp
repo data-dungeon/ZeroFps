@@ -49,14 +49,24 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iCurrentRenderMode=RENDER_NONE;
 	
 	
-	if( (!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || (!m_pkZShaderSystem->HaveExtension("GL_ARB_depth_texture")) )
+	if(	(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || 
+			(!m_pkZShaderSystem->HaveExtension("GL_ARB_depth_texture")) )
 	{
 		cout<<"WARNING: GL_ARB_shadow not supported shadows disabled"<<endl;
 		m_bShadowMap = false;
 	}
 		
 	//SHADOW HACK
-	m_iShadowSize	= 1024;//Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	
+	//find shadowtexture size
+	int iMaxSize = Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	m_iShadowSize = 256;
+	if(iMaxSize >= 1024 )
+		m_iShadowSize = 1024;
+	else if(iMaxSize >= 512 )
+		m_iShadowSize = 512;
+	
+
 	m_iShadowTexture = -1;
 	
 	glGenTextures(1, &m_iShadowTexture);
@@ -70,10 +80,17 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	
 
-	//projection matrix
+	//Light projection matrix
  	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
  	m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
  	m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
+}
+
+Camera::~Camera()
+{
+	if(m_iShadowTexture != -1)
+		glDeleteTextures(1,&m_iShadowTexture);
+
 }
 
 void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)

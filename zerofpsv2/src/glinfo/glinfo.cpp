@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <GL/gl.h>
+#include <GL/glx.h>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ void Log_DriverInfo()
 	int i = 0;
 	char szExtName[256];
 	unsigned char* pcExt1 = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));
+	//const char* pcExt1 = (glXQueryExtensionsString(NULL,0));
 	
 	if(!pcExt1)
 	{		
