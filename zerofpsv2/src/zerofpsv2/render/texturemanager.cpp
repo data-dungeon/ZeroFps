@@ -189,6 +189,18 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	// Calc Size of texture.
 	pkTex->m_iSizeInBytes = pkImage->m_iWidth * pkImage->m_iHeight * 4;
 
+	
+	//check for error size
+	float fCW = pkImage->m_iWidth / 2.0;
+	float fCH = pkImage->m_iHeight / 2.0;
+	if( (fCW != int(fCW)) ||  (fCH != int(fCH)) )
+	{
+		cout<<"WARNING: texture "<<acFilename<<" is not power of 2"<<endl;
+		delete pkImage;
+		return false;
+	}	
+	
+	
 	glGenTextures(1,&pkTex->index);
 	glBindTexture(GL_TEXTURE_2D,pkTex->index);
 
