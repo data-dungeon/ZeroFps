@@ -51,11 +51,14 @@ public:
    void SetAttributeBonus ( string kAttributeName, int iValue );
    void SetAttackBonus ( string kAttackName, int iValue );
    void SetDefenceBonus ( string kDefenceName, int iValue );
-   void CanEquipOn ( string kEquipOn );
+   void AddCanEquipOn ( string kEquipOn );
+
+   bool CanEquipOn ( string kSlotName );
 
 
    bool EquipOn ( CharacterStats *pkCharStat );
    bool UnEquip ( CharacterStats *pkCharStat );
+   bool UnEquip ();
 
    float GetQuality()                          { return m_fQuality; }
    void SetQuality(float fQuality);
@@ -73,6 +76,11 @@ public:
    void AddItemValue ( int iValue );
 
    void Print();
+
+   void Split ( int iTookens );
+   bool Stock ( ItemStats *pkItemStats );
+
+   bool operator== ( ItemStats &kItemStats );
 
 };
 

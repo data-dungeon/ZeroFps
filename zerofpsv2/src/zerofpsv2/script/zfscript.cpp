@@ -762,3 +762,6 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 	return bSuccess;
 }
+
+
+// ----------------------------------------------------------------------------------------------

@@ -67,6 +67,7 @@ SCRIPT_API ZFResource* Create__ZFScript();
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:
+
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
 	bool Run(ZFResourceHandle* pkResHandle);
 

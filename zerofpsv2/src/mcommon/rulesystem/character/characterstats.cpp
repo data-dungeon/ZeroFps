@@ -1,12 +1,19 @@
+#include "../../p_item.h"
 #include "characterstats.h"
+#include "../item/itemstats.h"
 #include <iostream>
 #include <string>
 	using namespace std;
 
 // ------------------------------------------------------------------------------------------
 
-CharacterStats::CharacterStats()
-{ 
+CharacterStats::CharacterStats( Object *pkParent )
+{
+   m_pkParent = pkParent;
+
+	// if stat-types isn't loaded
+	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
+      LoadStatTypes();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -16,7 +23,7 @@ int CharacterStats::GetSkillValue (string kName)
 	map<string, StatDescriber>::iterator kIte = m_kSkills.find(kName);
 
 	if ( kIte == m_kSkills.end() )
-		return -1;
+		return 0;
 	else
 		return m_kSkills[kName].m_iValue;
 }
@@ -28,7 +35,7 @@ int CharacterStats::GetAttributeValue (string kName)
 	map<string, StatDescriber>::iterator kIte = m_kAttributes.find(kName);
 
 	if ( kIte == m_kAttributes.end() )
-		return -1;
+		return 0;
 	else
 		return m_kAttributes[kName].m_iValue;
 }
@@ -40,7 +47,7 @@ int CharacterStats::GetPointStatValue (string kName)
 	map<string, StatDescriber>::iterator kIte = m_kAttributes.find(kName);
 
 	if ( kIte == m_kAttributes.end() )
-		return -1;
+		return 0;
 	else
 		return m_kAttributes[kName].m_iValue;
 }
@@ -61,23 +68,35 @@ string CharacterStats::GetCommonStatValue (string kName)
 
 void CharacterStats::SetSkill (string kName, int iStartValue)
 {
-	m_kSkills[kName].m_iValue = iStartValue;
-   m_kSkills[kName].m_fExp = 0;
+   // check if the skill exists
+   for ( unsigned int i = 0; i < g_kSkills.size(); i++ )
+      if ( g_kSkills[i] == kName )
+      {
+	      m_kSkills[kName].m_iValue = iStartValue;
+         m_kSkills[kName].m_fExp = 0;
+      }
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterStats::SetAttribute (string kName, int iStartValue)
 {
-	m_kAttributes[kName].m_iValue = iStartValue;
-   m_kAttributes[kName].m_fExp = 0;
+      // check if the skill exists
+   for ( unsigned int i = 0; i < g_kAttributes.size(); i++ )
+      if ( g_kAttributes[i] == kName )
+      {
+   	   m_kAttributes[kName].m_iValue = iStartValue;
+         m_kAttributes[kName].m_fExp = 0;
+      }
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterStats::SetData (string kName, string kStartValue)
 {
-	m_kData[kName] = kStartValue;
+   for ( unsigned int i = 0; i < g_kData.size(); i++ )
+      if ( g_kData[i] == kName )
+	      m_kData[kName] = kStartValue;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -335,10 +354,10 @@ void CharacterStats::AddMP( int iValue )
 
 // ------------------------------------------------------------------------------------------
 
-void CharacterStats::SetCounter( string kName, float fValue )
+void CharacterStats::SetCounter( string kName, int iValue )
 {
-   m_kPointStats[kName] = fValue;
-   m_kPointStats[kName].SetMaxValue(fValue);
+   m_kPointStats[kName] = iValue;
+   m_kPointStats[kName].SetMaxValue(iValue);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -376,6 +395,58 @@ void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
 }
 
 // ------------------------------------------------------------------------------------------
+
+bool CharacterStats::Equip ( Object *pkObject, string kSlot )
+{
+   // check if object is itemobject (has a itemproperty)
+   P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
+
+   if ( !pkP_Item )
+      return false;
+
+   // Test if the item is equipable at the chosen slot
+   if ( pkP_Item->GetItemStats()->CanEquipOn(kSlot) )
+   {
+      pkP_Item->GetItemStats()->EquipOn ( this );
+
+      // check if the slot already is taken, if so, switch objects...somehow!?
+
+      m_kEquipment[kSlot] = pkObject;
+
+
+      // stick Object to MAD model
+      //m_pkParent->GetProperty ("MadProperty")->
+
+
+      return true;
+   }
+
+   return false;
+
+
+}
+
+// ---------------------------------------------------------------------------------------------
+
+Object* CharacterStats::UnEquip (string kSlot)
+{
+   if ( m_kEquipment[kSlot] != 0 )
+   {
+      Object *pkTemp = m_kEquipment[kSlot];
+
+      P_Item* pkP_Item = (P_Item*)pkTemp->GetProperty("P_Item");
+
+      pkP_Item->GetItemStats()->UnEquip( this );
+      
+      m_kEquipment[kSlot] = 0;
+
+      return pkTemp;
+   }
+
+   return 0;
+}
+
+// ---------------------------------------------------------------------------------------------
 
 // temp rulez:
 

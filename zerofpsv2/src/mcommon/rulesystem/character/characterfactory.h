@@ -16,10 +16,9 @@ extern map<string, CharacterStats> g_kCharacters;
 class CharacterFactory
 {
 private:
-   void static LoadStatTypes();
+  // void static LoadStatTypes();
 public:
-	// Load character stats from file, if already loaded, just copy
-	static CharacterStats* GetCharacterData (string kCharacterName);
+
 
 };
 

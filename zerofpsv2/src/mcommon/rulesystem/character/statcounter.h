@@ -1,31 +1,32 @@
 #ifndef STATCOUNTER_H
 #define STATCOUNTER_H
 
+#include "../../mcommon_x.h"
 #include <string>
    using namespace std;
 
-class StatCounter
+class MCOMMON_API StatCounter
 {
 private:   
-   float
-      m_fValue,
-      m_fMax,
-      m_fMin;
+   int
+      m_iValue,
+      m_iMax,
+      m_iMin;
 public:
    StatCounter();
    
-   void operator+= (float fValue);
-   void operator- (float fValue);
+   void operator+= (int fValue);
+   void operator- (int fValue);
    void operator= (string kValue);
-   void operator= (float fValue);
+   void operator= (int fValue);
 
-   float Value()                          { return m_fValue; }
-   float Percent()                        { return m_fValue / m_fMax; }
+   int Value()                          { return m_iValue; }
+   float Percent()                      { return float(m_iValue) / float(m_iMax); }
 
-   void SetMaxValue (float fMax)          { m_fMax = fMax; }
-   void SetMinValue (float fMin)          { m_fMin = fMin; }
+   void SetMaxValue (int iMax)          { m_iMax = iMax; }
+   void SetMinValue (int iMin)          { m_iMin = iMin; }
 
-   float Max()                            { return m_fMax; }
+   int Max()                            { return m_iMax; }
 
 };
 

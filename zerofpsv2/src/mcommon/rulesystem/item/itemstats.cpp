@@ -137,7 +137,7 @@ void ItemStats::SetDefenceBonus ( string kDefenceName, int iValue )
 
 // ---------------------------------------------------------------------------------------------
 
-void ItemStats::CanEquipOn ( string kEquipOn )
+void ItemStats::AddCanEquipOn ( string kEquipOn )
 {
    m_kEquippableOn.push_back ( kEquipOn );
 }
@@ -266,6 +266,7 @@ ItemStats::ItemStats()
    m_fWeight = 0;
    m_fQuality = 1;
    m_iQuantity = 1;
+
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -276,6 +277,120 @@ void ItemStats::AddItemValue ( int iValue )
 
    if ( m_iValue < 0 )
       m_iValue = 0;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+bool ItemStats::Stock ( ItemStats *pkItemStats )
+{
+   if ( pkItemStats == this )
+   {
+      m_iQuantity += pkItemStats->m_iQuantity;
+      return true;
+   }
+   else
+      return false;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+bool ItemStats::operator== ( ItemStats &kItemStats )
+{
+   if ( m_kItemName != kItemStats.m_kItemName ||
+        m_iValue != kItemStats.m_iValue ||
+        m_fQuality != kItemStats.m_fQuality ||
+        m_fWeight != kItemStats.m_fWeight )
+      return false;
+
+   
+   map<string, int>::iterator kIte, kSearch;
+   
+   // compare skillbonuses
+   for ( kIte = m_kSkillBonus.begin(); kIte != m_kSkillBonus.end(); kIte++ )
+   {
+       kSearch = kItemStats.m_kSkillBonus.find ( (*kIte).first );
+
+       // test if bonus exists at all
+       if ( kSearch == kItemStats.m_kSkillBonus.end() )
+          return false;
+
+       // test if the bonus is same
+       if ( (*kSearch).second != (*kIte).second )
+          return false;
+   }
+
+   // compare attributebonuses
+   for ( kIte = m_kAttributeBonus.begin(); kIte != m_kAttributeBonus.end(); kIte++ )
+   {
+       kSearch = kItemStats.m_kAttributeBonus.find ( (*kIte).first );
+
+       // test if bonus exists at all
+       if ( kSearch == kItemStats.m_kAttributeBonus.end() )
+          return false;
+
+       // test if the bonus is same
+       if ( (*kSearch).second != (*kIte).second )
+          return false;
+   }
+
+
+   // compare attackbonuses
+   for ( kIte = m_kFightStats.m_kAttack.begin(); kIte != m_kFightStats.m_kAttack.end(); kIte++ )
+   {
+       kSearch = kItemStats.m_kFightStats.m_kAttack.find ( (*kIte).first );
+
+       // test if bonus exists at all
+       if ( kSearch == kItemStats.m_kFightStats.m_kAttack.end() )
+          return false;
+
+       // test if the bonus is same
+       if ( (*kSearch).second != (*kIte).second )
+          return false;
+   }
+
+   // compare defencebonuses
+   for ( kIte = m_kFightStats.m_kDefence.begin(); kIte != m_kFightStats.m_kDefence.end(); kIte++ )
+   {
+       kSearch = kItemStats.m_kFightStats.m_kDefence.find ( (*kIte).first );
+
+       // test if bonus exists at all
+       if ( kSearch == kItemStats.m_kFightStats.m_kDefence.end() )
+          return false;
+
+       // test if the bonus is same
+       if ( (*kSearch).second != (*kIte).second )
+          return false;
+   }
+
+
+
+   vector<string>::iterator kEqIte, kEqIte2;
+
+   // compare equippibility
+   for ( kEqIte = m_kEquippableOn.begin(); kEqIte != m_kEquippableOn.end(); kEqIte++ )
+   {
+      bool bExist = false;
+
+      for ( kEqIte2 = kItemStats.m_kEquippableOn.begin(); kEqIte2 != kItemStats.m_kEquippableOn.end(); kEqIte2++ )
+         if ( (*kEqIte) == (*kEqIte2) )
+            bExist = true;
+
+      if ( !bExist )
+         return false;
+   }
+
+   return true;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+bool ItemStats::CanEquipOn ( string kSlotName )
+{
+   for ( unsigned int i = 0; i < m_kEquippableOn.size(); i++)
+      if ( m_kEquippableOn[i] == kSlotName )
+         return true;
+
+   return false;
 }
 
 // ---------------------------------------------------------------------------------------------

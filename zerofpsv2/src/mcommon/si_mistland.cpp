@@ -3,6 +3,7 @@
 #include "rulesystem/item/itemstats.h"
 #include "p_charstats.h"
 #include "p_item.h"
+#include "../zerofpsv2/script/zfscript.h"
 #include <cmath>                    // for trigonometry functions
 
 
@@ -57,8 +58,6 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("PrintCharStats",			MistLandLua::PrintStatsLua);
    
    // item stuff
-   pkScript->ExposeFunction("Equip",      				MistLandLua::EquipLua);			
-   pkScript->ExposeFunction("UnEquip",            		MistLandLua::UnEquipLua);			
    pkScript->ExposeFunction("GetQuantity",     			MistLandLua::GetQuantityLua);			
    pkScript->ExposeFunction("SetQuantity",           	MistLandLua::SetQuantityLua);			
    pkScript->ExposeFunction("AddQuantity",   			MistLandLua::AddQuantityLua);			
@@ -79,7 +78,16 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("PrintItemStats",			MistLandLua::PrintItemStatsLua);			
    pkScript->ExposeFunction("SetItemName",		      MistLandLua::SetItemNameLua);			
    pkScript->ExposeFunction("SetItemValue",			   MistLandLua::SetItemValueLua);			
-   pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);			
+   pkScript->ExposeFunction("GetItemValue",			   MistLandLua::GetItemValueLua);			
+   pkScript->ExposeFunction("AddItemValue",			   MistLandLua::AddItemValueLua);			
+   pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);		
+
+   // Lua Lua commands
+   pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
+
+   // equip / unequip
+   pkScript->ExposeFunction("Equip",   		   	   MistLandLua::EquipLua);			
+   pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
 
 }
 
@@ -978,18 +986,6 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
    return 0;
 }
 
-// ----------------------------------------------------------------------------------------------
-
-int MistLandLua::UnEquipLua(lua_State* pkLua)
-{
-   return 0;
-}
-// ----------------------------------------------------------------------------------------------
-
-int MistLandLua::EquipLua(lua_State* pkLua)
-{
-   return 0;
-}
 
 // ----------------------------------------------------------------------------------------------
 
@@ -1145,11 +1141,10 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
          if ( pkCP )
          {      
             ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->CanEquipOn( string(acType) );
+            pkIS->AddCanEquipOn( string(acType) );
          }
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
       }
 
    }
@@ -1602,6 +1597,122 @@ int MistLandLua::AddItemValueLua (lua_State* pkLua)
    }
 
    return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::UnEquipLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acSlot[128];
+			g_pkScript->GetArgString(pkLua, 0, acSlot);
+
+         CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         // TODO! Ta emot objectet när det returneras, annars försvinner det ut i cyberspace
+         if ( pkChar )
+            pkChar->GetCharStats()->UnEquip( string(acSlot) );
+         else
+            cout << "Warning! Tried to unequip something on a non-character object!" << endl;
+       }
+
+   }
+
+   return 0;
+
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::EquipLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acItem[128];
+			g_pkScript->GetArgString(pkLua, 0, acItem);
+
+         char	acSlot[128];
+			g_pkScript->GetArgString(pkLua, 1, acSlot);
+
+
+         CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkChar )
+         {      
+            // save current Object ID
+            int iOldObject = g_iCurrentObjectID;
+            ZFScriptSystem* pkZFScriptSys = g_pkScript;
+
+            // create the new object
+            Object* pkNewObj = g_pkObjMan->CreateObjectFromScript(acItem);
+
+            if ( pkNewObj )
+            {
+               // if object has Event propery..
+               if ( pkNewObj->GetProperty ("P_Event") )
+                  // run the INIT function in the script
+                  pkNewObj->GetProperty("P_Event")->Update();
+ 
+               // equip the new, nice object
+               if ( !pkChar->GetCharStats()->Equip ( pkNewObj, string(acSlot) ) )
+                  // if we couln't equip the object, delete it.
+                  delete pkNewObj;
+            }
+
+            // return everything the way it was
+            g_iCurrentObjectID = iOldObject;
+            g_pkScript = pkZFScriptSys;
+            
+         }
+         else
+            cout << "Warning! Tried to equip something on a non-character object!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::RunScriptLua (lua_State* pkLua)
+{/*
+ 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+     	char	acType[128];
+		g_pkScript->GetArgString(pkLua, 0, acType);
+
+      
+
+      // save current Object ID
+      int iOldObject = g_iCurrentObjectID;
+      ZFScriptSystem* pkZFScriptSys = g_pkScript;
+
+      // create the new object
+      Object* pkNewObj = g_pkObjMan->CreateObjectFromScript(acType);
+
+      // return everything the way it was
+      g_iCurrentObjectID = iOldObject;
+      g_pkScript = pkZFScriptSys;
+
+      // return the new object´s ID      
+      g_pkScript->AddReturnValue( pkLua, pkNewObj->iNetWorkID );
+
+      return 1; // return newcreated-object_ID
+      
+   }*/ 
+   return 0;  
+
 }
 
 // ----------------------------------------------------------------------------------------------

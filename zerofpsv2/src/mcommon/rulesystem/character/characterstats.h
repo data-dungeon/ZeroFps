@@ -7,19 +7,25 @@
 #include "../../mcommon_x.h"
 #include "../rulesystem.h"
 #include "statcounter.h"
-
 #include "../fightstats.h"
 
 #include <string>
 #include <map>
 #include <vector>
 #include "../../../zerofpsv2/basic/zfini.h"
+#include "../../../zerofpsv2/engine/object.h"
+
 	using namespace std;
 
-struct StatDescriber
+class ItemStats;
+
+class MCOMMON_API StatDescriber
 {
+public:
 	int m_iValue;
 	float m_fExp;
+
+   StatDescriber() { m_iValue = m_fExp = 0; }
 };
 
 extern MCOMMON_API map<string, SkillType> g_kSkillExps;
@@ -27,6 +33,7 @@ extern MCOMMON_API vector<string> g_kSkills;
 extern MCOMMON_API vector<string> g_kAttributes;
 extern MCOMMON_API vector<string> g_kData;
 extern MCOMMON_API vector<string> g_kCounters;
+extern MCOMMON_API map<string, vector<string> > g_kSkillGroups;
 
 class MCOMMON_API CharacterStats
 {
@@ -36,6 +43,11 @@ private:
 	map<string, StatDescriber> m_kAttributes; // sty, smi...
 	map<string, StatCounter> m_kPointStats;   // mp, hp...
 	map<string, string> m_kData; // name, rase, sex
+
+   map<string, Object*> m_kEquipment;
+
+   Object *m_pkParent;
+
    FightStats m_kFightStats;
 
    void RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty, string kName );
@@ -45,7 +57,7 @@ private:
 
    string m_kCurrentSkill;
 public:
-	CharacterStats();
+	CharacterStats( Object *pkParent );
 
    // Get stat.
 	int GetSkillValue				(string kName);
@@ -54,8 +66,8 @@ public:
 	string GetCommonStatValue  (string kName);
 
    // hp/mp stuff
-   float GetHP()                                   { return m_kPointStats["hp"].Value(); }
-   float GetMP()                                   { return m_kPointStats["mp"].Value(); }
+   int GetHP()                                   { return m_kPointStats["hp"].Value(); }
+   int GetMP()                                   { return m_kPointStats["mp"].Value(); }
 
    void SetHP( string kValue );
    void SetMP( string kValue );
@@ -96,13 +108,16 @@ public:
 
 	void SetCharacterType( string kName );
 
-	vector<string>* GetSkills()								{ return &g_kSkills; }
-	vector<string>* GetAttributes()							{ return &g_kAttributes; } 
-	vector<string>* GetDataStats()							{ return &g_kData; }
-
    void Print();
 
-   void SetCounter( string kName, float fValue );
+   void SetCounter( string kName, int iValue );
+
+   map<string, Object*>* GetEquippedList()           { return &m_kEquipment; }
+   
+   bool Equip ( Object *pkObject, string kSlot );
+   Object* UnEquip ( string kSlot );
+
+
 
    friend class CharacterFactory;
 

@@ -2,26 +2,26 @@
 
 // ----------------------------------------------------------------------------------------------
 
-void StatCounter::operator+= (float fValue)
+void StatCounter::operator+= (int iValue)
 {
-   m_fValue += fValue;
+   m_iValue += iValue;
 
-   if ( m_fValue > m_fMax )
-      m_fValue = m_fMax;
-   if ( m_fValue < m_fMin )
-      m_fValue = m_fMin;
+   if ( m_iValue > m_iMax )
+      m_iValue = m_iMax;
+   if ( m_iValue < m_iMin )
+      m_iValue = m_iMin;
 }
 
 // ----------------------------------------------------------------------------------------------
 
-void StatCounter::operator- (float fValue)
+void StatCounter::operator- (int iValue)
 {
-   m_fValue -= fValue;
+   m_iValue -= iValue;
 
-   if ( m_fValue > m_fMax )
-      m_fValue = m_fMax;
-   if ( m_fValue < m_fMin )
-      m_fValue = m_fMin;
+   if ( m_iValue > m_iMax )
+      m_iValue = m_iMax;
+   if ( m_iValue < m_iMin )
+      m_iValue = m_iMin;
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -29,36 +29,35 @@ void StatCounter::operator- (float fValue)
 void StatCounter::operator= (string kValue)
 {
    if ( kValue == "Max" )
-      m_fValue = m_fMax;
+      m_iValue = m_iMax;
    else
    {
-      m_fValue = atof ( kValue.c_str() );
+      m_iValue = atoi ( kValue.c_str() );
 
-   if ( m_fValue > m_fMax )
-      m_fMax = m_fValue;
-   else if ( m_fValue < m_fMin )
-      m_fValue = m_fMin;
+   if ( m_iValue > m_iMax )
+      m_iValue = m_iMax;
+   else if ( m_iValue < m_iMin )
+      m_iValue = m_iMin;
 
    }
 
 }
 // ----------------------------------------------------------------------------------------------
 
-void StatCounter::operator= (float fValue)
+void StatCounter::operator= (int iValue)
 {
-   m_fValue = fValue;
-/*
-   if ( m_fValue > m_fMax )
-      m_fMax = m_fValue;
+   m_iValue = iValue;
 
-   if ( m_fValue < m_fMin )
-      m_fValue = m_fMin;*/
+   if ( m_iValue > m_iMax )
+      m_iValue = m_iMax;
+   else if ( m_iValue < m_iMin )
+      m_iValue = m_iMin;
 }
 // ----------------------------------------------------------------------------------------------
 
 StatCounter::StatCounter()
 {
-   m_fMax = m_fMin = m_fValue = 0;
+   m_iMax = m_iMin = m_iValue = 0;
 }
 
 

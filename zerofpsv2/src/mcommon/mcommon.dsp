@@ -171,14 +171,6 @@ SOURCE=.\si_mistland.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\rulesystem\character\characterfactory.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\rulesystem\character\characterfactory.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\rulesystem\character\characterstats.cpp
 # End Source File
 # Begin Source File

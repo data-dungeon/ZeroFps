@@ -59,8 +59,6 @@ namespace MistLandLua
    int MCOMMON_API PrintStatsLua (lua_State* pkLua);
 
    // item stuff
-   int MCOMMON_API EquipLua (lua_State* pkLua);
-   int MCOMMON_API UnEquipLua (lua_State* pkLua);
    int MCOMMON_API GetQuantityLua (lua_State* pkLua);
    int MCOMMON_API SetQuantityLua (lua_State* pkLua);
    int MCOMMON_API AddQuantityLua (lua_State* pkLua);
@@ -91,9 +89,16 @@ namespace MistLandLua
    int MCOMMON_API GetItemValueLua (lua_State* pkLua);
    int MCOMMON_API AddItemValueLua (lua_State* pkLua);
 
+   // equip / unequip character
 
+   int MCOMMON_API EquipLua (lua_State* pkLua);
+   int MCOMMON_API UnEquipLua (lua_State* pkLua);
 
 	
+   // Lua lua functions :)
+   int MCOMMON_API RunScriptLua (lua_State* pkLua);
+
+
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
 
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object

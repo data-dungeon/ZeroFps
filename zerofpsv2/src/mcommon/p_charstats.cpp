@@ -27,7 +27,7 @@ CharacterProperty::CharacterProperty()
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
    
-   m_pkCharStats = new CharacterStats;
+   m_pkCharStats = new CharacterStats( m_pkObject );
 
 	strcpy(m_acName,"P_CharStats");
 }
@@ -36,7 +36,7 @@ CharacterProperty::CharacterProperty()
 
 CharacterProperty::CharacterProperty( string kName )
 {
-   m_pkCharStats = new CharacterStats;
+   m_pkCharStats = new CharacterStats ( m_pkObject );
 
 	strcpy(m_acName,"P_CharStats");
 }
