@@ -19,6 +19,7 @@ CFG=test - Win32 Debug
 !MESSAGE 
 !MESSAGE "test - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "test - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "test - Win32 Release Profile" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -43,7 +44,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /Fr /YX
 # ADD BASE RSC /l 0x41d /d "NDEBUG"
 # ADD RSC /l 0x41d /d "NDEBUG"
 BSC32=bscmake.exe
@@ -51,7 +52,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
+# SUBTRACT LINK32 /profile /incremental:yes
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
@@ -67,7 +69,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /FD /GZ /c
+# SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
 # ADD RSC /l 0x41d /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +78,35 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
+# SUBTRACT LINK32 /profile /force
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "test___Win32_Release_Profile"
+# PROP BASE Intermediate_Dir "test___Win32_Release_Profile"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT BASE CPP /Fr /YX
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT CPP /Fr /YX
+# ADD BASE RSC /l 0x41d /d "NDEBUG"
+# ADD RSC /l 0x41d /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
 
 !ENDIF 
 
@@ -83,6 +114,7 @@ LINK32=link.exe
 
 # Name "test - Win32 Release"
 # Name "test - Win32 Debug"
+# Name "test - Win32 Release Profile"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -95,6 +127,11 @@ SOURCE=.\ballobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -109,6 +146,11 @@ SOURCE=.\bunnyaiproperty.cpp
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -121,6 +163,11 @@ SOURCE=.\bunnyobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -135,6 +182,11 @@ SOURCE=.\floatproperty.cpp
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -147,6 +199,11 @@ SOURCE=.\gravityproperty.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -161,6 +218,11 @@ SOURCE=.\normaldrawproperty.cpp
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -173,6 +235,11 @@ SOURCE=.\playerballobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -187,6 +254,11 @@ SOURCE=.\playercontrolproperty.cpp
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -200,6 +272,11 @@ SOURCE=.\playerobject.cpp
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -212,6 +289,11 @@ SOURCE=.\test.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "test - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 

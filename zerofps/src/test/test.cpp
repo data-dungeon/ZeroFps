@@ -100,15 +100,15 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-/*	for( i=0;i<20;i++) {
+	for( i=0;i<200;i++) {
 		Object *ball=new WalkerObject();
-		float x=290 + rand()%200;
-		float y=730 + rand()%100;
+		float x=227;	// + rand()%200;
+		float y=785;	// + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-*/
+
 
 /*	Object *sussi;
 	for(i=0;i<5;i++) {
@@ -127,7 +127,7 @@ void Test::OnInit(void) {
 	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),90,1.333,0.25,400);	
 	
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(340,25,780);		
+	m_pkPlayer->GetPos()=Vector3(300,25,785);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
@@ -211,8 +211,7 @@ void Test::OnHud(void) {
 	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
 	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
-	pkFps->DevPrintf("Fiskarna i havet");
-	pkFps->DevPrintf("Fps: %d aa",pkFps->m_iFps);
+	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);

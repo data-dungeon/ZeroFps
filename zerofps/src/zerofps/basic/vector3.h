@@ -8,17 +8,15 @@
 using namespace std;
 
 class BASIC_API Vector3 {
-	private:
-
 	public:
 		float x,y,z;												// NC
 	
 		Vector3(float fX,float fY,float fZ);						// NC
-		Vector3(void);												// NC
-	
+		Vector3() { /*x=0; y=0; z=0;*/ };												// NC
+
 		// Assign
 		Vector3 operator=(const Vector3 &kOtherV3);					// NC
-		void Set(float nx, float ny, float nz);						// NC
+		void Set(float fXIn, float fYIn, float fZIn);				// NC
 		
 		// Arithmetic operations
 		Vector3 operator+(const Vector3 &kOtherV3)	const;			// NC
@@ -30,6 +28,7 @@ class BASIC_API Vector3 {
 		Vector3 operator+=(const Vector3 &kOtherV3);				// NC
 		Vector3 operator-=(const Vector3 &kOtherV3);				// NC
 		Vector3 operator*=(const float &fOther);					// NC
+		Vector3 operator/=(const float fOther);
 		Vector3 operator-();										// NC	
 
 		// Comparison
@@ -38,6 +37,8 @@ class BASIC_API Vector3 {
 
 		// Vector operations.
 		float Length(void)const;									// NC
+		float LengthSqr(void)const;									// Squared length of vector.
+
 		void Normalize(void);										// NC
 		float Dot( const Vector3& v  )		const; 					// NC
 		Vector3 Unit(void)					const;					// NC		

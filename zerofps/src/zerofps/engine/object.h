@@ -7,7 +7,6 @@
 #include <string.h>
 #include "engine_x.h"
 #include "property.h"
-//#include "../engine/objects.pkg"
 #include "objectmanager.h"
 #include "propertyfactory.h"
 
@@ -16,7 +15,7 @@ using namespace std;
 class ObjectManager;
 
 class ENGINE_API Object {
-		PropertyFactory*	m_pkPropFactory;
+//		PropertyFactory*	m_pkPropFactory;
 
 	protected:
 		Vector3 m_kPos;
@@ -35,7 +34,7 @@ class ENGINE_API Object {
 		
 		void Remove();
 		Property* GetProperty(char* acName);
-		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
+//		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
 		void AddProperty(char* acName);
 		bool RemoveProperty(char* acName);

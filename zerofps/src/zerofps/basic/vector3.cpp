@@ -18,13 +18,6 @@ Vector3::Vector3(float fX,float fY,float fZ)
 	z=fZ;
 }
 
-Vector3::Vector3(void) 
-{
-	x=0;
-	y=0;
-	z=0;
-}
-
 // Assign
 Vector3 Vector3::operator=(const Vector3 &kOtherV3) 
 {
@@ -34,11 +27,11 @@ Vector3 Vector3::operator=(const Vector3 &kOtherV3)
 	return *this;
 }
 
-void Vector3::Set(float nx, float ny, float nz)
+void Vector3::Set(float fXIn, float fYIn, float fZIn)
 {
-	x = nx;
-	y = ny;
-	z = nz;
+	x = fXIn;
+	y = fYIn;
+	z = fZIn;
 }
 
 // Comparison
@@ -110,6 +103,14 @@ Vector3 Vector3::operator*=(const float &fOther)
 	return *this;
 }
 
+Vector3 Vector3::operator/=(const float fOther)
+{
+    x /= fOther;
+    y /= fOther;
+    z /= fOther;
+	return *this;
+}
+
 Vector3 Vector3::operator-()
 {
 	return Vector3(-x,-y,-z);
@@ -121,6 +122,12 @@ float Vector3::Length(void) const
 	return (float)sqrt( x*x + y*y + z*z );  
 
 }
+
+float Vector3::LengthSqr(void) const
+{
+	return (float)( x*x + y*y + z*z );  
+}
+
 
 float Vector3::Dot( const Vector3& v  ) const	
 {
@@ -141,7 +148,6 @@ void Vector3::Normalize(void)
 {
 	float invlen = Length();
 	ZFAssert(invlen != 0.0, "Vector3::Normalize: Vector has zero length");
-		//assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	x *= invlen;
 	y *= invlen;
@@ -156,7 +162,7 @@ Vector3 Vector3::Cross( const Vector3& v )	const
 
 bool Vector3::IsZero(void) const
 {
-	return (x == 0.0 && y == 0.0 && z == 0.0); 
+	return (x == 0.0f && y == 0.0f && z == 0.0f); 
 }
 
 bool Vector3::NearlyEquals( const Vector3& v, const float e ) const	

@@ -11,11 +11,33 @@ WalkerObject::WalkerObject() {
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/golem.mad"));
+/*	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/golem.mad"));
 	madp->SetScale(0.01);
 	madp->bFlipFace = true;
-	madp->PlayAnimation(0,0);
-// 	GetRot().y = (rand()%360);
+	madp->PlayAnimation(0,0);*/
+
+	int iRndMad = rand() % 4;
+	int iRndColor = rand() % 4;
+	
+	switch(iRndMad) {
+		case 0:		
+			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cone.mad"));
+			madp->SetReplaceTexture("c_red");
+			break;
+		case 1:		
+			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cube.mad"));
+			madp->SetReplaceTexture("c_blue");
+			break;
+		case 2:		
+			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/sphere.mad"));
+			madp->SetReplaceTexture("c_yellow");
+			break;
+		case 3:		
+			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/torus.mad"));
+			madp->SetReplaceTexture("c_green");
+			break;
+		}
+
 
 	onGround = false;
 }
@@ -37,7 +59,6 @@ void WalkerObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 		m_kVel.y=0;
 		onGround=true;
 		//GetStatic()=true;
-		
 	} else if(bContinue){
 		pkOther->HandleCollision(this,kPos,false);
 	}

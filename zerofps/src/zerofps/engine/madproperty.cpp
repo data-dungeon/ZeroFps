@@ -24,6 +24,8 @@ MadProperty::MadProperty(Core* pkModell) {
 	m_fScale = 1.0;
 	m_bActive = true;
 	bFlipFace = false;
+	pkCore->ClearReplaceTexture();
+
 }
 
 
@@ -38,7 +40,7 @@ void MadProperty::Update() {
 	
 //	pkCore->SetFrameI(0);
 	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
-	pkCore->ClearReplaceTexture();
+//	pkCore->ClearReplaceTexture();
 
 	if(bFlipFace)
 		glCullFace(GL_FRONT);
@@ -64,6 +66,8 @@ void MadProperty::SetBase(Core* pkModell)
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
+	bFlipFace = false;
+	pkCore->ClearReplaceTexture();
 }
 
 void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
@@ -145,6 +149,11 @@ void	MadProperty::StartAnimation(void)
 
 void	MadProperty::NextCoreAnimation(void)
 {}
+
+void MadProperty::SetReplaceTexture(char* szName)
+{
+	pkCore->SetReplaceTexture(szName);
+}
 
 
 Property* Create_MadProperty()

@@ -19,6 +19,7 @@ CFG=engine - Win32 Debug
 !MESSAGE 
 !MESSAGE "engine - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "engine - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "engine - Win32 Release Profile" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -59,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                               $(ProjDir)\debug\*.lib                               ..\..\..\bin\ 
+PostBuild_Cmds=copy                                $(ProjDir)\debug\*.lib                                ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -76,7 +77,7 @@ PostBuild_Cmds=copy                               $(ProjDir)\debug\*.lib        
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
@@ -90,7 +91,42 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                               $(ProjDir)\debug\*.lib                               ..\..\..\bin\ 
+PostBuild_Cmds=copy                                $(ProjDir)\debug\*.lib                                ..\..\..\bin\ 
+# End Special Build Tool
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "engine___Win32_Release_Profile"
+# PROP BASE Intermediate_Dir "engine___Win32_Release_Profile"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /FD /c
+# SUBTRACT BASE CPP /YX
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /FD /c
+# SUBTRACT CPP /YX
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x41d /d "NDEBUG"
+# ADD RSC /l 0x41d /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# SUBTRACT BASE LINK32 /profile
+# ADD LINK32 render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# Begin Special Build Tool
+ProjDir=.
+SOURCE="$(InputPath)"
+PostBuild_Cmds=copy                                $(ProjDir)\debug\*.lib                                ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -99,6 +135,7 @@ PostBuild_Cmds=copy                               $(ProjDir)\debug\*.lib        
 
 # Name "engine - Win32 Release"
 # Name "engine - Win32 Debug"
+# Name "engine - Win32 Release Profile"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -111,6 +148,11 @@ SOURCE=.\application.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -125,6 +167,11 @@ SOURCE=.\audiomanager.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -137,6 +184,11 @@ SOURCE=.\camera.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -151,6 +203,11 @@ SOURCE=.\cameraproperty.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -163,6 +220,11 @@ SOURCE=.\collisionheightmap.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -177,6 +239,11 @@ SOURCE=.\collisionmanager.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -189,6 +256,11 @@ SOURCE=.\collisionpoint.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -203,6 +275,11 @@ SOURCE=.\collisionproperty.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -215,6 +292,11 @@ SOURCE=.\collisionsphere.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -229,6 +311,11 @@ SOURCE=.\console.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -241,6 +328,11 @@ SOURCE=..\ogl\extgl.c
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -255,6 +347,11 @@ SOURCE=.\heightmapobject.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -267,6 +364,11 @@ SOURCE=.\input.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -285,6 +387,11 @@ SOURCE=.\madproperty.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -297,6 +404,11 @@ SOURCE=.\main.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -311,6 +423,11 @@ SOURCE=.\modelproperty.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -323,6 +440,11 @@ SOURCE=.\music.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -337,6 +459,11 @@ SOURCE=.\object.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -349,6 +476,11 @@ SOURCE=.\objectmanager.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -363,6 +495,11 @@ SOURCE=.\property.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -376,6 +513,11 @@ SOURCE=.\propertyfactory.cpp
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -388,6 +530,11 @@ SOURCE=.\zerofps.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 

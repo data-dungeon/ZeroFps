@@ -19,6 +19,7 @@ CFG=zerofps - Win32 Debug
 !MESSAGE 
 !MESSAGE "zerofps - Win32 Release" (based on "Win32 (x86) Generic Project")
 !MESSAGE "zerofps - Win32 Debug" (based on "Win32 (x86) Generic Project")
+!MESSAGE "zerofps - Win32 Release Profile" (based on "Win32 (x86) Generic Project")
 !MESSAGE 
 
 # Begin Project
@@ -53,11 +54,25 @@ MTL=midl.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 
+!ELSEIF  "$(CFG)" == "zerofps - Win32 Release Profile"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "zerofps___Win32_Release_Profile"
+# PROP BASE Intermediate_Dir "zerofps___Win32_Release_Profile"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
+# PROP Target_Dir ""
+
 !ENDIF 
 
 # Begin Target
 
 # Name "zerofps - Win32 Release"
 # Name "zerofps - Win32 Debug"
+# Name "zerofps - Win32 Release Profile"
 # End Target
 # End Project

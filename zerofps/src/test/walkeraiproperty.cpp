@@ -16,7 +16,8 @@ WalkerAIProperty::WalkerAIProperty()
 Vector3 GetYawVector(float fAngleDeg)
 {
 	Vector3 kYaw;
-	kYaw.x = sin(DegToRad(fAngleDeg));			
+	kYaw.x = sin(DegToRad(fAngleDeg));	
+	kYaw.y = 0;
 	kYaw.z = cos(DegToRad(fAngleDeg));	
 	return kYaw;
 }
@@ -103,13 +104,12 @@ void WalkerAIProperty::Update()
 			return;
 
 		// Move to walk state.
-		m_kTargetPos.Set(rand()%100 + 300,0,rand()%100 + 720);
+		m_kTargetPos.Set(rand()%200 + 227,0,rand()%200 + 685);
 		m_kTargetPos.y = m_pkMap->Height(m_kTargetPos.x,m_kTargetPos.z);
-		m_kTargetPos.Print();
 
 		m_iState = AIWALKER_WALK;
-		MadProperty* madp = dynamic_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
-		madp->PlayAnimation(4,0);
+		//MadProperty* madp = dynamic_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
+		//madp->PlayAnimation(4,0);
 	}
 
 	Vector3 diff = m_pkObject->GetPos() - m_kTargetPos;
@@ -120,7 +120,7 @@ void WalkerAIProperty::Update()
 		}
 
 
-	m_pkFps->DevPrintf("Dist: %f", diff.Length());
+//	m_pkFps->DevPrintf("Dist: %f", diff.Length());
 	
 	WalkerObject *bunny = dynamic_cast<WalkerObject*>(m_pkObject);
 
