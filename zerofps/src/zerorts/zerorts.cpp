@@ -6,8 +6,6 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth): Application(aNa
 
 void ZeroRTS::OnInit() 
 {
-	cout<<"julle"<<endl;
-	
 	pkConsole->Printf(" ZeroRTS");
 	pkConsole->Printf("--------------------------------");
 	pkConsole->Printf(" Does anything work yet?");
@@ -37,7 +35,6 @@ void ZeroRTS::Init()
 
 void ZeroRTS::OnIdle(void) 
 {
-	cout<<"blle"<<endl;
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());

@@ -1,0 +1,5 @@
+rm -f *.o
+../complink "*.cpp"
+./relink
+#g++ -c *.cpp -O3
+#g++ *.cpp -o ../../bin/game -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib
