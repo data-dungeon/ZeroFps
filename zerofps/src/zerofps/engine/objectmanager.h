@@ -89,6 +89,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		bool LoadTemplate(const char* acFile);
 		bool SaveTemplate(const char* acName,const char* acFile);
 
+		// Arch types
+		bool IsA(Object* pkObj, string strStringType);
+
 		// Load/Save Objects
 		bool SaveAllObjects(const char* acFile);
 		bool LoadAllObjects(const char* acFile);

@@ -50,6 +50,8 @@ class RENDER_API Render : public ZFObject {
 
 		GLuint m_iHmTempList;
 
+		int	m_iScreenShootNum;
+
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
 	public:
@@ -112,6 +114,7 @@ class RENDER_API Render : public ZFObject {
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
 
+		void CaptureScreenShoot( int m_iWidth, int m_iHeight );		
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

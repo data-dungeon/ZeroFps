@@ -59,5 +59,6 @@ class ZFIni;
 #include "zfini.h"
 #include "simplescript.h"
 
+#include "image.h"
 
 

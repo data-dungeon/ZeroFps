@@ -23,6 +23,7 @@ Render::Render()
 	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
 
+	m_iScreenShootNum = 0;
 
 	m_iHmTempList=0;
 }
@@ -524,7 +525,18 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 	glPopMatrix();
 }
 
+void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
+{
+	Image kScreen;
+	kScreen.create_empty(m_iWidth, m_iHeight);
 
+	glReadPixels(0,0, m_iWidth,m_iHeight,GL_RGBA, GL_UNSIGNED_BYTE, kScreen.pixels); 
+
+	char szImageName[256];
+	sprintf(szImageName, "screen_%d.tga", m_iScreenShootNum);
+	m_iScreenShootNum++;
+	kScreen.save(szImageName ,false);
+}
 
 char* BoolStr(bool bFlag)
 {

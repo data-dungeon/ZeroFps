@@ -55,6 +55,11 @@ Object::~Object()
 	m_pkObjectMan->Remove(this);
 }
 
+bool Object::IsA(string strStringType)
+{
+	return m_pkObjectMan->IsA(this, strStringType);
+}
+
 // Property Mangement Code.
 Property* Object::AddProperty(Property* pkNewProperty) 
 {

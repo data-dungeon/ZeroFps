@@ -165,6 +165,9 @@ class ENGINE_API Object
 		Object();		
 		~Object();
 		
+		// Object Type Handling
+		bool IsA(string strStringType);								///< Returns true if this object is based on type.
+
 		// Property Mangement Code.
 
 		Property* AddProperty(Property* pkNewProperty);		///< Add a propyrty by ptr.

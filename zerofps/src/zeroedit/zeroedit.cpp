@@ -69,7 +69,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("opendlg",FID_OPENDLG,this);
 	g_ZFObjSys.Register_Cmd("fileopendlg",FID_FILEOPENDLG,this);
 	
-	
+
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
 	pkConsole->Printf("--------------------------------");
@@ -620,6 +620,12 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkFps->QuitEngine();
 			break;
 
+		// Temporary test Functions ID's. 
+		case FID_FUNC1:	break;
+		case FID_FUNC2:	break;
+		case FID_FUNC3:	break;
+		case FID_FUNC4:	break;
+
 		case FID_OPENDLG:
 
 			if(kCommand->m_kSplitCommand[1] == "PropertyDlg")
@@ -778,6 +784,9 @@ void ZeroEdit::Input()
 		m_pkCurentChild->SetRot(rot);	
 	}
 	
+	if(pkInput->Pressed(KEY_F8))
+		g_ZFObjSys.RunCommand("shot");
+
 	if(pkInput->Pressed(KEY_Q))
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_E))

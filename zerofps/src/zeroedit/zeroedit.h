@@ -92,6 +92,14 @@ class ZeroEdit :public Application {
 			FID_QUIT,
 			FID_OPENDLG,
 			FID_FILEOPENDLG,
+
+			/* Test Functions that don't deserve a own name yet. This is NOT 
+				a place for functions that will remain for a long time.  - VIM */
+			FID_FUNC1,	
+			FID_FUNC2,
+			FID_FUNC3,
+			FID_FUNC4,
+
 		};	
 	
 		Object* m_pkCamObj;

@@ -51,6 +51,7 @@ ZeroFps::ZeroFps(void)
 	g_iMadLODLock = 		0;
 	m_pkCamera = 			NULL;
 	m_bRunWorldSim	=		true;
+	m_bCapture			=	false;
 
 	g_iLogRenderPropertys = 0;
 
@@ -84,6 +85,8 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
 	g_ZFObjSys.Register_Cmd("debug",FID_LISTMAD,this);	
+
+	g_ZFObjSys.Register_Cmd("shot",FID_SCREENSHOOT,this);	
 
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
@@ -457,6 +460,11 @@ void ZeroFps::Swap(void) {
 
 	SDL_GL_SwapBuffers();  //guess
 
+	if(m_bCapture) {
+		m_bCapture = false;
+		m_pkRender->CaptureScreenShoot(m_iWidth, m_iHeight);
+		}
+
 	glLoadIdentity();
   
 	//count FPS
@@ -826,6 +834,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(page)
 				page->m_bVisible = false;
 			break;
+
+		case FID_SCREENSHOOT:	m_bCapture = true;	break;
 
 /*			
 		case FID_SENDMESSAGE:

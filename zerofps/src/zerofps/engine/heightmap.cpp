@@ -82,7 +82,7 @@ bool HeightMap::IsAllZero()
 
 void HeightMap::SetPosition(Vector3 kNewPos) 
 {
-	m_kPosition		= kNewPos;
+	m_kPosition		= kNewPos + Vector3(0,-4,0);
 
 	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
 		m_kPosition.y,

@@ -76,15 +76,18 @@ class ENGINE_API ZeroFps : public ZFObject {
 			// DevStrings
 			FID_DEV_SHOWPAGE,	
 			FID_DEV_HIDEPAGE,
+
+			FID_SCREENSHOOT,
 		};
 		
 		SDL_Surface* m_pkScreen;		
 		bool	m_bDevPagesVisible;
 		
 		float m_fLastFrameTime;
-		int m_iWidth,m_iHeight,m_iDepth;
-		int m_iFullScreen;
-		
+		int	m_iWidth,m_iHeight,m_iDepth;
+		int	m_iFullScreen;
+		bool	m_bCapture;							// True if we should capture this frame
+
 		float m_fSystemUpdateFps;
 		float m_fSystemUpdateTime;
 		float m_fGameTime;

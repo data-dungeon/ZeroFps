@@ -304,6 +304,9 @@ void Game::Input()
 		DlgBox::CloseFocusDlg();
 		break;
 	}
+
+	if(pkInput->Pressed(KEY_F8))
+		g_ZFObjSys.RunCommand("shot");
 }
 
 void Game::RunCommand(int cmdid, const CmdArgument* kCommand)

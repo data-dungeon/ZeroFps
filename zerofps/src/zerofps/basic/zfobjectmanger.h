@@ -53,10 +53,10 @@ public:
 //	ZFCmdData&  operator=(const ZFCmdData& pack);
 
 	string			m_strName;				// Name for this data/commmand.
-	ZFCmdDataType	m_eType;				// Type of data.
+	ZFCmdDataType	m_eType;					// Type of data.
 	int				m_iFlags;				// flags.
 
-	void*			m_vValue;				// Pekare till data.
+	void*				m_vValue;				// Pekare till data.
 	ZFObject*		m_pkObject;				// Ptr to zfps object that owns this data (if any).
 	int				m_iCmdID;				// ID.
 

@@ -324,6 +324,30 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 	return true;
 }
 
+bool ObjectManager::IsA(Object* pkObj, string strStringType)
+{
+	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
+	if(!pkAt)
+		return false;	// Object not created from archtype at all :(.
+	
+	ObjectArcheType* pkParentAt;
+
+
+	bool bDone = false;
+	while(bDone){
+		if(pkAt->m_strName == strStringType)
+			return true;
+
+		pkParentAt = GetArcheType(pkAt->m_strParentName);
+		if(!pkParentAt)
+			return false;
+		else
+			pkAt = pkParentAt;
+		}
+
+	return false;
+}
+
 
 // Load/Save Objects
 bool ObjectManager::SaveAllObjects(const char* acFile)

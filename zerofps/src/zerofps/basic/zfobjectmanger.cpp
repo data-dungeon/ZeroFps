@@ -10,6 +10,19 @@ using namespace std;
 
 ZFObjectManger* ZFObjectManger::pkInstance;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 Manger:
 	Register:		Registrerar object i object name sys.
@@ -470,7 +483,7 @@ string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
 
 	switch(pkArea->m_eType) {
 		case CSYS_FUNCTION:
-			sprintf(szValue, "(%s)", pkArea->m_strHelpText);
+			sprintf(szValue, "(%s)", pkArea->m_strHelpText.c_str());
 			break;
 		case CSYS_FLOAT:
 			sprintf(szValue, "%.3f", *(float*)pkArea->m_vValue);
