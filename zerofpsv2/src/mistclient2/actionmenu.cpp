@@ -98,9 +98,7 @@ void ActionMenu::Open()
 	float mx = g_kMistClient.GetWidth()/2, my = g_kMistClient.GetHeight()/2;
 
 	if(m_bGuiCaptureBeforOpen == true)
-	{
 		g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
-	}
 
 	m_pkMainWnd->SetPos(mx-m_kWidth/2, my-m_kHeight/2, true, true);
 	m_pkMainWnd->Show();
@@ -218,7 +216,8 @@ void ActionMenu::Close()
 	m_iEntityID = -1;
 	m_pkMainWnd->Hide();
 
-	g_kMistClient.SetGuiCapture(m_bGuiCaptureBeforOpen);
+	if(m_bGuiCaptureBeforOpen == false)
+		g_kMistClient.SetGuiCapture(m_bGuiCaptureBeforOpen);
 
 	printf("Close action menu\n");
 }
