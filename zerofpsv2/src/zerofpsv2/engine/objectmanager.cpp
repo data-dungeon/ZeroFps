@@ -17,7 +17,6 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 	m_kPos				= kOther.m_kPos;
 	m_kMin				= kOther.m_kMin;
 	m_kMax				= kOther.m_kMax;
-//	m_iNumOfLinks		= kOther.m_iNumOfLinks;
 	m_iZoneLinks		= kOther.m_iZoneLinks;
 	m_fInactiveTime	= kOther.m_fInactiveTime;
 	m_bActive			= kOther.m_bActive;
@@ -59,6 +58,8 @@ ObjectManager::ObjectManager()
 	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
 
 	Register_Cmd("newworld",FID_NEWWORLD, CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
@@ -1048,7 +1049,17 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 			
 		case FID_NEWWORLD:
+			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
 			NewWorld();
+			break;
+	
+		case FID_LOADWORLD:
+			LoadWorld(kCommand->m_kSplitCommand[1].c_str());
+			break;
+		
+		case FID_SETWORLDDIR:
+			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());		
+			SaveZones();
 			break;
 	}	
 
@@ -1545,10 +1556,14 @@ void ObjectManager::DeleteZone(int iId)
 
 
 
-void ObjectManager::LoadZones()
+bool ObjectManager::LoadZones()
 {
 	ZFVFile kFile;
-	kFile.Open((m_kWorldDirectory + "zones.dat").c_str(),0,false);
+	if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
+	{
+		cout<<"Error loading zones"<<endl;
+		return false;
+	}
 
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
@@ -1578,20 +1593,13 @@ void ObjectManager::LoadZones()
 
 	kFile.Close();
 
-	// Set upp all links.
-/*	for( i=0; i<iNumOfZone; i++) {
-		for(zl=0; zl < m_kZones[i].m_iZoneLinks.size(); zl++) {
-			ZoneData* pkOtherZone = GetZoneData(m_kZones[i].m_iZoneLinks[zl]);
-			m_kZones[i].m_pkZoneLinks.push_back(pkOtherZone);
-			}
-		}
-*/
+	return true;
 }
 
-void ObjectManager::SaveZones()
+bool ObjectManager::SaveZones()
 {
 	
-	string filename(m_kWorldDirectory + "zones.dat");
+	string filename(m_kWorldDirectory + "/zones.dat");
 	
 	cout<<"saving to :"<<filename<<endl;
 	
@@ -1599,7 +1607,7 @@ void ObjectManager::SaveZones()
 	if(!kFile.Open(filename.c_str(),0,true))
 	{	
 		cout<<"Could not open zone save file"<<endl;
-		return;
+		return false;
 	}
 	
  	int iNumOfZone = m_kZones.size();
@@ -1625,6 +1633,7 @@ void ObjectManager::SaveZones()
 	kFile.Close();
 
 	cout<<"zones saved"<<endl;
+	return true;
 }
 
 void ObjectManager::LinkZones(int iFromId, int iToId)
@@ -1662,14 +1671,6 @@ void ObjectManager::LoadZone(int iId)
 	object->AddProperty("LightUpdateProperty");
 
 	kZData->m_pkZone = object;
-
-	// Create Ground Box.
-/*	object->AddProperty(new P_Primitives3D(SOLIDBBOX));
-	P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
-	pk3d->m_kMin =  - (object->m_kSize * 0.5);
-	pk3d->m_kMax =  (object->m_kSize * 0.5);
-	pk3d->m_kMax.y = - 4;
-	pk3d->m_kColor = RndColor();*/
 
 	// Create Ground Object
 	Object* pkNode;
@@ -1720,12 +1721,35 @@ int ObjectManager::GetUnusedZoneID()
 	return m_kZones.size() - 1;
 }
 
-void ObjectManager::NewWorld()
+bool ObjectManager::NewWorld()
 {
 	Clear();
 	m_kZones.clear();
 
 	CreateZone();
 	
-	SaveZones();
+	return SaveZones();
 }
+
+bool ObjectManager::LoadWorld(const char* acDir)
+{
+	SetWorldDir(acDir);
+	
+	//clear the world
+	Clear();
+	m_kZones.clear();
+
+	//load zones in acDir
+	return LoadZones();
+}
+
+
+
+
+
+
+
+
+
+
+

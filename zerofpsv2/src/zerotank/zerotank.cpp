@@ -538,9 +538,9 @@ void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void ZeroTank::OnServerStart(void)
 {		
-	pkObjectMan->NewWorld();
+	//pkObjectMan->NewWorld();
 	//pkObjectMan->CreateZone();
-	//pkObjectMan->Test_CreateZones();
+	pkObjectMan->Test_CreateZones();
 
 	// ZeroTank
  	m_pkZeroTankHull	= NULL;

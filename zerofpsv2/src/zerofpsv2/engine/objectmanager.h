@@ -54,7 +54,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			FID_SENDMESSAGE,
 			FID_LOADZONES,
 			FID_SAVEZONE,
+			
 			FID_NEWWORLD,
+			FID_LOADWORLD,
+			FID_SETWORLDDIR,
 		};
 
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
@@ -209,8 +212,12 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
-		void LoadZones();
-		void SaveZones();
+		
+		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
+		bool LoadWorld(const char* acDir);
+		
+		bool LoadZones();
+		bool SaveZones();
 		void LoadZone(int iId);
 		void UnLoadZone(int iId);
 		void LinkZones(int iFromId, int iToId);
@@ -218,7 +225,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		int CreateZone();
 		void DeleteZone(int iId);
 		int GetUnusedZoneID();		
-		void NewWorld();		
+		bool NewWorld();		
 		void Zones_Refresh();
 
 

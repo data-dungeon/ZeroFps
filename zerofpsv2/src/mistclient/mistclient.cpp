@@ -43,19 +43,6 @@ void MistClient::OnInit()
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 
 
-/*	for(int x=0;x<5;x++)
-	{
-		for(int y=0;y<5;y++)
-		{*/
-			Object* test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
-			test->SetLocalPosV(Vector3(10,0,0));
-//			test->GetVel() = Vector3(-10,0,0);
-			test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
-			test->SetLocalPosV(Vector3(-10,0,0));			
-//			if(test)
-//				test->SetLocalPosV(Vector3(x*4,0,y*4));
-//		}
-//	}
 
 }
 
@@ -331,24 +318,23 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
-/*			{
+			{
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
 			
-/*			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
-			{
-				pkConsole->Printf("Error loading level");
-				break;			
-			}*
-
+			cout<<"loading world:"<<kCommand->m_kSplitCommand[1].c_str()<<endl;
 			
-			pkConsole->Printf("Level loaded");
-
+			if(!pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
+			{
+				cout<<"Error loading world"<<endl;
+				break;
+			}
 						
-			pkConsole->Printf("Everything is loaded ,Starting server");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	*/
-			break;		
+			cout<<"starting server"<<endl;
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			
+			break;	
 		
 		case FID_UNLOAD:
 			break;
@@ -373,7 +359,6 @@ void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	pkObjectMan->AddTracker(pkClient->m_pkObject);
 	
 }
 
@@ -391,6 +376,7 @@ void MistClient::OnServerStart(void)
 	{
 		m_pkTestobj->AttachToClosestZone();
 	
+		m_pkTestobj->AddProperty("TrackProperty");	
 		m_pkCamProp = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
@@ -398,7 +384,7 @@ void MistClient::OnServerStart(void)
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
-	pkObjectMan->Test_CreateZones();
+	//pkObjectMan->Test_CreateZones();
 
 
 
@@ -407,17 +393,6 @@ void MistClient::OnServerStart(void)
 
 
 	}
-
-
-	//add server info property
-/*	if(!pkObjectMan->GetObject("A ServerInfoObject"))
-	{
-		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
-		if(!pkObj)
-			cout<<"Faild to create serverinfoobject"<<endl;
-		 else
-			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}	*/
 }
 
 void MistClient::OnClientStart(void)

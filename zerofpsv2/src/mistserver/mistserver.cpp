@@ -39,7 +39,7 @@ void MistServer::OnInit()
 void MistServer::Init()
 {	
 	//register commmands bös
-//	Register_Cmd("load",FID_LOAD);		
+	Register_Cmd("load",FID_LOAD);		
 
 	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
@@ -85,13 +85,36 @@ void MistServer::OnHud(void)
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	switch(cmdid) {
+		case FID_LOAD:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				pkConsole->Printf("load [mapname]");
+				break;				
+			}
+			
+			cout<<"loading world:"<<kCommand->m_kSplitCommand[1].c_str()<<endl;
+			
+			if(!pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
+			{
+				cout<<"Error loading world"<<endl;
+				break;
+			}
+						
+			cout<<"starting server"<<endl;
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			
+			break;		
+		
+	
+	}
 
 }
 
 void MistServer::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
-	cout<<"Mapsize is :"<<endl;
+	
 	cout<<"Join Complete"<<endl;
 }
 
@@ -99,13 +122,12 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
+	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	pkObjectMan->AddTracker(pkClient->m_pkObject);
 	
-	//setup client input
-	pkClient->m_pkObject->AddProperty("P_ClientInput");
+
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -116,7 +138,8 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
-	pkObjectMan->Test_CreateZones();
+	
+	
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 	}
