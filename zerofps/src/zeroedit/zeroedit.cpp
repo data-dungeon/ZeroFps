@@ -731,7 +731,7 @@ void ZeroEdit::Input()
 
 	//rotate the camera		
 	//if(!pkGui->IsActive())
-    if(pkInput->Pressed(MOUSERIGHT))
+    //if(pkInput->Pressed(MOUSERIGHT))
 	{
 		if(pkInput->Pressed(KEY_LSHIFT) == false)
 		{

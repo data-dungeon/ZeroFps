@@ -490,11 +490,17 @@ void Gui::CaptureInput(bool bCapture)
 	m_bGuiHaveFocus = bCapture;
 }
 
+void Gui::OpenPropHACK()
+{
+					if(m_pkEditPropDlgBox)
+					{
+						delete m_pkEditPropDlgBox;
+						m_pkEditPropDlgBox = NULL;
+					}
 
-
-
-
-
-
-
+					m_pkEditPropDlgBox = new EditPropertyDlg(this, 
+						m_pkEdit->pkPropertyFactory, 
+						m_pkEdit->pkObjectMan, 
+						m_pkEdit->m_pkCurentChild, MAINWINPROC);
+}
 
