@@ -54,10 +54,12 @@ class ENGINE_API ObjectDescriptor{
 	public:
 		string m_kName;
 		
-		Vector3 m_kPos;									// Position of object in world.
-		Vector3 m_kRot;									// Rotation of object in world.
-		Vector3 m_kVel;									// Velocity of object.
-		Vector3 m_kAcc;									// Acc of object.
+		Vector3	m_kPos;									// Position of object in world.
+		Vector3	m_kRot;									// Rotation of object in world.
+		Vector3	m_kVel;									// Velocity of object.
+		Vector3	m_kAcc;									// Acc of object.
+		
+		float		m_fRadius;
 		
 		bool		m_bSave;
 		ObjectType	m_iObjectType;
@@ -138,10 +140,10 @@ class ENGINE_API Object
 		Vector3					m_kRot;								///< Rotation of object in world.
 		Vector3					m_kVel;								///< Velocity of object.
 		Vector3					m_kAcc;								///< Acc of object.
+		float						m_fRadius;		
 		
 		Vector3					m_kOldPos;
 		Vector3					m_kOldRot;
-		
 		
 		string					m_kName;								///< Object name
 		string					m_strType;							///< Object type name.
@@ -222,10 +224,12 @@ class ENGINE_API Object
 		inline Vector3& GetRot()	{	return m_kRot;		};
 		inline Vector3& GetVel()	{	return m_kVel;		};		
 		inline Vector3& GetAcc()	{	return m_kAcc;		};
+		inline float& GetRadius()	{	return m_fRadius;		};		
 		inline Vector3* GetPosPointer()	{	return &m_kPos;	};
 		inline Vector3* GetRotPointer()	{	return &m_kRot;	};
 		inline Vector3* GetVelPointer()	{	return &m_kVel;	};		
 		inline Vector3* GetAccPointer()	{	return &m_kAcc;	};
+		inline float* GetRadiusPointer()	{	return &m_fRadius;	};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		void MakeCloneOf(Object* pkOrginal);

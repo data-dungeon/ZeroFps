@@ -101,20 +101,18 @@ void Input::Update(void) {
 	}
 }
 
-void Input::MouseXY(int &iX,int &iY) {		
+void Input::MouseXY(int &iX,int &iY) 
+{		
 	iX=m_iAbsMouseX;
 	iY=m_iAbsMouseY;
-
-/*	if(m_bInputEnabled) {
-		SDL_PumpEvents();
-		SDL_GetMouseState(&iX, &iY);
-		iX=int(float(iX)*m_fMouseSensitivity);	
-		iY=int(float(iY)*m_fMouseSensitivity);		
-	} else {
-		iX=0;	
-		iY=0;			
-	}*/
 }
+
+void Input::UnitMouseXY(float &fX,float &fY) 
+{		
+	fX=(m_iAbsMouseX/(float)m_pkZeroFps->GetWidth())-0.5;
+	fY=(m_iAbsMouseY/(float)m_pkZeroFps->GetHeight())-0.5;
+}
+
 
 void Input::UpdateMousePos()
 {		

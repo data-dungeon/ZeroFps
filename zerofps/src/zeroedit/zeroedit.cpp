@@ -1234,9 +1234,9 @@ void ZeroEdit::DrawMarkers()
 			size=1;
 		
 		glDisable(GL_LIGHTING);
-		//pkRender->Sphere(m_pkCurentChild->GetPos(),size,20,Vector3(1,0,0),false);
-		pkRender->DrawBoundingBox(m_pkCurentChild->GetPos(),
-			m_pkCurentChild->GetRot(),Vector3(size,size,size));
+		pkRender->Sphere(m_pkCurentChild->GetPos(),size,20,Vector3(1,0,0),false);
+		//pkRender->DrawBoundingBox(m_pkCurentChild->GetPos(),
+		//	m_pkCurentChild->GetRot(),Vector3(size,size,size));
 		glEnable(GL_LIGHTING);
 		
 		if(m_pkCurentChild->GetParent()){

@@ -10,12 +10,14 @@ void ZeroRTS::OnInit()
 	pkConsole->Printf("--------------------------------");
 	pkConsole->Printf(" Does anything work yet?");
 	
+
+
+	Init();
+
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerorts_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 
-
-	Init();
 }
 
 void ZeroRTS::Init()
@@ -29,7 +31,7 @@ void ZeroRTS::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera
-	m_pkCamera=new Camera(Vector3(0,60,0),Vector3(70,0,0),90,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,40,0),Vector3(70,0,0),90,1.333,0.25,250);	
 	
 	//disable zones modells
 	pkLevelMan->SetVisibleZones(false);
@@ -58,6 +60,9 @@ void ZeroRTS::RegisterActions()
 	m_iActionCamRight=pkInput->RegisterAction("CamRight");
 	m_iActionCamUp=pkInput->RegisterAction("CamUp");
 	m_iActionCamDown=pkInput->RegisterAction("CamDown");
+	m_iActionSelect=pkInput->RegisterAction("Select");
+	m_iActionScroll=pkInput->RegisterAction("Scroll");	
+
 }
 
 
@@ -69,6 +74,14 @@ void ZeroRTS::OnIdle(void)
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 			
 	Input();
+	
+/*	
+	Vector3 mpos = Get3DMousePos();
+	
+	glDisable(GL_LIGHTING);
+		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
+	glEnable(GL_LIGHTING);
+*/
 }
 
 void ZeroRTS::Input()
@@ -90,6 +103,25 @@ void ZeroRTS::Input()
 	if(pkInput->Action(m_iActionCamDown))
 	{
 		m_pkCamera->GetPos().z += 100*pkFps->GetFrameTime();
+	}
+
+	if(pkInput->Action(m_iActionSelect))
+	{
+		Object* bla=PickObject();
+		
+		if(bla != NULL)
+		{	
+			pkObjectMan->Delete(bla);
+			cout<<"diiiiiiiiie object from hell"<<endl;
+		}
+	}
+	if(pkInput->Action(m_iActionScroll))
+	{
+		int x,y;
+		pkInput->RelMouseXY(x,y);
+	
+		m_pkCamera->GetPos().x +=(x/2);
+		m_pkCamera->GetPos().z +=(y/2);		
 	}
 }
 
@@ -134,10 +166,57 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 
 
+Vector3 ZeroRTS::Get3DMousePos()
+{
+	Vector3 mpos;
+	mpos.y = 0;
+	pkInput->UnitMouseXY(mpos.x,mpos.z);
+	
+	mpos.x*=100;
+	mpos.z*=75;
+	mpos.z-=14;
+	
+	Matrix4 bla;
+	bla.Identity();
+	bla.Rotate(-20,0,0);
+	
+	mpos=bla.VectorTransform(mpos);
+	
+	mpos.x+=m_pkCamera->GetPos().x;
+	mpos.z+=m_pkCamera->GetPos().z;	
+	
+
+	return mpos;
+}
 
 
+Object* ZeroRTS::PickObject()
+{
+	Vector3 dir=(Get3DMousePos() - m_pkCamera->GetPos()).Unit();
+	vector<Object*> obs;
+	pkObjectMan->TestLine(&obs,m_pkCamera->GetPos(),dir);
+	
+	
+	Object* close =NULL;
+	float dist= 999999999;
+	
+	for(int i=0;i<obs.size();i++)
+	{
+		if(obs[i]->GetName() == "ZoneObject")
+			continue;
+		
+		float d = (m_pkCamera->GetPos() - obs[i]->GetPos()).Length();
+		if(d < dist)
+		{
+			dist = d;
+			close = obs[i];
+		}
+	
+	}
 
-
+	obs.clear();
+	return close;
+}
 
 
 

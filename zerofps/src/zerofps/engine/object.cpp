@@ -23,6 +23,7 @@ Object::Object() {
 	m_kRot  = Vector3::ZERO;
 	m_kVel  = Vector3::ZERO;
 	m_kAcc  = Vector3::ZERO;
+	m_fRadius = 1;
 	
 	m_kOldPos  = Vector3::ZERO;
 	m_kOldRot  = Vector3::ZERO;	
@@ -439,6 +440,7 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	ObjDesc->m_kRot  = GetRot();
 	ObjDesc->m_kVel  = GetVel();
 	ObjDesc->m_kAcc  = GetAcc();	
+	ObjDesc->m_fRadius  = GetRadius();		
 	
 	ObjDesc->m_bSave = m_bSave;
 	ObjDesc->m_iObjectType=m_iObjectType;
@@ -593,6 +595,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 	m_piDecorationStep	= pkOrginal->m_piDecorationStep;
 	m_bSave		= pkOrginal->m_bSave;
 	m_kAcc		= pkOrginal->m_kAcc;
+	m_fRadius	= pkOrginal->m_fRadius;	
 
 	Property* pkProp;
 	vector<string> akPropertyNames;
@@ -694,6 +697,7 @@ void ObjectDescriptor::Clear()
 	m_kRot.Set(0,0,0);
 	m_kVel.Set(0,0,0);			
 	m_kAcc.Set(0,0,0);	
+	m_fRadius=0.5;
 	
 	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 	m_bSave=true;
@@ -748,6 +752,7 @@ void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kRot,12);	
 	pkPackage->Write((void*)&m_kVel,12);
 	pkPackage->Write((void*)&m_kAcc,12);
+	pkPackage->Write((void*)&m_fRadius,4);
 	
 	
 	pkPackage->Write((void*)&m_bSave,4);
@@ -784,6 +789,7 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_kRot,12);	
 	pkPackage->Read((void*)&m_kVel,12);
 	pkPackage->Read((void*)&m_kAcc,12);			
+	pkPackage->Read((void*)&m_fRadius,4);
 			
 	pkPackage->Read((void*)&m_bSave,4);			
 	pkPackage->Read((void*)&m_iObjectType,4);	

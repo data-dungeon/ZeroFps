@@ -207,6 +207,7 @@ class ENGINE_API Input : public ZFObject {
 		int SizeOfQueue();
 		void UpdateMousePos();
 		void MouseXY(int &iX,int &iY);
+		void UnitMouseXY(float &fX,float &fY);
 		void RelMouseXY(int &iX,int &iY);
 		void ToggleGrab(void);
 		void ToggleGrab(bool bGrab);		

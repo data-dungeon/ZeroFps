@@ -22,6 +22,8 @@ class ZeroRTS :public Application {
 		int m_iActionCamRight;
 		int m_iActionCamUp;
 		int m_iActionCamDown;
+		int m_iActionSelect;
+		int m_iActionScroll;		
 
 		//console funktions
 		enum FuncId_e
@@ -45,6 +47,10 @@ class ZeroRTS :public Application {
 
 		void OnServerStart(void);
 		void OnClientStart(void);
+		
+		Vector3 Get3DMousePos();
+		
+		Object* PickObject();
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };

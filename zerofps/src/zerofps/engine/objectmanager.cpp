@@ -146,6 +146,7 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
 	tempobject->GetVel()=pkObjDesc->m_kVel;
 	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
+	tempobject->GetRadius()=pkObjDesc->m_fRadius;		
 	
 	tempobject->GetSave()=pkObjDesc->m_bSave;
 	tempobject->GetObjectType()=pkObjDesc->m_iObjectType;	
@@ -618,11 +619,6 @@ char* ObjectManager::GetPropertySideName(int iSide)
 }
 
 
-
-
-
-
-
 // Object ArcheTypes
 
 ObjectArcheType*	ObjectManager::GetArcheType(string strName)
@@ -761,7 +757,33 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 //	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
 }
 
+bool ObjectManager::TestLine(vector<Object*>* pkPPList,Vector3 kPos,Vector3 kVec)
+{
+	pkPPList->clear();
 
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) 
+	{	
+		Vector3 c=(*it)->GetPos() - kPos;		
+		kVec.Normalize();		
+		Vector3 k=kVec.Proj(c);		
+		float cdis=c.Length();
+		float kdis=k.Length();
+		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+		
+		
+		float fRadius=3;//(*it)->GetRadius();
+		
+		if(Distance < fRadius)
+		{			
+			pkPPList->push_back((*it));
+		}		
+	}
+	
+	if(pkPPList->size()==0)
+		return false;
+	
+	return true;
+}
 
 
 void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
