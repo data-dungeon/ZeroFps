@@ -40,7 +40,8 @@ bool CmdSystem::Set(const char* acName,const char* acData)
 
 void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	switch(cmdid) {
+	switch(cmdid) 
+	{
 		case FID_SET:
 			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
 				if(m_pkCon)

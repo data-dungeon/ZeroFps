@@ -431,10 +431,19 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 				con->Printf(" %s = [ %s]",kCmdData->m_strName.c_str(), strValue.c_str());
 			}
 			
+			//dvoid haxorar
+			if(kcmdargs.m_kSplitCommand.size() >= 2 )
+			{
+				SetVariable(kcmdargs.m_kSplitCommand[0].c_str(),kcmdargs.m_kSplitCommand[1].c_str());
+				break;
+			}
+
+			/*			
 			if(kcmdargs.m_kSplitCommand.size() >= 3 && kcmdargs.m_kSplitCommand[1] == string("=") )
 			{
 				SetVariable(kcmdargs.m_kSplitCommand[0].c_str(),kcmdargs.m_kSplitCommand[2].c_str());
 			}
+			*/
 			
 			break;
 
