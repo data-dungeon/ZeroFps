@@ -2,7 +2,7 @@
 	\defgroup ZeroEdit ZeroEdit
 	\ingroup MistLand
 
-  ZeroEdit is the Server of the game MistLands.
+  ZeroEdit is the Editor Application of the game MistLands.
 */ 
  
 #include <set> 
@@ -37,10 +37,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 
 	case ZGM_SELECTLISTITEM:
-		g_kMistServer.OnClickListbox(
-			//g_kMistServer.GetWnd(((int*)params)[0]), 
-			((int*)params)[0],
-			((int*)params)[1],win);
+		g_kMistServer.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
 		break;
 
 	case ZGM_SELECTTREEITEM:
@@ -54,11 +51,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
 		break;
 
-/*	case ZGM_SETFOCUS:
-		g_kMistServer.SetViewPort(win->GetName());
-		cout << "Set Focus to window: "  << win->GetName() << endl;
-		break;*/
-
 	}
 	return true;
 }
@@ -67,17 +59,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
-	g_ZFObjSys.Log_Create("mistserver");
-	m_pkServerInfoP = NULL;
+	g_ZFObjSys.Log_Create("zerodit");
 
 	// Set Default values
-	m_AcceptNewLogins = true;
 	m_bEditSun			= false;
 	m_bSoloMode       = false;
 
 	// Register Variables
-	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
-
+	
 	// Register Commands
 	Register_Cmd("new",FID_NEW);		
 	Register_Cmd("load",FID_LOAD);		
@@ -115,7 +104,7 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strWorldDir  = "";
    
 	m_pkActiveCameraObject	= NULL;
-	m_pkActiveCamera			= NULL;
+	m_pkActiveCamera	= NULL;
 
 	m_strActiveViewPort = "none";
 } 
@@ -253,9 +242,6 @@ void ZeroEdit::OnInit()
 
 void ZeroEdit::Init()
 {	
-	//create player database
-//	m_pkPlayerDB = new PlayerDatabase();
-
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
@@ -280,6 +266,7 @@ void ZeroEdit::Init()
 	//register resources
 	RegisterResources();
 
+
 	//initiate our camera
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[0]->SetName("persp");
@@ -303,6 +290,7 @@ void ZeroEdit::Init()
 	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
 	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
+
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -535,11 +523,11 @@ void ZeroEdit::OnIdle()
 	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
 	//	pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
    
-	if(m_pkServerInfoP)
-	{
-		m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
-		m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
-	}
+	//if(m_pkServerInfoP)
+	//{
+	//	m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
+	//	m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
+	//}
 	
 	if(m_iEditMode == EDIT_HMAP) {
 		HeightMap* pkMap = SetPointer();
@@ -573,13 +561,6 @@ void ZeroEdit::RenderInterface(void)
 	if(m_iEditMode == EDIT_ZONES)		DrawZoneMarker(m_kZoneMarkerPos);
 	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 }
-
-
-void ZeroEdit::OnSystem()
-{
-	HandleOrders();
-}
-
 
 HeightMap* ZeroEdit::SetPointer()
 {
@@ -1124,7 +1105,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	ClientOrder kOrder;
 
-	unsigned int i;
 	vector<string>	kUsers;
 	int iMode;
 	float fTest;
@@ -1440,132 +1420,6 @@ void ZeroEdit::CamFollow(bool bFollowMode)
 }
 
 
-void ZeroEdit::ClientInit()
-{
-	cout<<"Client Join granted"<<endl;
-	
-	cout<<"Join Complete"<<endl;
-}
-
-bool ZeroEdit::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
-{
-	cout << "ZeroEdit::OnPreConnect" << endl;
-	//dessa skall du fixa till vim =D
-	string strPlayer		= szLogin;
-	string strPasswd		= szPass;
-	string strCharacter	= "mrbad";
-	
-	// Check that this is a valid login.
-	//if(m_pkPlayerDB->LoginExist(strPlayer)) {
-	//	// Check Password
-	//	if(!m_pkPlayerDB->Login(strPlayer,strPasswd)) {
-	//		return false;
-	//		}
-		// Login Ok.
-
-	//	}
-	//else {
-	//	/* Failed to find the login. */
-	//	cout << "Login not found" << endl;
-
-	//	if(m_AcceptNewLogins) {
-	//		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) {
-	//			return false;
-	//			}
-	//
-	//		m_pkPlayerDB->Login(strPlayer,strPasswd);
-	//		}
-	//	else 
-	//		return false;
-	//	}
-
-
-	//if(m_pkServerInfoP)
-	//{
-	//	if(m_pkServerInfoP->PlayerExist(strPlayer))
-	//	{
-	//		cout<<"Player "<<strPlayer<< " is already connected"<<endl;
-	//	
-	//		//KICKA O DÖDA SPELARJÄVELN HÄR OCKSÅ FÖR HAN FÅR FAN INTE CONNECTA TVÅ GÅNGER!!!!
-	//	
-	//		return false;
-	//	}
-	//}
-	//
-	//printf("User %s tried to join with password %s\n", szLogin, szPass);
-	return true;
-}
-
-void ZeroEdit::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
-{
-	cout << "ZeroEdit::OnServerClientJoin" << endl;
-	//dessa skall du fixa till vim =D
-	string strPlayer		= szLogin;
-	string strPasswd		= szPass;
-
-	pkClient->m_strCharacter = "MrBadq";
-	pkClient->m_strLogin = szLogin;
-
-	//add client control to client object
-	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
-	if(pcc)	
-		pcc->m_iClientID = iConID;
-	
-	bool bEditorConnect = false;
-	if(bEditorConnect) {
-		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
-		pkTrack->SetClient(iConID);
-		(P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Primitives3D");
-		return;
-		}
-	else
-		SpawnPlayer(iConID);
-}
-
-void ZeroEdit::SpawnPlayer(int iConID)
-{
-	cout << "ZeroEdit::SpawnPlayer" << endl;
-	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) {
-		m_pkFps->PrintToClient(iConID, "You must select a character before you can join" );
-		return;
-		}
-
-	//update start locations  
-	UpdateStartLocatons();
-
-	//create player object
-	int iPlayerID  = CreatePlayer(m_pkFps->m_kClient[iConID].m_strLogin.c_str(),m_pkFps->m_kClient[iConID].m_strCharacter.c_str(),"Start",iConID);
-	
-	if(iPlayerID == -1)
-	{
-		cout<<"Error creating playercharacter"<<endl;
-	}
-	
-	if(m_pkServerInfoP)
-	{	
-		//wich rights shuld a client have on its player caracter
-		//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
-		
-		m_pkServerInfoP->AddPlayer(iConID, m_pkFps->m_kClient[iConID].m_strLogin.c_str());
-		m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
-		//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
-	}
-}
-
-
-
-void ZeroEdit::OnServerClientPart(ZFClient* pkClient,int iConID)
-{
-	//DeletePlayer(iConID);
-
-	//if(m_pkServerInfoP)
-	//	m_pkServerInfoP->RemovePlayer(iConID);	
-	//
-	//m_pkPlayerDB->Logout(pkClient->m_strLogin);
-	//cout<<"Client "<<iConID<<" Parted"<<endl;	
-}
-
-
 void ZeroEdit::OnServerStart(void)
 {		
 	CreateEditCameras();
@@ -1575,20 +1429,6 @@ void ZeroEdit::OnServerStart(void)
 	pe->SetEnable(true);		
 	pe->SetEnviroment("data/enviroments/server.env");
 
-	//create server info object
-	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
-	if(m_pkServerInfo)
-	{
-		m_pkServerInfo->SetParent(m_pkObjectMan->GetGlobalObject());
-		m_pkServerInfoP = (P_ServerInfo*)m_pkServerInfo->GetProperty("P_ServerInfo");		
-		if(m_pkServerInfoP)
-		{
-			m_pkServerInfoP->SetServerName("Test Server");
-		}
-		else
-			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
-	}
-
 	SoloToggleView();
 	m_fDelayTime = m_pkFps->GetEngineTime();
 	SoloToggleView();
@@ -1596,10 +1436,6 @@ void ZeroEdit::OnServerStart(void)
 	GetWnd("vp2")->SetZValue(0);
 	GetWnd("vp3")->SetZValue(0);
 	GetWnd("vp4")->SetZValue(0);
-}
-
-void ZeroEdit::OnClientStart(void)
-{
 }
 
 bool ZeroEdit::StartUp()	
@@ -2153,103 +1989,6 @@ Vector3 ZeroEdit::GetPlayerStartLocation(const char* csName)
 	return Vector3(0,0,0);
 }
 
-int ZeroEdit::CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID)
-{
-
-	////try to create character entity
-	//Entity* pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
-	//
-	//
-	////if it fails try to create it
-	//if(!pkObject)
-	//{
-	//	cout<<"Character not found, trying to create it"<<endl;
-	//	if(!m_pkPlayerDB->CreateNewCharacter(csPlayer,csCharacter))
-	//		return -1;
-	//	else	//it was created, now load it
-	//		pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
-	//}
-	//
-	//
-	//if(pkObject)
-	//{	
-	//	Vector3 kStartPos = Vector3(0,3,0);
-	//			
-	//	//try to get recal position from characterstats
-	//	CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
- //     if(pkCP)
- // 	   {
- //  	   CharacterStats *pkCS = pkCP->GetCharStats();	
-	//		kStartPos = pkCS->GetRecalPos();		
-	//	}	
-	//	
-	//	//make sure position is valid and zone is loaded
-	//	int zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);
-	//	if(zid == -1)
-	//	{
-	//		cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
-	//		kStartPos = Vector3(0,0,0);
-	//		zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
-	//	}		
-	//	
-	//	
-	//	//force loading of zone
-	//	m_pkObjectMan->LoadZone(zid);
-	//	
-	//	//finaly set objects position
-	//	pkObject->SetWorldPosV(kStartPos);
-	//	
-	//	cout<<"setting char pos:"<<kStartPos.x<<" "<<kStartPos.y<<" "<<kStartPos.z<<endl;
-	//	
-	//	//setup tracker to correct tracker id
-	//	P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
-	//	if(pkTrack)
-	//		pkTrack->SetClient(iConID);	
-	//}
-	//else
-	//{	
-	//	cout<<"Error creating caracter entity"<<endl;
-	//	return -1;
-	//}
-	//		
-	//cout<<"created character entity "<<csPlayer<<" -> "<<csCharacter<<endl;
-	//		
-	//return pkObject->GetEntityID();
-	return 0;
-}
-
-void ZeroEdit::DeletePlayer(int iConID)
-{
-	if(m_pkServerInfoP)
-	{
-		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
-		if(pi)
-		{
-			//first save and delete the player character
-			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pi->iCharacterObjectID);
-			if(pkObj)
-			{
-			//	m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
-				m_pkObjectMan->Delete(pkObj);
-			}
-		
-			//then walk trough all characters in his control list and delete the ones the player have spawned
-			for(unsigned int i = 0;i<pi->kControl.size();i++)
-			{
-				if(pi->kControl[i].second & PR_OWNER)
-				{
-					Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
-					
-										
-					//delete it
-					if(pkObj)
-						m_pkObjectMan->Delete(pkObj);
-				}
-			}		
-		}
-	}
-}
-
 void ZeroEdit::PathTest() 
 {
 	return;
@@ -2272,391 +2011,6 @@ void ZeroEdit::PathTest()
 		}
 }
 
-void ZeroEdit::HSO_Edit(ClientOrder* pkOrder)
-{
-	CmdArgument kcmdargs;
-	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
-
-	char szCmdNone[256];
-	char szCmd1[256];
-	char szCmd2[256];
-	Vector3 kPos;
-	Vector3 kSize;
-
-	if ( kcmdargs.m_kSplitCommand[1] == string("addzone") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to addzone." << endl;
-		cout << "m_sOrderName: " << pkOrder->m_sOrderName << endl;
-		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %f %f %f %f %f %f", szCmd1,szCmd2, &kPos.x,&kPos.y,&kPos.z,
-			&kSize.x,&kSize.y,&kSize.z) == 8) {
-
-			AddZone(kPos, kSize, m_strActiveZoneName);	
-			}
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("delzone") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to remove a zone." << endl;
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("spawn") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to create something" << endl;
-		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %s", szCmdNone,szCmdNone, szCmd1) == 3) {
-			string strObjName = string("data/script/objects/") + string(szCmd1);
-			m_pkObjectMan->CreateObjectFromScriptInZone( strObjName.c_str(), m_kObjectMarkerPos);
-			}
-
-	}
-
-	// ROTATE:	Rotera en zon.
-	// DELETE:	Radera en zon.	By Index, By Pos, By NetWorkID
-	// Spawn:   Skapa ett object
-}
-
-void ZeroEdit::HSO_Character(ClientOrder* pkOrder)
-{
-	CmdArgument kcmdargs;
-	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
-	
-	cout << "kcmdargs.m_kSplitCommand[1] " << kcmdargs.m_kSplitCommand[1].c_str(); 
-
-	if ( kcmdargs.m_kSplitCommand[1] == string("Play") )
-	{
-		cout << "Player: " << pkOrder->m_iConnectID << " wish to start play" << endl;
-		SpawnPlayer(pkOrder->m_iConnectID);
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("CharList") )
-	{
-		//cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to know what char he have." << endl;
-		//vector<string> kChars;
-		//kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strLogin.c_str() );
-		//for(unsigned int i=0; i<kChars.size(); i++)
-		//	m_pkFps->PrintToClient(pkOrder->m_iConnectID, kChars[i].c_str());
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
-		m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
-	}
-
-	// WHO:		Kolla vilken karaktär man är.
-	// LWHO:	Kolla vilket login man är.
-}
-
-
-/*
-	Handle Server Orders, that is commands sent from clients to the server.
-*/			
-void ZeroEdit::HandleOrders()
-{
-	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
-	
-	while(P_ClientControl::NrOfOrders() > 0 )
-	{
-		ClientOrder* order = P_ClientControl::GetNextOrder();	
-		
-		if(!CheckValidOrder(order))
-		{
-			cout << "Bad order from:" << order->m_iClientID << endl;
-			P_ClientControl::PopOrder();
-			continue;
-		}
-		
-		cout << "handling order "<<order->m_sOrderName<<" from client:" << order->m_iClientID << endl;
-		
-		// Edit Order
-		cout << order->m_sOrderName.c_str() << endl;
-
-		if(strncmp(order->m_sOrderName.c_str(),"ED",2) == 0) {
-			HSO_Edit(order);
-			}
-		
-		// Character Command
-		else if(strncmp(order->m_sOrderName.c_str(),"CC",2) == 0) {
-			HSO_Character(order);
-			}
-		
-		// OLD UNFIXED ORDERS BELOW.
-		//handle input messages from client
-		else if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
-		{
-			order->m_sOrderName.erase(0,4);
-			string playername=""; 
-			string message="";
-					
-			unsigned int pos=0;
-			
-			if(strncmp(order->m_sOrderName.c_str(),"/w",2)==0)
-			{
-				for(pos=3;pos<order->m_sOrderName.size();pos++)
-				{
-					if(order->m_sOrderName[pos] == ' ' && playername.size()>0)
-						break;
-					playername+=order->m_sOrderName[pos];
-				}
-			}
-			
-			for(;pos<order->m_sOrderName.size();pos++)
-			{	
-				message+=order->m_sOrderName[pos];
-			}
-			 
-			//cout<<"got message to "<<playername<<": "<<message<<endl;
-			
-			if(m_pkServerInfoP)
-			{
-				PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(order->m_iClientID);
-				
-				if(pi)
-				{
-					message = pi->sPlayerName + " : " + message;
-				
-				}
-				
-				if(playername == "")
-					m_pkServerInfoP->MessagePlayer(-1,message);
-				else
-					m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
-			}
-		}
-		else if(strncmp(order->m_sOrderName.c_str(),"G_",2)==0)
-		{
-			cout<<"Got ground click order"<<endl;
-		
-			Entity* ob = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
-		
-			if(ob)
-			{
-				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
-				if(pe)
-					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
-			}					
-		}
-      
-      // equip
-      else if ( order->m_sOrderName == "equip" )
-      {
-   		Entity* pkChar = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
-
-         if ( pkChar )
-         {
-            // get item to equip
-            Entity* pkItem = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-            CharacterProperty* pkCP = (CharacterProperty*)pkChar->GetProperty ("P_CharStats");
-            P_Item* pkIP = (P_Item*)pkItem->GetProperty("P_Item");
-
-            if ( pkIP && pkCP )
-               pkCP->GetCharStats()->Equip( pkItem, order->m_iUseLess );              
-         }
-      }
-
-	  // request orders
-      else if ( order->m_sOrderName == "(rq)item" )    
-      {
-   		Entity* pkItemObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkItemObject )
-         {
-            P_Item *pkItProp = (P_Item*) pkItemObject->GetProperty("P_Item");
-            
-            if ( pkItProp )
-            {
-               // if the items is of the same version, no need to send data
-                 if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
-                 {
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "itemdata";
-                  
-                     pkItProp->AddSendsData ( kSendType );
-                 }
-
-            }
-            else
-               cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }
-      
-      // container request
-      else if ( order->m_sOrderName == "(rq)cont" )
-      {
-         cout << "Sever hgot cont req" << endl;
-
-   		Entity* pkObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-         
-         if ( pkObject )
-         {
-
-            P_Container* pkC = (P_Container*) pkObject->GetProperty("P_Container");
-
-            if ( pkC )
-            {
-               // check versions...
-               //if ( pkC->m_uiVersion != order->m_iUseLess )
-                  pkC->AddSendsData(order->m_iClientID);
-            }            
-            else
-               cout << "Error! Non-P_Container requested for updated containerinfo!" << endl;
-         }
-      }
-      // request character skills
-      else if ( order->m_sOrderName == "(rq)skil" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-                 //if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )
-                 //{
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "skills";
-                  
-                     pkCP->AddSendsData ( kSendType );
-                 //}
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      } 
-      // request character data
-      else if ( order->m_sOrderName == "(rq)cdat" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-               //  if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )
-               //  {
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "data";
-                  
-                     pkCP->AddSendsData ( kSendType );
-               //  }
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }  
-      // request character skills
-      else if ( order->m_sOrderName == "(rq)attr" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-                 //if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
-                 //{
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "attributes";
-                  
-                     pkCP->AddSendsData ( kSendType );
-                 //}
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }  
-
-
-      // drop item from inventory to ground
-      else if ( order->m_sOrderName == "DropItem" )
-      {
-         Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-         Entity* pkPlayer = m_pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
-
-         if ( pkEntity && pkPlayer )
-         {
-            pkEntity->SetUpdateStatus (UPDATE_ALL);
-            pkEntity->GetParent()->RemoveChild (pkEntity);
-
-            pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
-
-            ((P_Container*)pkPlayer->GetProperty("P_Container"))->RemoveObject(order->m_iObjectID);         
-         }
-
-         if ( !pkEntity )
-            cout << "Error! Client wanted to drop a non-existing item!" << endl;
-      }  
-		
-		//normal orders
-		else if(order->m_iObjectID != -1)
-		{
-			Entity* ob = m_pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-			if(ob)
-			{
-			
-				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
-				if(pe)
-				{	
-					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCharacter);				
-				
-				}			
-			}
-		}
-		else
-		{
-			cout<<"CLICK"<<endl;
-
-		
-		}
-		
-		
-		P_ClientControl::PopOrder();
-	} 
-}
-
-bool ZeroEdit::CheckValidOrder(ClientOrder* pkOrder)
-{
-	if(pkOrder->m_iCharacter == -1)
-		return true;
-		
-	if(m_pkServerInfoP)
-	{
-		if(pkOrder->m_iCharacter  == m_pkServerInfoP->GetCharacterID(pkOrder->m_iClientID))
-			return true;
-		
-/*	
-		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(pkOrder->m_iClientID);
-		
-		if(pi)
-		{
-			for(unsigned int i = 0;i<pi->kControl.size();i++)
-			{
-				//found objectID
-				if(pi->kControl[i].first == pkOrder->m_iCharacter)
-					if(pi->kControl[i].second & PR_CONTROLS)
-						return true;				
-			}
-		}
-*/		
-	}
-	
-	return false;
-}
 
 void ZeroEdit::SendTextToMistClientInfoBox(char *szText)
 {

@@ -8,17 +8,14 @@
 
 #include <iostream>
 #include <cmath>
-//#include <GL/glut.h>
 #include <list>
+#include <vector>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
 #include "../zerofpsv2/engine/astar.h"
 
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/gui/zgui.h"
-
-#include <vector>
-
 
 #include "../mcommon/p_event.h"
 #include "../mcommon/si_mistland.h"
@@ -44,10 +41,6 @@
 #include "../mcommon/p_car.h"
 
 #include "../mcommon/p_arcadecharacter.h"
-
-//#include "playerdatabase.h"
-
-
 
 /**	\brief	Da ZeroEdit
 		\ingroup ZeroEdit
@@ -102,15 +95,8 @@ class ZeroEdit :public Application , public ZGuiApp {
 
 		bool	m_bEditSun;
 
-		//server stuff
-		Entity* m_pkServerInfo;
-		P_ServerInfo* m_pkServerInfoP;
-
 		vector<pair<string,Vector3> >	m_kLocations;
 		
-//		PlayerDatabase*	m_pkPlayerDB;
-		bool					m_AcceptNewLogins;
-
 		//edit stuff
 		int		m_iEditMode;
 
@@ -165,11 +151,6 @@ class ZeroEdit :public Application , public ZGuiApp {
 		void DrawCrossMarker(Vector3 kPos);
 		void AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
 
-		void HandleOrders();
-		void HSO_Edit(ClientOrder* pkOrder);
-		void HSO_Character(ClientOrder* pkOrder);
-
-		bool CheckValidOrder(ClientOrder* pkOrder);
 		void SendTextToMistClientInfoBox(char* szText);
 
 		void SetupGuiEnviroment();
@@ -219,7 +200,7 @@ class ZeroEdit :public Application , public ZGuiApp {
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);
-		void OnSystem();
+		void OnSystem() {};
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
@@ -227,22 +208,17 @@ class ZeroEdit :public Application , public ZGuiApp {
 		void RegisterResources();		
 		void Input();
 		void OnServerStart(void);
-		void OnClientStart(void);
+		void OnClientStart(void){};
 		
-		//init client
-		void ClientInit();
-		
-		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);
-		void DeletePlayer(int iConID);
-		void SpawnPlayer(int iConID);
+
 
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
 
 		//on client join, server runs this
-		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass);
-		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
-		void OnServerClientPart(ZFClient* pkClient,int iConID);
+		bool OnPreConnect(IPaddress, char*, char*){return true;}
+		void OnServerClientJoin(ZFClient*,int, char*, char*){};
+		void OnServerClientPart(ZFClient* pkClient,int iConID){};
 		void RenderInterface(void);
 
 		void AutoSetZoneSize(string strName);
