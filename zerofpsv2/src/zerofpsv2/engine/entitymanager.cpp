@@ -1945,6 +1945,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	// Create Object.
 	Entity* kZoneEntity = CreateEntity(false);
 	kZoneEntity->m_bZone = true;
+	kZoneEntity->m_iCurrentZone = iId;						//hack för att snabbt kunna se villken zon zonentityt tillhör
 	kZData->m_pkZone = kZoneEntity;
 	kZData->m_pkZone->SetParent(GetZoneEntity());	
 	kZData->m_pkZone->SetName("ZoneObject");

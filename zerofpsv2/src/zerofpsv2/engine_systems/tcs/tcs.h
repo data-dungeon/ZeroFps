@@ -37,6 +37,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 {
 	private:
 		ZeroFps*				m_pkZeroFps;
+		EntityManager*		m_pkEntityMan;
 		Render*				m_pkRender;
 	
 		vector<P_Tcs*>		m_kBodys;		
@@ -80,6 +81,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void ResetForces();
 		void TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2);
 						
+		
+		bool IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2);
 		
 		//collission funktions
 		void TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collission* pkCollission);

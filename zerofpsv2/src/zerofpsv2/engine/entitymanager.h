@@ -31,7 +31,7 @@ public:
 
 	unsigned int		m_iStatus;					//current status of zone
 	int					m_iVersion;
-	bool				m_bNew;
+	bool					m_bNew;
 	Entity*				m_pkZone;
 	int					m_iZoneObjectID;
 	int					m_iZoneID;

@@ -46,7 +46,8 @@ bool Tcs::StartUp()
 { 
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));		
-
+	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));		
+	
 	m_pkBodyCopy1 = new P_Tcs();
 	m_pkBodyCopy2 = new P_Tcs();	
 		
@@ -174,7 +175,9 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{				
 		if(m_kBodys[i]->m_bCharacter)
-		{	
+		{
+		
+			
 			//if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			if(CharacterLineTest(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{		
@@ -449,34 +452,40 @@ void Tcs::UpdateCollissions(float fAtime)
 	for(unsigned int B1=0;B1<m_kBodys.size();B1++)
 	{
 		for(unsigned int B2=B1+1;B2<m_kBodys.size();B2++)
-		{
+		{					
 			//dont test if both bodys are static or sleeping
 			if( (m_kBodys[B1]->m_bStatic || m_kBodys[B1]->m_bSleeping) && (m_kBodys[B2]->m_bStatic || m_kBodys[B2]->m_bSleeping))
 				continue;		
 				
-			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
-				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])			
-			{			
-				//first do a motion sphere test
-				if(TestMotionSpheres(m_kBodys[B1],m_kBodys[B2],fAtime))
-				{										
-					if(m_kBodys[B1]->m_bPolygonTest && m_kBodys[B2]->m_bPolygonTest)
-					{
-						//MESH VS MESH
-						TestMeshVsMesh(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
-					}
-					else if(m_kBodys[B1]->m_bPolygonTest || m_kBodys[B2]->m_bPolygonTest)
-					{				
-						//SPHERE VS SPHERE
-						TestSphereVsMesh(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
-					}
-					else
-					{
-						//SPHERE VS SPHERE
-						TestSphereVsSphere(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
-					}				
-				}
+			//check collission groups
+			if( !(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
+				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup]) )			
+				continue;
+				
+			//check if entitys are in neighbour zone
+			if(!IsInNerbyZone(m_kBodys[B1],m_kBodys[B2]))
+				continue;				
+								
+			//first do a motion sphere test			
+			if(!TestMotionSpheres(m_kBodys[B1],m_kBodys[B2],fAtime))
+				continue;
+								
+							
+			if(m_kBodys[B1]->m_bPolygonTest && m_kBodys[B2]->m_bPolygonTest)
+			{
+				//MESH VS MESH
+				TestMeshVsMesh(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
 			}
+			else if(m_kBodys[B1]->m_bPolygonTest || m_kBodys[B2]->m_bPolygonTest)
+			{				
+				//SPHERE VS SPHERE
+				TestSphereVsMesh(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
+			}
+			else
+			{
+				//SPHERE VS SPHERE
+				TestSphereVsSphere(m_kBodys[B1],m_kBodys[B2],fAtime,&m_kLastCollission);
+			}							
 		}
 	}
 }
@@ -512,6 +521,26 @@ bool Tcs::TestMotionSpheres(P_Tcs* pkBody1,P_Tcs* pkBody2,const float& fAtime)
 	return (d <= 0);
 }
 
+bool Tcs::IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2)
+{	
+	int iZoneID1 = pkBody1->GetEntity()->GetCurrentZone();
+	int iZoneID2 = pkBody2->GetEntity()->GetCurrentZone();
+		
+	
+	if(iZoneID1 == iZoneID2)
+		return true;
+	
+	if(ZoneData* pkZoneData = m_pkEntityMan->GetZoneData(iZoneID1))
+	{
+		for(int i = 0;i<pkZoneData->m_iZoneLinks.size();i++)
+		{
+			if(pkZoneData->m_iZoneLinks[i] == iZoneID2)
+				return true;
+		}
+	}
+	
+	return false;
+}
 
 bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)
 {
@@ -601,7 +630,11 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 				(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) || 
 				(!m_kBodys[i]->m_bHavePolygonData)	)
 			continue;
-			
+	
+		//check if entitys are in neighbour zone
+		if(!IsInNerbyZone(pkTester,m_kBodys[i]))
+			continue;							
+					
 		if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
 		{						
 			if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
