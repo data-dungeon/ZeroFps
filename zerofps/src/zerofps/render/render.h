@@ -42,6 +42,7 @@ class RENDER_API Render {
 //		void DrawQuad(HM_vert* vert,int width);
 		void DrawSkyBox(Vector3 CamPos);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep);
+		void DrawSimpleWater(Vector3 kPosition,int iSize);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
 		void GiveTexCor(float &iX,float &iY,int iNr);

@@ -21,6 +21,9 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 
 
 void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep) {
+	float freq=500.0;
+	float amp=1.0;
+	
 	glPushMatrix();
 	
 	glDisable(GL_CULL_FACE);
@@ -32,15 +35,46 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glTranslatef(-iSize/2,0,-iSize/2);
 	
 	glDisable(GL_LIGHTING);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 		
 	glDepthMask(GL_FALSE);
 	
-	m_pkTexMan->BindTexture("file:../data/textures/water.bmp");
-	float freq=400.0;
-	float amp=1.0;
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glEnable(GL_TEXTURE_2D);	
+	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp"));
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glEnable(GL_TEXTURE_2D);	
+	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp"));
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD);
+//	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp");
+	
+	
+	glBegin(GL_TRIANGLE_STRIP);		
+	for(int z=0;z<iSize;z+=iStep){
+		glNormal3f(0,1,0);
+		glColor4f(.7,.7,.7,0.4);
+		
+		float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;
+		float tx=SDL_GetTicks()/80000.0;
+		
+//		glTexCoord2f(0,z/iStep+SDL_GetTicks()/60000.0);
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,z/(iStep*10.0)+tx);		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,0,z/(iStep*10.0)-tx);				
+		glVertex3f(0,y,z);
+	
+//		glTexCoord2f(iSize/iStep,z/iStep+SDL_GetTicks()/60000.0);
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,iSize/(iStep*10.0),z/(iStep*10.0)+tx);		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,iSize/(iStep*10.0),z/(iStep*10.0)-tx);						
+		glVertex3f(iSize,y,z);
+	}
+	glEnd();	
+	
+	
+	/*
 	for(int z=0;z<iSize;z+=iStep){
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);		
@@ -58,13 +92,70 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 
 		}
 		glEnd();
-	}
+	}*/
+	
+
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glDisable(GL_TEXTURE_2D);	
+//	glActiveTextureARB(GL_TEXTURE0_ARB);
+//	glDisable(GL_TEXTURE_2D);	
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	
+	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 	glPopMatrix();
 }
+
+void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
+	glPushMatrix();
+	
+	glDisable(GL_CULL_FACE);	
+//	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
+	glDisable(GL_LIGHTING);
+	glDepthMask(GL_FALSE);	
+//	glDisable(GL_COLOR_MATERIAL);	
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glEnable(GL_BLEND);
+		
+	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp");
+
+	float tx=SDL_GetTicks()/60000.0;
+	glBegin(GL_QUADS);
+		glColor4f(.3,.3,.4,.99);
+		glNormal3f(0,1,0);
+		glTexCoord2f(tx,0);
+		glVertex3f(kPosition.x,kPosition.y,kPosition.z);
+		glTexCoord2f(tx,1);		
+		glVertex3f(kPosition.x,kPosition.y,kPosition.z+iSize);
+		glTexCoord2f(tx+2,0);		
+		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z+iSize);
+		glTexCoord2f(tx+2,1);		
+		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z);
+	
+	
+//		glColor4f(.5,.5,.5,0.5);
+		glTexCoord2f(-tx,0);
+		glVertex3f(kPosition.x,kPosition.y,kPosition.z);
+		glTexCoord2f(-tx,1);		
+		glVertex3f(kPosition.x,kPosition.y,kPosition.z+iSize);
+		glTexCoord2f(-tx+2,0);		
+		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z+iSize);
+		glTexCoord2f(-tx+2,1);		
+		glVertex3f(kPosition.x+iSize,kPosition.y,kPosition.z);
+	
+	
+	glEnd();
+
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glEnable(GL_LIGHTING);
+	glDepthMask(GL_TRUE);		
+	glPopMatrix();	
+}
+
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	glPushMatrix();
@@ -99,7 +190,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			//set lop steps depending on the distance to the center of the lod tile
 			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
 											//this distance realy sux..
-											CamPos.y,
+											CamPos.y,//this is nice =)
 //											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
 											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
 											).length()/m_iDetail);																
@@ -206,7 +297,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	
 		}
 	*/
-	
+	glDisable(GL_COLOR_MATERIAL);	
 	glPolygonMode(GL_FRONT,GL_FILL);
 	glPopMatrix();
 }
