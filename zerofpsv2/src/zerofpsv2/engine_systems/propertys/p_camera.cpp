@@ -35,6 +35,8 @@ void P_Camera::Update()
 	if(!m_pkCamera)
 		return;
 
+	StartProfileTimer("P_Camera");
+		
 	Vector3		kYawVector;
 	string		strCamName;
 
@@ -197,6 +199,8 @@ void P_Camera::Update()
 		}
 	}
 
+	
+	StopProfileTimer("P_Camera");	
 //	m_pkCamera->SetName(strCamName);
 }
 

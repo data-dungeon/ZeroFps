@@ -866,6 +866,9 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
+	static int iGraphTexture = m_pkTexMan->Load("data/textures/graph.bmp");
+	static int iMaxTexture = m_pkTexMan->Load("data/textures/notex.bmp");
+
 	unsigned int page;
 	if(!m_bDevPagesVisible) 
 	{
@@ -903,8 +906,8 @@ void ZeroFps::DrawDevStrings()
 							iVal = 100;
 											
 						float fPos = -1.1 + (iVal/100.0);
-						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),m_pkTexMan->Load("data/textures/graph.bmp") );
-						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),m_pkTexMan->Load("data/textures/notex.bmp"));
+						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),  iGraphTexture);
+						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),iMaxTexture);
 					}
 				}
 				else
