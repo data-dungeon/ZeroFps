@@ -1,4 +1,5 @@
 #include "p_spawn.h"
+#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "p_ml.h"
 
 
@@ -33,7 +34,7 @@ void P_Spawn::Update()
 	//draw a ball on the server
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
+		//m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
 	}
 	
@@ -132,6 +133,10 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 			m_pkObjectMan->Delete(ent);			
 		}
 	}*/
+
+	// if have scriptinterface, run OnSpawn
+	if(P_ScriptInterface* pkSI = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+		pkSI->CallFunction ( "OnSpawn" );
 }
 
 vector<PropertyValues> P_Spawn::GetPropertyValues()

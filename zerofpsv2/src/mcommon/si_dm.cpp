@@ -451,8 +451,9 @@ int DMLua::RunScriptLua (lua_State* pkLua)
 			Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(objectid);
 
 			if(!pkObject)
-			{
-				cout<<"parent object does not exist"<<endl;
+			{// if we sent i a vector, we don't want to know this
+				if (g_pkScript->GetNumArgs(pkLua) == 2) 
+					cout<<"parent object does not exist"<<endl;
 			}
 			else
 				kPos = pkObject->GetWorldPosV();
