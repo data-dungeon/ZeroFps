@@ -34,7 +34,7 @@ void DarkMetropolis::OnHud()
 	m_pkFps->ToggleGui();
 }
 
-void DarkMetropolis::OnInit() 
+void DarkMetropolis::OnInit()
 {
 
 	SetTitle("Dark Metropolis");
@@ -61,7 +61,7 @@ void DarkMetropolis::OnInit()
 	m_pkGamePlayInfoLabel =		NULL;
 	m_fCameraMaxDistanceFromAgent = 3;
 	m_fMusicVolume = 0.5f;
-	
+
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
 	Register_Cmd("save",FID_SAVE);	
@@ -75,7 +75,10 @@ void DarkMetropolis::OnInit()
 	
 	//enable light
 	m_pkLight->SetLighting(true);
-	
+
+	//set reference distance in audio syustem
+	m_pkAudioSys->SetReferensDistance(5);
+
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkFps->SetRenderTarget(m_pkCamera);

@@ -69,8 +69,11 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 		m_iLines++;
 	}
 
+
+	
+
 	// Kopiera datat till en buffert.
-	m_pstrLines = new char*[m_iLines+1];				// LEAK - MistServer, Nothing loaded.	
+	m_pstrLines = new char*[m_iLines+1];				// LEAK - MistServer, Nothing loaded.
 	int iLineLength, i;
 	fseek(pkFile, 0, SEEK_SET);
 	for ( i=0; i<m_iLines; i++)
@@ -78,7 +81,7 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 		memset(strLine, 0, MAX_LINE_LENGTH);
 		fgets(strLine, MAX_LINE_LENGTH, pkFile);
 		iLineLength = strlen(strLine)+1;
-		m_pstrLines[i] = new char[iLineLength+1];		// LEAK - MistServer, Nothing loaded.	
+		m_pstrLines[i] = new char[iLineLength+1];		// LEAK - MistServer, Nothing loaded.
 		memset(m_pstrLines[i], 0, iLineLength);
 		strcpy(m_pstrLines[i], strLine);
 	}

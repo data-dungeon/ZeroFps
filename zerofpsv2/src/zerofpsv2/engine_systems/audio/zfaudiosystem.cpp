@@ -414,7 +414,7 @@ bool ZFAudioSystem::StartUp()
 	alutInit (0, NULL); 
 	alGetError();
 	alListenerf(AL_GAIN, 1.0f);
-	alDopplerFactor(1.0f); 
+	alDopplerFactor(1.0f);
 	alDopplerVelocity(343); 
 
 	m_fVolume = 1.0f;
@@ -753,7 +753,7 @@ bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::Hearable(ZFSoundInfo* pkSound)
 {
-	if( (pkSound->m_kPos - m_kPos).Length() < HEARABLE_DISTANCE ) 
+	if( (pkSound->m_kPos - m_kPos).Length() < HEARABLE_DISTANCE )
 		return true;
 
 	return false;
@@ -905,6 +905,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	// Set reference distance.
 	alGetError();
 	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, m_fReferenceDistance);
+
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set reference distance!");
