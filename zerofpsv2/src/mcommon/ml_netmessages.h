@@ -13,6 +13,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_REQ_PLAYERLIST,
 	MLNM_CS_REQ_KILLME,
 	MLNM_CS_ANIM,
+	MLNM_CS_USE,
 };
 
 //	A network message from the server to the client.

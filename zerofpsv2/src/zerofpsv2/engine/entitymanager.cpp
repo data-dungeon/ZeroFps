@@ -2736,6 +2736,8 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 	ObjectManagerLua::g_iCurrentObjectID = pkEntity->m_iEntityID;	
 	
 	//cout << "Calling Func: " << acFunction << endl;
+	if(pkEntity->m_bZone)
+		return false;
 
 	if(pkParams)
 		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);

@@ -35,6 +35,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.SetPreLogName("mistclient2");
 	g_ZFObjSys.Log_Create("mistclient2");
 	
+	m_pkHighlight = NULL;
+	m_fDelayTime  = 0;
 
 	m_iCharacterID = -1;
 
@@ -178,6 +180,20 @@ void MistClient::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Container", 			Create_P_Container);
 }
 
+void MistClient::RenderInterface(void)
+{
+	if(m_pkHighlight) 
+	{
+		float fRadius = m_pkHighlight->GetRadius();
+		if(fRadius < 0.1)
+			fRadius = 0.1;
+				
+		Vector3 kMin = m_pkHighlight->GetWorldPosV() - fRadius;
+		Vector3 kMax = m_pkHighlight->GetWorldPosV() + fRadius;
+
+		m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
+	}
+}
 
 void MistClient::OnIdle() 
 {
@@ -212,36 +228,54 @@ void MistClient::Input()
 	}
 
 	// taunts
-	if ( (!IsWndVisible("MLStartWnd")) && !DelayCommand() )
+	if ( (!IsWndVisible("MLStartWnd")) )
 	{
 		if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
 			m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
 			m_pkInputHandle->VKIsDown("taunt5") )
 		{					
-		
-			int iTauntID = 0;
-			if (m_pkInputHandle->VKIsDown("taunt1"))
-				iTauntID = 1;
-			if (m_pkInputHandle->VKIsDown("taunt2"))
-				iTauntID = 2;
-			if (m_pkInputHandle->VKIsDown("taunt3"))
-				iTauntID = 3;
-			if (m_pkInputHandle->VKIsDown("taunt4"))
-				iTauntID = 4;
-			if (m_pkInputHandle->VKIsDown("taunt5"))
-				iTauntID = 5;
+			if(!DelayCommand())
+			{
+				int iTauntID = 0;
+				if (m_pkInputHandle->VKIsDown("taunt1"))
+					iTauntID = 1;
+				if (m_pkInputHandle->VKIsDown("taunt2"))
+					iTauntID = 2;
+				if (m_pkInputHandle->VKIsDown("taunt3"))
+					iTauntID = 3;
+				if (m_pkInputHandle->VKIsDown("taunt4"))
+					iTauntID = 4;
+				if (m_pkInputHandle->VKIsDown("taunt5"))
+					iTauntID = 5;
 
-			NetPacket kNp;	
-			kNp.Clear();
-			kNp.Write((char) MLNM_CS_ANIM);
+				NetPacket kNp;	
+				kNp.Clear();
+				kNp.Write((char) MLNM_CS_ANIM);
 
-			kNp.Write(iTauntID);
-			
-			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);
+				kNp.Write(iTauntID);
+				
+				kNp.TargetSetClient(0);
+				SendAppMessage(&kNp);
+			}
 		}
 	}
 
+	m_pkHighlight = GetTargetObject();
+	
+	if ( m_pkInputHandle->VKIsDown("use") )
+	{
+		if(!DelayCommand())
+		{
+			if(m_pkHighlight)
+			{
+				NetPacket kNp;			
+				kNp.Write((char) MLNM_CS_USE);
+				kNp.Write(m_pkHighlight->GetEntityID());
+				kNp.TargetSetClient(0);
+				SendAppMessage(&kNp);		
+			}
+		}
+	}
 
 	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
 	{
@@ -615,3 +649,148 @@ bool MistClient::StartUp()
    return true;
 }
 
+Entity* MistClient::GetTargetObject()
+{
+	Vector3 start = m_pkCamera->GetPos();
+	Vector3 dir;
+	dir = Get3DMousePos(true);
+
+	vector<Entity*> kObjects;
+	kObjects.clear();
+	
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
+	
+//	cout<<"nr of targets: "<<kObjects.size()<<endl;
+	
+	float closest = 999999999;
+	Entity* pkClosest = NULL;	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		//objects that should not be clicked on (special cases)
+		if(kObjects[i]->GetEntityID() <100000)
+			continue;
+		
+		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
+			continue;		
+		if(kObjects[i]->GetType() == "hosplayer.lua")
+			continue;		
+		if(kObjects[i]->GetType() == "Entity")
+			continue;		
+		
+		//-------------
+		
+		//get mad property and do a linetest
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		if(mp)
+		{
+			if(mp->TestLine(start,dir))
+			{	
+				float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+				if(d < closest)
+				{
+					closest = d;
+					pkClosest = kObjects[i];
+				}				
+			}
+		}		
+		
+	}
+	
+	return pkClosest;
+}
+
+/*	Return 3D postion of mouse in world. */
+Vector3 MistClient::Get3DMouseDir(bool bMouse)
+{
+	Vector3 dir;
+	float x,y;		
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+
+	Vector3 kViewSize, kViewCorner;
+	kViewSize = m_pkCamera->GetViewPortSize();
+	kViewCorner = m_pkCamera->GetViewPortCorner();
+	
+	if(bMouse)
+	{
+		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
+		// alltså måste vi använda den position vi får därifrån.
+		//	m_pkInputHandle->UnitMouseXY(x,y);
+		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		int mx;		
+		int my;
+		
+		m_pkInputHandle->SDLMouseXY(mx,my);
+		
+		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
+		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
+
+		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+		{
+			dir.Set(x*xp,y*yp,-1.5);
+			dir.Normalize();
+		}
+		else
+		{
+			dir.Set(0,0,-1);
+			//dir.Normalize();
+			//return dir;
+		}
+	}
+	else
+	{
+		dir.Set(0,0,-1.5);
+		dir.Normalize();	
+	}
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+	return dir;
+}
+
+/*	Returns 3D dir of mouse click in world. */
+Vector3 MistClient::Get3DMousePos(bool m_bMouse)
+{
+	Vector3 dir;
+//	float x,y;		
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+	float fovshit=-2.15;
+	
+	if(m_bMouse)
+	{
+		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
+		// alltså måste vi använda det inputsystemet.
+		//	m_pkInputHandle->UnitMouseXY(x,y); 
+		// Dvoid was here to . måste o måste, vill man ha lite kontroll över saker o ting så =D
+		int x;
+		int y;
+		
+		m_pkInputHandle->SDLMouseXY(x,y);
+		
+		x = int( -0.5f + (float) x / (float) m_pkApp->m_iWidth );
+		y = int( -0.5f + (float) y / (float) m_pkApp->m_iHeight );
+		
+		dir.Set(x*xp,-y*yp,fovshit);
+		dir.Normalize();
+	}
+	else
+	{
+		dir.Set(0,0,fovshit);
+		dir.Normalize();
+	}	
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+	return dir;
+}

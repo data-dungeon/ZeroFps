@@ -935,6 +935,15 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_CS_USE:
+		{
+			int iEntity;
+			PkNetMessage->Read(iEntity);
+			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntity))
+				m_pkEntityManager->CallFunction(pkObj, "Useit",NULL);;
+			break;
+		}
+
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);

@@ -35,7 +35,8 @@ class MistClient :public Application, public ZGuiApp {
 
 		Camera*		m_pkCamera;				//main camera
 		int			m_iCharacterID;		//current active character ID
-      		
+      Entity*		m_pkHighlight;			// Selected entity for use.		
+
 		bitset<6>	m_kCharacterControls;
 		
 		bool			m_bSkipLoginScreen;
@@ -80,6 +81,8 @@ class MistClient :public Application, public ZGuiApp {
 		void OnIdle(void);
 		void OnHud(void);
 		void OnSystem();
+		void RenderInterface(void);
+
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 				
@@ -102,6 +105,11 @@ class MistClient :public Application, public ZGuiApp {
 		map<string, msgScreenProg> m_kGuiMsgProcs;
 
 		OptionsDlg* m_pkOptionsDlg;
+
+		// This is a temporaty hack... sooo SHOOT ME 
+		Entity* GetTargetObject();
+		Vector3 Get3DMousePos(bool m_bMouse=true);
+		Vector3 Get3DMouseDir(bool bMouse);
 
 		friend class OptionsDlg;
 };
