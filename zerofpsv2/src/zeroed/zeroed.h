@@ -193,7 +193,7 @@ class ZeroEd :public Application , public ZGuiApp {
 	 	void OnInit();
 		void OnIdle();
 		void OnHud();
-		void OnSystem() {};
+		void OnSystem();
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();

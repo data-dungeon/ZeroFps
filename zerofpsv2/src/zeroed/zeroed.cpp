@@ -345,8 +345,7 @@ void ZeroEd::OnServerStart(void)
 
 void ZeroEd::OnClientStart()
 {
-//	if(!m_pkFps->m_bServerMode)
-//		CreateEditCameras();
+	m_pkActiveCameraObject = NULL;
 }
 
 void ZeroEd::SetupGuiEnviroment()
@@ -525,6 +524,32 @@ void ZeroEd::DeleteSelected()
 				return;
 			}
 		*/	
+}
+
+void ZeroEd::OnSystem()
+{
+	Entity* pkClient = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID());
+	if(pkClient)
+	{
+		if(!m_pkActiveCameraObject)
+		{
+			cout<<"got client object"<<endl;
+	
+			m_pkCameraObject[0] = pkClient;
+			m_pkActiveCameraObject = m_pkCameraObject[0];
+			
+			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[0]->AddProperty("P_Camera");
+			m_pkCamProp->SetCamera(m_pkCamera[0]);
+		
+			SoloToggleView();
+			m_fDelayTime = m_pkFps->GetEngineTime();
+			SoloToggleView();
+			GetWnd("vp1")->SetZValue(0);
+			GetWnd("vp2")->SetZValue(0);
+			GetWnd("vp3")->SetZValue(0);
+			GetWnd("vp4")->SetZValue(0);		
+		}
+	}	
 }
 
 
@@ -856,6 +881,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 {
+	if(!m_pkActiveCameraObject)
+		return;
+
 //	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
 //	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
 //	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(0);

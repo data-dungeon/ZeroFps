@@ -876,12 +876,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(kCommand->m_kSplitCommand.size() >= 4)
 				strPass = kCommand->m_kSplitCommand[3];
 			
+			
+			m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());
+			
 			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
 			
-			m_pkConsole->Printf("Connect: %s, %s, %s", g_szIpPort, 
-				strLogin.c_str(), strPass.c_str());
-			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
-			m_pkConsole->Printf("FID_CONNECT");
 			
 			/*
 			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
@@ -1064,6 +1063,10 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	//reset all first
 	StopAll();
 
+	//clear world   ---detta kan vara ganska evil ibland =D, 
+	m_pkObjectMan->Clear();
+	
+	
 	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
 	
 	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str());
