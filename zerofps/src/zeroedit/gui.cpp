@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //#include "zeroedit.h"
-#include "Gui.h"
+#include "gui.h"
 #include "resource_id.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -15,8 +15,10 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 	m_bMenuActive = true;
 	m_pkEdit = pkEdit;
 
+	m_pkWndProc = cb;
+
 	InitSkins();
-	CreateWindows(cb);
+	CreateWindows();
 
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
@@ -70,9 +72,7 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 					break;
 
 				case IDM_OPEN:
-					CreateFilePathBox(ID_MAINWND2, ID_FILEPATH_WND, 10, 10, 
-						m_pkEdit->pkGui->GetMainWindow(ID_MAINWND2)->GetWndRect().Width(), 
-						m_pkEdit->pkGui->GetMainWindow(ID_MAINWND2)->GetWndRect().Height());
+					CreateFilePathBox(0,0,500,500);
 					m_pkEdit->pkGui->GetMainWindow(ID_MAINWND2)->Show();
 					break;
 				}
@@ -159,17 +159,13 @@ void Gui::ToogleMenu()
 	}
 }
 
-bool Gui::CreateWindows(ZGuiCallBack cb)
+bool Gui::CreateWindows()
 {
 	int tex_font_a = m_pkEdit->pkTexMan->Load("file:../data/textures/text/font_a.bmp", 0);
 
 	ZGuiWnd* pkMainWnd1 = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,ID_MAINWND1);
 	pkMainWnd1->SetSkin(GetSkin("menu"));
 	pkMainWnd1->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
-
-	ZGuiWnd* pkMainWnd2 = new ZGuiWnd(Rect(500,300,1024,700),NULL,false,ID_MAINWND2);
-	pkMainWnd2->SetSkin(GetSkin("blue"));
-	pkMainWnd2->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
 
 	Rect rc = Rect(0,0,128,32);
 
@@ -183,16 +179,15 @@ bool Gui::CreateWindows(ZGuiCallBack cb)
 	pkMenuCBox->AddItem("Open...", IDM_OPEN);
 	pkMenuCBox->AddItem("item 3", iLastIDNr++);
 
-	m_pkEdit->pkGui->AddMainWindow(ID_MAINWND1, pkMainWnd1, cb, true);
-	m_pkEdit->pkGui->AddMainWindow(ID_MAINWND2, pkMainWnd2, cb, false);
-
+	m_pkEdit->pkGui->AddMainWindow(ID_MAINWND1, pkMainWnd1, m_pkWndProc, true);
+	
 	m_szSearchBoxPath = m_pkEdit->pkFps->m_pkBasicFS->GetCWD();
 	return true;
 }
 
 bool Gui::InitSkins()
 {
-	int piss = m_pkEdit->pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, vet inte varför...
+	//int piss = m_pkEdit->pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, vet inte varför...
 	int bn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
 	int bn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
@@ -244,7 +239,7 @@ ZGuiSkin* Gui::GetSkin(char* strName)
 	return fail_skin;
 }
 
-int Gui::CreateFilePathBox(int iMainWindow, int iListBox, int x, int y, int w, int h)
+int Gui::CreateFilePathBox(int x, int y, int w, int h)
 {
 	if( m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND) || 
 		m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND_LABEL_PATH) )
@@ -252,7 +247,13 @@ int Gui::CreateFilePathBox(int iMainWindow, int iListBox, int x, int y, int w, i
 		return false;
 	}
 
-	ZGuiWnd* pkMainWindow = m_pkEdit->pkGui->GetMainWindow(iMainWindow);
+	ZGuiWnd* pkMainWnd2 = new ZGuiWnd(Rect(x,y,w,h),NULL,false,ID_MAINWND2);
+	pkMainWnd2->SetSkin(GetSkin("blue"));
+	pkMainWnd2->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
+
+	m_pkEdit->pkGui->AddMainWindow(ID_MAINWND2, pkMainWnd2, m_pkWndProc, false);
+
+	ZGuiWnd* pkMainWindow = m_pkEdit->pkGui->GetMainWindow(ID_MAINWND2);
 	if(pkMainWindow == NULL)
 		return -1;
 
@@ -340,4 +341,9 @@ bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
 	}
 
 	return true;
+}
+
+int Gui::CreatePropertyBox()
+{
+	return 0;
 }

@@ -105,6 +105,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool m_bServerMode;
 		bool m_bClientMode;
 		bool m_bConsoleMode;
+		bool m_bDrawDevList;
 		
 		
 		ZeroFps(void);		

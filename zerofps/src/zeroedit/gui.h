@@ -13,29 +13,32 @@
 
 #include "zeroedit.h"
 
+typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
+
 class Gui
 {
-public:
-
-	typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
-
-	Gui(ZeroEdit* pkEdit, ZGuiCallBack cb);
-	virtual ~Gui();
-
-	bool InitSkins();
-	int  CreateFilePathBox(int iMainWindow, int iListBox, int x, int y, int Widht, int Height);
-	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
-	void ToogleMenu();
-	bool CreateWindows(ZGuiCallBack);
-	bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
-	bool IsMenuActive() { return m_bMenuActive; }
-
 private:
 	ZeroEdit* m_pkEdit;
 	map<string, ZGuiSkin*> m_kSkinMap;
 	ZGuiSkin* GetSkin(char* strName);
 	string m_szSearchBoxPath;
 	bool m_bMenuActive;
+	ZGuiCallBack m_pkWndProc;
+
+public:
+	int CreatePropertyBox();
+	bool InitSkins();
+	int  CreateFilePathBox(int x, int y, int Widht, int Height);
+	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
+	void ToogleMenu();
+	bool CreateWindows(/*ZGuiCallBack*/);
+	bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
+	bool IsMenuActive() { return m_bMenuActive; }
+
+	Gui(ZeroEdit* pkEdit, ZGuiCallBack cb);
+	virtual ~Gui();
+
+
 
 };
 

@@ -14,6 +14,6 @@ const int ID_FILEPATH_WND_LABEL_FILE	= 9008;
 const int ID_FILEPATH_WND_CLOSE			= 9009;
 const int IDM_OPEN						= 9010;
 
-static int iLastIDNr = 9005;
+static int iLastIDNr = 9011;
 
 #endif

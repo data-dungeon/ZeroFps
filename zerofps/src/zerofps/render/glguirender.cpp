@@ -351,7 +351,7 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 
 	if(bDrawMasked)
 	{
-		glEnable(GL_DEPTH_TEST);							// Enable Depth Testing
+		//glEnable(GL_DEPTH_TEST);							// Enable Depth Testing
 		glDisable(GL_BLEND);								// Disable Blending
 	}
 

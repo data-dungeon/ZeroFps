@@ -25,7 +25,7 @@ enum EDIT_MODES{
 
 class LandType{
 	public:
-		int 		m_iTexture;
+		int m_iTexture;
 		Vector3	m_kColor;		
 };
 
