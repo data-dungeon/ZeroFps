@@ -714,7 +714,7 @@ void ZeroEdit::Input()
 
 	//rotate the camera		
 	//if(!pkGui->IsActive())
-    if(pkInput->Pressed(MOUSELEFT))
+    if(pkInput->Pressed(MOUSERIGHT))
 	{
 		if(pkInput->Pressed(KEY_LSHIFT) == false)
 		{
@@ -765,8 +765,7 @@ void ZeroEdit::Input()
 					}
 				}
 			else {
-                if( pkInput->Pressed(MOUSELEFT) && 
-                    ( pkInput->Pressed(KEY_LCTRL) | pkInput->Pressed(KEY_RCTRL) ) )
+                if( pkInput->Pressed(MOUSELEFT) )
 				{
 					if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
 						break;			
@@ -792,7 +791,8 @@ void ZeroEdit::Input()
 
 					m_pkCurentChild=object;
 				}
-				if(pkInput->Pressed(MOUSERIGHT))
+				if(pkInput->Pressed(MOUSERIGHT) && pkInput->Pressed(KEY_LSHIFT) ||
+					pkInput->Pressed(MOUSEMIDDLE) )
 				{
 					SelectChild();
 				}
