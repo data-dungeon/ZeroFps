@@ -24,6 +24,7 @@ class ENGINE_API Application {
 		TextureManager* pkTexMan;
 		FileIo* pkFile;
 		Light* pkLight;
+		ObjectManager* pkObjectMan;
 		
 	public:
 		static Application* pkApp;

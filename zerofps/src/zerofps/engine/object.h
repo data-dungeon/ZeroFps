@@ -9,7 +9,7 @@
 #include <string.h>
 
 class Object {
-	private:
+	protected:
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		bool m_bStatic;	
@@ -17,8 +17,8 @@ class Object {
 		list<Property*> m_akPropertys;
 
 	public:
+		Object();		
 		~Object();
-		
 		
 		Property* GetProperty(char* acName);
 		void AddProperty(Property* pkNewProperty);

@@ -3,13 +3,14 @@ class Input;
 class AudioManager;
 class Application;
 class Console;
+class ObjectManager;
 
 #include "console.h"
 #include "application.h"
 #include "input.h"
 #include "zerofps.h"
 #include "audiomanager.h"
-
+#include "objectmanager.h"
 
 
 

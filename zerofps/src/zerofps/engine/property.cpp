@@ -5,12 +5,12 @@ void Property::SetObject(Object* pkObject) {
 
 }
 
-/*
-void Property::Update() {
 
-}
 
-*/
+
+
+
+
 
 
 

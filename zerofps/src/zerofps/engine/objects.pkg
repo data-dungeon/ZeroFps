@@ -1,11 +1,12 @@
 class Object;
 class Property;
-class PlayerControl;
+class PlayerControlProperty;
+class ModelProperty;
 
 #include "object.h"
 #include "property.h"
-#include "playercontrol.h"
-
+#include "playercontrolproperty.h"
+#include "modelproperty.h"
 
 
 

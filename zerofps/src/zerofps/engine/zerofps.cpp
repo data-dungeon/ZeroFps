@@ -9,6 +9,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkInput=new Input();
 	m_pkAudioMan=new AudioManager(this);
 	m_pkLight=new Light();
+	m_pkObjectMan=new ObjectManager();
 	
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
@@ -74,7 +75,8 @@ void ZeroFps::MainLoop(void) {
 				if(m_pkInput->Pressed(F11))
 					ToggleFullScreen();				
 
-				m_pkInput->Update();				
+				m_pkInput->Update();
+				m_pkObjectMan->Update();
 				Swap();
 
 				break;			

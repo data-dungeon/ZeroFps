@@ -1,5 +1,20 @@
 #include "object.h"
 
+Object::Object() {
+	m_kPos=Vector3(0,0,0);
+	m_kRot=Vector3(0,0,0);
+}
+
+
+Object::~Object() {
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		delete (*it);
+	}
+}
+
+
+
+
 Property* Object::GetProperty(char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
@@ -40,12 +55,6 @@ bool Object::Update(char* acName){
 		}
 	}
 	return false;
-}
-
-Object::~Object() {
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		delete (*it);
-	}
 }
 
 
