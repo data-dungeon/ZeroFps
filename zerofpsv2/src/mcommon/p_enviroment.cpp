@@ -139,7 +139,7 @@ ZFResource* Create__EnvSetting()
 P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
-	m_iType=PROPERTY_TYPE_RENDER;
+	m_iType=PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -154,6 +154,30 @@ P_Enviroment::P_Enviroment()
 	m_bEnabled =	false;
 	
 	m_StrCurrentEnviroment = "";
+
+	
+	
+	m_pkSunMat = new ZMaterial;
+		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
+		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunMat->GetPass(0)->m_bFog = 					false;		
+		m_pkSunMat->GetPass(0)->m_bDepthTest = 			true;		
+		m_pkSunMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
+
+	m_pkSunFlareMat = new ZMaterial;
+		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sunflare.tga");
+		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunFlareMat->GetPass(0)->m_bFog = 						false;		
+		m_pkSunFlareMat->GetPass(0)->m_bDepthTest = 				true;		
+		m_pkSunFlareMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
 }
 
@@ -516,7 +540,8 @@ void P_Enviroment::DrawSun()
 	{
 		//do occulusion test	
 		m_pkZShaderSystem->OcculusionBegin();
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);
 		int iSamples = m_pkZShaderSystem->OcculusionEnd();
 		
 		float fSize = float(iSamples) / float(iMaxSamples);
@@ -524,12 +549,15 @@ void P_Enviroment::DrawSun()
 			fSize = 1.0;
 			
 		//draw flare
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fSize*fAmp,m_pkSunFlareMat);
 	}
 	else
 	{
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);	
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fAmp,m_pkSunFlareMat);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
 	}
 }
 

@@ -342,6 +342,39 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	m_pkZShaderSystem->Pop();
 }
 
+void Render::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial)
+{
+	Matrix4 temp = kCamRotMatrix;
+	temp.Transponse();
+
+	m_pkZShaderSystem->BindMaterial(pkMaterial);
+	
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(kPos);
+	m_pkZShaderSystem->MatrixScale(fSize);
+	m_pkZShaderSystem->MatrixMult(temp);
+	
+	static float afVerts[] = {	-0.5,	0.5,	
+							 			-0.5,	-0.5,	
+							 			0.5,	-0.5,	
+										0.5,	0.5};
+	
+	static float afUvs[] = {	0,1,
+							 			1,1,
+										1,0,
+										0,0};
+														 
+	
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX2D_POINTER,afVerts);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);
+
+		
+	m_pkZShaderSystem->MatrixPop();
+}
+
 void Render::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
 {
 	Matrix4 temp = kCamRotMatrix;
@@ -579,7 +612,7 @@ void Render::Mode2D_End()
 }
 
 
-
+ 
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine, int iMarkerPos, int iMarker) 
 {
 	static ZMaterial* pkConsole = NULL;

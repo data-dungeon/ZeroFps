@@ -659,7 +659,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = "MrBad";
+	pkClient->m_strCharacter = szLogin;  //använder spelar namnet som karaktärs namn så länge..
 	pkClient->m_strLogin = szLogin;
 
 	if(!pkClient->m_pkObject)

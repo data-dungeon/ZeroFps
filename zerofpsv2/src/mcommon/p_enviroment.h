@@ -89,7 +89,11 @@ class MCOMMON_API P_Enviroment: public Property {
 		Vector4			m_kCurrentFogColor;
 		float				m_fCurrentFogStart;					
 		float				m_fCurrentFogStop;					
+
 		
+		ZMaterial*		m_pkSunMat;
+		ZMaterial*		m_pkSunFlareMat;
+				
 		int				m_iRainTextureID;
 		int				m_iRain;
 		
