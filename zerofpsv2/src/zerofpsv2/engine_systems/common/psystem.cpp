@@ -10,7 +10,7 @@ void PSystem::Draw()
 {
 
 	// Set depthmask
-	glDepthMask ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
+	glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
 
 	m_pkRender->DrawPSystem (this);
 
