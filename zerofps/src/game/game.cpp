@@ -474,6 +474,7 @@ void Game::InitGui()
 	ZGuiSkin* pkHealthSkin   =	new ZGuiSkin(0,   0,   255, 0,   0,   128, 4);
 	ZGuiSkin* pkArmorBkSkin  =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
 	ZGuiSkin* pkArmorSkin    =	new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
+	ZGuiSkin* pkFaceSkin    =	new ZGuiSkin(255, 255, 255, 0,   0,   0,   0);
 
 	pkMainSkin->m_iBkTexID = pkTexMan->Load("piss.bmp", 0); // först misslyckas, vet inte varför...
 	pkMainSkin->m_iBkTexID = pkTexMan->Load("../data/textures/player_panel.bmp", 0);
@@ -499,12 +500,17 @@ void Game::InitGui()
 	pkArmorbar->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	pkArmorbarBk->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
+	ZGuiWnd* pkFaceWnd = new ZGuiWnd(Rect(256,20,256+92,20+92),pkPlayerStatusMainWnd,true,id++);
+	pkFaceSkin->m_iBkTexID = pkTexMan->Load("../data/textures/face.bmp", 0);
+	pkFaceWnd->SetSkin(pkFaceSkin);
+
 	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, "PlayerStatusMainWnd", WINPROC, true);
 
 	pkGui->RegisterWindow(pkHelthbar, "helthbar");
 	pkGui->RegisterWindow(pkArmorbar, "armorbar");
 	pkGui->RegisterWindow(pkHelthbarBk, "helthbar_bk");
 	pkGui->RegisterWindow(pkArmorbarBk, "armorbar_bk");
+	pkGui->RegisterWindow(pkFaceWnd, "facewnd");
 
 	// Create inventory window
 	m_iActionOpenInventory = pkInput->RegisterAction("inventory_open");

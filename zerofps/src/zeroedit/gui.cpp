@@ -216,23 +216,21 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 	{
 	case ZGM_LBUTTONDOWN:
 
+		static int c;
+		printf("counter: %i\n", c++);
+
 		m_pkEdit->pkFps->DevPrint_Show(true);
 
 		unsigned int i;
 		for(i=0; i<m_uiNumMenuItems; i++)
-		{
-			ZGuiListbox* pkList = m_pkMenuInfo[i].cb->GetListbox();
-
-			if(pkList->IsVisible())
+			if(m_pkMenuInfo[i].cb->GetListbox()->IsVisible())
 			{
 				m_pkEdit->pkFps->DevPrint_Show(false);
 				break;
 			}
-		}
 
 		if(((ZGuiCombobox*)Get("MainMenuCB1"))->GetListbox()->IsVisible())
 			m_pkEdit->pkFps->DevPrint_Show(false);
-
 		break;
 
 	case ZGM_CBN_SELENDOK:
@@ -245,8 +243,6 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				ZGuiCombobox *cbox = (ZGuiCombobox*) win;
 
 				int index = ((int*)pkParams)[1];
-
-				//m_pkEdit->pkFps->DevPrint_Show(true);
 
 				switch(index)
 				{
