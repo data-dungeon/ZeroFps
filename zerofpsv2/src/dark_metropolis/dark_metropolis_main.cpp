@@ -985,8 +985,6 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		
 		if(pkCharProp)
 		{
-			printf("APAPAPA\n");
-
 			int iNumSelSounds = pkCharProp->m_vkSelectSounds.size();
 			if(iNumSelSounds > 0)
 			{

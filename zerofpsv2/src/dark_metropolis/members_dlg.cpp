@@ -349,7 +349,7 @@ void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 	GetWnd("MemeberWage")->SetText(szText);
 
 
-	//char szText[50];
+	//char szText[50];ok
 
 	//sprintf(szText, "Agent %s", pkCharacterStats->m_strName.c_str());
 	//SetText("CurrentMemberNumberLabel", szText);
@@ -919,7 +919,7 @@ void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 		if(pkCharacterStats)
 		{
 			int Level = pkCharacterStats->m_iLevel;
-			int XP = 500; //(int)pkCharacterStats->m_fExperience;
+			int XP = (int)pkCharacterStats->m_fExperience;
 			int XPNextLevel = (int)pkCharacterStats->m_fNextLevel;
 
 			if(XP > XPNextLevel)
@@ -949,8 +949,6 @@ void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 
 void CMembersDlg::UpdateHealthbar(DMCharacterStats* pkCharacterStats)
 {
-	return;
-
 	bool bFailed = false;
 
 	if(pkCharacterStats == NULL)
@@ -961,15 +959,14 @@ void CMembersDlg::UpdateHealthbar(DMCharacterStats* pkCharacterStats)
 	{
 		if(pkCharacterStats)
 		{
-			int Level = pkCharacterStats->m_iLife;
-			int XP = 500; //(int)pkCharacterStats->m_fExperience;
+			int XP = (int)pkCharacterStats->m_iLife;
 			int XPNextLevel = (int)pkCharacterStats->m_iMaxLife;
 
 			if(XP > XPNextLevel)
 				XP = XPNextLevel;
 
 			char szText[50];
-			sprintf(szText, "Life : %i (%i/%i)", Level, XP, XPNextLevel);
+			sprintf(szText, "Life : (%i/%i)", XP, XPNextLevel);
 			SetText("HealthBarTopic", szText);
 
 			const float MAX_SIZE_LEVELBAR = (float) GetWnd("HealthBarBK")->GetScreenRect().Width();
