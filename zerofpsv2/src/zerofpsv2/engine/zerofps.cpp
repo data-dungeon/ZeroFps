@@ -521,65 +521,21 @@ void ZeroFps::Run_Client()
 void ZeroFps::Update_Network()
 {
 
-
-
-	int iLoops			= 0;
-	float fRestTime	= 0;
-	float fATime		= 0;
-
 	//calculate new system delta time
 	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
 
-	//time since last update
-	fATime = GetTicks() - m_fNetworkUpdateTime; 	
-
-	if(fATime > m_fNetworkUpdateFpsDelta)
+	//shuld we run a network update
+	if( (GetTicks() - m_fNetworkUpdateTime) > m_fNetworkUpdateFpsDelta)
 	{
-		//cout<<"update"<<endl;
 		
 		//update last network update time
 		m_fNetworkUpdateTime = GetTicks();;
-	
-		//update network for client & server
-		m_pkNetWork->Run();		
 		
 		//pack objects to clients
 		m_pkEntityManager->PackToClients();		
 		
 	}
 	
-/*		
-	//how many system loops shuld we make?
-	iLoops = int(fATime / m_fNetworkUpdateFpsDelta);		
-			
-	//save rest time to add it att end of function
-	fRestTime = fATime - (iLoops * m_fNetworkUpdateFpsDelta);				
-			
-	//if no loops are to be done, just return
-	if(iLoops<=0)
-		return;
-	
-	//set maximum number of loops, dont know if this is realy that good...but what the hell
-	if(iLoops > 10)
-	{
-		//cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
-		iLoops = 10;
-	}
-*/
-	/*
-	for(int i=0;i<iLoops;i++)
-	{		
-		//cout<<"updating network" <<iLoops<<endl;
-		
-			
-		
-		//save current update time, 
-		m_fNetworkUpdateTime = GetTicks();		
-	}
-	
-	//finaly add rest time
-	m_fNetworkUpdateTime -= fRestTime;
-	*/
 }
 
 void ZeroFps::Update_System()
@@ -634,8 +590,8 @@ void ZeroFps::Update_System()
 		//update sim time for this systemupdate
 		m_pkEntityManager->UpdateSimTime();
 		
-		//update network for client & server
-		//m_pkNetWork->Run();				
+		//handle incomming network packages for client & server
+		m_pkNetWork->Run();				
 		
 		//update application systems
 		m_pkApp->OnSystem();
@@ -668,11 +624,7 @@ void ZeroFps::Update_System()
 		//client & server code
 
 		//update game message system				
-		m_pkEntityManager->UpdateGameMessages();
-		
-				
-		//pack objects to clients
-		//m_pkEntityManager->PackToClients();		
+		m_pkEntityManager->UpdateGameMessages();		
 		
 		//delete objects
 		m_pkEntityManager->UpdateDelete();
@@ -742,25 +694,15 @@ void ZeroFps::MainLoop(void)
 			
 			//update basic engine systems			
 			Run_EngineShell();
-			
-			/*
-			//update server only systems			
-			StartProfileTimer("s_System");			
-				
-			//update client only systems
-			if(m_bClientMode)
-				Run_Client();		
-			StopProfileTimer("s_System");							
-			*/	
-			
-			//update system
+						
+			//update system , and handle incomming network data from clients
 			Update_System();
 						
 			//client/server specifik updates
 			if(m_bServerMode) Run_Server();		
 			if(m_bClientMode) Run_Client();		
 			
-			//update network
+			//Update network:  sends entitydata to clients
 			Update_Network();			
 			
 			
