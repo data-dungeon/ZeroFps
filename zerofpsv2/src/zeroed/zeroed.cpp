@@ -1349,28 +1349,28 @@ void ZeroEd::DrawZoneMarker(Vector3 kPos)
 	{
 		switch(m_iAutoSnapZoneCorner)
 		{
-		case Top:
+		case eTop:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(0,0,16));
 			break;
-		case Bottom:
+		case eBottom:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(0,0,-16));
 			break;
-		case Left:
+		case eLeft:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,0));
 			break;
-		case Right:
+		case eRight:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,0));
 			break;
-		case TopLeft:
+		case eTopLeft:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,16));
 			break;
-		case TopRight:
+		case eTopRight:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,16));
 			break;
-		case BottomLeft:
+		case eBottomLeft:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,-16));
 			break;
-		case BottomRight:
+		case eBottomRight:
 			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,-16));
 			break;
 		}
