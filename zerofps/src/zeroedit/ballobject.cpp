@@ -8,24 +8,24 @@ BallObject::BallObject() {
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
-
+/*
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 //	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 	madp->SetBase("../data/mad/tree.mad");
 	madp->SetScale(0.5);
-
+*/
 	
 	m_iObjectType=OBJECT_TYPE_STATIC;
 
-//	AddProperty("ModelProperty");
-//	AddProperty("LightProperty");
-	AddProperty("FloatProperty");
-	AddProperty("AutoParentProperty");
+	AddProperty("ModelProperty");
+	AddProperty("LightProperty");
+//	AddProperty("FloatProperty");
+//	AddProperty("AutoParentProperty");
 	AddProperty("PhysicProperty");
 	
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-	pp->SetColShape(new CSSphere(0.5));		
+//	pp->SetColShape(new CSSphere(0.5));		
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.5;
 	pp->m_bGravity=false;
 	pp->m_bFloat=false;

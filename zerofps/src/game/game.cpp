@@ -79,24 +79,40 @@ void Game::OnIdle(void) {
 
 void Game::OnHud(void) 
 {	
-
-	glPushAttrib(GL_LIGHTING_BIT);
-	
+	glPushAttrib(GL_LIGHTING_BIT);	
 	glDisable(GL_LIGHTING);
+	
+	
+	switch(m_iGameState)
+	{
+		case GAME_STATE_MENU:
+		{
+//			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+//			glEnable(GL_BLEND);
+				
+			pkRender->Quad(Vector3(-.5,-.5,-.5),Vector3(0,0,0),Vector3(1,1,1),pkTexMan->Load("file:../data/textures/logo_menu.tga",0));		
+					
+//			glDisable(GL_BLEND);	
+			break;
+		}
 
-	pkRender->SetFont("file:../data/textures/text/console.tga");
+		case GAME_STATE_INGAME:
+		{
+			pkRender->SetFont("file:../data/textures/text/console.tga");
 
-	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
+			pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
 
 
-	glAlphaFunc(GL_GREATER,0.3);
-	glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER,0.3);
+			glEnable(GL_ALPHA_TEST);
 
 //	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkPlayer->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
 	
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_LIGHTING);	
-	
+			glDisable(GL_ALPHA_TEST);
+		}
+	}
+
+	glEnable(GL_LIGHTING);		
 	glPopAttrib();
 }
 
