@@ -21,7 +21,7 @@ bool HeightMap::Load(char* acFile) {
 void HeightMap::Random() {
 
 	int height=30000000;
-	int peaks=200;
+	int peaks=300;
 	int smooth=14;
 
 //   nice terrain
