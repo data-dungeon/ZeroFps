@@ -153,7 +153,8 @@ NetPacket::NetPacket()
 	m_iLength	= 0;
 	m_iPos		= 0;
 	m_iClientID = ZF_NET_NOCLIENT;
-
+	m_kData.m_kHeader.m_iOrder = 0;
+	m_kData.m_kHeader.m_iPacketType = -1;
 }
 
 NetPacket::~NetPacket()
@@ -166,6 +167,8 @@ void NetPacket::Clear()
 	m_iLength = 0;
 	m_iPos = 0;
 	m_bReadError = false;
+	m_kData.m_kHeader.m_iOrder = 0;
+	m_kData.m_kHeader.m_iPacketType = -1;
 }
 
 void NetPacket::SetTarget(const char* szIp)

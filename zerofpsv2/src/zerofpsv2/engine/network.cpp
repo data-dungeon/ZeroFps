@@ -386,6 +386,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	NetP.m_kAddress = kTargetIP;
 	//NetP.SetTarget(szIp);
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
@@ -412,6 +413,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 	if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
 		pkNetPacket->m_kAddress = kPacket.address;
 		pkNetPacket->m_iLength	= kPacket.len - sizeof(ZFNetHeader);
+		Logf("netpac", "Recv From Net");
 		return true;
 		}
 
@@ -428,6 +430,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 			pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
 			pkNetPacket->m_iLength  = m_RemoteNodes[i].m_aiRelPackRecvSize[iIndex];
 			m_RemoteNodes[i].FreeRelRecv( &m_RemoteNodes[i].m_akRelPackRecv[iIndex] );
+			Logf("netpac", "Recv From Local");
 			return true;
 		}
 	}
@@ -493,10 +496,13 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 
 	// Validate Data
 	//ZFAssert(kPacket.len > 0 && kPacket.len < MAX_PACKET_SIZE, "NetWork::SendRaw - Size Errors");
-	if(kPacket.len < 0 && kPacket.len > MAX_PACKET_SIZE)
-	{
+	if(pkNetPacket->m_iLength < 0 || pkNetPacket->m_iLength > MAX_PACKET_SIZE)
 		assert(0);
-	}
+	if(pkNetPacket->m_kData.m_kHeader.m_iOrder < 0)
+		assert(0);	
+	if(pkNetPacket->m_kData.m_kHeader.m_iPacketType < ZF_NETTYPE_NONE || 
+		pkNetPacket->m_kData.m_kHeader.m_iPacketType > ZF_NETTYPE_REL)
+		assert(0);
 
 
 	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
@@ -1013,7 +1019,7 @@ void NetWork::Run()
 				break;
 			
 			default:
-				cout<<"galet paket:"<<iClientID<<" o:"<<NetP.m_kData.m_kHeader.m_iOrder<<" t:"<<NetP.m_kData.m_kHeader.m_iPacketType<<" s:"<<NetP.m_iLength<<endl;
+				cout << "galet paket:" << iClientID << " o:" << NetP.m_kData.m_kHeader.m_iOrder<<" t:" << int(NetP.m_kData.m_kHeader.m_iPacketType) <<" s:"<<NetP.m_iLength<<endl;
 				Logf("netpac", " UnKnown Packet: From: %d Order: %d: Type: %d Size: %d\n",
 					iClientID, 
 					NetP.m_kData.m_kHeader.m_iOrder,
