@@ -71,3 +71,22 @@ bool Plane::LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos)
 		return false;
 }
 
+void Plane::Set(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2)
+{
+	Vector3 kDiff1 = kPoint1 - kPoint0;
+	Vector3 kDiff2 = kPoint2 - kPoint0;
+
+    m_kNormal = kDiff1.Cross(kDiff2);
+    m_kNormal.Normalize();
+
+    m_fD = - kPoint0.Dot( m_kNormal );
+}
+
+
+float Plane::SolveY(float X, float Z)
+{
+	if (m_kNormal.y)
+		return ( -(m_kNormal.x * X + m_kNormal.z * Z + m_fD) / m_kNormal.y );
+
+	return (0.0f);
+}

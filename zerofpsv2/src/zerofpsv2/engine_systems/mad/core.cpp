@@ -348,10 +348,10 @@ void Mad_Core::SetupBonePose()
 		// Interp Keys
 		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
 
-		if(m_kSkelleton[i].m_iParent != -1)
+//		if(m_kSkelleton[i].m_iParent != -1)
 			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
-		else 
-			g_Madpos[i].Set(0,0,0);
+//		else 
+//			g_Madpos[i].Set(0,0,0);
 		}
 
 	// Controllers
@@ -749,7 +749,9 @@ void Mad_Core::SetSkelleton(vector<Mad_CoreBone>	kSkelleton)
 
 void Mad_Core::SetMesh(vector<Mad_CoreMesh>	kMesh)
 {
+	cout << "Copy Mesh: " << kMesh.begin()->m_acName << endl;
 	m_kMesh = kMesh;
+	cout << "Copy Mesh: " << m_kMesh.begin()->m_acName << endl;
 }
 
 void Mad_Core::SetAnimation(vector<Mad_CoreBoneAnimation>	kBoneAnim)
@@ -767,7 +769,7 @@ void Mad_Core::PrintCoreInfo()
 
 	cout << "Num Of Mesh: " << m_kMesh.size() << endl;
 	for(i=0; i<m_kMesh.size(); i++)
-		cout << " [" << i << "]: " << m_kMesh[i].kHead.iNumOfSubMeshes << endl;
+		cout << " [" << i << "]: " << m_kMesh[i].m_acName << endl;
 
 	cout << "Num Of Bones: " << m_kSkelleton.size() << endl;
 }

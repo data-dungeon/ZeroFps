@@ -42,12 +42,17 @@ public:
 
 	void RefreshData();
 	Vector3 GetEdgeCenter(int iSide);
+
+	Vector3 MapToCellHeight(Vector3 kIn);
 };
 
+class AStar;
 
 class ENGINE_API P_PfMesh : public Property 
 {
 	private:
+		AStar*						m_pkAStar;
+
 		vector<NaviMeshCell>		m_NaviMesh;
 		P_Mad*						m_pkMad;
 		NaviMeshCell*				m_pkSelected;
@@ -75,10 +80,9 @@ class ENGINE_API P_PfMesh : public Property
 		void FlagExternalLinks();
 
 		NaviMeshCell* GetCell(Vector3 kPos);
-
 		NaviMeshCell* GetCell(Vector3 kA, Vector3 kB);
-
 		NaviMeshCell* GetCurrentCell(Vector3 kPos);
+
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

@@ -42,6 +42,7 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
 	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
+	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
 
 	// object orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
@@ -272,6 +273,25 @@ int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetNextAnimation(acName);
+	return 1;
+}
+
+int ObjectManagerLua::AddMesh(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get MeshName
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+
+	cout << "Trying to add Mesh " << acName << endl;
+	mp->AddMesh( acName );
 	return 1;
 }
 

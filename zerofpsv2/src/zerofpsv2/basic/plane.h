@@ -30,6 +30,10 @@ class BASIC_API Plane
 		float SphereTest(Vector3 kPoint,float fRadius);
 		float PointTest(Vector3 kPoint);
 		bool LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos); 
+
+		float SolveY(float X, float Z);
+		void Set(Vector3& kPoint0, Vector3& kPoint1, Vector3& Point2);
+
 };
 
 #endif

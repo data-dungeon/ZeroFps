@@ -99,6 +99,8 @@ private:
 
 	vector<AStarCellNode*>	kOpenList;
 	vector<AStarCellNode*>	kClosedList;
+	
+	bool		m_bDrawNaviMesh;
 
 public:
 	AStar();
@@ -125,6 +127,7 @@ public:
 	bool ShutDown() { return true; }
 	bool IsValid() { return true;  }
 
+	friend class P_PfMesh;
 };
 
 #endif

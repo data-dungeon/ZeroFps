@@ -1,5 +1,6 @@
 #include "p_pfmesh.h"
 #include "entity.h"
+#include "astar.h"
 #include "../engine_systems/propertys/p_mad.h"
 #include "../engine_systems/mad/mad_core.h"
 #include "../render/render.h"
@@ -104,6 +105,13 @@ Vector3 NaviMeshCell::GetEdgeCenter(int iSide)
 	return kCenter;
 }
 
+Vector3 NaviMeshCell::MapToCellHeight(Vector3 kIn)
+{
+	Plane kPlane;
+	kPlane.Set(m_kVertex[VERT_A], m_kVertex[VERT_B], m_kVertex[VERT_C]);
+	kIn.y = kPlane.SolveY(kIn.x,kIn.z);
+	return kIn;
+}
 
 
 
@@ -112,12 +120,14 @@ Vector3 NaviMeshCell::GetEdgeCenter(int iSide)
 P_PfMesh::P_PfMesh()
 {
 	strcpy(m_acName,"P_PfMesh");
-//	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
-	m_iType = PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+//	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	m_pkMad			= NULL;
 	m_pkSelected	= NULL;
+
+	m_pkAStar = static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 }
 
 P_PfMesh::~P_PfMesh()
@@ -127,13 +137,18 @@ P_PfMesh::~P_PfMesh()
 
 void P_PfMesh::Update()
 {
-	if(m_pkMad == NULL) {
-		m_pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
-		if(m_pkMad)
-			SetMad(m_pkMad);
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) {
+		if(m_pkMad == NULL) {
+			m_pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+			if(m_pkMad)
+				SetMad(m_pkMad);
+			}
 		}
 
-//	DrawNaviMesh();
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+		if(m_pkAStar->m_bDrawNaviMesh)
+			DrawNaviMesh();
+		}
 }
 
 void P_PfMesh::Save(ZFIoInterface* pkFile)

@@ -723,3 +723,32 @@ bool Mad_Modell::AddMesh(int iSubId)
 	return true;
 }
 
+bool Mad_Modell::AddMesh(char* szName)		
+{ 
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	int iSubId = pkCore->GetMeshIDByName( szName );
+
+	cout << "Mesh: " << szName << ", Id: " << iSubId << endl;
+
+	if(iSubId == -1)
+		return false;
+
+	return AddMesh(iSubId);
+}
+
+bool Mad_Modell::RemoveMesh(char* szName)	
+{ 
+	return false; 
+}
+
+bool Mad_Modell::IsMeshActive(int iId)	
+{
+	return false; 
+}
+
+bool Mad_Modell::IsMeshActive(char* szName) 
+{ 
+	return false; 
+}
+
+

@@ -109,11 +109,11 @@ public:
 	float GetRadius();
 
 	bool AddMesh(int iSId);
-	bool RemoveMesh(int iId)		{ return false; }
-	bool AddMesh(char* szName)		{ return false; }
-	bool RemoveMesh(char* szName)	{ return false; }
-	bool IsMeshActive(int iId)		{ return false; }
-	bool IsMeshActive(char* szName) { return false; }
+	bool RemoveMesh(int iId);	
+	bool AddMesh(char* szName);	
+	bool RemoveMesh(char* szName);	
+	bool IsMeshActive(int iId);	
+	bool IsMeshActive(char* szName);
 };
 
 

@@ -284,6 +284,10 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 	pkMesh->SetTextureFlags();
 	pkMesh->PushBackFrames(kFrame);
 
+	cout << "Done Reading Mesh: " <<	pkMesh->m_acName << endl;
+
+
+
 	fclose(fp);
 //	m_akFrames.clear();	
 }
@@ -682,7 +686,6 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 //		it->kHead.iNumOfAnimation	= it->akAnimation.size();
 		it->kHead.iNumOfSubMeshes	= it->SizeSubMesh();
 		it->kHead.iNumOfAnimation	= it->SizeAnimations();
-
 	}
 
 //	mad->m_kMesh = m_kMesh;		

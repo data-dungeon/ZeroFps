@@ -6,6 +6,11 @@
 AStar::AStar()
 : ZFSubSystem("AStar")
 {
+	// Set Default values
+	m_bDrawNaviMesh = false;
+
+	// Register Variables
+	RegisterVariable("ai_shownavmesh", &m_bDrawNaviMesh,	CSYS_BOOL);	
 
 }
 
@@ -279,6 +284,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		printf("No End Cell Was Found :(\n");
 		return false;
 		}
+	Vector3 kRealEnd = pkEndCell->MapToCellHeight( m_kGoal );
 
 	// 1: Let P = the starting point.
 	pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
@@ -321,6 +327,8 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		// 4:a	If B is the goal node.
 		if(pkNode->pkNaviCell == pkEndCell) {
 			MakePath(pkNode, kPath);
+			reverse(kPath.begin(), kPath.end());
+			kPath.push_back( kRealEnd );
 			return true;
 			}
 

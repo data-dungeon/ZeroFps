@@ -169,8 +169,8 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 
 	if(bres) 
 	{
-		reverse(kPath.begin(), kPath.end());
-		kPath.push_back(kPathEnd);
+		//reverse(kPath.begin(), kPath.end());
+		//kPath.push_back(kPathEnd);
 		SetPath(kPath);
 		return true;
 	}
@@ -181,6 +181,9 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 
 void P_PfPath::SetupOffset()
 {
+	m_bHaveOffset = true;
+	return;
+
 	P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 	if(pm)
 	{	
