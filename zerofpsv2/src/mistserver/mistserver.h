@@ -33,16 +33,27 @@ class MistServer :public Application , public ZGuiApp {
 			FID_LOAD,
 			FID_SAVE,
 		};
+		enum EditMode_e
+		{
+			EDIT_ZONES,
+			EDIT_OBJECTS,
+		
+		};
 
-		string  m_strActiveZoneName, m_strPrevZoneName;
-		Object* m_pkCameraObject;
-		Camera* m_pkCamera;
+		int		m_iEditMode;
+
+		string	m_strActiveZoneName, m_strPrevZoneName;
+		Object*	m_pkCameraObject;
+		Camera*	m_pkCamera;
 
 		Object* m_pkServerInfo;
 		P_ServerInfo* m_pkServerInfoP;
 
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
+		
+		Vector3	m_kObjectMarkerPos;
+		int		m_iCurrentObject;
 		
 		float		m_fClickDelay;
 		int 		m_iCurrentMarkedZone;
@@ -51,7 +62,9 @@ class MistServer :public Application , public ZGuiApp {
 		Object*	GetTargetObject();		
 
 		void UpdateZoneMarkerPos();
+		void UpdateObjectMakerPos();
 		void DrawZoneMarker(Vector3 kPos);
+		void DrawCrossMarker(Vector3 kPos);
 		void AddZone();
 
 	public:

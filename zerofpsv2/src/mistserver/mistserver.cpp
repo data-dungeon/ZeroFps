@@ -56,6 +56,12 @@ void MistServer::OnInit()
 
 void MistServer::Init()
 {	
+	//default edit mode 
+	m_iEditMode = EDIT_ZONES;
+
+	//object defaults
+	m_iCurrentObject = -1;
+	
 	//zone defaults
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
@@ -114,8 +120,6 @@ void MistServer::OnIdle()
 
  	pkFps->UpdateCamera(); 		
 
-	UpdateZoneMarkerPos();
-	DrawZoneMarker(m_kZoneMarkerPos);
 	
 	
 	if(m_pkServerInfoP)
@@ -125,17 +129,43 @@ void MistServer::OnIdle()
 	
 	}
 	
-	//draw selected zone marker
-	if(m_iCurrentMarkedZone != -1)
+	if(m_iEditMode == EDIT_ZONES)
 	{
-		ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		UpdateZoneMarkerPos();		
+		DrawZoneMarker(m_kZoneMarkerPos);		
 		
-		if(z)
+		//draw selected zone marker
+		if(m_iCurrentMarkedZone != -1)
 		{
-			Vector3 kMin = z->m_kPos - z->m_kSize/2;
-			Vector3 kMax = z->m_kPos + z->m_kSize/2;
+			ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		
-			pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+			if(z)
+			{
+				Vector3 kMin = z->m_kPos - z->m_kSize/2;
+				Vector3 kMax = z->m_kPos + z->m_kSize/2;
+		
+				pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+			}
+		}
+	}
+	
+	if(m_iEditMode == EDIT_OBJECTS)
+	{	
+		UpdateObjectMakerPos();
+		
+		DrawCrossMarker(m_kObjectMarkerPos);		
+	
+		if(m_iCurrentObject != -1)
+		{
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+			
+			if(pkObj)
+			{
+				Vector3 kMin = pkObj->GetWorldPosV() - pkObj->GetRadius()/2;
+				Vector3 kMax = pkObj->GetWorldPosV() + pkObj->GetRadius()/2;
+		
+				pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+			}
 		}
 	}
 }
@@ -148,6 +178,14 @@ void MistServer::OnSystem()
 void MistServer::Input()
 {
 	float speed = 20;
+	
+	//set speed depending on edit mode
+	if(m_iEditMode == EDIT_ZONES)
+		speed = 20;
+	
+	if(m_iEditMode == EDIT_OBJECTS)
+		speed = 5;
+	
 
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
@@ -195,48 +233,85 @@ void MistServer::Input()
 		bla = kRm.VectorTransform(bla);
 		kRm.LookDir(bla,Vector3(0,1,0));
 
-		m_pkCameraObject->SetLocalPosV(newpos);
-		
+		m_pkCameraObject->SetLocalPosV(newpos);		
 		if(pkInput->Pressed(MOUSERIGHT))
 			m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
-		if(pkInput->Pressed(MOUSELEFT))
-		{
-			printf("MistServer::Input\n");
-			AddZone();	
-		}
+		if(pkInput->Pressed(KEY_F1))
+			m_iEditMode = EDIT_ZONES;
 		
-		if(pkInput->Pressed(KEY_R))
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->DeleteZone(id);
-		}
-		
-		if(pkInput->Pressed(MOUSEMIDDLE))
-		{		
-			m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		}
+		if(pkInput->Pressed(KEY_F2))
+			m_iEditMode = EDIT_OBJECTS;		
 	
-		if(pkInput->Pressed(KEY_SPACE))
+		//edit zone  mode
+		if(m_iEditMode == EDIT_ZONES)
 		{
-			if(pkFps->GetTicks() - m_fClickDelay > 0.2)
-			{	
-				m_fClickDelay = pkFps->GetTicks();		
-				pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				AddZone();	
 			}
+		
+			if(pkInput->Pressed(KEY_R))
+			{
+				int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+				pkObjectMan->DeleteZone(id);
+			}
+		
+			if(pkInput->Pressed(MOUSEMIDDLE))
+			{		
+				m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			}
+		
+			if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+			if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+			if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+			if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+			if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
+			if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
+			if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
+			if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
+			if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
+		
 		}
 	
-		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-		if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-		if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-		if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-		if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
-		if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
-		if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
-		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
-		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
-		
+		//edit object mode
+		if(m_iEditMode == EDIT_OBJECTS)
+		{	
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+				{	
+					m_fClickDelay = pkFps->GetTicks();		
+					pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",m_kObjectMarkerPos);
+				}
+			}
+			
+			if(pkInput->Pressed(MOUSEMIDDLE))
+			{		
+				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+				{	
+					m_fClickDelay = pkFps->GetTicks();		
+					
+					Object* pkObj =  GetTargetObject();
+				
+					if(pkObj)
+					{
+						m_iCurrentObject = pkObj->iNetWorkID;
+					}
+				}
+			}
+			
+			if(pkInput->Pressed(KEY_R))
+			{
+				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+								
+				if(pkObj)
+					pkObjectMan->Delete(pkObj);
+			
+				m_iCurrentObject = -1;
+			}
+		}		
 	}
 };
 
@@ -412,6 +487,11 @@ Object* MistServer::GetTargetObject()
 	Object* pkClosest = NULL;	
 	for(int i=0;i<kObjects.size();i++)
 	{
+		if(kObjects[i] == m_pkCameraObject)
+			continue;
+		
+		if(kObjects[i]->GetName() == "ZoneObject")
+			continue;
 		
 		float d = (start - kObjects[i]->GetWorldPosV()).Length();
 	
@@ -454,6 +534,15 @@ void MistServer::DrawZoneMarker(Vector3 kPos)
 	pkRender->DrawAABB(kPos-bla,kPos+bla,Vector3(1,1,1));
 }
 
+
+void MistServer::DrawCrossMarker(Vector3 kPos)
+{
+	pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
+	pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
+	pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	
+}
+
+
 void MistServer::UpdateZoneMarkerPos()
 {
 	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
@@ -476,6 +565,13 @@ void MistServer::UpdateZoneMarkerPos()
 //	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
 
 }
+
+
+void MistServer::UpdateObjectMakerPos()
+{
+	m_kObjectMarkerPos = pkFps->GetCam()->GetPos() + Get3DMousePos(true)*1;
+}
+
 
 void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {

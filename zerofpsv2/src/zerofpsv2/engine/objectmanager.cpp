@@ -1662,12 +1662,15 @@ bool ObjectManager::LoadZones()
 	int iLink;
 
 	for( i=0; i<iNumOfZone; i++) {
-		int iNumOfLinks;
-	
-		kFile.Read(&iNumOfLinks, sizeof(iNumOfLinks), 1);
+		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
+		kFile.Read(&kZData.m_bUsed, sizeof(kZData.m_bUsed), 1);						
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
 		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
+
+
+		int iNumOfLinks;	
+		kFile.Read(&iNumOfLinks, sizeof(iNumOfLinks), 1);
 
 		for(zl=0; zl < iNumOfLinks; zl++) {
 			kFile.Read(&iLink, sizeof(iLink), 1);
@@ -1704,13 +1707,16 @@ bool ObjectManager::SaveZones()
 	
 	for(int i=0; i<iNumOfZone; i++) 
 	{
-		int iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
 
-		kFile.Write(&iNumOfLinks, sizeof(iNumOfLinks), 1);
+		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
+		kFile.Write(&m_kZones[i].m_bUsed, sizeof(m_kZones[i].m_bUsed), 1);				
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
 		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
 		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
 
+		int iNumOfLinks = m_kZones[i].m_iZoneLinks.size();		
+		kFile.Write(&iNumOfLinks, sizeof(iNumOfLinks), 1);		
+		
 		for(int zl=0; zl < iNumOfLinks; zl++)
 			kFile.Write(&m_kZones[i].m_iZoneLinks[zl], sizeof(m_kZones[i].m_iZoneLinks[zl]), 1);
 	}
@@ -1746,7 +1752,7 @@ void ObjectManager::LoadZone(int iId)
 	object->m_bZone = true;
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetZoneObject());	
-	
+	kZData->m_pkZone->GetName() = "ZoneObject";	
 	
 	
 	//load

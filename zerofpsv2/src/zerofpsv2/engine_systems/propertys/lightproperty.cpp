@@ -31,8 +31,9 @@ LightProperty::LightProperty()
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-
+ 
 	TurnOn();
+	
 }
 
 LightProperty::~LightProperty()
@@ -159,6 +160,8 @@ void LightProperty::Load(ZFIoInterface* pkPackage)
 	//pkPackage->Read((void*)&m_pkLight,sizeof(Light));
 	
 
+	m_pkLightSource->kPos=&kPos;
+	m_pkLightSource->kRot=&kRot;
 
 	//m_pkLightSource->kPos= m_pkObject->GetPosPointer();
 	//pkLightSource->kRot= m_pkObject->GetRotPointer();
