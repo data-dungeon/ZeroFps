@@ -181,7 +181,6 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 {
 	float atime = fATime;	
 	float dtime = atime;
-	Body BodyCopy;
 	bool retry = true;
 	bool didpen = false;
 	bool collission = false;
@@ -193,19 +192,19 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		retry = false;
 		nroftests++;
 		
-		memcpy(&BodyCopy,pkBody,sizeof(Body));
-		
-		UpdateBodyVelNPos(&BodyCopy,atime);
+		memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
+		UpdateBodyVelNPos(&m_kBodyCopy1,atime);
 	
-		int check = CollideSphereVSPlane(&BodyCopy,pkPlane);			
+		int check = CollideSphereVSPlane(&m_kBodyCopy1,pkPlane);			
 		
 		if(check == PENETRATING || check == COLLISSION)
 		{
 			//is it the first penetration in test?
 			if(didpen != true)
 			{
-				memcpy(&BodyCopy,pkBody,sizeof(Body));		
-				int check2 = CollideSphereVSPlane(&BodyCopy,pkPlane);			
+				memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
+		
+				int check2 = CollideSphereVSPlane(&m_kBodyCopy1,pkPlane);			
 			
 				//check if there still is a penetration if atime is 0 	
 				if(check2 == PENETRATING || check2 == COLLISSION)
@@ -248,10 +247,10 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		tempcol.pkBody1 = pkBody;
 		tempcol.pkBody2 = NULL;
 		
-		tempcol.kPos = BodyCopy.m_kPosition - (pkPlane->m_kNormal * BodyCopy.m_fRadius);
+		tempcol.kPos = m_kBodyCopy1.m_kPosition - (pkPlane->m_kNormal * m_kBodyCopy1.m_fRadius);
 		tempcol.kNormal = pkPlane->m_kNormal;	
-		tempcol.kRelVelocity = BodyCopy.m_kVelocity;
-		tempcol.kRelAcceleration = BodyCopy.m_kAcceleration;
+		tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity;
+		tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration;
 		tempcol.fAtime =	atime;	
 		tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
 	
@@ -294,15 +293,12 @@ int Physics_Engine::CollideSphereVSPlane(Body* pkBody,Plane* pkPlane)
 
 bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 {
+	
 	float atime = fATime;	
 	float dtime = atime;
-	Body BodyCopy1;
-	Body BodyCopy2;
-		
 	bool retry = true;
 	bool didpen = false;
 	bool collission = false;
-	
 	int nroftests = 0;
 	
 	while(retry && nroftests < m_iMaxTests)
@@ -310,24 +306,23 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 		retry = false;
 		nroftests++;
 		
-		memcpy(&BodyCopy1,pkBody1,sizeof(Body));
-		memcpy(&BodyCopy2,pkBody2,sizeof(Body));
+		memcpy(&m_kBodyCopy1,pkBody1,sizeof(Body));
+		memcpy(&m_kBodyCopy2,pkBody2,sizeof(Body));
 		
-		UpdateBodyVelNPos(&BodyCopy1,atime);
-		UpdateBodyVelNPos(&BodyCopy2,atime);	
+		UpdateBodyVelNPos(&m_kBodyCopy1,atime);
+		UpdateBodyVelNPos(&m_kBodyCopy2,atime);	
 	
-		int check = CollideBody(&BodyCopy1,&BodyCopy2);			
-		
+		int check = CollideBody(&m_kBodyCopy1,&m_kBodyCopy2);			
 		
 		if(check == PENETRATING || check == COLLISSION)
 		{
 			//is it the first penetration in test?
 			if(didpen != true)
-			{
-				memcpy(&BodyCopy1,pkBody1,sizeof(Body));
-				memcpy(&BodyCopy2,pkBody2,sizeof(Body));
+			{		
+				memcpy(&m_kBodyCopy1,pkBody1,sizeof(Body));
+				memcpy(&m_kBodyCopy2,pkBody2,sizeof(Body));
 				
-				int check2 = CollideBody(&BodyCopy1,&BodyCopy2);			
+				int check2 = CollideBody(&m_kBodyCopy1,&m_kBodyCopy2);			
 			
 				//check if there still is a penetration if atime is 0 	
 				if(check2 == PENETRATING || check2 == COLLISSION)
@@ -351,9 +346,10 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 		}
 		
 		if(check == NOT && didpen == false)
-			return false;
-		
-	
+		{	
+			return false;		
+		}
+			
 		//if time is infinit short set it to 0	
 		if(atime < 0.0001)
 		{	
@@ -364,19 +360,21 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 	
 	if(didpen)
 	{	
+		
 		Collission temp;
 		temp.pkBody1 = pkBody1;
 		temp.pkBody2 = pkBody2;
 	
-		temp.kNormal = (BodyCopy1.m_kPosition - BodyCopy2.m_kPosition).Unit();
-		temp.kPos = BodyCopy1.m_kPosition - (temp.kNormal * BodyCopy1.m_fRadius);	
-		temp.kRelVelocity = BodyCopy1.m_kVelocity - BodyCopy2.m_kVelocity;
-		temp.kRelAcceleration = BodyCopy1.m_kAcceleration - BodyCopy2.m_kAcceleration;
+		temp.kNormal = (m_kBodyCopy1.m_kPosition - m_kBodyCopy2.m_kPosition).Unit();
+		temp.kPos = m_kBodyCopy1.m_kPosition - (temp.kNormal * m_kBodyCopy1.m_fRadius);	
+		temp.kRelVelocity = m_kBodyCopy1.m_kVelocity - m_kBodyCopy2.m_kVelocity;
+		temp.kRelAcceleration = m_kBodyCopy1.m_kAcceleration - m_kBodyCopy2.m_kAcceleration;
 		temp.fAtime =	atime;
 		temp.kCollissionTangent = (temp.kNormal.Cross(temp.kRelVelocity.Unit())).Cross(temp.kNormal);		
 		
 		m_kCollissions.push_back(temp);		
 	}
+
 }
 
 int Physics_Engine::CollideBody(Body* pkBody1,Body* pkBody2)
@@ -400,8 +398,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 	if(pkCol->pkBody2 != NULL)
 	{
 		//body awake from your slumber =)	
-		pkCol->pkBody1->m_bResting = false;
-		pkCol->pkBody2->m_bResting = false;		
+		pkCol->pkBody1->Awaken();
+		pkCol->pkBody2->Awaken();
 		
 		float bounce = pkCol->pkBody1->m_fBounce*pkCol->pkBody2->m_fBounce;
 		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
@@ -422,8 +420,10 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody1->m_fMass;
 		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody2->m_fMass;
 
-
-		UpdateResting(pkCol->pkBody1,pkCol->pkBody2);				
+		//chevk if anybody wants to rest
+		UpdateResting(pkCol->pkBody1);				
+		UpdateResting(pkCol->pkBody2);				
+	
 	}	
 	else //body vs plane collission
 	{		
@@ -444,8 +444,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		//apply friction force
 		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody1->m_fMass;
 
-
-		UpdateResting(pkCol->pkBody1,NULL);	
+		//check if body can rest
+		UpdateResting(pkCol->pkBody1);	
 	}
 }
 
@@ -472,27 +472,13 @@ Collission* Physics_Engine::FindNextCollission()
 }
 
 
-void Physics_Engine::UpdateResting(Body* pkBody1,Body* pkBody2)
+void Physics_Engine::UpdateResting(Body* pkBody1)
 {
+	
+	//check if bodys velocity is beyound resting treshold
 	if(pkBody1->m_kVelocity.Length()<0.01)
 	{
-		pkBody1->m_bResting=true;
-		pkBody1->m_kVelocity.Set(0,0,0);
-		pkBody1->m_kAcceleration.Set(0,0,0);
-		pkBody1->m_kForces.Set(0,0,0);
-	
-	}
-	
-	if(pkBody2 != NULL)
-	{
-		if(pkBody2->m_kVelocity.Length()<0.01)
-		{	
-			pkBody2->m_bResting=true;
-			pkBody2->m_kVelocity.Set(0,0,0);
-			pkBody2->m_kAcceleration.Set(0,0,0);
-			pkBody2->m_kForces.Set(0,0,0);
-		
-		}	
+		pkBody1->Rest(NULL);	
 	}
 }
 

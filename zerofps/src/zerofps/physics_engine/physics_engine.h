@@ -39,12 +39,15 @@ class PHYSICSENGINE_API Physics_Engine : public ZFObject
 		list<Body*>				m_kBodys;
 		list<Plane*>			m_kPlanes;
 		vector<Collission>	m_kCollissions;
-		float						m_fAlphaTime;
 		
-		float						m_fRTime;
-	
+		Body						m_kBodyCopy1;
+		Body						m_kBodyCopy2;
+		
+		float						m_fAlphaTime;		
+		float						m_fRTime;	
 		float						m_fCtol;
 		int						m_iMaxTests;
+		
 		
 	public:
 		int						m_iNrOfCollissions;
@@ -76,7 +79,7 @@ class PHYSICSENGINE_API Physics_Engine : public ZFObject
 		bool TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime);
 		int CollideBody(Body* pkBody1,Body* pkBody2);
 
-		void UpdateResting(Body* pkBody1,Body* pkBody2);
+		void UpdateResting(Body* pkBody1);
 		void HandleCollission(Collission* pkCol);
 		
 		Collission* FindNextCollission();

@@ -4,6 +4,9 @@
 #include "../engine/mad_core.h"
 #include "physics_engine_x.h"
 #include <iostream>
+#include <vector>
+#include <list>
+
 
 using namespace std;
 
@@ -31,6 +34,7 @@ class PHYSICSENGINE_API Body
 		
 		Matrix3		m_kIeInverse;			//inverse of moment of inertia in world coordinats
 			
+			
 	public:
 		bool			m_bPolygonCheck;		//shuld we do a per polygon check in body
 		bool			m_bGravity;				//is object affeceted of gravity
@@ -41,17 +45,17 @@ class PHYSICSENGINE_API Body
 		float			m_fMass;					//object mass (constant)
 		float			m_fRadius;				//object bounding radius
 				
-//		float 		m_fAtime;					//current time for object (used for collission)		
 				
 				
 		Body();
 		void Reset();
 		void SetPos(Vector3 kPos);
-		Vector3 GetPos();
-				
+		Vector3 GetPos();								
+		void Rest(Body* pkBody);				//set object to rest against pkBody
+		void Awaken();
+		
 		friend class Physics_Engine;
 };
-
 #endif
 
 

@@ -344,7 +344,7 @@ void ZeroFps::Update_System()
 			
 			//update new super duper rigid body physics engine deluxe
 			m_pkPhysics_Engine->Update(m_fGameFrameTime);
-			}
+		}
 
 		//delete objects
 		m_pkObjectMan->UpdateDelete();

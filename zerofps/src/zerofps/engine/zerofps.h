@@ -82,22 +82,20 @@ class ENGINE_API ZeroFps : public ZFObject {
 		};
 		
 		SDL_Surface* m_pkScreen;		
-		bool	m_bDevPagesVisible;
+		bool		m_bDevPagesVisible;
 		
-		float m_fLastFrameTime;
-		float m_fAvrageFpsTime;
-		int	m_iAvrageFrameCount;
+		float 	m_fLastFrameTime;
+		float 	m_fAvrageFpsTime;
+		int		m_iAvrageFrameCount;
 		
-		int	m_iWidth,m_iHeight,m_iDepth;
-		int	m_iFullScreen;
-		bool  m_bCapture;							// True if we should capture this frame
+		int		m_iWidth,m_iHeight,m_iDepth;
+		int		m_iFullScreen;
+		bool  	m_bCapture;							// True if we should capture this frame
 
-		float m_fSystemUpdateFps;
-		float m_fSystemUpdateTime;
-		float m_fGameTime;
-		float m_fGameFrameTime;
-		int	m_bRunWorldSim;
-
+		float 	m_fSystemUpdateFps;
+		float 	m_fSystemUpdateTime;
+		float 	m_fGameTime;
+		float 	m_fGameFrameTime;
 		
 		vector<string>	AppArguments;		
 		
@@ -107,12 +105,10 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void HandleArgs(int iNrOfArgs, char** paArgs);		
-
 		void Run_EngineShell();
 		void Run_Server();
 		void Run_Client();
-		void Draw_EngineShell();
-		
+		void Draw_EngineShell();		
 		void Update_System();
 
 	public:
@@ -145,7 +141,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScript*				m_pkScript;					///< script
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
-
 		Application*			m_pkApp;						///< Application object.
 			
 
@@ -158,9 +153,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool		m_bClientMode;
 		//bool	m_bDrawDevList;
 		bool		m_bGuiMode, m_bGuiTakeControl;
+		bool		m_bRunWorldSim;
+
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
-		float	m_fMadLod;										//	If not 0 then force this LOD % on every mad.
+		float		m_fMadLod;										//	If not 0 then force this LOD % on every mad.
 		
 		ZeroFps(void);		
 		~ZeroFps();		

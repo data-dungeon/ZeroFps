@@ -186,7 +186,7 @@ bool Gui::CreateWindows()
 	bla->Open(); 
 	
 	// testing treebox
-	bool bTestingTreeBox = true;
+	bool bTestingTreeBox = false;
 	if(bTestingTreeBox)
 	{
 		CreateTestWnd();

@@ -140,6 +140,7 @@ class ZeroEdit :public Application {
 		int m_iMaskColorB;				
 		int m_iMaskColorA;				
 		
+		float plop;
 		
 		float m_fTimer;
 		float m_fDrawRate;

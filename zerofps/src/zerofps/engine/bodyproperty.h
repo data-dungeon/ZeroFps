@@ -7,12 +7,15 @@ using namespace std;
 
 #include "../physics_engine/physics_engine.pkg" 
 #include "property.h"
+#include "zerofps.h"
 
 class ENGINE_API BodyProperty :public Property
 {
 	private:
-		Body					m_kBody;
 		Physics_Engine*	m_pkPhysics_Engine;
+		ZeroFps*				m_pkZeroFps;	
+			
+		Body					m_kBody;
 	
 		bool					m_bHaveSetBody;
 	

@@ -165,6 +165,8 @@ void ZeroEdit::OnInit(void)
 */
 
 	pkInput->ToggleGrab();
+	
+	plop= pkFps->GetGameTime();
 }
 
 
@@ -173,6 +175,20 @@ void ZeroEdit::OnIdle(void)
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();		
 	
+/*	// fina bollar =)
+	if(pkFps->GetGameTime() - plop >1)
+	{
+		Object *object = new BallObject();
+		float x = ((rand()%1000)-500) /1000.0;
+		float z = ((rand()%1000)-500) /1000.0;		
+		object->SetPos(Vector3(x,10,z));	
+		object->SetPos(Vector3(x,10,z));					
+		
+		object->AttachToClosestZone();
+		
+		plop= pkFps->GetGameTime();
+	}
+*/	
 	Input(); 	
  	pkFps->UpdateCamera(); 	
  	SetPointer();

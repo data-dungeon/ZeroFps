@@ -16,6 +16,7 @@ void Body::Reset()
 	m_bResting =			false;
 	m_fBounce =				0.8;
 	
+	
 	m_fMass =				1;
 	m_kInertia.Identity();
 	m_kInertiaInverse.Identity();
@@ -36,8 +37,7 @@ void Body::Reset()
 	
 	m_kIeInverse.Identity();
 	
-	m_fRadius =				1;
-	
+	m_fRadius =				0.5;
 	
 }
 
@@ -53,3 +53,20 @@ Vector3 Body::GetPos()
 	return m_kPosition;
 }
 
+
+void Body::Rest(Body* pkBody)
+{
+	m_bResting = true;	
+	m_kVelocity.Set(0,0,0);
+	m_kAcceleration.Set(0,0,0);
+	m_kForces.Set(0,0,0);
+	
+//	cout<<"Object going to sleep"<<endl;
+}
+
+void Body::Awaken()
+{
+	m_bResting = false;
+//	cout<<"Objects Awakens"<<endl;
+
+}

@@ -10,7 +10,8 @@ BodyProperty::BodyProperty()
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
 	m_pkPhysics_Engine=static_cast<Physics_Engine*>(g_ZFObjSys.GetObjectPtr("Physics_Engine"));		
-
+	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	
 	m_bHaveSetBody = false;
 	
 }
@@ -30,13 +31,18 @@ void BodyProperty::Init()
 
 void BodyProperty::Update()
 {
+
 	if(!m_bHaveSetBody)
 	{
 		m_bHaveSetBody=true;
 		SetBodyToObject();
 	}
 
-	SetObjectToBody();
+	
+	if(m_pkZeroFps->m_bRunWorldSim)
+		SetObjectToBody();
+	else
+		SetBodyToObject();
 }
 
 bool BodyProperty::Enable()

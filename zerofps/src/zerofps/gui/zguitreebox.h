@@ -30,7 +30,7 @@ struct GUI_API ZGuiTreeboxNode
 				  // och används när höjden på träden skall räknas fram.
 	bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga
 							//  tillräckligt många "steg".
-private:
+
 	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode* pkNode);
 };
 
