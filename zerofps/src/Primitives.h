@@ -1,9 +1,12 @@
 #ifndef _PRIMITIVES_H_
 #define _PRIMITIVES_H_
 
+#include <cstring>
 #include <iostream>
 #include "TextureManager.h"
 #include "Vector3.h"
+
+#define TEXT_MAX_LENGHT 256
 
 class Primitives {
 	private:

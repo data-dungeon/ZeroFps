@@ -88,6 +88,8 @@ void Primitives::Pyra(float x,float y,float z) {
 void Primitives::PrintChar(char cChar) {
 	char* aTexture;
 	
+	aTexture=NULL;
+	
 	switch(cChar) {
 	
 		case '1':
@@ -98,13 +100,17 @@ void Primitives::PrintChar(char cChar) {
 			aTexture="data/textures/text/3.bmp";break;
 	}
 			
-			
-	Quad(Vector3(0,0,-.499),Vector3(0,0,0),Vector3(.05,.05,.05),m_pkTexMan->Load(aTexture));
+	if(aTexture!=NULL)
+		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));
 
 
 }
 
 void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
+	char paText[TEXT_MAX_LENGHT];
+	
+	strcpy(paText,aText);
+	
 	glPushMatrix();
 		
 		glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -113,13 +119,13 @@ void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 		glRotatef(kHead.z, 0, 0, 1);
 		glScalef(kScale.x,kScale.y,kScale.z);
 		
-		cout<<"printing ";
-	
+//		cout<<"printing ";
+
 		int i=0;
-		while(aText[i]!='\0') {
-			cout<<aText[i];
-			PrintChar(aText[i]);
-//			glTranslatef(0.5,0,0);
+		while(paText[i]!='\0') {
+//			cout<<paText[i];
+			PrintChar(paText[i]);
+			glTranslatef(1,0,0);
 		
 			i++;
 		}
