@@ -565,8 +565,8 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 		if(bLBnPressed == false && bRBnPressed == false)
 			m_bHandledMouse = false;
 
-	//	if(m_bForceGUICapture)
-	//		m_bHandledMouse = true;
+		if(m_bForceGUICapture)
+			m_bHandledMouse = true;
 
 		if(bMenuOpen && (m_pkActiveMenu && m_pkActiveMenu->IsOpen() == false))
 		{
@@ -1339,6 +1339,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							m_bHandledMouse = false;
 						}
 					}
+
+
 
 					return true;					
 				}
