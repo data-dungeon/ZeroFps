@@ -313,17 +313,21 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 		
 		
 		//find characters
+		static Property* pkProp;
+		
 		for(int i = 0;i<kPropertys.size();i++)
 		{
+			pkProp = kPropertys[i];
+		
 			//skip self
-			if(kPropertys[i] == m_pkCharacterProperty)
+			if(pkProp == m_pkCharacterProperty)
 				continue;
 		
 			//we only care about character propertys
- 			if(!kPropertys[i]->IsPropertyType("P_CharacterProperty"))
+ 			if(!pkProp->IsPropertyType("P_CharacterProperty"))
  				continue;
 				
-			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(kPropertys[i]))
+			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
 			{
 				//found character
 				

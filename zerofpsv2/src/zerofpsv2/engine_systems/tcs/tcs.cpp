@@ -235,32 +235,44 @@ void Tcs::Update(float fAlphaTime)
 
 void Tcs::PushVelPos()
 {
- 	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+
+	iBodys = m_kBodys.size();
+ 	for(unsigned int i=0;i<iBodys;i++)
  	{
-		if(m_kBodys[i]->InActive())
+		pkBody = m_kBodys[i];	
+	
+		if(pkBody->InActive())
 			continue;
 			
-		m_kBodys[i]->m_kOldNewPos = m_kBodys[i]->m_kNewPos;
-		m_kBodys[i]->m_kOldLinearVelocity = m_kBodys[i]->m_kLinearVelocity;
+		pkBody->m_kOldNewPos = pkBody->m_kNewPos;
+		pkBody->m_kOldLinearVelocity = pkBody->m_kLinearVelocity;
 		
-		m_kBodys[i]->m_kOldNewRotation = m_kBodys[i]->m_kNewRotation;
-		m_kBodys[i]->m_kOldRotVelocity = m_kBodys[i]->m_kRotVelocity;	
+		pkBody->m_kOldNewRotation = pkBody->m_kNewRotation;
+		pkBody->m_kOldRotVelocity = pkBody->m_kRotVelocity;	
 	}
 }
 
 void Tcs::PopVelPos()
 {
- 	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+
+	iBodys = m_kBodys.size();
+ 	for(unsigned int i=0;i<iBodys;i++)
  	{
-		if(m_kBodys[i]->InActive())
+		pkBody = m_kBodys[i];	
+		
+		if(pkBody->InActive())
 			continue;
 
 				
-		m_kBodys[i]->m_kNewPos = m_kBodys[i]->m_kOldNewPos;
-		m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->m_kOldLinearVelocity;
+		pkBody->m_kNewPos = pkBody->m_kOldNewPos;
+		pkBody->m_kLinearVelocity = pkBody->m_kOldLinearVelocity;
 		
-		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->m_kOldNewRotation;
-		m_kBodys[i]->m_kRotVelocity = m_kBodys[i]->m_kOldRotVelocity;	
+		pkBody->m_kNewRotation = pkBody->m_kOldNewRotation;
+		pkBody->m_kRotVelocity = pkBody->m_kOldRotVelocity;	
 	}	
 }
 
@@ -601,21 +613,32 @@ void Tcs::FindRestingBodys()
 
 void Tcs::SyncEntitys()
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+	
+	iBodys = m_kBodys.size();
+	for(unsigned int i=0;i<iBodys;i++)
 	{			
-		
-		m_kBodys[i]->GetEntity()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
+		pkBody = m_kBodys[i];
+			
+		pkBody->GetEntity()->SetWorldPosV(pkBody->m_kNewPos);
 		//m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
-		m_kBodys[i]->GetEntity()->SetLocalRotM(m_kBodys[i]->m_kNewRotation);
+		pkBody->GetEntity()->SetLocalRotM(pkBody->m_kNewRotation);
 	}
 }
 
 void Tcs::SyncBodys()
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+	
+	iBodys = m_kBodys.size();
+	for(unsigned int i=0;i<iBodys;i++)
 	{
-		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetEntity()->GetWorldPosV();		
-		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetEntity()->GetLocalRotM();
+		pkBody = m_kBodys[i];	
+	
+		pkBody->m_kNewPos = pkBody->GetEntity()->GetWorldPosV();		
+		pkBody->m_kNewRotation = pkBody->GetEntity()->GetLocalRotM();
 		//m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();							
 	}
 }
@@ -649,25 +672,37 @@ void Tcs::UpdateBodyVel(P_Tcs* pkBody,float fAtime)
 
 void Tcs::UpdateBodyPos(float fAtime)
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+	
+	iBodys = m_kBodys.size();
+	for(unsigned int i=0;i<iBodys;i++)
 	{	
-		if(m_kBodys[i]->InActive())
+		pkBody = m_kBodys[i];
+	
+		if(pkBody->InActive())
 			continue;
 
 			
 		//Calculate new position
-		m_kBodys[i]->m_kNewPos += (m_kBodys[i]->m_kLinearVelocity * fAtime);
+		pkBody->m_kNewPos += (pkBody->m_kLinearVelocity * fAtime);
 		//calculate new rotation 
-		m_kBodys[i]->m_kNewRotation.RadRotate(m_kBodys[i]->m_kRotVelocity * fAtime);					
+		pkBody->m_kNewRotation.RadRotate(pkBody->m_kRotVelocity * fAtime);					
 	}
 }
 
 
 void Tcs::UpdateForces()
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static P_Tcs* pkBody;
+	static int iBodys;
+
+	iBodys = m_kBodys.size();
+	for(unsigned int i=0;i<iBodys;i++)
 	{	
-		if(m_kBodys[i]->InActive())
+		pkBody = m_kBodys[i];
+	
+		if(pkBody->InActive())
 			continue;
 
 		//increse active body count
@@ -675,37 +710,36 @@ void Tcs::UpdateForces()
 			
 				
 		// LINEAR FORCE / ACCLERERATION			
-			m_kBodys[i]->m_kLinearForce.Set(0,0,0);
+			pkBody->m_kLinearForce.Set(0,0,0);
 		
 			//add external linear force
-			m_kBodys[i]->m_kLinearForce += m_kBodys[i]->m_kExternalLinearForce; 
+			pkBody->m_kLinearForce += pkBody->m_kExternalLinearForce; 
 					
 			//apply gravity if enabled
-			if(m_kBodys[i]->m_bGravity)
-				m_kBodys[i]->m_kLinearForce.y -= m_fGravity * m_kBodys[i]->m_fMass;
+			if(pkBody->m_bGravity)
+				pkBody->m_kLinearForce.y -= m_fGravity * pkBody->m_fMass;
 
-			Vector3 kY;
-			m_kBodys[i]->GetVel(kY);
-			
+
+							
 			//apply some air friction		
-			m_kBodys[i]->m_kLinearForce -= m_kBodys[i]->m_kLinearVelocity * m_kBodys[i]->m_fAirFriction;
+			pkBody->m_kLinearForce -= pkBody->m_kLinearVelocity * pkBody->m_fAirFriction;
 	
 			//Calculate linear acceleration
-			m_kBodys[i]->m_kLinearForce = m_kBodys[i]->m_kLinearForce / m_kBodys[i]->m_fMass;	
+			pkBody->m_kLinearForce = pkBody->m_kLinearForce / pkBody->m_fMass;	
 				
 		
 		
 		// ROTATIONAL FORCE / ACCLERATION			
-			m_kBodys[i]->m_kRotForce.Set(0,0,0);
+			pkBody->m_kRotForce.Set(0,0,0);
 			
 			//add external rotation force
-			m_kBodys[i]->m_kRotForce += m_kBodys[i]->m_kExternalRotForce; 		
+			pkBody->m_kRotForce += pkBody->m_kExternalRotForce; 		
 			
 			//apply some air friction				
-			m_kBodys[i]->m_kRotForce -= m_kBodys[i]->m_kRotVelocity * (m_kBodys[i]->m_fAirFriction*2);
+			pkBody->m_kRotForce -= pkBody->m_kRotVelocity * (pkBody->m_fAirFriction*2);
 	
 			//calculate rotation acceleration
-			m_kBodys[i]->m_kRotForce = m_kBodys[i]->m_kRotForce * m_kBodys[i]->m_fInertia;
+			pkBody->m_kRotForce = pkBody->m_kRotForce * pkBody->m_fInertia;
 	
 	}
 }
@@ -749,71 +783,80 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 
 void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 {
+	static P_Tcs* pkBody1;
+	static P_Tcs* pkBody2;
+	static int iBodys;
+	
 	//first update all bounding boxes
 	UpdateAABBs();
 
 	//loop trough all bodys and testing for collisions against each other
-	for(unsigned int B1=0;B1<m_kBodys.size();B1++)
+	iBodys = m_kBodys.size();
+	for(unsigned int B1=0;B1<iBodys;B1++)
 	{
-		for(unsigned int B2=B1+1;B2<m_kBodys.size();B2++)
+		pkBody1 = m_kBodys[B1];
+	
+		for(unsigned int B2=B1+1;B2<iBodys;B2++)
 		{					
+			pkBody2 = m_kBodys[B2];
+		
 			//dont test if both bodys are static or sleeping
-			if( (m_kBodys[B1]->InActive()) && (m_kBodys[B2]->InActive()))
+			if( (pkBody1->InActive()) && (pkBody2->InActive()))
 				continue;		
 				
 			//check collission groups
-			if( !(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
-				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup]) )			
+			if( !(pkBody1->m_akTestGroups[pkBody2->m_iGroup] ||
+				pkBody2->m_akTestGroups[pkBody1->m_iGroup]) )			
 				continue;
 				
 			//check if entitys are in neighbour zone
-			if(!IsInNerbyZone(m_kBodys[B1],m_kBodys[B2]))
+			if(!IsInNerbyZone(pkBody1,pkBody2))
 				continue;				
 								
 			//first do a sphere test			
-			if(!CollideSphereVSSphere(m_kBodys[B1],m_kBodys[B2]))
+			if(!CollideSphereVSSphere(pkBody1,pkBody2))
 				continue;
 			
 			//do aabb test	
-			if(!TestAABB(m_kBodys[B1],m_kBodys[B2]))
+			if(!TestAABB(pkBody1,pkBody2))
 				continue;
 			
 			//increse number of tests
 			m_iNrOfTests++;
 
 												
-			if(((m_kBodys[B1]->m_iTestType==E_BOX) && (m_kBodys[B2]->m_iTestType==E_MESH)) || 
-				((m_kBodys[B1]->m_iTestType==E_MESH) && (m_kBodys[B2]->m_iTestType==E_BOX)))
+			if(((pkBody1->m_iTestType==E_BOX) && (pkBody2->m_iTestType==E_MESH)) || 
+				((pkBody1->m_iTestType==E_MESH) && (pkBody2->m_iTestType==E_BOX)))
 			{
 				//BOX VS MESH
-				TestBoxVsMesh(m_kBodys[B1],m_kBodys[B2],pkCollissions);
+				TestBoxVsMesh(pkBody1,pkBody2,pkCollissions);
 			}
-			else if( (m_kBodys[B1]->m_iTestType==E_BOX) && (m_kBodys[B2]->m_iTestType==E_BOX) )
+			else if( (pkBody1->m_iTestType==E_BOX) && (pkBody2->m_iTestType==E_BOX) )
 			{
 				//BOX VS BOX
-				TestBoxVsBox(m_kBodys[B1],m_kBodys[B2],pkCollissions);
+				TestBoxVsBox(pkBody1,pkBody2,pkCollissions);
 			}
-			else if( (m_kBodys[B1]->m_iTestType==E_MESH) && (m_kBodys[B2]->m_iTestType==E_MESH) )
+			else if( (pkBody1->m_iTestType==E_MESH) && (pkBody2->m_iTestType==E_MESH) )
 			{
 				//MESH VS MESH
-				TestMeshVsMesh(m_kBodys[B1],m_kBodys[B2],pkCollissions);
+				TestMeshVsMesh(pkBody1,pkBody2,pkCollissions);
 			}
 			
-			else if( (m_kBodys[B1]->m_iTestType==E_MESH) || (m_kBodys[B2]->m_iTestType==E_MESH))
+			else if( (pkBody1->m_iTestType==E_MESH) || (pkBody2->m_iTestType==E_MESH))
 			{				
 				//SPHERE VS MESH
-				TestSphereVsMesh(m_kBodys[B1],m_kBodys[B2],pkCollissions);
+				TestSphereVsMesh(pkBody1,pkBody2,pkCollissions);
 			}
-			else if( (m_kBodys[B1]->m_iTestType==E_SPHERE) && (m_kBodys[B2]->m_iTestType==E_SPHERE) ) 
+			else if( (pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_SPHERE) ) 
 			{
 				//SPHERE VS SPHERE
-				TestSphereVsSphere(m_kBodys[B1],m_kBodys[B2],pkCollissions);
+				TestSphereVsSphere(pkBody1,pkBody2,pkCollissions);
 			}
-			else if	(((m_kBodys[B1]->m_iTestType==E_SPHERE) && (m_kBodys[B2]->m_iTestType==E_HMAP)) || 
-						((m_kBodys[B1]->m_iTestType==E_HMAP) && (m_kBodys[B2]->m_iTestType==E_SPHERE)))
+			else if	(((pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_HMAP)) || 
+						((pkBody1->m_iTestType==E_HMAP) && (pkBody2->m_iTestType==E_SPHERE)))
 			{
 				//SPHERE VS MESH ( HEIGHTMAP)
-				TestSphereVsMesh(m_kBodys[B1],m_kBodys[B2],pkCollissions);			
+				TestSphereVsMesh(pkBody1,pkBody2,pkCollissions);			
 			}
 		}
 	}
@@ -844,9 +887,11 @@ void Tcs::UpdateAABBs()
 	static Vector3 kSize;
 	static Vector3 kPos[8];
 	static Vector3 kVertex;
-	
-
-	for(int i = 0;i<m_kBodys.size();i++)
+	static int iBodys;
+	static int iVertexes;
+		
+	iBodys = m_kBodys.size();
+	for(int i = 0;i<iBodys;i++)
 	{
 		P_Tcs* pkBody = m_kBodys[i];
 	
@@ -928,7 +973,8 @@ void Tcs::UpdateAABBs()
 				pkBody->m_kAABBMax.Set(-9999999,-9999999,-9999999);	
 				pkBody->m_kAABBMin.Set(9999999,9999999,9999999);	
 				
-				for(unsigned int f=0;f<pkBody->m_pkVertex->size();f++)
+				iVertexes = pkBody->m_pkVertex->size();
+				for(unsigned int f=0;f<iVertexes;f++)
 				{
 					kVertex = pkBody->m_kNewRotation.VectorTransform((*pkBody->m_pkVertex)[f]);
 					kVertex*= pkBody->m_fScale;
@@ -987,16 +1033,21 @@ bool Tcs::TestAABB(P_Tcs* pkBody1,P_Tcs* pkBody2)
 
 bool Tcs::IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2)
 {	
-	int iZoneID1 = pkBody1->GetEntity()->GetCurrentZone();
-	int iZoneID2 = pkBody2->GetEntity()->GetCurrentZone();
+	static int iZoneID1,iZoneID2;
+	static int iZoneLinks;
+	static ZoneData* pkZoneData;
+
+	iZoneID1 = pkBody1->GetEntity()->GetCurrentZone();
+	iZoneID2 = pkBody2->GetEntity()->GetCurrentZone();
 		
 	
 	if(iZoneID1 == iZoneID2)
 		return true;
 	
-	if(ZoneData* pkZoneData = m_pkEntityMan->GetZoneData(iZoneID1))
+	if(pkZoneData = m_pkEntityMan->GetZoneData(iZoneID1))
 	{
-		for(int i = 0;i<pkZoneData->m_iZoneLinks.size();i++)
+		iZoneLinks = pkZoneData->m_iZoneLinks.size();
+		for(int i = 0;i<iZoneLinks;i++)
 		{
 			if(pkZoneData->m_iZoneLinks[i] == iZoneID2)
 				return true;

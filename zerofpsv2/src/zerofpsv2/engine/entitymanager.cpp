@@ -2739,11 +2739,19 @@ void EntityManager::UpdateTrackers()
 	static set<int>				kNewActiveZones;
 	static P_Track*				pkTracker;
 	
+	static int iZones;
+	static int iZoneLinks;
+	static ZoneData* pkZone;
+	static ZoneData* pkOtherZone;
+	
 	// Set All Zones as untracked
-	for(int iZ=0;iZ<m_kZones.size();iZ++) 
+	iZones = m_kZones.size();
+	for(int iZ=0;iZ<iZones;iZ++) 
 	{
-		m_kZones[iZ].m_bTracked		= false;
-		m_kZones[iZ].m_bActive		= false;
+		pkZone = &m_kZones[iZ];
+		
+		pkZone->m_bTracked	= false;
+		pkZone->m_bActive		= false;
 	}
 
 
@@ -2756,7 +2764,8 @@ void EntityManager::UpdateTrackers()
 		kNewActiveZones.clear();
 		
 		//set initi range
-		for(int iZ=0;iZ<m_kZones.size();iZ++)
+		iZones = m_kZones.size();
+		for(int iZ=0;iZ<iZones;iZ++)
 			m_kZones[iZ].m_iRange = 10000;
 		
 		//get trackerpos
@@ -2791,7 +2800,7 @@ void EntityManager::UpdateTrackers()
 			// Flood Zones in rage to active.
 			while(!kFloodZones.empty()) 
 			{
-				ZoneData* pkZone = kFloodZones.back();
+				pkZone = kFloodZones.back();
 				kFloodZones.pop_back();
 	
 				kNewActiveZones.insert(pkZone->m_iZoneID);
@@ -2803,9 +2812,10 @@ void EntityManager::UpdateTrackers()
 				{
 					pkZone->m_bActive = true;
 				
-					for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
+					iZoneLinks = pkZone->m_iZoneLinks.size();
+					for(unsigned int i=0; i<iZoneLinks; i++) 
 					{
-						ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
+						pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 	
 						//if zone has already been checked continue whit the next one
 						if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: �drade till <= fr� <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den l�ger till samma zon flera g�ger)
@@ -2837,29 +2847,36 @@ void EntityManager::UpdateTrackers()
 
 void EntityManager::UpdateZoneStatus()
 {
-	float fCurrentTime = m_pkZeroFps->GetEngineTime();
+	static int iZones;
+	static ZoneData* pkZone;
+	static float fCurrentTime;
+	
 
+	fCurrentTime = m_pkZeroFps->GetEngineTime();
 
-	for(int i=0;i<m_kZones.size();i++) 
+	iZones = m_kZones.size();
+	for(int i=0;i<iZones;i++) 
 	{
-		if(m_kZones[i].m_iStatus != EZS_UNUSED)
+		pkZone = &m_kZones[i];
+	
+		if(pkZone->m_iStatus != EZS_UNUSED)
 		{
 			//the zone is currently tracked
-			if(m_kZones[i].m_bTracked)
+			if(pkZone->m_bTracked)
 			{
 				//zone is cached , lets activate it
-				if(m_kZones[i].m_iStatus == EZS_CACHED)
+				if(pkZone->m_iStatus == EZS_CACHED)
 				{
 					//cout<<"activating cached zone "<<i<<endl;															
-					m_kZones[i].m_iStatus = EZS_LOADED;					
+					pkZone->m_iStatus = EZS_LOADED;					
 					
-					if(m_kZones[i].m_pkZone)
-						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					if(pkZone->m_pkZone)
+						pkZone->m_pkZone->SetUpdateStatus(UPDATE_ALL);
 					continue;
 				}
 			
 				//zone is unloaded , lests load it
-				if(m_kZones[i].m_iStatus == EZS_UNLOADED)
+				if(pkZone->m_iStatus == EZS_UNLOADED)
 				{
 					//cout<<"Loading zone "<<i<<endl;
 					
@@ -2867,8 +2884,8 @@ void EntityManager::UpdateZoneStatus()
 					// zone status is set in loadzone()
 					LoadZone(i);
 					
-					if(m_kZones[i].m_pkZone)
-						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					if(pkZone->m_pkZone)
+						pkZone->m_pkZone->SetUpdateStatus(UPDATE_ALL);
 						
 					continue;
 				}				
@@ -2877,27 +2894,27 @@ void EntityManager::UpdateZoneStatus()
 			else
 			{
 				//zone is loaded, set it as cached
-				if(m_kZones[i].m_iStatus == EZS_LOADED)
+				if(pkZone->m_iStatus == EZS_LOADED)
 				{
 					//cout<<"zone is no longer tracked, setting as cached and starting timout "<<i<<endl;
 					
-					m_kZones[i].m_iStatus = EZS_CACHED;
+					pkZone->m_iStatus = EZS_CACHED;
 					
-					if(m_kZones[i].m_pkZone)
-						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_NONE);
+					if(pkZone->m_pkZone)
+						pkZone->m_pkZone->SetUpdateStatus(UPDATE_NONE);
 						
-					m_kZones[i].m_fInactiveTime = fCurrentTime;
+					pkZone->m_fInactiveTime = fCurrentTime;
 					continue;
 				}
 				
 				//zone is cached, wait for timeout
-				if(m_kZones[i].m_iStatus == EZS_CACHED)
+				if(pkZone->m_iStatus == EZS_CACHED)
 				{
-					if( (fCurrentTime - m_kZones[i].m_fInactiveTime) > m_fZoneUnloadTime)
+					if( (fCurrentTime - pkZone->m_fInactiveTime) > m_fZoneUnloadTime)
 					{
 						//cout<<"cached zone timed out, unloading "<<i<<endl;
 						
-						m_kZones[i].m_iStatus = EZS_UNLOADED;						
+						pkZone->m_iStatus = EZS_UNLOADED;						
 						UnLoadZone(i);		
 						
 						continue;

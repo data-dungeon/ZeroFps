@@ -217,7 +217,8 @@ Property* Entity::GetProperty(const char* acName)
 */
 void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
-	Property* pkProp;
+	static Property* pkProp;
+	
 	for(int i = 0;i<m_akPropertys.size();i++)
 	{
 		pkProp = m_akPropertys[i];
