@@ -204,12 +204,6 @@ void MiniMap::Show(bool bVisible)
 
 void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, float wnd_sz)
 {
-/*	static float s_fPrevTime = -1;
-	// Är det dags att uppdatera grafiken?
-	if(fTime - s_fPrevTime < 1.00f)
-		return;
-	s_fPrevTime = fTime;*/
-
 	vector<Object*> akAllObjs;
 	m_pkObjectMan->GetAllObjects(&akAllObjs);
 
@@ -228,11 +222,11 @@ void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, floa
 			{
 			case 0: acColor[0] = 255;
 				break;
-			case 1: acColor[1] = 255;
+			case 1: acColor[2] = 255;
 				break;
-			case 2: acColor[2] = 255;
+			case 2: acColor[1] = 255;
 				break;
-			case 3: acColor[0] = acColor[2] = 255;
+			case 3: acColor[0] = acColor[1] = 255;
 				break;
 			}
 
