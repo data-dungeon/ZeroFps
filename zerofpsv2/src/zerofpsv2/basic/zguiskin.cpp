@@ -4,7 +4,7 @@
 
 #include <string.h>
 #include <SDL/SDL.h>
-using namespace std;
+//using namespace std;
 
 #include "zguiskin.h"
 
