@@ -6,7 +6,6 @@
 #endif
 
 #include "dark_metropolis.h"
-#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -73,17 +72,7 @@ void DarkMetropolis::OnInit()
 	//register propertys
 	RegisterPropertys();
 
-	// create gui script
-	GuiAppLua::Init(&g_kDM, m_pkScript);
-	InitGui(m_pkScript,
-		"data/textures/text/ms_sans_serif8.bmp",
-		"data/script/gui/defskins.lua",
-		NULL);
-
-	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
-	
-	StartSong("data/music/dm menu.ogg");
-
+	GUI_Init();
 
 	m_pkInput->ShowCursor(true);
 	

@@ -128,13 +128,34 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\briefing_dlg.cpp">
+			</File>
+			<File
 				RelativePath=".\dark_metropolis_gui.cpp">
 			</File>
 			<File
 				RelativePath=".\dark_metropolis_main.cpp">
 			</File>
 			<File
+				RelativePath=".\gamedlg.cpp">
+			</File>
+			<File
+				RelativePath=".\gameplay_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\ingame_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\mission_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\newgame_dlg.cpp">
+			</File>
+			<File
 				RelativePath=".\p_dmgameinfo.cpp">
+			</File>
+			<File
+				RelativePath=".\startdm_dlg.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -142,10 +163,31 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath=".\briefing_dlg.h">
+			</File>
+			<File
 				RelativePath=".\dark_metropolis.h">
 			</File>
 			<File
+				RelativePath=".\gamedlg.h">
+			</File>
+			<File
+				RelativePath=".\gameplay_dlg.h">
+			</File>
+			<File
+				RelativePath=".\ingame_dlg.h">
+			</File>
+			<File
+				RelativePath=".\mission_dlg.h">
+			</File>
+			<File
+				RelativePath=".\newgame_dlg.h">
+			</File>
+			<File
 				RelativePath=".\p_dmgameinfo.h">
+			</File>
+			<File
+				RelativePath=".\startdm_dlg.h">
 			</File>
 		</Filter>
 		<Filter

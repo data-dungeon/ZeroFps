@@ -22,8 +22,9 @@ using namespace std;
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmgameinfo.h"
 
-
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
+
+class CGameDlg;
 
 class DarkMetropolis : public Application, public ZGuiApp 
 {
@@ -34,11 +35,6 @@ class DarkMetropolis : public Application, public ZGuiApp
 			FID_LOAD,
 			FID_SAVE,
 		};
-
-		struct StartBaseInfo {
-			ZGuiSkin* pkIcon;
-			char* szName;
-		};
 		
 		enum Formations
 		{
@@ -47,8 +43,6 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		};
 	
-		vector<StartBaseInfo*> m_vkStartBaseList;
-		vector<StartBaseInfo*>::iterator m_itStartBase;
 
 		P_DMGameInfo*	m_pkGameInfoProperty;
 		Entity*			m_pkGameInfoEntity;
@@ -90,18 +84,29 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void Input();
 		void RegisterPropertys();
 		
-		bool StartNewGame(string strClanName,string strClanColor);
+		
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
+
+	public:
+
+		struct StartBaseInfo {
+			ZGuiSkin* pkIcon;
+			char* szName;
+		};
+
+		vector<StartBaseInfo*> m_vkStartBaseList;
+		vector<StartBaseInfo*>::iterator m_itStartBase;
+		bool m_bSaveGame; // gui state variable
+
+		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
+
+		bool StartNewGame(string strClanName,string strClanColor);
+		void StartSong(char* szName);
+
 		void GUI_LoadSave(bool bSave);
 		bool GUI_NewGame(ZGuiWnd *pkMainWnd);
-		bool m_bSaveGame; // gui state variable
-		
-		void StartSong(char* szName);
-	
-	public:
-		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
 		
 		// Application, network and system stuff
 		void OnInit();
@@ -130,6 +135,20 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void GUI_OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd);
 		void GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd);
+		void GUI_Init();
+
+		void GUI_InGameDlg_OnCommand(ZGuiWnd* pkMainWnd, string strClickName);
+
+
+
+		CGameDlg* m_pkInGameDlg;
+		CGameDlg* m_pkGamePlayDlg;
+		CGameDlg* m_pkStartDMDlg;
+		CGameDlg* m_pkNewGameDlg;
+		CGameDlg* m_pkMissionDlg;
+		CGameDlg* m_pkBriefingDlg;
+
+		friend class CGameDlg;
 };
 
 extern DarkMetropolis g_kDM;

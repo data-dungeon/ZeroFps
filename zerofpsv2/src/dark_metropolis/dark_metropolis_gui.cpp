@@ -1,6 +1,14 @@
 // dark_metropolis_gui.cpp
 
 #include "dark_metropolis.h"
+#include "gamedlg.h"
+#include "ingame_dlg.h"
+#include "gameplay_dlg.h"
+#include "startdm_dlg.h"
+#include "mission_dlg.h"
+#include "briefing_dlg.h"
+#include "newgame_dlg.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -49,6 +57,27 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	return true;
 }
 
+void DarkMetropolis::GUI_Init()
+{
+	// create gui script
+	GuiAppLua::Init(&g_kDM, m_pkScript);
+	InitGui(m_pkScript,
+		"data/textures/text/ms_sans_serif8.bmp",
+		"data/script/gui/defskins.lua",
+		NULL);
+
+	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+	
+	StartSong("data/music/dm menu.ogg");
+
+	m_pkStartDMDlg = new CStartDMDlg();
+	m_pkNewGameDlg = new CNewGameDlg();
+	m_pkInGameDlg = new CInGameDlg();
+	m_pkMissionDlg = new CMissionDlg();
+	m_pkBriefingDlg = new CBriefingDlg();
+	m_pkGamePlayDlg = new CGamePlayDlg();
+}
+
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
 											  ZGuiWnd *pkMainWnd)
 {
@@ -72,59 +101,32 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 	if(strMainWnd == "DMStartWnd")
 	{
-		if(strClickName == "StarNewGameBn")
-		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_start_new_game.lua");
-
-			pkMainWnd->Hide();
-
-			if(m_vkStartBaseList.empty())
-			{
-				StartBaseInfo* info;
-
-				int id[] =
-				{
-					pkTexMan->Load("data/textures/gui/dm/start_base1.bmp", 0),
-					pkTexMan->Load("data/textures/gui/dm/start_base2.bmp", 0),
-				};
-
-				char* acBaseName[] =
-				{
-					"Old warehouse",
-					"The Library of Death",
-				};
-
-				for(int i=0; i<2; i++)
-				{
-					info = new StartBaseInfo;
-					info->pkIcon = new ZGuiSkin(id[i], false);
-					info->szName = new char[25];
-					strcpy(info->szName, acBaseName[i]);
-					m_vkStartBaseList.push_back(info);
-				}
-			}
-
-			SelListItem("TeamColorCB", "Red");
-			m_itStartBase = m_vkStartBaseList.begin();
-			GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
-			GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
-		}
-		else
-		if(strClickName == "LoadNewGameBn")
-		{
-			GUI_LoadSave(false);
-		}
-		else
-		if(strClickName == "SaveNewGameBn")
-		{
-			GUI_LoadSave(true);
-		}
-		else
-		if(strClickName == "QuitBn")
-		{
-			m_pkFps->QuitEngine();
-		}
+		m_pkStartDMDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "StartNewGameWnd")
+	{
+		m_pkNewGameDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "InGamePanelWnd")
+	{
+		m_pkInGameDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "MissionWnd")
+	{
+		m_pkMissionDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "BriefingWnd")
+	{
+		m_pkBriefingDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "GamePlayPanelWnd")
+	{
+		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
 	if(strMainWnd == "LoadListWnd")
@@ -151,169 +153,6 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					GUI_NewGame(pkMainWnd);				
 				}
 			}
-		}
-	}
-	else
-	if(strMainWnd == "StartNewGameWnd")
-	{
-		if(strClickName == "StartNewGameDone")
-		{
-			if(!strlen(GetWnd("ClanNameEB")->GetText()) == 0)
-			{			
-				char* szClanName = GetWnd("ClanNameEB")->GetText();
-				char* szTeamColor = GetWnd("TeamColorCB")->GetText();
-
-				if(StartNewGame(szClanName, szTeamColor))
-					GUI_NewGame(pkMainWnd);
-			}
-		}
-		else
-		if(strClickName == "StartNewGameBack")
-		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_start.lua");
-			pkMainWnd->Hide();
-		}		
-		else
-		if(strClickName == "SelectNextBaseBn")
-		{
-			vector<StartBaseInfo*>::iterator n = m_itStartBase;
-			n++;
-
-			if(n != m_vkStartBaseList.end())
-			{
-				m_itStartBase++;
-				GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
-				GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
-			}
-		}
-		else
-		if(strClickName == "SelectPrevBaseBn")
-		{
-			if(m_itStartBase != m_vkStartBaseList.begin())
-			{
-				m_itStartBase--;
-				GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
-				GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
-			}
-		}
-	}
-	else
-	if(strMainWnd == "InGamePanelWnd")
-	{
-		if(strClickName == "MenuBn")
-		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_start.lua");
-			pkMainWnd->Hide();		
-
-			StartSong("data/music/dm menu.ogg");
-		}
-		else
-		if(strClickName == "MissionsBn")
-		{
-			ShowWnd("MembersWnd", false);
-			ShowWnd("BuyWnd", false);
-			ShowWnd("SellWnd", false);
-
-			ZGuiWnd* pkMissionWnd = GetWnd("MissionWnd");
-			if(pkMissionWnd == NULL || !pkMissionWnd->IsVisible())
-			{
-				LoadGuiFromScript(m_pkScript, 
-					"data/script/gui/dm_mission.lua");
-			}
-			else
-			{
-				pkMissionWnd->Hide();
-			}
-		}
-		else
-		if(strClickName == "MembersBn")
-		{
-			ShowWnd("MissionWnd", false);
-			ShowWnd("BriefingWnd", false);
-			ShowWnd("BuyWnd", false);
-			ShowWnd("SellWnd", false);
-
-			if(IsWndVisible("MembersWnd"))
-				ShowWnd("MembersWnd", false);
-			else
-			{
-				LoadGuiFromScript(m_pkScript, 
-					"data/script/gui/dm_members.lua");	
-
-				ClearListbox("MemberSkillsLB");
-				AddListItem("MemberSkillsLB", "Heavy Guns : 5");
-				AddListItem("MemberSkillsLB", "Rockets : 3");
-				AddListItem("MemberSkillsLB", "Lock Pick : 1");
-				AddListItem("MemberSkillsLB", "Knife : 1");
-			}
-		}
-		else
-		if(strClickName == "ShopBn")
-		{
-			ShowWnd("MissionWnd", false);
-			ShowWnd("MembersWnd", false);
-			ShowWnd("BriefingWnd", false);
-
-			if(IsWndVisible("BuyWnd"))
-			{
-				ShowWnd("BuyWnd", false);
-				ShowWnd("SellWnd", false);
-			}
-			else
-			{
-				LoadGuiFromScript(m_pkScript, 
-					"data/script/gui/dm_shop.lua");	
-			}
-		}
-	}
-	else
-	if(strMainWnd == "MissionWnd")
-	{
-		if(strClickName == "BriefingBn")
-		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_briefing.lua");
-			pkMainWnd->Hide();	
-		}
-		else
-		if(strClickName == "MissionCancelBn")
-		{
-			pkMainWnd->Hide();
-		}
-	}
-	else
-	if(strMainWnd == "BriefingWnd")
-	{
-		if(strClickName == "BriefingAcceptBn")
-		{
-			ZGuiWnd* pkInGamePanel = GetWnd("InGamePanelWnd");
-
-			if(pkInGamePanel)
-				pkInGamePanel->Hide();
-
-			GetWnd("ReputationLabel")->Hide();
-			GetWnd("MoneyLabel")->Hide();
-
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_gameplay.lua");
-			pkMainWnd->Hide();	
-		}
-		else
-		if(strClickName == "BriefingCancelBn")
-		{
-			pkMainWnd->Hide();
-		}
-	}
-	else
-	if(strMainWnd == "GamePlayPanelWnd")
-	{
-		if(strClickName == "GamPlayMenuBn")
-		{
-			LoadGuiFromScript(m_pkScript, 
-				"data/script/gui/dm_start.lua");
-			pkMainWnd->Hide();	
 		}
 	}
 }
@@ -450,7 +289,6 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 		"GamePlayInfoWnd", "MembersWnd",
 		"MissionWnd", "BriefingWnd",
 		"BuyWnd", "SellWnd", 
-		"GamePlayInfoWnd",
 	};
 
 	for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)

@@ -93,7 +93,7 @@ function GUICreate()
 	CreateWnd(0,"GamePlayChar5Wnd","","",8,339,64,73,0)
 	ChangeSkin("GamePlayChar5Wnd","Skin18","Window")
 
-	CreateWnd(0,"GamePlayInfoWnd","","",13,461,104,28,0)
+	CreateWnd(0,"GamePlayInfoWnd","","",8,461,104,28,0)
 	ChangeSkin("GamePlayInfoWnd","Skin19","Window")
 
 	CreateWnd(0,"GamePlayPanelWnd","","",7,504,789,92,0)
