@@ -36,7 +36,7 @@ m_pkUnit=static_cast<P_ServerUnit*>(m_pkObject->GetProperty("P_ServerUnit"));
 		
 		m_pkAttackCommand = new ExternalCommand(this, UNIT_ATTACK);
 	//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedDestination = false;
-	//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedTarget = true;
+		m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 		strcpy(m_pkAttackCommand->m_kUnitCommandInfo.m_acCommandName, "Attack");
 		strcpy(m_pkAttackCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
 		m_pkAttackCommand->m_kUnitCommandInfo.m_iIconIndex = 3;
@@ -60,6 +60,7 @@ AIBase* P_UnitAttackAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYD
 				if(m_pkTargetObject)
 				{
 					cout<< "P_UnitAttackAI:found target!" <<endl;
+					m_iCurrentState = UNIT_ATTACK;
 					return this;
 				}
 				else
@@ -81,6 +82,7 @@ AIBase* P_UnitAttackAI::UpdateAI()
 	{
 	case UNIT_ATTACK:
 		{
+			cout<<"hehjehejejhe" <<endl;
 			if(m_pkTargetObject)
 			{
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
@@ -90,10 +92,10 @@ AIBase* P_UnitAttackAI::UpdateAI()
 					if(m_pkAi)
 					{
 						UnitCommand TempCommand;
-						strcpy(TempCommand.m_acCommandName, "Move");
-						TempCommand.m_iTarget = m_pkObject->iNetWorkID;
+						strcpy(TempCommand.m_acCommandName, "Stop");
+						//TempCommand.m_iTarget = m_pkObject->iNetWorkID;
 						m_pkAi = m_pkUnit->RunExternalCommand(&TempCommand);
-						m_pkAi->UpdateAI();
+						//m_pkAi->UpdateAI();
 					}
 					cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
 				}

@@ -167,7 +167,8 @@ class ZeroEdit :public Application {
 		void DeleteSelected();
 
 	public:
-
+//		void OnServerClientJoin(ZFClient* pkClient,int iConID);
+//		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroEdit() {};
 	 	void OnInit(void);

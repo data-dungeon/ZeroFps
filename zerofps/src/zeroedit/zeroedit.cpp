@@ -1350,6 +1350,7 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_UnitAttackAI", Create_P_UnitAttackAI);
 	pkPropertyFactory->Register("P_UnitMoveAI", Create_P_UnitMoveAI);
 	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);
 	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
@@ -1419,9 +1420,14 @@ bool ZeroEdit::RotateCamera(int relMouseX, int relMouseY)
 void ZeroEdit::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 
+
 }
+
+
 
 void ZeroEdit::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	
 }
+
+

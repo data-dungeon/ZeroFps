@@ -102,6 +102,7 @@ void ZeroRTS::RegisterActions()
 
 void ZeroRTS::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_UnitAttackAI", Create_P_UnitAttackAI);
 	pkPropertyFactory->Register("P_UnitSystem", Create_P_UnitSystem);	
 	pkPropertyFactory->Register("P_UnitMoveAI", Create_P_UnitMoveAI);	
 	pkPropertyFactory->Register("P_FogRender", Create_P_FogRender);	

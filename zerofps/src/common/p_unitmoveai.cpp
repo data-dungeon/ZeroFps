@@ -76,7 +76,7 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 		m_pkStopUnitCommand->m_kUnitCommandInfo.m_bNeedArgument = false;
 		strcpy(m_pkStopUnitCommand->m_kUnitCommandInfo.m_acCommandName, "Stop");
 		strcpy(m_pkStopUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
-		m_pkStopUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 3;
+		m_pkStopUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 2;
 		m_pkUnit->RegisterExternalCommand(m_pkStopUnitCommand);
 		return true;
 	}
@@ -91,6 +91,7 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	case UNIT_MOVE:
 		{
 			m_pkPathFind->Reset();
+			cout<<"MOVEMOVE" <<endl;
 			//add a waiting move destination
 			if(iTarget>=0)
 			{
@@ -113,6 +114,8 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 			Vector3 kTempVect = m_pkObject->GetPos();
 			m_pkObject->SetPos(kTempVect);					
 			m_pkObject->SetPos(kTempVect);	
+			m_iCurrentState = -1;
+			m_fSpeedMod = 1;
 			return NULL;
 		}
 
