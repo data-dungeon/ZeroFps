@@ -2,8 +2,9 @@
 #include <iostream>
 #include <cstdio>
 #include <SDL/SDL.h>
-#include <GL/GLee.h>
+
 #include <vector>
+#include <GL/gl.h>
 
 using namespace std;
 

@@ -194,6 +194,7 @@ class ENGINE_API Entity
 		bool							m_bFirstSetPos;		
 		bool							m_bInterpolate;					//if this is false, GetIWorldPos vill return non inpterpolatet cordinats
 		float							m_fInterPolateFactor;		
+		unsigned int				m_iLastInterPolateFrame;
 		
 		Vector3						m_kVel;								///< Velocity of entity.
 		Vector3						m_kAcc;								///< Acc of entity.

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whatever loaded.
+int DEBUG_PRINT = false;			// Sï¿½t till true fï¿½ att printa bitmap/tga/pcx/whatever loaded.
 										
 // Defines
 #define BITMAP_ID				0x4D42	// universal id for a bitmap
@@ -205,6 +205,9 @@ void Image::ReadPixel(color_rgba* pkDst, char* pcSrc, int iPixsize)
 	red = grn = blu = alp = 0;
 	char *data = pcSrc;
 
+	//alpha test fix, skuggorna bugga sig annars
+	alp = 255;
+	
 	switch(iPixsize) {
 		case 8:		
 			break;
@@ -572,7 +575,7 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 			}
 		}
 
-	//delete [] data1;	// ** Fix_me ** [Vim], [Läcker som ett såll :)]
+	//delete [] data1;	// ** Fix_me ** [Vim], [Lï¿½ker som ett sï¿½l :)]
 	return true;
 }
 
@@ -921,8 +924,8 @@ bool Image::load_bmp(FILE* pkFile)
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
 	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
  
-	// Testa för om ulSizeImage är 0. Adobe Phoshop sätter denna 
-	// flagga till noll Windows Paint gör det inte.
+	// Testa fï¿½ om ulSizeImage ï¿½ 0. Adobe Phoshop sï¿½ter denna 
+	// flagga till noll Windows Paint gï¿½ det inte.
 	bool bZeroSize = false;
 	if(kBitmap.kInfoheader.ulSizeImage == 0)
 	{

@@ -55,7 +55,8 @@ Entity::Entity()
 	m_bInterpolate			= true;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
-	m_fInterPolateFactor = 15;						//lower factor = slower moving objects/smoother movements
+	m_fInterPolateFactor = 20;						//lower factor = slower moving objects/smoother movements
+	m_iLastInterPolateFrame = -1;
 	m_ucIcon					= 0;
 
 	//clear child list
@@ -1426,7 +1427,13 @@ Vector3 Entity::GetIWorldPosV()
 		Vector3 kDir = GetWorldPosV() - m_kILocalPosV;
 		m_kILocalPosV += kDir * m_pkZeroFps->GetFrameTime();
 		*/
-
+		
+		unsigned int iFrame = m_pkZeroFps->GetCurrentFrame();
+		if(m_iLastInterPolateFrame == iFrame)
+			return m_kILocalPosV;
+		
+		m_iLastInterPolateFrame = iFrame; 
+		
 		float fFac = m_fInterPolateFactor * m_pkZeroFps->GetFrameTime();
 		if(fFac > 1.0)
 			fFac = 1.0;

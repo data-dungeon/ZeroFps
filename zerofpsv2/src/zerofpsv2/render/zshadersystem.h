@@ -255,6 +255,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iGLupdates;
 		int			m_iTotalVertises;
 		
+		//force settings
+		int			m_iForceCullFace;
+		int			m_iForceColorMask;
+		int			m_iForceAlphaTest;
 		
 		//basic		
 		void SetupOpenGL();
@@ -329,6 +333,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void OcculusionBegin();
 		unsigned int  OcculusionEnd();
 
+		//force settings
+		void ForceCullFace(int iCull)							{	m_iForceCullFace = iCull;				}
+		void ForceColorMask(int iMask)						{	m_iForceColorMask = iMask;				}
+		void ForceAlphaTest(int iAlphaTest)					{	m_iForceAlphaTest = iAlphaTest;		}		
 		
 		//information
 		bool HaveExtension(const string& strExt);

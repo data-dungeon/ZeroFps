@@ -85,6 +85,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
+	m_iCurrentFrame			= 0;
 	
 	m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateTime		= 0;
@@ -119,6 +120,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bAlwaysWork				= true;
 	m_bTcsFullframe			= false;
 	m_iProfileTotalTime		= 0;
+	m_bShadowMap				= false;
 	
 	// Register Variables
 	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
@@ -140,6 +142,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
+	RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
 	
 	
 	// Register Commands
@@ -815,6 +818,7 @@ void ZeroFps::Swap(void)
 	m_fFps=1000.0f/m_fFrameTime;	
 
 	m_iAvrageFrameCount++;
+	m_iCurrentFrame++;
 	
 	//each 1 seccond
 	if( (GetTicks() - m_fAvrageFpsTime) >1)

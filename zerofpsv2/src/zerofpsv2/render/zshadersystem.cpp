@@ -34,6 +34,12 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	//register console commands
 	Register_Cmd("setgamma",FID_SETGAMMA);		
 	
+	
+	
+	//force settings
+	m_iForceCullFace = 	-1;
+	m_iForceColorMask = 	-1;
+	m_iForceAlphaTest =	-1;
 };
 
 bool ZShaderSystem::StartUp()
@@ -460,7 +466,13 @@ void ZShaderSystem::SetupPass(int iPass)
 		glDisable(GL_FOG);
 	
 	//enable/disable colormask
-	if(pkSettings->m_bColorMask)
+	bool bColorMask = pkSettings->m_bColorMask;
+	if(m_iForceColorMask == 0)
+		bColorMask = false;
+	else if(m_iForceColorMask == 1)
+		bColorMask = true;		
+	
+	if(bColorMask)
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	else
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -560,7 +572,11 @@ void ZShaderSystem::SetupPass(int iPass)
 		glDisable(GL_LIGHTING);	
 		
 	//cullface setting
-	switch(pkSettings->m_iCullFace)
+	int iCull = pkSettings->m_iCullFace;
+	if(m_iForceCullFace != -1)
+		iCull = m_iForceCullFace;
+	
+	switch(iCull)
 	{
 		case CULL_FACE_NONE:
 			glDisable(GL_CULL_FACE);
@@ -580,13 +596,32 @@ void ZShaderSystem::SetupPass(int iPass)
 	}
 		
 	//alphatest setting
-	if(pkSettings->m_bAlphaTest)
+	if(m_iForceAlphaTest == -1)
+	{
+		if(pkSettings->m_bAlphaTest)
+		{
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GEQUAL, 0.1);
+		}
+		else
+			glDisable(GL_ALPHA_TEST);
+		
+	}
+	else if(m_iForceAlphaTest == 0)
+	{
+		glDisable(GL_ALPHA_TEST);		
+	}
+	else if(m_iForceAlphaTest == 1)
 	{
 		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.1);
+		glAlphaFunc(GL_GEQUAL, 0.1);			
 	}
-	else
-		glDisable(GL_ALPHA_TEST);
+	else if(m_iForceAlphaTest == 2)
+	{
+ 		glEnable(GL_ALPHA_TEST);
+ 		glAlphaFunc(GL_GREATER, 0.1);	
+	}
+	
 		
 	//setup tus
 	for(int i = 3;i>=0;i--)
@@ -604,6 +639,10 @@ void ZShaderSystem::SetupPass(int iPass)
 
 void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
+	if(iTU == 3)
+		return;
+		
+
 	switch(iTU)
 	{
 		case 0:		
@@ -1345,6 +1384,7 @@ void ZShaderSystem::ClearBuffer(const int& iBuffer)
 			glClear(GL_COLOR_BUFFER_BIT);					
 			break;
 		case DEPTH_BUFFER:
+			glDepthMask(GL_TRUE);
 			glClear(GL_DEPTH_BUFFER_BIT);					
 			break;
 		case ACCUM_BUFFER:

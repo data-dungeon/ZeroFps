@@ -27,6 +27,7 @@ LightSource::LightSource()
 
 	iType					=	POINT_LIGHT;
 	iPriority			=	0;
+	
 }
 
 
@@ -36,6 +37,7 @@ Light::Light()
 	m_iNrOfLights=8;							//this shuld never be greater than 8
 
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
+	m_bAmbientOnly 	= false;
 
 }
 
@@ -197,9 +199,20 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 				return;
   		}
 		glEnable(light);		
-			
-		glLightfv(light,GL_DIFFUSE, (float*)&pkLight->kDiffuse);		// &m_kActiveLights[i]->kDiffuse[0]
-		glLightfv(light,GL_SPECULAR,(float*)&pkLight->kSpecular);	//&m_kActiveLights[i]->kSpecular[0]
+		
+		if(m_bAmbientOnly)
+		{
+			static float none[] = {0,0,0,0};
+		
+			glLightfv(light,GL_DIFFUSE, (float*)none);		// &m_kActiveLights[i]->kDiffuse[0]
+			glLightfv(light,GL_SPECULAR,(float*)none);	//&m_kActiveLights[i]->kSpecular[0]
+		}
+		else
+		{		
+			glLightfv(light,GL_DIFFUSE, (float*)&pkLight->kDiffuse);		// &m_kActiveLights[i]->kDiffuse[0]
+			glLightfv(light,GL_SPECULAR,(float*)&pkLight->kSpecular);	//&m_kActiveLights[i]->kSpecular[0]
+		}
+		
 		glLightfv(light,GL_AMBIENT, (float*)&pkLight->kAmbient);		//&m_kActiveLights[i]->kAmbient[0]
 		
 		Vector4 temp;

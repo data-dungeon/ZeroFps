@@ -136,41 +136,43 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool							m_bDevPagesVisible;
 		vector<DevStringPage>	m_DevStringPage;					
 		
-		float 	m_fLastFrameTime;
-		float 	m_fAvrageFpsTime;
-		int		m_iAvrageFrameCount;
+		float 			m_fLastFrameTime;
+		float 			m_fAvrageFpsTime;
+		int				m_iAvrageFrameCount;
+		unsigned int	m_iCurrentFrame;
 
-		bool		m_bLockFps;
-		float 	m_fLockFrameTime;
+		bool				m_bLockFps;
+		float 			m_fLockFrameTime;
 
-		float 	m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
-		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
-		float 	m_fSystemUpdateTime;				// last system update
+		float 			m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
+		float				m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
+		float 			m_fSystemUpdateTime;				// last system update
 		
-		bool		m_bSyncNetwork;
-		float		m_fNetworkUpdateFps;				// number of network updates each second
-		float		m_fNetworkUpdateFpsDelta;		// time between each network update
-		float 	m_fNetworkUpdateTime;			// last system update
-		int		m_iConnectionSpeed;				// speed of outgoing connections
+		bool				m_bSyncNetwork;
+		float				m_fNetworkUpdateFps;				// number of network updates each second
+		float				m_fNetworkUpdateFpsDelta;		// time between each network update
+		float 			m_fNetworkUpdateTime;			// last system update
+		int				m_iConnectionSpeed;				// speed of outgoing connections
 		
-		float		m_fEngineTime;						// Time since engine start.
-		bool		m_bRenderOn;
-		bool		m_bMinimized;
-		bool		m_bDrawAxisIcon;
-		bool		m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
+		float				m_fEngineTime;						// Time since engine start.
+		bool				m_bRenderOn;
+		bool				m_bMinimized;
+		bool				m_bDrawAxisIcon;
+		bool				m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
+		bool				m_bShadowMap;
 				
-		bool		m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
+		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
-		int		m_iServerConnection;				// The Connection num we have on the server.		
-		int		m_iClientEntityID;						
-		int		m_iMaxPlayers;
+		int				m_iServerConnection;				// The Connection num we have on the server.		
+		int				m_iClientEntityID;						
+		int				m_iMaxPlayers;
 				
 		//profile information
 		vector<TimerInfo > 	m_kProfileData;		
 		int						m_iProfileTotalTime;
 				
 		//materials
-		ZMaterial*		m_pkDevPageMaterial;
+		ZMaterial*			m_pkDevPageMaterial;
 		
 		
 		vector<Camera*>	m_kRenderCamera;
@@ -299,6 +301,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}		
+		unsigned int	GetCurrentFrame()	{	return m_iCurrentFrame;							}
 		
 		//sets
 		void  SetSyncNetwork(bool bSync)	{	m_bSyncNetwork = bSync;							}
@@ -331,6 +334,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool GetDebugGraph() 				{	return m_bDebugGraph;	}
 		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
+		bool GetShadowMap()					{	return m_bShadowMap;		}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

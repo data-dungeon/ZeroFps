@@ -69,6 +69,8 @@ class RENDER_API Light : public ZFSubSystem {
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
+		bool		m_bAmbientOnly;
+		
 		void TurnOffAll();
 		
 	public:
@@ -96,6 +98,8 @@ class RENDER_API Light : public ZFSubSystem {
 		void SetLighting(bool bOn);
 		void SetStartUpValues();
 
+		void SetAmbientOnly(bool bAmbient)	{	m_bAmbientOnly = bAmbient;	}
+		
 		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
 
 		bool StartUp();

@@ -14,6 +14,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkEntityMan = 		dynamic_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkZeroFps =			dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkZShadow = 			dynamic_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
+	m_pkLight	=			dynamic_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkTexMan	=			dynamic_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
@@ -42,7 +44,110 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_fFogFar		=		100;
 	m_bFogEnabled	=		false;
 	
-	m_bDebugGraphs=		true;
+	m_bDebugGraphs	=		true;
+	m_bShadowMap	=		true;
+	
+	
+	
+	if(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow"))
+	{
+		cout<<"WARNING: GL_ARB_shadow not supported shadows disabled"<<endl;
+		m_bShadowMap = false;
+	}
+		
+	//SHADOW HACK
+	m_iShadowSize	= Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	m_iShadowTexture = -1;
+	
+	glGenTextures(1, &m_iShadowTexture);
+	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowSize, m_iShadowSize, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	
+
+	//projection matrix
+ 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
+ 	m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
+ 	m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
+}
+
+void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)
+{
+
+	//setup light matrises
+	
+	//modelview matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
+	glLoadIdentity();					
+	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
+					kCenter.x,kCenter.y,kCenter.z,
+					0.0f, 1.0f, 0.0f);
+	glGetFloatv(GL_MODELVIEW_MATRIX, &m_kLightViewMatrix[0]);
+
+
+/*	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
+					0,0,0,
+					0.0f, 1.0f, 0.0f);		*/			
+					
+
+	
+	//m_pkZShaderSystem->SetClearColor(m_kClearColor);
+	//m_pkZShaderSystem->SetFog(m_kFogColor,m_fFogNear,m_fFogFar,m_bFogEnabled);
+	
+	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER|DEPTH_BUFFER);
+
+ 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+ 	m_pkZShaderSystem->MatrixLoad(&m_kLightProjMatrix);
+ 
+ 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+ 	m_pkZShaderSystem->MatrixLoad(&m_kLightViewMatrix);
+	
+	
+	
+	m_kRenderPos = kLightPos;
+	m_kFrustum.GetFrustum(m_kLightProjMatrix,m_kLightViewMatrix);	
+			
+	
+	
+	glViewport(0, 0, m_iShadowSize, m_iShadowSize);
+	glScissor(0, 0, m_iShadowSize, m_iShadowSize);
+
+	//Draw back faces into the shadow map
+	
+	//Disable color writes, and use flat shading for speed
+  	m_pkZShaderSystem->ForceColorMask(0);
+ 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+	
+	//reload last material
+	m_pkZShaderSystem->ReloadMaterial();		
+	
+	
+ 	m_pkLight->SetLighting(false);
+ 	glShadeModel(GL_FLAT);
+	
+	//update all render propertys that shuld cast a shadow
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+	
+	
+	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowSize, m_iShadowSize);
+	
+	
+	
+ 	m_pkLight->SetLighting(true);
+ 	glShadeModel(GL_SMOOTH);
+	m_pkZShaderSystem->ForceColorMask(-1);
+	m_pkZShaderSystem->ForceCullFace(-1);
+
+
+	//reload last material
+	m_pkZShaderSystem->ReloadMaterial();			
 }
 
 
@@ -416,6 +521,8 @@ Vector3 Camera::GetOrthoMove(Vector3 kMove)
 }
 
 
+
+
 void Camera::RenderView()
 {
 	//set current camera in engine ( render propertys wants to know this)
@@ -437,26 +544,82 @@ void Camera::RenderView()
 	//return if no rendering shuld be done
 	if( (!m_bRender) || (!m_pkZeroFps->GetRenderOn()) || m_pkZeroFps->GetMinimized() )
 		return;
+
+		
+	if(m_bShadowMap && m_pkZeroFps->GetShadowMap())
+	{
+		//scene center (use entity pos if any)
+		Vector3 kCenter;	
+		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_iEntity))
+			kCenter = pkEnt->GetIWorldPosV();		
+		else
+			kCenter = m_kPos;
+			
+		//setup light
+		vector<LightSource*> kLights;
+		m_pkLight->GetClosestLights(&kLights,1,m_kPos,false);
+		
+		Vector3 kLightPos;
+		if(!kLights.empty())
+		{			
+			if(kLights[0]->iType == DIRECTIONAL_LIGHT)
+				kLightPos = (kCenter + (kLights[0]->kRot.Unit() * 100));
+			else
+				kLightPos =  kLights[0]->kPos;		
+								
+		}
+		else
+		{
+			kLightPos =  kCenter + Vector3(0,100,0);		
+			//cout<<"WARNING: missing light source when doing shadows"<<endl;
+		}
+		
+		//create shadow map	
+		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
+		MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+		
+		
 	
-	//get root entity
-	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-
-	//update all render propertys that shuld be shadowed
-	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
-
-	//update shadow map
-	m_pkZShadow->Update();
-
-	//update all render propertys that shuld NOT be shadowed
-	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
-
-
+		//draw ambient light				
+		InitView();	
+		m_pkLight->SetAmbientOnly(false);
+			
+		Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		
+		
+		//draw lit scene
+		//m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
+		m_pkLight->SetAmbientOnly(true);
+		DrawShadowedScene();
+	
+		//update all render propertys that shuld NOT be shadowed
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		
+		m_pkLight->SetAmbientOnly(false);
+	}
+	else
+	{	
+	
+		//get root entity
+		Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+	
+		//update all render propertys that shuld be shadowed
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+	
+		//update shadow map
+		m_pkZShadow->Update();
+	
+		//update all render propertys that shuld NOT be shadowed
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		
+	}
 		
 	if(m_bDebugGraphs) 
 	{
 		m_pkEntityMan->DrawZones();				
 		m_pkZeroFps->m_pkApp->RenderInterface();	
-		
+			
 		//draw axes icon
 		if(m_pkZeroFps->GetDrawAxesIcon())
 			m_pkRender->Draw_AxisIcon(5);	
@@ -467,6 +630,99 @@ void Camera::RenderView()
 	m_pkZeroFps->m_pkCamera=NULL;
 
 }
+
+
+
+void Camera::DrawShadowedScene()
+{
+	//setup some textures
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+
+	static Matrix4 biasMatrix(	0.5f, 0.0f, 0.0f, 0.0f,
+										0.0f, 0.5f, 0.0f, 0.0f,
+										0.0f, 0.0f, 0.5f, 0.0f,
+										0.5f, 0.5f, 0.5f, 1.0f); //bias from [-1, 1] to [0, 1]
+
+
+	Matrix4 Proj = m_kLightProjMatrix;
+	Matrix4 View = m_kLightViewMatrix;
+	Matrix4 Bias = biasMatrix;	
+
+	View.Transponse();
+	Proj.Transponse();
+	Bias.Transponse();
+
+	Matrix4 textureMatrix=Bias*(Proj*View);									
+
+	
+	
+	//Bind & enable shadow map texture
+	//int iTexture = m_pkTexMan->GetTextureID(m_pkTexMan->GetIndex("data/textures/coke.tga"));
+	//m_pkTexMan->BindTexture("c#data/textures/hora.tga",0);
+	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+	glEnable(GL_TEXTURE_2D);
+	
+	
+	//Set up texture coordinate generation.
+	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	glTexGenfv(GL_S, GL_EYE_PLANE, &(textureMatrix.RowCol[0][0]));
+	glEnable(GL_TEXTURE_GEN_S);
+	
+	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	glTexGenfv(GL_T, GL_EYE_PLANE, &(textureMatrix.RowCol[1][0]));
+	glEnable(GL_TEXTURE_GEN_T);
+	
+	glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	glTexGenfv(GL_R, GL_EYE_PLANE, &(textureMatrix.RowCol[2][0]));
+	glEnable(GL_TEXTURE_GEN_R);
+	
+	glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	glTexGenfv(GL_Q, GL_EYE_PLANE, &(textureMatrix.RowCol[3][0]));
+	glEnable(GL_TEXTURE_GEN_Q);
+
+
+	
+	//Enable shadow comparison
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
+	
+	//Shadow comparison should be true (ie not in shadow) if r<=texture
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GREATER);
+	
+	//Shadow comparison should generate an INTENSITY result
+	//glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
+	//glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
+	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
+
+	
+	//Set alpha test to discard false comparisons
+	m_pkZShaderSystem->ForceAlphaTest(2);
+		
+	
+	//reload last material
+	m_pkZShaderSystem->ReloadMaterial();		
+	
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);	
+	
+	
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+	
+	m_pkZShaderSystem->ForceAlphaTest(-1);
+	
+	//Disable textures and texgen
+	glDisable(GL_TEXTURE_2D);
+	
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	glDisable(GL_TEXTURE_GEN_R);
+	glDisable(GL_TEXTURE_GEN_Q);
+	
+	//Restore other states
+	glDisable(GL_LIGHTING);
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+}
+
+
 
 void Camera::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled)
 {

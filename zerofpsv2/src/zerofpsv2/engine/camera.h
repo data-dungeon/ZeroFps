@@ -49,6 +49,8 @@ class ENGINE_API Camera : public I_Camera
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZeroFps*			m_pkZeroFps;
 		ZShadow*			m_pkZShadow;
+		Light*			m_pkLight;
+		TextureManager* m_pkTexMan;
 		
 		//matrises and position
 		Matrix4	m_kCamProjectionMatrix;
@@ -97,6 +99,7 @@ class ENGINE_API Camera : public I_Camera
 		int		m_iRenderTarget;
 		bool		m_bClearViewPort;
 		bool		m_bDebugGraphs;
+		bool		m_bShadowMap;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
 		int			m_iEntity;							// ID Of entity that this camera is connected to.
@@ -104,6 +107,17 @@ class ENGINE_API Camera : public I_Camera
 		bool			m_bRootOnly;
 		P_Camera*	m_pkCameraProp;		
 		
+		//shadow hack
+		unsigned int	m_iShadowTexture;
+		int				m_iShadowSize;
+		
+		Matrix4			m_kLightProjMatrix;
+		Matrix4			m_kLightViewMatrix;
+		
+		
+		
+		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
+		void		DrawShadowedScene();
 		
 		void		DrawGrid();
 		

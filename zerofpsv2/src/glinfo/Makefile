@@ -1,7 +1,7 @@
 SRC=../
 BINARY=glinfo
 BINDIR=$(SRC)../bin/
-LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lGLee -lSDL
+LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lGL -lSDL
 
 OBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 

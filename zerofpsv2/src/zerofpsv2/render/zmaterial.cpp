@@ -33,7 +33,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bAlphaTest =		false;
    m_bDepthTest = 	true;
 	m_bStencilTest=	false;
-	m_iDepthFunc =		DEPTHFUNC_LESS;
+	m_iDepthFunc =		DEPTHFUNC_LEQUAL;
 	m_bFog=				true;
 	
 	m_iStencilOpFail=		STENCILOP_KEEP;
