@@ -153,7 +153,7 @@ function GUICreate()
 	ChangeSkin("ToggleLight","Skin33","Checkbox: Button down")
 	ChangeSkin("ToggleLight","Skin20","Checkbox: Label")
 
-	CreateWnd(4,"ZeroEdInfoLabel","GuiMainWnd","Label500",12,566,699,20,0,2,0)
+	CreateWnd(4,"ZeroEdInfoLabel","GuiMainWnd","",12,566,699,20,0,2,0)
 	ChangeSkin("ZeroEdInfoLabel","Skin39","Label")
 
 	CreateWnd(0,"vp1","","",282,24,250,250,0,0,0)
