@@ -33,6 +33,8 @@ class MCOMMON_API P_Enviroment: public Property {
 
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
+
+		void SetEnable(bool bNew) {m_bEnabled = bNew;};
 };
 
 MCOMMON_API Property* Create_P_Enviroment();

@@ -669,8 +669,19 @@ void MistClient::SetActiveCaracter(int iCaracter)
 			
 				if(pkObj)
 				{
+					//disable camera on old active character 
 					pkObj->DeleteProperty("CameraProperty");
 					m_pkCamProp = NULL;
+				
+					//get enviroment property for old active character
+					P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
+					if(ep)
+					{
+						//disable enviroment for this caracter
+						ep->SetEnable(false);						
+						cout<<"disabled enviroment"<<endl;
+					}
+									
 				}
 				m_iActiveCaracter = -1;
 				m_iActiveCaracterObjectID = -1;
@@ -688,7 +699,9 @@ void MistClient::SetActiveCaracter(int iCaracter)
 					//object found
 					if(pkObj)
 					{
+						//get camera and enviroment propertys
 						CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+						P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
 				
 						if(!cp)
 							CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
@@ -699,10 +712,17 @@ void MistClient::SetActiveCaracter(int iCaracter)
 							cp->SetType(CAM_TYPE3PERSON);								
 							m_pkCamProp = cp;
 							
-							//set current active caracter
+							//set current active character
 							m_iActiveCaracter = iCaracter;
 							m_iActiveCaracterObjectID = id;
 							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;
+						}
+					
+						if(ep)
+						{
+							//enable enviroment for this caracter
+							ep->SetEnable(true);						
+							cout<<"enabled enviroment"<<endl;
 						}
 					}
 				}		

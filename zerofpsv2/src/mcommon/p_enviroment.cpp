@@ -18,8 +18,9 @@ P_Enviroment::P_Enviroment()
 
 void P_Enviroment::Update()
 {
+	//if(!m_bEnabled)
 	
-
+	
 }
 
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
