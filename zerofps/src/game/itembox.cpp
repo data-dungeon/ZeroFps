@@ -13,9 +13,10 @@
 ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan) 
 	: DlgBox(pkGui, oMainWndProc), m_ciSlotSize(48)
 {
+	m_pkMoveObject = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
-	m_pkClickButton = NULL;
+	//m_pkClickButton = NULL;
 	Create(0,0,0,0,oMainWndProc);
 }
 
@@ -47,52 +48,21 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			{
 				if(pkWnd == it->second)
 				{
-					m_pkClickButton = (ZGuiButton*) pkWnd;
+					m_pkMoveObject = m_pkContainer->GetItem(it->first.first, 
+						it->first.second);
+
+					if(m_pkMoveObject)
+					{
+						cout << "removed object named "<< m_pkMoveObject->GetName() << endl;
+						m_pkContainer->RemoveItem(m_pkMoveObject);
+
+						it->second->Resize(m_ciSlotSize, m_ciSlotSize);
+						it->second->GetSkin()->m_iBkTexID = -1;
+					}
+
 					break;
 				}
 			}
-		}
-		break;
-
-	case ZGM_LBUTTONUP:
-
-		if(m_pkClickButton != NULL)
-		{
-			// Check wich button that should be removed.
-			Object* pkMoveObject = NULL;
-			map<slot_pos, ZGuiButton*>>::iterator it;
-			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
-			{
-				if(pkWnd == it->second)
-				{
-					cout << "put" << endl;
-
-					if(pkMoveObject)
-					{
-						cout << "removed object named "<< pkMoveObject->GetName() << endl;
-
-						m_pkContainer->RemoveItem(pkMoveObject);
-						break;
-						/*m_pkContainer->AddItem(pkMoveObject, it->first.first, 
-							it->first.second);*/
-					}
-				}
-				
-				if(m_pkClickButton == it->second)
-				{
-					pkMoveObject = m_pkContainer->GetItem(it->first.first, 
-						it->first.second);
-
-					if(pkMoveObject)
-						cout << pkMoveObject->GetName() << endl;
-				}
-			}
-
-			m_pkClickButton = NULL;
-
-			//m_pkClickButton->Hide();
-			//m_kSlotsTable.find(
-			//m_pkContainer->
 		}
 		break;
 	}

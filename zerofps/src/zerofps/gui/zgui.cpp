@@ -504,6 +504,14 @@ bool ZGui::OnMouseUpdate()
 				if(ZGuiWnd::m_pkPrevWndUnderCursor)
 					ZGuiWnd::m_pkWndClicked->Notify(
 						ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_RELEASE);
+
+				// Send a Left Button Up Message...
+				int* pkParams = new int[1];
+				pkParams = new int[2];
+				pkParams[0] = x; pkParams[1] = y;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+					ZGM_LBUTTONUP,2,pkParams);
+				delete[] pkParams;
 			}
 		}
 	}

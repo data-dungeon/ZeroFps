@@ -154,7 +154,7 @@ SOURCE=.\gamescriptinterface.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\inventorybox.cpp
+SOURCE=.\itembox.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -182,7 +182,7 @@ SOURCE=.\inventary_id.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\inventorybox.h
+SOURCE=.\itembox.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -8,7 +8,7 @@ Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Game::OnInit() 
 {
-	m_pkInventoryBox = NULL;
+	m_pkPlayerInventoryBox = NULL;
 	m_pkPlayer = NULL;
 	Init();
 	
@@ -22,8 +22,8 @@ void Game::OnInit()
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return true; }
 
-static bool INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
-	return g_kGame.m_pkInventoryBox->DlgProc(wnd,msg,num,parms); }
+static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
+	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); }
 
 
 void Game::Init()
@@ -85,7 +85,13 @@ void Game::OnIdle(void)
 			pkFps->SetCamera(m_pkCamera);		
 			pkFps->GetCam()->ClearViewPort();	
 			//pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
-			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());			
+
+			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
+			
+			if(m_pkPlayerInventoryBox->IsOpen())
+			{
+				m_pkPlayerInventoryBox->Update();
+			}
 			
 			break;
 		}
@@ -175,23 +181,24 @@ void Game::Input()
 		break;
 	}
 	
-	if(pkInput->Action(m_iActionOpenInventory))
+	if(iKey == KEY_I)
+	//if(pkInput->Action(m_iActionOpenInventory))
 	{
-		int Width = m_pkInventoryBox->Width();
-		int Height = m_pkInventoryBox->Width();
+		int Width = m_pkPlayerInventoryBox->Width();
+		int Height = m_pkPlayerInventoryBox->Width();
 
 		// Open/Close inventory window
-		if(m_pkInventoryBox->IsOpen() == false)
-			m_pkInventoryBox->OnOpen(m_iWidth/2-Width/2,m_iHeight/2-Height/2); 
+		if(m_pkPlayerInventoryBox->IsOpen() == false)
+			m_pkPlayerInventoryBox->OnOpen(m_iWidth/2-Width/2,m_iHeight/2-Height/2); 
 		else
-			m_pkInventoryBox->OnClose(false);
+			m_pkPlayerInventoryBox->OnClose(false);
 	}
 
 	if(pkInput->Action(m_iActionCloseInventory))
 	{
 		// Open/Close inventory window
-		if(m_pkInventoryBox->IsOpen())
-			m_pkInventoryBox->OnClose(false);
+		if(m_pkPlayerInventoryBox->IsOpen())
+			m_pkPlayerInventoryBox->OnClose(false);
 	}
 
 
@@ -283,6 +290,11 @@ void Game::SetupLevel()
 			po=(*it);
 
 			m_pkScript->ExposeVariable("player_pos_y", &m_pkPlayer->GetPos().y, tFLOAT);
+
+			// Set container pointer to itembox
+			ContainerProperty* pkPlayerContainerProp = 
+				static_cast<ContainerProperty*>(m_pkPlayer->GetProperty("ContainerProperty"));
+			m_pkPlayerInventoryBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
 		}		
 	}
 	
@@ -341,10 +353,8 @@ void Game::InitGui()
 	// Create inventory window
 	m_iActionOpenInventory = pkInput->RegisterAction("inventory_open");
 	m_iActionCloseInventory = pkInput->RegisterAction("inventory_close");
-	m_pkInventoryBox = new InventoryBox(pkGui, INVENTORYPROC);
-	ZGuiSkin* pkSkin = pkGuiMan->Wnd("InventoryWnd")->GetSkin();
-	pkSkin->m_iBkTexID = pkTexMan->Load("file:../data/textures/detail1.bmp", 0);
-	pkGuiMan->Wnd("InventoryWnd")->SetSkin(pkSkin);
+
+	m_pkPlayerInventoryBox = new ItemBox(pkGui, PLAYER_INVENTORYPROC, pkTexMan);
 
 	pkFps->m_bGuiTakeControl = false;
 }

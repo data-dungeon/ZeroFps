@@ -240,7 +240,7 @@ void Container::PrintContainer()
 		for(int x=0;x<m_iSizeX;x++)
 		{
 			if(GetID(x,y) == -1)
-				cout<<" ";
+				cout<<"-";
 			else
 				cout<<GetID(x,y);
 			

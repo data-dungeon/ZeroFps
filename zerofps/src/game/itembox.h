@@ -13,6 +13,7 @@
 
 class Container;
 class TextureManager;
+class Object;
 
 class ItemBox : public DlgBox 
 {
@@ -37,8 +38,9 @@ private:
 
 	const int m_ciSlotSize;
 	TextureManager* m_pkTexMan;
-	ZGuiButton* m_pkClickButton;
+	//ZGuiButton* m_pkClickButton;
 	Container* m_pkContainer;
+	Object* m_pkMoveObject;
 
 };
 
