@@ -4,8 +4,11 @@
  
 P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 {
-	bNetwork = true;
+	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
+
 	strcpy(m_acName,"P_Primitives3D");
+	bNetwork = true;
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
@@ -16,15 +19,11 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 
 	m_kMin.Set(-1,-1,-1);
 	m_kMax.Set(1,1,1);
-
-	
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
-	
 }
 
 
-void P_Primitives3D::Update() {
+void P_Primitives3D::Update() 
+{
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
 	
@@ -74,7 +73,8 @@ void P_Primitives3D::Update() {
 	glPopAttrib();*/
 }
 
-void P_Primitives3D::PackTo( NetPacket* pkNetPacket ) {
+void P_Primitives3D::PackTo( NetPacket* pkNetPacket ) 
+{
 	pkNetPacket->Write( m_iType );		
 	pkNetPacket->Write( m_fRadius );		
 	pkNetPacket->Write( m_iSlices );		
@@ -82,13 +82,13 @@ void P_Primitives3D::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_kColor );		
 }
 
-void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) {
+void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) 
+{
 	pkNetPacket->Read( m_iType );		
 	pkNetPacket->Read( m_fRadius );		
 	pkNetPacket->Read( m_iSlices );		
 	pkNetPacket->Read( m_iStacks );		
 	pkNetPacket->Read( m_kColor );		
-	
 }
 
 void P_Primitives3D::Save(ZFIoInterface* pkPackage)
@@ -109,7 +109,6 @@ void P_Primitives3D::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_kColor	,12 ,1);	
 }
 
-
 vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
@@ -120,8 +119,6 @@ vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 
 	return kReturn;
 };
-
-
 
 Property* Create_Prim3DProperty()
 {

@@ -6,22 +6,21 @@
  
 LightProperty::LightProperty()
 {
-	bNetwork = true;
+	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
 	strcpy(m_acName,"LightProperty");
+	bNetwork = true;
 	
 	m_pkLightSource=new LightSource();
 
-	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
-	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iType = PROPERTY_TYPE_RENDER;
+	m_iSide = PROPERTY_SIDE_CLIENT;
  
-	m_iMode=LMODE_DEFAULT;
+	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = m_pkZeroFps->GetTicks();
 	
 	TurnOn();
-	
 }
 
 LightProperty::~LightProperty()
@@ -39,7 +38,6 @@ void LightProperty::Update()
 {
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV(); 
 	m_pkLightSource->kRot = m_pkObject->GetWorldRotV();
-	
 
 	switch(m_iMode)
 	{
@@ -57,7 +55,8 @@ void LightProperty::Update()
 	}
 }
 
-void LightProperty::PackTo( NetPacket* pkNetPacket ) {
+void LightProperty::PackTo( NetPacket* pkNetPacket ) 
+{
 	pkNetPacket->Write( m_pkLightSource->kDiffuse);
 	pkNetPacket->Write( m_pkLightSource->kSpecular);	
 	pkNetPacket->Write( m_pkLightSource->kAmbient);
@@ -70,7 +69,8 @@ void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_iMode);			
 }
 
-void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
+void LightProperty::PackFrom( NetPacket* pkNetPacket ) 
+{
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
 	pkNetPacket->Read( m_pkLightSource->kSpecular );			
 	pkNetPacket->Read( m_pkLightSource->kAmbient);
@@ -130,8 +130,7 @@ vector<PropertyValues> LightProperty::GetPropertyValues()
 	kReturn[10].kValueName = "Mode";
 	kReturn[10].iValueType = VALUETYPE_INT;
 	kReturn[10].pkValue    = (void*)&m_iMode;
-	
-	
+		
 	return kReturn;
 }
 
@@ -139,7 +138,6 @@ Property* Create_LightProperty()
 {
 	return new LightProperty;
 }
-
 
 void LightProperty::Save(ZFIoInterface* pkPackage)
 {
@@ -152,7 +150,6 @@ void LightProperty::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
 	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	
-
 }
 
 void LightProperty::TurnOn()
@@ -164,8 +161,6 @@ void LightProperty::TurnOff()
 {
 	m_pkLight->Remove(m_pkLightSource);
 }
-
-
 
 void LightProperty::HandleGameMessage(GameMessage& Msg)
 {

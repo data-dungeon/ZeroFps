@@ -963,14 +963,15 @@ void ZeroFps::RegisterResources()
 void ZeroFps::RegisterPropertys()
 {
 	// Propertys Used in MistLand
-	m_pkPropertyFactory->Register("MadProperty",		Create_MadProperty);		
-	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);		
-	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);		
-	m_pkPropertyFactory->Register("LightProperty",		Create_LightProperty);			
-	m_pkPropertyFactory->Register("PSystemProperty",	Create_PSystemProperty);									
-	m_pkPropertyFactory->Register("LinkToJoint",		Create_LinkToJoint);									
-	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);						
-	m_pkPropertyFactory->Register("TrackProperty",		Create_TrackProperty);					
+	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);			
+	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);							
+	m_pkPropertyFactory->Register("LightProperty",		Create_LightProperty);					
+	m_pkPropertyFactory->Register("LinkToJoint",		Create_LinkToJoint);										
+	m_pkPropertyFactory->Register("TrackProperty",		Create_TrackProperty);							
+
+	m_pkPropertyFactory->Register("MadProperty",		Create_MadProperty);				
+	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);			
+	m_pkPropertyFactory->Register("PSystemProperty",	Create_PSystemProperty);											
 
 	// Other Propertys.
 	m_pkPropertyFactory->Register("P_Heightmap2", Create_P_Heightmap2);
@@ -1031,6 +1032,7 @@ int ZeroFps::Connect(int iConnectionID)
 
 	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 	assert(m_kClient[iConnectionID].m_pkObject);	
+	m_kClient[iConnectionID].m_pkObject->GetName() = string("A Client Obj");
 	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 
 	// Connect all client objects to top level object,

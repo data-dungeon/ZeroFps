@@ -17,8 +17,7 @@ P_ClientControl::P_ClientControl()
 
 void P_ClientControl::Update()
 {
-
-	//cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
+	cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
 }
 
 

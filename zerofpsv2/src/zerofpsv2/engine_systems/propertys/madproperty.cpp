@@ -8,25 +8,29 @@ extern float g_fMadLODScale;
  
 MadProperty::MadProperty()
 {
+	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
 	strcpy(m_acName,"MadProperty");
+	bNetwork	 = true;
+
 	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	
-	bNetwork	 = true;
 	m_bIsVisible = true;
-	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_fScale	 = 1.0;
 }
 
 MadProperty::MadProperty(string strResName) 
 {
+	m_pkZeroFps  =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
 	strcpy(m_acName,"MadProperty");
+	bNetwork	 = true;
+
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
-	bNetwork	 = true;
 	m_bIsVisible = true;
-	m_pkZeroFps  =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	pkResDB->GetResource(kMadHandle, strResName);
@@ -260,7 +264,7 @@ LinkToJoint::LinkToJoint()
 	m_strToJoint = "joint0";
 }
 
-LinkToJoint::~LinkToJoint()	{ }
+LinkToJoint::~LinkToJoint()		{ }
 void LinkToJoint::Init()		{ }
 
 void LinkToJoint::Update() 

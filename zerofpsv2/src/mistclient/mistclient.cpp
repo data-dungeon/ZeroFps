@@ -180,6 +180,10 @@ void MistClient::OnIdle()
 	pkRender->Line(pos,pos+Vector3(0,10,0));	
 	pkRender->Line(pos,pos+Vector3(0,0,10));	
 	
+	// FULHACK Tm Vim
+		pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
+	
+
 	if(m_pkServerInfo)
 	{
 		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->m_sServerName.c_str());

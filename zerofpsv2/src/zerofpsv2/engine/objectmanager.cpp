@@ -592,7 +592,7 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)		continue;
 
 		NP.Write(pkPackObj->iNetWorkID);
-		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
+		Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
 		pkPackObj->PackTo(&NP);
 		iPacketSize++;
 
@@ -688,7 +688,7 @@ void ObjectManager::PackToClients()
 	if(m_pkNetWork->GetNumOfClients() == 0)
 		return;
 
-	//Logf("net", " *** ObjectManager::PackToClients() *** \n");
+	Logf("net", " *** ObjectManager::PackToClients() *** \n");
 
 
 /*	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
@@ -1215,15 +1215,18 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void ObjectManager::OwnerShip_Take(Object* pkObj)
 {
+	if(!pkObj)
+		return;
 	pkObj->m_eRole			= NETROLE_AUTHORITY;
 	pkObj->m_eRemoteRole	= NETROLE_PROXY;
 }
 
 void ObjectManager::OwnerShip_Give(Object* pkObj)
 {
+	if(!pkObj)
+		return;
 	pkObj->m_eRole			= NETROLE_PROXY;
 	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
-
 }
 
 void ObjectManager::OwnerShip_Request(Object* pkObj)
