@@ -1,0 +1,93 @@
+
+
+Evil Design Doc MistLands
+
+MistLand är ett Online Rollspel I en fantasy värld. Det fungerar på ett sätt 
+liknande dom flesta MUD's men med grafik och ljud i 3D.
+
+Världen:
+Mistland utspelas i en värld som genom en fruktansvärd katastrof har exploderat 
+och delats upp i flera olika delar. Dessa delar hålls nu endast samman av kraftig
+magi. Dom olika delarna är avgränsade från varandra av en ondskefull dimma som dödar 
+alla som kommer i kontakt med den. Dom enda som kan överleva dimman är dom  varelser 
+som lever i den och som gör olika utfall mot världen med ojämna mellanrum.
+Det enda möjliga sättet att fördas mellan dom olika delarna av världen är genom ett 
+system av magiska portaler. Dessa kontrolleras av samma magiker som håller samman
+världen. Det händer att dom olika portalerna blir inaktiva så ibland är det inte 
+möjligt att förflytta sig längre mellan dom olika delarna av världen.
+
+Dom olika delarna i spelvärlden är sen indelade i länder med olika kungar och andra 
+maktgrupperingar som spelarna kan agera med. Det vanligaste systemet som spelarna 
+kommer möta är länder med medeltid envåldshärskare i olika former men även andra 
+system som demokratier kan man möta på. Miljöerna i dessa länder varierar från öppna
+landskap till otrevliga städer. Det finns ochså ett betydande underjodiskt nätverk
+av gångar och även hela städer under marken. 
+
+Det finns tre stora religoner eller gudar i spelet som spelarna kan välja att följa.
+Dessa heter GudA, GudB och GudC. Dom har ungefär en lika stor mängd tillbedjare. 
+Det finns även en gud som dom flesta lärda anser skapade världen men han har inte 
+många tillbedjare jämfört med med GudA-GudC. Sen finns det ärven en stor mängd mindre
+gudar, andar och naturvarelser som tillbes i mindre mängd på olika platser i världen.  
+
+Dom tre stora religonerna ligger i krig med varandra och detta har effekten av mord, 
+stölder av reliker och regelrätta slag. Spelare kan välja att följa någon av dom 
+olika religonerna och på så sätt blanda i sig striderna.
+
+Användare:
+Varje person som ska koppla upp sig mot servern måste ha ett användar konto. Om man 
+inte har något så måste man skapa ett och det enda som finns till att börja med är 
+administrator kontot. Till varje konto finns det en mängd olika inställningar och 
+rättigheter som påverkar vad man kan göra. Det finns fyra olika avgörande rättigheter 
+som man kan ha Spelare, DM, Builder och God. Här listas dom från minst till mest makt.
+
+Spelare:
+Som spelare måsta man ansluta till en server för att kunna spela. När man gör det får
+man först skaffa sig ett konto och sedan efter det får man skapa sin egen spelarfigur. 
+Systemet är likt dom flesta andra rollspel som finns där man har en mängd egenskaper, 
+färdigheter och liknande att välja på. När man är klar så hamnar man vid en plats som 
+fungerar som en guide area till spelet. 
+
+Spelet spelas sedan på ett sätt som liknar DS och NWN. Man ser sig själv utifrån och man 
+kan snurra runt med sin vy och zooma in och ut. Vill man gå någonstans så klickar man där 
+och vill man påverka något så klickar man på det. Dom flesta av spelets kommandon kan 
+ges genom spelets chat konsol. När man gör olika saker i spelet så används ens olika 
+egenskaper för att avgöra om man lyckas.
+
+Som spelar styr du inte din rollpersons aktiviteter direkt utan du säger åt han vad han 
+ska gör (ex anfalla) någon och resultatet beror sen på rollpersonens egenskaper.
+
+DM:
+Som DM kan du påverka dom olika sakerna som sker i spelet och på så sätt göra spelomgången 
+roligare för dom spelare som är med. Som DM är man oftast osynlig för spelarna och påverkar 
+saker utan att dom ser det. Du kan dock även ta mer direkt kontroll över olika varelser 
+eller skapa en egen för att smälta in i spelet.
+
+Builders:
+En builder är en användare som kan ändra världen som man spelar i. Som DM kan du ändra/ta 
+bort monster under spelets gång men som builder kan du skapa helt ny områden och quest. 
+Eftersom spelet är gjort för att spelas online så sker även det mesta editeringen online. 
+Du kan exempelvis koppla upp dig och redigera en bit av en stad eller ta bort en bergskedja 
+och göra så man kommer till ett helt nytt landområde. Som builder så ska man se till att 
+man syns så lite som möjligt så spelarna inte blir förvirrade av alla förändringar. För att 
+uppnå detta gäller det att se till att inga spelare är i det område man ändrar på. Detta kan 
+uppnås genom en mängd olika medoder. Den enklasta är att helt enkelt fylla hela området med 
+den dödliga dimman som fyller spelet. Andra möjligheter är att låsa dörrar, blockara vägar 
+eller ställa några arga varelser som vaktar ingången.
+
+För att länka ihop flera servers så man kan skapa en större spelvärld så används portaler. 
+Dessa portaler kan ser ut som olika former av teleporter och spelarna kan få information 
+till vart dom leder genom att klicka på dom. Om den andra servern inte finns är aktiv så 
+är portalen avstängd. En spelare som inte appcepteras av andra servern kommer finna sig 
+själv kvar på första om han försöker använda den. Portaler kan modifieras av Builders men 
+dom måste skapas av Gods eller en builder med rättigheter.
+
+Gods:
+Är namnet på en användare som kontrollerar och administrerar spelets server.
+
+Regel System:
+Regel systemet till ZeroRPG är i grunden enkelt och möjligt att utöka. Det finns en del 
+grundläggande element som Egenskaper, Färdigheter, Förmågor, Fördelar, Nackdelar och 
+dessa kan man sedan utöka. Samma system används för att beskriva alla saker i spelet.
+
+
+
