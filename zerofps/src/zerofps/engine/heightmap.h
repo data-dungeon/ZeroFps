@@ -20,8 +20,8 @@ struct ENGINE_API HM_vert
 {
 	float			height;	
 	Vector3		normal;
-	int			texture;	
-	Vector3		color;
+//	int			texture;	
+//	Vector3		color;
 };
 
 struct HM_fileheader {
@@ -67,8 +67,6 @@ class ENGINE_API HeightMap: public ZFObject {
 		Vector3 m_kPosition;			// Position of Center of HMAP
 		Vector3 m_kCornerPos;		// Position for corner for rendering.
 		int m_iError;
-	
-//		FileIo *m_pkFile;
 		
 		HM_vert* GetHMVertex()	{	return verts;	}
 		bool	IsIndexOutOfMap(int iIndex);
@@ -83,7 +81,6 @@ class ENGINE_API HeightMap: public ZFObject {
 		bool Save(const char* acFile);
 		bool LoadImageHmap(const char* acFile);
 		void GenerateNormals();
-		void GenerateTextures();
 		void GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight);		
 		float Height(float x,float z);
 		Vector3 Tilt(float x,float z);		
@@ -109,6 +106,10 @@ class ENGINE_API HeightMap: public ZFObject {
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
 
+		
+		void GenerateTextures();
+		
+		
 		friend class Render;
 };
 

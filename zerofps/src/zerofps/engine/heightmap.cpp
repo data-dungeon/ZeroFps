@@ -60,7 +60,7 @@ void HeightMap::Zero()
 	cout << "iNumOfHMVertex:: " << iNumOfHMVertex << endl;
 	for(int i=0;i < iNumOfHMVertex;i++) {
 		verts[i].height	=	0;
-		verts[i].texture	=	0;
+		//verts[i].texture	=	0;
 	}
 }
 
@@ -507,54 +507,6 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 }
 
 
-void HeightMap::GenerateTextures() {
-	float slope;
-	float height;
-	Vector3 diff;
-	for(int z=0;z<m_iHmSize-1;z++) {
-		for(int x=0;x<m_iHmSize-1;x++) {
-			slope=0;
-			diff=Vector3(0,0,0);
-			for(int q=0;q<2;q++){	
-				for(int w=0;w<2;w++){	
-					diff+=GetVert(x+w,z+q)->normal;
-				}
-			}
-			diff.Normalize();
-			slope=diff.Dot(Vector3(0,1,0)) * degtorad;
-			height=GetVert(x,z)->height;						
-//			cout<<"Slope:"<<slope<<endl;
-
-//			GetVert(x,z)->color=Vector3(1,1,1);			
-			if(slope<35) {
-				GetVert(x,z)->texture=3;//stone
-				GetVert(x,z)->color=Vector3(0.7,0.7,0.7);			
-			}
-			else if(slope<50){
-				GetVert(x,z)->texture=2;//slope
-				GetVert(x,z)->color=Vector3(.6,.45,0.3);				
-			}				
-			else {
-				if(height<5) {  //if we are very low draw nice sand =)
-					GetVert(x,z)->texture=0;
-					GetVert(x,z)->color=Vector3(.80,.70,.60);
-					if(height<2) {//Make a big bad hole
-						GetVert(x,z)->color=Vector3(0.5 * GetVert(x,z)->height -0.5, 0.5 * GetVert(x,z)->height-0.5, 0.1 + 0.5 *GetVert(x,z)->height-0.5 ); //(.001,.001,.51);					
-//						GetVert(x,z)->color=Vector3(0,0, 1 * GetVert(x,z)->height ); //(.001,.001,.51);											
-						GetVert(x,z)->height-=10 + (1 - GetVert(x,z)->height)*10;
-						GetVert(x,z)->normal=Vector3(0,1,0);
-					}
-				} else {//else i like som grass
-					GetVert(x,z)->texture=1;
-//					GetVert(x,z)->color=Vector3(.35,.55,.10);				
-//					GetVert(x,z)->color=Vector3(.2,.5,.2);				
-					GetVert(x,z)->color=Vector3(0.19,0.53,0.11);				
-//					GetVert(x,z)->color=Vector3(.5,.5,.5);				
-				}
-			}
-		}
-	}
-}
 
 bool HeightMap::LoadImageHmap(const char* acFile) {
 	int smooth=1;
@@ -993,5 +945,58 @@ bool HeightMap::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 		
 	return inside;	
 }
+
+/*
+void HeightMap::GenerateTextures() {
+	float slope;
+	float height;
+	Vector3 diff;
+	for(int z=0;z<m_iHmSize-1;z++) {
+		for(int x=0;x<m_iHmSize-1;x++) {
+			slope=0;
+			diff=Vector3(0,0,0);
+			for(int q=0;q<2;q++){	
+				for(int w=0;w<2;w++){	
+					diff+=GetVert(x+w,z+q)->normal;
+				}
+			}
+			diff.Normalize();
+			slope=diff.Dot(Vector3(0,1,0)) * degtorad;
+			height=GetVert(x,z)->height;						
+//			cout<<"Slope:"<<slope<<endl;
+
+//			GetVert(x,z)->color=Vector3(1,1,1);			
+			if(slope<35) {
+				GetVert(x,z)->texture=3;//stone
+				GetVert(x,z)->color=Vector3(0.7,0.7,0.7);			
+			}
+			else if(slope<50){
+				GetVert(x,z)->texture=2;//slope
+				GetVert(x,z)->color=Vector3(.6,.45,0.3);				
+			}				
+			else {
+				if(height<5) {  //if we are very low draw nice sand =)
+					GetVert(x,z)->texture=0;
+					GetVert(x,z)->color=Vector3(.80,.70,.60);
+					if(height<2) {//Make a big bad hole
+						GetVert(x,z)->color=Vector3(0.5 * GetVert(x,z)->height -0.5, 0.5 * GetVert(x,z)->height-0.5, 0.1 + 0.5 *GetVert(x,z)->height-0.5 ); //(.001,.001,.51);					
+//						GetVert(x,z)->color=Vector3(0,0, 1 * GetVert(x,z)->height ); //(.001,.001,.51);											
+						GetVert(x,z)->height-=10 + (1 - GetVert(x,z)->height)*10;
+						GetVert(x,z)->normal=Vector3(0,1,0);
+					}
+				} else {//else i like som grass
+					GetVert(x,z)->texture=1;
+//					GetVert(x,z)->color=Vector3(.35,.55,.10);				
+//					GetVert(x,z)->color=Vector3(.2,.5,.2);				
+					GetVert(x,z)->color=Vector3(0.19,0.53,0.11);				
+//					GetVert(x,z)->color=Vector3(.5,.5,.5);				
+				}
+			}
+		}
+	}
+}
+*/
+
+
 
 
