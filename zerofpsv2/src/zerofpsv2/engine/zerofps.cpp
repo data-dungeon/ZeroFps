@@ -373,7 +373,7 @@ void ZeroFps::UpdateDevPages()
 			temp[0] = '#';
 			temp[1] = int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0);
 			temp[2] = '/0';		
-			DevPrintf("profile","%s : %dms / %d%",	m_kProfileData[i].first.c_str(),m_kProfileData[i].second, int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0));			
+			DevPrintf("profile","%s : %dms / %d%%",	m_kProfileData[i].first.c_str(),m_kProfileData[i].second, int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0));			
 			DevPrintf("profile",temp);
 		}	
 	}
@@ -480,7 +480,10 @@ void ZeroFps::Run_Client()
 	if(m_kRenderCamera.size()  == 1)
 		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
 	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
+	
+	StartProfileTimer("sound");
 	m_pkAudioSystem->Update();
+	StopProfileTimer("sound");
 }
 
 void ZeroFps::Update_System()
@@ -540,11 +543,7 @@ void ZeroFps::Update_System()
 				
 				//update Tiny Collission system
 				if(!m_bTcsFullframe)
-				{
-					StartProfileTimer("tcs");		
 					m_pkTcs->Update(m_pkEntityManager->GetSimDelta());	
-					StopProfileTimer("tcs");		
-				}
 			}	
 		}
 		
@@ -900,9 +899,12 @@ void ZeroFps::DrawDevStrings()
 					if(m_DevStringPage[page].m_akDevString[i].length() >= 2)
 					{
 						int iVal = int(m_DevStringPage[page].m_akDevString[i][1]);
+						if(iVal > 100)
+							iVal = 100;
 											
 						float fPos = -1.1 + (iVal/100.0);
 						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),m_pkTexMan->Load("data/textures/graph.bmp") );
+						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),m_pkTexMan->Load("data/textures/notex.bmp"));
 					}
 				}
 				else

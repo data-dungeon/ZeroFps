@@ -36,6 +36,8 @@ void P_WaterRender::SetTexture(const char* acTexture)
 
 void P_WaterRender::Update() 
 {	
+	StartProfileTimer("P_WaterRender");
+
 	m_fBlendValue = 1.0f; // Disable blend effect...
 
 	if(m_pkEntity->m_pkEntityManager->GetCurrentUpdateFlags() & PROPERTY_TYPE_NORMAL &&
@@ -56,6 +58,8 @@ void P_WaterRender::Update()
 		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkEntity->GetWorldPosV(),m_pkEntity->GetWorldRotV(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
 		
 	}
+	
+	StopProfileTimer("P_WaterRender");	
 }
 
 void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )

@@ -407,9 +407,13 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 	if(bSort)
 		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
 	
+		
 	//run updat ein all propertys
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++)
+	{ 
+		//cout<<(*it)->m_acName<<endl;
 		(*it)->Update();
+	}
 }
 
 bool EntityManager::IsUpdate(int iFlags)

@@ -58,6 +58,8 @@ void P_Mad::Update()
 	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
+		StartProfileTimer("p_mad");
+		
 		//m_pkRender->Draw_AxisIcon(5);
 		
 	 	//make sure theres only one animation update per frame		
@@ -70,9 +72,13 @@ void P_Mad::Update()
 			UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		}		
 
+		//cull spwhere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
+		{
+			StopProfileTimer("p_mad");
 			return;
-		
+		}
+			
 		/*
 		// Set Object LOD.
 		if(g_iMadLODLock == 0) {
@@ -81,7 +87,7 @@ void P_Mad::Update()
 		g_fMadLODScale = m_fLod;
 		*/
 
-		StartProfileTimer("p_mad");
+		
 		
 		//always update bones
 		UpdateBones();

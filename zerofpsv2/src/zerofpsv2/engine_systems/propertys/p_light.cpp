@@ -38,6 +38,8 @@ void P_Light::Init()
 
 void P_Light::Update() 
 {
+	StartProfileTimer("P_Light");
+
 	//draw ball on the server
 	if(m_pkZeroFps->GetDebugGraph())
 		m_pkRender->Sphere(m_pkEntity->GetIWorldPosV(),0.1,1,Vector3(1,0,1),true);
@@ -63,6 +65,8 @@ void P_Light::Update()
 			break;		
 		}
 	}
+	
+	StopProfileTimer("P_Light");	
 }
 
 void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

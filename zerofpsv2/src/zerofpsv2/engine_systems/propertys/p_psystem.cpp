@@ -7,6 +7,8 @@
 
 void P_PSystem::Update()
 {
+	StartProfileTimer("P_PSystem");
+
 	m_pkZShaderSystem->Push("P_PSystem::Update");
 	
 	glDisable(GL_STENCIL_TEST);
@@ -44,6 +46,8 @@ void P_PSystem::Update()
 	glPopAttrib();
 	
 	m_pkZShaderSystem->Pop();
+	
+	StopProfileTimer("P_PSystem");	
 }
 
 // ------------------------------------------------------------------------------------------
