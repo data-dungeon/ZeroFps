@@ -207,6 +207,19 @@ void DarkMetropolis::OnSystem()
 	//make sure all selected characters are valid
 	ValidateSelection();
 	ValidateAgentsOnField();
+
+	static int FULT = 0;
+
+	if(m_pkGamePlayDlg != NULL && m_pkGamePlayDlg->IsInitialized())
+	{
+		if(FULT == 0)
+		{
+			((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
+			printf(" ---------------------- Init GUI for the first time ---------------------- \n");
+			FULT = 1;
+		}
+	}
+
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -1158,6 +1171,8 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 
 void DarkMetropolis::ValidateSelection()
 {
+	bool update_list = false;
+
 	for(int i = 0;i < m_kSelectedEntitys.size();i++)
 	{
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
@@ -1165,12 +1180,19 @@ void DarkMetropolis::ValidateSelection()
 			if(!pkEnt->GetParent()->IsZone())		
 			{	
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
+
+				// Uppdatera GUI:t och berätta att ingen agent är i fokus.
+				if(m_pkGamePlayDlg)
+					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
+
 				i = 0;
+
+				update_list = true;
 			}		
 		}	
 	}
 
-	if(m_pkGamePlayDlg)
+	if(m_pkGamePlayDlg && update_list == true)
 		((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 }
 

@@ -16,6 +16,8 @@ public:
 	virtual bool InitDlg() {return true;}
 	virtual void OpenDlg(){};
 
+	bool IsInitialized() { return m_bInitialized; }
+
 	//virtual void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);
 	//virtual void OnDoubleClick(int x, int y, bool bLeftButton, ZGuiWnd *pkMain);
 	//virtual void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);

@@ -261,19 +261,20 @@ bool CGamePlayDlg::InitDlg()
 	
 	UpdateAgentList();
 
-	if(m_iSelectedAgent != -1)
-	{
-		SelectAgentGUI(m_iSelectedAgent, false);
-	}
-
 	m_bInitialized = true;
 
+	SelectAgentGUI(m_iSelectedAgent, false);
 
 	return true;
 }
 
 void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 {
+	if(m_bInitialized == false)
+		return;
+
+	printf("CGamePlayDlg::SelectAgentGUI\n");
+
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;
 	DMCharacterStats* pkCharacterStats;
@@ -415,6 +416,8 @@ void CGamePlayDlg::UpdateAgentList()
 {
 	if(!m_bInitialized)
 		return;
+
+	printf("CGamePlayDlg::UpdateAgentList\n");
 
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
