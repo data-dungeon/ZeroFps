@@ -1539,6 +1539,8 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->CheckButton();
 							else
 								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
+
+	                  UpdateSkin(m_pkFocusWnd, (*vkSkinDesc[i].first), szSkinType);
 						}
 						break;
 					}
@@ -1608,6 +1610,7 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *s
 
 						bFound = true;
 
+                  UpdateSkin(m_pkFocusWnd, (*vkSkinDesc[i].first), szSkinType);
 						break;
 					}
 
@@ -2193,6 +2196,8 @@ void ZGResEdit::UpdateSkinList(ZGuiWnd *pkFocusWnd)
 					((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->CheckButton();
 				else
 					((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
+
+            UpdateSkin(pkFocusWnd, pkSkin, (char*)vkSkinDesc[i].second.c_str());
 			}
 		}
 	}
@@ -2371,4 +2376,125 @@ bool ZGResEdit::StartUp()
 //	m_pkInputHandle = new InputHandle("ZGResEdit");
 
 	return true;
+}
+
+void ZGResEdit::UpdateSkin(ZGuiWnd* pkWnd, ZGuiSkin* pkSkin, char* szSkinType)
+{
+   GuiType eType = GetWndType(pkWnd);
+
+	if(!strcmp(szSkinType, "Button up") || 
+      !strcmp(szSkinType, "Button down") || 
+      !strcmp(szSkinType, "Button focus") ||
+      !strcmp(szSkinType, "Checkbox: Button up") || 
+      !strcmp(szSkinType, "Checkbox: Button down") )
+      pkWnd->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Radiobutton: Checkbox: Button up") ||
+      !strcmp(szSkinType, "Radiobutton: Checkbox: Button down") )
+      ((ZGuiRadiobutton*)pkWnd)->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Scrollbar: Button focus") )
+      ((ZGuiScrollbar*)pkWnd)->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Scrollbar: Top: Button focus") )
+      ((ZGuiScrollbar*)pkWnd)->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Scrollbar: Bottom: Button focus") )
+      ((ZGuiScrollbar*)pkWnd)->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Listbox: Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Listbox: Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Listbox: Scrollbar: Button focus") )
+      ((ZGuiListbox*)pkWnd)->GetScrollbar()->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Listbox: Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Listbox: Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Listbox: Scrollbar: Top: Button focus") )
+      ((ZGuiListbox*)pkWnd)->GetScrollbar()->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Listbox: Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Listbox: Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Listbox: Scrollbar: Bottom: Button focus") )
+      ((ZGuiListbox*)pkWnd)->GetScrollbar()->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Button focus") )
+      ((ZGuiCombobox*)pkWnd)->GetListbox()->GetScrollbar()->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Top: Button focus") )
+      ((ZGuiCombobox*)pkWnd)->GetListbox()->GetScrollbar()->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Combobox: Listbox: Scrollbar: Bottom: Button focus") )
+      ((ZGuiCombobox*)pkWnd)->GetListbox()->GetScrollbar()->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Textbox: Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Textbox: Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Textbox: Scrollbar: Button focus") )
+      ((ZGuiTextbox*)pkWnd)->GetScrollbar()->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Textbox: Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Textbox: Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Textbox: Scrollbar: Top: Button focus") )
+      ((ZGuiTextbox*)pkWnd)->GetScrollbar()->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Textbox: Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Textbox: Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Textbox: Scrollbar: Bottom: Button focus") )
+      ((ZGuiTextbox*)pkWnd)->GetScrollbar()->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: V.Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(true)->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: V.Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Top: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(true)->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: V.Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Treebox: V.Scrollbar: Bottom: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(true)->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: H.Scrollbar: Button up") ||
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Button down") || 
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(false)->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: H.Scrollbar: Top: Button up") ||
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Top: Button down") || 
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Top: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(false)->GetArrowButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Treebox: H.Scrollbar: Bottom: Button up") ||
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Bottom: Button down") || 
+      !strcmp(szSkinType, "Treebox: H.Scrollbar: Bottom: Button focus") )
+      ((ZGuiTreebox*)pkWnd)->GetScrollbar(false)->GetArrowButton(false)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Slider: Button up") || 
+      !strcmp(szSkinType, "Slider: Button down") || 
+      !strcmp(szSkinType, "Slider: Button focus") )
+      ((ZGuiSlider*)pkWnd)->GetButton()->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Tabctrl: nexttab: Button up") || 
+      !strcmp(szSkinType, "Tabctrl: nexttab: Button down") || 
+      !strcmp(szSkinType, "Tabctrl: nexttab: Button focus") )
+      ((ZGuiTabCtrl*)pkWnd)->GetTabButton(true)->SetSkin(pkSkin);
+
+   if(!strcmp(szSkinType, "Tabctrl: prevtab: Button up") || 
+      !strcmp(szSkinType, "Tabctrl: prevtab: Button down") || 
+      !strcmp(szSkinType, "Tabctrl: prevtab: Button focus") )
+      ((ZGuiTabCtrl*)pkWnd)->GetTabButton(false)->SetSkin(pkSkin);
 }

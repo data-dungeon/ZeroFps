@@ -72,6 +72,8 @@ public:
 		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
 		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
 
+   ZGuiScrollbar* GetScrollbar(bool bVert) { if(bVert) return m_pkVertScrollbar; else return m_pkHorzScrollbar; }
+
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false); // overloaded

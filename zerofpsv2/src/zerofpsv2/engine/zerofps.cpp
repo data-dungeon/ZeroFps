@@ -39,16 +39,16 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
    int iScreenWidth=800, iScreenHeight=600;
 
-   // GUI:t behöver veta dimensionen på skärmen...
-	ZFIni kINI;
-   char szINIFile[256];
-   sprintf(szINIFile, "%s.ini", Application::m_pkApp->m_pTitle);
-	if(kINI.Open(szINIFile, false)) 
-   {
-		iScreenWidth = kINI.GetIntValue("Render", "r_width");
-      iScreenHeight = kINI.GetIntValue("Render", "r_height");
-		kINI.Close();
-	}
+   // ZGui behöver veta dimensionen på skärmen...
+	// ZFIni kINI;
+   // char szINIFile[256];
+   // sprintf(szINIFile, "%s.ini", Application::m_pkApp->m_pTitle);
+	// if(kINI.Open(szINIFile, false)) 
+   // {
+	//	  iScreenWidth = kINI.GetIntValue("Render", "r_width");
+   //   iScreenHeight = kINI.GetIntValue("Render", "r_height");
+	//	  kINI.Close();
+	// }
 
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;

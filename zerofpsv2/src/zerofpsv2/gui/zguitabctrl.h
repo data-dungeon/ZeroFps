@@ -41,6 +41,8 @@ public:
 
 	ZGuiButton* GetTabFromPage(ZGuiWnd* pkPage);
 
+   ZGuiButton* GetTabButton(bool bNextTabBn) { if(bNextTabBn) return m_pkNextTabBn; else return m_pkPrevTabBn; }
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 

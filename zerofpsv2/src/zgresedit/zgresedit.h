@@ -73,6 +73,7 @@ class ZGResEdit : public Application, public ZGuiApp
 		void AddStandardElements(ZGuiWnd* pkWnd);
 		bool ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y);
 		void OnSelectWnd(ZGuiWnd* pkWnd);
+      void UpdateSkin(ZGuiWnd* pkWnd, ZGuiSkin* pkSkin, char* szSkinType);
 
 		
 		void Resize(ZGuiWnd* pkWnd, int w, int h);

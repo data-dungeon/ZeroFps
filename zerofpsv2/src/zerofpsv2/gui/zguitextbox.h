@@ -41,6 +41,8 @@ public:
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void SetFont(ZGuiFont* pkFont); //överlagrad
 
+   ZGuiScrollbar* GetScrollbar() { return m_pkScrollbarVertical; }
+
 	bool IsReadOnly();
 	void SetReadOnly(bool bReadOnly);
 	unsigned short GetRowCount() { return m_iNumRows; }

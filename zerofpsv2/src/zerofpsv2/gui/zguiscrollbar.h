@@ -44,6 +44,7 @@ public:
 	int m_iScrollChange;
 
 	ZGuiButton* GetButton() { return m_pkThumbButton; }
+   ZGuiButton* GetArrowButton(bool bUp) { if(bUp) return m_pkArrowBnUp; else return m_pkArrowBnDown; }
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 	void SetScrollButtonUpSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown);
