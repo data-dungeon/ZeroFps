@@ -85,6 +85,21 @@ void ZeroRTS::Init()
 	
 	//setup gui shit =P
 	SetupGUI();
+
+	srand( (int) (pkFps->GetGameTime()*1000) );
+
+	char* szRandom[] =
+	{
+		"The Ultimate Fulhack!",
+		"Does anything work yet?",
+		"Apa..",
+		"Made by gubb, vim, zeb, dvoid",
+	};
+
+	char szTitle[150];
+	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
+
+	SDL_WM_SetCaption(szTitle, NULL);
 }
 
 void ZeroRTS::RegisterActions()

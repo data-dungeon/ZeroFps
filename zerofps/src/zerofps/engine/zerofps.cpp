@@ -209,7 +209,6 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
 
-
 	return true;
 }
 
