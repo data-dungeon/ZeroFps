@@ -143,8 +143,6 @@ void InventoryDlg::OnCommand(string strController)
 		CloseContainerWnd();
 }
 
-
-
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
 	static bool s_bRightMouseButtonPressed = false;
@@ -408,8 +406,6 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 
 void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 {
-	printf("InventoryDlg::UpdateInventory\n");
-
 	m_iHighestZ = 1000;
 	m_kMoveSlot.m_iIndex = -1;
 
@@ -417,7 +413,10 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkInventoryItemList[i].pkWnd;
-		delete pkWnd->GetSkin();
+		
+		if(pkWnd->GetSkin())
+			delete pkWnd->GetSkin();
+		
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
@@ -463,13 +462,6 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
-
-		if(kNewSlot.bIsContainer)
-		{
-			printf("--------------------------\n");
-			printf("Found container item ID %i\n", kNewSlot.iItemID);
-			printf("--------------------------\n");
-		}
 
 		m_vkInventoryItemList.push_back(kNewSlot);
 	}	
@@ -793,7 +785,6 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
 			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 
-			//if(!(kSlot == test_slot && kSlotSize == test_size))
 			if(i != m_kMoveSlot.m_iIndex) 
 			{
 				for(int y=0; y<kSlotSize.y; y++)
@@ -809,7 +800,6 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
 			Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
 
-			//if(!(kSlot == test_slot && kSlotSize == test_size))
 			if(i != m_kMoveSlot.m_iIndex)
 			{
 				for(int y=0; y<kSlotSize.y; y++)
@@ -883,4 +873,3 @@ pair<int, bool> InventoryDlg::GetItemFromScreenPos(int x, int y)
 
 	return pair<int,bool>(-1,0);
 }
-
