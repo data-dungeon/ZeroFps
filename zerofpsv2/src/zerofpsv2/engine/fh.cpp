@@ -133,7 +133,7 @@ void DebugGraph::DrawGraph(int x, int y)
 
 	DrawAvgLine();
 
-	glColor3f(1, 0, 0);
+	glColor3f(m_kDrawColor.x, m_kDrawColor.y, m_kDrawColor.z);
 
 	glBegin(GL_LINES);
 	for(;;) {

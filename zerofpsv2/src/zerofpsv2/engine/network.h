@@ -75,6 +75,7 @@ public:
 	int				m_iPacketLossRecv;
 
 	DebugGraph		m_kRecvGraph;
+	DebugGraph		m_kRecvSizeGraph;
 
 	int				m_iOutOfOrderNetFrame;
 
@@ -213,6 +214,7 @@ public:
 	friend class NetPacket;
 	friend class EntityManager;	
 };
+
 
 #endif
 

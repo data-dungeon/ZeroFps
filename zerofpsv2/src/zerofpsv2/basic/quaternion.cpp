@@ -263,6 +263,44 @@ void Quaternion::FromRotationMatrix (const Matrix3& kRot)
         *apkQuat[k] = (kRot.m_aafRowCol[k][i]+kRot.m_aafRowCol[i][k])*fRoot;
     }
 }
+
+void Quaternion::FromRotationMatrix (const Matrix4& kRot)
+{
+    float fTrace = kRot.RowCol[0][0] + kRot.RowCol[1][1] + kRot.RowCol[2][2];
+    float fRoot;
+
+    if ( fTrace > 0.0f )
+    {
+        // |w| > 1/2, may as well choose w > 1/2
+        fRoot = sqrt(fTrace + 1.0f);			// 2w
+        w = 0.5f * fRoot;
+        fRoot = 0.5f / fRoot;						// 1/(4w)
+        x = (kRot.RowCol[2][1] - kRot.RowCol[1][2])*fRoot;
+        y = (kRot.RowCol[0][2] - kRot.RowCol[2][0])*fRoot;
+        z = (kRot.RowCol[1][0] - kRot.RowCol[0][1])*fRoot;
+    }
+    else
+    {
+        // |w| <= 1/2
+        static int s_iNext[3] = { 1, 2, 0 };
+        int i = 0;
+        if ( kRot.RowCol[1][1] > kRot.RowCol[0][0] )
+            i = 1;
+        if ( kRot.RowCol[2][2] > kRot.RowCol[i][i] )
+            i = 2;
+        int j = s_iNext[i];
+        int k = s_iNext[j];
+
+        fRoot = sqrt(kRot.RowCol[i][i]-kRot.RowCol[j][j]-kRot.RowCol[k][k] + 1.0f);
+        float* apkQuat[3] = { &x, &y, &z };
+        *apkQuat[i] = 0.5f*fRoot;
+        fRoot = 0.5f/fRoot;
+        w = (kRot.RowCol[k][j]-kRot.RowCol[j][k])*fRoot;
+        *apkQuat[j] = (kRot.RowCol[j][i]+kRot.RowCol[i][j])*fRoot;
+        *apkQuat[k] = (kRot.RowCol[k][i]+kRot.RowCol[i][k])*fRoot;
+    }
+}
+
 //----------------------------------------------------------------------------
 void Quaternion::ToRotationMatrix (Matrix3& kRot) const
 {
@@ -290,6 +328,33 @@ void Quaternion::ToRotationMatrix (Matrix3& kRot) const
     kRot.m_aafRowCol[2][2] = 1.0f-(fTxx+fTyy);
 	
 }
+
+void Quaternion::ToRotationMatrix (Matrix4& kRot) const
+{
+    float fTx  = 2.0f*x;
+    float fTy  = 2.0f*y;
+    float fTz  = 2.0f*z;
+    float fTwx = fTx*w;
+    float fTwy = fTy*w;
+    float fTwz = fTz*w;
+    float fTxx = fTx*x;
+    float fTxy = fTy*x;
+    float fTxz = fTz*x;
+    float fTyy = fTy*y;
+    float fTyz = fTz*y;
+    float fTzz = fTz*z;
+
+	 kRot.RowCol[0][0] = 1.0f-(fTyy+fTzz);
+    kRot.RowCol[0][1] = fTxy-fTwz;
+    kRot.RowCol[0][2] = fTxz+fTwy;
+    kRot.RowCol[1][0] = fTxy+fTwz;
+    kRot.RowCol[1][1] = 1.0f-(fTxx+fTzz);
+    kRot.RowCol[1][2] = fTyz-fTwx;
+    kRot.RowCol[2][0] = fTxz-fTwy;
+    kRot.RowCol[2][1] = fTyz+fTwx;
+    kRot.RowCol[2][2] = 1.0f-(fTxx+fTyy);
+}
+
 
 //----------------------------------------------------------------------------
 void Quaternion::FromAngleAxis (const float& rfAngle, const Vector3& rkAxis)

@@ -29,6 +29,7 @@ public:
 	DebugGraph();
 
 	Vector3			m_kBackColor;
+	Vector3			m_kDrawColor;
 
 	vector<float>	m_kValues;
 	int				m_iSize;
@@ -51,6 +52,7 @@ public:
 	void DrawAvgLine();
 	
 	void SetBackColor(float r, float g, float b)	{ m_kBackColor.Set(r,g,b); }
+	void SetDrawColor(float r, float g, float b)	{ m_kDrawColor.Set(r,g,b); }
 
 	float	GetSampleHeight(float fValue);
 	void	SetSampleColor(float fValue);

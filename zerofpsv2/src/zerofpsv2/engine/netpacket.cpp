@@ -38,8 +38,14 @@ void RemoteNode::Clear()
 	m_iCurrentObject			= 0;
 
 	m_kRecvGraph.SetMinMax(0,5000);		
-	m_kRecvGraph.SetSize(100,100,50);
+	m_kRecvGraph.SetSize(100,100,25);
+	m_kRecvGraph.SetBackColor(1,1,1);
+	m_kRecvGraph.SetDrawColor(1,0,0);
 
+	m_kRecvSizeGraph.SetMinMax(0,1024);		
+	m_kRecvSizeGraph.SetSize(100,100,25);
+	m_kRecvSizeGraph.SetBackColor(0.8, 0.8, 0.8);
+	m_kRecvGraph.SetDrawColor(0,1,0);
 }
 
 void RemoteNode::SetAddress(IPaddress* pkAddress)

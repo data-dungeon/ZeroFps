@@ -583,10 +583,7 @@ Entity*	EntityManager::GetObjectByNetWorkID(int iNetID)
 	return NULL;*/
 }
 
-
 // NetWork
-
-
 void EntityManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Entity* pkNetSlave;
@@ -594,16 +591,14 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 	pkNetPacket->Read(iObjectID);
 
 	while(iObjectID != -1) {
-		//Logf("net", " Object State[%d]\n", iObjectID);
+//		LOGSIZE("EntityID", 4);
 
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
-				//Logf("net", " Object '%d' not found. Trying to create...\n", iObjectID);	
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
 			}
 				
 		if( pkNetSlave ) {
-//			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
 			pkNetSlave->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);
 			if(pkNetPacket->IsReadError()) {
 				printf("pkNetPacket Read Error\n"); 
@@ -617,6 +612,8 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 			return;
 			}
 		}	
+
+//	LOGSIZE("EntityID", 4);
 }
 
 void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
@@ -624,7 +621,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
 	int iSentSize = 0;
-	int iMaxPacketSize = 512;
+	int iMaxPacketSize = 800;
 	unsigned int iObj = 0;	
 	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
 
@@ -636,10 +633,10 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 	Entity* pkPackObj;
 
-	NetPacket NP;
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_OBJECTSTATE);
+	//NetPacket NP;
+	//NP.Clear();
+	//NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	m_OutNP.Write((char) ZFGP_OBJECTSTATE);
 
 	
 	//if this is the zone object, start packing att last packed object
@@ -665,25 +662,29 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			continue;
 		}
 
-		NP.Write(pkPackObj->iNetWorkID);
+		//NP.Write(pkPackObj->iNetWorkID);
+		m_OutNP.Write(pkPackObj->iNetWorkID);
+		
 		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
-		pkPackObj->PackTo(&NP,iClient);
+		//pkPackObj->PackTo(&NP,iClient);
+		pkPackObj->PackTo(&m_OutNP,iClient);
 		iPacketSize++;
 
 		//Logf("net", " Size: %d\n\n",NP.m_iPos );
 
-		if(NP.m_iPos >= iMaxPacketSize) 
+		if(m_OutNP.m_iPos >= iMaxPacketSize) 
 		{
-			iSentSize += NP.m_iPos;			//increse total amount of data sent
+			iSentSize += m_OutNP.m_iPos;			//increse total amount of data sent
 			
-			NP.Write(iEndOfObject);
-			NP.Write(ZFGP_ENDOFPACKET);
-			NP.TargetSetClient(iClient);
-			m_pkNetWork->Send2(&NP);
+			m_OutNP.Write(iEndOfObject);
+			m_OutNP.Write(ZFGP_ENDOFPACKET);
+			m_OutNP.TargetSetClient(iClient);
+			m_pkNetWork->Send2(&m_OutNP);
 
-			NP.Clear();
-			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			NP.Write((char) ZFGP_OBJECTSTATE);
+			m_OutNP.Clear();
+			m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			m_OutNP.Write((char) ZFGP_OBJECTSTATE);
+			m_OutNP.TargetSetClient(iClient);
 
 			iPacketSize = 0;
 			
@@ -700,11 +701,11 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	}
 	
 	//write final package
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	NP.TargetSetClient(iClient);
-	m_pkNetWork->Send2(&NP);
-	
+	//NP.Write(iEndOfObject);
+	//NP.Write(ZFGP_ENDOFPACKET);
+	//NP.TargetSetClient(iClient);
+	//m_pkNetWork->Send2(&NP);
+	m_OutNP.Write(iEndOfObject);
 	
 	//cout<<"sent size:"<<iSentSize<<endl;	
 	//cout<<"Sent "<<obs-nso <<" object of "<<obs<<endl;
@@ -723,24 +724,23 @@ void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 		
 	int iNetID;
 
-	NetPacket NP;
-
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_ZONELIST);
+	//NetPacket NP;
+	//NP.Clear();
+	//NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	m_OutNP.Write((char) ZFGP_ZONELIST);
 
 	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) {
 		int iZoneID = (*itActiveZone);
 		iNetID = m_kZones[iZoneID].m_pkZone->iNetWorkID;
 
-		NP.Write(iNetID);
+		m_OutNP.Write(iNetID);
 		}
 
 		
-	NP.Write(-1);
-	NP.Write(ZFGP_ENDOFPACKET);
-	NP.TargetSetClient(iClient);
-	m_pkNetWork->Send2(&NP);
+	m_OutNP.Write(-1);
+	//NP.Write(ZFGP_ENDOFPACKET);
+	//NP.TargetSetClient(iClient);
+	//m_pkNetWork->Send2(&NP);
 
 }
 
@@ -767,7 +767,10 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 		kZones.push_back(iZoneID);
 		pkNetPacket->Read(iZoneID);
 		}
-	
+
+//	LOGSIZE("EntityManager::ZoneList", kZones.size() * 4 + 4);
+
+
 	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
 		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
 		
@@ -813,7 +816,7 @@ void EntityManager::PackToClients()
 
 	vector<Entity*>	kObjects;
 	m_iForceNetUpdate = 0xFFFFFFFF;
-	NetPacket NP;
+//	NetPacket NP;
 	
 	// Keep it alive.
 	int iNumOfObjects	= m_akEntitys.size();
@@ -847,6 +850,9 @@ void EntityManager::PackToClients()
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) 
 	{
 		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
+		m_OutNP.Clear();
+		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+		m_OutNP.TargetSetClient(iClient);
 
 		// Get Ptr to clients tracker.
 		//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
@@ -889,7 +895,8 @@ void EntityManager::PackToClients()
 		//send all data
 		PackToClient(iClient, kObjects,true);			//send in true to packtoclient 
 		
-		
+		m_OutNP.Write(ZFGP_ENDOFPACKET);
+		m_pkNetWork->Send2(&m_OutNP);
 	}
 		
 		

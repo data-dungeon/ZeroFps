@@ -17,7 +17,6 @@ typedef list<Property*>::iterator	itListProperty;
 #endif
 
 
-
 Entity::Entity() 
 {
 	// Get Ptrs to some usefull objects.
@@ -28,8 +27,6 @@ Entity::Entity()
 	ZFAssert(m_pkObjectMan,			"Entity::Entity(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
 	ZFAssert(m_pkFps,				   "Entity::Entity(): Failed to find ZeroFps");
-
-//	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
@@ -106,12 +103,6 @@ Entity::~Entity()
 	
 	delete(m_pScriptFileHandle);
 }
-
-/*
-bool Entity::IsA(string strStringType)
-{
-	return m_pkObjectMan->IsA(this, strStringType);
-}*/
 
 /**	\brief	Adds a property to the Entity.
 */
@@ -548,7 +539,6 @@ bool Entity::IsAnyPropertyNetworkActive()
 bool Entity::IsNetWork()
 {
 	m_bIsNetWork = false;
-//	bool bNetPropertys = false;
 
 	if(m_strName == "ZoneObject")
 	{
@@ -558,20 +548,6 @@ bool Entity::IsNetWork()
 	{
 		m_bIsNetWork = true;
 	}
-
-//	else {
-//	}
-
-/*	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->bNetwork == true) {
-			bNetPropertys = true;
-			break;
-		}
-	}*/
-
-/*	if(bNetPropertys != m_bHaveNetPropertys) {
-		cout << "VIM: ARGGGGGGGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHHH" << endl;
-		}*/
 
 	m_bIsNetWork |= m_bHaveNetPropertys;
 	
@@ -637,8 +613,6 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
-	
-	//cout<<"BLIB:"<<sizeof(m_kNetUpdateFlags[iConnectionID])<<endl;
 	
 	//send parent
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
@@ -744,72 +718,12 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	
 	//end whit and empty property name so that client knows theres no more propertys
 	pkNetPacket->Write_Str("");
-	
-/*
-	// Force Pos Updates
-	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
-	if(m_aiNetDeleteList.size())
-		m_iNetUpdateFlags |= OBJ_NETFLAG_DEL;
-
-	// Write Entity Update Flags.
-	pkNetPacket->Write( m_iNetUpdateFlags );
-
-	// Write Delete List
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_DEL) {
-		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
-
-		for(int i=0; i<m_aiNetDeleteList.size(); i++)
-			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
-		}
-*/
-	
-/*	Vector3 kPos;
-	kPos = GetLocalPosV();
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
-		pkNetPacket->Write(GetWorldPosV());
-*/	
-/*	Matrix4 kRotMatrix = GetLocalRotM();
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
-		pkNetPacket->Write( kRotMatrix );
-*/
-//	pkNetPacket->Write(m_fRadius);
-
-//	pkNetPacket->Write_NetStr(m_strName.c_str());
-	//g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
-	
-//	char szPropertyName[256];
-
-	// Write propertys med Propery::bNetwork = true
-/*	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-//		g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
-		if((*it)->bNetwork) {
-			(*it)->m_iNetUpdateFlags |= m_pkObjectMan->m_iForceNetUpdate;
-
-			//Property* hora = (*it);
-			//strcpy(szPropertyName, (*it)->m_acName);
-			if((*it)->m_iNetUpdateFlags) {
-//				g_ZFObjSys.Logf("net", "Add\n");
-				pkNetPacket->Write_NetStr((*it)->m_acName);
-				(*it)->PackTo(pkNetPacket,iConnectionID);
-				}
-			//else {
-				//g_ZFObjSys.Logf("net", "Same as last year.\n");
-			//	}
-			}
-//		else 
-//			g_ZFObjSys.Logf("net", "Dont Add\n");
-	}
-
-	pkNetPacket->Write_NetStr("");
-
-//	m_iNetUpdateFlags = 0;*/
 }
 
 /**	\brief	Unpack Entity.
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
-
 	int iStart = pkNetPacket->m_iPos;
 
 	//read update flags
@@ -831,16 +745,12 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
    // get update status
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_UPDATESTATUS))
 	{
-		//cout<<"got update status"<<endl;	
-		
 	   pkNetPacket->Read( m_iUpdateStatus );		   
 	}
 
 	//get delete list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
 	{	
-		//cout<<"got delete data"<<endl;	
-	
 		int iNumDelObjects;
 		Entity* pkNetSlave;	
 		
@@ -869,11 +779,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		LOGSIZE("Object::Interpolate", 4);
 	}
 
-
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
 	{
-		//cout<<"got position:"<<endl;	
 		Vector3 kPos;
 		pkNetPacket->Read(kPos);
 		SetLocalPosV(kPos);
@@ -883,7 +791,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get rotation	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ROT))
 	{
-		//cout<<"got rotation:"<<endl;	
 		Matrix4 kRot;
 		pkNetPacket->Read(kRot);
 		SetLocalRotM(kRot);
@@ -893,7 +800,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get velocity	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_VEL))
 	{
-		//cout<<"got velocity:"<<endl;	
 		Vector3 kVel;
 		pkNetPacket->Read(kVel);
 		GetVel()=kVel;
@@ -903,7 +809,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
 	{
-		//cout<<"got radius"<<endl;	
 		pkNetPacket->Read(m_fRadius);
 		LOGSIZE("Object::Radius", sizeof(m_fRadius));
 	}
@@ -926,13 +831,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		LOGSIZE("Object::Type", strlen(szStr) + 1);
 	}		
 	
-	
-	//read first property name
+	// Read first property name
 	int iPropertyStart = pkNetPacket->m_iPos;
 	int iPropettyEnd;
-	//float fSize;
-	
-
 
 	char szProperty[256];
 	pkNetPacket->Read_Str(szProperty);
@@ -951,14 +852,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		}
 
 		iPropettyEnd = pkNetPacket->m_iPos;
-		
-		//fSize = m_pkObjectMan->GetWorldObject()->GetVarDouble(string(szProperty));
-		//fSize += (iPropettyEnd - iPropertyStart);
-		//m_pkObjectMan->GetWorldObject()->SetVarDouble(string(szProperty), fSize);
-		//m_pkObjectMan->GetWorldObject()->AddVarDouble(string(szProperty),iPropettyEnd - iPropertyStart);
-
 		LOGSIZE(szProperty, iPropettyEnd - iPropertyStart);
-		//cout << szProperty << " iSize : " << m_pkObjectMan->GetWorldObject()->GetVarDouble(string(szProperty)) << endl;
 
 		//get next property name
 		iPropertyStart = pkNetPacket->m_iPos;
@@ -969,111 +863,6 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
-	
-	
-/*
-	int iDelObjectID;
-
-	int iParentID;
-	pkNetPacket->Read(iParentID);
-
-   // read update status
-   pkNetPacket->Read( m_iUpdateStatus );
-
-//	m_pkParent = ;
-	this->SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
-
-	int iStart = pkNetPacket->m_iPos;
-	
-
-	Vector3 kVec;
-	float	  fFloat;
-
-	pkNetPacket->Read( m_iNetUpdateFlags );
-
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_DEL) {
-		int iNumDelObjects;
-		Entity* pkNetSlave;
-
-		pkNetPacket->Read(iNumDelObjects);
-
-		for(int i=0; i<iNumDelObjects; i++) {
-			pkNetPacket->Read(iDelObjectID );
-			pkNetSlave = m_pkObjectMan->GetObjectByNetWorkID(iDelObjectID);
-			m_pkObjectMan->Delete(pkNetSlave);
-			}
-		}
-
-	if(GetNetUpdateFlag(0,0))
-	{
-		cout<<"got position:"<<endl;	
-		Vector3 kPos;
-		pkNetPacket->Read(kPos);
-		SetLocalPosV(kPos);
-	}
-	
-	if(GetNetUpdateFlag(0,1))
-	{
-		cout<<"got rotation:"<<endl;	
-		Matrix4 kRot;
-		pkNetPacket->Read(kRot);
-		SetLocalRotM(kRot);
-	}
-
-/*	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
-		pkNetPacket->Read(kVec);
-		SetLocalPosV(kVec);
-		//SetPos(kVec);
-		//g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
-		}
-*/
-/*	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
-		Matrix4 kRotMatrix;
-		pkNetPacket->Read(kRotMatrix);
-		//SetWorldPosV(kVec);
-		SetLocalRotM(kRotMatrix);
-		//SetWorldRotV(kVec);
-		//g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
-		}
-*
-	pkNetPacket->Read(fFloat);
-	GetRadius() = fFloat;
-
-	char szStr[256];
-	pkNetPacket->Read_NetStr(szStr);
-	m_strName = szStr;
-	//g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
-	//g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
-*/
-/*	char szProperty[256];
-	pkNetPacket->Read_NetStr(szProperty);
-
-	while(strcmp(szProperty,"") != 0) {
-		int iPStart = pkNetPacket->m_iPos;
-		Property* pProp  = AddProxyProperty(szProperty);
-		if(pProp) {
-			//g_ZFObjSys.Logf("net", " /%s\n", szProperty);
-			pProp->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);
-			}
-		else {
-			cout << "Error in netpacket" << endl;
-			pkNetPacket->SetError(true);
-			return;
-			}
-
-		int iPEnd	= pkNetPacket->m_iPos;
-		//g_ZFObjSys.Logf("net", " -Size: %d\n", (iPEnd - iPStart) + 4);	// +4 for netstring for property name
-
-		pkNetPacket->Read_NetStr(szProperty);
-		}	
-
-	int iEnd = pkNetPacket->m_iPos;
-	//g_ZFObjSys.Logf("net", " .End Of Propertys size: 4\n");
-	//g_ZFObjSys.Logf("net", " .Size for Entity %d\n",(iEnd - iStart) );
-	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
-	m_pkObjectMan->m_iNumOfNetObjects ++;
-	//g_ZFObjSys.Logf("net", "\n");
-*/	
 }
 
 /**	\brief	Load Entity.

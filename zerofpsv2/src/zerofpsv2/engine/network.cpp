@@ -655,7 +655,8 @@ void NetWork::DevShow_ClientConnections()
 			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
 			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iOutOfOrderNetFrame);
 
-		m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 200);
+		m_RemoteNodes[i].m_kRecvSizeGraph.DrawGraph(0, 50 * i + 200);
+		m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 25 + 200);
 	}
 }
 	
@@ -702,8 +703,11 @@ void NetWork::Run()
 			if(NetP.m_kData.m_kHeader.m_iOrder != (m_RemoteNodes[iClientID].m_iLastRecvPacket + 1))
 				m_RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
 			m_RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
+			m_RemoteNodes[iClientID].m_kRecvSizeGraph.PushValue(NetP.m_iLength);
 			}
 		
+		Logf("netpac", " Order: %d, Size: %d\n", NetP.m_kData.m_kHeader.m_iOrder, NetP.m_iLength);
+
 		switch(NetP.m_kData.m_kHeader.m_iPacketType) {
 			// If controll handle_controllpacket.
 			case ZF_NETTYPE_CONTROL:

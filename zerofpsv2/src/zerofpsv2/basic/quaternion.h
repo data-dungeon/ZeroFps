@@ -58,7 +58,11 @@ public:
 // conversion between quaternions, matrices, and angle-axes
     void FromRotationMatrix (const Matrix3& kRot);
     void ToRotationMatrix (Matrix3& kRot) const;
-    void FromAngleAxis (const float& rfAngle, const Vector3& rkAxis);
+ 
+    void FromRotationMatrix (const Matrix4& kRot);
+    void ToRotationMatrix (Matrix4& kRot) const;
+	 
+	 void FromAngleAxis (const float& rfAngle, const Vector3& rkAxis);
     void ToAngleAxis (float& rfAngle, Vector3& rkAxis) const;
     void FromAxes (const Vector3* akAxis);
     void ToAxes (Vector3* akAxis) const;

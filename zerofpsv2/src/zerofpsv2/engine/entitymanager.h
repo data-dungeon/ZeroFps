@@ -110,6 +110,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 //		void TESTVIM_LoadArcheTypes(char* szFileName);
 
+		NetPacket	m_OutNP;		// Used to create/send updates to clients.
+
 	public:
 		int		m_iForceNetUpdate;					
 		float		m_fEndTimeForceNet;

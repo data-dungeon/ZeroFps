@@ -26,6 +26,18 @@ P_Mad::P_Mad()
 
 void P_Mad::Update() 
 {
+/*
+	Matrix4 kOldMat4 = m_pkObject->GetLocalRotM();
+	Quaternion QRot;
+	QRot.FromRotationMatrix(kOldMat4);
+	QRot.Normalize();
+	cout << "Playing with evil matrix" << endl;
+	Matrix4 kNewMat4;
+	kNewMat4.Identity();
+	QRot.ToRotationMatrix(kNewMat4);
+	m_pkObject->SetLocalRotM(kNewMat4);
+*/
+
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
