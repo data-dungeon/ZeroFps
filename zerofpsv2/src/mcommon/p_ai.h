@@ -63,6 +63,7 @@ class MCOMMON_API P_AI: public Property
       void NextOrder();
 
 		void AddEnemy ( int iEnemyID );
+		void RemoveEnemy ( int iEnemyID );
 
       void AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );
       void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );

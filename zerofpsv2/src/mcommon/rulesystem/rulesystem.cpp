@@ -81,11 +81,11 @@ int DealDamage ( map<string,int>* pkDamage, CharacterStats* pkVictim )
    }
 
    // lose life
-   pkVictim->AddHP ( -fTotalDamage );
+   pkVictim->AddHP ( -int(fTotalDamage) );
 
    //cout << "Lost " << fTotalDamage << " life! " << pkVictim->GetHP() << " hp left." << endl;
 
-   return fTotalDamage;
+   return int(fTotalDamage);
 
 }
 

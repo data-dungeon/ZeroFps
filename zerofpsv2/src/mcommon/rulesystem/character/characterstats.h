@@ -26,11 +26,13 @@ public:
 	int m_iValue;
 	float m_fExp;
 
+
    StatDescriber() 
 	{ 
 		m_iValue = 0;
 		m_fExp = 0; 
 	}
+
 };
 
 extern MCOMMON_API map<string, SkillType> g_kSkillExps;

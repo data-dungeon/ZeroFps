@@ -360,7 +360,7 @@ void P_Spell::DoCollisions()
          if ( bOk )
          {
 				Vector3 Pos = m_pkObject->GetLocalPosV();
-            float fDist = kObjects[i]->GetLocalPosV().DistanceXZTo (Pos );
+            float fDist = float( kObjects[i]->GetLocalPosV().DistanceXZTo ( Pos ) );
 
             // calculate collision radius
             float fColRad = ((m_fAge / m_pkSpellType->m_fLifeTime) * m_pkSpellType->m_fEndRadius) +

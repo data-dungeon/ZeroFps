@@ -40,7 +40,7 @@ public:
    // returns false if the object wasn't found in the container
    bool RemoveObject ( int iRemoveFromContainer );
 
-   bool IsEmpty()                      { return m_kContainedObjects.size(); }
+   bool IsEmpty()                      { return m_kContainedObjects.empty(); }
 
    void AddObjectToBeLoaded (int iAddToContainer);
 

@@ -514,8 +514,8 @@ void MistClient::Input()
 		else
 		{
 			// use middle of screen as center of action menu
-			mx = m_iWidth  / 2.f;
-			my = m_iHeight / 2.f;
+			mx = int(m_iWidth  / 2.f);
+			my = int(m_iHeight / 2.f);
 		}
 
 		if ( OpenActionMenu(mx, my) && m_iMouseMode == eCAMERA_MODE )
@@ -1671,8 +1671,8 @@ bool MistClient::OpenActionMenu(int mx, int my)
 				pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
 		}
 
-		x -= sin(grad) * fOffset;
-		y -= cos(grad) * fOffset;
+		x -= int(sin(grad) * fOffset);
+		y -= int(cos(grad) * fOffset);
 
 		grad -= (zf_pi / (float) MAX_NUM_ACTION_BUTTONS);
 	}
@@ -1724,7 +1724,7 @@ void MistClient::UpdateCullObjects()
 	vector<Entity*> kEntitys;
 	m_pkObjectMan->TestLine(&kEntitys,kStart,kDir);
 	
-	int i;
+	unsigned int i;
 
 	//make all old objects visible again
 	for(i =0;i<mads.size();i++)
@@ -1822,7 +1822,7 @@ void MistClient::ChangeMode ( eMOUSE_MODES eMode )
 			pkGui->ShowCursor(false);
 			break;
 		case eACTION_MODE:
-			m_pkInput->SetCursorInputPos ( m_iWidth/2.f, m_iHeight/2.f );
+			m_pkInput->SetCursorInputPos ( int(m_iWidth/2.f), int(m_iHeight/2.f) );
 			pkGui->ShowCursor(true);
 			break;
 	}

@@ -63,7 +63,7 @@ void P_AI::Update()
 				pkMoveOrder->m_kOrderType = "MoveTo";
          
 				//dvoids fulhack deluxe
-				Vector3 kSlot = Vector3(sin(DegToRad(rand()%360))*1.5,0,sin(DegToRad(rand()%360))*1.5);
+				Vector3 kSlot = Vector3(float(sin(DegToRad(float(rand()%360))))*1.5f ,0.f ,float(sin(DegToRad(float(rand()%360)))*1.5f));
          
 				pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV() + kSlot;
 
@@ -154,7 +154,7 @@ void P_AI::Update()
          NextOrder();
       }
       else
-         m_pkCurrentOrder->m_iTargetID -= m_pkZeroFps->GetGameFrameTime() * 10000;
+         m_pkCurrentOrder->m_iTargetID -= int(m_pkZeroFps->GetGameFrameTime() * 10000);
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Face" )
    {
@@ -394,7 +394,31 @@ void P_AI::ClearDynamicOrders()
 
 void P_AI::AddEnemy ( int iEnemyID )
 {
-	
+	m_kEnemies[iEnemyID] = true;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void P_AI::RemoveEnemy ( int iEnemyID )
+{
+	map<int, bool>::iterator kIte = m_kEnemies.find (iEnemyID);
+
+	if ( kIte != m_kEnemies.end() )
+		m_kEnemies.erase (kIte);
+
+}
+
+// ------------------------------------------------------------------------------------------
+
+// Removes dead or non-active enemies from enemylist
+void P_AI::CleanEnemies ()
+{
+	for ( map<int, bool>::iterator kIte = m_kEnemies.begin();
+			kIte != m_kEnemies.end(); kIte++ )
+	{
+		if ( !m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte).first ) )
+			m_kEnemies.erase ( kIte++ );
+	}
 }
 
 // ------------------------------------------------------------------------------------------

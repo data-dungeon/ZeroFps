@@ -110,10 +110,10 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       strcpy( temp, (*kPointIte).first.c_str() ); // name
 	   pkPackage->Write((void*)&temp,128,1);        
 
-      fValue = (*kPointIte).second.Max(); // max value
+      fValue = float((*kPointIte).second.Max()); // max value
 	   pkPackage->Write((void*)&fValue,sizeof(float),1);        
 
-      fValue = (*kPointIte).second.Value(); // value
+      fValue = float((*kPointIte).second.Value()); // value
 	   pkPackage->Write((void*)&fValue,sizeof(float),1);        
 
    }
@@ -233,11 +233,11 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 	   pkPackage->Read((void*)&fValue,sizeof(float),1); // max value
       
-      m_pkCharStats->m_kPointStats[temp].SetMaxValue ( fValue );
+      m_pkCharStats->m_kPointStats[temp].SetMaxValue ( int(fValue) );
 
 	   pkPackage->Read((void*)&fValue,sizeof(float),1); // value
 
-      m_pkCharStats->m_kPointStats[temp] = fValue;
+      m_pkCharStats->m_kPointStats[temp] = int(fValue);
    }
    
    // load data

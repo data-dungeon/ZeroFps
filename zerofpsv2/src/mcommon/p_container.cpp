@@ -129,7 +129,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 {
    // do a request to server for update
    if ( pkItemList )
-      for ( int i = 0; i < m_kContainedObjects.size(); i++ )
+      for ( unsigned int i = 0; i < m_kContainedObjects.size(); i++ )
       {
          Entity *pkEntity = 
             m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );

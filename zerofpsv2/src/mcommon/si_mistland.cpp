@@ -3120,7 +3120,6 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3)
 	{
 		double dId;
-		double x,y,z;
       
       char temp[128] = "dynamic";
 
