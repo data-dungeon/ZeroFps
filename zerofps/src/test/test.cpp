@@ -18,22 +18,13 @@ void Test::OnInit(void) {
 	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
 	test->GenerateTextures();
-//	exit(0);
 
-/*
-	test2=new HeightMap();
-	test2->Random();
-	test2->GenerateNormals();
-	test2->SetPosition(Vector3(0,0,50));
-*/
-//	float x,y;
-//	pkRender->GiveTexCor(x,y,4);
-//s	exit(1);
-
+	IntToChar(fps,pkFps->m_iFps);
+	fpsupdate=0;
 
 	GLfloat light_position[] ={1000,-200,0,1};
-	GLfloat white_light[] = {0.2,0.2,0.2,0.6};
-	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
+	GLfloat white_light[] = {0.2,0.2,0.2,0.2};
+	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,1};
 
   glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
   glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -58,7 +49,18 @@ void Test::OnIdle(void) {
 
 	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
-	cout<<pkFps->m_iFps<<endl;
+//	cout<<pkFps->m_iFps<<endl;
+}
+
+void Test::OnHud(void) {	
+	pkRender->SetFont("file:../data/textures/text/console.bmp");
+	fpsupdate++;
+	if(fpsupdate>100){	
+		IntToChar(fps,pkFps->m_iFps);
+		fpsupdate=0;
+	}
+	pkRender->Print(Vector3(-0.2,0.2,-0.25),Vector3(0,0,0),Vector3(0.01,.01,.01),fps);
+
 }
 
 

@@ -33,7 +33,7 @@ class ENGINE_API Application {
 		
 		virtual void OnInit(void)=0;
 		virtual void OnIdle(void)=0;
-
+		virtual void OnHud(void)=0;
 
 };
 

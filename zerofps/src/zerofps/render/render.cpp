@@ -101,13 +101,13 @@ void Render::PrintChar(char cChar) {
 	
 	
 	
-	glBlendFunc(GL_ONE,GL_ALPHA); 		
+//	glBlendFunc(GL_ONE,GL_ALPHA); 		
  	m_pkTexMan->BindTexture(aCurentFont);  
 
 	glPushMatrix();
 	  glBegin(GL_QUADS);			
-			glColor4f(1.0,1.0,1.0,1.0);  	  
- 	  	glNormal3f(0,1,0);
+//			glColor4f(1.0,1.0,1.0,1.0);  	  
+ 	  	glNormal3f(0,0,1);
  	  
 	   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
   	 	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
@@ -116,7 +116,7 @@ void Render::PrintChar(char cChar) {
 		glEnd();				
 	glPopMatrix();
 	
-	m_pkTexMan->BindTexture(0);
+//	m_pkTexMan->BindTexture(0);
 	
 /*	char aTexture[255]="data/textures/text/ .bmp";
 		
@@ -312,7 +312,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 //	glPolygonMode(GL_FRONT,GL_LINE);	
 	
 	GLfloat mat_specular[]={1,1,1,1};
-	GLfloat mat_shininess[]={1};
+	GLfloat mat_shininess[]={0};
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 

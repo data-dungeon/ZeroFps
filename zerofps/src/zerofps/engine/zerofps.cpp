@@ -57,7 +57,9 @@ void ZeroFps::MainLoop(void) {
 				if(m_pkInput->Pressed(F12)){
 					m_pkInput->ToggleGrab();
 				}
-				m_pkApp->OnIdle();			
+//				m_pkApp->OnHud();
+				Camera();//camera translations/rotations				
+				m_pkApp->OnIdle();		
 				Swap();
 
 				break;			
@@ -127,7 +129,11 @@ void ZeroFps::Swap(void) {
 	m_fLastFrameTime=SDL_GetTicks();
 	m_iFps=int(1000/m_fFrameTime);	
 
-	if(m_iState==state_normal) {
+
+}
+
+void ZeroFps::Camera(void) {
+//	if(m_iState==state_normal) {
 		// Update Camera
 		switch(m_iCamMode)
 		{
@@ -145,9 +151,8 @@ void ZeroFps::Swap(void) {
 				m_kCamRot->x,m_kCamRot->y,m_kCamRot->z,0,1,0);
 			break;
 		}
-	}
+//	}
 }
-
 
 
 

@@ -17,11 +17,14 @@ class Test :public Application {
 	GLfloat white_light[] ;
 	GLfloat lmodel_ambient[];
 
+	int fpsupdate;
+	char fps[20];
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);
 		void OnIdle(void);
+		void OnHud(void);
 
 
 		void input();

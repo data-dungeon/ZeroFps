@@ -63,6 +63,7 @@ class ZeroFps {
 		void MainLoop(void);		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers
+		void Camera(void);
 		
 		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 		inline float GetFrameTime() {return m_fFrameTime;};
