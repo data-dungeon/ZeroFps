@@ -53,7 +53,7 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 					m_piTerrain[iIndex] = GRASS;
 					break;
 				case 1: // vatten
-					m_piTerrain[iIndex] = WATER;
+					m_piTerrain[iIndex] = 999;//WATER;
 					break;
 				case 2: // träsk
 					m_piTerrain[iIndex] = SWAMP;
@@ -94,7 +94,7 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			}
 		}
 
-	*m_ppkPathFind = new PathFind(m_piCostMap, iMapSize, BLOCKED);
+	*m_ppkPathFind = new PathFind(m_piCostMap, iMapSize, /*BLOCKED*/999);
 }
 
 Point PathBuilder::GetMapTile(Vector3 pos)

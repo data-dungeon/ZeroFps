@@ -61,7 +61,7 @@ public:
 class BASIC_API Point  
 {
 public:
-	Point() { }
+	Point() { x=-2147483647-1; y=-2147483647-1; }
 	Point(int nx, int ny) { x=nx, y=ny; }
 
 	inline bool operator==(Point a)

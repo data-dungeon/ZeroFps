@@ -93,7 +93,6 @@ private:
 	NodePtr m_pkSearchNode;
 	
 	int* m_piMapTerrain;
-	static int m_siMapWidth;
 	const unsigned int BLOCKED_VALUE;
 
 	// Advances search one step 
@@ -116,6 +115,8 @@ private:
 	NodePtr GetSolutionStart();
 	NodePtr GetSolutionNext();
 	NodePtr GetNextNextDiagonalStep(NodePtr pkNode);
+	void ReversePath();
+	bool ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY);
 
 public: 
 	
@@ -126,8 +127,7 @@ public:
 	bool GetNextStep(int &riSquareX, int &riSquareY);
 	bool Rebuild(int startx, int starty, int endx, int endy);
 
-	static int s_iMapWidth;
-
+	static int m_siMapWidth;
 	friend class PathBuilder;
 };
 

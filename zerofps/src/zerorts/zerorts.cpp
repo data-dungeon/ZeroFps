@@ -199,7 +199,6 @@ void ZeroRTS::Input()
 		{
 			m_pkMoveObject = pkObjectMan->GetObjectByNetWorkID(info.iObject);
 			m_pkEnd = m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
-			m_pkTestPath->Reset();
 		}
 		else
 		{
@@ -207,7 +206,11 @@ void ZeroRTS::Input()
 			{
 				m_pkEnd = info.kSquare;
 				m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
-				m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y);
+				if(m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y) == false)
+				{
+					m_pkEnd = m_pkStart;
+					printf("Rebuild Failed\n");
+				}
 			}
 		}
 
@@ -513,7 +516,9 @@ bool ZeroRTS::MovePath(Object* pkObject)
 	{
 		int x=-1, y=-1;
 		if(!m_pkTestPath->GetNextStep(x,y))
+		{
 			return true; // do nothing
+		}
 		
 		if(!(x==-1&&y==-1))
 			SetObjDstPos(x, y, pkObject);

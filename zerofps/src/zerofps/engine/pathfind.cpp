@@ -4,7 +4,7 @@
 
 #include "pathfind.h"
 
-int PathFind::s_iMapWidth = 256;
+int PathFind::m_siMapWidth = 256;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -14,7 +14,7 @@ PathFind::PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue
 	: ZFObject("PathFind") , m_pkSearchNode( NULL ), BLOCKED_VALUE(uiBlockedValue)
 {
 	m_piMapTerrain = piMapTerrain;
-	s_iMapWidth = iMapWidth;
+	m_siMapWidth = iMapWidth;
 }
 
 PathFind::~PathFind()
@@ -24,6 +24,17 @@ PathFind::~PathFind()
 
 bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY )
 {
+	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
+		return false;
+
+	// Byt start och slut ruta så att sökvägen byggs upp
+	// åt andra hållet. Detta är en nödvändig optimering
+	// för att det skall gå fortare för algorithmen att
+	// upptäcka om man har klickat på en nod som inte går att
+	// nå (en ruta omringad av blockerad terrän, tex. en ö)
+/*	swap(iStartPosX, iDestPosX);
+	swap(iStartPosY, iDestPosY);*/
+
 	m_pkStartNode = new Node(iStartPosX, iStartPosY);
 	m_pkDestNode = new Node(iDestPosX, iDestPosY);
 
@@ -59,6 +70,7 @@ bool PathFind::GetNextStep(int &riSquareX, int &riSquareY)
 		m_kqPath.pop();
 		return true;
 	}
+	
 	return false;
 }
 
@@ -422,13 +434,13 @@ float PathFind::Node::GetHeuristicCost( Point nodeGoal )
 //
 int PathFind::GetTerrainCost(int x, int y)
 {
-	if( x < 0 || x >= s_iMapWidth ||
-		y < 0 || y >= s_iMapWidth)
+	if( x < 0 || x >= m_siMapWidth ||
+		y < 0 || y >= m_siMapWidth)
 	{
 		return BLOCKED_VALUE;	 
 	}
 
-	return m_piMapTerrain[(y*s_iMapWidth)+x];
+	return m_piMapTerrain[(y*m_siMapWidth)+x];
 }
 
 
@@ -446,8 +458,17 @@ bool PathFind::FillQueue()
 
 	SEARCH_STATE uiSearchState;
 
+	static int it=0, max=(m_siMapWidth/6)*(m_siMapWidth/6);
+
 	do
 	{
+		if(it++ > max)
+		{
+			it=0;
+			Reset();
+			return false;
+		}
+
 		uiSearchState = SearchStep();
 	} while(uiSearchState == ACTIVE);
 
@@ -476,7 +497,9 @@ bool PathFind::FillQueue()
 		return false;
 	}
 
-	return false;
+	//ReversePath();  // Eftersom vi byggde upp sökvägen från andra hållet
+					// måste vi nu vända på kön.
+	return true;
 }
 
 
@@ -519,4 +542,42 @@ PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
 		return pkNextNext;
 
 	return NULL;
+}
+
+bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
+{
+	// Är rutan i sig blockerad
+	if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
+		return true;
+
+	if( GetTerrainCost(iDestPosX+1, iDestPosY) == BLOCKED_VALUE
+		&& GetTerrainCost(iDestPosX, iDestPosY+1) == BLOCKED_VALUE
+		&& GetTerrainCost(iDestPosX-1, iDestPosY) == BLOCKED_VALUE
+		&& GetTerrainCost(iDestPosX, iDestPosY-1) == BLOCKED_VALUE )
+	{
+		printf("PathFind::ImpossibleToReach!\n"); 
+		return true;
+	}
+
+	return false;
+}
+
+void PathFind::ReversePath()
+{
+	int size = m_kqPath.size();
+
+	if(size <= 1)
+		return;
+
+	vector<Point> apa;
+	apa.reserve(size);
+
+	for(int i=0; i<size; i++)
+	{
+		apa.push_back(m_kqPath.front());
+		m_kqPath.pop();
+	}
+
+	for(i=0; i<size; i++)
+		m_kqPath.push(apa[size-1-i]);
 }
