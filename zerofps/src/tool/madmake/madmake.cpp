@@ -57,6 +57,13 @@ IMadImport* GetImportObject(char *filename)
 
 	char* ext = strchr(ucaInFile, '.');
 	
+
+	
+	if(strcmp(ext, ".mdl") == 0)
+	{
+		pkImport = new ModellMD1;
+	}
+
 	if(strcmp(ext, ".md2") == 0)
 	{
 		pkImport = new ModellMD2;
@@ -125,10 +132,10 @@ int main(int argc, char* argv[])
 	strcpy(ucaInFile, argv[iCurArg]);
 	strcpy(ucaOutFile, argv[iCurArg + 1]);
 	
-	/*strcpy(ucaInFile, "test.mm");
-	strcpy(ucaOutFile, "gordo.mad");*/
+//	strcpy(ucaInFile, "progs/player.mdl");
+//	strcpy(ucaOutFile, "player.mad");
 	strcpy(ucaTextureNames, "testtex.tga");
-
+ 
 	cout << "InFile: " << ucaInFile << endl;
 	cout << "ucaOutFile: " << ucaOutFile << endl;
 
@@ -142,6 +149,7 @@ int main(int argc, char* argv[])
 	MadExporter madexp;
 	pkImport->Read(ucaInFile);
 	pkImport->Export(&madexp);
+
 	madexp.Save(ucaOutFile);
 
 	return 0;

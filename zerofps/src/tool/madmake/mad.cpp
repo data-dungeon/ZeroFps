@@ -185,6 +185,8 @@ void MadExporter::ShowInfo(void)
 
 void MadExporter::Save(char* filename)
 {
+	kHead.iNumOfAnimation = akAnimation.size();
+
 	cout << "Save " << filename << endl;
 	ShowInfo();
 

@@ -82,19 +82,34 @@ struct daliasframe_s
 
 struct mframe_s
 {
-	daliasframe_s head;					// Frame Info.
-	dtrivertx_s *vertex;				// Array of vertices
+	daliasframe_s head;						// Frame Info.
+	dtrivertx_s *vertex;					// Array of vertices
 };
 
-struct mdl_t 
+class ModellMD1 : public IMadImport
 {
-	PAKFileFp*    mdlfp;
-	mdlhead_s		head;				
-	dtriangle_s*	tris;				// Triangles.
-	mframe_s*		frames;				// Frames.
-	dstvert_s*		skinvert;			// Texture coo.
-    int				new_skinwidth;		// New skinsize after resampling to power of 2.
-	int				new_skinheight;		
+private:
+	void PrintInfo();
+
+	bool ReadFrames(void);
+	void ReadTriangles(void);
+	int  ReadSkins(void);
+	void TransformTexCoo(int t, int v, MadTextureCoo *st);
+
+public:
+	ModellMD1() {};
+	~ModellMD1() {};
+
+	PAKFileFp			md1fp;
+	mdlhead_s			head;				
+	dtriangle_s*		tris;				// Triangles.
+	mframe_s*			frames;				// Frames.
+	dstvert_s*			skinvert;			// Texture coo.
+    int					new_skinwidth;		// New skinsize after resampling to power of 2.
+	int					new_skinheight;		
+	
+	void Read( char* filename );			// Read data in own format to this.
+	bool Export(MadExporter* mad);			// Export this to mad.
 };
 
 // Quake 2
@@ -162,19 +177,14 @@ public:
 	ModellMD2() {};
 	~ModellMD2() {};
 
-	PAKFileFp    md2fp;
-	q2mdlhead_s head;
-	md2_dstvert_t *skinvert;
-	md2_dtriangle_t* tris;
-	q2frame_t* frames;
+	PAKFileFp			m_kFile;
+	q2mdlhead_s			m_kHead;
+	md2_dstvert_t*		m_pakSkinVert;
+	md2_dtriangle_t*	m_pakTris;
+	q2frame_t*			m_pakFrames;
 
 	void Read( char* filename );	// Read data in own format to this.
 	bool Export(MadExporter* mad);	// Export this to mad.
-
-//	void ReadMD2( char* filename );
-//	bool Export(pmd_c* pmd);
-//	bool Export(MadExporter* mad);
-
 };
 
 // Quake 3:

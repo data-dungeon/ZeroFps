@@ -252,6 +252,23 @@ size_t PAKFileFp::Tell(void)
 
 bool PAKFileFp::Seek(size_t iOffset, int iOrigin)
 {
-	return !fseek(pkFp,lBase + iOffset,iOrigin);
+	int iReturnValue;
+
+	switch(iOrigin)  {
+		case SEEK_CUR:
+			iReturnValue = fseek(pkFp,iOffset,iOrigin);
+			break;
+
+		case SEEK_END:
+			iReturnValue = fseek(pkFp,lBase + iOffset,iOrigin);
+			break;
+
+		case SEEK_SET:
+			iReturnValue = fseek(pkFp,lBase + iOffset,iOrigin);
+			break;
+		}
+
+	//	return !fseek(pkFp,lBase + iOffset,iOrigin);
+	return iReturnValue;
 }
 

@@ -58,42 +58,42 @@ void ModellMD2::Read( char* filename )
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
 	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
 
-	md2fp.Open(filename);
-	if(md2fp.pkFp == NULL)	return;
+	m_kFile.Open(filename);
+	if(m_kFile.pkFp == NULL)	return;
 
 	// Check that its a quake series modell file.
-	int q_ver = GetQuakeModellVersion(&md2fp, filename);
+	int q_ver = GetQuakeModellVersion(&m_kFile, filename);
 
 	if (q_ver == 0)	{
-		md2fp.Close();	
+		m_kFile.Close();	
 		return;
 		}
 
 	// Read the header.
-	md2fp.Read(&head, sizeof(q2mdlhead_s),1);
+	m_kFile.Read(&m_kHead, sizeof(q2mdlhead_s),1);
 
-	md2fp.Read(g_skins, head.num_skins * MD2_MAX_SKINNAME, 1);
+	m_kFile.Read(g_skins, m_kHead.num_skins * MD2_MAX_SKINNAME, 1);
 
 	// Read texture coo
-	skinvert = new md2_dstvert_t [head.num_st];
-	md2fp.Read(skinvert, head.num_st * sizeof(md2_dstvert_t), 1);
+	m_pakSkinVert = new md2_dstvert_t [m_kHead.num_st];
+	m_kFile.Read(m_pakSkinVert, m_kHead.num_st * sizeof(md2_dstvert_t), 1);
 
 	// Read triangles.
-	tris = new md2_dtriangle_t [head.num_tris];
-	md2fp.Read(tris, head.num_tris * sizeof(md2_dtriangle_t), 1);
+	m_pakTris = new md2_dtriangle_t [m_kHead.num_tris];
+	m_kFile.Read(m_pakTris, m_kHead.num_tris * sizeof(md2_dtriangle_t), 1);
 
 	// Read frames.
-	frames = new q2frame_t [head.num_frames];
-	memset(frames,0,sizeof(q2frame_t) * head.num_frames);
+	m_pakFrames = new q2frame_t [m_kHead.num_frames];
+	memset(m_pakFrames,0,sizeof(q2frame_t) * m_kHead.num_frames);
 
-	for(int i=0;i<head.num_frames;i++)
+	for(int i=0;i<m_kHead.num_frames;i++)
 	{
-		md2fp.Read(&frames[i].aliasframe, sizeof(md2_daliasframe_t), 1);
-		frames[i].vertex = new md2_dtrivertx_t [head.num_xyz];
-		md2fp.Read(frames[i].vertex, head.framesize - sizeof(md2_daliasframe_t),1);
+		m_kFile.Read(&m_pakFrames[i].aliasframe, sizeof(md2_daliasframe_t), 1);
+		m_pakFrames[i].vertex = new md2_dtrivertx_t [m_kHead.num_xyz];
+		m_kFile.Read(m_pakFrames[i].vertex, m_kHead.framesize - sizeof(md2_daliasframe_t),1);
 	}
 
-	md2fp.Close();
+	m_kFile.Close();
 }
 
 /*
@@ -204,10 +204,10 @@ bool ModellMD2::Export(MadExporter* mad)
 	int i,f;
 
 	mad->kHead.iVersionNum		= 1;
-	mad->kHead.iNumOfTextures	= head.num_skins;
-	mad->kHead.iNumOfVertex		= head.num_xyz;
-	mad->kHead.iNumOfFaces		= head.num_tris;
-	mad->kHead.iNumOfFrames		= head.num_frames;
+	mad->kHead.iNumOfTextures	= m_kHead.num_skins;
+	mad->kHead.iNumOfVertex		= m_kHead.num_xyz;
+	mad->kHead.iNumOfFaces		= m_kHead.num_tris;
+	mad->kHead.iNumOfFrames		= m_kHead.num_frames;
 //	mad->kHead.iNumOfVertex		= head.num_st;
 	mad->kHead.iNumOfSubMeshes	= 1;
 	mad->kHead.iNumOfAnimation	= 0;
@@ -219,7 +219,7 @@ bool ModellMD2::Export(MadExporter* mad)
 	for(i=0; i<mad->kHead.iNumOfTextures; i++) {
 		sprintf(NewSkinName,"skin_%d", i);
 		strcpy(mad->akTextures[i].ucTextureName, NewSkinName);
-		if(i < head.num_skins)
+		if(i < m_kHead.num_skins)
 			g_PakFileSystem.Unpack(g_skins[i], NewSkinName);
 		}
 
@@ -229,28 +229,28 @@ bool ModellMD2::Export(MadExporter* mad)
 
 	akVertexFrames.resize(mad->kHead.iNumOfFrames);
 	akPmdTriangles.resize(mad->kHead.iNumOfFaces);
-	akTextureCoo.resize(head.num_st);
+	akTextureCoo.resize(m_kHead.num_st);
 
 	// Read Triangles
 	int vi = 0;
 	for(i=0; i<mad->kHead.iNumOfFaces; i++) {
-		akPmdTriangles[i].vertex_index[0] = tris[i].index_xyz[0];
-		akPmdTriangles[i].texcoo_index[0] = tris[i].index_st[0];
-		akPmdTriangles[i].vertex_index[1] = tris[i].index_xyz[1];
-		akPmdTriangles[i].texcoo_index[1] = tris[i].index_st[1];
-		akPmdTriangles[i].vertex_index[2] = tris[i].index_xyz[2];
-		akPmdTriangles[i].texcoo_index[2] = tris[i].index_st[2];
+		akPmdTriangles[i].vertex_index[0] = m_pakTris[i].index_xyz[0];
+		akPmdTriangles[i].texcoo_index[0] = m_pakTris[i].index_st[0];
+		akPmdTriangles[i].vertex_index[1] = m_pakTris[i].index_xyz[1];
+		akPmdTriangles[i].texcoo_index[1] = m_pakTris[i].index_st[1];
+		akPmdTriangles[i].vertex_index[2] = m_pakTris[i].index_xyz[2];
+		akPmdTriangles[i].texcoo_index[2] = m_pakTris[i].index_st[2];
 		akPmdTriangles[i].texture_num = 0;
 		}
 
-	for(i=0; i<head.num_st; i++) {
-		akTextureCoo[i].s = (float) skinvert[i].s / head.skinwidth;
-		akTextureCoo[i].t = (float) skinvert[i].t / head.skinheight;
+	for(i=0; i<m_kHead.num_st; i++) {
+		akTextureCoo[i].s = (float) m_pakSkinVert[i].s / m_kHead.skinwidth;
+		akTextureCoo[i].t = (float) m_pakSkinVert[i].t / m_kHead.skinheight;
 		}
 
 	md2_dtrivertx_t		*vert;
 	md2_daliasframe_t	*af;
-	af = &frames[0].aliasframe;
+	af = &m_pakFrames[0].aliasframe;
 	float x,y,z;
 
 	Mad_Animation* pkAnim;
@@ -261,7 +261,7 @@ bool ModellMD2::Export(MadExporter* mad)
 
 	for(f=0; f<mad->kHead.iNumOfFrames; f++) {
 		// Alloc frame mem
-		af = &frames[f].aliasframe;
+		af = &m_pakFrames[f].aliasframe;
 
 		int iFrameNumIndex = strcspn( af->name, "1234567890" );
 
@@ -283,7 +283,7 @@ bool ModellMD2::Export(MadExporter* mad)
 		//akPmdVertexFrames[f].vertex.resize(mad->kHead.iNumOfVertex);
 
 		for(int v=0; v < mad->kHead.iNumOfVertex; v++) {
-			vert = &frames[f].vertex[v];
+			vert = &m_pakFrames[f].vertex[v];
 
 			x = (float) (af->scale[0] * vert->v[0]) + af->translate[0];
 			y = (float) (af->scale[1] * vert->v[1]) + af->translate[1];

@@ -97,6 +97,10 @@ SOURCE=.\madmake.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\md1.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\md2.cpp
 # End Source File
 # Begin Source File
