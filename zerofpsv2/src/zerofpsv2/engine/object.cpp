@@ -67,8 +67,10 @@ Object::~Object()
 	
 	// Remove All our propertys.
 	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++)
+	{
+		(*it)->SetObject(0);
 		delete (*it);
-	
+	}
 	// Tell object manger that we are no more.
 	m_pkObjectMan->Remove(this);
 }
