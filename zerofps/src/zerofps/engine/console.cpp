@@ -6,7 +6,7 @@
 using namespace std;
 
 Console::Console()
-  : BasicConsole("Console") {
+  : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
 	m_pkEngine	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkInput	= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));	
@@ -25,12 +25,15 @@ Console::Console()
 	Print(" Type help for help =)");
 	Print("");
 
+	m_nStartLine = 0;
+	m_nLastCommand = 0;
+
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
 	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
 }
 
 void Console::Update(void) {
-	m_pkRender->DrawConsole(m_aCommand,&m_kText);	
+	m_pkRender->DrawConsole(m_aCommand,&m_kText/*,m_nStartLine*/);	
 	
 	int iKey;
 	while(m_pkInput->SizeOfQueue() > 0) {
@@ -63,6 +66,44 @@ void Console::Update(void) {
 			m_bShift=true;
 		}else{
 			m_bShift=false;
+		}
+
+		if(iKey==KEY_PAGEDOWN)
+		{
+			if(m_nStartLine < m_kText.size())
+				m_nStartLine++;
+			continue;
+		}
+		if(iKey==KEY_PAGEUP)
+		{
+			if(m_nStartLine > 0)
+				m_nStartLine--;
+			continue;
+		}
+
+		if(iKey==KEY_DOWN)
+		{
+			if(m_nLastCommand > 0)
+			{
+				m_nLastCommand--;
+				strcpy(m_aCommand, m_kCommandHistory.at(m_nLastCommand).c_str());	
+			}
+			continue;
+		}
+		if(iKey==KEY_UP)
+		{
+			if(m_nLastCommand+1 < m_kCommandHistory.size())
+			{
+				m_nLastCommand++;
+				strcpy(m_aCommand, m_kCommandHistory.at(m_nLastCommand).c_str());		
+			}
+			else
+			{
+				int last = m_kCommandHistory.size()-1;
+				if(last >= 0)
+					strcpy(m_aCommand, m_kCommandHistory.at(last).c_str());		
+			}
+			continue;
 		}
 		
 //		if(iKey==RSHIFT || iKey==LSHIFT)
@@ -188,7 +229,13 @@ void Console::Execute(char* aText) {
 	
 	if(!g_ZFObjSys.RunCommand(aText))
 		Printf("Command Not Found");
+	else
+	{
+		m_kCommandHistory.push_back(string(aText));
+
+		if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
+		{
+			m_kCommandHistory.pop_front();
+		}
+	}
 }
-
-
-
