@@ -25,7 +25,8 @@ class BASIC_API Vector3 {
 	
 // Metoder
 		Vector3(float fX,float fY,float fZ) : x(fX), y(fY), z(fZ) { };
-		Vector3() { };											
+
+		Vector3() {	};											
 
 		// Assign
 		Vector3& operator=(const Vector3 &kOtherV3) {

@@ -132,9 +132,8 @@ void ZeroRTS::OnIdle()
 		MovePath(m_pkMoveObject);
 
 	int iObjID = pkFps->GetClientObjectID();
-	if(m_iSelfObjectID == -1 )
-		pkConsole->Printf("SelfID: %d" , iObjID);
 	m_iSelfObjectID = iObjID;
+
 
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
@@ -326,6 +325,7 @@ void ZeroRTS::OnHud(void)
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());	
 	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
 	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
+	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();

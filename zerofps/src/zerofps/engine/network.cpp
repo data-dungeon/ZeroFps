@@ -145,7 +145,8 @@ NetWork::NetWork()
 
 	m_eNetStatus = NET_NONE;
 
-	SetMaxNodes( 4 );	// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
+	SetMaxNodes( 4 );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
+	m_iMaxNumberOfNodes = 4;	
 }
 
 NetWork::~NetWork()
