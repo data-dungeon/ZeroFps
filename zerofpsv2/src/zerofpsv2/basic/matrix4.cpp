@@ -579,7 +579,7 @@ Vector3 Matrix4::GetRotVector()
       ftry      = data[4];
       angle_z  = atan2( ftry, ftrx ) * degtorad;
 	}
-	
+
 	angle_x = Clamp( angle_x, 0, 360 );
 	angle_y = Clamp( angle_y, 0, 360 );
 	angle_z = Clamp( angle_z, 0, 360 );

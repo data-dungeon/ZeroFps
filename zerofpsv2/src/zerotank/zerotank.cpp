@@ -246,10 +246,12 @@ void ZeroTank::Input()
 	
 	
 	
-	//--------
+	if(m_pkME)	
+	{	
+
 	
 	newpos = m_pkME->GetLocalPosV();
-//	rot = m_pkME->GetLocalRotV();
+	rot = m_pkME->GetLocalRotV();
 	
 	if(pkInput->Pressed(KEY_H)){
 		newpos.x+=pkFps->GetFrameTime()*speed;			
@@ -287,17 +289,25 @@ void ZeroTank::Input()
 		newpos.y-=2*pkFps->GetFrameTime()*speed;
 
 	if(pkInput->Pressed(KEY_U))
-		rot.z += pkFps->GetFrameTime()*speed*10;
-	
+		rot.x += pkFps->GetFrameTime()*speed*10;	
 	if(pkInput->Pressed(KEY_J))	
-		rot.z -= pkFps->GetFrameTime()*speed*10;
-		
-		
-	m_pkME->SetLocalPosV(newpos);		
-	//rot.y+=0.1;
+		rot.x -= pkFps->GetFrameTime()*speed*10;
 	
-	rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
+	if(pkInput->Pressed(KEY_I))
+		rot.y += pkFps->GetFrameTime()*speed*10;	
+	if(pkInput->Pressed(KEY_K))	
+		rot.y -= pkFps->GetFrameTime()*speed*10;
+		 
+	if(pkInput->Pressed(KEY_O))
+		rot.z += pkFps->GetFrameTime()*speed*10;	
+	if(pkInput->Pressed(KEY_L))	
+		rot.z -= pkFps->GetFrameTime()*speed*10;
+		 
+	m_pkME->SetLocalPosV(newpos);				
+		//rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
+		
 	m_pkME->SetLocalRotV(rot);
+	}
 	
 }
 

@@ -277,8 +277,6 @@ class ENGINE_API Object
 		Matrix4		GetWorldRotM();
 		Matrix4		GetWorldOriM();								//parent * rot * pos
 		Matrix4		GetLocalOriM();
-//		Quaternion	GetWorldRotQ();
-//		Quaternion	GetLocalRotQ();
 		Vector3		GetWorldRotV();
 		Vector3		GetLocalRotV();		
 
@@ -287,7 +285,6 @@ class ENGINE_API Object
 		
 		//set oritentation data
 		void			SetLocalRotM(Matrix4 kNewRot);
-//		void			SetLocalRotQ(Quaternion);
 		void			SetLocalRotV(Vector3);
 		void			SetLocalPosV(Vector3);
 		void			SetWorldPosV(Vector3);
