@@ -82,7 +82,7 @@ void QuickBoard::Init()
 	}
 }
 
-void QuickBoard::AddSlot(ActionType type, char *szIcon, char* szIconAlpha)
+void QuickBoard::AddSlot(ActionType type, const char *szName)
 {
 	int index = -1;
 	for(int i=0; i<MAX_NUM_QUICK_ITEMS; i++)
@@ -95,18 +95,59 @@ void QuickBoard::AddSlot(ActionType type, char *szIcon, char* szIconAlpha)
 	if(index == -1)
 		return; // fix later..
 
+	if(type == Skill)
+	{
+		for(int i=0; i<MAX_NUM_QUICK_ITEMS; i++)
+			if(m_vkQuickSlots[i]->eActionType == Skill)
+				if(strcmp(m_vkQuickSlots[i]->szActionName, szName) == 0)
+					return; // already exist
+	}
+
+	m_vkQuickSlots[index]->eActionType = type;
 	m_vkQuickSlots[index]->pkLabel->Show();
 	m_vkQuickSlots[index]->pkButton->Enable(); // enable
-				
+	strcpy(m_vkQuickSlots[index]->szActionName, szName);
+
 	ZGuiSkin* pkLabelSkin = m_vkQuickSlots[index]->pkLabel->GetSkin();
 
-	if(szIcon)
-		pkLabelSkin->m_iBkTexID = m_pkTexMan->Load(szIcon, 0);
+	if(type == Item)
+	{
+		char szIcon[128], szIconAlpha[128];
 
-	if(szIconAlpha)
-		pkLabelSkin->m_iBkTexAlphaID = m_pkTexMan->Load(szIconAlpha, 0);
-	else
+		sprintf(szIcon, "data/textures/gui/items/%s.bmp", szName);
+		sprintf(szIconAlpha, "data/textures/gui/items/%s_a.bmp", szName);
+
+		if(szIcon)
+			pkLabelSkin->m_iBkTexID = m_pkTexMan->Load(szIcon, 0);
+
 		pkLabelSkin->m_iBkTexAlphaID = -1;
+	}
+	else
+	if(type == Spell)
+	{
+		char szIcon[128], szIconAlpha[128];
+
+		sprintf(szIcon, "data/textures/gui/spells/%s.bmp", szName);
+		sprintf(szIconAlpha, "data/textures/gui/spells/%s_a.bmp", szName);
+
+		if(szIcon)
+			pkLabelSkin->m_iBkTexID = m_pkTexMan->Load(szIcon, 0);
+
+		pkLabelSkin->m_iBkTexAlphaID = -1;
+	}
+	else
+	if(type == Skill)
+	{
+		char szIcon[128], szIconAlpha[128];
+
+		sprintf(szIcon, "data/textures/gui/skills/%s.bmp", szName);
+		sprintf(szIconAlpha, "data/textures/gui/skills/%s_a.bmp", szName);
+
+		if(szIcon)
+			pkLabelSkin->m_iBkTexID = m_pkTexMan->Load(szIcon, 0);
+
+		pkLabelSkin->m_iBkTexAlphaID = -1;
+	}
 }
 
 void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked)

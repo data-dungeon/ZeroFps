@@ -243,6 +243,9 @@ void MistClient::OnIdle()
 			pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
 	}	
 
+	if(m_pkSkillDlg && m_pkSkillDlg->IsVisible())
+		m_pkSkillDlg->Update();
+
 }
 
 void MistClient::OnSystem() 
@@ -678,7 +681,8 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					pkGui->SetFocus(GetWnd("BackPackWnd"));
 
 				   ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
-						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);  
+
 				}
 				else
 					pkGui->SetFocus(GetWnd("PanelBkWnd"));
@@ -735,6 +739,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "SelectSkillBn")
 			{
+				m_pkSkillDlg->SetCharacterProperty((CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats"));
 				m_pkSkillDlg->ToogleOpen();
 			}
 		}
@@ -1139,44 +1144,6 @@ void MistClient::SetActiveCaracter(int iCaracter)
 	} 
 }	
 
-/* Zerom...pickup happens on server
-void MistClient::PickUp()
-{
-	if(m_pkActiveCharacter)
-	{
-		CharacterProperty* cp = static_cast<CharacterProperty*>(
-			m_pkActiveCharacter->GetProperty("P_CharStats"));
-
-		if(cp)
-		{
-			CharacterStats* stats = cp->GetCharStats();
-
-			if(stats)
-			{
-				map<string, Entity*>* vkEquipmentList = stats->GetEquippedList();
-
-				int size = vkEquipmentList->size();
-
-				printf("Num of objects in inventory = %i\n", size);
-
-				map<string, Entity*>::iterator it;
-				for( it=vkEquipmentList->begin(); it!=vkEquipmentList->end(); it++)
-				{
-					P_Item* pkItemProp = static_cast<P_Item*>(it->second->GetProperty("P_Item"));
-
-					if(pkItemProp)
-					{
-						ItemStats* pkStats = pkItemProp->m_pkItemStats;
-
-						if(pkStats)
-							m_pkInventDlg->AddItem(pkStats);
-					}
-				}
-			}
-		}
-	}
-}
-*/
 void MistClient::CreateGuiInterface()
 {
 	int screen_w = GetWidth();

@@ -29,7 +29,21 @@ SkillDlg::~SkillDlg()
 
 void SkillDlg::Update()
 {
-	
+	if(m_pkCharProperty)
+	{
+		CharacterStats* pkCharStats = m_pkCharProperty->GetCharStats();
+		
+		map<string,StatDescriber> kSkillList;
+		pkCharStats->GetSkills(kSkillList); 
+
+		map<string,StatDescriber>::iterator itSkill = kSkillList.begin();
+
+		for( ; itSkill != kSkillList.end(); itSkill++)
+		{
+			AddSlot(itSkill->first);
+		}
+
+	}
 }
 
 void SkillDlg::Init()
@@ -74,7 +88,7 @@ void SkillDlg::Init()
 		m_pkTexMan->Load("/data/textures/gui/quickbn_a.bmp", 0),0);
 	pkButtonSkinDown->m_bTileBkSkin = true;
 
-	Rect rcClipperArea = Rect(
+	m_rcClipperArea = Rect(
 		screen_w-336, screen_h-400+20,
 		screen_w-336+64*5, screen_h-400+64*5+20);
 
@@ -91,18 +105,14 @@ void SkillDlg::Init()
 			pkButton->SetButtonDownSkin(pkButtonSkinDown);
 			pkButton->m_bUseAlhpaTest = false;
 
-			pkButton->SetClipperArea(rcClipperArea); 
+			pkButton->SetClipperArea(m_rcClipperArea); 
 			pkButton->m_bUseClipper = true; 
 
 			m_pkSkillButtons[y][x] = pkButton;
 		}	
 
-	m_pkApp->CreateWnd(Label, "ApaTest", "SelectSkillsMainWnd", "", 0, 20, 64, 64, 0);
-	m_pkApp->GetWnd("ApaTest")->SetSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/skills/lockpick.bmp", 0),0));
-	m_pkApp->GetWnd("ApaTest")->SetClipperArea(rcClipperArea); 
-	m_pkApp->GetWnd("ApaTest")->m_bUseClipper = true; 
-	m_pkApp->GetWnd("ApaTest")->GetSkin()->m_bTileBkSkin = true; 
+	//m_pkApp->CreateWnd(Label, "ApaTest", "SelectSkillsMainWnd", "", 0, 20, 64, 64, 0);
+	
 
 	m_pkDialog->Hide();
 }
@@ -111,15 +121,17 @@ void SkillDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
 	if(!pkWndClicked->IsVisible())
 		return;
-	
-	printf("olle %s\n", pkWndClicked->GetName());
 
+	ZGuiButton* pkClickButton = NULL;
+	
 	for(int y=0; y<SKILL_ROWS; y++)
 		for(int x=0; x<SKILL_COLS; x++)
 		{
 			if(pkWndClicked == m_pkSkillButtons[y][x])
-			{
-				m_pkQuickBoard->AddSlot( QuickBoard::Skill, (char*) "data/textures/gui/skills/lockpick.bmp", NULL );
+			{		
+				Rect rc = pkWndClicked->GetScreenRect(); 
+				SkillDlg::SkillSlot* pkSkill = GetSkillFromCursorPos(rc.Left+8, rc.Top+8);
+				m_pkQuickBoard->AddSlot( QuickBoard::Skill, pkSkill->strName.c_str() );
 				ToogleOpen();
 				break;
 			}
@@ -130,6 +142,8 @@ void SkillDlg::ToogleOpen()
 {
 	if(!m_pkDialog->IsVisible())
 	{
+		m_pkCharProperty->RequestUpdateFromServer("skills"); 
+
 		m_pkAudioSys->StartSound( "/data/sound/open_window.wav",
 				m_pkAudioSys->GetListnerPos(),Vector3(0,0,0),false);
 		m_pkDialog->Show();
@@ -212,3 +226,72 @@ void SkillDlg::OnScroll(int iID, int iPos)
 	}
 }
 
+void SkillDlg::SetCharacterProperty(CharacterProperty* pkCharProp)
+{
+	m_pkCharProperty = pkCharProp;
+}
+
+bool SkillDlg::IsVisible()
+{
+	return m_pkDialog->IsVisible(); 
+}
+
+void SkillDlg::AddSlot(string strName)
+{
+	// returna om den redan fanns
+	if(m_vkSkillSlots.find(strName) != m_vkSkillSlots.end())
+		return;
+
+	char szIconName[100], szLabelName[50];
+	sprintf(szLabelName, "%sSkillLabel", strName.c_str());
+	sprintf(szIconName, "data/textures/gui/skills/%s.bmp", strName.c_str());
+
+	int x, y;
+	GetFreeSlotPos(x,y);
+
+	m_pkApp->CreateWnd(Label, szLabelName, "SelectSkillsMainWnd", "", x, 20, 64, 64, 0);
+
+	ZGuiLabel* pkLabel = (ZGuiLabel*) m_pkApp->GetWnd(szLabelName);
+
+	pkLabel->SetSkin(new ZGuiSkin(m_pkTexMan->Load(szIconName, 0),0));
+	pkLabel->SetClipperArea(m_rcClipperArea); 
+	pkLabel->m_bUseClipper = true; 
+	pkLabel->GetSkin()->m_bTileBkSkin = true; 
+
+	SkillSlot* pkNewSlot = new SkillSlot();
+	pkNewSlot->pkLabel = pkLabel;
+	pkNewSlot->strName = strName;
+
+	m_vkSkillSlots.insert(map<string, SkillSlot*>::value_type(strName, pkNewSlot)); 
+
+	printf("Adding slot \"%s\" to skill dialog\n", strName.c_str());
+}
+
+void SkillDlg::GetFreeSlotPos(int &x, int &y)
+{
+	int antal = m_vkSkillSlots.size();
+
+	y = antal / SKILL_COLS;
+	x = antal-(y*SKILL_COLS);
+
+	x *= 64;
+	y *= 64;
+
+	y+=20;
+}
+
+SkillDlg::SkillSlot* SkillDlg::GetSkillFromCursorPos(int x, int y)
+{
+	map<string, SkillSlot*>::iterator itSkills = m_vkSkillSlots.begin();
+
+	for( ; itSkills != m_vkSkillSlots.end(); itSkills++)
+	{
+		ZGuiLabel* pkLabel = itSkills->second->pkLabel;
+		Rect rc = pkLabel->GetScreenRect();
+		
+		if(x >= rc.Left && x <= rc.Right && y >= rc.Top && y <= rc.Bottom)
+			return itSkills->second;
+	}
+
+	return NULL;
+}

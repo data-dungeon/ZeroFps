@@ -29,7 +29,10 @@ SpellDlg::~SpellDlg()
 
 void SpellDlg::Update()
 {
-
+	if(m_pkDialog->IsVisible() == false)
+	{
+		return;
+	}
 }
 
 void SpellDlg::Init()
@@ -216,7 +219,7 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 					const char* szID = m_pkTexMan->GetFileName(tex_id);
 
-					m_pkQuickBoard->AddSlot( QuickBoard::Spell, (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+					m_pkQuickBoard->AddSlot( QuickBoard::Spell, "lightingball" );
 
 					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
 							m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);

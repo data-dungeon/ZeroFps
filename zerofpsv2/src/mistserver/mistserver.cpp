@@ -187,8 +187,7 @@ void MistServer::OnIdle()
 	if(m_pkServerInfoP)
 	{
 		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
-		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());
-	
+		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	}
 	
 	if(m_iEditMode == EDIT_ZONES)

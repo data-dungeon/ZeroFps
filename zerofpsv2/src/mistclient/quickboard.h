@@ -25,6 +25,7 @@ public:
 
 	struct QuickSlot
 	{
+		ActionType eActionType;
 		char szActionName[50];
 		ZGuiButton* pkButton;
 		ZGuiLabel* pkLabel;
@@ -33,7 +34,7 @@ public:
 
 	void Update();
 	void OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked);
-	void AddSlot(ActionType type, char *szIcon, char* szIconAlpha);
+	void AddSlot(ActionType type, const char *szName);
 	void RemoveSlot(int iIndex);
 	void Init();
 	QuickBoard(ZGuiApp* pkApp);
