@@ -32,6 +32,10 @@ void Core::Load(char* MadFileName)
 	// Read head
 	fread(&kHead,sizeof(Mad_Header),1,fp);
 
+	// Read SubMesh
+	pkSubMesh = new Mad_SubMesh [kHead.iNumOfSubMeshes];
+	fread((void *)pkSubMesh,sizeof(Mad_SubMesh),kHead.iNumOfSubMeshes,fp);
+
 	// Read textures
 	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
 
@@ -76,6 +80,8 @@ void Core::Load(char* MadFileName)
 		akAnimation.push_back(kNyAnim);
 	}
 
+
+
 	fclose(fp);
 }
 
@@ -118,19 +124,30 @@ void Core::draw()
 	glColor3f(1,1,1);
 	
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT);
-	//glDisable(GL_LIGHTING);
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+
+	glDisable(GL_LIGHTING);
 
 	char nisse[256];
-	sprintf(nisse, "%s.bmp", akTextures[0].ucTextureName);
-	pkTextureManger->BindTexture(nisse,0);
-	glCullFace(GL_FRONT);
+	//sprintf(nisse, "%s.bmp", akTextures[0].ucTextureName);
+	//pkTextureManger->BindTexture(nisse,0);
+	//glCullFace(GL_FRONT);
 
 	glVertexPointer(3,GL_FLOAT,0,pakFrames[iActiveFrame].pVertex);
 	glTexCoordPointer(2,GL_FLOAT,0,pakTextureCoo);
 	
-	glDrawElements(GL_TRIANGLES,kHead.iNumOfFaces*3,GL_UNSIGNED_INT,pakFaces[0].iIndex);
-	glCullFace(GL_BACK);
+	for(int i=0; i<this->kHead.iNumOfSubMeshes; i++)
+	{
+		sprintf(nisse, "%s.bmp", akTextures[pkSubMesh[i].iTextureIndex].ucTextureName);
+		pkTextureManger->BindTexture(nisse,0);
+		glDrawElements(GL_TRIANGLES,
+			pkSubMesh[i].iNumOfTriangles * 3,
+			GL_UNSIGNED_INT,
+			pakFaces[ pkSubMesh[i].iFirstTriangle ].iIndex);
+	}
+
+//	glDrawElements(GL_TRIANGLES,kHead.iNumOfFaces*3,GL_UNSIGNED_INT,pakFaces[0].iIndex);
+//	glCullFace(GL_BACK);
 
 	glPopAttrib();
 	glPopMatrix();

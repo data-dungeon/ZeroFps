@@ -28,11 +28,10 @@ void MadProperty::Update() {
 	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
 	int iFrame = fCurrentTime / 0.1;
 	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
-
 	
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
-		glScalef(.02,.02,.02);
+		//glScalef(.02,.02,.02);
 		pkCore->draw();
 	glPopMatrix();
 

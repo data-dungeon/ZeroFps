@@ -48,7 +48,7 @@ void Test::OnInit(void) {
   
 	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 
-	FH_SkapaObject();
+//	FH_SkapaObject();
 
 
 	
@@ -96,23 +96,24 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
-	
 /*
-
-	for(int i=0;i<1;i++) {
+	for(int i=0;i<100;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
+		
 		//ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-		//float x=rand()%50;
-		//float y=rand()%50;
-		float x = 351;
-		float y = 780;
+		float x=300 + rand()%100;
+		float y=720 + rand()%100;
+		//float x = 351;
+		//float y = 780;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
 		ball->GetStatic()=true;
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}
-*/
+
+		TestObject = ball;
+	}*/
+
 
 	glEnable(GL_LIGHTING );
 	
@@ -209,12 +210,18 @@ void Test::input() {
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
 
-	if(pkInput->Pressed(HOME))
-		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
+	//if(pkInput->Pressed(HOME))
+	//	pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(END))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
-
+	if(pkInput->Pressed(HOME))
+	{
+		MadProperty* madp = dynamic_cast<MadProperty*>(TestObject->GetProperty("MadProperty"));
+		madp->PlayAnimation(0, 0.0);
+	}
+		
+		
 	//Get mouse x,y		
 	int x,z;		
 	pkInput->RelMouseXY(x,z);
@@ -226,7 +233,7 @@ void Test::input() {
 
 char *MdlNames[] =
 {
-	"bitch.mad",
+	"test.mad",
 /*	"band.mad",
 	"berserk.mad",
 	"bitch.mad",

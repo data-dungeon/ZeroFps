@@ -112,6 +112,7 @@ public:
 	MadFace*			pakFaces;
 
 	TextureManager*		pkTextureManger;
+	Mad_SubMesh*		pkSubMesh;
 	
 	vector<Mad_Animation>	akAnimation;
 

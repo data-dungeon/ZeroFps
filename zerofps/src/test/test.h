@@ -44,6 +44,7 @@ class Test :public Application {
 	int		iCoreFrame;
 	int		TestUpdateSpeedFulHack;
 
+	Object*	TestObject;
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);
