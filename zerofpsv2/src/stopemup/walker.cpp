@@ -25,11 +25,11 @@ P_Walker::P_Walker()
 	float fPlayers = m_pkStopEmUp->GetPlayers();
 	float fLevel =  m_pkStopEmUp->GetLevel();
 	
-	fPlayers *= 0.75;	
+	fPlayers *= 0.70;	
 	if(fPlayers < 1)
 		fPlayers = 1;
 	
-	fLevel *= 0.5;
+	fLevel *= 0.35;
 	if(fLevel < 1)
 		fLevel = 1;
 			
@@ -99,7 +99,7 @@ void P_Walker::Update()
 						if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iTarget))
 						{
 							//if player is farther away than 4 go for the goal
-							if(pkEnt->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 5)
+							if(pkEnt->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 6)
 								m_iTarget = m_iGoalID;						
 						}				
 					}
@@ -251,10 +251,10 @@ void P_Walker::Damage(int iDmg,int iKiller)
 
 void P_Walker::CreateBonus()
 {
-	if( m_pkStopEmUp->GetLevel() < 5)
-		return;
+	//if( m_pkStopEmUp->GetLevel() < 4)
+	//	return;
 	
-	int i = Randomi(10);
+	int i = Randomi(5);
 
 	if(i <= 0)
 	{

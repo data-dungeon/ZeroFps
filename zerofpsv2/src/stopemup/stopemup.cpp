@@ -21,6 +21,7 @@
 #include "p_powerup.h"
 #include "p_goal.h"
 
+
 StopEmUp g_kStopEmUp("StopEmUp",0,0,0);
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -502,7 +503,7 @@ void StopEmUp::SetupLevel(int iLevel)
 	m_kSpawners.clear();
 	
 	
-	int iSpawners = int(iLevel / 2.0);
+	int iSpawners = int(iLevel / 4.0);
 	iSpawners += 1;
 	
 	cout<<"spawners:"<<iSpawners<<endl;
