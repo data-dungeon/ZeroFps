@@ -35,7 +35,10 @@ class BASIC_API ZFBasicFS : public ZFObject
 		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 			const char* acName, bool bIgnoreMaps=false);
 		bool DirExist(const char* acName);
-		
+
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
 };
 
 

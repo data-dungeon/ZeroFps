@@ -105,7 +105,7 @@ float GetYawAngle(Vector3 kDir)
 
 char LogFormatTxt[4096];	
 
-void Logf(const char *fmt, ...)
+void g_Logf(const char *fmt, ...)
 {
 	va_list		ap;							// Pointer To List Of Arguments
 

@@ -76,6 +76,10 @@ class RENDER_API Render : public ZFObject {
 //		void DrawHM(HeightMap* kmap);
 //		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
 
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

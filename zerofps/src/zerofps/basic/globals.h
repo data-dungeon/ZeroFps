@@ -35,6 +35,6 @@ Vector3 BASIC_API GetYawVector2(float fAngleDeg);
 float BASIC_API GetYawAngle(Vector3 kDir);
 
 char* BoolStr(bool bFlag);
-void BASIC_API Logf(const char *fmt, ...);
+void BASIC_API g_Logf(const char *fmt, ...);
 
 #endif

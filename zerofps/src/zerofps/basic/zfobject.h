@@ -21,7 +21,10 @@ public:
 	void Set(const char* szCmdArgs);
 };
 
-/// Base class for all Engine Systems like graphic, audio,...
+/**
+	Base class for all Engine Systems like graphic, audio,...
+*/
+ 
 class BASIC_API ZFObject
 {
 private:
@@ -53,6 +56,10 @@ public:
 	virtual ~ZFObject();
 
 	friend class ZFObjectManger;
+
+	virtual bool StartUp();
+	virtual bool ShutDown();
+	virtual bool IsValid();
 };
 
 #endif

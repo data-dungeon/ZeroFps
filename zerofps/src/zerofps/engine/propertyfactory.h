@@ -46,6 +46,11 @@ public:
 	void		Display();
 
 	void GetAllProperties(vector<string>& vkList);
+
+	bool StartUp()	{ return true;	}
+	bool ShutDown()	{ return true;	}
+	bool IsValid()	{ return true;	}
+
 };
 
 class ZeroFps;

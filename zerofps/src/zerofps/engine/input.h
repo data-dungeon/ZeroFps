@@ -205,6 +205,11 @@ class ENGINE_API Input : public ZFObject {
 		void SetInputEnabled(bool bInputEnabled) { m_bInputEnabled=bInputEnabled ;};
 		bool GetInputEnabled() { return m_bInputEnabled;};
 //		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
+
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };
 
 #endif

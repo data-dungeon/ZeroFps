@@ -124,7 +124,7 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
-	Logf("Adding %s to VFS root table\n", strRootPath.c_str());
+	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
 }
 

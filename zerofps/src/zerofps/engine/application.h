@@ -18,32 +18,32 @@ class FileIo;
 
 class ENGINE_API Application : public ZFObject {	
 	protected:
-		ZeroFps* pkFps;
-		Console* pkConsole;			
-		Render* pkRender;
-		Input* pkInput;
-		TextureManager* pkTexMan;
-		FileIo* pkFile;
-		ZFBasicFS* pkBasicFS;
-		Light* pkLight;
-		ObjectManager* pkObjectMan;
-		PropertyFactory* pkPropertyFactory;
-		CollisionManager* pkCollisionMan;
-		OpenAlSystem* pkAlSys;
-		ZGui* pkGui;
-		ZGuiResourceManager* pkGuiMan;
-		ZFIni* pkIni;
-		LevelManager* pkLevelMan;
-		PhysicsEngine* pkPhysEngine;
-		ZFScript* pkScript;
+		ZeroFps*				pkFps;
+		Console*				pkConsole;			
+		Render*					pkRender;
+		Input*					pkInput;
+		TextureManager*			pkTexMan;
+		FileIo*					pkFile;
+		ZFBasicFS*				pkBasicFS;
+		Light*					pkLight;
+		ObjectManager*			pkObjectMan;
+		PropertyFactory*		pkPropertyFactory;
+		CollisionManager*		pkCollisionMan;
+		OpenAlSystem*			pkAlSys;
+		ZGui*					pkGui;
+		ZGuiResourceManager*	pkGuiMan;
+		ZFIni*					pkIni;
+		LevelManager*			pkLevelMan;
+		PhysicsEngine*			pkPhysEngine;
+		ZFScript*				pkScript;
 		
 	public:
-		static Application* pkApp;
+		static Application*		pkApp;								///< The one and Only App Instance.
 		
 		int m_iWidth,m_iHeight,m_iDepth;
-		char* m_pTitle;												//title text
+		char* m_pTitle;												///< Windows Title.
 		
-		void SetEnginePointer(ZeroFps* pkZeroFps);
+		void SetEnginePointer(ZeroFps* pkZeroFps);					///< Set pointer to ZeroFps Engine.
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
 
 		virtual void OnInit(void)=0;
@@ -52,7 +52,6 @@ class ENGINE_API Application : public ZFObject {
 
 		virtual void OnServerStart(void)=0;
 		virtual void OnClientStart(void)=0;
-
 };
 
 

@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy    $(ProjDir)\debug\*.lib    ..\..\bin\ 
+PostBuild_Cmds=copy     $(ProjDir)\debug\*.lib     ..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -118,6 +118,10 @@ SOURCE=.\container.cpp
 # Begin Source File
 
 SOURCE=.\containerproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\doorproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -194,6 +198,10 @@ SOURCE=.\container.h
 # Begin Source File
 
 SOURCE=.\containerproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\doorproperty.h
 # End Source File
 # Begin Source File
 

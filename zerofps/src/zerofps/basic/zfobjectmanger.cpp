@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
-using namespace std;
+#include <cstdio>
+#include <cstdarg>
 
 #include "zfobjectmanger.h"
 #include "basicconsole.h"
 #include "globals.h"
+using namespace std;
 
 ZFObjectManger* ZFObjectManger::pkInstance;
 
@@ -79,7 +81,7 @@ ZFObjectManger::ZFObjectManger()
 	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
 
 #ifdef _DEBUG
-	Logf("Starting Object System\n");
+	g_Logf("Starting Object System\n");
 #endif
 
 
@@ -88,12 +90,12 @@ ZFObjectManger::ZFObjectManger()
 ZFObjectManger::~ZFObjectManger()
 {
 #ifdef _DEBUG
-	Logf("Closing Object System\n");
+	g_Logf("Closing Object System\n");
 #endif
 
 	// Check that we don't have any objects left.
 	if(kObjectNames.size() > 0) {
-		Logf("WARNING: Some Engine Systems have not been closed down\n");
+		g_Logf("WARNING: Some Engine Systems have not been closed down\n");
 		PrintObjects();
 		}
 
@@ -132,7 +134,7 @@ void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkPare
 	
 
 #ifdef _DEBUG
-	Logf("ok\n");
+	g_Logf("ok\n");
 #endif
 }
 
@@ -148,7 +150,7 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 		if(itNames->pkObject == pkObject) {
 			itNames = kObjectNames.erase(itNames);
 #ifdef _DEBUG
-			Logf(".");
+			g_Logf(".");
 #endif
 			}
 		else
@@ -156,7 +158,7 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 	}
 
 #ifdef _DEBUG
-	Logf("Ok\n");
+	g_Logf("Ok\n");
 #endif
 
 	UnRegister_Cmd(pkObject);
@@ -203,7 +205,7 @@ void ZFObjectManger::PrintObjects(void)
 
 void ZFObjectManger::PrintObjectsHer(void)
 {
-	Logf("ZFObjectManger::PrintObjectsHer\n");
+	g_Logf("ZFObjectManger::PrintObjectsHer\n");
 
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].pkObject->m_pkParent == NULL) {
@@ -260,7 +262,7 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject,ch
 bool ZFObjectManger::UnRegister_Cmd(ZFObject* kObject)
 {
 #ifdef _DEBUG
-	Logf("'%s' will no longer handle any commands\n", kObject->m_strZFpsName);
+	g_Logf("'%s' will no longer handle any commands\n", kObject->m_strZFpsName);
 #endif
 	return true;
 }
@@ -348,6 +350,29 @@ void ZFObjectManger::Log(const char* szName, const char* szMessage)
 
 	fprintf(pkLog->m_pkFilePointer, szMessage);
 }
+
+char g_LogFormatTxt2[4096];	
+
+void ZFObjectManger::Logf(const char* szName, const char* szMessageFmt,...)
+{
+	ZFLogFile* pkLog = Log_Find( szName );
+	if(!pkLog)
+		return;
+
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (szMessageFmt == NULL)	return;					
+
+	va_start(ap, szMessageFmt);						// Parses The String For Variables
+		vsprintf(g_LogFormatTxt2, szMessageFmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	fprintf(pkLog->m_pkFilePointer, g_LogFormatTxt2);
+}
+
+
 
 
 
@@ -471,5 +496,46 @@ void ZFObjectManger::PrintVariables()
 			strValue = GetVarValue(&m_kCmdDataList[i]);
 			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
 	}
-	
 }
+
+
+bool ZFObjectManger::StartUp()
+{
+	g_Logf("Start Engine SubSystems: \n");
+
+
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		Logf("Start %s: ",kObjectNames[i].m_strName.c_str());
+
+		if(!kObjectNames[i].pkObject->StartUp())
+			return false;
+
+		g_Logf("Ok\n");
+	}
+	
+	return true;
+}
+
+bool ZFObjectManger::ShutDown()
+{
+	g_Logf("ShutDown Engine SubSystems: \n");
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		g_Logf("ShutDown %s: ",kObjectNames[i].m_strName.c_str());
+		if(!kObjectNames[i].pkObject->ShutDown())
+			return false;
+		g_Logf("Ok\n");
+	}
+	
+	return true;
+}
+
+bool ZFObjectManger::IsValid()
+{
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		if(!kObjectNames[i].pkObject->IsValid())
+			return false;
+	}
+	
+	return true;
+}
+

@@ -35,14 +35,12 @@ ZeroFps::ZeroFps(void)
 	m_pkLevelMan				= new LevelManager();
 	m_pkPhysEngine				= new PhysicsEngine();
 	m_pkResourceDB				= new ZFResourceDB();
-//	m_pkEngineScriptInterface	= new EngineScriptInterface();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
 	m_fLastFrameTime=SDL_GetTicks();
 	m_bServerMode = true;
 	m_bClientMode = true;
-	//m_bConsoleMode=false;
 	m_bDrawDevList=true;
 	m_bGuiMode=false;
 	m_bGuiTakeControl=true;
@@ -65,31 +63,11 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 
-/*	Vim
-
-	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
-	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
-	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
-	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
-	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
-	m_pkCmd->Add(&m_pkLight->m_iNrOfLights,"r_MaxLights",type_int);		
-	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
-	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
-	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
-	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
-	m_pkCmd->Add(&m_iMadDraw,"r_maddraw",type_int);
-	m_pkCmd->Add(&g_fMadLODScale,"r_madlod",type_float);
-	m_pkCmd->Add(&g_iMadLODLock,"r_madlodlock",type_float);*/
-	
-
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
 	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
 	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
-//	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
-//	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
-	g_ZFObjSys.Register_Cmd("listmad",FID_LISTMAD,this);	
 	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
@@ -118,8 +96,8 @@ ZeroFps::ZeroFps(void)
 ZeroFps::~ZeroFps()
 {
 	m_pkNetWork->ServerEnd();
+	g_ZFObjSys.ShutDown();
 
-//	delete m_pkEngineScriptInterface;
 	delete m_pkResourceDB;
 	delete m_pkPhysEngine;
 	delete m_pkLevelMan;
@@ -182,19 +160,31 @@ string ZeroFps::GetArg(int iArgIndex)
 
 
 
-void ZeroFps::Init(int iNrOfArgs, char** paArgs)
+bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
-	HandleArgs(iNrOfArgs,paArgs);					//handle arguments
-	SetApp();											//setup class pointers	
+	HandleArgs(iNrOfArgs,paArgs);							//	handle arguments
+	SetApp();												//	setup class pointers	
 
+	// StartUp SDL
+	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
+		g_Logf("Error: Failed to StartUp SDL\n");
+		return false;
+	}	
+	
+	atexit(SDL_Quit);
+
+	if(!g_ZFObjSys.StartUp())
+		return false;
+	
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
-	m_iState=state_normal;							//init gamestate to normal		
+	m_iState=state_normal;									// init gamestate to normal		
 
-	m_pkApp->OnInit();								//call the applications oninit funktion
+	m_pkApp->OnInit();										// call the applications oninit funktion
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
-	MainLoop();											//jump to mainloop
+
+	return true;
 }
 
 /* Code that need to run on both client/server. */
@@ -206,7 +196,7 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
-	//handle input
+	// Update Local Input.
 	m_pkInput->Update();
 
 	//toggle keyboard/mouse grabing		// SHELL
@@ -220,10 +210,8 @@ void ZeroFps::Run_EngineShell()
 	if(m_pkInput->Pressed(KEY_TAB))
 	{		
 		m_pkConsole->Toggle();
-		//m_bConsoleMode = !m_bConsoleMode;		
 		m_pkInput->Reset();
 	}
-
 }
 
 void ZeroFps::Run_Server()
@@ -237,10 +225,10 @@ void ZeroFps::Run_Server()
 
 	//update physicsengine
 	m_pkPhysEngine->Update();
+
 	//delete objects
 	m_pkObjectMan->UpdateDelete();
 	m_pkResourceDB->Refresh();
-
 }
 
 void ZeroFps::Run_Client()
@@ -327,16 +315,6 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;
-
-
-	//initiera sdl med opengl
-	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
-		cout<<"Sdl_Graphic didt want to work right now =("<<endl;
-		exit(1);
-	}	
-	
-	atexit(SDL_Quit);
-
 
 	SetDisplay();
 
@@ -729,17 +707,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
 			m_pkObjectMan->RouteMessage(gm);
 			break;
-
-		case FID_LISTMAD:
-/*		Vim
-			int iSize = akCoreModells.size();
-			m_pkConsole->Printf("Loaded Mads: ");
-			for(i=0; i < akCoreModells.size(); i++) {
-				m_pkConsole->Printf(" %d: %s", i, akCoreModells[i]->Name);
-				}*/
-			break;
-
-			
 	}	
 }
 

@@ -15,6 +15,10 @@ class BASIC_API FileIo  : public ZFObject {
 		FileIo();
 		char* File(const char* aFile);
 
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };
 
 

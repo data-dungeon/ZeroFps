@@ -125,7 +125,11 @@ public:
 	ZFLogFile*	Log_Find(const char* szName);
 	void Log_DestroyAll();
 	void Log(const char* szName, const char* szMessage);
+	void Logf(const char* szName, const char* szMessageFmt,...);
 
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
 
 };
 

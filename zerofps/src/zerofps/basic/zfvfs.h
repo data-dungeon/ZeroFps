@@ -84,6 +84,10 @@ class BASIC_API ZFVFileSystem : public ZFObject
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };	
 
 

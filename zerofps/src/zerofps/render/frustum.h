@@ -29,6 +29,10 @@ class RENDER_API Frustum : public ZFObject
 		
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
 		
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };
 
 

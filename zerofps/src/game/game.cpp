@@ -3,8 +3,8 @@
 #include "gamescriptinterface.h"
 
 //Game g_kGame("ZeroFPS game",320,240,24);
-Game g_kGame("ZeroFPS game",640,480,24);
-//Game g_kGame("ZeroFPS game",1024,768,24);
+//Game g_kGame("ZeroFPS game",640,480,24);
+Game g_kGame("ZeroFPS game",1024,768,24);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
@@ -244,13 +244,13 @@ void Game::RegisterPropertys()
 
 void Game::SetUpMenuScreen()
 {
-	pkLevelMan->LoadLevel("adaptors");	
+//	pkLevelMan->LoadLevel("adaptors");	
 	
-	m_pkCamera->GetPos().Set(18,7,-130);	
-	m_pkCamera->GetRot().Set(21,360,0);	
+//	m_pkCamera->GetPos().Set(18,7,-130);	
+//	m_pkCamera->GetRot().Set(21,360,0);	
 	
-	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
-	pkFps->m_pkAudioMan->PlayMusic();
+//	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
+//	pkFps->m_pkAudioMan->PlayMusic();
 
 	m_iGameState=GAME_STATE_MENU;
 

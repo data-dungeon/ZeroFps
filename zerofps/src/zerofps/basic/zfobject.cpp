@@ -117,3 +117,28 @@ void ZFObject::DestroyChildren()
 
 }
 
+/**
+	dfsad
+  */
+bool ZFObject::StartUp()
+{
+	return true;
+}
+
+/**
+	sgdsfg
+  */
+bool ZFObject::ShutDown()
+{
+	return true;
+	
+}
+
+/**
+	dghdfj
+*/
+bool ZFObject::IsValid()
+{
+	return true;
+
+}

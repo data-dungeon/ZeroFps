@@ -151,7 +151,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZeroFps(void);		
 		~ZeroFps();		
 		void SetApp(void);
-		void Init(int iNrOfArgs, char** paArgs);	
+		bool Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void SetDisplay(int iWidth,int iHeight,int iDepth);

@@ -81,6 +81,10 @@ class RENDER_API Light : public ZFObject {
 		void Update(Vector3 kPos);
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
+		bool StartUp()	{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()	{ return true;	}
+
 };
 
 

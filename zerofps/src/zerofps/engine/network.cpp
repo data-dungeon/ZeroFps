@@ -78,6 +78,10 @@ NetWork::NetWork()
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));;
 
 	m_eNetStatus = NET_NONE;
+
+	g_ZFObjSys.Log_Create("net");
+	g_ZFObjSys.Log("net", "NetWork SubSystem Startup:\n");
+
 }
 
 NetWork::~NetWork()
@@ -85,6 +89,7 @@ NetWork::~NetWork()
 	CloseSocket();
 	SDLNet_Quit();
 	cout << "SDLNet_Quit()" << endl;
+	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
 }
 
 int NetWork::GetNumOfClients(void)

@@ -406,8 +406,6 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
-	cout << "ObjectManager::UpdateState" << endl;
-
 	Object* pkNetSlave;
 	int iObjectID;
 	pkNetPacket->Read(iObjectID);
@@ -417,11 +415,13 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
 
 		if(pkNetSlave == NULL) {
-			cout << "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl; 
+			pkNetSlave->PackFrom(pkNetPacket);
+			pkNetPacket->Read(iObjectID);
 			}
-
-		pkNetSlave->PackFrom(pkNetPacket);
-		pkNetPacket->Read(iObjectID);
+		else {
+			g_ZFObjSys.Log("net", "Failed to read UpdateState Message:\n");
+			return;
+			}
 		}	
 }
 
