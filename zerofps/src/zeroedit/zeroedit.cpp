@@ -2,6 +2,8 @@
 #include "gui.h"
 #include "fh.h"
 
+char* pkTempObjectTemplate = "ZfEditTempObject";
+
 ZeroEdit Editor("ZeroEdit",1024,768,16);
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
@@ -133,6 +135,11 @@ void ZeroEdit::OnHud(void)
 	pkFps->DevPrintf("Mode: %d",m_iMode);
 	pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	pkFps->DevPrintf("Pointer Altidude: %f",m_fPointerHeight);
+
+	if(m_pkCurentChild) {
+		pkFps->DevPrintf("Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName());
+
+		}
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
@@ -599,6 +606,20 @@ void ZeroEdit::Input()
 	if(pkInput->Pressed(KEY_E))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
+	// Copy A Object and make it active.
+	if(pkInput->Pressed(KEY_L) && m_pkCurentChild)
+	{
+		//if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+		//	break;			
+		//m_fTimer=pkFps->GetTicks();
+
+		if(!pkObjectMan->MakeTemplate(pkTempObjectTemplate,m_pkCurentChild, true)) {
+			cout << "Failed to create Template" << endl;
+		}
+		else {
+			m_kCurentTemplate = pkTempObjectTemplate;
+		}
+	}
 
 	//Get mouse x,y		
 	int x,z;		
@@ -606,6 +627,7 @@ void ZeroEdit::Input()
 
 	//rotate the camera		
 	//if(!pkGui->IsActive())
+	if(pkInput->Pressed(KEY_LSHIFT) == false)
 	{
 		pkFps->GetCam()->GetRot().x+=z/5.0;
 		pkFps->GetCam()->GetRot().y+=x/5.0;	
@@ -638,35 +660,49 @@ void ZeroEdit::Input()
 			}
 			break;
 		case ADDOBJECT:
-			if(pkInput->Pressed(MOUSELEFT))
-			{
-				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
-					break;			
-				m_fTimer=pkFps->GetTicks();
-			
-//				Object *object = new BallObject();
-				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-				if(object==NULL)
-					break;
-				
-				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
-				
-				if(m_iRandom){
-					object->GetRot().y+=rand()%360;					
-					object->GetRot().x+=((rand()%25000)-12500)/1000.0;
-
-					object->GetRot().z+=((rand()%25000)-12500)/1000.0;					
+			if(pkInput->Pressed(KEY_LSHIFT)) {
+				// Movment Command
+				if(pkInput->Pressed(MOUSELEFT) &&  m_pkCurentChild) 
+					m_pkCurentChild->GetPos()=m_kDrawPos-Vector3(0,1,0);
+				// Rotate Command
+				if(pkInput->Pressed(MOUSERIGHT) &&  m_pkCurentChild) {
+					m_pkCurentChild->GetRot().x += x;
+					m_pkCurentChild->GetRot().z += z;
+					}
+				if(pkInput->Pressed(MOUSEMIDDLE) &&  m_pkCurentChild) {
+					m_pkCurentChild->GetRot().y += x;
+					}
 				}
+			else {
+				if(pkInput->Pressed(MOUSELEFT))
+				{
+					if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+						break;			
+					m_fTimer=pkFps->GetTicks();
 				
-				object->AttachToClosestZone();
+					Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+					if(object==NULL)
+						break;
+					
+					object->GetPos()=m_kDrawPos-Vector3(0,1,0);
+					
+					if(m_iRandom){
+						object->GetRot().y+=rand()%360;					
+						object->GetRot().x+=((rand()%25000)-12500)/1000.0;
 
-				m_pkCurentChild=object;
+						object->GetRot().z+=((rand()%25000)-12500)/1000.0;					
+					}
+					
+					object->AttachToClosestZone();
 
+					m_pkCurentChild=object;
+				}
+				if(pkInput->Pressed(MOUSERIGHT))
+				{
+					SelectChild();
+				}
 			}
-			if(pkInput->Pressed(MOUSERIGHT))
-			{
-				SelectChild();
-			}
+
 			if(pkInput->Pressed(KEY_SPACE))
 			{
 				SelectParent();

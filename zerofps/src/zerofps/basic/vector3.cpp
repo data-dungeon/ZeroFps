@@ -201,5 +201,4 @@ Vector3 Vector3::AToU()
 	New.z+=sin((x-90)/degtorad);
 
 	return New;
-
 }

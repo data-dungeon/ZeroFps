@@ -243,6 +243,9 @@ Object::Object() {
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	
+
+	m_pkObjectMan->Add(this);
+
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
@@ -255,7 +258,7 @@ Object::Object() {
 	
 	m_bLockedChilds=false;
 	m_iUpdateStatus=UPDATE_ALL;
-	m_bLoadChilds=true;
+//	m_bLoadChilds=true;
 	m_bSave=true;
 	
 	m_pkParent=NULL;
@@ -273,6 +276,8 @@ Object::~Object() {
 		delete (*it);
 	}
 	
+	m_pkObjectMan->Remove(this);
+
 	cout<<"Object Destroyed"<<endl;
 }
 

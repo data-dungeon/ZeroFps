@@ -15,7 +15,7 @@ ObjectManager::ObjectManager()
 
 void ObjectManager::Add(Object* pkObject) {
 	pkObject->iNetWorkID = iNextObjectID++;
-	pkObject->SetObjectMan(this);	
+//	pkObject->SetObjectMan(this);	
 	m_akObjects.push_back(pkObject);
 }
 
@@ -26,7 +26,7 @@ void ObjectManager::Clear()
 //	}
 	
 	m_pkWorldObject->DeleteAllChilds();
-	
+	cout << "ObjectManager::Clear" << endl;
 //	UpdateDelete();
 }
 
@@ -39,7 +39,9 @@ void ObjectManager::Delete(Object* pkObject) {
 void ObjectManager::Remove(Object* pkObject) {	
 //	pkObject->SetObjectMan(NULL);
 	m_akObjects.remove(pkObject);
-	delete pkObject;
+//	delete pkObject;
+	cout << "ObjectManager::Remove" << endl;
+	
 }
 
 
@@ -227,11 +229,20 @@ void ObjectManager::GetTemplateList(vector<string>* paList)
 	}
 }
 
-bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
+bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject, bool bForce)
 {
-	if(GetTemplate(acName)!=NULL)
-		return false;
+	ObjectDescriptor* tempdesc = GetTemplate(acName);
+
+	if(tempdesc == NULL) {
+		tempdesc = new ObjectDescriptor;
+		}
+	else {
+		if(bForce == false)
+			return false;
 		
+		tempdesc->Clear();
+		}
+
 /*
 	ObjectDescriptor* tempdesc = new ObjectDescriptor;
 	
@@ -255,7 +266,6 @@ bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
 	}
 	*/
 	
-	ObjectDescriptor* tempdesc = new ObjectDescriptor;
 	
 	pkObject->Save(tempdesc);	
 	

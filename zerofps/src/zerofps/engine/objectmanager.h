@@ -19,7 +19,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-		Object* m_pkWorldObject;
+		Object*			m_pkWorldObject;
 	
 		list<Object*>	m_akObjects;
 		vector<Object*> m_akDeleteList;
@@ -56,7 +56,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
 		int GetNrOfTemplates();
 		void GetTemplateList(vector<string>* paList);
-		bool MakeTemplate(const char* acName,Object* pkObject);
+		bool MakeTemplate(const char* acName,Object* pkObject, bool bForce = false);
 		void ClearTemplates();
 		ObjectDescriptor* GetTemplate(const char* acName);
 		Object* CreateObject(const char* acName);
@@ -76,6 +76,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object* CreateObjectByNetWorkID(int iNetID);	
 		int	GetNumOfObjects();
 		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
+		
 
 };
 

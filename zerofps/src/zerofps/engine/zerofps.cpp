@@ -156,6 +156,7 @@ void ZeroFps::MainLoop(void) {
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
 		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
+		DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 		//handle input
 		m_pkInput->Update();
@@ -199,7 +200,6 @@ void ZeroFps::MainLoop(void) {
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
 
-			DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 			m_pkPhysEngine->Update();
 

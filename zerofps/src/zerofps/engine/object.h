@@ -18,6 +18,21 @@ using namespace std;
 class ObjectManager;
 struct CollisionData;
 
+
+enum UpdateStatus {
+	UPDATE_NONE,
+	UPDATE_ALL,
+	UPDATE_STATIC,
+	UPDATE_DYNAMIC,
+	UPDATE_PLAYERS,
+};
+
+enum ObjectType {
+	OBJECT_TYPE_DYNAMIC,
+	OBJECT_TYPE_STATIC,
+	OBJECT_TYPE_PLAYER,
+};
+
 class ENGINE_API PropertyDescriptor{
 	public:
 		string m_kName;
@@ -28,13 +43,13 @@ class ENGINE_API ObjectDescriptor{
 	public:
 		string m_kName;
 		
-		Vector3 m_kPos;
-		Vector3 m_kRot;
-		Vector3 m_kVel;
-		Vector3 m_kAcc;
+		Vector3 m_kPos;									// Position of object in world.
+		Vector3 m_kRot;									// Rotation of object in world.
+		Vector3 m_kVel;									// Velocity of object.
+		Vector3 m_kAcc;									// Acc of object.
 		
-		bool m_bSave;
-		int m_iObjectType;
+		bool		m_bSave;
+		ObjectType	m_iObjectType;
 		
 		list<PropertyDescriptor*> m_acPropertyList;		
 		
@@ -47,49 +62,34 @@ class ENGINE_API ObjectDescriptor{
 };
 
 
-enum UPDATE_STATUS{
-	UPDATE_NONE,
-	UPDATE_ALL,
-	UPDATE_STATIC,
-	UPDATE_DYNAMIC,
-	UPDATE_PLAYERS,
-};
-
-enum OBJECT_TYPE{
-	OBJECT_TYPE_DYNAMIC,
-	OBJECT_TYPE_STATIC,
-	OBJECT_TYPE_PLAYER,
-};
 
 class ENGINE_API Object {
 	protected:
-		Vector3 m_kPos;
-		Vector3 m_kRot;
-		Vector3 m_kVel;
-		Vector3 m_kAcc;		
+		Vector3			m_kPos;								// Position of object in world.
+		Vector3			m_kRot;								// Rotation of object in world.
+		Vector3			m_kVel;								// Velocity of object.
+		Vector3			m_kAcc;								// Acc of object.
 		
-		string m_kName;		
+		string			m_kName;							// Object type name
 
-		int m_iObjectType;		
-		int m_iUpdateStatus;
-		bool m_bLoadChilds;
-		bool m_bLockedChilds;
-		bool m_bAutoParent;
+		ObjectType		m_iObjectType;						
+		UpdateStatus	m_iUpdateStatus;					
+		bool			m_bLockedChilds;					
+//		bool	m_bLoadChilds;						
+//		bool	m_bAutoParent;						
 		
-		bool m_bSave;
+		bool	m_bSave;
 		
-		list<Property*> m_akPropertys;
-		ObjectManager* m_pkObjectMan; 
-	
+		ObjectManager*		m_pkObjectMan;			// Ptr to object manger.
+		PropertyFactory*	m_pkPropertyFactory;	
 
-		list<Object*> m_akChilds;
-		Object* m_pkParent;	
-	
-		PropertyFactory*	m_pkPropertyFactory;
+		Object*				m_pkParent;				// Parent Object.
+		list<Object*>		m_akChilds;				// List of child objects.
+		list<Property*>		m_akPropertys;			// List of propertys of object.
 		
 	public:
+		int		iNetWorkID;							// ID used by network state code.
 
-		int		iNetWorkID;		// ID used by network state code.
 		Object();		
 		~Object();
 		
@@ -121,16 +121,16 @@ class ENGINE_API Object {
 
 		void Save(ObjectDescriptor* ObjDesc);
 
-		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
+		inline UpdateStatus &GetUpdateStatus() {return m_iUpdateStatus;};
 
-		inline int &GetObjectType(){return m_iObjectType;};
+		inline ObjectType &GetObjectType(){return m_iObjectType;};
 		inline bool &GetSave(){return m_bSave;};
 		inline string &GetName(){return m_kName;};
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
 		inline Vector3 &GetAcc(){return m_kAcc;};				
-		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
+//		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		float GetBoundingRadius();
