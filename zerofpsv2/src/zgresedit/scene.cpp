@@ -607,10 +607,14 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 		{	
 			if(j==i)
 			{
-				if((*vkNewSkinDesc[j].first))
-					delete (*vkNewSkinDesc[j].first);
+				ZGuiSkin* pkOldSkin = (*vkNewSkinDesc[j].first);
+
+//				måste kommentera ut... krashar av någon anledning (borde inte göra det)
+//				if(pkOldSkin)
+//					delete pkOldSkin;	
 
 				(*vkNewSkinDesc[j].first) = new ZGuiSkin((*vkSkinDesc[i].first));
+
 				break;
 			}
 		}

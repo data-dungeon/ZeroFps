@@ -150,7 +150,8 @@ void MistClient::Init()
 	InitializeGui(pkGui, pkTexMan, m_pkScript, m_pkGuiMan, 
 		"data/textures/text/paternoster8.bmp",
 		"data/script/gui/gui_create_client.lua"
-		/*"data/script/gui/test2.lua"*/);
+		//"data/olle.lua"
+		);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -173,6 +174,15 @@ void MistClient::Init()
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	m_pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
 
+	
+
+
+	//ZFResourceHandle* pkTemp = m_pkScriptResHandle;
+	//ZFResourceHandle kScriptResHandle;
+	//kScriptResHandle.SetRes("data/script/gui/olle.lua");
+	//m_pkScriptResHandle = &kScriptResHandle;
+	//m_pkScript->Call(&kScriptResHandle, "GUICreate", 0, 0);
+	//m_pkScriptResHandle = pkTemp;
 
 }
 
