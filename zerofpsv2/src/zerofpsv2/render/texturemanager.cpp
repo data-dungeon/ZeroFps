@@ -353,8 +353,7 @@ int TextureManager::CreateTextureFromRGB(const char* acName, color_rgb* pkPixels
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-	glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,iWidth,iHeight,0,/*GL_RGB*/
-/*GL_BGR*/eFormat,GL_UNSIGNED_BYTE,pkPixels);
+	glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,iWidth,iHeight,0,eFormat,GL_UNSIGNED_BYTE,pkPixels);
 
 	glBindTexture(GL_TEXTURE_2D,0);
 	m_iCurrentTexture = NO_TEXTURE;

@@ -385,9 +385,10 @@ ZIFAnimation::ZIFAnimation()
 	m_bStream=true;
 	g_iZIFAnimTexIDCounter++;
 	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
+	m_bRebuildTexture=true;
 }
 
-ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream)
+ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream, bool bRebuildTexture)
 {
 	m_pkFile = NULL;
 	m_fLastTick=0;
@@ -404,6 +405,7 @@ ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream)
 	m_bStream=bStream;
 	g_iZIFAnimTexIDCounter++;
 	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
+	m_bRebuildTexture=bRebuildTexture;
 }
 
 ZIFAnimation::~ZIFAnimation()
@@ -436,7 +438,6 @@ bool ZIFAnimation::Update()
 			m_iCurrentFrame=0;
 
 		return true; // behöver läsa in ny bild till texturen
-
 	}
 
 	return false; // behöver inte uppdatera
@@ -447,9 +448,7 @@ char* ZIFAnimation::GetFramePixels()
 	if(m_bStream == true)
 		return m_pPixelData;
 	else
-	{
 		return m_pPixelData+(m_iPixelDataSize*m_iCurrentFrame);
-	}
 }
 
 bool ZIFAnimation::Read()
@@ -466,6 +465,14 @@ bool ZIFAnimation::Read()
 		fread(&m_iNumFrames, sizeof(int), 1, m_pkFile);
 		m_iPixelDataSize = m_iWidth*m_iHeight*3;
 
+		// Vi ökar på ID räknaren för texturn med antalet frames om denna
+		// animation kommer använda så många texturer (1 för varje frame)
+		if(m_bRebuildTexture==false)
+		{
+			m_iIDTexArrayStart = g_iZIFAnimTexIDCounter;
+			g_iZIFAnimTexIDCounter += m_iNumFrames;
+		}
+
 		if(m_bStream)
 			m_pPixelData = new char[m_iPixelDataSize];
 		else
@@ -481,4 +488,14 @@ bool ZIFAnimation::Read()
 	fread(m_pPixelData, sizeof(char), m_iPixelDataSize, m_pkFile);
 	fclose(m_pkFile);
 	return true;
+}
+
+char* ZIFAnimation::GetTexIDName()
+{
+	// Skapa ett nytt texturID namn om vi inte skall bygga om texturen
+	// utan istället skapa en ny
+	if(m_bRebuildTexture == false)
+		sprintf(m_szTexIDName, "ZIFAnimTex%i", m_iIDTexArrayStart+m_iCurrentFrame);
+
+	return m_szTexIDName;
 }

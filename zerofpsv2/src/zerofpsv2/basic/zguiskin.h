@@ -13,16 +13,17 @@ class BASIC_API ZIFAnimation
 {
 public:
 	ZIFAnimation();
-	ZIFAnimation(char* szFileName, bool bStream=true);
+	ZIFAnimation(char* szFileName, bool bStream=true, bool bRebuildTexture=true);
 	~ZIFAnimation();
 
 	bool Update();
 	char* GetFramePixels();
+	char* GetTexIDName();
 	
 	int m_iWidth, m_iHeight;
-	char* m_szFileName;
-	char m_szTexIDName[16]; // unikt TexturID namn för varje zif animation
 	bool m_bPlay;
+	bool m_bRebuildTexture; // Använd en och samma textur. OBS! _BÖR_ vara satt till true annars ryker allt texturminne!!! 
+							// Endast små animationer (på typ max: 40 frame) kan dra nytta av att sätta denna till false för att slippa bygga om texturen varje frame.
 
 private:
 	FILE* m_pkFile;
@@ -34,6 +35,10 @@ private:
 
 	char* m_pPixelData;
 	bool m_bStream;	// Läs en frame i taget från disk
+	
+	char m_szTexIDName[16]; // unikt TexturID namn för varje zif animation
+	int m_iIDTexArrayStart; // startID, om varje animationsframe har sin egen textur
+	char* m_szFileName;
 
 	bool Read();
 };

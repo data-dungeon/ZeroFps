@@ -280,7 +280,7 @@ void ZGResEdit::OnInit()
 	ZGuiSkin* pkSkin = new ZGuiSkin();
 	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
 	//pkSkin->m_rcBkTile = Rect(0,48,128,128);
-	pkSkin->m_pkZIFAnimation = new ZIFAnimation("apa.zif"); 
+	//pkSkin->m_pkZIFAnimation = new ZIFAnimation("apa.zif"); 
 
 	GetWnd("TestWnd")->SetSkin(pkSkin);
 
@@ -509,15 +509,19 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			static int apa = 0;
+			//static int apa = 0;
 
-			if(apa == 0)
-				m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
-			else
-				m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
+			//if(apa == 0)
+			//	m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
+			//else
+			//	m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("alien2.zif", false);
 
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			//apa++;
+
 			//GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("spider.zif",false,false);
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;
 
