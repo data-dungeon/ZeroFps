@@ -22,13 +22,16 @@
 
 using namespace std;
 
+#define PCLIENT_NET_INFOUPDATE	1
+#define PCLIENT_NET_COMMANDS		2
+
 
 class COMMON_API P_ClientUnit: public Property {
 	private:
-		ZeroFps*				 m_pkFps;
+		ZeroFps*					m_pkFps;
 //		queue<UnitCommand> m_kCommandsToDo;
 		
-		bool					 m_bCurrentSelectionRenderState;
+		bool						m_bCurrentSelectionRenderState;
 		//P_ClientInput*     m_pkClientInput;
 	
 	public:

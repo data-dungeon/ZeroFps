@@ -89,6 +89,8 @@ class ENGINE_API Property
 		virtual bool HandleGetValue( string kValueName );
 
 	public:
+		int							m_iNetUpdateFlags;					
+
 		Property();
 		virtual ~Property() { };
 

@@ -106,16 +106,19 @@ void P_ServerUnit::UpdateClient()
 	//calculate client health bar
 	m_kInfo.m_Info2.m_cHealth = int(((float)m_iHealth/m_iMaxHealth)*255.0f);
 
-
-
 	if(m_pkClientUnit != NULL)
 	{
+		m_pkClientUnit->m_iNetUpdateFlags = 0;
+		if(memcmp(&m_pkClientUnit->m_kInfo, &m_kInfo, sizeof(UnitInfo2) ) == 0) {
+			m_pkClientUnit->m_iNetUpdateFlags = PCLIENT_NET_INFOUPDATE;
+			}
 		m_pkClientUnit->m_kInfo = m_kInfo;
+
+
 		//Update the clients avalible commands
 		if(m_bUpdateCommands)
 		{
 			m_pkClientUnit->m_kUnitCommands.clear();
-			//m_bUpdateCommands = false;
 			map<string, ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
 			while (kItor != m_kExternalCommands.end())
 			{
@@ -126,6 +129,7 @@ void P_ServerUnit::UpdateClient()
 				
 			}
 			m_pkClientUnit->m_bCommandsUpdated = true;
+			m_bUpdateCommands = false;
 		}
 	}
 }

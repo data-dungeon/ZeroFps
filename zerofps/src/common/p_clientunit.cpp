@@ -14,14 +14,14 @@ P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 	bNetwork = true;
 	m_bSave = false;
 
-	m_kInfo.m_Info2.m_cTeam =			255;
-	m_kInfo.m_Info2.m_cHealth =		255;
-	m_kInfo.m_Info2.m_cWeapon =		0;
-	m_kInfo.m_Info2.m_cArmor = 		0;
-	m_kInfo.m_Info2.m_cPropultion =	0;
-	m_kInfo.m_Info2.m_cViewDistance=20;
-	m_kInfo.m_Info2.m_cWidth =		3;
-	m_kInfo.m_Info2.m_cHeight =		3;		
+	m_kInfo.m_Info2.m_cTeam				= 255;
+	m_kInfo.m_Info2.m_cHealth			= 255;
+	m_kInfo.m_Info2.m_cWeapon			= 0;
+	m_kInfo.m_Info2.m_cArmor			= 0;
+	m_kInfo.m_Info2.m_cPropultion		= 0;
+	m_kInfo.m_Info2.m_cViewDistance	= 20;
+	m_kInfo.m_Info2.m_cWidth			= 3;
+	m_kInfo.m_Info2.m_cHeight			= 3;		
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_bSelected =	false;
@@ -100,11 +100,14 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
 	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
 //	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
-	pkNetPacket->Write(&m_kInfo.m_Info2, sizeof(UnitInfo2));
-	pkNetPacket->Write_Str(m_kInfo.m_cName);
-	
+	pkNetPacket->Write( m_iNetUpdateFlags );
+	if( m_iNetUpdateFlags & PCLIENT_NET_INFOUPDATE)
+		pkNetPacket->Write(&m_kInfo.m_Info2, sizeof(UnitInfo2));
+	//pkNetPacket->Write_Str(m_kInfo.m_cName);
+	pkNetPacket->Write_NetStr( m_kInfo.m_cName );
+
 	int iCommandsToSend = -1; 
-	if(m_bCommandsUpdated)
+	if(m_bCommandsUpdated || (m_iNetUpdateFlags & PCLIENT_NET_COMMANDS))
 	{
 		iCommandsToSend = m_kUnitCommands.size();
 		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
@@ -147,11 +150,17 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 {
 //	pkNetPacket->Read(&m_kInfo, sizeof(m_kInfo));
-	pkNetPacket->Read(&m_kInfo.m_Info2, sizeof(UnitInfo2));
-	pkNetPacket->Read_Str(m_kInfo.m_cName);
+	pkNetPacket->Read( m_iNetUpdateFlags );
+	if( m_iNetUpdateFlags & PCLIENT_NET_INFOUPDATE)
+		pkNetPacket->Read(&m_kInfo.m_Info2, sizeof(UnitInfo2));
+	
+//	pkNetPacket->Read_Str(m_kInfo.m_cName);
+	pkNetPacket->Read_NetStr(m_kInfo.m_cName);
 	
 	int iCommandsToRecive;
 	pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
+	g_ZFObjSys.Logf("net", " Cmds to recv %d\n", iCommandsToRecive);
+
 	if(iCommandsToRecive > 0)
 	{
 		m_kUnitCommands.clear();

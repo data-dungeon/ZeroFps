@@ -165,7 +165,7 @@ void MadProperty::PackFrom(NetPacket* pkNetPacket)
 
 	pkNetPacket->Read(m_fScale);
 
-	g_ZFObjSys.Logf("net", " Mad Name: %s\n", temp);
+	g_ZFObjSys.Logf("net", " .Mad Name: %s\n", temp);
 }
 
 

@@ -502,7 +502,7 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 	pkNetPacket->Read(iObjectID);
 
 	while(iObjectID != -1) {
-		g_ZFObjSys.Logf("net", "UpdateState: Object %d\n", iObjectID);
+		g_ZFObjSys.Logf("net", " Object State[%d]\n", iObjectID);
 
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
@@ -511,7 +511,7 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 			}
 				
 		if( pkNetSlave ) {
-			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
+//			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
 			pkNetSlave->PackFrom(pkNetPacket);
 			if(pkNetPacket->IsReadError())
 				return;
