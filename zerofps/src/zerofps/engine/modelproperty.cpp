@@ -73,9 +73,9 @@ void ModelProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-vector<Property::PropertyValues> ModelProperty::GetPropertyValues()
+vector<PropertyValues> ModelProperty::GetPropertyValues()
 {
-	vector<Property::PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(1);
 
 	kReturn[0].kValueName="Radius";
 	kReturn[0].iValueType=VALUETYPE_FLOAT;

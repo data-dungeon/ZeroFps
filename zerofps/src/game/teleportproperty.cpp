@@ -81,12 +81,22 @@ void TeleportProperty::Load(ZFMemPackage* pkPackage)
 
 Property* Create_TeleportProperty()
 {
+	
 	return new TeleportProperty;
 
 }
 
 
+vector<PropertyValues> TeleportProperty::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
 
+	kReturn[0].kValueName="m_kToPos";
+	kReturn[0].iValueType=VALUETYPE_VECTOR3;
+	kReturn[0].pkValue=(void*)&m_kToPos;
+	
+	return kReturn;
+};
 
 
 

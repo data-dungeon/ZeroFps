@@ -65,7 +65,7 @@ bool Property::operator<(Property& kOther){
 	}
 }
 
-vector<Property::PropertyValues> Property::GetPropertyValues()
+vector<PropertyValues> Property::GetPropertyValues()
 {
 vector<PropertyValues> kReturn;
 	return kReturn;
@@ -347,7 +347,7 @@ bool Property::HandleGetValue( string kValueName )
 }
 
 
-Property::PropertyValues::PropertyValues()
+PropertyValues::PropertyValues()
 {
 	fLowerBound=FLT_MIN;
 	fUpperBound=FLT_MAX;

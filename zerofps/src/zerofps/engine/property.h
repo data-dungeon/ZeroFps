@@ -32,6 +32,16 @@ enum PROPERTY_SIDE{
 	PROPERTY_SIDE_SERVER
 };
 
+class ENGINE_API PropertyValues
+{
+public:
+	PropertyValues();
+	string kValueName;
+	void* pkValue;
+	int iValueType;
+	float fUpperBound;
+	float fLowerBound;
+};
 
 class ENGINE_API Property 
 {
@@ -41,7 +51,7 @@ class ENGINE_API Property
 	protected:
 		Object *m_pkObject;
 		PropertyFactory*	m_pkPropertyFactory;
-		struct PropertyValues
+		/*ENGINE_API struct PropertyValues
 		{
 			PropertyValues();
 			string kValueName;
@@ -49,7 +59,7 @@ class ENGINE_API Property
 			int iValueType;
 			float fUpperBound;
 			float fLowerBound;
-		};
+		};*/
 	
 		enum ValueTypes
 		{
@@ -67,6 +77,8 @@ class ENGINE_API Property
 		virtual bool HandleGetValue( string kValueName );
 
 	public:
+		
+		
 
 		bool SetValue(string kValueName ,string kValue);
 		string GetValue(string kValueName);

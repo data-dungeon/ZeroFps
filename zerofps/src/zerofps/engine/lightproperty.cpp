@@ -56,9 +56,9 @@ void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( spot->kDiffuse );		
 }
 
-vector<Property::PropertyValues> LightProperty::GetPropertyValues()
+vector<PropertyValues> LightProperty::GetPropertyValues()
 {
-	vector<Property::PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(1);
 
 	kReturn[0].kValueName = "m_fApa";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;

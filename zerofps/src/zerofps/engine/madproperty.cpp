@@ -108,9 +108,9 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-vector<Property::PropertyValues> MadProperty::GetPropertyValues()
+vector<PropertyValues> MadProperty::GetPropertyValues()
 {
-	vector<Property::PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(2);
 
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
