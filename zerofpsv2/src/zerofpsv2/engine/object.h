@@ -143,6 +143,7 @@ public:
 /// Game Object for things in game 
 class ENGINE_API Object 
 {
+	friend class Property;
 	private:
 		Object*						m_pkParent;							///< Parent Object.
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.

@@ -9,7 +9,7 @@
 #include "network.h"
 #include <cfloat>
 #include "../basic/zfmempackage.h"
-
+#include <typeinfo.h> 
 using namespace std;
 
 struct Collision;
@@ -81,7 +81,7 @@ public:
 template <typename T> class TPointer : public TPointerBase
 {
 public:
-	TPointer(T **pPointer) : m_ppPointer(pPointer) {cout<<"s" <<*m_ppPointer <<"s";}
+	TPointer(T **pPointer) : m_ppPointer(pPointer) {}
 	bool Set(Property *pProp) 
 	{
 		if(*m_ppPointer)
@@ -157,13 +157,13 @@ class ENGINE_API Property
 			pT = 0;
 			if(m_pkObject)
 			{
-				vector<Property*>::iterator kIt = m_pkObject->m_kPropertyVector.begin();
-				while(kIt != m_pkObject->m_kPropertyVector.end())
+				list<Property*>::iterator kIt = m_pkObject->m_akPropertys.begin();
+				while(kIt != m_pkObject->m_akPropertys.end())
 				{
 					if(pT = dynamic_cast<T*>(*kIt))
 					{
 						this->PointerFound(typeid(T*));
-						kIt = m_pkObject->m_kPropertyVector.end();
+						kIt = m_pkObject->m_akPropertys.end();
 					}
 					else
 						++kIt;
