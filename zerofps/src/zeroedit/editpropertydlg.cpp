@@ -32,7 +32,7 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf, ObjectManager*
 	m_pkObjectManager = om;
 	m_oGuiCallback = cb;
 	m_pkWindow = Create(0,0,500,500);
-	
+	OnOpenEditProperty();
 }
 
 EditPropertyDlg::~EditPropertyDlg()
@@ -82,8 +82,6 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, w-100, h-25, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
 	
 	m_pkZGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, PROPERTYPROC, true);
-
-	OnOpenEditProperty();
 
 	return pkMainWindow;
 }
