@@ -51,7 +51,7 @@ class MCOMMON_API MLContainer
 		
 		int				m_iContainerType;
 
-		bool SetItem(int iID,int iX,int iY,int iW,int iH);
+		bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
 		void ClearItem(int iID);

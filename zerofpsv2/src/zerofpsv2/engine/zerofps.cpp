@@ -559,6 +559,8 @@ void ZeroFps::Update_System()
 			
 	}*/
 	
+	StartProfileTimer("s__blub");
+	
 		
 	for(int i=0;i<iLoops;i++)
 	{	
@@ -618,6 +620,9 @@ void ZeroFps::Update_System()
 
 	//finaly add rest time
 	m_fSystemUpdateTime -= fRestTime;
+	
+	
+	StopProfileTimer("s__blub");	
 	
 }
 

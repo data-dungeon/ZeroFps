@@ -56,7 +56,7 @@ int* MLContainer::GetItem(int iX,int iY)
 		return NULL;
 }
 
-bool MLContainer::SetItem(int iID,int iX,int iY,int iW,int iH)
+bool MLContainer::SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH)
 {
 	//check if this space is free
 	for(int iYP = iY ;iYP < iY+iH;iYP++)
@@ -73,6 +73,10 @@ bool MLContainer::SetItem(int iID,int iX,int iY,int iW,int iH)
 		}
 	}
 	
+	//get id
+	int iID = pkItem->GetEntity()->GetEntityID();
+	
+
 	//now set spaces
 	for(int iYP = iY ;iYP < iY+iH;iYP++)
 	{	
@@ -85,7 +89,11 @@ bool MLContainer::SetItem(int iID,int iX,int iY,int iW,int iH)
 			else
 				return false;
 		}
-	}	
+	}
+	
+	//update position saved in item
+	pkItem->m_iInContainerPosX = iX;
+	pkItem->m_iInContainerPosY = iY;		
 	
 	return true;
 }
@@ -174,7 +182,7 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 					return false;
 				}
 
-				if(!SetItem(iID,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
+				if(!SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
 				{
 					cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
 					return false;
@@ -199,8 +207,6 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 
 				
 				//set item's owned by setting
-				pkPItem->m_iInContainerPosX = iX;
-				pkPItem->m_iInContainerPosY = iY;
 				pkPItem->m_iInContainerID = m_iOwnerID;
 				//Print();
 				
@@ -387,13 +393,13 @@ bool MLContainer::MoveItem(int iID,int iX,int iY)
 		
 				ClearItem(iID);
 		
-				if(SetItem(iID,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
+				if(SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
 				{
 					return true;				
 				}
 				else
 				{
-					if(!SetItem(iID,oldx,oldy,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
+					if(!SetItem(pkPItem,oldx,oldy,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
 						cout<<"ERROR: item's size has changed since added to container"<<endl;
 				
 					return false;
@@ -481,6 +487,8 @@ void MLContainer::Print()
 
 void MLContainer::Save(ZFIoInterface* pkPackage)
 {
+
+	
 	pkPackage->Write(&m_iMaxItems,sizeof(m_iMaxItems),1);
 	pkPackage->Write(&m_bDisableItems,sizeof(m_bDisableItems),1);
 	
@@ -488,6 +496,7 @@ void MLContainer::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
 	
 	pkPackage->Write(m_iContainerType);
+	
 	
 /*	
 	//save slots
