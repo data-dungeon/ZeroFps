@@ -74,25 +74,5 @@ MTL=midl.exe
 # Name "zerofps - Win32 Release"
 # Name "zerofps - Win32 Debug"
 # Name "zerofps - Win32 Release Profile"
-# Begin Source File
-
-SOURCE=.\render\glguirender.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\basic\zfobjectmanger.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\engine\zfresourcedb.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\gui\zguitextbox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\gui\zguitreebox.cpp
-# End Source File
 # End Target
 # End Project

@@ -330,15 +330,25 @@ void ZGuiTextbox::SetFocus()
 	m_iCursorPos = 0;
 	m_bBlinkCursor = true;
 
-	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
+//	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 
-	if(pkInput->Pressed(MOUSELEFT))
+	bool bMouseLeftPressed = false;
+	int iClickPosX=0, iClickPosY=0;
+
+	ZGui* pkGui = GetGUI();
+	if(pkGui)
 	{
-		int iClickPosX, iClickPosY;
-		pkInput->MouseXY(iClickPosX,iClickPosY);
+		bMouseLeftPressed = pkGui->m_bMouseLeftPressed;
+		iClickPosX = pkGui->m_iMouseX;
+		iClickPosY = pkGui->m_iMouseY;
+	}
 
+	if(bMouseLeftPressed/*pkInput->Pressed(MOUSELEFT)*/)
+	{
+	/*	int iClickPosX, iClickPosY;
+		pkInput->MouseXY(iClickPosX,iClickPosY);
 		iClickPosX -= GetScreenRect().Left;
-		iClickPosY -= GetScreenRect().Top;
+		iClickPosY -= GetScreenRect().Top;*/
 
 		// Placera markören där man klickade.
 		if(m_pkFont != NULL && m_strText != NULL)

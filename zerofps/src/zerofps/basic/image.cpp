@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whatever loaded.
+										
 // Defines
 #define BITMAP_ID				0x4D42	// universal id for a bitmap
 #define PC_NOCOLLAPSE			0x04    /* do not match color to system kPalette */
@@ -680,7 +682,7 @@ bool Image::load_bmp(const char* szFileName)
 	FILE *pkFile = fopen(szFileName, "rb");
 	if(pkFile == NULL)
 	{
-		printf("Failed to open bitmap %s\n", szFileName);
+		printf("Image::load_bmp: Failed to open bitmap %s\n", szFileName);
 		return false;
 	}
 
@@ -697,9 +699,7 @@ bool Image::load_bmp(FILE* pkFile)
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
 	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
 
-	bool bDebug = false;
-
-	if(bDebug)
+	if(DEBUG_PRINT)
 	{
 		printf("kBitmap.kFileheader.usType = %i\n", kBitmap.kFileheader.usType); 
 		printf("kBitmap.kFileheader.ulSize = %i\n", kBitmap.kFileheader.ulSize); 
@@ -738,7 +738,7 @@ bool Image::load_bmp(FILE* pkFile)
 		kBitmap.kInfoheader.lWidth  < 1 ||
 		kBitmap.kInfoheader.ulSizeImage < 1)
 	{
-		printf("Error loading bitmap. Bad file.\n");
+		printf("Image::load_bmp: Error loading bitmap. Bad file.\n");
 		return false;
 	}
 
@@ -762,7 +762,6 @@ bool Image::load_bmp(FILE* pkFile)
 	pixels = new color_rgba[width*height];
 
 	int i=0, j=0, x=0, y=0;
-
 	switch(kBitmap.kInfoheader.usBitCount)
 	{
 	case 8:
@@ -821,14 +820,15 @@ bool Image::load_bmp(FILE* pkFile)
 		break;
 
 	default:
-		printf("Error loading bitmap. Bitcount %i not suported!.\n",
+		printf("Image::load_bmp: Error loading bitmap. Bitcount %i not suported!.\n",
 			kBitmap.kInfoheader.usBitCount);
 		delete[] pixels;
 		return false;
 	}
 
-	printf("bitmap loaded (w=%i,h=%i,bpp=%i)\n", width, height, 
-		kBitmap.kInfoheader.usBitCount);
+	if(DEBUG_PRINT)
+		printf("bitmap loaded (w=%i,h=%i,bpp=%i)\n", width, height, 
+			kBitmap.kInfoheader.usBitCount);
 
 	if(kBitmap.pkData)
 		delete[] kBitmap.pkData;

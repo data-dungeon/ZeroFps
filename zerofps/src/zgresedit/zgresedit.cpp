@@ -674,7 +674,10 @@ void ZGResEdit::SetCursor(const char* szFileNameBitmap,
 {
 	int cursor_tex = pkTexMan->Load(szFileNameBitmap,0);
 	int cursor_tex_a = pkTexMan->Load(szFileNameBitmapAlpha,0);
-	pkGui->SetCursor(cursor_tex,cursor_tex_a,32,32);
+
+	int x,y;
+	pkInput->MouseXY(x,y);
+	pkGui->SetCursor(x,y,cursor_tex,cursor_tex_a,32,32);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

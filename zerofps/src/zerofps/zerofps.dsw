@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "basic"=".\basic\basic.dsp" - Package Owner=<4>
+Project: "basic"=.\basic\basic.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "engine"=".\engine\engine.dsp" - Package Owner=<4>
+Project: "engine"=.\engine\engine.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -36,7 +36,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "gui"=".\gui\gui.dsp" - Package Owner=<4>
+Project: "gui"=.\gui\gui.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -44,11 +44,17 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name render
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "render"=".\render\render.dsp" - Package Owner=<4>
+Project: "render"=.\render\render.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +69,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "script"=".\script\script.dsp" - Package Owner=<4>
+Project: "script"=.\script\script.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -75,7 +81,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "tdd"="..\..\docs\TDD\tdd.dsp" - Package Owner=<4>
+Project: "tdd"=..\..\docs\TDD\tdd.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -87,7 +93,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "zerofps"=".\zerofps.dsp" - Package Owner=<4>
+Project: "zerofps"=.\zerofps.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -103,6 +109,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name common
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gui
     End Project Dependency
 }}}
 

@@ -29,8 +29,8 @@
 using namespace std;
 
 class ZGuiRender;
-class Input;
-class ZeroFps;
+//class Input;
+//class ZeroFps;
 class ZGuiResourceManager;
 
 /*
@@ -80,7 +80,7 @@ public:
 
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
-	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
+	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow, int x=-1, int y=-1);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
@@ -90,7 +90,8 @@ public:
 	ZGui();
 	~ZGui();
 
-	bool Update();
+	bool Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
+		bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed);
 	bool IsActive();
 
 	ZGuiResourceManager* GetResMan();
@@ -137,24 +138,27 @@ public:
 	MAIN_WINDOW* FindMainWnd(int x, int y);
 	void GetResolution(int& x, int& y);
 
+	int m_iMouseX, m_iMouseY;
+	bool m_bMouseLeftPressed;
+
 private:
 	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
-	void FormatKey(int& iKey);
+	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void CreateDefaultSkins();
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
 	bool IgnoreKey(int Key);
 	bool Render(); // Render the active main window
 	void OnKeyPress(int iKey);
-	bool OnKeyUpdate();
-	bool OnMouseUpdate();
+	bool OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed, bool bShiftIsPressed, float fGameTime);
+	bool OnMouseUpdate(int x, int y, bool bLBnPressed, bool bRBnPressed, float fGameTime);
 	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
-	Input* m_pkInput;
+	//Input* m_pkInput;
 	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
@@ -170,7 +174,7 @@ private:
 	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
 
-	ZeroFps* m_pkFps;
+	//ZeroFps* m_pkFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;

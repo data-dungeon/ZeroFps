@@ -45,7 +45,6 @@ ZeroFps::ZeroFps(void)
 	m_bServerMode = 		true;
 	m_bClientMode = 		true;
 	m_bGuiMode=				false;
-	m_bGuiTakeControl=	true;
 	m_iMadDraw = 			1;
 	g_fMadLODScale = 		1.0;
 	g_iMadLODLock = 		0;
@@ -373,7 +372,14 @@ void ZeroFps::Draw_EngineShell()
 	}		
 	else {
 		// Update GUI
-		m_pkGui->Update();
+
+		m_pkInput->SetInputEnabled(true);
+
+		int mx, my;
+		m_pkInput->MouseXY(mx,my);
+		m_pkGui->Update(GetGameTime(),m_pkInput->GetQueuedKey(),false,
+			(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
+			mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
 	}
 
 
@@ -503,32 +509,12 @@ void ZeroFps::ToggleGui(void)
 	
 	if(m_bGuiMode == true)
 	{
-		if(m_bGuiTakeControl)
-		{
-			//SDL_ShowCursor(SDL_DISABLE);
-		}
 		m_pkGui->Activate(m_bGuiMode);
 	}
 	else
 	{
-		if(m_bGuiTakeControl)
-		{
-			//SDL_ShowCursor(SDL_ENABLE);
-		}
 		m_pkGui->Activate(m_bGuiMode);
 	}
-
-	bool bShowCursor;
-	
-	if(m_bGuiMode == true)
-		bShowCursor = true;
-	else
-		bShowCursor = false;
-
-	if(m_bGuiTakeControl == false)
-		bShowCursor = false;
-
-	//m_pkGui->ShowCursor(bShowCursor);
 }
 
 

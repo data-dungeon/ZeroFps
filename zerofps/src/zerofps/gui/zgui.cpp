@@ -6,9 +6,9 @@
 #include "zgui.h"
 #include "zguiwindow.h"
 #include "../render/zguirenderer.h"
-#include "../engine/input.h"
+#include "../render/texturemanager.h"
+#include "zguiresourcemanager.h"
 #include "../basic/zfassert.h"
-#include "../engine/zerofps.h"
 #include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
@@ -23,10 +23,8 @@ ZGui::ZGui()
 	m_iHighestZWndValue = 10;
 
 	m_bActive = false;
-	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkResManager = static_cast<ZGuiResourceManager*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkActiveMainWin = NULL;
@@ -308,16 +306,17 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 	return best;
 }
 
-bool ZGui::OnMouseUpdate()
+bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
+						 bool bRBnPressed, float fGameTime)
 {
-	static ZGuiWnd* pkApa = NULL;
+	// Register public variables needed by the editbox.
+	m_iMouseX = x; m_iMouseY = y;
+	m_bMouseLeftPressed = bLBnPressed;
 
-  	int x,y;
-	m_pkInput->MouseXY(x,y);
 	m_pkCursor->SetPos(x,y);
 
-	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
-	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
+	bool bLeftButtonDown = bLBnPressed;
+	bool bRightButtonDown = bRBnPressed;
 
 	if(m_pkActiveMainWin == NULL)
 		return false;
@@ -400,7 +399,6 @@ bool ZGui::OnMouseUpdate()
 				{
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
-					pkApa = ZGuiWnd::m_pkWndClicked;
 				}
 
 				// Send a Left Button Down Message...
@@ -502,10 +500,10 @@ bool ZGui::OnMouseUpdate()
 				delete[] pkParams;
 
 				static bool s_bClickedOnes = false;
-				static float s_fClickTime = m_pkFps->GetGameTime();
+				static float s_fClickTime = fGameTime; //m_pkFps->GetGameTime();
 
 				// Test for double click.
-				if(s_bClickedOnes == true && m_pkFps->GetGameTime()-
+				if(s_bClickedOnes == true && fGameTime/*m_pkFps->GetGameTime()*/-
 					s_fClickTime<0.25f)
 				{
 					pkParams = new int[2];
@@ -519,7 +517,7 @@ bool ZGui::OnMouseUpdate()
 				if(s_bClickedOnes == false)
 					s_bClickedOnes = true;
 
-				s_fClickTime = m_pkFps->GetGameTime();
+				s_fClickTime = fGameTime; //m_pkFps->GetGameTime();
 
 				ZGuiWnd::m_pkWndClicked = NULL;
 			}
@@ -560,19 +558,8 @@ bool ZGui::OnMouseUpdate()
 		}
 	}
 
-/*	if(bLeftButtonDown)
-	{
-		if(pkApa && pkApa->GetScreenRect().Inside(x,y) == false)
-		{
-			pkApa->KillFocus();
-			pkApa = NULL;
-		}
-	}*/
-
 	m_bLeftButtonDown = bLeftButtonDown;
 	m_bRightButtonDown = bRightButtonDown;
-
-
 
 	return true;
 }
@@ -582,16 +569,16 @@ bool ZGui::OnMouseUpdate()
 // Description: Skicka vidare knapp-händelser till kontroller sammt
 //				enabla keyrepeat (och sabba för folk som kan skriva fort...)
 //
-bool ZGui::OnKeyUpdate()
+bool ZGui::OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed, 
+					   bool bShiftIsPressed, float fGameTime)
 {
 	static bool s_bKeyrepeatActivated = false;
 	static int s_iLastKeyPressed;
-	int iKeyPressed = m_pkInput->GetQueuedKey();
 
 	// Registrera senast knappnedtryck.
 	if(iKeyPressed != -1)
 	{
-		FormatKey(iKeyPressed);
+		FormatKey(iKeyPressed, bShiftIsPressed);
 
 		if(s_iLastKeyPressed != iKeyPressed)
 			s_bKeyrepeatActivated = false;
@@ -600,13 +587,14 @@ bool ZGui::OnKeyUpdate()
 		OnKeyPress(s_iLastKeyPressed);
 	}
 
-	static float s_fKeyrepeatCheckTime = m_pkFps->GetGameTime();
-	static float s_fLastRepeatTime = m_pkFps->GetGameTime();
+	static float s_fKeyrepeatCheckTime = fGameTime; 
+	static float s_fLastRepeatTime = fGameTime;
 	
 	// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt.
-	if(m_pkInput->Pressed(s_iLastKeyPressed) && s_iLastKeyPressed != KEY_LSHIFT)
+	//if(m_pkInput->Pressed(s_iLastKeyPressed) && s_iLastKeyPressed != KEY_LSHIFT)
+	if(bLastButtonStillPressed)
 	{
-		float fCurrTime = m_pkFps->GetGameTime();
+		float fCurrTime = fGameTime;
 
 		const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
 
@@ -633,8 +621,8 @@ bool ZGui::OnKeyUpdate()
 	else
 	{
 		s_bKeyrepeatActivated = false;
-		s_fKeyrepeatCheckTime = m_pkFps->GetGameTime();
-		s_fLastRepeatTime = m_pkFps->GetGameTime();
+		s_fKeyrepeatCheckTime = fGameTime;
+		s_fLastRepeatTime = fGameTime;
 	}
 
 	return true;
@@ -699,16 +687,13 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 	}
 }
 
-void ZGui::SetCursor(int TextureID,int MaskTextureID,int Width,int Height)
+void ZGui::SetCursor(int x, int y, int TextureID,int MaskTextureID,int Width,int Height)
 {
 	m_pkCursorSkin->m_iBkTexID = TextureID;
 	m_pkCursorSkin->m_iBkTexAlphaID = MaskTextureID;
-	m_pkCursor->SetSkin(m_pkCursorSkin);
 	m_pkCursor->SetSize(Width,Height);
-
-	int x,y;
-	m_pkInput->MouseXY(x,y);
-	m_pkCursor->SetPos(x,y);
+	m_pkCursor->SetSkin(m_pkCursorSkin);
+	m_pkCursor->SetPos(x,y); 
 }
 
 bool ZGui::IsActive()
@@ -716,18 +701,13 @@ bool ZGui::IsActive()
 	return m_bActive;
 }
 
-bool ZGui::Update()
+bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
+				  bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed)
 {
-
 	if(m_bActive == true)
 	{
-		m_pkInput->SetInputEnabled(true);
-
-		OnMouseUpdate();
-		OnKeyUpdate();
-
-		m_pkInput->SetInputEnabled(false);
-
+		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, m_fGameTime);
+		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		Render();
 	}
 
@@ -790,7 +770,7 @@ void ZGui::ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow)
 
 bool ZGui::IgnoreKey(int Key)
 {
-	switch(Key) 
+/*	switch(Key) 
 	{
 		case KEY_RSHIFT:
 		case KEY_RCTRL:
@@ -815,8 +795,9 @@ bool ZGui::IgnoreKey(int Key)
 
 		default:
 			return false;
-	};
+	};*/
 
+	return false;
 }
 
 ZGuiFont* ZGui::AddBitmapFont(char* strBitmapName,char cCharsOneRow,
@@ -853,10 +834,8 @@ void ZGui::AddKeyCommand(int Key,ZGuiWnd *pkFocusWnd,ZGuiWnd *pkTriggerWnd)
 
 void ZGui::ShowCursor(bool bShow, int x, int y)
 {
-	if(m_pkInput && !(x==-1 && y==-1) )
-	{
-		//m_pkInput->SetCursorInputPos(x,y); 
-	}
+	//if(!(x==-1 && y==-1) )
+	//	m_pkInput->SetCursorInputPos(x,y); 
 
 	m_pkCursor->Show(bShow);
 }
@@ -952,11 +931,12 @@ void ZGui::CreateDefaultSkins()
 	m_pkResManager->Add(string("DEF_CBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_down,false));
 }
 
-void ZGui::FormatKey(int &iKey)
+void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 {
 	#ifdef WIN32
 	
-		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		//if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		if(bShiftIsPressed)
 		{
 			if(iKey == '7')
 				iKey = '/';
@@ -1004,7 +984,8 @@ void ZGui::FormatKey(int &iKey)
 
 	#ifndef WIN32
 
-		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		//if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		if(bShiftIsPressed)
 		{
 			if(iKey == '7')
 				iKey = '/';
@@ -1080,7 +1061,7 @@ void ZGui::OnKeyPress(int iKey)
 		if(bIsTextbox)
 			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
 
-		if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
+	/*	if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
 		{
 			// Find the child with the next tab nr...
 			ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
@@ -1088,10 +1069,10 @@ void ZGui::OnKeyPress(int iKey)
 
 			if(pkNext)
 				SetFocus( pkNext );
-		}
+		}*/
 
 		// Send a WM Command message when Return or space ar being hit
-		if( (iKey == KEY_RETURN || iKey == KEY_SPACE) 
+	/*	if( (iKey == KEY_RETURN || iKey == KEY_SPACE) 
 			&& !(bIsTextbox && bMultiLine) )
 		{
 			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
@@ -1104,7 +1085,7 @@ void ZGui::OnKeyPress(int iKey)
 			int kParams[1] = { ZGuiWnd::m_pkFocusWnd->GetID() };
 			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 				ZGM_KEYDOWN,1,(int*) kParams);
-		}
+		}*/
 
 		// En knapp har tryckts ner.
 		int kParams[1] = {iKey};
@@ -1515,78 +1496,6 @@ bool ZGui::MouseHoverWnd()
 {
 	return m_bHoverWindow;
 }
-
-/*bool ZGui::Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	map<string, ZGuiWnd*> akWindows;
-	m_pkResManager->GetWindows(akWindows);
-
-	map<string, ZGuiWnd*>::iterator itWindows;
-	for(itWindows = akWindows.begin();
-		itWindows != akWindows.end(); itWindows++)
-		{		
-			ResizeWnd((*itWindows).second, iOldWidth, iOldHeight, 
-				iNewWidth, iNewHeight);
-		}
-
-	return true;
-}
-
-bool ZGui::ResizeWnd(ZGuiWnd *pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-
-	float fScaleX = (float) iNewWidth / (float) iOldWidth;
-	float fScaleY = (float) iNewHeight / (float) iOldHeight;
-
-	Rect rc, rcNew;
-	float fOldXprocentAvSkarm, fOldYprocentAvSkarm;
-
-	// 
-	// Change area
-	// 
-	rc = pkWnd->m_kArea;
-	
-	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-	rcNew = Rect(
-		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-		(int) (fOldYprocentAvSkarm * (float) iNewHeight), 0,0);
-
-	rcNew.Right =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-	rcNew.Bottom =  rcNew.Top + (int) (fScaleY * (float) rc.Height());
-	
-	pkWnd->m_kArea = rcNew;
-
-	// 
-	// Change move area
-	// 
-	rc = pkWnd->m_kMoveArea;
-	
-	fOldXprocentAvSkarm = (float) rc.Left / (float) iOldWidth;
-	fOldYprocentAvSkarm = (float) rc.Top / (float) iOldHeight;
-
-	rcNew = Rect(
-		(int) (fOldXprocentAvSkarm * (float) iNewWidth ),
-		(int) (fOldYprocentAvSkarm * (float) iNewHeight),0,0);
-
-	rcNew.Right =  rcNew.Left + (int) (fScaleX * (float) rc.Width()); 
-	rcNew.Bottom =  rcNew.Top + (int) (fScaleY * (float) rc.Height());
-	
-	pkWnd->m_kMoveArea = rcNew;
-
-	// Move childrens
-	for( WINit win = pkWnd->m_kChildList.begin();
-		 win != pkWnd->m_kChildList.end(); win++)
-		 {
-			 if((*win)->IsInternalControl())
-			 {
-				 ResizeWnd((*win), iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-			 }
-		 }
-
-	return true;
-}*/
 
 void ZGui::GetResolution(int& res_x, int& res_y)
 {

@@ -517,7 +517,10 @@ void Game::InitGui()
 	// Show cursor
 	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-	pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
+	
+	int mx,my;
+	pkInput->MouseXY(mx,my);
+	pkGui->SetCursor(mx, my, cursor_tex, cursor_tex_a, 32, 32);
 	pkGui->ShowCursor(false);
 	SDL_ShowCursor(SDL_DISABLE);
 }

@@ -40,8 +40,9 @@ Gui::Gui(ZeroEdit* pkEdit)
 
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
-	pkEdit->pkFps->m_bGuiTakeControl = true;
+	int x,y;
+	pkEdit->pkInput->MouseXY(x,y);
+	pkEdit->pkGui->SetCursor(x, y, cursor_tex, cursor_tex_a, 32, 32);
 
 	m_bGuiHaveFocus = false;
 }
@@ -212,9 +213,9 @@ bool Gui::InitSkins()
 	int slider = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
 	int slider_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
 
-	int treenode_c = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_closed.bmp",0);
+/*	int treenode_c = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_closed.bmp",0);
 	int treenode_o = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_open.bmp",0);
-	int treenode_n = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_normal.bmp",0);
+	int treenode_n = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_normal.bmp",0);*/
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -272,12 +273,12 @@ bool Gui::InitSkins()
 		new ZGuiSkin(0, 0, 255, 0, 0, 0, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_a"), 
 		new ZGuiSkin(255, 0, 255, 0, 0, 0, 1)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_c"), 
+/*	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_c"), 
 		new ZGuiSkin(treenode_c,false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_o"), 
 		new ZGuiSkin(treenode_o,false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_n"), 
-		new ZGuiSkin(treenode_n,false)) ); 
+		new ZGuiSkin(treenode_n,false)) ); */
 
 	return true;
 }
