@@ -480,13 +480,6 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 		return NULL;
 	}
 	
-	
-	//copy return entity pointer
-	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
-	
-	//pop pointers
-	ObjectManagerLua::Pop();
-	
 	//find last /
 	int len = strlen(acName);
 	int pos = 0;
@@ -498,6 +491,9 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 			break;
 		}
 	}
+
+	//copy return entity pointer
+	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
 	
 	//setup entity
 	pkReturnObj->m_strType	= &acName[pos];
@@ -506,7 +502,10 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
    pkReturnObj->m_strCreatedFromScript = acName;
 	
 	CallFunction(pkReturnObj, "FirstRun");
-	
+
+	//pop pointers
+	ObjectManagerLua::Pop();	
+		
 	return pkReturnObj;
 }
 

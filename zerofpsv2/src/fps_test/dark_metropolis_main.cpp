@@ -512,7 +512,7 @@ void DarkMetropolis::Input()
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
 		{
-			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.2)
+			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 								

@@ -7,15 +7,19 @@ function Create()
 --			InitParameter("m_iShadowGroup","2");
 --		InitProperty("P_Primitives3D");
 		InitProperty("P_BillBoardRender");
-			InitParameter("texture","data/textures/rainsplash.tga");
+			InitParameter("texture","data/textures/fireball.tga");
+			InitParameter("scale",0.5);
 			
 		InitProperty("P_ScriptInterface");
+		InitProperty("P_PSystem");
+			InitParameter("PSType", "fireball");
 
 
+		
 		InitProperty("P_Tcs");
 --			InitParameter("polygontest","true");
 			InitParameter("radius",0.3);
-			InitParameter("gravity","false");
+			InitParameter("gravity","true");
 			InitParameter("group",3);
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);			
@@ -31,6 +35,18 @@ function Create()
 			
 end
 
+function Init()
+	SetLocalDouble(SIGetSelfID(),"bounces",3);
+
+end
+
 function Collission(bah)
-	Delete(SIGetSelfID());
+	b = GetLocalDouble(SIGetSelfID(),"bounces");
+	b = b-1;
+	
+	if b < 0 then
+		Delete(SIGetSelfID());
+	end
+	
+	SetLocalDouble(SIGetSelfID(),"bounces",b);
 end

@@ -108,10 +108,6 @@ function HeartBeat()
 end
 
 function Dead()
-
---	Print("DIIIIIIIIE");
-	
---	PlaySound(SIGetSelfID(),"deaths/trolldie.wav");
 	
 	p = GetObjectPos(SIGetSelfID());
 	p[2] = p[2] + 0.5;
@@ -120,9 +116,6 @@ function Dead()
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
-	
---	CreateEntity("data/script/objects/t_evilthing.lua",p);	
-
 
 	Delete(SIGetSelfID());
 end
