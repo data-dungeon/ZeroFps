@@ -1,0 +1,97 @@
+#ifndef _MISTSERVER_H_
+#define _MISTSERVER_H_
+
+#ifndef _DONT_MAIN
+	#define _MAINAPPLICATION_
+	#define _DONT_MAIN
+#endif
+
+#include <iostream>
+#include <cmath>
+#include <GL/glut.h>
+#include <list>
+#include "../zerofpsv2/engine/application.h"
+#include "../zerofpsv2/engine_systems/mad/mad_modell.h"
+
+#include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
+#include "../zerofpsv2/gui/zgui.h"
+
+//#include "../common/common.pkg"
+
+
+class MistServer :public Application {
+	private:
+		
+		Camera*			m_pkCamera;
+		
+		// actions
+		int 			m_iActionCamLeft;
+		int 			m_iActionCamRight;
+		int 			m_iActionCamUp;
+		int 			m_iActionCamDown;
+		int 			m_iActionSelect;
+		int 			m_iActionScroll;		
+		int 			m_iActionSelectManyModifier;		
+		int			m_iActionExploreAll;
+		int			m_iActionUnExploreAll;		
+		int			m_iActionPrintServerInfo;				
+		int			m_iActionDoOrder;
+		
+		//console funktions
+		enum FuncId_e
+		{
+			FID_LOAD,
+			FID_UNLOAD,
+			FID_MASSSPAWN,
+		};
+
+		//clients own little qute object
+		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
+
+	public:
+		bool InitializeScript();
+		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
+		
+		MistServer(char* aName,int iWidth,int iHeight,int iDepth);
+	 	
+	 	void OnInit(void);
+		void OnIdle(void);
+		void OnHud(void);
+		void OnSystem();
+				
+		void RunCommand(int cmdid, const CmdArgument* kCommand);		
+		void Init();
+		void RegisterActions();		
+		void RegisterPropertys();
+		void Input();
+		void OnServerStart(void);
+		void OnClientStart(void);
+		
+		
+		//init client
+		void ClientInit();
+		
+		//on client join, server runs this
+		void OnServerClientJoin(ZFClient* pkClient,int iConID);
+		void OnServerClientPart(ZFClient* pkClient,int iConID);
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
+};
+
+
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
