@@ -221,19 +221,8 @@ void ZGuiTextbox::KillFocus()
 // överlagrad från Zguiwnd
 void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 {
-	if(m_strText)
-		delete[] m_strText;
 
-	m_strText = new char[strlen(strText)+1];
-	strcpy(m_strText, strText);
-	
-	if(m_bMultiLine)
-	{
-		BuildTagList();
-		BuildTextStrings();
-	}
-	
-	//if(strText == NULL || strlen(strText) < 1)
+	//if(szText == NULL || strlen(strText) < 1))
 	//{
 	//	delete[] m_strText;
 	//	m_iTextLength = 1;
@@ -242,35 +231,62 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 	//	return;
 	//}
 
-	//if(m_bNumberOnly)
-	//	for(unsigned int i=0; i<strlen(strText); i++)
-	//		if(strText[i] < 48 || strText[i] > 57)
-	//			return;
+	//if(m_strText)
+	//	delete[] m_strText;
 
-	//int iLength = strlen(strText)+1;
-
-	//if(iLength > 1)
+	//m_strText = new char[strlen(strText)+1];
+	//strcpy(m_strText, strText);
+	
+	//if(m_bMultiLine)
 	//{
-	//	if(m_strText != NULL)
-	//	{
-	//		delete[] m_strText;
-	//		m_iTextLength = 0;
-	//	}
-
-	//	m_iTextLength = iLength;
-	//	m_strText = new char[m_iTextLength];
-	//	strcpy(m_strText, strText);
+	//	BuildTagList();
+	//	BuildTextStrings();
 	//}
-	//
-	//m_iCurrMaxText = strlen(strText);
+	
+	if(strText == NULL || strlen(strText) < 1)
+	{
+		delete[] m_strText;
+		m_iTextLength = 1;
+		m_strText = new char[m_iTextLength];
+		m_strText[0] = '\0';
+		return;
+	}
 
-	//if(m_iCurrMaxText < 0)
-	//	m_iCurrMaxText = 0;
+	if(m_bNumberOnly)
+		for(unsigned int i=0; i<strlen(strText); i++)
+			if(strText[i] < 48 || strText[i] > 57)
+				return;
+
+	int iLength = strlen(strText)+1;
+
+	if(iLength > 1)
+	{
+		if(m_strText != NULL)
+		{
+			delete[] m_strText;
+			m_iTextLength = 0;
+		}
+
+		m_iTextLength = iLength;
+		m_strText = new char[m_iTextLength+5];
+		strcpy(m_strText, strText);
+	}
+	
+	m_iCurrMaxText = strlen(strText);
+
+	if(m_iCurrMaxText < 0)
+		m_iCurrMaxText = 0;
 
 	m_iCursorPos = strlen(strText);
 
-	//if(m_iCursorPos < 0)
-	//	m_iCursorPos = 0;
+	if(m_iCursorPos < 0)
+		m_iCursorPos = 0;
+
+	if(m_bMultiLine)
+	{
+		BuildTagList();
+		BuildTextStrings();
+	}
 
 	//int* piParams = new int[1];
 	//piParams[0] = GetID(); // Listbox ID
@@ -927,7 +943,7 @@ void ZGuiTextbox::ResizeTextBuffer( int nCharacters )
 	}
 
 	m_iTextLength += nCharacters;
-	m_strText = new char[m_iTextLength];
+	m_strText = new char[m_iTextLength+5];
 	memset( m_strText, 0, m_iTextLength );
 	memcpy( m_strText, strBuffer, m_iTextLength );
 	delete[] strBuffer;
