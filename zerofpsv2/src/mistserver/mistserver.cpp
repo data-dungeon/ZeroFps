@@ -70,6 +70,9 @@ void MistServer::Init()
 void MistServer::RegisterPropertys()
 {
 
+	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
+	pkPropertyFactory->Register("P_Event", Create_P_Event);
+
 }
 
 void MistServer::OnIdle() 
@@ -153,6 +156,11 @@ void MistServer::Input()
 			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			pkObjectMan->DeleteZone(id);
 	
+		}
+	
+		if(pkInput->Pressed(KEY_SPACE))
+		{
+			pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
 		}
 	
 		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);

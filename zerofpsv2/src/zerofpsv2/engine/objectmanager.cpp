@@ -294,6 +294,27 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	Creates a object from a script and use it to set values and propertys. If script file
 	is not found no object will be created. 
 */
+Object* ObjectManager::CreateObjectFromScript(const char* acName,Vector3 kPos,int iCurrentZone)
+{
+	int id = GetZoneIndex(kPos,iCurrentZone,false);
+	
+	if(id == -1)
+		return NULL;
+	
+	if(!m_kZones[id].m_pkZone)
+		return NULL;
+		
+		
+	Object* newobj = CreateObjectFromScript(acName);
+	
+	if(newobj)
+	{
+		newobj->SetWorldPosV(kPos);	
+	}
+
+	return newobj;
+}
+
 Object* ObjectManager::CreateObjectFromScript(const char* acName)
 {
 	if(m_pScriptFileHandle)
@@ -329,6 +350,8 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	
 	return ObjectManagerLua::g_pkReturnObject;
 }
+
+
 
 /**	\brief	Creates a object from the zfoh.txt file.
 

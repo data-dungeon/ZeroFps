@@ -133,6 +133,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Object* CreateObjectFromScript(const char* acName);
+		Object* CreateObjectFromScript(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
