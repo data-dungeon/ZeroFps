@@ -287,6 +287,8 @@ void Game::Input()
 			char szFile[] = "hulk_jump.lua";
 			if(!m_pkScript->RunScript(szFile))
 				printf("Failed to run script %s.\n", szFile);
+
+			m_pkScript->CallScript("HulkJump", 0, 0);
 		}
 		break;
 	

@@ -24,6 +24,7 @@ GameScriptInterface::~GameScriptInterface()
 }
 
 
+
 OBJECT GameScriptInterface::GetPlayer() 
 {
 	OBJECT ob = g_kGame.m_pkPlayer->iNetWorkID;
@@ -76,9 +77,9 @@ OBJECT GameScriptInterface::GetClosestEnemy(OBJECT kFocusObj)
 	return -1;
 }
 
-OBJECT_TYPE GameScriptInterface::GetObjectType(OBJECT obj) 
+const char* GameScriptInterface::GetObjectType(OBJECT obj) 
 {
-	return ObjTypeNone;
+	return GetObject(obj)->GetType();
 }
 
 Object* GameScriptInterface::GetObject(int iNetworkID) 

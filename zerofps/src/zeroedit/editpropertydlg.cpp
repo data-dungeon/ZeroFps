@@ -19,15 +19,22 @@
 extern ZeroEdit Editor;
 
 static bool PROPERTYPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, 
-						 int iNumberOfParams, void *pkParams ) {
-	return Editor.m_pkGui->m_pkEditPropDlgBox->DlgProc(pkWindow, uiMessage, 
-		iNumberOfParams, pkParams); }
+						 int iNumberOfParams, void *pkParams ) 
+{
+	DlgBox* pkDlgBox = Editor.m_pkGui->GetDlg("PropertyDlg");
+	if(pkDlgBox)
+		return pkDlgBox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams);
+	else
+		return Editor.m_pkGui->WndProc(pkWindow, uiMessage, iNumberOfParams, pkParams);
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf, 
 								 ObjectManager* om, Object* pkCurrentChild, 
-								 callback cb)
+								 Input* pkInput,callback cb) 
+								 : DlgBox(pkGui->GetGUI(), pkInput, cb)
 {
 	m_szSelProperty.erase();
 	m_szSelPropValue.erase();
@@ -38,17 +45,18 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf,
 	m_pkPropFactory = pf;
 	m_pkObjectManager = om;
 	m_oGuiCallback = cb;
-	m_pkWindow = Create(200,200,500,300);
+	Create(200,200, "../data/gui_resource_files/zgresource_rc.txt", "PropertyDlg");
 	m_pkSelProperty = NULL;
-	OnOpenEditProperty();
+	//OnOpenEditProperty();
 }
 
 EditPropertyDlg::~EditPropertyDlg()
 {
-
+	OnCloseAddProperty(false);
+	OnCloseEditProperty(false);
 }
 
-ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
+bool EditPropertyDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 {
 	m_pkGui->CaptureInput(true);
 
@@ -57,11 +65,10 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	{
 		ClearAllFileds();
 		m_pkZGui->ShowMainWindow(test, true);
-		return test;
+		return true;
 	}
 
-	m_pkZGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
-		"PropertyDlg", PROPERTYPROC);
+	m_pkZGui->LoadDialog(szResourceFile, szDlgName, PROPERTYPROC);
 
 	// Initialize key commands to update values by pushing return while
 	// textbox have focus and closing window by pushing Return or Escape,
@@ -75,7 +82,12 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDialog, pkPropCancelBn);
 //	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
 
-	return pkDialog;
+	//m_pkWindow = pkDialog;
+	m_pkDlgBox = pkDialog;
+
+	m_pkZGui->ShowMainWindow(m_pkDlgBox, false);
+
+	return true;
 
 /*	// COMMENT OUT by: Zeb
 
@@ -212,7 +224,6 @@ void EditPropertyDlg::OnOpenEditProperty()
 
 	if(m_pkCurrentChild)
 	{
-
 		char szID[50];
 		sprintf(szID, "%i", m_pkCurrentChild->iNetWorkID);
 		m_pkGui->Get("ObjectID")->SetText(szID);
@@ -399,7 +410,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 		}
 	}*/
 
-	if(bSave)
+	if(bSave && m_pkCurrentChild != NULL)
 	{
 		if( ((ZGuiRadiobutton*)m_pkGui->Get("ObTypeDynamicRb"))->GetButton()->IsChecked())
 			m_pkCurrentChild->GetObjectType() = OBJECT_TYPE_DYNAMIC;
@@ -422,7 +433,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 		// Send a message to the main winproc...
 		int* piParams = new int[1];
 		piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID // COMMENT OUT by: Zeb
-		DlgProc(m_pkWindow, ZGM_COMMAND, 1, piParams);
+		DlgProc(m_pkDlgBox, ZGM_COMMAND, 1, piParams);
 		delete[] piParams;
 	}
 
@@ -505,7 +516,7 @@ bool EditPropertyDlg::OnCloseAddProperty(bool bSave)
 	if(bSave)
 	{
 		// Add new property.
-		if(m_bAdd)
+		if(m_bAdd && m_pkCurrentChild != NULL)
 		{
 			m_pkCurrentChild->AddProperty(strPropText);
 			ZGuiCombobox* pkPropertysCB = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"));
@@ -650,7 +661,7 @@ void EditPropertyDlg::RemoveProperty()
 		ZGuiListbox* pkPropList = ((ZGuiCombobox*)wnd)->GetListbox();
 		ZGuiListitem* pkItem = pkPropList->GetSelItem();
 
-		if(pkItem)
+		if(pkItem && m_pkCurrentChild != NULL)
 		{
 			m_pkCurrentChild->DeleteProperty(pkItem->GetText());
 			((ZGuiCombobox*)wnd)->RemoveSelItem(true); // select prev
@@ -683,7 +694,7 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 {
 	if(ComboBoxID == /*ID_PROPERTIES_CB*/ PropertyCB) // COMMENT OUT by: Zeb
 	{
-		if(!m_szSelProperty.empty())
+		if(!m_szSelProperty.empty() && m_pkCurrentChild != NULL)
 		{
 			m_pkSelProperty = m_pkCurrentChild->GetProperty( (char*) m_szSelProperty.c_str() );
 		
@@ -775,6 +786,15 @@ void EditPropertyDlg::ClearAllFileds()
 	((ZGuiCombobox*)m_pkGui->Get("PropertyValuesCB"))->RemoveAllItems();
 }
 
+bool EditPropertyDlg::OnOpen(int x, int y)
+{
+	//ClearAllFileds();
+	OnOpenEditProperty();
+	return true;
+}
 
-
-
+bool EditPropertyDlg::OnClose(bool bSave)
+{
+	OnCloseEditProperty(bSave);
+	return true;
+}

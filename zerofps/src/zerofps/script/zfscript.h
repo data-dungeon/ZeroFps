@@ -47,6 +47,7 @@ public:
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
 	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType);
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
+	bool CallScript(char* szFuncName, int iNumParams, int iNumResults);
 	bool RunScript(char* szFileName);
 	ZFScript();
 	virtual ~ZFScript();

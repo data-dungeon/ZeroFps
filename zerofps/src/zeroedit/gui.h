@@ -14,22 +14,27 @@
 #define _DONT_MAIN
 
 #include "zeroedit.h"
+#include "editpropertydlg.h"
 
 class FileOpenDlg;
-class EditPropertyDlg;
+//class EditPropertyDlg;
+class DlgBox;
 typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
+
+enum SEARCH_TASK
+{
+	LOAD_MAP,
+	SAVE_MAP,
+	LOAD_TEMPLATE,
+	SAVE_TEMPLATE,
+	NONE
+};
 
 class Gui
 {
 private:
+	void OpenPropertyDlg();
 	
-	enum SEARCH_TASK
-	{
-		MAP,
-		LOAD_TEMPLATE,
-		SAVE_TEMPLATE
-	};
-
 	struct MENU_INFO
 	{
 		ZGuiCombobox* cb;
@@ -82,7 +87,14 @@ private:
 
 	ZGuiWnd* Get(char* strName);
 
+	map<string, DlgBox*> m_kDialogs;
+
 public:
+	bool OpenFileDlg(SEARCH_TASK eTask); 
+	DlgBox* GetDlg(string strName);
+	bool OpenDlg(string strResName);
+	ZGuiWnd* GetMenu();
+	void CloseMenu();
 	void CreateTestWnd();
 	void UpdatePropertybox();
 	void ClosePropertybox();
@@ -97,7 +109,7 @@ public:
 	virtual ~Gui();
 
 	FileOpenDlg* m_pkFileDlgbox;
-	EditPropertyDlg* m_pkEditPropDlgBox;
+//	EditPropertyDlg* m_pkEditPropDlgBox;
 
 	friend class FileOpenDlg;
 	friend class EditPropertyDlg;

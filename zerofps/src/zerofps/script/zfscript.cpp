@@ -80,6 +80,17 @@ bool ZFScript::RunScript(char* szFileName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Name:		RunScript
+// Description:	Kör ett script från en fil.
+//
+bool ZFScript::CallScript(char* szFuncName, int iNumParams, int iNumResults)
+{
+	printf("SCRIPT_API: Calling script function %s\n", szFuncName);
+	lua_getglobal( m_pkLua, szFuncName);
+	return (lua_call(m_pkLua, iNumParams, iNumResults) == 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Name:		RegisterClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //

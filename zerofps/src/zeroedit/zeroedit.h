@@ -88,6 +88,10 @@ class ZeroEdit :public Application {
 
 			FID_LINKOBJECT,
 			FID_UNLINKOBJECT,
+
+			FID_QUIT,
+			FID_OPENDLG,
+			FID_FILEOPENDLG,
 		};	
 	
 		Object* m_pkCamObj;

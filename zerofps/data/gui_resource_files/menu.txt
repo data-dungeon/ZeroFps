@@ -1,14 +1,48 @@
-; ZeroFPS Editor 
-; Menu items
-; 
-; [Menu_Create]                	; Name of the menu item. Must start with "Menu_".
-; Title=Create			; Title of the menu item.
-; Parent=NULL	       		; Name of the parent or NULL if no parent exist.
-; Cmd=NULL	  		; Name of the console commando to run or NULL if no
-;				; commando should be executed.
-;
+; -------------------------------------
+; | 				      |
+; |          ZeroFPS Editor           |
+; |            Menu items             |
+; |				      |
+; -------------------------------------
 
-;				EDIT MENU
+; ------------- FILE MENU -------------
+
+[Menu_File]
+Title=File
+Parent=NULL
+Cmd=NULL
+
+[Menu_Loadmap]
+Title=Load map
+Parent=Menu_File
+Cmd=fileopendlg load map
+
+[Menu_Savemap]
+Title=Save map
+Parent=Menu_File
+Cmd=fileopendlg save map
+
+[Menu_LoadTemplate]
+Title=Load Template
+Parent=Menu_File
+Cmd=fileopendlg load template
+
+[Menu_SaveTemplate]
+Title=Save Template
+Parent=Menu_File
+Cmd=fileopendlg save template
+
+[Menu_OpenPropertyDlg]
+Title=Property dialog
+Parent=Menu_File
+Cmd=opendlg PropertyDlg
+
+[Menu_Quit]
+Title=Quit
+Parent=Menu_File
+Cmd=quit
+
+;------------- EDIT MENU -------------
 
 [Menu_Edit]
 Title=Edit
@@ -35,7 +69,7 @@ Title=Delete
 Parent=Menu_Edit
 Cmd=delete
 
-;				MODIFY MENU
+;MODIFY MENU
 [Menu_Modify]
 Title=Modify
 Parent=NULL
@@ -51,7 +85,8 @@ Title=Unlink
 Parent=Menu_Modify
 Cmd=unlinkobject
 
-;				DEBUG MENU
+; ------------- DEBUG MENU -------------
+
 [Menu_Debug]
 Title=Debug
 Parent=NULL
@@ -82,7 +117,8 @@ Title=Log RenderP
 Parent=Menu_Debug
 Cmd=set r_logrp 1
 
-;				LOAD MENU
+; --------------- LOAD MENU -------------
+
 [Menu_Load]
 Title=Load
 Parent=NULL

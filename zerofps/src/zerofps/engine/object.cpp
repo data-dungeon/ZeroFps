@@ -27,8 +27,8 @@ Object::Object() {
 	m_kOldPos  = Vector3::ZERO;
 	m_kOldRot  = Vector3::ZERO;	
 	
-	m_kName		= "Object";	
-	m_strType	= "Object";	
+	m_kName = "Object";	
+	m_strType = "Object";
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		=	UPDATE_ALL;
@@ -812,32 +812,3 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 		m_acPropertyList.push_back(newpropdesc);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-void Object::PPRot(bool bSave)
-{
-	static Vector3 akSave[6] =
-	{
-		m_kPos, m_kRot, m_kVel, m_kAcc, m_kOldPos, m_kOldRot
-	};
-
-	if(bSave)
-	{
-		akSave[0] = m_kPos;  akSave[1] = m_kRot;     akSave[2] = m_kVel;
-		akSave[3] = m_kAcc;  akSave[4] = m_kOldPos;  akSave[5] = m_kOldRot;
-	}
-	else
-	{
-		m_kPos = akSave[0];  m_kRot    = akSave[1];  m_kVel    = akSave[2];
-		m_kAcc = akSave[3];  m_kOldPos = akSave[4];  m_kOldRot = akSave[5];
-	}
-}
-

@@ -42,14 +42,15 @@ enum FileOpenResID
 	ID_FILEPATH_WND_LABEL_PATH,
 };
 
-class FileOpenDlg  
+class FileOpenDlg
 {
 public:
 	bool GetFlag(FileOpenFlags eFlag);
 	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
 
 	FileOpenDlg(ZGui* pkGui, ZFBasicFS* pkBasicFS, ZGuiWndProc cb, 
-		unsigned long flags=NUMBER_OF_FLAGS, string szSearchPath = ""); // search path is only valid if flag DISALLOW_DIR_CHANGE is true...
+		unsigned long flags=NUMBER_OF_FLAGS, string szSearchPath = ""); 
+		// search path is only valid if flag DISALLOW_DIR_CHANGE is true...
 
 	virtual ~FileOpenDlg();
 

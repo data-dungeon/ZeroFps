@@ -9,15 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-enum OBJECT_TYPE
-{
-	ObjTypeSelf,		
-	ObjTypeCreature,
-	ObjTypeDoor,
-	ObjTypeItem,
-	ObjTypeNone
-};
-
 typedef int OBJECT; // same as network id
 
 class GameScriptInterface  
@@ -34,7 +25,7 @@ public:
 	OBJECT GetClosestEnemy(OBJECT kFocusObj);
 
 	/// Recives the type of obj (or -1 if obj doesn´t exist)
-	OBJECT_TYPE GetObjectType(OBJECT obj);
+	const char* GetObjectType(OBJECT obj);
 
 	/// Recives the position for the object.
 	Vector3 GetObjectPos(OBJECT obj);
@@ -51,7 +42,6 @@ public:
 
 // Internal functions:
 private:
-	//ObjectManager* m_pkObjMan;
 	Object* GetObject(int iNetworkID);
 
 };

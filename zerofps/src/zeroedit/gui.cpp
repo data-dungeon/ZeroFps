@@ -31,7 +31,6 @@ Gui::Gui(ZeroEdit* pkEdit)
 	m_iScreenCY = pkEdit->m_iHeight / 2;
 	m_pkEdit = pkEdit;
 	m_pkFileDlgbox = NULL;
-	m_pkEditPropDlgBox = NULL;
 	m_uiNumMenuItems = 0;
 	
 	InitSkins();
@@ -73,7 +72,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			
 			switch(m_kSearchTask)
 			{
-			case MAP:
+			case LOAD_MAP:
 				sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
 				break;
@@ -95,7 +94,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 
 			case SAVE_TEMPLATE:
 				sprintf(path, "%s", m_pkFileDlgbox->m_szCurrentFile.c_str());
-				sprintf(cmd,"maketemplate %s",m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+					
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
 				sprintf(cmd, "savetemplate %s %s", path, 
@@ -113,91 +112,6 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				break;
 		}
 		break;
-
-/*	case ZGM_CBN_SELENDOK:
-		{
-			int iID = ((int*)pkParams)[0];
-			ZGuiWnd *win = ((ZGuiWnd*)m_pkEdit->pkGui->GetWindow(iID));
-
-			if(win)
-			{
-				ZGuiCombobox *cbox = (ZGuiCombobox*) win;
-
-				int iItemID = ((int*)pkParams)[1];
-
-				switch(iItemID)
-				{
-				case IDM_CLOSE:
-					if(cbox == m_pkEdit->pkGuiMan->Wnd("MainMenuCB1"))
-						m_pkEdit->pkFps->QuitEngine();
-					break;
-
-				case IDM_LOAD_TEMPLATE:
-				case IDM_LOAD_HEIGHTMAP:
-
-					switch(iItemID)
-					{	
-					case IDM_LOAD_HEIGHTMAP:
-						m_kSearchTask = MAP;
-						flags = DIRECTORIES_ONLY; 
-						break;
-					case IDM_LOAD_TEMPLATE:
-						m_kSearchTask = LOAD_TEMPLATE;
-						break;
-					}
-
-					if(m_pkFileDlgbox)
-					{
-						delete m_pkFileDlgbox;
-						m_pkFileDlgbox = NULL;
-					}
-
-					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
-						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
-					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
-
-					CaptureInput(true);
-					break;
-
-				case IDM_SAVE_TEMPLATE:
-
-					switch(iItemID)
-					{
-					case IDM_SAVE_TEMPLATE:
-						m_kSearchTask = SAVE_TEMPLATE;
-						flags = SAVE_FILES; 
-						break;
-					}
-
-					if(m_pkFileDlgbox)
-					{
-						delete m_pkFileDlgbox;
-						m_pkFileDlgbox = NULL;
-					}
-
-					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
-						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
-					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
-					CaptureInput(true);
-					break;
-
-				case IDM_CREATE_NEW_PROPERTY:
-
-					if(m_pkEditPropDlgBox)
-					{
-						delete m_pkEditPropDlgBox;
-						m_pkEditPropDlgBox = NULL;
-					}
-
-					m_pkEditPropDlgBox = new EditPropertyDlg(this, 
-						m_pkEdit->pkPropertyFactory, 
-						m_pkEdit->pkObjectMan, 
-						m_pkEdit->m_pkCurentChild, MAINWINPROC);
-					break;
-				}
-			}
-		}
-		break;*/
 	}
 	return true;
 }
@@ -226,8 +140,6 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				break;
 			}
 
-		if(((ZGuiCombobox*)Get("MainMenuCB1"))->GetListbox()->IsVisible())
-			m_pkEdit->pkFps->DevPrint_Show(false);
 		break;
 
 	case ZGM_CBN_SELENDOK:
@@ -238,94 +150,11 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			if(win)
 			{
 				ZGuiCombobox *cbox = (ZGuiCombobox*) win;
-
 				int index = ((int*)pkParams)[1];
-
-				switch(index)
-				{
-				case IDM_CLOSE:
-					if(cbox == m_pkEdit->pkGuiMan->Wnd("MainMenuCB1"))
-						m_pkEdit->pkFps->QuitEngine();
-					break;
-
-				case IDM_LOAD_TEMPLATE:
-				case IDM_LOAD_HEIGHTMAP:
-
-					switch(index)
-					{	
-					case IDM_LOAD_HEIGHTMAP:
-						m_kSearchTask = MAP;
-						flags = DIRECTORIES_ONLY; 
-						break;
-					case IDM_LOAD_TEMPLATE:
-						m_kSearchTask = LOAD_TEMPLATE;
-						break;
-					}
-
-					if(m_pkFileDlgbox)
-					{
-						delete m_pkFileDlgbox;
-						m_pkFileDlgbox = NULL;
-					}
-
-					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
-						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
-					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
-
-					CaptureInput(true);
-					break;
-
-				case IDM_SAVE_TEMPLATE:
-
-
-					m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();
-					break;
-
-
-					switch(index)
-					{
-					case IDM_SAVE_TEMPLATE:
-						m_kSearchTask = SAVE_TEMPLATE;
-						flags = SAVE_FILES; 
-						break;
-					}
-
-					if(m_pkFileDlgbox)
-					{
-						delete m_pkFileDlgbox;
-						m_pkFileDlgbox = NULL;
-					}
-
-					m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
-						m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
-					m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
-					CaptureInput(true);
-					break;
-
-				case IDM_CREATE_NEW_PROPERTY:
-
-					if(m_pkEditPropDlgBox)
-					{
-						delete m_pkEditPropDlgBox;
-						m_pkEditPropDlgBox = NULL;
-					}
-
-					m_pkEditPropDlgBox = new EditPropertyDlg(this, 
-						m_pkEdit->pkPropertyFactory, 
-						m_pkEdit->pkObjectMan, 
-						m_pkEdit->m_pkCurentChild, MAINWINPROC);
-					break;
-
-				default:
-					RunMenuCommand(cbox, index);
-					break;
-				}
+				RunMenuCommand(cbox, index);
 			}
 		}
 		break;
-
-
-
 	}
 	return true;
 }
@@ -334,24 +163,23 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 bool Gui::CreateWindows()
 {	
 	CreateMenu(m_pkEdit->pkIni, "../data/gui_resource_files/menu.txt");
-
-/*	ZGuiButton* pkCloseGuiButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
-		m_pkEdit->m_iWidth-20, 0, 20, 20, "x");
-	pkCloseGuiButton->SetWindowFlag(WF_CENTER_TEXT);
-	Register( pkCloseGuiButton, "CloseGuiBN");*/
-
-//	m_pkEdit->pkGui->AddKeyCommand(KEY_ESCAPE, pkMenu, pkCloseGuiButton);
-
-	//m_pkEdit->pkGui->Resize(1024,768,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight);
-
 	CreateTestWnd();
+
+	DlgBox * pkEditPropBox = new EditPropertyDlg(this, 
+		m_pkEdit->pkPropertyFactory, 
+		m_pkEdit->pkObjectMan, 
+		m_pkEdit->m_pkCurentChild, 
+		m_pkEdit->pkInput, MAINWINPROC);
+
+	m_kDialogs.insert(map<string,DlgBox*>::value_type(
+		string("PropertyDlg"), pkEditPropBox));
 
 	return true;
 }
 
 bool Gui::InitSkins()
 {
-	int piss = m_pkEdit->pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, vet inte varför...
+	int piss = m_pkEdit->pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, I don't know...
 	int bn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
 	int bn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
@@ -573,7 +401,6 @@ void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int in
 
 bool Gui::Register(ZGuiWnd *pkWnd, char* strName)
 {
-	//return (m_pkEdit->pkGuiMan->Add(string(strName), pkWnd) != NULL);
 	return m_pkEdit->pkGui->RegisterWindow(pkWnd, strName);
 }
 
@@ -599,50 +426,42 @@ void Gui::CaptureInput(bool bCapture)
 
 void Gui::UpdatePropertybox()
 {
-	if(m_pkEditPropDlgBox && m_pkEditPropDlgBox->IsOpen())
+	DlgBox* pkPropDlg = GetDlg("PropertyDlg");
+	if(pkPropDlg == NULL)
+		return;
+
+	if(pkPropDlg->IsOpen())
 	{
-		m_pkEditPropDlgBox->OnCloseAddProperty(false);
-		m_pkEditPropDlgBox->OnCloseEditProperty(false);
-
-		delete m_pkEditPropDlgBox;
-		m_pkEditPropDlgBox = NULL;
-
-		m_pkEditPropDlgBox = new EditPropertyDlg(this, 
-			m_pkEdit->pkPropertyFactory, 
-			m_pkEdit->pkObjectMan, 
-			m_pkEdit->m_pkCurentChild, MAINWINPROC);
+		pkPropDlg->Close(false);
+		pkPropDlg->Open();
 	}
 }
 
 void Gui::ClosePropertybox()
 {
-	if(m_pkEditPropDlgBox && m_pkEditPropDlgBox->IsOpen())
+	DlgBox* pkPropDlg = GetDlg("PropertyDlg");
+	if(pkPropDlg == NULL)
+		return;
+
+	if(pkPropDlg && pkPropDlg->IsOpen())
 	{
-		m_pkEditPropDlgBox->OnCloseAddProperty(false);
-		m_pkEditPropDlgBox->OnCloseEditProperty(false);
-
-		delete m_pkEditPropDlgBox;
-		m_pkEditPropDlgBox = NULL;
-
 		m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
 	}
 }
 
 void Gui::OpenPropertybox()
 {
-	if(m_pkEditPropDlgBox)
+	DlgBox* pkPropDlg = GetDlg("PropertyDlg");
+	if(pkPropDlg == NULL)
+		return;
+
+	if(pkPropDlg)
 	{
-		if(m_pkEditPropDlgBox->IsOpen())
+		if(pkPropDlg->IsOpen())
 			return;
 	}
 
-	delete m_pkEditPropDlgBox;
-	m_pkEditPropDlgBox = NULL;
-
-	m_pkEditPropDlgBox = new EditPropertyDlg(this, 
-		m_pkEdit->pkPropertyFactory, 
-		m_pkEdit->pkObjectMan, 
-		m_pkEdit->m_pkCurentChild, MAINWINPROC);
+	m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
 }
 
 bool Gui::HaveFocus()
@@ -685,7 +504,6 @@ bool Gui::HaveFocus()
 	return bGiveGuiFocus;
 }
 
-
 void Gui::CreateTestWnd()
 {
 	int id = 5000;
@@ -696,35 +514,20 @@ void Gui::CreateTestWnd()
 	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
 		false,id++);
 
+	pkWnd->SetSkin(new ZGuiSkin(0,0,0,0,0,0,0));
+
 	pkWnd->SetMoveArea(Rect(0,0,1024,768));
 
 	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 
-	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,100,w,400,true);
+	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(50,50,50+300,50+400), 
+		pkWnd, true, id++);
 
-	FILE* pkFile = fopen("../src/kodstd.txt", "r+t");
-	if(pkFile)
-	{
-		int length = 0;
-		while(1)
-		{
-			int ret = getc(pkFile);
-			if(ret == EOF)
-				break;
-			else
-				length++;
-		}
+	pkTreebox->AddItem(NULL, "Apa", 0);
 
-		fseek(pkFile, 0, SEEK_SET);
+	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,0));
 
-		char* szText = new char[length+1];
-		fread(szText, sizeof(char), length, pkFile);
-		szText[length] = '\0';
-		pkTextbox->SetText(szText);
-		delete[] szText;
-	}
-
-	m_pkEdit->pkGui->RegisterWindow(pkTextbox, "TestTextBox");
+	m_pkEdit->pkGui->RegisterWindow(pkTreebox, "TestTreeBox");
 }
 
 bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
@@ -736,36 +539,15 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 		return false;
 	}
 
-	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,1024,20),NULL,
-		true,ID_MAINWND_MENU);
+	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,1024,20),NULL,true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
 	pkMenu->SetZValue(102321);
 
 	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, "MainMenu", MENUPROC, true);
 
-	Rect rc = Rect(0,0,128,32);
-
-	int iMenuOffset = 0;
-	int iMenuWidth = pkFont->GetLength(" File")+6;
-	Rect rcMenu(0,0,iMenuWidth,20);
-	iMenuOffset += iMenuWidth;
-
-	ZGuiCombobox* pkFileMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,true,ID_MAINWND_MENU_CB,20,
-		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
-	pkFileMenuCBox->SetGUI(m_pkEdit->pkGui);
-	pkFileMenuCBox->SetLabelText("File");
-	pkFileMenuCBox->SetNumVisibleRows(5);
-	pkFileMenuCBox->IsMenu(true);
-	pkFileMenuCBox->AddItem(" Load map...", IDM_LOAD_HEIGHTMAP);
-	pkFileMenuCBox->AddItem(" Load template...", IDM_LOAD_TEMPLATE);
-	pkFileMenuCBox->AddItem(" Save template...", IDM_SAVE_TEMPLATE);
-	pkFileMenuCBox->AddItem(" Edit property...", IDM_CREATE_NEW_PROPERTY);
-	pkFileMenuCBox->AddItem(" Quit", IDM_CLOSE);
-	Register(pkFileMenuCBox, "MainMenuCB1");
-
 	if(!pkIni->Open(szFileName, false))
 	{
-		cout << "\n\n\nFailed to load ini file for menu!\n\n\n" << endl;
+		cout << "Failed to load ini file for menu!\n" << endl;
 		return false;
 	}
 
@@ -773,15 +555,14 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	pkIni->GetSectionNames(akSections);
 
 	unsigned int uiNumSections = akSections.size();
-
+	
 	// No items in file.
 	if(uiNumSections < 1)
 		return true;
-	
-	int iMenuIDCounter = 4578521;
-	char szParentName[50];
 
-	unsigned int i;
+	Rect rcMenu;
+	unsigned int i=0, iMenuOffset=0, iMenuWidth=0, iMenuIDCounter=45781;
+	char szParentName[50];
 
 	// Skapa alla parents
 	for(i=0; i<uiNumSections; i++)
@@ -804,23 +585,17 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 
 			pkMenuCBox->SetGUI(m_pkEdit->pkGui);
 			pkMenuCBox->SetLabelText(szTitle);
-			pkMenuCBox->SetNumVisibleRows(5);
+			pkMenuCBox->SetNumVisibleRows(1);
 			pkMenuCBox->IsMenu(true);
 
 			iMenuOffset += iMenuWidth;
 			rcMenu = rcMenu.Move(iMenuOffset,0);
 
 			m_pkEdit->pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
-			
-		}
-		else
-		{
-			// Sök igenom alla skapade menuboxar och leta efter en menubox med detta
 		}
 	}
 
 	ZGuiWnd* pkParent;
-
 	vector<MENU_INFO> kTempVector;
 
 	// Skapa alla childrens.
@@ -890,4 +665,75 @@ void Gui::RunMenuCommand(ZGuiCombobox* pkCombox, int iIndex)
 			break;
 		}
 	}
+}
+
+void Gui::CloseMenu()
+{
+	for(unsigned int i=0; i<m_uiNumMenuItems; i++)
+		if( m_pkMenuInfo[i].cb)
+			m_pkMenuInfo[i].cb->GetListbox()->Hide();
+}
+
+ZGuiWnd* Gui::GetMenu()
+{
+	return Get("MainMenu");
+}
+
+bool Gui::OpenDlg(string strResName)
+{
+	map<string,DlgBox*>::iterator it = m_kDialogs.find(strResName);
+	if(it != m_kDialogs.end())
+	{
+		it->second->Open(-1,-1);
+	}
+
+	return true;
+}
+
+DlgBox* Gui::GetDlg(string strResName)
+{
+	map<string,DlgBox*>::iterator res = m_kDialogs.find(strResName);
+
+	if(res != m_kDialogs.end())
+		return res->second;
+
+	return NULL;
+}
+
+bool Gui::OpenFileDlg(SEARCH_TASK eTask)
+{
+	unsigned long flags;
+	flags = 0;
+
+	if(m_pkFileDlgbox)
+	{
+		delete m_pkFileDlgbox;
+		m_pkFileDlgbox = NULL;
+	}
+
+	switch(eTask)
+	{
+	case LOAD_MAP:
+		flags = DIRECTORIES_ONLY;
+		break;
+
+	case LOAD_TEMPLATE:
+		break;
+
+	case SAVE_TEMPLATE:
+		flags = SAVE_FILES; 
+		break;
+
+	default:
+		return false;
+		break;
+	}
+
+	m_pkFileDlgbox = new FileOpenDlg(m_pkEdit->pkGui, 
+		m_pkEdit->pkFps->m_pkBasicFS, MAINWINPROC, flags);
+	m_pkFileDlgbox->Create(100,100,500,500,OPENFILEPROC);
+
+	m_kSearchTask = eTask;
+
+	return true;
 }

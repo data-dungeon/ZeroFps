@@ -18,6 +18,7 @@
 class GameScript : public ZFScript
 {
 public:
+	
 	GameScript();
 	virtual ~GameScript();
 
@@ -27,6 +28,7 @@ public:
 
 private:
 	static int GetTextFromFile(lua_State* pkLua);
+	static int Print(lua_State* pkLua);
 
 };
 

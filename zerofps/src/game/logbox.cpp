@@ -60,6 +60,10 @@ bool LogBox::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	if(pkTextbox == NULL)
 		return false;
 
+	ZGuiFont* pkFont = new ZGuiFont(16,16,0,20);
+	pkFont->CreateFromFile("../data/textures/text/comic_sans_8.bmp");
+	pkTextbox->SetFont(pkFont);
+
 	((ZGuiTextbox*)pkTextbox)->SetReadOnly(true);
 
 	return true;

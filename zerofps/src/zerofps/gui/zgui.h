@@ -18,6 +18,7 @@
 #include "zguiradiobutton.h"
 #include "zguicursor.h"
 #include "zguitextbox.h"
+#include "zguitreebox.h"
 
 #pragma warning( disable : 4786) // truncate long names
 #include <list>

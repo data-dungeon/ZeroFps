@@ -162,8 +162,6 @@ class ENGINE_API Object
 	public:
 		int					iNetWorkID;								///< ID used by network state code.
 
-		void PPRot(bool bSave);
-
 		Object();		
 		~Object();
 		
@@ -214,6 +212,7 @@ class ENGINE_API Object
 		// Inlines
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};
+
 		inline bool& GetSave()		{	return m_bSave;	};
 		inline string& GetName()	{	return m_kName;	};
 		inline Vector3& GetPos()	{	return m_kPos;		};
@@ -227,6 +226,7 @@ class ENGINE_API Object
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		void MakeCloneOf(Object* pkOrginal);
+		const char* GetType(){return m_strType.c_str();}
 		
 		float GetI();
 		Vector3 GetIPos();

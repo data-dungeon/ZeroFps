@@ -72,12 +72,13 @@ void GameScript::OpenPackageFiles()
 {	
 	tolua_zfscript_bind_open(GetLua());
 
-	ExposeClass("Console", tConsole, LuaGetBasicConsole, LuaSetBasicConsole);
+	//ExposeClass("Console", tConsole, LuaGetBasicConsole, LuaSetBasicConsole);
 	ExposeClass("Vector3", tVector3, LuaGetVector3, LuaSetVector3);
 	ExposeClass("GameScriptInterface", tGame, LuaGetGameScriptInterface, LuaSetGameScriptInterface);
 
-	// Exponera en läsa fil funktion till lua.
+	// Exponera standard funktioner
 	ExposeFunction("GetTextFromFile", GetTextFromFile);
+	ExposeFunction("Print", Print);
 }
 
 // Name: GetLogText
@@ -220,7 +221,17 @@ int GameScript::GetTextFromFile(lua_State* pkLua)
 
 	lua_pushlstring(pkLua, szSearchText, serch_length);
 
-	return 1;
+	return 0;
 }
 
+int GameScript::Print(lua_State *pkLua)
+{
+	int index = lua_gettop (pkLua);
 
+	if(lua_isstring(pkLua,index))
+	{
+		printf(lua_tostring(pkLua,index));
+	}
+
+	return 0;
+}

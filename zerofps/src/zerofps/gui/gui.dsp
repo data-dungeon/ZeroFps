@@ -188,6 +188,10 @@ SOURCE=.\zguitextbox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zguitreebox.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zguiwindow.cpp
 # End Source File
 # End Group
@@ -249,6 +253,10 @@ SOURCE=.\zguiscrollbar.h
 # Begin Source File
 
 SOURCE=.\zguitextbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguitreebox.h
 # End Source File
 # Begin Source File
 

@@ -50,7 +50,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("ambient",FID_AMBIENT,this);	
 
 	g_ZFObjSys.Register_Cmd("duplicate",FID_DUPLICATE,this);			
-	g_ZFObjSys.Register_Cmd("copy",FID_COPY,this);			
+	g_ZFObjSys.Register_Cmd("copy",FID_COPY,this);
 	g_ZFObjSys.Register_Cmd("paste",FID_PASTE,this);			
 	g_ZFObjSys.Register_Cmd("delete",FID_DELETE,this);			
 			
@@ -65,6 +65,10 @@ void ZeroEdit::OnInit(void)
 //	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
 //	g_ZFObjSys.Register_Cmd("fs_load",FID_VFS_LOAD,this);			
 
+	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
+	g_ZFObjSys.Register_Cmd("opendlg",FID_OPENDLG,this);
+	g_ZFObjSys.Register_Cmd("fileopendlg",FID_FILEOPENDLG,this);
+	
 	
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -114,8 +118,6 @@ void ZeroEdit::OnInit(void)
 	pkLevelMan->CreateEmptyLevel(128);
 
 	m_kMapBaseDir = pkLevelMan->GetMapBaseDir();
-
-
 
 	m_pkGui = new Gui(this);
 
@@ -670,6 +672,53 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			
 			break;
+
+		case FID_QUIT:
+			pkFps->QuitEngine();
+			break;
+
+		case FID_OPENDLG:
+
+			if(kCommand->m_kSplitCommand[1] == "PropertyDlg")
+			{
+				DlgBox* pkDlg = m_pkGui->GetDlg(kCommand->m_kSplitCommand[1]);
+				if(pkDlg)
+				{
+					// Set current child if open property dialog.
+					((EditPropertyDlg*) pkDlg)->m_pkCurrentChild = m_pkCurentChild;
+				}
+
+			}
+			m_pkGui->OpenDlg(kCommand->m_kSplitCommand[1]);
+			break;
+
+		case FID_FILEOPENDLG:
+
+			SEARCH_TASK task = NONE;
+
+			printf("%s %s\n", kCommand->m_kSplitCommand[1].c_str(),
+				kCommand->m_kSplitCommand[2].c_str());
+
+			if( kCommand->m_kSplitCommand[1] == "load" && 
+				kCommand->m_kSplitCommand[2] == "map")
+				task = LOAD_MAP;
+			else 
+			if( kCommand->m_kSplitCommand[1] == "save" && 
+				kCommand->m_kSplitCommand[2] == "map")
+				task = SAVE_MAP;
+			else 
+			if( kCommand->m_kSplitCommand[1] == "load" && 
+				kCommand->m_kSplitCommand[2] == "template")
+				task = LOAD_TEMPLATE;
+			else 
+			if( kCommand->m_kSplitCommand[1] == "save" && 
+				kCommand->m_kSplitCommand[2] == "template")
+				task = SAVE_TEMPLATE;
+	
+			if(task != NONE)
+				m_pkGui->OpenFileDlg(task);
+
+			break;
 	}
 }
 
@@ -686,6 +735,14 @@ void ZeroEdit::Input()
 	if(m_pkGui->HaveFocus()) 
 	{
 		pkInput->SetInputEnabled(false);
+	}
+
+	if(pkInput->Pressed(MOUSELEFT)) // fulhack för att stänga menyn.
+	{
+		int x,y;
+		pkInput->MouseXY(x,y);
+		if(pkGui->GetMainWindowFromPoint(x,y) != m_pkGui->GetMenu())
+			m_pkGui->CloseMenu();
 	}
 
 	float childmovespeed=2;
@@ -996,6 +1053,8 @@ void ZeroEdit::Input()
 				
 				object->AttachToClosestZone();
 				m_pkCurentChild=object;
+				((EditPropertyDlg*)m_pkGui->
+					GetDlg("PropertyDlg"))->m_pkCurrentChild = m_pkCurentChild;
 				m_pkGui->UpdatePropertybox();
 			}
 
@@ -1016,7 +1075,11 @@ void ZeroEdit::Input()
 	}
 
 	if(pkInput->Pressed(KEY_SPACE))
-		m_pkGui->OpenPropertybox();
+	{
+		CmdArgument* pkCmd = new CmdArgument();
+		pkCmd->Set("opendlg PropertyDlg");
+		RunCommand(FID_OPENDLG, pkCmd);
+	}
 }
 
 void ZeroEdit::PasteObject(Vector3 kPos)
@@ -1043,6 +1106,10 @@ void ZeroEdit::PasteObject(Vector3 kPos)
 	
 	object->AttachToClosestZone();
 	m_pkCurentChild=object;
+
+	((EditPropertyDlg*)m_pkGui->
+		GetDlg("PropertyDlg"))->m_pkCurrentChild = m_pkCurentChild;
+
 	m_pkGui->UpdatePropertybox();
 
 }
@@ -1059,6 +1126,10 @@ void ZeroEdit::DeleteSelected()
 	m_pkGui->ClosePropertybox();
 	delete m_pkCurentChild;
 	m_pkCurentChild=NULL;
+
+	((EditPropertyDlg*)m_pkGui->
+		GetDlg("PropertyDlg"))->m_pkCurrentChild = m_pkCurentChild;
+	m_pkGui->UpdatePropertybox();
 }
 
 /*
@@ -1191,11 +1262,19 @@ void ZeroEdit::SelectChild()
 		p->GetName() == "HeightMapObject")
 	{
 		m_pkCurentChild=NULL;
+
+		((EditPropertyDlg*)m_pkGui->
+			GetDlg("PropertyDlg"))->m_pkCurrentChild = m_pkCurentChild;
+		m_pkGui->UpdatePropertybox();
 		return;
 	}
 		
 		
 	m_pkCurentChild=p;
+
+	((EditPropertyDlg*)m_pkGui->
+		GetDlg("PropertyDlg"))->m_pkCurrentChild = m_pkCurentChild;
+	m_pkGui->UpdatePropertybox();
 
 	// Uppdatera property boxen
 	m_pkGui->UpdatePropertybox();

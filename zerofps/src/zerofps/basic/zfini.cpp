@@ -177,16 +177,27 @@ int ZFIni::GetKeyValuePos(int row)
 	return -1;
 }
 
-char* ZFIni::GetValue(const char *strSection, char *strKey)
+char* ZFIni::GetValue(const char *szSearchSection, char *szSearchKey)
 {
 	if(m_bFileReady == false)
 		return NULL;
 
+	const char* pFindSec, *pFindKey;
+
 	for(int sec=0; sec<m_iNumSections; sec++)
-		if(strstr(m_pstrSections[sec], strSection) != NULL)
-			for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
-				if(strstr(m_pkSectionData[sec].strKeyName[key], strKey) != NULL)
-					return m_pkSectionData[sec].strKeyValue[key];
+		if((pFindSec = strstr(m_pstrSections[sec], szSearchSection)) != NULL)
+		{
+			if(strcmp(pFindSec, szSearchSection) == 0)
+			{
+				for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
+					if((pFindKey = strstr(m_pkSectionData[sec].strKeyName[key],
+						szSearchKey)) != NULL)
+					{
+						if(strcmp(pFindKey, szSearchKey) == 0)
+							return m_pkSectionData[sec].strKeyValue[key];
+					}
+			}
+		}
 
 	return NULL;
 }
