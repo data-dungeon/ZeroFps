@@ -54,7 +54,7 @@ P_Controller::P_Controller()
 
     m_pkInputHandle = m_pkZeroFps->m_pkApp->m_pkInputHandle;
 
-	m_iRotateParent = 0;
+   //	m_iRotateParent = 0; zeb 4:e aug 2004 - variabeln är undeclared.
 
 	// temp: add some controller stuff
 	AddTrigger ("move_up", VEL_Z, -47);

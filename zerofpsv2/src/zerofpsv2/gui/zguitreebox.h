@@ -38,6 +38,9 @@ class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:
 	bool Clear();
+
+   ZGuiTreeboxNode* GetSelNode();
+   void SelNone();
 	
 	ZGuiTreeboxNode* Node(string strName);
 	ZGuiTreeboxNode* Root();

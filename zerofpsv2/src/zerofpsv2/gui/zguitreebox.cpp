@@ -1059,3 +1059,15 @@ bool ZGuiTreebox::Clear()
 
 	return true;
 }
+
+
+ZGuiTreeboxNode* ZGuiTreebox::GetSelNode()
+{
+   return m_pkSelectedNode;
+}
+
+void ZGuiTreebox::SelNone()
+{
+   m_pkSelectedNode = NULL;
+}
+
