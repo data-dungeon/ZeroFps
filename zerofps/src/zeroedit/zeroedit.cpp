@@ -262,7 +262,7 @@ void ZeroEdit::Input()
 //				m_pkCurentParent=m_pkHeightMapObject;				
 			
 				Object *object = new BallObject();
-				object->GetPos()=m_kDrawPos;
+				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
 				object->SetParent(m_pkCurentParent);
 				pkObjectMan->Add(object);				
 				m_pkCurentChild=object;
@@ -299,6 +299,7 @@ void ZeroEdit::CreateNew(int iSize)
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
 
+	cout<<"new map"<<endl;
 }
 
 

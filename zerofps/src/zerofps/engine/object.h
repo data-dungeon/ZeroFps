@@ -24,6 +24,7 @@ class ENGINE_API Object {
 		Vector3 m_kVel;
 		
 //		int m_iType;
+		bool m_bLockedChilds;
 		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
@@ -32,6 +33,8 @@ class ENGINE_API Object {
 		list<Object*> m_akChilds;
 		Object* m_pkParent;	
 	
+
+	
 	public:
 
 		int		iNetWorkID;		// ID used by network state code.
@@ -39,7 +42,7 @@ class ENGINE_API Object {
 		Object();		
 		~Object();
 		
-		void Remove();
+//		void Remove();
 		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
 		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		
 		Property* GetProperty(char* acName);
@@ -57,6 +60,7 @@ class ENGINE_API Object {
 		void SetParent(Object* pkObject);				
 		bool HasChild(Object* pkObject);
 		int NrOfChilds();
+		void DeleteAllChilds();
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);

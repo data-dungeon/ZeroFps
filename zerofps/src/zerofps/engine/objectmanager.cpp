@@ -21,21 +21,23 @@ void ObjectManager::Add(Object* pkObject) {
 
 void ObjectManager::Clear()
 {
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		Delete(*it);
-	}
+//	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+//		Delete(*it);
+//	}
 	
-	UpdateDelete();
+	m_pkWorldObject->DeleteAllChilds();
+	
+//	UpdateDelete();
 }
 
 void ObjectManager::Delete(Object* pkObject) {
-	pkObject->SetObjectMan(NULL);
+//	pkObject->SetObjectMan(NULL);
 	m_akDeleteList.push_back(pkObject);
 }
 
 
 void ObjectManager::Remove(Object* pkObject) {	
-	pkObject->SetObjectMan(NULL);
+//	pkObject->SetObjectMan(NULL);
 	m_akObjects.remove(pkObject);
 	delete pkObject;
 }
@@ -186,7 +188,7 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
-	UpdateDelete();
+//	UpdateDelete();
 
 	if(m_bNoUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)

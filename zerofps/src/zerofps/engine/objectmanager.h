@@ -23,7 +23,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		bool m_bNoUpdate;
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
-		void Remove(Object* pkObject);				//dont use this..use Delete instead
+
 
 	public:
 		ObjectManager();
@@ -38,6 +38,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void SetNoUpdate(bool bNoUpdate) {m_bNoUpdate=bNoUpdate;};
 		void Add(Object* pkNewObject);				//add object to the manager
 		void Delete(Object* pkNewObject);			//adds an object to delete qeue
+		void Remove(Object* pkObject);				//dont use this..use Delete instead
 //		void Update();								//update all objects in manager
 //		void Update(int iType);						//update all objects of specified type
 		void UpdateDelete();						//deletes objects in delete qeue	

@@ -9,18 +9,28 @@ Object::Object() {
 	m_kVel=Vector3(0,0,0);
 //	m_iType=0;
 	
+	m_bLockedChilds=false;
+	
 	m_pkParent=NULL;
 	m_akChilds.clear();
 }
 
 
 Object::~Object() {
-//	cout<<"OBJECT DIES"<<endl;
-
-	//if the object is in a objectmanager then tell the objectmanager
-	//to remove it before we delete it
-//	if(m_pkObjectMan!=NULL)
-//		m_pkObjectMan->Remove(this);
+	if(m_pkParent!=NULL)
+		m_pkParent->RemoveChild(this);
+	
+	DeleteAllChilds();
+/*	
+	m_bLockedChilds=true;
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+//		m_pkObjectMan->Delete(*it);
+//		m_pkObjectMan->Remove(*it);
+//		delete (*it);
+		delete (*it);		
+	}
+	m_bLockedChilds=false;
+*/	
 	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		delete (*it);
@@ -157,11 +167,13 @@ bool Object::Update(char* acName){
 	return false;
 }
 
+/*
 void Object::Remove() {
 	if(m_pkObjectMan!=NULL) {
 		m_pkObjectMan->Delete(this);	
 	}
 }
+*/
 
 /*
 void Object::ObjectUpdate() {
@@ -265,6 +277,8 @@ bool Object::NeedToPack()
 
 void Object::AddChild(Object* pkObject) 
 {
+	if(m_bLockedChilds)
+		return;
 	//check if this child is already added
 	if(HasChild(pkObject))
 		return;
@@ -278,6 +292,9 @@ void Object::AddChild(Object* pkObject)
 
 void Object::RemoveChild(Object* pkObject)
 {
+	if(m_bLockedChilds)
+		return;
+		
 	//remove child from list
 	m_akChilds.remove(pkObject);
 	//tell child to set its parent to null
@@ -331,3 +348,19 @@ int Object::NrOfChilds()
 {
 	return m_akChilds.size();
 }
+
+void Object::DeleteAllChilds()
+{
+	m_bLockedChilds=true;
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		delete (*it);
+	}
+
+	m_akChilds.clear();
+	m_bLockedChilds=false;	
+}
+
+
+
+
+
