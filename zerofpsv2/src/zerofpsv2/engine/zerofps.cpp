@@ -1654,10 +1654,10 @@ void ZeroFps::QuitEngine()
 	{
 		m_pkEntityManager->GetWorldEntity()->GetAllVarNames(kPropertyNames);
 
-		g_Logf("net", "WorldObject Dump %f\n", GetEngineTime());
+		g_ZFObjSys.Logf("net", "WorldObject Dump %f\n", GetEngineTime());
 		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
 		{
-			g_Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
+			g_ZFObjSys.Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
 		}
 	}
 

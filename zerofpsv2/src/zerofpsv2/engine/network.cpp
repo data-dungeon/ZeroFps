@@ -59,7 +59,7 @@ bool NetWork::StartUp()
 #ifdef NET_LOGALL
 	GetSystem().Log("net",		"NetWork SubSystem Startup:\n");
 	GetSystem().Log("netpac",	"NetWork Packet Log:\n");
-	g_Logf("net", "SDLNet_Init(): %d\n", iInitRes);
+	g_ZFObjSys.Logf("net", "SDLNet_Init(): %d\n", iInitRes);
 #endif
 
 	return true; 
@@ -73,7 +73,7 @@ NetWork::~NetWork()
 #ifdef NET_LOGALL
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		if(m_kStringTable[i].m_bInUse)
-			g_Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+			g_ZFObjSys.Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
 		}
 #endif
 
@@ -82,7 +82,7 @@ NetWork::~NetWork()
 	SDLNet_Quit();
 
 #ifdef NET_LOGALL
-	GetSystem().Log("net", "NetWork SubSystem ShutDown:\n");
+	g_ZFObjSys.Logf("net", "NetWork SubSystem ShutDown:\n");
 #endif
 }
 
@@ -109,7 +109,7 @@ int NetWork::NetString_Add(const char* szString)
 	string strTest;
 	strTest = /*string("A Cool ") +*/ string(szString);
 #ifdef NET_LOGALL
-	g_Logf("net", "NetString Add: = %s\n", strTest.c_str());
+	g_ZFObjSys.Logf("net", "NetString Add: = %s\n", strTest.c_str());
 #endif
 
 	if( m_eNetStatus == NET_CLIENT )	return ZF_NET_NONETSTRING;
@@ -178,7 +178,7 @@ void NetWork::Send_NetStrings()
 			NP.Write_Str(m_kStringTable[i].m_NetString.c_str());
 			m_kStringTable[i].m_bUpdated = false;
 #ifdef NET_LOGALL
-			g_Logf("net", "Write NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+			g_ZFObjSys.Logf("net", "Write NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
 #endif
 			}
 
@@ -186,7 +186,7 @@ void NetWork::Send_NetStrings()
 		if(NP.m_iPos >= 512) {
 			NP.Write( ZF_NET_NONETSTRING );
 #ifdef NET_LOGALL
-			g_Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
+			g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 #endif
 			NP.TargetSetClient(ZF_NET_ALLCLIENT);
 			//SendToAllClients(&NP);
@@ -200,7 +200,7 @@ void NetWork::Send_NetStrings()
 
 	NP.Write( ZF_NET_NONETSTRING );
 #ifdef NET_LOGALL
-	g_Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
+	g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 #endif
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	//SendToAllClients(&NP);
@@ -321,7 +321,7 @@ void NetWork::StartSocket(bool bStartServer,int iPort)
 	
 	if(!m_pkSocket) 
 	{
-		g_Logf("net", "Error open socket %d: %s.\n", iSocketNum, SDLNet_GetError());
+		g_ZFObjSys.Logf("net", "Error open socket %d: %s.\n", iSocketNum, SDLNet_GetError());
 		m_pkConsole->Printf("Failed to open socket %d.", iSocketNum);
 		return;
 	}
@@ -426,7 +426,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 		if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
 			pkNetPacket->m_kAddress = kPacket.address;
 			pkNetPacket->m_iLength	= kPacket.len - sizeof(ZFNetHeader);
-			g_Logf("netpac", "Recv From Net");
+			g_ZFObjSys.Logf("netpac", "Recv From Net");
 			return true;
 			}
 	}
@@ -446,7 +446,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 			pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
 			pkNetPacket->m_iLength  = m_RemoteNodes[i].m_aiRelPackRecvSize[iIndex];
 			m_RemoteNodes[i].FreeRelRecv( &m_RemoteNodes[i].m_akRelPackRecv[iIndex] );
-			g_Logf("netpac", "Recv From Local");
+			g_ZFObjSys.Logf("netpac", "Recv From Local");
 			return true;
 		}
 	}
@@ -737,7 +737,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 #endif
 			int iStringID;
 			pkNetPacket->Read(iStringID);
-			g_Logf("net", " NetString[%d]\n", iStringID);
+			g_ZFObjSys.Logf("net", " NetString[%d]\n", iStringID);
 
 			while(iStringID != ZF_NET_NONETSTRING) {
 				pkNetPacket->Read_Str( szText );
@@ -747,7 +747,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_kStringTable[iStringID].m_NetString	= szText;
 
 #ifdef NET_LOGALL
-				g_Logf("net", " NetString[%d] = %s\n",iStringID, m_kStringTable[iStringID].m_NetString.c_str());
+				g_ZFObjSys.Logf("net", " NetString[%d] = %s\n",iStringID, m_kStringTable[iStringID].m_NetString.c_str());
 #endif
 
 				pkNetPacket->Read(iStringID);
@@ -789,7 +789,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				pkNetPacket->Read( iRelID ); 
 				m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
 				m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.erase( iRelID );
-				g_Logf("netpac", "Recv Ack For: %d\n", iRelID );
+				g_ZFObjSys.Logf("netpac", "Recv Ack For: %d\n", iRelID );
 
 
 				if( m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == iRelID )
@@ -920,7 +920,7 @@ void NetWork::Run()
 			m_RemoteNodes[iClientID].m_kRecvSizeGraph.PushValue((float)(NetP.m_iLength));
 		}
 		
-		g_Logf("netpac", " Order: %d, Size: %d\n", NetP.m_kData.m_kHeader.m_iOrder, NetP.m_iLength);
+		g_ZFObjSys.Logf("netpac", " Order: %d, Size: %d\n", NetP.m_kData.m_kHeader.m_iOrder, NetP.m_iLength);
 
 		switch(NetP.m_kData.m_kHeader.m_iPacketType) 
 		{
@@ -955,15 +955,15 @@ void NetWork::Run()
 						{
 							//cout << "Duplicate Message: ";
 							//cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
-							g_Logf("netpac", "Duplicate Message: %d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
+							g_ZFObjSys.Logf("netpac", "Duplicate Message: %d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
 							m_RemoteNodes[iClientID].m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );
 							break;	// Evil Duplicate, throw away.
 						}
 
 						if(NetP.m_kData.m_kHeader.m_iOrder > m_RemoteNodes[iClientID].m_iReliableRecvOrder)
 						{
-							g_Logf("netpac", "Out Of Order Message %d while waiting for %d - ",NetP.m_kData.m_kHeader.m_iOrder, m_RemoteNodes[iClientID].m_iReliableRecvOrder);
-							g_Logf("netpac", "%d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
+							g_ZFObjSys.Logf("netpac", "Out Of Order Message %d while waiting for %d - ",NetP.m_kData.m_kHeader.m_iOrder, m_RemoteNodes[iClientID].m_iReliableRecvOrder);
+							g_ZFObjSys.Logf("netpac", "%d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
 
 							//cout << "Out Of Order Message: " <<  << " while waiting for: " <<  << " : ";
 							//cout <<  << endl;
@@ -984,7 +984,7 @@ void NetWork::Run()
 			
 			default:
 				cout << "galet paket:" << iClientID << " o:" << NetP.m_kData.m_kHeader.m_iOrder<<" t:" << int(NetP.m_kData.m_kHeader.m_iPacketType) <<" s:"<<NetP.m_iLength<<endl;
-				g_Logf("netpac", " UnKnown Packet: From: %d Order: %d: Type: %d Size: %d\n",
+				g_ZFObjSys.Logf("netpac", " UnKnown Packet: From: %d Order: %d: Type: %d Size: %d\n",
 					iClientID, 
 					NetP.m_kData.m_kHeader.m_iOrder,
 					NetP.m_kData.m_kHeader.m_iPacketType,
@@ -1037,7 +1037,7 @@ void NetWork::Run()
 			{
 				m_RemoteNodes[i].m_akRelPackSendTime[iRel] = fEngineTime;
 				SendUDP(&m_RemoteNodes[i].m_akRelPack[iRel], m_RemoteNodes[i].m_aiRelPackSize[iRel], &m_RemoteNodes[i].m_kAddress);
-				g_Logf("netpac", "Resending Packet: %d\n", m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iOrder);
+				g_ZFObjSys.Logf("netpac", "Resending Packet: %d\n", m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iOrder);
 			}
 		}
 

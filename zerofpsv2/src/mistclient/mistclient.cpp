@@ -279,7 +279,7 @@ void MistClient::OnSystem()
 	//setup client
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode)
 	{
-		g_Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
+		g_ZFObjSys.Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
 		if(!m_pkClientControlP)
 		{
