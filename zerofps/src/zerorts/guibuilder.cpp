@@ -4,14 +4,17 @@
 
 #include "guibuilder.h"
 #include "../zerofps/render/texturemanager.h"
+#include "../zerofps/engine/input.h"
+#include "../zerofps/gui/zguiresourcemanager.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-GuiBuilder::GuiBuilder(TextureManager* pkTexMan)
+GuiBuilder::GuiBuilder(TextureManager* pkTexMan, ZGui* pkGui)
 {
 	m_pkTexMan = pkTexMan;
+	m_pkGui = pkGui;
 	InitSkins();
 }	
 
@@ -51,6 +54,8 @@ bool GuiBuilder::InitSkins()
 	int guard_bnu = m_pkTexMan->Load("file:../data/textures/guard_bnu.bmp", 0);
 	int guard_bnd = m_pkTexMan->Load("file:../data/textures/guard_bnd.bmp", 0);
 	int guard_bnf = m_pkTexMan->Load("file:../data/textures/guard_bnf.bmp", 0);
+
+	int minimap = m_pkTexMan->Load("file:../data/textures/minimap.bmp", 0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("attack_bnu"), 
 		new ZGuiSkin(attack_bnu, false) ) ); 
@@ -94,6 +99,9 @@ bool GuiBuilder::InitSkins()
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("guard_bnf"), 
 		new ZGuiSkin(guard_bnf, false) ) ); 
 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("minimap"), 
+		new ZGuiSkin(minimap, false) ) ); 
+
 	return true;
 }
 
@@ -115,4 +123,25 @@ ZGuiSkin* GuiBuilder::GetSkin(char* strName)
 		return ret->second;
 	
 	return fail_skin;
+}
+
+ZGuiWnd* GuiBuilder::Get(char* strName)
+{
+	return m_pkGui->GetResMan()->Wnd(string(strName));
+}
+
+ZGuiLabel* GuiBuilder::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+								   int h, char* strText, char* szRegName)
+{
+	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
+	
+	if(strText)
+		pkLabel->SetText(strText);
+
+	if(szRegName != NULL)
+		m_pkGui->RegisterWindow(pkLabel, szRegName);
+
+	pkLabel->SetGUI(m_pkGui);
+
+	return pkLabel;
 }

@@ -78,7 +78,7 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 	FILE* pkFile;
 	if ((pkFile = fopen(strFileName, "rb")) == NULL)
 	{
-		printf("Failed to load ini file %s", strFileName);
+		printf("Failed to load ini file %s\n", strFileName);
 		return (m_bFileReady = false);
 	}
 

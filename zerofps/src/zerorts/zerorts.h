@@ -33,7 +33,7 @@ class ZeroRTS :public Application {
 		void CreateMinimap();
 		Camera*		m_pkCamera;
 		HeightMap*	m_pkMap;
-		UserPanel*	m_pkUserPanel;
+		
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -44,7 +44,6 @@ class ZeroRTS :public Application {
 		int 			m_iActionScroll;		
 		int 			m_iActionSelectManyModifier;		
 		
-
 		//console funktions
 		enum FuncId_e
 		{
@@ -59,9 +58,10 @@ class ZeroRTS :public Application {
 		float			m_fClickDelay;
 
 	public:
+		
 		GuiBuilder* m_pkGuiBuilder;
-		
-		
+		UserPanel*	m_pkUserPanel;
+
 		ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroRTS() {};
 	 	
@@ -99,7 +99,6 @@ class ZeroRTS :public Application {
 
 	//Palls (friends) =)
 	friend class UserPanel;
-
 };
 
 

@@ -145,3 +145,8 @@ void g_Logf(const char *fmt, ...)
 	g_ZFObjSys.Log(g_szFormatText);
 }
 
+bool equal_f(float a, float b)
+{
+	return( (a > (b - epsilon) ) && (a < (b + epsilon)) );
+}
+

@@ -19,6 +19,7 @@ class GuiBuilder;
 class UserPanel : public DlgBox
 {
 public:
+	bool Click();
 	UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc);
 	virtual ~UserPanel();
 
@@ -35,6 +36,7 @@ private:
 	GuiBuilder* m_pkGuiBuilder;
 
 	vector<ZGuiButton*> m_akCommandBns;
+	map<ZGuiButton*, string> m_akCmdButtonText;
 
 };
 

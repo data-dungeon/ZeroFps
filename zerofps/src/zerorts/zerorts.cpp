@@ -6,8 +6,10 @@ ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
-static bool USERPANELPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, 
-						  int iNumberOfParams, void *pkParams ) { return true; }
+static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{ 
+	return g_kZeroRTS.m_pkUserPanel->DlgProc(win,msg,numparms,params); 
+}
 
 void ZeroRTS::OnInit() 
 {
@@ -46,6 +48,7 @@ void ZeroRTS::Init()
 
 	//register actions
 	RegisterActions();
+
 	
 	//register property
 	RegisterPropertys();
@@ -54,28 +57,18 @@ void ZeroRTS::Init()
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
 	
-	// Show cursor
-	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
-	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-	
-	int mx,my;
-	pkInput->MouseXY(mx,my);
-	pkGui->SetCursor(mx, my, cursor_tex, cursor_tex_a, 32, 32);
+
 	pkGui->ShowCursor(true);
 	SDL_ShowCursor(SDL_DISABLE);	
 
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
-	//CreateMinimap();
-
-	m_pkGuiBuilder = new GuiBuilder(pkTexMan);
+	m_pkGuiBuilder = new GuiBuilder(pkTexMan, pkGui);
 
 	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
-
-
 }
 
 void ZeroRTS::RegisterActions()
@@ -114,21 +107,58 @@ void ZeroRTS::OnIdle(void)
 
 void ZeroRTS::Input()
 {
-	
+	if(m_pkUserPanel->Click())
+		return;
+
+	int mx,my;
+	pkInput->MouseXY(mx,my);
+
+	static s_iCursorTex=-1, s_iCursorTex_a=-1;
+	int iNewCursorTex=0, iNewCursorTex_a=0;
+
+	enum MOUSEDIR {Left, Right, Up, Down, None} eMouseDir = None;
+
+	if(mx == 0) 
+	{
+		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_l.bmp", 0);
+		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_l_a.bmp", 0);
+		eMouseDir = Left;} 
+	else if(mx >= m_iWidth-32) {
+		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_r.bmp", 0);
+		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_r_a.bmp", 0);
+		eMouseDir = Right;} 
+	else if(my == 0) {
+		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_u.bmp", 0);
+		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_u_a.bmp", 0);
+		eMouseDir = Up;} 
+	else if(my >= m_iHeight-32) {
+		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_d.bmp", 0);
+		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_d_a.bmp", 0);
+		eMouseDir = Down;} 
+	else {
+		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
+		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
+	}
+
+	// swap cursor image
+	if(s_iCursorTex != iNewCursorTex)
+		pkGui->SetCursor(mx, my, (s_iCursorTex = iNewCursorTex), 
+			(s_iCursorTex_a = iNewCursorTex_a), 32, 32);
+
 	//camera movements
-	if(pkInput->Action(m_iActionCamLeft))
+	if(pkInput->Action(m_iActionCamLeft) || eMouseDir == Left)
 	{
 		MoveCam(Vector3(-100,0,0));
 	}
-	if(pkInput->Action(m_iActionCamRight))
+	if(pkInput->Action(m_iActionCamRight) || eMouseDir == Right)
 	{
 		MoveCam(Vector3(100,0,0));
 	}
-	if(pkInput->Action(m_iActionCamUp))
+	if(pkInput->Action(m_iActionCamUp) || eMouseDir == Up)
 	{
 		MoveCam(Vector3(0,0,-100));
 	}
-	if(pkInput->Action(m_iActionCamDown))
+	if(pkInput->Action(m_iActionCamDown) || eMouseDir == Down)
 	{
 		MoveCam(Vector3(0,0,100));
 	}
@@ -146,8 +176,15 @@ void ZeroRTS::Input()
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
 		
+/*		if(bla != NULL)
+		{	
+			pkObjectMan->Delete(bla);
+			cout<<"diiiiiiiiie object from hell"<<endl;
+		}*/
+
 		if(info.iObject != -1)
 			AddSelectedObject(info.iObject);			
+
 	}
 	
 	if(pkInput->Action(m_iActionScroll))
@@ -157,6 +194,12 @@ void ZeroRTS::Input()
 	
 		MoveCam(Vector3(x*10,0,y*10));		
 	}
+
+	if(pkInput->Pressed(KEY_W))
+		pkLevelMan->ChangeLandscapeFillMode(LINE);
+	if(pkInput->Pressed(KEY_F))
+		pkLevelMan->ChangeLandscapeFillMode(FILL);
+			
 }
 
 
@@ -192,6 +235,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("Error loading level");
 				break;			
 			}
+
+			CreateMinimap();
 			
 			pkConsole->Printf("Level loaded");
 			
@@ -325,60 +370,61 @@ void ZeroRTS::CreateMinimap()
 	
 	HeightMap* hm = pkLevelMan->GetHeightMap();
 
-	int size = hm->GetSize();
+	int size = hm->m_iHmSize, x,y,r,g,b;
 
-	float scale = (float) size / 128.0f;
+	float scale = size / 128.0f, fx, fy, min=100000000, max=-100000000;
 
-	float fx, fy;
-
-	for(int y=0; y<128; y++)
+	for( y=0; y<128; y++)
 	{
 		fy = scale*(float)y;
-
-		for(int x=0; x<128; x++)
+		for( x=0; x<128; x++)
 		{
 			fx = scale*(float)x;
-
-			if(fx > size-1) 
-				fx = size -1;
-			if(fy > size-1) 
-				fy = size -1;
-
 			HM_vert* pkVert = hm->GetVert(fx,fy);
+			if(pkVert->height < min)
+				min = pkVert->height;
+			if(pkVert->height > max)
+				max = pkVert->height;
+		}
+	}
 
-			int r,g,b;
+	float length = (max - min);
 
-			if(pkVert->height < 0)
+	for( y=0; y<128; y++)
+	{
+		fy = scale*(float)y;
+		for( x=0; x<128; x++)
+		{
+			fx = scale*(float)x;
+			float height = hm->GetVert(fx,fy)->height;
+			float procent = (1.0f / (length)) + ((height-min) / length);
+			
+			int form_height = (int) (procent*255);
+			
+			if(form_height >= 0 && form_height <= 255)
+				r = g = b = form_height;
+			else
 			{
-				r = 0; 
-				g = 0; 
-				b = 255; 
+				r = 255 ; g = 0; b = 255;
+			}
+
+			if(height < epsilon)
+			{
+				b = 255;
 			}
 			else
-			if(pkVert->height > 0)
 			{
-				r = 0; 
-				g = 255; 
-				b = 0; 
-			}
-			else
-			//if(pkVert->height > 30)
-			{
-				r = 255; 
-				g = 255; 
-				b = 0; 
+				g = 255;
 			}
 
 			pkTexMan->PsetRGB(x,y,r,g,b);
 		}
 	}
 
-	for(int i=100; i<110; i++)
-		for(int j=100; j<110; j++)
-			printf("tex: %f\n", hm->GetVert(i,j)->height);
-
-
 	pkTexMan->SwapTexture();
+
+	m_pkGuiBuilder->GetSkin("minimap")->m_iBkTexID = 
+		pkTexMan->Load("../data/textures/minimap.bmp", T_NOMIPMAPPING);
 }	
 
 bool ZeroRTS::AddSelectedObject(int iID)
@@ -391,6 +437,8 @@ bool ZeroRTS::AddSelectedObject(int iID)
 	m_kSelectedObjects.push_back(iID);
 
 	cout<<"object Added to selection"<<endl;
+
+	return true;
 }
 
 bool ZeroRTS::AlreadySelected(int iID)
@@ -428,3 +476,4 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
+
