@@ -79,19 +79,12 @@ void PlayerControlProperty::Update() {
 	if(!m_bAlive)
 		return;
 
-//	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;
-//	cout<<"LUTNING:"<<lutning<<endl;
-
-	
 	walking=false;
-	Vector3 vel(0,m_pkObject->GetVel().y,0);
-	
+	Vector3 vel(0,m_pkObject->GetVel().y,0);	
 	
 	if(onGround && m_fGroundAngle >= 45)	{
-		cout<<"slides"<<endl;
-		//Vector3 hora = m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
-		Vector3  res(GroundNormal.x,-4,GroundNormal.z);		
-		m_pkObject->GetAcc()+=res*80;
+		Vector3  res(GroundNormal.x,-1,GroundNormal.z);		
+		m_pkObject->GetAcc()+=res*50;
 	}	
 
 	if(m_pkInput->Action(m_iActionStrafeRight)){
@@ -132,7 +125,7 @@ void PlayerControlProperty::Update() {
 
 	if(m_pkInput->Action(m_iActionJump))
 	{
-		if(onGround && m_fGroundAngle < 45){
+		if(onGround && m_fGroundAngle < 75){
 			//cout<<"walking on normal: "<<GroundNormal.x<<" "<<GroundNormal.y<<" "<<GroundNormal.z<<endl;
 			
 			m_pkObject->GetVel()+=GroundNormal*5;	
@@ -231,10 +224,9 @@ void PlayerControlProperty::Touch(Collision* pkCol)
 		kNormal=pkCol->m_kNormal1;		
 	}
 
-//	cout<<"walking on normal: "<<kNormal.x<<" "<<kNormal.y<<" "<<kNormal.z<<endl;
-
+	//	cout<<"walking on normal: "<<kNormal.x<<" "<<kNormal.y<<" "<<kNormal.z<<endl;
 	m_fGroundAngle = RadToDeg(Vector3(0,1,0).Angle(kNormal));
-	cout<<"angle:"<<m_fGroundAngle<<endl;
+	//cout<<"angle:"<<m_fGroundAngle<<endl;
 
 	if(m_fGroundAngle < 90)
 	{

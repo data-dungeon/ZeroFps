@@ -89,12 +89,12 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 				kPos1=kPos2;			
 				kPos2=kGlidePos;					
 				
-				/*
+				
 				if(c>1){
 					newhit=false;
 					kPos2=kPos1;
 				}
-				*/
+			
 			}
 		}
 		
@@ -146,10 +146,22 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	for(int i=0;i<3;i++){
 //		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
 		kNLVerts[i] = m_kModelMatrix.VectorTransform(kVerts[i]);
-
-//		cout<<"vertex "<<kNLVerts[i].x<<" "<<kNLVerts[i].y<<" "<<kNLVerts[i].z<<endl;
-//		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);		
+	
+//		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);			
 	}
+
+/*	//Render kollision mesh
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glColor3f(rand()%1000/1000.0,rand()%1000/1000.0 ,rand()%1000/1000.0);
+	glBegin(GL_TRIANGLES);
+		glVertex3fv(&kNLVerts[0].x);
+		glVertex3fv(&kNLVerts[1].x);				
+		glVertex3fv(&kNLVerts[2].x);					
+	glEnd();
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+*/
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
@@ -174,7 +186,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 //	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){	
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
-			//cout<<"Collision"<<endl;
+			//cout<<"Collision with "<<endl;
 			m_kColNormal = Normal;			
 			
 			Vector3 bla1=m_kOtherDest -m_kColPos;
@@ -200,59 +212,81 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 
 bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 {
+//	cout<<"kollde point :"<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
+
 //	fR-=0.05;
 
-	Plane side[3];
+	Plane side[6];
 	
-/*	
-	if(kVerts[0] == kVerts[1] || 
-		kVerts[2] == kVerts[0] ||
-		kVerts[1] == kVerts[2])
-		return false;
-*/	
 	
-	Vector3 V1 = kVerts[0] - kVerts[1];
-	Vector3 V2 = kVerts[2] - kVerts[0];	
-	Vector3 V3 = kVerts[1] - kVerts[2];	
+/*	if(kVerts[0] == kVerts[1] || 
+		kVerts[2] == kVerts[1] ||
+		kVerts[0] == kVerts[2])
+		return false;*/
 	
-	side[0].m_kNormal = (V1.Cross(*pkNormal).Unit());
-	side[1].m_kNormal = (V2.Cross(*pkNormal).Unit());	
-	side[2].m_kNormal = (V3.Cross(*pkNormal).Unit());
 	
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[1];	
+	Vector3 V3 = kVerts[0] - kVerts[2];	
+	
+	side[0].m_kNormal = pkNormal->Cross(V1).Unit();
+	side[1].m_kNormal = pkNormal->Cross(V2).Unit();	
+	side[2].m_kNormal = pkNormal->Cross(V3).Unit();
+
+	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
+	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
+	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
+
+
 	side[0].m_fD = -side[0].m_kNormal.Dot(kVerts[0]);
-	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[0]);	
-	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[1]);	
+	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[1]);	
+	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[2]);	
+
+	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
+	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
+	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
 	
 	
 	bool inside = true;
 	
-	for(int i=0;i<3;i++)
+	for(int i=0;i<6;i++)
 	{
-		if(!side[i].SphereInside(kPos,fR))
+		if(!side[i].SphereInside(kPos,fR)){
 			inside=false;
+		}
 //		if(!side[i].PointInside(kPos))
 //			inside=false;
 	
 	}
 	
-
-/*	
-
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+		
+/*		
+	if(inside)	
+	{
+		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+		
+		pkRender->Line(kVerts[0],kVerts[0]+*pkNormal);
+		pkRender->Line(kVerts[1],kVerts[1]+*pkNormal);		
 	
+		pkRender->Line(kVerts[1],kVerts[1]+*pkNormal);
+		pkRender->Line(kVerts[2],kVerts[2]+*pkNormal);		
 	
-	pkRender->Line(kVerts[0],kVerts[0]+side[0].m_kNormal);
-	pkRender->Line(kVerts[1],kVerts[1]+side[0].m_kNormal);		
+		pkRender->Line(kVerts[0],kVerts[0]+*pkNormal);
+		pkRender->Line(kVerts[2],kVerts[2]+*pkNormal);		
+		
+/*		pkRender->Line(kVerts[0],kVerts[0]+side[0].m_kNormal);
+		pkRender->Line(kVerts[1],kVerts[1]+side[0].m_kNormal);		
 	
-	pkRender->Line(kVerts[0],kVerts[0]+side[1].m_kNormal);
-	pkRender->Line(kVerts[2],kVerts[2]+side[1].m_kNormal);		
+		pkRender->Line(kVerts[1],kVerts[1]+side[1].m_kNormal);
+		pkRender->Line(kVerts[2],kVerts[2]+side[1].m_kNormal);		
 	
-	pkRender->Line(kVerts[1],kVerts[1]+side[2].m_kNormal);
-	pkRender->Line(kVerts[2],kVerts[2]+side[2].m_kNormal);		
+		pkRender->Line(kVerts[0],kVerts[0]+side[2].m_kNormal);
+		pkRender->Line(kVerts[2],kVerts[2]+side[2].m_kNormal);		
+	}
 */	
 	
+	
 	return inside;	
-//	return true;
 }
 
 
@@ -277,6 +311,8 @@ bool CSMech::SetUpMech()
 				m_pkFaces = m_pkCoreMech->GetFacesPointer();
 				m_pkVertex = (*m_pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
 				m_pkNormal = (*m_pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
+				
+				m_fScale = pkMP->m_fScale;
 				
 				//found the mech return true
 				return true;

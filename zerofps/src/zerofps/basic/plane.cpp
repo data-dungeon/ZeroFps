@@ -63,7 +63,7 @@ bool Plane::LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos)
 //	pos.y = (kP1.y*final_t) + ( kP2.y* (1-final_t));
 //	pos.z = (kP1.z*final_t) + ( kP2.z* (1-final_t));	
 	
-	if(final_t > 0 && final_t < 1){
+	if(final_t >= 0 && final_t <= 1){
 		*kColPos = (kP1*final_t) + (kP2*(1 - final_t));		
 		return true;
 	}

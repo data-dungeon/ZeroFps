@@ -96,12 +96,13 @@ void MachineGunProperty::Use()
 	
 //	Bullet->AddProperty("ModelProperty");
 //	ModelProperty* mp = dynamic_cast<ModelProperty*>(Bullet->GetProperty("ModelProperty"));
-//	mp->m_fRadius=0.01;
-	PhysicProperty* mp = dynamic_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"));
-	mp->m_bGravity=false;
-	mp->m_bFloat=false;
-	mp->m_bGlide=false;
-	static_cast<CSSphere*>(mp->GetColSphere())->m_fRadius=0.01;	
+//	mp->m_fRadius=0.4;
+	
+	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"));
+	pp->m_bGravity=false;
+	pp->m_bFloat=false;
+	pp->m_bGlide=false;
+	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.01;	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
 
