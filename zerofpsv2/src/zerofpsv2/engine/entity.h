@@ -360,6 +360,7 @@ class ENGINE_API Entity
 		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
 		inline EntityManager *GetObjectMan()	{	return m_pkObjectMan;	};				
+		inline int GetCurrentZone()  				{ return m_iCurrentZone;};
 
       void SetUpdateStatus(int iUpdateStatus);
 		

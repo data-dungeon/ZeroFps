@@ -16,11 +16,14 @@ using namespace std;
 class MCOMMON_API P_Ml: public Property {
 	private:
 		ZeroFps* m_pkFps;
+		EntityManager* m_pkEntityMan;
 		
 		vector<string>	m_kActions;	///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
 		
-		P_Spawn* 		m_pkSpawn;
+		int				m_iSpawnZon;
 		int				m_iSpawn;
+
+		bool				m_bJustSaved;
 
 	public:
 
@@ -34,7 +37,7 @@ class MCOMMON_API P_Ml: public Property {
 		
 		void AddAction(const char* csAction);
 		
-		void SetSpawnPointer(P_Spawn* pkSpawn) {m_pkSpawn = pkSpawn;};
+		void SetSpawnPointer(int iSpawner,int iZon) {m_iSpawn = iSpawner;m_iSpawnZon = iZon;};
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);

@@ -1036,7 +1036,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 	
 	pkFile->Read(&m_bZone,sizeof(m_bZone),1);			
 	pkFile->Read(&m_bUseZones,sizeof(m_bUseZones),1);				
-	pkFile->Read(&m_iCurrentZone,sizeof(m_bUseZones),1);						
+	pkFile->Read(&m_iCurrentZone,sizeof(m_iCurrentZone),1);						
 	
 	pkFile->Read(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
@@ -1129,7 +1129,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 	
 	pkFile->Write(&m_bZone,sizeof(m_bZone),1);			
 	pkFile->Write(&m_bUseZones,sizeof(m_bUseZones),1);				
-	pkFile->Write(&m_iCurrentZone,sizeof(m_bUseZones),1);					
+	pkFile->Write(&m_iCurrentZone,sizeof(m_iCurrentZone),1);					
 	
 	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				

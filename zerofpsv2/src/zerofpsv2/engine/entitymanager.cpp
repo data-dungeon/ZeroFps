@@ -1749,7 +1749,17 @@ void EntityManager::DeleteZone(int iId)
 	ClearZoneLinks(iId);	
 	
 	//unload the zone
-	UnLoadZone(iId);
+	//UnLoadZone(iId);
+	
+	
+	//delete zone object
+	ZoneData* kZData = GetZoneData(iId);
+	assert(kZData);
+	if(kZData->m_pkZone == NULL)
+		return;	
+	
+	Delete(kZData->m_pkZone);
+	kZData->m_pkZone = NULL;
 	
 }
 
