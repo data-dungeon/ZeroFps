@@ -1,9 +1,22 @@
 #include "dark_metropolis.h"
 #include "startdm_dlg.h"
 
+char* CStartDMDlg::Labels[] =
+{
+	"loggaLabel",
+	"dvoidLabel",
+	"zeromLabel",
+	"vimLabel",
+	"zebLabel",
+	"eldLabel",
+	"manfredLabel",
+};
+
 CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
 {
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_bPlayIntro = false;
+	m_fFadeOffset = 0;
 }
 
 CStartDMDlg::~CStartDMDlg()
@@ -89,6 +102,79 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
+	}
+	else
+	if(strClickName == "CreditsBn")
+	{
+		m_kApa.FADE_TIME = 4.5f;
+		m_kApa.oka = 0;
+		m_kApa.first = true;
+		m_kApa.pkCurrent = NULL;
+		m_bPlayIntro = true;
+		PlayIntroScreen();
+	}
+}
+
+void CStartDMDlg::PlayIntroScreen()
+{
+	LoadDlg("data/script/gui/dm_intro.lua");
+	
+	int antal = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
+	for(int i=0; i<antal; i++)
+		GetWnd(CStartDMDlg::Labels[i])->Hide();
+}
+
+void CStartDMDlg::Update(float fFrameTime)
+{
+	int antal_bilder = sizeof(Labels) / sizeof(Labels[1]);
+
+	if(m_bPlayIntro && m_kApa.oka <= antal_bilder)
+	{
+		if(m_kApa.first)
+		{
+			m_kApa.first = false;
+			return;
+		}
+
+		float procent = (fFrameTime) / m_kApa.FADE_TIME;
+
+		if(m_fFadeOffset < m_kApa.FADE_TIME)
+			m_fFadeOffset += procent;
+		
+		if(m_kApa.oka != antal_bilder)
+		{
+			if(m_fFadeOffset > 1)
+			{
+				m_fFadeOffset = 1;
+				m_kApa.pkCurrent->Hide();
+				m_kApa.pkCurrent = NULL;
+			}
+
+			if(m_kApa.pkCurrent == NULL)
+			{
+				m_kApa.pkCurrent = GetWnd(Labels[m_kApa.oka]); 
+
+				if(GetWnd(Labels[m_kApa.oka])->IsVisible() == false)
+				{
+					GetWnd(Labels[m_kApa.oka])->Show();	
+				}
+
+				m_kApa.oka++;
+				m_fFadeOffset = 0;
+			}
+		}
+		else
+		{
+			if(m_fFadeOffset > 0.98)
+			{
+				GetWnd("DMIntroWnd")->Hide();
+				m_bPlayIntro = false;
+			}
+		}
+
+		m_kApa.pkCurrent->GetSkin()->m_afBkColor[0] =  m_fFadeOffset;
+		m_kApa.pkCurrent->GetSkin()->m_afBkColor[1] =  m_fFadeOffset;
+		m_kApa.pkCurrent->GetSkin()->m_afBkColor[2] =  m_fFadeOffset;
 	}
 }
 

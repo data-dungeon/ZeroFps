@@ -8,9 +8,26 @@ public:
 	~CStartDMDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void Update(float fFrameTime);
 
 private:
 
 	ZeroFps* m_pkFps;
+
+	void PlayIntroScreen();
+	bool m_bPlayIntro;
+	float m_fFadeOffset;
+
+	static char* Labels[];
+
+	struct INTRO_CRAP
+	{
+		int oka;
+		float FADE_TIME;
+		bool first;
+		ZGuiWnd* pkCurrent;
+	};
+
+	INTRO_CRAP m_kApa;
 	
 };

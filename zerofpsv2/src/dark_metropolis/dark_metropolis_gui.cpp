@@ -67,6 +67,7 @@ void DarkMetropolis::GUI_OnIdle()
 	if(pkStartWnd && pkStartWnd->IsVisible() )
 	{
 		((CNewGameDlg*) m_pkNewGameDlg)->UpdateFade(m_pkFps->GetFrameTime()); 
+		((CStartDMDlg*) m_pkStartDMDlg)->Update(m_pkFps->GetFrameTime());
 	}
 }
 
