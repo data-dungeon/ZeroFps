@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="engine"
+	ProjectGUID="{7EF2ECBD-AC24-4473-B68C-0EE57879FBBF}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

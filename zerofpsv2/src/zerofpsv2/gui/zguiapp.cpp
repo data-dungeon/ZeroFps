@@ -430,12 +430,19 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
 	// Textures
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1", szData))
 		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
+
+
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex2", szData))
 		pkNewSkin->m_iHorzBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
+
+
+	return pkNewSkin;
+
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex3", szData))
 		pkNewSkin->m_iVertBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex4", szData))
 		pkNewSkin->m_iBorderCornerTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
+
 
 	// Alpha maps
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1a", szData))
