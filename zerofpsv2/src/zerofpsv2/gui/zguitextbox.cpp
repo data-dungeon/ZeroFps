@@ -8,7 +8,6 @@
 #include "zguitextbox.h"
 #include "zgui.h"
 #include "zguiscrollbar.h"
-//#include "../engine/input.h"
 #include "../basic/globals.h"
 #include <stdio.h>
 #include <typeinfo>
@@ -1184,4 +1183,12 @@ bool ZGuiTextbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
 	return true;
+}
+
+void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
+{
+	m_pkScrollbarVertical->SetPos(Width, 0, false, true);
+	m_pkScrollbarVertical->Resize(20,Height);
+
+	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
 }

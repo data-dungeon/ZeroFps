@@ -38,6 +38,8 @@ public:
 	const char* GetAlias(ZGuiWnd* pkWnd);
 	ZGuiWnd* GetWnd(const char* szName); // letar först igenom alias sedan bland fönster registrerade i resman.
 	void RemoveAlias(ZGuiWnd* pkWnd);
+	void ScaleWndToTexSize(ZGuiWnd* pkWnd, char* szSelSkinType);
+	ZGuiWnd* CloneWnd(ZGuiWnd* pkWnd, int xpos, int ypos);
 
 private:
 	void CreateUI();

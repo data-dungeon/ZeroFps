@@ -31,6 +31,7 @@ struct GUI_API ZGuiTreeboxNode
 class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:
+	bool Clear();
 	
 	ZGuiTreeboxNode* Node(string strName);
 	ZGuiTreeboxNode* Root();
@@ -54,7 +55,7 @@ public:
 	
 	ZGuiSkin* GetItemSkin(unsigned int uiIndex);
 
-	bool InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin);
+	bool InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin, bool bOverwrite=false);
 	unsigned int GetNumItemSkins();
 
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
@@ -65,6 +66,10 @@ public:
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	bool SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement); // overloaded
+
+	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
+
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

@@ -407,9 +407,17 @@ Rect ZGuiWnd::GetWndRect()
 }
 
 // Get the real screen area.
-Rect ZGuiWnd::GetScreenRect()	
+Rect ZGuiWnd::GetScreenRect(bool bIncBorder)	
 {
-	return m_kArea;
+	if(!bIncBorder)
+		return m_kArea;
+	else
+	{
+		if(GetSkin())
+			return m_kArea.Contract(-GetSkin()->m_unBorderSize);
+		else
+			return m_kArea;
+	}
 }
 
 void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
@@ -610,6 +618,9 @@ void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	else
 	if(t==typeid(ZGuiCombobox))
 		strType = "ComboBox";
+	else
+	if(t==typeid(ZGuiTreebox))
+		strType = "Treebox";
 
 	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, strType) );
 }
@@ -671,4 +682,17 @@ void ZGuiWnd::SetResizeFlags(bool bHorz, bool bVert)
 {
 	m_bResizeHorz = bHorz;
 	m_bResizeVert = bVert;
+}
+
+const bool ZGuiWnd::IsVisible()	
+{
+	if(m_bVisible == false)
+		return false;
+
+	ZGuiWnd* pkParent = GetParent();
+
+	if(pkParent)
+		return pkParent->IsVisible();
+	
+	return m_bVisible; 
 }

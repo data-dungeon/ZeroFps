@@ -231,3 +231,12 @@ bool ZGuiSlider::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewH
 	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
 	return true;
 }
+
+void ZGuiSlider::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
+{
+	int iStart = pkSkinDesc.size(); 
+	m_pkLabel->GetWndSkinsDesc(pkSkinDesc);
+	m_pkButton->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Slider: ");
+}

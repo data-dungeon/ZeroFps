@@ -20,8 +20,6 @@ unsigned int ZGuiTabCtrl::s_uiTabIDCounter = 1213;
 static int ID_TABCTRL_NEXT = 333;
 static int ID_TABCTRL_PREV = 334;
 
-static ZGuiSkin* s_pkTabPageSkin = new ZGuiSkin(214,211,206, 92,92,92, 0);
-
 ZGuiTabCtrl::ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID) 
 	: ZGuiWnd(kRect, pkParent, bVisible, iID)
 {
@@ -111,6 +109,8 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 		
 		pkNewPage = m_kPageList.back();
 		pkNewTab = m_kTabList.back();
+
+		pkNewPage->SetText(szTabText); 
 	}
 	else
 	{
@@ -160,10 +160,9 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 	if(pkNewPage)
 	{
 		pkNewPage->SetMoveArea(pkNewPage->GetScreenRect());
-		pkNewPage->SetSkin(s_pkTabPageSkin);
+		pkNewPage->SetSkin(new ZGuiSkin(214,211,206, 92,92,92, 0));
 		pkNewPage->RemoveWindowFlag(WF_CANHAVEFOCUS); 
 
-		// sdfsafd
 		ZGui* pkGui = GetGUI();
 
 		if(pkGui)
@@ -326,6 +325,42 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 		itPage++;
 	}
 
+	// Move tab into focus
+
+	if(IsVisible())
+	{
+		bool bMoveLeft = (iPrevCurrentPage < index);
+		bool stop = false;
+
+		while(1)
+		{
+			list<ZGuiButton*>::iterator itButton;
+
+			// Find first visible button.
+			unsigned int uiIndex=0;
+			ZGuiButton* pkFirst = NULL;
+			for(itButton = m_kTabList.begin(); itButton != m_kTabList.end(); itButton++)
+			{
+				if(uiIndex == index)
+				{
+					if((*itButton)->IsVisible())
+					{
+						stop = true;
+						break;
+					}
+				}
+
+				uiIndex++;
+			}
+
+			if(stop)
+				break;
+			else
+				MoveTabs(bMoveLeft);
+		}
+	}
+	
+
 	iPrevCurrentPage = index;
 }
 
@@ -479,4 +514,52 @@ bool ZGuiTabCtrl::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 	m_uiTabHeight = (unsigned int) round2((float) m_uiTabHeight * (float) ((float)iNewHeight/(float)iOldHeight));
 
 	return true;
+}
+
+void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
+{
+	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Tabctrl")) );
+	
+	unsigned int i;
+	int iStart = pkSkinDesc.size(); 
+	m_pkNextTabBn->GetWndSkinsDesc(pkSkinDesc);
+	for( i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Tabctrl: nexttab: ");	
+
+	iStart = pkSkinDesc.size(); 
+	m_pkPrevTabBn->GetWndSkinsDesc(pkSkinDesc);
+	for( i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Tabctrl: prevtab: ");	
+}
+
+void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
+{
+	int x, y;
+
+	int iParentWidth = Width;
+	const int c_iButtonSize  = 16;
+
+	y = m_uiTabHeight+5-c_iButtonSize;
+	x = iParentWidth-c_iButtonSize-m_uiMarg;
+	m_pkNextTabBn->SetPos(x,y,false,true);
+
+	x = iParentWidth-c_iButtonSize-m_uiMarg-c_iButtonSize-m_uiMarg;
+	m_pkPrevTabBn->SetPos(x,y,false,true);
+
+
+	x = m_uiMarg;
+	y = m_uiTabHeight+5+m_uiMarg;
+
+	Rect rcPage(x,y,x+GetScreenRect().Width()-x-m_uiMarg,
+		y+GetScreenRect().Height()-y-m_uiMarg);
+
+	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+	for( ; it != m_kPageList.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+		pkWnd->Resize(rcPage.Width(), rcPage.Height());
+	}
+
+
+	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
 }

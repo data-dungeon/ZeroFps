@@ -77,4 +77,13 @@ public:
 	int x,y;
 };
 
+class BASIC_API Line  
+{
+public:
+	Line() { s.x=s.y=e.x=s.x=e.y=-2147483647-1; }
+	Line(Point ns, Point ne) { s=ns, e=ne; }
+
+	Point s,e;
+};
+
 #endif // !defined(AFX_RECT_H__9D6EA35C_226A_4A91_BE8F_5E90ADCEC058__INCLUDED_)

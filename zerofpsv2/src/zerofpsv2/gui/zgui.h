@@ -115,6 +115,7 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
+	void SetLineColor(int r, int g, int b);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
 	bool UnregisterWindow(ZGuiWnd* pkWindow);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow, char* szName); // must be called if the window are created after the parent are created...
@@ -142,7 +143,7 @@ public:
 	{
 		bool operator()(MAIN_WINDOW* x, MAIN_WINDOW* y) 
 		{ 
-			return x->iZValue > y->iZValue; 
+			return x->pkWnd->m_iZValue > y->pkWnd->m_iZValue; 
 		};
 	} SortZCmp;
 
@@ -159,6 +160,8 @@ public:
 	
 	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
+	bool m_bDisableAlphatest;
+
 	void OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight);
 	void SetWndForeground(ZGuiWnd* pkWnd);
 	void SetRes(int iResX, int iResY); // should only be called one time before app start!
@@ -172,7 +175,7 @@ private:
 	bool RunKeyCommand(int iKey);
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
-	
+	unsigned char m_acLineColor[3];
 
 	void OnKeyPress(int iKey);
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 

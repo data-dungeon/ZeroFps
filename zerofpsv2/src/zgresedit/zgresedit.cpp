@@ -48,7 +48,7 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kSelStart = Point(-1,-1);
 	m_iRadiogroupCounter = RADIO_GROUP_COUNTER_START;
 	m_bLeftButtonPressed = false;
-	m_iHighestZValue = 10;
+	//m_iHighestZValue = 10;
 }
 
 void ZGResEdit::OnInit()
@@ -95,8 +95,21 @@ void ZGResEdit::OnIdle()
 	int x,y;
 	pkInput->MouseXY(x,y);
 
+	pkGui->SetLineColor(255,0,0);
+
+	if(!pkInput->Pressed(KEY_LSHIFT))
+	{
+		m_eEditMode = MOVE;
+	}
+
 	if(pkInput->Pressed(MOUSELEFT))
 	{
+		if(pkInput->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
+		{
+			pkGui->SetLineColor(255,255,0);
+			m_eEditMode = RESIZE;
+		}
+
 		if(!m_bLeftButtonPressed)
 		{
 			OnMouseClick(false, x, y);
@@ -121,6 +134,44 @@ void ZGResEdit::OnIdle()
 		ResizeWnd(x,y);
 
 	if(m_pkFocusWnd)
+	{
+		ZGuiWnd* pkParent = m_pkFocusWnd->GetParent();
+		ZGuiTabCtrl* pkTabCtrl = NULL;
+
+		if(pkParent && GetType(pkParent) == TabControl)
+			pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkParent);
+		else
+		if(GetType(m_pkFocusWnd) == TabControl)
+			pkTabCtrl = static_cast<ZGuiTabCtrl*>(m_pkFocusWnd);
+
+		if(pkTabCtrl)
+		{
+			unsigned int pressed_keynumber = 1000;
+			if(pkInput->Pressed(KEY_1)) pressed_keynumber = 0;
+			else if(pkInput->Pressed(KEY_2)) pressed_keynumber = 1;
+			else if(pkInput->Pressed(KEY_3)) pressed_keynumber = 2;
+			else if(pkInput->Pressed(KEY_4)) pressed_keynumber = 3;
+			else if(pkInput->Pressed(KEY_5)) pressed_keynumber = 4;
+			else if(pkInput->Pressed(KEY_6)) pressed_keynumber = 5;
+			else if(pkInput->Pressed(KEY_7)) pressed_keynumber = 6;
+			else if(pkInput->Pressed(KEY_8)) pressed_keynumber = 7;
+			else if(pkInput->Pressed(KEY_9)) pressed_keynumber = 8;
+			else if(pkInput->Pressed(KEY_0)) pressed_keynumber = 9;
+
+			if(pressed_keynumber < pkTabCtrl->GetNumPages() )
+			{
+				pkTabCtrl->SetCurrentPage(pressed_keynumber); 
+				
+				ZGuiWnd* pkPage = pkTabCtrl->GetPage(pressed_keynumber);
+
+				pkGui->SetFocus(pkPage);
+				m_pkFocusWnd = pkPage;
+				m_pkMainWnd = pkPage;
+			}
+		}
+	}
+
+	if(m_pkFocusWnd)
 		DrawSelectionRect(m_pkFocusWnd);
 }
 
@@ -138,6 +189,10 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
+	case KEY_RETURN:
+		ExecuteCommand();
+		break;
+
 	case KEY_F1:
 		m_eEditMode = VIEW;
 		m_pkScene->m_pkWorkSpace->Hide();
@@ -149,11 +204,8 @@ void ZGResEdit::OnKeyDown(int iKey)
 		break;
 	
 	case KEY_F2:
-		if(((ZGuiCheckbox*) GetWnd("ToogleEditMode"))->IsChecked())
-			m_eEditMode = RESIZE;
-		else
-			m_eEditMode = MOVE;
 
+		m_eEditMode = MOVE;
 		m_pkScene->m_pkWorkSpace->Show();
 		m_pkScene->m_pkPropertyWnd->Show();
 
@@ -165,16 +217,73 @@ void ZGResEdit::OnKeyDown(int iKey)
 		break;
 
 	case KEY_UP:
-		if(m_pkFocusWnd) m_pkFocusWnd->Move(0,-1,true,false);
+		if(m_pkFocusWnd) 
+		{
+			if(pkInput->Pressed(KEY_LSHIFT))
+			{
+				Rect rc = m_pkFocusWnd->GetScreenRect(); 
+				m_pkFocusWnd->Resize(rc.Width(),rc.Height()-1);
+				SetTextInt("HeightTextbox", rc.Height()-1); 
+			}
+			else
+			{
+				m_pkFocusWnd->Move(0,-1,true,false);
+				SetTextInt("PosYTextbox", m_pkFocusWnd->GetParent() ? 
+					m_pkFocusWnd->GetWndRect().Top : m_pkFocusWnd->GetScreenRect().Top); 
+			}
+		}
 		break;
 	case KEY_DOWN:
-		if(m_pkFocusWnd) m_pkFocusWnd->Move(0,1,true,false);
+		if(m_pkFocusWnd) 
+		{
+			if(pkInput->Pressed(KEY_LSHIFT))
+			{
+				Rect rc = m_pkFocusWnd->GetScreenRect(); 
+				m_pkFocusWnd->Resize(rc.Width(),rc.Height()+1);
+				SetTextInt("HeightTextbox", rc.Height()+1); 
+			}
+			else
+			{
+				m_pkFocusWnd->Move(0,1,true,false);
+				SetTextInt("PosYTextbox", m_pkFocusWnd->GetParent() ? 
+					m_pkFocusWnd->GetWndRect().Top : m_pkFocusWnd->GetScreenRect().Top); 
+			}
+		}
 		break;
 	case KEY_LEFT:
-		if(m_pkFocusWnd) m_pkFocusWnd->Move(-1,0,true,false);
+		if(m_pkFocusWnd)
+		{
+			if(pkInput->Pressed(KEY_LSHIFT))
+			{
+				Rect rc = m_pkFocusWnd->GetScreenRect(); 
+				m_pkFocusWnd->Resize(rc.Width()-1,rc.Height());
+				SetTextInt("WidthTextbox", rc.Width()-1); 
+			}
+			else
+			{
+				m_pkFocusWnd->Move(-1,0,true,false);
+
+				SetTextInt("PosXTextbox", m_pkFocusWnd->GetParent() ? 
+					m_pkFocusWnd->GetWndRect().Left : m_pkFocusWnd->GetScreenRect().Left); 
+			}
+		}
 		break;
 	case KEY_RIGHT:
-		if(m_pkFocusWnd) m_pkFocusWnd->Move(1,0,true,false);
+		if(m_pkFocusWnd)
+		{
+			if(pkInput->Pressed(KEY_LSHIFT))
+			{
+				Rect rc = m_pkFocusWnd->GetScreenRect(); 
+				m_pkFocusWnd->Resize(rc.Width()+1,rc.Height());
+				SetTextInt("WidthTextbox", rc.Width()+1); 
+			}
+			else
+			{
+				m_pkFocusWnd->Move(1,0,true,false);
+				SetTextInt("PosXTextbox", m_pkFocusWnd->GetParent() ? 
+					m_pkFocusWnd->GetWndRect().Left : m_pkFocusWnd->GetScreenRect().Left); 
+			}
+		}
 		break;
 	}
 }
@@ -193,63 +302,15 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "UpdateWndDataBn" && m_pkFocusWnd)
 		{
-			if(m_pkFocusWnd)
-			{
-				bool bSuccess;
-
-				int x = GetTextInt("PosXTextbox",&bSuccess);
-				int y = GetTextInt("PosYTextbox",&bSuccess);
-				int bd_size = GetTextInt("BdSizeTextbox",&bSuccess);
-
-				SetPos(m_pkFocusWnd, x, y);
-
-				Resize(m_pkFocusWnd, GetTextInt("WidthTextbox",&bSuccess), 
-					GetTextInt("HeightTextbox",&bSuccess));
-
-				// obs! anropet till settext måste ske efter anropet till resize eftersom
-				// settext kan ändra bredden på fönstret igen.
-				bool bResize = GetType(m_pkFocusWnd) == Radiobutton;
-				m_pkFocusWnd->SetText( GetText("WndTitleTextbox"), bResize );
-
-				// Försök byta namn på fönstret
-				const char* szNewName = GetText("WndNameTextbox");
-				if( strcmp( m_pkFocusWnd->GetName(), szNewName ) != 0) // om fönstrets namn har ändrats
-				{
-					if(m_pkScene->RenameWnd(m_pkFocusWnd, szNewName) == false)
-					{
-						const char* old_alias = m_pkScene->GetAlias(m_pkFocusWnd);
-						if(old_alias)
-						{
-							SetText( "WndNameTextbox", (char*) old_alias );
-						}
-						else
-						{
-							SetText( "WndNameTextbox", (char*) m_pkFocusWnd->GetName() );
-						}
-					}
-				}
-
-				// change borde size on selected control type.
-				char* szSkinType = GetSelItem("SkinTypeCB");
-				vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
-				m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
-				for(unsigned int i=0; i<vkSkinDesc.size(); i++)
-					if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
-					{
-						(*vkSkinDesc[i].first)->m_unBorderSize = bd_size; 
-						break;
-					}
-
-				if(bSuccess == false)
-				{
-					printf("failed to get text from a editbox!\n");
-				}
-			}
+			UpdatePropertyData();
 		}
 		else
-		if(strClickWndName == "WndInfoBn")
+		if(strClickWndName == "ResizeWndToTexBn")
 		{
-			
+			char* szSkinType = GetSelItem("SkinTypeCB");
+
+			if(szSkinType != NULL && m_pkFocusWnd != NULL )
+				m_pkScene->ScaleWndToTexSize(m_pkFocusWnd, szSkinType);
 		}
 	}
 	else
@@ -270,20 +331,6 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			SetText("OwerwriteWarning", "", true);
 		}
 		else
-		if(strClickWndName == "ToogleEditMode")
-		{
-			if(((ZGuiCheckbox*) pkWndClicked)->IsChecked())
-			{
-				pkGui->SetLineColor(255,255,0);
-				m_eEditMode = RESIZE;
-			}
-			else
-			{
-				pkGui->SetLineColor(255,0,0);
-				m_eEditMode = MOVE;
-			}
-		}
-		else
 		if(strClickWndName == "DeleteWnd")
 		{
 			DeleteWnd(m_pkFocusWnd);
@@ -301,18 +348,23 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 		}
 		else
-		if(strClickWndName == "TileTextureCB" && m_pkFocusWnd)
+		if(strClickWndName == "StretchTextureCB" && m_pkFocusWnd)
 		{
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
 
-			bool bTile = !IsButtonChecked("TileTextureCB");
+			bool bTile = !IsButtonChecked("StretchTextureCB");
 
 			char* szSkinType = GetSelItem("SkinTypeCB");
 			for(unsigned int i=0; i<vkSkinDesc.size(); i++)
 				if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
 				{
 					(*vkSkinDesc[i].first)->m_bTileBkSkin = bTile;
+
+					if(strcmp(vkSkinDesc[i].second.c_str() , "Button up") == 0)
+						m_pkFocusWnd->SetSkin((*vkSkinDesc[i].first));
+					if(strcmp(vkSkinDesc[i].second.c_str(), "Checkbox: Button up") == 0)
+						m_pkFocusWnd->SetSkin((*vkSkinDesc[i].first));
 					break;
 				}
 		}
@@ -456,7 +508,18 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 			else
 			{
-				if(CreateWnd( eWndType, szName,  szParent, szLabel, m_iXPos,  m_iYPos, m_iWidth, m_iHeight, dwFlag) == NULL)
+				if(m_pkFocusWnd)
+				{
+					if(GetType(m_pkFocusWnd) == eWndType)
+					{
+						Rect rc = m_pkFocusWnd->GetScreenRect();
+						m_iWidth = rc.Width();
+						m_iHeight = rc.Height();
+					}
+				}
+
+				if(CreateWnd( eWndType, szName,  szParent, szLabel, m_iXPos,  
+					m_iYPos, m_iWidth, m_iHeight, dwFlag) == NULL)
 				{
 					printf("Failed to create window!\n");
 					return;
@@ -489,6 +552,24 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);
 					*vkSkinDesc[i].first = pkNewSkin;
+
+					if(i==0)
+					{
+						//
+						// Set skin parameter settings
+						//
+						((ZGuiRadiobutton*)GetWnd("TextureBK"))->Check();
+
+						if(!pkNewSkin->m_bTileBkSkin)
+							((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->CheckButton();
+						else
+							((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->UncheckButton();
+
+						if(pkNewSkin->m_bTransparent)
+							((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->CheckButton();
+						else
+							((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
+					}
 				}
 				else
 				{
@@ -505,12 +586,11 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				GetListbox()->GetSelItem()->GetText(), rand()%1000);
 			SetText("NewWndNameTextbox", szNewName);
 
-			m_iHighestZValue++;
-			pkWnd->m_iZValue = m_iHighestZValue;
-
+			pkGui->SetFocus(pkWnd);
 			pkWnd->Disable(); // Disable wnd (otherwise some ctrls like listoboxes can't be moved easily)
 
 			UpdateViewWnd();
+			UpdateSkinList(pkWnd);
 		}
 	}
 	else
@@ -604,16 +684,30 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					string strLoadName(szFileName);
 					strLoadName.erase(0,2);
 
-					kSerialize.LoadGUI(strLoadName.c_str(), this);
-
+					// Börja med att ta bort alla fönster
 					map<string, ZGuiWnd*> kWindows;
 					pkGuiMan->GetWindows(kWindows);
 					map<string, ZGuiWnd*>::iterator it2;
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
 						if(m_pkScene->IsSceneWnd(it2->second) == false)
-							ZGResEdit::AddStandardElements(it2->second);
+							DeleteWnd(it2->second);
 					}
+
+					kSerialize.LoadGUI(strLoadName.c_str(), this);
+
+					kWindows.clear();
+					pkGuiMan->GetWindows(kWindows);
+					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
+					{
+						if(m_pkScene->IsSceneWnd(it2->second) == false)
+						{
+							ZGResEdit::AddStandardElements(it2->second);
+							it2->second->Disable();
+						}
+					}
+
+					UpdateViewWnd();
 				}
 			}
 		}
@@ -645,26 +739,15 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 {
+	if(pkInput->Pressed(KEY_A))
+		pkGui->m_bDisableAlphatest = true;
+	else
+		pkGui->m_bDisableAlphatest = false;
+
 	ZGuiWnd* pkWnd = GetWndFromPoint(x,y);
 
 	if(pkWnd == NULL)
 		return;
-
-	static ZGuiWnd* pkPrev = NULL;
-
-	if(pkPrev != pkWnd)
-	{
-		m_iHighestZValue++;
-		pkPrev = pkWnd;
-	}
-
-	if(pkWnd->GetParent()) // om man tex har klickat på en label så skall förädrar fönstert 
-	{								// under få högsta z-värde och barnet högsta z värde+1
-		pkWnd->GetParent()->m_iZValue = m_iHighestZValue;
-		m_iHighestZValue++;
-	}
-
-	pkWnd->m_iZValue = m_iHighestZValue; 
 
 	if(m_pkScene->IsSceneWnd(pkWnd))
 	{
@@ -680,7 +763,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 		return;
 	}
 
-	if(!bReleased)
+	if(!bReleased) // om musknappen har tryckts ner men inte släppts.
 	{
 		m_kSelStart = Point(x,y);
 		m_kClickPos = Point(x,y);
@@ -724,7 +807,6 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 
 				m_pkFocusWnd = pkWnd;
 
-
 				bool bLegalResizeWnd = true;
 				ZGuiWnd* pkParent = pkWnd->GetParent();
 
@@ -747,6 +829,8 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 				int dl = abs(x - rc.Left), dr = abs(x - rc.Right);
 				int dt = abs(y - rc.Top), db = abs(y - rc.Bottom);
 
+				m_eCurrentResizeType = None;
+
 				if(dl <= dr && dl <= dt && dl <= db)
 					m_eCurrentResizeType = LeftSide;
 				if(dr <= dl && dr <= dt && dr <= db)
@@ -755,7 +839,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 					m_eCurrentResizeType = TopSide;
 				if(db <= dr && db <= dt && db <= dl)
 					m_eCurrentResizeType = BottomSide;
-
+				
 				switch(m_eCurrentResizeType)
 				{
 					case LeftSide:   if(dl > 20) m_pkResizeWnd = NULL; break;
@@ -775,27 +859,6 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 	{
 		OnReleaseButton(x,y);
 	}
-
-	if(pkWnd && m_bLeftButtonPressed)
-	{
-		GuiType type = GetType(pkWnd);
-
-		if(type == TabControl)
-		{
-			ZGuiTabCtrl* pkTab = (ZGuiTabCtrl*) pkWnd;
-
-			int max_pages = pkTab->GetNumPages();
-
-			int current_page = pkTab->GetCurrentPage();
-
-			current_page++;
-
-			if(current_page > max_pages-1)
-				current_page = 0;
-			
-			pkTab->SetCurrentPage(current_page); 
-		}
-	}
 }
 
 
@@ -805,22 +868,14 @@ bool ZGResEdit::ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y)
 	Rect rc = pkChild->GetScreenRect();
 
 	if(rc.Inside(x,y) && pkChild->IsVisible() )
-		return true;
+	{
+		if(m_eEditMode == RESIZE)
+			return true;
+		if(pkGui->ClickedWndAlphaTex(x,y,pkWnd)==true)
+			return true;
+	}
 
 	return false;
-}
-
-int ZGResEdit::GetNumParent(ZGuiWnd* pkWnd, int& antal)
-{
-	ZGuiWnd* pkParent = pkWnd->GetParent();
-
-	if(pkParent == NULL)
-		return antal;
-	else
-	{
-		antal++;
-		return GetNumParent(pkParent, antal);
-	}
 }
 
 ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
@@ -867,6 +922,47 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	kTargets.sort(SortZValue);
 
 	ZGuiWnd* pkChild = kTargets.front().first; // best child
+
+	// Hantera tabuleringsboxar på ett speciellt sätt
+	if(GetType(pkChild) == TabControl )
+	{
+		ZGuiTabCtrl* pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkChild);
+
+		int iZValue = pkTabCtrl->m_iZValue;
+		
+		ZGuiWnd* pkWnd = pkTabCtrl->GetPage(pkTabCtrl->GetCurrentPage()); 
+
+		if(pkWnd && ClickInsideWnd(pkWnd, x,y))
+		{
+			pkGui->SetFocus(pkWnd);
+			m_pkFocusWnd = pkWnd;
+			m_pkMainWnd = pkWnd;
+
+			list<ZGuiWnd*> childs;
+			pkWnd->GetChildrens(childs);
+
+			kTargets.clear();
+
+			list<ZGuiWnd*>::iterator it2 = childs.begin();
+			for( ; it2 != childs.end(); it2++)
+			{
+				if(ClickInsideWnd((*it2), x,y))
+					kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
+			}
+
+			if(kTargets.empty())
+			{
+				if(!pkInput->Pressed(KEY_LSHIFT))
+					return pkWnd;
+				else
+					return pkWnd->GetParent();
+			}
+
+			kTargets.sort(SortZValue);
+			pkChild = kTargets.front().first; // best child
+		}
+
+	}
 	
 	return pkChild;
 }
@@ -973,6 +1069,37 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 			m_iXPos = x; m_iYPos = y;
 			m_iWidth = w; m_iHeight = h;
 		}
+		else
+		if(pkComboBox == GetWnd("SkinTypeCB"))
+		{
+			char* szSkinType = GetSelItem("SkinTypeCB");
+
+			if(m_pkFocusWnd && szSkinType != NULL)
+			{
+				vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+				m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+
+				for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+					if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+					{
+						ZGuiSkin* pkSkin = (*vkSkinDesc[i].first);
+
+						if(pkSkin)
+						{
+							if(!pkSkin->m_bTileBkSkin)
+								((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->CheckButton();
+							else
+								((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->UncheckButton();
+
+							if(pkSkin->m_bTransparent)
+								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->CheckButton();
+							else
+								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
+						}
+						break;
+					}
+			}
+		}
 	}
 }
 
@@ -980,6 +1107,20 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 {
 	if(pkWnd != NULL)
 	{
+		ZGuiWnd* pkSearch = pkWnd;
+
+		while(1)
+		{
+			if(m_pkMainWnd == pkSearch)
+				m_pkMainWnd = NULL;
+			if(m_pkFocusWnd == pkSearch)
+				m_pkFocusWnd = NULL;
+
+			pkSearch = pkWnd->GetParent();
+			if(pkSearch == NULL)
+				break;
+		}
+
 		if(pkWnd->GetParent())
 		{
 			m_pkFocusWnd = pkWnd->GetParent();
@@ -987,11 +1128,6 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 		}
 
 		m_pkScene->RemoveAlias(pkWnd);
-
-		if(m_pkMainWnd == pkWnd)
-			m_pkMainWnd = NULL;
-		if(m_pkFocusWnd == pkWnd)
-			m_pkFocusWnd = NULL;
 
 		pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
@@ -1116,35 +1252,7 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 {
 	unsigned int i=0;
 
-	// Fyll listan med olika skin typer...
-	ZGuiCombobox* pkCBox = (ZGuiCombobox*)GetWnd("SkinTypeCB");
-	
-	char* szCurrSel = GetSelItem("SkinTypeCB");
-
-	pkCBox->RemoveAllItems();
-	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
-	pkWnd->GetWndSkinsDesc(vkSkinDesc);
-	for(i=0; i<vkSkinDesc.size(); i++)
-		pkCBox->AddItem((char*)vkSkinDesc[i].second.c_str(), i, (i==0)?true:false);
-
-	if(GetType(pkWnd) == Treebox)
-	{
-		pkCBox->AddItem("child node", vkSkinDesc.size(),0);	
-		pkCBox->AddItem("closed node", vkSkinDesc.size()+1,0);
-		pkCBox->AddItem("open node", vkSkinDesc.size()+2,0);
-	}
-
-	if(szCurrSel)
-		SelListItem("SkinTypeCB", szCurrSel); // markera den som var vald igen...
-
-	// uppdatera textboxen med storlek på aktuell ram
-	char* szSkinType = GetSelItem("SkinTypeCB");
-	for(i=0; i<vkSkinDesc.size(); i++)
-		if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
-		{
-			SetTextInt("BdSizeTextbox", (*vkSkinDesc[i].first)->m_unBorderSize);
-			break;
-		}
+	UpdateSkinList(pkWnd);
 	
 	const char* szAlias = m_pkScene->GetAlias(m_pkFocusWnd);
 
@@ -1159,6 +1267,17 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 		GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
 	else
 		GetWnd("ParentLabel")->SetText( "-" );
+
+	if(pkInput->Pressed(KEY_LCTRL))
+	{
+		int x = m_pkFocusWnd->GetScreenRect().Left;
+		int y = m_pkFocusWnd->GetScreenRect().Top;
+
+		ZGuiWnd* pkCopy = m_pkScene->CloneWnd(m_pkFocusWnd, x, y); 
+
+		m_pkFocusWnd = pkCopy;
+		m_pkMoveWnd = m_pkFocusWnd;
+	}
 }
 
 void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
@@ -1273,7 +1392,6 @@ void ZGResEdit::OpenDefPropWnd(string strWndType)
 		CreateWnd(Textbox, "NewRadiogroupNameEB", "DefPropWnd", "", 10, 40, 150, 22, 0);
 	}
 
-	//pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, true);
 	MoveWndToTop(m_pkScene->m_pkDefProp);
 }
 
@@ -1324,7 +1442,8 @@ void ZGResEdit::ClipLine(Line kLine, const vector<Rect> rects, vector<Line>& out
 
 			if(kLine.s.x >= rc.Left && kLine.s.x <= rc.Right)
 				if(!rc.Inside(kLine.s.x, kLine.s.y) && !rc.Inside(kLine.e.x, kLine.e.y))
-					if(kLine.s.y < rc.Top && kLine.e.y > rc.Bottom || kLine.e.y < rc.Top && kLine.s.y > rc.Bottom)
+					if(kLine.s.y < rc.Top && kLine.e.y > rc.Bottom || 
+						kLine.e.y < rc.Top && kLine.s.y > rc.Bottom)
 					{
 						Line l1 = Line(kLine.s, Point(kLine.s.x, rc.Top));
 						Line l2 = Line(kLine.e, Point(kLine.s.x, rc.Bottom));
@@ -1523,6 +1642,18 @@ void ZGResEdit::DrawSelectionRect(ZGuiWnd *pkWnd)
 
 	int z_value = pkWnd->m_iZValue;
 
+	ZGuiWnd* pkParent = pkWnd->GetParent();
+
+	while(1)
+	{
+		if(pkParent == NULL)
+			break;
+		else
+			z_value += pkParent->m_iZValue;
+
+		pkParent = pkParent->GetParent();
+	}
+
 	vector<Rect> tmp;
 
 	// Hämta rektanglarna på alla fönster som befinner sig ovanför fönstret.
@@ -1577,8 +1708,133 @@ void ZGResEdit::UpdateViewWnd()
 
 void ZGResEdit::MoveWndToTop(ZGuiWnd *pkWnd)
 {
-	m_iHighestZValue++;
-	pkWnd->m_iZValue = m_iHighestZValue;
 	pkWnd->Show();
 	pkGui->SetFocus(pkWnd);
+}
+
+void ZGResEdit::ExecuteCommand()
+{
+	ZGuiWnd* pkTopWnd = pkGui->GetActiveMainWnd();
+	
+	if(pkTopWnd == m_pkScene->m_pkPropertyWnd)
+	{
+		UpdatePropertyData();
+	}
+}
+
+void ZGResEdit::UpdatePropertyData()
+{
+	if(m_pkFocusWnd)
+	{
+		bool bSuccess;
+
+		int x = GetTextInt("PosXTextbox",&bSuccess);
+		int y = GetTextInt("PosYTextbox",&bSuccess);
+		int bd_size = GetTextInt("BdSizeTextbox",&bSuccess);
+
+		SetPos(m_pkFocusWnd, x, y);
+
+		Resize(m_pkFocusWnd, GetTextInt("WidthTextbox",&bSuccess), 
+			GetTextInt("HeightTextbox",&bSuccess));
+
+		// obs! anropet till settext måste ske efter anropet till resize eftersom
+		// settext kan ändra bredden på fönstret igen.
+		bool bResize = GetType(m_pkFocusWnd) == Radiobutton;
+		m_pkFocusWnd->SetText( GetText("WndTitleTextbox"), bResize );
+
+		// Försök byta namn på fönstret
+		const char* szNewName = GetText("WndNameTextbox");
+		if( strcmp( m_pkFocusWnd->GetName(), szNewName ) != 0) // om fönstrets namn har ändrats
+		{
+			if(m_pkScene->RenameWnd(m_pkFocusWnd, szNewName) == false)
+			{
+				const char* old_alias = m_pkScene->GetAlias(m_pkFocusWnd);
+				if(old_alias)
+				{
+					SetText( "WndNameTextbox", (char*) old_alias );
+				}
+				else
+				{
+					SetText( "WndNameTextbox", (char*) m_pkFocusWnd->GetName() );
+				}
+			}
+
+			UpdateViewWnd();
+		}
+
+		// change borde size on selected control type.
+		char* szSkinType = GetSelItem("SkinTypeCB");
+		vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+		m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+		for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+			if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+			{
+				(*vkSkinDesc[i].first)->m_unBorderSize = bd_size; 
+				break;
+			}
+
+		if(bSuccess == false)
+		{
+			printf("failed to get text from a editbox!\n");
+		}
+	}
+}
+
+void ZGResEdit::UpdateSkinList(ZGuiWnd *pkFocusWnd)
+{
+	unsigned int i=0;
+
+	// Fyll listan med olika skin typer...
+	ZGuiCombobox* pkCBox = (ZGuiCombobox*)GetWnd("SkinTypeCB");
+	
+	char* szCurrSel = GetSelItem("SkinTypeCB");
+
+	pkCBox->RemoveAllItems();
+	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+	pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+	for(i=0; i<vkSkinDesc.size(); i++)
+	{
+		pkCBox->AddItem((char*)vkSkinDesc[i].second.c_str(), i, (i==0)?true:false);
+
+		if(i==0)
+		{
+			ZGuiSkin* pkSkin = *vkSkinDesc[i].first;
+
+			if(pkSkin)
+			{
+				//
+				// Set skin parameter settings
+				//
+
+				if(!pkSkin->m_bTileBkSkin)
+					((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->CheckButton();
+				else
+					((ZGuiCheckbox*)GetWnd("StretchTextureCB"))->UncheckButton();
+
+				if(pkSkin->m_bTransparent)
+					((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->CheckButton();
+				else
+					((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
+			}
+		}
+	}
+
+	if(GetType(pkFocusWnd) == Treebox)
+	{
+		pkCBox->AddItem("child node", vkSkinDesc.size(),0);	
+		pkCBox->AddItem("closed node", vkSkinDesc.size()+1,0);
+		pkCBox->AddItem("open node", vkSkinDesc.size()+2,0);
+	}
+
+	if(szCurrSel)
+		SelListItem("SkinTypeCB", szCurrSel); // markera den som var vald igen...
+
+	// uppdatera textboxen med storlek på aktuell ram
+	char* szSkinType = GetSelItem("SkinTypeCB");
+	for(i=0; i<vkSkinDesc.size(); i++)
+		if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+		{
+			SetTextInt("BdSizeTextbox", (*vkSkinDesc[i].first)->m_unBorderSize);
+			break;
+		}
 }

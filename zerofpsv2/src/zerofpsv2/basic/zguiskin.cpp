@@ -287,3 +287,30 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_bTileBkSkin					= pkCopy->m_bTileBkSkin;
 	m_bTransparent					= pkCopy->m_bTransparent;	
 }
+
+bool ZGuiSkin::operator==(ZGuiSkin d) 
+{   
+	if(m_iBkTexID						!= d.m_iBkTexID) return false;
+	if(m_iHorzBorderTexID			!= d.m_iHorzBorderTexID) return false;
+	if(m_iVertBorderTexID			!= d.m_iVertBorderTexID) return false;
+	if(m_iBorderCornerTexID			!= d.m_iBorderCornerTexID) return false;
+
+	if(m_iBkTexAlphaID				!= d.m_iBkTexAlphaID) return false;
+	if(m_iHorzBorderTexAlphaID		!= d.m_iHorzBorderTexAlphaID) return false;
+	if(m_iVertBorderTexAlphaID		!= d.m_iVertBorderTexAlphaID) return false;
+	if(m_iBorderCornerTexAlphaID	!= d.m_iBorderCornerTexAlphaID) return false;
+
+	if(m_afBkColor[0]					!= d.m_afBkColor[0]) return false;
+	if(m_afBkColor[1] 				!= d.m_afBkColor[1]) return false;
+	if(m_afBkColor[2] 				!= d.m_afBkColor[2]) return false;
+
+	if(m_afBorderColor[0] 			!= d.m_afBorderColor[0]) return false;
+	if(m_afBorderColor[1] 			!= d.m_afBorderColor[1]) return false;
+	if(m_afBorderColor[2] 			!= d.m_afBorderColor[2]) return false;
+
+	if(m_unBorderSize					!= d.m_unBorderSize) return false;
+	if(m_bTileBkSkin					!= d.m_bTileBkSkin) return false;
+	if(m_bTransparent					!= d.m_bTransparent) return false;
+
+	return true;
+} 

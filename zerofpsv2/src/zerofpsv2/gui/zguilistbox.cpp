@@ -261,6 +261,9 @@ bool g_bInv;
 
 bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 {
+	if(!m_bEnabled)
+		return true;
+
 	if(pkWnd->GetID() == VERT_SCROLLBAR_ID)
 	{
 		if(iCode == NCODE_CLICK_DOWN)
@@ -438,7 +441,7 @@ void ZGuiListbox::UpdateList()
 
 	// Resize all items
 	int iNewWidth = GetScreenRect().Width();
-	if(m_pkScrollbarVertical->IsVisible())
+	if(m_pkItemList.size()*m_unItemHeight > GetScreenRect().Height())
 		iNewWidth -= m_iScrollbarWidth;
 
 	list<ZGuiListitem*>::iterator it;
@@ -449,7 +452,7 @@ void ZGuiListbox::UpdateList()
 	ScrollItems(m_pkScrollbarVertical);
 }
 
-void ZGuiListbox::Resize(int Width, int Height)
+void ZGuiListbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 	Rect rc = GetWndRect();
 	rc.Bottom = rc.Top + Height;
@@ -458,16 +461,21 @@ void ZGuiListbox::Resize(int Width, int Height)
 	if(m_pkScrollbarVertical)
 	{
 		if(m_pkScrollbarVertical->IsVisible())
-			rc.Right -= m_iScrollbarWidth;	
+			rc.Right -= m_pkScrollbarVertical->GetScreenRect().Width();	
 	}
 
 	ZGuiWnd::Resize(Width, Height); 
 
 	m_kItemArea = rc;
+	
+	if(m_pkScrollbarVertical)
+	{
+		int iScrollbarWidth = m_pkScrollbarVertical->GetScreenRect().Width();
+		m_pkScrollbarVertical->SetPos(Width - iScrollbarWidth, 0, false, true);
 
-/*	if(m_pkScrollbarVertical)
-		m_pkScrollbarVertical->Resize(m_iScrollbarWidth, 
-			m_kItemArea.Height()-m_unItemHeight);*/
+		m_pkScrollbarVertical->Resize(iScrollbarWidth, 
+			m_kItemArea.Height());
+	}
 
 	UpdateList();
 }
@@ -535,6 +543,37 @@ bool ZGuiListbox::SelItem(int iIndex)
 	UpdateList();
 
 	return true;
+}
+
+bool ZGuiListbox::SelItem(const char* szText)
+{
+	if(szText == NULL)
+		return false;
+
+	bool bSuccess = false;
+
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 if(strcmp((*it)->GetText(), szText) == 0)
+			 {
+				 if(m_pkSelectedItem)
+					m_pkSelectedItem->Deselect();
+
+				 m_pkSelectedItem = (*it);
+
+				 if(m_bIsMenu == false)
+					m_pkSelectedItem->Select();
+
+				 bSuccess = true;
+				 break;
+			 }
+		 }
+
+	UpdateList();
+
+	return bSuccess;
 }
 
 void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const

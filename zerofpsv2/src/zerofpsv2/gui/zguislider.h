@@ -40,6 +40,8 @@ public:
 	
 	bool ProcessKBInput(int nKey);
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

@@ -40,13 +40,6 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16, 0);
 	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-190,-490,800+190,600+490),true);
 
-	m_pkApp->CreateWnd(Checkbox, "ToogleEditMode", "WorkSpace", "", 0, 0, 24, 22, 0);
-
-	((ZGuiCheckbox*)m_pkApp->GetWnd("ToogleEditMode"))->SetButtonUncheckedSkin(new ZGuiSkin());
-	((ZGuiCheckbox*)m_pkApp->GetWnd("ToogleEditMode"))->SetButtonCheckedSkin(new ZGuiSkin());
-	((ZGuiCheckbox*)m_pkApp->GetWnd("ToogleEditMode"))->GetUncheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/move.bmp", 0);
-	((ZGuiCheckbox*)m_pkApp->GetWnd("ToogleEditMode"))->GetCheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/scale.bmp", 0);
-
 	m_pkApp->CreateWnd(Button, "DeleteWnd", "WorkSpace", "", 28, 0, 24, 22, 0);
 
 	((ZGuiButton*)m_pkApp->GetWnd("DeleteWnd"))->SetButtonUpSkin(new ZGuiSkin());
@@ -157,7 +150,7 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Label, "SkinTypeCBLabel",  "WorkSpace",  "Skin type", 2,  440, 190, 19, 0);
 	m_pkApp->CreateWnd(Combobox, "SkinTypeCB", "WorkSpace", "Skin type", 2, 460, 190, 20, 0);
 
-	m_pkApp->CreateWnd(Checkbox, "TileTextureCB", "WorkSpace", "Stretch", 2, 484, 16, 16, 0);
+	m_pkApp->CreateWnd(Checkbox, "StretchTextureCB", "WorkSpace", "Stretch", 2, 484, 16, 16, 0);
 	m_pkApp->CreateWnd(Checkbox, "TransparentTextureCB", "WorkSpace", "Transparent", 100, 484, 16, 16, 0);
 
 	m_pkApp->CreateWnd(Button, "RemoveTextureBn",  "WorkSpace",  "No tex", 120,  440, 50, 16, 0);
@@ -196,7 +189,18 @@ void Scene::CreateUI()
 
 	m_pkApp->CreateWnd(Button, "UpdateWndDataBn", "PropertyWnd", "OK", 300-44, 110-24, 40, 20, 0);
 
-	m_pkApp->CreateWnd(Button, "WndInfoBn", "PropertyWnd", "Info", 300-44-80, 110-24, 60, 20, 0);
+	m_pkApp->CreateWnd(Button, "ResizeWndToTexBn", "PropertyWnd", "", 300-44-28, 110-24, 24, 22, 0);
+
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->SetButtonUpSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->SetButtonHighLightSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->SetButtonDownSkin(new ZGuiSkin());
+
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->GetButtonUpSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/scale_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->GetButtonHighLightSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/scale_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("ResizeWndToTexBn"))->GetButtonDownSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/scale_d.bmp", 0);
 
 	((ZGuiButton*)m_pkApp->GetWnd("UpdateWndDataBn"))->SetButtonUpSkin(new ZGuiSkin());
 	((ZGuiButton*)m_pkApp->GetWnd("UpdateWndDataBn"))->SetButtonHighLightSkin(new ZGuiSkin());
@@ -461,4 +465,89 @@ void Scene::RemoveAlias(ZGuiWnd *pkWnd)
 	{
 		m_kNickNameWnds.erase(itWnd);
 	}	
+}
+
+void Scene::ScaleWndToTexSize(ZGuiWnd *pkWnd, char *szSelSkinType)
+{
+	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+	pkWnd->GetWndSkinsDesc(vkSkinDesc);
+
+	for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+		if(strcmp(szSelSkinType, vkSkinDesc[i].second.c_str()) == 0)
+		{
+			ZGuiSkin* pkSkin = (*vkSkinDesc[i].first);
+
+			if(pkSkin)
+			{
+				if(pkSkin->m_iBkTexID)
+				{
+					m_pkTexMan->BindTexture(pkSkin->m_iBkTexID);
+					SDL_Surface* surface = m_pkTexMan->GetImage();
+					pkWnd->Resize(surface->w, surface->h);
+				}
+			}
+
+			break;
+		}
+}
+
+ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
+{
+	printf("%i\n", xpos);
+
+	ZGuiWnd* pkNewWnd = NULL;
+
+	GuiType eWndType = m_pkApp->GetType(pkWnd);
+	char szParent[100] = "";
+	char szLabel[100];
+	char szName[100];
+
+	ZGuiWnd* pkParent = pkWnd->GetParent();
+
+	int iWidth = pkWnd->GetScreenRect().Width();
+	int iHeight = pkWnd->GetScreenRect().Height();
+	
+	if(pkParent)
+	{
+		if(GetAlias(pkParent))
+			strcpy(szParent, GetAlias(pkParent));
+		else
+			strcpy(szParent, pkParent->GetName());
+
+		xpos -= pkParent->GetScreenRect().Left;
+		ypos -= pkParent->GetScreenRect().Top;
+
+		if(xpos + iWidth > pkParent->GetScreenRect().Width() || 
+			ypos + iHeight > pkParent->GetScreenRect().Height() || 
+			xpos < 0 || ypos < 0)
+			return NULL;
+	}
+
+	if(eWndType == Wnd)				strcpy(szName, "Wnd");
+	else if(eWndType == Button)			strcpy(szName, "Button");
+	else if(eWndType == Checkbox)		strcpy(szName, "Checkbox");
+	else if(eWndType == Combobox)		strcpy(szName, "Combobox");
+	else if(eWndType == Label)			strcpy(szName, "Label");
+	else if(eWndType == Listbox)			strcpy(szName, "Listbox");
+	else if(eWndType == Radiobutton)	strcpy(szName, "Radiobutton");
+	else if(eWndType == Scrollbar)		strcpy(szName, "Scrollbar");
+	else if(eWndType == Slider)			strcpy(szName, "Slider");
+	else if(eWndType == TabControl)		strcpy(szName, "TabControl");
+	else if(eWndType == Textbox)			strcpy(szName, "Textbox");
+	else if(eWndType == Treebox)			strcpy(szName, "Treebox");
+
+	strcpy(szLabel, pkWnd->GetText());
+	char szNumber[10];
+	sprintf(szNumber, "%i", rand() % 1000);
+	strcat(szName, szNumber);
+
+	if( (pkNewWnd = m_pkApp->CreateWnd( eWndType, szName,  szParent, szLabel, xpos,  
+		ypos, iWidth, iHeight, 0)) == NULL)
+	{
+		printf("Failed to create window!\n");
+	}
+
+	pkNewWnd->Disable();
+
+	return pkNewWnd;
 }

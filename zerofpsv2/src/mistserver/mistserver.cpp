@@ -68,9 +68,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistserver");
-
 	m_pkServerInfoP = NULL;
-
 } 
 
 void MistServer::OnInit() 
@@ -150,7 +148,7 @@ void MistServer::Init()
 	SDL_WM_SetCaption("MistServer", NULL);
 
 	// give focus to main window
-	pkGui->SetFocus(GetWnd("MainWnd")); 
+	//pkGui->SetFocus(GetWnd("MainWnd")); 
 
 	// Init tooltip
 	pkGui->GetToolTip()->SetToolTip(GetWnd("ToogleLight"),"Light");
@@ -160,6 +158,8 @@ void MistServer::Init()
 	kSkin.m_unBorderSize = 1;
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
 	pkGui->GetToolTip()->SetSkin(kSkin);	
+
+	pkInput->ToggleGrab();
 }
 
 void MistServer::RegisterResources()
@@ -268,8 +268,11 @@ void MistServer::Input()
 	switch(iPressedKey)
 	{
 	case KEY_F9:
-		printf("Num sounds in system = %i\nNum active channels = %i\n",
-			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
+	/*	printf("Num sounds in system = %i\nNum active channels = %i\n",
+			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());*/
+
+		//pkGui->ShowMainWindow(GetWnd("MainMenu"),false); 
+		pkGui->SetFocus(GetWnd("MainWnd")); 
 		break;
 	}
 
@@ -982,7 +985,6 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 		}
 	}
-
 }
 
 void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
@@ -1038,6 +1040,8 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 		
 		if(strParentName == "MainMenu")
 		{
+			//pkGui->SetFocus(GetWnd("MainWnd"));
+
 			// Run Menu command
 			for(int i=0; i<m_uiNumMenuItems; i++)
 			{
@@ -1713,10 +1717,8 @@ bool MistServer::CreateMenu(char* szFileName)
 		return false;
 	}
 
-	CreateWnd(Wnd, "MainMenu", "MainWnd", "", 0,0, 1024, 20, 0);
-
-	ZGuiWnd* pkMenu = GetWnd("MainMenu");
-	pkMenu->SetSkin(GetSkin("NullSkin"));
+	CreateWnd(Wnd, "MainMenu", "", "", 0,0, 800, 20, 0);
+	ChangeSkin(pkScript, "MainMenu", "NullSkin", "Window");
 
 	if(!pkIni->Open(szFileName, false))
 	{
@@ -1839,7 +1841,7 @@ void MistServer::CreateGuiInterface()
 	ZGuiWnd* pkWnd;
 	
 	pkWnd = CreateWnd(Wnd, "MainWnd", "", "", 0, 0, w, h, 0);
-	ChangeSkin(pkScript, "MainWnd", "NullSkin", "Wnd"); 
+	ChangeSkin(pkScript, "MainWnd", "NullSkin", "Window"); 
 
 	pkWnd = CreateWnd(Button, "OpenWorkTabButton", "MainWnd", "", w-40,h-40,32,32,0);
 	ChangeSkin(pkScript, "OpenWorkTabButton", "WorkButtonSkinUp", "Button up"); 
@@ -1847,8 +1849,8 @@ void MistServer::CreateGuiInterface()
 	ChangeSkin(pkScript, "OpenWorkTabButton", "WorkButtonSkinFocus", "Button focus"); 
 
 	pkWnd = CreateWnd(Checkbox, "ToogleLight", "MainWnd", "", w-80,h-40,32,32,0);
-	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinUp", "Button up");
-	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinDown", "Button down");
+	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinUp", "Checkbox: Button up");
+	ChangeSkin(pkScript, "ToogleLight", "ToogleLightButtonSkinDown", "Checkbox: Button down");
 
 	// Create workwnd
 
@@ -1912,4 +1914,3 @@ void MistServer::CreateGuiInterface()
 	CreateMenu("data/script/gui/menu.txt");
 
 }
-

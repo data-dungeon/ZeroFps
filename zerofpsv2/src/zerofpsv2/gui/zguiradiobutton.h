@@ -9,6 +9,7 @@
 class GUI_API ZGuiRadiobutton : public ZGuiWnd
 {
 public:
+	void Check();
 	void ChangeGroupName(char* szNewName);
 	ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID=0, 
 		int iGroupID=-1, char* szGroupName=NULL, 

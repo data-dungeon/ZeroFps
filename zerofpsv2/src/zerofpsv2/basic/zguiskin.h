@@ -15,6 +15,8 @@ public:
 
 	const ZGuiSkin& operator=(const ZGuiSkin& pkSkinSrc );
 
+	bool ZGuiSkin::operator==(ZGuiSkin d);
+
 	ZGuiSkin(ZGuiSkin* pkCopy);	
 
 	// Everything : 17 parameters

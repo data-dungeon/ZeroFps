@@ -31,6 +31,10 @@ public:
 
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
+	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
+
+	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 

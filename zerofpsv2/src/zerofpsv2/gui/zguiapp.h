@@ -54,6 +54,7 @@ public:
 	int GetTextInt(char* szWnd, bool* pkSuccess);
 	char* GetText(char* szWnd);
 	char* GetSelItem(char* szWnd);
+	bool SelListItem(char* szWnd, char* szItem);
 
 	void SetTextFloat(char* szWndResName, float fNumber, bool bResize=false);
 	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);

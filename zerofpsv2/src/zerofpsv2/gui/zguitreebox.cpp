@@ -445,7 +445,7 @@ void ZGuiTreebox::CreateInternalControls()
 	int h = rc.Height()-SCROLLBAR_WIDTH;
 	m_pkVertScrollbar = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,VERT_SCROLLBAR_ID); 
-	m_pkVertScrollbar->SetScrollInfo(0,100,1.0f,0); 
+	m_pkVertScrollbar->SetScrollInfo(0,100,0.25f,0); 
 
 	x = 0;
 	y = rc.Height()-SCROLLBAR_WIDTH;
@@ -453,7 +453,7 @@ void ZGuiTreebox::CreateInternalControls()
 	h = SCROLLBAR_WIDTH;
 	m_pkHorzScrollbar = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,HORZ_SCROLLBAR_ID); 
-	m_pkHorzScrollbar->SetScrollInfo(0,100,0.5f,0); 
+	m_pkHorzScrollbar->SetScrollInfo(0,100,0.25f,0); 
 
 	// Create root node.
 	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
@@ -576,7 +576,7 @@ void ZGuiTreebox::ScrollCols()
 	}
 }
 
-bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
+bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin, bool bOverwrite)
 {
 	if(uiIndex == m_kItemSkinList.size())
 	{
@@ -586,11 +586,43 @@ bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
 
 	unsigned int counter = 0;
 	list<ZGuiSkin*>::iterator itSkin = m_kItemSkinList.begin();
-	for( ; itSkin != m_kItemSkinList.end(); itSkin++)
+
+	if(!bOverwrite)
 	{
-		if(counter == uiIndex) {
-			m_kItemSkinList.insert(itSkin,pkSkin);
-			return true;
+		for( ; itSkin != m_kItemSkinList.end(); itSkin++)
+		{
+			if(counter == uiIndex) {
+				m_kItemSkinList.insert(itSkin,pkSkin);
+				return true;
+			}
+		}
+	}
+	else
+	{
+		for( ; itSkin != m_kItemSkinList.end(); itSkin++)
+		{
+			if(counter == uiIndex) 
+			{
+				ZGuiSkin* pkSkinToRemove = (*itSkin);
+
+				map<string, ZGuiTreeboxNode* >::iterator it;
+				for(it=m_kNodeMap.begin(); it!= m_kNodeMap.end(); it++)
+				{
+					ZGuiCheckbox* pkButton = (*it).second->pkButton;
+
+					if(pkButton->GetCheckedSkin() == pkSkinToRemove)
+						pkButton->SetButtonCheckedSkin(pkSkin);
+
+					if(pkButton->GetUncheckedSkin() == pkSkinToRemove)
+						pkButton->SetButtonUncheckedSkin(pkSkin);
+				}
+
+				m_kItemSkinList.insert(itSkin,pkSkin);
+				m_kItemSkinList.remove(pkSkinToRemove);
+				return true;
+			}
+
+			counter++;
 		}
 	}
 
@@ -913,6 +945,79 @@ bool ZGuiTreebox::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 	}		
 
 	m_pkSelLabel->SetClipperArea(rcClipper);
+
+	return true;
+}
+
+void ZGuiTreebox::Resize(int Width, int Height, bool bChangeMoveArea)
+{
+
+	Rect rc = GetWndRect();
+	int x = rc.Width()-SCROLLBAR_WIDTH;
+	int y = 0;
+	int w = SCROLLBAR_WIDTH;
+	int h = rc.Height()-SCROLLBAR_WIDTH;
+	m_pkVertScrollbar->Resize(w,h,true);
+	m_pkVertScrollbar->SetPos(x,y,false,true);
+
+	x = 0;
+	y = rc.Height()-SCROLLBAR_WIDTH;
+	w = rc.Width()-SCROLLBAR_WIDTH;
+	h = SCROLLBAR_WIDTH;
+	m_pkHorzScrollbar->Resize(w,h,true);
+	m_pkHorzScrollbar->SetPos(x,y,false,true);
+
+	ZGuiWnd::Resize(Width, Height, bChangeMoveArea);
+}
+
+void ZGuiTreebox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
+{
+	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Treebox")) );
+
+	unsigned int i, iStart;
+
+	iStart = pkSkinDesc.size(); 
+	m_pkVertScrollbar->GetWndSkinsDesc(pkSkinDesc);
+	for(i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Treebox: V.");
+
+	iStart = pkSkinDesc.size(); 
+	m_pkHorzScrollbar->GetWndSkinsDesc(pkSkinDesc);
+	for(i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Treebox: H.");
+
+	
+/*	unsigned int i;
+	int iStart = pkSkinDesc.size(); 
+	m_pkNextTabBn->GetWndSkinsDesc(pkSkinDesc);
+	for( i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Tabctrl: nexttab: ");	
+
+	iStart = pkSkinDesc.size(); 
+	m_pkPrevTabBn->GetWndSkinsDesc(pkSkinDesc);
+	for( i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Tabctrl: prevtab: ");	*/
+}
+
+bool ZGuiTreebox::Clear()
+{
+	ZGui* pkGui = GetGUI();
+	map<string, ZGuiTreeboxNode* >::iterator it;
+	for(it=m_kNodeMap.begin(); it!= m_kNodeMap.end(); it++)
+	{
+		delete (*it).second->pkButton;
+		delete (*it).second;
+	}
+
+	m_kNodeMap.clear();
+	m_kNodeList.clear();
+	
+	m_pkSelectedNode = NULL;
+	m_pkSelLabel->Hide();
+
+	// Create root node.
+	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
+	pkRoot->bIsOpen = true;
 
 	return true;
 }

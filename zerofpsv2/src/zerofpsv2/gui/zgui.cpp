@@ -30,6 +30,12 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_bActive = false;
 
 	m_bHaveInputFocus = false;
+
+	m_acLineColor[0] = 255;
+	m_acLineColor[1] = 0;
+	m_acLineColor[2] = 0;
+
+	m_bDisableAlphatest = false;
 }
 
 bool ZGui::StartUp()	
@@ -122,11 +128,11 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 					m_pkMainWindows.begin();
 					 itMain2 != m_pkMainWindows.end(); itMain2++)
 					 {
-						if((*itMain2)->iZValue > heighest && 
+						if((*itMain2)->pkWnd->m_iZValue > heighest && 
 							(*itMain2)->pkWnd->IsVisible())
 						{
 							best = (*itMain2);
-							heighest = best->iZValue;
+							heighest = best->pkWnd->m_iZValue;
 						}
 					 }
 
@@ -306,7 +312,8 @@ bool ZGui::Render()
 	m_pkRenderer->RenderRects(m_kRectsToDraw); 
 
 	// Draw lines
-	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
+	m_pkRenderer->RenderLines(m_kLinesToDraw,
+		m_acLineColor[0],m_acLineColor[1],m_acLineColor[2],1.0f);
 
 	 if(m_pkToolTip)
 	 {
@@ -325,13 +332,13 @@ bool ZGui::Render()
 	return true;
 }
 
-ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
+/*ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 {
 	MAIN_WINDOW* best = m_pkActiveMainWin;
 
 	// Find the window
 	for(list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++)
+		it != m_pkMainWindows.end(); it++)
 		 {
 			 ZGuiWnd* pkWnd = (*it)->pkWnd;
 
@@ -359,6 +366,38 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 		 }	
 
 	return best;
+}*/
+
+ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
+{
+	list<MAIN_WINDOW*> candidates;
+
+	// Find the window
+	for(list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		it != m_pkMainWindows.end(); it++)
+		 {
+			 ZGuiWnd* pkWnd = (*it)->pkWnd;
+
+			 if(pkWnd->GetScreenRect().Inside(x,y) == false)
+				 continue;
+
+			 if(pkWnd->IsVisible() == false)
+				 continue;
+
+			 if(ClickedWndAlphaTex(x,y,pkWnd) == false)
+				 continue;
+
+			 candidates.push_back( (*it) );			 
+		 }	
+
+	if(candidates.empty())
+		return NULL;
+
+	candidates.sort(SortZCmp);
+
+
+
+	return candidates.front();
 }
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
@@ -396,13 +435,16 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			bClicked = true;
 
 		// Skall vi byta main window?
-		MAIN_WINDOW* wnd;
-		if( bClicked && (wnd = FindMainWnd(x,y)) )
-		{
-			if(wnd != m_pkActiveMainWin)
+		MAIN_WINDOW* wnd; // = FindMainWnd(x,y);
+		if( bClicked )
+		{ 
+			if(wnd = FindMainWnd(x,y) )
 			{
-				SetFocus(wnd->pkWnd);
-				return true;
+				if(wnd != m_pkActiveMainWin)
+				{
+					SetFocus(wnd->pkWnd);
+					return true;
+				}
 			}
 		}
 	}
@@ -410,6 +452,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{
 		m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
 	}
+
+	if(m_pkActiveMainWin == NULL)
+		return false;
 
 	if(!m_pkActiveMainWin->pkWnd) 
 		return false; 
@@ -708,6 +753,7 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 				 if(bActiveMainWndHaveChanged)
 				 {						 
 					m_iHighestZWndValue++;
+					m_pkActiveMainWin->pkWnd->m_iZValue = m_iHighestZWndValue;
 					m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
 					m_pkMainWindows.sort(SortZCmp);
 
@@ -796,11 +842,11 @@ void ZGui::ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow)
 					m_pkMainWindows.begin();
 					 itMain2 != m_pkMainWindows.end(); itMain2++)
 					 {
-						if((*itMain2)->iZValue > heighest && 
+						if((*itMain2)->pkWnd->m_iZValue > heighest && 
 							(*itMain2)->pkWnd->IsVisible())
 						{
 							best = (*itMain2);
-							heighest = best->iZValue;
+							heighest = best->pkWnd->m_iZValue;
 						}
 					 }
 
@@ -1102,7 +1148,7 @@ ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)
 			{
 				if(best != NULL && best->pkWnd->GetScreenRect().Inside(x,y))
 				{
-					if((*it)->iZValue > best->iZValue)
+					if((*it)->pkWnd->m_iZValue > best->pkWnd->m_iZValue)
 						best = (*it);
 				}
 				else
@@ -1244,6 +1290,9 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 
 bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 {
+	if(m_bDisableAlphatest)
+		return true;
+
 	if(pkWndClicked == NULL)
 		return false;
 
@@ -1265,7 +1314,20 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		return false;
 
 	if(pkSkin->m_bTransparent)
+	{
+		list<ZGuiWnd*> vkChildList;
+		pkWndClicked->GetChildrens(vkChildList);
+
+		for(list<ZGuiWnd*>::iterator it = vkChildList.begin(); it!=vkChildList.end(); it++)
+		{
+			 if((*it)->GetScreenRect().Inside(mx,my) && (*it)->IsVisible())
+			 {
+				 return true;
+			 }
+		}
+
 		return false;
+	}
 
 	int alpha_tex = pkSkin->m_iBkTexAlphaID;
 	
@@ -1358,4 +1420,11 @@ void ZGui::TranslateMousePos(int &x, int &y)
 
 	x = x-dif_x;
 	y = y-dif_y;
+}
+
+void ZGui::SetLineColor(int r, int g, int b)
+{
+	m_acLineColor[0] = r;
+	m_acLineColor[1] = g;
+	m_acLineColor[2] = b;
 }

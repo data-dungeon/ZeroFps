@@ -69,7 +69,6 @@ ZGuiWnd* ZGuiApp::GetWnd(string strName)
 	return m_pkResMan->Wnd(strName);
 }
 
-
 ZGuiSkin* ZGuiApp::GetSkin(string strName)
 {
 	map<string, ZGuiSkin*>::iterator res = m_kSkins.find(strName);
@@ -107,11 +106,16 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	// måste då tas fram på nytt.
 	if( GetType(pkParent) == TabControl)
 	{
-		pkParent = ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+		AddTabPage((char*)pkParent->GetName(), szResourceName, szText);
+		return ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+
+/*		pkParent = ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+
+		printf("pkParent Name = %s\n", pkParent->GetName());
 		if(pkParent == NULL)
 		{
 			printf("Failed to create window! No such tab page\n");
-		}
+		}*/
 	}
 	
 	switch(eType)
@@ -248,7 +252,26 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		break;
 	}
 
-	if(eType == Wnd /*&& pkParent == NULL*/) // <- OBS! Kommer göra att GUI't mistclient inte funkar tror jag...
+			// Skapa nya texturer och kopiera de gamla mot nya unika...
+			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+			pkWnd->GetWndSkinsDesc(vkSkinDesc);
+			for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+			{
+				ZGuiSkin* pkPrevSkin = *vkSkinDesc[i].first; 
+
+				if(pkPrevSkin)
+				{
+					ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);
+					*vkSkinDesc[i].first = pkNewSkin;
+				}
+				else
+				{
+					*vkSkinDesc[i].first = new ZGuiSkin; 
+					(*vkSkinDesc[i].first)->m_bTransparent = true;
+				}
+			}
+
+	if(eType == Wnd) 
 	{
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 		{
@@ -311,23 +334,23 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGu
 
 	// Textures
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex1", szData))
-		pkNewSkin->m_iBkTexID = GetTexID(szData);
+		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex2", szData))
-		pkNewSkin->m_iHorzBorderTexID = GetTexID(szData);
+		pkNewSkin->m_iHorzBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex3", szData))
-		pkNewSkin->m_iVertBorderTexID = GetTexID(szData);
+		pkNewSkin->m_iVertBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex4", szData))
-		pkNewSkin->m_iBorderCornerTexID = GetTexID(szData);
+		pkNewSkin->m_iBorderCornerTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 
 	// Alpha maps
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex1a", szData))
-		pkNewSkin->m_iBkTexAlphaID = GetTexID(szData);
+		pkNewSkin->m_iBkTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex2a", szData))
-		pkNewSkin->m_iHorzBorderTexAlphaID = GetTexID(szData);
+		pkNewSkin->m_iHorzBorderTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex3a", szData))
-		pkNewSkin->m_iVertBorderTexAlphaID = GetTexID(szData);
+		pkNewSkin->m_iVertBorderTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(pkScript->GetGlobal(pkLuaState, szName, "tex4a", szData))
-		pkNewSkin->m_iBorderCornerTexAlphaID = GetTexID(szData);
+		pkNewSkin->m_iBorderCornerTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 
 	// Color Bk
 	if(pkScript->GetGlobal(pkLuaState, szName, "bkR", dData))
@@ -591,6 +614,33 @@ char* ZGuiApp::GetSelItem(char* szWnd)
 	return NULL;
 }
 
+bool ZGuiApp::SelListItem(char* szWnd, char* szItem)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
+	{
+		if(GetType(pkWnd) == Listbox)
+		{
+			return ((ZGuiListbox*)pkWnd)->SelItem(szItem);
+		}
+		else
+		if(GetType(pkWnd) == Combobox)
+		{
+			ZGuiListbox* pkListbox = ((ZGuiCombobox*) pkWnd)->GetListbox();
+			bool bSuccess = pkListbox->SelItem(szItem);
+			
+			if(bSuccess)
+			{
+				((ZGuiCombobox*) pkWnd)->SetLabelText(szItem);
+			}
+			
+			return bSuccess;
+		}
+	}
+	
+	return false;
+}
+
 int ZGuiApp::GetTextInt(char* szWnd, bool* pkSuccess)
 {
 	ZGuiWnd* pkWnd;
@@ -726,30 +776,34 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID,
 		return false;
 	}
 
+	bool bSkinChanged = false;
+
+	vector< pair<ZGuiSkin**, string> >kSkins;
+	pkWnd->GetWndSkinsDesc( kSkins );
+
+	// Gå igenom alla skins och lägg till dem om de inte redan har lagts till.
+	vector< pair<ZGuiSkin**, string> >::iterator itSkin = kSkins.begin(); 
+	for( ; itSkin != kSkins.end(); itSkin++)
+	{
+		if(strcmp(szSkinType, itSkin->second.c_str()) == 0)
+		{
+			(*itSkin->first) = pkSkin;
+			bSkinChanged = true;
+			break;
+		}
+	}
+
+	if(!bSkinChanged)
+		printf("Failed to change skin to %s on window %s!\n", szSkinName, szID);
+
 	GuiType eType = GetType(pkWnd);
 
-	if( eType == Wnd || eType == Label )
-		pkWnd->SetSkin(pkSkin);
-	else
-	if( eType == Button )
+	if( eType == Button || eType == Checkbox )
 	{
 		if(strcmp(szSkinType, "Button up") == 0)
-			static_cast<ZGuiButton*>(pkWnd)->SetButtonUpSkin(pkSkin);
-		else
-		if(strcmp(szSkinType, "Button down") == 0)
-			static_cast<ZGuiButton*>(pkWnd)->SetButtonDownSkin(pkSkin);
-		else
-		if(strcmp(szSkinType, "Button focus") == 0)
-			static_cast<ZGuiButton*>(pkWnd)->SetButtonHighLightSkin(pkSkin);
-	}
-	else
-	if( eType == Checkbox)
-	{
-		if(strcmp(szSkinType, "Button up") == 0)
-			static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonUncheckedSkin(pkSkin);
-		else
-		if(strcmp(szSkinType, "Button down") == 0)
-			static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(pkSkin);
+			pkWnd->SetSkin(pkSkin);
+		if(strcmp(szSkinType, "Checkbox: Button up") == 0)
+			pkWnd->SetSkin(pkSkin);
 	}
 
 	return true;

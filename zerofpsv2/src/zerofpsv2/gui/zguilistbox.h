@@ -15,6 +15,7 @@ class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:
 	void SetEnable(bool bEnable);
+	bool SelItem(const char* szText);
 	bool SelItem(int iIndex);
 	int GetItemCount();
 	void SelNone();
@@ -24,7 +25,7 @@ public:
 	virtual ~ZGuiListbox();
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	int Find(char* strString);
-	void Resize(int Width, int Height);
+	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool RemoveAllItems();
 	bool RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev);
 	void IsMenu(bool bMenu=true);

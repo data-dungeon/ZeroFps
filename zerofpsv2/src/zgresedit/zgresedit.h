@@ -50,6 +50,9 @@ class ZGResEdit : public Application, public ZGuiApp
 		ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth);
 
 	private:
+		void UpdateSkinList(ZGuiWnd* pkFocusWnd);
+		void UpdatePropertyData();
+		void ExecuteCommand();
 		void MoveWndToTop(ZGuiWnd *pkWnd);
 		void UpdateViewWnd();
 		void DrawSelectionRect(ZGuiWnd* pkWnd);
@@ -59,7 +62,6 @@ class ZGResEdit : public Application, public ZGuiApp
 		void ClipLine(Line kLine, const vector<Rect> rects, vector<Line>& out);
 		void OpenDefPropWnd(string strWndType);
 		void AddStandardElements(ZGuiWnd* pkWnd);
-		int GetNumParent(ZGuiWnd* pkWnd, int& antal);
 		bool ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y);
 		void OnSelectWnd(ZGuiWnd* pkWnd);
 		void DeleteWnd(ZGuiWnd* pkWnd);
@@ -81,10 +83,11 @@ class ZGResEdit : public Application, public ZGuiApp
 
 		bool m_bHaveAskedForDefProp;
 		int m_iRadiogroupCounter;
+		bool m_bDisableAlphatest;
 
 		int m_iXPosBeforeMove, m_iYPosBeforeMove;
 
-		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide } m_eCurrentResizeType;
+		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide, None } m_eCurrentResizeType;
 		enum EditMode { MOVE, RESIZE, VIEW } m_eEditMode;
 
 		int m_iXPos, m_iYPos;
@@ -97,7 +100,6 @@ class ZGResEdit : public Application, public ZGuiApp
 		Point m_kSelStart, m_kClickPos;
 
 		struct SORT_MOST_PARENTS : public binary_function<pair<ZGuiWnd*, int>, pair<ZGuiWnd*, int>, bool> {
-			void MoveWndToTop(ZGuiWnd* pkWnd);
 			bool operator()(pair<ZGuiWnd*, int> x, pair<ZGuiWnd*, int> y) { 
 				return (x.second > y.second);
 			};

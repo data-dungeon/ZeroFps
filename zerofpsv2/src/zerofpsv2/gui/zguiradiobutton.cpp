@@ -109,27 +109,7 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_CLICK_UP && m_iGroupID != -1)
 	{
-		m_pkCheckbox->CheckButton();
-
-		ZGuiRadiobutton* prev = m_pkPrev;
-		while(prev != NULL)
-		{
-			if(prev->GetGroupID() == m_iGroupID)
-				prev->GetButton()->UncheckButton(); 
-			prev = prev->GetPrev();
-		}
-
-		ZGuiRadiobutton* next = m_pkNext;
-		while(next != NULL)
-		{
-			if(next->GetGroupID() == m_iGroupID)
-				next->GetButton()->UncheckButton(); 
-			next = next->GetNext();
-		}
-
-		m_pkCheckbox->CheckButton();
-
-		SetFocus();
+		Check();
 	}
 
 	return true;
@@ -141,7 +121,7 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 //
 void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 {
-	m_pkCheckbox->SetText(strText);
+	m_pkCheckbox->SetText(strText,true);
 
 	ZGui* pkGui = GetGUI();
 	if(!m_pkFont && pkGui)
@@ -157,6 +137,8 @@ void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 	// Ändra storlek på radiobutton kontrollen.
 	// (så att man även träffar knappen när man klickar på texten)
 	Resize(usTextLength+20, GetScreenRect().Height());
+
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -216,10 +198,12 @@ void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 //
 void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 {
-	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
-	iWidth = GetScreenRect().Width(); // dont allow vertcal resize
+/*	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+	iWidth = GetScreenRect().Width(); // dont allow vertcal resize*/
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+
+/*	printf("%i, %i\n", iWidth, iHeight);*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -263,4 +247,29 @@ bool ZGuiRadiobutton::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int 
 
 	m_pkCheckbox->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
 	return true;
+}
+
+void ZGuiRadiobutton::Check()
+{
+	m_pkCheckbox->CheckButton();
+
+	ZGuiRadiobutton* prev = m_pkPrev;
+	while(prev != NULL)
+	{
+		if(prev->GetGroupID() == m_iGroupID)
+			prev->GetButton()->UncheckButton(); 
+		prev = prev->GetPrev();
+	}
+
+	ZGuiRadiobutton* next = m_pkNext;
+	while(next != NULL)
+	{
+		if(next->GetGroupID() == m_iGroupID)
+			next->GetButton()->UncheckButton(); 
+		next = next->GetNext();
+	}
+
+	m_pkCheckbox->CheckButton();
+
+	SetFocus();
 }

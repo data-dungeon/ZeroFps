@@ -87,12 +87,12 @@ public:
 	virtual void CreateInternalControls() { /* do nothing */ }
 
 	const bool Enabled()	{ return m_bEnabled; }
-	const bool IsVisible()	{ return m_bVisible; }
+	const bool IsVisible();
 	void Move(int dx, int dy, bool bScreenSpace=false, bool bFreeMovement=false);
 
 	Rect GetMoveArea() { return m_kMoveArea; }
 	Rect GetWndRect();		// Get the windows area, relative to it´s parent.
-	Rect GetScreenRect();	// Get the real screen area.
+	Rect GetScreenRect(bool bIncBorder=false);	// Get the real screen area.
 
 	int m_iZValue;
 	virtual void SetZValue(int iValue);

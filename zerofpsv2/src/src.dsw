@@ -174,7 +174,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "zguitest"=.\zguitest\zguitest.dsp - Package Owner=<4>
+Project: "zgresedit"=.\zgresedit\zgresedit.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
