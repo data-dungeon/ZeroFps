@@ -33,9 +33,12 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int			m_iCurrentShadows;
 		int			m_iCurrentVerts;
 
+		int			m_iStencilBits;
+		bool			m_bHaveCheckedBits;		//have we checked that the stencil buffer is ok
+		bool			m_bDisabled;				//is shadows disabled
 
-		int			m_iNrOfShadows;		//number of shadows calculated per model
-		float 		m_fExtrudeDistance;
+		int			m_iNrOfShadows;			//number of shadows calculated per model
+		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
 		bitset<8>	m_kShadowGroups;
 
 
@@ -47,6 +50,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		bool SetupMesh(P_Mad* pkMad);
 
 		void SetupGL();
+		void SetupStencilBuffer();
 
 	public:
 

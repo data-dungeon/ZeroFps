@@ -13,9 +13,10 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
  	m_fExtrudeDistance = 10000;
 	m_iCurrentShadows = 	0;
 	m_iCurrentVerts = 	0;
+	m_bHaveCheckedBits = false;
+	m_bDisabled = 			false;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
-//	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
 
 }
 
@@ -31,15 +32,23 @@ bool ZShadow::StartUp()
 	//EnableShadowGroup(1);
 	EnableShadowGroup(2);
 
+
+
+
 	return true;
 }
 
 void ZShadow::Update()
 {
 	//do a quick return if no shadows shuld be rendered
-	if(m_iNrOfShadows == 0)
+	if( (m_iNrOfShadows == 0) || m_bDisabled)
 		return;
 
+	//setup stencil buffert
+	if(!m_bHaveCheckedBits)
+		SetupStencilBuffer();
+
+	//push attribs
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	//setup gl states for shadows rendering
@@ -268,8 +277,24 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 
 }
 
+void ZShadow::SetupStencilBuffer()
+{
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+	glGetIntegerv(GL_STENCIL_BITS, &m_iStencilBits);
+
+	if(m_iStencilBits == 0)
+	{
+		cout<<"WARNING: No stencil buffer found, disabling shadows"<<endl;
+		m_bDisabled = true;
+	}
+
+	m_bHaveCheckedBits = true;
+}
+
 void ZShadow::SetupGL()
 {
+
+
 	//clear stencil buffert
 	glClear(GL_STENCIL_BUFFER_BIT);
 
