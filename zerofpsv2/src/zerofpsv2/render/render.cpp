@@ -644,7 +644,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 		pkConsole = new ZMaterial;
 		pkConsole->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/devstr.bmp");
 		pkConsole->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkConsole->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
+		//pkConsole->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
 		pkConsole->GetPass(0)->m_bLighting = false;		
 		pkConsole->GetPass(0)->m_bColorMaterial = true;
 		pkConsole->GetPass(0)->m_bFog = false;		
