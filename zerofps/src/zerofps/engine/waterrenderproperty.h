@@ -26,13 +26,15 @@ class ENGINE_API WaterRenderProperty: public Property {
 		int m_iStep;
 		
 	public:
-		WaterRenderProperty(int iSize,int iStep,const char* acTexture);
+		WaterRenderProperty();
 
 		void SetProperty(int iSize,int iStep,const char* acTexture);
 		void SetTexture(const char* acTexture);
 		void Update();
 
 };
+
+Property* Create_WaterRenderProperty();
 
 
 #endif

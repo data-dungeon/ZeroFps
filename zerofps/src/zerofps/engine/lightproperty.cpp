@@ -7,7 +7,7 @@ LightProperty::LightProperty()
 {
 	bNetwork = true;
 	strcpy(m_acName,"LightProperty");
-
+	
 	spot=new LightSource();
 	pkPos=new Vector3(0,0,0);
 	pkRot=new Vector3(0,0,0);

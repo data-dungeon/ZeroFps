@@ -4,6 +4,9 @@
 
 Property::Property()
 {
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));			
+	
 	bNetwork = false;
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
@@ -12,8 +15,6 @@ Property::Property()
 	
 	m_iSortPlace=0;
 	m_bSortDistance=false;
-	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	
 }
 
 void Property::PackTo(NetPacket* pkNetPacket) 

@@ -32,6 +32,7 @@ class ENGINE_API SkyBoxRenderProperty: public Property {
 
 };
 
+Property* Create_SkyBoxRenderProperty();
 
 #endif
 

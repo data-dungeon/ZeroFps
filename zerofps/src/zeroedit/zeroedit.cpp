@@ -1,6 +1,6 @@
 #include "zeroedit.h"
 
-ZeroEdit Editor("ZeroEdit",1024,768,16);
+ZeroEdit Editor("ZeroEdit",800,600,16);
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
 {
@@ -9,6 +9,8 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
+	
+	pkRender->SetFog(Vector4(0,0,0,1),8,100,150,true);
 	
 	//register commands
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
@@ -23,10 +25,8 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("            ZeroEdit ");
 	pkConsole->Printf("--------------------------------");
 
-	//init
 	
 	m_pkMap=new HeightMap();	
-//	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
 	glEnable(GL_LIGHTING);
@@ -38,10 +38,12 @@ void ZeroEdit::OnInit(void)
 	
 	m_pkCurentChild=NULL;
 	
+	m_fPointerHeight=1;
+	
 	m_fDrawRate=0.2;
 	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
-	m_iMode=FLATTEN;		
+	m_iMode=ADDOBJECT;		
 	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
 	
 	m_iTexture=1;	
@@ -107,6 +109,8 @@ void ZeroEdit::OnHud(void)
 
 	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
 	pkFps->DevPrintf("Mode: %d",m_iMode);
+	pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
+	pkFps->DevPrintf("Pointer Altidude: %f",m_fPointerHeight);
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
@@ -214,6 +218,15 @@ void ZeroEdit::Input()
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
+	
+	//pointer
+	if(pkInput->Pressed(KEY_R)){
+		m_fPointerHeight+=pkFps->GetFrameTime();
+	}
+	if(pkInput->Pressed(KEY_F)){
+		m_fPointerHeight-=pkFps->GetFrameTime();
+	}
+	
 	
 	
 	if(m_pkCurentChild!=NULL){	
@@ -330,12 +343,15 @@ void ZeroEdit::Input()
 			
 				Object *object = new BallObject();
 				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
-				object->SetParent(m_pkCurentParent);
-				pkObjectMan->Add(object);				
+//				object->SetParent(m_pkCurentParent);
+//				pkObjectMan->Add(object);				
+				
+				object->AttachToClosestZone();
+
 				m_pkCurentChild=object;
 //				pkCollisionMan->Add(object);
 	
-				cout<<"CHILDS: "<<m_pkHeightMapObject->NrOfChilds()<<endl;
+				cout<<"CHILDS: "<<m_pkCurentParent->NrOfChilds()<<endl;
 	
 			}
 			if(pkInput->Pressed(MOUSERIGHT))
@@ -350,7 +366,19 @@ void ZeroEdit::Input()
 			{
 				m_pkCurentParent=m_pkHeightMapObject;
 			}
-			
+			if(pkInput->Pressed(KEY_X))
+			{
+				if(pkFps->GetTicks()-m_fTimer < .5)
+					break;			
+				m_fTimer=pkFps->GetTicks();
+				
+				Object *object = new ZoneObject();
+				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
+				object->SetParent(pkObjectMan->GetWorldObject());
+//				pkObjectMan->Add(object);
+				m_pkCurentChild=object;								
+				m_pkCurentParent=object;
+			}
 			break;
 			
 	}
@@ -369,7 +397,7 @@ void ZeroEdit::CreateNew(int iSize)
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
 	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
-	pkObjectMan->Add(m_pkHeightMapObject);	
+//	pkObjectMan->Add(m_pkHeightMapObject);	
 	pkCollisionMan->Add(m_pkHeightMapObject);
 
 	m_pkCurentParent=m_pkHeightMapObject;
@@ -393,7 +421,7 @@ void ZeroEdit::SetPointer()
 	m_kDrawPos.Set(pkFps->GetCam()->GetPos().x,0,pkFps->GetCam()->GetPos().z);	
 	m_kDrawPos.x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
 	m_kDrawPos.z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
-	m_kDrawPos.y = 1+m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+	m_kDrawPos.y = m_fPointerHeight+m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
 }
 
 
@@ -457,3 +485,9 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 }
 
 
+void ZeroEdit::RegisterPropertys()
+{
+//	pkPropertyFactory->Register("MadProperty", Create_MadProperty);
+
+
+}

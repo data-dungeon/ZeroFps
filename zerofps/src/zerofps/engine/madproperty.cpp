@@ -1,6 +1,7 @@
 #include "madproperty.h"
 #include "object.h"
 
+
 float fGameTime;
 
 void SetGameTime(void)
@@ -14,6 +15,8 @@ MadProperty::MadProperty()
 	
 	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
+//	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
+	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 

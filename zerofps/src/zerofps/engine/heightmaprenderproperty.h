@@ -35,6 +35,7 @@ class ENGINE_API HeightMapRenderProperty: public Property {
 //		void GiveTexCor(float &iX,float &iY,int iNr);
 };
 
+Property* Create_HeightMapRenderProperty();
 
 #endif
 

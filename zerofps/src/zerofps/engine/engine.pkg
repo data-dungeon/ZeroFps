@@ -8,6 +8,7 @@ class CollisionManager;
 class Camera;
 class SoundBufferManager;
 class OpenAlSystem;
+class PropertyFactory;
 
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
@@ -21,7 +22,7 @@ class OpenAlSystem;
 #include "objectmanager.h"
 #include "collisionmanager.h"
 #include "fh.h"
-
+#include "propertyfactory.h"
 #include "property.h"
 #include "lightproperty.h"
 

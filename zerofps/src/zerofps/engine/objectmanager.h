@@ -21,6 +21,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		int	iNextObjectID;
 		bool m_bNoUpdate;
+		int m_iNrOfActivePropertys;
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
@@ -49,6 +50,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object*	GetObjectByNetWorkID(int iNetID);
 		Object* CreateObjectByNetWorkID(int iNetID);	
 		int	GetNumOfObjects();
+		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
 
 };
 

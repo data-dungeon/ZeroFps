@@ -1,8 +1,10 @@
 #include "skyboxobject.h"
 
 SkyBoxObject::SkyBoxObject(const char* acHor,const char* acTop) {
-//	m_bStatic=true;
-	AddProperty(new SkyBoxRenderProperty(acHor,acTop));
+	m_kName="SkyBoxObject";
+//	AddProperty(new SkyBoxRenderProperty(acHor,acTop));
+	AddProperty("SkyBoxRenderProperty");
+	(static_cast<SkyBoxRenderProperty*>(GetProperty("SkyBoxRenderProperty")))->SetTexture(acHor,acTop);
 }
 
 void SkyBoxObject::SetTexture(const char* acHor,const char* acTop)

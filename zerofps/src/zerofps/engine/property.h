@@ -7,10 +7,12 @@
 #include "engine_x.h"
 #include "network.h"
 
+//#include "engine.pkg"
 
 using namespace std;
 
 class Object;
+class PropertyFactory;
 
 enum PROPERTY_TYPES{
 	PROPERTY_TYPE_ALL,
@@ -50,7 +52,7 @@ class ENGINE_API Property
 
 	protected:
 		Object *m_pkObject;
-
+		PropertyFactory*	m_pkPropertyFactory;
 
 	public:
 		int m_iSortPlace;		//place in update queue

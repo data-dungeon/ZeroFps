@@ -8,7 +8,6 @@ CameraProperty::CameraProperty(Camera *pkCamera)
 
 void CameraProperty::Update() 
 {
-
 	if(m_pkCamera!=NULL) {
 		m_pkCamera->SetPos(m_pkObject->GetPos());
 		m_pkCamera->SetRot(m_pkObject->GetRot());
@@ -16,6 +15,9 @@ void CameraProperty::Update()
 }
 
 
-
+Property* Create_CameraProperty()
+{
+	return new CameraProperty(NULL);
+}
 
 

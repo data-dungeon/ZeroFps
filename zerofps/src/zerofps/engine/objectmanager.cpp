@@ -10,7 +10,7 @@ ObjectManager::ObjectManager()
 	m_bNoUpdate=false;
 	
 	m_pkWorldObject=new Object();	
-	
+	m_pkWorldObject->GetName()="WorldObject";
 }
 
 void ObjectManager::Add(Object* pkObject) {
@@ -195,6 +195,8 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 			return;
 
 	GetPropertys(iType,iSide);
+	
+	m_iNrOfActivePropertys = m_akPropertys.size();
 	
 	if(bSort){
 		m_akPropertys.sort(Less_Property);	

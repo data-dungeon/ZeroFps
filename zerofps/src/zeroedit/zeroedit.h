@@ -45,6 +45,7 @@ class ZeroEdit :public Application {
 		int m_iTexture;
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
+		float m_fPointerHeight;
 
 		Object* m_pkCurentParent;
 		Object* m_pkCurentChild;
@@ -71,6 +72,8 @@ class ZeroEdit :public Application {
 		Object* GetClosest(Vector3 kPos);
 		void SelectChild();
 		void SelectParent();		
+		
+		void RegisterPropertys();
 };
 
 

@@ -9,6 +9,7 @@ ZeroFps::ZeroFps(void)
 
 	m_pkFile=new FileIo;
 	m_pkTexMan=new TextureManager(m_pkFile);
+	m_pkPropertyFactory=new PropertyFactory();
 	m_pkFrustum = new Frustum;	
 	m_pkRender=new Render();
 	m_pkConsole=new Console();	
@@ -49,7 +50,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 
-	RegisterPropertys(this);
+	RegisterPropertys();
 }
 
 ZeroFps::~ZeroFps()
@@ -505,4 +506,16 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		pkNetPacket->Read(ucGamePacketType);
 		}
+}
+
+void ZeroFps::RegisterPropertys()
+{
+	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
+	m_pkPropertyFactory->Register("ModelProperty", Create_ModelProperty);
+	m_pkPropertyFactory->Register("LightProperty", Create_LightProperty);
+	m_pkPropertyFactory->Register("WaterRenderProperty",Create_WaterRenderProperty);	
+	m_pkPropertyFactory->Register("SkyBoxRenderProperty",Create_SkyBoxRenderProperty);		
+	m_pkPropertyFactory->Register("HeightMapRenderProperty",Create_HeightMapRenderProperty);		
+	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
+	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
 }

@@ -1,8 +1,9 @@
 #include "waterrenderproperty.h"
 
-WaterRenderProperty::WaterRenderProperty(int iSize,int iStep,const char* acTexture)
+WaterRenderProperty::WaterRenderProperty()
 {
 	strcpy(m_acName,"WaterRenderProperty");		
+
 //	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -11,8 +12,7 @@ WaterRenderProperty::WaterRenderProperty(int iSize,int iStep,const char* acTextu
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	SetProperty(iSize,iStep,acTexture);
-
+	SetProperty(100,10,"file:../data/textures/water2.bmp");
 	m_iSortPlace=10;
 }
 
@@ -37,5 +37,8 @@ void WaterRenderProperty::Update()
 	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture);
 }
 
-
+Property* Create_WaterRenderProperty()
+{
+	return new WaterRenderProperty;
+}
 

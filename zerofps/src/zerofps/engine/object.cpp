@@ -2,7 +2,9 @@
 #include "collisionproperty.h"
 
 Object::Object() {
-	m_pkObjectMan=NULL;
+	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
@@ -10,9 +12,11 @@ Object::Object() {
 	m_kName="Object";
 		
 	m_bLockedChilds=false;
+	m_bUpdateChilds=true;
+	m_bLoadChilds=true;
 	
 	m_pkParent=NULL;
-	m_akChilds.clear();
+	m_akChilds.clear();	
 }
 
 
@@ -53,9 +57,11 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
 	
 	//first get propertys from all childs
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->GetAllPropertys(akPropertys,iType,iSide);
-	}			
+	if(m_bUpdateChilds){
+		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+			(*it)->GetAllPropertys(akPropertys,iType,iSide);
+		}			
+	}
 	
 	GetPropertys(akPropertys,iType,iSide);
 /*	
@@ -99,9 +105,15 @@ void Object::AddProperty(char* acName)
 	if(!pProp)
 		return;*/
 
-	PropertyFactory* pkPropFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
-	Property* pProp = pkPropFactory->CreateProperty(acName);
+
+	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
 	
+	if(pProp==NULL)
+	{
+		cout<<"Error Property "<<acName<<" Not Registered"<<endl;
+		return;
+	}
+
 
 	AddProperty(pProp);
 }
@@ -143,11 +155,15 @@ void Object::Update(){
 }
 */
 
+/*
 void Object::Update(int iType,int iSide){
+
 	//first update all childs
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->Update(iType,iSide);
-	}		
+	if(m_bUpdateChilds){
+		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+			(*it)->Update(iType,iSide);
+		}		
+	}	
 	
 	//thenupdate propertys
 	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
@@ -158,6 +174,7 @@ void Object::Update(int iType,int iSide){
 		}
 	}
 }
+*/
 
 bool Object::Update(char* acName){
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
@@ -204,12 +221,6 @@ void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 }
 
 
-bool Object::Save(void *pkData,int iSize) {
-	iSize=0;
-	pkData=NULL;
-	
-	return false;
-}
 
 /*
  PackTo och PackFrom används för att spara ned / upp object till/från
@@ -382,5 +393,28 @@ void Object::GetAllObjects(list<Object*> *pakObjects)
 	pakObjects->push_back(this);
 }
 
+void Object::AttachToClosestZone()
+{
+	list<Object*> temp;
+	float mindistance=999999999;
+	Object* minobject=m_pkObjectMan->GetWorldObject();
 
+	
+	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
+	
+
+	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
+		if((*it)->GetName()=="ZoneObject"){
+			float distance = abs(((*it)->GetPos() - m_kPos).Length());
+			if(distance<mindistance){
+				mindistance=distance;
+				minobject=(*it);
+			}
+		}
+	}		
+	
+	temp.clear();
+	
+	SetParent(minobject);
+}
 

@@ -73,6 +73,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		CmdSystem* m_pkCmd;							//realtime variable handler
 		AudioManager* m_pkAudioMan;			//audio manager (sfx,music)		
 		TextureManager* m_pkTexMan;			//texture manager
+		PropertyFactory* m_pkPropertyFactory;		
 		Input* m_pkInput;								//keyboard mouse input
 		Render* m_pkRender;					//graphic primitives
 		Console* m_pkConsole;						//console handler
@@ -121,8 +122,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
 		inline Camera *GetConsoleCam() {return m_pkConsoleCamera;};				
 
-		PropertyFactory	m_kPropertyFactory;
-
 		int	NumberOfArgs(void);	// Return num of arg to app.
 		string GetArg(int iArgIndex);
 	
@@ -131,6 +130,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void DevPrintf(const char *fmt, ...);
 
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
+		
+		void RegisterPropertys();
 
 };
 

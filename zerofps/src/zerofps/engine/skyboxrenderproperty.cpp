@@ -35,3 +35,7 @@ void SkyBoxRenderProperty::Update()
 	m_pkRender->DrawSkyBox(m_pkZeroFps->GetCam()->GetPos(),m_kHead,m_iHor,m_iTop);
 }
 
+Property* Create_SkyBoxRenderProperty()
+{
+	return new SkyBoxRenderProperty("NONE","NONE");
+}

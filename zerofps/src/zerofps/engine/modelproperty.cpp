@@ -5,6 +5,7 @@
 ModelProperty::ModelProperty() {
 	bNetwork = true;
 	strcpy(m_acName,"ModelProperty");
+
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
 	m_fRadius = 1.0;

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "engine_x.h"
-#include "property.h"
+//#include "engine.pkg"
 
 using namespace std;
 
@@ -46,6 +46,6 @@ public:
 };
 
 class ZeroFps;
-void RegisterPropertys(ZeroFps* zfps);
+//void RegisterPropertys(ZeroFps* zfps);
 
 #endif

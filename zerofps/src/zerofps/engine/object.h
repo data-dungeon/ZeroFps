@@ -16,14 +16,15 @@ using namespace std;
 class ObjectManager;
 
 class ENGINE_API Object {
-//		PropertyFactory*	m_pkPropFactory;
-
 	protected:
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		Vector3 m_kVel;
 		
-//		int m_iType;
+		string m_kName;		
+
+		bool m_bUpdateChilds;		
+		bool m_bLoadChilds;
 		bool m_bLockedChilds;
 		
 		list<Property*> m_akPropertys;
@@ -33,7 +34,7 @@ class ENGINE_API Object {
 		list<Object*> m_akChilds;
 		Object* m_pkParent;	
 	
-		string m_kName;
+		PropertyFactory*	m_pkPropertyFactory;
 		
 	public:
 
@@ -42,17 +43,14 @@ class ENGINE_API Object {
 		Object();		
 		~Object();
 		
-//		void Remove();
 		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
 		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		
 		Property* GetProperty(char* acName);
-//		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
+
 		void AddProperty(Property* pkNewProperty);
 		void AddProperty(char* acName);		
 		Property* AddProxyProperty(char* acName);
 		bool RemoveProperty(char* acName);
-//		void Update();
-		void Update(int iType,int iSide);		
 		bool Update(char* acName);
 		
 		void AddChild(Object* pkObject);
@@ -62,26 +60,35 @@ class ENGINE_API Object {
 		int NrOfChilds();
 		void DeleteAllChilds();
 		void GetAllObjects(list<Object*> *pakObjects);
+		void AttachToClosestZone();
 		void PrintTree(int pos);
+		
+		
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 
+		inline bool &GetUpdateChilds() {return m_bUpdateChilds;};
+
+		inline string &GetName(){return m_kName;};
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
-//inline int &GetType(){return m_iType;};
-//		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		float GetBoundingRadius();
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-		virtual bool Save(void *pkData,int iSize);
 
-
+//		void Update();
+//		void Update(int iType,int iSide);		
+//		inline void SetUpdateChilds(bool bUpdateChilds) { m_bUpdateChilds=bUpdateChilds;};
+//inline int &GetType(){return m_iType;};
+//		inline bool &GetStatic(){return m_bStatic;};		
+//		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
+//		void Remove();
 };
 
 #endif

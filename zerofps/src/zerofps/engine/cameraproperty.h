@@ -22,6 +22,8 @@ class ENGINE_API CameraProperty:public Property{
 		void SetCamera(Camera *pkCamera){m_pkCamera=pkCamera;};
 };
 
+Property* Create_CameraProperty();
+
 #endif
 
 

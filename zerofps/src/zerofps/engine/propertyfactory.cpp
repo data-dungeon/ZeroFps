@@ -26,6 +26,8 @@ void PropertyFactory::Register(char* szName, Property*	(*Create)())
 	NewLink.Create = Create;
 	
 	m_kProperyLinks.push_back(NewLink);
+	
+	cout<<"Property added "<<szName<<endl;
 }
 
 void PropertyFactory::Display()
@@ -40,6 +42,7 @@ void PropertyFactory::Display()
 	
 }
 
+/*
 void RegisterPropertys(ZeroFps* zfps)
 {
 	zfps->m_kPropertyFactory.Register("MadProperty", Create_MadProperty);
@@ -47,5 +50,5 @@ void RegisterPropertys(ZeroFps* zfps)
 	zfps->m_kPropertyFactory.Register("LightProperty", Create_LightProperty);
 
 }
-
+*/
 
