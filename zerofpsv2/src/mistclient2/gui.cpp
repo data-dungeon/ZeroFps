@@ -135,9 +135,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "ConnectBn")
          {
-            g_kMistClient.ShowWnd("LoginWnd", true, true, true);
             g_kMistClient.SetText("LoginNameEB", (char*) g_kMistClient.m_strLoginName.c_str());
             g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_strLoginPW.c_str());
+            g_kMistClient.ShowWnd("LoginWnd", true, true, true);
          }
       }
       else
@@ -293,6 +293,8 @@ void MistClient::AddStringToChatBox(string strMsg)
 	string strText = string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
 	g_kMistClient.SetText("ChatTextbox",(char*) strText.c_str());
 
+   ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->UpdateText();
+
    ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->ScrollRowIntoView(
       ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 }
@@ -388,5 +390,5 @@ void MistClient::LoadInGameGui()
 	g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit (för att kunna ändra trasparens med färgvärdet)
 	g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest = false;
 
-	g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
+	g_kMistClient.ShowWnd("OpenChatButton", false);
 }

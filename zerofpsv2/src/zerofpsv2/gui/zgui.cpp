@@ -589,7 +589,7 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
 
    if(bIsTextbox)
    {
-      static int last_key = -1;
+      static KEY_INFO last_key = {-1,0,0};
       static float last_key_press_time = 0;
       static float repeat_time = 0;
 
@@ -597,26 +597,31 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
       {
          if(kKeysPressed[i].pressed)
          {
-            last_key = kKeysPressed[i].key;
+            last_key = kKeysPressed[i];
             last_key_press_time = time;
 
-            FormatKey(last_key, kKeysPressed[i].shift);
-				if(last_key != 0)
-	            ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);
+            int fkey = last_key.key;
+            FormatKey(fkey, last_key.shift);
+            if(fkey != 0)
+               ZGuiWnd::m_pkFocusWnd->ProcessKBInput(fkey);
          }
          else
          {
-            if(last_key == kKeysPressed[i].key)
-               last_key = -1;
+            if(last_key.key == kKeysPressed[i].key)
+               last_key.key = -1;
          }
       }
 
-      if(last_key > 0 && (time - last_key_press_time) > REPEAT_DELAY)
+      if(last_key.key > 0 && (time - last_key_press_time) > REPEAT_DELAY)
       {
          if(time - repeat_time > REPEAT_RATE)
          {
-				if(last_key != 0)			
-            	ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);   
+            int fkey = last_key.key;
+            FormatKey(fkey, last_key.shift);
+
+            if(fkey != 0)			
+               ZGuiWnd::m_pkFocusWnd->ProcessKBInput(fkey); 
+
             repeat_time = time;
          }
       }
@@ -624,15 +629,15 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
 
    if(!kKeysPressed.empty())
    {
-      KEY_INFO last_key = kKeysPressed.back();
+      KEY_INFO press_key = kKeysPressed.back();
 
-      if(last_key.pressed)
+      if(press_key.pressed)
       {
-			int kParams[1] = {last_key.key};
+			int kParams[1] = {press_key.key};
 			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 				ZGM_KEYPRESS,1,(int*) kParams);
          
-         RunKeyCommand(last_key.key);
+         RunKeyCommand(press_key.key);
       }
    }
 }
