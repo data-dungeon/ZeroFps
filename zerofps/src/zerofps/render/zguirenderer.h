@@ -13,6 +13,9 @@ class ZGuiSkin;
 
 const int ZG_CENTER_TEXT_HORZ = -2;
 
+typedef pair<Point,color_rgb> tRGBPoint;
+typedef pair<Rect,color_rgb> tRGBRect;
+
 class RENDER_API ZGuiRender : public ZFObject 
 {
 public:
@@ -21,6 +24,9 @@ public:
 
 	virtual bool StartRender() = 0;
 	virtual bool EndRender() = 0;
+	
+	virtual bool RenderRects(vector<tRGBRect>& akLines) = 0;
+	virtual bool RenderPoints(vector<tRGBPoint>& akLines) = 0;
 	virtual bool RenderQuad(Rect kScreenRect) = 0;
 	virtual bool RenderBorder(Rect kScreenRect) = 0;
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;

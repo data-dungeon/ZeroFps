@@ -199,6 +199,9 @@ void ZeroRTS::Input()
 		pkLevelMan->ChangeLandscapeFillMode(LINE);
 	if(pkInput->Pressed(KEY_F))
 		pkLevelMan->ChangeLandscapeFillMode(FILL);
+
+	if(pkInput->GetQueuedKey() == KEY_M)
+		m_pkMiniMap->bDraw = !m_pkMiniMap->bDraw;
 			
 }
 

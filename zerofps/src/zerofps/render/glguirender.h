@@ -20,8 +20,10 @@ public:
 	bool EndRender();
 	bool StartRender();
 	bool RenderQuad(Rect kScreenRect);
+	bool RenderPoints(vector<tRGBPoint>& akLines);
 	bool RenderLines(vector<Point>& akLines, 
 		unsigned char r,unsigned char g,unsigned char b, float width=1.0f);
+	bool RenderRects(vector<tRGBRect>& akLines);
 	bool RenderBorder(Rect kScreenRect);
 	bool SetSkin(ZGuiSkin* pkSkin);
 	void RenderText( char *stText, Rect kScreenRect, 

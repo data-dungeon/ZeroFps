@@ -272,6 +272,12 @@ bool ZGui::Render()
 	// Draw lines
 	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
 
+	// Draw points
+	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
+
+	// Draw rects
+	m_pkRenderer->RenderRects(m_kRectsToDraw); 
+
 	// Draw cursor
 	if(m_pkCursor->IsVisible())
 		m_pkCursor->Render();
@@ -711,6 +717,8 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 	}
 
 	m_kLinesToDraw.clear(); 
+	m_kPointsToDraw.clear();
+	m_kRectsToDraw.clear(); 
 
 	return true;
 }
@@ -1456,4 +1464,24 @@ void ZGui::DrawLine(Point p1, Point p2)
 {
 	m_kLinesToDraw.push_back(p1);
 	m_kLinesToDraw.push_back(p2);
+}
+
+void ZGui::DrawPoint(Point pos, 
+					 unsigned char r, unsigned char g, unsigned char b)
+{
+	tRGBPoint kElement;
+	kElement.first = pos;
+	color_rgb color = {r,g,b};
+	kElement.second = color;
+	m_kPointsToDraw.push_back(kElement);
+}
+
+void ZGui::DrawRect(int x, int y, int w, int h, 
+					unsigned char r, unsigned char g, unsigned char b)
+{
+	tRGBRect kElement;
+	kElement.first = Rect(x,y,x+w,y+h);
+	color_rgb color = {r,g,b};
+	kElement.second = color;
+	m_kRectsToDraw.push_back(kElement);
 }

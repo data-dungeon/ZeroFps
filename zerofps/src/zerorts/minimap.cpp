@@ -12,19 +12,26 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-MiniMap::MiniMap()
+MiniMap::MiniMap() : m_iDisclosuredCellRow(43)
 {
+	m_pbDisclosuredCells = new bool[m_iDisclosuredCellRow*m_iDisclosuredCellRow];
+	memset(m_pbDisclosuredCells, 0, 
+		sizeof(bool)*(m_iDisclosuredCellRow*m_iDisclosuredCellRow));
 	m_fCameraPosX = 0.5f;
 	m_fCameraPosY = 0.5f;
+	bDraw = true;
 }
 
 MiniMap::~MiniMap()
 {
-
-}
+	delete[] m_pbDisclosuredCells;
+}	
 
 void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 {
+	if(!bDraw)
+		return;
+
 	// minimap dimension
 	int mmSize = m_iSize; 
 	int mmLeft = m_kScreenPos.x;
@@ -52,23 +59,84 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 	pkGui->DrawLine(Point(fvLeft, fvTop), Point(fvLeft+fvWidth, fvTop));    // top
 	pkGui->DrawLine(Point(fvLeft+fvWidth, fvTop), Point(fvLeft+fvWidth, fvTop+fvHeight)); // right
 	pkGui->DrawLine(Point(fvLeft, fvTop+fvHeight), Point(fvLeft+fvWidth, fvTop+fvHeight)); 
+
+	Rect rcCamera(fvLeft, fvTop, fvLeft+fvWidth, fvTop+fvHeight);
+	DiscloseCells(rcCamera);
+
+	static bool init = false;
+	static Point array[800];
+
+	if(!init)
+	{
+		Point p;
+		
+		int k=0;
+
+		int s[] = { 25,25,  mmSize-20-25,15,  mmSize-30,mmSize-30,  11,mmSize-40 };
+
+		for(int i=0; i<4; i++)
+		{
+			p = Point(mmLeft+s[i*2], mmTop+s[i*2+1]);
+
+			for(int j=0; j<200; j++)
+				array[k++] = Point(p.x+rand()%30, p.y+rand()%20);
+		}
+
+		init = true;
+	}
+
+	for(int i=0; i<200; i++)
+		pkGui->DrawPoint(array[i], 255, 128, 0);
+
+	for( i=200; i<400; i++)
+		pkGui->DrawPoint(array[i], 0, 0, 128);
+
+	for( i=400; i<600; i++)
+		pkGui->DrawPoint(array[i], 0, 44, 128);
+
+	for( i=600; i<800; i++)
+		pkGui->DrawPoint(array[i], 243, 213, 2);
+
+	int x, y;
+
+	float center_x = mmLeft + mmSize/2;
+	float center_y = mmTop + mmSize/2;
+
+	const float TILE_SIZE = (float) mmSize / m_iDisclosuredCellRow;
+	
+	float dx=0,dy=0;
+	for( y = 0; y < m_iDisclosuredCellRow; y++)
+	{
+		for( x = 0; x < m_iDisclosuredCellRow; x++)
+		{
+			if(m_pbDisclosuredCells[y*m_iDisclosuredCellRow+x] == false)
+				pkGui->DrawRect(mmLeft+dx, mmTop+dy, TILE_SIZE, TILE_SIZE, 0, 0, 0);
+
+			dx += TILE_SIZE;
+		}
+		dy += TILE_SIZE;
+		dx = 0;
+	}
+
 }
 
 void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
 					 GuiBuilder* pkGuiBuilder)
 {
+	const int TEXTURE_SIZE = 128; // not same as minimap window size...
+
 	pkTexMan->BindTexture("../data/textures/minimap.bmp", T_NOMIPMAPPING);
 	
 	HeightMap* hm = pkLevelMan->GetHeightMap();
 
 	int size = hm->m_iHmSize, x,y,r,g,b;
 
-	float scale = size / 128.0f, fx, fy, min=100000000, max=-100000000;
+	float scale = (float) size / TEXTURE_SIZE, fx, fy, min=100000000, max=-100000000;
 
-	for( y=0; y<128; y++)
+	for( y=0; y<TEXTURE_SIZE; y++)
 	{
 		fy = scale*(float)y;
-		for( x=0; x<128; x++)
+		for( x=0; x<TEXTURE_SIZE; x++)
 		{
 			fx = scale*(float)x;
 			HM_vert* pkVert = hm->GetVert(fx,fy);
@@ -79,16 +147,16 @@ void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
 		}
 	}
 
-	float length = (max - min);
+	float max_height = (max - min);
 
-	for( y=0; y<128; y++)
+	for( y=0; y<TEXTURE_SIZE; y++)
 	{
 		fy = scale*(float)y;
-		for( x=0; x<128; x++)
+		for( x=0; x<TEXTURE_SIZE; x++)
 		{
 			fx = scale*(float)x;
 			float height = hm->GetVert(fx,fy)->height;
-			float procent = (1.0f / (length)) + ((height-min) / length);
+			float procent = (1.0f / (max_height)) + ((height-min) / max_height);
 			
 			int form_height = (int) (procent*255);
 			
@@ -140,11 +208,36 @@ void MiniMap::MoveFov(float fCameraPosX, float fCameraPosY)
 		counter = 0;
 	}
 
-	//counter++;
-
 	m_fCameraPosX = procent_av_bredd;
 	m_fCameraPosY = procent_av_hojd;
 
 	// -181 till 181 (x) = 362
 	// -182 till 236 (y) = 417
+}
+
+void MiniMap::DiscloseCells(Rect rcCamera)
+{
+	int mmSize = m_iSize; 
+	int mmLeft = m_kScreenPos.x;
+	int mmTop  = m_kScreenPos.y;
+
+	const float TILE_SIZE = (float) mmSize / m_iDisclosuredCellRow;
+
+	int x,y;
+	float dx=0,dy=0;
+	for( y = 0; y < m_iDisclosuredCellRow; y++)
+	{
+		for( x = 0; x < m_iDisclosuredCellRow; x++)
+		{
+			Rect rcCell(mmLeft+dx, mmTop+dy, 
+				mmLeft+dx+TILE_SIZE, mmTop+dy+TILE_SIZE);
+
+			if(rcCamera.Inside(rcCell))
+				m_pbDisclosuredCells[y*m_iDisclosuredCellRow+x] = true;
+
+			dx += TILE_SIZE;
+		}
+		dy += TILE_SIZE;
+		dx = 0;
+	}	
 }

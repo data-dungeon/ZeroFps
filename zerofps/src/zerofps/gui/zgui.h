@@ -63,6 +63,9 @@ class GUI_API ZGui : public ZFObject
 public:	
 
 	void DrawLine(Point p1, Point p2);
+	void DrawPoint(Point pos, unsigned char r, unsigned char g, unsigned char b);
+	void DrawRect(int x, int y, int w, int h, 
+		unsigned char r, unsigned char g, unsigned char b);
 	
 	ZGuiWnd* GetWndCapture();
 	void KillWndCapture();
@@ -85,6 +88,8 @@ public:
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WINit;
 	typedef pair<pair<string,string>, ZGuiSkin*> tSkinInf; //window_name, wnd_desc, skin
+	typedef pair<Point,color_rgb> tRGBPoint;
+	typedef pair<Rect,color_rgb> tRGBRect;
 
 	ZGui();
 	~ZGui();
@@ -180,6 +185,8 @@ private:
 	ZGuiWnd* m_pkCapturedWindow;
 
 	vector<Point> m_kLinesToDraw;
+	vector<tRGBPoint> m_kPointsToDraw;
+	vector<tRGBRect> m_kRectsToDraw;
 
 };
 

@@ -685,3 +685,43 @@ bool GLGuiRender::RenderLines(vector<Point>& akLines,
 
 	return true;
 }
+
+bool GLGuiRender::RenderPoints(vector<tRGBPoint>& akLines)
+{
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_POINTS);
+
+	int iSize = akLines.size();
+	for(int i=0; i<iSize; i++)
+	{
+		glColor3ub(akLines[i].second.r,akLines[i].second.g,akLines[i].second.b);
+		glVertex2i(akLines[i].first.x,m_iScreenHeight-akLines[i].first.y);		
+	}
+
+	glEnd();
+
+	return true;
+}
+
+bool GLGuiRender::RenderRects(vector<tRGBRect>& akRects)
+{
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_QUADS);
+
+	int iSize = akRects.size();
+	for(int i=0; i<iSize; i++)
+	{
+		Rect rc = akRects[i].first;
+		glColor3ub(akRects[i].second.r,akRects[i].second.g,akRects[i].second.b);
+		glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+		glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   		
+	}
+
+	glEnd();
+
+	return true;
+}
