@@ -226,7 +226,7 @@ void Input::Update(void)
 			//keyboard
 			case SDL_KEYDOWN:
 				//add key to queuedkeys
-				AddQueuedKey(&m_kEvent.key.keysym);
+				AddQueuedKey(&m_kEvent.key.keysym,true);
 
 				//set button as pressed		
 				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
@@ -234,20 +234,20 @@ void Input::Update(void)
 				//linux backquote hack deluxe
 				if(m_kEvent.key.keysym.sym == 167)
 					iZfKey = KEY_BACKQUOTE;
-				
-				//cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << " - "<<m_kEvent.key.keysym.sym<< endl;
-				//cout<<"CP:"<<m_kEvent.key.keysym.scancode<<endl;
-				//printf( "Scancode: 0x%02X \n", m_kEvent.key.keysym.scancode ); 				
-				//cout << "Key Pressed: " << (int) m_kEvent.key.keysym.scancode << " - " << GetKeyName(iZfKey) << endl;
-				
+								
+				//set status up
 				m_akKeyState[iZfKey].m_bDown = true;	
 
 				if(m_bBindMode)
 					BindBindMode( SDLToZeroFpsKey(m_kEvent.key.keysym.sym) );
+				
 				break;			
 
 			case SDL_KEYUP:
 				//set  button as unpressed
+				AddQueuedKey(&m_kEvent.key.keysym,false);
+				
+				//set status up
 				m_akKeyState[SDLToZeroFpsKey(m_kEvent.key.keysym.sym) ].m_bDown = false;	
     		break;    		
  
@@ -295,7 +295,7 @@ void Input::Update(void)
 	}
 }
 
-void Input::AddQueuedKey(SDL_keysym* kKey)
+void Input::AddQueuedKey(SDL_keysym* kKey,bool bPressed)
 {
 	int iModifier = 0;
 	
@@ -311,7 +311,7 @@ void Input::AddQueuedKey(SDL_keysym* kKey)
 		
 
 	//put key in list
-	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(kKey->sym),iModifier)  );	
+	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(kKey->sym),iModifier,bPressed)  );	
 	//cout << "Key Qued: " << kKey->sym <<"  modifiers:"<<iModifier<< endl;
 
 
@@ -659,7 +659,7 @@ void Input::Load(string strCfgName)
 
 QueuedKeyInfo Input::GetQueuedKey()
 {
-	QueuedKeyInfo kKey(-1,0);	
+	QueuedKeyInfo kKey(-1,0,true);	
 
 	if(!m_aPressedKeys.empty())
 	{

@@ -353,17 +353,52 @@ void ZeroFps::Run_EngineShell()
 	else
 		m_pkGuiInputHandle->MouseXY(mx,my);
 
+/*	///gammal input kod
 	int iInputKey = -1;
 	for(int i=0; i<256; i++)
 		if(m_pkGuiInputHandle->Pressed((Buttons) i)) {
 			iInputKey = i; break;
 		}
 
-	m_pkGui->Update(/*m_pkEntityManager->GetSimTime()*/GetTicks(),iInputKey,false,
+	m_pkGui->Update(GetTicks(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
+*/
 
+	//dvoids test kod -------------
+	if(m_pkGuiInputHandle->SizeOfQueue() == 0)
+	{
+		//om ingen tangent släppts eller tryckts in hantera det här
+		m_pkGui->Update(GetTicks(),-1,false,
+			(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
+			mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+			m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));	
+	}
+	else
+	{
+		while(m_pkGuiInputHandle->SizeOfQueue() > 0)
+		{
+			QueuedKeyInfo kKey = m_pkGuiInputHandle->GetQueuedKey();
+			if(kKey.m_bPressed)
+			{
+				//handera om kKey tryckts in här
+				int iKey = kKey.m_iKey;
+		
+				m_pkGui->Update(GetTicks(),iKey,false,
+					(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
+					mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+					m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));			
+			}
+			else
+			{
+				//hantera vad som händer om knappen kKey släppts här
+			
+			}
+		}
+	}
+	//slut på test kod -----------
+		
 	//disablar applicationens input om guit har hanterat den	
 	if(m_pkGui->m_bHandledMouse == true)
 		m_pkApp->m_pkInputHandle->SetTempDisable(true);

@@ -35,7 +35,7 @@ QueuedKeyInfo InputHandle::GetQueuedKey()
 	if(m_bActive && !m_bTempDisable)
 		return m_pkInput->GetQueuedKey();
 	else
-		return QueuedKeyInfo(-1,0);
+		return QueuedKeyInfo(-1,0,true); 
 }
 
 int InputHandle::SizeOfQueue()

@@ -294,6 +294,9 @@ void Console::Update(void)
 		//get next queued key
 		QueuedKeyInfo kKey = m_pkInputHandle->GetQueuedKey();
 
+		if(!kKey.m_bPressed)
+			continue;
+		
 		CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
 
 		//check funktion keys

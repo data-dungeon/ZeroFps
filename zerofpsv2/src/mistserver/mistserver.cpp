@@ -337,16 +337,6 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 
 void MistServer::Input()
 {
-	// *** HANDE Quueued Keys.
-	int iPressedKey = m_pkInputHandle->GetQueuedKey().m_iKey;
-
-	switch(iPressedKey)
-	{
-	case KEY_F9:
-		printf("smurf\n");
-		break;
-	}
-
 	int x = 0;
 	int z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	

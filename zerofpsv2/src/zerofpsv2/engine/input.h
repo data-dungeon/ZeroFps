@@ -49,17 +49,20 @@ class QueuedKeyInfo
 	public:
 		int	m_iKey;
 		int	m_iModifiers;		// OR-combined bit list (alt , shift , ctrl)
+		bool	m_bPressed;			// if false its released
 		
 		QueuedKeyInfo()
 		{
 			m_iKey = -1;
-			m_iModifiers = 0;		
+			m_iModifiers = 0;	
+			m_bPressed = true;	
 		};
 		
-		QueuedKeyInfo(int iKey,int iMod)
+		QueuedKeyInfo(int iKey,int iMod,bool bPressed)
 		{
 			m_iKey = iKey;
 			m_iModifiers = iMod;
+			m_bPressed = bPressed;
 		};
 };
 
@@ -114,7 +117,7 @@ class ENGINE_API Input : public ZFSubSystem {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);
 		void ReleaseInput(void);
-		void AddQueuedKey(SDL_keysym* kKey);
+		void AddQueuedKey(SDL_keysym* kKey,bool bPressed);
 		bool GetConsole();
 		
 		void UpdateMousePos();
