@@ -19,6 +19,7 @@ CFG=game - Win32 Debug
 !MESSAGE 
 !MESSAGE "game - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "game - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "game - Win32 Release Profile" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -78,12 +79,40 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\game.exe" /pdbtype:sept /libpath:"..\..\bin"
 
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "game___Win32_Release_Profile"
+# PROP BASE Intermediate_Dir "game___Win32_Release_Profile"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD BASE RSC /l 0x41d /d "NDEBUG"
+# ADD RSC /l 0x41d /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"..\..\bin\game.exe" /libpath:"..\..\bin"
+# SUBTRACT BASE LINK32 /debug
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"..\..\bin\game.exe" /libpath:"..\..\bin"
+# SUBTRACT LINK32 /debug
+
 !ENDIF 
 
 # Begin Target
 
 # Name "game - Win32 Release"
 # Name "game - Win32 Debug"
+# Name "game - Win32 Release Profile"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -96,6 +125,11 @@ SOURCE=.\ballobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -110,6 +144,11 @@ SOURCE=.\bunnyaiproperty.cpp
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -122,6 +161,11 @@ SOURCE=.\bunnyobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -136,6 +180,11 @@ SOURCE=.\floatproperty.cpp
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -148,6 +197,11 @@ SOURCE=.\game.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 
@@ -162,6 +216,11 @@ SOURCE=.\gravityproperty.cpp
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -175,6 +234,11 @@ SOURCE=.\playercontrolproperty.cpp
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
 
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
+
 !ENDIF 
 
 # End Source File
@@ -187,6 +251,11 @@ SOURCE=.\playerobject.cpp
 # SUBTRACT CPP /YX
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
+
+# SUBTRACT BASE CPP /YX
+# SUBTRACT CPP /YX
 
 !ENDIF 
 

@@ -50,7 +50,7 @@ class Test :public Application {
 		void CreateNew(int iSize);
 		
 	public:
-		Core	m_kTestCore;
+//		Core	m_kTestCore;
 
 		enum FuncId_e
 		{
