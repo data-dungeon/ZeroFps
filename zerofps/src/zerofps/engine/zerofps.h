@@ -1,17 +1,15 @@
 #ifndef _ENGINE_ZEROFPS_H_
 #define _ENGINE_ZEROFPS_H_
 
-/*#include "../basic/basic.pkg"
-#include "../render/render.pkg"*/
-#include "engine.pkg"
 #include <string>
 #include <vector>
-#include <SDL/SDL.h>
-#include "../ogl/zfpsgl.h"
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
+#include <SDL/SDL.h>
+#include "engine.pkg"
+#include "../ogl/zfpsgl.h"
 #include "network.h"
 #include "zfresourcedb.h"
 #include "mad_core.h"
@@ -27,7 +25,6 @@ class ZGui;
 class ZGuiResourceManager;
 class GLGuiRender;
 class ZFScript;
-
 class Application;
 class NetPacket;
 
@@ -53,10 +50,6 @@ public:
 	bool			m_bVisible;
 	string			m_kName;
 	vector<string>	m_akDevString;
-
-
-
-
 };
 
 /// Main class for the ZeroFps engine. 
@@ -96,14 +89,14 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
-//		Camera *m_pkDefaultCamera;
-//		Camera *m_pkTempCamera;
-	
 		string m_kCurentDir;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void HandleArgs(int iNrOfArgs, char** paArgs);		
 
+		void Run_EngineShell();
+		void Run_Server();
+		void Run_Client();
 
 	public:
 		/*
@@ -139,25 +132,20 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Application*			m_pkApp;					///< Application object.
 			
 
-		vector<Mad_Core*>		akCoreModells;
-/*		int LoadMAD(const char* filename);
-		void ClearMAD(void);
-		int GetMADIndex(const char* filename);
-		Mad_Core* GetMADPtr(const char* filename);
-*/
+//		vector<Mad_Core*>		akCoreModells;
 
-		int m_iState;										//	curent game state see enum enginestates
-		int m_iFps;											//	curent FPS
-		float m_fFrameTime;									//	frametime in MS
+		int		m_iState;											//	curent game state see enum enginestates
+		int		m_iFps;												//	curent FPS
+		float	m_fFrameTime;										//	frametime in MS
 		
-		bool m_bServerMode;
-		bool m_bClientMode;
-		bool m_bConsoleMode;
-		bool m_bDrawDevList;
-		bool m_bGuiMode, m_bGuiTakeControl;
+		bool	m_bServerMode;
+		bool	m_bClientMode;
+//		bool	m_bConsoleMode;
+		bool	m_bDrawDevList;
+		bool	m_bGuiMode, m_bGuiTakeControl;
 		
-		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
-		float	m_fMadLod;									//	If not 0 then force this LOD % on every mad.
+		int		m_iMadDraw;											//	Flags for what part's of mad's that should be draw.
+		float	m_fMadLod;											//	If not 0 then force this LOD % on every mad.
 		
 		ZeroFps(void);		
 		~ZeroFps();		
@@ -167,7 +155,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void SetDisplay(int iWidth,int iHeight,int iDepth);
 		void SetDisplay();
-		void Swap(void);									//	swap gl buffers
+		void Swap(void);											//	swap gl buffers
 		
 		void ToggleFullScreen(void);
 		void ToggleGui(void);
@@ -178,17 +166,13 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		void SetCamera(Camera* pkCamera);	
 		inline Camera *GetCam() {return m_pkCamera;};		
-//		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
-//		inline Camera *GetConsoleCam() {return m_pkConsoleCamera;};				
-
-		int	NumberOfArgs(void);	// Return num of arg to app.
+		int	NumberOfArgs(void);										// Return num of arg to app.
 		string GetArg(int iArgIndex);
 	
-		//vector<string>	akDevString;
-		vector<DevStringPage>	m_DevStringPage;
-		DevStringPage*	DevPrint_FindPage(const char* szName);
+		vector<DevStringPage>	m_DevStringPage;					
+		DevStringPage*	DevPrint_FindPage(const char* szName);		
 		void DrawDevStrings();
-		void DevPrintf(const char* szName, const char *fmt, ...);
+		void DevPrintf(const char* szName, const char *fmt, ...);	
 
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 		

@@ -33,6 +33,9 @@ Console::Console()
 
 //	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
 	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
+
+	m_fToggleTime = 0;
+	m_bActive = false;
 }
 
 /*void Console::Update(void) {
@@ -205,7 +208,7 @@ void Console::Update(void) {
 	if(iKeyPressed == KEY_TAB) {
 		glPopAttrib();
 		
-		m_pkEngine->m_bConsoleMode=false;
+		Toggle();
 		m_pkInput->Reset();
 		return;
 	}
@@ -431,3 +434,14 @@ void Console::FormatKey(int& r_iKey)
 		}
 	}
 }
+
+void Console::Toggle()
+{
+	float fTime = m_pkEngine->GetGameTime();
+	if(fTime < m_fToggleTime)
+		return;
+
+	m_bActive = !m_bActive;
+	m_fToggleTime = fTime += 0.2;
+}
+

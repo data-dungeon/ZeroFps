@@ -123,6 +123,10 @@ PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.map ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\dialogbox.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\game.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -147,10 +151,18 @@ SOURCE=.\gamescript.cpp
 
 SOURCE=.\gamescriptinterface.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\inventorybox.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\dialogbox.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\game.h
@@ -162,6 +174,14 @@ SOURCE=.\gamescript.h
 # Begin Source File
 
 SOURCE=.\gamescriptinterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\inventary_id.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\inventorybox.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

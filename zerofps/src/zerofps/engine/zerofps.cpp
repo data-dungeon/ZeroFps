@@ -40,21 +40,20 @@ ZeroFps::ZeroFps(void)
 	m_iFullScreen=0;
 	m_fFrameTime=0;
 	m_fLastFrameTime=SDL_GetTicks();
-	m_bServerMode=false;
-	m_bClientMode=true;
-	m_bConsoleMode=false;
+	m_bServerMode = true;
+	m_bClientMode = true;
+	//m_bConsoleMode=false;
 	m_bDrawDevList=true;
 	m_bGuiMode=false;
 	m_bGuiTakeControl=true;
 	m_iMadDraw = 1;
 	g_fMadLODScale = 1.0;
 	g_iMadLODLock = 0;
-	
-//	akCoreModells.reserve(25);
+	m_pkCamera = NULL;
 
-	//add some nice variables =)
-//	m_pkCmd->Add(&m_iState,"G_State",type_int);
-
+	//	akCoreModells.reserve(25);
+	//	add some nice variables =)
+	//	m_pkCmd->Add(&m_iState,"G_State",type_int);
 
 	g_ZFObjSys.RegisterVariable("m_Sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_LandLod", &m_pkRender->m_iDetail,CSYS_INT);
@@ -62,8 +61,6 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_AutoLod", &m_pkRender->m_iAutoLod,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_FpsLock", &m_pkRender->m_iFpsLock,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_MaxLights", &m_pkLight->m_iNrOfLights,CSYS_INT);
-
-	
 	g_ZFObjSys.RegisterVariable("r_Width", &m_iWidth,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_Height", &m_iHeight,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_Depth", &m_iDepth,CSYS_INT);
@@ -72,7 +69,9 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 
-/*	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
+/*	
+
+	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
 	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
@@ -99,14 +98,12 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
 	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
-
-
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
 	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this,	 "sendmsg name id",2);	
 
-	m_kCurentDir=m_pkBasicFS->GetCWD();
-	
+	m_kCurentDir = m_pkBasicFS->GetCWD();
+	 
 	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
 	char szWorkDir[256];
 	strcpy(szWorkDir, m_kCurentDir.c_str());
@@ -156,8 +153,6 @@ ZeroFps::~ZeroFps()
 void ZeroFps::SetApp() {
 	m_pkApp=Application::pkApp;
 	m_pkApp->SetEnginePointer(this);
-	
-	
 }
 
 void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
@@ -206,90 +201,97 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	MainLoop();											//jump to mainloop
 }
 
+/* Code that need to run on both client/server. */
+void ZeroFps::Run_EngineShell()
+{
+	m_pkInput->SetInputEnabled(true);
+	m_pkNetWork->Run();
+	m_pkObjectMan->PackToClients();
+	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
+	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+
+	//handle input
+	m_pkInput->Update();
+
+	//toggle keyboard/mouse grabing		// SHELL
+	if(m_pkInput->Pressed(KEY_F12))
+		m_pkInput->ToggleGrab();
+			
+	//toggle fullscreen on X systems	// SHELL	
+	if(m_pkInput->Pressed(KEY_F11))
+		ToggleFullScreen();		
+
+	if(m_pkInput->Pressed(KEY_TAB))
+	{		
+		m_pkConsole->Toggle();
+		//m_bConsoleMode = !m_bConsoleMode;		
+		m_pkInput->Reset();
+	}
+
+}
+
+void ZeroFps::Run_Server()
+{
+	//update zones
+	m_pkLevelMan->UpdateZones();			
+	
+	//update all normal propertys
+	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+	m_pkObjectMan->UpdateGameMessages();
+
+	//update physicsengine
+	m_pkPhysEngine->Update();
+	//delete objects
+	m_pkObjectMan->UpdateDelete();
+	m_pkResourceDB->Refresh();
+
+}
+
+void ZeroFps::Run_Client()
+{
+	if(m_pkConsole->IsActive())
+		m_pkInput->SetInputEnabled(false);
+	else 
+		m_pkInput->SetInputEnabled(true);						
+		
+	//run application main loop
+	m_pkApp->OnIdle();							
+
+	//update openal sound system			
+	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
+	up.x=90;
+	m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
+	m_pkOpenAlSystem->Update();
+
+	// Describe Active Cam.
+	string strCamDesc = GetCam()->GetCameraDesc();
+	DevPrintf("common",strCamDesc.c_str());
+
+	//run application Head On Display 
+	SetCamera(m_pkConsoleCamera);
+	m_pkApp->OnHud();
+
+	// Update GUI
+	if(!m_pkConsole->IsActive())
+		m_pkGui->Update();
+
+	m_iNumOfMadRender = 0;
+	g_iNumOfMadSurfaces = 0;
+}
+
+
 void ZeroFps::MainLoop(void) {
 
 	while(m_iState!=state_exit) {
 
 		Swap();											//swap buffers n calculate fps
-		m_pkNetWork->Run();
-		m_pkObjectMan->PackToClients();
-		DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
-		DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
-
-		//handle input
-		m_pkInput->Update();
 		 
-		if(m_bServerMode)
-		{
+		Run_EngineShell();
+
+		if(m_bServerMode)	Run_Server();
+		if(m_bClientMode)	Run_Client();
 		
-		}		
-		
-		if(m_bClientMode)
-		{
-			if(m_bConsoleMode)
-				m_pkInput->SetInputEnabled(false);
-			else 
-			{
-				m_pkInput->SetInputEnabled(true);						
-				
-				if(m_pkInput->Pressed(KEY_TAB))
-				{			
-					m_bConsoleMode=true;		
-					m_pkInput->Reset();
-				}
-			}			
-				
-			//toggle keyboard/mouse grabing
-			if(m_pkInput->Pressed(KEY_F12))
-				m_pkInput->ToggleGrab();
-					
-			//toggle fullscreen on X systems
-			if(m_pkInput->Pressed(KEY_F11))
-				ToggleFullScreen();		
-				
-			//run application main loop
-			m_pkApp->OnIdle();							
-			
-			//update zones
-			m_pkLevelMan->UpdateZones();			
-			
-			//update all normal propertys
-			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-			m_pkObjectMan->UpdateGameMessages();
-
-			//update physicsengine
-			m_pkPhysEngine->Update();
-
-			//update openal sound system			
-			Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
-			up.x=90;
-			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
-			m_pkOpenAlSystem->Update();
-
-			// Describe Active Cam.
-			string strCamDesc = GetCam()->GetCameraDesc();
-			DevPrintf("common",strCamDesc.c_str());
-
-			//run application Head On Display 
-			SetCamera(m_pkConsoleCamera);
-			m_pkApp->OnHud();
-
-			// Update GUI
-			if(!m_bConsoleMode)
-				m_pkGui->Update();
-
-			//delete objects
-			m_pkObjectMan->UpdateDelete();
-
-//			DevPrintf("Mad's: %d / %d / %f", m_iNumOfMadRender, g_iNumOfMadSurfaces, g_fMadLODScale);
-			m_pkResourceDB->Refresh();
-			m_iNumOfMadRender = 0;
-			g_iNumOfMadSurfaces = 0;
-			
-			
-		}
-		
-		if(m_bConsoleMode)
+		if(m_pkConsole->IsActive())
 		{		
 			SetCamera(m_pkConsoleCamera);			
 			
@@ -713,11 +715,12 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_LISTMAD:
+/*		Vim
 			int iSize = akCoreModells.size();
 			m_pkConsole->Printf("Loaded Mads: ");
 			for(i=0; i < akCoreModells.size(); i++) {
 				m_pkConsole->Printf(" %d: %s", i, akCoreModells[i]->Name);
-				}
+				}*/
 			break;
 
 			

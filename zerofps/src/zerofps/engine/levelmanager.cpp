@@ -503,13 +503,16 @@ void LevelManager::UpdateZones()
 
 	if(m_kTrackedObjects.size()==0)
 	{
-		Vector3 pos=m_pkZeroFps->GetCam()->GetPos();
+		Camera* pkCam = m_pkZeroFps->GetCam();
+		if(pkCam) {
+			Vector3 pos=m_pkZeroFps->GetCam()->GetPos();
 	
-		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
-		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
+			int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
+			int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));			
 
-		EnableZone(x,z,pos);
-	}		
+			EnableZone(x,z,pos);	
+		}
+	}	
 
 }
 
