@@ -74,5 +74,9 @@ MTL=midl.exe
 # Name "zerofps - Win32 Release"
 # Name "zerofps - Win32 Debug"
 # Name "zerofps - Win32 Release Profile"
+# Begin Source File
+
+SOURCE=.\basic\matrix4.cpp
+# End Source File
 # End Target
 # End Project
