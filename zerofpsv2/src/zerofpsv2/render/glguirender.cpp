@@ -1122,10 +1122,13 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 					tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
 					th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight - fTexOffset;
 
-					glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + fQuadHeight);		 
-					glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + fQuadHeight);    
-					glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
-					glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+					if( fQuadHeight > 0)
+					{
+						glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + fQuadHeight);		 
+						glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + fQuadHeight);    
+						glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+						glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+					}
 				}
 				else
 				{

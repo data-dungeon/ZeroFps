@@ -96,17 +96,21 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			int top = GetScreenRect().Top;
 			int bottom = GetScreenRect().Bottom /*- MARG_SIZE * 2*/;
 
-			int px = GetScreenRect().Left, py = top;
+			int px = GetScreenRect().Left;
+			int py = top;
 
 			pkRenderer->StartDrawText(); 
 
-			for(int i=/*m_iCursorRow*/0; i<m_kTextTags.size(); i++)
+			for(int i=0; i<m_kTextTags.size(); i++)
 			{
 				top = GetScreenRect().Top - m_kTextTags[i].iRowHeight;
 				bottom = GetScreenRect().Bottom;
 
 				yPos = py + m_kTextTags[i].y+m_iRenderDistFromTop;
-				if(yPos >= top && yPos /*+ m_kTextTags[i].iRowHeight*/ < bottom)
+				if(yPos > bottom)
+					break;
+
+				if(yPos >= top && yPos < bottom)
 				{
 					if(yPos < top + m_kTextTags[i].iRowHeight)
 					{
@@ -197,8 +201,13 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 
 	m_strText = new char[strlen(strText)+1];
 	strcpy(m_strText, strText);
-	BuildTagList();
-	BuildTextStrings();
+	
+	if(m_bMultiLine)
+	{
+		BuildTagList();
+		BuildTextStrings();
+	}
+	
 	return;
 
 	if(strText == NULL || strlen(strText) < 1)
@@ -368,6 +377,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	pkScrollbar->m_iScrollChange = 0;
 
 	m_iCursorRow = m_iStartrow;
+	printf("m_iCursorRow = %i\n", m_iCursorRow);
 }
 
 void ZGuiTextbox::ScrollText(int row)
@@ -432,7 +442,7 @@ bool ZGuiTextbox::UpdateScrollbar()
 	float fThumbSize = (float) (GetScreenRect().Height()-(MARG_SIZE*2)-
 		(m_pkScrollbarVertical->GetArrowButtonHeight()*2)) / (float)  m_iTotalTextHeight;
 
-	fThumbSize = 0.25f;
+	//fThumbSize = 0.25f;
 
 	m_pkScrollbarVertical->SetScrollInfo(0,m_iNumRows,fThumbSize,m_iCursorRow);
 
@@ -1064,20 +1074,149 @@ bool ZGuiTextbox::BuildTagList()
 	return true;
 }
 
+//void ZGuiTextbox::BuildTextStrings()
+//{
+//	if(m_bMultiLine == false || m_kTextTags.size() < 1)
+//		return;
+//
+//	const int LEFT = MARG_SIZE, TOP = 0;
+//	const int TOTAL_LENGTH = strlen(m_strText);
+//	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
+//	int xPos = LEFT;
+//	int yPos = TOP;
+//	int iRow = 0, iLettersProcessed=0;
+//
+//	vector<TEXT_TAG> kFinal;
+//	int w = 0, row=0, max_row=0;
+//	int word_break_pos = -1;
+//
+//	for(int i=0; i<m_kTextTags.size(); i++)
+//	{	
+//		int start_letter = m_kTextTags[i].iPos;
+//		int end_letter = start_letter + m_kTextTags[i].iNumChars;
+//		int start=start_letter;
+//		int row_width=0;
+//
+//		if(m_kTextTags[i].pkFont->m_iRowHeight > max_row)
+//			max_row = m_kTextTags[i].pkFont->m_iRowHeight;
+//
+//		for(int j=start_letter; j<end_letter; j++)
+//		{			
+//			int ch = m_strText[j];
+//			w += m_kTextTags[i].pkFont->m_aChars[ch].iSizeX;  
+//
+//			if(w >= WIDTH || j==end_letter-1 || ch == '\n')
+//			{
+//				int end = word_break_pos;
+//				if(j==end_letter-1)
+//					end = end_letter;
+//				if(ch == '\n')
+//					end = j+1;
+//
+//				TEXT_TAG t = m_kTextTags[i];
+//				t.iPos = start;
+//				t.iNumChars = end-start;
+//				t.x = xPos;
+//				t.y = yPos;
+//				t.iRow = row;
+//				kFinal.push_back(t); 
+//
+//				if(end == end_letter)
+//				{
+//					xPos = LEFT + w;
+//					w+=row_width;	
+//				}
+//				else
+//				{
+//					max_row=t.pkFont->m_iRowHeight;
+//					yPos += max_row; //t.pkFont->m_iRowHeight; 
+//					xPos = LEFT;
+//					row++;					
+//				}
+//
+//				if(ch == '\n')
+//				{
+//					if(end == end_letter)
+//					{
+//						yPos += max_row;
+//						xPos = LEFT;
+//						row++;
+//						max_row=t.pkFont->m_iRowHeight;
+//					}
+//					word_break_pos=j+1;
+//					start=j+1;
+//					w=0;
+//				}
+//				else
+//				{
+//					start=word_break_pos;
+//					w-=row_width;	
+//				}
+//			}
+//			else
+//			{
+//				if(ch == ' ' || ch == '\t')
+//				{
+//					word_break_pos = j+1;
+//					row_width = w;					
+//				}
+//			}
+//		}
+//	}
+//
+//	m_kTextTags.clear();
+//
+//	for(int i=0; i<kFinal.size(); i++)
+//		m_kTextTags.push_back(kFinal[i]); 
+//
+//	m_iNumRows = 0;
+//
+//	for(int i=0; i<row+1; i++)
+//	{
+//		int max_bl_height=0, max_row_height=0;
+//		for(int j=0; j<kFinal.size(); j++)
+//		{
+//			if(m_kTextTags[j].iRow == i)
+//			{
+//				if(m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine > max_bl_height)
+//					max_bl_height = m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
+//				if(m_kTextTags[j].pkFont->m_iRowHeight > max_row_height)
+//					max_row_height = m_kTextTags[j].pkFont->m_iRowHeight;
+//			}
+//		}
+//
+//		for(int j=0; j<kFinal.size(); j++)
+//		{
+//			if(m_kTextTags[j].iRow == i)
+//			{
+//				m_kTextTags[j].iRowHeight = max_row_height;
+//				m_iTotalTextHeight += max_row_height;
+//				int diff = max_bl_height - m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
+//				m_kTextTags[j].y += diff;
+//			}
+//
+//			if(m_kTextTags[j].iRow > m_iNumRows)
+//				m_iNumRows = m_kTextTags[j].iRow;
+//		}
+//	}
+//}
+
 void ZGuiTextbox::BuildTextStrings()
 {
 	if(m_bMultiLine == false || m_kTextTags.size() < 1)
 		return;
 
+	map<int,int> mkMaxRowHeight;
+	map<int,int> mkMaxBaselineHeight;
+
 	const int LEFT = MARG_SIZE, TOP = 0;
 	const int TOTAL_LENGTH = strlen(m_strText);
 	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
 	int xPos = LEFT;
-	int yPos = TOP;
 	int iRow = 0, iLettersProcessed=0;
 
 	vector<TEXT_TAG> kFinal;
-	int w = 0, row=0, max_row=0;
+	int w = 0, row=0, max_row=0, max_baseline=0;
 	int word_break_pos = -1;
 
 	for(int i=0; i<m_kTextTags.size(); i++)
@@ -1089,7 +1228,9 @@ void ZGuiTextbox::BuildTextStrings()
 
 		if(m_kTextTags[i].pkFont->m_iRowHeight > max_row)
 			max_row = m_kTextTags[i].pkFont->m_iRowHeight;
-
+		if(m_kTextTags[i].pkFont->m_iPixelsAboveBaseLine > max_baseline)
+			max_baseline = m_kTextTags[i].pkFont->m_iPixelsAboveBaseLine;
+		
 		for(int j=start_letter; j<end_letter; j++)
 		{			
 			int ch = m_strText[j];
@@ -1107,7 +1248,7 @@ void ZGuiTextbox::BuildTextStrings()
 				t.iPos = start;
 				t.iNumChars = end-start;
 				t.x = xPos;
-				t.y = yPos;
+				t.y = 0;
 				t.iRow = row;
 				kFinal.push_back(t); 
 
@@ -1119,7 +1260,7 @@ void ZGuiTextbox::BuildTextStrings()
 				else
 				{
 					max_row=t.pkFont->m_iRowHeight;
-					yPos += max_row; //t.pkFont->m_iRowHeight; 
+					max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
 					xPos = LEFT;
 					row++;					
 				}
@@ -1128,10 +1269,10 @@ void ZGuiTextbox::BuildTextStrings()
 				{
 					if(end == end_letter)
 					{
-						yPos += max_row;
 						xPos = LEFT;
 						row++;
 						max_row=t.pkFont->m_iRowHeight;
+						max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
 					}
 					word_break_pos=j+1;
 					start=j+1;
@@ -1142,6 +1283,26 @@ void ZGuiTextbox::BuildTextStrings()
 					start=word_break_pos;
 					w-=row_width;	
 				}
+
+				map<int,int>::iterator itRowHeight;
+				itRowHeight = mkMaxRowHeight.find(t.iRow);
+				if(itRowHeight != mkMaxRowHeight.end())
+				{
+					if(itRowHeight->second < max_row)
+						itRowHeight->second = max_row;
+				}
+				else
+					mkMaxRowHeight.insert(map<int,int>::value_type(t.iRow, max_row)); 
+
+				map<int,int>::iterator itBaselineHeight;
+				itBaselineHeight = mkMaxBaselineHeight.find(t.iRow);
+				if(itBaselineHeight != mkMaxBaselineHeight.end())
+				{
+					if(itBaselineHeight->second < max_baseline)
+						itBaselineHeight->second = max_baseline;
+				}
+				else
+					mkMaxBaselineHeight.insert(map<int,int>::value_type(t.iRow, max_baseline)); 
 			}
 			else
 			{
@@ -1154,41 +1315,41 @@ void ZGuiTextbox::BuildTextStrings()
 		}
 	}
 
+	m_iNumRows = 0;
 	m_kTextTags.clear();
 
-	for(int i=0; i<kFinal.size(); i++)
-		m_kTextTags.push_back(kFinal[i]); 
+	const int final_size = kFinal.size();
+	int yPos = TOP; 
+	int iPrevRow = 0;
 
-	m_iNumRows = 0;
-
-	for(int i=0; i<row+1; i++)
+	for(int j=0; j<final_size; j++)
 	{
-		int max_bl_height=0, max_row_height=0;
-		for(int j=0; j<kFinal.size(); j++)
-		{
-			if(m_kTextTags[j].iRow == i)
-			{
-				if(m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine > max_bl_height)
-					max_bl_height = m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
-				if(m_kTextTags[j].pkFont->m_iRowHeight > max_row_height)
-					max_row_height = m_kTextTags[j].pkFont->m_iRowHeight;
-			}
-		}
+		m_kTextTags.push_back(kFinal[j]); 
 
-		for(int j=0; j<kFinal.size(); j++)
-		{
-			if(m_kTextTags[j].iRow == i)
-			{
-				m_kTextTags[j].iRowHeight = max_row_height;
-				m_iTotalTextHeight += max_row_height;
-				int diff = max_bl_height - m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
-				m_kTextTags[j].y += diff;
-			}
+		iRow = m_kTextTags[j].iRow;
 
-			if(m_kTextTags[j].iRow > m_iNumRows)
-				m_iNumRows = m_kTextTags[j].iRow;
+		if(iRow != iPrevRow) // New line?
+		{
+			yPos += mkMaxRowHeight[iRow-1];
+			iPrevRow = iRow;
 		}
+		
+		m_kTextTags[j].iRowHeight = mkMaxRowHeight[iRow];
+		
+		int font_diff = mkMaxBaselineHeight[iRow] - m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
+		m_kTextTags[j].y = yPos + font_diff;
+		
+		if(iRow > m_iNumRows)
+			m_iNumRows = m_kTextTags[j].iRow;
 	}
 
-	printf("m_iTotalTextHeight = %i\n", m_iTotalTextHeight);
+	if(m_kTextTags.empty() == false)
+	{
+		m_iTotalTextHeight = m_kTextTags[final_size-1].y + 
+			m_kTextTags[final_size-1].iRowHeight - (MARG_SIZE*2);
+	}
+	else
+	{
+		m_iTotalTextHeight = 0;
+	}
 }
