@@ -62,30 +62,6 @@ void ZeroEd::SetupGuiEnviroment()
 
 	GUIServerInfo::Load(m_vkServerList);
 	GUIFillServerList();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
 }
 
 void ZeroEd::OnKeyPress(int iID, ZGuiWnd* win)
@@ -982,16 +958,7 @@ void ZeroEd::InitMainMenu()
 
 		m_pkIni->Close();
 	}
-
-	//SaveIPMenu(false);
-
-	//for(int i=0; i<m_vkIPMenuItems.size(); i++)
-	//{
-	//	AddToIPMenu(m_vkIPMenuItems[i], false);
-	//}
-
 }
-
 
 void ZeroEd::GUIFillServerList()
 {
