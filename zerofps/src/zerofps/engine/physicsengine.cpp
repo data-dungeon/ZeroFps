@@ -296,8 +296,9 @@ void PhysicsEngine::HandleCollisions()
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
-		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;			
-		(*it)->GetObject()->GetAcc()=static_cast<PhysicProperty*>(*it)->m_kNewAcc;		
+		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;
+		(*it)->GetObject()->GetAcc().Set(0,0,0);		
+//		(*it)->GetObject()->GetAcc()=static_cast<PhysicProperty*>(*it)->m_kNewAcc;		
 	}
 
 	for(i=0;i<kCols.size();i++) 

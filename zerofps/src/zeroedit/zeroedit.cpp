@@ -650,6 +650,7 @@ void ZeroEdit::Input()
 		case FLATTEN:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				cout<<"bhoa"<<endl;
 				float height=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->height;
 				int texture=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->texture;
 				Vector3 color=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->color;

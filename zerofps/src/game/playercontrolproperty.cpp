@@ -71,7 +71,7 @@ void PlayerControlProperty::Update() {
 	if(onGround && lutning>35)	{
 		Vector3 hora = m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
 		Vector3  res(hora.x,-4,hora.z);
-		vel+=res*5;
+		m_pkObject->GetAcc()+=res*200;
 	}
 	
 	if(m_pkInput->Pressed(KEY_X)){
