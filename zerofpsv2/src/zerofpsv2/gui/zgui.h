@@ -18,6 +18,7 @@
 #include "zguitabctrl.h"
 #include "zguislider.h"
 #include "zguiapp.h"
+#include "zguitooltip.h"
 
 #include "../basic/zfsystem.h"
 #include "../basic/image.h"
@@ -145,6 +146,7 @@ public:
 		};
 	} SortZCmp;
 
+	ZGuiToolTip* GetToolTip();
 
 	void* GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type);
 
@@ -178,6 +180,7 @@ private:
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
 	TextureManager* m_pkTexMan;
+	ZGuiToolTip* m_pkToolTip;
 	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows

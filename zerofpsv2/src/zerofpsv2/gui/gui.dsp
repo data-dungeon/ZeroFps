@@ -162,6 +162,10 @@ SOURCE=.\zguitextbox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zguitooltip.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zguitreebox.cpp
 # End Source File
 # Begin Source File
@@ -235,6 +239,10 @@ SOURCE=.\zguitabctrl.h
 # Begin Source File
 
 SOURCE=.\zguitextbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguitooltip.h
 # End Source File
 # Begin Source File
 

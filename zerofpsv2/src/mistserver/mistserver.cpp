@@ -148,6 +148,16 @@ void MistServer::Init()
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
+
+	pkGui->GetToolTip()->SetToolTip(GetWnd("ToogleLight"),"Light");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
+	
+	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
+
+	kSkin.m_unBorderSize = 1;
+	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
+
+	pkGui->GetToolTip()->SetSkin(kSkin);
 	
 }
 
@@ -1628,6 +1638,8 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 		strPrevNode = dir_list.back();
 	}
+
+	pkGui->GetToolTip()->SetToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
 
 	return true;
 

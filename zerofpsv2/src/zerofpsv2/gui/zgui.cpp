@@ -52,6 +52,8 @@ bool ZGui::StartUp()
 
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
 
+	m_pkToolTip = new ZGuiToolTip();
+
 	return true; 
 }
 
@@ -306,6 +308,14 @@ bool ZGui::Render()
 
 	// Draw lines
 	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);*/
+
+	 if(m_pkToolTip)
+	 {
+		 ZGuiWnd* pkWnd = m_pkToolTip->GetWnd();
+
+		 if(pkWnd && pkWnd->IsVisible() ) 
+			 pkWnd->Render(m_pkRenderer);
+	 }
 
 	// Draw cursor
 	if(m_pkCursor->IsVisible())
@@ -736,6 +746,8 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 		//OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
+
+		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fGameTime);
 	}
 
 /*	m_kPointsToDraw.clear();
@@ -1295,4 +1307,9 @@ void ZGui::SetWndForeground(ZGuiWnd *pkWnd)
 /*	m_iHighestZWndValue++;
 	m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
 	m_pkMainWindows.sort(SortZCmp);	*/
+}
+
+ZGuiToolTip* ZGui::GetToolTip()
+{
+	return m_pkToolTip; 
 }
