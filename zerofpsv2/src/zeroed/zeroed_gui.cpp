@@ -378,6 +378,12 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				SendRotateEntity(m_iCurrentObject,Vector3(0,45,0));
 			}
+			else
+			if(strWndClicked == "Menu_PlaceOnGroup")
+			{
+				if(m_iCurrentObject)
+					PlaceObjectOnGround(m_iCurrentObject);
+			}
 		}
 
 		// Run menu command.
