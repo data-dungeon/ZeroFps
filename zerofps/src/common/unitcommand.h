@@ -18,7 +18,7 @@ public:
 	int m_iXDestinaton;
 	int m_iYDestinaton; 
 	int m_iTarget;
-	char m_cPlayerID;
+	unsigned char m_cPlayerID;
 	int m_iUnitID;
 
 };

@@ -200,12 +200,13 @@ void ZeroRTS::OnIdle()
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
-
+*/
+	
 	if(pkFps->m_bServerMode == false) {
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
-*/
+
 
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
@@ -244,7 +245,7 @@ void ZeroRTS::OnSystem()
 	}
 	
 	//setup client
-	if(pkFps->m_bClientMode)
+	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
 	{
 		if(m_pkClientInput == NULL)		
 		{
@@ -856,7 +857,7 @@ void ZeroRTS::HandleOrders()
 				if(su != NULL)
 				{
 					//check that teems mach
-					if( int(su->m_kInfo.m_cTeam) == 255)
+					if( int(uc->m_cPlayerID) == 255)
 					{
 						cout<<"Order from GOD"<<endl;
 						su->RunExternalCommand(uc);												

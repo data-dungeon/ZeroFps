@@ -28,7 +28,9 @@ void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
 	if(m_bGod)	//if server's input
 	{
+		cout<<"GOD says"<<endl;
 		kCommand.m_cPlayerID = 255;
+		cout<<"bla:"<<(int)kCommand.m_cPlayerID<<endl;
 		m_kServerCommands.push_back(kCommand);
 	}
 	else
@@ -67,11 +69,10 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 		//only add commands if its a server
 		if(m_pkFps->m_bServerMode){		
 			//set player id to this client
-			tempcommand.m_cPlayerID = (char)m_iPlayerID;		
+			tempcommand.m_cPlayerID = (unsigned char)m_iPlayerID;		
 			m_kServerCommands.push_back(tempcommand);
 		}
 	}
-	
 }
 
 COMMON_API Property* Create_P_ClientInput()
