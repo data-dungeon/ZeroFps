@@ -9,7 +9,7 @@ class PSystemProperty;
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include "../zerofpsv2/engine/objectmanager.h"
-#include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "p_event.h"
 #include "p_ml.h"
 

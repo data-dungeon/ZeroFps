@@ -2,7 +2,7 @@
 #define _ENGINE_SPELLPROPERTY_H_
 
 #include "../zerofpsv2/engine/property.h"
-#include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "mcommon_x.h"
 #include "rulesystem/spell/spellstats.h"
 //#include "../zerofpsv2/basic/zfini.h"

@@ -13,7 +13,7 @@
 #include "../zerofpsv2/basic/zfresource.h"
 #include "../zerofpsv2/basic/zfini.h"
 
-#include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "../zerofpsv2/engine_systems/propertys/p_light.h"
 
 using namespace std;

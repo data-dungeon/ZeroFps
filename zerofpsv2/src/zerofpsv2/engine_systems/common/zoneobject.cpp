@@ -1,5 +1,5 @@
 #include "zoneobject.h"
-#include "../propertys/proxyproperty.h"
+#include "../propertys/p_track.h"
  
 ZoneObject::ZoneObject()
 {

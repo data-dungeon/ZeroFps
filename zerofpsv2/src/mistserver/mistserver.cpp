@@ -8,8 +8,8 @@
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
-#include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
-#include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
+#include "../zerofpsv2/engine_systems/propertys/p_track.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 

@@ -1,6 +1,6 @@
 #include "p_physic.h"
-#include "primitives3d.h"
-#include "hmrp2.h"
+#include "p_primitives3d.h"
+#include "p_hmrp2.h"
 #include <typeinfo>
 
 #include "../physicsengine/cssphere.h"
