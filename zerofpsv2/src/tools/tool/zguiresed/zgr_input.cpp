@@ -103,7 +103,11 @@ void ZGuiResEd::HandleInput()
 			s_bLShiftPressed = false;
 			CheckButton("GuiEd_ResizeMode", false);
 			m_bResize = false;
+			
+#ifdef WIN32
 			SetCursor(LoadCursor(NULL, IDC_ARROW));
+#endif
+
 		}
 	}
 
@@ -171,17 +175,25 @@ void ZGuiResEd::MouseClick(bool bLeft, int x, int y)
 				if(diff_right < diff_bottom)
 				{
 					m_eResizeDir = Left;
-					SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+
+#ifdef WIN32
+			SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+#endif					
 				}
 				else
 				{
 					m_eResizeDir = Up;
-					SetCursor(LoadCursor(NULL, IDC_SIZENS));
+#ifdef WIN32
+			SetCursor(LoadCursor(NULL, IDC_SIZENS));
+#endif					
 				}
 			}
 			else
 			{
-				SetCursor(LoadCursor(NULL, IDC_ARROW));				
+				
+#ifdef WIN32
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
+#endif
 			}
 		}
 		else
@@ -652,11 +664,6 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 
 			GetWnd("GuiEd_SelectFileWnd")->SetPos(x,y,true,true); 
 		}
-
-		char buffer[512];
-		GetCurrentDirectory(512, buffer);
-
-		printf("buffer = %s\n", buffer);
 		
 		vector<string> kFiles;
 		if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
