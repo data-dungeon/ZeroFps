@@ -52,6 +52,8 @@ class COMMON_API TileEngine
 		bool UnitInTile(int x,int y,int iID);
 		void ClearUnits();
 		
+		vector<Tile>* GetTilesPointer() {return &m_kTiles;};
+		
 		//convertions
 		Point GetSqrFromPos(Vector3 pos);				
 		Vector3 GetPosFromSqr(Point square);
