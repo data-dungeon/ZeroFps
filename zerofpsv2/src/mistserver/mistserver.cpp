@@ -608,7 +608,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(pcc)	
 		pcc->m_iClientID = iConID;
 	
-	bool bEditorConnect = false;
+	bool bEditorConnect = true;
 	if(bEditorConnect) {
 		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
 		pkTrack->SetClient(iConID);
