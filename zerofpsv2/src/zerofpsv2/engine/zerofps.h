@@ -132,6 +132,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fGameFrameTime;
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
+		bool		m_bDrawAxisIcon;
 		
 		int		m_iServerConnection;	// The Connection num we have on the server.		
 		int		m_iRTSClientObject;

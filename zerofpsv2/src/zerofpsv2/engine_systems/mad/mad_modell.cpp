@@ -7,8 +7,6 @@ char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
 
-//#define MAD_NOANIM	-1
-
 Mad_Modell::Mad_Modell()
 {
 	m_pkTex		= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
@@ -18,7 +16,6 @@ Mad_Modell::Mad_Modell()
 	iActiveAnimation	= MAD_NOANIMINDEX;
 	m_iNextAnimation	= MAD_NOANIMINDEX;
 
-//	fLastUpdate			= 0;
 	m_bLoop				= true;
 	m_bActive			= true;
 	m_fScale			= 1.0;
@@ -34,7 +31,6 @@ void Mad_Modell::SetBasePtr(string strResName)
 		return;
 
 	m_bActive = true;
-//	pkCore->ClearReplaceTexture();
 	LoadTextures();
 	AddMesh(0);
 //	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
@@ -43,9 +39,17 @@ void Mad_Modell::SetBasePtr(string strResName)
 
 void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 {
+	if(kMadHandle.IsValid() == false)
+		return;
+	if(iAnimNum < 0)	iAnimNum = MAD_NOANIMINDEX;
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	if(pkCore) {
+		if(iAnimNum >= pkCore->GetNumOfAnimations())
+			iAnimNum = MAD_NOANIMINDEX;
+		}
+
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
-//	fLastUpdate			=	fGameTime; 
 	m_bActive = true;
 //	SetLoopedStatus(true);
 }
@@ -59,9 +63,6 @@ void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
 		return;
 
 	int iAnimNum = pkCore->GetAnimIndex(szName);
-//	printf("Playing Anim %d %f", iAnimNum, pkCore->GetAnimationLengthInS(iAnimNum));
-
-
 
 //	if(iAnimNum == -1)
 //		return;
@@ -72,7 +73,6 @@ void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
 	m_bActive = true;
 //	SetLoopedStatus(true);
 }
-
 
 void Mad_Modell::UpdateAnimation(float fDelta)
 {
@@ -90,7 +90,6 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	// Move Anim forward.
 	fCurrentTime += fDelta;
 	float fAnimLength = pkCore->GetAnimationLengthInS(iActiveAnimation);
-	
 
 	// If we pass the end of the anim
 	if(fCurrentTime >= fAnimLength) {

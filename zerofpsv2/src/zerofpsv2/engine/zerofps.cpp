@@ -85,6 +85,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 	m_bLockFps					= false;
+	m_bDrawAxisIcon			= true;
 	
 
 	// Register Variables
@@ -97,6 +98,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);	
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
 	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
+	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -352,7 +354,8 @@ void ZeroFps::Run_Client()
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();
 	
-	m_pkRender->Draw_AxisIcon(5);
+	if(m_bDrawAxisIcon)
+		m_pkRender->Draw_AxisIcon(5);
  
 	if(m_bRenderOn == 1)
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
