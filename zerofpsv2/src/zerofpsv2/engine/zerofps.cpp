@@ -68,7 +68,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_fSystemUpdateFps		= 30;
-	m_fSystemUpdateFpsDelta = 1.0 / m_fSystemUpdateFps;
+
 	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
@@ -404,7 +404,8 @@ void ZeroFps::Update_System(bool bServer)
 
 	//m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
-
+ 	
+	m_fSystemUpdateFpsDelta = 1.0 / m_fSystemUpdateFps;
 	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
 	
 	for(int i=0;i<iLoops;i++)
