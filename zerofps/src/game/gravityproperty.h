@@ -1,6 +1,8 @@
 #ifndef _GRAVITYPROPERTY_H_
 #define _GRAVITYPROPERTY_H_
 
+#pragma message( "File has been removed" )
+
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
 

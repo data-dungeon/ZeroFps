@@ -1,6 +1,8 @@
 #ifndef _FLOATPROPERTY_H_
 #define _FLOATPROPERTY_H_
 
+#pragma message( "File has been removed" )
+
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
 
