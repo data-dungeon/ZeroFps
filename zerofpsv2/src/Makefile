@@ -14,6 +14,7 @@ all:
 #	cd fps_test/; $(MAKE) $@
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
+	cd tools/tool/zguiresed/; $(MAKE) $@
 	./gengdbinit.sh
 
 clean:
@@ -29,7 +30,8 @@ clean:
 #	cd fps_test/; $(MAKE) $@
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
-
+	cd tools/tool/zguiresed/; $(MAKE) $@
+	
 clean_engine:
 	cd zerofpsv2/; $(MAKE) clean	
 
