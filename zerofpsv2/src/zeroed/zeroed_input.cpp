@@ -154,19 +154,20 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			m_iGrabEntity = GetTargetTCS(&m_kGrabPos);
 			if(m_iGrabEntity != -1)
 			{
-				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity)->GetWorldPosV();
-			
-				m_bGrabing = true;
-				m_fArmLength = m_pkFps->GetCam()->GetPos().DistanceTo(m_kGrabPos);
-				m_kGrabCurrentPos = m_kGrabPos;
 				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
+				
+				m_kLocalGrabPos = m_kGrabPos - m_pkObjectMan->GetObjectByNetWorkID(m_iGrabEntity)->GetWorldPosV();			
+				m_bGrabing = true;
+				m_fArmLength = m_pkActiveCamera->GetPos().DistanceTo(m_kGrabPos);
+				m_kGrabCurrentPos = m_kGrabPos;				
 			
 			}
 		}
 	}
 	else
 		m_bGrabing = false;	
-		
+	
+			
 	//remove			
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 
@@ -471,7 +472,7 @@ void ZeroEd::Input()
 		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 */	
-		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
+		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain() ;
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
 		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));
 
