@@ -8,6 +8,7 @@ Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Game::OnInit() 
 {
+	m_pkInventoryBox = NULL;
 	m_pkPlayer = NULL;
 	Init();
 	
@@ -22,6 +23,10 @@ static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 {
 	return true; 
 }
+
+static bool INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
+	return g_kGame.m_pkInventoryBox->DlgProc(wnd,msg,num,parms); }
+
 
 void Game::Init()
 {
@@ -62,10 +67,8 @@ void Game::OnClientStart(void)
 
 
 
-void Game::OnIdle(void) {
-
-	pkFps->m_bGuiMode = true;
-	pkFps->ToggleGui();
+void Game::OnIdle(void) 
+{
 	
 	switch(m_iGameState)
 	{
@@ -158,8 +161,6 @@ void Game::OnHud(void)
 
 	glEnable(GL_LIGHTING);		
 	glPopAttrib();
-
-
 }
 
 
@@ -167,12 +168,25 @@ void Game::Input()
 {
 	int iKey = pkInput->GetQueuedKey();
 
-	if(iKey == KEY_SPACE)
+	switch(iKey)
 	{
-		char szFile[] = "delete_closest_object.lua";
-		if(!m_pkScript->RunScript(szFile))
-			printf("Failed to run script %s.\n", szFile);
+	case KEY_SPACE:
+		{
+			char szFile[] = "delete_closest_object.lua";
+			if(!m_pkScript->RunScript(szFile))
+				printf("Failed to run script %s.\n", szFile);
+		}
+		break;
+	case KEY_I:
+		// Open/Close inventory window
+		if(m_pkInventoryBox->IsOpen() == false)
+			m_pkInventoryBox->OnOpen(300,200); 
+		else
+			m_pkInventoryBox->OnClose(false);
+		break;
 	}
+
+
 }
 
 void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -316,6 +330,9 @@ void Game::InitGui()
 	pkGui->RegisterWindow(pkHelthbarBk, "helthbar_bk");
 	pkGui->RegisterWindow(pkArmorbarBk, "armorbar_bk");
 
+	// Create inventory window
+	m_pkInventoryBox = new InventoryBox(pkGui, INVENTORYPROC);
+	
 	pkFps->m_bGuiTakeControl = false;
 }
 

@@ -7,6 +7,7 @@
 #include <cmath>
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
+#include "inventorybox.h"
 
 #include "../common/common.pkg"
 
@@ -67,6 +68,8 @@ class Game :public Application {
 	public:
 		
 //		Core	m_kTestCore;
+
+		InventoryBox* m_pkInventoryBox;
 
 		enum FuncId_e
 		{

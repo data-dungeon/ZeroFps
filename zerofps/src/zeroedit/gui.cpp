@@ -206,7 +206,7 @@ bool Gui::CreateWindows()
 
 	Rect rc = Rect(0,0,128,32);
 
-	rc = Rect(0,0,200,20);
+	rc = Rect(0,0,50,20);
 	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc,pkMenu,true,ID_MAINWND_MENU_CB,20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
 	pkMenuCBox->SetGUI(m_pkEdit->pkGui);

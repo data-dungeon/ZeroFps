@@ -143,8 +143,8 @@ bool SkinBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 		349,280,31,18,false);
 
 	ZGuiCombobox* pkSkinTypesCB = m_pkGuiBuilder->CreateCombobox(m_pkDlgBox,
-		ID_SKINDLGTYPES_CB,"SkinTypesCB",0,0,250,20,true);
-	pkSkinTypesCB->SetNumVisibleRows(2);
+		ID_SKINDLGTYPES_CB,"SkinTypesCB",0,0,250,20,false);
+	pkSkinTypesCB->SetNumVisibleRows(8);
 	pkSkinTypesCB->SetLabelText("Skin type: 1");
 
 	m_pkGui->ShowMainWindow(m_pkGuiBuilder->GetWnd("SkinBoxWnd"),false);
@@ -700,6 +700,13 @@ bool SkinBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						m_pkGuiBuilder->GetWnd("SkinTypesCB");
 
 					pkSelItem = pkCbox->GetListbox()->GetSelItem();
+
+					if(pkSelItem == NULL)
+					{
+						printf("Failed to sel item!\n");
+						return false;
+					}
+
 					m_usSkinTypeIndex = pkSelItem->GetIndex();
 
 					char szText[64];
