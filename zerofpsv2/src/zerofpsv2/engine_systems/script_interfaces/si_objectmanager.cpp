@@ -44,6 +44,10 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
 	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
 
+	// Object Variables
+	pkScript->ExposeFunction("GetLocalDouble",		ObjectManagerLua::GetLocalDouble);
+	pkScript->ExposeFunction("SetLocalDouble",		ObjectManagerLua::SetLocalDouble);
+
 	// object orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
@@ -293,6 +297,52 @@ int ObjectManagerLua::AddMesh(lua_State* pkLua)
 	mp->AddMesh( iId2 );
 	return 1;
 }
+
+float fLocalTest;
+
+int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+
+	printf("SetLocalDouble Entity[%d] = %s \n", iId1, acName);
+	g_pkScript->AddReturnValue(pkLua, fLocalTest);
+	return 1;
+
+}
+
+int ObjectManagerLua::SetLocalDouble(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
+	float fValue = dTemp;
+
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+
+	printf("GetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
+	fLocalTest = fValue; 
+	return 1;	
+}
+/*
+	SetLocalString
+	GotLocalString
+*/
+
 
 int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
 {
