@@ -578,8 +578,6 @@ bool ZGui::OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed,
 	// Registrera senast knappnedtryck.
 	if(iKeyPressed != -1)
 	{
-		FormatKey(iKeyPressed, bShiftIsPressed);
-
 		if(s_iLastKeyPressed != iKeyPressed)
 			s_bKeyrepeatActivated = false;
 
@@ -929,101 +927,6 @@ void ZGui::CreateDefaultSkins()
 	m_pkResManager->Add(string("DEF_RBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(rbn_down,rbn_a,false));
 	m_pkResManager->Add(string("DEF_CBN_UP_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_up,false));
 	m_pkResManager->Add(string("DEF_CBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_down,false));
-}
-
-void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
-{
-	#ifdef WIN32
-	
-		//if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
-		if(bShiftIsPressed)
-		{
-			if(iKey == '7')
-				iKey = '/';
-			else
-			if(iKey == '0')
-				iKey = '=';
-			else
-			if(iKey == ',') 
-				iKey = ';';
-			else
-			if(iKey == '.')
-				iKey = ':';
-			else
-			if(iKey == '/')
-				iKey = '_';
-			else
-			if(iKey == '=')
-				iKey = '`';
-			else
-			if(iKey == '-')
-				iKey = '?';
-			else
-			if(iKey == '\\')
-				iKey = '*';
-			else
-			if(iKey > 48 && iKey < 58)
-				iKey -= 16;
-			else
-			if(iKey > 96 && iKey < 123)
-				iKey -= 32;
-		}
-		else
-		{
-			if(iKey == '-')
-				iKey = '+';
-			if(iKey == '/')
-				iKey = '-';
-			if(iKey == '\\')
-				iKey = '\'';
-			if(iKey == '=')
-				iKey = '´';
-		}	
-
-	#endif // #ifdef WIN32
-
-	#ifndef WIN32
-
-		//if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
-		if(bShiftIsPressed)
-		{
-			if(iKey == '7')
-				iKey = '/';
-			else
-			if(iKey == '0')
-				iKey = '=';
-			else
-			if(iKey == ',') 
-				iKey = ';';
-			else
-			if(iKey == '.')
-				iKey = ':';
-			else
-			if(iKey == '/')
-				iKey = '_';
-			else
-			if(iKey == '=')
-				iKey = '`';
-			else
-			if(iKey == '-')
-				iKey = '_';
-			else
-			if(iKey == '\'')
-				iKey = '*';
-			else
-			if(iKey > 48 && iKey < 58)
-				iKey -= 16;
-			else
-			if(iKey > 96 && iKey < 123)
-				iKey -= 32;
-		}
-		else
-		{
-		
-		
-		}	
-
-	#endif // #ifndef LINUX
 }
 
 bool ZGui::RunKeyCommand(int iKey)
@@ -1523,7 +1426,7 @@ ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)
 					best = (*it);
 				}
 			}
-		 }	
+		 }
 
 	if(best == NULL)
 		return NULL;

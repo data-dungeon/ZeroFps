@@ -124,12 +124,12 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 	if(m_bReadOnly == true)
 		return true;
 
-	if(IgnoreKey(iKey))
-		return true;
-
-	if(iKey == gKEY_RETURN && m_bMultiLine == true)
+	if(iKey == gKEY_RETURN)
 	{
-		iKey = '\n';
+		if(m_bMultiLine == true)
+			iKey = '\n';
+		else
+			return true;
 	}
 
 	if( (iKey == gKEY_DOWN && m_bMultiLine == true) ||
@@ -640,8 +640,8 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 	}
 
 	if( iKey == gKEY_BACKSPACE || iKey == gKEY_DELETE || iKey == gKEY_LEFT || 
-		iKey == gKEY_RIGHT || iKey == gKEY_END || iKey == gKEY_HOME ||
-		iKey == gKEY_RETURN)// || iKey == gKEY_DOWN || iKey == gKEY_UP)
+		iKey == gKEY_RIGHT	   || iKey == gKEY_END    || iKey == gKEY_HOME ||
+		iKey == gKEY_RETURN )// || iKey == gKEY_DOWN || iKey == gKEY_UP)
 		bIgnore = false;
 
 	if(m_bNumberOnly == false && (iKey >= 32 && iKey < 256) )

@@ -39,7 +39,7 @@ void BASIC_API g_Logf(const char *fmt, ...);
 
 bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
 
-enum BASIC_API GlobalButtons
+enum BASIC_API GlobalButton
 {
 	gKEY_ESCAPE=0,
 	gKEY_LEFT,
@@ -149,7 +149,5 @@ enum BASIC_API GlobalButtons
 	gMOUSEMIDDLE,
 	gMOUSERIGHT
 };
-
-static int g_iKeyButtons[gMOUSERIGHT];
 
 #endif

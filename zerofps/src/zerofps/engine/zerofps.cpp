@@ -370,14 +370,38 @@ void ZeroFps::Draw_EngineShell()
 		m_pkInput->SetInputEnabled(true);			
 		m_pkConsole->Update();
 	}		
-	else {
+	else 
+	{
 		// Update GUI
-
 		m_pkInput->SetInputEnabled(true);
 
 		int mx, my;
 		m_pkInput->MouseXY(mx,my);
-		m_pkGui->Update(GetGameTime(),m_pkInput->GetQueuedKey(),false,
+
+		map<int,int>::iterator itKeyPressed;
+		int iInputKey = m_pkInput->GetQueuedKey();
+		int iPrevKey = iInputKey;
+		m_pkInput->FormatKey(iInputKey);
+
+		bool bGlobalFormat = (iPrevKey == iInputKey) ? true : false;
+
+		if( (iInputKey >= 'a' && iInputKey <= 'z') ||
+			(iInputKey >= 'A' && iInputKey <= 'Z') ||
+			(iInputKey >= '0' && iInputKey <= '9') ||
+			iInputKey == '+' || iInputKey == '?'||
+			iInputKey == ';' || iInputKey == ','||
+			iInputKey == ':' || iInputKey == '.' ||
+			iInputKey == ' ')
+			bGlobalFormat = false;
+
+		if(bGlobalFormat)
+		{
+			itKeyPressed = m_pkInput->m_kGlobalKeyTranslator.find(iInputKey);
+			if(itKeyPressed != m_pkInput->m_kGlobalKeyTranslator.end())
+				iInputKey = itKeyPressed->second;
+		}
+	
+		m_pkGui->Update(GetGameTime(),iInputKey,false,
 			(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 			mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
 	}

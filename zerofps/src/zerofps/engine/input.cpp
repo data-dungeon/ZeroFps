@@ -536,14 +536,206 @@ void Input::SetupButtons()
 	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
 	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
 
-	for(int i=0; i<255; i++)
-		g_iKeyButtons[i] = Buttons(i);
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFT,gKEY_LEFT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHT,gKEY_RIGHT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_UP,gKEY_UP));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DOWN,gKEY_DOWN));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SPACE,gKEY_SPACE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKSPACE,gKEY_BACKSPACE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RETURN,gKEY_RETURN));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RSHIFT,gKEY_RSHIFT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RCTRL,gKEY_RCTRL));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LSHIFT,gKEY_LSHIFT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LCTRL,gKEY_LCTRL));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F12,gKEY_F12));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F11,gKEY_F11));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F10,gKEY_F10));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F9,gKEY_F9));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F8,gKEY_F8));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F7,gKEY_F7));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F6,gKEY_F6));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F5,gKEY_F5));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F4,gKEY_F4));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F3,gKEY_F3));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F2,gKEY_F2));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F1,gKEY_F1));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PAGEUP,gKEY_PAGEUP));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PAGEDOWN,gKEY_PAGEDOWN));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_HOME,gKEY_HOME));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_END,gKEY_END));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_TAB,gKEY_TAB));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DELETE,gKEY_DELETE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_INSERT,gKEY_INSERT));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_1,gKEY_1));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_2,gKEY_2));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_3,gKEY_3));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_4,gKEY_4));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_5,gKEY_5));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_6,gKEY_6));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_7,gKEY_7));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_8,gKEY_8));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_9,gKEY_9));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_0,gKEY_0));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Q,gKEY_Q));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Q,gKEY_Q));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_E,gKEY_E));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_R,gKEY_R));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_T,gKEY_T));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Y,gKEY_Y));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_U,gKEY_U));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_I,gKEY_I));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_O,gKEY_O));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_P,gKEY_P));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_A,gKEY_A));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_S,gKEY_S));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_D,gKEY_D));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F,gKEY_F));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_G,gKEY_G));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_H,gKEY_H));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_J,gKEY_J));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_K,gKEY_K));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_L,gKEY_L));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Z,gKEY_Z));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_X,gKEY_X));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_C,gKEY_C));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_V,gKEY_V));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_B,gKEY_B));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_N,gKEY_N));	
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_M,gKEY_M));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_EXCLAIM,gKEY_EXCLAIM));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUOTEDBL,gKEY_QUOTEDBL));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_HASH,gKEY_HASH));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DOLLAR,gKEY_DOLLAR));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_AMPERSAND,gKEY_AMPERSAND));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUOTE,gKEY_QUOTE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFTPAREN,gKEY_LEFTPAREN));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHTPAREN,gKEY_RIGHTPAREN));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_ASTERISK,gKEY_ASTERISK));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PLUS,gKEY_PLUS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_COMMA,gKEY_COMMA));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_MINUS,gKEY_MINUS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PERIOD,gKEY_PERIOD));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SLASH,gKEY_SLASH));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_COLON,gKEY_COLON));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SEMICOLON,gKEY_SEMICOLON));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LESS,gKEY_LESS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_EQUALS,gKEY_EQUALS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_GREATER,gKEY_GREATER));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUESTION,gKEY_QUESTION));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_AT,gKEY_AT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFTBRACKET,gKEY_LEFTBRACKET));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKSLASH,gKEY_BACKSLASH));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHTBRACKET,gKEY_RIGHTBRACKET));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_CARET,gKEY_CARET));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_UNDERSCORE,gKEY_UNDERSCORE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKQUOTE,gKEY_BACKQUOTE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_PERIOD,gKEY_KP_PERIOD));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_DIVIDE,gKEY_KP_DIVIDE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_MULTIPLY,gKEY_KP_MULTIPLY));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_MINUS,gKEY_KP_MINUS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_PLUS,gKEY_KP_PLUS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_ENTER,gKEY_KP_ENTER));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_EQUALS,gKEY_KP_EQUALS));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_NUMLOCK,gKEY_NUMLOCK));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_CAPSLOCK,gKEY_CAPSLOCK));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SCROLLOCK,gKEY_SCROLLOCK));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSELEFT,gMOUSELEFT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSEMIDDLE,gMOUSEMIDDLE));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSERIGHT,gMOUSERIGHT));
 
 }
 
+void Input::FormatKey(int& iKey)
+{
+	bool bShiftIsPressed = Pressed(KEY_LSHIFT) || Pressed(KEY_RSHIFT);
 
+	#ifdef WIN32
+	
+		if(bShiftIsPressed)
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '?';
+			else
+			if(iKey == '\\')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+			if(iKey == '-')
+				iKey = '+';
+			if(iKey == '/')
+				iKey = '-';
+			if(iKey == '\\')
+				iKey = '\'';
+			if(iKey == '=')
+				iKey = '´';
+		}	
 
+	#endif // #ifdef WIN32
 
+	#ifndef WIN32
 
+		if(bShiftIsPressed)
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '_';
+			else
+			if(iKey == '\'')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+		
+		
+		}	
 
-
+	#endif // #ifndef LINUX
+}

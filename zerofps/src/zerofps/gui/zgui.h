@@ -145,7 +145,6 @@ private:
 	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
-	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void CreateDefaultSkins();
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;

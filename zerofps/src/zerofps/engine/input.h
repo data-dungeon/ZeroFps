@@ -153,6 +153,7 @@ class Console;
 
 class ENGINE_API Input : public ZFObject {
 	private:
+		
 		enum FuncId_e
 		{
 			FID_TOGGLEGRAB,
@@ -177,7 +178,6 @@ class ENGINE_API Input : public ZFObject {
 
 		queue<int>		m_aPressedKeys;
 	
-
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);
 		void ReleaseInput(void);
@@ -192,8 +192,8 @@ class ENGINE_API Input : public ZFObject {
 		bool GetConsole();
 		void ListActions();
 		
-
 	public:
+		void FormatKey(int& iKey);
 		void SetCursorInputPos(int x, int y);
 		float m_fMouseSensitivity;
 		
@@ -219,6 +219,7 @@ class ENGINE_API Input : public ZFObject {
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
 
+		map<int,int> m_kGlobalKeyTranslator;
 };
 
 #endif
