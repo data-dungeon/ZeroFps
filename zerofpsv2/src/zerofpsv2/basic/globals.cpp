@@ -211,17 +211,18 @@ float round2(float val)
 	return (float) (int) (val + 0.5f);
 }
 
-/*
 
-  val = 13.3231
+float Randomf(float fMax)
+{
+	float r = (float)rand() / (float)(RAND_MAX);
+	return r*fMax;
+}
 
-  lower = 13
-
-  13.3231 - 13 = 0.3231
-
-
-
-*/
+int Randomi(int iMax)
+{
+	float r = (float)rand() / (float)(RAND_MAX);
+	return (r*iMax) + 0.5;
+}
 
 
 void ZFError(const char *fmt, ...)

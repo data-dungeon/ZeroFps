@@ -58,6 +58,8 @@ float BASIC_API Clamp(float fValue,float fBotom,float fTop);	//clamp value whiti
 bool BASIC_API equal_f(float a, float b);
 float BASIC_API round2(float val);										//round value to nearest integer
 
+float BASIC_API Randomf(float ffMax);
+int BASIC_API Randomi(int iiMax);
 
 //strange funktions =D
 Vector3 BASIC_API RndColor();												//randomize a colorvector...i think

@@ -1016,7 +1016,8 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 		
 		// om det är en ny tagent...
 		if(ZGuiWnd::m_pkFocusWnd)
-			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(key);
+			if(key != 0)
+				ZGuiWnd::m_pkFocusWnd->ProcessKBInput(key);
 	}
 
 	OnKeyPress(key);
