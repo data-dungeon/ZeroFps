@@ -111,7 +111,7 @@ class ENGINE_API Entity
 			WORLD_ROT_M,
 			WORLD_ORI_M,
 			LOCAL_ORI_M,
-			WORLD_ROT_Q,
+			WORLD_ROT_Q,	
 			LOCAL_ROT_Q,
 			WORLD_ROT_V,
 			LOCAL_ROT_V,
@@ -162,9 +162,9 @@ class ENGINE_API Entity
 		Vector3						m_kWorldRotV;
 		Vector3						m_kLocalRotV;		
 
-		Vector3						m_kOldLocalPosV;
+		Vector3						m_kILocalPosV;
 
-		float							m_fLastSetPos;						//time of last setpos operation
+		bool							m_bFirstSetPos;
 
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.

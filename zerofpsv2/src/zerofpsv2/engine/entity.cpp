@@ -47,8 +47,7 @@ Entity::Entity()
 	m_bSave					= true;	
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
-	m_fLastSetPos			= -1;
-	
+	m_bFirstSetPos			= true;
 	
 	m_akChilds.clear();	
 	
@@ -1081,11 +1080,11 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	//m_kOldLocalPosV=m_kLocalPosV;				//save old pos for interpolation
 	m_kLocalPosV = kPos;
 	
-	if(m_fLastSetPos == -1)						//if the pos has never been set, the set oldpos to the new one
-		m_kOldLocalPosV=m_kLocalPosV;
-	
-	m_fLastSetPos = m_pkFps->GetTicks();
-
+	if(m_bFirstSetPos)						//if the pos has never been set, the set oldpos to the new one
+	{
+		m_kILocalPosV=m_kLocalPosV;
+		m_bFirstSetPos=false;
+	}
 }
 
 void Entity::SetWorldPosV(Vector3 kPos)
@@ -1128,28 +1127,9 @@ Matrix4 Entity::GetLocalRotM()
 
 Vector3 Entity::GetIWorldPosV()
 {
-	Vector3 dir = GetWorldPosV() - m_kOldLocalPosV;
-	
-	m_kOldLocalPosV +=dir/12;
+	m_kILocalPosV +=(GetWorldPosV() - m_kILocalPosV) / 12;
 
-
-	return m_kOldLocalPosV;
-//	float t = m_pkFps->GetTicks() - m_fLastSetPos;	
-//	float i = t/m_pkFps->GetGameFrameTime();
-	
-//	if(i>1)
-//		i=1;
-	
-/*	Vector3 curent = GetLocalPosV();		
-	
-	if(m_bRelativeOri)		
-		return GetWorldPosV()+curent*i;
-	else 
-	{
-		Vector3 pos;
-		pos.Lerp(m_kOldLocalPosV,curent,i);
-		return pos;
-	}*/
+	return m_kILocalPosV;
 }
 
 Vector3 Entity::GetWorldPosV()
