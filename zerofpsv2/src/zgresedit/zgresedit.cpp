@@ -696,6 +696,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			m_bSaveFile = false;
 			OpenWnd(m_pkScene->m_pkSelectFileWnd, true);
 			SetText("OwerwriteWarning", "", true);
+         
 		}
 		else
 		if(strClickWndName == "SaveBn")
@@ -1317,6 +1318,8 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 		return;
 	}
 
+   m_pkGui->PlaceWndFrontBack(pkWnd, true);
+
 	if(m_pkScene->IsSceneWnd(pkWnd))
 	{
 		m_pkResizeWnd = NULL;
@@ -1360,6 +1363,8 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 
 		if(pkWnd)
 		{
+         
+
 			if(!m_pkScene->IsSceneWnd(pkWnd))
 			{
 				if(GetWndType(pkWnd) == Wnd)
@@ -1786,6 +1791,8 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 
 	UpdateSkinList(pkWnd);
 	UpdatePropertyWnd();
+
+   
    
 
 	
@@ -2211,6 +2218,7 @@ void ZGResEdit::MoveWndToTop(ZGuiWnd *pkWnd)
 {
 	pkWnd->Show();
 	m_pkGui->SetFocus(pkWnd);
+   m_pkGui->PlaceWndFrontBack(pkWnd, true);
 }
 
 void ZGResEdit::ExecuteCommand()
@@ -2349,6 +2357,7 @@ void ZGResEdit::OpenWnd(ZGuiWnd *pkWnd, bool bOpen)
 	{
 		m_pkAudioSys->StartSound("/data/sound/open_door1.wav");
 		MoveWndToTop(pkWnd);
+      //m_pkGui->PlaceWndFrontBack(pkWnd, true);
 	}
 	else
 	{

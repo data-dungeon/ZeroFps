@@ -25,6 +25,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.Log_Create("mistclient2");
 	m_iViewFrom = -1;
+
+   RegisterVariable("r_jumpstart", &m_bSkipLoginScreen, CSYS_BOOL);
 } 
  
 void MistClient::OnInit() 
@@ -53,19 +55,20 @@ void MistClient::OnInit()
 	//set window title		
    SetTitle("MistClient - Hacka och slå");
 	
+	//set client in server mode to show gui etc
+	m_pkFps->StartServer(true,false);
+
    // initialize gui system with default skins, font etc
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, false, true); 
 
    // load startup screen 
-   LoadGuiFromScript("data/script/gui/ml_start.lua");
+   if(!m_bSkipLoginScreen)
+      LoadGuiFromScript("data/script/gui/ml_start.lua");
 
    // load software cursor
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
    m_pkInput->ShowCursor(false);
-
-	//set client in server mode to show gui etc
-	m_pkFps->StartServer(true,false);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
@@ -233,7 +236,7 @@ bool MistClient::ReadWriteServerList(bool bRead)
          if(pos != string::npos)
          {
             string strName = strText.substr(0, pos-1);
-            string strIP = strText.substr(pos+2, strText.length());
+            string strIP = strText.substr(pos+2, /*strText.length()*/strText.length()-pos-3);
 
             if(strName.length() > 0 && strIP.length() > 0) 
                AddRemoveServer(strName.c_str(), strIP.c_str());

@@ -19,11 +19,12 @@ class MistClient :public Application, public ZGuiApp {
 		//console functions
 		enum FuncId_e
 		{
-		
+
 		};
 
 		Camera*				m_pkCamera;
 		int					m_iViewFrom;
+      bool              m_bSkipLoginScreen;
 
       vector<pair<string,string> > m_kServerList;
       bool ReadWriteServerList(bool bRead);
@@ -40,7 +41,6 @@ class MistClient :public Application, public ZGuiApp {
 		void OnHud(void);
 		void OnSystem();
 		void RenderInterface(void) { }
-				
 		
 		void OnServerStart(void);
 		void OnClientStart(void);
@@ -56,6 +56,8 @@ class MistClient :public Application, public ZGuiApp {
 
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
+
+      friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 		
 };
 
