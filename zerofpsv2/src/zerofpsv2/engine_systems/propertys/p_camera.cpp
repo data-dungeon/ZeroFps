@@ -231,7 +231,7 @@ void P_Camera::SetCamera(Camera *pkCamera)
 	{
 		m_pkCamera->m_iEntity = m_pkEntity->GetEntityID();		
 		
-		cout<<"Attached a new camera to" << m_pkEntity->GetType() << endl;		
+		//cout<<"Attached a new camera to" << m_pkEntity->GetType() << endl;		
 		//cout<<"current camera position "<<m_pkCamera->GetPos().x<<" "<<m_pkCamera->GetPos().y<<" "<<m_pkCamera->GetPos().z<<endl;
 		//cout<<"new position "<<m_pkObject->GetWorldPosV().x<<" "<< m_pkObject->GetWorldPosV().y<<" "<<m_pkObject->GetWorldPosV().z<<endl;
 	}

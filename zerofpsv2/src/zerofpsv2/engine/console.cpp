@@ -315,7 +315,7 @@ void Console::Update(void)
 		//if a function-key was pressed, execute function and return
 		if(eCmd != CONCMD_NONE)
 		{
-			cout << "Running Cmd" << endl;
+			//cout << "Running Cmd" << endl;
 			if(bUpdate) {
 				PREVTIME = fCurrTime;
 				ConsoleCmd( eCmd );
