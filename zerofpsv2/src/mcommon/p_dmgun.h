@@ -30,6 +30,8 @@ class MCOMMON_API P_DMGun: public Property {
 		
 		//gun info
 		string	m_strName;
+		string m_strSound;
+
 		float		m_fFireRate;
 		float		m_fDamage;
 		float		m_fRange;		
@@ -55,6 +57,16 @@ class MCOMMON_API P_DMGun: public Property {
 		void Init();
 		
 		bool Fire(Vector3 kTarget);
+
+		void SetFireRate	 (float fFireRate)	{ m_fFireRate = fFireRate; }
+		void SetDamage		 (float fDamage)	{ m_fDamage = fDamage; }
+		void SetMaxAmmo		 (int iMaxAmmo)		{ m_iMaxAmmo = iMaxAmmo; }
+		void SetRandom		 (float fRandom)	{ m_fRandom = fRandom; }
+		void SetRange		 (float fRange)		{ m_fRange = fRange; }
+		void SetBurstLenght	 (float fBurstL)	{ m_fBurstLength = fBurstL; }
+		void SetSound		 (string strSound)	{ m_strSound = strSound; }
+		void SetAmmo		 (int iAmmo);
+
 		
 //		void Save(ZFIoInterface* pkPackage);
 //		void Load(ZFIoInterface* pkPackage);

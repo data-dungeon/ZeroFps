@@ -208,8 +208,6 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	pkP_Gun->Fire (kLocation);
 
-	cout << "X:" << pkWeapon->GetWorldPosV().x << " y:" << pkWeapon->GetWorldPosV().y << " z:" << pkWeapon->GetWorldPosV().z << endl;
-
 	// rotate character towards target
 	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();
 	kdiff.y = 0;

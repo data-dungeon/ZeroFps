@@ -19,6 +19,7 @@ P_DMGun::P_DMGun()
 	
 	//default gun
 	m_strName = 	"YberGun";
+	m_strSound =	"data/sound/9m_pistol.wav";
 	m_fFireRate = 	10;
 	m_fRange = 		10;
 	m_iAmmo = 		100;
@@ -52,11 +53,19 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_bFireing = true;
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 
-	m_pkAudioSys->StartSound("data/sound/9m_pistol.wav",
+	m_pkAudioSys->StartSound(m_strSound.c_str(),
 
 	m_pkObject->GetWorldPosV(), m_kDir, false);
 	
 	return true;
+}
+
+void P_DMGun::SetAmmo (int iAmmo)
+{
+	m_iAmmo = iAmmo;
+
+	if ( m_iAmmo > m_iMaxAmmo )
+		m_iAmmo = m_iMaxAmmo;
 }
 
 void P_DMGun::Update()
@@ -126,7 +135,7 @@ bool P_DMGun::FireBullets(int iAmount)
 
 	for(int i =0;i<iAmount;i++)
 	{
-		Vector3 kDir = m_kDir +  Vector3( rand() % int(m_fRandom*1000) / 1000.0, rand() % int(m_fRandom*1000) / 1000.0,rand() % int(m_fRandom*1000) / 1000.0);
+		Vector3 kDir = m_kDir + Vector3( rand() % int(m_fRandom*1000) / 1000.0, rand() % int(m_fRandom*1000) / 1000.0,rand() % int(m_fRandom*1000) / 1000.0);
 	
 		float d;	
 		Vector3 cp;

@@ -1,11 +1,12 @@
 #include "si_dm.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include "p_dmhq.h"
+#include "p_dmgun.h"
 #include "p_dmmission.h"
 #include "p_dmcharacter.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 
-ZFScriptSystem*			DMLua::g_pkScript;
+ZFScriptSystem*				DMLua::g_pkScript;
 EntityManager*				DMLua::g_pkObjMan;
 int							DMLua::g_iMissionStatus;
 
@@ -43,6 +44,16 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 	// math
 	pkScript->ExposeFunction("Random", DMLua::RandomLua);
+
+	// weapon script
+	pkScript->ExposeFunction("SetGunFireRate", DMLua::SetGunFireRateLua);				
+	pkScript->ExposeFunction("SetGunDamage", DMLua::SetGunDamageLua);				
+	pkScript->ExposeFunction("SetGunRange", DMLua::SetGunRangeLua);				
+	pkScript->ExposeFunction("SetGunAmmo", DMLua::SetGunAmmoLua);				
+	pkScript->ExposeFunction("SetGunMaxAmmo", DMLua::SetGunAmmoLua);			
+	pkScript->ExposeFunction("SetGunRandom", DMLua::SetGunRandomLua);				
+	pkScript->ExposeFunction("SetGunBurstLenght", DMLua::SetGunBurstLenghtLua);	
+	pkScript->ExposeFunction("SetGunSound", DMLua::SetGunSoundLua);	
 }
 // ------------------------------------------------------------------------------------------------
 
@@ -512,6 +523,191 @@ int DMLua::RandomLua (lua_State* pkLua)
 
    return 0;
 }
+
+int DMLua::SetGunRandomLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunRandom: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dRandom;
+	g_pkScript->GetArgNumber(pkLua, 1, &dRandom);
+	pkGunP->SetRandom ( float(dRandom) );
+
+	return 0;
+}
+
+int DMLua::SetGunFireRateLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunFireRate: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dFireRate;
+	g_pkScript->GetArgNumber(pkLua, 1, &dFireRate);
+	pkGunP->SetFireRate ( float(dFireRate) );
+
+	return 0;
+}
+
+int DMLua::SetGunDamageLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunDamage: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dDamage;
+	g_pkScript->GetArgNumber(pkLua, 1, &dDamage);
+	pkGunP->SetDamage ( float(dDamage) );
+
+	return 0;
+}
+
+int DMLua::SetGunRangeLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunRange: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dRange;
+	g_pkScript->GetArgNumber(pkLua, 1, &dRange);
+	pkGunP->SetRange ( float(dRange) );
+
+	return 0;
+}
+
+int DMLua::SetGunMaxAmmoLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunMaxAmmo: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dAmmo;
+	g_pkScript->GetArgNumber(pkLua, 1, &dAmmo);
+	pkGunP->SetMaxAmmo ( int(dAmmo) );
+
+	return 0;
+}
+
+int DMLua::SetGunAmmoLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunAmmo: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dAmmo;
+	g_pkScript->GetArgNumber(pkLua, 1, &dAmmo);
+	pkGunP->SetAmmo ( int(dAmmo) );
+
+	return 0;
+}
+
+int DMLua::SetGunBurstLenghtLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetBurstLenghtLua: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dBLenght;
+	g_pkScript->GetArgNumber(pkLua, 1, &dBLenght);
+	pkGunP->SetBurstLenght ( float(dBLenght) );
+
+	return 0;
+}
+
+int DMLua::SetGunSoundLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetBurstLenghtLua: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	char sound[256];
+	g_pkScript->GetArgString(pkLua, 1, sound);
+	pkGunP->SetSound ( string(sound) );
+
+	return 0;
+}
+
 
 Entity* DMLua::TestScriptInput (int iArgs, lua_State* pkLua)
 {
