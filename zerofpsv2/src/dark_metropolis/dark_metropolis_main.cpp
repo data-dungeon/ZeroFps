@@ -1144,7 +1144,14 @@ void DarkMetropolis::ValidateAgentsOnField()
 		//character was not found att all, remove it
 		else		
 		{			
+			if(m_kAgentsOnField.empty())
+				break;
+
 			m_kAgentsOnField.erase(it); 
+
+			if(m_kAgentsOnField.empty())
+				break;
+
 			it = m_kAgentsOnField.begin();
 		}
 	}	
