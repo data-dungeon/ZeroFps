@@ -45,13 +45,13 @@ void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 		for(y=0; y<iMapSize; y++)
 			for(x=0; x<iMapSize; x++)
 			{
-				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
+				/*HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);*/
 
 				// Kolla terrängtyp
 				float dx=(float)x, dy=(float)y;
 				int texture = m_pkHeightMap->GetMostVisibleTexture(dx, dy); 
 
-				// Kolla vinkeln mot XZ planet
+/*				// Kolla vinkeln mot XZ planet
 				float fx = -(iMapSize/2)*HEIGHTMAP_SCALE + x*HEIGHTMAP_SCALE;
 				float fy = -(iMapSize/2)*HEIGHTMAP_SCALE + y*HEIGHTMAP_SCALE;
 				Vector3 sqrnorm = m_pkHeightMap->Tilt(fx,fy);
@@ -59,7 +59,7 @@ void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 				float angle = RadToDeg(sqrnorm.Angle(ground_plane));
 
 				if(pkVert->height <= 2.0f || angle > fMaxAngle)
-					texture = 4;
+					texture = 4;*/
 
 				int iIndex = y*iMapSize+x;
 				m_piTerrain[iIndex] = texture;					
@@ -79,7 +79,29 @@ void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 		for(y=0; y<iMapSize; y++)
 			for(x=0; x<iMapSize; x++)
 			{
-				int iIndex = y*iMapSize+x;
+				int iIndex = (y*iMapSize)+x;
+
+				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
+
+				// Kolla vinkeln mot XZ planet
+				float fx = -(iMapSize/2)*HEIGHTMAP_SCALE + x*HEIGHTMAP_SCALE;
+				float fy = -(iMapSize/2)*HEIGHTMAP_SCALE + y*HEIGHTMAP_SCALE;
+				Vector3 sqrnorm = m_pkHeightMap->Tilt(fx,fy);
+				Vector3 ground_plane = Vector3(0,1,0);
+				float angle = RadToDeg(sqrnorm.Angle(ground_plane));
+				float fHeightMultipel = 1.0f;
+
+				if(pkVert->height <= 2.0f || angle > fMaxAngle)
+				{
+					piCostMap[iIndex] = BLOCKED;
+					continue;
+				}
+				else
+				{
+					//float fProcentAvMaxAngle = angle / fMaxAngle; // 0 - 1
+					//fHeightMultipel = fProcentAvMaxAngle * 2.0f;
+				}
+
 				switch(m_piTerrain[iIndex])
 				{
 				case 0:
@@ -101,6 +123,8 @@ void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 					printf("Bad terran type found, terrain not intialized!\n");
 					break;
 				}
+
+				piCostMap[iIndex] = (int) ((float) piCostMap[iIndex] * fHeightMultipel);
 			}
 
 		m_akCostMaps.insert( map<string, int*>::value_type(szKey, piCostMap) );

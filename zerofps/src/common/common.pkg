@@ -33,6 +33,7 @@
 #include "p_unitmoveai.h"
 #include "tileengine.h"
 #include "p_unitsystem.h"
+#include "p_unitattackai.h"
 
 
 

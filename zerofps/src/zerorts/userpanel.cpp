@@ -322,8 +322,6 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 
 		if(r->second->m_bNeedArgument == false)
 		{
-			printf("APAN LETAR FISK!\n");
-
 			UnitCommand cmd;
 			for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin(); 
 				it != m_pkZeroRts->m_kSelectedObjects.end(); it++)
@@ -333,7 +331,7 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 				cmd.m_iXDestinaton = 0;
 				cmd.m_iYDestinaton = 0;	
 				cmd.m_iTarget = 0;
-				cmd.m_iUnitID = (*it);			
+				cmd.m_iUnitID = (*it);	
 				m_pkZeroRts->m_pkClientInput->AddOrder(cmd);
 				
 			}
