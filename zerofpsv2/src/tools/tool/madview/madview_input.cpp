@@ -63,7 +63,7 @@ void MadView::Input()
 	}
 
 	// Rotate object with Left mouse button...
-	static float prev_x = 0, prev_y = 0;
+	static float prev_x = 0, prev_y = 0, prev_z = 0;
 	static Point press_pos;
 	static bool pressed = false;
 	if(m_pkInputHandle->Pressed(MOUSELEFT))
@@ -84,7 +84,7 @@ void MadView::Input()
 		}
 		else
 		{
-			m_fObjRotZ = curr_pos.y - press_pos.y + prev_x;
+			m_fObjRotZ = curr_pos.y - press_pos.y + prev_z;
 		}
 	}
 	else
@@ -92,6 +92,7 @@ void MadView::Input()
 		pressed = false;
 		prev_x = m_fObjRotX;
 		prev_y = m_fObjRotY;
+		prev_z = m_fObjRotZ;
 	}
 
 	// Move in and out (Z) or Left and Right (X) with Right button...
