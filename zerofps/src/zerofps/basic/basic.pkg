@@ -1,7 +1,14 @@
 class CmdSystem;
 class FileIo;
+class Vector3;
+class HalfEdge;
+class Vector4;
+class Matrix4;
 
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"
-
+#include "vector3.h"
+#include "halfedge.h"
+#include "matrix4.h"
+#include "vector4.h"
