@@ -162,7 +162,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		Console*					m_pkConsole;				///< ZeroFps Console.
 		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
 		ObjectManager*			m_pkObjectMan;				///< In Game Object System.
-//		SoundBufferManager*  m_pkSBM;						///< Sound
 		ZFAudioSystem*			m_pkAudioSystem;			///< Sound
 		NetWork*					m_pkNetWork;				///< NetWork Interface.
 		GLGuiRender*			m_pkGuiRenderer;			///< Gui - Zeb

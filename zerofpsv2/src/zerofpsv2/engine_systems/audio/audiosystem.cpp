@@ -1,5 +1,6 @@
 #include "audiosystem.h"
 #include <stdlib.h>
+#include "../../basic/zfvfs.h"
  
 ZFSound::ZFSound()
 {
@@ -48,9 +49,14 @@ bool ZFSound::Load()
    ALenum format;
    ALvoid *data;
 	ALboolean loop;   //we dont use this
-	
+
+	ZFVFileSystem* pkFileSys;
+	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
+
+	string strFull = pkFileSys->GetFullPath("data/sound/walk.wav");
+
 	// Load file
-   alutLoadWAVFile((ALbyte*)m_szFileName, &format, &data, &size, &freq, &loop);   
+   alutLoadWAVFile((ALbyte*)strFull.c_str(), &format, &data, &size, &freq, &loop);   
 	if(size==0)
 	{
 	   cout<<"cold not load file " << m_szFileName << ", Loading Dummy" << endl;	
@@ -197,6 +203,7 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 {
 	if(pkSound==NULL)
 		return;
+
 	
 	bool found=false;
 	list<ZFSound*>::iterator it;
@@ -217,8 +224,6 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 		}
 		pkSound->m_iNrOfPlays++;
 		m_akSounds.remove(pkSound);
-
-		printf("removing = %i\n", m_akSounds.size());
 	}
 }
 
