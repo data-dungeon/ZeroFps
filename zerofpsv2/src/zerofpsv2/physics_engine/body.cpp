@@ -10,7 +10,7 @@ Body::Body()
 void Body::Reset()
 {
 	m_bPolygonCheck =		false;
-	m_bSolid	=				true;
+	m_bSolid	=				false;
 	m_bGravity =			true;
 	m_bResting =			false;
 	m_fBounce =				0.8;

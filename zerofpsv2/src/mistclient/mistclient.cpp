@@ -54,6 +54,7 @@ void MistClient::OnInit()
 //				test->SetLocalPosV(Vector3(x*4,0,y*4));
 //		}
 //	}
+
 }
 
 void MistClient::Init()

@@ -305,7 +305,6 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 
 	}
 	
-		
 	if(didpen)
 	{	
 		Collission tempcol;
