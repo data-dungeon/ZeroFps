@@ -5,11 +5,12 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
+#include "common_x.h"
 //#include "playerobject.h"
 
 using namespace std;
 
-class MassDriverProjectile: public Property {
+class COMMON_API MassDriverProjectile: public Property {
 	private:	
 		ObjectManager *m_pkObjectMan;
 		ZeroFps *m_pkFps;			
@@ -26,7 +27,7 @@ class MassDriverProjectile: public Property {
 
 
 
-Property* Create_MassDriverProjectile();
+COMMON_API Property* Create_MassDriverProjectile();
 
 
 

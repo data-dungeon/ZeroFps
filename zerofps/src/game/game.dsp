@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 script.lib gui.lib opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /force /out:"..\..\bin\game.exe" /libpath:"..\..\bin"
+# ADD LINK32 common.lib script.lib gui.lib opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /force /out:"..\..\bin\game.exe" /libpath:"..\..\bin"
 # SUBTRACT LINK32 /debug
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug"
@@ -77,7 +77,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 script.lib gui.lib opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\game.exe" /pdbtype:sept /libpath:"..\..\bin"
+# ADD LINK32 common.lib script.lib gui.lib opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\game.exe" /pdbtype:sept /libpath:"..\..\bin"
 
 !ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
 
@@ -123,64 +123,6 @@ PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.map ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\adaptorsniper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ballobject.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\bunnyaiproperty.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\bunnyobject.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\game.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -197,133 +139,13 @@ SOURCE=.\game.cpp
 !ENDIF 
 
 # End Source File
-# Begin Source File
-
-SOURCE=.\machinegunprojectile.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\machinegunproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\massdriverprojectile.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\massdriverproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\playercontrolproperty.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\playerobject.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\zeroedit\statusproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\teleportproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\treeidleproperty.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\adaptorsniper.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ballobject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\bunnyaiproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\bunnyobject.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\game.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\inventoryproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\machinegunprojectile.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\machinegunproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\massdriverprojectile.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\massdriverproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\playercontrolproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\playerobject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\statusproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\teleportproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\treeidleproperty.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

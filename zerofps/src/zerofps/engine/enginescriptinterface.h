@@ -10,8 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "engine_x.h"
-#include "engine.pkg"
-#include "../basic/basic.pkg"
+
+class Object;
 
 enum OBJECT_TYPE
 {
@@ -24,7 +24,7 @@ enum OBJECT_TYPE
 
 typedef int OBJECT; // same as network id
 
-class ENGINE_API EngineScriptInterface : public ZFObject 
+class ENGINE_API EngineScriptInterface
 {
 
 // Export functions:
@@ -38,14 +38,22 @@ public:
 	/// Recives the first-person-player for the client.
 	OBJECT GetPlayer();
 
-	/// Recives the closes hostile object from kFocusObj or -1 if no object exist.
-	/// or kFocusObj doesn´t exist.
+	/// Recives the closes object from kFocusObj or -1 if no object exist,
+	/// or if kFocusObj doesn´t exist.
+	OBJECT GetClosestObject(OBJECT kFocusObj);
+
+	/// Recives the closes hostile object from kFocusObj or -1 if no object exist,
+	/// or if kFocusObj doesn´t exist.
 	OBJECT GetClosestEnemy(OBJECT kFocusObj);
 
 	/// Recives the type of obj (or -1 if obj doesn´t exist)
 	OBJECT_TYPE GetObjectType(OBJECT obj);
 
-	void DestroyObject(OBJECT obj);
+	/// Recives rhe distance in meters between two objects or -1 if either of the 
+	/// two objects doesn´t exist.
+	float GetMetersBetween(OBJECT obj1, OBJECT obj2);
+
+	void DestroyObject(int obj);
 
 // Internal functions:
 private:

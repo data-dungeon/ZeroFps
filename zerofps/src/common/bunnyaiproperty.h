@@ -6,12 +6,12 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "bunnyobject.h"
-
+#include "common_x.h"
 
 using namespace std;
 
 
-class BunnyAIProperty: public Property {
+class COMMON_API BunnyAIProperty: public Property {
 	private:
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;

@@ -34,6 +34,7 @@ class ENGINE_API Application : public ZFObject {
 		ZFIni* pkIni;
 		LevelManager* pkLevelMan;
 		PhysicsEngine* pkPhysEngine;
+		EngineScriptInterface* pkEngineScriptInterface;
 		
 	public:
 		static Application* pkApp;

@@ -11,8 +11,9 @@
 #include "statusproperty.h"
 //#include "floatproperty.h"
 //#include "heightmapobject.h"
+#include "common_x.h"
 
-class PlayerObject: public Object {
+class COMMON_API PlayerObject: public Object {
 	private:
 		ZeroFps *m_pkFps;
 

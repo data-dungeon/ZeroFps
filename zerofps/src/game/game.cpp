@@ -315,4 +315,5 @@ void Game::InitScript()
 {
 	m_pkScript = new GameScript();
 	m_pkScript->ExposeObject("pkConsole", pkConsole, tConsole);
+	m_pkScript->ExposeObject("pkEngine", pkEngineScriptInterface, tEngine);
 }

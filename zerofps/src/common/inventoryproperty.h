@@ -6,11 +6,12 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "massdriverprojectile.h"
+#include "common_x.h"
 //#include "playerobject.h"
 
 using namespace std;
 
-class InventoryProperty: public Property {
+class COMMON_API InventoryProperty: public Property {
 		
 	public:
 		bool m_bUse;

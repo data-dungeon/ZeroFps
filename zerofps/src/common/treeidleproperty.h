@@ -5,10 +5,11 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
+#include "common_x.h"
 
 using namespace std;
 
-class TreeIdleProperty: public Property {
+class COMMON_API TreeIdleProperty: public Property {
 	private:
 		ZeroFps *m_pkFps;
 		float m_fWind;
@@ -23,7 +24,7 @@ class TreeIdleProperty: public Property {
 		void Load(ZFMemPackage* pkPackage);
 };
 
-Property* Create_TreeIdleProperty();
+COMMON_API Property* Create_TreeIdleProperty();
 
 
 #endif

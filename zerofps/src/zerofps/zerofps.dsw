@@ -15,6 +15,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "common"="..\common\common.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "engine"=".\engine\engine.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -100,6 +112,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name script
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name common
     End Project Dependency
 }}}
 

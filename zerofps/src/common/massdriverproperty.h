@@ -3,10 +3,11 @@
 
 #include "inventoryproperty.h"
 #include "massdriverprojectile.h"
+#include "common_x.h"
 
 using namespace std;
 
-class MassDriverProperty: public InventoryProperty {
+class COMMON_API MassDriverProperty: public InventoryProperty {
 
 	private:
 		Input *m_pkInput;
@@ -39,7 +40,7 @@ class MassDriverProperty: public InventoryProperty {
 
 };
 
-Property* Create_MassDriverProperty();
+COMMON_API Property* Create_MassDriverProperty();
 
 
 #endif

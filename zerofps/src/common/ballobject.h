@@ -3,9 +3,9 @@
 
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
+#include "common_x.h"
 
-
-class BallObject: public Object {
+class COMMON_API BallObject: public Object {
 	private:
 		ZeroFps *m_pkFps;
 

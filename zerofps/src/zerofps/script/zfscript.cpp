@@ -35,9 +35,9 @@ bool ZFScript::Open()
 
 	// Create Lua tag for Int type.
 	m_iLuaTagInt = lua_newtag(m_pkLua);
-	lua_pushcfunction(m_pkLua, SetTypeInt);
+	lua_pushcfunction(m_pkLua, GetTypeInt);
 	lua_settagmethod(m_pkLua, m_iLuaTagInt, "getglobal");
-	lua_pushcfunction(m_pkLua, GetTypeInt); 
+	lua_pushcfunction(m_pkLua, SetTypeInt); 
 	lua_settagmethod(m_pkLua, m_iLuaTagInt, "setglobal");
 
 	// Create Lua tag for Double type.
@@ -56,9 +56,9 @@ bool ZFScript::Open()
 
 	// Create Lua tag for String type.
 	m_iLuaTagString = lua_newtag(m_pkLua);
-	lua_pushcfunction(m_pkLua, SetTypeString);
+	lua_pushcfunction(m_pkLua, GetTypeString);
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "getglobal");
-	lua_pushcfunction(m_pkLua, GetTypeString); 
+	lua_pushcfunction(m_pkLua, SetTypeString); 
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
 	return true;	
 }

@@ -6,10 +6,11 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 //#include "playerobject.h"
+#include "common_x.h"
 
 using namespace std;
 
-class MachineGunProjectile: public Property {
+class COMMON_API MachineGunProjectile: public Property {
 	private:	
 		ObjectManager *m_pkObjectMan;
 		ZeroFps *m_pkFps;			
@@ -26,7 +27,7 @@ class MachineGunProjectile: public Property {
 
 
 
-Property* Create_MachineGunProjectile();
+COMMON_API Property* Create_MachineGunProjectile();
 
 
 

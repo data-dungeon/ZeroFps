@@ -6,10 +6,11 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 //#include "playerobject.h"
+#include "common_x.h"
 
 using namespace std;
 
-class StatusProperty: public Property {
+class COMMON_API StatusProperty: public Property {
 	private:
 	
 		ObjectManager *m_pkObjectMan;
@@ -32,7 +33,7 @@ class StatusProperty: public Property {
 //		void Touch(Object* pkObject);
 };
 
-Property* Create_StatusProperty();
+COMMON_API Property* Create_StatusProperty();
 
 
 #endif

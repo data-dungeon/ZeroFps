@@ -118,6 +118,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		LevelManager*			m_pkLevelMan;				///< 
 		PhysicsEngine*			m_pkPhysEngine;				///< 
 		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
+		EngineScriptInterface*	m_pkEngineScriptInterface;	///< script interface API
 
 		Application*			m_pkApp;					///< Application object.
 			

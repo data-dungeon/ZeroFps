@@ -12,10 +12,11 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
+#include "common_x.h"
 
 using namespace std;
 
-class ItemProperty: public Property {
+class COMMON_API ItemProperty: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
 		
@@ -33,7 +34,7 @@ class ItemProperty: public Property {
 		void Load(ZFMemPackage* pkPackage);
 };
 
-Property* Create_ItemProperty();
+COMMON_API Property* Create_ItemProperty();
 
 
 #endif

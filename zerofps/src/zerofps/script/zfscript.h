@@ -34,6 +34,7 @@ enum ScripVarType
 
 enum ScripObjectType
 {
+	tEngine,
 	tConsole,
 	tVector3,
 };

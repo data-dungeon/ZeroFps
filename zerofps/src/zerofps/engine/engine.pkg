@@ -11,6 +11,7 @@ class OpenAlSystem;
 class PropertyFactory;
 class LevelManager;
 class PhysicsEngine;
+class EngineScriptInterface;
 
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
@@ -29,5 +30,4 @@ class PhysicsEngine;
 #include "levelmanager.h"
 #include "lightproperty.h"
 #include "physicsengine.h"
-
-
+#include "enginescriptinterface.h"

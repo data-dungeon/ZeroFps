@@ -10,10 +10,11 @@
 #include "statusproperty.h"
 
 #include "inventoryproperty.h"
+#include "common_x.h"
 
 using namespace std;
 
-class PlayerControlProperty: public Property {
+class COMMON_API PlayerControlProperty: public Property {
 	private:
 		int FORWARD_ACTION;
 		Input *m_pkInput;

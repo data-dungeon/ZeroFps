@@ -6,10 +6,11 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "statusproperty.h"
+#include "common_x.h"
 
 using namespace std;
 
-class AdaptorSniper: public Property {
+class COMMON_API AdaptorSniper: public Property {
 	private:
 		ZeroFps *m_pkFps;
 		StatusProperty* m_pkStatusProperty;
@@ -44,7 +45,7 @@ class AdaptorSniper: public Property {
 		
 };
 
-Property* Create_AdaptorSniper();
+COMMON_API Property* Create_AdaptorSniper();
 
 
 #endif

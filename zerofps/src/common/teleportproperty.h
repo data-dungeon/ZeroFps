@@ -6,10 +6,11 @@
 #include "../zerofps/engine/openalsystem.h"
 #include <iostream>
 #include "statusproperty.h"
+#include "common_x.h"
 
 using namespace std;
 
-class TeleportProperty: public Property {
+class COMMON_API TeleportProperty: public Property {
 	private:
 		Vector3 m_kToPos;
 		OpenAlSystem* m_pkAlSys;
@@ -36,7 +37,7 @@ class TeleportProperty: public Property {
 	
 };
 
-Property* Create_TeleportProperty();
+COMMON_API Property* Create_TeleportProperty();
 
 #endif
 

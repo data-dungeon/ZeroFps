@@ -8,8 +8,9 @@
 //#include "gravityproperty.h"
 #include "ballobject.h"
 #include "bunnyaiproperty.h"
+#include "common_x.h"
 
-class BunnyObject: public Object {
+class COMMON_API BunnyObject: public Object {
 	private:
 		ZeroFps		*m_pkFps;
 

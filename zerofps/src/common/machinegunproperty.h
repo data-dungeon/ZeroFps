@@ -3,10 +3,11 @@
 
 #include "inventoryproperty.h"
 #include "machinegunprojectile.h"
+#include "common_x.h"
 
 using namespace std;
 
-class MachineGunProperty: public InventoryProperty {
+class COMMON_API MachineGunProperty: public InventoryProperty {
 
 	private:
 		Input *m_pkInput;
@@ -39,7 +40,7 @@ class MachineGunProperty: public InventoryProperty {
 
 };
 
-Property* Create_MachineGunProperty();
+COMMON_API Property* Create_MachineGunProperty();
 
 
 #endif
