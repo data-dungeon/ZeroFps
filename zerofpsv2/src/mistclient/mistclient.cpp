@@ -220,10 +220,10 @@ void MistClient::OnIdle()
 	Vector3 pos = Get3DMousePos();
 	pos+=pkFps->GetCam()->GetPos();
 	
-	pkRender->Line(pos,pos+Vector3(10,0,0));
+/*	pkRender->Line(pos,pos+Vector3(10,0,0));
 	pkRender->Line(pos,pos+Vector3(0,10,0));	
 	pkRender->Line(pos,pos+Vector3(0,0,10));	
-	
+*/	
 	// FULHACK Tm Vim
 		pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
 	
