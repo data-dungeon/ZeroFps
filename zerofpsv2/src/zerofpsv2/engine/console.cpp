@@ -443,3 +443,7 @@ void Console::Toggle()
 	m_fToggleTime = fTime += 0.2;
 }
 
+bool Console::StartUp()	{ return true; }
+bool Console::ShutDown() { return true; }
+bool Console::IsValid()	{ return true; }
+

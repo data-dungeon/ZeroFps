@@ -197,6 +197,10 @@ private:
 	vector<tRGBPoint> m_kPointsToDraw;
 	vector<tRGBRect> m_kRectsToDraw;
 
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
+
 };
 
 #endif 

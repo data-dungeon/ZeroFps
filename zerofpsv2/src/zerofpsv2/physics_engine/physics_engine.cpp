@@ -682,6 +682,9 @@ int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 		return NOT;
 }
 
+bool Physics_Engine::StartUp()	{ return true; }
+bool Physics_Engine::ShutDown() { return true; }
+bool Physics_Engine::IsValid()	{ return true; }
 
 
 

@@ -153,6 +153,11 @@ ZeroFps::~ZeroFps()
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 }
 
+bool ZeroFps::StartUp()	{ return true; }
+bool ZeroFps::ShutDown() { return true; }
+bool ZeroFps::IsValid()	{ return true; }
+
+
 void ZeroFps::SetApp() {
 	m_pkApp=Application::pkApp;
 	m_pkApp->SetEnginePointer(this);

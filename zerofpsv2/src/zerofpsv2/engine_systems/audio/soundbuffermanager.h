@@ -31,6 +31,10 @@ class ENGINE_SYSTEMS_API SoundBufferManager : public ZFSubSystem {
 		int LoadSound(char* acFile);
 		void ClearAll();
 
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

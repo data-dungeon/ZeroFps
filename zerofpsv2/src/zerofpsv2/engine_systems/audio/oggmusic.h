@@ -59,6 +59,12 @@ private:
 	ALuint* m_pALuiBuffers;
 	// need those ticks..
 	ZeroFps* m_pkZeroFpsObject;
+
+
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
+
 };
 
 #endif // !defined(AFX_OGGMUSIC_H__F6B21359_4F71_4820_B204_C24F0BEE49A7__INCLUDED_)

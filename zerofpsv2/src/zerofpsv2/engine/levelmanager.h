@@ -96,6 +96,10 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		const string GetLogFileFullName();
 		const string GetCurrentMapDir() { return m_kCurrentMapDir; }		
 
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

@@ -241,6 +241,10 @@ public:
 
 //	void ServerList(void);
 	void DrawConnectionGraphs();
+	
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
 
 };
 

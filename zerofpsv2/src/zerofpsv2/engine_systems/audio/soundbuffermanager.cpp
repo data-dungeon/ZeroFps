@@ -78,4 +78,7 @@ void SoundBufferManager::ClearAll()
 	m_kBuffers.clear();
 }
 
+bool SoundBufferManager::StartUp()	{ return true; }
+bool SoundBufferManager::ShutDown() { return true; }
+bool SoundBufferManager::IsValid()	{ return true; }
 

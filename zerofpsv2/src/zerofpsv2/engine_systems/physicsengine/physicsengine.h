@@ -124,6 +124,11 @@ class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 		
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

@@ -436,7 +436,7 @@ bool Image::load_tga(FILE *fp)
 		unsigned char ucPacketValue;
 		unsigned int iNumOfRLE;
 		color_rgba		kColor;
-		int i;
+		unsigned int i;
 
 		while(iPixelOffset < (width * height)) {
 			ucPacketValue =  data[iDataOffset++];

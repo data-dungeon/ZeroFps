@@ -878,6 +878,10 @@ void NetWork::TEST_KeepAliveALL()
 		}
 }
 
+bool NetWork::StartUp()	{ return true; }
+bool NetWork::ShutDown() { return true; }
+bool NetWork::IsValid()	{ return true; }
+
 /*
 void NetWork::ServerList(void)
 {

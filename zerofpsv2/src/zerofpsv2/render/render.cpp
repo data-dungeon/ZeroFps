@@ -8,29 +8,29 @@ Render::Render()
 
 bool Render::StartUp()
 {
- 
- 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	// Get SubSystem Ptrs
+	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
- 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
+ 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
  	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
-	
-	m_iSlicesize = 32;		//grid size of lod tiles
-	m_iDetail = 30;				//height meens greater detail att longer range	
-	m_iViewDistance = 300;
-	m_iFpsLock = 60;
-	m_iAutoLod = 1;
-	m_iLodUpdate = 0;	
-	m_kOldCamPos = Vector3(0,0,0);
 
-	m_iMaxLandscapeLayers	= 4;
-	m_iDrawLandscape			= 1;
-
+	// Register Our Own commands.
+	// Register Our Own variables.
 	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
 
-	m_iScreenShootNum = 0;
-
-	m_iHmTempList=0;
+	// Set Our own local variables.
+	m_iSlicesize				= 32;						//grid size of lod tiles
+	m_iDetail					= 30;						//height meens greater detail att longer range	
+	m_iViewDistance			= 300;
+	m_iFpsLock					= 60;
+	m_iAutoLod					= 1;
+	m_iLodUpdate				= 0;	
+	m_kOldCamPos				= Vector3(0,0,0);
+	m_iMaxLandscapeLayers	= 4;
+	m_iDrawLandscape			= 1;
+	m_iScreenShootNum			= 0;
+	m_iHmTempList				= 0;
 
 	//setup material for heightmap rendering
 	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = GL_FILL;

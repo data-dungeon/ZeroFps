@@ -61,6 +61,11 @@ private:
 	char** m_pstrSections;
 	SectionData* m_pkSectionData;
 	CommandData* m_pkCommandData;
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 #endif 

@@ -6,9 +6,9 @@ ZeroTank g_kZeroTank("ZeroTank",800,600,16);
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
 { 
-	m_iSelfObjectID			 = -1;
-	m_HaveFoundHMapObject	 = false;
-	m_iGameType				 = 1;
+	m_iSelfObjectID				= -1;
+	m_HaveFoundHMapObject		= false;
+	m_iGameType						= 1;
 	
 	g_ZFObjSys.Log_Create("zerorts");
 
@@ -204,8 +204,6 @@ void ZeroTank::OnHud(void)
 
 void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	Object* pkmad;
-
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -286,7 +284,7 @@ void ZeroTank::SetupSpawnPoints()
 	
 	pkObjectMan->GetAllObjects(&kObjects);
 	
-	for(int i=0;i<kObjects.size();i++)
+	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i]->GetName() == "A ZeroRTSSpawnPoint")
 		{
@@ -316,4 +314,8 @@ void ZeroTank::OnServerStart(void)
 void ZeroTank::OnClientStart(void)
 {
 }
+
+bool ZeroTank::StartUp()	{ return true; }
+bool ZeroTank::ShutDown() { return true; }
+bool ZeroTank::IsValid()	{ return true; }
 

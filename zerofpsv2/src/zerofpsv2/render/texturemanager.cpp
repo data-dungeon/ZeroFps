@@ -21,6 +21,14 @@ TextureManager::TextureManager()
 	g_ZFObjSys.Register_Cmd("t_unload",FID_UNLOAD,this);
 }	
 
+bool TextureManager::StartUp()	
+{
+	
+	return true;
+}	
+
+
+
 void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
 	pkTex->b_bClamp			= false;

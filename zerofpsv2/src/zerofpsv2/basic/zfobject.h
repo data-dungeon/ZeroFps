@@ -57,9 +57,9 @@ public:
 
 	friend class ZFObjectManger;
 
-	virtual bool StartUp();
-	virtual bool ShutDown();
-	virtual bool IsValid();
+	virtual bool StartUp()  = 0;
+	virtual bool ShutDown() = 0;
+	virtual bool IsValid()  = 0;
 };
 
 #endif

@@ -1491,3 +1491,6 @@ void ZGui::DrawRect(int x, int y, int w, int h,
 	kElement.second = color;
 	m_kRectsToDraw.push_back(kElement);
 }
+bool ZGui::StartUp()	{ return true; }
+bool ZGui::ShutDown() { return true; }
+bool ZGui::IsValid()	{ return true; }

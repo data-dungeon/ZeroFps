@@ -125,6 +125,9 @@ bool ZGuiResourceManager::RemoveFont(string strName)
 	return false;
 }
 
+bool ZGuiResourceManager::StartUp()	{ return true; }
+bool ZGuiResourceManager::ShutDown() { return true; }
+bool ZGuiResourceManager::IsValid()	{ return true; }
 
 
 

@@ -74,6 +74,9 @@ class ENGINE_SYSTEMS_API OpenAlSystem : public ZFSubSystem {
 		void Init();
 		void SetListnerPosition(Vector3 kPos,Vector3 kAngel,Vector3 kUp);
 		
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 };
 
 #endif

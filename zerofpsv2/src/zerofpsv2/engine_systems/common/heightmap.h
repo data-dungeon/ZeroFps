@@ -118,6 +118,11 @@ class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 		
 		
 		friend class Render;
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

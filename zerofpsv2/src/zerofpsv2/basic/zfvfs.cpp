@@ -45,12 +45,12 @@ bool ZFVFile::Close()
 
 bool ZFVFile::Read  (void* pkData, int iSize, int iCount)
 {
-	return fread(pkData, iSize, iCount, m_pkFilePointer);
+	return (fread(pkData, iSize, iCount, m_pkFilePointer) != 0);
 }
 
 bool ZFVFile::Write (void* pkData, int iSize, int iCount)
 {
-	return fwrite(pkData, iSize, iCount, m_pkFilePointer);
+	return (fwrite(pkData, iSize, iCount, m_pkFilePointer) != 0);
 }
 
 void ZFVFile::Seek(int iPos, int iOrigin)

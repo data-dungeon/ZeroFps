@@ -91,6 +91,9 @@ class ZeroTank :public Application {
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 
 };
 

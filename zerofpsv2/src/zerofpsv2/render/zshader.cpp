@@ -395,4 +395,6 @@ void ZShader::Draw()
 	glPopAttrib();
 }
 
+bool ZShader::ShutDown() { return true; }
+bool ZShader::IsValid()	{ return true; }
 

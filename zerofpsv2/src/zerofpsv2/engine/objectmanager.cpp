@@ -973,3 +973,7 @@ Object* ObjectManager::CloneObject(int iNetID)
 	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
 }
+
+bool ObjectManager::StartUp()	{ return true; }
+bool ObjectManager::ShutDown() { return true; }
+bool ObjectManager::IsValid()	{ return true; }

@@ -7,7 +7,8 @@
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") {
 	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
-	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST,this);
+	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST, this);
+	g_ZFObjSys.Register_Cmd("sys",		FID_SYS, this);
 
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 }
@@ -32,8 +33,21 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_VARLIST:	g_ZFObjSys.PrintVariables();	break;
+
+		case FID_SYS:
+			// Draw All Systems to console.
+			for(unsigned int i=0; i < m_pkObjectManger->kObjectNames.size();i++) {
+				m_pkCon->Printf(" %s, %d\n", m_pkObjectManger->kObjectNames[i].m_strName.c_str(), m_pkObjectManger->kObjectNames[i].m_iNumOfRequests );
+			}
+
+			break;
 	}
 }
+
+
+bool CmdSystem::StartUp()	{ return true; }
+bool CmdSystem::ShutDown() { return true; }
+bool CmdSystem::IsValid()	{ return true; }
 
 
 

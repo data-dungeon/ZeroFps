@@ -46,6 +46,10 @@ private:
 	bool RemoveWnd(string strName); // does not delete it, just erase it from list
 	friend class ZGui;
 
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
+
 };
 
 #endif

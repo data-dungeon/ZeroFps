@@ -20,7 +20,8 @@ class BASIC_API CmdSystem : public ZFSubSystem  {
 		enum FuncId_e
 			{
 			FID_SET,
-			FID_VARLIST
+			FID_VARLIST,
+			FID_SYS
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -28,6 +29,13 @@ class BASIC_API CmdSystem : public ZFSubSystem  {
 		CmdSystem(void);
 		
 		bool Set(const char* aName,const char* acData);							//set variable aName to dData
+
+		friend ZFObjectManger;
+
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 };
 
 

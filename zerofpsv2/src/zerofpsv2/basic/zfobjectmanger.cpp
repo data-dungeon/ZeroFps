@@ -141,7 +141,8 @@ void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* 
 	NameObject kObjName;
 	kObjName.m_strName = string(acName);
 	kObjName.pkObject = pkObject;
-	kObjName.m_iNumOfRequests = 0;
+	kObjName.m_iNumOfRequests	= 0;
+	kObjName.m_bStarted			= false;
 	
 	kObjectNames.push_back(kObjName);
 	pkObject->m_strZFpsName = string(acName);
@@ -294,7 +295,7 @@ bool ZFObjectManger::RunCommand(const char* szCmdArg)
 
 	switch(kCmdData->m_eType) {
 		case CSYS_FUNCTION:	
-			if(kcmdargs.m_kSplitCommand.size() <= kCmdData->m_iMinNumOfArgs) {
+			if(kcmdargs.m_kSplitCommand.size() <= (unsigned int)kCmdData->m_iMinNumOfArgs) {
 				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 				con->Printf(kCmdData->m_strHelpText.c_str());
 				}
@@ -337,7 +338,7 @@ ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
 {
 	string strHataStl;
 
-	for(int i=0; i<m_kLogFiles.size(); i++) {
+	for(unsigned int i=0; i<m_kLogFiles.size(); i++) {
 		strHataStl = m_kLogFiles[i].m_strName ;
 		if(m_kLogFiles[i].m_strName == string(szName)) 
 			return &m_kLogFiles[i];
@@ -348,7 +349,7 @@ ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
 
 void ZFObjectManger::Log_DestroyAll()
 {
-	for(int i=0; i<m_kLogFiles.size(); i++) {
+	for(unsigned int i=0; i<m_kLogFiles.size(); i++) {
 		fclose(m_kLogFiles[i].m_pkFilePointer);
 		}
 }
@@ -537,14 +538,20 @@ bool ZFObjectManger::StartUp()
 {
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
+	int iSize = kObjectNames.size();
+	ZFSubSystem* pkTestObject;
+
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
+
+		pkTestObject = kObjectNames[i].pkObject;
 
 		if(!kObjectNames[i].pkObject->StartUp()) {
 			g_Logf("Fail\n");
 			return false;
 			}
 
+		kObjectNames[i].m_bStarted = true;
 		g_Logf("Ok\n");
 	}
 	
@@ -557,6 +564,8 @@ bool ZFObjectManger::ShutDown()
 
 	// Engine Systems Shutdown backwards.
 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
+		if(kObjectNames[i].m_bStarted == false)	continue;
+
 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
 		if(!kObjectNames[i].pkObject->ShutDown()) {
 			g_Logf("Fail\n");

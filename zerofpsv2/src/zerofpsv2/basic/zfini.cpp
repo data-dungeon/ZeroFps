@@ -440,6 +440,10 @@ bool ZFIni::ExecuteCommands(const char* strName)
 	return false;
 }
 
+bool ZFIni::StartUp()	{ return true; }
+bool ZFIni::ShutDown() { return true; }
+bool ZFIni::IsValid()	{ return true; }
+
 void ZFIni::GetSectionNames(vector<string>& kSectionList)
 {
 	for(int i=0; i<m_iNumSections; i++)

@@ -48,6 +48,12 @@ class ENGINE_API Console : public BasicConsole {
 
 		void			Toggle();
 		bool			IsActive()	{ return m_bActive; }
+
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

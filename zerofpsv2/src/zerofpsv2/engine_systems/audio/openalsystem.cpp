@@ -304,5 +304,8 @@ void OpenAlSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+bool OpenAlSystem::StartUp()	{ return true; }
+bool OpenAlSystem::ShutDown() { return true; }
+bool OpenAlSystem::IsValid()	{ return true; }
 
 

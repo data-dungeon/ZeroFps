@@ -124,7 +124,10 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetDrawMode(int iDrawMode);
 		void Reset();
 		void Draw();
-		
+
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

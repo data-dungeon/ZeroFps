@@ -1109,6 +1109,9 @@ Vector3 HeightMap::GetPosFromSqr(Point square)
 	return Vector3(x,y,z);
 }
 
+bool HeightMap::StartUp()	{ return true; }
+bool HeightMap::ShutDown() { return true; }
+bool HeightMap::IsValid()	{ return true; }
 
 
 

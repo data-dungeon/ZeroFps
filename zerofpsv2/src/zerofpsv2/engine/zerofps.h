@@ -257,6 +257,12 @@ class ENGINE_API ZeroFps : public ZFSubSystem {
 			Keep asking :).*/ 
 		int	m_iRTSClientObject;
 		int GetClientObjectID();
+
+		
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 

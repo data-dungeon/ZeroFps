@@ -92,6 +92,11 @@ class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 		Collission* FindNextCollission();
 
 		bool BodyCollides(Body* pkBody);
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 #endif

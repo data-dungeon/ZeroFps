@@ -299,3 +299,6 @@ float OggMusic::GetTicks()
 	return (m_pkZeroFpsObject->GetGameTime());
 };
 
+bool OggMusic::StartUp()	{ return true; }
+bool OggMusic::ShutDown() { return true; }
+bool OggMusic::IsValid()	{ return true; }

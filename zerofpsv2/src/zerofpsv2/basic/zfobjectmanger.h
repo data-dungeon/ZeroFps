@@ -24,9 +24,10 @@ public:
 /// Links Names to ZFObjects
 struct NameObject
 {
-	string		m_strName;			// Name of object.
-	ZFSubSystem*	pkObject;			// Ptr to object.
-	int			m_iNumOfRequests;	// Num times name was checked.
+	string			m_strName;				// Name of object.
+	ZFSubSystem*	pkObject;				// Ptr to object.
+	int				m_iNumOfRequests;		// Num times name was checked.
+	int				m_bStarted;				// True if this subsystem has started ok.
 };
 
 /// Type of Command
@@ -74,14 +75,16 @@ public:
 class BASIC_API ZFObjectManger
 {
 private:
-	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 
 	vector<ZFLogFile>		m_kLogFiles;
 	FILE*						m_pkLogFile;
 
+protected:
+
 public:
 	public:
+	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
 
 	//DECLARE_SINGLETON(ZFObjectManger);
 

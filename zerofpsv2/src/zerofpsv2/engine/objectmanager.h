@@ -145,6 +145,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void OwnerShip_Give(Object* pkObj);
 		
 		friend class Object;
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 };
 
 #endif

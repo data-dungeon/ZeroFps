@@ -549,6 +549,9 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 	return pkClosest;
 }
 
+bool PhysicsEngine::StartUp()	{ return true; }
+bool PhysicsEngine::ShutDown() { return true; }
+bool PhysicsEngine::IsValid()	{ return true; }
 
 
 

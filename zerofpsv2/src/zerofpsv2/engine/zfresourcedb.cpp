@@ -274,6 +274,9 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		};
 }
 
+bool ZFResourceDB::StartUp()	{ return true; }
+bool ZFResourceDB::ShutDown() { return true; }
+bool ZFResourceDB::IsValid()	{ return true; }
 
 
 

@@ -682,6 +682,9 @@ void LevelManager::ChangeLandscapeFillMode(PolygonMode eMode)
 }
 
 
+bool LevelManager::StartUp()	{ return true; }
+bool LevelManager::ShutDown() { return true; }
+bool LevelManager::IsValid()	{ return true; }
 
 
 

@@ -88,6 +88,11 @@ class ENGINE_API ZFResourceDB : public ZFSubSystem {
 		void Refresh();
 
 		ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle);
+
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 };
 
 #endif
