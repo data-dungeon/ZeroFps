@@ -173,7 +173,7 @@ void ZGuiEd::SelNewSkin(int iIndex)
 		sprintf(szText, "%i", (*ppkSkin)->m_unBorderSize);
 		SetDlgItemText(g_kDlgBoxBottom, IDC_BORDER_EB, szText);
 
-		if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB))
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 		{
 			sprintf(szText, "%i", (int)((*ppkSkin)->m_afBkColor[0]*255));
 			SetDlgItemText(g_kDlgBoxBottom, IDC_RGB_COLOR_R_EB, szText);

@@ -49,6 +49,11 @@ public:
 	void KillFocus();
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	void SetResizeFlags(bool bHorz, bool bVert);
+	void SetFont(ZGuiFont* pkFont);
+	void SetTextColor(unsigned char ucR, unsigned char ucG, 
+		unsigned char ucB); // overloaded
+	void GetTextColor(unsigned char& rucR, unsigned char& rucG, 
+		unsigned char& rucB); // overloaded
 
 private:
 	ZGuiLabel* m_pkLabel;

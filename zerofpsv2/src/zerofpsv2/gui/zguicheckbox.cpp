@@ -26,7 +26,7 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent,
 		kRectangle.Height()), this, true, 0);
 	m_pkLabel->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	m_pkLabel->Enable();
-	m_pkLabel->Move(20,0);
+	m_pkLabel->Move(kRectangle.Width()+2,0);
    m_pkLabel->Disable(); 
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
@@ -47,8 +47,11 @@ ZGuiCheckbox::~ZGuiCheckbox()
 //
 bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 {
-	if(m_pkFont)
-		pkRenderer->SetFont(m_pkFont);
+	//if(m_pkFont)
+	//{
+	//	m_pkLabel->SetFont(m_pkFont);
+	//	//pkRenderer->SetFont(m_pkFont);
+	//}
 
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->SetClipperArea(m_kClipperArea);  
@@ -60,6 +63,13 @@ bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 	m_pkLabel->Render(pkRenderer); 
 	
 	return false;
+}
+
+void ZGuiCheckbox::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	m_pkLabel->SetFont(m_pkFont);
+	m_pkLabel->Resize(-1, m_pkFont->m_iRowHeight+1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -169,6 +179,12 @@ void ZGuiCheckbox::SetTextColor(unsigned char ucR, unsigned char ucG,
 	m_afTextColor[2] = ucB;
 }
 
+void ZGuiCheckbox::GetTextColor(unsigned char& rucR, 
+										  unsigned char& rucG, unsigned char& rucB)
+{
+	m_pkLabel->GetTextColor(rucR, rucG, rucB);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name: GetText
@@ -210,10 +226,18 @@ void ZGuiCheckbox::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 	if(iWidth == -1) iWidth = GetScreenRect().Width();
 	if(iHeight == -1) iHeight = GetScreenRect().Height();
 
-	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
-	iWidth = GetScreenRect().Width(); // dont allow horizontal resize
+//	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+//	iWidth = GetScreenRect().Width(); // dont allow horizontal resize
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+
+	int font_height = 8;
+	if(m_pkFont)
+		font_height = m_pkFont->m_iRowHeight;
+
+	int x = iWidth + 2;
+	int y = iHeight/2-font_height/2;
+	m_pkLabel->SetPos(x,y,false,true); 
 }
 
 void ZGuiCheckbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)

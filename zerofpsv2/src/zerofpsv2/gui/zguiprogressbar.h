@@ -50,6 +50,7 @@ public:
 	void SetSkin(ZGuiSkin* pkFront, ZGuiSkin* pkBack);
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	bool Render( ZGuiRender* pkRenderer ); // overloaded
+	void Resize(int iWidth, int iHeight, bool bChangeMoveArea); // overloaded
 
 	bool m_bShowText;
 	

@@ -35,9 +35,10 @@ public:
 
 	void CheckButton();
 	void UncheckButton();
+	void SetFont(ZGuiFont* pkFont); // överlagrad
 	void SetText(char* strText, bool bResizeWnd=false); // overloaded
 	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
-
+	void GetTextColor(unsigned char& rucR, unsigned char& rucG, unsigned char& rucB);
 	bool IsChecked();
 
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight); // overloaded

@@ -110,22 +110,26 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
 	{
+		float width_mod, height_mod;
 		int iNewWidth = -1, iNewHeight = -1;
 
 		if(eResizeType == ResizeWidth || eResizeType == Resize)
 		{
-			float width_mod = (float) GetWidth() / 800.0f;
+			width_mod = (float) GetWidth() / 800.0f;
 			iNewWidth = (int) (800.0f*width_mod);
 		}
 
 		if(eResizeType == ResizeHeight || eResizeType == Resize)
 		{
-			float height_mod = (float) GetHeight() / 600.0f;
+			height_mod = (float) GetHeight() / 600.0f;
 			iNewHeight = (int) (600.0f*height_mod);
 		}
 
-		if(iNewWidth != -1) w = iNewWidth;
-		if(iNewHeight != -1) h = iNewHeight;
+		//if(iNewWidth != -1) w = iNewWidth;
+		//if(iNewHeight != -1) h = iNewHeight;
+
+		if(iNewWidth != -1) w = (int) (width_mod * (float) w);
+		if(iNewHeight != -1) h = (int) (height_mod * (float) h);
 	}
 
 	// Om parent fönstret är en TabControl så är iFlags = sidnummret och parent fönstret

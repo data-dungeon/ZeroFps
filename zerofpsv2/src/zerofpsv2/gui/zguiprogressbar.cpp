@@ -202,3 +202,14 @@ ProgressbarTextOrientation ZGuiProgressbar::GetTextOrientation()
 {
 	return m_eTextOrient;
 }
+
+void ZGuiProgressbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
+{
+	if(iWidth == -1) iWidth = GetScreenRect().Width();
+	if(iHeight == -1) iHeight = GetScreenRect().Height();
+
+	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+
+	m_pkLabelBkgrd->Resize(iWidth, iHeight, bChangeMoveArea);
+	m_pkLabelFront->Resize(iWidth, iHeight, bChangeMoveArea);
+}

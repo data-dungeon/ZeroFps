@@ -138,8 +138,11 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 		new ZGuiCheckbox(rcButton, this, (pkParent == NULL), m_iID++));
 	
 	pkButton->SetMoveArea(pkNewItem->pkButton->GetScreenRect());
+	
+	pkButton->SetFont(m_pkFont);
 	pkButton->SetText(szText);
-	pkButton->SetTextColor(0,0,0); 
+	
+	pkButton->SetTextColor(m_afTextColor[0]*255,m_afTextColor[1]*255,m_afTextColor[2]*255); 
 
 	Rect rcClipper = GetScreenRect();
 	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
@@ -341,7 +344,7 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				// Change back to old font color
 				if(m_pkSelectedNode && m_pkSelectedNode->pkButton)
 					if(m_pkSelectedNode->kChilds.empty())
-						m_pkSelectedNode->pkButton->SetTextColor(0,0,0); 
+						m_pkSelectedNode->pkButton->SetTextColor(m_afTextColor[0]*255,m_afTextColor[1]*255,m_afTextColor[2]*255); 
 				
 				// Öppna/stäng noden som har klickats.
 				bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked(); 
@@ -1124,3 +1127,44 @@ void ZGuiTreebox::SelNone()
    m_pkSelectedNode = NULL;
 }
 
+void ZGuiTreebox::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	m_iButtonSize = m_pkFont->m_iRowHeight;
+
+	if(!m_kNodeList.empty())
+	{
+		Rect rc = (*m_kNodeList.begin())->pkButton->GetScreenRect();
+
+		int y = GetScreenRect().Top - m_iButtonSize;
+
+		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
+		{	
+			ZGuiCheckbox* pkButton = (*it)->pkButton;
+			pkButton->SetFont(m_pkFont);
+			pkButton->Resize(m_iButtonSize, m_iButtonSize);
+			rc = pkButton->GetScreenRect();
+			pkButton->SetPos(rc.Left, y, 1, 1);
+			y += (rc.Height() + 1);
+		}
+	}
+
+	m_pkSelLabel->Resize(m_iButtonSize, m_iButtonSize);
+
+	ScrollCols();
+
+}
+
+void ZGuiTreebox::SetTextColor(unsigned char ucR, unsigned char ucG, 
+										 unsigned char ucB)
+{
+	m_afTextColor[0] = (float) ucR / 255.0f;
+	m_afTextColor[1] = (float) ucG / 255.0f;
+	m_afTextColor[2] = (float) ucB / 255.0f;
+
+	map<string, ZGuiTreeboxNode* >::iterator it;
+	for(it=m_kNodeMap.begin(); it!= m_kNodeMap.end(); it++)
+	{
+		it->second->pkButton->SetTextColor(ucR, ucG, ucB);
+	}
+}

@@ -26,6 +26,7 @@ public:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	void SetText(char* strText, bool bResizeWnd=false); // överlagrad
 	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB);
+	void SetFont(ZGuiFont* pkFont);
 	ZGuiRadiobutton* GetNext() { return m_pkNext; }
 	char* GetText();// overloaded
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded

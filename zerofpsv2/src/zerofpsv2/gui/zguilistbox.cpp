@@ -144,6 +144,10 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 		m_pkSkinBnUp, m_pkSkinBnDown, m_pkSkinBnHLight);
 	pkNewItem->GetButton()->SetGUI(GetGUI());
 
+	unsigned char r,g,b;
+	GetTextColor(r,g,b);
+	pkNewItem->GetButton()->SetTextColor(r,g,b); 
+
 	if(!m_bEnabled)
 		pkNewItem->GetButton()->Disable();
 
@@ -732,3 +736,4 @@ void ZGuiListbox::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned ch
 	for(itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
 		(*it)->GetButton()->SetTextColor(ucR, ucG, ucB);
 }
+

@@ -96,6 +96,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic", "zerofpsv2\basic\ba
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zguied", "tools\tool\zguied\zgresedit2.vcproj", "{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}"
 	ProjectSection(ProjectDependencies) = postProject
+		{16A13C60-A6BF-4D63-A961-A4323F2CDCDE} = {16A13C60-A6BF-4D63-A961-A4323F2CDCDE}
 	EndProjectSection
 EndProject
 Global

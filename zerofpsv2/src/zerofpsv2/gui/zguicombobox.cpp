@@ -324,10 +324,13 @@ void ZGuiCombobox::Resize(int iWidth,int iHeight,bool bChangeMoveArea)
 	if(iWidth == -1) iWidth = GetScreenRect().Width();
 	if(iHeight == -1) iHeight = GetScreenRect().Height();
 
-	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+	if(m_bIsMenu)
+		iHeight = GetScreenRect().Height(); // dont allow vertcal resize
+	else
+		iHeight = m_pkListbox->GetItemHeight();
 
-	if(m_bIsMenu == false) // The label of a menu shall not be resized.
-		m_pkLabel->Resize(iWidth,m_pkListbox->GetItemHeight());
+	//if(m_bIsMenu == false) // The label of a menu shall not be resized.
+	//	m_pkLabel->Resize(iWidth,m_pkListbox->GetItemHeight());
 
 	ZGuiWnd::Resize(iWidth,iHeight,bChangeMoveArea);
 
@@ -335,12 +338,19 @@ void ZGuiCombobox::Resize(int iWidth,int iHeight,bool bChangeMoveArea)
 	{
 		m_pkListbox->Resize(
 			m_pkListbox->GetScreenRect().Width(),
-			m_pkListbox->GetItemCount()*
-			m_pkListbox->GetItemHeight());
+			m_pkListbox->GetItemCount()*m_pkListbox->GetItemHeight());
 	}
    else
    {
-      
+		m_pkLabel->Resize(iWidth, m_pkListbox->GetItemHeight());
+
+		Rect rc = m_pkLabel->GetScreenRect(true);
+
+		m_pkListbox->Resize(rc.Width(), 
+			m_unNumVisibleRows*m_pkListbox->GetItemHeight()); 
+		
+		m_pkListbox->SetPos(rc.Left, rc.Bottom, 1, 1);
+
    }
 }
 
@@ -382,10 +392,26 @@ void ZGuiCombobox::SetResizeFlags(bool bHorz, bool bVert)
 	m_pkListbox->SetResizeFlags(bHorz, bVert);
 }
 
+void ZGuiCombobox::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	m_pkListbox->SetFont(m_pkFont);
+	m_pkLabel->SetFont(m_pkFont);
+}
 
+void ZGuiCombobox::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)
+{
+	m_afTextColor[0] = (float) ucR / 255.0f;
+	m_afTextColor[1] = (float) ucG / 255.0f;
+	m_afTextColor[2] = (float) ucB / 255.0f;
 
+	m_pkListbox->SetTextColor(ucR, ucG, ucB);
+	m_pkLabel->SetTextColor(ucR, ucG, ucB);
+}
 
-
-
-
-
+void ZGuiCombobox::GetTextColor(unsigned char& rucR, 
+										  unsigned char& rucG, 
+										  unsigned char& rucB)
+{
+	m_pkListbox->GetTextColor(rucR, rucG, rucB);
+}

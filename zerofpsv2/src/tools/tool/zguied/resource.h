@@ -100,6 +100,7 @@
 #define IDC_MINIMIZE_BUTTON             1092
 #define IDC_IMAGE_INFO_LABEL            1093
 #define IDC_MULTILINE_CB                1094
+#define IDC_SCREEN_ALIGNMENT_GB         1095
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -125,7 +126,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1094
+#define _APS_NEXT_CONTROL_VALUE         1096
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -80,6 +80,10 @@ public:
 
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 
+	void SetFont(ZGuiFont* pkFont); // overloaded
+
+	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
+
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 
 protected:
@@ -97,6 +101,7 @@ private:
 	void MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive=true);
 	void OpenChilds(list<ZGuiTreeboxNode*> kChilds, bool bOpen);
 	void OpenNode(ZGuiTreeboxNode* pkNode, bool bOpen);
+	
 	
 	void PrintNode(ZGuiTreeboxNode* pkNode);
 	void PrintChilds(list<ZGuiTreeboxNode*> kList);

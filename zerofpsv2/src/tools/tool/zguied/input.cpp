@@ -228,7 +228,7 @@ void ZGuiEd::HandleInput()
 					if(GetSelSkin(ppkSkin))
 					{
 						float fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB))
+						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[0] = fColor;
 						else
 							(*ppkSkin)->m_afBorderColor[0] = fColor;
@@ -241,7 +241,7 @@ void ZGuiEd::HandleInput()
 					if(GetSelSkin(ppkSkin))
 					{
 						float fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB))
+						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[1] = fColor;
 						else
 							(*ppkSkin)->m_afBorderColor[1] = fColor;
@@ -254,7 +254,7 @@ void ZGuiEd::HandleInput()
 					if(GetSelSkin(ppkSkin))
 					{
 						float fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB))
+						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[2] = fColor;
 						else
 							(*ppkSkin)->m_afBorderColor[2] = fColor;

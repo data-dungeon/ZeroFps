@@ -428,7 +428,7 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		{
 			x += 10;
 			y += 10;
-		}
+		}		
 	}
 
 	if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == TabControl)
@@ -456,7 +456,13 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		UpdateInfo();
 
 		if(pkCloneTarget)
+		{
 			CloneSkins(m_pkFocusWnd, pkCloneTarget);
+			m_pkFocusWnd->SetFont(pkCloneTarget->GetFont());
+			unsigned char r,g,b;
+			pkCloneTarget->GetTextColor(r,g,b);
+			m_pkFocusWnd->SetTextColor(r,g,b);
+		}
 
 		if(UpdateSkinList())
 			SelNewSkin(0);

@@ -181,8 +181,8 @@ int Win32ThreadMain(void *v)
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_WINDOW_LIST), 
 		"Widget List\r\n\r\n" \
 		"By selecting a item in the list, you select a widget. Sometimes this is " \
-		"easier then working with mouse.\r\n" \
-		"This is also the only way to select a page in a Tab Control.");
+		"easier then working with mouse.\r\n\r\n" \
+		"This is also the only way to select a page in a Tab Control or a widget that is hidden.");
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_COPY_WND_BN), 
 		"Press this button to create a copy of a widget.\r\n" \
@@ -294,6 +294,43 @@ int Win32ThreadMain(void *v)
 		"that are hidden behind other windows. Not neccesery to set this for every window, the " \
 		"editor will rearrange all widgets automatically anyway on save.");
 
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT), 
+		"The distance from Top Left corner of the screen to window are always " \
+		"the same no matter how big or small the screen is.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPRIGHT), 
+		"The distance from Top Right corner of the screen to window are always " \
+		"the same no matter how big or small the screen is.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMLEFT), 
+		"The distance from Bottom Left corner of the screen to window are always " \
+		"the same no matter how big or small the screen is.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMRIGHT), 
+		"The distance from Bottom Right corner of the screen to window are always " \
+		"the same no matter how big or small the screen is.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTER), 
+		"The window are always centered on the screen.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERVERT), 
+		"The window are always centered vertically on the screen.");
+	
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERHORZ), 
+		"The window are always centered horizontally on the screen.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT), 
+		"The window will not be resized when the resolution thange from 800x600.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RESIZETYPE_BOTH), 
+		"If the screen size is not 800x600, the window will change size so it will have the same propotion in any resolution.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RESIZETYPE_WIDTH), 
+		"If the screen size is not 800x600, the window will change width so it will have the same propotion in any resolution.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RESIZETYPE_HEIGHT), 
+		"If the screen size is not 800x600, the window will change height so it will have the same propotion in any resolution.");
+	
 	HBITMAP hIcon;
 	hIcon = (HBITMAP) LoadImage(NULL, 
 		"../datafiles/sysdata/textures/gui/wndalignent_topleft.bmp", 

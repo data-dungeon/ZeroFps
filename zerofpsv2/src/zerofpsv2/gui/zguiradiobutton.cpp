@@ -207,6 +207,8 @@ void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 
+	m_pkCheckbox->Resize(iHeight, iHeight, bChangeMoveArea);
+
 /*	printf("%i, %i\n", iWidth, iHeight);*/
 }
 
@@ -284,4 +286,10 @@ void ZGuiRadiobutton::SetTextColor(unsigned char ucR, unsigned char ucG, unsigne
 	m_afTextColor[0] = ucR;
 	m_afTextColor[1] = ucG;
 	m_afTextColor[2] = ucB;
+}
+
+void ZGuiRadiobutton::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	m_pkCheckbox->SetFont(m_pkFont);
 }
