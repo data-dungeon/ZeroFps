@@ -42,17 +42,6 @@ end
 
 function HeartBeat()
 
-	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
-
-	-- Ropa på hjälp om han har blivit skadad igen.
-	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		CallForHelp(SIGetSelfID(), 1)
-		Panic();
-	end
-
-	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
-
 	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
@@ -66,6 +55,17 @@ function HeartBeat()
 	
 		return
 	end
+
+	local Life = GetCharStats(SIGetSelfID(), 0)
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
+
+	-- Ropa på hjälp om han har blivit skadad igen.
+	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
+		CallForHelp(SIGetSelfID(), 1)
+		Panic();
+	end
+
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 
 	local pos = GetObjectPos(SIGetSelfID());
 	pos[1] = pos[1] + Random(12)-6;
@@ -93,8 +93,6 @@ function Dead()
 	if Random(10) < 3 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 	end
-
-	SISetHeartRate(SIGetSelfID(),-1);
 end
 
 function Panic()

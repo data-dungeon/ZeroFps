@@ -47,17 +47,6 @@ end
 
 function HeartBeat()
 
-	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_BaldieLife")
-
-	-- om skadad, bli aggro
-	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		SetState(SIGetSelfID(), 4) -- aggro
-		SetVar("HarryWounded", 1);
-	end
-
-	SetEntityVar(SIGetSelfID(), "g_BaldieLife", Life)
-
 	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
@@ -71,6 +60,18 @@ function HeartBeat()
 	
 		return
 	end
+
+	local Life = GetCharStats(SIGetSelfID(), 0)
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_BaldieLife")
+
+	-- om skadad, bli aggro
+	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
+		SetState(SIGetSelfID(), 4) -- aggro
+		SetVar("HarryWounded", 1);
+	end
+
+	SetEntityVar(SIGetSelfID(), "g_BaldieLife", Life)
+
 
 	-- check if harry is wounded, if so, get aggro
 	if GetVar("HarryWounded") == 1 then

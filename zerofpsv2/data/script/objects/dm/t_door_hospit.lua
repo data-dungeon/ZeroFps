@@ -2,7 +2,7 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/dm/door_hospital.mad");			
+			InitParameter("m_kMadFile","/data/mad/dm/dm_door.mad");			
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMClickMe");	
 		InitProperty("P_ScriptInterface");
