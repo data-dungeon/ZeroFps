@@ -33,7 +33,10 @@ P_CharacterProperty::P_CharacterProperty()
 
 P_CharacterProperty::~P_CharacterProperty()
 {
-
+	//make sure all sounds are stoped
+	m_pkAudioSystem->StopSound(m_iWalkSoundID);
+	m_pkAudioSystem->StopSound(m_iRunSoundID);
+	m_pkAudioSystem->StopSound(m_iSwimSoundID);
 
 }
 
