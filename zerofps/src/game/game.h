@@ -14,6 +14,7 @@
 #include "bunnyobject.h"
 #include "teleportproperty.h"
 #include "adaptorsniper.h"
+#include "treeidleproperty.h"
 
 enum GAME_STATE
 {

@@ -18,6 +18,7 @@
 #include "../game/massdriverproperty.h"
 #include "../game/massdriverprojectile.h"
 #include "../game/adaptorsniper.h"
+#include "../game/treeidleproperty.h"
 class Gui;
 
 

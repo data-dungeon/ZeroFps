@@ -979,7 +979,8 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
-    pkPropertyFactory->Register("AdaptorSniper", Create_AdaptorSniper);
+	pkPropertyFactory->Register("TreeIdleProperty", Create_TreeIdleProperty);
+	pkPropertyFactory->Register("AdaptorSniper", Create_AdaptorSniper);
 	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);
 	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
 	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
