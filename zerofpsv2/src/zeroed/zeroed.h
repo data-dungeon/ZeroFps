@@ -39,6 +39,8 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
+const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
+
 /**	\brief	Da ZeroEd
 		\ingroup ZeroEd
 */
@@ -211,6 +213,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		void AddPropertyVal();
 		void RemoveSelProperty();
+      bool SaveCurrentToScript();
 	
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();

@@ -37,6 +37,11 @@ bool ZeroEd::UpdatePropertyList(int iID)
 			   pkProperyList->AddItem((char*)(*it).c_str(), j++, false);
 	   }
    }
+   else
+   {
+      ShowWnd("AddNewProperyWnd",false);
+      ShowWnd("EditPropertyWnd",false);
+   }
 
 	return true;
 }
@@ -84,12 +89,12 @@ void ZeroEd::FillPropertyValList()
 		if((item = GetSelItem("PropertyList")))
 			if((pkProp = pkEnt->GetProperty(item)))
 			{
-				vector<string> apa;
-				apa = pkProp->GetValueNames();
+				vector<string> kValNames;
+				kValNames = pkProp->GetValueNames();
 				
 				list<string> temp;
-				for(int i=0; i<apa.size(); i++)
-					temp.push_back(apa[i]);
+				for(int i=0; i<kValNames.size(); i++)
+					temp.push_back(kValNames[i]);
 
 				temp.sort(); 
 
@@ -133,4 +138,70 @@ void ZeroEd::RemoveSelProperty()
 				pkEnt->RemoveProperty(pkProp);
 				UpdatePropertyList(m_iCurrentObject);
 			}
+}
+
+bool ZeroEd::SaveCurrentToScript()
+{
+   Entity* pkEnt;
+   Property* pkProp;
+   ZFBasicFS* pkBFPS;	
+   PropertyFactory* pkPropFuck;
+   string strFileName = GetText("SaveScriptFileNameEb");
+
+   bool bUpdate = false;
+   
+	if((pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"))) &&
+      (pkPropFuck = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
+      (pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)) && !strFileName.empty())
+   {
+      if( strFileName.find(".lua") == string::npos )
+         strFileName += string(".lua");
+
+      if(!pkBFPS->DirExist(CREATED_SCRIPTS_DIR.c_str()))
+	      pkBFPS->CreateDir(CREATED_SCRIPTS_DIR.c_str());
+
+      ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
+      BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+
+      ZFVFile kFile;
+      if(kFile.Open(CREATED_SCRIPTS_DIR + strFileName, 0,true))
+      {
+         fprintf(kFile.m_pkFilePointer, "function Create()\n\n");
+         fprintf(kFile.m_pkFilePointer, "\tInitObject()\n");
+
+         vector<string> vkProperties;
+	      pkPropFuck->GetAllProperties(vkProperties);
+       
+         for(int i=0; i<vkProperties.size(); i++)
+         {
+            if((pkProp=pkEnt->GetProperty(vkProperties[i].c_str())) != NULL)
+            {
+		         fprintf(kFile.m_pkFilePointer, "\t\tInitProperty(\"%s\")\n", vkProperties[i].c_str());
+
+               vector<string> kValNames = pkProp->GetValueNames();
+               for(int j=0; j<kValNames.size(); j++)
+                  fprintf(kFile.m_pkFilePointer, "\t\t\tInitParameter(\"%s\",\"%s\")\n", 
+                     kValNames[j].c_str(), pkProp->GetValue( kValNames[j].c_str() ) );
+            }
+         }
+         
+         fprintf(kFile.m_pkFilePointer, "\tSetParentObject()\n");
+         fprintf(kFile.m_pkFilePointer, "\tSetReturnObject()\n");
+         fprintf(kFile.m_pkFilePointer, "end\n");
+         kFile.Close();
+         bUpdate = true;
+      }
+   }
+
+   ShowWnd("SaveScriptFileNameEb",false);
+   GetWnd("CustomEntitiesTree")->Resize(200, 200, false);
+   ((ZGuiTextbox*) GetWnd("SaveScriptFileNameEb"))->KillFocus();
+
+   if(bUpdate)
+   {
+      ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
+      BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+   }
+ 
+   return true;
 }

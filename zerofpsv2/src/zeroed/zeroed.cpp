@@ -59,6 +59,11 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 			{
 				g_kZeroEd.AddPropertyVal();
 			}
+         else
+         if(strcmp("SaveScriptFileNameEb", win->GetName()) == 0)
+         {
+            g_kZeroEd.SaveCurrentToScript();
+         }
 		}
 		break;
 	}
@@ -215,7 +220,7 @@ void ZeroEd::OnInit()
 	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/zeroed/") ,"data/");
-	
+
 	m_pkConsole->Printf(" ZeroEd ");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");

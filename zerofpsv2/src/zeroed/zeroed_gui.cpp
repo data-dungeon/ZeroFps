@@ -171,6 +171,20 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				RemoveSelProperty();
 			}
 		}
+      else
+      if(strMainWnd == "CustomEntitiesPage")
+      {
+			if(strWndClicked == "AddToScriptBn")
+			{            
+            if(IsWndVisible("SaveScriptFileNameEb"))
+               SaveCurrentToScript();
+            else
+            {
+               ShowWnd("SaveScriptFileNameEb",true);
+               GetWnd("CustomEntitiesTree")->Resize(200, 200-60, false);
+            }
+			}
+      }
 		else
 		if(strMainWnd == "AddNewProperyWnd")
 		{
@@ -322,6 +336,22 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			m_strActiveObjectName = strFullpath;
 		}
 	}
+	else
+	if(strcmp(szTreeBox, "CustomEntitiesTree") == 0)
+	{
+		if(szClickNodeText && bHaveChilds == false)
+		{
+			string strFullpath = string("data/script/custom_scripts/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			m_strActiveObjectName = strFullpath;
+		}
+	}
 }
 
 void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
@@ -342,7 +372,11 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			break;
-		case 3:
+      case 3:
+         ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
+         BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+         break;
+		case 4:
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			break;

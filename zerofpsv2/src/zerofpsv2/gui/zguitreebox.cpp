@@ -973,6 +973,7 @@ bool ZGuiTreebox::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 
 void ZGuiTreebox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+   ZGuiWnd::Resize(Width, Height, bChangeMoveArea);
 
 	Rect rc = GetWndRect();
 	int x = rc.Width()-SCROLLBAR_WIDTH;
@@ -989,7 +990,17 @@ void ZGuiTreebox::Resize(int Width, int Height, bool bChangeMoveArea)
 	m_pkHorzScrollbar->Resize(w,h,true);
 	m_pkHorzScrollbar->SetPos(x,y,false,true);
 
-	ZGuiWnd::Resize(Width, Height, bChangeMoveArea);
+	Rect rcClipper = GetScreenRect();
+	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
+	rcClipper.Bottom -= m_pkHorzScrollbar->GetScreenRect().Height();
+
+	m_pkSelLabel->SetClipperArea(rcClipper); 
+
+	for(itNode it = m_kNodeList.begin(); it != m_kNodeList.end(); it++)
+	{
+		ZGuiCheckbox* pkWnd = (*it)->pkButton;
+		pkWnd->SetClipperArea(rcClipper); 
+	}	
 }
 
 void ZGuiTreebox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
@@ -1023,7 +1034,12 @@ void ZGuiTreebox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 bool ZGuiTreebox::Clear()
 {
-//	ZGui* pkGui = GetGUI();
+   m_iStartrow=m_iStartcol=0;
+   PREV_VERT_SCROLLROW=PREV_HORZ_SCROLLCOL=-1000;
+   m_pkVertScrollbar->SetScrollInfo(0,100,0.25f,0); 
+   m_pkHorzScrollbar->SetScrollInfo(0,100,0.25f,0); 
+
+   //	ZGui* pkGui = GetGUI();
 	map<string, ZGuiTreeboxNode* >::iterator it;
 	for(it=m_kNodeMap.begin(); it!= m_kNodeMap.end(); it++)
 	{

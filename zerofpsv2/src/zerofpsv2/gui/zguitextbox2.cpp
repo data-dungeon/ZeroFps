@@ -832,6 +832,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		if((unsigned)m_iCursorPos == strlen(m_strText))
 		{
 			m_strText[m_iCursorPos] = iKey;
+         m_strText[m_iCursorPos+1] = '\0'; // lade till 040801
 			m_iCursorPos++;
 		}
 		else
