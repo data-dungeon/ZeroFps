@@ -38,10 +38,14 @@ void P_AmbientSound::Update()
 	{
 		if(m_bDotFileLoaded == false)
 		{
+			/*
+				// det där ser inge vidare ut, du borde nog inte spara data i nån ".dot" fil, varför inte spara datan i propertyt istället?
+			
 			if(LoadDotFile(m_pEntityMan->GetLoadDir() + string("/asa.dot")))
 			{
 				m_bDotFileLoaded = true;
 			}
+			*/
 		}
 		else
 		{
