@@ -43,8 +43,11 @@ void BASIC_API g_Logf(const char *fmt, ...);
 
 bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
 
+#define zf_pi 6.28318531f
 #define epsilon 1.0e-4f
 bool BASIC_API equal_f(float a, float b);
+
+
 
 extern char g_szFormatText[4096];	
 

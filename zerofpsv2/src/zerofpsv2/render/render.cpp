@@ -452,7 +452,7 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
-void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor)
+void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSolid)
 {
 	glPushMatrix();
 		
@@ -460,41 +460,83 @@ void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor)
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
 	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
-		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );	
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT);	
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
 
-	glColor4f(kColor.x,kColor.y,kColor.z,1);
+	
+	if(bSolid)
+		glBegin(GL_TRIANGLES);
+	else
+		glBegin(GL_LINES);
 
-	glBegin(GL_LINES);
+	if(bSolid)
+	{	
+		float kTopColor[3] = {1,0,1};
 
-	// Base
-	glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
-	glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5, 0.5);
-	glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5,-0.5);
-	glVertex3f( 0.5,-0.5,-0.5);	glVertex3f(-0.5,-0.5,-0.5);
+		float l[3] = {-0.5,-0.5,-0.5};
+		float t[3] = {-0.5,-0.5, 0.5};
+		float r[3] = { 0.5,-0.5, 0.5};
+		float b[3] = { 0.5,-0.5,-0.5};
+		float c[3] = { 0.0, 0.5, 0.0};
 
-	// Left
-	glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
-	glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
-	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5,-0.5);
+		// Base
+		glVertex3fv(l); glVertex3fv(r); glVertex3fv(t);	
+		glVertex3fv(l); glVertex3fv(b); glVertex3fv(r);
 
-	// Top
-	glVertex3f(-0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5, 0.5);
-	glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
-	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5, 0.5);
+		// Left
+		glColor4f(kColor.x,kColor.y,kColor.z,1);
+		glVertex3fv(l); glVertex3fv(t); 
+		glColor3fv(kTopColor); glVertex3fv(c); 
 
-	// Right
-	glVertex3f( 0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5,-0.5);
-	glVertex3f( 0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
-	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5, 0.5);
+		// Top
+		glColor4f(kColor.x,kColor.y,kColor.z,1);
+		glVertex3fv(t); glVertex3fv(r); 
+		glColor3fv(kTopColor); glVertex3fv(c); 
 
-	// Bottom
-	glVertex3f( 0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5,-0.5);
-	glVertex3f(-0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
-	glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5,-0.5);
+		// Right
+		glColor4f(kColor.x,kColor.y,kColor.z,1);
+		glVertex3fv(r); glVertex3fv(b); 
+		glColor3fv(kTopColor); glVertex3fv(c); 
+
+		// Bottom
+		glColor4f(kColor.x,kColor.y,kColor.z,1);
+		glVertex3fv(b); glVertex3fv(l); 
+		glColor3fv(kTopColor); glVertex3fv(c);
+	}
+	else
+	{
+		glColor4f(kColor.x,kColor.y,kColor.z,1);
+
+		// Base
+		glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
+		glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5, 0.5);
+		glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.5,-0.5,-0.5);
+		glVertex3f( 0.5,-0.5,-0.5);	glVertex3f(-0.5,-0.5,-0.5);
+
+		// Left
+		glVertex3f(-0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5, 0.5);
+		glVertex3f(-0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
+		glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5,-0.5);
+
+		// Top
+		glVertex3f(-0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5, 0.5);
+		glVertex3f( 0.5,-0.5, 0.5);	glVertex3f( 0.0, 0.5, 0.0);
+		glVertex3f( 0.0, 0.5, 0.0);	glVertex3f(-0.5,-0.5, 0.5);
+
+		// Right
+		glVertex3f( 0.5,-0.5, 0.5); glVertex3f( 0.5,-0.5,-0.5);
+		glVertex3f( 0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
+		glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5, 0.5);
+
+		// Bottom
+		glVertex3f( 0.5,-0.5,-0.5); glVertex3f(-0.5,-0.5,-0.5);
+		glVertex3f(-0.5,-0.5,-0.5);	glVertex3f( 0.0, 0.5, 0.0);
+		glVertex3f( 0.0, 0.5, 0.0);	glVertex3f( 0.5,-0.5,-0.5);
+
+	}
 
 	glEnd();
 
@@ -503,7 +545,8 @@ void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor)
 	glPopAttrib();
 }
 
-void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, float fAngularity)
+void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, 
+					  Vector3 kColor, bool bSolid, int iSegments)
 {
 	glPushMatrix();
 		
@@ -511,7 +554,7 @@ void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor,
 	glScalef(fRadie,fHeight,fRadie);
 	
 	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
-		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );	
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT);	
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
@@ -519,9 +562,70 @@ void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor,
 
 	glColor4f(kColor.x,kColor.y,kColor.z,1);
 
-	glBegin(GL_LINES);
+	if(bSolid)
+		glBegin(GL_TRIANGLE_FAN);
+	else
+		glBegin(GL_LINES);
 
+	int i;
+	float grad = 0, grad_oka = zf_pi / iSegments, x, z;
 
+	for( i=0; i<iSegments+1; i++)
+	{
+		x = sinf(grad) * fRadie;
+		z = cosf(grad) * fRadie;
+		grad += grad_oka;
+
+		if(bSolid)
+		{
+			if( i == 0)
+				glVertex3f( kPos.x, kPos.y+fHeight, kPos.z);
+			
+			glVertex3f( kPos.x+x, kPos.y, kPos.z+z);
+		}
+		else
+		{
+			glVertex3f( kPos.x+x, kPos.y, kPos.z+z); 
+			glVertex3f( kPos.x, kPos.y+fHeight, kPos.z);
+		}
+	}
+
+	if(bSolid)
+	{
+		glEnd();
+		glBegin(GL_TRIANGLES);
+		grad = 0;
+	}
+
+	for( i=0; i<iSegments+1; i++)
+	{
+		x = sinf(grad) * fRadie;
+		z = cosf(grad) * fRadie;
+
+		if(bSolid)
+		{
+			glVertex3f( kPos.x, kPos.y, kPos.z);
+
+			float x2 = sinf(grad+grad_oka) * fRadie;
+			float z2 = cosf(grad+grad_oka) * fRadie;
+
+			glVertex3f( kPos.x+x2, kPos.y, kPos.z+z2);
+			glVertex3f( kPos.x+x, kPos.y, kPos.z+z);
+		}
+		else
+		{
+			glVertex3f( kPos.x+x, kPos.y, kPos.z+z); 
+		}
+
+		grad += grad_oka;
+
+		if(!bSolid)
+		{
+			x = sinf(grad) * fRadie;
+			z = cosf(grad) * fRadie;	
+			glVertex3f( kPos.x+x, kPos.y, kPos.z+z); 
+		}
+	}
 
 	glEnd();
 
@@ -541,7 +645,7 @@ void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 k
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
 	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
-		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT);
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	

@@ -88,11 +88,9 @@ void ZeroTank::Init()
 	pkMad->SetBase("/data/mad/dog.mad");
 	pkObjectMan->Add(m_pkTestObject);*/
 	
-	m_pkTestObject->SetLocalPosV(Vector3(0,0,0));
+	m_pkTestObject->SetLocalPosV(Vector3(0,-10,0));
 	m_pkTestObject->AttachToClosestZone();
 	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
-
-	printf("apa\n\n\n\n\n");
 	
 /*
 	srand( (int) (pkFps->GetGameTime()*1000) );

@@ -44,10 +44,10 @@ void P_Primitives3D::Update() {
 		m_pkRender->DrawAABB(min, max, m_kColor);
 		break;
 	case PYRAMID:
-		m_pkRender->DrawPyramid(pos,Vector3(m_fRadius,m_fRadius,m_fRadius),m_kColor);
+		m_pkRender->DrawPyramid(pos,Vector3(m_fRadius,m_fRadius,m_fRadius),m_kColor, true);
 		break;
 	case CONE:
-		m_pkRender->DrawCone(pos, m_fRadius, m_fRadius*2, m_kColor);
+		m_pkRender->DrawCone(pos, m_fRadius, m_fRadius*2, m_kColor, false);
 		break;
 	}
 	
