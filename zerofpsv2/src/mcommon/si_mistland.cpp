@@ -97,6 +97,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AddItemValue",			   MistLandLua::AddItemValueLua);			
    pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);
    pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
+	pkScript->ExposeFunction("SetEquipmentCategory",	MistLandLua::SetEquipmentCategoryLua);
+	pkScript->ExposeFunction("RegisterAsContainer",		MistLandLua::RegisterAsContainerLua);
 
    pkScript->ExposeFunction("AddBeforeItemName",		MistLandLua::AddBeforeItemNameLua);
    pkScript->ExposeFunction("AddAfterItemName",	      MistLandLua::AddAfterItemNameLua);
@@ -1240,6 +1242,79 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
 
    return 0;
 }
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 ) 
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acCategory[75];
+			g_pkScript->GetArgString(pkLua, 0, acCategory);
+
+  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkIP )
+			{
+				string strCategory = acCategory;
+				EquipmentCategory eCategory = Item;
+
+				if(strCategory == "Armor") eCategory = Armor;
+				else if(strCategory == "Cloak") eCategory = Cloak;
+				else if(strCategory == "Helm") eCategory = Helm;
+				else if(strCategory == "Amulett") eCategory = Amulett;
+				else if(strCategory == "Shield") eCategory = Shield;
+				else if(strCategory == "Weapon") eCategory = Weapon;
+				else if(strCategory == "Bracer") eCategory = Bracer;
+				else if(strCategory == "Glove") eCategory = Glove;
+				else if(strCategory == "Ring") eCategory = Ring;
+				else if(strCategory == "Boots") eCategory = Boots;
+				else if(strCategory == "Belt") eCategory = Belt;
+
+				pkIP->m_pkItemStats->SetEquipmentCategory( eCategory );
+
+			}
+         else
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+}
+
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::RegisterAsContainerLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 ) 
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acCategory[75];
+			g_pkScript->GetArgString(pkLua, 0, acCategory);
+
+  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkIP )
+				pkIP->m_pkItemStats->RegisterAsContainer();
+         else
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+      }
+
+   }
+
+   return 0;
+}
+
 
 // ----------------------------------------------------------------------------------------------
 

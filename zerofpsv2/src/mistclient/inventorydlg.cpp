@@ -869,7 +869,9 @@ void InventoryDlg::UpdateSkin(Slot slot)
 				}
 				else
 				{
-					slot.m_pkLabel->Show(); 
+					if(slot.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
+						slot.m_pkLabel->Show(); 
+					
 					pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
 
 					string strAlphaTex = strFullPath;

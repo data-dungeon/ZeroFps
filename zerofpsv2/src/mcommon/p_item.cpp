@@ -171,7 +171,6 @@ void P_Item::Load(ZFIoInterface* pkPackage)
    pkPackage->Read((void*)&m_pkItemStats->m_iValue,sizeof(int),1); // save value
    pkPackage->Read((void*)&m_pkItemStats->m_fQuality,sizeof(float),1); // save quality
    pkPackage->Read((void*)&m_pkItemStats->m_fWeight,sizeof(float),1); // save weight
-
     
    // load counters
    pkPackage->Read((void*)&iSkillBonuses,sizeof(int),1);
@@ -245,6 +244,14 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // icon
             pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic );
 
+            // category
+            pkNetPacket->Write( &m_pkItemStats->m_eEquipmentCategory, 
+					sizeof(m_pkItemStats->m_eEquipmentCategory) );
+
+            // contatiner id (if it's a container)
+            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, 
+					sizeof(m_pkItemStats->m_iContainerID) );
+
             // item name
             pkNetPacket->Write_NetStr( m_pkItemStats->m_kItemName.c_str() );
 
@@ -309,6 +316,14 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
    {
       // get icon
       pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic);
+
+      // category
+      pkNetPacket->Read( &m_pkItemStats->m_eEquipmentCategory, 
+			sizeof(m_pkItemStats->m_eEquipmentCategory) );
+
+		// contatiner id (if it's a container)
+      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, 
+			sizeof(m_pkItemStats->m_iContainerID) );
 
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );
