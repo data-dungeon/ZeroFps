@@ -339,66 +339,68 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 	return true;
 }
 
-void Render::DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iTexture){
-	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT);
+void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iTexture){
+	Vector3 x;
+	Vector3 y;
 	
+	Vector3 a;
+	Vector3 b;	
+	Vector3 c;	
+	Vector3 d;	
+	
+	glPushMatrix();
+	glPushAttrib(GL_LIGHTING_BIT|GL_CULL_FACE);
 	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
 
-
-//	glDisable(GL_COLOR_MATERIAL);
 	glColor4f(1,1,1,1);
-
-	
-
-	
-	Vector3 kDis=kCamPos-kPos;
-//	Vector3 kDis=Vector3(0.5,0,.5);
-
-	kDis.Normalize();	
-	Vector3 kRot=kDis.Angels();
-	
-	
-//	Line(kPos,kPos+kDis+Vector3(5,0,0));
-	
-//	kRot.y=atan(kDis.x/kDis.z) * degtorad;
-//	kRot.x=-atan(kDis.y/kDis.x) * degtorad;	
-//	kRot.z=atan(kDis.x/kDis.y) * degtorad;		
-
-		
-//	if(kRot.y<0)
-//		kRot.y+=180;
-//	cout<<"ROT:"<<kRot.x<<endl;	
-	
-	
-	glTranslatef(kPos.x,kPos.y,kPos.z);	
-	glRotatef(kRot.z, 0, 0, 1);		
-	glRotatef(kRot.y, 0, 1, 0);			
-	glRotatef(kRot.x, 1, 0, 0);	
-
-
-//	glScalef(kScale.x,kScale.y,kScale.z);	
-	
 	m_pkTexMan->BindTexture(iTexture); 	
+//	glAlphaFunc(GL_GREATER,0.3);
+//	glEnable(GL_ALPHA_TEST);
+
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
 	
-	glAlphaFunc(GL_GREATER,0.3);
-	glEnable(GL_ALPHA_TEST);
+	x.Set(kModelMatrix[0], kModelMatrix[4], kModelMatrix[8]);
+	y.Set(kModelMatrix[1], kModelMatrix[5], kModelMatrix[9]); 
+
+/*	a = kPos + ((-x - y) * iSize);
+   b = kPos + ((x - y) * iSize);
+   c = kPos + ((x + y) * iSize);
+   d = kPos + ((-x + y) * iSize);*/
+
+	a = kPos + ((-x + y) * iSize);
+   b = kPos + ((x + y) * iSize);
+   c = kPos + ((x - y) * iSize);
+   d = kPos + ((-x - y) * iSize);
+	
+	glBegin(GL_QUADS);
+      glTexCoord2f(0.0f, 0.0f);
+      glVertex3fv(&a[0]);
+      glTexCoord2f(1.0f, 0.0f);
+      glVertex3fv(&b[0]);
+      glTexCoord2f(1.0f, 1.0f);
+      glVertex3fv(&c[0]);
+      glTexCoord2f(0.0f, 1.0f);
+      glVertex3fv(&d[0]);
+   glEnd();
 	
 	
+	/*
 	glBegin(GL_QUADS);
 		glNormal3f(0,0,1);
 		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
 		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
 		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
 		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 			
-	glEnd();
+	glEnd();*/
 		
 	
+//	glDisable(GL_ALPHA_TEST);
+
 	glPopMatrix();
-	glEnable(GL_CULL_FACE);	
-//	glEnable(GL_LIGHTING);		
 	glPopAttrib();
+//	glEnable(GL_CULL_FACE);	
+	
 }
 
 

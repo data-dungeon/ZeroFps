@@ -59,7 +59,7 @@ class RENDER_API Render : public ZFObject {
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		void DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2);
 		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
-		void DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iTexture);
+		void DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iTexture);
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

@@ -85,6 +85,11 @@ void Camera::ClearViewPort() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
 }
 
+Matrix4 Camera::GetModelMatrix() {
+	Matrix4 temp;
 
+	glGetFloatv(GL_MODELVIEW_MATRIX, &temp[0]);
+	return temp;
+}
 
 

@@ -32,6 +32,7 @@ class ENGINE_API Camera {
 		void SetRot(Vector3 kRot){ m_kRot=kRot;};
 		Vector3 &GetPos(){return m_kPos;};
 		Vector3 &GetRot(){return m_kRot;};
+		Matrix4 GetModelMatrix();
 };
 
 #endif

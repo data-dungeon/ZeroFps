@@ -33,7 +33,7 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
-	speed=0.1;
+	speed=30;
   	
 	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
@@ -91,7 +91,7 @@ void Test::OnInit(void) {
 
 /*	pkLight->Add(spot2);			
 	pkLight->Add(spot);	*/
-//	pkLight->Add(sol);
+	pkLight->Add(sol);
 	
 	
 	
@@ -120,7 +120,7 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
-	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);	
+	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),90,1.333,0.25,400);	
 	
 	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos()=Vector3(340,25,780);		
@@ -174,7 +174,14 @@ void Test::OnIdle(void) {
 			}
 	}
 
-	//pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
+//	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(0,70,0),4,pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER,0.3);
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
+//	glDisable(GL_ALPHA_TEST);
+	
 	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
 //	pkRender->DrawSimpleWater(Vector3(0,-5,0),Vector4(.5,.5,.5,.99),1024,pkTexMan->Load("file:../data/textures/water3.bmp",0));	
 	
