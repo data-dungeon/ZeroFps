@@ -595,6 +595,70 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 	m_pkNetWork->SendToClient(iClient, &NP);
 }
 
+void ObjectManager::PackZoneListToClient(int iClient, TrackProperty* pkTrack)
+{
+	int iNetID;
+
+	NetPacket NP;
+
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_ZONELIST);
+
+	for(set<int>::iterator itActiveZone = pkTrack->m_iActiveZones.begin(); itActiveZone != pkTrack->m_iActiveZones.end(); itActiveZone++ ) {
+		int iZoneID = (*itActiveZone);
+		iNetID = m_kZones[iZoneID].m_pkZone->iNetWorkID;
+
+		NP.Write(iNetID);
+		}
+
+		
+	NP.Write(-1);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToClient(iClient, &NP);
+}
+
+bool IsInsideVector(int iVal, vector<int>& iArray)
+{
+	for(int i=0; i<iArray.size(); i++) {
+		if(iArray[i] == iVal)
+			return true;
+		}
+	
+
+	return false;
+}
+
+void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
+{
+	int i;
+
+	vector<int>	kZones;
+	int iZoneID;
+
+	pkNetPacket->Read(iZoneID);
+	while(iZoneID != -1) {
+		kZones.push_back(iZoneID);
+		pkNetPacket->Read(iZoneID);
+		}
+
+	cout << "Active Zones: "; 
+	for(i=0; i<kZones.size(); i++) 
+		cout << kZones[i] << ", ";
+	cout << endl;
+
+
+	for(i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
+		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
+		
+		if(IsInsideVector(iLocalZoneID, kZones) == false) {
+			Delete(m_pkZoneObject->m_akChilds[i]);
+			cout << "Removing Zone: " << iLocalZoneID << endl;
+
+			}
+		}
+}
+
 
 void ObjectManager::PackToClients()
 {
@@ -630,9 +694,6 @@ void ObjectManager::PackToClients()
 
 
 
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	NP.Write((char) ZFGP_OBJECTSTATE);
 
 	int iNumOfObjects = m_akObjects.size();
 	int iPacketSize = 0;
@@ -645,7 +706,7 @@ void ObjectManager::PackToClients()
 		m_pkWorldObject->GetAllObjects(&kObjects);
 		PackToClient(0, kObjects);
 		m_pkNetWork->SendToAllClients(&NP);
-		cout << "Sending ClientData" << endl;
+//		cout << "Sending ClientData" << endl;
 		return;
 		}
 
@@ -655,6 +716,9 @@ void ObjectManager::PackToClients()
 
 		// Get Ptr to clients tracker.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
+
+		// Pack And Sent Active Zones to client
+		PackZoneListToClient(iClient, pkTrack);
 
 		// Pack and Send CLient Objects
 		kObjects.clear();
@@ -739,6 +803,10 @@ void ObjectManager::PackToClients()
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
 	m_pkNetWork->SendToAllClients(&NP);*/
+
+/*	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_OBJECTSTATE);*/
 
 	if(m_aiNetDeleteList.size() == 0)
 		return;

@@ -86,6 +86,8 @@ void ZeroTank::Init()
 	// Set SDL Options.
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_WM_SetCaption("ZeroFps", NULL);
+	pkZShader->SetForceLighting(ALWAYS_OFF);
+
 }
 
 void ZeroTank::RegisterPropertys()
@@ -244,6 +246,14 @@ void ZeroTank::Input()
 		//m_pkZeroTankHull		= NULL;
 		//m_pkZeroTank_Modify	= NULL;
 		}
+
+		if(pkInput->Pressed(KEY_I))
+			pkZShader->SetForceLighting(ALWAYS_ON);	
+		if(pkInput->Pressed(KEY_O))
+			pkZShader->SetForceLighting(ALWAYS_OFF);
+		if(pkInput->Pressed(KEY_P))
+			pkZShader->SetForceLighting(MATERIAL);
+
 }
 
 void ZeroTank::OnHud(void) 

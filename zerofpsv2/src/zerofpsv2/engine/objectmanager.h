@@ -15,6 +15,7 @@ class ZeroFps;
 class GameMessage;
 class NetWork;
 class ZoneObject;
+class TrackProperty;
 
 
 /// Data about a Zone in the World.
@@ -161,6 +162,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
 		// NetWork
+		void UpdateZoneList(NetPacket* pkNetPacket);
+		void PackZoneListToClient(int iClient, TrackProperty* pkTrack);
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
 		void UpdateDeleteList(NetPacket* pkNetPacket);
 		void PackToClient(int iClient, vector<Object*> kObjects);

@@ -954,6 +954,11 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				m_pkObjectMan->OwnerShip_OnGrant(m_pkObjectMan->GetObjectByNetWorkID( m_iObjectID ));
 				break;
 
+			case ZFGP_ZONELIST: 
+				Logf("net", "HandleNetworkPacket(ZFGP_ZONELIST)\n");
+				m_pkObjectMan->UpdateZoneList(pkNetPacket);
+				break;
+
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;
