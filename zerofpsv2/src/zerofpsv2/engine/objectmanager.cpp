@@ -332,7 +332,7 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 	AddArchPropertys(pkObj, string(acName));
 
 	pkObj->m_strType	= acName;
-	pkObj->m_kName		= string("A ") + pkObj->m_strType;
+	pkObj->m_strName	= string("A ") + pkObj->m_strType;
 
 	return pkObj;
 }
@@ -724,7 +724,7 @@ void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
 	{
 		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->iNetWorkID );
 		if((*it)->GetObject()->m_pkParent)
-			Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
+			Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_strName.c_str() );
 	}
 	
 }

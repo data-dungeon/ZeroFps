@@ -6,17 +6,15 @@
 
 class ENGINE_SYSTEMS_API ZoneObject: public Object {
 	private:
-		ZeroFps *m_pkFps;
-
-		
+		//ZeroFps *m_pkFps;
+	
 	public:
 		//vector<ZoneObject*>	m_kZoneLinks;
+		//bool IsInside(Vector3 kPos);
+		//void SetRadius(float fRadius);
 
 		Vector3	m_kSize;
-
 		ZoneObject();
-//		bool IsInside(Vector3 kPos);
-		void SetRadius(float fRadius);
 };
 
 

@@ -17,7 +17,8 @@ class		ObjectManager;
 struct	CollisionData;
 class		LevelManager;
 
-enum UpdateStatus {
+enum UpdateStatus 
+{
 	UPDATE_NONE				= 1,	
 	UPDATE_ALL				= 2,
 	UPDATE_STATIC			= 4,
@@ -28,7 +29,8 @@ enum UpdateStatus {
 	UPDATE_LIGHT			= 128,
 };
 
-enum ObjectType {
+enum ObjectType 
+{
 	OBJECT_TYPE_DYNAMIC,			// Full update, Full Collision
 	OBJECT_TYPE_STATIC,	
 	OBJECT_TYPE_PLAYER,			// Unused
@@ -144,13 +146,13 @@ public:
 class ENGINE_API Object 
 {
 	friend class Property;
+	
 	private:
-		Object*						m_pkParent;							///< Parent Object.
+		Object*						m_pkParent;							///< Parent Object. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 
-
 	protected:
-		enum HAVE_DATA		//used in m_kGotData
+		enum HAVE_DATA				//used in m_kGotData
 		{
 			WORLD_ROT_M,
 			WORLD_ORI_M,
@@ -163,14 +165,16 @@ class ENGINE_API Object
 			WORLD_POS_V,		
 		};
 	
-		int							m_iNetUpdateFlags;					
+		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
+	
+		// Rotation & Position.
+		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
+		bitset<7>					m_kGotData;							
 
-		bool							m_bRelativeOri;					//
-		
-		bitset<7>					m_kGotData;
-		
-		//rotation and orientation data
-		Matrix4						m_kLocalRotM;						//always contains local rotation
+		Vector3						m_kLocalPosV;						///< Local position.
+		Vector3						m_kWorldPosV;						///< World position.
+
+		Matrix4						m_kLocalRotM;						///< Local rotation
 		Matrix4						m_kWorldRotM;
 		Matrix4						m_kWorldOriM;
 		Matrix4						m_kLocalOriM;
@@ -178,22 +182,17 @@ class ENGINE_API Object
 		Quaternion					m_kLocalRotQ;
 		Vector3						m_kWorldRotV;
 		Vector3						m_kLocalRotV;		
-		
-		//position data
-		Vector3						m_kLocalPosV;						//always contains local position
-		Vector3						m_kWorldPosV;
-				
 
-//		Vector3						m_kPos;								///< Position of object in world.
-//		Vector3						m_kRot;								///< Rotation of object in world.
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
-		float							m_fRadius;		
+		float							m_fRadius;							///< Radius of object.
 		
+//		Vector3						m_kPos;								///< Position of object in world.
+//		Vector3						m_kRot;								///< Rotation of object in world.
 //		Vector3						m_kOldPos;
 //		Vector3						m_kOldRot;
 		
-		string						m_kName;								///< Object name
+		string						m_strName;								///< Object name
 		string						m_strType;							///< Object type name.
 
 		ObjectType					m_iObjectType;						
@@ -201,16 +200,15 @@ class ENGINE_API Object
 		int*							m_piDecorationStep;
 		bool							m_bSave;								///< True if this object should save to disk.
 		
-		LevelManager* 				m_pkLevelMan;		
-		PropertyFactory*			m_pkPropertyFactory;	
-		ZeroFps*						m_pkFps;
+//		LevelManager* 				m_pkLevelMan;						// REMOVE
+		PropertyFactory*			m_pkPropertyFactory;				// Ptr to property factory.
+		ZeroFps*						m_pkFps;								// Ptr to zerofps. // CHANGE TO ObjectManger?
 
 		float							m_fLastPosSetTime;
 		float							m_fLastRotSetTime;		
 
 		list<Object*>				m_akChilds;							///< List of child objects.
 		list<Property*>			m_akPropertys;						///< List of propertys of object.
-		
 		
 		Object();				
 		
@@ -273,8 +271,9 @@ class ENGINE_API Object
 		void PrintTree(int pos);									///< Debug: Prints object tree from object.
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
 
-		//Get orientation data
-		bool			GetRelativeOri(){return m_bRelativeOri;};
+		// Orientation  
+		bool			GetRelativeOri()				{	return m_bRelativeOri;		};
+		void			SetRelativeOri(bool bRO)	{	m_bRelativeOri = bRO;		};
 		
 		Matrix4		GetLocalRotM();					
 		Matrix4		GetWorldRotM();
@@ -287,8 +286,6 @@ class ENGINE_API Object
 		Vector3		GetWorldPosV();
 		
 		//set oritentation data
-		void			SetRelativeOri(bool bRO) {m_bRelativeOri = bRO;};
-		
 		void			SetLocalRotM(Matrix4 kNewRot);
 		void			SetLocalRotV(Vector3);
 		void			SetLocalPosV(Vector3);
@@ -300,34 +297,35 @@ class ENGINE_API Object
 		void			ResetChildsGotData();
 
 		// Inlines
-		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
-		inline ObjectType &GetObjectType(){return m_iObjectType;};
+		inline int &GetUpdateStatus()				{	return m_iUpdateStatus;	};
+		inline ObjectType &GetObjectType()		{	return m_iObjectType;	};
+		inline bool& GetSave()						{	return m_bSave;			};
+		inline string& GetName()					{	return m_strName;			};
+		inline string& GetType()					{	return m_strType;			};
+		//const char* GetType(){return m_strType.c_str();}
 
-		inline bool& GetSave()		{	return m_bSave;	};
-		inline string& GetName()	{	return m_kName;	};
-//		inline Vector3& GetPos()	{	return m_kPos;		};
-//		inline Vector3 GetRot()	{	return m_kRot;		};
-		inline Vector3& GetVel()	{	return m_kVel;		};		
-		inline Vector3& GetAcc()	{	return m_kAcc;		};
-		inline float& GetRadius()	{	return m_fRadius;		};		
-//		inline Vector3* GetPosPointer()	{	return &m_kPos;	};
-//		inline Vector3* GetRotPointer()	{	return &m_kRot;	};
-		inline Vector3* GetVelPointer()	{	return &m_kVel;	};		
-		inline Vector3* GetAccPointer()	{	return &m_kAcc;	};
-		inline float* GetRadiusPointer()	{	return &m_fRadius;	};		
-		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
+		inline Vector3& GetVel()					{	return m_kVel;				};		
+		inline Vector3& GetAcc()					{	return m_kAcc;				};
+		inline float& GetRadius()					{	return m_fRadius;			};		
+		inline Vector3* GetVelPointer()			{	return &m_kVel;			};		
+		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
+		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
+		inline ObjectManager *GetObjectMan()	{	return m_pkObjectMan;	};				
 		
 		void MakeCloneOf(Object* pkOrginal);
-		const char* GetType(){return m_strType.c_str();}
 		
 		float GetI();
+		
+//		inline Vector3* GetPosPointer()	{	return &m_kPos;	};
+//		inline Vector3* GetRotPointer()	{	return &m_kRot;	};
+//		inline Vector3& GetPos()	{	return m_kPos;		};
+//		inline Vector3 GetRot()	{	return m_kRot;		};
 //		Vector3 GetIPos();
 //		Vector3 GetIRot();
 //		void SetRot(Vector3 kRot);
 //		void SetPos(Vector3 kPos);
 
 		friend class ObjectManager;
-
 
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}

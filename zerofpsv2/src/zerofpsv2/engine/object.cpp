@@ -30,7 +30,7 @@ Object::Object() {
 //	m_kOldPos	= Vector3::ZERO;
 //	m_kOldRot	= Vector3::ZERO;	
 	
-	m_kName		= "A Object";	
+	m_strName	= "A Object";	
 	m_strType	= "Object";
 
 	m_iNetUpdateFlags = 0;
@@ -45,15 +45,14 @@ Object::Object() {
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
 	
-	
 	m_bRelativeOri	=	false;
 	
 	SetLocalRotV(Vector3(0,0,0));
 	SetLocalPosV(Vector3(0,0,0));
 	
 	ResetGotData();
-	
 
+	cout << "Object Size " << sizeof(Object) << endl;
 }
 
 Object::~Object() 
@@ -500,8 +499,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 	pkNetPacket->Write(m_fRadius);
 
-	pkNetPacket->Write_NetStr(m_kName.c_str());
-	g_ZFObjSys.Logf("net", " .Name '%s':", m_kName.c_str() );
+	pkNetPacket->Write_NetStr(m_strName.c_str());
+	g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
 	
 //	char szPropertyName[256];
 
@@ -565,8 +564,8 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 
 	char szStr[256];
 	pkNetPacket->Read_NetStr(szStr);
-	m_kName = szStr;
-	g_ZFObjSys.Logf("net", " .Name '%s'\n", m_kName.c_str() );
+	m_strName = szStr;
+	g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
 	g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
 
 	char szProperty[256];
@@ -764,7 +763,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 	m_kVel		= pkOrginal->m_kVel;
 //	m_kOldPos	= pkOrginal->m_kOldPos;
 //	m_kOldRot	= pkOrginal->m_kOldRot;
-	m_kName		= pkOrginal->m_kName;
+	m_strName	= pkOrginal->m_strName;
 	m_strType	= pkOrginal->m_strType;
 	m_iObjectType			= pkOrginal->m_iObjectType;
 	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;

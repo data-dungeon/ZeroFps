@@ -3,21 +3,18 @@
  
 ZoneObject::ZoneObject()
 {
-	m_strType	= "ZoneObject";
-	m_kName		= "A ZoneObject";
+	m_strType	=	"ZoneObject";
+	m_strName		=	"A ZoneObject";
 
-	m_bSave=false;	
+	m_bSave		=	false;	
 	
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
-//	AddProperty("P_Primitives3D");
+//	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	m_eRole			= NETROLE_AUTHORITY;
-//	m_eRemoteRole	= NETROLE_NONE;
 	m_eRemoteRole	= NETROLE_PROXY;
-
 	m_kSize.Set(10,10,10);
-//	m_bActive = true;
+
+//	AddProperty("P_Primitives3D");
 }
 /*
 bool ZoneObject::IsInside(Vector3 kPos)
@@ -35,14 +32,12 @@ bool ZoneObject::IsInside(Vector3 kPos)
 
 	return true;
 }
-*/
 
 void ZoneObject::SetRadius(float fRadius)
 {
 	ProxyProperty *proxy = static_cast<ProxyProperty*>(GetProperty("ProxyProperty"));
 	proxy->SetRadius(fRadius);	
-
-}
+}*/
 
 
 
