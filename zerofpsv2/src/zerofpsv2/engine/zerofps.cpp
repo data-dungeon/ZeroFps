@@ -1069,6 +1069,13 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				//m_pkEntityManager->UpdateDeleteList(pkNetPacket);
 				break;
 			}
+			
+			case ZPGP_DELETELIST:
+			{
+				m_pkEntityManager->HandleDeleteQueue(pkNetPacket);
+			
+				break;			
+			}
 				
 			case ZFGP_OBJECTSTATE: 
 				//Logf("netpac", "  HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
@@ -1288,7 +1295,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	if( szCmd == string("request_zones"))
 	{
 	
-		cout<<"sending zones to client editor"<<endl;
+		//cout<<"sending zones to client editor"<<endl;
 	
 		NetPacket kNp;
 		
@@ -1483,10 +1490,7 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool 
 int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	if(m_bServerMode)
-	{
-			
-		//reset all netupdate flags in the world
-		m_pkEntityManager->ResetNetUpdateFlags(iConnectionID);
+	{			
 	
 		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
 		m_kClient[iConnectionID].m_pkObject = m_pkEntityManager->CreateEntity();//m_pkEntityManager->CreateObjectByArchType("ZeroRTSPlayer");
@@ -1516,6 +1520,9 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 */
 void ZeroFps::Disconnect(int iConnectionID)
 {
+	//reset all netupdate flags in the world
+	m_pkEntityManager->ResetNetUpdateFlags(iConnectionID);	
+	
 	if(m_bClientMode && !m_bServerMode)
 	{
 		m_pkApp->OnDisconnect( iConnectionID );

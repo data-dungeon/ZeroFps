@@ -19,16 +19,13 @@ using namespace std;
 
 class		EntityManager;
 class		Property;
-//struct	CollisionData;
+
 
 enum UpdateStatus 
 {
 	UPDATE_NONE				= 1,	
 	UPDATE_ALL				= 2,
 	UPDATE_NOCHILDS		= 4,	
-//	UPDATE_STATIC			= 4,		//not used
-//	UPDATE_DYNAMIC 		= 8,		//not used
-//	UPDATE_NOCHILDS		= 16,
 };
 
 
@@ -84,13 +81,7 @@ public:
 };
 
 
-// Net Flags for Network updates
-//#define OBJ_NETFLAG_POS		1
-//#define OBJ_NETFLAG_ROT		2
-//#define OBJ_NETFLAG_DEL		4
-
-#define MAX_NETUPDATEFLAGS	15
-
+#define MAX_NETUPDATEFLAGS	14
 #define MAX_ENTITY_VARIABLENAME	64
 
 enum EntityVariableType

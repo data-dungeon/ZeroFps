@@ -61,7 +61,8 @@ void P_WaterRender::Update()
 void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write(m_iSize);
-	pkNetPacket->Write(m_iStep);
+	pkNetPacket->Write(m_iStep);	
+	SetNetUpdateFlag(iConnectionID,false);
 }
  
 void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )

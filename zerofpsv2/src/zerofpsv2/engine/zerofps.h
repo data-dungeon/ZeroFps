@@ -72,6 +72,7 @@ enum enginestates
 #define	ZFGP_EDIT				13
 #define  ZPGP_SS_APP				14		
 #define  ZPGP_ZED_ZONELIST		15
+#define	ZPGP_DELETELIST		16
 
 #define	ZFGP_ENDOFPACKET		128
 
@@ -92,8 +93,10 @@ public:
 	string	m_strLogin;				// Login Name
 	string	m_strCharacter;
 	Entity*	m_pkObject;				// Object used for client.
-	set<int>	m_iActiveZones;		// Activated Zones.
-	set<int>	m_iUnloadZones;		// Activated Zones.
+	
+	set<int>		m_iActiveZones;		// Activated Zones.
+	set<int>		m_iUnloadZones;		// Activated Zones.
+	queue<int>	m_kDeleteQueue;	// clients delete queue (contains is of entitys that shuld be deleted on the client)
 };
 
 /** \brief	Main class for the ZeroFps engine.

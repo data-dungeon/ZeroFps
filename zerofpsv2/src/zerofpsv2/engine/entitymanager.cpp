@@ -238,7 +238,6 @@ void EntityManager::Clear()
 	while(m_akEntitys.begin() != m_akEntitys.end())
 		delete((*m_akEntitys.begin()).second);
 	
-	//m_akEntitys.clear();
 	
 	//clear all zones
 	m_kZones.clear();
@@ -305,10 +304,8 @@ Entity* EntityManager::CreateEntity(bool bLink)
 */
 void EntityManager::Delete(int iNetworkID) 
 {
-   Entity* pkE = GetEntityByID(iNetworkID);
-
-   if ( pkE )
-      Delete (pkE);
+   if( Entity* pkE = GetEntityByID(iNetworkID))
+      Delete(pkE);
 }
 
 
@@ -326,7 +323,22 @@ void EntityManager::Delete(Entity* pkEntity)
 		}
 	}
 	
+	//add to delete list
 	m_aiDeleteList.push_back(pkEntity->m_iEntityID);
+	
+	
+	//if where the owner of this entity also add entity to clients delete lists
+	if(pkEntity->m_eRole == NETROLE_AUTHORITY)
+	{
+		for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
+		{
+			//only add to clients who is suppose to have the entity
+			if(pkEntity->GetExistOnClient(i))
+			{
+				AddEntityToClientDeleteQueue(i,pkEntity->GetEntityID());
+			}
+		}
+	}
 }
  
 /**	\brief	
@@ -337,7 +349,7 @@ void EntityManager::UpdateDelete()
 {
 //	int iSize = m_aiDeleteList.size();
 
-	if(m_aiDeleteList.size()==0)
+	if(m_aiDeleteList.size()==0) 
 		return;
 	
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
@@ -670,7 +682,7 @@ void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 	}
 }
 
-void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
+void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
 {
 	int iPacketSize = 	0;
 	int iEndOfObject = 	-1;
@@ -857,11 +869,8 @@ void EntityManager::PackToClients()
 		return;
 
 	//Logf("net", " *** EntityManager::PackToClients() *** \n");
-
-
 	vector<Entity*>	kObjects;
-	m_iForceNetUpdate = 0xFFFFFFFF;
-	
+
 
 	unsigned int iClient;
 	// Clear Active Zones for clients.
@@ -871,7 +880,7 @@ void EntityManager::PackToClients()
 		m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.clear();		
 	}
 	
-	// Refresh list of active Zones for each client.
+	// Refresh list of active Zones for each tracker with a client.
 	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{		
 		if((*iT)->m_iConnectID != -1)
@@ -898,7 +907,7 @@ void EntityManager::PackToClients()
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 		m_OutNP.TargetSetClient(0);
 		
-		PackToClient(0, kObjects,false);
+		PackEntityToClient(0, kObjects,false);
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
 		return;
@@ -907,13 +916,21 @@ void EntityManager::PackToClients()
 	// Server Network send.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) 
 	{
-		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
+		//if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
+		if(!m_pkNetWork->IsConnected(iClient))	
+			continue;
+					
+			
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL ZF_NETTYPE_REL
 		m_OutNP.TargetSetClient(iClient);
 
+		//pack and send clients delete list
+		SendDeleteQueue(iClient);
+		
 		// Pack And Send unload list to client
-		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iUnloadZones);		
+		DeleteUnloadedZones(iClient);
+		//PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iUnloadZones);		
 //		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
 
 		// Loop and clear send data flag for those zone to this client
@@ -932,7 +949,7 @@ void EntityManager::PackToClients()
 			if((*it)->m_iConnectID == (int) iClient)
 				(*it)->GetEntity()->GetAllEntitys(&kObjects, true);
 		}		
-		PackToClient(iClient, kObjects,false);
+		PackEntityToClient(iClient, kObjects,false);
 		
 		//collect objects
 		kObjects.clear();		
@@ -965,7 +982,7 @@ void EntityManager::PackToClients()
 		}
 		
 		//send all data
-		PackToClient(iClient, kObjects,true);			//send in true to packtoclient 
+		PackEntityToClient(iClient, kObjects,true);			//send in true to packtoclient 
 		
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
@@ -1013,7 +1030,6 @@ void EntityManager::PackToClients()
 }
 
 
-
 void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 {
 	int iEntityID;
@@ -1028,11 +1044,10 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 		return;
 
 	vector<Entity*>	kObjects;
-	m_iForceNetUpdate = 0xFFFFFFFF;
 
 	kObjects.clear();
 	pkStatic->GetAllEntitys(&kObjects);
-	PackToClient(iClient, kObjects,false);
+	PackEntityToClient(iClient, kObjects,false);
 	
 }
 
@@ -2740,4 +2755,89 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 	else
 		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
 }
+
+
+void EntityManager::ClearClientDeleteQueue(int iClient)
+{
+	while(!m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
+		m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.pop();
+}
+
+void EntityManager::ClearClientsDeleteQueues()
+{
+	for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
+		ClearClientDeleteQueue(i);
+}
+
+void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
+{
+	if(!m_pkNetWork->IsConnected(iClient))
+	{
+		cout<<"WARNING: tried to add entity to unconnected client delete list"<<endl;
+		return;	
+	}
+	
+	m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.push(iEntityID);
+	
+	//entity shuld not exist anymore on the client, after this
+	if(Entity* pkEnt = GetEntityByID(iEntityID))
+	{
+		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);		
+		pkEnt->SetExistOnClient(iClient,false);	
+	}
+	
+	cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
+}
+
+
+void EntityManager::SendDeleteQueue(int iClient)
+{
+	if(m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
+		return;
+		
+
+	cout<<"sending delete list to client:"<<iClient<<" size:"<<m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.size()<<endl;
+		
+	m_OutNP.Write((char) ZPGP_DELETELIST);
+	
+	while(!m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
+	{
+		m_OutNP.Write(m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.front());
+		m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.pop();
+	}
+	
+	m_OutNP.Write(-1);
+	
+	
+}
+
+void EntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
+{
+	int iEntityID;
+	
+	pkNetPacket->Read(iEntityID);
+	
+	while(iEntityID != -1)
+	{
+		if(Entity* pkEnt = GetEntityByID(iEntityID))
+			if(pkEnt->m_eRole == NETROLE_PROXY)
+			{
+				cout<<"deleting entity:"<<iEntityID<<endl;
+				Delete(iEntityID);		
+			}
+			else
+				cout<<"WARNING: got request to delete a non proxy entity:"<<iEntityID<<endl;
+
+		pkNetPacket->Read(iEntityID);
+	}
+}
+
+void EntityManager::DeleteUnloadedZones(int iClient)
+{	
+	for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
+	{
+		AddEntityToClientDeleteQueue(iClient,m_kZones[ (*itActiveZone) ].m_iZoneObjectID);		
+	}	
+}
+
 

@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "property.h"
 #include <vector>
+#include <queue>
 #include <list>
 #include "../script/zfscript.h"
 #include "propertyfactory.h"
@@ -73,56 +74,54 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		};
 
 		//sort funktion for property sorting
-		struct Property_Less : public binary_function<Property*, Property*, bool> {
+		struct Property_Less : public binary_function<Property*, Property*, bool> 
+		{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
 		
 		//some system pointers
-		ZeroFps*						m_pkZeroFps;
-		ZFScriptSystem* 			m_pkScript;
-		NetWork*						m_pkNetWork;
-		ZFBasicFS*					m_pkBasicFS;
-		ZShaderSystem*				m_pkZShaderSystem;
-		Render*						m_pkRender;
-		PropertyFactory*			m_pkPropertyFactory;	
+		ZeroFps*					m_pkZeroFps;
+		ZFScriptSystem* 		m_pkScript;
+		NetWork*					m_pkNetWork;
+		ZFBasicFS*				m_pkBasicFS;
+		ZShaderSystem*			m_pkZShaderSystem;
+		Render*					m_pkRender;
+		PropertyFactory*		m_pkPropertyFactory;	
 		
 		// Base Entitys
-		Entity*						m_pkWorldEntity;											///< Top level entity.
-		Entity*						m_pkZoneEntity;											///< Top level entity.
-		Entity*						m_pkClientEntity;											///< Top level entity.
-		Entity*						m_pkGlobalEntity;											///< Top level entity.
+		Entity*					m_pkWorldEntity;											///< Top level entity.
+		Entity*					m_pkZoneEntity;											///< Top level entity.
+		Entity*					m_pkClientEntity;											///< Top level entity.
+		Entity*					m_pkGlobalEntity;											///< Top level entity.
 		
 		//current world directory to save/load zone data to 
-		string						m_kWorldDirectory;
-		string						m_strLoadDirectory;
+		string					m_kWorldDirectory;
+		string					m_strLoadDirectory;		
 		
-		//hash map of entitys, for fast entity trough ID access
-		map<int,Entity*>			m_akEntitys;
-
-		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
-		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
+		vector<Property*>		m_akPropertys;												///< List of Active Propertys.	
+		int						m_iNrOfActivePropertys;									///> Size of akProperty list.
 		
-		int							m_iNextEntityID;												///< Next free Entity ID.
-		
-		//debug
-		bool							m_bDrawZones;						//shuld zones be drawed
-		bool							m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
+		//entity stuff
+		map<int,Entity*>		m_akEntitys;									//hash map of entitys, for fast entity trough ID access				
+		int						m_iNextEntityID;								///< Next free Entity ID.		
+		vector<int>				m_aiDeleteList;								// contains object that are going to be deleted
 				
-		// DELETE
-		vector<int>					m_aiDeleteList;
+		//debug
+		bool						m_bDrawZones;						//shuld zones be drawed
+		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
+						
+		// Network 	
+		float						m_fEndTimeForceNet;
+		int						m_iTotalNetEntityData;
+		int						m_iNumOfNetEntitys;
+		NetPacket				m_OutNP;							// Used to create/send updates to clients.		
+		//vector< queue<int> >	m_kClientDeleteQueues;
 		
-		// Network 
-		int			m_iForceNetUpdate;					
-		float			m_fEndTimeForceNet;
-		int			m_iTotalNetEntityData;
-		int			m_iNumOfNetEntitys;
-		NetPacket	m_OutNP;		// Used to create/send updates to clients.		
 
 		//other strange variables =D
-		int			m_iUpdateFlags;												///< Flags of active update.
-		int			m_iRole;															///< I'm i a server or a client or both.
-
+		int						m_iUpdateFlags;												///< Flags of active update.
+		int						m_iRole;															///< I'm i a server or a client or both.
 				
 		// Zones
 		vector<ZoneData>			m_kZones;
@@ -144,6 +143,16 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
+		//network
+		void ClearClientDeleteQueue(int iClient);
+		void ClearClientsDeleteQueues();
+		void AddEntityToClientDeleteQueue(int iClient,int iEntityID);
+		
+		void SendDeleteQueue(int iClient);
+		
+		//check for unloaded zones
+		void DeleteUnloadedZones(int iClient);
+		
 		//private zone system functions
 		void UpdateTrackers();
 		void UpdateZoneStatus();		
@@ -159,8 +168,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		bool SaveTrackers(string strSaveDir = "");
 		bool LoadTrackers(string strSaveDir = "");
 		void UnLoadZone(int iId);										//unload zone (saves and deletes)
-
-		//void UpdateZones();
 		
 		//system time 
 		void	UpdateSimTime();											//this is called every system update, to calculate the new sim time
@@ -226,7 +233,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );
 		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
-		void PackToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject);
+		void HandleDeleteQueue(NetPacket* pkNetPacket);		
+		void PackEntityToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject);
 		void PackToClients();																		//Packs and Sends to ALL clients.
 		void SendDeleteEntity(int iClient,int iEntityID);
 		

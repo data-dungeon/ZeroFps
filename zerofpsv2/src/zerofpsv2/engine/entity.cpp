@@ -11,7 +11,7 @@
 #else
 	#define LOGSIZE(name, size)	
 #endif
-
+ 
 
 Entity::Entity() 
 {
@@ -447,21 +447,26 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 	for(list<P_Track*>::iterator it = m_pkEntityManager->m_kTrackedObjects.begin();it!= m_pkEntityManager->m_kTrackedObjects.end();it++)
 	{	
 		if((*it)->m_iConnectID != -1)
-		{		
-			if( (*it)->m_iActiveZones.find(iCurrent) != (*it)->m_iActiveZones.end())
-			{
-				//cout<<"Connection "<<(*it)->m_iConnectID<<" has this entity"<<endl;				
-				if( (*it)->m_iActiveZones.find(iNew) == (*it)->m_iActiveZones.end())
+		{
+			//if this object is the tracker, dont remove it			
+			if((*it)->GetEntity() == this)
+				continue;
+			
+			if(GetExistOnClient((*it)->m_iConnectID))
+			{				
+				if( (*it)->m_iActiveZones.find(iCurrent) != (*it)->m_iActiveZones.end())
 				{
-					//if this object is the tracker, dont remove it
-					if((*it)->GetEntity() == this)
-						continue;
-					
-					cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
-					
-					// send delete request to client here =)
-					m_pkEntityManager->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
-				}		
+					//cout<<"Connection "<<(*it)->m_iConnectID<<" has this entity"<<endl;				
+					if( (*it)->m_iActiveZones.find(iNew) == (*it)->m_iActiveZones.end())
+					{
+						
+						cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
+						
+						// send delete request to client here =)
+						//m_pkEntityManager->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
+						m_pkEntityManager->AddEntityToClientDeleteQueue((*it)->m_iConnectID,m_iEntityID);
+					}		
+				}
 			}
 		}
 	}
@@ -538,6 +543,14 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		if((*it)->bNetwork) 
 		{
 			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
+			
+			/*
+			if((*it)->GetNetUpdateFlag(iConnectionID))
+			{
+				cout<<"property wants to send:"<<(*it)->m_acName<<endl;
+			
+			}
+			*/
 		}
 	}
 	
@@ -578,7 +591,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE))
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,false);
-		
+		/*
 		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
 
 		for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++)
@@ -588,6 +601,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_aiNetDeleteList[i]))
 				pkEnt->SetExistOnClient(iConnectionID,false);
 		}
+		*/
 	}
 
 	//send deleteproperty list
@@ -612,26 +626,11 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Write((unsigned char) ucEntityFlags );
 		
 		
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS,false);
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE,false);
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE,false);
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS		,false);
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE	,false);
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE		,false);
 		
 	}
-
-	//send rel position flag
-	/*
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS))
-	{
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS,false);
-		pkNetPacket->Write((int) m_bRelativeOri );
-	}
-
-	//send interpolate flag
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE))
-	{
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE,false);
-		pkNetPacket->Write((int) m_bInterpolate );
-	}*/
 
 
 	//send position
@@ -656,11 +655,11 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	}
 	
 	//send acceleration
-	/*if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC))	
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC))	
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC,false);	
 		pkNetPacket->Write(m_kAcc);
-	}*/
+	}
 
 	
 	//send radius
@@ -693,6 +692,9 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 			{	
 				pkNetPacket->Write_Str((*it)->m_acName);
 				(*it)->PackTo(pkNetPacket,iConnectionID);
+				
+				//dvoid test, sätter automatiskt nätverks flaggan till false för propertyt
+				(*it)->SetNetUpdateFlag(iConnectionID,false);
 			}
 		}
 	}
@@ -731,7 +733,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	//get delete list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
-	{	
+	{	/*
 		int iNumDelEntitys;
 		Entity* pkNetSlave;	
 		
@@ -744,6 +746,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 			pkNetSlave = m_pkEntityManager->GetEntityByID(iDelEntityID);
 			m_pkEntityManager->Delete(pkNetSlave);
 		}
+		*/
 	}
 
 	//get deleteproperty list
@@ -821,13 +824,13 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	}
 	
 	//get acceleration	
-	/*if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
 	{
 		Vector3 kAcc;
 		pkNetPacket->Read(kAcc);
 		SetAcc(kAcc);
 		LOGSIZE("Entity::Acceleration", sizeof(kAcc));
-	}*/	
+	}
 	
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
@@ -1570,6 +1573,10 @@ void	Entity::SetExistOnClient(int iConID,bool bStatus)
 	if(iConID < 0 || iConID >= m_kExistOnClient.size())
 		return;
 		
+	//cout<<"E:"<<m_iEntityID<<" con:"<<iConID<<" "<<bStatus<<endl;
+	if(bStatus == false)
+		cout<<"setting false entity:"<<m_iEntityID<<endl;
+		
 	m_kExistOnClient[iConID] = bStatus;
 }
 
@@ -1577,7 +1584,7 @@ bool	Entity::GetExistOnClient(int iConID)
 {
 	if(iConID < 0 || iConID >= m_kExistOnClient.size())
 		return false;
-
+	
 	return m_kExistOnClient[iConID];
 }
 
@@ -1602,10 +1609,10 @@ void	Entity::ResetAllNetUpdateFlags()
 
 void	Entity::ResetAllNetUpdateFlags(int iConID)
 {
+	m_kExistOnClient[iConID] = false;	
+	
 	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
-	
-	
 
 	//reset all propertys
 	for(unsigned int j = 0;j<m_akPropertys.size();j++)
@@ -1616,6 +1623,8 @@ void	Entity::ResetAllNetUpdateFlags(int iConID)
 
 void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
 {
+	m_kExistOnClient[iConID] = false;
+
 	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
 	
@@ -1644,6 +1653,7 @@ bool	Entity::IsAnyNetUpdateFlagTrue(int iConID)
 	for(int i = 0; i<MAX_NETUPDATEFLAGS; i++)
 	{
 		bValue |= m_kNetUpdateFlags[iConID][i];
+		
 	}
 	
 	return bValue;
