@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVIFrameGrabber", "AVIFrameGrabber.vcproj", "{C91ACE72-8EC2-40AF-BD2A-4E1B009B8102}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{C91ACE72-8EC2-40AF-BD2A-4E1B009B8102}.Debug.ActiveCfg = Debug|Win32
+		{C91ACE72-8EC2-40AF-BD2A-4E1B009B8102}.Debug.Build.0 = Debug|Win32
+		{C91ACE72-8EC2-40AF-BD2A-4E1B009B8102}.Release.ActiveCfg = Release|Win32
+		{C91ACE72-8EC2-40AF-BD2A-4E1B009B8102}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

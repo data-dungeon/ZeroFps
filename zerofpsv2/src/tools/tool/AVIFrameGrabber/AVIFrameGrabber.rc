@@ -1,0 +1,149 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Swedish resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
+#ifdef _WIN32
+LANGUAGE LANG_SWEDISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open...",                    ID_FILE_OPEN40002
+        MENUITEM "&Setting...",                 ID_FILE_SETTING
+        MENUITEM "&Exit",                       ID_FILE_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SETTINGS DIALOGEX 0, 0, 120, 279
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "AVIFrameGrabber Settings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,18,93,84,14
+    EDITTEXT        IDC_PICTURE_PREVIEW_SIZE,65,21,40,14,ES_AUTOHSCROLL
+    LTEXT           "Preview size:",IDC_STATIC,17,24,43,8
+    LTEXT           "Cols:",IDC_STATIC,43,40,17,8
+    LTEXT           "Rows:",IDC_STATIC,39,57,21,8
+    EDITTEXT        IDC_COLS,65,38,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ROWS,65,54,40,14,ES_AUTOHSCROLL
+    LTEXT           "Start frame:",IDC_STATIC,20,74,40,8
+    EDITTEXT        IDC_STARTFRAME,65,71,40,14,ES_AUTOHSCROLL
+    LTEXT           "End:",IDC_STATIC,38,173,16,8
+    EDITTEXT        IDC_ANIMATIONEND,60,172,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ANIMATIONSTART,60,153,40,14,ES_AUTOHSCROLL
+    LTEXT           "Start:",IDC_STATIC,34,156,20,8
+    GROUPBOX        "Make animation",IDC_STATIC,7,122,106,151
+    PUSHBUTTON      "Save...",IDC_CREATEANIMATION,24,247,76,14
+    GROUPBOX        "Preview Settings",IDC_STATIC,7,7,105,110
+    LTEXT           "Frames:",IDC_STATIC,28,137,27,8
+    EDITTEXT        IDC_FRAMES_TOTAL,60,134,40,14,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_MEGABYTE,60,228,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Size (Mb):",IDC_STATIC,22,231,33,8
+    EDITTEXT        IDC_FRAMEWIDTH,60,190,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FRAMEHEIGHT,60,208,40,14,ES_AUTOHSCROLL
+    LTEXT           "Width:",IDC_STATIC,32,193,22,8
+    LTEXT           "Height:",IDC_STATIC,30,212,24,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 113
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 272
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Swedish resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
