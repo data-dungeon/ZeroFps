@@ -43,7 +43,6 @@ ZeroFps::ZeroFps(void)
 	m_fSystemUpdateTime= 0;
 	m_bServerMode = 		true;
 	m_bClientMode = 		true;
-	m_bDrawDevList=		true;
 	m_bGuiMode=				false;
 	m_bGuiTakeControl=	true;
 	m_iMadDraw = 			1;
@@ -96,6 +95,8 @@ ZeroFps::ZeroFps(void)
 
 
 	RegisterPropertys();
+
+	m_bDevPagesVisible = true;
 }
 
 ZeroFps::~ZeroFps()
@@ -430,7 +431,6 @@ void ZeroFps::ToggleGui(void)
 		if(m_bGuiTakeControl)
 		{
 			//SDL_ShowCursor(SDL_DISABLE);
-			m_bDrawDevList = !m_bGuiMode;
 		}
 		m_pkGui->Activate(m_bGuiMode);
 	}
@@ -439,7 +439,6 @@ void ZeroFps::ToggleGui(void)
 		if(m_bGuiTakeControl)
 		{
 			//SDL_ShowCursor(SDL_ENABLE);
-			m_bDrawDevList = !m_bGuiMode;
 		}
 		m_pkGui->Activate(m_bGuiMode);
 	}
@@ -558,6 +557,9 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
+	if(!m_bDevPagesVisible)
+		return;
+
 	string strPageName;
 		
 	glPushAttrib(GL_LIGHTING_BIT);
@@ -588,6 +590,11 @@ void ZeroFps::DrawDevStrings()
 	}
 
 	glPopAttrib();
+}
+
+void ZeroFps::DevPrint_Show(bool bVisible)
+{
+	m_bDevPagesVisible = bVisible;
 }
 
 char g_szIpPort[256];
@@ -847,6 +854,7 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	kCreditsStrings.push_back( string("   Patrik 'Gubb' Sellin		") );
 	kCreditsStrings.push_back( string("   Nina 'Nanna3d' Rydqvist	") );
 }
+
 
 
 

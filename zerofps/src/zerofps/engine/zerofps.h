@@ -81,7 +81,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		};
 		
 		SDL_Surface* m_pkScreen;		
-
+		bool	m_bDevPagesVisible;
 		
 		float m_fLastFrameTime;
 		int m_iWidth,m_iHeight,m_iDepth;
@@ -147,7 +147,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		bool	m_bServerMode;
 		bool	m_bClientMode;
-		bool	m_bDrawDevList;
+		//bool	m_bDrawDevList;
 		bool	m_bGuiMode, m_bGuiTakeControl;
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
@@ -181,7 +181,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		vector<DevStringPage>	m_DevStringPage;					
 		DevStringPage*	DevPrint_FindPage(const char* szName);		
 		void DrawDevStrings();
-		void DevPrintf(const char* szName, const char *fmt, ...);	
+		void DevPrintf(const char* szName, const char *fmt, ...);
+		void DevPrint_Show(bool bVisible);
 
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 		
