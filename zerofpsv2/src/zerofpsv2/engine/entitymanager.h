@@ -167,6 +167,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
+		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
+		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
+
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );

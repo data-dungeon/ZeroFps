@@ -543,6 +543,59 @@ void EntityManager::GetAllObjects(vector<Entity*> *pakObjects)
 	m_pkWorldObject->GetAllObjects(pakObjects);
 }
 
+void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
+{
+	ZoneData* pkZone = GetZone(kPos);
+	
+	if(!pkZone)
+		return;
+		
+	if(!pkZone->m_pkZone)
+		return;
+		
+	set<int> kZones;	
+	
+	kZones.insert(pkZone->m_iZoneID);
+	
+	for(int i =0;i<pkZone->m_iZoneLinks.size();i++)
+	{
+		GetZones(&kZones,pkZone->m_iZoneLinks[i],kPos,fRadius);
+	}
+
+	
+	for(set<int>::iterator it=kZones.begin();it!=kZones.end();it++) {
+		GetZoneData(*it)->m_pkZone->GetAllObjects(pkEntitys);
+	}		
+
+
+}
+
+void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRadius)
+{
+	set<int>::iterator it = pkZones->find(iZone);
+	
+	if(it != pkZones->end())
+		return;
+		
+	ZoneData* pkTemp = GetZoneData(iZone);
+	if(pkTemp)
+	{
+		float d = (kPos - pkTemp->m_kPos).Length() - pkTemp->m_kSize.Length()/2;
+		if(d > fRadius)
+			return;
+	
+		if(pkTemp->m_pkZone)
+		{	
+			pkZones->insert(iZone);
+			
+			for(int i =0;i<pkTemp->m_iZoneLinks.size();i++)
+			{
+				GetZones(pkZones,pkTemp->m_iZoneLinks[i],kPos,fRadius);
+			}			
+		}
+	}
+}
+
 Entity* EntityManager::GetObject(const char* acName)
 {
 	vector<Entity*> kObjects;		

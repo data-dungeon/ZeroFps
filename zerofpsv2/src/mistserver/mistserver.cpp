@@ -300,7 +300,13 @@ void MistServer::Input()
 		} 
 	
 /*	if(pkInput->Pressed(KEY_F4)) {
-		pkObjectMan->ResetNetUpdateFlags(0);
+		vector<Entity*> ents;
+		pkObjectMan->GetAllObjectsInArea(&ents,m_kObjectMarkerPos,2);
+		
+		for(int i = 0;i<ents.size();i++)
+		{
+			cout<<"GOT object:"<<ents[i]->GetName()<<endl;
+		}
 	} 	
 */	
 	if(m_pkCameraObject)	
