@@ -11,6 +11,7 @@
 #include "engine_x.h"
 #include <AL/al.h>
 #include <AL/alut.h>
+#include "OggMusic.h"
 
 class ENGINE_API Sound {
 	public:
@@ -47,7 +48,19 @@ class ENGINE_API OpenAlSystem : public ZFObject {
 		bool Hearable(Sound* pkSound);
 		ALint GetState(Sound* pkSound);
 		void PlaySound(Sound* pkSound, int iSource);
+		//Gubb was here//////
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		OggMusic* m_pkMusic;
+		enum FuncId_e
+		{
+			FID_MUSICLOAD,
+			FID_MUSICPLAY,
+			FID_MUSICVOLUME,
+			FID_MUSICBUFFERS,
+			FID_MUSICSTOP
+		};
 		
+		////////////////////
 	public:
 		void AddSound(Sound* pkSound);
 		void RemoveSound(Sound* pkSound);

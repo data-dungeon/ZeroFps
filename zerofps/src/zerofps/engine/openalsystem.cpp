@@ -1,4 +1,5 @@
 #include "openalsystem.h"
+#include <stdlib.h>
 
 Sound::Sound()
 {
@@ -18,6 +19,13 @@ OpenAlSystem::OpenAlSystem()
 
 	Init();
 	GenerateSources(10);
+	
+	//Gubb was here
+	g_ZFObjSys.Register_Cmd("musicload",FID_MUSICLOAD,this);
+	g_ZFObjSys.Register_Cmd("musicplay",FID_MUSICPLAY,this);
+	g_ZFObjSys.Register_Cmd("musicstop",FID_MUSICSTOP,this);
+	g_ZFObjSys.Register_Cmd("musicvolume",FID_MUSICVOLUME,this);
+	g_ZFObjSys.Register_Cmd("musicbuffers",FID_MUSICBUFFERS,this);
 }
 
 OpenAlSystem::~OpenAlSystem()
@@ -25,6 +33,8 @@ OpenAlSystem::~OpenAlSystem()
 	for(unsigned int i=0;i<m_kSources.size();i++) {
 		delete m_kSources[i];
 	}
+	//Gubb was here
+	delete m_pkMusic;
 }
 
 
@@ -51,7 +61,8 @@ void OpenAlSystem::Init()
    alDopplerVelocity(343); // using meters/second
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,0,1),Vector3(0,1,0));
-
+	//Gubb was here
+	m_pkMusic = new OggMusic(24,4096);
 }
 
 
@@ -123,6 +134,9 @@ void OpenAlSystem::RemoveSound(Sound* pkSound)
 void OpenAlSystem::Update()
 {
 
+	//Gubb was here
+	m_pkMusic->Update();
+	
 	vector<Sound*> kPlay;
 	vector<Sound*> kRemove;
 	
@@ -246,6 +260,40 @@ void OpenAlSystem::PlaySound(Sound* pkSound,int iSource)
 	
 	alSourcePlay(m_kSources[iSource]->m_iSource);
 //	cout<<"Starting to play"<<endl;
+}
+
+void OpenAlSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	
+	switch(cmdid) 
+	{
+		case FID_MUSICLOAD:
+			m_pkMusic->LoadFile(kCommand->m_kSplitCommand[1]);
+			break;
+		
+		case FID_MUSICPLAY:
+			m_pkMusic->Play();
+			break;
+
+		case FID_MUSICSTOP:
+			m_pkMusic->Stop();
+			break;
+		
+		case FID_MUSICVOLUME:
+			m_pkMusic->SetVolume((float) strtod( (kCommand->m_kSplitCommand[1]).c_str(),NULL));
+			break;
+			
+		case FID_MUSICBUFFERS:
+			{
+				int iTemp = atoi((kCommand->m_kSplitCommand[1]).c_str());
+				if(iTemp > 0)
+				{
+					delete m_pkMusic;
+					m_pkMusic = new OggMusic(iTemp, 4096);
+				}
+			}
+			break;
+	}
 }
 
 

@@ -20,6 +20,11 @@ How to - ZeroFps
 		Windows:	http://www.tecgraf.puc-rio.br/lua/ftp/binaries/Windows/	
  G: toLua 4.0			ftp://ftp.tecgraf.puc-rio.br/pub/users/celes/tolua/tolua-4.0.tar.gz
 
+ Z: Ogg vorbis skräp : 		http://www.vorbis.com/download.psp
+	OBS! länka mot dessa libs: ogg_static.lib 
+				   vorbis_static.lib 
+				   vorbisfile_static.lib	
+
 2: Installera allt man laddat ned.
 	Windows:
 	A:
