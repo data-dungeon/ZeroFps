@@ -89,8 +89,11 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 void P_CharacterControl::Update()
 {	
 	if(!m_bEnabled)
+	{
+		SetCharacterState(eNONE);
 		return;
-
+	}
+		
 	if(m_fLockTime != -1)
 	{
 		if(m_pkEntityManager->GetSimTime() < m_fLockTime)

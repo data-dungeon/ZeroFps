@@ -26,7 +26,7 @@ enum CharcterStates
 	eRUNNING	=		4,
 	eJUMPING	=		5,
 	eIDLE_SWIMING= 6,
-	eDEAD	       	= 7,
+	eNONE	       = 7,
 };
 
 enum CharacterMoveDirection

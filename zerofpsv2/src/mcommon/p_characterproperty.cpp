@@ -460,7 +460,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fMarkerSize			=	1;
 	m_bDead					=	false;
 	m_bCombatMode			=	false;
-		
+	m_fDeadTimer			=	0;	
+	
 	//container id's
 	m_iInventory	= -1;		
 	m_iHead			= -1;
@@ -707,6 +708,12 @@ void P_CharacterProperty::MakeAlive()
 		pkCC->SetEnabled(true);	
 	}
 
+	//enable sphere collissions on tcs again
+	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
+	{
+		pkTcs->SetTestType(E_SPHERE);
+	}	
+	
 	//send im alive info to client, if any
 	SendAliveInfo();
 }
@@ -718,6 +725,7 @@ void P_CharacterProperty::OnDeath()
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Death");
 	
+	//set death animation
 	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 	{
 		pkMad->SetAnimation("die", 0);
@@ -731,10 +739,25 @@ void P_CharacterProperty::OnDeath()
 		pkCC->SetEnabled(false);	
 	}
 	
+	//disable TCS collissions
+	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
+	{
+		pkTcs->SetTestType(-1);
+	}
 	
-	//send death info to client
-	SendStats();
-	SendDeathInfo();	
+	
+	//not a player character
+	if(m_iConID == -1)
+	{
+		m_fDeadTimer = m_pkEntityManager->GetSimTime();
+	
+	}
+	else
+	{	
+		//send death info to client
+		SendStats();
+		SendDeathInfo();
+	}
 }
 
 void P_CharacterProperty::UpdateSkills()
@@ -1079,15 +1102,27 @@ void P_CharacterProperty::Update()
 				}				
 			}
 		
+			//if not dead
 			if(!m_bDead)
 			{
 				//update stats
 				UpdateStats();
 			
 				//update skills
-				UpdateSkills();
-				
-
+				UpdateSkills();				
+			}
+			else
+			{
+				//not a player character
+				if(m_iConID == -1)
+				{
+					//been dead for a while
+					if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > 10)
+					{
+						//send character to the world beyound
+						m_pkEntityManager->Delete(m_pkEntity);						
+					}			
+				}
 			}
 		}
 			

@@ -147,6 +147,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool			m_bDead;
 		bool			m_bCombatMode;
 		
+		float			m_fDeadTimer;
 		
 		vector<Skill*>	m_kSkills;
 		float				m_fSkillTimer;
@@ -224,18 +225,27 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void Update();
 		
 		void SetClient(int iConID)									{	m_iConID = iConID;				}	
+		
+		//alive
 		void MakeAlive();
 		bool IsDead()													{	return m_bDead;					}
+		
+		//combat mode
+		void SetCombatMode(bool bCombat)							{	m_bCombatMode = bCombat;		}
+		bool GetCombatMode()											{	return m_bCombatMode;			}
+		
 		
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
 		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
 		
+		//sound
 		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
+		
 		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
 		
 		string GetName()												{	return m_strName;					}

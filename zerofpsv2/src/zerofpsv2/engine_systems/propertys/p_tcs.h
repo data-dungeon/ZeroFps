@@ -189,7 +189,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
 
 		void Draw();
-// 		void GenerateModelMatrix();
 		const Matrix4& GetModelMatrix() const;
 
 		int		m_iColFace;
