@@ -62,9 +62,10 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 
 
-//	pkRender->DrawSimpleWater(Vector3(0,0,0),500);
+	pkRender->DrawSimpleWater(Vector3(180,3,200),30);
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(250,0,250),Vector3(0,0,0),600,30);
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
+	
+//	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
 	cout<<pkFps->m_iFps<<endl;
 }
 

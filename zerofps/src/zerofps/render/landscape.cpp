@@ -53,54 +53,28 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 //	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp");
 	
 	
+	float tx=SDL_GetTicks()/80000.0;	
+	
 	glBegin(GL_TRIANGLE_STRIP);		
-	for(int z=0;z<iSize;z+=iStep){
-		glNormal3f(0,1,0);
-		glColor4f(.7,.7,.7,0.2);
-		
+	glNormal3f(0,1,0);
+	glColor4f(.6,.6,.9,0.2);
+	
+	for(int z=0;z<iSize;z+=iStep){	
 		float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;
-		float tx=SDL_GetTicks()/80000.0;
 		
-//		glTexCoord2f(0,z/iStep+SDL_GetTicks()/60000.0);
 		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,z/(iStep*10.0)+tx);		
 		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,0,z/(iStep*10.0)-tx);				
 		glVertex3f(0,y,z);
 	
-//		glTexCoord2f(iSize/iStep,z/iStep+SDL_GetTicks()/60000.0);
 		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,iSize/(iStep*10.0),z/(iStep*10.0)+tx);		
 		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,iSize/(iStep*10.0),z/(iStep*10.0)-tx);						
 		glVertex3f(iSize,y,z);
 	}
 	glEnd();	
-	
-	
-	/*
-	for(int z=0;z<iSize;z+=iStep){
-		glBegin(GL_TRIANGLE_STRIP);
-		glNormal3f(0,1,0);		
-		glColor4f(.7,.7,.7,.9);
-		for(int x=0;x<iSize;x+=iStep) {
-			float y=sin((SDL_GetTicks()/1000.0)+(x/iStep)*freq)*amp;
-			
-			glNormal3f(1.0,0,0);
-			glTexCoord2f(x/iStep+SDL_GetTicks()/60000.0,1);
-			glVertex3f(x,y,z);
-			
-			glTexCoord2f(x/iStep+SDL_GetTicks()/60000.0,0);			
-			glVertex3f(x,y,z+iStep);
-
-
-		}
-		glEnd();
-	}*/
-	
 
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glDisable(GL_TEXTURE_2D);	
-//	glActiveTextureARB(GL_TEXTURE0_ARB);
-//	glDisable(GL_TEXTURE_2D);	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	
 	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);	
