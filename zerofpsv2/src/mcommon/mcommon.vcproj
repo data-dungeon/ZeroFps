@@ -152,9 +152,6 @@
 				RelativePath=".\dmcontainer.cpp">
 			</File>
 			<File
-				RelativePath=".\mlcontainer.cpp">
-			</File>
-			<File
 				RelativePath=".\p_ai.cpp">
 			</File>
 			<File
@@ -259,9 +256,6 @@
 			</File>
 			<File
 				RelativePath=".\ml_netmessages.h">
-			</File>
-			<File
-				RelativePath=".\mlcontainer.h">
 			</File>
 			<File
 				RelativePath=".\p_ai.h">

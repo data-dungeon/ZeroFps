@@ -30,6 +30,9 @@ public:
 //	MLContainer* GetContainer();
 	void OpenContainerWnd();
 	void CloseContainerWnd();
+
+	int m_iItemUnderCursor; // används av inventoryt för att avgöra vilket item som finns under 
+									// cursorn efter att ha klickat på ett object i världen.
 	
 private:
 
@@ -57,6 +60,8 @@ private:
 	int m_iMoveSlot; // index of m_vkItemList
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
+
+	float m_fPickUpTimer;
 
 	Point m_kPosBeforeMove;
 	

@@ -44,6 +44,7 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87
 	m_iMoveSlot = -1;
 	m_iSelItemID = -1;
 	m_iHighestZ = 1000;
+	m_iItemUnderCursor = -1;
 }
 
 InventoryDlg::~InventoryDlg()
@@ -118,16 +119,27 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
-	if(g_kMistClient.m_iPickedUpItem)
+	if(m_iItemUnderCursor)
 	{
-		for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		const float WAIT_TIME_PICKUP = 0.25f;
+
+		float fTime = (float) SDL_GetTicks() / 1000.0f;
+
+		if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
 		{
-			if(m_vkInventoryItemList[i].iItemID == g_kMistClient.m_iPickedUpItem)
+			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 			{
-				m_iMoveSlot = i;
-				m_vkInventoryItemList[i].pkWnd->Show();
-				break;
+				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
+				{
+					if(bLeftButtonPressed)
+						m_iMoveSlot = i;
+
+					m_vkInventoryItemList[i].pkWnd->Show();
+					break;
+				}
 			}
+
+			m_iItemUnderCursor = -1;
 		}
 	}
 
@@ -212,10 +224,15 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
-		if(g_kMistClient.m_iPickedUpItem != vkItemList[i].m_iItemID || i==0) // dont knwo why
-			pkNewSlot->Show();
-		else
-			pkNewSlot->Hide();
+		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
+		{
+			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
+			{
+				float fTime = (float) SDL_GetTicks() / 1000.0f;
+				m_fPickUpTimer = fTime;
+				pkNewSlot->Hide();
+			}
+		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
@@ -293,6 +310,7 @@ void InventoryDlg::CloseContainerWnd()
 	{
 		m_pkContainerWnd->Hide();
 		g_kMistClient.GetWnd("ContainerCloseButton")->Hide();
+		g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);
 	}
 }
 

@@ -81,7 +81,7 @@ class MistClient :public Application, public ZGuiApp {
 				iPosX   : position i containern som föremålet skall flyttas till, om -1 så sätts föremålet på en ledig plats
 			*/
 
-		int m_iPickedUpItem;
+		
 		
 		
 			

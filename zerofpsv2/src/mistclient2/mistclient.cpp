@@ -54,8 +54,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("ap_quickstartadress", &m_strQuickStartAddress,	CSYS_STRING);
 
 	m_bGuiCapture = false;
-
-	m_iPickedUpItem = -1;
 } 
  
 void MistClient::OnInit() 
@@ -462,7 +460,7 @@ void MistClient::Input()
 	//perform the first action in the action list
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
-		if(!DelayCommand() && m_iPickedUpItem == -1)
+		if(!DelayCommand() && m_pkInventoryDlg->m_iItemUnderCursor == -1)
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{				
@@ -472,9 +470,9 @@ void MistClient::Input()
 					SendMoveItem(m_iPickedEntityID,-1,-1,-1);
 
 					if(m_pkInventoryDlg->IsVisible()) 
-						m_iPickedUpItem = m_iPickedEntityID;	
+						m_pkInventoryDlg->m_iItemUnderCursor = m_iPickedEntityID;	
 					else
-						m_iPickedUpItem = -1;
+						m_pkInventoryDlg->m_iItemUnderCursor = -1;
 				}
 				else 
 				// if not an item do first action
@@ -491,11 +489,6 @@ void MistClient::Input()
 			}
 		}	
 	}	
-
-	if(!m_pkInputHandle->VKIsDown("use") && m_iPickedUpItem != -1)
-	{
-		m_iPickedUpItem = -1;		
-	}
 			
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
