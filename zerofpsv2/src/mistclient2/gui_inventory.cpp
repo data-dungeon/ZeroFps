@@ -727,7 +727,17 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	if(kTargetSlot.first == -1) // no collision
 	{					
 		if(eDropTarget == DropTarget_Ground)
+		{
 			iTarget = iSlotX = iSlotY = -1;
+			if(g_kMistClient.GetWnd("EquipWnd")->GetScreenRect().Inside(mx,my))
+			{
+				bEquip = true;
+
+				pkMoveWnd->Show();
+				pkMoveWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+					m_kItemWndPosBeforeMove.y, false, true);
+			}
+		}
 		else
 		if(eDropTarget == DropTarget_Inventory && !m_kMoveSlot.bIsInventoryItem)
 			iTarget = GetInventoryContainerID();
@@ -811,6 +821,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
+//	g_kMistClient.SendRequestContainer(GetInventoryContainerID());
 }
 
 int InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
