@@ -105,6 +105,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bTcsFullframe			= false;
 	
 	// Register Variables
+	RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);

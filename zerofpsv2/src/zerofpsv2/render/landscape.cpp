@@ -659,9 +659,17 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 		pkGrass->GetPass(0)->m_kTUs[0]->SetRes("data/textures/grassp.tga");	
 		pkGrass->GetPass(0)->m_iPolygonModeBack = FILL_POLYGON;
 		pkGrass->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkGrass->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
-		pkGrass->GetPass(0)->m_bAlphaTest = true;
+		pkGrass->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
 		pkGrass->GetPass(0)->m_bLighting = true;
+
+		//for alpha instead
+		//pkGrass->GetPass(0)->m_bAlphaTest = true;
+				
+		//blending is much nicer thou =)
+		pkGrass->GetPass(0)->m_bDepthMask = false;
+		pkGrass->GetPass(0)->m_bBlend = true;
+		pkGrass->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkGrass->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
 	}
 
 	static Vector3 normaldata[8] = { Vector3(0,1,0),
@@ -697,7 +705,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 	
 	
 	m_pkZShaderSystem->MatrixPush();		
-
+	
 		m_pkZShaderSystem->MatrixTranslate(kPos);		
 		m_pkZShaderSystem->MatrixRotate(kHead);		
 		m_pkZShaderSystem->MatrixScale(kScale);		
