@@ -1,7 +1,7 @@
 #pragma warning( disable : 4786 )
 
 #include "p_light.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 #include "../../basic/zfsystem.h"
  
 P_Light::P_Light()

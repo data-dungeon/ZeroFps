@@ -1,5 +1,5 @@
 #include "p_pfmesh.h"
-#include "object.h"
+#include "entity.h"
 
 P_PfMesh::P_PfMesh()
 {

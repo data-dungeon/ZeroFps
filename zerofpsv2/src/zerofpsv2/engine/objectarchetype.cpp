@@ -1,4 +1,4 @@
-#include "object.h"
+#include "entity.h"
 
 // **************************** PropertyValue ****************************
 PropertyValue::PropertyValue()

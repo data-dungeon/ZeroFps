@@ -1,6 +1,6 @@
 #include "../../engine/psystemmanager.h"
 #include "p_psystem.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 
 // ------------------------------------------------------------------------------------------
 

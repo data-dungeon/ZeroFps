@@ -1,7 +1,7 @@
 // p_ambientsound.h
 
 #include "p_ambientsound.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 
 P_AmbientSound::P_AmbientSound()
 {
