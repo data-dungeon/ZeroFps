@@ -2,31 +2,28 @@
 #include "zfassert.h"
 #include "globals.h"
 
-Matrix4		g_Madkbonetransform[MAX_BONES];		// bone transformation matrix
-Matrix4		g_FullBoneTransform[MAX_BONES];		
-Matrix4		g_MadkBoneMatrix;
-Quaternion	g_Madq[MAX_BONES];
-Vector3		g_Madpos[MAX_BONES];
+Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix
+Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
+Quaternion	g_Madq[MAX_BONES];					// Quat angle for bone.
+Vector3		g_Madpos[MAX_BONES];				// Position for bone.
+Vector3		g_TransformedVertex[10000];			// Transformed Skinvertex Position.
+Vector3		g_TransformedNormal[10000];			// Transformed Skinvertex Normals.
 
-//Vector3		g_akVertexBuffer[10000];
-//Vector3		g_akNormalBuffer[10000];
-Vector3		g_TransformedVertex[10000];
-Vector3		g_TransformedNormal[10000];
-
-#define		MAD_FPS		15
-float const g_fMadFrameTime = 1.0 / MAD_FPS;
+#define		MAD_FPS		15						// Def FPS for Mad's.
+float const g_fMadFrameTime = 1.0 / MAD_FPS;	// Def time between frames in Mad.
 
 Mad_CoreMesh* g_pkSelectedMesh;
 
 Mad_Core::Mad_Core()
 {
-	iActiveFrame = 0;
-	iActiveKeyFrame = 0;
+	iActiveFrame		= 0;
+	iActiveKeyFrame		= 0;
+	m_bDrawNormals		= false;
+	iActiveAnimation	= 0;
+	iBoneFrame			= 0;
+	m_fBoundRadius		= 0;
+
 	m_bInterpolVertexFrames = false;
-	m_bDrawNormals = false;
-	iActiveAnimation = 0;
-	iBoneFrame = 0;
-	m_fBoundRadius = 0;
 }
 
 Mad_Core::~Mad_Core()
@@ -38,6 +35,7 @@ void Mad_Core::Save_SD(FILE* pkFp)
 {
 	int iNumOfBones = m_kSkelleton.size();
 	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
+
 	for(unsigned int i=0; i < m_kSkelleton.size(); i++) {
 		fwrite(&m_kSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
 	}
@@ -181,6 +179,8 @@ void InversTransformMatrix(Matrix4& pkIn, Matrix4& pkOut)
 
 void Mad_Core::SetUpBindPose()
 {
+	Matrix4		kMadkBoneMatrix;					
+	
 	cout << "Setup bind pose" << endl;
 
 	unsigned int i;
@@ -194,21 +194,21 @@ void Mad_Core::SetUpBindPose()
 
 	Quaternion kTestQ;
 	for (i = 0; i < m_kSkelleton.size(); i++) {
-		g_MadkBoneMatrix.Identity();
-		g_MadkBoneMatrix = g_Madq[i].Inverse();
-		g_MadkBoneMatrix.SetPos(g_Madpos[i]);
+		kMadkBoneMatrix.Identity();
+		kMadkBoneMatrix = g_Madq[i].Inverse();
+		kMadkBoneMatrix.SetPos(g_Madpos[i]);
 
 		if (m_kSkelleton[i].m_iParent == -1) {
-			g_Madkbonetransform[i] = g_MadkBoneMatrix;
+			g_Madkbonetransform[i] = kMadkBoneMatrix;
 		} 
 	 	else {
-			g_Madkbonetransform[i] = g_MadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
+			g_Madkbonetransform[i] = kMadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
 		}
 	}
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		cout << "Invert " << m_kSkelleton[i].m_acName << endl ;
-		g_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
+		m_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
 		//InversTransformMatrix(g_Madkbonetransform[i],g_MadkbonetransformI[i]);
 		}	
 }
@@ -262,6 +262,8 @@ void Core::CreateFrame(void)
 
 void Mad_Core::SetupBonePose()
 {
+	Matrix4		kMadkBoneMatrix;					
+
 	unsigned int i;
 	Vector3 Angles;
 
@@ -325,18 +327,18 @@ void Mad_Core::SetupBonePose()
 	
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
-		g_MadkBoneMatrix.Identity();
-		g_MadkBoneMatrix = g_Madq[i].Inverse();
-		g_MadkBoneMatrix.SetPos(g_Madpos[i]);
+		kMadkBoneMatrix.Identity();
+		kMadkBoneMatrix = g_Madq[i].Inverse();
+		kMadkBoneMatrix.SetPos(g_Madpos[i]);
 
 		if (m_kSkelleton[i].m_iParent == -1) {
-			g_Madkbonetransform[i] = g_MadkBoneMatrix;
+			g_Madkbonetransform[i] = kMadkBoneMatrix;
 		} 
 		else {
-			g_Madkbonetransform[i] = g_MadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
+			g_Madkbonetransform[i] = kMadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
 		}
 
-		g_FullBoneTransform[i] = g_MadkbonetransformI[i] * g_Madkbonetransform[i];
+		g_FullBoneTransform[i] = m_MadkbonetransformI[i] * g_Madkbonetransform[i];
 	}
 }
 
@@ -519,19 +521,33 @@ int Mad_Core::GetTextureID()
 
 void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 {
+	Vector3* pkVertexDst;
+	Vector3* pkNormalDst;
+
 	g_pkSelectedMesh = pkMesh;
 	if(pkMesh->bNotAnimated)
 		return;
 	
 	//Matrix4 kFullTransform;
-	int iBoneConnection;
+	int* piBoneConnection;
 	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];
 	Vector3* pkNormal = &pkMesh->akFrames[0].akNormal[0];
  
+	pkVertexDst = g_TransformedVertex;
+	pkNormalDst = g_TransformedNormal;
+	piBoneConnection = &pkMesh->akBoneConnections[0];
+
 	for(int i = 0; i<pkMesh->kHead.iNumOfVertex; i++) {
-		iBoneConnection = pkMesh->akBoneConnections[i];
-		g_TransformedVertex[i] = g_FullBoneTransform[iBoneConnection].VectorTransform( pkVertex[i] );
-		g_TransformedNormal[i] = g_FullBoneTransform[iBoneConnection].VectorRotate( pkNormal[i] );
+		//iBoneConnection = pkMesh->akBoneConnections[i];
+		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
+		*pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal );
+
+		pkVertexDst++;
+		pkNormalDst++;
+		piBoneConnection++;
+		pkVertex++;
+		pkNormal++;
+
 		
 		/*kFullTransform.Identity();
 		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];

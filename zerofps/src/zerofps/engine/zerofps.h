@@ -122,7 +122,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool m_bDrawDevList;
 		bool m_bGuiMode, m_bGuiTakeControl;
 		
-		int	m_iMadDraw;				// Flags for what part's of mad's that should be draw.
+		int		m_iMadDraw;				// Flags for what part's of mad's that should be draw.
+		float	m_fMadLod;				// If not 0 then force this LOD % on every mad.
 		
 		ZeroFps(void);		
 		~ZeroFps();		

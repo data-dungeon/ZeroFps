@@ -125,6 +125,7 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	iTexture = GetIndex(acFileName);
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
+	cout << "Load Texture: "<<  acFileName << endl;
 	
 	//else load it
 	texture *temp = new texture;

@@ -310,6 +310,25 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
+/*
+RENDER_API char* GetOpenGLErrorName(GLenum id )
+{
+	switch(id) 
+	{
+		case GL_NO_ERROR:			return "GL_NO_ERROR";				break;
+		case GL_INVALID_ENUM:		return "GL_INVALID_ENUM ";			break;
+		case GL_INVALID_VALUE :		return "GL_INVALID_VALUE ";			break;
+		case GL_INVALID_OPERATION:	return "GL_INVALID_OPERATION";			break;
+		case GL_STACK_OVERFLOW :	return "GL_STACK_OVERFLOW ";			break;
+		case GL_STACK_UNDERFLOW :	return "GL_STACK_UNDERFLOW ";			break;
+		case GL_OUT_OF_MEMORY :		return "GL_OUT_OF_MEMORY ";			break;
+		//case XXX:		return "XXX";			break;
+	}
+
+	return "*** --- ***";
+}
+*/
+
 
 
 RENDER_API void RenderDLL_InitExtGL(void)

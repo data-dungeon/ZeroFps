@@ -15,6 +15,8 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
+		float	m_fLod;
+
 	public:
 		MadProperty();
 		MadProperty(Mad_Core* pkModell);

@@ -7,16 +7,19 @@ using namespace std;
 #include "basicmath.pkg"
 #include "basic_x.h"
 
-#define MAD_MAX_ANIMATIONNAME	256
-#define MAD_MAX_NAME			64
-#define MAD_MAX_TEXTURENAME		64
-#define MAD_MAX_TEXTURES		64
-#define MAX_MAD_TEXTURES		256
-#define MAX_BONES	256
-#define MAX_JOINTNAME			32
+#define MAD_MAX_ANIMATIONNAME	256		 
+#define MAD_MAX_NAME			64		
+#define MAD_MAX_TEXTURENAME		64		// Max Size på texturename/path.
+#define MAD_MAX_TEXTURES		64		// Max textures in one Mesh.
+//#define MAX_MAD_TEXTURES		256		// Max textures in one Mesh.
+#define MAX_BONES				256		// Max Bones in skelleton.
+#define MAX_JOINTNAME			32		// Max Joint Name Size.
 #define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
 
-#define MAD_VERSION				1
+#define MAD_VERSION				1		// Current Versions.
+#define MAD_SD_VERSION			1
+#define MAD_AD_VERSION			1
+#define MAD_MD_VERSION			1
 
 // MAD - MD (Mesh Data)
 struct BASIC_API Mad_TextureCoo
@@ -38,22 +41,22 @@ struct BASIC_API Mad_CoreMeshHeader
 	int		iNumOfFaces;				// Num of triangles in mesh.
 	int		iNumOfFrames;				// Num of vertex frames.
 	int		iNumOfSubMeshes;			// Num of texture coo.
-	int		iNumOfAnimation;			// Antal Animationer.
+	int		iNumOfAnimation;			// Num of animations.
 };
 
 class BASIC_API Mad_CoreTexture
 {
 public:
-	bool	bIsAlphaTest;				// True if needs alpha test.
-	bool	bTwoSided;					// True if two sided.
-	bool	bClampTexture;				// True if texture should clamp texture coo.
-	char	ucTextureName[64];			// path/name of texture.
+	bool	bIsAlphaTest;						// True if needs alpha test.
+	bool	bTwoSided;							// True if two sided.
+	bool	bClampTexture;						// True if texture should clamp texture coo.
+	char	ucTextureName[MAD_MAX_TEXTURES];	// path/name of texture.
 
 	Mad_CoreTexture() 
 	{
-		bIsAlphaTest = false;
-		bTwoSided = false;
-		bClampTexture = false;
+		bIsAlphaTest	= false;
+		bTwoSided		= false;
+		bClampTexture	= false;
 	}
 };
 
@@ -121,24 +124,23 @@ struct BASIC_API Mad_CoreSubMesh
 class BASIC_API Mad_CoreMesh
 { 
 private:
-	vector<Mad_CoreTexture>			akTextures;				
-	vector<Mad_TextureCoo>			akTextureCoo;
-	vector<Mad_Face>				akFaces;
-	vector<Mad_CoreVertexFrame>		akFrames;
-	vector<Mad_CoreSubMesh>			akSubMeshes;
-	vector<Mad_CoreMeshAnimation>	akAnimation;
-	vector<int>						akBoneConnections;
+	vector<Mad_CoreTexture>			akTextures;			// Texturers used in mesh.			
+	vector<Mad_TextureCoo>			akTextureCoo;		// Texture Coo for mesh.
+	vector<Mad_Face>				akFaces;			// Faces in mesh.
+	vector<Mad_CoreVertexFrame>		akFrames;			// Vertex frames for mesh.
+	vector<Mad_CoreSubMesh>			akSubMeshes;		// Submeshes.
+	vector<Mad_CoreMeshAnimation>	akAnimation;		// Animations.
+	vector<int>						akBoneConnections;	// Vertex -> Bone index.
 
-	int								iTextureID[256];
+	int								iTextureID[256];	// Texture ID's Assigned by rendering sys.
 
 public:
-	bool							bNotAnimated;
-	int								iDisplayID;
+	bool							bNotAnimated;		// True if this is a static mesh that we could put in a display list.
+	int								iDisplayID;			// Display List ID if any.
 	void							SetDisplayID(int iId) { iDisplayID = iId; }
 	int								GetDisplayID() { return iDisplayID; }
 
-	
-	char							m_acName[64];
+	char							m_acName[MAD_MAX_NAME];		// Name of MAD.
 	Mad_CoreMeshHeader				kHead;
 
 	Mad_CoreMesh();
@@ -199,13 +201,13 @@ public:
 class BASIC_API Mad_CoreBone
 {
 public:
-	char				m_acName[32];
-	int					m_iParent;
-	Vector3				m_kPosition;
-	Vector3				m_kRotation;
+	char				m_acName[32];		// Name of Joint / Bone.
+	int					m_iParent;			// Parent Joint to this one.
+	Vector3				m_kPosition;		// Bind Pose position of Bone.
+	Vector3				m_kRotation;		// Bind Pose potation of Bone.
 
-	Vector3				m_kPosScale;
-	Vector3				m_kRotScale;
+	Vector3				m_kPosScale;		// ??
+	Vector3				m_kRotScale;		// ??
 
 	Mad_CoreBone();
 	~Mad_CoreBone();
@@ -218,8 +220,8 @@ public:
 class BASIC_API Mad_CoreBoneKey
 {
 public:
-	Vector3				m_kPosition;
-	Vector3				m_kRotation;
+	Vector3				m_kPosition;		// Position of bone.
+	Vector3				m_kRotation;		// Rotation of bone.
 
 	Mad_CoreBoneKey() { }
 	~Mad_CoreBoneKey() { }
@@ -329,7 +331,8 @@ private:
 	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;		// List of all bone animations for modell.
 	vector<Mad_CoreMesh>			m_kMesh;			// List of all mesh object for modell.
 
-	Matrix4		g_MadkbonetransformI[MAX_BONES];		// Inverse bone transformation matrix for bind pose
+	// Inverse bone transformation matrix for bind pose
+	Matrix4							m_MadkbonetransformI[MAX_BONES];
 
 	// Radius from local origo that contain all of modell.
 	float							m_fBoundRadius;

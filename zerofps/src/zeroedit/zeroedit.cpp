@@ -566,13 +566,15 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Loading MAD %s", kCommand->m_kSplitCommand[1].c_str());				
 
-			for(int x=0; x < 30; x+=3) {
-				for(int y=0; y < 30; y+=3) {
+			int x,y;
+			x = y = 0;
+			//for( x=0; x < 30; x+=3) {
+			//	for(y=0; y < 30; y+=3) {
 					Object *pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
 					pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
 					pkmad->AttachToClosestZone();
-					}
-				}
+			//		}
+			//	}
 
 			break;
 

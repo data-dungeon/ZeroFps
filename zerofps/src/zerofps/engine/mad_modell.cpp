@@ -2,6 +2,9 @@
 
 float fGameTime;
 char szFullTexName[256];
+extern int g_iNumOfMadSurfaces;
+extern float g_fMadLODScale;
+
 
 /*
 void SetGameTime(void)
@@ -233,16 +236,20 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 	fCurrentTime = 0;
 
 	GLenum iError = glGetError();
-	if(iError != GL_NO_ERROR)
-		cout << "Gaa ett error" << endl;
+	if(iError != GL_NO_ERROR) {
+//		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
+		return;
+		}
 
 	glNewList(iListID,GL_COMPILE );
 	Draw_All();
 	glEndList();
 
 	iError = glGetError();
-	if(iError != GL_NO_ERROR)
-		cout << "Gaa ett error :(" << endl;
+	if(iError != GL_NO_ERROR) {
+//		cout << "Failed to create GLList in Mad_Modell::Create_GLList. Err = " << GetOpenGLErrorName(iError) << endl;
+		return;
+		}
 
 	cout << "List Created: " << iListID << endl;
 	pkMesh->SetDisplayID(iListID);
@@ -299,13 +306,13 @@ Mad_CoreMesh* g_pkLastMesh;
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
-
-//	cout << "iDrawFlags: " << iDrawFlags << endl;
-	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
+/*	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
 		glCallList(iListID);
+		g_iNumOfMadSurfaces += pkCore->GetMeshByID(0)->kHead.iNumOfFaces;
 		return;
-		}
+		}*/
+	
 
 	if(iDrawFlags == 0)
 		return;
@@ -327,7 +334,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(iM);
 
-		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
+		//if(g_fMadLODScale == 1)
+			pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
 
 		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
@@ -339,7 +347,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 			SelectSubMesh(iSubM);
 
 			if(iDrawFlags & MAD_DRAW_MESH) {
-				iNumOfFaces = GetNumFaces();
+				iNumOfFaces = GetNumFaces() * g_fMadLODScale;
 				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
@@ -353,7 +361,11 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					iNumOfFaces * 3,
 					GL_UNSIGNED_INT,
 					GetFacesPtr());
+				
+				g_iNumOfMadSurfaces += iNumOfFaces;
 				}
+
+				
 
 			if(iDrawFlags & MAD_DRAW_NORMAL)
 				DrawNormal(GetVerticesPtr(), GetNormalsPtr());

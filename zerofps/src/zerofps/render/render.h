@@ -90,6 +90,7 @@ class RENDER_API Render : public ZFObject {
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);
+//RENDER_API char* GetOpenGLErrorName(GLenum id );
 
 #endif
 

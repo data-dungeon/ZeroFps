@@ -2,6 +2,9 @@
 #include "object.h"
 #include "../render/render.h"
 
+extern int g_iMadLODLock;
+extern float g_fMadLODScale;
+
 MadProperty::MadProperty()
 {
 	strcpy(m_acName,"MadProperty");
@@ -57,6 +60,12 @@ void MadProperty::Update()
 		pkCore->SetControll("lucka",fTestValue);
 		}*/
 	
+//	Vector4 sphere=m_pkObject->GetPos();
+//	sphere.w = GetRadius();
+
+//	if(!m_pkFrustum->SphereInFrustum(sphere))
+//		return;
+
 	if(!pkCore)
 		return;
 
@@ -64,14 +73,18 @@ void MadProperty::Update()
 	if(!m_bIsVisible)
 		return;
 
-//	Vector4 sphere=m_pkObject->GetPos();
-//	sphere.w = GetRadius();
-
-//	if(!m_pkFrustum->SphereInFrustum(sphere))
-//		return;
 	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
 		return;
 
+	// Set Object LOD.
+	if(g_iMadLODLock == 0) {
+		Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetPos();
+		float fDist = fabs(kDiff.Length());
+		m_fLod = 1 - (fDist / 300);
+		//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
+		}
+
+	g_fMadLODScale = m_fLod;
 
 
 	glPushMatrix();
@@ -94,7 +107,6 @@ void MadProperty::Update()
 	}
 
 	m_pkZeroFps->m_iNumOfMadRender++;
-
 }
 
 void MadProperty::SetBase(const char* acName)

@@ -692,6 +692,8 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
+//	return;
+
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();

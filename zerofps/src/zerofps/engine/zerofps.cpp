@@ -3,7 +3,10 @@
 
 //	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
 int	g_iNumOfFrames;
+int g_iNumOfMadSurfaces;
 
+float g_fMadLODScale;
+int g_iMadLODLock;
 
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
@@ -41,6 +44,8 @@ ZeroFps::ZeroFps(void)
 	m_bGuiMode=false;
 	m_bGuiTakeControl=true;
 	m_iMadDraw = 1;
+	g_fMadLODScale = 1.0;
+	g_iMadLODLock = 0;
 	
 //	akCoreModells.reserve(25);
 
@@ -57,7 +62,10 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
-	m_pkCmd->Add(&m_iMadDraw,"r_maddraw",type_int);	
+	m_pkCmd->Add(&m_iMadDraw,"r_maddraw",type_int);
+	m_pkCmd->Add(&g_fMadLODScale,"r_madlod",type_float);
+	m_pkCmd->Add(&g_iMadLODLock,"r_madlodlock",type_float);
+	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -237,8 +245,10 @@ void ZeroFps::MainLoop(void) {
 			//delete objects
 			m_pkObjectMan->UpdateDelete();
 
-			DevPrintf("Mad's: %d", m_iNumOfMadRender);
+			DevPrintf("Mad's: %d / %d / %f", m_iNumOfMadRender, g_iNumOfMadSurfaces, g_fMadLODScale);
 			m_iNumOfMadRender = 0;
+			g_iNumOfMadSurfaces = 0;
+			
 			
 		}
 		
