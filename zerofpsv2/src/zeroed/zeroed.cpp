@@ -77,7 +77,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("zeroed");
 
 	// Set Default values
-	m_bEditSun		= 				true;
+	m_bEditSun		= 				false;
 	m_bSoloMode     = 			true;
 	m_bPlaceObjectsOnGround = 	false;
 	m_bDisableFreeZonePlacement = false;
@@ -352,6 +352,10 @@ void ZeroEd::OnServerStart(void)
 	GetWnd("vp2")->SetZValue(0);
 	GetWnd("vp3")->SetZValue(0);
 	GetWnd("vp4")->SetZValue(0);
+	
+	//enable sun as default
+	m_bEditSun = true;	
+	m_pkLight->Add(&m_kSun);
 }
 
 void ZeroEd::OnClientStart()
