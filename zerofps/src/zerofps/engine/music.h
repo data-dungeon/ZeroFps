@@ -14,7 +14,7 @@
 		
 #include <SDL/SDL_mixer.h>		
 #include <iostream>
-#include "../base/base.pkg"
+#include "../basic/basic.pkg"
 
 class Music {
 	private:

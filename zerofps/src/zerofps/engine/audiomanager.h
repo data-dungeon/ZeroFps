@@ -5,7 +5,7 @@
 #include <iostream>
 #include <SDL/SDL_mixer.h>		
 #include "music.h"
-#include "../base/base.pkg"
+#include "../basic/basic.pkg"
 
 class Music;
 

@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <cmath>
-#include "../zerofps/base/application.h"
+#include "../zerofps/basic/application.h"
 
 class Test :public Application {
 	

@@ -7,7 +7,7 @@
 #include <SDL/SDL.h>
 
 #include "engine.pkg"
-#include "../base/base.pkg"
+#include "../basic/basic.pkg"
 #include "../render/render.pkg"
 
 using namespace std;

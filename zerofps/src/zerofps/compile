@@ -1,6 +1,6 @@
 echo Recompiling zerofps
 
-cd base
+cd basic
 ./compile
 cd ..
 
