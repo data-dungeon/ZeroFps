@@ -368,10 +368,11 @@ void MistServer::Input()
 					m_fClickDelay = pkFps->GetTicks();						
 					m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 					
+					/*
 					ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 					if(zd)
-						if(zd->m_bUnderContruction)					
-							RotateActiveZoneObject();
+						if(zd->m_bUnderContruction)*/
+					RotateActiveZoneObject();
 				}
 			}
 			

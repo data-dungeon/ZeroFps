@@ -48,7 +48,6 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
-	m_fLastGetIWorldPosUpdate = 0;
 	
 	//clear child list
 	m_akChilds.clear();	
