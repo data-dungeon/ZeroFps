@@ -30,7 +30,7 @@ void CameraProperty::Update()
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
 			case CAM_TYPEFIRSTPERSON:
-				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.6,0));
+				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
 				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				strCamName = " 1P ";
 				if(madp)

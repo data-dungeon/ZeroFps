@@ -1,5 +1,5 @@
 #g++ -c *.cpp -O3
-#rm -f *.o
+rm -f *.o
 ../../complink "*.cpp"
 ./relink
 

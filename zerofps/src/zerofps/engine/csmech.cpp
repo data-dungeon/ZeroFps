@@ -36,6 +36,9 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 			m_bHavePolygonData=true;
 	
 	}
+	
+	if(!m_bHavePolygonData)
+		return NULL;
 
 	GenerateModelMatrix();
 
@@ -104,17 +107,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 		
 	if(!hit)
 		return NULL;
-		
-/*				//glide point if wanted
-				if(kOther->m_pkPP->m_bGlide)
-				{
-					Vector3 NewPos=kOther->m_pkPP->m_kNewPos + (HitNormal * kOther->m_fRadius);
-		
-					Vector3 mov=NewPos - kPos2;
-					Vector3 mov2=HitNormal.Proj(mov);
-					kPos2=NewPos-mov2;
-				}						*/
-						
+			
 			
 	Collision* tempdata = new Collision;
 	

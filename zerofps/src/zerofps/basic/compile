@@ -1,5 +1,5 @@
 #g++ -c *.cpp -O3
-#rm -f *.o
+rm -f *.o
 ../../complink "*.cpp"
 ./relink
 #g++ *.o -o ../../../bin/libbasic.so --shared -O3 -lSDL -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`

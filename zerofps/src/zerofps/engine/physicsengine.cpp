@@ -374,33 +374,39 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 
 bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 {
-	float fStep = 0.05;
+	float fStep = 0.00;
 
 	Vector3 kOldNewPos = pkPP->m_kNewPos;
 	Vector3 kOldPos = pkPP->GetObject()->GetPos();
-	Collision *pkCD = NULL;
+	Collision *pkCD = NULL;	
 	
+//	if(kOldNewPos == kOldPos)
+//		return false;
 	
-	pkPP->m_kNewPos = kOldPos ;//+ Vector3(0,pkPP->m_bStrideHeight,0);
-	pkPP->m_kNewPos.y = kOldNewPos.y + pkPP->m_bStrideHeight;
+	if(kOldNewPos.x == kOldPos.x &&
+		kOldNewPos.z == kOldPos.z)
+		return false;
+		
+	Vector3 kBlub = (kOldNewPos - kOldPos).Unit() * fStep;
+	Vector3 kBack = -(kOldNewPos - kOldPos).Unit() * 0.05;	
+	kBlub.y =0;
 	
+	pkPP->GetObject()->GetPos() = kOldPos + kBack;
+	pkPP->m_kNewPos = kOldPos + Vector3(0,pkPP->m_bStrideHeight,0) + kBack;
+//	pkPP->m_kNewPos.y = kOldNewPos.y + pkPP->m_bStrideHeight;
 	
 	if(pkCD = CheckIfColliding(pkPP))
 	{
 		pkPP->m_kNewPos = kOldNewPos;
 		pkPP->GetObject()->GetPos() = kOldPos;
 		
-		//cout<<"up krock"<<endl;
+		cout<<"blocked up"<<endl;
 		delete pkCD;
 		return false;
 	}
-
-	
-	if((kOldNewPos - kOldPos).Length() == 0)
-		return false;
 	
 	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos;
-	pkPP->m_kNewPos = kOldNewPos + (kOldNewPos - kOldPos).Unit() * fStep;
+	pkPP->m_kNewPos = kOldNewPos + kBlub;
 	pkPP->m_kNewPos.y = pkPP->GetObject()->GetPos().y;
 	
 	if(pkCD = CheckIfColliding(pkPP))
@@ -408,40 +414,62 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 		pkPP->m_kNewPos = kOldNewPos;
 		pkPP->GetObject()->GetPos() = kOldPos;
 		
-		//cout<<"blocked forward"<<endl;		
+		cout<<"blocked forward"<<endl;
 		delete pkCD;
 		return false;		
 	}
 
 	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos ; 
-	pkPP->m_kNewPos = kOldNewPos;
+	pkPP->m_kNewPos = kOldNewPos + kBlub;
 
+/*
+	pkCD = NULL;
 	if(pkCD = CheckIfColliding(pkPP))
 	{
-		//cout<<"bla:"<<pkCD->m_kPos2.x<<" "<<pkCD->m_kPos2.y<<" "<<pkCD->m_kPos2.z<<endl;
-		//cout<<"asd:"<<kOldNewPos.x<<" "<<kOldNewPos.y<<" "<<kOldNewPos.z<<endl;						
-		if(!(pkCD->m_kPos2 - kOldNewPos).NearlyZero(0.05))
+
+//		cout<<"old    pos:"<<kOldPos.x<<" "<<kOldPos.y<<" "<<kOldPos.z<<endl;
+//		cout<<"curent pos:"<<pkPP->GetObject()->GetPos().x<<" "<<pkPP->GetObject()->GetPos().y<<" "<<pkPP->GetObject()->GetPos().z<<endl;			
+//		cout<<"next   pos:"<<pkPP->m_kNewPos.x<<" "<<pkPP->m_kNewPos.y<<" "<<pkPP->m_kNewPos.z<<endl;						
+			
+//		cout<<"newpos : "<<pkCD->m_kPos2.y<<endl;
+//		cout<<"kOldPos: "<<kOldPos.y<<endl;
+		
+		cout<<"Step height: "<<(pkCD->m_kPos2.y - pkPP->m_kNewPos.y)<<endl;		
+			
+		if((pkCD->m_kPos2.y - pkPP->m_kNewPos.y)!=0)
 		{	
-			Vector3 diff = kOldNewPos - kOldPos;
-			if(diff.Length() != 0){
-				pkPP->GetObject()->GetPos() += diff.Unit() * fStep;
-				pkPP->m_kNewPos += diff.Unit() * fStep;
-			}
+//			cout<<"Step height: "<<(pkCD->m_kPos2.y - pkPP->m_kNewPos.y)<<endl;
+//			pkPP->GetObject()->GetPos() = pkCD->m_kPos2;
+//			pkPP->m_kNewPos = pkCD->m_kPos2;
+		
+//			Vector3 diff = kOldNewPos - kOldPos;
+//			if(diff.Length() != 0){
+//				pkPP->GetObject()->GetPos() += diff.Unit() * fStep;
+//				pkPP->m_kNewPos += diff.Unit() * fStep;
+//			}
+			
+			cout<<"upp uppp"<<endl;
 			delete pkCD;			
 			return true;		
 		}
-	}
+	}	
 
+//	cout<<"walking"<<endl;
+
+	pkPP->m_kNewPos = kOldNewPos;
+	pkPP->GetObject()->GetPos() = kOldPos;
+*/		
 	delete pkCD;
-	//cout<<"climing stair"<<endl;	
-
 	return false;
 }
 
 Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 {
-	Collision* pkCD;
-			
+	Collision* pkCD = NULL; 
+	Collision* pkClosest = NULL;
+	float fMinDis=99999999;
+
+	
 	PhysicProperty* PP1 = pkPP;			
 	
 	for(list<Property*>::iterator it2 = m_kPropertys.begin();it2!=m_kPropertys.end();it2++) 
@@ -463,13 +491,23 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 			pkCD=DeepTest(PP1,PP2);				
 				
 			if(pkCD != NULL){
-				return pkCD;
-			}
-		
+				if(pkCD->m_fDistance2 < fMinDis)
+				{
+					pkClosest = pkCD;
+					fMinDis = pkCD->m_fDistance2;
+				}
+				else
+				{
+					delete pkCD;
+				}
+							
+				//cout<<"Distance:"<<pkCD->m_fDistance2<<endl;
+				//cout<<"colliding with "<<PP2->GetObject()->GetName()<<" AT: "<<pkCD->m_kPos2.x<<" "<<pkCD->m_kPos2.y<<" "<<pkCD->m_kPos2.z<<endl;				
+			}		
 		}
 	}
 	
-	return NULL;
+	return pkClosest;
 }
 
 

@@ -91,7 +91,7 @@ void MassDriverProperty::Use()
 	Object* Bullet=new Object;
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=m_kAim*m_fBulletVel;
-	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.6,0) + Bullet->GetVel().Unit();		
+	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.95,0) + Bullet->GetVel().Unit();		
 	Bullet->AddProperty("MassDriverProjectile");	
 	
 //	Bullet->AddProperty("ModelProperty");
