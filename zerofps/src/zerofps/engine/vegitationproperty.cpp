@@ -210,7 +210,7 @@ void VegitationProperty::Load(ZFMemPackage* pkPackage)
 
 	pkPackage->Read((void*)&nrofpos,sizeof(nrofpos));
 	
-	cout<<"grass found :"<<nrofpos<<endl;	
+	//cout<<"grass found :"<<nrofpos<<endl;	
 	
 	for(int i=0;i<nrofpos;i++)
 	{			

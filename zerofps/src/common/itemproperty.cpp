@@ -109,7 +109,7 @@ bool ItemProperty::RegisterAction(int iType,const char* acName,const char* acSig
 	
 	m_kUseData.push_back(kTemp);
 	
-	cout<<"Action "<<acName<<" Added to actionlist"<<endl;
+//	cout<<"Action "<<acName<<" Added to actionlist"<<endl;
 	return true;
 }
 
