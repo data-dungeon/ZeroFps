@@ -249,7 +249,26 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 
 	bool bIsTGA;// = m_pkTextureManger->TextureHaveAlpha(m_pkSkin->m_iBkTexID);
-	bIsTGA = m_pkTextureManger->TextureIsTGA(m_pkSkin->m_iBkTexID);
+	//bIsTGA = m_pkTextureManger->TextureIsTGA(m_pkSkin->m_iBkTexID);
+
+	const char* name = m_pkTextureManger->GetFileName(m_pkSkin->m_iBkTexID);
+	
+	if(name != NULL)
+	{
+		string n = name;
+		if(n.find(".tga") == string::npos)
+		{
+			bIsTGA = false;
+		}
+		else
+		{
+			bIsTGA = true;
+		}
+	}
+	else
+	{
+		bIsTGA = false;
+	}
 
 
 

@@ -37,11 +37,12 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 }
 
 const float BD_R = 1;
-const float BD_G = 0;
-const float BD_B = 0;
+const float BD_G = 1;
+const float BD_B = 1;
 
 InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVENTORY(27,87),
-										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), UPPER_LEFT_CONTAINER(0,0)
+										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), 
+										 UPPER_LEFT_CONTAINER(0,0)
 {
 	m_pkInventoryWnd = NULL;
 	m_pkContainerWnd = NULL;
@@ -58,26 +59,6 @@ InventoryDlg::~InventoryDlg()
 {
 	g_kMistClient.m_pkGui->UnregisterWindow(m_pkInventoryWnd);
 }
-
-/*
-MLContainer* InventoryDlg::GetContainer()
-{
-	Entity* pkPlayer = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID);
-
-	if(pkPlayer)
-	{
-		P_CharacterProperty* pkCharacterProperty = 
-			(P_CharacterProperty*) pkPlayer->GetProperty("P_CharacterProperty");
-
-		if(pkCharacterProperty)
-		{
-			return pkCharacterProperty->m_pkInventory;
-		}
-	}
-
-	return NULL;
-}
-*/
 
 void InventoryDlg::Open()
 {	
@@ -113,9 +94,6 @@ void InventoryDlg::Close()
 
 	g_kMistClient.GetWnd("OpenInventoryBn")->Show();
 	g_kMistClient.PositionActionButtons();
-
-	
-
 }
 
 void InventoryDlg::OnCommand(string strController)
@@ -140,7 +118,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
 		{
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
-			{
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
 				{
 					if(bLeftButtonPressed)
@@ -154,7 +131,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					m_pkInventoryWnd->SortChilds(); 
 					break;
 				}
-			}
 
 			m_iItemUnderCursor = -1;
 		}
@@ -391,14 +367,12 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->Show();
 
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
-		{
 			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
 			{
 				float fTime = (float) SDL_GetTicks() / 1000.0f;
 				m_fPickUpTimer = fTime;
 				pkNewSlot->Hide();
 			}
-		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
@@ -538,14 +512,12 @@ void InventoryDlg::OnDropItem()
 				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
 
 				for(int i=0; i<m_vkInventoryItemList.size(); i++)
-				{
 					if(m_kMoveSlot.m_iIndex == i)
 					{
 						m_vkInventoryItemList[i].pkWnd->Hide();				
 						m_kMoveSlot.m_iIndex = -1;
 						break;
 					}
-				}
 			}
 		}
 		else
@@ -553,7 +525,6 @@ void InventoryDlg::OnDropItem()
 			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
-				{
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 					{
 						g_kMistClient.SendMoveItem(
@@ -562,21 +533,18 @@ void InventoryDlg::OnDropItem()
 						m_kMoveSlot.m_iIndex = -1;
 						return;
 					}
-				}
 			}
 			else
 			{
 				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
 
 				for(int i=0; i<m_vkContainerItemList.size(); i++)
-				{
 					if(m_kMoveSlot.m_iIndex == i)
 					{
 						m_vkContainerItemList[i].pkWnd->Hide();				
 						m_kMoveSlot.m_iIndex = -1;
 						break;
 					}
-				}
 			}
 		}
 	}
@@ -663,7 +631,6 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 	if(bInventory)
 	{
 		for(int i=0; i<m_vkInventoryItemList.size(); i++)
-		{
 			if( i != iTestSlot)
 			{
 				Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
@@ -673,12 +640,10 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 					for(int x=0; x<kSlotSize.x; x++)
 						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
 			}
-		}
 	}
 	else
 	{
 		for(int i=0; i<m_vkContainerItemList.size(); i++)
-		{
 			if( i != iTestSlot)
 			{
 				Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
@@ -688,11 +653,9 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 					for(int x=0; x<kSlotSize.x; x++)
 						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
 			}
-		}
 	}
 
 	for(int i=0; i<kSlotsTaken.size(); i++)
-	{
 		for(int y=0; y<test_size.y; y++)
 			for(int x=0; x<test_size.x; x++)
 			{
@@ -701,7 +664,6 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 				if(t == kSlotsTaken[i])
 					return true;
 			}
-	}
 
 	return false;
 
