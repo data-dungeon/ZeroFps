@@ -38,8 +38,10 @@ void P_Player::Update()
 			{			 
 				m_fSecondaryTime = m_pkZeroFps->GetTicks();
 					
-				m_iStopers--;
 				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/stop.lua",GetEntity()->GetWorldPosV()+Vector3(0,-0.6,0),-1);
+			
+				m_iStopers--;
+				ResetAllNetUpdateFlags();			
 			}
 		}
 	}
