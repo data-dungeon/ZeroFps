@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class P_CharacterProperty: public Property
+class MCOMMON_API P_CharacterProperty: public Property
 {
 	private:
 		ZFAudioSystem*	m_pkAudioSystem;
