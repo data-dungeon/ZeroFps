@@ -64,6 +64,7 @@ namespace MistLandLua
 	int MCOMMON_API AddServerLua(lua_State* pkLua);
 	int MCOMMON_API SetDefaultServerLua(lua_State* pkLua);
 
+/*	
    // character status
    int MCOMMON_API RollSkillDiceLua (lua_State* pkLua);       // returns failed/suceeded
    int MCOMMON_API RollAttributeDiceLua (lua_State* pkLua);   // returns failed/suceeded
@@ -143,7 +144,7 @@ namespace MistLandLua
    int MCOMMON_API EquipLua (lua_State* pkLua);
    int MCOMMON_API UnEquipLua (lua_State* pkLua);
 
-	
+*/	
    // Lua lua functions :)
    int MCOMMON_API RunScriptLua (lua_State* pkLua);
 
@@ -155,15 +156,15 @@ namespace MistLandLua
    int MCOMMON_API RandomLua(lua_State* pkLua); //takes a number and returns a number between 0-entered number
 
 
-   
+/*   
    // container stuff..hmm
    int MCOMMON_API SetContainerSizeLua (lua_State* pkLua); // takes size
    int MCOMMON_API PutInContainerLua (lua_State* pkLua); // takes object and containerObject ID (or only container)
    int MCOMMON_API GetPickedUpByLua (lua_State* pkLua);     // takes character
-   
+*/   
    
    // spell functions (inte för stavelsekontroll)
-   int MCOMMON_API CastSpellLua (lua_State* pkLua);
+//  int MCOMMON_API CastSpellLua (lua_State* pkLua);
 
 
 	//movement

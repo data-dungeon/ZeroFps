@@ -6,6 +6,8 @@
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 #include "p_charactercontrol.h"
 
+#include "mlcontainer.h"
+
 using namespace std;
 
 class MCOMMON_API P_CharacterProperty: public Property
@@ -14,16 +16,20 @@ class MCOMMON_API P_CharacterProperty: public Property
 		ZFAudioSystem*	m_pkAudioSystem;
 		Render*			m_pkRender;	
 		ZShaderSystem*	m_pkZShaderSystem;
+		EntityManager*	m_pkEntityMan;
 
+		MLContainer*	m_pkInventory;
+		
+		
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
 		ZGuiFont*	m_pkFont;		
 		bool			m_bOverHeadText;			//shuld overhead text be drawn?
 			 
-		string	m_strName;			
 		
-		bool		m_bIsPlayerCharacter;
-		string	m_strOwnedByPlayer;
+		string		m_strName;					//character name		
+		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
+		string		m_strOwnedByPlayer;		//who owns me ? if anyone
 
 		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
 			
@@ -63,7 +69,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 	
 		P_CharacterProperty();
 		~P_CharacterProperty();
-
+		
+		void Init();
 		void Update();
 		
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}

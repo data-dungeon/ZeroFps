@@ -8,7 +8,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_pkAudioSystem = 	static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));			
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
-
+	m_pkEntityMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
 	
 	strcpy(m_acName,"P_CharacterProperty");
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
@@ -23,7 +23,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strOwnedByPlayer 	=	"NoPlayer";
 	m_bIsPlayerCharacter =	false;
 	m_bOverHeadText		=	true;
-	
+		
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
 	m_strRunSound			=	"data/sound/footstep_forest_run.wav";
@@ -69,6 +69,13 @@ P_CharacterProperty::P_CharacterProperty()
 	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);	
 }
 
+void P_CharacterProperty::Init()
+{
+	//containers
+	m_pkInventory			=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),10,5);
+
+}
+
 
 P_CharacterProperty::~P_CharacterProperty()
 {
@@ -79,6 +86,8 @@ P_CharacterProperty::~P_CharacterProperty()
 
 	delete m_pkTextMaterial;
 	delete m_pkFont;
+	
+	delete m_pkInventory;
 }
 
 
@@ -294,6 +303,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strName);
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
+		
+	m_pkInventory->Save(pkPackage);
 }
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -301,6 +312,8 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read_Str(m_strName);	
 	pkPackage->Read_Str(m_strOwnedByPlayer);	
 	pkPackage->Read(m_bIsPlayerCharacter); 
+	
+	m_pkInventory->Load(pkPackage);
 }
 
 void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

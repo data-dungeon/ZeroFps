@@ -204,106 +204,106 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
 
 void CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-   char temp[128], temp2[128];
-   float fValue;
-   int i;
-
-   // counters
-   int iData = 0, iSkills = 0, iAttributes = 0, 
-       iEquipment = 0, iAttacks = 0, iDefence = 0, iCounters = 0, iValue;
-
-    // load counters 
-   pkPackage->Read ( (void*)&iData, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iSkills, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iAttributes, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iEquipment, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iAttacks, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iDefence, sizeof(int), 1 );
-   pkPackage->Read ( (void*)&iCounters, sizeof(int), 1 );
-
-
-   // load current skill
-	pkPackage->Read((void*)&temp,128,1);   
-   m_pkCharStats->m_strPrimSkill = temp;
-
-   // load counters
-   for ( i = 0; i < iCounters; i++ )
-   {
-	   pkPackage->Read((void*)&temp,128,1);        
-
-	   pkPackage->Read((void*)&fValue,sizeof(float),1); // max value
-      
-      m_pkCharStats->m_kPointStats[temp].SetMaxValue ( int(fValue) );
-
-	   pkPackage->Read((void*)&fValue,sizeof(float),1); // value
-
-      m_pkCharStats->m_kPointStats[temp] = int(fValue);
-   }
-   
-   // load data
-   for ( i = 0; i < iData; i++ )
-   {
-	   pkPackage->Read((void*)&temp,128,1); 
-	   pkPackage->Read((void*)&temp2,128,1);
-      
-      m_pkCharStats->SetData ( string(temp), string(temp2) );
-   }
-
-   // load skills
-   for ( i = 0; i < iSkills; i++ )
-   {
-	   pkPackage->Read ( (void*)&temp,128,1); // name
-      pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
-      pkPackage->Read ( (void*)&fValue, sizeof(float), 1 ); // exp
-
-      m_pkCharStats->SetSkill ( string(temp), iValue );
-      m_pkCharStats->SetSkillExp ( string(temp), fValue );
-   }
-   
-   // load attributes
-   for ( i = 0; i < iAttributes; i++ )
-   {
-	   pkPackage->Read ( (void*)&temp,128,1); // name
-      pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
-      pkPackage->Read ( (void*)&fValue, sizeof(float), 1 ); // exp
-
-      m_pkCharStats->SetAttribute ( string(temp), iValue );
-      m_pkCharStats->SetAttributeExp ( string(temp), fValue );
-   }
-
-   // load equipment
-   for ( i = 0; i < iEquipment; i++ )
-   {
-	   pkPackage->Read((void*)&temp,128,1);  // slot
-      pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // network ID
-
-      // TODO!!: equip the item. Make sure it exist first!
-   }
-    
-   // load attack stats
-   for ( i = 0; i < iAttacks; i++ )
-   {
-	   pkPackage->Read ( (void*)&temp,128,1);  // name
-      pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
-
-      m_pkCharStats->SetAttackValue ( string(temp), iValue );
-   }
-
-   // load defence stats
-   for ( i = 0; i < iDefence; i++ )
-   {
-	   pkPackage->Read ( (void*)&temp,128,1);  // name
-      pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
-
-      m_pkCharStats->SetDefenceValue ( string(temp), iValue );
-   }
-
-   // load parentID
-   pkPackage->Read ( (void*)&iValue, sizeof(int), 1 );
-
-
-	//load reacal position
-   pkPackage->Read ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
+//    char temp[128], temp2[128];
+//    float fValue;
+//    int i;
+// 
+//    // counters
+//    int iData = 0, iSkills = 0, iAttributes = 0, 
+//        iEquipment = 0, iAttacks = 0, iDefence = 0, iCounters = 0, iValue;
+// 
+//     // load counters 
+//    pkPackage->Read ( (void*)&iData, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iSkills, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iAttributes, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iEquipment, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iAttacks, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iDefence, sizeof(int), 1 );
+//    pkPackage->Read ( (void*)&iCounters, sizeof(int), 1 );
+// 
+// 
+//    // load current skill
+// 	pkPackage->Read((void*)&temp,128,1);   
+//    m_pkCharStats->m_strPrimSkill = temp;
+// 
+//    // load counters
+//    for ( i = 0; i < iCounters; i++ )
+//    {
+// 	   pkPackage->Read((void*)&temp,128,1);        
+// 
+// 	   pkPackage->Read((void*)&fValue,sizeof(float),1); // max value
+//       
+//       m_pkCharStats->m_kPointStats[temp].SetMaxValue ( int(fValue) );
+// 
+// 	   pkPackage->Read((void*)&fValue,sizeof(float),1); // value
+// 
+//       m_pkCharStats->m_kPointStats[temp] = int(fValue);
+//    }
+//    
+//    // load data
+//    for ( i = 0; i < iData; i++ )
+//    {
+// 	   pkPackage->Read((void*)&temp,128,1); 
+// 	   pkPackage->Read((void*)&temp2,128,1);
+//       
+//       m_pkCharStats->SetData ( string(temp), string(temp2) );
+//    }
+// 
+//    // load skills
+//    for ( i = 0; i < iSkills; i++ )
+//    {
+// 	   pkPackage->Read ( (void*)&temp,128,1); // name
+//       pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
+//       pkPackage->Read ( (void*)&fValue, sizeof(float), 1 ); // exp
+// 
+//       m_pkCharStats->SetSkill ( string(temp), iValue );
+//       m_pkCharStats->SetSkillExp ( string(temp), fValue );
+//    }
+//    
+//    // load attributes
+//    for ( i = 0; i < iAttributes; i++ )
+//    {
+// 	   pkPackage->Read ( (void*)&temp,128,1); // name
+//       pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
+//       pkPackage->Read ( (void*)&fValue, sizeof(float), 1 ); // exp
+// 
+//       m_pkCharStats->SetAttribute ( string(temp), iValue );
+//       m_pkCharStats->SetAttributeExp ( string(temp), fValue );
+//    }
+// 
+//    // load equipment
+//    for ( i = 0; i < iEquipment; i++ )
+//    {
+// 	   pkPackage->Read((void*)&temp,128,1);  // slot
+//       pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // network ID
+// 
+//       // TODO!!: equip the item. Make sure it exist first!
+//    }
+//     
+//    // load attack stats
+//    for ( i = 0; i < iAttacks; i++ )
+//    {
+// 	   pkPackage->Read ( (void*)&temp,128,1);  // name
+//       pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
+// 
+//       m_pkCharStats->SetAttackValue ( string(temp), iValue );
+//    }
+// 
+//    // load defence stats
+//    for ( i = 0; i < iDefence; i++ )
+//    {
+// 	   pkPackage->Read ( (void*)&temp,128,1);  // name
+//       pkPackage->Read ( (void*)&iValue, sizeof(int), 1 ); // level
+// 
+//       m_pkCharStats->SetDefenceValue ( string(temp), iValue );
+//    }
+// 
+//    // load parentID
+//    pkPackage->Read ( (void*)&iValue, sizeof(int), 1 );
+// 
+// 
+// 	//load reacal position
+//    pkPackage->Read ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
 
 }
 

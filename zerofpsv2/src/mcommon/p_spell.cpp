@@ -146,6 +146,7 @@ bool P_Spell::CastOn ( Entity *pkObject )
  //false = remove bonuses (on end of spell)
 void P_Spell::Bonuses(bool bAddBonuses)
 {
+/*
    CharacterProperty *pkCharStats = (CharacterProperty*)m_pkEntity->GetProperty("P_CharStats");
    P_Item *pkItem = (P_Item*)m_pkEntity->GetProperty("P_Item");
 
@@ -217,7 +218,7 @@ void P_Spell::Bonuses(bool bAddBonuses)
          pkCharStats->GetCharStats()->AddDefenceValue( (*kIte).first, (*kIte).second * iModi );
    }
 
-
+*/
 }
 
 // ------------------------------------------------------------------------------------------

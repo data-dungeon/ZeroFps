@@ -561,45 +561,45 @@ bool CharacterStats::Equip ( Entity *pkObject, int iSlot )
 
 bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 {
-   // check if object is itemobject (has a itemproperty)
-	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
-
-   if ( !pkP_Item )
-      return false;
-
-   // Test if the item is equipable at the chosen slot
-   if ( pkP_Item->m_pkItemStats->CanEquipOn(kSlot) )
-   {
-
-      pkObject->SetUseZones(false);
-
-      pkP_Item->m_pkItemStats->EquipOn ( this );
-
-      // check if the slot already is taken, if so, switch objects...somehow!?
-      m_kEquipment[kSlot] = pkObject;
-
-      m_uiVersion++;
-
-      // stick Object to MAD model
-      m_pkParent->AddChild ( pkObject );
-
-      pkObject->SetUpdateStatus ( UPDATE_ALL );
-
-      P_LinkToJoint* pkLink = (P_LinkToJoint*)pkObject->AddProperty ("P_LinkToJoint");
-      
-      pkLink->SetJoint( kSlot.c_str() );
-
-      //cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
-
-      // if equipped primary weapon, set skill!!
-      if ( kSlot == "righthand" || kSlot == "RightHand" || kSlot == "cavetroll_r_u_finger_end")
-      {
-         m_strPrimSkill = pkP_Item->m_pkItemStats->m_kUsesSkill;
-         //cout << "SetPrimSkillTo:" << m_strPrimSkill << endl;
-      }
-
-      return true;
-   }
+//    // check if object is itemobject (has a itemproperty)
+// 	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//    if ( !pkP_Item )
+//       return false;
+// 
+//    // Test if the item is equipable at the chosen slot
+//    if ( pkP_Item->m_pkItemStats->CanEquipOn(kSlot) )
+//    {
+// 
+//       pkObject->SetUseZones(false);
+// 
+//       pkP_Item->m_pkItemStats->EquipOn ( this );
+// 
+//       // check if the slot already is taken, if so, switch objects...somehow!?
+//       m_kEquipment[kSlot] = pkObject;
+// 
+//       m_uiVersion++;
+// 
+//       // stick Object to MAD model
+//       m_pkParent->AddChild ( pkObject );
+// 
+//       pkObject->SetUpdateStatus ( UPDATE_ALL );
+// 
+//       P_LinkToJoint* pkLink = (P_LinkToJoint*)pkObject->AddProperty ("P_LinkToJoint");
+//       
+//       pkLink->SetJoint( kSlot.c_str() );
+// 
+//       //cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
+// 
+//       // if equipped primary weapon, set skill!!
+//       if ( kSlot == "righthand" || kSlot == "RightHand" || kSlot == "cavetroll_r_u_finger_end")
+//       {
+//          m_strPrimSkill = pkP_Item->m_pkItemStats->m_kUsesSkill;
+//          //cout << "SetPrimSkillTo:" << m_strPrimSkill << endl;
+//       }
+// 
+//       return true;
+//    }
 
    return false;
 }
@@ -608,22 +608,22 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 
 Entity* CharacterStats::UnEquip (string kSlot)
 {
-   if ( m_kEquipment[kSlot] != 0 )
-   {
-      Entity *pkTemp = m_kEquipment[kSlot];
-
-      P_Item* pkP_Item = (P_Item*)pkTemp->GetProperty("P_Item");
-
-      pkP_Item->m_pkItemStats->UnEquip( this );
-      
-      m_kEquipment[kSlot] = 0;
-
-      // TODO!!!! Remove P_LinkToJoint from item!!!
-
-      m_uiVersion++;
-
-      return pkTemp;
-   }
+//    if ( m_kEquipment[kSlot] != 0 )
+//    {
+//       Entity *pkTemp = m_kEquipment[kSlot];
+// 
+//       P_Item* pkP_Item = (P_Item*)pkTemp->GetProperty("P_Item");
+// 
+//       pkP_Item->m_pkItemStats->UnEquip( this );
+//       
+//       m_kEquipment[kSlot] = 0;
+// 
+//       // TODO!!!! Remove P_LinkToJoint from item!!!
+// 
+//       m_uiVersion++;
+// 
+//       return pkTemp;
+//    }
 
    return 0;
 }

@@ -58,7 +58,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	
 
    // char.stats-scipts
-   pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
+/*   
+	pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
    pkScript->ExposeFunction("RollAttributeDice",		MistLandLua::RollAttributeDiceLua);			
    pkScript->ExposeFunction("SetCurrentSkill",			MistLandLua::SetCurrentSkillLua);			
    pkScript->ExposeFunction("AddToSkillValue",			MistLandLua::AddSkillValueLua);			
@@ -122,15 +123,15 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AddAfterItemName",	      MistLandLua::AddAfterItemNameLua);
 
    pkScript->ExposeFunction("UseOn",	               MistLandLua::UseItemOnLua);
-
+*/
    // Lua Lua commands
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
 
    // equip / unequip
-   pkScript->ExposeFunction("EquipFromScript",   		MistLandLua::EquipFromScriptLua);			
-   pkScript->ExposeFunction("Equip",   		         MistLandLua::EquipLua);			
-   pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
-	pkScript->ExposeFunction("Equip",	      		   MistLandLua::EquipLua);			
+//    pkScript->ExposeFunction("EquipFromScript",   		MistLandLua::EquipFromScriptLua);			
+//    pkScript->ExposeFunction("Equip",   		         MistLandLua::EquipLua);			
+//    pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
+// 	pkScript->ExposeFunction("Equip",	      		   MistLandLua::EquipLua);			
 
    // random function
    pkScript->ExposeFunction("Random",	      		   MistLandLua::RandomLua);			
@@ -140,15 +141,15 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
    pkScript->ExposeFunction("SetPropertyValue",	      MistLandLua::SetPropertyValueLua);
 
-   pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
+//    pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
    
    pkScript->ExposeFunction("SetDrawingOrder",	      MistLandLua::SetDrawingOrderLua);
 
 
    // contianer stuff
-   pkScript->ExposeFunction("SetContainerSize",	      MistLandLua::SetContainerSizeLua);
-   pkScript->ExposeFunction("PutInContainer",	      MistLandLua::PutInContainerLua);
-   pkScript->ExposeFunction("GetPickedUpBy",	         MistLandLua::GetPickedUpByLua);
+//     pkScript->ExposeFunction("SetContainerSize",	      MistLandLua::SetContainerSizeLua);
+//    pkScript->ExposeFunction("PutInContainer",	      MistLandLua::PutInContainerLua);
+//    pkScript->ExposeFunction("GetPickedUpBy",	         MistLandLua::GetPickedUpByLua);
 
 	// setup ip
 	pkScript->ExposeFunction("AddServer", MistLandLua::AddServerLua);
@@ -573,7 +574,7 @@ int MistLandLua::RotateTowardsLua(lua_State* pkLua)
 
 
 // ----------------------------------------------------------------------------------------------
-
+/*
 int MistLandLua::RollSkillDiceLua (lua_State* pkLua)
 {
     // error
@@ -899,24 +900,24 @@ int MistLandLua::SetHPLua (lua_State* pkLua)
 
 int MistLandLua::SetMPLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-
-         if ( pkCP )
-         {
-            CharacterStats *pkCS = pkCP->GetCharStats();
-            pkCS->SetMP ( string(acType) );
-         }
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+// 
+//          if ( pkCP )
+//          {
+//             CharacterStats *pkCS = pkCP->GetCharStats();
+//             pkCS->SetMP ( string(acType) );
+//          }
+//       }
+//    }
 
    return 0;
 }
@@ -925,23 +926,23 @@ int MistLandLua::SetMPLua (lua_State* pkLua)
 
 int MistLandLua::SetMaxHPLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         
-         if ( pkCP )
-            pkCP->GetCharStats()->SetMaxHP( int(dTemp) );
-         else
-            cout << "Error! Tried to use luaFunc SetMaxHP on a entity without P_CharStats" << endl;
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          
+//          if ( pkCP )
+//             pkCP->GetCharStats()->SetMaxHP( int(dTemp) );
+//          else
+//             cout << "Error! Tried to use luaFunc SetMaxHP on a entity without P_CharStats" << endl;
+//       }
+//    }
 
    return 0;
 }
@@ -950,21 +951,21 @@ int MistLandLua::SetMaxHPLua (lua_State* pkLua)
 
 int MistLandLua::SetMaxMPLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->SetMaxMP( int(dTemp) );
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          pkCS->SetMaxMP( int(dTemp) );
+//       }
+//    }
 
    return 0;
 }
@@ -973,20 +974,20 @@ int MistLandLua::SetMaxMPLua (lua_State* pkLua)
 
 int MistLandLua::GetHPLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         g_pkScript->AddReturnValue(pkLua, pkCS->GetHP () );
-      }
-
-      return 1;
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          g_pkScript->AddReturnValue(pkLua, pkCS->GetHP () );
+//       }
+// 
+//       return 1;
+//    }
 
    return 0;
 }
@@ -995,21 +996,21 @@ int MistLandLua::GetHPLua (lua_State* pkLua)
 
 int MistLandLua::GetMPLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         g_pkScript->AddReturnValue(pkLua, pkCS->GetMP () );
-      }
-
-      return 1;
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          g_pkScript->AddReturnValue(pkLua, pkCS->GetMP () );
+//       }
+// 
+//       return 1;
+//    }
 
    return 0;
 }
@@ -1018,21 +1019,21 @@ int MistLandLua::GetMPLua (lua_State* pkLua)
 
 int MistLandLua::GetHpPercentLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         g_pkScript->AddReturnValue(pkLua, pkCS->GetHPPercent () );
-      }
-
-      return 1;
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          g_pkScript->AddReturnValue(pkLua, pkCS->GetHPPercent () );
+//       }
+// 
+//       return 1;
+//    }
 
    return 0;
 }
@@ -1041,21 +1042,21 @@ int MistLandLua::GetHpPercentLua (lua_State* pkLua)
 
 int MistLandLua::GetMpPercentLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         g_pkScript->AddReturnValue(pkLua, pkCS->GetMPPercent () );
-      }
-
-      return 1;
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          g_pkScript->AddReturnValue(pkLua, pkCS->GetMPPercent () );
+//       }
+// 
+//       return 1;
+//    }
 
    return 0;
 }
@@ -1064,22 +1065,22 @@ int MistLandLua::GetMpPercentLua (lua_State* pkLua)
 
 int MistLandLua::AddHpLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->AddHP ( (int) dTemp );
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          pkCS->AddHP ( (int) dTemp );
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1088,22 +1089,22 @@ int MistLandLua::AddHpLua (lua_State* pkLua)
 
 int MistLandLua::AddMpLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->AddMP ( (int) dTemp );
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//          CharacterStats *pkCS = pkCP->GetCharStats();
+// 
+//          pkCS->AddMP ( (int) dTemp );
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1113,30 +1114,30 @@ int MistLandLua::AddMpLua (lua_State* pkLua)
 // which script to run when character is hit
 int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-		
-     		char	acScript[128];
-			g_pkScript->GetArgString(pkLua, 0, acScript);
-
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-			
-
-         if ( pkCP )
-         {
-            CharacterStats* pkc = pkCP->GetCharStats();
-            if(pkc)
-            	pkc->m_strScriptWhenHit = acScript;
-         }
-         else
-            cout << "Warning! Tried to use SetScriptWhenHitLua on a non-character object!" << endl; 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 		
+//      		char	acScript[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acScript);
+// 
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+// 			
+// 
+//          if ( pkCP )
+//          {
+//             CharacterStats* pkc = pkCP->GetCharStats();
+//             if(pkc)
+//             	pkc->m_strScriptWhenHit = acScript;
+//          }
+//          else
+//             cout << "Warning! Tried to use SetScriptWhenHitLua on a non-character object!" << endl; 
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1145,26 +1146,26 @@ int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
 
 int MistLandLua::SetReloadTimeLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-
-         if ( pkCP )
-         {
-     		   double dSpeed;
-            g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
-
-            pkCP->GetCharStats()->SetReloadTime ( (float) dSpeed);
-         }
-         else
-            cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+// 
+//          if ( pkCP )
+//          {
+//      		   double dSpeed;
+//             g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
+// 
+//             pkCP->GetCharStats()->SetReloadTime ( (float) dSpeed);
+//          }
+//          else
+//             cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1320,29 +1321,29 @@ int MistLandLua::SetRecalPositionLua (lua_State* pkLua)
 
 int MistLandLua::GetQuantityLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetQuantity() );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-          
-         return 1;
-      }
-   }
-
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetQuantity() );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+//           
+//          return 1;
+//       }
+//    }
+// *
    return 0;
 }
 
@@ -1350,7 +1351,7 @@ int MistLandLua::GetQuantityLua (lua_State* pkLua)
 
 int MistLandLua::SetQuantityLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+/*	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
 
@@ -1377,6 +1378,7 @@ int MistLandLua::SetQuantityLua (lua_State* pkLua)
 
 int MistLandLua::AddQuantityLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1395,7 +1397,7 @@ int MistLandLua::AddQuantityLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1403,6 +1405,7 @@ int MistLandLua::AddQuantityLua (lua_State* pkLua)
 
 int MistLandLua::SetQualityLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1421,7 +1424,7 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1430,6 +1433,7 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
 
 int MistLandLua::SetIconLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 2 ) // ändra till 1 och ändra alla skriptfiler...
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1449,7 +1453,7 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1457,6 +1461,7 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
 
 int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 1 ) 
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1494,7 +1499,7 @@ int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1503,6 +1508,7 @@ int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
 
 int MistLandLua::UseItemOnLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1524,7 +1530,7 @@ int MistLandLua::UseItemOnLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 
 }
@@ -1533,6 +1539,7 @@ int MistLandLua::UseItemOnLua (lua_State* pkLua)
 
 int MistLandLua::SetSkillBonusLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1556,7 +1563,7 @@ int MistLandLua::SetSkillBonusLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1564,6 +1571,7 @@ int MistLandLua::SetSkillBonusLua (lua_State* pkLua)
 
 int MistLandLua::SetAttributeBonusLua (lua_State* pkLua)
 {
+/*
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
@@ -1587,7 +1595,7 @@ int MistLandLua::SetAttributeBonusLua (lua_State* pkLua)
       }
 
    }
-
+*
    return 0;
 }
 
@@ -1595,60 +1603,61 @@ int MistLandLua::SetAttributeBonusLua (lua_State* pkLua)
 
 int MistLandLua::SetAttackBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-            pkCP->m_pkItemStats->SetAttackBonus ( string(acType), iValue );
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//             pkCP->m_pkItemStats->SetAttackBonus ( string(acType), iValue );
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
 
-// ----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 
 int MistLandLua::SetDefenceBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
 
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-            pkCP->m_pkItemStats->SetDefenceBonus ( string(acType), iValue );
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//             pkCP->m_pkItemStats->SetDefenceBonus ( string(acType), iValue );
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1657,24 +1666,24 @@ int MistLandLua::SetDefenceBonusLua (lua_State* pkLua)
 
 int MistLandLua::EquipOnLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
- 			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkIP )
-            pkIP->m_pkItemStats->AddCanEquipOn( string(acType) );
-         else
-            cout << "Warning! Tried to use function EquipOn on a non-item object!" << endl;
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkIP )
+//             pkIP->m_pkItemStats->AddCanEquipOn( string(acType) );
+//          else
+//             cout << "Warning! Tried to use function EquipOn on a non-item object!" << endl;
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1683,31 +1692,31 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
 
 int MistLandLua::GetSkillBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetSkillBonus ( string (acType) ) );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-          
-         return 1;
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+// 		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetSkillBonus ( string (acType) ) );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+//           
+//          return 1;
+//       }
+//    }
 
    return 0;
 }
@@ -1716,31 +1725,31 @@ int MistLandLua::GetSkillBonusLua (lua_State* pkLua)
 
 int MistLandLua::GetAttributeBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetAttributeBonus ( string (acType) ) );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-          
-         return 1;
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+// 		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetAttributeBonus ( string (acType) ) );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+//           
+//          return 1;
+//       }
+//    }
 
    return 0;
 }
@@ -1748,31 +1757,31 @@ int MistLandLua::GetAttributeBonusLua (lua_State* pkLua)
 // ----------------------------------------------------------------------------------------------
 int MistLandLua::GetAttackBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetAttackBonus ( string (acType) ) );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-          
-         return 1;
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+// 		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetAttackBonus ( string (acType) ) );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+//           
+//          return 1;
+//       }
+//    }
 
    return 0;
 }
@@ -1780,31 +1789,31 @@ int MistLandLua::GetAttackBonusLua (lua_State* pkLua)
 // ----------------------------------------------------------------------------------------------
 int MistLandLua::GetDefenceBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetDefenceBonus ( string (acType) ) );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-          
-         return 1;
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+// 		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetDefenceBonus ( string (acType) ) );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+//           
+//          return 1;
+//       }
+//    }
 
    return 0;
 }
@@ -1813,32 +1822,32 @@ int MistLandLua::GetDefenceBonusLua (lua_State* pkLua)
 
 int MistLandLua::AddSkillBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->AddToSkillBonus ( string(acType), iValue );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->AddToSkillBonus ( string(acType), iValue );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1847,31 +1856,31 @@ int MistLandLua::AddSkillBonusLua (lua_State* pkLua)
 
 int MistLandLua::AddAttributeBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->AddToAttributeBonus ( string(acType), iValue );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-       }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->AddToAttributeBonus ( string(acType), iValue );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//        }
+// 
+//    }
 
    return 0;
 }
@@ -1880,32 +1889,32 @@ int MistLandLua::AddAttributeBonusLua (lua_State* pkLua)
 
 int MistLandLua::AddAttackBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->AddToAttackBonus ( string(acType), iValue );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->AddToAttackBonus ( string(acType), iValue );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1914,32 +1923,32 @@ int MistLandLua::AddAttackBonusLua (lua_State* pkLua)
 
 int MistLandLua::AddDefenceBonusLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-   		int iValue = (int)dTemp;
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->AddToDefenceBonus ( string(acType), iValue );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+//    		int iValue = (int)dTemp;
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->AddToDefenceBonus ( string(acType), iValue );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1948,26 +1957,26 @@ int MistLandLua::AddDefenceBonusLua (lua_State* pkLua)
 
 int MistLandLua::PrintItemStatsLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->Print();
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->Print();
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -1976,28 +1985,28 @@ int MistLandLua::PrintItemStatsLua (lua_State* pkLua)
 
 int MistLandLua::SetItemNameLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->SetItemName ( string (acType) );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->SetItemName ( string (acType) );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2006,24 +2015,24 @@ int MistLandLua::SetItemNameLua (lua_State* pkLua)
 
 int MistLandLua::UsesSkillLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-            pkCP->m_pkItemStats->m_kUsesSkill = string (acType);
-         else
-           cout << "Warning! Tried to use luaFunc UsesSkillLua on a non-item object!" << endl;
-       }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//             pkCP->m_pkItemStats->m_kUsesSkill = string (acType);
+//          else
+//            cout << "Warning! Tried to use luaFunc UsesSkillLua on a non-item object!" << endl;
+//        }
+// 
+//    }
 
    return 0;
 }
@@ -2032,28 +2041,28 @@ int MistLandLua::UsesSkillLua (lua_State* pkLua)
 
 int MistLandLua::SetItemWeightLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->SetItemWeight ( (float) dTemp );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->SetItemWeight ( (float) dTemp );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2062,28 +2071,28 @@ int MistLandLua::SetItemWeightLua (lua_State* pkLua)
 
 int MistLandLua::SetItemValueLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->SetItemValue ( int(dTemp) );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->SetItemValue ( int(dTemp) );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2092,30 +2101,30 @@ int MistLandLua::SetItemValueLua (lua_State* pkLua)
 
 int MistLandLua::GetItemValueLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            g_pkScript->AddReturnValue(pkLua, pkIS->GetItemValue () );
-         }
-         else
-         {
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-            return 0;
-         }
-
-         return 1;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             g_pkScript->AddReturnValue(pkLua, pkIS->GetItemValue () );
+//          }
+//          else
+//          {
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//             return 0;
+//          }
+// 
+//          return 1;
+//  
+//       }
+// 
+//    }
 
    return 0;
 
@@ -2125,28 +2134,28 @@ int MistLandLua::GetItemValueLua (lua_State* pkLua)
 
 int MistLandLua::AddItemValueLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->AddItemValue ( int(dTemp) );
-         }
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//          {      
+//             ItemStats *pkIS = pkCP->m_pkItemStats;
+//             pkIS->AddItemValue ( int(dTemp) );
+//          }
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2155,25 +2164,25 @@ int MistLandLua::AddItemValueLua (lua_State* pkLua)
 
 int MistLandLua::AddBeforeItemNameLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);	
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-            pkCP->m_pkItemStats->AddBeforeName ( string(acType ) );
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);	
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//             pkCP->m_pkItemStats->AddBeforeName ( string(acType ) );
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2182,25 +2191,25 @@ int MistLandLua::AddBeforeItemNameLua (lua_State* pkLua)
 
 int MistLandLua::AddAfterItemNameLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acType[128];
-			g_pkScript->GetArgString(pkLua, 0, acType);	
-
-  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkCP )
-            pkCP->m_pkItemStats->AddAfterName ( string(acType ) );
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
- 
-      }
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acType[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acType);	
+// 
+//   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+// 
+//          if ( pkCP )
+//             pkCP->m_pkItemStats->AddAfterName ( string(acType ) );
+//          else
+//             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+//  
+//       }
+// 
+//    }
 
    return 0;
 }
@@ -2209,150 +2218,150 @@ int MistLandLua::AddAfterItemNameLua (lua_State* pkLua)
 
 int MistLandLua::UnEquipLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acSlot[128];
-			g_pkScript->GetArgString(pkLua, 0, acSlot);
-
-         CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-
-         // TODO! Ta emot objectet när det returneras, annars försvinner det ut i cyberspace
-         if ( pkChar )
-            pkChar->GetCharStats()->UnEquip( string(acSlot) );
-         else
-            cout << "Warning! Tried to unequip something on a non-character object!" << endl;
-       }
-
-   }
-
-   return 0;
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acSlot[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acSlot);
+// 
+//          CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+// 
+//          // TODO! Ta emot objectet när det returneras, annars försvinner det ut i cyberspace
+//          if ( pkChar )
+//             pkChar->GetCharStats()->UnEquip( string(acSlot) );
+//          else
+//             cout << "Warning! Tried to unequip something on a non-character object!" << endl;
+//        }
+// 
+//    }
+/*  	return 0;
 
 }
 
-// ----------------------------------------------------------------------------------------------
+ // ----------------------------------------------------------------------------------------------
 
 int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acItem[128];
-			g_pkScript->GetArgString(pkLua, 0, acItem);
-
-         char	acSlot[128];
-			g_pkScript->GetArgString(pkLua, 1, acSlot);
-
-
-         CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-
-         if ( pkChar )
-         {      
-            // save current Object ID
-            int iOldObject = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
-            ZFScriptSystem* pkZFScriptSys = g_pkScript;
-
-            // create the new object
-            Entity* pkNewObj = g_pkObjMan->CreateEntityFromScript( acItem );
-
-            if ( pkNewObj )
-            {
-               // if object has Event propery..
-               if ( pkNewObj->GetProperty ("P_Event") )
-                  // run the INIT function in the script
-                  pkNewObj->GetProperty("P_Event")->Update();
-
-               // equip the new, nice object
-               if ( !pkChar->GetCharStats()->Equip ( pkNewObj, string(acSlot) ) )
-                  // if we couln't equip the object, delete it.
-                  g_pkObjMan->Delete ( pkNewObj );
-            }
-
-            // return everything the way it was before calling the script
-            ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = iOldObject;
-            g_pkScript = pkZFScriptSys;
-
-            //pkNewObj->AttachToZone();
-
-           
-         }
-         else
-            cout << "Warning! Tried to equip something on a non-character object!" << endl;
- 
-      }
-
-   }
-
+{*/
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//      		char	acItem[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acItem);
+// 
+//          char	acSlot[128];
+// 			g_pkScript->GetArgString(pkLua, 1, acSlot);
+// 
+// 
+//          CharacterProperty *pkChar = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+// 
+//          if ( pkChar )
+//          {      
+//             // save current Object ID
+//             int iOldObject = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
+//             ZFScriptSystem* pkZFScriptSys = g_pkScript;
+// 
+//             // create the new object
+//             Entity* pkNewObj = g_pkObjMan->CreateEntityFromScript( acItem );
+// 
+//             if ( pkNewObj )
+//             {
+//                // if object has Event propery..
+//                if ( pkNewObj->GetProperty ("P_Event") )
+//                   // run the INIT function in the script
+//                   pkNewObj->GetProperty("P_Event")->Update();
+// 
+//                // equip the new, nice object
+//                if ( !pkChar->GetCharStats()->Equip ( pkNewObj, string(acSlot) ) )
+//                   // if we couln't equip the object, delete it.
+//                   g_pkObjMan->Delete ( pkNewObj );
+//             }
+// 
+//             // return everything the way it was before calling the script
+//             ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = iOldObject;
+//             g_pkScript = pkZFScriptSys;
+// 
+//             //pkNewObj->AttachToZone();
+// 
+//            
+//          }
+//          else
+//             cout << "Warning! Tried to equip something on a non-character object!" << endl;
+//  
+//       }
+// 
+//    }
+/*
    return 0;
 }
 
 // ----------------------------------------------------------------------------------------------
 
 int MistLandLua::EquipLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         double dTemp;
-         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-
-         char	acSlot[128];
-			g_pkScript->GetArgString(pkLua, 1, acSlot);
-
-         Entity* pkCharProp = g_pkObjMan->GetEntityByID ( int(dTemp) );
-
-         if ( pkCharProp )
-         {
-            CharacterProperty *pkChar = (CharacterProperty*)pkCharProp->GetProperty("P_CharStats");   
-
-            if ( pkChar )
-            {      
-               if ( pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) ) )
-					{
-					//	printf("Succeeded to equip item\n");
-					}
-            }
-            else
-               cout << "Warning! Tried to equip something on a non-character object!" << endl;
-         }
-       }
-
-   }
-
-
-
-/* test kod
-
-   Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
-
-   Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone("data/script/objects/t_item.lua", pkObject->GetLocalPosV() );
-   pkNewObj->GetProperty("P_Event")->Update();
-
-   CharacterProperty* pCharProp = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-   pCharProp->GetCharStats()->Equip( pkNewObj, "lefthand" );
-
-   P_Item *pkItem = (P_Item*)pkNewObj->GetProperty("P_Item");   
-
-   Object *pkNewItObj = pkItem->Split (10);
-
-   pkItem = (P_Item*)pkNewItObj->GetProperty("P_Item");
-
-   pkItem->m_pkItemStats->Print();
-
-
-*/
-
-   return 0;
-}
+{*/
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          double dTemp;
+//          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+// 
+//          char	acSlot[128];
+// 			g_pkScript->GetArgString(pkLua, 1, acSlot);
+// 
+//          Entity* pkCharProp = g_pkObjMan->GetEntityByID ( int(dTemp) );
+// 
+//          if ( pkCharProp )
+//          {
+//             CharacterProperty *pkChar = (CharacterProperty*)pkCharProp->GetProperty("P_CharStats");   
+// 
+//             if ( pkChar )
+//             {      
+//                if ( pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) ) )
+// 					{
+// 					//	printf("Succeeded to equip item\n");
+// 					}
+//             }
+//             else
+//                cout << "Warning! Tried to equip something on a non-character object!" << endl;
+//          }
+//        }
+// 
+//    }
+// 
+// 
+// 
+// /* test kod
+// 
+//    Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(ObjectManagerLua::g_iCurrentObjectID);
+// 
+//    Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone("data/script/objects/t_item.lua", pkObject->GetLocalPosV() );
+//    pkNewObj->GetProperty("P_Event")->Update();
+// 
+//    CharacterProperty* pCharProp = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+//    pCharProp->GetCharStats()->Equip( pkNewObj, "lefthand" );
+// 
+//    P_Item *pkItem = (P_Item*)pkNewObj->GetProperty("P_Item");   
+// 
+//    Object *pkNewItObj = pkItem->Split (10);
+// 
+//    pkItem = (P_Item*)pkNewItObj->GetProperty("P_Item");
+// 
+//    pkItem->m_pkItemStats->Print();
+// 
+// 
+// 
+// 
+//    return 0;
+// }
+// 
 
 // ----------------------------------------------------------------------------------------------
 
@@ -2512,48 +2521,48 @@ int MistLandLua::SetPropertyValueLua(lua_State* pkLua)
 }
 
 // ----------------------------------------------------------------------------------------------
-
-// spell
-int MistLandLua::CastSpellLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 3 )
-   {
-		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-         //spell
-     		char acValue[128];
-			g_pkScript->GetArgString(pkLua, 0, acValue);
-
-         // caster
-         double dCaster;
-         g_pkScript->GetArgNumber(pkLua, 1, &dCaster);
-
-         // target
-         double dTarget;
-         g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
-
-			Entity* me = g_pkObjMan->GetEntityByID((int) dCaster);
-			if(!me)
-				return 0;
-
-			//cout<<"pos:"<<me.x<<endl;
-
-         Entity* pkSpell = 
-                 g_pkObjMan->CreateEntityFromScriptInZone(acValue,me->GetWorldPosV());
-
-         P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
-         pkSpellProp->SetCaster ( (int) dCaster );
-
-         g_pkScript->AddReturnValue( pkLua, pkSpell->GetEntityID() );
-                
-         return 1;
-       }
-   }
-
-   return 0;
-}
+// /*
+// // spell
+// int MistLandLua::CastSpellLua (lua_State* pkLua)
+// {
+// 	if( g_pkScript->GetNumArgs(pkLua) == 3 )
+//    {
+// 		Entity* pkObject = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+// 	   if (pkObject)
+// 		{
+//          //spell
+//      		char acValue[128];
+// 			g_pkScript->GetArgString(pkLua, 0, acValue);
+// 
+//          // caster
+//          double dCaster;
+//          g_pkScript->GetArgNumber(pkLua, 1, &dCaster);
+// 
+//          // target
+//          double dTarget;
+//          g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
+// 
+// 			Entity* me = g_pkObjMan->GetEntityByID((int) dCaster);
+// 			if(!me)
+// 				return 0;
+// 
+// 			//cout<<"pos:"<<me.x<<endl;
+// 
+//          Entity* pkSpell = 
+//                  g_pkObjMan->CreateEntityFromScriptInZone(acValue,me->GetWorldPosV());
+// 
+//          P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
+//          pkSpellProp->SetCaster ( (int) dCaster );
+// 
+//          g_pkScript->AddReturnValue( pkLua, pkSpell->GetEntityID() );
+//                 
+//          return 1;
+//        }
+//    }
+// 
+//    return 0;
+// }*
 
 // ----------------------------------------------------------------------------------------------
 
@@ -2647,111 +2656,111 @@ int MistLandLua::SetDrawingOrderLua(lua_State* pkLua)
 // -----------------------------------------------------------------------------------------------
 
 // takes size of container (how many objects the container can hold )
-int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-      // size
-      double dSize;
-      g_pkScript->GetArgNumber(pkLua, 0, &dSize);
-
-      Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-  		P_Container* pkC = (P_Container*)pkEntity->GetProperty("P_Container");
-
-      if ( pkC )
-         pkC->m_iCapacity = (int) dSize;
-      else      
-         cout << "Warning! Tried to set container capacity on a non-container object!" << endl;
- }
-
-   return 0;
-}
+// int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
+// {
+// // 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+// // 	{
+// //       // size
+// //       double dSize;
+// //       g_pkScript->GetArgNumber(pkLua, 0, &dSize);
+// // 
+// //       Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// // 
+// //   		P_Container* pkC = (P_Container*)pkEntity->GetProperty("P_Container");
+// // 
+// //       if ( pkC )
+// //          pkC->m_iCapacity = (int) dSize;
+// //       else      
+// //          cout << "Warning! Tried to set container capacity on a non-container object!" << endl;
+// //  }
+// 
+//    return 0;
+// }
 
 // -----------------------------------------------------------------------------------------------
 
 // this function is used only on ordinary items, PICKUP is user for characters
 // takes container and object, or only container
-int MistLandLua::PutInContainerLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-      // the ID if the object who has the container
-      double dContainer, dObject;
-
-      g_pkScript->GetArgNumber(pkLua, 0, &dContainer);
-
-      if ( g_pkScript->GetNumArgs(pkLua) == 2 )
-         // Object to put in container
-         g_pkScript->GetArgNumber(pkLua, 1, &dObject);
-      else
-         dObject = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
-
-      Entity* pkItem = g_pkObjMan->GetEntityByID((int)dObject);
-      Entity* pkContObj = g_pkObjMan->GetEntityByID((int)dContainer);
-
-      if ( !pkItem )
-      {
-         cout << "Error! No item with ID:" << dObject << " exists! (PutInContainerLua)" << endl;
-         return 0;
-      }
-
-      if ( !pkContObj )
-      {
-         cout << "Error! No container with ID:" << dContainer << " exists! (PutInContainerLua)" << endl;
-         return 0;
-      }
-      
-      // check if the object is a item, and the other object is a container
-      P_Item* pkItemIP = (P_Item*)pkItem->GetProperty("P_Item");
-      P_Container* pkCont = (P_Container*)pkContObj->GetProperty("P_Container");
-
-      if ( pkItemIP && pkCont )
-      {
-         // check if the container object has a container
-         if ( pkCont != 0 )
-            pkCont->AddObject ( (int)dObject );
-         else
-            cout << "Warning! Tried to put a item into a non-container object!" << endl;
-      }
-      else
-         cout << "Warning! Tried to put a wannabeitemobject into a wannabecontainerobject!" << endl;
-      
-   }
-
-
-   return 0;
-}
+// int MistLandLua::PutInContainerLua (lua_State* pkLua)
+// {
+// // 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1 )
+// // 	{
+// //       // the ID if the object who has the container
+// //       double dContainer, dObject;
+// // 
+// //       g_pkScript->GetArgNumber(pkLua, 0, &dContainer);
+// // 
+// //       if ( g_pkScript->GetNumArgs(pkLua) == 2 )
+// //          // Object to put in container
+// //          g_pkScript->GetArgNumber(pkLua, 1, &dObject);
+// //       else
+// //          dObject = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
+// // 
+// //       Entity* pkItem = g_pkObjMan->GetEntityByID((int)dObject);
+// //       Entity* pkContObj = g_pkObjMan->GetEntityByID((int)dContainer);
+// // 
+// //       if ( !pkItem )
+// //       {
+// //          cout << "Error! No item with ID:" << dObject << " exists! (PutInContainerLua)" << endl;
+// //          return 0;
+// //       }
+// // 
+// //       if ( !pkContObj )
+// //       {
+// //          cout << "Error! No container with ID:" << dContainer << " exists! (PutInContainerLua)" << endl;
+// //          return 0;
+// //       }
+// //       
+// //       // check if the object is a item, and the other object is a container
+// //       P_Item* pkItemIP = (P_Item*)pkItem->GetProperty("P_Item");
+// //       P_Container* pkCont = (P_Container*)pkContObj->GetProperty("P_Container");
+// // 
+// //       if ( pkItemIP && pkCont )
+// //       {
+// //          // check if the container object has a container
+// //          if ( pkCont != 0 )
+// //             pkCont->AddObject ( (int)dObject );
+// //          else
+// //             cout << "Warning! Tried to put a item into a non-container object!" << endl;
+// //       }
+// //       else
+// //          cout << "Warning! Tried to put a wannabeitemobject into a wannabecontainerobject!" << endl;
+// //       
+// //    }
+// 
+// 
+//    return 0;
+// }
 
 // -----------------------------------------------------------------------------------------------
 
 // takes ObjectID (want a Entity with characterproperty with a container)
-int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
-{
-	
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-      // the ID if the object who has the container
-      double dChar;
-
-      g_pkScript->GetArgNumber(pkLua, 0, &dChar);
-
-      Entity* pkCharObj = g_pkObjMan->GetEntityByID((int)dChar);
-  
-      if(!pkCharObj)
-      	return 0;
-      
-      // check if the object is a container
-      P_Container* pkC = (P_Container*)pkCharObj->GetProperty("P_Container");
-
-      if ( pkC )
-            pkC->AddObject ( ObjectManagerLua::g_kScriptState.g_iCurrentObjectID );
-      else
-         cout << "Warning! Tried to add a object to a non-container object!! (GetPickedUpByLua)" << endl;
-   }
-
-   return 0;
-}
+// int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
+// {
+// /*	
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+// 	{
+//       // the ID if the object who has the container
+//       double dChar;
+// 
+//       g_pkScript->GetArgNumber(pkLua, 0, &dChar);
+// 
+//       Entity* pkCharObj = g_pkObjMan->GetEntityByID((int)dChar);
+//   
+//       if(!pkCharObj)
+//       	return 0;
+//       
+//       // check if the object is a container
+//       P_Container* pkC = (P_Container*)pkCharObj->GetProperty("P_Container");
+// 
+//       if ( pkC )
+//             pkC->AddObject ( ObjectManagerLua::g_kScriptState.g_iCurrentObjectID );
+//       else
+//          cout << "Warning! Tried to add a object to a non-container object!! (GetPickedUpByLua)" << endl;
+//    }*/
+// 
+//    return 0;
+// }
 // -----------------------------------------------------------------------------------------------
 
 // 1=event 2=target 3=user
@@ -3018,64 +3027,64 @@ int MistLandLua::AISetSlave(lua_State* pkLua)
 
 int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-     	char	acType[128];
-		g_pkScript->GetArgString(pkLua, 0, acType);	
-
-      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-      if ( !pkObj )
-         return 0;
-
-      Entity* pkClosestItem = 0;
-
-      float fDistance = 99999999;      
-      
-      // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
-
-      vector<Entity*>* pkList = new vector<Entity*>;
-
-      P_Item* pkItemProp = 0;
-      
-      pkZone->m_pkZone->GetAllEntitys( pkList );
-
-      for ( unsigned int i = 0; i < pkList->size(); i++ )
-      {
-         // check if object has item property
-         if ( (pkItemProp = (P_Item*)pkList->at(i)->GetProperty ("P_Item")) != NULL )
-         {
-            // check if item is of right type
-            if ( pkItemProp->m_pkItemStats->m_kItemName == acType )
-            {
-            	Vector3 kPos = pkList->at(i)->GetWorldPosV();
-               // check if distance is smaller that the previos (if any) found
-               if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
-               {
-                  fDistance = (float) pkObj->GetWorldPosV().DistanceTo(kPos);
-                  pkClosestItem = pkList->at(i);
-               }
-            }
-            
-            pkItemProp = 0;
-         }
-      }
-
-      delete pkList;
-
-      if ( pkClosestItem )
-      {
-         g_pkScript->AddReturnValue(pkLua, pkClosestItem->GetEntityID());         
-      }
-      else
-      {
-         g_pkScript->AddReturnValue(pkLua, -1);
-      }
-
-
-      return 1;
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+// 	{
+//      	char	acType[128];
+// 		g_pkScript->GetArgString(pkLua, 0, acType);	
+// 
+//       Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+//       if ( !pkObj )
+//          return 0;
+// 
+//       Entity* pkClosestItem = 0;
+// 
+//       float fDistance = 99999999;      
+//       
+//       // TODO!!!: check more than the zone the user is in
+//       ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
+// 
+//       vector<Entity*>* pkList = new vector<Entity*>;
+// 
+//       P_Item* pkItemProp = 0;
+//       
+//       pkZone->m_pkZone->GetAllEntitys( pkList );
+// 
+//       for ( unsigned int i = 0; i < pkList->size(); i++ )
+//       {
+//          // check if object has item property
+//          if ( (pkItemProp = (P_Item*)pkList->at(i)->GetProperty ("P_Item")) != NULL )
+//          {
+//             // check if item is of right type
+//             if ( pkItemProp->m_pkItemStats->m_kItemName == acType )
+//             {
+//             	Vector3 kPos = pkList->at(i)->GetWorldPosV();
+//                // check if distance is smaller that the previos (if any) found
+//                if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
+//                {
+//                   fDistance = (float) pkObj->GetWorldPosV().DistanceTo(kPos);
+//                   pkClosestItem = pkList->at(i);
+//                }
+//             }
+//             
+//             pkItemProp = 0;
+//          }
+//       }
+// 
+//       delete pkList;
+// 
+//       if ( pkClosestItem )
+//       {
+//          g_pkScript->AddReturnValue(pkLua, pkClosestItem->GetEntityID());         
+//       }
+//       else
+//       {
+//          g_pkScript->AddReturnValue(pkLua, -1);
+//       }
+// 
+// 
+//       return 1;
+//    }
 
    return 0;
 }

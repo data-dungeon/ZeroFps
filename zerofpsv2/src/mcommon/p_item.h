@@ -3,8 +3,6 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
-#include "rulesystem/item/itemstats.h"
-#include "rulesystem/sendtype.h"
 #include "../zerofpsv2/basic/zfini.h"
 #include <list>
    using namespace std;
@@ -12,42 +10,65 @@
 /**	\brief	Da P_Item
 		\ingroup Common
 */
+
+enum MCOMMON_API eMLItemTypes
+{
+	MLITEM_DEFAULT = 		0,
+	MLITEM_HELMET = 		1,
+	MLITEM_BOOTS = 		2,
+	MLITEM_LIGHT_ARMOR = 3,
+	MLITEM_HEAVY_ARMOR = 4,	
+
+};
+
+class MCOMMON_API MLItemStats
+{
+public:
+	int m_iValue;				 // vad föremålet kostar att köpa / sälja
+	
+	float	m_fArmourVal;
+	float	m_fSpeedVal;
+	float	m_iMaxLifeVal;
+	float	m_fAim;
+
+	MLItemStats()
+	{
+		m_fArmourVal = 0;
+		m_fSpeedVal = 0;
+		m_iMaxLifeVal = 0;
+		m_fAim = 0;
+	}
+};
+
+
 class MCOMMON_API P_Item: public Property 
 {
 	private:
-		string m_kObjectScriptname; // which script the object is created from
-                                  // needed when splitting items
+		
+		string	m_strName;
+		string	m_strIcon;
+		int		m_iSizeX;	
+		int		m_iSizeY;
+		int		m_iType;
+	
+// 		vector<PropertyValues> GetPropertyValues();
+			
 	public:
-
-		list<SendType> m_kSends;       // the clients to recieve data from this property
-
-		ItemStats *m_pkItemStats;
-		vector<Entity*>* m_pkInventoryList;
-
-		void Update();
-		vector<PropertyValues> GetPropertyValues(); 
-
-		P_Item( string kName );
+		MLItemStats m_kItemStats;
+		
 		P_Item();
-
+		~P_Item();
+		
+		void Init();
+		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
-
-		bool HandleSetValue( string kValueName, string kValue );
-
-		Entity* Split ( int iTookens );
-		bool Stock ( Entity *pkObject );
-
-		void RequestUpdateFromServer (string kType);
-
-		void AddSendsData(SendType);
-
-		bool UseOn ( Entity *pkCharacterObject );
-
-		friend class Container;
+		string 	GetIcon() { return m_strIcon; }
+		int 		GetType() { return m_iType;	}
+		string 	GetName() { return m_strName; }
+		
+		friend class MLContainer;
 };
 
 MCOMMON_API Property* Create_P_Item();
