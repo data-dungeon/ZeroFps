@@ -207,8 +207,8 @@ class ENGINE_API Object
 		float							m_fLastPosSetTime;
 		float							m_fLastRotSetTime;		
 
-		list<Object*>				m_akChilds;							///< List of child objects.
-		list<Property*>			m_akPropertys;						///< List of propertys of object.
+		vector<Object*>				m_akChilds;							///< List of child objects.
+		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 		Object();				
 		

@@ -157,7 +157,7 @@ class ENGINE_API Property
 			pT = 0;
 			if(m_pkObject)
 			{
-				list<Property*>::iterator kIt = m_pkObject->m_akPropertys.begin();
+				vector<Property*>::iterator kIt = m_pkObject->m_akPropertys.begin();
 				while(kIt != m_pkObject->m_akPropertys.end())
 				{
 					if(pT = dynamic_cast<T*>(*kIt))

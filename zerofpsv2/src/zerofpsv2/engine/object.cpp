@@ -92,7 +92,7 @@ Property* Object::AddProperty(Property* pkNewProperty)
 		return NULL;
 	
 	///EVIL GUBB/////
-	list<Property*>::iterator kIt = m_akPropertys.begin();
+	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
 		(*kIt)->PropertyFound(pkNewProperty);
@@ -123,8 +123,21 @@ Property* Object::AddProperty(const char* acName)
 
 void Object::RemoveProperty(Property* pkProp) 
 {
-	m_akPropertys.remove(pkProp);
+	//m_akPropertys.remove(pkProp);
+	
 	///EVIL GUBB/////
+	vector<Property*>::iterator kIt = m_akPropertys.begin();
+	while(kIt != m_akPropertys.end())
+	{
+		if((*kIt) == pkProp)
+		{
+			(*kIt) = m_akPropertys.back();
+			m_akPropertys.pop_back();
+			kIt = m_akPropertys.end();
+		}
+		++kIt;
+	}
+
 	PropertyLost(pkProp);
 }
 
@@ -133,7 +146,7 @@ void Object::PropertyLost(Property* pkProp)
 {
 	if(pkProp->m_pkObject == this)
 	{
-		list<Property*>::iterator kIt = m_akPropertys.begin();
+		vector<Property*>::iterator kIt = m_akPropertys.begin();
 		while(kIt != m_akPropertys.end())
 		{
 			(*kIt)->PropertyLost(pkProp);
@@ -145,17 +158,28 @@ void Object::PropertyLost(Property* pkProp)
 
 bool Object::DeleteProperty(const char* acName) 
 {
-	
-	
-	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		if(strcmp((*it)->m_acName,acName)==0) {
-			delete (*it);
+	//for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
+	//	if(strcmp((*it)->m_acName,acName)==0) {
+	//		delete (*it);
 			//EVIL GUBB//////
 			//Property* TempProp = (*it)
 			//m_akPropertys.erase(it);
 			//PropertyLost(TempProp);
+	//		return true;
+	//	}
+	//}
+	vector<Property*>::iterator kIt = m_akPropertys.begin();
+	while(kIt != m_akPropertys.end())
+	{
+		if(strcmp((*kIt)->m_acName,acName)==0)
+		{
+			Property* TempProp = (*kIt);
+			(*kIt) = m_akPropertys.back();
+			m_akPropertys.pop_back();
+			delete (*kIt);
 			return true;
 		}
+		++kIt;
 	}
 	
 	return false;
@@ -163,9 +187,18 @@ bool Object::DeleteProperty(const char* acName)
 
 Property* Object::GetProperty(const char* acName) 
 {
-	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		if(strcmp((*it)->m_acName,acName) == 0) 
-			return (*it);
+	//for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
+	//	if(strcmp((*it)->m_acName,acName) == 0) 
+	//		return (*it);
+	//}
+	vector<Property*>::iterator kIt = m_akPropertys.begin();
+	while(kIt != m_akPropertys.end())
+	{
+		if(strcmp((*kIt)->m_acName,acName)==0)
+		{
+			return (*kIt);
+		}
+		++kIt;
 	}
 
 	return NULL;
@@ -173,7 +206,7 @@ Property* Object::GetProperty(const char* acName)
 
 void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
-	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
+	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
 		if((*it)->m_iType & iType || iType == PROPERTY_TYPE_ALL){
 			if((*it)->m_iSide & iSide || iSide == PROPERTY_SIDE_ALL){
 				akPropertys->push_back((*it));			
@@ -199,7 +232,7 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
+	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
 	{	
 		if(m_iUpdateStatus & UPDATE_ALL)
 		{
@@ -257,7 +290,7 @@ Property* Object::AddProxyProperty(const char* acName)
 }
 
 bool Object::Update(const char* acName){
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			(*it)->Update();
 			return true;
@@ -295,7 +328,18 @@ void Object::RemoveChild(Object* pkObject)
 	if(HasChild(pkObject) == false)
 		return;
 
-	m_akChilds.remove(pkObject);	// Remove object as child.
+	//m_akChilds.remove(pkObject);	// Remove object as child.
+	vector<Object*>::iterator kIt = m_akChilds.begin();
+	while(kIt != m_akChilds.end())
+	{
+		if((*kIt) == pkObject)
+		{
+			(*kIt) = m_akChilds.back();
+			m_akChilds.pop_back();
+			kIt = m_akChilds.end();
+		}
+		++kIt;
+	}
 	pkObject->SetParent(NULL);		// Set objects parent to NULL.
 
 /*		if(m_bLockedChilds)
@@ -351,7 +395,7 @@ void Object::SetParent(Object* pkObject)
 bool Object::HasChild(Object* pkObject)
 {
 	//check if this object is in the child list
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)==pkObject) return true;
 	}
 	
@@ -394,7 +438,7 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 {
 	pakObjects->push_back(this);	
 	
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->GetAllObjects(pakObjects);
 	}	
 }
@@ -439,10 +483,12 @@ void Object::AttachToZone()
 */
 bool Object::IsNetWork()
 {
+
 	if(m_strType == "ZoneObject")
 		return true;
 
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+
 		if((*it)->bNetwork == true) {
 			return true;
 		}
@@ -465,7 +511,7 @@ bool Object::NeedToPack()
 	int iUpdateFlags = m_iNetUpdateFlags | m_pkObjectMan->m_iForceNetUpdate;
 
 	if(IsNetWork()) {
-		for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 			iUpdateFlags |= (*it)->m_iNetUpdateFlags; 
 			}
 	
@@ -514,7 +560,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 //	char szPropertyName[256];
 
 	// Write propertys med Propery::bNetwork = true
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
 		if((*it)->bNetwork) {
 			(*it)->m_iNetUpdateFlags |= m_pkObjectMan->m_iForceNetUpdate;
@@ -655,7 +701,7 @@ float Object::GetBoundingRadius()
 
 void Object::Touch(Collision* pkCol)
 {
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		(*it)->Touch(pkCol);
 	}
@@ -684,7 +730,7 @@ void Object::HandleMessages()
 /// Send a GameMessage to all object propertys.
 void Object::RouteMessage(GameMessage& Msg)
 {
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 		(*it)->HandleGameMessage(Msg);
 }
 
@@ -701,7 +747,7 @@ bool Object::CheckLinks(bool bCheckChilds, int iPos)
 			}
 		}
 	
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)->m_pkParent != this)
 			return false;
 	}
@@ -742,7 +788,7 @@ void Object::PrintTree(int pos)
 
 	vector<string> akPropertyNames;
 	
-	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
+	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
 		TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "%s\n" ,(*it)->m_acName);
 		akPropertyNames = (*it)->GetValueNames();
 
@@ -756,7 +802,7 @@ void Object::PrintTree(int pos)
 			}
 		}
 
-	for(list<Object*>::iterator it2=m_akChilds.begin();it2!=m_akChilds.end();it2++) {
+	for(vector<Object*>::iterator it2=m_akChilds.begin();it2!=m_akChilds.end();it2++) {
 		(*it2)->PrintTree(pos+1);
 	}
 
@@ -784,7 +830,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 	Property* pkProp;
 	vector<string> akPropertyNames;
 
-	for(itListProperty it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
+	for(vector<Property*>::iterator it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
 		pkProp = AddProperty((*it)->m_acName);
 		//cout << "Creating '" << (*it)->m_acName << "'\n";
 		
@@ -1031,7 +1077,7 @@ void Object::ResetChildsGotData()
 {
 	ResetGotData();
 	
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)->GetRelativeOri())
 			(*it)->ResetChildsGotData();	
 	}	
