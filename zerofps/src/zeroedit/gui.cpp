@@ -118,7 +118,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		break;
 
 	case ZGM_RBUTTONDOWN:
-		((ZGuiTreebox*)Get("TestTreeBox"))->DeleteNode("PNODE_PHYSICS");
+		((ZGuiTreebox*)Get("TestTreeBox"))->DeleteNode("PNODE_BALLS");
 		break;
 	}
 	return true;
@@ -678,7 +678,7 @@ void Gui::CreateTestWnd()
 	pkTreebox->AddItem(pkShips, "Playership", 0, 1);
 	ZGuiTreeboxNode* pkByggnad = pkTreebox->AddItem(pkPhysics, "Buildings", 1, 2, "PNODE_BUILDINGS");
 	pkTreebox->AddItem(pkByggnad, "az3", 0, 1);
-	ZGuiTreeboxNode* pkBall = pkTreebox->AddItem(pkPhysics, "Balls", 1, 2);
+	ZGuiTreeboxNode* pkBall = pkTreebox->AddItem(pkPhysics, "Balls", 1, 2, "PNODE_BALLS");
 	pkTreebox->AddItem(pkBall, "Ball1", 0, 1);
 	pkTreebox->AddItem(pkBall, "Ball2", 0, 1);
 	pkTreebox->AddItem(pkBall, "Ball3", 0, 1);

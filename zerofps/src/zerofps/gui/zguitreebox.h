@@ -30,6 +30,8 @@ struct GUI_API ZGuiTreeboxNode
 				  // och används när höjden på träden skall räknas fram.
 	bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga
 							//  tillräckligt många "steg".
+private:
+	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode* pkNode);
 };
 
 class GUI_API ZGuiTreebox : public ZGuiWnd
@@ -68,6 +70,8 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
+	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode *pkNode);
+	ZGuiTreeboxNode* FindLastChild(ZGuiTreeboxNode* pkFrom);
 
 	void SetSelColor(ZGuiTreeboxNode* pkNode);
 	void ScrollRows(bool bVertically);

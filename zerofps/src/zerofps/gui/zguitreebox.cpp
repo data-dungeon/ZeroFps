@@ -18,7 +18,7 @@ const int SCROLLBAR_WIDTH = 16;
 #define print_node(x) { if(x && x->pkButton) printf("%s\n", x->pkButton->GetText()); \
 	else printf("NULL\n"); }
 
-#define node_have_childs(n) !n->kChilds.empty()
+#define node_have_childs(n) (n && !n->kChilds.empty())
 #define first_child(n) n->kChilds.front()
 #define next_node(n) n->pkNext
 #define node_parent(n) n->pkParent
@@ -547,90 +547,138 @@ bool ZGuiTreebox::DeleteNode(string strName)
 	return false;
 }
 
-bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
+ZGuiTreeboxNode* ZGuiTreebox::RemoveNode(ZGuiTreeboxNode *pkNode)
 {
-	ZGuiTreeboxNode* pkParent = pkNode->pkParent;
-
-	if(pkNode == NULL)
-		return false;
-
-	if(pkNode->pkParent == NULL)
-	{
-		printf("ZGuiTreebox::DeleteNode, Can't delete the root node!\n");
-		return false;
-	}
-
-	vector<ZGuiTreeboxNode*> akDeleteList; 
-
 	for(itNode n=m_kNodeList.begin(); n!=m_kNodeList.end(); n++)
 	{
-		if((*n) == pkNode) // har vi hittat noden i huvudlistan.
+		// Find prev child
+		if((*n)->pkNext == pkNode)
 		{
-		}
-	}
-
-	return true;
-}
-
-/*
-bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
-{
-	ZGuiTreeboxNode* pkParent = pkNode->pkParent;
-
-	if(pkNode == NULL)
-		return false;
-
-	if(pkNode->pkParent == NULL)
-	{
-		printf("ZGuiTreebox::DeleteNode, Can't delete the root node!\n");
-		return false;
-	}
-
-	for(itNode n=m_kNodeList.begin(); n!=m_kNodeList.end(); n++)
-		if((*n) == pkNode) // har vi hittat noden i huvudlistan.
-		{
-			if(!pkNode->kChilds.empty())
-				DeleteNode(pkNode->kChilds.back(), bRemoveFromMap);
-
-			ZGuiTreeboxNode* pkParent = pkNode->pkParent; // (finns alltid en root node)
-			for(itNode c=pkParent->kChilds.begin(); c!=pkParent->kChilds.end(); c++)
-				if((*c) == pkNode)
+			// Remove child from parent
+			for(itNode p=pkNode->pkParent->kChilds.begin();
+				p!=pkNode->pkParent->kChilds.end(); p++)
+				if((*p) == pkNode)
 				{
-					if(bRemoveFromMap)
-					{
-						map<string, ZGuiTreeboxNode* >::iterator m;
-						for(m=m_kNodeMap.begin(); m!=m_kNodeMap.end(); m++)
-							if(m->second == pkNode)
-							{
-								m_kNodeMap.erase(m);
-								break;
-							}
-					}
-
-					// Koppla om pekarna som används för att söka genom listan.
-					if(pkNode != pkParent->kChilds.front())
-					{
-						itNode prev = c; prev--;
-						(*prev)->pkNext = (*c)->pkNext;
-					}
-
-					printf("Removing node named %s\n", pkNode->pkButton->GetText());  
-					delete pkNode->pkButton; pkNode->pkButton = NULL;
-					delete pkNode; pkNode = NULL;
-					pkParent->kChilds.erase(c);
+					pkNode->pkParent->kChilds.erase(p); 
 					break;
 				}
 
-			m_kNodeList.erase(n);
+			// Set child next to remove child next (re-chain)
+			(*n)->pkNext = pkNode->pkNext;
+
+			for(itNode r=m_kNodeList.begin(); r!=m_kNodeList.end(); r++)
+			{
+				if((*r) == pkNode)
+				{
+					m_kNodeList.erase(r);
+					break;
+				}
+			}
+
+			delete pkNode->pkButton; pkNode->pkButton = NULL;
+			delete pkNode; pkNode = NULL;
+
+			printf("Node removed!\n");
+
 			break;
 		}
-
-	if(pkNode)
-	{
-		if(pkNode->kChilds.empty() == false)
-			DeleteNode(pkNode->kChilds.front(), bRemoveFromMap);
 	}
+
+	// Noden har inga childs, (är den sista noden på en gren eller
+	// en tom föräldernod)
+	for(itNode p=m_kNodeList.begin(); p!=m_kNodeList.end(); p++)
+	{
+		if((*p) == pkNode)
+		{
+			// Är det den sista noden?
+			if((*p)->pkParent->kChilds.size() == 1)
+			{
+				(*p)->pkParent->kChilds.clear();
+			}
+			else
+			{
+				// ... eller finns det fler?
+				// Remove child from parent
+				for(itNode r=pkNode->pkParent->kChilds.begin();
+					r!=pkNode->pkParent->kChilds.end(); r++)
+					{
+						if((*r)->pkNext == pkNode)
+						{
+							(*r)->pkNext = pkNode->pkNext;
+						}
+						
+						if((*r) == pkNode)
+						{
+							pkNode->pkParent->kChilds.erase(r); 
+							break;
+						}
+					}
+			}
+
+			m_kNodeList.erase(p);
+
+			delete pkNode->pkButton; pkNode->pkButton = NULL;
+			delete pkNode; pkNode = NULL;
+			printf("Node removed!\n");
+
+			break;
+		}
+	}
+
+	return NULL;
+}
+
+ZGuiTreeboxNode* ZGuiTreebox::FindLastChild(ZGuiTreeboxNode *pkFrom)
+{
+	ZGuiTreeboxNode* s = pkFrom;
+	
+	while(1)
+	{
+		if(s->kChilds.empty() == false)
+		{
+			s = s->kChilds.back();
+		}
+		else
+		{
+			return s;
+		}
+	}
+
+}
+
+bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
+{
+	ZGuiTreeboxNode* pkParent = pkNode->pkParent;
+
+	if(pkNode == NULL)
+		return false;
+
+	if(pkParent == NULL)
+	{
+		printf("ZGuiTreebox::DeleteNode, Can't delete the root node!\n");
+		return false;
+	}
+
+	ZGuiTreeboxNode* last_child;
+
+	printf("-------- DeleteNode START --------\n");
+
+	// Remove branch
+	while(last_child != pkNode)
+	{
+		last_child = FindLastChild(pkNode);
+
+		printf("Found node %s, tring to delete...", 
+			last_child->pkButton->GetText());
+
+		RemoveNode(last_child);
+	}
+
+	printf("-------- DeleteNode END ----------\n");
+
+	// Öppna stäng noden så att nodträdet uppdateras.
+	OpenNode(pkParent, false);
+	OpenNode(pkParent, true);
 
 	return true;
 }
-*/
