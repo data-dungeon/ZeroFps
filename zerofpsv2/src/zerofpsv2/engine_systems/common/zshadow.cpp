@@ -29,6 +29,9 @@ bool ShadowMesh::Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 	if(pkMad != m_pkMad)
 		return false;
 
+	if(m_pkMad->GetCurrentAnimation() != -1 )
+		return false;
+
 	//light piinter
 	if(pkLightSource != m_pkLightSource)
 		return false;
@@ -320,6 +323,7 @@ void ZShadow::SetupStencilBuffer()
 
 void ZShadow::SetupGL()
 {
+
 	//clear stencil buffert
 	glClear(GL_STENCIL_BUFFER_BIT);
 
@@ -332,6 +336,10 @@ void ZShadow::SetupGL()
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glDepthMask(GL_FALSE);
 	glEnable(GL_CULL_FACE);
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glColor4f(0,0,0,0);
 
 	//client states
 	glDisableClientState(GL_NORMAL_ARRAY);
