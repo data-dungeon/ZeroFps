@@ -896,49 +896,101 @@ void ZGui::CreateDefaultSkins()
 
 void ZGui::FormatKey(int &iKey)
 {
-	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
-	{
-		if(iKey == '7')
-			iKey = '/';
+	#ifdef WIN32
+	
+		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '?';
+			else
+			if(iKey == '\\')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
 		else
-		if(iKey == '0')
-			iKey = '=';
+		{
+			if(iKey == '-')
+				iKey = '+';
+			if(iKey == '/')
+				iKey = '-';
+			if(iKey == '\\')
+				iKey = '\'';
+			if(iKey == '=')
+				iKey = '´';
+		}	
+
+	#endif // #ifdef WIN32
+
+	#ifdef LINUX
+
+		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '_';
+			else
+			if(iKey == '\\')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
 		else
-		if(iKey == ',') 
-			iKey = ';';
-		else
-		if(iKey == '.')
-			iKey = ':';
-		else
-		if(iKey == '/')
-			iKey = '_';
-		else
-		if(iKey == '=')
-			iKey = '`';
-		else
-		if(iKey == '-')
-			iKey = '?';
-		else
-		if(iKey == '\\')
-			iKey = '*';
-		else
-		if(iKey > 48 && iKey < 58)
-			iKey -= 16;
-		else
-		if(iKey > 96 && iKey < 123)
-			iKey -= 32;
-	}
-	else
-	{
-		if(iKey == '-')
-			iKey = '+';
-		if(iKey == '/')
-			iKey = '-';
-		if(iKey == '\\')
-			iKey = '\'';
-		if(iKey == '=')
-			iKey = '´';
-	}	
+		{
+			if(iKey == '-')
+				iKey = '+';
+			if(iKey == '/')
+				iKey = '-';
+			if(iKey == '\\')
+				iKey = '\'';
+			if(iKey == '=')
+				iKey = '´';
+		}	
+
+	#endif // #ifdef LINUX
 }
 
 bool ZGui::RunKeyCommand(int iKey)
@@ -1020,7 +1072,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 	vector<string> vkSections;
 	pkINI->GetSectionNames(vkSections);
 
-	unsigned int i=0;
+	unsigned int i=0; 
 
 	// Ladda in alla skins till en temp vektor.
 	vector<tSkinInf> kAllSkinsTempArray;
