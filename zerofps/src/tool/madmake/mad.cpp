@@ -28,7 +28,7 @@ MadExporter::~MadExporter()
 
 void MadExporter::Save_SD(const char* filename)
 {
-/*	FILE* fp = fopen(filename, "wb");
+	FILE* fp = fopen(filename, "wb");
 	
 	int iNumOfBones = m_akSkelleton.size();
 	fwrite(&iNumOfBones, sizeof(int),1,fp);
@@ -36,7 +36,7 @@ void MadExporter::Save_SD(const char* filename)
 		fwrite(&m_akSkelleton[i],sizeof(Mad_CoreBone),1,fp);
 	}
 
-	fclose(fp);*/
+	fclose(fp);
 }
 
 Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
@@ -59,6 +59,8 @@ Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
 
 void MadExporter::Save_MAD(const char* filename)
 {
+	m_kMesh[0].CreateVertexNormals();
+
 	FILE* MadFp = fopen(filename, "wb");
 	if(!MadFp) {
 		cout << "Failed to open '" << filename << "' for writing" << endl;

@@ -119,7 +119,7 @@ public:
 	void Load(FILE* fp);
 	void ShowInfo(void);
 	Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName);
-
+	void CreateVertexNormals();
 };
 
 // MAD - SD
@@ -138,6 +138,61 @@ public:
 	Vector3				m_kRotation;
 };
 
+// MAD - AD
+class Mad_BoneKey
+{
+public:
+	Vector3				m_kPosition;
+	Vector3				m_kRotation;
+
+	Mad_BoneKey() { }
+	~Mad_BoneKey() { }
+	void Clear(void) { }
+	void operator=(const Mad_BoneKey& kOther)
+	{
+		m_kPosition = kOther.m_kPosition;
+		m_kRotation = kOther.m_kRotation;
+	}
+};
+
+class Mad_BoneKeyFrame
+{
+public:
+	vector<Mad_BoneKey>	m_kBonePose;	
+
+	Mad_BoneKeyFrame() { }
+	~Mad_BoneKeyFrame() { }
+	void Clear(void) 
+	{
+		m_kBonePose.clear();
+	}
+
+	void operator=(const Mad_BoneKeyFrame& kOther)
+	{
+		m_kBonePose = kOther.m_kBonePose;
+	}
+};
+
+class Mad_CoreBoneAnimation
+{
+public:
+	Mad_CoreBoneAnimation();
+	~Mad_CoreBoneAnimation();
+	void Clear(void);
+	void operator=(const Mad_CoreBoneAnimation& kOther);
+
+
+	char	m_szName[MAD_MAX_ANIMATIONNAME];
+	vector<Mad_BoneKeyFrame>	m_kBoneKeyFrames;
+
+	void Save(FILE* fp);
+	void Load(FILE* fp);
+};
+
+
+
+
+
 struct Mad_Header
 {
 	int			m_iNumOfMeshes;
@@ -153,7 +208,10 @@ public:
 	MadExporter();
 	~MadExporter();
 
-	vector<Mad_CoreMesh>	m_kMesh;
+	vector<Mad_CoreMesh>			m_kMesh;
+	vector<Mad_CoreBone>			m_akSkelleton;
+	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
+	
 	Mad_CoreMesh* GetMesh(char* ucaName);
 
 	void Save_SD(const char* filename);

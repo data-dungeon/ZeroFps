@@ -92,8 +92,8 @@ IMadImport* MadMake::GetImportObject(string FileName)
 	string strExt = GetFileExt(ucaInFile);
 	
 	if( strExt == ".mdl" )
-		pkImport = new ModellMD1;
-		//pkImport = new ModellHalfLife;
+		//pkImport = new ModellMD1;
+		pkImport = new ModellHalfLife;
 
 	if( strExt == ".md2" )
 		pkImport = new ModellMD2;
@@ -191,8 +191,8 @@ void MadMake::Run(int argc, char* argv[])
 	MadExporter madexp;
 	pkImport->Read(ucaInFile.c_str());
 	pkImport->Export(&madexp,ucaTextureNames.c_str());
-	madexp.Save_MAD(ucaOutFile.c_str());
-
+//	madexp.Save_MAD(ucaOutFile.c_str());
+	madexp.Save_SD("test.sd");
 }
 
 

@@ -67,11 +67,68 @@ struct HLBone
 
 };
 
+struct HLSequenceDesc 
+{
+	char				m_szLabel[32];
+
+	float				m_fFps;
+	int					m_iFlags;
+
+	int					m_iActivity;
+	int					m_iActWeight;
+
+	int					m_iNumOfEvents;
+	int					m_iEvenetIndex;
+
+	int					m_iNumOfFrames;
+
+	int					m_iNumOfPiviots;
+	int					m_iPivotIndex;
+
+	int					m_iMotionType;
+	int					m_iMotionBone;
+	Vector3				m_kLinerarMovment;
+	int					m_iAutoMovePosIndex;
+	int					m_iAoutMoveAngleIndex;
+
+	Vector3				m_kBBMin;
+	Vector3				m_kBBMax;
+
+	int					m_iNumOfBlends;
+	int					m_iAnimIndex;
+
+	int					m_iBlendType[2];
+	float				m_fBlendStart[2];
+	float				m_fBlendEnd[2];
+	int					m_iBlendParent;
+
+	int					m_iSegGroup;
+	
+	int					m_iEntryNode;
+	int					m_iExitNode;
+	int					m_iNodeFlags;
+
+	int					m_iNextSeq;
+};
+
+struct HLAnimation
+{
+	
+};
+
+typedef struct
+{
+	unsigned short	offset[6];
+} mstudioanim_t;
+
+
 class ModellHalfLife : public IMadImport
 {
 private:
-	HLHeader*	m_pkHeader;
-	HLBone*		m_pkBones;
+	HLHeader*		m_pkHeader;
+	HLBone*			m_pkBones;
+	HLSequenceDesc*	m_pkSeqDesc;
+
 	char*		m_pcFileBuffer;
 
 	void PrintHeader();
@@ -80,6 +137,8 @@ private:
 public:
 	ModellHalfLife();
 	~ModellHalfLife();
+
+	void			Print_SegmentInfo(HLSequenceDesc* pkSeg);
 
 	void Read( const char* filename );	// Read data in own format to this.
 	bool Export(MadExporter* mad, const char* filename);	// Export this to mad.

@@ -44,18 +44,21 @@ void ModellHalfLife::Read( const char* filename )
 	fread(m_pcFileBuffer, iSize, 1, fp);
 	fclose(fp);
 
-	m_pkHeader = (HLHeader*) m_pcFileBuffer;
-	m_pkBones  = (HLBone*) (m_pcFileBuffer + m_pkHeader->m_iBoneIndex);
+	m_pkHeader	= (HLHeader*) m_pcFileBuffer;
+	m_pkBones	= (HLBone*) (m_pcFileBuffer + m_pkHeader->m_iBoneIndex);
+	m_pkSeqDesc = (HLSequenceDesc*) (m_pcFileBuffer + m_pkHeader->m_iSequencesIndex);
+
 	PrintHeader();
 	PrintBones();
 }
 
 bool ModellHalfLife::Export(MadExporter* mad, const char* filename)
 {
-/*	// Export Skelleton Data
+	int i;
+	// Export Skelleton Data
 	Mad_CoreBone	NewBone;
 
-	for(int i=0; i < m_pkHeader->m_iNumOfBones; i++) {
+	for(i=0; i < m_pkHeader->m_iNumOfBones; i++) {
 		NewBone.Clear();
 		strcpy(NewBone.m_acName, m_pkBones[i].m_acName);
 		NewBone.m_iParent = m_pkBones[i].m_iParent;
@@ -67,7 +70,28 @@ bool ModellHalfLife::Export(MadExporter* mad, const char* filename)
 			m_pkBones[i].m_afValue[5]);
 		mad->m_akSkelleton.push_back(NewBone);
 		}
-*/
+
+	// Export Animation
+	Mad_CoreBoneAnimation	NewBoneAnim;
+
+	for(i=0; i < m_pkHeader->m_iNumOfSequences; i++) {
+		Print_SegmentInfo(&m_pkSeqDesc[i]);
+		NewBoneAnim.Clear();
+	
+		for(int f=0; f< pkSeg->m_iNumOfFrames ;f++) {
+			
+			}
+
+		mad->m_kBoneAnim.push_back(NewBoneAnim);
+
+		}
+
 	return false;
+}
+
+void ModellHalfLife::Print_SegmentInfo(HLSequenceDesc* pkSeg)
+{
+	cout << "m_kHeader.m_szLabel: " << pkSeg->m_szLabel << endl; 
+	cout << "m_kHeader.m_iNumOfFrames: " << pkSeg->m_iNumOfFrames << endl; 
 }
 

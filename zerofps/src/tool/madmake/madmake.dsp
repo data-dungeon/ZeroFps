@@ -95,6 +95,10 @@ SOURCE=.\core_bone.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\core_boneanim.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\core_mesh.cpp
 # End Source File
 # Begin Source File

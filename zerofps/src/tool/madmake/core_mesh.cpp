@@ -221,3 +221,41 @@ Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName)
 	akAnimation.push_back(kNewAnim);
 	return &akAnimation.back();
 }
+
+void Mad_CoreMesh::CreateVertexNormals()
+{
+	Vector3 kSurfNormal;
+	Vector3 kA, kB;
+	int v,f;
+
+	vector<Vector3> kSurfNormals;
+	kSurfNormals.resize(kHead.iNumOfFaces);
+
+	for(int i=0; i<this->akFrames.size(); i++) {
+		// Clear all normals.
+		for( v = 0; v<kHead.iNumOfVertex; v++)
+			akFrames[i].akNormal[v].Set(0,0,0);
+
+		// Create Surface Normals
+		for( f = 0; f<kHead.iNumOfFaces; f++) {
+			kA = akFrames[i].akVertex[ akFaces[f].iIndex[0] ] - akFrames[i].akVertex[ akFaces[f].iIndex[1] ];
+			kB = akFrames[i].akVertex[ akFaces[f].iIndex[2] ] - akFrames[i].akVertex[ akFaces[f].iIndex[1] ];
+			
+			kSurfNormal = kA.Cross(kB);
+			kSurfNormals[f] = kSurfNormal;
+			}
+
+		// Add Surface to vertex normals
+		for( f = 0; f<kHead.iNumOfFaces; f++) {
+			akFrames[i].akNormal[ akFaces[f].iIndex[0] ] += kSurfNormals[f];
+			akFrames[i].akNormal[ akFaces[f].iIndex[1] ] += kSurfNormals[f];
+			akFrames[i].akNormal[ akFaces[f].iIndex[2] ] += kSurfNormals[f];
+			}
+
+
+		// Normalize Surface normals.
+		for( v = 0; v<kHead.iNumOfVertex; v++)
+			if(akFrames[i].akNormal[v].Length() > 0)
+				akFrames[i].akNormal[v].Normalize();
+		}
+}

@@ -276,6 +276,7 @@ void ModellXXX::ReadExportSD(char* filename)
 
 }
 
+/*
 class Mad_BoneKeyFrame
 {
 public:
@@ -390,6 +391,7 @@ void ModellXXX::ReadExportAD(char* filename)
 	fclose(fp);
 
 }
+*/
 
 void ModellXXX::Read( const char* filename )
 {
@@ -429,7 +431,7 @@ void ModellXXX::Read( const char* filename )
 		{
 			ucpToken = kMMScipt.GetToken();
 			cout << "Command ad-export: " << ucpToken << endl;
-			ReadExportAD(ucpToken);
+//			ReadExportAD(ucpToken);
 		}
 
 		ucpToken = kMMScipt.GetToken();
