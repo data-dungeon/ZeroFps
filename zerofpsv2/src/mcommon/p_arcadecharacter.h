@@ -32,7 +32,7 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		
 		void Fire();
 		
-		Vector3 AutoAim();
+		void AutoAim();
 
 		//void Save(ZFIoInterface* pkPackage);
 		//void Load(ZFIoInterface* pkPackage);

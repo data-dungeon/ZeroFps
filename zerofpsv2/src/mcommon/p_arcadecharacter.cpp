@@ -140,7 +140,7 @@ void P_ArcadeCharacter::Fire()
 		cout<<"missing P_DMGun"<<endl;
 }
 
-Vector3 P_ArcadeCharacter::AutoAim()
+void P_ArcadeCharacter::AutoAim()
 {
 
 
