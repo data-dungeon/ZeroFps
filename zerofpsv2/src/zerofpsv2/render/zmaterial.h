@@ -15,6 +15,7 @@ class RENDER_API ZMaterialSettings
 {
 	public:
 		ZFResourceHandle*	m_kTUs[4];		
+		ZFResourceHandle*	m_pkVP;
 		
 		int	m_iTUTexCords[4];
 		

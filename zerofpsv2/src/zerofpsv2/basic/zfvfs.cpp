@@ -65,7 +65,15 @@ int ZFVFile::Tell()
 
 int ZFVFile::GetSize()
 {
-	return 0;
+	int size;
+	int pos = Tell();
+	
+	fseek(m_pkFilePointer,0,SEEK_END);
+	size = Tell();	
+	
+	fseek(m_pkFilePointer,pos,SEEK_SET);
+
+	return size;
 }
 
 

@@ -4,14 +4,12 @@
 
 ZMaterialSettings::ZMaterialSettings()
 {
-/*	m_iTUs[0] = -1;
-	m_iTUs[1] = -1;		
-	m_iTUs[2] = -1;			
-	m_iTUs[3] = -1;			*/
 	m_kTUs[0] = new ZFResourceHandle();
 	m_kTUs[1] = new ZFResourceHandle();
 	m_kTUs[2] = new ZFResourceHandle();
 	m_kTUs[3] = new ZFResourceHandle();
+	
+	m_pkVP = new ZFResourceHandle();
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
@@ -42,6 +40,11 @@ ZMaterialSettings::~ZMaterialSettings()
 		m_kTUs[i] = NULL;
 		
 	}
+
+	if(m_pkVP)
+		delete m_pkVP;
+	
+	m_pkVP = NULL;
 }
 
 ZMaterial::ZMaterial()
@@ -189,6 +192,8 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"tu3"))
 		newpass->m_kTUs[3]->SetRes(m_kIni.GetValue(passname.c_str(),"tu3"));
 
+	if(m_kIni.KeyExist(passname.c_str(),"vertexprogram"))
+		newpass->m_pkVP->SetRes(m_kIni.GetValue(passname.c_str(),"vertexprogram"));
 	
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords0"))
 		newpass->m_iTUTexCords[0] = m_kIni.GetIntValue(passname.c_str(),"tutexcords0");

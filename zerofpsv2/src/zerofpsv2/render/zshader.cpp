@@ -20,6 +20,10 @@ bool ZShader::StartUp()
 	}		
 			
 			
+	SetVertexProgram(NO_VPROGRAM);
+			
+	testvp = new 	ZFResourceHandle();
+		
 			
 	return true;
 } 
@@ -252,6 +256,21 @@ void ZShader::Waves()
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
 	}
+}
+
+void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)
+{
+	int iVP;
+	ZVProgram* pkRt = (ZVProgram*)pkSettings->m_pkVP->GetResourcePtr();
+
+	
+	if(!pkRt)
+		iVP = NO_VPROGRAM;
+	else
+		iVP = pkRt->m_iId;
+		
+
+	SetVertexProgram(iVP);
 }
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
@@ -504,6 +523,8 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 
 	//want TU 0 to be active when exiting
 
+	//setup vertex program
+	SetupVertexProgram(pkSettings);
 }
 
 void ZShader::CopyVertexData()
@@ -579,6 +600,14 @@ void ZShader::CleanCopyedData()
 
 void ZShader::Draw()
 {	
+/*	static bool hora=false;;
+	
+	if(!hora)
+	{	
+		testvp->SetRes("data/vertexprogram/testvp.zvp");
+		hora=true;
+	}*/
+
 	glPushMatrix();
 	
 	SetupPrerenderStates();
@@ -622,3 +651,21 @@ bool ZShader::HaveVertexProgramExt()
 	return false;
 }
 
+void ZShader::SetVertexProgram(int iVPID)
+{
+		
+	if(iVPID == NO_VPROGRAM)
+	{
+		glDisable(GL_VERTEX_PROGRAM_ARB);		
+	}
+	else	
+	{
+		glEnable(GL_VERTEX_PROGRAM_ARB);		
+		
+		if(m_iCurrentVertexProgram != iVPID)
+			glBindProgramARB(GL_VERTEX_PROGRAM_ARB, iVPID);
+	}	
+		
+		
+	m_iCurrentVertexProgram=iVPID;
+}

@@ -12,6 +12,7 @@
 #include "frustum.h"
 #include "light.h"
 #include "../engine/res_texture.h"
+#include "zvprogram.h"
 
 using namespace std;
 class ZMaterial;
@@ -151,7 +152,13 @@ class RENDER_API ZShader : public ZFSubSystem
 		//do we have vertex program support
 		bool			m_bVertexProgram;
 	
-		//this enable/diable client states if pointers have been set
+		//vertex program is NO_VPROGRAM if no vertex program is active
+		int			m_iCurrentVertexProgram;
+		
+		ZFResourceHandle* testvp;
+	
+	
+		//this enable/disable client states if pointers have been set
 		void SetupClientStates();			
 		
 		//configure setup, stuff before setting up a pass, acording to current material
@@ -161,6 +168,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetupRenderStates(ZMaterialSettings* pkSettings);
 		
 		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
+		void SetupVertexProgram(ZMaterialSettings* pkSettings);
 		
 		//makes a memcopy of all none null pointers data, and sets the pointers to the new location
 		void CopyVertexData();
@@ -182,6 +190,11 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetNrOfVertexs(int iNr);
 		void SetNrOfIndexes(int iNr);		
 		void SetDrawMode(int iDrawMode);
+		
+		void SetVertexProgram(int iVPID);
+		int  GetCurrentVertexProgram() {return m_iCurrentVertexProgram;};
+		bool SupportVertexProgram() { return m_bVertexProgram;};
+		
 		void Reset();
 		void Draw();
 
