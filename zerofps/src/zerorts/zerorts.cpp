@@ -284,7 +284,7 @@ void ZeroRTS::Input()
 		m_fClickTimer = pkFps->GetTicks();
 	
 		PickInfo info = Pick();
-
+/*
 		// Test pathfind
 		if(info.iObject != -1)
 		{
@@ -314,7 +314,7 @@ void ZeroRTS::Input()
 			float angle = sqrnorm.Angle(ground_plane);
 			//printf("Angle: %f\n", RadToDeg(angle));
 		}
-
+*/
 		//do we want to clear?
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
