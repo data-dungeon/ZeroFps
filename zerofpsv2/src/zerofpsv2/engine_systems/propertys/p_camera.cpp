@@ -89,6 +89,23 @@ void P_Camera::Update()
 				strCamName = " 3P ";
 				break;
 			}	
+			case CAM_TYPEFIRSTPERSON_NON_EA:
+			{				
+				if(m_f3PPAngle > 90)
+					m_f3PPAngle = 90;
+				if(m_f3PPAngle < -90)
+					m_f3PPAngle = -90;
+				
+				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + m_kOffset );			
+				Matrix4 kRot;											
+				kRot.Identity();
+				kRot.Rotate(0,180,0);				
+				kRot.Rotate(-m_f3PPAngle,m_f3PYAngle,0);
+			
+				m_pkCamera->SetRotM(kRot);
+				break;
+			}			
+			
 			case CAM_TYPEFIRSTPERSON:
 			{
 				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + m_kOffset );

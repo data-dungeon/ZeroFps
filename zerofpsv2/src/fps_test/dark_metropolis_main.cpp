@@ -481,11 +481,11 @@ void DarkMetropolis::Input()
 
 			//select first or 3d view camera
 			if(fDistance < 0.3)				
-				m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON);
+				m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
 			else			
 				m_pkCameraProp->SetType(CAM_TYPE3PERSON);
 				
-						
+						 
 				
 			pkCam->Set3PDistance(fDistance);
 			

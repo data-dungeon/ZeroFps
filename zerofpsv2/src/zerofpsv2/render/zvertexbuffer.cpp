@@ -20,3 +20,13 @@ ZVertexBuffer::~ZVertexBuffer()
 	else
 		cout<<"removes unused vertex buffer"<<endl;
 }
+
+
+
+
+
+
+
+
+
+

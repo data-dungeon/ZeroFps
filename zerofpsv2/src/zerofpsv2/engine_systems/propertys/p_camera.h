@@ -14,6 +14,7 @@ using namespace std;
 enum ENGINE_SYSTEMS_API CamType_e
 {
 	CAM_TYPEFIRSTPERSON,	// View from object. 
+	CAM_TYPEFIRSTPERSON_NON_EA,
 	CAM_TYPETOPDOWN,		// Top down view from object.
 	CAM_TYPEISO,			// Isometric view of object.
 	CAM_TYPESIDE,
