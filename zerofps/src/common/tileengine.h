@@ -9,6 +9,7 @@
 #include <list>
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
+#include "p_serverunit.h"
 #include "common_x.h"
 
 using namespace std;
@@ -45,7 +46,9 @@ class COMMON_API TileEngine
 		
 		void GenerateUnits();		
 		void AddUnit(int x,int y,int iID);
+		void AddUnit(Vector3 kPos,P_ServerUnit* kSu);
 		void RemoveUnit(int x,int y,int iID);
+		void RemoveUnit(Vector3 kPos,P_ServerUnit* kSu);		
 		bool UnitInTile(int x,int y,int iID);
 		void ClearUnits();
 		

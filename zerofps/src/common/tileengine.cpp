@@ -1,5 +1,5 @@
 #include "tileengine.h"
-#include "p_serverunit.h"
+
 
 TileEngine::TileEngine()
 {
@@ -159,19 +159,8 @@ void TileEngine::GenerateUnits()
 		P_ServerUnit* su = (P_ServerUnit*)kObjects[i]->GetProperty("P_ServerUnit");		
 			
 		if(su)
-		{
-			Point pos = GetSqrFromPos(kObjects[i]->GetPos());	
-			
-			int w = su->m_kInfo.m_cWidth;
-			int h = su->m_kInfo.m_cHeight;
-			
-			for(int y = -(h/2.0);y<(h/2.0);y++)
-				for(int x = -(w/2.0);x<(w/2.0);x++)
-				{			
-					//cout<<"X:"<<x<<endl;
-					AddUnit(pos.x + x,pos.y + y,kObjects[i]->iNetWorkID);
-					
-				}
+		{		
+			AddUnit(kObjects[i]->GetPos(),su);
 		}
 	}
 }
@@ -214,5 +203,37 @@ void TileEngine::ClearUnits()
 	}
 }
 
+void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
+{
+	Point pos = GetSqrFromPos(kPos);
+		
+	int w = kSu->m_kInfo.m_cWidth;
+	int h = kSu->m_kInfo.m_cHeight;
+			
+	for(int y = int(-(h/2.0));y<(h/2.0);y++)
+		for(int x = int(-(w/2.0));x<(w/2.0);x++)
+		{			
+			//cout<<"X:"<<x<<endl;
+			AddUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
+			
+		}
+
+}
+
+void TileEngine::RemoveUnit(Vector3 kPos,P_ServerUnit* kSu)
+{
+	Point pos = GetSqrFromPos(kPos);
+		
+	int w = kSu->m_kInfo.m_cWidth;
+	int h = kSu->m_kInfo.m_cHeight;
+			
+	for(int y =  int(-(h/2.0));y<(h/2.0);y++)
+		for(int x =  int(-(w/2.0));x<(w/2.0);x++)
+		{			
+			//cout<<"X:"<<x<<endl;
+			RemoveUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
+			
+		}
+}
 
 

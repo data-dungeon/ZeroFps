@@ -169,10 +169,11 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
+
 /*
-	Vector3 mpos = Get3DMousePos();
+	PickInfo p = Pick();
 	
-	Point bla = GetSqrFromPos(mpos);
+	Point bla = GetSqrFromPos(p.kHitPos);
 	
 	cout<<"square "<<bla.x<<" "<<bla.y<<endl;
 	
