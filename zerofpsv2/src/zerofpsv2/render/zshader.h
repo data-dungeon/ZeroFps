@@ -202,9 +202,14 @@ class RENDER_API ZShader : public ZFSubSystem
 		//configure render states/pass
 		void SetupRenderStates(ZMaterialSettings* pkSettings);
 		
+		//setup texture unit
 		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
+		
+		//setup and update vertex/fragment  programs
 		void SetupVertexProgram(ZMaterialSettings* pkSettings);
 		void SetupFragmentProgram(ZMaterialSettings* pkSettings);
+		
+		void UpdateFragmentProgramParameters();
 		
 		//makes a memcopy of all none null pointers data, and sets the pointers to the new location
 		void CopyVertexData();

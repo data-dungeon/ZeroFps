@@ -262,6 +262,9 @@ void ZShader::SetupPrerenderStates()
 
 void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)
 {
+	if(!SupportVertexProgram())
+		return;
+	
 	int iVP;
 	ZVProgram* pkRt = (ZVProgram*)pkSettings->m_pkVP->GetResourcePtr();
 
@@ -277,6 +280,9 @@ void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)
 
 void ZShader::SetupFragmentProgram(ZMaterialSettings* pkSettings)
 {
+	if(!SupportFragmentProgram())
+		return;
+
 	int iFP;
 	ZFProgram* pkRt = (ZFProgram*)pkSettings->m_pkFP->GetResourcePtr();
 
@@ -286,8 +292,11 @@ void ZShader::SetupFragmentProgram(ZMaterialSettings* pkSettings)
 	else
 		iFP = pkRt->m_iId;
 		
-
+	//set current frament program
 	SetFragmentProgram(iFP);
+	
+	//update fragment program parameters
+	UpdateFragmentProgramParameters();
 }
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
@@ -759,7 +768,7 @@ void ZShader::SetVertexProgram(int iVPID)
 void ZShader::SetFragmentProgram(int iFPID)
 {
     
-	if(iFPID == NO_VPROGRAM)
+	if(iFPID == NO_FPROGRAM)
 	{
 		glDisable(GL_FRAGMENT_PROGRAM_ARB);
 	}
@@ -776,8 +785,27 @@ void ZShader::SetFragmentProgram(int iFPID)
 
 }
 
+void ZShader::UpdateFragmentProgramParameters()
+{
+	if(m_iCurrentFragmentProgram != NO_FPROGRAM)
+	{
+		float fTime = (float(SDL_GetTicks()) /1000.0);		
+		
+		// parameter 0  (time,time,0,0)
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,0,
+											fTime	, fTime, 0 ,0);
 
-
+		// parameter 1  (time,time,time,time)
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,1,
+											fTime	, fTime, fTime ,fTime);
+	
+											
+		// parameter 2  (sin(time),sin(time),sin(time),sin(time))
+		glProgramEnvParameter4fARB(GL_FRAGMENT_PROGRAM_ARB,2,
+											sin(fTime)	, sin(fTime), sin(fTime) ,sin(fTime));
+																																		
+	}
+}
 
 // SOFTWARE SHADERS
 void ZShader::TextureOffset()

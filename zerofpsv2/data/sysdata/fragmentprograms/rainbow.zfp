@@ -1,0 +1,22 @@
+!!ARBfp1.0
+
+# Fragment inputs
+ATTRIB inTexCoord = fragment.texcoord;      # First set of texture coordinates
+ATTRIB inColor    = fragment.color.primary; # Diffuse interpolated color
+ATTRIB pso 			= fragment.position;
+
+PARAM bah        = state.light[0].diffuse;
+
+# Fragment outputs
+OUTPUT outColor   = result.color;
+
+#TEMP texelColor;
+#TXP texelColor, inTexCoord, texture, 2D; 
+
+TEMP rainbow;
+MUL rainbow,inTexCoord,inColor;
+MOV outColor,rainbow;
+
+
+END
+
