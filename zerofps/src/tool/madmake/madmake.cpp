@@ -13,7 +13,8 @@
 //#include "3ds.h"
 #include "xxx.h"
 //#include "halflife.h"
-#include "script.h"
+//#include "script.h"
+
 
 using namespace std;
 

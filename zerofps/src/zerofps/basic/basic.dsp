@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                       $(ProjDir)\release\*.lib                                        ..\..\..\bin\ 
+PostBuild_Cmds=copy                         $(ProjDir)\release\*.lib                                          ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -167,11 +167,6 @@ SOURCE=.\halfedge.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\heightmap.cpp
-# SUBTRACT CPP /YX
-# End Source File
-# Begin Source File
-
 SOURCE=.\image.cpp
 # End Source File
 # Begin Source File
@@ -196,6 +191,10 @@ SOURCE=.\quaternion.cpp
 # Begin Source File
 
 SOURCE=.\rect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\simplescript.cpp
 # End Source File
 # Begin Source File
 
@@ -344,6 +343,10 @@ SOURCE=.\quaternion.h
 # Begin Source File
 
 SOURCE=.\rect.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\simplescript.h
 # End Source File
 # Begin Source File
 

@@ -55,6 +55,7 @@ class ENGINE_API HeightMap: public ZFObject {
 		void RebuildVertex();
 
 		int m_iHmSize;
+		int m_iHmScaleSize;
 		char m_acTileSet[256];
 		Vector3 m_kPosition;
 		int m_iError;

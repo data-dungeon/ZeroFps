@@ -1,0 +1,17 @@
+class object
+	set ModelProperty Radius 1
+
+class tree
+	parent object
+	
+	set MadProperty m_kMadFile ../data/mad/tree.mad
+	set MadProperty m_fScale 1
+
+class avsats
+	parent object
+
+	set MadProperty m_kMadFile ../data/mad/avsats.mad
+	set MadProperty m_fScale 1
+
+	set PhysicProperty ColShape 3
+	set PhysicProperty m_bGravity false

@@ -144,10 +144,6 @@ SOURCE=.\qpack.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\script.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\xxx.cpp
 
 !IF  "$(CFG)" == "madmake - Win32 Release"
@@ -198,10 +194,6 @@ SOURCE=.\mdl.h
 # Begin Source File
 
 SOURCE=.\qpack.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\script.h
 # End Source File
 # Begin Source File
 

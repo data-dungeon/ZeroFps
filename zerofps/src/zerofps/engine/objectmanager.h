@@ -22,7 +22,11 @@ class ENGINE_API ObjectManager : public ZFObject{
 	
 		Object*			m_pkWorldObject;		
 	
-		list<Object*>	m_akObjects;				// List of all objects.
+		list<ObjectArcheType*>	m_akArcheTypes;						// List of all object Archetypes.
+		ObjectArcheType*	GetArcheType(string strName);				// Get ptr to AT. NULL if not found.
+		void AddArchPropertys(Object* pkObj, string strName);
+
+		list<Object*>	m_akObjects;					// List of all objects.
 		vector<Object*> m_akDeleteList;				// List of objects that will be destroyed at end of frame.
 
 		list<Property*> m_akPropertys;				// List of Active Propertys.	
@@ -39,6 +43,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void GetPropertys(int iType,int iSide);		// Fill propery list.
 
 		ZeroFps*	m_pkZeroFps;
+
+		void TESTVIM_SpawnArcheTypes();
+		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
 		ObjectManager();
@@ -61,6 +68,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object* CreateObject(const char* acName);
 		Object* CreateObject(ObjectDescriptor* pkObjDesc);
 		Object* CreateObjectByNetWorkID(int iNetID);	
+		Object* CreateObjectByArchType(const char* acName);
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);

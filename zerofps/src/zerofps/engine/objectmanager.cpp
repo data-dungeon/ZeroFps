@@ -32,7 +32,8 @@ ObjectManager::ObjectManager()
 	m_pkWorldObject->GetName() = "WorldObject";
 
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-
+//	TESTVIM_SpawnArcheTypes();
+	TESTVIM_LoadArcheTypes("zfoh.txt");
 }
 
 void ObjectManager::Add(Object* pkObject) 
@@ -658,4 +659,228 @@ char* ObjectManager::GetPropertySideName(int iSide)
 	return pkName;
 
 
+}
+
+ 
+ObjectArcheType*	ObjectManager::GetArcheType(string strName)
+{
+	for(list<ObjectArcheType*>::iterator it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
+		if((*it)->m_strName == strName)
+			return (*it);
+		}
+
+	return NULL;
+	
+}
+
+void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
+{
+	SimpleScriptFile kMMScipt;
+
+	if(kMMScipt.LoadScript(szFileName) == false) {
+		cout << "Failed to load script " << szFileName << endl;
+		return;
+		}
+
+
+	char* ucpToken;
+	ucpToken = kMMScipt.GetToken();
+	ObjectArcheType* pkAt = NULL;
+	
+	string strPropName, strPropVar, strPropValue;
+
+	while(ucpToken)
+	{
+		if (!strcmp (ucpToken, "parent")) {
+			if(pkAt) {
+				ucpToken = kMMScipt.GetToken();
+				pkAt->m_strParentName = ucpToken;
+				}
+		}
+
+		if (!strcmp (ucpToken, "class")) {
+			if(pkAt) {
+				m_akArcheTypes.push_back(pkAt);
+				pkAt = NULL;
+				}
+
+			pkAt = new ObjectArcheType;
+			ucpToken = kMMScipt.GetToken();
+			pkAt->m_strName = ucpToken;
+			cout << "Creating class: " << ucpToken << endl;
+			}
+
+		
+		if (!strcmp (ucpToken, "set")) {
+			if(pkAt) {
+				ucpToken = kMMScipt.GetToken();
+				strPropName = ucpToken;
+
+				ucpToken = kMMScipt.GetToken();
+				strPropVar = ucpToken;
+
+				ucpToken = kMMScipt.GetToken();
+				strPropValue = ucpToken;
+	
+				pkAt->SetValue(strPropName, strPropVar, strPropValue);
+				cout << "Set:  " << strPropName << "." <<  strPropVar << "=" << strPropValue << endl;
+
+				}
+			}
+
+		ucpToken = kMMScipt.GetToken();
+	}
+
+	if(pkAt) {
+		m_akArcheTypes.push_back(pkAt);
+		pkAt = NULL;
+		}
+}
+
+
+/*	string strFileName;
+	string strName;
+
+	while(ucpToken)
+	{
+		if (!strcmp (ucpToken, "!scale"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			g_fExportScale = atof(ucpToken);
+			cout << "Setting Scale to: " << g_fExportScale << endl;
+			g_fTotalScale	= (1.0 / g_fUnitsMeter) * g_fExportScale;
+		}
+
+		if (!strcmp (ucpToken, "!filetype")) {
+			cout << "Command filetype" << endl;
+			}
+		
+		if (!strcmp (ucpToken, "!target"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Target file is: " << ucpToken << endl;
+			ucaOutFile = ucpToken;
+		}
+
+		if (!strcmp (ucpToken, "!sd-export"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Setting Bones" << ucpToken << endl;
+			ReadExportSD(ucpToken);
+		}
+
+		if (!strcmp (ucpToken, "!ad-export"))
+		{
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			cout << "Add Animation '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
+			ReadExportAD(strFileName.c_str(),strName.c_str());
+		}
+
+		if (!strcmp (ucpToken, "!add-md"))
+		{
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			cout << "Add Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
+			ReadCoreMesh(strFileName.c_str(),strName.c_str());
+		}
+
+		if (!strcmp (ucpToken, "!add-fd"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command add-fd: " << ucpToken << endl;
+			ReadBaseFrame(ucpToken);
+		}
+
+		if (!strcmp (ucpToken, "!add-meshanim"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command add-meshanim: " << ucpToken << endl;
+			ReadAnimation(ucpToken);
+		}
+		
+		ucpToken = kMMScipt.GetToken();
+	}
+*/
+void ObjectManager::TESTVIM_SpawnArcheTypes()
+{
+/*	ObjectArcheType* pkAt;
+
+	// Create Object
+	pkAt = new ObjectArcheType;
+	
+	pkAt->m_strName = "Object";
+	pkAt->m_strParentName = "";
+
+	// Create Physics
+		pkAt = new ObjectArcheType;
+		pkAt->m_strName = "Physic";
+		pkAt->m_strParentName = "";
+		pkAt->SetValue("PhysicProperty", "ColShape",	"3");
+		pkAt->SetValue("PhysicProperty", "m_bGravity",	"false");
+
+		m_akArcheTypes.push_back(pkAt);
+
+	// Create Tree
+		pkAt = new ObjectArcheType;
+		pkAt->m_strName = "Tree";
+		pkAt->m_strParentName = "";
+		pkAt->SetValue("MadProperty", "m_kMadFile","../data/mad/tree.mad");
+		pkAt->SetValue("MadProperty", "m_fScale","1");
+		m_akArcheTypes.push_back(pkAt);
+
+	// Create Avsats
+		pkAt = new ObjectArcheType;
+		pkAt->m_strName = "Avsats";
+		pkAt->m_strParentName = "Physic";
+		pkAt->SetValue("MadProperty", "m_kMadFile",	"../data/mad/avsats.mad");
+		pkAt->SetValue("MadProperty", "m_fScale",		"1");
+	
+
+		pkAt->SetValue("PhysicsProperty", "Gravity",	"0");
+		pkAt->SetValue("PhysicsProperty", "Float",	"0");
+		pkAt->SetValue("PhysicsProperty", "Solid",	"1");
+		pkAt->SetValue("PhysicsProperty", "Glide",	"1");
+		pkAt->SetValue("PhysicsProperty", "Stride",	"0");
+		
+		pkAt->SetValue("PhysicsProperty", "StrideHieght",	"0.7");
+		pkAt->SetValue("PhysicsProperty", "Radius",	"4.6");
+		pkAt->SetValue("PhysicsProperty", "ColShape",	"3");
+		
+		m_akArcheTypes.push_back(pkAt);*/
+}
+
+void ObjectManager::AddArchPropertys(Object* pkObj, string strName)
+{
+	ObjectArcheType* pkAt = GetArcheType(strName);
+	if(!pkAt)
+		return;
+
+	Property* pkProperty;
+
+	AddArchPropertys(pkObj, pkAt->m_strParentName);
+	for(int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
+		pkProperty = pkObj->AddProxyProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
+
+		for(int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
+			pkProperty = pkObj->GetProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
+	
+			pkProperty->SetValue(pkAt->m_kArchPropertys[i].m_kVariables[j].m_strVariable.c_str(),
+				pkAt->m_kArchPropertys[i].m_kVariables[j].m_strValue.c_str());
+			}
+		}
+	
+}
+
+Object* ObjectManager::CreateObjectByArchType(const char* acName)
+{
+	ObjectArcheType* pkAt = GetArcheType(string(acName));
+	if(!pkAt)
+		return false;
+
+	Object* pkObj =	new Object;
+	AddArchPropertys(pkObj, string(acName));
+//	pkObj->AddProperty("ModelProperty");
+	
+	return pkObj;
 }

@@ -57,6 +57,7 @@ class ZFIni;
 #include "zguifont.h"
 
 #include "zfini.h"
+#include "simplescript.h"
 
 
 

@@ -27,6 +27,7 @@ HeightMap::HeightMap()
 void HeightMap::Create(int iHmSize)
 {
 	m_iHmSize=iHmSize;
+	m_iHmScaleSize = this->GetSize();
 	m_kPosition.Set(0,0,0);
 
 	delete[] verts;
@@ -217,10 +218,11 @@ bool HeightMap::Load(const char* acFile) {
 		return false;
 	}
 //	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
-	savefile.Read(k_Fh);
+	savefile.Read((void*)&k_Fh, sizeof(HM_fileheader));
 	
 	m_iHmSize=k_Fh.m_iHmSize;
-	
+	m_iHmScaleSize = GetSize();
+
 	cout<<"MAP SIZE IS:"<<m_iHmSize<<endl;
 	
 	delete[] verts;
@@ -235,7 +237,7 @@ bool HeightMap::Load(const char* acFile) {
 	{
 //		HM_vert hora;
 //		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
-		savefile.Read(verts[i]);
+		savefile.Read((void*)&verts[i],sizeof(HM_vert));
 //		savefile.Read(hora);
 //		cout<<i<<"  "<<hora.height<<endl;
 //		if(hora.height==0) {
@@ -292,14 +294,14 @@ bool HeightMap::Save(const char* acFile) {
 		return false;
 	}
 //	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
-	savefile.Write(k_Fh);
+	savefile.Write((void*)&k_Fh, sizeof(HM_fileheader));
 	
 //	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 
 	for(int i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
 //		savefile.Write((void*)&verts[i],sizeof(HM_vert));	
-		savefile.Write(verts[i]);
+		savefile.Write((void*)&verts[i],sizeof(HM_vert));
 //		cout<<verts[i].height<<endl;
 //		cout<<verts[i].texture<<endl;
 	}

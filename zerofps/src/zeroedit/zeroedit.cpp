@@ -793,7 +793,9 @@ void ZeroEdit::Input()
 						break;			
 					m_fTimer=pkFps->GetTicks();
 				
-					Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+					//Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+					Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+
 					if(object==NULL)
 						break;
 					

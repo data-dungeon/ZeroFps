@@ -1,4 +1,5 @@
 #include "object.h"
+
 #include "physicsengine.h"
 
 
@@ -481,7 +482,7 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 }
 */
 
-Property* Object::AddProxyProperty(char* acName)
+Property* Object::AddProxyProperty(const char* acName)
 {
 	Property* pProp = GetProperty(acName);
 	if(pProp)

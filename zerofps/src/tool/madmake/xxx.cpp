@@ -1,6 +1,6 @@
 #include <iostream>
 #include "xxx.h"
-#include "script.h"
+//#include "script.h"
 
 float g_fExportScale;	
 float g_fUnitsMeter;	// Num of units to be one meter in real scale.
@@ -557,7 +557,7 @@ void ModellXXX::Read( const char* filename )
 
 	LogIt("g_fTotalScale = %f\n", g_fTotalScale);
 
-	ScriptFile kMMScipt;
+	SimpleScriptFile kMMScipt;
 	if(kMMScipt.LoadScript(filename) == false) {
 		sprintf(ErrorMsg, "Failed to load script file %s.\n",filename);
 		Error(ErrorMsg);

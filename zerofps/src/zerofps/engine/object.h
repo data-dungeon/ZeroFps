@@ -6,18 +6,16 @@
 #include <list>
 #include <string.h>
 #include "engine_x.h"
-//#include "physicsengine.h"
 #include "property.h"
-#include "objectmanager.h"
+//#include "objectmanager.h"
 #include "propertyfactory.h"
 #include "network.h"
-//#include "levelmanager.h"
 
 using namespace std;
 
-class ObjectManager;
-struct CollisionData;
-class LevelManager;
+class		ObjectManager;
+struct	CollisionData;
+class		LevelManager;
 
 enum UpdateStatus {
 	UPDATE_NONE			= 1,
@@ -75,6 +73,57 @@ class ENGINE_API ObjectDescriptor{
 		void LoadFromMem(ZFMemPackage* pkPackage);		
 };
 	
+class ENGINE_API PropertyValue
+{
+public:
+	PropertyValue();
+	~PropertyValue();
+	
+	PropertyValue(const PropertyValue &Other);
+	PropertyValue& operator=(const PropertyValue &Other);
+
+	string	m_strVariable;
+	string	m_strValue;
+};
+		// Assign
+
+class ENGINE_API PropertyArcheType
+{
+public:
+	PropertyArcheType();
+	~PropertyArcheType();
+
+	string						m_strName;
+	vector<PropertyValue>	m_kVariables;
+
+	PropertyArcheType(const PropertyArcheType &Other);
+	PropertyArcheType& operator=(const PropertyArcheType &Other);
+
+};
+
+class ENGINE_API ObjectArcheType
+{
+private:
+	void AddArchProperty(string strArchPropertys);
+	PropertyArcheType*	GetArchProperty(string strArchPropertys);
+	PropertyArcheType*	GetAddArchProperty(string strArchPropertys);
+
+public:
+	string	m_strName;
+	string	m_strParentName;
+
+	vector<PropertyArcheType>	m_kArchPropertys;
+
+	void SetValue(string strProperty, string strVariable, string Value);
+
+	ObjectArcheType();
+	~ObjectArcheType();
+
+	ObjectArcheType(const ObjectArcheType &Other);
+	ObjectArcheType& operator=(const ObjectArcheType &Other);
+};
+
+
 
 /// Game Object for things in game 
 class ENGINE_API Object 
@@ -127,7 +176,7 @@ class ENGINE_API Object
 		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);		///< Get all propertys by flags.
 		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
 
-		Property* AddProxyProperty(char* acName);									///< Add a property if not exist.
+		Property* AddProxyProperty(const char* acName);									///< Add a property if not exist.
 		bool Update(const char* acName);											///< Run update on property 'name'.
 
 		// Child/Parent object mangement.
