@@ -238,6 +238,9 @@
 			<File
 				RelativePath=".\zssenviroment.cpp">
 			</File>
+			<File
+				RelativePath=".\zssmltime.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -331,6 +334,9 @@
 			</File>
 			<File
 				RelativePath=".\zssenviroment.h">
+			</File>
+			<File
+				RelativePath=".\zssmltime.h">
 			</File>
 		</Filter>
 		<Filter

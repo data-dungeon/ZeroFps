@@ -39,7 +39,7 @@ class MistClient :public Application, public ZGuiApp {
 
 		bitset<6>	m_kCharacterControls;
 		
-		bool			m_bSkipLoginScreen;
+		bool			m_bGuiCapture;
 		string		m_strLoginName, m_strLoginPW;
 		
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
@@ -65,8 +65,8 @@ class MistClient :public Application, public ZGuiApp {
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetupGUI();
-		
-				
+		void ToggleGuiCapture(int iForce=-1);
+						
 		void RegisterPropertys();
 		void RegisterResources();
 	  

@@ -43,12 +43,10 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strLoginName = "Psykosmurfan";
    m_strLoginPW = "topsecret";
 
-   RegisterVariable("r_jumpstart", 	&m_bSkipLoginScreen, CSYS_BOOL);
    RegisterVariable("r_loginname", 	&m_strLoginName, CSYS_STRING);
    RegisterVariable("r_loginpw", 	&m_strLoginPW, CSYS_STRING);
 
-
-   
+	m_bGuiCapture = false;
 } 
  
 void MistClient::OnInit() 
@@ -91,6 +89,8 @@ void MistClient::OnInit()
 	// create gui for mistlands
 	m_pkOptionsDlg = new OptionsDlg(this);
 	SetupGUI();
+
+	ToggleGuiCapture(1);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
@@ -212,12 +212,16 @@ bool MistClient::DelayCommand()
 
 void MistClient::Input()
 {
+	if(m_pkInputHandle->Pressed(KEY_SPACE) && !DelayCommand())
+		ToggleGuiCapture();
+
+
 	//get mouse
 	float x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 	
 	//check buttons
-	if(!IsWndVisible("MLStartWnd"))
+	if(!m_bGuiCapture)
 	{
 		m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 		m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -228,7 +232,7 @@ void MistClient::Input()
 	}
 
 	// taunts
-	if ( (!IsWndVisible("MLStartWnd")) )
+	if ( !m_bGuiCapture )
 	{
 		if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
 			m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
@@ -309,7 +313,7 @@ void MistClient::Input()
 			LoadInGameGui();
 	}
 
-	if(!IsWndVisible("MLStartWnd"))
+	if(!m_bGuiCapture)
 	{
 		//update camera
 		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
@@ -815,4 +819,21 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse)
 	dir = rm.VectorTransform(dir);
 	
 	return dir;
+}
+
+void MistClient::ToggleGuiCapture(int iForce)
+{
+	if(iForce == -1)
+		m_bGuiCapture = !m_bGuiCapture;
+	else
+		m_bGuiCapture = (bool) iForce;
+
+	if(m_bGuiCapture == true)
+	{
+		m_pkGui->ShowCursor(true);
+	}
+	else
+	{
+		m_pkGui->ShowCursor(false);
+	}
 }

@@ -182,6 +182,8 @@ void MistClient::ResizeChatDlg(bool	bMakeBigger)
 
 void MistClient::LoadInGameGui()
 {
+	ToggleGuiCapture(0);
+
 	ShowWnd("MLStartWnd",	false);
 	ShowWnd("ConnectWnd",	false);
 	ShowWnd("AddNewServerWnd", false);

@@ -553,7 +553,7 @@ bool ZGui::IsActive()
 
 bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bMBnPressed, float fTime)
 {
-	if(m_bActive == true)
+	if(m_bActive == true && m_pkCursor->IsVisible())
 	{
 		m_fTime = fTime;
 

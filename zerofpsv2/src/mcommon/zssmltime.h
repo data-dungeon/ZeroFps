@@ -4,10 +4,11 @@
 #include <string>
 #include "../zerofpsv2/basic/globals.h"
 #include "../zerofpsv2/basic/zfsubsystem.h"
+#include "mcommon_x.h"
 
 using namespace std;
 
-class ZSSMLTime : public ZFSubSystem 
+class MCOMMON_API ZSSMLTime : public ZFSubSystem 
 {
 	private:
 		// RT = real time (time in reality)
