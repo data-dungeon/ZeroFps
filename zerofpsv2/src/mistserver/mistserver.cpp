@@ -1280,7 +1280,7 @@ void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 				kNp.Write(kItemList[i].m_cItemW);
 				kNp.Write(kItemList[i].m_cItemH);						
 				kNp.Write(kItemList[i].m_iStackSize);				
-		
+				kNp.Write(kItemList[i].m_bIsContainer);	
 				
 				if(kNp.m_iPos > 1000)
 				{

@@ -46,6 +46,7 @@ class MCOMMON_API MLContainerInfo
 		char	m_cItemH;
 		
 		int	m_iStackSize;
+		bool	m_bIsContainer;
 };
 
 /**	\brief	Da P_Container

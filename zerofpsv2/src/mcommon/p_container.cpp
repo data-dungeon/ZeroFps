@@ -281,6 +281,7 @@ bool P_Container::AddItem(int iID,int iX,int iY)
 			pkItem->SetParent(GetEntity());				
 			
 			
+			//setup joint
 			if(m_strAttachToJoint.empty())
 			{
 				pkItem->SetUpdateStatus(UPDATE_NONE);									
@@ -303,6 +304,12 @@ bool P_Container::AddItem(int iID,int iX,int iY)
 			
 			//set item's owned by setting
 			pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
+			
+			//set container owner setting
+			if(P_Container* pkCon = (P_Container*)pkItem->GetProperty("P_Container"))
+			{
+				pkCon->SetOwnerID(m_iOwnerID);
+			}
 			//Print();
 			
 			return true;
@@ -535,6 +542,12 @@ void P_Container::GetItemList(vector<MLContainerInfo>* pkItemList)
 				kTemp.m_cItemW = pkItem->m_iSizeX;
 				kTemp.m_cItemH = pkItem->m_iSizeY;
 				kTemp.m_iStackSize = pkItem->m_iStackSize;
+				
+				//check if its a container
+				if(pkEnt->GetProperty("P_Container"))
+					kTemp.m_bIsContainer = true;
+				else
+					kTemp.m_bIsContainer = false;
 				
 				
 				pkItemList->push_back(kTemp);
