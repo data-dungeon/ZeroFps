@@ -14,7 +14,7 @@ P_Light::P_Light()
 	
 	strcpy(m_acName,"P_Light");
 	bNetwork = true;
-	m_iVersion = 3;
+	m_iVersion = 4;
 	m_iSortPlace=10;
 	
 	m_pkLightSource=new LightSource();
@@ -28,7 +28,9 @@ P_Light::P_Light()
 	m_fFlareSize = 0.0;
 	
 	m_pkMaterial = new ZFResourceHandle;
-	m_pkMaterial->SetRes("data/material/flare.zmt");	
+
+	SetMaterial("data/material/flare-white.zmt");
+	
 }
 
 P_Light::~P_Light()
@@ -59,11 +61,29 @@ void P_Light::Update()
 
 void P_Light::DrawFlare()
 {
+	static ZMaterial* pkTestMat=NULL;
+	
+	if(!pkTestMat)
+	{
+		pkTestMat = new ZMaterial;
+	
+		pkTestMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/clear.tga");
+		pkTestMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		pkTestMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		pkTestMat->GetPass(0)->m_bBlend = 					true;	
+		pkTestMat->GetPass(0)->m_iBlendSrc = 				SRC_ALPHA_BLEND_SRC;
+		pkTestMat->GetPass(0)->m_iBlendDst = 				ONE_MINUS_SRC_ALPHA_BLEND_DST;	
+	}
+
+
+		
 	if(m_pkZShaderSystem->SupportOcculusion())
 	{
 		//do occulusion test	
 		m_pkZShaderSystem->OcculusionBegin();
-		m_pkRender->Line(m_pkLightSource->kPos-0.02,m_pkLightSource->kPos+0.02,Vector3(1,1,1));		
+		
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,0.1,pkTestMat);		
+		//m_pkRender->Line(m_pkLightSource->kPos-0.02,m_pkLightSource->kPos+0.02,Vector3(1,1,1));		
 		int iSamples = m_pkZShaderSystem->OcculusionEnd();
 		
 		if(iSamples > 0 )
@@ -110,6 +130,8 @@ void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	
 	pkNetPacket->Write(m_kOffset);
 	pkNetPacket->Write(m_fFlareSize);
+	pkNetPacket->Write_Str(m_strMaterial);
+	
 																						
 	SetNetUpdateFlag(iConnectionID,false);
 }
@@ -129,11 +151,26 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	
 	pkNetPacket->Read(m_kOffset);
 	pkNetPacket->Read(m_fFlareSize);
+	
+	string strFlareMaterial;
+	pkNetPacket->Write_Str(strFlareMaterial);
+	SetMaterial(strFlareMaterial);
+	
+	
 }
+
+void P_Light::SetMaterial(const string& strMaterial)
+{
+	m_pkMaterial->SetRes(strMaterial);
+	m_strMaterial = strMaterial;
+
+	SetNetUpdateFlag(true);
+}
+
 
 vector<PropertyValues> P_Light::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(13);
+	vector<PropertyValues> kReturn(14);
 
 	kReturn[0].kValueName = "Ambient";
 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
@@ -187,12 +224,29 @@ vector<PropertyValues> P_Light::GetPropertyValues()
 	kReturn[12].iValueType = VALUETYPE_FLOAT;
 	kReturn[12].pkValue    = (void*)&m_fFlareSize;
 				
+	kReturn[13].kValueName = "FlareMaterial";
+	kReturn[13].iValueType = VALUETYPE_STRING;
+	kReturn[13].pkValue    = (void*)&m_strMaterial;
+	
+	
 	return kReturn;
 }
 
-Property* Create_LightProperty()
+bool P_Light::HandleSetValue( string kValueName ,string kValue )
 {
-	return new P_Light;
+	if(kValueName == "FlareMaterial")
+	{
+		SetMaterial(kValue);
+		return true;
+	}
+	
+	if( kValueName == "FlareSize") 
+	{
+		SetNetUpdateFlag(true);
+		return false;
+	}
+
+	return false;
 }
 
 void P_Light::Save(ZFIoInterface* pkPackage)
@@ -201,6 +255,8 @@ void P_Light::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iMode);		
 	pkPackage->Write(m_kOffset);		
 	pkPackage->Write(m_fFlareSize);		
+	
+	pkPackage->Write_Str(m_strMaterial);		
 }
 
 void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -224,6 +280,17 @@ void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_kOffset);	
 			pkPackage->Read(m_fFlareSize);	
 			break;	
+			
+		case 4:
+			pkPackage->Read(*m_pkLightSource);
+			pkPackage->Read(m_iMode);		
+			pkPackage->Read(m_kOffset);	
+			pkPackage->Read(m_fFlareSize);	
+			
+			string strTemp;
+			pkPackage->Read_Str(strTemp);	
+			SetMaterial(strTemp);
+			break;				
 	}
 	
 	
@@ -258,3 +325,8 @@ void P_Light::OnEvent(GameMessage& Msg)
 	
 }
 
+
+Property* Create_LightProperty()
+{
+	return new P_Light;
+}

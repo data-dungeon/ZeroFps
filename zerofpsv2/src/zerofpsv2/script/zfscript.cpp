@@ -515,7 +515,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 		return false;
 	}
 
-	printf("Loading Script = %s\n", pkScript->m_szScriptName);
+	//printf("Loading Script = %s\n", pkScript->m_szScriptName);
 
 	if( luaL_loadfile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
 	{
