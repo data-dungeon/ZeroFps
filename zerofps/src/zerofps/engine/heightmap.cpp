@@ -784,6 +784,10 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 			int x = int(xpos + sin(z/degtorad)*i);
 			int y = int(ypos + cos(z/degtorad)*i);
 		
+			if(x<0 || x >= m_pkTexMan->GetImage()->w 
+				|| y <0 || y>=m_pkTexMan->GetImage()->h)	
+				continue;		
+			
 			Uint32 old = m_pkTexMan->GetPixel(x,y);
 			
 			Uint8 cr,cg,cb,ca;			
