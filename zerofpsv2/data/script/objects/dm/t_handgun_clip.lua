@@ -2,7 +2,7 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/dm_handgun_clip.mad");			
+			InitParameter("m_kMadFile","/data/mad/dm/dm_handgun_clip.mad");			
 			InitParameter("m_fScale","1.0");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","HandgunClip");
