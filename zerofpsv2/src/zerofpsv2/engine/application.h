@@ -19,29 +19,29 @@ class ZFClient;
 */
 class ENGINE_API Application : public ZFSubSystem {	
 	protected:
-		ZeroFps*					pkFps;
-		Console*					pkConsole;			
-		Render*					pkRender;
-		Input*					pkInput;
+		ZFBasicFS*				m_pkBasicFS;
+		ZFVFileSystem*			m_pkZFVFileSystem;
 		TextureManager*		pkTexMan;
-		FileIo*					pkFile;
-		ZFBasicFS*				pkBasicFS;
-		Light*					pkLight;
-		EntityManager*			pkObjectMan;
-		PropertyFactory*		pkPropertyFactory;
-		ZFAudioSystem*			pkAudioSys;
+		Input*					m_pkInput;
+		PropertyFactory*		m_pkPropertyFactory;
+		Light*					m_pkLight;
+		Render*					m_pkRender;
+		Console*					m_pkConsole;			
+		EntityManager*			m_pkObjectMan;
+		ZFAudioSystem*			m_pkAudioSys;
+		ZGuiResourceManager*	m_pkGuiMan;
 		ZGui*						pkGui;
-		ZGuiResourceManager*	pkGuiMan;
-		ZFIni*					pkIni;
-		PhysicsEngine*			pkPhysEngine;
-		ZFScriptSystem*		pkScript;
-		ZFVFileSystem*			pkZFVFileSystem;
-		Physics_Engine*		pkPhysics_Engine;
-		ZShader*					pkZShader;	
-		ZFResourceDB*			pkResourceDB;
+		ZFIni*					m_pkIni;
+		PhysicsEngine*			m_pkPhysEngine;
+		ZFResourceDB*			m_pkResourceDB;
+		ZFScriptSystem*		m_pkScript;
+		Physics_Engine*		m_pkPhysics_Engine;
+		FileIo*					m_pkFile;
+		ZShader*					m_pkZShader;	
+		ZeroFps*					m_pkFps;
 		
 	public:
-		static Application*	pkApp;												///< The one and Only App Instance.
+		static Application*	m_pkApp;												///< The one and Only App Instance.
 		
 		int m_iWidth,m_iHeight,m_iDepth;
 		char* m_pTitle;																///< Windows Title.

@@ -71,6 +71,9 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC), MAX_NUM_ACTION_BUTTONS(8)
 { 
+	g_ZFObjSys.Log_Create("mistclient");
+
+	// Set Default values
 	m_iActiveCaracterObjectID = -1;
 	m_iSelfObjectID			= -1;
 	m_pkClientObject			= NULL;
@@ -92,35 +95,34 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fAngle 					= 0;
 	m_fPAngle 					= 0;
 	
-	g_ZFObjSys.Log_Create("mistclient");
+	// Register Variables
 
+	// Register Commands
+	Register_Cmd("load",			FID_LOAD);		
+	Register_Cmd("unload",		FID_UNLOAD);			
+	Register_Cmd("c_getchar",	FID_GETCHAR);			
+	Register_Cmd("c_selchar",	FID_SELECTCHAR);			
+	Register_Cmd("c_delchar",	FID_DELETECHAR);			
+	Register_Cmd("play",			FID_PLAY);			
 } 
 
 void MistClient::OnInit() 
 {
-	pkConsole->Printf(" MistClient , im scarred  =/");
-	pkConsole->Printf("--------------------------------");
-	pkConsole->Printf("this program will selfdestruct in 5 seconds");
+	m_pkConsole->Printf(" MistClient , im scarred  =/");
+	m_pkConsole->Printf("--------------------------------");
+	m_pkConsole->Printf("this program will selfdestruct in 5 seconds");
 
 	Init();
 
 	//run autoexec script
-	if(!pkIni->ExecuteCommands("mistclient_autoexec.ini"))
-		pkConsole->Printf("No game_autoexec.ini.ini found");
+	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
+		m_pkConsole->Printf("No game_autoexec.ini.ini found");
 }
 
 void MistClient::Init()
 {	
-	m_fClickDelay = pkFps->GetTicks();
+	m_fClickDelay = m_pkFps->GetTicks();
 
-	//register commmands bös
-	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("unload",FID_UNLOAD);			
-
-	Register_Cmd("c_getchar",FID_GETCHAR);			
-	Register_Cmd("c_selchar",FID_SELECTCHAR);			
-	Register_Cmd("c_delchar",FID_DELETECHAR);			
-	Register_Cmd("play",FID_PLAY);			
 
 
 	//initiate our camera bös
@@ -139,19 +141,19 @@ void MistClient::Init()
 	SDL_WM_SetCaption("MistClient", NULL);
  
 	// create gui script
-	GuiAppLua::Init(&g_kMistClient, pkScript);
+	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	HenchmanButton::s_iHenchemanAlphaTex = 
 		pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 
 	// init gui
-	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
+	InitializeGui(pkGui, pkTexMan, m_pkScript, m_pkGuiMan, 
 		"data/textures/text/paternoster8.bmp",
 		"data/script/gui/gui_create_client.lua"
 		/*"data/script/gui/test2.lua"*/);
 
 	//init mistland script intreface
-	MistLandLua::Init(pkObjectMan,pkScript);
+	MistLandLua::Init(m_pkObjectMan,m_pkScript);
 	
 	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
@@ -160,60 +162,60 @@ void MistClient::Init()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	// Varde ljus!
-	pkLight->SetLighting(true);
+	m_pkLight->SetLighting(true);
 	//pkZShader->SetForceLighting(ALWAYS_OFF);   //GE FAN I DENNA "#¤%)"#?=&(?!"=#(&!?#¤%)! =)
 
-	pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
+	m_pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
 
 	pkGui->SetFocus(GetWnd("IntroWnd")); 
 
 	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
-	pkFps->m_bClientMode = true;
+	m_pkFps->m_bClientMode = true;
 
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
-	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
+	m_pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
 
 
 }
 
 void MistClient::RegisterResources()
 {
-	pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MistClient::RegisterActions()
 {
-	m_iActionDoOrder=pkInput->RegisterAction("DoOrder");
-	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
-	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
-	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
-	m_iActionCamLeft=pkInput->RegisterAction("CamLeft");
-	m_iActionCamRight=pkInput->RegisterAction("CamRight");
-	m_iActionCamUp=pkInput->RegisterAction("CamUp");
-	m_iActionCamDown=pkInput->RegisterAction("CamDown");
-	m_iActionSelect=pkInput->RegisterAction("Select");
-	m_iActionScroll=pkInput->RegisterAction("Scroll");	
-	m_iActionSelectManyModifier=pkInput->RegisterAction("SelectManyModifier");	
+	m_iActionDoOrder=m_pkInput->RegisterAction("DoOrder");
+	m_iActionPrintServerInfo=m_pkInput->RegisterAction("PrintServerInfo");
+	m_iActionUnExploreAll=m_pkInput->RegisterAction("UnExploreAll");
+	m_iActionExploreAll=m_pkInput->RegisterAction("ExploreAll");
+	m_iActionCamLeft=m_pkInput->RegisterAction("CamLeft");
+	m_iActionCamRight=m_pkInput->RegisterAction("CamRight");
+	m_iActionCamUp=m_pkInput->RegisterAction("CamUp");
+	m_iActionCamDown=m_pkInput->RegisterAction("CamDown");
+	m_iActionSelect=m_pkInput->RegisterAction("Select");
+	m_iActionScroll=m_pkInput->RegisterAction("Scroll");	
+	m_iActionSelectManyModifier=m_pkInput->RegisterAction("SelectManyModifier");	
 }
 
 void MistClient::RegisterPropertys()
 {
-	pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
-	pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
-	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
-	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-	pkPropertyFactory->Register("P_Event", Create_P_Event);
-	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
-   pkPropertyFactory->Register("P_Item", Create_P_Item);
-   pkPropertyFactory->Register("P_Container", Create_P_Container);
+	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
+	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
+	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
+   m_pkPropertyFactory->Register("P_Item", Create_P_Item);
+   m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 }
 
 
 void MistClient::OnIdle() 
 {
-	pkFps->SetCamera(m_pkCamera);		
-	pkFps->GetCam()->ClearViewPort();	
+	m_pkFps->SetCamera(m_pkCamera);		
+	m_pkFps->GetCam()->ClearViewPort();	
 		
 	if(pkGui->m_bHaveInputFocus == false)
 	{
@@ -224,22 +226,22 @@ void MistClient::OnIdle()
    if ( m_pkInventDlg )
       m_pkInventDlg->Update();
 	
-	pkFps->UpdateCamera();
+	m_pkFps->UpdateCamera();
 	
 	
 	// FULHACK Tm Vim
-	pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
+	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetObjectByNetWorkID( m_pkFps->GetClientObjectID() ) );
 	
 
 	//printouts
 	if(m_pkServerInfo)
 	{
-		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
-		pkFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
+		m_pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
+		m_pkFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
 	
-		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkFps->GetConnectionID());
 		if(pi)
-			pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
+			m_pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
 	}	
 
 	//gui
@@ -276,24 +278,24 @@ void MistClient::OnSystem()
 	UpdateCullObjects();
 
 	//setup client
-	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
+	if(m_pkFps->m_bClientMode && !m_pkFps->m_bServerMode)
 	{
 		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
 		if(!m_pkClientControlP)
 		{
-			m_iSelfObjectID = pkFps->GetClientObjectID();	
+			m_iSelfObjectID = m_pkFps->GetClientObjectID();	
 			if(m_iSelfObjectID != -1)
 			{		
-				m_pkClientObject = pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);		
+				m_pkClientObject = m_pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);		
 				if(m_pkClientObject)
 				{			
-					pkConsole->Printf("Got client object, Trying to get client control");
+					m_pkConsole->Printf("Got client object, Trying to get client control");
 			
 					m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
 					if(m_pkClientControlP)
 					{
-						pkConsole->Printf("Got client control");				
+						m_pkConsole->Printf("Got client control");				
 						
 					}				
 				}
@@ -302,7 +304,7 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			Entity* pkServerI = pkObjectMan->GetObject("A t_serverinfo.lua");
+			Entity* pkServerI = m_pkObjectMan->GetObject("A t_serverinfo.lua");
 			if(pkServerI)
 			{
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
@@ -310,7 +312,7 @@ void MistClient::OnSystem()
 				
 			if(m_pkServerInfo)
 			{
-				pkConsole->Printf("Got server info");
+				m_pkConsole->Printf("Got server info");
 
 				// Skapa spelar panelen
 				if(GetWnd("IntroWnd") != NULL && GetWnd("IntroWnd")->IsVisible() )
@@ -318,7 +320,7 @@ void MistClient::OnSystem()
 /*					pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
 					pkMusic->Play();*/
 					GetWnd("IntroWnd")->Hide();
-					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
+					m_pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
 					CreateGuiInterface();
 				}
 
@@ -329,7 +331,7 @@ void MistClient::OnSystem()
 
 	if(m_pkServerInfo)
 	{		
-		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(m_pkFps->GetConnectionID());
 		if(pi)
 		{
 			//print server messages
@@ -344,14 +346,14 @@ void MistClient::OnSystem()
 			{
 				pair<int,string> sound_info = pi->kSounds.front();
 
-				Entity* pkGenerator = pkObjectMan->GetObjectByNetWorkID(sound_info.first);
+				Entity* pkGenerator = m_pkObjectMan->GetObjectByNetWorkID(sound_info.first);
 
 				if(pkGenerator)
 				{
 					Vector3 pos = pkGenerator->GetWorldPosV();
 					Vector3 dir = pkGenerator->GetVel();
 
-					pkAudioSys->StartSound(string("data/sound/") + 
+					m_pkAudioSys->StartSound(string("data/sound/") + 
 						sound_info.second.c_str(), pos, dir, false);  
 				}
 
@@ -359,7 +361,7 @@ void MistClient::OnSystem()
 			}
 			
 		}else
-			cout<<"cant find player object id "<< pkFps->GetConnectionID() <<endl;
+			cout<<"cant find player object id "<< m_pkFps->GetConnectionID() <<endl;
 	}
 
 	
@@ -373,10 +375,10 @@ void MistClient::Input()
 {
 	//get mouse
 	int x,z;		
-	pkInput->RelMouseXY(x,z);	
+	m_pkInput->RelMouseXY(x,z);	
 		
 	//setup player controls
-	if(pkInput->Pressed(MOUSEMIDDLE))	//do we want to zoom?
+	if(m_pkInput->Pressed(MOUSEMIDDLE))	//do we want to zoom?
 	{
 
 		if(m_pkCamProp)
@@ -394,10 +396,10 @@ void MistClient::Input()
 	}
 	else if(m_pkClientControlP)			//else rotate camera
 	{
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP] = pkInput->Pressed(KEY_W);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = pkInput->Pressed(KEY_S);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = pkInput->Pressed(KEY_A);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = pkInput->Pressed(KEY_D);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP] = m_pkInput->Pressed(KEY_W);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN] = m_pkInput->Pressed(KEY_S);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = m_pkInput->Pressed(KEY_A);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInput->Pressed(KEY_D);
 
 		if(m_pkCamProp && m_iMouseMode == eCAMERA_MODE)
 		{
@@ -442,12 +444,12 @@ void MistClient::Input()
 		}	
 	}
 */
-	if(pkInput->Pressed(MOUSELEFT))
+	if(m_pkInput->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
 
-		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
 			m_pkTargetObject = GetTargetObject();
 			
@@ -465,7 +467,7 @@ void MistClient::Input()
 						ClientOrder order;
 						
 						order.m_sOrderName = vkActionNames[0]; //"Klicka";
-						order.m_iClientID = pkFps->GetConnectionID();
+						order.m_iClientID = m_pkFps->GetConnectionID();
 						order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 												
@@ -482,7 +484,7 @@ void MistClient::Input()
 						ClientOrder order;
 						
 						order.m_sOrderName = "G_Move";
-						order.m_iClientID = pkFps->GetConnectionID();
+						order.m_iClientID = m_pkFps->GetConnectionID();
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 						
 						order.m_kPos = m_kTargetPos;
@@ -491,11 +493,11 @@ void MistClient::Input()
 					} 
 				}			
 			}
-			m_fClickDelay = pkFps->GetTicks();					
+			m_fClickDelay = m_pkFps->GetTicks();					
 		}
 	}
 	
-	if(pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
+	if(m_pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
 	{
 		m_pkTargetObject = GetTargetObject();
 
@@ -506,7 +508,7 @@ void MistClient::Input()
 
 		// use mouse pointer as center of action menu
 		if ( m_iMouseMode == eMOUSE_MODE)
-			pkInput->MouseXY(mx,my);
+			m_pkInput->MouseXY(mx,my);
 		else
 		{
 			// use middle of screen as center of action menu
@@ -547,12 +549,12 @@ void MistClient::Input()
 
 
 
-	int pressed_key = pkInput->GetQueuedKey();
+	int pressed_key = m_pkInput->GetQueuedKey();
 
 	if(pressed_key == KEY_F1)
 	{
-		int iNumSounds = pkAudioSys->GetNumSounds(); 
-		int iNumActiveChannels = pkAudioSys->GetNumActiveChannels(); 
+		int iNumSounds = m_pkAudioSys->GetNumSounds(); 
+		int iNumActiveChannels = m_pkAudioSys->GetNumActiveChannels(); 
 
 		printf("sounds =%i, channels =%i\n",  iNumSounds, iNumActiveChannels);
 	}
@@ -563,7 +565,7 @@ void MistClient::Input()
 
 		if( pkInputWnd->IsVisible() == false)
 		{
-			pkAudioSys->StartSound("/data/sound/open_window2.wav",pkAudioSys->GetListnerPos());
+			m_pkAudioSys->StartSound("/data/sound/open_window2.wav",m_pkAudioSys->GetListnerPos());
 			
 			pkInputWnd->Show();
 			pkGui->SetFocus(GetWnd("InputBox"));
@@ -572,7 +574,7 @@ void MistClient::Input()
 		{		
 			ZGuiWnd* pkTextbox = GetWnd("InputBox");
 
-			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
+			m_pkAudioSys->StartSound("/data/sound/close_window2.wav",m_pkAudioSys->GetListnerPos());
 			
 			OnClientInputSend(pkTextbox->GetText());
 			pkTextbox->SetText("");
@@ -585,16 +587,16 @@ void MistClient::Input()
 
 void MistClient::OnHud(void) 
 {	
-	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());	
-	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
-	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
-	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
+	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
+	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
+	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
+	m_pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
 	if ( m_iMouseMode == eCAMERA_MODE )
 		DrawCrossHair();
 	
-	pkFps->m_bGuiMode = false;
-	pkFps->ToggleGui();
+	m_pkFps->m_bGuiMode = false;
+	m_pkFps->ToggleGui();
 
 }
 
@@ -606,7 +608,7 @@ void MistClient::DrawCrossHair()
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
 
-	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(.05,.05,.05),pkTexMan->Load("data/textures/crosshair.tga",0));
+	m_pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(.05,.05,.05),pkTexMan->Load("data/textures/crosshair.tga",0));
 
 	glPopAttrib();
 }
@@ -617,13 +619,13 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
-				pkConsole->Printf("load [mapname]");
+				m_pkConsole->Printf("load [mapname]");
 				break;				
 			}
 			
 			cout<<"loading world:"<<kCommand->m_kSplitCommand[1].c_str()<<endl;
 			
-			if(!pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
+			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
@@ -650,7 +652,7 @@ void MistClient::SendOrder(string strOrder)
 {
 	ClientOrder order;
 	order.m_sOrderName	= strOrder;
-	order.m_iClientID		= pkFps->GetConnectionID();
+	order.m_iClientID		= m_pkFps->GetConnectionID();
 	order.m_iObjectID		= -1;				
 	order.m_iCharacter	= -1;
 	m_pkClientControlP->AddOrder(order);
@@ -724,8 +726,8 @@ void MistClient::OnServerStart(void)
 
 void MistClient::OnClientStart(void)
 {
-	pkConsole->Printf("Connected, Waiting for client object");
-	pkConsole->Printf("To Start Play use command 'play'");
+	m_pkConsole->Printf("Connected, Waiting for client object");
+	m_pkConsole->Printf("To Start Play use command 'play'");
 }
 
 bool MistClient::StartUp()	{ return true; }
@@ -769,7 +771,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				bool bExist = GetWnd("BackPackWnd") != NULL;
 				
-				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0);
+				m_pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0);
 
 				if(bExist == false)
 				{
@@ -830,7 +832,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				bool bExist = GetWnd("StatsWnd") != NULL;
 
-				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
+				m_pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
 
 				if ( GetWnd("StatsWnd")->IsVisible() )
 					pkGui->SetFocus(GetWnd("StatsWnd"));
@@ -844,7 +846,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "MapButton")
 			{
-				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+				m_pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 
 				if ( GetWnd("MapWnd")->IsVisible() )
 					pkGui->SetFocus(GetWnd("MapWnd"));
@@ -852,7 +854,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
 			{
-				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
+				m_pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
 
 				if ( GetWnd("InputWnd")->IsVisible() )
 				{
@@ -862,7 +864,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "ToggleInfoBoxBn")
 			{
-				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
+				m_pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
 
 				ZGuiWnd* pkQuickSlotMainWnd = GetWnd("QuickSlotMainWnd");
 
@@ -931,7 +933,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 									ClientOrder order;
 
 									order.m_sOrderName = res->second;
-									order.m_iClientID = pkFps->GetConnectionID();
+									order.m_iClientID = m_pkFps->GetConnectionID();
 									
 									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
@@ -970,7 +972,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");		
 			pkInputWnd->Hide();
-			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
+			m_pkAudioSys->StartSound("/data/sound/close_window2.wav",m_pkAudioSys->GetListnerPos());
 			
 			pkInputWnd = GetWnd("InputBox");			
 			OnClientInputSend(pkInputWnd->GetText());
@@ -982,7 +984,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "OpenConnectButton")
 		{
-			pkScript->Call(m_pkScriptResHandle, "OnClickConnect",0,0);
+			m_pkScript->Call(m_pkScriptResHandle, "OnClickConnect",0,0);
 
 			// Add server names
 			ClearListbox("IPNumbersComboBox");
@@ -1021,8 +1023,8 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 			char* szLoginName = GetWnd("UserEditbox")->GetText();
 			char* szPassName = GetWnd("PasswordEditbox")->GetText();
-			pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName);
-			pkApp->OnClientStart();
+			m_pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName);
+			m_pkApp->OnClientStart();
 		}
 	}
 	else
@@ -1064,7 +1066,7 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 	
 	if(m_bMouse)
 	{
-		pkInput->UnitMouseXY(x,y);	
+		m_pkInput->UnitMouseXY(x,y);	
 		dir.Set(x*xp,-y*yp,fovshit);
 		dir.Normalize();
 	}
@@ -1096,7 +1098,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//pkObjectMan->TestLine(&kObjects,start,dir);
 	
-	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
@@ -1229,13 +1231,13 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 	{
 		if(m_pkServerInfo)
 		{			
-			int id = m_pkServerInfo->GetCharacterID(pkFps->GetConnectionID());
+			int id = m_pkServerInfo->GetCharacterID(m_pkFps->GetConnectionID());
 		
 			if(id != -1)
 			{
 				cout<<"enabling charactercontrol of:"<<id<<endl;
 				
-				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(id);
 	
 				//object found
 				if(pkObj)
@@ -1287,7 +1289,7 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 		{
 			cout<<"disabling charactercontrol of:"<<m_iActiveCaracterObjectID<<endl;
 			
-			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
 			
 			if(pkObj)
 			{
@@ -1523,7 +1525,7 @@ bool MistClient::PickZones()
 	Vector3 dir = Get3DMousePos();
 	
 	vector<Entity*> kObjects;	
-	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 		
 	float closest = 999999999;
 	
@@ -1546,7 +1548,7 @@ bool MistClient::PickZones()
 						m_iTargetFace = mp->GetLastColFace();
 						m_kTargetPos = mp->GetLastColPos();
 					
-						pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
+						m_pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
 					}						
 				}				
 			}
@@ -1571,7 +1573,7 @@ void MistClient::OnClientInputSend(char *szText)
 	ClientOrder order;
 						
 	order.m_sOrderName = message; 
-	order.m_iClientID = pkFps->GetConnectionID();
+	order.m_iClientID = m_pkFps->GetConnectionID();
 	order.m_iCharacter = m_iActiveCaracterObjectID;				
 						
 	m_pkClientControlP->AddOrder(order);
@@ -1691,7 +1693,7 @@ void MistClient::UpdateCullObjects()
 	static vector<P_Mad*> mads;	
 	static float fAddRadius = 1;
 	
-	Entity* pkCar = pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+	Entity* pkCar = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
 	
 	if(!pkCar)
 		return;
@@ -1707,7 +1709,7 @@ void MistClient::UpdateCullObjects()
 	float d = (pkCar->GetWorldPosV() - kStart).Length() + fAddRadius ;
 
 	vector<Entity*> kEntitys;
-	pkObjectMan->TestLine(&kEntitys,kStart,kDir);
+	m_pkObjectMan->TestLine(&kEntitys,kStart,kDir);
 	
 	int i;
 
@@ -1758,7 +1760,7 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 				{
 					pkWnd->Hide();
 					pkGui->SetFocus(GetWnd("MainWnd")); 
-					pkAudioSys->StartSound("/data/sound/close_window.wav",pkAudioSys->GetListnerPos()); 
+					m_pkAudioSys->StartSound("/data/sound/close_window.wav",m_pkAudioSys->GetListnerPos()); 
 				}
 			}
 		}
@@ -1807,7 +1809,7 @@ void MistClient::ChangeMode ( eMOUSE_MODES eMode )
 			pkGui->ShowCursor(false);
 			break;
 		case eACTION_MODE:
-			pkInput->SetCursorInputPos ( m_iWidth/2.f, m_iHeight/2.f );
+			m_pkInput->SetCursorInputPos ( m_iWidth/2.f, m_iHeight/2.f );
 			pkGui->ShowCursor(true);
 			break;
 	}

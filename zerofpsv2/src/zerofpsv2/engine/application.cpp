@@ -1,12 +1,12 @@
 #include "application.h"
 #include "zerofps.h"
 
-Application* Application::pkApp;
+Application* Application::m_pkApp;
  
 Application::Application(char* pName,int iWidth,int iHeight,int iDepth) 
 	: ZFSubSystem("Application") 
 {
-	Application::pkApp = this;
+	Application::m_pkApp = this;
 	
 	m_pTitle		=	pName;
 	m_iWidth		=	iWidth;
@@ -19,25 +19,25 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 */
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
 {
-	pkFps					=	pkZeroFps;	
-	pkConsole			=	pkFps->m_pkConsole;
-	pkRender				=	pkFps->m_pkRender;
-	pkInput				=	pkFps->m_pkInput;
-	pkTexMan				=	pkFps->m_pkTexMan;
-	pkBasicFS			=	pkFps->m_pkBasicFS;
-	pkLight				=	pkFps->m_pkLight;
-	pkObjectMan			=	pkFps->m_pkObjectMan;
-	pkAudioSys			=	pkFps->m_pkAudioSystem;
-	pkPropertyFactory =	pkFps->m_pkPropertyFactory;
-	pkGui					=	pkFps->m_pkGui;
-	pkGuiMan				=	pkFps->m_pkGuiMan;
-	pkIni					=	pkFps->m_pkIni;
-	pkPhysEngine		=	pkFps->m_pkPhysEngine;
-	pkScript				=	pkFps->m_pkScript;
-	pkPhysics_Engine	=	pkFps->m_pkPhysics_Engine;
-	pkZFVFileSystem	=	pkFps->m_pkZFVFileSystem;
-	pkZShader			=	pkFps->m_pkZShader;
-	pkResourceDB		=	pkFps->m_pkResourceDB;
+	m_pkFps					=	pkZeroFps;	
+	m_pkConsole				=	m_pkFps->m_pkConsole;
+	m_pkRender				=	m_pkFps->m_pkRender;
+	m_pkInput				=	m_pkFps->m_pkInput;
+	pkTexMan				=	m_pkFps->m_pkTexMan;
+	m_pkBasicFS				=	m_pkFps->m_pkBasicFS;
+	m_pkLight				=	m_pkFps->m_pkLight;
+	m_pkObjectMan			=	m_pkFps->m_pkObjectMan;
+	m_pkAudioSys			=	m_pkFps->m_pkAudioSystem;
+	m_pkPropertyFactory =	m_pkFps->m_pkPropertyFactory;
+	pkGui					=	m_pkFps->m_pkGui;
+	m_pkGuiMan				=	m_pkFps->m_pkGuiMan;
+	m_pkIni					=	m_pkFps->m_pkIni;
+	m_pkPhysEngine			=	m_pkFps->m_pkPhysEngine;
+	m_pkScript				=	m_pkFps->m_pkScript;
+	m_pkPhysics_Engine	=	m_pkFps->m_pkPhysics_Engine;
+	m_pkZFVFileSystem		=	m_pkFps->m_pkZFVFileSystem;
+	m_pkZShader				=	m_pkFps->m_pkZShader;
+	m_pkResourceDB			=	m_pkFps->m_pkResourceDB;
 
 }
 	

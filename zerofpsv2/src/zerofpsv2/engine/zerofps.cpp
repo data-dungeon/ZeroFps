@@ -45,7 +45,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
-	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
+	m_pkGui						= new ZGui(Application::m_pkApp->m_iWidth, Application::m_pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
 	m_pkGuiRenderer				= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
@@ -208,7 +208,7 @@ bool ZeroFps::IsValid()		{	return true;	}
 	
 void ZeroFps::SetApp() 
 {
-	m_pkApp=Application::pkApp;
+	m_pkApp=Application::m_pkApp;
 	m_pkApp->SetEnginePointer(this);
 }
 
