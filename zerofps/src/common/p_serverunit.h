@@ -64,6 +64,7 @@ class COMMON_API P_ServerUnit: public Property {
 	
 	
 		P_ServerUnit();
+		~P_ServerUnit();
 		void Init();		
 		void CloneOf(Property* pkProperty) { }
 		void Update();

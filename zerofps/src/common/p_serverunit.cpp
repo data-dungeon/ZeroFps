@@ -36,6 +36,11 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	
 }
 
+P_ServerUnit::~P_ServerUnit()
+{
+	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),this);
+}	
+
 void P_ServerUnit::Init()
 {
 }
