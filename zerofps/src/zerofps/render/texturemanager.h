@@ -94,7 +94,7 @@ class RENDER_API TextureManager : public ZFObject {
 		int GetIndex(const char* szFileName);
 		const char* GetFileName(unsigned int uiIndex);
 
-		SDL_Surface* GetTexture(int iLevel);
+		SDL_Surface* GetTexture(int iLevel);							//dont use, use GetImage() insted
 		bool PutTexture(SDL_Surface* pkImage,bool bMipMaping);
 		bool SwapTexture();
 		bool MakeTextureEditable();

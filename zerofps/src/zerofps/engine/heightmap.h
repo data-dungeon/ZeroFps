@@ -106,6 +106,8 @@ class ENGINE_API HeightMap: public ZFObject {
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
 
+		float GetAlpha(float x,float y,int iTexture);
+		int GetMostVisibleTexture(float x,float y);
 		
 		void GenerateTextures();
 		

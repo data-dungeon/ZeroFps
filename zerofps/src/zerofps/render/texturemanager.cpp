@@ -597,11 +597,11 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	}
 	
 //	cout << "TextureManager::GetTexture: " glGetError(); << endl;
-	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	//download pixels from opengl
 	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
-	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	return image;
 }
@@ -801,6 +801,9 @@ bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
 SDL_Surface* TextureManager::GetImage()
 {
 	if(!m_iTextures[m_iCurrentTexture])
+		return NULL;
+	
+	if(!MakeTextureEditable())
 		return NULL;
 
 	return m_iTextures[m_iCurrentTexture]->m_pkImage;

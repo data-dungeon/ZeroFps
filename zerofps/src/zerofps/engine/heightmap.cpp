@@ -946,6 +946,77 @@ bool HeightMap::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 	return inside;	
 }
 
+float HeightMap::GetAlpha(float x,float y,int iTexture)
+{
+
+	//return -1 if outside heightmap
+	if(x <0 &&
+		x >=m_iHmSize &&
+		y <0 &&
+		y >=m_iHmSize)
+	{
+		return -1;
+	}
+
+	//return -1 if texture does not extist
+	if(iTexture >= m_kSets.size())
+		return -1;
+	
+	//texture 0 dont have any alpha mask, therefor alpha is always 1
+	if(iTexture == 0)
+		return 1;
+			
+	//bind mask
+	m_pkTexMan->BindTexture(m_kSets[iTexture].m_acMask,0);
+		
+	float dw = m_pkTexMan->GetImage()->w / m_iHmSize;
+	float dh = m_pkTexMan->GetImage()->h / m_iHmSize;	
+	
+	//convert to texture cordinats
+	x*=dw;
+	y*=dh;
+	
+	//get color
+	Uint32 color = m_pkTexMan->GetPixel(int(x),int(y));
+	
+	Uint8 r,g,b,a;
+		
+	//get alpha value
+	SDL_GetRGBA(color,  m_pkTexMan->GetImage()->format ,&r,&g,&b,&a);
+	
+	return (a/255.0);
+}
+
+int HeightMap::GetMostVisibleTexture(float x,float y)
+{
+	//return -1 if outside heightmap
+	if(x <0 &&
+		x >=m_iHmSize &&
+		y <0 &&
+		y >=m_iHmSize)
+	{
+		return -1;
+	}	
+
+	int t=-1;
+	float v=0;
+	
+	for(int i=0;i<m_kSets.size();i++)
+	{
+		float a=GetAlpha(x,y,i);
+		
+		if(a>0.5)
+		{
+			v=a;
+			t=i;
+		}	
+	}
+	
+	
+	return t;
+}
+
+
 /*
 void HeightMap::GenerateTextures() {
 	float slope;

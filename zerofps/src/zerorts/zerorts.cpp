@@ -101,11 +101,14 @@ void ZeroRTS::OnIdle(void)
 	
 
 	Vector3 mpos = Get3DMousePos();
-/*	
+	
 	glDisable(GL_LIGHTING);
-		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
+		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
+		pkRender->Line(mpos-Vector3(0,1,0),mpos+Vector3(0,1,0));		
+		pkRender->Line(mpos-Vector3(0,0,1),mpos+Vector3(0,0,1));				
+//		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
 	glEnable(GL_LIGHTING);
-*/
+
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
@@ -210,12 +213,6 @@ void ZeroRTS::Input()
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
 		
-/*		if(bla != NULL)
-		{	
-			pkObjectMan->Delete(bla);
-			cout<<"diiiiiiiiie object from hell"<<endl;
-		}*/
-
 		if(info.iObject != -1)
 			AddSelectedObject(info.iObject);			
 
@@ -371,6 +368,11 @@ PickInfo ZeroRTS::Pick()
 	else		
 		temp.iObject = -1;
 
+/*
+	Vector3 pos = Get3DMousePos();
+	m_pkMap->GetMapXZ(pos.x,pos.z);
+	cout<<"Ground: "<<m_pkMap->GetMostVisibleTexture(pos.x,pos.z)<<endl;
+*/
 	return temp;
 }
 
