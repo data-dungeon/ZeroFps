@@ -215,10 +215,15 @@ void Game::RegisterPropertys()
 
 void Game::SetUpMenuScreen()
 {
-	pkLevelMan->LoadLevel("menu");
+//	pkLevelMan->LoadLevel("menu");
+	pkLevelMan->LoadLevel("adaptors");
 
-	m_pkCamera->GetPos().Set(36,19,18);	
-	m_pkCamera->GetRot().Set(17,18,0);	
+//	m_pkCamera->GetPos().Set(36,19,18);	
+//	m_pkCamera->GetRot().Set(17,18,0);	
+	
+	m_pkCamera->GetPos().Set(25,10,-205);	
+	m_pkCamera->GetRot().Set(15,-305,0);	
+		
 	
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
 	pkFps->m_pkAudioMan->PlayMusic();
@@ -246,7 +251,6 @@ void Game::SetupLevel()
 			CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
 			pkCam->SetCamera(m_pkCamera);
 			m_pkPlayer->AttachToClosestZone();
-//			pkCollisionMan->Add(m_pkPlayer);			
 			pkLevelMan->AddTracker(m_pkPlayer);
 
 			m_pfPlayerHealth = &static_cast<StatusProperty*>(m_pkPlayer->GetProperty("StatusProperty"))->m_fHealth;
