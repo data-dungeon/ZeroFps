@@ -187,3 +187,4 @@ Vector3 RndColor()
 
 	return kColor;
 }
+

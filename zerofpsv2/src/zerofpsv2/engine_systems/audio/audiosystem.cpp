@@ -43,6 +43,12 @@ bool ZFSound::Create(string strName)
 	return true;
 }
 
+int ZFSound::CalculateSize()
+{
+	return 3;
+}
+
+
 bool ZFSound::Load()
 {
 	if(m_szFileName == NULL)

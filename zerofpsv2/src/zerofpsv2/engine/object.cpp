@@ -11,7 +11,6 @@ typedef list<Property*>::iterator	itListProperty;
 Object::Object() {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
-//	m_pkLevelMan			= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));	
 	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		

@@ -412,6 +412,8 @@ public:
 	void LoadMesh(const char* MDFileName);
 	//bool LoadMad(const char* MadFileName);
 	bool Create(string strName);
+	int CalculateSize();
+
 
 	void SetAnimationTime(int iAnim, float fTime );
 	void SetBoneAnimationTime(int iAnim, float fTime );

@@ -6,7 +6,7 @@
 #include <limits.h>
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/zerofps.h"
-#include "../../engine/levelmanager.h"
+#include "../../engine/objectmanager.h"
 #include <string.h>
 #include "../engine_systems_x.h"
 #include <set>
@@ -24,7 +24,7 @@ enum PROXYPROPERTY_AKTIONS
 class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 	private:
 		ZeroFps* m_pkFps;
-		LevelManager* m_pkLevelMan;
+//		LevelManager* m_pkLevelMan;
 		
 		list<Object*>* m_pkTrackers;
 		

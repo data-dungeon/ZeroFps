@@ -1,6 +1,6 @@
 #include "hmrp2.h"
 #include "../../engine/zerofps.h"
-#include "../../engine/levelmanager.h"
+//#include "../../engine/levelmanager.h"
 
 HMRP2::HMRP2(HeightMap* pkHeightMap, string strMapName) 
 {
@@ -52,11 +52,11 @@ void HMRP2::PackFrom(NetPacket* pkNetPacket)
 	if(strcmp(m_strMapName.c_str(), temp) == 0) 
 		return;
 
-	LevelManager* pkLev = static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));		
-	pkLev->LoadLevelHmapOnly(temp);
+//	LevelManager* pkLev = static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));		
+//	pkLev->LoadLevelHmapOnly(temp);
 	
 	m_strMapName = temp;	
-	SetHeightMap(pkLev->GetHeightMap(),m_strMapName);
+//	SetHeightMap(pkLev->GetHeightMap(),m_strMapName);
 
 }
 

@@ -30,6 +30,9 @@ class RENDER_API ZVProgram : public ZFResource
 		~ZVProgram();
 		
 		bool Create(string  strName);
+		int CalculateSize();
+
+
 		bool Load(string  strFile);
 		bool UnLoad();
 		

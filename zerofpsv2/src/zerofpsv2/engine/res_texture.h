@@ -18,6 +18,7 @@ public:
 	~ResTexture();
 
 	bool Create(string strName);
+	int  CalculateSize();		
 };
 
 ENGINE_API ZFResource* Create__ResTexture();

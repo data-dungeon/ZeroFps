@@ -18,14 +18,14 @@ public:
 	ZFResource*	(*Create)();		// Create function for resource type.
 };
 
-
+// Data that the ResM have about a res.
 class ZFResourceInfo
 {
 private:
-	string	m_strName;
+	string	m_strName;				// Name of the resource.
 	int		m_iID;
 	int		m_iNumOfUsers;
-	float	m_fExpireTimer;
+	float		m_fExpireTimer;
 	
 	ZFResource*		m_pkResource;
 
@@ -44,8 +44,6 @@ public:
 		m_pkResource	= kOther.m_pkResource;
 		return *this;
 		}	
-
-
 };
 
 /// Resource manger.
@@ -57,7 +55,6 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 			FID_LISTTYPES,
 		};
 
-
 		int						m_iNextID;
 
 		list<ZFResourceInfo*>		m_kResources;
@@ -66,8 +63,6 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
-		ZeroFps*					m_pkZeroFps;
 
 	public:
 		ZFResourceDB();

@@ -38,6 +38,8 @@ struct texture
 
 	bitset<20>		m_abLevels;			//	level x is true if mipmap level is loaded	
 	SDL_Surface*	m_pkImage;			//	for realtime editing of surface
+
+	int				m_iSizeInBytes;	// Size of texture in bytes.
 };
 
 /// Handles all textures in the game. Texture can be refered to by name
@@ -87,6 +89,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		bool AddMipMapLevel(int iLevel,const char* acNewFile);
 		void BindTexture(const char* acFileName,int iOption);
 		
+		int GetSizeOfTexture(int iTexture);
 		void BindTexture(int iTexture);
 		bool UnLoad(int iTextureID);		
 		

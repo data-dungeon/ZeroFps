@@ -228,6 +228,12 @@ bool ZMaterial::Create(string strName)
 	return LoadShader(strName.c_str());
 }
 
+int ZMaterial::CalculateSize()
+{
+	return 1;
+}
+
+
 ZFResource* Create__Material()
 {
 	return new ZMaterial;

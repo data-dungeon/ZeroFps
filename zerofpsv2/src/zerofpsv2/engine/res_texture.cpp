@@ -26,6 +26,15 @@ bool ResTexture::Create(string strName)
 		
 	return true;
 }
+
+int ResTexture::CalculateSize()
+{
+	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	return pkTex->GetSizeOfTexture(m_iTextureID);
+}
+
+
+
 /*
 ZFResource*	ResTexture::GetResourcePtr()
 {

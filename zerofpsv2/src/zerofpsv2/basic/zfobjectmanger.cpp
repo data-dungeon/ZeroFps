@@ -314,6 +314,9 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 	kcmdargs.Set(szCmdArg);
 	kcmdargs.m_eSource = iCmdSource;
 
+	if(kcmdargs.m_kSplitCommand.size() == 0)
+		return false;
+
 	ZFCmdData* kCmdData = FindArea(kcmdargs.m_kSplitCommand[0].c_str());
 
 	if(!kCmdData)	return false;

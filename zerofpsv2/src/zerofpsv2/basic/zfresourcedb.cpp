@@ -1,4 +1,6 @@
-#include "../engine/zerofps.h"
+//#include "../engine/zerofps.h"
+#include "zfresourcedb.h"
+#include "globals.h"
 #include "../basic/zfobjectmanger.h"
 
 //ZFResource* Create__Mad_Core();
@@ -99,7 +101,7 @@ ZFResourceDB::ZFResourceDB()
 
 bool ZFResourceDB::StartUp()	
 { 
-	m_pkZeroFps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+//	m_pkZeroFps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	return true; 
 }
@@ -131,7 +133,7 @@ void ZFResourceDB::Refresh()
 		}
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+//		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
 		}
 }
 
@@ -187,7 +189,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 	// Failed to create resource.
 	if(!pkRes) {
 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
-		cout<<"Error: failed to create resource "<<strResName<<endl;
+//		cout<<"Error: failed to create resource "<<strResName<<endl;
 		return;
 		}
 
@@ -286,7 +288,10 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LISTRES:
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-			m_pkZeroFps->DevPrintf("res", "- %s - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers);
+			string hora = (*it)->m_strName.c_str();
+			cout << "Hora: " <<  hora << endl;
+
+			GetSystem().Printf("- %s - %d - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers, (*it)->m_pkResource->GetSize());
 			}
 			break;
 

@@ -7,7 +7,6 @@
 #include "../gui/zguiresourcemanager.h"
 #include "application.h"
 #include "../gui/zgui.h"
-#include "levelmanager.h"
 #include "../engine_systems/propertys/propertys.pkg"
 #include "../basic/zfini.h"
  
@@ -34,7 +33,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
-//	m_pkLevelMan				= new LevelManager;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;

@@ -15,7 +15,6 @@ using namespace std;
 
 class		ObjectManager;
 struct	CollisionData;
-//class		LevelManager;
 
 enum UpdateStatus 
 {
@@ -200,7 +199,6 @@ class ENGINE_API Object
 		int*							m_piDecorationStep;
 		bool							m_bSave;								///< True if this object should save to disk.
 		
-//		LevelManager* 				m_pkLevelMan;						// REMOVE
 		PropertyFactory*			m_pkPropertyFactory;				// Ptr to property factory.
 		ZeroFps*						m_pkFps;								// Ptr to zerofps. // CHANGE TO ObjectManger?
 

@@ -22,6 +22,11 @@ bool ZVProgram::Create(string  strName)
 	return Load(strName);
 }
 
+int ZVProgram::CalculateSize()
+{
+	return 2;
+}
+
 bool ZVProgram::Load(string  strFile)
 {
 	if(!SetupShaderPointer())

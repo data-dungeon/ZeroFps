@@ -1,3 +1,4 @@
+/*
 #include "levelmanager.h"
 #include "../engine_systems/physicsengine/heightmapcs.h"
 #include "../basic/zfobjectmanger.h"
@@ -72,7 +73,7 @@ bool LevelManager::StartUp()
 	
 	m_pkLight->Add(m_bSun);
 	m_pkLight->Add(m_bMoon);
-*/
+
 	return true; 
 }
 
@@ -124,7 +125,7 @@ void LevelManager::CreateNew(int iSize)
 	
 }
 
-/*void LevelManager::CreateZones()
+void LevelManager::CreateZones()
 {
 	m_kZones.clear();
 	
@@ -147,7 +148,7 @@ void LevelManager::CreateNew(int iSize)
 
 	
 
-/*
+
 	for(float x=(m_pkMap->GetPos().x-m_pkMap->GetSize()/2);x< (float)(m_pkMap->GetPos().x+m_pkMap->GetSize()/2);x+=m_fZoneRadius/m_iZpr){
 		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneRadius/m_iZpr){	
 			if(m_pkMap->Height(x,z)>-1){
@@ -165,7 +166,7 @@ void LevelManager::CreateNew(int iSize)
 		}
 	}	
 	
-}*/
+}
 
 bool LevelManager::LoadLevelHmapOnly(const char* acFile)
 {
@@ -243,21 +244,21 @@ bool LevelManager::LoadLevel(const char* acFile)
 	
 	//execute preconfig.ini
 	/*if(!m_pkIni->ExecuteCommands(kpreinifile.c_str()))
-		m_pkConsole->Printf("No preconfig.ini found");*/
+		m_pkConsole->Printf("No preconfig.ini found");
 	
 	//load heightmap
 	if(!m_pkMap->Load(kHmfile.c_str())){
 		m_pkConsole->Printf("Error loading heightmap");
 		return false;
 	};	
-/*	
+
 	//load textures
 	m_pkMap->ClearSet();
 	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	m_pkMap->AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp",(kBase+"mask1.tga").c_str());
 	m_pkMap->AddSet("../data/textures/nodetail3.bmp","../data/textures/detail3.bmp",(kBase+"mask2.tga").c_str());		
 	m_pkMap->AddSet("../data/textures/nodetail4.bmp","../data/textures/detail4.bmp",(kBase+"mask3.tga").c_str());	
-*/	
+
 	
 	//create zoneobjects
 //	CreateZones();		
@@ -277,7 +278,7 @@ bool LevelManager::LoadLevel(const char* acFile)
 
 	//execute suconfig.ini
 	/*if(!m_pkIni->ExecuteCommands(ksuinifile.c_str()))
-		m_pkConsole->Printf("No suconfig.ini found");*/
+		m_pkConsole->Printf("No suconfig.ini found");
 
 	m_kCurrentMapDir = kBase;
 
@@ -525,7 +526,7 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	
 }
 
-/*
+
 
 list<Object*>* LevelManager::GetTrackerList()
 {
@@ -551,7 +552,7 @@ void LevelManager::ClearTrackers()
 {
 	m_kTrackedObjects.clear();
 }
-*/
+
 void LevelManager::SetMoonColor(Vector3 kColor)
 {
 	m_bMoon->kDiffuse=kColor;
@@ -570,7 +571,7 @@ void LevelManager::SetAmbientColor(Vector3 kColor)
 	m_kWIP.m_kAmbientColor=kColor;	
 }
 
-/*
+
 void LevelManager::UpdateZones()
 {
 //	float zpr=m_fZoneRadius/m_iZpr;
@@ -650,7 +651,7 @@ Object* LevelManager::GetClosestZone(Vector3 &kPos)
 	return m_kZones[x*tot+z];		
 
 }
-*/
+
 
 Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 {
@@ -672,7 +673,7 @@ Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 	return ob;
 };
 
-/*
+
 void LevelManager::DrawZones()
 {
 	if(!m_bDrawZones)
@@ -684,7 +685,7 @@ void LevelManager::DrawZones()
 		else 
 			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, Vector3(1,1,1),Vector3(1,0,0));
 		}
-}*/
+}
 
 
 const string LevelManager::GetLogFileFullName()
@@ -701,7 +702,7 @@ void LevelManager::ChangeLandscapeFillMode(PolygonMode eMode)
 	hp->SetPolyMode(eMode);
 }
 
-
+*/
 
 
 

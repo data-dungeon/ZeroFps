@@ -55,7 +55,10 @@ class RENDER_API ZMaterial : public ZFResource
 		
 		ZMaterial();
 		~ZMaterial();
-		bool Create(string strName);	//for resource system
+
+		bool Create(string strName);	//	for resource system
+		int  CalculateSize();		
+		
 	
 		int GetNrOfPasses() {return m_kPasses.size();};
 		ZMaterialSettings* GetPass(int iPass);

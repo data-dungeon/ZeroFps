@@ -545,6 +545,12 @@ bool Mad_Core::Create(string MadFileName)
 	return true;
 }
 
+int Mad_Core::CalculateSize()
+{
+	return 4;
+}
+
+
 Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 {
 	if(iMesh < 0)	

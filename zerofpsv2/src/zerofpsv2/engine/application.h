@@ -31,7 +31,6 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZGui*						pkGui;
 		ZGuiResourceManager*	pkGuiMan;
 		ZFIni*					pkIni;
-//		LevelManager*			pkLevelMan;
 		PhysicsEngine*			pkPhysEngine;
 		ZFScript*				pkScript;
 		ZFVFileSystem*			pkZFVFileSystem;

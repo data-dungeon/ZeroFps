@@ -141,6 +141,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	if(!pkImage)
 		return false;
 
+	pkTex->m_iSizeInBytes = pkImage->width * pkImage->height * 4;
 
 
 	glGenTextures(1,&pkTex->index);
@@ -386,6 +387,14 @@ void TextureManager::BindTexture(int iTexture)
 		m_iCurrentTexture = iTexture;
 		glBindTexture(GL_TEXTURE_2D,m_iTextures[iTexture]->index);
 	}
+}
+
+int TextureManager::GetSizeOfTexture(int iTexture)
+{
+	if(m_iTextures[iTexture] == NULL)
+		return 0;
+
+	return m_iTextures[iTexture]->m_iSizeInBytes;
 }
 
 void TextureManager::BindTexture(const char* acFileName,int iOption) 

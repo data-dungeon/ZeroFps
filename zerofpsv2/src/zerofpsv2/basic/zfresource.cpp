@@ -2,7 +2,8 @@
 
 ZFResource::ZFResource() 
 {
-	Hora = 0;
+//	Hora = 0;
+	m_iSizeInBytes = 0;
 }
 
 ZFResource::~ZFResource() 
@@ -10,24 +11,26 @@ ZFResource::~ZFResource()
 
 }
 
-
 int ZFResource::GetSize()
 {
-	return 0; 
+	if(m_iSizeInBytes == 0)
+		m_iSizeInBytes = CalculateSize();
+
+	return m_iSizeInBytes;
 }
 
-void ZFResource::Clear() 
+/*void ZFResource::Clear() 
 {
 
-}
+}*/
 	
 /*bool ZFResource::Create(string strName) 
 {
 	return true;
 }*/
 
-void ZFResource::Destroy() 
+/*void ZFResource::Destroy() 
 {
 
-}
+}*/
 

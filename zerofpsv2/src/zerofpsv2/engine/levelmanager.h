@@ -1,7 +1,7 @@
 #ifndef _ENGINE_LEVELMANAGER_H_
 #define _ENGINE_LEVELMANAGER_H_
 
-#include "engine_x.h"
+/*#include "engine_x.h"
 #include "objectmanager.h"
 #include "../engine_systems/propertys/worldinfoproperty.h"
 
@@ -100,7 +100,7 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		bool ShutDown();
 		bool IsValid();
 };
-
+*/
 
 #endif
 

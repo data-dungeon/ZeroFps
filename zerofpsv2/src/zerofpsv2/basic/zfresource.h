@@ -6,26 +6,25 @@
 
 using namespace std;
 
-
+//	A Resource.
 class BASIC_API ZFResource
 {
 private:
-	int Hora;
+	int		m_iSizeInBytes;						// The size in bytes that this res takes. Does not include sub res.
 
 public:
 	ZFResource();
 	virtual ~ZFResource();
 
-	void Clear();	
-	virtual bool Create(string strName) = 0;
-	void Destroy();
+	virtual bool Create(string strName) = 0;	// Loads the res. Return false if load fails.
+	virtual int  CalculateSize() = 0;			// Calc the num of bytes this res takes.
 
-	int GetSize() ;
+	int GetSize();										// Returns the size in bytes of this res.
 
-	friend class ZFResourceDB;
+	friend class ZFResourceDB;						
 };
 
-
+// A Handle to a Resource.
 class BASIC_API ZFResourceHandle
 {
 private:
@@ -45,10 +44,7 @@ public:
 	ZFResource*	GetResourcePtr();
 
 	friend class ZFResourceDB;
-
-
 };
-
 
 #endif
 

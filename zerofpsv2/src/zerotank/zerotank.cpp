@@ -83,6 +83,7 @@ void ZeroTank::OnInit()
 	pk8->SetWorldPosV ( Vector3 (-15, 0, 15) );
 	pk11->SetWorldPosV ( Vector3 (-15, 0, 15) );
 	pk12->SetWorldPosV ( Vector3 (48.5, 17, -40) );
+//	pk13->SetWorldPosV ( Vector3 (48.5, 0.7, -40) );
 
 	pkGob->SetWorldPosV ( Vector3 (15, 0, -15) );
 

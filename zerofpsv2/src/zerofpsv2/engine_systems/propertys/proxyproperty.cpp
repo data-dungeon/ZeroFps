@@ -10,7 +10,7 @@ ProxyProperty::ProxyProperty()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkLevelMan	= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));			
+//	m_pkLevelMan	= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));			
 	
 //	m_pkTrackers=m_pkLevelMan->GetTrackerList();
 }
@@ -99,6 +99,15 @@ TrackProperty::~TrackProperty()
 {
 	m_pkOBjM->RemoveTracker(m_pkObject);
 }
+
+/*
+TrackProperty::Init() 
+{
+	cout << "Trackerproperty Init" << endl;
+}*/
+
+
+
 
 void TrackProperty::Update() 
 {

@@ -274,7 +274,7 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
-			{
+/*			{
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
@@ -290,7 +290,7 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 						
 			pkConsole->Printf("Everything is loaded ,Starting server");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	*/
 			break;		
 		
 		case FID_UNLOAD:
