@@ -58,14 +58,14 @@ class MCOMMON_API Skill
 };
 
 
-class MCOMMON_API CharacterStat
+class MCOMMON_API Stat
 {
 	public:
 		string	m_strName;
 		float		m_fValue;
 		float		m_fMod;
 	
-		CharacterStat(const string& strName,float fValue,float fMod)
+		Stat(const string& strName,float fValue,float fMod)
 		{
 			m_strName = strName;
 			m_fValue = fValue;
@@ -74,19 +74,24 @@ class MCOMMON_API CharacterStat
 				
 };
 
-class MCOMMON_API CharacterStats
+class MCOMMON_API Stats
 {
 	private:
-		vector<CharacterStat>	m_kStats;
+		vector<Stat>	m_kStats;
 		
 
 	public:
 		
 		
-		CharacterStats();
+		Stats();
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
+		
+		void AddOn(Stats* pkTarget);
+		void RemoveOn(Stats* pkTarget);
+		
+		void AddStat(const string& strName,float fValue=0,float fMod = 0);
 		
 		void 	SetStat(const string& strName,float fValue);
 		float GetStat(const string& strName);
@@ -157,11 +162,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendBuffList();
 		void SendStats();
 		
-		void UpdateStats();
-		
+		void UpdateStats();		
+		void SetupCharacterStats();
 		
 	public:
-		CharacterStats	m_kCharacterStats;
+		Stats	m_kCharacterStats;
 
 	
 		//containers

@@ -3,9 +3,10 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
-//#include "../zerofpsv2/basic/zfini.h"
-//#include <list>
-   using namespace std;
+
+#include "p_characterproperty.h"
+
+using namespace std;
 
 /**	\brief	Da P_Item
 		\ingroup Common
@@ -35,16 +36,8 @@ public:
 	
 	//weapon
 	string		m_strWeaponType;
-	int			m_iMinDamage;
-	int			m_iMaxDamage;	
-	
-	float			m_fSlashingDamage;
-	float			m_fCrushingDamage;
-	float			m_fPiercingDamage;
-	
-	//armor
-	string		m_strArmorType;
-	int			m_iArmorClass;
+
+
 	
 	
 	MLItemStats()
@@ -77,6 +70,7 @@ class MCOMMON_API P_Item: public Property
 		
 		//buff
 		string	m_strBuffName;
+		int		m_iEquipedOnCharacterID;
 		int		m_iBuffEntityID;
 		
 		//item info
@@ -87,8 +81,9 @@ class MCOMMON_API P_Item: public Property
 		vector<PropertyValues> GetPropertyValues();
 			
 	public:
-		MLItemStats m_kItemStats;
-		
+		Stats		m_kItemStats;		
+
+				
 		P_Item();
 		~P_Item();
 		
@@ -116,6 +111,7 @@ class MCOMMON_API P_Item: public Property
 };
 
 MCOMMON_API Property* Create_P_Item();
+MCOMMON_API void Register_P_Item(ZeroFps* pkZeroFps);
 
 #endif
 

@@ -186,60 +186,49 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 //-------CharacterStats-----------
 
 
-CharacterStats::CharacterStats()
+Stats::Stats()
 {
-	m_kStats.push_back(CharacterStat("Level"			,0,0));
-	m_kStats.push_back(CharacterStat("Experience"	,0,0));
-	m_kStats.push_back(CharacterStat("NextLevel"		,0,0));
-	
-	m_kStats.push_back(CharacterStat("Speed"			,0,0));
-	m_kStats.push_back(CharacterStat("Jump"			,0,0));
-	
-	m_kStats.push_back(CharacterStat("Mana"			,0,0));
-	m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
-	m_kStats.push_back(CharacterStat("ManaRegen"		,0,0));	
-	
-	m_kStats.push_back(CharacterStat("Health"			,0,0));
-	m_kStats.push_back(CharacterStat("HealthMax"		,0,0));
-	m_kStats.push_back(CharacterStat("HealthRegen"	,0,0));
 
-	m_kStats.push_back(CharacterStat("Stamina"		,0,0));
-	m_kStats.push_back(CharacterStat("StaminaMax"	,0,0));
-	m_kStats.push_back(CharacterStat("StaminaRegen"	,0,0));	
+	
+}
+
+void Stats::AddStat(const string& strName,float fValue,float fMod)
+{
+	//check if stat already exist
+	for(int i = 0;i<m_kStats.size();i++)
+	{
+		if(m_kStats[i].m_strName == strName)
+		{
+			cout<<"Stat "<<strName<<" already exist in stats list"<<endl;
+			return;
+		}
+	}
 		
-	m_kStats.push_back(CharacterStat("Strength"		,0,0));
-	m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
-	m_kStats.push_back(CharacterStat("Vitality"		,0,0));
-	m_kStats.push_back(CharacterStat("Intelligence"	,0,0));
-	m_kStats.push_back(CharacterStat("Wisdom"			,0,0));
-	m_kStats.push_back(CharacterStat("Charisma"		,0,0));
-	m_kStats.push_back(CharacterStat("Armor"			,0,0));
-	m_kStats.push_back(CharacterStat("Attack"			,0,0));
-	
-	
-	m_kStats.push_back(CharacterStat("Load"			,0,0));
-	m_kStats.push_back(CharacterStat("LoadMax"		,0,0));
-
-	m_kStats.push_back(CharacterStat("DamageSlashingMin"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageSlashingMax"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageCrushingMin"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageCrushingMax"	,0,0));
-	m_kStats.push_back(CharacterStat("DamagePiercingMin"	,0,0));
-	m_kStats.push_back(CharacterStat("DamagePiercingMax"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageFireMin"		,0,0));
-	m_kStats.push_back(CharacterStat("DamageFireMax"		,0,0));
-	m_kStats.push_back(CharacterStat("DamageIceMin"			,0,0));
-	m_kStats.push_back(CharacterStat("DamageIceMax"			,0,0));
-	m_kStats.push_back(CharacterStat("DamageLightningMin"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageLightningMax"	,0,0));
-	m_kStats.push_back(CharacterStat("DamageMagicMin"		,0,0));
-	m_kStats.push_back(CharacterStat("DamageMagicMax"		,0,0));
-	
-	
+	m_kStats.push_back(Stat(strName,fValue,fMod));
 
 }
 
-void CharacterStats::Save(ZFIoInterface* pkPackage)
+void Stats::AddOn(Stats* pkTarget)
+{
+	for(int i = 0;i<m_kStats.size();i++)
+	{
+		pkTarget->ChangeMod(m_kStats[i].m_strName, m_kStats[i].m_fValue + m_kStats[i].m_fMod );
+		
+		cout<<"Applying stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
+	}
+}
+
+void Stats::RemoveOn(Stats* pkTarget)
+{
+	for(int i = 0;i<m_kStats.size();i++)
+	{
+		pkTarget->ChangeMod(m_kStats[i].m_strName, -(m_kStats[i].m_fValue + m_kStats[i].m_fMod) );
+		
+		cout<<"removing stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
+	}
+}
+
+void Stats::Save(ZFIoInterface* pkPackage)
 {
 	//stat version
 	static int iVersion = 1;
@@ -258,7 +247,7 @@ void CharacterStats::Save(ZFIoInterface* pkPackage)
 // 	cout<<"saved stats"<<endl;
 }
 
-void CharacterStats::Load(ZFIoInterface* pkPackage)
+void Stats::Load(ZFIoInterface* pkPackage)
 {
 	static string strName;
 	static float fValue,fMod;
@@ -276,7 +265,7 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 			pkPackage->Read(fValue);
 			pkPackage->Read(fMod);
 			
-			m_kStats.push_back(CharacterStat(strName,fValue,0)); //dont load mod value
+			m_kStats.push_back(Stat(strName,fValue,0)); //dont load mod value
 			
 			pkPackage->Read_Str(strName);
 		}
@@ -285,7 +274,7 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 // 	cout<<"loaded stats"<<endl;
 }
 
-void CharacterStats::SetStat(const string& strName,float fValue)
+void Stats::SetStat(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -297,7 +286,7 @@ void CharacterStats::SetStat(const string& strName,float fValue)
 	cout<<"WARNING:SetStat requested stat "<<strName<<" was not found"<<endl;
 }
 
-float CharacterStats::GetStat(const string& strName)
+float Stats::GetStat(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -306,10 +295,10 @@ float CharacterStats::GetStat(const string& strName)
 		}		
 
 	cout<<"WARNING:GetStat requested stat "<<strName<<" was not found"<<endl;
-	return -1;
+	return 0;
 }
 		
-void CharacterStats::ChangeStat(const string& strName,float fValue)
+void Stats::ChangeStat(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -322,7 +311,7 @@ void CharacterStats::ChangeStat(const string& strName,float fValue)
 }
 
 
-void CharacterStats::SetMod(const string& strName,float fValue)
+void Stats::SetMod(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -334,7 +323,7 @@ void CharacterStats::SetMod(const string& strName,float fValue)
 	cout<<"WARNING:SetMod requested stat "<<strName<<" was not found"<<endl;
 }
 
-float CharacterStats::GetMod(const string& strName)
+float Stats::GetMod(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -344,10 +333,10 @@ float CharacterStats::GetMod(const string& strName)
 
 		
 	cout<<"WARNING:GetMod requested stat "<<strName<<" was not found"<<endl;
-	return -1;
+	return 0;
 }		
 
-void CharacterStats::ChangeMod(const string& strName,float fValue)
+void Stats::ChangeMod(const string& strName,float fValue)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -359,7 +348,7 @@ void CharacterStats::ChangeMod(const string& strName,float fValue)
 	cout<<"WARNING:ChangeMod requested stat "<<strName<<" was not found"<<endl;
 }
 
-float CharacterStats::GetTotal(const string& strName)
+float Stats::GetTotal(const string& strName)
 {
 	for(int i=0;i<m_kStats.size();i++)
 		if(m_kStats[i].m_strName == strName)
@@ -369,7 +358,7 @@ float CharacterStats::GetTotal(const string& strName)
 		
 		
 	cout<<"WARNING:GetTotal requested stat "<<strName<<" was not found"<<endl;
-	return -1;
+	return 0;
 }
 
 
@@ -456,8 +445,9 @@ P_CharacterProperty::P_CharacterProperty()
 
 void P_CharacterProperty::Init()
 {
-
+	SetupCharacterStats();
 }
+
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
@@ -472,6 +462,68 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 	kReturn[1].pkValue    = (void*)&m_fMarkerSize;	
 		
 	return kReturn;	
+}
+
+void P_CharacterProperty::SetupCharacterStats()
+{
+	m_kCharacterStats.AddStat("Level"			,0,0);
+	m_kCharacterStats.AddStat("Experience"	,0,0);
+	m_kCharacterStats.AddStat("NextLevel"		,0,0);
+	
+	m_kCharacterStats.AddStat("Speed"			,0,0);
+	m_kCharacterStats.AddStat("Jump"			,0,0);
+	
+	m_kCharacterStats.AddStat("Mana"			,0,0);
+	m_kCharacterStats.AddStat("ManaMax"		,0,0);
+	m_kCharacterStats.AddStat("ManaRegen"		,0,0);	
+	
+	m_kCharacterStats.AddStat("Health"			,0,0);
+	m_kCharacterStats.AddStat("HealthMax"		,0,0);
+	m_kCharacterStats.AddStat("HealthRegen"	,0,0);
+
+	m_kCharacterStats.AddStat("Stamina"		,0,0);
+	m_kCharacterStats.AddStat("StaminaMax"	,0,0);
+	m_kCharacterStats.AddStat("StaminaRegen"	,0,0);	
+		
+	m_kCharacterStats.AddStat("Strength"		,0,0);
+	m_kCharacterStats.AddStat("Dexterity"		,0,0);
+	m_kCharacterStats.AddStat("Vitality"		,0,0);
+	m_kCharacterStats.AddStat("Intelligence"	,0,0);
+	m_kCharacterStats.AddStat("Wisdom"			,0,0);
+	m_kCharacterStats.AddStat("Charisma"		,0,0);
+			
+	m_kCharacterStats.AddStat("Load"			,0,0);
+	m_kCharacterStats.AddStat("LoadMax"		,0,0);
+
+	m_kCharacterStats.AddStat("Attack"			,0,0);	
+	m_kCharacterStats.AddStat("DamageSlashingMin"	,0,0);
+	m_kCharacterStats.AddStat("DamageSlashingMax"	,0,0);
+	m_kCharacterStats.AddStat("DamageCrushingMin"	,0,0);
+	m_kCharacterStats.AddStat("DamageCrushingMax"	,0,0);
+	m_kCharacterStats.AddStat("DamagePiercingMin"	,0,0);
+	m_kCharacterStats.AddStat("DamagePiercingMax"	,0,0);
+	m_kCharacterStats.AddStat("DamageFireMin"			,0,0);
+	m_kCharacterStats.AddStat("DamageFireMax"			,0,0);
+	m_kCharacterStats.AddStat("DamageIceMin"			,0,0);
+	m_kCharacterStats.AddStat("DamageIceMax"			,0,0);
+	m_kCharacterStats.AddStat("DamageLightningMin"	,0,0);
+	m_kCharacterStats.AddStat("DamageLightningMax"	,0,0);
+	m_kCharacterStats.AddStat("DamageMagicMin"		,0,0);
+	m_kCharacterStats.AddStat("DamageMagicMax"		,0,0);
+	m_kCharacterStats.AddStat("DamagePoisonMin"		,0,0);
+	m_kCharacterStats.AddStat("DamagePoisonMax"		,0,0);
+	
+	m_kCharacterStats.AddStat("AbsorbSlashing"	,0,0);
+	m_kCharacterStats.AddStat("AbsorbCrushing"	,0,0);
+	m_kCharacterStats.AddStat("AbsorbPiercing"	,0,0);
+	m_kCharacterStats.AddStat("AbsorbFire"			,0,0);
+	m_kCharacterStats.AddStat("AbsorbIce"			,0,0);
+	m_kCharacterStats.AddStat("AbsorbLightning"	,0,0);
+	m_kCharacterStats.AddStat("AbsorbMagic"		,0,0);
+	m_kCharacterStats.AddStat("AbsorbPoison"		,0,0);
+	
+	m_kCharacterStats.AddStat("Avoid"				,0,0);		//chance to avoid an attack in %
+	m_kCharacterStats.AddStat("Block"				,0,0);		//chance to block an attack in %	
 }
 
 void P_CharacterProperty::UpdateStats()
