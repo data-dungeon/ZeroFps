@@ -250,27 +250,27 @@ class ENGINE_API Entity
 		// Property Mangment
 		Property* AddProperty(Property* pkNewProperty);			// Add a propyrty by ptr.
 		Property* AddProperty(const char* acName);				// Create/Add a property by name.
-		void RemoveProperty(Property* pkProp);						// Remove property by pointer.
-		bool DeleteProperty(const char* acName);					// Remove property by name.
-		void PropertyLost(Property* pkProp);
+		void 	RemoveProperty(Property* pkProp);						// Remove property by pointer.
+		bool 	DeleteProperty(const char* acName);					// Remove property by name.
+		void 	PropertyLost(Property* pkProp);
 		Property* GetProperty(const char* acName);				// Returns property by name (first one only). 
-		void GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
-		void GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
-		Property* AddProxyProperty(const char* acName);		///< Add a property if not exist.
-		bool Update(const char* acName);							///< Run update on property 'name'.
+		void 	GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
+		void 	GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
+		Property* AddProxyProperty(const char* acName);			///< Add a property if not exist.
+		bool 	Update(const char* acName);							///< Run update on property 'name'.
 
 		// Child/Parent Entity mangement.
-		void AddChild(Entity* pkObject);							// Set a object to be child to this.	
-		void RemoveChild(Entity* pkObject);						// Remove a child from this.
-		void SetParent(Entity* pkObject);						// Set the parent of this object.
-		Entity* GetParent(){return m_pkParent;};				///< Get parent of this object.
-		bool HasChild(Entity* pkObject);							
-		int  NrOfChilds();												///< Return num of childs to this object.
-		void DeleteAllChilds();										// Remove all childs from this object.
-		void GetAllEntitys(vector<Entity*> *pakObjects ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
+		void 	AddChild(Entity* pkObject);							// Set a object to be child to this.	
+		void 	RemoveChild(Entity* pkObject);						// Remove a child from this.
+		void 	SetParent(Entity* pkObject);							// Set the parent of this object.
+		Entity* GetParent(){return m_pkParent;};					///< Get parent of this object.
+		bool 	HasChild(Entity* pkObject);							
+		int  	NrOfChilds();												///< Return num of childs to this object.
+		void 	DeleteAllChilds();										// Remove all childs from this object.
+		void 	GetAllEntitys(vector<Entity*> *pakObjects ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
 		
-		void AddToDeleteList(int iId);
-		void UpdateDeleteList();
+		void 	AddToDeleteList(int iId);
+		void 	UpdateDeleteList();
 
 
 		bool AttachToZone();		
@@ -294,7 +294,7 @@ class ENGINE_API Entity
 		// Collision / Shape.
 		void Touch(Collision* pkCol);								///< Run touch on all properys of this object.
 		void Touch(int iId);
-		void ZoneChange(int iCurrent,int iNew);			//callback when object changes zone
+		void ZoneChange(int iCurrent,int iNew);				//callback when object changes zone
 
 		// Game Messages
 		void	AddGameMessage(GameMessage& Msg);

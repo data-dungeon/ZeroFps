@@ -84,9 +84,6 @@ Entity::~Entity()
 		{
 			m_pkParent->AddToDeleteList(m_aiNetDeleteList[i]);
 		}
-		
-		
-		//m_pkParent->m_aiNetDeleteList.insert(m_pkParent->m_aiNetDeleteList.begin(), m_aiNetDeleteList.begin(), m_aiNetDeleteList.end());
 	}
 
 	// Then we remove ourself from our master.
@@ -189,7 +186,6 @@ bool Entity::DeleteProperty(const char* acName)
 			m_akPropertys.pop_back();
 			delete (TempProp);
 			
-//			m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
 			return true;
 		}
 		++kIt;
@@ -219,13 +215,6 @@ void Entity::PropertyLost(Property* pkProp)
 */
 Property* Entity::GetProperty(const char* acName) 
 {
-/*	if(strstr(acName, "P_") == NULL) {
-		if(strcmp(acName, "nons") != 0) {
-			printf("REQUEST FOR A PROPERTY WITH OLD NAME %s\n", acName);
-			assert(0);	
-			}
-		}
-*/
 	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
@@ -336,9 +325,6 @@ void Entity::RemoveChild(Entity* pkObject)
 		{
 			m_akChilds.erase(kIt);
 			break;
-			//(*kIt) = m_akChilds.back();
-			//m_akChilds.pop_back();
-			//kIt = m_akChilds.end();
 		}
 		++kIt;
 	}
@@ -531,9 +517,6 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		if((*it)->bNetwork) 
 		{
 			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
-		
-			//if((*it)->GetNetUpdateFlag(iConnectionID))
-			//	cout<<"sending: "<<(*it)->m_acName<<endl;
 		}
 	}
 	
@@ -544,12 +527,7 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 /**	\brief	Pack Entity.
 */
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
-{
-	//check delete list
-	//if(m_aiNetDeleteList.size())
-	//	SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,true);
-	
-
+{	
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 	
@@ -849,7 +827,6 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	pkFile->Read(&m_kAcc,sizeof(m_kAcc),1);	
 	pkFile->Read(&m_fRadius,sizeof(m_fRadius),1);		
 	
-//	pkFile->Read(&m_iObjectType,sizeof(m_iObjectType),1);		
 	pkFile->Read(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
 	pkFile->Read(&m_bSave,sizeof(m_bSave),1);		
 	
@@ -952,7 +929,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 	pkFile->Write(&m_kAcc,sizeof(m_kAcc),1);	
 	pkFile->Write(&m_fRadius,sizeof(m_fRadius),1);		
 	
-//	pkFile->Write(&m_iObjectType,sizeof(m_iObjectType),1);		
 	pkFile->Write(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
 	pkFile->Write(&m_bSave,sizeof(m_bSave),1);		
 	
@@ -1120,7 +1096,6 @@ void Entity::PrintTree(int pos)
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "m_kAcc = <%f,%f,%f>\n", m_kAcc.x, m_kAcc.y, m_kAcc.z );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", m_strType.c_str() );
 
-//	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Type = %d\n", m_iObjectType );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "UpdateStatus = %d\n", m_iUpdateStatus );
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Save = %d\n", m_bSave );
 
@@ -1147,41 +1122,6 @@ void Entity::PrintTree(int pos)
 	TabIn(pos);	g_ZFObjSys.Logf("fisklins", "}\n" );
 }
 
-/*
-void Entity::MakeCloneOf(Entity* pkOrginal)
-{
-	SetParent(pkOrginal->m_pkParent);
-
-	SetUseZones(true);
-
-	m_kLocalPosV = pkOrginal->m_kLocalPosV;		
-	m_kLocalRotM = pkOrginal->m_kLocalRotM;			
-	SetWorldPosV(GetWorldPosV());	
-
-
-	m_kVel				= pkOrginal->m_kVel;
-	m_strName			= pkOrginal->m_strName;
-	m_strType			= pkOrginal->m_strType;
-//	m_iObjectType		= pkOrginal->m_iObjectType;
-	m_iUpdateStatus	= pkOrginal->m_iUpdateStatus;
-	m_bSave				= pkOrginal->m_bSave;
-	m_kAcc				= pkOrginal->m_kAcc;
-
-	Property* pkProp;
-	vector<string> akPropertyNames;
-
-	for(vector<Property*>::iterator it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
-		pkProp = AddProperty((*it)->m_acName);
-		
-		// Get Values
-		akPropertyNames = (*it)->GetValueNames();
-
-		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
-			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
-			}
-		}
-	m_fRadius			= pkOrginal->m_fRadius;	
-}*/
 
 void Entity::SetRadius(float fRadius)
 {
@@ -1897,3 +1837,46 @@ bool Entity::IsAnyPropertyNetworkActive()
 	return bNetwork;
 }
 */
+
+/*
+void Entity::MakeCloneOf(Entity* pkOrginal)
+{
+	SetParent(pkOrginal->m_pkParent);
+
+	SetUseZones(true);
+
+	m_kLocalPosV = pkOrginal->m_kLocalPosV;		
+	m_kLocalRotM = pkOrginal->m_kLocalRotM;			
+	SetWorldPosV(GetWorldPosV());	
+
+
+	m_kVel				= pkOrginal->m_kVel;
+	m_strName			= pkOrginal->m_strName;
+	m_strType			= pkOrginal->m_strType;
+//	m_iObjectType		= pkOrginal->m_iObjectType;
+	m_iUpdateStatus	= pkOrginal->m_iUpdateStatus;
+	m_bSave				= pkOrginal->m_bSave;
+	m_kAcc				= pkOrginal->m_kAcc;
+
+	Property* pkProp;
+	vector<string> akPropertyNames;
+
+	for(vector<Property*>::iterator it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
+		pkProp = AddProperty((*it)->m_acName);
+		
+		// Get Values
+		akPropertyNames = (*it)->GetValueNames();
+
+		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
+			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
+			}
+		}
+	m_fRadius			= pkOrginal->m_fRadius;	
+}*/
+
+
+
+
+
+
+
