@@ -26,7 +26,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	switch(msg)
 	{
 	case ZGM_COMMAND:
-		g_kMistServer.OnCommand(((int*)params)[0], win);
+		g_kMistServer.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
 		break;
 
 	case ZGM_SELECTLISTITEM:
@@ -863,7 +863,7 @@ void MistServer::UpdateObjectMakerPos()
 }
 
 
-void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
+void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 

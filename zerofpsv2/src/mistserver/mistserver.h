@@ -126,7 +126,7 @@ class MistServer :public Application , public ZGuiApp {
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
-		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
+		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 			char *szClickNodeText, bool bHaveChilds);
 		

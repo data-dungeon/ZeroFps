@@ -77,6 +77,8 @@ void QuickBoard::Init()
 		pkNewButton->pkButton->Disable(); // disable
 		
 		pkNewButton->iPos = i;
+
+		pkNewButton->pkButton->m_bAcceptRightClicks = true;
 		
 		m_vkQuickItems.push_back(pkNewButton);
 	}
@@ -109,9 +111,9 @@ void QuickBoard::AddQuickItem(char *szIcon, char* szIconAlpha)
 		pkLabelSkin->m_iBkTexAlphaID = -1;
 }
 
-void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked)
+void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked)
 {
-
+	
 }
 
 void QuickBoard::Update()

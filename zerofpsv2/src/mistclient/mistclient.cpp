@@ -23,7 +23,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	switch(msg)
 	{
 	case ZGM_COMMAND:
-		g_kMistClient.OnCommand(((int*)params)[0], win);
+		g_kMistClient.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
 		break;
 
 	case ZGM_LBUTTONDOWN:
@@ -481,17 +481,31 @@ void MistClient::Input()
 		printf("sounds =%i, channels =%i\n",  iNumSounds, iNumActiveChannels);
 	}
 	
-	if(pkInput->Pressed(KEY_RETURN))
+	if(pressed_key == KEY_RETURN)
 	{
-		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		ZGuiWnd* pkInputWnd = GetWnd("InputWnd");
+
+		if( pkInputWnd->IsVisible() == false)
+		{
+			pkAudioSys->StartSound("/data/sound/open_window2.wav",pkAudioSys->GetListnerPos());
+			
+			pkInputWnd->Show();
+			pkGui->SetFocus(GetWnd("InputBox"));
+		}
+		else
 		{		
-			m_fClickDelay = pkFps->GetTicks();					
+			ZGuiWnd* pkTextbox = GetWnd("InputBox");
+
+			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
 			
-			pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
-			pkGui->SetFocus(GetWnd("InputBox"));	
-			
+			OnClientInputSend(pkTextbox->GetText());
+			pkTextbox->SetText("");
+
+			pkInputWnd->Hide();
+			pkGui->SetFocus(GetWnd("PanelBkWnd")); // set focus to panel (very importent, crash if not)
 		}
 	}
+
 }
 
 void MistClient::OnHud(void) 
@@ -624,7 +638,7 @@ bool MistClient::ShutDown()
 bool MistClient::IsValid()	{ return true; }
 
 
-void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
+void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
 	printf("OnCommand\n");
 
@@ -670,6 +684,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
 			{
+				printf("ToggleInputBoxBn\n");
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
 				pkGui->SetFocus(GetWnd("InputBox"));
 			}
@@ -813,7 +828,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	else
 	if(strMainWndName == "QuickItemMainWnd")
 	{
-		m_pkQuickBoard->OnCommand(pkWndClicked);
+		m_pkQuickBoard->OnCommand(pkWndClicked, bRMouseBnClick);
 	}
 	else
 	if(strMainWndName == "SpellBookMainWnd")
@@ -1158,7 +1173,9 @@ void MistClient::CreateGuiInterface()
 	GetWnd("InputBox")->SetFont( pkFont);
 	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
 
-	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
+/*	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
+	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("MainWnd"), GetWnd("ToggleInputBoxBn") );
+	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("PanelBkWnd"), GetWnd("ToggleInputBoxBn") );*/
 
 	m_pkQuickBoard = new QuickBoard(this);
 	//m_pkQuickBoard->AddQuickItem("apple", NULL);

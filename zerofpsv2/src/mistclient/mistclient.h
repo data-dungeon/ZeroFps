@@ -117,7 +117,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd* pkWnd);
 		void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd* pkMain);
 		void OnDClick(int x, int y, bool bLeftButton, ZGuiWnd* pkMainWnd);
-		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
+		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
 		
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
 	 	

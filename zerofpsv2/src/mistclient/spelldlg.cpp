@@ -171,19 +171,18 @@ void SpellDlg::Init()
 
 void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
-	for(int i=0; i<NUM_PAGES; i++)
+	for(int i=0; i<NUM_SCHOOLS; i++)
 	{
 		if(pkWndClicked == m_pkSchoolButtons[i])
 		{
+			for(int j=0; j<NUM_SCHOOLS; j++)
+				m_pkSchoolButtons[j]->UncheckButton();
+
 			char szLabel[25];
 			sprintf(szLabel, "Spellbook School %i", i+1);
 			m_pkApp->GetWnd("SpellBookLabel")->SetText(szLabel);
 
-			for(int j=0; j<NUM_PAGES; j++)
-			{
-				if(j!=i)
-					m_pkSchoolButtons[j]->UncheckButton();
-			}
+			m_pkSchoolButtons[i]->CheckButton();
 		}
 	}
 

@@ -546,7 +546,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_UP);
 
-				int* pkParams = new int[1];
+				int* pkParams = new int[2];
 
 				// Notify the main window that the window have been clicked
 				if(bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased))
@@ -559,8 +559,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode)  ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 						{
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
+							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
 							m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
-								ZGM_COMMAND,1,pkParams);
+								ZGM_COMMAND,2,pkParams);
 
 							m_bHaveInputFocus = true;
 						}
@@ -899,16 +900,18 @@ bool ZGui::RunKeyCommand(int iKey)
 	if(itKey != m_KeyCommandTable.end() && m_pkActiveMainWin)
 	{		
 		// Skicka ett Command medelande till valt fönster.
-		int* pkParams = new int[1];
+		int* pkParams = new int[2];
 		int id = itKey->second->GetID(); // control id
 		pkParams[0] = id;
+		pkParams[1] = 0;
 
 		ZGuiWnd* pkMain = itKey->second->GetParent();
 
 		if(pkMain == NULL)
 			pkMain = m_pkActiveMainWin->pkWnd;
 
-		m_pkActiveMainWin->pkCallback(pkMain,ZGM_COMMAND, 1,pkParams);
+		m_pkActiveMainWin->pkCallback(pkMain,ZGM_COMMAND, 2, pkParams);
+
 		delete[] pkParams;
 
 		SetFocus(itKey->second);
