@@ -126,6 +126,7 @@ public:
 	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
 
    friend class P_PSystem;
+   friend class TexturePSProp;
 };
 
 #endif
