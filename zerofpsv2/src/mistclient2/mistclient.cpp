@@ -379,32 +379,19 @@ void MistClient::Input()
 	float fAy=0;
 	m_pkInputHandle->UnitMouseXY(fAx,fAy);
 	
-	//gui stuff
-	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
-	{
-		if(IsWndVisible("ChatDlgMainWnd"))
-			LoadStartScreenGui(false);
-	}
-
-	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
-	{
-		if(IsWndVisible("OptionsWnd"))
-			ShowWnd("OptionsWnd", 0,0,0);
-		else
-		if(IsWndVisible("MLStartWnd"))
-			LoadInGameGui();
-	}
+	// gui stuff
+	static bool s_bEscPressed = false;
+	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && s_bEscPressed == false){
+		s_bEscPressed = true; CloseActiveWindow();
+	} else if(!m_pkInputHandle->Pressed(KEY_ESCAPE))
+		s_bEscPressed = false;
 
 	if(m_pkInputHandle->Pressed(KEY_I) && !DelayCommand())
-	{	
-		
+	{			
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
 		else
-		{	RequestOpenInventory();
-			
-				//	m_pkInventoryDlg->Open(); 
-		}	
+			RequestOpenInventory();
 	}
 			
 	// taunts

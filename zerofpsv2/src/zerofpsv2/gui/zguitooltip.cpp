@@ -50,6 +50,12 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	
 	m_pkToolTipWnd->Hide();
 
+	if(m_pkGui->m_bMouseLeftPressed || m_pkGui->m_bMouseRightPressed)
+	{
+		m_fToolTipDisplayTime = 0.0f;
+		return;
+	}
+
 	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkWindowList[i].pkWnd;

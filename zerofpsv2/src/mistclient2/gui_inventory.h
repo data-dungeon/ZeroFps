@@ -36,6 +36,7 @@ public:
 	
 	void OpenContainerWnd(int id, char slots_x, char slots_y);
 	void CloseContainerWnd();
+	void CloseSplitStockWnd(bool bExecuteSplit=false);
 
 	int m_iItemUnderCursor; // används av inventoryt för att avgöra vilket item som finns under 
 									// cursorn efter att ha klickat på ett object i världen.
@@ -56,9 +57,10 @@ private:
 		ZGuiWnd* pkWnd;
 		int iItemID;
 		bool bIsContainer;
+		int iStackSize;
 	};
 
-	struct MOVE_SLOT
+	struct SPECIAL_SLOT
 	{
 		int m_iIndex; // index in item list (m_vkInventoryItemList or m_vkContainerItemList)
 		bool bIsInventoryItem;
@@ -81,8 +83,8 @@ private:
 	int GetInventoryContainerID();
 	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);
 	void SetSelectionBorder(int iIndex, bool bInventory, bool bRemove);
+	void OpenSplitStockWnd();
 	
-
 	TextureManager* m_pkTexMan;
 	
 	vector<ITEM_SLOT> m_vkInventoryItemList;
@@ -91,7 +93,9 @@ private:
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;
 
-	MOVE_SLOT m_kMoveSlot; // index of m_vkInventoryItemList or m_vkContainerItemList
+	SPECIAL_SLOT m_kMoveSlot; 
+	SPECIAL_SLOT m_kSplitSlot; 
+
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
 

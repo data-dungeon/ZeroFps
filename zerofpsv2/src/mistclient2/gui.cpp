@@ -144,8 +144,8 @@ void MistClient::SetupGUI()
 
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("InventoryWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ContainerWnd", GuiMsgInventoryDlg));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("SplitStockWnd", GuiMsgInventoryDlg));
 	
-
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
@@ -155,4 +155,19 @@ void MistClient::SetupGUI()
 	GetWnd("ContinueGameBn")->Hide();
 
 	SetGuiCapture(true);
+}
+
+
+void MistClient::CloseActiveWindow()
+{
+	printf("PRESSED ESC!\n");
+
+	if(IsWndVisible("OptionsWnd"))
+		ShowWnd("OptionsWnd", 0,0,0);
+	
+	if(IsWndVisible("MLStartWnd"))
+		LoadInGameGui();
+
+	if(IsWndVisible("SplitStockWnd"))
+		m_pkInventoryDlg->CloseSplitStockWnd(); 
 }

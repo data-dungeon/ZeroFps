@@ -13,7 +13,7 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 {
 	if(msg == ZGM_COMMAND)
 	{
-		if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd")
+		if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd" || strMainWnd == "SplitStockWnd")
 			g_kMistClient.m_pkInventoryDlg->OnCommand(strController);
 	}
 	else
@@ -44,6 +44,9 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 				g_kMistClient.m_pkGui->m_bHandledMouse = false;
 			}
 			else
+			if( strController == "SplitStockSplitEb")
+				g_kMistClient.m_pkInventoryDlg->CloseSplitStockWnd(true);
+			else
 				g_kMistClient.ToogleChatWnd(true, true);
 			break;
 		
@@ -56,6 +59,9 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 				g_kMistClient.SetGuiCapture(false);				
 				g_kMistClient.m_pkGui->m_bHandledMouse = false;
 			}
+			else
+			if( strController == "SplitStockSplitEb")
+				g_kMistClient.m_pkInventoryDlg->CloseSplitStockWnd(false);
 
 			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
 			break;	
@@ -72,6 +78,7 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVEN
 
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
 	m_kMoveSlot.m_iIndex = -1;
+	m_kSplitSlot.m_iIndex =-1;
 	m_iSelItemID = -1;
 	m_iHighestZ = 1000;
 	m_iItemUnderCursor = -1;
@@ -106,6 +113,7 @@ void InventoryDlg::Open()
 
 	// visa inventory fönstret
 	m_pkInventoryWnd->Show();
+	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 
 	// dölj actionikonen och regruppera dom andra
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
@@ -135,6 +143,9 @@ void InventoryDlg::Close()
 
 	// Close contatiner window.
 	CloseContainerWnd();
+
+	// Close splitstock wnd
+	CloseSplitStockWnd();
 
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
@@ -167,13 +178,18 @@ void InventoryDlg::OnCommand(string strController)
 	else
 	if(strController == "ContainerCloseButton")
 		CloseContainerWnd();
+	else
+	if(strController == "SplitStockOKBn")
+		CloseSplitStockWnd(true);
+	if(strController == "SplitStockCancelBn")
+		CloseSplitStockWnd(false);
 }
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
 	static bool s_bRightMouseButtonPressed = false;
 
-	if(m_iItemUnderCursor) // the application have found a item 
+	if(m_iItemUnderCursor) // the application have found a item 		
 		PickUpFromGround(bLeftButtonPressed, mx, my); // test if its time to place it under cursor.
 
 	int iCursorBordeSize = 0;
@@ -189,6 +205,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				if(bLeftButtonPressed)
 				{			
+					CloseSplitStockWnd();
+
 					if(m_kMoveSlot.m_iIndex == -1)
 						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
 				}
@@ -205,11 +223,21 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{	
 					s_bRightMouseButtonPressed = true;
 
-					bool bOpen = true;
-					if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID) // klickat på samma container
-						bOpen = false;															 // som redan är öppnad?
+					if(m_vkInventoryItemList[i].bIsContainer)
+					{
+						bool bOpen = true;
+						if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID) // klickat på samma container
+							bOpen = false;															 // som redan är öppnad?
 
-					OpenContainerItem(bOpen, i, true);				
+						OpenContainerItem(bOpen, i, true);				
+					}
+					else
+					if(m_vkInventoryItemList[i].iStackSize > 1)
+					{
+						m_kSplitSlot.m_iIndex = i;
+						m_kSplitSlot.bIsInventoryItem = true;
+						OpenSplitStockWnd();
+					}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
 					s_bRightMouseButtonPressed = false;
@@ -235,6 +263,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				if(bLeftButtonPressed)
 				{				
+					CloseSplitStockWnd();
+
 					if(m_kMoveSlot.m_iIndex == -1) // inget slot under cursorn, plocka upp.
 						PickUpFromGrid(i,false,mx,my); 
 				}
@@ -251,11 +281,21 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{	
 					s_bRightMouseButtonPressed = true;
 
-					bool bOpen = true;
-					if(m_iActiveContainerID == m_vkContainerItemList[i].iItemID) // klickat på samma container
-						bOpen = false;															 // som redan är öppnad?
+					if(m_vkContainerItemList[i].bIsContainer)
+					{
+						bool bOpen = true;
+						if(m_iActiveContainerID == m_vkContainerItemList[i].iItemID) // klickat på samma container
+							bOpen = false;															 // som redan är öppnad?
 
-					OpenContainerItem(bOpen, i, false);				
+						OpenContainerItem(bOpen, i, false);		
+					}
+					else
+					if(m_vkContainerItemList[i].iStackSize > 1)
+					{
+						m_kSplitSlot.m_iIndex = i;
+						m_kSplitSlot.bIsInventoryItem = false;
+						OpenSplitStockWnd();
+					}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
 					s_bRightMouseButtonPressed = false;
@@ -293,7 +333,7 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 		return;
 
 	if(bLeftButtonPressed)
-	{
+	{		
 		const float WAIT_TIME_PICKUP = 0.25f; // seconds to wait before item appear under cursor.
 
 		if(g_kMistClient.m_pkZeroFps->GetTicks() - m_fPickUpTimer > WAIT_TIME_PICKUP)
@@ -301,6 +341,8 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
 				{
+					CloseSplitStockWnd();
+
 					m_kMoveSlot.bIsInventoryItem = true;
 					m_kMoveSlot.m_iIndex = i;
 				
@@ -550,6 +592,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
+		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		m_vkInventoryItemList.push_back(kNewSlot);
 
 		SetSelectionBorder(i, true, !(kNewSlot.iItemID == m_iActiveContainerID && 
@@ -603,6 +646,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
+		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		m_vkContainerItemList.push_back(kNewSlot);
 
 		SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
@@ -856,4 +900,85 @@ void InventoryDlg::SetSelectionBorder(int iIndex, bool bInventory, bool bRemove)
 		(*pkVector)[iIndex].pkWnd->GetSkin()->m_afBorderColor[1] = 1;
 		(*pkVector)[iIndex].pkWnd->GetSkin()->m_afBorderColor[2] = 1;
 	}
+}
+
+void InventoryDlg::OpenSplitStockWnd()
+{
+	Rect rcSlot;
+	int max, split;
+	
+	if(m_kSplitSlot.bIsInventoryItem)
+	{
+		max = m_vkInventoryItemList[m_kSplitSlot.m_iIndex].iStackSize;
+		split = m_vkInventoryItemList[m_kSplitSlot.m_iIndex].iStackSize/2;
+		rcSlot = m_vkInventoryItemList[m_kSplitSlot.m_iIndex].pkWnd->GetScreenRect();
+	}
+	else
+	{
+		max = m_vkContainerItemList[m_kSplitSlot.m_iIndex].iStackSize;
+		split = m_vkContainerItemList[m_kSplitSlot.m_iIndex].iStackSize/2;
+		rcSlot = m_vkContainerItemList[m_kSplitSlot.m_iIndex].pkWnd->GetScreenRect();
+	}
+
+	ZGuiWnd* pkSplitStockWnd = g_kMistClient.GetWnd("SplitStockWnd");
+	pkSplitStockWnd->Show();
+	
+	Rect rcWnd = pkSplitStockWnd->GetScreenRect();
+	
+	int x, y;
+	x = rcSlot.Left - rcWnd.Width() / 2 + ICON_WIDTH/2;
+	y = rcSlot.Bottom + 8;
+
+	if(y + rcWnd.Height() > g_kMistClient.GetHeight())
+		y = rcSlot.Top - rcWnd.Height() - 8;
+	if(x + rcWnd.Width() > g_kMistClient.GetWidth())
+		x = g_kMistClient.GetWidth() - rcWnd.Width() - 8;
+
+	pkSplitStockWnd->SetPos(x, y, true, true); 
+
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(pkSplitStockWnd, true); 
+	g_kMistClient.m_pkGui->SetFocus(pkSplitStockWnd, true);
+	g_kMistClient.SetTextInt("SplitStockMaxEb", max);
+	g_kMistClient.SetTextInt("SplitStockSplitEb", split);
+	g_kMistClient.GetWnd("SplitStockMaxEb")->Disable();
+
+	ZGuiSlider* pkSlider = (ZGuiSlider*) g_kMistClient.GetWnd("SplitStockSlider");
+	pkSlider->SetRange(0, max);
+	pkSlider->SetPos(split, true, false);
+	pkSlider->AddBuddyWindow(g_kMistClient.GetWnd("SplitStockSplitEb"));
+}
+
+void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
+{
+	ZGuiWnd* pkSplitStockWnd = g_kMistClient.GetWnd("SplitStockWnd");
+
+	if(!pkSplitStockWnd->IsVisible())
+		return;
+
+	pkSplitStockWnd->Hide();
+
+	if(bExecuteSplit && m_kSplitSlot.m_iIndex != -1)
+	{
+		int iItemID=-1, iTarget=-1, iSlotX=1, iSlotY=-1, iCount=1;
+
+		if(m_kSplitSlot.bIsInventoryItem)
+			iItemID = m_vkInventoryItemList[m_kSplitSlot.m_iIndex].iItemID;
+		else
+			iItemID = m_vkContainerItemList[m_kSplitSlot.m_iIndex].iItemID;
+
+		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, iCount);	
+		
+		if(m_kSplitSlot.bIsInventoryItem)
+			g_kMistClient.RequestOpenInventory();
+		else
+		{
+			if(m_iActiveContainerID)
+				g_kMistClient.SendRequestContainer(m_iActiveContainerID);
+		}
+
+		m_kSplitSlot.m_iIndex = -1;
+	}
+	
+	ZGuiWnd::m_pkFocusWnd->KillFocus();
+	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 }

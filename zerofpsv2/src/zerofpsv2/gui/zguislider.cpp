@@ -57,8 +57,8 @@ void ZGuiSlider::CreateInternalControls()
 			rcSlider.Top = 0;
 			rcSlider.Bottom = iHeight;
 
-			rcSliderMoveArea.Left += 20;
-			rcSliderMoveArea.Right -= 20;
+			//rcSliderMoveArea.Left += 20;
+			//rcSliderMoveArea.Right -= 20;
 		}
 		else
 		if(GetCtrlStyle(SCF_SLIDER_BOTTOM)) // markören är under labeln

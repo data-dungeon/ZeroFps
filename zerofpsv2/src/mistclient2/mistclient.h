@@ -91,6 +91,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);
 		void PositionActionButtons();
 		void CloseActiveContainer();
+		void CloseActiveWindow(); // on ESC press
 						
 		//register
 		void RegisterPropertys();
