@@ -501,7 +501,7 @@ void LevelManager::EnableZone(int xp,int zp)
 	{
 		for(int z = zp-w;z <= zp +w;z++)
 		{
-			if(x<0 || z<0 || x>=tot-1 || z>=tot-1)
+			if(x<0 || z<0 || x>=tot || z>=tot)
 				continue;
 			
 			m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
