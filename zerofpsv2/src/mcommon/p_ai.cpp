@@ -112,6 +112,12 @@ void P_AI::Update()
 
       NextOrder();
    }
+   else if ( m_pkCurrentOrder->m_kOrderType == "Idle" )
+   {
+      
+
+      NextOrder();
+   }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
       Entity* pkEnt = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );

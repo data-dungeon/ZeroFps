@@ -445,6 +445,9 @@ void P_Spell::DoCollisions()
                // remember which objects is hit by the spell so it can't hit same object twice
                m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
 
+               DealDamage( &m_pkSpellType->m_kDamage, 
+                  ((CharacterProperty*)kObjects[i]->GetProperty("P_CharStats"))->GetCharStats() );
+
             }
          }
       }

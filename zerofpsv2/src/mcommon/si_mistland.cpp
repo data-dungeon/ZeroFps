@@ -3034,6 +3034,44 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
 
 // -----------------------------------------------------------------------------------------------
 
+int MistLandLua::AIIdleLua(lua_State* pkLua) 
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	{
+		double dId, dWaitTime;
+      
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dWaitTime);
+		
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+
+      if(pkEnt)
+		{
+         // check if object has AI
+         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
+
+         // is AI is player, clear all other orders
+         if ( pkAI->PlayerAI() )
+            pkAI->ClearDynamicOrders();
+         else if ( pkAI->PlayerAI() )
+         {
+            cout << "Warning! Tried to add static order to player" << endl;
+            return 0;
+         }
+
+         if ( pkAI )
+            pkAI->AddStaticOrder ("Idle", dWaitTime, 0, Vector3::ZERO, ".");
+		}
+      else
+         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
+	}
+	return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
 int MistLandLua::AIMoveToLua(lua_State* pkLua) 
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3)
