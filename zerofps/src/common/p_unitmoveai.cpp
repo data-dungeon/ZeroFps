@@ -12,7 +12,8 @@
 
 HeightMap* P_UnitMoveAI::m_pkMap =NULL;
 
-P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(false) 
+P_UnitMoveAI::P_UnitMoveAI() 
+:m_pkMoveUnitCommand(NULL),m_pkStopUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(false) 
 {
 	strcpy(m_acName,"P_UnitMoveAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -33,6 +34,7 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 P_UnitMoveAI::~P_UnitMoveAI()
 {
 	delete m_pkMoveUnitCommand;
+	delete m_pkStopUnitCommand;
 }
 
 void P_UnitMoveAI::Init()
@@ -44,7 +46,7 @@ void P_UnitMoveAI::Init()
 		if(m_pkMap)
 			cout<<"found HeightMap!!" <<endl;
 		else
-			cout<<"didnt find the damn fucking shit asshole HeightMap fucker!!" <<endl;
+			cout<<"didnt find heightmap" <<endl;
 	}
 
 	int aiCost[5];
@@ -102,6 +104,7 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 					move.y = int(m_pkMap->m_iHmSize/2+ceil((TargetObject->GetPos().z / HEIGHTMAP_SCALE)));
 					return this;
 				}
+				else return NULL;
 			}
 			move.x = iXDestinaton;
 			move.y = iYDestinaton;			
