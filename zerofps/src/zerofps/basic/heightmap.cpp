@@ -180,7 +180,6 @@ void HeightMap::GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight)
 			med=med*0.125;	//insted of  division by 8 
 			med.Normalize();
 			verts[z*m_iHmSize+x].normal=med;
-			verts[z*m_iHmSize+x].texture=2;			
 		}
 	}
 
@@ -213,14 +212,14 @@ bool HeightMap::Load(const char* acFile) {
 	int i;
 	for(i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
-		HM_vert hora;
+//		HM_vert hora;
 //		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
-//		savefile.Read(verts[i]);
-		savefile.Read(hora);
-		cout<<i<<"  "<<hora.height<<endl;
-		if(hora.height==0) {
-			break;
-		}
+		savefile.Read(verts[i]);
+//		savefile.Read(hora);
+//		cout<<i<<"  "<<hora.height<<endl;
+//		if(hora.height==0) {
+//			break;
+//		}
 	}
 	
 	savefile.Close();
@@ -274,7 +273,7 @@ bool HeightMap::Save(const char* acFile) {
 //	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
 	savefile.Write(k_Fh);
 	
-	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
+//	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 
 	for(int i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{

@@ -29,7 +29,6 @@ class ZFFile {
 		template <class Any> 
 		bool Read(Any &data)
 		{
-			cout<<"SIZE OF DATA:"<<sizeof(Any)<<endl;
 			return m_kIo->Read((void*)&data,sizeof(Any));
 		};
 		

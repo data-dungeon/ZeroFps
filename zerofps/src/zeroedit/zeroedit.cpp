@@ -68,8 +68,10 @@ void ZeroEdit::OnIdle(void)
 
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		
-		
-		
+	float degtorad=57.3248;
+	Vector3 kPos=pkFps->GetCam()->GetPos();
+	Vector3 kHead=pkFps->GetCam()->GetRot();
+	m_fPointDistance=-(sin((kHead.x-90)/degtorad)/(sin((180-90-(kHead.x-90))/degtorad)/kPos.y));
 	m_kDrawPos.Set(pkFps->GetCam()->GetPos().x,0,pkFps->GetCam()->GetPos().z);	
 	m_kDrawPos.x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
 	m_kDrawPos.z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
@@ -196,15 +198,17 @@ void ZeroEdit::Input()
 			if(pkInput->Pressed(MOUSELEFT))
 			{
 				float height=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->height;
+				int texture=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->texture;
+				Vector3 color=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->color;
 //				float height=m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
-				for(int xp=-1;xp<2;xp++){
-					for(int yp=-1;yp<2;yp++){
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->texture=2;
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->color=Vector3(.6,.45,0.3);		
+				for(int xp=-2;xp<3;xp++){
+					for(int yp=-2;yp<3;yp++){
+						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->texture=texture;
+						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->color=color;//Vector3(.6,.45,0.3);		
 						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->height=height;				
 					}
 				}
-				m_pkMap->GenerateNormals(m_kDrawPos.x-3,m_kDrawPos.z-3,6,6);
+				m_pkMap->GenerateNormals((int)m_kDrawPos.x-4,(int)m_kDrawPos.z-4,8,8);
 				
 			}
 	}
