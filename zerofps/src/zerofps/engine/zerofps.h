@@ -22,10 +22,8 @@ enum enginestates {
 };
 
 class ZeroFps {
-	private:
-		
+	private:		
 		SDL_Surface* m_pkScreen;		
-		int m_iState;
 		void HandleArgs(int iNrOfArgs, char** paArgs);
 
 	public:
@@ -35,6 +33,8 @@ class ZeroFps {
 		Input* m_pkInput;
 		Primitives* m_pkPrims;
 		Console* m_pkConsole;	
+	
+		int m_iState;
 	
 		ZeroFps(void);
 		
