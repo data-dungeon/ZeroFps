@@ -186,6 +186,11 @@ void ActionMenu::Open()
 
 void ActionMenu::Close()
 {
+	list<ZGuiWnd*> kChilds;
+	m_pkMainWnd->GetChildrens(kChilds);
+	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
+		(*it)->Hide();
+
 	m_pkEntity = NULL;
 	m_pkMainWnd->Hide();
 	g_kMistClient.ToggleGuiCapture();
