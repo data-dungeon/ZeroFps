@@ -109,7 +109,7 @@ void MistServer::Init()
 	//create player database
 	m_pkPlayerDB = new PlayerDatabase();
 
-	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
+	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
 	m_pkFps->SetDebugGraph(true);
@@ -341,10 +341,11 @@ void MistServer::Input()
 	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
 
 	Input_Camera(float(x),float(z));
-
+/*
 	if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 	if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 	if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
+*/	
 };
 
 void MistServer::OnHud(void)
@@ -504,13 +505,13 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
-
+/*
 			iMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 			if(iMode == 0)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);		
 			if(iMode == 1)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);		
 			if(iMode == 2)	m_pkZShader->SetForceLighting(LIGHT_MATERIAL);		
 			break;
-
+*/
 
 
 		case FID_LOCALORDER:
