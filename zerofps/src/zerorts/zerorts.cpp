@@ -509,7 +509,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConstructMan->Init("techtree.txt");
 			
 			pkConsole->Printf("Everything is loaded ,Starting server");
-			g_ZFObjSys.RunCommand("server Default server");			
+			g_ZFObjSys.RunCommand("server Default server");	
 			break;		
 		
 		case FID_UNLOAD:
@@ -535,7 +535,6 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Spawned %d",iAntal);				
 			break;
-	
 	}
 }
 

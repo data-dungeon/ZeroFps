@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                    $(ProjDir)\release\*.lib                    ..\..\bin\ 
+PostBuild_Cmds=copy                     $(ProjDir)\release\*.lib                     ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                $(ProjDir)\debug\*.lib                                ..\..\bin\ 
+PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -174,6 +174,10 @@ SOURCE=.\dialogbox.cpp
 # Begin Source File
 
 SOURCE=.\doorproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\effectsystem.cpp
 # End Source File
 # Begin Source File
 
@@ -334,6 +338,10 @@ SOURCE=.\dialogbox.h
 # Begin Source File
 
 SOURCE=.\doorproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\effectsystem.h
 # End Source File
 # Begin Source File
 

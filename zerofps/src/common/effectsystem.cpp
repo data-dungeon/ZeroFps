@@ -72,17 +72,19 @@ void EffectSystem::AddFX(int iType,Vector3 kPos)
 		
 		case FX_EXPLOSION1:
 		{
-			for(int i= 0;i< 20;i++)
+			int i; // learn
+
+			for(i= 0;i< 20;i++)
 			{
 				AddPart(PART_SMOKE,kPos);			
 			}
 			
-			for(int i= 0;i< 40;i++)
+			for(i= 0;i< 40;i++)
 			{
 				AddPart(PART_DEBRI,kPos);			
 			}
 			
-			for(int i= 0;i< 20;i++)
+			for(i= 0;i< 20;i++)
 			{
 				AddPart(PART_SMALLDEBRI,kPos);			
 			}
