@@ -94,11 +94,7 @@ bool ZGui::IsValid()	{ return true; }
 
 ZGui::~ZGui()
 {
-	map<int,ZGuiFont*>::iterator itFont=m_pkFonts.begin();
-	for( ; itFont != m_pkFonts.end(); itFont++)
-	{
-		delete itFont->second;
-	}
+
 }
 
 bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow, char* szName)
@@ -111,13 +107,8 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow, char* szName)
 
 	pkNewWindow->SetGUI(this);
 	if(pkNewWindow->GetFont() == NULL)
-	{
-		// Add stanadard font
-		map<int,ZGuiFont*>::iterator itFont;
-		itFont = m_pkFonts.find(ZG_DEFAULT_GUI_FONT);
-		if(itFont != m_pkFonts.end())
-			pkNewWindow->SetFont(itFont->second);
-	}
+		pkNewWindow->SetFont(m_pkResManager->Font("defguifont"));
+	
 	m_pkWindows.insert(map<int,ZGuiWnd*>::value_type(pkNewWindow->GetID(),
 		pkNewWindow)); 
 
@@ -309,8 +300,6 @@ int ZGui::GetMainWindowID(char* strWindow)
 bool ZGui::Render(int fps)
 {
 	m_pkRenderer->StartRender();
-
-	m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 	
 	// Blit windows with lowest z order first.
 	for(list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
@@ -334,7 +323,6 @@ bool ZGui::Render(int fps)
 			//m_pkRenderer->EndRender(); 
 			m_pkZeroFps->Draw_RenderTarget(pkWnd->m_pkCamera);
 			//m_pkRenderer->StartRender();
-			//m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 		}
 	 }
 
@@ -624,32 +612,6 @@ void ZGui::ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow)
 		}
 }
 
-ZGuiFont* ZGui::AddBitmapFont(char* strBitmapName,char cCharsOneRow,
-							  char cCellSize,char cPixelGapBetweenChars,
-							  int iID)
-{
-	ZGuiFont* pkNewFont = new ZGuiFont(cCharsOneRow,cCellSize,
-		cPixelGapBetweenChars,iID);
-	if(pkNewFont->CreateFromFile(strBitmapName))
-	{
-		m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkNewFont->m_iID,
-			pkNewFont)); 
-		return pkNewFont;
-	}
-
-	return NULL;
-}
-
-ZGuiFont* ZGui::GetBitmapFont(int iID)
-{
-	map<int,ZGuiFont*>::iterator itFont;
-	itFont = m_pkFonts.find(iID);
-	if(itFont != m_pkFonts.end())
-		return itFont->second;
-	
-	return NULL;
-}
-
 void ZGui::AddKeyCommand(int Key,ZGuiWnd *pkFocusWnd,ZGuiWnd *pkTriggerWnd)
 {
 	m_KeyCommandTable.insert(map< pair<ZGuiWnd*,int>,ZGuiWnd* >
@@ -659,24 +621,6 @@ void ZGui::AddKeyCommand(int Key,ZGuiWnd *pkFocusWnd,ZGuiWnd *pkTriggerWnd)
 void ZGui::ShowCursor(bool bShow)
 {
 	m_pkCursor->Show(bShow);
-}
-
-void ZGui::SetDefaultFont(ZGuiFont* pkFont)
-{
-	map<int,ZGuiFont*>::iterator itFont;
-	itFont = m_pkFonts.find(ZG_DEFAULT_GUI_FONT);
-	if(itFont != m_pkFonts.end())
-	{
-		delete (itFont->second);
-		m_pkFonts.erase(itFont);
-		m_pkFonts.insert(map<int,ZGuiFont*>::value_type(
-			pkFont->m_iID,pkFont)); 
-	}
-	else
-	{
-		m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkFont->m_iID,
-				pkFont));
-	}
 }
 
 ZGuiWnd* ZGui::FindNextTabWnd(ZGuiWnd *pkCurrentWnd, bool bNext)
@@ -1343,11 +1287,6 @@ void ZGui::CloseActiveMenu(void)
 		m_bClickedMenu = true;
 	}
 }
-
-
-
-
-
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
 						 bool bRBnPressed, bool bMBnPressed, 

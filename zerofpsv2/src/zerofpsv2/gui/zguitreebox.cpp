@@ -135,7 +135,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	
 	pkButton->SetMoveArea(pkNewItem->pkButton->GetScreenRect());
 	pkButton->SetText(szText);
-	pkButton->SetTextClr(0,255,0); 
+	pkButton->SetTextClr(0,0,0); 
 
 	Rect rcClipper = GetScreenRect();
 	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();

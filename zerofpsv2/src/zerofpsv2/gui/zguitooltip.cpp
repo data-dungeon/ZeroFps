@@ -32,7 +32,7 @@ ZGuiToolTip::~ZGuiToolTip()
 void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime)
 {
 	if(m_pkToolTipWnd->GetFont() == NULL )
-		m_pkToolTipWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
+		m_pkToolTipWnd->SetFont(m_pkGui->GetResMan()->Font("defguifont"));  
 
 	if(!(mouse_x == m_iPrevCursorX && mouse_y == m_iPrevCursorY))
 	{

@@ -404,14 +404,18 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			ZGuiFont* pkFont = new ZGuiFont(16,16,0,2312);
-			if(pkFont->CreateFromFile("data/zgresedit/textures/text/test.tga"))
-			{
-				printf("Setting font\n");
-				m_pkFocusWnd->SetFont(pkFont); 
-			}
 
-			m_pkFocusWnd->SetText("<col:255,0,0>Apan<col:0,0,255> e brun"); 
+
+
+
+			//ZGuiFont* pkFont = new ZGuiFont(16,16,0,2312);
+			//if(pkFont->CreateFromFile("data/zgresedit/textures/text/test.tga"))
+			//{
+			//	printf("Setting font\n");
+			//	m_pkFocusWnd->SetFont(pkFont); 
+			//}
+
+			//m_pkFocusWnd->SetText("<col:255,0,0>Apan<col:0,0,255> e brun"); 
 
 			//m_pkFocusWnd->GetSkin()->m_afBkColor[0] =
 			//m_pkFocusWnd->GetSkin()->m_afBkColor[1] =

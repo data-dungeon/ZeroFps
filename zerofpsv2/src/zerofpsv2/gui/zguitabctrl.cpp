@@ -99,6 +99,7 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 
 	ZGuiWnd* pkNewPage = NULL;
 	ZGuiButton* pkNewTab = NULL;
+
 	
 	// Create and insert page
 	if(uiIndex == m_kPageList.size())

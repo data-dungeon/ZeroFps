@@ -91,11 +91,8 @@ public:
 	bool MouseHoverWnd();
 	bool ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName);
 	ZGuiSkin* GetFocusBorderSkin() { return m_pkFocusBorderSkin; }
-	void SetDefaultFont(ZGuiFont* pkFont);
 	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
-	ZGuiFont* AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID);
-	ZGuiFont* GetBitmapFont(int iID);
-
+	
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
 	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
@@ -226,7 +223,6 @@ private:
 	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
 
-	map<int, ZGuiFont*> m_pkFonts;
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
 
 	ZGuiWnd* m_pkCapturedWindow;
@@ -238,8 +234,6 @@ private:
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();
-
-
 
 public:
 	void CloseActiveMenu(void);

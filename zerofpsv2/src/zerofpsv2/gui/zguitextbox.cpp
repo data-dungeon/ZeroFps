@@ -143,16 +143,16 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		else
 			MoveUpOneRow();
 
-		int y_pos = m_iRenderDistFromTop + m_iCursorRow * m_pkFont->m_cCharCellSize; 
+		int y_pos = m_iRenderDistFromTop + m_iCursorRow * m_pkFont->m_iRowHeight; 
 
 		bool bScroll = false;
 
 		if(iKey == KEY_DOWN &&
-			y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
+			y_pos >= GetScreenRect().Height()-m_pkFont->m_iRowHeight)
 			bScroll = true;
 
 		if(iKey == KEY_UP &&
-			y_pos <= m_pkFont->m_cCharCellSize)
+			y_pos <= m_pkFont->m_iRowHeight)
 			bScroll = true;
 
 		if(bScroll)
@@ -170,9 +170,9 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 		int cursor_row = GetCursorRow();
 
-		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_cCharCellSize; 
+		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_iRowHeight; 
 
-		if(y_pos <= m_pkFont->m_cCharCellSize)
+		if(y_pos <= m_pkFont->m_iRowHeight)
 			ScrollText( cursor_row );
 
 		if(m_bMultiLine == false)
@@ -211,9 +211,9 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 		int cursor_row = GetCursorRow();
 
-		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_cCharCellSize; 
+		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_iRowHeight; 
 
-		if(y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
+		if(y_pos >= GetScreenRect().Height()-m_pkFont->m_iRowHeight)
 			ScrollText( cursor_row );
 
 		if(m_bMultiLine == false)
@@ -464,7 +464,7 @@ void ZGuiTextbox::SetFocus()
 		// Placera markören där man klickade.
 		if(m_pkFont != NULL && m_strText != NULL)
 		{
-			int rowheight = (m_pkFont != NULL) ? m_pkFont->m_cCharCellSize : 12;
+			int rowheight = (m_pkFont != NULL) ? m_pkFont->m_iRowHeight : 12;
 			int row = m_iStartrow + iClickPosY/rowheight;
 			if(row < m_iNumRows)
 				m_iCursorPos = m_kRowOffsets[row]; 
@@ -483,10 +483,6 @@ void ZGuiTextbox::SetFocus()
 				
 				if(cell != '\n')
 					font_size = m_pkFont->m_aChars[cell].iSizeX;
-
-				if( m_strText[m_iCursorPos] != ' ' &&
-					m_strText[m_iCursorPos] != '\n')
-					font_size += m_pkFont->m_cPixelGapBetweenChars;
 
 				pixel_offset += font_size;
 				m_iCursorPos++;
@@ -706,7 +702,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	int row_size = 12;
 
 	if(m_pkFont)
-		row_size = m_pkFont->m_cCharCellSize;
+		row_size = m_pkFont->m_iRowHeight;
 
 	m_iRenderDistFromTop = -row_size*m_iStartrow;
 
@@ -765,7 +761,7 @@ int ZGuiTextbox::GetNumRows(char* text)
 
 	int characters_totalt = strlen(text);
 	int width = GetScreenRect().Width();
-	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
+	int xpos=0, ypos=0, row_height = m_pkFont->m_iRowHeight;
 	int rows = 0, offset = 0, max_width = width;
 
 	pair<int,int> kLength; // first = character, second = pixels.
@@ -872,7 +868,7 @@ bool ZGuiTextbox::UpdateScrollbar()
 	int max_visible_row;
 
 	if(m_pkFont != NULL)
-		max_visible_row = GetScreenRect().Height() / m_pkFont->m_cCharCellSize;
+		max_visible_row = GetScreenRect().Height() / m_pkFont->m_iRowHeight;
 
 	int rows = GetNumRows();
 	if(rows == -1)
@@ -881,7 +877,7 @@ bool ZGuiTextbox::UpdateScrollbar()
 	int rows_to_much = rows-max_visible_row;
 	
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
-	int iRowSize = m_pkFont->m_cCharCellSize * rows;
+	int iRowSize = m_pkFont->m_iRowHeight * rows;
 	int iTextboxSize = GetScreenRect().Height();
 	if(iRowSize <= 0) iRowSize = 1; // don´t devide by zero
 	float fThumbSize = (float) iTextboxSize / (float) iRowSize;
@@ -951,9 +947,6 @@ void ZGuiTextbox::MoveDownOneRow()
 				
 				letter_size = m_pkFont->m_aChars[element].iSizeX;  
 
-				if(element != ' ')
-					gap_size = m_pkFont->m_cPixelGapBetweenChars;
-
 				curr_row_length += (letter_size + gap_size);
 
 				char_counter++;
@@ -981,8 +974,6 @@ void ZGuiTextbox::MoveDownOneRow()
 
 				letter_size = m_pkFont->m_aChars[element].iSizeX;  
 
-				if(element != ' ')
-					gap_size = m_pkFont->m_cPixelGapBetweenChars;
 
 				pixel_counter += (letter_size + gap_size);
 
@@ -1050,8 +1041,6 @@ void ZGuiTextbox::MoveUpOneRow()
 					
 					letter_size = m_pkFont->m_aChars[element].iSizeX;  
 
-					if(element != ' ')
-						gap_size = m_pkFont->m_cPixelGapBetweenChars;
 
 					curr_row_length += (letter_size + gap_size);
 				}
@@ -1081,8 +1070,6 @@ void ZGuiTextbox::MoveUpOneRow()
 
 				letter_size = m_pkFont->m_aChars[element].iSizeX;  
 
-				if(element != ' ')
-					gap_size = m_pkFont->m_cPixelGapBetweenChars;
 
 				pixel_counter += (letter_size + gap_size);
 

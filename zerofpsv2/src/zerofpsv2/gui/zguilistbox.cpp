@@ -8,6 +8,7 @@
 #include "zguiscrollbar.h"
 #include "zguibutton.h"
 #include "zgui.h"
+#include "zguiresourcemanager.h"
 #include <typeinfo>
 
 // Static internal IDs for the scrollbars
@@ -155,8 +156,8 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 	UpdateList();
 
 	ZGui* pkGui = GetGUI();
-	if(m_pkFont == NULL && pkGui)
-		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(m_pkFont == NULL && m_pkResMan)
+		m_pkFont = m_pkResMan->Font("defguifont");
 
 	int iWidth = GetScreenRect().Width();
 	int iHeight = GetScreenRect().Height();

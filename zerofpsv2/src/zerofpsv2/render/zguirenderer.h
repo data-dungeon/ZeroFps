@@ -45,15 +45,14 @@ public:
 	virtual bool SetFont(ZGuiFont* pkFont) = 0;
 	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, int iRenderDistFromTop,
 		bool bMultiLine, int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]) = 0;
+	virtual pair<int,int> GetWordLength(char *text, int offset, int max_width) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
 	virtual void GetScreenSize(int& x, int& y) = 0;
 	virtual bool RenderLines(vector<Point>& akLines,
 		unsigned char r,unsigned char g,unsigned char b,
 		float width=1.0f) = 0;
-	virtual pair<int,int> GetWordLength(char *text, int offset, int max_width) = 0;
 	virtual void GetScaleMode(GUIScaleMode& eGUIScaleMode) = 0; 
 	virtual void SetScaleMode(GUIScaleMode eGUIScaleMode) = 0;
-
 };
 
 #endif 

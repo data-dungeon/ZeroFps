@@ -40,7 +40,7 @@ public:
 	ZGuiMenuItem* GetItem(const char* szNameID);
 	void HideAll();
 
-	void ResizeMenu(ZGuiFont* pkFont);
+	void ResizeMenu();
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

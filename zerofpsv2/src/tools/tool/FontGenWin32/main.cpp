@@ -1,35 +1,39 @@
 #include <windows.h>
 #include <stdio.h>
+#include "resource.h"
 #include "../../../zerofpsv2/basic/image.h"
 
 bool bShowGrid = true;
 bool g_bDrawCharGrid = false;
 static LOGFONT    lf;
 
-int ROW_WIDTH = 10;
-int CELL_SIZE = 16;
-int BITMAP_SIZE = 256;
-int TEST_WIDTH = 128;
-int BITMAP_HEIGHT = 128;
+//int ROW_WIDTH = 10;
+//int CELL_SIZE = 16;
+//int BITMAP_SIZE = 256;
+int IMAGE_WIDTH = 128;
+int IMAGE_HEIGHT = 128;
 int ROW_HEIGHT = 0;
 int VERTICAL_OFFSET = 0;
 int HORIZONTAL_OFFSET = 1;
 
-POINT mclick = {9999,9999};
+char STARTUPDIR[512];
+
+int g_iSpaceWidth = 0;
 
 char aLetters[] =
 {
 	'!','"','#','$','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8',
 	'9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
 	'P','Q','R','S','T','U','V','W','X','Y','Z','[','\\',']','^','_','a','b','c','d','e','f','g',
-	'h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','}'
+	'h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','}','|',''
 };
 
 const int NUM_LETTERS = sizeof(aLetters) / sizeof(aLetters[1]);
 
 RECT aLetterRects[NUM_LETTERS];
 
-static COLORREF bkColor = RGB(255,255,255), textColor = RGB(0,0,0);
+//static COLORREF bkColor = RGB(255,255,255), textColor = RGB(0,0,0);
+static COLORREF textColor = RGB(255,255,255), bkColor = RGB(0,0,0);
 
 /*void DrawFont(HDC hdc)
 {
@@ -112,7 +116,7 @@ static COLORREF bkColor = RGB(255,255,255), textColor = RGB(0,0,0);
 	}
 }*/
 
-void DrawFont2(HDC hdc)
+void DrawFont2(HDC hdc, HWND hwnd)
 {
 	static HPEN blue_pen = CreatePen(PS_SOLID,0,RGB(0,0,255));
 	static HPEN red_pen = CreatePen(PS_SOLID,0,RGB(255,0,0));
@@ -120,7 +124,7 @@ void DrawFont2(HDC hdc)
 	SelectObject (hdc, CreateFontIndirect (&lf)) ;
 	SelectObject (hdc, blue_pen) ;
 
-	RECT rc = {0,0,CELL_SIZE,CELL_SIZE};
+	RECT rc = {0,0,0,0};
 
 	int i;
 	int oka=0;
@@ -138,6 +142,11 @@ void DrawFont2(HDC hdc)
 			max_char_height = s.cy;
 	}
 
+	SIZE s;
+	char text[2] = { ' ', '\0' };
+	GetTextExtentPoint32(hdc, text, 1, &s);
+	g_iSpaceWidth = s.cx;
+
 	max_char_height += VERTICAL_OFFSET;
 
 	bool bFinished = false;
@@ -151,7 +160,7 @@ void DrawFont2(HDC hdc)
 
 		while(1)
 		{
-			if(oka == 90)
+			if(oka == NUM_LETTERS)
 			{
 				bFinished = true;
 				break;
@@ -163,7 +172,7 @@ void DrawFont2(HDC hdc)
 			GetTextExtentPoint32(hdc, text, 1, &char_size);
 			row_width += (char_size.cx + HORIZONTAL_OFFSET);
 
-			if(row_width > TEST_WIDTH)
+			if(row_width > IMAGE_WIDTH)
 				break;
 
 			rc.right = rc.left + char_size.cx; 
@@ -185,32 +194,49 @@ void DrawFont2(HDC hdc)
 		}
 
 		rc.left = 0;
-		rc.right = CELL_SIZE;
+		rc.right = 0;
 		OffsetRect(&rc, 0, max_char_height);
 	}
 
 	ROW_HEIGHT = max_char_height;
-	BITMAP_HEIGHT = (rows * ROW_HEIGHT) + 0;
+	IMAGE_HEIGHT = (rows * ROW_HEIGHT) + 0;
 	
-	if(BITMAP_HEIGHT < 8) BITMAP_HEIGHT = 8;
-	else if(BITMAP_HEIGHT < 16) BITMAP_HEIGHT = 16;
-	else if(BITMAP_HEIGHT < 32) BITMAP_HEIGHT = 32;
-	else if(BITMAP_HEIGHT < 64) BITMAP_HEIGHT = 64;
-	else if(BITMAP_HEIGHT < 128) BITMAP_HEIGHT = 128;
-	else if(BITMAP_HEIGHT < 256) BITMAP_HEIGHT = 256;
-	else if(BITMAP_HEIGHT < 512) BITMAP_HEIGHT = 512;
-	else if(BITMAP_HEIGHT < 1024) BITMAP_HEIGHT = 1024;
+	if(IMAGE_HEIGHT < 8) IMAGE_HEIGHT = 8;
+	else if(IMAGE_HEIGHT < 16) IMAGE_HEIGHT = 16;
+	else if(IMAGE_HEIGHT < 32) IMAGE_HEIGHT = 32;
+	else if(IMAGE_HEIGHT < 64) IMAGE_HEIGHT = 64;
+	else if(IMAGE_HEIGHT < 128) IMAGE_HEIGHT = 128;
+	else if(IMAGE_HEIGHT < 256) IMAGE_HEIGHT = 256;
+	else if(IMAGE_HEIGHT < 512) IMAGE_HEIGHT = 512;
+	else if(IMAGE_HEIGHT < 1024) IMAGE_HEIGHT = 1024;
 
 	if(bShowGrid)
 	{
 		SelectObject (hdc, red_pen) ;
 
-		MoveToEx(hdc,TEST_WIDTH,0,NULL);
-		LineTo(hdc,TEST_WIDTH,BITMAP_HEIGHT);
+		MoveToEx(hdc,IMAGE_WIDTH,0,NULL);
+		LineTo(hdc,IMAGE_WIDTH,IMAGE_HEIGHT);
 
-		MoveToEx(hdc,0,BITMAP_HEIGHT,NULL);
-		LineTo(hdc,TEST_WIDTH+1,BITMAP_HEIGHT);
+		MoveToEx(hdc,0,IMAGE_HEIGHT,NULL);
+		LineTo(hdc,IMAGE_WIDTH+1,IMAGE_HEIGHT);
 	}
+
+	static int oldwidth=-1;
+	static int oldheight=-1;
+
+	if(oldwidth != IMAGE_WIDTH && oldheight != IMAGE_HEIGHT)
+	{
+		int new_w = IMAGE_WIDTH+10;
+		int new_h = IMAGE_HEIGHT+50;
+
+		SetWindowPos(hwnd, HWND_TOPMOST, 0,0, new_w, new_h, SWP_NOMOVE);
+		
+		oldwidth = new_w;
+		oldheight = new_h;
+
+		UpdateWindow(hwnd);
+	}
+		
 }
 
 #define FILE_FILTER "TGA (*.tga)\0*.tga\0\0"
@@ -221,7 +247,19 @@ void SaveFontInfo(HDC hdc, HWND hwnd)
 
 	char strFilePath[512] = "";
 	char strInitialDir[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, strInitialDir);
+
+	SetCurrentDirectory(STARTUPDIR);
+	FILE* infofile = fopen("fontgen.dat", "rt");
+
+	if(infofile)
+	{
+		fgets(strInitialDir, 512, infofile);
+		fclose(infofile);
+	}
+	else
+	{
+		GetCurrentDirectory(MAX_PATH, strInitialDir);
+	}
 
 	OPENFILENAME ofn = { sizeof(OPENFILENAME), hwnd, NULL,
 		FILE_FILTER, NULL, 5, 0, strName, 
@@ -237,13 +275,20 @@ void SaveFontInfo(HDC hdc, HWND hwnd)
 		ofn.lpstrFileTitle[strlen(ofn.lpstrFileTitle)-4] = '\0';
 
 	UpdateWindow(hwnd);
+	SetCursor(LoadCursor(NULL,IDC_WAIT));
 
 	char szFileName[512];
 	sprintf(szFileName, "%s.fnt", ofn.lpstrFileTitle);
 
 	FILE* pkFile = fopen(szFileName, "wb");
+	
+	fwrite(&IMAGE_WIDTH, sizeof(int), 1, pkFile); // bitmap width
+	fwrite(&IMAGE_HEIGHT, sizeof(int), 1, pkFile); // bitmap height
+	
 	fwrite(&ROW_HEIGHT, sizeof(int), 1, pkFile); // row height
-	fwrite(&aLetterRects, sizeof(RECT), 90, pkFile); // letters
+	fwrite(&g_iSpaceWidth, sizeof(int), 1, pkFile); // row height
+	fwrite(&NUM_LETTERS, sizeof(int), 1, pkFile); // num letters
+	fwrite(&aLetterRects, sizeof(int)*4, NUM_LETTERS, pkFile); // letters rect
 	fclose(pkFile);
 
 	unsigned char bk_r = GetRValue(bkColor);
@@ -251,9 +296,9 @@ void SaveFontInfo(HDC hdc, HWND hwnd)
 	unsigned char bk_b = GetBValue(bkColor);
 	
 	Image file;
-	file.CreateEmpty(TEST_WIDTH,BITMAP_HEIGHT);
-	for(int y=0; y<BITMAP_HEIGHT; y++)
-		for(int x=0; x<TEST_WIDTH; x++)
+	file.CreateEmpty(IMAGE_WIDTH,IMAGE_HEIGHT);
+	for(int y=0; y<IMAGE_HEIGHT; y++)
+		for(int x=0; x<IMAGE_WIDTH; x++)
 		{
 			COLORREF color = GetPixel(hdc, x, y);
 
@@ -262,32 +307,42 @@ void SaveFontInfo(HDC hdc, HWND hwnd)
 			unsigned char b = GetBValue(color);
 			unsigned char a;
 
-			if((r == bk_r && g == bk_g && b == bk_b))
-				a = 0;
-			else
-				a = 255;
+			//if((r == bk_r && g == bk_g && b == bk_b))
+			//if(r<250&&g<250&&b<250)
+				a = r;
+		/*	else
+				a = 255;*/
 
-			file.set_pixel(x,BITMAP_HEIGHT-y, r, g, b, a); 
+			file.set_pixel(x,IMAGE_HEIGHT-y, r, g, b, a); 
 		}
 
 	sprintf(szFileName, "%s.tga", ofn.lpstrFileTitle);
 
 	file.Save(szFileName,true); 
+	SetCursor(LoadCursor(NULL,IDC_ARROW));
+
+	GetCurrentDirectory(MAX_PATH, strInitialDir);
+	SetCurrentDirectory(STARTUPDIR);
+	infofile = fopen("fontgen.dat", "wt");
+	fprintf(infofile, strInitialDir);
+	fclose(infofile);
+
 }
 
-static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK WndProc (HWND hwnd, UINT uiMessage, WPARAM wParam, LPARAM lParam)
 {
+	static HDC hdcCanvas = CreateCompatibleDC(NULL);
 	static HDC hdc;
 	PAINTSTRUCT ps;
 
 	CHOOSEFONT cf;
 	cf.lStructSize = sizeof (CHOOSEFONT) ;
-   cf.hwndOwner   = khWnd ;
+   cf.hwndOwner   = hwnd ;
    cf.lpLogFont   = &lf ;
-	cf.Flags       = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_LIMITSIZE;
+	cf.Flags       = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_EFFECTS | CF_LIMITSIZE;
 	cf.rgbColors      = 0 ;
 	cf.lCustData      = 0 ;
-	cf.lpfnHook       = NULL ;
+	cf.lpfnHook       = NULL;
 	cf.lpTemplateName = NULL ;
 	cf.hInstance      = NULL ;
 	cf.lpszStyle      = NULL ;
@@ -297,7 +352,7 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 
 	static CHOOSECOLOR cc ;
 	static COLORREF    crCustColors[16] ;
-	static HBRUSH bkBrush = CreateSolidBrush(RGB(255,255,255));
+	static HBRUSH bkBrush = CreateSolidBrush(bkColor);
 
 	cc.lStructSize    = sizeof (CHOOSECOLOR) ;
 	cc.hwndOwner      = NULL ;
@@ -306,21 +361,55 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 	cc.lpCustColors   = crCustColors ;
 	cc.Flags          = CC_RGBINIT | CC_FULLOPEN ;
 	cc.lCustData      = 0 ;
-	cc.lpfnHook       = NULL ;
+	cc.lpfnHook       = NULL;
 	cc.lpTemplateName = NULL ;
 
 	bool bUpdate = false;
-
-	char text[50];
-	RECT rc;
 
 	int sx = GetDeviceCaps(GetDC(NULL),HORZRES);
 	int sy = GetDeviceCaps(GetDC(NULL),VERTRES);
 
 	switch(uiMessage)
 	{
+
 	case WM_SHOWWINDOW:
 		ChooseFont(&cf);
+		break;
+
+	case WM_MOVE:
+		{
+			RECT rcWindow;
+			GetWindowRect(hwnd, &rcWindow);
+			int sx = GetDeviceCaps(GetDC(NULL),HORZRES);
+			int sy = GetDeviceCaps(GetDC(NULL),VERTRES);
+			int w = rcWindow.right-rcWindow.left;
+			int h = rcWindow.bottom-rcWindow.top;
+
+			if(rcWindow.left < 0)
+			{
+				rcWindow.left = 0;
+				SetWindowPos(hwnd, HWND_TOPMOST, rcWindow.left ,rcWindow.top, 0, 0, SWP_NOSIZE);
+				UpdateWindow(hwnd);
+			}
+
+			if(rcWindow.top < 0)
+			{
+				rcWindow.top = 0;
+				SetWindowPos(hwnd, HWND_TOPMOST, rcWindow.left ,rcWindow.top, 0, 0, SWP_NOSIZE);
+				UpdateWindow(hwnd);
+			}
+
+			if(rcWindow.right > sx)
+			{
+				rcWindow.left = sx-w;
+				SetWindowPos(hwnd, HWND_TOPMOST, rcWindow.left ,rcWindow.top, 0, 0, SWP_NOSIZE);
+			}
+			if(rcWindow.bottom > sy)
+			{
+				rcWindow.top = sy-h;
+				SetWindowPos(hwnd, HWND_TOPMOST, rcWindow.left ,rcWindow.top, 0, 0, SWP_NOSIZE);
+			}
+		}
 		break;
 
 	case WM_DESTROY:
@@ -328,62 +417,11 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 		break;
 
 	case WM_PAINT:
-		hdc = BeginPaint (khWnd, &ps) ;
-		DrawFont2(hdc);
+		hdc = BeginPaint (hwnd, &ps) ;
+		DrawFont2(hdc, hwnd);			
+		EndPaint (hwnd, &ps) ;
 
-		SelectObject (hdc, GetStockObject(DEFAULT_GUI_FONT) ) ;
-
-		SetTextColor(hdc, RGB(0,0,0));
-
-		SetRect(&rc, sx-120,sy-260,sx,sy);
-		sprintf(text, "F5 = save TGA %s");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-240,sx,sy);
-		sprintf(text, "Esc = quit");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-220,sx,sy);
-		sprintf(text, "F1 = change font");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-200,sx,sy);
-		sprintf(text, "F2 = change bk color");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-180,sx,sy);
-		sprintf(text, "F3 = change font color");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-160,sx,sy);
-		sprintf(text, "+/- = resize width");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		SetRect(&rc, sx-120,sy-140,sx,sy);
-		sprintf(text, "0 and ',' = Toggle grid");
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		OffsetRect(&rc, 0, 20);
-		sprintf(text, "HORZ OFFSET: %i", HORIZONTAL_OFFSET);
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		OffsetRect(&rc, 0, 20);
-		sprintf(text, "VERT OFFSET: %i", VERTICAL_OFFSET);
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		OffsetRect(&rc, 0, 20);
-		sprintf(text, "ROW HEIGHT: %i", ROW_HEIGHT);
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		OffsetRect(&rc, 0, 20);
-		sprintf(text, "WIDTH: %i", TEST_WIDTH);
-		DrawText(hdc, text, strlen(text), &rc, 0);
-
-		OffsetRect(&rc, 0, 20);
-		sprintf(text, "HEIGHT: %i", BITMAP_HEIGHT);
-		DrawText(hdc, text, strlen(text), &rc, 0);
-			
-		EndPaint (khWnd, &ps) ;
+		//DrawFont2(hdcCanvas);
 		break;
 
 	case WM_ERASEBKGND:
@@ -392,7 +430,44 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 		FillRect((HDC) wParam, &rc, bkBrush);
 		SetBkColor((HDC) wParam, bkColor);
 		SetTextColor((HDC) wParam, textColor);
+
 		return 1;
+		break;
+
+	case WM_COMMAND:
+		switch(LOWORD(wParam))
+		{
+		case ID_FILE_SAVE40001:
+			SendMessage(hwnd, WM_KEYDOWN, VK_F5, 0);
+			break;
+		case ID_FILE_EXIT:
+			SendMessage(hwnd, WM_KEYDOWN, VK_ESCAPE, 0);
+			break;
+		case ID_EDIT_CHANGEFONT:
+			SendMessage(hwnd, WM_KEYDOWN, VK_F1, 0);
+			break;
+		case ID_EDIT_GRID:
+			SendMessage(hwnd, WM_KEYUP, VK_NUMPAD0, 0);
+			break;
+		case ID_EDIT_INCREASEWIDTH:
+			SendMessage(hwnd, WM_KEYUP, VK_ADD, 0);
+			break;
+		case ID_EDIT_DECREASEWIDTH:
+			SendMessage(hwnd, WM_KEYUP, VK_SUBTRACT, 0);
+			break;
+		case ID_EDIT_INCREASEROWSPACEX:
+			SendMessage(hwnd, WM_KEYDOWN, VK_RIGHT, 0);
+			break;
+		case ID_EDIT_DECREASEROWSPACEX:
+			SendMessage(hwnd, WM_KEYDOWN, VK_LEFT, 0);
+			break;
+		case ID_EDIT_INCREASEROWSPACEY:
+			SendMessage(hwnd, WM_KEYDOWN, VK_DOWN, 0);
+			break;
+		case ID_EDIT_DECREASEROWSPACEY:
+			SendMessage(hwnd, WM_KEYDOWN, VK_UP, 0);
+			break;
+		}
 		break;
 
 	case WM_KEYDOWN:
@@ -417,11 +492,20 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 			break;
 
 		case VK_ESCAPE:
-			DestroyWindow(khWnd);
+			DestroyWindow(hwnd);
 			break;
 
 		case VK_F1:
-			ChooseFont(&cf);
+	
+			LOGFONT temp;
+			temp = lf;
+			cf.lpLogFont = &temp;
+
+			if(ChooseFont(&cf) != 0)
+				lf = temp;
+
+			//lf.lfQuality = PROOF_QUALITY;
+
 			bUpdate = true;
 			break;
 
@@ -445,9 +529,10 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 			bool bState2 = g_bDrawCharGrid;
 			bShowGrid = false;
 			g_bDrawCharGrid = false;
-			InvalidateRect(khWnd,NULL,TRUE);
-			UpdateWindow(khWnd);
-			SaveFontInfo(hdc, khWnd);
+			InvalidateRect(hwnd,NULL,TRUE);
+			UpdateWindow(hwnd);
+
+			SaveFontInfo(hdc, hwnd);
 			
 			bShowGrid = bState;
 			g_bDrawCharGrid = bState2;
@@ -456,30 +541,20 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 		}
 		break;
 
-	case WM_LBUTTONDOWN:
-		mclick.x = 55;
-		mclick.y = 55;
-		break;
-
 	case WM_KEYUP:
 		switch(wParam)
 		{
 		case VK_ADD:
-			TEST_WIDTH *= 2;
+			IMAGE_WIDTH *= 2;
 			bUpdate = true;
 			break;
 
 		case VK_SUBTRACT:
-			TEST_WIDTH /= 2;
+			IMAGE_WIDTH /= 2;
 			bUpdate = true;
 			break;
 
 		case VK_NUMPAD0:
-			bShowGrid =! bShowGrid;
-			bUpdate = true;
-			break;
-
-		case VK_DECIMAL:
 			g_bDrawCharGrid = !g_bDrawCharGrid;
 			bUpdate = true;
 			break;
@@ -489,16 +564,16 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 
 	if(bUpdate)
 	{
-		InvalidateRect(khWnd,NULL,TRUE);
-		UpdateWindow(khWnd);
+		InvalidateRect(hwnd,NULL,TRUE);
+		UpdateWindow(hwnd);
 	}
 
-	return DefWindowProc( khWnd, uiMessage, wParam, lParam);
+	return DefWindowProc( hwnd, uiMessage, wParam, lParam);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, int)
 {
-	static char szAppName[] = "ChatClient";
+	static char szAppName[] = "ZPGFontGen";
 
 	WNDCLASSEX wndClass = 
 	{ 
@@ -508,10 +583,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, int)
 	};
 	RegisterClassEx( &wndClass );
 
-	int sx = GetDeviceCaps(GetDC(NULL),HORZRES);
-	int sy = GetDeviceCaps(GetDC(NULL),VERTRES);
-	const int STYLE  = WS_POPUPWINDOW  ^WS_BORDER | WS_VISIBLE ;
-	HWND khWnd = CreateWindow (szAppName, szAppName, STYLE, 0, 0, sx, sy, 0, 0, hInstance, NULL);
+	int x = GetDeviceCaps(GetDC(NULL),HORZRES) / 2 - 640/2;
+	int y = GetDeviceCaps(GetDC(NULL),VERTRES) / 2 - 480/2;
+	const int STYLE  = WS_OVERLAPPEDWINDOW ^WS_THICKFRAME ^WS_MAXIMIZEBOX | WS_VISIBLE ;
+	HWND hwnd = CreateWindow (szAppName, szAppName, STYLE, x, y, 640, 480, 0, 
+		LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MENU1)), hInstance, NULL);
+
+	GetCurrentDirectory(MAX_PATH, STARTUPDIR);
 
 	MSG msg;
 	while (GetMessage (&msg, NULL, 0, 0))
@@ -520,7 +598,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, int)
 		DispatchMessage (&msg) ;
 	}
 
-	DestroyWindow(khWnd);
+	DestroyWindow(hwnd);
 
 	return msg.wParam ;
 }

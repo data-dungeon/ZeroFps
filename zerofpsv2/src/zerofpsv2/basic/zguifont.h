@@ -10,14 +10,11 @@
 #include "basic_x.h"
 using namespace std;
 
-//#include "zffile.h"
-
-class BASIC_API ZGuiFont  
+class BASIC_API ZGuiFont
 {
 public:
-	unsigned short GetLength(const char* c_szText) const;
-	ZGuiFont(char m_sCharsOneRow=16, char cCharacterCellSize=16, 
-		char cPixelGapBetweenChars=0, int iID=0);
+	
+	ZGuiFont(char* szName);
 	~ZGuiFont();
 
 	struct CHARINFO
@@ -28,16 +25,18 @@ public:
 		unsigned short iSizeY;
 	};
 
-	CHARINFO m_aChars[256];
-	int m_iBMPWidth;
-	char m_cCharsOneRow; // Number of characters in rows and cols (must be same)
-	char m_cCharCellSize;
-	char m_cPixelGapBetweenChars;
-	int m_iID; // used to compare with other fonts to prevent rebuilding
-	string m_szFileName;
-	int m_iType; // 0 = BMP, 1 = TGA
+	CHARINFO m_aChars[255];
 
-	bool CreateFromFile(char* szFileName);
+	char m_szImageName[80]; // Name of the TGA image
+	char m_szNameID[40]; // Font Identication
+	int m_iTextureID;
+	int m_iTextureWidth, m_iTextureHeight;
+	int m_iRowHeight;	// Nr pixels each row
+	int m_iSpaceWidth; // Nr pixels a ' ' is
+	int m_iNumLetters; // Nr of letters in bitmap font
+	
+	bool Create(char* szInfoFile, int iTexID);
+	unsigned short GetLength(const char* c_szText) const;
 };
 
 #endif // !defined(AFX_ZGUIFONT_H__52B0ABD1_BF56_4D1D_A173_BB1CCEE56658__INCLUDED_)

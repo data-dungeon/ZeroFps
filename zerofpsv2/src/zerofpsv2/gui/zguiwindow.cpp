@@ -50,8 +50,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkFont = NULL;
 	m_iTabOrderNumber = 0;
 
-/*	m_pkGuiMan=static_cast<ZGuiResourceManager*>
-		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));	*/		
+	m_pkResMan=static_cast<ZGuiResourceManager*>
+		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));			
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -410,7 +410,7 @@ void ZGuiWnd::SetText(char* szText, bool bResizeWnd)
 	{
 		ZGui* pkGui = GetGUI();
 		if(!m_pkFont && pkGui)
-			m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+			m_pkFont = m_pkResMan->Font("defguifont"); //pkGui->GetBitmapFont("defguifont");
 
 		int usTextLength = 0;
 

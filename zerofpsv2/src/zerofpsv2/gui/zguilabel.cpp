@@ -42,6 +42,17 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 	{
 		Rect r = GetScreenRect();
 
+		//if(m_pkFont)
+		//{
+		//	pkRenderer->SetFont(m_pkFont);
+
+		//	if(m_bCenterTextHorz)
+		//	{
+		//		int tw = m_pkFont->GetLength(m_strText);
+		//		r.Left = r.Left + r.Width()/2 - tw/2;
+		//	}
+		//}
+
 		if(m_pkFont)
 		{
 			pkRenderer->SetFont(m_pkFont);

@@ -5,6 +5,7 @@
 #include "zguiradiobutton.h"
 #include "../render/zguirenderer.h"
 #include "zgui.h"
+#include "zguiresourcemanager.h"
 #include <typeinfo>
 
 ZGuiRadiobutton* ZGuiRadiobutton::m_pkLastbutton = NULL;
@@ -124,8 +125,8 @@ void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 	m_pkCheckbox->SetText(strText,true);
 
 	ZGui* pkGui = GetGUI();
-	if(!m_pkFont && pkGui)
-		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(!m_pkFont && m_pkResMan)
+		m_pkFont = m_pkResMan->Font("defguifont");
 
 	int usTextLength = strlen(strText)*12+25;
 

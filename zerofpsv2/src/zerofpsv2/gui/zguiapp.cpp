@@ -324,7 +324,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	m_kWindows.insert(map<int, ZGuiWnd*>::value_type(iID, pkWnd));
 
 	pkWnd->SetGUI(m_pkGuiSys);
-	pkWnd->SetFont(m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
+	pkWnd->SetFont(m_pkResMan->Font("defguifont"));  
 
 
 //	pkWnd->Rescale(800,600, GetWidth(),GetHeight());
@@ -579,9 +579,10 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
-	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
-	pkDefaultFont->CreateFromFile(szFontTexture);		
-	m_pkGuiSys->SetDefaultFont(pkDefaultFont);
+	ZGuiFont* pkDefaultFont = new ZGuiFont("defguifont");				// LEAK - MistServer, Nothing loaded. (FIXED)
+	pkDefaultFont->Create("data/textures/text/defguifont.fnt",
+				m_pkTextureMan->Load("data/textures/text/defguifont.tga"));
+	m_pkResMan->Add("defguifont", pkDefaultFont);
 
 	if(m_pkScriptResHandle)
 		delete m_pkScriptResHandle;
@@ -1103,134 +1104,6 @@ bool ZGuiApp::LoadGuiFromScript(char* szFileName)
 	return true;
 }
 
-/*
-bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
-{
-	ZGuiFont* pkFont = m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
-	if(pkFont == NULL)
-	{
-		printf("Failed to find font for menu!\n");
-		return false;
-	}
-
-	CreateWnd(Wnd, "MainMenu", "", "", 0,0, 800, 20, 0);
-	ChangeSkin(pkScriptSys, GetGuiScript()->m_pkLuaState, "MainMenu", "NullSkin", "Window");
-
-	ZFIni kINI;
-	if(!kINI.Open(szFileName, false))
-	{
-		cout << "Failed to load ini file for menu!\n" << endl;
-		return false;
-	}
-
-	vector<string> akSections;
-	kINI.GetSectionNames(akSections);
-
-	unsigned int uiNumSections = akSections.size();
-	
-	// No items in file.
-	if(uiNumSections < 1)
-		return true;
-
-	Rect rcMenu;
-	unsigned int i=0, iMenuOffset=0, iMenuWidth=0, iMenuIDCounter=45781;
-	char szParentName[50];
-
-	// Skapa alla parents
-	for(i=0; i<uiNumSections; i++)
-	{
-		char* parent = kINI.GetValue(akSections[i].c_str(), "Parent");
-		if(parent == NULL)
-			continue;
-
-		if(strcmp(parent, "NULL") == 0)
-		{
-			char szTitle[50];
-			sprintf(szTitle, " %s", kINI.GetValue(akSections[i].c_str(), "Title"));
-			iMenuWidth = pkFont->GetLength(szTitle) + 6; // move rc right
-
-			rcMenu = Rect(iMenuOffset,0,iMenuOffset+iMenuWidth,20);
-
-			CreateWnd(Combobox, (char*)akSections[i].c_str(), "MainMenu", szTitle,
-				rcMenu.Left, rcMenu.Top, rcMenu.Width(), rcMenu.Height(), 0);
-
-			ZGuiCombobox* pkMenuCBox = static_cast<ZGuiCombobox*>(GetWnd(
-				(char*)akSections[i].c_str()));
-
-			pkMenuCBox->SetGUI(m_pkGuiSys);
-			pkMenuCBox->SetLabelText(szTitle);
-			pkMenuCBox->SetNumVisibleRows(1);
-			pkMenuCBox->IsMenu(true);
-			pkMenuCBox->SetSkin(new ZGuiSkin());
-			
-			iMenuOffset += iMenuWidth;
-			rcMenu = rcMenu.Move(iMenuOffset,0);
-		}
-	}
-
-	ZGuiWnd* pkParent;
-	vector<MENU_INFO> kTempVector;
-
-	// Skapa alla childrens.
-	char szCommando[512];
-	int item_counter = 0;
-
-	char szPrevParent[150];
-	strcpy(szPrevParent, "");
-
-	for(i=0; i<uiNumSections; i++)
-	{
-		char* parent = kINI.GetValue(akSections[i].c_str(), "Parent");
-		if(parent == NULL)
-			continue;
-
-		if(strcmp(szPrevParent, parent) != 0)
-			item_counter = 0;
-
-		strcpy(szParentName, parent);
-		if(strcmp(szParentName, "NULL") != 0)
-		{
-			pkParent = GetWnd(szParentName);
-
-			if(pkParent != NULL)
-			{
-				char szTitle[50];
-				sprintf(szTitle, "%s", kINI.GetValue(akSections[i].c_str(), "Title"));
-				((ZGuiCombobox*) pkParent)->AddItem(szTitle, item_counter++);
-
-				MENU_INFO mi;
-				mi.cb = (ZGuiCombobox*) pkParent;
-				mi.iIndex = item_counter-1;
-				char* szCmd = kINI.GetValue(akSections[i].c_str(), "Cmd");
-				if(szCmd != NULL)
-					strcpy(szCommando, szCmd);
-				else
-					strcpy(szCommando, "No commando!");
-
-				mi.szCommando = new char[strlen(szCommando)+1];
-				strcpy(mi.szCommando, szCommando);
-				kTempVector.push_back(mi);
-			}
-		}
-
-		strcpy(szPrevParent, parent);
-	}
-
-	// Copy from tempvektor.
-	m_uiNumMenuItems = kTempVector.size();
-	m_pkMenuInfo = new MENU_INFO[m_uiNumMenuItems];
-	for(i=0; i<(unsigned int) m_uiNumMenuItems; i++)
-	{
-		m_pkMenuInfo[i].cb = kTempVector[i].cb;
-		m_pkMenuInfo[i].iIndex = kTempVector[i].iIndex;
-		m_pkMenuInfo[i].szCommando = new char[strlen(kTempVector[i].szCommando)+1];
-		strcpy(m_pkMenuInfo[i].szCommando, kTempVector[i].szCommando);
-		delete[] kTempVector[i].szCommando;
-	}
-
-	return true;
-}*/
-
 bool ZGuiApp::CreateMenu(char* szFileName)
 {
 	// Skapa själva menyn
@@ -1291,7 +1164,7 @@ bool ZGuiApp::CreateMenu(char* szFileName)
 		}
 	}
 
-	pkMenu->ResizeMenu(m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+	pkMenu->ResizeMenu();
 
 	return true;
 }
@@ -1396,12 +1269,3 @@ bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow)
 
 	return false;
 }
-
-
-
-
-
-
-
-
-

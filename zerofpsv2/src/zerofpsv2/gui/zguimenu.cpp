@@ -5,6 +5,7 @@
 #include "../basic/zguiskin.h"
 #include "zguimenu.h"
 #include "../render/zguirenderer.h"
+#include "zguiresourcemanager.h"
 #include "zgui.h"
  
 //////////////////////////////////////////////////////////////////////
@@ -24,10 +25,10 @@ ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 
 	CreateInternalControls();
 
-	m_pkFont = GetGUI()->GetBitmapFont(ZG_DEFAULT_GUI_FONT); 
+	m_pkFont = m_pkResMan->Font("defguifont"); 
 	if(m_pkFont)
 	{
-		ResizeMenu(m_pkFont);
+		ResizeMenu();
 		m_bNeedToResize = false;
 	}
 }
@@ -85,12 +86,12 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 	{
 		if(m_pkFont != NULL)
 		{
-			ResizeMenu(m_pkFont);
+			ResizeMenu();
 			m_bNeedToResize = false;
 		}
 		else
 		{
-			m_pkFont = GetGUI()->GetBitmapFont(ZG_DEFAULT_GUI_FONT); 
+			m_pkFont = m_pkResMan->Font("defguifont"); 
 		}
 	}
 
@@ -384,9 +385,9 @@ void ZGuiMenu::HideAll()
 	}
 }
 
-void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
+void ZGuiMenu::ResizeMenu()
 {
-	if(pkFont == NULL)
+	if(m_pkFont == NULL)
 		return;
 
 	const int SPACE_BETWEEN_SUB_MENUS = 8;
@@ -399,9 +400,9 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 		if(m_vkItems[j]->pkParent == NULL)
 		{
 			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
-			pkButton->SetFont(pkFont); 
+			pkButton->SetFont(m_pkFont); 
 
-			int width = pkFont->GetLength( pkButton->GetText() ); 
+			int width = m_pkFont->GetLength( pkButton->GetText() ); 
 			pkButton->Resize(width, MENU_ITEM_HEIGHT);
 
 			if( j > 0 )
@@ -423,7 +424,7 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 		if(m_vkItems[j]->pkParent == NULL)
 		{
 			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
-			int width = pkFont->GetLength( pkButton->GetText() ); 
+			int width = m_pkFont->GetLength( pkButton->GetText() ); 
 			pkButton->Resize(width+SPACE_BETWEEN_SUB_MENUS, MENU_ITEM_HEIGHT);
 		}
 	}
@@ -444,9 +445,9 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 			if(m_vkItems[j]->pkParent == it->first)
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
-				pkButton->SetFont(pkFont); 
+				pkButton->SetFont(m_pkFont); 
 
-				int width = 4 + pkFont->GetLength( pkButton->GetText() ); 
+				int width = 4 + m_pkFont->GetLength( pkButton->GetText() ); 
 
 				if(max < width)
 					max = width;

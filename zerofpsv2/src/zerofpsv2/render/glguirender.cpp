@@ -274,10 +274,10 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
 			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
 
-			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			glTexCoord2f(txs[0],tys[2]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(txs[1],tys[3]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(txs[2],tys[0]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(txs[3],tys[1]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
 		}
 		else
 		{
@@ -441,7 +441,7 @@ bool GLGuiRender::RenderBorder(Rect rc)
 				// Högra kolonnen
 				glTexCoord2f(0,0);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);		 
 				glTexCoord2f(0,wy);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);		
-				glTexCoord2f(-1,wy);glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Top);    
+				glTexCoord2f(-1,wy); glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Top);    
 				glTexCoord2f(-1,0);	glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Bottom);      
 			glEnd();
 		}
@@ -451,421 +451,6 @@ bool GLGuiRender::RenderBorder(Rect rc)
 
 	return true;
 }
-
-void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
-							  bool bMultiLine, int& chars_printed, int& rows_printed, float afTextcolor[3])
-{
-	if(m_pkFont == NULL)
-		return; 
-
-	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
-	int fontTexture_a = fontTexture; //m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
-	m_iCursorPos = iCursorPos;
-
-	m_rcTextBox = rc;
-
-	Rect t = rc;
-
-	m_rcTextBox = Rect(t.Left,m_iScreenHeight-t.Bottom,t.Right,m_iScreenHeight-t.Top);
-
-	glColor3f(1,1,1);
-
-	m_afTextColor[0] = afTextcolor[0];
-	m_afTextColor[1] = afTextcolor[1];
-	m_afTextColor[2] = afTextcolor[2];
-
-	bool bIsTGA = m_pkTextureManger->TextureHaveAlpha(fontTexture);
-
-	bool bDrawMasked = !bIsTGA;
-
-	if(bDrawMasked)
-	{
-		glEnable(GL_BLEND);					// Enable Blending
-		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
-		
-		if(m_pkFont->m_iType == 0)
-			glBlendFunc(GL_ZERO, GL_SRC_COLOR);	
-		else
-			glBlendFunc(GL_DST_COLOR,GL_ZERO);
-		
-		m_pkTextureManger->BindTexture( fontTexture_a );				
-		glDisable(GL_TEXTURE_2D);
-		
-		if(bMultiLine)
-			PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
-				chars_printed, rows_printed);
-		else
-			PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
-	}
-
-	int texture = fontTexture;
-		 		
-	if(texture >=0 )
-	{
-		m_pkTextureManger->BindTexture( texture );		
-		glEnable(GL_TEXTURE_2D);
-
-		if(bDrawMasked)
-		{
-			glBlendFunc(GL_DST_COLOR, GL_ZERO);	// Blend Screen Color With Zero (Black)
-		}
-	}
-	else
-	{
-		return;
-	}
-
-
-	if(bIsTGA)
-	{
-		glColor4f(1,1,1,1);		
-		glDisable(GL_LIGHTING);
-		glAlphaFunc(GL_GREATER,0.1);
-		glEnable(GL_ALPHA_TEST);
-	}
-
-	if(bMultiLine)
-		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
-			chars_printed, rows_printed);
-	else
-		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
-
-	if(bDrawMasked)
-		glDisable(GL_BLEND);
-}
-
-bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
-							int& chars_printed, int& rows_printed) 
-{
-	int characters_totalt = strlen(text);
-	int width = rc.Width();
-	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
-	int rows = 0, offset = 0, max_width = rc.Width();
-
-	pair<int,int> kLength; // first = character, second = pixels.
-
-	glBegin(GL_QUADS);	 
-
-		while(offset < characters_totalt) // antal ord
-		{
-			kLength = GetWordLength(text, offset, max_width);
-
-			if(xpos+kLength.second >= width)
-			{
-				// Räkna inte in sista tecknets längd om det är ett space.
-				// och om längden på ordet överskrider den tillåtna längden.
-				if(text[offset+kLength.first-1] == ' ')
-				{
-					int index = ' ' - 32;
-					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
-				}
-
-				if(xpos+kLength.second >= width)
-				{
-					if(text[offset+kLength.first-1] == ' ')
-					{
-						int index = ' ' - 32;
-						kLength.second += m_pkFont->m_aChars[index].iSizeX;
-					}
-
-					rows++;
-					ypos += row_height;
-					xpos = 0;
-				}
-			}
-
-			int x,y;
-			x = rc.Left + xpos;
-			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
-				ypos - iRenderDistFromTop;
-
-			bool bInside = true;
-			if(ypos+iRenderDistFromTop+m_pkFont->m_cCharCellSize>rc.Height())
-				bInside = false;
-			if(rc.Top + ypos + iRenderDistFromTop < rc.Top)
-				bInside = false;
-
-			if(bInside)
-				PrintWord(x, y, text, offset, kLength.first);
-
-			bool bRowBreak = false;
-			
-			if(text[offset+kLength.first-1] == '\n')
-			{	
-				rows++;
-				ypos += row_height;	
-				xpos = 0;
-
-				bRowBreak = true;
-			}
-
-			if(bRowBreak == false)
-				xpos += kLength.second;
-
-			offset += kLength.first;
-		}
-
-		// Print cursor outside the loop if last character.
-		if(iCursorPos == characters_totalt && characters_totalt != 0)
-		{
-			int x,y;
-			x = rc.Left + xpos - 2;
-			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
-				ypos - iRenderDistFromTop;
-			PrintWord(x, y, "|", 0, 1);
-		}
-		
-	glEnd();
-
-	chars_printed = offset;
-	rows_printed = rows;
-
-	return true;
-}
-
-bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos, 
-						   int iRenderDistFromLeft, int &chars_printed)
-{
-	int characters_totalt = strlen(text);
-	int xpos = 0, offset = 0, max_width = rc.Width();
-	int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize;
-
-	// Center text vertically
-	if(rc.Height() > m_pkFont->m_cCharCellSize)
-	{
-		y = m_iScreenHeight - rc.Top - (rc.Bottom-rc.Top)/2 - 
-			m_pkFont->m_cCharCellSize/2;
-	}
-
-	pair<int,int> kLength; // first = character, second = pixels.
-
-	// Must calc width if text should be centered.
-	if(iRenderDistFromLeft == ZG_CENTER_TEXT_HORZ)
-	{
-		while(offset < characters_totalt) // antal ord
-		{
-			kLength = GetWordLength(text, offset, max_width);
-
-			offset += kLength.first;
-			xpos += kLength.second;
-
-			if(xpos >= max_width)
-				break;
-		}
-
-		int row_length = xpos;
-
-		// reset values
-		xpos = 0;
-		offset = 0;
-
-		xpos = rc.Width()/2 - row_length/2;
-		iRenderDistFromLeft = 0;
-	}
-
-	glBegin(GL_QUADS);
-
-		while(offset < characters_totalt) // antal ord
-		{
-			kLength = GetWordLength(text, offset, 999999);//max_width);
-
-			int x = rc.Left + xpos - iRenderDistFromLeft;
-			PrintWord(x, y, text, offset, kLength.first);
-
-			offset += kLength.first;
-			xpos += kLength.second;
-
-		/*	if(xpos >= max_width)
-				break;*/
-		}
-
-		// Print cursor outside the loop if last character.
-		if(iCursorPos == characters_totalt)
-		{
-			int x = rc.Left + xpos - iRenderDistFromLeft;
-
-			if(x < rc.Left + 2)
-				x = rc.Left + 2;
-			
-			float prevcolor[3] = {
-				m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]
-			};
-
-			m_afTextColor[0]=m_afTextColor[1]=m_afTextColor[2]=0;
-
-			PrintWord(x, y, "|", 0, 1);
-
-			m_afTextColor[0]=prevcolor[0];
-			m_afTextColor[1]=prevcolor[1];
-			m_afTextColor[2]=prevcolor[2];
-		}
-
-	glEnd();
-
-	chars_printed = offset;
-
-	return true;
-}
-
-void GLGuiRender::PrintWord(int x, int y, char *szWord, 
-							int offset, int length)
-{
-	int i, fx, fy, fw, fh, pos, iCurrLegth;
-	float tx, ty, tw, th;
-
-	for(i=offset; i<offset+length; i++)
-	{
-		// Print cursor
-		if(i == m_iCursorPos && !(m_iCursorPos == 0 && strlen(szWord) <= 1))
-		{
-			int iCursorX = x;
-			int iCursorY = y;
-
-			int index = '|'-32;
-			fx = m_pkFont->m_aChars[index].iPosX;
-			fy = m_pkFont->m_aChars[index].iPosY;
-			fw = m_pkFont->m_aChars[index].iSizeX;
-			fh = m_pkFont->m_aChars[index].iSizeY;
-
-			tx = (float) fx / m_pkFont->m_iBMPWidth;
-			ty = (float) fy / m_pkFont->m_iBMPWidth;
-			tw = (float) fw / m_pkFont->m_iBMPWidth;
-			th = (float) fh / m_pkFont->m_iBMPWidth;
-
-			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
-							// som en kompensation för tecknets egen storlek.
-
-			if(m_pkFont->m_iType == 1)
-			{
-				glColor3f(0,0,0);
-
-				glTexCoord2f(tx,1-ty);			glVertex2i(iCursorX,iCursorY+fh);		 
-				glTexCoord2f(tx+tw,1-ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
-				glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(iCursorX+fw,iCursorY);    
-				glTexCoord2f(tx,1-ty-th);		glVertex2i(iCursorX,iCursorY);
-			}
-			else
-			{
-				glTexCoord2f(tx,ty);			glVertex2i(iCursorX,iCursorY+fh);		 
-				glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
-				glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
-				glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
-			}
-		}
-
-		pos = szWord[i]-32;
-		if(pos < 0 || pos > 255)
-			continue;
-		if(szWord[i] == '\n')
-			return;
-
-		// Do tags
-		if(szWord[i] == '<'){
-			m_bSearchForSytax = true;
-			continue;
-		} else if(szWord[i] == '>'){
-			DoTextTag();
-			continue;
-		} else if(m_bSearchForSytax){
-			m_strSyntax.push_back(szWord[i]);
-			continue;
-		}
-
-		fx = m_pkFont->m_aChars[pos].iPosX;
-		fy = m_pkFont->m_aChars[pos].iPosY;
-		fw = m_pkFont->m_aChars[pos].iSizeX;
-		fh = m_pkFont->m_aChars[pos].iSizeY;
-
-		iCurrLegth = fw;
-
-		if(m_rcTextBox.Inside(x, y))
-		{
-			if( !m_bClipperEnabled || (m_bClipperEnabled && 
-				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
-				 y < m_iScreenHeight-m_rcClipperArea.Top && 
-				 y+fh > m_iScreenHeight-m_rcClipperArea.Bottom))
-			{
-				tx = (float) fx / m_pkFont->m_iBMPWidth;
-				ty = (float) fy / m_pkFont->m_iBMPWidth;
-				tw = (float) fw / m_pkFont->m_iBMPWidth;
-				th = (float) fh / m_pkFont->m_iBMPWidth;
-
-				if(m_pkFont->m_iType == 1) // tga
-				{
-					glColor3f(m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]);
-
-					glTexCoord2f(tx,1-ty);			glVertex2i(x,y+fh);		 
-					glTexCoord2f(tx+tw,1-ty);		glVertex2i(x+fw,y+fh);    
-					glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(x+fw,y);    
-					glTexCoord2f(tx,1-ty-th);		glVertex2i(x,y);
-				}
-				else
-				{
-					glColor3f(1,1,1);
-
-					glTexCoord2f(tx,ty);			glVertex2i(x,y+fh);		 
-					glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
-					glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
-					glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
-				}
-			}
-		}
-
-		x+=iCurrLegth;
-	}
-}
-
-
-pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
-{
-	int char_counter = 0;
-	int length_counter = 0;
-
-	int iMax = strlen(text);
-	for(int i=offset; i<iMax; i++)
-	{
-		if(text[i] == '\n')
-		{
-			char_counter++;
-			break;
-		}
-
-		int index = text[i]-32;
-		if(index < 0 || index > 255)
-		{
-			char_counter++;
-			continue;
-		}
-
-		// Do tags
-		if(text[i] == '<'){
-			m_bSearchForSytax = true;
-		} else if(text[i] == '>'){
-			m_bSearchForSytax = false;
-		} 
-		else
-		if(m_bSearchForSytax == false)
-		{
-			if(text[i] != '\n')
-				length_counter += m_pkFont->m_aChars[index].iSizeX;
-		}
-
-		// Break words bigger then then the length
-		// of one row in the textbox.
-		if(length_counter > max_width)
-			break;
-
-		char_counter++;
-
-		if(text[i] == ' ')
-			break;
-	}
-
-	return pair<int,int>(char_counter, length_counter);
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name: SetSkin
@@ -1018,7 +603,8 @@ void GLGuiRender::DoTextTag()
 	m_bSearchForSytax = false;
 }
 
-void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs, unsigned char ucRotLaps)
+void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs, 
+														unsigned char ucRotLaps)
 {
 	unsigned char A=0, B=1, C=2, D=3;
 
@@ -1038,4 +624,358 @@ void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs, unsigned c
 		pfTVs[C] = pfTempTVs[B];
 		pfTVs[D] = pfTempTVs[C];
 	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Font rendering
+///////////////////////////////////////////////////////////////////////////////
+
+void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, 
+									   int iRenderDistFromTop, bool bMultiLine, 
+										int& chars_printed, int& rows_printed, 
+										float afTextcolor[3])
+{
+	if(m_pkFont == NULL || m_pkFont->m_iTextureID < 0)
+		return; 
+
+	m_iCursorPos = iCursorPos;
+	m_rcTextBox = Rect(rc.Left,m_iScreenHeight-rc.Bottom,rc.Right,
+		m_iScreenHeight-rc.Top);
+
+	m_afTextColor[0] = afTextcolor[0];
+	m_afTextColor[1] = afTextcolor[1];
+	m_afTextColor[2] = afTextcolor[2];
+		 		
+	m_pkTextureManger->BindTexture( m_pkFont->m_iTextureID );		
+	glEnable(GL_TEXTURE_2D);
+
+	//glColor4f(1,1,1,1);		
+	//glAlphaFunc(GL_GREATER,0.4);
+	//glEnable(GL_ALPHA_TEST);
+
+	
+	glColor4f(0.0f,0.0f,0.0f,1);		
+	glDisable(GL_LIGHTING);
+	glAlphaFunc(GL_GREATER,0.1f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);			
+	glEnable(GL_ALPHA_TEST);
+
+	if(bMultiLine)
+		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+			chars_printed, rows_printed);
+	else
+		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
+}
+
+bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, 
+									 int iRenderDistFromTop, int& chars_printed, 
+									 int& rows_printed) 
+{
+	int characters_totalt = strlen(text);
+	int width = rc.Width();
+	int xpos=0, ypos=0, row_height = m_pkFont->m_iRowHeight;
+	int rows = 0, offset = 0, max_width = rc.Width();
+
+	pair<int,int> kLength; // first = character, second = pixels.
+
+	glBegin(GL_QUADS);	 
+
+		while(offset < characters_totalt) // antal ord
+		{
+			kLength = GetWordLength(text, offset, max_width);
+
+			if(xpos+kLength.second >= width)
+			{
+				// Räkna inte in sista tecknets längd om det är ett space.
+				// och om längden på ordet överskrider den tillåtna längden.
+				if(text[offset+kLength.first-1] == ' ')
+				{
+					int index = ' ' - 32;
+					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
+				}
+
+				if(xpos+kLength.second >= width)
+				{
+					if(text[offset+kLength.first-1] == ' ')
+					{
+						int index = ' ' - 32;
+						kLength.second += m_pkFont->m_aChars[index].iSizeX;
+					}
+
+					rows++;
+					ypos += row_height;
+					xpos = 0;
+				}
+			}
+
+			int x,y;
+			x = rc.Left + xpos;
+			y = m_iScreenHeight-rc.Top-m_pkFont->m_iRowHeight -
+				ypos - iRenderDistFromTop;
+
+			bool bInside = true;
+			if(ypos+iRenderDistFromTop+m_pkFont->m_iRowHeight>rc.Height())
+				bInside = false;
+			if(rc.Top + ypos + iRenderDistFromTop < rc.Top)
+				bInside = false;
+
+			if(bInside)
+				PrintWord(x, y, text, offset, kLength.first);
+
+			bool bRowBreak = false;
+			
+			if(text[offset+kLength.first-1] == '\n')
+			{	
+				rows++;
+				ypos += row_height;	
+				xpos = 0;
+
+				bRowBreak = true;
+			}
+
+			if(bRowBreak == false)
+				xpos += kLength.second;
+
+			offset += kLength.first;
+		}
+
+		// Print cursor outside the loop if last character.
+		if(iCursorPos == characters_totalt && characters_totalt != 0)
+		{
+			int x,y;
+			x = rc.Left + xpos - 2;
+			y = m_iScreenHeight-rc.Top-m_pkFont->m_iRowHeight -
+				ypos - iRenderDistFromTop;
+			PrintWord(x, y, "|", 0, 1);
+		}
+		
+	glEnd();
+
+	chars_printed = offset;
+	rows_printed = rows;
+
+	return true;
+}
+
+bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos, 
+									 int iRenderDistFromLeft, int &chars_printed)
+{
+	int characters_totalt = strlen(text);
+	int xpos = 0, offset = 0, max_width = rc.Width();
+	int y = m_iScreenHeight-rc.Top-m_pkFont->m_iRowHeight;
+
+	// Center text vertically
+	if(rc.Height() > m_pkFont->m_iRowHeight)
+	{
+		y = m_iScreenHeight - rc.Top - (rc.Bottom-rc.Top)/2 - 
+			m_pkFont->m_iRowHeight/2;
+	}
+
+	pair<int,int> kLength; // first = character, second = pixels.
+
+	// Must calc width if text should be centered.
+	if(iRenderDistFromLeft == ZG_CENTER_TEXT_HORZ)
+	{
+		while(offset < characters_totalt) // antal ord
+		{
+			kLength = GetWordLength(text, offset, max_width);
+
+			offset += kLength.first;
+			xpos += kLength.second;
+
+			if(xpos >= max_width)
+				break;
+		}
+
+		int row_length = xpos;
+
+		// reset values
+		xpos = 0;
+		offset = 0;
+
+		xpos = rc.Width()/2 - row_length/2;
+		iRenderDistFromLeft = 0;
+	}
+
+	glBegin(GL_QUADS);
+
+		while(offset < characters_totalt) // antal ord
+		{
+			kLength = GetWordLength(text, offset, 999999);//max_width);
+
+			int x = rc.Left + xpos - iRenderDistFromLeft;
+			PrintWord(x, y, text, offset, kLength.first);
+
+			offset += kLength.first;
+			xpos += kLength.second;
+
+		/*	if(xpos >= max_width)
+				break;*/
+		}
+
+		// Print cursor outside the loop if last character.
+		if(iCursorPos == characters_totalt)
+		{
+			int x = rc.Left + xpos - iRenderDistFromLeft;
+
+			if(x < rc.Left + 2)
+				x = rc.Left + 2;
+			
+			float prevcolor[3] = {
+				m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]
+			};
+
+			m_afTextColor[0]=m_afTextColor[1]=m_afTextColor[2]=0;
+
+			PrintWord(x, y, "|", 0, 1);
+
+			m_afTextColor[0]=prevcolor[0];
+			m_afTextColor[1]=prevcolor[1];
+			m_afTextColor[2]=prevcolor[2];
+		}
+
+	glEnd();
+
+	chars_printed = offset;
+
+	return true;
+}
+
+void GLGuiRender::PrintWord(int x, int y, char *szWord, 
+							int offset, int length)
+{
+	int i, fx, fy, fw, fh, pos, iCurrLegth;
+	float tx, ty, tw, th;
+
+	for(i=offset; i<offset+length; i++)
+	{
+		// Print cursor
+		if(i == m_iCursorPos && !(m_iCursorPos == 0 && strlen(szWord) <= 1))
+		{
+			int iCursorX = x;
+			int iCursorY = y;
+
+			int index = '|';
+			fx = m_pkFont->m_aChars[index].iPosX;
+			fy = m_pkFont->m_aChars[index].iPosY;
+			fw = m_pkFont->m_aChars[index].iSizeX;
+			fh = m_pkFont->m_aChars[index].iSizeY;
+
+			tx = (float) fx / m_pkFont->m_iTextureWidth;
+			ty = (float) fy / m_pkFont->m_iTextureHeight;
+			tw = (float) fw / m_pkFont->m_iTextureWidth;
+			th = (float) fh / m_pkFont->m_iTextureHeight;
+
+			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
+								// som en kompensation för tecknets egen storlek.
+
+//			glColor3f(0,0,0);
+
+			glTexCoord2f(tx,1-ty);			glVertex2i(iCursorX,iCursorY+fh);		 
+			glTexCoord2f(tx+tw,1-ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
+			glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(iCursorX+fw,iCursorY);    
+			glTexCoord2f(tx,1-ty-th);		glVertex2i(iCursorX,iCursorY);
+		}
+
+		pos = szWord[i]; // m_pkFont->m_mapChars[ szWord[i] ];
+		if(pos < 0 || pos > 255)
+			continue;
+		if(szWord[i] == '\n')
+			return;
+
+		// Do tags
+		if(szWord[i] == '<'){
+			m_bSearchForSytax = true;
+			continue;
+		} else if(szWord[i] == '>'){
+			DoTextTag();
+			continue;
+		} else if(m_bSearchForSytax){
+			m_strSyntax.push_back(szWord[i]);
+			continue;
+		}
+
+		fx = m_pkFont->m_aChars[pos].iPosX;
+		fy = m_pkFont->m_aChars[pos].iPosY;
+		fw = m_pkFont->m_aChars[pos].iSizeX;
+		fh = m_pkFont->m_aChars[pos].iSizeY;
+
+		iCurrLegth = fw;
+
+		if(m_rcTextBox.Inside(x, y) && szWord[i] != ' ')
+		{
+			if( !m_bClipperEnabled || (m_bClipperEnabled && 
+				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
+				 y < m_iScreenHeight-m_rcClipperArea.Top && 
+				 y+fh > m_iScreenHeight-m_rcClipperArea.Bottom))
+			{
+				tx = (float) fx / m_pkFont->m_iTextureWidth;
+				ty = (float) fy / m_pkFont->m_iTextureHeight;
+				tw = (float) fw / m_pkFont->m_iTextureWidth;
+				th = (float) fh / m_pkFont->m_iTextureHeight;
+
+				glColor4f(m_afTextColor[0], m_afTextColor[1], m_afTextColor[2], 1);
+				
+				
+
+				glTexCoord2f(tx,1-ty);			glVertex2i(x,y+fh);		 
+				glTexCoord2f(tx+tw,1-ty);		glVertex2i(x+fw,y+fh);    
+				glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(x+fw,y);    
+				glTexCoord2f(tx,1-ty-th);		glVertex2i(x,y);
+			}
+		}
+
+		x+=iCurrLegth;
+	}
+}
+
+
+pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
+{
+	int char_counter = 0;
+	int length_counter = 0;
+
+	int iMax = strlen(text);
+	for(int i=offset; i<iMax; i++)
+	{
+		if(text[i] == '\n')
+		{
+			char_counter++;
+			break;
+		}
+
+		int index = text[i];
+		if(index < 0 || index > 255)
+		{
+			char_counter++;
+			continue;
+		}
+
+		// Do tags
+		if(text[i] == '<'){
+			m_bSearchForSytax = true;
+		} else if(text[i] == '>'){
+			m_bSearchForSytax = false;
+		} 
+		else
+		if(m_bSearchForSytax == false)
+		{
+			if(text[i] != '\n')
+				length_counter += m_pkFont->m_aChars[index].iSizeX;
+		}
+
+		// Break words bigger then then the length
+		// of one row in the textbox.
+		if(length_counter > max_width)
+			break;
+
+		char_counter++;
+
+		if(text[i] == ' ')
+			break;
+	}
+
+	return pair<int,int>(char_counter, length_counter);
 }

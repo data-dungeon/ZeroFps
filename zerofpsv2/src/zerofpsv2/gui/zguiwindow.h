@@ -159,6 +159,7 @@ protected:
 
 	int m_iResolutionX, m_iResolutionY;
 	
+	ZGuiResourceManager* m_pkResMan;
 	ZGuiWnd* m_pkParent;
 	list<ZGuiWnd*> m_kChildList;
 	ZGui* m_pkGUI;

@@ -35,21 +35,21 @@ public:
 	bool RenderRects(vector<tRGBRect>& akLines);
 	bool RenderBorder(Rect kScreenRect);
 	bool SetSkin(ZGuiSkin* pkSkin);
-	void RenderText( char *stText, Rect kScreenRect, 
-		int iCursorPos, int iRenderDistFromTop, bool bMultiLine,
-		int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
 	bool SetDisplay(int w, int h);
-	bool SetFont(ZGuiFont* pkFont);
 	void GetScreenSize(int& cx, int& cy);
 	void GetScaleMode(GUIScaleMode& eGUIScaleMode) { eGUIScaleMode = m_eGUIScaleMode; } 
 	void SetScaleMode(GUIScaleMode eGUIScaleMode);
 	void SetClipperArea(Rect rc);
+
+	bool SetFont(ZGuiFont* pkFont);
+	void RenderText( char *stText, Rect kScreenRect, 
+		int iCursorPos, int iRenderDistFromTop, bool bMultiLine,
+		int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
 	
 private:
 
 	void PrintWord(int x, int y, char* szWord, int offset, int length);
 	pair<int,int> GetWordLength(char* text, int offset, int max_width);
-
 	bool PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop, 
 		int& chars_printed, int& rows_printed);
 	bool PrintRow(char* text, Rect rc, int iCursorPos, 

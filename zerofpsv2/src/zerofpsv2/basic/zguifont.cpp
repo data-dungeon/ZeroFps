@@ -7,37 +7,11 @@
 #include "image.h"
 #include "zfvfs.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-ZGuiFont::ZGuiFont(char cCharsOneRow, char cCharacterCellSize, char cPixelGapBetweenChars, int iID)
+ZGuiFont::ZGuiFont(char* szName)
 {
-	m_iID = iID;
-	m_iBMPWidth = 256;
-	m_cCharCellSize = cCharacterCellSize;
-	m_cCharsOneRow = cCharsOneRow;
-	m_cPixelGapBetweenChars = cPixelGapBetweenChars;
-	m_szFileName = ""; // "NONE"
-	m_iType=0;
-
-	int counter=0;
-	int cRowWidth = m_cCharCellSize*m_cCharsOneRow;
-	for(int y=0; y<cRowWidth; y+=m_cCharCellSize)
-	{
-		for(int x=0; x<cRowWidth; x+=m_cCharCellSize)
-		{
-			m_aChars[counter].iPosX = x;
-			m_aChars[counter].iPosY = y;
-			m_aChars[counter].iSizeX = m_cCharCellSize;
-			m_aChars[counter].iSizeY = m_cCharCellSize;
-			counter++;
-
-			if(counter > 255)
-				goto stop;
-		}
-	}
-	stop: { /*printf("jolly jumper\n");*/ }
+	memset(m_aChars, 0, 255*sizeof(CHARINFO));
+	strcpy(m_szNameID, szName);
+	strcpy(m_szImageName, "");
 }
 
 ZGuiFont::~ZGuiFont()
@@ -45,152 +19,79 @@ ZGuiFont::~ZGuiFont()
 
 }
 
-bool ZGuiFont::CreateFromFile(char* szFileName)
+bool ZGuiFont::Create(char* szInfoFile, int iTexID)
 {
-
-/*	ZFVFileSystem* pkFileSys;
-	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
-	string strFull = pkFileSys->GetFullPath(szFileName);*/
-
 	ZFVFile kFile;
-	if(!kFile.Open(szFileName,0,false))
+	if(!kFile.Open(szInfoFile,0,false))
 	{
-		printf("Failed to open file for creating font\n");
+		printf("Failed to open info [%s] file for creating font\n", szInfoFile);
 		return false;
 	}
 
-	Image kImage;
-	bool bSuccess = kImage.load(kFile.m_pkFilePointer, szFileName);
+	m_iTextureID = iTexID;
 
-	if(!bSuccess)
+	fread(&m_iTextureWidth, sizeof(int), 1, kFile.m_pkFilePointer);
+	fread(&m_iTextureHeight, sizeof(int), 1, kFile.m_pkFilePointer);
+	fread(&m_iRowHeight, sizeof(int), 1, kFile.m_pkFilePointer);
+	fread(&m_iSpaceWidth, sizeof(int), 1, kFile.m_pkFilePointer);
+	fread(&m_iNumLetters, sizeof(int), 1, kFile.m_pkFilePointer);
+
+	if(m_iNumLetters < 1 || m_iNumLetters > 255)
 	{
-		printf("font generation: Failed to find bitmap file [%s]!\n", szFileName);
+		printf("Failed to create font\n");
 		return false;
 	}
 
-	m_szFileName = string(szFileName);	
+	int* piLettersRect = new int[4*m_iNumLetters];
+	fread(piLettersRect, sizeof(int)*4, m_iNumLetters, kFile.m_pkFilePointer);
 
-	m_iType = 0; // bmp
-
-	FILE* pkFile = NULL;
-
-	bool bIsTGA = false;
-	if(m_szFileName.find(".tga") != string::npos)
+	CHARINFO undef =
 	{
-		bIsTGA = true;
-		m_iType = 1;
+		piLettersRect[(m_iNumLetters-1)*4], 
+		piLettersRect[(m_iNumLetters-1)*4+1],
+		piLettersRect[(m_iNumLetters-1)*4+2]-piLettersRect[(m_iNumLetters-1)*4], 
+		piLettersRect[(m_iNumLetters-1)*4+3]-piLettersRect[(m_iNumLetters-1)*4+1]
+	};
 
-		//pkFile = fopen("apa.txt", "wt");
-
-		//for(int y=0; y<kImage.m_iWidth; y++)
-		//{
-		//	for(int x=0; x<kImage.m_iWidth; x++)
-		//	{
-		//		color_rgba kCurrColor;
-		//		kImage.get_pixel(x, kImage.m_iWidth-1-y, kCurrColor); 
-		//		fprintf(pkFile, "%i ", (int) (kCurrColor.a));
-
-		//		if(kCurrColor.a < 10)
-		//			fprintf(pkFile, " ");
-		//		if(kCurrColor.a < 100)
-		//			fprintf(pkFile, " ");
-		//	}
-
-		//	fprintf(pkFile, "\n");
-		//}
-
-		//return false;
-
+	for(int i=0; i<255; i++)
+	{
+		m_aChars[i].iPosX = undef.iPosX; m_aChars[i].iPosY = undef.iPosY;
+		m_aChars[i].iSizeX = undef.iSizeX; m_aChars[i].iSizeY = undef.iSizeY;
 	}
 
-	m_iBMPWidth = kImage.m_iWidth;
+	static char aLetters[] =
+	{
+		'!','"','#','$','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8',
+		'9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
+		'P','Q','R','S','T','U','V','W','X','Y','Z','[','\\',']','^','_','a','b','c','d','e','f','g',
+		'h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','}','|',''
+	};
 
-	color_rgba kBkColor, kCurrColor;
-	kImage.get_pixel(0,0,kBkColor); 
+	for(int i=0; i<m_iNumLetters; i++)
+	{
+		int index = (int)aLetters[i];
+		m_aChars[index].iPosX = piLettersRect[i*4];
+		m_aChars[index].iPosY = piLettersRect[i*4+1];
+		m_aChars[index].iSizeX = piLettersRect[i*4+2]-m_aChars[index].iPosX;
+		m_aChars[index].iSizeY = piLettersRect[i*4+3]-m_aChars[index].iPosY;
+	}
 
-	int sqr = 0;
-	int cRowWidth = m_cCharCellSize*m_cCharsOneRow;
-	for(int ry=0; ry<cRowWidth; ry+=m_cCharCellSize)
-		for(int rx=0; rx<cRowWidth; rx+=m_cCharCellSize)
-		{
-			int min_x=m_cCharCellSize+1, max_x=0, min_y=m_cCharCellSize+1, max_y=0;
-			for(int py=0;py<m_cCharCellSize;py++)
-				for(int px=0;px<m_cCharCellSize;px++)
-				{				
-					if(bIsTGA == false)
-						kImage.get_pixel(rx + px, ry + py,kCurrColor); 
-					else
-						kImage.get_pixel(rx + px, m_iBMPWidth-1-(ry + py),kCurrColor); 
-
-					bool bBkColor = true; // vi antar att det är bakgrundfärg
-
-					if(bIsTGA)
-					{
-						if(kCurrColor.a > 5)
-							bBkColor = false;
-					}
-					else
-					{
-						//if(!(kCurrColor.r == 255 && kCurrColor.g == 255 && kCurrColor.b == 255)) // < 85)
-						if(kCurrColor.r < 85)
-							bBkColor = false;
-					}
-
-					if(!bBkColor && px > max_x)
-						max_x=px;
-					if(!bBkColor && px < min_x)
-						min_x=px-1;
-					if(!bBkColor && py > max_y)
-						max_y=py;
-					if(!bBkColor && py < min_y)
-						min_y=py-1;
-				}
-
-			if(max_x && max_y)
-			{
-				m_aChars[sqr].iPosX = rx+min_x-1;
-				m_aChars[sqr].iPosY = ry;//ry+min_y;
-				m_aChars[sqr].iSizeX = max_x-min_x+3;
-				m_aChars[sqr].iSizeY = m_cCharCellSize;//max_y-min_y+1;
-			}
-			else
-			{
-				m_aChars[sqr].iPosX = rx;
-				m_aChars[sqr].iPosY = ry;
-				m_aChars[sqr].iSizeX = m_cCharCellSize;
-				m_aChars[sqr].iSizeY = m_cCharCellSize;
-			}
-
-			sqr++;
-
-			if(sqr > 255)
-				goto stop;
-		}
-		stop: { /*printf("jolly jumper\n");*/ }
-
-	m_aChars[' '-32].iSizeX = m_aChars['t'-32].iSizeX;
-	m_aChars[' '-32].iSizeY = m_cCharCellSize;
-
-	if(pkFile != NULL)
-		fclose(pkFile);
-
+	m_aChars[' '].iSizeX = m_iSpaceWidth;
+	
 	return true;
 }
 
-unsigned short ZGuiFont::GetLength(const char *c_szText) const
+unsigned short ZGuiFont::GetLength(const char* c_szText) const
 {
 	unsigned short usLength = 0;
 	const int c_iTextLegth = strlen(c_szText);
 
 	for(int i=0; i<c_iTextLegth; i++)
 	{
-		int pos = c_szText[i]-32;
+		int pos = c_szText[i];
 		if(pos >= 0 && pos < 256)
 		{
 			usLength += m_aChars[pos].iSizeX;
-
-			if(c_szText[i] != ' ')
-				usLength += (unsigned short) m_cPixelGapBetweenChars;
 		}
 	}
 

@@ -8,6 +8,7 @@
 #include "../basic/zguifont.h"
 #include "zguiradiobutton.h"
 #include "zgui.h"
+#include "zguiresourcemanager.h"
 #include <typeinfo>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -139,8 +140,8 @@ void ZGuiCheckbox::UncheckButton()
 void ZGuiCheckbox::SetText(char* szText, bool bResizeWnd)
 {
 	ZGui* pkGui = GetGUI();
-	if(!m_pkFont && pkGui)
-		m_pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(!m_pkFont && m_pkResMan)
+		m_pkFont = m_pkResMan->Font("defguifont");
 	
 	m_pkLabel->SetText(szText, true);
 	m_pkLabel->Enable();
