@@ -65,7 +65,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 	
 	m_iShadowTexture = -1;
-	m_fShadowArea = 30;
+	m_fShadowArea = 15;
 	
 	glGenTextures(1, &m_iShadowTexture);
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
@@ -577,16 +577,22 @@ void Camera::RenderView()
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 		
 	
+
+	
 	//shuld be render shadowmaps?		
 	if((m_bShadowMap && m_pkZeroFps->GetShadowMap()))
 	{	
 		//scene center (use entity pos if any)
-		Vector3 kCenter;	
+/*		Vector3 kCenter;			
 		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_iEntity))
 			kCenter = pkEnt->GetIWorldPosV();		
 		else
-			kCenter = m_kPos;
+			kCenter = m_kPos;*/
+		Matrix4 kTrans = m_kRotM;
+		kTrans.Transponse();	
+		Vector3 kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;			
 			
+						
 		//setup light
 		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
 		
@@ -654,9 +660,14 @@ void Camera::RenderView()
 		
 		m_iCurrentRenderMode = RENDER_NONE;	
 	}
+	
+	
+	
 		
 	if(m_bDebugGraphs) 
 	{
+		//m_pkRender->Sphere(kCenter,1,1,Vector3(1,1,1),true);
+		
 		m_pkEntityMan->DrawZones();				
 		m_pkZeroFps->m_pkApp->RenderInterface();	
 			
