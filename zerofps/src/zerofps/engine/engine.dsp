@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\release\*.lib                                                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                                  $(ProjDir)\release\*.lib                                                   ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -87,11 +87,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 sdl_net.lib OpenAL32.lib ALut.lib script.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 sdl_net.lib OpenAL32.lib ALut.lib script.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# SUBTRACT LINK32 /profile
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                                      $(ProjDir)\debug\*.lib                                                                                      ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                                       $(ProjDir)\debug\*.lib                                                                                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -225,97 +226,7 @@ SOURCE=.\cameraproperty.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\collisionheightmap.cpp
-
-!IF  "$(CFG)" == "engine - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\collisionmanager.cpp
-
-!IF  "$(CFG)" == "engine - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\collisionpoint.cpp
-
-!IF  "$(CFG)" == "engine - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\collisionproperty.cpp
-
-!IF  "$(CFG)" == "engine - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\collisionshape.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\collisionsphere.cpp
-
-!IF  "$(CFG)" == "engine - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
