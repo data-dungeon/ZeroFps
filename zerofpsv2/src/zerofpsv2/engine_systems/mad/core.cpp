@@ -96,11 +96,13 @@ void Mad_Core::Save_MAD(const char* filename)
 	PrintCoreInfo();
 
 	ZFVFile kZFile;
-	if( !kZFile.Open(string(filename),0,true) ) {
+
+	if( !kZFile.Open(string(filename),0,true) ) 
+	{
 		cout << "Failed to open " << filename << endl;
 		return;
-		}
-
+	}
+ 
 	Mad_Header m_kMadHeader;
 	// Setup MAD Header.
 	m_kMadHeader.m_iVersionNum		= MAD_VERSION;

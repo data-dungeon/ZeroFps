@@ -15,7 +15,8 @@ extern ZFSystem g_ZFObjSys;
 
 ZFVFile::ZFVFile()
 {
-	m_pkFileSystem = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
+	m_pkFileSystem = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+	
 	m_pkFilePointer = NULL;
 	
 }
@@ -166,11 +167,11 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	else
 		szOptions = "rb";
 	
-	// Try to open file directly.  (this shuld not exist)
-/*	pkFp = fopen(strFileName.c_str(), szOptions);
+	// Try to open file directly.  (this should not exist)
+	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)
 		return pkFp;
-*/
+
 	
 	// Try to open from all active RootPaths.
 	unsigned int num_paths = m_kRootPath.size();	

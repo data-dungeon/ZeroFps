@@ -789,10 +789,10 @@ Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
 {
 	vector<Mad_CoreMesh>::iterator it;
 
-	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
+	for(int i = 0; i < m_kMesh.size(); i++)
 	{
-		if(strcmp(it->m_acName, ucaName) == 0)
-			return it;
+		if(strcmp(m_kMesh[i].m_acName, ucaName) == 0)
+			return &m_kMesh[i];
 	}
 
 	// Finns ingen mesh med det namnet så skapa den och returnera den.
