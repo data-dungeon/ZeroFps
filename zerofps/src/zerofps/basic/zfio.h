@@ -2,6 +2,7 @@
 #define _ZFIO_H_
 
 //#include <stdint.h>
+#include "basic_x.h"
 
 class BASIC_API ZFIo {
 	private:

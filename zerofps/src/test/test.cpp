@@ -47,6 +47,7 @@ void Test::OnInit(void) {
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
+
 //	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 	pkRender->SetFog(Vector4(0,0,0,1),8,100,200,true);
 	
@@ -86,7 +87,7 @@ void Test::OnInit(void) {
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
 //		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);	//Dag
-		sol->kDiffuse=Vector4(4,4,4,4);	//natt
+		sol->kDiffuse=Vector4(1,1,1,1);	//natt
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
@@ -103,7 +104,9 @@ void Test::OnInit(void) {
 	int i;
 	float waterlevel;
 	
-	for( i=0;i<100;i++) {
+
+	
+	for( i=0;i<2000;i++) {
 		Object *ball=new BallObject();
 		
 		// Place this tree somewere on land.
@@ -122,6 +125,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		//pkCollisionMan->Add(ball);
 	}
+
 
 	glEnable(GL_LIGHTING );
 	
@@ -171,14 +175,12 @@ void Test::OnInit(void) {
 	water->SetParent(hm);
 	pkObjectMan->Add(water);	
 	
-	
-
-
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
+
 
 	ZFObjectManger::GetInstance()->PrintObjects();
 }
@@ -224,6 +226,7 @@ void Test::OnIdle(void) {
 			}
 	}
 */
+
 
 	pkFps->SetCamera(cam1);		
 		pkFps->GetCam()->ClearViewPort();	

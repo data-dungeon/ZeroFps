@@ -5,6 +5,7 @@
 #include "fileio.h"
 #include "zfio.h"
 #include "zfiofile.h"
+#include "basic_x.h"
 
 using namespace std;
 

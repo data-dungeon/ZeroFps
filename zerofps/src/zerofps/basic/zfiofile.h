@@ -4,6 +4,7 @@
 #include "zfio.h"
 #include <cstdio>
 #include <errno.h>
+#include "basic_x.h"
 
 class BASIC_API ZFIoFile : public ZFIo {
 	private:
