@@ -1576,7 +1576,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					if( pkParent)
 					{
 						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
-							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode)  ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode) && 
+								typeid(*pkParent)!=typeid(ZGuiMenu) ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 						{
 							ZGuiWnd* pkMainWnd = m_pkActiveMainWin->pkWnd;
 
