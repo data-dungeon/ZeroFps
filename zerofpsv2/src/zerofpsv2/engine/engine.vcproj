@@ -229,9 +229,6 @@
 				RelativePath="..\engine_systems\propertys\p_billboardrender.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_body.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_camera.cpp">
 			</File>
 			<File
