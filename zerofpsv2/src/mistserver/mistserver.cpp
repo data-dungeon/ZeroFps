@@ -122,6 +122,9 @@ void MistServer::Init()
 
 	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
+	//set tracker los
+	m_pkEntityManager->SetTrackerLos(30);
+	
 	//enable debug graphics
 	m_pkZeroFps->SetDebugGraph(true);
 	

@@ -621,6 +621,13 @@ void ZeroFps::MakeDelay()
 		//	cout<<"Delaying:"<<fDelay<<endl;		
 		//end of delay code ---				
 	}
+	
+	/*
+	if(!(SDL_GetAppState() & SDL_APPACTIVE))
+		m_bRenderOn = false;
+	else
+		m_bRenderOn = true;
+	*/
 }
 
 void ZeroFps::AddRenderCamera(Camera* pkCamera)

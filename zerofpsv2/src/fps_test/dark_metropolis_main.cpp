@@ -83,7 +83,7 @@ void DarkMetropolis::OnInit()
 	m_pkEntityManager->SetTimeScale(1.0);
 	
 	//set tracker los
-	m_pkEntityManager->SetTrackerLos(5);
+	m_pkEntityManager->SetTrackerLos(25);
 	
 	//enable light
 	m_pkLight->SetLighting(true);
