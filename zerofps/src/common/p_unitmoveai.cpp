@@ -40,9 +40,9 @@ void P_UnitMoveAI::Init()
 	}
 
 	int aiCost[5];
-	aiCost[0] = 15; // gräs (grön nyans)
-	aiCost[1] = 1;  // väg (röd nyans)
-	aiCost[2] = 7;  // sten (blå nyans)
+	aiCost[0] = 5; // gräs (grön nyans)
+	aiCost[1] = 1; // väg (röd nyans)
+	aiCost[2] = 8; // sten (blå nyans)
 	aiCost[3] = 10; // öken (röd nyans)
 	aiCost[4] = 999; // vatten
 
@@ -85,23 +85,6 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 			else
 				return NULL;
 				
-/*
-			m_kEndPoint = Point(iXDestinaton,iYDestinaton);
-			m_kStartPoint.x =  m_pkMap->m_iHmSize/2+ceil((m_pkObject->GetPos()).x / HEIGHTMAP_SCALE);
-			m_kStartPoint.y = m_pkMap->m_iHmSize/2+ceil((m_pkObject->GetPos()).z / HEIGHTMAP_SCALE);			
-			
-			if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y) == false)
-			{
-				m_kEndPoint = m_kStartPoint;
-				printf("Pathfinding Failed\n");
-				return NULL;
-			} 
-			else
-			{
-				kCurretDestination = m_pkObject->GetPos();
-				m_iCurrentState=UNIT_MOVE;
-				return this;
-			}*/
 		}
 	}
 	return NULL;
@@ -114,7 +97,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 	case UNIT_MOVE:
 		{
 			
-			if(!MoveTo(kCurretDestination))
+			if(!MoveTo(m_kCurretDestination))
 			{
 				cout<<"Reached destination"<<endl;
 
@@ -122,9 +105,11 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				if(!m_pkPathFind->GetNextStep(iX,iY))
 				{
 					cout<<"no new destination"<<endl;
-					//set pos one finale time to prevent ugly interpolation
+					
+					//set pos one finale time to prevent ugly interpolation					
 					m_pkObject->SetPos(m_pkObject->GetPos());					
-		
+					m_pkObject->SetPos(m_pkObject->GetPos());					
+					
 					m_iCurrentState = -1;
 					return NULL;
 				}		
@@ -136,12 +121,18 @@ AIBase* P_UnitMoveAI::UpdateAI()
 						
 				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
-					TileEngine::m_pkInstance->AddUnit(kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
-					m_pkPathFind->Reset();	
+					TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
+					m_pkPathFind->Reset();						
 					m_iCurrentState = -1;
+					
+					//set pos one finale time to prevent ugly interpolation										
+					m_pkObject->SetPos(m_pkObject->GetPos());					
+					m_pkObject->SetPos(m_pkObject->GetPos());					
 					return NULL;
 				}						
 						
+				m_fSpeedMod = 1 - (m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
+				
 			
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
@@ -151,13 +142,13 @@ AIBase* P_UnitMoveAI::UpdateAI()
 
 				float fY = m_pkMap->Height(fX,fZ);
 			
-				kCurretDestination.Set(fX,fY,fZ);
+				m_kCurretDestination.Set(fX,fY,fZ);
 								
 				//tell tile engine that im standing on kCurretDestination now
-				TileEngine::m_pkInstance->AddUnit(kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
+				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
 				
 				//now we can move 
-				MoveTo(kCurretDestination);
+				MoveTo(m_kCurretDestination);
 			}
 			
 			
@@ -172,9 +163,11 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 {
 	float fVel = 10;	
 		
+	fVel *= m_fSpeedMod; 
+		
 	if( (m_pkObject->GetPos() - kPos).Length() < (fVel * m_pkFps->GetGameFrameTime()))
 	{
-		m_pkObject->SetPos(kPos);		
+		//m_pkObject->SetPos(kPos);		
 		return false;
 	}
 
@@ -196,7 +189,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 {
 	cout<<"Path finding"<<endl;
-
+	
 	m_kStartPos = kStart;
 	m_kEndPos = kStop;
 
@@ -214,7 +207,7 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 	} 
 	else
 	{
-		kCurretDestination = m_pkObject->GetPos();
+		m_kCurretDestination = m_pkObject->GetPos();
 		m_iCurrentState=UNIT_MOVE;
 		return true;
 	}

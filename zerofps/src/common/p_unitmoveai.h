@@ -36,7 +36,8 @@ private:
 	Point 				m_kStartPoint, m_kEndPoint;
 	Vector3				m_kStartPos,m_kEndPos;
 	
-	Vector3				kCurretDestination;	
+	Vector3				m_kCurretDestination;	
+	float					m_fSpeedMod;
 	
 	P_ServerUnit*		m_pkUnit;
 	ExternalCommand*	m_pkMoveUnitCommand;
