@@ -13,30 +13,35 @@
 
 enum MCOMMON_API eMLItemTypes
 {
-	MLITEM_DEFAULT = 		0,
+	MLITEM_MISC =	 		0,
 	MLITEM_HELMET = 		1,
 	MLITEM_BOOTS = 		2,
-	MLITEM_LIGHT_ARMOR = 3,
-	MLITEM_HEAVY_ARMOR = 4,	
-
+	MLITEM_ARMOR = 		3,
+	MLITEM_RING =			4,
+	MLITEM_SHIELD = 		5,
+	MLITEM_WEAPON=			6,
+	MLITEM_BELT = 			7,
 };
+
 
 class MCOMMON_API MLItemStats
 {
 public:
-	int m_iValue;				 // vad föremålet kostar att köpa / sälja
+	int	m_iValue;				 // vad föremålet kostar att köpa / sälja
 	
-	float	m_fArmourVal;
-	float	m_fSpeedVal;
-	float	m_iMaxLifeVal;
-	float	m_fAim;
-
+	//weapon
+	string		m_strWeaponType;
+	int			m_iMinDamage;
+	int			m_iMaxDamage;	
+	
+	//armor
+	string		m_strArmorType;
+	int			m_iArmorClass;
+	
+	
 	MLItemStats()
 	{
-		m_fArmourVal = 0;
-		m_fSpeedVal = 0;
-		m_iMaxLifeVal = 0;
-		m_fAim = 0;
+	
 	}
 };
 

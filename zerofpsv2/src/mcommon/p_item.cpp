@@ -18,7 +18,7 @@ P_Item::P_Item()
 	m_strName = "Unnamed Item";
 	m_strIcon = "default.bmp";
 	m_iSizeX = 1;	
-	m_iSizeY = 1;	
+	m_iSizeY = 1;
 	m_iType = 0;
 
 	m_iInContainerID = -1;

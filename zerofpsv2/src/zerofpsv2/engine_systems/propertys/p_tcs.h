@@ -61,7 +61,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bRemoveOnSleep;
 		bool		m_bNoColRespons;
 		
-      Vector3	m_kRotVel;
 
 		Vector3	m_kExternalLinearForce;
 		Vector3	m_kExternalRotForce;
@@ -151,7 +150,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 
-      void SetRotVel (Vector3 kRotVel)			{m_kRotVel = kRotVel; }		
+      void SetRotVel (Vector3 kRotVel)			{Wakeup();m_kRotVelocity = kRotVel; }		
+		void SetLinVel (Vector3 kLinVel)			{Wakeup();m_kLinearVelocity = kLinVel; }		
 		//void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
 		void SetTestType(int iTest)				{m_iTestType = iTest;};
 		void SetRadius(float t) 					{m_fRadius = t;};
@@ -182,10 +182,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 };
 
 
-namespace SI_PTcs
-{
-	int ENGINE_SYSTEMS_API ApplyImpulsLua(lua_State* pkLua);
-}
 
 Property* Create_P_Tcs();
 void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps);

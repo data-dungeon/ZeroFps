@@ -16,7 +16,7 @@ P_Tcs::P_Tcs()
 	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 		
 	bNetwork		= false;
-	m_iVersion	= 2;
+	m_iVersion	= 3;
 	
 	
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
@@ -55,7 +55,6 @@ P_Tcs::P_Tcs()
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
 
-   m_kRotVel.Set(0,0,0);
 	m_kExternalLinearForce.Set(0,0,0);
 	m_kExternalRotForce.Set(0,0,0);
 	
@@ -167,7 +166,9 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);					
 	pkPackage->Write((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 			
-	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+	//pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+	pkPackage->Write(m_kLinearVelocity);								
+	pkPackage->Write(m_kRotVelocity);								
 	
 	pkPackage->Write((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
 	pkPackage->Write((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);		
@@ -207,7 +208,8 @@ void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
 			pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 							
-			pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+			Vector3 dummy;
+			pkPackage->Read((void*)&dummy,sizeof(dummy),1);								
 			
 			pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
 			pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
@@ -247,7 +249,8 @@ void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
 			pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 							
-			pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+			Vector3 dummy;
+			pkPackage->Read((void*)&dummy,sizeof(dummy),1);									
 			
 			pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
 			pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
@@ -260,6 +263,43 @@ void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 		
 			break;
 		}			
+		
+		case 3:
+		{
+			pkPackage->Read((void*)&m_kBoxSize,sizeof(m_kBoxSize),1);
+			pkPackage->Read((void*)&m_iTestType,sizeof(m_iTestType),1);
+			pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
+			pkPackage->Read((void*)&m_iGroup,sizeof(m_iGroup),1);	
+			pkPackage->Read((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
+			pkPackage->Read((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
+			pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
+			pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
+			pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
+			pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
+		
+			pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);		
+			pkPackage->Read((void*)&m_fFriction,sizeof(m_fFriction),1);											
+			pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
+			pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
+			pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
+			pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
+			pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
+							
+			pkPackage->Read(m_kLinearVelocity);								
+			pkPackage->Read(m_kRotVelocity);									
+			
+			pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
+			pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
+			pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
+			
+			pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
+			pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
+			pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);											
+			pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);						
+		
+			break;
+		}			
+		
 	}					
 }
 
@@ -824,120 +864,154 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 /**	\brief Script functions for Tcs
 	\ingroup si
 */
-class SITcs { };
-
 
 namespace SI_PTcs
 {
 
-/**	\fn ApplyImpuls( Entity, Table.xyz)
- 	\relates SITcs
-	\brief Adds a one time impulse to the entity.
-
-	Impulse is given in the direction specified by xyz.
-*/
-int ApplyImpulsLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	/**	\fn ApplyImpuls( Entity, Table.xyz)
+		\relates SITcs
+		\brief Adds a one time impulse to the entity.
+	
+		Impulse is given in the direction specified by xyz.
+	*/
+	int ApplyImpulsLua(lua_State* pkLua)
 	{
-		double dId;
-		vector<TABLE_DATA> vkData;
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-
-		Vector3 kDir((float) (*(double*) vkData[0].pData),
-						(float) (*(double*) vkData[1].pData),
-						(float) (*(double*) vkData[2].pData));
-
-		if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
+		if(g_pkScript->GetNumArgs(pkLua) == 2)
 		{
-			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+			double dId;
+			vector<TABLE_DATA> vkData;
+	
+			g_pkScript->GetArgNumber(pkLua, 0, &dId);
+			g_pkScript->GetArgTable(pkLua, 2, vkData);
+	
+			Vector3 kDir((float) (*(double*) vkData[0].pData),
+							(float) (*(double*) vkData[1].pData),
+							(float) (*(double*) vkData[2].pData));
+	
+			if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
 			{
-				pkTcs->ApplyImpulsForce(kDir);
-				return 1;
+				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+				{
+					pkTcs->ApplyImpulsForce(kDir);
+					return 1;
+				}
 			}
-		}
-		return 0;
-	}
-
-   return 0;	
-
-}
-
-int SetObjectRotVelLua (lua_State* pkLua)
-{
-	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
-
-	if(iNrArgs != 2)
-		return 0;
-
-	double dID;
-	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
-
-	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
-
-	if(pkObject)
-	{
-		vector<TABLE_DATA> vkData;
-		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
-
-      // Get physic-property
-      P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs");
-
-      if ( pkTcs )
-      {
-		   pkTcs->SetRotVel (  Vector3(
-			   (float) (*(double*) vkData[0].pData),
-			   (float) (*(double*) vkData[1].pData),
-			   (float) (*(double*) vkData[2].pData)) );
-      }
-      else
-         cout << "Warning! Tried to set RotVel on a object without P_Tcs!" << endl;
-
-		g_pkScript->DeleteTable(vkData);
-	}
-
-	return 1;
-}
-
-int BounceLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
-		return 0;
-	
-	double id;	
-	g_pkScript->GetArgNumber(pkLua, 0, &id);		
-
-
-	Entity* ent = g_pkObjMan->GetEntityByID((int)id);
-	
-	if(ent)
-	{
-		Vector3 vel = ent->GetVel();
-		
-		if(vel.y > 0)
 			return 0;
-		
-		if(abs((int)vel.y) < 1)
+		}
+	
+		return 0;	
+	
+	}
+	
+	int SetObjectRotVelLua (lua_State* pkLua)
+	{
+		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+	
+		if(iNrArgs != 2)
+			return 0;
+	
+		double dID;
+		g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+	
+		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
+	
+		if(pkObject)
 		{
-			ent->SetVel(Vector3(0,0,0));
-			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
-			if(ts)
-				ts->SetGravity(false);
-			
-			return 0;
-		}
-		
-		vel.y = (float) abs((int)vel.y);
+			vector<TABLE_DATA> vkData;
+			g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
 	
-		vel*=0.9;			//dämpnings faktor
-		
-		ent->SetVel(vel);
+			// Get physic-property
+			P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs");
+	
+			if ( pkTcs )
+			{
+				pkTcs->SetRotVel (  Vector3(
+					(float) (*(double*) vkData[0].pData),
+					(float) (*(double*) vkData[1].pData),
+					(float) (*(double*) vkData[2].pData)) );
+			}
+			else
+				cout << "Warning! Tried to set RotVel on a object without P_Tcs!" << endl;
+	
+			g_pkScript->DeleteTable(vkData);
+		}
+	
+		return 1;
 	}
 	
-	return 0;
-}
+	int SetObjectLinVelLua (lua_State* pkLua)
+	{
+		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+	
+		if(iNrArgs != 2)
+			return 0;
+	
+		double dID;
+		g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+	
+		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
+	
+		if(pkObject)
+		{
+			vector<TABLE_DATA> vkData;
+			g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+	
+			// Get physic-property
+			P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs");
+	
+			if ( pkTcs )
+			{
+				pkTcs->SetLinVel(  Vector3(
+					(float) (*(double*) vkData[0].pData),
+					(float) (*(double*) vkData[1].pData),
+					(float) (*(double*) vkData[2].pData)) );
+			}
+			else
+				cout << "Warning! Tried to set LinVel on a object without P_Tcs!" << endl;
+	
+			g_pkScript->DeleteTable(vkData);
+		}
+	
+		return 1;
+	}	
+	
+	int BounceLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 1)
+			return 0;
+		
+		double id;	
+		g_pkScript->GetArgNumber(pkLua, 0, &id);		
+	
+	
+		Entity* ent = g_pkObjMan->GetEntityByID((int)id);
+		
+		if(ent)
+		{
+			Vector3 vel = ent->GetVel();
+			
+			if(vel.y > 0)
+				return 0;
+			
+			if(abs((int)vel.y) < 1)
+			{
+				ent->SetVel(Vector3(0,0,0));
+				P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
+				if(ts)
+					ts->SetGravity(false);
+				
+				return 0;
+			}
+			
+			vel.y = (float) abs((int)vel.y);
+		
+			vel*=0.9;			//dämpnings faktor
+			
+			ent->SetVel(vel);
+		}
+		
+		return 0;
+	}
 
 }
 
@@ -955,5 +1029,6 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
 	g_pkScript->ExposeFunction("SetRotVel",	SI_PTcs::SetObjectRotVelLua);
+	g_pkScript->ExposeFunction("SetLinVel",	SI_PTcs::SetObjectLinVelLua);	
 	g_pkScript->ExposeFunction("Bounce",		SI_PTcs::BounceLua);				
 }
