@@ -1,4 +1,6 @@
-complink *.cpp
+#rm -f *.o
+../complink "*.cpp"
+./relink
 #g++ *.cpp -c -O3
 #./relink
 #g++ *.o -o ../../bin/zeroedit -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib

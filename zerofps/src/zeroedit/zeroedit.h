@@ -98,7 +98,7 @@ class ZeroEdit :public Application {
 		float m_fDrawRate;
 		int m_iLandType;
 		bool m_bDrawing;
-		bool m_iRandom;
+		int m_iRandom;
 
 		bool m_bMenuActive;
 	

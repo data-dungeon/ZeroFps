@@ -56,16 +56,13 @@ void ZeroEdit::OnInit(void)
 	m_pkMap=pkLevelMan->GetHeightMap();
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
-//	m_pkCamObj->AddProperty("CameraProperty");
-
 	glEnable(GL_LIGHTING);
-	
 
 	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
 	
-	pkObjectMan->SetUpdate(false);
-	pkPhysEngine->SetUpdate(false);
+//	pkObjectMan->SetUpdate(false);
+//	pkPhysEngine->SetUpdate(false);
 	
 	m_pkCurentChild=NULL;
 	
@@ -111,6 +108,19 @@ void ZeroEdit::OnInit(void)
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
 */	
+
+/*
+	Plane plan;
+	plan.Set(Vector3(-1,-1,0),Vector3(10,10,0));	
+	Vector3 pos1(0,0,0);
+	Vector3 pos2(1,1,0);	
+	Vector3 res;
+	plan.LineTest(pos1,pos2,&res);	
+	cout<<"resultat: " <<res.x<<" "<<res.y<<" "<<res.z<<endl;
+	
+	exit(1);
+*/
+
 }
 
 
@@ -119,25 +129,14 @@ void ZeroEdit::OnIdle(void)
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 
+
+//	pkRender->DrawBox(Vector3(0,10,0),Vector3(pkFps->GetTicks()*100,0,0),Vector3(5,5,5));
+
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		
-		
-//	Vector3 ba(-45,180,0);
-//	cout<<"x = "<<ba.AToU().x<<" Y = "<<ba.AToU().y<<" Z = "<<ba.AToU().z<<endl;	
-/*	
-	pkRender->Line(Vector3(0,10,0),Vector3(0,10,0) + pkFps->GetCam()->GetRot().AToU()*5);
 	
-	list<PhysicProperty*> bla;
-	bla.clear();
-	pkPhysEngine->TestLine(&bla,Vector3(0,10,0),pkFps->GetCam()->GetRot().AToU());
+		
 
-	cout<<"BLA"<<bla.size()<<endl;
-
-	for(list<PhysicProperty*>::iterator it=bla.begin();it!=bla.end();it++) 
-	{	
-//		cout<<"OBJECT "<<(*it)->GetObject()->GetName().c_str()<<endl;
-	}
-*/	
 	SetPointer();
 	DrawMarkers();
 
@@ -360,23 +359,29 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 			
 		case FID_LOADIMAGEMAP:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("Please Supply a filename");
+			{
+				if(kCommand->m_kSplitCommand.size() <= 1) {
+					pkConsole->Printf("Please Supply a filename");
+					break;
+				}
+			
+				m_pkCurentChild=NULL;
+				int oldsize=m_pkMap->GetSize();
+					
+				if(!m_pkMap->LoadImageHmap(kCommand->m_kSplitCommand[1].c_str())){
+					pkConsole->Printf("Could not load map =(");
+				} else  {		
+					m_pkMap->GenerateNormals(); 
+										
+					if(m_pkMap->GetSize() != oldsize)	//clear objects and reacreate zones if size dont match
+					{
+						pkLevelMan->ClearObjects();					//clear objects																					
+						pkLevelMan->CreateZones();			//recreate zones
+					}
+				}
+			
 				break;
 			}
-			
-			m_pkCurentChild=NULL;
-			
-			pkLevelMan->Clear();		//clear objects
-			if(!m_pkMap->LoadImageHmap(kCommand->m_kSplitCommand[1].c_str())){
-				pkConsole->Printf("Could not load map =(");
-			} else  {
-				m_pkMap->GenerateNormals(); 
-				m_pkMap->GenerateTextures();
-				pkLevelMan->CreateZones();
-			}
-			
-			break;
 	
 		case FID_SAVEMAP:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
@@ -763,9 +768,9 @@ void ZeroEdit::Input()
 					
 					if(m_iRandom){
 						object->GetRot().y=rand()%360;					
-						object->GetRot().x=((rand()%25000)-12500)/1000.0;
+						object->GetRot().x=((rand()%20000)-10000)/1000.0;
 
-						object->GetRot().z=((rand()%25000)-12500)/1000.0;					
+						object->GetRot().z=((rand()%20000)-10000)/1000.0;					
 					}else
 					{
 						object->GetRot().Set(0,0,0);
@@ -886,10 +891,10 @@ void ZeroEdit::SetPointer()
 
 void ZeroEdit::DrawMarkers()
 {
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.3);
+//	glEnable(GL_ALPHA_TEST);
+//	glAlphaFunc(GL_GREATER,0.3);
 	
-	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
+	pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
 	
 /*	
 	if(m_pkCurentParent!=NULL){
@@ -909,7 +914,7 @@ void ZeroEdit::DrawMarkers()
 		if(size < 1)
 			size=1;
 			
-		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
+		pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
 		
 		if(m_pkCurentChild->GetParent()){
 			pkRender->Line(m_pkCurentChild->GetParent()->GetPos(),m_pkCurentChild->GetPos());

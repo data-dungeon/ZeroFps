@@ -44,6 +44,9 @@ class PlayerControlProperty: public Property {
 	
 		float walk;
 		bool walking;
+		bool onGround;		
+		Vector3 GroundNormal;
+		//Vector3 OldWalkVel;
 		
 		Sound *walksound;		
 		
@@ -55,13 +58,13 @@ class PlayerControlProperty: public Property {
 		float	m_fCamSwitchTimer;
 
 	public:
-		bool onGround;
+
 		
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 		~PlayerControlProperty();		
 
 		void Update();
-		void Touch(Object* pkObject);		
+		void Touch(Collision* pkCol);		
 		
 		void AddObject(InventoryProperty* pkProperty);
 		void RemoveObject(InventoryProperty* pkProperty);

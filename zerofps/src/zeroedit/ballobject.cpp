@@ -3,6 +3,8 @@
 #include "../game/teleportproperty.h"
 #include "../game/statusproperty.h"
 
+#include "../zerofps/engine/csbox.h"
+
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
  
@@ -17,19 +19,24 @@ BallObject::BallObject() {
 */
 	
 //	m_iObjectType=OBJECT_TYPE_STATIC;
-	m_iObjectType=OBJECT_TYPE_STATDYN;
+	m_iObjectType=OBJECT_TYPE_DECORATION;
 
 	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
 //	AddProperty("StatusProperty");
 //	AddProperty("AdaptorSniper");
-	AddProperty("PhysicProperty");
+	PhysicProperty* pp=static_cast<PhysicProperty*>(AddProperty("PhysicProperty"));
+	pp->m_bGravity=false;
+	pp->m_bFloat=false;
+	pp->SetColShape(new CSBox(Vector3(1,1,1)));		
+
+	
 //	AddProperty("AutoParentProperty");	
 //	AddProperty("TeleportProperty");
 //	TeleportProperty* tp = dynamic_cast<TeleportProperty*>(GetProperty("TeleportProperty"));
 //	tp->SetToPos(Vector3(-7,8,394));	
 	
-	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
+//	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
 //	pp->SetColShape(new CSSphere(0.2));		
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.5;
 //	pp->m_bGravity=false;

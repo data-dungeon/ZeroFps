@@ -21,7 +21,7 @@ class MachineGunProjectile: public Property {
 		
 		MachineGunProjectile();	
 		void Update();
-		void Touch(Object* pkObject);
+		void Touch(Collision* pkCol);		
 };
 
 

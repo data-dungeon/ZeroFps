@@ -124,16 +124,23 @@ void PlayerControlProperty::Update() {
 		UseInvItem();	
 	}
 	
+	
+	if(onGround)
+		m_pkObject->GetVel()=vel;	
+	
+
 	if(m_pkInput->Action(m_iActionJump))
 	{
 		if(onGround){
-			vel.y=5;
+			//cout<<"walking on normal: "<<GroundNormal.x<<" "<<GroundNormal.y<<" "<<GroundNormal.z<<endl;
+			
+			m_pkObject->GetVel()+=GroundNormal*5;	
+		
+			//vel.y=5;
 			walking=false;
 		}
 	}
 	
-	
-	m_pkObject->GetVel()=vel;
 	
 	
 	//camera tilting when walking
@@ -207,12 +214,29 @@ void PlayerControlProperty::Update() {
 	onGround=false;
 };
 
-void PlayerControlProperty::Touch(Object* pkObject)
+void PlayerControlProperty::Touch(Collision* pkCol)
 {
-	Vector3 Dis=pkObject->GetPos()-m_pkObject->GetPos();	
-		
-	if(Dis.y<0)
+	Object* pkOther;
+	Vector3 kNormal;
+	
+	if(pkCol->m_pkPP1->GetObject() == (Object*)this)
+	{
+		pkOther=pkCol->m_pkPP2->GetObject();
+		kNormal=pkCol->m_kNormal2;
+	}
+	else
+	{
+		pkOther=pkCol->m_pkPP1->GetObject();
+		kNormal=pkCol->m_kNormal1;		
+	}
+
+	//cout<<"walking on normal: "<<kNormal.x<<" "<<kNormal.y<<" "<<kNormal.z<<endl;
+
+	if(Vector3(0,1,0).Dot(kNormal) > 0)
+	{
+		GroundNormal=kNormal.Unit();
 		onGround=true;
+	}
 }
 
 void PlayerControlProperty::AddObject(InventoryProperty* pkProperty)

@@ -32,8 +32,16 @@ void MachineGunProjectile::Update()
 
 }
 
-void MachineGunProjectile::Touch(Object* pkObject)
+void MachineGunProjectile::Touch(Collision* pkCol)
 {
+	Object* pkObject;
+	
+	if(pkCol->m_pkPP1->GetObject() == (Object*)this)
+		pkObject=pkCol->m_pkPP2->GetObject();
+	else
+		pkObject=pkCol->m_pkPP1->GetObject();	
+	
+	
 	if(m_iMode==0)
 	{	
 	
@@ -44,9 +52,9 @@ void MachineGunProjectile::Touch(Object* pkObject)
 		}
 		
 		m_iMode=1;	
-		CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(m_pkObject->AddProperty("CrossRenderProperty"));
+		BillBoardRenderProperty* cr=static_cast<BillBoardRenderProperty*>(m_pkObject->AddProperty("BillBoardRenderProperty"));
 		cr->SetTexture("../data/textures/massdriver_hit.tga");
-		cr->SetScale(Vector3(.3,.3,.3));
+		cr->SetScale(.3);
 	
 
 		m_fCreateTime=m_pkFps->GetTicks();

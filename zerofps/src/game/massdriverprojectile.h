@@ -21,7 +21,7 @@ class MassDriverProjectile: public Property {
 		
 		MassDriverProjectile();	
 		void Update();
-		void Touch(Object* pkObject);
+		void Touch(Collision* pkCol);		
 };
 
 

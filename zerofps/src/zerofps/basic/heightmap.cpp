@@ -449,7 +449,7 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-//	delete[] verts;
+	delete[] m_pkVertex;
 	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 	 
 	for(int y=0;y<m_iHmSize;y++)

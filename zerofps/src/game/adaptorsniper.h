@@ -36,7 +36,7 @@ class AdaptorSniper: public Property {
 	public:
 		AdaptorSniper();
 		~AdaptorSniper();
-		void Touch(Object* pkObject);
+		void Touch(Collision* pkCol);
 		void Update();
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

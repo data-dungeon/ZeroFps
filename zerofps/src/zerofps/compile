@@ -1,13 +1,17 @@
 echo Recompiling zerofps
 
+echo Compiling Basic
 cd basic
 ./compile
 cd ..
 
+echo Compiling Render
+cd render
+./compile
+cd ..
+
+echo Compiling Engine
 cd engine
 ./compile
 cd ..
 
-cd render
-./compile
-cd ..

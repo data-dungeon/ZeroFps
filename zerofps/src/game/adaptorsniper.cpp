@@ -117,11 +117,19 @@ void AdaptorSniper::Update()
 	}
 }
 
-void AdaptorSniper::Touch(Object* pkObject)
+void AdaptorSniper::Touch(Collision* pkCol)
 {
-	if(pkObject->GetObjectType() != OBJECT_TYPE_STATIC)
+	Object* pkOther;
+	
+	if(pkCol->m_pkPP1->GetObject() == (Object*)this)
+		pkOther=pkCol->m_pkPP2->GetObject();
+	else
+		pkOther=pkCol->m_pkPP1->GetObject();
+
+
+	if(pkOther->GetObjectType() != OBJECT_TYPE_STATIC)
 	{		
-		m_pkObject->GetRot().y+=180;
+		pkOther->GetRot().y+=180;
 	}
 }
 
@@ -136,9 +144,10 @@ void AdaptorSniper::Fire(Vector3 kAim)
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
 	Bullet->AddProperty("MachineGunProjectile");		
 	
-	CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(Bullet->AddProperty("CrossRenderProperty"));
+	BillBoardRenderProperty* cr=static_cast<BillBoardRenderProperty*>(Bullet->AddProperty("BillBoardRenderProperty"));
 	cr->SetTexture("../data/textures/adaptor_energyball.tga");
-	cr->SetScale(Vector3(.3,.3,.3));
+	cr->SetScale(.3);
+	
 
 	
 //	dynamic_cast<ModelProperty*>(Bullet->AddProperty("ModelProperty"))->m_fRadius=0.1;	
