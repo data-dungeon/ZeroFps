@@ -1250,7 +1250,8 @@ void DarkMetropolis::UpdateAgentsOnField()
 		{	
 			if(pkCh->m_iTeam == 0)
 			{
-				m_kAgentsOnField.push_back(m_kEntitys[i]->GetEntityID());
+				if(pkCh->GetStats()->m_iLife > 0)
+					m_kAgentsOnField.push_back(m_kEntitys[i]->GetEntityID());
 			}
 		}
 	}

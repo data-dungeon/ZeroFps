@@ -41,16 +41,34 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	//
 	if(strClickName == "ActiveCharacterPortraitBn") 
 	{
-		LoadDlg("data/script/gui/dm_members_2.lua");
-		m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
+		Entity* pkActiveCharObject = GetObject(m_iSelectedAgent);
 
-		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+		if(pkActiveCharObject)
+		{
+			P_DMCharacter* pkCharacter = (P_DMCharacter*)
+				pkActiveCharObject->GetProperty("P_DMCharacter");
 
-		if(pkMembersDlg)
-			pkMembersDlg->SetWindowMode(CMembersDlg::IN_GAME); 
+			if(pkCharacter)
+			{
+				if(pkCharacter->GetStats()->m_iLife > 0)
+				{
+					LoadDlg("data/script/gui/dm_members_2.lua");
+					m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+					CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+
+					if(pkMembersDlg)
+						pkMembersDlg->SetWindowMode(CMembersDlg::IN_GAME); 
+
+					m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+						m_pkAudioSys->GetListnerPos()); 
+				}
+			}
+			else
+			{
+				UpdateAgentList();
+			}
+		}
 	}
 	else
 	if(strClickName == "PauseBn")
