@@ -24,9 +24,11 @@ enum InventoryDropTarget
 
 struct ITEM_INFO 
 {
-	string strInfo;
-	string strImage;
-	string strName;
+	string	strInfo;
+	string	strImage;
+	string	strName;
+	int		m_iValue;
+	float		m_fWeight;
 };
 
 class InventoryDlg

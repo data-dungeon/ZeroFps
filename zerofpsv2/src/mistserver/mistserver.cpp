@@ -1464,7 +1464,10 @@ void MistServer::SendItemInfo(int iItemID,int iClientID)
 		kNp.Write((char) MLNM_SC_ITEMINFO);		
 	
 		kNp.Write_Str(pkItem->GetInfo());
-		kNp.Write_Str(pkItem->GetImage());		
+		kNp.Write_Str(pkItem->GetImage());
+		kNp.Write(pkItem->GetWeight());
+		kNp.Write(pkItem->GetValue());
+				
 		
 		kNp.TargetSetClient(iClientID);
 		SendAppMessage(&kNp);		

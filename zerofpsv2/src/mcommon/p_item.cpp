@@ -10,30 +10,33 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 5;
+	m_iVersion = 6;
 
 	// ITEM STUFF
-	m_strName = "Unnamed Item";
-	m_strIcon = "default.bmp";
-	m_iSizeX = 1;	
-	m_iSizeY = 1;
-	m_iType = 0;
+	m_strName = 	"Unnamed Item";
+	m_strIcon = 	"default.bmp";
+	m_iSizeX = 		1;	
+	m_iSizeY = 		1;
+	m_iType = 		0;
 	
 	m_iStackSize = 1;
-	m_iStackMax = 1;	
+	m_iStackMax =	1;	
 
+	m_fWeight	=	1;
+	m_iValue		=	1;
+	
 	//item info
-	m_strInfo = "Nothing is known about this item";
-	m_strImage = "default.bmp"; // zeb: ändrade till bmp... skall vara bmp.
+	m_strInfo = 	"Nothing is known about this item";
+	m_strImage = 	"default.bmp"; // zeb: ändrade till bmp... skall vara bmp.
 	
 	//container
-	m_iInContainerID = -1;
+	m_iInContainerID = 	-1;
 	m_iInContainerPosX = 0;
 	m_iInContainerPosY = 0;
 	
 	
 	//buff
-	m_strBuffName = "";
+	m_strBuffName = 	"";
 	m_iBuffEntityID = -1;
 	
 }
@@ -111,6 +114,11 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write_Str(m_strInfo);
 	pkPackage->Write_Str(m_strImage);
+	
+	pkPackage->Write(m_fWeight);
+	pkPackage->Write(m_iValue);
+	
+	
 }
 
 void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -195,6 +203,33 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read_Str(m_strImage);			
 			break;
 		}					
+		
+		case 6:
+		{
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			pkPackage->Read_Str(m_strInfo);
+			pkPackage->Read_Str(m_strImage);			
+			
+			pkPackage->Read(m_fWeight);
+			pkPackage->Read(m_iValue);			
+			
+			break;
+		}			
 	}
 
 // 	if(iVersion == 3)
@@ -242,7 +277,7 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(10);
+	vector<PropertyValues> kReturn(12);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -284,7 +319,15 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[9].kValueName = "image";
 	kReturn[9].iValueType = VALUETYPE_STRING;
 	kReturn[9].pkValue    = &m_strImage;		
-		
+
+	kReturn[10].kValueName = "weight";
+	kReturn[10].iValueType = VALUETYPE_FLOAT;
+	kReturn[10].pkValue    = &m_fWeight;	
+	
+	kReturn[11].kValueName = "value";
+	kReturn[11].iValueType = VALUETYPE_INT;
+	kReturn[11].pkValue    = &m_iValue;			
+			
 	return kReturn;
 }
 

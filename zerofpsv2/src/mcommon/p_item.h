@@ -66,6 +66,9 @@ class MCOMMON_API P_Item: public Property
 		int		m_iStackSize;
 		int		m_iStackMax;
 		
+		float		m_fWeight;
+		int		m_iValue;
+		
 		//container
 		int		m_iInContainerID;					//last known container this item was in, if -1 it was not in any container
 		int		m_iInContainerPosX;				//last known position in a container this item had
@@ -101,7 +104,8 @@ class MCOMMON_API P_Item: public Property
 		
 		string	GetInfo()				{ return m_strInfo;				}
 		string	GetImage()				{ return m_strImage;				}
-		
+		int		GetValue()				{ return m_iValue;				}
+		float		GetWeight()				{ return m_fWeight;				}
 		
 		void		Equip(int iEntity);
 		void		UnEquip();

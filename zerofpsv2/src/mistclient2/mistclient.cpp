@@ -803,6 +803,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 			pkNetMessage->Read_Str(kInfo.strInfo);
 			pkNetMessage->Read_Str(kInfo.strImage);
+			pkNetMessage->Read(kInfo.m_fWeight);
+			pkNetMessage->Read(kInfo.m_iValue);
 
 			kInfo.strName = "Unknown item"; // Dvoid: fixa så att även namnet skickas med.
 		
