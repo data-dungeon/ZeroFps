@@ -216,6 +216,9 @@
 				RelativePath=".\si_dm.cpp">
 			</File>
 			<File
+				RelativePath=".\si_dmcharacter.cpp">
+			</File>
+			<File
 				RelativePath=".\si_mistland.cpp">
 			</File>
 		</Filter>
