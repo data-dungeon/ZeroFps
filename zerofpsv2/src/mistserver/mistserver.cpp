@@ -1513,7 +1513,7 @@ void MistServer::HandleOrders()
       }  
 		
 		//normal orders
-		else
+		else if(order->m_iObjectID != -1)
 		{
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 			if(ob)
@@ -1527,6 +1527,13 @@ void MistServer::HandleOrders()
 				}			
 			}
 		}
+		else
+		{
+			cout<<"CLICK"<<endl;
+
+		
+		}
+		
 		
 		P_ClientControl::PopOrder();
 	} 

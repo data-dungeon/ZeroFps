@@ -429,6 +429,24 @@ void MistClient::Input()
 		}
 	}
 
+	if(pkInput->Pressed(MOUSELEFT))
+	{
+		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{		
+			if(m_pkClientControlP)
+			{
+				ClientOrder order;
+						
+				order.m_sOrderName = "Fire";
+				order.m_iClientID = pkFps->GetConnectionID();
+				order.m_iCharacter = m_iActiveCaracterObjectID;
+				order.m_iObjectID = -1;
+					
+				m_pkClientControlP->AddOrder(order);
+			} 	
+			m_fClickDelay = pkFps->GetTicks();	
+		}	
+	}
 /*	
 	if(pkInput->Pressed(MOUSELEFT))
 	{

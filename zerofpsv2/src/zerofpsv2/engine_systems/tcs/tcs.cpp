@@ -189,6 +189,10 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		pkCol->pkBody2->m_kVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;			
 	}
 
+
+	//touch objects
+	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->iNetWorkID);
+	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->iNetWorkID);	
 }
 
 void Tcs::SyncEntitys()
