@@ -97,6 +97,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// shop functions
 	pkScript->ExposeFunction("AddItemToShop", DMLua::AddItemToShopLua);
 
+	// hmm... team related
+	pkScript->ExposeFunction("GetCharsByFraction", DMLua::GetCharsByFractionLua);
+	
 	cout << "DM LUA Scripts Loaded" << endl;
 
 }
@@ -1660,3 +1663,57 @@ int DMLua::PanicAreaLua(lua_State* pkLua)
 }
 
 // ------------------------------------------------------------------------------------------------
+//
+// Fråga om en lista med objectID-nummer på alla av en viss typ. 
+// Arg(0) = Team (0,1... 10)
+// Returnerar: En lista med nummer. OBS! Listan börjar räkna på element 2. Element [0] är ogiltligt,
+// och element [1] anger size. Säker funktion, returnerar en lista med första elementet satt till 0
+// även om inget argument sänds in.
+int DMLua::GetCharsByFractionLua(lua_State* pkLua)
+{
+	vector<TABLE_DATA> vkData;
+	TABLE_DATA temp;
+
+	double dTeam = -1;
+	if(g_pkScript->GetArgNumber(pkLua, 0, &dTeam) == false)
+	{
+		printf("DMLua::GetCharsByFractionLua failed! Arg 1 isnt correct\n");
+		
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = 0;
+		vkData.push_back(temp);
+	}
+	else
+	{
+		int iAntal = 0;
+		vector<Entity*> kObj;
+		g_pkObjMan->GetAllObjects(&kObj);
+
+		for ( unsigned int i = 0; i < kObj.size(); i++ )
+		{
+			// check for characters
+			if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
+			{
+				if( pkChar->m_iTeam == (int) dTeam)
+				{
+					temp.bNumber = true;
+					temp.pData = new double;
+					(*(double*) temp.pData) = (double) kObj[i]->GetEntityID();
+					vkData.push_back(temp);
+
+					iAntal++;
+				}
+			}
+		}
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = (double) iAntal;
+		vkData.insert(vkData.begin(), temp);
+	}
+
+	g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+	return 1;
+}

@@ -103,6 +103,9 @@ namespace DMLua
 	// shop functions
 	int MCOMMON_API AddItemToShopLua(lua_State* pkLua);
 
+	// stuff 2
+	int MCOMMON_API GetCharsByFractionLua(lua_State* pkLua);
+
 };
 
 #endif
