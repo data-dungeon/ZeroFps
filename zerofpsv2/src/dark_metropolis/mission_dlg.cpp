@@ -1,6 +1,7 @@
+#include "dark_metropolis.h"
 #include "mission_dlg.h"
 
-CMissionDlg::CMissionDlg() : CGameDlg(&g_kDM)
+CMissionDlg::CMissionDlg() : CGameDlg("MissionWnd", &g_kDM)
 {
 }
 

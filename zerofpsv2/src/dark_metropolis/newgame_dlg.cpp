@@ -1,6 +1,7 @@
+#include "dark_metropolis.h"
 #include "newgame_dlg.h"
 
-CNewGameDlg::CNewGameDlg() : CGameDlg(&g_kDM)
+CNewGameDlg::CNewGameDlg() : CGameDlg("DMStartWnd", &g_kDM)
 {
 
 }
@@ -24,6 +25,7 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			if(m_pkDM->StartNewGame(szClanName, szTeamColor))
 			{
 				m_pkDM->GUI_NewGame(pkMainWnd);
+				GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 			}
 		}
 	}

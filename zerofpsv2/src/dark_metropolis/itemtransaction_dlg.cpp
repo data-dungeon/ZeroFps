@@ -1,6 +1,8 @@
+#include "dark_metropolis.h"
 #include "itemtransaction_dlg.h"
 
-CItemTransactionDlg::CItemTransactionDlg() : CGameDlg(&g_kDM)
+CItemTransactionDlg::CItemTransactionDlg() : CGameDlg(
+	"ItemTransactionWnd", &g_kDM)
 {
 }
 

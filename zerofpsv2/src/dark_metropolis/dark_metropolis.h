@@ -86,12 +86,31 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void Input();
 		void RegisterPropertys();
 		
-		
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
 
+
+
 	public:
+
+		enum SLOT_TYPE
+		{
+			ITEM,
+			CYBERNETICS,
+			QUICKITEM,
+			ARMOR,
+			WEAPON
+		};
+
+		struct SItemSlots
+		{
+			Entity* m_pkEntity;
+			string strIcon;
+			int cell_x, cell_y;
+			int size_x, size_y;
+			SLOT_TYPE eSlotType;
+		};
 
 		struct StartBaseInfo {
 			ZGuiSkin* pkIcon;
@@ -147,7 +166,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		CGameDlg* m_pkNewGameDlg;
 		CGameDlg* m_pkMissionDlg;
 		CGameDlg* m_pkBriefingDlg;
-		CGameDlg* m_pkShopDlg;
+		CGameDlg* m_pkItemTransactionDlg;
 		CGameDlg* m_pkMembersDlg;
 		CGameDlg* m_pkHandleAgents;
 

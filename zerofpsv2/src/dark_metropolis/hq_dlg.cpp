@@ -1,8 +1,11 @@
+#include "dark_metropolis.h"
 #include "hq_dlg.h"
+#include "members_dlg.h"
 
-CHQDlg::CHQDlg() : CGameDlg(&g_kDM)
+
+CHQDlg::CHQDlg() : CGameDlg("HQWnd", &g_kDM)
 {
-
+	m_pkHQ = NULL;
 }
 
 CHQDlg::~CHQDlg(void)
@@ -11,9 +14,17 @@ CHQDlg::~CHQDlg(void)
 
 void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
+	if(m_pkHQ == NULL)
+	{
+		m_pkHQ = (P_DMHQ*) GetDMObject(HQ);
+		if(m_pkHQ == NULL)
+			printf("error: can't get information about HQ\n");
+	}
+
 	if(strClickName == "HQCloseBn") // the door button
 	{
 		LoadDlg("data/script/gui/dm_gameplay.lua");
+		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
 	}
@@ -28,13 +39,17 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		LoadDlg("data/script/gui/dm_members.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
-		ShowWnd("MembersEquipBn", true); // visa equip knappen
-		ShowWnd("MembersDropItemBn", false); // dölj drop knappen
+
+		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+
+		if(pkMembersDlg)
+			pkMembersDlg->SetWindowMode(CMembersDlg::HQ_EQUIP_MEMBERS); 
 	}
 	else
 	if(strClickName == "HQHireBn") // the telephone button
 	{
 		LoadDlg("data/script/gui/dm_agents.lua");
+		GetGameDlg(HANDLE_AGENTS_DLG)->InitDlg();
 		m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
 	}
 	else
@@ -109,4 +124,15 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			LoadDlg("data/script/gui/dm_itemtransaction.lua");
 		}
 	}*/
+}
+
+void CHQDlg::OpenDlg()
+{
+	//P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ")
+
+	ShowWnd("GamePlayScreen", false);
+	ShowWnd("GamePlayPanelWnd", false);
+
+	LoadDlg("data/script/gui/dm_hq.lua");
+	m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 }

@@ -1,6 +1,7 @@
+#include "dark_metropolis.h"
 #include "briefing_dlg.h"
 
-CBriefingDlg::CBriefingDlg() : CGameDlg(&g_kDM)
+CBriefingDlg::CBriefingDlg() : CGameDlg("BriefingWnd", &g_kDM)
 {
 }
 
@@ -14,6 +15,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		ShowWnd("HQWnd", false, false);
 		LoadDlg("data/script/gui/dm_gameplay.lua");
+		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();	
 		m_pkGui->KillWndCapture();
 	}

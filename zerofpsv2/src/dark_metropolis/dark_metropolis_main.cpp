@@ -6,6 +6,7 @@
 #endif
 
 #include "dark_metropolis.h"
+#include "hq_dlg.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -136,7 +137,6 @@ void DarkMetropolis::RenderInterface(void)
 		{
 			float r = pkEnt->GetBoundingRadius();
 			m_pkRender->DrawAABB(pkEnt->GetWorldPosV()-Vector3(r,r,r),pkEnt->GetWorldPosV()+Vector3(r,r,r),Vector3(1,1,0));
-	
 		}
 	}
 	
@@ -429,17 +429,18 @@ void DarkMetropolis::Input()
 			
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
+				
 				for(int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
 					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 					if(pkEnt)				
 					{
-					
+						
 						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
 						{
 							cout<<"entering hq"<<endl;
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							
+							m_pkHQDlg->OpenDlg(); // Open the HQ dialog
 						}
 						else
 						{
@@ -551,7 +552,6 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_pkGameInfoProperty->m_strClanName = strClanName;
 	m_pkGameInfoProperty->m_strClanColor = strClanColor;
 
-
 	return true;
 }
 
@@ -587,7 +587,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		cout<<"ERROR: could not find any gameinfo"<<endl;
 		return false;
 	}
-	
+
 	
 	cout<<"CLAN NAME:"<<m_pkGameInfoProperty->m_strClanName<<endl;
 	
@@ -600,8 +600,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		cout<<"seting cam pos"<<endl;
 		m_pkCameraEntity->SetWorldPosV(m_pkGameInfoProperty->m_kCameraPos);
 	}
-	
-	
+		
 	return true;
 }
 
@@ -752,5 +751,4 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 	// RETURN WHAT??????
 	// e:\programmering\zerofpsv2\src\dark_metropolis\dark_metropolis_main.cpp(668) : warning C4715: 'DarkMetropolis::GetFormationPos' : not all control paths return a value
 }
-
 

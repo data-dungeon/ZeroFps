@@ -1,6 +1,7 @@
+#include "dark_metropolis.h"
 #include "startdm_dlg.h"
 
-CStartDMDlg::CStartDMDlg() : CGameDlg(&g_kDM)
+CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
 {
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
@@ -70,6 +71,7 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		pkMainWnd->Hide();
 		LoadDlg("data/script/gui/dm_gameplay.lua");
+		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 	}
 }
 

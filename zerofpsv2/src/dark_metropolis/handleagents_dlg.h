@@ -7,5 +7,12 @@ public:
 	CHandleAgents();
 	~CHandleAgents();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName); 
+	bool InitDlg();
+
+private:
+
+	vector<ZGuiCheckbox*> m_vkCharsInBaseBns;
+
+	bool SendOutAgent(int iID);
 };

@@ -35,7 +35,6 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 			win);
 		break;
 	case ZGM_LBUTTONDBLCLK:
-		printf("mamma\n");
 		g_kDM.GUI_OnDoubleClick(((int*)params)[0], ((int*)params)[1], true, win);
 		break;
 	case ZGM_RBUTTONDBLCLK:
@@ -85,7 +84,7 @@ void DarkMetropolis::GUI_Init()
 	m_pkMissionDlg = new CMissionDlg();
 	m_pkBriefingDlg = new CBriefingDlg();
 	m_pkGamePlayDlg = new CGamePlayDlg();
-	m_pkShopDlg = new CItemTransactionDlg();
+	m_pkItemTransactionDlg = new CItemTransactionDlg();
 	m_pkMembersDlg = new CMembersDlg();
 	m_pkHandleAgents = new CHandleAgents();
 }
@@ -150,7 +149,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	else
 	if(strMainWnd == "ItemTransactionWnd")
 	{
-		m_pkShopDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkItemTransactionDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
 	if(strMainWnd == "AgentsWnd")
