@@ -10,6 +10,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_REQ_CHARACTERID,
 	MLNM_CS_CONTROLS,
 	MLNM_CS_SAY,
+	MLNM_CS_REQ_PLAYERLIST,
 };
 
 //	A network message from the server to the client.
@@ -21,6 +22,7 @@ enum MLNM_ServerToClient
 	
 	MLNM_SC_CHARACTERID,
 	MLNM_SC_SAY,
+	MLNM_SC_PLAYERLIST,
 };
 
 

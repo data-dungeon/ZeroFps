@@ -93,7 +93,6 @@ class MistServer :public Application , public ZGuiApp
 
 //		void HandleOrders();
 		void HSO_Character(ClientOrder* pkOrder);
-
 //		bool CheckValidOrder(ClientOrder* pkOrder);
 		void SendTextToMistClientInfoBox(char* szText);
 
@@ -101,7 +100,10 @@ class MistServer :public Application , public ZGuiApp
 
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);		
+		
 		void SayToClients(const string& strMsg);
+		
+		void SendPlayerListToClient(int iClient);		
 		
 		Vector3 GetPlayerStartPos();
 		

@@ -981,6 +981,13 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}			
 			
+		case MLNM_CS_REQ_PLAYERLIST:
+		{
+			SendPlayerListToClient(PkNetMessage->m_iClientID);
+						
+			break;
+		}
+		
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);
@@ -988,7 +995,29 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 	}
 }
 
+void MistServer::SendPlayerListToClient(int iClient)
+{
+	NetPacket kNp;
+	vector<string> kActivePlayers;		
+	
+	//get user list
+	m_pkPlayerDB->GetUsers(&kActivePlayers);
+	
+	//clear package and write pkg id
+	kNp.Clear();
+	kNp.Write((char) MLNM_SC_PLAYERLIST);
+	
+	//write player names			
+	kNp.Write(kActivePlayers.size());
+	for(int i = 0;i<kActivePlayers.size();i++)
+	{
+		kNp.Write_Str(kActivePlayers[i]);
+	}
 
+	//send package
+	kNp.TargetSetClient(iClient);
+	SendAppMessage(&kNp);	
+}
 
 void MistServer::SayToClients(const string& strMsg)
 {

@@ -9,7 +9,7 @@
 	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
 	#define _DONT_MAIN
 #endif
-
+ 
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/engine_systems/propertys/p_sound.h"
@@ -46,7 +46,9 @@ void MistClient::OnInit()
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 
 	//register commands
-	Register_Cmd("say",			FID_SAY);	
+	Register_Cmd("say",			FID_SAY);
+	Register_Cmd("playerlist",	FID_PLAYERLIST);
+		
 	
 	//initiate our mainview camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -97,6 +99,13 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 					
 				
 			Say(strMsg);	
+			break;
+		}
+		
+		case FID_PLAYERLIST:
+		{
+			RequestPlayerList();			
+			break;
 		}
 	}
 }
@@ -310,6 +319,26 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}			
 
+		case MLNM_SC_PLAYERLIST:
+		{
+			int iPlayers;
+			string strName;
+			
+			m_kPlayerList.clear();
+			
+			PkNetMessage->Read(iPlayers);
+			
+			m_pkConsole->Printf("Listing Players : %d",iPlayers);
+			for(int i = 0;i<iPlayers;i++)
+			{
+				PkNetMessage->Read_Str(strName);
+				m_pkConsole->Printf("%d %s",i,strName.c_str());
+				m_kPlayerList.push_back(strName);			
+			}
+			
+			break;
+		}
+		
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);
@@ -417,6 +446,14 @@ bool MistClient::ReadWriteServerList(bool bRead)
    }
 
    return true;
+}
+
+void MistClient::RequestPlayerList()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_PLAYERLIST);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
 }
 
 bool MistClient::ShutDown()

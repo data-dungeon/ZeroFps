@@ -24,18 +24,21 @@ class MistClient :public Application, public ZGuiApp {
 		enum FuncId_e
 		{
 			FID_SAY,
+			FID_PLAYERLIST,
 		};
 
 		Camera*		m_pkCamera;				//main camera
 		int			m_iCharacterID;		//current active character ID
-      
-		
+      		
 		bitset<6>	m_kCharacterControls;
 		
 		bool			m_bSkipLoginScreen;
-      string     m_strLoginName, m_strLoginPW;
+		string     m_strLoginName, m_strLoginPW;
+		
+		vector<string>	m_kPlayerList;		//list of players since last playerlist update
+		
 
-      vector<pair<string,string> > m_kServerList;
+		vector<pair<string,string> > m_kServerList;
       bool ReadWriteServerList(bool bRead);
 
 		void UpdateCharacter();
@@ -43,12 +46,17 @@ class MistClient :public Application, public ZGuiApp {
 		void Input();
 		
 		void Say(string strMsg);
+		void RequestPlayerList();
 
-      bool NameIPFromServerList(string& strName, string& strIP);
-	  void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
-     void ResizeChatDlg(bool bBigger); 
-     	
-	  void LoadInGameGui();
+		bool NameIPFromServerList(string& strName, string& strIP);
+		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
+		void ResizeChatDlg(bool bBigger);      	
+		void LoadInGameGui();
+		void SetupGUI();
+		
+				
+		void RegisterPropertys();
+		void RegisterResources();
 	  
 	public:
 		//application virtuals
@@ -62,23 +70,17 @@ class MistClient :public Application, public ZGuiApp {
 		void OnHud(void);
 		void OnSystem();
 
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 				
-		void OnClientStart(void);
-				
-		//on client join, server runs this
+		void OnClientStart(void);			
 		void OnClientConnected();
 		void OnNetworkMessage(NetPacket *PkNetMessage);
-		
-		void RegisterPropertys();
-		void RegisterResources();
 
+		
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
-	  void AddStringToChatBox(string strMsg);
-
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void AddStringToChatBox(string strMsg);
 		
-		void SetupGUI();
 
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
