@@ -7,7 +7,7 @@ function IsMissionDone()
 	name = GetClosestDMCharacter();
 
 	if name == "mormor ond" then
-		Print("apan satt i grannen, skulle");
+		--Print("apan satt i grannen, skulle");
 	end
 
 end
