@@ -1988,9 +1988,17 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 		{
 		case 0:
 			m_iEditMode = EDIT_ZONES;
+			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
+			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			break;
 		case 1:
 			m_iEditMode = EDIT_OBJECTS;
+			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
+			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+			break;
+		case 3:
+			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
+			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			break;
 		}
 	}

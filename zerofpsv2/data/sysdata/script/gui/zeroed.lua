@@ -212,7 +212,7 @@ function GUICreate()
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button down")
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button focus")
 
-	CreateWnd(0,"AddNewProperyWnd","GuiMainWnd","",527,288-257+16,256,227,0,0,0)
+	CreateWnd(0,"AddNewProperyWnd","GuiMainWnd","",527,288-257+16,256,227,0,3,0)
 	ShowWnd("AddNewProperyWnd",0,0)
 
 	CreateWnd(5,"AllPropertyList","AddNewProperyWnd","",10,8,200,200,0,0,0)
@@ -222,7 +222,7 @@ function GUICreate()
 	ChangeSkin("AddPropertyBn","Skin2","Button down")
 	ChangeSkin("AddPropertyBn","Skin11","Button focus")
 
-	CreateWnd(0,"EditPropertyWnd","GuiMainWnd","",527,288-257+16,256,227,0,0,0)
+	CreateWnd(0,"EditPropertyWnd","GuiMainWnd","",527,288-257+16,256,227,0,3,0)
 	ShowWnd("EditPropertyWnd",0,0)
 
 	CreateWnd(5,"PropertyValList","EditPropertyWnd","",10,10,236,200-22,0,0,0)
