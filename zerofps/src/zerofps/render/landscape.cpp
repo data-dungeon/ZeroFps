@@ -1,5 +1,4 @@
 #include "render.h"
-#include "GL/glext.h"
 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	float fYpos;

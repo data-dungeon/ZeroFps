@@ -123,8 +123,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						m_pkFileDlgbox = NULL;
 					}
 
-					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, 
-						WINPROC, flags);
+					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, flags);
 					break;
 
 				case IDM_SAVE_TEMPLATE:
@@ -143,8 +142,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						m_pkFileDlgbox = NULL;
 					}
 
-					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, 
-						WINPROC, SAVE_FILES);
+					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, flags);
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
@@ -206,9 +204,16 @@ bool Gui::InitSkins()
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
 	int rbn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_up.bmp", 0);
 	int rbn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_down.bmp", 0);
+	int bk1 = m_pkEdit->pkTexMan->Load("file:../data/textures/bk1.bmp", 0);
+	int bd1 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_horz.bmp", 0);
+	int bd2 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_vert.bmp", 0);
+	int bd3 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner.bmp", 0);
+	int bda = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner_a.bmp", 0);
+
+	m_kTextureMap.insert( map<string, int>::value_type(string("border_corner_a"), bda)); 
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
-		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 8)) ); 
+		new ZGuiSkin(bk1, bd1, bd2, bd3, 255, 255, 255, 255, 255, 255, 8, true)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("blue"), 
 		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 255, 0, 0, 128, 4)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("red"), 

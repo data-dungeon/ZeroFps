@@ -136,38 +136,25 @@ bool ZGui::RemoveMainWindow(int iMainWindowID)
 		 {
 			if( (*itMain)->iID == iMainWindowID)
 			{
-				ZGuiWnd* pkWndMain = (*itMain)->pkWin;
-
-				list<ZGuiWnd*> kChildList;
-				pkWndMain->GetChildrens(kChildList);
-
-				WIN it = kChildList.begin(); 
-
-/*				if(kChildList.size() > 0)
-				{
-					//UnregisterWindow( (*it) );
-
-					delete (*it);
-					(*it) = NULL;
-
-					kChildList.erase( it ); 
-
-					//pkWndMain->RemoveChild( (*it) );	
-				}*/
+				UnregisterWindow( (*itMain)->pkWin );
+				delete (*itMain)->pkWin;
+				(*itMain)->pkWin = NULL;
 
 				delete (*itMain);
-				(*itMain) = NULL;
-
 				m_pkMainWindows.erase(itMain);				
-
-				if(m_pkMainWindows.size() == 0)
-					m_pkActiveMainWin = NULL;
-				else
-					m_pkActiveMainWin = m_pkMainWindows.back();
-
 				break;
 			}
 		 }
+
+	m_pkActiveMainWin = NULL;
+	ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
+	ZGuiWnd::m_pkPrevWndClicked = NULL;
+	ZGuiWnd::m_pkFocusWnd = NULL;
+	ZGuiWnd::m_pkWndClicked = NULL;
+	ZGuiWnd::m_pkWndUnderCursor = NULL;
+
+	printf("hej");
+
 
 	return true;
 }

@@ -19,21 +19,18 @@ class ZFBasicFS;
 
 enum FileOpenFlags
 {
-	NORMAL,
-	DIRECTORIES_ONLY,
-	DISALLOW_DIR_CHANGE,
-	SAVE_FILES,
-	NUMBER_OF_FLAGS
+	DIRECTORIES_ONLY=1,
+	SAVE_FILES=2,
+	DISALLOW_DIR_CHANGE=3,
+	NUMBER_OF_FLAGS=4
 };
 
 class FileOpenDlg  
 {
 public:
-
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
-	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
-				bitset<NUMBER_OF_FLAGS> flags = NORMAL);
+	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, unsigned long flags=NUMBER_OF_FLAGS);
 	virtual ~FileOpenDlg();
 
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
@@ -51,8 +48,7 @@ private:
 	ZFBasicFS* m_pkBasicFS;
 	callback m_oGuiCallback;
 	ZGuiWnd* m_pkWindow;
-
-	bitset<NUMBER_OF_FLAGS> m_vkBitParams;
+	bitset<16> m_vkBitParams;
 };
 
 #endif // !defined(AFX_ZGUIFILEOPENDLG_H__5889E38C_500F_4A0F_979B_1CA085A4E0BC__INCLUDED_)

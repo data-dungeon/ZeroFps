@@ -38,19 +38,19 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf, ObjectManager*
 
 EditPropertyDlg::~EditPropertyDlg()
 {
-
+	m_pkZGui->RemoveMainWindow(ID_PROPERTY_WND_MAIN);
 }
 
 ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 {
-	if( m_pkZGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
+/*	if( m_pkZGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
 	{
 		m_pkZGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
 		return NULL;
-	}
+	}*/
 
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
-	pkMainWindow->SetSkin(m_pkGui->GetSkin("blue"));
+	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"), -1, m_pkGui->GetTexture("border_corner_a"));
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkGui->m_pkEdit->m_iWidth,m_pkGui->m_pkEdit->m_iHeight));
 	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
 
@@ -89,7 +89,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Values:");
 
 	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, ID_PROPERTY_VALUES_CB, 16*6, 
-		y_pos, 16*6+16*7*2, h-(y_pos+60), false), "PropertyValuesCB");
+		y_pos, 16*6+16*7*2, 500, false), "PropertyValuesCB");
 	cb->SetNumVisibleRows(20);
 
 	y_pos += 30;
@@ -159,25 +159,9 @@ void EditPropertyDlg::OnOpenEditProperty()
 		list<Property*>::iterator s = akPropertys.begin();
 		list<Property*>::iterator e = akPropertys.end();
  
-		for(int i ; s != e; s++, i++ )
+		for(int i=0 ; s != e; s++, i++ )
 		{
 			m_pkGui->AddItemToList(pkPropertysCB, true, (*s)->m_acName, i++);
-
-			akPropertyNames.clear(); 
-			akPropertyNames = (*s)->GetValueNames();
-/*
-			if(!akPropertyNames.empty())
-			{
-				vector<string>::iterator s2 = akPropertyNames.begin();
-				vector<string>::iterator e2 = akPropertyNames.end();
-
-				for(int j ; s2 != e2; s2++, j++ )
-					m_pkGui->AddItemToList(pkPropertyValuesCB, true, (char*)(*s2).c_str(), j++);
-			}
-			else
-			{
-				printf("No property values for property %s\n", (*s)->m_acName);
-			}*/
 		}	
 	}
 }
@@ -369,6 +353,9 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 						vector<string> akPropertyNames = m_pkSelProperty->GetValueNames();
 
 						ZGuiWnd* pkPValueCB = m_pkGui->Get("PropertyValuesCB");
+
+						((ZGuiCombobox*) pkPValueCB)->RemoveAllItems();
+						((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText(" ");
 						
 						if(!akPropertyNames.empty())
 						{
@@ -395,55 +382,6 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 						m_pkSelProperty->GetValue(m_kSelPropValue).c_str());
 				}
 				break;
-
-/*			case 324124124:
-				ZGuiListitem* pkSelItem = ((ZGuiCombobox*)(win))->GetListbox()->GetSelItem();
-
-				if(pkSelItem)
-				{
-					Object* pkObject = m_pkObjectManager->GetObject(pkSelItem->GetText());
-
-					if(pkObject)
-					{
-						ZGuiWnd* pkWnd = m_pkZGui->GetWindow(ID_PROPERTIES_CB);
-
-						if(pkWnd)
-						{
-							ZGuiCombobox* pkCB = (ZGuiCombobox*) pkWnd;
-							pkCB->RemoveAllItems();
-
-							list<Property*> pkList;
-							pkObject->GetPropertys(&pkList, PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
-
-							list<Property*>::iterator s = pkList.begin();
-							list<Property*>::iterator e = pkList.end();
-							int counter=0;
-
-							for( ; s != e; s++ )
-							{
-								pkCB->SetLabelText((*s)->m_acName);
-								m_pkGui->AddItemToList(pkCB, true, (*s)->m_acName, counter++);
-							}
-						}
-					}
-				}
-				break;*/
-
-/*			case ID_PROPERTY_VALUES_CB:
-				ZGuiTextbox* pkPropValEB = (ZGuiTextbox*) (m_pkGui->Get( "PropertyValueSetEB"));
-				ZGuiCombobox* pkPropValCB = (ZGuiCombobox*) (m_pkGui->Get( "PropertyValuesCB"));
-
-				if(pkPropValEB && pkPropValLB)
-				{
-					char* prop_key = pkPropValCB->GetListbox()->GetSelItem()->GetText();
-					//char* value = pkPropValEB->SetText();
-
-					Property* prop = m_pkCurrentChild->GetProperty(prop_key):
-
-					prop->GetValue(prop_key);
-				}
-
-				break;*/
 			}
 		}
 		break;

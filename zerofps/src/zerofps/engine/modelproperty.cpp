@@ -77,11 +77,11 @@ vector<Property::PropertyValues> ModelProperty::GetPropertyValues()
 {
 	vector<Property::PropertyValues> kReturn(1);
 
-kReturn[0].kValueName="Radius";
-kReturn[0].iValueType=VALUETYPE_FLOAT;
-kReturn[0].pkValue=(void*)&m_fRadius;
+	kReturn[0].kValueName="Radius";
+	kReturn[0].iValueType=VALUETYPE_FLOAT;
+	kReturn[0].pkValue=(void*)&m_fRadius;
 
-return kReturn;
+	return kReturn;
 };
 
 

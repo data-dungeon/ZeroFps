@@ -98,6 +98,7 @@ public:
 	virtual void SetText(char* strText);
 	virtual char* GetText() { return m_strText; }
 	ZGui* GetGUI();
+	static void ResetStaticClickWnds(ZGuiWnd* pkWnd);
 
 	static ZGuiWnd* m_pkPrevWndUnderCursor;
 	static ZGuiWnd* m_pkPrevWndClicked;

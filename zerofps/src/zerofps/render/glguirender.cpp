@@ -182,6 +182,8 @@ bool GLGuiRender::RenderQuad(Rect kScreenRect, bool bMask)
 
 bool GLGuiRender::RenderBorder(Rect kScreenRect, bool bMask)
 {
+	bool bDrawMasked = (bMask == true && m_iMaskTexture > 0) ? true : false;
+
 	if(m_pkSkin == NULL)
 		return false;
 
@@ -268,6 +270,45 @@ bool GLGuiRender::RenderBorder(Rect kScreenRect, bool bMask)
 		glDisable(GL_TEXTURE_2D);
 	}
 
+	if(bDrawMasked)
+	{
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);								
+		glDisable(GL_DEPTH_TEST);								
+		glBlendFunc(GL_DST_COLOR,GL_ZERO);	
+
+		m_pkTextureManger->BindTexture( m_iMaskTexture );
+
+		glBegin(GL_QUADS);
+			// Översta, vänstra hörnet
+			glTexCoord2f(0,0);	glVertex2i(kScreenRect.Left-sz,m_iScreenHeight-kScreenRect.Top);		 
+			glTexCoord2f(0,1);	glVertex2i(kScreenRect.Left-sz,m_iScreenHeight-kScreenRect.Top+sz);		
+			glTexCoord2f(1,1);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top+sz);    
+			glTexCoord2f(1,0);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);    
+			// Översta, högra hörnet
+			glTexCoord2f(1,0);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);		 
+			glTexCoord2f(1,1);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top+sz);		
+			glTexCoord2f(0,1);	glVertex2i(kScreenRect.Right+sz,m_iScreenHeight-kScreenRect.Top+sz);    
+			glTexCoord2f(0,0);	glVertex2i(kScreenRect.Right+sz,m_iScreenHeight-kScreenRect.Top);    
+			// Understa, vänstra hörnet
+			glTexCoord2f(0,1);	glVertex2i(kScreenRect.Left-sz,m_iScreenHeight-kScreenRect.Bottom-sz);		 
+			glTexCoord2f(0,0);	glVertex2i(kScreenRect.Left-sz,m_iScreenHeight-kScreenRect.Bottom);		
+			glTexCoord2f(1,0);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom);    
+			glTexCoord2f(1,1);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom-sz);    
+			// Understa, högra hörnet
+			glTexCoord2f(1,1);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom-sz);		 
+			glTexCoord2f(1,0);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom);		
+			glTexCoord2f(0,0);	glVertex2i(kScreenRect.Right+sz,m_iScreenHeight-kScreenRect.Bottom);    
+			glTexCoord2f(0,1);	glVertex2i(kScreenRect.Right+sz,m_iScreenHeight-kScreenRect.Bottom-sz);    
+		glEnd();
+
+	}
+
+	if(bDrawMasked)
+		glBlendFunc(GL_ONE, GL_ONE);					// Copy Image 1 Color To The Screen
+
+	m_pkTextureManger->BindTexture( m_pkSkin->m_iBorderCornerTexID );
+
 	glBegin(GL_QUADS);
 		// Översta, vänstra hörnet
 		glTexCoord2f(0,0);	glVertex2i(kScreenRect.Left-sz,m_iScreenHeight-kScreenRect.Top);		 
@@ -291,7 +332,12 @@ bool GLGuiRender::RenderBorder(Rect kScreenRect, bool bMask)
 		glTexCoord2f(0,1);	glVertex2i(kScreenRect.Right+sz,m_iScreenHeight-kScreenRect.Bottom-sz);    
 	glEnd();
 
-/*	glDisable(GL_ALPHA_TEST);*/
+
+	if(bDrawMasked)
+	{
+		//glEnable(GL_DEPTH_TEST);							// Enable Depth Testing
+		glDisable(GL_BLEND);								// Disable Blending
+	}
 /*	glPopAttrib();*/
 
 

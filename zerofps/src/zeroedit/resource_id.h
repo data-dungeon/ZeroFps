@@ -8,7 +8,7 @@ const int ID_CLOSE						= 9002;
 const int ID_OPEN_TEMPLATE				= 9003;
 const int ID_LOAD_MAP					= 9004;
 const int IDM_CLOSE						= 9005;
-const int ID_FILEPATH_WND				= 9006;
+const int ID_FILEPATH_WND_LB			= 9006;
 const int ID_FILEPATH_WND_LABEL_PATH	= 9007;
 const int ID_FILEPATH_WND_FILE_EB		= 9008;
 const int ID_FILEPATH_WND_CLOSE			= 9009;
@@ -43,5 +43,6 @@ const int ID_PROPERTY_NEW_VALUE_EB		= 9036;
 const int ID_PROPERTY_SET_NEW_VALUE_BN	= 9037;
 const int IDM_LOAD_TEMPLATE				= 9038;
 const int IDM_SAVE_TEMPLATE				= 9039;
+const int ID_FILEPATH_WND				= 9040;
  
 #endif

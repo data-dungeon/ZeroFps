@@ -137,16 +137,14 @@ bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 	if(m_bIsMenu == false)
 	{
 		pkNewItem = new ZGuiListitem(this, strText, iID, 
-			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight/*, 
-			m_pkSkinItemFont, m_iTextMaskTexture*/);
+			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight);
 		pkNewItem->GetButton()->SetGUI(GetGUI());
 		pkNewItem->m_bMenuItem = false;
 	}
 	else
 	{
 		pkNewItem = new ZGuiListitem(this, strText, iID, 
-			m_pkSkinItem, m_pkSkinItem, m_pkSkinItemSelected/*, 
-			m_pkSkinItemFont, m_iTextMaskTexture*/);
+			m_pkSkinItem, m_pkSkinItem, m_pkSkinItemSelected);
 		pkNewItem->GetButton()->SetGUI(GetGUI());
 		pkNewItem->m_bMenuItem = true;
 	}
@@ -183,6 +181,8 @@ bool ZGuiListbox::RemoveItem(unsigned int iID)
 	Rect rcRemoveItem, rcSearchItem;
 
 	list<ZGuiListitem*>::iterator it;
+	list<ZGuiListitem*>::iterator itRemove;
+
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
@@ -192,14 +192,25 @@ bool ZGuiListbox::RemoveItem(unsigned int iID)
 
 				 if(pkButton)
 				 {
+					 itRemove = it;
 					 rcRemoveItem = pkButton->GetScreenRect();
-
-					 delete (*it);
-					 m_pkItemList.erase(it);
+					 break;
 				 }
-				 break;
 			 }
 		 }
+	
+	if(itRemove != NULL)
+	{
+		ZGuiWnd* pkButton = (*itRemove)->GetButton();
+		ResetStaticClickWnds(pkButton);
+
+		delete (*it);
+		m_pkItemList.erase(it);
+	}
+	else
+	{
+		return false;
+	}
 
 	// Flytta upp alla element som är under denna.
 	for( it = m_pkItemList.begin();
@@ -212,8 +223,10 @@ bool ZGuiListbox::RemoveItem(unsigned int iID)
 			 }
 		 }
 
+	m_pkSelectedItem = NULL;
+
 	UpdateList();
-	return false;
+	return true;
 }
 
 bool ZGuiListbox::RemoveAllItems()
@@ -391,4 +404,21 @@ void ZGuiListbox::SetZValue(int iValue)
 int ZGuiListbox::GetItemCount()
 {
 	return m_pkItemList.size();
+}
+
+int ZGuiListbox::Find(char* strString)
+{
+	int counter=0;
+
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 if(strcmp(strString, (*it)->GetText()) == 0)
+				 return counter;
+
+			 counter++;
+		 }
+
+	return -1;
 }

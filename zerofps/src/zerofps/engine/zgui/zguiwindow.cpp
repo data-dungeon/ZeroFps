@@ -463,3 +463,17 @@ void ZGuiWnd::Show()
 
 	m_bVisible = true;  
 }
+
+void ZGuiWnd::ResetStaticClickWnds(ZGuiWnd* pkWnd)
+{
+	if(pkWnd == ZGuiWnd::m_pkPrevWndUnderCursor)
+		ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
+	if(pkWnd == ZGuiWnd::m_pkPrevWndClicked)
+		ZGuiWnd::m_pkPrevWndClicked = NULL;
+	if(pkWnd == ZGuiWnd::m_pkFocusWnd)
+		ZGuiWnd::m_pkFocusWnd = NULL;
+	if(pkWnd == ZGuiWnd::m_pkWndUnderCursor)
+		ZGuiWnd::m_pkWndUnderCursor = NULL;
+	if(pkWnd == ZGuiWnd::m_pkWndClicked)
+		ZGuiWnd::m_pkWndClicked = NULL;
+}

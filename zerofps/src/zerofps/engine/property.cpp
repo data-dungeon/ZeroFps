@@ -78,7 +78,6 @@ vector<string> Property::GetValueNames()
 	vector<string> kReturnVector;
 	if(!kTemp.empty())
 	{
-		
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
@@ -95,13 +94,11 @@ string Property::GetValue(string kValueName)
 	string kBuffer;
 	if(!kTemp.empty())
 	{
-	
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
 			if( kValueName == kItor->kValueName)
-			{
-				
+			{	
 				char pk_chBuffer[50];
 				switch(kItor->iValueType)
 				{	
@@ -126,13 +123,10 @@ string Property::GetValue(string kValueName)
 					if(iSign !=0)
 						kBuffer.insert(0, "-");
 					return kBuffer; 
-
-				};
-				
+				};	
 			}	
 		kItor++;
 		};
-
 	};
 	return kBuffer;
 }
@@ -143,7 +137,6 @@ bool Property::SetValue(string kValueName, string kValue)
 vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
-	
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
@@ -151,7 +144,7 @@ vector<PropertyValues> kTemp= GetPropertyValues();
 			{
 				int iTemp;
 				float fTemp;	
-				
+			
 				switch(kItor->iValueType)
 				{	
 				case VALUETYPE_INT:

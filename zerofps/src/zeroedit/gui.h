@@ -42,7 +42,6 @@ private:
 	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText);
 	ZGui* GetGUI() { return m_pkEdit->pkGui; }
 	
-	ZGuiWnd* m_pkMainWnd;
 	ZeroEdit* m_pkEdit;
 	
 	map<string, ZGuiSkin*> m_kSkinMap;
@@ -75,7 +74,6 @@ public:
 
 	friend class FileOpenDlg;
 	friend class EditPropertyDlg;
-
 };
 
 #endif // !defined(AFX_GUI_H__6ADF8B0C_5888_4E90_95E1_C2E517786ECA__INCLUDED_)

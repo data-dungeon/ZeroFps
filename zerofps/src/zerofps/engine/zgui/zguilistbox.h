@@ -26,6 +26,7 @@ public:
 		ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL);
 	virtual ~ZGuiListbox();
 
+	int Find(char* strString);
 	void Resize(int Width, int Height);
 	void UpdateList();
 	bool RemoveAllItems();
