@@ -435,23 +435,27 @@ void DarkMetropolis::Input()
 			
 			pkTcs->ApplyForce(Vector3(0,0,0),kVel);					
 			//pkTcs->SetWalkVel(kVel);				
+		}		
+
 		
+					
+		if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
+		{
 			
-			Matrix4 kRm;
-			kRm = m_pkPlayerEntity->GetLocalRotM();
+			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
+			pkCam->Set3PPAngle(pkCam->Get3PPAngle() - (z/5.0));
 			
-			Vector3 rot;
-			rot.Set(float(-z / 5.0),float(-x / 5.0),0);			
 			
-			kRm.Transponse();		
-			kRm.Rotate(rot);
-			kRm.Transponse();		
-			Vector3 bla = Vector3(0,0,1);
-			bla = kRm.VectorTransform(bla);
-			kRm.LookDir(bla,Vector3(0,1,0));
-			kRm.Transponse();											
+			pkCam->Set3PDistance(4.0);
+			pkCam->SetOffset(Vector3(0,2,0));
+					
 			
-			m_pkPlayerEntity->SetLocalRotM(kRm);
+			Matrix4 kRot;
+			kRot.Identity();
+			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+			kRot.Transponse();				
+			m_pkPlayerEntity->SetLocalRotM(kRot);				
+		
 		}
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
@@ -463,8 +467,17 @@ void DarkMetropolis::Input()
 				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.8,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
-					Vector3 kDir = m_pkPlayerEntity->GetWorldRotM().VectorTransform(Vector3(0,0,-1));					
-					pkTcs->ApplyImpulsForce(kDir*10);				
+					if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
+					{
+					
+						Matrix4 kRot;
+						kRot.Identity();
+						kRot.Rotate(pkCam->Get3PPAngle(),pkCam->Get3PYAngle(),0);
+						kRot.Transponse();				
+						
+						Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));					
+						pkTcs->ApplyImpulsForce(kDir*10);				
+					}
 				} 								
 			}
 		}				
@@ -1065,10 +1078,11 @@ bool DarkMetropolis::CreatePlayer()
 				if(m_pkCameraProp = (P_Camera*)m_pkPlayerEntity->AddProperty("P_Camera"))
 				{
 					m_pkCameraProp->SetCamera(m_pkCamera);
-					m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON);
-					m_pkCameraProp->Set3PPAngle(1.30);					
+					//m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON);
+					m_pkCameraProp->SetType(CAM_TYPE3PERSON);
+					m_pkCameraProp->Set3PPAngle(.30);					
 					m_pkCameraProp->Set3PYAngle(m_fAngle);
-					m_pkCameraProp->Set3PDistance(m_fDistance);							
+					m_pkCameraProp->Set3PDistance(4);							
 				}
 							
 				//create enviroment
@@ -1080,7 +1094,7 @@ bool DarkMetropolis::CreatePlayer()
 				}					
 				
 				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
-				m_pkPlayerEntity->DeleteProperty("P_Mad");
+				//m_pkPlayerEntity->DeleteProperty("P_Mad");
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
 				

@@ -65,22 +65,27 @@ void P_Camera::Update()
 			}
 		
 			case CAM_TYPE3PERSON:
-			{
-				Vector3 dir = m_pkObject->GetIWorldPosV() - m_kInterPos;
-				m_kInterPos +=dir/8;
-				
-				
+			{	
+				if(m_f3PPAngle > 45)
+					m_f3PPAngle = 45;
+				if(m_f3PPAngle < -45)
+					m_f3PPAngle = -45;
+ 	
 				Matrix4 kRot;
 				kRot.Identity();
-				kRot.Rotate(RadToDeg(m_f3PPAngle),RadToDeg(m_f3PYAngle),0);
 				
-				m_pkCamera->SetRotM(kRot);
-				
-				Vector3 offset = Vector3(0,0,1);
+				kRot.Rotate(m_f3PPAngle,m_f3PYAngle,0);
 				kRot.Transponse();
-				Vector3 pos = m_kInterPos + m_kOffset + kRot.VectorRotate(offset)*m_f3PDistance;
-				m_pkCamera->SetPos(pos);
 				
+				Vector3 kOffset(0,0,1);				
+				kOffset = kRot.VectorTransform(kOffset);
+				kOffset *= m_f3PDistance;									
+	 			kOffset += m_kOffset;
+								
+				
+				LookAt(m_pkObject->GetIWorldPosV() + kOffset,m_pkObject->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
+				
+
 				strCamName = " 3P ";
 				break;
 			}	
