@@ -39,3 +39,4 @@ class ZoneObject;
 #include "billboardrenderproperty.h"
 #include "boxrenderproperty.h"
 #include "vegitationproperty.h"
+#include "bodyproperty.h"

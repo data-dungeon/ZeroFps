@@ -62,8 +62,9 @@ class BASIC_API Vector3 {
 			return Vector3(x * fOther,y * fOther,z * fOther);
 			}
 		
-		Vector3 operator*(const Vector3 &fOther)		const {
-			return Vector3(x * fOther.x,y * fOther.y,z * fOther.z);
+		
+		float operator*(const Vector3 &kOther)		const {
+			return Dot(kOther);
 			}
 		
 //		Vector3 operator*(const Matrix4 &f)	const;
@@ -136,6 +137,8 @@ class BASIC_API Vector3 {
 		Vector3 Unit(void)					const;					///< Return unit vector of this.		
 		Vector3 Cross( const Vector3& v )	const;					///< Return cross product between this vector and another one.
 		
+		Vector3 PEP(const Vector3 &fOther) const;				//per element pruduct
+	
 	
 		bool IsZero(void) const;									///< True if this = <0,0,0>
 		bool NearlyEquals( const Vector3& v, const float e ) const;	///< True if this is == v within the range of +-e

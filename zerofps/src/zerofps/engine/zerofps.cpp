@@ -136,6 +136,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkZFVFileSystem;
 	delete m_pkBasicFS;
 	delete m_pkFile;
+	delete m_pkPhysics_Engine;
 }
 
 void ZeroFps::SetApp() {
@@ -340,6 +341,9 @@ void ZeroFps::Update_System()
 
 			//update physicsengine
 			m_pkPhysEngine->Update();	
+			
+			//update new super duper rigid body physics engine deluxe
+			m_pkPhysics_Engine->Update(m_fGameFrameTime);
 			}
 
 		//delete objects
@@ -908,6 +912,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("BodyProperty", Create_BodyProperty);
 	m_pkPropertyFactory->Register("VegitationProperty", Create_VegitationProperty);
 	m_pkPropertyFactory->Register("BoxRenderProperty", Create_BoxRenderProperty);
 	m_pkPropertyFactory->Register("BillBoardRenderProperty", Create_BillBoardRenderProperty);

@@ -199,6 +199,10 @@ Vector3 Vector3::AToU()
 	return New;
 }
 
+Vector3 Vector3::PEP(const Vector3 &fOther)		const {
+	return Vector3(x * fOther.x,y * fOther.y,z * fOther.z);
+}
+
 /*
 Vector3 Vector3::operator*(const Matrix4 &f) const 
 {

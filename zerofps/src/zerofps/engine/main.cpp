@@ -16,13 +16,13 @@ int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[])
 {
 	kEngine = new ZeroFps();
 	
-	if( kEngine->Init(iNrOfArgs,paArgs) ) {
-	
+	if( kEngine->Init(iNrOfArgs,paArgs) ) 
+	{
 		kEngine->MainLoop();
-
-		}
+	}
 
 	delete kEngine;
+	
 	// This leave console window on screen.
 	exit(1);
 

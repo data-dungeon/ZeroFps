@@ -53,7 +53,7 @@ class BASIC_API Matrix3 {
 		
 		bool inverse (Matrix3& inv, float tolerance) const;
 		float determinant(void)	 const;
-
+		void Identity();
 		void Print();
 
 };

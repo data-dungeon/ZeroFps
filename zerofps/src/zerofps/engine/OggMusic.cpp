@@ -63,7 +63,9 @@ OggMusic::~OggMusic()
 {
 	
 	//SDL_Quit();
-	Stop();
+	
+	//denna onda funktion krashar när den anropas här
+	//Stop();
 
 	alDeleteBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
 	alDeleteSources(1, &m_ALuiSource);
@@ -239,10 +241,10 @@ bool OggMusic::Stop()
 	m_bPlaying=false;
 	//rewind
 
-//	Dvoid   krashar här för mig =(
+//	Dvoid   krashar FORTFARANDE här för mig =(
 	if(ov_pcm_seek(&m_kOggFile,0) != 0)
 		return false;
-	
+
 	return true;
 }
 

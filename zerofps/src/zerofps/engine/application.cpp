@@ -8,10 +8,10 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 {
 	Application::pkApp = this;
 	
-	m_pTitle	=	pName;
-	m_iWidth	=	iWidth;
+	m_pTitle		=	pName;
+	m_iWidth		=	iWidth;
 	m_iHeight	=	iHeight;
-	m_iDepth	=	iDepth;
+	m_iDepth		=	iDepth;
 }
 	
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
@@ -26,15 +26,14 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkLight				=	pkFps->m_pkLight;
 	pkObjectMan			=	pkFps->m_pkObjectMan;
 	pkAlSys				=	pkFps->m_pkOpenAlSystem;
-	pkPropertyFactory	=	pkFps->m_pkPropertyFactory;
+	pkPropertyFactory =	pkFps->m_pkPropertyFactory;
 	pkGui					=	pkFps->m_pkGui;
 	pkGuiMan				=	pkFps->m_pkGuiMan;
 	pkIni					=	pkFps->m_pkIni;
 	pkLevelMan			=	pkFps->m_pkLevelMan;
 	pkPhysEngine		=	pkFps->m_pkPhysEngine;
 	pkScript				=	pkFps->m_pkScript;
-	pkZFVFileSystem	=	pkFps->m_pkZFVFileSystem;
-	
+	pkPhysics_Engine	=	pkFps->m_pkPhysics_Engine;
 }
 	
 	

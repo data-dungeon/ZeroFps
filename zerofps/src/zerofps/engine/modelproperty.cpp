@@ -8,7 +8,7 @@ ModelProperty::ModelProperty() {
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
-	m_fRadius = 1.0;
+	m_fRadius = 0.5;
 	m_iSlices = 10;
 	m_iStacks = 10;
 	m_kColor.Set(1,1,1);

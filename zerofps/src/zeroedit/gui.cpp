@@ -41,6 +41,7 @@ Gui::Gui(ZeroEdit* pkEdit)
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	int x,y;
+
 	pkEdit->pkInput->MouseXY(x,y);
 	pkEdit->pkGui->SetCursor(x, y, cursor_tex, cursor_tex_a, 32, 32);
 
@@ -180,8 +181,10 @@ bool Gui::CreateWindows()
 		string("WorkPanelDlg"), new WorkPanelDlg(this, 
 			m_pkEdit->pkInput, MAINWINPROC)));
 
-	GetDlg("WorkPanelDlg")->Open(); 
-
+	DlgBox* bla = GetDlg("WorkPanelDlg");
+	
+	bla->Open(); 
+	
 	// testing treebox
 	bool bTestingTreeBox = false;
 	if(bTestingTreeBox)

@@ -5,6 +5,7 @@
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
 #include "../engine/engine.pkg"
+#include "../physics_engine/physics_engine.pkg"
 #include "../gui/gui.pkg"
 #include "../script/script.pkg"
 
@@ -18,18 +19,18 @@ class FileIo;
 
 class ENGINE_API Application : public ZFObject {	
 	protected:
-		ZeroFps*				pkFps;
-		Console*				pkConsole;			
+		ZeroFps*					pkFps;
+		Console*					pkConsole;			
 		Render*					pkRender;
 		Input*					pkInput;
-		TextureManager*			pkTexMan;
+		TextureManager*		pkTexMan;
 		FileIo*					pkFile;
 		ZFBasicFS*				pkBasicFS;
 		Light*					pkLight;
 		ObjectManager*			pkObjectMan;
 		PropertyFactory*		pkPropertyFactory;
 		OpenAlSystem*			pkAlSys;
-		ZGui*					pkGui;
+		ZGui*						pkGui;
 		ZGuiResourceManager*	pkGuiMan;
 		ZFIni*					pkIni;
 		LevelManager*			pkLevelMan;
@@ -37,9 +38,10 @@ class ENGINE_API Application : public ZFObject {
 		ZFScript*				pkScript;
 		ZFVFileSystem*			pkZFVFileSystem;
 		
+		Physics_Engine*		pkPhysics_Engine;
 		
 	public:
-		static Application*		pkApp;								///< The one and Only App Instance.
+		static Application*	pkApp;								///< The one and Only App Instance.
 		
 		int m_iWidth,m_iHeight,m_iDepth;
 		char* m_pTitle;												///< Windows Title.

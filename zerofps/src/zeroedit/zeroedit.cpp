@@ -13,11 +13,9 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 }
 
 void ZeroEdit::OnInit(void) 
-{
+{	
 	RegisterPropertys();
 		
-	pkLevelMan->Fog(Vector3(0,0,0),200,250);
-	
 	//register commands
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
 	g_ZFObjSys.Register_Cmd("loadimagemap",FID_LOADIMAGEMAP,this);		
@@ -45,23 +43,16 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
 	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);
 	g_ZFObjSys.Register_Cmd("ambient",FID_AMBIENT,this);	
-
 	g_ZFObjSys.Register_Cmd("duplicate",FID_DUPLICATE,this);			
 	g_ZFObjSys.Register_Cmd("copy",FID_COPY,this);
 	g_ZFObjSys.Register_Cmd("paste",FID_PASTE,this);			
-	g_ZFObjSys.Register_Cmd("delete",FID_DELETE,this);			
-			
+	g_ZFObjSys.Register_Cmd("delete",FID_DELETE,this);						
 	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
-	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
-			
+	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);						
 	g_ZFObjSys.Register_Cmd("linkobject",FID_LINKOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("unlinkobject",FID_UNLINKOBJECT,this);			
-
 	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
-//	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
-//	g_ZFObjSys.Register_Cmd("fs_load",FID_VFS_LOAD,this);			
-
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
 	g_ZFObjSys.Register_Cmd("opendlg",FID_OPENDLG,this);
 	g_ZFObjSys.Register_Cmd("fileopendlg",FID_FILEOPENDLG,this);
@@ -72,6 +63,7 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("--------------------------------");
 
 	
+	pkLevelMan->Fog(Vector3(0,0,0),200,250);	
 	m_pkMap=pkLevelMan->GetHeightMap();
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
@@ -79,7 +71,6 @@ void ZeroEdit::OnInit(void)
 
 	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
-	
 	
 	m_pkCurentChild=NULL;
 	
@@ -119,6 +110,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.RegisterVariable("g_mcolora", &m_iMaskColorA,CSYS_INT);	
 	
 	
+	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
 
@@ -131,12 +123,20 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_bGuiTakeControl = true; 
 	pkFps->ToggleGui(); 
 
+
 	// run zeroedit_autoexec.ini
 	if(!pkIni->ExecuteCommands("zeroedit_autoexec.ini"))
 		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
 	m_iCopyNetWorkID = -1;
 
+		
+	Plane* ground = new Plane;
+	ground->Set(Vector3(0,1,0),4);
+	
+	pkPhysics_Engine->AddPlane(ground);
+	
+/*	
 	string kName = "../data/textures/pointer.tga";
 	Image kImg1;
 	if( kImg1.load(kName.c_str()))
@@ -145,7 +145,7 @@ void ZeroEdit::OnInit(void)
 	Image kImg2;
 	if( kImg2.load(kName2.c_str()))
 		kImg2.save("imgtest2.tga", false);
-	
+*/	
 /*
 	pkTexMan->BindTexture("grass2.tga",0);			
 <<<<<<< zeroedit.cpp
@@ -191,8 +191,7 @@ void ZeroEdit::OnHud(void)
 	pkRender->SetFont("file:../data/textures/text/console.tga");
 
 	pkFps->DevPrintf("common","Fps: %f",pkFps->m_fFps);
-	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);
-	pkFps->DevPrintf("common","Mode: %d",m_iMode);
+	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);	pkFps->DevPrintf("common","Mode: %d",m_iMode);
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	pkFps->DevPrintf("common","Pointer Altidude: %f",m_fPointerHeight);
 

@@ -2,23 +2,54 @@
 #define _BODY_H_
 
 #include "../engine/mad_core.h"
-
+#include "physics_engine_x.h"
 #include <iostream>
 
 using namespace std;
 
-class Body
+class PHYSICSENGINE_API Body
 {
 	private:
 		Mad_Core*	m_pkMad;
-		float			m_fBoundingRadius;		
 
-	public:
-		bool			m_bPolygonCheck;
-		bool			m_bGravity;
+		Matrix3		m_kInertia;				//Mass moment of inertia in body coordinats
+		Matrix3		m_kInertiaInverse;	//inverse of mass moment of inertia matrix
+		Vector3		m_kMassCenter;			//objects mass center in object cordinats
 		
+		Vector3		m_kPosition;			//object possition in world cordinats		
+		Vector3		m_kVelocity;			//velocity in world coordinats
+		Vector3		m_kBodyVelocity;		//Velocity in body coordinats		
+		Vector3		m_kAcceleration;		//acceleration of (Center of gravity) in body coordinats
+		
+		Matrix4		m_kAngles;				//Angle in body coordinats
+		Vector3		m_kAngleVel;			 //angle velocity in body coordinats
+		Vector3		m_kAngleAcceleration; //angle acclereration in body coordinats		
+		Matrix4		m_kOrientation;		 //orientatiojn in world cordinats
+		
+		Vector3		m_kForces;				//total force on body
+		Vector3		m_kMoment;				//total moment(torque) on body
+		
+		Matrix3		m_kIeInverse;			//inverse of moment of inertia in world coordinats
+			
+	public:
+		bool			m_bPolygonCheck;		//shuld we do a per polygon check in body
+		bool			m_bGravity;				//is object affeceted of gravity
+		bool			m_bSolid;				//is this a solid body?				
+		bool			m_bResting;				//is the object in a resting possition		
+				
+		float			m_fBounce;				//bounce factor		
+		float			m_fMass;					//object mass (constant)
+		float			m_fRadius;				//object bounding radius
+				
+//		float 		m_fAtime;					//current time for object (used for collission)		
+				
+				
 		Body();
 		void Reset();
+		void SetPos(Vector3 kPos);
+		Vector3 GetPos();
+				
+		friend class Physics_Engine;
 };
 
 #endif

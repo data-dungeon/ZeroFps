@@ -60,11 +60,13 @@ void DlgBox::GetPos(int& x, int& y)
 
 void DlgBox::CenterCursor()
 {
+	/*
 	m_pkInput->MouseXY(prev_x, prev_y);
 
 	int mx = m_pkDlgBox->GetScreenRect().Left + m_pkDlgBox->GetScreenRect().Width() / 2;
 	int my = m_pkDlgBox->GetScreenRect().Top + m_pkDlgBox->GetScreenRect().Height() / 2;
 	m_pkInput->SetCursorInputPos(mx,my);
+	*/
 }
 
 void DlgBox::KillFocus()

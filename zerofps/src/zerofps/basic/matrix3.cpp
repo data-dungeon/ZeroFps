@@ -203,6 +203,13 @@ bool Matrix3::inverse (Matrix3& inv, float tolerance) const
 	return true;
 }
 
+void Matrix3::Identity() {
+	*this=Matrix3( 1,0,0,
+						0,1,0,
+						0,0,1);
+
+}
+
 
 /*
 Matrix4 Matrix4::operator*(const float &f) const

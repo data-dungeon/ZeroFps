@@ -15,6 +15,11 @@ cd gui
 ./compile
 cd ..
 
+echo Compiling Physics_Engine
+cd physics_engine
+./compile
+cd ..
+
 echo Compiling Script Engine Lua
 cd script
 ./compile
