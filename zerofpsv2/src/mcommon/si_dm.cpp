@@ -380,15 +380,15 @@ int DMLua::SetCharStatsLua(lua_State* pkLua)
 
 	switch((int)dStatsType)
 	{
-	case 0: pkChar->GetStats()->m_iLife = dStatsValue; break; 
-	case 1: pkChar->GetStats()->m_iMaxLife = dStatsValue; break;
-	case 2: pkChar->GetStats()->m_fSpeed = dStatsValue; break;
-	case 3: pkChar->GetStats()->m_fArmour = dStatsValue; break;
-	case 4: pkChar->GetStats()->m_fWage = dStatsValue; break;
-	case 5: pkChar->GetStats()->m_fAim = dStatsValue; break; 
-	case 6: pkChar->GetStats()->m_fExperience = dStatsValue; break;
-	case 7: pkChar->GetStats()->m_fNextLevel = dStatsValue; break; 
-	case 8: pkChar->GetStats()->m_iLevel = dStatsValue; break;
+	case 0: pkChar->GetStats()->m_iLife = int(dStatsValue); break; 
+	case 1: pkChar->GetStats()->m_iMaxLife = int(dStatsValue); break;
+	case 2: pkChar->GetStats()->m_fSpeed = float(dStatsValue); break;
+	case 3: pkChar->GetStats()->m_fArmour = float(dStatsValue); break;
+	case 4: pkChar->GetStats()->m_fWage = float(dStatsValue); break;
+	case 5: pkChar->GetStats()->m_fAim = float(dStatsValue); break; 
+	case 6: pkChar->GetStats()->m_fExperience = float(dStatsValue); break;
+	case 7: pkChar->GetStats()->m_fNextLevel = float(dStatsValue); break; 
+	case 8: pkChar->GetStats()->m_iLevel = int(dStatsValue); break;
 	}																			 
 
 	return 0;
@@ -1801,7 +1801,7 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 	{
 		if( g_pkScript->GetArgNumber(pkLua, 0, &dEntID) )
 		{
-			Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dEntID);
+			Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dEntID));
 
 			if(pkEnt != NULL)
 			{

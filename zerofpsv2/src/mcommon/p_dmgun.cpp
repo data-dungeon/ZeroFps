@@ -42,7 +42,7 @@ P_DMGun::~P_DMGun()
 void P_DMGun::Init()
 {
 	//cout<< "New GUN created"<<endl;
-
+	m_iHitSparkleTextureID = m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/dm/gun_sparkle.tga", 0);
 }
 
 bool P_DMGun::Fire(Vector3 kTarget)
@@ -57,6 +57,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	
 	m_fTimeFired = t;
 	m_bFireing = true;
+	m_fTargetDist = kTarget.DistanceTo(m_pkObject->GetWorldPosV());
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 	
 	return true;
@@ -86,15 +87,16 @@ void P_DMGun::Update()
 			f = (t - m_kHitPos[i].second )*2;
 			kColor.Set(0.8f - f, 0.8f - f, 0.8f - f);
 		
-			m_pkZeroFps->m_pkRender->Sphere(m_kHitPos[i].first,0.1,1,kColor,true);
-			m_pkZeroFps->m_pkRender->SetColor(kColor);
-			m_pkZeroFps->m_pkRender->Line(m_kHitPos[i].first,m_pkObject->GetWorldPosV() + m_kGunOffset);
+			// draw hit-sparkle
+			m_pkZeroFps->m_pkRender->DrawBillboard(
+				m_pkObject->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
+				m_kHitPos[i].first, 0.2, m_iHitSparkleTextureID);
 		}
 	
 		//vector<pair<Vector3,float> >::iterator kIte2;
 	   for ( vector<pair<Vector3,float> >::iterator kIte = m_kHitPos.begin(); kIte != m_kHitPos.end(); kIte++ )	
 		{	
-			if( (t - (*kIte).second ) > 0.4)
+			if( (t - (*kIte).second ) > 0.08)
 			{
 				m_kHitPos.erase(kIte);
 				return;
@@ -138,7 +140,6 @@ void P_DMGun::Update()
 	//has the trigger just been pressed, if so make sure we only fire one round
 	if(m_bFirstUpdateSinceFireing)
 	{
-		cout<<"tried to fire:"<<iAmmoToFire<<endl;
 		m_bFirstUpdateSinceFireing = false;
 		iAmmoToFire = 1;		
 		prevShotPlayTime = 0;
@@ -183,11 +184,14 @@ bool P_DMGun::FireBullets(int iAmount)
 
 	for(int i =0;i<iAmount;i++)
 	{
-		//Vector3 kDir = (m_kDir +  Vector3( (rand() % int(m_fRandom*1000) / 1000.0)-0.5, (rand() % int(m_fRandom*1000) / 1000.0)-0.5,(rand() % int(m_fRandom*1000) / 1000.0)-0.5)).Unit();
-		Vector3 kDir = m_kDir + Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom;
-		//Vector3 kDir = (kSDir + Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom) * dist;
-		//Vector3 kDir = kStart + (kSDir +  (Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom)) * dist;
-	
+
+		// fAim = degrees
+		float fRand = sin(m_fRandom / (180.f / PI)) * m_fTargetDist;
+
+		Vector3 kDir = m_kDir + Vector3( (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f),
+										 (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f),
+										 (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f) );
+
 		float d;	
 		Vector3 cp;
 		float closest = 999999999;
@@ -209,7 +213,7 @@ bool P_DMGun::FireBullets(int iAmount)
 					if(d < closest)
 					{
 						// annoying test, hittest checks with bindpose,
-						// so dead models are hit as if they are standing :(
+						// so dead models aren't hit as if they are standing :(
 						if( P_DMCharacter* pkChar = (P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter") )
 						{
 							if ( pkChar->GetStats()->m_iLife > 0 && m_iTeam != pkChar->m_iTeam )
@@ -232,14 +236,30 @@ bool P_DMGun::FireBullets(int iAmount)
 		
 		if(pkClosest)
 		{
-			m_kHitPos.push_back(pair<Vector3,float>(kPickPos,t));			
+			// smoke psystem
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/dm/t_gunsmoke.lua");
+			pkSmoke->SetWorldPosV (kPickPos);
+			pkSmoke->AttachToZone();
+
+			// so half the sparkle doesn't always get stuck in the ground
+			kPickPos.y += 0.06;
+			m_kHitPos.push_back(pair<Vector3,float>(kPickPos,t));		
 			
 			
 			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
 					pkChar->Damage(0, int(m_fDamage));
 		}
 		else
+		{			
+			// smoke psystem
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/dm/t_gunsmoke.lua");
+			pkSmoke->SetWorldPosV (kPickPos);
+			pkSmoke->AttachToZone();
+
+			// so half the sparkle doesn't always get stuck in the ground
+			kPickPos.y += 0.06;
 			m_kHitPos.push_back(pair<Vector3,float>(kStart+kDir*100,t));			
+		}
 			
 	
 	}

@@ -194,9 +194,7 @@ void DarkMetropolis::RenderInterface(void)
 	
 	//draw select square
 	if(m_bSelectSquare)
-	{				
-		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.5,m_kSelectSquareStop.z),Vector3(0,1,0));								
-	}
+		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
 }
 
 void DarkMetropolis::OnSystem() 
@@ -450,16 +448,6 @@ void DarkMetropolis::Input()
 	{
 		if(pkGui->m_bUseHardwareMouse == true)
 			m_pkInput->ShowCursor(true);
-		
-		/* utkomenterat av Zerom: jobbig kamera!!!!!
-		if(m_pkCameraProp)
-		{
-			//reset the camera if it aint moving
-			m_fAngle *= 0.99;
-			
-			m_pkCameraProp->Set3PYAngle(m_fAngle);	
-		}s
-		*/
 	}
 		
 		
@@ -474,7 +462,7 @@ void DarkMetropolis::Input()
 			if(pkEnt)
 			{
 				m_bSelectSquare = true;
-				m_kSelectSquareStart = m_kPickPos;		
+				m_kSelectSquareStart = m_kPickPos;
 				m_kSelectSquareStop = m_kPickPos;
 			}	
 		}

@@ -18,10 +18,10 @@ DMCharacterStats::DMCharacterStats()
 	m_fSpeed =		1;
 	m_fArmour =		10;
 	m_fWage =		10;
-	m_fAim =		1;
+	m_fAim =		10;
 				
-	m_fExperience =0;
-	m_fNextLevel = 1000;
+	m_fExperience = 0;
+	m_fNextLevel =  1000;
 	m_iLevel =		1;
 }
 
@@ -169,14 +169,12 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	m_kStats.m_iLife -= iDmg;
 
 	if ( m_kStats.m_iLife < 0 )
-		m_kStats.m_iLife = 0; // m_kStats.m_iLife == 0; // zeb: ändrar detta uppenbara fel.
+		m_kStats.m_iLife = 0;
 	
 	cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
 
 	if(m_kStats.m_iLife <= 0)
 	{
-		cout<<"ARRRGGg *dead*"<<endl;		
-
 		int iNumSounds = m_vkDeathSounds.size();
 		if(iNumSounds > 0)
 		{
@@ -257,7 +255,8 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	pkP_Gun->m_iTeam = m_iTeam;
 
-	pkP_Gun->Fire (kLocation);
+	// bad aim
+	float fDist = kLocation.DistanceTo( pkWeapon->GetWorldPosV() );
 
 	// rotate character towards target
 	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();
@@ -267,6 +266,18 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	kRotM.LookDir( kdiff.Unit(), Vector3(0, 1, 0) );
 	kRotM.Transponse();
 	m_pkObject->SetLocalRotM(kRotM);
+
+	if ( fDist < pkP_Gun->Range() )
+	{
+		// fAim = degrees
+		float fRand = sin(m_kStats.m_fAim / (180.f / PI)) * fDist;
+
+		kLocation.x += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+		kLocation.y += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+		kLocation.z += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+
+		pkP_Gun->Fire (kLocation);
+	}
 
 	// Start shoot animation, if gun isn't empty
 	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))

@@ -28,6 +28,7 @@ class MCOMMON_API P_DMGun: public Property {
 		bool		m_bFirstUpdateSinceFireing;
 		
 		Vector3	m_kGunOffset;
+		float m_fTargetDist;
 		
 		//gun info
 		string	m_strName;
@@ -45,6 +46,8 @@ class MCOMMON_API P_DMGun: public Property {
 		bool		FireBullets(int iAmount);
 
 		ZFAudioSystem* m_pkAudioSys;
+
+		int			m_iHitSparkleTextureID;
 		
 
 	public:
@@ -74,6 +77,8 @@ class MCOMMON_API P_DMGun: public Property {
 		bool ReadyToFire	 ()					{ return m_bFireing; }
 
 		void Reload();
+
+		float Range()							{ return m_fRange; }
 
 		
 		void Save(ZFIoInterface* pkPackage);
