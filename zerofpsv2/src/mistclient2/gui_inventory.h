@@ -27,15 +27,28 @@ public:
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
 	bool IsVisible() { if(m_pkMainWnd == NULL) return false; return m_pkMainWnd && m_pkMainWnd->IsVisible(); }
+	MLContainer* GetContainer();
 
 private:
+
+	struct ITEM_SLOT
+	{
+		ZGuiWnd* pkWnd;
+		int iItemID;
+	};
 
 	void OnDropItem();
 
 	TextureManager* m_pkTexMan;
 
+	vector<ITEM_SLOT> m_vkItemList;
+
 	ZGuiWnd* m_pkMainWnd;
-	ZGuiWnd* m_pkSelectedWnd;
+	int m_iMoveSlot; // index of m_vkItemList
+	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
+	int m_iHighestZ;
+
+	Point m_kPosBeforeMove;
 	
 	bool m_bGuiCaptureBeforOpen;
 
@@ -47,12 +60,11 @@ private:
 
 	const Point UPPER_LEFT;
 
-	struct ITEM_SLOT
-	{
-		ZGuiWnd* pkWnd;
-	};
 
-	vector<ITEM_SLOT> m_vkItemList;
+
+
+
+	
 };
 
 #endif

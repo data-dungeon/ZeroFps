@@ -1,11 +1,12 @@
 
-
 #include "mistclient.h"
 #include "gui_inventory.h"
+#include "../mcommon/p_characterproperty.h"
 
 extern MistClient	g_kMistClient;
 
-void GuiMsgInventoryDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params )
+void GuiMsgInventoryDlg( string strMainWnd, string strController, 
+								unsigned int msg, int numparms, void *params )
 {
 	if(msg == ZGM_COMMAND)
 	{
@@ -40,12 +41,32 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87
 {
 	m_pkMainWnd = NULL;
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
-	m_pkSelectedWnd = NULL;
+	m_iMoveSlot = -1;
+	m_iSelItemID = -1;
+	m_iHighestZ = 1000;
 }
 
 InventoryDlg::~InventoryDlg()
 {
 	g_kMistClient.m_pkGui->UnregisterWindow(m_pkMainWnd);
+}
+
+MLContainer* InventoryDlg::GetContainer()
+{
+	Entity* pkPlayer = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID);
+
+	if(pkPlayer)
+	{
+		P_CharacterProperty* pkCharacterProperty = 
+			(P_CharacterProperty*) pkPlayer->GetProperty("P_CharacterProperty");
+
+		if(pkCharacterProperty)
+		{
+			return pkCharacterProperty->m_pkInventory;
+		}
+	}
+
+	return NULL;
 }
 
 void InventoryDlg::Open()
@@ -95,55 +116,62 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+	if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+	{
+		m_iSelItemID = -1;
+	}
+
 	for(int i=0; i<m_vkItemList.size(); i++)
 	{		
 		if(m_vkItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
-			m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+			if(m_iMoveSlot == -1)
+				m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
 			{
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[0] = 1;
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[1] = 0;
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[2] = 0;
+				if(m_iMoveSlot == -1)
+				{
+					m_kPosBeforeMove.x = m_vkItemList[i].pkWnd->GetWndRect().Left;
+					m_kPosBeforeMove.y = m_vkItemList[i].pkWnd->GetWndRect().Top;
 
-				if(m_pkSelectedWnd == NULL)
-					m_pkSelectedWnd = m_vkItemList[i].pkWnd; // set new selection window
+					m_iMoveSlot = i; // select new item
+					m_vkItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					m_pkMainWnd->SortChilds(); 
+				}
 			}
 			else
 			{
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[0] = 1;
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[1] = 1;
-				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[2] = 1;
-
-				if(m_pkSelectedWnd)
-				{
+				if(m_iMoveSlot != -1)
 					OnDropItem();
-				}
 
-				m_pkSelectedWnd = NULL;
+				m_iMoveSlot = -1;
+			}	
+
+			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+			{	
+				m_iSelItemID = m_vkItemList[i].iItemID;
 			}
-
 		}
 		else
 		{
-			m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
+			if( m_vkItemList[i].iItemID != m_iSelItemID)
+				m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
 		}
 	}
 
-	if(m_pkSelectedWnd)
+	if(m_iMoveSlot != -1)
 	{
-		m_pkSelectedWnd->SetPos(mx,my, true, true);
+		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(mx,my, true, true);
 	}
 }
 
 void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 {
-	printf("size of item list = %i\n", vkItemList.size());
+	m_iHighestZ = 1000;
+	m_iMoveSlot = -1;
 
-	m_pkSelectedWnd = NULL;
-
-	// Ta bort alla gamla items
+	// Remove all slots.
 	for(int i=0; i<m_vkItemList.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkItemList[i].pkWnd;
@@ -153,6 +181,7 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 
 	m_vkItemList.clear();
 
+	// Rebuild slotlist.
 	int x,y,w,h;
 	char szItemName[128];
 	for(int i=0; i<vkItemList.size(); i++)
@@ -163,29 +192,33 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		w = vkItemList[i].m_cItemW * ICON_WIDTH;
 		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
 
-		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, szItemName, "InventoryWnd", "", x, y, w, h, 0);
+		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
+			szItemName, "", m_pkMainWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
 
+		if(m_iSelItemID == vkItemList[i].m_iItemID)
+			pkNewSlot->GetSkin()->m_unBorderSize = 2;
+
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
+		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		m_vkItemList.push_back(kNewSlot);
+
 	}
 }
 
+// When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem()
 {
-	Rect rcMain = m_pkMainWnd->GetWndRect();
-	Rect rc = m_pkSelectedWnd->GetWndRect();
+	Rect rcMain = m_vkItemList[m_iMoveSlot].pkWnd->GetWndRect();
+	Rect rc = m_vkItemList[m_iMoveSlot].pkWnd->GetWndRect();
 
-	if(rc.Left < UPPER_LEFT.x)
-		rc.Left = UPPER_LEFT.x;
-
-	if(rc.Top < UPPER_LEFT.y)
-		rc.Top = UPPER_LEFT.y;
+	if(rc.Left < UPPER_LEFT.x) rc.Left = UPPER_LEFT.x;
+	if(rc.Top < UPPER_LEFT.y) rc.Top = UPPER_LEFT.y;
 
 	int slot_w = rc.Width() / ICON_WIDTH;
 	int slot_h = rc.Height() / ICON_HEIGHT;
@@ -199,5 +232,32 @@ void InventoryDlg::OnDropItem()
 	int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
 	int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
 
-	m_pkSelectedWnd->SetPos(x, y, false, true);
+	bool bMoveOK = true;
+	for(int i=0; i<m_vkItemList.size(); i++)
+	{
+		if(i!=m_iMoveSlot)
+		{
+			if(m_vkItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
+				m_vkItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
+				m_vkItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
+				m_vkItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
+			{
+				// TODO: Check if collision slot is a container or ar stackable item.
+				bMoveOK = false; 
+				break;
+			}
+		}
+	}
+
+	if(bMoveOK)
+	{
+		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
+		MLContainer* pkContainer = GetContainer();
+		pkContainer->MoveItem(m_vkItemList[m_iMoveSlot].iItemID, 4, 8);
+	}
+	else
+	{
+		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
+			m_kPosBeforeMove.y, false, true);		
+	}
 }
