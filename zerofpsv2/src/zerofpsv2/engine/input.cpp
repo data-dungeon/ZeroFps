@@ -13,16 +13,12 @@ Input::Input()
 
 	// Register Commands
 	Register_Cmd("i_togglegrab",		FID_TOGGLEGRAB);
-	Register_Cmd("i_bind",				FID_BIND);
-	Register_Cmd("i_unbindall",		FID_UNBINDALL);
-	Register_Cmd("i_listactions",		FID_LISTACTIONS);		
 	Register_Cmd("i_mousesens",		FID_MOUSESENS);		
-
-
 	Register_Cmd("i_bindvk",			FID_BINDVK);
 	Register_Cmd("i_listvk",			FID_VKBINDLIST);
-	
-	
+//	Register_Cmd("i_bind",				FID_BIND);
+//	Register_Cmd("i_unbindall",		FID_UNBINDALL);
+//	Register_Cmd("i_listactions",		FID_LISTACTIONS);		
 };
 
 bool Input::StartUp()	
@@ -43,7 +39,7 @@ bool Input::StartUp()
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 	
-	m_iNrActions=0;
+//	m_iNrActions=0;
 
 	bool m_bInputEnabled = true;
 	
@@ -53,7 +49,7 @@ bool Input::StartUp()
 //		m_aiActionToButton[i]=NULL;
 	};
 	
-	SetupButtons();	
+	SetupMapToKeyState();	
 
 	return true;
 }
@@ -65,7 +61,8 @@ bool Input::ShutDown()
 
 bool Input::IsValid()	{ return true;	}
 
-void Input::Update(void) {
+void Input::Update(void) 
+{
 	m_iMouseX=-1;	
 	m_iMouseY=-1;
 	
@@ -76,12 +73,10 @@ void Input::Update(void) {
 
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
-			
-			
 			//keyboard
 			case SDL_KEYDOWN:
 				//put key in list
-				m_aPressedKeys.push(  m_kEvent.key.keysym.sym  );
+				m_aPressedKeys.push(  SDLToZeroFpsKey(m_kEvent.key.keysym.sym)  );
 				cout << "Key Qued: " << m_kEvent.key.keysym.sym << endl;
 
 				if(m_aPressedKeys.size()>m_iQueueLength)
@@ -423,64 +418,6 @@ bool Input::Pressed(Buttons eButton)
 	}
 }
 
-/*
-bool Input::Bind(const string kKey, const string kAction)
-{
-	unsigned int iAcSize = m_kActions.size();
-	unsigned int iKeySize = m_kButtons.size();
-	map<string, int>::iterator kIt = m_kButtons.find(kKey);
-	if(kIt!= m_kButtons.end())
-	{
-		m_kActions[kAction];
-		if(m_kActions.size()!=iAcSize)
-		{
-			m_kActions.erase(kAction);
-			if(GetConsole())
-			m_pkConsole->Printf("putting'%s'in pending actions list",kAction.c_str());	
-			//cout<<"putting'" <<kAction<<"'in pending actions list" <<endl;
-			m_kPendingActions[kAction]=&(*kIt);
-		}
-		else 
-		{
-		
-			(*m_kActions[kAction])=&(*kIt);
-		}
-		return true;
-	}
-	else
-	{
-	if(GetConsole())
-		m_pkConsole->Printf("bind <key> <action>");	
-		
-		return false;
-	}
-};*/
-
-/*
-void Input::ListActions()
-{
-	if(GetConsole())
-	{
-		if(m_kActions.empty())
-			//if(GetConsole())
-			m_pkConsole->Printf("No actions defined!");	
-		else
-		{
-			map<const string, pair<const string, int>**>::iterator kItor = m_kActions.begin();
-			while (kItor != m_kActions.end())
-			{
-				
-			
-				if((*kItor->second) !=NULL)
-					m_pkConsole->Printf("%s : %s",kItor->first.c_str(),((*kItor->second)->first).c_str());
-				else 
-					m_pkConsole->Printf("%s : no key defined",(kItor->first).c_str());
-				kItor++;
-				
-			}
-		}
-	}
-}*/
 
 
 bool Input::GetConsole()
@@ -493,57 +430,6 @@ bool Input::GetConsole()
 		return true;
 }
 
-/*
-int Input::RegisterAction(const char *pcAction)
-{
-	string kAction=string(pcAction);
-	if(!m_kPendingActions.empty())
-	{
-		map<const string, pair<const string, int>*>::iterator kIt = m_kPendingActions.find(kAction);
-		
-		if(kIt != m_kPendingActions.end())
-		{
-			m_aiActionToButton[m_iNrActions]=&(*kIt->second);
-			m_kPendingActions.erase(kIt);
-		}
-		else m_aiActionToButton[m_iNrActions]=NULL;
-		
-	}
-	else m_aiActionToButton[m_iNrActions]=NULL;
-	unsigned int iAcSize = m_kActions.size();
-	m_kActions[kAction];
-	if( iAcSize == m_kActions.size())
-	{
-	
-
-		for(int i=0; i<m_iNrActions;i++)
-		{
-		
-			if(m_kActions[kAction]==&m_aiActionToButton[i])
-				return i;
-		}
-	}
-	else
-		m_kActions[kAction]=&m_aiActionToButton[m_iNrActions];
-
-	m_iNrActions++;
-	return (m_iNrActions-1);
-}*/
-
-/*
-bool Input::Action(int iAction)
-{
-	if(m_bInputEnabled) 
-	{	
-		if(m_aiActionToButton[iAction]!=NULL)
-			return m_akKeyState[m_aiActionToButton[iAction]->second].m_bDown;
-		else return false;
-	} 
-	else 
-	{
-		return false;
-	}
-}*/
 
 void Input::SetCursorInputPos(int x, int y)
 {
@@ -848,11 +734,233 @@ void Input::SetupMapToKeyState()
 //	m_akKeyState[KEY_].m_strName = "";
 }
 
+void Input::FormatKey(int& iKey)
+{
+	bool bShiftIsPressed = Pressed(KEY_LSHIFT) || Pressed(KEY_RSHIFT);
+
+	#ifdef WIN32
+	
+		if(bShiftIsPressed)
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '?';
+			else
+			if(iKey == '\\')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+			if(iKey == '-')
+				iKey = '+';
+			if(iKey == '/')
+				iKey = '-';
+			if(iKey == '\\')
+				iKey = '\'';
+			if(iKey == '=')
+				iKey = '´';
+		}	
+
+	#endif // #ifdef WIN32
+
+	#ifndef WIN32
+
+		if(bShiftIsPressed)
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '_';
+			else
+			if(iKey == '\'')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+		
+		
+		}	
+
+	#endif // #ifndef LINUX
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+bool Input::Bind(const string kKey, const string kAction)
+{
+	unsigned int iAcSize = m_kActions.size();
+	unsigned int iKeySize = m_kButtons.size();
+	map<string, int>::iterator kIt = m_kButtons.find(kKey);
+	if(kIt!= m_kButtons.end())
+	{
+		m_kActions[kAction];
+		if(m_kActions.size()!=iAcSize)
+		{
+			m_kActions.erase(kAction);
+			if(GetConsole())
+			m_pkConsole->Printf("putting'%s'in pending actions list",kAction.c_str());	
+			//cout<<"putting'" <<kAction<<"'in pending actions list" <<endl;
+			m_kPendingActions[kAction]=&(*kIt);
+		}
+		else 
+		{
+		
+			(*m_kActions[kAction])=&(*kIt);
+		}
+		return true;
+	}
+	else
+	{
+	if(GetConsole())
+		m_pkConsole->Printf("bind <key> <action>");	
+		
+		return false;
+	}
+};*/
+
+/*
+void Input::ListActions()
+{
+	if(GetConsole())
+	{
+		if(m_kActions.empty())
+			//if(GetConsole())
+			m_pkConsole->Printf("No actions defined!");	
+		else
+		{
+			map<const string, pair<const string, int>**>::iterator kItor = m_kActions.begin();
+			while (kItor != m_kActions.end())
+			{
+				
+			
+				if((*kItor->second) !=NULL)
+					m_pkConsole->Printf("%s : %s",kItor->first.c_str(),((*kItor->second)->first).c_str());
+				else 
+					m_pkConsole->Printf("%s : no key defined",(kItor->first).c_str());
+				kItor++;
+				
+			}
+		}
+	}
+}*/
+
+
+/*
+int Input::RegisterAction(const char *pcAction)
+{
+	string kAction=string(pcAction);
+	if(!m_kPendingActions.empty())
+	{
+		map<const string, pair<const string, int>*>::iterator kIt = m_kPendingActions.find(kAction);
+		
+		if(kIt != m_kPendingActions.end())
+		{
+			m_aiActionToButton[m_iNrActions]=&(*kIt->second);
+			m_kPendingActions.erase(kIt);
+		}
+		else m_aiActionToButton[m_iNrActions]=NULL;
+		
+	}
+	else m_aiActionToButton[m_iNrActions]=NULL;
+	unsigned int iAcSize = m_kActions.size();
+	m_kActions[kAction];
+	if( iAcSize == m_kActions.size())
+	{
+	
+
+		for(int i=0; i<m_iNrActions;i++)
+		{
+		
+			if(m_kActions[kAction]==&m_aiActionToButton[i])
+				return i;
+		}
+	}
+	else
+		m_kActions[kAction]=&m_aiActionToButton[m_iNrActions];
+
+	m_iNrActions++;
+	return (m_iNrActions-1);
+}*/
+
+/*
+bool Input::Action(int iAction)
+{
+	if(m_bInputEnabled) 
+	{	
+		if(m_aiActionToButton[iAction]!=NULL)
+			return m_akKeyState[m_aiActionToButton[iAction]->second].m_bDown;
+		else return false;
+	} 
+	else 
+	{
+		return false;
+	}
+}*/
+
+/*
 void Input::SetupButtons()
 {
 	SetupMapToKeyState();
 
-/*	m_kButtons.insert(map<char*, int>::value_type("escape",SDLK_ESCAPE));
+	m_kButtons.insert(map<char*, int>::value_type("escape",SDLK_ESCAPE));
 	m_kButtons.insert(map<char*, int>::value_type("left",SDLK_LEFT));
 	m_kButtons.insert(map<char*, int>::value_type("right",SDLK_RIGHT));
 	m_kButtons.insert(map<char*, int>::value_type("up",SDLK_UP));
@@ -972,9 +1080,8 @@ void Input::SetupButtons()
 	m_kButtons.insert(map<char*,int>::value_type("mouseleft",MOUSELEFT));
 	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
 	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
-*/
 
-/*	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFT,gKEY_LEFT));
+	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFT,gKEY_LEFT));
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHT,gKEY_RIGHT));
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_UP,gKEY_UP));
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DOWN,gKEY_DOWN));
@@ -1080,100 +1187,6 @@ void Input::SetupButtons()
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSELEFT,gMOUSELEFT));
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSEMIDDLE,gMOUSEMIDDLE));
 	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSERIGHT,gMOUSERIGHT));
+
+}
 */
-}
-
-void Input::FormatKey(int& iKey)
-{
-	bool bShiftIsPressed = Pressed(KEY_LSHIFT) || Pressed(KEY_RSHIFT);
-
-	#ifdef WIN32
-	
-		if(bShiftIsPressed)
-		{
-			if(iKey == '7')
-				iKey = '/';
-			else
-			if(iKey == '0')
-				iKey = '=';
-			else
-			if(iKey == ',') 
-				iKey = ';';
-			else
-			if(iKey == '.')
-				iKey = ':';
-			else
-			if(iKey == '/')
-				iKey = '_';
-			else
-			if(iKey == '=')
-				iKey = '`';
-			else
-			if(iKey == '-')
-				iKey = '?';
-			else
-			if(iKey == '\\')
-				iKey = '*';
-			else
-			if(iKey > 48 && iKey < 58)
-				iKey -= 16;
-			else
-			if(iKey > 96 && iKey < 123)
-				iKey -= 32;
-		}
-		else
-		{
-			if(iKey == '-')
-				iKey = '+';
-			if(iKey == '/')
-				iKey = '-';
-			if(iKey == '\\')
-				iKey = '\'';
-			if(iKey == '=')
-				iKey = '´';
-		}	
-
-	#endif // #ifdef WIN32
-
-	#ifndef WIN32
-
-		if(bShiftIsPressed)
-		{
-			if(iKey == '7')
-				iKey = '/';
-			else
-			if(iKey == '0')
-				iKey = '=';
-			else
-			if(iKey == ',') 
-				iKey = ';';
-			else
-			if(iKey == '.')
-				iKey = ':';
-			else
-			if(iKey == '/')
-				iKey = '_';
-			else
-			if(iKey == '=')
-				iKey = '`';
-			else
-			if(iKey == '-')
-				iKey = '_';
-			else
-			if(iKey == '\'')
-				iKey = '*';
-			else
-			if(iKey > 48 && iKey < 58)
-				iKey -= 16;
-			else
-			if(iKey > 96 && iKey < 123)
-				iKey -= 32;
-		}
-		else
-		{
-		
-		
-		}	
-
-	#endif // #ifndef LINUX
-}

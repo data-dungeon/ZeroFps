@@ -199,8 +199,8 @@ class ENGINE_API Input : public ZFSubSystem {
 	private:
 		vector<VKData>		m_VirtualKeys;
 
-		InputKey	m_akKeyState[MAX_KEYS];
-		int		m_akMapToKeyState[MAX_SDLKEYS];
+		InputKey				m_akKeyState[MAX_KEYS];
+		int					m_akMapToKeyState[MAX_SDLKEYS];
 
 		void SetupMapToKeyState();
 		int  SDLToZeroFpsKey(int iSdlSym);		
@@ -208,16 +208,16 @@ class ENGINE_API Input : public ZFSubSystem {
 		enum FuncId_e
 		{
 			FID_TOGGLEGRAB,
-			FID_BIND,
 			FID_BINDVK,			// Bind VK to a key.
-			FID_UNBINDALL,
-			FID_LISTACTIONS,
 			FID_MOUSESENS,
 			FID_VKBINDLIST,		// List all VK and keys they are bind to.
+			//FID_UNBINDALL,
+			//FID_BIND,
+			//FID_LISTACTIONS,
 		};		
 		
-		BasicConsole* m_pkConsole;
-		ZeroFps* m_pkZeroFps;
+		BasicConsole*	m_pkConsole;
+		ZeroFps*			m_pkZeroFps;
 			
 		bool				m_bInputEnabled;
 		SDL_Event		m_kEvent;
@@ -233,18 +233,29 @@ class ENGINE_API Input : public ZFSubSystem {
 		void GrabInput(void);
 		void ReleaseInput(void);
 		
+		//int m_iNrActions;
+		
+		bool GetConsole();
+		
 		//map<const string, pair<const string, int>**>		m_kActions;
 		//map<const string, pair<const string, int>*>		m_kPendingActions;
 		//map<const string, int>									m_kButtons;
 		//pair<const string, int>*									m_aiActionToButton[400];
-		int m_iNrActions;
-		bool Bind(const string kKey, const string kAction);
+		//void ListActions();
+		//bool Bind(const string kKey, const string kAction);
+		//void SetupButtons();
+
+public:
+		int		m_iSDLMouseX, m_iSDLMouseY;
+		float		m_fMouseSensitivity;
 		
-		void SetupButtons();
-		bool GetConsole();
-		void ListActions();
-		
-	public:
+		Input();
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+	
+		void Update(void);
+
 		bool Pressed(Buttons eButton);
 		
 		VKData*	GetVKByName(string strName);
@@ -254,17 +265,10 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 		void VKList();
 		
-		
-		
 		void FormatKey(int& iKey);
 		void SetCursorInputPos(int x, int y);
-		float m_fMouseSensitivity;
 		
-		bool Action(int iAction);
-		int RegisterAction(const char* pcAction);
-		Input();
 		
-		void Update(void);
 		int GetQueuedKey();
 		int SizeOfQueue();
 		void UpdateMousePos();
@@ -279,17 +283,18 @@ class ENGINE_API Input : public ZFSubSystem {
 
 		void ShowCursor(bool bShow);
 
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
 
-//		map<int,int> m_kGlobalKeyTranslator;
 
 		string  GetKeyName(Buttons eKey);
 		Buttons GetNameByKey(string strName);
 		Buttons GetKeyCode(string strName);
 
-		int				m_iSDLMouseX, m_iSDLMouseY;
+
+
+		//map<int,int> m_kGlobalKeyTranslator;
+		//bool Action(int iAction);
+		//int RegisterAction(const char* pcAction);
+
 };
 
 #endif
