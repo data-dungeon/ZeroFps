@@ -24,6 +24,7 @@ Render::Render()
 	m_iHmTempList				= 0;
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
+	m_bShowInputToken			= false;
 
 	// The default graphics mode.
 	m_iWidth						= 800;
@@ -511,13 +512,11 @@ void Render::Mode2D_Start()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, 1024, 0, 768);
+	gluOrtho2D(0, 800, 0, 600);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-
-	//SetFont("data/textures/text/devstr.bmp");
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -542,7 +541,7 @@ void Render::Mode2D_End()
 
 
 
-void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
+void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine, int iMarkerPos, int iMarker) 
 {
 	Mode2D_Start();
 	SetFont("data/textures/text/devstr.bmp");
@@ -551,6 +550,15 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 
 	Print2(Vector3(8,8,0),m_aCommand);		
 	
+	char kMarker[3];
+	if(iMarker >= 0) {
+		kMarker[0] = iMarker;
+		kMarker[1] = 0;
+		//if(m_bShowInputToken)
+		Print2(Vector3(8+iMarkerPos*8,8,0), kMarker);		
+		//m_bShowInputToken = !m_bShowInputToken;
+		}
+
 	if(iStartLine < 0)
 		iStartLine = 0;
 	

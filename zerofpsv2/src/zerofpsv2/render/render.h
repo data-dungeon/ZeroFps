@@ -87,6 +87,8 @@ class RENDER_API Render : public ZFSubSystem {
    	void SubDivide(float *v1, float *v2, float *v3, long depth);
    	void Normalize(float v[3]);
    	
+		bool	m_bShowInputToken;
+
 	public:
 		int	m_iDetail;				//	grid size of lod tiles for the terran
 		int	m_iViewDistance;		//	how far until we cut the landscape	
@@ -130,7 +132,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void SetFont(char* aFont);
 		void PrintChar2(char cChar);
 		void Print2(Vector3 kPos, char* aText);
-		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
+		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);

@@ -20,22 +20,22 @@ bool Console::StartUp()
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 
-	m_iBufferSize=100;
+	m_iBufferSize			= 100;
 	m_kText.resize(m_iBufferSize);
-	m_bShift=false;
+   m_bShift					=	false;
 	strcpy(m_aCommand,"");
+	m_iInputPos				= 0;
 	
-	Print("ZeroFps engine started");
-	Print("ZeroFps (C) Dvoid & Vim");
-	Print("-----------------------");
-	Print("");
+	m_nStartLine			= 0;
+	m_iLastCommand			= -1;
+	m_nStartLine			= 0;
 
-	m_nStartLine = 0;
-	m_nLastCommand = 0;
-	m_nStartLine = 0;
+	m_fToggleTime			= 0;
+	m_bActive				= false;
+	m_bModeInsert			= true;
 
-	m_fToggleTime = 0;
-	m_bActive = false;
+	m_bShowMarker			= true;
+	m_fMarkerToggleTime	= 0;
 
 	return true; 
 }
@@ -46,6 +46,416 @@ bool Console::ShutDown()
 }
 
 bool Console::IsValid()	{ return true; }
+
+
+
+void Console::InsertKey(unsigned char ucKey)
+{
+	if(ucKey == SDLK_BACKSPACE) {
+		RemoveKey(false);
+		return;	
+		}
+
+	if(ucKey == KEY_DELETE) {
+		RemoveKey(true);
+		return;	
+		}
+
+	if(m_bModeInsert){
+		if( m_iInputPos >= strlen(m_aCommand )) {
+			strncat(m_aCommand,(char*)&(ucKey),1);
+			m_iInputPos++;
+			}
+		else {
+			string kEnd = &m_aCommand[m_iInputPos];
+			m_aCommand[m_iInputPos] = ucKey;
+			m_iInputPos++;
+			strcpy(&m_aCommand[m_iInputPos], kEnd.c_str());			
+			}
+		}
+	else {
+		if( m_iInputPos >= strlen(m_aCommand ))
+			strncat(m_aCommand,(char*)&(ucKey),1);
+		else 
+			m_aCommand[m_iInputPos] = ucKey;
+
+		m_iInputPos++;
+		}
+}
+	
+/*	Delete at current input position. If bDelete == true it will act like Delete and remove at the postion and if
+false it will act like backspace and remove before the current input position.*/
+void Console::RemoveKey(bool bDelete)
+{
+	if(bDelete) {
+		if( m_iInputPos >= strlen(m_aCommand ))	// Delete at end of line does nothing.
+			return;
+		
+		string kEnd = &m_aCommand[m_iInputPos + 1];
+		strcpy(&m_aCommand[m_iInputPos], kEnd.c_str());			
+		}
+
+	else {
+		if( m_iInputPos == 0)							// Backspace at start of line does nothing.
+			return;
+
+		string kEnd = &m_aCommand[m_iInputPos];
+		m_iInputPos--;
+		strcpy(&m_aCommand[m_iInputPos], kEnd.c_str());	
+		}
+
+}
+
+void Console::Draw(void)
+{
+	int iMarker;
+
+	if(m_bModeInsert)
+		iMarker = 22;	
+	else
+		iMarker = 203;	
+	if(m_bShowMarker == false)
+		iMarker = -1;
+
+	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine, m_iInputPos, iMarker );	
+	float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+
+	if(fCurrTime > m_fMarkerToggleTime) {
+		m_fMarkerToggleTime = fCurrTime + 0.5; 
+		m_bShowMarker = !m_bShowMarker;
+		}
+}
+
+void Console::ConsoleCmd(CON_CMD eCmd)
+{
+	switch(eCmd) {
+		case CONCMD_TOGGLE:			
+			glPopAttrib();
+			
+			Toggle();
+			m_pkInput->Reset();
+			break;
+
+		case CONCMD_RUN:			
+			Execute(m_aCommand);
+			for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
+				m_aCommand[i]=' ';				
+			strcpy(m_aCommand,"");
+			m_iInputPos = 0;
+			break;
+
+		case CONCMD_SCROLLUP:			
+			if(m_nStartLine < m_kText.size()/* && bUpdate*/ )
+			{
+				m_nStartLine++;
+				//PREVTIME = fCurrTime;
+			}
+			m_pkInput->GetQueuedKey(); // remove latest
+			
+			break;
+
+		case CONCMD_SCROLLDOWN:	
+			if(m_nStartLine > 0)
+			{
+				m_nStartLine--;
+				//PREVTIME = fCurrTime;
+			}
+			m_pkInput->GetQueuedKey(); // remove latest
+
+			break;
+
+		case CONCMD_HISTORYUP:		
+			if( !m_kCommandHistory.empty() ) {
+				if((m_iLastCommand + 1) < m_kCommandHistory.size() )
+					m_iLastCommand++;
+				
+				strcpy(m_aCommand, m_kCommandHistory[m_iLastCommand].c_str());
+				m_iInputPos = strlen(m_aCommand);
+				}
+			
+			break;
+		
+		case CONCMD_HISTORYDOWN:
+			if( !m_kCommandHistory.empty() && m_iLastCommand != -1  ) {
+				m_iLastCommand--;
+				if(m_iLastCommand >= 0) {
+					strcpy(m_aCommand, m_kCommandHistory[m_iLastCommand].c_str());
+					m_iInputPos = strlen(m_aCommand);
+				}
+				else {
+					strcpy(m_aCommand, "");
+					m_iInputPos = 0;
+				
+					}
+
+			}
+			else 
+				m_iLastCommand = -1;
+			
+			break;
+
+		case CONCMD_MARKERLEFT:			
+			m_iInputPos--;
+			if(m_iInputPos < 0 ) 
+				m_iInputPos = 0;
+			break;
+
+		case CONCMD_MARKERRIGHT:		
+			m_iInputPos++;
+			if(m_iInputPos >= strlen(m_aCommand) ) 
+				m_iInputPos = strlen(m_aCommand);
+			break;
+
+		case CONCMD_TOGGLEINSERT:	
+			m_bModeInsert = !m_bModeInsert;
+			break;
+		
+		default:
+			assert(0);
+		}
+}
+	
+void Console::Update(void) 
+{
+	Draw();
+
+	// Scroll console text
+	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
+	static float TIME = 0.10f;
+	float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+	bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
+
+	static bool s_bKeyrepeatActivated = false;
+	static int s_iLastKeyPressed;
+	static float s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();		//GetGameTime();
+	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
+
+	int iKeyPressed = m_pkInput->GetQueuedKey();
+		
+	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
+		m_bShift=true;
+	}else{
+		m_bShift=false;
+	}
+
+	CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
+
+	if(m_pkInput->Pressed(KEY_PAGEUP))		eCmd = CONCMD_SCROLLUP;
+	if(m_pkInput->Pressed(KEY_PAGEDOWN))	eCmd = CONCMD_SCROLLDOWN;
+	if(m_pkInput->Pressed(KEY_UP))			eCmd = CONCMD_HISTORYUP;
+	if(m_pkInput->Pressed(KEY_DOWN))			eCmd = CONCMD_HISTORYDOWN;
+	if(m_pkInput->Pressed(KEY_LEFT))			eCmd = CONCMD_MARKERLEFT;
+	if(m_pkInput->Pressed(KEY_RIGHT))		eCmd = CONCMD_MARKERRIGHT;
+	if(m_pkInput->Pressed(KEY_INSERT))		eCmd = CONCMD_TOGGLEINSERT;
+	if(m_pkInput->Pressed(KEY_TAB))			eCmd = CONCMD_TOGGLE;
+	if(m_pkInput->Pressed(SDLK_RETURN))		eCmd = CONCMD_RUN;
+
+	if(eCmd != CONCMD_NONE)
+	{
+		if(bUpdate) {
+			PREVTIME = fCurrTime;
+			ConsoleCmd( eCmd );
+			}
+		return;
+	}
+
+	//type text
+	if(strlen(m_aCommand)<COMMAND_LENGHT) 
+	{
+		// Registrera senast knappnedtryck.
+		if(iKeyPressed != -1 && 
+			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
+		{
+			// Formatera bokstaven.
+			FormatKey(iKeyPressed);
+
+			if(s_iLastKeyPressed != iKeyPressed)
+				s_bKeyrepeatActivated = false;
+
+			s_iLastKeyPressed = iKeyPressed; // registrera
+			InsertKey(s_iLastKeyPressed);
+		}
+		
+		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
+		if(m_pkInput->Pressed(s_iLastKeyPressed))
+		{
+			float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+
+			const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
+
+			if(s_bKeyrepeatActivated == false)
+			{
+				// Är det dags att aktivera Key Repeat?
+				if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
+				{
+					s_bKeyrepeatActivated = true;
+					s_fKeyrepeatCheckTime = fCurrTime;
+					s_fLastRepeatTime = fCurrTime;
+				}
+			}
+			else
+			{
+				// Är det dags att skriva ett nytt tecken?
+				if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
+				{
+					InsertKey(s_iLastKeyPressed);
+					s_fLastRepeatTime = fCurrTime;
+				}
+			}
+		}
+		// ... i annat fall nollställ statiska variabler.
+		else
+		{
+			s_bKeyrepeatActivated = false;
+			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
+		}	
+	}	
+}
+
+
+bool Console::Execute(char* aText) {
+	if(strlen(aText)==0){
+		Print("");
+		return false;
+	}
+	
+	Printf("> %s", aText);				// Print command to screen.
+
+	// Put into command history. New command are pushed on front and oldest are poped from back of deque
+	if(m_kCommandHistory.front() != string(aText))
+		m_kCommandHistory.push_front( string(aText) );
+	
+	// If deque is full remove last element.
+	if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
+		m_kCommandHistory.pop_back();
+	
+	m_iLastCommand = -1;
+
+	/*	DEBUG Help for printing cmd buffer.
+	Printf("Cmd History'", aText);
+	for(int i=0; i<m_kCommandHistory.size(); i++)
+		Printf(" [%d] '%s'", i, m_kCommandHistory[i].c_str()); */
+
+
+	if(!GetSystem().RunCommand(aText,CSYS_SRC_CONSOLE))
+	{
+		Printf("No Command was Found for '%s'", aText);
+		return false;
+	}
+
+	return true;
+}
+
+void Console::FormatKey(int& r_iKey)
+{
+	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
+	{
+		if(r_iKey>96 && r_iKey<123){
+			r_iKey-=32;
+		}
+		if(r_iKey=='-'){
+			r_iKey='_';
+		}
+		if(r_iKey=='.'){
+			r_iKey=':';
+		}					
+		if(r_iKey=='7'){
+			r_iKey='/';
+		}
+	}
+}
+
+void Console::Toggle()
+{
+	float fTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+	if(fTime < m_fToggleTime)
+		return;
+
+	m_bActive = !m_bActive;
+	m_fToggleTime = fTime += 0.2;
+}
+
+
+
+	
+/*	
+	while(SDL_PollEvent(&m_kEvent)) {
+		
+		//press keys
+		if(m_kEvent.type==SDL_KEYDOWN){
+
+			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
+				glPopAttrib();
+//				m_pkEngine->m_iState=state_normal;
+//				m_pkEngine->m_bClientMode=false;
+				m_pkEngine->m_bConsoleMode=false;
+
+				return;
+			}
+
+			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
+				Execute(m_aCommand);
+				for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
+					m_aCommand[i]=' ';				
+				strcpy(m_aCommand,"");
+				break;
+			}
+			if(m_kEvent.key.keysym.sym==SDLK_BACKSPACE){
+				m_aCommand[strlen(m_aCommand)-1]='\0';
+				break;
+			}
+						
+			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
+				m_bShift=true;
+				break;
+			}
+
+			
+			//type text
+			if(strlen(m_aCommand)<COMMAND_LENGHT) {
+				int code=m_kEvent.key.keysym.sym;
+				
+				//shift?
+				if(m_bShift) {
+					if(code>96 && code<123){
+						code-=32;
+						strncat(m_aCommand,(char*)&(code),1);
+						break;
+					}
+					if(code=='-'){
+						code='_';
+						strncat(m_aCommand,(char*)&(code),1);
+						break;
+					}
+					if(code=='.'){
+						code=':';
+						strncat(m_aCommand,(char*)&(code),1);
+						break;
+					}					
+					if(code=='7'){
+						code='/';
+						strncat(m_aCommand,(char*)&(code),1);
+						break;
+					}					
+				}
+				strncat(m_aCommand,(char*)&(code),1);
+			}
+		}
+		
+		//release keys
+		if(m_kEvent.type==SDL_KEYUP){									
+			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
+				m_bShift=false;
+				break;
+			}		
+		}
+	}
+}
+
+*/
+
+
 
 /*void Console::Update(void) {
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
@@ -174,299 +584,3 @@ bool Console::IsValid()	{ return true; }
 		}
 	}		
 }*/
-
-void Console::Update(void) {
-	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
-
-	// Scroll console text
-	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
-	static float TIME = 0.10f;
-	float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-
-	bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
-
-	if(m_pkInput->Pressed(KEY_PAGEUP))
-	{
-		if(m_nStartLine < m_kText.size() && bUpdate)
-		{
-			m_nStartLine++;
-			PREVTIME = fCurrTime;
-		}
-		m_pkInput->GetQueuedKey(); // remove latest
-		return;
-	}
-	if(m_pkInput->Pressed(KEY_PAGEDOWN) && bUpdate)
-	{
-		if(m_nStartLine > 0)
-		{
-			m_nStartLine--;
-			PREVTIME = fCurrTime;
-		}
-		m_pkInput->GetQueuedKey(); // remove latest
-		return;
-	}
-	
-	static bool s_bKeyrepeatActivated = false;
-	static int s_iLastKeyPressed;
-	static float s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();		//GetGameTime();
-	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
-
-	int iKeyPressed = m_pkInput->GetQueuedKey();
-		
-	//press keys
-	if(iKeyPressed == KEY_TAB) {
-		glPopAttrib();
-		
-		Toggle();
-		m_pkInput->Reset();
-		return;
-	}
-
-	if(iKeyPressed==SDLK_RETURN){
-		Execute(m_aCommand);
-		for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
-			m_aCommand[i]=' ';				
-		strcpy(m_aCommand,"");
-		
-		return;
-	}
-				
-	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
-		m_bShift=true;
-	}else{
-		m_bShift=false;
-	}
-
-	if(iKeyPressed==KEY_UP)
-	{
-		if(m_nLastCommand >= 0)
-		{
-			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
-			
-			if(m_nLastCommand > 0)
-				m_nLastCommand--;
-		}
-		return;
-	}
-	if(iKeyPressed==KEY_DOWN)
-	{
-		if(m_nLastCommand+1 < m_kCommandHistory.size())
-		{
-			m_nLastCommand++;						
-			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
-		}
-		else
-		{
-			int last = m_kCommandHistory.size()-1;
-			if(last >= 0)
-				strcpy(m_aCommand, m_kCommandHistory[last].c_str());		
-		}
-		return;
-	}
-	
-	//type text
-	if(strlen(m_aCommand)<COMMAND_LENGHT) 
-	{
-		// Registrera senast knappnedtryck.
-		if(iKeyPressed != -1 && 
-			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
-		{
-			// Formatera bokstaven.
-			FormatKey(iKeyPressed);
-
-			if(s_iLastKeyPressed != iKeyPressed)
-				s_bKeyrepeatActivated = false;
-
-			s_iLastKeyPressed = iKeyPressed; // registrera
-
-			// Har knappen tryckts ner?
-			if(s_iLastKeyPressed != SDLK_BACKSPACE)
-				strncat(m_aCommand,(char*)&(s_iLastKeyPressed),1);
-			else
-				m_aCommand[strlen(m_aCommand)-1]='\0';
-		}
-		
-		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
-		if(m_pkInput->Pressed(s_iLastKeyPressed))
-		{
-			float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-
-			const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
-
-			if(s_bKeyrepeatActivated == false)
-			{
-				// Är det dags att aktivera Key Repeat?
-				if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
-				{
-					s_bKeyrepeatActivated = true;
-					s_fKeyrepeatCheckTime = fCurrTime;
-					s_fLastRepeatTime = fCurrTime;
-				}
-			}
-			else
-			{
-				// Är det dags att skriva ett nytt tecken?
-				if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
-				{
-					if(s_iLastKeyPressed != SDLK_BACKSPACE)
-						strncat(m_aCommand,(char*)&(s_iLastKeyPressed),1);
-					else
-						m_aCommand[strlen(m_aCommand)-1]='\0';
-
-					s_fLastRepeatTime = fCurrTime;
-				}
-			}
-		}
-		// ... i annat fall nollställ statiska variabler.
-		else
-		{
-			s_bKeyrepeatActivated = false;
-			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
-		}	
-	}	
-}
-	
-/*	
-	while(SDL_PollEvent(&m_kEvent)) {
-		
-		//press keys
-		if(m_kEvent.type==SDL_KEYDOWN){
-
-			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
-				glPopAttrib();
-//				m_pkEngine->m_iState=state_normal;
-//				m_pkEngine->m_bClientMode=false;
-				m_pkEngine->m_bConsoleMode=false;
-
-				return;
-			}
-
-			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
-				Execute(m_aCommand);
-				for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
-					m_aCommand[i]=' ';				
-				strcpy(m_aCommand,"");
-				break;
-			}
-			if(m_kEvent.key.keysym.sym==SDLK_BACKSPACE){
-				m_aCommand[strlen(m_aCommand)-1]='\0';
-				break;
-			}
-						
-			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
-				m_bShift=true;
-				break;
-			}
-
-			
-			//type text
-			if(strlen(m_aCommand)<COMMAND_LENGHT) {
-				int code=m_kEvent.key.keysym.sym;
-				
-				//shift?
-				if(m_bShift) {
-					if(code>96 && code<123){
-						code-=32;
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}
-					if(code=='-'){
-						code='_';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}
-					if(code=='.'){
-						code=':';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}					
-					if(code=='7'){
-						code='/';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}					
-				}
-				strncat(m_aCommand,(char*)&(code),1);
-			}
-		}
-		
-		//release keys
-		if(m_kEvent.type==SDL_KEYUP){									
-			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
-				m_bShift=false;
-				break;
-			}		
-		}
-	}
-}
-
-*/
-
-
-bool Console::Execute(char* aText) {
-	if(strlen(aText)==0){
-		Print("");
-		return false;
-	}
-	
-	Printf("> %s", aText);				// Print command to screen.
-	if(!GetSystem().RunCommand(aText,CSYS_SRC_CONSOLE))
-	{
-		Printf("No Command was Found for '%s'", aText);
-		return false;
-	}
-	else
-	{
-		if(!m_kCommandHistory.empty())
-		{
-			if(m_kCommandHistory.back() != aText)
-			{
-				m_kCommandHistory.push_back(string(aText));
-
-				if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
-				{
-					m_kCommandHistory.pop_front();
-				}
-			}
-		}
-		else
-			m_kCommandHistory.push_back(string(aText));
-	
-		m_nLastCommand = m_kCommandHistory.size()-1;
-	
-	}
-	
-	return true;
-}
-
-void Console::FormatKey(int& r_iKey)
-{
-	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
-	{
-		if(r_iKey>96 && r_iKey<123){
-			r_iKey-=32;
-		}
-		if(r_iKey=='-'){
-			r_iKey='_';
-		}
-		if(r_iKey=='.'){
-			r_iKey=':';
-		}					
-		if(r_iKey=='7'){
-			r_iKey='/';
-		}
-	}
-}
-
-void Console::Toggle()
-{
-	float fTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-	if(fTime < m_fToggleTime)
-		return;
-
-	m_bActive = !m_bActive;
-	m_fToggleTime = fTime += 0.2;
-}
-
-
