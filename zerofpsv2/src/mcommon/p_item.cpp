@@ -1,6 +1,6 @@
 #include "p_item.h"
 #include "../zerofpsv2/engine/entity.h"
-#include "../zerofpsv2/engine/objectmanager.h"
+#include "../zerofpsv2/engine/entitymanager.h"
 
 // ------------------------------------------------------------------------------------------
 

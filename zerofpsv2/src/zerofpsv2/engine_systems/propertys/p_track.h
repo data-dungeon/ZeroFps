@@ -6,7 +6,7 @@
 #include <limits.h>
 #include "../../basic/zfsystem.h"
 #include "../../engine/zerofps.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 #include <string.h>
 #include "../engine_systems_x.h"
 #include <set>
@@ -51,7 +51,7 @@ Property* Create_ProxyProperty();
 /// Property to track objects to activate zones.
 class ENGINE_SYSTEMS_API P_Track : public Property {
 	private:
-		ObjectManager*		m_pkOBjM;
+		EntityManager*		m_pkOBjM;
 		ZeroFps*			m_pkFps;
 		float				m_fNextMove;
 		

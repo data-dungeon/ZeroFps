@@ -7,7 +7,7 @@
 #include "../../basic/zfsystem.h"
 #include <string.h>
 #include "../../engine/zerofps.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 
 
 using namespace std;

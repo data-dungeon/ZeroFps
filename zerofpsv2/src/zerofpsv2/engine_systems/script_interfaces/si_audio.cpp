@@ -3,14 +3,14 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../audio/zfaudiosystem.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 #include "si_audio.h"
 
 ZFScriptSystem* AudioLua::g_pkScript;
 ZFAudioSystem* AudioLua::g_pAudioSys;
-ObjectManager* AudioLua::g_pkObjectMan;
+EntityManager* AudioLua::g_pkObjectMan;
 
-void AudioLua::Init(ZFAudioSystem* pkAudio, ObjectManager* pkObjMan,
+void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 						  ZFScriptSystem* pkScript)
 {
 	g_pkScript = pkScript;

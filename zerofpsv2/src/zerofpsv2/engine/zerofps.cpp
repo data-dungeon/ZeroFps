@@ -1,7 +1,7 @@
 #include "psystemmanager.h"
 #include "zerofps.h"
 #include "network.h"
-#include "objectmanager.h"
+#include "entitymanager.h"
 #include "../render/glguirender.h"
 #include "../basic/zfsystem.h"
 #include "../gui/zguiresourcemanager.h"
@@ -36,7 +36,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
 	m_pkPhysics_Engine		= new Physics_Engine;
-	m_pkObjectMan				= new ObjectManager;
+	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;

@@ -125,7 +125,7 @@ P_Enviroment::P_Enviroment()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkObjectMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
 	bNetwork =		true;

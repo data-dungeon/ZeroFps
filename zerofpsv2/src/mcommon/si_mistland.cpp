@@ -10,14 +10,14 @@
 
 
 ZFScriptSystem*		MistLandLua::g_pkScript;
-ObjectManager*			MistLandLua::g_pkObjMan;
+EntityManager*			MistLandLua::g_pkObjMan;
 int						MistLandLua::g_iCurrentObjectID;
 int						MistLandLua::g_iLastCollidedID;
 int						MistLandLua::g_iCurrentPCID = -1;
 map<string,string>	MistLandLua::g_kServerList;
 string					MistLandLua::g_kDefServer;
 
-void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
+void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;

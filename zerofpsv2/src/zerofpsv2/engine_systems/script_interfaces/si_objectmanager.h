@@ -4,21 +4,21 @@
 
 #include "../engine_systems_x.h"
 
-class ObjectManager;
+class EntityManager;
 class ZFScriptSystem;
 class Entity;
 class Property;
 
 namespace ObjectManagerLua
 {
-	void ENGINE_SYSTEMS_API Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript);
+	void ENGINE_SYSTEMS_API Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript);
 	void ENGINE_SYSTEMS_API Reset();
 	void ENGINE_SYSTEMS_API Push();
 	void ENGINE_SYSTEMS_API Pop();	
 
 	extern ZFScriptSystem* 		g_pkScript;
 	
-	extern ObjectManager* g_pkObjMan;
+	extern EntityManager* g_pkObjMan;
 	
 	extern Entity*			g_pkLastObject;
 	extern Entity*			g_pkLastParent;

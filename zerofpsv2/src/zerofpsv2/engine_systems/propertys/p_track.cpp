@@ -85,7 +85,7 @@ Property* Create_ProxyProperty()
 
 P_Track::P_Track() 
 {
-	m_pkOBjM			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkOBjM			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));	
 	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	strcpy(m_acName,"P_Track");		

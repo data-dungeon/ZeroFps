@@ -1,11 +1,11 @@
 #include "../../script/zfscript.h"
 #include "si_objectmanager.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 
 ZFScriptSystem* ObjectManagerLua::g_pkScript;
-ObjectManager*  ObjectManagerLua::g_pkObjMan;
+EntityManager*  ObjectManagerLua::g_pkObjMan;
 
 Entity*			 ObjectManagerLua::g_pkLastObject;
 Entity*			 ObjectManagerLua::g_pkLastParent;
@@ -18,7 +18,7 @@ Property*		 ObjectManagerLua::g_pkLastPropertyBak;
 Entity*			 ObjectManagerLua::g_pkReturnObjectBak;
 
 
-void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
+void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;

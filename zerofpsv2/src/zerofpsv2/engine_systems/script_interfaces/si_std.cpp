@@ -1,12 +1,12 @@
 #include "si_std.h"
 #include <cmath>                    // for trigonometry functions
 #include "../../basic/zfvfs.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 
 ZFScriptSystem* StdLua::g_pkScript;
 ZFVFileSystem*	StdLua::g_pkVFS;
 
-extern ObjectManager* g_pkObjMan;
+extern EntityManager* g_pkObjMan;
 
 void StdLua::Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 {

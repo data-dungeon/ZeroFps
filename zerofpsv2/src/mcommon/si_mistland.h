@@ -8,7 +8,7 @@ class PSystemProperty;
 #include "mcommon_x.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
-#include "../zerofpsv2/engine/objectmanager.h"
+#include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "p_event.h"
 #include "p_ml.h"
@@ -20,7 +20,7 @@ using namespace std;
 namespace MistLandLua
 {
 	extern ZFScriptSystem* 		g_pkScript;
-	extern ObjectManager*		g_pkObjMan;
+	extern EntityManager*		g_pkObjMan;
 	
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
@@ -28,7 +28,7 @@ namespace MistLandLua
 
 	extern int MCOMMON_API 		g_iCurrentPCID;
 
-	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
+	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
 	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//() return the callers object id
 	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);					//() return the callers object id	

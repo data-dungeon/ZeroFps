@@ -6,7 +6,7 @@
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkObjMan        	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkObjMan        	= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	
 	bNetwork = false;
 	m_iNetUpdateFlags = 0;

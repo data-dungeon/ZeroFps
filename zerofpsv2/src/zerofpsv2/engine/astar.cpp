@@ -10,7 +10,7 @@ AStar::AStar()
 
 bool AStar::StartUp()
 {
-	m_pkObjectManger	= static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));
+	m_pkObjectManger	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
 
 	return true;
 }

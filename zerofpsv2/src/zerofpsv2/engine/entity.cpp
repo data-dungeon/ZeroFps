@@ -2,7 +2,7 @@
 
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../basic/zfsystem.h"
-#include "objectmanager.h"
+#include "entitymanager.h"
 #include "../engine_systems/propertys/p_physic.h"
  
 typedef list<Entity*>::iterator		itListObject;
@@ -12,7 +12,7 @@ typedef list<Property*>::iterator	itListProperty;
 Entity::Entity() 
 {
 	// Get Ptrs to some usefull objects.
-	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkObjectMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkPropertyFactory		= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		

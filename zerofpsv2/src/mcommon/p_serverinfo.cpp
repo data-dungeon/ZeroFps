@@ -192,7 +192,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		int messages; 
 		pkNetPacket->Read(&messages,sizeof(messages));		
 			
-		for(int i =0;i<messages;i++)
+		for(int i2 =0;i2<messages;i2++)
 		{	
 			char tempstr[256];
 			pkNetPacket->Read_Str(tempstr);

@@ -1,7 +1,7 @@
 #include "physicsengine.h"
 #include "cssphere.h"
 #include "../../engine/zerofps.h"
-#include "../../engine/objectmanager.h"
+#include "../../engine/entitymanager.h"
 
 PhysicsEngine::PhysicsEngine() 
 : ZFSubSystem("PhysicsEngine")
@@ -12,7 +12,7 @@ PhysicsEngine::PhysicsEngine()
 bool PhysicsEngine::StartUp()	
 { 
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
-	m_pkObjectMan	= static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));		
+	m_pkObjectMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));		
 
 	return true; 
 }

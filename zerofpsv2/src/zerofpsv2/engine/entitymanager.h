@@ -47,7 +47,7 @@ create, update and destroy objects. It also handles to operation of replicating 
 to other connected users that need to now about them.
 */
 
-class ENGINE_API ObjectManager : public ZFSubSystem{
+class ENGINE_API EntityManager : public ZFSubSystem{
 	private:
 		enum FuncId_e
 		{
@@ -117,8 +117,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		int		m_iTotalNetObjectData;
 		int		m_iNumOfNetObjects;
 
-		ObjectManager();
-		~ObjectManager();
+		EntityManager();
+		~EntityManager();
 	
 		// Add/Remove Objects
 		void Link(Entity* pkNewObject);									///< Link this to the Object manager
@@ -181,7 +181,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 
-		Entity* ObjectManager::CloneObject(int iNetID);
+		Entity* EntityManager::CloneObject(int iNetID);
 
 		//picking of objects
 		bool TestLine(vector<Entity*>* pkObList,Vector3 kPos,Vector3 kVec);

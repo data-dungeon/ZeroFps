@@ -4,7 +4,7 @@
 #include "../basic/zfassert.h"
 #include "engine_x.h"
 #include "console.h"
-#include "objectmanager.h"
+#include "entitymanager.h"
 
 class AStarNode
 {
@@ -44,7 +44,7 @@ class HeapComp
 class ENGINE_API AStar : public ZFSubSystem 
 {
 private:
-	ObjectManager*	m_pkObjectManger;
+	EntityManager*	m_pkObjectManger;
 
 	Vector3 m_kStart;
 	Vector3 m_kGoal;

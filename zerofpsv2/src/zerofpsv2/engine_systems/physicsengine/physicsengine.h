@@ -81,7 +81,7 @@ class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 		} SortCollision;
 	
 		
-		ObjectManager* m_pkObjectMan;
+		EntityManager* m_pkObjectMan;
 		ZeroFps* m_pkZeroFps;
 
 		float m_fFrameTime;

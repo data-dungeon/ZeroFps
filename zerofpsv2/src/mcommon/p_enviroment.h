@@ -56,7 +56,7 @@ RENDER_API ZFResource* Create__EnvSetting();
 class MCOMMON_API P_Enviroment: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
-		ObjectManager* m_pkObjectMan;
+		EntityManager* m_pkObjectMan;
 		Render*			m_pkRender;
 		
 		float				m_fTimer;

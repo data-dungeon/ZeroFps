@@ -10,16 +10,16 @@
 
 class ZFScriptSystem;
 class ZFAudioSystem;
-class ObjectManager;
+class EntityManager;
 
 namespace AudioLua
 {
-	void ENGINE_SYSTEMS_API Init(ZFAudioSystem* pkAudio, ObjectManager* pkObjMan,
+	void ENGINE_SYSTEMS_API Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 		ZFScriptSystem* pkScript);
 
 	extern ZFScriptSystem* g_pkScript;
 	extern ZFAudioSystem* g_pAudioSys;
-	extern ObjectManager* g_pkObjectMan;
+	extern EntityManager* g_pkObjectMan;
 
 	int ENGINE_SYSTEMS_API PlaySoundLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API PlayGuiSoundLua(lua_State* pkLua);

@@ -402,8 +402,8 @@ bool ZFAudioSystem::StartUp()
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
-	ObjectManager* pkObjectMan = reinterpret_cast<ObjectManager*>(
-		g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	EntityManager* pkObjectMan = reinterpret_cast<EntityManager*>(
+		g_ZFObjSys.GetObjectPtr("EntityManager"));
 
 	ZFScriptSystem* pkScriptSys = reinterpret_cast<ZFScriptSystem*>(
 		GetSystem().GetObjectPtr("ZFScriptSystem"));

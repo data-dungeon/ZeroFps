@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class		ObjectManager;
+class		EntityManager;
 struct	CollisionData;
 
 enum UpdateStatus 
@@ -211,7 +211,7 @@ class ENGINE_API Entity
 		
 	public:
 		int							iNetWorkID;							///< ID used by network state code.
-		ObjectManager*				m_pkObjectMan;						///< Ptr to object manger.
+		EntityManager*				m_pkObjectMan;						///< Ptr to object manger.
 	
 		NetWorkRole					m_eRole;							///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
@@ -314,13 +314,13 @@ class ENGINE_API Entity
 		inline Vector3* GetVelPointer()			{	return &m_kVel;			};		
 		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
-		inline ObjectManager *GetObjectMan()	{	return m_pkObjectMan;	};				
+		inline EntityManager *GetObjectMan()	{	return m_pkObjectMan;	};				
 		
 		void MakeCloneOf(Entity* pkOrginal);
 		
 		float GetI();
 		
-		friend class ObjectManager;
+		friend class EntityManager;
 		friend class Property;
 
 		// Force class to be polymorfic.
