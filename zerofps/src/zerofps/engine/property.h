@@ -140,7 +140,7 @@ class ENGINE_API Property
 
 		bool operator<(Property& kOther);
 
-		friend Object;
+		friend class Object;
 };
 
 

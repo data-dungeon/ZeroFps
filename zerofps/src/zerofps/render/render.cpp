@@ -531,7 +531,7 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 	
-	float fHScale = cos(45) * fScale;
+	float fHScale = cos(45.0) * fScale;
 
 	glTranslatef(kPos.x, kPos.y, kPos.z);
 

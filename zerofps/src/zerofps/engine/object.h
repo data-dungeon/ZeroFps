@@ -237,7 +237,7 @@ class ENGINE_API Object
 		void SetRot(Vector3 kRot);
 		void SetPos(Vector3 kPos);
 
-		friend ObjectManager;
+		friend class ObjectManager;
 
 
 		// Force class to be polymorfic.

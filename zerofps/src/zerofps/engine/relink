@@ -1,1 +1,1 @@
-g++ *.o -o ../../../bin/libengine.so --shared -O3 -L../../../bin/ -lSDL_mixer -lopenal -lSDL_net -lGL -lGLU -lscript  -lphysics_engine -L/usr/X11R6/lib `sdl-config --cflags --libs`
+g++ *.o -o ../../../bin/libengine.so --shared -O3 -L../../../bin/ -logg -lvorbis -lvorbisfile -lSDL_mixer -lopenal -lSDL_net -lGL -lGLU -lscript  -lphysics_engine -L/usr/X11R6/lib `sdl-config --cflags --libs`
