@@ -18,7 +18,7 @@ P_ClientControl::P_ClientControl()
 void P_ClientControl::Update()
 {
 
-	cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
+	//cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
 }
 
 
@@ -74,6 +74,16 @@ void P_ClientControl::AddOrder(ClientOrder kNewOrder)
 {
 	m_kClientOrders.push(kNewOrder);
 	cout<<"added order"<<endl;
+}
+
+ClientOrder P_ClientControl::GetNextOrder()
+{
+	ClientOrder temp;
+	
+	if(!m_kServerOrders.empty())
+		ClientOrder temp =  m_kServerOrders.front();
+
+	return temp;
 }
 
 

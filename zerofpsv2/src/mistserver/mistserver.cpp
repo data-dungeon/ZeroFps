@@ -205,7 +205,7 @@ void MistServer::OnIdle()
 
 void MistServer::OnSystem()
 {
-
+	HandleOrders();
 }
 
 
@@ -922,4 +922,16 @@ void MistServer::PathTest()
 		}
 }
 
+void MistServer::HandleOrders()
+{
+	cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
+	
+	while(P_ClientControl::NrOfOrders() > 0 )
+	{
+		cout<<"handling order "<<P_ClientControl::GetNextOrder().m_csOrderName<<" from client:"<<P_ClientControl::GetNextOrder().m_iClientID<<endl;
+		P_ClientControl::PopOrder();
+	}
+
+
+}
 

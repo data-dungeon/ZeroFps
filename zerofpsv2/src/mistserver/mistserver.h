@@ -77,7 +77,9 @@ class MistServer :public Application , public ZGuiApp {
 		void DrawCrossMarker(Vector3 kPos);
 		void AddZone();
 
-		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. */
+		void HandleOrders();
+
+		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. LOL*/
 			AStar*	m_pkAStar;
 			vector<Vector3> kPath;
 			Vector3 kPathStart;

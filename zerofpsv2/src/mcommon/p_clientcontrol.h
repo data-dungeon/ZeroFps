@@ -44,6 +44,10 @@ class MCOMMON_API P_ClientControl: public Property {
       void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 		
+		
+		static ClientOrder GetNextOrder();		
+		static int NrOfOrders(){return m_kServerOrders.size();};				
+		static void PopOrder(){m_kServerOrders.pop();};
 };
 
 MCOMMON_API Property* Create_P_ClientControl();
