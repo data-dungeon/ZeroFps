@@ -50,6 +50,7 @@ void ZeroFps::MainLoop(void) {
 				m_pkInput->Update();				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
+					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
 				}

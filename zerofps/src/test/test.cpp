@@ -20,9 +20,9 @@ void Test::OnInit(void) {
 //	Vector3 test=Vector3(0
 
 
-	GLfloat light_position[] ={0,60,0,0};
-	GLfloat white_light[] = {1.0,1.0,1.0,1.0};
-	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
+	GLfloat light_position[] ={0,60,0,1};
+	GLfloat white_light[] = {0.5,0.5,0.5,0.5};
+	GLfloat lmodel_ambient[] = {0.5,0.5,0.5,0.5};
 
   glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
   glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -42,10 +42,10 @@ void Test::OnIdle(void) {
 	input();
 	
 	float x,z;
-	x=sin(pkFps->GetTicks()/1000.0)*30;
-	z=cos(pkFps->GetTicks()/1000.0)*30;
-  light_position[0]=x;
-  light_position[2]=z;
+	x=sin(pkFps->GetTicks()/1000.0)*400;
+	z=cos(pkFps->GetTicks()/1000.0)*400;
+//  light_position[0]=x;
+//  light_position[2]=z;
 //  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
 	pkRender->DrawHM(test);		
