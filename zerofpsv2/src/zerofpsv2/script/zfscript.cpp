@@ -273,6 +273,21 @@ bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
 	return false;
 }
 
+bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, string& strData)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_isstring(state, iLuaIndex))
+	{
+		const char* val = lua_tostring(state, iLuaIndex);      
+		strData = val;
+      //strcpy(data, val);
+		return true;
+	}
+
+	return false;
+}
+
 const int ZFScriptSystem::GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const
 {
 	if(state == NULL)

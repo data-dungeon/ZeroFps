@@ -163,6 +163,7 @@ public:
 	bool GetArgInt(lua_State* state, int iIndex, int* data);
 	bool GetArgNumber(lua_State* state, int iIndex, double* data);
 	bool GetArgString(lua_State* state, int iIndex, char* data);
+	bool GetArgString(lua_State* state, int iIndex, string& strData);
 	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
 	void DeleteTable(vector<TABLE_DATA>& data);
 
