@@ -62,18 +62,7 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-//				m_pkCamera=m_pkGameCamera;
-				
-//				m_pkApp->OnHud();									
-				
-//				SetCamera(m_pkCamera);
 
-//				m_pkCamera->Update(m_iWidth,m_iHeight);
-//				UpdateCamera();
-//				m_pkRender->GetFrustum();				
-				
-//				m_pkLight->SetCamera(m_pkCamera->GetPos());				
-//				m_pkLight->Update();				
 				m_pkApp->OnIdle();				
 				
 				//this changes mode to console

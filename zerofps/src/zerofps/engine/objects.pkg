@@ -6,6 +6,7 @@ class CollisionProperty;
 class CollisionObject;
 class CollisionSphere;
 class CollisionPoint;
+class CollisionHeightMap;
 
 #include "object.h"
 #include "property.h"
@@ -16,6 +17,6 @@ class CollisionPoint;
 #include "collisionobject.h"
 #include "collisionsphere.h"
 #include "collisionpoint.h"
-
+#include "collisionheightmap.h"
 
 

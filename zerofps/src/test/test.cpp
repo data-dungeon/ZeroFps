@@ -96,8 +96,8 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-
 /*
+
 	for(int i=0;i<20;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
@@ -121,10 +121,14 @@ void Test::OnInit(void) {
 	
 	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
 	kul->AddProperty(new CameraProperty(cam2));
+	kul->AddProperty(new MadProperty(&akCoreModells[0]));	
 	kul->GetPos()=Vector3(5,5,5);		
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
 	
+	
+	CollisionHeightMap *testcmap=new CollisionHeightMap(test);
+//	pkCollisionMan->Add(testcmap);
 	
 
 }
@@ -179,6 +183,8 @@ void Test::OnIdle(void) {
 	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+
+	pkFps->SetCamera(cam1);
 
 }
 

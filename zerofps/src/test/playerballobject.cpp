@@ -3,7 +3,7 @@
 
 PlayerBallObject::PlayerBallObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps) {
 
-	AddProperty(new ModelProperty());
+//	AddProperty(new ModelProperty());
 	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
 	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));
 }

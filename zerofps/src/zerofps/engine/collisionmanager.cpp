@@ -13,6 +13,12 @@ void CollisionManager::Add(Object *kObject)
 	m_akColPropertys.push_back(pkColProp);
 }
 
+void CollisionManager::Add(CollisionProperty* kColProperty)
+{
+	kColProperty->SetColMan(this);
+	m_akColPropertys.push_back(kColProperty);
+}
+
 void CollisionManager::Remove(Object *pkObject)
 {
 	CollisionProperty *pkColProp=dynamic_cast<CollisionProperty*>(pkObject->GetProperty("CollisionProperty"));

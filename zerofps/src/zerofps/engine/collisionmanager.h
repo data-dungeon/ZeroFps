@@ -18,6 +18,7 @@ class ENGINE_API CollisionManager {
 		
 	public:
 		void Add(Object* kObject);
+		void Add(CollisionProperty* kColProperty);		
 		void Remove(Object* kObject);
 		void Remove(CollisionProperty* kColProperty);
 		

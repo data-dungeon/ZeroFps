@@ -39,7 +39,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	float amp=0.5;
 	
 	glPushMatrix();
-	glPushAttrib(GL_FOG_BIT | GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glPushAttrib(GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	
 	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glRotatef(kHead.x, 1, 0, 0);
@@ -48,7 +48,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glTranslatef(-iSize/2,0,-iSize/2);
 	
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_FOG);		
+//	glDisable(GL_FOG);		
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);	
 	
@@ -90,8 +90,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glDisable(GL_TEXTURE_2D);	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	
-	if(m_FogEnable)//Disable the fog while drawing the sky box
-		glEnable(GL_FOG);		
+//	if(m_FogEnable)//Disable the fog while drawing the sky box
+//		glEnable(GL_FOG);		
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
