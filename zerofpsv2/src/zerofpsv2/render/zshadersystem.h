@@ -224,7 +224,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iGLupdates;
 		int			m_iTotalVertises;
 		
-		//basic
+		
+		//basic		
+		void SetupOpenGL();
 		void SetupGlobalSettings();
 		void SetupArrayClientStates();
 		void SetupTUClientStates(const int& iPass);

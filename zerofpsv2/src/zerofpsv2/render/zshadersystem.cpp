@@ -10,6 +10,7 @@ bool ZShaderSystem::StartUp()
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
 
+	SetupOpenGL();
 	BindMaterial(NULL);
 	
 	m_iPushPop = 				0;
@@ -41,6 +42,24 @@ bool ZShaderSystem::ShutDown()
 	return true;
 }
 
+void ZShaderSystem::SetupOpenGL()
+{
+	//fog stuff
+	glHint(GL_FOG_HINT,GL_NICEST);		
+	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
+	
+	//setup some opengl stuff =)
+	//glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	//glEnable(GL_CULL_FACE);
+	glEnable(GL_SCISSOR_TEST);
+
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0,0,0,0);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+}
 
 
 void ZShaderSystem::Push(const char* czNote)

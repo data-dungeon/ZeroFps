@@ -102,32 +102,8 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	GLeeInit();
 #endif	
 
-	//fog stuff
-	glHint(GL_FOG_HINT,GL_NICEST);		
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
-	
-
-
-	//setup some opengl stuff =)
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_SCISSOR_TEST);
-
-	glShadeModel(GL_SMOOTH);
-	SetClearColor(Vector4(0,0,0,0));
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glMatrixMode(GL_MODELVIEW);
-
-
-	
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
 }
 
 void Render::ToggleFullScreen(void)
@@ -468,18 +444,6 @@ void Render::Line(const Vector3& kPos1,const Vector3& kPos2)
 	m_pkZShaderSystem->SetDrawMode(LINES_MODE);
 	m_pkZShaderSystem->DrawGeometry();
 	
-/*
-	glDisable(GL_LIGHTING );
-	glDisable(GL_TEXTURE_2D);
-	
-	glBegin(GL_LINES);
-		glVertex3f(kPos1.x,kPos1.y,kPos1.z);
-		glVertex3f(kPos2.x,kPos2.y,kPos2.z);		
-	glEnd();
-	
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-*/
 }
 /*
 void Render::SetColor(Vector3 kColor)
