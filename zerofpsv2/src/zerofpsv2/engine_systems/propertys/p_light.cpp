@@ -120,9 +120,9 @@ void P_Light::UpdateLightMode()
 			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)
 			{
 				m_fTimer = m_pkZeroFps->GetTicks();
-				float hora = float( ((rand() % 1000)/200000.0) );
+				float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
-				m_pkLightSource->kDiffuse = Vector3(float(hora + 0.02), float(hora + 0.02) , float(hora + 0.01) );
+				m_pkLightSource->kDiffuse = Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03) );
 			}
 			break;		
 		}
