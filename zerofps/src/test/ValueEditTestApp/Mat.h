@@ -24,7 +24,10 @@ class Mat
 {
 public:
 	bool SetValue(string kValueName ,string kValue);
+	bool SetValue(string kValueName, int iIndex ,string kValue);
+	int GetNumberOfValues(string kValueName);
 	string GetValue(string kValueName);
+	string GetValue(string kValueName, int iIndex);
 	vector<string> GetValueNames();
 	Mat();
 	virtual ~Mat();
@@ -38,6 +41,7 @@ protected:
 		float fUpperBound;
 		float fLowerBound;
 		PropertyValues();
+		int iNumberOfValues;
 	};	
 	
 	enum ValueTypes

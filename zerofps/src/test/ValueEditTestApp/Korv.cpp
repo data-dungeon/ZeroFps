@@ -13,7 +13,7 @@ Korv::Korv()
 Storlek=1231231233.3111125435435435;
 Skin=true;
 Status="stinkig";
-Vek.set(1.0,2.0,3.0, 4.0);
+Vek.set(1.34534,2.1,-0.0001, 131234234234234234.0);
 }
 
 Korv::~Korv()

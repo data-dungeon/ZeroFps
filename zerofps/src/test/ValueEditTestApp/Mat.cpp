@@ -24,53 +24,6 @@ vector<PropertyValues> kReturn;
 	return kReturn;
 };
 
-//DEL void Mat::GetName()
-//DEL {
-//DEL 	vector<PropertyValues> apa= GetPropertyValues();
-//DEL 	if(!apa.empty())
-//DEL 	{
-//DEL 		vector<PropertyValues>::iterator i = apa.begin();
-//DEL 		while (i != apa.end())
-//DEL 		{
-//DEL 		cout <<i->kValueName <<endl;	
-//DEL 		i++;
-//DEL 		};
-//DEL 	};
-//DEL }
-
-//DEL void Mat::GetValues()
-//DEL {
-//DEL 	vector<PropertyValues> apa= GetPropertyValues();
-//DEL 	if(!apa.empty())
-//DEL 	{
-//DEL 		char* apan = new char[50];
-//DEL 		vector<PropertyValues>::iterator i = apa.begin();
-//DEL 		while (i != apa.end())
-//DEL 		{
-//DEL 			switch(i->iValueType)
-//DEL 			{	
-//DEL 			case VALUETYPE_INT:
-//DEL 				cout<<*((int*)i->pkValue) <<endl;;
-//DEL 				break;
-//DEL 		
-//DEL 			case VALUETYPE_BOOL:
-//DEL 				cout<<*((bool*)i->pkValue) <<endl;;
-//DEL 				break;
-//DEL 			case VALUETYPE_STRING:
-//DEL 				
-//DEL 				cout<<*(reinterpret_cast<string*>(i->pkValue)) <<endl;;
-//DEL 				break;
-//DEL 			case VALUETYPE_FLOAT:
-//DEL 				int  decimal, sign;
-//DEL 				cout<<*((float*)i->pkValue) <<endl;;
-//DEL 				break;
-//DEL 			};
-//DEL 				
-//DEL 				
-//DEL 		i++;
-//DEL 		};
-//DEL 	};
-//DEL }
 
 vector<string> Mat::GetValueNames()
 {
@@ -123,64 +76,40 @@ string Mat::GetValue(string kValueName)
 								
 				case VALUETYPE_FLOAT:
 					sprintf( pk_chBuffer,"%g", *((float*)kItor->pkValue)  );
-					kBuffer=pk_chBuffer;
-					return kBuffer;
-					/*kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
-					kBuffer.insert(iDecimal, ".");
-					if(iSign !=0)
-						kBuffer.insert(0, "-");
-					return kBuffer; */
+
+				return kBuffer=pk_chBuffer;
 
 			case VALUETYPE_VECTOR3:
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer=kBuffer1;	
-					
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
-					
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer+=kBuffer1;
-					return kBuffer; 
-				
-				case VALUETYPE_VECTOR4:
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer=kBuffer1;	
-					
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
-					
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
 
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](3), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer+=kBuffer1;
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](0)  );
+					kBuffer=pk_chBuffer;
+
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](1)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](2)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
 					return kBuffer; 
+
+				case VALUETYPE_VECTOR4:
+
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](0)  );
+					kBuffer=pk_chBuffer;
+
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](1)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](2)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](3)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+					return kBuffer;
 				};
 				
 			}	
@@ -328,7 +257,7 @@ bool Mat::SetValue(string kValueName, string kValue)
 						if(fTemp3<(kItor->fLowerBound))
 							return false;
 				
-					((Vector4*)kItor->pkValue)->set(fTemp1,fTemp2,fTemp3, fTemp4); 
+					((Vector4*)kItor->pkValue)->set(fTemp1,fTemp2,fTemp3,fTemp4); 
 					return true;
 					
 				
@@ -346,9 +275,26 @@ Mat::PropertyValues::PropertyValues()
 {
 	fLowerBound=FLT_MIN;
 	fUpperBound=FLT_MAX;
-		
+	iNumberOfValues = 1;	
 }
 
+int Mat::GetNumberOfValues(string kValueName)
+{
+	vector<PropertyValues> kTemp= GetPropertyValues();
+	if(!kTemp.empty())
+	{
+		vector<PropertyValues>::iterator kItor = kTemp.begin();
+		while (kItor != kTemp.end())
+		{
+			if( kValueName == kItor->kValueName)
+			{
+				return kItor->iNumberOfValues;
+			}	
+		kItor++;
+		};
+	}
+	return -1;
+}
 
 
 

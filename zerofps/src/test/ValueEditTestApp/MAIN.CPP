@@ -19,7 +19,7 @@ Korv Nisse;
 		
 		}
 	cout<< endl;
-	//if(!Nisse.SetValue("Storlek","1.0 7.87 9.434 3423.0")) cout<<"fel vid tilldelning!";
+	if(!Nisse.SetValue("Storlek","1.909")) cout<<"fel vid tilldelning!";
 	cout<<Nisse.GetValue("Storlek")<<endl;
 
 
