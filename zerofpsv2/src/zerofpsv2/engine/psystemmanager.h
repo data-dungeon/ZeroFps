@@ -45,8 +45,6 @@ struct PSystemTypeData
 		m_kMaxSize,
 		m_kCullPosOffset;
 
-	bool m_bCirkularStart;
-		
 	float 
 		m_fLifeTime,
 		m_fStartArea,
@@ -60,7 +58,9 @@ struct PSystemTypeData
 		m_iPartCreateRand;
 
 	string 
-		m_kSound;
+		m_kSound,
+		m_kCullingTest,
+		m_kCreateStyle;
 
 	unsigned int 
 		m_uiTexture,
@@ -96,7 +96,8 @@ struct ParticleTypeData
 		m_bBillboardX,
 		m_bBillBoardY,
 		m_bBillBoardZ,
-		m_bForceInheritDirection;
+		m_bForceInheritDirection,
+		m_bStartSpeedInheritDirection;
 
 	int
 		m_iLifeTimeRandom,

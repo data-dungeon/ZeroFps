@@ -86,6 +86,7 @@ public:
 	unsigned int* GetIndices()						{ return m_pfIndices;  }
 
 	Vector3 GetPosition()							{ return m_kPosition;  }
+	Matrix4 GetRotation()							{ return m_kRotation;  }
 
 	void SetVertices (float *pfVertices)		{ m_pfVertices = pfVertices;   }
 	void SetTexCoords (float *pfTexCoords)		{ m_pfTexCoords = pfTexCoords; }

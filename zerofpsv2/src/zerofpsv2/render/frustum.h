@@ -27,6 +27,7 @@ class RENDER_API Frustum
 		bool SphereInFrustum(Vector4& kPoint);				
 		bool SphereInFrustum(Vector3 kPos,float fRadius);				
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
+		bool CubeInFrustum ( Vector3 kPosition, Vector3 kSize, Matrix4 kRotation );
 		
 /*		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}

@@ -154,3 +154,35 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 }
 
 
+bool Frustum::CubeInFrustum ( Vector3 kPos, Vector3 kSize, Matrix4 kRotation )
+{
+	int p;
+
+	Vector3 kCubeNeg(kPos.x - kSize.x, kPos.y - kSize.y, kPos.z - kSize.z); 
+	Vector3 kCubePos(kPos.x + kSize.x, kPos.y + kSize.y, kPos.z + kSize.z);
+
+	kCubeNeg = kRotation.VectorRotate ( kCubeNeg );
+	kCubePos = kRotation.VectorRotate ( kCubePos );
+
+	for( p = 0; p < 6; p++ )
+	{
+		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+			continue;
+		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+			continue;
+		return false;
+	}
+	return true;
+}

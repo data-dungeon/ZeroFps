@@ -570,7 +570,7 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,-0.5);    
 		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);    		
 		
-		//botom
+		//bottom
 		glNormal3f(0,-1,0);
 		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
 		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,-0.5);		
@@ -1339,8 +1339,16 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 					   GL_UNSIGNED_INT, pkPSystem->GetIndices() );
 
 
-	// For debugging cullingbox
+	// For debugging cullingbox (without rotation)
 	/*
+	Vector3 kScale = pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
+
+	Vector3 kPos = pkPSystem->GetPosition() + 
+						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset + 
+						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset;
+
+	kScale *= 2.f;
+
 	glEnable (GL_CULL_FACE);
 	glDisable (GL_FOG);
 	glDisable (GL_LIGHTING);

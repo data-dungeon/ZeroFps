@@ -23,6 +23,13 @@ void PSystem::Draw()
 
 void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 {
+
+	// Inherit position from parent
+	m_kPosition = kNewPosition;
+
+	// Inherit rotation from parent
+	m_kRotation = kNewRotation;
+
 	TestInsideFrustum();
 
 	// don't update live-forevever psystems if not inside frustum
@@ -35,12 +42,6 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	glDisable (GL_ALPHA_TEST);
 	glEnable (GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);	
-
-	// Inherit position from parent
-	m_kPosition = kNewPosition;
-
-	// Inherit rotation from parent
-	m_kRotation = kNewRotation;
 
 		// if PSystem loops in infinity, make it have particles from start
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && m_bFirstRun )
@@ -166,6 +167,8 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 	m_uiLastParticle = -1;
 
 	m_kPosition.Set (0,0,0);
+
+	m_bInsideFrustum = true;
 	
 	m_kPosOffset = pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 
@@ -181,8 +184,6 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 {
-	//cout << m_kParticles[iParticleIndex].m_kCenter.y << endl;
-
 	// set size of particle array stuff
 	if ( iParticleIndex > m_uiLastParticle )
 		m_uiLastParticle = iParticleIndex;
@@ -213,29 +214,45 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	float fZInnerRadius = m_pkPSystemType->m_kPSystemBehaviour.m_kStart_InnerStartArea.z * m_fAgePercent + 
 								 m_pkPSystemType->m_kPSystemBehaviour.m_kEnd_InnerStartArea.z * (1.f - m_fAgePercent);
 
+	double dRadiusX, dRadiusY, dRadiusZ;
+	double dRADx, dRADy, dRADz;
 
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCreateStyle == "box" )
+	{
+		dRadiusX = (rand()%100) / 100.f;
+		dRadiusY = (rand()%100) / 100.f;
+		dRadiusZ = (rand()%100) / 100.f;
 
-	double dRAD = rand()%6283;
-	double dRADy = rand()%(6283 - int(dRAD));
+		dRADx = rand()%6283;
+		dRADz = rand()%6283;
+		dRADy = rand()%6283;
+	}
+	else
+	{
+		dRadiusX = dRadiusY = dRadiusZ = (rand()%100) / 100.f;
+		dRADx = dRADz = rand()%6283;
+		dRADy = rand()%(6283 - int(dRADx));
+	}
+	
 
-	dRAD /= 100.0;
+	dRADx /= 100.0;
+	dRADz /= 100.0;
 	dRADy /= 100.0;
 
-	double dRadius = (rand()%100) / 100.f;
 
 	// Reset position
 	if ( fXOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.x = (cos(dRAD) * fXOuterRadius * dRadius) + (cos(dRAD) * fXInnerRadius * (1-dRadius));
+		m_kParticles[iParticleIndex].m_kCenter.x = (cos(dRADx) * fXOuterRadius * dRadiusX) + (cos(dRADx) * fXInnerRadius * (1-dRadiusX));
 	else
 		m_kParticles[iParticleIndex].m_kCenter.x = 0;
 
 	if ( fYOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.y = (cos(dRADy) * fYOuterRadius * dRadius) + (cos(dRADy) * fYInnerRadius * (1-dRadius));
+		m_kParticles[iParticleIndex].m_kCenter.y = (cos(dRADy) * fYOuterRadius * dRadiusY) + (cos(dRADy) * fYInnerRadius * (1-dRadiusY));
 	else
 		m_kParticles[iParticleIndex].m_kCenter.y = 0;
 
 	if ( fZOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.z = (sin(dRAD) * fZOuterRadius * dRadius) + (sin(dRAD) * fZInnerRadius * (1 - dRadius));
+		m_kParticles[iParticleIndex].m_kCenter.z = (sin(dRADz) * fZOuterRadius * dRadiusZ) + (sin(dRADz) * fZInnerRadius * (1 - dRadiusZ));
 	else
 		m_kParticles[iParticleIndex].m_kCenter.z = 0;
 
@@ -298,8 +315,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	kRandomDir.z = ((rand()%2 * 2) - 1) * sin(kRandomDir.z / degtorad) + 
 						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.z;
 
-//	m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
-
 	// Startspeed
 	float fStartSpeedRand = ((rand()%100) / 100.f) * ((rand()%2) * 2 - 1);
 	float fStartSpeed = m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed * 
@@ -343,6 +358,10 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 															m_kParticles[iParticleIndex].m_kForce * pow(fTimeOffset,2)/2.f;
 
 	m_kParticles[iParticleIndex].m_kVelocity += m_kParticles[iParticleIndex].m_kForce * fTimeOffset;
+
+
+	if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
+		m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
 
 }
 
@@ -403,17 +422,28 @@ void PSystem::TimeoffSet ()
 
 void PSystem::TestInsideFrustum()
 {
+	Frustum *pkFrustum = &static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetCam()->
+							  m_kFrustum;
+
 	// test culling
-	Vector3 kScale = GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "cube" )
+	{
+		Vector3 kScale = m_pkPSystemType->m_kPSystemBehaviour.m_kMaxSize;
 
-	Vector3 kPos = GetPosition() + 
-						GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset + 
-						GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset;
+		Vector3 kPos = m_kPosition + 
+							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset + 
+							m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset;
+		
+		m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, kScale, m_kRotation );
 
-	// if PSystem is inside frustum
-	if ( static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetCam()->
-			m_kFrustum.CubeInFrustum ( kPos.x, kPos.y, kPos.z, kScale.x, kScale.y, kScale.z ) )
-		m_bInsideFrustum = true;
+	}
+	else if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "point" )
+	{		
+		Vector3 kPos = m_kPosition + 
+							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
+
+		m_bInsideFrustum = pkFrustum->PointInFrustum ( m_kRotation.VectorRotate( kPos ) );
+	}
 	else
-		m_bInsideFrustum = false;
+		m_bInsideFrustum = true;
 }

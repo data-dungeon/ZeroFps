@@ -374,10 +374,10 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 
 		// Start type
-	if( m_kIniLoader.KeyExist("start_area", "type") )
-		pkPSType->m_kPSystemBehaviour.m_bCirkularStart = m_kIniLoader.GetBoolValue("start_area", "type");
+	if( m_kIniLoader.KeyExist("start_area", "create_style") )
+		pkPSType->m_kPSystemBehaviour.m_kCreateStyle = m_kIniLoader.GetValue("start_area", "create_style");
 	else
-		pkPSType->m_kPSystemBehaviour.m_bCirkularStart = false;
+		pkPSType->m_kPSystemBehaviour.m_kCreateStyle = "cirkular";
 
 
 
@@ -439,8 +439,8 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_kForce.z = 0;
 
-	if ( m_kIniLoader.KeyExist("force", "inherit_direction") )
-		pkPSType->m_kParticleBehaviour.m_bForceInheritDirection = m_kIniLoader.GetBoolValue("force", "inherit_direction");
+	if ( m_kIniLoader.KeyExist("force", "force_inherit_rotation") )
+		pkPSType->m_kParticleBehaviour.m_bForceInheritDirection = m_kIniLoader.GetBoolValue("force", "force_inherit_rotation");
 	else
 		pkPSType->m_kParticleBehaviour.m_bForceInheritDirection = true;
 
@@ -461,6 +461,11 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kDirection.z = m_kIniLoader.GetFloatValue("direction", "z");
 	else
 		pkPSType->m_kParticleBehaviour.m_kDirection.z = 0;
+
+	if ( m_kIniLoader.KeyExist("direction", "dir_inherit_rotation") )
+		pkPSType->m_kParticleBehaviour.m_bStartSpeedInheritDirection = m_kIniLoader.GetBoolValue("direction", "dir_inherit_rotation");
+	else
+		pkPSType->m_kParticleBehaviour.m_bStartSpeedInheritDirection = true;
 
 
 	// Wideness
@@ -514,6 +519,13 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kPSystemBehaviour.m_kPosOffset.z = m_kIniLoader.GetFloatValue("position_offset", "z");
 	else
 		pkPSType->m_kPSystemBehaviour.m_kPosOffset.z = 0;
+
+	// culling test-type
+	if ( m_kIniLoader.KeyExist("culling", "type") )
+		pkPSType->m_kPSystemBehaviour.m_kCullingTest = m_kIniLoader.GetValue("culling", "type");
+	else
+		pkPSType->m_kPSystemBehaviour.m_kCullingTest = "cube";
+
 
 
 	// close the file
