@@ -611,7 +611,7 @@ void Mad_CoreMesh::Clear(void)
 	kHead.iNumOfVertex = 0;
 	kHead.iVersionNum = 0;*/
 
-//	bNotAnimated = false;
+	bNotAnimated = false;
 //	iDisplayID = -1;
 	m_kLodMesh.clear();
 

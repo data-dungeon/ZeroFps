@@ -441,10 +441,10 @@ bool Mad_Core::Create(string MadFileName)
 
 	kZFile.Close();
 
-/*	if(m_kSkelleton.size() == 1) {
+	if(m_kSkelleton.size() == 1) {
 		for(i=0; i<m_kMesh.size(); i++)
-			//m_kMesh[i].bNotAnimated = true;
-		}*/
+			m_kMesh[i].bNotAnimated = true;
+		}
 
 	CalculateRadius();
 
@@ -480,7 +480,7 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 
 Vector3*  Mad_Core::GetVerticesPtr()
 {
-//	if(g_pkSelectedMesh->bNotAnimated)
+	if(g_pkSelectedMesh->bNotAnimated)
 		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
 
 	return g_TransformedVertex;
@@ -488,7 +488,7 @@ Vector3*  Mad_Core::GetVerticesPtr()
 
 Vector3* Mad_Core::GetNormalsPtr()
 {
-//	if(g_pkSelectedMesh->bNotAnimated)
+	if(g_pkSelectedMesh->bNotAnimated)
 		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
 
 	return g_TransformedNormal;
@@ -519,8 +519,8 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	g_pkSelectedMesh = pkMesh;
 	//g_pkSelectedRawMesh = pkMesh->GetLODMesh(0);
 
-//	if(pkMesh->bNotAnimated)
-//		return;
+	if(pkMesh->bNotAnimated)
+		return;
 	
 	int* piBoneConnection;
 	Vector3* pkVertex = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];

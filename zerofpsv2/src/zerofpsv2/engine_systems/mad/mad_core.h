@@ -257,6 +257,8 @@ public:
 	vector<Mad_RawMesh>				m_kLodMesh;
 	Mad_RawMesh* GetLODMesh(int iId);
 
+	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
+
 /*
 	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
 	int									iDisplayID;						///< Display List ID if any.
