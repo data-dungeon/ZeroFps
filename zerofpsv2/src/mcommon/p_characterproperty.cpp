@@ -421,9 +421,9 @@ void P_CharacterProperty::Update()
 			{
 				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;		
 				float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(GetEntity()->GetWorldPosV());
-				if(fDistance < 15)
+				if(fDistance < 20)
 				{
-					float fScale = 0.06 * fDistance;
+					float fScale = 0.05 * fDistance;
 					
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
 									Vector3(0,1.0,0),fScale,strText,m_pkTextMaterial,m_pkFont,true);													
