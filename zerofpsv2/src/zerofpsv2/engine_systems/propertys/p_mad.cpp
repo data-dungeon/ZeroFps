@@ -738,29 +738,34 @@ void P_Mad::SetVisible(bool bVisible)
 }
 
 
-Vector3 P_Mad::GetJointPosition(const char* szJointName)
+Vector3 P_Mad::GetJointPosition(const string& strJointName)
 {
-	Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr();
+	static Matrix4 kMat;
+	static Vector3 kPos;
+	static int iJointID;
 	
-	if(pkMc)
+	if(Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr())
 	{
-	
 		//update joint positions
 		UpdateBones();
 	
-		if( pkMc->GetJointID(szJointName) == -1)
-			cout<<"Joint "<<szJointName<<" not found"<<endl;
+		//get joint ID
+		iJointID = pkMc->GetJointID(strJointName.c_str());
 		
-		Matrix4 kMat;
-		Vector3 kPos;
+		//could not find joint
+		if(iJointID == -1)
+			cout<<"Joint "<<strJointName<<" not found"<<endl;
 		
-		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
+		//get joint pos
+		kMat = pkMc->GetBoneTransform(iJointID);
+		
+		//scale position
 		kPos = kMat.GetPos() * m_fScale;
 		
 		//rotate joint with entity rotation
 		kPos = m_pkEntity->GetWorldRotM().VectorTransform(kPos);
 		
-		//kPos = -pkMc->GetJointPosition(szJointName);
+		
 		
 		return kPos + m_kOffset;	
 	}
@@ -769,33 +774,30 @@ Vector3 P_Mad::GetJointPosition(const char* szJointName)
 	return m_kOffset;
 }
 
-Matrix4 P_Mad::GetJointRotation(const char* szJointName)
+Matrix4 P_Mad::GetJointRotation(const string& strJointName)
 {
+	static Matrix4 kMat;
+	static Vector3 kPos;	
+	static int iJointID;
+	
 	if(Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr())
 	{
 	
 		//update joint positions
 		UpdateBones();
 	
-		if( pkMc->GetJointID(szJointName) == -1)
-			cout<<"Joint "<<szJointName<<" not found"<<endl;
+		iJointID = pkMc->GetJointID(strJointName.c_str());
 		
-		Matrix4 kMat;
-		Vector3 kPos;
+		//could not find joint
+		if(iJointID == -1)
+			cout<<"Joint "<<strJointName<<" not found"<<endl;		
 		
-		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
+			
+		kMat = pkMc->GetBoneTransform(iJointID);
 		kMat*=m_pkEntity->GetWorldRotM();
 		kMat.SetPos(Vector3(0,0,0));
 		
 		return kMat;
-		//kPos = kMat.GetPos() * m_fScale;
-		
-		//rotate joint with entity rotation
-		//kPos = m_pkEntity->GetWorldRotM().VectorTransform(kPos);
-		
-		//kPos = -pkMc->GetJointPosition(szJointName);
-		
-		//return kPos + m_kOffset;	
 	}
 	cout<<"Error: No Model loaded when trying to get joint position"<<endl;
 	

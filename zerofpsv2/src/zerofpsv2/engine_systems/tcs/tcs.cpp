@@ -1164,16 +1164,18 @@ bool Tcs::TestSides(const Vector3* kVerts,const Vector3* pkNormal,const Vector3&
 
 	//one way to do it
 	static Vector3 e10,e20,vp;
+	static float a,b,c,ac_bb,d,e;	
 	
 	e10=kVerts[1]-kVerts[0];
 	e20=kVerts[2]-kVerts[0];
-	float a = e10.Dot(e10);
-	float b = e10.Dot(e20);
-	float c = e20.Dot(e20);
-	float ac_bb=(a*c)-(b*b);
+	a = e10.Dot(e10);
+	b = e10.Dot(e20);
+	c = e20.Dot(e20);
+	ac_bb=(a*c)-(b*b);
 	vp.Set(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
-	float d = vp.Dot(e10);
-	float e = vp.Dot(e20);
+	d = vp.Dot(e10);
+	e = vp.Dot(e20);
+	
 	float x = (d*c)-(e*b);
 	float y = (e*a)-(d*b);
 	float z = x+y-ac_bb;
@@ -1222,56 +1224,59 @@ bool Tcs::TestSides(const Vector3* kVerts,const Vector3* pkNormal,const Vector3&
 
 P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 {
-	m_kLastLineTestColPos =	kStart;		
-	float fClosest = 			999999999;
-	P_Tcs* pkClosest =		NULL;	
-	float d;
+	static float fClosest;
+	static float d;
+	static int iBodys; 
+	static Vector3 kPos2;
+	static P_Tcs* pkClosest;	
+	static P_Tcs* pkBody;
 	
-	Vector3 kPos2 = kStart + kDir*10;
-		
-	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{				
-		if(	(m_kBodys[i] == pkTester) || 
-				(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) )
+	m_kLastLineTestColPos =	kStart;		
+	fClosest = 					999999999;
+	pkClosest =					NULL;	
+	kPos2 = 						kStart + kDir*10;
+	
+	iBodys = m_kBodys.size();
+	for(unsigned int i=0;i<iBodys;i++)
+	{
+		pkBody = m_kBodys[i];
+					
+		if(	(pkBody == pkTester) || 
+				(!pkTester->m_akWalkableGroups[pkBody->m_iGroup]) )
 			continue;
 			
 	
 		//check if entitys are in neighbour zone
-		if(!IsInNerbyZone(pkTester,m_kBodys[i]))
+		if(!IsInNerbyZone(pkTester,pkBody))
 			continue;							
 		
 			
-		switch(m_kBodys[i]->m_iTestType)
+		switch(pkBody->m_iTestType)
 		{
 			case E_MESH:
-				/*if(!m_kBodys[i]->m_bHavePolygonData)
-				{
-					cout<<"NO Polygon data warning"<<endl;
-				}*/
-				
-				if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
-					if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
+				if(CharacterTestLineVSSphere(kStart,kPos2,pkBody))
+					if(CharacterTestLineVSMesh(kStart,kDir,pkBody))
 					{
 						d = kStart.DistanceTo(m_kLastTestPos);				
 						if(d < fClosest)
 						{						
 							m_kLastLineTestColPos = m_kLastTestPos;
 							fClosest = d;
-							pkClosest = m_kBodys[i];
+							pkClosest = pkBody;
 						}													
 					}					
 				break;
 				
 			case E_HMAP:
-				if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
-					if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
+				if(CharacterTestLineVSSphere(kStart,kPos2,pkBody))
+					if(CharacterTestLineVSMesh(kStart,kDir,pkBody))
 					{
 						d = kStart.DistanceTo(m_kLastTestPos);				
 						if(d < fClosest)
 						{						
 							m_kLastLineTestColPos = m_kLastTestPos;
 							fClosest = d;
-							pkClosest = m_kBodys[i];
+							pkClosest = pkBody;
 						}													
 					}					
 				break;
@@ -1326,14 +1331,14 @@ bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tc
 	static Vector3 verts[3];	
 	static Vector3 kPoint2;
 	static int iFaces;
+	static float d;
 	
-	kModelMatrix = pkMesh->GetModelMatrix();
-	
-	closest = 		99999999;
-	bHaveColided = 	false;		
-	kPoint2 = kStart + kDir * 1000;
-	float d;
-	
+	kModelMatrix 	= pkMesh->GetModelMatrix();	
+	closest 			= 99999999;
+	bHaveColided 	= false;		
+	kPoint2 			= kStart + kDir * 1000;
+
+		
 	iFaces = pkMesh->m_pkFaces->size();
 	for(unsigned int f=0;f<iFaces;f++)
 	{		 
@@ -1419,22 +1424,23 @@ bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 	return false;	
 }
 
-bool Tcs::CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
+bool Tcs::CharacterTestLineVSSphere(const Vector3& kP1,const Vector3& kP2,P_Tcs* pkB)
 {
 	static Vector3 kDir;
 	static Vector3 c;
-	static Vector3 k;
+	static Vector3 k;	
+	static float d,cdis,kdis,Distance;
 	
 	kDir = kP2 - kP1;
 	c=pkB->m_kNewPos - kP1;		
 
 	kDir.Normalize();		
 	
-	float d = kDir.Dot(c);
+	d = kDir.Dot(c);
 	k=kDir.Proj(c);		
-	float cdis=c.Length();
-	float kdis=k.Length();
-	float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
+	cdis=c.Length();
+	kdis=k.Length();
+	Distance = sqrt( (cdis*cdis) - (kdis*kdis) );
 	
 
 	if(Distance < pkB->m_fRadius)

@@ -90,8 +90,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int GetShadowGroup() 					{	return m_iShadowGroup;		};	
 
 		//get joint position
-		Vector3 GetJointPosition(const char* szJointName);
-		Matrix4 GetJointRotation(const char* szJointName);
+		Vector3 GetJointPosition(const string& strJointName);
+		Matrix4 GetJointRotation(const string& strJointName);
 
 		//line test
 		bool TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly = false,bool bIgnoreY = false);

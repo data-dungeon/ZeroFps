@@ -30,7 +30,10 @@ void P_LinkToJoint::Init()
 
 void P_LinkToJoint::Update() 
 {
-	Entity* pkHost=NULL;;
+	static Vector3 kPos;
+	static Matrix4 kRot;
+
+	Entity* pkHost=NULL;
 	
 	//get host object
 	if(m_iLinkEntityID == -1)
@@ -43,8 +46,8 @@ void P_LinkToJoint::Update()
 	{
 		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
 		{
-			Vector3 kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint.c_str());				
-			Matrix4 kRot = pkMad->GetJointRotation(m_strToJoint.c_str());
+			kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint);				
+			kRot = pkMad->GetJointRotation(m_strToJoint);
 			
 			m_pkEntity->SetLocalPosV(kPos);
 			m_pkEntity->SetLocalRotM(kRot);

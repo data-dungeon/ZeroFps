@@ -87,7 +87,7 @@ void P_Camera::Update()
 				{				
 					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 					{
-						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset;			
+						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone) + m_kOffset;			
 						
 					}
 				}
@@ -139,7 +139,7 @@ void P_Camera::Update()
 				{				
 					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 					{
-						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset;			
+						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone) + m_kOffset;			
 						
 					}
 				}
@@ -187,7 +187,7 @@ void P_Camera::Update()
 				if(m_bAttachToMadBone)
 				{
 					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
-						m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset );			
+						m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone) + m_kOffset );			
 				}
 				else					
 					m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + m_kOffset );			

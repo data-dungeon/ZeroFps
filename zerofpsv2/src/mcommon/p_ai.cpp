@@ -31,6 +31,8 @@ P_AI::P_AI()
 	m_bWalk 		= true;
 	m_fTime 		= 0;
 	m_iTarget	= -1;
+	
+	m_fFindTime = 0;
 }
 
 P_AI::~P_AI()
@@ -85,13 +87,19 @@ void P_AI::Update()
 		case 4:
 		{	
 			//look for enemy
-			int iEnemy = FindClosestEnemy(m_fSeeDistance);
-			if(iEnemy != -1)
+			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
 			{
-				//set look att state
-				m_iState = 2;
-				m_iTarget = iEnemy;
-			}		
+				m_fFindTime = m_pkZeroFps->GetEngineTime();
+			
+				int iEnemy = FindClosestEnemy(m_fSeeDistance);
+				if(iEnemy != -1)
+				{
+					//set look att state
+					m_iState = 2;
+					m_iTarget = iEnemy;
+				}	
+			
+			}	
 		
 			break;
 		}
@@ -127,15 +135,21 @@ void P_AI::Update()
 		
 		
 			//look for enemy , and attack
-			int iEnemy = FindClosestEnemy(m_fAttackDistance);
-			if(iEnemy != -1)
+			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
 			{
-				//set attack state
-				m_iState = 3;
-				m_iTarget = iEnemy;
-				
+				m_fFindTime = m_pkZeroFps->GetEngineTime();
+			
+				int iEnemy = FindClosestEnemy(m_fAttackDistance);
+				if(iEnemy != -1)
+				{
+					//set attack state
+					m_iState = 3;
+					m_iTarget = iEnemy;
+					
+				}
 			}
-						
+			
+				 					
 			break;
 		}
 	

@@ -31,6 +31,8 @@ class MCOMMON_API P_AI: public Property
 		bool 	m_bWalk;
 		float m_fTime;
 		
+		float	m_fFindTime;
+		
 		//look at
 		int	m_iTarget;
 		
