@@ -692,7 +692,7 @@ void ZeroEd::UpdatePreviewObject()
 	static float s_fObjRotDelay = 0.009f;
 	static Vector3 kRot(0,0,0);
 	
-	float fTime = (float) SDL_GetTicks() / 1000.0f;
+	float fTime = m_pkZeroFps->GetTicks();//(float) SDL_GetTicks() / 1000.0f;
 
 	float fTimeSinceLastFrame = fTime - s_fRotTimer;
 	float dif = fTimeSinceLastFrame / s_fObjRotDelay;

@@ -100,7 +100,7 @@ class ENGINE_API Input : public ZFSubSystem {
 
 		queue<QueuedKeyInfo>	m_aPressedKeys;
 			
-		unsigned int	m_iGrabtime;			
+		float				m_fGrabtime;			
 		float				m_fRelMouseX,m_fRelMouseY;
 		float				m_fAbsMouseX,m_fAbsMouseY;
 		unsigned int	m_iQueueLength;

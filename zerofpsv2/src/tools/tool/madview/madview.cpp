@@ -88,7 +88,7 @@ void MadView::Init()
 
 	ToogleLight(true);
 
-	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
+	m_fRotTimer = m_pkZeroFps->GetTicks();
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 
 	//open mad from command line
@@ -104,7 +104,7 @@ void MadView::Init()
 
 void MadView::OnIdle()
 {	
-	float fTime = (float) SDL_GetTicks() / 1000.0f;
+	float fTime = m_pkZeroFps->GetTicks();
 
 	if(m_pkGui->m_bHandledMouse == false)
 	{

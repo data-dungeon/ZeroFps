@@ -32,7 +32,7 @@ bool Input::StartUp()
 
 	m_bKeyRepeat	= 	true;
 	m_iQueueLength	= 	100;
-	m_iGrabtime		= 	SDL_GetTicks();
+	m_fGrabtime		= 	m_pkZeroFps->GetTicks();
 
 	m_fAbsMouseX = 	0;
 	m_fAbsMouseY = 	0;
@@ -534,9 +534,9 @@ void Input::RelMouseXY(float &fX,float &fY)
 
 void Input::ToggleGrab(void) 
 {	
-	if(SDL_GetTicks()-m_iGrabtime>200) 
+	if(m_pkZeroFps->GetTicks()-m_fGrabtime > 0.200) 
 	{
-		m_iGrabtime=SDL_GetTicks();
+		m_fGrabtime	= 	m_pkZeroFps->GetTicks();
 		if(SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_OFF) 
 		{
 			GrabInput();
