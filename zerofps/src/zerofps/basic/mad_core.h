@@ -426,6 +426,8 @@ public:
 	void CalculateRadius();
 
 	int GetJointID(char* szJointName);
+	Vector3 GetJointPosition(char* szJointName);	// Use NULL to get pos for first root joint.
+
 	vector<Controller>	m_kControllers;
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);
 	void SetControll(char* szName, float fValue);

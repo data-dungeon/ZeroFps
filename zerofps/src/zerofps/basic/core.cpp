@@ -291,7 +291,11 @@ void Mad_Core::SetupBonePose()
 
 		// Interp Keys
 		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
-		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
+
+		if(m_kSkelleton[i].m_iParent != -1)
+			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
+		else 
+			g_Madpos[i].Set(0,0,0);
 		}
 
 	// Controllers
@@ -608,32 +612,38 @@ void Mad_Core::CalculateRadius()
 		return;
 		}
 
+	Vector3 CenterPos = GetJointPosition(NULL);
+
 	Mad_CoreMesh* pkMesh = &m_kMesh[0];		
 	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];		
 
-	Vector3 kMin = pkVertex[0];
+	Vector3 kMin = pkVertex[0] - CenterPos;
 	Vector3 kMax = kMin;
+	Vector3 kDiff;
 
 	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) {
-		if(pkVertex[i].x < kMin.x)
-			kMin.x = pkVertex[i].x;
-		else if (pkVertex[i].x > kMax.x)
-			kMax.x = pkVertex[i].x;
+		kDiff = pkVertex[i] - CenterPos;
+		
+		if(kDiff.x < kMin.x)
+			kMin.x = kDiff.x;
+		else if (kDiff.x > kMax.x)
+			kMax.x = kDiff.x;
 
-		if(pkVertex[i].y < kMin.y)
-			kMin.y = pkVertex[i].y;
-		else if (pkVertex[i].y > kMax.y)
-			kMax.y = pkVertex[i].y;
+		if(kDiff.y < kMin.y)
+			kMin.y = kDiff.y;
+		else if (kDiff.y > kMax.y)
+			kMax.y = kDiff.y;
 
-		if(pkVertex[i].z < kMin.z)
-			kMin.z = pkVertex[i].z;
-		else if (pkVertex[i].z > kMax.z)
-			kMax.z = pkVertex[i].z;
+		if(kDiff.z < kMin.z)
+			kMin.z = kDiff.z;
+		else if (kDiff.z > kMax.z)
+			kMax.z = kDiff.z;
 		}
 
 
 	Vector3 kDiagonal = (kMax - kMin) / 2;
 	float fRadius = kDiagonal.Length();
+	cout << "fRadius: " << fRadius << endl;
 
 	kMin.Abs();
 	kMax.Abs();
@@ -647,6 +657,7 @@ void Mad_Core::CalculateRadius()
 
 	m_fBoundRadius = fMaxDist;	// * 1.42;
 	
+	cout << "m_fBoundRadius: " << fMaxDist << endl;
 //	return fRadius;
 }
 
@@ -665,6 +676,25 @@ int Mad_Core::GetJointID(char* szJointName)
 	return -1;
 }
 
+Vector3 Mad_Core::GetJointPosition(char* szJointName)
+{
+	unsigned int i;
+
+	if(szJointName) {
+		for(i=0; i<m_kSkelleton.size(); i++) {
+			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) 
+				return m_kSkelleton[i].m_kPosition;
+			}
+		}
+	else {
+		for(i=0; i<m_kSkelleton.size(); i++) {
+			if(m_kSkelleton[i].m_iParent == -1) 
+				return m_kSkelleton[i].m_kPosition;
+			}
+		}
+
+	return Vector3::ZERO;
+}
 
 void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax)
 {

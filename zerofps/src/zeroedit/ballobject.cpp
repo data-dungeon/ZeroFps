@@ -15,7 +15,6 @@ BallObject::BallObject() {
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 //	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 	madp->SetBase("../data/mad/adaptor.mad");
-	madp->SetScale(0.5);
 
 	
 //	m_iObjectType=OBJECT_TYPE_STATIC;

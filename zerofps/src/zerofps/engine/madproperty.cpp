@@ -75,6 +75,15 @@ void MadProperty::Update()
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 
+	if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
+		glPushMatrix();
+			glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
+			glRotatef(90 ,1,0,0);
+			Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+			pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+		glPopMatrix();
+	}
+
 	m_pkZeroFps->m_iNumOfMadRender++;
 
 }

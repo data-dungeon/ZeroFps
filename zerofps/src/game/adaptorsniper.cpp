@@ -25,6 +25,8 @@ AdaptorSniper::AdaptorSniper()
 
 void AdaptorSniper::Update()
 {
+	return;
+
 	if(m_pkStatusProperty==NULL)
 	{
 		m_pkStatusProperty=static_cast<StatusProperty*>(m_pkObject->GetProperty("StatusProperty"));

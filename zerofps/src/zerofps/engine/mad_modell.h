@@ -8,6 +8,7 @@
 #define MAD_DRAW_MESH		1
 #define MAD_DRAW_NORMAL		2
 #define MAD_DRAW_BONES		4
+#define MAD_DRAW_SPHERE		8
 
 
 class ENGINE_API Mad_Modell 
