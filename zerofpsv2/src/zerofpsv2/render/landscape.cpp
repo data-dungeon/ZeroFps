@@ -704,6 +704,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 	
 	glDrawArrays(GL_QUADS,0,8);
 */	
+
 	glBegin(GL_QUADS);
 		glNormal3f(0,1,0);
 		glTexCoord2f(0,1);glVertex3f(-0.5,1,0); 
