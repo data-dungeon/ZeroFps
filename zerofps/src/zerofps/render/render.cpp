@@ -193,6 +193,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
 //	m_pkTexMan->BindTexture(0);
 	
+	
 	for(int z=0;z<HM_SIZE-1;z++){
 		for(int x=0;x<HM_SIZE-1;x++) {
 			p1=Vector3(x,kmap->verts[z*HM_SIZE+x].height,-z);

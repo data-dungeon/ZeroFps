@@ -5,6 +5,7 @@
 
 #include "vector3.h"
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
