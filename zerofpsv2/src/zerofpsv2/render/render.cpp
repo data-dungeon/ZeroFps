@@ -463,12 +463,6 @@ void Render::SetColor(Vector3 kColor)
 	//glColor3f(kColor.x,kColor.y,kColor.z);
 }
 */
-void Render::SetClearColor(Vector4 kColor)
-{
-	//glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
-	cout<<"call to Render::SetClearColor is obsolete"<<endl;
-	m_pkZShaderSystem->SetClearColor(kColor);
-}
 
 
 void Render::Mode2D_Start()
@@ -2267,5 +2261,15 @@ void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 		}
 
 	glPopMatrix();
+}
+*/
+
+
+/*
+void Render::SetClearColor(Vector4 kColor)
+{
+	//glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
+	cout<<"call to Render::SetClearColor is obsolete"<<endl;
+	m_pkZShaderSystem->SetClearColor(kColor);
 }
 */

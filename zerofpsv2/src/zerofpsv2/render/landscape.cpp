@@ -611,29 +611,6 @@ void Render::DrawHM(HeightMap *kmap) {
 }
 */
 
-//void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
-
-
-void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled)
-{
-	if(FogEnabled)
-	{
-		m_FogEnable=true;		
-		
-		glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
-	//	glFogf(GL_FOG_DENSITY,FogDensity);
-		glFogf(GL_FOG_START,FogStart);
-		glFogf(GL_FOG_END,FogStop);	
-	} 
-	else 
-	{
-		glFogf(GL_FOG_START,1000);
-		glFogf(GL_FOG_END,2000);	
-		
-		m_FogEnable=false;
-	}	
-}
-
 
 
 //this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
@@ -1448,3 +1425,36 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 		}
 		glEnd();	
 	};*/
+
+	
+	
+	
+	/*
+void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled)
+{
+	if(FogEnabled)
+	{
+		m_FogEnable=true;		
+		
+		glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
+	//	glFogf(GL_FOG_DENSITY,FogDensity);
+		glFogf(GL_FOG_START,FogStart);
+		glFogf(GL_FOG_END,FogStop);	
+	} 
+	else 
+	{
+		glFogf(GL_FOG_START,1000);
+		glFogf(GL_FOG_END,2000);	
+		
+		m_FogEnable=false;
+	}	
+}
+*/
+
+
+
+
+
+	
+	
+	

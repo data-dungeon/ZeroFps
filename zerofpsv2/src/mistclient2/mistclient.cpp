@@ -45,7 +45,6 @@ void MistClient::OnInit()
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");
 		
-	m_pkRender->SetFog(Vector3(0,0,0),10,50,false);			
 		
 	//set client in server mode to show gui etc
 	m_pkFps->StartServer(true,false);

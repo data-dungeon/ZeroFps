@@ -142,7 +142,6 @@ class RENDER_API Render : public ZFSubSystem {
 
 		void Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor);
 		void Line(const Vector3& kPos1,const Vector3& kPos2);
-		void SetClearColor(Vector4 kColor);
 
 		// LandScape
 		void DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected);
@@ -162,9 +161,6 @@ class RENDER_API Render : public ZFSubSystem {
 		// Water
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue);
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
-
-		// Fog
-		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
 
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		
@@ -208,6 +204,10 @@ class RENDER_API Render : public ZFSubSystem {
 		
 		
 		//old stuff
+		//void SetClearColor(Vector4 kColor);
+		//void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
+		
+		
 		//void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
 		//void Dot(float x,float y,float z);
 		//void SetColor(Vector3 kColor);
