@@ -1040,6 +1040,9 @@ struct SORT_NODE : public binary_function<string, string, bool> {
 
 void MistServer::BuildZoneTree()
 {
+	return; // not done yet
+
+
 	set<string> kSearchedFiles;
 	list<string> dir_list;
 	string strPrevNode;
@@ -1113,17 +1116,5 @@ int oka = 0;
 	}
 
 	printf("oka = %i\n", oka);
-
-/*	AddTreeItem("ZoneModelTree", "data/mad/zones/", "RootNode", "zones", 1, 2);
-	AddTreeItem("ZoneModelTree", "data/mad/zones/cooridor.mad", "data/mad/zones/", "cooridor.mad", 0, 1);
-	AddTreeItem("ZoneModelTree", "data/mad/zones/rooms", "data/mad/zones/", "rooms", 1, 2);
-	AddTreeItem("ZoneModelTree", "data/mad/zones/large_room_een.mad", "data/mad/zones/rooms", "large_room_een.mad", 0, 1);
-*/
-	// Algorithm:
-	// 1. Lista alla kataloger i dir X     
-	//		?: Finns det kataloger i dir X?
- 	//			Y: Gå in i första katalogen i dir X. Upprepa 1:an		
-	//			N: Gå till 2.
-	// 2. Lista alla filer i dir X. Markera att katalogen är genomsökt. Hoppa tillbaks 1:steg.
 
 }

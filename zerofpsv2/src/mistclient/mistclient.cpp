@@ -595,16 +595,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "SendInputBoxBn")
 		{
-			//GetWnd("InputWnd")->Hide();
-			//pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());  
-
-			static int oka=0; 
-			char szText[50];
-			sprintf(szText, "%i What's up doc? This is Laura Parmer...", oka);
-
-			oka++;
-
-			PrintInfoBox(szText);
+			GetWnd("InputWnd")->Hide();
+			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());  
 		}
 	}
 
@@ -865,19 +857,19 @@ void MistClient::CreateGuiInterface()
 		string("curse upon our line that were nightly told and magnified by the simple tenantry as they conversed in ") +
 		string("hushed accents in the glow of their cottage hearths. ");
 
-	GetWnd("InfoBox")->SetText((char*)szText.c_str());*/
+	GetWnd("InfoBox")->SetText((char*)szText.c_str());
 	GetWnd("InfoBox")->GetSkin()->m_bTileBkSkin = true; 
 
 	ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);
 	pkFont->CreateFromFile("/data/textures/text/small.bmp"); 
 	GetWnd("InfoBox")->SetFont( pkFont);
 	GetWnd("InputBox")->SetFont( pkFont);
-	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
+	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; */	
 
 	// tillfällig Fulhack delux (ta bort sen)
-	pkFps->DevPrintf("common", "=)");
+/*	pkFps->DevPrintf("common", "=)");
 	pkFps->DevPrint_FindPage("common")->m_bVisible = true;
-	pkFps->DevPrint_Show(true);
+	pkFps->DevPrint_Show(true);*/
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
