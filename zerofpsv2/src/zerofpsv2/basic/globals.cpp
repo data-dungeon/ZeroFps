@@ -188,10 +188,10 @@ Vector3 RndColor()
 	return kColor;
 }
 
-float round(float val)
+float round2(float val)
 {
 	int lower = (int) val;
-	if(val - lower > 0.4999f)
+	if(val - lower > 0.49999999999999999f)
 		return (float) lower + 1.0f;
 	return (float) lower;
 }

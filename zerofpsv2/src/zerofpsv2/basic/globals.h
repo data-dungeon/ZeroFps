@@ -50,7 +50,7 @@ bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
 #define epsilon 1.0e-4f
 bool BASIC_API equal_f(float a, float b);
 
-float BASIC_API round(float val);
+float BASIC_API round2(float val);
 
 extern char g_szFormatText[4096];	
 
