@@ -35,8 +35,9 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	white_light = Vector4(1.5,1.5,1.5,1.5);
-	lmodel_ambient = Vector4(0.5,0.5,0.5,1);
+	float b=1.5;
+	white_light = Vector4(b,b,b,b);
+	lmodel_ambient = Vector4(0.5*b,0.5*b,0.5*b,0.5*b);
 
   
 //  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);

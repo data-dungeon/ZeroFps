@@ -169,6 +169,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 	glEnable(GL_COLOR_MATERIAL);	
 	glColorMaterial(GL_FRONT,GL_DIFFUSE);
+//	glColorMaterial(GL_FRONT,GL_AMBIENT);	
 	float black[4]={0.2,0.2,0.2,0};
 	glMaterialfv(GL_FRONT,GL_AMBIENT,black);
 //	glMaterialfv(GL_FRONT,GL_SPECULAR,black);
