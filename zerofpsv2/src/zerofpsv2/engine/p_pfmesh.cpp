@@ -368,7 +368,7 @@ void P_PfMesh::DrawNaviMesh()
 	glPushAttrib(GL_DEPTH_BUFFER_BIT );
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
-	glDepthFunc(GL_EQUAL);
+//	glDepthFunc(GL_EQUAL);
 	glColor3f(1,1,1);
 	Vector3 kColor;
 
@@ -379,15 +379,16 @@ void P_PfMesh::DrawNaviMesh()
 //			else										kColor.Set(1,1,1);
 //		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
 
+/*/
 		glBegin(GL_TRIANGLES);
 			glColor3f(0,1,0);
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[1] );
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[2] );
-		glEnd();
+		glEnd();*/
 
 
-/*		glLineWidth(3.0);
+		glLineWidth(3.0);
 		glBegin(GL_LINES);
 			SetEdgeColor(m_NaviMesh[i].m_aiLinks[0]);
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[1] );
@@ -399,7 +400,7 @@ void P_PfMesh::DrawNaviMesh()
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[2] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );
 		glEnd();
 		glLineWidth(1.0);
-*/
+
 
 /*		kColor.Set(1,0,0);
 		for(int e=0; e<3; e++) {

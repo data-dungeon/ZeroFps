@@ -123,7 +123,7 @@ void DarkMetropolis::RenderInterface(void)
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 		if(pkEnt)
 		{
-			m_pkRender->Sphere(pkEnt->GetWorldPosV(),2,2,Vector3(0,1,0),false);		
+			m_pkRender->Sphere(pkEnt->GetWorldPosV(),0.5,2,Vector3(0,1,0),false);		
 		}	
 	}
 	

@@ -95,6 +95,8 @@ void P_PfPath::Update()
 
 	if(m_kPath.size() == 0)
 		return;
+	if(m_iNextGoal == m_kPath.size())
+		return;
 
 	// Get Distance to next goal.
 	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;
@@ -107,8 +109,8 @@ void P_PfPath::Update()
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
 		{
-			m_kPath.clear();
-			m_kRawPath.clear();
+			//m_kPath.clear();
+			//m_kRawPath.clear();
 			
 			
 			//play idle

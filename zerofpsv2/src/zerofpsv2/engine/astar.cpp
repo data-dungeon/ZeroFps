@@ -157,10 +157,11 @@ AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 
 AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCell)
 {
-	for(unsigned int i=0; i<List.size(); i++) {
+	for(unsigned int i=0; i<List.size(); i++) 
+	{
 		if(List[i]->pkNaviCell == pkCell)
 			return List[i];
-		}
+	}
 
 	return NULL;
 }
@@ -169,7 +170,8 @@ void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 {
 	PathNode kNode;
 
-	do {
+	do 
+	{
 		kNode.kPosition	= pkNode->pkNaviCell->m_kCenter;
 		kNode.pkStartMesh = pkNode->m_pkNaviMesh;
 		kNode.pkStartCell = pkNode->pkNaviCell;
@@ -201,7 +203,8 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 	Vector3 kEdgeCenter = (kA + kB) / 2;
 
 	// loop all connected zones
-	for(unsigned int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) {
+	for(unsigned int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) 
+	{
 		pkOtherZone = m_pkObjectManger->GetZoneData(pkZoneData->m_iZoneLinks[i]);
 		if(pkOtherZone == NULL)					continue;
 		if(pkOtherZone->m_pkZone == NULL)	continue;	
@@ -210,11 +213,11 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 		if(pkMesh == NULL)						continue;	
 
 		pkCell = pkMesh->GetCell(kA,kB);
-		if(pkCell) {
+		if(pkCell) 
+		{
 			return new AStarCellNode(pkOtherZone, pkMesh, pkCell);
-
-			}
 		}
+	}
 
 	return NULL;
 }
@@ -223,21 +226,24 @@ void AStar::Reset()
 {
 	unsigned int i;
 
-	if(kOpenList.size()) {
-		for(i=0; i<kOpenList.size(); i++) {
+	if(kOpenList.size()) 
+	{
+		for(i=0; i<kOpenList.size(); i++) 
+		{
 			delete kOpenList[i];
-			}
-
-		kOpenList.clear();
 		}
+		kOpenList.clear();
+	}
 
-	if(kClosedList.size()) {
-		for(i=0; i<kClosedList.size(); i++) {
+	if(kClosedList.size())
+	{
+		for(i=0; i<kClosedList.size(); i++) 
+		{
 			delete kClosedList[i];
-			}
+		}
 
 		kClosedList.clear();
-		}
+	}
 }
 
 
@@ -462,7 +468,7 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 			i++;
 			}
 		else {
-			if(pkStartMesh->LineOfSightTest(pkStartCell, kStart, pkEndCell, kEnd) == false) {
+			if(pkStartMesh->LineOfSightTest(pkStartCell, kStart, pkEndCell, kEnd) == false && pkEndCell->m_bNonWalkable == false) {
 				kResult.push_back( kInPath[ i - 1].kPosition );
 				kStart = kInPath[ i - 1 ].kPosition;
 				pkStartMesh = kInPath[ i - 1 ].pkStartMesh;	//GetPathFindMesh( kStart );
