@@ -20,6 +20,7 @@ External Code:
 		Net:	Sköter om low level nätverks kod. 
 	AponAL:		Spelar upp ljud.
 	ExtGl:		Laddar opengl 1.2 under windows. Används ej i linux.
+	Lua:		Används flitigt av skriptsystemet.
 
 Code Modules:
  Basic:		Grundläggande klasser (math, namnsystem, log files, fil system).
