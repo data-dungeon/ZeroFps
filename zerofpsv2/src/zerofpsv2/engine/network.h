@@ -40,7 +40,7 @@ using namespace std;
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
 #define ZF_NET_ALLCLIENT				-2		// ID for a all clients.
 
-#define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
+#define ZF_NET_CONNECTION_TIMEOUT	10	// Timeout connection if no message from a client after this time (sec).
 
 #define ZF_NET_MAXREL					1024
 

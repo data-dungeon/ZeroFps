@@ -1059,7 +1059,7 @@ void NetWork::Run()
 			m_RemoteNodes[i]->Clear();
 		}
 
-		if(fEngineTime > ( m_RemoteNodes[i]->m_fLastMessageTime + 60 )) 
+		if(fEngineTime > ( m_RemoteNodes[i]->m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT )) //dvoid ändra från 60 till zf_net_ blaa  
 		{
 			// Time out this connection.
 			m_pkZeroFps->Disconnect(i);
