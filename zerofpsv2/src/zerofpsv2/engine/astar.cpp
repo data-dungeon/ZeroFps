@@ -208,6 +208,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	push_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
 
 	NaviMeshCell* pkCell;
+	cout << "START PF:";
 
 	// 4: Let B be the best node from the open list.
 	while(kOpenList.size()) {
@@ -234,6 +235,8 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 			kNode.pkStartMesh = pkPfEndMesh;
 			kNode.pkStartCell = 	pkEndCell;
 			kPath.push_back( kNode );
+			cout << "END PF:";
+
 			return true;
 			}
 
@@ -244,10 +247,17 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 		for(unsigned int i=0; i<3; i++) {
 			pkNewNode = NULL;
 
-			if(pkCell->m_aiLinks[i] <= 0) {
+			if(pkCell->m_aiLinks[i] <= 0) 
+			{
 				pkCell->GetEdgeVertex(i, kA, kB);
 				pkNewNode = GetConnectedZone( pkNode->m_pkZoneData, kA, kB);
+
+				if(pkCell->m_bNonWalkable &&
+					kA.x == kB.x && kA.z == kB.z)
+				{
+					pkNewNode = NULL;
 				}
+			}
 			else {
 				if(pkCell->m_aiLinks[i] > 0)	
 					pkNewNode = new AStarCellNode( pkNode->m_pkZoneData, pkNode->m_pkNaviMesh, &pkNode->m_pkNaviMesh->m_NaviMesh [ pkCell->m_aiLinks[i] ]);
@@ -286,6 +296,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 			}
 		}
 
+	cout << "END PF 2:";
 	return false;
 }
 
@@ -325,6 +336,8 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 	kStart = kInPath[0].kPosition;
 	pkStartMesh = kInPath[0].pkStartMesh;	//GetPathFindMesh( kStart );
 	pkStartCell = kInPath[0].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
+	cout << "START OPTIMIZE:";
+
 
 	for(i=1; i<kInPath.size(); i++) 
 	{
@@ -359,6 +372,8 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 			//	cout << "Skipping Path step " << i << endl;
 		}
 	}
+
+	cout << "END OPTIMIZE:";
 
 	kResult.push_back( kInPath[kInPath.size() - 1].kPosition );
 //	cout << "Optimized Path: " << kResult.size() << endl;

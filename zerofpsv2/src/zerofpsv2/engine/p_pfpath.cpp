@@ -47,6 +47,7 @@ void P_PfPath::RenderPath()
 	Vector3 kColor;
 	Vector3 kPathOffset(0,0,0);
 
+	// Render the raw path.
 	kColor = m_pkRender->GetEditColor("ai/rawpath");
 	glColor3f(kColor.x,kColor.y,kColor.z);
 	if(m_kRawPath.size() >= 2) 
@@ -57,6 +58,7 @@ void P_PfPath::RenderPath()
 		}	
 	}
 	
+	// Render the optimized path.
 	kColor = m_pkRender->GetEditColor("ai/path");
 	glColor3f(kColor.x,kColor.y,kColor.z);
 	if(m_kPath.size() >= 2) 
@@ -110,10 +112,9 @@ void P_PfPath::Update()
 
 	// Get Distance to next goal.
 	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;
-
 	Vector3 kdiff = kGoal - kPos;
 
-
+	// Check if we are so close to the goal that we will reach it in this frame. If so move to it and go for the next one.
 	float fdist = kdiff.Length();
 	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
 	{
@@ -140,10 +141,10 @@ void P_PfPath::Update()
 		return;
 	}
 
+	// Move towards current goal.
 	kdiff.Normalize();
 	kPos += (kdiff * m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta();
 	m_pkObject->SetWorldPosV(kPos);
-
 
 	//setup character orientation
 	if(!m_bTilt)
@@ -212,7 +213,8 @@ void P_PfPath::SetPath(vector<Vector3> kPath)
 	m_iNextGoal = 0;
 }
 
-
+/**	\brief	Makes a pathfind to a choosen postition.
+*/
 bool P_PfPath::MakePathFind(Vector3 kDestination)
 {
 	vector<PathNode> kPath;
@@ -220,18 +222,11 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 	Vector3 kPathStart = m_pkObject->GetWorldPosV();
 	Vector3 kPathEnd   = kDestination;
 	
-	//cout << "Making PathFind: ";
-	//kPathStart.Print();
-	//kPathEnd.Print();
-	//cout << endl;
-	
 	kPath.clear();
-	bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
+	bool bPathFound = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
 
-	if(bres) 
+	if(bPathFound) 
 	{
-		//reverse(kPath.begin(), kPath.end());
-		//kPath.push_back(kPathEnd);
 		m_kRawPath = kPath;
 		SetPath( m_pkAStar->OptimizePath(kPath) );
 		
@@ -239,11 +234,9 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 		if(pm)
 			pm->SetAnimation((char*)m_kRunAnim.c_str(),0);
-
-		return true;
 	}
 	
-	return false;
+	return bPathFound;
 }
 
 

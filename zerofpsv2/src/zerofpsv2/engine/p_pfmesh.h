@@ -37,6 +37,7 @@ public:
 		CELL_EXIT,				// Path exits this cell.
 	};
 	
+	int				m_iCellId;
 	Vector3			m_kVertex[3];		// Vertex the made up the cell.
 	Vector3			m_kCenter;			// Center of the Cell.
 	int				m_aiLinks[3];		// Links to cells on each side. 0 if none.
@@ -52,10 +53,11 @@ public:
 
 	void RefreshData();
 	Vector3 GetEdgeCenter(int iSide);
+	int  GetConnectedCellInStep(int iFromCell);
 
 	Vector3 MapToCellHeight(Vector3 kIn);
 
-	NaviMeshCell::PATH_CLASSIFICATION ClassifyPath(Line2D& kPath, int& iNextCell, CELL_SIDE& eSide, Vector2* pkIntersection);
+	NaviMeshCell::PATH_CLASSIFICATION ClassifyPath(Line2D& kPath, int& iNextCell, CELL_SIDE& eSide, Vector2* pkIntersection, int iFromCell);
 
 };
 
