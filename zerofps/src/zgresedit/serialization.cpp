@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include "serialization.h"
 #include "../zerofps/basic/zfini.h"
+#include "../zerofps/basic/zfassert.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -17,7 +18,10 @@ Serialization::Serialization(const char* szFileName, ZFIni* pkINI, bool bWrite)
 	m_pkFile = NULL;
 
 	if(bWrite)
+	{
 		m_pkFile = fopen(szFileName, "wt");
+		ZFAssert(m_pkFile, "Serialization::Serialization(): Failed to create file.");
+	}
 	else
 	{
 		Open(szFileName);

@@ -53,8 +53,6 @@ ZGResEdit::~ZGResEdit()
 //
 void ZGResEdit::OnInit()
 {
-	int test = 2;
-
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);
 	m_pkGuiBuilder=new GuiBuilder(pkGui,pkTexMan,pkGuiMan,
 		Rect(0,0,m_iWidth,m_iHeight));
@@ -142,12 +140,14 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			// Save File
 			else
 			{
-				Serialization kSaveIDs("../data/gui_resource/zgresource_id.h", m_pkINI, true);
+				Serialization kSaveIDs("../data/gui_resource_files/zgresource_id.h", 
+					m_pkINI, true);
 				kSaveIDs.Output("#ifndef _ZGRESOURCE_ID_H\n#define _ZGRESOURCE_ID_H\n\nenum WindowID\n{\n");
 				m_pkControlBox->PrintWindowIDs(&kSaveIDs);
 				kSaveIDs.Outputa("};\n\n#endif // #ifndef _ZGRESOURCE_ID_H");
 
-				Serialization kSaveRC("../data/gui_resource/zgresource_rc.txt", m_pkINI, true);
+				Serialization kSaveRC("../data/gui_resource_files/zgresource_rc.txt", 
+					m_pkINI, true);
 				kSaveRC.Output("; ZGui resource script.\n\n");
 				m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
 			}
