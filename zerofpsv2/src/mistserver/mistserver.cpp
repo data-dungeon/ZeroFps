@@ -977,8 +977,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			P_Item* 			pkItem = 				NULL;
 			Entity*			pkCharacter = 			NULL;
 			
-			cout<<"bla:"<<iItemID<<" "<<iTargetContainer<<" "<<iPosX<<" "<<iPosY<<" "<<iCount<<endl;
-			
 			//get container
 			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))
 				pkTargetContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
