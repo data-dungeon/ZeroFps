@@ -105,26 +105,26 @@ void P_Vegitation::Update()
 			P_HMRP2* pkhmrp = (P_HMRP2*)hme->GetProperty("P_HMRP2");
 			if(pkhmrp)
 			{
-				//cout<<"this zone has a heightmap, using it to get Y values"<<endl;
-				
+				//cout<<"this zone has a heightmap, using it to get Y values"<<endl;				
 				Random(pkhmrp);
 			}
 		}		
 	}
 			
 			
-	Vector3 ObjectPos = m_pkEntity->GetWorldPosV();			
-			
-	
-	float fDistance = float(ObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius);
-	//if(fDistance > 40)
-	//	return;
-						
+	static Vector3 kObjectPos;
+	kObjectPos = m_pkEntity->GetWorldPosV();			
+					
 					
 	//draw a ball on the server
 	if(m_pkFps->GetDebugGraph())
-		m_pkRender->Sphere(ObjectPos,0.5,1,Vector3(1,1,1),true);
-					
+		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
+
+	
+	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
+	if(fDistance > 32)
+		return;
+							
 					
 	int iStep = int(fDistance / 5.0);
 	if(iStep < 1)
@@ -132,64 +132,33 @@ void P_Vegitation::Update()
 
 	iStep = PowerOf2(iStep);
 
-//	cout<<"step "<<iStep<<endl;
-//	cout<<"grass "<<m_akPositions.size()<<endl;
 
-
-	//ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr();
-	//int iTexture;
-	/*	
-	if(!pkRt)	
-	{
-		StopProfileTimer("P_Vegitation");
-		return;
-	}
-	else
-		iTexture = (pkRt)->m_iTextureID;
-	*/
-	
-	//setup material
-	
-	ZMaterial* pkMaterial = (ZMaterial*)(m_pkMaterial->GetResourcePtr());			
-	m_pkZShaderSystem->BindMaterial(pkMaterial);		
+	//setup material	
+	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
 	
 	float t=m_pkFps->GetTicks();
 
 	if(iStep == 1)
 	{
-		Vector3 rot;
-		Vector3 kPos;
+		static Vector3 rot;
+		static Vector3 kPos;
 		for(unsigned int i=0;i<m_akPositions.size();i++)
 		{
 			rot = m_akPositions[i].kRot;  
-			kPos = m_akPositions[i].kPos + ObjectPos;
+			kPos = m_akPositions[i].kPos + kObjectPos;
 			rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
 			m_pkRender->DrawCross(kPos,rot,m_kScale);			
 		}
 	}
 	else
 	{
-		Vector3 kPos;
+		static Vector3 kPos;
 		for(unsigned int i=0;i<m_akPositions.size();i += iStep)
 		{
-			kPos = m_akPositions[i].kPos + ObjectPos;
+			kPos = m_akPositions[i].kPos + kObjectPos;
 			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale);			
 		}		
 	}
-
-
-// 	StopProfileTimer("r___Vegitation");	
-
-/*	for(unsigned int i=0;i<m_akPositions.size();i += iStep)
-//	for(unsigned int i=0;i<m_akPositions.size();i++)
-	{
-		Vector3 rot = m_akPositions[i].kRot;  
-//		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
-		Vector3 kPos = m_akPositions[i].kPos + ObjectPos;
-		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
-		m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
-	}
-*/
 }
 
 vector<PropertyValues> P_Vegitation::GetPropertyValues()

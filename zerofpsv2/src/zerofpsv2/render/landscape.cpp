@@ -354,28 +354,8 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 
 
-void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale)//,int& iTexture1) //,int iTexture2) 
+void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale)//,int& iTexture1) //,int iTexture2) 
 {
-/*	static ZMaterial* pkGrass = NULL;
-	if(!pkGrass)
-	{ 
-		pkGrass = new ZMaterial;
-		pkGrass->GetPass(0)->m_kTUs[0]->SetRes("data/textures/grassp.tga");	
-		pkGrass->GetPass(0)->m_iPolygonModeBack = FILL_POLYGON;
-		pkGrass->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-		pkGrass->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
-		pkGrass->GetPass(0)->m_bLighting = true;
-
-		//for alpha instead
-		//pkGrass->GetPass(0)->m_bAlphaTest = true;
-				
-		//blending is much nicer thou =)
-		pkGrass->GetPass(0)->m_bDepthMask = false;
-		pkGrass->GetPass(0)->m_bBlend = true;
-		pkGrass->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
-		pkGrass->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
-	}
-*/
 	static Vector3 normaldata[8] = { Vector3(0,1,0),
 												Vector3(0,1,0),
 												Vector3(0,1,0),
@@ -415,7 +395,6 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale)//,int& iTex
 		m_pkZShaderSystem->MatrixScale(kScale);		
 	
 		m_pkZShaderSystem->ResetPointers();
-//		m_pkZShaderSystem->BindMaterial(pkGrass);
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,atexdata);
 		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,apointdata);
 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);
