@@ -48,7 +48,7 @@ void DarkMetropolis::OnInit()
 	m_pkCameraEntity = 			NULL;
 	m_pkFps->m_bClientMode =	true;
 	m_fMinCamDistance =			0.1f;
-	m_fMaxCamDistance =			6;
+	m_fMaxCamDistance =			8;
 	m_fDistance =					m_fMaxCamDistance;	
 	m_fAngle =						0;
 	m_strSaveDirectory =			"savegames/";
@@ -287,14 +287,14 @@ void DarkMetropolis::OnServerStart()
 		m_pkCameraEntity->AddProperty("P_Camera");	
 	
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
-		m_pkCameraEntity->SetWorldPosV(Vector3(0,5,0));
+		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
 		
 		m_pkCameraProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");		
 		if(m_pkCameraProp)
 		{
 			m_pkCameraProp->SetCamera(m_pkCamera);
 			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
-			m_pkCameraProp->Set3PPAngle(1.04);
+			m_pkCameraProp->Set3PPAngle(1.30);
 			
 			m_pkCameraProp->Set3PYAngle(m_fAngle);
 			m_pkCameraProp->Set3PDistance(m_fDistance);							
@@ -365,6 +365,7 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Car",					Create_P_Car);
 
 	m_pkPropertyFactory->Register("P_DMMission",			Create_P_DMMission);
@@ -455,45 +456,27 @@ void DarkMetropolis::Input()
 
 	if(m_pkPlayerEntity)
 	{	
-		float fSpeed = 30;
-	
-		//rotate player
-		float x;
-		float y;
-		Matrix4 kRot;		
-		m_pkInputHandle->UnitMouseXY(x,y);	
-		Vector3 kLookDir(x,0,y);
-		kRot = m_pkPlayerEntity->GetWorldRotM();
-		kRot.LookDir(kLookDir,Vector3(0,1,0));		
-		kRot.Transponse();
-		m_pkPlayerEntity->SetLocalRotM(kRot);
-		
-		
-		if(P_Tcs* pkTcs = (P_Tcs*)m_pkPlayerEntity->GetProperty("P_Tcs"))
+		if(P_ArcadeCharacter* pkChar = (P_ArcadeCharacter*)m_pkPlayerEntity->GetProperty("P_ArcadeCharacter"))
 		{
-			Vector3 kVel(0,0,0);
-		
-			if(m_pkInputHandle->VKIsDown("cam_up"))
-				kVel.z = -1;
-			if(m_pkInputHandle->VKIsDown("cam_down"))
-				kVel.z =  1;
-			if(m_pkInputHandle->VKIsDown("cam_left"))
-				kVel.x = -1;
-			if(m_pkInputHandle->VKIsDown("cam_right"))
-				kVel.x =  1;
-
-							
-			if(kVel.Length() == 0)			
-				pkTcs->SetWalkVel(Vector3(0,0,0));
-			else
-			{
-				float fWalkRatio = (kVel.Unit().Dot(kLookDir.Unit()) / 2.0) + 0.5 ;
-				
-				kVel.Normalize();
-				kVel *= ( (fSpeed/2.0)*fWalkRatio) + (fSpeed/2.0);					
+			pkChar->m_kActions.reset();
 					
-				pkTcs->SetWalkVel(kVel);
-			}
+			if(m_pkInputHandle->VKIsDown("cam_up"))
+				pkChar->m_kActions[0] = true;;
+			if(m_pkInputHandle->VKIsDown("cam_down"))
+				pkChar->m_kActions[1] = true;;
+			if(m_pkInputHandle->VKIsDown("cam_left"))
+				pkChar->m_kActions[2] = true;;
+			if(m_pkInputHandle->VKIsDown("cam_right"))
+				pkChar->m_kActions[3] = true;;
+
+			if(m_pkInputHandle->VKIsDown("select"))
+				pkChar->m_kActions[4] = true;;
+				
+						
+			float x;
+			float y;
+			m_pkInputHandle->UnitMouseXY(x,y);	
+			pkChar->m_kDir.Set(x,0,y);
 		}
 	}
 }

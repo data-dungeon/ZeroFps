@@ -21,10 +21,10 @@ P_DMGun::P_DMGun()
 	//default gun
 	m_strName = 	"YberGun";
 	m_strSound =	"data/sound/9m_pistol.wav";
-	m_fFireRate = 	10;
+	m_fFireRate = 	20;
 	m_fRange = 		10;
-	m_iAmmo = 		100;
-	m_iMaxAmmo = 	100;
+	m_iAmmo = 		1000;
+	m_iMaxAmmo = 	1000;
 	m_kDir.Set(0,0,-1);
 	m_fRandom = 	0.5;
 	m_fDamage =		25;

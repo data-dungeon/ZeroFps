@@ -76,7 +76,6 @@ void P_ArcadeCharacter::Fire()
 {
 	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
 	{
-		cout<<m_kDir.Length()<<endl;;
 		pkGun->Fire( GetObject()->GetWorldPosV() + m_kDir.Unit());
 	}
 
