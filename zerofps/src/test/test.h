@@ -29,6 +29,9 @@ class Test :public Application {
 
 	Vector3 *m_kSpotpos;
 
+	Camera *cam1;
+	Camera *cam2;
+
 	//Core		CoreTest;
 	//MadInstans	kBitch;
 

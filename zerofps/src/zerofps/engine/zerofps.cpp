@@ -52,7 +52,8 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_pkGameCamera=m_pkDefaultCamera;		
 	m_pkCamera=m_pkGameCamera;
 
-	
+	SetCamera(m_pkDefaultCamera);	
+
 	m_pkApp->OnInit();										//call the applications oninit funktion
 	MainLoop();														//jump to mainloop
 }
@@ -61,14 +62,17 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-				m_pkCamera=m_pkGameCamera;
+//				m_pkCamera=m_pkGameCamera;
 				
 				m_pkApp->OnHud();									
+				
+				SetCamera(m_pkCamera);
 
-				UpdateCamera();
+				m_pkCamera->Update();
+//				UpdateCamera();
 				m_pkRender->GetFrustum();				
 				
-				m_pkLight->SetCamera(m_pkCamera->GetPos());				
+//				m_pkLight->SetCamera(m_pkCamera->GetPos());				
 				m_pkLight->Update();				
 				m_pkApp->OnIdle();				
 				
@@ -78,7 +82,9 @@ void ZeroFps::MainLoop(void) {
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
-					m_pkCamera=m_pkConsoleCamera;					
+					m_pkTempCamera=m_pkCamera;					
+					SetCamera(m_pkConsoleCamera);
+//					m_pkCamera=m_pkConsoleCamera;					
 					m_pkCamera->UpdateAll();
 									
 					break;
@@ -101,7 +107,8 @@ void ZeroFps::MainLoop(void) {
 				Swap();
 				
 				if(m_iState==state_normal){
-					m_pkCamera=m_pkGameCamera;
+					SetCamera(m_pkTempCamera);
+//					m_pkCamera=m_pkGameCamera;
 					m_pkCamera->UpdateAll();
 				}					
 				
@@ -226,12 +233,14 @@ void ZeroFps::UpdateCamera(void) {
 
 }
 
-void ZeroFps::ToggleFullScreen(void){
+void ZeroFps::ToggleFullScreen(void)
+{
 	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
 
-void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth) {
+void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
+{
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;
@@ -239,10 +248,39 @@ void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth) {
 	SetDisplay();
 }
 
-void ZeroFps::SetDisplay(){
+void ZeroFps::SetDisplay()
+{
 	SDL_QuitSubSystem(SDL_OPENGL);
 	
 	SDL_InitSubSystem(SDL_OPENGL);
 	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
 	glViewport(0, 0,m_iWidth,m_iHeight);	
 }
+
+
+void ZeroFps::SetCamera(Camera* pkCamera)
+{
+	if(m_pkCamera==pkCamera){
+		return;
+	}
+	
+	
+	m_pkCamera=pkCamera;
+
+	m_pkCamera->UpdateAll();					
+	m_pkRender->GetFrustum();				
+	m_pkLight->SetCamera(m_pkCamera->GetPos());				
+	m_pkLight->Update();	
+		
+	glViewport( int(m_iWidth*m_pkCamera->m_fX), 
+					int(m_iHeight*m_pkCamera->m_fY),
+					int(m_iWidth*m_pkCamera->m_fWidth),
+					int(m_iHeight*m_pkCamera->m_fHeight));		
+
+
+}
+
+
+
+
+

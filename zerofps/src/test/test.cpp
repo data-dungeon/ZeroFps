@@ -10,10 +10,9 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 
 void Test::OnInit(void) {
-//	pkFps->SetDisplay(640,480,16);
 	
 	pkConsole->Print("MegaUltraSuper Duper Game");
-	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
+	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/alien.mp3");		
 //	pkFps->m_pkAudioMan->PlayMusic();
 
 
@@ -43,8 +42,8 @@ void Test::OnInit(void) {
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
-	pkFps->GetDefaultCam()->SetView(90,1.333,0.25,400);
-  	pkFps->GetDefaultCam()->SetPos(Vector3(20,50,30));
+//	pkFps->GetCam()->SetView(90,1.333,0.25,400);
+//  	pkFps->GetCam()->SetPos(Vector3(20,50,30));
   
 	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 
@@ -116,60 +115,53 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
+	cam1=new Camera(Vector3(50,50,200),Vector3(0,0,0),90,1.333,0.25,400);
+	cam1->SetViewPort(0,.4,.6,.6);
 	
-
-//	Camera *testcam=new Camera(Vector3(50,50,50),Vector3(0,0,0),1.33,90,0.4,300);
-//	pkFps->SetGameCam(testcam);
+	cam2=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
+	cam2->SetViewPort(0.6,0,.4,.4);
+	
+//	pkFps->SetCamera(cam1);
+//	pkFps->SetCamera(cam2);	
 
 }
 
 
 void Test::OnIdle(void) {
-//	cout<<pkFps->m_kCamPos->y<<endl;
-
-
-//	pkLight->Update();
-	pkRender->DrawSkyBox(pkFps->GetGameCam()->GetPos());
-	pkRender->DrawHMlod(test,pkFps->GetGameCam()->GetPos(),pkFps->m_iFps);		
-
-
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->y=50;
 
-/*	glPushMatrix();
-		glTranslatef(m_kSolpos->x,m_kSolpos->y,m_kSolpos->z);
-		glColor3f(1,1,0);
-//		glDepthMask(GL_FALSE);
-		glutSolidSphere(20,10,10);
-//		glDepthMask(GL_TRUE);		
-	glPopMatrix();
-		*/
-		
+
+
+	pkFps->SetCamera(cam2);
+	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+	pkFps->SetCamera(cam1);
+	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+
 	
 	if(m_iGrass>0){
 		for(int ix=0;ix<1000;ix+=30)
 			for(int iy=0;iy<1000;iy+=30){
-				pkRender->DrawGrassPatch(pkFps->GetGameCam()->GetPos(),Vector3(ix,0,iy),Vector3(1.5,.3,1.5),30,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
-				pkRender->DrawGrassPatch(pkFps->GetGameCam()->GetPos(),Vector3(ix,0,iy),Vector3(1,.5,1),30,m_iGrassVolyme/4,test,pkTexMan->Load("file:../data/textures/grass3.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+				pkRender->DrawGrassPatch(pkFps->GetCam()->GetPos(),Vector3(ix,0,iy),Vector3(1.5,.3,1.5),30,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+				pkRender->DrawGrassPatch(pkFps->GetCam()->GetPos(),Vector3(ix,0,iy),Vector3(1,.5,1),30,m_iGrassVolyme/4,test,pkTexMan->Load("file:../data/textures/grass3.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 			}
 	}
 
-	pkRender->DrawBillboard(pkFps->GetGameCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
+	pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
 
 	
-	pkRender->DrawWater(pkFps->GetGameCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
-	//FH_UpdateraObject();
-	//FH_RitaObject();
-
-//	cout<<pkFps->m_iFps<<endl;
+	
 	input();
-	float z=pkFps->GetDefaultCam()->GetPos().z;
-	float x=pkFps->GetDefaultCam()->GetPos().x;	
+	float z=pkFps->GetCam()->GetPos().z;
+	float x=pkFps->GetCam()->GetPos().x;	
 	
-	if(pkFps->GetDefaultCam()->GetPos().y<test->Height(x,z)+1)
-		pkFps->GetDefaultCam()->GetPos().y=test->Height(x,z)+1;	
+	if(pkFps->GetCam()->GetPos().y<test->Height(x,z)+1)
+		pkFps->GetCam()->GetPos().y=test->Height(x,z)+1;	
 
 }
 
@@ -188,27 +180,27 @@ void Test::OnHud(void) {
 
 void Test::input() {
 	if(pkInput->Pressed(RIGHT)){
-		pkFps->GetDefaultCam()->GetPos().x+=cos((pkFps->GetDefaultCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		pkFps->GetDefaultCam()->GetPos().z+=sin((pkFps->GetDefaultCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
 	}
 	if(pkInput->Pressed(LEFT)){
-		pkFps->GetDefaultCam()->GetPos().x+=cos((pkFps->GetDefaultCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		pkFps->GetDefaultCam()->GetPos().z+=sin((pkFps->GetDefaultCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
 	}
 	
 	if(pkInput->Pressed(UP))	{
-			pkFps->GetDefaultCam()->GetPos().x+=cos((pkFps->GetDefaultCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-			pkFps->GetDefaultCam()->GetPos().z+=sin((pkFps->GetDefaultCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+			pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+			pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
 	}					
 	if(pkInput->Pressed(DOWN))	{
-		pkFps->GetDefaultCam()->GetPos().x+=cos((pkFps->GetDefaultCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		pkFps->GetDefaultCam()->GetPos().z+=sin((pkFps->GetDefaultCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
 
 	if(pkInput->Pressed(HOME))
-		pkFps->GetDefaultCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(END))
-		pkFps->GetDefaultCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
+		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
 
 	//Get mouse x,y		
@@ -216,8 +208,8 @@ void Test::input() {
 	pkInput->RelMouseXY(x,z);
 
 	//rotate the camera		
-	pkFps->GetDefaultCam()->GetRot().x+=z/5.0;
-	pkFps->GetDefaultCam()->GetRot().y+=x/5.0;
+	pkFps->GetCam()->GetRot().x+=z/5.0;
+	pkFps->GetCam()->GetRot().y+=x/5.0;
 }
 
 char *MdlNames[] =

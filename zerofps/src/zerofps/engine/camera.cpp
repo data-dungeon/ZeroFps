@@ -7,10 +7,11 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetPos(kPos);
 	SetRot(kRot);
 		
-	m_iX=0;
-	m_iY=0;
-	m_iWidth=1024;
-	m_iHeight=768;
+	m_fX=0;
+	m_fY=0;
+	m_fWidth=1;
+	m_fHeight=1;
+	
 }
 
 void Camera::UpdateAll() 
@@ -25,10 +26,13 @@ void Camera::Update() {
 	if(m_bViewChange){
 		m_bViewChange=false;
 	
+//		cout<<"balle"<<endl;
+	
 		//load projection matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf((float*)&m_kCamMatrix[0]);
 	}
+	
 	
 	//reset modelview matrix and setup the newone
 	glMatrixMode(GL_MODELVIEW);
@@ -54,5 +58,14 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	glMatrixMode(GL_MODELVIEW);	
 }
 
+void Camera::SetViewPort(float fX,float fY,float fW,float fH) 
+{
+	m_fX=fX;
+	m_fY=fY;
+	
+	m_fWidth=fW;
+	m_fHeight=fH;
+
+}
 
 

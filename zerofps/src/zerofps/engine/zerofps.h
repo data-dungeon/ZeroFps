@@ -38,6 +38,7 @@ class ZeroFps {
 		int m_iWidth,m_iHeight,m_iDepth;
 		
 
+		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		Camera *m_pkGameCamera;		
@@ -91,12 +92,14 @@ class ZeroFps {
 //		inline Vector3& CamRot(void){return *m_kCamRot;};		
 //		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
 	
-		inline void SetCam(Camera* pkCamera) {m_pkCamera=pkCamera;};
-		inline void SetGameCam(Camera* pkCamera) {m_pkGameCamera=pkCamera;};
+		void SetCamera(Camera* pkCamera);
+	
+//		inline void SetCam(Camera* pkCamera) {m_pkCamera=pkCamera;};
+//		inline void SetGameCam(Camera* pkCamera) {m_pkGameCamera=pkCamera;};
 		
 		inline Camera *GetCam() {return m_pkCamera;};		
 		inline Camera *GetGameCam() {return m_pkGameCamera;};				
-		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};
+		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
 //		inline void SetConsoleCam(Camera* pkCamera) {m_pkConsoleCamera=pkCamera;};
 };
 
