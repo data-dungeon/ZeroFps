@@ -386,6 +386,37 @@ void PSystem::DisableParticle ( int iParticleIndex )
 			m_uiFirstParticle++;
 		else
 			break;
+
+	// if particle > first and particle < last
+	if ( iParticleIndex < m_uiLastParticle && iParticleIndex > m_uiFirstParticle )
+	{
+		//make copy of particle
+		Particle kTemp;
+		memcpy (&kTemp, &m_kParticles[i], sizeof(m_kParticles[i]));
+		
+		// move last active particle to disabled particles place
+		memcpy(&m_kParticles[iParticleIndex], &m_kParticles[m_uiLastParticle], sizeof(m_kParticles[i]));
+
+		// copy disabled particle to back
+		memcpy(&m_kParticles[m_uiLastParticle], &kTemp, sizeof(m_kParticles[i]));
+		m_uiLastParticle--;
+	}
+
+	// if particle < first or particle > last
+	if ( iParticleIndex < m_uiLastParticle && iParticleIndex > m_uiFirstParticle )
+	{
+		//make copy of particle
+		Particle kTemp;
+		memcpy (&kTemp, &m_kParticles[i], sizeof(m_kParticles[i]));
+		
+		// move last active particle to disabled particles place
+		memcpy(&m_kParticles[iParticleIndex], &m_kParticles[m_uiLastParticle], sizeof(m_kParticles[i]));
+
+		// copy disabled particle to back
+		memcpy(&m_kParticles[m_uiLastParticle], &kTemp, sizeof(m_kParticles[i]));
+		m_uiLastParticle--;
+	}
+
 }
 
 // ------------------------------------------------------------------------------------------
