@@ -63,7 +63,14 @@ void ZeroFps::MainLoop(void) {
 		switch(m_iState){
 			case state_normal:{
 
+				//run application main loop
 				m_pkApp->OnIdle();				
+				
+				
+				//run application Head On Display 
+				SetCamera(m_pkConsoleCamera);
+				m_pkApp->OnHud();
+				
 				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
@@ -72,10 +79,7 @@ void ZeroFps::MainLoop(void) {
 					m_iState=state_console;
 					m_pkInput->Reset();
 					m_pkTempCamera=m_pkCamera;					
-					SetCamera(m_pkConsoleCamera);
-//					m_pkCamera=m_pkConsoleCamera;					
-//					m_pkCamera->UpdateAll(m_iWidth,m_iHeight);
-									
+					SetCamera(m_pkConsoleCamera);					
 					break;
 				}
 				if(m_pkInput->Pressed(F12))
@@ -83,10 +87,14 @@ void ZeroFps::MainLoop(void) {
 				if(m_pkInput->Pressed(F11))
 					ToggleFullScreen();				
 
+				//handle input
 				m_pkInput->Update();
+				//update all objects
 				m_pkObjectMan->Update();
+				//update all collisions
 				m_pkCollisionMan->Update();				
 
+				//swap buffers and calculate fps
 				Swap();
 
 				break;			
@@ -162,14 +170,12 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 
-//	glClear(GL_DEPTH_BUFFER_BIT);	
 	glLoadIdentity();
   
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
 	m_iFps=int(1000.0/m_fFrameTime);	
-
 
 }
 
@@ -189,10 +195,13 @@ void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 	SetDisplay();
 }
 
+
 void ZeroFps::SetDisplay()
 {
+	//turn of opengl 
 	SDL_QuitSubSystem(SDL_OPENGL);
 	
+	//reinit opengl with the new configuration
 	SDL_InitSubSystem(SDL_OPENGL);
 	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
 	glViewport(0, 0,m_iWidth,m_iHeight);	
@@ -201,26 +210,24 @@ void ZeroFps::SetDisplay()
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
+	
+	//if we have changed active camera, update all
 	if(m_pkCamera!=pkCamera){
-//		cout<<"Changing Camera"<<endl;
 		m_pkCamera=pkCamera;		
 		m_pkCamera->UpdateAll(m_iWidth,m_iHeight);					
-
 		
+	//else do a normal update
 	} else {
 		m_pkCamera->Update(m_iWidth,m_iHeight);
 	}
-//	m_pkCamera=pkCamera;		
-
-//	m_pkCamera=pkCamera;		
-
-//	m_pkCamera->Update(m_iWidth,m_iHeight);					
+	
+	//get the frustrum for frustum culling
 	m_pkRender->GetFrustum();				
+	//Lighting needs camera position for light calculation
 	m_pkLight->SetCamera(m_pkCamera->GetPos());				
+	//update all lights
 	m_pkLight->Update();	
 		
-
-
 }
 
 

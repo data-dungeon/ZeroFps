@@ -112,23 +112,20 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
+	//main camera
 	cam1=new Camera(Vector3(50,50,200),Vector3(0,0,0),90,1.333,0.25,400);
 //	cam1->SetViewPort(0,.4,.6,.6);
 	
-	cam2=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
-	cam2->SetViewPort(0.6,0.1,.3,.3);
-	
-	
 	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
-	kul->AddProperty(new CameraProperty(cam2));
+//	kul->AddProperty(new CameraProperty(cam2));
 	kul->AddProperty(new MadProperty(&akCoreModells[0]));	
 	kul->GetPos()=Vector3(5,5,5);		
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
 	
 	
+	//add a collisionproperty for our heightmap
 	CollisionProperty *hmcolprop=new CollisionProperty(test);
-//	CollisionHeightMap *testcmap=new CollisionHeightMap(test);
 	pkCollisionMan->Add(hmcolprop);
 	
 
@@ -140,15 +137,9 @@ void Test::OnIdle(void) {
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->y=50;
 
-
-	
 	pkFps->SetCamera(cam1);		
 	pkFps->GetCam()->ClearViewPort();	
-//	OnHud();
-//	pkFps->SetCamera(cam1);		
 
-
-//	pkFps->SetCamera(cam1);
 	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	
@@ -162,8 +153,6 @@ void Test::OnIdle(void) {
 	}
 
 	pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
-
-	
 	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
 	
@@ -174,19 +163,6 @@ void Test::OnIdle(void) {
 	if(pkFps->GetCam()->GetPos().y<test->Height(x,z)+1)
 		pkFps->GetCam()->GetPos().y=test->Height(x,z)+1;	
 
-
-
-
-
-
-	pkFps->SetCamera(cam2);
-	cam2->ClearViewPort();	
-	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
-
-	pkFps->SetCamera(cam1);
-
 }
 
 void Test::OnHud(void) {	
@@ -196,8 +172,8 @@ void Test::OnHud(void) {
 		IntToChar(fps,pkFps->m_iFps);
 		fpsupdate=0;
 	}
-	pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),"FPS:");	
-	pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),fps);
+	pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
+	pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
 }
 
