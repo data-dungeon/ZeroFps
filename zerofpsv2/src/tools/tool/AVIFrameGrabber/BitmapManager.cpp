@@ -5,14 +5,16 @@ BitmapManager::BitmapManager()
 	const int max_width = 1024;
 	const int max_height = 1024;
 
-	m_pkSortData = new DATA[max_width*max_height];
+	m_pkSortData8bit = new SORT_DATA_RGB8[max_width*max_height];
 	m_pImage8bit = new BYTE[max_width*max_height];
+	m_pkJPGEncoder = new JpgEncoder();
 }
 
 BitmapManager::~BitmapManager(void)
 {
-	delete[] m_pkSortData;
+	delete[] m_pkSortData8bit;
 	delete[] m_pImage8bit;
+	delete m_pkJPGEncoder;
 }
 
 int BitmapManager::SaveFile(FILE* pkFile, char* pData, int w, int h, ImageFormat eFormat)
@@ -34,11 +36,24 @@ int BitmapManager::SaveFile(FILE* pkFile, char* pData, int w, int h, ImageFormat
 		fwrite(m_akPalette, sizeof(unsigned int), m_iPaletteSize, pkFile);
 		fwrite(m_pImage8bit, sizeof(unsigned char), m_iWidth*m_iHeight, pkFile);
 	}
+	else
+	if(eFormat == JPEG)
+	{		
+		m_pkJPGEncoder->SaveData(pkFile, (JpgEncoder::colorRGB*)pData, w, h);
+		//fwrite(m_pImage8bit, sizeof(unsigned char), after-before, pkFile);
+		fseek(pkFile, 0, SEEK_END);
+	}
 	
 	return true;
 }
 
-void BitmapManager::SaveFile24(const char* szFileName, const char* pData, int w, int h) const
+typedef struct s_RGB {
+			 BYTE B;
+		     BYTE G;
+		     BYTE R;
+} RGB;
+
+void BitmapManager::SaveFile24(const char* szFileName, void* pData, int w, int h) const
 {
 	FILE* pkFile = fopen(szFileName, "wb");
 
@@ -61,17 +76,54 @@ void BitmapManager::SaveFile24(const char* szFileName, const char* pData, int w,
 	ih.biClrUsed = 0;
 	ih.biCompression = 0;
 	ih.biHeight = h;
+	ih.biWidth = w;
 	ih.biPlanes = 1;
 	ih.biSize = 40;
 	ih.biSizeImage = 0;
-	ih.biWidth = w;
 	ih.biXPelsPerMeter = 0;
 	ih.biYPelsPerMeter = 0;
 	
 	fwrite(&fh, sizeof(BITMAPFILEHEADER), 1, pkFile);
 	fwrite(&ih, sizeof(BITMAPINFOHEADER), 1, pkFile);
 
-	fwrite(pData, w*h*3, 1, pkFile);
+	//fwrite(pData, w*h*3, 1, pkFile);
+
+	//int x,y,i;
+	//RGB *pixel;
+	//BYTE zero_byte=0;
+	//DWORD im_loc_bytes=(DWORD)pData+((DWORD)h-1)*w*4;
+
+	//for (y=0;y<h;y++)
+	//{
+	//	for (x=0;x<w;x++)
+	//	{
+	//		pixel=(RGB *)im_loc_bytes;
+	//		fwrite(pixel, 3, 1, pkFile);
+	//		im_loc_bytes+=4;
+	//	}
+	//	for (i=0;i<rest;i++)
+	//		fwrite(&zero_byte,1,1,pkFile);
+
+	//	im_loc_bytes-=2L*w*4;
+	//}
+
+	int x,y,i;
+	RGB *pixel;
+	BYTE zero_byte=0;
+	DWORD im_loc_bytes=(DWORD)pData;
+
+	for (y=0;y<h;y++)
+	{
+		for (x=0;x<w;x++)
+		{
+			pixel=(RGB *)im_loc_bytes;
+			fwrite(pixel, 3, 1, pkFile);
+			im_loc_bytes+=4;
+		}
+
+		for (i=0;i<rest;i++)
+			fwrite(&zero_byte,1,1,pkFile);
+	}   
 
 	fclose(pkFile);
 }
@@ -118,14 +170,14 @@ void BitmapManager::CreatePalette(const char* pData)
 	for(freq_itor=m_kFreqTable.begin(); freq_itor!=m_kFreqTable.end(); ++freq_itor )
 		color_table.insert( std::make_pair(freq_itor->second, freq_itor->first));
 
-	// copy to m_pkSortData...
+	// copy to m_pkSortData8bit...
 	multimap<unsigned long, unsigned long>::iterator color_itor=color_table.end();
-	const unsigned int size = color_table.size();
+	const unsigned int size = (unsigned int) color_table.size();
 	for(i=0; i<size; i++ )
 	{
 		color_itor--;
-		m_pkSortData[i].freq = color_itor->first;
-		m_pkSortData[i].nyans = color_itor->second;	
+		m_pkSortData8bit[i].freq = color_itor->first;
+		m_pkSortData8bit[i].nyans = color_itor->second;	
 	}
 
 	m_kFreqTable.clear();
@@ -136,7 +188,7 @@ void BitmapManager::CreatePalette(const char* pData)
 		m_iPaletteSize = 256;
 
 	for(int i=0; i<m_iPaletteSize; i++)
-		m_akPalette[i] = m_pkSortData[i].nyans;
+		m_akPalette[i] = m_pkSortData8bit[i].nyans;
 }
 
 void BitmapManager::Create8bitImage(char* pData)
@@ -184,3 +236,4 @@ void BitmapManager::Create8bitImage(char* pData)
 		m_pImage8bit[oka++] = (BYTE) min_dist_index;
 	}
 }
+

@@ -509,20 +509,9 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			//static int apa = 0;
-
-			//if(apa == 0)
-			//	m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("La Forge.zif", false);
-			//else
-			//	m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("alien2.zif", false);
-
+			//m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
+			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",true,true);
 			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
-			//apa++;
-
-			//GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
-			m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",true,true);
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;
 

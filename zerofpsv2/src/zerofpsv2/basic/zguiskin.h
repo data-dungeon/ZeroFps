@@ -8,6 +8,8 @@
 #include "basic_x.h"
 #include "rect.h"
 
+class JpgDecoder;
+
 class BASIC_API ZIFAnimation
 {
 public:
@@ -25,6 +27,13 @@ public:
 
 private:
 
+	enum ZIFFormat
+	{
+		RGB24=0,
+		RGB8=1,
+		JPEG=2,
+	};
+
 	float m_fLastTick;
 	
 	int m_iNumFrames, m_iCurrentFrame;
@@ -40,9 +49,14 @@ private:
 
 	bool Read();
 
-	bool m_b8bitsFormat;
+	//bool m_b8bitsFormat;
+	ZIFFormat m_eFormat;
 	unsigned int m_iFileOffset; // behövs eftersom paletten kan vara olika stor på 8 bitars animationer
 	int m_iImageFrameWidth, m_iImageFrameHeight;
+
+	JpgDecoder* m_pkJPGDec;
+
+	int* m_pFramesSizesJPG;
 	
 };
 

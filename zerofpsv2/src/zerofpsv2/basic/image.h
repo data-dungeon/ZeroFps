@@ -42,6 +42,8 @@ public:
 	bool				m_bHasAlpha;							///< True if image was loaded with alpha.
 
 	// Load Functions
+	bool load_jpg(const char* filename);					///< Load a .jpg/.jpeg image
+	bool load_jpg(FILE *fp);								///< Load a .jpg/.jpeg image
 	bool load_tga(const char* filename);					///< Load a .tga image.
 	bool load_tga(FILE *fp);									///< Load a .tga image.
 	bool load_pcx(const char* filename);					///< Load a .pcx image.

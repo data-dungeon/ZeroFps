@@ -123,6 +123,12 @@
 				RelativePath=".\BitmapManager.cpp">
 			</File>
 			<File
+				RelativePath=".\jpegdec.cpp">
+			</File>
+			<File
+				RelativePath=".\jpegenc.cpp">
+			</File>
+			<File
 				RelativePath=".\main.cpp">
 			</File>
 		</Filter>
@@ -135,6 +141,12 @@
 			</File>
 			<File
 				RelativePath=".\BitmapManager.h">
+			</File>
+			<File
+				RelativePath=".\jpegdec.h">
+			</File>
+			<File
+				RelativePath=".\jpegenc.h">
 			</File>
 			<File
 				RelativePath=".\resource.h">

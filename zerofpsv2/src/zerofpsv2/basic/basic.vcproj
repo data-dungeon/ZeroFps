@@ -159,6 +159,9 @@
 				RelativePath=".\image.cpp">
 			</File>
 			<File
+				RelativePath=".\jpegdec.cpp">
+			</File>
+			<File
 				RelativePath=".\line2d.cpp">
 			</File>
 			<File
@@ -242,6 +245,9 @@
 			</File>
 			<File
 				RelativePath=".\image.h">
+			</File>
+			<File
+				RelativePath=".\jpegdec.h">
 			</File>
 			<File
 				RelativePath=".\keys.h">

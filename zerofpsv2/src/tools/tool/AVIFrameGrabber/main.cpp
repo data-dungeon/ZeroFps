@@ -5,6 +5,7 @@
 #include "bitmapmanager.h"
 #include "resource.h"
 #include <stdio.h>
+#include "jpegdec.h"
 
 #define FILE_FILTER_LOAD "AVI (*.avi)\0*.avi\0\0"
 #define FILE_FILTER_SAVE "ZIF (*.zif)\0*.zif\0\0"
@@ -15,9 +16,10 @@ BOOL CALLBACK SettingsDlg (HWND, UINT, WPARAM, LPARAM) ;
 
 AVIFrameGrabber g_kAVIGrabber;
 BitmapManager g_kBitmapManager;
+JpgDecoder g_kJpegDec;
 
 HWND hwnd;
-HDC hdcMem;// = CreateCompatibleDC(0);
+HDC hdcMem;
 
 char szFileName[128] = "TestAnimation.zif";
 
@@ -26,8 +28,9 @@ int preview_size = 256;
 int num_bitmaps = 0;
 int startframe = 0;
 int animationstart = 0;
-int animationend = 100;
-int frames = 10;
+int animationend = 1;
+int frames = 1;
+int* g_pFrameSizesJPG = NULL;
 
 bool print_frame = true;
 float fStretchMod = 0.5f;
@@ -390,7 +393,14 @@ bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 	if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT1) == BST_CHECKED)
 		by8bitsFormat = 1;
 	if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT2) == BST_CHECKED)
+	{
 		by8bitsFormat = 2;
+
+		if(g_pFrameSizesJPG)
+			delete[] g_pFrameSizesJPG;
+
+		g_pFrameSizesJPG = new int[num_frames];
+	}
 
 	int w = g_kAVIGrabber.GetWidth();
 	int h = g_kAVIGrabber.GetHeight();
@@ -401,16 +411,56 @@ bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 	fwrite(&num_frames, sizeof(int), 1, pkFile);
 	fwrite(&by8bitsFormat, sizeof(unsigned char), 1, pkFile);
 
+	// Hoppa in [NUM_FRAMES+headersize(17)] i filen, eftersom där skall skrivas storleken på varje frame
+	if(by8bitsFormat == 2)
+		fseek(pkFile, 17+ sizeof(int)*num_frames, SEEK_SET);
+
 	int starTime = timeGetTime();
+
+	long file_size_before, frame_counter=0;
 
 	for(int i=animationstart; i<animationend; i++)
 	{
 		char* pixels = g_kAVIGrabber.GetFramePixels(i);
+		
+		if(by8bitsFormat == 2)
+			file_size_before = ftell(pkFile);
+
 		g_kBitmapManager.SaveFile(pkFile, pixels, w, h, ImageFormat(by8bitsFormat) );
+			
+		if(by8bitsFormat == 2)
+			g_pFrameSizesJPG[frame_counter++] = ftell(pkFile)-file_size_before;
+		
 		SendMessage(hwnd, PBM_STEPIT, 0, 0);
 	}
 
+	// Hoppa tillbaks till strax efter headern på filen och skriv ner storleken på varje frame
+	if(by8bitsFormat == 2)
+	{
+		fseek(pkFile, 17, SEEK_SET);
+		fwrite(g_pFrameSizesJPG, num_frames, sizeof(int), pkFile);
+	}
+
+
+	// Testkod för att se så att jpeg decon funkar.
+	//fclose(pkFile);
+	//pkFile = fopen(szFileName,"rb");
+	//fseek(pkFile, 17, SEEK_SET); 
+	//unsigned int x, y;
+	//if(g_kJpegDec.LoadHeader(pkFile, &x, &y))
+	//{
+	//	BYTE *our_image_buffer;
+	//	g_kJpegDec.Decode();
+	//	if (!g_kJpegDec.GetBuffer(x,y,&our_image_buffer)) 
+	//	{
+	//		__debugbreak();
+	//	}
+	//	g_kBitmapManager.SaveFile24("BITMAP_FROM_JPG_DATA.bmp", our_image_buffer, w, h);
+	//}
+
 	fclose(pkFile);
+	 
+
 	return true;
 
 }
@@ -440,6 +490,8 @@ void PrintSize()
 		else
 		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT0) == BST_CHECKED)
 			size_in_meg = (double)(frames*w*h*3+16) / 1048576.0;
+		else
+			size_in_meg = 0.0f;
 
 		sprintf(text, "%.02f", size_in_meg);
 		SetDlgItemText(ctrlWnd, IDC_MEGABYTE, text);
@@ -476,3 +528,9 @@ void PrintSize()
 	end = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONEND, NULL, FALSE);
 	SetDlgItemInt(ctrlWnd, IDC_NUMFRAMES, end-start, 0);
 }
+
+
+
+
+
+

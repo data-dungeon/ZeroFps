@@ -2,6 +2,7 @@
 #include <memory.h> 
 #include <string.h> 
 #include "image.h"
+#include "jpegdec.h"
 #include <iostream>
 
 using namespace std;
@@ -380,7 +381,7 @@ bool Image::load_tga(FILE *fp)
 {
 	char *data = NULL;
 	color_rgba* map = NULL;
-	int m_pkPixelsize;
+	int iPixelSize;
 
 	if(!fp)	return false;
 
@@ -398,15 +399,15 @@ bool Image::load_tga(FILE *fp)
 	m_iWidth			= head.width;
 	m_iHeight		= head.height;
 
-	if(head.pixel_depth == 8)	m_pkPixelsize = 1;
-	else if(head.pixel_depth == 16)	m_pkPixelsize = 2;
-	else if(head.pixel_depth == 24)	m_pkPixelsize = 3;
+	if(head.pixel_depth == 8)	iPixelSize = 1;
+	else if(head.pixel_depth == 16)	iPixelSize = 2;
+	else if(head.pixel_depth == 24)	iPixelSize = 3;
 	else if(head.pixel_depth == 32)	{
-		m_pkPixelsize = 4;
+		iPixelSize = 4;
 		m_bHasAlpha = true;
 		}
 	else
-		return false; // 040701: m_pkPixelsize = what?
+		return false; // 040701: iPixelSize = what?
 
 	if(head.id_length != 0) {
 		fseek(fp, head.id_length, SEEK_CUR);
@@ -423,12 +424,12 @@ bool Image::load_tga(FILE *fp)
 	// Alloc pixel memory.
 	m_pkPixels = new color_rgba [m_iWidth * m_iHeight];
 	
-	data = new char [m_iWidth*m_iHeight*m_pkPixelsize];
-	fread(data,sizeof(char),m_iWidth * m_iHeight * m_pkPixelsize,fp);
+	data = new char [m_iWidth*m_iHeight*iPixelSize];
+	fread(data,sizeof(char),m_iWidth * m_iHeight * iPixelSize,fp);
 
 	if(head.image_type == TGA_IMAGETYPE_URGB || head.image_type == TGA_IMAGETYPE_UMAP) {
 		for(int i=0; i<m_iWidth * m_iHeight; i++) {
-			if(head.image_type == TGA_IMAGETYPE_URGB)	ReadPixel(&m_pkPixels[i], &data[i*m_pkPixelsize], head.pixel_depth);
+			if(head.image_type == TGA_IMAGETYPE_URGB)	ReadPixel(&m_pkPixels[i], &data[i*iPixelSize], head.pixel_depth);
 			if(head.image_type == TGA_IMAGETYPE_UMAP)	{
 				m_pkPixels[i] = map [ data[i] ];
 
@@ -451,7 +452,7 @@ bool Image::load_tga(FILE *fp)
 				iNumOfRLE = ucPacketValue - BIT_7;
 				iNumOfRLE += 1;
 				ReadPixel(&kColor, &data[iDataOffset], head.pixel_depth);
-				iDataOffset += m_pkPixelsize;
+				iDataOffset += iPixelSize;
 
 				for(i=0; i<iNumOfRLE; i++)
 					m_pkPixels[iPixelOffset++] = kColor;
@@ -461,7 +462,7 @@ bool Image::load_tga(FILE *fp)
 				for(i=0; i<iNumOfRLE; i++) {
 					ReadPixel(&kColor, &data[iDataOffset], head.pixel_depth);
 					m_pkPixels[iPixelOffset++] = kColor;
-					iDataOffset += m_pkPixelsize;
+					iDataOffset += iPixelSize;
 					}
 				}
 			}
@@ -546,6 +547,46 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 	return true;
 }
 
+bool Image::load_jpg(const char* filename)
+{
+	FILE *fp = fopen(filename,"rb");
+	if(!fp)	return false;
+	load_jpg(fp);
+	fclose(fp);
+	return true;
+}
+
+bool Image::load_jpg(FILE *fp)
+{
+	JpgDecoder kJPGdec;
+	color_rgb *pixel;
+	unsigned char* temp; // the decoder delete this...
+	unsigned int w, h, x, y, oka=0;
+
+	kJPGdec.LoadHeader(fp, 0, &w, &h);
+	kJPGdec.Decode();
+
+	m_pkPixels = new color_rgba[w*h];
+	kJPGdec.GetBuffer(w,h,&temp);	
+
+	DWORD im_loc_bytes=(DWORD)temp;
+
+	for (y=0;y<h;y++)
+		for (x=0;x<w;x++)
+		{
+			pixel = (color_rgb*) im_loc_bytes;
+			m_pkPixels[oka].r = pixel->b;
+			m_pkPixels[oka].g = pixel->g;
+			m_pkPixels[oka++].b = pixel->r;
+			im_loc_bytes+=4;
+		}
+
+	m_bHasAlpha = false;
+	m_iWidth  = w;
+	m_iHeight = h;
+	return true;
+}
+
 bool Image::load(const char* filename)
 {	
 	// Find file exten.
@@ -563,7 +604,12 @@ bool Image::load(const char* filename)
 		//this->fill(0,0,this->width,this->height,255,0,0);
 
 		return load_bmp(filename);
-	}	
+	}
+
+	if(strcmp(ext, ".jpg") || strcmp(ext, ".jpeg"))
+	{
+		return load_jpg(filename);
+	}
 
 	return false;	// Not supported.
 }
@@ -576,6 +622,7 @@ bool Image::load(FILE* fp, const char* filename)
 	
 	if(strcmp(ext,".tga") == 0)	return load_tga(fp);
 	if(strcmp(ext,".bmp") == 0) return load_bmp(fp);
+	if(strcmp(ext,".jpg") == 0 || strcmp(ext,".jpeg") == 0) return load_jpg(fp);
 
 	return false;	// Not supported.
 }

@@ -5,13 +5,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <map>
+#include "jpegenc.h"
 using namespace std;
-
-struct DATA
-{
-	unsigned int freq;
-	unsigned int nyans;
-};
 
 enum ImageFormat
 {
@@ -26,14 +21,21 @@ public:
 	BitmapManager();
 	~BitmapManager(void);
 	int SaveFile(FILE* pkFile, char* data, int w, int h, ImageFormat eFormat);
-	void SaveFile24(const char* szFileName, const char* pData, int w, int h) const;
+	void SaveFile24(const char* szFileName, void* pData, int w, int h) const;
 
 private:
 	
 	void CreatePalette(const char* pData);
 	void Create8bitImage(char* pData);
 
-	DATA* m_pkSortData;
+	struct SORT_DATA_RGB8
+	{
+		unsigned int freq;
+		unsigned int nyans;
+	};
+
+	JpgEncoder* m_pkJPGEncoder;
+	SORT_DATA_RGB8* m_pkSortData8bit;
 	BYTE* m_pImage8bit;
 	unsigned int m_akPalette[256];
 	map<unsigned long, unsigned long> m_kFreqTable;
