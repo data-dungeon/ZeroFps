@@ -1037,36 +1037,35 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//do we have a target container , if so try to put item in it
 				if(pkTargetContainer)
 				{
-					//we have a target contianer ,check if its ours
-					if(pkTargetContainer->GetOwnerID() == pkCharacter->GetEntityID())
-					{					
-						//no target position given assuming free position
-						if(iPosX == -1)
-						{
-							//try adding item on a free position in character inventory
-							if(pkTargetContainer->AddItem(iItemID))											
-								SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
-							else
-								SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-
-							
-							break;
-						}
+					//check if target container is ours
+					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
+					{
+						SayToClients("target container is not yours",PkNetMessage->m_iClientID);
+						break;					
+					}				
+				
+		
+					//no target position given assuming free position
+					if(iPosX == -1)
+					{
+						//try adding item on a free position in character inventory
+						if(pkTargetContainer->AddItem(iItemID))											
+							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
 						else
-						{
-							//try adding item on target position in character inventory
-							if(pkTargetContainer->AddItem(iItemID,iPosX,iPosY))											
-								SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
-							else
-								SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-																		
-							break;																	
-						}
+							SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+
+						
+						break;
 					}
 					else
 					{
-						cout<<"WARNING: MLNM_CS_MOVE_ITEM we dont own the target container"<<endl;
-						break;
+						//try adding item on target position in character inventory
+						if(pkTargetContainer->AddItem(iItemID,iPosX,iPosY))											
+							SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
+						else
+							SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+																	
+						break;																	
 					}
 				}
 				else
@@ -1075,8 +1074,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					break;
 				}		
 					
-				//try to pickup item
-				
 			}
 			//item is in a container
 			else
