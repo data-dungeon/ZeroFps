@@ -8,6 +8,8 @@ GravityProperty::GravityProperty(ZeroFps *pkFps) {
 }
 
 void GravityProperty::Update() {
+	cout<<"FARTEN: "<<m_pkObject->GetVel().y<<endl;
+
 	m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
 	m_pkObject->GetPos().y+=m_pkObject->GetVel().y * m_pkFps->GetFrameTime();
 }

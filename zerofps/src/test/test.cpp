@@ -107,7 +107,7 @@ void Test::OnInit(void) {
 		pkCollisionMan->Add(ball);
 	}*/
 
-	for(int i=0;i<200;i++) {
+	for(int i=0;i<100;i++) {
 
 		Object *sussi=new BunnyObject(test,pkFps);
 		float x=300 + rand()%100;
@@ -122,8 +122,8 @@ void Test::OnInit(void) {
 	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);	
 	
 	m_pkPlayer=new PlayerObject(test,pkInput,pkFps);
+	m_pkPlayer->GetPos()=Vector3(340,100,780);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
-	m_pkPlayer->GetPos()=Vector3(340,50,780);		
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
 	

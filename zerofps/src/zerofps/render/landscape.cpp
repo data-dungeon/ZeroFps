@@ -48,7 +48,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glTranslatef(-iSize/2,0,-iSize/2);
 	
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_FOG);		
+//	glDisable(GL_FOG);		
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);	
 	
@@ -69,9 +69,35 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	float tx=SDL_GetTicks()/80000.0;	
 	
+	for(int x=0;x<iSize;x+=iStep){	
+		glBegin(GL_TRIANGLE_STRIP);
+		glNormal3f(0,1,0);
+		glColor4f(.5,.5,.7,0.4);	
+	
+
+		
+		for(int z=0;z<iSize;z+=iStep) {
+			float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;		
+		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,z/(iStep)+tx);		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,.5,z/(iStep)-tx);				
+			glVertex3f(x,y,z);
+	
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,1,z/(iStep)+tx);		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,1.5,z/(iStep)-tx);						
+			glVertex3f(x+iStep,y,z);
+		}
+		glEnd();
+	}
+	
+		
+	
+	/*
+	
 	glBegin(GL_TRIANGLE_STRIP);		
 	glNormal3f(0,1,0);
 	glColor4f(.5,.5,.7,0.4);
+	
 	
 	for(int z=0;z<iSize;z+=iStep){	
 		float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;
@@ -85,6 +111,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 		glVertex3f(iSize,y,z);
 	}
 	glEnd();	
+	*/
+	
 
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glDisable(GL_TEXTURE_2D);	

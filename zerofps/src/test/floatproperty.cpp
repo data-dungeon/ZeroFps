@@ -5,6 +5,8 @@ FloatProperty::FloatProperty(ZeroFps *pkFps) {
 	
 	m_fGravity=-0.00002;
 	strcpy(m_acName,"GravityProperty");	
+	
+
 }
 
 void FloatProperty::Update() {

@@ -12,8 +12,10 @@ ZeroFps::ZeroFps(void) {
 	m_pkObjectMan=new ObjectManager();
 	m_pkCollisionMan=new CollisionManager();	
 
-	m_fFrameTime=0;
 	m_iFullScreen=0;
+	m_fFrameTime=0;
+	m_fLastFrameTime=SDL_GetTicks();
+
 
 	akCoreModells.reserve(25);
 
@@ -64,6 +66,11 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 //	SetCamera(m_pkDefaultCamera);	
 
 	m_pkApp->OnInit();										//call the applications oninit funktion
+	
+	m_fFrameTime=0;
+	m_fLastFrameTime=SDL_GetTicks();
+
+	
 	MainLoop();														//jump to mainloop
 }
 

@@ -34,7 +34,6 @@ bool CollisionSphere::Collide(CollisionObject *kOther,Vector3 *pkPos,bool bConti
 bool CollisionSphere::CollideSphere(CollisionSphere *kCs,Vector3 *pkPos) {
 	Vector3 kDistance=((*kCs->m_kPos)-(*m_kPos));
 	
-
 	if( kDistance.Length() < (*m_fRadius + *kCs->m_fRadius) ){
 		if(kDistance.Length()==0){
 			*pkPos=*m_kPos;

@@ -12,6 +12,8 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
 	
 	onGround=false;
 	m_pkFps=pkFps;
+	
+
 }
 
 void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)

@@ -35,6 +35,7 @@ void CollisionManager::Update()
 {
 	for(list<CollisionProperty*>::iterator itx=m_akColPropertys.begin();itx!=m_akColPropertys.end();itx++) 
 	{
+		//if the object is static dont test collisions with it
 		if((*itx)->GetObject()->GetStatic())
 			continue;
 		
@@ -42,12 +43,11 @@ void CollisionManager::Update()
 		{
 			//jump past the first one
 			if(itx==ity)
-				continue;
+				continue;			
 			
 			Vector3 kCollisionPoint(0,0,0);			
 			
 			if((*itx)->GetColObject()->Collide((*ity)->GetColObject(),&kCollisionPoint,true)){
-
 				(*itx)->GetObject()->HandleCollision((*ity)->GetObject(),kCollisionPoint,true);
 			}
 		}
