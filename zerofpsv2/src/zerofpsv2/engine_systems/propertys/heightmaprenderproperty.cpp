@@ -20,14 +20,14 @@ void HeightMapRenderProperty::SetHeightMap(HeightMap* pkHeightMap)
 {
 	m_pkHeightMap=pkHeightMap;	
 	if(m_pkHeightMap!=NULL)
-		m_pkHeightMap->SetPosition(m_pkObject->GetPos());	
+		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());	
 }
 
 
 void HeightMapRenderProperty::Update() 
 {	
 	if(m_pkHeightMap!=NULL){
-		m_pkHeightMap->SetPosition(m_pkObject->GetPos());
+		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
 //		m_pkRender->DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
 	}
 }

@@ -153,3 +153,27 @@ bool equal_f(float a, float b)
 	return( (a > (b - epsilon) ) && (a < (b + epsilon)) );
 }
 
+float Clamp(float fValue,float fBotom,float fTop)
+{
+	bool bChanged=true;
+	float fDiff = fTop - fBotom;
+	
+	while(bChanged)
+	{
+		bChanged = false;
+		
+		if(fValue < fBotom)
+		{	
+			fValue+=fDiff;
+			bChanged=true;
+		}
+		if(fValue > fTop)
+		{	
+			fValue-=fDiff;
+			bChanged=true;
+		}
+	}
+
+	return fValue;
+}
+

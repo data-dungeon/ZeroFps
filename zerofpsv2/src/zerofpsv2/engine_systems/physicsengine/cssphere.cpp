@@ -26,8 +26,8 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 	Object* O2=kOther->m_pkPP->GetObject();
 
 	//caluculate movevector for both spheres
-	Vector3 movevec1=m_pkPP->m_kNewPos - O1->GetPos();//-     m_pkPhysEngine->GetNewVel(m_pkPP);
-	Vector3 movevec2=kOther->m_pkPP->m_kNewPos - O2->GetPos();//m_pkPhysEngine->GetNewVel(kOther->m_pkPP);
+	Vector3 movevec1=m_pkPP->m_kNewPos - O1->GetWorldPosV();//-     m_pkPhysEngine->GetNewVel(m_pkPP);
+	Vector3 movevec2=kOther->m_pkPP->m_kNewPos - O2->GetWorldPosV();//m_pkPhysEngine->GetNewVel(kOther->m_pkPP);
 	
 	//relative move vector
 	Vector3 movevec = movevec1-movevec2;
@@ -45,7 +45,7 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 	N.Normalize();
 	
 	//center of a to center of b
-	Vector3 C = O2->GetPos() - O1->GetPos();
+	Vector3 C = O2->GetWorldPosV() - O1->GetWorldPosV();
 	
 	double D = N.Dot(C);
 	
@@ -104,8 +104,8 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 	Vector3 statmov1=movevec1 * bla;
 	Vector3 statmov2=movevec2 * bla;	
 
-	Vector3 newmov1=O1->GetPos() + (movevec1*bla);
-	Vector3 newmov2=O2->GetPos() + (movevec2*bla);	
+	Vector3 newmov1=O1->GetWorldPosV() + (movevec1*bla);
+	Vector3 newmov2=O2->GetWorldPosV() + (movevec2*bla);	
 	
 	Vector3 normal1 = (newmov2 - newmov1).Unit();
 	Vector3 normal2 = (newmov1 - newmov2).Unit();	
@@ -145,13 +145,13 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
-	tempdata->m_kPos2 = O2->GetPos()+ newmov2;//(movevec2*bla);
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
+	tempdata->m_kPos2 = O2->GetWorldPosV()+ newmov2;//(movevec2*bla);
+	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
 	tempdata->m_kNormal2=normal2;
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos()+newmov1; //(movevec1*bla);
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
+	tempdata->m_kPos1 = O1->GetWorldPosV()+newmov1; //(movevec1*bla);
+	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
 	tempdata->m_kNormal1=normal1;
 	
 //	tempdata->m_kNormal=Vector3(0,0,0);

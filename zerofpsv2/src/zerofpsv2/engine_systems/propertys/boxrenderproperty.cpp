@@ -38,10 +38,10 @@ void BoxRenderProperty::Update()
 {
 	
 
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),GetBoundingRadius()))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetBoundingRadius()))
 		return;
 		
-	m_pkRender->DrawBox(m_pkObject->GetPos(),m_pkObject->GetRot(),m_kScale,m_iTex1);//,m_iTex2);
+	m_pkRender->DrawBox(m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_kScale,m_iTex1);//,m_iTex2);
 }
 
 vector<PropertyValues> BoxRenderProperty::GetPropertyValues()

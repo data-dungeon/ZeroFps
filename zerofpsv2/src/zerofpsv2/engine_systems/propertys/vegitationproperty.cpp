@@ -36,10 +36,10 @@ void VegitationProperty::Init()
 void VegitationProperty::Update()
 {
 	//frustum culling
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
 		return;
 			
-	Vector3 ObjectPos = m_pkObject->GetPos();			
+	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
 	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
 	if(fDistance > 50)

@@ -64,14 +64,14 @@ bool BodyProperty::Disable()
 
 void BodyProperty::SetBodyToObject()
 {
-	m_kBody.SetPos(m_pkObject->GetPos());
-	m_kBody.SetRot(m_pkObject->GetRot());	
+	m_kBody.SetPos(m_pkObject->GetWorldPosV());
+	m_kBody.SetRot(m_pkObject->GetWorldRotV());	
 }
 
 void BodyProperty::SetObjectToBody()
 {
-	m_pkObject->SetPos(m_kBody.GetPos());
-	m_pkObject->SetRot(m_kBody.GetRot());	
+	m_pkObject->SetWorldPosV(m_kBody.GetPos());
+	m_pkObject->SetWorldRotV(m_kBody.GetRot());	
 }
 
 void BodyProperty::SetBodyPos(Vector3 kPos)

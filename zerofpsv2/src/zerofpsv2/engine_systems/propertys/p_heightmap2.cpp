@@ -17,7 +17,7 @@ P_Heightmap2::P_Heightmap2() // : m_kMap("HeightMap2")
 
 void P_Heightmap2::Update()
 {
-	m_kMap.SetPos(m_pkObject->GetPos());
+	m_kMap.SetPos(m_pkObject->GetWorldPosV());
 	m_pkRender->DrawHM2(&m_kMap,m_pkZeroFps->GetCam()->GetPos());
 }
 

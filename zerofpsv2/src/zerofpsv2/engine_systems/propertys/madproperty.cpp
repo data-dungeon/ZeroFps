@@ -74,12 +74,12 @@ void MadProperty::Update()
 	if(!m_bIsVisible)
 		return;
 	
-	if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
+	if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 		return;
 
 	// Set Object LOD.
 	if(g_iMadLODLock == 0) {
-		Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetPos();
+		Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
 		float fDist = float( fabs(kDiff.Length()) );
 		m_fLod = 1 - (fDist / 300);
 		//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
@@ -96,20 +96,24 @@ void MadProperty::Update()
 
 
 	glPushMatrix();
-		Vector3 pos=m_pkObject->GetIPos();
+		Matrix4 ori = m_pkObject->GetWorldOriM();
+		
+		glMultMatrixf(&ori[0]);
+	
+		/*Vector3 pos=m_pkObject->GetIPos();
 		Vector3 rot=m_pkObject->GetIRot();
-		glTranslatef(pos.x,pos.y,pos.z);
+		glTranslatef(pos.x,pos.y,pos.z);*/
 		glScalef(m_fScale, m_fScale, m_fScale);
-		glRotatef(- rot.y ,0,1,0);		
+		/*glRotatef(- rot.y ,0,1,0);		
 		glRotatef(- rot.z ,0,0,1);		
-		glRotatef(- rot.x ,1,0,0);
+		glRotatef(- rot.x ,1,0,0);*/
 
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 
 	if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
 		glPushMatrix();
-			glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
+			glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
 			glRotatef(90 ,1,0,0);
 			Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 			pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		

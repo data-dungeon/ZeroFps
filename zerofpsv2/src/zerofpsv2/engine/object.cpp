@@ -44,6 +44,15 @@ Object::Object() {
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
+	
+	
+	m_bRelativeOri	=	true;
+	
+	SetLocalRotV(Vector3(0,0,0));
+	SetLocalPosV(Vector3(0,0,0));
+	
+	ResetGotData();
+	
 
 }
 
@@ -367,7 +376,7 @@ void Object::AttachToClosestZone()
 			//dont attach this object to this object ;)
 			if((*it)==this)
 				continue;
-			float distance = abs(((*it)->GetPos() - m_kPos).Length());
+			float distance = abs(((*it)->GetWorldPosV() - m_kPos).Length());
 			if(distance<mindistance){
 				mindistance=distance;
 				minobject=(*it);
@@ -483,15 +492,15 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	pkNetPacket->Read( m_iNetUpdateFlags );
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
 		pkNetPacket->Read(kVec);
-		SetPos(kVec);
+		SetWorldPosV(kVec);
 		//SetPos(kVec);
 		g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
 		}
 
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
 		pkNetPacket->Read(kVec);
-		SetRot(kVec);
-		SetRot(kVec);
+		SetWorldPosV(kVec);
+		SetWorldRotV(kVec);
 		g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
 		}
 
@@ -544,8 +553,8 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	//set name
 	ObjDesc->m_kName = GetName();	
 	 
-	ObjDesc->m_kPos  = GetPos();
-	ObjDesc->m_kRot  = GetRot();
+	ObjDesc->m_kPos  = GetWorldPosV();
+	ObjDesc->m_kRot  = GetWorldRotV();
 	ObjDesc->m_kVel  = GetVel();
 	ObjDesc->m_kAcc  = GetAcc();	
 	ObjDesc->m_fRadius  = GetRadius();		
@@ -729,7 +738,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 	
 }
 
-
+/*
 float Object::GetI()
 {
 	float t = m_pkFps->GetGameFrameTime(); 
@@ -811,7 +820,7 @@ void Object::SetPos(Vector3 kPos)
 	
 	m_fLastPosSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();
 }
-
+*/
 ObjectDescriptor::~ObjectDescriptor()
 {
 	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
@@ -953,3 +962,202 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 		m_acPropertyList.push_back(newpropdesc);
 	}
 }
+
+void Object::ResetChildsGotData()
+{
+	ResetGotData();
+	
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		if((*it)->GetRelativeOri())
+			(*it)->ResetChildsGotData();	
+	}	
+}
+
+void Object::SetLocalRotM(Matrix4 kNewRot)
+{
+	ResetChildsGotData();
+	
+	m_kLocalRotM = kNewRot;
+}
+
+void Object::SetLocalRotV(Vector3 kRot)
+{
+	ResetChildsGotData();
+	
+	m_kLocalRotM.Identity();
+	m_kLocalRotM.Rotate(kRot);
+	
+}
+
+void Object::SetWorldRotV(Vector3 kRot)
+{
+	Vector3 crot = GetWorldRotV();
+	Vector3 	newlocal = GetLocalRotV();	
+	Vector3 diff;
+	
+	kRot.x = Clamp(kRot.x,0,360);
+	kRot.y = Clamp(kRot.y,0,360);
+	kRot.z = Clamp(kRot.z,0,360);
+
+	diff.x = kRot.x - crot.x;
+	diff.y = kRot.y - crot.y;	
+	diff.z = kRot.z - crot.z;	
+	
+	diff.x = Clamp(diff.x,0,360);
+	diff.y = Clamp(diff.y,0,360);
+	diff.z = Clamp(diff.z,0,360);
+	
+	newlocal.x += diff.x;
+	newlocal.y += diff.y;	
+	newlocal.z += diff.z;	
+	
+	SetLocalRotV(newlocal);
+}
+
+void Object::SetLocalPosV(Vector3 kPos)
+{
+	ResetChildsGotData();
+	
+	m_kLocalPosV = kPos;
+}
+
+void Object::SetWorldPosV(Vector3 kPos)
+{
+	Vector3 kDiff = kPos - GetWorldPosV();
+	Vector3 newlocalpos = m_kLocalPosV + kDiff;
+	
+	SetLocalPosV(newlocalpos);
+}
+
+Vector3 Object::GetLocalRotV()
+{
+	if(!m_kGotData[LOCAL_ROT_V])
+	{
+		m_kLocalRotV = m_kLocalRotM.GetRotVector();
+		m_kGotData[LOCAL_ROT_V] = true;
+	}
+
+	return m_kLocalRotV;
+}
+
+Vector3 Object::GetLocalPosV()
+{	
+	return m_kLocalPosV;
+}
+
+Matrix4 Object::GetLocalRotM()
+{
+	return m_kLocalRotM;
+}
+
+Vector3 Object::GetWorldPosV()
+{
+	if(!m_kGotData[WORLD_POS_V])
+	{
+		if(m_bRelativeOri)
+		{
+			//check if we have a parent else use local pos
+			if(m_pkParent)
+			{
+				m_kWorldPosV  = GetWorldOriM().GetPosVector();
+				m_kGotData[WORLD_POS_V] = true;
+			}
+			else
+			{
+				m_kWorldPosV = m_kLocalPosV;
+				m_kGotData[WORLD_POS_V] = true;			
+			}
+		
+		}
+		else
+		{
+			m_kWorldPosV = m_kLocalPosV;
+			m_kGotData[WORLD_POS_V] = true;
+		}
+	}
+	
+	return m_kWorldPosV;
+}
+
+Matrix4 Object::GetWorldRotM()
+{
+	if(!m_kGotData[WORLD_ROT_M])
+	{	
+		if(m_bRelativeOri)
+		{
+			//check if we have a parent else use local pos
+			if(m_pkParent)
+			{
+				m_kWorldRotM  = m_kLocalRotM * m_pkParent->GetWorldRotM() ;
+				m_kGotData[WORLD_ROT_M] = true;
+			}
+			else
+			{
+				m_kWorldRotM = m_kLocalRotM;
+				m_kGotData[WORLD_ROT_M] = true;			
+			}
+		
+		}
+		else
+		{
+			m_kWorldRotM = m_kLocalRotM;
+			m_kGotData[WORLD_ROT_M] = true;
+		}
+		
+	}
+	
+	return m_kWorldRotM;
+}
+
+Vector3 Object::GetWorldRotV()
+{
+	if(!m_kGotData[WORLD_ROT_V])
+	{	
+		m_kWorldRotV = GetWorldRotM().GetRotVector();
+		m_kGotData[WORLD_ROT_V] = true;
+	}
+
+	return m_kWorldRotV;
+}
+
+Matrix4 Object::GetWorldOriM()
+{
+	if(!m_kGotData[WORLD_ORI_M])
+	{	
+		if(m_bRelativeOri)
+		{
+			if(m_pkParent)
+			{			
+				m_kWorldOriM = GetLocalOriM() *m_pkParent->GetWorldOriM() ;
+				m_kGotData[WORLD_ORI_M] = true;						
+			}
+			else
+			{
+				m_kWorldOriM = GetLocalOriM();
+				
+				m_kGotData[WORLD_ORI_M] = true;			
+			}		
+		}
+		else
+		{
+			m_kWorldOriM = GetLocalOriM();
+			
+			m_kGotData[WORLD_ORI_M] = true;
+		}	
+	}
+	
+	return m_kWorldOriM;
+
+}
+
+Matrix4 Object::GetLocalOriM()
+{
+	if(!m_kGotData[LOCAL_ORI_M])
+	{	
+		m_kLocalOriM = m_kLocalRotM;
+		m_kLocalOriM.Translate(m_kLocalPosV);
+	}
+	
+	return m_kLocalOriM;
+}
+

@@ -24,14 +24,14 @@ void HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
 	m_strMapName	=	strMapName;
 
 	if(m_pkHeightMap!=NULL)
-		m_pkHeightMap->SetPosition(m_pkObject->GetPos());	
+		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());	
 }
 
 
 void HMRP2::Update() 
 {	
 	if(m_pkHeightMap!=NULL){
-		m_pkHeightMap->SetPosition(m_pkObject->GetPos());
+		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}

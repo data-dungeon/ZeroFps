@@ -60,8 +60,8 @@ bool Property::operator<(Property& kOther)
 			return true;		
 		}else {
 			if(m_iSortPlace == kOther.m_iSortPlace){			
-				d1 = abs( (m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetPos()).Length() );
-				d2 = abs( (m_pkZeroFps->GetCam()->GetPos() - kOther.m_pkObject->GetPos()).Length() );
+				d1 = abs( (m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV()).Length() );
+				d2 = abs( (m_pkZeroFps->GetCam()->GetPos() - kOther.m_pkObject->GetWorldPosV()).Length() );
 				return d1<d2;		
 			} else {
 				return false;

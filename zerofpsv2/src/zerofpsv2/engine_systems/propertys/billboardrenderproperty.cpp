@@ -35,11 +35,11 @@ void BillBoardRenderProperty::UpdateSet()
 
 void BillBoardRenderProperty::Update()
 {
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fScale))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
 		return;
 		
-	
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),m_pkObject->GetPos(),m_fScale,m_iTexture);
+	Vector3 pos = m_pkObject->GetWorldPosV();
+	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture);
 }
 
 vector<PropertyValues> BillBoardRenderProperty::GetPropertyValues()

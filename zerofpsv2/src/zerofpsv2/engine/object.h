@@ -4,10 +4,12 @@
 #include <vector>
 #include <list>
 #include <string.h>
+#include <bitset>
 #include "engine_x.h"
 #include "property.h"
 #include "propertyfactory.h"
 #include "network.h"
+#include "../basic/quaternion.h"
 
 using namespace std;
 
@@ -145,10 +147,41 @@ class ENGINE_API Object
 		Object*						m_pkParent;							///< Parent Object.
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 
-	protected:
-		Object();		
 
+	protected:
+		enum HAVE_DATA		//used in m_kGotData
+		{
+			WORLD_ROT_M,
+			WORLD_ORI_M,
+			LOCAL_ORI_M,
+			WORLD_ROT_Q,
+			LOCAL_ROT_Q,
+			WORLD_ROT_V,
+			LOCAL_ROT_V,
+			
+			WORLD_POS_V,		
+		};
+	
 		int							m_iNetUpdateFlags;					
+
+		bool							m_bRelativeOri;					//
+		
+		bitset<7>					m_kGotData;
+		
+		//rotation and orientation data
+		Matrix4						m_kLocalRotM;						//always contains local rotation
+		Matrix4						m_kWorldRotM;
+		Matrix4						m_kWorldOriM;
+		Matrix4						m_kLocalOriM;
+		Quaternion					m_kWorldRotQ;
+		Quaternion					m_kLocalRotQ;
+		Vector3						m_kWorldRotV;
+		Vector3						m_kLocalRotV;		
+		
+		//position data
+		Vector3						m_kLocalPosV;						//always contains local position
+		Vector3						m_kWorldPosV;
+				
 
 		Vector3						m_kPos;								///< Position of object in world.
 		Vector3						m_kRot;								///< Rotation of object in world.
@@ -176,6 +209,9 @@ class ENGINE_API Object
 
 		list<Object*>				m_akChilds;							///< List of child objects.
 		list<Property*>			m_akPropertys;						///< List of propertys of object.
+		
+		
+		Object();				
 		
 	public:
 		int							iNetWorkID;							///< ID used by network state code.
@@ -234,14 +270,40 @@ class ENGINE_API Object
 		void PrintTree(int pos);									///< Debug: Prints object tree from object.
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
 
+		//Get orientation data
+		bool			GetRelativeOri(){return m_bRelativeOri;};
+		
+		Matrix4		GetLocalRotM();					
+		Matrix4		GetWorldRotM();
+		Matrix4		GetWorldOriM();								//parent * rot * pos
+		Matrix4		GetLocalOriM();
+//		Quaternion	GetWorldRotQ();
+//		Quaternion	GetLocalRotQ();
+		Vector3		GetWorldRotV();
+		Vector3		GetLocalRotV();		
+
+		Vector3		GetLocalPosV();
+		Vector3		GetWorldPosV();
+		
+		//set oritentation data
+		void			SetLocalRotM(Matrix4 kNewRot);
+//		void			SetLocalRotQ(Quaternion);
+		void			SetLocalRotV(Vector3);
+		void			SetLocalPosV(Vector3);
+		void			SetWorldPosV(Vector3);
+		void			SetWorldRotV(Vector3);
+
+		void			ResetGotData(){m_kGotData.reset();};
+		void			ResetChildsGotData();
+
 		// Inlines
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};
 
 		inline bool& GetSave()		{	return m_bSave;	};
 		inline string& GetName()	{	return m_kName;	};
-		inline Vector3& GetPos()	{	return m_kPos;		};
-		inline Vector3 GetRot()	{	return m_kRot;		};
+//		inline Vector3& GetPos()	{	return m_kPos;		};
+//		inline Vector3 GetRot()	{	return m_kRot;		};
 		inline Vector3& GetVel()	{	return m_kVel;		};		
 		inline Vector3& GetAcc()	{	return m_kAcc;		};
 		inline float& GetRadius()	{	return m_fRadius;		};		
@@ -256,10 +318,10 @@ class ENGINE_API Object
 		const char* GetType(){return m_strType.c_str();}
 		
 		float GetI();
-		Vector3 GetIPos();
-		Vector3 GetIRot();
-		void SetRot(Vector3 kRot);
-		void SetPos(Vector3 kPos);
+//		Vector3 GetIPos();
+//		Vector3 GetIRot();
+//		void SetRot(Vector3 kRot);
+//		void SetPos(Vector3 kPos);
 
 		friend class ObjectManager;
 

@@ -20,7 +20,7 @@ void ProxyProperty::Update()
 
 	//if there is no tracked objects ,,track the camera
 	if(m_pkTrackers->size() <= 0)
-		fDistance= abs((m_pkFps->GetCam()->GetPos() - m_pkObject->GetPos()).Length());
+		fDistance= abs((m_pkFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV()).Length());
 	else
 		fDistance=GetDistance();
 
@@ -48,7 +48,7 @@ float ProxyProperty::GetDistance()
 
 	for(list<Object*>::iterator it=m_pkTrackers->begin();it!=m_pkTrackers->end();it++)
 	{
-		fDistance = abs(((*it)->GetPos() - m_pkObject->GetPos()).Length());		
+		fDistance = abs(((*it)->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length());		
 		if(fDistance < fShortestDistance)
 			fShortestDistance = fDistance;
 	}

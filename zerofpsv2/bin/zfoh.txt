@@ -1,10 +1,10 @@
 class object	
 	class ZeroRTSSpawnPoint
 		parent object
-		set MadProperty m_kMadFile /data/mad/Armour.mad
+		set MadProperty m_kMadFile /data/mad/rts/unit/tankl.mad
 		set MadProperty m_fScale 1
 	
 	class ZeroRTSTestBox
 		parent object
-		set MadProperty m_kMadFile /data/mad/Helmet.mad
+		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 	

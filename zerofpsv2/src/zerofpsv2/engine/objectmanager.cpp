@@ -184,10 +184,10 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 	Object* tempobject	=	CreateObject();
 
 	tempobject->GetName()	=	pkObjDesc->m_kName;
-	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
-	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
-	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
-	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
+	tempobject->SetWorldPosV(pkObjDesc->m_kPos);		//två gånger för interpolering
+	tempobject->SetWorldPosV(pkObjDesc->m_kPos);		//två gånger för interpolering
+	tempobject->SetWorldRotV(pkObjDesc->m_kRot);		//två gånger för interpolering
+	tempobject->SetWorldRotV(pkObjDesc->m_kRot);		//två gånger för interpolering
 	tempobject->GetVel()		=	pkObjDesc->m_kVel;
 	tempobject->GetAcc()		=	pkObjDesc->m_kAcc;	
 	tempobject->GetRadius()	=	pkObjDesc->m_fRadius;		
@@ -859,7 +859,7 @@ bool ObjectManager::TestLine(vector<Object*>* pkPPList,Vector3 kPos,Vector3 kVec
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) 
 	{	
-		Vector3 c=(*it)->GetPos() - kPos;		
+		Vector3 c=(*it)->GetWorldPosV() - kPos;		
 		kVec.Normalize();		
 		Vector3 k=kVec.Proj(c);		
 		float cdis=c.Length();

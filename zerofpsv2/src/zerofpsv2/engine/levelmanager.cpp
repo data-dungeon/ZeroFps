@@ -109,7 +109,7 @@ void LevelManager::ClearObjects()
 	m_pkHeightMapObject=CreateHeightMapObject(m_pkMap);
 	
 	m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
-	m_pkHeightMapObject->GetPos().Set(0,0,0);
+	m_pkHeightMapObject->GetWorldPosV().Set(0,0,0);
 	m_pkMap->SetPosition(Vector3(0,0,0));
 }
 
@@ -133,7 +133,7 @@ void LevelManager::CreateZones()
 		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneDistance){	
 //			if(m_pkMap->Height(x,z)>-1){			
 				ZoneObject *object = new ZoneObject();
-				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
+				object->GetWorldPosV()=Vector3(x,m_pkMap->Height(x,z),z);
 				object->SetParent(m_pkObjectMan->GetWorldObject());				
 				if(!m_bVisibleZones)
 					object->DeleteProperty("MadProperty");
@@ -194,7 +194,7 @@ bool LevelManager::LoadLevelHmapOnly(const char* acFile)
 	if(m_pkHeightMapObject) {
 		m_pkHeightMapObject	=	CreateHeightMapObject(m_pkMap);
 		m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
-		m_pkHeightMapObject->GetPos().Set(0,0,0);
+		m_pkHeightMapObject->GetWorldPosV().Set(0,0,0);
 		m_pkMap->SetPosition(Vector3(0,0,0));
 		}
 	
@@ -479,7 +479,7 @@ void LevelManager::Water(bool bWater)
 			wrp->SetProperty(m_pkMap->GetSize()+300,100,"../data/textures/water2.bmp");
 			
 			water->GetName()="WorldWaterObject";
-			water->GetPos().Set(0,0,0);
+			water->GetWorldPosV().Set(0,0,0);
 			water->SetParent(m_pkObjectMan->GetWorldObject());		
 		}
 		else {
@@ -587,7 +587,7 @@ void LevelManager::UpdateZones()
 
 	for(list<Object*>::iterator it=m_kTrackedObjects.begin();it!=m_kTrackedObjects.end();it++)
 	{
-		Vector3 pos=(*it)->GetPos();
+		Vector3 pos=(*it)->GetWorldPosV();
 	
 		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
 		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
@@ -625,7 +625,7 @@ void LevelManager::EnableZone(int xp,int zp,Vector3 &kPos)
 			if(x<0 || z<0 || x>=tot || z>=tot)
 				continue;
 			
-			if(( kPos - m_kZones[x*tot+z]->GetPos()).Length()<m_fZoneRadius)
+			if(( kPos - m_kZones[x*tot+z]->GetWorldPosV()).Length()<m_fZoneRadius)
 				if(m_iShowDecorations>0)
 //					m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL|UPDATE_LIGHT;		
 					m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_STATIC|UPDATE_DYNAMIC|UPDATE_PLAYERS|UPDATE_STATDYN|UPDATE_LIGHT|UPDATE_DECORATION;		
@@ -677,9 +677,9 @@ void LevelManager::DrawZones()
 
 	for(unsigned int i=0;i<m_kZones.size();i++) {
 		if(m_kZones[i]->GetUpdateStatus() & UPDATE_STATIC)
-			m_pkRender->DrawColorBox(m_kZones[i]->GetPos(),Vector3::ZERO, Vector3(1,1,1),Vector3(0,1,0));
+			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, Vector3(1,1,1),Vector3(0,1,0));
 		else 
-			m_pkRender->DrawColorBox(m_kZones[i]->GetPos(),Vector3::ZERO, Vector3(1,1,1),Vector3(1,0,0));
+			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, Vector3(1,1,1),Vector3(1,0,0));
 		}
 }
 

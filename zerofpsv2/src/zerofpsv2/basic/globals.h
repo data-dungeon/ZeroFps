@@ -32,6 +32,7 @@ void BASIC_API IntToChar(char* aText,int iValue);
 
 int BASIC_API PowerOf2(int iVal);
 
+float BASIC_API Clamp(float fValue,float fBotom,float fTop);
 
 Vector3 BASIC_API GetYawVector2(float fAngleDeg);
 

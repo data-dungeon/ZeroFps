@@ -53,7 +53,7 @@ void PhysicsEngine::Update()
 
 Vector3 PhysicsEngine::GetNewPos(PhysicProperty* pkPP)
 {
-	return pkPP->GetObject()->GetPos() + GetNewVel(pkPP) * m_fFrameTime;
+	return pkPP->GetObject()->GetWorldPosV() + GetNewVel(pkPP) * m_fFrameTime;
 }
 
 Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
@@ -68,7 +68,7 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 		Acc+=Vector3(0,-15,0);
 	
 	if(pkPP->m_bFloat)
-		if(pkObject->GetPos().y < 0) 
+		if(pkObject->GetWorldPosV().y < 0) 
 		{
 			Acc+=Vector3(0,11,0);
 			Acc+= (Vel*-1) *0.3;			//simulate water friktion		
@@ -111,7 +111,7 @@ void PhysicsEngine::CalcNewPos()
 	{	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
-		PP->m_kOldPos = PP->GetObject()->GetPos();
+		PP->m_kOldPos = PP->GetObject()->GetWorldPosV();
 		PP->m_kNewPos=GetNewPos(PP);
 		PP->m_kNewVel=GetNewVel(PP);		
 		PP->m_kNewAcc=PP->GetObject()->GetAcc();				
@@ -191,11 +191,14 @@ bool PhysicsEngine::TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP
 	Sphere sp1;
 	Sphere sp2;
 	
-	sp1.m_kPos.Lerp(pkPP1->GetObject()->GetPos(),pkPP1->m_kNewPos,0.5);
-	sp1.m_fRadius=((pkPP1->GetObject()->GetPos()-pkPP1->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP1->GetColSphere())->m_fRadius;
+	Vector3 o1pos = pkPP1->GetObject()->GetWorldPosV() ;
+	Vector3 o2pos = pkPP2->GetObject()->GetWorldPosV();
+	
+	sp1.m_kPos.Lerp(o1pos,pkPP1->m_kNewPos,0.5);
+	sp1.m_fRadius=((pkPP1->GetObject()->GetWorldPosV()-pkPP1->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP1->GetColSphere())->m_fRadius;
 
-	sp2.m_kPos.Lerp(pkPP2->GetObject()->GetPos(),pkPP2->m_kNewPos,0.5);
-	sp2.m_fRadius=((pkPP2->GetObject()->GetPos()-pkPP2->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP2->GetColSphere())->m_fRadius;
+	sp2.m_kPos.Lerp(o2pos,pkPP2->m_kNewPos,0.5);
+	sp2.m_fRadius=((pkPP2->GetObject()->GetWorldPosV()-pkPP2->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP2->GetColSphere())->m_fRadius;
 
 	
 	float Dist= (sp1.m_kPos-sp2.m_kPos).Length();
@@ -315,8 +318,8 @@ void PhysicsEngine::HandleCollisions()
 	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 //		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
-		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kOldPos);	
-		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kNewPos);	
+		(*it)->GetObject()->SetWorldPosV(static_cast<PhysicProperty*>(*it)->m_kOldPos);	
+		(*it)->GetObject()->SetWorldPosV(static_cast<PhysicProperty*>(*it)->m_kNewPos);	
 //		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
 		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;
 		(*it)->GetObject()->GetAcc().Set(0,0,0);		
@@ -380,7 +383,7 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 
 	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
-		Vector3 c=(*it)->GetObject()->GetPos() - kPos;		
+		Vector3 c=(*it)->GetObject()->GetWorldPosV() - kPos;		
 		kVec.Normalize();		
 		Vector3 k=kVec.Proj(c);		
 		float cdis=c.Length();
@@ -408,7 +411,7 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	float fStep = 0.00;
 
 	Vector3 kOldNewPos = pkPP->m_kNewPos;
-	Vector3 kOldPos = pkPP->GetObject()->GetPos();
+	Vector3 kOldPos = pkPP->GetObject()->GetWorldPosV();
 	Collision *pkCD = NULL;	
 	
 	if(kOldNewPos.x == kOldPos.x &&
@@ -420,34 +423,34 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	Vector3 kBack = -(kOldNewPos - kOldPos).Unit() * 0.05;	
 	kBlub.y =0;
 	
-	pkPP->GetObject()->GetPos() = kOldPos + kBack;
+	pkPP->GetObject()->GetWorldPosV() = kOldPos + kBack;
 	pkPP->m_kNewPos = kOldPos + Vector3(0,pkPP->m_bStrideHeight,0) + kBack;
 	
 	if(pkCD = CheckIfColliding(pkPP))
 	{
 		pkPP->m_kNewPos = kOldNewPos;
-		pkPP->GetObject()->GetPos() = kOldPos;
+		pkPP->GetObject()->GetWorldPosV() = kOldPos;
 		
 		//cout<<"blocked up"<<endl;
 		delete pkCD;
 		return false;
 	}
 	
-	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos;
+	pkPP->GetObject()->GetWorldPosV() = pkPP->m_kNewPos;
 	pkPP->m_kNewPos = kOldNewPos + kBlub;
-	pkPP->m_kNewPos.y = pkPP->GetObject()->GetPos().y;
+	pkPP->m_kNewPos.y = pkPP->GetObject()->GetWorldPosV().y;
 	
 	if(pkCD = CheckIfColliding(pkPP))
 	{
 		pkPP->m_kNewPos = kOldNewPos;
-		pkPP->GetObject()->GetPos() = kOldPos;
+		pkPP->GetObject()->GetWorldPosV() = kOldPos;
 		
 		//cout<<"blocked forward"<<endl;
 		delete pkCD;
 		return false;		
 	}
 
-	pkPP->GetObject()->GetPos() = pkPP->m_kNewPos ; 
+	pkPP->GetObject()->GetWorldPosV() = pkPP->m_kNewPos ; 
 	pkPP->m_kNewPos = kOldNewPos + kBlub;
 
 /*

@@ -27,7 +27,7 @@ void P_Primitives3D::Update() {
 //		return;
 
 	Vector3 min, max;
-	Vector3 pos = m_pkObject->GetIPos();
+	Vector3 pos = m_pkObject->GetWorldPosV();
 
 	switch(m_ePrimType)
 	{

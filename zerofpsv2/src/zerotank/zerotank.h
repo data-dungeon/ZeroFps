@@ -18,6 +18,8 @@
 
 #include "guiapp.h"
 
+#include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
+
 //#include "../common/common.pkg"
 
 
@@ -63,7 +65,10 @@ class ZeroTank :public Application, public GuiApp {
 
 		Heightmap2*			m_pkMap2;
 
-		Object*			m_pkTestObject;
+		Mad_Modell			m_pkTestMod;
+		
+		Object*				m_pkME;
+		Object*				m_pkTestObject;
 
 		//GuiBuilder*			m_pkGuiBuilder;
 

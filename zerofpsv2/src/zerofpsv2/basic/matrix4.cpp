@@ -1,6 +1,8 @@
 #include "matrix4.h"
 #include "matrix3.h"
 #include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 
 Matrix4::Matrix4( float v1,float v2,float v3 ,float v4,
@@ -545,3 +547,62 @@ void Matrix4::Translate(float fX, float fY, float fZ)
 void Matrix4::Translate(Vector3 kTrans){
 	Translate(kTrans.x, kTrans.y, kTrans.z);
 }
+
+Vector3 Matrix4::GetRotVector()
+{
+	float D;
+	float C;
+	float angle_x;
+	float angle_y;				
+	float angle_z;
+	float ftrx;
+	float ftry;
+	
+	
+	angle_y = D = -asin( data[2]);
+	C           =  cos( angle_y );
+	angle_y    *= degtorad;
+    
+	if ( fabs( angle_y ) > 0.0005 )
+   {
+		ftrx      =  data[10] / C;
+		ftry      = -data[6]  / C;
+		angle_x  = atan2( ftry, ftrx ) * degtorad;
+		ftrx      =  data[0] / C;
+		ftry      = -data[1] / C;
+   	angle_z  = atan2( ftry, ftrx ) * degtorad;
+   }
+	else
+	{
+   	angle_x  = 0;
+      ftrx      = data[5];
+      ftry      = data[4];
+      angle_z  = atan2( ftry, ftrx ) * degtorad;
+	}
+	
+	angle_x = Clamp( angle_x, 0, 360 );
+	angle_y = Clamp( angle_y, 0, 360 );
+	angle_z = Clamp( angle_z, 0, 360 );
+	
+
+	return Vector3(angle_x,angle_y,angle_z);
+}
+
+
+Vector3 Matrix4::GetPosVector()
+{
+	return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

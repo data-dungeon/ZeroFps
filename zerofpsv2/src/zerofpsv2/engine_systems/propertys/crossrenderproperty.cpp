@@ -37,11 +37,11 @@ void CrossRenderProperty::UpdateSet()
 
 void CrossRenderProperty::Update()
 {
-	return;
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_kScale.x))
+//	return;
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_kScale.x))
 		return;
 		
-	m_pkRender->DrawCross(m_pkObject->GetPos(),m_pkObject->GetRot(),m_kScale,m_iTex1);//,m_iTex2);
+	m_pkRender->DrawCross(m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_kScale,m_iTex1);//,m_iTex2);
 }
 
 vector<PropertyValues> CrossRenderProperty::GetPropertyValues()

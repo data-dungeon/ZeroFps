@@ -50,7 +50,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther)
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
 
-	Vector3 kPos1 = O2->GetPos();
+	Vector3 kPos1 = O2->GetWorldPosV();
 	Vector3 kPos2 = kOther->m_pkPP->m_kNewPos;
 
 	
@@ -117,12 +117,12 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther)
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kPos2;
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
+	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos();
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
+	tempdata->m_kPos1 = O1->GetWorldPosV();
+	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
 	tempdata->m_kNormal1 = m_kColNormal;
 	
 
@@ -338,8 +338,8 @@ void CSMech::GenerateModelMatrix()
 {
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-	m_kModelMatrix.Rotate( m_pkPP->GetObject()->GetRot());	
-	m_kModelMatrix.Translate(m_pkPP->GetObject()->GetPos());		
+	m_kModelMatrix.Rotate( m_pkPP->GetObject()->GetWorldRotV());	
+	m_kModelMatrix.Translate(m_pkPP->GetObject()->GetWorldPosV());		
 
 }
 
@@ -361,7 +361,7 @@ Collision* CSMech::Collide_CSBox(CSBox* kOther)
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
 
-	Vector3 kPos1 = O2->GetPos();
+	Vector3 kPos1 = O2->GetWorldPosV();
 	Vector3 kPos2 = kOther->m_pkPP->m_kNewPos;
 
 	m_bOtherGlide=kOther->m_pkPP->m_bGlide;
@@ -370,7 +370,7 @@ Collision* CSMech::Collide_CSBox(CSBox* kOther)
 	{	
 /*		if(BoxEdgeTest(kPos2,kOther->m_kScale))
 		{
-			Vector3 mov = (kPos1 - O1->GetPos()).Unit();
+			Vector3 mov = (kPos1 - O1->GetWorldPosV()).Unit();
 				
 			m_kColPos = kPos1 + mov * (kPos1-kPos2).Length();
 			m_kGlideColPos = kPos1+ mov * (kPos1-kPos2).Length();
@@ -392,12 +392,12 @@ Collision* CSMech::Collide_CSBox(CSBox* kOther)
 		
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kFinalPos;
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
+	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos();
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
+	tempdata->m_kPos1 = O1->GetWorldPosV();
+	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
 	tempdata->m_kNormal1 = m_kColNormal;
 	
 

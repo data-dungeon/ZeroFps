@@ -19,23 +19,6 @@ class BASIC_API Matrix4 {
 	public:
 		union 
 		{
-/*			struct
-			{
-				Vector3		AxisX();	// X - Axis
-				float		m03;
-				Vector3		AxisY();	// Y - Axis
-				float		m13;
-				Vector3		AxisZ();	// Z - Axis
-				float		m23;	
-				union
-				{
-					struct  { Vector3	Pos();	};// Position as a vector 
-					struct	{ float		x,y,z;	};// Position as coordinaters
-				};
-				float		m33;
-			};*/
-
-
 			float RowCol[4][4];
 			float data[16];	
 		};
@@ -83,6 +66,8 @@ class BASIC_API Matrix4 {
 		void Translate(float fX, float fY, float fZ);
 		void Translate(Vector3 kPos);
 		
+		Vector3 GetRotVector();
+		Vector3 GetPosVector();
 		
 		void Print();
 

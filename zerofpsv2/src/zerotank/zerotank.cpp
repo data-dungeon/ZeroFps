@@ -79,7 +79,7 @@ void ZeroTank::Init()
 	pkMad->SetBase("/data/mad/dog.mad");
 	pkObjectMan->Add(m_pkTestObject);*/
 	
-	m_pkTestObject->SetPos(Vector3(0,0,0));
+	m_pkTestObject->SetLocalPosV(Vector3(0,0,0));
 	m_pkTestObject->AttachToClosestZone();
 	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
 
@@ -156,12 +156,11 @@ void ZeroTank::OnIdle()
 */	
 
 	
-	//update player possition
+	//update player possition 
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
-		pkObj->SetPos(pkFps->GetCam()->GetPos());
-		pkObj->SetPos(pkFps->GetCam()->GetPos());
+		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
 	}
 
 }
@@ -207,32 +206,99 @@ void ZeroTank::Input()
 	if(pkInput->Pressed(KEY_X)){
 		speed*=0.25;
 	}
+	
+	Vector3 newpos = m_pkCamera->GetPos();
+	Vector3 rot = m_pkCamera->GetRot();
+	
 	if(pkInput->Pressed(KEY_D)){
-		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
+		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
 	}
 	if(pkInput->Pressed(KEY_A)){
-		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
+		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
 	}	
 	if(pkInput->Pressed(KEY_W))	{
-		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
 	}					
 	if(pkInput->Pressed(KEY_S))	{
-		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
+		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
 	
 	if(pkInput->Pressed(KEY_Q))
-		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
+		newpos.y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_E))
-		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
+		newpos.y-=2*pkFps->GetFrameTime()*speed;
 
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
-	pkFps->GetCam()->GetRot().x+=z/5.0;
-	pkFps->GetCam()->GetRot().y+=x/5.0;	
+	
+	rot.x+=z/5.0;
+	rot.y+=x/5.0;	
+	
+//	m_pkME->SetLocalPosV(newpos);
+//	m_pkME->SetLocalRotV(rot);	
+
+	m_pkCamera->SetPos(newpos);
+	m_pkCamera->SetRot(rot);
+	
+	
+	
+	//--------
+	
+	newpos = m_pkME->GetLocalPosV();
+//	rot = m_pkME->GetLocalRotV();
+	
+	if(pkInput->Pressed(KEY_H)){
+		newpos.x+=pkFps->GetFrameTime()*speed;			
+	}
+	if(pkInput->Pressed(KEY_F)){
+		newpos.x-=pkFps->GetFrameTime()*speed;			
+	}	
+	if(pkInput->Pressed(KEY_T))	{
+		newpos.z+=pkFps->GetFrameTime()*speed;			
+	}					
+	if(pkInput->Pressed(KEY_G))	{
+		newpos.z-=pkFps->GetFrameTime()*speed;
+	}		
+	
+/*	if(pkInput->Pressed(KEY_H)){
+		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
+	}
+	if(pkInput->Pressed(KEY_F)){
+		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
+	}	
+	if(pkInput->Pressed(KEY_T))	{
+		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+	}					
+	if(pkInput->Pressed(KEY_G))	{
+		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
+	}		*/
+	
+	if(pkInput->Pressed(KEY_R))
+		newpos.y+=2*pkFps->GetFrameTime()*speed;			
+	if(pkInput->Pressed(KEY_Y))
+		newpos.y-=2*pkFps->GetFrameTime()*speed;
+
+	if(pkInput->Pressed(KEY_U))
+		rot.z += pkFps->GetFrameTime()*speed*10;
+	
+	if(pkInput->Pressed(KEY_J))	
+		rot.z -= pkFps->GetFrameTime()*speed*10;
+		
+		
+	m_pkME->SetLocalPosV(newpos);		
+	//rot.y+=0.1;
+	
+	rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
+	m_pkME->SetLocalRotV(rot);
+	
 }
 
 void ZeroTank::OnHud(void) 
@@ -333,7 +399,7 @@ void ZeroTank::SetupSpawnPoints()
 	{
 		if(kObjects[i]->GetName() == "A ZeroRTSSpawnPoint")
 		{
-			m_kSpawnPoints.push_back(kObjects[i]->GetPos());
+			m_kSpawnPoints.push_back(kObjects[i]->GetWorldPosV());
 			pkObjectMan->Delete(kObjects[i]);
 		}
 	}
@@ -343,17 +409,32 @@ void ZeroTank::SetupSpawnPoints()
 
 void ZeroTank::OnServerStart(void)
 {		
+/*	m_pkME = pkObjectMan->CreateObject();
+	m_pkME->AttachToClosestZone();
+	m_pkME->AddProperty("CameraProperty");
+	
+	CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
+	cam->SetCamera(m_pkCamera);
+	*/
 
-	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	if(pk0) {
-		pk0->SetPos(Vector3(0,0,0));
-		pk0->AttachToClosestZone();
-		}
+	m_pkME = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	if(m_pkME) {
+		m_pkME->SetWorldPosV(Vector3(0,0,0));
+		m_pkME->AttachToClosestZone();
+	
+		/*
+		m_pkME->AddProperty("CameraProperty");
+	
+		CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
+		cam->SetCamera(m_pkCamera);
+		*/
+	}
 
 	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
 	if(pk1) {
-		pk1->SetPos(Vector3(30,0,0));
-		pk1->AttachToClosestZone();
+		pk1->SetParent(m_pkME);
+		pk1->SetLocalPosV(Vector3(40,0,0));
+		//pk1->AttachToClosestZone();		
 	}
 
 

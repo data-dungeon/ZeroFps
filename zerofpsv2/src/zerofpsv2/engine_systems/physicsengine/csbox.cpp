@@ -29,7 +29,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther)
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
 	
-	Vector3 op=O1->GetPos();
+	Vector3 op=O1->GetWorldPosV();
 	
 
 	bool hit=false;
@@ -37,47 +37,47 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther)
 	Vector3 HitNormal;
 	
 	
-	if(TestTop(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestTop(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
 		HitPos=m_kColPos;
 		HitNormal.Set(0,1,0);
 	}
 	
-	if(TestBotom(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestBotom(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+		if(Closer(O2->GetWorldPosV(),HitPos,m_kColPos))
 		{
 			HitPos=m_kColPos;
 			HitNormal.Set(0,-1,0);
 		}
 	}	
-	if(TestFront(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestFront(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+		if(Closer(O2->GetWorldPosV(),HitPos,m_kColPos))
 		{
 			HitPos=m_kColPos;
 			HitNormal.Set(0,0,1);
 		}		
 	}
-	if(TestBack(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestBack(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+		if(Closer(O2->GetWorldPosV(),HitPos,m_kColPos))
 		{
 			HitPos=m_kColPos;
 			HitNormal.Set(0,0,-1);
 		}
 	}
-	if(TestLeft(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestLeft(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+		if(Closer(O2->GetWorldPosV(),HitPos,m_kColPos))
 		{
 			HitPos=m_kColPos;
 			HitNormal.Set(-1,0,0);
 		}
 	}
-	if(TestRight(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
+	if(TestRight(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+		if(Closer(O2->GetWorldPosV(),HitPos,m_kColPos))
 		{
 			HitPos=m_kColPos;
 			HitNormal.Set(1,0,0);
@@ -88,7 +88,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther)
 //	if(!hit)	
 	bool inside=false;
 
-	if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
+	if(TestInside(O2->GetWorldPosV() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
 	{
 		HitPos=m_kColPos;
 		hit=true;
@@ -116,12 +116,12 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther)
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = HitPos;
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
+	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos(); //(movevec1*bla);
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
+	tempdata->m_kPos1 = O1->GetWorldPosV(); //(movevec1*bla);
+	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
 	tempdata->m_kNormal1 = HitNormal;
 	
 
@@ -140,11 +140,11 @@ bool CSBox::TestTop(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,0).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,-0.5).PEP(m_kScale)));
-	side[1].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,0.5).PEP(m_kScale)));		
-	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0.5,0).PEP(m_kScale)));		
-	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0.5,0).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,0).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,-0.5).PEP(m_kScale)));
+	side[1].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,0.5).PEP(m_kScale)));		
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0.5,0).PEP(m_kScale)));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0.5,0).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -175,11 +175,11 @@ bool CSBox::TestBotom(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,0).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,-0.5).PEP(m_kScale)));
-	side[1].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,0.5).PEP(m_kScale)));		
-	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,-0.5,0).PEP(m_kScale)));		
-	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,-0.5,0).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,0).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,-0.5).PEP(m_kScale)));
+	side[1].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,0.5).PEP(m_kScale)));		
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,-0.5,0).PEP(m_kScale)));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,-0.5,0).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -211,11 +211,11 @@ bool CSBox::TestFront(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(0,0,0.5).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,0.5).PEP(m_kScale)));
-	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,0.5).PEP(m_kScale)));		
-	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0.5).PEP(m_kScale)));		
-	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0.5).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0,0.5).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,0.5).PEP(m_kScale)));
+	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,0.5).PEP(m_kScale)));		
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,0.5).PEP(m_kScale)));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,0.5).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -246,11 +246,11 @@ bool CSBox::TestBack(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(0,0,-0.5).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,-0.5).PEP(m_kScale)));
-	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,-0.5).PEP(m_kScale)));		
-	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,-0.5).PEP(m_kScale)));		
-	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,-0.5).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0,-0.5).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,-0.5).PEP(m_kScale)));
+	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,-0.5).PEP(m_kScale)));		
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,-0.5).PEP(m_kScale)));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,-0.5).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -281,11 +281,11 @@ bool CSBox::TestLeft(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0.5,0).PEP(m_kScale)));
-	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,-0.5,0).PEP(m_kScale)));		
-	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,-0.5).PEP(m_kScale)));		
-	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0.5).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,0).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0.5,0).PEP(m_kScale)));
+	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,-0.5,0).PEP(m_kScale)));		
+	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,-0.5).PEP(m_kScale)));		
+	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,0.5).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -316,11 +316,11 @@ bool CSBox::TestRight(Vector3 kPos1,Vector3 kPos2,float fR)
 	Plane side[4];
 
 
-	surface.Set(kNormal,m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0).PEP(m_kScale)));	
-	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0.5,0).PEP(m_kScale)));
-	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,-0.5,0).PEP(m_kScale)));		
-	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,-0.5).PEP(m_kScale)));		
-	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0.5).PEP(m_kScale)));		
+	surface.Set(kNormal,m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,0).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0.5,0).PEP(m_kScale)));
+	side[1].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,-0.5,0).PEP(m_kScale)));		
+	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,-0.5).PEP(m_kScale)));		
+	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,0.5).PEP(m_kScale)));		
 	
 	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
@@ -345,12 +345,12 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 {
 	Plane side[6];
 	
-	side[0].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,0).PEP(m_kScale)));	
-	side[1].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,0).PEP(m_kScale)));	
-	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0).PEP(m_kScale)));		
-	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0).PEP(m_kScale)));		
-	side[4].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0,0.5).PEP(m_kScale)));	
-	side[5].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0,-0.5).PEP(m_kScale)));	
+	side[0].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0.5,0).PEP(m_kScale)));	
+	side[1].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,-0.5,0).PEP(m_kScale)));	
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0.5,0,0).PEP(m_kScale)));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(-0.5,0,0).PEP(m_kScale)));		
+	side[4].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0,0.5).PEP(m_kScale)));	
+	side[5].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetWorldPosV()+(Vector3(0,0,-0.5).PEP(m_kScale)));	
 	
 	
 	bool inside=true;

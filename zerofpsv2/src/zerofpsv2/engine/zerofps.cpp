@@ -1054,8 +1054,7 @@ void ZeroFps::Connect(int iConnectionID)
 
 	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 	assert(m_kClient[iConnectionID].m_pkObject);	
-	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
-	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
+	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 	m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 

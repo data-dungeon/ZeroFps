@@ -36,10 +36,10 @@ Collision* HeightMapCS::Collide_CSSphere(CSSphere* kOther)
 	Object* O2=kOther->m_pkPP->GetObject();
 	
 	
-	if(O2->GetPos().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||
-		O2->GetPos().x>m_pkMap->GetPos().x+m_pkMap->GetSize()/2 ||
-		O2->GetPos().z<m_pkMap->GetPos().z-m_pkMap->GetSize()/2 ||
-		O2->GetPos().z>m_pkMap->GetPos().z+m_pkMap->GetSize()/2)
+	if(O2->GetWorldPosV().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().x>m_pkMap->GetPos().x+m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().z<m_pkMap->GetPos().z-m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().z>m_pkMap->GetPos().z+m_pkMap->GetSize()/2)
 		return NULL;
 	
 	
@@ -73,7 +73,7 @@ Collision* HeightMapCS::Collide_CSSphere(CSSphere* kOther)
 	Collision* tempdata = new Collision;
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kNewPos;
-	tempdata->m_fDistance2 = (kNewPos - O2->GetPos()).Length();	
+	tempdata->m_fDistance2 = (kNewPos - O2->GetWorldPosV()).Length();	
 	tempdata->m_kNormal2.Set(0,1,0);	
 	
 	tempdata->m_pkPP1 = m_pkPP;
@@ -92,10 +92,10 @@ Collision* HeightMapCS::Collide_CSBox(CSBox* kOther)
 	Object* O2=kOther->m_pkPP->GetObject();
 	
 	
-	if(O2->GetPos().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||
-		O2->GetPos().x>m_pkMap->GetPos().x+m_pkMap->GetSize()/2 ||
-		O2->GetPos().z<m_pkMap->GetPos().z-m_pkMap->GetSize()/2 ||
-		O2->GetPos().z>m_pkMap->GetPos().z+m_pkMap->GetSize()/2)
+	if(O2->GetWorldPosV().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().x>m_pkMap->GetPos().x+m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().z<m_pkMap->GetPos().z-m_pkMap->GetSize()/2 ||
+		O2->GetWorldPosV().z>m_pkMap->GetPos().z+m_pkMap->GetSize()/2)
 		return NULL;
 	
 	
@@ -115,7 +115,7 @@ Collision* HeightMapCS::Collide_CSBox(CSBox* kOther)
 	}
 	else
 	{
-		kNewPos=kOther->m_pkPP->GetObject()->GetPos();
+		kNewPos=kOther->m_pkPP->GetObject()->GetWorldPosV();
 	
 		float h=m_pkMap->Height(kNewPos.x,kNewPos.z);
 	
@@ -131,7 +131,7 @@ Collision* HeightMapCS::Collide_CSBox(CSBox* kOther)
 	Collision* tempdata = new Collision;
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kNewPos;
-	tempdata->m_fDistance2 = (kNewPos - O2->GetPos()).Length();	
+	tempdata->m_fDistance2 = (kNewPos - O2->GetWorldPosV()).Length();	
 	tempdata->m_kNormal2.Set(0,1,0);	
 	
 	tempdata->m_pkPP1 = m_pkPP;
