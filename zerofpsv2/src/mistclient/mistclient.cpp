@@ -158,6 +158,10 @@ void MistClient::Init()
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
+
+	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
+	pkMusic->Play();
 }
 
 void MistClient::RegisterResources()
