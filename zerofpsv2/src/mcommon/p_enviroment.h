@@ -91,13 +91,13 @@ class MCOMMON_API P_Enviroment: public Property {
 		void Update();
 		void ZoneChange(int iCurrent,int iNew);
 
-		void SetEnviroment(char* csEnviroment);
+		void SetEnviroment(const char* csEnviroment);
 		void ResetEnviroment();
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
-		void SetEnable(bool bNew) {m_bEnabled = bNew;};
+		void SetEnable(bool bNew);
 };
 
 MCOMMON_API Property* Create_P_Enviroment();

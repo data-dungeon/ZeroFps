@@ -134,7 +134,7 @@ void MistServer::Init()
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/gui_create_server.lua");
-		/*"data/script/gui/test2s.lua")*/;
+		//"data/script/gui/test2s.lua");
 
 	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);

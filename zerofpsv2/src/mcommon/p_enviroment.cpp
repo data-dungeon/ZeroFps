@@ -138,7 +138,7 @@ P_Enviroment::P_Enviroment()
 	bNetwork =		true;
 	m_bEnabled =	false;
 	
-	m_StrCurrentEnviroment = "Default";
+	m_StrCurrentEnviroment = "";
 
 }
 
@@ -211,24 +211,19 @@ void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 	if(zd)	
 	{	
 		m_StrCurrentEnviroment = zd->m_strEnviroment;
-		//SetNetUpdateFlag(true);
+		SetNetUpdateFlag(true);
 
 	}
 }
 
 
-void P_Enviroment::SetEnviroment(char* csEnviroment )
+void P_Enviroment::SetEnviroment(const char* csEnviroment )
 {
-	if(m_StrCurrentEnviroment == csEnviroment)
-		return;
-
-	m_StrCurrentEnviroment = csEnviroment;
-
 	//reset everything
 	ResetEnviroment();
 
 	//dont even try to load if theres no string
-	if(m_StrCurrentEnviroment == "")
+	if(strlen(csEnviroment) == 0)
 		return;
 
 	ZFResourceHandle* pkTempenv = new ZFResourceHandle;	
@@ -318,6 +313,8 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_Str(m_StrCurrentEnviroment.c_str());	
 	
+	if(m_StrCurrentEnviroment != "")
+		SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
@@ -326,12 +323,34 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	
 	pkNetPacket->Read_Str(temp);
 	
+	if(m_StrCurrentEnviroment  == temp)
+		return;
+			
+	m_StrCurrentEnviroment = temp;
+	
 	if(m_bEnabled)
-		SetEnviroment(temp);
+		SetEnviroment(m_StrCurrentEnviroment.c_str());
 	else
 		SetEnviroment("");
 		
 		
+}
+
+void P_Enviroment::SetEnable(bool bNew)
+{
+	if(bNew == m_bEnabled)
+		return;
+
+	m_bEnabled = bNew;
+
+	if(bNew)
+	{
+		SetEnviroment(m_StrCurrentEnviroment.c_str());
+	}	
+	else
+	{
+		SetEnviroment("");
+	}
 }
 
 Property* Create_P_Enviroment()
