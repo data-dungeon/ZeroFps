@@ -348,8 +348,6 @@ void DarkMetropolis::Input()
 	//check for selection
 	if(m_pkInputHandle->VKIsDown("select"))
 	{
-		printf("select\n");
-
 		if(!m_bSelectSquare)
 		{
 			Entity* pkEnt = GetTargetObject();

@@ -40,6 +40,7 @@ private:
 
 	void SwitchCharacter(bool bNext);
 	void SetCharacterStats(Entity* pkCharacterObject);
+	void OnEquip(int iItemID, DMContainer* pkDestContainer);
 
 	int m_iCurrentCharacterPage;
 	int m_iActiveCharacteInBase;

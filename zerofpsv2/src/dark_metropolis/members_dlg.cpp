@@ -397,6 +397,8 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 						if(m_pkMoveInfo->m_kFromContainer.pkContainer->MoveItem(
 							*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer, sx, sy))
 						{
+							OnEquip(*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer);
+
 							m_pkMoveInfo->m_pkMoveButton->SetPos(dx,dy,true,true); 
 							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
 								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
@@ -884,4 +886,9 @@ void CMembersDlg::UpdateCamera()
 			m_pkModellCamera->m_bRender = false;			
 		}
 	}
+}
+
+void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
+{
+
 }
