@@ -66,7 +66,8 @@ void DarkMetropolis::OnInit()
 
 	m_pkPlayerEntity =			NULL;
 	m_iPlayerEntityID =			-1;
-	
+
+	m_kPlayerwalkforce.Set(0,0,0);	
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -287,6 +288,10 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem()
 {	
+	if(m_pkPlayerEntity)
+		if(P_Tcs* pkTcs = (P_Tcs*)m_pkPlayerEntity->GetProperty("P_Tcs"))
+			pkTcs->ApplyForce(Vector3(0,0,0),m_kPlayerwalkforce);	
+
 /*
 
 	float t = m_pkFps->m_pkObjectMan->GetSimTime();
@@ -436,7 +441,7 @@ void DarkMetropolis::Input()
 			if(kVel.Length() > 0)
 				kVel = kVel.Unit() * 50.0;
 			
-			pkTcs->ClearExternalForces();
+			//pkTcs->ClearExternalForces();
 				
 			if(m_pkInputHandle->Pressed(MOUSERIGHT))
 				if(pkTcs->GetOnGround())
@@ -446,7 +451,8 @@ void DarkMetropolis::Input()
 						pkTcs->ApplyImpulsForce(Vector3(0,4,0));
 					}
 			
-			pkTcs->ApplyForce(Vector3(0,0,0),kVel);					
+			
+			m_kPlayerwalkforce = kVel;				
 			//pkTcs->SetWalkVel(kVel);				
 		}		
 
@@ -475,12 +481,21 @@ void DarkMetropolis::Input()
 				fDistance = 0.2;
 
 			//select first or 3d view camera
-			if(fDistance < 0.3)				
+			if(fDistance < 0.3)	
+			{	
 				m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+				
+				//disable player model in first person
+				if(P_Mad* pkMad = (P_Mad*)m_pkPlayerEntity->GetProperty("P_Mad"))
+					pkMad->SetVisible(false);
+			}
 			else			
+			{
 				m_pkCameraProp->SetType(CAM_TYPE3PERSON);
 				
-						 
+				if(P_Mad* pkMad = (P_Mad*)m_pkPlayerEntity->GetProperty("P_Mad"))
+					pkMad->SetVisible(true);	
+			}			 
 				
 			pkCam->Set3PDistance(fDistance);
 			
@@ -499,7 +514,7 @@ void DarkMetropolis::Input()
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 								
-				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.8,0) );											
+				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,1.5,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
 					if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))

@@ -377,7 +377,6 @@ void Tcs::UpdateForces()
 			//calculate rotation acceleration
 			m_kBodys[i]->m_kRotForce = m_kBodys[i]->m_kRotForce * m_kBodys[i]->m_fInertia;
 	
-			
 	}
 }
 

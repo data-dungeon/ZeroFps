@@ -22,6 +22,14 @@ Matrix4::Matrix4( float v1,float v2,float v3 ,float v4,
 	data[12]=v13;	data[13]=v14;	data[14]=v15;	data[15]=v16;	
 };
 
+Matrix4::Matrix4(	const Matrix3& kOther)
+{
+	data[0]=kOther.m_afData[0];	data[1]=kOther.m_afData[1];	data[2]=kOther.m_afData[2];	data[3]=0;
+	data[4]=kOther.m_afData[3];	data[5]=kOther.m_afData[4];	data[6]=kOther.m_afData[5];	data[7]=0;
+	data[8]=kOther.m_afData[6];	data[9]=kOther.m_afData[7];	data[10]=kOther.m_afData[8];	data[11]=0;	
+	data[12]=0;							data[13]=0;							data[14]=0;							data[15]=1;	
+}
+
 void Matrix4::Set( float v1,float v2,float v3 ,float v4,
 						float v5,float v6,float v7 ,float v8,						
 						float v9,float v10,float v11 ,float v12,

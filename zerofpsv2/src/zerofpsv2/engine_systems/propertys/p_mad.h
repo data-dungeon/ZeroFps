@@ -16,9 +16,10 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
-		Render*	m_pkRender;		// Ptr to render sys.
-		ZeroFps*	m_pkZeroFps;	// Ptr to zerofps sys.
-
+		Render*			m_pkRender;		// Ptr to render sys.
+		ZeroFps*			m_pkZeroFps;	// Ptr to zerofps sys.
+		ZShaderSystem* m_pkZShaderSystem;
+		
 		float		m_fLod;
 		bool		m_bIsVisible;
 		int		m_iShadowGroup;

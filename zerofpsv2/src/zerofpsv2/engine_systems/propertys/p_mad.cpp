@@ -10,6 +10,7 @@ P_Mad::P_Mad()
 {
 	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
 //	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
 	
 	strcpy(m_acName,"P_Mad");
@@ -30,30 +31,11 @@ P_Mad::P_Mad()
 
 void P_Mad::Update()
 {
-/*
-	Matrix4 kOldMat4 = m_pkObject->GetLocalRotM();
-	Quaternion QRot;
-	QRot.FromRotationMatrix(kOldMat4);
-	QRot.Normalize();
-	cout << "Playing with evil matrix" << endl;
-	Matrix4 kNewMat4;
-	kNewMat4.Identity();
-	QRot.ToRotationMatrix(kNewMat4);
-	m_pkObject->SetLocalRotM(kNewMat4);
-*/
-
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 
-/*	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) )//&& m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER) ) 
-   {
-
-		UpdateAnimation(m_pkZeroFps->GetFrameTime());
-		return;
-   }
-*/
-
+	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
 		
@@ -65,75 +47,47 @@ void P_Mad::Update()
 			m_fLastAnimationUpdateTime = fCurrentTime;
 			//UpdateAnimation(m_pkObjMan->GetSimDelta());
 			UpdateAnimation(m_pkZeroFps->GetFrameTime());
-		}
-		
+		}		
+
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 			return;
 		
+		/*
 		// Set Object LOD.
 		if(g_iMadLODLock == 0) {
 			Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
-//			float fDist = float( fabs(kDiff.Length()) );
-			//m_fLod = 1 - (fDist / 300);
-			//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
 		}
-
 		g_fMadLODScale = m_fLod;
+		*/
 
-
-		//set force transparent if not visible
-		//if(!m_bIsVisible)
-		//	m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
-
-/*
-		m_pkShader->MatrixPush();
-		m_pkShader->Reset();
-
-		m_pkShader->MatrixScale(m_fScale);
-		Matrix4 ori;
-		ori = m_pkObject->GetWorldRotM();
-		m_pkShader->MatrixMult(ori);
-		m_pkShader->MatrixTranslate(m_pkObject->GetIWorldPosV());
-
-		Draw_All(m_pkZeroFps->m_iMadDraw);
-
-		m_pkShader->MatrixPop();
-*/
-
-
-		glPushMatrix();
-			Vector3 pos;
-
-			pos = m_pkObject->GetIWorldPosV();
-			//m_pkShader->Reset();
-
-			
-			glTranslatef(pos.x,pos.y,pos.z);
-
-			Matrix4 ori;
-			ori = m_pkObject->GetWorldRotM();
-			glMultMatrixf(&ori[0]);
-			glScalef(m_fScale, m_fScale, m_fScale);
-
-			Draw_All(m_pkZeroFps->m_iMadDraw);
-		glPopMatrix();
-
-
-		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
-			glPushMatrix();
-				glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
-				glRotatef(90 ,1,0,0);
-//				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);
-				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
-			glPopMatrix();
+		if(m_bIsVisible)
+		{		
+			m_pkZShaderSystem->MatrixPush();
+				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV());
+				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkObject->GetWorldRotM()));
+				m_pkZShaderSystem->MatrixScale(m_fScale);
+	
+				Draw_All(m_pkZeroFps->m_iMadDraw);
+			m_pkZShaderSystem->MatrixPop();
 		}
 
+		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
+		{
+			m_pkZShaderSystem->MatrixPush();
+				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV());
+				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
+			m_pkZShaderSystem->MatrixPop();
+			
+			
+			//glPushMatrix();
+			//	glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
+			//	glRotatef(90 ,1,0,0);
+			//	m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
+			//glPopMatrix();
+		}
+		
+		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
-
-		//reset blend
-		//if(!m_bIsVisible)
-		//	m_pkShader->SetForceBlending(BLEND_MATERIAL);
-	
 	}
 }
 

@@ -78,6 +78,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float			m_fCameraMaxDistanceFromAgent;
 		
 		
+		Vector3		m_kPlayerwalkforce;
+		
 		GameMode		m_eGameMode;		
 		float			m_fDelayTimer;
 		bool			m_bActionPressed;

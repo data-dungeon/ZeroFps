@@ -32,7 +32,8 @@ class BASIC_API Matrix4
 					float v9,float v10,float v11 ,float v12,
 					float v13,float v14,float v15 ,float v16);
 		
-			
+		Matrix4(	const Matrix3& kOther);
+					
 // Operators
 		// Assignment 
 		Matrix4 operator=(const Matrix4 &kOther);
