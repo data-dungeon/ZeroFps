@@ -456,7 +456,7 @@ void MistClient::Input()
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
-		if(!DelayCommand() && m_pkInventoryDlg->m_iItemUnderCursor == -1)
+		if(!DelayCommand() && (m_pkInventoryDlg->m_iItemUnderCursor == -1 || m_bGuiCapture == false))
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{								

@@ -152,12 +152,12 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	if(m_iItemUnderCursor) // the application have found a item 
 		PickUpFromGround(bLeftButtonPressed, mx, my); // test if its time to place it under cursor.
 
-	if(m_pkInventoryWnd)
+	if(m_pkInventoryWnd->IsVisible()) // kolla så att inventory är synligt
 	{
 		for(int i=0; i<m_vkInventoryItemList.size(); i++)
 		{		
-			if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my)) // cursor is inside the rectangle of the slot.
-			{
+			if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my)) // cursor is inside the 
+			{																						 // rectangle of the slot.
 				// set selection border.
 				if(m_kMoveSlot.m_iIndex == -1)
 					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
@@ -181,8 +181,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					s_bRightMouseButtonPressed = true;
 
 					bool bOpen = true;
-					if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID)
-						bOpen = false;
+					if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID) // klickat på samma container
+						bOpen = false;															 // som redan är öppnad?
 
 					OpenContainerItem(bOpen, i, true);				
 				}
@@ -199,7 +199,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		}
 	}
 
-	if(m_pkContainerWnd->IsVisible())
+	if(m_pkContainerWnd->IsVisible()) // kolla så att containerfönstret är synligt
 	{
 		for(int i=0; i<m_vkContainerItemList.size(); i++)
 		{
@@ -210,8 +210,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				if(bLeftButtonPressed)
 				{				
-					if(m_kMoveSlot.m_iIndex == -1)
-						PickUpFromGrid(i,false,mx,my);
+					if(m_kMoveSlot.m_iIndex == -1) // inget slot under cursorn, plocka upp.
+						PickUpFromGrid(i,false,mx,my); 
 				}
 				else
 				{
