@@ -2244,15 +2244,16 @@ void EntityManager::SetUnderConstruction(int iId)
 			return;
 		}
 		
-		//find all static objects and attach them to zoneobject
 		int nrofstatic=0;
+/*		//find all static objects and attach them to zoneobject
+
 		for(i=0;i<kEntitys.size();i++)
 			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
 			{
 				kEntitys[i]->SetParent(zd->m_pkZone);
 				nrofstatic++;
 			}
-		
+*/		
 		//update zonedata		
 		zd->m_bUnderContruction = true;
 		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<< " static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
@@ -2313,15 +2314,15 @@ void EntityManager::CommitZone(int iId)
 		}
 		
 		
-		//find all static objects and attach them to staticentity
 		int nrofstatic=0;		
+/*		//find all static objects and attach them to staticentity
 		for(i=0;i<kEntitys.size();i++)
 			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
 			{	
 				kEntitys[i]->SetParent(pkStaticEntity);
 				nrofstatic++;
 			}
-	
+*/	
 	
 		//update zone data
 		zd->m_bUnderContruction = false;

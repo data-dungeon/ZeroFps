@@ -1081,9 +1081,17 @@ void MistServer::RotateActiveZoneObject()
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData) {
+		if(pkData) 
+		{
 			pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
-			}
+		
+			// Update PFind Mesh
+			P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
+			if(pkMesh) {
+				pkMesh->CalcNaviMesh();
+			}		
+		}
+		
 	}
 }
 
