@@ -142,8 +142,8 @@ void ModellXXX::ReadAnimation(char* filename)
 
 	FILE* fp = fopen(filename,"rt");
 
-	int iFrame = -1;
-	int iNumTris = -1;
+	int iFrame		= -1;
+	int iNumTris	= -1;
 
 	int iStartFrame = m_akFrames.size();
 	int iNumOfFrames = 0;

@@ -7,7 +7,7 @@ WalkerObject::WalkerObject() {
 	AddProperty(new CollisionProperty(&m_kPos,new float(0.5)));
 	AddProperty(new GravityProperty());
 	AddProperty(new FloatProperty());	
-	AddProperty(new WalkerAIProperty());
+//	AddProperty(new WalkerAIProperty());
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
@@ -22,7 +22,10 @@ WalkerObject::WalkerObject() {
 	int iRndMad = rand() % 4;
 	int iRndColor = rand() % 4;
 	
-	switch(iRndMad) {
+			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/torus.mad"));
+			//madp->SetReplaceTexture("c_green");
+
+			/*switch(iRndMad) {
 		case 0:		
 			madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cone.mad"));
 			madp->SetReplaceTexture("c_red");
@@ -40,7 +43,7 @@ WalkerObject::WalkerObject() {
 			madp->SetReplaceTexture("c_green");
 			break;
 		}
-
+*/
 
 	onGround = false;
 }
@@ -57,7 +60,7 @@ void WalkerObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
 		HeightMapObject *kO=dynamic_cast<HeightMapObject*>(pkOther);
 	
-		GetPos()=kPos+Vector3(0,.25,0);
+		GetPos()=kPos+Vector3(0,3.25,0);
 		m_kVel.y=0;
 		onGround=true;
 		//GetStatic()=true;

@@ -4,6 +4,10 @@ using namespace std;
 
 #include "zfobjectmanger.h"
 
+ZFObjectManger* ZFObjectManger::pkInstance;
+
+
+
 /*
 Manger:
 	Register:		Registrerar object i object name sys.
@@ -69,6 +73,8 @@ void CmdArgument::Set(const char* szCmdArgs)
 
 ZFObjectManger::ZFObjectManger()
 {
+	ZFObjectManger::pkInstance = this;
+
 #ifdef _DEBUG
 	cout << "Starting Object System" << endl;
 #endif
@@ -79,8 +85,13 @@ ZFObjectManger::~ZFObjectManger()
 #ifdef _DEBUG
 	cout << "Closing Object System" << endl;
 #endif
-
 }
+
+ZFObjectManger* ZFObjectManger::GetInstance()
+{
+	return ZFObjectManger::pkInstance;
+}
+
 
 void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkParent)
 {

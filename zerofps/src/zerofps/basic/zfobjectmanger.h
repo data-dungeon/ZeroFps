@@ -47,6 +47,11 @@ public:
 };
 
 
+#define DECLARE_SINGLETON( TClass)	\
+	static TClass* pkInstance;		\
+	static TClass* GetInstance();	\
+
+
 
 class BASIC_API ZFObjectManger
 {
@@ -55,6 +60,12 @@ private:
 	vector<ZFCmdData>		m_kCmdDataList;		// List of all cmd functions/variables.
 
 public:
+	public:
+	//DECLARE_SINGLETON(ZFObjectManger);
+
+	static ZFObjectManger* pkInstance;
+	static ZFObjectManger* GetInstance();
+
 	ZFObjectManger();
 	~ZFObjectManger();
 
@@ -67,7 +78,6 @@ public:
 
 	void PrintObjects(void);
 	void PrintObjectsHer(void);
-
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);

@@ -28,7 +28,7 @@ How to - ZeroFps
  
  D:	
 
- E:
+ E: 
 	Windows:
 		CVS:		Installera det och starta det en gång och stäng ned det.
 		SSH:		Installera SfSetup. 	

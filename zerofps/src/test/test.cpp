@@ -1,7 +1,7 @@
 #include "test.h"
 #include "walker.h"
 
-Test olle("MegaGame",1024,768,16);
+Test olle("MegaGame",640, 480,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -99,15 +99,15 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	*/
 	pkLight->Add(sol);
 	
-	
-/*	for( i=0;i<1;i++) {
-		Object *ball=new WalkerObject();
-		float x=227;	// + rand()%200;
-		float y=785;	// + rand()%100;
+	int i;
+	for( i=0;i<1;i++) {
+		Object *ball=new BallObject();
+		float x=289;	// + rand()%200;
+		float y=828;	// + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}*/
+	}
 
 	glEnable(GL_LIGHTING );
 	
@@ -126,7 +126,7 @@ void Test::OnInit(void) {
 
 	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(100,25,105);		
+	m_pkPlayer->GetPos()=Vector3(289,25,828);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
@@ -145,6 +145,8 @@ void Test::OnInit(void) {
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
+
+	ZFObjectManger::GetInstance()->PrintObjects();
 }
 
 void Test::OnServerStart(void)
@@ -262,7 +264,7 @@ void Test::input() {
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(END))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
-
+/*
 	if(pkInput->Pressed(HOME)) {
 		//pkFps->m_kPropertyFactory.Display();
 		cout << "Gaaaaaaaaaaaaa " << endl;
@@ -272,7 +274,7 @@ void Test::input() {
 		paket.SetTarget("192.168.0.111:4242");
 		pkFps->m_pkNetWork->Send(&paket);
 		}
-		
+*/		
 		
 	//Get mouse x,y		
 	int x,z;		
