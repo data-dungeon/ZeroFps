@@ -12,7 +12,6 @@
  
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-//#include "../mcommon/p_arcadecharacter.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../mcommon/ml_netmessages.h"
 
@@ -475,16 +474,7 @@ void MistClient::Input()
 			}
 		}	
 	}	
-	
-	//togle front view
-	if(m_pkInputHandle->VKIsDown("frontview") && !DelayCommand())
-	{
-		if(m_bFrontView)
-			m_bFrontView = false;
-		else
-			m_bFrontView = true;
-	}		
-	
+		
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -499,6 +489,24 @@ void MistClient::Input()
 	{
 		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
 		{	
+		
+			//togle front view
+			if(m_pkInputHandle->VKIsDown("frontview") && !DelayCommand())
+			{
+				static float fOldDistance = 0;
+				if(m_bFrontView)
+				{
+					m_bFrontView = false;
+					pkCam->Set3PDistance(fOldDistance);
+				}
+				else
+				{		
+					m_bFrontView = true;
+					fOldDistance = pkCam->Get3PDistance();
+				}
+			}				
+		
+			//capture mouse pointer?
 			if(!m_bGuiCapture)
 			{
 				pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
@@ -518,11 +526,14 @@ void MistClient::Input()
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() - m_pkZeroFps->GetFrameTime()*100);
 			}
 			
+			//get current distance
 			float fDistance = pkCam->Get3PDistance();
 			
+			//handle zoom
 			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
 			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
 			
+			//set max/min zoom distance
 			if(m_bFrontView)
 			{
 				//make sure camera is nto to far away

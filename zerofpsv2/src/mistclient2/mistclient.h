@@ -29,7 +29,7 @@ class MistClient :public Application, public ZGuiApp {
 
 		
 		//delay
-		float	m_fDelayTime;
+		float			m_fDelayTime;
 
 		Camera*		m_pkCamera;						//main camera
 		bool			m_bFrontView;

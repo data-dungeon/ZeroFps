@@ -419,11 +419,15 @@ void P_CharacterProperty::Update()
 		{
 			if(m_bOverHeadText)
 			{
-				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;
-		
-				m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
-								Vector3(0,1.0,0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
-						
+				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;		
+				float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(GetEntity()->GetWorldPosV());
+				if(fDistance < 15)
+				{
+					float fScale = 0.06 * fDistance;
+					
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
+									Vector3(0,1.0,0),fScale,strText,m_pkTextMaterial,m_pkFont,true);													
+				}
 			}
 		}	
 	}		
