@@ -2688,38 +2688,39 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 				SaveZone(i,strSaveDir);
 			}
 		}
-	}	
+	}
 
 	return true;
 }
 
 bool EntityManager::LoadWorld(string strLoadDir)
 {
-	//check if directory exist	
+	//check if directory exist
 	if(!m_pkBasicFS->DirExist(strLoadDir.c_str()))
 	{
 		cout<<"ERROR: save directory does not exist"<<endl;
 		return false;
 	}
 
-	//check that the worldtempdirectory is clean 
+	//check that the worldtempdirectory is clean
 	//first make sure it does exist
 	if(m_pkBasicFS->DirExist(m_kWorldDirectory.c_str()))
 	{
 		//try to remove all files in the directory
-		
+
 		//setup a filter, so we dont delete files that shuld not be deleted =)
 		vector<string> kFilter;
 		kFilter.push_back("dynamic.zone");
-		
+
 		vector<string> kFiles;
 		m_pkBasicFS->ListDirFilter(&kFiles,kFilter,m_kWorldDirectory.c_str());
-		
-		cout<<"going to remove these files to clean the temp directory, here goes the harddrive ;-)"<<endl;
+
+		//cout<<"going to remove these files to clean the temp directory, here goes the harddrive ;-)"<<endl;
+		cout<<"Cleaning temp directory"<<endl;
 		for(int i=0;i<kFiles.size();i++)
 		{
 			string file = m_kWorldDirectory+string("/")+kFiles[i];
-			cout<<file<<endl;
+			//cout<<file<<endl;
 			
 			if(!m_pkBasicFS->RemoveFile(file.c_str()))
 			{
