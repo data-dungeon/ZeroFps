@@ -353,7 +353,7 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iText
 	Vector3 d;	
 	
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT|GL_CULL_FACE);
+	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
 
@@ -403,7 +403,7 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iText
 
 	glPopMatrix();
 	glPopAttrib();
-//	glEnable(GL_CULL_FACE);	
+	glEnable(GL_CULL_FACE);	
 	
 }
 

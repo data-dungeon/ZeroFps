@@ -18,6 +18,9 @@ class PlayerControlProperty: public Property {
 		
 		ObjectManager *m_pkObjectMan;
 		CollisionManager *m_pkCollisionMan;
+		
+		float walk;
+		bool walking;
 				
 	public:
 		

@@ -234,6 +234,8 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
+//	glEnable(GL_CULL_FACE);
+	
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();

@@ -47,9 +47,10 @@ void Camera::Update(int iWidth,int iHeight) {
 	glMatrixMode(GL_MODELVIEW);
  	glLoadIdentity();													
 	
+	glRotatef(m_kRot.z,0,0,1);	
 	glRotatef(m_kRot.x,1,0,0);	
-	glRotatef(m_kRot.y,0,1,0);	
-	glRotatef(m_kRot.z,0,0,1);	 	
+	glRotatef(m_kRot.y,0,1,0);		
+	 	
 	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 	
 	

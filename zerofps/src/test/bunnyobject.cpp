@@ -6,6 +6,7 @@ BunnyObject::BunnyObject()
 
 	AddProperty(new GravityProperty());
 	AddProperty(new FloatProperty());	
+	
 
 	AddProperty("ModelProperty");
 	AddProperty(new BunnyAIProperty());
