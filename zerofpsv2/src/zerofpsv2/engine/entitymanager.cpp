@@ -592,11 +592,10 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		
 		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;
 	
-		//cout<<"nr of objects: "<<kObjects.size()<<endl;
-		//cout<<"starting from:"<<iObj<<endl;
-	
 	}
 	
+	int nso=0;
+	int obs=0;
 
 	for(; iObj < kObjects.size(); iObj++)	{
 		pkPackObj = kObjects[iObj];
@@ -605,10 +604,14 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 		if(pkPackObj->NeedToPack() == false)						continue;
 		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)				continue;
-		if(pkPackObj->HaveSomethingToSend(iClient) == false) {
+		
+		obs++;				//count objects to send
+		if(pkPackObj->HaveSomethingToSend(iClient) == false) 
+		{
 			//cout << "No need to send object" << endl;
+			nso++;	//count object not sent
 			continue;
-			}
+		}
 
 		NP.Write(pkPackObj->iNetWorkID);
 		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
@@ -644,13 +647,12 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		}
 	}
 	
-	//cout<<"size is:"<<iSentSize<<endl;
+	cout<<"Sent "<<obs-nso <<" object of "<<obs<<endl;
 	
 	//if zone object save this object is, so that we can continue at this object next frame
 	if(bZoneObject)
 	{	
 		m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = iObj;		
-		//cout<<"stoped at: "<<iObj<<endl;
 	}
 
 	NP.Write(iEndOfObject);
