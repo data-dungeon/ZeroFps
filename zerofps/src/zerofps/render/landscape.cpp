@@ -12,7 +12,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	
 	
 	int iSize=200;	
-	glTranslatef(CamPos.x,CamPos.y+iSize/4,CamPos.z);
+	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
 
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp",0));
@@ -229,8 +229,8 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
 			if(!CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
-									kmap->m_kPosition.y+44,
-									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,44,m_iSlicesize/2))
+									kmap->m_kPosition.y+34,
+									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,54,m_iSlicesize/2))
 				continue;
 		
 			//set lop steps depending on the distance to the center of the lod tile

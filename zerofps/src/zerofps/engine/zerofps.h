@@ -84,7 +84,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		void ToggleFullScreen(void);
 		
-		inline unsigned int GetTicks(void) {return (SDL_GetTicks()/1000.0);};
+		inline float GetTicks(void) {return (SDL_GetTicks()/1000.0);};
 		inline float GetFrameTime() {return (m_fFrameTime/1000.0);};
 		
 	
