@@ -25,6 +25,7 @@ class MistClient :public Application, public ZGuiApp {
 		{
 			FID_SAY,
 			FID_PLAYERLIST,
+			FID_KILLME,
 		};
 
 		Camera*		m_pkCamera;				//main camera
@@ -48,7 +49,8 @@ class MistClient :public Application, public ZGuiApp {
 		void Say(string strMsg);
 		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void RequestPlayerList();
-
+		void RequestKillMe();
+		
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	

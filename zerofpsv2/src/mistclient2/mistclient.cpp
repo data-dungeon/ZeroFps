@@ -52,6 +52,7 @@ void MistClient::OnInit()
 	//register commands
 	Register_Cmd("say",			FID_SAY);
 	Register_Cmd("playerlist",	FID_PLAYERLIST);
+	Register_Cmd("killme",		FID_KILLME);
 		
 	
 	//initiate our mainview camera
@@ -111,6 +112,12 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 			RequestPlayerList();			
 			break;
 		}
+	
+		case FID_KILLME:
+		{
+			RequestKillMe();
+			break;
+		}	
 	}
 }
 
@@ -331,6 +338,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 		
 			break;
 		}
+
 			
 		case MLNM_SC_SAY:
 		{
@@ -469,6 +477,14 @@ bool MistClient::ReadWriteServerList(bool bRead)
    }
 
    return true;
+}
+
+void MistClient::RequestKillMe()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_KILLME);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
 }
 
 void MistClient::RequestPlayerList()

@@ -841,6 +841,22 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_CS_REQ_KILLME:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				cout<<"Player "<<pkData->m_strPlayerName<<" requested to be killed, BYE BYE =D"<<endl;
+				
+				//move player to start
+				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+				{
+					pkCharacter->SetWorldPosV(GetPlayerStartPos());
+				}				
+			}
+					
+			break;
+		}		
+		
 		case MLNM_CS_CONTROLS:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
