@@ -86,7 +86,7 @@ void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 				&kTextureCoo.s,&kTextureCoo.t);
 			kFace.iIndex[v] = kFrame.akVertex.size();
 			kFrame.akVertex.push_back(kVertex);
-			
+
 			if(bMakeTextureCoo)
 				m_akTextureCoo.push_back(kTextureCoo);
 			else {
@@ -151,6 +151,94 @@ void ModellXXX::ReadBaseFrame(char* filename)
 	fclose(fp);
 	m_akFrames.clear();	
 }
+
+void ModellXXX::ReadCoreMesh(char* filename)
+{
+	Vector3		kVertex;
+	Vector3		kNormal;
+	MadFace		kFace;
+	Mad_VertexFrame kFrame;
+	MadTextureCoo	kTextureCoo;
+
+	bool bMakeTextureCoo = true;
+	bool bMakeTriangles = true;
+	if(m_akTextureCoo.size() > 0)
+		bMakeTextureCoo = false;
+	if(m_akFace.size() > 0)
+		bMakeTriangles = false;
+
+	char TextureName[256];
+	int iTexture;
+
+	float diff_s, diff_t;
+
+	cout << "CoreMesh: " << filename << " ";
+
+	char tmpstr[256];
+
+	FILE* fp = fopen(filename,"rt");
+
+	int iFrame = -1;
+	int iNumTris = -1;
+
+	bool done = false;
+
+	fscanf(fp, "%s",tmpstr);
+	fscanf(fp, "%s",tmpstr);
+	iNumTris = atoi(tmpstr);
+	int iBoneLink;
+
+	for(int i=0; i < iNumTris; i++)
+	{
+		fscanf(fp, "%s", TextureName);
+		iTexture = AddTexture(TextureName);
+
+		for(int v = 0; v < 3; v++)
+		{
+			fscanf(fp, " <%d,%f,%f,%f,%f,%f,%f,%f,%f>",&iBoneLink, &kVertex.x,&kVertex.y,&kVertex.z,
+				&kNormal.x,&kNormal.y,&kNormal.z,
+				&kTextureCoo.s,&kTextureCoo.t);
+			kFace.iIndex[v] = kFrame.akVertex.size();
+			kFrame.akVertex.push_back(kVertex);
+			kFrame.akNormal.push_back(kNormal);			
+
+			
+			m_iBoneLinks.push_back(iBoneLink);
+			
+			if(bMakeTextureCoo)
+				m_akTextureCoo.push_back(kTextureCoo);
+			else {
+				diff_s = m_akTextureCoo[(i*3) + v].s - kTextureCoo.s;
+				diff_t = m_akTextureCoo[(i*3) + v].t - kTextureCoo.t;
+				if(diff_s != 0.0 || diff_t != 0.0 ) {
+					cout << "Err: " << i << ", " << v << "  ";
+					cout << "<" << diff_s << ","<< diff_t << ">" << endl;
+					}
+				}
+		}
+
+		if(bMakeTriangles) {
+			m_akFace.push_back(kFace);
+			
+			// Skapa en submesh för varje polygon
+			Mad_CoreSubMesh newsub;
+			newsub.iFirstTriangle = i;
+			newsub.iNumOfTriangles = 1;
+			newsub.iTextureIndex = iTexture;
+			m_akSubMesh.push_back(newsub);
+			int smsize = m_akSubMesh.size();
+			}
+	}
+
+	m_akFrames.push_back(kFrame);
+
+	cout << endl;
+
+	fclose(fp);
+//	m_akFrames.clear();	
+}
+
+
 
 void ModellXXX::ReadAnimation(char* filename)
 {
@@ -419,11 +507,19 @@ void ModellXXX::Read( const char* filename )
 		if (!strcmp (ucpToken, "!filetype"))
 			cout << "Command filetype" << endl;
 		
+		if (!strcmp (ucpToken, "!add-fd"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command add-fd: " << ucpToken << endl;
+			ReadBaseFrame(ucpToken);
+		}
+
 		if (!strcmp (ucpToken, "!add-md"))
 		{
 			ucpToken = kMMScipt.GetToken();
 			cout << "Command add-md: " << ucpToken << endl;
-			ReadBaseFrame(ucpToken);
+			ReadCoreMesh(ucpToken);
+			//ReadBaseFrame(ucpToken);
 		}
 
 		if (!strcmp (ucpToken, "!add-meshanim"))
@@ -453,9 +549,9 @@ void ModellXXX::Read( const char* filename )
 
 bool ModellXXX::Export(MadExporter* mad, const char* filename)
 {
+	int i;
 	mad->m_akSkelleton = m_akSkelleton;
 	mad->m_kBoneAnim = m_kBoneAnim;
-	return true;
 
 	OptimizeSubMeshes();
 
@@ -463,7 +559,6 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 	int iTotalTriangles = m_akFace.size();
 	int iAntalFrames = m_akFrames.size();
 
-	int i;
 
 	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
 	pkMesh->kHead.iVersionNum		= 1;
@@ -495,9 +590,11 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 		pkMesh->akFaces[i].iIndex[2] = m_akFace[i].iIndex[2];
 	}
 
+	int framesize = m_akFrames.size();
 	pkMesh->akFrames		= m_akFrames;
 	pkMesh->akTextureCoo	= m_akTextureCoo;
-	pkMesh->akAnimation	= akAnimation;
+	pkMesh->akAnimation		= akAnimation;
+	pkMesh->akBoneConnections = m_iBoneLinks;
 
 
 	return true;

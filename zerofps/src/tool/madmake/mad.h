@@ -114,6 +114,7 @@ public:
 	vector<Mad_VertexFrame>			akFrames;
 	vector<Mad_CoreSubMesh>			akSubMeshes;
 	vector<Mad_CoreMeshAnimation>	akAnimation;
+	vector<int>						akBoneConnections;
 
 	void Save(FILE* fp);
 	void Load(FILE* fp);

@@ -21,9 +21,10 @@ public:
 //	vector<MadVertex>			m_akVertex;
 	vector<MadFace>				m_akFace;
 
-	vector<Mad_VertexFrame>		m_akFrames;
-	vector<MadTextureCoo>		m_akTextureCoo;
-	vector<Mad_Texture>			m_akTextureNames;
+	vector<Mad_VertexFrame>			m_akFrames;
+	vector<MadTextureCoo>			m_akTextureCoo;
+	vector<Mad_Texture>				m_akTextureNames;
+	vector<int>						m_iBoneLinks;
 
 	vector<Mad_CoreSubMesh>			m_akSubMesh;
 	vector<Mad_CoreMeshAnimation>	akAnimation;
@@ -38,6 +39,7 @@ private:
 
 	void ReadVertexFrame(FILE* fp,int iNumTriangles);
 
+	void ReadCoreMesh(char* filename);
 	void ReadBaseFrame(char* filename);		// Triangles / Textures
 	void ReadAnimation(char* filename);		// Position Data.
 	void ReadAnimationFrame(FILE* fp, int iNumTriangles);

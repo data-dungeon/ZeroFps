@@ -85,6 +85,9 @@ void Mad_CoreMesh::Save(FILE* fp)
 	// Write Texture Coo
 	fwrite((void *)&akTextureCoo[0],sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
 
+	// Write Bone Vikter
+	fwrite((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex,fp);
+
 	// Write Alla vertex Frames.
 	int size;
 	for(int i=0; i<kHead.iNumOfFrames; i++) {
@@ -140,8 +143,15 @@ void Mad_CoreMesh::Load(FILE* fp)
 		MadTextureCoo	kTexCoo;
 		fread(&kTexCoo,sizeof(MadTextureCoo),1,fp);
 		akTextureCoo.push_back(kTexCoo);
-
 		}
+
+	// Read Bone Vikter
+	for(i = 0; i<kHead.iNumOfVertex; i++) {
+		int iBoneVikt;
+		fread(&iBoneVikt,sizeof(int),1,fp);
+		akBoneConnections.push_back(iBoneVikt);
+		}
+
 
 	// Read Alla vertex Frames.
 	Vector3* pkVector = new Vector3 [kHead.iNumOfVertex];

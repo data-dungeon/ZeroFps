@@ -51,8 +51,25 @@ void MadExporter::Save_AD(const char* filename)
 	}
 
 	fclose(fp);
-
 }
+
+
+void MadExporter::Save_MD(const char* filename)
+{
+	FILE* MadFp = fopen(filename, "wb");
+	if(!MadFp) {
+		cout << "Failed to open '" << filename << "' for writing" << endl;
+		return;
+		}
+
+	// Write MD
+	m_kMesh[0].Save(MadFp);
+
+
+	fclose(MadFp);
+	
+}
+
 
 Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
 {
