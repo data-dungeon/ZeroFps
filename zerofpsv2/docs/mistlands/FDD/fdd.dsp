@@ -63,5 +63,9 @@ MTL=midl.exe
 
 SOURCE=.\nosort.txt
 # End Source File
+# Begin Source File
+
+SOURCE=.\readme.txt
+# End Source File
 # End Target
 # End Project
