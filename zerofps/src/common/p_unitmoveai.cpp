@@ -24,6 +24,7 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	move.y = -1;
 	
 	m_iCurrentState = -1;
+	m_fSpeedMod = 1;
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -136,7 +137,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				//remove old marker
 				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
 						
-			/*	if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
+/*				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
 					TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
 					m_pkPathFind->Reset();						
@@ -146,15 +147,12 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_pkObject->SetPos(m_kCurretDestination);					
 					m_pkObject->SetPos(m_kCurretDestination);					
 					return NULL;
-				}						
+				}						*/
 						
-<<<<<<< p_unitmoveai.cpp
-			*/
-=======
+
 				m_fSpeedMod = 1 - (m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
-				
-			
->>>>>>> 1.16
+						
+
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
 			
@@ -182,8 +180,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 
 bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 {
-	float fVel = 10;	
-		
+	float fVel = 10;			
 	fVel *= m_fSpeedMod; 
 		
 	if( (m_pkObject->GetPos() - kPos).Length() < (fVel * m_pkFps->GetGameFrameTime()))
@@ -209,13 +206,8 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 
 bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 {
-<<<<<<< p_unitmoveai.cpp
-	//cout<<"Path finding"<<endl;
-
-=======
 	cout<<"Path finding"<<endl;
-	
->>>>>>> 1.16
+
 	m_kStartPos = kStart;
 	m_kEndPos = kStop;
 

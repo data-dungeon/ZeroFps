@@ -39,17 +39,15 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 	}
 
 	memcpy(TEMP_TERRAIN, m_piMapTerrain, 
-		sizeof(int)*65536); // kopiera den riktiga terrängen till en temp variabel.
+		sizeof(int)*(m_siMapWidth*m_siMapWidth)); // kopiera den riktiga terrängen till en temp variabel.
 
 	int l = min(iStartPosX, iDestPosX); // 
 	int t = max(iStartPosY, iDestPosY); // T---R
  	int r = max(iStartPosX, iDestPosX); // |   |
 	int b = min(iStartPosY, iDestPosY); // L---B
 
-	printf("-------------------------%i\n", m_siMapWidth);
-
-	for(int y=b; y<=t; y++)
-		for(int x=l; x<=r; x++)
+	for(int y=1; y<m_siMapWidth+1; y++)
+		for(int x=1; x<m_siMapWidth+1; x++)
 		{
 			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
 			if( pkTile != NULL && pkTile->kUnits.size() > 0)

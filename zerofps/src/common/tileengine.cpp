@@ -103,7 +103,7 @@ Tile* TileEngine::GetTile(int x,int y)
 		return &m_kTiles[(y*m_iSizeX) +x];
 	else
 	{
-		cout<<"get tile out of index"<<endl;
+		cout<<"get tile out of index "<< x << " " << y << endl;
 		return NULL;
 	}
 }
