@@ -315,12 +315,12 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	GLfloat mat_specular[]={0,0,0,0};
 	GLfloat mat_diffuse[]={1,1,1,1};	
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
+	glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);	
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 	glEnable(GL_COLOR_MATERIAL);	
 	glColorMaterial(GL_FRONT,GL_DIFFUSE);
-	float black[4]={0.3,0.3,0.3,0};
+	float black[4]={0.2,0.2,0.2,0};
 	glMaterialfv(GL_FRONT,GL_AMBIENT,black);
 //	glMaterialfv(GL_FRONT,GL_SPECULAR,black);
 	
@@ -343,8 +343,8 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 											
 			if(step<1)//step cant be lower than 1
 				step=1;				
-			if(step>6)//if the step get to high it will look realy bad
-				step=6;			
+			if(step>7)//if the step get to high it will look realy bad
+				step=7;			
 				
 			bool flip=false;	//texture fliper
 			float t=0;
