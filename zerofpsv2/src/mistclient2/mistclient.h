@@ -55,6 +55,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		
 		//states
+		bool			m_bTargetRotate;
 		bool			m_bShowMenulevel;
 		bool			m_bQuickStart; 
 		string		m_strQuickStartAddress;	

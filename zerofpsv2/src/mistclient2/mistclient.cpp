@@ -40,25 +40,27 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.SetPreLogName("mistclient2");
 	g_ZFObjSys.Log_Create("mistclient2");
 	
-	m_iPickedEntityID = 	-1;
-	m_fDelayTime  = 		0;
+	m_iPickedEntityID 	= 	-1;
+	m_fDelayTime  			=	0;
 
-	m_iCharacterID = 		-1;
-	m_iTargetID =			-1;
-	m_bFrontView = 		false;
-	m_bShowMenulevel = 	false;
-	m_bQuickStart = 		false;
+	m_iCharacterID 		=	-1;
+	m_iTargetID 			=	-1;
+	m_bFrontView 			=	false;
+	m_bShowMenulevel 		= 	false;
+	m_bQuickStart 			=	false;
+	m_bTargetRotate		=	false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
 
-	m_strLoginName = "Psykosmurfan";
-   m_strLoginPW = "topsecret";
+	m_strLoginName			= "player";
+   m_strLoginPW 			= "topsecret";
 
-   RegisterVariable("ap_loginname", 		 &m_strLoginName,				CSYS_STRING);
-   RegisterVariable("ap_loginpw", 			 &m_strLoginPW,				CSYS_STRING);
-	RegisterVariable("ap_showmenulevel", 	 &m_bShowMenulevel,			CSYS_BOOL);
-	RegisterVariable("ap_quickstart",		 &m_bQuickStart,				CSYS_BOOL);
-	RegisterVariable("ap_quickstartadress", &m_strQuickStartAddress,	CSYS_STRING);
+   RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
+   RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
+	RegisterVariable("ap_showmenulevel", 	 	&m_bShowMenulevel,			CSYS_BOOL);
+	RegisterVariable("ap_quickstart",		 	&m_bQuickStart,				CSYS_BOOL);
+	RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
+	RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
 
 	m_bGuiCapture = false;
 	m_iNumBuffIcons = 0;
@@ -742,7 +744,7 @@ void MistClient::Input()
 			
 			
 			//rotate towards target
-			if(m_iTargetID != -1)
+			if(m_bTargetRotate && m_iTargetID != -1)
 			{
 				if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(m_iTargetID))
 				{
