@@ -212,10 +212,8 @@ bool Gui::InitSkins()
 	int bda = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner_a.bmp", 0);
 	int arrow_prev_up = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_up.bmp", 0);
 	int arrow_prev_down = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_down.bmp", 0);
-	int arrow_prev_end = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_end.bmp", 0);
 	int arrow_next_up = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_up.bmp", 0);
 	int arrow_next_down = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_down.bmp", 0);
-	int arrow_next_end = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_end.bmp", 0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -251,14 +249,10 @@ bool Gui::InitSkins()
 		new ZGuiSkin(arrow_prev_up, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_prev_down"), 
 		new ZGuiSkin(arrow_prev_down, false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_prev_end"), 
-		new ZGuiSkin(arrow_prev_end, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_up"), 
 		new ZGuiSkin(arrow_next_up, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_down"), 
 		new ZGuiSkin(arrow_next_down, false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_end"), 
-		new ZGuiSkin(arrow_next_end, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("tabbn_back"), 
 		new ZGuiSkin(128,128,128,92,92,92,1)));
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("tabbn_front"), 
@@ -304,6 +298,30 @@ int Gui::GetTexture(char* strName)
 		return ret->second;
 	
 	return fail_texture;
+}
+
+ZGuiTabCtrl* Gui::CreateTabbedDialog(char* szName, int iWndID, int iMainWndID, 
+									int x, int y, int w, int h, 
+									vector<string> kTabNames)
+{
+	ZGuiTabCtrl* pkTab = new ZGuiTabCtrl(Rect(x,y,x+w,y+h),NULL,true,iWndID);
+	pkTab->SetSkin(GetSkin("menu"));
+	pkTab->SetFont(m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+	pkTab->SetNextButtonSkin( GetSkin("arrow_next_up"), 
+		GetSkin("arrow_next_down"), GetSkin("arrow_next_up"));
+	pkTab->SetPrevButtonSkin( GetSkin("arrow_prev_up"), 
+		GetSkin("arrow_prev_down"), GetSkin("arrow_prev_up"));
+	pkTab->InsertTabSkin(0, GetSkin("tabbn_back"));
+	pkTab->InsertTabSkin(1, GetSkin("tabbn_front"));
+	
+	for(unsigned int i=0; i<kTabNames.size(); i++)
+		pkTab->InsertPage(i, (char*) kTabNames[i].c_str(), 0);
+
+	pkTab->SetCurrentPage(0);
+
+	m_pkEdit->pkGui->AddMainWindow(iMainWndID,pkTab,szName,MAINWINPROC,false);
+
+	return pkTab;
 }
 
 ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
@@ -812,20 +830,12 @@ bool Gui::CreateWorkPanel()
 {
 	int w = 224, y = 20, h = 224, x = m_pkEdit->m_iWidth-w;
 
-	m_pkWorkPanel = new ZGuiTabCtrl(Rect(x,y,x+w,y+h),NULL,true,12314124);
-	m_pkWorkPanel->SetSkin(GetSkin("menu"));
-	m_pkWorkPanel->SetFont(m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
-	m_pkWorkPanel->SetNextButtonSkin( GetSkin("arrow_next_up"), 
-		GetSkin("arrow_next_down"), GetSkin("arrow_next_up"));
-	m_pkWorkPanel->SetPrevButtonSkin( GetSkin("arrow_prev_up"), 
-		GetSkin("arrow_prev_down"), GetSkin("arrow_prev_up"));
-	m_pkWorkPanel->InsertTabSkin(0, GetSkin("tabbn_back"));
-	m_pkWorkPanel->InsertTabSkin(1, GetSkin("tabbn_front"));
-	m_pkWorkPanel->InsertPage(0, "Paint terrain", 0);
-	m_pkWorkPanel->InsertPage(1, "Elevation tool", 0);
-	m_pkWorkPanel->SetCurrentPage(0);
+	vector<string> akTabNames;
+	akTabNames.push_back("Paint terrain");
+	akTabNames.push_back("Elevation tool");
 
-	m_pkEdit->pkGui->AddMainWindow(2321323,m_pkWorkPanel,"WorkPanel",MAINWINPROC,false);
+	m_pkWorkPanel = CreateTabbedDialog("WorkPanel",12314124,2321323,
+		x,y,w,h,akTabNames);
 
 	ZGuiWnd* pkPage1 = m_pkWorkPanel->GetPage(0);
 
@@ -840,9 +850,7 @@ bool Gui::CreateWorkPanel()
 	int iHeight = CreateRadiobuttons(pkPage1, vkNames, 
 		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 30, 16);
 
-	this->CheckRadioButton("BrushSizeRadioGroup", "Medium");
+	CheckRadioButton("BrushSizeRadioGroup", "Medium");
 
 	return true;
 }
-
-

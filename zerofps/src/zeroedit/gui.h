@@ -63,6 +63,8 @@ private:
 	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 		int h, char* strText);
 	ZGui* GetGUI() { return m_pkEdit->pkGui; }
+	ZGuiTabCtrl* CreateTabbedDialog(char* szName, int iWndID, int iMainWndID, 
+		int x, int y, int w, int h, vector<string> kNames);
 	
 	ZeroEdit* m_pkEdit;
 	
