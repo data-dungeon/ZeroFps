@@ -81,7 +81,7 @@ void Tcs::UpdateVel()
 		//apply gravity if enabled
 		if(m_kBodys[i]->m_bGravity)
 		{
-			Vector3 kVel = m_kBodys[i]->GetObject()->GetVel() + Vector3(0,-2,0)*m_pkZeroFps->GetGameFrameTime();
+			Vector3 kVel = m_kBodys[i]->GetObject()->GetVel() + Vector3(0,-4,0)*m_pkZeroFps->GetGameFrameTime();
 			m_kBodys[i]->GetObject()->SetVel(kVel);
 		}
 	}
