@@ -1499,13 +1499,13 @@ void EntityManager::Test_DrawZones()
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 	
 		if(m_kZones[i].m_bUnderContruction)
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,0,1), 3 );
+			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zonebuild"), 3 );
 
 		if(m_kZones[i].m_bActive) {
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
+			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
 			}
 		else {
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
+			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
 			}	
 
 /*			if(m_kZones[i].m_bUnderContruction)
@@ -1514,9 +1514,11 @@ void EntityManager::Test_DrawZones()
 			}*/
 	
 		if(m_bDrawZoneConnections) {
+			Vector3 kConnectColor = m_pkRender->GetEditColor("inactive/zonebuild");
+			glColor3f( kConnectColor.x,kConnectColor.y,kConnectColor.z);
+			
 			for(unsigned int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
 			{	
-				glColor4f(0,0,1,0);
 				m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
 			}
 		}

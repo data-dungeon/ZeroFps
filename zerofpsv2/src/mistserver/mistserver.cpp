@@ -272,7 +272,7 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 		kVertexList.push_back(kVertex);
 	}
 
-	m_pkRender->DrawCircle(kVertexList, Vector3(0.8,0.8,0));
+	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
 
 	kVertexList.clear();
 	for(int i=0; i<360; i+=(int)12.25) {
@@ -283,7 +283,7 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 		kVertexList.push_back(kVertex);
 	}
 
-	m_pkRender->DrawCircle(kVertexList, Vector3(1,1,0));
+	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
 }
 
 void MistServer::DrawSelectedEntity()
@@ -301,9 +301,9 @@ void MistServer::DrawSelectedEntity()
 			Vector3 kMax = pkEnt->GetWorldPosV() + fRadius/2;
 
 			if(m_iCurrentObject == (*itEntity))
-				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,1 ) );
+				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
 			else
-				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
 			}
 	}
 }
@@ -348,24 +348,35 @@ void MistServer::OnIdle()
 	
 	if(m_iEditMode == EDIT_HMAP) {
 		HeightMap* pkMap = SetPointer();
-		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
+		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 		}
 
 	if(m_iEditMode == EDIT_ZONES)
 	{
 		UpdateZoneMarkerPos();		
-		DrawZoneMarker(m_kZoneMarkerPos);		
+		//DrawZoneMarker(m_kZoneMarkerPos);		
 	}
 	
-	DrawSelectedEntity();
 	
 	if(m_iEditMode == EDIT_OBJECTS)
 	{	
 		UpdateObjectMakerPos();
-		DrawCrossMarker(m_kObjectMarkerPos);		
+		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
 
 	PathTest();
+}
+
+void MistServer::RenderInterface(void)
+{
+	DrawSelectedEntity();
+	if(m_iEditMode == EDIT_HMAP) {
+		HeightMap* pkMap = SetPointer();
+		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
+		}
+
+	if(m_iEditMode == EDIT_ZONES)		DrawZoneMarker(m_kZoneMarkerPos);
+	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 }
 
 void MistServer::OnSystem()
@@ -548,8 +559,8 @@ void MistServer::Input_EditZone()
 	if(m_pkInput->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
 
 
-	if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
-   if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
+//	if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
+// if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
 
 }
 
@@ -1341,12 +1352,13 @@ void MistServer::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpt
 void MistServer::DrawZoneMarker(Vector3 kPos)
 {
 	Vector3 bla = m_kZoneSize / 2;
-	m_pkRender->DrawAABB(kPos-bla,kPos+bla,Vector3(1,1,1));
+	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
 }
 
 
 void MistServer::DrawCrossMarker(Vector3 kPos)
 {
+	// Set Color here.
 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
 	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
 	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	
@@ -2299,3 +2311,7 @@ char* MistServer::GetSelEnviromentString()
 
 	return NULL;
 }
+
+
+
+

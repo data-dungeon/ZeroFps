@@ -42,6 +42,15 @@ enum PolygonMode
 	LINE 
 };
 
+class EditColor
+{
+public:
+	EditColor(string strName, Vector3 kColor) { m_strName = strName; m_kColor = kColor;	 }
+	string	m_strName;
+	Vector3	m_kColor;
+};
+
+
 /**	\brief	Render SubSystem
 		\ingroup Render
 */
@@ -190,6 +199,10 @@ class RENDER_API Render : public ZFSubSystem {
 		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
 
 		void DrawPSystem( PSystem *pkPSystem );
+
+		vector<EditColor>	m_kEditColor;
+		void Setup_EditColors();
+		Vector3	GetEditColor(string strName);
 
 };
 

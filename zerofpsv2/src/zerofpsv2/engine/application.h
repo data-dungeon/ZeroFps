@@ -59,6 +59,9 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)=0;
 		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)=0;
 
+		virtual void RenderInterface(void)=0;
+
+
 		virtual void OnServerStart(void)=0;
 		virtual void OnClientStart(void)=0;
 };

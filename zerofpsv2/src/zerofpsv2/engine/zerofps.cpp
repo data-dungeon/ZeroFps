@@ -561,12 +561,15 @@ void ZeroFps::Draw_RenderTargets()
 	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
 	{
 		SetCamera(m_kRenderTarget[i]);
+		GetCam()->ClearViewPort();	
+		
 		UpdateCamera();
 		if(m_bDrawAxisIcon)
 			m_pkRender->Draw_AxisIcon(5);
 		if(m_bRenderOn == 1)
 			m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		m_pkObjectMan->Test_DrawZones();
+		m_pkApp->RenderInterface();
 	}
 }
 

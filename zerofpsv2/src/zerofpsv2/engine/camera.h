@@ -55,6 +55,8 @@ class ENGINE_API Camera
 		float m_fAppWidth;
 		float m_fAppHeight;
 
+		void	DrawGrid();
+		float	m_fGridSpace;
 
 	public:
 		Frustum m_kFrustum;

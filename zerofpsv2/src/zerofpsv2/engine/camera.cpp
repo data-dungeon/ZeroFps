@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "../render/render.h"
 #include "../ogl/zfpsgl.h"
 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
@@ -13,9 +14,10 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_strName = "A Camera";
 	
-	m_kOrthoSize.Set(320,240,0);
+	m_kOrthoSize.Set(15,15,0);	// Defualt Size is 50 x 50 meters
 	
 	m_eMode = CAMMODE_PERSP; //just initiating it
+	m_fGridSpace = 1.0;
 }
 
 void Camera::UpdateAll(int iWidth,int iHeight) 
@@ -184,9 +186,81 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 	m_fHeight=fH;
 }
 
+void Camera::DrawGrid()
+{
+	if(m_eMode == CAMMODE_PERSP)
+		return;
+
+	Vector3 kStart, kEnd;
+	float		fStart;
+	int		iStart;
+	Vector3	kColor;
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+
+	//Vector3 kFrom, kTo;
+	float fFromX	= GetPos().Dot(m_kOrthoAxisX) - m_kOrthoSize.x;
+	float fToX		= GetPos().Dot(m_kOrthoAxisX) + m_kOrthoSize.x;
+	float fFromY	= GetPos().Dot(m_kOrthoAxisY) - m_kOrthoSize.y;
+	float fToY		= GetPos().Dot(m_kOrthoAxisY) + m_kOrthoSize.y;
+
+	// Draw Grid Axis
+	kColor = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"))->GetEditColor("grid/axis");
+	glColor3f(kColor.x,kColor.y,kColor.z);
+	glLineWidth(2.0);
+	glBegin(GL_LINES);	
+		kStart	= m_kOrthoAxisX * fFromX	+ m_kOrthoAxisY * 0;	
+		kEnd		= m_kOrthoAxisX * fToX		+ m_kOrthoAxisY * 0;	
+		glVertex3f(kStart.x,kStart.y,kStart.z);
+		glVertex3f(kEnd.x,kEnd.y,kEnd.z);
+		kStart	= m_kOrthoAxisX * 0	+ m_kOrthoAxisY * fFromY;	
+		kEnd		= m_kOrthoAxisX * 0		+ m_kOrthoAxisY * fToY;	
+		glVertex3f(kStart.x,kStart.y,kStart.z);
+		glVertex3f(kEnd.x,kEnd.y,kEnd.z);
+	glEnd();
+	glLineWidth(1.0);
+
+	kColor = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"))->GetEditColor("grid/line");
+	glColor3f(kColor.x,kColor.y,kColor.z);
+
+	glBegin(GL_LINES);	
+
+
+
+
+	iStart = fFromX / m_fGridSpace;
+	fStart = m_fGridSpace * (float)iStart;
+
+	// Draw X-Grid Lines
+	for(int x = fStart; x < fToX; x += m_fGridSpace) {
+		kStart	= m_kOrthoAxisX * x + m_kOrthoAxisY * fFromY;	
+		kEnd		= m_kOrthoAxisX * x + m_kOrthoAxisY * fToY;	
+		glVertex3f(kStart.x,kStart.y,kStart.z);
+		glVertex3f(kEnd.x,kEnd.y,kEnd.z);
+		}
+
+	// Draw Y-Grid Lines
+	iStart = fFromY / m_fGridSpace;
+	fStart = m_fGridSpace * (float)iStart;
+	for(int y = fStart; y < fToY; y += m_fGridSpace) {
+		kStart	= m_kOrthoAxisX * fFromX	+ m_kOrthoAxisY * y;	
+		kEnd		= m_kOrthoAxisX * fToX		+ m_kOrthoAxisY * y;	
+		glVertex3f(kStart.x,kStart.y,kStart.z);
+		glVertex3f(kEnd.x,kEnd.y,kEnd.z);
+		}
+
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+
+}
+
 void Camera::ClearViewPort() 
 {
+	glClearColor(0.631, 0.631, 0.631,0.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+	DrawGrid();
 }
 
 /* Returns a string that describes the camera. */

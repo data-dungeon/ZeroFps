@@ -35,6 +35,8 @@
 
 #include "playerdatabase.h"
 
+
+
 /**	\brief	Da MistServer
 		\ingroup MistServer
 */
@@ -209,6 +211,7 @@ class MistServer :public Application , public ZGuiApp {
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass);
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
+		void RenderInterface(void);
 
 		void AutoSetZoneSize(string strName);
 

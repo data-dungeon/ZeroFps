@@ -54,6 +54,8 @@ Render::Render()
 
 	
 	SetFont("data/textures/text/devstr.bmp");
+
+	Setup_EditColors();
 }
 
 bool Render::StartUp()
@@ -2007,6 +2009,62 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	glPopMatrix();
 }
 
+/*	Set the colors that are used in the editor to display information.	*/
+void Render::Setup_EditColors()
+{
+	m_kEditColor.push_back( EditColor(string("3dview/background"),		Vector3(0.631, 0.631, 0.631)));	
+	m_kEditColor.push_back( EditColor(string("grid/line"),				Vector3(0.250, 0.250, 0.250)));	
+	m_kEditColor.push_back( EditColor(string("grid/axis"),				Vector3(0,0,0)));	
+
+	// Markers
+	m_kEditColor.push_back( EditColor(string("zonemarker"),				Vector3(1,1,1) ));	
+	m_kEditColor.push_back( EditColor(string("hmapbrush"),				Vector3(0.8, 0.8, 0.0) ));	
+
+	// Active - Selected Items in the editor.
+	m_kEditColor.push_back( EditColor(string("active/zone"),				Vector3(1,1,1) ));	
+	m_kEditColor.push_back( EditColor(string("active/entity"),			Vector3(1,1,1) ));	
+	m_kEditColor.push_back( EditColor(string("active/firstentity"),	Vector3(0.263,1.000,0.639) ));	
+
+	// Inactive - Items not selected.
+	m_kEditColor.push_back( EditColor(string("inactive/zonebuild"),	Vector3(0,		1,			1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneon"),		Vector3(0,		0,			1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneoff"),		Vector3(0.000, 0.016, 0.376) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/entity"),		Vector3(1,1,1) ));	
+
+	// Std Colors
+	m_kEditColor.push_back( EditColor(string("black"),		Vector3( 0,0,0) ));	
+	m_kEditColor.push_back( EditColor(string("gray"),		Vector3( 0.5,0.5,0.5) ));
+	m_kEditColor.push_back( EditColor(string("silver"),	Vector3( 0.753,0.753,0.753) ));	
+	m_kEditColor.push_back( EditColor(string("white"),		Vector3(1,1,1) ));	
+	m_kEditColor.push_back( EditColor(string("maroon"),	Vector3(0.5,0,0) ));	
+	m_kEditColor.push_back( EditColor(string("red"),		Vector3(1,0,0) ));	
+	m_kEditColor.push_back( EditColor(string("purple"),	Vector3(0.5,0,0.5) ));	
+	m_kEditColor.push_back( EditColor(string("fuchsia"),	Vector3(1,0,1) ));	
+	m_kEditColor.push_back( EditColor(string("green"),		Vector3(0,0.5,0) ));	
+	m_kEditColor.push_back( EditColor(string("lime"),		Vector3(0,1,0) ));	
+	m_kEditColor.push_back( EditColor(string("olive"),		Vector3(0.5,0.5,0) ));	
+	m_kEditColor.push_back( EditColor(string("yellow"),	Vector3(1,1,0) ));	
+	m_kEditColor.push_back( EditColor(string("navy"),		Vector3(1,0,0.5) ));	
+	m_kEditColor.push_back( EditColor(string("blue"),		Vector3(0,0,1) ));	
+	m_kEditColor.push_back( EditColor(string("teal"),		Vector3(0,0.5,0.5) ));	
+	m_kEditColor.push_back( EditColor(string("aqua"),		Vector3(0,1,1) ));	
+	
+
+}
+
+Vector3 Render::GetEditColor(string strName)
+{
+	Vector3 kColor(1,0,0);
+
+	for(int i=0; i<m_kEditColor.size(); i++) 
+	{
+		if(m_kEditColor[i].m_strName == strName)
+			return m_kEditColor[i].m_kColor;
+	}
+
+
+	return kColor;
+}
 
 
 RENDER_API void RenderDLL_InitExtGL(void)

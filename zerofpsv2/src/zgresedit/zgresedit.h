@@ -42,6 +42,8 @@ class ZGResEdit : public Application, public ZGuiApp
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid() {return true;};
+		void RenderInterface(void) { }
+
 
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) { return true; }
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass) {};
