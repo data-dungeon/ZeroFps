@@ -7,6 +7,10 @@
 #include "zguicheckbox.h"
 #include "zguitreebox.h"
 
+const int BUTTON_SIZE = 16;
+const int VERT_ROW_SPACE = 2;
+const int HORZ_ROW_SPACE = 2;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -16,10 +20,11 @@ ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
 	m_pkVertScrollbar = NULL;
 	m_pkHorzScrollbar = NULL;
-	m_pkCloseBnSkin = new ZGuiSkin(0,255,0,0,0,0,0);
-	m_pkOpenBnSkin = new ZGuiSkin(255,0,0,0,0,0,0);
+
 	m_iID = 33212;
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
+
+	CreateInternalControls();
 }
 
 ZGuiTreebox::~ZGuiTreebox()
@@ -27,13 +32,64 @@ ZGuiTreebox::~ZGuiTreebox()
 
 }
 
-ZGuiTreebox::Branch* ZGuiTreebox::AddItem(ZGuiTreebox::Branch* pkParent, 
-										  char* szText, int iSkin)
+ZGuiTreebox::Node* ZGuiTreebox::AddItem(Node* pkParent, 
+										char* szText, 
+										unsigned char ucSkinNormal,
+										unsigned char ucSkinClosed,
+										unsigned char ucSkinOpen)
 {
-	const int BUTTON_SIZE = 16;
+	Node* pkNewBranch = CreateNode(pkParent, szText, ucSkinNormal,
+		ucSkinClosed, ucSkinOpen);
+
+	return pkNewBranch;
+}
+
+void ZGuiTreebox::ShowNode(vector<Node*> itList, bool bShow)
+{
+	for(unsigned int i=0; i<itList.size(); i++)
+	{
+		if(bShow)
+			itList[i]->pkButton->Show();
+		else
+			itList[i]->pkButton->Hide();
+
+		if( itList[i]->m_kChilds.empty() == false )
+			if( itList[i]->bChildListIsOpen == true)
+				ShowNode(itList[i]->m_kChilds, bShow);
+	}
+}
+
+bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
+{
+	if(iCode == NCODE_CLICK_UP)
+	{
+		for(list<Node*>::iterator it = m_kNodeList.begin(); 
+			it != m_kNodeList.end(); it++)
+			{
+				if((*it)->pkButton == pkWnd)
+				{
+					bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked();
+					ShowNode((*it)->m_kChilds, bShow);
+					OpenNode((*it),bShow);
+				}
+			}
+	}
+	return true;
+}
+
+void ZGuiTreebox::CreateInternalControls()
+{
+
+}
+
+ZGuiTreebox::Node* ZGuiTreebox::CreateNode( Node* pkParent, char* szText, 
+											unsigned char uiSkinNormal,
+											unsigned char uiSkinClosed,
+											unsigned char uiSkinOpen)
+{
 	const int ITEM_WIDTH = 100;
 
-	Branch* pkNewItem = NULL;
+	Node* pkNewItem = new Node;
 
 	int x, y;
 
@@ -43,54 +99,111 @@ ZGuiTreebox::Branch* ZGuiTreebox::AddItem(ZGuiTreebox::Branch* pkParent,
 	}
 	else
 	{
-		x = pkParent->pkOpenCloseButton->GetWndRect().Left;
-		y = pkParent->pkOpenCloseButton->GetWndRect().Top;
+		int iNumItems = pkParent->m_kChilds.size();
+
+		x = pkParent->pkButton->GetWndRect().Right + HORZ_ROW_SPACE;
+		y = pkParent->pkButton->GetWndRect().Bottom + VERT_ROW_SPACE +
+			iNumItems*(BUTTON_SIZE+VERT_ROW_SPACE);
+
+		pkParent->m_kChilds.push_back(pkNewItem); // add this child to parent list.
 	}
 
-	pkNewItem = new Branch;
-	pkNewItem->pkParent = pkParent;
-	pkNewItem->bOpen = false;
+	bool bHaveChilds = false;
+
+	pkNewItem->pkPrev = pkParent;
+	pkNewItem->bChildListIsOpen = false;
 	Rect rcButton = Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE);
-	pkNewItem->pkOpenCloseButton = new ZGuiCheckbox(
-		rcButton, this, true, m_iID++);
-	pkNewItem->pkOpenCloseButton->SetMoveArea(
-		pkNewItem->pkOpenCloseButton->GetScreenRect());
-	pkNewItem->pkOpenCloseButton->SetButtonCheckedSkin(m_pkCloseBnSkin);
-	pkNewItem->pkOpenCloseButton->SetButtonUncheckedSkin(m_pkOpenBnSkin);
-	pkNewItem->pkOpenCloseButton->SetText(szText);
-	m_akBranshes.push_back(pkNewItem);
+	ZGuiCheckbox* pkButton = (pkNewItem->pkButton = 
+		new ZGuiCheckbox(rcButton, this, (pkParent == NULL), m_iID++));
+	
+	pkButton->SetMoveArea(pkNewItem->pkButton->GetScreenRect());
+	pkButton->SetText(szText);
+
+	if(bHaveChilds)
+	{
+		pkButton->SetButtonCheckedSkin(GetItemSkin(uiSkinOpen));
+		pkButton->SetButtonUncheckedSkin(GetItemSkin(uiSkinClosed));
+	}
+	else
+	{
+		pkButton->SetButtonCheckedSkin(GetItemSkin(uiSkinNormal));
+		pkButton->SetButtonUncheckedSkin(GetItemSkin(uiSkinNormal));
+	}
+
+	m_kNodeList.push_back(pkNewItem);
 
 	return pkNewItem;
 }
 
-bool ZGuiTreebox::Render( ZGuiRender* pkRenderer )
+bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
 {
-	if(!IsVisible())
+	if(uiIndex == m_kItemSkinList.size())
+	{
+		m_kItemSkinList.push_back(pkSkin);
 		return true;
+	}
 
-	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect()); 
-	pkRenderer->RenderBorder(GetScreenRect()); 
+	unsigned int counter = 0;
+	list<ZGuiSkin*>::iterator itSkin = m_kItemSkinList.begin();
+	for( ; itSkin != m_kItemSkinList.end(); itSkin++)
+	{
+		if(counter == uiIndex)
+		{
+			m_kItemSkinList.insert(itSkin,pkSkin);
+			return true;
+		}
+	}
 
-	if(m_pkVertScrollbar && m_pkVertScrollbar->IsVisible())
-		m_pkVertScrollbar->Render( pkRenderer );
-	if(m_pkHorzScrollbar && m_pkHorzScrollbar->IsVisible())
-		m_pkHorzScrollbar->Render( pkRenderer );
+	printf("Failed to insert branch skin in tree controll!. Bad index.\n\n\n");
+	return false;
+}
 
-	for( vector<Branch*>::iterator it = m_akBranshes.begin(); 
-		 it != m_akBranshes.end(); it++)
-		 {
-			(*it)->pkOpenCloseButton->Render( pkRenderer );
+unsigned int ZGuiTreebox::GetNumItemSkins()
+{
+	return m_kItemSkinList.size();
+}
 
-			if((*it)->bOpen)
+ZGuiSkin* ZGuiTreebox::GetItemSkin(unsigned int uiIndex)
+{
+	unsigned int uiSkins = GetNumItemSkins();
+	list<ZGuiSkin*>::iterator itSkin = m_kItemSkinList.begin();
+
+	for(unsigned int i=0; i<uiSkins; i++)
+	{
+		if(i == uiIndex)
+			return (*itSkin);
+
+		itSkin++;
+	}
+
+	return NULL;
+}
+
+void ZGuiTreebox::OpenNode(ZGuiTreebox::Node *pkNode, bool bOpen)
+{
+	pkNode->bChildListIsOpen = bOpen;
+
+	Node* pkParent = pkNode->pkPrev;
+	if(pkParent != NULL)
+	{
+		int iSize = (pkNode->m_kChilds.size()+1) * (BUTTON_SIZE+VERT_ROW_SPACE);
+		int iTop = pkNode->pkButton->GetScreenRect().Top;
+
+		ZGuiCheckbox* pkButton;
+		for(unsigned int i=0; i<pkParent->m_kChilds.size(); i++)
+		{
+			pkButton = pkParent->m_kChilds[i]->pkButton;
+			if(pkButton->GetScreenRect().Top > iTop)
 			{
-				for( vector<ZGuiCheckbox*>::iterator it2 = (*it)->akLeafs.begin();
-					 it2 != (*it)->akLeafs.end(); it2++)
-					 {
-						(*it2)->Render(pkRenderer);
-					 }
-			}
-		 }
+				int x = pkButton->GetScreenRect().Left; 
+				int y = iTop + BUTTON_SIZE+VERT_ROW_SPACE;
 
-	return true;
+				if(bOpen == true) 
+					y = iTop + iSize;
+
+				pkButton->SetPos(x, y, true, true);
+				pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
+			}
+		}
+	}
 }

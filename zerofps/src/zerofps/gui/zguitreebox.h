@@ -22,27 +22,50 @@ public:
 	ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTreebox();
 
-	struct Branch
+	struct Node
 	{
-		bool bOpen;
-		Branch* pkParent;
-		ZGuiCheckbox* pkOpenCloseButton;
-		vector<ZGuiCheckbox*> akLeafs; 
+		unsigned char ucState;			 // 0 = Normal, 1 = Closed, 2 = Open. 
+		unsigned char ucSkinIndexNormal; // Kan varken stängas eller öppnas. 
+										 // Endast grenar som inte har några 
+										 // childs har en sån bild.
+		unsigned char ucSkinIndexClosed; // '+' tecknet, redo att öppnas
+		unsigned char ucSkinIndexOpen;	 // '-' tecknet, redo att stängas
+
+		ZGuiCheckbox* pkButton;
+
+		Node *pkPrev, *pkNext;
+
+		bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga tillräckligt många "steg".
+		vector<Node*> m_kChilds;
 	};
+	
+	Node* AddItem(Node* pkParent, char* szText, unsigned char uiSkinNormal,
+		unsigned char uiSkinClosed, unsigned char uiSkinOpen);
 
-	ZGuiSkin* m_pkCloseBnSkin;
-	ZGuiSkin* m_pkOpenBnSkin;
+	ZGuiSkin* GetItemSkin(unsigned int uiIndex);
 
-	vector<ZGuiSkin*> m_pkItemSkins;
-	vector<Branch*> m_akBranshes;
+	bool InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin);
+	unsigned int GetNumItemSkins();
+
+protected:
+	bool Notify(ZGuiWnd* pkWnd, int iCode);
+	
+private:
+	
+	void ShowNode(vector<Node*> itList, bool bShow);
+	void OpenNode(Node* pkNode, bool bNode);
+
+	Node* CreateNode(Node* pkParent, char* szText, unsigned char uiSkinNormal,
+		unsigned char uiSkinClosed, unsigned char uiSkinOpen);
+
+	void CreateInternalControls();
+	int m_iID;
+
+	list<ZGuiSkin*> m_kItemSkinList;
+	list<Node*> m_kNodeList;
 
 	ZGuiScrollbar* m_pkVertScrollbar;
 	ZGuiScrollbar* m_pkHorzScrollbar;
-
-	Branch* AddItem(Branch* pkParent, char* szText, int iSkin);
-	bool Render(ZGuiRender* pkRenderer );
-
-	int m_iID;
 };
 
 #endif // !defined(AFX_ZGUITREEBOX_H__BF9294AD_DC4A_4533_9A72_1D79F95BFE4F__INCLUDED_)

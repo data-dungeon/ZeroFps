@@ -679,7 +679,10 @@ bool Image::load_bmp(const char* szFileName)
 {
 	FILE *pkFile = fopen(szFileName, "rb");
 	if(pkFile == NULL)
+	{
+		printf("Failed to open bitmap %s\n", szFileName);
 		return false;
+	}
 
 	bool bSuccess = load_bmp(pkFile);
 	fclose(pkFile);
