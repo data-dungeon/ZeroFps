@@ -25,6 +25,8 @@ static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
 	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); }
 
+static bool STATUE_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
+	return g_kGame.m_pkStatueInventoryBox->DlgProc(wnd,msg,num,parms); }
 
 void Game::Init()
 {
@@ -179,6 +181,15 @@ void Game::Input()
 				printf("Failed to run script %s.\n", szFile);
 		}
 		break;
+
+	case KEY_H:
+		{
+			char szFile[] = "hulk_jump.lua";
+			if(!m_pkScript->RunScript(szFile))
+				printf("Failed to run script %s.\n", szFile);
+		}
+		break;
+
 	}
 	
 	if(iKey == KEY_I)
@@ -294,6 +305,8 @@ void Game::SetupLevel()
 			// Set container pointer to itembox
 			ContainerProperty* pkPlayerContainerProp = 
 				static_cast<ContainerProperty*>(m_pkPlayer->GetProperty("ContainerProperty"));
+			pkPlayerContainerProp->m_kContainer.SetSize(5,5);
+
 			m_pkPlayerInventoryBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
 		}		
 	}
@@ -355,6 +368,7 @@ void Game::InitGui()
 	m_iActionCloseInventory = pkInput->RegisterAction("inventory_close");
 
 	m_pkPlayerInventoryBox = new ItemBox(pkGui, PLAYER_INVENTORYPROC, pkTexMan);
+	//m_pkStatueInventoryBox = new ItemBox(pkGui, STATUE_INVENTORYPROC, pkTexMan);
 
 	pkFps->m_bGuiTakeControl = false;
 }

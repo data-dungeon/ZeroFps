@@ -13,7 +13,7 @@
 ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
 				 int iCols, int iRows, int iSlotSize, int iTopX, int iTopY) 
 	:	DlgBox(pkGui, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
-		m_ciTopY(iTopY), m_ciRows(iRows), m_ciCols(iCols)
+		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
@@ -51,8 +51,6 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				break;
 			}
 		}
-
-		m_pkContainer->PrintContainer();
 		break;
 
 	case ZGM_LBUTTONUP:
@@ -87,13 +85,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 					}
 					else
 						bObjectMoved = true;
-				}
-				else
-				{
-					printf("[m_pkContainer->GetItem(%i,%i)] failed \n",
-						m_pkMoveItem->second.first,
-						m_pkMoveItem->second.second);
-				}
+				} 
 			}
 			
 			// If move have failed, reset button pos.
@@ -105,8 +97,6 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			}
 
 			m_pkMoveItem = NULL;
-
-			m_pkContainer->PrintContainer();
 		}
 		break;
 
@@ -140,6 +130,10 @@ bool ItemBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
 
 bool ItemBox::OnOpen(int x, int y)
 {
+	int sx,sy;
+	m_pkContainer->GetSize(sx,sy);
+	PaintStaticSlots(sx,sy);
+
 	m_pkDlgBox->SetPos(x,y,true,true);
 	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
 	return true;
@@ -278,4 +272,33 @@ pair<int,int> ItemBox::GetSlot(int x, int y)
 	int row = wnd_y / m_ciSlotSize;
 
 	return slot_pos(col,row);
+}
+
+void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
+{
+	const float fStaticColor[] = 
+	{
+		(1.0f/255)*132,
+		(1.0f/255)*130,
+		(1.0f/255)*132
+	};
+
+	int counter = 1;
+	char szName[50];
+	for(int y=0; y<m_ciRows; y++)
+		for(int x=0; x<m_ciCols; x++)
+		{
+			sprintf(szName, "ItemboxSlotGridST%i", counter);
+			ZGuiWnd* pkWnd = m_pkGuiMan->Wnd(string(szName));
+			if(pkWnd != NULL )
+			{
+				slot_pos cell = GetSlot(pkWnd->GetScreenRect().Left, 
+					pkWnd->GetScreenRect().Top);
+				
+				if(cell.first>container_size_x || cell.second>container_size_y)
+					memcpy(pkWnd->GetSkin()->m_afBkColor, 
+						fStaticColor, sizeof(float) * 3);
+			}
+			counter++;
+		}
 }

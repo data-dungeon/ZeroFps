@@ -34,6 +34,7 @@ public:
 	bool OnOpen(int x, int y);
 
 private:
+	void PaintStaticSlots(int container_size_x, int container_size_y);
 
 	typedef pair<int,int > slot_pos;
 
