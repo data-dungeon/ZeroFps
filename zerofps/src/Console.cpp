@@ -1,11 +1,6 @@
 #include "Console.h"
 #include "ZeroFps.h"
 
-/*Console::Console(CmdSystem* pkCmd,Primitives* pkPrims){
-	m_pkCmd=pkCmd;
-	m_pkPrims=pkPrims;
-}*/
-
 Console::Console(ZeroFps* pkEngine) {
 //	m_pkEngine=pkEngine;	
 	m_pkCmd=pkEngine->m_pkCmd;
@@ -16,6 +11,12 @@ Console::Console(ZeroFps* pkEngine) {
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
 	m_bShift=false;
+	
+	Print("ZeroFps engine started");
+	Print("ZeroFps (C) Dvoid & Vim");
+	Print("-----------------------");
+	Print(" Type help for help =)");
+	Print("");
 }
 
 void Console::Update(void) {

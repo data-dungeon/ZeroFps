@@ -78,7 +78,6 @@ int TextureManager::Load(char* acFileName) {
 	//if the texture cant be loaded then complain and return 0 
 	if(!LoadTexture(temp->index,acFileName)){
 		cout<<"Error Loading texture: "<<temp->file<<endl;
-		exit(1);
 		return 0;
 	}
 	//add the texture to the loaded textures vector

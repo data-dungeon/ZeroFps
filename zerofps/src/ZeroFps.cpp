@@ -36,15 +36,7 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 }
 
 void ZeroFps::MainLoop(void) {
-		
-	m_pkPrims->Pyra(0,0,-3);
-	m_pkPrims->Pyra(1,0,-2);	
-	
-	m_pkConsole->Print("+--------------------------+");
-	m_pkConsole->Print("i zerofps by dvoid and vim i");
-	m_pkConsole->Print("+--------------------------+");		
-	
-	while(m_iState!=state_exit) {	
+	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:
 				m_pkInput->Update();
