@@ -1,11 +1,16 @@
 class ZeroFps;
 class Input;
 class Vector3;
+class HalfEdge;
+class Vector4;
+class Matrix4;
 
 #include "input.h"
 #include "vector3.h"
 #include "zerofps.h"
-
+#include "halfedge.h"
+#include "matrix4.h"
+#include "vector4.h"
 
 
 
