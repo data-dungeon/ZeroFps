@@ -221,28 +221,27 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
-	case KEY_F7:
-		{
+	case KEY_S:
 
-		}
-		break;
+		if(!m_pkInputHandle->Pressed(KEY_LCTRL))
+			break;
 
-	case KEY_F5:
 		if(m_pkScene->m_pkPropertyWnd->IsVisible()) m_pkScene->m_pkPropertyWnd->Hide();
 		else if(m_eEditMode != VIEW)
 		{
 			m_pkScene->m_pkPropertyWnd->Show();
 			MoveWndToTop(m_pkScene->m_pkPropertyWnd);
 		}
-		break;
+//		break;
 
-	case KEY_F6:
+//	case KEY_F6:
 		if(m_pkScene->m_pkWorkSpace->IsVisible()) m_pkScene->m_pkWorkSpace->Hide();
 		else if(m_eEditMode != VIEW)
 		{
 			m_pkScene->m_pkWorkSpace->Show();
 			MoveWndToTop(m_pkScene->m_pkWorkSpace);
 		}
+
 		break;
 
 	case KEY_RETURN:

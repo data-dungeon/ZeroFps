@@ -20,7 +20,8 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 		g_kDM.GUI_OnClick(((int*)params)[0], ((int*)params)[1], true, false, win);
 		break;
 	case ZGM_RBUTTONUP:
-		g_kDM.GUI_OnClick(((int*)params)[0], ((int*)params)[1], false, false, win);
+		g_kDM.GUI_OnClick(((int*)params)[0], ((int*)params)[1], false, false, 
+			win);
 		break;
 	case ZGM_LBUTTONDBLCLK:
 		g_kDM.GUI_OnDoubleClick(((int*)params)[0], ((int*)params)[1], true, win);
@@ -45,12 +46,61 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	return true;
 }
 
-void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
+void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
+											  ZGuiWnd *pkMainWnd)
 {
+	string strClickName;
+	string strMainWnd;
+
+	if(pkMainWnd)
+	{
+		strMainWnd = pkMainWnd->GetName();
+
+		list<ZGuiWnd*> kChilds;
+		pkMainWnd->GetChildrens(kChilds);
+
+		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+			if((*it)->GetID() == iID)
+				strClickName = (*it)->GetName();
+	}
+
+	if(strClickName.empty())
+		return;
+
+	if(strMainWnd == "DMStartWnd")
+	{
+		if(strClickName == "StarNewGameBn")
+		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_start_new_game.lua");
+			pkMainWnd->Hide();
+		}
+		else
+		if(strClickName == "QuitBn")
+		{
+			m_pkFps->QuitEngine();
+		}
+	}
+	else
+	if(strMainWnd == "StartNewGameWnd")
+	{
+		if(strClickName == "StartNewGameDone")
+		{
+			pkMainWnd->Hide();
+		}
+		else
+		if(strClickName == "StartNewGameBack")
+		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_start.lua");
+			pkMainWnd->Hide();
+		}		
+	}
+
 }
 
-void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, bool bLeftButton, 
-									  ZGuiWnd *pkMain)
+void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, 
+											bool bLeftButton, ZGuiWnd *pkMain)
 {
 }
 
@@ -59,7 +109,8 @@ void DarkMetropolis::GUI_OnDoubleClick(int x, int y, bool bLeftButton,
 {
 }
 
-void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
+void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown, 
+												 ZGuiWnd *pkMain)
 {
 }
 
@@ -67,7 +118,8 @@ void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 {
 }
 
-void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
+void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex, 
+												ZGuiWnd *pkMain)
 {
 }
 

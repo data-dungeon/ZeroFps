@@ -7,6 +7,8 @@
 #include <cmath>
 #include <list>
 
+using namespace std;
+
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
 
@@ -15,10 +17,6 @@
 #include "../mcommon/p_event.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
-
-/**	\brief	Daz DaaaaarkMetropolis
-		\ingroup DarkMetropolis
-*/
 
 class DarkMetropolis : public Application, public ZGuiApp 
 {

@@ -336,17 +336,6 @@ Parent=NULL
 OpenSubMenu=1
 Cmd=NULL
 
-[Menu_AiSubmenu]
-Title=Sub Menu
-Parent=Menu_Ai
-OpenSubMenu=1
-Cmd=NULL
-
-[Menu_AiTest]
-Title=Test
-Parent=Menu_AiSubmenu
-Cmd=devtog common
-
 [Menu_AiNavMesh]
 Title=Show NavMesh (T)
 Parent=Menu_Ai

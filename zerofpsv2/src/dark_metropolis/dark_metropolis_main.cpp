@@ -1,7 +1,7 @@
 // dark_metropolis_main.cpp
 
 #ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
-	#define _MAINAPPLICATION_		// just denna fil och inte flera ställen.
+	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
 	#define _DONT_MAIN
 #endif
 
@@ -49,9 +49,11 @@ void DarkMetropolis::OnInit()
 	// create gui script
 	GuiAppLua::Init(&g_kDM, m_pkScript);
 	InitGui(m_pkScript,
-		"data/textures/text/small.bmp",
+		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/defskins.lua",
 		NULL);
+
+	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
 
 	m_pkInput->ShowCursor(true);
 	m_pkLight->SetLighting(true);
