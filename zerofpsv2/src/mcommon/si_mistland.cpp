@@ -195,6 +195,8 @@ int MistLandLua::SendEventLua(lua_State* pkLua)
 			return 0;
 		}
 	}
+	
+	return 0;
 }
 
 
@@ -244,6 +246,7 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		
 		return 0;
 	}
+	return 0;
 }
 
 
@@ -279,4 +282,5 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		
 		o1->GetVel() = dir*fVel;
 	}
+	return 0;
 }

@@ -2,8 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include <al/al.h>
-#include <al/alut.h>
+#include <AL/al.h>
+#include <AL/alut.h>
 #include "../../basic/zfvfs.h"
 #include "zfaudiosystem2.h"
 
