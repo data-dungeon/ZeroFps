@@ -61,6 +61,7 @@ private:
 
 public:
 	public:
+
 	//DECLARE_SINGLETON(ZFObjectManger);
 
 	static ZFObjectManger* pkInstance;

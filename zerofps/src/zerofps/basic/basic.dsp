@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                   $(ProjDir)\debug\*.lib                                   ..\..\..\bin\ 
+PostBuild_Cmds=copy                                      $(ProjDir)\debug\*.lib                                      ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                   $(ProjDir)\debug\*.lib                                   ..\..\..\bin\ 
+PostBuild_Cmds=copy                                      $(ProjDir)\debug\*.lib                                      ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -205,7 +205,15 @@ SOURCE=.\vector4.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zfbasicfs_windows.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zffile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfini.cpp
 # End Source File
 # Begin Source File
 
@@ -335,7 +343,15 @@ SOURCE=.\zfassert.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\zfbasicfs.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\zffile.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfini.h
 # End Source File
 # Begin Source File
 

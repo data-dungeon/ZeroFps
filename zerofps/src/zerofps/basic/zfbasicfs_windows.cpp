@@ -62,7 +62,7 @@ char* ZFBasicFS::GetCWD()
 bool ZFBasicFS::DirExist(const char* acName)
 {
 	if(CreateFile(acName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 
-		FILE_ATTRIBUTE_NORMAL,0) == == INVALID_HANDLE_VALUE)
+		FILE_ATTRIBUTE_NORMAL,0) == INVALID_HANDLE_VALUE)
 		return false;
 
 	return true;

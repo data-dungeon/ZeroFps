@@ -256,4 +256,3 @@ bool ZFObjectManger::RunCommand(const char* szCmdArg)
 
 	return true;
 }
-
