@@ -42,6 +42,8 @@ public:
 	void UpdateInventory(vector<MLContainerInfo>& vkItemList);
 	void UpdateContainer(vector<MLContainerInfo>& vkItemList);
 
+	string GetNameFromID(int iID);
+
 	void Open();
 	void Close();
 	void OnCommand(string strController);
@@ -69,9 +71,8 @@ public:
 
 	ZGuiWnd* m_pkSplitStockWnd;
 	int m_iSplitShareMax;
+
 private:
-
-
 
 	struct ITEM_SLOT
 	{	
@@ -80,6 +81,7 @@ private:
 		bool bIsContainer;
 		int iItemType;
 		int iStackSize;
+		string strName;
 	};
 
 	struct SPECIAL_SLOT
@@ -113,11 +115,13 @@ private:
 
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;
-	
 
 	SPECIAL_SLOT m_kMoveSlot; 
 	SPECIAL_SLOT m_kSplitSlot; 
 	SPECIAL_SLOT m_kSplitSlotTarget; 
+
+	pair<int, bool> m_kItemUnderInspection; // 1:st arg: index into that array (or -1 if no item under inspection).
+														 // 2:nd arg: 1 = m_vkInventoryItemList, 0: m_vkContainerItemList.
 
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;

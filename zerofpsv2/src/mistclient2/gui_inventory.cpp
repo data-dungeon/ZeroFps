@@ -121,6 +121,8 @@ InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6),
 
 	m_iSplitShareMax = 0;
 
+	m_kItemUnderInspection.second = -1;
+
 
 }
 
@@ -272,6 +274,9 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					}
 					else
 					{
+						m_kItemUnderInspection.first = i;
+						m_kItemUnderInspection.second = true;
+
 						g_kMistClient.RequestItemInfo(m_vkInventoryItemList[i].iItemID);
 						//OpenItemInfoWnd(true);
 					}
@@ -348,6 +353,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					else
 					{
 						g_kMistClient.RequestItemInfo(m_vkContainerItemList[i].iItemID);
+						m_kItemUnderInspection.first = i;
+						m_kItemUnderInspection.second = false;
 						//OpenItemInfoWnd(true);
 					}
 				}
@@ -720,6 +727,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		kNewSlot.iItemType = vkItemList[i].m_cItemType;
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
+		kNewSlot.strName = vkItemList[i].m_strName;
 		m_vkInventoryItemList.push_back(kNewSlot);
 
 		/*SetSelectionBorder(i, true, !(kNewSlot.iItemID == m_iActiveContainerID && 
@@ -776,6 +784,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		kNewSlot.iItemType = vkItemList[i].m_cItemType;
+		kNewSlot.strName = vkItemList[i].m_strName;
 		m_vkContainerItemList.push_back(kNewSlot);
 
 		//SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
@@ -1261,15 +1270,45 @@ void InventoryDlg::OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo)
 	}
 	else
 	{
+		char szNumber[50];
+
 		g_kMistClient.ShowWnd("ItemInfoWnd", true, true, false);
 		g_kMistClient.SetText("ItemInfoTextbox", (char*)kInfo.strInfo.c_str());
-		g_kMistClient.SetText("ItemLabelTextbox", (char*)kInfo.strName.c_str());
+
+		if(m_kItemUnderInspection.first != -1)
+		{
+			if(m_kItemUnderInspection.second == true)
+				g_kMistClient.SetText("ItemLabelTextbox", 
+					(char*)m_vkInventoryItemList[m_kItemUnderInspection.first].strName.c_str());
+			else
+				g_kMistClient.SetText("ItemLabelTextbox", 
+					(char*)m_vkContainerItemList[m_kItemUnderInspection.first].strName.c_str());
+
+		}
+		
+		sprintf(szNumber, "%0.2f Kg", kInfo.m_fWeight);
+		g_kMistClient.SetText("ItemValueWeight", szNumber);
+
+		sprintf(szNumber, "%i GM", kInfo.m_iValue);
+		g_kMistClient.SetText("ItemValueLabel", szNumber);
 
 		g_kMistClient.GetWnd("ItemInfoImage")->GetSkin()->m_iBkTexID = 
 			g_kMistClient.LoadGuiTextureByRes(string("item_images/") + kInfo.strImage);
 	}
+}
 
+string InventoryDlg::GetNameFromID(int iID)
+{
+	vector<ITEM_SLOT> m_vkInventoryItemList;
+	vector<ITEM_SLOT> m_vkContainerItemList;
 
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		if(m_vkInventoryItemList[i].iItemID == iID)
+			return m_vkInventoryItemList[i].strName;
 
+	for(int i=0; i<m_vkContainerItemList.size(); i++)
+		if(m_vkContainerItemList[i].iItemID == iID)
+			return m_vkContainerItemList[i].strName;
 
+	return string("");
 }
