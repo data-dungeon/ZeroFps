@@ -459,7 +459,14 @@ void MistClient::Input()
 		if(!DelayCommand())
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-			{
+			{				
+				//if its an item , pick it up
+				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+				{
+					SendMoveItem(m_iPickedEntityID,-1,-1,-1,-1);
+				}
+				else 
+				// if not an item do first action
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
 					vector<string>	kActions;
@@ -1028,13 +1035,7 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 
 void MistClient::SendAction(int iEntityID,const string& strAction)
 {
-	//dvoid hacks
-	if(strAction == "Pickup")
-	{
-		SendMoveItem(iEntityID,-1,-1,-1,-1);
-		return;
-	}
-	
+
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_ACTION);
 	
