@@ -1,6 +1,7 @@
-Adding /home/dvoid/program/zerofpsv2/ to VFS root table
+Adding /home/dvoid/shitt/c/zerofpsv2/ to VFS root table
 Adding h:/ to VFS root table
 Start Engine SubSystems: 
+Ok
 Ok
 Ok
 Ok
@@ -54,3 +55,4 @@ ShutDown HeightMap: Ok
 ShutDown PhysicsEngine: Ok
 ShutDown ZFResourceDB: Ok
 ShutDown Physics_Engine: Ok
+ShutDown ZShader: Ok

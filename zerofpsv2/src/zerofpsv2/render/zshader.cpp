@@ -142,23 +142,65 @@ void ZShader::BindMaterial(ZMaterial* pkMaterial)
 }
 
 
+void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
+{
+	//polygon mode settings	
+	glPolygonMode(GL_FRONT, pkSettings->m_iPolygonModeFront);
+	glPolygonMode(GL_BACK, pkSettings->m_iPolygonModeBack);	
+
+	//lighting setting
+	if(pkSettings->m_bLighting)
+		glEnable(GL_LIGHTING);
+	else
+		glDisable(GL_LIGHTING);
+		
+	//cullface setting
+	if(pkSettings->m_bLighting)
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);	
+	
+	//setup TU 1
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	if(pkSettings->m_iTUs[0] > 0)
+	{	
+		glEnable(GL_TEXTURE_2D);
+		m_pkTexMan->BindTexture(pkSettings->m_iTUs[0]);
+		
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+			
+	}
+	
+	//setup TU 2
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	if(pkSettings->m_iTUs[1] > 0)
+	{	
+		glEnable(GL_TEXTURE_2D);
+		m_pkTexMan->BindTexture(pkSettings->m_iTUs[0]);
+	
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		
+	}
+
+
+}
+
 void ZShader::Draw()
 {	
+	glPushMatrix();
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
 	{
 		ZMaterialSettings* pkSettings = m_pkCurentMaterial->GetPass(i);
 	
-		
-		m_pkTexMan->BindTexture(pkSettings->m_iTUs[0]);
-		glPolygonMode(GL_FRONT, pkSettings->m_iPolygonModeFront);
-		glPolygonMode(GL_BACK, pkSettings->m_iPolygonModeBack);		
+		SetupRenderStates(pkSettings);
 		
 		glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
 	}
 	
-
+	glPopMatrix();
+	glPopAttrib();
 }
 
 

@@ -1204,6 +1204,7 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	//m_pkTexMan->BindTexture("grass.tga",0);
+	glColor4f(1,1,1,1);
 	
 	glDisableClientState(GL_COLOR_ARRAY);	
 	glDisableClientState(GL_INDEX_ARRAY);	
@@ -1222,9 +1223,9 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
 	
-	ZMaterial bla;
-	bla.GetPass(0)->m_iPolygonModeFront = GL_FILL;
-	m_pkZShader->BindMaterial(&bla);
+
+	
+	m_pkZShader->BindMaterial(&m_kHeightmapMaterial);
 	m_pkZShader->SetDrawMode(TRIANGLESTRIP_MODE);
 	
 	for(int y = 0;y<py;y++)

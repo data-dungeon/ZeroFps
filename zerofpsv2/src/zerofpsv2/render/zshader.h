@@ -70,6 +70,8 @@ class RENDER_API ZShader : public ZFObject
 	
 		//this enable/diable client states if pointers have been set
 		void SetupClientStates();			
+		
+		void SetupRenderStates(ZMaterialSettings* pkSettings);
 	
 	public:
 		ZShader();

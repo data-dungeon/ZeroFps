@@ -1,5 +1,18 @@
 #include "zmaterial.h"
 
+ZMaterialSettings::ZMaterialSettings()
+{
+	m_iTUs[0] = -1;
+	m_iTUs[1] = -1;		
+	m_iTUs[2] = -1;			
+	m_iTUs[3] = -1;			
+	
+	m_iPolygonModeFront = GL_LINE;
+	m_iPolygonModeBack = GL_LINE;			
+	
+	m_bLighting = false;
+	m_bCullFace = false;
+};
 
 ZMaterial::ZMaterial()
 {

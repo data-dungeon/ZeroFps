@@ -61,7 +61,9 @@ class RENDER_API Render : public ZFObject {
 		int			m_iScreenShootNum;
 		
 		ZFResourceHandle	m_kConsoleText;
-
+		
+		ZMaterial	m_kHeightmapMaterial;
+		
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
    	

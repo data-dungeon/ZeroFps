@@ -16,17 +16,11 @@ class RENDER_API ZMaterialSettings
 		int	m_iPolygonModeFront;
 		int	m_iPolygonModeBack;		
 		
+		bool	m_bLighting;	
+		bool	m_bCullFace;
 	
-		ZMaterialSettings()
-		{
-			m_iTUs[0] = -1;
-			m_iTUs[1] = -1;		
-			m_iTUs[2] = -1;			
-			m_iTUs[3] = -1;			
-			
-			m_iPolygonModeFront = GL_LINE;
-			m_iPolygonModeBack = GL_LINE;			
-		};
+		ZMaterialSettings();
+
 };
 
 
