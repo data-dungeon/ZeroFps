@@ -2,7 +2,8 @@
 #define _PLAYERCONTROL_H_
 
 //#include "property.h"
-#include "objects.pkg"
+//#include "objects.pkg"
+#include "property.h"
 #include <iostream>
 
 using namespace std;

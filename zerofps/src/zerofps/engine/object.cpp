@@ -18,7 +18,7 @@ void Object::AddProperty(Property* pkNewProperty) {
 bool Object::RemoveProperty(char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
-			(*it)->SetObject(NULL);			
+			delete (*it);
 			m_akPropertys.erase(it);
 			return true;
 		}
@@ -42,6 +42,10 @@ bool Object::Update(char* acName){
 	return false;
 }
 
-
+Object::~Object() {
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		delete (*it);
+	}
+}
 
 

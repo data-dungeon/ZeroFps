@@ -3,6 +3,7 @@
 
 #include "../basic/basic.pkg"
 #include "objects.pkg"
+//#include "property.h"
 #include <vector>
 #include <list>
 #include <string.h>
@@ -16,6 +17,8 @@ class Object {
 		list<Property*> m_akPropertys;
 
 	public:
+		~Object();
+		
 		
 		Property* GetProperty(char* acName);
 		void AddProperty(Property* pkNewProperty);

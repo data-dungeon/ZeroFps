@@ -1,10 +1,16 @@
-#ifndef _PROPERTY_H_
-#define _PROPERTY_H_
+#ifndef _OPROPERTY_H_
+#define _OPROPERTY_H_
 
+
+
+//#include "objects.pkg"
 //#include "object.h"
-
-#include "objects.pkg"
 #include <string.h>
+#include <iostream>
+
+using namespace std;
+
+class Object;
 
 class Property 
 {
@@ -12,35 +18,12 @@ class Property
 		Object *m_pkObject;
 		
 	public:
-		Property();
-		
-		char m_acName[10];
+		char m_acName[20];
+			
 			
 		void SetObject(Object* pkObject);
 		virtual void Update()=0;
 
-
 };
 #endif
-
-/*
-protected:
-		Object *m_pkObject;
-	
-	public:
-		char m_acName[10];
-				
-		void SetObject(Object* pkObject);
-		virtual void Update()=0;
-
-*/
-
-
-
-
-
-
-
-
-
 

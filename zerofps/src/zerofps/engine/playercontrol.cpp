@@ -2,7 +2,7 @@
 
 PlayerControl::PlayerControl() {
 	strcpy(m_acName,"PlayerControl");
-
+	cout<<"fuck ass"<<endl;
 };
 
 

@@ -96,10 +96,12 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
-	
+/*	
 	Object *kul=new Object;
-	
-	
+	PlayerControl *fuck=new PlayerControl;
+//	fuck->Update();
+	kul->AddProperty(fuck);
+	kul->Update();*/
 }
 
 
