@@ -9,8 +9,8 @@ AStar::AStar()
 	m_bDrawPaths		= false;
 
 	// Register Variables
-	RegisterVariable("ai_shownavmesh", &m_bDrawNaviMesh,	CSYS_BOOL);	
-	RegisterVariable("ai_showpath",	&m_bDrawPaths,	CSYS_BOOL);	
+	RegisterVariable("ai_shownavmesh",	&m_bDrawNaviMesh,	CSYS_BOOL);	
+	RegisterVariable("ai_showpath",		&m_bDrawPaths,		CSYS_BOOL);	
 }
 
 
@@ -40,11 +40,14 @@ void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 
 	do 
 	{
-		kNode.kPosition	= pkNode->pkNaviCell->m_kCenter;
-		kNode.pkStartMesh = pkNode->m_pkNaviMesh;
-		kNode.pkStartCell = pkNode->pkNaviCell;
+		//if(pkNode->pkNaviCell->m_bNonWalkable == false)
+		//{
+			kNode.kPosition	= pkNode->pkNaviCell->m_kCenter;
+			kNode.pkStartMesh = pkNode->m_pkNaviMesh;
+			kNode.pkStartCell = pkNode->pkNaviCell;
+			kPath.push_back( kNode );
+		//}
 
-		kPath.push_back( kNode );
 		pkNode = pkNode->m_pParent;
 	} while(pkNode);
 }

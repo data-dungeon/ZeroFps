@@ -42,6 +42,7 @@ void P_PfPath::RenderPath()
 
 	unsigned int i;
 	Vector3 kColor;
+	Vector3 kPathOffset(0,0,0);
 
 	kColor = m_pkRender->GetEditColor("ai/rawpath");
 	glColor3f(kColor.x,kColor.y,kColor.z);
@@ -49,7 +50,7 @@ void P_PfPath::RenderPath()
 	{
 		for(i=0; i<m_kRawPath.size() - 1; i++) 
 		{
-			m_pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
+			m_pkRender->Line(m_kRawPath[i].kPosition + kPathOffset, m_kRawPath[i+1].kPosition + kPathOffset);
 		}	
 	}
 	
@@ -59,7 +60,7 @@ void P_PfPath::RenderPath()
 	{
 		for(i=0; i < (m_kPath.size() - 1); i++) 
 		{
-			m_pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
+			m_pkRender->Line(m_kPath[i] + kPathOffset, m_kPath[i+1] + kPathOffset);
 		}	
 	}
 }
@@ -117,8 +118,11 @@ void P_PfPath::Update()
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
 		{
-			m_kPath.clear(); // added again by zerom, havepath didn't work else
-			m_kRawPath.clear();
+			if(!m_pkAStar->m_bDrawPaths)
+			{
+				m_kPath.clear(); // added again by zerom, havepath didn't work else
+				m_kRawPath.clear();
+			}
 
 			//play idle
 			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
