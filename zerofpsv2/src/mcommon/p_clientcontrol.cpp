@@ -16,7 +16,6 @@ P_ClientControl::P_ClientControl()
 
 void P_ClientControl::Update()
 {
-	cout<<"client control here"<<endl;
 
 }
 

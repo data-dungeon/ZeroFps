@@ -475,6 +475,8 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
 
 
+	pkClient->m_pkObject->AddProperty("P_ClientControl");
+
 	if(m_pkServerInfoP)
 		m_pkServerInfoP->AddPlayer(iConID,"UnKnownPlayer");
 		

@@ -165,16 +165,16 @@ void MistClient::OnSystem()
 				{			
 					pkConsole->Printf("Got client object, Trying to get client control");
 			
-					m_pkClientControlP = (P_ClientControl*)m_pkClientObject->AddProperty("P_ClientControl");
+				//	m_pkClientControlP = (P_ClientControl*)m_pkClientObject->AddProperty("P_ClientControl");
 				//m_pkClientObject->AddProperty("P_ClientControl");
-				/*
-				m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
-				if(m_pkClientControlP)
-				{
-					pkConsole->Printf("Got client control");
 				
-				}
-				*/
+					m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
+					if(m_pkClientControlP)
+					{
+						pkConsole->Printf("Got client control");
+				
+					}
+				
 				}
 			}
 		}
