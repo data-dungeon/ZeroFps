@@ -198,7 +198,7 @@ void P_Enviroment::Update()
 				m_fCurrentFogStart = m_fCurrentFogStart*(1-fIf) + m_fFogStart*fIf;
 				m_fCurrentFogStop = m_fCurrentFogStop*(1-fIf) + m_fFogStop*fIf;				
 				
-				if( (m_kFogColor.x < 0) )
+				if( (m_fFogStart < 0) )
 				{
 					m_pkRender->SetFog(interpolated,m_fCurrentFogStart,m_fCurrentFogStop,false);	
 				}
