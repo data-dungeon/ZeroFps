@@ -24,7 +24,7 @@ public:
 
 	bool					m_bNew;
 	bool					m_bUsed;
-	ZoneObject*			m_pkZone;
+	Object*				m_pkZone;
 	int					m_iZoneID;
 	Vector3				m_kPos;
 	Vector3				m_kSize;
@@ -134,7 +134,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Object* CreateObjectFromScript(const char* acName);
-		Object* CreateObjectFromScript(const char* acName,Vector3 kPos,int iCurrentZone = -1);
+		Object* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
@@ -234,8 +234,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void Zones_Refresh();
 		void ClearZoneLinks(int iId);
 
-		Object* CreateTemplateZoneObject(Vector3 kPos);
-
+		void SetZoneModel(const char* szName,int iId);
+	
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
 		void UpdateZoneLinks(int iId);
 

@@ -200,8 +200,6 @@ class ENGINE_API Object
 		Vector3						m_kAcc;								///< Acc of object.
 		float							m_fRadius;							///< Radius of object.
 
-		//int*							m_piDecorationStep;
-	
 		int							m_bUseZones;
 		int							m_iCurrentZone;
 		vector<Object*>			m_akChilds;							///< List of child objects.

@@ -7,6 +7,7 @@
 #include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/primitives3d.h"
 #include "../engine_systems/propertys/proxyproperty.h"
+#include "../engine_systems/propertys/madproperty.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 
@@ -283,7 +284,7 @@ void ObjectManager::UpdateGameMessages(void)
 Object* ObjectManager::CreateObject()
 {
 	Object* pkObj = new Object;
-//	cout << "CreateObject :" << pkObj->iNetWorkID << endl;
+	//cout << "CreateObject :" << pkObj->iNetWorkID << endl;
 	return pkObj;
 }
 
@@ -310,7 +311,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	Creates a object from a script and use it to set values and propertys. If script file
 	is not found no object will be created. 
 */
-Object* ObjectManager::CreateObjectFromScript(const char* acName,Vector3 kPos,int iCurrentZone)
+Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
 	int id = GetZoneIndex(kPos,iCurrentZone,false);
 	
@@ -324,8 +325,11 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName,Vector3 kPos,in
 	Object* newobj = CreateObjectFromScript(acName);
 	
 	if(newobj)
-	{
+	{		
+		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
+		if(newobj->m_iCurrentZone != id)
+			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 	}
 
 	return newobj;
@@ -1553,7 +1557,7 @@ void ObjectManager::DeleteZone(int iId)
 {
 	if(iId >= m_kZones.size())
 	{
-		cout<<"that zone is invalid"<<endl;
+		//cout<<"that zone is invalid"<<endl;
 		return;
 	}
 
@@ -1676,7 +1680,8 @@ void ObjectManager::LoadZone(int iId)
 		return;
 
 	// Create Object.
-	ZoneObject *object = new ZoneObject;
+	Object* object = new Object;//ZoneObject;
+	object->m_bZone = true;
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetWorldObject());	
 	
@@ -1691,7 +1696,7 @@ void ObjectManager::LoadZone(int iId)
 	filename+=nr;
 	filename+=".dynamic.zone";
 	
-	cout<<"load from :"<<filename<<endl;
+	//cout<<"load from :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	
@@ -1704,25 +1709,18 @@ void ObjectManager::LoadZone(int iId)
 	{	
 		kZData->m_bNew = false;
 		
-		cout<<"error loading zone, creating a new template zone"<<endl;
+		//cout<<"error loading zone, creating a new template zone"<<endl;
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
 		object->GetUpdateStatus()=UPDATE_DYNAMIC;
 		object->AddProperty("LightUpdateProperty");	//always attach a lightupdateproperty to new zones
 
-		//create template object	
-		Object* pkTemp;
-		pkTemp = CreateObjectFromScript("data/script/objects/t_template.lua");
-		if(pkTemp)
-		{	
-			pkTemp->SetWorldPosV(kPos);
-			pkTemp->SetParent(object);
-		}
-		
+		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
+
 		return;
 	}
-
+ 
 	kZData->m_pkZone->Load(&kFile);
 	kFile.Close();
 	
@@ -1744,7 +1742,7 @@ void ObjectManager::UnLoadZone(int iId)
 	filename+=".dynamic.zone";
 
 	
-	cout<<"saving to :"<<filename<<endl;
+	//cout<<"saving to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -1944,5 +1942,30 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 }
 
 
+void ObjectManager::SetZoneModel(const char* szName,int iId)
+{
+	ZoneData* zd = GetZoneData(iId);
+	if(!zd)
+	{
+		return;
+	}	
+	
+	if(!zd->m_pkZone)	
+	{
+		return;
+	}	
+
+	MadProperty* mp = (MadProperty*)zd->m_pkZone->GetProperty("MadProperty");
+	
+	if(!mp)
+	{
+		mp = (MadProperty*)zd->m_pkZone->AddProperty("MadProperty");
+	}
+		
+	if(mp)
+	{
+		mp->SetBase(szName);
+	}
+}
 
 

@@ -41,7 +41,7 @@ Object::Object()
 	m_iUpdateStatus		=	UPDATE_ALL;
 	m_bZone					=	false;
 	m_iCurrentZone			=	-1;
-	m_bUseZones				=	true;
+	m_bUseZones				=	false;
 	m_bSave					=	true;	
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
@@ -627,6 +627,10 @@ void Object::Load(ZFIoInterface* pkFile)
 	pkFile->Read(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
 	pkFile->Read(&m_bSave,sizeof(m_bSave),1);		
 	
+	pkFile->Read(&m_bZone,sizeof(m_bZone),1);			
+	pkFile->Read(&m_bUseZones,sizeof(m_bUseZones),1);				
+	pkFile->Read(&m_iCurrentZone,sizeof(m_bUseZones),1);						
+	
 	pkFile->Read(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
 
@@ -696,8 +700,14 @@ void Object::Save(ZFIoInterface* pkFile)
 	pkFile->Write(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
 	pkFile->Write(&m_bSave,sizeof(m_bSave),1);		
 	
+	pkFile->Write(&m_bZone,sizeof(m_bZone),1);			
+	pkFile->Write(&m_bUseZones,sizeof(m_bUseZones),1);				
+	pkFile->Write(&m_iCurrentZone,sizeof(m_bUseZones),1);					
+	
 	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
+
+
 
 	char acTemp[128];
 	
@@ -949,33 +959,30 @@ void Object::SetLocalPosV(Vector3 kPos)
 	{
 		if(!m_bZone)
 		{
-			if(m_pkParent)
-			{
-				if(!m_bRelativeOri)
-				{		
-					int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
-					if(nZ == -1)
-					{
-						cout<<"object tried to move outside zone"<<endl;
-						return;
-					}
-					
-					ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
-					if(!cz)
-					{
-						cout<<"zone does not exist"<<endl;
-						return;
-					}
-			
-					if(!cz->m_pkZone)
-					{
-						cout<<"object tried to move to a unloaded zone"<<endl;
-						return;
-					}
-			
-					m_iCurrentZone = nZ;
-					SetParent((Object*)cz->m_pkZone);				
+			if(!m_bRelativeOri)
+			{		
+				int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+				if(nZ == -1)
+				{
+					cout<<"object tried to move outside zone"<<endl;
+					return;
 				}
+				
+				ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
+				if(!cz)
+				{
+					cout<<"zone does not exist"<<endl;
+					return;
+				}
+		
+				if(!cz->m_pkZone)
+				{
+					cout<<"object tried to move to a unloaded zone"<<endl;
+					return;
+				}
+		
+				m_iCurrentZone = nZ;
+				SetParent((Object*)cz->m_pkZone);				
 			}
 		}
 	}

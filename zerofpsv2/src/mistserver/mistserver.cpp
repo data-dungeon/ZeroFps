@@ -160,7 +160,7 @@ void MistServer::Input()
 	
 		if(pkInput->Pressed(KEY_SPACE))
 		{
-			pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
+			pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_blub.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
 		}
 	
 		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
@@ -173,9 +173,26 @@ void MistServer::Input()
 		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
 		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
 		
+		if(pkInput->Pressed(KEY_Z))
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->SetZoneModel("data/mad/zones/tcross.mad",id);		
+		}
+		
+		if(pkInput->Pressed(KEY_X))
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->SetZoneModel("data/mad/zones/largeroom.mad",id);		
+		}
+		
+		if(pkInput->Pressed(KEY_C))
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->SetZoneModel("data/mad/zones/large_room_een.mad",id);		
+		}
+	
+	
 	}
-
-
 };
 
 void MistServer::OnHud(void)
