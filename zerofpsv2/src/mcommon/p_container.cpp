@@ -15,11 +15,13 @@ P_Container::P_Container()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 	m_bNetwork = 	false;
-	m_iVersion = 	1;
+	m_iVersion = 	2;
 
 	m_bFirstUpdate = true;
 	
+	
 	m_iOwnerID 				= -1;
+	m_bStaticOwner			= false;
 	m_iMaxItems 			= 0;
 	m_iContainerType		= eNormal;
 	m_kItemTypes.clear();
@@ -48,6 +50,21 @@ void P_Container::Update()
 		FindMyItems();	
 	}
 
+	
+	if(!m_bStaticOwner)
+	{
+		if(m_iOwnerID != -1)
+		{
+			if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID))
+			{
+				if(pkOwner->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 2)
+				{
+					m_iOwnerID = -1;
+					cout<<"Container owner out of distance, reseting owner to -1"<<endl;
+				} 
+			}
+		}
+	}
 }
 
 vector<PropertyValues> P_Container::GetPropertyValues()
@@ -538,24 +555,15 @@ void P_Container::Print()
 
 void P_Container::Save(ZFIoInterface* pkPackage)
 {
-
-	
 	pkPackage->Write(&m_iMaxItems,sizeof(m_iMaxItems),1);
 	
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
 	
 	pkPackage->Write(m_iContainerType);
+	pkPackage->Write(m_bStaticOwner);	
 	
 	
-/*	
-	//save slots
-	int iSlots = m_kSlots.size();
-	pkPackage->Write(&iSlots,sizeof(iSlots),1);		
-	for(int i = 0 ;i < iSlots;i++)
-		pkPackage->Write(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
-*/
-		
 	//save item types
 	int iTypes = m_kItemTypes.size();
 	pkPackage->Write(&iTypes,sizeof(iTypes),1);		
@@ -566,34 +574,52 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
 void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
-	
-	pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
-	pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
-
-	SetSize(m_iSizeX,m_iSizeY);
-
-	pkPackage->Read(m_iContainerType);
-		
-/*	
-	//load slots
-	int iSlots;
-	pkPackage->Read(&iSlots,sizeof(iSlots),1);		
-	for(int i = 0 ;i < iSlots;i++)
-		pkPackage->Read(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
-*/
-
-	//load types
-	int iTypes;
-	pkPackage->Read(&iTypes,sizeof(iTypes),1);		
-	m_kItemTypes.clear();
-	for(int i = 0 ;i < iTypes;i++)
+	if(iVersion == 2)
 	{
-		int iT;
-		pkPackage->Read(&iT,sizeof(iT),1);				
-		m_kItemTypes.push_back(iT);
-	}
+		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		
+		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
 	
+		SetSize(m_iSizeX,m_iSizeY);
+	
+		pkPackage->Read(m_iContainerType);
+		pkPackage->Read(m_bStaticOwner);
+	
+		//load types
+		int iTypes;
+		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		m_kItemTypes.clear();
+		for(int i = 0 ;i < iTypes;i++)
+		{
+			int iT;
+			pkPackage->Read(&iT,sizeof(iT),1);				
+			m_kItemTypes.push_back(iT);
+		}	
+	
+	}
+	else
+	{
+		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		
+		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+	
+		SetSize(m_iSizeX,m_iSizeY);
+	
+		pkPackage->Read(m_iContainerType);
+	
+		//load types
+		int iTypes;
+		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		m_kItemTypes.clear();
+		for(int i = 0 ;i < iTypes;i++)
+		{
+			int iT;
+			pkPackage->Read(&iT,sizeof(iT),1);				
+			m_kItemTypes.push_back(iT);
+		}
+	}	
 }
 
 void P_Container::FindMyItems()

@@ -53,7 +53,7 @@ class MCOMMON_API P_Container: public Property
 		int				m_iContainerType;
 		
 		int				m_iOwnerID;
-		
+		bool				m_bStaticOwner;
 		
 		bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
@@ -84,7 +84,9 @@ class MCOMMON_API P_Container: public Property
 		char GetSizeY()								{return char(m_iSizeY);};
 
 		int GetOwnerID()								{return m_iOwnerID;};
-		void SetOwnerID(int iOwner)					{m_iOwnerID = iOwner;};						
+		void SetOwnerID(int iOwner)				{m_iOwnerID = iOwner;};						
+		
+		void SetStaticOwner(bool bStatic)		{m_bStaticOwner = bStatic;};
 		
 		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
 		void ClearItemTypes() 						{m_kItemTypes.clear();};		

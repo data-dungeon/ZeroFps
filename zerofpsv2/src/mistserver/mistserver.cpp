@@ -1273,6 +1273,7 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 						if(pkContainerP->GetOwnerID() != pkData->m_iCharacterID)
 						{
 							cout<<"and its not me =("<<endl;
+							SayToClients("Someone else is using this container",iClientID);
 							return;
 						}
 						else
@@ -1291,6 +1292,10 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 						if(pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0)
 						{
 							 SayToClients("Opening container",iClientID);
+							 
+							 //set new owner of this container
+							 pkContainerP->SetOwnerID(pkData->m_iCharacterID);
+							 
 							 SendContainer(iContainerID,iClientID,true);
 						}
 						else

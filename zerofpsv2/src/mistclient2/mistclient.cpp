@@ -439,33 +439,26 @@ void MistClient::Input()
 		{
 			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 			{
-					m_pkActionDlg->SetEntity(m_iPickedEntityID);			
-					m_pkActionDlg->Open();				
+				cout<<"action menu"<<endl;
+				m_pkActionDlg->SetEntity(m_iPickedEntityID);			
+				m_pkActionDlg->Open();				
 				
-					/*
-					vector<string>	kActions;
-					pkMl->GetActions(kActions);
-					
-					cout<<"actions:"<<endl;
-					for(int i =0;i<kActions.size();i++)
-						cout<<i<<" "<<kActions[i]<<endl;
-					*/						
 			}
 		}
 	}
 
-	//perform the first action in the action list
+	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
 		if(!DelayCommand() && m_pkInventoryDlg->m_iItemUnderCursor == -1)
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-			{				
+			{								
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
+					cout<<"trying pickup"<<endl;
 					RequestPickup(m_iPickedEntityID);
-					//SendMoveItem(m_iPickedEntityID,-1,-1,-1);
 
 					if(m_pkInventoryDlg->IsVisible()) 
 						m_pkInventoryDlg->m_iItemUnderCursor = m_iPickedEntityID;	
@@ -476,6 +469,7 @@ void MistClient::Input()
 				// if not an item do first action
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
+					cout<<"performing first action"<<endl;
 					vector<string>	kActions;
 					pkMl->GetActions(kActions);
 					

@@ -94,20 +94,24 @@ class MistServer :public Application , public ZGuiApp
 		Camera*	m_pkActiveCamera;
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
+		//camera
 		void  CreateEditCameras();	
-		
-		void SetupGuiEnviroment();
 		void Input_Camera(float fMouseX, float fMouseY);
-		void DeletePlayerCharacter(int iConID);		
 		
+		//gui
+		void SetupGuiEnviroment();		
+		
+		//network sends
 		void SendPlayerListToClient(int iClient);
 		void SendContainer(int iContainerID,int iClientID,bool bOpen);
 						
+		//player creation
 		Vector3 GetPlayerStartPos();
-
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
 		void SpawnPlayer(int iConID);	
+		void DeletePlayerCharacter(int iConID);		
 
+		//register stuff
 		void RegisterScriptFunctions();
 		void RegisterPropertys();
 		void RegisterResources();		
@@ -122,6 +126,10 @@ class MistServer :public Application , public ZGuiApp
 		void OnIdle(void);
 		void OnHud(void);
 		void OnSystem();
+		
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
@@ -140,9 +148,6 @@ class MistServer :public Application , public ZGuiApp
 		void RenderInterface(void);
 		void OnNetworkMessage(NetPacket *PkNetMessage);
 
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
 
 		//game stuff
 		void SayToClients(const string& strMsg,int iClientID = -2);				

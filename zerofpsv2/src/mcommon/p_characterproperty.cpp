@@ -139,6 +139,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(6,12);
 				pkCon->SetContainerType(eInventory);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
 				
 		//body	
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -148,6 +149,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(4,4);
 				pkCon->SetContainerType(eBody);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
 				
 		//head
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -157,7 +159,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(4,4);
 				pkCon->SetContainerType(eHead);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
-
+				pkCon->SetStaticOwner(true);
+				
 		//left hand
 		pkContainer = m_pkEntityMan->CreateEntity();
 			m_iLeftHand = pkContainer->GetEntityID();		
@@ -166,7 +169,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(2,8);
 				pkCon->SetContainerType(eLeftHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
-
+				pkCon->SetStaticOwner(true);
+				
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
 			m_iRightHand = pkContainer->GetEntityID();
@@ -175,7 +179,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(2,8);
 				pkCon->SetContainerType(eRightHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
-				
+				pkCon->SetStaticOwner(true);
 																		
 		cout<<"done"<<endl;
 	}
