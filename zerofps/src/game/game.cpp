@@ -485,7 +485,7 @@ void Game::InitGui()
 	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);
 	pkPlayerStatusMainWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
-	x = 10; y = 10;
+	x = 17; y = 40;
 	ZGuiWnd* pkHelthbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
 	ZGuiWnd* pkHelthbar = new ZGuiWnd(Rect(0,0,170,10),pkHelthbarBk,true,id++);
 	pkHelthbarBk->SetSkin(pkHealthBkSkin);
@@ -493,7 +493,7 @@ void Game::InitGui()
 	pkHelthbar->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	pkHelthbarBk->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
-	y += 20;
+	y += 50;
 	ZGuiWnd* pkArmorbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
 	ZGuiWnd* pkArmorbar = new ZGuiWnd(Rect(0,0,170,10),pkArmorbarBk,true,id++);
 	pkArmorbarBk->SetSkin(pkArmorBkSkin);
@@ -503,11 +503,13 @@ void Game::InitGui()
 
 	ZGuiWnd* pkFaceWnd = new ZGuiWnd(Rect(256,20,256+92,20+92),pkPlayerStatusMainWnd,true,id++);
 	pkFaceSkin->m_iBkTexID = pkTexMan->Load("../data/textures/face.bmp", 0);
+	pkFaceSkin->m_iBkTexAlphaID = pkTexMan->Load("../data/textures/face_a.bmp", 0);
 	pkFaceWnd->SetSkin(pkFaceSkin);
 	pkFaceWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	ZGuiWnd* pkWeaponWnd = new ZGuiWnd(Rect(256+92+24,20,256+92+92+24,20+92),pkPlayerStatusMainWnd,true,id++);
 	pkWeaponSkin->m_iBkTexID = pkTexMan->Load("../data/textures/gun.bmp", 0);
+	pkWeaponSkin->m_iBkTexAlphaID = pkTexMan->Load("../data/textures/gun_a.bmp", 0);
 	pkWeaponWnd->SetSkin(pkWeaponSkin);
 	pkWeaponWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
