@@ -56,6 +56,9 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	case ZGM_KEYPRESS:
 		g_kDM.GUI_OnKeyPress(((int*)params)[0], win);		
 		break;
+	case ZGM_SCN_SETPOS:
+		g_kDM.GUI_OnMoveSlider(((int*)params)[0],((int*)params)[1],win);	// id, pos, wnd
+		break;
 	}
 	return true;
 }
@@ -153,8 +156,6 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	if(pkMainWnd)
 	{
 		strMainWnd = pkMainWnd->GetName();
-
-		printf("%s\n", strMainWnd.c_str());
 
 		list<ZGuiWnd*> kChilds;
 		pkMainWnd->GetChildrens(kChilds);
@@ -468,6 +469,60 @@ void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 	//else
 
 
+}
+
+void DarkMetropolis::GUI_OnMoveSlider(int iID, int iPos, ZGuiWnd* pkMainWnd)
+{
+	string strMainWnd = pkMainWnd->GetName();
+	string strCtrl = "";
+
+	if(pkMainWnd)
+	{
+		list<ZGuiWnd*> kChilds;
+		pkMainWnd->GetChildrens(kChilds);
+
+		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+			if((*it)->GetID() == iID)
+				strCtrl = (*it)->GetName();
+	}
+	else
+	{
+		return;
+	}
+
+	if(strCtrl.empty())
+		return;
+
+	printf("%s\n", strCtrl.c_str());
+
+	if(strMainWnd == "DMOptionsWnd")
+	{
+		if(strCtrl == "MusicVolumeSlider")
+		{
+			// mellan 0-10
+			float fNewVol = (float)iPos/10.0f;
+			if(iPos < 1)
+				fNewVol = 0.001f;
+
+			m_fMusicVolume = fNewVol;
+
+			OggMusic* pkMusic = static_cast<OggMusic*>(
+				g_ZFObjSys.GetObjectPtr("OggMusic")); 
+
+			pkMusic->SetVolume(m_fMusicVolume); 
+		}
+		else
+		if(strCtrl == "SFXVolumeSlider")
+		{
+			// mellan 0-10
+			float fSFXVolume = (float)iPos/10.0f;
+
+			if(iPos < 1)
+				fSFXVolume = 0.001f;
+
+			m_pkAudioSys->SetVolume(fSFXVolume);
+		}
+	}
 }
 
 void DarkMetropolis::GUI_LoadSave(bool bSave)

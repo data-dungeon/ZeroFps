@@ -157,6 +157,10 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	{
 		LoadDlg("data/script/gui/dm_options.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("DMOptionsWnd"));
+		((ZGuiSlider*)GetWnd("MusicVolumeSlider"))->SetPos(m_pkDM->GetMusicVol()*10, true, false);
+		((ZGuiSlider*)GetWnd("SFXVolumeSlider"))->SetPos(m_pkAudioSys->GetVolume()*10, true, false);
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "OptionsCloseBn")
@@ -164,6 +168,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture(); 
 		m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 }
 

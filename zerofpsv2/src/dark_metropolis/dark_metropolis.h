@@ -98,7 +98,10 @@ class DarkMetropolis : public Application, public ZGuiApp
 		string		m_strSaveDirectory;						//directory in wich savegames are stored
 
 		int 			m_iEnableMusic; 									//if the music should be played or not
+		float			m_fMusicVolume;						// Music volume for Ogg
 		float			m_fBulletTime;
+
+		
 			
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
 		
@@ -151,11 +154,12 @@ class DarkMetropolis : public Application, public ZGuiApp
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
 		bool m_bSaveGame; // gui state variable
-
+		
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
 
 		bool StartNewGame(string strClanName,string strClanColor);
 		void StartSong(char* szName);
+		float GetMusicVol() { return m_fMusicVolume; }
 
 		void GUI_LoadSave(bool bSave);
 		bool GUI_NewGame(ZGuiWnd *pkMainWnd);
@@ -195,6 +199,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void GUI_OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd);
 		void GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd);
+		void GUI_OnMoveSlider(int iID, int iPos, ZGuiWnd* pkMainWnd); 
 		void GUI_Init();
 		void GUI_OnIdle();
 

@@ -415,6 +415,8 @@ bool ZFAudioSystem::StartUp()
 	alDopplerFactor(1.0f); 
 	alDopplerVelocity(343); 
 
+	m_fVolume = 1.0f;
+
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
 	EntityManager* pkObjectMan = reinterpret_cast<EntityManager*>(
@@ -502,6 +504,16 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+bool ZFAudioSystem::SetVolume(float fVolume)
+{
+	if((fVolume<=1.0) && (fVolume>0.0))
+	{
+		m_fVolume = fVolume;
+		return true;
+	}
+	return false;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Uppdatera ljudsystemet. Anropas från mainloopen.
@@ -552,6 +564,8 @@ void ZFAudioSystem::Update()
 					AL_POSITION,&pkSound->m_kPos[0]);	
 				alSourcefv(pkSound->m_uiSourceBufferName, 
 					AL_VELOCITY,&pkSound->m_kDir[0]);
+				alSourcef(pkSound->m_uiSourceBufferName, 
+					AL_GAIN, m_fVolume);
 			}
 			else
 			{

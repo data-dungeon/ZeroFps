@@ -60,6 +60,7 @@ void DarkMetropolis::OnInit()
 	m_fBulletTime =				-1;
 	m_pkGamePlayInfoLabel =		NULL;
 	m_fCameraMaxDistanceFromAgent = 3;
+	m_fMusicVolume = 0.5f;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -1075,7 +1076,7 @@ void DarkMetropolis::StartSong(char* szName)
 		OggMusic* pkMusic = static_cast<OggMusic*>(
 			g_ZFObjSys.GetObjectPtr("OggMusic")); 
 
-		pkMusic->SetVolume(0.1f); 
+		pkMusic->SetVolume(m_fMusicVolume); 
 		pkMusic->LoadFile(szName);
 		pkMusic->Play();
 

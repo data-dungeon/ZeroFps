@@ -76,6 +76,9 @@ public:
 
 	void UnloadAll();
 
+	bool SetVolume(float fVolume);
+	float GetVolume() { return m_fVolume; }
+
 	bool StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
 	bool StopSound(string strName, Vector3 pos);
 
@@ -130,6 +133,7 @@ private:
 	int m_iEnableSound; // enable/disable
 
 	bool m_bIsValid;
+	float m_fVolume;
 	
 	OggMusic* m_pkMusic;
 
