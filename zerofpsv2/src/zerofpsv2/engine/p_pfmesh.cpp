@@ -9,13 +9,6 @@
 
 bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB)
 {
-//	printf("-Found a edge to test \n");
-//	printf(" 1 <%f,%f,%f> \n", m_kVertex[VERT_A].x, m_kVertex[VERT_A].y,m_kVertex[VERT_A].z);
-//	printf(" 2 <%f,%f,%f> \n", m_kVertex[VERT_B].x, m_kVertex[VERT_B].y,m_kVertex[VERT_B].z);
-//	printf(" 3 <%f,%f,%f> \n", m_kVertex[VERT_C].x, m_kVertex[VERT_C].y,m_kVertex[VERT_C].z);
-
-	
-	
 	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,0.3 )) {
 		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,0.3 ) )	return true;
 		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,0.3 )  )	return true;
@@ -137,8 +130,6 @@ void P_PfMesh::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_PfMesh::SetMad(P_Mad* pkMad)
 {
-	printf("Refreshing Mesh\n");
-
 	m_NaviMesh.clear();
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
@@ -163,7 +154,7 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	kNaviMesh.m_aiLinks[2] = 0;
 	m_NaviMesh.push_back( kNaviMesh );
 
-	printf("Vertex/Normals: %d,%d\n",(*pkVertex).size(),(*pkNormal).size());
+	//printf("Vertex/Normals: %d,%d\n",(*pkVertex).size(),(*pkNormal).size());
 	Vector3 kNormal;
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
@@ -193,7 +184,6 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 		}
 
 	LinkCells();
-//	printf("NaviMesh Size: %d \n", m_NaviMesh.size());
 	m_pkSelected = &m_NaviMesh[0];
 }
 
@@ -330,8 +320,6 @@ void P_PfMesh::FlagExternalLinks()
 
 NaviMeshCell* P_PfMesh::GetCell(Vector3 kA, Vector3 kB)
 {
-//	printf("Scanning for Cell <%f,%f,%f>, <%f,%f,%f>", kA.x, kA.y,kA.z, kB.x, kB.y,kB.z);
-
 	NaviMeshCell* pkNavCell;
 
 	// Loop all cells

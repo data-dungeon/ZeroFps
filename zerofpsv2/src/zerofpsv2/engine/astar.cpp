@@ -199,7 +199,6 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 
 		pkCell = pkMesh->GetCell(kA,kB);
 		if(pkCell) {
-			printf("Found a connected Cell");
 			return new AStarCellNode(pkOtherZone, pkMesh, pkCell);
 
 			}
@@ -233,8 +232,6 @@ void AStar::Reset()
 bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 {
 	Reset();
-
-	printf("Creating full path");
 
 	kPath.clear();
 
@@ -306,7 +303,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 
 	// 4: Let B be the best node from the open list.
 	while(kOpenList.size()) {
-		cout << "kOpenList " << kOpenList.size() << endl;
+//		cout << "kOpenList " << kOpenList.size() << endl;
 
 		// Get best node from open list
 		AStarCellNode* pkNode = kOpenList.front();

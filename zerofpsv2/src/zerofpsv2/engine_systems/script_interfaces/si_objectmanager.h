@@ -46,6 +46,7 @@ namespace ObjectManagerLua
 
 	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);		
 
+	// Animations
 	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
 	

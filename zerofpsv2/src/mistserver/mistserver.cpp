@@ -171,8 +171,8 @@ void MistServer::OnIdle()
 
  	pkFps->UpdateCamera(); 		
 
-	for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
-		pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
+	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
+	//	pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
    
 	if(m_pkServerInfoP)
 	{
@@ -278,31 +278,6 @@ void MistServer::Input()
 		mp->NextCoreAnimation();
 		} 
 	
-
-
-
-/*	if(pkInput->Pressed(KEY_F5)) {
-		kPathStart = m_kObjectMarkerPos;
-		cout << "Setting Start" << endl;
-		} 
-	if(pkInput->Pressed(KEY_F6)) {
-		kPathEnd = m_kObjectMarkerPos;
-		cout << "Setting end" << endl;
-		} 
-
-	if(pkInput->Pressed(KEY_L)) {
-		kPath.clear();
-		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
-
-		if(bres) {
-			cout << "Path was found. Size " << kPath.size()  << endl;
-			}
-		else {
-			cout << "Path was NOT found" << endl;
-			}
-		}*/
-
-
 	if(m_pkCameraObject)	
 	{	
 		if(pkInput->Pressed(KEY_X)){
@@ -1221,7 +1196,6 @@ void MistServer::HandleOrders()
 				bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
 
 				if(bres) {
-					cout << "Path was found. Size " << kPath.size()  << endl;
 					P_PfPath* pm = (P_PfPath*)ob->GetProperty("P_PfPath");
 					if(pm) {
 						reverse(kPath.begin(), kPath.end());
