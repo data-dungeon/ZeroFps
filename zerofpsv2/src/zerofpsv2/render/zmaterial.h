@@ -12,6 +12,7 @@
 #include "../basic/vector4.h"
 
 
+
 using namespace std;
 
 /**	\brief	Settings for one pass in a Material.
@@ -70,7 +71,21 @@ class RENDER_API ZMaterialSettings
 
 A ZMaterial contains all the settings used for a surface or something that need
 to be rendered in the engine. 
+
+options can be givven to manipulate a texture by entering them like "[Options]#[Filename]"
+	valid options:
+		c : clamp
+		n : no mipmaping
+		a : alpha texture
+		f : no texture filtering
+		
+	example
+		"cn#/data/textures/test.tga"
+		
+		will enable clamping and disable mipmaping on the texture
+
 */
+
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:		
