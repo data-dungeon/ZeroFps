@@ -23,9 +23,9 @@ bool HeightMap::Load(char* acFile) {
 }
 
 void HeightMap::Random() {
-	int height=30000000;
-	int peaks=300;
-	int smooth=14;
+	int height=3000;
+	int peaks=500;
+	int smooth=5;
 
 //   nice terrain
 //	int height=30000000;
@@ -36,8 +36,8 @@ void HeightMap::Random() {
 		
 	int x,y;
 	for(int i=0;i<peaks;i++) {
-		x=rand()%(m_iHmSize-3)+2;	
-		y=rand()%(m_iHmSize-3)+2;	
+		x=rand()%(m_iHmSize-4)+2;	
+		y=rand()%(m_iHmSize-4)+2;	
 		verts[y*m_iHmSize+x].height=(rand()%height)/10.0;
 	}
 	
@@ -46,11 +46,12 @@ void HeightMap::Random() {
 		for(int y=1;y<m_iHmSize-1;y++) {
 			for(int x=1;x<m_iHmSize-1;x++) {
 				med=0;
-				for(int q=0;q<3;q++)
-					for(int w=0;w<3;w++){
-						if(q!=0 && w!=0) {
-							med+=verts[(y+q)*m_iHmSize+(x+w)].height;
+				for(int q=-1;q<2;q++)
+					for(int w=-1;w<2;w++){
+						if(q==0 && w==0) {							
 
+						} else {
+							med+=verts[(y+q)*m_iHmSize+(x+w)].height;							
 						}
 					}
 				med=med/8;
