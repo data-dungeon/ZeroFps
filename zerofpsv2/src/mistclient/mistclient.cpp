@@ -841,7 +841,7 @@ void MistClient::CreateGuiInterface()
 
 	static_cast<ZGuiTextbox*>(GetWnd("InfoBox"))->SetReadOnly(true); 
 
-/*	string szText = string("The Alchemist\n\nIt was in one of the vast and gloomy chambers of this remaining tower that I, ") + 
+	string szText = string("The Alchemist\n\nIt was in one of the vast and gloomy chambers of this remaining tower that I, ") + 
 		string("Antoine, last of the unhappy and accursed Counts de C-, first saw the light of day, ninety long ") +
 		string("years ago. Within these walls and amongst the dark and shadowy forests, the wild ravines and grottos ") +
 		string("of the hillside below, were spent the first years of my troubled life. My parents I never knew. My ") +
@@ -864,7 +864,7 @@ void MistClient::CreateGuiInterface()
 	pkFont->CreateFromFile("/data/textures/text/small.bmp"); 
 	GetWnd("InfoBox")->SetFont( pkFont);
 	GetWnd("InputBox")->SetFont( pkFont);
-	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; */	
+	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
 
 	// tillfällig Fulhack delux (ta bort sen)
 /*	pkFps->DevPrintf("common", "=)");
