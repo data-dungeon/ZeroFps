@@ -101,7 +101,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 	
 	switch(m_iCurrentState)
 	{
-	case UNIT_MOVE:
+		case UNIT_MOVE:
 		{
 			
 			if(!MoveTo(m_kCurretDestination))
@@ -146,16 +146,16 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_pkObject->SetPos(m_kCurretDestination);					
 					m_pkObject->SetPos(m_kCurretDestination);					
 					
-					if(!DoPathFind(m_kCurretDestination,m_kEndPos))
-						return NULL;
-					
+					m_iCurrentState = UNIT_WAIT;
+										
 					m_kCurretDestination = m_pkObject->GetPos();
-					
+					m_fWaitTime = m_pkFps->GetGameTime();
+					m_iRetries = 0;
 							
 					return this;
 				}
 						
-				m_fSpeedMod = 1 - (m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
+				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
@@ -172,6 +172,31 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				
 				//now we can move 
 				MoveTo(m_kCurretDestination);
+			}
+			
+			
+			return this;
+		}
+		
+		case UNIT_WAIT:
+		{
+			CheckForOrder();
+			
+			if(m_iRetries >= 5)
+			{
+				return NULL;
+			
+			}
+			
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2)
+			{
+				//cout<<"trying again " <<m_iRetries<<endl;				
+				m_iRetries++;
+				
+				m_fWaitTime = m_pkFps->GetGameFrameTime();
+				
+				if(!DoPathFind(m_kCurretDestination,m_kEndPos))
+					return this;
 			}
 			
 			

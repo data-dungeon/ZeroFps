@@ -47,9 +47,11 @@ private:
 	bool					m_bTemp;
 	
 	float					m_fWaitTime;
+	int					m_iRetries;
 	
 	enum { 
 		UNIT_MOVE,
+		UNIT_WAIT,
 		TEMP 
 	};
 
