@@ -627,7 +627,11 @@ void MistClient::Input()
 		if(!DelayCommand() )
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-			{								
+			{					
+				//remove current target
+				m_iTargetID = -1;
+			
+						
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
@@ -653,6 +657,11 @@ void MistClient::Input()
 				{
 					m_iTargetID = m_iPickedEntityID;				
 				}
+			}
+			else
+			{
+				//remove current traget if nothing was picked
+				m_iTargetID = -1;			
 			}
 		}	
 	}	
