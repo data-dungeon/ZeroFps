@@ -158,7 +158,6 @@ void TextureManager::FreeTexture(texture* pkTex)
 bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) 
 {	
 	GLint iInternalFormat	=	GL_RGB;
-//	GLint iFormat				=	GL_RGB;
 	
 	//make sure the m_pkImage is null for swaping;
 	pkTex->m_pkImage2 = NULL;	
@@ -180,15 +179,15 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	//is this a tga?
 	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0)
 	{
-		iInternalFormat=GL_RGBA4;
-//		iFormat=GL_RGBA;
+		//cout << "Setting Tga format" << endl;
+		iInternalFormat=GL_RGBA8;
 	}
 
-	if(pkTex->m_bAlphaOnly) {
+	if(pkTex->m_bAlphaOnly) 
+	{
 		//cout << "Setting alpha on " <<acFilename << endl;
 		iInternalFormat=GL_ALPHA;
-//		iFormat=GL_ALPHA;
-		}
+	}
 
 	if(pkTex->b_bClamp){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);

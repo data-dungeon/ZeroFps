@@ -56,9 +56,13 @@ void NaviMeshCell::GetEdgeVertex(int iEdge, Vector3& kA, Vector3& kB)
 
 void NaviMeshCell::RefreshData()
 {
+	m_bNonWalkable = false;
 	m_kEdges[0].SetPoints( m_kVertex[0].x,m_kVertex[0].z, m_kVertex[1].x,m_kVertex[1].z );
 	m_kEdges[1].SetPoints( m_kVertex[1].x,m_kVertex[1].z, m_kVertex[2].x,m_kVertex[2].z );
 	m_kEdges[2].SetPoints( m_kVertex[2].x,m_kVertex[2].z, m_kVertex[0].x,m_kVertex[0].z );
+	if( m_kVertex[0].x == m_kVertex[1].x && m_kVertex[0].z == m_kVertex[1].z)	m_bNonWalkable = true;
+	if( m_kVertex[1].x == m_kVertex[2].x && m_kVertex[1].z == m_kVertex[2].z)	m_bNonWalkable = true;
+	if( m_kVertex[2].x == m_kVertex[0].x && m_kVertex[2].z == m_kVertex[0].z)	m_bNonWalkable = true;
 }
 
 
@@ -116,6 +120,14 @@ Vector3 NaviMeshCell::MapToCellHeight(Vector3 kIn)
 
 NaviMeshCell::PATH_CLASSIFICATION NaviMeshCell::ClassifyPath(Line2D& kPath, int& iNextCell, CELL_SIDE& eSide, Vector2* pkIntersection)
 {
+	if(m_bNonWalkable) 
+	{
+		iNextCell = -1;
+		return CELL_EXIT;
+	}
+
+
+
 	int iInside = 0;
 
 	for(int i=0; i<3; i++)
@@ -208,6 +220,24 @@ void P_PfMesh::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 }
 
+float GetStepHojd(Vector3 kV1,Vector3 kV2,Vector3 kV3 )
+{
+	float fMaxHojd = 0.0;
+	float fHojd = 0.0;
+
+	fHojd = fabs( kV1.y - kV2.y );
+	if(fHojd > fMaxHojd)
+		fMaxHojd = fHojd;
+	fHojd = fabs( kV2.y - kV3.y );
+	if(fHojd > fMaxHojd)
+		fMaxHojd = fHojd;
+	fHojd = fabs( kV3.y - kV1.y );
+	if(fHojd > fMaxHojd)
+		fMaxHojd = fHojd;
+	
+	return fMaxHojd;
+}
+
 void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal)
 {
 	m_NaviMesh.clear();
@@ -227,7 +257,8 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
 	//cout << "BuildNavMesh: Create Faces" << endl;
-	for(unsigned int i=0; i<pkFace->size(); i++) {
+	for(unsigned int i=0; i<pkFace->size(); i++) 
+	{
 			kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 			kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
 			kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
@@ -240,7 +271,9 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 		}
 
 		kNormal = CalcNormal(kNaviMesh.m_kVertex[0], kNaviMesh.m_kVertex[1], kNaviMesh.m_kVertex[2]);
-		if(kNormal.y <= 0.8)	continue;
+		
+		float fMaxStepSize = 0.2;
+		float fStepSize = GetStepHojd(kNaviMesh.m_kVertex[0], kNaviMesh.m_kVertex[1], kNaviMesh.m_kVertex[2]);
 
 		kNaviMesh.m_kCenter = (	kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
 		kNaviMesh.m_aiLinks[0] = 0;
@@ -248,8 +281,14 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 		kNaviMesh.m_aiLinks[2] = 0;
 		kNaviMesh.RefreshData();
 
-		m_NaviMesh.push_back( kNaviMesh );
-		}
+		if(fStepSize < fMaxStepSize)
+			m_NaviMesh.push_back( kNaviMesh );
+/*		else
+		{
+			if(kNormal.y > 0.9)	
+				m_NaviMesh.push_back( kNaviMesh );
+		}*/
+	}
 
 	LinkCells();
 }
@@ -340,7 +379,15 @@ void P_PfMesh::DrawNaviMesh()
 //			else										kColor.Set(1,1,1);
 //		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
 
-		glLineWidth(3.0);
+		glBegin(GL_TRIANGLES);
+			glColor3f(0,1,0);
+			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );
+			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[1] );
+			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[2] );
+		glEnd();
+
+
+/*		glLineWidth(3.0);
 		glBegin(GL_LINES);
 			SetEdgeColor(m_NaviMesh[i].m_aiLinks[0]);
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[1] );
@@ -352,6 +399,7 @@ void P_PfMesh::DrawNaviMesh()
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[2] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );
 		glEnd();
 		glLineWidth(1.0);
+*/
 
 /*		kColor.Set(1,0,0);
 		for(int e=0; e<3; e++) {
@@ -428,6 +476,9 @@ NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 	Vector2 kStartPos(kPos.x,kPos.z);
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
+		if(m_NaviMesh[i].m_bNonWalkable)
+			continue;
+
 		if(m_NaviMesh[i].IsPointInCell(kStartPos) == false )
 			continue;
 

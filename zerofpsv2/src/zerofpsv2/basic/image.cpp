@@ -308,6 +308,7 @@ void Image::Save(const char* szFileName, bool bAlpha)
 
 bool Image::load_tga(const char* filename)
 {
+	cout << "Loading Tga : " << filename << endl;
 	FILE *fp = fopen(filename,"rb");
 	if(!fp)	return false;
 	load_tga(fp);
@@ -389,7 +390,10 @@ bool Image::load_tga(FILE *fp)
 
 	// Check that it's a tga file and that it is one that we support.
 //	if(head.image_type != TGA_IMAGETYPE_URGB)	return false;
-	
+	cout << "head.image_type " << (int) head.image_type << endl;
+	cout << "head.colormap_type " << (int) head.colormap_type << endl;
+	cout << "head.pixel_depth " << (int) head.pixel_depth << endl;
+
 	// Set basic image prop.
 	m_bHasAlpha	   = false;
 	m_iWidth			= head.width;
@@ -464,6 +468,8 @@ bool Image::load_tga(FILE *fp)
 
 	if(data)	delete [] data;
 	if(map)		delete [] map;
+	
+	//Save("test.tga", true);
 	return true;
 }
 

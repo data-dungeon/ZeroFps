@@ -43,6 +43,8 @@ public:
 
 	Line2D			m_kEdges[3];
 
+	bool				m_bNonWalkable;	// Non walkable, like a step.
+
 	void	GetEdgeVertex(int iEdge, Vector3& kA, Vector3& kB);
 	bool	IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB);
 
