@@ -20,11 +20,10 @@ enum EDIT_MODES{
 	ADDOBJECT=5
 };
 
-class LandType
-{
+class LandType{
 	public:
 		int 		m_iTexture;
-		Vector3	m_kColor;
+		Vector3	m_kColor;		
 };
 
 class ZeroEdit :public Application {
@@ -50,6 +49,8 @@ class ZeroEdit :public Application {
 			FID_ADDLAND,
 			FID_REMOVELAND,
 			FID_LISTLAND,
+			FID_SAVELAND,
+			FID_LOADLAND,
 		};	
 	
 		Camera* m_pkCamera;
@@ -58,8 +59,8 @@ class ZeroEdit :public Application {
 		list<LandType> m_kLandTypes;
 		
 		int m_iMode;
+	
 		
-//		int m_iTexture;
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
 		float m_fPointerHeight;
@@ -68,6 +69,8 @@ class ZeroEdit :public Application {
 		Object* m_pkCurentChild;
 		
 		string m_kCurentTemplate;
+		
+		int m_iPencilSize;
 		
 		float m_fTimer;
 		float m_fDrawRate;
@@ -78,10 +81,8 @@ class ZeroEdit :public Application {
 	
 	
 		void Input();				
-//		void CreateNew(int iSize);
 		void SetPointer();	
 		void DrawMarkers();
-//		void Clear();
 		Object* GetClosest(Vector3 kPos);
 		void SelectChild();
 		void SelectParent();		
@@ -93,6 +94,8 @@ class ZeroEdit :public Application {
 		bool RemoveLandtype(int iNr);
 		LandType GetLandType(int iNr);
 		void ListLandTypes();
+		bool LoadLandFromFile(const char* acFile);
+		bool SaveLandToFile(const char* acFile);		
 		
 		void HeightMapDraw(Vector3 kPencilPos);
 		

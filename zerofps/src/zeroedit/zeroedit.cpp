@@ -43,7 +43,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("addland",FID_ADDLAND,this);		
 	g_ZFObjSys.Register_Cmd("removeland",FID_REMOVELAND,this);		
 	g_ZFObjSys.Register_Cmd("listland",FID_LISTLAND,this);		
-
+	g_ZFObjSys.Register_Cmd("loadland",FID_LOADLAND,this);		
+	g_ZFObjSys.Register_Cmd("saveland",FID_SAVELAND,this);		
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -68,6 +69,9 @@ void ZeroEdit::OnInit(void)
 		
 	m_kCurentTemplate="null";
 	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
+	
+	m_iPencilSize=4;
+	pkFps->m_pkCmd->Add(&m_iPencilSize,"g_PencilSize",type_int);		
 	
 	m_iLandType=1;
 	pkFps->m_pkCmd->Add(&m_iLandType,"g_landtype",type_int);		
@@ -162,6 +166,33 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		
+		case FID_SAVELAND:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("saveland [filename]");
+				break;
+			}
+			
+			if(!SaveLandToFile(kCommand->m_kSplitCommand[1].c_str()))
+				break;
+				
+			pkConsole->Printf("LandTypes Saved");				
+		
+			break;		
+		
+		case FID_LOADLAND:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("loadland [filename]");
+				break;
+			}
+			
+			if(!LoadLandFromFile(kCommand->m_kSplitCommand[1].c_str()))
+				break;
+				
+			pkConsole->Printf("LandTypes Loaded");				
+		
+			break;
+		
 		case FID_ADDLAND:{
 			if(kCommand->m_kSplitCommand.size() < 5) {
 				pkConsole->Printf("addland [texture-nr] color[r][g][b]");
@@ -183,7 +214,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 			
-			if(!RemoveLandtype(atoi(kCommand->m_kSplitCommand[1].c_str())));
+			if(!RemoveLandtype(atoi(kCommand->m_kSplitCommand[1].c_str())))
 				pkConsole->Printf("Landtype not found");				
 					  
 			break;
@@ -739,9 +770,16 @@ void ZeroEdit::SelectChild()
 {
 	Object* temp=GetClosest(m_kDrawPos);
 	
-	if(temp!=NULL)
-		m_pkCurentChild=temp;	
+	if(temp==NULL){
+		m_pkCurentChild=NULL;	
+		return;
+	}
+	
+	if(temp->GetName() == "ZoneObject"){
+		temp=NULL;
+	}	
 
+	m_pkCurentChild=temp;
 }
 
 void ZeroEdit::SelectParent()
@@ -881,12 +919,12 @@ void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 	
 	cout<<"color "<<kTemp.m_kColor.x<<endl;
 	
-	for(int xp=-2;xp<3;xp++){
-		for(int yp=-2;yp<3;yp++){
+	for(int xp=-(m_iPencilSize/2);xp<(m_iPencilSize/2)+1;xp++){
+		for(int yp=-(m_iPencilSize/2);yp<(m_iPencilSize/2)+1;yp++){
 			m_pkMap->GetVert(int(kPencilPos.x+xp),int(kPencilPos.z+yp))->texture=kTemp.m_iTexture;
-			m_pkMap->GetVert(int(kPencilPos.x+xp),int(kPencilPos.z+yp))->color=kTemp.m_kColor;
+			m_pkMap->GetVert(int(kPencilPos.x+xp +1),int(kPencilPos.z+yp +1))->color=kTemp.m_kColor;
 		}
-	}
+	}	
 }
 
 
@@ -918,6 +956,7 @@ bool ZeroEdit::RemoveLandtype(int iNr)
 	
 	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
 	{	
+		i++;
 		if(i == iNr){
 			m_kLandTypes.erase(it);
 			return true;
@@ -960,4 +999,58 @@ LandType ZeroEdit::GetLandType(int iNr)
 	return temp;
 }
 
+bool ZeroEdit::LoadLandFromFile(const char* acFile)
+{
+	ZFFile kFile;
+	
+	if(!kFile.Open(acFile,false))
+	{
+		pkConsole->Printf("Error opening file");
+		return false;
+	}
+	
+	m_kLandTypes.clear();
+	
+	int size; 
+	kFile.Read((void*)&size,4);
+	
+	for(int i=0;i<size;i++)
+	{
+		LandType temp;
+		
+		kFile.Read((void*)&temp.m_iTexture,4);		
+		kFile.Read((void*)&temp.m_kColor,12);		
+	
+		m_kLandTypes.push_back(temp);
+	}
+	
+	kFile.Close();
 
+	return true;
+}
+
+
+bool ZeroEdit::SaveLandToFile(const char* acFile)
+{
+	ZFFile kFile;
+	
+	if(!kFile.Open(acFile,true))
+	{
+		pkConsole->Printf("Error opening file");
+		return false;
+	}
+	
+	
+	int size=m_kLandTypes.size();
+	kFile.Write((void*)&size,4);
+	
+	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
+	{	
+		kFile.Write((void*)&(*it).m_iTexture,4);		
+		kFile.Write((void*)&(*it).m_kColor,12);	
+	}
+
+	kFile.Close();
+
+	return true;
+}
