@@ -277,6 +277,47 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 
 		SetButtonIcon(pkActiveCharBn, szTexName, false);
 
+		int iItemID;
+
+		if((iItemID=*pkCharProperty->m_pkHand->GetItem(0,0)) != -1)
+		{
+			Entity* pkEntity = GetObject( iItemID );
+			P_DMItem* pkItemProperty;
+
+			if((pkItemProperty=(P_DMItem*)pkEntity->GetProperty("P_DMItem")))
+			{
+				szTexName = string("data/textures/gui/dm/items/") +
+					pkItemProperty->GetIcon();
+				ZGuiButton* pkActiveWeaponBn = (ZGuiButton*) 
+					GetWnd("GamePlayDlgWeaponBn");
+				SetButtonIcon(pkActiveWeaponBn, szTexName, false, true);		
+			}
+		}
+
+		for(int i=0; i<4; i++)
+		{
+			if((iItemID=*pkCharProperty->m_pkBelt->GetItem(i,0)) != -1)
+			{
+				Entity* pkEntity = GetObject( iItemID );
+				P_DMItem* pkItemProperty;
+
+				if((pkItemProperty=(P_DMItem*)pkEntity->GetProperty("P_DMItem")))
+				{
+					szTexName = string("data/textures/gui/dm/items/") +
+						pkItemProperty->GetIcon();
+
+					char szQuickItem[50];
+					sprintf(szQuickItem, "GamePlayDlgQuickItem%i", i);
+
+					ZGuiButton* pkQuickItemBn = (ZGuiButton*) 
+						GetWnd(szQuickItem);
+
+					SetButtonIcon(pkQuickItemBn, szTexName, false, true);		
+				}
+			}
+		}
+
+		
 		// Lägg till en ram kring valt porträtt och ta bort gammla ramar
 		for(int i=0; i<5; i++)
 		{

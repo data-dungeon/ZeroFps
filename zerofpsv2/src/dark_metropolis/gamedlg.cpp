@@ -147,7 +147,7 @@ void CGameDlg::SetNumber(char* szWndName, int iNumber)
 }
 
 void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp, 
-									  bool bSetAlphaTex)
+									  bool bSetAlphaTex, bool bUseBorder)
 {
 	string strIconNameDown="data/textures/notex.bmp";
 	string strIconNameA   ="data/textures/notex.bmp";
@@ -158,10 +158,13 @@ void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp,
 	if((pos=strIconNameUp.find(".bmp")) != string::npos)
 	{
 		// Down tex
-		string temp(strIconNameUp);
-		temp.erase(pos,strIconNameUp.length());
-		temp.insert(temp.length(), "_b.bmp");
-		strIconNameDown = temp;
+		if(!bUseBorder)
+		{
+			string temp(strIconNameUp);
+			temp.erase(pos,strIconNameUp.length());
+			temp.insert(temp.length(), "_b.bmp");
+			strIconNameDown = temp;
+		}
 
 		// Alpha tex
 		if(bSetAlphaTex)
@@ -186,7 +189,20 @@ void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp,
 		GetTexID((char*)strIconNameUp.c_str());
 	pkButton->GetButtonHighLightSkin()->m_iBkTexAlphaID = alpha_tex;
 
-	pkButton->GetButtonDownSkin()->m_iBkTexID = 
-		GetTexID((char*)strIconNameDown.c_str());
-	pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+	if(!bUseBorder)
+	{
+		pkButton->GetButtonDownSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameDown.c_str());
+		pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+	}
+	else
+	{
+		pkButton->GetButtonDownSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+		pkButton->GetButtonDownSkin()->m_afBorderColor[0] = 0;
+		pkButton->GetButtonDownSkin()->m_afBorderColor[1] = 0;
+		pkButton->GetButtonDownSkin()->m_afBorderColor[2] = 0;
+		pkButton->GetButtonDownSkin()->m_unBorderSize = 2;
+	}
 }
