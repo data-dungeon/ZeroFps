@@ -17,10 +17,12 @@
 
 using namespace std;
 
-enum OPTIONS {
-	T_NOMIPMAPPING=1,
-	T_COMPRESSION=8,
-	T_CLAMP=16
+enum OPTIONS 
+{
+	T_NOMIPMAPPING	=	1,
+	T_COMPRESSION	=	8,
+	T_CLAMP			=	16,
+	T_ALPHA			=	32
 };
 
 #define	NO_TEXTURE	-1
@@ -37,9 +39,11 @@ struct texture
 	bool				m_bMipMapping;		// True if we would like to have mipmapping.
 	bool				m_bCompression;
 	bool				b_bClamp;			// Texture Clamping.
+	bool				m_bAlphaOnly;
 
 	bitset<20>		m_abLevels;			//	level x is true if mipmap level is loaded	
-	SDL_Surface*	m_pkImage;			//	for realtime editing of surface
+	//SDL_Surface*	m_pkImage;			//	for realtime editing of surface
+	Image*			m_pkImage2;
 
 	int				m_iSizeInBytes;	// Size of texture in bytes.
 };
@@ -62,10 +66,6 @@ class RENDER_API TextureManager : public ZFSubSystem {
 			FID_UNLOAD,
 		};
 
-//		int					m_iCurrentTexture;				// TexMgr ID of Active Texture.
-//		vector<texture*>	m_iTextures;				
-//		vector<int>			m_iFreeIndex;
-
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
 		vector<int>			m_iFreeID;
@@ -80,10 +80,11 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		void ListTextures(void);
 		void ReloadAll(void);
 		void SetOptions(texture *pkTex, int iOptions);
+		string GetFileName(string strFileExtFlags);
 
 		ZFVFileSystem*	m_pkZFFileSystem;
 
-		void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
+		//void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
 
 		int GetOptionsFromFileName(string strName);
 
@@ -113,16 +114,18 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		int GetIndex(const char* szFileName);
 		const char* GetFileName(unsigned int uiIndex);
 
-		SDL_Surface* GetTexture(int iLevel);							//dont use, use GetImage() insted
-		bool PutTexture(SDL_Surface* pkImage,bool bMipMaping);
+		
+		Image* GetTexture(int iLevel);							//dont use, use GetImage() insted
+		bool PutTexture(Image* pkImage,bool bMipMaping);
 		bool SwapTexture();
 		bool MakeTextureEditable();
 		bool PsetRGB(int x,int y,int r,int g,int b);
 		bool PsetRGBA(int x,int y,int r,int g,int b,int a);
-		Uint32 GetPixel(int x,int y);
-		bool Blit(SDL_Surface* pkImage,int x,int y);
+		color_rgba GetPixel(int x,int y);
+		//bool Blit(SDL_Surface* pkImage,int x,int y);
 		
-		SDL_Surface* GetImage();		
+
+		Image* GetImage();		
 		bool SaveTexture(const char* acFile,int iLevel);		
 		Image* LoadImage2(const char *filename);	
 

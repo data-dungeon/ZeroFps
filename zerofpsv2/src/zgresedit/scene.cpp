@@ -492,8 +492,8 @@ void Scene::ScaleWndToTexSize(ZGuiWnd *pkWnd, char *szSelSkinType)
 				if(pkSkin->m_iBkTexID)
 				{
 					m_pkTexMan->BindTexture(pkSkin->m_iBkTexID);
-					SDL_Surface* surface = m_pkTexMan->GetImage();
-					pkWnd->Resize(surface->w, surface->h);
+					Image* surface = m_pkTexMan->GetImage();
+					pkWnd->Resize(surface->m_iWidth, surface->m_iHeight);
 				}
 			}
 

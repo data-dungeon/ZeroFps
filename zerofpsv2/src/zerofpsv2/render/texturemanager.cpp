@@ -45,8 +45,9 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
 	pkTex->b_bClamp			= false;
 	pkTex->m_bCompression	= false;
-	pkTex->m_bMipMapping	= true;
-	
+	pkTex->m_bMipMapping		= true;
+	pkTex->m_bAlphaOnly		= false;
+
 	if(iOption!=0) {	
 		if((iOption & T_NOMIPMAPPING)){
 			pkTex->m_bMipMapping	=	false;
@@ -56,6 +57,9 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 		}
 		if((iOption & T_CLAMP)) {
 			pkTex->b_bClamp			=	true;
+		}	
+		if((iOption & T_ALPHA)) {
+			pkTex->m_bAlphaOnly		=	true;
 		}	
 	}
 }
@@ -100,10 +104,20 @@ int TextureManager::GetOptionsFromFileName(string strName)
 			case 'n':
 				iOptions = iOptions | T_NOMIPMAPPING;			//undrar om detta funkar?
 				break;				
+			case 'a':
+				iOptions = iOptions | T_ALPHA; 
+				break;
 		}
 	}
 
 	return iOptions;
+}
+
+// Strip away any flags at the end of the filename
+string TextureManager::GetFileName(string strFileExtFlags)
+{
+	string strnisse;
+	return strnisse;
 }
 
 
@@ -144,7 +158,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	GLint iType					=	GL_UNSIGNED_BYTE;
 	
 	//make sure the m_pkImage is null for swaping;
-	pkTex->m_pkImage = NULL;	
+	pkTex->m_pkImage2 = NULL;	
 	
 	//is this a tga?
 	bool isTga=false;
@@ -152,6 +166,12 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		iInternalFormat=GL_RGBA4;
 		iFormat=GL_RGBA;
 	}
+
+	if(pkTex->m_bAlphaOnly) {
+		cout << "Setting alpha on " <<acFilename << endl;
+		iInternalFormat=GL_ALPHA;
+		iFormat=GL_ALPHA;
+		}
 	
 	Image* pkImage;
 	pkImage = LoadImage2(acFilename);
@@ -557,11 +577,12 @@ bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
 	return true;
 }
 
-SDL_Surface* TextureManager::GetTexture(int iLevel)
+
+Image* TextureManager::GetTexture(int iLevel)
 {
 	glGetError();
 	
-	SDL_Surface* image;
+	Image* pkImage;
 	int iHeight;
 	int iWidth;
 	int iDepth;
@@ -576,7 +597,6 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_WIDTH,&iWidth);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_HEIGHT,&iHeight);	
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
-	
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_RED_SIZE,&iRSize);		
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_GREEN_SIZE,&iGSize);		
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_BLUE_SIZE,&iBSize);		
@@ -597,9 +617,10 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	cout<<"blue size: "<<iBSize<<endl;	
 	cout<<"alpha size:"<<iASize<<endl;	
 	
-
 	int iFormat=-1;
 	int iType=-1;
+
+/*
 	
 	
 	if(iDepth == 16 )
@@ -684,17 +705,21 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	
 	cout << "TextureManager::GetTexture: " << glGetError() << endl;
 	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
-
 	//download pixels from opengl
 	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
+*/
+	pkImage = new Image;
+	pkImage->CreateEmpty(iWidth,iHeight);
+	glGetTexImage(GL_TEXTURE_2D,iLevel,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
+
 	
 	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
-	return image;
+	return pkImage;
 }
 
 
-bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
+bool TextureManager::PutTexture(Image* pkImage,bool bMipMaping)
 {
 	glGetError();
 
@@ -716,8 +741,13 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 	
 	iDepth = iRSize+iGSize+iBSize+iASize;
 
+	// Upload into same format.
+	if(bMipMaping)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
+	else
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
 		
-	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
+/*	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
 	{		
 		//cout<<"GL_RGB"<<endl;
 		iFormat = GL_RGB;
@@ -742,15 +772,15 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 		{
 			//cout<<"rebuilding mipmaps"<<endl;	
 			if(iFormat == GL_RGB)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->m_pkPixels);  					
 			if(iFormat == GL_RGBA)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->m_pkPixels);  		
 		}
 		
 		if(iDepth == 24)
 		{
 			if(iFormat == GL_RGB)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  					
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
 			if(iFormat == GL_RGBA)
 				cout<<"putting unsuported format GL_RGBA in 24bit depth"<<endl;
 				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
@@ -777,23 +807,24 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
 		}
 	
-	}
+	}*/
 	
 	return true;
 }
 
 bool TextureManager::SwapTexture()
 {
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
 		return false;
 		
-	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage,
+	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage2,
 		m_iTextures[m_iCurrentTexture]->m_bMipMapping);
 	
 	if(works)
 	{
-		SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
-		m_iTextures[m_iCurrentTexture]->m_pkImage = NULL;
+		//SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
+		delete m_iTextures[m_iCurrentTexture]->m_pkImage2;
+		m_iTextures[m_iCurrentTexture]->m_pkImage2 = NULL;
 		return true;
 	}
 	else
@@ -806,12 +837,12 @@ bool TextureManager::SwapTexture()
 
 bool TextureManager::MakeTextureEditable()
 {
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage != NULL)
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 != NULL)
 		return true;
 
-	m_iTextures[m_iCurrentTexture]->m_pkImage = GetTexture(0);
+	m_iTextures[m_iCurrentTexture]->m_pkImage2 = GetTexture(0);
 	
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
 		return false;
 
 	return true;
@@ -822,15 +853,14 @@ bool TextureManager::PsetRGB(int x,int y,int r,int g,int b)
 	if(!MakeTextureEditable())
 		return false;
 
-	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage->w ||
-		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage->h)
+	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iWidth ||
+		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iHeight)
 		return false;
 		
 
-	Uint32 color = SDL_MapRGB(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b);
-	
-	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
-
+//	Uint32 color = SDL_MapRGB(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b);
+//	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
+	m_iTextures[m_iCurrentTexture]->m_pkImage2->set_pixel(x,y,r,g,b);
 	return true;
 }
 
@@ -840,22 +870,22 @@ bool TextureManager::PsetRGBA(int x,int y,int r,int g,int b,int a)
 		return false;
 	}
 	
-	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage->w ||
-		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage->h)
+	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iWidth ||
+		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iHeight)
 		return false;
 	
-	Uint32 color = SDL_MapRGBA(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b,a);	
-
-	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
+//	Uint32 color = SDL_MapRGBA(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b,a);	
+//	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
+	m_iTextures[m_iCurrentTexture]->m_pkImage2->set_pixel(x,y,r,g,b,a);
 
 	return true;
 }
 
-
+/*
 void TextureManager::PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
 {
 	 int bpp = surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to set */
+    // Here p is the address to the pixel we want to set
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
 
@@ -910,10 +940,13 @@ bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
 
 
 	return true;
+	
+
+	return false;
 }
+*/
 
-
-SDL_Surface* TextureManager::GetImage()
+Image* TextureManager::GetImage()
 {
 	if(!m_iTextures[m_iCurrentTexture])
 		return NULL;
@@ -921,16 +954,22 @@ SDL_Surface* TextureManager::GetImage()
 	if(!MakeTextureEditable())
 		return NULL;
 
-	return m_iTextures[m_iCurrentTexture]->m_pkImage;
+	return m_iTextures[m_iCurrentTexture]->m_pkImage2;
 }
 
-Uint32 TextureManager::GetPixel(int x,int y)
+color_rgba TextureManager::GetPixel(int x,int y)
 {
+	color_rgba kColor;
+	kColor.r = kColor.g = kColor.b = kColor.a = 0;
+
 	if(!MakeTextureEditable()){
-		return 0;
+		return kColor;
 	}
 
-	SDL_Surface* surface = m_iTextures[m_iCurrentTexture]->m_pkImage;
+	m_iTextures[m_iCurrentTexture]->m_pkImage2->get_pixel(x,y, kColor);
+	return kColor;
+
+	/*	SDL_Surface* surface = m_iTextures[m_iCurrentTexture]->m_pkImage;
 
 	int bpp = surface->format->BytesPerPixel;
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
@@ -952,8 +991,8 @@ Uint32 TextureManager::GetPixel(int x,int y)
 		return *(Uint32 *)p;
 
 	default:
-		return 0;       /* shouldn't happen, but avoids warnings */
-	}
+		return 0;       // shouldn't happen, but avoids warnings 
+	}*/
 }
 
 bool TextureManager::SaveTexture(const char* acFile,int iLevel)

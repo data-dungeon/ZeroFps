@@ -402,14 +402,14 @@ void MistServer::Input_EditTerrain()
 		if(m_pkInput->VKIsDown("hmraise"))
 			HMModifyCommand(5); 
 		if(m_pkInput->VKIsDown("hmlower")) {
-			//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			//hmrp->m_pkHeightMap->Smooth(kLocalOffset.x,kLocalOffset.z,5,5);
-			HMModifyCommand(-5); 
+			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+			hmrp->m_pkHeightMap->Smooth(kLocalOffset.x,kLocalOffset.z,5,5);
+			//HMModifyCommand(-5); 
 			}
 
 		if(m_pkInput->VKIsDown("hmpaint")) {
 			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,128);
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
 			}
 
 	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		

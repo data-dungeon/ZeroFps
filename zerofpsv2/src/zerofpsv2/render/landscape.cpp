@@ -828,7 +828,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 			break;
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
-		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING);	
+		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING|T_ALPHA);	
 		
 		
 		glActiveTextureARB(GL_TEXTURE1_ARB);
@@ -909,14 +909,14 @@ void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	HM_vert* pkHmVertex = kMap->verts;
 
-	for(int z = 0 ; z < kMap->m_iTilesSide; z++){
-		for(int x = 0 ; x < kMap->m_iTilesSide ; x++){	
+	for(int z = 0 ; z < kMap->m_iVertexSide; z++){
+		for(int x = 0 ; x < kMap->m_iVertexSide ; x++){	
 			float	fScaleX = float(x * HEIGHTMAP_SCALE);
 			float fScaleZ = float(z * HEIGHTMAP_SCALE);
-			int iVertexIndex = z*kMap->m_iTilesSide+x;
+			int iVertexIndex = z*kMap->m_iVertexSide+x;
 
 			kVertex.Set(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);
-			kVertex += (CamPos + kMap->m_kCornerPos);
+			kVertex += (kMap->m_kCornerPos);
 			glVertex3f(kVertex.x,kVertex.y,kVertex.z);					
 			
 			kNormal = pkHmVertex[ iVertexIndex ].normal;

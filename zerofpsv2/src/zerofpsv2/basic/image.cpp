@@ -573,7 +573,7 @@ bool Image::load(FILE* fp, const char* filename)
 	return false;	// Not supported.
 }
 
-void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned char b)
+void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned char b, unsigned char a)
 {
 //	assert(m_pkPixels);
 
@@ -585,7 +585,7 @@ void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned cha
 	m_pkPixels[offset].r = r;
 	m_pkPixels[offset].g = g;
 	m_pkPixels[offset].b = b;
-	m_pkPixels[offset].a = 0;
+	m_pkPixels[offset].a = a;
 }
 
 bool Image::get_pixel(int x, int y, color_rgba& rkColor)
@@ -603,13 +603,13 @@ bool Image::get_pixel(int x, int y, color_rgba& rkColor)
 	return true;
 }
 
-void Image::fill(int sx, int sy, int w, int h,unsigned char r,unsigned char g,unsigned char bl)
+void Image::fill(int sx, int sy, int w, int h,unsigned char r,unsigned char g,unsigned char bl, unsigned char al)
 {
 //	assert(m_pkPixels);
 
 	for(int y = 0; y<h; y++) {	
 		for(int x = 0; x<w; x++) {
-			set_pixel(sx+x,sy+y,r,g,bl);
+			set_pixel(sx+x,sy+y,r,g,bl,al);
 			}
 		}
 }

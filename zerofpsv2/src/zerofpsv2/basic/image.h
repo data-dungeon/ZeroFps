@@ -58,9 +58,9 @@ public:
 
 	// Tools
 	void Flip(bool bFlipX, bool bFlipY);				///< Flip image along one or two axis.
-	void set_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b);	///< Set color of a pixel.
+	void set_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);	///< Set color of a pixel.
 	bool get_pixel(int x, int y, color_rgba& rkColor);
-	void fill(int sx, int sy, int w, int h, unsigned char r, unsigned char g, unsigned char b);
+	void fill(int sx, int sy, int w, int h, unsigned char r, unsigned char g, unsigned char b, unsigned char al = 0);
 
 	void DownSample(void);							///< Sample image down so it's size is a power of two.
 

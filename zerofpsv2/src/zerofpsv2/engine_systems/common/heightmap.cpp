@@ -243,8 +243,8 @@ void HeightMap::GenerateNormals()
 
 	int iZIndex, iXIndex;
 	int iNumOfSides;
-	for(int z = 0; z < m_iTilesSide; z++){
-		for(int x = 0; x < m_iTilesSide; x++) {
+	for(int z = 0; z < m_iVertexSide; z++){
+		for(int x = 0; x < m_iVertexSide; x++) {
 			med = Vector3(0,0,0);  //reset medium vector
 			iNumOfSides = 0;
 
@@ -255,9 +255,9 @@ void HeightMap::GenerateNormals()
 
 					if(!IsIndexOutOfMap(iZIndex) && !IsIndexOutOfMap(iXIndex) &&
 						!IsIndexOutOfMap(iZIndex+1) && !IsIndexOutOfMap(iXIndex+1)) {
-						v1=Vector3(1,(verts[(z+q)*m_iTilesSide+(x+1+w)].height)-(verts[(z+q)*m_iTilesSide+(x+w)].height) ,0);
-						v2=Vector3(1,(verts[(z+1+q)*m_iTilesSide+(x+1+w)].height)- (verts[(z+q)*m_iTilesSide+(x+w)].height),1);		
-						v3=Vector3(0,(verts[(z+q+1)*m_iTilesSide+(x+w)].height)-(verts[(z+q)*m_iTilesSide+(x+w)].height) ,1);	
+						v1=Vector3(1,(verts[(z+q)*m_iVertexSide+(x+1+w)].height)-(verts[(z+q)*m_iVertexSide+(x+w)].height) ,0);
+						v2=Vector3(1,(verts[(z+1+q)*m_iVertexSide+(x+1+w)].height)- (verts[(z+q)*m_iVertexSide+(x+w)].height),1);		
+						v3=Vector3(0,(verts[(z+q+1)*m_iVertexSide+(x+w)].height)-(verts[(z+q)*m_iVertexSide+(x+w)].height) ,1);	
 		
 						n1=v2.Cross(v1);			
 						n2=v3.Cross(v2);				
@@ -276,7 +276,7 @@ void HeightMap::GenerateNormals()
 
 			med=med*0.125;	//insted of  division by 8 
 			med.Normalize();
-			verts[z*m_iTilesSide+x].normal=med;
+			verts[z*m_iVertexSide+x].normal=med;
 		}
 	}
 
@@ -807,7 +807,7 @@ float HeightMap::GetBrushSizeInAlphaUVSpace(float fSize)
 	return fSize * fTextelsInWorld;
 }
 
-void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int a)
+void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,int a)
 {
 	kPos -= m_kCornerPos;
 
@@ -828,53 +828,52 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int 
 		}
 	
 	//get texture pos
-	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->GetImage()->w);
+	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->GetImage()->m_iWidth);
 	float xpos = (float) ((kPos.x * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	
-	xpos *= (float)m_pkTexMan->GetImage()->w;
-	ypos *= (float)m_pkTexMan->GetImage()->h;
+	xpos *= (float)m_pkTexMan->GetImage()->m_iWidth;
+	ypos *= (float)m_pkTexMan->GetImage()->m_iHeight;
 	
-	float fRealSize = GetBrushSizeInAlphaUVSpace( iSize );	// * (float)m_pkTexMan->GetImage()->w;
+	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
 	int size=fRealSize;
 	
-	cout << "Brush size: " << size << endl;
-	cout << "Img Size: " << m_pkTexMan->GetImage()->w << "," << m_pkTexMan->GetImage()->h;
+	cout << "Brush size: " << fRealSize << endl;
+	cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
 
-	for(float i=0;i<size;i+=0.5)
+	for(float i=0;i<fRealSize;i+=0.5)
 	{
 		for(int z=0;z<360;z+=1)
 		{
 			int x = int(xpos + sin(z/degtorad)*i);
 			int y = int(ypos + cos(z/degtorad)*i);
 		
-			if(x<0 || x >= m_pkTexMan->GetImage()->w 
-				|| y <0 || y>=m_pkTexMan->GetImage()->h)	
+			if(x<0 || x >= m_pkTexMan->GetImage()->m_iWidth 
+				|| y <0 || y>=m_pkTexMan->GetImage()->m_iHeight)	
 				continue;		
 			
-			Uint32 old = m_pkTexMan->GetPixel(x,y);
+			color_rgba kColor = m_pkTexMan->GetPixel(x,y);
 			
-			Uint8 cr,cg,cb,ca;			
 			int pr,pg,pb,pa;
 			
-			SDL_GetRGBA(old,  m_pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
+			/*SDL_GetRGBA(old,  m_pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
 					
-			//grr hata Uint8
-			pr=cr;
-			pg=cg;			
-			pb=cb;			
-			pa=ca;			
+			//grr hata Uint8*/	
+			pr=kColor.r;
+			pg=kColor.g;			
+			pb=kColor.b;			
+			pa=kColor.a;		
 			
-			pr=r;
-			pg=g;
-			pb=b;			
-			pa+=a;
+			pr		=	r;
+			pg		=	g;
+			pb		=	b;			
+			pa		+=	a;
 			
 			//fula men nödvändiga =P
 			if(pr >255)
 				pr = 255;
-			if(pg >255)
-				pg = 255;
+			if(pg	 >255)
+				pg	 = 255;
 			if(pb >255)
 				pb = 255;
 			if(pa >255)
@@ -1199,13 +1198,13 @@ bool HeightMap::Layer_Create(string strName, string strTexture)
 	kLayer.m_strDetailTexture	= strTexture;
 
 	char szMaskName[256];
-	sprintf(szMaskName, "mask%d_%d.tga", m_iID, m_kLayer.size());
+	sprintf(szMaskName, "a-mask%d_%d.tga", m_iID, m_kLayer.size());
 	
 	kLayer.m_strMask				= string(szMaskName);
 		
 	Image kImg;
 	kImg.CreateEmpty(128,128);
-	kImg.fill(0,0,128,128,0,0,0);
+	kImg.fill(0,0,128,128,0,0,0,0);
 	kImg.Save(szMaskName, true);
 
 	//kLayer.m_kMaskHandle.SetRes(kLayer.m_strMask.c_str());	

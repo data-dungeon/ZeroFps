@@ -141,7 +141,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
 		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		
-		void DrawMask(Vector3 kPos,int iMode,int iSize,int r,int g,int b,int a);
+		void DrawMask(Vector3 kPos,int iMode,float fSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iTilesSide*HEIGHTMAP_SCALE;};				// Return the size of one side of the Hm.
 		//void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
