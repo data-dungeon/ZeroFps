@@ -123,7 +123,10 @@ string Property::GetValue(string kValueName)
 								
 				case VALUETYPE_FLOAT:
 					kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
-					kBuffer.insert(iDecimal, ".");
+					if(iDecimal >= 0)
+						kBuffer.insert(iDecimal, ".");
+					else
+						kBuffer.insert(0, ".");
 					if(iSign !=0)
 						kBuffer.insert(0, "-");
 					return kBuffer; 

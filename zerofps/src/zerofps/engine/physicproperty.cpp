@@ -136,8 +136,15 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 
 	kReturn[3].kValueName="m_fRadius";
 	kReturn[3].iValueType=VALUETYPE_FLOAT;
-	kReturn[3].pkValue=(void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
+	CSSphere* pkColSphere = static_cast<CSSphere*>(GetColSphere());
 
+	float fHata = static_cast<CSSphere*>(GetColSphere())->m_fRadius;
+
+	if(pkColSphere != NULL)
+		kReturn[3].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
+
+	else
+		assert(0);
 
 	return kReturn;
 };
