@@ -863,9 +863,12 @@ void InventoryDlg::Update()
       }
    }
 
-	vector<Slot>::iterator test = m_kItemSlots.begin();
-	for( ; test != m_kItemSlots.end(); test++)
-		UpdateSkin((*test));
+	if(m_pkDlgWnd->IsVisible()) // only update itemslots when inventorydlg is up
+	{
+		vector<Slot>::iterator test = m_kItemSlots.begin();
+		for( ; test != m_kItemSlots.end(); test++)
+			UpdateSkin((*test));
+	}
 }
 
 void InventoryDlg::UpdateSkin(Slot slot)
@@ -886,8 +889,23 @@ void InventoryDlg::UpdateSkin(Slot slot)
 				string strFullPath = string("/data/textures/gui/items/") 
 					+ string(pkItemProp->m_pkItemStats->m_szPic[0]);
 
-				pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
-				slot.m_pkLabel->SetSkin(pkSkin);
+				if(strcmp(pkItemProp->m_pkItemStats->m_szPic[0], "dummy.bmp") == 0)
+				{
+					slot.m_pkLabel->Hide();
+				}
+				else
+				{
+					slot.m_pkLabel->Show(); 
+					pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
+
+					string strAlphaTex = strFullPath;
+
+					int pos = strAlphaTex.find_last_of(".");
+					strAlphaTex.insert(pos, "_a", 2);
+					pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load(strAlphaTex.c_str(), 0);
+
+					slot.m_pkLabel->SetSkin(pkSkin);
+				}
 			}
 		}		
 	}
