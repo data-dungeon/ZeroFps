@@ -206,7 +206,7 @@ void* ZGui::GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type)
 	switch(type)
 	{
 	case WNDPROC:
-		return (ZGuiWnd::callbackfunc) pkWnd->m_pkCallback;
+		return (void*)((ZGuiWnd::callbackfunc) pkWnd->m_pkCallback);
 		break;
 	}
 

@@ -30,14 +30,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 	
 	Vector3 op=O1->GetPos();
 	
-	//cout<<"testing box VS sphere"<<endl;
-	
-/*	
-	if(!TestQuad(O1->GetPos()+(Vector3(0,0.5,0)*m_kScale.y),Vector3(0,1,0),-(O1->GetPos().y+(0.5*m_kScale.y)),1,1,O2->GetPos(),kOther->m_pkPP->m_kNewPos,kOther->m_fRadius))
-	{	
-		return NULL;
-	}
-*/
+
 	bool hit=false;
 	Vector3 HitPos;
 	Vector3 HitNormal;
@@ -45,13 +38,9 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 	
 	if(TestTop(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-//		if(Closer(O2->GetPos(),HitPos,m_kColPos))
-//		{		
-			HitPos=m_kColPos;
-			HitNormal.Set(0,1,0);
-//		}
+		HitPos=m_kColPos;
+		HitNormal.Set(0,1,0);
 	}
-	
 	
 	if(TestBotom(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
@@ -98,22 +87,15 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 //	if(!hit)	
 	bool inside=false;
 
-		if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
-		{
-//			cout<<"inside a box"<<endl;
-			HitPos=m_kColPos;
-			hit=true;
-			inside=true;
-		}
-	
-	
-	
-	
+	if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
+	{
+		HitPos=m_kColPos;
+		hit=true;
+		inside=true;
+	}
 	
 	if(!hit)
 		return NULL;
-
-
 	
 	if(!inside)
 	{
@@ -128,9 +110,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 		}
 	}
 
-
-	
-
+	//--setup return data
 	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;

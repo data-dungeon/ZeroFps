@@ -1,6 +1,7 @@
 #include "physicproperty.h"
 #include "cssphere.h"
 #include "csbox.h"
+#include "csmech.h"
 #include <typeinfo>
 
 PhysicProperty::PhysicProperty()
@@ -86,6 +87,10 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	{
 		type=2;		
 	}
+	else if(typeid(*m_pkColObject) == typeid(CSMech))
+	{
+		type=3;		
+	}
 		
 		
 	pkPackage->Write((void*)&type,4);		
@@ -128,7 +133,9 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 			SetColShape(new CSBox(Vector3(1,1,1)));	
 			pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);
 			break;
-		
+		case 3:
+			SetColShape(new CSMech());	
+			break;		
 	}		
 }
 
@@ -165,16 +172,6 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 	kReturn[4].iValueType=VALUETYPE_FLOAT;
 	kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;	
 
-/*
-	CSSphere* pkColSphere = static_cast<CSSphere*>(GetColSphere());
-	float fHata = static_cast<CSSphere*>(GetColSphere())->m_fRadius;
-
-	if(pkColSphere != NULL)
-		kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
-	else
-		assert(0);
-*/
-
 	kReturn[5].kValueName="m_fColShape";
 	kReturn[5].iValueType=VALUETYPE_FLOAT;
 	kReturn[5].pkValue=(void*)&m_fColShape;
@@ -201,6 +198,12 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 			kReturn[6].pkValue = (void*)&static_cast<CSBox*>(m_pkColObject)->m_kScale;								
 			break;
 		}
+		
+		case 3:
+			kReturn[6].kValueName="co-mech-nothing";
+			kReturn[6].iValueType=VALUETYPE_BOOL;
+			kReturn[6].pkValue=(void*)&m_bDummyValue;
+			break;
 	
 	}
 		
@@ -214,8 +217,10 @@ bool PhysicProperty::HandleSetValue( string kValueName ,string kValue )
 	if(strcmp(kValueName.c_str(), "m_fColShape") == 0) 
 	{
 			if(kValue=="0"){
-				if(m_pkColObject!=NULL)
+				if(m_pkColObject!=NULL){
 					delete m_pkColObject;
+					m_pkColObject=NULL;
+				}
 				
 				m_fColShape=0;
 			}
@@ -234,6 +239,14 @@ bool PhysicProperty::HandleSetValue( string kValueName ,string kValue )
 					delete m_pkColObject;								
 				SetColShape(new CSBox(Vector3(1,1,1)));	
 				m_fColShape=2;				
+			}
+			
+			if(kValue=="3")
+			{
+				if(m_pkColObject!=NULL)
+					delete m_pkColObject;								
+				SetColShape(new CSMech());	
+				m_fColShape=3;				
 			}
 			
 			return true;
