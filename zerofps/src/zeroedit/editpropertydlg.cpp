@@ -210,6 +210,11 @@ void EditPropertyDlg::OnOpenEditProperty()
 
 	if(m_pkCurrentChild)
 	{
+
+		char szID[50];
+		sprintf(szID, "%i", m_pkCurrentChild->iNetWorkID);
+		m_pkGui->Get("ObjectID")->SetText(szID);
+
 		char text[50];
 		Vector3 p = m_pkCurrentChild->GetPos();
 
@@ -349,6 +354,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 				m_pkCurrentChild->GetRot() = Vector3(rx,ry,rz);
 			}
 		}
+
 	}
 
 /*	int index = -1;
