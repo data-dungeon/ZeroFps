@@ -23,6 +23,8 @@ using namespace std;
 class GuiBuilder  
 {
 public:
+	ZGuiWnd* GetChild(ZGuiWnd *pkParent, unsigned int iID);
+	bool AddSkin(int texture, string szName);
 	GuiBuilder(TextureManager* pkTexMan, ZGui* pkGui);
 	virtual ~GuiBuilder();
 

@@ -71,7 +71,7 @@ void ZeroRTS::Init()
 	m_fClickDelay = 0.2;
 	
 	//set fog timer
-	m_fFogTimer = pkFps->GetTicks();	
+	m_fFogTimer = pkFps->GetTicks();
 	
 	//gui bös
 	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
@@ -82,8 +82,44 @@ void ZeroRTS::Init()
 	pkFps->ToggleGui();
 
 	m_pkGuiBuilder = new GuiBuilder(pkTexMan, pkGui);
-
 	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
+
+	// load command icon names from file
+	if(pkIni->Open("cmdicons.txt", true))
+	{
+		vector<string> kNames;
+		pkIni->GetCommandStrings(&kNames);
+
+		for(unsigned int i=0; i<kNames.size(); i++)
+		{
+			m_pkUserPanel->m_kCmdIconNameMap.insert(
+				map<int,string>::value_type(i, kNames[i]));
+
+			m_pkUserPanel->m_kCmdIconIDMap.insert(
+				map<string,int>::value_type(kNames[i], i));
+
+			string szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnu.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnu"));
+
+			szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnd.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnd"));
+
+			szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnf.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnf"));
+		}
+	}
+	else
+		printf("Failed to load command icon names!!!\n\n");
+
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
 
@@ -354,8 +390,9 @@ void ZeroRTS::Input()
 			ClearSelected();
 		
 		if(info.iObject != -1)
-			AddSelectedObject(info.iObject);			
-
+			AddSelectedObject(info.iObject);		
+		
+		m_pkUserPanel->UpdateCmdButtons();
 	}
 	
 	if(pkInput->Action(m_iActionScroll))

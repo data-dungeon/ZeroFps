@@ -40,62 +40,27 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	pkMinimap->SetZValue(121212);
 	m_pkGui->RegisterWindow(pkMinimap, "MiniMapWnd");
 
-/*	ZGuiWnd* pkFogmap = new ZGuiWnd(Rect(10,9,10+128,9+128),m_pkDlgBox,true,751490);
-	pkFogmap->SetSkin(m_pkGuiBuilder->GetSkin("FogWnd") );
-	pkFogmap->SetZValue(121213);
-	m_pkGui->RegisterWindow(pkFogmap, "FogWnd");
-*/
-	Rect rc(m_pkZeroRts->m_iWidth-48-10,10,0,0);
-	rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;
+	Rect rc(m_pkZeroRts->m_iWidth-300-10,10,0,0);
+	rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
 
-	char* aSkinNames[] = 
-	{
-		"attack_bnu", "attack_bnd", "attack_bnf",
-		"build_bnu", "build_bnd", "build_bnf",
-		"move_bnu", "move_bnd", "move_bnf",
-		"stop_bnu", "stop_bnd", "stop_bnf",
-		"repair_bnu", "repair_bnd", "repair_bnf",
-		"guard_bnu", "guard_bnd", "guard_bnf",
-	};
-
-	char* aDescNames[] = 
-	{
-		"Attack",
-		"Build",
-		"Move",
-		"Stop",
-		"Repair",
-		"Guard",
-	};
-
-	int aIDNumbers[] =
-	{
-		ID_ATTACK_BN,
-		ID_BUILD_BN,
-		ID_MOVE_BN,
-		ID_STOP_BN,
-		ID_REPAIR_BN,
-		ID_GUARD_BN,
-	};
-
-	for(int i=0; i<(sizeof(aSkinNames) / sizeof(aSkinNames[1]))/3; i++)
+	for(int i=0; i<18; i++)
 	{
 		if(i%6==0 && i!=0)
 		{
-			rc = Rect(m_pkZeroRts->m_iWidth-48-10,10,0,0);
-			rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;
-			rc = rc.Move(0,(i/6)*50);
+			rc = Rect(m_pkZeroRts->m_iWidth-300-10,10,0,0);
+			rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
+			rc = rc.Move(0,(i/6)*(CMD_BN_SIZE+2));
 		}
 
-		ZGuiButton* pkButton = new ZGuiButton(rc,m_pkDlgBox,true,aIDNumbers[i]);
+		ZGuiButton* pkButton = new ZGuiButton(rc,m_pkDlgBox,true,ID_CMD_BUTTONS_START+i);
 		pkButton->SetMoveArea(pkButton->GetScreenRect());
-		pkButton->SetButtonUpSkin(m_pkGuiBuilder->GetSkin(aSkinNames[i*3]));
-		pkButton->SetButtonDownSkin(m_pkGuiBuilder->GetSkin(aSkinNames[i*3+1]));
-		pkButton->SetButtonHighLightSkin(m_pkGuiBuilder->GetSkin(aSkinNames[i*3+2]));
+		pkButton->SetButtonUpSkin(new ZGuiSkin());
+		pkButton->SetButtonDownSkin(new ZGuiSkin());
+		pkButton->SetButtonHighLightSkin(new ZGuiSkin());
+		pkButton->Hide();
+
 		m_akCommandBns.push_back(pkButton);
-		m_akCmdButtonText.insert(map< ZGuiButton*, string >::value_type(
-			pkButton, string(aDescNames[i]))); 
-		rc = rc.Move(-50,0);
+		rc = rc.Move(CMD_BN_SIZE+2,0);
 	}
 
 	ZGuiLabel* pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox, 123456, 
@@ -106,6 +71,7 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 		m_oMainWndProc, false);
 
 	m_pkDlgBox->SortChilds();
+
 
 	return true;
 }
@@ -121,6 +87,8 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 	{
 	case ZGM_LBUTTONDOWN:
 	case ZGM_RBUTTONDOWN:
+
+		// SetCmdButtonIcon(oka++, m_kCmdIconIDMap.find("stop")->second, true);
 
 		x = ((int*)pkParams)[0];
 		y = ((int*)pkParams)[1];
@@ -166,6 +134,11 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				OnClickMinimap(x,y);
 		}
 
+		break;
+
+	case ZGM_COMMAND:
+		int iCtrlID; iCtrlID = ((int*)pkParams)[0];
+		OnClickCmdButton(iCtrlID);
 		break;
 
 	}
@@ -220,4 +193,123 @@ void UserPanel::OnClickMinimap(int x, int y)
 	pos.z = -255 + fProcentAvHeight*512;
 
 	m_pkZeroRts->SetCamPos(pos);
+}
+
+void UserPanel::UpdateCmdButtons()
+{
+	ObjectManager* pkObjMan = m_pkZeroRts->pkObjectMan;
+	Object* pkObject;
+
+	set<int> kSetMap;
+
+	for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin();
+		it != m_pkZeroRts->m_kSelectedObjects.end();it++)		
+	{
+		pkObject = pkObjMan->GetObjectByNetWorkID((*it));
+		P_ClientUnit* pkClientUnit = m_pkZeroRts->GetClientUnit((*it));
+
+		if(pkClientUnit)
+		{
+			printf("Antal commandon%i\n", pkClientUnit->m_kUnitCommands.size());
+
+			int iIndex = 0;
+			for(unsigned int i=0; i<pkClientUnit->m_kUnitCommands.size(); i++)
+			{
+				int iIconIndex = pkClientUnit->m_kUnitCommands[i].m_iIconIndex;
+				set<int>::iterator r = kSetMap.find(iIconIndex);
+				if(r != kSetMap.end() )
+				{
+					SetCmdButtonIcon(iIndex, iIconIndex, true);
+					kSetMap.insert(set<int>::value_type(iIconIndex));
+					iIndex++;
+				}
+			}
+		}
+	}
+}
+
+void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
+{
+	if(iButtonIndex < 0 || iButtonIndex > 18)
+	{
+		printf("SetCmdButtonIcon = ERROR\n");
+		return;
+	}
+
+	ZGuiButton* pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
+		ID_CMD_BUTTONS_START+iButtonIndex);
+
+	if(pkButton == NULL)
+	{
+		printf("SetCmdButtonIcon = ERROR\n");
+		return;
+	}
+
+	int iNumVisibleButtons = GetNumVisibleCmdButtons();
+
+	
+	int x = m_pkZeroRts->m_iWidth-300-10, y = 10;
+	x += (CMD_BN_SIZE+2) * (iNumVisibleButtons % 6);
+	y += (CMD_BN_SIZE+2) * (iNumVisibleButtons / 6);
+
+	Rect rc(x,y,x+CMD_BN_SIZE,y+CMD_BN_SIZE);
+	pkButton->SetPos(x,y,false,true);
+	pkButton->SetMoveArea(pkButton->GetScreenRect());
+
+	if(bShow)
+		pkButton->Show();
+	else
+		pkButton->Hide();
+
+	char* postfix[] = { "_bnu.bmp", "_bnd.bmp", "_bnf.bmp" };
+
+	ZGuiSkin* pkSkin;
+
+	for(int i=0; i<3; i++)
+	{
+		switch(i)
+		{
+		case 0: pkSkin = pkButton->GetButtonUpSkin(); break;
+		case 1: pkSkin = pkButton->GetButtonDownSkin(); break;
+		case 2: pkSkin = pkButton->GetButtonHighLightSkin(); break;
+		}
+
+		string szFileName = "file:../data/textures/cmdbuttons/";
+		szFileName += m_kCmdIconNameMap.find(iIconIndex)->second.c_str();
+		szFileName += postfix[i];
+
+		pkSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load(szFileName.c_str(), 0);
+		
+		switch(i)
+		{
+		case 0: pkButton->SetButtonUpSkin(pkSkin); break;
+		case 1: pkButton->SetButtonDownSkin(pkSkin); break;
+		case 2: pkButton->SetButtonHighLightSkin(pkSkin); break;
+		}
+	}
+}
+
+void UserPanel::OnClickCmdButton(int iCtrlID)
+{
+	if(iCtrlID >= ID_CMD_BUTTONS_START && iCtrlID < ID_CMD_BUTTONS_START+18)
+		return;
+
+	//m_kCmdIconNameMap.find(ID_CMD_BUTTONS_START
+}
+
+int UserPanel::GetNumVisibleCmdButtons()
+{
+	int iCounter = 0;
+
+	ZGuiButton* pkButton;
+	for(int i=0; i<18; i++)
+	{
+		pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
+			ID_CMD_BUTTONS_START+i);
+
+		if(pkButton->IsVisible())
+			iCounter++;
+	}
+
+	return iCounter;
 }

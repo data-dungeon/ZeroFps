@@ -15,9 +15,6 @@
 
 MiniMap::MiniMap(GuiBuilder* pkGuiBuilder, TextureManager *pkTexMan) : m_iDisclosuredCellRow(43)
 {
-	m_pbDisclosuredCells = new bool[m_iDisclosuredCellRow*m_iDisclosuredCellRow];
-	memset(m_pbDisclosuredCells, 0, 
-		sizeof(bool)*(m_iDisclosuredCellRow*m_iDisclosuredCellRow));
 	m_fCameraPosX = 0.5f;
 	m_fCameraPosY = 0.5f;
 	m_bVisible = true;
@@ -27,7 +24,7 @@ MiniMap::MiniMap(GuiBuilder* pkGuiBuilder, TextureManager *pkTexMan) : m_iDisclo
 
 MiniMap::~MiniMap()
 {
-	delete[] m_pbDisclosuredCells;
+
 }	
 
 void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender,
@@ -64,8 +61,6 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender,
 	pkGui->DrawLine(Point(fvLeft+fvWidth, fvTop), Point(fvLeft+fvWidth, fvTop+fvHeight)); // right
 	pkGui->DrawLine(Point(fvLeft, fvTop+fvHeight), Point(fvLeft+fvWidth, fvTop+fvHeight)); 
 
-	Rect rcCamera(fvLeft, fvTop, fvLeft+fvWidth, fvTop+fvHeight);
-	//DiscloseCells(rcCamera);
 
 	static bool init = false;
 	static Point array[800];
@@ -232,59 +227,7 @@ void MiniMap::MoveFov(float fCameraPosX, float fCameraPosY)
 	// -182 till 236 (y) = 417
 }
 
-/*void MiniMap::DiscloseCells(Rect rcCamera)
-{
-	int mmSize = m_iSize; 
-	int mmLeft = m_kScreenPos.x;
-	int mmTop  = m_kScreenPos.y;
 
-	const float TILE_SIZE = (float) mmSize / m_iDisclosuredCellRow;
-
-	int x,y;
-	float dx=0,dy=0;
-	for( y = 0; y < m_iDisclosuredCellRow; y++)
-	{
-		for( x = 0; x < m_iDisclosuredCellRow; x++)
-		{
-			Rect rcCell(mmLeft+dx, mmTop+dy, 
-				mmLeft+dx+TILE_SIZE, mmTop+dy+TILE_SIZE);
-
-			if(rcCamera.Inside(rcCell))
-				m_pbDisclosuredCells[y*m_iDisclosuredCellRow+x] = true;
-
-			dx += TILE_SIZE;
-		}
-		dy += TILE_SIZE;
-		dx = 0;
-	}	
-}*/
-
-void MiniMap::DiscloseCells(Rect rcCamera)
-{
-	int mmSize = m_iSize; 
-	int mmLeft = m_kScreenPos.x;
-	int mmTop  = m_kScreenPos.y;
-
-	const float TILE_SIZE = (float) mmSize / m_iDisclosuredCellRow;
-
-	int x,y;
-	float dx=0,dy=0;
-	for( y = 0; y < m_iDisclosuredCellRow; y++)
-	{
-		for( x = 0; x < m_iDisclosuredCellRow; x++)
-		{
-			Rect rcCell(mmLeft+dx, mmTop+dy, 
-				mmLeft+dx+TILE_SIZE, mmTop+dy+TILE_SIZE);
-
-			if(rcCamera.Inside(rcCell))
-				m_pbDisclosuredCells[y*m_iDisclosuredCellRow+x] = true;
-
-			dx += TILE_SIZE;
-		}
-		dy += TILE_SIZE;
-		dx = 0;
-	}	
-}
 
 void MiniMap::Show(bool bVisible)
 {

@@ -116,6 +116,10 @@ SOURCE=.\minimap.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\resource_id.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\userpanel.h
 # End Source File
 # Begin Source File

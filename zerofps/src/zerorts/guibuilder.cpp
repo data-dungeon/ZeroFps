@@ -31,33 +31,33 @@ bool GuiBuilder::InitSkins()
 	int bn_down = m_pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = m_pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
 
-	int attack_bnu = m_pkTexMan->Load("file:../data/textures/attack_bnu.bmp", 0);
-	int attack_bnd = m_pkTexMan->Load("file:../data/textures/attack_bnd.bmp", 0);
-	int attack_bnf = m_pkTexMan->Load("file:../data/textures/attack_bnf.bmp", 0);
+/*	int attack_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/attack_bnu.bmp", 0);
+	int attack_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/attack_bnd.bmp", 0);
+	int attack_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/attack_bnf.bmp", 0);
 
-	int build_bnu = m_pkTexMan->Load("file:../data/textures/build_bnu.bmp", 0);
-	int build_bnd = m_pkTexMan->Load("file:../data/textures/build_bnd.bmp", 0);
-	int build_bnf = m_pkTexMan->Load("file:../data/textures/build_bnf.bmp", 0);
+	int build_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/build_bnu.bmp", 0);
+	int build_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/build_bnd.bmp", 0);
+	int build_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/build_bnf.bmp", 0);
 
-	int move_bnu = m_pkTexMan->Load("file:../data/textures/move_bnu.bmp", 0);
-	int move_bnd = m_pkTexMan->Load("file:../data/textures/move_bnd.bmp", 0);
-	int move_bnf = m_pkTexMan->Load("file:../data/textures/move_bnf.bmp", 0);
+	int move_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/move_bnu.bmp", 0);
+	int move_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/move_bnd.bmp", 0);
+	int move_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/move_bnf.bmp", 0);
 
-	int stop_bnu = m_pkTexMan->Load("file:../data/textures/stop_bnu.bmp", 0);
-	int stop_bnd = m_pkTexMan->Load("file:../data/textures/stop_bnd.bmp", 0);
-	int stop_bnf = m_pkTexMan->Load("file:../data/textures/stop_bnf.bmp", 0);
+	int stop_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/stop_bnu.bmp", 0);
+	int stop_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/stop_bnd.bmp", 0);
+	int stop_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/stop_bnf.bmp", 0);
 
-	int repair_bnu = m_pkTexMan->Load("file:../data/textures/repair_bnu.bmp", 0);
-	int repair_bnd = m_pkTexMan->Load("file:../data/textures/repair_bnd.bmp", 0);
-	int repair_bnf = m_pkTexMan->Load("file:../data/textures/repair_bnf.bmp", 0);
+	int repair_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/repair_bnu.bmp", 0);
+	int repair_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/repair_bnd.bmp", 0);
+	int repair_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/repair_bnf.bmp", 0);
 
-	int guard_bnu = m_pkTexMan->Load("file:../data/textures/guard_bnu.bmp", 0);
-	int guard_bnd = m_pkTexMan->Load("file:../data/textures/guard_bnd.bmp", 0);
-	int guard_bnf = m_pkTexMan->Load("file:../data/textures/guard_bnf.bmp", 0);
+	int guard_bnu = m_pkTexMan->Load("file:../data/textures/cmdbuttons/guard_bnu.bmp", 0);
+	int guard_bnd = m_pkTexMan->Load("file:../data/textures/cmdbuttons/guard_bnd.bmp", 0);
+	int guard_bnf = m_pkTexMan->Load("file:../data/textures/cmdbuttons/guard_bnf.bmp", 0);*/
 
 	int minimap = m_pkTexMan->Load("file:../data/textures/minimap.bmp", 0);
 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("attack_bnu"), 
+/*	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("attack_bnu"), 
 		new ZGuiSkin(attack_bnu, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("attack_bnd"), 
 		new ZGuiSkin(attack_bnd, false) ) ); 
@@ -97,7 +97,7 @@ bool GuiBuilder::InitSkins()
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("guard_bnd"), 
 		new ZGuiSkin(guard_bnd, false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("guard_bnf"), 
-		new ZGuiSkin(guard_bnf, false) ) ); 
+		new ZGuiSkin(guard_bnf, false) ) ); */
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("minimap"), 
 		new ZGuiSkin(minimap, false) ) ); 
@@ -144,4 +144,32 @@ ZGuiLabel* GuiBuilder::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int
 	pkLabel->SetGUI(m_pkGui);
 
 	return pkLabel;
+}
+
+bool GuiBuilder::AddSkin(int texture, string szName)
+{
+	printf("Name = %s, id = %i\n", szName.c_str(), texture);
+	
+	if(GetSkin((char*)szName.c_str()) != NULL)
+		return false;
+
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(szName, 
+		new ZGuiSkin(texture, false) ) );
+	
+	return true;
+}
+
+ZGuiWnd* GuiBuilder::GetChild(ZGuiWnd *pkParent, unsigned int iID)
+{
+	list<ZGuiWnd*> childs;
+	pkParent->GetChildrens(childs);
+
+	list<ZGuiWnd*>::iterator it = childs.begin();
+	for( ; it != childs.end(); it++)
+	{
+		if((*it)->GetID() == iID)
+			return (*it);
+	}
+
+	return NULL;
 }

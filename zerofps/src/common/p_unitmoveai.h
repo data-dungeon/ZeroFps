@@ -25,7 +25,7 @@ using namespace std;
 
 
 
-class P_UnitMoveAI : public Property, public AIBase
+class COMMON_API P_UnitMoveAI : public Property, public AIBase
 {
 public:
 	P_UnitMoveAI();

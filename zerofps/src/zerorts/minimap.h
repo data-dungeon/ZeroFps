@@ -19,9 +19,8 @@ public:
 	virtual ~MiniMap();
 
 private:
-	void DiscloseCells(Rect rcCamera);
+	
 	const int m_iDisclosuredCellRow;
-	bool* m_pbDisclosuredCells;
 	Point m_kScreenPos;
 	int m_iSize;
 

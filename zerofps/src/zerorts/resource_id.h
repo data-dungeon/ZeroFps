@@ -4,12 +4,7 @@
 
 enum WindowResID
 {
-	ID_ATTACK_BN,
-	ID_BUILD_BN,
-	ID_MOVE_BN,
-	ID_STOP_BN,
-	ID_REPAIR_BN,
-	ID_GUARD_BN,
+	ID_CMD_BUTTONS_START=50,
 };
  
 #endif

@@ -16,9 +16,12 @@
 class ZeroRTS;
 class GuiBuilder;
 
+const int CMD_BN_SIZE = 48;
+
 class UserPanel : public DlgBox
 {
 public:
+	void UpdateCmdButtons();
 	void OnClickMinimap(int x, int y);
 	bool Click();
 	UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc);
@@ -28,8 +31,13 @@ public:
 	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		int iNumberOfParams,void *pkParams );
 
-private:
+	map<int, string> m_kCmdIconNameMap;
+	map<string, int> m_kCmdIconIDMap;
 
+private:
+	int GetNumVisibleCmdButtons();
+	void OnClickCmdButton(int iCtrlID);
+	void SetCmdButtonIcon(int iIndex, int iIconIndex, bool bShow);
 	bool OnOpen(int x, int y);
 	bool OnClose(bool bSave);
 

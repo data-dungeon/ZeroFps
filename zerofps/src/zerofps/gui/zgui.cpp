@@ -269,14 +269,14 @@ bool ZGui::Render()
 		m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
 	}
 
-	// Draw lines
-	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
-
 	// Draw points
 	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
 
 	// Draw rects
 	m_pkRenderer->RenderRects(m_kRectsToDraw); 
+
+	// Draw lines
+	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
 
 	// Draw cursor
 	if(m_pkCursor->IsVisible())
@@ -716,9 +716,10 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		Render();
 	}
 
-	m_kLinesToDraw.clear(); 
+	
 	m_kPointsToDraw.clear();
 	m_kRectsToDraw.clear(); 
+	m_kLinesToDraw.clear(); 
 
 	return true;
 }
