@@ -150,7 +150,7 @@ void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(9);
+	vector<PropertyValues> kReturn(11);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_CHARVAL;
@@ -187,6 +187,14 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[8].kValueName="m_bClient";
 	kReturn[8].iValueType=VALUETYPE_BOOL;
 	kReturn[8].pkValue=(void*)&m_bClient;
+
+	kReturn[9].kValueName="m_iMaxHealth";
+	kReturn[9].iValueType=VALUETYPE_INT;
+	kReturn[9].pkValue=(void*)&m_iMaxHealth;
+
+	kReturn[10].kValueName="m_iHealth";
+	kReturn[10].iValueType=VALUETYPE_INT;
+	kReturn[10].pkValue=(void*)&m_iHealth;
 
 	return kReturn;
 }

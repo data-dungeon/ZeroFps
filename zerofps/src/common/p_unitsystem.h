@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "p_serverunit.h"
+#include "p_serverinfo.h"
 #include "tileengine.h"
 
 using namespace std;
@@ -66,16 +67,18 @@ class COMMON_API UnitSystems
 class COMMON_API P_UnitSystem: public Property {
 	private:
 		UnitSystems				m_kBaseSystems;
+		P_ServerInfo*			m_pkServerInfo;
 		int						m_iPlayers;
 	
 		vector<UnitSystems>	m_kPlayerSystems;
 	
 	public:
+		void Update();
+	
 		P_UnitSystem();
 		void CloneOf(Property* pkProperty) { }
 
-		void SetupSystems();
-		
+		void SetupSystems();				
 		Weapon* GetWeaponPointer(int iPlayer,int iWeapon);
 		Armor* GetArmorPointer(int iPlayer,int iArmor);		
 		

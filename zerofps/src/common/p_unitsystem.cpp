@@ -7,15 +7,31 @@ P_UnitSystem::P_UnitSystem()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
-	cout<<"unit system manager created"<<endl;
 
+	m_pkServerInfo = NULL;
 	m_iPlayers = 4;
-	
+
 	SetupSystems();
 
 	//add base systems to all players
 	for(int i =0;i<m_iPlayers;i++)
 		m_kPlayerSystems.push_back(m_kBaseSystems);
+
+	cout<<"unit system manager created"<<endl;
+}
+
+void P_UnitSystem::Update()
+{
+	
+	if(!m_pkServerInfo)
+	{
+		Object* sio = m_pkObject->m_pkObjectMan->GetObject("A ServerInfoObject");
+		
+		if(sio)
+			m_pkServerInfo =  (P_ServerInfo*)sio->GetProperty("P_ServerInfo");		
+	}		
+
+
 }
 
 void P_UnitSystem::SetupSystems()
@@ -135,6 +151,13 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 							cout<<"FireWeapon: no Armour!" <<endl;
 							return false;
 						}
+					
+						Event temp;
+						temp.m_iType = 0;
+						temp.m_kPos.Set(0,5,0);
+					
+						if(m_pkServerInfo)
+							m_pkServerInfo->AddEvent(temp);
 					
 						int iDamage = int(pkWeapon->iDamage * pkWeapon->afModifiers[pkTarget->m_kInfo.m_Info2.m_cArmor] * pkArmor->fModifier);
 						return pkTarget->Damage(iDamage);

@@ -48,13 +48,24 @@ class object
 			add P_UnitAttackAI			
 			set MadProperty m_kMadFile /data/mad/rts/unit/tankl.mad
 			set MadProperty m_fScale 0.3
-
+			
+			set P_ServerUnit m_cWeapon 0
+			set P_ServerUnit m_cArmor  1
+			set P_ServerUnit m_iMaxHealth  100
+			set P_ServerUnit m_iHealth  	100			
+			
+		
 		class ZeroRTSHeavyTank
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
 			add P_UnitAttackAI						
 			set MadProperty m_kMadFile /data/mad/rts/unit/tankh.mad
 			set MadProperty m_fScale 0.3
+
+			set P_ServerUnit m_cWeapon 0
+			set P_ServerUnit m_cArmor  2
+			set P_ServerUnit m_iMaxHealth  150
+			set P_ServerUnit m_iHealth  	150			
 
 		class ZeroRTSCommandCenter
 			parent ZeroRTSUnit
