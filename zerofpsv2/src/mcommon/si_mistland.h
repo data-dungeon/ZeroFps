@@ -27,6 +27,7 @@ namespace MistLandLua
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
 	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
 	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
+	
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
 
 };
