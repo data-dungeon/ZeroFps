@@ -391,6 +391,47 @@ void Object::DeleteAllChilds()
 	m_akChilds.clear();
 }
 
+bool Object::AttachToZone()
+{
+	return AttachToZone(GetLocalPosV());
+}
+
+
+bool Object::AttachToZone(Vector3 kPos)
+{
+	if(!m_bZone)
+	{
+		if(!m_bRelativeOri)
+		{		
+			int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+			if(nZ == -1)
+			{
+				//cout<<"object tried to move outside zone"<<endl;
+				return false;
+			}
+			
+			ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
+			if(!cz)
+			{
+				//cout<<"zone does not exist"<<endl;
+				return  false;
+			}
+	
+			if(!cz->m_pkZone)
+			{
+				//cout<<"object tried to move to a unloaded zone"<<endl;
+				return  false;
+			}
+	
+			m_iCurrentZone = nZ;
+			SetParent((Object*)cz->m_pkZone);				
+			return true;
+		}
+	}	
+	
+	return false;
+}
+
 /**	\brief	Adds ourself and all our children to the list of objects.
 */
 void Object::GetAllObjects(vector<Object*> *pakObjects)
@@ -402,33 +443,6 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 	}	
 }
 
-/*
-void Object::AttachToClosestZone()
-{
-	vector<Object*> temp;
-	float mindistance=999999999;
-	Object* minobject=m_pkObjectMan->GetWorldObject();
-
-	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
-
-	for(vector<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
-		if((*it)->GetName()=="ZoneObject"){
-			//dont attach this object to this object ;)
-			if((*it)==this)
-				continue;
-			float distance = abs(((*it)->GetWorldPosV() - GetWorldPosV()).Length());
-			if(distance<mindistance){
-				mindistance=distance;
-				minobject=(*it);
-			}
-		}
-	}		
-	
-	temp.clear();
-	
-	SetParent(minobject);
-}
-*/
 
 /**	\brief	Returns true if object is one that need to be sent over network.
 */
@@ -957,34 +971,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 	//check new zone
 	if(m_bUseZones)
 	{
-		if(!m_bZone)
-		{
-			if(!m_bRelativeOri)
-			{		
-				int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
-				if(nZ == -1)
-				{
-					//cout<<"object tried to move outside zone"<<endl;
-					return;
-				}
-				
-				ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
-				if(!cz)
-				{
-					//cout<<"zone does not exist"<<endl;
-					return;
-				}
-		
-				if(!cz->m_pkZone)
-				{
-					//cout<<"object tried to move to a unloaded zone"<<endl;
-					return;
-				}
-		
-				m_iCurrentZone = nZ;
-				SetParent((Object*)cz->m_pkZone);				
-			}
-		}
+		AttachToZone(kPos);
 	}
 
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;

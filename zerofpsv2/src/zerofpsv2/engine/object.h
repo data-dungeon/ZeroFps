@@ -241,7 +241,8 @@ class ENGINE_API Object
 		void DeleteAllChilds();										// Remove all childs from this object.
 		void GetAllObjects(vector<Object*> *pakObjects);	// Return this + all childs.
 
-//		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
+		bool AttachToZone();		
+		bool AttachToZone(Vector3 kPos);		
 
 		bool GetUseZones() {return m_bUseZones;};
 		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
