@@ -612,11 +612,13 @@ void ZShader::Draw()
 
 bool ZShader::HaveVertexProgramExt()
 {
-	unsigned char* pcExt1 = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
+	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
-	cout<<"Exnstions "<<pcExt1<<endl;
-	//strcmp("
+	if(strcmp("GL_ARB_vertex_program",(const char*)pcExt) >= 0)
+	{
+		return true;	
+	}
 	
-	return true;
+	return false;
 }
 
