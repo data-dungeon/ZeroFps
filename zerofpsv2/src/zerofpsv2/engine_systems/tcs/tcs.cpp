@@ -157,8 +157,8 @@ void Tcs::UpdateLineTests()
 
 void Tcs::HandleCollission(Tcs_collission* pkCol)
 {
-	m_pkRender->Sphere(pkCol->kPos,0.1,1,Vector3(1,1,0),false);
-	m_pkRender->Line(pkCol->pkBody1->m_kNewPos,pkCol->pkBody1->m_kNewPos + pkCol->kNormal);	
+//	m_pkRender->Sphere(pkCol->kPos,0.1,1,Vector3(1,1,0),false);
+//	m_pkRender->Line(pkCol->pkBody1->m_kNewPos,pkCol->pkBody1->m_kNewPos + pkCol->kNormal);	
 			
 	float b = 2;		
 			
@@ -209,7 +209,7 @@ void Tcs::SyncBodys()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
-		m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius,1,Vector3(1,0,0),false);
+//		m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius,1,Vector3(1,0,0),false);
 		
 		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetObject()->GetWorldPosV();
 		m_kBodys[i]->m_kVelocity = m_kBodys[i]->GetObject()->GetVel();				
