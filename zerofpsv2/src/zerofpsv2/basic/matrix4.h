@@ -13,9 +13,9 @@ class Matrix3;
 class Quaternion;
 
 /// A Class for matrix math with 4 x 4 matrix.
-class BASIC_API Matrix4 {
-	private:	
-	
+class BASIC_API Matrix4 
+{
+// Data
 	public:
 		union 
 		{
@@ -23,6 +23,7 @@ class BASIC_API Matrix4 {
 			float data[16];	
 		};
 
+// Constructors
 		Matrix4(void);
 		Matrix4(float v1,float v2,float v3 ,float v4,
 						float v5,float v6,float v7 ,float v8,						
@@ -30,19 +31,15 @@ class BASIC_API Matrix4 {
 						float v13,float v14,float v15 ,float v16);
 		
 			
-		
-		void Zero();								// Set whole matrix to zero.
-		void Identity();							// Set matrix to the identity matrix.
-	
+// Operators
 		// Assignment 
-		void operator=(const Matrix3 &rkMatrix);
 		Matrix4 operator=(const Matrix4 &kOther);
+		void operator=(const Matrix3 &rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
 		
 		// Comparison
 		bool operator== (const Matrix4& rkMatrix) const;
 		bool operator!= (const Matrix4& rkMatrix) const;
-
 		
 		// Arithmetic operations
 		Matrix4 operator+ (const Matrix4& rkMatrix) const;
@@ -56,9 +53,13 @@ class BASIC_API Matrix4 {
 		Matrix4 operator*=(const float &f);		
 		Vector4 operator*(const Vector4 &f);
 
+// Methods
+		void Zero();								// Set whole matrix to zero.
+		void Identity();							// Set matrix to the identity matrix.
+
 		void Transponse();
+
 		void OldTranslate(float x, float y, float z);
-		
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(Vector3 kRot);
 		void Scale(float fX, float fY, float fZ);
@@ -67,11 +68,6 @@ class BASIC_API Matrix4 {
 		void Translate(Vector3 kPos);
 		
 		void LookDir(Vector3 kDir,Vector3 kUp);
-		
-		Vector3 GetRotVector();
-		Vector3 GetPosVector();
-		
-		void Print();
 
 		// ************************************************
 		Vector3 VectorRotate (const Vector3& kVec)
@@ -81,7 +77,6 @@ class BASIC_API Matrix4 {
 				kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1],
 				kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2]
 				);
-
 /*
 			Vector3 res;
 			res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
@@ -90,7 +85,7 @@ class BASIC_API Matrix4 {
 			return res;
 */		
 		}
-
+		
 		Vector3 VectorIRotate (const Vector3& kVec);
 
 		Vector3 VectorTransform (const Vector3& kVec) 
@@ -101,6 +96,17 @@ class BASIC_API Matrix4 {
 				kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2]
 				);
 		}
+
+		void SetZeroDelta(float delta);
+
+		bool inv(void);
+		float det(void);
+		Matrix3 submat(int i, int j);
+		Matrix4 Invert2( );
+
+// Accessors 
+		Vector3 GetRotVector();
+		Vector3 GetPosVector();
 
 		Vector3 GetPos()
 		{
@@ -115,16 +121,12 @@ class BASIC_API Matrix4 {
 		}
 
 		float &operator[](const int i);				
-		void SetZeroDelta(float delta);
 
-		bool inv(void);
-		float det(void);
-		Matrix3 submat(int i, int j);
-		Matrix4 Invert2( );
-		
 		void SetAxis(int iAxisNum, Vector3 kNewAxis);
 		Vector3 GetAxis(int iAxisNum);
 
+// Other
+		void Print();
 
 };
 
