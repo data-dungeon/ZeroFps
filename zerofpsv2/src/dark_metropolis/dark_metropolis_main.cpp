@@ -43,6 +43,8 @@ void DarkMetropolis::OnInit()
 	m_fDistance = 0;	
 	m_fAngle = 0;
 	m_strSaveDirectory = "clans/";
+	m_pkGameInfoProperty = NULL;
+	m_pkGameInfoEntity = NULL;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -182,7 +184,7 @@ void DarkMetropolis::RegisterPropertys()
 //	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
 	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
-	
+	m_pkPropertyFactory->Register("P_DMGameInfo", Create_P_DMGameInfo);	
 }
 
 void DarkMetropolis::Input()
@@ -243,44 +245,16 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 		{		
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
-				m_pkConsole->Printf("load [worlddir]");
+				m_pkConsole->Printf("load [savegame]");
 				break;				
 			}
 			
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			if(!LoadGame(kCommand->m_kSplitCommand[1]))
 			{
-				cout<<"Error loading world"<<endl;
+				cout<<"Error loading game"<<endl;
 				break;
 			}				
-		
-			m_pkConsole->Printf("starting server");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			
-			
-			/*
-			if(kCommand->m_kSplitCommand.size() <= 2)
-			{
-				m_pkConsole->Printf("load [level] [savegame]");
-				break;				
-			}
-			
-			
-			m_pkConsole->Printf("loading world: %s",kCommand->m_kSplitCommand[1].c_str());						
-			m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());				
-				
-			
-				
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
-			{
-				cout<<"Error loading world"<<endl;
-				break;
-			}				
-			
 
-			m_pkConsole->Printf("starting server");
-
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			*/
 			
 			break;		
 		}
@@ -306,23 +280,39 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 bool DarkMetropolis::LoadGame(string strClanName)
 {
-	m_kGameInfo.strClanName = strClanName;
-
-/*
-	string strDir = m_strSaveDirectory + string("/") + strClanName;
-	string strBlub = string("load dmworld ") + strDir;
-
-	if(!m_pkBasicFS->DirExist(strDir.c_str()))
+	if(!m_pkObjectMan->LoadWorld(m_strSaveDirectory+strClanName))
 	{
-		cout<<"ERROR clan "<<strClanName<<" does not exist"<<endl;	
+		cout<<"could not load world from savegame"<<endl;
+		return false;	
+	}
+
+	//create a new gameinfo entity
+	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
+	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
+	
+	
+	//load gameinfo
+	ZFVFile blub;
+	if(!blub.Open(m_strSaveDirectory+strClanName+"/gameinfo.dat",0,false))
+	{
+		cout<<"ERROR: could not load gameinfo"<<endl;
 		return false;
 	}
-	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);	
-*/	
+
+	m_pkGameInfoEntity->Load( &blub,false,false);
+	blub.Close();		
 	
-	string strDir = string("load ") + m_strSaveDirectory + string("/") + strClanName;
-	GetSystem().RunCommand(strDir.c_str(),CSYS_SRC_SUBSYS);	
+	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->GetProperty("P_DMGameInfo");
 	
+	if(!m_pkGameInfoProperty)
+	{
+		cout<<"ERROR: could not find any gameinfo"<<endl;
+		return false;
+	}
+	
+	
+	//start server
+	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 	
 	return true;
 }
@@ -332,23 +322,18 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_kGameInfo.strClanName = strClanName;
 	m_kGameInfo.strClanColor = strClanColor;
 	
-/*	//make sure samegame directory exist
-	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
+	//GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
 	
-	string strDir = m_strSaveDirectory + string("/") + strClanName;
-	string strBlub = string("load dmworld ") + strDir;
+	//load world
+	m_pkObjectMan->LoadWorld("dmworld");
 	
-	if(m_pkBasicFS->DirExist(strDir.c_str()))
-	{
-		cout<<"ERROR clan already exist";
-		return false;
-	}
-	
-	
+	//start server
+	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 
-	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);
-*/
-	GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
+	//create a new gameinfo entity
+	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
+	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
+	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
 
 	return true;
 }
@@ -357,15 +342,28 @@ bool DarkMetropolis::SaveGame(string strsavegame)
 {
 	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
 
-	return m_pkObjectMan->SaveWorld(m_strSaveDirectory+strsavegame);
-
-/*	if(!m_kGameInfo.strClanName.empty())
+	//first save gameinfo
+	if(m_pkGameInfoEntity)
 	{
-		m_pkObjectMan->ForceSave();
-		m_pkObjectMan->SaveZones();	
+		ZFVFile blub;
+		if(!blub.Open(m_strSaveDirectory+strsavegame+"/gameinfo.dat",0,true))
+		{
+			cout<<"ERROR: could not save gameinfo"<<endl;
+			return false;
+		}
 	
-		cout<<"game "<<m_kGameInfo.strClanName<< " saved"<<endl;
-	}*/
+		m_pkGameInfoEntity->Save( &blub);
+		blub.Close();	
+	}
+	
+	if(!m_pkObjectMan->SaveWorld(m_strSaveDirectory+strsavegame,true))
+	{
+		cout<<"ERROR: could not save world"<<endl;
+		return false;
+	}
+
+	return true;
+
 }
 
 Vector3 DarkMetropolis::Get3DMousePos(bool m_bMouse=true)

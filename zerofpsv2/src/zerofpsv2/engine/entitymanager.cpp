@@ -159,24 +159,20 @@ void EntityManager::Link(Entity* pkObject,int iId)
 	{
 		if(IsLinked(pkObject))
 		{
-			cout<<"Error Object is already linked"<<endl;
+			cout<<"WARNING: Object is already linked"<<endl;
 			return;	
 		}
 	}
 
 	if(iId == -1)
 	{
-		int newid = iNextObjectID++;
-		//if(GetObjectByNetWorkID(newid))
-		//	cout<<"Error object whit id: "<<newid<<" already exist, this is not good =("<<endl;
-		
-		pkObject->iNetWorkID = newid;
+		pkObject->iNetWorkID = iNextObjectID++;
 	}
 	else
 	{
 		if(GetObjectByNetWorkID(iId))
 		{
-			cout<<"Entity whit id:"<<iId<<" already exist"<<" setting new id"<<endl;
+			cout<<"WARNING: "<<GetNumOfObjects()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<iNextObjectID<<endl;
 			pkObject->iNetWorkID = iNextObjectID++;			
 		}
 		else	
@@ -220,18 +216,19 @@ void EntityManager::UnLink(Entity* pkObject)
 */
 void EntityManager::Clear()
 {
+
 	//delete all objects in world
 	while(m_akEntitys.begin() != m_akEntitys.end())
 		delete((*m_akEntitys.begin()).second);
-
-//	while(m_akObjects.begin() != m_akObjects.end())
-//		delete(*m_akObjects.begin());
+	
+	//m_akEntitys.clear();
 	
 	//clear all zones
 	m_kZones.clear();
 	
 	// Recreate base objects
 	CreateBaseObjects();
+	
 }
 
 /**	\brief	Create the top level objects.
@@ -2546,7 +2543,10 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 	{
 		//if we dont want to forcesave in that directory we return
 		if(!bForce)
+		{
+			cout<<"ERROR: directory already exist"<<endl;
 			return false;
+		}
 	}
 	else
 	{
@@ -2603,8 +2603,6 @@ bool EntityManager::LoadWorld(string strLoadDir)
 	}
 
 	//check that the worldtempdirectory is clean 
-	m_kWorldDirectory = "worldtemp";
-	
 	//first make sure it does exist
 	if(m_pkBasicFS->DirExist(m_kWorldDirectory.c_str()))
 	{
@@ -2678,7 +2676,8 @@ bool EntityManager::LoadWorld(string strLoadDir)
 		}
 	}	
 	
-	//observe, all zones are now loaded, but they shuld be unloaded in the next frame
+	//make sure all entitys created in the load process is deleted. this may caus problem if the load funkction is called from whitin a property etc
+	UpdateDelete();
 	
 	return true;
 }

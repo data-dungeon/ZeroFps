@@ -17,6 +17,7 @@ using namespace std;
 #include "../mcommon/p_event.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_dmhq.h"
+#include "p_dmgameinfo.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
@@ -43,6 +44,9 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
+
+		P_DMGameInfo*	m_pkGameInfoProperty;
+		Entity*			m_pkGameInfoEntity;
 
 		LightSource	m_kSun;
 

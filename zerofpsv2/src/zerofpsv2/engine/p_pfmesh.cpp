@@ -226,7 +226,7 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
-	cout << "BuildNavMesh: Create Faces" << endl;
+	//cout << "BuildNavMesh: Create Faces" << endl;
 	for(unsigned int i=0; i<pkFace->size(); i++) {
 			kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 			kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
@@ -402,7 +402,7 @@ void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 
 void P_PfMesh::LinkCells()
 {
-	cout << "LinkCells: " << m_NaviMesh.size() << endl;
+	//cout << "LinkCells: " << m_NaviMesh.size() << endl;
 	int iTest = 0;
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++, iTest++) 
