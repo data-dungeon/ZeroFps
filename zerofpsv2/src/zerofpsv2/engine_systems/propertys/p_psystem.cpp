@@ -193,7 +193,7 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 {
-   pkNetPacket->Write_Str( m_kPSType.c_str() );
+   pkNetPacket->Write_Str( m_kPSType);
    
 	SetNetUpdateFlag(iConnectionID,false);   
 }
@@ -202,9 +202,7 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	char temp[128];
-	pkNetPacket->Read_Str(temp);
-	m_kPSType = temp;	
+	pkNetPacket->Read_Str(m_kPSType);
 	
 	if(m_kPSType == "nons")
 		return;
