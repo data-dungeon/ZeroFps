@@ -52,12 +52,13 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
 				if(text == NULL || strlen(text) < 1)
 				{
-              g_kMistClient.ToogleChatWnd();
+              if(ZGuiWnd::m_pkFocusWnd)
+						ZGuiWnd::m_pkFocusWnd->KillFocus();
 				}
             else
             {
-               //g_kMistClient.Say(text);
-               g_kMistClient.AddStringToChatBox(text);
+               g_kMistClient.Say(text);
+               //g_kMistClient.AddStringToChatBox(text);
                g_kMistClient.SetText("SayTextbox", "");
 			      g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") );
             }
