@@ -399,10 +399,12 @@ void EntityManager::UpdateGameMessages(void)
 Entity* EntityManager::CreateObjectByNetWorkID(int iNetID)
 {
 //	Object *pkNew = new NetSlaveObject;
-	Entity *pkNew = CreateObject();
+	Entity *pkNew = CreateObject(false);
 
 	//	Add(pkNew);
-	pkNew->iNetWorkID = iNetID;
+//	pkNew->iNetWorkID = iNetID;
+	Link(pkNew,iNetID);
+	
 	pkNew->SetParent(m_pkWorldObject);
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;

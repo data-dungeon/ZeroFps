@@ -214,13 +214,13 @@ void Entity::PropertyLost(Property* pkProp)
 */
 Property* Entity::GetProperty(const char* acName) 
 {
-	if(strstr(acName, "P_") == NULL) {
+/*	if(strstr(acName, "P_") == NULL) {
 		if(strcmp(acName, "nons") != 0) {
 			printf("REQUEST FOR A PROPERTY WITH OLD NAME %s\n", acName);
 			assert(0);	
 			}
 		}
-
+*/
 	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
