@@ -800,9 +800,12 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				g_kMistClient.AddListItem("CharGen_CharList",szArghhh , true);	
 			}
 
-			int iItem = ((ZGuiCombobox*)GetWnd("CharGen_CharList"))->GetListbox()->GetItemCount();
-			if(iItem > 20) iItem = 20;
-			((ZGuiCombobox*)GetWnd("CharGen_CharList"))->SetNumVisibleRows(iItem);
+			ZGuiCombobox* pkCharbox =(ZGuiCombobox*)GetWnd("CharGen_CharList");
+			if(pkCharbox)
+			{
+				int iItem = pkCharbox->GetListbox()->GetItemCount();				
+				pkCharbox->SetNumVisibleRows(iItem > 20 ? 20 : iItem);
+			}
 
 
 			break;
