@@ -22,6 +22,9 @@ class ENGINE_API PhysicProperty :public Property
 		bool m_bFloat;
 		bool m_bSolid;
 		bool m_bGlide;
+		bool m_bStride;
+		
+		float m_bStrideHeight;
 		
 		float m_fColShape;
 		bool m_bDummyValue;

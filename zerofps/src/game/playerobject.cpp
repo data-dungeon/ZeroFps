@@ -17,7 +17,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 
 	AddProperty("PhysicProperty");
 	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-//	pp->m_bGlide=false;
+	pp->m_bStride=true;
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=1;
 
 

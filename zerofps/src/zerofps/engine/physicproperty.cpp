@@ -15,6 +15,9 @@ PhysicProperty::PhysicProperty()
 	m_bFloat=true;	
 	m_bSolid=true;	
 	m_bGlide=true;
+	m_bStride=false;
+		
+	m_bStrideHeight=0.1;
 
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
