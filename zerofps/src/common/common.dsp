@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy           $(ProjDir)\release\*.lib           ..\..\bin\ 
+PostBuild_Cmds=copy            $(ProjDir)\release\*.lib            ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\bin\ 
+PostBuild_Cmds=copy                        $(ProjDir)\debug\*.lib                        ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -198,6 +198,10 @@ SOURCE=.\massdriverprojectile.cpp
 # Begin Source File
 
 SOURCE=.\massdriverproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_clientinput.cpp
 # End Source File
 # Begin Source File
 
@@ -310,6 +314,10 @@ SOURCE=.\massdriverprojectile.h
 # Begin Source File
 
 SOURCE=.\massdriverproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_clientinput.h
 # End Source File
 # Begin Source File
 

@@ -378,6 +378,11 @@ void Object::AttachToClosestZone()
 // NetWork/Demo/Save/Load Code.
 bool Object::NeedToPack()
 {
+	// We can only send data for object we own.
+	if( m_eRole != NETROLE_AUTHORITY)			return false;
+	// We only send object that the other side need to know about
+	if( m_eRemoteRole	== NETROLE_NONE)	return false;
+
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork == true) {
 			return true;

@@ -20,6 +20,7 @@
 #define ZF_NETCONTROL_DISCONNECT	5
 
 #define MAX_NET_CLIENTS		4
+#define ZF_NET_NOCLIENT		-1
 
 enum ClientConnectStatus
 {
@@ -31,13 +32,14 @@ enum ClientConnectStatus
 class RemoteNode
 {
 public:
-	RemoteNode() {};
-	~RemoteNode() {};
+	RemoteNode();
+	~RemoteNode();
 
 	IPaddress					m_kAddress;				// Address of node.
 	ClientConnectStatus		m_eConnectStatus;		// Status of this nodes connection.
 
 	void SetAddress(IPaddress* pkAddress);			// Sets address of node.
+	void Clear();
 
 	// Stats
 	int				m_iNumOfPacketsSent;
@@ -120,8 +122,13 @@ private:
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
+	void	SetMaxNodes(int iMaxNode);			
 
 	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
+
+	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
+
+	void DisconnectAll();											// Send disconenct message to all nodes.
 
 public:
 	NetWorkStatus			m_eNetStatus;
@@ -133,8 +140,11 @@ public:
 	NetWork();
 	~NetWork();
 
+	void DevShow_ClientConnections();
+
 	int GetNumOfClients(void);
 	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
+	int GetFreeClientNum();
 
 	void StartSocket(bool bStartServer);
 	void CloseSocket();
@@ -154,6 +164,7 @@ public:
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 
 	void ServerList(void);
+
 };
 
 #endif

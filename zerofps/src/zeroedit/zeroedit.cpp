@@ -704,7 +704,7 @@ void ZeroEdit::OnClientStart(void)
 
 void ZeroEdit::Input() 
 {	
-	if(m_pkGui->HaveFocus()) 
+	if(m_pkGui->HaveFocus() || pkConsole->IsActive()) 
 	{
 		pkInput->SetInputEnabled(false);
 	}
