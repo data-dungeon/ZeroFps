@@ -145,6 +145,7 @@ void Console::Execute(char* aText) {
 		Print(" set $n $v   -set variable");		
 		Print(" music 1/0   -music on/off");
 		Print(" togglegrab  -toggle input grab");
+		Print(" setdisplay  -reinit display");
 		return;
 	}
 	
