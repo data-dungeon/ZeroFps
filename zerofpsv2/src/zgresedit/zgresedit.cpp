@@ -509,9 +509,9 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			//m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
-			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",true,true);
-			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
+			m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",READ_EVERY_FRAME_TO_VIDEOMEMORY);
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;
 

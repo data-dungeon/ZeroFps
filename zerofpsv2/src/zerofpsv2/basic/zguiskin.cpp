@@ -4,10 +4,14 @@
 
 #include <SDL/SDL.h>
 #include "zfvfs.h"
+#include "zfassert.h"
 #include "zguiskin.h"
 #include "jpegdec.h"
 
-int g_AnimationHeaderSize = 17;
+const int ZIF_MAX_IMAGE_SIZE = 1024*1024*3; // maximal storlek på en frame i animationen
+const int ANIMATIONHEADERSIZE = 17;
+
+unsigned char g_aucZIFConvBuff[ZIF_MAX_IMAGE_SIZE]; // En global 3 megabyte buffert som används för att göra konverteringar
 int g_iZIFAnimTexIDCounter=0; // ökas upp för varje animation som skapas och används för att generera ett unikt TexIDName
 
 typedef struct s_RGB {
@@ -379,7 +383,7 @@ bool ZGuiSkin::operator==(ZGuiSkin d)
 // ZIFAnimation
 ///////////////////////////////////////////////////////////////////////////////
 
-ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream, bool bRebuildTexture)
+ZIFAnimation::ZIFAnimation(char* szFileName, int iMode)
 {
 	m_fLastTick=0;
 	m_szFileName=new char[strlen(szFileName)+1];
@@ -392,10 +396,32 @@ ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream, bool bRebuildTexture)
 	m_bPlay=false;
 	m_pPixelData=NULL;
 	m_iPixelDataSize=0;
-	m_bStream=bStream;
+	
 	g_iZIFAnimTexIDCounter++;
 	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
-	m_bRebuildTexture=bRebuildTexture;
+
+	m_eMode = ZIFAnimationMode(iMode);
+
+	switch(m_eMode)
+	{
+	case READ_EVERY_FRAME_and_WRITE_IN_TEXTURE_EVERY_FRAME:
+		m_bRebuildTexture = m_bStream = true;
+		break;
+	case READ_ALL_and_WRITE_IN_TEXTURE_EVERY_FRAME:
+		m_bStream = false;
+		m_bRebuildTexture = true;
+		break;
+	case READ_EVERY_FRAME_TO_VIDEOMEMORY:
+		m_bStream = true;
+		m_bRebuildTexture = false;
+		break;
+	case READ_ALL_TO_VIDEOMEMORY:
+		m_bRebuildTexture = m_bStream = false;
+		break;
+	default:
+		m_bRebuildTexture = m_bStream = true;
+	}
+	
 	m_iFileOffset = 0;
 	m_pkJPGDec=NULL;
 	m_pFramesSizesJPG=NULL;
@@ -427,13 +453,47 @@ bool ZIFAnimation::Update()
 		m_fLastTick = fTick;
 
 		if(m_bStream || m_iNumFrames==0)
+		{
 			Read();
+		}
 			
 		m_iCurrentFrame++;
+
+		//
+		// Om vi har loopat igenom alla frames...
+		//
 		if(m_iCurrentFrame==m_iNumFrames-1)
 		{
-			m_iFileOffset=g_AnimationHeaderSize;
+			m_iFileOffset=ANIMATIONHEADERSIZE;
+
+			if(m_eFormat == JPEG)
+			{
+				m_iFileOffset += (sizeof(int) * m_iNumFrames);
+			}
+
 			m_iCurrentFrame=0;
+
+			//
+			// Om vi inte återanvänder samma textur, sluta då att streama eftersom
+			// texturmanagern redan har skapat alla texturer åt oss. Frigör dessutom
+			// allt arbetsminne som nu inte längre behövs.
+			//
+			if(m_bRebuildTexture == false)
+			{
+				m_bStream = false;
+
+				if(m_pPixelData)
+				{
+					delete[] m_pPixelData;
+					m_pPixelData = NULL;
+				}
+
+				if(m_pkJPGDec)
+				{
+					delete m_pkJPGDec;
+					m_pkJPGDec = NULL;
+				}
+			}
 		}
 
 		return true; // behöver läsa in ny bild till texturen
@@ -447,52 +507,15 @@ char* ZIFAnimation::GetFramePixels()
 	if(m_bStream == true)
 		return m_pPixelData;
 	else
-		return m_pPixelData+(m_iPixelDataSize*m_iCurrentFrame);
+	{
+		if(m_pPixelData)
+			return m_pPixelData+(m_iPixelDataSize*m_iCurrentFrame);	
+		else
+			return NULL; // returnera NULL då alla frames har loopats igenom och 
+						 // m_pPixelData har deallokerats eftersom texturmanagern ej längre 
+						 // bygger om texturen utan har skapat en textur för varje frame.
+	}
 }
-
-//bool ZIFAnimation::Read()
-//{
-//	ZFVFile kFile;
-//	if(kFile.Open(m_szFileName,0, false) == false) 
-//	{
-//		fprintf(stderr, "Unable to Open %s: \n", m_szFileName);
-//		return false;
-//	}
-//
-//	if(m_iNumFrames==0) // not initialized
-//	{
-//		fread(&m_iWidth, sizeof(int), 1, kFile.m_pkFilePointer);
-//		fread(&m_iHeight, sizeof(int), 1, kFile.m_pkFilePointer);
-//		fread(&m_iMsecsPerFrame, sizeof(int), 1, kFile.m_pkFilePointer);
-//		fread(&m_iNumFrames, sizeof(int), 1, kFile.m_pkFilePointer);
-//		m_iPixelDataSize = m_iWidth*m_iHeight*3;
-//
-//		// Vi ökar på ID räknaren för texturn med antalet frames om denna
-//		// animation kommer använda så många texturer (1 för varje frame)
-//		if(m_bRebuildTexture==false)
-//		{
-//			m_iIDTexArrayStart = g_iZIFAnimTexIDCounter;
-//			g_iZIFAnimTexIDCounter += m_iNumFrames;
-//		}
-//
-//		if(m_bStream)
-//			m_pPixelData = new char[m_iPixelDataSize];
-//		else
-//		{
-//			m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
-//			fread(m_pPixelData, sizeof(char), m_iPixelDataSize*m_iNumFrames, kFile.m_pkFilePointer);
-//			kFile.Close();
-//			return true;
-//		}
-//	}
-//
-//	fseek(kFile.m_pkFilePointer, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
-//	fread(m_pPixelData, sizeof(char), m_iPixelDataSize, kFile.m_pkFilePointer);
-//	kFile.Close();
-//	return true;
-//}
-
-unsigned char* temp;// = new unsigned char[320*240];
 
 bool ZIFAnimation::Read()
 {
@@ -523,6 +546,8 @@ bool ZIFAnimation::Read()
 		fread(&m_iNumFrames, sizeof(int), 1, kFile.m_pkFilePointer);
 		fread(&format, sizeof(unsigned char), 1, kFile.m_pkFilePointer);
 
+		m_iFileOffset = ANIMATIONHEADERSIZE;
+
 		int bytes_per_pixel;
 		if(format == 0) {m_eFormat = RGB24; bytes_per_pixel = 3; }
 		else if(format == 1) {m_eFormat = RGB8; bytes_per_pixel = 1; }
@@ -537,7 +562,7 @@ bool ZIFAnimation::Read()
 			// Läs in storleken på varje frame.
 			m_pFramesSizesJPG = new int[m_iNumFrames];
 			fread(m_pFramesSizesJPG, m_iNumFrames, sizeof(int), kFile.m_pkFilePointer);
-			g_AnimationHeaderSize += (sizeof(int) * m_iNumFrames);
+			m_iFileOffset += (sizeof(int) * m_iNumFrames);
 
 			int biggest = 0;
 			for(int i=0; i<m_iNumFrames; i++)
@@ -567,10 +592,13 @@ bool ZIFAnimation::Read()
 			}
 		}
 
-		m_iFileOffset = g_AnimationHeaderSize;
 		m_iPixelDataSize = m_iWidth*m_iHeight*3;
-		
-		// Vi ökar på ID räknaren för texturn med antalet frames om denna
+
+		// Kolla så att animationen inte är för stor
+		ZFAssert((m_iPixelDataSize <= ZIF_MAX_IMAGE_SIZE), 
+			"ZIFAnimation::Read - Animation to big (max 1024x1024)!");
+
+		// Vi ökar på ID räknaren för texturen med antalet frames om denna
 		// animation kommer använda så många texturer (1 för varje frame)
 		if(m_bRebuildTexture==false)
 		{
@@ -578,17 +606,11 @@ bool ZIFAnimation::Read()
 			g_iZIFAnimTexIDCounter += m_iNumFrames;
 		}
 
-		if(m_bStream)
-		{
-			m_pPixelData = new char[m_iPixelDataSize];
-			temp = new unsigned char[m_iImageFrameWidth*m_iImageFrameHeight*bytes_per_pixel];
-		}
-		else
-		{
-			iFramesToRead = m_iNumFrames; // Läs in alla frames!
-			m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
-			temp = new unsigned char[m_iImageFrameWidth*m_iImageFrameHeight*bytes_per_pixel*m_iNumFrames];
-		}
+		if(m_bStream == false)
+			iFramesToRead = m_iNumFrames;
+
+		// Allokera minne för RGB bufferten till texturen sammt tempbufferten för konvertering.
+		m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
 	}
 
 	// 
@@ -610,13 +632,13 @@ bool ZIFAnimation::Read()
 		{
 			fread(&palette_size, sizeof(unsigned int), 1, kFile.m_pkFilePointer);
 			fread(palette, sizeof(unsigned int), palette_size, kFile.m_pkFilePointer);
-			fread(temp, sizeof(unsigned char), m_iImageFrameWidth*m_iImageFrameHeight, kFile.m_pkFilePointer);
+			fread(g_aucZIFConvBuff, sizeof(unsigned char), m_iImageFrameWidth*m_iImageFrameHeight, kFile.m_pkFilePointer);
 
 			// Konvertera till 24-bitar
 			unsigned int r,g,b,i,j=0,k=0,palette_idex,bytes=320*240*3,offset=f*m_iWidth*m_iHeight*3;
 			for(i=0; i<bytes; i+=3)
 			{
-				palette_idex = temp[j++];
+				palette_idex = g_aucZIFConvBuff[j++];
 				r = palette[palette_idex];
 				g = palette[palette_idex];
 				b = palette[palette_idex];
@@ -645,62 +667,82 @@ bool ZIFAnimation::Read()
 			m_iFileOffset += ( m_iImageFrameWidth*m_iImageFrameHeight + (4*(palette_size+1))  );
 		}
 
-		delete[] temp_row;
+		static int apa = 0; 
+		printf("apa %i\n", apa);
+		apa++;
 
-		// Ta bort konverteringsbufferten nu eftersom den inte 
-		// kommer att behövas mer och bara tar upp massa minne.
-		if(m_bStream == false)
-			delete[] temp;
+		delete[] temp_row;
 	}
 	else
 	if(m_eFormat == RGB24)
 	{
-		if(m_iImageFrameWidth != m_iWidth || m_iImageFrameHeight != m_iHeight)
+		int frame_offset=0, frame_size=m_iWidth*m_iHeight*3;
+		for(int f=0; f<iFramesToRead; f++)
 		{
-			fread(temp, sizeof(unsigned char), 
-				m_iImageFrameWidth*m_iImageFrameHeight*3, kFile.m_pkFilePointer);
-		
-			for(int i=0; i<m_iImageFrameHeight; i++)
-				memcpy(m_pPixelData+(TEXTURE_WIDTH_IN_BYTES*i), 
-					temp+(PICTURE_WIDTH_IN_BYTES*i), PICTURE_WIDTH_IN_BYTES);
-		}
-		else
-		{
-			fread(m_pPixelData, sizeof(unsigned char), m_iPixelDataSize, kFile.m_pkFilePointer);
-		}
+			if(m_iImageFrameWidth != m_iWidth || m_iImageFrameHeight != m_iHeight)
+			{
+				fread(g_aucZIFConvBuff, sizeof(unsigned char), 
+					m_iImageFrameWidth*m_iImageFrameHeight*3, kFile.m_pkFilePointer);
+			
+				for(int i=0; i<m_iImageFrameHeight; i++)
+					memcpy(m_pPixelData+(TEXTURE_WIDTH_IN_BYTES*i+frame_offset), 
+						g_aucZIFConvBuff+(PICTURE_WIDTH_IN_BYTES*i), PICTURE_WIDTH_IN_BYTES);
+			}
+			else
+			{
+				fread(m_pPixelData+frame_offset, sizeof(unsigned char), 
+					m_iPixelDataSize, kFile.m_pkFilePointer);
+			}
 
-		m_iFileOffset += m_iImageFrameWidth*m_iImageFrameHeight*3;
+			m_iFileOffset += m_iImageFrameWidth*m_iImageFrameHeight*3;
+			frame_offset += frame_size;
+		}
 	}
 	else
 	if(m_eFormat == JPEG)
 	{
-		unsigned int w, h;
-		m_pkJPGDec->LoadHeader(kFile.m_pkFilePointer, m_pFramesSizesJPG[m_iCurrentFrame], &w, &h);
-		m_pkJPGDec->Decode();
-		m_pkJPGDec->GetBuffer(w,h,&temp);
-
-		int x,y,oka=0;
-		RGB *pixel;
-		DWORD im_loc_bytes=(DWORD)temp;
-
-		for (y=0;y<h;y++)
+		int frame_offset=0, frame_size=m_iWidth*m_iHeight*3;
+		for(int f=0; f<iFramesToRead; f++)
 		{
-			for (x=0;x<w;x++)
+			unsigned char* buffer;
+			unsigned int w, h;
+			m_pkJPGDec->LoadHeader(kFile.m_pkFilePointer, m_pFramesSizesJPG[m_iCurrentFrame+f], &w, &h);
+			m_pkJPGDec->Decode();
+			m_pkJPGDec->GetBuffer(w,h,&buffer);
+
+			int x,y,oka=frame_offset;
+			RGB *pixel;
+			DWORD im_loc_bytes=(DWORD)buffer;
+			const int iRowExtra = (m_iWidth-w) * 3;
+
+			for (y=0;y<h;y++)
 			{
-				pixel=(RGB *)im_loc_bytes;
+				for (x=0;x<w;x++)
+				{
+					pixel=(RGB *)im_loc_bytes;
 
-				m_pPixelData[oka] = pixel->B;
-				m_pPixelData[oka+1] = pixel->G;
-				m_pPixelData[oka+2] = pixel->R;
-				oka+=3;
+					m_pPixelData[oka] = pixel->B;
+					m_pPixelData[oka+1] = pixel->G;
+					m_pPixelData[oka+2] = pixel->R;
+					oka+=3;
 
-				im_loc_bytes+=4;
-			}
+					im_loc_bytes+=4;
+				}
 
-			oka += 576;
-		}   
-		
-		m_iFileOffset += m_pFramesSizesJPG[m_iCurrentFrame];
+				oka += iRowExtra;
+			}  
+
+			m_iFileOffset += m_pFramesSizesJPG[m_iCurrentFrame+f];
+			frame_offset += frame_size;
+		}
+
+		// Ta bort konverteringsbufferten nu eftersom den inte 
+		// kommer att behövas mer och bara tar upp massa minne.
+		if(m_bStream == false)
+		{
+			delete m_pkJPGDec;
+			m_pkJPGDec = NULL;
+		}
 	}
 
 	kFile.Close();
@@ -710,9 +752,23 @@ bool ZIFAnimation::Read()
 char* ZIFAnimation::GetTexIDName()
 {
 	// Skapa ett nytt texturID namn om vi inte skall bygga om texturen
-	// utan istället skapa en ny
+	// utan istället skapa en ny. Då 
 	if(m_bRebuildTexture == false)
 		sprintf(m_szTexIDName, "ZIFAnimTex%i", m_iIDTexArrayStart+m_iCurrentFrame);
 
 	return m_szTexIDName;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,10 +10,52 @@
 
 class JpgDecoder;
 
+enum ZIFAnimationMode
+{
+	/*----------------------------------------------------------------------------
+	 Läs in en bild varje frame till minnet OCH skriv i samma textur varje frame.
+	 [+] Kostar lite texturminne efetrsom den återanvännder samma textur.
+	 [+] Laddas in efter hand, kräver ingen laddningstid.
+	 [-] Kostar CPU eftersom den skriver i en textur varje frame.
+	 [-] Dekryptering görs varje frame, vilket kan slöa ner för jpeg och 8bit.*/
+	READ_EVERY_FRAME_and_WRITE_IN_TEXTURE_EVERY_FRAME = 0,
+	/*--------------------------------------------------------------------------*/
+
+	/*----------------------------------------------------------------------------
+	 Läs in alla bilder till minnet OCH skriv i samma textur varje frame.
+	 [+] Kostar lite texturminne efetrsom den återanvännder samma textur.
+	 [+] Dekryptering görs endast när animationen läses in och ej varje frame (bra för jpeg och 8bit).
+	 [-] Kostar CPU eftersom den skriver i en textur varje frame.
+	 [-] Tar längre tid att ladda in. */
+	READ_ALL_and_WRITE_IN_TEXTURE_EVERY_FRAME = 1,
+	/*--------------------------------------------------------------------------*/
+
+	/*----------------------------------------------------------------------------
+	 Läs in en bild varje frame till minnet OCH spara ner varje bild som en ny
+	 textur allt eftersom den renderar.
+	 Efter första loopvaret behövs ingen läsning göras.
+	 [+] Snabb rendering då varje bild får sin egen textur.
+	 [+] Laddas in efter hand, kräver ingen laddningstid. 
+	 [-] Kostar mycket texturminne .
+	 [-] Dekryptering görs varje frame, vilket kan slöa ner för jpeg och 8bit.*/
+	READ_EVERY_FRAME_TO_VIDEOMEMORY = 2,
+	/*----------------------------------------------------------------------------
+
+	/*----------------------------------------------------------------------------
+	 Läs in alla bilder till minnet OCH spara ner varje bild som en ny 
+	 textur allt eftersom den renderar.
+	 [+] Snabb rendering då varje bild får sin egen textur.
+	 [+] Dekryptering görs endast när animationen läses in och ej varje frame (bra för jpeg och 8bit).
+	 [-] Kostar mycket texturminne .
+	 [-] Tar längre tid att ladda in. */
+	READ_ALL_TO_VIDEOMEMORY = 3
+	/*--------------------------------------------------------------------------*/
+};
+
 class BASIC_API ZIFAnimation
 {
 public:
-	ZIFAnimation(char* szFileName=0, bool bStream=true, bool bRebuildTexture=true);
+	ZIFAnimation(char* szFileName=0, int iMode=0);
 	~ZIFAnimation();
 
 	bool Update();
@@ -33,6 +75,8 @@ private:
 		RGB8=1,
 		JPEG=2,
 	};
+
+	ZIFAnimationMode m_eMode;
 
 	float m_fLastTick;
 	
