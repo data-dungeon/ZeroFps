@@ -70,8 +70,13 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		ZFResourceHandle* 		m_pScriptFileHandle;
 		NetWork*						m_pkNetWork;
 
+		//base objects
 		Object*						m_pkWorldObject;											///< Top level object.
+		Object*						m_pkZoneObject;											///< Top level object.
+		Object*						m_pkClientObject;											///< Top level object.
+		Object*						m_pkGlobalObject;											///< Top level object.
 		
+		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
 		
 		// Object ArcheTypes
@@ -88,6 +93,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		list<Object*> 				m_kTrackedObjects;	
 
 		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
+		
 		vector<Property*>			m_akPropertys;									///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;						///> Size of akProperty list.
 
@@ -115,6 +121,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		ObjectManager();
 		~ObjectManager();
 	
+		//create all base objects
+		void CreateBaseObjects();
 
 		// Add/Remove Objects
 		void Add(Object* pkNewObject);									///< Add object to the manager
@@ -128,34 +136,23 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void UpdateGameMessages(void);									///< Update game messages.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 
-			// Create 
+		// Create 
 		Object* CreateObject();												///< Create a empty object.
 		Object* CreateObject(const char* acName);						///< Create object from template.
-		Object* CreateObject(ObjectDescriptor* pkObjDesc);			///< Create object from ObjectDescriptor
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Object* CreateObjectFromScript(const char* acName);
 		Object* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
-		// Template
-		void AddTemplate(ObjectDescriptor* pkNewTemplate);
-		int GetNrOfTemplates();
-		void GetTemplateList(vector<string>* paList);
-		bool MakeTemplate(const char* acName,Object* pkObject, bool bForce = false);
-		void ClearTemplates();
-		ObjectDescriptor* GetTemplate(const char* acName);
-		bool LoadTemplate(const char* acFile);
-		bool SaveTemplate(const char* acName,const char* acFile);
-
 		// Arch types
 		bool IsA(Object* pkObj, string strStringType);
 
-		// Load/Save Objects
-		bool SaveAllObjects(const char* acFile);
-		bool LoadAllObjects(const char* acFile);
-
 		// Gets
 		Object* GetWorldObject()	{	return m_pkWorldObject;				};
+		Object* GetZoneObject()		{	return m_pkZoneObject;					};		
+		Object* GetClientObject()	{	return m_pkClientObject;				};		
+		Object* GetGlobalbject()	{	return m_pkGlobalObject;				};				
+		
 		int	GetNumOfObjects()		{	return m_akObjects.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		void GetAllObjects(vector<Object*> *pakObjects);
@@ -168,7 +165,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void UpdateDeleteList(NetPacket* pkNetPacket);
 		void PackToClient(int iClient, vector<Object*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
-		
 
 		// Debug / Help Functions		
 		void DisplayTree();
@@ -186,6 +182,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		Object* ObjectManager::CloneObject(int iNetID);
 
+		//picking of objects
 		bool TestLine(vector<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
 
 		void OwnerShip_Request(Object* pkObj);		// Use this to request ownership of a object.
@@ -198,6 +195,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool ShutDown();
 		bool IsValid();
 
+		//zone system
 		int GetNumOfZones();
 		void Test_CreateZones();
 		void Test_DrawZones();
@@ -209,7 +207,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		ZoneData* GetZone(Vector3 kPos);
 		void AutoConnectZones();
 		Vector3 GetZoneCenter(int iZoneNum);
-
+	
+		//trackers
 		void AddTracker(Object* kObject);
 		void RemoveTracker(Object* kObject);
 		int GetNrOfTrackedObjects();
@@ -226,7 +225,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool SaveZones();
 		void LoadZone(int iId);
 		void UnLoadZone(int iId);
-		void LinkZones(int iFromId, int iToId);
+		
 		ZoneData*	GetZoneData(int iID);
 		int CreateZone();
 		int CreateZone(Vector3 kPos,Vector3 kSize);
@@ -241,6 +240,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
 		void UpdateZoneLinks(int iId);
 
+		//box vs vox test
 		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
 
 		friend class Object;

@@ -96,10 +96,8 @@ bool ObjectManager::StartUp()
 
 	m_kWorldDirectory = "../data/testmap";
 
-	m_pkWorldObject						=	new Object();	
-	m_pkWorldObject->GetName()			= "WorldObject";
-	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
+	//create all base objects
+	CreateBaseObjects();
 
 	iNextObjectID = 100000;
 
@@ -130,6 +128,37 @@ ObjectManager::~ObjectManager()
 
 	// Obs! Här skall resursen laddas ur, går dock inte pga timeout expire.
 	//delete m_pScriptFileHandle;
+
+}
+
+void ObjectManager::CreateBaseObjects()
+{
+	//top world object parent to all objects
+	m_pkWorldObject						=	new Object();	
+	m_pkWorldObject->GetName()			= "WorldObject";
+	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
+
+	//object that is parent to all zones
+	m_pkZoneObject						=	new Object();	
+	m_pkZoneObject->SetParent(m_pkWorldObject);
+	m_pkZoneObject->GetName()		= "ZoneObject";
+	m_pkZoneObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkZoneObject->m_eRemoteRole	= NETROLE_NONE;
+
+	//object that is parent to all client objects
+	m_pkClientObject						=	new Object();	
+	m_pkClientObject->SetParent(m_pkWorldObject);
+	m_pkClientObject->GetName()		= "ClientObject";
+	m_pkClientObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkClientObject->m_eRemoteRole	= NETROLE_NONE;
+
+	//object that is parent to all global objects (server information etc)
+	m_pkGlobalObject						=	new Object();	
+	m_pkGlobalObject->SetParent(m_pkWorldObject);
+	m_pkGlobalObject->GetName()		= "GlobalObject";
+	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkGlobalObject->m_eRemoteRole	= NETROLE_NONE;
 
 }
 
@@ -1667,11 +1696,6 @@ bool ObjectManager::SaveZones()
 	return true;
 }
 
-void ObjectManager::LinkZones(int iFromId, int iToId)
-{
-	
-}
-
 ZoneData* ObjectManager::GetZoneData(int iID)
 {
 	if(iID < 0 || iID >= m_kZones.size())
@@ -1694,7 +1718,7 @@ void ObjectManager::LoadZone(int iId)
 	Object* object = new Object;//ZoneObject;
 	object->m_bZone = true;
 	kZData->m_pkZone = object;
-	kZData->m_pkZone->SetParent(GetWorldObject());	
+	kZData->m_pkZone->SetParent(GetZoneObject());	
 	
 	
 	
@@ -1794,7 +1818,7 @@ int ObjectManager::GetUnusedZoneID()
 
 bool ObjectManager::NewWorld()
 {
-	Clear();
+	GetZoneObject()->DeleteAllChilds();
 	m_kZones.clear();
 
 	return true;
@@ -1805,8 +1829,7 @@ bool ObjectManager::LoadWorld(const char* acDir)
 	SetWorldDir(acDir);
 	
 	//clear the world
-	Clear();
-	m_kZones.clear();
+	NewWorld();
 
 	//load zones in acDir
 	return LoadZones();
