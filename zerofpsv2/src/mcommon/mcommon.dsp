@@ -147,27 +147,27 @@ SOURCE=.\si_mistland.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\rulesystem\character\characterfactory.cpp
+SOURCE=.\rulesystem\character\characterfactory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\character\characterfactory.h
+SOURCE=.\rulesystem\character\characterfactory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\character\characterstats.cpp
+SOURCE=.\rulesystem\character\characterstats.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\character\characterstats.h
+SOURCE=.\rulesystem\character\characterstats.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\character\statcounter.cpp
+SOURCE=.\rulesystem\character\statcounter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\character\statcounter.h
+SOURCE=.\rulesystem\character\statcounter.h
 # End Source File
 # End Group
 # Begin Group "item"
@@ -175,24 +175,32 @@ SOURCE=..\rulesystem\character\statcounter.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\rulesystem\item\itemdatabase.h
+SOURCE=.\rulesystem\item\itemdatabase.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\item\itemstats.h
+SOURCE=.\rulesystem\item\itemstats.h
+# End Source File
+# End Group
+# Begin Group "spell"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\rulesystem\spell\spellstats.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\rulesystem\rulesystem.cpp
+SOURCE=.\rulesystem\rulesystem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\rulesystem.h
+SOURCE=.\rulesystem\rulesystem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\rulesystem\rulesystemx.h
+SOURCE=.\rulesystem\rulesystemx.h
 # End Source File
 # End Group
 # End Target
