@@ -61,6 +61,9 @@ class BASIC_API Matrix3
 		Matrix3 operator*=(const float &f);		
 
 // Methods
+		void SetAxis(int iAxisNum, Vector3 kNewAxis);
+		Vector3 GetAxis(int iAxisNum);
+		
 		void Zero();								// Set whole matrix to zero.
 		void Identity();							// Set matrix to the identity matrix.
 		void Transponse();

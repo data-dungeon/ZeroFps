@@ -144,7 +144,8 @@ void Render::SetDisplay()
 	m_pkLight->SetStartUpValues();
 }
 
-void Render::Swap(void) {
+void Render::Swap(void) 
+{
 	SDL_GL_SwapBuffers();  //guess
 
 	if(m_bCapture) {
@@ -152,9 +153,15 @@ void Render::Swap(void) {
 		CaptureScreenShoot(m_iWidth, m_iHeight);
 		}
 
-	glLoadIdentity();
+	glLoadIdentity();	
 	
+/*
+	glScissor  (0, 0,	GetWidth(), GetHeight());		
+	glViewport (0, 0,	GetWidth(), GetHeight());		
+
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+	
+*/	
 	//glClear(GL_DEPTH_BUFFER_BIT);	
 }
 

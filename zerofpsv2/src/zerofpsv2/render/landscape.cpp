@@ -717,8 +717,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);
 		m_pkZShaderSystem->SetNrOfVertexs(8);
 		
-		m_pkZShaderSystem->SetDrawMode(QUADS_MODE);		
-		m_pkZShaderSystem->DrawArray();							
+		m_pkZShaderSystem->DrawArray(QUADS_MODE);							
 	
 	
 	m_pkZShaderSystem->MatrixPop();

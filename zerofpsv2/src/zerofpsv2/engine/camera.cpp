@@ -8,9 +8,12 @@ bool Camera::m_bGridSnap(false);
 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
-	m_pkRender = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-	m_pkZShaderSystem = dynamic_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-
+	m_pkRender = 			dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkZShaderSystem =	dynamic_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkEntityMan = 		dynamic_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkZeroFps =			dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZShadow = 			dynamic_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
+	
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
 	SetPos(kPos);
@@ -28,60 +31,57 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_eMode			= CAMMODE_PERSP;		//	just initiating it
 	m_fGridSpace	= 1.0;					// Defualt grid space is one meter.
 	m_pkWnd			= NULL;
-
+	m_iRenderTarget= RENDERTARGET_SCREEN;
+	m_bClearViewPort=true;
+	
 	m_bForceFullScreen = false;
 }
 
+/*
 void Camera::UpdateAll(int iWidth,int iHeight) 
 {
 	m_bViewChange		=	true;
 	m_bViewPortChange	=	true;
 }
+*/
 
-void Camera::Update(int iWidth,int iHeight) 
+void Camera::Update()//int iWidth,int iHeight) 
 {
-	m_fAppWidth  = float(iWidth);
-	m_fAppHeight = float(iHeight);
+	m_fAppWidth  = m_pkRender->GetWidth();//;float(iWidth);
+	m_fAppHeight = m_pkRender->GetHeight();//float(iHeight);
 
-	if(m_bViewChange)   
+	// Load projection.
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixLoad(&m_kCamProjectionMatrix);
+
+	//do we have a gui window?
+	if(m_pkWnd) 
 	{
-		m_bViewChange = false;
+		Rect kJagVillSpelUT2k4 = m_pkWnd->GetScreenRect();
+		m_kViewPortCorner.x = float(kJagVillSpelUT2k4.Left);
+		m_kViewPortCorner.y = float(600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height());
+		m_kViewPortSize.x  = float(kJagVillSpelUT2k4.Width()); 
+		m_kViewPortSize.y  = float(kJagVillSpelUT2k4.Height()); 
 	
-		// Load projection.
-		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
-		m_pkZShaderSystem->MatrixLoad(&m_kCamProjectionMatrix);
-
+		m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ float(800.0) * m_pkRender->GetWidth();
+		m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / float(600.0) * m_pkRender->GetHeight();
+		m_kViewPortSize.x		= float(m_kViewPortSize.x)		/ float(800.0) * m_pkRender->GetWidth();
+		m_kViewPortSize.y		= float(m_kViewPortSize.y)		/ float(600.0) * m_pkRender->GetHeight();
 	}
-	
-	if(m_bViewPortChange)
+
+	//force full screen
+	if(m_bForceFullScreen)
 	{
-		m_bViewPortChange = false;
-
-		if(m_pkWnd) 
-		{
-			Rect kJagVillSpelUT2k4 = m_pkWnd->GetScreenRect();
-			m_kViewPortCorner.x = float(kJagVillSpelUT2k4.Left);
-			m_kViewPortCorner.y = float(600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height());
-			m_kViewPortSize.x  = float(kJagVillSpelUT2k4.Width()); 
-			m_kViewPortSize.y  = float(kJagVillSpelUT2k4.Height()); 
-		
-			m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ float(800.0) * m_pkRender->GetWidth();
-			m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / float(600.0) * m_pkRender->GetHeight();
-			m_kViewPortSize.x		= float(m_kViewPortSize.x)		/ float(800.0) * m_pkRender->GetWidth();
-			m_kViewPortSize.y		= float(m_kViewPortSize.y)		/ float(600.0) * m_pkRender->GetHeight();
-		}
-
-		if(m_bForceFullScreen)
-		{
-			m_kViewPortCorner.x = 0;
-			m_kViewPortCorner.y = 0;
-			m_kViewPortSize.x = float(m_pkRender->GetWidth());
-			m_kViewPortSize.y = float(m_pkRender->GetHeight());
-		}
-
-		glScissor  ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y) );
-		glViewport ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y)  );		
+		m_kViewPortCorner.x = 0;
+		m_kViewPortCorner.y = 0;
+		m_kViewPortSize.x = float(m_pkRender->GetWidth());
+		m_kViewPortSize.y = float(m_pkRender->GetHeight());
 	}
+
+	//setup viewport
+	glScissor  ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y) );
+	glViewport ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y)  );		
+	
 	
 	//reset modelview matrix and setup the newone
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
@@ -117,7 +117,7 @@ Vector3 Camera::GetViewPortCorner()
 
 void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 {
-	m_bViewChange	= true;
+	//m_bViewChange	= true;
 
 	m_fFov		= fFov;
 	m_fAspect	= fAspect;
@@ -136,7 +136,7 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 
 void Camera::SetOrthoView()
 {
-	m_bViewChange	= true;
+	//m_bViewChange	= true;
 
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 	m_pkZShaderSystem->MatrixPush();
@@ -221,7 +221,7 @@ void Camera::SetFov(float fFov)
 
 void Camera::SetViewPort(float fX,float fY,float fW,float fH) 
 {
-	m_bViewPortChange = true;
+	//m_bViewPortChange = true;
 
 	m_kViewPortCorner.Set(fX,fY,0);
 	m_kViewPortSize.Set(fW,fH,0);
@@ -333,15 +333,20 @@ Vector3 Camera::SnapToGrid(Vector3 kPos)
 }
 
 
-void Camera::ClearViewPort()
+void Camera::ClearViewPort(bool bColor)
 {
 /*	if(m_bSelected)
 		glClearColor(0.680, 0.631, 0.631,0.0);
 	else
 		glClearColor(0.631, 0.631, 0.631,0.0);
 */
+	if(bColor)
+		m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER);
+		
+	m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
 	
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 	DrawGrid();
 }
@@ -409,3 +414,43 @@ Vector3 Camera::GetOrthoMove(Vector3 kMove)
 	kNewMove += m_kOrthoAxisY * kMove.y;
 	return kNewMove;
 }
+
+
+void Camera::RenderView()
+{
+	if(!m_bRender)
+		return;
+
+		
+	//first make this camera matrises the current ones
+	Update();
+	
+	//clear viewport
+	if(m_bClearViewPort)
+		ClearViewPort(true);	
+	else
+		ClearViewPort(false);	
+	
+	//get root entity
+	Entity* pkRootEntity = m_pkEntityMan->GetObjectByNetWorkID(m_iRootEntity);
+		
+	//update all render propertys that shuld be shadowed
+	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+
+	//update shadow map
+	m_pkZShadow->Update();
+
+	//update all render propertys that shuld NOT be shadowed
+	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+
+		
+		
+	m_pkEntityMan->Test_DrawZones();
+	m_pkZeroFps->m_pkApp->RenderInterface();
+	
+	//draw axes icon
+	if(m_pkZeroFps->GetDrawAxesIcon())
+		m_pkRender->Draw_AxisIcon(5);	
+
+}
+

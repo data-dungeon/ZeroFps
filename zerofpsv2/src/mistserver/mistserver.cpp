@@ -80,7 +80,7 @@ void MistServer::CreateEditCameras()
 	m_pkActiveCamera = m_pkCamera;
 	m_pkActiveCamera->SetSelected(true);
 
-	m_pkFps->SetRenderTarget(m_pkCamera);
+	m_pkFps->AddRenderCamera(m_pkCamera);
 	m_pkCamera->m_bForceFullScreen = true;
 }
 
@@ -196,14 +196,14 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {	
-	m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkFps->GetCam()->ClearViewPort();	
 
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}
 
- 	m_pkFps->UpdateCamera(); 		
+ 	//m_pkFps->UpdateCamera(); 		
 
 	if(m_pkServerInfoP)
 	{

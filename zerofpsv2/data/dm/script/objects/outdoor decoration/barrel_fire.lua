@@ -9,6 +9,9 @@ function Create()
 		InitProperty("P_ShadowBlob");
 			InitParameter("scale","1.5");
 
+		InitProperty("P_AmbientSound");
+			InitParameter("FileName","/data/sound/fire.wav");			
+			
 		SetParentObject();
 		SetReturnObject();
 end

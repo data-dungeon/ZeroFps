@@ -603,15 +603,15 @@ void ZeroEd::OnIdle()
 	m_pkObjectMan->OwnerShip_Take( m_pkObjectMan->GetObjectByNetWorkID( m_pkFps->GetClientObjectID() ) );
 
 
-	m_pkFps->SetCamera(m_pkActiveCamera);		
-	m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkFps->SetCamera(m_pkActiveCamera);		
+	//m_pkFps->GetCam()->ClearViewPort();	
 
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}
 
- 	m_pkFps->UpdateCamera(); 		
+ 	//m_pkFps->UpdateCamera(); 		
 
 	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
 	//	pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
@@ -621,6 +621,9 @@ void ZeroEd::OnIdle()
 	//	m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
 	//	m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	//}
+	if(m_pkActiveCamera)
+		m_pkAudioSys->SetListnerPosition(m_pkActiveCamera->GetPos(),m_pkActiveCamera->GetRotM());
+	
 	
 	if(m_iEditMode == EDIT_HMAP) {
 		HeightMap* pkMap = SetPointer();
@@ -1054,14 +1057,15 @@ void ZeroEd::SoloToggleView()
 
 	if(m_bSoloMode) 
 	{
-		m_pkFps->RemoveRenderTarget(NULL);
+		//m_pkFps->RemoveRenderTarget(NULL);
+		m_pkFps->ClearRenderCameras();
 		pkCam->m_bForceFullScreen = false;
 		m_bSoloMode = false;
 		GetWnd("vp1")->Show();	GetWnd("vp1")->SetPos(400,0,true,true);		GetWnd("vp1")->Resize(400,300,false);
 		GetWnd("vp2")->Show();	GetWnd("vp2")->SetPos(0,0,true,true);			GetWnd("vp2")->Resize(400,300,false);
 		GetWnd("vp3")->Show();	GetWnd("vp3")->SetPos(0,300,true,true);		GetWnd("vp3")->Resize(400,300,false);
 		GetWnd("vp4")->Show();	GetWnd("vp4")->SetPos(400,300,true,true);		GetWnd("vp4")->Resize(400,300,false);
-	}
+	} 
 	else
 	{
 		m_bSoloMode = true;
@@ -1073,7 +1077,7 @@ void ZeroEd::SoloToggleView()
 		// Add Active as ZeroFps Fullscreen Render Target.
 		if(pkCam) 
 		{
-			m_pkFps->SetRenderTarget(pkCam);
+			m_pkFps->AddRenderCamera(pkCam);
 			pkCam->m_bForceFullScreen = true;
 		}
 	}
@@ -1166,7 +1170,7 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 
 Entity* ZeroEd::GetTargetObject()
 {
-	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
+	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 //	dir.Set(0,1,0);
 
@@ -1265,31 +1269,21 @@ void ZeroEd::DrawCrossMarker(Vector3 kPos)
 
 void ZeroEd::UpdateZoneMarkerPos()
 {
-	Vector3 temp = m_pkFps->GetCam()->GetPos() + Get3DMousePos(false)*15;
-
-	float fStep = 2.0;
-
-	m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
-	m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
-	m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
-
-
-	m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
-	m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
-	m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+	if(m_pkActiveCameraObject)
+	{
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
 	
-/*	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
-		else  m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep + 2;						
-
-	if(m_kZoneSize.y != 4) m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
-		else  m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep + 2;						
-
-	if(m_kZoneSize.z != 4) m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
-		else  m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep + 2;						
-*/
-//	m_kZoneMarkerPos.y = round2(temp.y/4.0) * 4.0;
-//	m_kZoneMarkerPos.z = round2(temp.z/4.0) * 4.0;
-
+		float fStep = 2.0;
+	
+		m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
+		m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
+		m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
+	
+	
+		m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
+		m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
+		m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+	}	
 }
 
 

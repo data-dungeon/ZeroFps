@@ -3,8 +3,10 @@
 
 #include "engine_x.h"
 #include "zerofps.h"
+#include "entitymanager.h"
 #include "../basic/zfvfs.h"
 #include "inputhandle.h"
+#include "../engine_systems/audio/zfaudiosystem.h"
 
 using namespace std;
 
@@ -14,6 +16,7 @@ class Render;
 class Input;
 class FileIo;
 class ZFClient;
+class ZShadow;
 
 /** \brief	The application object.
 	 \ingroup Engine

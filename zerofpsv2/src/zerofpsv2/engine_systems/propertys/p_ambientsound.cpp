@@ -17,7 +17,7 @@ P_AmbientSound::P_AmbientSound()
 	SetSound("/data/sound/dummy.wav");
 	bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iSide=PROPERTY_SIDE_ALL;
 
 }
 
@@ -29,8 +29,8 @@ P_AmbientSound::~P_AmbientSound()
 
 void P_AmbientSound::Update()
 {
-	if(m_pkFps->m_bServerMode)
-		return;
+//	if(m_pkFps->m_bServerMode)
+//		return;
 
 	Entity* pkObject = GetObject();
 

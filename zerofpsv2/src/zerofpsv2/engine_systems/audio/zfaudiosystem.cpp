@@ -628,6 +628,16 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix4 kOri)
 	SetListnerPosition(kPos,dir,up);
 }
 
+void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix3 kOri)
+{	
+	kOri.Transponse();
+	Vector3 up = -kOri.GetAxis(1);
+	Vector3 dir = Vector3(0,0,1);
+	dir = kOri.VectorTransform(dir);
+
+	SetListnerPosition(kPos,dir,up);
+}
+
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 
 {
 	m_kPos=kPos;

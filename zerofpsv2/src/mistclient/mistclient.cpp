@@ -135,6 +135,8 @@ void MistClient::Init()
 
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkFps->AddRenderCamera(m_pkCamera);
+	
 	
 	//register property bös
 	RegisterPropertys();
@@ -211,8 +213,8 @@ void MistClient::RegisterPropertys()
 
 void MistClient::OnIdle() 
 {
-	m_pkFps->SetCamera(m_pkCamera);		
-	m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkFps->SetCamera(m_pkCamera);		
+	//m_pkFps->GetCam()->ClearViewPort();	
 		
 	if(m_pkGui->m_bHandledMouse == false)
 	{
@@ -223,7 +225,7 @@ void MistClient::OnIdle()
    if ( m_pkInventDlg )
       m_pkInventDlg->Update();
 	
-	m_pkFps->UpdateCamera();
+	//m_pkFps->UpdateCamera();
 	
 	
 	// FULHACK Tm Vim

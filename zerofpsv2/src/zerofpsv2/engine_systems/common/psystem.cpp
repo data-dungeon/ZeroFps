@@ -431,6 +431,12 @@ void PSystem::TimeoffSet (bool bUseAge)
 
 void PSystem::TestInsideFrustum()
 {
+	if(!m_pkFps->GetCam())
+	{
+		m_bInsideFrustum= false;
+		return;
+	}
+
 	Frustum *pkFrustum = m_pkFps->GetCam()->GetFrustum();
 
 	// test culling

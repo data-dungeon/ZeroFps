@@ -91,8 +91,9 @@ void DarkMetropolis::OnInit()
 
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
-	m_pkFps->SetRenderTarget(m_pkCamera);
-	m_pkCamera->SetRender(true);
+	m_pkCamera->SetClearViewPort(false);
+	m_pkFps->AddRenderCamera(m_pkCamera);
+	
 
 	LoadResourcesOnStartup();
 
@@ -134,8 +135,8 @@ void DarkMetropolis::OnIdle()
 	ShowWnd("panel_char", false);
 
 	
-	m_pkFps->SetCamera(m_pkCamera);		
-	m_pkFps->GetCam()->ClearViewPort();
+	//m_pkFps->SetCamera(m_pkCamera);		
+	//m_pkFps->GetCam()->ClearViewPort();
 
 	if(m_eGameMode != PAUSED)
 	{

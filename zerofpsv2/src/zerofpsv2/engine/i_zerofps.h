@@ -28,8 +28,6 @@ public:
 	virtual float GetLastGameUpdateTime() = 0;
 	virtual float GetEngineTime() = 0;
 
-	virtual void SetCamera(Camera* pkCamera)= 0;	
-	virtual void UpdateCamera()= 0;
 	virtual Camera* GetCam()= 0;		
 						
 	virtual DevStringPage* DevPrint_FindPage(const char* szName)= 0;	
@@ -44,9 +42,11 @@ public:
 
 	virtual	void GetEngineCredits(vector<string>& kCreditsStrings)= 0;
 		 	
-	virtual	void SetRenderTarget(Camera* pkCamera)= 0;
-	virtual void RemoveRenderTarget(Camera* pkCamera)= 0;
-	virtual void Draw_RenderTarget(Camera* pkCamera) = 0;
+	virtual	void AddRenderCamera(Camera* pkCamera)= 0;
+	virtual void RemoveRenderCamera(Camera* pkCamera)= 0;
+	virtual void ClearRenderCameras()= 0;
+	virtual void Draw_RenderCamera(Camera* pkCamera) = 0;
+	
 
 	virtual int GetWidth()= 0;
 	virtual int GetHeight()= 0;

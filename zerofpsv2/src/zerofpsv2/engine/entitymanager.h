@@ -148,7 +148,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateZoneStatus();		
 		
 		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
-		void Test_DrawZones();
 		void ClearZoneLinks(int iId);
 		void UpdateZoneLinks(int iId);
 		
@@ -242,7 +241,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		// Debug / Help Functions		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
+		void Test_DrawZones();
 
+		
 		// Message System.
 		void SendMsg(string strName, int iFrom, int iTo);
 		void RouteMessage(GameMessage& Msg);

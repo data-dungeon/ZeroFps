@@ -1,3 +1,6 @@
+#ifndef _KEYS_H_
+#define _KEYS_H_
+
 
 /*
 	This is the input keys from the keyboard. They are mapped as far as possible to map to ASCII.
@@ -171,4 +174,6 @@ enum Buttons
 
 
 
+
+#endif
 

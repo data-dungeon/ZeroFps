@@ -46,6 +46,18 @@ void Matrix3::Set(float f00,float f01,float f02,
 	m_aafRowCol[2][2] = f22;
 };
 
+void Matrix3::SetAxis(int iAxisNum, Vector3 kNewAxis)
+{
+        m_aafRowCol[iAxisNum][0] = kNewAxis.x;
+        m_aafRowCol[iAxisNum][1] = kNewAxis.y;
+        m_aafRowCol[iAxisNum][2] = kNewAxis.z;
+}
+
+Vector3 Matrix3::GetAxis(int iAxisNum)
+{
+	return Vector3(m_aafRowCol[iAxisNum][0], m_aafRowCol[iAxisNum][1], m_aafRowCol[iAxisNum][2]);
+}
+
 
 // Operators	-	Assignment
 Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)

@@ -14,6 +14,7 @@
 #include "../../basic/vector4.h"
 #include "oggmusic.h"
 #include "../../basic/matrix4.h"
+#include "../../basic/matrix3.h"
 
 #define DUMMY_SOUND "/data/sound/dummy.wav"
 #define HEARABLE_DISTANCE 100.0f
@@ -120,6 +121,7 @@ public:
 	void Update();
 	void SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp);
 	void SetListnerPosition(Vector3 kPos,Matrix4 kOri);
+	void SetListnerPosition(Vector3 kPos,Matrix3 kOri);
 	void SetReferensDistance(float fR) {m_fReferenceDistance = fR;};
 	static Vector3 GetListnerPos() { return m_kPos;  }
 	Vector3 GetListnerDir() { return m_kHead; }

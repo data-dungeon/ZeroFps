@@ -156,7 +156,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZMaterial*	m_pkDevPageMaterial;
 		
 		
-		vector<Camera*>	m_kRenderTarget;
+		vector<Camera*>	m_kRenderCamera;
 		
 
 		Camera *m_pkCamera;
@@ -273,16 +273,17 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
 		
 		//camera
-		void SetCamera(Camera* pkCamera);	
-		void UpdateCamera();
-		Camera *GetCam() {return m_pkCamera;};		
+		//void SetCamera(Camera* pkCamera);	
+		//void UpdateCamera();
+		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can me NULL
 
 		//render targets
-		void SetRenderTarget(Camera* pkCamera);
-		void RemoveRenderTarget(Camera* pkCamera);
-		void Draw_RenderTargets();
-		void Draw_RenderTarget(Camera* pkCamera);
-		Camera* GetRenderTarget(string strName);
+		void AddRenderCamera(Camera* pkCamera);
+		void RemoveRenderCamera(Camera* pkCamera);
+		void ClearRenderCameras();
+		void Draw_RenderCameras();
+		void Draw_RenderCamera(Camera* pkCamera);
+		Camera* GetRenderCamera(string strName);
 
 		//screen info
 		int GetWidth(){return m_pkRender->GetWidth();}
@@ -297,9 +298,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void DevPrintf(const char* szName, const char *fmt, ...);
 
 		//graphs
-		bool GetDebugGraph() {return m_bDebugGraph;};
-		void SetDebugGraph(bool bDebug) {m_bDebugGraph = bDebug;};
-
+		bool GetDebugGraph() 				{	return m_bDebugGraph;	}
+		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
+		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256);

@@ -333,7 +333,7 @@ bool ZGui::Render(int fps)
 		if(pkWnd->m_pkCamera && pkWnd->IsVisible()) 
 		{
 			//m_pkRenderer->EndRender(); 
-			m_pkZeroFps->Draw_RenderTarget(pkWnd->m_pkCamera);
+			m_pkZeroFps->Draw_RenderCamera(pkWnd->m_pkCamera);
 			//m_pkRenderer->StartRender();
 		}
 	 }

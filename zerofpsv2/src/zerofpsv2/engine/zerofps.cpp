@@ -399,7 +399,7 @@ void ZeroFps::Run_Client()
 		
 		
 	//   _---------------------------------- fulhack deluxe 
-	Draw_RenderTargets();
+	Draw_RenderCameras();
 	
 	if(m_bTcsFullframe)
 		m_pkTcs->Update(GetFrameTime());	
@@ -412,12 +412,16 @@ void ZeroFps::Run_Client()
 	}
 
 	//update sound system
-	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
+	if(m_kRenderCamera.size()  == 1)
+		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
+	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	m_pkAudioSystem->Update();
 
 	
 	//run application Head On Display
-	SetCamera(m_pkConsoleCamera);
+	//SetCamera(m_pkConsoleCamera);
+	m_pkConsoleCamera->Update();
+	m_pkConsoleCamera->ClearViewPort(false);
 	m_pkApp->OnHud();
 	
 	
@@ -544,14 +548,19 @@ void ZeroFps::Draw_EngineShell()
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
 	
-	if(m_pkConsole->IsActive()) {		
-		SetCamera(m_pkConsoleCamera);			
+	
+	//render gui
+	m_pkGui->Render((int)m_fAvrageFps);
+	
+	//set console kamera matrisses, and clear depthbuffer
+	m_pkConsoleCamera->Update();
+	m_pkConsoleCamera->ClearViewPort(false);	
+	
+	//draw devstrings
+	DrawDevStrings();
+	
+	if(m_pkConsole->IsActive()) 
 		m_pkConsole->Draw();
-	}		
-	else 
-	{
-		m_pkGui->Render((int)m_fAvrageFps);
-	}
 }
 
 void ZeroFps::MainLoop(void) 
@@ -607,44 +616,65 @@ void ZeroFps::MakeDelay()
 	}
 }
 
-void ZeroFps::SetRenderTarget(Camera* pkCamera)
+void ZeroFps::AddRenderCamera(Camera* pkCamera)
 {
-	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
-		if(m_kRenderTarget[i] == pkCamera)
+	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
+		if(m_kRenderCamera[i] == pkCamera)
 			return;
 
-	m_kRenderTarget.push_back(pkCamera);
+	m_kRenderCamera.push_back(pkCamera);
 	//cout << "Adding: " << pkCamera->GetName();
 	//cout << " to active rendertargets\n";
 }
 
-void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
+void ZeroFps::ClearRenderCameras()
 {
-	m_kRenderTarget.clear();
+	m_kRenderCamera.clear();
+}
+
+void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
+{
+	for(vector<Camera*>::iterator it=m_kRenderCamera.begin();it!=m_kRenderCamera.end();it++) 
+	{
+		if(pkCamera == (*it))
+			m_kRenderCamera.erase(it);
+	}	
+
+	//m_kRenderTarget.clear();
 //	m_kRenderTarget.remo(pkCamera);	
 }
 
-void ZeroFps::Draw_RenderTargets()
+void ZeroFps::Draw_RenderCameras()
 {
-	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{
-		Draw_RenderTarget(m_kRenderTarget[i]);
+		Draw_RenderCamera(m_kRenderCamera[i]);
 	}
 }
 
-Camera* ZeroFps::GetRenderTarget(string strName)
+Camera* ZeroFps::GetRenderCamera(string strName)
 {
-	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{
-		if(m_kRenderTarget[i]->GetName() == strName)
-			return m_kRenderTarget[i];
+		if(m_kRenderCamera[i]->GetName() == strName)
+			return m_kRenderCamera[i];
 	}
 
 	return NULL;
 }
 
-void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
+void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 {
+	//set active camera
+	m_pkCamera=pkCamera;			
+	
+	//render camera view
+	pkCamera->RenderView();
+
+	//set NULL as active camera
+	m_pkCamera = NULL;
+	
+/*	
 	//is this camera enabled
 	if(!pkCamera->IsRenderOn())
 		return;
@@ -680,12 +710,11 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 
 	m_pkObjectMan->Test_DrawZones();
 	m_pkApp->RenderInterface();
-
+*/
 }
 
 
 void ZeroFps::Swap(void) {
-	DrawDevStrings();
 
 	m_pkRender->Swap();
 
@@ -729,24 +758,6 @@ void ZeroFps::ToggleGui(void)
 	{
 		m_pkGui->Activate(m_bGuiMode);
 	}
-}
-
-void ZeroFps::SetCamera(Camera* pkCamera)
-{
-	//set camera pointer 
-	m_pkCamera=pkCamera;		
-	
-	//call updateall so that the camera updates viewport and realoads projectionmatrix
-	m_pkCamera->UpdateAll(m_pkRender->GetWidth(),m_pkRender->GetHeight());
-	
-	UpdateCamera();
-}
-
-void ZeroFps::UpdateCamera()
-{
-	//update camera
-	m_pkCamera->Update(m_pkRender->GetWidth(),m_pkRender->GetHeight());
-	
 }
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
@@ -1502,3 +1513,22 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 }
 
 
+/*
+void ZeroFps::SetCamera(Camera* pkCamera)
+{
+	//set camera pointer 
+	m_pkCamera=pkCamera;		
+	
+	//call updateall so that the camera updates viewport and realoads projectionmatrix
+	//m_pkCamera->UpdateAll(m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	
+	UpdateCamera();
+}
+
+void ZeroFps::UpdateCamera()
+{
+	//update camera
+	m_pkCamera->Update();//m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	
+}
+*/

@@ -9,6 +9,11 @@
 #include "../gui/zguiwindow.h"
 #include "../render/zshadersystem.h"
 
+#include "entitymanager.h"
+#include "zerofps.h"
+#include "application.h"
+#include "../engine_systems/common/zshadow.h"
+
 class Render;
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
@@ -28,12 +33,22 @@ class ENGINE_API Camera
 			CAMMODE_ORTHO_RIGHT,
 		};
 	
+		enum RENDERTARGET
+		{
+			RENDERTARGET_SCREEN,
+			RENDERTARGET_TEXTURE,
+			RENDERTARGET_NONE,		
+		};
 
 	private:	
 		ZGuiWnd*	m_pkWnd;
 
+		EntityManager*	m_pkEntityMan;
 		Render*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
+		ZeroFps*			m_pkZeroFps;
+		ZShadow*			m_pkZShadow;
+		
 
 		Matrix4	m_kCamProjectionMatrix;
 		Matrix4	m_kCamModelViewMatrix;
@@ -41,8 +56,8 @@ class ENGINE_API Camera
 		Matrix4	m_kRotM;
 				
 		//update view change
-		bool		m_bViewChange;
-		bool		m_bViewPortChange;				
+//		bool		m_bViewChange;
+//		bool		m_bViewPortChange;				
 		
 		//viewport
 		Vector3	m_kViewPortCorner;
@@ -74,7 +89,10 @@ class ENGINE_API Camera
 		//camera settings
 		bool		m_bRender;							// False if no need to render from this camera (not visible on screen).
 		bool		m_bSelected;
-
+		int		m_iRenderTarget;
+		bool		m_bClearViewPort;
+		
+		
 		//if theres a p_cam attached to this camera , this is its entity id
 		int		m_iEntity;							// ID Of entity that this camera is connected to.
 		int		m_iRootEntity;		
@@ -91,8 +109,8 @@ class ENGINE_API Camera
 				
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 	
-		void 	Update(int iWidth,int iHeight);
-		void 	UpdateAll(int iWidth,int iHeight);
+		void 	Update();	
+		void	RenderView();	
 		void 	SetView(float fFov,float fAspect,float fNear,float fFar);
 	
 		void 	SetViewMode(CamMode eMode);
@@ -100,7 +118,7 @@ class ENGINE_API Camera
 
 		void 	SetOrthoView();
 		void 	SetViewPort(float iX,float iY,float iW,float iH);
-		void 	ClearViewPort();
+		void 	ClearViewPort(bool bColor);
 		void 	SetFov(float fFov);
 
 		void 		OrthoZoom(float fZoom);
@@ -127,6 +145,8 @@ class ENGINE_API Camera
 		void		SetRootEntityID(int iEntityID){	m_iRootEntity = iEntityID;			}
 		void		SetRootOnly(bool bRoot)			{	m_bRootOnly = bRoot;					}
 		bool		GetRootOnly()						{	return m_bRootOnly;					}
+		void		SetClearViewPort(bool bClear)	{	m_bClearViewPort = bClear;			}
+		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
 		
 		Frustum*	GetFrustum()						{	return &m_kFrustum;			}
 		bool	   IsRenderOn()						{	return m_bRender;				}
@@ -143,6 +163,7 @@ class ENGINE_API Camera
 		Vector3	GetViewPortCorner();
 
 
+		
 		friend	class ZGuiWnd;
 		friend	class P_Camera;
 };

@@ -152,7 +152,7 @@ void P_Controller::SpringTrigger (int iAxis, float fValue)
 	// check if force should be rotated
 	if ( m_bCameraRotation )
 	{
-      Camera* pkCamera = m_pkZeroFps->GetRenderTarget("AppView");
+      Camera* pkCamera = m_pkZeroFps->GetRenderCamera("AppView");
 
 		if ( Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(pkCamera->GetEntityID()) )
 		{
