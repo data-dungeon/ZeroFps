@@ -138,12 +138,13 @@ void ZeroRTS::OnIdle()
 		m_iSelfObjectID = iObjID;
 		}
 
+	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
-		pkObj->SetPos(pkFps->GetCam()->GetPos());
-		pkObj->SetPos(pkFps->GetCam()->GetPos());
-		}
+		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-5,0));
+		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-5,0));
+	}
 
 	if(m_pkMiniMap)
 		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); 
@@ -260,10 +261,15 @@ void ZeroRTS::Input()
 		
 		if(m_pkClientInput)
 		{
-			UnitCommand bla;
-			strcpy(bla.m_acCommandName,"HOCKER MOVE TO TREE ATT 4 o clock");
-			m_pkClientInput->AddOrder(bla);
-		
+			for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)
+			{
+				UnitCommand bla;
+				strcpy(bla.m_acCommandName,"Move");
+				bla.m_iXDestinaton = 100;
+				bla.m_iYDestinaton = 100;			
+				bla.m_iUnitID = (*it);
+				m_pkClientInput->AddOrder(bla);
+			}
 		}
 	}
 	
@@ -299,14 +305,14 @@ void ZeroRTS::Input()
 
 				float fx=m_pkEnd.x, fy=m_pkEnd.y;
 				int tex = m_pkMap->GetMostVisibleTexture(fx,fy);
-				printf("Texture=%i\n", tex);
+				//printf("Texture=%i\n", tex);
 			}
 
 			float fx = info.kHitPos.x, fy = info.kHitPos.z;
 			Vector3 sqrnorm = m_pkMap->Tilt(fx,fy);
 			Vector3 ground_plane = Vector3(0,1,0);
 			float angle = sqrnorm.Angle(ground_plane);
-			printf("Angle: %f\n", RadToDeg(angle));
+			//printf("Angle: %f\n", RadToDeg(angle));
 		}
 
 		//do we want to clear?
@@ -355,10 +361,7 @@ void ZeroRTS::Input()
 	{
 		static bool s_bToggle = true;
 		m_pkMiniMap->Show((s_bToggle=!s_bToggle));
-	}
-
-
-			
+	}			
 }
 
 
@@ -680,15 +683,32 @@ void ZeroRTS::HandleOrders()
 {
 	
 	if(P_ClientInput::m_kServerCommands.size() > 0)
-	{
+	{	
 		cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
 		
 		for(int i=0;i<P_ClientInput::m_kServerCommands.size();i++)
 		{
-			cout<<"Player:"<< int(P_ClientInput::m_kServerCommands[i].m_cPlayerID)<<endl;
-			cout<<"executing "<<P_ClientInput::m_kServerCommands[i].m_acCommandName<<endl;		
+			UnitCommand* uc = &P_ClientInput::m_kServerCommands[i];		
+		
+			cout<<"Player:    "<< int(uc->m_cPlayerID)<<endl;
+			cout<<"executing: "<<uc->m_acCommandName<<endl;		
+			cout<<"on unit:   "<<uc->m_iUnitID<<endl;
+			cout<<"target:    "<<uc->m_iTarget<<endl;
+			cout<<"targetpos: "<<uc->m_iXDestinaton<< " "<<uc->m_iYDestinaton<<endl;
 			
-			
+			Object* ob = pkObjectMan->GetObjectByNetWorkID(uc->m_iUnitID);
+			if(ob != NULL)			
+			{	
+				P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
+				if(su != NULL)
+				{
+					su->RunExternalCommand(uc);	
+				}
+				else
+					cout<<"Error: P_ServerUnit not found on unit"<<endl;
+			}
+			else
+				cout<<"Error: Unit not found"<<endl;
 		}
 	
 		P_ClientInput::m_kServerCommands.clear();
@@ -719,10 +739,10 @@ void ZeroRTS::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
 	pkClient->m_pkObject->AddProperty("ModelProperty");	
-	pkClient->m_pkObject->AddProperty("P_ClientInput");
-
-	P_ClientInput* ci = (P_ClientInput*)pkClient->m_pkObject->GetProperty("P_ClientInput");
 	
+	//setup client input
+	pkClient->m_pkObject->AddProperty("P_ClientInput");
+	P_ClientInput* ci = (P_ClientInput*)pkClient->m_pkObject->GetProperty("P_ClientInput");	
 	ci->m_iPlayerID = iConID;
 
 }

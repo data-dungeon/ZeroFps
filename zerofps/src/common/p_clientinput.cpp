@@ -16,9 +16,6 @@ P_ClientInput::P_ClientInput()
 	m_iMaxOrders = 200;	
 	
 	m_iPlayerID =	-1;
-
-
-	cout<<"PLAYER "<<m_iPlayerID<<" Created"<<endl;
 }
 
 void P_ClientInput::Update()
