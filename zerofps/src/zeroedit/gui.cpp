@@ -214,6 +214,27 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 
 	switch(uiMessage)
 	{
+	case ZGM_LBUTTONDOWN:
+
+		m_pkEdit->pkFps->DevPrint_Show(true);
+
+		unsigned int i;
+		for(i=0; i<m_uiNumMenuItems; i++)
+		{
+			ZGuiListbox* pkList = m_pkMenuInfo[i].cb->GetListbox();
+
+			if(pkList->IsVisible())
+			{
+				m_pkEdit->pkFps->DevPrint_Show(false);
+				break;
+			}
+		}
+
+		if(((ZGuiCombobox*)Get("MainMenuCB1"))->GetListbox()->IsVisible())
+			m_pkEdit->pkFps->DevPrint_Show(false);
+
+		break;
+
 	case ZGM_CBN_SELENDOK:
 		{
 			int iID = ((int*)pkParams)[0];
@@ -736,20 +757,18 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	Rect rcMenu(0,0,iMenuWidth,20);
 	iMenuOffset += iMenuWidth;
 
-	printf("menu width:%i\n", iMenuWidth);
-
-	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,true,ID_MAINWND_MENU_CB,20,
+	ZGuiCombobox* pkFileMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,true,ID_MAINWND_MENU_CB,20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
-	pkMenuCBox->SetGUI(m_pkEdit->pkGui);
-	pkMenuCBox->SetLabelText("File");
-	pkMenuCBox->SetNumVisibleRows(5);
-	pkMenuCBox->IsMenu(true);
-	pkMenuCBox->AddItem(" Load map...", IDM_LOAD_HEIGHTMAP);
-	pkMenuCBox->AddItem(" Load template...", IDM_LOAD_TEMPLATE);
-	pkMenuCBox->AddItem(" Save template...", IDM_SAVE_TEMPLATE);
-	pkMenuCBox->AddItem(" Edit property...", IDM_CREATE_NEW_PROPERTY);
-	pkMenuCBox->AddItem(" Quit", IDM_CLOSE);
-	Register(pkMenuCBox, "MainMenuCB1");
+	pkFileMenuCBox->SetGUI(m_pkEdit->pkGui);
+	pkFileMenuCBox->SetLabelText("File");
+	pkFileMenuCBox->SetNumVisibleRows(5);
+	pkFileMenuCBox->IsMenu(true);
+	pkFileMenuCBox->AddItem(" Load map...", IDM_LOAD_HEIGHTMAP);
+	pkFileMenuCBox->AddItem(" Load template...", IDM_LOAD_TEMPLATE);
+	pkFileMenuCBox->AddItem(" Save template...", IDM_SAVE_TEMPLATE);
+	pkFileMenuCBox->AddItem(" Edit property...", IDM_CREATE_NEW_PROPERTY);
+	pkFileMenuCBox->AddItem(" Quit", IDM_CLOSE);
+	Register(pkFileMenuCBox, "MainMenuCB1");
 
 	if(!pkIni->Open(szFileName, false))
 	{
