@@ -611,7 +611,7 @@ void InventoryDlg::OnDropItem()
 						int collision_slot = TestForCollision(p, s, false);
 						if(collision_slot > 0)
 						{
-							p = Point(-1,-1);
+							//p = Point(-1,-1); kommenterar bort för att kunna stapla grejer
 							if(m_vkContainerItemList[collision_slot].bIsContainer)
 							{
 								container_id = m_vkContainerItemList[collision_slot].iItemID;	
@@ -658,7 +658,7 @@ void InventoryDlg::OnDropItem()
 						int collision_slot = TestForCollision(p, s, true);
 						if(collision_slot > 0)
 						{
-							p = Point(-1,-1);
+							//p = Point(-1,-1); kommenterar bort för att kunna stapla grejer
 							if(m_vkInventoryItemList[collision_slot].bIsContainer)
 							{
 								container_id = m_vkInventoryItemList[collision_slot].iItemID;	
@@ -689,7 +689,7 @@ void InventoryDlg::OnDropItem()
 			}
 		}
 	}
-	else
+	else // Klickat innuti gridden (släppa i samma fönster)
 	{
 		if(rc.Left < upper_left.x) rc.Left = upper_left.x;
 		if(rc.Top < upper_left.y) rc.Top = upper_left.y;
@@ -728,7 +728,7 @@ void InventoryDlg::OnDropItem()
 					-1, slot_x, slot_y);
 				mx = x + m_kCursorRangeDiff.x + m_pkContainerWnd->GetScreenRect().Left;
 				my = y + m_kCursorRangeDiff.y + m_pkContainerWnd->GetScreenRect().Top;
-				g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx, my);
+				g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx, my);								
 			}
 			
 			g_kMistClient.RequestOpenInventory();
@@ -740,7 +740,7 @@ void InventoryDlg::OnDropItem()
 
 			pair<int,bool> iItemUnderCursor = GetItemFromScreenPos(x, y);
 
-			if(iItemUnderCursor.second == true) // droped item to inventory
+			if(iItemUnderCursor.second == true) // droped item to inventory wnd
 			{				
 				if(iItemUnderCursor.first != -1)	
 					if(m_vkInventoryItemList[iItemUnderCursor.first].bIsContainer)		
@@ -756,9 +756,15 @@ void InventoryDlg::OnDropItem()
 									g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);	
 								break;
 							}
-					}				
+					}		
+					else
+					{
+						// TODO: Släppa item på annat item som går att stacka.
+						g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
+							-1, slot_x, slot_y);
+					}
 			}
-			else // droped item to container
+			else // droped item to container wnd
 			{
 				if(iItemUnderCursor.first != -1)	
 					if(m_vkContainerItemList[iItemUnderCursor.first].bIsContainer)
@@ -770,11 +776,19 @@ void InventoryDlg::OnDropItem()
 									m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
 									m_vkContainerItemList[i].iItemID, -1, -1);
 
-								if(m_vkContainerItemList[i].iItemID != m_iActiveContainerID)								
-									g_kMistClient.SendRequestContainer(m_vkContainerItemList[i].iItemID);	
+								//if(m_vkContainerItemList[i].iItemID != m_iActiveContainerID)								
+								//	g_kMistClient.SendRequestContainer(m_vkContainerItemList[i].iItemID);	
 								break;
 							}
 					}
+					else
+					{
+						// TODO: Släppa item på annat item som går att stacka.
+						g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
+							-1, slot_x, slot_y);
+					}
+
+					g_kMistClient.SendRequestContainer(m_iActiveContainerID);	
 			}
 
 			g_kMistClient.RequestOpenInventory();
