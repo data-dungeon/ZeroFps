@@ -178,6 +178,8 @@ class ENGINE_API Entity
 		Entity();				
 		
 	public:
+		bool							m_bHavePlayedSound;				///< Litet test bara...
+
 		int							iNetWorkID;							///< ID used by network state code.
 		EntityManager*				m_pkObjectMan;						///< Ptr to object manger.
 	

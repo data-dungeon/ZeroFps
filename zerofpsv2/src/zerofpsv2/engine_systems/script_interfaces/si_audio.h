@@ -25,6 +25,8 @@ namespace AudioLua
 	int ENGINE_SYSTEMS_API PlayGuiSoundLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API StopSoundLua(lua_State* pkLua);
+
+
 };
 
 #endif // #ifndef _SI_GUI_H

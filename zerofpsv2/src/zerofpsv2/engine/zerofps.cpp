@@ -945,7 +945,8 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Track",				Create_TrackProperty);							
 
 	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
-	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);			
+	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);
+	m_pkPropertyFactory->Register("P_Sound",				Create_SoundProperty);		
 	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 
 	

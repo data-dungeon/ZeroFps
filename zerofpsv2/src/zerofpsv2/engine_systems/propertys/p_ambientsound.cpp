@@ -33,7 +33,7 @@ void P_AmbientSound::CloneOf(Property* pkProperty)
 
 void P_AmbientSound::Update()
 {
-	if(m_pkFps && m_pkFps->m_bServerMode)
+	if(m_pkFps->m_bServerMode)
 		return;
 
 	Entity* pkObject = GetObject();
@@ -133,6 +133,7 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 	pkFile->Write( &m_fHearableDistance, sizeof(float), 1); // hearable distance
 	pkFile->Write( &m_bLoop, sizeof(bool), 1); // loop
 	pkFile->Write( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
+	pkFile->Write( m_pkFps, sizeof(ZeroFps), 1); 
 	pkFile->Write( &m_bManagedByAudioSystem, sizeof(bool), 1); 
 }
 
@@ -154,6 +155,7 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 	pkFile->Read( &m_fHearableDistance, sizeof(float), 1); // hearable distance
 	pkFile->Read( &m_bLoop, sizeof(bool), 1); // loop
 	pkFile->Read( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
+	pkFile->Read( m_pkFps, sizeof(ZeroFps), 1); 
 	pkFile->Read( &m_bManagedByAudioSystem, sizeof(bool), 1); 
 	
 	if(szFileName)
@@ -187,4 +189,67 @@ void P_AmbientSound::Stop()
 	Entity* pkObject = GetObject();
 	m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
 	m_bStarted = false;
+}
+
+
+
+
+/////////////////////// P_Sound
+
+P_Sound::P_Sound()
+{
+	bNetwork = true;
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+
+	strcpy(m_acName,"P_Sound");
+	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_bPlay = true;
+	m_strFileName = "";
+}
+
+P_Sound::~P_Sound()
+{
+
+}
+
+void P_Sound::Update()
+{
+	if(!m_pkFps->m_bServerMode)
+	{
+		if(!m_strFileName.empty() && m_bPlay == true)
+		{
+			Entity* pkObject = GetObject();
+
+			m_pkAudioSystem->StartSound(m_strFileName, 
+				pkObject->GetWorldPosV(), pkObject->GetVel(), false);
+
+			m_strFileName = "";
+			m_bPlay = true;
+		}
+	}
+}
+
+void P_Sound::Play(string strName) // körs endast på server sidan
+{
+	m_strFileName = strName;
+}
+
+void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+{
+	pkNetPacket->Write_Str( m_strFileName.c_str()); // write filename
+	m_strFileName = "";
+}
+
+void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+{
+	char file_name[128];
+	pkNetPacket->Read_Str(file_name); // read filename
+	m_strFileName = file_name;
+}
+
+Property* Create_SoundProperty()
+{
+	return new P_Sound();
 }

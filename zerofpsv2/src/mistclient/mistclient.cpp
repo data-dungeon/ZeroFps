@@ -318,7 +318,7 @@ void MistClient::OnSystem()
 				m_pkServerInfo->m_kMyMessages.pop();
 			}
 
-			//play sounds
+			//play private sounds
 			while(!pi->kPrivateSounds.empty())
 			{
 				pair<int,string> sound_info = pi->kPrivateSounds.front();

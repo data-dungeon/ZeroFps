@@ -4,6 +4,7 @@
 
 #include "../audio/zfaudiosystem.h"
 #include "../../engine/entitymanager.h"
+#include "../../engine_systems/propertys/p_ambientsound.h"
 #include "si_audio.h"
 
 ZFScriptSystem* AudioLua::g_pkScript;
@@ -32,7 +33,7 @@ void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 //		(1,2,3) pos x, pos y, pos z (double, double, double)
 //		(4,5,6) dir x, dir y, dir z (double, double, double)
 //		(7) loop = 1, do not loop = 0 (int)
-int AudioLua::PlaySoundLua(lua_State* pkLua)
+/*int AudioLua::PlaySoundLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
@@ -89,6 +90,34 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	strFileName.append(szFileName);
 
 	g_pAudioSys->StartSound(strFileName, pos, dir, bLoop);
+
+	return 1;
+}*/
+
+// 1:st arg Object ID generating sound
+// 2:st arg name of file
+int AudioLua::PlaySoundLua(lua_State* pkLua)
+{
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iObjectID = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	//printf("Play Sound '%s' on object %d\n", acName,  iObjectID);
+
+	Entity* pkObject = g_pkObjectMan->GetObjectByNetWorkID(iObjectID);
+	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
+
+	if(pkSound)
+	{
+		pkSound->Play(string("data/sound/") + string(acName));
+	}
+	else
+	{
+		printf("Object have no P_Sound property! Failed to play sound.\n");
+	}
 
 	return 1;
 }

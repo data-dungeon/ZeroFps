@@ -8,6 +8,28 @@
 
 using namespace std;
 
+class ENGINE_SYSTEMS_API P_Sound : public Property
+{
+private:
+	ZFAudioSystem* m_pkAudioSystem;
+	ZeroFps* m_pkFps;
+	string m_strFileName, m_strFileNameClient;
+
+	bool m_bPlay;
+
+public:
+	P_Sound();
+	~P_Sound();
+
+	void Play(string strName);
+	void Update();
+	void CloneOf(Property* pkProperty) {};
+	void PackTo(NetPacket* pkNetPacket, int iConnectionID);
+	void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
+};
+
+Property* Create_SoundProperty();
+
 class ENGINE_SYSTEMS_API P_AmbientSound : public Property 
 {
 	private:
