@@ -17,7 +17,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistclient2");
 
 } 
-
+ 
 void MistClient::OnInit() 
 {
 	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
