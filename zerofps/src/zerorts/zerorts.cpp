@@ -216,7 +216,12 @@ void ZeroRTS::Input()
 				int tex = m_pkMap->GetMostVisibleTexture(fx,fy);
 				printf("Texture=%i\n", tex);
 			}
-			
+
+			float fx = info.kHitPos.x, fy = info.kHitPos.z;
+			Vector3 sqrnorm = m_pkMap->Tilt(fx,fy);
+			Vector3 ground_plane = Vector3(0,1,0);
+			float angle = sqrnorm.Angle(ground_plane);
+			printf("Angle: %f\n", RadToDeg(angle));
 		}
 
 		//do we want to clear?

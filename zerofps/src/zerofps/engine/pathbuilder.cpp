@@ -42,10 +42,18 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			{
 				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
 
+				// Kolla terrängtyp
 				float dx=x, dy=y;
 				int texture = m_pkHeightMap->GetMostVisibleTexture(dx, dy); 
 
-				if(pkVert->height <= 2.0f)
+				// Kolla vinkeln mot XZ planet
+				float fx = -(iMapSize/2)*HEIGHTMAP_SCALE + x*HEIGHTMAP_SCALE;
+				float fy = -(iMapSize/2)*HEIGHTMAP_SCALE + y*HEIGHTMAP_SCALE;
+				Vector3 sqrnorm = m_pkHeightMap->Tilt(fx,fy);
+				Vector3 ground_plane = Vector3(0,1,0);
+				float angle = RadToDeg(sqrnorm.Angle(ground_plane));
+
+				if(pkVert->height <= 2.0f || angle > 40.0f)
 					texture = 4;
 
 				int iIndex = y*iMapSize+x;
