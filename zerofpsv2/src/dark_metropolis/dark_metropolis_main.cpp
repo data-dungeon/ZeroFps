@@ -628,7 +628,11 @@ void DarkMetropolis::Input()
 				m_fDelayTimer = m_pkFps->GetTicks();
 		
 				if(Entity* pkPickEnt = GetTargetObject())
-				{	
+				{
+					//if targeting a character...aim for the center of it
+					if((P_DMCharacter*)pkPickEnt->GetProperty("P_DMCharacter"))
+						m_kPickPos = pkPickEnt->GetWorldPosV() + Vector3(0,1,0);
+					
 					for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 					{
 						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))

@@ -235,6 +235,14 @@ void Mad_Core::SetupBonePose()
 		return;
 		}
 
+	//DVOID FUL HACK...
+	if(iStartFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
+		iStartFrame = 0;
+
+	if(iEndFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
+		iEndFrame = 0;
+		
+		
 	Matrix4		kMadkBoneMatrix;					
 
 	Vector3 Angles;
@@ -242,6 +250,7 @@ void Mad_Core::SetupBonePose()
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
 
+	
 	ZFAssert(pkStartKey, "Mad_Core::SetupBonePose: No StartKey");
 	ZFAssert(pkEndKey, "Mad_Core::SetupBonePose: No EndKey");
 
@@ -253,7 +262,7 @@ void Mad_Core::SetupBonePose()
 
    //if ( iBoneKeys != m_kSkelleton.size() )
    //   return;
-
+	
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		// Get Start/End Keys
 		kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
@@ -264,7 +273,7 @@ void Mad_Core::SetupBonePose()
 
 			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
-
+	
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		kMadkBoneMatrix.Identity();
 		kMadkBoneMatrix = g_Madq[i].Inverse();
