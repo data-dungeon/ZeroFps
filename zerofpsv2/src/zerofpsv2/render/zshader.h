@@ -203,6 +203,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		void RandomVertexMovements();
 		void Waves();	
 		void TextureOffset();
+		void ColorEffect(ZMaterialSettings* pkSettings);
 	
 		bool HaveVertexProgramExt();
 	

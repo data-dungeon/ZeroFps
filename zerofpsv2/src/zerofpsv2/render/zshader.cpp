@@ -238,38 +238,9 @@ void ZShader::SetupPrerenderStates()
 	if(m_pkCurentMaterial->m_bWaves)
 		Waves();
 
-}
 
-void ZShader::TextureOffset()
-{
-	for(int i=0;i<m_iNrOfVertexs;i++)
-	{
-		m_pkTexturePointer0[i].x += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[0];
-		m_pkTexturePointer0[i].y += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[1];
-	}
-}
-
-void ZShader::RandomVertexMovements()
-{
-	for(int i=0;i<m_iNrOfVertexs;i++)
-	{
-		m_pkVertexPointer[i] += Vector3( float((rand()%500 /1000.0) -0.25), 
-			float((rand()%500 /1000.0) -0.25),
-			float((rand()%500 /1000.0) -0.25));
-
-	}
 	
-}
 
-void ZShader::Waves()
-{	
-	for(int i=0;i<m_iNrOfVertexs;i++)
-	{
-		float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
-		float bla = float( cos(SDL_GetTicks()/500.0 + offset)*0.1 );
-		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
-
-	}
 }
 
 void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)
@@ -358,6 +329,10 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
+	//run effects
+	if(pkSettings->m_iTextureColorEffect != -1)
+		ColorEffect(pkSettings);
+
 	//enable color material if wanted
 	if(pkSettings->m_bColorMaterial)
 	{
@@ -369,6 +344,7 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	
 	//set vertex color	
 	glColor4fv(&pkSettings->m_kVertexColor.x);
+
 
 	//polygon mode settings		front
 	switch(pkSettings->m_iPolygonModeFront)
@@ -728,3 +704,69 @@ void ZShader::SetVertexProgram(int iVPID)
 		
 	m_iCurrentVertexProgram=iVPID;
 }
+
+
+// SOFTWARE SHADERS
+void ZShader::TextureOffset()
+{
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		m_pkTexturePointer0[i].x += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[0];
+		m_pkTexturePointer0[i].y += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[1];
+	}
+}
+
+void ZShader::RandomVertexMovements()
+{
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		m_pkVertexPointer[i] += Vector3( float((rand()%500 /1000.0) -0.25), 
+			float((rand()%500 /1000.0) -0.25),
+			float((rand()%500 /1000.0) -0.25));
+
+	}
+	
+}
+
+void ZShader::Waves()
+{	
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
+		float bla = float( cos(SDL_GetTicks()/500.0 + offset)*0.1 );
+		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
+
+	}
+}
+
+void ZShader::ColorEffect(ZMaterialSettings* pkSettings)
+{
+	switch(pkSettings->m_iTextureColorEffect)
+	{
+		case 1:	
+		{
+			//float fV = ((rand() % 500)  + 500)  / 1000.0  ;			
+			float fV = (rand() % 500)  / 1000.0   + 0.2;
+
+			pkSettings->m_kVertexColor.x = fV;
+			pkSettings->m_kVertexColor.y = fV;
+			pkSettings->m_kVertexColor.z = fV;	
+			break;
+		}
+		
+		case 2:
+		{
+		
+			float fV = sin((float)SDL_GetTicks() / 300.0)*0.25 + 0.2;
+			//float fV = ((rand() % 500)  + 500)  / 1000.0  ;
+
+			pkSettings->m_kVertexColor.x = fV;
+			pkSettings->m_kVertexColor.y = fV;
+			pkSettings->m_kVertexColor.z = fV;				
+		
+			break;
+		}
+	}
+
+}
+

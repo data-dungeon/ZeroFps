@@ -31,6 +31,9 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bBlend	= false;
 	m_iBlendSrc = ONE_BLEND_SRC; 
 	m_iBlendDst = ZERO_BLEND_DST; 
+	
+	
+	m_iTextureColorEffect = -1;
 };
 
 ZMaterialSettings::~ZMaterialSettings()
@@ -261,6 +264,10 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-a"))
       newpass->m_kVertexColor.w = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-a");	
 	
+	
+	//get effects	
+	if(m_kIni.KeyExist(passname.c_str(),"coloreffect"))
+		newpass->m_iTextureColorEffect = m_kIni.GetIntValue(passname.c_str(),"coloreffect");
 	
 	
 	return true;
