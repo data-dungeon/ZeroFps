@@ -11,8 +11,8 @@ P_DMItem::P_DMItem()
 
 	m_strName = "Unnamed Item";
 	m_strIcon = "default.bmp";
-	m_iSizeX = 2;	
-	m_iSizeY = 2;	
+	m_iSizeX = 1;	
+	m_iSizeY = 1;	
 	m_iType = DMItemDefault;
 
 }

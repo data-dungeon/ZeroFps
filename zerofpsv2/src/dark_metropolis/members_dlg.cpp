@@ -77,11 +77,7 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "MembersDropItemBn")
 	{
-		if(m_pkSelectInfo != NULL)
-		{
-			DropItem(m_pkSelectInfo);
-			m_pkSelectInfo = NULL;
-		}
+		DropItem(m_pkSelectInfo);
 	}
 
 	if(strClickName.find("ItemButton") != string::npos)
@@ -95,10 +91,15 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkSelWnd->Resize(rc.Width(), rc.Height(), true);  
 		pkSelWnd->SetMoveArea(rc, true);
 	}
-	else
-	{
-		ShowWnd("MemberSelItemBorder", false);
-	}
+	//else
+	//{
+	//	if(m_pkSelectInfo != NULL)
+	//	{
+	//		delete m_pkSelectInfo;
+	//		m_pkSelectInfo = NULL;
+	//		ShowWnd("MemberSelItemBorder", false);
+	//	}
+	//}
 
 }
 
@@ -368,6 +369,8 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 	{
 		if(m_pkMoveInfo)
 		{
+			Rect rcBeforeMove = m_pkMoveInfo->m_rcBeforeMove;
+
 			bool bMoveOK = false;
 			CONTAINER_INFO kContainer;
 			if( GetContainer(x, y, kContainer, agent_obj_id) )
@@ -411,6 +414,15 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 					m_pkMoveInfo->m_rcBeforeMove.Left,
 					m_pkMoveInfo->m_rcBeforeMove.Top,
 					true, true);
+			}
+
+			if(!(rcBeforeMove == m_pkMoveInfo->m_pkMoveButton->GetScreenRect()) )
+			{
+				delete m_pkSelectInfo;
+				m_pkSelectInfo = NULL;
+
+				for(int i=0; i<m_vkItemButtons.size(); i++)
+					m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 			}
 
 			if(m_pkMoveInfo)
@@ -493,6 +505,13 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 			{
 				m_vkItemButtons[i]->GetButtonUpSkin()->m_unBorderSize = 0;
 				m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
+			}
+
+			if(m_pkSelectInfo != NULL)
+			{
+				delete m_pkSelectInfo;
+				m_pkSelectInfo = NULL;
+				ShowWnd("MemberSelItemBorder", false);
 			}
 		}
 
@@ -640,7 +659,10 @@ bool CMembersDlg::GetItemPosFromCursor(int x, int y,
 void CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 {
 	if(pkObject == NULL)
+	{
+		printf("Failed to drop item\n");
 		return;
+	}
 
 	DMContainer* pkBackPack=NULL, *pkArmor=NULL;
 	DMContainer* pkCybernetics=NULL, *pkQuickSlots=NULL;
@@ -656,13 +678,21 @@ void CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 			GetObject(agent_obj_id)->GetProperty("P_DMCharacter");
 	}
 
-	pkObject->m_kFromContainer.pkContainer->DropItem(
-		*pkObject->m_pMoveObject);
+	if(pkObject->m_kFromContainer.pkContainer->DropItem(
+		*pkObject->m_pMoveObject) == true)
+	{
+		pkObject->m_pkMoveButton->Hide();
 
-	pkObject->m_pkMoveButton->Hide();
+		for(int i=0; i<m_vkItemButtons.size(); i++)
+			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
-	for(int i=0; i<m_vkItemButtons.size(); i++)
-		m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
+		delete m_pkSelectInfo;
+		m_pkSelectInfo = NULL;
+	}
+	else
+	{
+		printf("Failed to drop item\n");
+	}
 }
 
 void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
