@@ -10,6 +10,8 @@
 #include <functional>
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
+#pragma warning( disable : 4251) // needs to have dll-interface
+
 #include <list>
 #include <string>
 #include <vector>

@@ -1,10 +1,10 @@
 #include "cssphere.h"
-
+ 
 CSSphere::CSSphere(float fRadius)
 {
 	m_fRadius=fRadius;
 }
-
+ 
 Collision* CSSphere::Test(CollisionShape* kOther,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
@@ -99,7 +99,7 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 	cout << "movevec.Length(): " << movevec.Length() << endl;
 	cout << "absmovevec.Length(): " << fabs(movevec.Length()) << endl;*/
 
-	float bla = distance / fabs(movevec.Length());
+	float bla = float( distance / fabs(movevec.Length()) );
 
 	Vector3 statmov1=movevec1 * bla;
 	Vector3 statmov2=movevec2 * bla;	

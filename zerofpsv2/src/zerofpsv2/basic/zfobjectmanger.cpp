@@ -607,7 +607,7 @@ bool ZFObjectManger::ShutDown()
 	g_Logf("ShutDown Engine SubSystems: \n");
 
 	// Engine Systems Shutdown backwards.
-	for( int i=0; i < kObjectNames.size();i++) {
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].m_bStarted == false)	continue;
 
 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());

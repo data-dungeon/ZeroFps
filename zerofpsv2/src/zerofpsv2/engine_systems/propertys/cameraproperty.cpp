@@ -3,7 +3,7 @@
 
 #define CHASE_CAM_DISTANCE	5
 
-
+ 
 CameraProperty::CameraProperty() 
 {
 	m_pkCamera = NULL;

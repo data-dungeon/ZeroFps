@@ -4,7 +4,7 @@
 #include "../basic/zfobjectmanger.h"
 #include "objectmanager.h"
 #include "../engine_systems/propertys/physicproperty.h"
-
+ 
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
 
@@ -599,7 +599,7 @@ void Object::HandleMessages()
 {
 	GameMessage Msg;
 
-	for(int i=0; i<m_kGameMessages.size(); i++) {
+	for(unsigned int i=0; i<m_kGameMessages.size(); i++) {
 		Msg = m_kGameMessages[i];
 		RouteMessage(Msg);
 		}
@@ -672,7 +672,7 @@ void Object::PrintTree(int pos)
 		TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "%s\n" ,(*it)->m_acName);
 		akPropertyNames = (*it)->GetValueNames();
 
-		for(int i=0; i < akPropertyNames.size(); i++) {
+		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
 			strValue = (*it)->GetValue(akPropertyNames[i]);
 			szValue = strValue.c_str();
 
@@ -717,7 +717,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 		// Get Values
 		akPropertyNames = (*it)->GetValueNames();
 
-		for(int i=0; i < akPropertyNames.size(); i++) {
+		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
 			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
 			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
 			}

@@ -9,7 +9,7 @@
 #include "levelmanager.h"
 #include "../engine_systems/propertys/propertys.pkg"
 #include "../basic/zfini.h"
-
+ 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
 float		g_fMadLODScale;
@@ -235,7 +235,7 @@ int	ZeroFps::NumberOfArgs(void)
 string ZeroFps::GetArg(int iArgIndex)
 {
 	string strArg("");
-	if(iArgIndex < 0 || iArgIndex >= AppArguments.size())
+	if(iArgIndex < 0 || iArgIndex >= int(AppArguments.size()))
 		return strArg;
 
 	strArg = AppArguments[iArgIndex];
@@ -533,7 +533,7 @@ void ZeroFps::MainLoop(void) {
 
 void ZeroFps::SetRenderTarget(Camera* pkCamera)
 {
-	for(int i=0; i<m_kRenderTarget.size(); i++)
+	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
 		if(m_kRenderTarget[i] == pkCamera)
 			return;
 
@@ -719,7 +719,7 @@ void ZeroFps::UpdateCamera()
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
 {
-	for(int i=0; i<m_DevStringPage.size(); i++) {
+	for(unsigned int i=0; i<m_DevStringPage.size(); i++) {
 		if(string(szName) == m_DevStringPage[i].m_kName) {
 			return &m_DevStringPage[i];
 			}
@@ -760,7 +760,7 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
-	int page;
+	unsigned int page;
 
 	if(!m_bDevPagesVisible) {
 		for(page = 0; page <m_DevStringPage.size(); page++ )
@@ -786,7 +786,7 @@ void ZeroFps::DrawDevStrings()
 				const_cast<char*>(strPageName.c_str()));	
 			fYOffset -= 0.02;
 
-			for(int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
+			for(unsigned int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
 			{
 				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
 					const_cast<char*>(m_DevStringPage[page].m_akDevString[i].c_str()));	
@@ -809,7 +809,7 @@ char g_szIpPort[256];
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	int i;
+	unsigned int i;
 
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
@@ -895,7 +895,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 				kFiles.clear();
 				m_pkConsole->Printf("Listing %s",m_kCurentDir.c_str());
-				for(int i=0;i<kFiles.size();i++)
+				for(unsigned int i=0;i<kFiles.size();i++)
 				{
 					m_pkConsole->Printf(kFiles[i].c_str());
 				}

@@ -1,7 +1,7 @@
 #include "modelproperty.h"
 #include "../../engine/object.h"
 #include "../../basic/zfobjectmanger.h"
-
+ 
 ModelProperty::ModelProperty() {
 	bNetwork = true;
 	strcpy(m_acName,"ModelProperty");

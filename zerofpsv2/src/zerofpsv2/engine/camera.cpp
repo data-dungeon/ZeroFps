@@ -3,7 +3,7 @@
 
 /*#include "GL/gl.h"
 #include "GL/glu.h"*/
-
+ 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
 	SetView(fFov,fAspect,fNear,fFar);

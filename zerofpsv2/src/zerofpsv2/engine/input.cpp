@@ -1,7 +1,7 @@
 #include "input.h"
 #include "../basic/zfobjectmanger.h"
 #include "zerofps.h"
-
+ 
 Input::Input() 
  : ZFSubSystem("Input") {
 
@@ -121,8 +121,8 @@ void Input::MouseXY(int &iX,int &iY)
 
 void Input::UnitMouseXY(float &fX,float &fY) 
 {		
-	fX=(m_iAbsMouseX/(float)m_pkZeroFps->GetWidth())-0.5;
-	fY=(m_iAbsMouseY/(float)m_pkZeroFps->GetHeight())-0.5;
+	fX = float( (m_iAbsMouseX/(float)m_pkZeroFps->GetWidth())-0.5 );
+	fY = float( (m_iAbsMouseY/(float)m_pkZeroFps->GetHeight())-0.5 );
 }
 
 

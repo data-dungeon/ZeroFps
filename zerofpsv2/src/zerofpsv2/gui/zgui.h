@@ -27,6 +27,8 @@
 #include "../basic/zfini.h"
 
 #pragma warning( disable : 4786) // truncate long names
+#pragma warning( disable : 4251) // needs to have dll-interface
+
 #include <list>
 #include <vector>
 #include <map>

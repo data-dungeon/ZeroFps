@@ -34,7 +34,7 @@ void DebugGraph::SetSize(int iSize,int iWidth, int iHeight)
 	m_kValues.resize(iSize);
 	m_iSize = iSize;
 
-	for(int i=0; i<m_kValues.size(); i++) {
+	for(unsigned int i=0; i<m_kValues.size(); i++) {
 		m_kValues[i] = 0;
 		}
 
@@ -63,10 +63,10 @@ void DebugGraph::DrawSolidBox(int x, int y, int x2, int y2)
 
 	// Draw a Solid Color Box.
 	glBegin(GL_QUADS);
-		glVertex3f(x,y,0);
-		glVertex3f(x2,y,0);
-		glVertex3f(x2,y2,0);
-		glVertex3f(x,y2,0);
+		glVertex3i(x,y,0);
+		glVertex3i(x2,y,0);
+		glVertex3i(x2,y2,0);
+		glVertex3i(x,y2,0);
 	glEnd();
 }
 
@@ -116,8 +116,8 @@ void DebugGraph::DrawGraph(int x, int y)
 	glBegin(GL_LINES);
 	for(;;) {
 		fSize = GetSampleHeight(m_kValues[iValueIndex]);
-		glVertex3f(m_iWidth - iOffset,0,0);
-		glVertex3f(m_iWidth - iOffset,fSize,0);
+		glVertex3i(m_iWidth - iOffset,0,0);
+		glVertex3i(m_iWidth - iOffset,fSize,0);
 		iOffset++;
 		if(iOffset >= m_iWidth)
 			break;

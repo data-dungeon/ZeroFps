@@ -1,7 +1,7 @@
 #include "boxrenderproperty.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/object.h"
-
+ 
 BoxRenderProperty::BoxRenderProperty()
 {
 	strcpy(m_acName,"BoxRenderProperty");		

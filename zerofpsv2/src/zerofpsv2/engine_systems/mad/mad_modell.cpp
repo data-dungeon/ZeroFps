@@ -8,7 +8,7 @@ char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
 
-
+ 
 /*
 void SetGameTime(void)
 {

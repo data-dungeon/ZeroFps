@@ -1,5 +1,5 @@
 #include "waterrenderproperty.h"
-
+ 
 WaterRenderProperty::WaterRenderProperty()
 {
 	strcpy(m_acName,"WaterRenderProperty");		

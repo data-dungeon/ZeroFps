@@ -1,6 +1,6 @@
 #include "worldinfoproperty.h"
 #include "../../engine/zerofps.h"
-
+ 
 WorldInfoProperty::WorldInfoProperty()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));

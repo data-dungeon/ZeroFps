@@ -1,6 +1,6 @@
 #include "zoneobject.h"
 #include "../propertys/proxyproperty.h"
-
+ 
 ZoneObject::ZoneObject()
 {
 	m_kName="ZoneObject";

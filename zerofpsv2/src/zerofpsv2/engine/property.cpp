@@ -2,7 +2,7 @@
 #include "../basic/zfobjectmanger.h"
 
 #include "zerofps.h"
-
+ 
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -469,7 +469,7 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 
 bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue)
 {
-	unsigned char cTemp1;
+//	unsigned char cTemp1;
 	int iTemp1,iTemp2;
 	float fTemp1, fTemp2,fTemp3, fTemp4;
 	string kTemp1, kTemp2, kTemp3;

@@ -1,6 +1,6 @@
 #include "billboardrenderproperty.h"
 #include "../../engine/zerofps.h"
-
+ 
 BillBoardRenderProperty::BillBoardRenderProperty()
 {
 	strcpy(m_acName,"BillBoardRenderProperty");		

@@ -3,7 +3,7 @@
 #include "lightproperty.h"
 #include "../../engine/object.h"
 #include "../../basic/zfobjectmanger.h"
-
+ 
 LightProperty::LightProperty()
 {
 	bNetwork = true;

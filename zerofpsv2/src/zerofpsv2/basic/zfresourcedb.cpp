@@ -231,7 +231,7 @@ ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
 
 ResourceCreateLink*	ZFResourceDB::FindResourceType(string strName)
 {
-	for(int i=0; i<m_kResourceFactory.size(); i++) {
+	for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
 		if(m_kResourceFactory[i].m_strName == strName)
 			return &m_kResourceFactory[i];
 	}

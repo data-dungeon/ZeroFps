@@ -59,9 +59,9 @@ void VegitationProperty::Update()
 
 	
 
-	for(int i=0;i<m_akPositions.size();i += iStep){
+	for(unsigned int i=0;i<m_akPositions.size();i += iStep){
 		Vector3 rot = m_akPositions[i].kRot; 
-		rot.x = sin(t + m_akPositions[i].fWindStart) * m_fWind;
+		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
 		m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,m_iTexture);			
 	}
 }
@@ -122,7 +122,7 @@ void VegitationProperty::CalculateRadius()
 {
 	float maxDist = 0;
 
-	for(int i=0;i<m_akPositions.size();i++)
+	for(unsigned int i=0;i<m_akPositions.size();i++)
 	{
 		float Distance = (m_akPositions[i].kPos).Length();
 		
@@ -152,8 +152,8 @@ void VegitationProperty::AddPos(Vector3 kPos)
 {
 	vegitation temp;
 	temp.kPos = kPos;
-	temp.kRot = Vector3( (rand() % 20) -10.0 ,rand() % 320,(rand() % 20) -10.0);
-	temp.fWindStart = (rand() % 2000) / 1000.0;
+	temp.kRot = Vector3( float((rand() % 20) -10.0) ,float(rand() % 320),float((rand() % 20) -10.0));
+	temp.fWindStart = float((rand() % 2000) / 1000.0);
 
 	m_akPositions.push_back(temp);
 

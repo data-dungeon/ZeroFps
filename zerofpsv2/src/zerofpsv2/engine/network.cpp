@@ -4,7 +4,7 @@
 #include "../basic/zfobjectmanger.h"
 
 NetWork* g_pkNetWork;
-
+ 
 
 RemoteNode::RemoteNode()
 {
@@ -369,7 +369,7 @@ void NetWork::NetString_Request(int iIndex)
 int NetWork::GetNumOfClients(void)
 {
 	int iNumOfClients = 0;
-	for(int i=0; i < m_RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_DISCONNECT)
 			iNumOfClients++;
 		}
@@ -387,7 +387,7 @@ bool NetWork::IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2)
 
 int NetWork::GetClientNumber(IPaddress* pkAddress)
 {
-	for(int i=0; i < m_RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		if(IsAddressEquals(pkAddress, &m_RemoteNodes[i].m_kAddress))
 			return i;
 		}
@@ -705,7 +705,7 @@ void NetWork::DevShow_ClientConnections()
 	char* pkName = "Die Vim";
 	char szAdress[256];
 
-	for(int i=0; i < m_RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		switch(m_RemoteNodes[i].m_eConnectStatus) {
 			case NETSTATUS_CONNECTING:	pkName = "CONNECTING";	break;
 			case NETSTATUS_CONNECTED:	pkName = "CONNECTED";	break;
@@ -725,7 +725,7 @@ void NetWork::DevShow_ClientConnections()
 	
 void NetWork::DrawConnectionGraphs()
 {
-	for(int i=0; i < m_RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 55 * i + 100);
 	}
 }
@@ -740,7 +740,7 @@ void NetWork::Run()
 
 	Logf("netpac", "Engine Time: %f\n", fEngineTime );
 
-	int i;
+	unsigned int i;
 	for(i=0; i<m_RemoteNodes.size(); i++) {
 		m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 		}
@@ -794,7 +794,7 @@ void NetWork::Run()
 		// Refresh num of recd bytes graphs.
 		m_RemoteNodes[i].m_iNumOfBytesRecv += m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame;
 		if(fEngineTime > m_fStatsUpdate) {
-			m_RemoteNodes[i].m_kRecvGraph.PushValue(m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame);
+			m_RemoteNodes[i].m_kRecvGraph.PushValue( float(m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame ));
 			m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 			}
 
@@ -807,7 +807,7 @@ void NetWork::Run()
 		}
 
 	if(fEngineTime > m_fStatsUpdate)
-		m_fStatsUpdate = fEngineTime + 1.0;	
+		m_fStatsUpdate = fEngineTime + float(1.0);	
 
 	Send_NetStrings();
 	NetString_Refresh();

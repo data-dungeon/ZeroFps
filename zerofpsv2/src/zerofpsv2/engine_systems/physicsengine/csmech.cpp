@@ -1,6 +1,6 @@
 #include "csmech.h"
 
-
+ 
 CSMech::CSMech()
 {
 	m_fcoloffset = 0.001;
@@ -11,7 +11,7 @@ CSMech::CSMech()
 	m_bOtherGlide=false;
 }
 
-
+ 
 Collision* CSMech::Test(CollisionShape* kOther,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSBox)){
@@ -72,7 +72,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther)
 		c++;
 			
 		Vector3 data[3];
-		for(int i=0;i<m_pkFaces->size();i++)
+		for(unsigned int i=0;i<m_pkFaces->size();i++)
 		{
 	
 			for(int j=0;j<3;j++)
@@ -538,7 +538,7 @@ bool CSMech::TestAxisBox(Vector3 kPos1,Vector3 kPos2,Vector3 kScale)
 		for(int k=0;k<12;k++)
 		{
 
-			for(int i=0;i<m_pkFaces->size();i++)
+			for(unsigned int i=0;i<m_pkFaces->size();i++)
 			{	
 				
 				Vector3 data[3];	
@@ -629,7 +629,7 @@ bool CSMech::BoxEdgeTest(Vector3 kPos,Vector3 kScale)
 	
 	for(int k=0;k<12;k++)
 	{
-		for(int i=0;i<m_pkFaces->size();i++)
+		for(unsigned int i=0;i<m_pkFaces->size();i++)
 		{	
 		
 				

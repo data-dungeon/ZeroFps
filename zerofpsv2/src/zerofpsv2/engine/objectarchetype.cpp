@@ -6,7 +6,7 @@ PropertyValue::PropertyValue()
 	m_strVariable = "";
 	m_strValue = "";
 }
-
+ 
 PropertyValue::~PropertyValue()
 {
 
@@ -74,7 +74,7 @@ void ObjectArcheType::AddArchProperty(string strArchPropertys)
 
 PropertyArcheType* ObjectArcheType::GetArchProperty(string strArchPropertys)
 {
-	for(int i=0; i<m_kArchPropertys.size(); i++) 
+	for(unsigned int i=0; i<m_kArchPropertys.size(); i++) 
 	{
 		if(strArchPropertys == m_kArchPropertys[i].m_strName)
 			return &m_kArchPropertys[i];

@@ -4,7 +4,7 @@
 #include "netslaveobject.h"
 #include "../basic/zfobjectmanger.h"
 #include "../basic/simplescript.h"
-
+ 
 ObjectManager::ObjectManager() 
 : ZFSubSystem("ObjectManager") 
 {
@@ -605,7 +605,7 @@ void ObjectManager::PackToClients()
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_DELETEOBJECT);
 
-	for(int i=0; i<m_aiNetDeleteList.size(); i++) {
+	for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++) {
 		NP.Write((int) m_aiNetDeleteList[i] );
 		}
 	
@@ -742,10 +742,10 @@ void ObjectManager::AddArchPropertys(Object* pkObj, string strName)
 	Property* pkProperty;
 
 	AddArchPropertys(pkObj, pkAt->m_strParentName);
-	for(int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
+	for(unsigned int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
 		pkProperty = pkObj->AddProxyProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
 
-		for(int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
+		for(unsigned int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
 			pkProperty = pkObj->GetProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
 	
 			pkProperty->SetValue(pkAt->m_kArchPropertys[i].m_kVariables[j].m_strVariable.c_str(),

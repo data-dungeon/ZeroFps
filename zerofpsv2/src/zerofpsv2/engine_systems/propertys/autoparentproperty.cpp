@@ -1,7 +1,7 @@
 #include "autoparentproperty.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/zerofps.h"
-
+ 
 AutoParentProperty::AutoParentProperty()
 {
 	strcpy(m_acName,"AutoParentProperty");		
@@ -23,7 +23,7 @@ void AutoParentProperty::Update()
 	if(fCurentTime - m_fLastUpdate >= m_fUpdateTime)
 	{
 		m_fLastUpdate=fCurentTime;// + m_fUpdateTime + (rand()%4)/1000;
-		m_fUpdateTime= 1 + (rand()%2000)/1000;
+		m_fUpdateTime = float(1.0 + (rand()%2000)/1000);
 
 		m_pkObject->AttachToClosestZone();
 	}

@@ -1,6 +1,6 @@
 #include "lightupdateproperty.h" 	
 #include "../../basic/zfobjectmanger.h"
- 	
+  	
 LightUpdateProperty::LightUpdateProperty()
 {
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	

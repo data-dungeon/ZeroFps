@@ -78,7 +78,7 @@ int TextureManager::GetOptionsFromFileName(string strName)
 	if(strlen(szFlags) == 0)
 		return 0;
 
-	for(int i=0; i<strlen(szFlags); i++) {
+	for(unsigned int i=0; i<strlen(szFlags); i++) {
 		switch(szFlags[i]) {
 			case 'c':
 				iOptions = iOptions | T_CLAMP;

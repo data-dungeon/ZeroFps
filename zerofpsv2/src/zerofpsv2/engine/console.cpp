@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include "../basic/zfobjectmanger.h"
-
+ 
 using namespace std;
 
 Console::Console()

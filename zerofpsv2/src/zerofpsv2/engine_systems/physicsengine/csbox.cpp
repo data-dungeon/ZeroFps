@@ -1,14 +1,14 @@
 #include "csbox.h"
 #include "../propertys/physicproperty.h"
 
-
+ 
 CSBox::CSBox(Vector3 kScale)
 {
 	m_kScale=kScale;
 	
 	coloffset=0.00001;
 }
-
+ 
 Collision* CSBox::Test(CollisionShape* kOther,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
@@ -388,7 +388,7 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	if(inside)
 	{
-		fDist=abs(fDist);
+		fDist = abs(fDist);	// CHECK-ME: Dvoid - Ska det vara fabs här?
 //		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
 //		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
 		

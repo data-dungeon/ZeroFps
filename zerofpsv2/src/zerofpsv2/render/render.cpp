@@ -290,7 +290,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	{
 		if((*m_kText)[i] != NULL)
 		{
-			Print2(Vector3(float( 8.0, 16.0 + 8.0 * float(i) ),0),(*m_kText)[i]);		
+			Print2(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i]);		
 		}
 	}
 	

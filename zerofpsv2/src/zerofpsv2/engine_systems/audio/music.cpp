@@ -1,6 +1,6 @@
 #include "music.h"
   
-
+ 
 Music::Music() {
 //m_audio_open=audio_open;
 	

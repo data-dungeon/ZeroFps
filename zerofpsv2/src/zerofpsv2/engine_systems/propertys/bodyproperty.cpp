@@ -2,7 +2,7 @@
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/object.h"
 #include "madproperty.h"
-
+ 
 BodyProperty::BodyProperty()
 {
 	strcpy(m_acName,"BodyProperty");

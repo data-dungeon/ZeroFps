@@ -2,7 +2,7 @@
 #include "../../engine/object.h"
 #include "../../render/render.h"
 #include "../../basic/zfobjectmanger.h"
-
+ 
 extern int g_iMadLODLock;
 extern float g_fMadLODScale;
  
@@ -81,7 +81,7 @@ void MadProperty::Update()
 	// Set Object LOD.
 	if(g_iMadLODLock == 0) {
 		Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetPos();
-		float fDist = fabs(kDiff.Length());
+		float fDist = float( fabs(kDiff.Length()) );
 		m_fLod = 1 - (fDist / 300);
 		//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
 		
