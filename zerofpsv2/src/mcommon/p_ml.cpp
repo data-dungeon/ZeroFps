@@ -11,7 +11,18 @@ P_Ml::P_Ml()
 
 
 	bNetwork = true;
+	
+	m_pkSpawn = NULL;
 }
+
+P_Ml::~P_Ml()
+{
+	if(m_pkSpawn)
+	{
+		m_pkSpawn->RemoveEntity(m_pkObject);
+	}
+}
+
 
 void P_Ml::Update()
 {

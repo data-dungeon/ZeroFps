@@ -30,6 +30,7 @@
 #include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_ai.h"
+#include "../mcommon/p_spawn.h"
 
 #include "playerdatabase.h"
 
