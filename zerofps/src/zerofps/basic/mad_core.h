@@ -140,7 +140,7 @@ public:
 	void							SetDisplayID(int iId) { iDisplayID = iId; }
 	int								GetDisplayID() { return iDisplayID; }
 
-	char							m_acName[MAD_MAX_NAME];		// Name of MAD.
+	char							m_acName[MAD_MAX_NAME];		// Name of mesh.
 	Mad_CoreMeshHeader				kHead;
 
 	Mad_CoreMesh();
@@ -353,6 +353,7 @@ public:
 	~Mad_Core();
 	
 	Mad_CoreMesh*	GetMeshByID(int iMesh);
+	int	GetMeshIDByName(char* szName);
 	Mad_CoreMesh* CreateCoreMesh(const char* szName);
 	int	NumOfMeshes();
 

@@ -23,8 +23,8 @@ External Code:
 
 Code Modules:
  Basic:		Grundläggande klasser (math, namnsystem, log files, fil system).
- Engine:	Objectmangement, network, client/server, Input, Physic/Collision, sound.
  Render:	Utritning (*opengl). Rendering av modeller och landskap. Textures.
+ Engine:	Objectmangement, network, client/server, Input, Physic/Collision, sound.
  App.Exe:	
 
 Control Loop: 

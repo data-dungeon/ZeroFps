@@ -483,6 +483,11 @@ bool Mad_Core::LoadMad(const char* MadFileName)
 
 Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 {
+	if(iMesh < 0)	
+		return NULL;
+	if(iMesh >= m_kMesh.size())
+		return NULL;
+
 	return &m_kMesh[iMesh];
 }
 
@@ -757,4 +762,13 @@ void Mad_Core::SetControll(char* szName, float fValue)
 	cout << "Controller not found" << endl;
 }
 
+int	Mad_Core::GetMeshIDByName(char* szName)
+{
+	for(int i=0; i<m_kMesh.size(); i++) {
+		if(strcmp(m_kMesh[i].m_acName, szName) == 0)
+			return i;
+		}
+
+	return -1;
+}
 

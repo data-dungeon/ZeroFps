@@ -39,6 +39,23 @@ Mad_Modell::Mad_Modell(Mad_Core* pkModell)
 
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
+	AddMesh(0);
+
+/*	pkCore = pkModell;
+	m_kMadFile = pkCore->Name;
+
+	m_fScale = 1.0;
+	m_bActive = true;
+	fGameTime = 0;
+	pkCore = NULL;
+
+	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+
+	if(pkModell) {
+		LoadTextures();
+		PlayAnimation(0, 0.0);
+		pkCore->ClearReplaceTexture();
+		}*/
 }
 
 void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
@@ -54,6 +71,23 @@ void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
 	Create_GLList(pkCore->GetMeshByID(0));
+	AddMesh(0);
+
+/*	m_fScale = 1.0;
+	m_bActive = true;
+	
+	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+
+	if(pkModell) {
+		pkCore = pkModell;
+		m_kMadFile = pkCore->Name;
+		PlayAnimation(0, 0.0);
+		pkCore->ClearReplaceTexture();
+		LoadTextures();
+		Create_GLList(pkCore->GetMeshByID(0));
+
+		AddMesh(0);
+		}*/
 }
 
 void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
@@ -327,27 +361,31 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D );
 
-	int iNumOfMesh = GetNumOfMesh();
+	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 	
+	if(iDrawFlags &	MAD_DRAW_LINES)
+		glPolygonMode(GL_FRONT, GL_LINE);
+
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
-		SelectMesh(iM);
+		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
 
 		//if(g_fMadLODScale == 1)
-			pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
+			pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
 		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
 		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
 
-		iNumOfSubMesh = GetNumOfSubMesh(iM);
+		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
+
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
 			SelectSubMesh(iSubM);
 
 			if(iDrawFlags & MAD_DRAW_MESH) {
-				iNumOfFaces = GetNumFaces() * g_fMadLODScale;
+				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
 				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
@@ -375,6 +413,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glDisable(GL_ALPHA_TEST);
 	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
+	if(iDrawFlags &	MAD_DRAW_LINES)
+	glPolygonMode(GL_FRONT, GL_FILL );
 
 	glPopAttrib();
 }
@@ -480,3 +520,13 @@ float Mad_Modell::GetRadius()
 
 	return pkCore->GetRadius() * m_fScale;	
 }
+
+bool Mad_Modell::AddMesh(int iSubId)
+{
+	if(pkCore->GetMeshByID(iSubId) == NULL)
+		return false;
+
+	m_kActiveMesh.push_back(iSubId);
+	return true;
+}
+

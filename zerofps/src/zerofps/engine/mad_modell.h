@@ -9,12 +9,15 @@
 #define MAD_DRAW_NORMAL		2
 #define MAD_DRAW_BONES		4
 #define MAD_DRAW_SPHERE		8
+#define MAD_DRAW_LINES		16
 
 
 class ENGINE_API Mad_Modell 
 {
 private:
-	TextureManager*	m_pkTex;
+	vector<int>			m_kActiveMesh;
+	
+	TextureManager*		m_pkTex;
 
 	void LoadTextures();
 
@@ -86,6 +89,13 @@ public:
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
 	
 	float GetRadius();
+
+	bool AddMesh(int iSId);
+	bool RemoveMesh(int iId)		{ return false; }
+	bool AddMesh(char* szName)		{ return false; }
+	bool RemoveMesh(char* szName)	{ return false; }
+	bool IsMeshActive(int iId)		{ return false; }
+	bool IsMeshActive(char* szName) { return false; }
 };
 
 
