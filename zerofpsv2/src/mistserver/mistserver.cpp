@@ -977,6 +977,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			P_Item* 			pkItem = 				NULL;
 			Entity*			pkCharacter = 			NULL;
 			
+			cout<<"bla:"<<iItemID<<" "<<iTargetContainer<<" "<<iPosX<<" "<<iPosY<<" "<<iCount<<endl;
+			
 			//get container
 			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))
 				pkTargetContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
@@ -1048,9 +1050,11 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					break;					
 				}
 			
+
 				//do we have a target container 
 				if(!pkTargetContainer)
 				{
+				
 					//if we have a position, try moving there
 					if(iPosX != -1)
 					{

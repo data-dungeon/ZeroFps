@@ -154,60 +154,58 @@ bool P_Container::StackItem(P_Item* pkItem,int iX,int iY,int iCount)
 
 	int* i = GetItem(iX,iY);
 
+	if(!i)
+		return false;	
+	
 	//get target item
 	if(P_Item* pkTargetItem = (P_Item*)m_pkEntMan->GetPropertyFromEntityID(*i,"P_Item"))
 	{
-		//check if its the same item
-		if(pkTargetItem->m_strName == pkItem->m_strName)
+		//check if stackable
+		if(CanStack(pkTargetItem,pkItem))
 		{
-			//check if stackable
-			if(pkTargetItem->m_iStackMax > 1)
+			//get free stack		
+			int iFree = pkTargetItem->m_iStackMax - pkTargetItem->m_iStackSize;
+			if(iFree <= 0)
 			{
-				//get free stack		
-				int iFree = pkTargetItem->m_iStackMax - pkTargetItem->m_iStackSize;
-				if(iFree <= 0)
-				{
-					cout<<"no free space"<<endl;
-					return true;
-				}
-				
-				//not enough space
-				if(iCount > iFree)
-				{
-					cout<<"not enough free space, adding to full"<<endl;
-					pkTargetItem->m_iStackSize += iFree;
-					pkItem->m_iStackSize -= iFree;
-				}
-				else //enough space
-				{
-					pkTargetItem->m_iStackSize += iCount;
-					pkItem->m_iStackSize -= iCount;					
-				}
-				
-				//check if item is totaly moved
-				if(pkItem->m_iStackSize <= 0)
-				{
-					//remove from world
-					
-					//in container?
-					if(pkItem->m_iInContainerID != -1)
-					{
-						//get container and remove item
-						if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
-						{
-							pkContainer->RemoveItem(pkItem->GetEntity()->GetEntityID());
-						}
-					}
-					else
-					{
-						//not in a container, just remove it from the face of the earth
-						m_pkEntMan->Delete(pkItem->GetEntity());
-					}
-				}
-				
-				//have now handled the stacking
+				cout<<"no free space"<<endl;
 				return true;
 			}
+			
+			//not enough space
+			if(iCount > iFree)
+			{
+				cout<<"not enough free space, adding to full"<<endl;
+				pkTargetItem->m_iStackSize += iFree;
+				pkItem->m_iStackSize -= iFree;
+			}
+			else //enough space
+			{
+				pkTargetItem->m_iStackSize += iCount;
+				pkItem->m_iStackSize -= iCount;					
+			}
+			
+			//check if item is totaly moved
+			if(pkItem->m_iStackSize <= 0)
+			{
+				//remove from world
+				//in container?
+				if(pkItem->m_iInContainerID != -1)
+				{
+					//get container and remove item
+					if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
+					{
+						pkContainer->RemoveItem(pkItem->GetEntity()->GetEntityID());
+					}
+				}
+				else
+				{
+					//not in a container, just remove it from the face of the earth
+					m_pkEntMan->Delete(pkItem->GetEntity());
+				}
+			}
+			
+			//have now handled the stacking
+			return true;
 		}
 	}
 		
@@ -318,8 +316,7 @@ bool P_Container::GetItemPos(int iID,int& iRX,int& iRY)
 bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 {
 	P_Item* pkItem = NULL;
-	P_Container* pkContainer = NULL;
-	
+		
 	//get item
 	if(!(pkItem = (P_Item*)m_pkEntMan->GetPropertyFromEntityID(iID,"P_Item")))
 	{		
@@ -330,9 +327,6 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 	//check if *this is the item
 	if(GetEntity() == pkItem->GetEntity())
 		return false;
-	
-	//get item's current container, if any
-	//pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container");
 	
 	
 	//place on free slot?
@@ -365,7 +359,6 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	//stack and return if possible
 	if(StackItem(pkItem,iX,iY,iCount))
 		return true;			
-
 
 	//no stacking, lets add item here	
 	if(!IsFree(iX,iY,pkItem->m_iSizeX,pkItem->m_iSizeY))
@@ -504,9 +497,10 @@ bool P_Container::FindFreePos(P_Item* pkItem,int& iX,int& iY)
 
 bool P_Container::CanStack(P_Item* pkTarget,P_Item* pkItem)
 {
-	if(pkTarget->m_strName == pkItem->m_strName)
-		if(pkTarget->m_iStackMax - pkTarget->m_iStackSize > 0)
-			return true;
+	if(pkTarget->m_iStackMax > 1)
+		if(pkTarget->m_strName == pkItem->m_strName)
+			if(pkTarget->m_iStackMax - pkTarget->m_iStackSize > 0)
+				return true;
 	
 	
 	return false;
