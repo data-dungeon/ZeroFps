@@ -6,6 +6,7 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "playerobject.h"
+#include "bunnyobject.h"
 
 using namespace std;
 
@@ -14,6 +15,9 @@ class PlayerControlProperty: public Property {
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;
+		
+		ObjectManager *m_pkObjectMan;
+		CollisionManager *m_pkCollisionMan;
 				
 	public:
 		

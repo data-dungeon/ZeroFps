@@ -11,6 +11,10 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty(new FloatProperty());	
 //	AddProperty(new ModelProperty());
 	
+	AddProperty("LightProperty");
+	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
+	pkJumpLight->SetColor(1,1,1);
+	
 	onGround=false;
 }
 

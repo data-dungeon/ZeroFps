@@ -3,6 +3,8 @@
 PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 	m_pkMap=pkMap;
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
 	//m_pkFps=pkFps;
 	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
@@ -38,10 +40,16 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Pressed(KEY_C)){
 		m_pkObject->GetRot().y+=0.1*m_pkFps->GetFrameTime();
 	}
-	if(m_pkInput->Pressed(KEY_Q) || m_pkInput->Pressed(MOUSERIGHT) ){
+	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
 			m_pkObject->GetVel().y+=0.005;// *m_pkFps->GetFrameTime();;						
 		}
+	}
+	if(m_pkInput->Pressed(KEY_Q)){
+		Object *test = new BunnyObject();
+		test->GetPos()=m_pkObject->GetPos();
+		m_pkObjectMan->Add(test);
+		m_pkCollisionMan->Add(test);	
 	}
 	
 	

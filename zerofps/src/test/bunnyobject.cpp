@@ -51,8 +51,8 @@ void BunnyObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue)
 		m_kRot.y+=180;
 		pkOther->GetRot().y+=180;		
 		
-		GetPos().x+=cos((GetRot().y-90)/degtorad)*0.1;			
-		GetPos().z+=sin((GetRot().y-90)/degtorad)*0.1;			
+		GetPos().x+=cos((GetRot().y-90)/degtorad)*0.3;			
+		GetPos().z+=sin((GetRot().y-90)/degtorad)*0.3;			
 		
 	} else if(bContinue){
 		pkOther->HandleCollision(this,kPos,false);
