@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstdio>
+#include <algorithm>
+#include <functional>
+
 #include "zfobject.h"
 #include "zfobjectmanger.h"
 #include "zfvfs.h"
@@ -146,7 +149,22 @@ bool ZFVFileSystem::RemoveDir(string strDir)
 
 bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
 {
-	return m_pkBasicFS->ListDir(pkFiles, strName.c_str(), bOnlyMaps);
+	string	strRootMerge;
+
+	// Try to open from all active RootPaths.
+	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
+		strRootMerge = m_kstrRootPath[i] + strName;
+		cout << "ListDir: " << strRootMerge.c_str();
+		cout << endl;
+		m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
+		}
+
+	// Remove All ..
+	vector<string>::iterator start	=  pkFiles->begin();
+	vector<string>::iterator end		=	pkFiles->end();
+	remove(start, end, string(".."));
+
+	return true;
 }
 
 bool ZFVFileSystem::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 

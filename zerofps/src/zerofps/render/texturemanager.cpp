@@ -127,6 +127,27 @@ Image* TextureManager::LoadImage2(const char *filename)
 	Image* kImage = new Image;
 	if(!kImage)
 		return NULL;
+	
+	ZFVFile kFile;
+	if(! kFile.Open(m_pkFile->File(filename),0, false)) {
+		delete kImage;
+		fprintf(stderr, "Unable to load %s: \n", filename);
+		return(NULL);
+		}
+
+	if(! kImage->load(kFile.m_pkFilePointer, filename)) {
+		delete kImage;
+		kFile.Close();
+		fprintf(stderr, "Unable to load %s: \n", filename);
+		return(NULL);
+		}
+
+	kFile.Close();
+	return kImage;
+
+/*	Image* kImage = new Image;
+	if(!kImage)
+		return NULL;
 
 	if(! kImage->load(m_pkFile->File(filename))) {
 		delete kImage;
@@ -134,7 +155,7 @@ Image* TextureManager::LoadImage2(const char *filename)
 		return(NULL);
 		}
 
-	return kImage;
+	return kImage;*/
 	
 	// VIM
 /*	SDL_Surface *image;

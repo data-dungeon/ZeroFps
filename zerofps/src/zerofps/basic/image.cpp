@@ -451,6 +451,18 @@ bool Image::load(const char* filename)
 	return false;	// Not supported.
 }
 
+bool Image::load(FILE* fp, const char* filename)
+{
+	// Find file exten.
+	char *ext = strrchr( filename, '.');
+	if(ext == NULL)		return false;
+	
+	if(strcmp(ext,".tga") == 0)	return load_tga(fp);
+	if(strcmp(ext,".bmp") == 0) 	return load_bmp(fp);	
+
+	return false;	// Not supported.
+}
+
 void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned char b)
 {
 //	assert(pixels);

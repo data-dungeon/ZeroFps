@@ -132,6 +132,7 @@ public:
 	bool load_pcx(FILE *fp, color_rgb* pal);		///< Load a .pcx image.
 
 	bool load(const char* filename);						///< Load pcx or tga.
+	bool load(FILE* fp, const char* filename);		///< Load pcx or tga.
 
 	void save(const char* filename, bool alpha = false);	///< Save image as a 24 / 32 bit .tga file.
 

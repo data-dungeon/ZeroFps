@@ -150,8 +150,8 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	m_pkGuiBuilder->Register(pkMadList, "MadFileList");
 	
 	vkNames.clear(); 
-	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
-	for(unsigned int i=1; i<vkNames.size(); i++)
+	m_pkEdit->pkZFVFileSystem->ListDir(&vkNames, "data/mad", false);
+	for(unsigned int i=0; i<vkNames.size(); i++)
 		m_pkGuiBuilder->AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
 	m_pkGuiBuilder->CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");

@@ -16,23 +16,25 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 	
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
 {
-	pkFps				=	pkZeroFps;	
+	pkFps					=	pkZeroFps;	
 	pkConsole			=	pkFps->m_pkConsole;
-	pkRender			=	pkFps->m_pkRender;
+	pkRender				=	pkFps->m_pkRender;
 	pkInput				=	pkFps->m_pkInput;
-	pkTexMan			=	pkFps->m_pkTexMan;
+	pkTexMan				=	pkFps->m_pkTexMan;
 	pkFile				=	pkFps->m_pkFile;
 	pkBasicFS			=	pkFps->m_pkBasicFS;
 	pkLight				=	pkFps->m_pkLight;
 	pkObjectMan			=	pkFps->m_pkObjectMan;
 	pkAlSys				=	pkFps->m_pkOpenAlSystem;
 	pkPropertyFactory	=	pkFps->m_pkPropertyFactory;
-	pkGui				=	pkFps->m_pkGui;
-	pkGuiMan			=	pkFps->m_pkGuiMan;
-	pkIni				=	pkFps->m_pkIni;
+	pkGui					=	pkFps->m_pkGui;
+	pkGuiMan				=	pkFps->m_pkGuiMan;
+	pkIni					=	pkFps->m_pkIni;
 	pkLevelMan			=	pkFps->m_pkLevelMan;
 	pkPhysEngine		=	pkFps->m_pkPhysEngine;
-	pkScript			=	pkFps->m_pkScript;
+	pkScript				=	pkFps->m_pkScript;
+	pkZFVFileSystem	=	pkFps->m_pkZFVFileSystem;
+	
 }
 	
 	
