@@ -194,13 +194,13 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 
 void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 {
-	cout<<"loading"<<endl;
+//	cout<<"loading"<<endl;
 	char namn[50];
 			
 	pkPackage->Read((void*)namn,50);
 						
 	m_kName=namn;
-	cout<<"NAMN:"<<namn<<endl;
+//	cout<<"NAMN:"<<namn<<endl;
 			
 //	pkPackage->Read(m_kPos);	
 //	pkPackage->Read(m_kRot);	
@@ -215,7 +215,7 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 	int iNrOfPropertys;
 	pkPackage->Read((void*)&iNrOfPropertys,4);
 			
-	cout<<"propertys "<<iNrOfPropertys<<endl;
+//	cout<<"propertys "<<iNrOfPropertys<<endl;
 		
 	for(int i=0;i<iNrOfPropertys;i++)
 	{
@@ -225,14 +225,14 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 		//read property name
 		char propertyname[50];
 		pkPackage->Read((void*)propertyname,50);				
-		cout<<"property name "<<propertyname<<endl;
+//		cout<<"property name "<<propertyname<<endl;
 		newpropdesc->m_kName=propertyname;
 		
 		//read size
 		int iSize;
 		pkPackage->Read((void*)&iSize,4);
 		
-		cout<<iSize<<endl;
+//		cout<<iSize<<endl;
 		
 		//read data
 		char data;
