@@ -163,7 +163,7 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 	if(iStart_index  < 0)
 		iStart_index  = 0;
 	if(iStart_index  > vkInfo.size()-1)
-		iStart_index  = vkInfo.size()-1;
+		iStart_index  = int( vkInfo.size()-1) ;
 
 	char* test[] = {
 		"Mission_A_Eb", "Mission_B_Eb", "Mission_C_Eb",

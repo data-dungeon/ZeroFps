@@ -300,9 +300,9 @@ void ZGResEdit::OnInit()
 
 void ZGResEdit::OnIdle()
 {
-	m_pkFps->SetCamera(m_pkCamera);		
-	m_pkFps->GetCam()->ClearViewPort();	
-	m_pkFps->UpdateCamera(); 	
+	//m_pkFps->SetCamera(m_pkCamera);		
+	//m_pkFps->GetCam()->ClearViewPort();	
+	//m_pkFps->UpdateCamera(); 	
 
 	OnKeyDown(m_pkInputHandle->GetQueuedKey().m_iKey);
 

@@ -883,7 +883,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		
 		if(pkCharProp && pkCharProp->GetStats()->m_iLife > 0)
 		{
-			int iNumSelSounds = pkCharProp->m_vkSelectSounds.size();
+			int iNumSelSounds = int(pkCharProp->m_vkSelectSounds.size());
 			if(iNumSelSounds > 0)
 			{
 				m_pkAudioSys->StartSound(

@@ -1286,7 +1286,6 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int iTo;
 			unsigned int i;
 			vector<int>	kZones;
-			int iZoneID;
 
 	switch(cmdid) {
 		case FID_LOGOHTREE:

@@ -428,9 +428,7 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System(bool bServer)
 {
-
 	int iLoops;
-	float fRest;
 
 	if(m_bLockFps)
 	{	

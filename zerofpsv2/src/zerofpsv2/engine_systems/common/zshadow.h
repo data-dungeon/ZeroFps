@@ -118,10 +118,10 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void EnableShadowGroup(int i) {m_kShadowGroups[i] = true;};
 		void DisableShadowGroup(int i) {m_kShadowGroups[i] = false;};
 
-		int GetCurrentActiveShadows() {return m_iCurrentActiveShadows;};
+		int GetCurrentActiveShadows() { return m_iCurrentActiveShadows;};
 		int GetCurrentShadows() {return m_iCurrentShadows;};
 		int GetCurrentVerts() 	{return m_iCurrentVerts;};
-		int GetBuffertSize()		{return m_kShadowMeshs.size();};
+		int GetBuffertSize()		{return int(m_kShadowMeshs.size()); }
 
 		bool StartUp();
 		bool ShutDown();

@@ -807,7 +807,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 	ClientOrder kOrder;
 
 	vector<string>	kUsers;
-	int iMode;
 	float fTest;
 	string strNewTitle;
 

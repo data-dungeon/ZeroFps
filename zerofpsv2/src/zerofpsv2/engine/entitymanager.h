@@ -211,7 +211,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity* GetGlobalObject()	{	return m_pkGlobalObject;			};				
 		
 		int	GetNextObjectID()		{	return iNextObjectID;				};
-		int	GetNumOfObjects()		{	return m_akEntitys.size();			}
+		int	GetNumOfObjects()		{	return int(m_akEntitys.size());	}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		
 		void 		GetAllObjects(vector<Entity*> *pakObjects);

@@ -345,7 +345,7 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 						kWalkOrder.m_iEntityID = m_kSelectedEntitys[i]; 
 						kWalkOrder.m_iOrderType = eWalk;							 
 						kWalkOrder.m_kPosition = kClickPos + 
-							GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i);
+							GetFormationPos(m_iCurrentFormation,int(m_kSelectedEntitys.size()),i);
 						kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
 
 						pkCharProp->ClearOrders();
@@ -746,7 +746,7 @@ void DarkMetropolis::LoadResourcesOnStartup()
 	for(int j=0; j<7; j++)
 	{	
 		m_pkZFVFileSystem->ListDir(&t, path_list[j]);
-		const int antal = t.size();
+		const int antal = int(t.size());
 
 		for(unsigned int i=0; i<antal; i++)
 			if(t[i].find(".bmp") != string::npos)

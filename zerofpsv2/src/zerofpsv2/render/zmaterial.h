@@ -108,7 +108,7 @@ class RENDER_API ZMaterial : public ZFResource
 		int  CalculateSize();				
 	
 		int GetID() 			{return m_iID;};
-		int GetNrOfPasses() 	{return m_kPasses.size();};
+		int GetNrOfPasses() 	{ return int(m_kPasses.size()); }
 		ZMaterialSettings* GetPass(int iPass);
 		ZMaterialSettings* AddPass();
 				

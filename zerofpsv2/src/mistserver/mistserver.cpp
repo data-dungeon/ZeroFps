@@ -377,8 +377,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	unsigned int i;
 	vector<string>	kUsers;
-	int iMode;
-	float fTest;
 	string strNewTitle;
 
 	switch(cmdid) {

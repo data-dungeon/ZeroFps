@@ -45,7 +45,7 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\bin"
-				IgnoreDefaultLibraryNames="LIBCD.lib"
+				IgnoreDefaultLibraryNames="LIBCD.lib,msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/script.pdb"
 				ImportLibrary=".\Debug/script_debug.lib"/>

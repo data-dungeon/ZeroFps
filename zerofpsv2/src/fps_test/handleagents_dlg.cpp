@@ -184,7 +184,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	};
 
 	int pos;
-	if((pos=strClickName.find("AgentsInHQBn")) != string::npos)
+	if((pos = int(strClickName.find("AgentsInHQBn"))) != string::npos)
 	{
 		string temp(strClickName);
 		temp.erase(0,pos+strlen("AgentsInHQBn"));
@@ -220,7 +220,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		}
 	}
 
-	if((pos=strClickName.find("AgentsToHireBn")) != string::npos)
+	if((pos= int(strClickName.find("AgentsToHireBn"))) != string::npos)
 	{
 		string temp(strClickName);
 		temp.erase(0,pos+strlen("AgentsToHireBn"));
@@ -463,7 +463,7 @@ int CHandleAgents::GetNumAgentsInBase()
 		vector<int> vkCharsInBase;
 		pkHQ->GetCharacters(&vkCharsInBase);
 
-		return vkCharsInBase.size();
+		return int(vkCharsInBase.size());
 	}
 
 	return -1;
@@ -476,7 +476,7 @@ int CHandleAgents::GetNumAgentsToHire()
 	if(pkHQObject)
 	{
 		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
-		return pkHQ->GetHireList()->size();
+		return int(pkHQ->GetHireList()->size());
 	}
 
 	return -1;

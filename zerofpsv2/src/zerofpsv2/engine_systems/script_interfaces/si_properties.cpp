@@ -30,7 +30,7 @@ void Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 int BindKeyLua(lua_State* pkLua)
 {
 	char strKeyName[255];
-	double dObjectID, dAxis, dInput, dForce;
+	double dObjectID, dAxis, dForce;
 
 	if( g_pkScript->GetNumArgs(pkLua) == 4 )
 	{

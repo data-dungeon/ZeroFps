@@ -176,7 +176,7 @@ void CGameDlg::SetButtonIcon(ZGuiWnd* pkButton, string strIconNameUp,
 	int alpha_tex = -1;
 
 	int pos;
-	if((pos=strIconNameUp.find(".bmp")) != string::npos)
+	if((pos=int(strIconNameUp.find(".bmp"))) != string::npos)
 	{
 		// Down tex
 		if(!bUseBorder)
