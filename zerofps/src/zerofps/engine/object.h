@@ -23,7 +23,7 @@ class ENGINE_API Object {
 		Vector3 m_kRot;
 		Vector3 m_kVel;
 		
-		int m_iType;
+//		int m_iType;
 		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
@@ -40,14 +40,15 @@ class ENGINE_API Object {
 		~Object();
 		
 		void Remove();
-		int GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
+		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
+		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		
 		Property* GetProperty(char* acName);
 //		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
 		void AddProperty(char* acName);		
 		Property* AddProxyProperty(char* acName);
 		bool RemoveProperty(char* acName);
-		void Update();
+//		void Update();
 		void Update(int iType,int iSide);		
 		bool Update(char* acName);
 		
@@ -55,6 +56,7 @@ class ENGINE_API Object {
 		void RemoveChild(Object* pkObject);
 		void SetParent(Object* pkObject);				
 		bool HasChild(Object* pkObject);
+		int NrOfChilds();
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);
@@ -63,7 +65,7 @@ class ENGINE_API Object {
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
-		inline int &GetType(){return m_iType;};
+//inline int &GetType(){return m_iType;};
 //		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				

@@ -7,7 +7,7 @@ Object::Object() {
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
-	m_iType=0;
+//	m_iType=0;
 	
 	m_pkParent=NULL;
 	m_akChilds.clear();
@@ -37,21 +37,42 @@ Property* Object::GetProperty(char* acName) {
 	return NULL;
 }
 
-
-int Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
+void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
-	int iNrOProps=0;
+	
+	//first get propertys from all childs
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		(*it)->GetAllPropertys(akPropertys,iType,iSide);
+	}			
+	
+	GetPropertys(akPropertys,iType,iSide);
+/*	
+	//then get this objects propertys
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
+			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
+				akPropertys->push_back((*it));			
+			}
+		}	
+	}*/
+}
+
+
+
+void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
+{
+//	int iNrOProps=0;
 	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
 			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
 				akPropertys->push_back((*it));			
 //				cout<<"NAME "<<(*it)->m_acName<<endl;
-				iNrOProps++;
+//				iNrOProps++;
 			}
 		}	
 	}
-	return iNrOProps;
+//	return iNrOProps;
 }
 
 
@@ -95,6 +116,7 @@ bool Object::RemoveProperty(char* acName) {
 	return false;
 }
 
+/*
 void Object::Update(){
 
 	//if the object is static then only update those propertys that are static propertys
@@ -107,6 +129,7 @@ void Object::Update(){
 		(*it)->Update();
 	}
 }
+*/
 
 void Object::Update(int iType,int iSide){
 	//first update all childs
@@ -250,6 +273,7 @@ void Object::AddChild(Object* pkObject)
 	m_akChilds.push_back(pkObject);	
 	//tell the child to set its new parent
 	pkObject->SetParent(this);
+	
 }
 
 void Object::RemoveChild(Object* pkObject)
@@ -301,4 +325,9 @@ float Object::GetBoundingRadius()
 		return 1;
 
 	return (static_cast<CollisionProperty*>(pr))->GetBoundingRadius();
+}
+
+int Object::NrOfChilds()
+{
+	return m_akChilds.size();
 }

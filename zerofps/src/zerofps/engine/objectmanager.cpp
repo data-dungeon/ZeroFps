@@ -8,6 +8,9 @@ ObjectManager::ObjectManager()
 {
 	iNextObjectID = 0;
 	m_bNoUpdate=false;
+	
+	m_pkWorldObject=new Object();	
+	
 }
 
 void ObjectManager::Add(Object* pkObject) {
@@ -38,6 +41,7 @@ void ObjectManager::Remove(Object* pkObject) {
 }
 
 
+/*
 void ObjectManager::Update(){
 	if(m_bNoUpdate)
 		return;
@@ -61,6 +65,7 @@ void ObjectManager::Update(int iType){
 		}
 	}
 }
+*/
 
 void ObjectManager::UpdateDelete(){
 	if(m_akDeleteList.size()==0)
@@ -167,9 +172,13 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 {
 	m_akPropertys.clear();
 
+	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
+
+/*
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
 	}
+*/
 	
 //	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
 	

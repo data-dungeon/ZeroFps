@@ -34,7 +34,6 @@ void ZeroEdit::OnInit(void)
 	m_kDrawPos.Set(0,0,0);
 	pkObjectMan->SetNoUpdate(true);
 	
-	m_pkCurentParent=m_pkHeightMapObject;
 	m_pkCurentChild=NULL;
 	
 	m_fDrawRate=0.2;
@@ -84,6 +83,7 @@ void ZeroEdit::OnIdle(void)
 	pkFps->GetCam()->ClearViewPort();	
 
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+//	m_pkHeightMapObject->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		
 	SetPointer();
 	DrawMarkers();
@@ -259,11 +259,17 @@ void ZeroEdit::Input()
 			
 				m_fTimer=pkFps->GetTicks();
 			
+//				m_pkCurentParent=m_pkHeightMapObject;				
+			
 				Object *object = new BallObject();
 				object->GetPos()=m_kDrawPos;
-				pkObjectMan->Add(object);
+				object->SetParent(m_pkCurentParent);
+				pkObjectMan->Add(object);				
 				m_pkCurentChild=object;
 //				pkCollisionMan->Add(object);
+	
+//				Object* pk=static_cast<Object*>(m_pkHeightMapObject);
+				cout<<"CHILDS: "<<m_pkHeightMapObject->NrOfChilds()<<endl;
 	
 			}
 			break;
@@ -280,14 +286,15 @@ void ZeroEdit::CreateNew(int iSize)
 {
 	pkObjectMan->Clear();
 	m_pkCurentChild=NULL;
-	m_pkCurentParent=m_pkHeightMapObject;
 
-
-	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
 	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
 	pkObjectMan->Add(m_pkHeightMapObject);	
 	pkCollisionMan->Add(m_pkHeightMapObject);
 
+	m_pkCurentParent=m_pkHeightMapObject;
+	
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
@@ -317,8 +324,9 @@ void ZeroEdit::DrawMarkers()
 	
 	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
 	
-	if(m_pkCurentParent!=NULL)
+	if(m_pkCurentParent!=NULL){
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentParent->GetPos(),m_pkCurentParent->GetBoundingRadius()*2,pkTexMan->Load("file:../data/textures/parentmarker.tga",T_NOMIPMAPPING));	
+	}
 	
 	if(m_pkCurentChild!=NULL){
 		float size=m_pkCurentChild->GetBoundingRadius();

@@ -13,7 +13,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-	
+		Object* m_pkWorldObject;
 	
 		list<Object*>	m_akObjects;
 		vector<Object*> m_akDeleteList;
@@ -29,6 +29,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		ObjectManager();
 		~ObjectManager() { }
 
+		Object* GetWorldObject() {return m_pkWorldObject;};
 
 		void GetPropertys(int iType,int iSide);
 		void Update(int iType,int iSide,bool bSort);
@@ -37,8 +38,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void SetNoUpdate(bool bNoUpdate) {m_bNoUpdate=bNoUpdate;};
 		void Add(Object* pkNewObject);				//add object to the manager
 		void Delete(Object* pkNewObject);			//adds an object to delete qeue
-		void Update();								//update all objects in manager
-		void Update(int iType);						//update all objects of specified type
+//		void Update();								//update all objects in manager
+//		void Update(int iType);						//update all objects of specified type
 		void UpdateDelete();						//deletes objects in delete qeue	
 		
 		void UpdateState(NetPacket* pkNetPacket);	//Updates objects.

@@ -116,25 +116,38 @@ void Test::OnInit(void) {
 	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,250);	
 	cam2->SetViewPort(0.7,0.7,0.29,0.29);
 
+
+	//Heightmap
+	HeightMapObject *hm=new HeightMapObject(test);
+	hm->SetParent(pkObjectMan->GetWorldObject());
+	hm->GetPos().Set(0,-4,0);			
+	pkObjectMan->Add(hm);	
+	pkCollisionMan->Add(hm);
+
+
+
 	//camera rabit
 	Object *sussi = new BunnyObject();
 	float x=300 + rand()%100;
 	float y=750 + rand()%100;
 	sussi->GetPos()=Vector3(x,test->Height(x,y),y);
 	sussi->AddProperty(new CameraProperty(cam2));
-	pkObjectMan->Add(sussi);
+	sussi->SetParent(hm);
+	pkObjectMan->Add(sussi);	
 	pkCollisionMan->Add(sussi);
 
 	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos().Set(400,25,705);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
+	m_pkPlayer->SetParent(hm);	
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
 	
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
+	sky->SetParent(hm);	
 	sky->SetRotate(Vector3(.5,0,0));
 	pkObjectMan->Add(sky);	
 
@@ -142,15 +155,10 @@ void Test::OnInit(void) {
 	//water
 	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
 	water->GetPos().Set(512,0,512);
+	water->SetParent(hm);
 	pkObjectMan->Add(water);	
 	
 	
-	//Heightmap
-	HeightMapObject *hm=new HeightMapObject(test);
-	hm->GetPos().Set(0,-4,0);			
-	pkObjectMan->Add(hm);	
-	pkCollisionMan->Add(hm);
-
 
 
 	Sound *welcome=new Sound();
