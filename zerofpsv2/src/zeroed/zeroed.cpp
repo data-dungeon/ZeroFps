@@ -349,7 +349,7 @@ void ZeroEd::OnServerStart(void)
 	// Create and setup the Env on the server.
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
-	pe->SetEnviroment("data/enviroments/server.env");
+	pe->SetEnviroment("data/enviroments/zeroed.env");
 
 	SoloToggleView();
 	m_fDelayTime = m_pkFps->GetEngineTime();
