@@ -106,8 +106,8 @@ bool GLGuiRender::StartRender()
 		}
 	}
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -179,7 +179,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	
 	bool bMask = m_pkSkin->m_iBkTexAlphaID != -1;
 
-	glLoadIdentity();
+	//glLoadIdentity();
 
 	float orginal_pos_x = (float) rc.Left;
 	float orginal_pos_y = (float) rc.Top;
@@ -218,17 +218,17 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);								
-		glDisable(GL_DEPTH_TEST);								
+		//glDisable(GL_DEPTH_TEST);								
 		glBlendFunc(GL_DST_COLOR,GL_ZERO);		
 
 		m_pkTextureManger->BindTexture( m_pkSkin->m_iBkTexAlphaID );
 
 		glBegin(GL_QUADS);		
 			glColor3f(1,1,1);
-/*			glTexCoord2f(tx,ty);				glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(tx,th);				glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(tx+tw,th);			glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,ty);			glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
+//			glTexCoord2f(tx,ty);				glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+//			glTexCoord2f(tx,th);				glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+//			glTexCoord2f(tx+tw,th);			glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+//			glTexCoord2f(tx+tw,ty);			glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
 
 			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
@@ -240,6 +240,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	if(texture > 0)
 	{
 		glEnable(GL_TEXTURE_2D);
+
 
 		m_pkTextureManger->BindTexture( texture );
 
@@ -254,7 +255,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	if(bIsTGA)
 	{
 		glColor4f(1,1,1,1);		
-		glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);
 		glAlphaFunc(GL_GREATER,0.1);
 		glEnable(GL_ALPHA_TEST);
 	}
@@ -306,6 +307,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 //
 bool GLGuiRender::RenderBorder(Rect rc)
 {
+
 	if(!m_pkSkin)
 		return false;
 
@@ -362,7 +364,7 @@ bool GLGuiRender::RenderBorder(Rect rc)
 			{
 				glEnable(GL_TEXTURE_2D);
 				glEnable(GL_BLEND);								
-				glDisable(GL_DEPTH_TEST);								
+				//glDisable(GL_DEPTH_TEST);								
 				glBlendFunc(GL_DST_COLOR,GL_ZERO);
 				bDrawAlpha = true;
 			}
@@ -656,7 +658,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 
 	
 	glColor4f(0.0f,0.0f,0.0f,1);		
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER,0.1f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);			
