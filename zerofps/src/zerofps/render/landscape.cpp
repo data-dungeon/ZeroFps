@@ -519,7 +519,8 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
 
-void Render::DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2) {
+void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) //,int iTexture2) 
+{
 	glPushMatrix();
 	
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -531,26 +532,9 @@ void Render::DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale
 	glDisable(GL_COLOR_MATERIAL);		
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 
-	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
+//	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
 	glDisable(GL_CULL_FACE);	
 	
-	GLfloat mat_specular[]={0,0,0,0};
-	
-	GLfloat mat_diffuse[]={.6,.6,.6,.6};	
-	GLfloat mat_ambient[]={.8,.8,.8,.8};
-	GLfloat mat_shininess[]={0};
-	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,mat_shininess);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
-	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,mat_ambient);		
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
-	
-//	glEnable(GL_BLEND);
-//	glDepthMask(GL_FALSE);
-	
-//	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-//	glBlendFunc(GL_ONE,GL_ALPHA); 		
-//	glDepthMask(GL_FALSE);
 	
 	glAlphaFunc(GL_GREATER,0.3);
    glEnable(GL_ALPHA_TEST);
@@ -563,44 +547,31 @@ void Render::DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale
 	m_pkTexMan->BindTexture(iTexture1);  	
 	glBegin(GL_QUADS);
 	
-	glNormal3f(0,0,1);
-	glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
-	glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
-	glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
-	glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
+		glNormal3f(0,1,0);
+		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
+		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
+		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
+		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
+
+		//glNormal3f(0,1,0);
+		glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5); 
+		glTexCoord2f(0,0);glVertex3f(0,0.5,0.5); 
+		glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5); 
+		glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5); 
 
 	glEnd();
-/*
-	glNormal3f(1,0,0);
-	glTexCoord2f(0,0);glVertex3f(0,0.5,0.5); 
-	glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5); 
-	glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5); 
-	glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5); 	
-	glEnd();
 	
-/*	
-	m_pkTexMan->BindTexture(iTexture2);  	
-	glBegin(GL_QUADS);	
-	glNormal3f(0,1,0);
-	glTexCoord2f(0,0);glVertex3f(-0.5,0,-0.5); 
-	glTexCoord2f(0,1);glVertex3f(-0.5,0,0.5); 
-	glTexCoord2f(1,1);glVertex3f(0.5,0,0.5); 
-	glTexCoord2f(1,0);glVertex3f(0.5,0,-0.5); 
-	glEnd();
-	
-	*/
-	
-	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
-//	glDepthMask(GL_TRUE);
-//	glDisable(GL_BLEND);
+//	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
+
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_CULL_FACE);
 	glPopMatrix();
 }
 
+/*
 void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps)
 {
-/*
+
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iGrassLodUpdate+500)){
 			m_iGrassLodUpdate=SDL_GetTicks();
@@ -612,7 +583,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 			}
 		}
 	}
-	*/
+	
 //CamPos=Vector3(150,8,100);
 
 
@@ -699,7 +670,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	glPopMatrix();	
 //	glPopAttrib();
 };
-
+*/
 
 
 

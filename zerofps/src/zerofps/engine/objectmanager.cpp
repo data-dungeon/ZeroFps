@@ -22,18 +22,11 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 
 
 
-
-
-
-
-
-
-
 ObjectManager::ObjectManager() 
 : ZFObject("ObjectManager") 
 {
 	iNextObjectID	= 0;
-	m_bNoUpdate		= false;
+	m_bUpdate		= true;
 	
 	m_pkWorldObject	=	new Object();	
 	m_pkWorldObject->GetName() = "WorldObject";
@@ -80,7 +73,7 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
 //	UpdateDelete();
 
-	if(m_bNoUpdate)
+	if(!m_bUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)
 			return;
 

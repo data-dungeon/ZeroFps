@@ -1,21 +1,11 @@
 #include "playercontrolproperty.h"
-
-/*
-Vector3 GetYawVector(float fAngleDeg)
-{
-	Vector3 kYaw;
-	kYaw.x = cos(DegToRad(fAngleDeg));	
-	kYaw.y = 0;
-	kYaw.z = sin(DegToRad(fAngleDeg));	
-	return kYaw;
-}*/
+#include "../zerofps/engine/cssphere.h"
 
 PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 {
 	m_pkMap=pkMap;
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
-//	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
 	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 
 	m_pkStatusProperty=NULL;
@@ -55,8 +45,12 @@ void PlayerControlProperty::Update() {
 	}
 	else
 	{
-		if(m_pkStatusProperty->m_fHealth<0)
+		if(m_pkStatusProperty->m_fHealth<0){
 			cout<<"PLAYER DIED !!!!"<<endl;
+			
+			PhysicProperty* pp = dynamic_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
+			static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.2;
+		}
 	}
 
 	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;

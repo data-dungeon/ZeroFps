@@ -10,22 +10,24 @@ BallObject::BallObject() {
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
-
+/*
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 //	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 	madp->SetBase("../data/mad/adaptor.mad");
+	madp->SetScale(0.5);
+*/
 
 	
-//	m_iObjectType=OBJECT_TYPE_STATIC;
-	m_iObjectType=OBJECT_TYPE_STATDYN;
+	m_iObjectType=OBJECT_TYPE_STATIC;
+//	m_iObjectType=OBJECT_TYPE_STATDYN;
 
-//	AddProperty("ModelProperty");
+	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
-	AddProperty("StatusProperty");
-	AddProperty("AdaptorSniper");
-	AddProperty("PhysicProperty");
-	AddProperty("AutoParentProperty");	
+//	AddProperty("StatusProperty");
+//	AddProperty("AdaptorSniper");
+//	AddProperty("PhysicProperty");
+//	AddProperty("AutoParentProperty");	
 //	AddProperty("TeleportProperty");
 //	TeleportProperty* tp = dynamic_cast<TeleportProperty*>(GetProperty("TeleportProperty"));
 //	tp->SetToPos(Vector3(-7,8,394));	

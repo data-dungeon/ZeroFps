@@ -511,7 +511,17 @@ void LevelManager::EnableZone(int xp,int zp,Vector3 &kPos)
 }
 
 
+Object* LevelManager::GetClosestZone(Vector3 &kPos)
+{
+	int tot=int(m_pkMap->GetSize()/m_fZoneDistance);	
+	
+	int x=int(((kPos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
+	int z=int(((kPos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
 
+	
+	return m_kZones[x*tot+z];		
+
+}
 
 
 

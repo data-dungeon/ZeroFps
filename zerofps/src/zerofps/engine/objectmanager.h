@@ -31,7 +31,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 
 		int	iNextObjectID;							// Next avil object ID.
-		bool m_bNoUpdate;							// Disable all updates except RENDER.
+		bool m_bUpdate;							// Disable all updates except RENDER.
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
@@ -50,7 +50,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		// Updates
 		void Update(int iType,int iSide,bool bSort);					// Update selected propertys.
-		void SetNoUpdate(bool bNoUpdate) { m_bNoUpdate=bNoUpdate; };
+		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };
 		void UpdateDelete();											// Deletes objects in delete qeue	
 
 			// Create 

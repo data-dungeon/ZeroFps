@@ -54,7 +54,7 @@ void TeleportProperty::Touch(Object* pkObject)
 {
 	cout<<"teleporting :"<<pkObject->GetName()<<endl;
 
-	if(pkObject->GetName()!="HeightMapObject");
+	if(pkObject->GetName()!="HeightMapObject")
 	{
 
 		m_pkAlSys->AddSound(sound);

@@ -3,6 +3,7 @@ class ModelProperty;
 class CameraProperty;
 class CollisionProperty;
 class HeightMapRenderProperty;
+class CrossRenderProperty;
 class HMRP2;
 class SkyBoxRenderProperty;
 class WaterRenderProperty;
@@ -47,5 +48,5 @@ class CollisionHeightMap;
 #include "autoparentproperty.h"
 #include "hmrp2.h"
 #include "physicproperty.h"
-
+#include "crossrenderproperty.h"
 

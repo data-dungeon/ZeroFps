@@ -13,7 +13,8 @@ using namespace std;
 
 class ENGINE_API AutoParentProperty: public Property {
 	private:
-		ZeroFps* m_pkFps;		
+		ZeroFps* m_pkFps;
+		
 		float m_fUpdateTime;
 		float m_fLastUpdate;
 

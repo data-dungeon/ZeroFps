@@ -672,6 +672,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
 	m_pkPropertyFactory->Register("ModelProperty", Create_ModelProperty);
 	m_pkPropertyFactory->Register("LightProperty", Create_LightProperty);

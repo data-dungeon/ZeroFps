@@ -79,8 +79,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
 		void GiveTexCor(float &iX,float &iY,int iNr);
-		void DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2);
-		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
+		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1);//,int iTexture2);
+//		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
 		void DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTexture);
 
 		void DrawBoundSphere(float fRadius, Vector3);

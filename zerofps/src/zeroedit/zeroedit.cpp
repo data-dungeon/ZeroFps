@@ -62,7 +62,9 @@ void ZeroEdit::OnInit(void)
 
 	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
-//	pkObjectMan->SetNoUpdate(true);
+	
+	pkObjectMan->SetUpdate(false);
+//	pkPhysEngine->SetUpdate(false);
 	
 	m_pkCurentChild=NULL;
 	
@@ -753,10 +755,13 @@ void ZeroEdit::Input()
 				}
 			}
 
+/*
 			if(pkInput->Pressed(KEY_SPACE))
 			{
 				SelectParent();
 			}
+*/			
+			/*
 			if(pkInput->Pressed(KEY_V))
 			{
 				if(pkFps->GetTicks()-m_fTimer < .5)
@@ -770,6 +775,8 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;								
 				m_pkCurentParent=object;
 			}
+			*/
+			
 			if(pkInput->Pressed(KEY_Z))
 			{
 				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
@@ -784,6 +791,7 @@ void ZeroEdit::Input()
 			}
 			if(pkInput->Pressed(KEY_C))
 			{
+				cout<<"updating object"<<endl;
 				list<Property*> kProp;
 				m_pkCurentChild->GetAllPropertys(&kProp,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL);
 				
@@ -864,7 +872,7 @@ void ZeroEdit::DrawMarkers()
 */	
 
 	if(m_pkCurentChild!=NULL){
-		float size=0.5;
+		float size=1;
 		
 		MadProperty* mp = static_cast<MadProperty*>(m_pkCurentChild->GetProperty("MadProperty"));
 		if( mp != NULL && mp->pkCore != NULL)
@@ -872,8 +880,8 @@ void ZeroEdit::DrawMarkers()
 			 size = mp->GetRadius();	//mp->pkCore->GetRadius();	
 		}		
 		
-		if(size < .5)
-			size=.5;
+		if(size < 1)
+			size=1;
 			
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
 		

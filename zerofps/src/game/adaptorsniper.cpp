@@ -25,7 +25,6 @@ AdaptorSniper::AdaptorSniper()
 
 void AdaptorSniper::Update()
 {
-	return;
 
 	if(m_pkStatusProperty==NULL)
 	{

@@ -20,7 +20,6 @@ void AutoParentProperty::Update()
 
 	if(fCurentTime - m_fLastUpdate >= m_fUpdateTime)
 	{
-		//cout<<"böL2 "<<m_fLastUpdate<<endl;
 		m_fLastUpdate=fCurentTime + m_fUpdateTime + (rand()%1)/1000;
 
 		m_pkObject->AttachToClosestZone();

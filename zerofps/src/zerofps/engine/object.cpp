@@ -2,6 +2,7 @@
 #include "collisionproperty.h"
 #include "physicsengine.h"
 
+
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
 
@@ -260,7 +261,9 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 Object::Object() {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan		= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkLevelMan		= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));	
 	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	
 	
 	ZFAssert(m_pkObjectMan, "Object::Object(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory, "Object::Object(): Failed to find PropertyFactory");

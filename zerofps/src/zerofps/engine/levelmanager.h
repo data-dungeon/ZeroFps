@@ -6,10 +6,12 @@
 #include "objectmanager.h"
 #include "collisionmanager.h"
 #include "objects.pkg"
+
 #include "zerofps.h"
 #include <string>
 #include "../render/render.pkg"
 #include "heightmapobject.h"
+
 //#include "worldinfoproperty.h"
 
 using namespace std;
@@ -79,6 +81,7 @@ class ENGINE_API LevelManager : public ZFObject {
 
 		void UpdateZones();
 		void EnableZone(int xp,int zp,Vector3 &kPos);
+		Object* GetClosestZone(Vector3 &kPos);
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
 };

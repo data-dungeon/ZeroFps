@@ -120,7 +120,7 @@ void PhysicProperty::SetColShape(CollisionShape* pkCs)
 
 vector<PropertyValues> PhysicProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(4);
 
 	kReturn[0].kValueName="m_bGravity";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -133,6 +133,11 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 	kReturn[2].kValueName="m_bSolid";
 	kReturn[2].iValueType=VALUETYPE_BOOL;
 	kReturn[2].pkValue=(void*)&m_bSolid;
+
+	kReturn[3].kValueName="m_fRadius";
+	kReturn[3].iValueType=VALUETYPE_FLOAT;
+	kReturn[3].pkValue=(void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius);
+
 
 	return kReturn;
 };

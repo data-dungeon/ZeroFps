@@ -11,13 +11,13 @@
 #include "objectmanager.h"
 #include "propertyfactory.h"
 #include "network.h"
-
+//#include "levelmanager.h"
 
 using namespace std;
 
 class ObjectManager;
 struct CollisionData;
-
+class LevelManager;
 
 enum UpdateStatus {
 	UPDATE_NONE,
@@ -83,6 +83,7 @@ class ENGINE_API Object {
 		bool				m_bSave;							// True if this object should save to disk.
 		
 		ObjectManager*		m_pkObjectMan;						// Ptr to object manger.
+		LevelManager* 		m_pkLevelMan;		
 		PropertyFactory*	m_pkPropertyFactory;	
 
 		list<Object*>		m_akChilds;							// List of child objects.
