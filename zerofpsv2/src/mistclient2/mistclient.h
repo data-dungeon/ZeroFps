@@ -26,13 +26,14 @@ class MistClient :public Application, public ZGuiApp {
 		int					m_iViewFrom;
 
       vector<pair<string,string> > m_kServerList;
+      bool ReadWriteServerList(bool bRead);
 
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
 		
-		bool StartUp()			{return true;}
-		bool ShutDown()		{return true;}
+		bool StartUp();
+		bool ShutDown();
 		bool IsValid()			{return true;}
 		void OnInit(void);
 		void OnIdle(void);

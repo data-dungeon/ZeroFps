@@ -1403,7 +1403,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
       if(bLeftButtonDown && m_bLeftButtonDown==false) // annars körs den alltid
       {
          SetFocus(m_pkCapturedWindow);
-         printf("Apa\n");
       }
 	}
 

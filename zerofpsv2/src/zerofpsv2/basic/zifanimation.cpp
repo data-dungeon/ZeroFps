@@ -391,9 +391,6 @@ int ZIFAnimation::ReadHeader(FILE* pkFile)
 	fread(&m_iNumFrames, sizeof(int), 1, pkFile);
 	fread(&format, sizeof(unsigned char), 1, pkFile);
 
-	printf("apa = %i\n", m_iImageFrameWidth);
-	printf("apa2 = %i\n", m_iImageFrameHeight);
-
 	m_iFileOffset = ANIMATIONHEADERSIZE;
 
 	int bytes_per_pixel;

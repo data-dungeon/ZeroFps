@@ -61,17 +61,20 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
             g_kMistClient.ShowWnd("ConnectWnd", false);
          else
          if(strController == "AddServerBn")
+         {
             g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
+            g_kMistClient.SetText("NewServerNameEB", "");
+            g_kMistClient.SetText("NewServerIPName", "");
+         }
          else
          if(strController == "RemoveServerBn")
          {
             char* szSelItem = g_kMistClient.GetSelItem("ServerList");
-
             if( szSelItem )
             {
                string strText = string(szSelItem);
 
-               int pos = strText.find("-");
+               int pos = (int) strText.find("-");
 
                string strName = strText.substr(0, pos-1);
                string strIP = strText.substr(pos+2, strText.length());
@@ -109,7 +112,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
          }
       }
    }
-
 
    return true;
 }
@@ -165,8 +167,6 @@ void MistClient::OnInit()
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
-
-   AddRemoveServer("Pelle", "128.0.1.122");
 }
 
 	
@@ -307,4 +307,64 @@ void MistClient::UpdateServerListbox()
       sprintf(szText, "%s - %s", m_kServerList[i].first.c_str(), m_kServerList[i].second.c_str());
       g_kMistClient.AddListItem("ServerList", szText);
    }
+}
+
+bool MistClient::ReadWriteServerList(bool bRead)
+{
+   if(bRead)
+   {
+      m_kServerList.clear();
+
+      FILE* pkFile = fopen("serverlist.txt", "rt");
+      if(pkFile == NULL)
+         return false;
+
+      char strLine[512];
+	   while (!feof(pkFile))
+	   {
+		   fgets(strLine, 512, pkFile);
+         string strText = string(strLine);
+
+         int pos = (int) strText.find("-");
+
+         if(pos != string::npos)
+         {
+            string strName = strText.substr(0, pos-1);
+            string strIP = strText.substr(pos+2, strText.length());
+
+            if(strName.length() > 0 && strIP.length() > 0) 
+               AddRemoveServer(strName.c_str(), strIP.c_str());
+         }
+	   }
+
+      fclose(pkFile);
+   }
+   else
+   {
+      FILE* pkFile = fopen("serverlist.txt", "wt");
+      if(pkFile == NULL)
+         return false;
+
+      for(int i=0; i<m_kServerList.size(); i++)
+      {
+         if(m_kServerList[i].first.length() > 0 && m_kServerList[i].second.length() > 0) 
+            fprintf(pkFile, "%s - %s\n", m_kServerList[i].first.c_str(), m_kServerList[i].second.c_str());
+      }
+
+      fclose(pkFile);
+   }
+
+   return true;
+}
+
+bool MistClient::ShutDown()
+{
+   ReadWriteServerList(false);
+   return true;
+}
+
+bool MistClient::StartUp()
+{
+   ReadWriteServerList(true);
+   return true;
 }
