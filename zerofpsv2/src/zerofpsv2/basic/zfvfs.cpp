@@ -125,15 +125,17 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	string	strRootMerge;
 	char*	szOptions;
 	if(bWrite)
-		szOptions = "wb";
+		szOptions = "w+b";
 	else
 		szOptions = "rb";
+	
+	cout<<"trying to open: "<<strFileName<<endl;
 	
 	// Try to open file directly.
 	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)
 		return pkFp;
-
+		
 	// Try to open from all active RootPaths.
 	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
 		strRootMerge = m_kstrRootPath[i] + strFileName;
@@ -144,6 +146,28 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 			return pkFp;
 			}
 		}
+
+	//dvoid hack
+	//if file still not open and it was opened for writing create directory
+	string dir  = "";
+	for(int i = strFileName.size();i > 0 ;i--)
+	{
+		if( strFileName[i] == '/')
+		{
+			dir  = strFileName.substr(0,i);
+			
+			//create directory
+			m_pkBasicFS->CreateDir(dir.c_str());
+			
+			//try to open the file now			
+			pkFp = fopen(strFileName.c_str(), szOptions);
+			if(pkFp)
+				return pkFp;
+			else
+				return NULL;
+		}
+	}
+	
 
 	// Failed to open file.
 	return NULL;
