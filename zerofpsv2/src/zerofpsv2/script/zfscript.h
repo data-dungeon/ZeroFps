@@ -78,7 +78,7 @@ public:
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
 	bool Run(ZFResourceHandle* pkResHandle);
 
-	void AddReturnValueTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData);
+	void AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData);
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
 	void AddReturnValue(lua_State* state, double dValue);
 
@@ -94,6 +94,7 @@ public:
 	bool GetArgNumber(lua_State* state, int iIndex, double* data);
 	bool GetArgString(lua_State* state, int iIndex, char* data);
 	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
+	void DeleteTable(vector<TABLE_DATA>& data);
 
 	bool ExposeClass(char *szName, ScripObjectType eType, 
 	lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);

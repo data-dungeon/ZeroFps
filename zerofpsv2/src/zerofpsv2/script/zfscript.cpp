@@ -372,34 +372,32 @@ bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA
 
 	if(lua_istable(state, iLuaIndex))
 	{
-		int iNumElements = lua_getn(state, iLuaIndex);
-
 		TABLE_DATA table_data;
 
-		for(int i=0; i<iNumElements; i++)
-		{
-			lua_rawgeti(state, iLuaIndex, 1+i);
+		int c=0;
 
-			if(lua_isnumber(state, 3+i))
+		while(1)
+		{
+			lua_rawgeti(state, iLuaIndex, 1+c);
+
+			if(lua_isnumber(state, 2+c))
 			{
 				table_data.bNumber = true;
 				table_data.pData = new double;
-				(*(double*) table_data.pData) = lua_tonumber(state, 3+i);
-
-		/*		lua_pushvalue(state, 22);
-				lua_rawseti(state, iLuaIndex, 1+i);*/
+				(*(double*) table_data.pData) = lua_tonumber(state, 2+c);
 			}
 			else
-			if(lua_isstring(state, 3+i))
+			if(lua_isstring(state, 2+c))
 			{
-				const char* text = lua_tostring(state, 3+i);
+				const char* text = lua_tostring(state, 2+c);
 				table_data.bNumber = false;
 				table_data.pData = new char[strlen(text)+1];
 				strcpy( (char*) table_data.pData, text);
-
-	/*			lua_pushstring (state, "mamasdsadfasdfsadfsadf");
-				lua_rawseti(state, iLuaIndex, 1+i);*/
 			}
+			else
+				break;
+
+			c++;
 
 			vkData.push_back(table_data);
 		}
@@ -411,7 +409,7 @@ bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA
 }
 
 // returnerar en tabel med data till lua
-void ZFScriptSystem::AddReturnValueTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
+void ZFScriptSystem::AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData)
 {
 	lua_newtable(state);
 
@@ -426,6 +424,8 @@ void ZFScriptSystem::AddReturnValueTable(lua_State* state, int iIndex, vector<TA
 
 		lua_settable(state, -3);
 	}
+
+	DeleteTable(vkData);
 }
 
 bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
@@ -811,3 +811,12 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 
 // ----------------------------------------------------------------------------------------------
+
+void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
+{
+	for(int i=0; i<data.size(); i++)
+	{
+		if(data[i].pData)
+			delete data[i].pData;
+	}
+}

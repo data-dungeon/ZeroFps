@@ -124,7 +124,7 @@ int StdLua::GetFilesInFolderLua(lua_State* pkLua)
 		}
 	}
 
-	g_pkScript->AddReturnValueTable(pkLua, 1, vkData);
+	g_pkScript->AddReturnValueTable(pkLua, vkData);
 
 	if(vkData[0].pData)
 		delete (double*) vkData[0].pData;

@@ -30,6 +30,10 @@ namespace GuiAppLua
 	int ENGINE_SYSTEMS_API SetTextInt(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddTreeItemLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API ShowWndLua(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API TestTableGetLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API TestTableSetLua(lua_State* pkLua);
+	
 };
 
 #endif // #ifndef _SI_GUI_H
