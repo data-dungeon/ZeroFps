@@ -133,10 +133,18 @@ void ZeroEd::Input_EditZone()
 // Handles input for EditMode Object.
 void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
+	NetPacket kNp;
+
    if(m_pkInputHandle->VKIsDown("eventuse"))	
 	{
-		Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		bool bSuccess = m_pkEntityManager->CallFunction(pkObject, "Useit",NULL);
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("use");
+		kNp.Write( m_iCurrentObject );
+		m_pkZeroFps->RouteEditCommand(&kNp);
+
+		//Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
+		//bool bSuccess = m_pkEntityManager->CallFunction(pkObject, "Useit",NULL);
 
 
 /*		Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
@@ -162,7 +170,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			EditRunCommand(FID_CLONE);	
 	}
 	
-	NetPacket kNp;
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
 		/*
@@ -171,6 +178,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		pkObj->SetParent(m_pkEntityManager->GetObjectByNetWorkID(
 			m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
 		*/
+		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("spawn");
 		kNp.Write_Str(m_strActiveObjectName.c_str());

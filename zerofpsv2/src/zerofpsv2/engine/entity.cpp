@@ -1971,6 +1971,33 @@ int AddPropertyLua(lua_State* pkLua)
 	return 1;
 }		
 
+/**	\fn DelProperty(Entity, PropertyName)
+ 	\relates SIEntity
+   \brief Removes a property from a entity (NOT STABLE).
+   \param Entity Entity to remove property to.
+   \param PropertyName Name of property to remove from object.
+
+	Adds the property to the entity with def parameters. 
+*/
+int DelPropertyLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
+	if(!pkObject)
+		return 0;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	pkObject->DeleteProperty( acName );
+	return 1;
+}		
+
+
 /**	\fn SetParameter(Entity, Property, szName, szValue )
  	\relates SIEntity
    \brief Sets the value of a variable in a property.
@@ -2366,6 +2393,7 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetParameter",		SI_Entity::SetParameterLua);
 	g_pkScript->ExposeFunction("GetObjectType",		SI_Entity::GetObjectTypeLua);		
 	g_pkScript->ExposeFunction("GetObjectName",		SI_Entity::GetObjectNameLua);		
+	g_pkScript->ExposeFunction("DelProperty",		   SI_Entity::DelPropertyLua);		
 
 	g_pkScript->ExposeFunction("GetLocalDouble",		SI_Entity::GetLocalDouble);
 	g_pkScript->ExposeFunction("SetLocalDouble",		SI_Entity::SetLocalDouble);
