@@ -13,7 +13,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkCmd->Add(&m_iState,"m_iState",type_int);
 	m_pkCmd->Add(&m_iFps,"m_iFps",type_int);
 	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
-		
+	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_fMouseSens",type_float);			
 }
 
 
@@ -52,6 +52,9 @@ void ZeroFps::MainLoop(void) {
 				if(m_pkInput->Pressed(TAB)){
 					m_iState=state_console;
 					m_pkInput->Reset();
+				}
+				if(m_pkInput->Pressed(F12)){
+					m_pkInput->ToggleGrab();
 				}
 				m_pkApp->OnIdle();			
 				Swap();

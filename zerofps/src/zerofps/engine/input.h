@@ -63,6 +63,8 @@ class ENGINE_API Input {
 	
 	
 	public:
+		float m_fMouseSensitivity;
+	
 		Input();
 		
 		void Update(void);

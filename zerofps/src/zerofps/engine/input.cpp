@@ -14,7 +14,7 @@ Input::Input() {
 	for(int i =0;i<400;i++) 
 		m_akButtonList[i]=false;
 	
-	
+	m_fMouseSensitivity=1;	
 	m_iGrabtime=SDL_GetTicks();
 };
 
@@ -63,10 +63,14 @@ void Input::Update(void) {
 
 void Input::MouseXY(int &iX,int &iY) {		
 	SDL_GetMouseState(&iX, &iY);
+	iX=int(float(iX)*m_fMouseSensitivity);	
+	iY=int(float(iY)*m_fMouseSensitivity);		
 }
 
 void Input::RelMouseXY(int &iX,int &iY) {		
 	SDL_GetRelativeMouseState(&iX, &iY);
+	iX=int(float(iX)*m_fMouseSensitivity);	
+	iY=int(float(iY)*m_fMouseSensitivity);		
 }
 
 void Input::ToggleGrab(void) {	

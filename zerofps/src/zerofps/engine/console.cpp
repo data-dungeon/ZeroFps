@@ -139,9 +139,11 @@ void Console::Execute(char* aText) {
 	if(arg[0]=="help"){
 		Print("");
 		Print("### help ###");
-		Print(" quit         -exit program");
-		Print(" varlist      -list variables");		
-		Print(" set $n $v    -set variable");		
+		Print(" quit        -exit program");
+		Print(" varlist     -list variables");		
+		Print(" set $n $v   -set variable");		
+		Print(" music 1/0   -music on/off");
+		Print(" togglegrab  -toggle input grab");
 		return;
 	}
 	
@@ -206,6 +208,11 @@ void Console::Execute(char* aText) {
 		if(arg[1]=="0")
 			m_pkEngine->m_pkAudioMan->StopMusic();
 			
+		return;
+	}
+
+	if(arg[0]=="togglegrab") {
+		m_pkEngine->m_pkInput->ToggleGrab();
 		return;
 	}
 
