@@ -684,7 +684,7 @@ void Mad_Core::CalculateRadius()
 
 float Mad_Core::GetRadius()
 {
-	return m_fBoundRadius * float(0.01);	// // BM-NOTE: Exporter scale stämmer inte ännu.
+	return m_fBoundRadius;	// * float(0.01);	// // BM-NOTE: Exporter scale stämmer inte ännu.
 }
 
 int Mad_Core::GetJointID(char* szJointName)

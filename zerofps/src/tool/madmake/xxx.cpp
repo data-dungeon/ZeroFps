@@ -2,6 +2,7 @@
 #include "xxx.h"
 #include "script.h"
 
+float g_fExportScale;
 
 /*int	ModellXXX::AddTexture(char* ucpTextureName)
 {
@@ -201,6 +202,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			fscanf(fp, " <%d,%f,%f,%f,%f,%f,%f,%f,%f>",&iBoneLink, &kVertex.x,&kVertex.y,&kVertex.z,
 				&kNormal.x,&kNormal.y,&kNormal.z,
 				&kTextureCoo.s,&kTextureCoo.t);
+			kVertex *= g_fExportScale;
 			kFace.iIndex[v] = kFrame.Size();
 			kFrame.PushBack(kVertex, kNormal);
 			//kFrame.akVertex.push_back(kVertex);
@@ -339,6 +341,10 @@ void ModellXXX::ReadExportSD(const char* filename)
 		fscanf(fp, "%s",tmpstr);
 		NewBone.m_kRotation.z = atof(tmpstr);
 
+		// Scale
+		NewBone.m_kPosition *= g_fExportScale;
+		NewBone.m_kRotation *= g_fExportScale;
+
 		m_akSkelleton.push_back(NewBone);
 	}
 
@@ -460,6 +466,10 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		kNewBoneKey.m_kRotation.y = atof(tmpstr);
 		fscanf(fp, "%s",tmpstr);
 		kNewBoneKey.m_kRotation.z = atof(tmpstr);
+
+		kNewBoneKey.m_kPosition *= g_fExportScale;
+		kNewBoneKey.m_kRotation *= g_fExportScale;
+
 //		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
 		kNewBoneKeyFrame.PushBack(kNewBoneKey);
 //		kNewTrack = kNewAnimation.GetTrackForBone(iBoneId);
@@ -500,6 +510,8 @@ extern string ucaOutFile;
 
 void ModellXXX::Read( const char* filename )
 {
+	g_fExportScale = 1.0;
+
 	ScriptFile kMMScipt;
 	kMMScipt.LoadScript(filename);
 
@@ -510,6 +522,14 @@ void ModellXXX::Read( const char* filename )
 
 	while(ucpToken)
 	{
+		if (!strcmp (ucpToken, "!scale"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			g_fExportScale = atof(ucpToken);
+			//sscanf(fp, "%s",tmpstr);
+			cout << "Setting Scale to: " << g_fExportScale << endl;
+		}
+
 		if (!strcmp (ucpToken, "!filetype")) {
 			cout << "Command filetype" << endl;
 			}

@@ -89,7 +89,8 @@ void MadProperty::Update()
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
-		glScalef(m_fScale * 0.01, m_fScale * 0.01, m_fScale * 0.01);
+		glScalef(m_fScale, m_fScale, m_fScale);
+		//		glScalef(m_fScale * 0.01, m_fScale * 0.01, m_fScale * 0.01);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
 		glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		// FH's Föreningens årsmöte.
