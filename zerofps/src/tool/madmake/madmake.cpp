@@ -8,6 +8,7 @@
 #include "mdl.h"
 #include "3ds.h"
 #include "xxx.h"
+#include "halflife.h"
 #include "script.h"
 
 using namespace std;
@@ -92,6 +93,7 @@ IMadImport* MadMake::GetImportObject(string FileName)
 	
 	if( strExt == ".mdl" )
 		pkImport = new ModellMD1;
+		//pkImport = new ModellHalfLife;
 
 	if( strExt == ".md2" )
 		pkImport = new ModellMD2;
@@ -102,26 +104,6 @@ IMadImport* MadMake::GetImportObject(string FileName)
 	if( strExt == ".mm" )
 		pkImport = new ModellXXX;
 	
-/*	if(strcmp(ext, ".mdl") == 0)
-	{
-		pkImport = new ModellMD1;
-	}
-
-	if(strcmp(ext, ".md2") == 0)
-	{
-		pkImport = new ModellMD2;
-	}
-
-	if(strcmp(ext, ".3ds") == 0) 
-	{
-		pkImport = new Modell3DS;
-	}
-
-	if(strcmp(ext, ".mm") == 0) 
-	{
-		pkImport = new ModellXXX;
-	}*/
-
 	return pkImport;
 }
 
@@ -209,8 +191,7 @@ void MadMake::Run(int argc, char* argv[])
 	MadExporter madexp;
 	pkImport->Read(ucaInFile.c_str());
 	pkImport->Export(&madexp,ucaTextureNames.c_str());
-
-	madexp.Save(ucaOutFile.c_str());
+	madexp.Save_MAD(ucaOutFile.c_str());
 
 }
 

@@ -29,8 +29,8 @@ int	ModellXXX::AddTexture(char* ucpTextureName)
 
 void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 {
-	MadVertex	kVertex;
-	MadVertex	kNormal;
+	Vector3		kVertex;
+	Vector3		kNormal;
 	MadFace		kFace;
 
 	Mad_VertexFrame kFrame;
@@ -54,8 +54,8 @@ void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 
 void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 {
-	MadVertex	kVertex;
-	MadVertex	kNormal;
+	Vector3		kVertex;
+	Vector3		kNormal;
 	MadFace		kFace;
 
 	Mad_VertexFrame kFrame;
@@ -103,7 +103,7 @@ void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 			m_akFace.push_back(kFace);
 			
 			// Skapa en submesh för varje polygon
-			Mad_SubMesh newsub;
+			Mad_CoreSubMesh newsub;
 			newsub.iFirstTriangle = i;
 			newsub.iNumOfTriangles = 1;
 			newsub.iTextureIndex = iTexture;
@@ -189,7 +189,7 @@ void ModellXXX::ReadAnimation(char* filename)
 
 	cout << endl;
 
-	Mad_Animation newanim;
+	Mad_CoreMeshAnimation newanim;
 	Mad_KeyFrame newkey;
 	newanim.Clear();
 	strcpy(newanim.Name, filename);
@@ -209,8 +209,8 @@ struct BoneData
 {
 	int			m_iParent;
 	char		m_szName[64];
-	MadVertex	m_kPosition;
-	MadVertex	m_kRotation;
+	Vector3		m_kPosition;
+	Vector3		m_kRotation;
 };
 
 /*
@@ -279,8 +279,8 @@ void ModellXXX::ReadExportSD(char* filename)
 class Mad_BoneKeyFrame
 {
 public:
-	MadVertex	m_kPosition;
-	MadVertex	m_kRotation;
+	Vector3		m_kPosition;
+	Vector3		m_kRotation;
 };
 
 class Mad_CoreTrack
@@ -383,8 +383,8 @@ void ModellXXX::ReadExportAD(char* filename)
 	for(int i=0; i<kNewAnimation.m_kTracks.size(); i++) {
 		fwrite(&kNewAnimation.m_kTracks[i].m_iBoneID, 1, sizeof(int), fp);
 		for(int t=0; t<iNumOfKeyFrames; t++) 
-			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kPosition,1,sizeof(MadVertex),fp);
-			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kRotation,1,sizeof(MadVertex),fp);
+			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kPosition,1,sizeof(Vector3),fp);
+			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kRotation,1,sizeof(Vector3),fp);
 		}
 
 	fclose(fp);
@@ -446,38 +446,39 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 
 	int i;
 
-	mad->kHead.iVersionNum		= 1;
-	mad->kHead.iNumOfTextures	= m_akTextureNames.size();
-	mad->kHead.iNumOfVertex		= iTotalNumOfVertex;
-	mad->kHead.iNumOfFaces		= iTotalTriangles;
-	mad->kHead.iNumOfFrames		= iAntalFrames;
-	mad->kHead.iNumOfSubMeshes	= m_akSubMesh.size();
-	mad->kHead.iNumOfAnimation	= akAnimation.size();
+	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
+	pkMesh->kHead.iVersionNum		= 1;
+	pkMesh->kHead.iNumOfTextures	= m_akTextureNames.size();
+	pkMesh->kHead.iNumOfVertex		= iTotalNumOfVertex;
+	pkMesh->kHead.iNumOfFaces		= iTotalTriangles;
+	pkMesh->kHead.iNumOfFrames		= iAntalFrames;
+	pkMesh->kHead.iNumOfSubMeshes	= m_akSubMesh.size();
+	pkMesh->kHead.iNumOfAnimation	= akAnimation.size();
 
 	for( i=0; i < m_akTextureNames.size(); i++) 
 	{
 		cout << "Texture " << i << ": " << m_akTextureNames[i].ucTextureName << endl;
-		strcpy(mad->akTextures[i].ucTextureName, m_akTextureNames[i].ucTextureName);
+		strcpy(pkMesh->akTextures[i].ucTextureName, m_akTextureNames[i].ucTextureName);
 	}
 
-	mad->akFrames.resize(mad->kHead.iNumOfFrames);
-	mad->akFaces.resize(mad->kHead.iNumOfFaces);
-	mad->akSubMeshes.resize(mad->kHead.iNumOfSubMeshes);
+	pkMesh->akFrames.resize(pkMesh->kHead.iNumOfFrames);
+	pkMesh->akFaces.resize(pkMesh->kHead.iNumOfFaces);
+	pkMesh->akSubMeshes.resize(pkMesh->kHead.iNumOfSubMeshes);
 	
 	// Copy Submeshes.
-	mad->akSubMeshes = m_akSubMesh;
+	pkMesh->akSubMeshes = m_akSubMesh;
 
 	// Copy Faces
-	for(i=0; i<mad->kHead.iNumOfFaces; i++) 
+	for(i=0; i<pkMesh->kHead.iNumOfFaces; i++) 
 	{
-		mad->akFaces[i].iIndex[0] = m_akFace[i].iIndex[0];
-		mad->akFaces[i].iIndex[1] = m_akFace[i].iIndex[1];
-		mad->akFaces[i].iIndex[2] = m_akFace[i].iIndex[2];
+		pkMesh->akFaces[i].iIndex[0] = m_akFace[i].iIndex[0];
+		pkMesh->akFaces[i].iIndex[1] = m_akFace[i].iIndex[1];
+		pkMesh->akFaces[i].iIndex[2] = m_akFace[i].iIndex[2];
 	}
 
-	mad->akFrames		= m_akFrames;
-	mad->akTextureCoo	= m_akTextureCoo;
-	mad->akAnimation	= akAnimation;
+	pkMesh->akFrames		= m_akFrames;
+	pkMesh->akTextureCoo	= m_akTextureCoo;
+	pkMesh->akAnimation	= akAnimation;
 
 
 	return true;
@@ -489,11 +490,11 @@ void ModellXXX::OptimizeSubMeshes(void)
 	
 	cout << "Start OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
 
-	vector<Mad_SubMesh>	akOldSubMesh;
+	vector<Mad_CoreSubMesh>	akOldSubMesh;
 	akOldSubMesh = m_akSubMesh;
 	m_akSubMesh.clear();
 
-	Mad_SubMesh newsub;
+	Mad_CoreSubMesh newsub;
 	newsub.iFirstTriangle	= 0;
 	newsub.iNumOfTriangles	= 1;
 	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;

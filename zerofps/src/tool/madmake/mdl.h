@@ -4,11 +4,13 @@
 #include "qpack.h"
 #include "mad.h"
 
-class Vector3
+#include "../../zerofps/basic/basicmath.pkg"
+
+/*class Vector3
 {
 public:
 	float x,y,z;
-};
+};*/
 
 struct pmd_triangle_s
 {

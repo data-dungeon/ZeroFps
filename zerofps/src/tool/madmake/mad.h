@@ -5,8 +5,13 @@
 
 #include <vector>
 using namespace std;
+#include "../../zerofps/basic/basicmath.pkg"
 
 class MadExporter;
+
+#define MAD_MAX_ANIMATIONNAME	256
+#define MAD_MAX_TEXTURENAME		64
+#define MAD_MAX_TEXTURES		64
 
 /*
 Bas klass för alla klasser som kan importeras till MAD.
@@ -22,11 +27,9 @@ public:
 };
 
 // MAD FILE STRUCTURES.
-struct MadVertex
-{
-	float x,y,z;
-};
 
+
+// MAD - MD
 struct MadTextureCoo
 {
 	float s,t;
@@ -37,7 +40,7 @@ struct MadFace
 	int iIndex[3];
 };
 
-struct Mad_Header
+struct Mad_CoreMeshHeader
 {
 	int		iVersionNum;				// Version num.
 	int		iNumOfTextures;				// Num of textures used by mesh.
@@ -53,12 +56,6 @@ struct Mad_Texture
 	char	ucTextureName[64];			// path/name of texture.
 };
 
-struct Mad_SubMesh
-{
-	int		iTextureIndex;				// Texture used.
-	int		iFirstTriangle;				// First triangle to use texture.
-	int		iNumOfTriangles;			// Num of triangles that use texture.
-};
 
 class Mad_VertexFrame
 {
@@ -67,8 +64,8 @@ public:
 	~Mad_VertexFrame();
 
 	void operator=(const Mad_VertexFrame& kOther);
-	vector<MadVertex>	akVertex;
-	vector<MadVertex>	akNormal;
+	vector<Vector3>	akVertex;
+	vector<Vector3>	akNormal;
 	
 };
 
@@ -82,38 +79,89 @@ public:
 	float	fFrameTime;					// Antal Sekunder denna frame ska vara.
 };
 
-class Mad_Animation
+class Mad_CoreMeshAnimation
 {
 public:
 	void Clear(void);
-	void operator=(const Mad_Animation& kOther);
+	void operator=(const Mad_CoreMeshAnimation& kOther);
 
-	char	Name[256];
+	char	Name[MAD_MAX_ANIMATIONNAME];
 	vector<Mad_KeyFrame>	KeyFrame;	
 };
 
-class MadExporter
+struct Mad_CoreSubMesh
 {
-public:
-	Mad_Header				kHead;
-	Mad_Texture				akTextures[MAX_MAD_TEXTURES];
+	int		iTextureIndex;				// Texture used.
+	int		iFirstTriangle;				// First triangle to use texture.
+	int		iNumOfTriangles;			// Num of triangles that use texture.
+};
 
+class Mad_CoreMesh
+{ 
+public:
+	Mad_CoreMesh();
+	~Mad_CoreMesh();
+	void Clear(void);
+	void operator=(const Mad_CoreMesh& kOther);
+
+
+	char					m_acName[64];
+	Mad_CoreMeshHeader		kHead;
+
+	Mad_Texture				akTextures[MAD_MAX_TEXTURES];
 	vector<MadTextureCoo>	akTextureCoo;
 	vector<MadFace>			akFaces;
 	vector<Mad_VertexFrame>	akFrames;
-	vector<Mad_SubMesh>		akSubMeshes;
-	vector<Mad_Animation>	akAnimation;
-	
+	vector<Mad_CoreSubMesh>	akSubMeshes;
+	vector<Mad_CoreMeshAnimation>	akAnimation;
+
+	void Save(FILE* fp);
+	void Load(FILE* fp);
+	void ShowInfo(void);
+	Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName);
+
+};
+
+// MAD - SD
+class Mad_CoreBone
+{
+public:
+	Mad_CoreBone();
+	~Mad_CoreBone();
+
+	void Clear(void);
+	void operator=(const Mad_CoreBone& kOther);
+
+	char				m_acName[32];
+	int					m_iParent;
+	Vector3				m_kPosition;
+	Vector3				m_kRotation;
+};
+
+struct Mad_Header
+{
+	int			m_iNumOfMeshes;
+};
+
+
+class MadExporter
+{
+private:
+	Mad_Header	m_kMadHeader;
+
+public:
 	MadExporter();
 	~MadExporter();
 
-	void Save(const char* filename);
-	void Load(const char* filename);
+	vector<Mad_CoreMesh>	m_kMesh;
+	Mad_CoreMesh* GetMesh(char* ucaName);
 
-//	void ImportPMD(pmd_c* pmd);
-
-	Mad_Animation*	GetAnimation(char* ucaName);
-	void ShowInfo(void);
+	void Save_SD(const char* filename);
+	void Save_MD(const char* filename);
+	void Save_MAD(const char* filename);
 };
+
+
+
 
 #endif

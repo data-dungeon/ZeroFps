@@ -25,8 +25,8 @@ public:
 	vector<MadTextureCoo>		m_akTextureCoo;
 	vector<Mad_Texture>			m_akTextureNames;
 
-	vector<Mad_SubMesh>			m_akSubMesh;
-	vector<Mad_Animation>		akAnimation;
+	vector<Mad_CoreSubMesh>			m_akSubMesh;
+	vector<Mad_CoreMeshAnimation>	akAnimation;
 
 private:
 	void OptimizeSubMeshes(void);

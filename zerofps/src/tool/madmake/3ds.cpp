@@ -1,5 +1,4 @@
 #include <iostream>
-#include "pmd.h"
 #include "3ds.h"
 
 using namespace std;
@@ -582,49 +581,50 @@ bool Modell3DS::Export(MadExporter* mad, const char* filename)
 	int		iNumOfAnimation;			// Antal Animationer.
 	*/
 
-	mad->kHead.iNumOfVertex		= part3DS.num_vertex;
-	mad->kHead.iNumOfFaces		= part3DS.num_surfaces;
-	mad->kHead.iNumOfFrames		= 1;
-	mad->kHead.iNumOfVertex		= part3DS.num_vertex;
-	mad->kHead.iNumOfTextures	= part3DS.Material.size();
+	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
+	pkMesh->kHead.iNumOfVertex		= part3DS.num_vertex;
+	pkMesh->kHead.iNumOfFaces		= part3DS.num_surfaces;
+	pkMesh->kHead.iNumOfFrames		= 1;
+	pkMesh->kHead.iNumOfVertex		= part3DS.num_vertex;
+	pkMesh->kHead.iNumOfTextures	= part3DS.Material.size();
 
-	mad->akFrames.resize(1);
+	pkMesh->akFrames.resize(1);
 
 	// Copy texture names
 	vector<material_c>::iterator mi;
 	i = 0;
 	for (mi = part3DS.Material.begin(); mi != part3DS.Material.end(); mi++, i++)
 	{
-		strcpy(mad->akTextures[i].ucTextureName, mi->Texture.File_name);
+		strcpy(pkMesh->akTextures[i].ucTextureName, mi->Texture.File_name);
 		mi->print();
-		char* extpos = strchr(mad->akTextures[i].ucTextureName,'.');
+		char* extpos = strchr(pkMesh->akTextures[i].ucTextureName,'.');
 		if(extpos)
 			extpos[0] = 0;
 	}
 
-	mad->akFrames[0].akVertex.resize(mad->kHead.iNumOfVertex);
-	mad->akTextureCoo.resize(mad->kHead.iNumOfVertex);
+	pkMesh->akFrames[0].akVertex.resize(pkMesh->kHead.iNumOfVertex);
+	pkMesh->akTextureCoo.resize(pkMesh->kHead.iNumOfVertex);
 
-	for(i=0; i<mad->kHead.iNumOfVertex; i++) {
-		mad->akFrames[0].akVertex[i].x = part3DS.vertex[i].x;
-		mad->akFrames[0].akVertex[i].y = part3DS.vertex[i].y;
-		mad->akFrames[0].akVertex[i].z = part3DS.vertex[i].z;
+	for(i=0; i<pkMesh->kHead.iNumOfVertex; i++) {
+		pkMesh->akFrames[0].akVertex[i].x = part3DS.vertex[i].x;
+		pkMesh->akFrames[0].akVertex[i].y = part3DS.vertex[i].y;
+		pkMesh->akFrames[0].akVertex[i].z = part3DS.vertex[i].z;
 		}
 
 	if(part3DS.mapcoo)	{
 		for(i=0; i<part3DS.num_vertex; i++) {
-			mad->akTextureCoo[i].s = part3DS.mapcoo[i].x;
-			mad->akTextureCoo[i].t = part3DS.mapcoo[i].y;
+			pkMesh->akTextureCoo[i].s = part3DS.mapcoo[i].x;
+			pkMesh->akTextureCoo[i].t = part3DS.mapcoo[i].y;
 			}
 		}
 	else
 		cout << "No Mapping Coo" << endl;
 
-	mad->akFaces.resize(mad->kHead.iNumOfFaces);
+	pkMesh->akFaces.resize(pkMesh->kHead.iNumOfFaces);
 	for(i=0; i<part3DS.num_surfaces; i++) {
-		mad->akFaces[i].iIndex[0] = part3DS.surface[i].index[0];
-		mad->akFaces[i].iIndex[1] = part3DS.surface[i].index[1];
-		mad->akFaces[i].iIndex[2] = part3DS.surface[i].index[2];
+		pkMesh->akFaces[i].iIndex[0] = part3DS.surface[i].index[0];
+		pkMesh->akFaces[i].iIndex[1] = part3DS.surface[i].index[1];
+		pkMesh->akFaces[i].iIndex[2] = part3DS.surface[i].index[2];
 		}
 
 /*	vector<facemat_c>::iterator fmi;
@@ -637,7 +637,7 @@ bool Modell3DS::Export(MadExporter* mad, const char* filename)
 		}
 	}*/
 
-	Mad_Animation kNyAnimation;
+	Mad_CoreMeshAnimation kNyAnimation;
 	Mad_KeyFrame kNyKeyF;
 	kNyAnimation.Clear();
 	strcpy(kNyAnimation.Name, "freeze"); 
@@ -645,7 +645,7 @@ bool Modell3DS::Export(MadExporter* mad, const char* filename)
 	kNyKeyF.iVertexFrame = 0;
 	kNyKeyF.fFrameTime = 0.1;
 	kNyAnimation.KeyFrame.push_back(kNyKeyF);
-	mad->akAnimation.push_back(kNyAnimation);
+	pkMesh->akAnimation.push_back(kNyAnimation);
 	
 	i=0;
 	return 0;
