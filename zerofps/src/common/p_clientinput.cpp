@@ -14,6 +14,7 @@ P_ClientInput::P_ClientInput()
 	m_pkFps = 		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
 	bNetwork =		true;
 	m_iMaxOrders = 200;	
+	m_iMaxOrdersPerpkg = 5;
 	
 	m_iPlayerID =	-1;
 	m_bGod =			false;
@@ -34,7 +35,7 @@ void P_ClientInput::AddOrder(UnitCommand kCommand)
 	else
 	{
 		if(m_kCommands.size() < m_iMaxOrders)
-			m_kCommands.push_back(kCommand);
+			m_kCommands.push(kCommand);
 	}
 }
 
@@ -42,14 +43,18 @@ void P_ClientInput::AddOrder(UnitCommand kCommand)
 void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 {	
 	int nrofcommands = m_kCommands.size();
+	
+	if(nrofcommands > m_iMaxOrdersPerpkg)
+		nrofcommands = m_iMaxOrdersPerpkg;
 
-	pkNetPacket->Write(&m_iPlayerID,sizeof(m_iPlayerID));	
+	pkNetPacket->Write(&m_iPlayerID,sizeof(m_iPlayerID));		
 	pkNetPacket->Write(&nrofcommands,sizeof(nrofcommands));
 	
-	for(int i=0;i<nrofcommands;i++)
-		pkNetPacket->Write(&m_kCommands[i],sizeof(UnitCommand));
-	
-	m_kCommands.clear();
+	for(int i=0;i<nrofcommands;i++){	
+		pkNetPacket->Write(&m_kCommands.front(),sizeof(UnitCommand));
+		m_kCommands.pop();
+	}
+
 }
 
 void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
