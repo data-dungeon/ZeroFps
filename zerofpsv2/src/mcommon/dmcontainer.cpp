@@ -233,7 +233,7 @@ bool DMContainer::AddItem(int iID)
 
 bool DMContainer::RemoveItem(int iID)
 {
-	if(HaveItem(iID))
+	if(!HaveItem(iID))
 		return false;	
 
 	ClearItem(iID);	

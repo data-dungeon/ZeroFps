@@ -51,6 +51,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 
 		bool m_bCharacterIdle;
 		bool m_bPlayWalkSound;
+
+		void MakeStringLowerCase(string& s);
 	
 	public:
 		//item slots
@@ -81,9 +83,12 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void Equip (P_DMItem* pkDMItem);
 		void UnEquip (P_DMItem* pkDMItem);
 
+		void UseQuickItem(int iItemIndex); // <- iItemIndex = 0,1,2,3 dvs slot (0,0), (0,1) osv
+		
 		// Speed pathfinding is using
 		void SetMoveSpeed (float fSpeed);		
 		void AddMoveSpeed (float fSpeed);
+
 		
 		void Init();		
 		void Update();		

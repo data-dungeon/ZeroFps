@@ -142,10 +142,24 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->GetListnerPos() ); 
 	}
 	else
-	if(strClickName.find("GamePlayDlgQuickItem") != string::npos)
+	if(strClickName.find("GamePlayDlgQuickItem") != string::npos && m_iSelectedAgent != -1)
 	{
-		printf("using quickitem\n");
+		char number[] = { strClickName.c_str()[strClickName.size()-1], '\0' };
+		int iItem = atoi(number)-1;
 
+		if(m_iSelectedAgent != -1)
+		{
+			P_DMCharacter* pkCharacter = (P_DMCharacter*)
+				GetObject(m_iSelectedAgent)->GetProperty("P_DMCharacter");
+
+			pkCharacter->UseQuickItem(iItem);
+			SelectAgent(m_iSelectedAgent, false);
+		}
+		else
+		{
+			printf("Failed to use quickitem, no agent selected\n");
+		}
+		
 	}	
 
 	//

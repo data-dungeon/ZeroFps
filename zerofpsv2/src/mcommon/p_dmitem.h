@@ -67,6 +67,7 @@ class MCOMMON_API P_DMItem: public Property {
 
 		string GetIcon() { return m_strIcon; }
 		int GetType() { return m_iType; }
+		string GetName() { return m_strName; }
 
 		
 	friend class DMContainer;

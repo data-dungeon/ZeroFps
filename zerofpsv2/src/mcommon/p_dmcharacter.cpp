@@ -417,6 +417,102 @@ void P_DMCharacter::UnEquip (P_DMItem* pkDMItem)
 
 // -----------------------------------------------------------------------------------------------
 
+
+void P_DMCharacter::UseQuickItem(int iItemIndex) // <- iItemIndex = 0,1,2,3 dvs slot (0,0), (0,1) osv
+{
+	vector<ContainerInfo> kItemList;
+	m_pkBelt->GetItemList(&kItemList);
+	
+	for(unsigned int i=0; i<kItemList.size(); i++)
+	{
+		if(kItemList[i].m_iItemX == iItemIndex)
+		{
+			printf("Character using quickitem %i %i\n", 
+				kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+
+			switch(kItemList[i].m_iType)
+			{
+			case DMITEM_CLIP:
+				{
+					string strClipName = kItemList[i].m_strName;
+
+					// format string of clipname to lowercase
+					MakeStringLowerCase(strClipName);
+					
+					// check if character is equipped with at weapon
+					int iWeapID = -1;
+					Entity* pkWeapon;
+					P_DMGun* pkP_Gun = NULL;
+
+					for ( int y = 0; y < 2; y++ )
+						for ( int x = 0; x < 3; x++ )
+							if ( *m_pkHand->GetItem(x,y) != -1 )
+							{
+								iWeapID = *m_pkHand->GetItem(x,y);
+
+								if( iWeapID != -1)
+								{
+									pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
+
+									string strGunItemName = 
+										((P_DMItem*)pkWeapon->GetProperty("P_DMItem"))->GetName();
+
+									MakeStringLowerCase(strGunItemName);
+									if(strClipName.find(strGunItemName) != string::npos)
+									{
+										pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun");
+										break;
+									}
+								}
+							}
+
+					if( pkP_Gun != NULL )
+					{
+						pkP_Gun->Reload();
+					}
+					else
+					{
+						printf("Failed to reload weapon, not correct weapon in hand\n");
+					}
+
+					int a = kItemList[i].m_iItemX;
+					int b = kItemList[i].m_iItemY;
+
+					if(m_pkBelt->RemoveItem(a,b))
+					{
+						printf("Removing clip\n");
+						return;
+					}
+					else
+					{
+						printf("Failed to remove clip\n");
+						return;
+					}
+
+					break;
+				}
+			}
+
+			break;
+		}
+	}
+}
+
+void P_DMCharacter::MakeStringLowerCase(string& s)
+{
+	for(int i=0; i<s.size(); i++)
+	{
+		char test = s[i];
+
+		if(test > 'A' && test < 'Z')
+		{
+			test += 32;
+			s[i] = test;
+		}
+	}
+}
+
+
 void P_DMCharacter::SetMoveSpeed (float fSpeed)
 {
 	// get pf_path property
@@ -452,8 +548,6 @@ void P_DMCharacter::AddMoveSpeed (float fSpeed)
 vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(0);
-		
-
 	return kReturn;
 }
 

@@ -298,6 +298,11 @@ void P_DMGun::Load(ZFIoInterface* pkPackage)
 	m_strSound = temp;
 }
 
+void P_DMGun::Reload()
+{
+	m_iAmmo = m_iMaxAmmo;
+	printf("reloading gun, ammo is now: %i\n", m_iAmmo);
+}
 
 vector<PropertyValues> P_DMGun::GetPropertyValues()
 {
