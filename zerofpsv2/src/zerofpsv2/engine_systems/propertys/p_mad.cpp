@@ -52,7 +52,7 @@ P_Mad::P_Mad()
 
 void P_Mad::Update()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = static_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 		
@@ -199,7 +199,7 @@ void P_Mad::CreateAABB()
 	m_AABBMin.Set(99999999,99999999,99999999);
 	Matrix3 kRot = m_pkEntity->GetWorldRotM();
 		
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = static_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();	
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
@@ -809,7 +809,7 @@ bool P_Mad::operator<(Property& kOther)
 	{
 		if(m_iSortPlace == kOther.m_iSortPlace)
 		{	
-			if(P_Mad* pkMad = dynamic_cast<P_Mad*>(&kOther))
+			if(P_Mad* pkMad = static_cast<P_Mad*>(&kOther))
 				return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
 		}
 	}
@@ -846,7 +846,7 @@ int SetNextAnim(lua_State* pkLua)
 //	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
 
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+	P_Mad* mp = static_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetNextAnimation(acName);
 	return 1;
 }
@@ -870,7 +870,7 @@ int PlayAnim(lua_State* pkLua)
 	char acAnimationName[100];
 	g_pkScript->GetArg(pkLua, 1, acAnimationName);
 
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
+	P_Mad* pkMad = static_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
 	pkMad->SetAnimation(acAnimationName,0);
 	
 	return 1;
@@ -892,7 +892,7 @@ int AddMesh(lua_State* pkLua)
 	int iId2 = (int)dTemp;
 
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+	P_Mad* mp = static_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 
 	mp->AddMesh( iId2 );
 	return 1;

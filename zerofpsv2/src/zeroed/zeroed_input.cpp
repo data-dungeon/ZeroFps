@@ -14,7 +14,7 @@ vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 	{
 		Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 		if(!pkEntity)			continue;
-		hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+		hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
 
 		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
@@ -64,7 +64,7 @@ void ZeroEd::Input_EditTerrain()
 				{
 					Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 					if(!pkEntity)			continue;
-					P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+					P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 					if(hmrp == NULL)		continue;
 					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
@@ -77,7 +77,7 @@ void ZeroEd::Input_EditTerrain()
 			{
 				Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 				if(!pkEntity)			continue;
-				P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+				P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 				if(hmrp == NULL)		continue;
 				Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 
@@ -522,7 +522,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		}
 		else 
 		{
-			P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
+			P_Camera* pkCam = static_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
 			if(pkCam)
 				pkCam->OrthoMove(kMove);
 		}

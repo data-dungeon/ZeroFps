@@ -304,7 +304,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 				ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
 
-				Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget());
+				Camera* pkCam = static_cast<Camera*>(pkModelWnd->GetRenderTarget());
 
 				if(pkCam == NULL)
 				{
@@ -418,7 +418,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			{
 				ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
 			
-				if(Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget()))
+				if(Camera* pkCam = static_cast<Camera*>(pkModelWnd->GetRenderTarget()))
 				{
 					Entity* pkEnt = g_kMistClient.m_pkEntityManager->GetEntityByID(pkCam->GetRootEntityID());
 
@@ -469,7 +469,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				{
 					m_fObjRotX = press_pos.x - curr_pos.x  + prev_x;
 
-					if(Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget()))
+					if(Camera* pkCam = static_cast<Camera*>(pkModelWnd->GetRenderTarget()))
 					{
 						Entity* pkEnt = g_kMistClient.m_pkEntityManager->GetEntityByID(pkCam->GetRootEntityID());
 						pkEnt->SetWorldRotV(Vector3(fObjRotX,m_fObjRotX,fObjRotZ));

@@ -187,7 +187,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			{
 				P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
 
-				Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+				Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 
 				pkCore->GetMeshByID(0)->GetLODMesh(0)->SetTextureHandle(
 					m_pkSelMesh->iTextureIndex, strFullpath);
@@ -200,7 +200,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	if(strcmp(szTreeBox, "AnimationFileTree") == 0)
 	{
 		P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");		
-		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+		Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 
 		if(szClickNodeText)
 			pkMad->SetAnimation(szClickNodeText, 0);
@@ -219,7 +219,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 		if(szClickNodeText && strText.find(string(" : ")) != string::npos)
 		{
 			P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
-			Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+			Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 
 			string format = strText;
 			format.erase(0,5);
@@ -258,7 +258,7 @@ void MadView::ChangeMad(string strName)
 
 	m_fObjectRadius = 0.5;
 		
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 
 	ZFAssert(pkCore, "Failed to get Mad_Core pointer!\n");
 	if(pkCore == NULL)

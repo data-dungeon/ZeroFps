@@ -258,7 +258,7 @@ void MistClient::SetupGUI()
 
 		ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
 
-		Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget());
+		Camera* pkCam = static_cast<Camera*>(pkModelWnd->GetRenderTarget());
 
 		if(pkCam == NULL)
 		{

@@ -321,7 +321,7 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 
 void P_PfMesh::SetMad(P_Mad* pkMad)
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 	if(pkCore == NULL)
 		return;
 	Mad_CoreMesh* pkCoreMesh = pkCore->GetMeshByID(pkMad->GetCollisionMeshID());
@@ -368,7 +368,7 @@ void P_PfMesh::AutoMakeNaviMesh()
 
 void P_PfMesh::CalcNaviMesh()
 {
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));
+	P_Mad* pkMad = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));
 	if(!pkMad)	
 		return;
 

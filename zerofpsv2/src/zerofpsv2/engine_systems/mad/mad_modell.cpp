@@ -45,7 +45,7 @@ void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 	if(kMadHandle.IsValid() == false)
 		return;
 	if(iAnimNum < 0)	iAnimNum = MAD_NOANIMINDEX;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(pkCore) {
 		if(iAnimNum >= pkCore->GetNumOfAnimations())
 			iAnimNum = MAD_NOANIMINDEX;
@@ -61,7 +61,7 @@ void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 {
 	if(kMadHandle.IsValid() == false)
 		return;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
 
@@ -87,7 +87,7 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 
 	if(kMadHandle.IsValid() == false)
 		return;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
 
@@ -139,7 +139,7 @@ void Mad_Modell::SetNextAnimation(const char* szName)
 	if(kMadHandle.IsValid() == false)
 		return;
 		
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
 
@@ -168,7 +168,7 @@ string Mad_Modell::GetCurrentAnimationName()
 	if(kMadHandle.IsValid() == false)
 		return "error";
 	
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return "error";
 
@@ -201,7 +201,7 @@ bool Mad_Modell::GetAnimationActive() {
 
 void Mad_Modell::NextCoreAnimation(void)
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 
 	iActiveAnimation++;
 	if(iActiveAnimation >= pkCore->GetNumOfAnimations())
@@ -210,7 +210,7 @@ void Mad_Modell::NextCoreAnimation(void)
 
 void Mad_Modell::SetReplaceTexture(char* szName)
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	pkCore->SetReplaceTexture(szName);
 }
 
@@ -229,7 +229,7 @@ int Mad_Modell::GetNumOfMesh()
 		return 0;
 
 	ZFResource* pkres = kMadHandle.GetResourcePtr();
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkres); 
+	Mad_Core* pkCore = (Mad_Core*)pkres; 
  	return pkCore->NumOfMeshes();
 }
 
@@ -237,7 +237,7 @@ int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 {
 	if(kMadHandle.IsValid() == false)
 		return 0;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetMeshByID(iMeshID)->GetLODMesh(0)->kHead.iNumOfSubMeshes;
 }
 
@@ -245,7 +245,7 @@ void Mad_Modell::SelectMesh(int iMeshID)
 {
 	if(kMadHandle.IsValid() == false)
 		return;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	m_pkMesh = pkCore->GetMeshByID(iMeshID);
 }
 
@@ -270,25 +270,25 @@ int Mad_Modell::GetNumFaces()
 
 Vector3*  Mad_Modell::GetVerticesPtr()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore =(Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	return	pkCore->GetVerticesPtr();
 }
 
 int* Mad_Modell::GetFacesPtr()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	return	pkCore->GetFacesPtr(m_pkMesh, m_pkSubMesh);
 }
 
 Mad_TextureCoo* Mad_Modell::GetTextureCooPtr()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetTextureCooPtr(m_pkMesh);
 }
 
 Vector3* Mad_Modell::GetNormalsPtr()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetNormalsPtr();
 }
 
@@ -352,7 +352,7 @@ void Mad_Modell::LoadTextures()
 	int iNumOfMesh = GetNumOfMesh();
 	int iNumOfSubMesh;
 
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(iM);
@@ -375,7 +375,7 @@ void Mad_Modell::LoadTextures()
 
 void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfSubMesh;
@@ -401,7 +401,7 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 
 void Mad_Modell::UpdateBones()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
@@ -413,7 +413,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	if(iDrawFlags == 0)
 		return;
 	
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
@@ -560,7 +560,7 @@ void Mad_Modell::DrawSkelleton()
 	glDisable (GL_DEPTH_TEST);
 	
 	Vector3 Position;
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 
@@ -594,7 +594,7 @@ void Mad_Modell::DrawSkelleton()
 
 float Mad_Modell::GetRadius()
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return 0;
 
@@ -608,7 +608,7 @@ void Mad_Modell::ClearAllMesh()
 
 bool Mad_Modell::AddMesh(int iSubId)
 {
-	if(Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr())) 
+	if(Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr())) 
 	{	
 		if(pkCore->GetMeshByID(iSubId) == NULL)
 			return false;
@@ -623,7 +623,7 @@ bool Mad_Modell::AddMesh(int iSubId)
 
 bool Mad_Modell::AddMesh(char* szName)		
 { 
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	int iSubId = pkCore->GetMeshIDByName( szName );
 
 	cout << "Mesh: " << szName << ", Id: " << iSubId << endl;

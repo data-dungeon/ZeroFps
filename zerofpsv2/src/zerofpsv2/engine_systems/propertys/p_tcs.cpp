@@ -455,7 +455,7 @@ bool P_Tcs::SetupMeshData()
 	{
 		// cout << "Found MAD" <<endl;
 		//look for core pointer in mad property
-		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr()); 
+		Mad_Core* pkCore = static_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr()); 
 
 		if(pkCore != NULL)
 		{

@@ -1117,7 +1117,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkEnt->AddProperty("P_Item");
 			pkEnt->AddProperty("P_Ml");
 
-			pkMad = dynamic_cast<P_Mad*>(pkEnt->GetProperty("P_Mad"));
+			pkMad = static_cast<P_Mad*>(pkEnt->GetProperty("P_Mad"));
 			strMad += kCommand->m_kSplitCommand[1];
 			pkMad->SetBase(strMad.c_str());
 			pkMad->SetScale(1.0);

@@ -203,7 +203,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 		}
 	}
 
-	Camera* pkCam = dynamic_cast<Camera*>(pkWnd->GetRenderTarget());
+	Camera* pkCam = static_cast<Camera*>(pkWnd->GetRenderTarget());
 	//Camera* pkCam = pkWnd->GetRenderTarget();
 	if(!pkCam)
 		return false;
@@ -775,7 +775,7 @@ HeightMap* ZeroEd::SetPointer()
 
 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 	if(!pkEntity)	return NULL;
-	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+	P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
 
 	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
@@ -820,7 +820,7 @@ void ZeroEd::HMModifyCommand(float fSize)
 	{
 		Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 		if(!pkEntity)			continue;
-		hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+		hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
 
 		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
@@ -1182,7 +1182,7 @@ void ZeroEd::SoloToggleView()
 {
 	if(DelayCommand())	return;
 
-	Camera* pkCam = dynamic_cast<Camera*>(GetWnd(m_strActiveViewPort)->GetRenderTarget());
+	Camera* pkCam = static_cast<Camera*>(GetWnd(m_strActiveViewPort)->GetRenderTarget());
 	//Camera* pkCam = GetWnd(m_strActiveViewPort)->GetRenderTarget();
 
 	if(m_bSoloMode) 

@@ -143,9 +143,9 @@ void MistClient::OnInit()
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
 
-//  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
-//  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
-//  		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
+ 	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
+ 		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
+ 		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
 
 }
 

@@ -9,13 +9,13 @@ bool Camera::m_bGridSnap(false);
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
  : I_Camera(kPos,kRot,fFov,fAspect,fNear,fFar) 
 {
-	m_pkRender = 			dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-	m_pkZShaderSystem =	dynamic_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-	m_pkEntityMan = 		dynamic_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkZeroFps =			dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkZShadow = 			dynamic_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
-	m_pkLight	=			dynamic_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
-	m_pkTexMan	=			dynamic_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkRender = 			static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkEntityMan = 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkZeroFps =			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZShadow = 			static_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
+	m_pkLight	=			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkTexMan	=			static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));

@@ -49,7 +49,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	int iLoop = (int)dTemp;
 
 	Entity* pkObject = g_pkEntityMan->GetEntityByID(iObjectID);
-	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
+	P_Sound* pkSound = static_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
 
 	if(pkSound)
 	{
@@ -80,7 +80,7 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, acName);
 
 	Entity* pkObject = g_pkEntityMan->GetEntityByID(iObjectID);
-	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
+	P_Sound* pkSound = static_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
 
 	if(pkSound)
 	{

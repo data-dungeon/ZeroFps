@@ -21,7 +21,7 @@ ZFSystem* ZFSystem::pkInstance;
 void ZFSystem::PrintVariables()
 {
 	BasicConsole*		m_pkCon;
-	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 	string strValue;
 
 	m_pkCon->Printf("### variable list ###");
@@ -39,7 +39,7 @@ void ZFSystem::PrintVariables()
 void ZFSystem::PrintCommands()
 {
 	BasicConsole*		m_pkCon;
-	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 	string strValue;
 
 	m_pkCon->Printf("### variable list ###");

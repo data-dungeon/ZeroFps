@@ -840,7 +840,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		pkObject->SetWorldPosV(GetPlayerStartPos());
 		
 		//setup tracker to correct tracker id
-		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
+		P_Track* pkTrack = static_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
 		if(pkTrack)
 			pkTrack->SetClient(iConID);	
 	}
