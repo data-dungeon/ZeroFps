@@ -220,11 +220,8 @@ void MistClient::Input()
 		if(pkInput->Pressed(KEY_L))
 			rot.z-=fSpeedScale*5;
 
-
-
-		m_pkME->SetLocalPosV(newpos);				
-		m_pkME->RotateLocalRotV(rot);				
-		
+		m_pkME->SetLocalPosV(newpos);
+		m_pkME->RotateLocalRotV(rot);
 	}
 
 	if(pkInput->Pressed(MOUSELEFT))
@@ -242,15 +239,39 @@ void MistClient::Input()
 
 	int iPressedKey = pkInput->GetQueuedKey();
 
+	char szFileName[] = "data/sound/walk.wav";
+	ZFResourceHandle* res = pkAudioSys->GetResHandle(szFileName);
+
 	switch(iPressedKey)
 	{
 	case KEY_P:
-		static ZFSound* s = new ZFSound;
-		s->m_kPos = Vector3(0,0,0);
-		//s.m_kVel = Vector3(0,0,1);
-		s->Create("walk.wav");
-		s->m_bLoop = false;
-		pkAudioSys->AddSound(s);
+		if(res->SetRes(szFileName))
+		{
+			ZFSound* pkSound = static_cast<ZFSound*>(res->GetResourcePtr()); 
+			if(pkSound) {
+				pkSound->m_kPos = Vector3(0,0,0);
+				pkSound->m_kVel = Vector3(0,0,1);
+				pkSound->Create(szFileName);
+				pkSound->m_bLoop = true;
+				pkAudioSys->AddSound(pkSound);
+			}
+			printf("Sound loaded!\n");
+		}
+		else
+			printf("Failed to load sound!\n");
+		break;
+
+	case KEY_O:
+		if(res->SetRes(szFileName))
+		{
+			ZFSound* pkSound = static_cast<ZFSound*>(res->GetResourcePtr()); 
+			if(pkSound) {
+				pkAudioSys->RemoveSound(pkSound);
+				printf("Sound stopped\n");
+			}
+		}
+		else
+			printf("Failed to stop sound\n");
 		break;
 	}
 

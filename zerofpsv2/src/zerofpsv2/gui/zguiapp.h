@@ -11,8 +11,9 @@ using namespace std;
 #include "zgui.h"
 
 class TextureManager;
-class ZFScript;
+class ZFScriptSystem;
 class ZGuiResourceManager;
+class ZFResourceHandle;
 
 #define EB_IS_MULTILINE   0x1
 #define READ_ONLY			  0x2
@@ -43,9 +44,10 @@ public:
 	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
-	bool ChangeSkin(ZFScript* pkScript, int iWndID, char* szSkinName, char* szSkinType);
+	bool ChangeSkin(ZFScriptSystem* pkScript, int iWndID, char* szSkinName, 
+		char* szSkinType);
 	
-	ZGuiSkin* AddSkinFromScript(char* szName, ZFScript* pkScript, ZGuiSkin* pkSkin=NULL);
+	ZGuiSkin* AddSkinFromScript(char* szName, ZFScriptSystem* pkScript, ZGuiSkin* pkSkin=NULL);
 	bool IsButtonChecked(int iWndID);
 	float GetTextFloat(int iWndID, bool* pkSuccess);
 	int GetTextInt(int iWndID, bool* pkSuccess);
@@ -64,7 +66,8 @@ public:
 	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
-	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript, ZGuiResourceManager* pkResMan);
+	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
+		ZFScriptSystem* pkScript, ZGuiResourceManager* pkResMan);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
 	bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
@@ -82,7 +85,7 @@ public:
 private:
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
-	void InitTextures(ZFScript* pkScript);
+	void InitTextures(ZFScriptSystem* pkScript);
 	ZGuiWnd* GetWnd(int iID);
 	ZGuiSkin* GetSkin(string strName);
 
@@ -98,6 +101,8 @@ private:
 	char* m_szLastRadioBGroup;
 	int m_iLastRadioBGroup;
 	char m_szTexName[250];
+
+	ZFResourceHandle* m_kResHandle;
 };
 
 #endif // #ifndef _GUIBUILDER_H

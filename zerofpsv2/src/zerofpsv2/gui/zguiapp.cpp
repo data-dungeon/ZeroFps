@@ -4,6 +4,7 @@
 
 #include "zguiapp.h"
 #include "../basic/zfassert.h"
+#include "../basic/zfresourcedb.h"
 #include "../engine/res_texture.h"
 #include "../render/texturemanager.h"
 #include "../script/zfscript.h"
@@ -239,7 +240,7 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int i
 		pkParent, x, y, w, h, uiFlags);
 }
 
-ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScript *pkScript, ZGuiSkin* pkSkin)
+ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGuiSkin* pkSkin)
 {
 	ZGuiSkin* pkNewSkin;
 	
@@ -299,7 +300,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScript *pkScript, ZGuiSkin*
 	return pkNewSkin;
 }
 
-void ZGuiApp::InitTextures(ZFScript* pkScript)
+void ZGuiApp::InitTextures(ZFScriptSystem* pkScript)
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
 	int crap = m_pkTexMan->Load("/data/textures/gui/crap.bmp", 0);
@@ -331,12 +332,19 @@ void ZGuiApp::InitTextures(ZFScript* pkScript)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i], pkScript) ) );
 }
 
-void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript,
-									ZGuiResourceManager* pkResMan)
+void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
+									 ZFScriptSystem* pkScript,
+									 ZGuiResourceManager* pkResMan)
 {
 	// Start skript filen för GUI:t.
 	// Läs in tex filnamn på textuerer osv.
-	pkScript->RunScript("data/script/gui/gui_script.lua");
+
+	if(m_kResHandle)
+		delete m_kResHandle;
+
+	m_kResHandle = new ZFResourceHandle;
+	if(!m_kResHandle->SetRes("data/script/gui/gui_script.lua"))
+		printf("Failed to load gui_script.lua\n");
 
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;
@@ -346,7 +354,6 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkS
 
 	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("/data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/cursor_a.bmp", 0), 32, 32);
-	//SDL_ShowCursor(SDL_DISABLE);
 
 	// Låt skriptfilen skapa alla fönster.
 	pkScript->CallScript("CreateMainWnds", 0, 0);
@@ -619,7 +626,8 @@ void ZGuiApp::CloseWindow(char* szResName)
 		pkWnd->Hide();
 }
 
-bool ZGuiApp::ChangeSkin(ZFScript* pkScript, int iID, char *szSkinName, char* szSkinType)
+bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, int iID, 
+								 char *szSkinName, char* szSkinType)
 {
 	ZGuiWnd* pkWnd = GetWnd(iID);
 

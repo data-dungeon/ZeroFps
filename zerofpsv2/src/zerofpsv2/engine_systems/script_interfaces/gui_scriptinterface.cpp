@@ -6,7 +6,7 @@
 #include "../../gui/zgui.h"
 #include "gui_scriptinterface.h"
 
-void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScript* pkScript)
+void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 {
 	g_pkGuiApp = pkGuiApp;
 	g_pkScript = pkScript;

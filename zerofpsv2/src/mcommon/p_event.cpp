@@ -7,7 +7,7 @@ P_Event::P_Event()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkScript=static_cast<ZFScript*>(g_ZFObjSys.GetObjectPtr("ZFScript"));
+	m_pkScript=static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 
 	
 	m_bHaveRunInit=false;

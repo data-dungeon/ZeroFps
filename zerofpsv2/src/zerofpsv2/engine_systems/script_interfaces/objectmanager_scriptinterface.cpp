@@ -3,14 +3,14 @@
 #include "../../engine/objectmanager.h"
 #include "../../script/zfscript.h"
 
-ZFScript* 		ObjectManagerLua::g_pkScript;
-ObjectManager* ObjectManagerLua::g_pkObjMan;
-Object*			ObjectManagerLua::g_pkLastObject;
-Object*			ObjectManagerLua::g_pkLastParent;
-Property*		ObjectManagerLua::g_pkLastProperty;
-Object*			ObjectManagerLua::g_pkReturnObject;
+ZFScriptSystem* ObjectManagerLua::g_pkScript;
+ObjectManager*  ObjectManagerLua::g_pkObjMan;
+Object*			 ObjectManagerLua::g_pkLastObject;
+Object*			 ObjectManagerLua::g_pkLastParent;
+Property*		 ObjectManagerLua::g_pkLastProperty;
+Object*			 ObjectManagerLua::g_pkReturnObject;
 
-void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScript* pkScript)
+void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;

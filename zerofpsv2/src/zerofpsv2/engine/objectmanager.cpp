@@ -67,7 +67,7 @@ bool ObjectManager::StartUp()
 {
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	m_pkScript = static_cast<ZFScript*>(GetSystem().GetObjectPtr("ZFScript"));
+	m_pkScript = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 

@@ -91,7 +91,7 @@ class MistClient :public Application, public ZGuiApp {
 		bool ShutDown();
 		bool IsValid();
 
-		ZFScript* GetScript() { return pkScript; }
+		ZFScriptSystem* GetScript() { return pkScript; }
 
 };
 

@@ -3,12 +3,10 @@
 #ifndef _ZFSCRIPT_H
 #define _ZFSCRIPT_H
 
-extern "C"  {
+extern "C"  
+{
 	#include <lua.h>
-//	#include <lualib.h>
 }
-
-//#include <tolua.h>
 
 #pragma warning (disable :4786)
 #include <set>
@@ -18,6 +16,7 @@ using namespace std;
 
 #include "script_x.h"
 #include "../basic/zfobjectmanger.h"
+#include "../basic/zfresource.h"
 
 class ZFVFileSystem;
 
@@ -38,7 +37,22 @@ enum ScripObjectType
 	tVector3,
 };
 
-class SCRIPT_API ZFScript  : public ZFSubSystem
+class SCRIPT_API ZFScript : public ZFResource
+{
+	public:
+		ZFScript();
+		~ZFScript();
+		bool Create(string strName);	// overloaded
+		
+	private:
+
+		char* m_szScriptName;
+};
+
+SCRIPT_API ZFResource* Create__ZFScript();
+
+
+class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
@@ -64,15 +78,12 @@ public:
 	bool CallScript(char* szFuncName, int iNumParams, int iNumResults);
 	bool RunScript(char* szFileName);
 	
-	
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();	
 	
-	ZFScript();
-	virtual ~ZFScript();
-
-
+	ZFScriptSystem();
+	virtual ~ZFScriptSystem();
 
 private:
 

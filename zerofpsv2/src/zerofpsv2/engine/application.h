@@ -32,7 +32,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZGuiResourceManager*	pkGuiMan;
 		ZFIni*					pkIni;
 		PhysicsEngine*			pkPhysEngine;
-		ZFScript*				pkScript;
+		ZFScriptSystem*		pkScript;
 		ZFVFileSystem*			pkZFVFileSystem;
 		Physics_Engine*		pkPhysics_Engine;
 		ZShader*					pkZShader;	

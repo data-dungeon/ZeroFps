@@ -2,7 +2,7 @@
 #ifndef _STD_SCRIPTINTERFACE_H_
 #define _STD_SCRIPTINTERFACE_H_
 
-class ZFScript;
+class ZFScriptSystem;
 
 #include "../engine_systems_x.h"
 #include "../../script/zfscript.h"
@@ -13,9 +13,9 @@ using namespace std;
 namespace StdLua
 {
 
-	extern ZFScript* 		g_pkScript;
+	extern ZFScriptSystem* 		g_pkScript;
 	
-	void ENGINE_SYSTEMS_API Init(ZFScript* pkScript);
+	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript);
 	
 	int ENGINE_SYSTEMS_API PrintLua(lua_State* pkLua);	
 	

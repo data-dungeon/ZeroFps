@@ -53,7 +53,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkPSystemManager		= new PSystemManager;
 
-	m_pkScript					= new ZFScript;
+	m_pkScript					= new ZFScriptSystem;
 
 	// Set Default values
 	m_fFrameTime				= 0;
@@ -960,7 +960,8 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);
 	m_pkResourceDB->RegisterResource( string(".wav"), Create__WavSound	);
-	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);	
+	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);
+	m_pkResourceDB->RegisterResource( string(".lua"), Create__ZFScript  	);
 }
 
 void ZeroFps::RegisterPropertys()

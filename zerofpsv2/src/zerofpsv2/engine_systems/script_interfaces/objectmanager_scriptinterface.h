@@ -5,16 +5,16 @@
 #include "../engine_systems_x.h"
 
 class ObjectManager;
-class ZFScript;
+class ZFScriptSystem;
 class Object;
 class Property;
 
 namespace ObjectManagerLua
 {
-	void ENGINE_SYSTEMS_API Init(ObjectManager* pkObjMan, ZFScript* pkScript);
+	void ENGINE_SYSTEMS_API Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript);
 	void ENGINE_SYSTEMS_API Reset();
 
-	extern ZFScript* 		g_pkScript;
+	extern ZFScriptSystem* 		g_pkScript;
 	
 	extern ObjectManager* g_pkObjMan;
 	extern Object*			g_pkLastObject;

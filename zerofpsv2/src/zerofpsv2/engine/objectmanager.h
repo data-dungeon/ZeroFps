@@ -61,7 +61,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		} Less_Property;
 	
 		ZeroFps*	m_pkZeroFps;
-		ZFScript* m_pkScript;
+		ZFScriptSystem* m_pkScript;
 		Object*	m_pkWorldObject;											///< Top level object.
 		
 		// Object ArcheTypes

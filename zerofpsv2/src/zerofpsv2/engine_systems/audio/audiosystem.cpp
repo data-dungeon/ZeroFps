@@ -33,12 +33,24 @@ bool ZFSound::Create(string strName)
    if(alGetError() != AL_NO_ERROR) 
 	   return false;
 
+	// Använd det virituella filsytemet för att kolla om filen finns och
+	// spara undan sökvägen till filen i en medlems variabel
+	ZFVFileSystem* pkFileSys;
+	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
+	string strFull = pkFileSys->GetFullPath(strName.c_str());
+
+	if(strFull.empty())
+	{
+		cout<< "ZFSound::Create: Sound \"" << strName.c_str() << "\" does not exist" << endl;	
+		return false;
+	}
+
 	// register filename
 	if(m_szFileName != NULL)
 		delete[] m_szFileName;
 
-	m_szFileName = new char[strName.size()+1];
-	strcpy(m_szFileName, strName.c_str());
+	m_szFileName = new char[strFull.size()+1];
+	strcpy(m_szFileName, strFull.c_str());
 
 	return true;
 }
@@ -59,19 +71,8 @@ bool ZFSound::Load()
    ALvoid *data;
 	ALboolean loop;   //we dont use this
 
-	ZFVFileSystem* pkFileSys;
-	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
-
-	string strFull = pkFileSys->GetFullPath(m_szFileName);
-
-	if(strFull.empty())
-	{
-		cout<<"cold not load file: " << m_szFileName << ", from vf" << endl;	
-		return false;
-	}
-
 	// Load file
-   alutLoadWAVFile((ALbyte*)strFull.c_str(), &format, &data, &size, &freq, &loop);   
+   alutLoadWAVFile((ALbyte*)m_szFileName, &format, &data, &size, &freq, &loop);   
 	if(size==0)
 	{
 	   cout<<"cold not load file " << m_szFileName << ", Loading Dummy" << endl;	
@@ -87,6 +88,9 @@ bool ZFSound::Load()
 		alDeleteBuffers(1, &m_uiIndex);
 		exit(-1);
 	}
+
+	//release the data
+	alutUnloadWAV(format, data, size, freq);
 
 	return true;
 }
@@ -158,7 +162,16 @@ bool ZFAudioSystem::StartUp()
 	return true; 
 }
 
-bool ZFAudioSystem::ShutDown() { return true; }
+bool ZFAudioSystem::ShutDown() 
+{ 
+	// Remove resurce files
+	map<string,ZFResourceHandle*>::iterator itRes = m_mkResHandles.begin();
+	for( ; itRes != m_mkResHandles.end(); itRes++)
+		if(itRes->second)
+			delete itRes->second;
+
+	return true; 
+}
 
 bool ZFAudioSystem::IsValid()  { return true; }
 
@@ -218,12 +231,17 @@ void ZFAudioSystem::AddSound(ZFSound* pkSound)
 			return;
 	
 	m_akSounds.push_back(pkSound);
+	printf("Sound addded to list\n");
+
+	printf("Antal ljud: %i\n", m_akSounds.size());
 }
 
 void ZFAudioSystem::RemoveSound(ZFSound* pkSound) 
 {
 	if(pkSound==NULL)
 		return;
+
+	printf("Antal ljud: %i\n", m_akSounds.size());
 
 	bool found=false;
 	list<ZFSound*>::iterator it;
@@ -232,6 +250,8 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 		if( (*it) == pkSound)
 			found=true;	
 	}
+
+	printf("MMMMMMM\n%i\n", found);
 	
 	if(found==true)
 	{
@@ -242,7 +262,7 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 			m_kSources[index]->m_bUsed=false;
 			pkSound->m_iSourceIndex=-1;
 		}
-		pkSound->m_iNrOfPlays++;
+		//pkSound->m_iNrOfPlays++;
 		m_akSounds.remove(pkSound);
 	}
 }
@@ -382,4 +402,24 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			break;
 	}
+}
+
+//
+// Returnerar ett resurshantag om ett sådant finnes eller skapar
+// ett nytt och sparar ner i en map om inget finnes.
+//
+ZFResourceHandle* ZFAudioSystem::GetResHandle(string strFileName)
+{
+	// Check if resource handle exist.
+	map<string,ZFResourceHandle*>::iterator itRes;
+	itRes = m_mkResHandles.find(strFileName);
+	if(itRes != m_mkResHandles.end())
+		return itRes->second; // return if exist.
+
+	// Add resource if not.
+	ZFResourceHandle* pkNewRes = new ZFResourceHandle;
+	m_mkResHandles.insert(map<string,ZFResourceHandle*>::value_type(
+		strFileName, pkNewRes)); 
+	
+	return pkNewRes;
 }

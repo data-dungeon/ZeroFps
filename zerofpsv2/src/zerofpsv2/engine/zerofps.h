@@ -39,7 +39,7 @@ class Render;
 class ZGui;
 class ZGuiResourceManager;
 class GLGuiRender;
-class ZFScript;
+class ZFScriptSystem;
 class Application;
 class NetPacket;
 class PSystemManager;
@@ -172,7 +172,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZFIni*					m_pkIni;						///< Ini Files - Zeb
 		PhysicsEngine*			m_pkPhysEngine;			///< 
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
-		ZFScript*				m_pkScript;					///< script
+		ZFScriptSystem*		m_pkScript;					///< script
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 		Application*			m_pkApp;						///< Application object.
 		ZShader*					m_pkZShader;				///< zerofps shader system

@@ -108,7 +108,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		bool ShutDown();
 		bool IsValid();
 
-		ZFScript* GetScript() { return pkScript; }
+		ZFScriptSystem* GetScript() { return pkScript; }
 
 		//void RegisterActions();		
 		//Setup spawn points

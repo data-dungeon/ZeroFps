@@ -21,6 +21,7 @@ class ZFSound;
 class ENGINE_SYSTEMS_API ZFAudioSystem : public ZFSubSystem 
 {		
 	public:
+		ZFResourceHandle* GetResHandle(string strFileName);
 		void AddSound(ZFSound* pkSound);
 		void RemoveSound(ZFSound* pkSound);
 		void Update();
@@ -65,6 +66,9 @@ class ENGINE_SYSTEMS_API ZFAudioSystem : public ZFSubSystem
 			FID_MUSICBUFFERS,
 			FID_MUSICSTOP
 		};
+
+		//vector<ZFResourceHandle*> m_vkResHandles;
+		map<string, ZFResourceHandle*> m_mkResHandles;
 };
 
 class ENGINE_SYSTEMS_API ZFSound : public ZFResource
@@ -73,8 +77,8 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		ZFSound();
 		~ZFSound();
 		bool Create(string strName);	// overloaded
-		int CalculateSize();
 
+		int CalculateSize();
 		bool Start(int iSourceIndex, int iSourceName);
 		bool Load();
 
@@ -83,6 +87,10 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		bool m_bLoop;						// does the sound loop?	
 		
 	private:
+
+		bool Start(int iSourceIndex, int iSourceName);
+		bool Load();
+
 		ALuint m_uiIndex;
 		char* m_szFileName;
 		int m_iSourceIndex;				// index in m_kSources, if no source it shud be -1

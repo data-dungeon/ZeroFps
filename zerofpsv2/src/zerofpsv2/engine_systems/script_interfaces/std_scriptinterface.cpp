@@ -1,9 +1,9 @@
 #include "std_scriptinterface.h"
 #include <cmath>                    // for trigonometry functions
 
-ZFScript* StdLua::g_pkScript;
+ZFScriptSystem* StdLua::g_pkScript;
 
-void StdLua::Init(ZFScript* pkScript)
+void StdLua::Init(ZFScriptSystem* pkScript)
 {
 	g_pkScript = pkScript;
 	
