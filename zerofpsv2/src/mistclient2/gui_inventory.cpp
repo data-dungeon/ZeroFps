@@ -217,7 +217,21 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 						OnDropItem();
 
 					m_kMoveSlot.m_iIndex = -1;
-				}	
+				}
+
+				// Open or close container in grid.
+				if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
+				{	
+					s_bRightMouseButtonPressed = true;
+
+					bool bOpen = true;
+					if(m_iActiveContainerID == m_vkContainerItemList[i].iItemID) // klickat på samma container
+						bOpen = false;															 // som redan är öppnad?
+
+					OpenContainerItem(bOpen, i, false);				
+				}
+				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
+					s_bRightMouseButtonPressed = false;
 			}
 			else
 			{

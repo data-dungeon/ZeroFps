@@ -6,8 +6,6 @@ extern MistClient	g_kMistClient;
 void GuiMsgIngameScreen( string strMainWnd, string	strController,	
 								 unsigned int msg, int numparms,	void *params )	
 {
-
-
 	if(msg == ZGM_COMMAND)
 	{
 		if(strMainWnd == "GameGuiToolbar")
@@ -147,9 +145,7 @@ void MistClient::AddStringToChatBox(string strMsg)
 	((ZGuiTextbox*)GetWnd("ChatTextbox"))->ScrollRowIntoView(
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
 
-	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);
-
-	
+	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);	
 }
 
 void MistClient::ResizeChatDlg(bool	bMakeBigger)
