@@ -5,7 +5,7 @@ HeightMap::HeightMap() {
 	m_iHmSize=500;	
 	m_iBoxTresh=2;
 	m_iMaxSteps=5;
-	m_kPosition=Vector3(-50,-20,-50);
+	m_kPosition=Vector3(-50,0,-50);
 	verts=new HM_vert[(m_iHmSize+1)*m_iHmSize];
 	Zero();
 	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");

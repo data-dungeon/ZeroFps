@@ -31,7 +31,7 @@ void Test::OnInit(void) {
 //s	exit(1);
 
 
-	GLfloat light_position[] ={100,100,0,1};
+	GLfloat light_position[] ={1000,-200,0,1};
 	GLfloat white_light[] = {0.2,0.2,0.2,0.6};
 	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
 
@@ -55,8 +55,8 @@ void Test::OnIdle(void) {
 	glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
-//	pkRender->DrawHMlod(test2,*pkFps->m_kCamPos);			
-//	pkRender->DrawHM(test);		
+
+	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
 	cout<<pkFps->m_iFps<<endl;
 }

@@ -19,6 +19,7 @@ class ENGINE_API Application {
 		Console* pkConsole;			
 		Render* pkRender;
 		Input* pkInput;
+		TextureManager* pkTexMan;
 		
 	public:
 		static Application* pkApp;
