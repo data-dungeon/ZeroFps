@@ -35,10 +35,11 @@ GLGuiRender::~GLGuiRender()
 bool GLGuiRender::StartRender()
 {
 	//glPushMatrix();
-	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
+	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_FOG);
 
 /*	glViewport(0,0,m_iScreenWidth,m_iScreenHeight);						// Reset The Current Viewport
 
