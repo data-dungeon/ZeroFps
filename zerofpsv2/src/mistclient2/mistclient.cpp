@@ -119,7 +119,8 @@ void MistClient::RegisterPropertys()
 {
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
-	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+//	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 }
 
 

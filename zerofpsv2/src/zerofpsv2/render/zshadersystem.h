@@ -358,7 +358,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void MatrixPush()										{glPushMatrix();};
 		
 		void MatrixSave(Matrix4* pkMatrix);
-		void MatrixLoad(Matrix4* pkMatrix);
+		void MatrixLoad(const Matrix4* pkMatrix);
 		
 		void MatrixGenerateOrtho(	const float& fLeft,const float& fRight,const float& fBottom,
 											const float& fTop,const float& fNear,const float& fFar)

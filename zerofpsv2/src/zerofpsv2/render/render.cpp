@@ -364,6 +364,24 @@ void Render::PrintChar(char cChar,float fPos,float fScale)
 					
 }
 
+void Render::PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos,const char* aText,float fScale,bool bCentered) 
+{
+	Matrix4 temp = kCamRotMatrix;
+	temp.Transponse();
+
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(kPos);
+	m_pkZShaderSystem->MatrixMult(temp);
+
+
+	if(bCentered)
+		m_pkZShaderSystem->MatrixTranslate(Vector3(-(strlen(aText)/2.0)*fScale,0,0));
+
+	Print(Vector3(0,0,0),aText,fScale);
+		
+	m_pkZShaderSystem->MatrixPop();
+}
+
 void Render::Print(Vector3 kPos,const char* aText,float fScale) 
 {
 	if(strlen(aText) == 0)

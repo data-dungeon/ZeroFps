@@ -233,7 +233,7 @@ void MistServer::RenderInterface(void)
 
 void MistServer::OnSystem()
 {
-	HandleOrders();
+
 }
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
@@ -659,7 +659,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = "MrBadq";
+	pkClient->m_strCharacter = "MrBad";
 	pkClient->m_strLogin = szLogin;
 
 	if(!pkClient->m_pkObject)
@@ -734,6 +734,7 @@ void MistServer::OnServerStart(void)
 {		
 	CreateEditCameras();
 
+/*	
 	//create server info object
 	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
 	if(m_pkServerInfo)
@@ -747,6 +748,7 @@ void MistServer::OnServerStart(void)
 		else
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
+*/	
 }
 
 void MistServer::OnClientStart(void)
@@ -917,9 +919,126 @@ void MistServer::HSO_Character(ClientOrder* pkOrder)
 }
 
 
+void MistServer::SendTextToMistClientInfoBox(char *szText)
+{
+	  
+}
+
+void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
+{
+	unsigned char ucType;
+
+	// Read Type of Message.
+	PkNetMessage->Read(ucType);
+
+	switch(ucType)
+	{
+		case MLNM_CS_JIDDRA:
+			char szMsg[256];
+			PkNetMessage->Read_Str(szMsg);
+			m_pkConsole->Printf(szMsg);
+			break;
+
+		case MLNM_CS_REQ_CHARACTERID:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				NetPacket kNp;
+				
+				kNp.Clear();
+				kNp.Write((char) MLNM_SC_CHARACTERID);
+				kNp.Write(pkData->m_iCharacterID);
+				kNp.TargetSetClient(PkNetMessage->m_iClientID);
+				SendAppMessage(&kNp);
+			}
+			break;
+		}
+		
+		case MLNM_CS_CONTROLS:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				bitset<6> kControls;
+				float	fYAngle;
+				float fPAngle;
+				
+				PkNetMessage->Read(kControls);
+				PkNetMessage->Read(fYAngle);
+				PkNetMessage->Read(fPAngle);
+				
+				if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(pkData->m_iCharacterID))
+				{
+					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
+					{
+						pkCC->SetKeys(&kControls);
+						pkCC->SetRotation(fYAngle,fPAngle);
+					}
+					else
+						cout<<"character has no controls ...WHYYYYYYYY!!!!!!!!"<<endl;
+				}
+			}
+			break;
+		}
+		
+		case MLNM_CS_SAY:
+		{
+			string strMsg;
+			PkNetMessage->Read_Str(strMsg);
+			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{				
+				m_pkConsole->Printf("Msg> %s: %s",pkData->m_strPlayerName.c_str(),strMsg.c_str());
+				
+				SayToClients(pkData->m_strPlayerName+string(": ")+strMsg);
+			}			
+			
+			break;
+		}			
+			
+		default:
+			cout << "Error in game packet : " << (int) ucType << endl;
+			PkNetMessage->SetError(true);
+			return;
+	}
+}
+
+
+
+void MistServer::SayToClients(const string& strMsg)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_SC_SAY);
+	kNp.Write_Str(strMsg);
+	kNp.TargetSetClient(-2);
+	SendAppMessage(&kNp);	
+}
+
+Vector3 MistServer::GetPlayerStartPos()
+{
+	if(Entity* pkEnt = m_pkObjectMan->GetEntityByType("hosstartpos.lua"))
+	{
+		return pkEnt->GetWorldPosV();	
+	}
+	else
+	{
+		cout<<"missing hosstartpos.lua object, starting at <0 1 0>"<<endl;
+		return Vector3(0,3,0);			
+	}
+}
+
+
+
+
+
+
+
+
+
+
 /*
 	Handle Server Orders, that is commands sent from clients to the server.
 */			
+/*
 void MistServer::HandleOrders()
 {
 	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
@@ -1222,120 +1341,9 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 						return true;				
 			}
 		}
-*/		
+*		
 	}
 	
 	return false;
 }
-
-void MistServer::SendTextToMistClientInfoBox(char *szText)
-{
-	  
-}
-
-void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
-{
-	unsigned char ucType;
-
-	// Read Type of Message.
-	PkNetMessage->Read(ucType);
-
-	switch(ucType)
-	{
-		case MLNM_CS_JIDDRA:
-			char szMsg[256];
-			PkNetMessage->Read_Str(szMsg);
-			m_pkConsole->Printf(szMsg);
-			break;
-
-		case MLNM_CS_REQ_CHARACTERID:
-		{
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{
-				NetPacket kNp;
-				
-				kNp.Clear();
-				kNp.Write((char) MLNM_SC_CHARACTERID);
-				kNp.Write(pkData->m_iCharacterID);
-				kNp.TargetSetClient(PkNetMessage->m_iClientID);
-				SendAppMessage(&kNp);
-			}
-			break;
-		}
-		
-		case MLNM_CS_CONTROLS:
-		{
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{
-				bitset<6> kControls;
-				float	fYAngle;
-				float fPAngle;
-				
-				PkNetMessage->Read(kControls);
-				PkNetMessage->Read(fYAngle);
-				PkNetMessage->Read(fPAngle);
-				
-				if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(pkData->m_iCharacterID))
-				{
-					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
-					{
-						pkCC->SetKeys(&kControls);
-						pkCC->SetRotation(fYAngle,fPAngle);
-					}
-					else
-						cout<<"character has no controls ...WHYYYYYYYY!!!!!!!!"<<endl;
-				}
-			}
-			break;
-		}
-		
-		case MLNM_CS_SAY:
-		{
-			string strMsg;
-			PkNetMessage->Read_Str(strMsg);
-			
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{				
-				m_pkConsole->Printf("Msg> %s: %s",pkData->m_strPlayerName.c_str(),strMsg.c_str());
-				
-				SayToClients(pkData->m_strPlayerName+string(": ")+strMsg);
-			}			
-			
-			break;
-		}			
-			
-		default:
-			cout << "Error in game packet : " << (int) ucType << endl;
-			PkNetMessage->SetError(true);
-			return;
-	}
-}
-
-
-
-void MistServer::SayToClients(const string& strMsg)
-{
-	NetPacket kNp;			
-	kNp.Write((char) MLNM_SC_SAY);
-	kNp.Write_Str(strMsg);
-	kNp.TargetSetClient(-2);
-	SendAppMessage(&kNp);	
-}
-
-Vector3 MistServer::GetPlayerStartPos()
-{
-	if(Entity* pkEnt = m_pkObjectMan->GetEntityByType("hosstartpos.lua"))
-	{
-		return pkEnt->GetWorldPosV();	
-	}
-	else
-	{
-		cout<<"missing hosstartpos.lua object, starting at <0 1 0>"<<endl;
-		return Vector3(0,3,0);			
-	}
-}
-
-
-
-
-
+*/

@@ -7,7 +7,8 @@ P_Ml::P_Ml()
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
-	m_pkRender=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
 	bNetwork = true;	
 	m_iVersion = 2;
@@ -30,13 +31,27 @@ P_Ml::~P_Ml()
 
 
 void P_Ml::Update()
-{		
+{
+	static ZMaterial* pkText = NULL;
+	if(!pkText)
+	{
+		pkText = new ZMaterial;
+		pkText->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/mltext.tga");
+		pkText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		pkText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		pkText->GetPass(0)->m_bLighting = 				false;		
+		pkText->GetPass(0)->m_bColorMaterial = 		true;
+		pkText->GetPass(0)->m_bFog = 						true;		
+		pkText->GetPass(0)->m_bAlphaTest =				true;		
+		pkText->GetPass(0)->m_bDepthTest = 				true;				//needs to disable z-test , else marker wont work
+	}
+	
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		if(m_bShowText)
 		{
-		//	m_pkRender->SetFont("data/textures/text/objecttext.tga");
-		//	m_pkRender->Print(m_pkObject->GetIWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2f,0),Vector3(.2f,.2f,.2f),(char*)m_strText.c_str());				
+			m_pkZShaderSystem->BindMaterial(pkText);			
+			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetObject()->GetIWorldPosV()+Vector3(0,GetObject()->GetRadius(),0),GetObject()->GetName().c_str(),0.2,true);
 		}
 	}
 }

@@ -90,10 +90,10 @@ class MistServer :public Application , public ZGuiApp
 
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
-		void HandleOrders();
+//		void HandleOrders();
 		void HSO_Character(ClientOrder* pkOrder);
 
-		bool CheckValidOrder(ClientOrder* pkOrder);
+//		bool CheckValidOrder(ClientOrder* pkOrder);
 		void SendTextToMistClientInfoBox(char* szText);
 
 		void SetupGuiEnviroment();

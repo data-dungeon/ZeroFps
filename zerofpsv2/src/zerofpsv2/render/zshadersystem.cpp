@@ -1350,7 +1350,7 @@ void ZShaderSystem::MatrixSave(Matrix4* pkMatrix)
 	}
 }
 
-void ZShaderSystem::MatrixLoad(Matrix4* pkMatrix)
+void ZShaderSystem::MatrixLoad(const Matrix4* pkMatrix)
 {
 	glLoadMatrixf(pkMatrix->data);
 }
