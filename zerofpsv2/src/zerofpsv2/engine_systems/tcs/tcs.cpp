@@ -81,7 +81,8 @@ void Tcs::UpdateVel()
 		//apply gravity if enabled
 		if(m_kBodys[i]->m_bGravity)
 		{
-			m_kBodys[i]->GetObject()->GetVel() += Vector3(0,-2,0)*m_pkZeroFps->GetGameFrameTime();
+			Vector3 kVel = m_kBodys[i]->GetObject()->GetVel() + Vector3(0,-2,0)*m_pkZeroFps->GetGameFrameTime();
+			m_kBodys[i]->GetObject()->SetVel(kVel);
 		}
 	}
 }
@@ -90,7 +91,8 @@ void Tcs::UpdateMotion()
 {
 	for(int i=0;i<m_kBodys.size();i++)
 	{	
-		m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
+		if(!m_kBodys[i]->m_bStatic)
+			m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
 	}
 }
 

@@ -29,8 +29,8 @@ Entity::Entity()
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
 	
-  	m_strName	= "A Entity";	
-	m_strType	= "Entity";
+  	SetName("A Entity");
+	SetType("Entity");
 
 	m_pScriptFileHandle	= new ZFResourceHandle;
 
@@ -49,9 +49,14 @@ Entity::Entity()
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
 	
+	//clear child list
 	m_akChilds.clear();	
 	
+	//reset all oritentation data
 	ResetGotData();
+	
+	//set nr of connections
+	SetNrOfConnections(m_pkFps->GetMaxPlayers());
 }
 
 Entity::~Entity() 
@@ -358,6 +363,8 @@ void Entity::SetParent(Entity* pkObject)
 	if(this == pkObject)
 		return;
 
+	SetNetUpdateFlag(NETUPDATEFLAG_PARENT,true);
+
 	// Remove Parent
 	if(pkObject == NULL) {
 		if(m_pkParent == NULL)
@@ -553,15 +560,89 @@ bool Entity::NeedToPack()
 */
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
-	int iParentID	=	-1;
-	if(m_pkParent)
-		iParentID = m_pkParent->iNetWorkID;
+	//check delete list
+	if(m_aiNetDeleteList.size())
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,true);
+	
 
-	pkNetPacket->Write( iParentID );
+	//send update flags
+	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
+	
+	//send parent
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT,false);		
+		
+		int iParentID	=	-1;
+		if(m_pkParent)
+			iParentID = m_pkParent->iNetWorkID;
+
+		pkNetPacket->Write( iParentID );
+	}
 
    // send update status
-   pkNetPacket->Write( m_iUpdateStatus );
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_UPDATESTATUS))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_UPDATESTATUS,false);	   
+	   
+	   pkNetPacket->Write( m_iUpdateStatus );		   
+	}
 
+	//send delete list
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,false);
+		
+		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
+
+		for(int i=0; i<m_aiNetDeleteList.size(); i++)
+			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
+	}
+
+	//send position
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_POS))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_POS,false);		
+		pkNetPacket->Write(GetWorldPosV());
+	}
+	
+	//send rotation
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ROT))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ROT,false);	
+		pkNetPacket->Write(GetLocalRotM());
+	}
+	
+	//send velocity
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_VEL))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_VEL,false);	
+		pkNetPacket->Write(m_kVel);
+	}
+	
+	
+	//send radius
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RADIUS))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RADIUS,false);	
+		pkNetPacket->Write(m_fRadius);
+	}
+	
+	//send name
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_NAME))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_NAME,false);	
+		pkNetPacket->Write_Str(m_strName.c_str());
+	}
+	
+	//send type
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_TYPE))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_TYPE,false);	
+		pkNetPacket->Write_Str(m_strType.c_str());
+	}	
+
+/*
 	// Force Pos Updates
 	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
 	if(m_aiNetDeleteList.size())
@@ -577,20 +658,20 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		for(int i=0; i<m_aiNetDeleteList.size(); i++)
 			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
 		}
-
-	//	Write Pos, Rotation, radius and name.
-	Vector3 kPos;
+*/
+	
+/*	Vector3 kPos;
 	kPos = GetLocalPosV();
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
 		pkNetPacket->Write(GetWorldPosV());
-	
-	Matrix4 kRotMatrix = GetLocalRotM();
+*/	
+/*	Matrix4 kRotMatrix = GetLocalRotM();
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
 		pkNetPacket->Write( kRotMatrix );
+*/
+//	pkNetPacket->Write(m_fRadius);
 
-	pkNetPacket->Write(m_fRadius);
-
-	pkNetPacket->Write_NetStr(m_strName.c_str());
+//	pkNetPacket->Write_NetStr(m_strName.c_str());
 	//g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
 	
 //	char szPropertyName[256];
@@ -618,13 +699,110 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 
 	pkNetPacket->Write_NetStr("");
 
-	m_iNetUpdateFlags = 0;
+//	m_iNetUpdateFlags = 0;
 }
 
 /**	\brief	Unpack Entity.
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
+	int iStart = pkNetPacket->m_iPos;
+
+	//read update flags
+	pkNetPacket->Read(m_kNetUpdateFlags[0]);			//con id is 0
+
+	//get parent
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
+	{
+		cout<<"got parent update"<<endl;
+		
+		int iParentID	=	-1;
+
+		pkNetPacket->Read( iParentID );
+		SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
+	}
+
+   // get update status
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_UPDATESTATUS))
+	{
+		cout<<"got update status"<<endl;	
+		
+	   pkNetPacket->Read( m_iUpdateStatus );		   
+	}
+
+	//get delete list
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
+	{	
+		cout<<"got delete data"<<endl;	
+	
+		int iNumDelObjects;
+		Entity* pkNetSlave;	
+		
+		pkNetPacket->Read(iNumDelObjects);
+
+		for(int i=0; i<iNumDelObjects; i++) 
+		{
+			int iDelObjectID;
+			pkNetPacket->Read(iDelObjectID );
+			pkNetSlave = m_pkObjectMan->GetObjectByNetWorkID(iDelObjectID);
+			m_pkObjectMan->Delete(pkNetSlave);
+		}
+	}
+
+	//get position
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
+	{
+		cout<<"got position:"<<endl;	
+		Vector3 kPos;
+		pkNetPacket->Read(kPos);
+		SetLocalPosV(kPos);
+	}
+	
+	//get rotation	
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ROT))
+	{
+		cout<<"got rotation:"<<endl;	
+		Matrix4 kRot;
+		pkNetPacket->Read(kRot);
+		SetLocalRotM(kRot);
+	}
+	
+	//get velocity	
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_VEL))
+	{
+		cout<<"got velocity:"<<endl;	
+		Vector3 kVel;
+		pkNetPacket->Read(kVel);
+		GetVel()=kVel;
+	}
+	
+	//get radius
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
+	{
+		cout<<"got radius"<<endl;	
+		pkNetPacket->Read(m_fRadius);
+	}
+	
+	//get name
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_NAME))	
+	{
+		char szStr[256];
+		pkNetPacket->Read_Str(szStr);
+		m_strName = szStr;		
+	
+		cout<<"got name "<<m_strName<<endl;		
+	}	
+	
+	//get type
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_TYPE))	
+	{
+		char szStr[256];
+		pkNetPacket->Read_Str(szStr);
+		m_strType = szStr;		
+	
+		cout<<"got type "<<m_strType<<endl;		
+	}		
+/*
 	int iDelObjectID;
 
 	int iParentID;
@@ -657,14 +835,30 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 			}
 		}
 
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
+	if(GetNetUpdateFlag(0,0))
+	{
+		cout<<"got position:"<<endl;	
+		Vector3 kPos;
+		pkNetPacket->Read(kPos);
+		SetLocalPosV(kPos);
+	}
+	
+	if(GetNetUpdateFlag(0,1))
+	{
+		cout<<"got rotation:"<<endl;	
+		Matrix4 kRot;
+		pkNetPacket->Read(kRot);
+		SetLocalRotM(kRot);
+	}
+
+/*	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
 		pkNetPacket->Read(kVec);
 		SetLocalPosV(kVec);
 		//SetPos(kVec);
 		//g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
 		}
-
-	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
+*/
+/*	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
 		Matrix4 kRotMatrix;
 		pkNetPacket->Read(kRotMatrix);
 		//SetWorldPosV(kVec);
@@ -672,7 +866,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		//SetWorldRotV(kVec);
 		//g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
 		}
-
+*
 	pkNetPacket->Read(fFloat);
 	GetRadius() = fFloat;
 
@@ -681,7 +875,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	m_strName = szStr;
 	//g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
 	//g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
-
+*/
 	char szProperty[256];
 	pkNetPacket->Read_NetStr(szProperty);
 
@@ -788,6 +982,9 @@ void Entity::Load(ZFIoInterface* pkFile)
 		newobj->SetParent(this);
 		newobj->Load(pkFile);		
 	}
+	
+	//reset alla update flags for this object
+	ResetAllNetUpdateFlags();
 }
 
 /**	\brief	Save Entity.
@@ -1029,6 +1226,48 @@ void Entity::MakeCloneOf(Entity* pkOrginal)
 		}
 }
 
+void Entity::SetRadius(float fRadius)
+{
+	if(m_fRadius == fRadius)
+		return;
+		
+	m_fRadius = fRadius;
+	
+	SetNetUpdateFlag(NETUPDATEFLAG_RADIUS,true);
+}
+
+void Entity::SetType(string strType)
+{
+	if(m_strType == strType)
+		return;
+		
+	m_strType = strType;
+	
+	SetNetUpdateFlag(NETUPDATEFLAG_TYPE,true);
+}
+
+void Entity::SetName(string strName)
+{
+	if(strName == m_strName)
+		return;
+		
+	m_strName = strName;
+	
+	SetNetUpdateFlag(NETUPDATEFLAG_NAME,true);
+}
+
+
+void Entity::SetVel(Vector3 kVel)
+{
+	if(kVel == m_kVel)
+		return;
+		
+	m_kVel = kVel;
+	
+	SetNetUpdateFlag(NETUPDATEFLAG_VEL,true);
+}
+
+
 void Entity::ResetChildsGotData()
 {
 	ResetGotData();
@@ -1041,10 +1280,15 @@ void Entity::ResetChildsGotData()
 
 void Entity::SetLocalRotM(Matrix4 kNewRot)
 {
-	m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
+	if(kNewRot == m_kLocalRotM)
+		return;
+
 	ResetChildsGotData();
+	SetNetUpdateFlag(1,true);	
 	
 	m_kLocalRotM = kNewRot;
+
+
 }
 
 void Entity::SetLocalRotV(Vector3 kRot)
@@ -1083,6 +1327,9 @@ void Entity::SetWorldRotV(Vector3 kRot)
 
 void Entity::SetLocalPosV(Vector3 kPos)
 {
+	if(kPos == m_kLocalPosV)
+		return;
+
 	//check new zone
 	if(m_bUseZones)
 	{
@@ -1094,8 +1341,8 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	ResetChildsGotData();
 	
 	
-	//m_kOldLocalPosV=m_kLocalPosV;				//save old pos for interpolation
 	m_kLocalPosV = kPos;
+	SetNetUpdateFlag(0,true);
 	
 	if(m_bFirstSetPos)						//if the pos has never been set, the set oldpos to the new one
 	{
@@ -1116,8 +1363,10 @@ void Entity::SetWorldPosV(Vector3 kPos)
 void Entity::RotateLocalRotV(Vector3 kRot)
 {
 	ResetChildsGotData();
+	SetNetUpdateFlag(1,true);	
 	
 	m_kLocalRotM.Rotate(kRot);
+	
 }
 
 
@@ -1276,5 +1525,45 @@ Entity* Entity::GetStaticEntity()
 	}
 	
 	return pkStaticEntity;
+}
+
+
+void	Entity::SetNrOfConnections(int iConNR)
+{
+	m_kNetUpdateFlags.resize(iConNR);
+	ResetAllNetUpdateFlags();
+}
+
+void	Entity::ResetAllNetUpdateFlags()
+{
+	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		m_kNetUpdateFlags[i].reset();	//reset all bits to false
+		m_kNetUpdateFlags[i].flip();  //flip all bits to true
+	}
+}
+
+void	Entity::ResetAllNetUpdateFlags(int iConID)
+{
+	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
+	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
+}
+
+bool	Entity::GetNetUpdateFlag(int iConID,int iFlagID)
+{
+	return m_kNetUpdateFlags[iConID][iFlagID];
+}
+
+void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
+{
+	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		m_kNetUpdateFlags[i][iFlagID] = bValue;
+	}
+}
+
+void	Entity::SetNetUpdateFlag(int iConID,int iFlagID,bool bValue)
+{
+	m_kNetUpdateFlags[iConID][iFlagID] = bValue;
 }
 

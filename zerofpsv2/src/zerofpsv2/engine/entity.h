@@ -24,20 +24,26 @@ enum UpdateStatus
 	UPDATE_NONE				= 1,	
 	UPDATE_ALL				= 2,
 	UPDATE_STATIC			= 4,
-	UPDATE_DYNAMIC 			= 8,
-//	UPDATE_PLAYERS 			= 16,
-//	UPDATE_STATDYN 			= 32,
-//	UPDATE_DECORATION		= 64,
-//	UPDATE_LIGHT			= 128,
+	UPDATE_DYNAMIC 		= 8,
 };
 
 enum ObjectType 
 {
 	OBJECT_TYPE_DYNAMIC,			// Full update, Full Collision
 	OBJECT_TYPE_STATIC,	
-//	OBJECT_TYPE_PLAYER,			// Unused
-//	OBJECT_TYPE_STATDYN,	
-//	OBJECT_TYPE_DECORATION,
+};
+
+enum NetUpdateFlags
+{
+	NETUPDATEFLAG_POS =				0,
+	NETUPDATEFLAG_ROT =				1,
+	NETUPDATEFLAG_VEL =				2,	
+	NETUPDATEFLAG_PARENT =			3,	
+	NETUPDATEFLAG_RADIUS =			4,	
+	NETUPDATEFLAG_NAME =				5,		
+	NETUPDATEFLAG_TYPE =				6,			
+	NETUPDATEFLAG_UPDATESTATUS =	7,			
+	NETUPDATEFLAG_DELETE =			8,				
 };
 
 /*
@@ -175,7 +181,16 @@ class ENGINE_API Entity
 		vector<Entity*>			m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
+		//network
+		vector<bitset<9> >			m_kNetUpdateFlags;
+					
 		Entity();				
+		void	SetNetUpdateFlag(int iFlagID,bool bValue);
+		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
+		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
+		void	ResetAllNetUpdateFlags();											//reset all update flags to true
+		void	ResetAllNetUpdateFlags(int iConID);											//reset all update flags to true		
+		void	SetNrOfConnections(int iConNR);
 		
 	public:
 		bool							m_bHavePlayedSound;				///< Litet test bara...
@@ -230,6 +245,8 @@ class ENGINE_API Entity
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
 
+		
+
 		void Load(ZFIoInterface* pkFile);
 		void Save(ZFIoInterface* pkFile);
 
@@ -277,17 +294,22 @@ class ENGINE_API Entity
 		void			ResetGotData(){m_kGotData.reset();};
 		void			ResetChildsGotData();
 
+		void			SetVel(Vector3 kVel);
+		void			SetName(string strName);
+		void			SetType(string strType);		
+		void			SetRadius(float fRadius);
+
 		// Inlines
 		inline int &GetUpdateStatus()				{	return m_iUpdateStatus;	};
 		inline ObjectType &GetObjectType()		{	return m_iObjectType;	};
 		inline bool& GetSave()						{	return m_bSave;			};
-		inline string& GetName()					{	return m_strName;			};
-		inline string& GetType()					{	return m_strType;			};
+		inline string GetName()					{	return m_strName;			};
+		inline string GetType()					{	return m_strType;			};
 		inline ZFResourceHandle* GetObjectScript()  { return m_pScriptFileHandle;};
-
-		inline Vector3& GetVel()					{	return m_kVel;				};		
+		
+		inline Vector3 GetVel()					{	return m_kVel;				};		
 		inline Vector3& GetAcc()					{	return m_kAcc;				};
-		inline float& GetRadius()					{	return m_fRadius;			};		
+		inline float GetRadius()					{	return m_fRadius;			};		
 		inline Vector3* GetVelPointer()			{	return &m_kVel;			};		
 		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
@@ -307,6 +329,7 @@ class ENGINE_API Entity
 };
 
 #endif
+
 
 
 

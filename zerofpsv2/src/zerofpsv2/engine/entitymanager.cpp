@@ -186,28 +186,28 @@ void EntityManager::CreateBaseObjects()
 	
 	//top world object parent to all objects
 	m_pkWorldObject						=	new Entity();	
-	m_pkWorldObject->GetName()			= "WorldObject";
+	m_pkWorldObject->SetName("WorldObject");
 	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
 	m_pkZoneObject							=	new Entity();	
 	m_pkZoneObject->SetParent(m_pkWorldObject);
-	m_pkZoneObject->GetName()			= "ZoneObject";
+	m_pkZoneObject->SetName("ZoneObject");
 	m_pkZoneObject->m_eRole				= NETROLE_AUTHORITY;
 	m_pkZoneObject->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
 	m_pkClientObject						=	new Entity();	
 	m_pkClientObject->SetParent(m_pkWorldObject);
-	m_pkClientObject->GetName()		= "ClientObject";
+	m_pkClientObject->SetName("ClientObject");
 	m_pkClientObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkClientObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all global objects (server information etc)
 	m_pkGlobalObject						=	new Entity();	
 	m_pkGlobalObject->SetParent(m_pkWorldObject);
-	m_pkGlobalObject->GetName()		= "GlobalObject";
+	m_pkGlobalObject->SetName("GlobalObject");
 	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkGlobalObject->m_eRemoteRole	= NETROLE_NONE;
 
@@ -1745,7 +1745,7 @@ void EntityManager::LoadZone(int iId)
 	object->m_bZone = true;
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetZoneObject());	
-	kZData->m_pkZone->GetName() = "ZoneObject";	
+	kZData->m_pkZone->SetName("ZoneObject");
 	
 	
 	//load
@@ -1782,7 +1782,7 @@ void EntityManager::LoadZone(int iId)
 
 		//add static entity
 		Entity* staticentity = new Entity;
-		staticentity->GetName() = "StaticEntity";
+		staticentity->SetName("StaticEntity");
 		staticentity->SetParent(kZData->m_pkZone);
 		staticentity->GetObjectType() = OBJECT_TYPE_STATIC;
 
@@ -2222,4 +2222,13 @@ void EntityManager::CommitZone(int iId)
 		zd->m_iRevision++;		
 		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<" static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
 	}
+}
+
+
+void EntityManager::ResetNetUpdateFlags(int iConID)
+{
+	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->ResetAllNetUpdateFlags(iConID);
+	}
+	
 }

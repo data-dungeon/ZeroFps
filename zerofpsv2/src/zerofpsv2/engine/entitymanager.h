@@ -175,6 +175,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void OwnerShip_Take(Entity* pkObj);		
 		void OwnerShip_Give(Entity* pkObj);
 
+		void ResetNetUpdateFlags(int iConID);
+
 		// Debug / Help Functions		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.

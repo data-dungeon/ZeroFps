@@ -255,6 +255,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int	GetClientObjectID();
 		int	GetConnectionID() {	return m_iServerConnection;	};		///< Return our Connection Num on the Server.
 		
+		
+		int	GetMaxPlayers() {return m_iMaxPlayers;};
+		
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

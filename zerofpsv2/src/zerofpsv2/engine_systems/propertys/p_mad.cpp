@@ -121,7 +121,7 @@ void P_Mad::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);	
 	
 	//update object radius
-	m_pkObject->GetRadius() = GetRadius();
+	m_pkObject->SetRadius(GetRadius());
 }
 
 void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
@@ -179,7 +179,7 @@ bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 	
 	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
 		m_fScale = atof(kValue.c_str());
-		m_pkObject->GetRadius() = GetRadius();
+		m_pkObject->SetRadius(GetRadius());
 		return true;
 	}
 
