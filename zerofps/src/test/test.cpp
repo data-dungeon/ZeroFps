@@ -1,7 +1,7 @@
 #include "test.h"
 
 
-Test olle("MegaGame",640,480,16);
+Test olle("MegaGame",1024,768,16);
 //Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
@@ -97,11 +97,11 @@ void Test::OnInit(void) {
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
 
-	for(int i=0;i<200;i++) {
+	for(int i=0;i<20;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
-		float x=rand()%100;
-		float y=rand()%100;
+		float x=rand()%20;
+		float y=rand()%20;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
 		ball->GetStatic()=true;
 		pkObjectMan->Add(ball);
