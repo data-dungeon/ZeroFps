@@ -82,7 +82,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	else
 	if(strClickName == "PauseBn")
 	{
-		if(((ZGuiCheckbox*)GetWnd((char*)strClickName.c_str()))->IsChecked())
+		if(m_pkDM->GetGameMode() != DarkMetropolis::PAUSED)
 			m_pkDM->PauseGame(true);
 		else
 			m_pkDM->PauseGame(false);
