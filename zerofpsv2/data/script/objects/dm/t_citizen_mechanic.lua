@@ -1,3 +1,6 @@
+
+g_MechLife = -1
+
 function Create()
 	
 	InitObject();
@@ -33,9 +36,21 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 
 	SetTeam (SIGetSelfID(), 1);
+
+	g_MechLifePrevHeartBeat = GetCharStats(SIGetSelfID(), 0)
 end
 
 function HeartBeat()
+
+	local Life = GetCharStats(SIGetSelfID(), 0)
+
+	-- Ropa på hjälp om han har blivit skadad.
+	if Life < g_MechLife then
+		CallForHelp(SIGetSelfID(), 1)
+		Print( "Mechanic call the cops!" )
+	end
+
+	g_MechLife = Life
 
 	if HavePath(SIGetSelfID()) == 1 then
 		return

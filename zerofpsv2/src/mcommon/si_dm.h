@@ -19,6 +19,7 @@ namespace DMLua
 	extern EntityManager*		g_pkObjMan;
 
 	extern map<string, double> m_kVars;
+	extern vector<int> m_kCallsForHelp;
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
 	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
@@ -50,9 +51,14 @@ namespace DMLua
 	int MCOMMON_API SetCharStatsLua(lua_State* pkLua);
 	int MCOMMON_API EquipLua(lua_State* pkLua);
 	int MCOMMON_API GetStateLua(lua_State* pkLua);
+	int MCOMMON_API SetStateLua(lua_State* pkLua);
 	
 	// behaviours for characters
 	int MCOMMON_API PanicAreaLua(lua_State* pkLua);
+	int MCOMMON_API CallForHelp(lua_State* pkLua);
+
+	// police functions
+	int MCOMMON_API GetClosestCallerLua(lua_State* pkLua);
 
 	// SI for guns
 	int MCOMMON_API SetGunFireRateLua(lua_State* pkLua);

@@ -281,10 +281,10 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 						return false;
 			}
 
-			printf("Loaded sound: %s (index:%i, %i bytes), cach size = %i\n", 
+			/*printf("Loaded sound: %s (index:%i, %i bytes), cach size = %i\n", 
 				strFileName.c_str(), 
 				((ZFSoundRes*) pkResHandle->GetResourcePtr())->GetBufferIndexName(),
-				size, m_uiCurrentCachSize );
+				size, m_uiCurrentCachSize );*/
 
 			return true;
 		}

@@ -11,8 +11,9 @@
 #include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 
 ZFScriptSystem*				DMLua::g_pkScript;
-EntityManager*				DMLua::g_pkObjMan;
+EntityManager*					DMLua::g_pkObjMan;
 map<string, double>			DMLua::m_kVars;
+vector<int>						DMLua::m_kCallsForHelp;
 
 // ------------------------------------------------------------------------------------------------
 
@@ -30,6 +31,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
 	pkScript->ExposeFunction("IsDead", DMLua::IsDeadLua);
 	pkScript->ExposeFunction("GetState", DMLua::GetStateLua);
+	pkScript->ExposeFunction("SetState", DMLua::SetStateLua);
 	pkScript->ExposeFunction("Heal", DMLua::HealLua);
 	pkScript->ExposeFunction("BeamToLocation", DMLua::BeamToLocationLua);
 	pkScript->ExposeFunction("BeamToObject", DMLua::BeamToObjectLua);
@@ -49,9 +51,10 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetCharStats", DMLua::GetCharStatsLua);
 	pkScript->ExposeFunction("SetCharStats", DMLua::SetCharStatsLua);
 	pkScript->ExposeFunction("Equip", DMLua::EquipLua);
-
+	
 	// character behaviours
 	pkScript->ExposeFunction("PanicArea", DMLua::PanicAreaLua);
+	pkScript->ExposeFunction("CallForHelp", DMLua::CallForHelp);
 
 	// path finding
 	pkScript->ExposeFunction("HavePath", DMLua::HavePathLua);					
@@ -105,6 +108,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// hmm... team related
 	pkScript->ExposeFunction("GetCharsByFraction", DMLua::GetCharsByFractionLua);
 	pkScript->ExposeFunction("GetDMObject", DMLua::GetDMObjectLua);
+
+	// police functions
+	pkScript->ExposeFunction("GetClosestCaller", DMLua::GetClosestCallerLua);
 	
 	cout << "DM LUA Scripts Loaded" << endl;
 
@@ -295,6 +301,28 @@ int DMLua::GetStateLua(lua_State* pkLua)
 		g_pkScript->AddReturnValue(pkLua, double(pkChar->m_iState) );
 	else
 		g_pkScript->AddReturnValue(pkLua, -1);
+
+	return 1;
+}
+
+// takes a entityID (0) and a state value (1)
+int DMLua::SetStateLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	double dState;
+	g_pkScript->GetArgNumber(pkLua, 1, &dState);
+
+	if ( pkChar->GetStats()->m_iLife > 0 )
+		pkChar->ChangeState(dState);
 
 	return 1;
 }
@@ -1759,6 +1787,79 @@ int DMLua::PanicAreaLua(lua_State* pkLua)
 
 	return 0;
 
+}
+
+// Take 2 arguments: Entity ID and 1 (to start call) or -1 (to stop call).
+int DMLua::CallForHelp(lua_State* pkLua)
+{
+	double dEntIDCalling;
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntIDCalling);
+
+	Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dEntIDCalling));
+	if(pkEnt != NULL)
+	{
+		bool bFound = false;
+		double dCallForHelp;
+		g_pkScript->GetArgNumber(pkLua, 1, &dCallForHelp);
+
+		vector<int>::iterator it = m_kCallsForHelp.begin();
+		for( ; it != m_kCallsForHelp.end(); it++)
+		{
+			if((*it) == dEntIDCalling)
+			{
+				// Remove from list to stop calling?
+				if(dCallForHelp < 0)
+					m_kCallsForHelp.erase(it);
+
+				bFound = true;
+				break;
+			}
+		}
+
+		// Insert caller in list if not already there.
+		if(bFound == false)			
+			m_kCallsForHelp.push_back(dEntIDCalling);
+	}
+	
+	return 0;
+}
+
+// Takes 1 arguments: Entity ID of the police that try to the hear the call.
+int DMLua::GetClosestCallerLua(lua_State* pkLua)
+{
+	double dClosestCaller = -1;
+	double dPoliceEntityID = -1;
+
+ 	if(g_pkScript->GetArgNumber(pkLua, 0, &dPoliceEntityID))
+	{
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(int(dPoliceEntityID));
+		if(pkEnt != NULL)
+		{
+			float fClosestDist = 99999.9f;
+			Vector3 kPolicePos = pkEnt->GetWorldPosV();
+	
+			vector<int>::iterator it = m_kCallsForHelp.begin();
+			for( ; it != m_kCallsForHelp.end(); it++)
+			{
+				Entity* pkCaller = g_pkObjMan->GetObjectByNetWorkID((*it));
+
+				if(pkCaller)
+				{
+					Vector3 kCallerPos = pkEnt->GetWorldPosV();
+
+					float fDist = (float) kPolicePos.DistanceTo(kCallerPos);
+					if(fDist < fClosestDist)
+					{
+						fClosestDist = fDist;
+						dClosestCaller = (double) (*it);
+					}
+				}
+			}
+		}
+	}
+
+	g_pkScript->AddReturnValue(pkLua, dClosestCaller);
+	return 1;
 }
 
 // ------------------------------------------------------------------------------------------------

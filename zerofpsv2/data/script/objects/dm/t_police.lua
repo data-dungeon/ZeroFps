@@ -1,3 +1,6 @@
+
+g_HelpingCharacterID = -1
+
 function Create()
 	
 	InitObject();
@@ -49,12 +52,48 @@ function HeartBeat()
 		return
 	end
 
+	-- Lyssna om någon ropar på hjälp
+	-- TODO: lägg in en avståndscheck
+	person_calling = GetClosestCaller(SIGetSelfID())
+
+	if person_calling > 0 then
+		g_HelpingCharacterID = person_calling
+		Print( "Hearing person calling : ", g_HelpingCharacterID)
+	end
+
+	-- Sök reda på personen i nöd.
+	if g_HelpingCharacterID > 0 then
+
+		civilian_pos = GetEntityPos(g_HelpingCharacterID)
+		police_pos = GetEntityPos(SIGetSelfID())
+
+		range = GetRangeBetween(civilian_pos, police_pos)
+
+		if range > 10 then -- Inte framme hos den som ropar?
+
+			Print( "Moving to person calling : ", g_HelpingCharacterID)
+
+			if HavePath(SIGetSelfID()) == 1 then
+				return
+			else
+				MakePathFind(SIGetSelfID(),civilian_pos);
+			end
+
+		else -- Är framme hos den som ropar?
+
+			CallForHelp(g_HelpingCharacterID, -1) -- Säg till personen att sluta skrika (annars springer han till personen i nöd hela tiden)
+
+			SetState(SIGetSelfID(),4) -- Get Aggro
+			g_HelpingCharacterID = -1 -- Don't run to that person anymore
+		end
+	end
+
 	local State = GetState(SIGetSelfID())
 
 	if State == 4 then -- aggresive
 
 		local closest_agent = GetDMCharacterClosest(SIGetSelfID())
-
+	
 		-- Close enough?
 		agent_pos = GetEntityPos(closest_agent)
 		police_pos = GetEntityPos(SIGetSelfID())
@@ -68,11 +107,13 @@ function HeartBeat()
 			if HavePath(SIGetSelfID()) == 1 then
 				return
 			else
+				
+				agent_pos[1] = agent_pos[1] + Random(12)-6;
+				agent_pos[3] = agent_pos[3] + Random(12)-6;
+
 				MakePathFind(SIGetSelfID(),agent_pos);
 			end
 		end
-
-		
 	end	
 
 	
