@@ -710,14 +710,18 @@ void ZeroFps::Draw_EngineShell()
 	//on hud drawing
 	m_pkApp->OnHud();
 			
-	//draw devstrings
-	DrawDevStrings();
 
 	//render gui
 	if(!m_bMinimized)	
 		m_pkGui->Render((int)m_fAvrageFps);
 	
-	
+
+	//set console kamera matrisses, and clear depthbuffer
+ 	m_pkConsoleCamera->InitView();
+		
+	//draw devstrings
+	DrawDevStrings();		
+			
 	//draw console
 	if(!m_bMinimized)
 		if(m_pkConsole->IsActive()) 
