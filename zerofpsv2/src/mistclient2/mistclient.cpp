@@ -6,7 +6,7 @@
 */
 
 #include "mistclient.h"
-
+#include "../zerofpsv2/engine_systems/propertys/p_camera.h"
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -71,7 +71,17 @@ void MistClient::OnIdle()
 
 void MistClient::OnSystem() 
 {
+	m_pkRender->SetClearColor(Vector4(1,0,0,0));
 
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID()))
+	{
+		if(!pkEnt->GetProperty("P_Camera"))
+			if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
+			{
+				pkCam->SetCamera(m_pkCamera);
+				cout<<"attached camera to client property"<<endl;
+			}
+	}
 }
 
 
