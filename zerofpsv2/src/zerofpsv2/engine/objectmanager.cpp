@@ -1337,16 +1337,15 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 {
 	Vector3 kMyPos = PkObject->GetWorldPosV();
 
-	//first check current zone
-	if(m_kZones[iCurrentZone].IsInside( kMyPos ))
-		return iCurrentZone;
-	
-	
-	//first check zones connected to the last visited zone
-	if(iCurrentZone >= 0)
+	if(iCurrentZone >= 0 )
 	{
-		ZoneData* pkZone = GetZoneData(iCurrentZone);
+		//first check current zone
+		if(m_kZones[iCurrentZone].IsInside( kMyPos ))
+			return iCurrentZone;
 	
+	
+		//first check zones connected to the last visited zone
+		ZoneData* pkZone = GetZoneData(iCurrentZone);
 		for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
 		{
 			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
