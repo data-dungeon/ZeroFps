@@ -685,7 +685,7 @@ void MistClient::ClientInit()
 	
 }
 
-void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
+void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
@@ -1041,7 +1041,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 			char* szLoginName = GetWnd("UserEditbox")->GetText();
 			char* szPassName = GetWnd("PasswordEditbox")->GetText();
-			m_pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName);
+			m_pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName, m_pkApp->m_bIsEditor);
 			m_pkApp->OnClientStart();
 		}
 	}

@@ -42,8 +42,8 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientStart(void);
 				
 		//on client join, server runs this
-		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) { return true; }
-		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
+		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
+		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void OnNetworkMessage(NetPacket *PkNetMessage) {}
 		

@@ -13,6 +13,7 @@
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
+#include "../mcommon/p_arcadecharacter.h"
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -83,6 +84,7 @@ void MistClient::RegisterResources()
 
 void MistClient::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 }
@@ -115,7 +117,7 @@ void MistClient::OnHud(void)
 }
 
 
-void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
+void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	

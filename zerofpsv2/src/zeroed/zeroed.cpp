@@ -82,6 +82,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bSoloMode     = 			true;
 	m_bPlaceObjectsOnGround = 	false;
 	m_bDisableFreeZonePlacement = false;
+	m_bIsEditor =  true;
 
 	// Register Variables
 	

@@ -174,7 +174,7 @@ public:
 	void CloseSocket();
 	void ServerStart(void);
 	void ServerEnd(void);
-	void ClientStart(const char* szIp, const char* szLogin, const char* szPass);
+	void ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor);
 	void ClientEnd(void);
 
 	void	SetMaxNodes(int iMaxNode);			

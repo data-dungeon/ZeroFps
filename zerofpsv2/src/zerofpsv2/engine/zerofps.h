@@ -298,8 +298,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
 
 		// Called by network.
-		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256);
-		int	Connect(int iConnectionID, char* szLogin, char* szPass);
+		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, char* szWhy256);
+		int	Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor);
 		void	Disconnect(int iConnectionID);
 		int	GetClientObjectID();
 		int	GetConnectionID() 			{	return m_iServerConnection;	}		///< Return our Connection Num on the Server.

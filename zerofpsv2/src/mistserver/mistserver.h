@@ -125,8 +125,8 @@ class MistServer :public Application , public ZGuiApp
 		void UpdateStartLocatons();
 
 		//on client join, server runs this
-		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass);
-		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
+		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor);
+		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void RenderInterface(void);
 		void OnNetworkMessage(NetPacket *PkNetMessage);

@@ -92,6 +92,15 @@ void PlayerDatabase::Logout(string strPlayer)
 	cout << "Logout: " << strPlayer << endl;
 }
 
+bool PlayerDatabase::IsOnline(string strLogin)
+{
+	if(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strLogin))
+		return true;
+
+	return false;
+}
+
+
 vector<string> PlayerDatabase::GetUsers()
 {
 	return m_strActiveUsers;
@@ -146,11 +155,11 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	}	
 	
 	//create new caracter and save it	
-	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");		// t_player
+	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
 	pkEntity->SetName(strCharacter);
 	pkEntity->GetSave() = true;
 	pkEntity->SetUseZones(true);
-	
+
 	if(!pkEntity->GetProperty("P_Track"))	//check if theres a tracker property
 		pkEntity->AddProperty("P_Track");	//else create one
 	

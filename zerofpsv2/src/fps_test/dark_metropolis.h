@@ -189,8 +189,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void OnIdle();
 		void OnHud();
 		void OnSystem();
-		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) { return true; }
-		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
+		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
+		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void OnServerStart();
 		void OnClientStart();

@@ -1044,7 +1044,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	
 	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
 	
-	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str());
+	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor);
 	m_bClientMode = true;
 
 	m_pkApp->OnClientStart();
@@ -1332,10 +1332,10 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	for a server Node that accepts connections. Never called on a client node. Return false
 	to deny connection. Put reason if any into szWhy256.
 */
-bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256)
+bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, char* szWhy256)
 {
 	//m_pkConsole->Printf("ZeroFps::PreConnect()");
-	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass);
+	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass,bIsEditor);
 }
 
 /**	\brief	Called when someone have been connected.
@@ -1344,7 +1344,7 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char*
 	PreConnect returns true. It is called on Clients when they recive connect_yes from server.
 	Return value is the NetID off the client object on the server. It don't matter on the client.
 */
-int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
+int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	if(!m_bServerMode)
 		return -1;
@@ -1361,7 +1361,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);
 	
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
-	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass);
+	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass,bIsEditor);
 	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
 
 	

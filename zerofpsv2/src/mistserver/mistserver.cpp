@@ -7,7 +7,7 @@
  
 #include <set> 
 #include <algorithm>
-
+  
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
@@ -174,6 +174,7 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
 
 	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
@@ -369,6 +370,8 @@ void MistServer::OnHud(void)
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	NetPacket kNp;
+	Entity* pkEntity;
+	Vector3 kStartPos;
 	ClientOrder kOrder;
 
 	unsigned int i;
@@ -488,11 +491,17 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 
 		case FID_TEST_JIDDRA:
-			kNp.Clear();
+			pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
+			//pkEntity = this->m_pkObjectMan->CreateObjectFromScript("data/script/objects/characters/BadGuy.lua");		// t_player
+			pkEntity->SetUseZones(true);
+			kStartPos = Vector3(0,0.5,0);
+			pkEntity->SetWorldPosV(kStartPos);
+
+			/*kNp.Clear();
 			kNp.Write((char) MLNM_SC_MADDRAW);
 			kNp.Write((int) 5);
 			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);			
+			SendAppMessage(&kNp);*/			
 
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
@@ -550,7 +559,7 @@ void MistServer::ClientInit()
 	//cout<<"Join Complete"<<endl;
 }
 
-bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
+bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor)
 {
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
@@ -560,69 +569,53 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 	// Check that this is a valid login.
 	if(m_pkPlayerDB->LoginExist(strPlayer)) 
 	{
-		// Check Password
-		if(!m_pkPlayerDB->Login(strPlayer,strPasswd)) 
+		if(m_pkPlayerDB->IsOnline(szLogin))
 		{
-			m_pkConsole->Printf("Player %s found, password check FAILED",strPlayer.c_str());
-			//cout<<"Player "<<strPlayer<<" found, password check FAILED"<<endl;
+			m_pkConsole->Printf("Player '%s' tried to join twice",strPlayer.c_str());
+			return false;	
+		}
+
+		// Check Password
+		if(!m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd)) 
+		{
+			m_pkConsole->Printf("Player '%s' found, password check FAILED",strPlayer.c_str());
 			return false;
 		}
 
-		m_pkConsole->Printf("Player %s found, password check OK",strPlayer.c_str());
-		//cout<<"Player "<<strPlayer<<" found, password check OK"<<endl;		
+		m_pkConsole->Printf("Player '%s' found, password check OK",strPlayer.c_str());
 		return true;
 	}
 	else 
 	{
-		if(m_AcceptNewLogins) 
+		if(!m_AcceptNewLogins)
 		{
-			if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) 
-			{
-				m_pkConsole->Printf("Failed to create new player %s",strPlayer.c_str());
-				//cout<<"Failed to creacte new player "<<strPlayer<<endl;
-				return false;
-			}
-	
-			if(m_pkPlayerDB->Login(strPlayer,strPasswd))
-			{
-				m_pkConsole->Printf("Player %s created",strPlayer.c_str());
-				//cout<<"Player "<<strPlayer<<" created"<<endl;				
-				return true;
-			}
-			else
-			{
-				m_pkConsole->Printf("Error while creating player %s (this shuld never hapen)",strPlayer.c_str());
-				//cout<<"Something went wrong when creating player "<<strPlayer<<endl;
-				return false;
-			}
+			m_pkConsole->Printf("A new player '%s' tried to join but new players are not accepted", strPlayer.c_str());
+			return false;
 		}
-		else 
+
+		// Try To Create the new player
+		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) 
 		{
-			m_pkConsole->Printf("Player %s not found, and no new players accepted",strPlayer.c_str());
-			//cout<<"Player not found, and no new players accepted"<<endl;
+			m_pkConsole->Printf("Failed to create new player '%s'",strPlayer.c_str());
+			return false;
+		}
+	
+		if(m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd))
+		{
+			m_pkConsole->Printf("Player '%s' created",strPlayer.c_str());
+			return true;
+		}
+		else
+		{
+			m_pkConsole->Printf("Error while creating player '%s' (this shuld never hapen)",strPlayer.c_str());
 			return false;
 		}
 	}
 
-/*
-	if(m_pkServerInfoP)
-	{
-		if(m_pkServerInfoP->PlayerExist(strPlayer))
-		{
-			cout<<"Player "<<strPlayer<< " is already connected"<<endl;
-		
-			//KICKA O DÖDA SPELARJÄVELN HÄR OCKSÅ FÖR HAN FÅR FAN INTE CONNECTA TVÅ GÅNGER!!!!
-		
-			return false;
-		}
-	}
-*/	
-	
-	//printf("User %s tried to join with password %s\n", szLogin, szPass);
 	return false;
 }
 
-void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
+void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
@@ -632,14 +625,18 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 
 	if(!pkClient->m_pkObject)
 		cout<<"ERROR: client object not created"<<endl;
-	
+
+	m_pkPlayerDB->Login(strPlayer,strPasswd);
+
 	
 	//add client control to client object
 	//P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
 	//if(pcc)	
 	//	pcc->m_iClientID = iConID;
 	
-	bool bEditorConnect = true;
+	bool bEditorConnect = bIsEditor;
+	cout << szLogin << " Joined with editmode " << bEditorConnect << endl;
+
 	if(bEditorConnect) 
 	{
 		if(P_Track* pkTrack = (P_Track*)pkClient->m_pkObject->AddProperty("P_Track"))
@@ -787,7 +784,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		if(zid == -1)
 		{
 			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
-			kStartPos = Vector3(0,0,0);
+			kStartPos = Vector3(0,0.5,0);
 			zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
 		}		
 		

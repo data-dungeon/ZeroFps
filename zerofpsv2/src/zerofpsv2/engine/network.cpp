@@ -332,7 +332,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass)
+void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor)
 {
 	//szIp = "127.0.0.1:4242";
 
@@ -350,6 +350,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
+	NetP.Write((int) bConnectAsEditor);
 	SendRaw(&NetP);
 
 	m_kServerAddress = NetP.m_kAddress;
@@ -452,6 +453,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 	char szLogin[64];
 	char szPass[64];
+	int  iConnectAsEditor;
 
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
@@ -472,6 +474,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 			pkNetPacket->Read_Str(szLogin);
 			pkNetPacket->Read_Str(szPass);
+			pkNetPacket->Read(iConnectAsEditor);
 
 			if(GetNumOfClients() == m_iMaxNumberOfNodes) {
 				m_pkConsole->Printf("Join Ignored: To many connected clients.");
@@ -483,7 +486,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				SendRaw(&kNetPRespons);
 				}
 			else {
-				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, szText)) {
+				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, szText)) {
 					m_pkConsole->Printf("Join Ignored: Preconnect no.");
 					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 					//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
@@ -508,7 +511,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
 
 				// Tell ZeroFPS Someone has connected.
-				int iNetID = m_pkZeroFps->Connect(iClientID, szLogin, szPass);
+				int iNetID = m_pkZeroFps->Connect(iClientID, szLogin, szPass,iConnectAsEditor);
 
 				// Send Connect Yes.
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
@@ -545,7 +548,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			pkNetPacket->Read( iObjId ); 
 			m_pkZeroFps->m_iServerConnection	= iConnID;
 			m_pkZeroFps->m_iClientEntityID		= iObjId;
-			m_pkZeroFps->Connect(iClientID,NULL,NULL);
+			m_pkZeroFps->Connect(iClientID,NULL,NULL,false);
 			m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
 			break;
 

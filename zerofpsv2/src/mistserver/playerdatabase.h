@@ -62,7 +62,8 @@ class PlayerDatabase
 		bool LoginExist(string strLogin);
 		bool Login(string strPlayer,string strPassword);
 		void Logout(string strPlayer);
-		
+		bool IsOnline(string strLogin);
+
 		vector<string>	GetLoginCharacters(string strLogin);
 		vector<string>	GetUsers();
 

@@ -328,7 +328,7 @@ void DarkMetropolis::OnSystem()
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
-													 char* szLogin, char* szPass)
+													 char* szLogin, char* szPass, bool bIsEditor)
 {
 }
 

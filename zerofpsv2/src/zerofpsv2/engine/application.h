@@ -50,7 +50,8 @@ class ENGINE_API Application : public ZFSubSystem {
 		char* m_pTitle;																///< Windows Title.
 		
 		InputHandle*	m_pkInputHandle;
-		
+		bool	m_bIsEditor;
+
 		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
 		void SetTitle(string strTitle);		
 		
@@ -61,8 +62,8 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnHud(void)=0;
 		virtual void OnSystem(void)=0;
 
-		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) = 0;
-		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)=0;
+		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) = 0;
+		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)=0;
 		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)=0;
 
 		virtual void RenderInterface(void)=0;

@@ -13,6 +13,7 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 	m_iWidth		=	iWidth;
 	m_iHeight	=	iHeight;
 	m_iDepth		=	iDepth;
+	m_bIsEditor =  false;
 }
 	
 /**
