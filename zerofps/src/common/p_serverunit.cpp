@@ -296,6 +296,7 @@ bool P_ServerUnit::Damage(int iDamage)
 	{
 		if(m_iDieEffect != -1)
 		{
+			
 			if(m_pkServerInfo)
 			{
 				Event fx;
