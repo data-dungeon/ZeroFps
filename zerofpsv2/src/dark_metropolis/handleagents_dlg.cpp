@@ -25,15 +25,28 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "AgentsInfoBn")
 	{
-		m_pkGui->KillWndCapture();
-		LoadDlg("data/script/gui/dm_members.lua");
-		ShowWnd("MembersWnd", true, true);
+		bool bAButtonIsSelected=false;
+		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
+		{
+			if(m_vkCharsInBaseBns[i]->IsChecked())
+			{
+				bAButtonIsSelected=true;
+				break;
+			}
+		}
 
-		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+		if(bAButtonIsSelected)
+		{
+			m_pkGui->KillWndCapture();
+			LoadDlg("data/script/gui/dm_members.lua");
+			ShowWnd("MembersWnd", true, true);
 
-		if(pkMembersDlg)
-			pkMembersDlg->SetWindowMode(
-				CMembersDlg::HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING); 
+			CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
+
+			if(pkMembersDlg)
+				pkMembersDlg->SetWindowMode(
+					CMembersDlg::HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING); 
+		}
 	}
 	else
 	if(strClickName == "SendOutAgentBn")

@@ -140,7 +140,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		m_pkBriefingDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
-	if(strMainWnd == "GamePlayPanelWnd")
+	if(strMainWnd == "GamePlayPanelWnd" ||
+		strMainWnd == "GamePlayScreen")
 	{
 		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
 	}

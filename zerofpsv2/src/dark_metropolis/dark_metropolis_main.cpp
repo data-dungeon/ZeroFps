@@ -50,6 +50,7 @@ void DarkMetropolis::OnInit()
 	m_iCurrentFormation =		FORMATION_CIRCLE;
 	m_bActionPressed = 			false;
 	m_iHQID = 						-1;
+	m_eGameMode	=					ACTIVE;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -92,11 +93,10 @@ void DarkMetropolis::OnIdle()
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
-	Input();
+	if(m_eGameMode != PAUSED)
+		Input();
 
 	m_pkFps->UpdateCamera(); 	
-
-
 }
 
 void DarkMetropolis::RenderInterface(void)
@@ -361,7 +361,10 @@ void DarkMetropolis::Input()
 				Entity* pkEnt = GetTargetObject();
 				if(pkEnt)
 					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
-						m_kSelectedEntitys.push_back(pkEnt->iNetWorkID);
+					{
+						SelectAgent(pkEnt->iNetWorkID, false,
+							!m_pkInputHandle->VKIsDown("multiselect"), false);
+					}
 					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 					{
 						m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
@@ -472,8 +475,9 @@ void DarkMetropolis::Input()
 						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
 						{
 							cout<<"entering hq"<<endl;
+							SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							m_pkHQDlg->OpenDlg(); // Open the HQ dialog
+							m_pkHQDlg->OpenDlg(); // Open the HQ dialog and Pause game
 						}
 						else
 						{
@@ -803,5 +807,55 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 
 	// RETURN WHAT??????
 	// e:\programmering\zerofpsv2\src\dark_metropolis\dark_metropolis_main.cpp(668) : warning C4715: 'DarkMetropolis::GetFormationPos' : not all control paths return a value
+
+	return Vector3(0,0,0);
 }
 
+void DarkMetropolis::PauseGame(bool bPause)
+{
+	if(bPause)
+		m_eGameMode = PAUSED;
+	else
+		m_eGameMode = ACTIVE;
+}
+
+//
+// Har markerat en agent.
+//
+void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst, 
+											bool bMoveCamera) 
+{ 
+	if(bResetFirst)
+		m_kSelectedEntitys.clear(); 
+
+	if(bToggleSelect=false)
+		m_kSelectedEntitys.push_back(id); 
+	else
+	{
+		bool bFound=false;
+		vector<int>::iterator it = m_kSelectedEntitys.begin();
+		for( ; it!=m_kSelectedEntitys.end(); it++)
+		{
+			if((*it) == id)
+			{
+				m_kSelectedEntitys.erase(it); 
+				bFound = true;
+				break;
+			}
+		}
+
+		if(bFound == false)
+		{
+			m_kSelectedEntitys.push_back(id); 
+		}
+	}
+
+	//
+	// TODO: Flytta kameran till samma plats.
+	// 
+
+	if(bMoveCamera)
+	{
+
+	}
+}

@@ -10,8 +10,6 @@ public:
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
 	void OpenDlg();
 
-	int m_iHQID;
-
 private:
 	P_DMHQ* m_pkHQ;
 };

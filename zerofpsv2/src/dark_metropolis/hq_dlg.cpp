@@ -27,6 +27,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
+		m_pkDM->PauseGame(false);
 	}
 	else
 	if(strClickName == "HQMissionBn") // the noteboard button
@@ -136,4 +137,7 @@ void CHQDlg::OpenDlg()
 
 	LoadDlg("data/script/gui/dm_hq.lua");
 	m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+
+	m_pkDM->PauseGame(true);
 }
+

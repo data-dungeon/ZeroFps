@@ -13,7 +13,7 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin4 = { tex1="dm/prev_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin5 = { tex1="dm/portrait1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin5 = { tex1="dm/portraits/portrait1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin6 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=199, bkG=178,
 	 bkB=153, borderR=0, borderG=0, borderB=0, bd_size=1, tile=0, trans=0 }
@@ -66,7 +66,7 @@ function GUICreate()
 	ChangeSkin("MembersClosBn","Skin20","Button down")
 	ChangeSkin("MembersClosBn","Skin21","Button focus")
 
-	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,100,20,0)
+	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,200,20,0)
 	ChangeSkin("LevelbarTopic","Skin1","Label")
 
 	CreateWnd(1,"NextMemberBn","MembersWnd","",668,412,20,20,0)

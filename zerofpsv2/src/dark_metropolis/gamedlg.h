@@ -22,12 +22,15 @@ public:
 
 protected:
 
+	void SetButtonIcon(ZGuiButton* pkButton, string strIconName);
 	void ShowWnd(char* szWndResName, bool bShow, bool bToogleCapture=false);
 	bool IsWndVisible(char* szWndResName) { return m_pkDM->IsWndVisible(szWndResName); } 
 	bool LoadDlg(char* szScriptName);
 	void ClearListbox(char* szName) { m_pkDM->ClearListbox(szName); }
 	void AddListItem(char* szListbox, char* szItem) { m_pkDM->AddListItem(szListbox, szItem); }
 	void SetText(char* szWndName, char* szText) { m_pkDM->SetText(szWndName, szText); }
+	void SetNumber(char* szWndName, float fNumber);
+	void SetNumber(char* szWndName, int iNumber);
 	void SelListItem(char* szWndName, char* szText) { m_pkDM->SelListItem(szWndName, szText); }
 	ZGuiWnd* GetWnd(char* szName) { return m_pkDM->GetWnd(szName); }
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
@@ -43,6 +46,7 @@ protected:
 		HQ
 	};
 
+	Entity* GetObject(int iID){return m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(iID);}
 	Entity* GetDMObject(DM_OBJECT eDmObject);
 	void GetAllAgentsInField(vector<Entity*>& kList);
 

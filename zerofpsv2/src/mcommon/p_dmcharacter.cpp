@@ -35,8 +35,8 @@ P_DMCharacter::~P_DMCharacter()
 
 void P_DMCharacter::Init()
 {
-	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,4,7);
-	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,3,4);
+	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,4,7); // skall vara 7x7
+	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,3,4); 
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,4,1);
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,2,3);
 	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->iNetWorkID,3,3);

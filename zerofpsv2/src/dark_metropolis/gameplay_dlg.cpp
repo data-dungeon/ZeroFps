@@ -43,6 +43,25 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(pkMembersDlg)
 			pkMembersDlg->SetWindowMode(CMembersDlg::IN_GAME); 
 	}
+	else
+	if(strClickName == "PauseBn")
+	{
+		if(m_pkDM->GetGameMode() != DarkMetropolis::PAUSED)
+			m_pkDM->PauseGame(true);
+		else
+			m_pkDM->PauseGame(false);
+	}
+	
+	//
+	// Markera en agent
+	//
+	char* icon_name[] ={
+		"CharPortBn1","CharPortBn2","CharPortBn3","CharPortBn4","CharPortBn5",
+	};
+
+	for(int i=0; i<5; i++)
+		if(strClickName == icon_name[i])
+			SelectAgent(m_akAgetIcons[i].iAgentObjectID);
 }
 
 bool CGamePlayDlg::InitDlg()
@@ -84,16 +103,73 @@ bool CGamePlayDlg::InitDlg()
 			m_akAgetIcons[i].pkButton->Show();
 			m_akAgetIcons[i].pkLifeProgressbar->Show();
 			m_akAgetIcons[i].pkLifeBk->Show();
+			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->iNetWorkID;
+
+			string icon = GetAgentStats(kMembersInField[i]->iNetWorkID)->m_strIcon;
+			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
+			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName);
 		}
 		else
 		{
 			m_akAgetIcons[i].pkButton->Hide();
 			m_akAgetIcons[i].pkLifeProgressbar->Hide();
 			m_akAgetIcons[i].pkLifeBk->Hide();
+			m_akAgetIcons[i].iAgentObjectID = -1;
 		}
 	}
 
 	m_bInitialized = true;
 
 	return true;
+}
+
+void CGamePlayDlg::SelectAgent(int iAgent)
+{
+	Entity* pkAgentObject;
+	P_DMCharacter* pkCharProperty;
+	DMCharacterStats* pkCharacterStats;
+
+	if((pkAgentObject = GetObject(iAgent)))
+	{
+		pkCharProperty = (P_DMCharacter*) 
+			pkAgentObject->GetProperty("P_DMCharacter");
+
+		ZFAssert(pkCharProperty, 
+			"CMembersDlg::SetCharacterStats - No character property\n");
+
+		pkCharacterStats = pkCharProperty->GetStats();
+
+		string szTexName = string("data/textures/gui/dm/portraits/") +
+			pkCharacterStats->m_strIcon;
+
+		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
+			GetWnd("ActiveCharacterPortraitBn");
+
+		SetButtonIcon(pkActiveCharBn, szTexName);
+
+		bool bMultiSelect = m_pkDM->m_pkInputHandle->VKIsDown("multiselect");
+
+		m_pkDM->SelectAgent(iAgent, true, !bMultiSelect, true);
+	}
+}
+
+DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
+{
+	Entity* pkAgentObject;
+	P_DMCharacter* pkCharProperty;
+	DMCharacterStats* pkCharacterStats;
+
+	if((pkAgentObject = GetObject(iAgent)))
+	{
+		pkCharProperty = (P_DMCharacter*) 
+			pkAgentObject->GetProperty("P_DMCharacter");
+
+		ZFAssert(pkCharProperty, 
+			"CMembersDlg::SetCharacterStats - No character property\n");
+
+		pkCharacterStats = pkCharProperty->GetStats();
+		return pkCharacterStats;
+	}
+
+	return NULL;
 }

@@ -108,3 +108,40 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 		if((P_DMHQ*)kObjects[i]->GetProperty("P_DMCharacter"))
 			kList.push_back(kObjects[i]);	
 }
+
+void CGameDlg::SetNumber(char* szWndName, float fNumber)
+{ 
+	char szText[50];
+	sprintf(szText, "%f", fNumber);
+	m_pkDM->SetText(szWndName, szText);
+}
+
+void CGameDlg::SetNumber(char* szWndName, int iNumber)
+{ 
+	char szText[50];
+	sprintf(szText, "%i", iNumber);
+	m_pkDM->SetText(szWndName, szText);
+}
+
+void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp)
+{
+	string strIconNameDown="data/textures/notex.bmp";
+
+	int pos;
+	if((pos=strIconNameUp.find(".bmp")) != string::npos)
+	{
+		string temp(strIconNameUp);
+		temp.erase(pos,strIconNameUp.length());
+		temp.insert(temp.length(), "b.bmp");
+		strIconNameDown = temp;
+	}
+
+	pkButton->GetSkin()->m_iBkTexID = 
+		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetButtonUpSkin()->m_iBkTexID = 
+		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetButtonHighLightSkin()->m_iBkTexID = 
+		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetButtonDownSkin()->m_iBkTexID = 
+		GetTexID((char*)strIconNameDown.c_str());
+}

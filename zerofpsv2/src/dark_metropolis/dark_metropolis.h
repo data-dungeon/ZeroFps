@@ -30,10 +30,11 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
 class CGameDlg;
 
+
 class DarkMetropolis : public Application, public ZGuiApp 
 {
 	private:
-		
+
 		enum FuncId_e
 		{
 			FID_LOAD,
@@ -63,7 +64,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		float		m_fDelayTimer;
 		bool		m_bActionPressed;
-		
+
+
 		vector<int>	m_kSelectedEntitys;					//list of selected entitys		
 		int			m_iCurrentFormation;					//what formation to use when moving characters
 		
@@ -91,10 +93,17 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
-
-
-
 	public:
+
+		enum GameMode
+		{
+			ACTIVE,
+			PAUSED
+		};
+
+		private:
+			GameMode m_eGameMode;
+		public:
 
 		enum SLOT_TYPE
 		{
@@ -130,6 +139,11 @@ class DarkMetropolis : public Application, public ZGuiApp
 
 		void GUI_LoadSave(bool bSave);
 		bool GUI_NewGame(ZGuiWnd *pkMainWnd);
+
+		void PauseGame(bool bPause);
+		GameMode GetGameMode() { return m_eGameMode; }
+
+		void SelectAgent(int id,  bool bToggleSelect, bool bResetFirst, bool bMoveCamera);
 		
 		// Application, network and system stuff
 		void OnInit();

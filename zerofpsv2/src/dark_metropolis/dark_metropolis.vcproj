@@ -89,7 +89,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib"
+				AdditionalDependencies="engine.lib opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib"
 				OutputFile="..\..\bin\dark_metropolis.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\bin"

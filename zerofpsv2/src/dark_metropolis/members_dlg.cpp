@@ -64,10 +64,17 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 				if(!vkCharsInBase.empty())
 				{
 					char text[50];
-					sprintf(text, "Agent %i", vkCharsInBase[m_iCurrentCharacterPage]);
+					sprintf(text, "Agent %i", 
+						vkCharsInBase[m_iCurrentCharacterPage]);
 					SetText("CurrentMemberNumberLabel", text);
+					SetCharacterStats(GetObject(vkCharsInBase[m_iCurrentCharacterPage]));
+				}
+				else
+				{
+					SetCharacterStats(NULL);
 				}
 			}
+
 			break;
 
 		case HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING:
@@ -89,6 +96,7 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 				char text[50];
 				sprintf(text, "Agent %i", m_kMembersInField[0]->iNetWorkID);
 				SetText("CurrentMemberNumberLabel", text);
+				SetCharacterStats(m_kMembersInField[0]);
 			}
 
 			break;
@@ -118,7 +126,10 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 			vkCharsInBase.size());
 
 		if(vkCharsInBase.empty())
+		{
+			SetCharacterStats(NULL);
 			return;
+		}
 
 		if(bNext)
 		{
@@ -131,8 +142,11 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 				m_iCurrentCharacterPage--;
 		}
 
-		sprintf(text, "Agent %i", vkCharsInBase[m_iCurrentCharacterPage]);
+		int agent_object;
+		agent_object = vkCharsInBase[m_iCurrentCharacterPage];
+		sprintf(text, "Agent %i", agent_object);
 		SetText("CurrentMemberNumberLabel", text);
+		SetCharacterStats(GetObject(agent_object));
 		break;
 
 	case IN_GAME:
@@ -154,4 +168,51 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		break;
 
 	}
+}
+
+void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
+{
+	char szText[50];
+	P_DMCharacter* pkCharProperty;
+	DMCharacterStats* pkCharacterStats;
+	
+	if(pkCharacterObject == NULL)
+	{
+		SetText("MemberNameField", "");
+		SetText("MembersArmourField", "");
+		SetText("MemberSpeedField", "");
+		SetText("MemberLifeField", "");
+		SetText("LevelbarTopic", "");
+		GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = -1;
+		return;
+	}
+
+	pkCharProperty = (P_DMCharacter*) 
+		pkCharacterObject->GetProperty("P_DMCharacter");
+
+	ZFAssert(pkCharProperty, 
+		"CMembersDlg::SetCharacterStats - No character property\n");
+
+	pkCharacterStats = pkCharProperty->GetStats();
+
+	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
+	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
+	SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
+	SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
+
+	sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
+		pkCharacterStats->m_iMaxLife);
+	SetText("MemberLifeField", szText);
+
+	sprintf(szText, "Level : %i (%i/%i)", pkCharacterStats->m_iLevel,
+		(int)(pkCharacterStats->m_fExperience), 
+		(int)(pkCharacterStats->m_fNextLevel));
+	SetText("LevelbarTopic", szText);
+
+	string szTexName = string("data/textures/gui/dm/portraits/") +
+		pkCharacterStats->m_strIcon;
+
+	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
+		GetTexID((char*)szTexName.c_str());
+
 }

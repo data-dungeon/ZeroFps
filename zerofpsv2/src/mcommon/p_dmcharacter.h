@@ -18,6 +18,7 @@ class MCOMMON_API DMCharacterStats
 {
 	public:
 		string	m_strName;
+		string	m_strIcon; // porträtt
 	
 		int		m_iLife;
 		int		m_iMaxLife;
@@ -33,6 +34,7 @@ class MCOMMON_API DMCharacterStats
 		DMCharacterStats()
 		{
 			m_strName = 	"NoName";
+			m_strIcon =		"portrait1.bmp";
 			
 			m_iLife = 		100;
 			m_iMaxLife =	100;

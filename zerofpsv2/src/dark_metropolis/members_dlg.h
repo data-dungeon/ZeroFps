@@ -31,6 +31,7 @@ private:
 	WINDOW_MODE m_eWidowMode;
 
 	void SwitchCharacter(bool bNext);
+	void SetCharacterStats(Entity* pkCharacterObject);
 
 	int m_iCurrentCharacterPage;
 
