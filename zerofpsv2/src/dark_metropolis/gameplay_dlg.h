@@ -8,10 +8,11 @@ public:
 	~CGamePlayDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void SelectAgent(int iAgent, bool bSelectModels);
 	
 protected:
 	bool InitDlg();
-	void SelectAgent(int iAgent);
+	
 	DMCharacterStats* GetAgentStats(int iAgent);
 
 	struct AGENT_ICON

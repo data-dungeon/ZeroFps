@@ -6,6 +6,7 @@
 #endif
 
 #include "dark_metropolis.h"
+#include "gameplay_dlg.h"
 #include "hq_dlg.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
@@ -362,6 +363,7 @@ void DarkMetropolis::Input()
 				if(pkEnt)
 					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 					{
+						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->iNetWorkID, false); 
 						SelectAgent(pkEnt->iNetWorkID, false,
 							!m_pkInputHandle->VKIsDown("multiselect"), false);
 					}
@@ -384,6 +386,7 @@ void DarkMetropolis::Input()
 				vector<Entity*> kObjects;	
 				m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
 	
+				int last_object_selected = -1;
 				for(unsigned int i=0;i<kObjects.size();i++)
 				{		
 					//objects that should not be clicked on (special cases)
@@ -395,9 +398,15 @@ void DarkMetropolis::Input()
 					if(pos.x > tl.x && pos.x < br.x)
 						if(pos.z > tl.z && pos.z < br.z)
 							if(kObjects[i]->GetProperty("P_DMCharacter"))
-								m_kSelectedEntitys.push_back(kObjects[i]->iNetWorkID);							
-			
+							{
+								last_object_selected = kObjects[i]->iNetWorkID;
+								m_kSelectedEntitys.push_back(kObjects[i]->iNetWorkID);										
+							}
 				}
+
+				if(last_object_selected != false)
+					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(
+						last_object_selected, false); 
 			}
 		}
 	}

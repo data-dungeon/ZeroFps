@@ -61,7 +61,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 	for(int i=0; i<5; i++)
 		if(strClickName == icon_name[i])
-			SelectAgent(m_akAgetIcons[i].iAgentObjectID);
+			SelectAgent(m_akAgetIcons[i].iAgentObjectID, true);
 }
 
 bool CGamePlayDlg::InitDlg()
@@ -123,7 +123,7 @@ bool CGamePlayDlg::InitDlg()
 	return true;
 }
 
-void CGamePlayDlg::SelectAgent(int iAgent)
+void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 {
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;
