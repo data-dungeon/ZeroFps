@@ -209,8 +209,8 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::Run_EngineShell()
 {
 	m_pkInput->SetInputEnabled(true);
-	m_pkNetWork->Run();
-	m_pkObjectMan->PackToClients();
+
+
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
@@ -230,6 +230,10 @@ void ZeroFps::Run_EngineShell()
 		m_pkConsole->Toggle();
 		m_pkInput->Reset();
 	}
+
+	//update system
+	Update_System();
+
 }
 
 void ZeroFps::Run_Server()
@@ -237,7 +241,6 @@ void ZeroFps::Run_Server()
 	//update zones
 	//m_pkLevelMan->UpdateZones();			
 	
-	Update_System();
 
 }
 
@@ -282,74 +285,56 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-/*
-	RROFILE	- VIM
 	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
-
 
 	if(iLoops<=0)
 		return;
 
-	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
-	
+	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
 	
-	//m_fGameTime = GetTicks();
-
 	for(int i=0;i<iLoops;i++)
 	{
+		//calculate current game time
 		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
-		if(m_bRunWorldSim) {
-			//update all normal propertys
-			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-			m_pkObjectMan->UpdateGameMessages();
-
-			//update physicsengine
-			m_pkPhysEngine->Update();	
-			}
-
-		//delete objects
-		m_pkObjectMan->UpdateDelete();
 		
-		//update the resource manager
-		m_pkResourceDB->Refresh();
-
-		m_fSystemUpdateTime = GetTicks();
-//
-*/
-// NORMAL
-	float fATime = GetTicks() - m_fSystemUpdateTime; 	
-	int iLoops = int(m_fSystemUpdateFps * fATime);
-
-
-	if(iLoops<=0)
-		return;
-
-	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
-	
-	float m_fLU = m_fSystemUpdateTime;
-	
-	//m_fGameTime = GetTicks();
-
-	for(int i=0;i<iLoops;i++)
-	{
-		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
+		//client & server code
 		
-		if(m_bRunWorldSim) {
-			//update application systems
-			m_pkApp->OnSystem();
-			
-			//update all normal propertys
-			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
-			m_pkObjectMan->UpdateGameMessages();
+		//update network for client & server
+		m_pkNetWork->Run();				
+		
+		//update application systems
+		m_pkApp->OnSystem();
+		
+		
+		
+		//server only code
+		if(m_bServerMode)
+		{
+			if(m_bRunWorldSim) {			
+				//update all normal propertys
+				m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
+				m_pkObjectMan->UpdateGameMessages();
 
-			//update physicsengine
-			m_pkPhysEngine->Update();	
+				//update physicsengine
+				m_pkPhysEngine->Update();	
 			
-			//update new super duper rigid body physics engine deluxe
-			m_pkPhysics_Engine->Update(m_fGameFrameTime);
+				//update new super duper rigid body physics engine deluxe
+				m_pkPhysics_Engine->Update(m_fGameFrameTime);
+		
+				//pack objects to clients
+				m_pkObjectMan->PackToClients();		
+
+			}	
+		}
+		
+		
+		//client only code
+		if(m_bClientMode)
+		{
+		
 		}
 
 		//delete objects
@@ -360,8 +345,6 @@ void ZeroFps::Update_System()
 
 		m_fSystemUpdateTime = GetTicks();
 	}
-	
-
 }
 
 void ZeroFps::Draw_EngineShell()
