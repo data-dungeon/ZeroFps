@@ -85,12 +85,12 @@ float* PSystemManager::CreateTexCoords (int iParticles)
 	for ( int i = 0; i < iParticles * 6; i += 6 )
 	{
 		pfTexCoords[i] = 0.5f;
-		pfTexCoords[i+1] = -0.50f;
+		pfTexCoords[i+1] = -0.5f;
 
-		pfTexCoords[i+2] = 1.7f;
+		pfTexCoords[i+2] = 2.0f;
 		pfTexCoords[i+3] = 1;
 
-		pfTexCoords[i+4] = -0.7f;
+		pfTexCoords[i+4] = -1.0f;
 		pfTexCoords[i+5] = 1;
 	}
 
@@ -269,6 +269,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if( m_kIniLoader.KeyExist("start_color", "random_a") )
 		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.w = m_kIniLoader.GetFloatValue("start_color", "random_a");
 
+	pkPSType->m_kParticleBehaviour.m_kStartColorRandom /= 100.f;
 
 	// End RGBA
 	if( m_kIniLoader.KeyExist("end_color", "r") )
@@ -296,7 +297,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	if( m_kIniLoader.KeyExist("end_color", "random") )
 	{
-		pkPSType->m_kParticleBehaviour.m_kStartColorRandom = m_kIniLoader.GetFloatValue("end_color", "random");
+		pkPSType->m_kParticleBehaviour.m_kEndColorRandom = m_kIniLoader.GetFloatValue("end_color", "random");
 	}
 	if( m_kIniLoader.KeyExist("end_color", "random_r") )
 		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.x = m_kIniLoader.GetFloatValue("end_color", "random_r");
@@ -307,6 +308,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if( m_kIniLoader.KeyExist("end_color", "random_a") )
 		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.w = m_kIniLoader.GetFloatValue("end_color", "random_a");
 
+	pkPSType->m_kParticleBehaviour.m_kEndColorRandom /= 100.f;
 
 	// Start area, (random size start area)
 		// Start outer
@@ -541,7 +543,16 @@ void PSystemManager::SetProperties ( PSystemType *pkPSType )
 		  pkPSType->m_kParticleBehaviour.m_kStartColor.z != 1 ||
 		  pkPSType->m_kParticleBehaviour.m_kEndColor.z   != 1 ||
 		  pkPSType->m_kParticleBehaviour.m_kStartColor.w != 1 || 
-		  pkPSType->m_kParticleBehaviour.m_kEndColor.w   != 1  )
+		  pkPSType->m_kParticleBehaviour.m_kEndColor.w   != 1 ||
+		  pkPSType->m_kParticleBehaviour.m_kEndColorRandom.x != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kEndColorRandom.y != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kEndColorRandom.z != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kEndColorRandom.w != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColorRandom.x != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColorRandom.y != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColorRandom.z != 0 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColorRandom.w != 0
+		  )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Color");
 
 	// size

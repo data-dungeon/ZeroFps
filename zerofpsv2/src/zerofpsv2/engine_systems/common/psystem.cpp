@@ -276,6 +276,8 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		m_kParticles[iParticleIndex].m_kStartColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
 			m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
 
+		//cout << "b:" << m_kParticles[iParticleIndex].m_kStartColor.z << endl;
+
 		// Random PSystem end colors
 		m_kParticles[iParticleIndex].m_kEndColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
 			m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
@@ -482,10 +484,3 @@ void PSystem::TestInsideFrustum()
 	else
 		m_bInsideFrustum = true;
 }
-
-
-
-
-
-
-

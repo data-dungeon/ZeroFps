@@ -45,7 +45,11 @@ void MovePSProp::Update()
 	kRightVect.Set(afM[0], afM[4], afM[8]); // right_vector
 	kUpVect.Set(afM[1], afM[5], afM[9]); // up_vector
 
-	a = kUpVect/2 + kRightVect/2;
+	// fix for box in triangle to get size written in psystemfile
+	kRightVect *= 3;
+	kUpVect *= 3;
+
+	a = kUpVect/2;
    b = -kUpVect/2 + kRightVect;
    c = -kUpVect/2 - kRightVect;
 
@@ -59,8 +63,8 @@ void MovePSProp::Update()
 
 	for ( i = m_pkParent->Start() * 9; i < m_pkParent->End() * 9; i += 9 )
 	{
-		int iPartIndex = i / 9;
 
+		int iPartIndex = i / 9;
 		float fWidth =  pkParticles->at(iPartIndex).m_kSize.x/2.f;
 		float fHeight = pkParticles->at(iPartIndex).m_kSize.y/2.f;
 		

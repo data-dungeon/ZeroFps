@@ -12,6 +12,77 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
+			Name="Debug Maya 5|Win32"
+			OutputDirectory=".\madexport___Win32_Debug_Maya_5"
+			IntermediateDirectory=".\madexport___Win32_Debug_Maya_5"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="C:\Program Files\AliasWavefront\Maya5.0\include\"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\madexport___Win32_Debug_Maya_5/madexport.pch"
+				AssemblerListingLocation=".\madexport___Win32_Debug_Maya_5/"
+				ObjectFile=".\madexport___Win32_Debug_Maya_5/"
+				ProgramDataBaseFileName=".\madexport___Win32_Debug_Maya_5/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaAnim.lib"
+				OutputFile="Debug\madexport.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="C:\Program Files\AliasWavefront\Maya5.0\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\madexport___Win32_Debug_Maya_5/madexport.pdb"
+				SubSystem="2"
+				ImportLibrary=".\madexport___Win32_Debug_Maya_5/madexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\madexport___Win32_Debug_Maya_5/madexport.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(ProjectDir)&quot;debug\*.mll &quot;C:\Program Files\AliasWavefront\Maya5.0\bin\plug-ins&quot;
+copy &quot;$(ProjectDir)&quot;debug\*.mll &quot;C:\Program\AliasWavefront\Maya5.0\bin\plug-ins&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1053"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
@@ -22,7 +93,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
+				AdditionalIncludeDirectories="C:\Program\AliasWavefront\Maya4.5\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -39,27 +110,29 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
 				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaAnim.lib"
 				OutputFile="Debug\madexport.mll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="C:\Program\AliasWavefront\Maya4.5\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/madexport.pdb"
 				SubSystem="2"
-				ImportLibrary=".\Debug/madexport.lib"/>
+				ImportLibrary=".\Debug/madexport.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/madexport.tlb"/>
+				TypeLibraryName=".\Debug/madexport.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(ProjectDir)debug\*.mll &quot;C:\Program Files\AliasWavefront\Maya4.5\bin\plug-ins&quot;
-copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-ins&quot;
+				CommandLine="copy &quot;$(ProjectDir)&quot;debug\*.mll &quot;C:\Program Files\AliasWavefront\Maya4.5\bin\plug-ins&quot;
+copy &quot;$(ProjectDir)&quot;debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-ins&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -67,7 +140,7 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;_DEBUG"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="1053"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
@@ -90,8 +163,9 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
+				AdditionalIncludeDirectories=".,C:\AW\Maya4.0\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;NT_PLUGIN"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -108,7 +182,7 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
 				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaAnim.lib"
 				OutputFile="Release\madexport.mll"
 				LinkIncremental="1"
@@ -116,93 +190,26 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 				AdditionalLibraryDirectories="C:\AW\Maya4.0\lib"
 				ProgramDatabaseFile=".\Release/madexport.pdb"
 				SubSystem="2"
-				ImportLibrary=".\Release/madexport.lib"/>
+				ImportLibrary=".\Release/madexport.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/madexport.tlb"/>
+				TypeLibraryName=".\Release/madexport.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(ProjectDir)release\*.mll c:\aw\Maya4.0\bin\plug-ins"/>
+				CommandLine="copy &quot;$(ProjectDir)&quot;release\*.mll c:\aw\Maya4.0\bin\plug-ins"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;NDEBUG"
-				Culture="1053"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug Maya 5|Win32"
-			OutputDirectory=".\madexport___Win32_Debug_Maya_5"
-			IntermediateDirectory=".\madexport___Win32_Debug_Maya_5"
-			ConfigurationType="2"
-			UseOfMFC="2"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\madexport___Win32_Debug_Maya_5/madexport.pch"
-				AssemblerListingLocation=".\madexport___Win32_Debug_Maya_5/"
-				ObjectFile=".\madexport___Win32_Debug_Maya_5/"
-				ProgramDataBaseFileName=".\madexport___Win32_Debug_Maya_5/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaAnim.lib"
-				OutputFile="Debug\madexport.mll"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Program\AliasWavefront\Maya5.0\lib"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\madexport___Win32_Debug_Maya_5/madexport.pdb"
-				SubSystem="2"
-				ImportLibrary=".\madexport___Win32_Debug_Maya_5/madexport.lib"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\madexport___Win32_Debug_Maya_5/madexport.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="copy $(ProjectDir)debug\*.mll &quot;C:\Program Files\AliasWavefront\Maya5.0\bin\plug-ins&quot;
-copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya5.0\bin\plug-ins&quot;
-"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AFXDLL;_DEBUG"
+				PreprocessorDefinitions="NDEBUG"
 				Culture="1053"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
@@ -223,26 +230,81 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya5.0\bin\plug-i
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\bone.cpp">
+				RelativePath="bone.cpp">
+				<FileConfiguration
+					Name="Debug Maya 5|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\madexport.cpp">
+				RelativePath="madexport.cpp">
+				<FileConfiguration
+					Name="Debug Maya 5|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;$(NoInherit)"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath=".\bone.h">
+				RelativePath="bone.h">
 			</File>
 			<File
-				RelativePath=".\madexport.h">
+				RelativePath="madexport.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
+		<File
+			RelativePath="..\..\..\..\..\Documents and Settings\jima02\My Documents\maya\scripts\MadExportOptions.mel">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -67,6 +67,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	// entity orientation
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
+	pkScript->ExposeFunction("PlaceObjectOnGround",	ObjectManagerLua::PlaceObjectOnGroundLua);
 
 	//zone management
 	pkScript->ExposeFunction("GetZoneIDAtPos",		ObjectManagerLua::GetZoneIDAtPosLua);
@@ -340,6 +341,78 @@ int HaveRelativOriLua(lua_State* pkLua)
 	return 0;
 }
 //----end of create
+
+
+
+// Position/Rotations.
+
+
+/**	\fn SetLocalPos(x,y,z)
+ 	\relates SIEntityManger
+	\brief Sets the local pos of the last object.
+*/
+int SetLocalPosLua(lua_State* pkLua)
+{
+	if(g_kScriptState.g_pkLastObject == NULL)
+		return 0;
+
+	if(g_pkScript->GetNumArgs(pkLua) != 3)
+		return 0;	
+
+	double x,y,z;
+	
+	g_pkScript->GetArg(pkLua, 0, &x);
+	g_pkScript->GetArg(pkLua, 1, &y);
+	g_pkScript->GetArg(pkLua, 2, &z);
+	
+	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
+	
+	return 0;
+}
+
+int PlaceObjectOnGroundLua(lua_State* pkLua)
+{/*
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+			return 0;
+
+	double iObjectID;
+	g_pkScript->GetArg(pkLua, 0, &iObjectID);
+
+	Entity* pkObj = g_pkObjMan->GetEntityByID(iObjectID);		
+	if(pkObj) 
+	{
+		ZoneData* pkData = g_pkObjMan->GetZoneData(pkObj->GetCurrentZone());		
+		if(pkData == NULL || pkData->m_pkZone == NULL)
+			return false;
+
+		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
+		{
+			if(pkMad->TestLine(pkObj->GetWorldPosV(),Vector3(0,-1,0)))
+			{
+				Vector3 kPos = pkMad->GetLastColPos();
+				
+				pkObj->SetWorldPosV(kPos);
+				return true;
+			}
+		}
+		
+		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
+		if(pkMesh == NULL)
+			return false;
+
+		NaviMeshCell* pkCurrCell = pkMesh->GetCell(pkObj->GetLocalPosV());
+		if(pkCurrCell)
+		{
+			Vector3 pos = pkObj->GetLocalPosV(); 
+			pos.y = pkCurrCell->m_kVertex->y;
+			pkObj->SetLocalPosV(pos); 
+			m_iCurrentObject = -1;
+		}
+	}
+*/
+	return 0;
+}
+
 
 
 int SIGetSelfIDLua(lua_State* pkLua)

@@ -3,6 +3,7 @@
 
 void ZGuiEd::OnIdle()
 {
+
 	if(m_bTestGUI && m_iTask != 11)
 		return;
 
@@ -710,6 +711,8 @@ bool ZGuiEd::NewGUI(bool bConfirm)
 
 	while(1)
 	{
+		if ( kWnds.begin() == kWnds.end() )
+			break;
 		for(map<string, ZGuiWnd*>::iterator it = kWnds.begin(); it != kWnds.end(); it++)
 		{
 			ZGuiWnd* pkWnd = it->second;

@@ -625,7 +625,7 @@ void ZShaderSystem::SetupPass(int iPass)
 	else if(m_iForceAlphaTest == 2)
 	{
  		glEnable(GL_ALPHA_TEST);
- 		glAlphaFunc(GL_GREATER, 0.1);	
+ 		glAlphaFunc(GL_GREATER, 0.01);	
 		//glAlphaFunc(GL_EQUAL, 1.0);	
 	}
 	
