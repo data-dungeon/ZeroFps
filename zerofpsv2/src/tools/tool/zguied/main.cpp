@@ -127,8 +127,7 @@ void ZGuiEd::OnInit()
 	m_strNewFileToLoad = "";
 
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
-	m_pkZFVFileSystem->AddRootPath( "../datafiles/sysdata/",		"/data");
-
+	
   	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetClearViewPort(true);

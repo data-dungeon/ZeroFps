@@ -1,5 +1,6 @@
 #include "zguied.h"
 #include "resource.h"
+#include "shellapi.h"
 
 void ZGuiEd::HandleInput()
 {
@@ -321,6 +322,9 @@ void ZGuiEd::MouseClick(bool bLeft, int x, int y)
 
 void ZGuiEd::MouseMove(bool bLeft, int x, int y)
 {
+	if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_DISABLE_MOVE_CB) && m_bResize == false)
+		return;
+
 	if(x > 800 || y > 600)
 		return;
 
@@ -576,7 +580,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_TESTGUI_BN:
-			
+					
 			m_bTestGUI = !m_bTestGUI;
 			m_pkGui->Activate(m_bTestGUI); 
 			m_iTask = TASK_TEST_GUI;			

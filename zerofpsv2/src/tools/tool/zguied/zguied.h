@@ -23,8 +23,6 @@ public:
 	void OnIdle(void);
 	void RenderInterface();
 
-	
-
 	bool StartUp()		{return true;}
 	bool ShutDown()	{return true;}
 	bool IsValid()		{return true;}
@@ -106,6 +104,7 @@ private:
 	void PasteWnd();
 	bool CloneSkins(ZGuiWnd* pkDst, ZGuiWnd* pkSrc);
 	void HandleInput();
+	bool AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow);
 
 	Point m_kCursorRangeDiff;
 };
@@ -118,6 +117,5 @@ extern HWND g_kDlgBoxBottom;
 extern HINSTANCE hInstance;
 extern HBITMAP preview_bitmap;
 extern HWND g_kFontDlg;
-
 
 #endif // #ifndef _ZGUIED_H_

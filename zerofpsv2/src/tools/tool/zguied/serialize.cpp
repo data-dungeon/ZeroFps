@@ -227,14 +227,35 @@ bool ZGuiEd::WriteWindows()
 		vkCandidates.push_back(it->second);
 	}
 	
-	//sortlist.push_back(pkMainWnd);
-	//vkCandidates.push_back(pkMainWnd);
-
 	while(1)
 	{
 		for(int i=0; i<vkCandidates.size(); i++)
 		{
+			GuiType eType = GetWndType(vkCandidates[i]);
 			ZGuiWnd* pkParent = vkCandidates[i]->GetParent();
+
+			if(pkParent && GetWndType(pkParent) == TabControl)
+				if(!AlreadyInList(sortlist, pkParent))
+					continue;
+
+			if(eType == TabControl)
+			{
+				if(pkParent == NULL || (pkParent && AlreadyInList(sortlist, pkParent)) )
+				{
+					if(!AlreadyInList(sortlist, vkCandidates[i]))
+						sortlist.push_back(vkCandidates[i]);
+
+					ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*) vkCandidates[i];
+					for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
+					{
+						ZGuiWnd* pkPage = pkTabCtrl->GetPage(i);
+						if(!AlreadyInList(sortlist, pkPage))
+							sortlist.push_back(pkPage);						
+					}
+
+					continue;
+				}
+			}
 
 			if(pkParent == NULL)
 			{
@@ -338,4 +359,13 @@ void ZGuiEd::PrintSkins(ZGuiWnd* pkWnd)
 	}
 
 	kSkins.clear(); 
+}
+
+bool ZGuiEd::AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow)
+{
+	for(int i=0; i<kList.size(); i++)
+		if(kList[i] == kWindow)
+			return true;
+
+	return false;
 }

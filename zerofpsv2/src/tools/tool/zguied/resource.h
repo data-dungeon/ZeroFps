@@ -31,6 +31,7 @@
 #define IDC_LIST3                       1025
 #define IDC_WINDOW_LIST                 1026
 #define IDC_CHECK1                      1027
+#define IDC_DISABLE_MOVE_CB             1027
 #define IDC_WINDOW_LIST3                1028
 #define IDC_SELECT_SCRIPT_FOLDER_LIST   1029
 #define IDC_TILE_CB                     1030

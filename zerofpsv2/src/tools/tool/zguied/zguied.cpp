@@ -13,9 +13,8 @@ void ZGuiEd::OnIdle()
 		int size = kWnds.size();
 
 		if(NewGUI(size > 1))
-		{
 			LoadGUI(m_strNewFileToLoad.c_str());
-		}
+
 		m_strNewFileToLoad = "";
 	}
 
@@ -153,11 +152,11 @@ void ZGuiEd::RenderInterface()
 
 ZGuiWnd* ZGuiEd::GetWndFromPoint(int x, int y)
 {
-	ZGuiWnd* pkFind = NULL;
-	vector<ZGuiWnd*> vkCandidates;
+	pair<ZGuiWnd*, int> kFind(NULL,0);
+	vector<pair<ZGuiWnd*, float> > vkCandidates;
 	map<string, ZGuiWnd*> kWindows;
 
-	GuiType eType = GuiType_Error;
+	GuiType eFilterType = GuiType_Error;
 	bool bFilter = IsDlgButtonChecked(g_kDlgBoxRight, IDC_ONLY_OF_WND_TYPE_CB);
 
 	int sel = SendDlgItemMessage(g_kDlgBoxRight, IDC_NEWCNTRL_CB, CB_GETCURSEL, 0, 0);
@@ -165,7 +164,7 @@ ZGuiWnd* ZGuiEd::GetWndFromPoint(int x, int y)
 	{
 		char szWndTypeText[100];
 		SendDlgItemMessage(g_kDlgBoxRight, IDC_NEWCNTRL_CB, CB_GETLBTEXT, sel, (LPARAM) (LPTSTR) szWndTypeText);
-		eType = FormatWndType(szWndTypeText);
+		eFilterType = FormatWndType(szWndTypeText);
 	}
 
 	m_pkGuiMan->GetWindows(kWindows);
@@ -174,32 +173,40 @@ ZGuiWnd* ZGuiEd::GetWndFromPoint(int x, int y)
 		ZGuiWnd* pkWnd = it->second;
 		if(pkWnd->GetScreenRect().Inside(x,y) && pkWnd->IsVisible())
 		{
-			if(bFilter == false || GetWndType(pkWnd) == eType)
+			GuiType eType = GetWndType(pkWnd);
+			if(bFilter == false || eType == eFilterType)
 			{
-				if(!pkWnd->GetParent() || pkWnd->GetParent()->IsVisible()) 
-					vkCandidates.push_back(pkWnd);
+				if(!pkWnd->GetParent() || pkWnd->GetParent()->IsVisible())
+				{
+					int value = pkWnd->m_iZValue;
+
+					Vector2 dist = Vector2(x,y) - Vector2(pkWnd->GetScreenRect().Left,pkWnd->GetScreenRect().Top);					
+					float length = dist.Length();
+
+					value -= length;
+
+					vkCandidates.push_back(pair<ZGuiWnd*, int> (pkWnd, value));
+				}
 			}
 		}
 	}
 
 	if(!vkCandidates.empty())
 	{
-		pkFind = (*vkCandidates.begin());
+		kFind = (*vkCandidates.begin());
 
-		for(vector<ZGuiWnd*>::iterator it2 = vkCandidates.begin(); it2 != vkCandidates.end(); it2++)
-		{
-			if((*it2)->m_iZValue > pkFind->m_iZValue)
+		for(vector<pair<ZGuiWnd*, float> >::iterator it2 = vkCandidates.begin(); it2 != vkCandidates.end(); it2++)
+			if((*it2).second > kFind.second)
 			{
 				if(bFilter == false)
-					pkFind = (*it2);
+					kFind = (*it2);
 				else
-				if(eType == GetWndType((*it2)))
-					pkFind = (*it2);
+					if(eFilterType == GetWndType((*it2).first))
+						kFind = (*it2);
 			}
-		}
 	}
 
-	return pkFind;
+	return kFind.first;
 }
 
 void ZGuiEd::DeleteSelWindow(bool bConfirm)
@@ -212,11 +219,20 @@ void ZGuiEd::DeleteSelWindow(bool bConfirm)
 		if(m_pkCopyWnd == m_pkFocusWnd)
 			m_pkCopyWnd = NULL;
 
-		m_pkGui->UnregisterWindow(m_pkFocusWnd);
+		if(m_pkFocusWnd->GetParent() && GetWndType(m_pkFocusWnd->GetParent()) == TabControl)
+		{
+			ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*) m_pkFocusWnd->GetParent();
+			unsigned int current_page = pkTabCtrl->GetCurrentPage(); 
+			pkTabCtrl->DeletePage(current_page);
+		}
+		else
+		{
+			m_pkGui->UnregisterWindow(m_pkFocusWnd);
+		}
+
 		m_pkFocusWnd = NULL;
 
 		UpdateInfo();
-
 		FilterWnd();
 		UpdateSkinList();
 		UpdatePreviewImage("");
@@ -252,22 +268,22 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 			return;
 
 		string strText = szWnd;
-		if(strText == "Wnd") {eType = Wnd; w=200; h=200;}
+		text = strText;
+
+		if(strText == "Wnd") {eType = Wnd; w=200; h=200; text=""; }
 		if(strText == "Button") {eType = Button; w=40; h=16;}
 		if(strText == "Checkbox") {eType = Checkbox; w=16; h=16;}
-		if(strText == "Combobox") {eType = Combobox; w=118; h=16;}
+		if(strText == "Combobox") {eType = Combobox; w=118; h=16; text="";}
 		if(strText == "Label") {eType = Label; w=64; h=16;}
-		if(strText == "Listbox") {eType = Listbox; w=128; h=128;}
+		if(strText == "Listbox") {eType = Listbox; w=128; h=128; text="";}
 		if(strText == "Radiobutton") {eType = Radiobutton; w=16; h=16;}
-		if(strText == "Scrollbar") {eType = Scrollbar; w=16; h=200;}
-		if(strText == "Slider") {eType = Slider; w=50; h=16;}
-		if(strText == "TabControl") {eType = TabControl; w=200; h=200;}
+		if(strText == "Scrollbar") {eType = Scrollbar; w=16; h=200; text="";}
+		if(strText == "Slider") {eType = Slider; w=50; h=16; text="";}
+		if(strText == "TabControl") {eType = TabControl; w=200; h=200; text="";}
 		if(strText == "Textbox") {eType = Textbox; w=100; h=16;}
-		if(strText == "Treebox") {eType = Treebox; w=100; h=100;}
-		if(strText == "Menu") {eType = Menu; w=200; h=16;}
-		if(strText == "Progressbar") {eType = Progressbar; w=100; h=16;}
-
-		text = strText;
+		if(strText == "Treebox") {eType = Treebox; w=100; h=100; text="";}
+		if(strText == "Menu") {eType = Menu; w=200; h=16; text="";}
+		if(strText == "Progressbar") {eType = Progressbar; w=100; h=16; text="";}
 	}
 
 	char name[50], parent[50];
@@ -313,6 +329,9 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 			y += 10;
 		}
 	}
+
+	if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == TabControl)
+		text = name;
 
 	ZGuiWnd* pkNewWnd = CreateWnd(eType, name, parent, (char*)text.c_str(), x, y, w, h, 0);
 	if(pkNewWnd)
@@ -580,15 +599,8 @@ bool ZGuiEd::NewGUI(bool bConfirm)
 	}
 
 	for(int k=removelist.size()-1; k>0; k--)
-	{
-		if(removelist[k] != GetWnd("GuiMainWnd"))
-		{
-			if(removelist[k] != pkMainWnd)
-			{
-				m_pkGui->UnregisterWindow(removelist[k]);
-			}
-		}
-	}
+		if(removelist[k] != pkMainWnd)
+			m_pkGui->UnregisterWindow(removelist[k]);
 
 	ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 	ZGuiWnd::m_pkPrevWndClicked = NULL;
