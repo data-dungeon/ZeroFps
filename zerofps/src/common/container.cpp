@@ -150,7 +150,8 @@ bool Container::AddItem(Object* pkObject)
 	m_kObjects.push_back(kTemp);
 
 	//set slot to item ID
-	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
+//	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
+	RebuildGrid();
 
 	PrintContainer();
 
@@ -183,7 +184,8 @@ bool Container::AddItem(Object* pkObject,int iX,int iY)
 	m_kObjects.push_back(kTemp);
 
 	//set slot iX,iY to ID
-	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
+//	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
+	RebuildGrid();
 
 	return true;
 }
@@ -217,6 +219,9 @@ bool Container::RemoveItem(Object* pkObject)
 	//remove item from item list
 	m_kObjects.erase(kOit);	
 	
+	RebuildGrid();
+	
+/*	
 	//loop trough the grid and erase the item
 	for(int x=0;x<m_iSizeX;x++)
 	{
@@ -226,7 +231,7 @@ bool Container::RemoveItem(Object* pkObject)
 				GetID(x,y) = -1;		
 		}
 	}
-
+*/
 	return true;
 }
 
@@ -269,3 +274,17 @@ GuiData Container::GetGuiData(int iNr)
 }
 
 
+void Container::RebuildGrid()
+{
+	for(int x=0;x<m_iSizeX;x++)
+		for(int y=0;y<m_iSizeY;y++)
+			GetID(x,y) = -1;
+
+
+	for(int i=0;i<m_kObjects.size();i++)
+	{
+		ItemProperty* pkIP = GetItemProperty(m_kObjects[i].pkObject);
+		SetID(m_kObjects[i].iX,m_kObjects[i].iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,i);					
+	}
+
+}

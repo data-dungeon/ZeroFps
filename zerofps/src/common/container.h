@@ -66,6 +66,8 @@ class COMMON_API Container
 		int		GetFreeSlots();
 		void	GetSize(int& iX,int& iY){iX = m_iSizeX;iY = m_iSizeY;};
 		
+		void RebuildGrid();
+		
 		void	PrintContainer();		
 		
 		unsigned int	GetNrOfItems() {return m_kObjects.size();};		
