@@ -68,6 +68,21 @@ class ZeroEdit :public Application {
 	
 		string m_kMapBaseDir;
 
+
+		void Input();				
+		void CreateNew(int iSize);
+		void SetPointer();	
+		void DrawMarkers();
+		void Clear();
+		Object* GetClosest(Vector3 kPos);
+		void SelectChild();
+		void SelectParent();		
+		void CreateZones();				
+		bool LoadLevel(const char* acFile);				
+		bool SaveLevel(const char* acFile);												
+		void ListTemplates();		
+		void RegisterPropertys();
+		
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroEdit() {};
@@ -76,24 +91,8 @@ class ZeroEdit :public Application {
 		void OnHud(void);
 		void OnServerStart(void);
 		void OnClientStart(void);		
-		void Input();		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		
-		void CreateNew(int iSize);
-		void SetPointer();	
-		void DrawMarkers();
-		void Clear();
-		Object* GetClosest(Vector3 kPos);
-		void SelectChild();
-		void SelectParent();		
-		void CreateZones();
-				
-		bool LoadLevel(const char* acFile);				
-		bool SaveLevel(const char* acFile);								
-				
-		void ListTemplates();
-		
-		void RegisterPropertys();
 };
 
 

@@ -247,6 +247,7 @@ Object::Object() {
 
 	m_kName="Object";
 		
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 	m_bLockedChilds=false;
 	m_iUpdateStatus=UPDATE_ALL;
 	m_bLoadChilds=true;
@@ -286,11 +287,40 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
-	//first get propertys from all childs
-	if(m_iUpdateStatus != UPDATE_NONE ){
-		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-			(*it)->GetAllPropertys(akPropertys,iType,iSide);
+	switch(m_iUpdateStatus)
+	{
+		//if UPDATE_NONE dont return any child propertys
+		case UPDATE_NONE:
+			return;
+		
+		//update both players and dynamic objects
+		case UPDATE_DYNAMIC:{
+			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+				if((*it)->GetObjectType() == OBJECT_TYPE_DYNAMIC || (*it)->GetObjectType() == OBJECT_TYPE_PLAYER)
+					(*it)->GetAllPropertys(akPropertys,iType,iSide);
+			}
+			break;
+		}
+		case UPDATE_STATIC:{
+			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+				if((*it)->GetObjectType() == OBJECT_TYPE_STATIC)
+					(*it)->GetAllPropertys(akPropertys,iType,iSide);
+			}			
+			break;
+		}
+		case UPDATE_PLAYERS:{
+			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+				if((*it)->GetObjectType() == OBJECT_TYPE_PLAYER)
+					(*it)->GetAllPropertys(akPropertys,iType,iSide);
+			}			
+			break;
 		}			
+		case UPDATE_ALL:{
+			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+				(*it)->GetAllPropertys(akPropertys,iType,iSide);
+			}			
+			break;
+		}
 	}
 }
 

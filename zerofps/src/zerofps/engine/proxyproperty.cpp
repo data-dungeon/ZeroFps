@@ -26,7 +26,7 @@ void ProxyProperty::Update()
 		//if the camera is outside the proximity
 		switch(m_iAktion) {
 			case UPDATESTATUS:
-				m_pkObject->GetUpdateStatus()=UPDATE_NONE;
+				m_pkObject->GetUpdateStatus()=UPDATE_DYNAMIC;
 				break;				
 		}		
 	}

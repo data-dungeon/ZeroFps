@@ -47,9 +47,14 @@ enum UPDATE_STATUS{
 	UPDATE_ALL,
 	UPDATE_STATIC,
 	UPDATE_DYNAMIC,
-	UPDATE_PLAYERS
+	UPDATE_PLAYERS,
 };
 
+enum OBJECT_TYPE{
+	OBJECT_TYPE_DYNAMIC,
+	OBJECT_TYPE_STATIC,
+	OBJECT_TYPE_PLAYER,
+};
 
 class ENGINE_API Object {
 	protected:
@@ -59,7 +64,7 @@ class ENGINE_API Object {
 		
 		string m_kName;		
 
-//		bool m_bUpdateChilds;
+		int m_iObjectType;		
 		int m_iUpdateStatus;
 		bool m_bLoadChilds;
 		bool m_bLockedChilds;
@@ -112,6 +117,7 @@ class ENGINE_API Object {
 
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 
+		inline int &GetObjectType(){return m_iObjectType;};
 		inline bool &GetSave(){return m_bSave;};
 		inline string &GetName(){return m_kName;};
 		inline Vector3 &GetPos(){return m_kPos;};

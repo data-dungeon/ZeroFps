@@ -27,6 +27,8 @@ public:
 */
 
 void PlayerControlProperty::Update() {
+	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
+	
 	float speed=25;
 	walking=false;
 	

@@ -37,6 +37,7 @@ class Game :public Application {
 		
 		void input();				
 		bool LoadLevel(const char* acFile);				
+		void SetupLevel();
 		void Clear();		
 		void CreateNew(int iSize);
 		

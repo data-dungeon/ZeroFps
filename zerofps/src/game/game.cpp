@@ -63,6 +63,11 @@ void Game::OnIdle(void) {
 	
 		case GAME_STATE_INGAME:
 		{
+			pkFps->SetCamera(m_pkCamera);		
+			pkFps->GetCam()->ClearViewPort();	
+			
+			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
+			pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());			
 			
 			break;
 		}
@@ -202,6 +207,9 @@ bool Game::LoadLevel(const char* acFile)
 	
 	cout<<"objects loaded"<<endl;
 
+	//setup player aso
+	SetupLevel();
+
 	return true;
 }
 
@@ -233,14 +241,6 @@ void Game::CreateNew(int iSize)
 	m_pkHeightMapObject->GetPos().Set(0,-4,0);				
 	m_pkMap->SetPosition(Vector3(0,-4,0));
 	
-	/*
-	//player
-	m_pkPlayer=new PlayerObject(m_pkMap,pkInput);
-	m_pkPlayer->GetPos().Set(227,42,190);		
-	m_pkPlayer->AddProperty(new CameraProperty(cam1));
-	m_pkPlayer->AttachToClosestZone();
-	pkCollisionMan->Add(m_pkPlayer);
-*/
 
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
@@ -262,7 +262,46 @@ void Game::SetUpMenuScreen()
 	m_pkCamera->GetPos().Set(94.5,23,98.1);	
 	m_pkCamera->GetRot().Set(13,138,0);	
 
+	m_iGameState=GAME_STATE_MENU;
 }
+
+
+void Game::SetupLevel()
+{
+	list<Object*> kObjects;		
+	pkObjectMan->GetAllObjects(&kObjects);
+	
+	Object* po=NULL;
+	
+	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) 
+	{
+		if((*it)->GetName() == "PLAYER_SPAWN_POINT")
+		{
+			//player
+			PlayerObject* m_pkPlayer=new PlayerObject(m_pkMap,pkInput);
+			m_pkPlayer->GetPos() = (*it)->GetPos();
+			m_pkPlayer->GetRot() = (*it)->GetRot();			
+			m_pkPlayer->AddProperty(new CameraProperty(m_pkCamera));
+			m_pkPlayer->AttachToClosestZone();
+			pkCollisionMan->Add(m_pkPlayer);			
+			
+			po=(*it);
+		}		
+	}
+	
+	if(po==NULL)
+	{
+		pkConsole->Printf("ERROR: Player spawn point is missing");
+		return;
+	}
+	
+	delete po;
+	
+	m_iGameState=GAME_STATE_INGAME;
+}
+
+
+
 
 
 
