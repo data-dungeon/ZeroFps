@@ -35,9 +35,12 @@ bool Render::StartUp()
 	m_iHmTempList=0;
 
 	//setup material for heightmap rendering
-	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = GL_FILL;
-	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
-	m_kHeightmapMaterial.GetPass(1)->m_bCullFace = false;
+	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = GL_LINE;
+//	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
+//	m_kHeightmapMaterial.GetPass(1)->m_bCullFace = false;
+	m_kHeightmapMaterial.m_bCopyData = true;
+	m_kHeightmapMaterial.m_bWaves = true;	
+	m_kHeightmapMaterial.m_bRandomMovements = false;		
 
 	return true;
 }

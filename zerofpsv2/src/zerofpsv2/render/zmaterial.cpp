@@ -12,6 +12,7 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_bLighting = false;
 	m_bCullFace = false;
+	
 };
 
 ZMaterial::ZMaterial()
@@ -20,6 +21,8 @@ ZMaterial::ZMaterial()
 	
 	first->m_iTUs[0] = 1; 
 
+	m_bCopyData = false;
+	m_bRandomMovements = false;
 }
 
 ZMaterialSettings* ZMaterial::GetPass(int iPass)

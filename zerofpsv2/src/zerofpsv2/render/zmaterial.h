@@ -30,6 +30,11 @@ class RENDER_API ZMaterial
 		vector<ZMaterialSettings> m_kPasses;
 		
 	public:		
+		bool	m_bCopyData;
+		bool	m_bRandomMovements;
+		bool	m_bWaves;		
+				
+		
 		ZMaterial();
 	
 		int GetNrOfPasses() {return m_kPasses.size();};

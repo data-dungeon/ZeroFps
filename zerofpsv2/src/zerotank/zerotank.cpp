@@ -108,7 +108,7 @@ void ZeroTank::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	m_pkMap2->SetPos(Vector3(0,-5,-10));
-	pkRender->DrawHM2(m_pkMap2,Vector3(0,0,0));
+	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 	
 	//update player possition
@@ -178,11 +178,16 @@ void ZeroTank::Input()
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
-/*	if(pkInput->Pressed(KEY_W))
-		pkLevelMan->ChangeLandscapeFillMode(LINE);
-	if(pkInput->Pressed(KEY_F))
-		pkLevelMan->ChangeLandscapeFillMode(FILL);
-*/
+	
+	if(pkInput->Pressed(KEY_Q))
+		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
+	if(pkInput->Pressed(KEY_E))
+		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
+
+	int x,z;		
+	pkInput->RelMouseXY(x,z);	
+	pkFps->GetCam()->GetRot().x+=z/5.0;
+	pkFps->GetCam()->GetRot().y+=x/5.0;	
 }
 
 void ZeroTank::OnHud(void) 

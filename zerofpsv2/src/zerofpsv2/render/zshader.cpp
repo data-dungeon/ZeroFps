@@ -27,7 +27,10 @@ void ZShader::Reset()
 	m_pkIndexPointer = 	NULL;
 	m_pkColorPointer = 	NULL;	
 
+	m_bCopyedData =		false;
+	
 	SetDrawMode(POLYGON_MODE);
+
 }
 
 void ZShader::SetPointer(int iType,void* pkPointer)
@@ -141,9 +144,43 @@ void ZShader::BindMaterial(ZMaterial* pkMaterial)
 	m_pkCurentMaterial = pkMaterial;
 }
 
+void ZShader::SetupPrerenderStates()
+{
+	if(m_pkCurentMaterial->m_bCopyData)
+		CopyVertexData();
+		
+		
+	if(m_pkCurentMaterial->m_bRandomMovements)
+		RandomVertexMovements();
+
+	if(m_pkCurentMaterial->m_bWaves)
+		Waves();
+
+}
+
+void ZShader::RandomVertexMovements()
+{
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		m_pkVertexPointer[i] += Vector3( (rand()%1000 /1000.0) -0.5,(rand()%1000 /1000.0) -0.5,(rand()%1000 /1000.0) -0.5);
+
+	}
+	
+}
+
+void ZShader::Waves()
+{	
+	for(int i=0;i<m_iNrOfVertexs;i++)
+	{
+		m_pkVertexPointer[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);
+
+	}
+}
+
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
+
 	//polygon mode settings	
 	glPolygonMode(GL_FRONT, pkSettings->m_iPolygonModeFront);
 	glPolygonMode(GL_BACK, pkSettings->m_iPolygonModeBack);	
@@ -184,10 +221,62 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 
 }
 
+void ZShader::CopyVertexData()
+{
+	m_bCopyedData = true;
+	
+	if(m_pkVertexPointer)
+		CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
+
+	if(m_pkNormalPointer)
+		CopyData((void**)&m_pkNormalPointer,sizeof(Vector3)*m_iNrOfVertexs);
+	
+	if(m_pkTexturePointer)
+		CopyData((void**)&m_pkTexturePointer,sizeof(Vector2)*m_iNrOfVertexs);
+	
+	if(m_pkIndexPointer)
+		CopyData((void**)&m_pkIndexPointer,sizeof(int)*m_iNrOfVertexs);
+	
+	if(m_pkColorPointer)
+		CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
+
+	//we have to reset opengls data pointers
+	SetupClientStates();
+}
+
+void ZShader::CopyData(void** pkData,int iSize)
+{
+	void* pkNewData = new char[iSize];
+	memcpy(pkNewData,*pkData,iSize);
+	
+	*pkData = pkNewData;
+	
+}
+
+void ZShader::CleanCopyedData()
+{
+	delete m_pkVertexPointer;	
+	delete m_pkNormalPointer;		
+	delete m_pkTexturePointer;		
+	delete m_pkIndexPointer;		
+	delete m_pkColorPointer;		
+	
+	m_pkVertexPointer =	NULL;	
+	m_pkNormalPointer =	NULL;		
+	m_pkTexturePointer = NULL;		
+	m_pkIndexPointer =	NULL;		
+	m_pkColorPointer =	NULL;		
+	
+	m_bCopyedData = false;
+}
+
+
 void ZShader::Draw()
 {	
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	
+	SetupPrerenderStates();
 	
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
@@ -197,7 +286,12 @@ void ZShader::Draw()
 		SetupRenderStates(pkSettings);
 		
 		glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
+	
 	}
+	
+	if(m_bCopyedData)
+		CleanCopyedData();
+	
 	
 	glPopMatrix();
 	glPopAttrib();

@@ -6,4 +6,3 @@ ZeroFps (C) Dvoid & Vim
 --------------------------------
  Can we shoot yet?
 No game_autoexec.ini.ini found
-Start a server with name bla

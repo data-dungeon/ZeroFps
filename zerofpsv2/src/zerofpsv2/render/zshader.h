@@ -67,11 +67,30 @@ class RENDER_API ZShader : public ZFObject
 		
 		//mode to use (depending on underlying system , etc this may be opengl types)
 		int			m_iDrawMode;
+		
+		//did we copy the data?
+		bool			m_bCopyedData;
+	
+	
 	
 		//this enable/diable client states if pointers have been set
 		void SetupClientStates();			
 		
+		//configure setup, stuff before setting up a pass, acording to current material
+		void SetupPrerenderStates();
+		
+		//configure render states/pass
 		void SetupRenderStates(ZMaterialSettings* pkSettings);
+		
+		//makes a memcopy of all none null pointers data, and sets the pointers to the new location
+		void CopyVertexData();
+		void CopyData(void** pkData,int iSize);
+		void CleanCopyedData();
+	
+		
+		//effects
+		void RandomVertexMovements();
+		void Waves();		
 	
 	public:
 		ZShader();
