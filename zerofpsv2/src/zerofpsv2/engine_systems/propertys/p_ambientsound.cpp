@@ -2,6 +2,7 @@
 
 #include "p_ambientsound.h"
 #include "../../engine/entity.h"
+#include "../../engine/zerofps.h"
 
 P_AmbientSound::P_AmbientSound()
 {
@@ -9,9 +10,11 @@ P_AmbientSound::P_AmbientSound()
 
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")); // för att kunna kolla om debugutprintning skall göras...
 
 	bNetwork = true;
-	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	m_strSound = "";
@@ -86,6 +89,10 @@ void P_AmbientSound::Update()
 				SetArea(m_kPolygon);
 		}
 	}
+	
+	if(m_pkZeroFps->GetDebugGraph())
+		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.1,1,Vector3(1,1,0),true);
+
 }
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
