@@ -1170,6 +1170,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkFps->StartServer(true,false);
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
+			m_kAddedZonePlacement.clear(); 
 			break;
 		
 		case FID_LOAD:
@@ -1223,6 +1224,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 			m_pkFps->StartServer(true,false);
 			
+			m_bNeedToRebuildZonePosArray = true;
 			break;		
 		
 		case FID_SAVE:
@@ -1830,7 +1832,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "RotateObjectButton")
 			{
-				RotateActive();
+				RebuildZonePosArray();
+				//RotateActive();
 			}
 			else
 			if(strWndClicked == "DeleteObjectButton")
@@ -2211,6 +2214,9 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 
 bool ZeroEd::ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize)
 {
+	if(m_bNeedToRebuildZonePosArray)
+		RebuildZonePosArray();
+
 	const int size = m_kAddedZonePlacement.size();
 
 	if(size > 0)
@@ -2253,3 +2259,25 @@ bool ZeroEd::ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize)
 	m_kAddedZonePlacement.push_back( pair<Vector3,Vector3>(kPos, kSize) );
 	return true;	
 }
+
+
+void ZeroEd::RebuildZonePosArray()
+{
+	m_kAddedZonePlacement.clear();
+	vector<Entity*> vkEntList;
+	m_pkObjectMan->GetAllObjects(&vkEntList);
+	for(int i=0; i<vkEntList.size(); i++)
+	{
+		if(vkEntList[i]->IsZone()) 
+		{
+			int zone = m_pkObjectMan->GetZoneIndex(vkEntList[i]->GetWorldPosV(),-1, false);
+
+			ZoneData* pkData = m_pkObjectMan->GetZoneData(zone);
+			if(pkData)
+				m_kAddedZonePlacement.push_back( pair<Vector3,
+					Vector3>(pkData->m_kPos, pkData->m_kSize) );
+		}
+	}
+
+	m_bNeedToRebuildZonePosArray = false;
+}	
