@@ -50,8 +50,8 @@ The VFS can be set to many root paths. The base one is one step above the exe fi
 class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
-		friend ZFVFile;
-		friend ZFIni;
+		friend class ZFVFile;
+		friend class ZFIni;
 		
 		ZFBasicFS*		m_pkBasicFS;					
 		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
