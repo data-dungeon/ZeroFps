@@ -276,7 +276,7 @@ void MistClient::Input()
 			
 			if(COUNTER==0)
 			{
-				strcpy(kSound.m_szFile, "data/sound/test.wav");
+				strcpy(kSound.m_szFile, "data/sound/dummy.wav");
 			//	COUNTER++;
 			}
 /*			else
@@ -391,7 +391,7 @@ void MistClient::OnServerStart(void)
 		
 		// Comment out by Zeb: Funkar inte att accessa variabeln.
 		// får felet: mistclient.obj : error LNK2001: unresolved external symbol "int  MistLandLua::g_iCurrentPCID" 
-		//MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
+		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
 	pkObjectMan->Test_CreateZones();
 

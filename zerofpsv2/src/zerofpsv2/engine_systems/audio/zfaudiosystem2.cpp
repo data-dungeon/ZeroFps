@@ -152,9 +152,9 @@ bool ZFAudioSystem2::StartUp()
    alDopplerFactor(1.0f); 
    alDopplerVelocity(343); 
 
-	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
-
 	GenerateSourcePool();
+
+	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
 	return true;
 }

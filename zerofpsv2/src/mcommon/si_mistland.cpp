@@ -6,7 +6,7 @@ ZFScriptSystem*	MistLandLua::g_pkScript;
 ObjectManager*		MistLandLua::g_pkObjMan;
 int					MistLandLua::g_iCurrentObjectID;
 int					MistLandLua::g_iLastCollidedID;
-int					MistLandLua::g_iCurrentPCID;
+int		MCOMMON_API			MistLandLua::g_iCurrentPCID;
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 {

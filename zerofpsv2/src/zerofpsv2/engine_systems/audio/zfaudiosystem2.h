@@ -56,7 +56,7 @@ class ENGINE_SYSTEMS_API SoundInfo
 		ZFSoundRes* m_pkResource;
 		ALuint m_uiSourceBufferName;
 
-		friend ZFAudioSystem2;
+		friend class ZFAudioSystem2;
 };
 
 class ENGINE_SYSTEMS_API ZFAudioSystem2  : public ZFSubSystem 
