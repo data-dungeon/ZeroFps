@@ -19,6 +19,7 @@ class ZGuiRender;
 class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:
+	void PrintHierarchy();
 	ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTreebox();
 
@@ -29,14 +30,17 @@ public:
 		unsigned char ucSkinIndex;	
 		unsigned char ucSkinIndexSelected;
 		unsigned int uiRootLevel;
+		unsigned int uiChildIndex;
 		
-		Node *pkPrev, *pkNext;
+		Node *pkParent, *pkNext;
 
 		bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga tillräckligt många "steg".
-		vector<Node*> m_kChilds;
+		vector<Node*> kChilds;
 	};
 
+	typedef vector<Node*>::iterator itChild;
 	typedef list<Node*>::iterator itNode;
+	typedef list<Node*>::reverse_iterator ritNode;
 	
 	Node* AddItem(Node* pkParent, char* szText, unsigned char ucSkinIndex, 
 		unsigned char ucSkinIndexSelected);
@@ -50,9 +54,13 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
-	void MoveNode(Node* pkNode, int offset);
+	void MoveNode(Node* pkNode, int steps);
 	void ShowNode(vector<Node*> itList, bool bShow);
-	void OpenNode(Node* pkNode, bool bNode);
+	void OpenChilds(vector<Node*> kChilds, bool bOpen);
+	void OpenNode(Node* pkNode, bool bOpen);
+	
+	void PrintNode(Node* pkNode);
+	void PrintChilds(vector<Node*> kList);
 
 	Node* CreateNode(Node* pkParent, char* szText, unsigned char ucSkinIndex,
 		unsigned char ucSkinIndexSelected);

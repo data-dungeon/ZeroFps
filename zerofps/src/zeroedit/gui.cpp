@@ -115,6 +115,10 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				break;
 		}
 		break;
+
+	case ZGM_RBUTTONDOWN:
+		((ZGuiTreebox*)Get("TestTreeBox"))->PrintHierarchy();
+		break;
 	}
 	return true;
 }
@@ -659,17 +663,17 @@ void Gui::CreateTestWnd()
 	pkTreebox->InsertBranchSkin(0, GetSkin("treenode"));
 	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_s"));
 
-	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animal", 0, 1);
-	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Apa", 0, 1);
-	pkTreebox->AddItem(pkParent, "Kossa", 0, 1);
-	pkTreebox->AddItem(pkApa, "Green apa", 0, 1);
-	pkTreebox->AddItem(pkApa, "Brun apa", 0, 1);
-	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Weapons", 0, 1);
-	pkTreebox->AddItem(pkParent2, "Scroll", 0, 1);
-	ZGuiTreebox::Node* pkParent3 = pkTreebox->AddItem(pkParent2, "Ninja", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Green Ninja", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Red Ninja", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Black Ninja", 0, 1);
+	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animals", 0, 1);
+	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Aps", 0, 1);
+	pkTreebox->AddItem(pkParent, "Cows", 0, 1);
+	pkTreebox->AddItem(pkApa, "Green ape", 0, 1);
+	pkTreebox->AddItem(pkApa, "Brown ape", 0, 1);
+	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Cats", 0, 1);
+	pkTreebox->AddItem(pkParent2, "Katten Gustav", 0, 1);
+	ZGuiTreebox::Node* pkParent3 = pkTreebox->AddItem(pkParent2, "Wild cats", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Lion", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Tiger", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Black Panter", 0, 1);
 	
 	pkWnd->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
 	pkTreebox->SetSkin(new ZGuiSkin(255,128,64,0,0,0,1));
