@@ -1,6 +1,7 @@
 #include "p_spell.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/physicproperty.h"
 #include "rulesystem/rulesystem.h"
 #include "p_charstats.h"
 #include "p_item.h"
@@ -29,6 +30,7 @@ P_Spell::P_Spell()
 	bNetwork = true;
 
    m_pkSpellType = 0;
+   m_fDamageTimer = 0;
 
 	strcpy(m_acName,"P_Spell");
 
@@ -46,7 +48,21 @@ void P_Spell::Update()
 
       // update lived time if spell isn't permanent
       if ( m_pkSpellType->m_fLifeTime != -1 )
-	      m_fAge += m_pkZeroFps->GetFrameTime();
+	      m_fAge += m_pkZeroFps->GetFrameTime();      
+
+
+
+      // TODO!!! Only test for damage if spell MAKES damage and is stuck on CharacterObject
+
+      // if spell i cast upon character, damagecounter
+      m_fDamageTimer += m_pkZeroFps->GetFrameTime();
+
+
+      if ( m_fDamageTimer > m_pkSpellType->m_fDamageEvery )
+      {
+         m_fDamageTimer = 0;
+         DealDamage ( &m_pkSpellType->m_kDamage, m_pkObject );
+      }
 
 
       // create new PSystems
@@ -105,18 +121,22 @@ void P_Spell::Update()
 // which object the spell is cast upon
 bool P_Spell::CastOn ( Object *pkObject )
 {  
-   // remove from parent
-   m_pkObject->RemoveProperty (this);
+   // temp test...i think....
 
-   // remove the parent from the objectsystem
-   m_pkObject->m_pkObjectMan->Delete (m_pkObject);
+   // if the spell is projectile type
 
-   // connect to new parent
-   pkObject->AddProperty (this);
+   // temp, for now, all spells are projectiles :)
+   //if ( m_pkSpellType->
 
-   // add bonuses
-   Bonuses(true);
-   
+   // add a physicproperty so we can move the spell
+   if ( m_pkSpellType->m_kSpellName == "fire of evil death spell fireballstuff" )
+   {
+      PhysicProperty* pkPsyProp = (PhysicProperty*)m_pkObject->AddProperty("PhysicProperty");
+      m_pkObject->GetAcc().x = 50.f;
+   }
+
+
+
    return false;
 }
 
@@ -227,6 +247,8 @@ bool P_Spell::HandleSetValue( string kValueName, string kValue )
 
          Bonuses(true);
 
+         CastOn(0);
+
          return true;
       }
       else
@@ -237,6 +259,8 @@ bool P_Spell::HandleSetValue( string kValueName, string kValue )
             m_pkSpellType = g_kSpells[kValue];
 
             Bonuses(true);
+
+            CastOn(0);
 
             return true;
          }
@@ -288,13 +312,12 @@ void P_Spell::DoCollisions()
       bool bOk = true;
       
       // don't care if spell collides with own ps or self
-      if ( kObjects[i] == m_pkObject )
-         bOk = false;
-
       // don't test against the zone object :) We don't want to burn that away
-      if ( pkZone->m_pkZone == kObjects[i] )
+      if ( kObjects[i] == m_pkObject || pkZone->m_pkZone == kObjects[i] )
          bOk = false;
 
+
+      // don't test against own psystems
       for ( unsigned int j = 0; j < m_kPSystems.size(); j++ )
          if ( kObjects[i] == m_kPSystems[j] )
             bOk = false;
@@ -350,9 +373,24 @@ void P_Spell::DoCollisions()
                // attach new spell to hit object
                if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
                {
-                  P_Spell *pkNewSpell = new P_Spell;
-                  kObjects[i]->AddProperty( pkNewSpell );
-                  pkNewSpell->SetValue ( "SpellType", m_pkSpellType->m_kOnHit[1] );
+                  Object *pkNewSpell =
+                  m_pkObject->m_pkObjectMan->CreateObjectFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
+
+                  if ( pkNewSpell )
+                  {
+                     pkNewSpell->SetLocalPosV ( Vector3(0,0,0) );
+
+                     // set hit object as parent
+                     pkNewSpell->SetParent ( kObjects[i] );
+                     pkNewSpell->SetRelativeOri(true);
+
+                     pkNewSpell->AttachToZone();
+                     
+                     // It's annoying to hit the new spell with the spell just casted so....
+                     m_kAttackedObjects.push_back (pkNewSpell->iNetWorkID);
+  
+                  }
+
                }
 
                // destroy spell (TODO!!!: after dealt damage!!! )
@@ -362,6 +400,11 @@ void P_Spell::DoCollisions()
                // creates a new spell at the hit location and removes the old one
                if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
                {
+                  Object *pkNewSpell =
+                  m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
+                                                                           kObjects[i]->GetWorldPosV() );
+                  pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
+                  /*
                   Object *pkNewSpellObject = m_pkObject->m_pkObjectMan->CreateObject();
             
                   P_Spell *pkNewSpell = new P_Spell;
@@ -372,6 +415,7 @@ void P_Spell::DoCollisions()
                   pkNewSpellObject->SetWorldRotV ( m_pkObject->GetWorldRotV() );
 
                   pkNewSpellObject->AttachToZone();
+                  */
 
                   m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
                }
