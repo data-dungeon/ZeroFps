@@ -54,3 +54,6 @@ void DrawTest(float x, float y, float z)
 	glPopAttrib();
 }
 
+
+
+

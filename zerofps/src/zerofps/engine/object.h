@@ -61,6 +61,7 @@ class ENGINE_API Object {
 		bool HasChild(Object* pkObject);
 		int NrOfChilds();
 		void DeleteAllChilds();
+		void PrintTree(int pos);
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);

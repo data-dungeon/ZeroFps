@@ -360,6 +360,18 @@ void Object::DeleteAllChilds()
 	m_bLockedChilds=false;	
 }
 
+void Object::PrintTree(int pos)
+{
+	for(int i=0;i<pos;i++)
+		cout<<" ";
+	cout<<"Object";
+
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		(*it)->PrintTree(pos+1);
+	}
+	
+	
+}
 
 
 

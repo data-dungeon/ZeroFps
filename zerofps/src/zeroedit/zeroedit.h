@@ -31,7 +31,8 @@ class ZeroEdit :public Application {
 			FID_LOADMAP,
 			FID_LOADIMAGEMAP,			
 			FID_SAVEMAP,
-			FID_NEWMAP
+			FID_NEWMAP,
+			FID_OBJECTTREE
 		};	
 	
 		Camera *m_pkCamera;

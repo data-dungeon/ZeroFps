@@ -15,6 +15,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("loadimagemap",FID_LOADIMAGEMAP,this);		
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
 	g_ZFObjSys.Register_Cmd("newmap",FID_NEWMAP,this);		
+	g_ZFObjSys.Register_Cmd("objecttree",FID_OBJECTTREE,this);		
+
 
 
 	//start text =)
@@ -121,6 +123,10 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		case FID_OBJECTTREE:
+			pkObjectMan->GetWorldObject()->PrintTree(0);
+			break;		
+			
 		case FID_LOADMAP:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Supply a filename");
@@ -166,6 +172,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Creating new map with size %d",size);
 			CreateNew(size);
 			break;
+			
+
 	}
 
 
@@ -181,9 +189,11 @@ void ZeroEdit::OnClientStart(void)
 
 void ZeroEdit::Input() 
 {
-	
+	float childmovespeed=2;
+	float childrotatespeed=15;
 	float speed=40;
 
+	//camera movements
 	if(pkInput->Pressed(KEY_X)){
 		speed*=0.5;
 	}
@@ -194,16 +204,60 @@ void ZeroEdit::Input()
 	if(pkInput->Pressed(KEY_A)){
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}
-	
+	}	
 	if(pkInput->Pressed(KEY_W))	{
-			pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-			pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
 	}					
 	if(pkInput->Pressed(KEY_S))	{
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
+	
+	
+	if(m_pkCurentChild!=NULL){	
+		//child movements
+		if(pkInput->Pressed(LEFT)) {
+			m_pkCurentChild->GetPos().x-=pkFps->GetFrameTime()*childmovespeed;
+		}
+		if(pkInput->Pressed(RIGHT)) {
+			m_pkCurentChild->GetPos().x+=pkFps->GetFrameTime()*childmovespeed;	
+		}
+		if(pkInput->Pressed(UP)) {
+			m_pkCurentChild->GetPos().z-=pkFps->GetFrameTime()*childmovespeed;	
+		}
+		if(pkInput->Pressed(DOWN)) {
+			m_pkCurentChild->GetPos().z+=pkFps->GetFrameTime()*childmovespeed;	
+		}
+		if(pkInput->Pressed(RSHIFT)) {
+			m_pkCurentChild->GetPos().y+=pkFps->GetFrameTime()*childmovespeed;	
+		}
+		if(pkInput->Pressed(RCTRL)) {
+			m_pkCurentChild->GetPos().y-=pkFps->GetFrameTime()*childmovespeed;	
+		}
+
+	
+		//child rotation
+		if(pkInput->Pressed(HOME)) {
+			m_pkCurentChild->GetRot().y+=pkFps->GetFrameTime()*childrotatespeed;
+		}
+		if(pkInput->Pressed(END)) {
+			m_pkCurentChild->GetRot().y-=pkFps->GetFrameTime()*childrotatespeed;
+		}
+		if(pkInput->Pressed(INSERT)) {
+			m_pkCurentChild->GetRot().x+=pkFps->GetFrameTime()*childrotatespeed;
+		}
+		if(pkInput->Pressed(DELETE)) {
+			m_pkCurentChild->GetRot().x-=pkFps->GetFrameTime()*childrotatespeed;
+		}
+		if(pkInput->Pressed(PAGEUP)) {
+			m_pkCurentChild->GetRot().z+=pkFps->GetFrameTime()*childrotatespeed;
+		}
+		if(pkInput->Pressed(PAGEDOWN)) {
+			m_pkCurentChild->GetRot().z-=pkFps->GetFrameTime()*childrotatespeed;
+		}
+	}
+	
 
 	if(pkInput->Pressed(KEY_Q))
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
