@@ -21,8 +21,8 @@ enum FileOpenFlags
 {
 	DIRECTORIES_ONLY=1,
 	SAVE_FILES=2,
-	DISALLOW_DIR_CHANGE=3,
-	NUMBER_OF_FLAGS=4
+	DISALLOW_DIR_CHANGE=4,
+	NUMBER_OF_FLAGS=6
 };
 
 class FileOpenDlg  
@@ -30,7 +30,9 @@ class FileOpenDlg
 public:
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
-	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, unsigned long flags=NUMBER_OF_FLAGS);
+	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
+		unsigned long flags=NUMBER_OF_FLAGS, string szSearchPath = ""); // search path is only valid if flag DISALLOW_DIR_CHANGE is true...
+
 	virtual ~FileOpenDlg();
 
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );

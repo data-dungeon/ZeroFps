@@ -45,6 +45,7 @@ const int IDM_SAVE_TEMPLATE				= 9040;
 const int ID_FILEPATH_WND				= 9041;
 const int ID_ADDPROPERTY_WND_MAIN		= 9042;
 
+const int ID_OBJECTTYPE_RADIOGROUP		= 9990; // Flytta ej
 const int ID_PROPERTY_RADIOGROUP		= 10000; // Måste ligga ist
  
 #endif

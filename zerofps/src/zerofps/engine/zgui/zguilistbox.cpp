@@ -23,7 +23,6 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 {
 	m_iScrollbarWidth = 20;
 	m_bIsMenu = false;
-	//kRectangle.Bottom = 50;
 
 	m_pkSelectedItem = NULL;
 	m_pkSkinItem = pkSkinItem;
@@ -35,7 +34,6 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 	int w = GetWndRect().Width();
 	int h = GetWndRect().Height();
 	
-	// h=m_unItemHeight*10;//GetWndRect().Height() % m_unItemHeight;
 	ZGuiWnd::Resize(w,h);
 
 	CreateInternalControls();
@@ -124,7 +122,6 @@ void ZGuiListbox::CreateInternalControls()
 	int w = m_iScrollbarWidth;
 	int h = rc.Height();
 
-	//h -= (rc.Height() % m_unItemHeight);
 
 	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,0,x+w,GetScreenRect().Height()),
 		this,true,VERT_SCROLLBAR_ID); 
@@ -351,13 +348,6 @@ void ZGuiListbox::UpdateList()
 {
 	int iElements = m_pkItemList.size();
 	
-/*	if(iElements > 0)
-	{
-		int y = (iElements - 1) * m_unItemHeight; 
-		m_pkItemList.back()->SetPos(0, y);
-		m_pkItemList.back()->Resize(m_kItemArea.Width(), m_unItemHeight);
-	}*/
-
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
 	int iElementSize = m_unItemHeight * iElements;
 	int iListboxSize = GetScreenRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...

@@ -17,15 +17,9 @@ static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumber
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, unsigned long flags)
+FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
+						 unsigned long flags, string szSearchPath)
 {
-	m_vkBitParams.reset();
-
-	if( ((flags & DIRECTORIES_ONLY) == DIRECTORIES_ONLY) )
-		m_vkBitParams.set(DIRECTORIES_ONLY);
-
-	if( ((flags & SAVE_FILES) == SAVE_FILES) )
-		m_vkBitParams.set(SAVE_FILES);
 
 	m_szSearchPath.reserve(1024);
 	m_szCurrentDir.reserve(128);
@@ -36,6 +30,23 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, unsigned
 	m_pkGui = pkGui;
 	m_pkZGui = m_pkGui->GetGUI(); 
 	m_pkBasicFS = pkBasicFS;
+
+	m_vkBitParams.reset();
+
+	if( ((flags & DIRECTORIES_ONLY) == DIRECTORIES_ONLY) )
+	{
+		m_vkBitParams.set(DIRECTORIES_ONLY);
+		printf("hhhhh\n");
+	}
+
+	if( ((flags & SAVE_FILES) == SAVE_FILES) )
+		m_vkBitParams.set(SAVE_FILES);
+
+	if( ((flags & DISALLOW_DIR_CHANGE) == DISALLOW_DIR_CHANGE) )
+	{
+		m_vkBitParams.set(DISALLOW_DIR_CHANGE);
+		m_szSearchPath = szSearchPath; // search path is only valid if flag DISALLOW_DIR_CHANGE is true...
+	}
 
 	m_pkWindow = Create(100,100,500,500);
 
@@ -97,8 +108,10 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 					bool bFillPathlist = false;
 
-					if(szFileName == string("..") )
+					if(szFileName == string("..") && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
 					{
+						printf("Switching dir\n");
+
 						int new_path_length = m_szSearchPath.find_last_of("\\"); 
 
 						if(new_path_length != string::npos)
@@ -138,7 +151,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 						}
 					}
 
-					if(bFillPathlist)
+					if(bFillPathlist && !m_vkBitParams.test(DISALLOW_DIR_CHANGE))
 					{
 						int size = m_szSearchPath.length();  
 						int pos = m_szSearchPath.find_last_of("\\");

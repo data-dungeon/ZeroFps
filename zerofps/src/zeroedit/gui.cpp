@@ -65,6 +65,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 		case ID_FILEPATH_OPEN_BN:
 			char cmd[512];
+			char path[512];
 			
 			switch(m_kSearchTask)
 			{
@@ -74,23 +75,29 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				break;
 
 			case LOAD_TEMPLATE:
-				sprintf(cmd, "loadtemplate %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				
+				// Som det är nu så letar den alltid i BIN katalagen.
+				// Egentligen skall man även skicka med m_pkFileDlgbox->m_szSearchPath.c_str(),
+				// men detta går nämligen inte eftersom Execute klipper strängen när den 
+				// hittar en space-tecken.
+				sprintf(path, "%s", m_pkFileDlgbox->m_szCurrentFile.c_str());
+
+				sprintf(cmd, "loadtemplate %s", path); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
 				sprintf(cmd, "set g_template %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
-				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);			
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 				break;
 
 			case SAVE_TEMPLATE:
 
-				char* name = (char*) m_pkFileDlgbox->m_szCurrentFile.c_str();
-				sprintf(cmd, "maketemplate %s", name); 
-				printf("\n%s\n",cmd);
+				sprintf(path, "%s", m_pkFileDlgbox->m_szCurrentFile.c_str());
+
+				sprintf(cmd, "maketemplate %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
-				sprintf(cmd, "savetemplate %s %s", name, name); 
-				printf("\n%s\n",cmd);
-				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);			
+				sprintf(cmd, "savetemplate %s %s", path, m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 				break;
 			}
 
@@ -319,11 +326,8 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 	int rbn_a = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_a.bmp", 0);
 
 	int GroupID = start_id;
-
 	ZGuiRadiobutton* pkPrev = NULL;
-
 	Rect rc = Rect(x,y,x+size,y+size);
-
 	const int antal = vkNames.size();
 
 	for(int i=0; i<antal; i++)

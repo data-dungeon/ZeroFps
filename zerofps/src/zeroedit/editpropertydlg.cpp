@@ -34,7 +34,7 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf, ObjectManager*
 	m_pkPropFactory = pf;
 	m_pkObjectManager = om;
 	m_oGuiCallback = cb;
-	m_pkWindow = Create(200,200,500,500);
+	m_pkWindow = Create(200,200,500,300);
 	m_pkSelProperty = NULL;
 	OnOpenEditProperty();
 }
@@ -105,16 +105,29 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 		16*6+16*6+16*7*2+10, y_pos, 70, 20, "OK");
 	pkSetNewValueBN->SetWindowFlag(WF_CENTER_TEXT);
 
-	ZGuiWnd* pkPropOKBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK");
+	ZGuiWnd* pkPropOKBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, 16*6+16*6+16*7*2+10, h-50, 70, 20, "OK");
 	pkPropOKBn->SetWindowFlag(WF_CENTER_TEXT);
-	ZGuiWnd* pkPropCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, w-100, h-25, 80, 20, "Cancel");
+	ZGuiWnd* pkPropCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, 16*6+16*6+16*7*2+10, h-25, 70, 20, "Cancel");
 	pkPropCancelBn->SetWindowFlag(WF_CENTER_TEXT);
+
+	y_pos += 30;
+
+	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 100, 20, "ObjectType");
+
+	vector<string> vkObjectTypeNames;
+	vkObjectTypeNames.push_back("OBJECT_TYPE_DYNAMIC");
+	vkObjectTypeNames.push_back("OBJECT_TYPE_STATIC");
+	vkObjectTypeNames.push_back("OBJECT_TYPE_PLAYER");
+	vkObjectTypeNames.push_back("OBJECT_TYPE_STATDYN");
+
+	m_pkGui->CreateRadiobuttons(pkMainWindow, vkObjectTypeNames, "ObjecttypeRadioGroup", 
+		ID_OBJECTTYPE_RADIOGROUP, 10, 100, 16); 
 	
 	m_pkZGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, PROPERTYPROC, true);
 
 	m_pkZGui->AddKeyCommand(KEY_RETURN, pkMainWindow, pkPropOKBn);
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkPropCancelBn);
-	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN);
+	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
 
 	return pkMainWindow;
 }
@@ -186,6 +199,33 @@ void EditPropertyDlg::OnOpenEditProperty()
 			DlgProc(pkPropertysCB->GetParent(), ZGM_CBN_SELENDOK, 2, piParams);
 			delete[] piParams;
 		}
+
+		int apa = m_pkCurrentChild->GetObjectType();
+
+		ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjecttypeRadioGroup");
+
+		if(pkWndGroup)
+		{
+			ZGuiRadiobutton* curr = ((ZGuiRadiobutton*)pkWndGroup);
+
+			while(1)
+			{
+				int index = curr->GetButton()->GetID() - ID_OBJECTTYPE_RADIOGROUP;
+
+				if(index == apa)
+				{
+					curr->GetButton()->CheckButton();
+				}
+				else
+				{
+					curr->GetButton()->UncheckButton();
+				}
+
+				curr = curr->GetNext();
+				if(curr == NULL)
+					break;
+			}
+		}
 	}
 }
 
@@ -223,6 +263,40 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 				m_pkCurrentChild->GetName() = string(strText);
 				m_pkCurrentChild->GetPos() = Vector3(x,y,z);
 			}
+		}
+	}
+
+	int index = -1;
+	ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjecttypeRadioGroup");
+
+	if(pkWndGroup)
+	{
+		ZGuiRadiobutton* curr = ((ZGuiRadiobutton*)pkWndGroup);
+
+		while(1)
+		{
+			if(curr->GetButton()->IsChecked())
+			{
+				index = curr->GetButton()->GetID();
+				break;
+			}
+
+			curr = curr->GetNext();
+			if(curr == NULL)
+				break;
+		}
+	}
+	else
+		return false;
+
+	if(index != -1 && bSave)
+	{
+		int type_offset = index-ID_OBJECTTYPE_RADIOGROUP;
+		if(type_offset >= 0 && type_offset < 4)
+			m_pkCurrentChild->GetObjectType() = ObjectType(index-ID_OBJECTTYPE_RADIOGROUP);
+		else
+		{
+			printf("Failed to set object type\n");
 		}
 	}
 
