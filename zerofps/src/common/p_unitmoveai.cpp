@@ -71,6 +71,13 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
 		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 1;
 		m_pkUnit->RegisterExternalCommand(m_pkMoveUnitCommand);
+
+		m_pkStopUnitCommand = new ExternalCommand(this, UNIT_STOP);
+		m_pkStopUnitCommand->m_kUnitCommandInfo.m_bNeedArgument = false;
+		strcpy(m_pkStopUnitCommand->m_kUnitCommandInfo.m_acCommandName, "Stop");
+		strcpy(m_pkStopUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
+		m_pkStopUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 3;
+		m_pkUnit->RegisterExternalCommand(m_pkStopUnitCommand);
 		return true;
 	}
 	else
@@ -83,12 +90,32 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	{
 	case UNIT_MOVE:
 		{
+			m_pkPathFind->Reset();
 			//add a waiting move destination
+			if(iTarget>=0)
+			{
+				Object* TargetObject= m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(iTarget);
+				if(TargetObject)
+				{
+					move.x = int(m_pkMap->m_iHmSize/2+ceil((TargetObject->GetPos().x / HEIGHTMAP_SCALE)));
+					move.y = int(m_pkMap->m_iHmSize/2+ceil((TargetObject->GetPos().z / HEIGHTMAP_SCALE)));
+					return this;
+				}
+			}
 			move.x = iXDestinaton;
 			move.y = iYDestinaton;			
 			
 			return this;
 		}
+	case UNIT_STOP:
+		{
+			m_pkPathFind->Reset();
+			Vector3 kTempVect = m_pkObject->GetPos();
+			m_pkObject->SetPos(kTempVect);					
+			m_pkObject->SetPos(kTempVect);	
+			return NULL;
+		}
+
 	}
 	return NULL;
 }
@@ -226,7 +253,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	
 	if(fVel < 0)
 	{	
-		cout<<"FUCK ASS this aint suppose to hapen fucking krap code!!!!!!!!!!"<<endl;
+		cout<<"ojoj nu blev det fel"<<endl;
 		return false;
 	}
 		

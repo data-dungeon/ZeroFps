@@ -29,33 +29,6 @@ using namespace std;
 
 class COMMON_API P_UnitMoveAI : public Property, public AIBase
 {
-private: 
-	Point move;
-
-	static HeightMap* m_pkMap;
-	ZeroFps*				m_pkFps;
-	PathFind* 			m_pkPathFind;
-	Point 				m_kStartPoint, m_kEndPoint;
-	Vector3				m_kStartPos,m_kEndPos;
-	
-	Vector3				m_kCurretDestination;	
-	float					m_fSpeedMod;
-	
-	P_ServerUnit*		m_pkUnit;
-	ExternalCommand*	m_pkMoveUnitCommand;
-	int					m_iCurrentState;
-	bool					m_bTemp;
-	
-	float					m_fWaitTime;
-	int					m_iRetries;
-	
-	enum { 
-		UNIT_MOVE,
-		UNIT_WAIT,
-		TEMP 
-	};
-
-
 
 public:
 	P_UnitMoveAI();
@@ -72,6 +45,37 @@ public:
 	bool CheckForOrder();
 
 	PathFind* GetPathFind() {return m_pkPathFind;}
+
+private: 
+	Point move;
+	
+	static HeightMap* m_pkMap;
+	ZeroFps*				m_pkFps;
+	PathFind* 			m_pkPathFind;
+	Point 				m_kStartPoint, m_kEndPoint;
+	Vector3				m_kStartPos,m_kEndPos;
+	
+	Vector3				m_kCurretDestination;	
+	float					m_fSpeedMod;
+	
+	P_ServerUnit*		m_pkUnit;
+	ExternalCommand*	m_pkMoveUnitCommand;
+	ExternalCommand*  m_pkStopUnitCommand; 
+	int					m_iCurrentState;
+	bool					m_bTemp;
+	
+	float					m_fWaitTime;
+	int					m_iRetries;
+	
+	enum 
+	{	UNIT_MOVE,
+		UNIT_WAIT,
+		UNIT_STOP,
+		TEMP 
+	};
+
+
+
 };
 
 COMMON_API Property* Create_P_UnitMoveAI();

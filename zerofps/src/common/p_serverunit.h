@@ -76,7 +76,7 @@ class COMMON_API P_ServerUnit: public Property {
 		
 		bool RegisterExternalCommand(ExternalCommand* kCommand);
 		bool RemoveExternalCommand(string kCommandName);
-		bool RunExternalCommand(UnitCommand* kCommand);
+		AIBase* RunExternalCommand(UnitCommand* kCommand);
 
 
 };

@@ -211,7 +211,7 @@ bool P_ServerUnit::RemoveExternalCommand(string kCommandName)
 		return false;
 }
 			
-bool P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
+AIBase* P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
 {
 	cout<<"run exrt" <<endl;
 	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(string(kCommand->m_acCommandName));
@@ -219,7 +219,7 @@ bool P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
 	{
 		
 		m_pkCurrentAIState = kIt->second->RunUnitCommand(kCommand->m_iXDestinaton, kCommand->m_iYDestinaton, kCommand->m_iTarget);
-		return true;
+		return m_pkCurrentAIState;
 	}	
 	else 
 		return false;
