@@ -449,26 +449,7 @@ function GUICreate()
 	ChangeSkin("HelpTextOK","Skin1","Button focus")
 
 
-	HelpText = [[The Minimoog Voyager is a true analog monophonic synthesizer (probably the most expensive one of its kind) and is 
-		based entirely on the original classic Minimoog Model D, which was produced by Moog Music, Inc. from 1970 to 1982. It 
-		introduces many new features, including a three dimensional touch pad, MIDI I/O, extensive patching facilities, patch storage, 
-		and more! It's cased in a beautiful, solid hardwood cabinet with a multi-position hinged control panel.
-		Just like the original, the Voyager has three analog wide-range voltage controlled oscillators, one noise source, as well as 
-		one audio preamplifier for externally-applied audio signals.\n\nTwo resonant Moog-style filters are on-board and function in dual 
-		lowpass or lowpass/highpass modes and can be modulated by one of the two ADSR envelopes, the LFO, or external control. All 
-		knobs and switches can have their settings stored into one of 128 Program memories. Program Banks as well as the Voyager's 
-		Operating System can be uploaded/downloaded via MIDI SysEx. Centered on its front panel is the ominous, black 3-D (XYZ) Touch 
-		Surface which provides three continuously-variable control signals which are derived from the up-down and left-right position 
-		of the player's finger, and the amount of area with which the player makes contact to the surface.\n\n
-		There's also a 44-note keyboard, this time with velocity and aftertouch sensitivity. Also on-board are Pitch and Mod wheels, 
-		Glide/Portamento, and a series of 1/4" CV and/or Pedal jacks lining the top/rear of the front panel. The Mod Wheel can be sent 
-		to control all oscillators, or just VCO2, VCO3, the filter cutoff, or LFO rate. The Mod can gets its source from the LFO 
-		(triangle/square/sample-n-hold waveforms), VCO3, or the external Mod2 input. A Mixer Module gives you a five-input mixer for 
-		combining various audio sources prior to filtering between the oscillators, noise and external audio input signals.\n\n
-		The new Minimoog Voyager is a first class synth; every bit as elegant in look as sound and quality. It is highly streamlined 
-		and offers all the functionality of a modern day (mono)synth with the classic, warm, unforgettable Moog sound. It WILL replace 
-		your original Minimoog (if you're lucky enough to have one). 
-		Signature models will become prized possessions for decades to come, and the Perfo]]
+	HelpText = [[Dark Metropolis - Help text\n----------------------------------\n\nMove camera:\n a,d,w,s buttons or move the mouse to the end of the screen.\n\nRotate and zoom camera:\n Press space or third mouse button and move mouse.\n\nSelect a character:\n Left click on the character you want to select. A green circle appears under the characters you can select if you hold the mouse over one.\nYou can also select a character by left clicking on his portrait.\n\nSelecting multiple characters:\n You can select many characters at once by dragging out a select box. Also, if you have shift pressed while selecting a character, the previous selected character(s) wont be deselected.\n\nMoving characters:\n Right click anywhere on the ground while having a character selected will make him move there. You can also move characters by right clicking on the map.\n\nShooting:\n Pressing shift and the right mouse button will make the character shoot. A weapon must be equipped to shoot. Different weapons have different ranges. Also, if the weapon doesn't fire, it could be that the weapon must be reloaded.\n\nPicking up items:\n Items that can be picked up gets a yellow circle around them when pointed at. Right click on an item to pick it up.\n\nHire agents:\n Click on the HQ icon (bottom to the right), select agents. Then click on the agent you want to hire.\nTo use the agent in a mission, click on him and press send out.\n\nBuy items:\n You can buy items from the same screen as you hire agents. Click on the HQ button, and on agents. Click on a agent in the HQ, and press shop. Then click on the item you want and press buy.\n\nEquip items:\n Select a character, and left click on the large portrait of him. Drag and drop an item from the inventory to a slot to equip something. Items such as bombs and ammo must be dragged to the belt to be used.\n\nUsing quickitems:\n Equip items to the belt. Close the character window, and then click on the item in the belt to use it.\n\nMissions:\n To get a mission, click on the HQ button and select mission. You will get a brief description on each mission. Click on briefing to get a more detailed description. Click accept to start the mission. If you want to get a rebriefing during the mission, just click HQ-mission-briefing again.\n\nTips:\n By right-dubbel clicking on a portrait of a character the camera will move to that character.\nSome doors can be entered, just right click on them.\n\n\n\n ]]
 
 
 	SetTextString("HelpTextEb", HelpText)
