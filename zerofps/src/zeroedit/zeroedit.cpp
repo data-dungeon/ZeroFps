@@ -741,10 +741,13 @@ void ZeroEdit::Input()
 					object->GetPos()=m_kDrawPos;
 					
 					if(m_iRandom){
-						object->GetRot().y+=rand()%360;					
-						object->GetRot().x+=((rand()%25000)-12500)/1000.0;
+						object->GetRot().y=rand()%360;					
+						object->GetRot().x=((rand()%25000)-12500)/1000.0;
 
-						object->GetRot().z+=((rand()%25000)-12500)/1000.0;					
+						object->GetRot().z=((rand()%25000)-12500)/1000.0;					
+					}else
+					{
+						object->GetRot().Set(0,0,0);
 					}
 					
 					object->AttachToClosestZone();

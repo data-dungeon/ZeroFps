@@ -17,8 +17,10 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
+	m_fSpeed=4;
 	walk=0;
 	walking=false;
+	m_bAlive=true;
 	m_fNextTime=m_pkFps->GetTicks();
 	
 
@@ -64,19 +66,23 @@ void PlayerControlProperty::Update() {
 	}
 	else
 	{
-		if(m_pkStatusProperty->m_fHealth<0){
+		if(m_pkStatusProperty->m_fHealth <= 0){
 			//cout<<"PLAYER DIED !!!!"<<endl;
 			
 			PhysicProperty* pp = dynamic_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
 			static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.2;
+			
+			m_bAlive=false;
 		}
 	}
+
+	if(!m_bAlive)
+		return;
 
 	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;
 //	cout<<"LUTNING:"<<lutning<<endl;
 
 	
-	float speed=5;
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
@@ -85,39 +91,23 @@ void PlayerControlProperty::Update() {
 		Vector3 hora = m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
 		Vector3  res(hora.x,-4,hora.z);
 		m_pkObject->GetAcc()+=res*200;
-	}
-	
-	if(m_pkInput->Pressed(KEY_X)){
-		speed*=0.5;
-	}
-	
+	}	
+
 	if(m_pkInput->Action(m_iActionStrafeRight)){
-		walking=true;		
-		
-		//vel.x+=cos((m_pkObject->GetRot().y+90)/degtorad)*speed;
-		//vel.z+=sin((m_pkObject->GetRot().y+90)/degtorad)*speed;
-		vel += GetYawVector2(m_pkObject->GetRot().y + 90) * speed;
+		walking=true;				
+		vel += GetYawVector2(m_pkObject->GetRot().y + 90) * m_fSpeed;
 	}
 	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
-		
-		//vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
-		//vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;		
-		vel += GetYawVector2(m_pkObject->GetRot().y - 90) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y - 90) * m_fSpeed;
 	}
 	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
-		
-		//vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
-		//vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;	
-		vel += GetYawVector2(m_pkObject->GetRot().y) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y) * m_fSpeed;
 	}
 	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
-		
-		//vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
-		//vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
-		vel += GetYawVector2(m_pkObject->GetRot().y + 180) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y + 180) * m_fSpeed;
 	}
 	if(m_pkInput->Action(m_iActionNextItem))
 	{
@@ -300,11 +290,14 @@ bool PlayerControlProperty::UseInvItem()
 	if((*m_kCurentInv)!=NULL)
 	{
 		(*m_kCurentInv)->m_bUse=true;	
+		return true;
 	}
 	else
 	{
 		return false;
 	}
+	
+	return false;
 }
 
 

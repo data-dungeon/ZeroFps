@@ -39,6 +39,9 @@ class PlayerControlProperty: public Property {
 
 		float m_fNextTime;
 	
+		float m_fSpeed;
+		bool m_bAlive;
+	
 		float walk;
 		bool walking;
 		

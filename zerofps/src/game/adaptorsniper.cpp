@@ -60,7 +60,7 @@ void AdaptorSniper::Update()
 		if(m_pkStatusProperty->m_fArmor < 100) 
 			m_bActive=true;		
 	
-		if(m_pkStatusProperty->m_fHealth < 0){
+		if(m_pkStatusProperty->m_fHealth <= 0){
 			cout<<"DIEEEEEEEEEEEED!"<<endl;
 			m_pkObjectMan->Delete(m_pkObject);
 		}	
