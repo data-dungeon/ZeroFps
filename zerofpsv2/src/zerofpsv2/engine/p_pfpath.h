@@ -15,6 +15,7 @@ class ENGINE_API P_PfPath : public Property
 		AStar*				m_pkAStar;
 		
 		vector<Vector3>	m_kPath;				// The path we are following (if any).
+		vector<PathNode>	m_kRawPath;			// The path unoptimized path.
 		int					m_iNextGoal;		// The point we are going to.		
 		float					m_fSpeed;			// Our walking speed.
 		bool					m_bTilt;				// Shuld the character tilt when walking (used for 4-leged creatures)
@@ -46,6 +47,7 @@ class ENGINE_API P_PfPath : public Property
 		bool MakePathFind(Vector3 kDestination);
 		bool HavePath();				
 		
+//		vector<Vector3> OptimizePath(vector<Vector3> kInPath);
 		
 		void SetSpeed(float fSpeed) { m_fSpeed = fSpeed;};
 		void SetTilt(bool bTilt) { m_bTilt = bTilt;};

@@ -7,6 +7,10 @@
 P_PfPath::P_PfPath()
 {
 	strcpy(m_acName,"P_PfPath");
+
+//	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
+//	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+
 	m_iType = PROPERTY_TYPE_NORMAL;// | PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_SERVER;// | PROPERTY_SIDE_CLIENT;
 
@@ -64,12 +68,22 @@ void P_PfPath::Update()
 	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+		int i;
 
-		for(int i=0; i<m_kPath.size(); i++) {
-			pkRender->Draw_MarkerCross(m_kPath[i], Vector3(1,1,0), 1);
-			}	
+		glColor3f(1,0,0);
+		if(m_kRawPath.size() >= 2) {
+			for(i=0; i<m_kRawPath.size() - 1; i++) {
+				pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
+				}	
+			}
 
-		//cout << "Render Path"<< endl;
+		glColor3f(0,1,0);
+		if(m_kPath.size() >= 2) {
+			for(i=0; i < (m_kPath.size() - 1); i++) {
+				pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
+				}	
+			}
+		
 		return;
 		}
 
@@ -101,6 +115,7 @@ void P_PfPath::Update()
 		if(m_iNextGoal == m_kPath.size()) 
 		{
 			m_kPath.clear();
+			m_kRawPath.clear();
 			
 			
 			//play idle
@@ -198,7 +213,7 @@ void P_PfPath::SetPath(vector<Vector3> kPath)
 
 bool P_PfPath::MakePathFind(Vector3 kDestination)
 {
-	vector<Vector3> kPath;
+	vector<PathNode> kPath;
 
 	/* Vim Test Path*/
 	Vector3 kPathStart = m_pkObject->GetWorldPosV();
@@ -210,7 +225,8 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 	{
 		//reverse(kPath.begin(), kPath.end());
 		//kPath.push_back(kPathEnd);
-		SetPath(kPath);
+		m_kRawPath = kPath;
+		SetPath( m_pkAStar->OptimizePath(kPath) );
 		
 		//play run animation
 		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
@@ -248,6 +264,12 @@ bool P_PfPath::HavePath()
 	else
 		return true;
 }
+
+/*
+vector<Vector3> P_PfPath::OptimizePath(vector<Vector3> kInPath)
+{
+	
+}*/
 
 
 Property* Create_P_PfPath()

@@ -82,10 +82,13 @@ class HeapCellComp
 		}
 };
 
-
-
-
-
+class PathNode
+{	
+public:
+	Vector3			kPosition;
+	P_PfMesh*		pkStartMesh;
+	NaviMeshCell*	pkStartCell;	
+};
 
 class ENGINE_API AStar : public ZFSubSystem 
 {
@@ -108,20 +111,20 @@ public:
 
 //	AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID);
 //	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
-
-	
-	
-	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
-	
-	void Reset();
-	
 //	void CalcCoset(AStarNode* pkNode);
 //	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
+	
 
+	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath);
+	void Reset();
 	void CalcCoset(AStarCellNode* pkNode);
-	void MakePath(AStarCellNode* pkNode, vector<Vector3>& kPath);
+	void MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath);
+
 	AStarCellNode* GetConnectedZone(ZoneData*	pkZoneData, Vector3 kA, Vector3 kB);
 
+	vector<Vector3> OptimizePath(vector<PathNode>& kInPath);
+	
+	P_PfMesh*	GetPathFindMesh(Vector3 kPos);
 
 	bool StartUp();
 	bool ShutDown() { return true; }

@@ -121,3 +121,63 @@ Vector2 Line2D::GetMidPoint()
 	return kCenter;
 }
 
+const Vector2& Line2D::EndPointA() const
+{
+	return m_PointA;
+}
+
+const Vector2& Line2D::EndPointB() const
+{
+	return m_PointB;
+
+}
+
+Line2D::LINE_CLASSIFICATION Line2D::Intersection(Line2D& Line, Vector2* pIntersectPoint)
+{
+	float Ay_minus_Cy = m_PointA.y - Line.EndPointA().y;	
+	float Dx_minus_Cx = Line.EndPointB().x - Line.EndPointA().x;	
+	float Ax_minus_Cx = m_PointA.x - Line.EndPointA().x;	
+	float Dy_minus_Cy = Line.EndPointB().y - Line.EndPointA().y;	
+	float Bx_minus_Ax = m_PointB.x - m_PointA.x;	
+	float By_minus_Ay = m_PointB.y - m_PointA.y;	
+
+	float Numerator = (Ay_minus_Cy * Dx_minus_Cx) - (Ax_minus_Cx * Dy_minus_Cy);
+	float Denominator = (Bx_minus_Ax * Dy_minus_Cy) - (By_minus_Ay * Dx_minus_Cx);
+
+	// if lines do not intersect, return now
+	if (!Denominator)
+	{
+		if (!Numerator)
+		{
+			return COLLINEAR;
+		}
+
+		return PARALELL;
+	}
+
+	float FactorAB = Numerator / Denominator;
+	float FactorCD = ((Ay_minus_Cy * Bx_minus_Ax) - (Ax_minus_Cx * By_minus_Ay)) / Denominator;
+
+	// if an interection point was provided, fill it in now
+	if (pIntersectPoint)
+	{
+		pIntersectPoint->x = (m_PointA.x + (FactorAB * Bx_minus_Ax));
+		pIntersectPoint->y = (m_PointA.y + (FactorAB * By_minus_Ay));
+	}
+
+	// now determine the type of intersection
+	if ((FactorAB >= 0.0f) && (FactorAB <= 1.0f) && (FactorCD >= 0.0f) && (FactorCD <= 1.0f))
+	{
+		return SEGMENTS_INTERSECT;
+	}
+	else if ((FactorCD >= 0.0f) && (FactorCD <= 1.0f))
+	{
+		return (A_BISECTS_B);
+	}
+	else if ((FactorAB >= 0.0f) && (FactorAB <= 1.0f))
+	{
+		return (B_BISECTS_A);
+	}
+
+	return LINES_INTERSECT;
+}

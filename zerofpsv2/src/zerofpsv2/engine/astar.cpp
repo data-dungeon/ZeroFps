@@ -164,10 +164,16 @@ AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCe
 	return NULL;
 }
 
-void AStar::MakePath(AStarCellNode* pkNode, vector<Vector3>& kPath)
+void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 {
+	PathNode kNode;
+
 	do {
-		kPath.push_back(pkNode->pkNaviCell->m_kCenter);
+		kNode.kPosition	= pkNode->pkNaviCell->m_kCenter;
+		kNode.pkStartMesh = pkNode->m_pkNaviMesh;
+		kNode.pkStartCell = pkNode->pkNaviCell;
+
+		kPath.push_back( kNode );
 		pkNode = pkNode->m_pParent;
 	} while(pkNode);
 }
@@ -234,7 +240,7 @@ void AStar::Reset()
 }
 
 
-bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
+bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 {
 	Reset();
 
@@ -328,7 +334,10 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		if(pkNode->pkNaviCell == pkEndCell) {
 			MakePath(pkNode, kPath);
 			reverse(kPath.begin(), kPath.end());
-			kPath.push_back( kRealEnd );
+
+			PathNode kNode;
+			kNode.kPosition = kRealEnd;
+			kPath.push_back( kNode );
 			return true;
 			}
 
@@ -384,6 +393,79 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	return false;
 }
 
+P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
+{
+	int iZone	= m_pkObjectManger->GetZoneIndex(kPos,-1, false);
+	if(m_iStartZone < 0)	return NULL;
+
+	ZoneData* pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
+	if(pkZone->m_pkZone == NULL)
+		return false;
+
+	P_PfMesh* pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+	return pkMesh;
+}
+
+vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
+{
+	int i;
+	vector<Vector3> kResult;
+/*	for( i=0; i<kInPath.size(); i++) 
+		kResult.push_back( kInPath[i].kPosition );
+	return kResult;*/
+
+	//cout << "Optimizing Path: " << kInPath.size() << endl;
+
+	kResult.push_back( kInPath[0].kPosition );
+
+	Vector3			kStart;
+	P_PfMesh*		pkStartMesh;
+	NaviMeshCell*	pkStartCell;	
+
+	Vector3			kEnd;
+	P_PfMesh*		pkEndMesh;
+	NaviMeshCell*	pkEndCell;	
+
+	kStart = kInPath[0].kPosition;
+	pkStartMesh = kInPath[0].pkStartMesh;	//GetPathFindMesh( kStart );
+	pkStartCell = kInPath[0].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
+
+	for(i=1; i<kInPath.size(); i++) {
+		kEnd		= kInPath[i].kPosition;
+		pkEndMesh = kInPath[i].pkStartMesh;	//GetPathFindMesh( kEnd );
+		pkEndCell = kInPath[i].pkStartCell;	//pkEndMesh->GetCurrentCell( kEnd );
+		
+		assert(pkStartMesh);
+		assert(pkStartCell);
+		assert(pkEndMesh);
+		assert(pkEndCell);
+
+		if(pkStartMesh != pkEndMesh) {
+			kResult.push_back( kInPath[ i - 1 ].kPosition );
+			kResult.push_back( kInPath[ i ].kPosition );
+			kStart = kInPath[ i ].kPosition;
+			pkStartMesh = kInPath[i].pkStartMesh;	//GetPathFindMesh( kStart );
+			pkStartCell = kInPath[i].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
+			i++;
+			}
+		else {
+			if(pkStartMesh->LineOfSightTest(pkStartCell, kStart, pkEndCell, kEnd) == false) {
+				kResult.push_back( kInPath[ i - 1].kPosition );
+				kStart = kInPath[ i - 1 ].kPosition;
+				pkStartMesh = kInPath[ i - 1 ].pkStartMesh;	//GetPathFindMesh( kStart );
+				pkStartCell = kInPath[ i - 1 ].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
+				}
+			//else 
+			//	cout << "Skipping Path step " << i << endl;
+			}
+		}
+
+	kResult.push_back( kInPath[kInPath.size() - 1].kPosition );
+//	cout << "Optimized Path: " << kResult.size() << endl;
+	return kResult;
+}
+
+//bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos)
 
 
 

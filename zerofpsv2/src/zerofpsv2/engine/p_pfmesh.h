@@ -28,6 +28,13 @@ public:
 		SIDE_BC,
 		SIDE_CA
 	};
+
+	enum PATH_CLASSIFICATION
+	{
+		CELL_NONE,				// Path do not cross this cell.
+		CELL_END,				// Path ends in cell.
+		CELL_EXIT,				// Path exits this cell.
+	};
 	
 	Vector3			m_kVertex[3];		// Vertex the made up the cell.
 	Vector3			m_kCenter;			// Center of the Cell.
@@ -44,6 +51,9 @@ public:
 	Vector3 GetEdgeCenter(int iSide);
 
 	Vector3 MapToCellHeight(Vector3 kIn);
+
+	NaviMeshCell::PATH_CLASSIFICATION ClassifyPath(Line2D& kPath, int& iNextCell, CELL_SIDE& eSide, Vector2* pkIntersection);
+
 };
 
 class AStar;
@@ -82,6 +92,7 @@ class ENGINE_API P_PfMesh : public Property
 		NaviMeshCell* GetCell(Vector3 kPos);
 		NaviMeshCell* GetCell(Vector3 kA, Vector3 kB);
 		NaviMeshCell* GetCurrentCell(Vector3 kPos);
+		bool LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos);
 
 
 	protected:

@@ -113,6 +113,34 @@ Vector3 NaviMeshCell::MapToCellHeight(Vector3 kIn)
 	return kIn;
 }
 
+NaviMeshCell::PATH_CLASSIFICATION NaviMeshCell::ClassifyPath(Line2D& kPath, int& iNextCell, CELL_SIDE& eSide, Vector2* pkIntersection)
+{
+	int iInside = 0;
+
+	for(int i=0; i<3; i++)
+	{
+		if( m_kEdges[i].ClassifyPoint(kPath.EndPointB()) != Line2D::RIGHT_SIDE) {
+			if( m_kEdges[i].ClassifyPoint(kPath.EndPointA()) != Line2D::LEFT_SIDE) {
+				Line2D::LINE_CLASSIFICATION iInterSect = kPath.Intersection(m_kEdges[i],pkIntersection);
+
+				if(iInterSect == Line2D::SEGMENTS_INTERSECT || iInterSect == Line2D::A_BISECTS_B) {
+					iNextCell = m_aiLinks[i];
+					eSide = (CELL_SIDE)i;
+					return CELL_EXIT;
+					}
+				}
+			}
+
+		else {
+			iInside++;
+			}
+	}
+
+	if( iInside == 3)
+		return CELL_END;
+
+	return CELL_NONE;
+}
 
 
 
@@ -422,6 +450,24 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kA, Vector3 kB)
 
 	return NULL;
 }
+
+bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos)
+{
+	Line2D kPath(Vector2(kStartPos.x,kStartPos.z), Vector2(kEndPos.x, kEndPos.z));
+	NaviMeshCell* pkNextCell = pkStartCell;
+	int iNextCell;
+	NaviMeshCell::CELL_SIDE					eSideNumber;
+	NaviMeshCell::PATH_CLASSIFICATION	eResult;
+
+	while((eResult = pkNextCell->ClassifyPath(kPath, iNextCell, eSideNumber, 0)) == NaviMeshCell::CELL_EXIT)
+	{
+		if(iNextCell <= 0)	return false;
+		pkNextCell = &m_NaviMesh[iNextCell];
+	}
+
+	return (eResult == NaviMeshCell::CELL_END);
+}
+
 
 
 
