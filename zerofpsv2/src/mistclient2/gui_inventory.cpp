@@ -79,7 +79,7 @@ void InventoryDlg::Open()
 	// load inventory
 	if(m_pkInventoryWnd == NULL)
 	{
-		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/inventory2.lua"))
+		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/inventory.lua"))
 		{
 			printf("Error loading inventory script!\n");
 			return;
