@@ -283,7 +283,7 @@ void ObjectManager::UpdateGameMessages(void)
 Object* ObjectManager::CreateObject()
 {
 	Object* pkObj = new Object;
-	cout << "CreateObject :" << pkObj->iNetWorkID << endl;
+//	cout << "CreateObject :" << pkObj->iNetWorkID << endl;
 	return pkObj;
 }
 

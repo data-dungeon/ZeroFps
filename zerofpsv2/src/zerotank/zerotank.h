@@ -26,28 +26,26 @@ class ZeroTank :public Application, public ZGuiApp {
 		Object*			m_pkCameraObject;
 		
 		//this is true when client has got heightmap from server
-		bool			m_HaveFoundHMapObject;
+		bool				m_HaveFoundHMapObject;
 		
 		//console funktions
 		enum FuncId_e
 		{
-			FID_LOAD,
-			FID_UNLOAD,
 			FID_MASSSPAWN,
 		};
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 
-		Mad_Modell			m_pkTestMod;
+//		Mad_Modell			m_pkTestMod;
 		
 		Object*				m_pkME;
 		Object*				m_pkTestObject;
 
 		Object*				m_pkZeroTankClientObject;
 		Object*				m_pkZeroTankHull;
-		Object*				m_pkZeroTankTower;
-		Object*				m_pkZeroTankGun;
+//		Object*				m_pkZeroTankTower;
+//		Object*				m_pkZeroTankGun;
 		Object*				m_pkZeroTankTrack;			// Owned by Vim
 
 		Object*				m_pkZeroTank_Modify;
@@ -57,6 +55,10 @@ class ZeroTank :public Application, public ZGuiApp {
 		Object*				m_pkGoblinSlave;
 		Object*				m_pkGoblinSword;
 
+		vector<Object*>	m_kEditList;					// Lista of object we can controll.
+		int					m_iContollIndex;
+		
+		void NextControllObject();
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
@@ -74,7 +76,6 @@ class ZeroTank :public Application, public ZGuiApp {
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);
-		
 		
 		//init client
 		void ClientInit();

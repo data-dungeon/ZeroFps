@@ -37,11 +37,11 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("zerorts");
  
 	m_pkZeroTankHull		= NULL;
-	m_pkZeroTankTower		= NULL;
-	m_pkZeroTankGun		= NULL;
 	m_pkZeroTank_Modify	= NULL;
 	m_pkZeroTankClientObject = NULL;
 	m_pkGoblinLord = NULL;
+	m_iContollIndex = 0;
+
 
 } 
 
@@ -62,8 +62,6 @@ void ZeroTank::OnInit()
 void ZeroTank::Init()
 {	
 	//register commmands bös
-	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("unload",FID_UNLOAD);			
 	Register_Cmd("massspawn",FID_MASSSPAWN);			
 
 	//damn "#¤(="%#( lighting fix bös
@@ -80,13 +78,6 @@ void ZeroTank::Init()
 	//register property bös
 	RegisterPropertys();
 
-	/*	
-	m_pkTestObject = pkObjectMan->CreateObject();
-	m_pkTestObject->SetLocalPosV(Vector3(0,-10,0));
-	m_pkTestObject->AttachToClosestZone();
-	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
-	*/
-	
 	GuiAppLua::Init(&g_kZeroTank, GetScript());
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
@@ -99,7 +90,6 @@ void ZeroTank::RegisterPropertys()
 {
 
 }
-
 
 void ZeroTank::OnIdle() 
 {
@@ -131,7 +121,6 @@ void ZeroTank::OnIdle()
 	if(m_pkGoblinLord)
 		m_pkGoblinSlave->SetLocalRotM( m_pkGoblinLord->GetLocalRotM() );
 
-
 /*	if(pkObj) {
 		m_pkZeroTank_Modify = pkObj;
 		pkObjectMan->OwnerShip_Take( pkObj );
@@ -151,6 +140,22 @@ void ZeroTank::OnSystem()
 		if(m_iSelfObjectID == -1)
 			m_iSelfObjectID = pkFps->GetClientObjectID();
 	};
+}
+
+		int					m_iContollIndex;
+		
+void ZeroTank::NextControllObject()
+{
+	m_iContollIndex++;
+
+	if(m_iContollIndex >= m_kEditList.size())
+		m_iContollIndex = 0;
+
+	m_pkZeroTank_Modify = m_kEditList[ m_iContollIndex ];
+
+	if(m_pkZeroTank_Modify) {
+		cout << "Selected : " << m_pkZeroTank_Modify->iNetWorkID << endl;
+		}
 }
 
 void ZeroTank::Input()
@@ -196,13 +201,7 @@ void ZeroTank::Input()
 
 	// Switch Modify Object
 	if(pkInput->Pressed(KEY_1))	m_pkZeroTank_Modify = m_pkCameraObject;
-	if(pkInput->Pressed(KEY_2))	m_pkZeroTank_Modify = m_pkZeroTankHull;
-	if(pkInput->Pressed(KEY_3))	m_pkZeroTank_Modify = m_pkZeroTankTower;
-	if(pkInput->Pressed(KEY_4))	m_pkZeroTank_Modify = m_pkZeroTankGun;
-	if(pkInput->Pressed(KEY_5))	m_pkZeroTank_Modify = m_pkZeroTankTrack;
-	if(pkInput->Pressed(KEY_6))	m_pkZeroTank_Modify = m_pkGoblinLord;
-
-
+	if(pkInput->Pressed(KEY_2))	NextControllObject();
 
 	if(m_pkZeroTank_Modify)
 	{
@@ -222,13 +221,6 @@ void ZeroTank::Input()
 			 m_pkZeroTank_Modify == m_pkZeroTankClientObject) 
 			kRm.Transponse();
 	
-		/*
-		if(pkInput->Pressed(KEY_D))	newpos-=kRm.VectorRotate(Vector3(-1,0,0))	* fSpeedScale;		
-		if(pkInput->Pressed(KEY_A))	newpos-=kRm.VectorRotate(Vector3(1,0,0))	* fSpeedScale;		
-		if(pkInput->Pressed(KEY_W))	newpos-=kRm.VectorRotate(Vector3(0,0,1))	* fSpeedScale;
-		if(pkInput->Pressed(KEY_S))	newpos-=kRm.VectorRotate(Vector3(0,0,-1)) * fSpeedScale;	
-		*/
-
 		if(pkInput->Pressed(KEY_D))	newpos += kRm.GetAxis(0) * fSpeedScale;		
 		if(pkInput->Pressed(KEY_A))	newpos += kRm.GetAxis(0) * -fSpeedScale;		
 		if(pkInput->Pressed(KEY_W))	newpos += kRm.GetAxis(2) * -fSpeedScale;
@@ -250,171 +242,6 @@ void ZeroTank::Input()
 		//m_pkZeroTankHull		= NULL;
 		//m_pkZeroTank_Modify	= NULL;
 		}
-
-/*
-	if(pkInput->Action(m_iActionPrintServerInfo))
-	{
-	}
-
-	float speed = 20;
-
-	//camera movements
-	if(pkInput->Pressed(KEY_X)){
-		speed*=0.25;
-	}
-
-	Vector3 newpos = m_pkCamera->GetPos();
-	Vector3 rot = m_pkCamera->GetRot();
-	
-	if(pkInput->Pressed(KEY_D)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
-	}
-	if(pkInput->Pressed(KEY_A)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}	
-	if(pkInput->Pressed(KEY_W))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_S))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
-	}		
-	
-	if(pkInput->Pressed(KEY_Q))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_E))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
-
-	int x,z;		
-	pkInput->RelMouseXY(x,z);	
-	
-	rot.x+=z/5.0;
-	rot.y+=x/5.0;	
-	
-//	m_pkME->SetLocalPosV(newpos);
-//	m_pkME->SetLocalRotV(rot);	
-
-	float fSpeedScale = pkFps->GetFrameTime()*speed;
-
-	m_pkCamera->SetPos(newpos);
-	m_pkCamera->SetRot(rot);
-	
-
-	static float fRotate = 0;
-	static Vector3 kRotate(0,0,0); 
-	
-	if(m_pkZeroTank_Modify) {
-		// Translate
-		newpos = m_pkZeroTank_Modify->GetLocalPosV();
-
-		if(pkInput->Pressed(KEY_H))	newpos.x +=	fSpeedScale;			
-		if(pkInput->Pressed(KEY_F))	newpos.x -=	fSpeedScale;			
-		if(pkInput->Pressed(KEY_R))	newpos.y +=	fSpeedScale;			
-		if(pkInput->Pressed(KEY_Y))	newpos.y -=	fSpeedScale;			
-		if(pkInput->Pressed(KEY_T))	newpos.z +=	fSpeedScale;			
-		if(pkInput->Pressed(KEY_G))	newpos.z -=	fSpeedScale;			
-
-		m_pkZeroTank_Modify->SetLocalPosV(newpos);		
-	
-		kRotate = m_pkZeroTank_Modify->GetLocalRotV();
-		
-		//cout<<"x:"<<kRotate.x<<" y:"<<kRotate.y<<" z:"<<kRotate.z<<endl;
-		kRotate.Set(0,0,0);
-		
-		
-		// Rotate
-		if(pkInput->Pressed(KEY_J))	kRotate.x += fSpeedScale;			
-		if(pkInput->Pressed(KEY_U))	kRotate.x -= fSpeedScale;			
-		if(pkInput->Pressed(KEY_I))	kRotate.y += fSpeedScale;			
-		if(pkInput->Pressed(KEY_K))	kRotate.y -= fSpeedScale;			
-		if(pkInput->Pressed(KEY_O))	kRotate.z += fSpeedScale;			
-		if(pkInput->Pressed(KEY_L))	kRotate.z -= fSpeedScale;			
-
-		m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
-		//m_pkZeroTank_Modify->SetLocalRotV(kRotate);
-	}
-	
-	if(PRESSED_KEY == KEY_R)
-	{
-		static int w = 0;
-		if(w++ > 400-16) w = 0;
-		ResizeWnd("ManaBarProgress", w, -1);		
-	}	
-
-*/
-	
-/*	
-	if(m_pkME)	
-	{	
-newpos = m_pkME->GetLocalPosV();
-//	rot = m_pkME->GetLocalRotV();
-	
-	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=pkFps->GetFrameTime()*speed;			
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x-=pkFps->GetFrameTime()*speed;			
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.z+=pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.z-=pkFps->GetFrameTime()*speed;
-	}		
-
-	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
-	}		
-	
-	if(pkInput->Pressed(KEY_R))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_Y))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
-		
-
-  if(pkInput->Pressed(KEY_U))
-		rot.x += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_J))	
-		rot.x -= pkFps->GetFrameTime()*speed*10;
-	
-	if(pkInput->Pressed(KEY_I))
-		rot.y += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_K))	
-		rot.y -= pkFps->GetFrameTime()*speed*10;
-		 
-	if(pkInput->Pressed(KEY_O))
-		rot.z += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_L))	
-		rot.z -= pkFps->GetFrameTime()*speed*10;
-
-  m_pkME->SetLocalPosV(newpos);				
-		//rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-		
-//	m_pkME->SetLocalPosV(newpos);		
-	//rot.y+=0.1;
-
-  rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-	m_pkME->SetLocalRotV(rot);
-	}
-	*/
-
-
 }
 
 void ZeroTank::OnHud(void) 
@@ -442,28 +269,6 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int i;
 
 	switch(cmdid) {
-/*		case FID_LOAD:
-			if(kCommand->m_kSplitCommand.size() <= 1)
-			{
-				pkConsole->Printf("load [mapname]");
-				break;				
-			}
-			
-			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
-			{
-				pkConsole->Printf("Error loading level");
-				break;			
-			}
-			
-			pkConsole->Printf("Level loaded");
-
-			pkConsole->Printf("Everything is loaded ,Starting server");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	
-			break;		
-		
-		case FID_UNLOAD:
-			break;*/
-	
 		case FID_MASSSPAWN:
 			for(i=0; i < 64;i++) {
 				m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
@@ -513,60 +318,15 @@ void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void ZeroTank::OnServerStart(void)
 {		
-	//pkObjectMan->NewWorld();
-	//pkObjectMan->CreateZone();
 	pkObjectMan->Test_CreateZones();
-
-	// ZeroTank
- 	m_pkZeroTankHull	= NULL;
-	m_pkZeroTankTower	= NULL;
-	m_pkZeroTankGun	= NULL;
+	m_pkZeroTankHull	= NULL;
 	m_pkCameraObject	= NULL;
 
-	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
-	if(m_pkZeroTankHull) {
-		//m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
-		m_pkZeroTankHull->AttachToClosestZone();
-
-		//m_pkZeroTankHull->AddProperty("CameraProperty");
-		//CameraProperty* cam = (CameraProperty*)m_pkZeroTankHull->GetProperty("CameraProperty");
-		//cam->SetCamera(m_pkCamera);
-	}
-
-	Object* pkObj;
-
-	pkObj = pkObjectMan->CreateObjectByArchType("vimshouse");
-	if(pkObj) {
-		pkObj->SetParent(m_pkZeroTankHull);
-		pkObj->SetRelativeOri(true);
-		pkObj->SetLocalPosV(Vector3(0,0,0));
-	}
-
-/*	pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
-	if(pkObj) {
-		pkObj->SetParent(m_pkZeroTankHull);
-		pkObj->SetRelativeOri(true);
-		pkObj->SetLocalPosV(Vector3(0,0,0));
-	}*/
-
-/*	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
-	if(m_pkZeroTankTower) {
-		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
-		m_pkZeroTankTower->SetLocalPosV(Vector3(0,0.81,0));
-		m_pkZeroTankTower->SetRelativeOri(true);
-	}
-
-	m_pkZeroTankGun = pkObjectMan->CreateObjectByArchType("ZeroRTSGun");
-	if(m_pkZeroTankGun) {
-		m_pkZeroTankGun->SetParent(m_pkZeroTankTower);
-		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
-		m_pkZeroTankGun->SetRelativeOri(true);
-	}
-*/
-
+	// Create our camera.
 	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
 	if(m_pkCameraObject)
 	{
+		m_pkCameraObject->SetUseZones(false);
 		//m_pkCameraObject->SetParent(m_pkZeroTankGun);
 		//m_pkCameraObject->SetRelativeOri(true);
 		m_pkCameraObject->AddProperty("TrackProperty");
@@ -575,116 +335,71 @@ void ZeroTank::OnServerStart(void)
 		cam->SetCamera(m_pkCamera);
 	}
 
-	pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
+	// Create test objects.
+	Object* pkObj;
+	Object* pkObj2;
 
-	//add server info property
-/*	if(!pkObjectMan->GetObject("A ServerInfoObject"))
-	{
-		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
-		if(!pkObj)
-			cout<<"Faild to create serverinfoobject"<<endl;
-		 else
-			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}*/
 
+	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
+	if(m_pkZeroTankHull) {
+		m_kEditList.push_back( m_pkZeroTankHull );
+		cout << "Goblin: " << m_pkZeroTankHull->iNetWorkID << endl;
+		//m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
+		m_pkZeroTankHull->AttachToClosestZone();
+		//m_pkZeroTankHull->AddProperty("CameraProperty");
+		//CameraProperty* cam = (CameraProperty*)m_pkZeroTankHull->GetProperty("CameraProperty");
+		//cam->SetCamera(m_pkCamera);
+	}
+
+		pkObj = pkObjectMan->CreateObjectByArchType("vimsshield");
+		if(pkObj) {
+			pkObj->SetParent(m_pkZeroTankHull);
+			pkObj->SetRelativeOri(true);
+			pkObj->SetLocalPosV(Vector3(0,0,0));
+		}
+
+		pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
+		if(pkObj) {
+			pkObj->SetParent(m_pkZeroTankHull);
+			pkObj->SetRelativeOri(true);
+			pkObj->SetLocalPosV(Vector3(0,0,0));
+		}
 
 	// Female warrior
-	Object* pk0 = pkObjectMan->CreateObjectByArchType("FWarrior");
-	pkObj = pkObjectMan->CreateObjectByArchType("vimshield");
+	pkObj = pkObjectMan->CreateObjectByArchType("FWarrior");
 	if(pkObj) {
-		pkObj->SetParent(pk0);
-		pkObj->SetRelativeOri(true);
-		pkObj->SetLocalPosV(Vector3(0,0,0));
-	}
+		m_kEditList.push_back( pkObj );
+		pkObj->SetWorldPosV ( Vector3 (0,0,0));
+		pkObj->AttachToClosestZone();
+		}
+	
+		pkObj2 = pkObjectMan->CreateObjectByArchType("vimshield");
+		if(pkObj) {
+			pkObj2->SetParent(pkObj);
+			pkObj2->SetRelativeOri(true);
+			pkObj2->SetLocalPosV(Vector3(0,0,0));
+		}
 
-	pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
-	if(pkObj) {
-		pkObj->SetParent(pk0);
-		pkObj->SetRelativeOri(true);
-		pkObj->SetLocalPosV(Vector3(0,0,0));
-	}
-
-
-
-/*	Object* pk1 = pkObjectMan->CreateObjectByArchType("Armour");
-	Object* pk2 = pkObjectMan->CreateObjectByArchType("Sword");
-	Object* pk3 = pkObjectMan->CreateObjectByArchType("Armband");
-	Object* pk4 = pkObjectMan->CreateObjectByArchType("Helmet");
-	Object* pk5 = pkObjectMan->CreateObjectByArchType("Stovlar");
-	Object* pk6 = pkObjectMan->CreateObjectByArchType("Shield");*/
-
-	// monster
-	Object* pk7 = pkObjectMan->CreateObjectByArchType("Monster");
-
-	// goblin
-	Object *pkGob = pkObjectMan->CreateObjectByArchType("Goblin");
-
-
-	// minoutar
-	Object* pk8 = pkObjectMan->CreateObjectByArchType("VimTest1");		// Minoutar VimTest1
-	Object* pk11 = pkObjectMan->CreateObjectByArchType("Min_axe");
-
-	// PSystem
-	Object* pk12 = pkObjectMan->CreateObjectByArchType("Smoke");
-
-	// Inn
-	Object* pk9	= pkObjectMan->CreateObjectByArchType("Inn_roof");
-	Object* pk10 = pkObjectMan->CreateObjectByArchType("Inn_walls");
-
-	// PSystem
-	Object* pk13 = pkObjectMan->CreateObjectByArchType("FireSword");
-
-	Object* pk14 = pkObjectMan->CreateObjectByArchType("Rain");
-
-	pk7->SetWorldPosV ( Vector3 (20,0,20) );
-
-	pk8->SetWorldPosV ( Vector3 (-15, 0, 15) );
-	pk11->SetWorldPosV ( Vector3 (-15, 0, 15) );
-	pk12->SetWorldPosV ( Vector3 (48.5, 17, -40) );
-	pk13->SetWorldPosV ( Vector3 (-16,7,-20.3) );
-
-	pkGob->SetWorldPosV ( Vector3 (15, 0, -15) );
-
-	pk0->SetWorldPosV ( Vector3 (-20,0,-20) );
-/*	pk1->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk2->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk3->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk4->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk5->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk6->SetWorldPosV ( Vector3 (-20,0,-20) );*/
-
-
-	pk9->SetWorldPosV ( Vector3 (30,0,-30) );
-	pk10->SetWorldPosV ( Vector3 (30,0,-30) );
-
-	pk0->AttachToClosestZone();
-/*	pk1->AttachToClosestZone();
-	pk2->AttachToClosestZone();
-	pk3->AttachToClosestZone();
-	pk4->AttachToClosestZone();
-	pk5->AttachToClosestZone();
-	pk6->AttachToClosestZone();*/
-	pk7->AttachToClosestZone();
-   pk8->AttachToClosestZone();
-   pk9->AttachToClosestZone();
-   pk10->AttachToClosestZone();
-	pk11->AttachToClosestZone();
-//	pk12->AttachToClosestZone();
-//	pk13->AttachToClosestZone();
-//	pk14->AttachToClosestZone();
-//	pkGob->AttachToClosestZone();
+		pkObj2 = pkObjectMan->CreateObjectByArchType("vimsword");
+		if(pkObj2) {
+			pkObj2->SetParent(pkObj);
+			pkObj2->SetRelativeOri(true);
+			pkObj2->SetLocalPosV(Vector3(0,0,0));
+		}
 
 	m_pkGoblinLord =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinLord->SetWorldPosV ( Vector3 (20,30,20) );
 	m_pkGoblinLord->AttachToClosestZone();
 	m_pkGoblinLord->AddProperty("P_Primitives3D");
 
-	P_AmbientSound* pkSound = (P_AmbientSound*) m_pkGoblinLord->AddProperty("P_AmbientSound");
-	pkSound->SetSound("data/sound/walk.wav", true, 2);
-
 	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );
 	m_pkGoblinSlave->AttachToClosestZone();
+	
+	P_AmbientSound* pkSound = (P_AmbientSound*) m_pkGoblinLord->AddProperty("P_AmbientSound");
+	pkSound->SetSound("data/sound/walk.wav", true, 2);
+
+	pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
 }
 
