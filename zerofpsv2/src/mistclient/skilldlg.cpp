@@ -202,10 +202,9 @@ void SkillDlg::OnScroll(int iID, int iPos)
 	int screen_h = m_pkApp->GetHeight();
 	string strScrollbarName = GetWndByID(iID);
 
-	ZGuiWnd* pkApa = m_pkApp->GetWnd("ApaTest");
-
 	if(strScrollbarName == "SelectSkillsScrollbar")
 	{
+		// Move buttons
 		for(int y=0; y<SKILL_ROWS; y++)
 			for(int x=0; x<SKILL_COLS; x++)
 			{
@@ -226,7 +225,11 @@ void SkillDlg::OnScroll(int iID, int iPos)
 				m_pkSkillButtons[y][x]->SetMoveArea(m_pkSkillButtons[y][x]->GetScreenRect(), true); 
 			}
 
-		pkApa->Move(0, -offset*8, true, true);
+		// Move icon slots
+		map<string, SkillSlot*>::iterator itSkills = m_vkSkillSlots.begin();
+		for( ; itSkills != m_vkSkillSlots.end(); itSkills++)
+			itSkills->second->pkLabel->Move(0, -offset*8, true, true);
+
 	}
 }
 

@@ -195,8 +195,8 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
 						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 
-					m_kClickOffset.x = 32;//x-pkSlot->m_pkLabel->GetScreenRect().Left; //(264+sqr.x*48); 
-					m_kClickOffset.y = 32;//y-pkSlot->m_pkLabel->GetScreenRect().Top;  //(16+sqr.y*48);
+					m_kClickOffset.x = 32;//x-pkSlot->m_pkLabel->GetScreenRect().Left; //(264+sqr.x*SLOT_SIZE); 
+					m_kClickOffset.y = 32;//y-pkSlot->m_pkLabel->GetScreenRect().Top;  //(16+sqr.y*SLOT_SIZE);
 
 					m_pkGui->SetCaptureToWnd( m_pkDlgWnd ); // set capture
 				}
@@ -220,7 +220,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 		else // släppa tillbaks ett föremål
 		if(!m_kDragSlots.empty() && bMouseDown == false)
 		{
-			if(Rect(448,200,448+48,200+48).Inside(x,y))
+			if(Rect(448,200,448+SLOT_SIZE,200+SLOT_SIZE).Inside(x,y))
 			{
 				DropItems();
 				m_pkGui->KillWndCapture(); // remove capture
@@ -264,8 +264,8 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 				int sx, sy;
 				if(sqr.x < 5) // container item
 				{
-					sx = 264 + sqr.x * 48;
-					sy = 16 + sqr.y * 48;
+					sx = 264 + sqr.x * SLOT_SIZE;
+					sy = 16 + sqr.y * SLOT_SIZE;
 				}
 				else
 				{
@@ -385,8 +385,8 @@ Point InventoryDlg::MousePosToSqr(int x, int y)
 	top_x = 264;
 	top_y = 16;
 
-	int sqr_x = (x - top_x) / 48;
-	int sqr_y = (y - top_y) / 48;
+	int sqr_x = (x - top_x) / SLOT_SIZE;
+	int sqr_y = (y - top_y) / SLOT_SIZE;
 
 	if(x < top_x || y < top_y || sqr_x > 4 || sqr_y > 3)
 		return Point(-1,-1);
@@ -579,11 +579,11 @@ void InventoryDlg::ScrollItems(int iPos)
 			{
 				Rect rc = slot.m_pkLabel->GetScreenRect(); 
 
-				int y = rc.Top+offset*48;
+				int y = rc.Top+offset*SLOT_SIZE;
 
 				slot.m_pkLabel->SetPos(rc.Left, y, true, true);
 
-				(*it).m_kSqr.y = (y-16) / 48;
+				(*it).m_kSqr.y = (y-16) / SLOT_SIZE;
 
 				if(y < 0 || y > 192)
 					slot.m_pkLabel->Hide();
@@ -598,7 +598,7 @@ void InventoryDlg::ScrollItems(int iPos)
 		if(m_pkSelectedSlot->m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 		{
 			Rect rc = m_pkSelectionLabel->GetScreenRect(); 
-			int y = rc.Top+offset*48;
+			int y = rc.Top+offset*SLOT_SIZE;
 			m_pkSelectionLabel->SetPos(rc.Left, y, true, true);
 			if(y < 0 || y > 192) m_pkSelectionLabel->Hide();
 			else m_pkSelectionLabel->Show();
@@ -650,8 +650,8 @@ void InventoryDlg::AddSlot(const char *szPic, Point sqr,
 	}
 	else
 	{
-		sx = 264+sqr.x*48;
-		sy = 16+sqr.y*48;
+		sx = 264+sqr.x*SLOT_SIZE;
+		sy = 16+sqr.y*SLOT_SIZE;
 
 		if((sqr.x < -1 && sqr.y < -1))
 		{
@@ -761,8 +761,8 @@ void InventoryDlg::SwitchContainer(int iNewContainer)
 			// Placer föremålen på rätt ställen i den nya gridden.
 			if(slot.m_pkItemStats->GetCurrentContainer() == iNewContainer)
 			{
-				int nx = 264 + slot.m_kRealSqr.x * 48;
-				int ny = 16  + slot.m_kRealSqr.y * 48;
+				int nx = 264 + slot.m_kRealSqr.x * SLOT_SIZE;
+				int ny = 16  + slot.m_kRealSqr.y * SLOT_SIZE;
 
 				slot.m_pkLabel->SetPos(nx, ny, true, true);
 				
@@ -1009,8 +1009,9 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 //ContainerDlg
 ///////////////////////////////////////////////////////////////////////////////
 
-ContainerDlg::ContainerDlg()
+ContainerDlg::ContainerDlg(ZGuiApp* pkApp)
 {
+	m_pkApp = pkApp;
 	Create();
 }
 
@@ -1022,10 +1023,197 @@ ContainerDlg::~ContainerDlg()
 void ContainerDlg::Create()
 {
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
-	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkTexMan = static_cast<TextureManager*>(
+		g_ZFObjSys.GetObjectPtr("TextureManager"));
 
-	m_pkDlgWnd = new ZGuiWnd( Rect(512,0,512+256,256), NULL, true, 88883);
+	int screen_w = m_pkApp->GetWidth(); 
+	//
+	// Create main wnd
+	//
+	m_pkApp->CreateWnd( Wnd, "ContainerDlg", "MainWnd", "", 
+		screen_w-(256-27), 288, 256-27, 256, 0); 
+	m_pkDlgWnd = m_pkApp->GetWnd("ContainerDlg");
 
-//	m_pkDlgWnd->SetSkin(new ZGuiSkin( m_pkTexMan->Load("data/, 0) ); 
+	ZGuiSkin* pkSkin = new ZGuiSkin( 
+		m_pkTexMan->Load("data/textures/gui/container_wnd.bmp", 0), 0 );
+	m_pkDlgWnd->SetSkin(pkSkin); 
+
+	//
+	// Create label
+	//
+	m_pkApp->CreateWnd( Label, "ContainerWndLabel", 
+		"ContainerDlg", "Container", 12, 8, 100, 20, 0); 
+
+	//
+	// Create scrollbar
+	//
+
+	int x_pos = SLOT_SIZE*CONTAINER_ITEM_COLS+8;
+	int y_pos = 30;
+	m_pkApp->CreateWnd(Scrollbar, "ContainerScrollbar", "ContainerDlg", "", 
+		x_pos, y_pos-2, 16, SLOT_SIZE*(CONTAINER_ITEM_ROWS-1)+2, 0);
+	((ZGuiScrollbar*)m_pkApp->GetWnd(
+		"ContainerScrollbar"))->SetScrollInfo(0,100,0.10f,0);
+
+	// 
+	// Create "take all button"
+	//
+
+	m_pkApp->CreateWnd( Button, "ContainerWndTakeAllBn", "ContainerDlg", 
+		"Take all", 12, 256-30, 100, 20, 0);
+
+	// 
+	// Create close button
+	//
+
+	m_pkApp->CreateWnd( Button, "ContainerWndCloseBn", "ContainerDlg", 
+		"Close", 117, 256-30, 100, 20, 0);
+
+	//
+	// Create item buttons
+	//
+
+	ZGuiSkin* pkButtonSkinUp = new ZGuiSkin(
+		m_pkTexMan->Load("/data/textures/gui/itembn_u.bmp", 0),0);
+
+	ZGuiSkin* pkButtonSkinDown = new ZGuiSkin(
+		m_pkTexMan->Load("/data/textures/gui/itembn_d.bmp", 0),0);
+
+	Rect m_rcClipperArea(12, 30-2, 12+SLOT_SIZE*4, 30+SLOT_SIZE*4);
+	m_rcClipperArea += m_pkDlgWnd->GetScreenRect(); 
+
+	for(int y=0; y<CONTAINER_ITEM_ROWS; y++)
+		for(int x=0; x<CONTAINER_ITEM_COLS; x++)
+		{
+			char szName[50];
+			sprintf(szName, "ContainerDlgItemSlot%i", y*10+x);
+			m_pkApp->CreateWnd(Button, szName, "ContainerDlg", "", 
+				8+x*(SLOT_SIZE), 30+y*(SLOT_SIZE), SLOT_SIZE, SLOT_SIZE, 0);
+
+			ZGuiButton* pkButton = (ZGuiButton*)m_pkApp->GetWnd(szName);
+			pkButton->SetButtonUpSkin(pkButtonSkinUp);
+			pkButton->SetButtonHighLightSkin(pkButtonSkinUp);
+			pkButton->SetButtonDownSkin(pkButtonSkinDown);
+			pkButton->m_bUseAlhpaTest = false;
+
+			pkButton->SetClipperArea(m_rcClipperArea); 
+			pkButton->m_bUseClipper = true; 
+
+			m_pkContatinerButtons[y][x] = pkButton;
+		}
+
+	// Hide window from start
+	m_pkDlgWnd->Hide();
+}
+
+void ContainerDlg::ToggleOpen(bool bOpen)
+{
+	if(bOpen)
+	{
+		m_pkDlgWnd->Show();
+		m_pkDlgWnd->SetFocus();
+		m_pkGui->SetFocus( m_pkDlgWnd);
+	}
+	else
+	{
+		m_pkDlgWnd->Hide();
+		ZGuiWnd* pkPanel = m_pkApp->GetWnd("PanelBkWnd");
+		pkPanel->SetFocus();
+		m_pkGui->SetFocus(pkPanel);
+	}
+}
+
+void ContainerDlg::OnScroll(int iID, int iPos)
+{
+	static int prev_pos = 0;
+	int offset;
+
+	if(prev_pos == iPos)
+		return;
+	else
+	{
+		offset = iPos-prev_pos;
+		prev_pos = iPos;
+	}
+
+	int screen_h = m_pkApp->GetHeight();
+	string strScrollbarName = GetWndByID(iID);
+
+	if(strScrollbarName == "ContainerScrollbar")
+	{
+		Rect m_rcClipperArea(12, 30-2, 12+SLOT_SIZE*4, 30+SLOT_SIZE*4);
+		m_rcClipperArea += m_pkDlgWnd->GetScreenRect(); 
+
+		// Move buttons
+		for(int y=0; y<CONTAINER_ITEM_ROWS; y++)
+			for(int x=0; x<CONTAINER_ITEM_COLS; x++)
+			{
+				m_pkContatinerButtons[y][x]->Move(0, -offset*8, true, true);
+
+				Rect rcButton = m_pkContatinerButtons[y][x]->GetScreenRect();
+
+				// scroll down
+				if(rcButton.Bottom <= m_rcClipperArea.Top)
+					m_pkContatinerButtons[y][x]->Move(0, 
+					48*CONTAINER_ITEM_ROWS , true, true);
+
+				// scroll up
+				if(rcButton.Top >= m_rcClipperArea.Bottom)
+					m_pkContatinerButtons[y][x]->Move(0, 
+					-48*CONTAINER_ITEM_ROWS, true, true);
+
+				m_pkContatinerButtons[y][x]->SetMoveArea(
+					m_pkContatinerButtons[y][x]->GetScreenRect(), true); 
+			}
+
+/*		// Move icon slots
+		map<string, SkillSlot*>::iterator itSkills = m_vkSkillSlots.begin();
+		for( ; itSkills != m_vkSkillSlots.end(); itSkills++)
+			itSkills->second->pkLabel->Move(0, -offset*8, true, true);*/
+
+	}
+}
+
+string ContainerDlg::GetWndByID(int iID)
+{
+	ZGuiWnd* pkParent = m_pkDlgWnd;
+
+	list<ZGuiWnd*> childs;
+	pkParent->GetChildrens(childs);
+
+	list<ZGuiWnd*>::iterator itChild = childs.begin() ;
+
+	ZGuiWnd* pkClickWnd = NULL;
+	
+	for( ; itChild != childs.end(); itChild++)
+	{
+		if((*itChild)->GetID() == (unsigned int) iID)
+		{
+			pkClickWnd = *itChild;
+			return string(pkClickWnd->GetName());
+		}
+	}
+
+	return string("");
+}
+
+void ContainerDlg::OnCommand(int iID)
+{
+	string strCtrlName = GetWndByID(iID);
+
+	if(strCtrlName == "ContainerWndCloseBn")
+	{
+		ToggleOpen(false);
+	}
+	else
+	if(strCtrlName == "ContainerWndTakeAllBn")
+	{
+		TakeAll();
+		ToggleOpen(false);
+	}
+}
+
+void ContainerDlg::TakeAll()
+{
 
 }

@@ -102,12 +102,27 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	if(!m_pkSkin)
 		return false;
 
+	float tx = 0.0,  ty = 0.0f; // offset into the texture
+	float tw = 1.0f, th = -1.0f; // size of the texture
+
 	if(m_bClipperEnabled)
 	{
+		float fHeightChange;
+
 		if(rc.Top < m_rcClipperArea.Top)
+		{
+			fHeightChange = (float) (m_rcClipperArea.Top - rc.Top) / rc.Height();
+			ty = 0.0f;
+			th = -1.0f+fHeightChange;
 			rc.Top = m_rcClipperArea.Top;
+		}
 		if(rc.Bottom > m_rcClipperArea.Bottom)
+		{
+			fHeightChange = (float) (m_rcClipperArea.Bottom - rc.Bottom) / rc.Height();
+			ty = fHeightChange;
+			th = -1.0f;
 			rc.Bottom = m_rcClipperArea.Bottom;
+		}
 		if(rc.Height() <= 0)
 			return true;
 
@@ -133,24 +148,21 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
 
-	float wx = 1.0f, wy = 1.0f;
+	
 	int texture = m_pkSkin->m_iBkTexID;
-
 
 	if(m_pkSkin->m_bTileBkSkin == true && texture > 0)
 	{
 		glEnable(GL_TEXTURE_2D);
 		m_pkTextureManger->BindTexture( texture );
 
-/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)*/;
+		int iTextureWidth, iTextureHeight;
 
-		int iWidth=32, iHeight=32;
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iWidth);
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iHeight);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iTextureWidth);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iTextureHeight);
 
-		wx = (float)(rc.Right-rc.Left) / iWidth;
-		wy = (float)(rc.Bottom-rc.Top) / iHeight;
+		tw = (float)(rc.Right-rc.Left) / iTextureWidth;
+		th = -(float)(rc.Bottom-rc.Top) / iTextureHeight;
 	}
 
 	if(bDrawMasked)
@@ -162,15 +174,12 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 		m_pkTextureManger->BindTexture( m_pkSkin->m_iBkTexAlphaID );
 
-/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-
 		glBegin(GL_QUADS);		
 			glColor3f(1,1,1);
-			glTexCoord2f(0,0);	  glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(0,-wy);  glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(wx,-wy); glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(wx,0);	  glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
+			glTexCoord2f(tx,ty);		glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(tx,th);		glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(tx+tw,th);  glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(tx+tw,ty);	  glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
 		glEnd();							
 	}
 	 		
@@ -178,9 +187,6 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	{
 		glEnable(GL_TEXTURE_2D);
 		m_pkTextureManger->BindTexture( texture );
-
-/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 
 		if(bDrawMasked)
 			glBlendFunc(GL_ONE, GL_ONE);	// Copy Image 1 Color To The Screen
@@ -198,10 +204,10 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],
 				m_pkSkin->m_afBkColor[2]);
 
-		glTexCoord2f(0,0);		glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-		glTexCoord2f(0,-wy);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-		glTexCoord2f(wx,-wy);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-		glTexCoord2f(wx,0);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
+		glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+		glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+		glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+		glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
 	glEnd();
 
 	if(bDrawMasked)

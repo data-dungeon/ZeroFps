@@ -24,6 +24,7 @@
 using namespace std;
 
 const int MAIN_CONTAINER = 0;
+const int SLOT_SIZE = 48;
 
 struct InvType
 {
@@ -128,19 +129,33 @@ private:
 	Point m_kClickOffset;
 };
 
+const int CONTAINER_ITEM_ROWS = 5;
+const int CONTAINER_ITEM_COLS = 4;
+
 class ContainerDlg
 {
 public:
+	void OnCommand(int iID);
+	void OnScroll(int iID, int iPos);
+	bool IsOpen() { if(m_pkDlgWnd == NULL) return false; return m_pkDlgWnd->IsVisible(); }
+	void ToggleOpen(bool bOpen);
 	void Create();
 
-	ContainerDlg();
+	ContainerDlg(ZGuiApp* pkApp);
 	~ContainerDlg();
 
 private:
+	void TakeAll();
 	ZGuiWnd* m_pkDlgWnd;
 
 	ZGui* m_pkGui;
+	ZGuiApp* m_pkApp;
 	TextureManager* m_pkTexMan;
+
+	ZGuiButton* m_pkContatinerButtons[CONTAINER_ITEM_ROWS][CONTAINER_ITEM_COLS];
+
+	string GetWndByID(int iID);
+	
 };
 
 #endif // !defined(AFX_INVENTORYDLG_H__E2EC300C_10CF_4D5C_B948_2FD7FCAB2686__INCLUDED_)

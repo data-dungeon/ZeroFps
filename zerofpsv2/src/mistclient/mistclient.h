@@ -99,6 +99,7 @@ class MistClient :public Application, public ZGuiApp {
 		QuickBoard*		  m_pkQuickBoard;
 		SkillDlg*		  m_pkSkillDlg;
 		StatsDlg*		  m_pkStatsDlg;
+		ContainerDlg*	  m_pkContainerDlg;
 
 		void CreateGuiInterface();
 

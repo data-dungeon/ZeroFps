@@ -929,6 +929,9 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		m_pkSkillDlg->OnCommand(pkWndClicked);
 	}
+	else
+	if(strMainWndName == "ContainerDlg")
+		m_pkContainerDlg->OnCommand(iID);
 
 	if(m_pkInventDlg)
 	{
@@ -1060,6 +1063,9 @@ void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 	else
 	if(strcmp(pkMain->GetName(), "SelectSkillsMainWnd") == 0)
 		m_pkSkillDlg->OnScroll(iID,iPos);	
+	else
+	if(strcmp(pkMain->GetName(), "ContainerDlg") == 0)
+		m_pkContainerDlg->OnScroll(iID,iPos);	
 }
 
 void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
@@ -1244,6 +1250,7 @@ void MistClient::CreateGuiInterface()
 	m_pkSpellDlg = new SpellDlg(this, m_pkQuickBoard);
 	m_pkSkillDlg = new SkillDlg(this, m_pkQuickBoard);
 	m_pkStatsDlg = new StatsDlg(this);
+	m_pkContainerDlg = new ContainerDlg(this);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
@@ -1530,18 +1537,27 @@ void MistClient::UpdateCullObjects()
 
 void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 {
-	if(iKey == KEY_ESCAPE)
+	switch(iKey)
 	{
-		if(pkWnd && pkWnd->IsVisible()  )
+	case KEY_ESCAPE:
 		{
-			if(strcmp(pkWnd->GetName(), "StatsWnd") == 0)
+			if(pkWnd && pkWnd->IsVisible()  )
 			{
-				pkWnd->Hide();
-				pkGui->SetFocus(GetWnd("MainWnd")); 
-				pkAudioSys->StartSound("/data/sound/close_window.wav",pkAudioSys->GetListnerPos()); 
+				if(strcmp(pkWnd->GetName(), "StatsWnd") == 0)
+				{
+					pkWnd->Hide();
+					pkGui->SetFocus(GetWnd("MainWnd")); 
+					pkAudioSys->StartSound("/data/sound/close_window.wav",pkAudioSys->GetListnerPos()); 
+				}
 			}
 		}
+		break;
+
+	case KEY_SPACE:
+		m_pkContainerDlg->ToggleOpen(!m_pkContainerDlg->IsOpen());
+		break;
 	}
+
 }
 
 void MistClient::UpdateManaAndHealthBar(CharacterStats* pkCharacterStats)
