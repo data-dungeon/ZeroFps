@@ -237,6 +237,14 @@ void ZGResEdit::OnInit()
 	// Gör en första temp save.
 	TempSave(true);
 
+
+
+
+   	//create camera
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkCamera->SetClearViewPort(true);
+	m_pkFps->AddRenderCamera(m_pkCamera);
+
 	//ZGuiFont* pkNewFont = new ZGuiFont("arial26");
 	//pkNewFont->Create("data/textures/text/arial26.fnt",
 	//	m_pkTexMan->Load("data/textures/text/arial26.tga"));
@@ -303,6 +311,9 @@ void ZGResEdit::OnIdle()
 	//m_pkFps->SetCamera(m_pkCamera);		
 	//m_pkFps->GetCam()->ClearViewPort();	
 	//m_pkFps->UpdateCamera(); 	
+
+   //m_pkFps->GetCam()->ClearViewPort(true);
+
 
 	OnKeyDown(m_pkInputHandle->GetQueuedKey().m_iKey);
 

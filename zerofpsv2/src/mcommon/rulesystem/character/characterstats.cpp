@@ -39,7 +39,10 @@ CharacterStats::CharacterStats( Entity *pkParent )
       Entity* pkEnt = m_pkParent->m_pkEntityMan->GetObject("A t_serverinfo.lua");
 
       if ( !pkEnt )
+      {
          cout << "ERROR!!! CharStats couln't find ServerInfoObject!!! :(" << endl;
+         return;
+      }
 
       m_pkServInf = (P_ServerInfo*)pkEnt->GetProperty("P_ServerInfo");
 

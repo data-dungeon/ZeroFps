@@ -54,13 +54,13 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 	// kopiera alla fönster till en vektor och sortera den
 	list<ZGuiWnd*> kWnd;
 
-	//ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
+	ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
 	
 	map<string, ZGuiWnd*>::iterator it2;
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
 		ZGuiWnd* pkWnd = (*it2).second;
-		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) /*&& pkWnd != pkMainWnd*/ )
+		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) && pkWnd != pkMainWnd )
 			kWnd.push_back(pkWnd);
 	}
 
