@@ -42,6 +42,8 @@ struct PSystemTypeData
 	Vector3 m_kEnd_OuterStartArea;
 	Vector3 m_kEnd_InnerStartArea;
 
+	Vector3 m_kPosOffset;
+
 	bool m_bCirkularStart;
 		
 	float 
@@ -84,14 +86,16 @@ struct ParticleTypeData
 		m_fLifeTime,
 		m_fStartSpeed;
 
-	Vector3 m_kDirection;
-	Vector3 m_kForce;
-	Vector3 m_kWideness;
+	Vector3 
+		m_kDirection,
+		m_kForce,
+		m_kWideness;
 
 	bool 
 		m_bBillboardX,
 		m_bBillBoardY,
-		m_bBillBoardZ;
+		m_bBillBoardZ,
+		m_bForceInheritDirection;
 
 	int
 		m_iLifeTimeRandom,

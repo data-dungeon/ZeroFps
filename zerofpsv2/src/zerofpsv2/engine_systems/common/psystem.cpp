@@ -19,7 +19,7 @@ void PSystem::Draw()
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::Update( Vector3 kNewPosition )
+void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -38,6 +38,9 @@ void PSystem::Update( Vector3 kNewPosition )
 
 	// Inherit position from parent
 	m_kPosition = kNewPosition;
+
+	// Inherit rotation from parent
+	m_kRotation = kNewRotation;
 
 	// If all particles hasn't been created...
 	if ( m_kParticles.size() < m_uiParticles )
@@ -144,6 +147,8 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 	m_uiLastParticle = -1;
 
 	m_kPosition.Set (0,0,0);
+	
+	m_kPosOffset = pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 
 	m_fAge = pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
 
@@ -153,9 +158,6 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 {
-	if ( m_fAge < 0 && m_fAge != -1 )
-		cout << "ERROR!!!" << endl;
-
 	// set size of particle array stuff
 	if ( iParticleIndex > m_uiLastParticle )
 		m_uiLastParticle = iParticleIndex;
@@ -186,33 +188,33 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	float fZInnerRadius = m_pkPSystemType->m_kPSystemBehaviour.m_kStart_InnerStartArea.z * m_fAgePercent + 
 								 m_pkPSystemType->m_kPSystemBehaviour.m_kEnd_InnerStartArea.z * (1.f - m_fAgePercent);
 
-	
-	double dRADx = rand()%6283184;
-	double dRADy = rand()%(6283184 - int(dRADx));
-	double dRADz = rand()%(6283184 - int(dRADx + dRADy) );
 
-	dRADx /= 10000.0 * 2.0;
-	dRADy /= 10000.0 * 2.0;
-	dRADz /= 10000.0 * 2.0;
-	
+
+	double dRAD = rand()%6283;
+	double dRADy = rand()%(6283 - int(dRAD));
+
+	dRAD /= 100.0;
+	dRADy /= 100.0;
+
+	double dRadius = (rand()%100) / 100.f;
 
 	// Reset position
 	if ( fXOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.x = cos(dRADx) * fXOuterRadius + cos(dRADx) * fXInnerRadius - fXOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.x = (cos(dRAD) * fXOuterRadius * dRadius) + (cos(dRAD) * fXInnerRadius * (1-dRadius));
 	else
-		m_kParticles[iParticleIndex].m_kCenter.x =  - fXOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.x = -fXOuterRadius / 2.f;
 
 	if ( fYOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y + cos(dRADy) * fYOuterRadius + cos(dRADy) * fYInnerRadius - fYOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.y = (cos(dRADy) * fYOuterRadius * dRadius) + (cos(dRADy) * fYInnerRadius * (1-dRadius));
 	else
 		m_kParticles[iParticleIndex].m_kCenter.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y - fYOuterRadius / 2.f;
 
 	if ( fZOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.z = sin(dRADz) * fZOuterRadius + sin(dRADz) * fZInnerRadius - fZOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.z = (sin(dRAD) * fZOuterRadius * dRadius) + (sin(dRAD) * fZInnerRadius * (1 - dRadius));
 	else
-		m_kParticles[iParticleIndex].m_kCenter.z =  - fZOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.z = -fZOuterRadius / 2.f;
 
-	m_kParticles[iParticleIndex].m_kCenter += m_kPosition;
+	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kPosOffset;
  
 	// Set current particle to active
 	m_kParticles[iParticleIndex].m_bActive = true;
@@ -228,7 +230,15 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		}
 
 
-	m_kParticles[iParticleIndex].m_fAge = m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime + fTimeOffset;
+	// Set and randomize lifetime
+	m_kParticles[iParticleIndex].m_fLifeTime = m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime
+															 * (1 + ((((rand()%100) / 100.f) 
+															 * ((rand()%2) * 2 - 1)) 
+															 * (m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom/100.f)));
+
+	// Set age to max lifetime
+	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime + fTimeOffset;
+
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	
 	
@@ -246,28 +256,38 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 	
 
-	m_kParticles[iParticleIndex].m_kVelocity = m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed * 
-															 kRandomDir;
+	m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
 	
-	m_kParticles[iParticleIndex].m_kSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x;
-	m_kParticles[iParticleIndex].m_kSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y;
+	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x;
+	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y;
 
 	m_kParticles[iParticleIndex].m_kEndSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kEndSize.x;
 	m_kParticles[iParticleIndex].m_kEndSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kEndSize.y;
 
+
+	
 	// Randomize size startvalues
 	if ( m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom )
 	{
-		m_kParticles[iParticleIndex].m_kSize.x *= rand()%m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom;
-		m_kParticles[iParticleIndex].m_kSize.y *= rand()%m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom;
+		float fStartRand = ((rand()%100) / 100.f) * ((rand()%2) * 2 - 1);
+
+		m_kParticles[iParticleIndex].m_kStartSize.x *= 1 + (fStartRand * (m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom/100.f));
+		m_kParticles[iParticleIndex].m_kStartSize.y *= 1 + (fStartRand * (m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom/100.f));
+
 	}
 
 	// Randomize size endvalues
 	if ( m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom )
 	{
-		m_kParticles[iParticleIndex].m_kSize.x *= rand()%m_pkPSystemType->m_kParticleBehaviour.m_iEndSizeRandom;
-		m_kParticles[iParticleIndex].m_kSize.y *= rand()%m_pkPSystemType->m_kParticleBehaviour.m_iEndSizeRandom;
+		float fEndRand = ((rand()%100) / 100.f) * ((rand()%2) * 2 - 1);
+
+		m_kParticles[iParticleIndex].m_kEndSize.x *= 1 + (fEndRand * (m_pkPSystemType->m_kParticleBehaviour.m_iEndSizeRandom/100.f));
+		m_kParticles[iParticleIndex].m_kEndSize.y *= 1 + (fEndRand * (m_pkPSystemType->m_kParticleBehaviour.m_iEndSizeRandom/100.f));
 	}
+
+	// Set startsize
+	m_kParticles[iParticleIndex].m_kSize.x = m_kParticles[iParticleIndex].m_kStartSize.x;
+	m_kParticles[iParticleIndex].m_kSize.y = m_kParticles[iParticleIndex].m_kStartSize.y;
 
 
 }

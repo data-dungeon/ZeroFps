@@ -159,7 +159,7 @@ unsigned int* PSystemManager::CreateIndices ( int iParticles )
 
 bool PSystemManager::LoadNewPSystem ( string kName )
 {
-	string kLoadName = "/data/psystems/" + kName + ".zps";
+	string kLoadName = "../data/psystems/" + kName + ".zps";
 
 	// Open file
 	if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
@@ -420,8 +420,8 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLifeTime = -1;
 
-	if ( m_kIniLoader.KeyExist("ps_lifetime", "random") )
-		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetFloatValue("ps_lifetime", "random") / 100.f;
+	if ( m_kIniLoader.KeyExist("particle_lifetime", "random") )
+		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetFloatValue("particle_lifetime", "random");
 	else
 		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 0;
 
@@ -448,6 +448,12 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kForce.z = m_kIniLoader.GetFloatValue("force", "z");
 	else
 		pkPSType->m_kParticleBehaviour.m_kForce.z = 0;
+
+	if ( m_kIniLoader.KeyExist("force", "inherit_direction") )
+		pkPSType->m_kParticleBehaviour.m_bForceInheritDirection = m_kIniLoader.GetBoolValue("force", "inherit_direction");
+	else
+		pkPSType->m_kParticleBehaviour.m_bForceInheritDirection = true;
+
 
 
 	// Direction
@@ -502,6 +508,22 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kPSystemBehaviour.m_uiDepthMask = ui_aGLTest[m_kIniLoader.GetIntValue("depthmask", "type")];
 	else
 		pkPSType->m_kPSystemBehaviour.m_uiDepthMask = ui_aGLTest[GL_LEQUAL];
+
+	// Position offset
+	if ( m_kIniLoader.KeyExist("position_offset", "x") )
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.x = m_kIniLoader.GetFloatValue("position_offset", "x");
+	else
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.x = 0;
+
+	if ( m_kIniLoader.KeyExist("position_offset", "y") )
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.y = m_kIniLoader.GetFloatValue("position_offset", "y");
+	else
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.y = 0;
+
+	if ( m_kIniLoader.KeyExist("position_offset", "z") )
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.z = m_kIniLoader.GetFloatValue("position_offset", "z");
+	else
+		pkPSType->m_kPSystemBehaviour.m_kPosOffset.z = 0;
 
 
 	// close the file

@@ -2,7 +2,9 @@
 #define _ENGINE_PSYSTEM_H_
 
 #include "../propertys/psproperties/particleproperty.h"
+
 #include "../../basic/vector3.h"
+#include "../../basic/matrix4.h"
 #include "../../basic/vector2.h"
 
 #include <vector>
@@ -22,8 +24,10 @@ struct Particle
 
 	Vector2 m_kSize;
 	Vector2 m_kEndSize;
+	Vector2 m_kStartSize;
 
 	float m_fAge;
+	float m_fLifeTime;
 
 	bool m_bActive;
 };
@@ -36,7 +40,11 @@ private:
 	
 	Render* m_pkRender;
 
-	Vector3 m_kPosition;
+	Vector3 
+		m_kPosition,
+		m_kPosOffset;
+	
+	Matrix4 m_kRotation;
 
 	float 
 		*m_pfVertices,
@@ -63,7 +71,7 @@ private:
 
 public:
 	void Draw();
-	void Update( Vector3 kNewPosition = Vector3 (0,0,0) );
+	void Update( Vector3 kNewPosition, Matrix4 kNewRotation );
 	void AddPSProperty ( ParticleProperty *pkPSProperty );
 
 	float* GetVertices()								{ return m_pfVertices; }

@@ -8,7 +8,7 @@ void PSystemProperty::Update()
 {
 	if ( m_pkPSystem )
 	{
-		m_pkPSystem->Update( m_pkObject->GetWorldPosV() );
+		m_pkPSystem->Update( m_pkObject->GetWorldPosV(), m_pkObject->GetWorldRotM() );
  		m_pkPSystem->Draw();
 	}
 }
