@@ -11,6 +11,7 @@
 // Static internal IDs for the scrollbars
 const int VERT_SCROLLBAR_ID = 620;
 const int HORZ_SCROLLBAR_ID = 621;
+const int FONT_SIZE = 12;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -22,7 +23,7 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
 	m_iScrollbarWidth = 20;
-	m_bSelitemDisabled = false;
+	m_bIsMenu = false;
 	kRectangle.Bottom = 50;
 
 	m_pkSelectedItem = NULL;
@@ -171,7 +172,7 @@ bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 {
 	ZGuiListitem* pkNewItem;
 	
-	if(m_bSelitemDisabled == false)
+	if(m_bIsMenu == false)
 	{
 		pkNewItem = new ZGuiListitem(this, strText, iID, 
 			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight, 
@@ -191,6 +192,25 @@ bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 	m_pkItemList.push_back(pkNewItem);
 
 	UpdateList();
+
+	int iWidth = GetScreenRect().Width();
+	int iHeight = GetScreenRect().Height();
+	int iNewWidth = FONT_SIZE * (strlen(strText)+1);
+
+	if(iNewWidth > iWidth)
+	{
+		ZGuiWnd::Resize( iNewWidth, iHeight);
+
+		list<ZGuiListitem*>::iterator it;
+		for( it = m_pkItemList.begin();
+			 it != m_pkItemList.end(); it++)
+			 {
+				(*it)->Resize( iNewWidth, m_unItemHeight);
+			 }
+
+		m_kItemArea.Right = m_kItemArea.Left + iWidth;
+	}
+
 	return true;
 }
 
@@ -262,12 +282,6 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		ScrollItems(m_pkScrollbarVertical);
 		return true;
 	}
-/*	else
-	if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
-	{
-		ScrollItems(m_pkScrollbarHorizontal);
-		return true;
-	}*/
 
 	if(iCode == NCODE_CLICK_DOWN)
 	{
@@ -347,9 +361,9 @@ ZGuiListitem* ZGuiListbox::GetItem(int iID)
 	return NULL;
 }
 
-void ZGuiListbox::DisableSelItem(bool bDisable)
+void ZGuiListbox::IsMenu(bool bMenu)
 {
-	m_bSelitemDisabled = bDisable;
+	m_bIsMenu = bMenu;
 }
 
 void ZGuiListbox::UpdateList()

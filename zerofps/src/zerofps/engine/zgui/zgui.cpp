@@ -40,6 +40,13 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 	if(pkNewWindow == NULL)
 		return false;
 
+	if(GetWindow(pkNewWindow->GetID()))
+	{
+		// Ful hack...
+		while(1)
+			printf("Dubbel trubbel!");
+	}
+
 	pkNewWindow->SetGUI(this);
 	m_pkWindows.insert( map<int, ZGuiWnd*>::value_type(pkNewWindow->GetID(), pkNewWindow) ); 
 
@@ -77,13 +84,12 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	pkNewMainWindow->iZValue = iZValueCounter++;
 
 	m_pkMainWindows.push_back(pkNewMainWindow);
-	m_pkMainWindows.sort();
+	//m_pkMainWindows.sort();
 
 	if(bSetAsActive)
 		m_pkActiveMainWin = pkNewMainWindow;
 
-	// Gå igenom alla childs och lägg till de till listan
-
+	// Gå igenom alla childs och lägg till de till listan.
 	list<ZGuiWnd*> kChildList;
 	ZGuiWnd* pkSearchWnd = pkWindow;
 	pkSearchWnd->GetChildrens(kChildList);
@@ -99,6 +105,14 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 
 bool ZGui::RemoveMainWindow(int iMainWindowID)
 {
+
+
+
+	return 1;
+
+
+
+
 	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
 		 itMain != m_pkMainWindows.end(); itMain++ )
 		 {
@@ -207,7 +221,10 @@ bool ZGui::SetActiveMainWindow(int iMainWindowID)
 		 it != m_pkMainWindows.end(); it++ )
 		 {
 			if( (*it)->iID == iMainWindowID)
+			{
 				m_pkActiveMainWin = (*it);
+				m_pkActiveMainWin->pkWin->Show(); 
+			}
 		 }
 
 	return true;
@@ -250,7 +267,6 @@ ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
 
 	return best;
 }
-
 
 void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
 {
@@ -305,7 +321,7 @@ bool ZGui::OnMouseUpdate()
 
 	// Har vänster musknapp klickats (men inte släppt)
 	if(m_bLeftButtonDown == false && bLeftButtonDown == true)
-	{
+	{		
 		if(pkFocusWindow)
 		{
 			ZGuiWnd::m_pkWndClicked = pkFocusWindow;

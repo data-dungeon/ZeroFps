@@ -22,20 +22,25 @@ class Gui
 private:
 	ZeroEdit* m_pkEdit;
 	map<string, ZGuiSkin*> m_kSkinMap;
+	map<string, int> m_kTextureMap;
 	ZGuiSkin* GetSkin(char* strName);
+	int GetTexture(char* strName);
 	string m_szSearchBoxPath;
 	bool m_bMenuActive;
 	ZGuiCallBack m_pkWndProc;
+	int m_iScreenCX;
+	int m_iScreenCY;
+	
+	int CreatePropertyDialog(int x, int y, int Widht, int Height);
+	int  CreateFilePathDialog(int x, int y, int Widht, int Height);
+	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
+	bool CreateWindows(/*ZGuiCallBack*/);
+	bool InitSkins();
 
 public:
-	int CreatePropertyBox();
-	bool InitSkins();
-	int  CreateFilePathBox(int x, int y, int Widht, int Height);
-	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
-	void ToogleMenu();
-	bool CreateWindows(/*ZGuiCallBack*/);
 	bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool IsMenuActive() { return m_bMenuActive; }
+	void ToogleMenu();
 
 	Gui(ZeroEdit* pkEdit, ZGuiCallBack cb);
 	virtual ~Gui();

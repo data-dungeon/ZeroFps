@@ -29,7 +29,7 @@ public:
 	void UpdateList();
 	bool RemoveAllItems();
 	bool RemoveItem(unsigned int iID);
-	void DisableSelItem(bool bDisable=true);
+	void IsMenu(bool bDisable=true);
 	ZGuiListitem* GetItem(int iID);
 	bool AddItem(char* strText, unsigned int iID); 
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
@@ -58,7 +58,7 @@ private:
 	unsigned short m_unItemHeight;
 	Rect m_kItemArea;
 	ZGuiListitem* m_pkSelectedItem;
-	bool m_bSelitemDisabled;
+	bool m_bIsMenu;
 	int m_iScrollbarWidth;
 };
 

@@ -32,6 +32,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_iBorderMaskTexture = -1;
 	m_bVisible = bVisible;
 	m_bInternalControl = false;
+	m_bEnabled = true;
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -278,17 +279,24 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	WINit child = m_kChildList.begin();
 	while( (pkFind == NULL)&&(child!=m_kChildList.end()) )
 	{
-		pkFind = (*child)->Find( x, y );
+		pkFind = (*child)->Find(x, y);
 		child++;
 	}
 
-	if( pkFind==NULL && m_kArea.Inside(x,y))
+	if( (pkFind==NULL) && m_kArea.Inside(x,y))
 	{
+//		printf("find id: %i\n", this->GetID());
 		return this;
 	}
 	else
 	{
-		return pkFind;
+		if(pkFind)
+		{
+			if(pkFind->GetScreenRect().Inside(x,y))
+				return pkFind;
+		}
+		
+		return NULL;
 	}
 
 	return NULL;

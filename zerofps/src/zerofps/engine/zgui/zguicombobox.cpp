@@ -6,6 +6,7 @@
 #include "zguilabel.h"
 #include "zguilistbox.h"
 #include "zgui.h"
+#include <iostream.h>
 
 const int COMBOBOX_LABEL_ID = 800;
 const int LISTBOX_ID = 801;
@@ -20,7 +21,7 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 						 ZGuiSkin* pkTopItemSkin, int iTopItemTextureMask) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
-	m_pkLabelIsDisabled = false;
+	m_bIsMenu = false;
 	Rect rc = GetWndRect();
 	rc.Left = 0;
 	rc.Right = rc.Left + kRectangle.Width();
@@ -75,7 +76,7 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 	{
 		ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
  
-		if(pkSelItem && m_pkLabelIsDisabled == false)
+		if(pkSelItem && m_bIsMenu == false)
 			m_pkLabel->SetText(pkSelItem->GetText());
 
 		if(m_pkListbox->IsVisible())
@@ -114,24 +115,13 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 			{
 				ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
  
-				if(pkSelItem && m_pkLabelIsDisabled == false)
+				if(pkSelItem && m_bIsMenu == false)
 					m_pkLabel->SetText(pkSelItem->GetText());
 
 				m_pkListbox->Hide();
 		
 				Resize(m_pkLabel->GetScreenRect().Width(),
 					m_pkLabel->GetScreenRect().Height());
-
-				// Send a message to the main winproc...
-				int* piParams = new int[2];
-				piParams[0] = GetID(); // Listbox ID
-				if(pkSelItem != NULL)
-				{
-					piParams[1] = pkSelItem->GetID(); // list item ID
-					GetGUI()->GetActiveCallBackFunc()(
-						GetGUI()->GetActiveMainWnd(), ZGM_CBN_SELENDOK, 2, piParams);
-				}
-				delete[] piParams;
 			}
 		}
 	}
@@ -155,12 +145,12 @@ void ZGuiCombobox::SetLabelWidth(int iWidth)
 	m_pkLabel->Resize(iWidth, m_pkLabel->GetScreenRect().Height());
 }
 
-void ZGuiCombobox::DisableLabelText(bool bDisable)
+void ZGuiCombobox::IsMenu(bool bIsMenu)
 {
-	m_pkLabelIsDisabled = bDisable; 
+	m_bIsMenu = bIsMenu; 
 
-	if(m_pkLabelIsDisabled)
-		m_pkListbox->DisableSelItem();
+	if(m_bIsMenu)
+		m_pkListbox->IsMenu(bIsMenu);
 }
 
 void ZGuiCombobox::SetNumVisibleRows(unsigned short iNumVisibleRows)

@@ -78,5 +78,9 @@ MTL=midl.exe
 
 SOURCE=.\basic\matrix4.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\engine\zgui\zguicombobox.cpp
+# End Source File
 # End Target
 # End Project

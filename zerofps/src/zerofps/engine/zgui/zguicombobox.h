@@ -34,7 +34,7 @@ public:
 	bool AddItem(char* strText, unsigned int iID);
 	void SetLabelText(char* strText);
 	void SetLabelWidth(int iWidth);
-	void DisableLabelText(bool bDisable=true);
+	void IsMenu(bool bIsMenu);
 	void SetNumVisibleRows(unsigned short iNumVisibleRows);
 
 	ZGuiListitem* GetItem(int iID);
@@ -45,7 +45,7 @@ private:
 	ZGuiLabel* m_pkLabel;
 	ZGuiListbox* m_pkListbox;
 //	ZGuiSkin m_kDropDownIcon;
-	bool m_pkLabelIsDisabled;
+	bool m_bIsMenu;
 	unsigned short m_unNumVisibleRows;
 };
 
