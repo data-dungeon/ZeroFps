@@ -672,52 +672,9 @@ void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 		return;
 	}
 
-	//set active camera
-	m_pkCamera=pkCamera;			
-	
 	//render camera view
 	pkCamera->RenderView();
 
-	//set NULL as active camera
-	m_pkCamera = NULL;
-	
-/*	
-	//is this camera enabled
-	if(!pkCamera->IsRenderOn())
-		return;
-
-	//set this camera as active
-	SetCamera(pkCamera);
-	
-	//clear active camera viewport
-	GetCam()->ClearViewPort();
-	
-	//update camera
-	UpdateCamera();
-		
-	if(m_bDrawAxisIcon)
-		m_pkRender->Draw_AxisIcon(5);
-		
-	if(m_bRenderOn == 1)
-	{
-		//get root entity
-		Entity* pkRootEntity = m_pkObjectMan->GetObjectByNetWorkID(pkCamera->GetRootEntityID());
-		bool	bUpdateRootOnly = pkCamera->GetRootOnly();
-			
-		//update all render propertys that shuld be shadowed
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,bUpdateRootOnly);
-
-		//update shadow map
-		m_pkZShadow->Update();
-
-		//update all render propertys that shuld NOT be shadowed
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,bUpdateRootOnly);
-
-	}
-
-	m_pkObjectMan->Test_DrawZones();
-	m_pkApp->RenderInterface();
-*/
 }
 
 

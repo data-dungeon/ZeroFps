@@ -472,8 +472,8 @@ void DarkMetropolis::Input()
 			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	fDistance += 0.5;
 			
 			//make sure camera is nto to far away
-			if(fDistance > 10.0)
-				fDistance = 10.0;
+			if(fDistance > 8.0)
+				fDistance = 8.0;
 			
 			//make sure camera is not to close
 			if(fDistance < 0.2)
@@ -1134,7 +1134,7 @@ bool DarkMetropolis::CreatePlayer()
 				}					
 				
 				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
-				//m_pkPlayerEntity->DeleteProperty("P_Mad");
+				m_pkPlayerEntity->DeleteProperty("P_Controller");
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
 				

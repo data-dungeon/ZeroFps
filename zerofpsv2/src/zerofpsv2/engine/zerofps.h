@@ -159,8 +159,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		vector<Camera*>	m_kRenderCamera;
 		
 
-		Camera *m_pkCamera;
-		Camera *m_pkConsoleCamera;
+		Camera *m_pkCamera;							//current camera
+		Camera *m_pkConsoleCamera;					//camera for console
 		string m_kCurentDir;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -314,6 +314,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void RouteEditCommand(NetPacket* pkNetPacket);						
 	
 		friend class NetWork;
+		friend class Camera;
 };
 
 

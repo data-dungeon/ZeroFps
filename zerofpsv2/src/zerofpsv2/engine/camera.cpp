@@ -421,6 +421,9 @@ void Camera::RenderView()
 	if(!m_bRender)
 		return;
 
+	//set current camera in engine ( render propertys wants to know this)
+	m_pkZeroFps->m_pkCamera=this;			
+		
 		
 	//first make this camera matrises the current ones
 	Update();
@@ -452,5 +455,8 @@ void Camera::RenderView()
 	if(m_pkZeroFps->GetDrawAxesIcon())
 		m_pkRender->Draw_AxisIcon(5);	
 
+		
+	//reset camera
+	m_pkZeroFps->m_pkCamera=NULL;
 }
 
