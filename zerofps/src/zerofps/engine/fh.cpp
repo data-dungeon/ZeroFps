@@ -18,6 +18,7 @@ public:
 	vector<BoneAnim>	BonePositions;
 };
 
+/*
 void CreateAnim()
 {
 	BoneAnim	NewBone;
@@ -25,7 +26,7 @@ void CreateAnim()
 	BoneAnimFrame	BoneFrames;
 
 	BoneFrames.BonePositions.push_back(NewBone);
-}
+}*/
 
 void DrawTest(float x, float y, float z)
 {

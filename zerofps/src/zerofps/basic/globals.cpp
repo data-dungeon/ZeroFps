@@ -87,7 +87,7 @@ Vector3 GetYawVector2(float fAngleDeg)
 
 float GetYawAngle(Vector3 kDir)
 {
-	float fAngle =  atan2(kDir.x, - kDir.z);
+	float fAngle =  float(atan2(kDir.x, - kDir.z));
 	return RadToDeg(fAngle);
 }
 

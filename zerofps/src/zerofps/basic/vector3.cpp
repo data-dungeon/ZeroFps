@@ -194,10 +194,9 @@ Vector3 Vector3::AToU()
 {
 	Vector3 New(0,0,0);
 	
-	New.y+=cos((x+90)/degtorad);
-	
-	New.x+=cos((y)/degtorad)*cos((x)/degtorad);
-	New.z+=sin((y)/degtorad)*cos((x)/degtorad);
+	New.y += float(cos((x+90)/degtorad));
+	New.x += float(cos((y)/degtorad)*cos((x)/degtorad) );
+	New.z += float(sin((y)/degtorad)*cos((x)/degtorad) );
 
 	New.Normalize();
 	return New;

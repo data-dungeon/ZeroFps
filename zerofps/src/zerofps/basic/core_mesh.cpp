@@ -359,7 +359,7 @@ void Mad_CoreMesh::SetTextureFlags(void)
 {
 	char* pkChar;
 
-	for(int i=0; i<akTextures.size(); i++) {
+	for(unsigned int i=0; i<akTextures.size(); i++) {				
 		char* pszFlags = strstr(akTextures[i].ucTextureName, "-");		
 		
 		if(pszFlags == NULL)

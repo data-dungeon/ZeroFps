@@ -151,7 +151,7 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 	kReturn[1].iValueType = VALUETYPE_STRING;
 	kReturn[1].pkValue    = (void*)&m_kMadFile;
 
-	string	m_kMadFile;
+//	string	m_kMadFile;
 
 	return kReturn;
 }
