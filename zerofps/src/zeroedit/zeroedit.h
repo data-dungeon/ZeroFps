@@ -138,7 +138,6 @@ class ZeroEdit :public Application {
 		void OnClientStart(void);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		Gui* m_pkGui;
-		GameScript* m_pkScript;
 		
 	friend class Gui;
 };

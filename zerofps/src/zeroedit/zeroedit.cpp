@@ -110,10 +110,6 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_bGuiTakeControl = true; 
 	pkFps->ToggleGui(); 
 
-	m_pkScript = new GameScript();
-	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
-	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
-
 /*	
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";

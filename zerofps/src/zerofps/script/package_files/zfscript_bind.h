@@ -1,6 +1,6 @@
 /*
 ** Lua binding: zfscript_bind
-** Generated automatically by tolua 4.0 on 01/27/03 19:35:10.
+** Generated automatically by tolua 4.0 on 01/30/03 14:48:24.
 */
 
 #include "tolua.h"
@@ -26,9 +26,8 @@ void tolua_zfscript_bind_close (lua_State* tolua_S);
 static void toluaI_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"CmdArgument");
- tolua_usertype(tolua_S,"Console");
  tolua_usertype(tolua_S,"BasicConsole");
- tolua_usertype(tolua_S,"lua_State");
+ tolua_usertype(tolua_S,"Console");
 }
 
 /* method: new of class  BasicConsole */
@@ -170,50 +169,6 @@ tolua_lerror:
  return 0;
 }
 
-/* method: LuaSet of class  Console */
-/*static int toluaI_zfscript_bind_Console_LuaSet00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,2,tolua_tag(tolua_S,"lua_State"),0) ||
- !tolua_isnoobj(tolua_S,3)
- )
- goto tolua_lerror;
- else
- {
-  lua_State* pkLua = ((lua_State*)  tolua_getusertype(tolua_S,2,0));
- {
-  int toluaI_ret = (int)  Console::LuaSet(pkLua);
- tolua_pushnumber(tolua_S,(double)toluaI_ret);
- }
- }
- return 1;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'LuaSet'.");
- return 0;
-}*/
-
-/* method: LuaGet of class  Console */
-/*static int toluaI_zfscript_bind_Console_LuaGet00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,2,tolua_tag(tolua_S,"lua_State"),0) ||
- !tolua_isnoobj(tolua_S,3)
- )
- goto tolua_lerror;
- else
- {
-  lua_State* pkLua = ((lua_State*)  tolua_getusertype(tolua_S,2,0));
- {
-  int toluaI_ret = (int)  Console::LuaGet(pkLua);
- tolua_pushnumber(tolua_S,(double)toluaI_ret);
- }
- }
- return 1;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'LuaGet'.");
- return 0;
-}*/
-
 /* Open function */
 int tolua_zfscript_bind_open (lua_State* tolua_S)
 {
@@ -230,8 +185,6 @@ int tolua_zfscript_bind_open (lua_State* tolua_S)
  tolua_function(tolua_S,"Console","new",toluaI_zfscript_bind_Console_new00);
  tolua_function(tolua_S,"Console","Update",toluaI_zfscript_bind_Console_Update00);
  tolua_function(tolua_S,"Console","Execute",toluaI_zfscript_bind_Console_Execute00);
- //tolua_function(tolua_S,"Console","LuaSet",toluaI_zfscript_bind_Console_LuaSet00);
- //tolua_function(tolua_S,"Console","LuaGet",toluaI_zfscript_bind_Console_LuaGet00);
  return 1;
 }
 /* Close function */
