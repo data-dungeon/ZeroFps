@@ -44,6 +44,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bActiveMoment;
 		float		m_fBounce;
 		float		m_fFriction;
+		bool		m_bSleeping;
 		
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;
@@ -102,6 +103,10 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		
+		//resting
+		void Wakeup() {m_bSleeping = false;};
+
+		
 		//collission groups
 		bool CheckFlag(int iFlag) {return m_akTestGroups[iFlag];};
 		void ResetGroupFlags() {m_akTestGroups.reset();};
@@ -114,12 +119,9 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		//forces
 		void ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal =true);
-		void ApplyForce(const Vector3& kForce);
 		void ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
-		void ApplyImpulsForce(const Vector3& kForce);
-		void ApplyRotationImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
-		
-		void ApplyRotationForce(Vector3 kNewVel);		
+		void ApplyImpulsForce(const Vector3& kForce);		
+
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 

@@ -35,6 +35,7 @@ P_Tcs::P_Tcs()
 	m_bActiveMoment =		true;
 	m_fBounce =				1;
 	m_fFriction = 			0.2;
+	m_bSleeping = 			false;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
@@ -138,6 +139,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fInertia,sizeof(m_fInertia),1);						
 	pkPackage->Write((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
 	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);					
+	pkPackage->Write((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 			
 	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
@@ -166,6 +168,7 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
 	pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
 	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
+	pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 					
 	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
@@ -535,11 +538,6 @@ void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 	}	
 }
 
-void P_Tcs::ApplyForce(const Vector3& kForce)
-{
-	m_kExternalLinearForce += kForce;
-}
-
 void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 {
 	//add linear force
@@ -558,31 +556,11 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 	}
 }
 
-void P_Tcs::ApplyRotationImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
-{	
-	if(m_bActiveMoment)
-	{	
-		//are we using local cordinats or not, if so rotate it
-		if(bLocal)
-			kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
-		else
-			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
-				
-		m_kRotVelocity += kForce.Cross(kAttachPos) / m_fInertia;
-		
-	}
-}
 
 void P_Tcs::ApplyImpulsForce(const Vector3& kForce)
 {
 	m_kLinearVelocity +=  kForce / m_fMass;
 } 
-
-void P_Tcs::ApplyRotationForce(Vector3 kNewVel)
-{
-	m_kRotVelocity	+= kNewVel / m_fInertia;
-
-}
 
 Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
 {
