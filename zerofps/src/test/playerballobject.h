@@ -5,6 +5,7 @@
 #include "../zerofps/basic/basic.pkg"
 #include "normaldrawproperty.h"
 #include "playercontrolproperty.h"
+//#include "heightmapobject.h"
 
 class PlayerBallObject: public Object {
 	private:
@@ -13,7 +14,7 @@ class PlayerBallObject: public Object {
 	public:
 		PlayerBallObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps);
 		
-//		void HandleCollision(Object* pkObject,bool bContinue);
+		void HandleCollision(Object* pkObject,bool bContinue);
 
 
 };

@@ -46,15 +46,18 @@ void PlayerControlProperty::Update() {
 	
 	m_pkObject->GetPos().y+=ner;
 
-	if(m_pkObject->GetPos().y<m_pkMap->Height(m_pkObject->GetPos().x,m_pkObject->GetPos().z)){
-		ner=(ner/1.2)*-1;
-		m_pkObject->GetPos().y=m_pkMap->Height(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
-	}
 
 //	if(m_pkObject->GetPos().x>100)
 //		m_pkObject->Remove();
 
 };
+
+void PlayerControlProperty::Bounce(Vector3 kPos){
+	ner=abs((ner/1.2));
+//	m_pkObject->GetPos().y+=0.25;
+
+	m_pkObject->GetPos()=kPos;
+}
 
 
 

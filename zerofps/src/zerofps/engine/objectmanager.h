@@ -1,7 +1,8 @@
 #ifndef _OBJECTMANAGER_H_
 #define _OBJECTMANAGER_H_
 
-#include "objects.pkg"
+#include "object.h"
+
 
 using namespace std;
 

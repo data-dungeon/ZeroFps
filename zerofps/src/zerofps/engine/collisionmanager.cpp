@@ -46,23 +46,6 @@ void CollisionManager::Update()
 			
 			if((*itx)->GetColObject()->Collide((*ity)->GetColObject(),true)){
 				(*itx)->GetObject()->HandleCollision((*ity)->GetObject(),true);
-			
-			
-/*				if((*ity)->GetObject()->GetProperty("PlayerControlProperty")==NULL){
-					Object *test=new Object();
-					test->AddProperty(new ModelProperty());
-					test->AddProperty(new CollisionProperty(&test->GetPos(),new float(1)));		
-					float x=(rand()%100)/100.0-0.5;
-					float y=(rand()%100)/100.0-0.5;
-					test->GetPos()=(*ity)->GetObject()->GetPos()+Vector3(x,0,y);
-					test->GetStatic()=true;
-					if((*ity)->GetObject()->GetObjectMan()!=NULL){
-						(*ity)->GetObject()->GetObjectMan()->Add(test);
-						Add(test);
-					}
-					(*ity)->GetObject()->Remove();
-				}
-*/
 			}
 		}
 	}

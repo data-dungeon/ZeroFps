@@ -25,7 +25,14 @@ bool CollisionHeightMap::Collide(CollisionObject *kOther,bool bContinue)
 }
 
 bool CollisionHeightMap::CollideSphere(CollisionSphere *pkCs){
-
+	if( pkCs->m_kPos->x - *pkCs->m_fRadius >= m_pkHM->m_kPosition.x  &&  pkCs->m_kPos->x + *pkCs->m_fRadius <= m_pkHM->m_kPosition.x+m_pkHM->m_iHmSize )
+	{
+		if( pkCs->m_kPos->z - *pkCs->m_fRadius >= m_pkHM->m_kPosition.z  &&  pkCs->m_kPos->z + *pkCs->m_fRadius <= m_pkHM->m_kPosition.z+m_pkHM->m_iHmSize )
+		{
+			if( pkCs->m_kPos->y - *pkCs->m_fRadius <= m_pkHM->Height( pkCs->m_kPos->x , pkCs->m_kPos->z ))
+				return true;			
+		}
+	}
 	return false;
 }
 

@@ -5,7 +5,9 @@
 #include <list>
 #include <string.h>
 #include "engine_x.h"
-#include "../engine/objects.pkg"
+#include "../basic/basic.pkg"
+#include "property.h"
+//#include "../engine/objects.pkg"
 #include "objectmanager.h"
 
 using namespace std;

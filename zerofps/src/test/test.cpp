@@ -113,7 +113,7 @@ void Test::OnInit(void) {
 	glEnable(GL_LIGHTING );
 	
 	//main camera
-	cam1=new Camera(Vector3(50,50,200),Vector3(0,0,0),90,1.333,0.25,400);
+	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);
 //	cam1->SetViewPort(0,.4,.6,.6);
 	
 	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
@@ -125,8 +125,8 @@ void Test::OnInit(void) {
 	
 	
 	//add a collisionproperty for our heightmap
-	CollisionProperty *hmcolprop=new CollisionProperty(test);
-	pkCollisionMan->Add(hmcolprop);
+	HeightMapObject *hm=new HeightMapObject(test);
+	pkCollisionMan->Add(hm);
 	
 
 }
