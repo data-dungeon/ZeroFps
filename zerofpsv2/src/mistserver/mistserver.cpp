@@ -178,6 +178,9 @@ void MistServer::Init()
 	m_kSun.fLinear_Atten=0;
 	m_kSun.fQuadratic_Atten=0;
 	m_pkLight->Add(&m_kSun);
+
+	CreateFromScript(m_pkScript, "data/script/gui/olle.lua");
+
 }
 
 	
@@ -2043,7 +2046,7 @@ bool MistServer::CreateMenu(char* szFileName)
 	}
 
 	CreateWnd(Wnd, "MainMenu", "", "", 0,0, 800, 20, 0);
-	ChangeSkin(m_pkScript, "MainMenu", "NullSkin", "Window");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "MainMenu", "NullSkin", "Window");
 
 	if(!m_pkIni->Open(szFileName, false))
 	{
@@ -2166,16 +2169,16 @@ void MistServer::CreateGuiInterface()
 	ZGuiWnd* pkWnd;
 	
 	pkWnd = CreateWnd(Wnd, "MainWnd", "", "", 0, 0, w, h, 0);
-	ChangeSkin(m_pkScript, "MainWnd", "NullSkin", "Window"); 
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "MainWnd", "NullSkin", "Window"); 
 
 	pkWnd = CreateWnd(Button, "OpenWorkTabButton", "MainWnd", "", w-40,h-40,32,32,0);
-	ChangeSkin(m_pkScript, "OpenWorkTabButton", "WorkButtonSkinUp", "Button up"); 
-	ChangeSkin(m_pkScript, "OpenWorkTabButton", "WorkButtonSkinDown", "Button down"); 
-	ChangeSkin(m_pkScript, "OpenWorkTabButton", "WorkButtonSkinFocus", "Button focus"); 
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "OpenWorkTabButton", "WorkButtonSkinUp", "Button up"); 
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "OpenWorkTabButton", "WorkButtonSkinDown", "Button down"); 
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "OpenWorkTabButton", "WorkButtonSkinFocus", "Button focus"); 
 
 	pkWnd = CreateWnd(Checkbox, "ToogleLight", "MainWnd", "", w-80,h-40,32,32,0);
-	ChangeSkin(m_pkScript, "ToogleLight", "ToogleLightButtonSkinUp", "Checkbox: Button up");
-	ChangeSkin(m_pkScript, "ToogleLight", "ToogleLightButtonSkinDown", "Checkbox: Button down");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "ToogleLight", "ToogleLightButtonSkinUp", "Checkbox: Button up");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "ToogleLight", "ToogleLightButtonSkinDown", "Checkbox: Button down");
 
 	// Create workwnd
 
@@ -2191,14 +2194,14 @@ void MistServer::CreateGuiInterface()
 	// Page 1
 	//
 	CreateWnd(Button,"RotateZoneModellButton","ZonePage","",256-32,16,16,16,0);
-	ChangeSkin(m_pkScript, "RotateZoneModellButton", "RotateButtonSkinUp", "Button up");
-	ChangeSkin(m_pkScript, "RotateZoneModellButton", "RotateButtonSkinDown", "Button down");
-	ChangeSkin(m_pkScript, "RotateZoneModellButton", "RotateButtonSkinFocus", "Button focus");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "RotateZoneModellButton", "RotateButtonSkinUp", "Button up");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "RotateZoneModellButton", "RotateButtonSkinDown", "Button down");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "RotateZoneModellButton", "RotateButtonSkinFocus", "Button focus");
 
 	CreateWnd(Button,"DeleteZoneButton","ZonePage","",256-32,36,16,16,0);
-	ChangeSkin(m_pkScript, "DeleteZoneButton", "DeleteButtonSkinUp", "Button up");
-	ChangeSkin(m_pkScript, "DeleteZoneButton", "DeleteButtonSkinDown", "Button down");
-	ChangeSkin(m_pkScript, "DeleteZoneButton", "DeleteButtonSkinFocus", "Button focus");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteZoneButton", "DeleteButtonSkinUp", "Button up");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteZoneButton", "DeleteButtonSkinDown", "Button down");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteZoneButton", "DeleteButtonSkinFocus", "Button focus");
 
 	CreateWnd(Treebox, "ZoneModelTree", "ZonePage", "", 10,20,200,200,0);
 
@@ -2209,14 +2212,14 @@ void MistServer::CreateGuiInterface()
 	CreateWnd(Treebox, "ObjectTree", "ObjectPage", "", 10,20,200,200,0);
 	
 	CreateWnd(Button,"PlaceongroundButton","ObjectPage","",256-32,16,16,16,0);
-	ChangeSkin(m_pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinUp", "Button up");
-	ChangeSkin(m_pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinDown", "Button down");
-	ChangeSkin(m_pkScript, "PlaceongroundButton", "PlaceongroundButtonSkinFocus", "Button focus");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "PlaceongroundButton", "PlaceongroundButtonSkinUp", "Button up");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "PlaceongroundButton", "PlaceongroundButtonSkinDown", "Button down");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "PlaceongroundButton", "PlaceongroundButtonSkinFocus", "Button focus");
 
 	CreateWnd(Button,"DeleteObjectButton","ObjectPage","",256-32,36,16,16,0);
-	ChangeSkin(m_pkScript, "DeleteObjectButton", "DeleteButtonSkinUp", "Button up");
-	ChangeSkin(m_pkScript, "DeleteObjectButton", "DeleteButtonSkinDown", "Button down");
-	ChangeSkin(m_pkScript, "DeleteObjectButton", "DeleteButtonSkinFocus", "Button focus");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteObjectButton", "DeleteButtonSkinUp", "Button up");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteObjectButton", "DeleteButtonSkinDown", "Button down");
+	ChangeSkin(m_pkScript, GetGuiScript()->m_pkLuaState, "DeleteObjectButton", "DeleteButtonSkinFocus", "Button focus");
 
 	//
 	// Page 3

@@ -404,3 +404,28 @@ ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 
 	return pkReturnWnd;
 }
+
+bool Serialization::RANDOM_SORT::operator() (ZGuiWnd* x, ZGuiWnd* y) 
+{ 
+	ZGuiWnd* pkParentX = x->GetParent();
+	ZGuiWnd* pkParentY = y->GetParent();
+
+	if( typeid(*pkParentX) == typeid(ZGuiTabCtrl) && 
+		typeid(*pkParentY) == typeid(ZGuiTabCtrl)  )
+	{
+		int xPos = 0;
+		int yPos = 0;
+
+		ZGuiTabCtrl* pkTab = (ZGuiTabCtrl*) pkParentX;
+
+		for(int i=0; i<pkTab->GetNumPages(); i++)
+		{
+			if(x == pkTab->GetPage(i)) xPos = i;
+			if(y == pkTab->GetPage(i)) yPos = i;
+		}
+
+		return xPos > yPos;
+	}
+
+	return (rand()%10 > 5) ? true : false; 
+}

@@ -1254,7 +1254,7 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 	if(key == s_iLastKeyPressed)
 	{
 		// om det är samma tagent som innan...
-		if(time-s_fPressTime > REPEAT_DELAY_SEC)
+		if(time-s_fPressTime > REPEAT_DELAY_SEC && shift == false)
 		{
 			bPrint = true;
 			s_fPressTime = 0;
@@ -1278,6 +1278,21 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 				}
 			}
 		}
+	}
+
+	static bool FULlosning = false;
+	if(shift && !FULlosning)
+	{
+		if(ZGuiWnd::m_pkFocusWnd && s_iLastKeyPressed != key)
+		{
+			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(key);
+			FULlosning = true;
+			s_iLastKeyPressed = key;
+		}
+	}
+	else
+	{
+		FULlosning = false;
 	}
 
 	if(bPrint)
@@ -1449,7 +1464,7 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 	#ifdef WIN32
 
 		if(bShiftIsPressed)
-		{/*
+		{
 			if(iKey == '7')
 				iKey = '/';
 			else
@@ -1476,7 +1491,7 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 			else
 			if(iKey > 48 && iKey < 58)
 				iKey -= 16;
-			else*/
+			else
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
 		}

@@ -44,7 +44,7 @@ private:
 	ZGui* m_pkGui;
 
 	struct RANDOM_SORT: public binary_function<ZGuiWnd*, ZGuiWnd*, bool> { 
-		bool operator() (ZGuiWnd* x, ZGuiWnd* y) { return (rand()%10 > 5) ? true : false; }
+		bool operator() (ZGuiWnd* x, ZGuiWnd* y); // { return (rand()%10 > 5) ? true : false; }
 	} RandomSort;
 
 };

@@ -187,6 +187,24 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
+	case KEY_F5:
+		if(m_pkScene->m_pkPropertyWnd->IsVisible()) m_pkScene->m_pkPropertyWnd->Hide();
+		else if(m_eEditMode != VIEW)
+		{
+			m_pkScene->m_pkPropertyWnd->Show();
+			MoveWndToTop(m_pkScene->m_pkPropertyWnd);
+		}
+		break;
+
+	case KEY_F6:
+		if(m_pkScene->m_pkWorkSpace->IsVisible()) m_pkScene->m_pkWorkSpace->Hide();
+		else if(m_eEditMode != VIEW)
+		{
+			m_pkScene->m_pkWorkSpace->Show();
+			MoveWndToTop(m_pkScene->m_pkWorkSpace);
+		}
+		break;
+
 	case KEY_RETURN:
 		ExecuteCommand();
 		break;
@@ -1016,8 +1034,8 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 		if(pkWnd && ClickInsideWnd(pkWnd, x,y))
 		{
-			pkGui->SetFocus(pkWnd);
-			m_pkFocusWnd = pkWnd;
+			//pkGui->SetFocus(pkWnd);
+			//m_pkFocusWnd = pkWnd;
 			m_pkMainWnd = pkWnd;
 
 			list<ZGuiWnd*> childs;

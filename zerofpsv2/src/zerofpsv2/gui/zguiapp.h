@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "zgui.h"
+#include "../script/zfscript.h"
 
 class TextureManager;
 class ZFScriptSystem;
@@ -48,10 +49,13 @@ public:
 //	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
-	bool ChangeSkin(ZFScriptSystem* pkScript, char* szID, char* szSkinName, 
-		char* szSkinType);
-	
+	bool ChangeSkin(ZFScriptSystem* pkScript, lua_State* pkState, char* szID, char* szSkinName, char* szSkinType);
+
+	bool CreateFromScript(ZFScriptSystem* pkScript, char* szFileName);
+
 	ZGuiSkin* AddSkinFromScript(char* szName, ZFScriptSystem* pkScript, ZGuiSkin* pkSkin=NULL);
+	ZGuiSkin* AddSkinFromScript2(char *szName, ZFScriptSystem *pkScript, lua_State* pkResHandle, ZGuiSkin* pkSkin);
+
 	bool IsButtonChecked(char* szWnd);
 	float GetTextFloat(char* szWnd, bool* pkSuccess);
 	int GetTextInt(char* szWnd, bool* pkSuccess);
