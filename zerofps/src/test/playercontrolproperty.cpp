@@ -28,6 +28,11 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetPos().z+=speed*m_pkFps->GetFrameTime();
 	}
 	
+	if(m_pkInput->Pressed(KEY_Q)){
+		m_pkObject->GetPos().y=100;
+	}
+	
+	
 	ner-=0.20;
 	
 	m_pkObject->GetPos().y+=ner;
