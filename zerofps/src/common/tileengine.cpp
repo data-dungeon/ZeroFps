@@ -162,7 +162,16 @@ void TileEngine::GenerateUnits()
 		{
 			Point pos = GetSqrFromPos(kObjects[i]->GetPos());	
 			
-			AddUnit(pos.x,pos.y,kObjects[i]->iNetWorkID);
+			int w = su->m_kInfo.m_cWidth;
+			int h = su->m_kInfo.m_cHeight;
+			
+			for(int y = -(h/2.0);y<(h/2.0);y++)
+				for(int x = -(w/2.0);x<(w/2.0);x++)
+				{			
+					//cout<<"X:"<<x<<endl;
+					AddUnit(pos.x + x,pos.y + y,kObjects[i]->iNetWorkID);
+					
+				}
 		}
 	}
 }

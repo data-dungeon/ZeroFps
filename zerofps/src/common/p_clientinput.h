@@ -18,6 +18,7 @@ class COMMON_API P_ClientInput: public Property {
 		int								 m_iPlayerID;
 		ZeroFps*					 		m_pkFps;
 		int								 m_iMaxOrders;
+		bool								 m_bGod;					//is this the server?
 
 	public:
 		P_ClientInput();

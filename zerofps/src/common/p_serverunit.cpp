@@ -118,7 +118,7 @@ void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(8);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_INT;
@@ -127,6 +127,31 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[1].kValueName="m_cHealth";
 	kReturn[1].iValueType=VALUETYPE_INT;
 	kReturn[1].pkValue=(void*)&m_kInfo.m_cHealth;
+	
+	kReturn[2].kValueName="m_cWeapon";
+	kReturn[2].iValueType=VALUETYPE_INT;
+	kReturn[2].pkValue=(void*)&m_kInfo.m_cWeapon;
+	
+	kReturn[3].kValueName="m_cArmor";
+	kReturn[3].iValueType=VALUETYPE_INT;
+	kReturn[3].pkValue=(void*)&m_kInfo.m_cArmor;
+	
+	kReturn[4].kValueName="m_cPropultion";
+	kReturn[4].iValueType=VALUETYPE_INT;
+	kReturn[4].pkValue=(void*)&m_kInfo.m_cPropultion;
+	
+	kReturn[5].kValueName="m_cViewDistance";
+	kReturn[5].iValueType=VALUETYPE_INT;
+	kReturn[5].pkValue=(void*)&m_kInfo.m_cViewDistance;
+	
+	kReturn[6].kValueName="m_cWidth";
+	kReturn[6].iValueType=VALUETYPE_INT;
+	kReturn[6].pkValue=(void*)&m_kInfo.m_cWidth;
+	
+	kReturn[7].kValueName="m_cHeight";
+	kReturn[7].iValueType=VALUETYPE_INT;
+	kReturn[7].pkValue=(void*)&m_kInfo.m_cHeight;
+	
 
 	return kReturn;
 }

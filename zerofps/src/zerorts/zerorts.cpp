@@ -137,6 +137,7 @@ void ZeroRTS::Init()
 
 void ZeroRTS::RegisterActions()
 {
+	m_iActionDoOrder=pkInput->RegisterAction("DoOrder");
 	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
 	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
 	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
@@ -168,7 +169,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-
+/*
 	Vector3 mpos = Get3DMousePos();
 	
 	Point bla = GetSqrFromPos(mpos);
@@ -185,7 +186,7 @@ void ZeroRTS::OnIdle()
 			cout<<"Unit:"<<(*t->kUnits.begin())<<endl;
 
 	}
-	
+*/	
 	
 /*	glDisable(GL_LIGHTING);
 		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
@@ -282,7 +283,16 @@ void ZeroRTS::OnSystem()
 	
 	//if server is running
 	if(pkFps->m_bServerMode)	
+	{
 		HandleOrders();
+		
+		if(!m_pkClientInput)
+		{
+			pkObjectMan->GetWorldObject()->AddProperty("P_ClientInput");
+			m_pkClientInput = (P_ClientInput*)pkObjectMan->GetWorldObject()->GetProperty("P_ClientInput");
+			m_pkClientInput->m_bGod = true;
+		}
+	}
 }
 
 void ZeroRTS::Input()
@@ -356,10 +366,8 @@ void ZeroRTS::Input()
 		MoveCam(Vector3(0,0,100));
 	}
 	
-	if(pkInput->Action(m_iActionExploreAll))
+	if(pkInput->Action(m_iActionDoOrder))
 	{
-		m_pkFogRender->ExploreAll();
-		
 		if(m_pkClientInput)
 		{
 			PickInfo info2 = Pick();
@@ -386,9 +394,12 @@ void ZeroRTS::Input()
 				bla.m_iYDestinaton = info2.kSquare.y;			
 				bla.m_iUnitID = (*it);
 				m_pkClientInput->AddOrder(bla);
-			}
-		}
+			}	
+		}	
 	}
+	
+	if(pkInput->Action(m_iActionExploreAll))
+		m_pkFogRender->ExploreAll();
 	
 	if(pkInput->Action(m_iActionUnExploreAll))
 		m_pkFogRender->UnExploreAll();
@@ -823,7 +834,6 @@ void ZeroRTS::Explore()
 
 void ZeroRTS::HandleOrders()
 {
-	
 	if(P_ClientInput::m_kServerCommands.size() > 0)
 	{	
 		cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
@@ -846,6 +856,12 @@ void ZeroRTS::HandleOrders()
 				if(su != NULL)
 				{
 					//check that teems mach
+					if( int(su->m_kInfo.m_cTeam) == 255)
+					{
+						cout<<"Order from GOD"<<endl;
+						su->RunExternalCommand(uc);												
+					}
+					else
 					if( int(su->m_kInfo.m_cTeam) == int(uc->m_cPlayerID))							
 						su->RunExternalCommand(uc);							
 					else

@@ -16,6 +16,7 @@ P_ClientInput::P_ClientInput()
 	m_iMaxOrders = 200;	
 	
 	m_iPlayerID =	-1;
+	m_bGod =			false;
 }
 
 void P_ClientInput::Update()
@@ -25,9 +26,16 @@ void P_ClientInput::Update()
 
 void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
-	if(m_kCommands.size() < m_iMaxOrders)
-		m_kCommands.push_back(kCommand);
-
+	if(m_bGod)	//if server's input
+	{
+		kCommand.m_cPlayerID = 255;
+		m_kServerCommands.push_back(kCommand);
+	}
+	else
+	{
+		if(m_kCommands.size() < m_iMaxOrders)
+			m_kCommands.push_back(kCommand);
+	}
 }
 
 

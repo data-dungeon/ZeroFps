@@ -54,6 +54,7 @@ class ZeroRTS :public Application {
 		int			m_iActionExploreAll;
 		int			m_iActionUnExploreAll;		
 		int			m_iActionPrintServerInfo;				
+		int			m_iActionDoOrder;
 		
 		//this is true when client has got heightmap from server
 		bool			m_HaveFoundHMapObject;
