@@ -14,12 +14,12 @@
 #include "../mcommon/p_dmshop.h"
 #include "../zerofpsv2/render/glguirender.h"
 
-DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
+DarkMetropolis g_kDM("DM_arcad",0,0,0);
 
 DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
-	g_ZFObjSys.Log_Create("DarkMetropolis");	
+	g_ZFObjSys.Log_Create("DM_arcad");	
 
 	RegisterVariable("r_enablemusic",&m_iEnableMusic,CSYS_INT);
 
