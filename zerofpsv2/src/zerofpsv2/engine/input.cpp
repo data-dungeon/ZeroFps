@@ -481,10 +481,12 @@ void Input::UpdateMousePos()
 	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 
 	//update relative mousepos
-	int iX,iY;
+	int iX;
+	int iY;
 	SDL_GetRelativeMouseState(&iX, &iY);			
 	m_fRelMouseX = (float(iX) * m_fMouseSensitivity);
 	m_fRelMouseY = (float(iY) * m_fMouseSensitivity);
+	
 	
 	//update absolute mouse position
 	int iWidth=m_pkRender->GetWidth();

@@ -51,6 +51,8 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMap
 			pkFiles->push_back(kNamn);
 	}
 	
+	
+	closedir(kDir);
 	return true;
 }
 
@@ -92,6 +94,7 @@ bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters
 		}			
 	}
 	
+	closedir(kDir);
 	return true;
 }
 

@@ -364,11 +364,12 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		m_pkActiveCameraObject->SetLocalPosV(newpos);		
 		if(m_pkInputHandle->VKIsDown("pancam"))
 		{
-			SDL_ShowCursor(false);
+			
 			m_pkActiveCameraObject->SetLocalRotM(kRm);	
+		//	SDL_ShowCursor(false);
 		}
-		else
-			SDL_ShowCursor(true);
+		//else
+		//	SDL_ShowCursor(true);
 	}
 
 	else 

@@ -336,7 +336,8 @@ void ZeroEd::Init()
 	SetTitle("ZeroEd");
 	// hide cursor
 	m_pkInput->ShowCursor(true);
-
+	
+	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
 	m_kSun.kRot = Vector3(1,2,1);
 	m_kSun.kDiffuse=Vector4(1,1,1,0);

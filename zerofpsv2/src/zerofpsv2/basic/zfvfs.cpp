@@ -163,6 +163,7 @@ bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& str
 
 FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 {
+
 	FILE*	pkFp;
 	string	strRootMerge;
 	char*	szOptions;
@@ -188,7 +189,6 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 			if(!m_bCaseSensitive)
 				strRootMerge = GetRealName(strRootMerge);
 			
-		
 			pkFp = fopen(strRootMerge.c_str(), szOptions);
 			if(pkFp) {
 				return pkFp;
