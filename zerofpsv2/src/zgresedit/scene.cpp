@@ -196,7 +196,7 @@ void Scene::CreateUI()
 
 	((ZGuiRadiobutton*) m_pkApp->GetWnd("TextureBK"))->GetButton()->CheckButton(); 
 
-   m_pkApp->CreateWnd(Button, "ResizeSkinTypeListBn",  "WorkSpace",  "S", 162,  440, 30, 16, 0);
+   m_pkApp->CreateWnd(Button, "ResizeSkinTypeListBn",  "WorkSpace",  "+", 162,  440, 30, 16, 0);
 
 	//
 	// Create Def.Properties Wnd
