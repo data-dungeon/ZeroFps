@@ -73,7 +73,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	m_pkZGui->AddKeyCommand(KEY_RETURN, pkDialog, pkPropOKBn);
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDialog, pkPropCancelBn);
-	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
+//	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
 
 	return pkDialog;
 

@@ -599,6 +599,9 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 	if(iKey >= 32 && iKey < 256)
 		bIgnore = false;
 
+	if(iKey == KEY_LSHIFT || iKey == KEY_RSHIFT)
+		bIgnore = true;
+
 	return bIgnore;
 }
 

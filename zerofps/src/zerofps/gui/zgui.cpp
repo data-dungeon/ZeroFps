@@ -595,7 +595,7 @@ bool ZGui::OnKeyUpdate()
 	static float s_fLastRepeatTime = m_pkFps->GetGameTime();
 	
 	// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt.
-	if(m_pkInput->Pressed(s_iLastKeyPressed))
+	if(m_pkInput->Pressed(s_iLastKeyPressed) && s_iLastKeyPressed != KEY_LSHIFT)
 	{
 		float fCurrTime = m_pkFps->GetGameTime();
 
