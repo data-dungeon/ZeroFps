@@ -587,9 +587,11 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	// Har vänster musknapp släpts (men inte klickats)?
 	if(bLeftReleased || bRightReleased)
 	{
+		m_bHaveInputFocus = false;
+
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
-			m_bHaveInputFocus = false;
+			//m_bHaveInputFocus = false;
 
 			// Informera fönstret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
