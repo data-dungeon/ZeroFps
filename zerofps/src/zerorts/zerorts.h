@@ -59,7 +59,12 @@ class ZeroRTS :public Application {
 		float			m_fClickTimer;
 		float			m_fClickDelay;
 
+		PathFind* m_pkTestPath;
+		void BuildPath();
+
 	public:
+		Vector3 GetPosFromSqr(Point square);
+		Point GetSqrFromPos(Vector3 pos);
 		void SetObjDstPos(int sqr_x, int sqr_y);
 		//void DrawMinimap();
 		

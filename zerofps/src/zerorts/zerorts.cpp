@@ -11,6 +11,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
 	m_pkMiniMap = NULL;
+	m_pkTestPath = NULL;
 }
 
 void ZeroRTS::OnInit() 
@@ -264,7 +265,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkMiniMap->Create(pkTexMan, pkLevelMan); 
 			
 			pkConsole->Printf("Level loaded");
-			
+
+			BuildPath();
 			break;		
 		
 		case FID_UNLOAD:
@@ -342,8 +344,10 @@ PickInfo ZeroRTS::Pick()
 	PickInfo temp;
 	
 	temp.pkVert = PickMap(temp.kHitPos);
-	temp.kSquare.x = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.x / HEIGHTMAP_SCALE);
-	temp.kSquare.y = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.z / HEIGHTMAP_SCALE);
+/*	temp.kSquare.x = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.x / HEIGHTMAP_SCALE);
+	temp.kSquare.y = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.z / HEIGHTMAP_SCALE);*/
+
+	temp.kSquare = GetSqrFromPos(temp.kHitPos);
 
 	printf("%f\n", temp.kHitPos.x);
 	
@@ -456,33 +460,42 @@ void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y)
 	if(pkObject == NULL)
 		return;
 
-	Vector3 prev = 
-	pkObject->GetPos();
-
-	float x = -128*HEIGHTMAP_SCALE + sqr_x*HEIGHTMAP_SCALE;
-	float z = -128*HEIGHTMAP_SCALE + sqr_y*HEIGHTMAP_SCALE;
-
-	x -= HEIGHTMAP_SCALE/2;
-	z += HEIGHTMAP_SCALE/2;
-
-	Vector3 newp = Vector3(x, m_pkMap->Height(x,z), z);
+	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
 
 	pkObject->SetPos(newp);
 	pkObject->SetPos(newp);
+}
 
+void ZeroRTS::BuildPath()
+{
+	int aiCost[5];
+	aiCost[GRASS] = 1;
+	aiCost[WOOD]  = 1000;
+	aiCost[SWAMP] = 500;
+	aiCost[WATER] = 1000;
+	aiCost[ROAD]  = 1;
 
-/*	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(m_kSelectedObjects.front());
-	
-	HeightMap* hp = pkLevelMan->GetHeightMap();
+	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
+	kPathBuilder.Build(aiCost);
+}
 
-	float x = pkObject->GetPos().x,
-		  y = pkObject->GetPos().z;
+Point ZeroRTS::GetSqrFromPos(Vector3 pos)
+{
+	int iSquareX = m_pkMap->m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
+	int iSquareY = m_pkMap->m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE);
 
-	hp->GetMapXZ(x,y);
+	return Point(iSquareX,iSquareY);
+}
 
-	int tile_x = x / HEIGHTMAP_SCALE, tile_y = y / HEIGHTMAP_SCALE;
+Vector3 ZeroRTS::GetPosFromSqr(Point square)
+{
+	float x = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
 
-	printf("Tile = (%i, %i)\n", tile_x, tile_y);*/
+	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
+	z -= HEIGHTMAP_SCALE/2;	// of square.*/
 
-	//pkObjectMan->Remove(pkDemon);
+	float y = m_pkMap->Height(x,z);
+
+	return Vector3(x,y,z);
 }
