@@ -38,6 +38,7 @@ enum GuiType
 	Textbox,			// 10
 	Treebox,			// 11
 	Menu,				// 12
+	Progressbar,	// 13
 	GuiType_Error
 };
 
@@ -131,6 +132,8 @@ public:
 	ZGuiWnd* GetWnd(string strName);
 	ZGuiSkin* GetSkin(string strName);
 	GuiType GetWndType(ZGuiWnd* pkWnd);
+
+	bool SetFont(string strWnd, string strFont, int r=0, int g=0, int b=0, int glyph=0);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 

@@ -24,6 +24,7 @@
 #include "zguiapp.h"
 #include "zguitooltip.h"
 #include "zguimenu.h"
+#include "zguiprogressbar.h"
 
 #include "../basic/zfsystem.h"
 #include "../basic/image.h"

@@ -159,22 +159,22 @@ void ZGuiWnd::GetChildrens(list<ZGuiWnd*>& kList)
 bool ZGuiWnd::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 {
 	int iPrevPosX = m_kArea.Left, 
-		iPrevPosY = m_kArea.Top;
+		 iPrevPosY = m_kArea.Top;
 
 	ZGuiWnd* pkParent = GetParent();
 	if(pkParent && bScreenSpace == false)
 	{
-		x += pkParent->m_kArea.Left;
-		y += pkParent->m_kArea.Top;
+		if(x != -1) x += pkParent->m_kArea.Left;
+		if(y != -1) y += pkParent->m_kArea.Top;
 	}
 
 	int w = m_kArea.Width();
 	int h = m_kArea.Height();
 
-	m_kArea.Left = x;
-	m_kArea.Top = y;
-	m_kArea.Right = x+w;
-	m_kArea.Bottom = y+h;
+	if(x != -1) m_kArea.Left = x;
+	if(y != -1) m_kArea.Top = y;
+	if(x != -1) m_kArea.Right = x+w;
+	if(y != -1) m_kArea.Bottom = y+h;
 
 	UpdatePos(iPrevPosX, iPrevPosY, w, h, bFreeMovement);
 

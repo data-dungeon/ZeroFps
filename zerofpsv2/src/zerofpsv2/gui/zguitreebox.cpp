@@ -470,6 +470,7 @@ void ZGuiTreebox::CreateInternalControls()
 		this,true,VERT_SCROLLBAR_ID); 
 	m_pkVertScrollbar->SetScrollInfo(0,100,0.25f,0); 
 
+
 	x = 0;
 	y = rc.Height()-SCROLLBAR_WIDTH;
 	w = rc.Width()-SCROLLBAR_WIDTH;

@@ -36,7 +36,7 @@
 				OutputFile="..\..\bin\mistclient2_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\bin"
-				IgnoreDefaultLibraryNames="msvcrt.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/mistclient2.pdb"
 				SubSystem="1"

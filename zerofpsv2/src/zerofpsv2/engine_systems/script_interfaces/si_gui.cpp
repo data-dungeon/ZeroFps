@@ -29,6 +29,10 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetTextString", GuiAppLua::SetTextStringLua); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
 	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);		
+	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
+	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
+	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
+	
 }
 
 // Name: CreateWndLua
@@ -78,7 +82,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	double dType;
 	g_pkScript->GetArg(pkLua, 0, &dType);
 
-	char szWindowName[50], szParentName[50], szText[50];
+	char szWindowName[50], szParentName[50], szText[512];
 	g_pkScript->GetArg(pkLua, 1, szWindowName);
 	g_pkScript->GetArg(pkLua, 2, szParentName);
 	g_pkScript->GetArg(pkLua, 3, szText);
@@ -110,6 +114,8 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 		case 9:  eType = TabControl;  break;
 		case 10: eType = Textbox;	   break;
 		case 11: eType = Treebox;	   break;
+		case 12: eType = Menu;		   break;
+		case 13: eType = Progressbar; break;
 		default:
 		{
 			printf("Failed to create window! : wrong type\n");
@@ -462,20 +468,99 @@ int GuiAppLua:: SetMoveAreaLua(lua_State* pkLua)
 	return 1;
 }
 
+// 1:st arg: String name of window
+// 2:nd arg: String name of font
+// 3:rd arg: (optinal) color red
+// 4:rt arg: (optinal) color green
+// 5:th arg: (optinal) color blue
+// 6:th arg: (optinal) glyph
+int GuiAppLua::SetFontLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
+	char szWindow[250], szFont[250];
+	g_pkScript->GetArg(pkLua, 0, szWindow);
+	g_pkScript->GetArg(pkLua, 1, szFont);
 
+	double dRed=0, dGreen=0, dBlue=0, dGlyph=0;
+	if(iNumArgs > 2) g_pkScript->GetArgNumber(pkLua, 2, &dRed);
+	if(iNumArgs > 3) g_pkScript->GetArgNumber(pkLua, 3, &dGreen);
+	if(iNumArgs > 4) g_pkScript->GetArgNumber(pkLua, 4, &dBlue);
+	if(iNumArgs > 5) g_pkScript->GetArgNumber(pkLua, 5, &dGlyph);
 
+	ZGuiWnd* pkWnd = g_pkGuiApp->GetWnd(szWindow);
+	if(pkWnd)
+	{
+		g_pkGuiApp->SetFont(szWindow, szFont, dRed, dGreen, dBlue, dGlyph);
+	}
+		
+	return 1;
+}
 
+// 1:st Arg: String name of Wnd
+// 2:rd Arg: String for parameter to set
+int GuiAppLua::ChangeWndParameterLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
+	char szWindow[250], szParameter[250];
+	g_pkScript->GetArg(pkLua, 0, szWindow);
+	g_pkScript->GetArg(pkLua, 1, szParameter);
 
+	ZGuiWnd* pkWnd = g_pkGuiApp->GetWnd(szWindow);
+	if(pkWnd)
+	{
+		GuiType eWndType = g_pkGuiApp->GetWndType(pkWnd);
 
+		if(eWndType == Progressbar)
+		{
+			// ProgressbarDir
+			if(!strcmp("PBDIR_LEFT_TO_RIGHT", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetDir(PBDIR_LEFT_TO_RIGHT); 
+			else 
+			if(!strcmp("PBDIR_RIGHT_TO_LEFT", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetDir(PBDIR_RIGHT_TO_LEFT); 
+			else 
+			if(!strcmp("PBDIR_TOP_TO_BOTTOM", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetDir(PBDIR_TOP_TO_BOTTOM); 
+			else 
+			if(!strcmp("PBDIR_BOTTOM_TO_TOP", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetDir(PBDIR_BOTTOM_TO_TOP); 
 
+			// ProgressbarTextOrientation
+			if(!strcmp("PBTEXTORIENT_CENTER", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_CENTER); 
+			else
+			if(!strcmp("PBTEXTORIENT_LEFT", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_LEFT); 	
+			else
+			if(!strcmp("PBTEXTORIENT_OVER", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_OVER); 	
+			else
+			if(!strcmp("PBTEXTORIENT_RIGHT", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_RIGHT); 
+			else
+			if(!strcmp("PBTEXTORIENT_UNDER", szParameter))
+				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_UNDER); 
+		}
 
+		if(eWndType == Textbox)
+		{
+			if(!strcmp("TOGGLE_MULTILINE", szParameter))
+			{
+				((ZGuiTextbox*)pkWnd)->ToggleMultiLine(true);
 
+				((ZGuiTextbox*)pkWnd)->SetScrollbarSkin(
+					g_pkGuiApp->GetSkin("DefSBrBkSkin"),
+					g_pkGuiApp->GetSkin("DefSBrNSkin"),
+					g_pkGuiApp->GetSkin("DefSBrFSkin"),
+					g_pkGuiApp->GetSkin("DefSBrScrollUpSkin_u"),
+					g_pkGuiApp->GetSkin("DefSBrScrollUpSkin_d"),
+					g_pkGuiApp->GetSkin("DefSBrScrollDownSkin_u"),
+					g_pkGuiApp->GetSkin("DefSBrScrollDownSkin_d"));
+			}
+		}
+	}
 
-
-
-
-
-
-
+	return 1;
+}

@@ -193,6 +193,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	case Menu:
 		pkWnd = new ZGuiMenu( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
+	case Progressbar:
+		pkWnd = new ZGuiProgressbar( Rect(x,y,x+w,y+h), pkParent, true, iID);
+		break;
 	default:
 		return NULL;
 	}
@@ -281,6 +284,10 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		static_cast<ZGuiTabCtrl*>(pkWnd)->InsertTabSkin(0, GetSkin("DefTabPageBackSkin"));
 		static_cast<ZGuiTabCtrl*>(pkWnd)->InsertTabSkin(1, GetSkin("DefTabPageFrontSkin"));
 		break;
+	case Progressbar:
+		static_cast<ZGuiProgressbar*>(pkWnd)->SetSkin( GetSkin("DefProgressbarFrontSkin"),
+			GetSkin("DefProgressbarBkgrSkin") );
+		break;
 	}
 
 	// Skapa nya texturer och kopiera de gamla mot nya unika...
@@ -292,7 +299,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 		if(pkPrevSkin)
 		{
-				//WARNING!!!!!!!!!!   VALGRIND KLAGAR PÅ ATT DENNA INTE AVALOKERAS!!!					
+				//WARNING!!!!!!!!!!   VALGRIND KLAGAR PÅ ATT DENNA INTE AVALOKERAS!!! /... wtf is valgrind?					
 			ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);		
 			*vkSkinDesc[i].first = pkNewSkin;
 		}
@@ -600,6 +607,7 @@ void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 		"DefTabPageBackSkin",			"DefTabPageFrontSkin",
 		"DefSBrScrollDownSkin_u",		"DefSBrScrollDownSkin_d",
 		"DefSBrScrollUpSkin_u",			"DefSBrScrollUpSkin_d",
+		"DefProgressbarFrontSkin",	   "DefProgressbarBkgrSkin",
 	};
 
 	for(int i=0; i<sizeof(szDefNames)/sizeof(szDefNames[0]); i++) 
@@ -1019,6 +1027,9 @@ GuiType ZGuiApp::GetWndType(ZGuiWnd *pkWnd)
 	else
 	if(t==typeid(ZGuiMenu))
 		return Menu;	
+	else
+	if(t==typeid(ZGuiProgressbar))
+		return Progressbar;	
 
 	return GuiType_Error;
 }
@@ -1372,4 +1383,33 @@ bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow, bool bPlaceFront, bool bSe
 	}
 
 	return false;
+}
+
+
+bool ZGuiApp::SetFont(string strWnd, string strFont, int r, int g, int b, int glyph)
+{
+	ZGuiFont* pkFont = m_pkResMan->Font(strFont);
+
+	if(pkFont == NULL)
+	{
+		char szFontData[512], szFontTex[512];
+		sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strFont.c_str());
+		sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strFont.c_str());
+
+		pkFont = new ZGuiFont((char*)strFont.c_str());
+		if(pkFont->Create(szFontData, m_pkTextureMan->Load(szFontTex, 0), glyph))
+			m_pkResMan->Add(strFont, pkFont);	
+		else
+			return false;
+	}
+
+	ZGuiWnd* pkWnd = GetWnd(strWnd);
+
+	if(pkWnd == NULL)
+		return false;
+
+	pkWnd->SetFont(pkFont); 
+	pkWnd->SetTextClr(r,g,b);
+
+	return true;	
 }

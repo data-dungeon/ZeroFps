@@ -32,7 +32,9 @@ namespace GuiAppLua
 	int ENGINE_SYSTEMS_API AddTreeItemLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API ShowWndLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetMoveAreaLua(lua_State* pkLua);
-	
+	int ENGINE_SYSTEMS_API SetMoveAreaLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API SetFontLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API ChangeWndParameterLua(lua_State* pkLua);	
 };
 
 #endif // #ifndef _SI_GUI_H
