@@ -22,7 +22,7 @@ void Test::OnInit(void) {
 
           
 //------------Map---------
-	test=new HeightMap(pkFile);
+	test=new HeightMap();
 	test->SetTileSet("file:../data/textures/landbw.bmp");
 	if(!test->LoadImageHmap("file:islands.bmp"))
 		cout<<"Error loading map"<<endl;
@@ -135,7 +135,7 @@ void Test::OnInit(void) {
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetRotate(Vector3(22.5,0,0));
+	sky->SetRotate(Vector3(.5,0,0));
 	pkObjectMan->Add(sky);	
 
 	

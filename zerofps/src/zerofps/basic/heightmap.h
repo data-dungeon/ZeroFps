@@ -11,6 +11,9 @@
 #include "fileio.h"
 #include "globals.h"
 #include "zffile.h"
+#include "zfobject.h"
+#include "zfobjectmanger.h"
+
 
 struct BASIC_API HM_vert {
 	float height;	//land height
@@ -25,7 +28,7 @@ struct HM_fileheader {
 	int m_iHmSize;
 };
 
-#include "zfobject.h"
+
 
 class BASIC_API HeightMap: public ZFObject {
 	private:		
@@ -44,7 +47,8 @@ class BASIC_API HeightMap: public ZFObject {
 		int m_iError;
 		FileIo *m_pkFile;
 		
-		HeightMap(FileIo* pkFile);		
+		HeightMap();		
+		void Create(int iHmSize);
 		void Zero();
 		void Random();
 		bool Load(const char* acFile);
@@ -59,10 +63,6 @@ class BASIC_API HeightMap: public ZFObject {
 
 		HM_vert* GetVert(int x,int z);		
 
-//		void MakeQuadTree();
-//		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
-
-//		bool BoxTest(int x,int z,int width);
 };
 
 

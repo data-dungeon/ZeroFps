@@ -29,6 +29,8 @@ class ENGINE_API HeightMapRenderProperty: public Property {
 	public:
 		HeightMapRenderProperty(HeightMap* pkHeightMap);
 		void Update();
+
+		void SetHeightMap(HeightMap* pkHeightMap);
 //		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);
 //		void GiveTexCor(float &iX,float &iY,int iNr);
 };

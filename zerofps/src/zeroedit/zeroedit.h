@@ -19,7 +19,7 @@ class ZeroEdit :public Application {
 	private:
 		Camera *m_pkCamera;
 
-
+		HeightMap *m_pkMap;
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
@@ -31,7 +31,7 @@ class ZeroEdit :public Application {
 		void OnServerStart(void);
 		void OnClientStart(void);
 		
-		void input();
+		void Input();
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };

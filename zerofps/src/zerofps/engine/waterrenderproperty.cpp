@@ -11,10 +11,15 @@ WaterRenderProperty::WaterRenderProperty(int iSize,int iStep,const char* acTextu
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
+	SetProperty(iSize,iStep,acTexture);
+
+	m_iSortPlace=10;
+}
+
+void WaterRenderProperty::SetProperty(int iSize,int iStep,const char* acTexture)
+{
 	m_iSize=iSize;
 	m_iStep=iStep;
-	
-	m_iSortPlace=10;
 	
 	SetTexture(acTexture);
 }

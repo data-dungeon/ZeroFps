@@ -27,7 +27,8 @@ class ENGINE_API WaterRenderProperty: public Property {
 		
 	public:
 		WaterRenderProperty(int iSize,int iStep,const char* acTexture);
-		
+
+		void SetProperty(int iSize,int iStep,const char* acTexture);
 		void SetTexture(const char* acTexture);
 		void Update();
 

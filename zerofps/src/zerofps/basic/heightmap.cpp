@@ -6,22 +6,31 @@
 #include "heightmap.h"
 
 
-HeightMap::HeightMap(FileIo* pkFile) 
+HeightMap::HeightMap() 
  : ZFObject("HeightMap") {
-	m_pkFile=pkFile;
-	m_iHmSize=100;	
-//	m_iBoxTresh=2;
-//	m_iMaxSteps=5;
+ 
+ 	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_iError=10;
-	m_kPosition=Vector3(0,0,0);
-	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
+	
+	Create(100);
+//	m_kPosition=Vector3(0,0,0);
+//	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
+//	Zero();
+//	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
+}
+
+void HeightMap::Create(int iHmSize)
+{
+	m_iHmSize=iHmSize;
+	m_kPosition.Set(0,0,0);	
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
 	Zero();
-	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
+	SetTileSet("file:../data/textures/landbw.bmp");
 }
 
 void HeightMap::Zero() {
 	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
-		verts[i].height=0;
+		verts[i].height=5;
 		verts[i].texture=0;
 	}
 }
