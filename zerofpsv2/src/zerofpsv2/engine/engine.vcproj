@@ -160,9 +160,6 @@
 				RelativePath=".\camera.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\physicsengine\collisionshape.cpp">
-			</File>
-			<File
 				RelativePath=".\console.cpp">
 			</File>
 			<File
@@ -181,15 +178,6 @@
 				RelativePath="..\engine_systems\mad\core_meshanim.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\physicsengine\csbox.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\csmech.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\cssphere.cpp">
-			</File>
-			<File
 				RelativePath=".\entity.cpp">
 			</File>
 			<File
@@ -203,9 +191,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\heightmap2.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\heightmapcs.cpp">
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.cpp">
@@ -280,9 +265,6 @@
 				RelativePath=".\p_pfpath.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_physic.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_primitives3d.cpp">
 			</File>
 			<File
@@ -308,9 +290,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_worldinfo.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\physicsengine.cpp">
 			</File>
 			<File
 				RelativePath=".\property.cpp">
@@ -347,19 +326,7 @@
 				RelativePath=".\camera.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\physicsengine\collisionshape.h">
-			</File>
-			<File
 				RelativePath=".\console.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\csbox.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\csmech.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\cssphere.h">
 			</File>
 			<File
 				RelativePath=".\engine_x.h">
@@ -378,9 +345,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\heightmap2.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\heightmapcs.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.h">
@@ -461,9 +425,6 @@
 				RelativePath=".\p_pfpath.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_physic.h">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_primitives3d.h">
 			</File>
 			<File
@@ -489,9 +450,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_worldinfo.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\physicsengine\physicsengine.h">
 			</File>
 			<File
 				RelativePath=".\property.h">
