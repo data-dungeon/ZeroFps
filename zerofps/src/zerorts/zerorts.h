@@ -94,14 +94,15 @@ class ZeroRTS :public Application {
 		void OnHud(void);
 		void OnSystem();
 		
-		/* Pathfind test */////////////////////////////////////
+		/* COMMENT OUT BY ZEB
+		// Pathfind test //////////////////////////////////////
 		PathFind* m_pkTestPath;
 		Point m_pkStart, m_pkEnd;
 		Object* m_pkMoveObject;
 		void BuildPath();
 		bool MovePath(Object* pkObject);
 		void SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject);
-		//////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////*/
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();

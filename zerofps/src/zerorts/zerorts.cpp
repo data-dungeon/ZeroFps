@@ -481,7 +481,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_MASSSPAWN:
-			pkConsole->Printf("Nu fettar vi på igen.");				
+			pkConsole->Printf("Nu fettar vi till det igen.");				
 			int x,y;
 			x = y = 0;
 			int iAntal = 0;

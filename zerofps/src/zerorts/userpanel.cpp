@@ -330,3 +330,58 @@ void UserPanel::HideAllCmdButtons()
 		pkButton->Hide();
 	}
 }
+
+/* COMMENT OUT BY ZEB
+void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
+{	
+	if(pkObject == NULL)
+		return;
+
+	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
+
+	pkObject->SetPos(newp);
+	pkObject->SetPos(newp);
+}
+
+void ZeroRTS::BuildPath()
+{
+	static bool bDone = false;
+	if(bDone == false)
+		bDone = true;
+	else
+		return;
+
+	int aiCost[5];
+	aiCost[0] = 15; // gräs (grön nyans)
+	aiCost[1] = 1; // väg (röd nyans)
+	aiCost[2] = 7; // sten (blå nyans)
+	aiCost[3] = 10; // öken (röd nyans)
+	aiCost[4] = 999; // vatten
+
+	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
+	kPathBuilder.Build(aiCost);
+}
+
+bool ZeroRTS::MovePath(Object* pkObject)
+{
+	static float prev_time = 0;
+
+	float time = pkFps->GetGameTime();
+
+	if(time - prev_time > 0.125f)
+	{
+		int x=-1, y=-1;
+		if(!m_pkTestPath->GetNextStep(x,y))
+		{
+			return true; // do nothing
+		}
+		
+		if(!(x==-1&&y==-1))
+			SetObjDstPos(x, y, pkObject);
+
+		prev_time = time;
+	}
+
+	return true;
+}
+*/
