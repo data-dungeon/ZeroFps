@@ -38,7 +38,10 @@ void Console::Update(void) {
 
 			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
 				glPopAttrib();
-				m_pkEngine->m_iState=state_normal;
+//				m_pkEngine->m_iState=state_normal;
+//				m_pkEngine->m_bClientMode=false;
+				m_pkEngine->m_bConsoleMode=false;
+
 				return;
 			}
 

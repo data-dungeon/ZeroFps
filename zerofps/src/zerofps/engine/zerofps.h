@@ -47,6 +47,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		int m_iWidth,m_iHeight,m_iDepth;
 		int m_iFullScreen;
 		
+		
 		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
@@ -54,7 +55,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 	
 		vector<string>	AppArguments;
 
-
+		
 
 		enum FuncId_e
 			{
@@ -98,6 +99,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
+		
+		bool m_bServerMode;
+		bool m_bClientMode;
+		bool m_bConsoleMode;
+		
 		
 		ZeroFps(void);		
 		~ZeroFps();		

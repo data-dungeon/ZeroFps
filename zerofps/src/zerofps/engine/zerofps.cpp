@@ -27,7 +27,10 @@ ZeroFps::ZeroFps(void)
 	m_iFullScreen=0;
 	m_fFrameTime=0;
 	m_fLastFrameTime=SDL_GetTicks();
-
+	m_bServerMode=false;
+	m_bClientMode=true;
+	m_bConsoleMode=false;
+	
 	akCoreModells.reserve(25);
 
 	//add some nice variables =)
@@ -131,83 +134,93 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::MainLoop(void) {
 
 	while(m_iState!=state_exit) {
+		
+		Swap();				//swap buffers n calculate fps
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
 		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 
-		switch(m_iState){
-			case state_normal:{
 
-				//run application main loop
-				m_pkApp->OnIdle();				
-				
-				//this changes mode to console
-				if(m_pkInput->Pressed(TAB)){
-					glPushAttrib(GL_LIGHTING_BIT);
-					glDisable(GL_LIGHTING);
-					m_iState=state_console;
-					m_pkInput->Reset();
+		//handle input
+		if(!m_bConsoleMode)
+			m_pkInput->Update();
+
+
+		if(m_bServerMode)
+		{
+		
+		}		
+		
+		if(m_bClientMode)
+		{
+			//run application main loop
+			m_pkApp->OnIdle();				
+			
+			
+			if(m_pkInput->Pressed(TAB))
+			{			
+				m_bConsoleMode=true;		
+				m_pkInput->Reset();
+			}
+			
+			
+/*			
+			//this changes mode to console
+			if(m_pkInput->Pressed(TAB)){
+				glPushAttrib(GL_LIGHTING_BIT);
+				glDisable(GL_LIGHTING);
+//				m_iState=state_console;
+				m_bClientMode=false;
+				m_bConsoleMode=true;
+				m_pkInput->Reset();
 //					m_pkTempCamera=m_pkCamera;										
 					
 					
-					SetCamera(m_pkConsoleCamera);					
-					break;
-				}
-				
-				//toggle keyboard/mouse grabing
-				if(m_pkInput->Pressed(F12))
-					m_pkInput->ToggleGrab();
-					
-				//toggle fullscreen on X systems
-				if(m_pkInput->Pressed(F11))
-					ToggleFullScreen();				
-
-				//handle input
-				m_pkInput->Update();
-						
-				//update all normal propertys
-//				m_pkObjectMan->Update(PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL,false);
-				m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-//				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
-				DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
-
-
-				//update all collisions
-				m_pkCollisionMan->Update();				
-
-				//update openal sound system
-				m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),Vector3(0,0,-1),Vector3(0,1,0));
-				m_pkOpenAlSystem->Update();
-
-				// Describe Active Cam.
-				string strCamDesc = GetCam()->GetCameraDesc();
-				DevPrintf(strCamDesc.c_str());
-
-				//run application Head On Display 
-				SetCamera(m_pkConsoleCamera);
-				m_pkApp->OnHud();
-
-				//swap buffers and calculate fps
-				Swap();
-
-				break;			
+				SetCamera(m_pkConsoleCamera);					
+//				break;
 			}
-			case state_console: {
-				SetCamera(m_pkCamera);			
-				m_pkCamera->ClearViewPort();
-				
-				m_pkConsole->Update();
-				Swap();
-				
-				
-				//set the old camera when changing to in-game state
-/*				
-				if(m_iState==state_normal){
-					SetCamera(m_pkTempCamera);
-				}					
 */				
-				break;
-			}
+				
+			//toggle keyboard/mouse grabing
+			if(m_pkInput->Pressed(F12))
+				m_pkInput->ToggleGrab();
+					
+			//toggle fullscreen on X systems
+			if(m_pkInput->Pressed(F11))
+				ToggleFullScreen();				
+
+						
+			//update all normal propertys
+//				m_pkObjectMan->Update(PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL,false);
+			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+//				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
+			DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+
+
+			//update all collisions
+			m_pkCollisionMan->Update();				
+
+			//update openal sound system
+			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),Vector3(0,0,-1),Vector3(0,1,0));
+			m_pkOpenAlSystem->Update();
+
+			// Describe Active Cam.
+			string strCamDesc = GetCam()->GetCameraDesc();
+			DevPrintf(strCamDesc.c_str());
+
+			//run application Head On Display 
+			SetCamera(m_pkConsoleCamera);
+			m_pkApp->OnHud();
+
+		}
+		
+		if(m_bConsoleMode)
+		{
+			SetCamera(m_pkCamera);			
+			m_pkCamera->ClearViewPort();
+			
+			m_pkConsole->Update();
+
 		}
 	}
 }
