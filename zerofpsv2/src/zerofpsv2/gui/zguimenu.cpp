@@ -295,6 +295,61 @@ void ZGuiMenu::CreateInternalControls()
 	m_pkSkinDown->m_unBorderSize = 1;
 }
 
+bool ZGuiMenu::RemoveItem(const char* szText)
+{
+	ZGuiMenuItem* pkItem = GetItem(szText);
+	if(pkItem == NULL)
+		return false;
+
+	vector<ZGuiMenuItem*>::iterator it;
+
+	bool bStepOut = false;
+
+	while( bStepOut == false)
+	{
+		bStepOut = true;
+
+		for(it = m_vkItems.begin(); it != m_vkItems.end(); it++)
+		{
+			if((*it)->pkParent == pkItem )
+			{
+				map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( (*it) );
+				if ( res != m_mkSubMenuStateMap.end() )
+					m_mkSubMenuStateMap.erase(res);
+
+				m_vkItems.erase(it);
+				bStepOut = false;
+				break;
+			}
+			else
+			if((*it)->pkParent == pkItem->pkParent )
+			{
+				if( (*it)->pkButton->GetScreenRect().Top > 
+					pkItem->pkButton->GetScreenRect().Top)
+				{
+					(*it)->pkButton->Move(0,-MENU_ITEM_HEIGHT,true,true);
+				}
+			}
+		}
+
+	}
+
+	map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkItem );
+	if ( res != m_mkSubMenuStateMap.end() )
+		m_mkSubMenuStateMap.erase(res);
+
+	for(it = m_vkItems.begin(); it != m_vkItems.end(); it++)
+	{
+		if((*it) == pkItem)
+		{
+			m_vkItems.erase(it);
+			break;
+		}
+	}
+
+	return true;
+}
+
 bool ZGuiMenu::AddItem(const char* szText, const char* szNameID, 
 							  const char* szParentID, bool bOpenSubMenu)
 {
@@ -356,6 +411,9 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 		}
 
 		y += GetNumChilds((char*)szRealParent) * MENU_ITEM_HEIGHT;
+
+		if(pkParent->pkParent == NULL)
+			y++;
 	}
 	else
 	{
@@ -426,6 +484,22 @@ ZGuiMenuItem* ZGuiMenu::GetItem(const char* szNameID)
 	}
 
 	return NULL;
+}
+
+bool ZGuiMenu::GetItems(const char* szParent, vector<string>& vkItems)
+{
+	ZGuiMenuItem* pkParent = GetItem(szParent);
+
+	if(pkParent == NULL)
+		return false;
+
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkParent == pkParent)
+			vkItems.push_back(m_vkItems[i]->szNameID);
+	}
+
+	return true;
 }
 
 int ZGuiMenu::GetNumChilds(char* szNameID)
@@ -710,7 +784,7 @@ void ZGuiMenu::ResizeMenu()
 
 				int y = pkButton->GetWndRect().Top; 
 
-				pkButton->SetPos(2+x, 2+y, false, true);
+				pkButton->SetPos(2+x, /*2+*/y, false, true);
 			}
 		}
 	}

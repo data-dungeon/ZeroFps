@@ -42,6 +42,8 @@ public:
 
 	bool AddItem(const char* szText, const char* szNameID, const char* szParentID,
 		bool bOpenSubMenu=false);
+
+	bool RemoveItem(const char* szText);
 	
 	ZGuiMenuItem* GetItem(const char* szNameID);
 	void HideAll();
@@ -61,6 +63,8 @@ public:
 	void SetItemIcon(char* szItemNameID, char* szIconFile);
 	void SetItemText(char* szItemNameID, char* szName);
 	void SetCheckMarkGroup(char* szItemNameID, int iGroup);
+
+	bool GetItems(const char* szParent, vector<string>& vkItems);
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

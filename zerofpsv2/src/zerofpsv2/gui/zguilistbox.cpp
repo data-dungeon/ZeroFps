@@ -233,8 +233,10 @@ bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev)
 	for(unsigned int i=0; i<temp.size(); i++)
 	{
 		bool bSelect = bSelPrev && temp[i].second == index_to_select;
-		AddItem((char*)temp[i].first.c_str(), temp[i].second, bSelect); 
+		AddItem((char*)temp[i].first.c_str(), i/*temp[i].second*/, bSelect); 
 	}
+
+	UpdateList();
 
 	return true;
 }

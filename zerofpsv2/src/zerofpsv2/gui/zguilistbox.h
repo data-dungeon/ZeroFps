@@ -33,7 +33,7 @@ public:
 	int Find(char* strString);
 	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool RemoveAllItems();
-	bool RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev);
+	bool RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev=false);
 	void IsMenu(bool bMenu=true);
 	ZGuiListitem* GetItem(unsigned int iIndex);
 	ZGuiListitem* AddItem(char* strText, unsigned int iIndex, bool bSelect); 

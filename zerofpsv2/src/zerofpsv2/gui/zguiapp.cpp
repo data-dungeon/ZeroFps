@@ -764,7 +764,7 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText, bool bSelect)
 
 		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
 		int iIndex = pkListBox->GetItemCount(); 
-		pkListBox->AddItem(szText, iIndex, bSelect); 
+		pkListBox->AddItem(szText, iIndex, bSelect);  
 	}
 	else
 	{
@@ -1156,6 +1156,9 @@ bool ZGuiApp::IsWndVisible(char* szResName)
 void ZGuiApp::ClearListbox(char *szResName)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
+
+	if(pkWnd == NULL)
+		return;
 
 	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
 

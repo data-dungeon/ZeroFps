@@ -41,6 +41,8 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
+#include "guiserverinfo.h"
+
 //const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
 
 /**	\brief	Da ZeroEd
@@ -123,7 +125,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		// gui stuff
 		int		m_iSelectFileState;		
 		Entity*	m_pkPreviewEntity;
-		vector<string> m_vkIPMenuItems;
+		vector<GUIServerInfo> m_vkServerList;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -214,8 +216,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void UpdatePreviewObject();
 		void OpenObjectMenu();
 		void InitMainMenu();
-		void AddToIPMenu(string strIp, bool bSave);
-		void SaveIPMenu(bool bSave);
+		void GUIFillServerList();
 
 		//camera stuff
 		void  CreateEditCameras();
@@ -284,6 +285,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
+		void OnKeyPress(int iID, ZGuiWnd* pkWnd);
+		
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 									char *szClickNodeText, bool bHaveChilds);
 		
@@ -331,14 +334,5 @@ class ZeroEd :public Application , public ZGuiApp {
 
 
 #endif
-
-
-
-
-
-
-
-
-
 
 

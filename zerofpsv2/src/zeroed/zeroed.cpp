@@ -57,19 +57,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
 		break;
 	case ZGM_KEYPRESS:
-		if(((int*)params)[0] == KEY_RETURN)
-		{
-			if(strcmp("PropertyValEb", win->GetName()) == 0)
-			{
-				g_kZeroEd.AddPropertyVal();
-				g_kZeroEd.AddPropertyVal();
-			}
-         else
-         if(strcmp("SaveScriptFileNameEb", win->GetName()) == 0)
-         {
-            g_kZeroEd.SaveCurrentToScript();
-         }
-		}
+		g_kZeroEd.OnKeyPress(((int*)params)[0], win);
 		break;
 	}
 	return true;
@@ -1799,17 +1787,7 @@ void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)
 void ZeroEd::OnClientConnected() 
 {
 	m_bRemoteEditing = true;
-	cout<<"connected"<<endl;
-
-	NetWork* pkNetWork =	static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-
-	if(pkNetWork)
-	{
-		char addr[50];
-		if(pkNetWork->AddressToStr(&pkNetWork->m_kServerAddress, addr))
-			AddToIPMenu(addr, true);
-	}
-	
+	cout<<"connected"<<endl;	
 	SendZoneListRequest();
 }
 
