@@ -85,7 +85,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="engine.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="render.lib engine.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../../../bin/madview.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../../bin"

@@ -14,7 +14,7 @@ P_Mad::P_Mad()
 	
 	strcpy(m_acName,"P_Mad");
 	bNetwork	 = true;
-	m_iVersion = 2;
+	m_iVersion = 3;
 	
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
@@ -146,6 +146,7 @@ void P_Mad::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
 	pkPackage->Write((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
 	pkPackage->Write((void*)&m_kOffset,sizeof(m_kOffset),1);
+	pkPackage->Write((void*)&m_iSortPlace,sizeof(m_iSortPlace),1);
 	
 }
 
@@ -181,6 +182,22 @@ void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
 			pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
 			pkPackage->Read((void*)&m_kOffset,sizeof(m_kOffset),1);
+			break;			
+		}
+		case 3:
+		{
+			char temp[128];
+			pkPackage->Read((void*)temp,128,1);	
+			SetBase(temp);
+			
+			float scale;
+			pkPackage->Read((void*)&scale,4,1);
+			SetScale(scale);
+			
+			pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+			pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
+			pkPackage->Read((void*)&m_kOffset,sizeof(m_kOffset),1);
+			pkPackage->Read((void*)&m_iSortPlace,sizeof(m_iSortPlace),1);
 			break;			
 		}
 		
