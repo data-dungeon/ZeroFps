@@ -54,24 +54,22 @@ void P_Mad::Update()
 		if ( strcmp(pkCore->GetMeshByID(i)->m_acName, "lowpoly") == 0 )
 			m_iCollisionMeshID = i;
 	}
-*/	 
-	
+*/	
+	 
+	//if no rendering is done, update animation in normal updates
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) && ( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ) )
+	{
+		DoAnimationUpdate();
+	}
+
+	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
 		StartProfileTimer("p_mad");
 		
-		//m_pkRender->Draw_AxisIcon(5);
 		
-	 	//make sure theres only one animation update per frame		
-		//float fCurrentTime = m_pkObjMan->GetSimTime();
-		float fCurrentTime = m_pkZeroFps->GetEngineTime();
-		if(m_fLastAnimationUpdateTime != fCurrentTime)
-		{
-			m_fLastAnimationUpdateTime = fCurrentTime;
-			//UpdateAnimation(m_pkObjMan->GetSimDelta());
-			UpdateAnimation(m_pkZeroFps->GetFrameTime());
-		}		
-
+		DoAnimationUpdate();
+		
 		//cull spwhere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 		{
@@ -125,6 +123,18 @@ void P_Mad::Update()
 		
 		
 	}
+}
+
+void P_Mad::DoAnimationUpdate()
+{
+	float fCurrentTime = m_pkZeroFps->GetEngineTime();
+	if(m_fLastAnimationUpdateTime != fCurrentTime)
+	{
+		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);
+		m_fLastAnimationUpdateTime = fCurrentTime;
+		//UpdateAnimation(m_pkObjMan->GetSimDelta());
+		//UpdateAnimation(m_pkZeroFps->GetFrameTime());
+	}	
 }
 
 void P_Mad::SetBase(const char* acName)

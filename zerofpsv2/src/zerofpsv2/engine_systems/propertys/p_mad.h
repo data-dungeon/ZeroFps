@@ -41,6 +41,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);
 
+		void DoAnimationUpdate();
+		
 	public:
 		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		
 		

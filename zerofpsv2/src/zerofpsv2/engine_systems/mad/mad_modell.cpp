@@ -108,7 +108,8 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 			if( (m_iNextAnimation != MAD_NOANIMINDEX) && (m_iNextAnimation != MAD_NOLOOP) ) 
 			{
 				PlayAnimation(m_iNextAnimation, 0);
-				m_iNextAnimation = MAD_NOANIMINDEX;
+				//m_iNextAnimation = MAD_NOANIMINDEX;
+				SetNextAnimation(MAD_NOANIMINDEX);
 			}
 		}
 	}
