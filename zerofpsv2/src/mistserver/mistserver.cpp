@@ -1330,8 +1330,8 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 					}
 					else
 					{
-						//do distance check
-						if(pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0)
+						//check if its in a container or if its close enoguth
+						if( (!pkContainerEnt->GetParent()->IsZone()) || (pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0) )
 						{
 							 SayToClients("Opening container",iClientID);
 							 
