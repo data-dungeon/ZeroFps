@@ -5,6 +5,7 @@
 #include "../basic/zfobjectmanger.h"
 #include "../basic/simplescript.h"
 #include "../engine_systems/common/zoneobject.h"
+#include "../engine_systems/propertys/primitives3d.h"
 #include "fh.h"
 
 ObjectManager::ObjectManager() 
@@ -1002,6 +1003,10 @@ void ObjectManager::Test_CreateZones()
 	int y = 0;
 	int iZonesSize = 10;
 	int iZonesSide = 100;
+	int iNumOfBalls;
+	Object *pkBall;
+	Vector3 kPos;
+	Vector3 kRandOffset;
 
 	MazeGen GaaMaze;
 	GaaMaze.Load("maze.bmp");
@@ -1010,10 +1015,30 @@ void ObjectManager::Test_CreateZones()
 		for(int z=0; z<iZonesSide; z++) {
 			if(GaaMaze.aaiMaze[x][z] == 1) {
 				ZoneObject *object = new ZoneObject();
-				object->SetWorldPosV(Vector3(x*iZonesSize,y,z*iZonesSize));
+				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
+				object->SetLocalPosV(kPos);
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
 				m_kZones.push_back(object);
+
+				// Create Ground Box.
+				//object->AddProperty("P_Primitives3D");
+				object->AddProperty(new P_Primitives3D(SOLIDBBOX));
+				P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
+				pk3d->m_kMin = /*object->GetWorldPosV()*/ - (object->m_kSize * 0.5);
+				pk3d->m_kMax = /*object->GetWorldPosV()*/ (object->m_kSize * 0.5);
+				pk3d->m_kMax.y = - 4;
+				pk3d->m_kColor = RndColor();
+
+				// Create Random Objects.
+				iNumOfBalls = rand() % 20;
+				for(int i=0; i<iNumOfBalls; i++) {
+					kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
+					pkBall = CreateObjectByArchType("TVimBollus");
+					pkBall->SetLocalPosV(kPos + kRandOffset);
+					pkBall->SetParent(object);				
+					//pkBall->SetParent(GetWorldObject());				
+					}
 				}
 		}
 	}
@@ -1154,7 +1179,8 @@ void ObjectManager::UpdateZones()
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		m_kZones[iZ]->m_bActive					= false;
 		m_kZones[iZ]->m_fInactiveTime			= fTime;
-		m_kZones[iZ]->m_iRange	= 1000;
+		m_kZones[iZ]->m_iRange					= 1000;
+		m_kZones[iZ]->GetUpdateStatus()		= UPDATE_NONE;
 		}
 
 	vector<ZoneObject*>	m_kFloodZones;
@@ -1173,6 +1199,7 @@ void ObjectManager::UpdateZones()
 			m_kFloodZones.pop_back();
 
 			pkZone->m_bActive = true;
+			pkZone->GetUpdateStatus()		= UPDATE_ALL;
 			int iRange = pkZone->m_iRange + 1;
 
 			if(iRange < iTrackerLOS) {

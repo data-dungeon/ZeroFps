@@ -8,9 +8,16 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 	
+	class TVimBollus
+		parent object
+		set MadProperty m_kMadFile /data/mad/Monster.mad
+		set MadProperty m_fScale 0.1
+
+
 	class TrackObject
 		parent object
-		add P_Primitives3D
+		set MadProperty m_kMadFile /data/mad/orc.mad
+		set MadProperty m_fScale 0.1
 		add TrackProperty
 
 	class ZeroRTSHull

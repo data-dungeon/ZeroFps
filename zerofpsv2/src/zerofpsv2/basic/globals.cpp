@@ -177,3 +177,13 @@ float Clamp(float fValue,float fBotom,float fTop)
 	return fValue;
 }
 
+Vector3 RndColor()
+{
+	Vector3 kColor;
+	kColor.x = rand()%255;
+	kColor.y = rand()%255;
+	kColor.z = rand()%255;
+	kColor.Normalize();
+
+	return kColor;
+}

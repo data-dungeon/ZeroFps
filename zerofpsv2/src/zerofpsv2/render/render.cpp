@@ -792,6 +792,54 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
 	glEnable(GL_LIGHTING);
 }
 
+void Render::DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
+{
+	Vector3 kCubeNeg = kMin; 
+	Vector3 kCubePos = kMax; 
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+
+	glColor3f(kColor.x,kColor.y,kColor.z);
+	glBegin(GL_QUADS);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);
+		
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
+
+		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);
+
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);
+
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+
+
+}
+
+
 void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor )
 {
 	Vector3 kCubeNeg(x - sizex, y - sizey, z - sizez); 

@@ -557,9 +557,12 @@ void ZeroTank::OnServerStart(void)
 
 			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
 			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
+				int iRandZone = 0;	// rand() % pkObjectMan->GetNumOfZones();
+				Vector3 kPos = pkObjectMan->GetZoneCenter(iRandZone);
+				kPos.y = -4;
+				m_pkZeroTankTrack->SetWorldPosV( kPos );
+				//m_pkZeroTankTrack->AttachToClosestZone();
+				m_pkZeroTankTrack->SetParent(pkObjectMan->GetWorldObject());
 				pkObjectMan->AddTracker(m_pkZeroTankTrack);
 			}
 	

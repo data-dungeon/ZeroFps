@@ -46,7 +46,7 @@ Object::Object() {
 	m_akChilds.clear();	
 	
 	
-	m_bRelativeOri	=	true;
+	m_bRelativeOri	=	false;
 	
 	SetLocalRotV(Vector3(0,0,0));
 	SetLocalPosV(Vector3(0,0,0));

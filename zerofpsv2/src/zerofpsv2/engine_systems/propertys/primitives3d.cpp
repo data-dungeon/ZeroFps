@@ -13,6 +13,10 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 	m_iSlices = 10;
 	m_iStacks = 10;
 	m_kColor.Set(1,1,1);
+
+	m_kMin.Set(-1,-1,-1);
+	m_kMax.Set(1,1,1);
+
 	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
@@ -48,6 +52,9 @@ void P_Primitives3D::Update() {
 		break;
 	case CONE:
 		m_pkRender->DrawCone(pos, m_fRadius, m_fRadius*2, m_kColor, false);
+		break;
+	case SOLIDBBOX:
+		m_pkRender->DrawSolidAABB(pos + m_kMin, pos + m_kMax, m_kColor);
 		break;
 	}
 	

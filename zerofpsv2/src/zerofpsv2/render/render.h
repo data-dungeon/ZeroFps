@@ -135,6 +135,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
 		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
+		void DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
 
 		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 
