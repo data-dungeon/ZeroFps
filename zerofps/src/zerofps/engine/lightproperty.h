@@ -15,6 +15,9 @@ class ENGINE_API LightProperty: public Property {
 
 		Light*	m_pkLight;
 		
+		int m_fApa;
+
+		vector<Property::PropertyValues> GetPropertyValues();
 
 	public:
 		LightProperty();

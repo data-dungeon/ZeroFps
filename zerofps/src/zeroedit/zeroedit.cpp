@@ -159,7 +159,7 @@ void ZeroEdit::OnHud(void)
 	glEnable(GL_ALPHA_TEST);
 
 	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkCamera->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
-	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(0.2,0.2,0),pkTexMan->Load("file:../data/textures/pointer.tga",0));	
+//	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(0.2,0.2,0),pkTexMan->Load("file:../data/textures/pointer.tga",0));	
 	
 	glDisable(GL_ALPHA_TEST);
 	

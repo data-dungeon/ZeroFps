@@ -293,6 +293,7 @@ Mad_CoreMesh* g_pkLastMesh;
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
+//	cout << "iDrawFlags: " << iDrawFlags << endl;
 	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
 		glCallList(iListID);

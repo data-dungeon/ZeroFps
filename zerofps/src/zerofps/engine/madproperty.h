@@ -12,9 +12,11 @@ using namespace std;
 
 class ENGINE_API MadProperty : public Property, public Mad_Modell {
 	private:
+		vector<PropertyValues> GetPropertyValues();
 	
 
 	public:
+
 		MadProperty();
 		MadProperty(Mad_Core* pkModell);
  

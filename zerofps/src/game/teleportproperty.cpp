@@ -17,6 +17,8 @@ TeleportProperty::TeleportProperty()
 	sound2=new Sound();
 	sound2->m_acFile="file:../data/sound/beam.wav";
 	sound2->m_bLoop=false;
+
+	m_pkStatusProperty = NULL;
 	
 	m_kToPos.Set(10,10,10);
 }

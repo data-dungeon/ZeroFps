@@ -79,7 +79,7 @@ class ENGINE_API Object {
 		UpdateStatus		m_iUpdateStatus;					
 //		bool				m_bLockedChilds;					
 		
-		bool				m_bSave;
+		bool				m_bSave;							// True if this object should save to disk.
 		
 		ObjectManager*		m_pkObjectMan;						// Ptr to object manger.
 		PropertyFactory*	m_pkPropertyFactory;	

@@ -3,20 +3,56 @@
 #include "zerofps.h"
 #include "netslaveobject.h"
 
+void ObjectManager::GetPropertys(int iType,int iSide)
+{
+	m_akPropertys.clear();
+	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
+
+/*
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
+	}
+*/
+//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ObjectManager::ObjectManager() 
 : ZFObject("ObjectManager") 
 {
-	iNextObjectID = 0;
-	m_bNoUpdate=false;
+	iNextObjectID	= 0;
+	m_bNoUpdate		= false;
 	
-	m_pkWorldObject=new Object();	
-	m_pkWorldObject->GetName()="WorldObject";
+	m_pkWorldObject	=	new Object();	
+	m_pkWorldObject->GetName() = "WorldObject";
 }
 
-void ObjectManager::Add(Object* pkObject) {
+void ObjectManager::Add(Object* pkObject) 
+{
 	pkObject->iNetWorkID = iNextObjectID++;
-//	pkObject->SetObjectMan(this);	
 	m_akObjects.push_back(pkObject);
+}
+
+void ObjectManager::Remove(Object* pkObject) 
+{	
+	m_akObjects.remove(pkObject);
+}
+
+void ObjectManager::Delete(Object* pkObject) 
+{
+	m_akDeleteList.push_back(pkObject);
 }
 
 void ObjectManager::Clear()
@@ -29,149 +65,8 @@ void ObjectManager::Clear()
 	} 
 	
 	m_pkWorldObject->DeleteAllChilds();
-//	cout << "ObjectManager::Clear" << endl;
-//	UpdateDelete();
 }
 
-void ObjectManager::DisplayTree()
-{
-	m_pkWorldObject->PrintTree(0);
-}
-
-
-
-void ObjectManager::Remove(Object* pkObject) {	
-//	pkObject->SetObjectMan(NULL);
-	m_akObjects.remove(pkObject);
-//	delete pkObject;
-//	cout << "ObjectManager::Remove" << endl;
-	
-}
-
-
-
-void ObjectManager::Delete(Object* pkObject) {
-	m_akDeleteList.push_back(pkObject);
-}
-
-
-
-void ObjectManager::UpdateDelete(){
-	if(m_akDeleteList.size()==0)
-		return;
-	
-	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
-	{
-		delete (*it);		
-	}
-	
-	m_akDeleteList.clear();
-}
-
-void ObjectManager::UpdateState(NetPacket* pkNetPacket)
-{
-	cout << "ObjectManager::UpdateState" << endl;
-
-	Object* pkNetSlave;
-	int iObjectID;
-	pkNetPacket->Read(iObjectID);
-	while(iObjectID != -1) {
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL)
-			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
-
-		if(pkNetSlave == NULL) {
-			cout << "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl; 
-			}
-
-		pkNetSlave->PackFrom(pkNetPacket);
-		pkNetPacket->Read(iObjectID);
-		}	
-}
-
-void ObjectManager::PackToClients()
-{
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
-	if(net->m_eNetStatus != NET_SERVER)	return;
-
-	NetPacket NP;
-	NP.Clear();
-	NP.Write((char) ZF_NETTYPE_UNREL);
-	NP.Write((char) ZFGP_OBJECTSTATE);
-
-	int iNumOfObjects = m_akObjects.size();
-	int iPacketSize = 0;
-	int iEndOfObject = -1;
-
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->NeedToPack()) {
-			NP.Write((*it)->iNetWorkID);
-			(*it)->PackTo(&NP);
-			}
-
-		iPacketSize++;
-
-		if(iPacketSize >= 10) {
-			NP.Write(iEndOfObject);
-			NP.Write(ZFGP_ENDOFPACKET);
-			net->SendToAllClients(&NP);
-
-			NP.Clear();
-			NP.Write((char) ZF_NETTYPE_UNREL);
-			NP.Write((char) ZFGP_OBJECTSTATE);
-
-			iPacketSize = 0;
-			}
-	}
-
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	net->SendToAllClients(&NP);
-}
-
-Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
-{
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->iNetWorkID == iNetID)
-			return (*it);
-	}
-
-	return NULL;
-}
-
-
-
-Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
-{
-	Object *pkNew;
-	pkNew = new NetSlaveObject;
-	Add(pkNew);
-	pkNew->iNetWorkID = iNetID;
-	return pkNew;
-}
-
-int ObjectManager::GetNumOfObjects()
-{
-	return m_akObjects.size();
-}
-
-
-void ObjectManager::GetPropertys(int iType,int iSide)
-{
-	m_akPropertys.clear();
-
-	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
-
-/*
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
-	}
-*/
-	
-//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
-	
-}
 
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
@@ -193,6 +88,86 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	{
 		(*it)->Update();
 	}
+}
+
+void ObjectManager::UpdateDelete()
+{
+	int i=0;
+	for(vector<Object*>::iterator it2=m_akDeleteList.begin();it2!=m_akDeleteList.end();it2++) 
+	{
+		Object* pkObject = (*it2);
+		cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
+		i++;
+	}
+
+	int iSize = m_akDeleteList.size();
+
+	if(m_akDeleteList.size()==0)
+		return;
+	
+	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
+	{
+		Object* pkObject = (*it);
+		delete (*it);		
+	}
+	
+	m_akDeleteList.clear();
+}
+
+
+
+
+
+
+
+
+
+Object* ObjectManager::CreateObject(const char* acName)
+{	
+	ObjectDescriptor *objtemplate = GetTemplate(acName);
+	
+	//return null if the template does not exist
+	if(objtemplate==NULL)
+		return NULL;
+	
+	return CreateObject(objtemplate);	
+}
+
+Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
+{
+	Object* tempobject=new Object;
+
+	tempobject->GetName()=pkObjDesc->m_kName;
+	tempobject->GetPos()=pkObjDesc->m_kPos;
+	tempobject->GetRot()=pkObjDesc->m_kRot;
+	tempobject->GetVel()=pkObjDesc->m_kVel;
+	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
+	
+	tempobject->GetSave()=pkObjDesc->m_bSave;
+	tempobject->GetObjectType()=pkObjDesc->m_iObjectType;	
+	
+	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
+	{
+		if(tempobject->AddProperty((*it)->m_kName.c_str()))
+		{
+			//cout<<"Added property "<<(*it)->m_kName.c_str()<<endl;
+			(*it)->m_kData.SetPos(0);
+			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
+			//cout<<"Loaded "<<(*it)->m_kName.c_str()<<endl;
+		}
+	}
+	
+	return tempobject;
+}
+
+
+Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
+{
+	Object *pkNew;
+	pkNew = new NetSlaveObject;
+	Add(pkNew);
+	pkNew->iNetWorkID = iNetID;
+	return pkNew;
 }
 
 void ObjectManager::AddTemplate(ObjectDescriptor* pkNewTemplate)
@@ -260,43 +235,7 @@ bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject, bool bForc
 	return true;
 }
 
-Object* ObjectManager::CreateObject(const char* acName)
-{	
-	ObjectDescriptor *objtemplate = GetTemplate(acName);
-	
-	//return null if the template does not exist
-	if(objtemplate==NULL)
-		return NULL;
-	
-	return CreateObject(objtemplate);	
-}
 
-Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
-{
-	Object* tempobject=new Object;
-
-	tempobject->GetName()=pkObjDesc->m_kName;
-	tempobject->GetPos()=pkObjDesc->m_kPos;
-	tempobject->GetRot()=pkObjDesc->m_kRot;
-	tempobject->GetVel()=pkObjDesc->m_kVel;
-	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
-	
-	tempobject->GetSave()=pkObjDesc->m_bSave;
-	tempobject->GetObjectType()=pkObjDesc->m_iObjectType;	
-	
-	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
-	{
-		if(tempobject->AddProperty((*it)->m_kName.c_str()))
-		{
-			//cout<<"Added property "<<(*it)->m_kName.c_str()<<endl;
-			(*it)->m_kData.SetPos(0);
-			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
-			//cout<<"Loaded "<<(*it)->m_kName.c_str()<<endl;
-		}
-	}
-	
-	return tempobject;
-}
 
 
 void ObjectManager::ClearTemplates()
@@ -359,6 +298,18 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 		
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool ObjectManager::SaveAllObjects(const char* acFile)
 {
@@ -432,7 +383,85 @@ Object* ObjectManager::GetObject(const char* acName)
 	return NULL;
 }
 
+Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
+{
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->iNetWorkID == iNetID)
+			return (*it);
+	}
 
+	return NULL;
+}
+
+
+
+
+void ObjectManager::UpdateState(NetPacket* pkNetPacket)
+{
+	cout << "ObjectManager::UpdateState" << endl;
+
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+	while(iObjectID != -1) {
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL)
+			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
+
+		if(pkNetSlave == NULL) {
+			cout << "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl; 
+			}
+
+		pkNetSlave->PackFrom(pkNetPacket);
+		pkNetPacket->Read(iObjectID);
+		}	
+}
+
+void ObjectManager::PackToClients()
+{
+	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	if(net->m_eNetStatus != NET_SERVER)	return;
+
+	NetPacket NP;
+	NP.Clear();
+	NP.Write((char) ZF_NETTYPE_UNREL);
+	NP.Write((char) ZFGP_OBJECTSTATE);
+
+	int iNumOfObjects = m_akObjects.size();
+	int iPacketSize = 0;
+	int iEndOfObject = -1;
+
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->NeedToPack()) {
+			NP.Write((*it)->iNetWorkID);
+			(*it)->PackTo(&NP);
+			}
+
+		iPacketSize++;
+
+		if(iPacketSize >= 10) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			net->SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.Write((char) ZF_NETTYPE_UNREL);
+			NP.Write((char) ZFGP_OBJECTSTATE);
+
+			iPacketSize = 0;
+			}
+	}
+
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	net->SendToAllClients(&NP);
+}
+
+void ObjectManager::DisplayTree()
+{
+	m_pkWorldObject->PrintTree(0);
+}
 
 
 

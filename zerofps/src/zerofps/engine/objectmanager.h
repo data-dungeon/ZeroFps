@@ -19,66 +19,76 @@ class ENGINE_API ObjectManager : public ZFObject{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-		Object*			m_pkWorldObject;
+		Object*			m_pkWorldObject;		
 	
-		list<Object*>	m_akObjects;
-		vector<Object*> m_akDeleteList;
-		list<Property*> m_akPropertys;
+		list<Object*>	m_akObjects;				// List of all objects.
+		vector<Object*> m_akDeleteList;				// List of objects that will be destroyed at end of frame.
 
-		list<ObjectDescriptor*> m_akTemplates;
+		list<Property*> m_akPropertys;				// List of Active Propertys.	
+		int m_iNrOfActivePropertys;					// Size of akProperty list.
 
-		int	iNextObjectID;
-		bool m_bNoUpdate;
-		int m_iNrOfActivePropertys;
+		list<ObjectDescriptor*> m_akTemplates;		// List of templates.
+
+		int	iNextObjectID;							// Next avil object ID.
+		bool m_bNoUpdate;							// Disable all updates except RENDER.
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
-		void GetPropertys(int iType,int iSide);
+		void GetPropertys(int iType,int iSide);		// Fill propery list.
 
 	public:
 		ObjectManager();
 		~ObjectManager() { }
 
-		Object* GetWorldObject() {return m_pkWorldObject;};
 
+		// Add/Remove Objects
+		void Add(Object* pkNewObject);				// Add object to the manager
+		void Delete(Object* pkNewObject);			// Adds an object to delete qeue
+		void Remove(Object* pkObject);				// Dont use this..use Delete instead
+		void Clear();								// Delete all objects.
 
-		void Update(int iType,int iSide,bool bSort);
+		// Updates
+		void Update(int iType,int iSide,bool bSort);					// Update selected propertys.
+		void SetNoUpdate(bool bNoUpdate) { m_bNoUpdate=bNoUpdate; };
+		void UpdateDelete();											// Deletes objects in delete qeue	
 
-		void Clear();
-		void SetNoUpdate(bool bNoUpdate) {m_bNoUpdate=bNoUpdate;};
-		void Add(Object* pkNewObject);				//add object to the manager
-		void Delete(Object* pkNewObject);			//adds an object to delete qeue
-		void Remove(Object* pkObject);				//dont use this..use Delete instead
-//		void Update();								//update all objects in manager
-//		void Update(int iType);						//update all objects of specified type
-		void UpdateDelete();						//deletes objects in delete qeue	
-		
+			// Create 
+		Object* CreateObject(const char* acName);
+		Object* CreateObject(ObjectDescriptor* pkObjDesc);
+		Object* CreateObjectByNetWorkID(int iNetID);	
+
+		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
 		int GetNrOfTemplates();
 		void GetTemplateList(vector<string>* paList);
 		bool MakeTemplate(const char* acName,Object* pkObject, bool bForce = false);
 		void ClearTemplates();
 		ObjectDescriptor* GetTemplate(const char* acName);
-		Object* CreateObject(const char* acName);
-		Object* CreateObject(ObjectDescriptor* pkObjDesc);
 		bool LoadTemplate(const char* acFile);
 		bool SaveTemplate(const char* acName,const char* acFile);
+
+		// Load/Save Objects
 		bool SaveAllObjects(const char* acFile);
 		bool LoadAllObjects(const char* acFile);
+
+		// Gets
+		Object* GetWorldObject() {return m_pkWorldObject;};
 		void GetAllObjects(list<Object*> *pakObjects);
-		
 		Object* GetObject(const char* acName);
-		
+		Object*	GetObjectByNetWorkID(int iNetID);
+		int	GetNumOfObjects() { return m_akObjects.size(); }
+		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
+
+		// NetWork
 		void UpdateState(NetPacket* pkNetPacket);	//Updates objects.
 		void PackToClients();						//Packs and Sends to ALL clients.
 
-		Object*	GetObjectByNetWorkID(int iNetID);
-		Object* CreateObjectByNetWorkID(int iNetID);	
-		int	GetNumOfObjects();
-		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
-		
+		// Debug / Help Functions		
 		void DisplayTree();
 };
+
+//		void Update();								//update all objects in manager
+//		void Update(int iType);						//update all objects of specified type
 
 
 #endif

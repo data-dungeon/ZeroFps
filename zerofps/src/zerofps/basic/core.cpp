@@ -13,6 +13,9 @@ Vector3		g_Madpos[MAX_BONES];
 Vector3		g_TransformedVertex[10000];
 Vector3		g_TransformedNormal[10000];
 
+#define		MAD_FPS		15
+float const g_fMadFrameTime = 1.0 / MAD_FPS;
+
 Mad_CoreMesh* g_pkSelectedMesh;
 
 Mad_Core::Mad_Core()
@@ -150,7 +153,7 @@ char* Mad_Core::GetName(void)
 float Mad_Core::GetAnimationLengthInS(int iAnim)
 { 
 	int iNumOfKeyFrames = m_kBoneAnim[iAnim].m_kBoneKeyFrames.size();
-	return (iNumOfKeyFrames * 0.1);
+	return (iNumOfKeyFrames * g_fMadFrameTime);
 }
 
 int Mad_Core::GetAnimationTimeInFrames(int iAnim)
@@ -263,7 +266,7 @@ void Mad_Core::SetupBonePose()
 	Vector3 Angles;
 
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
-	int iStartFrame = int(fActiveAnimationTime / 0.1);
+	int iStartFrame = int(fActiveAnimationTime / g_fMadFrameTime);
 	int iEndFrame = iStartFrame + 1;
 	if(iStartFrame >= iNumOfFrame) 
 		iStartFrame = 0;
@@ -350,8 +353,8 @@ void Mad_Core::SetAnimationTime( int iAnim, float fTime )
 	iActiveAnimation = iAnim;
 
 	int iNumOfFrame = GetAnimationTimeInFrames(iActiveAnimation);
-	int iFrame = int(fActiveAnimationTime / 0.1);
-	fFrameOffs = (fActiveAnimationTime / 0.1) - iFrame;
+	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
+	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
 	SetFrameI(m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iFrame].iVertexFrame);
 }
 
@@ -361,8 +364,8 @@ void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime )
 	iActiveAnimation = iAnim;
 
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
-	int iFrame = int(fActiveAnimationTime / 0.1);
-	fFrameOffs = (fActiveAnimationTime / 0.1) - iFrame;
+	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
+	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
 	iBoneFrame = iFrame;
 	if(iBoneFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() )
 		iBoneFrame = 0;

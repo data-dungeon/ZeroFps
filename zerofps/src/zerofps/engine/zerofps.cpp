@@ -38,6 +38,7 @@ ZeroFps::ZeroFps(void)
 	m_bConsoleMode=false;
 	m_bDrawDevList=true;
 	m_bGuiMode=false;
+	m_iMadDraw = 1;
 	
 //	akCoreModells.reserve(25);
 
@@ -49,12 +50,12 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
 	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
 	m_pkCmd->Add(&m_pkLight->m_iNrOfLights,"r_MaxLights",type_int);		
-	
-	
+
 	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
+	m_pkCmd->Add(&m_iMadDraw,"r_maddraw",type_int);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);

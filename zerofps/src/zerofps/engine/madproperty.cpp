@@ -74,7 +74,7 @@ void MadProperty::Update()
 		//glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		// FH's Föreningens årsmöte.
 			glRotatef(- (m_pkObject->GetRot().y - 90) ,0,1,0);
-		Draw_All();
+		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 
 	m_pkZeroFps->m_iNumOfMadRender++;
@@ -109,10 +109,23 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 	SetScale(scale);
 }
 
+vector<Property::PropertyValues> MadProperty::GetPropertyValues()
+{
+	vector<Property::PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName = "m_fScale";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = (void*)&m_fScale;
+
+	return kReturn;
+}
+
 Property* Create_MadProperty()
 {
 	return new MadProperty;
 }
+
+
 
 
 /*

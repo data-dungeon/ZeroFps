@@ -239,6 +239,10 @@ SOURCE=.\playerobject.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\zeroedit\statusproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\teleportproperty.cpp
 # End Source File
 # End Group
@@ -276,6 +280,10 @@ SOURCE=.\playercontrolproperty.h
 # Begin Source File
 
 SOURCE=.\playerobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\statusproperty.h
 # End Source File
 # Begin Source File
 

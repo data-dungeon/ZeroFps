@@ -48,8 +48,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_SERVER,			// Start a Server.
 			FID_DIR,
 			FID_CD,
-			FID_LISTMAD,
-			FID_PRINTOBJECT,
+			FID_LISTMAD,		// List all loaded mad's.
+			FID_PRINTOBJECT,	// Print all objects to external console.
+
 		};
 		
 		SDL_Surface* m_pkScreen;		
@@ -115,6 +116,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool m_bDrawDevList;
 		bool m_bGuiMode;
 		
+		int	m_iMadDraw;				// Flags for what part's of mad's that should be draw.
 		
 		ZeroFps(void);		
 		~ZeroFps();		

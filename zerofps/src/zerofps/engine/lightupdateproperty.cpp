@@ -17,6 +17,8 @@ void LightUpdateProperty::Update()
 
 }
 
+
+
 Property* Create_LightUpdateProperty()
 {
 	return new LightUpdateProperty;

@@ -108,6 +108,18 @@ SOURCE=.\gui.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\game\massdriverprojectile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\game\massdriverproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\statusproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\teleportproperty.cpp
 # End Source File
 # Begin Source File

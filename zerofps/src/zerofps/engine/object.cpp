@@ -585,23 +585,35 @@ void Object::GetAllObjects(list<Object*> *pakObjects)
 
 void Object::PrintTree(int pos)
 {
-	for(int i=0;i<pos;i++)
-		cout<<" ";
+	int i;
+	for(i=0;i<pos;i++)	cout<<" ";
 
 	cout << "Obj[" << iNetWorkID << "] '" << m_kName << "'" << endl;
+	for(i=0;i<pos;i++)	cout<<" ";
+	cout << "{" << endl;
+
+	vector<string> akPropertyNames;
+	
+	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
+		for(i=0;i<(pos+1);i++)
+			cout<<" ";
+		cout << (*it2)->m_acName << endl;
+		
+		akPropertyNames = (*it2)->GetValueNames();
+
+		for(int iValue = 0; iValue < akPropertyNames.size(); iValue++) {
+			cout << akPropertyNames[iValue] << ",";
+			}
+	}
 
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->PrintTree(pos+1);
 	}
+
+	for(i=0;i<pos;i++)	cout<<" ";
+	cout << "}" << endl;
+
 }
-
-
-
-
-
-
-
-
 
 bool Object::NeedToPack()
 {
@@ -689,14 +701,14 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	ObjDesc->Clear();
 	
 	//set name
-	ObjDesc->m_kName=GetName();	
+	ObjDesc->m_kName = GetName();	
+	 
+	ObjDesc->m_kPos  = GetPos();
+	ObjDesc->m_kRot  = GetRot();
+	ObjDesc->m_kVel  = GetVel();
+	ObjDesc->m_kAcc  = GetAcc();	
 	
-	ObjDesc->m_kPos=GetPos();
-	ObjDesc->m_kRot=GetRot();
-	ObjDesc->m_kVel=GetVel();
-	ObjDesc->m_kAcc=GetAcc();	
-	
-	ObjDesc->m_bSave=m_bSave;
+	ObjDesc->m_bSave = m_bSave;
 	ObjDesc->m_iObjectType=m_iObjectType;
 	
 	list<Property*> pkPropertys;
