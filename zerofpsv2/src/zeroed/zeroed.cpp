@@ -971,7 +971,7 @@ void ZeroEd::Input()
 		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
 		m_pkFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
 	}  
-
+	/*
 	if(m_pkInputHandle->Pressed(KEY_F6)) 
 	{
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
@@ -988,7 +988,7 @@ void ZeroEd::Input()
 			//	pkMesh->SetHmap(pkHmap);
 		//}
 	}
-
+	*/
 	Vector3 kMove(0,0,0);
 //	Vector3 kRotate(0,0,0);
 
