@@ -22,6 +22,7 @@ class ENGINE_API ModelProperty: public Property {
 
 		Vector3	m_kColor;
 		ModelProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void PackTo(NetPacket* pkNetPacket) ;

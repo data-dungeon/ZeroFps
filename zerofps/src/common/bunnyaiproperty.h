@@ -21,6 +21,7 @@ class COMMON_API BunnyAIProperty: public Property {
 	public:
 		
 		BunnyAIProperty();
+		void CloneOf(Property* pkProperty) { }
 		
 		void Update();
 

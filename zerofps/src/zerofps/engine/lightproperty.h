@@ -27,6 +27,7 @@ class ENGINE_API LightProperty: public Property {
 	public:
 		LightProperty();
 		~LightProperty();
+		void CloneOf(Property* pkProperty) { }
 
 		void Update();
 		void PackTo(NetPacket* pkNetPacket) ;

@@ -36,6 +36,7 @@ class COMMON_API DoorProperty: public Property {
 
 		DoorProperty();
 		~DoorProperty();		
+		void CloneOf(Property* pkProperty) { }
 		void Init();
 
 		void HandleGameMessage(GameMessage& Msg);

@@ -28,6 +28,7 @@ class ENGINE_API BillBoardRenderProperty: public Property {
 	
 	public:
 		BillBoardRenderProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetTexture(const char* acTexure);

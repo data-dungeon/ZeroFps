@@ -234,6 +234,8 @@ class ENGINE_API Object
 
 		friend ObjectManager;
 
+		void MakeCloneOf(Object* pkOrginal);
+
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}
 };

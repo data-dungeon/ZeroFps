@@ -32,7 +32,8 @@ class COMMON_API MachineGunProperty: public InventoryProperty {
 	public:
 		MachineGunProperty();
 		~MachineGunProperty();
-		
+		void CloneOf(Property* pkProperty) { }
+	
 		
 		void Update();
 		

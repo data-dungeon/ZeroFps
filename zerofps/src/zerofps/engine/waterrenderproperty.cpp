@@ -16,6 +16,15 @@ WaterRenderProperty::WaterRenderProperty()
 	m_iSortPlace=10;
 }
 
+void WaterRenderProperty::CloneOf(Property* pkProperty)
+{
+	bNetwork				= pkProperty->bNetwork;
+	m_iType				= pkProperty->m_iType;
+	m_iSide				= pkProperty->m_iSide;
+	m_iSortPlace		= pkProperty->m_iSortPlace;
+	m_bSortDistance	= pkProperty->m_bSortDistance;
+}
+
 void WaterRenderProperty::SetProperty(int iSize,int iStep,const char* acTexture)
 {
 	m_iSize=iSize;

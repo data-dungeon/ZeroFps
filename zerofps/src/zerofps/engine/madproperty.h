@@ -19,6 +19,7 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 	public:
 		MadProperty();
 		MadProperty(string strResName);
+		void CloneOf(Property* pkProperty) { }
 		
 		Frustum* m_pkFrustum;
 		ZeroFps* m_pkZeroFps;

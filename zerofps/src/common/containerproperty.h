@@ -30,6 +30,7 @@ class COMMON_API ContainerProperty: public Property {
 		
 		ContainerProperty();
 		~ContainerProperty();
+		void CloneOf(Property* pkProperty) { }
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

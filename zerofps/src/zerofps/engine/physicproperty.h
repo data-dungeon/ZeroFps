@@ -38,6 +38,7 @@ class ENGINE_API PhysicProperty :public Property
 		
 		PhysicProperty();
 		~PhysicProperty();		
+		void CloneOf(Property* pkProperty) { }
 		
 		void Update();
 		

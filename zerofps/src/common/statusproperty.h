@@ -26,6 +26,7 @@ class COMMON_API StatusProperty: public Property {
 		float m_fMaxHealth;
 		
 		StatusProperty();			
+		void CloneOf(Property* pkProperty) { }
 		
 		void Damage(float fDamage);
 		

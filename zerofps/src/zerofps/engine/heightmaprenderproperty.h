@@ -22,6 +22,7 @@ class ENGINE_API HeightMapRenderProperty: public Property {
 	
 	public:
 		HeightMapRenderProperty(HeightMap* pkHeightMap);
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);

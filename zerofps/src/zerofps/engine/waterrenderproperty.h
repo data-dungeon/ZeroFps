@@ -29,6 +29,7 @@ class ENGINE_API WaterRenderProperty: public Property {
 		
 	public:
 		WaterRenderProperty();
+		void CloneOf(Property* pkProperty);
 
 		void SetProperty(int iSize,int iStep,const char* acTexture);
 		void SetTexture(const char* acTexture);

@@ -21,6 +21,7 @@ class COMMON_API MachineGunProjectile: public Property {
 		int shoterid;
 		
 		MachineGunProjectile();	
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Touch(Collision* pkCol);		
 };

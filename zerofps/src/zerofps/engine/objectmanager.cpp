@@ -896,3 +896,14 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 
 	return pkObj;
 }
+
+Object* ObjectManager::CloneObject(int iNetID)
+{
+	Object* pkObjOrginal = GetObjectByNetWorkID(iNetID);
+	if(pkObjOrginal == NULL)
+		return NULL;
+
+	Object* pkObjClone = new Object;
+	pkObjClone->MakeCloneOf(pkObjOrginal);
+	return pkObjClone;
+}

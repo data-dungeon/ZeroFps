@@ -21,6 +21,7 @@ class COMMON_API MassDriverProjectile: public Property {
 		int shoterid;
 		
 		MassDriverProjectile();	
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Touch(Collision* pkCol);		
 };

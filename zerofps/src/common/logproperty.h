@@ -34,6 +34,7 @@ class COMMON_API LogProperty: public Property {
 
 		LogProperty();
 		~LogProperty();		
+		void CloneOf(Property* pkProperty) { }
 		void Init();
 
 		void HandleGameMessage(GameMessage& Msg);

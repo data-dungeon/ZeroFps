@@ -37,6 +37,7 @@ class COMMON_API AdaptorSniper: public Property {
 	public:
 		AdaptorSniper();
 		~AdaptorSniper();
+		void CloneOf(Property* pkProperty) { }
 		void Touch(Collision* pkCol);
 		void Update();
 		void Save(ZFMemPackage* pkPackage);

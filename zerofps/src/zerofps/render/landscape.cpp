@@ -879,7 +879,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	}
 
 	//damn ulgly lod fix
-	 
+
 	z=zp;	
 	
 	glBegin(GL_TRIANGLE_STRIP);

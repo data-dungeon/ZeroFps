@@ -81,9 +81,10 @@ class ZeroEdit :public Application {
 				
 			FID_MASSSPAWN,
 		
-//			FID_VFS_SAVE,
-//			FID_VFS_LOAD,
-
+			FID_DUPLICATE,
+			FID_COPY,
+			FID_PASTE,
+			FID_DELETE,
 		};	
 	
 		Object* m_pkCamObj;
@@ -115,6 +116,8 @@ class ZeroEdit :public Application {
 
 		bool m_bMenuActive;
 	
+		int m_iCopyNetWorkID;
+
 		void Input();				
 		void SetPointer();	
 		void DrawMarkers();
@@ -133,6 +136,9 @@ class ZeroEdit :public Application {
 		bool SaveLandToFile(const char* acFile);		
 		
 		void HeightMapDraw(Vector3 kPencilPos);
+
+		void PasteObject(Vector3 kPos);	// Klistrar in markerat object.
+		void DeleteSelected();
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);

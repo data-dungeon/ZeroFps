@@ -13,6 +13,9 @@ class WorldInfoProperty: public Property {
 		ZeroFps *m_pkFps;
 	
 	public:
+		void CloneOf(Property* pkProperty) { }
+
+
 		string m_kSkyBoxHor;
 		string m_kSkyBoxTop;
 		Vector3 m_kSkyBoxRotate;

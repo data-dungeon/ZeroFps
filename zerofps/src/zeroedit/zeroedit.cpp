@@ -48,7 +48,12 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
 	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);
 	g_ZFObjSys.Register_Cmd("ambient",FID_AMBIENT,this);	
-	
+
+	g_ZFObjSys.Register_Cmd("duplicate",FID_DUPLICATE,this);			
+	g_ZFObjSys.Register_Cmd("copy",FID_COPY,this);			
+	g_ZFObjSys.Register_Cmd("paste",FID_PASTE,this);			
+	g_ZFObjSys.Register_Cmd("delete",FID_DELETE,this);			
+			
 	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
@@ -118,6 +123,7 @@ void ZeroEdit::OnInit(void)
 	if(!pkIni->ExecuteCommands("zeroedit_autoexec.ini"))
 		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
+	m_iCopyNetWorkID = -1;
 }
 
 
@@ -520,6 +526,27 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;	
 			
+		case FID_DUPLICATE:
+			if(!m_pkCurentChild)
+				break;
+
+			m_iCopyNetWorkID = m_pkCurentChild->iNetWorkID;
+			PasteObject(pkObjectMan->GetObjectByNetWorkID(m_iCopyNetWorkID)->GetPos());
+			m_iCopyNetWorkID = -1;
+			break;
+
+		case FID_COPY:
+			m_iCopyNetWorkID = m_pkCurentChild->iNetWorkID;
+			break;
+
+		case FID_PASTE:
+			PasteObject(m_kDrawPos);
+			break;
+		
+		case FID_DELETE:
+			DeleteSelected();
+			break;
+
 		case FID_SAVE:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("load [mapname]");
@@ -704,23 +731,6 @@ void ZeroEdit::Input()
 		}
 		
 		m_pkCurentChild->SetRot(rot);	
-		
-		
-		//child delete mohahaha
-		if(pkInput->Pressed(KEY_BACKSPACE)) {
-			if(m_pkCurentChild!=NULL)
-				if(m_pkCurentChild->GetName() != "HeightMapObject") 
-					if(m_pkCurentChild->GetName() != "WorldObject")
-					{	
-						m_pkGui->ClosePropertybox();
-
-						delete m_pkCurentChild;
-						m_pkCurentChild=NULL;
-						
-//						m_pkCurentParent=m_pkHeightMapObject;
-					}
-
-		}	
 	}
 	
 	if(pkInput->Pressed(KEY_Q))
@@ -728,20 +738,13 @@ void ZeroEdit::Input()
 	if(pkInput->Pressed(KEY_E))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
-	// Copy A Object and make it active.
-	if(pkInput->Pressed(KEY_L) && m_pkCurentChild)
-	{
-		//if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
-		//	break;			
-		//m_fTimer=pkFps->GetTicks();
-
-		if(!pkObjectMan->MakeTemplate(pkTempObjectTemplate,m_pkCurentChild, true)) {
-			cout << "Failed to create Template" << endl;
-		}
-		else {
-			m_kCurentTemplate = pkTempObjectTemplate;
-		}
-	}
+	// Copy, Paste, Delete & Duplicate
+	if(pkInput->Pressed(KEY_C) && m_pkCurentChild)
+		m_iCopyNetWorkID = m_pkCurentChild->iNetWorkID;
+	if(pkInput->Pressed(KEY_V))
+			PasteObject(m_kDrawPos);
+	if(pkInput->Pressed(KEY_BACKSPACE) && m_pkCurentChild)
+			DeleteSelected();
 
 	//Get mouse x,y		
 	int x,z;		
@@ -859,7 +862,14 @@ void ZeroEdit::Input()
 					m_fTimer=pkFps->GetTicks();
 				
 					//Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-					Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+					Object *object;
+					if(m_iCopyNetWorkID != -1) {
+						object = pkObjectMan->CloneObject(m_iCopyNetWorkID);
+						m_iCopyNetWorkID = -1;
+						}
+					else {
+						object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+						}
 
 					if(object==NULL)
 						break;
@@ -943,7 +953,7 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;
 				m_pkGui->UpdatePropertybox();
 			}
-			if(pkInput->Pressed(KEY_C))
+			if(pkInput->Pressed(KEY_U))
 			{
 				cout<<"updating object"<<endl;
 				list<Property*> kProp;
@@ -961,6 +971,48 @@ void ZeroEdit::Input()
 	{
 		m_pkGui->OpenPropertybox();
 	}
+}
+
+void ZeroEdit::PasteObject(Vector3 kPos)
+{
+	if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+		return;			
+	m_fTimer=pkFps->GetTicks();
+
+	Object *object;
+	if(m_iCopyNetWorkID != -1) {
+		object = pkObjectMan->CloneObject(m_iCopyNetWorkID);
+		//m_iCopyNetWorkID = -1;
+		}
+	else {
+		object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+		}
+
+	if(object==NULL)
+		return;
+
+	object->SetPos(kPos);
+	object->SetPos(kPos);					
+	object->GetVel().Set(0,0,0);
+	
+	object->AttachToClosestZone();
+	m_pkCurentChild=object;
+	m_pkGui->UpdatePropertybox();
+
+}
+
+void ZeroEdit::DeleteSelected()
+{
+	if(m_pkCurentChild == NULL)
+		return;
+	if(m_pkCurentChild->GetName() == "HeightMapObject") 
+		return;
+	if(m_pkCurentChild->GetName() == "WorldObject") 
+		return;
+
+	m_pkGui->ClosePropertybox();
+	delete m_pkCurentChild;
+	m_pkCurentChild=NULL;
 }
 
 /*

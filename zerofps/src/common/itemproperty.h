@@ -64,6 +64,7 @@ class COMMON_API ItemProperty: public Property {
 		string m_kItemName;			//the items name
 
 		ItemProperty();
+		void CloneOf(Property* pkProperty) { }
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

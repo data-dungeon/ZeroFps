@@ -9,15 +9,33 @@
 ;
 
 
-[Menu_Ost]
-Title=Ost
+[Menu_Edit]
+Title=Edit
 Parent=NULL
 Cmd=NULL
 
-[Menu_OstOsta]
-Title=Osta
-Parent=Menu_Ost
-Cmd=echo ostttttttttttttttttt
+[Menu_EditCopy]
+Title=Copy
+Parent=Menu_Edit
+Cmd=copy
+
+[Menu_EditPaste]
+Title=Paste
+Parent=Menu_Edit
+Cmd=paste
+
+[Menu_EditDuplicate]
+Title=Duplicate
+Parent=Menu_Edit
+Cmd=duplicate
+
+[Menu_EditDelete]
+Title=Delete
+Parent=Menu_Edit
+Cmd=delete
+
+
+
 
 
 

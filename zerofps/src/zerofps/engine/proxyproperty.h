@@ -31,6 +31,7 @@ class ENGINE_API ProxyProperty: public Property {
 			
 	public:
 		ProxyProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 		
 		float GetDistance();

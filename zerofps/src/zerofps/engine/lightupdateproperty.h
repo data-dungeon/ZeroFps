@@ -16,6 +16,7 @@ class ENGINE_API LightUpdateProperty: public Property
 
 	public:
 	LightUpdateProperty();
+		void CloneOf(Property* pkProperty) { }
 	void Update();
 };
 

@@ -69,6 +69,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object* CreateObject(ObjectDescriptor* pkObjDesc);
 		Object* CreateObjectByNetWorkID(int iNetID);	
 		Object* CreateObjectByArchType(const char* acName);
+		Object* CloneObject(int iNetID);
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);

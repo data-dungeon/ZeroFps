@@ -18,6 +18,7 @@ class COMMON_API TreeIdleProperty: public Property {
 		vector<PropertyValues> GetPropertyValues();
 	public:
 		TreeIdleProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 		
 		void Save(ZFMemPackage* pkPackage);

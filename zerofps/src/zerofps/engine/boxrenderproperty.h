@@ -29,6 +29,7 @@ class ENGINE_API BoxRenderProperty: public Property {
 		
 	public:
 		BoxRenderProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetTexture(const char* acTex1);

@@ -68,7 +68,6 @@ void Mad_Modell::SetBasePtr(string strResName)
 		return;
 
 	PlayAnimation(0, 0.0);
-	m_fScale = 1.0;
 	m_bActive = true;
 //	pkCore->ClearReplaceTexture();
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));

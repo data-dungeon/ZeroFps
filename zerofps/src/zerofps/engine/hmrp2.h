@@ -23,6 +23,7 @@ class ENGINE_API HMRP2: public Property {
 	
 	public:
 		HMRP2(HeightMap* pkHeightMap);
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);

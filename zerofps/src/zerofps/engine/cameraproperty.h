@@ -36,6 +36,7 @@ class ENGINE_API CameraProperty:public Property
 
 	public:
 		CameraProperty();
+		void CloneOf(Property* pkProperty) { }
 	
 		void Update();
 

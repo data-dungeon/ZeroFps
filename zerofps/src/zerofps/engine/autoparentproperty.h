@@ -19,6 +19,7 @@ class ENGINE_API AutoParentProperty: public Property {
 		float m_fLastUpdate;
 
 	public:
+		void CloneOf(Property* pkProperty) { }
 		AutoParentProperty();
 		void Update();		
 };

@@ -39,6 +39,7 @@ class ENGINE_API VegitationProperty: public Property {
 	
 	public:
 		VegitationProperty();
+		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Init();
 

@@ -25,6 +25,7 @@ class COMMON_API TeleportProperty: public Property {
 	public:
 		TeleportProperty();
 		~TeleportProperty();
+		void CloneOf(Property* pkProperty) { }
 		
 		void Update();
 		void Touch(Collision* pkCol);		

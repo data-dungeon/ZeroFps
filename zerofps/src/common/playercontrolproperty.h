@@ -72,6 +72,7 @@ class COMMON_API PlayerControlProperty: public Property {
 
 		PlayerControlProperty(/*Input *pkInput ,HeightMap *pkMap*/);
 		~PlayerControlProperty();		
+		void CloneOf(Property* pkProperty) { }
 
 		void Update();
 		void Touch(Collision* pkCol);		

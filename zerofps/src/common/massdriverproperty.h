@@ -32,6 +32,7 @@ class COMMON_API MassDriverProperty: public InventoryProperty {
 	public:
 		MassDriverProperty();
 		~MassDriverProperty();
+		void CloneOf(Property* pkProperty) { }
 		
 		
 		void Update();

@@ -123,14 +123,16 @@ class ENGINE_API Property
 		
 		Property();
 		virtual ~Property(){};
-		virtual void Touch(Collision* pkCol){};		//executet when collision occurs
-		virtual void Init(){};								//executet when property is added to an object
-		virtual void Update(){};							//executet once every game loop
+		virtual void Touch(Collision* pkCol){};					//executet when collision occurs
+		virtual void Init(){};											//executet when property is added to an object
+		virtual void Update(){};										//executet once every game loop
 		virtual void PackTo(NetPacket* pkNetPacket){} ;
 		virtual void PackFrom(NetPacket* pkNetPacket){} ;
-		virtual void Save(ZFMemPackage* pkPackage);	//save property
-		virtual void Load(ZFMemPackage* pkPackage);	//load property
-		
+		virtual void Save(ZFMemPackage* pkPackage);				//save property
+		virtual void Load(ZFMemPackage* pkPackage);				//load property
+		virtual void CloneOf(Property* pkProperty) = 0;
+
+
 		virtual void HandleGameMessage(GameMessage& Msg);
 
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
@@ -138,6 +140,7 @@ class ENGINE_API Property
 
 		bool operator<(Property& kOther);
 
+		friend Object;
 };
 
 

@@ -275,8 +275,8 @@ Object::Object() {
 	m_kName = "Object";			
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
-	m_iUpdateStatus			=	UPDATE_ALL;
-	m_piDecorationStep 		=	m_pkLevelMan->GetDecorationStepPointer();
+	m_iUpdateStatus		=	UPDATE_ALL;
+	m_piDecorationStep 	=	m_pkLevelMan->GetDecorationStepPointer();
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
@@ -300,7 +300,44 @@ Object::~Object()
 	m_pkObjectMan->Remove(this);
 }
 
+void Object::MakeCloneOf(Object* pkOrginal)
+{
+	SetParent(m_pkParent);
 
+	m_kPos		= pkOrginal->m_kPos;
+	m_kRot		= pkOrginal->m_kRot;
+	m_kVel		= pkOrginal->m_kVel;
+	m_kOldPos	= pkOrginal->m_kOldPos;
+	m_kOldRot	= pkOrginal->m_kOldRot;
+	m_kName		= pkOrginal->m_kName;
+	m_strType	= pkOrginal->m_strType;
+	m_iObjectType			= pkOrginal->m_iObjectType;
+	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;
+	m_piDecorationStep	= pkOrginal->m_piDecorationStep;
+	m_bSave		= pkOrginal->m_bSave;
+	m_kAcc		= pkOrginal->m_kAcc;
+
+	Property* pkProp;
+	vector<string> akPropertyNames;
+
+	for(itListProperty it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
+		pkProp = AddProperty((*it)->m_acName);
+		cout << "Creating '" << (*it)->m_acName << "'\n";
+		
+		// Get Values
+		akPropertyNames = (*it)->GetValueNames();
+
+		for(int i=0; i < akPropertyNames.size(); i++) {
+			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
+			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
+			}
+		
+		//*pkProp = (*it);
+		}
+	
+	
+}
+	
 Property* Object::AddProperty(Property* pkNewProperty) 
 {
 	if(pkNewProperty == NULL)

@@ -17,6 +17,7 @@ Property::Property()
 	m_bSortDistance=false;
 }
 
+
 /*
 void Property::PackTo(NetPacket* pkNetPacket) 
 {
