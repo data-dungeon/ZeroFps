@@ -13,13 +13,17 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
 	if(strClickName == "BriefingBn")
 	{
-		ShowWnd("MissionWnd", false, true);
+		ShowWnd("MissionWnd", false/*, true*/);
 		LoadDlg("data/script/gui/dm_briefing.lua");
+		m_pkGui->KillWndCapture();
+		m_pkGui->SetCaptureToWnd(GetWnd("BriefingWnd"));
 	}
 	else
 	if(strClickName == "MissionCancelBn")
 	{
-		ShowWnd("MissionWnd", false, true);
+		ShowWnd("MissionWnd", false/*, true*/);
+		m_pkGui->KillWndCapture();
+		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 	}
 }
 
@@ -42,6 +46,8 @@ bool CMissionDlg::InitDlg()
 	((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->ToggleMultiLine(true);
 	((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->SetReadOnly(true);
 	SetText("Mission_C_Eb", (char*) szText.c_str() );
+
+	m_pkGui->SetCaptureToWnd(GetWnd("MissionWnd"));
 
 	return true;
 }

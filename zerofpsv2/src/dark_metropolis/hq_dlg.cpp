@@ -23,7 +23,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 	if(strClickName == "HQCloseBn") // the door button
 	{
-		LoadDlg("data/script/gui/dm_gameplay.lua");
+		LoadDlg("data/script/gui/dm_gameplay_2.lua");
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();

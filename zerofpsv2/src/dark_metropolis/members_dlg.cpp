@@ -36,15 +36,25 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		for(int i=0; i<m_vkItemButtons.size(); i++)
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
-		ShowWnd("MembersWnd", false, true);
-		ShowWnd("TestCameraWnd", false, true);
+		ShowWnd("MembersWnd", false, false);
+		ShowWnd("TestCameraWnd", false, false);
+
+		if(m_eWidowMode == HQ_EQUIP_MEMBERS)
+		{
+			m_pkGui->KillWndCapture(); 
+			m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+		}
+		else
+		{
+			m_pkGui->KillWndCapture();
+		}
 	}
 	else
 	if(strClickName == "MembersEquipBn")
 	{
 		m_pkGui->KillWndCapture(); 
 		LoadDlg("data/script/gui/dm_itemtransaction.lua");
-		ShowWnd("ItemTransactionWnd", true, true);
+		ShowWnd("ItemTransactionWnd", true/*, true*/);
 		SetText("RemoveItemBn", "Unequip");
 		SetText("AddItemBn", "Equip");
 	}
@@ -790,7 +800,8 @@ void CMembersDlg::UpdateLevelbar(Entity* pkCharacterObject)
 void CMembersDlg::CreateCamera()
 {
 	//create camera
-	m_pkModellCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkModellCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkModellCamera->SetName("ModellCamera");
 	m_pkModellCamera->m_bRender = true;
 	m_pkModellCamera->m_bSelected = true;
 	

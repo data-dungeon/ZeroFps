@@ -176,7 +176,10 @@ public:
 
 	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
 
+	bool PlaceWndFrontBack(ZGuiWnd* pkMainWnd, bool bFront);
+
 private:
+
 	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void KeyboardInput(int key, bool shift, float time);
 	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
@@ -187,12 +190,9 @@ private:
 	unsigned char m_acLineColor[3];
 
 	void OnKeyPress(int iKey);
-	bool OnMouseUpdate_OLD_UGLY(int x, int y, bool bLBnPressed, 
-		bool bRBnPressed, bool bMBnPressed, float fGameTime);
 
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 
 		bool bRBnPressed, bool bMBnPressed, float fGameTime);
-
 	
 	void TranslateMousePos(int &x, int &y);
 	

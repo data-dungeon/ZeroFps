@@ -45,7 +45,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 			m_pkGui->KillWndCapture();
 			LoadDlg("data/script/gui/dm_members.lua");
-			ShowWnd("MembersWnd", true, true);
+			ShowWnd("MembersWnd", true/*, true*/);
 
 			CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
 

@@ -15,6 +15,7 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "StarNewGameBn")
 	{
 		LoadDlg("data/script/gui/dm_start_new_game.lua");
+	//	m_pkGui->PlaceWndFrontBack(GetWnd("StartNewGameWnd"), false);
 
 		pkMainWnd->Hide();
 
@@ -50,6 +51,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_pkDM->m_itStartBase = m_pkDM->m_vkStartBaseList.begin();
 		GetWnd("StartBaseNameLabel")->SetText((*m_pkDM->m_itStartBase)->szName);
 		GetWnd("StartBaseIconLabel")->SetSkin((*m_pkDM->m_itStartBase)->pkIcon);
+
+		ShowWnd("StartNewGameWnd", true);
+		m_pkGui->PlaceWndFrontBack(GetWnd("StartNewGameWnd"), true);
 	}
 	else
 	if(strClickName == "LoadNewGameBn")
@@ -70,8 +74,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "ContinueGameBn")
 	{
 		pkMainWnd->Hide();
-		LoadDlg("data/script/gui/dm_gameplay.lua");
+		LoadDlg("data/script/gui/dm_gameplay_2.lua");
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
+		m_pkGui->KillWndCapture(); 
 	}
 }
 

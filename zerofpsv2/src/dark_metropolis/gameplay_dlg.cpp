@@ -5,6 +5,10 @@
 CGamePlayDlg::CGamePlayDlg() : CGameDlg("GamePlayScreen", &g_kDM)
 {
 	m_iSelectedAgent = -1;
+	m_bSkillbarIsOut = false;
+	m_bActionbarIsOut = false;
+	m_bCharbarIsOut = false;
+	m_bItembarIsOut = false;
 }
 
 CGamePlayDlg::~CGamePlayDlg()
@@ -18,6 +22,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("GamePlayScreen", false);
 		LoadDlg("data/script/gui/dm_start.lua");
 		pkMainWnd->Hide();
+		m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
 	}	
 	else
 	if(strClickName == "HQBn")
@@ -49,7 +54,65 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		else
 			m_pkDM->PauseGame(false);
 	}
+	else
+	if(strClickName == "skill_button_ext")
+	{
+		ShowWnd("skill_bar", true);
+		ShowWnd("skill_button_ext", false);
+		m_bSkillbarIsOut = true;
+	}
+	else
+	if(strClickName == "skill_button")
+	{
+		ShowWnd("skill_bar", false);
+		ShowWnd("skill_button_ext", true);
+		m_bSkillbarIsOut = false;
+	}
+	else
+	if(strClickName == "action_button_ext")
+	{
+		ShowWnd("action_bar", true);
+		ShowWnd("action_button_ext", false);
+		m_bActionbarIsOut = true;
+	}
+	else
+	if(strClickName == "action_button")
+	{
+		ShowWnd("action_bar", false);
+		ShowWnd("action_button_ext", true);
+		m_bActionbarIsOut = false;
+	}
+	else
+	if(strClickName == "char_panel_button_ext")
+	{
+		ShowWnd("panel_char", true);
+		ShowWnd("char_panel_button_ext", false);
+		m_bCharbarIsOut = true;
+	}
+	else
+	if(strClickName == "char_panel_button" || 
+		strClickName.find("CharPortBn") != string::npos)
+	{
+		ShowWnd("panel_char", false);
+		ShowWnd("char_panel_button_ext", true);
+		m_bCharbarIsOut = false;
+	}
+	else
+	if(strClickName == "item_button_ext")
+	{
+		ShowWnd("item_bar", true);
+		ShowWnd("item_button_ext", false);
+		m_bItembarIsOut=true;
+	}
+	else
+	if(strClickName == "item_button")
+	{
+		ShowWnd("item_bar", false);
+		ShowWnd("item_button_ext", true);
+		m_bItembarIsOut=false;
+	}
 	
+
 	//
 	// Markera en agent
 	//
@@ -76,20 +139,48 @@ bool CGamePlayDlg::InitDlg()
 
 		char* szNameID[] =
 		{
-			"CharPortBn1", "Char1LifeFront1", "Char1LifeBk1",
-			"CharPortBn2", "Char1LifeFront2", "Char1LifeBk2",
-			"CharPortBn3", "Char1LifeFront3", "Char1LifeBk3",
-			"CharPortBn4", "Char1LifeFront4", "Char1LifeBk4",
-			"CharPortBn5", "Char1LifeFront5", "Char1LifeBk5",
+			"CharPortBn1", "Char1LifeBk1",
+			"CharPortBn2", "Char1LifeBk2",
+			"CharPortBn3", "Char1LifeBk3",
+			"CharPortBn4", "Char1LifeBk4",
+			"CharPortBn5", "Char1LifeBk5",
 		};
 
 		for(int i=0; i<5; i++)
 		{
-			m_akAgetIcons[i].pkButton = (ZGuiButton*)GetWnd(szNameID[i*3]);
-			m_akAgetIcons[i].pkLifeProgressbar = (ZGuiLabel*)GetWnd(szNameID[i*3+1]);
-			m_akAgetIcons[i].pkLifeBk = (ZGuiLabel*)GetWnd(szNameID[i*3+2]);
-		}
+			m_akAgetIcons[i].pkButton = (ZGuiButton*)GetWnd(szNameID[i*2]);
+			m_akAgetIcons[i].pkLifeProgressbar = (ZGuiLabel*)GetWnd(szNameID[i*2+1]);
+		}		
 	}
+
+	if(m_bSkillbarIsOut) 
+	{
+		GetWnd("skill_bar")->Show();
+		ShowWnd("skill_button_ext", false);
+	}
+	else GetWnd("skill_bar")->Hide();
+	
+	if(m_bActionbarIsOut) 
+	{
+		GetWnd("action_bar")->Show();
+		ShowWnd("action_button_ext", false);
+	}
+	else GetWnd("action_bar")->Hide();
+	
+	if(m_bCharbarIsOut) 
+	{
+		GetWnd("panel_char")->Show();
+		ShowWnd("char_panel_button_ext", false);
+	}
+	else GetWnd("panel_char")->Hide();
+	
+	if(m_bItembarIsOut) 
+	{
+		GetWnd("item_bar")->Show();
+		ShowWnd("item_button_ext", false);
+	}
+	else GetWnd("item_bar")->Hide();
+	
 
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
@@ -100,7 +191,6 @@ bool CGamePlayDlg::InitDlg()
 		{
 			m_akAgetIcons[i].pkButton->Show();
 			m_akAgetIcons[i].pkLifeProgressbar->Show();
-			m_akAgetIcons[i].pkLifeBk->Show();
 			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->GetEntityID();
 
 			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
@@ -118,14 +208,12 @@ bool CGamePlayDlg::InitDlg()
 
 			float procent_av_max = 1 - (float) curr / (float) max;
 			float w = 64.0f - (procent_av_max * 64.f);
-			m_akAgetIcons[i].pkLifeProgressbar->Resize((int)w,8,true); 
-
+			m_akAgetIcons[i].pkLifeProgressbar->Resize((int)w,16,true); 
 		}
 		else
 		{
 			m_akAgetIcons[i].pkButton->Hide();
 			m_akAgetIcons[i].pkLifeProgressbar->Hide();
-			m_akAgetIcons[i].pkLifeBk->Hide();
 			m_akAgetIcons[i].iAgentObjectID = -1;
 		}
 	}

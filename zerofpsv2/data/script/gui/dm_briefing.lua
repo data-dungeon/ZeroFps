@@ -29,8 +29,8 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
-	ChangeSkin("GuiMainWnd","Skin4","Window")
+--	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
+--	ChangeSkin("GuiMainWnd","Skin4","Window")
 
 	CreateWnd(0,"BriefingWnd","","",81,73,667,415,0)
 	ChangeSkin("BriefingWnd","Skin9","Window")

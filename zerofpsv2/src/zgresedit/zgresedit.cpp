@@ -367,8 +367,6 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
-	case KEY_S:
-
 		if(!m_pkInputHandle->Pressed(KEY_LCTRL))
 			break;
 

@@ -20,7 +20,6 @@ protected:
 	{
 		ZGuiButton* pkButton;
 		ZGuiLabel* pkLifeProgressbar;
-		ZGuiLabel* pkLifeBk;
 		int iAgentObjectID;
 	};
 
@@ -28,5 +27,9 @@ protected:
 
 private:
 	int m_iSelectedAgent;
+	bool m_bSkillbarIsOut;
+	bool m_bActionbarIsOut;
+	bool m_bCharbarIsOut;
+	bool m_bItembarIsOut;
 
 };

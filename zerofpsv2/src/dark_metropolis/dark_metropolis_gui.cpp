@@ -108,10 +108,13 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
 			if((*it)->GetID() == iID)
 				strClickName = (*it)->GetName();
+
 	}
 
 	if(strClickName.empty())
 		return;
+
+	printf("strClickName = %s, %s\n", strClickName.c_str(), strMainWnd.c_str());
 
 	if(strMainWnd == "DMStartWnd")
 	{
@@ -144,7 +147,13 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	}
 	else
 	if(strMainWnd == "GamePlayPanelWnd" ||
-		strMainWnd == "GamePlayScreen")
+		strMainWnd == "GamePlayScreen" ||
+		strMainWnd == "wind_char" ||
+		strMainWnd == "skill_bar" ||
+		strMainWnd == "action_bar" ||
+		strMainWnd == "panel_char" ||
+		strMainWnd == "wind_map" ||
+		strMainWnd == "item_bar")
 	{
 		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
 	}
@@ -158,6 +167,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	{		
 		m_pkHandleAgents->OnCommand(pkMainWnd, strClickName);
 	}
+	else
 	if(strMainWnd == "LoadListWnd")
 	{
 		if(strClickName == "LoadListCancelBn")
@@ -225,6 +235,14 @@ void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown,
 	{
 		m_pkMembersDlg->OnMouseMove(x, y, bMouseDown, pkMain);
 	}
+
+	//if(x >= 142 && x < 397 && y > 397 && y <= 600)
+	//{
+	//	if(GetWnd("skill_bar"))
+	//	{
+	//		pkGui->SetFocus(GetWnd("skill_bar"));
+	//	}
+	//}
 }
 
 void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
@@ -333,7 +351,7 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 {			
 	pkMainWnd->Hide();
 	
-	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_gameplay.lua");
+	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_gameplay_2.lua");
 	
 	//char* szWndToHide[] =
 	//{

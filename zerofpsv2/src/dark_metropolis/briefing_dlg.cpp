@@ -14,15 +14,18 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "BriefingAcceptBn")
 	{
 		ShowWnd("HQWnd", false, false);
-		LoadDlg("data/script/gui/dm_gameplay.lua");
+		LoadDlg("data/script/gui/dm_gameplay_2.lua");
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		pkMainWnd->Hide();	
 		m_pkGui->KillWndCapture();
+		m_pkDM->PauseGame(false); 
 	}
 	else
 	if(strClickName == "BriefingCancelBn")
 	{
 		pkMainWnd->Hide();
+		m_pkGui->KillWndCapture();
+		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 	}
 }
 

@@ -26,8 +26,8 @@ function GUICreate()
 	CreateWnd(0,"DMStartWnd","","",0,0,800,600,0)
 	ChangeSkin("DMStartWnd","Skin5","Window")
 
-	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
-	ChangeSkin("GuiMainWnd","Skin6","Window")
+--	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
+--	ChangeSkin("GuiMainWnd","Skin6","Window")
 
 	CreateWnd(1,"LoadNewGameBn","DMStartWnd","Load",365,122,70,20,0)
 	ChangeSkin("LoadNewGameBn","Skin4","Button up")
