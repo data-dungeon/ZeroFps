@@ -35,6 +35,7 @@ enum GuiType
 class GuiApp
 {
 public:
+	void AddListItem(char* szListboxResName, char* szItemText, bool bCombobox);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
 	bool ChangeSkin(ZFScript* pkScript, int iWndID, char* szSkinName, char* szSkinType);

@@ -73,7 +73,10 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	{
 		printf("GuiApp::CreateWnd: WindowID already exist\n");
 
-		m_pkResMan->Wnd(szResourceName)->Show();
+		ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResourceName);
+
+		pkWnd->Show();
+		m_pkGui->SetFocus(pkWnd);
 		
 		return false;
 	}
@@ -199,7 +202,10 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	if(eType == Wnd)
 	{
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
+		{
+			m_pkGui->SetFocus(pkWnd);
 			return false;
+		}
 	}
 	else
 	{
@@ -630,4 +636,19 @@ bool GuiApp::IsWndVisible(char* szResName)
 	}
 	
 	return false;
+}
+
+void GuiApp::AddListItem(char *szListboxResName, char *szItemText, bool bCombobox)
+{
+	if(bCombobox == false)
+	{
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(m_pkResMan->Wnd(szListboxResName));
+		int iIndex = pkListBox->GetItemCount(); 
+		pkListBox->AddItem(szItemText, iIndex, false); 
+	}
+	else
+	{
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(m_pkResMan->Wnd(szListboxResName));
+		pkComboBox->AddItem(szItemText, -1, false); 
+	}
 }

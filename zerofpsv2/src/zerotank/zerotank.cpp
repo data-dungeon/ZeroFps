@@ -158,8 +158,6 @@ void ZeroTank::OnIdle()
 	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 
-
-
 /*
 	Vector3 pos = pkFps->GetCam()->GetPos();
 	pos.y  = m_pkMap2->Height(pos.x,pos.z) ;
@@ -672,6 +670,7 @@ bool ZeroTank::InitializeScript()
 	// Script functions for using the gui
 	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
 	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
+	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
 	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
 	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
 	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 

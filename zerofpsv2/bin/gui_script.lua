@@ -15,10 +15,10 @@ DefSBrFSkin = {	tex1="sb_f.bmp" }
 DefSBrBkSkin = { tex1="sb_bk.bmp" }
 DefSliderSkin = { tex1="slider.bmp", tex1a="slider_a.bmp" }
 DefSliderBkSkin = { tex1= "lb_u.bmp" }
-DefLBitemUSkin = { tex1= "lb_d.bmp" }
+DefLBitemUSkin = { tex1= "lb_u.bmp" }
 DefLBitemDSkin = { tex1= "lb_d.bmp" }
 DefLBitemFSkin = { tex1= "lb_f.bmp", borderR=56, borderG=56, borderB=56, bd_size=1 }
-DefLBBkSkin = { tex1= "lb_bk.bmp", borderR=56, borderG=56, borderB=56, bd_size=1 }
+DefLBBkSkin = { tex1= "lb_bk.bmp", borderR=56, borderG=56, borderB=56, bd_size=1, tile=1 }
 DefCBitemUSkin = { tex1= "cb_u.bmp" }
 DefCBitemDSkin = { tex1= "cb_d.bmp" }
 DefCBitemFSkin = { tex1= "cb_f.bmp", borderR=56, borderG=56, borderB=56, bd_size=1 }
@@ -51,11 +51,9 @@ BackPackSkinDown   = { tex1= "backpack_down.bmp", tex1a = "backpack_up_a.bmp" }
 StatsSkinUp     = { tex1= "stats_up.bmp", tex1a = "stats_up_a.bmp" }
 StatsSkinFocus  = { tex1= "stats_focus.bmp", tex1a = "stats_up_a.bmp" }
 StatsSkinDown   = { tex1= "stats_down.bmp", tex1a = "stats_up_a.bmp" }
-BackPackWndSkin = { tex1= "backpack_wnd.bmp", bd_size = 3 }
-BackPackWndSkin = { tex1= "backpack_wnd.bmp", bd_size = 3 }
-StatsWndSkin	= { tex1= "stats_wnd.bmp", bd_size = 3 }
+BackPackWndSkin = { tex1= "backpack_wnd.bmp" }
+StatsWndSkin	= { tex1= "stats_wnd.bmp" }
 MapWndSkin	= { tex1= "map_wnd.bmp", tex1a= "map_wnd_a.bmp" }
-
 
 function CreateMainWnds()
 
@@ -114,7 +112,7 @@ function CreateMainWnds()
 	ChangeSkin(BackpackButton, "BackPackSkinFocus", "Button focus")
 
 	-- Create stats button
-	CreateWnd(Button,"StatsButton","",StatsButton,MainWnd,w-190,h-90,64,64,0)
+	CreateWnd(Button,"StatsButton","",StatsButton,MainWnd,w-190,h-80,64,64,0)
 	ChangeSkin(StatsButton, "StatsSkinUp", "Button up")
 	ChangeSkin(StatsButton, "StatsSkinDown", "Button down")
 	ChangeSkin(StatsButton, "StatsSkinFocus", "Button focus")
@@ -144,15 +142,21 @@ function OnClickStats()
 	local h = GetScreenHeight()
 
 	local Wnd	= 0
+	local Listbox	= 5
 
 	local MainWnd	  = 1
 	local StatisticWnd = 101
+	local AbilityList  = 102
 
 	if IsWndVisible("StatsWnd") == 1 then 
 		CloseWnd("StatsWnd")
 	else 
-		CreateWnd(Wnd, "StatsWnd", "",StatisticWnd,MainWnd,3,3,400,570,0)
+		CreateWnd(Wnd, "StatsWnd", "",StatisticWnd,MainWnd,0,0,400,570,0)
+		CreateWnd(Listbox, "AbilityList", "",AbilityList,StatisticWnd,20,50,168,225,0)
 		ChangeSkin(StatisticWnd, "StatsWndSkin", "Window")
+
+		AddListItem("AbilityList", "Jump 10", 0)
+		AddListItem("AbilityList", "Hide 19", 0)
 	end
 end
 
@@ -163,8 +167,8 @@ function OnClickMap()
 
 	local Wnd	= 0
 
-	local MainWnd	  = 1
-	local MapWnd	= 102
+	local MainWnd	= 1
+	local MapWnd	= 103
 
 	if IsWndVisible("MapWnd") == 1 then 
 		CloseWnd("MapWnd")

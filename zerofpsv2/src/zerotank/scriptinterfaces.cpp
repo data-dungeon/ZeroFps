@@ -191,3 +191,31 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 
 	return 1;
 }
+
+// Close window
+// Parameters:
+// (0) int iID to wnd
+// (1) char* Item name
+// (2) int 0 = Listbox, 1 = Combobox
+int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
+{
+	ZFScript* pkScript = g_kZeroTank.GetScript();
+
+	int iNumArgs = pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 3)
+		return 0;
+
+	char szWndName[100];
+	pkScript->GetArg(pkLua, 0, szWndName);
+
+	char szItemName[100];
+	pkScript->GetArg(pkLua, 1, szItemName);
+
+	double dComboBox;
+	pkScript->GetArg(pkLua, 2, &dComboBox);
+
+	g_kZeroTank.AddListItem(szWndName, szItemName, ((int)dComboBox == 1) ? true : false);
+	
+	return 1;
+}

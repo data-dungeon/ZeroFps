@@ -281,7 +281,7 @@ bool ZGui::Render()
 			(*it)->pkWnd->Render(m_pkRenderer);
 
 	// Render a yellow frame around the window that have focus if the bk texture isn't hollow.
-	if(ZGuiWnd::m_pkFocusWnd)
+/*	if(ZGuiWnd::m_pkFocusWnd)
 	{
 		ZGuiSkin* pkSkin = ZGuiWnd::m_pkFocusWnd->GetSkin();
 
@@ -290,7 +290,7 @@ bool ZGui::Render()
 			m_pkRenderer->SetSkin(m_pkFocusBorderSkin);	
 			m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
 		}
-	}
+	}*/
 
 	// Draw points
 	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
