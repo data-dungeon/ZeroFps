@@ -786,7 +786,9 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			{
 				BuildFileTree("ZoneModelTree", "data/mad/zones");
 				BuildFileTree("ObjectTree", "data/script/objects");
-				GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+				AddListItem("EnviromentPresetList", "Rain");
+				AddListItem("EnviromentPresetList", "Sun");
 			}
 		}
 
@@ -805,7 +807,16 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 {
+	if(pkListBox == GetWnd("EnviromentPresetList"))
+	{
+		char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
 
+		if(szPreset)
+		{
+			printf("setting enviroment %s\n", szPreset);
+			SetZoneEnviroment( szPreset );  
+		}
+	}
 }
 
 
@@ -1146,4 +1157,17 @@ string MistServer::GetZoneEnviroment()
 		env = z->m_strEnviroment;
 
 	return env;
+}
+
+char* MistServer::GetSelEnviromentString()
+{
+	ZGuiListbox* pkEnviromentList = static_cast<ZGuiListbox*>(GetWnd("EnviromentPresetList"));
+	if(pkEnviromentList)
+	{
+		ZGuiListitem* pkSel = pkEnviromentList->GetSelItem(); 
+		if(pkSel)
+			return pkSel->GetText();
+	}
+
+	return NULL;
 }

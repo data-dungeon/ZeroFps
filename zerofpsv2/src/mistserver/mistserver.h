@@ -31,6 +31,7 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
+		char* GetSelEnviromentString();
 
 		//console funktions
 		enum FuncId_e

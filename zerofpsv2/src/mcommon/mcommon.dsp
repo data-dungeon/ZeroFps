@@ -110,6 +110,10 @@ SOURCE=.\p_clientcontrol.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_enviroment.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_event.cpp
 # End Source File
 # Begin Source File
@@ -143,6 +147,10 @@ SOURCE=.\p_charstats.h
 # Begin Source File
 
 SOURCE=.\p_clientcontrol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_enviroment.h
 # End Source File
 # Begin Source File
 
