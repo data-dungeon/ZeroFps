@@ -9,7 +9,9 @@
 //#include "basicconsole.h"
 #include "globals.h"
 #include "zfbasicfs.h"
- 
+
+#include <set>
+#include <list>
 
 using namespace std;
 
@@ -293,6 +295,97 @@ bool ZFVFileSystem::RemoveDir(string strDir)
 	return m_pkBasicFS->RemoveDir(strDir.c_str());
 }
 
+void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, vector<string>& szExtensions)
+{
+	if(strRootPath.size() > 1)
+	{
+		char last_char[] = { strRootPath[strRootPath.size()-1], '\0' };
+		if(!(last_char[0] == '/' || last_char[0] == '\\'))
+			strRootPath += "/";
+	}
+
+	set<string> kSearchedFiles;
+	list<string> dir_list;
+
+	dir_list.push_back(strRootPath);
+
+	while(1)
+	{
+		list<string> vkFileNames;
+		string currentFolder = dir_list.back();
+
+		// Hämta filerna i den aktuella katalogen och sortera listan.
+		vector<string> t;
+		ListDir(&t, currentFolder);
+		for(unsigned int i=0; i<t.size(); i++)
+			vkFileNames.push_back(t[i]); 
+		t.clear(); vkFileNames.sort(SortFiles);
+
+		// Lägg till alla filer
+		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
+		{
+			string strFile = (*it);
+			string id = currentFolder + strFile;
+
+			bool bIsFolder = strFile.find(".") == string::npos;
+
+			if(kSearchedFiles.find(id) == kSearchedFiles.end())
+			{			
+				if(bIsFolder)		
+				{
+					string d;
+
+					char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
+					if(!(last_char[0] == '/' || last_char[0] == '\\'))
+						d = currentFolder + string("/") + strFile; 
+					else
+						d = currentFolder + strFile;
+
+					dir_list.push_back( d );					
+				}
+				
+				if(strFile != "..")
+				{
+					char *ext = strrchr( strFile.c_str(), '.');
+
+					if(ext != NULL)
+					{					
+						for(int i=0; i<szExtensions.size(); i++)
+						{
+							if(strcmp(ext, szExtensions[i].c_str()) == 0)
+							{
+								if(currentFolder.size() > 1)
+								{
+									char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
+									if(!(last_char[0] == '/' || last_char[0] == '\\'))
+										vkFiles->push_back( currentFolder + "/" + strFile );
+									else
+										vkFiles->push_back( currentFolder + strFile );
+
+									// ta bort rotpathen
+									vkFiles->back().erase(0, strRootPath.length());
+								}								
+							}
+						}
+					}
+				}
+
+				kSearchedFiles.insert(id);
+			}
+		}
+
+		// ej klivit in i ett nytt dir? gå tillbaks
+		if(dir_list.back() == currentFolder)
+		{
+			// sista?
+			if(currentFolder == strRootPath)
+				break;
+
+			dir_list.pop_back();
+		}
+	}
+}
+
 bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
 {
 	string	strRootMerge;
@@ -559,7 +652,5 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		}					
 	};
 }
-
-
 
 

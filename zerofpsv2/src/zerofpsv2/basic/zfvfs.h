@@ -81,6 +81,9 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 
+		struct SORT_FILES : public binary_function<string, string, bool> {
+			bool operator()(string x, string y) {return (y > x);}
+		} SortFiles;
 
 	public:
 		ZFVFileSystem();
@@ -110,10 +113,11 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		
 		string GetCurrentWorkingDir();
 		bool CreateDir(string strDir);
-		bool RemoveDir(string strDir);
+		bool RemoveDir(string strDir);		
 		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
 		bool ListDirFilter(	vector<string>* pkFiles, vector<string>& pkFilters, 
 									string strName, bool bIgnoreMaps = false);
+		void ListDirRecursive(vector<string>* vkFiles, string strRootPath, vector<string>& szExtensions); ///< Search ALL dirs, starting from root dir.
 		bool DirExist(string strName);
 		bool FileExists(string strFileName);				///< Returns true if a file was found.
 

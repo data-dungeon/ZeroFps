@@ -605,10 +605,6 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 		Writes out the stack index for the current lua state. Should be Zero.*/
 	// cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;
 
-	/* Bug - Parameters are removed buy the called lua function. 
-	if(!vkParams.empty())
-		lua_pop(pkScript->m_pkLuaState, vkParams.size());
-	*/
 	//cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;
 	
 	//dvoids ultra mega super fix som löser alla jorens problem o kanske problemen på månen också men vem vet.
@@ -617,7 +613,6 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	//onda vim, dvoid fick cp buffertar om detta togs bort
 	//if(!vkParams.empty())
 	//	lua_pop(pkScript->m_pkLuaState, vkParams.size());
-	
 	
 	return true;
 }

@@ -1703,6 +1703,7 @@ void ZGuiApp::MsgBox(char* text, char* caption, int type)
 	
 }
 
+
 void ZGuiApp::FindGuiTextureByResolution()
 {
 	vector<string> kTexMap_640x480;
@@ -1711,13 +1712,17 @@ void ZGuiApp::FindGuiTextureByResolution()
 	vector<string> kTexMap_1280x1024;
 	vector<string> kTexMap_1600x1200;
 
+	vector<string> vkExtension;
+	vkExtension.push_back(".bmp");
+	vkExtension.push_back(".tga");
+
 	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 
-	pkFileSys->ListDir(&kTexMap_640x480, string("data/textures/gui/640x480/"));
-	pkFileSys->ListDir(&kTexMap_800x600, string("data/textures/gui/800x600/"));
-	pkFileSys->ListDir(&kTexMap_1024x768, string("data/textures/gui/1024x768/"));
-	pkFileSys->ListDir(&kTexMap_1280x1024, string("data/textures/gui/1280x1024/"));
-	pkFileSys->ListDir(&kTexMap_1600x1200, string("data/textures/gui/1600x1200/"));
+	pkFileSys->ListDirRecursive(&kTexMap_640x480, string("data/textures/gui/640x480/"), vkExtension);
+	pkFileSys->ListDirRecursive(&kTexMap_800x600, string("data/textures/gui/800x600/"), vkExtension);
+	pkFileSys->ListDirRecursive(&kTexMap_1024x768, string("data/textures/gui/1024x768/"), vkExtension);
+	pkFileSys->ListDirRecursive(&kTexMap_1280x1024, string("data/textures/gui/1280x1024/"), vkExtension);
+	pkFileSys->ListDirRecursive(&kTexMap_1600x1200, string("data/textures/gui/1600x1200/"), vkExtension);
 
 	struct TEST
 	{
@@ -1774,7 +1779,6 @@ void ZGuiApp::FindGuiTextureByResolution()
 					best_value = res2->second;
 				}
 
-
 				if( iValue < best_value )
 				{
 					if(res2 != kFileResValMap.end())
@@ -1790,6 +1794,5 @@ void ZGuiApp::FindGuiTextureByResolution()
 				}
 			}
 		}
-
 	}
 }
