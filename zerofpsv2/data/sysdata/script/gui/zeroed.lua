@@ -212,7 +212,7 @@ function GUICreate()
 	ChangeSkin("OpenEditPropertyWnd","Skin11","Button focus")
 
 	CreateWnd(0,"CustomEntitiesPage","WorkTabWnd","Custom",10,20,200,200,0,0,0)
-	CreateWnd(11,"CustomEntitiesTree","CustomEntitiesPage","",10,20,200,200-60,0,0,0)
+	CreateWnd(11,"CustomEntitiesTree","CustomEntitiesPage","",10,20,200,200,0,0,0)
 	ChangeSkin("CustomEntitiesTree","Skin13","Treebox")
 	ChangeSkin("CustomEntitiesTree","Skin9","Treebox: V.Scrollbar")
 	ChangeSkin("CustomEntitiesTree","Skin10","Treebox: V.Scrollbar: Button up")
