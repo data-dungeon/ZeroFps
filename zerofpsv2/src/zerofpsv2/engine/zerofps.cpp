@@ -517,39 +517,51 @@ void ZeroFps::Draw_EngineShell()
 
 void ZeroFps::MainLoop(void) 
 {
+
 	while(m_iState!=state_exit) {
-		m_fEngineTime = GetTicks();
 
-		Swap();											//swap buffers n calculate fps
-		 
-		 
-		//handle locked fps delay
-/*		if(m_bLockFps)
+		// check if app is iconized
+		if(!(SDL_GetAppState() & SDL_APPACTIVE))
 		{
-			float fDelay = m_pkObjectMan->GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
-		
-			if(fDelay < 0)
-				fDelay = 0;
-	
-			SDL_Delay((int)(fDelay*1000.0f));	
+			SDL_WaitEvent(NULL);
+		}
+		else
+		{
+
+			m_fEngineTime = GetTicks();
+
+			Swap();											//swap buffers n calculate fps
+			 
+			 
+			//handle locked fps delay
+	/*		if(m_bLockFps)
+			{
+				float fDelay = m_pkObjectMan->GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
 			
-			m_fLockFrameTime = GetTicks();
-	
-			//	cout<<"Frametime:"<<fFrameT<<endl;
-			//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
-			//	cout<<"Delaying:"<<fDelay<<endl;		
-			//end of delay code ---				
-		}*/
-		 
-		Run_EngineShell();
-
-		if(m_bServerMode)
-			Run_Server();
-
-		if(m_bClientMode)
-			Run_Client();		
+				if(fDelay < 0)
+					fDelay = 0;
 		
-		Draw_EngineShell();
+				SDL_Delay((int)(fDelay*1000.0f));	
+				
+				m_fLockFrameTime = GetTicks();
+		
+				//	cout<<"Frametime:"<<fFrameT<<endl;
+				//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
+				//	cout<<"Delaying:"<<fDelay<<endl;		
+				//end of delay code ---				
+			}*/
+			 
+			Run_EngineShell();
+
+			if(m_bServerMode)
+				Run_Server();
+
+			if(m_bClientMode)
+				Run_Client();		
+			
+			Draw_EngineShell();
+
+		}
 	}
 
 }
