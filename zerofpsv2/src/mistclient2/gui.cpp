@@ -56,7 +56,8 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 				}
             else
             {
-               g_kMistClient.Say(text);
+               //g_kMistClient.Say(text);
+               g_kMistClient.AddStringToChatBox(text);
                g_kMistClient.SetText("SayTextbox", "");
 			      g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") );
             }
@@ -364,11 +365,19 @@ void MistClient::AddStringToChatBox(string strMsg)
 {
 	string strText = string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
 	g_kMistClient.SetText("ChatTextbox",(char*) strText.c_str());
+
+   if(g_kMistClient.GetText("ChatTextbox"))
+      printf("test = %s\n", g_kMistClient.GetText("ChatTextbox"));
+   else
+      printf("test = %s\n", "bad string");
  
-	unsigned int min,max,pos;
-	ZGuiScrollbar* pkScrollbar = ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar();
-	pkScrollbar->GetScrollInfo(min,max,pos);
-	pkScrollbar->SetScrollPos(max-1);
+	//unsigned int min,max,pos;
+	//ZGuiScrollbar* pkScrollbar = ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar();
+	//pkScrollbar->GetScrollInfo(min,max,pos);
+	//pkScrollbar->SetScrollPos(/*max-1*/1);
+
+   ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->ScrollRowIntoView(
+      ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 
 	//Rect rc = pkScrollbar->GetArrowButton(false)->GetScreenRect();
 	//pkScrollbar->GetButton()->SetPos(rc.Left,rc.Top-20,true,true);

@@ -56,6 +56,8 @@ void MistClient::OnInit()
 
 	//register resources
 	RegisterResources();
+
+
 		
 	//init mistland script intreface
 	MistLandLua::Init(m_pkEntityManager,m_pkScript);

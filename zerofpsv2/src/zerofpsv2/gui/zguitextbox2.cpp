@@ -426,9 +426,14 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	bottom -= top;
 	now -= top;
 
-	float procent = now / bottom;
-	m_iRenderDistFromTop = int(-tomuch *procent);
-
+	if(now == 0 && bottom == 0)
+	   m_iRenderDistFromTop = 0;
+   else
+   {
+	   float procent = now / bottom;
+	   m_iRenderDistFromTop = int(-tomuch *procent);
+   }
+   
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;
 
@@ -516,7 +521,7 @@ void ZGuiTextbox::ToggleMultiLine(bool bMultiLine)
 	if(m_pkRowOffsets)
 		delete[] m_pkRowOffsets;
 	
-	m_pkRowOffsets = new unsigned short[1000];
+	m_pkRowOffsets = new int[1000];
 
 	m_bMultiLine = bMultiLine;
 	CreateInternalControls();
@@ -563,7 +568,7 @@ int ZGuiTextbox::GetCursorRow()
 {
 	int row = 0;
 
-	for(unsigned int i=0; i<m_iNumRows; i++)
+	for(int i=0; i<m_iNumRows; i++)
 	{
 		if(m_iCursorPos > m_pkRowOffsets[i] &&
 		   m_iCursorPos < m_pkRowOffsets[i+1])

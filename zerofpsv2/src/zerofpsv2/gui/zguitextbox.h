@@ -45,7 +45,7 @@ public:
 
 	bool IsReadOnly();
 	void SetReadOnly(bool bReadOnly);
-	unsigned short GetRowCount() { return m_iNumRows; }
+	int GetRowCount() { return m_iNumRows; }
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool m_bNumberOnly;
@@ -65,18 +65,18 @@ private:
 	void ResizeTextBuffer( int nCharacters );
 	
 	vector<int> m_kRowOffsets;
-	unsigned short* m_pkRowOffsets;
+	int* m_pkRowOffsets;
 	
 	bool m_bReadOnly;
 	bool m_bMultiLine;
 	bool m_bBlinkCursor;
-	bool m_bScrollbarUpdated;
-	bool m_bTextFit;
+	//bool m_bScrollbarUpdated;
+	//bool m_bTextFit;
 
 	int m_iCursorPos; 
 	int m_iCurrMaxText;
 	int m_iStartrow;
-	unsigned short m_iNumRows;
+	int m_iNumRows;
 	int m_iCursorRow;
 	int m_iRenderDistFromTop;
 	
