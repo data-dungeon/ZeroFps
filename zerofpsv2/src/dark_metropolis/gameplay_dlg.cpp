@@ -14,7 +14,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "GamPlayMenuBn")
 	{
 		ShowWnd("GamePlayScreen", false);
-		LoadDlg("data/script/gui/dm_ingame.lua");
-		pkMainWnd->Hide();	
+		LoadDlg("data/script/gui/dm_start.lua");
+		pkMainWnd->Hide();
 	}	
 }

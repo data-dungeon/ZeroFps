@@ -44,7 +44,7 @@ function GUICreate()
 	ChangeSkin("QuitBn","Skin2","Button down")
 	ChangeSkin("QuitBn","Skin3","Button focus")
 
-	CreateWnd(1,"StarNewGameBn","DMStartWnd","Start",365,96,70,20,0)
+	CreateWnd(1,"StarNewGameBn","DMStartWnd","New",365,96,70,20,0)
 	ChangeSkin("StarNewGameBn","Skin4","Button up")
 	ChangeSkin("StarNewGameBn","Skin2","Button down")
 	ChangeSkin("StarNewGameBn","Skin3","Button focus")
@@ -58,6 +58,12 @@ function GUICreate()
 	ChangeSkin("CreditsBn","Skin4","Button up")
 	ChangeSkin("CreditsBn","Skin2","Button down")
 	ChangeSkin("CreditsBn","Skin3","Button focus")
+
+
+	CreateWnd(1,"ContinueGameBn","DMStartWnd","Continue",365,260,70,20,0)
+	ChangeSkin("ContinueGameBn","Skin4","Button up")
+	ChangeSkin("ContinueGameBn","Skin2","Button down")
+	ChangeSkin("ContinueGameBn","Skin3","Button focus")
 
 end
 

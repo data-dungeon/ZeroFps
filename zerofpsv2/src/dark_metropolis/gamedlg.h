@@ -25,8 +25,14 @@ public:
 	void SetText(char* szWndName, char* szText) { m_pkDM->SetText(szWndName, szText); }
 	void SelListItem(char* szWndName, char* szText) { m_pkDM->SelListItem(szWndName, szText); }
 	ZGuiWnd* GetWnd(char* szName) { return m_pkDM->GetWnd(szName); }
+	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
+		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags) {
+		m_pkDM->CreateWnd(eType, szWndName, szParentName, szLabel, x, y, w, h, uiFlags);
+	}
 
 	int GetTexID(char* szName);
+
+	P_DMGameInfo* GetGameInfo() { return m_pkDM->m_pkGameInfoProperty; }
 
 	DarkMetropolis* m_pkDM;
 };

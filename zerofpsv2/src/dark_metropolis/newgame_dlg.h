@@ -7,4 +7,7 @@ public:
 	CNewGameDlg();
 	~CNewGameDlg();
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+
+private:
+	void AddContinueButton();
 };

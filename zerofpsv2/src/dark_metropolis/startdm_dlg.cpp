@@ -65,4 +65,11 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		m_pkFps->QuitEngine();
 	}
+	else
+	if(strClickName == "ContinueGameBn")
+	{
+		pkMainWnd->Hide();
+		LoadDlg("data/script/gui/dm_gameplay.lua");
+	}
 }
+

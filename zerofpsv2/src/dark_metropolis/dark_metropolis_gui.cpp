@@ -59,17 +59,22 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
 void DarkMetropolis::GUI_Init()
 {
-	// create gui script
+	// Create gui script.
 	GuiAppLua::Init(&g_kDM, m_pkScript);
 	InitGui(m_pkScript,
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/defskins.lua",
 		NULL);
 
+	// Load start sceen.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+
+	ShowWnd("ContinueGameBn", false);
 	
+	// Start menu song
 	StartSong("data/music/dm menu.ogg");
 
+	// Create all screens
 	m_pkStartDMDlg = new CStartDMDlg();
 	m_pkNewGameDlg = new CNewGameDlg();
 	m_pkInGameDlg = new CInGameDlg();
@@ -98,6 +103,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 	if(strClickName.empty())
 		return;
+
+	printf("strMainWnd = %s\n", strMainWnd.c_str());
 
 	if(strMainWnd == "DMStartWnd")
 	{
@@ -272,27 +279,26 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 	((ZGuiTextbox*) GetWnd("SaveLoadFileNameEB"))->SetReadOnly(!bSave);
 
 	m_bSaveGame = bSave;
-
 }
 
 bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 {			
 	pkMainWnd->Hide();
 	
-	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
+	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_gameplay.lua");
 	
-	char* szWndToHide[] =
-	{
-		"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
-		"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
-		"GamePlayChar5Wnd", "GamePlayPanelWnd",
-		"GamePlayInfoWnd", "MembersWnd",
-		"MissionWnd", "BriefingWnd",
-		"BuyWnd", "SellWnd", 
-	};
+	//char* szWndToHide[] =
+	//{
+	//	"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
+	//	"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
+	//	"GamePlayChar5Wnd", "GamePlayPanelWnd",
+	//	"GamePlayInfoWnd", "MembersWnd",
+	//	"MissionWnd", "BriefingWnd",
+	//	"BuyWnd", "SellWnd", 
+	//};
 
-	for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
-		ShowWnd(szWndToHide[i], false);	
+	//for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
+	//	ShowWnd(szWndToHide[i], false);	
 
 	StartSong("data/music/dm ingame.ogg");
 	
