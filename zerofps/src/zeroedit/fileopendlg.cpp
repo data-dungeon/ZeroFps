@@ -54,6 +54,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 			case ID_FILEPATH_WND_CLOSE:
 				{
 					m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+					printf("hej\n");
 				}
 				break;
 

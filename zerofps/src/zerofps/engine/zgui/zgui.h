@@ -127,6 +127,8 @@ private:
 	ZeroFps* m_pkZeroFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
+
+	int test;
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)

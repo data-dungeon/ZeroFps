@@ -39,7 +39,7 @@ class ENGINE_API Console : public BasicConsole {
 		Console();
 		
 		void Update(void);
-		void Execute(char* aText);
+		bool Execute(char* aText);
 };
 
 

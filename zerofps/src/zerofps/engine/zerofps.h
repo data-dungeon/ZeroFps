@@ -1,8 +1,8 @@
 #ifndef _ZEROFPS_H_
 #define _ZEROFPS_H_
 
-#include "../basic/basic.pkg"
-#include "../render/render.pkg"
+/*#include "../basic/basic.pkg"
+#include "../render/render.pkg"*/
 #include "engine.pkg"
 #include <string>
 #include <vector>
@@ -15,6 +15,9 @@
 #include "network.h"
 
 using namespace std;
+
+class Basic;
+class Render;
 
 class Application;
 class NetPacket;

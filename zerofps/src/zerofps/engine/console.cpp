@@ -228,14 +228,17 @@ void Console::Update(void) {
 */
 
 
-void Console::Execute(char* aText) {
+bool Console::Execute(char* aText) {
 	if(strlen(aText)==0){
 		Print("");
-		return;
+		return false;
 	}
 	
 	if(!g_ZFObjSys.RunCommand(aText))
+	{
 		Printf("Command Not Found");
+		return false;
+	}
 	else
 	{
 		m_kCommandHistory.push_back(string(aText));
@@ -245,4 +248,6 @@ void Console::Execute(char* aText) {
 			m_kCommandHistory.pop_front();
 		}
 	}
+
+	return true;
 }
