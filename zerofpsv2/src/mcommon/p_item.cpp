@@ -244,6 +244,8 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // icon
             pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic );
 
+            cout << "GotIcon:" << m_pkItemStats->m_szPic << endl;
+
             // category
             pkNetPacket->Write( &m_pkItemStats->m_eEquipmentCategory, 
 					sizeof(m_pkItemStats->m_eEquipmentCategory) );

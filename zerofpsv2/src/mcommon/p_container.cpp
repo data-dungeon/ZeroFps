@@ -15,7 +15,6 @@ P_Container::P_Container()
 	strcpy(m_acName,"P_Container");
 
 	bNetwork = true;
-
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -129,8 +128,6 @@ void P_Container::Empty()
 void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 {
    // do a request to server for update
-   RequestUpdateFromServer();
-
    if ( pkItemList )
       for ( int i = 0; i < m_kContainedObjects.size(); i++ )
       {
@@ -176,8 +173,6 @@ void P_Container::RequestUpdateFromServer()
       kOrder.m_iUseLess = m_uiVersion;
 
       pkCP->AddOrder (kOrder);
-
-      cout << "SENT CONT REQUEST" << endl;
    }
 }
 
@@ -295,6 +290,8 @@ void P_Container::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
       // request update for item at the same time
       Entity* pkObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(iID);
+
+      cout << "GOT ITEM IN CONT" << endl;
 
       if ( pkObj )
          ((P_Item*)pkObj->GetProperty("P_Item"))->RequestUpdateFromServer("data");

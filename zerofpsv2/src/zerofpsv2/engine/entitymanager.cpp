@@ -903,7 +903,7 @@ void EntityManager::PackToClients()
 	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
-		m_pkWorldObject->GetAllObjects(&kObjects);
+		m_pkWorldObject->GetAllObjects(&kObjects, true);
 
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -936,7 +936,7 @@ void EntityManager::PackToClients()
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == iClient)
-				(*it)->GetObject()->GetAllObjects(&kObjects);
+				(*it)->GetObject()->GetAllObjects(&kObjects, true);
 		}		
 		PackToClient(iClient, kObjects,false);
 		
@@ -944,10 +944,10 @@ void EntityManager::PackToClients()
 		kObjects.clear();		
 		
 		// Pack and Send all Client Objects
-		m_pkClientObject->GetAllObjects(&kObjects);
+		m_pkClientObject->GetAllObjects(&kObjects, true);
 
 		//pack and send global objects
-		m_pkGlobalObject->GetAllObjects(&kObjects);
+		m_pkGlobalObject->GetAllObjects(&kObjects, true);
 
 		// Loop all zones activated by client.
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 

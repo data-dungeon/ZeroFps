@@ -505,15 +505,15 @@ void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
 
 /**	\brief	Adds ourself and all our children to the list of objects.
 */
-void Entity::GetAllObjects(vector<Entity*> *pakObjects)
+void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll)
 {
-	if(m_iUpdateStatus & UPDATE_NONE)
+	if(m_iUpdateStatus & UPDATE_NONE && !bForceSendAll)
 		return;
 	
 	pakObjects->push_back(this);	
 	
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->GetAllObjects(pakObjects);
+		(*it)->GetAllObjects(pakObjects, bForceSendAll);
 	}	
 }
 

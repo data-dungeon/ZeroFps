@@ -2859,6 +2859,18 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
 
       Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID(dObject);
       Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID(dContainer);
+
+      if ( !pkItem )
+      {
+         cout << "Error! No item with ID:" << dObject << " exists! (PutInContainerLua)" << endl;
+         return 0;
+      }
+
+      if ( !pkContObj )
+      {
+         cout << "Error! No container with ID:" << dContainer << " exists! (PutInContainerLua)" << endl;
+         return 0;
+      }
       
       // check if the object is a item, and the other object is a container
       P_Item* pkItemIP = (P_Item*)pkItem->GetProperty("P_Item");
@@ -2867,7 +2879,7 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
       if ( pkItemIP && pkCont )
       {
          // check if the container object has a container
-         if ( pkCont )
+         if ( pkCont != 0 )
             pkCont->AddObject ( dObject );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;

@@ -1407,7 +1407,7 @@ void MistServer::HandleOrders()
             if ( pkC )
             {
                // check versions...
-               if ( pkC->m_uiVersion != order->m_iUseLess )
+               //if ( pkC->m_uiVersion != order->m_iUseLess )
                   pkC->AddSendsData(order->m_iClientID);
             }            
             else
@@ -1503,13 +1503,18 @@ void MistServer::HandleOrders()
          Entity* pkEntity = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
          Entity* pkPlayer = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
 
-         pkEntity->SetUpdateStatus (UPDATE_ALL);
-         pkEntity->GetParent()->RemoveChild (pkEntity);
+         if ( pkEntity && pkPlayer )
+         {
+            pkEntity->SetUpdateStatus (UPDATE_ALL);
+            pkEntity->GetParent()->RemoveChild (pkEntity);
 
-         pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
+            pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
 
-         //((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->
-         //   m_pkIsInContainer->RemoveObject( order->m_iObjectID );
+            ((P_Container*)pkPlayer->GetProperty("P_Container"))->RemoveObject(order->m_iObjectID);         
+         }
+
+         if ( !pkEntity )
+            cout << "Error! Client wanted to drop a non-existing item!" << endl;
       }  
 		
 		//normal orders

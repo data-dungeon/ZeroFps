@@ -274,7 +274,8 @@ class ENGINE_API Entity
 		bool HasChild(Entity* pkObject);							
 		int NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										// Remove all childs from this object.
-		void GetAllObjects(vector<Entity*> *pakObjects);			// Return this + all childs.
+		void GetAllObjects(vector<Entity*> *pakObjects     // Return this + all childs.
+                         ,bool bForceSendAll=false);			
 		void GetAllDynamicEntitys(vector<Entity*> *pakObjects);	// Return this + all childs.
 		Entity* GetStaticEntity();
 		
