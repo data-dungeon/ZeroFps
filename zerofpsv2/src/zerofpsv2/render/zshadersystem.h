@@ -273,7 +273,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//basic
 		void Push(const char* czNote);
 		void Pop();		
-		void BindMaterial(ZMaterial* pkMaterial);
+		void BindMaterial(ZMaterial* pkMaterial,bool bForceReload = false);
 		void ReloadMaterial();
 		
 		//other stuff

@@ -27,6 +27,13 @@ class RENDER_API ZMaterialSettings
 		int				m_iTUTexCords[4];
 		
 		Vector4			m_kVertexColor;
+		
+		Vector4			m_kMatAmbient;
+		Vector4			m_kMatDiffuse;
+		Vector4			m_kMatSpecular;
+		Vector4			m_kMatEmission;
+		float				m_fShininess;
+		
 		bool				m_bColorMaterial;		
 		float				m_fLineWidth;		
 		int				m_iPolygonModeFront;
@@ -49,7 +56,7 @@ class RENDER_API ZMaterialSettings
 		int				m_iBlendDst;
 		bool				m_bColorMask;
 		bool				m_bDepthMask;
-				
+		
 		//software effects
 		int				m_iTextureColorEffect;
 		

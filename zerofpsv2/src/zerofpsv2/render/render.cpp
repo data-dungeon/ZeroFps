@@ -424,7 +424,31 @@ void Render::SetFont(char* aFont) {
 }
 */
 
-void Render::Line(Vector3 kPos1,Vector3 kPos2)
+void Render::Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor)
+{
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
+		pkLine->GetPass(0)->m_bLighting = 			false;
+		pkLine->GetPass(0)->m_bFog = 					false;
+		pkLine->GetPass(0)->m_bColorMaterial =		true;
+	}
+	
+	pkLine->GetPass(0)->m_kVertexColor = kColor;		
+	m_pkZShaderSystem->BindMaterial(pkLine,true);
+	
+	m_pkZShaderSystem->ClearGeometry();
+	
+	m_pkZShaderSystem->AddLineV(kPos1,kPos2);
+	
+	m_pkZShaderSystem->SetDrawMode(LINES_MODE);
+	m_pkZShaderSystem->DrawGeometry();
+}
+
+void Render::Line(const Vector3& kPos1,const Vector3& kPos2)
 {
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
@@ -1150,7 +1174,7 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 	glPopMatrix();
 	
 }
-void Render::DrawAABB( Vector3 kMin,Vector3 kMax)
+void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax)
 {
 	Vector3 kCubeNeg = kMin; 
 	Vector3 kCubePos = kMax; 
@@ -1176,7 +1200,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax)
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
-void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize )
+void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor, float fLineSize )
 {
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
@@ -1194,8 +1218,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSiz
 	pkLine->GetPass(0)->m_fLineWidth = fLineSize;
 	
 	
-	m_pkZShaderSystem->BindMaterial(pkLine);
-	m_pkZShaderSystem->ReloadMaterial();
+	m_pkZShaderSystem->BindMaterial(pkLine,true);
 	
 	
 	Vector3 kCubeNeg = kMin; 
@@ -1222,7 +1245,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSiz
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
-void Render::DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
+void Render::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor )
 {
 	cout<<"Render::DrawSolidAABB"<<endl;
 
@@ -1318,6 +1341,11 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 
 void Render::Draw_AxisIcon(float scale)
 {
+
+	Line(Vector3(0,0,0),Vector3(scale,0,0),Vector3(1,0,0));
+	Line(Vector3(0,0,0),Vector3(0,scale,0),Vector3(0,1,0));
+	Line(Vector3(0,0,0),Vector3(0,0,scale),Vector3(0,0,1));
+/*
 	m_pkZShaderSystem->Push("Draw_AxisIcon");
 
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -1345,7 +1373,7 @@ void Render::Draw_AxisIcon(float scale)
 //	glEnable(GL_LIGHTING);
 //	glPopAttrib();
 
-	m_pkZShaderSystem->Pop();
+	m_pkZShaderSystem->Pop();*/
 }
 
 void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)

@@ -55,6 +55,12 @@ ZMaterialSettings::ZMaterialSettings()
 		
 	m_iTextureColorEffect = -1;
 	
+	m_kMatAmbient.Set(0.2,0.2,0.2,1.0);
+	m_kMatDiffuse.Set(0.8,0.8,0.8,1.0);
+	m_kMatSpecular.Set(0.0,0.0,0.0,1.0);
+	m_kMatEmission.Set(0.0,0.0,0.0,1.0);
+	m_fShininess = 0.0;
+	
 };
 
 ZMaterialSettings::~ZMaterialSettings()
@@ -337,7 +343,52 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-a"))
       newpass->m_kVertexColor.w = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-a");	
 	
+	//material settings
+	//ambient
+	if(m_kIni.KeyExist(passname.c_str(),"matambient-r"))
+      newpass->m_kMatAmbient.x = m_kIni.GetFloatValue(passname.c_str(),"matambient-r");	
+	if(m_kIni.KeyExist(passname.c_str(),"matambient-g"))
+      newpass->m_kMatAmbient.y = m_kIni.GetFloatValue(passname.c_str(),"matambient-g");	
+	if(m_kIni.KeyExist(passname.c_str(),"matambient-b"))
+      newpass->m_kMatAmbient.z = m_kIni.GetFloatValue(passname.c_str(),"matambient-b");	
+	if(m_kIni.KeyExist(passname.c_str(),"matambient-a"))
+      newpass->m_kMatAmbient.w = m_kIni.GetFloatValue(passname.c_str(),"matambient-a");	
+
+	//diffuse
+	if(m_kIni.KeyExist(passname.c_str(),"matdiffuse-r"))
+      newpass->m_kMatDiffuse.x = m_kIni.GetFloatValue(passname.c_str(),"matdiffuse-r");	
+	if(m_kIni.KeyExist(passname.c_str(),"matdiffuse-g"))
+      newpass->m_kMatDiffuse.y = m_kIni.GetFloatValue(passname.c_str(),"matdiffuse-g");	
+	if(m_kIni.KeyExist(passname.c_str(),"matdiffuse-b"))
+      newpass->m_kMatDiffuse.z = m_kIni.GetFloatValue(passname.c_str(),"matdiffuse-b");	
+	if(m_kIni.KeyExist(passname.c_str(),"matdiffuse-a"))
+      newpass->m_kMatDiffuse.w = m_kIni.GetFloatValue(passname.c_str(),"matdiffuse-a");	
 	
+	//specular
+	if(m_kIni.KeyExist(passname.c_str(),"matspecular-r"))
+      newpass->m_kMatSpecular.x = m_kIni.GetFloatValue(passname.c_str(),"matspecular-r");	
+	if(m_kIni.KeyExist(passname.c_str(),"matspecular-g"))
+      newpass->m_kMatSpecular.y = m_kIni.GetFloatValue(passname.c_str(),"matspecular-g");	
+	if(m_kIni.KeyExist(passname.c_str(),"matspecular-b"))
+      newpass->m_kMatSpecular.z = m_kIni.GetFloatValue(passname.c_str(),"matspecular-b");	
+	if(m_kIni.KeyExist(passname.c_str(),"matspecular-a"))
+      newpass->m_kMatSpecular.w = m_kIni.GetFloatValue(passname.c_str(),"matspecular-a");	
+	
+	//emission
+	if(m_kIni.KeyExist(passname.c_str(),"matemission-r"))
+      newpass->m_kMatEmission.x = m_kIni.GetFloatValue(passname.c_str(),"matemission-r");	
+	if(m_kIni.KeyExist(passname.c_str(),"matemission-g"))
+      newpass->m_kMatEmission.y = m_kIni.GetFloatValue(passname.c_str(),"matemission-g");	
+	if(m_kIni.KeyExist(passname.c_str(),"matemission-b"))
+      newpass->m_kMatEmission.z = m_kIni.GetFloatValue(passname.c_str(),"matemission-b");	
+	if(m_kIni.KeyExist(passname.c_str(),"matemission-a"))
+      newpass->m_kMatEmission.w = m_kIni.GetFloatValue(passname.c_str(),"matemission-a");	
+				
+	//shininess
+	if(m_kIni.KeyExist(passname.c_str(),"matshininess"))
+      newpass->m_fShininess = m_kIni.GetFloatValue(passname.c_str(),"matshininess");	
+	
+		
 	//get effects	
 	if(m_kIni.KeyExist(passname.c_str(),"coloreffect"))
 		newpass->m_iTextureColorEffect = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"coloreffect"));

@@ -140,7 +140,8 @@ class RENDER_API Render : public ZFSubSystem {
 		void Print(Vector3 kPos, const char* aText,float fScale = 1.0);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
-		void Line(Vector3 kPos1,Vector3 kPos2);
+		void Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor);
+		void Line(const Vector3& kPos1,const Vector3& kPos2);
 		void SetClearColor(Vector4 kColor);
 
 		// LandScape
@@ -183,9 +184,9 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawBox(Vector3 kPos,Vector3 kCenter, Matrix4 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
-		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize = 1.0 );
-		void DrawAABB( Vector3 kMin,Vector3 kMax);
-		void DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
+		void DrawAABB( const Vector3& kMin,const Vector3& kMax,const Vector3& kColor, float fLineSize = 1.0 );
+		void DrawAABB(const Vector3& kMin,const Vector3& kMax);
+		void DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor );
 
 		void DrawCircle(vector<Vector3> kCircel, Vector3 kColor);
 

@@ -99,7 +99,7 @@ void ZShaderSystem::Pop()
 
 
 
-void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial)
+void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial,bool bForceReload)
 {
 	if(pkMaterial == NULL)
 	{
@@ -110,12 +110,13 @@ void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial)
 	m_iMaterialBinds++;
 	
 	//compare IDS of materials	if its the same , return
-	if(m_pkCurrentMaterial != NULL)
-		if(pkMaterial->m_iID == m_pkCurrentMaterial->m_iID)
-		{
-			m_iSavedReloads++;
-			return;
-		}
+	if(!bForceReload)
+		if(m_pkCurrentMaterial != NULL)
+			if(pkMaterial->m_iID == m_pkCurrentMaterial->m_iID)
+			{
+				m_iSavedReloads++;
+				return;
+			}
 
 	//set corrent material
 	m_pkCurrentMaterial = pkMaterial;
@@ -179,7 +180,13 @@ void ZShaderSystem::SetupPass(int iPass)
 		
 	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->m_kPasses[iPass];
 	
-
+	
+	//material light propertys
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,	&pkSettings->m_kMatAmbient.x);	
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,	&pkSettings->m_kMatDiffuse.x);	
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,	&pkSettings->m_kMatSpecular.x);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,	&pkSettings->m_kMatEmission.x);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,	&pkSettings->m_fShininess);
 	
 	//enable color material if wanted
 	if(pkSettings->m_bColorMaterial)

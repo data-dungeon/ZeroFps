@@ -189,12 +189,13 @@ void P_Enviroment::Update()
 				Vector3 intr;
 			
 				float fIf = 0.02;
-			
+
+							
 				//interpolate diffuse light
 				current=m_pkCurrentLP->GetDiffuse();
 				interpolated.Lerp(current,m_kSunDiffuseColor,fIf);
 				m_pkCurrentLP->SetDiffuse(interpolated);
-			
+							
 				//interpolate ambient light
 				current=m_pkCurrentLP->GetAmbient();
 				interpolated.Lerp(current,m_kSunAmbientColor,fIf);
