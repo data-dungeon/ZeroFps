@@ -1579,10 +1579,9 @@ Entity* MistClient::GetTargetObject()
 						
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
 			continue;		
-		if(kObjects[i]->GetType() == "hosplayer.lua")
-			continue;		
-		if(kObjects[i]->GetType() == "Entity")
-			continue;		
+	
+// 		if(kObjects[i]->GetType() == "Entity")
+// 			continue;		
 		
 		if(kObjects[i]->GetEntityID() == m_iCharacterID)		//dont pick self
 			continue;
@@ -1591,9 +1590,8 @@ Entity* MistClient::GetTargetObject()
 		
 		
 		
-		//get mad property and do a linetest
-		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
-		if(mp)
+		//get mad property and do a linetest		
+		if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
 		{
 			if(mp->TestLine(start,dir))
 			{	

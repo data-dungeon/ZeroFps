@@ -591,8 +591,8 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 	
 	
 	//ful hack  , skips models that are to large
-	if(pkFaces->size() > 1000)
-		return false;
+ 	if(pkFaces->size() > 10000)
+ 		return false;
 	
 	
 	GenerateModelMatrix();
