@@ -91,17 +91,12 @@ void ZeroEdit::OnInit(void)
 
 	m_pkGui = new Gui(this);
 
-/*	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(0,0,500,500),NULL,true,245123241);
-	pkMainWindow->SetSkin(m_pkGui->GetSkin("blue"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_iWidth,m_iHeight));
-
-	int	iID = 22541; printf("%i", iID);
-	ZGuiButton* pkCloseButton = new ZGuiButton(Rect(500-20,0,500,20),pkMainWindow,true,iID);
-	pkCloseButton->SetButtonHighLightSkin(m_pkGui->GetSkin("bn_focus"));
-	pkCloseButton->SetButtonDownSkin(m_pkGui->GetSkin("bn_down"));
-	pkCloseButton->SetButtonUpSkin(m_pkGui->GetSkin("bn_up"));
-	pkGui->AddMainWindow(24512324122, pkMainWindow, m_pkGui->m_pkWndProc, true);*/
-
+	
+	Sound *welcome=new Sound();
+	welcome->m_acFile="file:../data/sound/welcome.wav";
+	welcome->m_kPos.Set(0,10,0);
+	welcome->m_bLoop=true;
+	pkAlSys->AddSound(welcome);
 }
 
 
