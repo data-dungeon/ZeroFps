@@ -87,41 +87,40 @@ int DMLua::SetDMCharacterNameLua(lua_State* pkLua)
 int DMLua::GetDMCharacterClosestLua(lua_State* pkLua) 
 {
 	double dObjectID = -1;
-
-	int iClosestCharID = 0;
+	double dClosestCharID = -1;
 
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
 		P_DMCharacter* pkCharacter;
 		double dFromObjectID, dClosestDistance = 999999999;
 
-		g_pkScript->GetArgNumber(pkLua, 0, &dFromObjectID);
+		if(g_pkScript->GetArgNumber(pkLua, 0, &dFromObjectID))
+		{
+			// if it crashed here sometime, give zerom a kick
+			Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(int(dFromObjectID))->GetWorldPosV();
 
-		// if it crashed here sometime, give zerom a kick
-		Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(int(dFromObjectID))->GetWorldPosV();
+			vector<Entity*> kObjects;		
+			g_pkObjMan->GetAllObjects(&kObjects);
 
-		vector<Entity*> kObjects;		
-		g_pkObjMan->GetAllObjects(&kObjects);
-
-		for(unsigned int i=0;i<kObjects.size();i++)
-			if( dFromObjectID != kObjects[i]->GetEntityID() &&
-			    (pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
-			{
-				if(pkCharacter->m_iTeam == 0) // endast spelarens agenter
+			for(unsigned int i=0;i<kObjects.size();i++)
+				if( dFromObjectID != kObjects[i]->GetEntityID() &&
+					(pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
 				{
-					double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
-					// ignore if dead
-					if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
+					if(pkCharacter->m_iTeam == 0) // endast spelarens agenter
 					{
-						dClosestDistance = dDist;
-						iClosestCharID = kObjects[i]->GetEntityID();
+						double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
+						// ignore if dead
+						if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
+						{
+							dClosestDistance = dDist;
+							dClosestCharID = (double) kObjects[i]->GetEntityID();
+						}
 					}
 				}
-			}
-
+		}
 	}
 
-	g_pkScript->AddReturnValue(pkLua, iClosestCharID);
+	g_pkScript->AddReturnValue(pkLua, dClosestCharID);
 
 	return 1; // this function returns one (1) argument
 }

@@ -35,8 +35,11 @@ end
 function FirstRun()
 
 	SISetHeartRate(SIGetSelfID(),1);
-
 	SetEntityVar(SIGetSelfID(), "g_HelpingCharacterID", -1)
+
+end
+
+function InitPoliceData()
 
 	local civilian_list = GetCharsByFraction(1)
 	local num_civilians = civilian_list[1]
@@ -46,9 +49,31 @@ function FirstRun()
 		local civilian_pos = GetEntityPos(civilian_list[x])
 		AddPatrolPoint(SIGetSelfID(), civilian_pos)
 	end
+
+	AddPatrolPoint(SIGetSelfID(), GetEntityPos(SIGetSelfID()))
+	SetEntityVar(SIGetSelfID(), "CreateCounter", 10)
 end
 
 function HeartBeat()
+
+
+	-----------------------------------------------------------------------
+	-- Vänta på att alla objekt skall ha skapats så att vi kan 
+	-- skapa en lista över alla civila.
+	-----------------------------------------------------------------------
+	local cc = GetEntityVar(SIGetSelfID(), "CreateCounter")
+	if cc == 1 then
+		InitPoliceData()
+	end
+	if cc < 2 then
+		cc = cc + 1
+		SetEntityVar(SIGetSelfID(), "CreateCounter", cc)
+		return
+	end
+	-----------------------------------------------------------------------
+
+
+
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
 
@@ -110,6 +135,12 @@ function HeartBeat()
 	if State == 4 then -- aggresive
 
 		local closest_agent = GetDMCharacterClosest(SIGetSelfID())
+
+		if closest_agent == -1 then
+			SetState(SIGetSelfID(),0) -- Get Idle
+			Patrol(SIGetSelfID())
+			return
+		end
 	
 		-- Close enough?
 		agent_pos = GetEntityPos(closest_agent)

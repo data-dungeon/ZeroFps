@@ -152,6 +152,19 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_vkPlayedPictures.clear();
 		PlayIntroScreen();
 	}
+	else
+	if(strClickName == "OptionsBn")
+	{
+		LoadDlg("data/script/gui/dm_options.lua");
+		m_pkGui->SetCaptureToWnd(GetWnd("DMOptionsWnd"));
+	}
+	else
+	if(strClickName == "OptionsCloseBn")
+	{
+		pkMainWnd->Hide();
+		m_pkGui->KillWndCapture(); 
+		m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+	}
 }
 
 void CStartDMDlg::PlayIntroScreen()

@@ -188,14 +188,21 @@ int DMLua::PatrolLua(lua_State* pkLua)
 					{
 						if(pf->HavePath() == false)
 						{
-							int* curr_pos = &(it->second.m_iCurrent);
-							pf->MakePathFind(it->second.m_vkPoints[*curr_pos]);
-							
-							*curr_pos = *curr_pos +1;
-							if(*curr_pos > it->second.m_vkPoints.size()-1)
-							{
-								*curr_pos = 0;
-							}
+							it->second.m_iCurrent++; // öka upp så att vi pathfindar till nästa punkt
+
+							// är detta 1 mer än den sista punkten (dvs == size på vektorn)
+							// så pathfindar vi tillbaks till punkt 0
+							if(it->second.m_iCurrent == it->second.m_vkPoints.size())
+								it->second.m_iCurrent = 0;
+
+							// gör pathfind till nästa punkt
+							pf->MakePathFind(it->second.m_vkPoints[it->second.m_iCurrent]);
+
+							printf("Step %i. Moving to (%i,%i,%i)\n", 
+								it->second.m_iCurrent,
+								(int)it->second.m_vkPoints[it->second.m_iCurrent].x,
+								(int)it->second.m_vkPoints[it->second.m_iCurrent].y,
+								(int)it->second.m_vkPoints[it->second.m_iCurrent].z);
 						}
 					}
 				}

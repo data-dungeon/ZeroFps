@@ -1074,6 +1074,8 @@ void DarkMetropolis::StartSong(char* szName)
 	{
 		OggMusic* pkMusic = static_cast<OggMusic*>(
 			g_ZFObjSys.GetObjectPtr("OggMusic")); 
+
+		pkMusic->SetVolume(0.1f); 
 		pkMusic->LoadFile(szName);
 		pkMusic->Play();
 

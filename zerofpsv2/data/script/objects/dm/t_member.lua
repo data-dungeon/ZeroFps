@@ -84,7 +84,7 @@ function HeartBeat()
 	end	
 
 	-- Spela upp en liten kommentar då och då när personen står still och inte har blivit skadad
-	if Random(100) > 75 then
+	if Random(100) > 85 then
 			
 		talk_sound = 
 		{

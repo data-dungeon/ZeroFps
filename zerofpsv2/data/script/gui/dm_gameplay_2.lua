@@ -294,10 +294,10 @@ function GUICreate()
 	ChangeSkin("GamPlayMenuBn","Skin1","Button focus")
 
 
-	CreateWnd(2,"PauseBn","wind_map","",160+35,200-35,32,32,0)
-	ChangeSkin("PauseBn","Skin29","Checkbox: Button up")
-	ChangeSkin("PauseBn","Skin30","Checkbox: Button down")
-	--ChangeSkin("PauseBn","Skin3","Button focus")
+	CreateWnd(1,"PauseBn","wind_map","",160+35,200-35,32,32,0)
+	ChangeSkin("PauseBn","Skin29","Button up")
+	ChangeSkin("PauseBn","Skin30","Button down")
+	ChangeSkin("PauseBn","Skin29","Button focus")
 
 
 

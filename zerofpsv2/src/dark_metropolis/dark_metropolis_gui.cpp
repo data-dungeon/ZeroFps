@@ -170,7 +170,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 	printf("strClickName = %s, %s\n", strClickName.c_str(), strMainWnd.c_str());
 
-	if(strMainWnd == "DMStartWnd")
+	if(strMainWnd == "DMStartWnd" ||
+		strMainWnd == "DMOptionsWnd")
 	{
 		m_pkStartDMDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
