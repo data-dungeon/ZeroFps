@@ -497,7 +497,6 @@ void DarkMetropolis::Input()
 			}
 			else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 			{
-				//m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
 				m_iHQID = pkEnt->GetEntityID();
 				
 				// Test for double click and in that case open HQ dlg.
@@ -625,7 +624,11 @@ void DarkMetropolis::Input()
 					
 						SelectAgent(m_iSelectedEntity, false, false,false); // remove selection
 						pkHQ->InsertCharacter(m_iSelectedEntity);
-						
+
+						// clear orders
+						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+							pkCh->ClearOrders();
+
 						// Remove selected agent from list
 						((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 
@@ -747,6 +750,9 @@ void DarkMetropolis::Input()
 							// TODO: write "not close enough" message
 							else
 							{
+								if ( m_iSelectedEntity == m_iMainAgent )
+									SetText("infotext", "Not close enough.");
+
 								pkCh->ClearOrders();
 								
 								DMOrder kOrder;

@@ -181,6 +181,9 @@ function GUICreate()
 	CreateWnd(0,"GamePlayScreen","","",0,0,800,600,0,0,3)
 	ChangeSkin("GamePlayScreen","Skin4","Window")
 
+	CreateWnd(0,"infotext_box","GamePlayScreen","",120,20,650,30,0,2,0)
+	ChangeSkin("infotext_box","Skin9","Window")
+
 	CreateWnd(0,"panel_char","GamePlayScreen","",-1,-10,128,512,0,2,0)
 	ChangeSkin("panel_char","Skin11","Window")
 
@@ -203,7 +206,8 @@ function GUICreate()
 	CreateWnd(4,"GamePlayInfoLabel","GamePlayScreen","Return to base! Mission done.",150,470,400,22,0,0,0)
 	ChangeSkin("GamePlayInfoLabel","Skin25","Label")
 
-
+	CreateWnd(4,"infotext","GamePlayScreen","Testtjoff",120,20,400,22,0,0,0)
+	ChangeSkin("infotext","Skin25","Label")
 
 	--
 	--   quickitems..
@@ -468,7 +472,7 @@ function GUICreate()
 
 
 	SetTextString("HelpTextEb", HelpText)
-	
+	SetTextString("infotext", "");
 end
 
 -- Mistlands GUI Resource file, END

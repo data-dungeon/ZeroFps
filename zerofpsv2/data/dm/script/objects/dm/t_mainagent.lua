@@ -19,7 +19,7 @@ function Create()
 		InitParameter("group",2);
 		InitParameter("groupflag",0);
 		InitParameter("groupflag",1);
-		InitParameter("leglength",0.5);
+		InitParameter("leglength",0.8);
 		InitParameter("walkablegroupflag",0);
 		InitParameter("airfriction",10.0);
 		InitParameter("mass",1);
@@ -38,6 +38,8 @@ function Init()
 	BindKey(SIGetSelfID(), "move_left", 0, -50);
 	BindKey(SIGetSelfID(), "move_right", 0, 50);
 	BindKey(SIGetSelfID(), "move_up", 2, -50);
-	BindKey(SIGetSelfID(), "move_down", 2, 50);			RotWithCamYAxis(SIGetSelfID(), 1);
+	BindKey(SIGetSelfID(), "move_down", 2, 50);			
+	RotWithCamYAxis(SIGetSelfID(), 1);
+	SetVar ("MainAgent", SIGetSelfID());
 
 end

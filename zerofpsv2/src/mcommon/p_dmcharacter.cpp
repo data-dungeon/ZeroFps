@@ -388,7 +388,7 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 
 void P_DMCharacter::Update()
 {
-	UpdateOrders();	
+	UpdateOrders();
 	
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{

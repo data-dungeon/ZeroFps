@@ -622,7 +622,7 @@ int DMLua::AddToEntityVarLua (lua_State* pkLua)
 }
 
 // ------------------------------------------------------------------------------------------------
-
+// key, value
 int DMLua::SetVarLua (lua_State* pkLua)
 {
 	if ( g_pkScript->GetNumArgs(pkLua) != 2 )
