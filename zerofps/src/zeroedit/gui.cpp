@@ -665,8 +665,16 @@ void Gui::CreateTestWnd()
 
 	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animals", 0, 1);
 	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Aps", 0, 1);
-	pkTreebox->AddItem(pkParent, "Cows", 0, 1);
-	pkTreebox->AddItem(pkApa, "Green ape", 0, 1);
+	ZGuiTreebox::Node* pkParent7 = pkTreebox->AddItem(pkParent, "Cows", 0, 1);
+	ZGuiTreebox::Node* pkParent4 = pkTreebox->AddItem(pkApa, "Big ape", 0, 1);
+	pkTreebox->AddItem(pkParent4, "Big ape, big nose", 0, 1);
+	ZGuiTreebox::Node* pkParent5 = pkTreebox->AddItem(pkParent4, "Big ape, wicked", 0, 1);
+	pkTreebox->AddItem(pkParent5, "Donkey Kong", 0, 1);
+	ZGuiTreebox::Node* pkParent6 = pkTreebox->AddItem(pkParent5, "King Kong", 0, 1);
+	pkTreebox->AddItem(pkParent6, "Climbing", 0, 1);
+	pkTreebox->AddItem(pkParent6, "Eating", 0, 1);
+	pkTreebox->AddItem(pkParent4, "Big ape, small eyes", 0, 1);
+	pkTreebox->AddItem(pkParent4, "Big ape, no smell", 0, 1);
 	pkTreebox->AddItem(pkApa, "Brown ape", 0, 1);
 	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Cats", 0, 1);
 	pkTreebox->AddItem(pkParent2, "Katten Gustav", 0, 1);
@@ -674,6 +682,14 @@ void Gui::CreateTestWnd()
 	pkTreebox->AddItem(pkParent3, "Lion", 0, 1);
 	pkTreebox->AddItem(pkParent3, "Tiger", 0, 1);
 	pkTreebox->AddItem(pkParent3, "Black Panter", 0, 1);
+	pkTreebox->AddItem(pkParent7, "KoBo", 0, 1);
+	pkTreebox->AddItem(pkParent7, "Tjuren Ferdinand", 0, 1);
+	ZGuiTreebox::Node* pkParent8 = pkTreebox->AddItem(pkParent, "Dogs", 0, 1);
+	ZGuiTreebox::Node* pkParent9 = pkTreebox->AddItem(pkParent8, "Bulldog", 0, 1);
+	pkTreebox->AddItem(pkParent9, "Fet", 0, 1);
+	pkTreebox->AddItem(pkParent9, "AsFet", 0, 1);
+	pkTreebox->AddItem(pkParent8, "Labrador", 0, 1);
+	pkTreebox->AddItem(pkParent8, "Newfoundland", 0, 1);
 	
 	pkWnd->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
 	pkTreebox->SetSkin(new ZGuiSkin(255,128,64,0,0,0,1));

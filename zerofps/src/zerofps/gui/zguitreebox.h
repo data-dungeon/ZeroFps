@@ -54,8 +54,9 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
-	void MoveNode(Node* pkNode, int steps);
-	void ShowNode(vector<Node*> itList, bool bShow);
+	int m_iStepSum;
+	int GetNumExpandSteps(Node* pkNode);
+	void MoveNode(Node* pkNode, int steps, bool bRecursive=true);
 	void OpenChilds(vector<Node*> kChilds, bool bOpen);
 	void OpenNode(Node* pkNode, bool bOpen);
 	
