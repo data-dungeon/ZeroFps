@@ -10,6 +10,9 @@
 #include <cstdlib>
 
 #include "ballobject.h"
+//#include "gui.h"
+
+class Gui;
 
 
 enum EDIT_MODES{
@@ -28,6 +31,7 @@ class LandType{
 
 class ZeroEdit :public Application {
 	private:
+
 		enum FuncId_e
 		{
 			FID_LOADMAP,
@@ -60,7 +64,6 @@ class ZeroEdit :public Application {
 		
 		int m_iMode;
 	
-		
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
 		float m_fPointerHeight;
@@ -68,6 +71,8 @@ class ZeroEdit :public Application {
 		Object* m_pkCurentParent;
 		Object* m_pkCurentChild;
 		
+		string m_kMapBaseDir;
+
 		string m_kCurentTemplate;
 		
 		int m_iPencilSize;
@@ -77,8 +82,8 @@ class ZeroEdit :public Application {
 		int m_iLandType;
 		bool m_bDrawing;
 		bool m_iRandom;
+
 		bool m_bMenuActive;
-	
 	
 		void Input();				
 		void SetPointer();	
@@ -98,14 +103,8 @@ class ZeroEdit :public Application {
 		bool SaveLandToFile(const char* acFile);		
 		
 		void HeightMapDraw(Vector3 kPencilPos);
-		
-		void ToogleMenu();
-		bool InitGUI();
-		
-		
-		
+
 	public:
-		bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroEdit() {};
 	 	void OnInit(void);
@@ -114,7 +113,9 @@ class ZeroEdit :public Application {
 		void OnServerStart(void);
 		void OnClientStart(void);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		Gui* m_pkGui;
 		
+	friend class Gui;
 };
 
 

@@ -1,17 +1,19 @@
-struct CtrlInfo
-{
-	char name[50];
-	int id;
-};
 
-#define ID_CLOSE			100
-#define ID_OPEN_TEMPLATE	101
-#define ID_LOAD_MAP			102
-#define IDM_CLOSE			203
+#ifndef RES_ID
+#define RES_ID
 
-static CtrlInfo g_kCtrList[] =
-{
-	{ "Close",			ID_CLOSE			},
-	{ "Open template",	ID_OPEN_TEMPLATE	},
-	{ "Load map",		ID_LOAD_MAP			},
-};
+const int ID_MAINWND1					= 9000;
+const int ID_MAINWND2					= 9001;
+const int ID_CLOSE						= 9002;
+const int ID_OPEN_TEMPLATE				= 9003;
+const int ID_LOAD_MAP					= 9004;
+const int IDM_CLOSE						= 9005;
+const int ID_FILEPATH_WND				= 9006;
+const int ID_FILEPATH_WND_LABEL_PATH	= 9007;
+const int ID_FILEPATH_WND_LABEL_FILE	= 9008;
+const int ID_FILEPATH_WND_CLOSE			= 9009;
+const int IDM_OPEN						= 9010;
+
+static int iLastIDNr = 9005;
+
+#endif

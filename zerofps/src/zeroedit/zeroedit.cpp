@@ -1,14 +1,11 @@
 #include "zeroedit.h"
-#include "resource_id.h"
+#include "gui.h"
 
 ZeroEdit Editor("ZeroEdit",1024,768,16);
 
-#define ID_MAINWND1 1
-#define ID_CLOSE_BUTTON 2
-
 static bool g_ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {
-	return Editor.ZGWinProc(pkWindow, uiMessage, iNumberOfParams, pkParams);
+	return Editor.m_pkGui->ZGWinProc(pkWindow, uiMessage, iNumberOfParams, pkParams);
 }
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
@@ -18,7 +15,6 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
-
 	RegisterPropertys();
 		
 	pkLevelMan->Fog(Vector3(0,0,0),200,250);
@@ -92,7 +88,6 @@ void ZeroEdit::OnInit(void)
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
 
-
 	//default light
 	LightSource *sol=new LightSource;	
 	Vector3 *solrot=new Vector3(.4,.4,.2);	
@@ -110,8 +105,7 @@ void ZeroEdit::OnInit(void)
 
 	pkLight->Add(sol);
 
-	InitGUI();
-
+	m_pkGui = new Gui(this, g_ZGWinProc);
 
 }
 
@@ -127,7 +121,6 @@ void ZeroEdit::OnIdle(void)
 	SetPointer();
 	DrawMarkers();
 
-	
 	Input();
 }
 
@@ -480,7 +473,7 @@ void ZeroEdit::Input()
 	float speed=40;
 
 	if(pkInput->GetQueuedKey() == F10)
-		ToogleMenu();
+		m_pkGui->ToogleMenu();
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){
@@ -563,12 +556,9 @@ void ZeroEdit::Input()
 //						m_pkCurentParent=m_pkHeightMapObject;
 					}
 
-		}
-		
-		
+		}	
 	}
 	
-
 	if(pkInput->Pressed(KEY_Q))
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_E))
@@ -580,7 +570,7 @@ void ZeroEdit::Input()
 	pkInput->RelMouseXY(x,z);
 
 	//rotate the camera		
-	if(m_bMenuActive == false)
+	if(!m_pkGui->IsMenuActive())
 	{
 		pkFps->GetCam()->GetRot().x+=z/5.0;
 		pkFps->GetCam()->GetRot().y+=x/5.0;	
@@ -831,86 +821,6 @@ void ZeroEdit::ListTemplates()
 	akNames.clear();
 }
 
-
-bool ZeroEdit::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
-{
-	Rect rc;
-
-	switch(uiMessage)
-	{
-	case ZGM_COMMAND:
-		if( ((int*)pkParams)[0] == ID_CLOSE)
-		{
-			cout<<"blub"<<endl;		
-			pkFps->QuitEngine();
-		}
-		break;
-	}
-	return true;
-}
-
-bool ZeroEdit::InitGUI()
-{
-	int tex_font = pkTexMan->Load("file:../data/textures/text/font.bmp", 0);
-	int tex_font_a = pkTexMan->Load("file:../data/textures/text/font_a.bmp", 0);
-	int tex_bn_up = pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
-	int tex_bn_down = pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
-	int tex_bn_focus = pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
-	int tex_cursor = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
-	int tex_cursor_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-
-	ZGuiSkin* sk_main = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
-	ZGuiSkin* sk_bn1_up = new ZGuiSkin(tex_bn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_down = new ZGuiSkin(tex_bn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(tex_bn_focus, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_font = new ZGuiSkin(tex_font, -1, -1, -1, 255, 0, 255, 255, 0, 255);
-	ZGuiSkin* sn_white = new ZGuiSkin(-1, -1, -1, -1, 128, 128, 128, 0, 0, 0, 0);
-
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-200/2,768/2-500/2,1024/2+200/2,768/2+100/2), 
-		NULL, m_bMenuActive);
-
-	Rect rc = Rect(10,10,190,40);
-
-	for(int i=0; i<sizeof(g_kCtrList) / sizeof(g_kCtrList[1]); i++)
-	{
-		ZGuiButton* pkMenuButton = new ZGuiButton(rc,pkMainWindow,true,g_kCtrList[i].id);
-		pkMenuButton->SetButtonHighLightSkin(sn_bn1_focus);
-		pkMenuButton->SetButtonDownSkin(sn_bn1_down);
-		pkMenuButton->SetButtonUpSkin(sk_bn1_up);
-		pkMenuButton->SetTextSkin(sn_font, tex_font_a);
-		pkMenuButton->SetText(g_kCtrList[i].name);
-		rc = rc.Move(0, rc.Height() + 5);
-	}
-
-	pkMainWindow->SetSkin(sk_main); 
-	if(!pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow, g_ZGWinProc, true))
-		return false;
-
-	pkGui->SetCursor(tex_cursor, tex_cursor_a, 32, 32);
-
-	m_bMenuActive = true;
-	ToogleMenu();
-
-	return true;
-}
-
-void ZeroEdit::ToogleMenu()
-{
-	m_bMenuActive = !m_bMenuActive;
-
-	if(m_bMenuActive)
-	{	
-		pkGui->GetActiveMainWnd()->Show();
-		pkGui->ShowCursor(true);
-	}
-	else
-	{
-		pkGui->GetActiveMainWnd()->Hide();
-		pkGui->ShowCursor(false);
-	}
-}
-
-
 void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 {
 	LandType kTemp=GetLandType(m_iLandType);
@@ -1052,3 +962,4 @@ bool ZeroEdit::SaveLandToFile(const char* acFile)
 
 	return true;
 }
+
