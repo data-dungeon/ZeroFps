@@ -183,7 +183,7 @@ void Test::OnInit(void)
 	pkAlSys->AddSound(welcome);
 
 	// Gui
-//	InitUI();
+	InitUI();
 
 	ZFObjectManger::GetInstance()->PrintObjects();
 }
@@ -407,9 +407,9 @@ bool Test::InitUI()
 //	int font_a = pkRender->GetTexMangager()->Load("file:../data/textures/font_a.bmp", 0);
 
 	ZGuiSkin* sk_main = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
-//	ZGuiSkin* sk_bn1_up = new ZGuiSkin(bn1_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_bn1_down = new ZGuiSkin(bn1_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(bn1_focus, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+	ZGuiSkin* sk_bn1_up = new ZGuiSkin(-1, -1, -1, -1, 223, 55, 255, 0, 0, 0, 0);
+	ZGuiSkin* sn_bn1_down = new ZGuiSkin(-1, -1, -1, -1, 0, 255, 255, 0, 0, 0, 0);
+	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 23, 0, 0, 0, 0);
 //	ZGuiSkin* sn_sb1 = new ZGuiSkin(bk_image2, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
 //	ZGuiSkin* sn_radio_bn_unsel = new ZGuiSkin(radiobn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
 //	ZGuiSkin* sn_radio_bn_sel = new ZGuiSkin(radiobn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
@@ -422,10 +422,10 @@ bool Test::InitUI()
 //	pkMainWindow2->SetSkin(sn_white);
 //	pkMainWindow2->SetMoveArea(Rect(0,0,1024,768));
 //
-//	ZGuiButton* pkButton = new ZGuiButton(Rect(100,100,180,150),pkMainWindow,true,ID_CLOSE_BUTTON);
-//	pkButton->SetButtonHighLightSkin(sn_bn1_focus);
-//	pkButton->SetButtonDownSkin(sn_bn1_down);
-//	pkButton->SetButtonUpSkin(sk_bn1_up);
+	ZGuiButton* pkButton = new ZGuiButton(Rect(100,100,180,150),pkMainWindow,true);
+	pkButton->SetButtonHighLightSkin(sn_bn1_focus);
+	pkButton->SetButtonDownSkin(sn_bn1_down);
+	pkButton->SetButtonUpSkin(sk_bn1_up);
 //	pkButton->SetText("Close");
 //	pkButton->SetTextSkin(sn_font, font_a);
 //
