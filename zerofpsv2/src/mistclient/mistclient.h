@@ -100,6 +100,8 @@ class MistClient :public Application, public ZGuiApp {
 
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 		
+		void UpdateCullObjects();
+		
 	public:
 		void CloseActionMenu();
 		void OpenActionMenu(int x, int y);

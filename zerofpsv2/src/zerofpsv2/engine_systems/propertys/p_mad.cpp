@@ -17,7 +17,9 @@ P_Mad::P_Mad()
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	
 	m_bIsVisible = true;
+	m_bCanBeInvisible = false;
 	m_fScale	 = 1.0;
+	
 }
 
 void P_Mad::Update() 
@@ -92,6 +94,7 @@ void P_Mad::Save(ZFIoInterface* pkPackage)
 
 	pkPackage->Write((void*)temp,128,1);
 	pkPackage->Write((void*)&m_fScale,4,1);
+	pkPackage->Write((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
 }
 
 void P_Mad::Load(ZFIoInterface* pkPackage)
@@ -104,6 +107,8 @@ void P_Mad::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&scale,4,1);
 	SetScale(scale);
 	
+	pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);	
+	
 	//update object radius
 	m_pkObject->GetRadius() = GetRadius();
 }
@@ -112,6 +117,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
 	pkNetPacket->Write( m_fScale );
+	pkNetPacket->Write( m_bCanBeInvisible );	
 	pkNetPacket->Write( iActiveAnimation );
 	
 	m_iNetUpdateFlags = 0;
@@ -124,6 +130,8 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	SetBase(temp);
 	pkNetPacket->Read(m_fScale);
 
+	pkNetPacket->Read(m_bCanBeInvisible);
+
 	int iNewAnim;
 	pkNetPacket->Read( iNewAnim );
 	if(iNewAnim != iActiveAnimation)
@@ -133,7 +141,7 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
 	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
@@ -142,6 +150,11 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	kReturn[1].kValueName = "m_kMadFile";
 	kReturn[1].iValueType = VALUETYPE_STRING;
 	kReturn[1].pkValue    = (void*)&m_kMadFile;
+
+	kReturn[2].kValueName = "m_bCanBeInvisible";
+	kReturn[2].iValueType = VALUETYPE_BOOL;
+	kReturn[2].pkValue    = (void*)&m_bCanBeInvisible;
+
 
 	return kReturn;
 }

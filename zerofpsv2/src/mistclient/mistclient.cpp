@@ -238,6 +238,8 @@ void MistClient::OnIdle()
 
 void MistClient::OnSystem() 
 {
+	UpdateCullObjects();
+
 	//setup client
 	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
 	{
@@ -1317,4 +1319,62 @@ void MistClient::CloseActionMenu()
 	}
 
 	m_bActionMenuIsOpen = false;
+}
+
+
+void MistClient::UpdateCullObjects()
+{
+	static vector<P_Mad*> mads;	
+	static float fAddRadius = 1;
+	
+	Entity* pkCar = pkObjectMan->GetObjectByNetWorkID(m_iActiveCaracterObjectID);
+	
+	if(!pkCar)
+		return;
+		
+	Vector3 kStart = m_pkCamera->GetPos();
+	Vector3 kDir = (pkCar->GetWorldPosV() - m_pkCamera->GetPos()).Unit();
+	
+	
+	float d = (pkCar->GetWorldPosV() - kStart).Length() + fAddRadius ;
+
+	vector<Entity*> kEntitys;
+	pkObjectMan->TestLine(&kEntitys,kStart,kDir);
+	
+	//make all old objects visible again
+	for(int i =0;i<mads.size();i++)
+	{
+		mads[i]->m_bIsVisible = true;
+	}
+	
+	//clear old object
+	mads.clear();
+	
+	//find objects to hide
+	for(int i=0;i<kEntitys.size();i++)
+	{
+		//kEntitys[i]->DeleteProperty("P_Mad");
+		P_Mad* pm = (P_Mad*)kEntitys[i]->GetProperty("P_Mad");
+		
+		if(pm)
+		{
+			//do we realy want to make this object invisible?
+			if(!pm->m_bCanBeInvisible)
+				continue;
+		
+			//check if object is behind player
+			if((kEntitys[i]->GetWorldPosV() - kStart).Length() < d)
+			{
+				//hide and add to vector
+				pm->m_bIsVisible = false;
+				mads.push_back(pm);
+			}
+		}		
+	}
+	
+	
+	
+	cout<<"Nrof object betwen camera and player:"<<mads.size()<<endl;
+	
+	
 }
