@@ -11,10 +11,11 @@
 
 #include "render_x.h"
 #include "../basic/rect.h"
+#include "../basic/basic.pkg"
 
 class ZGuiSkin;
 
-class RENDER_API ZGuiRender  
+class RENDER_API ZGuiRender : public ZFObject 
 {
 public:
 	ZGuiRender();

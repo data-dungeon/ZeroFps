@@ -8,7 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiRender::ZGuiRender()
+ZGuiRender::ZGuiRender() :	ZFObject("Render")
 {
 
 }
