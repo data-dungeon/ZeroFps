@@ -1732,12 +1732,14 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 */
 void ZeroFps::Disconnect(int iConnectionID)
 {
+	/*
 	if(!m_kClient[iConnectionID].m_pkObject)
 	{
 		cout << "ZeroFps::Disconnect - Client is already disconnected." <<endl;
 		return;
 	}
-
+	*/
+	
 	//reset all netupdate flags in the world
 	m_pkEntityManager->ResetNetUpdateFlags(iConnectionID);	
 	
