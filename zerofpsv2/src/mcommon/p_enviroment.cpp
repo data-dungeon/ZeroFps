@@ -295,7 +295,7 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 		return;
 
 	ZFResourceHandle* pkTempenv = new ZFResourceHandle;	
-	
+
 	//load enviroment settings
 	if(!pkTempenv->SetRes(string(csEnviroment)))
 	{	
@@ -303,7 +303,6 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 		delete pkTempenv;
 		return;
 	}
-
 
 	//get enviroment pointer
 	EnvSetting* es = (EnvSetting*)pkTempenv->GetResourcePtr();
@@ -313,14 +312,13 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 
 	//setup music
 	if(es->m_strMusic == "")
-	{
 		m_pkMusic->Stop();
-	}
 	else
 	{
 		m_pkMusic->LoadFile(es->m_strMusic.c_str());
 		m_pkMusic->Play();
 	}
+	
 
 	//setup skybox property
 	if(es->m_strSkybox1 != "" && es->m_strSkybox2 != "")
@@ -338,12 +336,12 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 		if(ps)
 			ps->SetPSType(es->m_strParticles);
 	}
-	
+
 	//setup light property	
 	P_Light* pl = (P_Light*)m_pkEntity->GetProperty("P_Light");		
 	if(!pl)
 		pl = (P_Light*)m_pkEntity->AddProperty("P_Light");	
-	
+
 	if(pl)
 	{	
 		m_pkCurrentLP = pl;
@@ -353,7 +351,7 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 		
 		pl->SetType(DIRECTIONAL_LIGHT);
 	}
-	
+
 	m_kFogColor = es->m_kFogColor;
 	m_fFogStart = es->m_fFogStart;
 	m_fFogStop = es->m_fFogStop;

@@ -46,6 +46,7 @@ public:
 
 	bool Stop();
 	bool Update(Vector3 kListerPos);
+	bool IsPlaying()	{ return m_bPlaying; }
 	OggMusic(); 
 	OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize); 
 	virtual ~OggMusic();

@@ -97,7 +97,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZoneMarkerEntity 	=	NULL;
 	
 	strcpy(szCoolName , "Guldfisk");	
-	
+
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
 	

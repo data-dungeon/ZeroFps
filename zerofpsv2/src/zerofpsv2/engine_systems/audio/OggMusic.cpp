@@ -258,6 +258,9 @@ bool OggMusic::Update(Vector3 kListerPos)
 
 bool OggMusic::Stop()
 {
+	if ( !m_bPlaying )
+		return true;
+
 	int iPlaying;
 	alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
 	if(iPlaying==AL_PLAYING)
