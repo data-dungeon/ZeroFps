@@ -3,7 +3,7 @@
 
 enum containerID
 {
-	ContainerWnd = 71,
+	ContainerWnd = 81,
 	ContainerClose = 72,
 	ContainerPrevPage = 73,
 	ContainerNextPage = 74,

@@ -212,7 +212,7 @@ transparent=0
 
 [Window1]
 type=Window
-id=71
+id=81
 name=ContainerWnd
 parent_id=-1
 parent_name=NULL
@@ -228,13 +228,13 @@ move_area_top=129
 move_area_right=658
 move_area_bottom=629
 tab_order=0
-mainwnd_id=72
+mainwnd_id=83
 
 [Button1]
 type=Button
 id=72
 name=ContainerClose
-parent_id=71
+parent_id=81
 parent_name=ContainerWnd
 text= Close
 visible=1
@@ -253,7 +253,7 @@ tab_order=0
 type=Button
 id=73
 name=ContainerPrevPage
-parent_id=71
+parent_id=81
 parent_name=ContainerWnd
 text= Prev
 visible=1
@@ -272,7 +272,7 @@ tab_order=1
 type=Button
 id=74
 name=ContainerNextPage
-parent_id=71
+parent_id=81
 parent_name=ContainerWnd
 text= Next
 visible=1
