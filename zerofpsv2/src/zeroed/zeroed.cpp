@@ -32,6 +32,10 @@
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../mcommon/ml_netmessages.h"
 
+#include "../mcommon/p_charactercontrol.h"
+#include "../mcommon/p_characterproperty.h"
+
+
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -384,6 +388,13 @@ void ZeroEd::RegisterResources()
 
 void ZeroEd::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);
+	m_pkPropertyFactory->Register("P_CharacterControl", 	Create_P_CharacterControl);
+	m_pkPropertyFactory->Register("P_Ml",						Create_P_Ml);
+
+
+	
+
 	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
 
 	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
@@ -398,8 +409,6 @@ void ZeroEd::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
-	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-//	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
 	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);

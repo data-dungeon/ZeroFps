@@ -10,11 +10,11 @@
   
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
-#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
-#include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
-#include "../zerofpsv2/engine_systems/propertys/p_track.h"
-#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
-#include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_track.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
@@ -26,7 +26,9 @@
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../mcommon/ml_netmessages.h"
+
 #include "../mcommon/p_charactercontrol.h"
+#include "../mcommon/p_characterproperty.h"
 
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
@@ -190,32 +192,34 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);
+	m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);
+	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);
 
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
-	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
-
-	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
-	m_pkPropertyFactory->Register("P_DMMission", Create_P_DMMission);
-	m_pkPropertyFactory->Register("P_DMItem", Create_P_DMItem);
-	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
-	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
-	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
-	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);
-	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
-	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
-	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
-	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
-	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
+	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
-	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);
-	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
-	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
+		
+//	m_pkPropertyFactory->Register("P_Car", Create_P_Car);	
+//	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
+//	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);
+//	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
+//	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
+//	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
+//	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+//	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 
-	//m_pkPropertyFactory->Display();
+//	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);
+//	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
+
+//	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
+//	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
+//	m_pkPropertyFactory->Register("P_DMMission", Create_P_DMMission);
+//	m_pkPropertyFactory->Register("P_DMItem", Create_P_DMItem);
+//	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
+
 }
 
 void MistServer::OnIdle()

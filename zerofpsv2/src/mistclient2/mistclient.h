@@ -33,7 +33,7 @@ class MistClient :public Application, public ZGuiApp {
 		bitset<6>	m_kCharacterControls;
 		
 		bool			m_bSkipLoginScreen;
-		string     m_strLoginName, m_strLoginPW;
+		string		m_strLoginName, m_strLoginPW;
 		
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
 		

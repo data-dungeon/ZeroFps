@@ -18,6 +18,9 @@
 #include "p_scriptinterface.h"
 #include "p_controller.h"
 
+#include "p_sound.h"
+
+
 
 
 

@@ -7,7 +7,6 @@
 #include "../gui/zguiresourcemanager.h"
 #include "application.h"
 #include "../gui/zgui.h"
-#include "../engine_systems/propertys/propertys.pkg"
 #include "../basic/zfini.h"
 #include "inputhandle.h" 
  
