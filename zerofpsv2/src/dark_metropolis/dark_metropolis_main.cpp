@@ -517,7 +517,9 @@ void DarkMetropolis::Input()
 						P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
 						if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
 						{					
-					
+							if(i==0)
+								m_pkAudioSys->StartSound("/data/sound/run.wav", pkEnt->GetIWorldPosV());
+
 							//randomize position a bit if theres many characters selected
 							if(m_kSelectedEntitys.size() > 1)
 								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
@@ -933,6 +935,9 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 			m_kSelectedEntitys.push_back(id); 
 		}
 	}
+
+	m_pkAudioSys->StartSound("/data/sound/yes_my_lord.WAV",
+		m_pkObjectMan->GetObjectByNetWorkID(id)->GetIWorldPosV() );
 
 	//
 	// TODO: Flytta kameran till samma plats.

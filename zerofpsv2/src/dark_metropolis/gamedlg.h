@@ -54,6 +54,7 @@ protected:
 
 	DarkMetropolis* m_pkDM;
 	ZGui* m_pkGui;
+	ZFAudioSystem* m_pkAudioSys;
 
 	int GetTexID(char* szName);
 	int m_iFailTex;

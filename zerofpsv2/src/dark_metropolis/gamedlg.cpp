@@ -9,6 +9,8 @@ CGameDlg::CGameDlg(string strMainWndName, DarkMetropolis* pkDM)
 	m_bInitialized = false;
 	m_strMainWndName = strMainWndName;
 
+	m_pkAudioSys = pkDM->m_pkAudioSys;
+
 	m_iFailTex = m_pkDM->pkTexMan->Load(ERROR_TEXTURE, 0);
 }
 

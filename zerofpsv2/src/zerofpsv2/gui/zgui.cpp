@@ -522,7 +522,11 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		//if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 
-		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
+			KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
+
+			if(bLBnPressed == false && bRBnPressed == false)
+				m_bHandledMouse = false;
+		
 
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fGameTime);
 	}
@@ -939,10 +943,10 @@ void ZGui::SetRes(int iResX, int iResY)
 
 void ZGui::KeyboardInput(int key, bool shift, float time)
 {
-	if(key != -1)
+	if(key != -1 /*&& m_bHandledMouse != true*/)
 	{
 		FormatKey(key, shift);
-		m_bHandledMouse = false; // Ge alltid fokusen till APP :)
+	//	m_bHandledMouse = false; // Ge alltid fokusen till APP :)
 	}
 
 	const float REPEAT_DELAY_SEC = 0.5f;
@@ -1411,6 +1415,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	// Har vänster musknapp klickats (men inte släppt)
 	if( bLeftPressed || bRightPressed )
 	{		
+
 		if(pkFocusWindow)
 		{			
 			if(pkFocusWindow->m_bUseAlhpaTest)
@@ -1472,6 +1477,11 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						if(test->GetSkin() && test->GetSkin()->m_bTransparent == false)
 						{
 							m_bHandledMouse = true;
+						}
+						else
+						{
+							if(typeid(*test)==typeid(ZGuiLabel))
+								m_bHandledMouse = true;
 						}
 					}
 				}

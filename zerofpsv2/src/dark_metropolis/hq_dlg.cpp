@@ -132,6 +132,8 @@ void CHQDlg::OpenDlg()
 {
 	//P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ")
 
+	m_pkAudioSys->StartSound("data/sound/click1.WAV");
+
 	ShowWnd("GamePlayScreen", false);
 	ShowWnd("GamePlayPanelWnd", false);
 
