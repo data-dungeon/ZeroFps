@@ -12,6 +12,8 @@ P_EditIcon::P_EditIcon()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
+	m_bSave = false;
+	
 	m_kTexture="NONE";
 	m_fScale=1;	
 	m_kAxis.Set(1,1,1);
@@ -87,9 +89,10 @@ void P_EditIcon::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 	strcpy(temp,m_kTexture.c_str());	
-	pkPackage->Write((void*)&temp,128,1);
-
-	pkPackage->Write((void*)&m_fScale,4,1);
+	pkPackage->Read((void*)&temp,128,1);
+	m_kTexture = temp;
+	
+	pkPackage->Read((void*)&m_fScale,4,1);
 }
 
 

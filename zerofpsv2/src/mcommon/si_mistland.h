@@ -56,7 +56,7 @@ namespace MistLandLua
 
 	// sound crap
 	int MCOMMON_API StartPrivateSoundLua(lua_State* pkLua);
-	int MCOMMON_API StartSoundLua(lua_State* pkLua);
+	//int MCOMMON_API StartSoundLua(lua_State* pkLua);
 
 	// ip crap
 	extern map<string,LogInInfo*> MCOMMON_API	g_kServerList;

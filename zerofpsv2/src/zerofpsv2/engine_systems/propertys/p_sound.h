@@ -5,8 +5,12 @@
 #include "../engine_systems_x.h"
 #include "../audio/zfaudiosystem.h"
 #include "../../engine/entitymanager.h"
+#include "../../engine/zerofps.h"
 
-Property* Create_SoundProperty();
+
+ENGINE_SYSTEMS_API Property* Create_SoundProperty();
+ENGINE_SYSTEMS_API void Register_P_Sound(ZeroFps* pkZeroFps);
+
 
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {

@@ -54,7 +54,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 //	pkScript->ExposeFunction("SetHeartRate",				MistLandLua::SetHeartRateLua);
 	
 	pkScript->ExposeFunction("StartPrivateSound",		MistLandLua::StartPrivateSoundLua);
-	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
+//	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
 	
 
    // char.stats-scipts
@@ -404,6 +404,7 @@ int MistLandLua::StartPrivateSoundLua(lua_State* pkLua)
 // Arg 1. ID på objektet som genererar ljudet.
 // Arg 2. Namn på ljudet som skall spelas.
 
+/*
 int MistLandLua::StartSoundLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -433,7 +434,7 @@ int MistLandLua::StartSoundLua(lua_State* pkLua)
 	
 	return 0;
 }
-
+*/
 /*
 int MistLandLua::SetPSystemLua(lua_State* pkLua)
 {

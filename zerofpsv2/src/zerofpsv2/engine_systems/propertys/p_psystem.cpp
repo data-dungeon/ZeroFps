@@ -16,6 +16,8 @@ void P_PSystem::Update()
 	m_pkZShaderSystem->Push("P_PSystem::Update");
 	
 	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT,GL_FILL);
 	
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
