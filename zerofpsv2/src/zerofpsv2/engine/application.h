@@ -4,6 +4,7 @@
 #include "engine_x.h"
 #include "zerofps.h"
 #include "../basic/zfvfs.h"
+#include "inputhandle.h"
 
 using namespace std;
 

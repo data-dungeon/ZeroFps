@@ -211,8 +211,6 @@ void Input::Update(void)
 	UpdateInputHandles();
 	UpdateMousePos();
 	
-
-	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 	Buttons iZfKey;
 
 	while(SDL_PollEvent(&m_kEvent)) {
@@ -397,6 +395,9 @@ void Input::UnitMouseXY(float &fX,float &fY)
 
 void Input::UpdateMousePos()
 {		
+	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
+
+
 	int width=m_pkZeroFps->GetWidth();
 	int height=m_pkZeroFps->GetHeight();
 

@@ -22,18 +22,11 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 class DarkMetropolis : public Application, public ZGuiApp 
 {
 	private:
-		Camera*	m_pkCamera;
-		Entity*	m_pkCameraEntity;
 		
 		enum FuncId_e
 		{
 			FID_LOAD,
 		};
-		
-		LightSource	m_kSun;
-		
-		void Input();
-		void RegisterPropertys();
 
 		struct StartBaseInfo {
 			ZGuiSkin* pkIcon;
@@ -41,6 +34,20 @@ class DarkMetropolis : public Application, public ZGuiApp
 		};
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
+
+		LightSource	m_kSun;
+
+		Camera*	m_pkCamera;
+		Entity*	m_pkCameraEntity;
+		P_Camera* m_pkCameraProp;
+		float		m_fDistance;		
+		float		m_fAngle;
+		float		m_fMinCamDistance;
+		float		m_fMaxCamDistance;
+		
+		void Input();
+		void RegisterPropertys();
+
 
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);

@@ -21,6 +21,7 @@ enum ENGINE_SYSTEMS_API CamType_e
 	CAM_TYPEDYNAMICISO,		
 	CAM_TYPEMAX,
 	CAM_TYPE3PERSON, 
+	CAM_TYPEBIRDSEYE,
 };
 
 /// Connects a Object to a Camera.

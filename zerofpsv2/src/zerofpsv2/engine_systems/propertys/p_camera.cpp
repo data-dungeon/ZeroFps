@@ -39,9 +39,8 @@ void P_Camera::Update()
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
-			case CAM_TYPE3PERSON:
+			case CAM_TYPEBIRDSEYE:
 			{
-				/*
 				Matrix4 r;
 				r.Identity();
 				r.Rotate(Vector3(-90,0,0));
@@ -58,7 +57,14 @@ void P_Camera::Update()
 				Vector3 campos = m_kInterPos + Vector3(xp,yp,zp).Unit() * m_f3PDistance;
 				
 				LookAt(campos, m_kInterPos,Vector3(0,1,0));
-				*/
+			
+				strCamName = " BirdeEye ";
+			
+				break;		
+			}
+		
+			case CAM_TYPE3PERSON:
+			{
 				Vector3 dir = m_pkObject->GetIWorldPosV() - m_kInterPos;
 				m_kInterPos +=dir/8;
 				
@@ -79,36 +85,27 @@ void P_Camera::Update()
 			}	
 			case CAM_TYPEFIRSTPERSON:
 			{
-//				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
-//				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0.95,0));
-				//m_pkCamera->SetRot(m_pkObject->GetWorldRotV() + Vector3(0,90,0));
 				Matrix4 kMat4;
 				kMat4 = m_pkObject->GetWorldRotM();
 				m_pkCamera->SetRotM(kMat4);
 				
 				strCamName = " 1P ";
-	/*			if(madp)
-					madp->m_bIsVisible = false;*/
-				//m_pkCamera->SetFov(m_fFov);
+
 				break;
 			}
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
 				strCamName = " TD ";
-/*				if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(90);
+
 				break;
 
 			case CAM_TYPEISO:
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(10,10,10));
 				m_pkCamera->SetRot(Vector3(45,-45,0));
 				strCamName = " ISO ";
-	/*			if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(m_fFov);
+
 				break;
 
 				
@@ -119,9 +116,7 @@ void P_Camera::Update()
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_pkObject->GetWorldRotV() + Vector3(0,90,0)));
 				strCamName = " Chase ";
-/*				if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(m_fFov);
+
 				break;
 
 			case CAM_TYPEDYNAMICISO:
@@ -131,18 +126,14 @@ void P_Camera::Update()
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_kDynamicIso + Vector3(0,90,0)));
 				strCamName = " Dyn ISO ";
-/*				if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(m_fFov);
+
 				break;
 				
 			case CAM_TYPESIDE:
 				strCamName = " Side ";
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0,10));
 				m_pkCamera->SetRot(Vector3(0,20,0));
-	/*			if(madp)
-					madp->m_bIsVisible = true;*/
-				//m_pkCamera->SetFov(90);
+
 				break;
 		
 		}

@@ -30,10 +30,17 @@ void DarkMetropolis::OnHud()
 void DarkMetropolis::OnInit() 
 {
 	SetTitle("Dark Metropolis");
-
+	
+	m_pkCameraProp	= NULL;	
+	m_pkCameraEntity = NULL;
+	m_pkFps->m_bClientMode = true;
+	m_fMinCamDistance = 2;
+	m_fMaxCamDistance = 10;
+	m_fDistance = 0;	
+	m_fAngle = 0;
+	
 	Register_Cmd("load",FID_LOAD);		
 
-	m_pkFps->m_bClientMode = true;
 
 	m_pkLight->SetLighting(true);
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -54,6 +61,7 @@ void DarkMetropolis::OnInit()
 	m_pkLight->SetLighting(true);
 	
 	
+	//setup default lightsource
 	m_kSun.kRot = Vector3(1,2,1);
 	m_kSun.kDiffuse=Vector4(1,1,1,0);
 	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
@@ -100,9 +108,14 @@ void DarkMetropolis::OnServerStart()
 	{
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
 		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera);
-		m_pkCameraEntity->GetSave() = false;
+		
+		m_pkCameraProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");		
+		if(m_pkCameraProp)
+		{
+			m_pkCameraProp->SetCamera(m_pkCamera);
+			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
+			m_pkCameraEntity->GetSave() = false;
+		}
 	}
 			
 
@@ -136,51 +149,65 @@ void DarkMetropolis::RegisterPropertys()
 
 void DarkMetropolis::Input()
 {
+	//get mouse
+	int x,z;		
+	m_pkInputHandle->RelMouseXY(x,z);	
+		
+
+	//setup player controls
+	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))	//do we want to zoom?
+	{
+
+		if(m_pkCameraProp)
+		{
+			m_fDistance += z/60.f;
+			m_fAngle -=x/300.f;
+	
+			if(m_fDistance < m_fMinCamDistance)
+				m_fDistance = m_fMinCamDistance;
+		
+			if(m_fDistance > m_fMaxCamDistance)
+				m_fDistance = m_fMaxCamDistance;
+				
+			m_pkCameraProp->Set3PDistance(m_fDistance);
+			m_pkCameraProp->Set3PYAngle(m_fAngle);
+			
+		}
+	}
+
 }
 
 void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-//	unsigned int i;
-//	vector<string>	kUsers;
-//	int iMode;
-//	float fTest;
 
 	switch(cmdid) {
 
 		case FID_LOAD:
-			if(kCommand->m_kSplitCommand.size() <= 1)
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2)
 			{
-				m_pkConsole->Printf("load [mapdir]");
+				m_pkConsole->Printf("load [level] [savegame]");
 				break;				
 			}
 			
-			cout<<"BLUB:"<<kCommand->m_kSplitCommand.size()<<endl;
-			cout<<"loading world:"<<kCommand->m_kSplitCommand[1]<<endl;
 			
-			if(kCommand->m_kSplitCommand.size() > 2)
-			{
-				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
+			m_pkConsole->Printf("loading world: %s",kCommand->m_kSplitCommand[1].c_str());						
+			m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());				
 				
-				if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
-				{
-					cout<<"Error loading world"<<endl;
-					break;
-				}				
-			}
-			else if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
 			}				
 
-			cout<<"starting server"<<endl;
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			
 
+			m_pkConsole->Printf("starting server");
+
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 			
 			
 			break;		
-
+		}
 	}
 }
 
