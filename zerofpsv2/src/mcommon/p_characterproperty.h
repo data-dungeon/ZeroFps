@@ -73,7 +73,16 @@ class MCOMMON_API P_CharacterProperty: public Property
 		int	m_iBody;
 		int	m_iLeftHand;
 		int	m_iRightHand;
-	
+		
+		int	m_iGloves;
+		int	m_iCape;
+		int	m_iNecklace;
+		int	m_iLeftRing;
+		int	m_iRightRing;
+		int	m_iBracers;
+		int	m_iBelt;
+		int	m_iFeets;
+		
 	
 		P_CharacterProperty();
 		~P_CharacterProperty();
