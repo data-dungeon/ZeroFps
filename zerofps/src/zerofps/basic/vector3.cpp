@@ -201,3 +201,27 @@ Vector3 Vector3::AToU()
 	New.Normalize();
 	return New;
 }
+
+/*
+Vector3 Vector3::operator*(const Matrix4 &f) const 
+{
+	Vector3 ny;
+	ny.Set(0,0,0);
+	
+	
+	for(int j=0;j<3;j++) 
+		for(int i=0;i<4;i++)
+			switch(i) {
+				case 0:
+					ny[j]+=x*f.data[i*4+j];break;
+				case 1:
+					ny[j]+=y*f.data[i*4+j];break;
+				case 2:
+					ny[j]+=z*f.data[i*4+j];break;
+				case 3:
+					ny[j]+=w*f.data[i*4+j];break;
+			}
+	return ny;
+}
+*/
+

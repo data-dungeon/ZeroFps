@@ -23,7 +23,7 @@ void Plane::Set(Vector3 kNormal, Vector3 kPos)
 
 bool Plane::PointInside(Vector3 kPoint)
 {
-	return ((m_kNormal.Dot(kPoint) + m_fD) <= 0);
+	return ((m_kNormal.Dot(kPoint) + m_fD) >= 0);
 }
 
 bool Plane::SphereInside(Vector3 kCenter, float fRadius)

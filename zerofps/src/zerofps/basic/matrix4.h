@@ -7,6 +7,7 @@
 #include "vector3.h"
 #include "vector4.h"
 #include <algorithm>
+#include "globals.h"
 
 class Matrix3;
 class Quaternion;
@@ -72,8 +73,16 @@ class BASIC_API Matrix4 {
 		Vector4 operator*(const Vector4 &f);
 
 		void Transponse();
-		void Translate(float x, float y, float z);
-
+		void OldTranslate(float x, float y, float z);
+		
+		void Rotate(float fX, float fY, float fZ);
+		void Rotate(Vector3 kRot);
+		void Scale(float fX, float fY, float fZ);
+		void Scale(Vector3 kScale);
+		void Translate(float fX, float fY, float fZ);
+		void Translate(Vector3 kPos);
+		
+		
 		void Print();
 
 		// ************************************************

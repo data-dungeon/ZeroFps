@@ -64,6 +64,9 @@ class BASIC_API Vector3 {
 		Vector3 operator*(const Vector3 &fOther)		const {
 			return Vector3(x * fOther.x,y * fOther.y,z * fOther.z);
 			}
+		
+//		Vector3 operator*(const Matrix4 &f)	const;
+	
 	
 		Vector3 operator /  ( const float  s )	const {
 			float invs = 1/s; 

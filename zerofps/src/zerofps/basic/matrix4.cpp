@@ -3,10 +3,10 @@
 #include <math.h>
 
 
-Matrix4::Matrix4(float v1,float v2,float v3 ,float v4,
-								 float v5,float v6,float v7 ,float v8,						
-								 float v9,float v10,float v11 ,float v12,
-							 	 float v13,float v14,float v15 ,float v16)
+Matrix4::Matrix4( float v1,float v2,float v3 ,float v4,
+						float v5,float v6,float v7 ,float v8,						
+						float v9,float v10,float v11 ,float v12,
+						float v13,float v14,float v15 ,float v16)
 {							 	 
 	data[0]=v1;		data[1]=v2;		data[2]=v3;		data[3]=v4;
 	data[4]=v5;		data[5]=v6;		data[6]=v7;		data[7]=v8;
@@ -325,7 +325,7 @@ void Matrix4::Transponse()
 
 }
 
-void Matrix4::Translate(float x, float y, float z)
+void Matrix4::OldTranslate(float x, float y, float z)
 {
 	Identity();
 	SetPos(Vector3(x,y,z));
@@ -484,4 +484,63 @@ Matrix4 Matrix4::Invert2( )
 }
 
 
+void Matrix4::Rotate(float fX, float fY, float fZ)
+{
+	fX=DegToRad(fX);
+	fY=DegToRad(fY);
+	fZ=DegToRad(fZ);	
 
+	Matrix4 rotatez=Matrix4(cos(fZ)	,-sin(fZ)  ,0				,0,
+									sin(fZ)	,cos(fZ)	,0				,0,
+									0			,0			,1				,0,
+									0			,0			,0				,1);	
+	
+	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
+									0			,cos(fX)	,-sin(fX)	,0,
+									0			,sin(fX)	,cos(fX)		,0,
+									0			,0			,0				,1);	
+												 
+	Matrix4 rotatey=Matrix4(cos(fY)	,0			,sin(fY)		,0,
+									0			,1			,0				,0,
+									-sin(fY)	 ,0			,cos(fY)		,0,
+									0			,0			,0				,1);	
+												 
+						 
+	*this *=rotatex*rotatez*rotatey;
+
+}
+
+
+void Matrix4::Rotate(Vector3 kRot){
+	Rotate(kRot.x, kRot.y, kRot.z);
+}
+
+
+void Matrix4::Scale(float fX, float fY, float fZ)
+{
+	Matrix4 scale=Matrix4(fX	,0 	,0		,0,
+								 0		,fY	,0		,0,
+								 0		,0		,fZ	,0,
+								 0		,0		,0		,1);	
+							 
+	*this *= scale;
+}
+
+void Matrix4::Scale(Vector3 kScale){
+	Scale(kScale.x, kScale.y, kScale.z);
+}
+
+
+void Matrix4::Translate(float fX, float fY, float fZ)
+{
+	Matrix4 translate=Matrix4(	 1		,0 	,0		,0		,
+								 		0		,1		,0		,0		,
+								 		0		,0		,1		,0		,
+								 		fX	,fY	,fZ	,1		);	
+							 
+	*this *= translate;
+}
+
+void Matrix4::Translate(Vector3 kTrans){
+	Translate(kTrans.x, kTrans.y, kTrans.z);
+}

@@ -10,8 +10,17 @@ cd render
 ./compile
 cd ..
 
+echo Compiling Gui
+cd gui
+./compile
+cd ..
+
+echo Compiling Script Engine Lua
+cd script
+./compile
+cd ..
+
 echo Compiling Engine
 cd engine
 ./compile
 cd ..
-

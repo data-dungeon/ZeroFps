@@ -91,10 +91,10 @@ void MadProperty::Update()
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
 		glScalef(m_fScale, m_fScale, m_fScale);
-		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
-		glRotatef(m_pkObject->GetRot().x ,1,0,0);
-		// FH's Föreningens årsmöte.
-		glRotatef(- (m_pkObject->GetRot().y ) ,0,1,0);
+		glRotatef(- m_pkObject->GetRot().y ,0,1,0);		
+		glRotatef(- m_pkObject->GetRot().z ,0,0,1);		
+		glRotatef(- m_pkObject->GetRot().x ,1,0,0);
+
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 

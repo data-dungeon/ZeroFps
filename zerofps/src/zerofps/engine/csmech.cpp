@@ -3,14 +3,14 @@
 
 CSMech::CSMech()
 {
-	m_fcoloffset = 0.0001;
+	m_fcoloffset = 0.001;
 	m_bHavePolygonData = false;
 	m_pkCore = 	NULL;
 	m_iModelID = 0;
-	m_fScale = 	1;
-	
+	m_fScale = 	1;	
 	m_bOtherGlide=false;
 }
+
 
 Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
 {	
@@ -27,6 +27,7 @@ Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
 	return NULL;
 }
 
+
 Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 {
 	if(!m_bHavePolygonData)
@@ -36,6 +37,8 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 	
 	}
 
+	GenerateModelMatrix();
+
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
 
@@ -44,81 +47,64 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 
 	
 	bool hit=false;
+	bool newhit=false;
 	m_kCollidedFaces.clear();
 	Vector3 HitNormal;
 	m_bOtherGlide=kOther->m_pkPP->m_bGlide;
 	m_kOtherDest=kOther->m_pkPP->m_kNewPos;
-
-	Vector3 data[3];
-	for(int i=0;i<m_pkFaces->size();i++)
-	{
-
-		for(int j=0;j<3;j++)
-			data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
 	
-		if(TestPolygon(data,kPos1,kPos2,kOther->m_fRadius))
-		{
-			hit=true;		
+	Vector3 kGlidePos;
+	
+	int c=0;
+
+	hit=false;
+	do
+	{
+		newhit=false;
+		c++;
 			
-//			if(Closer(kPos1,kPos2,m_kColPos))
-//			{
-				//cout<<"Blub"<<endl;
-				HitNormal=m_kColNormal;
+		Vector3 data[3];
+		for(int i=0;i<m_pkFaces->size();i++)
+		{
+	
+			for(int j=0;j<3;j++)
+				data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
+	
+			if(TestPolygon(data,kPos1,kPos2,kOther->m_fRadius))
+			{
+				//cout<<"colliding with :"<<i<<endl;
+				hit=true;
+				newhit=true;
 				kPos2=m_kColPos;
-//			}
-				
-				//go trough all previous added collisions and check if the still occurs
-				for(list<int>::iterator it=m_kCollidedFaces.begin();it!=m_kCollidedFaces.end();it++)				
-				{
-					Vector3 temp[3];
-					for(int l=0;l<3;l++)
-						temp[l] = (*m_pkVertex)[ (*m_pkFaces)[(*it)].iIndex[l]];
-
-				
-					if(TestPolygon(temp,kPos1,kPos2,kOther->m_fRadius))
-					{
-						cout<<"collision still occurs"<<endl;					
-//						if(Closer(kPos1,kPos2,m_kColPos))
-//						{						
-							
-							cout<<"Blub"<<endl;
-							hit=true;
-							HitNormal=m_kColNormal;
-							kPos2=m_kColPos;				
-//						}
-					}
-					else										
-					{
-						cout<<"removing old collision"<<endl;
-						if(m_kCollidedFaces.size() > 1)
-						{					
-							list<int>::iterator oldit = it;
-							it--;
-							
-							m_kCollidedFaces.erase(oldit);
-						}
-						else
-						{
-							it=m_kCollidedFaces.end();
-							m_kCollidedFaces.clear();						
-						}
-					}
-				}	
-				
-				//add face to collided faces
-				m_kCollidedFaces.push_back(i);
-
-//			}			
+				kGlidePos=m_kGlideColPos;
+				HitNormal=m_kColNormal;
+			}		
 		}
-	}
-
-
-
+			
+		if(m_bOtherGlide){
+			if(newhit){
+				
+				//cout<<"diff:"<< (kPos1-kPos2).Length()<<endl;
+				
+				kPos1=kPos2;			
+				kPos2=kGlidePos;					
+				
+				if(c>1){
+					newhit=false;
+					kPos2=kPos1;
+				}
+				
+			}
+		}
+		
+	}while(newhit && m_bOtherGlide && c < 30);
+		
+		
 	if(!hit)
 		return NULL;
 		
-				//glide point if wanted
-/*				if(kOther->m_pkPP->m_bGlide)
+/*				//glide point if wanted
+				if(kOther->m_pkPP->m_bGlide)
 				{
 					Vector3 NewPos=kOther->m_pkPP->m_kNewPos + (HitNormal * kOther->m_fRadius);
 		
@@ -127,10 +113,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 					kPos2=NewPos-mov2;
 				}						*/
 						
-		
-	cout<<"still collides with"<<m_kCollidedFaces.size()<<endl;	
-
-	
+			
 	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
@@ -139,7 +122,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos(); //(movevec1*bla);
+	tempdata->m_kPos1 = O1->GetPos();
 	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
 	tempdata->m_kNormal1 = HitNormal;
 	
@@ -154,23 +137,28 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	Vector3 kNLVerts[3];
 	Plane P;
 	
+	
+//	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	
+	
 	//add objects possition to vertexs
 	for(int i=0;i<3;i++){
-		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
-		
-//		cout<<"vertex "<<kNLVerts[i].x<<" "<<kNLVerts[i].y<<" "<<kNLVerts[i].z<<endl;		
-//		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-//		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);
-		
+//		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
+		kNLVerts[i] = m_kModelMatrix.VectorTransform(kVerts[i]);
+
+//		cout<<"vertex "<<kNLVerts[i].x<<" "<<kNLVerts[i].y<<" "<<kNLVerts[i].z<<endl;
+//		pkRender->DrawBox(kNLVerts[i],Vector3(0,0,0),Vector3(0.1,0.1,0.1),-1);		
 	}
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
 	Vector3 Normal= V1.Cross(V2);
 	
+	
 	if(Normal.Length() == 0)
 	{
-		Normal.Set(0,1,0);
+		return false;
+		//Normal.Set(0,1,0);
 	}
 	
 	Normal.Normalize();
@@ -181,25 +169,25 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 //	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
 //	cout<<"D "<<P.m_fD<<endl;	
 	
-	if(P.LineTest(kPos1 + (-Normal * fR), kPos2 + (-Normal * fR),&m_kColPos)){
+	if(P.LineTest(kPos1 - (Normal * fR), kPos2 - (Normal * fR),&m_kColPos)){
+//	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){	
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
 			//cout<<"Collision"<<endl;
-			m_kColNormal = Normal;
-			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);			
+			m_kColNormal = Normal;			
 			
+			Vector3 bla1=m_kOtherDest -m_kColPos;
+			Vector3 bla2=Normal.Proj(bla1);
+			m_kGlideColPos=m_kColPos + (bla1-bla2);
+							
+			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);						
+			m_kGlideColPos += (Normal*m_fcoloffset) + (Normal * fR);
 			
-//			if(m_kCollidedFaces.size() <1)
-//			{
-			//glide point
-				if(m_bOtherGlide)
-				{
-					Vector3 NewPos=m_kOtherDest + (Normal * fR);	
-					Vector3 mov=NewPos - m_kColPos;
-					Vector3 mov2=Normal.Proj(mov);
-					m_kColPos=NewPos-mov2;		
-				}
-//			}
+/*			
+			Vector3 NewPos=m_kOtherDest + (Normal * fR);	
+			Vector3 mov=NewPos - m_kColPos;
+			Vector3 mov2=Normal.Proj(mov);
+			m_kGlideColPos=NewPos-mov2;		*/
 			
 			return true;
 		}
@@ -211,14 +199,16 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 
 bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 {
-//	fR-=0.05;
+//	fR+=0.05;
 
 	Plane side[3];
 	
+/*	
 	if(kVerts[0] == kVerts[1] || 
-		kVerts[2] == kVerts[1] ||
+		kVerts[2] == kVerts[0] ||
 		kVerts[1] == kVerts[2])
 		return false;
+*/	
 	
 	Vector3 V1 = kVerts[0] - kVerts[1];
 	Vector3 V2 = kVerts[2] - kVerts[0];	
@@ -296,32 +286,8 @@ bool CSMech::SetUpMech()
 	
 	cout<<"error mech not found"<<endl;
 	return false;
-
-/*
-	//did not find any mad property return false
-	if(m_pkMP == NULL)
-		return false;
-	
-	//get core pointer
-	m_pkCore = m_pkMadProperty->pkCore;
-	
-	//is the core pointer vallid?
-	if(m_pkCore == NULL)
-		return false;
-	
-	cout<<"found mad property"<<endl;
-	
-	//get mech pointer
-	m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);
-		
-	//is the mech pointer valid?
-	if(m_pkCoreMech == NULL)
-		return false;
-		
-	//everything was ok return true
-	return true;
-*/	
 }
+
 
 Vector3& CSMech::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
@@ -331,6 +297,7 @@ Vector3& CSMech::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 		return OPos2;
 }
 
+
 bool CSMech::Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
 	if( (kCurPos-OPos2).Length() < (kCurPos-OPos1).Length())
@@ -338,3 +305,77 @@ bool CSMech::Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 	else
 		return false;
 }
+
+void CSMech::GenerateModelMatrix()
+{
+	m_kModelMatrix.Identity();
+	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+	m_kModelMatrix.Rotate( m_pkPP->GetObject()->GetRot());	
+	m_kModelMatrix.Translate(m_pkPP->GetObject()->GetPos());		
+
+}
+
+
+
+
+
+/*
+
+
+	Vector3 data[3];
+	for(int i=0;i<m_pkFaces->size();i++)
+	{
+
+		for(int j=0;j<3;j++)
+			data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
+	
+		if(TestPolygon(data,kPos1,kPos2,kOther->m_fRadius))
+		{
+			hit=true;		
+			HitNormal=m_kColNormal;
+			kPos2=m_kColPos;			
+			
+			//go trough all previous added collisions and check if the still occurs
+			for(list<int>::iterator it=m_kCollidedFaces.begin();it!=m_kCollidedFaces.end();it++)				
+			{
+				Vector3 temp[3];
+				for(int l=0;l<3;l++)
+					temp[l] = (*m_pkVertex)[ (*m_pkFaces)[(*it)].iIndex[l]];
+				
+				if(TestPolygon(temp,kPos1,kPos2,kOther->m_fRadius))
+				{
+					cout<<"collision still occurs "<<(*it)<<endl;					
+						
+					//hit=true;
+					HitNormal=m_kColNormal;
+					kPos2=m_kColPos;				
+				}
+				else										
+				{
+					cout<<"removing old collision "<<(*it)<<endl;
+					
+					if(m_kCollidedFaces.size() > 1)
+					{					
+						list<int>::iterator oldit = it;
+						it--;
+						
+						m_kCollidedFaces.erase(oldit);
+					}
+					else
+					{
+						it=m_kCollidedFaces.end();
+						m_kCollidedFaces.clear();						
+					}
+				}				
+			}
+			//add face to collided faces
+			m_kCollidedFaces.push_back(i);
+			cout<<"added "<<i<<" To collided faces"<<endl;			
+		}
+	}
+*/
+
+
+
+
+

@@ -13,7 +13,10 @@ using namespace std;
 class ENGINE_API CSMech : public CollisionShape
 {
 	private:
+		Matrix4								 m_kModelMatrix;		
+	
 		Vector3								 m_kColPos;
+		Vector3								 m_kGlideColPos;		
 		Vector3 								 m_kColNormal;
 		float 								 m_fcoloffset;
 
@@ -48,6 +51,8 @@ class ENGINE_API CSMech : public CollisionShape
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
 		
 		bool SetUpMech();
+		
+		void GenerateModelMatrix();
 		
 };
 
