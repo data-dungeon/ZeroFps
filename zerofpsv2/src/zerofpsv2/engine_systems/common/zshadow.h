@@ -14,6 +14,12 @@ class	P_Mad;
 class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 {
 	private:
+		enum eShadowMode
+		{
+			ezFail = 0,
+			ezPass = 1,
+		};
+
 		Light*			m_pkLight;
 		ZeroFps*			m_pkZeroFps;
 		Render*			m_pkRender;
@@ -25,13 +31,11 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int						m_iNrOfVerts;
 		int						m_iNrOfFaces;
 
-		int						m_iDebug;
 
-		//vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
-		//vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>			m_kTransFormedVertexs;
-		vector<pair<int,int> >	m_kTowardsEdges;
-//		vector<Vector3>
+		vector<Vector3>			m_kExtrudedSiluet;
+		vector<Vector3>			m_kFrontCaping;
+		vector<Vector3>			m_kBackCaping;
 
 		int			m_iCurrentShadows;
 		int			m_iCurrentVerts;
@@ -40,13 +44,22 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		bool			m_bHaveCheckedBits;		//have we checked that the stencil buffer is ok
 		bool			m_bDisabled;				//is shadows disabled
 
+		int			m_iDebug;
+		int			m_iShadowMode;
 		int			m_iNrOfShadows;			//number of shadows calculated per model
 		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
+		float			m_fFrontCapOffset;
 		bitset<8>	m_kShadowGroups;
 
-		void FindFrontCaping(Vector3 kSourcePos);
+		//void FindCapings(Vector3 kSourcePos);
+		//void ExtrudeSiluet(Vector3 kSourcePos);
+
+		void DrawCapings();
+		void DrawExtrudedSiluet();
+
 		void FindSiluetEdges(Vector3 kSourcePos);
-		void ExtrudeSiluet(Vector3 kSourcePos);
+
+
 		void MakeStencilShadow(Vector3 kSourcePos);
 		void DrawShadow(float fItensity);
 

@@ -16,8 +16,11 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	m_bHaveCheckedBits = false;
 	m_bDisabled = 			false;
 	m_iDebug = 				0;
+	m_iShadowMode =		ezFail;
+	m_fFrontCapOffset =	0.025;
 
 	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
+	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
 	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
 }
 
@@ -74,7 +77,7 @@ void ZShadow::Update()
 			{
 				//find witch lights to enable
 				vector<LightSource*>	kLights;
-				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, m_pkMad->GetObject()->GetIWorldPosV(),true);
+				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, m_pkMad->GetObject()->GetIWorldPosV(),false);
 
 				for(int i = 0;i<kLights.size();i++)
 				{
@@ -156,71 +159,20 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 	return false;
 }
 
-void ZShadow::FindFrontCaping(Vector3 kSourcePos)
-{
-	int iVerts = m_iNrOfFaces*3;
-	m_iCurrentVerts += iVerts;
-	Vector3 v[3];
-	Vector3 ev[3];
-	Vector3 bv[3];
-
-	for(int i = 0;i<iVerts; i+=3)
-	{
-		v[0] = m_kTransFormedVertexs[ m_pkFaces[i] ];
-		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
-		v[2] = m_kTransFormedVertexs[ m_pkFaces[i+2]];
-
-
-		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
-		Vector3 RefV = ( kSourcePos - (v[0]) );
-
-		if(Normal.Dot(RefV) > 0)
-		{
-
-
-/*			ev[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
-			ev[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
-			ev[2] = v[2] + ( kSourcePos - v[2]).Unit() * 0.01;
-*/
-			ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * 0.01;
-			ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * 0.01;
-			ev[2] = v[2] + ( v[2] - kSourcePos).Unit() * 0.01;
-
-
-			bv[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
-			bv[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
-			bv[2] = v[2] + ( v[2] - kSourcePos).Unit() * m_fExtrudeDistance;
-
-
-			glBegin(GL_TRIANGLES);
-				glVertex3f(ev[0].x,ev[0].y,ev[0].z);
-				glVertex3f(ev[1].x,ev[1].y,ev[1].z);
-				glVertex3f(ev[2].x,ev[2].y,ev[2].z);
-			glEnd();
-
-/*			glBegin(GL_TRIANGLES);
-				glVertex3f(v[0].x,v[0].y,v[0].z);
-				glVertex3f(v[1].x,v[1].y,v[1].z);
-				glVertex3f(v[2].x,v[2].y,v[2].z);
-			glEnd();
-*/
-			glBegin(GL_TRIANGLES);
-				glVertex3f(bv[2].x,bv[2].y,bv[2].z);
-				glVertex3f(bv[1].x,bv[1].y,bv[1].z);
-				glVertex3f(bv[0].x,bv[0].y,bv[0].z);
-			glEnd();
-
-		}
-	}
-}
 
 void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 {
 	Vector3 v[3];
-
-
 	int iVerts = m_iNrOfFaces*3;
 	m_iCurrentVerts += iVerts;
+
+	vector<pair<int,int> >	kTowardsEdges;
+
+	if(m_iShadowMode == ezFail)
+	{
+		m_kFrontCaping.clear();
+		m_kBackCaping.clear();
+	}
 
 	for(int i = 0;i<iVerts; i+=3)
 	{
@@ -238,8 +190,21 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 		//
 		if(Normal.Dot(RefV) > 0)
 		{
-			pair<int,int> p;
+			//here we generate the front and back capings for the zfail shadows
+			if(m_iShadowMode == ezFail)
+			{
+				m_kFrontCaping.push_back(v[0] + ( v[0] - kSourcePos).Unit() * m_fFrontCapOffset);
+				m_kFrontCaping.push_back(v[1] + ( v[1] - kSourcePos).Unit() * m_fFrontCapOffset);
+				m_kFrontCaping.push_back(v[2] + ( v[2] - kSourcePos).Unit() * m_fFrontCapOffset);
 
+				m_kBackCaping.push_back(v[2] + ( v[2] - kSourcePos).Unit() * m_fExtrudeDistance);
+				m_kBackCaping.push_back(v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance);
+				m_kBackCaping.push_back(v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance);
+
+			}
+
+
+			pair<int,int> p;
 			for(int j = 0;j<3;j++)
 			{
 				switch(j)
@@ -261,7 +226,7 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 
 
 				bool bFound = false;
-				for(vector<pair<int,int> >::iterator it=m_kTowardsEdges.begin();it!=m_kTowardsEdges.end();it++)
+				for(vector<pair<int,int> >::iterator it=kTowardsEdges.begin();it!=kTowardsEdges.end();it++)
 				{
 //					if( ( ( (*it).first == p.first ) 	&& ( (*it).second == p.second ) ) ||
 //						 ( ( (*it).second == p.first ) 	&& ( (*it).first == p.second  ) ) )
@@ -271,8 +236,8 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 							( ( m_kTransFormedVertexs[(*it).second] == m_kTransFormedVertexs[p.first] ) 	&&
 							( m_kTransFormedVertexs[(*it).first] == m_kTransFormedVertexs[p.second]  ) ) )
 					{
-						m_kTowardsEdges.erase(it);
-						it = m_kTowardsEdges.begin();
+						kTowardsEdges.erase(it);
+						it = kTowardsEdges.begin();
 						bFound =true;
 
 						break;
@@ -281,95 +246,110 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 
 				if(!bFound)
 				{
-					m_kTowardsEdges.push_back(p);
+					kTowardsEdges.push_back(p);
 				}
 			}
 		}
 	}
-}
 
-void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
-{
-	Vector3 v[2];
-	Vector3 ev[2];
-
-	for(int i =0 ;i<m_kTowardsEdges.size();i++)
+	//now lets calculate the extruded siluet
+	m_kExtrudedSiluet.clear();
+	Vector3 ev[3];
+	for(int i =0 ;i<kTowardsEdges.size();i++)
 	{
-		v[0] = m_kTransFormedVertexs[m_kTowardsEdges[i].first];
-		v[1] = m_kTransFormedVertexs[m_kTowardsEdges[i].second];
+		v[0] = m_kTransFormedVertexs[kTowardsEdges[i].first];
+		v[1] = m_kTransFormedVertexs[kTowardsEdges[i].second];
 
-		v[0] = v[0] + ( v[0] -kSourcePos).Unit() * 0.01;
-		v[1] = v[1] + ( v[1] -kSourcePos).Unit() * 0.01;
+		v[0] = v[0] + ( v[0] -kSourcePos).Unit() * m_fFrontCapOffset;
+		v[1] = v[1] + ( v[1] -kSourcePos).Unit() * m_fFrontCapOffset;
 
 		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
 		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
 
-		glBegin(GL_QUADS);
-			glVertex3f(v[0].x,v[0].y,v[0].z);
-			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
-			glVertex3f(ev[1].x,ev[1].y,ev[1].z);
-			glVertex3f(v[1].x,v[1].y,v[1].z);
-		glEnd();
+		m_kExtrudedSiluet.push_back(v[0]);
+		m_kExtrudedSiluet.push_back(ev[0]);
+		m_kExtrudedSiluet.push_back(ev[1]);
+		m_kExtrudedSiluet.push_back(v[1]);
 
-		//debug stuff
-		if(m_iDebug != 0)
-		{
-			glPushAttrib(GL_ALL_ATTRIB_BITS);
-				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-				glDisable(GL_STENCIL_TEST);
-				glDisable(GL_TEXTURE_2D);
-				glColor4f(1,0,0,0);
-				glDisable(GL_LIGHTING);
-
-				glBegin(GL_LINES);
-					glVertex3f(v[0].x,v[0].y,v[0].z);
-					glVertex3f(v[1].x,v[1].y,v[1].z);
-
-					glVertex3f(v[0].x,v[0].y,v[0].z);
-					glVertex3f(ev[0].x,ev[0].y,ev[0].z);
-
-					glVertex3f(v[1].x,v[1].y,v[1].z);
-					glVertex3f(ev[1].x,ev[1].y,ev[1].z);
-				glEnd();
-			glPopAttrib();
-		}
 	}
 }
+
+void ZShadow::DrawCapings()
+{
+	//draw front caping
+	glVertexPointer(3,GL_FLOAT,0,&m_kFrontCaping[0].x);
+	glDrawArrays(GL_TRIANGLES,0,m_kFrontCaping.size());
+
+	//draw back caping
+	glVertexPointer(3,GL_FLOAT,0,&m_kBackCaping[0].x);
+	glDrawArrays(GL_TRIANGLES,0,m_kBackCaping.size());
+}
+
+void ZShadow::DrawExtrudedSiluet()
+{
+	glVertexPointer(3,GL_FLOAT,0,&m_kExtrudedSiluet[0].x);
+	glDrawArrays(GL_QUADS,0,m_kExtrudedSiluet.size());
+
+
+	//debug stuff
+	if(m_iDebug != 0)
+	{
+		glPushAttrib(GL_ALL_ATTRIB_BITS);
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDisable(GL_STENCIL_TEST);
+			glDisable(GL_TEXTURE_2D);
+			glColor4f(1,0,0,0);
+			glDisable(GL_LIGHTING);
+			glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+
+			glVertexPointer(3,GL_FLOAT,0,&m_kExtrudedSiluet[0].x);
+			glDrawArrays(GL_QUADS,0,m_kExtrudedSiluet.size());
+		glPopAttrib();
+	}
+}
+
 
 void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 {
 	//first calculate the siluet
-	m_kTowardsEdges.clear();
 	FindSiluetEdges(kSourcePos);
 
+	switch(m_iShadowMode)
+	{
+		case ezFail:
+		{
+			//carmac inverse (zfail)
+			//back
+			glCullFace(GL_FRONT);
+			glStencilOp(GL_KEEP, GL_INCR, GL_KEEP);
+			DrawExtrudedSiluet();
+			DrawCapings();
 
-	//carmac inverse (zfail)
-	//back
-	glCullFace(GL_FRONT);
-	glStencilOp(GL_KEEP, GL_INCR, GL_KEEP);
-	ExtrudeSiluet(kSourcePos);
-	FindFrontCaping(kSourcePos);
+			//front
+ 			glCullFace(GL_BACK);
+			glStencilOp(GL_KEEP, GL_DECR, GL_KEEP);
+			DrawExtrudedSiluet();
+			DrawCapings();
+		break;
+		}
 
+		case ezPass:
+		{
+			//the other one ;)
+			//draw front
+			glCullFace(GL_BACK);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+			DrawExtrudedSiluet();
 
-	//front
- 	glCullFace(GL_BACK);
-	glStencilOp(GL_KEEP, GL_DECR, GL_KEEP);
-	ExtrudeSiluet(kSourcePos);
-	FindFrontCaping(kSourcePos);
+			//draw back
+			glCullFace(GL_FRONT);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+			DrawExtrudedSiluet();
 
+		break;
+		}
+	}
 
-/*
-	//the other one ;)
-	//draw front
-	glCullFace(GL_BACK);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-	ExtrudeSiluet(kSourcePos);
-
-	//draw back
-	glCullFace(GL_FRONT);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
-	ExtrudeSiluet(kSourcePos);
-*/
 }
 
 void ZShadow::SetupStencilBuffer()
@@ -399,8 +379,15 @@ void ZShadow::SetupGL()
 
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glDepthMask(GL_FALSE);
-
 	glEnable(GL_CULL_FACE);
+
+	//client states
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_EDGE_FLAG_ARRAY);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 }
 
 void ZShadow::DrawShadow(float fItensity)
@@ -461,3 +448,114 @@ void ZShadow::DrawShadow(float fItensity)
 	glPopAttrib();
 
 }
+
+
+/*
+void ZShadow::FindCapings(Vector3 kSourcePos)
+{
+	int iVerts = m_iNrOfFaces*3;
+	m_iCurrentVerts += iVerts;
+	Vector3 v[3];
+	Vector3 ev[3];
+	Vector3 bv[3];
+
+	for(int i = 0;i<iVerts; i+=3)
+	{
+		v[0] = m_kTransFormedVertexs[ m_pkFaces[i] ];
+		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
+		v[2] = m_kTransFormedVertexs[ m_pkFaces[i+2]];
+
+
+		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
+		Vector3 RefV = ( kSourcePos - (v[0]) );
+
+		if(Normal.Dot(RefV) > 0)
+		{
+
+
+/*			ev[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
+			ev[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
+			ev[2] = v[2] + ( kSourcePos - v[2]).Unit() * 0.01;
+*
+			ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * 0.01;
+			ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * 0.01;
+			ev[2] = v[2] + ( v[2] - kSourcePos).Unit() * 0.01;
+
+
+			bv[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
+			bv[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
+			bv[2] = v[2] + ( v[2] - kSourcePos).Unit() * m_fExtrudeDistance;
+
+
+			glBegin(GL_TRIANGLES);
+				glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+				glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+				glVertex3f(ev[2].x,ev[2].y,ev[2].z);
+			glEnd();
+
+/*			glBegin(GL_TRIANGLES);
+				glVertex3f(v[0].x,v[0].y,v[0].z);
+				glVertex3f(v[1].x,v[1].y,v[1].z);
+				glVertex3f(v[2].x,v[2].y,v[2].z);
+			glEnd();
+*
+			glBegin(GL_TRIANGLES);
+				glVertex3f(bv[2].x,bv[2].y,bv[2].z);
+				glVertex3f(bv[1].x,bv[1].y,bv[1].z);
+				glVertex3f(bv[0].x,bv[0].y,bv[0].z);
+			glEnd();
+
+		}
+	}
+}
+*/
+
+/*
+void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
+{
+	Vector3 v[2];
+	Vector3 ev[2];
+
+	for(int i =0 ;i<m_kTowardsEdges.size();i++)
+	{
+		v[0] = m_kTransFormedVertexs[m_kTowardsEdges[i].first];
+		v[1] = m_kTransFormedVertexs[m_kTowardsEdges[i].second];
+
+		v[0] = v[0] + ( v[0] -kSourcePos).Unit() * 0.01;
+		v[1] = v[1] + ( v[1] -kSourcePos).Unit() * 0.01;
+
+		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
+		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
+
+		glBegin(GL_QUADS);
+			glVertex3f(v[0].x,v[0].y,v[0].z);
+			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+			glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+			glVertex3f(v[1].x,v[1].y,v[1].z);
+		glEnd();
+
+		//debug stuff
+		if(m_iDebug != 0)
+		{
+			glPushAttrib(GL_ALL_ATTRIB_BITS);
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				glDisable(GL_STENCIL_TEST);
+				glDisable(GL_TEXTURE_2D);
+				glColor4f(1,0,0,0);
+				glDisable(GL_LIGHTING);
+
+				glBegin(GL_LINES);
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(v[1].x,v[1].y,v[1].z);
+
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+
+					glVertex3f(v[1].x,v[1].y,v[1].z);
+					glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+				glEnd();
+			glPopAttrib();
+		}
+	}
+}
+*/
