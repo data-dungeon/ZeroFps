@@ -19,7 +19,7 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 	glRotatef(kHead.y, 0, 1, 0);	
 	glRotatef(kHead.z, 0, 0, 1);
 
-//	glScalef(200,200,200);
+	glScalef(100,100,100);
 
 //	glDisable(GL_TEXTURE_2D);
 
@@ -113,8 +113,9 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 	glEnd();*/
 
 	glEnable(GL_CULL_FACE);
+	glDepthMask(GL_TRUE);		
+	
 	glPopAttrib();
-	glDepthMask(GL_TRUE);	
 	glPopMatrix();
 
 }

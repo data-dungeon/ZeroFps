@@ -10,6 +10,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
+
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
@@ -681,6 +683,10 @@ void MistServer::OnServerStart(void)
 		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
+		m_pkCameraObject->GetSave() = false;
+		
+		P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
+		sb->SetTexture("data/textures/env/plainsky/sky","mode6");
 		
 	}
 	
