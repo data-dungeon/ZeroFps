@@ -286,7 +286,6 @@ void ZGuiWnd::SetRenderTarget(I_Camera* pkCam)
 			m_pkGUI->m_iResY-m_kArea.Top-m_kArea.Height(), 
 			m_kArea.Width(), m_kArea.Height());
 	}
-	//pkCam->m_pkWnd = this;
 }
 
 
@@ -300,14 +299,12 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	pkRenderer->RenderQuad(m_kArea);
 	pkRenderer->RenderBorder(m_kArea);
 
-	if(m_pkCamera && IsVisible()) 
-		{
-			pkRenderer->EndRender(); 
-
+	if(m_pkCamera) 
+	{
+		pkRenderer->EndRender(); 
 			m_pkCamera->RenderView(); 
-
-			pkRenderer->StartRender(false);
-		}
+		pkRenderer->StartRender(false);
+	}
 
 	// Render childrens back to front
 	for( WINrit w = m_kChildList.rbegin(); w != m_kChildList.rend(); w++)
@@ -321,21 +318,12 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 
 				(*w)->Render( pkRenderer );
 
-
-
-
-
-		if((*w)->m_pkCamera && (*w)->IsVisible()) 
-		{
-			pkRenderer->EndRender(); 
-
-			(*w)->m_pkCamera->RenderView(); 
-
-			pkRenderer->StartRender(false);
-		}
-
-
-
+				if((*w)->m_pkCamera) 
+				{
+					pkRenderer->EndRender(); 
+						(*w)->m_pkCamera->RenderView(); 
+					pkRenderer->StartRender(false);
+				}
 
 				if((*w)->m_bUseClipper)
 					pkRenderer->EnableClipper(false);

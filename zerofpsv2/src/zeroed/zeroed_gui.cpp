@@ -37,6 +37,11 @@ void ZeroEd::SetupGuiEnviroment()
 	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
 
 	ShowWnd("SelectFileWnd", false);
+
+	CreateWnd(Label, "vp1Label", "Perspective", GetWnd("vp1"), 2, 0, 100, 20, 0);
+	CreateWnd(Label, "vp2Label", "Top", GetWnd("vp2"), 2, 0, 100, 20, 0);
+	CreateWnd(Label, "vp3Label", "Left", GetWnd("vp3"), 2, 0, 100, 20, 0);
+	CreateWnd(Label, "vp4Label", "Front", GetWnd("vp4"), 2, 0, 100, 20, 0);
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
