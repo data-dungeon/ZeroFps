@@ -134,19 +134,27 @@ private:
 const int CONTAINER_ITEM_ROWS = 5;
 const int CONTAINER_ITEM_COLS = 4;
 
+const int MAX_NUM_ITEMS = 76;
+
+class P_Container;
+
 class ContainerDlg
 {
 public:
+	void Update();
 	void OnCommand(int iID);
 	void OnScroll(int iID, int iPos);
 	bool IsOpen() { if(m_pkDlgWnd == NULL) return false; return m_pkDlgWnd->IsVisible(); }
 	void ToggleOpen(bool bOpen);
+	void SetContainer(P_Container* pkContainer);
 	void Create();
 
 	ContainerDlg(ZGuiApp* pkApp);
 	~ContainerDlg();
 
 private:
+	void RemoveAllItems();
+	bool AddItem(char* szPic, Entity* pkObject);
 	void TakeAll();
 	ZGuiWnd* m_pkDlgWnd;
 
@@ -156,7 +164,14 @@ private:
 
 	ZGuiButton* m_pkContatinerButtons[CONTAINER_ITEM_ROWS][CONTAINER_ITEM_COLS];
 
+	vector<pair<ZGuiLabel*, Entity*> > m_vkItems;
+	set<Entity*> m_kContainerObjects;
+
 	string GetWndByID(int iID);
+
+	Rect m_rcClipperArea;
+
+	P_Container* m_pkContainer;
 	
 };
 

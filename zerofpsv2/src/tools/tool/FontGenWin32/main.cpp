@@ -23,12 +23,14 @@ void DrawFont(HDC hdc)
 
 	int oka=0, x, y;
 
+	int start_char = 0; // ändra till 0 om det är en textur för konsolen
+
 	for(y=0; y<ROW_WIDTH; y++)
 	{
 		for(x=0; x<ROW_WIDTH; x++)
 		{
 			char text[2];
-			text[0] = 32 + oka;
+			text[0] = start_char + oka;
 			text[1] = '\0';
 			DrawText(hdc, text, 1, &rc, 0);
 

@@ -252,6 +252,8 @@ void MistClient::OnIdle()
 	if(m_pkStatsDlg && m_pkStatsDlg->IsVisible())
 		m_pkStatsDlg->Update();
 
+	if(m_pkContainerDlg && m_pkContainerDlg->IsOpen())
+		m_pkContainerDlg->Update();
 
 	CharacterProperty* pkCharacterProperty = NULL;
 
@@ -849,10 +851,22 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
 
-
 									m_pkClientControlP->AddOrder(order);
 
 									printf("selected order = %s\n", res->second.c_str());
+
+									// öppna en container...
+									if(order.m_sOrderName == "Open")
+									{
+										P_Container* m_pkContainer =  static_cast<P_Container*>(
+											m_pkTargetObject->GetProperty("P_Container"));
+
+										if(m_pkContainer)
+										{
+											m_pkContainerDlg->SetContainer( m_pkContainer);
+											m_pkContainerDlg->ToggleOpen(true); 
+										}										
+									}
 								}
 							}
 						}
@@ -1565,11 +1579,10 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 		}
 		break;
 
-/*	case KEY_SPACE:
+	case KEY_SPACE:
 		if ( m_pkContainerDlg )
          m_pkContainerDlg->ToggleOpen(!m_pkContainerDlg->IsOpen());
-
-		break;*/
+		break;
 	}
 
 }
