@@ -25,7 +25,7 @@ class ENGINE_API VegitationProperty: public Property {
 		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;
 		Render*				m_pkRender;	
-		ZeroFps *m_pkFps;
+		ZeroFps*				m_pkFps;
 			
 		string				m_kTexture; 		
 		int					m_iTexture;	

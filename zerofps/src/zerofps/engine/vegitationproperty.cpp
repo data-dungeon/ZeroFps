@@ -38,11 +38,28 @@ void VegitationProperty::Update()
 	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
 			
+	Vector3 ObjectPos = m_pkObject->GetPos();			
 			
-	Vector3 ObjectPos = m_pkObject->GetPos();
+	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
+	if(fDistance > 40)
+		return;
+	
+	if(fDistance < 0)
+		fDistance = 0;	
+		
+	int iStep = int(fDistance / 10.0);
+	if(iStep < 1)
+		iStep = 1;
+
+//	cout<<"step "<<iStep<<endl;
+//	cout<<"grass "<<m_akPositions.size()<<endl;
+
+
+
 	float t=m_pkFps->GetTicks();
 
-	for(int i=0;i<m_akPositions.size();i++){
+
+	for(int i=0;i<m_akPositions.size();i += iStep){
 		if(m_fWind == 0)
 			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,m_akPositions[i].kRot,m_kScale,m_iTexture);
 		else
