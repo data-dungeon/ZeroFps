@@ -270,7 +270,7 @@ void DarkMetropolis::OnServerStart()
 		if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 		{
 			pkEnv->SetEnable(true);
-			pkEnv->SetEnviroment("data/enviroments/sun.env");			
+			pkEnv->SetEnviroment("data/enviroments/dm.env");			
 		}
 		
 		//add tracker to camera
