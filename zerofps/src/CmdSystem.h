@@ -23,9 +23,7 @@ struct variable {
 
 class CmdSystem {
 	private:
-		vector<variable*> kVars;
-		double GetVar(int i);
-		
+		vector<variable*> kVars;		
 		
 	public:
 		CmdSystem(void);
@@ -34,7 +32,8 @@ class CmdSystem {
 		void Get(char* aName);
 		void List(void);
 		void Set(char* aName,double);
-
+		inline vector<variable*> &GetList(void) {return kVars;};
+		double GetVar(int i);
 };
 
 #endif

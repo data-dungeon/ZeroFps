@@ -30,6 +30,7 @@ class Console {
 		
 		void Update(void);
 		void Draw(void);
+		void Execute(char* aText);
 };
 
 

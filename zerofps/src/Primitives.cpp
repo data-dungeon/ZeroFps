@@ -86,9 +86,15 @@ void Primitives::Pyra(float x,float y,float z) {
 }
 
 void Primitives::PrintChar(char cChar) {
-	char aTexture[]="data/textures/text/ .bmp";
+	char aTexture[255]="data/textures/text/ .bmp";
 		
 	aTexture[19]=cChar;
+				
+	if(cChar=='+')			
+		strcpy(aTexture,"data/textures/text/plus.bmp");
+	if(cChar=='-')			
+		strcpy(aTexture,"data/textures/text/minus.bmp");	
+		
 				
 	if(aTexture[19]!=' ')
 		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));

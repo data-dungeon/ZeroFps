@@ -18,13 +18,31 @@ Console::Console(ZeroFps* pkEngine) {
 }
 
 void Console::Update(void) {
-//	if(m_pkInput->Pressed(SDL_KEY
+	while(SDL_PollEvent(&m_kEvent)) {
+		if(m_kEvent.type==SDL_KEYDOWN){
 
+			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
+				Execute(m_aCommand);
+				strcpy(m_aCommand,"");
+				break;
+			}
+			if(m_kEvent.key.keysym.sym==SDLK_BACKSPACE){
+				m_aCommand[strlen(m_aCommand)-1]='\0';
+				break;
+			}
+			
+			
+			if(strlen(m_aCommand)<TEXT_MAX_LENGHT) {
+				strncat(m_aCommand,&(char)m_kEvent.key.keysym.sym,1);
+			}
+		}
+	}
 }
 
 void Console::Draw(void) {
 	m_pkPrims->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("data/textures/background.bmp"));
-
+	
+	m_pkPrims->Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
 	
 	for(int i=0;i<22;i++) {
 		if(m_kText[i]!=NULL){
@@ -48,5 +66,41 @@ void Console::Print(char* aText) {
 //	cout<<"added "<<m_kText[0]<<endl;
 }
 
+void Console::Execute(char* aText) {
+	if(strlen(aText)==0){
+		Print("");
+		return;
+	}
+	
 
+	if(strcmp(aText,"quit")==0){
+		exit(1);
+		return;
+	}
+	
+	if(strcmp(aText,"help")==0){
+		Print("-------+ help +-------");
+		Print(" quit - exit program  ");
+		return;
+	}
+	
+	if(strncmp(aText,"set",4)==0) {
+		
+	}
+
+	if(strcmp(aText,"varlist")==0) {
+		Print("---+ variable list +---");
+		for(int i=0;i<m_pkCmd->GetList().size();i++){
+			char text[255]="";
+			strcpy(text,m_pkCmd->GetList()[i]->aName);
+			strcat(text,"  ");
+			Print(text);
+//			strcat(text,atoi(m_pkCmd->GetVar(i)
+//			cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
+		}
+		return;
+	}
+
+	Print("-+ unknown command +-");
+}
 
