@@ -41,7 +41,7 @@ void P_UnitMoveAI::Init()
 		if(m_pkMap)
 			cout<<"found HeightMap!!" <<endl;
 		else
-			cout<<"didnt find the damn HeightMap!!" <<endl;
+			cout<<"didnt find the damn fucking shit asshole HeightMap fucker!!" <<endl;
 	}
 
 	int aiCost[5];
