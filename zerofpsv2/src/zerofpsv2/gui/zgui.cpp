@@ -446,10 +446,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{		
 		if(pkFocusWindow)
 		{
-			if(!ClickedWndAlphaTex(x,y,pkFocusWindow))
+			if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
 			{
 				m_bHaveInputFocus = false;
-				//printf("clicked on alpha\n");
 				return true;
 			}
 
@@ -1002,6 +1001,8 @@ void ZGui::OnKeyPress(int iKey)
 {
 	if(ZGuiWnd::m_pkFocusWnd && iKey != -1)
 	{	
+		m_bHaveInputFocus = false;
+
 		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
 			typeid(ZGuiTextbox) ? true : false;
 
