@@ -51,6 +51,10 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// object orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
+
+   // rotation functions
+   pkScript->ExposeFunction("SetRotVel",			   ObjectManagerLua::SetObjectRotVelLua);
+
 }
 
 void Reset()
@@ -424,6 +428,41 @@ int SetLocalDouble(lua_State* pkLua)
 	GotLocalString
 */
 
+int SetObjectRotVelLua (lua_State* pkLua)
+{
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs != 2)
+		return 0;
+
+	double dID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+
+	if(pkObject)
+	{
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+
+      // Get physic-property
+      P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs");
+
+      if ( pkTcs )
+      {
+		   pkTcs->SetRotVel (  Vector3(
+			   (float) (*(double*) vkData[0].pData),
+			   (float) (*(double*) vkData[1].pData),
+			   (float) (*(double*) vkData[2].pData)) );
+      }
+      else
+         cout << "Warning! Tried to set RotVel on a object without P_Tcs!" << endl;
+
+		g_pkScript->DeleteTable(vkData);
+	}
+
+	return 1;
+}
 
 int SetObjectPosLua(lua_State* pkLua)
 {

@@ -455,7 +455,6 @@ void PSystem::TestInsideFrustum()
 																							  0,0,1,0,
 																							  0,0,0,1) );
 
-
 	}
 	else if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "point" )
 	{		

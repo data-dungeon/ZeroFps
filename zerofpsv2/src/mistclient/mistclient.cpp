@@ -717,15 +717,20 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					}
 				}
 
+
 				// order itemcontainer to begin gather iteminfo from server
 				if ( GetWnd("BackPackWnd")->IsVisible() )
 				{
 					pkGui->SetFocus(GetWnd("BackPackWnd"));
 
 					if(m_pkActiveCharacter)
+               {
+                  ((P_Container*)m_pkActiveCharacter->GetProperty("P_Container"))->RequestUpdateFromServer();
+							
+
 						((P_Container*)m_pkActiveCharacter->GetProperty("P_Container"))->
 							GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);  
-
+               }
 				}
 				else
 					pkGui->SetFocus(GetWnd("PanelBkWnd"));

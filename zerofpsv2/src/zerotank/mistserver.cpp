@@ -159,6 +159,8 @@ void MistServer::Init()
 	pkGui->GetToolTip()->SetSkin(kSkin);
 	
 	pkInput->ToggleGrab(true);
+
+ 	pkFps->SetCamera(m_pkCamera);		
 	
 	
 /*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
@@ -190,6 +192,7 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {
+
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 

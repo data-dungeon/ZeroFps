@@ -113,7 +113,7 @@ void P_AI::Update()
                   ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
             }
             else
-               cout << "Missed!" << endl;
+               ;//cout << "Missed!" << endl;
 
             m_pkCharProp->GetCharStats()->ResetActionTimer();
          }

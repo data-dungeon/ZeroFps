@@ -174,6 +174,8 @@ void P_Container::RequestUpdateFromServer()
 
       pkCP->AddOrder (kOrder);
    }
+   else
+      cout << "ERROR! Couldn't find clientobject! (P_Container::RequestUpdateFromServer)" << endl;
 }
 
 // -----------------------------------------------------------------------------------------------

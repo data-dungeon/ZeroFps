@@ -48,6 +48,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		//temp data
 		Vector3	m_kNewPos;
 		Vector3	m_kMSPos;
+      Vector3 m_kRotVel;
+
 		float		m_fMSRadius;	
 
 		vector<PropertyValues> GetPropertyValues();
@@ -61,6 +63,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		~P_Tcs();		
 		
 		void Init();
+
+      void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }
 		
 		void CloneOf(Property* pkProperty) { }		
 		void Update();

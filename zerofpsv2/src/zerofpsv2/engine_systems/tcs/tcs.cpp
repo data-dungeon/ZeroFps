@@ -93,6 +93,8 @@ void Tcs::UpdateMotion()
 	{	
 //		if(!m_kBodys[i]->m_bStatic)
 			m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
+
+         m_kBodys[i]->GetObject()->RotateLocalRotV (m_kBodys[i]->m_kRotVel * m_pkZeroFps->GetFrameTime() );
 	}
 }
 

@@ -582,13 +582,13 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       
       pkLink->SetJoint( kSlot.c_str() );
 
-      cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
+      //cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
 
       // if equipped primary weapon, set skill!!
       if ( kSlot == "righthand" || kSlot == "RightHand" || kSlot == "cavetroll_r_u_finger_end")
       {
          m_strPrimSkill = pkP_Item->m_pkItemStats->m_kUsesSkill;
-         cout << "SetPrimSkillTo:" << m_strPrimSkill << endl;
+         //cout << "SetPrimSkillTo:" << m_strPrimSkill << endl;
       }
 
       return true;

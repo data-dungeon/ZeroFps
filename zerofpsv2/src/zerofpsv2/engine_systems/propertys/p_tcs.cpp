@@ -27,6 +27,8 @@ P_Tcs::P_Tcs()
 	m_iGroup=				0;
 	
 	ResetGroupFlags();
+
+   m_kRotVel = Vector3(0,0,0);
 	
 }
 
