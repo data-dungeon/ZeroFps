@@ -1902,6 +1902,7 @@ move_area_top=468
 move_area_right=620
 move_area_bottom=548
 tab_order=10
+multiline=1
 
 [Textbox5]
 type=Textbox

@@ -19,6 +19,7 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	m_pkSkinBnDown=NULL;
 	m_pkSkinBnHLight=NULL;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
+	m_bCenterTextHorz = true;
 }
 
 ZGuiButton::~ZGuiButton()
@@ -82,25 +83,11 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	if(m_strText != NULL)
 	{
 		Rect rcTextRect = GetScreenRect();
-		if(GetWindowFlag(WF_CENTER_TEXT) == true)
-		{
-			int textwidth = 12;
-			int buttonWidth = 20;
-			int x_diff = buttonWidth/2-textwidth/2;
-	
-			rcTextRect.Left += x_diff;
-			rcTextRect.Right += x_diff;
-
-/*			int textheight = 12;
-			int buttonHeight = 20;
-			int y_diff = buttonHeight/2-textheight/2;
-
-			rcTextRect.Top += y_diff;
-			rcTextRect.Bottom += y_diff;*/
-		}
 
 		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, rcTextRect, -1, 0, false, iLetters, iRows);
+		pkRenderer->RenderText(m_strText, rcTextRect, -1, 
+			m_bCenterTextHorz == true ? ZG_CENTER_TEXT_HORZ : 0, 
+			false, iLetters, iRows);
 	}
 
 	return true;

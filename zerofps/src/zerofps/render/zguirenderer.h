@@ -11,6 +11,8 @@
 
 class ZGuiSkin;
 
+const int ZG_CENTER_TEXT_HORZ = -2;
+
 class RENDER_API ZGuiRender : public ZFObject 
 {
 public:

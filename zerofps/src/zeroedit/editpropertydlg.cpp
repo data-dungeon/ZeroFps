@@ -60,7 +60,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 		return test;
 	}
 
-	m_pkZGui->LoadDialog("../src/zeroedit/gui_resource_files/zgresource_rc.txt", 
+	m_pkZGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
 		"PropertyDlg", PROPERTYPROC);
 
 	// Initialize key commands to update values by pushing return while

@@ -581,6 +581,8 @@ void ControlBox::PrintSpecialProperites(Serialization *pkFile, ZGuiWnd *pkWnd)
 	case LABEL:
 		break;
 	case TEXTBOX:
+		pkFile->Outputa("multiline=%i\n", 
+			(int)((ZGuiTextbox*)(pkWnd))->IsMultiLine());
 		break;
 	case BUTTON:
 		break;
@@ -749,13 +751,17 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 					(char*)vkSections[i].c_str(), "mainwnd_id"));
 				pkWnd=m_pkGuiBuilder->CreateMainWindow(mainwnd_id,wnd_id,name,
 					x,y,w,h,m_oMainWndProc);
+				pkWnd->SetMoveArea(rc_m);
 			}
 			break;
 		case LABEL:
 			pkWnd=m_pkGuiBuilder->CreateLabel(pkParent,wnd_id,name,x,y,w,h,text);
 			break;
 		case TEXTBOX:
-			pkWnd=m_pkGuiBuilder->CreateTextbox(pkParent,wnd_id,name,x,y,w,h,false);	
+			int multiline; 
+			multiline= atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "multiline"));
+			pkWnd=m_pkGuiBuilder->CreateTextbox(pkParent,wnd_id,name,x,y,w,h,
+				multiline == 1 ? true : false);	
 			break;
 		case BUTTON:
 			pkWnd=m_pkGuiBuilder->CreateButton(pkParent,wnd_id,name,x,y,w,h,text);	

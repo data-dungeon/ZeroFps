@@ -261,6 +261,11 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 
 				case IDM_SAVE_TEMPLATE:
 
+
+					m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();
+					break;
+
+
 					switch(index)
 					{
 					case IDM_SAVE_TEMPLATE:
@@ -651,16 +656,18 @@ bool Gui::HaveFocus()
 void Gui::CreateTestWnd()
 {
 	int id = 5000;
-	int w = 400, h = 400;
+	int w = 400, h = 500;
 	int x = m_pkEdit->m_iWidth/2 - w/2;
 	int y = m_pkEdit->m_iHeight/2 - h/2;
 
 	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
 		false,id++);
 
+	pkWnd->SetMoveArea(Rect(0,0,1024,768));
+
 	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 
-	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
+	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,100,w,400,true);
 
 	FILE* pkFile = fopen("../src/kodstd.txt", "r+t");
 	if(pkFile)

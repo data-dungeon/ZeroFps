@@ -29,6 +29,9 @@ public:
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	ZGuiSkin* m_pkSkinBnUp, *m_pkSkinBnDown, *m_pkSkinBnHLight;
+
+public:
+	bool m_bCenterTextHorz;
 };
 
 #endif 

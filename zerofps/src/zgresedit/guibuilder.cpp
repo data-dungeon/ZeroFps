@@ -475,10 +475,11 @@ ZGuiTextbox* GuiBuilder::CreateTextbox(ZGuiWnd* pkParent,int iID,
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h),pkParent,
 		true,iID,bMulitLine);
 	pkTextbox->SetSkin(GetSkin(szSkin,m_bAllocateNewSkins));
-	pkTextbox->SetScrollbarSkin(
-		GetSkin("menu_item_sel",m_bAllocateNewSkins),
-		GetSkin("menu_item_hl",m_bAllocateNewSkins),
-		GetSkin("menu_item_hl",m_bAllocateNewSkins));
+	if(bMulitLine)
+		pkTextbox->SetScrollbarSkin(
+			GetSkin("menu_item_sel",m_bAllocateNewSkins),
+			GetSkin("menu_item_hl",m_bAllocateNewSkins),
+			GetSkin("menu_item_hl",m_bAllocateNewSkins));
 	pkTextbox->SetGUI(m_pkGui);
 	pkTextbox->SetTabOrderNr((TabOrderNr == -1) ? m_iLastTabNr++ : TabOrderNr);
 	

@@ -191,7 +191,8 @@ bool PropertyBox::OnClose(bool bSave)
 						GetWnd("NumVisibleRowsEB")->GetText()));
 				break;
 			case RADIOBUTTON:
-				char* szGroupName = m_pkGuiBuilder->GetWnd(
+				char* szGroupName;
+				szGroupName = m_pkGuiBuilder->GetWnd(
 					"RadioBnGroupResIDEB")->GetText();
 
 				if(m_pkGuiBuilder->IsGroupNameLegal(
@@ -206,6 +207,28 @@ bool PropertyBox::OnClose(bool bSave)
 					m_pkGuiBuilder->GetWnd(
 						"RadioBnGroupResIDEB")->SetText("Bad name!");
 					return false;
+				}
+				break;
+			case TEXTBOX:
+
+				ZGuiTextbox* pkTextbox;
+				pkTextbox = ((ZGuiTextbox*)pkSelWnd);
+
+				if( m_pkGuiBuilder->IsButtonChecked(
+					"ToogleTextboxMultilineCB") == true)
+				{
+					// Textboxen skall ändras till att bli multiline.
+					pkTextbox->ToggleMultiLine(true);
+
+					pkTextbox->SetScrollbarSkin(
+						m_pkGuiBuilder->GetSkin("menu_item_sel",true),
+						m_pkGuiBuilder->GetSkin("menu_item_hl",true),
+						m_pkGuiBuilder->GetSkin("menu_item_hl",true));
+				}
+				else
+				{
+					// Textboxen skall ändras till att bli singelline.
+					pkTextbox->ToggleMultiLine(false);
 				}
 				break;
 		}
@@ -500,6 +523,18 @@ void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWn
 		{
 			char* group_name = ((ZGuiRadiobutton*) pkSelWnd)->GetGroupName();
 			pkControl->SetText(group_name);
+		}
+		break;
+
+	case TEXTBOX:
+		if(pkControl == m_pkGuiBuilder->GetWnd("ToogleTextboxMultilineCB"))
+		{
+			bool bIsMuliline = ((ZGuiTextbox*) pkSelWnd)->IsMultiLine();
+
+			if(bIsMuliline)
+				((ZGuiCheckbox*) pkControl)->CheckButton();
+			else
+				((ZGuiCheckbox*) pkControl)->UncheckButton();
 		}
 		break;
 	}

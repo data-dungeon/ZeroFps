@@ -32,6 +32,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_iCursorPos = 0;
 	m_bBlinkCursor = false;
 	m_iCurrMaxText = 0;
+	m_pkScrollbarVertical = NULL;
 
 	CreateInternalControls();
 
@@ -285,7 +286,6 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	}
 
 	int iRows = GetNumRows(m_strText);
-
 	if(iRows > 1 && m_bMultiLine == false && m_iCursorPos != 0)
 	{
 		// Remove last character put.
@@ -456,20 +456,31 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 
 void ZGuiTextbox::CreateInternalControls()
 {
-	Rect rc = GetWndRect();
-	int x = rc.Width();
-	int y = 0;
-	int w = 20;
-	int h = rc.Height();
-
 	if(m_bMultiLine)
 	{
+		Rect rc = GetWndRect();
+		int x = rc.Width();
+		int y = 0;
+		int w = 20;
+		int h = rc.Height();
+
+		if(m_pkScrollbarVertical)
+			delete m_pkScrollbarVertical;
+
 		m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 			this,true,VERT_SCROLLBAR_TEXBOX_ID);
+		m_pkScrollbarVertical->SetAutoHide(false);  
 		m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
+		m_pkScrollbarVertical->Show();
+		m_pkScrollbarVertical->GetButton()->Show();
 	}
 	else
 	{
+		if(m_pkScrollbarVertical)
+		{
+			delete m_pkScrollbarVertical;
+		}
+
 		m_pkScrollbarVertical = NULL;
 	}
 }
@@ -606,72 +617,72 @@ int ZGuiTextbox::GetNumRows(char* text)
 
 	pair<int,int> kLength; // first = character, second = pixels.
 
-		while(offset < characters_totalt) // antal ord
-		{
-			int prev_row = rows;
+	while(offset < characters_totalt) // antal ord
+	{
+		int prev_row = rows;
 
-			kLength = GetWordLength(text, offset, max_width);
+		kLength = GetWordLength(text, offset, max_width);
+
+		if(xpos+kLength.second >= width)
+		{
+			// Räkna inte in sista tecknets längd om det är ett space.
+			// och om längden på ordet överskrider den tillåtna längden.
+			if(text[offset+kLength.first-1] == ' ')
+			{
+				int index = ' ' - 32;
+				kLength.second -= m_pkFont->m_aChars[index].iSizeX;
+			}
 
 			if(xpos+kLength.second >= width)
 			{
-				// Räkna inte in sista tecknets längd om det är ett space.
-				// och om längden på ordet överskrider den tillåtna längden.
 				if(text[offset+kLength.first-1] == ' ')
 				{
 					int index = ' ' - 32;
-					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
+					kLength.second += m_pkFont->m_aChars[index].iSizeX;
 				}
 
-				if(xpos+kLength.second >= width)
-				{
-					if(text[offset+kLength.first-1] == ' ')
-					{
-						int index = ' ' - 32;
-						kLength.second += m_pkFont->m_aChars[index].iSizeX;
-					}
-
-					rows++;
-					ypos += row_height;
-					xpos = 0;
-				}
-			}
-
-			if(prev_row != rows)
-			{
-				m_kRowOffsets[rows] = offset;
-
-				if(m_iCursorPos < m_kRowOffsets[rows] &&
-				   m_iCursorPos >= m_kRowOffsets[rows-1])
-				   m_iCursorRow = rows-1;
-
-				prev_row = rows;
-			}
-
-			bool bRowBreak = false;
-			
-			if(text[offset+kLength.first-1] == '\n')
-			{	
 				rows++;
-				ypos += row_height;	
+				ypos += row_height;
 				xpos = 0;
-
-				bRowBreak = true;
-			}
-
-			if(bRowBreak == false)
-				xpos += kLength.second;
-
-			offset += kLength.first;
-
-			if(prev_row != rows)
-			{
-				m_kRowOffsets[rows] = offset;
-
-				if(m_iCursorPos < m_kRowOffsets[rows] &&
-				   m_iCursorPos >= m_kRowOffsets[rows-1])
-				   m_iCursorRow = rows-1;
 			}
 		}
+
+		if(prev_row != rows)
+		{
+			m_kRowOffsets[rows] = offset;
+
+			if(m_iCursorPos < m_kRowOffsets[rows] &&
+			   m_iCursorPos >= m_kRowOffsets[rows-1])
+			   m_iCursorRow = rows-1;
+
+			prev_row = rows;
+		}
+
+		bool bRowBreak = false;
+		
+		if(text[offset+kLength.first-1] == '\n')
+		{	
+			rows++;
+			ypos += row_height;	
+			xpos = 0;
+
+			bRowBreak = true;
+		}
+
+		if(bRowBreak == false)
+			xpos += kLength.second;
+
+		offset += kLength.first;
+
+		if(prev_row != rows)
+		{
+			m_kRowOffsets[rows] = offset;
+
+			if(m_iCursorPos < m_kRowOffsets[rows] &&
+			   m_iCursorPos >= m_kRowOffsets[rows-1])
+			   m_iCursorRow = rows-1;
+		}
+	}
 
 	return rows;
 }
@@ -995,4 +1006,10 @@ int ZGuiTextbox::GetCursorRow()
 	}
 
 	return row;
+}
+
+void ZGuiTextbox::ToggleMultiLine(bool bMultiLine)
+{
+	m_bMultiLine = bMultiLine;
+	CreateInternalControls();
 }

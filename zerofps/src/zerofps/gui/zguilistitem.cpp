@@ -22,7 +22,8 @@ ZGuiListitem::ZGuiListitem(ZGuiWnd* pkParent, char* strText, unsigned int iIndex
 	m_pkButton->SetButtonDownSkin(pkSelected);
 	m_pkButton->SetButtonUpSkin(pkBkSkin);
 	m_pkButton->SetButtonHighLightSkin(pkHighLigtSkin);
-	m_pkButton->SetText(strText);  
+	m_pkButton->SetText(strText);
+	m_pkButton->m_bCenterTextHorz = false;
 }
 
 ZGuiListitem::~ZGuiListitem()

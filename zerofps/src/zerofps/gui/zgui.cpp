@@ -1333,7 +1333,19 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			case TEXTBOX:
 				{
 					bool bMultiLine = false;
+					char* szMultiLine = pkINI->GetValue(vkSections[i].c_str(), 
+						"multiline");
+
+					if(szMultiLine != NULL)
+						bMultiLine = atoi(szMultiLine) == 0 ? false : true;
+
 					pkNewWnd = new ZGuiTextbox(rc,pkParent,bVisible,wnd_id,bMultiLine);
+
+					if(bMultiLine)
+					{
+						((ZGuiTextbox*) pkNewWnd)->SetScrollbarSkin(
+							new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+					}
 				}
 				break;
 			case SCROLLBAR:
