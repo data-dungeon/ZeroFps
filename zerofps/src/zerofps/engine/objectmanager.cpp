@@ -26,6 +26,18 @@ void ObjectManager::Update(){
 	}
 }
 
+void ObjectManager::Update(int iType){
+	UpdateDelete();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		//if the object is of specified type, then update it
+		if((*it)->GetType()==iType)
+			(*it)->Update();
+	}
+}
+
+
+
 void ObjectManager::UpdateDelete(){
 	if(m_akDeleteList.size()==0)
 		return;

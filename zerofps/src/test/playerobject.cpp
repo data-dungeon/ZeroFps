@@ -25,7 +25,6 @@ void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)
 			pc->ner=0;			
 		}
 */		
-		cout<<"ground collision"<<endl;
 		GetPos()=kPos;
 		m_kVel.y=0;
 		onGround=true;

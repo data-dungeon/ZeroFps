@@ -17,6 +17,7 @@ class ENGINE_API ObjectManager {
 		void Delete(Object* pkNewObject);		//adds an object to delete qeue
 		void Remove(Object* pkObject);			//dont use this..use Delete instead
 		void Update();									//update all objects in manager
+		void Update(int iType);						//update all objects of specified type
 		void UpdateDelete();							//deletes objects in delete qeue	
 		
 

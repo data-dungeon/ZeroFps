@@ -51,15 +51,11 @@ void PlayerControlProperty::Update() {
 	
 	if(m_pkInput->Pressed(KEY_Q) || m_pkInput->Pressed(MOUSERIGHT) ){
 		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
-			m_pkObject->GetVel().y+=0.0003*m_pkFps->GetFrameTime();
-			m_pkObject->GetPos().y+=0.0003*m_pkFps->GetFrameTime();
-			cout<<"boing"<<endl;
+			m_pkObject->GetVel().y+=0.006*m_pkFps->GetFrameTime();;
+			m_pkObject->GetPos().y+=0.003;
 		}
 	}
 	
-	
-	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround)
-		cout<<"ON GROUND"<<endl;
 	
 	//Get mouse x,y		
 	int x,z;		

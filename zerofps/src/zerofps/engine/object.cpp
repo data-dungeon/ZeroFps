@@ -6,6 +6,7 @@ Object::Object() {
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
+	m_iType=0;
 }
 
 

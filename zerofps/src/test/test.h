@@ -32,6 +32,8 @@ class Test :public Application {
 
 	Camera *cam1;
 	Camera *cam2;
+	
+	PlayerObject *m_pkPlayer;
 
 	//Core		CoreTest;
 	//MadInstans	kBitch;

@@ -23,7 +23,8 @@ void Test::OnInit(void) {
 	
 //	test->Save("test.hm");
 //	test->Load("file:test.hm");
-	test->LoadImageHmap("file:test2.bmp");
+	if(!test->LoadImageHmap("file:islands.bmp"))
+		cout<<"Error loading map"<<endl;
 	test->GenerateNormals();
 	test->GenerateTextures();
 
@@ -117,12 +118,12 @@ void Test::OnInit(void) {
 	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);
 //	cam1->SetViewPort(0,.4,.6,.6);
 	
-	PlayerObject *player=new PlayerObject(test,pkInput,pkFps);
-	player->AddProperty(new CameraProperty(cam1));
+	m_pkPlayer=new PlayerObject(test,pkInput,pkFps);
+	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 //	player->AddProperty(new MadProperty(&akCoreModells[0]));	
-	player->GetPos()=Vector3(5,5,5);		
-	pkObjectMan->Add(player);
-	pkCollisionMan->Add(player);
+	m_pkPlayer->GetPos()=Vector3(340,50,780);		
+	pkObjectMan->Add(m_pkPlayer);
+	pkCollisionMan->Add(m_pkPlayer);
 	
 	
 	//add a collisionproperty for our heightmap
@@ -176,6 +177,12 @@ void Test::OnHud(void) {
 	pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
 	pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
+	glAlphaFunc(GL_GREATER,0.3);
+	glEnable(GL_ALPHA_TEST);
+
+	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkPlayer->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
+	
+	glDisable(GL_ALPHA_TEST);
 }
 
 

@@ -20,10 +20,12 @@ class ENGINE_API Object {
 		Vector3 m_kRot;
 		Vector3 m_kVel;
 		bool m_bStatic;	
-
+		int m_iType;
+		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
 	public:
+
 
 		Object();		
 		~Object();
@@ -41,6 +43,7 @@ class ENGINE_API Object {
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
+		inline int &GetType(){return m_iType;};
 		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
