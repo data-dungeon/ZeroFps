@@ -28,7 +28,7 @@ public:
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
 	bool IsVisible() { if(m_pkInventoryWnd == NULL) return false; return m_pkInventoryWnd && m_pkInventoryWnd->IsVisible(); }
 	MLContainer* GetContainer();
-	void OpenContainerWnd(int slots_horz, int slots_vert);
+	void OpenContainerWnd();
 	void CloseContainerWnd();
 
 private:
@@ -40,10 +40,12 @@ private:
 	};
 
 	void OnDropItem();
+	void CreateContainerGrid(int slots_horz, int slots_vert);
 
 	TextureManager* m_pkTexMan;
 
-	vector<ITEM_SLOT> m_vkItemList;
+	vector<ITEM_SLOT> m_vkInventoryItemList;
+	vector<ITEM_SLOT> m_vkContainerItemList;
 
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;

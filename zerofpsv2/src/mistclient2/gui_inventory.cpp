@@ -88,8 +88,6 @@ void InventoryDlg::Open()
 		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
 	}
 
-	//OpenContainerWnd(4,4);
-
 	m_pkInventoryWnd->Show();
 
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
@@ -123,22 +121,22 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		m_iSelItemID = -1;
 	}
 
-	for(int i=0; i<m_vkItemList.size(); i++)
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{		
-		if(m_vkItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
+		if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
 			if(m_iMoveSlot == -1)
-				m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
 			{
 				if(m_iMoveSlot == -1)
 				{
-					m_kPosBeforeMove.x = m_vkItemList[i].pkWnd->GetWndRect().Left;
-					m_kPosBeforeMove.y = m_vkItemList[i].pkWnd->GetWndRect().Top;
+					m_kPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
+					m_kPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
 
 					m_iMoveSlot = i; // select new item
-					m_vkItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
 					m_pkInventoryWnd->SortChilds(); 
 				}
 			}
@@ -152,19 +150,19 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 			{	
-				m_iSelItemID = m_vkItemList[i].iItemID;
+				m_iSelItemID = m_vkInventoryItemList[i].iItemID;
 			}
 		}
 		else
 		{
-			if( m_vkItemList[i].iItemID != m_iSelItemID)
-				m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
+			if( m_vkInventoryItemList[i].iItemID != m_iSelItemID)
+				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
 		}
 	}
 
 	if(m_iMoveSlot != -1)
 	{
-		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(mx,my, true, true);
+		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(mx,my, true, true);
 	}
 }
 
@@ -174,14 +172,14 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 	m_iMoveSlot = -1;
 
 	// Remove all slots.
-	for(int i=0; i<m_vkItemList.size(); i++)
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{
-		ZGuiWnd* pkWnd = m_vkItemList[i].pkWnd;
+		ZGuiWnd* pkWnd = m_vkInventoryItemList[i].pkWnd;
 		delete pkWnd->GetSkin();
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
-	m_vkItemList.clear();
+	m_vkInventoryItemList.clear();
 
 	// Rebuild slotlist.
 	int x,y,w,h;
@@ -208,7 +206,7 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
-		m_vkItemList.push_back(kNewSlot);
+		m_vkInventoryItemList.push_back(kNewSlot);
 
 	}
 }
@@ -216,8 +214,8 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 // When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem()
 {
-	Rect rcMain = m_vkItemList[m_iMoveSlot].pkWnd->GetWndRect();
-	Rect rc = m_vkItemList[m_iMoveSlot].pkWnd->GetWndRect();
+	Rect rcMain = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
+	Rect rc = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
 
 	if(rc.Left < UPPER_LEFT.x) rc.Left = UPPER_LEFT.x;
 	if(rc.Top < UPPER_LEFT.y) rc.Top = UPPER_LEFT.y;
@@ -235,14 +233,14 @@ void InventoryDlg::OnDropItem()
 	int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
 
 	bool bMoveOK = true;
-	for(int i=0; i<m_vkItemList.size(); i++)
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{
 		if(i!=m_iMoveSlot)
 		{
-			if(m_vkItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
-				m_vkItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
-				m_vkItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
-				m_vkItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
+			if(m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
+				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
+				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
+				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
 			{
 				// TODO: Check if collision slot is a container or ar stackable item.
 				bMoveOK = false; 
@@ -253,12 +251,12 @@ void InventoryDlg::OnDropItem()
 
 	if(bMoveOK)
 	{
-		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
-		g_kMistClient.SendMoveItem(m_vkItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
+		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
+		g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
 	}
 	else
 	{
-		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
+		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
 			m_kPosBeforeMove.y, false, true);		
 	}
 }
@@ -272,11 +270,19 @@ void InventoryDlg::CloseContainerWnd()
 	}
 }
 
-void InventoryDlg::OpenContainerWnd(int slots_horz, int slots_vert)
+void InventoryDlg::OpenContainerWnd()
 {
 	m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 	m_pkContainerWnd->Show();
 
+	int slots_x = 4;
+	int slots_y = 4;
+
+	CreateContainerGrid(slots_x, slots_y);
+}
+
+void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
+{
 	list<ZGuiWnd*> kChilds;
 	m_pkContainerWnd->GetChildrens(kChilds);
 
