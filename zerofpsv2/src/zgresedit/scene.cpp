@@ -241,6 +241,14 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Label, "ParentLabel2", "PropertyWnd",  "Parent:", 4, 80+2, 50, 20, 0);
 	m_pkApp->CreateWnd(Label, "ParentLabel", "PropertyWnd",  "", 54, 80+2, 150, 20, 0);
 
+	m_pkApp->CreateWnd(Checkbox, "SelectMoveAreaBn",  "PropertyWnd",  "", 300-44-28*2, 110-24, 24, 22, 0);
+	
+	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->SetButtonCheckedSkin(new ZGuiSkin());
+	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->SetButtonUncheckedSkin(new ZGuiSkin());
+	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetUncheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/move.bmp", 0);
+	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetCheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/move.bmp", 0);
+	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetCheckedSkin()->m_afBkColor[0] = 0.5f;
+
 	//
 	// Create view window
 	//
@@ -300,6 +308,9 @@ void Scene::CreateUI()
 	m_pkApp->SetText("SelectedFileEB", "");
 
 	m_pkApp->CreateWnd(Label, "OwerwriteWarning", "SelectFileWnd", "", 400-240, 16+400-16-64+24+15, 100, 20, 0);
+
+	m_pkSelectMoveAreaWnd = m_pkApp->CreateWnd(Wnd, "SeletMoveAreaWnd", "", "", 0, 0, 200, 200, 0);
+	m_pkSelectMoveAreaWnd->Hide();
 	
 }
 
@@ -397,6 +408,8 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 	if(pkWnd == m_pkSelectFileWnd)
 		return true;
 	if(pkWnd == m_pkDefProp)
+		return true;
+	if(pkWnd == m_pkSelectMoveAreaWnd)
 		return true;
 	
 	ZGuiWnd* pkParent = pkWnd->GetParent();

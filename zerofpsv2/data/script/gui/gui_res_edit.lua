@@ -41,6 +41,8 @@ DefTabBnNextDSkin = { tex1= "tab_bnNext_d.bmp" }
 DefTabPageBackSkin = { bkR=128, bkG=128, bkB=128, borderR=92, borderG=92, borderB=92, bd_size=1 }
 DefTabPageFrontSkin = { bkR=214, bkG=211, bkB=206 }
 
+	
+
 -- custom skins
 NullSkin  = { trans=1 }
 

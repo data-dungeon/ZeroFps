@@ -41,16 +41,6 @@
 class MistServer :public Application , public ZGuiApp {
 	private:
 
-		struct MENU_INFO
-		{
-			ZGuiCombobox* cb;
-			int iIndex;
-			char* szCommando;
-		};
-
-		int m_uiNumMenuItems;
-		MENU_INFO* m_pkMenuInfo;
-
 		char* GetSelEnviromentString();
 
 		//console funktions
@@ -139,7 +129,7 @@ class MistServer :public Application , public ZGuiApp {
 				};
 			} SortFiles;
 
-		void CreateGuiInterface();
+		void SetupGuiEnviroment();
 		bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
 		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();
@@ -151,8 +141,6 @@ class MistServer :public Application , public ZGuiApp {
 			Vector3 kPathEnd;
 
 			void PathTest();
-
-		bool CreateMenu(char* szFileName);
 
 		Vector3	m_kDrawPos;
 		HeightMap* SetPointer();

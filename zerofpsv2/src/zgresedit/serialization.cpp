@@ -53,12 +53,14 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 	// kopiera alla fönster till en vektor och sortera den
 	list<ZGuiWnd*> kWnd;
+
+	ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
 	
 	map<string, ZGuiWnd*>::iterator it2;
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
 		ZGuiWnd* pkWnd = (*it2).second;
-		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) )
+		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) && pkWnd != pkMainWnd )
 			kWnd.push_back(pkWnd);
 	}
 
@@ -197,7 +199,7 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 			ZGuiWnd* pkWnd = kWnd.back();
 			ZGuiWnd* pkParent = pkWnd->GetParent();
 
-			if(pkParent == NULL || ParentHaveBeenSaved(pkParent))
+			if(pkParent == NULL || pkParent == pkMainWnd || ParentHaveBeenSaved(pkParent))
 			{
 				Rect rc;
 
@@ -233,6 +235,13 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 				fprintf(pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0)\n", iType, 
 					szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height());
+
+				if(pkWnd->GetScreenRect() != pkWnd->GetMoveArea())
+				{
+					Rect rc = pkWnd->GetMoveArea();
+					fprintf(pkFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n",
+						szName, rc.Left, rc.Top, rc.Width(), rc.Height());
+				}
 
 				m_kSavedWnds.push_back(pkWnd);
 
@@ -291,12 +300,15 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 	ZGuiApp* pkApp = pkScene->GetApp();
 
 	// Börja med att ta bort alla fönster
+
+	ZGuiWnd* pkMainWnd = pkApp->GetWnd("GuiMainWnd");
+
 	map<string, ZGuiWnd*> kWindows;
 	m_pkGuiResMan->GetWindows(kWindows);
 	map<string, ZGuiWnd*>::iterator it2;
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
-		if(pkScene->IsSceneWnd(it2->second) == false)
+		if(pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
 		{
 			if(it2->second)
 				printf("%s\n", it2->second->GetName());
@@ -374,8 +386,6 @@ ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 
 	if(m_pkBasicFS->FileExist(strTempFileName.c_str()))
 	{
-		
-
 		strTempFileName.erase(0,2);
 
 		// Ladda in på nytt
@@ -385,12 +395,14 @@ ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 			return NULL;
 		}
 
+		ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
+
 		// Lägg till standardelement
 		map<string, ZGuiWnd*> kWindows;
 		m_pkGuiResMan->GetWindows(kWindows);
 		for(map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
 		{
-			if(pkScene->IsSceneWnd(it->second) == false)
+			if(pkScene->IsSceneWnd(it->second) == false && it->second != pkMainWnd)
 			{
 				pkScene->AddStandardElements(it->second);
 				it->second->Disable();
@@ -410,21 +422,25 @@ bool Serialization::RANDOM_SORT::operator() (ZGuiWnd* x, ZGuiWnd* y)
 	ZGuiWnd* pkParentX = x->GetParent();
 	ZGuiWnd* pkParentY = y->GetParent();
 
-	if( typeid(*pkParentX) == typeid(ZGuiTabCtrl) && 
-		typeid(*pkParentY) == typeid(ZGuiTabCtrl)  )
+	if(pkParentX != NULL && pkParentY != NULL)
 	{
-		int xPos = 0;
-		int yPos = 0;
-
-		ZGuiTabCtrl* pkTab = (ZGuiTabCtrl*) pkParentX;
-
-		for(int i=0; i<pkTab->GetNumPages(); i++)
+		if( typeid(*pkParentX) == typeid(ZGuiTabCtrl) && 
+			typeid(*pkParentY) == typeid(ZGuiTabCtrl)  )
 		{
-			if(x == pkTab->GetPage(i)) xPos = i;
-			if(y == pkTab->GetPage(i)) yPos = i;
+			int xPos = 0;
+			int yPos = 0;
+
+			ZGuiTabCtrl* pkTab = (ZGuiTabCtrl*) pkParentX;
+
+			for(int i=0; i<pkTab->GetNumPages(); i++)
+			{
+				if(x == pkTab->GetPage(i)) xPos = i;
+				if(y == pkTab->GetPage(i)) yPos = i;
+			}
+
+			return xPos > yPos;
 		}
 
-		return xPos > yPos;
 	}
 
 	return (rand()%10 > 5) ? true : false; 

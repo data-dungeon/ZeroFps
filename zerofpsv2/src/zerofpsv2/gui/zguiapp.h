@@ -43,6 +43,7 @@ enum GuiType
 class GUI_API ZGuiApp
 {
 public:
+	bool CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
 	void AddListItem(char* szListboxResName, char* szText);
@@ -51,7 +52,7 @@ public:
 	void ResizeWnd(char* szResName, int w, int h);
 	bool ChangeSkin(ZFScriptSystem* pkScript, lua_State* pkState, char* szID, char* szSkinName, char* szSkinType);
 
-	bool CreateFromScript(ZFScriptSystem* pkScript, char* szFileName);
+	bool LoadGuiFromScript(ZFScriptSystem* pkScript, char* szFileName); ///< Open GUI enviroment from script.
 
 	ZGuiSkin* AddSkinFromScript(char* szName, ZFScriptSystem* pkScript, ZGuiSkin* pkSkin=NULL);
 	ZGuiSkin* AddSkinFromScript2(char *szName, ZFScriptSystem *pkScript, lua_State* pkResHandle, ZGuiSkin* pkSkin);
@@ -72,9 +73,9 @@ public:
 	void AddTreeItem(char* szTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
-	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
-		ZFScriptSystem* pkScript, ZGuiResourceManager* pkResMan,
-		char* szFontTexture, char* szScriptFile);
+	
+	void InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, char* szScriptFile, char* szMenuFile);
+
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags);
 	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
@@ -100,11 +101,21 @@ public:
 	bool m_bGuiHaveFocus;
 
 private:
+
+	struct MENU_INFO
+	{
+		ZGuiCombobox* cb;
+		int iIndex;
+		char* szCommando;
+	};
+
+	int m_uiNumMenuItems;
+	MENU_INFO* m_pkMenuInfo;
+
 	unsigned int m_uiWindowIDCounter;
 
 	int GetTexID(char* szFile);
-	void InitTextures(ZFScriptSystem* pkScript);
-	
+	void InitDefaultSkins(ZFScriptSystem* pkScript);
 
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;

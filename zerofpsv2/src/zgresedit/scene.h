@@ -28,6 +28,7 @@ public:
 	ZGuiWnd* m_pkViewWindow;
 	ZGuiWnd* m_pkSelectFileWnd;
 	ZGuiWnd* m_pkDefProp;
+	ZGuiWnd* m_pkSelectMoveAreaWnd;
 
 	void AddStandardElements(ZGuiWnd *pkWnd);
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension);

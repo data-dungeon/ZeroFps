@@ -58,11 +58,7 @@ DeleteButtonSkinUp     = { tex1= "delete_u.bmp" }
 DeleteButtonSkinDown   = { tex1= "delete_d.bmp" }
 DeleteButtonSkinFocus  = { tex1= "delete_f.bmp" }
 
-PlaceongroundButtonSkinUp     = { tex1= "placeonground_u.bmp" }
-PlaceongroundButtonSkinDown   = { tex1= "placeonground_d.bmp" }
-PlaceongroundButtonSkinFocus  = { tex1= "placeonground_f.bmp" }
-
-function CreateMainWnds()
-
-end
+--PlaceongroundButtonSkinUp     = { tex1= "placeonground_u.bmp" }
+--PlaceongroundButtonSkinDown   = { tex1= "placeonground_d.bmp" }
+--PlaceongroundButtonSkinFocus  = { tex1= "placeonground_f.bmp" }
 

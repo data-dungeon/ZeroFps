@@ -60,6 +60,7 @@ bool ZGui::StartUp()
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
 
 	m_pkToolTip = new ZGuiToolTip();
+	m_pkToolTip->SetSkin(new ZGuiSkin(255,255,198, 128,128,128, 1));
 
 	return true; 
 }

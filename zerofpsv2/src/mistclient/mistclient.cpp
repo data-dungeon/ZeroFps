@@ -147,11 +147,10 @@ void MistClient::Init()
 		pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 
 	// init gui
-	InitializeGui(pkGui, pkTexMan, m_pkScript, m_pkGuiMan, 
-		"data/textures/text/paternoster8.bmp",
-		"data/script/gui/gui_create_client.lua"
-		//"data/olle.lua"
-		);
+	InitGui(m_pkScript, 
+		"data/textures/text/paternoster8.bmp", 
+		"data/script/gui/gui_create_client.lua",
+		NULL);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -1482,13 +1481,13 @@ void MistClient::CreateGuiInterface()
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
 
 	// Init tooltip
-	pkGui->GetToolTip()->SetToolTip(GetWnd("MapButton"),"Map");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("BackPackButton"),"Inventory");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("StatsButton"),"Character");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("SelectSpellBn"),"Spellbook");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("SelectSkillBn"),"Skills");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("ToggleInputBoxBn"),"Inputbox on/off");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("ToggleInfoBoxBn"),"Infobox on/off");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("MapButton"),"Map");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("BackPackButton"),"Inventory");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("StatsButton"),"Character");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSpellBn"),"Spellbook");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSkillBn"),"Skills");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInputBoxBn"),"Inputbox on/off");
+	pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInfoBoxBn"),"Infobox on/off");
 	
 	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
 	kSkin.m_unBorderSize = 1;

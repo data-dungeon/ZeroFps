@@ -56,9 +56,10 @@ void ZGResEdit::OnInit()
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);
 
-	InitializeGui(pkGui, pkTexMan, m_pkScript, m_pkGuiMan, 
+	InitGui(m_pkScript,
 		"data/textures/text/small.bmp",
-		"data/script/gui/gui_res_edit.lua");
+		"data/script/gui/gui_res_edit.lua",
+		NULL);
 
 	SetTitle("GUI Editor Mistlands");
 	m_pkInput->ShowCursor(true);
@@ -69,6 +70,8 @@ void ZGResEdit::OnInit()
 	m_pkFps->m_bClientMode = true;
 
 	m_pkInput->ToggleGrab(); // koppla på grab mode
+
+	m_pkMainWnd = GetWnd("GuiMainWnd");
 
 	// Gör en första temp save.
 	TempSave(true);
@@ -90,18 +93,18 @@ void ZGResEdit::OnIdle()
 	x = m_pkInput->m_iSDLMouseX;
 	y = m_pkInput->m_iSDLMouseY;
 
-	pkGui->SetLineColor(255,0,0);
+//	pkGui->SetLineColor(255,0,0);
 
-	if(!m_pkInput->Pressed(KEY_LSHIFT))
+	if(!m_pkInput->Pressed(KEY_LSHIFT) && m_eEditMode != SET_MOVE_AREA)
 	{
 		m_eEditMode = MOVE;
 	}
 
-	if(m_pkInput->Pressed(MOUSELEFT))
+	if(m_pkInput->Pressed(MOUSELEFT) && m_eEditMode != SET_MOVE_AREA)
 	{
 		if(m_pkInput->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
 		{
-			pkGui->SetLineColor(255,255,0);
+//			pkGui->SetLineColor(255,255,0);
 			m_eEditMode = RESIZE;
 		}
 
@@ -129,6 +132,24 @@ void ZGResEdit::OnIdle()
 	{
 		if(m_eEditMode == RESIZE && m_pkInput->Pressed(MOUSELEFT))
 			ResizeWnd(x,y);
+	}
+	else
+	if(m_eEditMode == SET_MOVE_AREA && m_pkFocusWnd != NULL)
+	{
+		Rect rc = m_pkFocusWnd->GetMoveArea(); 
+
+		int x=rc.Left,y=rc.Top,w=abs(rc.Right-x),h=abs(rc.Bottom-y);
+		x = GetTextInt("PosXTextbox", NULL);
+		y = GetTextInt("PosYTextbox", NULL);
+		w = GetTextInt("WidthTextbox", NULL);
+		h = GetTextInt("HeightTextbox", NULL);
+		if(x > 800) x = 800; if(x < 0) x = 0; if(y > 600) y = 600; if(y < 0) y = 0;
+		if(w > 800) w = 800; if(w < 0) w = 0; if(h > 600) h = 600; if(h < 0) y = 0;
+		m_pkScene->m_pkSelectMoveAreaWnd->SetPos(x,y,true,true);
+		m_pkScene->m_pkSelectMoveAreaWnd->Resize(w,h,true); 
+		DrawSelectionRect(m_pkScene->m_pkSelectMoveAreaWnd);	
+
+		m_pkFocusWnd->SetMoveArea(Rect(x,y,x+w,y+h),true);
 	}
 
 	if(m_pkFocusWnd)
@@ -165,12 +186,22 @@ void ZGResEdit::OnIdle()
 				pkGui->SetFocus(pkPage);
 				m_pkFocusWnd = pkPage;
 				m_pkMainWnd = pkPage;
+
+				if(m_pkMainWnd == NULL)
+					m_pkMainWnd = GetWnd("GuiMainWnd");
 			}
 		}
 	}
 
+	pkGui->SetLineColor(255,255,0);
+
 	if(m_pkFocusWnd)
 		DrawSelectionRect(m_pkFocusWnd);
+
+	pkGui->SetLineColor(255,0,0);
+
+	if(m_pkMainWnd)
+		DrawSelectionRect(m_pkMainWnd);	
 }
 
 void ZGResEdit::OnHud(void) 
@@ -234,6 +265,9 @@ void ZGResEdit::OnKeyDown(int iKey)
 		m_pkFocusWnd = DeleteWnd(m_pkFocusWnd);
 		
 		m_pkMainWnd = m_pkFocusWnd;
+		
+		if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
+
 		UpdatePropertyWnd();
 		break;
 
@@ -335,6 +369,20 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(szSkinType != NULL && m_pkFocusWnd != NULL )
 				m_pkScene->ScaleWndToTexSize(m_pkFocusWnd, szSkinType);
 		}
+		else
+		if(strClickWndName == "SelectMoveAreaBn")
+		{
+			if(m_eEditMode == SET_MOVE_AREA)
+			{
+				m_eEditMode = MOVE;
+				OpenWnd(m_pkScene->m_pkWorkSpace, true);
+			}
+			else
+			{
+				m_eEditMode = SET_MOVE_AREA;
+				OpenWnd(m_pkScene->m_pkWorkSpace, false);
+			}
+		}
 
 		m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
 	}
@@ -367,6 +415,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 			m_pkFocusWnd = pkNewMain;
 			m_pkMainWnd = pkNewMain;
+
+			if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 
 			UpdateViewWnd();
 		}
@@ -591,6 +641,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(eWndType == Wnd)
 			{
 				m_pkMainWnd = pkWnd;
+				if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 			}
 		
 			// Skapa nya texturer och kopiera de gamla mot nya unika...
@@ -682,6 +733,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					if( pkWnd == m_pkResizeWnd )
 						m_pkResizeWnd = NULL;
 
+					if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
+
 					m_pkMoveWnd = NULL;
 
 					pkWnd->Hide();
@@ -747,27 +800,33 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					string strLoadName(szFileName);
 					strLoadName.erase(0,2);
 
+					ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
+
 					// Börja med att ta bort alla fönster
 					map<string, ZGuiWnd*> kWindows;
 					m_pkGuiMan->GetWindows(kWindows);
 					map<string, ZGuiWnd*>::iterator it2;
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
-						if(m_pkScene->IsSceneWnd(it2->second) == false)
+						if(m_pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
 						{
 							ZGuiWnd* pkNewMain = /*m_pkScene->*/DeleteWnd(it2->second);
 							m_pkFocusWnd = pkNewMain;
 							m_pkMainWnd = pkNewMain;
+
+							if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 						}
 					}
 
 					kSerialize.LoadGUI(strLoadName.c_str(), m_pkScene);
 
+					pkMainWnd = GetWnd("GuiMainWnd");
+
 					kWindows.clear();
 					m_pkGuiMan->GetWindows(kWindows);
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
-						if(m_pkScene->IsSceneWnd(it2->second) == false)
+						if(m_pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
 						{
 							m_pkScene->AddStandardElements(it2->second);
 							it2->second->Disable();
@@ -819,6 +878,14 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 	{
 		m_pkMoveWnd = NULL;
 		m_pkResizeWnd = NULL;
+
+		m_pkMainWnd = GetWnd("GuiMainWnd");
+		return;
+	}
+
+	if(pkWnd == GetWnd("GuiMainWnd"))
+	{
+		m_pkMainWnd = GetWnd("GuiMainWnd");
 		return;
 	}
 
@@ -870,6 +937,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 				if(GetType(pkWnd) == Wnd)
 				{
 					m_pkMainWnd = pkWnd;
+					if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 				}
 
 				if(m_pkResizeWnd != NULL)
@@ -1037,6 +1105,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 			//pkGui->SetFocus(pkWnd);
 			//m_pkFocusWnd = pkWnd;
 			m_pkMainWnd = pkWnd;
+			if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 
 			list<ZGuiWnd*> childs;
 			pkWnd->GetChildrens(childs);
@@ -1434,6 +1503,7 @@ void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMai
 					ZGuiWnd* pkNewActiveWnd = m_pkScene->GetWnd(szItem);
 					m_pkFocusWnd = pkNewActiveWnd;
 					m_pkMainWnd = pkNewActiveWnd;
+					if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 				}
 				else
 					((ZGuiCheckbox*)GetWnd("ShowHideWndCB"))->UncheckButton();
@@ -2031,6 +2101,10 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 				}
 			}
 		}
+		else
+		{
+			m_pkMainWnd = GetWnd("GuiMainWnd");
+		}
 
 		pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
@@ -2067,7 +2141,6 @@ void ZGResEdit::TempSave(bool bSave)
 
 		kSerialize.TempLoad(m_pkScene);
 		m_pkFocusWnd = NULL;
-		m_pkMainWnd = NULL;
 
 		if(!prev_focus_wnd_name.empty())
 			m_pkFocusWnd = m_pkGuiMan->Wnd(prev_focus_wnd_name);
@@ -2077,6 +2150,8 @@ void ZGResEdit::TempSave(bool bSave)
 
 		if(!prev_main_wnd_name.empty())
 			m_pkMainWnd = m_pkGuiMan->Wnd(prev_main_wnd_name);
+
+		if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
 
 		UpdateViewWnd();
 		UpdatePropertyWnd();

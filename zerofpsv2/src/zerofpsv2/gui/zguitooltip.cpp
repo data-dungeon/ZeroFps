@@ -108,7 +108,7 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	m_iPrevCursorY = mouse_y;
 }
 
-void ZGuiToolTip::SetToolTip(ZGuiWnd* pkWnd, string strText)
+void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText)
 {
 	TOOLTIP_INFO ttinfo;
 

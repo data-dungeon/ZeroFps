@@ -24,6 +24,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
+	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);
 
 	pkScript->ExposeFunction("TestTableSet", GuiAppLua::TestTableSetLua);
 	pkScript->ExposeFunction("TestTableGet", GuiAppLua::TestTableGetLua);
@@ -418,6 +419,32 @@ int GuiAppLua::TestTableGetLua(lua_State* pkLua)
 	vkData.push_back(temp);
 
 	g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+	return 1;
+}
+
+int GuiAppLua:: SetMoveAreaLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 5)
+		return 0;
+
+	char szWnd[100];
+	g_pkScript->GetArg(pkLua, 0, szWnd);
+
+	double l, t, r, b;
+	g_pkScript->GetArg(pkLua, 1, &l);
+	g_pkScript->GetArg(pkLua, 2, &t);
+	g_pkScript->GetArg(pkLua, 3, &r);
+	g_pkScript->GetArg(pkLua, 4, &b);
+
+	ZGuiWnd* pkWnd = g_pkGuiApp->GetWnd(szWnd);
+
+	if(pkWnd)
+	{
+		pkWnd->SetMoveArea( Rect((int)l,(int)t,(int)r,(int)b), true);
+	}
 
 	return 1;
 }

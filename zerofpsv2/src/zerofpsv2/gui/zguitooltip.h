@@ -23,7 +23,7 @@ public:
 	virtual ~ZGuiToolTip();
 
 	void Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime);
-	void SetToolTip(ZGuiWnd* pkWnd, string strText);
+	void AddToolTip(ZGuiWnd* pkWnd, string strText);
 
 	ZGuiWnd* GetWnd() { return m_pkToolTipWnd; }
 

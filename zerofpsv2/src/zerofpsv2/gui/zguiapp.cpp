@@ -444,7 +444,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, ZFScriptSystem *pkScript,
 	return pkNewSkin;
 }
 
-void ZGuiApp::InitTextures(ZFScriptSystem* pkScript)
+void ZGuiApp::InitDefaultSkins(ZFScriptSystem* pkScript)
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
 	int crap = m_pkTexMan->Load("/data/textures/gui/crap.bmp", 0);
@@ -478,32 +478,18 @@ void ZGuiApp::InitTextures(ZFScriptSystem* pkScript)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i], pkScript) ) );
 }
 
-void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, 
-									 ZFScriptSystem* pkScript,
-									 ZGuiResourceManager* pkResMan,
-									 char* szFontTexture, 
-									 char* szScriptFile)
+void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, char* szScriptFile, char* szMenuFile)
 {
-
-	m_pkGui = pkGui;
-	m_pkTexMan = pkTexMan;
-	m_pkResMan = pkResMan;
+	// Spara undan viktiga pekare till system.
+	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
+	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 
 	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
-	/*m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);*/
-
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
-
-//	char defFontPath[] = szFontTexture; //"data/textures/text/paternoster8.bmp";
-	
 	pkDefaultFont->CreateFromFile(szFontTexture);		
-
 	m_pkGui->SetDefaultFont(pkDefaultFont);
-
-	// Start skript filen för GUI:t.
-	// Läs in tex filnamn på textuerer osv.
 
 	if(m_pkScriptResHandle)
 		delete m_pkScriptResHandle;
@@ -515,11 +501,19 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 		return;
 	}
 
-	InitTextures(pkScript);
+	InitDefaultSkins(pkScriptSys);
+
+	ZGuiWnd* pkWnd = CreateWnd(Wnd, "GuiMainWnd", "", "", 0, 0, 800, 600, 0);
+	ZGuiSkin* main_skin = new ZGuiSkin();
+	main_skin->m_bTransparent = true;
+	pkWnd->SetSkin(main_skin);
 
 	// Låt skriptfilen skapa alla fönster.
-	pkScript->Call(m_pkScriptResHandle, "CreateMainWnds", 0, 0);
+	//pkScript->Call(m_pkScriptResHandle, "CreateMainWnds", 0, 0);
 
+	// Create the menu for the application
+	if(szMenuFile != NULL)
+		CreateMenu(szMenuFile, pkScriptSys);
 }
 
 int ZGuiApp::GetTexID(char *szFile)
@@ -952,7 +946,7 @@ ZFScript* ZGuiApp::GetGuiScript()
 }
 
 
-bool ZGuiApp::CreateFromScript(ZFScriptSystem* pkScript, char* szFileName)
+bool ZGuiApp::LoadGuiFromScript(ZFScriptSystem* pkScript, char* szFileName)
 {
 	ZFResourceHandle kScriptResHandle;
 
@@ -963,6 +957,134 @@ bool ZGuiApp::CreateFromScript(ZFScriptSystem* pkScript, char* szFileName)
 	}
 
 	pkScript->Call(&kScriptResHandle, "GUICreate", 0, 0);
+
+	return true;
+}
+
+
+bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
+{
+	ZGuiFont* pkFont = m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(pkFont == NULL)
+	{
+		printf("Failed to find font for menu!\n");
+		return false;
+	}
+
+	CreateWnd(Wnd, "MainMenu", "", "", 0,0, 800, 20, 0);
+	ChangeSkin(pkScriptSys, GetGuiScript()->m_pkLuaState, "MainMenu", "NullSkin", "Window");
+
+	ZFIni kINI;
+	if(!kINI.Open(szFileName, false))
+	{
+		cout << "Failed to load ini file for menu!\n" << endl;
+		return false;
+	}
+
+	vector<string> akSections;
+	kINI.GetSectionNames(akSections);
+
+	unsigned int uiNumSections = akSections.size();
+	
+	// No items in file.
+	if(uiNumSections < 1)
+		return true;
+
+	Rect rcMenu;
+	unsigned int i=0, iMenuOffset=0, iMenuWidth=0, iMenuIDCounter=45781;
+	char szParentName[50];
+
+	// Skapa alla parents
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* parent = kINI.GetValue(akSections[i].c_str(), "Parent");
+		if(parent == NULL)
+			continue;
+
+		if(strcmp(parent, "NULL") == 0)
+		{
+			char szTitle[50];
+			sprintf(szTitle, " %s", kINI.GetValue(akSections[i].c_str(), "Title"));
+			iMenuWidth = pkFont->GetLength(szTitle) + 6; // move rc right
+
+			rcMenu = Rect(iMenuOffset,0,iMenuOffset+iMenuWidth,20);
+
+			CreateWnd(Combobox, (char*)akSections[i].c_str(), "MainMenu", szTitle,
+				rcMenu.Left, rcMenu.Top, rcMenu.Width(), rcMenu.Height(), 0);
+
+			ZGuiCombobox* pkMenuCBox = static_cast<ZGuiCombobox*>(GetWnd(
+				(char*)akSections[i].c_str()));
+
+			pkMenuCBox->SetGUI(m_pkGui);
+			pkMenuCBox->SetLabelText(szTitle);
+			pkMenuCBox->SetNumVisibleRows(1);
+			pkMenuCBox->IsMenu(true);
+			pkMenuCBox->SetSkin(new ZGuiSkin());
+			
+			iMenuOffset += iMenuWidth;
+			rcMenu = rcMenu.Move(iMenuOffset,0);
+		}
+	}
+
+	ZGuiWnd* pkParent;
+	vector<MENU_INFO> kTempVector;
+
+	// Skapa alla childrens.
+	char szCommando[512];
+	int item_counter = 0;
+
+	char szPrevParent[150];
+	strcpy(szPrevParent, "");
+
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* parent = kINI.GetValue(akSections[i].c_str(), "Parent");
+		if(parent == NULL)
+			continue;
+
+		if(strcmp(szPrevParent, parent) != 0)
+			item_counter = 0;
+
+		strcpy(szParentName, parent);
+		if(strcmp(szParentName, "NULL") != 0)
+		{
+			pkParent = GetWnd(szParentName);
+
+			if(pkParent != NULL)
+			{
+				char szTitle[50];
+				sprintf(szTitle, "%s", kINI.GetValue(akSections[i].c_str(), "Title"));
+				((ZGuiCombobox*) pkParent)->AddItem(szTitle, item_counter++);
+
+				MENU_INFO mi;
+				mi.cb = (ZGuiCombobox*) pkParent;
+				mi.iIndex = item_counter-1;
+				char* szCmd = kINI.GetValue(akSections[i].c_str(), "Cmd");
+				if(szCmd != NULL)
+					strcpy(szCommando, szCmd);
+				else
+					strcpy(szCommando, "No commando!");
+
+				mi.szCommando = new char[strlen(szCommando)+1];
+				strcpy(mi.szCommando, szCommando);
+				kTempVector.push_back(mi);
+			}
+		}
+
+		strcpy(szPrevParent, parent);
+	}
+
+	// Copy from tempvektor.
+	m_uiNumMenuItems = kTempVector.size();
+	m_pkMenuInfo = new MENU_INFO[m_uiNumMenuItems];
+	for(i=0; i<(unsigned int) m_uiNumMenuItems; i++)
+	{
+		m_pkMenuInfo[i].cb = kTempVector[i].cb;
+		m_pkMenuInfo[i].iIndex = kTempVector[i].iIndex;
+		m_pkMenuInfo[i].szCommando = new char[strlen(kTempVector[i].szCommando)+1];
+		strcpy(m_pkMenuInfo[i].szCommando, kTempVector[i].szCommando);
+		delete[] kTempVector[i].szCommando;
+	}
 
 	return true;
 }
