@@ -26,7 +26,7 @@ public:
 				 int iNumberOfParams,void *pkParams ) ;
 	void OnServerStart() {}
 	void OnClientStart() {}
-	void OnHud() {}
+	void OnHud();
 	void OnIdle();
 	void OnInit();
 
@@ -42,7 +42,12 @@ public:
 	ControlBox* m_pkControlBox;
 	FileOpenDlg* m_pkFileOpenDlg;
 
+	ZGuiWnd* m_pkRectWnd;
+
 private:
+
+	bool m_bResizeRectWnd;
+
 	void SaveFile();
 	void EnableClickWnd();
 	void DisableClickWnd();
@@ -71,6 +76,7 @@ private:
 	int m_iResizewnd_old_x,m_iResizewnd_old_y;
 	bool m_bUseGrid;
 	int m_iGridPrec;
+	vector<ZGuiWnd*> m_pkMoveWnds;
 
 	ZFFile* m_pkFile;
 	ZFIni* m_pkINI;

@@ -93,9 +93,36 @@ void ZGResEdit::OnInit()
 //
 void ZGResEdit::OnIdle()
 {
+	static bool s_bMouseDown = false;
+	if( pkInput->Pressed(KEY_LSHIFT) && pkInput->Pressed(MOUSELEFT) )
+	{
+		if(s_bMouseDown == false)
+		{
+			m_pkRectWnd->Show();
+			int mx, my;
+			pkInput->MouseXY(mx, my);
+			pkGui->SetFocus(m_pkRectWnd);
+			m_pkRectWnd->SetPos(mx, my, true, true);
+			m_pkRectWnd->Resize(0,0);
+			s_bMouseDown = true;
+			m_bResizeRectWnd = true;
+			return;
+		}
+	}	
+	if(!pkInput->Pressed(MOUSELEFT))
+	{
+		s_bMouseDown = false;
+		m_bResizeRectWnd = false;
+		
+		if(ZGuiWnd::m_pkFocusWnd != m_pkRectWnd )
+		{
+			m_pkRectWnd->Hide();
+			m_pkRectWnd->Resize(0,0);
+		}
+	}
+
+
 	DisableClickWnd();
-	
-	
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();
 
@@ -103,6 +130,15 @@ void ZGResEdit::OnIdle()
 		pkFps->QuitEngine();
 
 	EnableClickWnd();
+}
+
+void ZGResEdit::OnHud()
+{
+/*	StartDraw2D();
+
+		OnPaint();
+
+	EndDraw2D();*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -164,10 +200,22 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		}
 		break;
 
+/*	case ZGM_MOVING:
+		if( ((int*)pkParams)[0] == ID_RECTWND)
+		{
+			printf("hhe\n");
+		}
+		break;*/
+
 	// Left Mouse Click Down Message
 	case ZGM_LBUTTONDOWN:
-		{
-			if(!IsGuiWnd(pkWnd))
+		{				
+			if(pkWnd != m_pkRectWnd)
+			{
+				m_pkRectWnd->Hide();
+			}
+
+			if(!IsGuiWnd(pkWnd) || pkWnd == m_pkRectWnd)
 			{			
 				//DisableClickWnd();
 
@@ -221,9 +269,11 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 						pkGui->GetFocusBorderSkin()->m_afBorderColor,0,0,0); 
 				}
 
-				SelectWnd::GetInstance()->m_pkWnd = pkWnd;
+				if(pkWnd != m_pkRectWnd)
+					SelectWnd::GetInstance()->m_pkWnd = pkWnd;
+
 				pkGui->SetFocus(pkWnd);
-				m_pkPropertyBox->Update(pkWnd);
+				m_pkPropertyBox->Update(SelectWnd::GetInstance()->m_pkWnd);
 			}
 		}
 		break;
@@ -250,12 +300,20 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 	case ZGM_MOUSEMOVE:
 		if(((bool*)pkParams)[0] == true) // Left button down
 		{
+	/*		if(pkInput->Pressed(KEY_LSHIFT))
+			{
+				int mx, my;
+				pkInput->MouseXY(mx, my);
+				pkGui->SetFocus(m_pkRectWnd);
+				m_pkRectWnd->SetPos(mx, my, true, true);
+			}*/
+
 			switch(m_kMouseState)
 			{
 			case RESIZING_BOTH:
 			case RESIZING_HORZ:
 			case RESIZING_VERT:
-				if(!IsGuiWnd(pkWnd))
+				if(!IsGuiWnd(pkWnd) || pkWnd == m_pkRectWnd)
 				{
 					int x = ((int*)pkParams)[1];
 					int y = ((int*)pkParams)[2];
@@ -272,8 +330,28 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			case MOVING:
 				int x = ((int*)pkParams)[1]-m_pnCursorRangeDiffX;
 				int y = ((int*)pkParams)[2]-m_pnCursorRangeDiffY;
+
+				if(pkWnd == m_pkRectWnd )
+				{
+					// Kolla vilka fönster som befinner sig innanför
+					// rammens gränser.
+
+					vector<ControlBox::CreateWnd> pkWindows = 
+						m_pkControlBox->m_pkCreatedWindows;
+
+					m_pkMoveWnds.clear(); 
+
+					for(unsigned int i=0; i<pkWindows.size(); i++)
+					{
+						if(pkWnd->GetScreenRect().Inside(
+							pkWindows[i].m_pkWnd->GetScreenRect()))
+						{
+							m_pkMoveWnds.push_back(pkWindows[i].m_pkWnd);
+						}
+					}
+				}
 				
-				if(!IsGuiWnd(pkWnd))
+				if(!IsGuiWnd(pkWnd) || pkWnd == m_pkRectWnd )
 				{
 					if(m_bUseGrid)
 					{
@@ -281,7 +359,38 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 						y -= y%m_iGridPrec;
 					}
 
-					MoveWnd(pkWnd,x,y);
+					if(pkWnd == m_pkRectWnd )
+					{
+						int bx = pkWnd->GetScreenRect().Left;
+						int by = pkWnd->GetScreenRect().Top;
+
+						if(m_bResizeRectWnd)
+						{
+							int u,v;
+							pkInput->MouseXY(u,v);
+							int sx = u-bx; if(sx<0) sx=0;
+							int sy = v-by; if(sy<0) sy=0;
+							pkWnd->Resize(sx,sy);
+						}
+						else
+						{
+							MoveWnd(pkWnd,x,y);
+
+							int mx = pkWnd->GetScreenRect().Left;
+							int my = pkWnd->GetScreenRect().Top;
+
+							for(int i=0; i<m_pkMoveWnds.size(); i++)
+							{
+								m_pkMoveWnds[i]->Move(mx-bx, my-by);
+							}
+
+							return true;
+						}
+					}
+					else
+					{
+						MoveWnd(pkWnd,x,y);
+					}
 				}
 				break;
 			}
@@ -444,6 +553,12 @@ bool ZGResEdit::Create()
 	m_pkINI = static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));	
 
 	int x,y,w,h;
+
+	pkGuiMan->Add(string("rectwnd_skin"),new ZGuiSkin(0,0,0,255,0,0,1,true));
+	m_pkRectWnd = m_pkGuiBuilder->CreateMainWindow(ID_RECTWND+1, ID_RECTWND, 
+		"RectWnd", 0,0,0,0, MAINPROC, "rectwnd_skin");
+	m_pkRectWnd->SetSkin(pkGuiMan->Skin("rectwnd_skin"));
+	m_pkRectWnd->Hide();
 
 	w = 150; h = 270; x = m_iWidth-w; y = 0;
 	m_pkControlBox = new ControlBox(m_pkGuiBuilder,MAINPROC);
@@ -613,6 +728,7 @@ bool ZGResEdit::IsGuiWnd(ZGuiWnd *pkWnd) const
 
 	static char* aGuiWnd[] =
 	{
+		"RectWnd",
 		"CtrlBoxWnd",
 		"CtrlPropBoxWnd",
 		"SkinBoxWnd",
@@ -672,3 +788,4 @@ void ZGResEdit::SaveFile()
 		m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
 	}
 }
+
