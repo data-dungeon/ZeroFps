@@ -486,7 +486,7 @@ void ZeroEd::Input()
 
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
-	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = m_kZoneSize.Length();
+	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 4 * m_kSnapSize.Length();
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
 	float x = 0, z = 0;		

@@ -422,7 +422,7 @@ void MistClient::UpdateCharacter()
 			if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
 			{
 				pkEnv->SetEnable(true);				
-				pkEnv->SetEnviroment("data/enviroments/rain.env");
+				pkEnv->SetEnviroment("data/enviroments/sun.env");
 			}
 		}		
 	}

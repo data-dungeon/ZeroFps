@@ -326,6 +326,7 @@ void ZeroEd::Init()
 	//initiate our camera
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[0]->SetName("persp");
+	m_pkCamera[0]->SetFog(Vector4(1,1,1,1),300,400,true);
 	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
 	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
 
@@ -333,18 +334,21 @@ void ZeroEd::Init()
 	m_pkCamera[1]->SetName("top");
 	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
+	m_pkCamera[1]->SetFog(Vector4(1,1,1,1),300,400,true);
 	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[2]->SetName("front");
 	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
+	m_pkCamera[2]->SetFog(Vector4(1,1,1,1),300,400,true);	
 	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[3]->SetName("right");
 	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
+	m_pkCamera[3]->SetFog(Vector4(1,1,1,1),300,400,true);
 	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
 
 
