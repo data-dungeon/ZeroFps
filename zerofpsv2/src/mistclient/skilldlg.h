@@ -14,7 +14,7 @@
 #include "../zerofpsv2/render/texturemanager.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
-const int SKILL_ROWS = 5;
+const int SKILL_ROWS = 8;
 const int SKILL_COLS = 5;
 
 class SkillDlg  
@@ -27,6 +27,7 @@ public:
 	void Init();
 	void OnCommand(ZGuiWnd* pkWndClicked);
 	void ToogleOpen();
+	void OnScroll(int iID, int iPos);
 
 private:
 	ZGuiApp* m_pkApp;
@@ -37,6 +38,9 @@ private:
 	ZGuiWnd* m_pkDialog;
 
 	ZGuiButton* m_pkSkillButtons[SKILL_ROWS][SKILL_COLS];
+
+	string GetWndByID(int iID);
+	int m_iTopRow;
 };
 
 #endif // !defined(AFX_SKILLDLG_H__3F43BAD0_998F_4EE0_9C84_5C41014FA075__INCLUDED_)

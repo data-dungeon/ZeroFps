@@ -50,6 +50,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kMistClient.OnMouseMove(((int*)params)[1], ((int*)params)[2], 
 			((int*)params)[0] == 1 ? true : false, win);
 		break;
+
 	case ZGM_SCROLL:
 		g_kMistClient.OnScroll(((int*)params)[0], ((int*)params)[2], win);
 		break;
@@ -674,7 +675,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				   ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
 						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
 				else
-					pkGui->SetFocus(GetWnd("MainWnd")); 
+					pkGui->SetFocus(GetWnd("PanelBkWnd")); 
 			}
 			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
@@ -973,6 +974,9 @@ void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
 		m_pkInventDlg->OnScroll(iID,iPos);	
+	else
+	if(strcmp(pkMain->GetName(), "SelectSkillsMainWnd") == 0)
+		m_pkSkillDlg->OnScroll(iID,iPos);	
 }
 
 void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)

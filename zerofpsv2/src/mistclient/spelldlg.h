@@ -14,6 +14,10 @@
 #include "../zerofpsv2/render/texturemanager.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
+using namespace std;
+#include <string>
+
+
 const int NUM_PAGES = 10;
 const int NUM_SCHOOLS = 10;
 const int SPELL_ROWS = 4;
@@ -44,6 +48,8 @@ private:
 	ZGuiButton* m_pkSpellButtons[SPELL_ROWS][SPELL_COLS];
 	QuickBoard* m_pkQuickBoard;
 
+	
+
 	struct SpellSlot
 	{
 		int x, y;
@@ -53,6 +59,7 @@ private:
 	vector<SpellSlot*> m_vkSpells;
 
 	SpellSlot* FindSlot(int x, int y);
+	
 
 	ZGuiCheckbox* m_pkAutoCloseSpellCheckBox;
 	bool m_bAutoCloseWnd;

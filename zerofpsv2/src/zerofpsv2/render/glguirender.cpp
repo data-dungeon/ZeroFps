@@ -104,9 +104,22 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	if(m_bClipperEnabled)
 	{
-		if(m_rcClipperArea.Left > rc.Left || m_rcClipperArea.Right < rc.Right || 
-			m_rcClipperArea.Top > rc.Top || m_rcClipperArea.Bottom < rc.Bottom)
+		if(rc.Top < m_rcClipperArea.Top)
+		{
+			rc.Top = m_rcClipperArea.Top;
+		}
+
+		if(rc.Bottom > m_rcClipperArea.Bottom)
+		{
+			rc.Bottom = m_rcClipperArea.Bottom;
+		}
+
+		if(rc.Height() <= 0)
 			return true;
+
+/*		if(m_rcClipperArea.Left > rc.Left || m_rcClipperArea.Right < rc.Right || 
+			m_rcClipperArea.Top > rc.Top || m_rcClipperArea.Bottom < rc.Bottom)
+			return true;*/
 	}
 
 	// Don't render if skin is transparent.
@@ -354,13 +367,13 @@ bool GLGuiRender::RenderBorder(Rect rc)
 ///////////////////////////////////////////////////////////////////////////////
 // Name: RenderText
 //
-void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
+/*void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
 							  bool bMultiLine, int& chars_printed, int& rows_printed)
 {
 	g_bLettersPrinted = 0;
 
 	if(m_pkFont == NULL)
-		return; // false;
+		return; 
 
 	bool bDrawMasked = true;
 
@@ -379,13 +392,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		glEnable(GL_BLEND);					// Enable Blending
 		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
 		glBlendFunc(GL_DST_COLOR,GL_ZERO);	// Blend Screen Color With Zero (Black)
-
-//		m_pkTextureManger->BindTexture( fontTexture );
-		m_pkTextureManger->BindTexture( fontTexture );		
-		
-/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-		
+		m_pkTextureManger->BindTexture( fontTexture );				
 		glDisable(GL_TEXTURE_2D);
 
 		glColor3f(1,1,1);
@@ -401,12 +408,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		 		
 	if(texture >=0 )
 	{
-		//m_pkTextureManger->BindTexture( texture );
 		m_pkTextureManger->BindTexture( texture );		
-/*
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-	
 		glEnable(GL_TEXTURE_2D);
 
 		if(bDrawMasked)
@@ -414,7 +416,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	}
 	else
 	{
-		return; // true;
+		return;
 	}
 
 	glColor3f(1,1,1);
@@ -427,10 +429,68 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	if(bDrawMasked)
 		glDisable(GL_BLEND);
+}*/
+void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
+							  bool bMultiLine, int& chars_printed, int& rows_printed)
+{
+	g_bLettersPrinted = 0;
 
-	//printf("g_bLettersPrinted = %i\n", g_bLettersPrinted);
+	if(m_pkFont == NULL)
+		return; 
 
-	//return bFit;
+	bool bDrawMasked = true;
+
+	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
+
+	m_iCursorPos = iCursorPos;
+
+	m_rcTextBox = rc;
+
+	Rect t = rc;
+
+	m_rcTextBox = Rect(t.Left,m_iScreenHeight-t.Bottom,t.Right,m_iScreenHeight-t.Top);
+
+	glColor3f(1,1,1);
+
+	if(bDrawMasked)
+	{
+		glEnable(GL_BLEND);					// Enable Blending
+		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
+		glBlendFunc(GL_ZERO, GL_SRC_COLOR);	
+		m_pkTextureManger->BindTexture( fontTexture );				
+		glDisable(GL_TEXTURE_2D);
+		
+		if(bMultiLine)
+			PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+				chars_printed, rows_printed);
+		else
+			PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
+	}
+
+	int texture = fontTexture;
+		 		
+	if(texture >=0 )
+	{
+		m_pkTextureManger->BindTexture( texture );		
+		glEnable(GL_TEXTURE_2D);
+
+		if(bDrawMasked)
+			glBlendFunc(GL_DST_COLOR, GL_ZERO);	// Blend Screen Color With Zero (Black)
+			
+	}
+	else
+	{
+		return;
+	}
+
+	if(bMultiLine)
+		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+			chars_printed, rows_printed);
+	else
+		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
+
+	if(bDrawMasked)
+		glDisable(GL_BLEND);
 }
 
 bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
@@ -662,7 +722,6 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 void GLGuiRender::PrintWord(int x, int y, char *szWord, 
 							int offset, int length)
 {
-	//fy fy dumma erik som använder en "obsolete binding at `i'" =P
 	int i;
 	for(i=offset; i<offset+length; i++)
 	{
