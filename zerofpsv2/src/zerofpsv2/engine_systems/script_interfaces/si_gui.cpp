@@ -6,8 +6,6 @@
 #include "../../gui/zgui.h"
 #include "si_gui.h"
 
-static int g_iTestApa = 2;
-
 //ZFScriptSystem*	GuiAppLua::g_pkScript;
 //ZGuiApp* 			GuiAppLua::g_pkGuiApp;
 
@@ -34,10 +32,6 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
-
-	pkScript->ExposeVariable("g_iTestApa", &g_iTestApa, VAR_INT);
-
-	
 }
 
 // Name: CreateWndLua

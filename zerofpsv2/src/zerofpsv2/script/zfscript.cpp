@@ -800,8 +800,6 @@ int ZFScriptSystem::ExposeVariable (const char* name, void* pVar, VAR_TYPE eType
 	if(L == NULL)
 		L = m_pkLua;
 
-	CreateMetatables(L);
-
 	lua_pushvalue(L,LUA_GLOBALSINDEX);
 
 		// get func
