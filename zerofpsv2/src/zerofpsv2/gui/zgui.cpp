@@ -222,6 +222,8 @@ bool ZGui::AddMainWindow(int iMainWindowID,ZGuiWnd* pkWindow, char* szName,
 		ZFAssert(0, szError );
 	}
 
+	printf("Adding mainwnd %s\n", szName);
+
 	// Ett main window skall inte ha någon parent!
 	pkWindow->SetParent(NULL);
 	
@@ -1313,6 +1315,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 			if((wnd = FindMainWnd(x,y)) != NULL) //if(wnd = FindMainWnd(x,y) ) -- Ändring 040701
 			{
+				printf("wnd find = %s\n", wnd->pkWnd->GetName());
+
 				if(wnd != m_pkActiveMainWin)
 				{
 					SetFocus(wnd->pkWnd);
@@ -1342,11 +1346,29 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 	else
 	{
+
+
+		bool bClicked = false;
+
+		if( bLeftButtonDown && m_bLeftButtonDown==false)
+			bClicked = true;
+
+		if( bRightButtonDown && m_bRightButtonDown==false)
+			bClicked = true;
+
+		if(bClicked )
+		{
+			MAIN_WINDOW* wnd = FindMainWnd(x,y);
+			printf("wnd find = %s\n", wnd->pkWnd->GetName());
+		}
+
 		//m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
       if(bLeftButtonDown && m_bLeftButtonDown==false) // annars körs den alltid
       {
          SetFocus(m_pkCapturedWindow);
       }
+
+
 	}
 
 	if(m_pkActiveMainWin == NULL)
@@ -1587,9 +1609,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					{
 						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
 							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode) && 
-								typeid(*pkParent)!=typeid(ZGuiMenu) ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+								typeid(*pkParent)!=typeid(ZGuiMenu) &&
+								typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 						{
-							ZGuiWnd* pkMainWnd = m_pkActiveMainWin->pkWnd;
+							ZGuiWnd* pkMainWnd = pkParent; //m_pkActiveMainWin->pkWnd; // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
 
 							// Menyalternativ har sitt egen förälderfönster.
 							if(pkParent && typeid(*pkParent)==typeid(ZGuiMenu))

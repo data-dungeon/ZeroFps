@@ -107,6 +107,18 @@ bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		{
 			m_pkSkin = m_pkSkinBnDown;
 		}
+
+		ZGui* pkGUI = GetGUI();
+
+		if(m_pkParent && pkGUI) // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
+		{
+			int* pkParams = new int[2];
+			pkParams[0] = GetID(); // control id
+			pkParams[1] = false; // control id
+			pkGUI->GetActiveCallBackFunc()(m_pkParent, ZGM_COMMAND,2,pkParams);
+			delete[] pkParams;
+		}
+
 	}
 
 	m_pkParent->Notify(this, iCode);

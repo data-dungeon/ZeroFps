@@ -115,7 +115,7 @@ public:
 	void AddTabPage(char* szTabboxID, char* szPageResName, char* szName);
 	void AddTreeItem(char* szTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
-	bool CreateNewRadiobuttonGroup(const char *szName, int id);
+	bool CreateNewRadiobuttonGroup(const char *szName, int id=-1);
 	
 	void InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
 		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, bool bScaleGUIManually);

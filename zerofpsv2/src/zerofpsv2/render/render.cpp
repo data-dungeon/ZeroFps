@@ -106,16 +106,18 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 
 void Render::ToggleFullScreen(void)
 {
+	m_iFullScreen = !m_iFullScreen;
 	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
-void Render::SetDisplay(int iWidth,int iHeight,int iDepth)
+void Render::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
 {
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;
+	m_iFullScreen=bFullscreen;
 
-	SetDisplay();
+//	SetDisplay(); // comment out by zeb 9 nov 2004 - krashar
 }
 
 

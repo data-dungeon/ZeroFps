@@ -117,15 +117,16 @@ class RENDER_API Render : public ZFSubSystem {
 
 		//display functions		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
-		void SetDisplay(int iWidth,int iHeight,int iDepth);
+		void SetDisplay(int iWidth,int iHeight,int iDepth,bool bFullScreen);
 		void SetDisplay();
 		void Swap(void);			
 		void ToggleFullScreen(void);
 		void ScreenShot() 	{	m_bCapture = true;}
 		
-		int GetWidth()			{	return m_iWidth;	}
-		int GetHeight()		{	return m_iHeight;	}		
-		int GetDepth()			{	return m_iDepth;	}		
+		int GetWidth()			{	return m_iWidth;			}
+		int GetHeight()		{	return m_iHeight;			}		
+		int GetDepth()			{	return m_iDepth;			}		
+		bool GetFullscreen()	{	return m_iFullScreen;	}		
 
 		void DumpGLState(char* szFileName);
 		

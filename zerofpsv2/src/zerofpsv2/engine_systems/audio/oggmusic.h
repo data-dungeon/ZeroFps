@@ -53,6 +53,7 @@ public:
 	bool LoadFile(string kFileName);
 	bool Play();
 	bool SetVolume(float fVolume);
+	float GetVolume();
 	inline void SetLooping(bool bState) {m_bLooping=bState;};
 
 	static int OggMusic::ThreadMain(void *);

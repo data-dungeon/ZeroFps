@@ -21,6 +21,8 @@
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
 
+#include "gui_optionsdlg.h"
+
 MistClient g_kMistClient("MistClient",0,0,0);
 
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) ;
@@ -42,6 +44,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
    RegisterVariable("r_jumpstart", 	&m_bSkipLoginScreen, CSYS_BOOL);
    RegisterVariable("r_loginname", 	&m_strLoginName, CSYS_STRING);
    RegisterVariable("r_loginpw", 	&m_strLoginPW, CSYS_STRING);
+
+
    
 } 
  
@@ -83,6 +87,7 @@ void MistClient::OnInit()
 	m_pkZeroFps->StartServer(true,false);
 
 	// create gui for mistlands
+	m_pkOptionsDlg = new OptionsDlg(this);
 	SetupGUI();
 
 	//run autoexec script
@@ -424,7 +429,7 @@ void MistClient::OnDisconnect(int iConnectionID)
 	m_pkEntityManager->Clear();
    
 	// Load start screen.
-	LoadStartScreenGui();
+	LoadStartScreenGui(true);
 
 	m_iCharacterID = -1;
 

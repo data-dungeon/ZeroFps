@@ -430,14 +430,8 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
 	// Textures
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1", szData))
 		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
-
-
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex2", szData))
 		pkNewSkin->m_iHorzBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
-
-
-	return pkNewSkin;
-
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex3", szData))
 		pkNewSkin->m_iVertBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex4", szData))
@@ -718,7 +712,11 @@ bool ZGuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 	m_szLastRadioBGroup = new char[strlen(szName)+1];
 	strcpy(m_szLastRadioBGroup, szName);
 
-	m_iLastRadioBGroup = id;
+	if(id!=-1)
+		m_iLastRadioBGroup = id;	
+	else
+		m_iLastRadioBGroup++;
+
 
 	return true;
 }
@@ -975,7 +973,8 @@ void ZGuiApp::CheckButton(const char* szWnd, bool bCheck)
 	{
 		if(GetWndType(pkWnd) == Radiobutton)
 		{
-         ((ZGuiRadiobutton*)pkWnd)->Check(); 
+			if(bCheck)
+				((ZGuiRadiobutton*)pkWnd)->Check(); 
 			//return ((ZGuiRadiobutton*)pkWnd)->GetButton()->IsChecked();
 		}
 		else

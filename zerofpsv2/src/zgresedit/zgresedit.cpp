@@ -203,13 +203,11 @@ void ZGResEdit::OnInit()
 {
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/zgresedit/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
+//	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 
 	glEnable(GL_LIGHTING );
 
 	m_pkLight->SetLighting(true);
-
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
 
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);
@@ -233,130 +231,20 @@ void ZGResEdit::OnInit()
 	// Gör en första temp save.
 	TempSave(true);
 
-
-
-
-   	//create camera
+  	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetClearViewPort(true);
+	m_pkCamera->SetClearColor(Vector4(0.44f,0.44f,0.44f,0));
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
-	//ZGuiFont* pkNewFont = new ZGuiFont("arial26");
-	//pkNewFont->Create("data/textures/text/arial26.fnt",
-	//	m_pkTexMan->Load("data/textures/text/arial26.tga"));
-	//m_pkGuiMan->Add("arial26", pkNewFont);
-
-	//pkNewFont = new ZGuiFont("apa48");
-	//pkNewFont->Create("data/textures/text/apa48.fnt",
-	//	m_pkTexMan->Load("data/textures/text/apa48.tga"));
-	//m_pkGuiMan->Add("apa48", pkNewFont);
-
-	//pkNewFont = new ZGuiFont("syflen16");
-	//pkNewFont->Create("data/textures/text/syflen16.fnt",
-	//	m_pkTexMan->Load("data/textures/text/syflen16.tga"));
-	//m_pkGuiMan->Add("syflen16", pkNewFont);
-	
-//	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 64, 64, 0);
-
-	//ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 550, 350, 0);
-	//textbox->ToggleMultiLine(true);
-	//textbox->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
-	//		GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
-	//		GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
-	//		GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
-
-	//FILE* pkFile = fopen("textbox.txt", "rt");
-	//if(pkFile)
-	//{
-	//	string text;
-	//	int iLines=0;
-	//	const int max = 512;
-	//	char strLine[max];
-
-	//	while (!feof(pkFile))
-	//	{
-	//		if(fgets(strLine, max, pkFile))
-	//		{
-	//			text += string(strLine);
-	//			iLines++;
-	//		}
-	//	}
-
-	//	textbox->SetText((char*)text.c_str());
-	//	fclose(pkFile);
-	//}
-
-//	ZGuiSkin* pkSkin = new ZGuiSkin();
-//	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
-	//pkSkin->m_rcBkTile = Rect(0,48,128,128);
-	//pkSkin->m_pkZIFAnimation = new ZIFAnimation("apa.zif"); 
-
-//	GetWnd("TestWnd")->SetSkin(pkSkin);
-
-//	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,800),true);
-	
-	//ZGuiFont* pkNewFont = new ZGuiFont("small");
-	//pkNewFont->Create("data/textures/text/small.fnt",
-	//	m_pkTexMan->Load("data/textures/text/small.tga"));
-	//m_pkGuiMan->Add("small", pkNewFont);
-	//textbox->SetFont(m_pkGuiMan->Font("small"));
 }
 
 void ZGResEdit::OnIdle()
 {
-	//m_pkZeroFps->SetCamera(m_pkCamera);		
-	//m_pkZeroFps->GetCam()->ClearViewPort();	
-	//m_pkZeroFps->UpdateCamera(); 	
-
-   //m_pkZeroFps->GetCam()->ClearViewPort(true);
-
-
 	OnKeyDown(m_pkInputHandle->GetQueuedKey().m_iKey);
 
 	if(m_eEditMode == VIEW)
 		return;
-
-	if(/*bPlayAnimation*/0)
-	{
-		//static int anim = 0;
-		//static float fPrevTick = 0;
-
-		//float fTick = m_pkZeroFps->GetTicks();
-
-		//if(fTick - fPrevTick > 0.04f) // har det gått 40 msek sen sist?
-		//{
-		//	fPrevTick = fTick;
-
-		//	static int oka = 0;
-
-		//	bPlayAnimation = true;
-		//	pkAnimationFile = fopen("test.zif", "rb");
-
-		//	int w, h, frames, Msecs_Per_Frame;
-		//	fread(&w, sizeof(int), 1, pkAnimationFile);
-		//	fread(&h, sizeof(int), 1, pkAnimationFile);
-		//	fread(&Msecs_Per_Frame, sizeof(int), 1, pkAnimationFile);
-		//	fread(&frames, sizeof(int), 1, pkAnimationFile);
-
-		//	char* data = new char[w*h*3];
-		//	
-		//	fseek(pkAnimationFile, (w*h*3)*oka+(sizeof(int)*4), SEEK_SET);
-		//	fread(data, sizeof(char), w*h*3, pkAnimationFile);
-
-		//	int id = m_pkTexMan->CreateTextureFromRGB("animation_data1", (color_rgb*)data, w, h,
-		//		TextureManager::BGR, true);
-		//	GetWnd("TestWnd")->GetSkin()->m_iBkTexID = id;
-
-		//	delete[] data;
-
-		//	oka++;
-
-		//	if(oka==frames-1)
-		//		oka=0;
-
-		//	fclose(pkAnimationFile);
-		//}
-	}
 
 	int x,y;
 	//m_pkInputHandle->MouseXY(x,y);

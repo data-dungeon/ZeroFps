@@ -7,7 +7,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 	string strMainWnd;
 	string strController;
 	
-	if(msg == ZGM_COMMAND)
+	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || msg == ZGM_CBN_SELENDOK)
 	{
 		strMainWnd = win->GetName();
 
@@ -45,8 +45,12 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 		}
 	}
 
+
 	if(strController.empty())
 		return false;
+
+//	if(g_kMistClient.GetWnd(strController.c_str())->GetParent())
+//		strMainWnd = g_kMistClient.GetWnd(strController.c_str())->GetParent()->GetName();
 
 	map<string,msgScreenProg>::iterator itCallback;
 	itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
@@ -102,8 +106,14 @@ void MistClient::SetupGUI()
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ConnectWnd", GuiMsgStartScreen));
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("AddNewServerWnd", GuiMsgStartScreen));
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("LoginWnd", GuiMsgStartScreen));
-		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsWnd", GuiMsgStartScreen));
 
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsWnd", GuiMsgOptionsDlg));
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageVideo", GuiMsgOptionsDlg));
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageGraphic", GuiMsgOptionsDlg));
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageAudio", GuiMsgOptionsDlg));
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageController", GuiMsgOptionsDlg));
+		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("RestartMsgBox", GuiMsgOptionsDlg));
+		
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GameGuiToolbar", GuiMsgIngameScreen));
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ChatDlgMainWnd", GuiMsgIngameScreen));
 		g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GuiMainWnd", GuiMsgIngameScreen));
@@ -113,4 +123,6 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
    g_kMistClient.m_pkInput->ShowCursor(false);
+
+	GetWnd("ContinueGameBn")->Hide();
 }

@@ -217,6 +217,12 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
 
+	m_fSoundVolume = 1.0f;
+	RegisterVariable("a_soundvolume",&m_fSoundVolume,CSYS_FLOAT);
+	
+	m_fMusicVolume = 1.0f;
+	RegisterVariable("a_musicvolume",&m_fMusicVolume,CSYS_FLOAT);
+
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 }
 
@@ -465,12 +471,15 @@ unsigned int ZFAudioSystem::GetNumActiveChannels()
 bool ZFAudioSystem::StartUp()
 {
 	m_pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+	
+
 	m_pkTreadInfo = new THREAD_INFO;
 
 	Register_Cmd("musicload",FID_MUSICLOAD);
 	Register_Cmd("musicplay",FID_MUSICPLAY);
 	Register_Cmd("musicstop",FID_MUSICSTOP);
 	Register_Cmd("musicvolume",FID_MUSICVOLUME);
+	Register_Cmd("soundvolume",FID_SOUNDVOLUME);
 	Register_Cmd("musicbuffers",FID_MUSICBUFFERS);
 
 	alutInit (0, NULL); 
@@ -478,8 +487,6 @@ bool ZFAudioSystem::StartUp()
 	alListenerf(AL_GAIN, 1.0f);
 	alDopplerFactor(1.0f);
 	alDopplerVelocity(343); 
-
-	m_fVolume = 1.0f;
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
@@ -555,8 +562,18 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 		case FID_MUSICVOLUME:
 			if(kCommand->m_kSplitCommand.size() > 1)
-				m_pkMusic->SetVolume((float) 
-					strtod( (kCommand->m_kSplitCommand[1]).c_str(),NULL));
+			{
+				m_fMusicVolume = (float)strtod( kCommand->m_kSplitCommand[1].c_str(), NULL );
+				m_pkMusic->SetVolume(m_fMusicVolume);
+			}
+			break;
+
+		case FID_SOUNDVOLUME:
+			if(kCommand->m_kSplitCommand.size() > 1)
+			{
+				m_fSoundVolume = (float)strtod( kCommand->m_kSplitCommand[1].c_str(),NULL );
+				SetSoundVolume(m_fMusicVolume);
+			}
 			break;
 			
 		case FID_MUSICBUFFERS:
@@ -576,11 +593,11 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-bool ZFAudioSystem::SetVolume(float fVolume)
+bool ZFAudioSystem::SetSoundVolume(float fVolume)
 {
 	if((fVolume<=1.0) && (fVolume>0.0))
 	{
-		m_fVolume = fVolume;
+		m_fSoundVolume = fVolume;
 		return true;
 	}
 	return false;
@@ -645,7 +662,7 @@ void ZFAudioSystem::Update()
 				alSourcefv(pkSound->m_uiSourceBufferName, 
 					AL_VELOCITY,&pkSound->m_kDir[0]);
 				alSourcef(pkSound->m_uiSourceBufferName, 
-					AL_GAIN, /*m_fVolume*/pkSound->m_fGain);
+					AL_GAIN, /*m_fSoundVolume*/pkSound->m_fGain);
 			}
 			else
 			{

@@ -1,4 +1,5 @@
 #include "mistclient.h"
+#include "gui_optionsdlg.h"
 
 extern MistClient g_kMistClient;
 
@@ -29,11 +30,12 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			{
 				g_kMistClient.LoadGuiFromScript("data/script/gui/ml_option.lua");
 				g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
+				g_kMistClient.m_pkOptionsDlg->Open();
 			}
 			else
 			if(strController == "ContinueGameBn")
 			{	
-				//g_kMistClient.LoadInGameGui(); 
+				g_kMistClient.LoadInGameGui(); 
 			}
 		}
 		else
@@ -154,19 +156,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				 g_kMistClient.ShowWnd("LoginWnd", false);
 			}
 		}
-		else
-		if(strMainWnd == "OptionsWnd")
-		{
-			if(strController == "OptionsWndOKBn")
-			{
-				g_kMistClient.ShowWnd("OptionsWnd",	false);
-			}
-			else
-			if(strController == "OptionsWndCancelBn")
-			{
-				g_kMistClient.ShowWnd("OptionsWnd",	false);
-			}
-		}
+		
 	}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -186,7 +176,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			if( strController	==	"LoginNameEB" )
 				g_kMistClient.m_pkGui->SetFocus(	g_kMistClient.GetWnd("LoginPWEb") ); 
 		}
-	}
+	}	
 }
 
 bool MistClient::NameIPFromServerList(string& strName, string& strIP)
@@ -204,15 +194,27 @@ bool MistClient::NameIPFromServerList(string& strName, string& strIP)
 	return false;
 }
 
-void MistClient::LoadStartScreenGui()
+void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 {
-	g_kMistClient.ShowWnd("GameGuiToolbar",	false);
-	g_kMistClient.ShowWnd("ChatDlgMainWnd",	false);
+	ShowWnd("GameGuiToolbar",	false);
+	ShowWnd("ChatDlgMainWnd",	false);
 
-	g_kMistClient.ShowWnd("ConnectWnd", false);
-	g_kMistClient.ShowWnd("AddNewServerWnd", false);
-	g_kMistClient.ShowWnd("LoginWnd", false);
-	g_kMistClient.ShowWnd("OptionsWnd", false);
+	ShowWnd("ConnectWnd", false);
+	ShowWnd("AddNewServerWnd", false);
+	ShowWnd("LoginWnd", false);
+	ShowWnd("OptionsWnd", false);
 
-	g_kMistClient.ShowWnd("MLStartWnd", true);
+	ShowWnd("MLStartWnd", true);
+	
+	GetWnd("ContinueGameBn")->Show();
+
+	if(bShowSplashImage == false)
+	{
+		GetWnd("MLStartWnd")->m_bUseAlhpaTest = false;
+		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = true;
+	}
+	else
+	{
+		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+	}
 }

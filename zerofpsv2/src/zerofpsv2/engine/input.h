@@ -160,6 +160,8 @@ public:
 		void ToggleGrab(void);
 		void ToggleGrab(bool bGrab);		
 
+		float GetMouseSens() { return m_fMouseSensitivity; }
+
 		//virtual keys
 		void StartBindMode(string strBindKey, int iBindIndex);
 		

@@ -13,6 +13,8 @@
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_charactercontrol.h"
 
+class OptionsDlg;
+
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 
 /**	\brief	Da MistClient
@@ -37,10 +39,10 @@ class MistClient :public Application, public ZGuiApp {
 		string		m_strLoginName, m_strLoginPW;
 		
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
-		
-
+	
 		vector<pair<string,string> > m_kServerList;
-      bool ReadWriteServerList(bool bRead);
+      		
+		bool ReadWriteServerList(bool bRead);
 
 		void UpdateCharacter();
 		void SendControlInfo();
@@ -56,7 +58,7 @@ class MistClient :public Application, public ZGuiApp {
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
-		void LoadStartScreenGui();
+		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetupGUI();
 		
 				
@@ -91,8 +93,13 @@ class MistClient :public Application, public ZGuiApp {
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
+		friend void GuiMsgOptionsDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 
 		map<string, msgScreenProg> m_kGuiMsgProcs;
+
+		OptionsDlg* m_pkOptionsDlg;
+
+		friend class OptionsDlg;
 };
 
 

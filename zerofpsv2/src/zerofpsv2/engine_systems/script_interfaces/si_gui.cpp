@@ -32,6 +32,8 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
+	pkScript->ExposeFunction("CreateNewRadiobuttonGroup", GuiAppLua::CreateNewRadiobuttonGroupLua);
+	
 }
 
 // Name: CreateWndLua
@@ -560,6 +562,21 @@ int GuiAppLua::ChangeWndParameterLua(lua_State* pkLua)
 			}
 		}
 	}
+
+	return 1;
+}
+
+int GuiAppLua::CreateNewRadiobuttonGroupLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs < 1)
+		return false;
+
+	char szName[100];
+	g_pkScript->GetArgString(pkLua, 0, szName);
+	
+	g_pkGuiApp->CreateNewRadiobuttonGroup(szName);
 
 	return 1;
 }

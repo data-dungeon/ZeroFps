@@ -93,15 +93,18 @@ void ZGuiSlider::SetPos(int iPos, bool bRedraw, bool bUpdateBuddy)
 		callbackfunc cb = pkGui->GetActiveCallBackFunc();
 		if(cb)
 		{
-			ZGuiWnd* pkActivMainWnd = pkGui->GetActiveMainWnd();
+			ZGuiWnd* pkActivMainWnd = GetParent(); //pkGui->GetActiveMainWnd();
 
 			if(pkActivMainWnd)
 			{	
-				int* piParams = new int[2];
-				piParams[0] = GetID();
-				piParams[1] = m_iPos;
-				cb(pkActivMainWnd, ZGM_SCN_SETPOS, 2, piParams);
-				delete[] piParams;
+				if(bRedraw == true)
+				{
+					int* piParams = new int[2];
+					piParams[0] = GetID();
+					piParams[1] = m_iPos;
+					cb(pkActivMainWnd, ZGM_SCN_SETPOS, 2, piParams);
+					delete[] piParams;
+				}
 
 				// Update buddy windows.
 				if(bUpdateBuddy==true)
@@ -113,7 +116,7 @@ void ZGuiSlider::SetPos(int iPos, bool bRedraw, bool bUpdateBuddy)
 						(*it)->SetText(szText);
 				}
 
-				if(bRedraw == true)
+				if(/*bRedraw == true*/1)
 				{
 					int iWidth  = GetScreenRect().Width();
 //					int iBnHeight = m_pkButton->GetScreenRect().Height();
@@ -190,7 +193,7 @@ bool ZGuiSlider::Notify(ZGuiWnd* pkWnd, int iCode)
 
 			if(prev_pos != new_pos)
 			{
-				SetPos(m_iMin+new_pos, false);
+				SetPos(m_iMin+new_pos, true);
 			}
 		}
 	}

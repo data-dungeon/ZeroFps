@@ -332,6 +332,13 @@ bool OggMusic::SetVolume(float fVolume)
 	return false;
 };
 
+float OggMusic::GetVolume()
+{
+	float val;
+	alGetSourcef(m_ALuiSource, AL_GAIN, &val);
+	return val;
+};
+
 float OggMusic::GetTicks() 
 {
 	return (m_pkZeroFpsObject->m_pkEntityManager->GetSimTime());

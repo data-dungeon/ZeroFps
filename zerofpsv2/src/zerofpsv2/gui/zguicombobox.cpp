@@ -147,7 +147,8 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 			{
 				piParams[1] = pkSelItem->GetIndex(); // list item ID
 				GetGUI()->GetActiveCallBackFunc()(
-					GetGUI()->GetActiveMainWnd(),ZGM_CBN_SELENDOK,
+					//GetGUI()->GetActiveMainWnd(),ZGM_CBN_SELENDOK, // ändrade 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
+					GetParent(), ZGM_CBN_SELENDOK,
 					2,piParams);
 			}
 			delete[] piParams;

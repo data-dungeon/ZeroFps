@@ -96,8 +96,11 @@ public:
 
 	void UnloadAll();
 
-	bool SetVolume(float fVolume);
-	float GetVolume() { return m_fVolume; }
+	bool SetSoundVolume(float fVolume);
+	float GetSoundVolume() { return m_fSoundVolume; }
+
+	bool SetMusicVolume(float fVolume) { return m_pkMusic->SetVolume(fVolume); }
+	float GetMusicVolume() { return m_pkMusic->GetVolume(); }
 
 	int StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false, float fGain=1.0f);
 	bool StopSound(string strName, Vector3 pos);
@@ -130,6 +133,7 @@ public:
 		FID_MUSICLOAD,
 		FID_MUSICPLAY,
 		FID_MUSICVOLUME,
+		FID_SOUNDVOLUME,
 		FID_MUSICBUFFERS,
 		FID_MUSICSTOP
 	};
@@ -161,7 +165,7 @@ private:
 	float m_fReferenceDistance; // ReferenceDistance (ljud styrka)
 
 	bool m_bIsValid;
-	float m_fVolume;
+	float m_fSoundVolume, m_fMusicVolume;
 	
 	OggMusic* m_pkMusic;
 	THREAD_INFO* m_pkTreadInfo;

@@ -125,8 +125,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void Update();
 
 		void EnableShadowGroup(int i) ;
-		void DisableShadowGroup(int i);
-
+		void DisableShadowGroup(int i);		int GetNumShadowsPerModel() { return m_iNrOfShadows; }		bool IsShadowGroupEnabled(int iGroup) 		{ 			if( iGroup >= 0 && iGroup < m_kShadowGroups.size() ) 				return m_kShadowGroups[iGroup]; 			else				return false;		}
 		int GetCurrentActiveShadows() {	return m_iCurrentActiveShadows;		}
 		int GetCurrentShadows() 		{	return m_iCurrentShadows;				}
 		int GetCurrentVerts() 			{	return m_iCurrentVerts;					}
