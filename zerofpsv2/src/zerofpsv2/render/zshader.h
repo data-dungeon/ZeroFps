@@ -15,6 +15,7 @@
 #include "../engine/res_texture.h"
 #include "zvprogram.h"
 
+#include <stack>
 
 using namespace std;
 class ZMaterial;
@@ -168,7 +169,8 @@ class RENDER_API ZShader : public ZFSubSystem
 		int			m_iDrawMode;
 
 		//vertexdata offset (used for shadow calculations etc)
-		Vector3		m_kVertexOffset;
+		stack<Matrix4>	m_kModelMatrixStack;
+		Matrix4			m_kModelMatrix;
 
 		//force lighting to this
 		int			m_iForceLighting;		
@@ -227,13 +229,20 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetNrOfIndexes(int iNr);		
 		void SetDrawMode(int iDrawMode);
 
-		void SetVertexOffset(Vector3 kOffset) { m_kVertexOffset = kOffset;};
-
 		void SetVertexProgram(int iVPID);
 		int  GetCurrentVertexProgram() {return m_iCurrentVertexProgram;};
 		bool SupportVertexProgram() { return m_bVertexProgram;};
 
-		
+		//matrix manipulation
+		void MatrixIdentity()						{m_kModelMatrix.Identity();};
+		void MatrixTranslate(Vector3 kPos)		{m_kModelMatrix.Translate(kPos.x,kPos.y,kPos.z);};
+		void MatrixRotate(Vector3 kRot)			{m_kModelMatrix.Rotate(kRot.x,kRot.y,kRot.z);};
+		void MatrixScale(Vector3 kScale)			{m_kModelMatrix.Scale(kScale.x,kScale.y,kScale.z);};
+		void MatrixScale(float fScale)			{m_kModelMatrix.Scale(fScale,fScale,fScale);};
+		void MatrixMult(Matrix4 kMatrix)			{m_kModelMatrix *= kMatrix;};
+		void MatrixPop();
+		void MatrixPush();
+
 		void Reset();
 		void Draw();
 

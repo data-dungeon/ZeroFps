@@ -25,7 +25,7 @@ bool ZShader::StartUp()
 	m_iForceLighting = LIGHT_MATERIAL;
 	m_iForceBledning = BLEND_MATERIAL;
 
-	SetVertexOffset(Vector3(0,0,0));
+	m_kModelMatrix.Identity();
 
 	return true;
 }
@@ -36,33 +36,34 @@ bool ZShader::IsValid()		{ return true; }
 
 void ZShader::Reset()
 {
-	m_pkCurentMaterial = NULL;
-	m_iNrOfVertexs = 		0;
-	m_iNrOfIndexes = 		0;
+	m_pkCurentMaterial = 		NULL;
+	m_iNrOfVertexs = 				0;
+	m_iNrOfIndexes = 				0;
 
-	m_pkVertexPointer =	NULL;
-	m_pkNormalPointer =	NULL;
-	m_pkTexturePointer0 = NULL;
-	m_pkTexturePointer1 = NULL;
-	m_pkTexturePointer2 = NULL;
-	m_pkTexturePointer3 = NULL;
-	m_pkIndexPointer = 	NULL;
-	m_pkColorPointer = 	NULL;
+	m_pkVertexPointer =			NULL;
+	m_pkNormalPointer =			NULL;
+	m_pkTexturePointer0 = 		NULL;
+	m_pkTexturePointer1 = 		NULL;
+	m_pkTexturePointer2 = 		NULL;
+	m_pkTexturePointer3 = 		NULL;
+	m_pkIndexPointer = 			NULL;
+	m_pkColorPointer = 			NULL;
 
-	m_pkBakupVertexPointer = NULL;
-	m_pkBakupNormalPointer = NULL;
+	m_pkBakupVertexPointer = 	NULL;
+	m_pkBakupNormalPointer =	NULL;
 	m_pkBakupTexturePointer0 = NULL;
 	m_pkBakupTexturePointer1 = NULL;
 	m_pkBakupTexturePointer2 = NULL;
 	m_pkBakupTexturePointer3 = NULL;
-	m_pkBakupIndexPointer = NULL;
-	m_pkBakupColorPointer = NULL;
+	m_pkBakupIndexPointer = 	NULL;
+	m_pkBakupColorPointer = 	NULL;
 
-	m_bCopyedData =		false;
+	m_bCopyedData =				false;
 
 	SetDrawMode(POLYGON_MODE);
 
 	//SetVertexOffset(Vector3(0,0,0));
+	//m_kModelMatrix.Identity();
 }
 
 void ZShader::SetPointer(int iType,void* pkPointer)
@@ -642,7 +643,9 @@ void ZShader::CleanCopyedData()
 void ZShader::Draw()
 {	
 	glPushMatrix();
-	
+
+	glMultMatrixf( &m_kModelMatrix.data[0] );
+
 	SetupPrerenderStates();
 
 	//we have to reset opengls data pointers
@@ -650,10 +653,11 @@ void ZShader::Draw()
 
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
-	{	
+	{
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
-		
-		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
+
+		SetupRenderStates(m_pkCurentMaterial->GetPass(i));
+
 
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
@@ -663,14 +667,15 @@ void ZShader::Draw()
 
 //		FindSiluetEdges(Vector3(0,0,0));
 
+		glPopMatrix;
 
 		glPopAttrib();
 	}
-	
+
 	if(m_bCopyedData)
 		CleanCopyedData();
-	
-	
+
+
 	glPopMatrix();
 
 
@@ -684,7 +689,7 @@ bool ZShader::HaveVertexProgramExt()
 	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
 	//cout<<"extensions: "<<pcExt<<endl;
-	
+
 	if(strstr((const char*)pcExt,"GL_ARB_vertex_program") != NULL)
 	{
 		return true;	
@@ -726,8 +731,13 @@ void ZShader::FindSiluetEdges(Vector3 kSourcePos)
 			v[1] = m_pkVertexPointer[m_pkIndexPointer[i+1]] ;
 			v[2] = m_pkVertexPointer[m_pkIndexPointer[i+2]] ;
 
+			v[0] = m_kModelMatrix.VectorTransform(v[0]);
+			v[1] = m_kModelMatrix.VectorTransform(v[1]);
+			v[2] = m_kModelMatrix.VectorTransform(v[2]);
+
 			Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
-			Vector3 RefV = ( kSourcePos - (v[0] + m_kVertexOffset) ).Unit();
+			//Vector3 RefV = ( kSourcePos - (v[0] + m_kVertexOffset) ).Unit();
+			Vector3 RefV = ( kSourcePos - (v[0]) ).Unit();
 
 			float d = Normal.Dot(RefV);
 			//cout<<"DOT:"<<<<endl;
@@ -798,10 +808,13 @@ void ZShader::FindSiluetEdges(Vector3 kSourcePos)
 			v[0] = m_pkVertexPointer[kTowardsEdges[i].first];
 			v[1] = m_pkVertexPointer[kTowardsEdges[i].second];
 
+//				glColor3f(0,0,0);
+//				glLineWidth(10);
 				glBegin(GL_LINES);
 					glVertex3f(v[0].x,v[0].y,v[0].z);
 					glVertex3f(v[1].x,v[1].y,v[1].z);
 				glEnd();
+//				glLineWidth(1);
 		}
 	}
 }
@@ -857,10 +870,10 @@ void ZShader::ColorEffect(ZMaterialSettings* pkSettings)
 			pkSettings->m_kVertexColor.z = fV;	
 			break;
 		}
-		
+
 		case 2:
 		{
-		
+
 			float fV = sin((float)SDL_GetTicks() / 300.0)*0.25 + 0.2;
 			//float fV = ((rand() % 500)  + 500)  / 1000.0  ;
 
@@ -874,4 +887,18 @@ void ZShader::ColorEffect(ZMaterialSettings* pkSettings)
 
 }
 
+// Matrix Stuff
 
+void ZShader::MatrixPush()
+{
+	m_kModelMatrixStack.push(m_kModelMatrix);
+}
+
+void ZShader::MatrixPop()
+{
+	if(!m_kModelMatrixStack.empty())
+	{
+		m_kModelMatrix = m_kModelMatrixStack.top();
+		m_kModelMatrixStack.pop();
+	}
+}

@@ -63,7 +63,7 @@ void P_Mad::Update()
 			//m_fLod = 1 - (fDist / 300);
 			//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
 			
-			
+
 			//dvoid yber loding deluxe
 			//float blub = GetRadius() / fDist;
 			//if(blub < 0.020)
@@ -77,21 +77,56 @@ void P_Mad::Update()
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
 
+
+		m_pkShader->MatrixPush();
+		m_pkShader->Reset();
+
+		m_pkShader->MatrixScale(m_fScale);
+		Matrix4 ori;
+		ori = m_pkObject->GetWorldRotM();
+		m_pkShader->MatrixMult(ori);
+		m_pkShader->MatrixTranslate(m_pkObject->GetIWorldPosV());
+
+		Draw_All(m_pkZeroFps->m_iMadDraw);
+
+		m_pkShader->MatrixPop();
+
+
+/*
 		glPushMatrix();
 			Vector3 pos;
 
 			pos = m_pkObject->GetIWorldPosV();
 
-			glTranslatef(pos.x,pos.y,pos.z);
+			m_pkShader->Reset();
+			m_pkShader->MatrixPush();
+
+		m_pkShader->MatrixScale(m_fScale);
+		Matrix4 ori;
+		ori = m_pkObject->GetWorldRotM();
+		m_pkShader->MatrixMult(ori);
+		m_pkShader->MatrixTranslate(m_pkObject->GetIWorldPosV());
+/*			m_pkShader->MatrixTranslate(pos);
+
+			Matrix4 ori;
+			ori = m_pkObject->GetWorldRotM();
+			m_pkShader->MatrixMult(ori);
+
+			m_pkShader->MatrixScale(m_fScale);
+*/
+
+/*
+			//glTranslatef(pos.x,pos.y,pos.z);
 
 			Matrix4 ori;
 			ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
 			glScalef(m_fScale, m_fScale, m_fScale);
-
-			m_pkShader->SetVertexOffset(pos);
-			Draw_All(m_pkZeroFps->m_iMadDraw);			
+*
+			Draw_All(m_pkZeroFps->m_iMadDraw);
+			m_pkShader->MatrixPop();
 		glPopMatrix();
+*/
 
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
 			glPushMatrix();
