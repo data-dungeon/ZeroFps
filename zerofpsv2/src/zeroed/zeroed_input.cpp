@@ -181,10 +181,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(!pkObj)
 		return;		
 
-	//return if its a static object
-	if(pkObj->GetParent()->GetName() == "StaticEntity")
-		return;
-		
 
 	// Move Selected Entity
 	Vector3 kMove(0,0,0);
@@ -196,7 +192,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kMove = pkObj->GetLocalPosV();
 		kMove = m_pkActiveCamera->GetPos() + Get3DMousePos(true) * 2;
 		
-		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) {
+		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) 
+		{
 			// In Ortho mode we keep the old coo for the axis that go into the screen.
 			Vector3 kAxisX, kAxisY, kAxisZ;
 			kAxisX = m_pkActiveCamera->GetOrthoAxisX();
@@ -209,7 +206,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			kMove = kMove.PEP(kAxisX) + 
 				kMove.PEP(kAxisY) + 
 				pkObj->GetLocalPosV().PEP(kAxisZ);
-			}
+		}
 
 		kMove = m_pkActiveCamera->SnapToGrid(kMove);
 		kNp.Clear();
@@ -218,7 +215,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
 		m_pkZeroFps->RouteEditCommand(&kNp);
-		//pkObj->SetLocalPosV( m_pkActiveCamera->SnapToGrid(kMove) );
 	}
 	else 
 	{
@@ -241,39 +237,27 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
 		m_pkZeroFps->RouteEditCommand(&kNp);
-
-		//pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
 
-/*	if(m_pkInputHandle->VKIsDown("rotent")) 
+
+	//handle rotation
+	Vector3 kRot(0,0,0);
+	if(m_pkInputHandle->VKIsDown("rotx+"))			kRot.x =  100*m_pkZeroFps->GetFrameTime();		
+	if(m_pkInputHandle->VKIsDown("rotx-"))			kRot.x = -100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty+"))			kRot.y =  100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty-"))			kRot.y = -100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz+"))			kRot.z =  100*m_pkZeroFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz-"))			kRot.z = -100*m_pkZeroFps->GetFrameTime();			
+
+	if(kRot != Vector3::ZERO)
 	{
-		pkObj->RotateLocalRotV( Vector3(0, fMouseX,0));
-	}*/
-
-	// Rotate Selected Entity
-	/*
-	if(m_pkInputHandle->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
-	if(m_pkInputHandle->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
-	if(m_pkInputHandle->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
-	if(m_pkInputHandle->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
-	if(m_pkInputHandle->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
-	if(m_pkInputHandle->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
-	*/
-	kMove.Set(0,0,0);
-	if(m_pkInputHandle->VKIsDown("rotx+"))			kMove.x = 100*m_pkZeroFps->GetFrameTime();		
-	if(m_pkInputHandle->VKIsDown("rotx-"))			kMove.x = -100*m_pkZeroFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty+"))			kMove.y = 100*m_pkZeroFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty-"))			kMove.y = -100*m_pkZeroFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz+"))			kMove.z = 100*m_pkZeroFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz-"))			kMove.z = -100*m_pkZeroFps->GetFrameTime();			
-
-	kNp.Clear();
-	kNp.Write((char) ZFGP_EDIT);
-	kNp.Write_Str("rot");
-	kNp.Write(m_iCurrentObject);
-	kNp.Write(kMove);
-	m_pkZeroFps->RouteEditCommand(&kNp);
-
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("rot");
+		kNp.Write(m_iCurrentObject);
+		kNp.Write(kRot);
+		m_pkZeroFps->RouteEditCommand(&kNp);
+	}
 }
 
 // Handles input for Edit Ambient Areas

@@ -1128,10 +1128,9 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
-		if(!pkObj)
-			return;	
-		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+		
+		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
+			pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
 
 	if( szCmd == string("setpos"))
