@@ -55,7 +55,7 @@ bool AmbientSoundAreas::Save(string strFileName)
 	{
 		kZFile.Write_Str(m_kAmbientAreas[i].m_strAreaName);
 		kZFile.Write_Str(GetAmbientSound(m_kAmbientAreas[i].m_strAreaName));
-
+ 
 		GetAllPointsInAmbientArea(m_kAmbientAreas[i].m_strAreaName, kPoints);
 
 		int iNumPoints = kPoints.size();
@@ -66,6 +66,8 @@ bool AmbientSoundAreas::Save(string strFileName)
 			kZFile.Write(&kPoints[i].x, sizeof(float), 1);
 			kZFile.Write(&kPoints[i].z, sizeof(float), 1);
 		}
+
+		kPoints.clear();
 	}
 
 	return true;
