@@ -447,19 +447,17 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-	delete[] verts;
+//	delete[] verts;
 	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 	 
-
 	for(int y=0;y<m_iHmSize;y++)
 		for(int x=0;x<m_iHmSize;x++){						
 			pixel=GetPixel(image,x,y);			
 		
 			SDL_GetRGB(pixel, image->format, &data,&data, &data);
-			verts[y*m_iHmSize+x].height = data/3;			
+			verts[y*m_iHmSize+x].height = data/3;		
 		}
 			
-
 	float med;
 	for(int l=0;l<smooth;l++) {
 		for(int y=1;y<m_iHmSize-1;y++) {

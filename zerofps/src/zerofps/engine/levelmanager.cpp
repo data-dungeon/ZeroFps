@@ -25,20 +25,23 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	
 	//default light
 	m_bSun=new LightSource;	
-		m_bSun->kPos=new Vector3(1000,1000,1000);		
+		m_bSun->kRot=new Vector3(1,2,1);
+//		m_bSun->kPos=new Vector3(10000,10000,10000);		
 //		m_bSun->kDiffuse=Vector4(1.0,1.0,1.0,1);	//Dag
 		m_bSun->kAmbient=Vector4(0.05,0.05,0.05,1);
-		m_bSun->iType=POINT_LIGHT;			
+//		m_bSun->iType=POINT_LIGHT;			
+		m_bSun->iType=DIRECTIONAL_LIGHT;			
 		m_bSun->iPriority=10;
 		m_bSun->fConst_Atten=1;
 		m_bSun->fLinear_Atten=0;
 		m_bSun->fQuadratic_Atten=0;
 
 	m_bMoon=new LightSource;	
-		m_bMoon->kPos=new Vector3(-1000,-1000,-1000);		
+		m_bMoon->kRot=new Vector3(-1,-2,-1);	
+//		m_bMoon->kPos=new Vector3(-10000,-10000,-10000);		
 //		m_bMoon->kDiffuse=Vector4(0.1,0.1,0.3,1);
 		m_bMoon->kAmbient=Vector4(0,0,0,1);
-		m_bMoon->iType=POINT_LIGHT;			
+		m_bMoon->iType=DIRECTIONAL_LIGHT;			
 		m_bMoon->iPriority=10;
 		m_bMoon->fConst_Atten=1;
 		m_bMoon->fLinear_Atten=0;

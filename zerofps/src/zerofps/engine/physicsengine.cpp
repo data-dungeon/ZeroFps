@@ -56,11 +56,11 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 	Vector3 Acc=pkObject->GetAcc();
 	
 	if(pkPP->m_bGravity)
-		Acc+=Vector3(0,-5,0);
+		Acc+=Vector3(0,-9.82,0);
 	
 	if(pkPP->m_bFloat)
 		if(pkObject->GetPos().y < 0)
-			Acc+=Vector3(0,10,0);
+			Acc+=Vector3(0,12,0);
 		
 	return pkObject->GetVel() + (Acc *  m_fFrameTime);
 }

@@ -91,12 +91,13 @@ void ZeroEdit::OnInit(void)
 
 	m_pkGui = new Gui(this);
 
-	
+/*	
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
 	welcome->m_kPos.Set(0,10,0);
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
+*/	
 }
 
 
