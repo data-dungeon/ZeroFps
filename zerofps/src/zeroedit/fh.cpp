@@ -15,13 +15,15 @@ FHObject::FHObject(const char* szMadName)
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	AddProperty("MadProperty");
-	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBasePtr(m_pkFps->GetMADPtr(szMadName));
-	//szMadName
-	GetPos()=Vector3(0,0,0);
-
-	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+	if(szMadName) {
+		AddProperty("MadProperty");
+		MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+		madp->SetBasePtr(m_pkFps->GetMADPtr(szMadName));
+		//szMadName
+	}
+		
+	GetPos()		= Vector3(0,0,0);
+	m_iObjectType	= OBJECT_TYPE_STATIC;
 }
 
 

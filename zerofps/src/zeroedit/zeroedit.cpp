@@ -48,6 +48,9 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
 
+	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
+
+	
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
 	pkConsole->Printf("--------------------------------");
@@ -185,6 +188,7 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	int iObjectID;
+	Object *pkmad;
 
 	switch(cmdid) {
 		case FID_AMBIENT:{
@@ -566,18 +570,26 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Loading MAD %s", kCommand->m_kSplitCommand[1].c_str());				
 
-			int x,y;
-			x = y = 0;
-			//for( x=0; x < 30; x+=3) {
-			//	for(y=0; y < 30; y+=3) {
-					Object *pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
-					pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
-					pkmad->AttachToClosestZone();
-			//		}
-			//	}
+			pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
+			pkmad->GetPos() = m_kDrawPos + Vector3(0,0,0);
+			pkmad->AttachToClosestZone();
 
 			break;
 
+		case FID_MASSSPAWN:
+			pkConsole->Printf("Die FPS, DIE.");				
+			int x,y;
+			x = y = 0;
+			for( x=0; x < 150; x+=1) {
+				for(y=0; y < 150; y+=1) {
+					//pkmad = new FHObject("../data/mad/cube.mad");
+					pkmad = new FHObject(NULL);
+					pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
+					pkmad->AttachToClosestZone();
+					}
+				}
+			
+			break;
 			
 	}
 }

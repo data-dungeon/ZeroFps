@@ -20,14 +20,14 @@ struct CollisionData;
 class LevelManager;
 
 enum UpdateStatus {
-	UPDATE_NONE			=1,
-	UPDATE_ALL			=2,
-	UPDATE_STATIC		=4,
-	UPDATE_DYNAMIC 	=8,
-	UPDATE_PLAYERS 	=16,
-	UPDATE_STATDYN 	=32,
-	UPDATE_DECORATION =64,
-	UPDATE_LIGHT		=128,
+	UPDATE_NONE			= 1,
+	UPDATE_ALL			= 2,
+	UPDATE_STATIC		= 4,
+	UPDATE_DYNAMIC 		= 8,
+	UPDATE_PLAYERS 		= 16,
+	UPDATE_STATDYN 		= 32,
+	UPDATE_DECORATION	= 64,
+	UPDATE_LIGHT		= 128,
 };
 
 enum ObjectType {

@@ -71,6 +71,7 @@ class ZeroEdit :public Application {
 			FID_NEXTOBJECT,
 			FID_PREVOBJECT,
 				
+			FID_MASSSPAWN,
 		};	
 	
 		Object* m_pkCamObj;
