@@ -565,7 +565,7 @@ void P_Enviroment::DrawSky()
 	
 	if(m_kCurrentEnvSetting.m_kSunDiffuseColor.x == -1)
 	{
-		if(!m_kCurrentEnvSetting.m_strSky[0].empty() && !m_kCurrentEnvSetting.m_strSky[2].empty())
+		if(!m_kCurrentEnvSetting.m_strSky[0].empty())
 		{													
 			
 			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes(		m_kCurrentEnvSetting.m_strSky[m_iPartOfDay]	);			
