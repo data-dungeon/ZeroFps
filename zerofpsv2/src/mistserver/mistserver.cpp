@@ -179,8 +179,6 @@ void MistServer::Init()
 	m_kSun.fQuadratic_Atten=0;
 	m_pkLight->Add(&m_kSun);
 
-	CreateFromScript(m_pkScript, "data/script/gui/olle.lua");
-
 }
 
 	
