@@ -154,8 +154,6 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 		strRootMerge = m_kstrRootPath[i] + strFileName;
 		pkFp = fopen(strRootMerge.c_str(), szOptions);
 		if(pkFp) {
-			//cout << "Path: " << strRootMerge.c_str();
-			//cout << "\n";
 			return pkFp;
 			}
 		}
@@ -211,12 +209,9 @@ string ZFVFileSystem::GetFullPath(string strFileName)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
-	cout << "Adding to VFS root table: " <<  strRootPath << endl;
 	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
 	int iSize = m_kstrRootPath.size();
-
-	printf("Adding root path %s\n", (char*) strRootPath.c_str() );
 }
 
 string	ZFVFileSystem::GetCurrentWorkingDir()
@@ -244,8 +239,6 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 	// Try to open from all active RootPaths.
 	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
 		strRootMerge = m_kstrRootPath[i] + strName;
-		//cout << "ListDir: " << strRootMerge.c_str();
-		//cout << endl;
 		m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
 		}
 

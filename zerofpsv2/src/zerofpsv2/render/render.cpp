@@ -1802,7 +1802,7 @@ RENDER_API void RenderDLL_InitExtGL(void)
 {
 #ifdef _WIN32
 	int res = extgl_Initialize();
-	cout << "extgl_Initialize: "<< res << endl;
+//	cout << "extgl_Initialize: "<< res << endl;
 #endif
 }
 

@@ -59,7 +59,9 @@ class MistServer :public Application , public ZGuiApp {
 			FID_NEW,
 			FID_LOAD,
 			FID_SAVE,
+			FID_USERS
 		};
+
 		enum EditMode_e
 		{
 			EDIT_ZONES,
@@ -156,6 +158,8 @@ class MistServer :public Application , public ZGuiApp {
 		
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);
 		void DeletePlayer(int iConID);
+		void SpawnPlayer(int iConID);
+
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
 

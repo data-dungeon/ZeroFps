@@ -116,6 +116,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 	Register_Cmd("mass",FID_MASSSPAWN);	
+	Register_Cmd("sc",FID_SERVERCOMMAND);	
 	
 }
 
@@ -939,6 +940,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
 
+		case FID_SERVERCOMMAND:
+			cout << "Servercommand" << endl;
+			PrintToClient(0, "Yooo liksom");
+			break;
 /*			
 		case FID_SENDMESSAGE:
 			gm.m_FromObject = -1;
@@ -950,11 +955,24 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}	
 }
 
+void ZeroFps::PrintToClient(int iConnectionID, char* szMsg)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	kNp.Write((char) ZFGP_PRINT);
+	kNp.Write_Str(szMsg);
+	kNp.Write(ZFGP_ENDOFPACKET);
+	kNp.TargetSetClient(iConnectionID);
+	m_pkNetWork->Send2(&kNp);
+
+}
 
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {
 	unsigned char ucGamePacketType;
 	int	m_iObjectID;
+	char	szMsg[1024];
 
 	pkNetPacket->Read(ucGamePacketType);
 
@@ -982,6 +1000,8 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				break;
 			
 			case ZFGP_PRINT: 
+				pkNetPacket->Read_Str(szMsg);
+				m_pkConsole->Print(szMsg);
 				//Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
 				break;
 

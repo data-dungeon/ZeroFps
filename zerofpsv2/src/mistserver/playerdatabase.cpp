@@ -1,15 +1,34 @@
 #include "playerdatabase.h"
-
 #include "../zerofpsv2/basic/zfbasicfs.h"
+
+
+/*
+	Sköter logins och hanteringen av karaktärer. Alla som kan ansluta har ett login
+	som innehåller information, password, rättigheter och karaktärer.
+
+		Info:	Namn, osv.
+		Rätt:	Vad denna login kan göra.
+		Kar:	Alla karaktärer kopplade till detta login.
+
+	Login(Name, Password):	Logs in a user.
+	Logout(Name):			Logs out a user.
+	
+	GetOnline(List)			Get a list of users loged in.
+
+
+
+	
+
+*/
 
 PlayerDatabase::PlayerDatabase()
 {
-	m_pkEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_strPlayerDirectory="players/";
-	
-	
+	m_pkEntityMan		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	ZFBasicFS* pkBFPS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
+
+	m_strPlayerDirectory= "logins/";
+		
 	//make sure that player directory exist
-	ZFBasicFS* pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
 	if(pkBFPS)
 		pkBFPS->CreateDir(m_strPlayerDirectory.c_str());
 }
@@ -44,6 +63,29 @@ bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 		kFile.Close();
 		return false;
 	}
+}
+
+bool PlayerDatabase::Login(string strPlayer,string strPassword)
+{
+	if(VerifyPlayer(strPlayer, strPassword)) {
+		m_strActiveUsers.push_back( strPlayer );
+
+		cout << "Login: " << strPlayer << endl;
+		return true;
+		}
+
+	return false;
+}
+
+void PlayerDatabase::Logout(string strPlayer)
+{
+	m_strActiveUsers.erase(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strPlayer));
+	cout << "Logout: " << strPlayer << endl;
+}
+
+vector<string> PlayerDatabase::GetUsers()
+{
+	return m_strActiveUsers;
 }
 
 bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)

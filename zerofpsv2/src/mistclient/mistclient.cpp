@@ -116,7 +116,7 @@ void MistClient::Init()
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("unload",FID_UNLOAD);			
-	Register_Cmd("massspawn",FID_MASSSPAWN);			
+	Register_Cmd("play",FID_MASSSPAWN);			
 
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -354,7 +354,7 @@ void MistClient::OnSystem()
 			}
 			
 		}else
-			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
+			cout<<"cant find player object id "<< pkFps->GetConnectionID() <<endl;
 	}
 
 	
@@ -632,6 +632,17 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_UNLOAD:
 			break;
 	
+		case FID_MASSSPAWN:
+			cout << "MassSpawn" << endl;
+
+			ClientOrder order;
+			order.m_sOrderName = "ccPlay";
+			order.m_iClientID = pkFps->GetConnectionID();
+			
+			order.m_iObjectID	= -1;				
+			order.m_iCharacter	= -1;
+			m_pkClientControlP->AddOrder(order);
+			break;
 	}
 }
 
@@ -704,6 +715,7 @@ void MistClient::OnServerStart(void)
 void MistClient::OnClientStart(void)
 {
 	pkConsole->Printf("Connected, Waiting for client object");
+	pkConsole->Printf("To Start Play use command 'play'");
 }
 
 bool MistClient::StartUp()	{ return true; }

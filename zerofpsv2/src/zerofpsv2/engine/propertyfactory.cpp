@@ -51,7 +51,8 @@ void PropertyFactory::Register(char* szName, Property*	(*Create)())
 	m_kProperyLinks.push_back(NewLink);
 	
 //	GetSystem().Logf("zerorts", "Property added: %s", szName);
-	cout<<"Property added "<<szName<<endl;
+	Logf("zerofps", "Property added %s", szName);
+//	cout<<"Property added "<<szName<<endl;
 	
 	m_pkNetWork->NetString_Add(szName);
 	

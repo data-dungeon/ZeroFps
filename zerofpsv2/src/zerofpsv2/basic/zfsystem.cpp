@@ -95,9 +95,9 @@ void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 	if(strFullArg.size())
 		AppArguments.push_back(strFullArg);
 
-	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
+	//cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
 	for(unsigned int ia = 0; ia < AppArguments.size(); ia++) {
-		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
+		//cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
 		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
 		}
 }
@@ -232,7 +232,6 @@ ZFSubSystem* ZFSystem::GetObjectPtr(char* acName)
 */
 bool ZFSystem::StartUp()
 {
-	cout << "Start ZeroFps Engine SubSystems:" << endl;
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
 	int iSize = kObjectNames.size();

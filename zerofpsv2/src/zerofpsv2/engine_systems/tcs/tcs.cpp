@@ -3,7 +3,8 @@
 
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
-	cout<<"Tiny Collission system created"<<endl;
+	Logf("zerofps","Tiny Collission system created");
+	//cout<<"Tiny Collission system created"<<endl;
 	
 }
 

@@ -59,10 +59,12 @@ enum enginestates
 #define	ZFGP_CLIENTCMD			3
 #define	ZFGP_PRINT				4
 #define	ZFGP_REQOWNOBJECT		6
-#define	ZFGP_GIVEOWNOBJECT	7
+#define	ZFGP_GIVEOWNOBJECT		7
 #define	ZFGP_ZONELIST			8		// LIst of active zones sent to client.
-#define  ZFGP_GETSTATICDATA	9
-#define  ZFGP_STATICDATA		10
+#define ZFGP_GETSTATICDATA		9
+#define ZFGP_STATICDATA			10
+#define ZFGP_COMMAND			12
+
 
 #define	ZFGP_ENDOFPACKET		128
 
@@ -80,6 +82,7 @@ class ENGINE_API ZFClient
 {
 public:
 	float		m_fConnectTime;	
+	string		m_strLogin;			// Login Name
 	string		m_strName;			// Name of player.
 	Entity*		m_pkObject;			// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
@@ -116,6 +119,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 			FID_SCREENSHOOT,
 			FID_MASSSPAWN,
+
+			FID_SERVERCOMMAND,
 		};
 		
 
@@ -269,6 +274,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool ShutDown();
 		bool IsValid();
 
+		void PrintToClient(int iConnectionID, char* szMsg);
 
 		friend class NetWork;
 };

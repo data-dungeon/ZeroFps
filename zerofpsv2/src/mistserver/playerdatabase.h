@@ -1,19 +1,25 @@
 #ifndef _PLAYERDATABASE_H_
 #define _PLAYERDATABASE_H_
 
-//using namespace std;
 
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/basic/zfsystem.h"
+#include <vector>
+
+using namespace std;
 
 /**	\brief	Da PlayerDatabase
 		\ingroup MistServer
 */
+
+
 class PlayerDatabase
 {
 	private:
-		EntityManager* m_pkEntityMan;
+		EntityManager*	m_pkEntityMan;
 		string			m_strPlayerDirectory;	
+
+		vector<string>	m_strActiveUsers;		// Names of loged in users.
 
 	public:
 		PlayerDatabase();
@@ -25,6 +31,10 @@ class PlayerDatabase
 		Entity* CreateCharacter(string strPlayer, string strCharacter);
 		bool SaveCharacter(Entity* pkEntity,string strPlayer);
 		
+		bool Login(string strPlayer,string strPassword);
+		void Logout(string strPlayer);
+		
+		vector<string>	GetUsers();
 
 };
 
