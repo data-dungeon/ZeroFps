@@ -57,7 +57,6 @@ Title=Debug
 Parent=NULL
 Cmd=NULL
 
-
 [Menu_DebugSimStart]
 Title=Sim Start
 Parent=Menu_Debug
@@ -68,7 +67,15 @@ Title=Sim Stop
 Parent=Menu_Debug
 Cmd=set e_runsim 0
 
+[Menu_DebugShowZones]
+Title=Show Zones
+Parent=Menu_Debug
+Cmd=set l_showzones 1
 
+[Menu_DebugHideZones]
+Title=Hide Zones
+Parent=Menu_Debug
+Cmd=set l_showzones 0
 
 ;				LOAD MENU
 [Menu_Load]
