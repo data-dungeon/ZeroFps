@@ -42,6 +42,8 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iMaxEnergy		=100;
 	m_iScore				=0;
 	m_iCurrentLevel	=1;	
+	
+	m_strMap				="../datafiles/stopemup/maps/woods";
 }
 
 void StopEmUp::OnInit()
@@ -56,7 +58,7 @@ void StopEmUp::OnInit()
 	//add vfs root
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/stopemup") ,"/data");
-	//m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 
 	//register mcommon
 	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
@@ -85,7 +87,10 @@ void StopEmUp::RunCommand(int cmdid, const CmdArgument* kCommand)
 	{
 		case FID_NEWGAME:
 		{
-			cout<<"starting new stopemup server"<<endl;			
+			if(kCommand->m_kSplitCommand.size() > 1)
+				m_strMap = string("../datafiles/stopemup/maps/")+kCommand->m_kSplitCommand[1];
+					
+			cout<<"starting new StopEmUp server , map "<<m_strMap<<endl;			
 		
 			m_pkZeroFps->StartServer(false,true,4242,"StopEmUp");
 			break;
@@ -256,7 +261,7 @@ void StopEmUp::OnServerStart()
 {
 	cout<<"StopEmUp server started"<<endl;
 
-	m_pkEntityManager->LoadWorld("../datafiles/stopemup/map");	
+	m_pkEntityManager->LoadWorld(m_strMap);	
 	CreateCamera();
 	
 	m_bServerMode =	true;

@@ -27,6 +27,7 @@ class StopEmUp :public Application , public ZGuiApp
 		Entity*	m_pkCameraEntity;
 		Camera*	m_pkCamera;
 		
+		string	m_strMap;
 		int		m_iLevel;
 		float		m_fLevelWait;
 		vector<pair<int,int> >	m_kPlayers;
