@@ -373,6 +373,8 @@ bool CHandleAgents::SendOutAgent(int iAgentID)
 		if(pkHQ->EjectCharacter( iAgentID ))
 		{
 			printf("Sending out characterd id %i", iAgentID);
+			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(iAgentID, true);
+			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->UpdateAgentList();
 			return true;
 		}
 	}

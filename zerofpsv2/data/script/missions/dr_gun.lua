@@ -17,7 +17,7 @@ HospitalObject = -1
 
 MissionText = 
 { 
-	short = "Dr Gun",
+	short = "Dr Gun\n\nWork for Ludavico Hospital",
 	long  = [[Dr Gun\n\nMr. Wilhelm Von Leath on Ludavico Hospital want you to work for him for a while.\n\nYou are hired to damage 5 persons.
 	 You can pick anyone, he does't care, just don't kill anyone (the undertaker have enough work already). When you are 
 	 done return to base. You will get 1000 dollar in cash when the mission is done (minus 200 dollar for any killed person)]]

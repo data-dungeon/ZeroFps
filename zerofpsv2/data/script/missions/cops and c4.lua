@@ -9,7 +9,7 @@ MissionInfo = { name="Cops and c4", difficulty=1, xp=900, cash=500, success=0 } 
 
 MissionText = 
 { 
-	short = "Cops and c4",
+	short = "Cops and c4\n\nBlow up a police station.",
 	long = [[Cops and c4\n\nThe Bomb Squad wants you to deliver a bomb to the police station in 
 	the north district as a revenge for not doing a good work. But watch out! 
 	They expect a visit...\n\nThe bomb will be delivered to your headquarter.\n\nYou will get 500 
