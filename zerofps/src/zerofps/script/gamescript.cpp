@@ -26,3 +26,9 @@ void GameScript::OpenPackageFiles()
 {
 	tolua_zfscript_bind_open(GetLua());
 }
+
+
+
+
+
+

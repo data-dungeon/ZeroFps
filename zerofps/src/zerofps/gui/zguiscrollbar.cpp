@@ -275,3 +275,13 @@ void ZGuiScrollbar::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 		ToogleHorizontal();
 
 }
+
+
+
+
+
+
+
+
+
+

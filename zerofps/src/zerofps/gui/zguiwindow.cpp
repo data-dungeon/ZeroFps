@@ -537,3 +537,13 @@ void ZGuiWnd::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	m_pkGUI =pkSrc->m_pkGUI;
 	m_pkCallback = pkSrc->m_pkCallback;
 }
+
+
+
+
+
+
+
+
+
+

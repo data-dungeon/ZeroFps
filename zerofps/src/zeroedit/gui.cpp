@@ -489,3 +489,12 @@ void Gui::CaptureInput(bool bCapture)
 {
 	m_bGuiHaveFocus = bCapture;
 }
+
+
+
+
+
+
+
+
+

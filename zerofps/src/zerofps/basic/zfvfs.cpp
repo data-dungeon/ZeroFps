@@ -1,5 +1,5 @@
-#include <iostream.h>
-#include <stdio.h>
+#include <iostream>
+#include <cstdio>
 #include "zfobject.h"
 #include "zfobjectmanger.h"
 #include "zfvfs.h"
