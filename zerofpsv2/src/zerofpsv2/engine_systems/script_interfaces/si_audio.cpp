@@ -101,6 +101,9 @@ void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 // 2:st arg name of file
 int AudioLua::PlaySoundLua(lua_State* pkLua)
 {
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 	int iObjectID = (int)dTemp;

@@ -412,7 +412,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if ( m_kIniLoader.KeyExist("ps_lifetime", "time") )
 		pkPSType->m_kPSystemBehaviour.m_fLifeTime = m_kIniLoader.GetFloatValue("ps_lifetime", "time");
 	else
-		pkPSType->m_kPSystemBehaviour.m_fLifeTime = -1;
+		pkPSType->m_kPSystemBehaviour.m_fLifeTime = -9999999;
 
 	// Start speed
 	if ( m_kIniLoader.KeyExist("speed", "startspeed") )

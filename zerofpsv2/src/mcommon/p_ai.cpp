@@ -17,6 +17,16 @@ void P_AI::Update()
    if ( !m_pkCharProp )
       m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
    
+   if(!m_pkSound)
+   {
+   	m_pkSound = (P_Sound*)m_pkObject->GetProperty ("P_Sound");
+   	if(m_pkSound)
+   		cout<<"Got sound property"<<endl;
+   	else
+   		cout<<"no sound property found"<<endl;
+   }
+   
+   
    if ( !m_pkCurrentOrder )
    {
       NextOrder();
@@ -83,8 +93,13 @@ void P_AI::Update()
 				   kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
    				kRotM.Transponse();		
             }
-
 				m_pkObject->SetLocalRotM(kRotM);
+			
+				//play a nice sound
+				if(m_pkSound)
+				{
+					m_pkSound->Play("data/sound/hit.wav");
+				}
 
             // create splattblood PSystem
             if ( kWhenHit.size() )
@@ -272,6 +287,9 @@ P_AI::P_AI()
    m_pkCurrentOrder = 0;
 
    m_kOrderIte = m_kStaticOrders.begin();
+   
+   m_pkSound = NULL;
+   m_pkCharProp =NULL;
 }
 
 // ------------------------------------------------------------------------------------------

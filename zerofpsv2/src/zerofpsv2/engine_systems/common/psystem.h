@@ -6,6 +6,7 @@
 #include "../../basic/vector3.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/vector2.h"
+#include "../../engine/zerofps.h"
 
 #include <vector>
 
@@ -30,6 +31,7 @@ struct Particle
 	float m_fAge;
 	float m_fLifeTime;
 
+
 	bool m_bActive;
 };
 
@@ -39,6 +41,7 @@ private:
 
 	vector<ParticleProperty*> m_kPSProperties;
 	
+	ZeroFps* m_pkFps;
 	Render* m_pkRender;
 
 	Vector3 
@@ -53,8 +56,8 @@ private:
 		m_fFrameTime,
 		m_fTimeSinceLastCreatedParticle,
 		m_fAge,
-		m_fAgePercent;
-
+		m_fAgePercent,
+		m_fLastTime;
 
 	vector<Particle> m_kParticles;
 

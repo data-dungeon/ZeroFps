@@ -867,7 +867,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set reference distance.
 	alGetError();
-	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 0.1f);
+	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 1.0f);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set reference distance!");

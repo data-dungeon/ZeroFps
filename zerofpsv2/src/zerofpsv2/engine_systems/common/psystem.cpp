@@ -1,7 +1,6 @@
 #include "../../render/render.h"
 #include "../../engine/psystemmanager.h"
 #include "psystem.h"
-#include "../../engine/zerofps.h"
 #include "../../ogl/zfpsgl.h"
 
 // ------------------------------------------------------------------------------------------
@@ -35,7 +34,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	TestInsideFrustum();
 
 	// don't update live-forevever psystems if not inside frustum
-	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && !m_bInsideFrustum )
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && !m_bInsideFrustum )
 		return false;
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -46,7 +45,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	glDepthMask(GL_FALSE);	
 
 		// if PSystem loops in infinity, make it have particles from start
-	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && m_bFirstRun )
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && m_bFirstRun )
 	{
 		TimeoffSet();
 		m_bFirstRun = false;
@@ -54,11 +53,15 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 
 	// Get Frametime
-	m_fFrameTime = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetFrameTime();
+	m_fFrameTime = m_pkFps->GetTicks() - m_fLastTime;
+	m_fLastTime =  m_pkFps->GetTicks();
+
 
 	// Update particlesystem lifetime
-	if ( m_fAge != -1 )
+	if ( m_fAge != -9999999 )
+	{
 		m_fAge -= m_fFrameTime;
+	}
 
 	// Update age life percent
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
@@ -107,7 +110,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 			// if lifetime if over, particle is reseted
 			if ( m_kParticles[i].m_fAge < 0 )
 				// is particle system finished, don't reset particle
-				if ( m_fAge > 0 || m_fAge == -1)
+				if ( m_fAge > 0 || m_fAge == -9999999)
 					ResetParticle( i, -m_kParticles[i].m_fAge );
 				else
 					DisableParticle ( i );
@@ -119,7 +122,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 		m_kPSProperties[i]->Update();
 
 	// Has PSystem reachet its age and has no active particles, return true (PS finished)
-	if ( m_fAge != -1 && m_fAge < 0 && m_uiLastParticle - m_uiFirstParticle < 1 )
+	if ( m_fAge != -9999999 && m_fAge < 0 && m_uiLastParticle - m_uiFirstParticle < 1 )
       return true;
    else 
       return false;
@@ -156,7 +159,7 @@ PSystem::~PSystem()
 PSystem::PSystem(PSystemType* pkPSystemType)
 {
 	m_pkRender = static_cast<Render*>( g_ZFObjSys.GetObjectPtr("Render") );		
-
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkPSystemType = pkPSystemType;
 
 	m_pfVertices = 0;
@@ -178,6 +181,7 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 	m_fAgePercent = 1;
 
 	m_bFirstRun = true;
+	m_fLastTime = m_pkFps->GetTicks();
 
 }
 
@@ -430,7 +434,7 @@ void PSystem::TimeoffSet (bool bUseAge)
 
 void PSystem::TestInsideFrustum()
 {
-	Frustum *pkFrustum = &static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetCam()->
+	Frustum *pkFrustum = &m_pkFps->GetCam()->
 							  m_kFrustum;
 
 	// test culling

@@ -8,6 +8,8 @@
 #include <deque>
 #include <vector>
 #include <string>
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+
    using namespace std;
 
 struct Order
@@ -44,6 +46,8 @@ class MCOMMON_API P_AI: public Property
 
       // pointer to the characters charprop.
       CharacterProperty* m_pkCharProp;
+		P_Sound* m_pkSound;
+
 
       bool m_bAIPlayer;
 

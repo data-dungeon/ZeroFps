@@ -159,6 +159,11 @@ void MistServer::Init()
 	pkGui->GetToolTip()->SetSkin(kSkin);
 	
 	pkInput->ToggleGrab(true);
+	
+	
+/*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
+	pkMusic->Play();*/
 }
 
 void MistServer::RegisterResources()
@@ -471,7 +476,7 @@ void MistServer::OnServerStart(void)
 		
 		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);
-		pe->SetEnviroment("data/enviroments/sun.env");
+		pe->SetEnviroment("data/enviroments/rain.env");
 	}
 	
 	//create server info object

@@ -202,7 +202,7 @@ P_Sound::P_Sound()
 {
 	bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	strcpy(m_acName,"P_Sound");
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
@@ -217,8 +217,8 @@ P_Sound::~P_Sound()
 
 void P_Sound::Update()
 {
-	if(!m_pkFps->m_bServerMode)
-	{
+/*	if(!m_pkFps->m_bServerMode)
+	{*/
 		if(!m_strFileName.empty())
 		{
 			Entity* pkObject = GetObject();
@@ -228,7 +228,7 @@ void P_Sound::Update()
 
 			m_strFileName = "";
 		}
-	}
+//	}
 }
 
 void P_Sound::Play(string strName) // körs endast på server sidan
