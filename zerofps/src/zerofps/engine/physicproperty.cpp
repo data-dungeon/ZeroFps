@@ -10,7 +10,7 @@ PhysicProperty::PhysicProperty()
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
 	m_bGravity=true;
-	m_bMove=true;
+	m_bFloat=true;	
 
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
@@ -20,11 +20,22 @@ PhysicProperty::PhysicProperty()
 
 }
 
-CollisionData* PhysicProperty::Test(PhysicProperty* kOther)
+PhysicProperty::~PhysicProperty()
 {
+	delete m_pkColSphere;
+	delete m_pkColObject;
+}
 
+void PhysicProperty::Save(ZFMemPackage* pkPackage)
+{
+	pkPackage->Write((void*)&m_bGravity,4);
+	pkPackage->Write((void*)&m_bFloat,4);
+}
 
-	return NULL;
+void PhysicProperty::Load(ZFMemPackage* pkPackage)
+{
+	pkPackage->Read((void*)&m_bGravity,4);
+	pkPackage->Read((void*)&m_bFloat,4);
 }
 
 

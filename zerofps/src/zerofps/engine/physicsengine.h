@@ -13,6 +13,8 @@
 #include <list>
 #include <vector>
 
+#include <algorithm>
+
 
 using namespace std;
 
@@ -21,11 +23,17 @@ class PhysicProperty;
 
 struct ENGINE_API CollisionData
 {
-	Object* m_pkOtherObject;	
+	Object* m_pkOther;	
+	Vector3 m_kOtherPos;		
+	Vector3 m_kOtherVel;	
+	Vector3 m_kOtherAcc;		
+	Vector3 m_kOtherRot;		
 	
 	Vector3 m_kPos;
-	Vector3 m_kOtherVel;
 	Vector3 m_kVel;
+	Vector3 m_kAcc;
+	Vector3 m_kRot;	
+
 	Vector3 m_kNormal;
 
 };
@@ -43,7 +51,6 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		ZeroFps* m_pkZeroFps;
 
 		float m_fFrameTime;
-
 		bool m_bUpdate;
 	
 		//curent physicpropertys
@@ -57,14 +64,15 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		
 		void Update();
 
-		Vector3 GetNewPos(Object* pkObject,float fTime);
+		Vector3 GetNewPos(PhysicProperty* pkPP);
+		Vector3 GetNewVel(PhysicProperty* pkPP);
 		
 		void CalcMotionSpheres();
 		void TestCollisions();
 		bool TestSphere(Sphere* S1,Sphere* S2);
 		void DeepTest(Sphere* S1,Sphere* S2);
 		
-		void MoveObject(Object* pkObject);
+		void MoveObject(PhysicProperty* pkPP);
 
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};

@@ -660,9 +660,10 @@ void ZeroEdit::Input()
 			}
 			if(pkInput->Pressed(KEY_Z))
 			{
-//				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-//				if(object==NULL)
-//					break;
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();
+
 				Object *object = new BallObject();					
 				object->GetPos()=m_kDrawPos;	
 				

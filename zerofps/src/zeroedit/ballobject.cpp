@@ -19,10 +19,15 @@ BallObject::BallObject() {
 
 	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
+	AddProperty("FloatProperty");	
 	AddProperty("AutoParentProperty");	
 	AddProperty("PhysicProperty");
+	
+	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
+	pp->m_bGravity=true;
 
-//	m_kAcc.Set(5,0,0);
+
+//	m_kAcc.Set(0,-9.82,0);
 
 	onGround = false;
 }

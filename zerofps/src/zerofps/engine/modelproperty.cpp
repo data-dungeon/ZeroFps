@@ -9,8 +9,8 @@ ModelProperty::ModelProperty() {
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
 	m_fRadius = 1.0;
-	m_iSlices = 5;
-	m_iStacks = 5;
+	m_iSlices = 10;
+	m_iStacks = 10;
 	m_kColor.Set(1,1,1);
 	
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
@@ -25,7 +25,7 @@ void ModelProperty::Update() {
 		return;
 	
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-	glDisable(GL_LIGHTING);
+//	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
 	

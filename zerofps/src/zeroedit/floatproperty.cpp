@@ -12,6 +12,7 @@ FloatProperty::FloatProperty() {
 }
 
 void FloatProperty::Update() {
+/*
 	if(m_pkObject->GetPos().y<0) {
 		//if upspeed becomes to great dont add more speed
 		if(m_pkObject->GetVel().y<4) 
@@ -20,7 +21,18 @@ void FloatProperty::Update() {
 		
 		m_pkObject->GetVel().y*=0.99;
 	}
+*/	
 }
+
+void FloatProperty::Touch(CollisionData* Data)
+{
+	m_pkObject->GetPos()=Data->m_kPos;
+	m_pkObject->GetVel()=Data->m_kVel;
+	m_pkObject->GetAcc()=Data->m_kAcc;
+
+}
+
+
 
 Property* Create_FloatProperty()
 {

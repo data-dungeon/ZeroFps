@@ -30,28 +30,42 @@ void PhysicsEngine::Update()
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
-		if(PP->m_bGravity)
-			PP->GetObject()->GetVel()+=Vector3(0,-9.82,0)*m_fFrameTime;
-		
-		
-		if(PP->m_bMove)			
-			MoveObject(PP->GetObject());
+		MoveObject(PP);
 	}
 
 	
 	m_kPropertys.clear();
 }
 
-Vector3 PhysicsEngine::GetNewPos(Object* pkObject,float fTime)
+Vector3 PhysicsEngine::GetNewPos(PhysicProperty* pkPP)
 {
-	Vector3 Vel = pkObject->GetVel() + pkObject->GetAcc() * fTime;
-	return pkObject->GetPos() + Vel * fTime;
+	return pkPP->GetObject()->GetPos() + GetNewVel(pkPP) * m_fFrameTime;
 }
 
-void PhysicsEngine::MoveObject(Object* pkObject)
+Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 {
-	pkObject->GetVel() += pkObject->GetAcc() * m_fFrameTime;
-	pkObject->GetPos() += pkObject->GetVel() * m_fFrameTime;;
+	Object* pkObject=pkPP->GetObject();
+	
+	//add object acceleration
+	Vector3 Acc=pkObject->GetAcc();
+	
+	if(pkPP->m_bGravity)
+		Acc+=Vector3(0,-5,0);
+	
+	if(pkPP->m_bFloat)
+		if(pkObject->GetPos().y < 0)
+			Acc+=Vector3(0,10,0);
+		
+	return pkObject->GetVel() + (Acc *  m_fFrameTime);
+}
+
+void PhysicsEngine::MoveObject(PhysicProperty* pkPP)
+{
+	pkPP->GetObject()->GetVel() = GetNewVel(pkPP);
+	pkPP->GetObject()->GetPos() += pkPP->GetObject()->GetVel()*m_fFrameTime;
+	
+//	pkObject->GetVel() += pkObject->GetAcc() * m_fFrameTime;
+//	pkObject->GetPos() += pkObject->GetVel() * m_fFrameTime;;
 }
 
 
@@ -67,7 +81,7 @@ void PhysicsEngine::CalcMotionSpheres()
 		CSSphere *csp = static_cast<CSSphere*>((static_cast<PhysicProperty*>(*it))->GetColSphere());
 		
 		kPos1=(*it)->GetObject()->GetPos();
-		kPos2=GetNewPos((*it)->GetObject(),m_fFrameTime);	
+		kPos2=GetNewPos(static_cast<PhysicProperty*>(*it));	
 		
 		sp.m_kPos.Lerp(kPos1,kPos2,0.5);
 		sp.m_fRadius= (abs((kPos1-kPos2).Length()) / 2) + csp->m_fRadius;
@@ -85,6 +99,10 @@ void PhysicsEngine::TestCollisions()
 	{
 		for(int j=i+1;j<m_kMotionSpheres.size();j++)		
 		{
+			if(m_kMotionSpheres[i].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0) &&
+				m_kMotionSpheres[j].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0))
+				continue;
+		
 			if(TestSphere(&m_kMotionSpheres[i],&m_kMotionSpheres[j]))
 				DeepTest(&m_kMotionSpheres[i],&m_kMotionSpheres[j]);	
 			
@@ -119,20 +137,33 @@ void PhysicsEngine::DeepTest(Sphere* S1,Sphere* S2)
 	
 	
 	if(CS1!=NULL && CS2!=NULL)	
-		pkCD=CS1->Test(CS2,true);
+		pkCD=CS1->Test(CS2,m_fFrameTime,true);
 	else if(CS1!=NULL && CS2==NULL)	
-		pkCD=CS1->Test(CSP2,true);
+		pkCD=CS1->Test(CSP2,m_fFrameTime,true);
 	else if(CS1==NULL && CS2!=NULL)	
-		pkCD=CSP1->Test(CS2,true);
+		pkCD=CSP1->Test(CS2,m_fFrameTime,true);
 	else if(CS1==NULL & CS2==NULL)
-		pkCD=CSP1->Test(CSP2,true);
+		pkCD=CSP1->Test(CSP2,m_fFrameTime,true);
 
-	if(pkCD==NULL)
-		cout<<"NO Collission"<<endl;
-	else	
-		cout<<"Collision"<<endl;
+	if(pkCD!=NULL)	
+	{
 	
+		//touch object 1
+		S1->m_pkPP->GetObject()->Touch(pkCD);
+	
+		//inverse the data krap
+		pkCD->m_pkOther=S1->m_pkPP->GetObject();	
+		swap(pkCD->m_kOtherPos,pkCD->m_kPos);
+		swap(pkCD->m_kOtherVel,pkCD->m_kVel);
+		swap(pkCD->m_kOtherAcc,pkCD->m_kAcc);	
+		swap(pkCD->m_kOtherRot,pkCD->m_kRot);	
 
+		//touche object 2
+		S2->m_pkPP->GetObject()->Touch(pkCD);
+	
+		//delete the collision data object
+		delete pkCD;
+	}
 }
 
 

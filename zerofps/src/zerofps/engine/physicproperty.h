@@ -17,14 +17,16 @@ class ENGINE_API PhysicProperty :public Property
 
 	public:
 		bool m_bGravity;
-		bool m_bMove;
+		bool m_bFloat;
 	
 		PhysicProperty();
-
-		CollisionData* Test(PhysicProperty* kOther);
-
+		~PhysicProperty();		
+		
 		CollisionShape* GetColSphere(){return m_pkColSphere;};
 		CollisionShape* GetColShape(){return m_pkColObject;};
+
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
 };
 
 Property* Create_PhysicProperty();

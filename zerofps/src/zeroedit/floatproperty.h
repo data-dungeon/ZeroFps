@@ -13,7 +13,7 @@ class FloatProperty: public Property {
 	
 		FloatProperty();
 		void Update();
-
+		void Touch(CollisionData* Data);
 
 
 };

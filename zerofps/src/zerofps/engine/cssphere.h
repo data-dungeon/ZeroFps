@@ -18,8 +18,9 @@ class ENGINE_API CSSphere : public CollisionShape
 		float m_fRadius;
 		
 		CSSphere(float fRadius);	
-		CollisionData* Test(CollisionShape* kOther,bool bContinue);
+		CollisionData* Test(CollisionShape* kOther,float fTime,bool bContinue);
 
+		CollisionData* Collide_CSSphere(CSSphere* kOther,float fTime);
 };
 
 
