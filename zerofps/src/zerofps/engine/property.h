@@ -20,18 +20,18 @@ class GameMessage;
 /*	When property should be updated. 
 */enum PROPERTY_TYPES
 {
-	PROPERTY_TYPE_ALL,			// Run on all.
-	PROPERTY_TYPE_NORMAL,		// Run at normal update.
-	PROPERTY_TYPE_RENDER,		// Run at render update.
-	PROPERTY_TYPE_PHYSIC,		// Run at physics update.
+	PROPERTY_TYPE_ALL		= 1,		// Run on all.
+	PROPERTY_TYPE_NORMAL	= 2,		// Run at normal update.
+	PROPERTY_TYPE_RENDER = 4,		// Run at render update.
+	PROPERTY_TYPE_PHYSIC = 8,		// Run at physics update.
 };
 
 /* On wich side the propertys should update. */
 enum PROPERTY_SIDE
 {	
-	PROPERTY_SIDE_ALL,			// Run on both client/server
-	PROPERTY_SIDE_CLIENT,		// Run on client
-	PROPERTY_SIDE_SERVER			// Run on server
+	PROPERTY_SIDE_CLIENT	= 16,		// Run on client
+	PROPERTY_SIDE_SERVER = 32,		// Run on server
+	PROPERTY_SIDE_ALL		= 48,		// Run on both client/server
 };
 
 enum ValueTypes
@@ -70,7 +70,7 @@ public:
 class ENGINE_API Property 
 {
 	private:
-		ZeroFps* m_pkZeroFps;
+		ZeroFps*					m_pkZeroFps;
 
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
@@ -78,8 +78,8 @@ class ENGINE_API Property
 		////////////////////////////////////////////7
 
 	protected:
-		Object *m_pkObject;
-		PropertyFactory*	m_pkPropertyFactory;
+		Object*					m_pkObject;
+		PropertyFactory*		m_pkPropertyFactory;
 	
 
 		virtual vector<PropertyValues> GetPropertyValues();

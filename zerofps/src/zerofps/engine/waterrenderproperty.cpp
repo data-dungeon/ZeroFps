@@ -14,6 +14,7 @@ WaterRenderProperty::WaterRenderProperty()
 	
 	SetProperty(100,10,"file:../data/textures/water2.bmp");
 	m_iSortPlace=10;
+	bNetwork	=	true;
 }
 
 void WaterRenderProperty::CloneOf(Property* pkProperty)
@@ -43,6 +44,19 @@ void WaterRenderProperty::Update()
 {	
 	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture);
 }
+
+void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)
+{
+	pkNetPacket->Write((int) m_iSize);
+	pkNetPacket->Write((int) m_iStep);
+}
+ 
+void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket)
+{
+	pkNetPacket->Read((int) m_iSize);
+	pkNetPacket->Read((int) m_iStep);
+}
+
 
 void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
 {

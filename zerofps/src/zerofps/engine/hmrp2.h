@@ -22,14 +22,21 @@ class ENGINE_API HMRP2: public Property {
 	
 	
 	public:
+		string	m_strMapName;
+
 		void SetPolyMode(int iMode);
-		HMRP2(HeightMap* pkHeightMap);
+		HMRP2(HeightMap* pkHeightMap, string strMapName);
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 
-		void SetHeightMap(HeightMap* pkHeightMap);
+		void SetHeightMap(HeightMap* pkHeightMap, string strMapName);
 		HeightMap* GetHeightMap() {return m_pkHeightMap;};
 		void SetPolyMode(PolygonMode eMode);
+
+
+
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
 };
 
 Property* Create_HMRP2();

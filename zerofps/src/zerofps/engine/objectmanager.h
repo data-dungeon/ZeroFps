@@ -38,6 +38,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		list<Object*>		m_akObjects;									///< List of all objects.
 		vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
+		vector<int>			m_aiNetDeleteList;
 
 		vector<Property*>	m_akPropertys;									///< List of Active Propertys.	
 		int					m_iNrOfActivePropertys;						///> Size of akProperty list.
@@ -67,6 +68,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void Clear();															///< Delete all objects.
 
 		// Updates
+		int	m_iUpdateFlags;
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
 		void UpdateDelete();													///< Deletes objects in delete qeue	
 		void UpdateGameMessages(void);									///< Update game messages.
@@ -107,6 +109,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		// NetWork
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
+		void UpdateDeleteList(NetPacket* pkNetPacket);
 		void PackToClients();												//Packs and Sends to ALL clients.
 
 		// Debug / Help Functions		

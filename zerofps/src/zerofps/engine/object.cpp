@@ -402,8 +402,12 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Read(m_kPos);
-	pkNetPacket->Read(m_kRot);
+	Vector3 kVec;
+
+	pkNetPacket->Read(kVec);
+	SetPos(kVec);
+	pkNetPacket->Read(kVec);
+	SetRot(kVec);
 
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>", m_kPos.x,m_kPos.y,m_kPos.z);
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>\n", m_kRot.x,m_kRot.y,m_kRot.z);

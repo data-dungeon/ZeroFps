@@ -143,6 +143,49 @@ void LevelManager::CreateZones()
 */	
 }
 
+bool LevelManager::LoadLevelHmapOnly(const char* acFile)
+{
+	for(int i=0;acFile[i]!='\0';i++)
+	{
+		if(acFile[i]=='\\' || acFile[i]=='/')
+		{
+			m_pkConsole->Print("Bad filename");
+			return false;
+		}
+	}
+		
+	string kHmfile;
+	string kZolfile;
+	string kpreinifile;
+	string ksuinifile;	
+	string kBase;
+	
+	kBase=m_kMapBaseDir;
+	kBase+="/";
+	kBase+=acFile;
+	kBase+="/";	
+
+	kHmfile=kBase+"heightmap";
+
+	if(m_pkHeightMapObject) {
+		m_pkHeightMapObject	=	CreateHeightMapObject(m_pkMap);
+		m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
+		m_pkHeightMapObject->GetPos().Set(0,0,0);
+		m_pkMap->SetPosition(Vector3(0,0,0));
+		}
+	
+	//load heightmap
+	if(!m_pkMap->Load(kHmfile.c_str())){
+		m_pkConsole->Printf("Error loading heightmap");
+		return false;
+	};	
+	
+	//create zoneobjects
+	CreateZones();		
+	m_kCurrentMapDir = kBase;
+	return true;
+
+}
 
 bool LevelManager::LoadLevel(const char* acFile)
 {
@@ -213,6 +256,9 @@ bool LevelManager::LoadLevel(const char* acFile)
 		m_pkConsole->Printf("No suconfig.ini found");
 
 	m_kCurrentMapDir = kBase;
+
+	HMRP2* hp= static_cast<HMRP2*>(m_pkHeightMapObject->GetProperty("HMRP2"));
+	hp->m_strMapName = acFile;
 
 	return true;
 }
@@ -593,7 +639,7 @@ Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 	PP->m_bGravity=false;		
 
 	ob->AddProperty("HMRP2");
-	(static_cast<HMRP2*>(ob->GetProperty("HMRP2")))->SetHeightMap(pkMap);	
+	(static_cast<HMRP2*>(ob->GetProperty("HMRP2")))->SetHeightMap(pkMap, "None");	
 
 	return ob;
 };

@@ -38,6 +38,8 @@ class ENGINE_API WaterRenderProperty: public Property {
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
 
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
 
 };
 

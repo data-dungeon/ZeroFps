@@ -35,6 +35,7 @@ void ObjectManager::Add(Object* pkObject)
 
 void ObjectManager::Remove(Object* pkObject) 
 {	
+	m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
 	m_akObjects.remove(pkObject);
 }
 
@@ -67,6 +68,8 @@ void ObjectManager::Clear()
 // Updates
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
+	m_iUpdateFlags = iType & iSide;
+
 	if(!m_bUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)
 			return;
@@ -108,9 +111,10 @@ void ObjectManager::UpdateDelete()
 	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
 	{
 		Object* pkObject = (*it);
+		m_aiNetDeleteList.push_back((*it)->iNetWorkID);
 		delete (*it);		
 	}
-	
+
 	m_akDeleteList.clear();
 }
 
@@ -435,6 +439,27 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 
 
 // NetWork
+void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
+{
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+
+	while(iObjectID != -1) {
+		g_ZFObjSys.Logf("net", "Delete: Object %d\n", iObjectID);
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL) {
+			g_ZFObjSys.Logf("net", " Object '%d' not found.\n", iObjectID);	
+			}
+		else {
+			Delete(pkNetSlave);
+			}
+		pkNetPacket->Read(iObjectID);
+		}	
+
+	m_aiNetDeleteList.clear();
+}
+
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Object* pkNetSlave;
@@ -467,7 +492,10 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 void ObjectManager::PackToClients()
 {
 	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
-	if(net->m_eNetStatus != NET_SERVER)	return;
+	if(net->m_eNetStatus != NET_SERVER) {
+		m_aiNetDeleteList.clear();
+		return;
+		}
 
 	NetPacket NP;
 	NP.Clear();
@@ -507,6 +535,22 @@ void ObjectManager::PackToClients()
 			}
 	}
 
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	net->SendToAllClients(&NP);
+
+	if(m_aiNetDeleteList.size() == 0)
+		return;
+
+	// Pack delete data.
+	NP.Clear();
+	NP.Write((char) ZF_NETTYPE_UNREL);
+	NP.Write((char) ZFGP_DELETEOBJECT);
+
+	for(int i=0; i<m_aiNetDeleteList.size(); i++) {
+		NP.Write((int) m_aiNetDeleteList[i] );
+		}
+	
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
 	net->SendToAllClients(&NP);

@@ -130,10 +130,8 @@ public:
 class ENGINE_API Object 
 {
 	private:
-		Object*					 m_pkParent;						///< Parent Object.
-		vector<GameMessage>	m_kGameMessages;					///< Messages that are waiting to be handled by this object.
-		
-
+		Object*						m_pkParent;						///< Parent Object.
+		vector<GameMessage>		m_kGameMessages;				///< Messages that are waiting to be handled by this object.
 
 	protected:
 		Vector3					m_kPos;								///< Position of object in world.

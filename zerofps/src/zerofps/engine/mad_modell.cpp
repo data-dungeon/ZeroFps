@@ -63,6 +63,9 @@ Mad_Modell::Mad_Modell(string strResName)
 
 void Mad_Modell::SetBasePtr(string strResName)
 {
+	if(m_kMadFile == strResName)
+		return;
+
 	m_kMadFile = strResName;
 	if(!kMadHandle.SetRes(strResName))
 		return;

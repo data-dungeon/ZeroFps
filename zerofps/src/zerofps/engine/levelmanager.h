@@ -57,6 +57,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		LevelManager();
 		void CreateZones();
 		bool LoadLevel(const char* acName);
+		bool LoadLevelHmapOnly(const char* acFile);
 		bool SaveLevel(const char* acName);
 		void CreateNew(int iSize);
 		void Clear();

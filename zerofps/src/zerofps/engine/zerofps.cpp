@@ -275,6 +275,7 @@ void ZeroFps::Run_Client()
 	//run application Head On Display 
 	SetCamera(m_pkConsoleCamera);			
 	m_pkApp->OnHud();
+	m_pkObjectMan->UpdateDelete();
 }
 
 void ZeroFps::Update_System()
@@ -882,6 +883,11 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
 		switch(ucGamePacketType) {
+			case ZFGP_DELETEOBJECT:
+				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
+				m_pkObjectMan->UpdateDeleteList(pkNetPacket);
+				break;
+
 			case ZFGP_OBJECTSTATE: 
 				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
 				m_pkObjectMan->UpdateState(pkNetPacket);
