@@ -365,7 +365,7 @@ void ZeroFps::Run_Client()
 	
 	
 	//m_pkPhysics_Engine->Update(GetFrameTime());	
-	m_pkTcs->Update(GetFrameTime());	
+	//m_pkTcs->Update(GetFrameTime());	
 
 
 	if(g_iLogRenderPropertys) 
@@ -459,7 +459,7 @@ void ZeroFps::Update_System(bool bServer)
 				
 	
 				//update Tiny Collission system
-				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+				m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}

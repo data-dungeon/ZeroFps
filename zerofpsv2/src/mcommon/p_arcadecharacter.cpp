@@ -95,9 +95,9 @@ void P_ArcadeCharacter::Update()
 			kVel.x =  1;
 
 								
-		if(kVel.Length() == 0)			
-			pkTcs->SetWalkVel(Vector3(0,0,0));
-		else
+//		if(kVel.Length() == 0)			
+//			pkTcs->SetWalkVel(Vector3(0,0,0));
+		if(kVel.Length() != 0)
 		{
 		
 			kVel = m_kCameraRotation.VectorTransform(kVel);			
@@ -108,7 +108,8 @@ void P_ArcadeCharacter::Update()
 			
 			kVel *= ( (m_fSpeed/2.0)*fWalkRatio) + (m_fSpeed/2.0);					
 				
-			pkTcs->SetWalkVel(kVel);
+			//pkTcs->SetWalkVel(kVel);
+			pkTcs->ApplyForce(Vector3(0,0,0),kVel);
 		}
 	}
 	else

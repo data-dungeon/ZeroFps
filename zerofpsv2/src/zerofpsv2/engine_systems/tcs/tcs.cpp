@@ -67,7 +67,6 @@ void Tcs::AddBody(P_Tcs* pkPTcs)
 	}
 	
 	m_kBodys.push_back(pkPTcs);
-	//cout<<"boddy added"<<endl;
 }
 void Tcs::RemoveBody(P_Tcs* pkPTcs)
 {
@@ -80,7 +79,6 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 			m_kBodys[i]=m_kBodys.back();			//chacke place whit bak elment 
 			m_kBodys.pop_back();
 			
-			//cout<<"body removed"<<endl;			
 			return;
 		}
 	}
@@ -93,17 +91,6 @@ void Tcs::Update(float fAlphaTime)
 	if(m_kBodys.empty())
 		return;
 	
-/*				
-	//make sure alpha time is not to small
-	if(fAlphaTime > 0.033) 
-	{
-		cout<<"slow:"<<fAlphaTime<<endl;
-		fAlphaTime = 0.033; 
-	}
-*/			
-	//	cout<<"slow:"<<fAlphaTime<<endl;
-		
-
 		
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
@@ -118,7 +105,6 @@ void Tcs::Update(float fAlphaTime)
 	
 	//calculate current forces
 	UpdateForces();
-	
 	
 	
 	while(fRTime > 0)
@@ -362,14 +348,11 @@ void Tcs::SyncEntitys()
 void Tcs::SyncBodys()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{	
-		
+	{			
 		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetObject()->GetWorldPosV();		
-		//m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();				
 		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetObject()->GetLocalRotM();
-	
-	//	cout<<"wieard:"<<m_kBodys[i]->m_kNewPos.x<<" "<<m_kBodys[i]->m_kNewPos.y<<" "<<m_kBodys[i]->m_kNewPos.z<<endl;
-			
+
+		//m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();							
 	}
 }
 
@@ -388,7 +371,7 @@ void Tcs::UpdateForces()
 			m_kBodys[i]->m_kLinearForce += m_kBodys[i]->m_kExternalLinearForce; 
 			
 			//Apply walk force
-			m_kBodys[i]->m_kLinearForce+=m_kBodys[i]->m_kWalkVel;
+			//m_kBodys[i]->m_kLinearForce+=m_kBodys[i]->m_kWalkVel;
 			
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
@@ -1103,6 +1086,7 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		return;		
 	}
 	
+	/*
 	//the smalest object shuld be body2 for best result
 	if(pkBody2->m_fRadius > pkBody1->m_fRadius)
 	{
@@ -1111,17 +1095,17 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		pkBody1 = pkBody2;
 		pkBody2 = pkBakup;
 	}
-	
+	*/
 	
 	while(retry && (fAtime > 0) )
 	{
-	
 		retry = false;
 		nroftests++;
 			
 		if(fAtime < m_fAlmostZero)
+		{
 			fAtime = 0;
-
+		}
 		
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
@@ -1135,22 +1119,18 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 			if(!didpen)
 			{
 				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
-		
+				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));				
 				UpdateBodyVelnPos(m_pkBodyCopy1,0);
 				UpdateBodyVelnPos(m_pkBodyCopy2,0);	
 						
 				if(CollideMeshVSMesh3(pkBody1,pkBody2,NULL))
 				{
-					//cout<<"Stuck Object detected"<<endl;
 					didpen = true;			
 					fAtime = 0;
+					fLastColTime = 0;
 					break;
-					//return;
 				}
 			}	 
-			
-
 			
 			didpen = true;			
 			retry = true;
@@ -1421,52 +1401,6 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 						
 				}
 			}			
-			
-			/*
-			//body2 vs body1			
-			for(int i = 0;i<3;i++)
-			{
-				switch(i)
-				{
-					case 0:
-						i1 = 0;
-						i2 = 1; 
-						break;
-		
-					case 1:
-						i1 = 1;
-						i2 = 2; 
-						break;
-		
-					case 2:
-						i1 = 2;
-						i2 = 0; 
-						break;
-				}			
-				
-				if(pkTempCol)				
-				{
-					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2))
-					{
-						if(!bHaveCleared)
-						{
-							bHaveCleared = true;
-							pkTempCol->kNormals.clear();
-							pkTempCol->kPositions.clear();
-						}					
-							
-						pkTempCol->kPositions.push_back(m_kLastTestPos);
-						pkTempCol->kNormals.push_back(-m_kLastTestNormal);
-							
-						bHaveColided = true;	
-					}
-				}
-				else
-				{
-					if(TestLineVSPolygonNoNormal(verts2,&verts1[i1],&verts1[i2],&P2))
-						return true;
-				}
-				*/
 		}
 	}
 	
@@ -1522,17 +1456,17 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				if((f1 < f2) && (f1 < f3))
 				{
 					m_kLastTestNormal = n1;
-					v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
+				//	v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
 				};
 				if((f2 < f1) && (f2 < f3))
 				{
 					m_kLastTestNormal = n2;
-					v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
+				//	v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
 				};
 				if((f3 < f1) && (f3 < f2))
 				{
 					m_kLastTestNormal = n3;
-					v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
+				//	v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
 				};			
 				
 				

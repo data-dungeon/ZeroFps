@@ -485,8 +485,9 @@ void DarkMetropolis::Input()
 				if(pkTcs->GetOnGround())
 					pkTcs->ApplyImpulsForce(Vector3(0,1,0));
 
-							
-			pkTcs->SetWalkVel(kVel);				
+				
+			pkTcs->ApplyForce(Vector3(0,0,0),kVel);					
+			//pkTcs->SetWalkVel(kVel);				
 		
 			
 			Matrix4 kRm;
