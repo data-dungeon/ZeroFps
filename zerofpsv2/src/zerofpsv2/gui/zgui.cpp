@@ -1612,6 +1612,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
 							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode) && 
 								typeid(*pkParent)!=typeid(ZGuiMenu) &&
+								typeid(*pkFocusWindow)!=typeid(ZGuiCheckbox) &&
 								typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 						{
 							ZGuiWnd* pkMainWnd = pkParent; //m_pkActiveMainWin->pkWnd; // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
