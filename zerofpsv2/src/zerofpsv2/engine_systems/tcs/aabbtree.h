@@ -24,13 +24,10 @@ class Triangle
 		
 	public:
 		Vector3	m_kVerts[3];
-		Vector3	m_kNormals[3];
+		Vector3	m_kNormals[3];		
+		Plane		m_kPlane;				
 		
-		Plane		m_kPlane;		
-		
-		
-		Vector3	Middle()		{	return (m_kVerts[0]+m_kVerts[1]+m_kVerts[2]) / 3.0;	};
-		
+		Vector3	Middle()		{	return (m_kVerts[0]+m_kVerts[1]+m_kVerts[2]) / 3.0;	};		
 		bool TestSphere(const Vector3& kPos,float fRadius,Vector3* kTestPos);
 		bool TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* kTestPos);
 

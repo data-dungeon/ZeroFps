@@ -64,7 +64,6 @@ void AABBTree::GetAABBList(vector<AABB>* pkAABBList)
 	if(m_pkRootNode)
 		m_pkRootNode->GetAABBList(pkAABBList);
 
-
 }
 
 //---- AABBNode
@@ -133,6 +132,8 @@ void AABBNode::Create(vector<Triangle>*	pkTriangles,int iDepth,const AABBTreeInf
 
 void AABBNode::GetAABBList(vector<AABB>* pkAABBList)
 {
+	//only add leaves
+
 	if(m_pkChild1)
 	{
 		m_pkChild1->GetAABBList(pkAABBList);
@@ -145,6 +146,7 @@ void AABBNode::GetAABBList(vector<AABB>* pkAABBList)
 
 bool AABBNode::TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* pkTestPos)
 {
+	//line collides with AABB?
 	if(m_kBox.TestLine(kP1,kP2))
 	{
 		//we have childs
@@ -189,6 +191,8 @@ bool AABBNode::TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* pkTestPos
 		}
 		else
 		{
+			// no childs , assuming leaf, doing line VS triangle tests
+		
 			static float 	fClosest;
 			static float 	fDistance;
 			static bool  	bHaveColided;		
@@ -216,12 +220,14 @@ bool AABBNode::TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* pkTestPos
 			return bHaveColided;
 		}	
 	}
-	else
-		return false;
+	
+	
+	return false;
 }
 
 bool AABBNode::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 {
+	//sphere collides with AABB?
 	if(m_kBox.TestSphere(kPos,fRadius))
 	{
 		//we have childs
@@ -239,7 +245,7 @@ bool AABBNode::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
 			if(m_pkChild2->TestSphere(kPos,fRadius,&kPos2))
 				bHaveHit2 = true;
 				
-			//both tests was true, check wich was closest
+			//both tests was true, check wich one is closest
 			if(bHaveHit1 && bHaveHit2)
 			{
 				if(kPos1.DistanceTo(kPos) < kPos2.DistanceTo(kPos))
@@ -295,8 +301,9 @@ bool AABBNode::TestSphere(const Vector3& kPos,float fRadius,Vector3* pkTestPos)
  			return bHaveCollided;
 		}
 	}
-	else
-		return false;
+		
+		
+	return false;
 }
 
 
@@ -310,6 +317,7 @@ void AABB::Set(vector<Triangle>*	pkTriangles)
 	m_kMin.Set(999999999,99999999,99999999);
 	m_kMax.Set(-999999999,-99999999,-99999999);
 
+	//find max/min values
 	int iSize = pkTriangles->size();
 	for(int i =0;i<iSize;i++)
 	{
@@ -347,16 +355,17 @@ int AABB::LongestAxis()
 	int l = 0;
 	
 	for(int i = 1;i<3;i++)
-	{
  		if( fabs(m_kMin[i] - m_kMax[i]) > fabs(m_kMin[l] - m_kMax[l]) )
 			l = i;
-	}
 
+			
 	return l;
 }
 
 bool AABB::TestSphere(const Vector3& kPos,float fRadius)
 {
+	//not exact SPHERE VS AABB test, more like AABB VS AABB, but its faster thou ;)
+
 	if(kPos.x - fRadius > m_kMax.x) return false;
 	if(kPos.x + fRadius < m_kMin.x) return false;
 
