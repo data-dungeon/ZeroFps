@@ -2276,7 +2276,6 @@ int MistLandLua::GetItemValueLua (lua_State* pkLua)
          {      
             ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetItemValue () );
-
          }
          else
          {
