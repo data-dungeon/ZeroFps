@@ -42,7 +42,7 @@ class ZeroRTS :public Application {
 		int 			m_iActionCamDown;
 		int 			m_iActionSelect;
 		int 			m_iActionScroll;		
-
+		int 			m_iActionSelectManyModifier;		
 		
 
 		//console funktions

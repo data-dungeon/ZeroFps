@@ -8,29 +8,37 @@ P_ClientUnit::P_ClientUnit()
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_ALL;
+	
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	
+	bNetwork = true;
 
-	m_cTeam = 		0;
-	m_cHealth = 	255;
-	m_cWeapon = 	0;
-	m_cArmor = 		0;
-	m_cPropultion =0;
-	m_kName = 		"NoName";
+	m_kInfo.m_cTeam = 		0;
+	m_kInfo.m_cHealth = 	255;
+	m_kInfo.m_cWeapon = 	0;
+	m_kInfo.m_cArmor = 		0;
+	m_kInfo.m_cPropultion =0;
+	m_kInfo.m_kName = 		"NoName";
+	
 	m_bSelected =	false;
 	
 	m_bCurrentSelectionRenderState = false;
+
 }
 
 
 void P_ClientUnit::Update()
 {
-	//enable rendering of selection
-	if(m_bSelected && !m_bCurrentSelectionRenderState)
-		EnableSelectionRender();
+	if(m_pkFps->m_bClientMode)
+	{
+		//enable rendering of selection
+		if(m_bSelected && !m_bCurrentSelectionRenderState)
+			EnableSelectionRender();
 		
-	//disable rendering of selection
-	if(!m_bSelected && m_bCurrentSelectionRenderState)
-		DisableSelectionRender();
-	
+		//disable rendering of selection
+		if(!m_bSelected && m_bCurrentSelectionRenderState)
+			DisableSelectionRender();
+	}
 
 }
 
@@ -81,6 +89,15 @@ void P_ClientUnit::Load(ZFMemPackage* pkPackage)
 
 }
 
+void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
+{
+	pkNetPacket->Write(m_kInfo);
+}
+ 
+void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
+{
+	pkNetPacket->Read(m_kInfo);
+}
 
 
 COMMON_API Property* Create_P_ClientUnit()

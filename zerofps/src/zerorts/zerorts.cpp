@@ -86,13 +86,14 @@ void ZeroRTS::RegisterActions()
 	m_iActionCamDown=pkInput->RegisterAction("CamDown");
 	m_iActionSelect=pkInput->RegisterAction("Select");
 	m_iActionScroll=pkInput->RegisterAction("Scroll");	
-
+	m_iActionSelectManyModifier=pkInput->RegisterAction("SelectManyModifier");	
 }
 
 void ZeroRTS::RegisterPropertys()
 {
 	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
+	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);	
 }
 
 void ZeroRTS::OnIdle(void) 
@@ -141,7 +142,9 @@ void ZeroRTS::Input()
 	
 		PickInfo info = Pick();
 		
-		ClearSelected();
+		//do we want to clear?
+		if(!pkInput->Action(m_iActionSelectManyModifier))
+			ClearSelected();
 		
 		if(info.iObject != -1)
 			AddSelectedObject(info.iObject);			

@@ -1341,6 +1341,8 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);
+	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
 	pkPropertyFactory->Register("LogProperty", Create_LogProperty);
 	pkPropertyFactory->Register("DoorProperty", Create_DoorProperty);

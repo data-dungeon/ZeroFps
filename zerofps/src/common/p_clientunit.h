@@ -13,22 +13,20 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "common_x.h"
+#include "p_serverunit.h"
 
 using namespace std;
 
 
 class COMMON_API P_ClientUnit: public Property {
 	private:
+		ZeroFps*				m_pkFps;
+		
 		bool					m_bCurrentSelectionRenderState;
 	
 	
 	public:
-		unsigned char		m_cTeam;
-		unsigned char		m_cHealth;
-		unsigned char		m_cWeapon;
-		unsigned char		m_cArmor;
-		unsigned char		m_cPropultion;
-		string				m_kName;
+		UnitInfo				m_kInfo;	
 		bool					m_bSelected;
 	
 	
@@ -42,6 +40,8 @@ class COMMON_API P_ClientUnit: public Property {
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
 
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
 };
 
 COMMON_API Property* Create_P_ClientUnit();
