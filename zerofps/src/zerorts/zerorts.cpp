@@ -1,6 +1,6 @@
 #include "zerorts.h"
 #include "userpanel.h"
-//#include "guibuilder.h"
+#include "minimap.h"
 
 ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 
@@ -49,7 +49,6 @@ void ZeroRTS::Init()
 	//register actions
 	RegisterActions();
 
-	
 	//register property
 	RegisterPropertys();
 	
@@ -57,7 +56,7 @@ void ZeroRTS::Init()
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
 	
-
+	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
 	pkGui->ShowCursor(true);
 	SDL_ShowCursor(SDL_DISABLE);	
 
@@ -69,6 +68,8 @@ void ZeroRTS::Init()
 	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
+
+	pkInput->ToggleGrab();
 }
 
 void ZeroRTS::RegisterActions()
@@ -118,8 +119,7 @@ void ZeroRTS::Input()
 
 	enum MOUSEDIR {Left, Right, Up, Down, None} eMouseDir = None;
 
-	if(mx == 0) 
-	{
+	if(mx == 0) {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_l.bmp", 0);
 		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_l_a.bmp", 0);
 		eMouseDir = Left;} 
@@ -138,7 +138,7 @@ void ZeroRTS::Input()
 	else {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-	}
+		eMouseDir = None; }
 
 	// swap cursor image
 	if(s_iCursorTex != iNewCursorTex)
@@ -211,6 +211,8 @@ void ZeroRTS::OnHud(void)
 
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
+
+	m_pkMiniMap->Draw(m_pkCamera, pkGui); 
 }
 
 void ZeroRTS::OnServerStart(void)
@@ -236,7 +238,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;			
 			}
 
-			CreateMinimap();
+			m_pkMiniMap = new MiniMap();
+			m_pkMiniMap->Create(pkTexMan, pkLevelMan, m_pkGuiBuilder); 
 			
 			pkConsole->Printf("Level loaded");
 			
@@ -363,69 +366,6 @@ void ZeroRTS::MoveCam(Vector3 kVel)
 {
 	SetCamPos(GetCamPos() + kVel * pkFps->GetFrameTime());
 }
-
-void ZeroRTS::CreateMinimap()
-{
-	pkTexMan->BindTexture("../data/textures/minimap.bmp", T_NOMIPMAPPING);
-	
-	HeightMap* hm = pkLevelMan->GetHeightMap();
-
-	int size = hm->m_iHmSize, x,y,r,g,b;
-
-	float scale = size / 128.0f, fx, fy, min=100000000, max=-100000000;
-
-	for( y=0; y<128; y++)
-	{
-		fy = scale*(float)y;
-		for( x=0; x<128; x++)
-		{
-			fx = scale*(float)x;
-			HM_vert* pkVert = hm->GetVert(fx,fy);
-			if(pkVert->height < min)
-				min = pkVert->height;
-			if(pkVert->height > max)
-				max = pkVert->height;
-		}
-	}
-
-	float length = (max - min);
-
-	for( y=0; y<128; y++)
-	{
-		fy = scale*(float)y;
-		for( x=0; x<128; x++)
-		{
-			fx = scale*(float)x;
-			float height = hm->GetVert(fx,fy)->height;
-			float procent = (1.0f / (length)) + ((height-min) / length);
-			
-			int form_height = (int) (procent*255);
-			
-			if(form_height >= 0 && form_height <= 255)
-				r = g = b = form_height;
-			else
-			{
-				r = 255 ; g = 0; b = 255;
-			}
-
-			if(height < epsilon)
-			{
-				b = 255;
-			}
-			else
-			{
-				g = 255;
-			}
-
-			pkTexMan->PsetRGB(x,y,r,g,b);
-		}
-	}
-
-	pkTexMan->SwapTexture();
-
-	m_pkGuiBuilder->GetSkin("minimap")->m_iBkTexID = 
-		pkTexMan->Load("../data/textures/minimap.bmp", T_NOMIPMAPPING);
-}	
 
 bool ZeroRTS::AddSelectedObject(int iID)
 {

@@ -37,6 +37,7 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	ZGuiWnd* pkMinimap = new ZGuiWnd(Rect(10,9,10+172,10+172),m_pkDlgBox,true,751489);
 	pkMinimap->SetSkin(m_pkGuiBuilder->GetSkin("minimap") );
 	pkMinimap->SetZValue(121212);
+	m_pkGui->RegisterWindow(pkMinimap, "MinMapWnd");
 
 	Rect rc(m_pkZeroRts->m_iWidth-48-10,10,0,0);
 	rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;

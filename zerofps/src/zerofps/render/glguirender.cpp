@@ -655,3 +655,33 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 		x+=iCurrLegth;
 	}
 }
+
+bool GLGuiRender::RenderLines(vector<Point>& akLines, 
+							  unsigned char r,
+							  unsigned char g,
+							  unsigned char b,
+							  float width)
+{
+	glColor3ub(r,g,b);
+	glDisable(GL_TEXTURE_2D);
+
+	float fPrevLineWidth;
+	glGetFloatv(GL_LINE_WIDTH, &fPrevLineWidth);
+
+	glLineWidth(width);
+
+	glBegin(GL_LINES);
+
+	int iSize = akLines.size();
+	for(int i=0; i<iSize; i+=2)
+	{
+		glVertex2i(akLines[i].x,m_iScreenHeight-akLines[i].y);
+		glVertex2i(akLines[i+1].x,m_iScreenHeight-akLines[i+1].y);		
+	}
+
+	glEnd();
+
+	glLineWidth(fPrevLineWidth);
+
+	return true;
+}

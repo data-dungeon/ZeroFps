@@ -15,6 +15,7 @@
 #include "../common/common.pkg"
 
 class UserPanel;
+class MiniMap;
 #include "guibuilder.h"
 
 
@@ -30,10 +31,10 @@ struct PickInfo
 
 class ZeroRTS :public Application {
 	private:
-		void CreateMinimap();
+		
 		Camera*		m_pkCamera;
 		HeightMap*	m_pkMap;
-		
+		MiniMap*	m_pkMiniMap;
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -58,9 +59,11 @@ class ZeroRTS :public Application {
 		float			m_fClickDelay;
 
 	public:
+		//void DrawMinimap();
 		
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;
+		
 
 		ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroRTS() {};

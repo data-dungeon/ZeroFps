@@ -61,6 +61,8 @@ class ZGuiResourceManager;
 class GUI_API ZGui : public ZFObject 
 {
 public:	
+
+	void DrawLine(Point p1, Point p2);
 	
 	ZGuiWnd* GetWndCapture();
 	void KillWndCapture();
@@ -176,6 +178,8 @@ private:
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
 
 	ZGuiWnd* m_pkCapturedWindow;
+
+	vector<Point> m_kLinesToDraw;
 
 };
 

@@ -269,6 +269,9 @@ bool ZGui::Render()
 		m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
 	}
 
+	// Draw lines
+	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
+
 	// Draw cursor
 	if(m_pkCursor->IsVisible())
 		m_pkCursor->Render();
@@ -706,6 +709,8 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		Render();
 	}
+
+	m_kLinesToDraw.clear(); 
 
 	return true;
 }
@@ -1445,4 +1450,10 @@ void ZGui::KillWndCapture()
 ZGuiWnd* ZGui::GetWndCapture()
 {
 	return m_pkCapturedWindow;
+}
+
+void ZGui::DrawLine(Point p1, Point p2)
+{
+	m_kLinesToDraw.push_back(p1);
+	m_kLinesToDraw.push_back(p2);
 }

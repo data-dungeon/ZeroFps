@@ -1,7 +1,6 @@
 #include "p_clientunit.h"
 #include "p_renderselection.h"
 
-
 P_ClientUnit::P_ClientUnit()
 {
 	strcpy(m_acName,"P_ClientUnit");
@@ -22,7 +21,7 @@ P_ClientUnit::P_ClientUnit()
 	
 	m_bSelected =	false;
 	
-	m_bCurrentSelectionRenderState = false;
+	m_bCurrentSelectionRenderState = false;/**/
 
 }
 

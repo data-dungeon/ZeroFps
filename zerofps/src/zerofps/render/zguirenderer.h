@@ -21,14 +21,17 @@ public:
 
 	virtual bool StartRender() = 0;
 	virtual bool EndRender() = 0;
-	virtual bool RenderQuad(Rect kScreenRect/*, bool bMask=false*/) = 0;
-	virtual bool RenderBorder(Rect kScreenRect/*, bool bMask=false*/) = 0;
+	virtual bool RenderQuad(Rect kScreenRect) = 0;
+	virtual bool RenderBorder(Rect kScreenRect) = 0;
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;
 	virtual bool SetFont(ZGuiFont* pkFont) = 0;
 	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, int iRenderDistFromTop,
 		bool bMultiLine, int& rCharsPrinted, int& rRowsPrinted) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
 	virtual void GetScreenSize(int& x, int& y) = 0;
+	virtual bool RenderLines(vector<Point>& akLines,
+		unsigned char r,unsigned char g,unsigned char b,
+		float width=1.0f) = 0;
 };
 
 #endif 
