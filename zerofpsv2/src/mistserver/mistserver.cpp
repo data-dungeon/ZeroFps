@@ -503,7 +503,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				strMsg.push_back(kCommand->m_strFullCommand[i]);
 					
 				
-			SayToClients(string("SERVER: ")+strMsg);	
+			SayToClients(strMsg);	
 		}			
 			
 		case FID_USERS:			
@@ -660,7 +660,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		SpawnPlayer(iConID);
 		
 		
-	SayToClients(string("SERVER:") + strPlayer + string(" connected"));
+	SayToClients(strPlayer + string(" connected"));
 }
 
 void MistServer::SpawnPlayer(int iConID)
@@ -694,7 +694,7 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(iConID))
 	{
-		SayToClients(string("SERVER:") + pkNewPlayer->m_strPlayerName + string(" disconnected"));				
+		SayToClients(pkNewPlayer->m_strPlayerName + string(" disconnected"));				
 	}	
 
 	
@@ -900,9 +900,14 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 			{				
-				m_pkConsole->Printf("Msg> %s: %s",pkData->m_strPlayerName.c_str(),strMsg.c_str());
+				SayToClients(strMsg,pkData->m_strPlayerName,pkData->m_iCharacterID);
 				
-				SayToClients(pkData->m_strPlayerName+string(": ")+strMsg);
+				// --- for server output only , not reqired
+				m_pkConsole->Printf("Msg> %s: %s",pkData->m_strPlayerName.c_str(),strMsg.c_str());								
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->AddChatMsg(strMsg);
+				// ---
+				
 			}			
 			
 			break;
@@ -943,7 +948,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					if(Entity* pkChar = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 						if(pkObj->GetWorldPosV().DistanceTo(pkChar->GetWorldPosV()) > 2.0)
 						{
-							SayToClients("You are to far away",PkNetMessage->m_iClientID);
+							SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
 							break;
 						}
 				
@@ -951,7 +956,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					{
 						if(pkItem->GetInContainerID() != -1)
 						{
-							SayToClients("This item is in a container",PkNetMessage->m_iClientID);
+							SayToClients("This item is in a container","Server",-1,PkNetMessage->m_iClientID);
 							break;
 						}					
 					}
@@ -1022,7 +1027,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//do a distance check
 				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
 				{
-					SayToClients("You are to far away",PkNetMessage->m_iClientID);
+					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
 					break;
 				}						
 			
@@ -1032,7 +1037,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//check if target container is ours
 					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
 					{
-						SayToClients("target container is not yours",PkNetMessage->m_iClientID);
+						SayToClients("target container is not yours","Server",-1,PkNetMessage->m_iClientID);
 						break;					
 					}								
 							
@@ -1042,7 +1047,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
 					else
-						SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+						SayToClients("You could not pick that up","Server",-1,PkNetMessage->m_iClientID);
 						
 					break;
 
@@ -1060,7 +1065,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//ware we owner of this container?
 				if(pkInContainer->GetOwnerID() != pkCharacter->GetEntityID())
 				{
-					SayToClients("That container is not yours",PkNetMessage->m_iClientID);
+					SayToClients("That container is not yours","Server",-1,PkNetMessage->m_iClientID);
 					break;					
 				}
 			
@@ -1077,7 +1082,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						if(pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
-							SayToClients("Could not move item",PkNetMessage->m_iClientID);				
+							SayToClients("Could not move item","Server",-1,PkNetMessage->m_iClientID);				
 							
 						break;		
 					}
@@ -1088,7 +1093,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
 							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
-							SayToClients("Could not drop item",PkNetMessage->m_iClientID);														
+							SayToClients("Could not drop item","Server",-1,PkNetMessage->m_iClientID);														
 							
 						break;
 					}
@@ -1099,7 +1104,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//first do we own this container?						
 					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
 					{
-						SayToClients("Target container is not yours",PkNetMessage->m_iClientID);
+						SayToClients("Target container is not yours","Server",-1,PkNetMessage->m_iClientID);
 						break;					
 					}				
 				
@@ -1110,7 +1115,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);						
 					}
 					else
-						SayToClients("Could not move item to that container",PkNetMessage->m_iClientID);	
+						SayToClients("Could not move item to that container","Server",-1,PkNetMessage->m_iClientID);	
 					
 					break;	
 		
@@ -1119,7 +1124,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 
 			cout<<"WARNING: bad item movement"<<endl;
-			SayToClients("Bad item movement",PkNetMessage->m_iClientID);
+			SayToClients("Bad item movement","Server",-1,PkNetMessage->m_iClientID);
 			
 			break;	
 		}		
@@ -1158,7 +1163,7 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 						if(pkContainerP->GetOwnerID() != pkData->m_iCharacterID)
 						{
 							//cout<<"and its not me =("<<endl;
-							SayToClients("Someone else is using this container",iClientID);
+							SayToClients("Someone else is using this container","Server",-1,iClientID);
 							return;
 						}
 					}
@@ -1174,7 +1179,7 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 						//check if its in a container or if its close enoguth
 						if( (!pkContainerEnt->GetParent()->IsZone()) || (pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0) )
 						{
-							 SayToClients("Opening container",iClientID);
+							 SayToClients("Opening container","Server",-1,iClientID);
 							 
 							 //set new owner of this container
 							 pkContainerP->SetOwnerID(pkData->m_iCharacterID);
@@ -1182,7 +1187,7 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 							 SendContainer(iContainerID,iClientID,true);
 						}
 						else
-							SayToClients("You are to far away",iClientID);
+							SayToClients("You are to far away","Server",-1,iClientID);
 					}
 				}
 			}
@@ -1294,10 +1299,13 @@ void MistServer::SendCharacterEqipment(int iCharacter,int iClientID)
 }
 
 
-void MistServer::SayToClients(const string& strMsg,int iClientID)
+void MistServer::SayToClients(const string& strMsg,const string& strSource,int iCharacterID ,int iClientID)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_SC_SAY);
+	kNp.Write(iCharacterID);
+	
+	kNp.Write_Str(strSource);
 	kNp.Write_Str(strMsg);
 	kNp.TargetSetClient(iClientID);
 	SendAppMessage(&kNp);
@@ -1337,7 +1345,7 @@ namespace SI_MistServer
 		g_pkScript->GetArgString(pkLua, 1, acMessage);		
 		
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
-			g_kMistServer.SayToClients(acMessage,pkData->m_iConnectionID);
+			g_kMistServer.SayToClients(acMessage,"Server",-1,pkData->m_iConnectionID);
 		else
 			cout<<"WARNING: could not find character ID:"<<id<<endl;
 		

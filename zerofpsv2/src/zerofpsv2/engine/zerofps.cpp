@@ -765,9 +765,11 @@ Camera* ZeroFps::GetRenderCamera(string strName)
 
 
 
-void ZeroFps::Swap(void) {
+void ZeroFps::Swap(void) 
+{
 
-	m_pkRender->Swap();
+	if(!m_bMinimized)
+		m_pkRender->Swap();
 
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
@@ -899,7 +901,7 @@ void ZeroFps::DrawDevStrings()
 	static int iMaxTexture = m_pkTexMan->Load("data/textures/notex.bmp");
 
 	unsigned int page;
-	if(!m_bDevPagesVisible) 
+	if(!m_bDevPagesVisible || m_bMinimized) 
 	{
 		//no visible page, just clear the pages
 		for(page = 0; page <m_DevStringPage.size(); page++ )

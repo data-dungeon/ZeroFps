@@ -16,7 +16,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
-	m_bNetwork = 		true;
+	m_bNetwork = 	true;
 	m_iVersion = 	1;
 	
 	m_kCurrentCharacterStates.reset();
@@ -26,6 +26,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bIsPlayerCharacter =	false;
 	m_bOverHeadText		=	true;	
 	m_bFirstUpdate			=	true;
+	m_fChatTime				=	0;
+	m_strChatMsg			=	"";
 	
 	m_iInventory	= -1;		
 	m_iHead			= -1;
@@ -388,6 +390,7 @@ void P_CharacterProperty::Update()
 {
 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
+		//SERVER
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 		{
 			//try to find items on load
@@ -400,10 +403,15 @@ void P_CharacterProperty::Update()
 			UpdateAnimation();
 		}
 			
+		//CLIENT
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
-		{
-			PlayCharacterMovementSounds();			
-		}
+			PlayCharacterMovementSounds();					
+		
+		//CLIENT AND SERVER
+		//reset chat msg
+		if(m_pkZeroFps->GetTicks() > m_fChatTime + 10.0)
+			m_strChatMsg = "";						
+		
 	}
 	else if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
@@ -411,13 +419,20 @@ void P_CharacterProperty::Update()
 		{
 			if(m_bOverHeadText)
 			{
-				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string(">");
+				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;
 		
 				m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
-								Vector3(0,GetEntity()->GetRadius(),0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
+								Vector3(0,1.0,0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
+						
 			}
 		}	
 	}		
+}
+
+void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
+{
+	m_strChatMsg = strChatMsg;
+	m_fChatTime = m_pkZeroFps->GetTicks();	
 }
 
 void P_CharacterProperty::DoTaunt(int iTauntID)

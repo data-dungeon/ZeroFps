@@ -193,13 +193,31 @@ void MistClient::Say(string strMsg)
 
 	if(strMsg[0] == '/')
 	{
-		//handle different chatbox funktions		
+		//handle different chatbox functions		
 		if(strMsg.length() > 1)
 		{
-			if(strMsg.substr(1) == "users")
-			{
+			//list users
+			if(strMsg.substr(1) == "users" || strMsg.substr(1) == "players")
 				SendRequestPlayerList();
-			}		
+			
+			//emote hello
+			if(strMsg.substr(1,5) == "hello")
+			{
+				SendTaunt(1);
+				if(strMsg.size() <= 7)
+					SendMessage("hello",MLCM_TALK,""); 	
+				else				
+					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+			}						
+			if(strMsg.substr(1,5) == "scare")
+			{
+				SendTaunt(2);
+				if(strMsg.size() <= 7)
+					SendMessage("boo",MLCM_TALK,""); 	
+				else				
+					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+			}									
+			
 		}
 	}
 	else
@@ -207,6 +225,18 @@ void MistClient::Say(string strMsg)
 		//default to normal talk
 		SendMessage(strMsg,MLCM_TALK,""); 	
 	}									
+}
+
+void MistClient::SendTaunt(int iID)
+{
+	NetPacket kNp;	
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_ANIM);
+
+	kNp.Write(iID);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
 }
 
 void MistClient::SendMessage(string strMsg,int iChannel,string strToWho)
@@ -392,14 +422,7 @@ void MistClient::Input()
 			if (m_pkInputHandle->VKIsDown("taunt5"))
 				iTauntID = 5;
 
-			NetPacket kNp;	
-			kNp.Clear();
-			kNp.Write((char) MLNM_CS_ANIM);
-
-			kNp.Write(iTauntID);
-			
-			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);
+			SendTaunt(iTauntID);
 		}
 	}
 
@@ -664,9 +687,23 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		case MLNM_SC_SAY:
 		{
 			string strMsg;
+			string strSource;
+			int iCharacterID;
+			pkNetMessage->Read(iCharacterID);
+			pkNetMessage->Read_Str(strSource);
 			pkNetMessage->Read_Str(strMsg);
-			//m_pkConsole->Printf("Msg> %s",strMsg.c_str());
-			AddStringToChatBox(strMsg);
+
+						
+			AddStringToChatBox(strSource+string(": ")+strMsg);
+			
+			if(iCharacterID != -1)
+			{
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+				{
+					pkCP->AddChatMsg(strMsg);
+				}
+			}
+			
 						
 			break;
 		}			

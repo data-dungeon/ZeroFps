@@ -28,7 +28,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string		m_strName;					//character name		
 		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
 		string		m_strOwnedByPlayer;		//who owns me ? if anyone
-
+		string		m_strChatMsg;				//last chat msg
+		float			m_fChatTime;				//lst chat msg time
+		
+		
 		bool			m_bFirstUpdate;
 		
 		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
@@ -107,6 +110,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
+		
+		//client code
+		void AddChatMsg(const string& strChatMsg);
+		
 				
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

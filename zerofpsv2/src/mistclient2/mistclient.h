@@ -79,7 +79,8 @@ class MistClient :public Application, public ZGuiApp {
 		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void SendRequestKillMe();
 		void SendRequestOpenEqipment();			
-			
+		void SendTaunt(int iID);
+		
 			/*SendMoveItem hjälp.
 				iItemID : alltid entity id't för itemet i fråga
 				iTraget : target container entity ID , om -1 så antas i spelarens inventory

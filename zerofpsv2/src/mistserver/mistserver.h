@@ -122,7 +122,7 @@ class MistServer :public Application , public ZGuiApp
 
 
 		//game stuff
-		void SayToClients(const string& strMsg,int iClientID = -2);				
+		void SayToClients(const string& strMsg,const string& strSource = "Server", int iCharacterID = -1,int iClientID = -2);				
 		void OpenContainer(int iContainerID,int iClientID);
 
 };
