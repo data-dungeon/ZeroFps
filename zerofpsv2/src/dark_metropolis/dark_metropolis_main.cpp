@@ -31,6 +31,9 @@ void DarkMetropolis::OnIdle()
 {
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
+
+	Input();
+
 	m_pkFps->UpdateCamera(); 	
 }
 
@@ -88,4 +91,9 @@ bool DarkMetropolis::ShutDown()
 bool DarkMetropolis::IsValid()
 {
 	return true;
+}
+
+void DarkMetropolis::Input()
+{
+
 }
