@@ -101,7 +101,7 @@ class MCOMMON_API P_Container: public Property
 		void FindMyItems();					//must be called after loading, and after childs has been created
 		
 		//set/get's
-		void SetEqip(bool bEquip)					{m_bEquip = bEquip;};
+		void SetEquip(bool bEquip)					{m_bEquip = bEquip;};
 		void SetSize(int iX,int iY);
 		char GetSizeX()								{return char(m_iSizeX);};
 		char GetSizeY()								{return char(m_iSizeY);};

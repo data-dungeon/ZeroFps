@@ -25,6 +25,7 @@ class MCOMMON_API P_AI: public Property
 		
 		float m_fSeeDistance;
 		float m_fAttackDistance;
+		float	m_fStrikeRange;
 		
 		//random walk
 		bool 	m_bWalk;

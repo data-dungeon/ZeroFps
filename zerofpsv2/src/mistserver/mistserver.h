@@ -78,7 +78,7 @@ class MistServer :public Application , public ZGuiApp
 		void SendPlayerListToClient(int iClient);
 		void SendContainer(int iContainerID,int iClientID,bool bOpen);
 		void SendItemInfo(int iItemID,int iClientID);
-		void SendCharacterEqipment(int iCharacter,int iClientID);				
+		void SendCharacterEquipment(int iCharacter,int iClientID);				
 		void SendCharacterList(int iClient);
 		void SendClientCharacterID(int iClientID);
 

@@ -42,7 +42,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			{
 				bool bOpen = !g_kMistClient.IsWndVisible("EquipWnd");
 				if(bOpen)
-					g_kMistClient.SendRequestOpenEqipment();
+					g_kMistClient.SendRequestOpenEquipment();
 				else
 					g_kMistClient.m_pkEquipmentDlg->Close();
 			}

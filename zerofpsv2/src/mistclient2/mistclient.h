@@ -115,7 +115,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SendRequestPlayerList();
 		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void SendRequestKillMe();
-		void SendRequestOpenEqipment();			
+		void SendRequestOpenEquipment();			
 		void SendTaunt(int iID);
 		void SendTaunt(const string& strEmote);
 		void RequestItemInfo(int iItemID);

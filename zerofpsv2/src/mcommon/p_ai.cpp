@@ -25,7 +25,8 @@ P_AI::P_AI()
 	m_iState = 1;
 
 	m_fSeeDistance = 		10;
-	m_fAttackDistance =	5;	
+	m_fAttackDistance =	5;
+	m_fStrikeRange = 		2;
 	
 	m_bWalk 		= true;
 	m_fTime 		= 0;
@@ -166,7 +167,6 @@ void P_AI::Update()
 			{
 				cout<<"target disapered"<<endl;
 				m_iState = 1;
-				break;
 			}
 			
 			break;
@@ -186,7 +186,14 @@ void P_AI::Update()
 					break;
 				}
 			
-				//attack
+				
+				if(fDistance < m_fStrikeRange)
+				{
+					m_iState = 5;
+					break;				
+				}
+				
+				//chase
 				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 				m_pkCharacterControl->SetControl(eUP,true);
 				m_pkCharacterControl->SetControl(eCRAWL,false);						
@@ -197,12 +204,37 @@ void P_AI::Update()
 			{
 				cout<<"target disapered"<<endl;
 				m_iState = 1;
-				break;
 			}			
 			
 			break;
 		}
-					
+		
+		//attack
+		case 5:
+		{
+			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
+			{
+				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+			
+				if(fDistance > m_fStrikeRange)
+				{
+					m_iState = 3;
+					break;
+				}
+		
+				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
+				m_pkCharacterControl->SetControl(eUP,false);
+				
+				m_pkCharacterControl->DoEmote(1);				
+			}
+			else
+			{
+				cout<<"target disapered"<<endl;
+				m_iState = 1;				
+			}
+			
+			break;							
+		}					
 	}
 }
 

@@ -567,7 +567,7 @@ void MistClient::Input()
 			m_pkEquipmentDlg->Close(); 
 		else
 		{
-			SendRequestOpenEqipment();
+			SendRequestOpenEquipment();
 		}
 	}
 
@@ -1450,7 +1450,7 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	SendAppMessage(&kNp);			
 }
 
-void MistClient::SendRequestOpenEqipment()
+void MistClient::SendRequestOpenEquipment()
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_REQ_EQIPMENT);

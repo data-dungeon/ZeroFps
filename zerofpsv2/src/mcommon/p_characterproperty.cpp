@@ -484,7 +484,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BODY);
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//head
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -497,7 +497,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HEAD);
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//left hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -511,7 +511,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
 				pkCon->SetJoint("hand_left");
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -525,7 +525,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
 				pkCon->SetJoint("hand_right");
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//eGloves
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -538,7 +538,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_GLOVES);
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//eCape
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -551,7 +551,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_CAPE);																					
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 		
 		//eNecklace
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -564,7 +564,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_NECKLACE);																					
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 		
 		//eBracers
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -577,7 +577,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BRACERS);					
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 
 		//eBelt
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -590,7 +590,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BELT);					
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 								
 		//eFeets
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -603,7 +603,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_FEETS);									
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//eRing1
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -616,7 +616,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);					
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 
 		//eRing2
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -629,7 +629,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);	
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 		//eRing3
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -642,7 +642,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);		
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 
 		//eRing4
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -655,7 +655,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);	
-				pkCon->SetEqip(true);
+				pkCon->SetEquip(true);
 				
 																															
 		//cout<<"done"<<endl;
@@ -1082,6 +1082,46 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_CharacterProperty
 {
+	//eqipment
+	int GetCharacterContainerIDLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: EquipNewItem - wrong number of arguments"<<endl;
+			return 0;		
+		}
+					
+		int iCharcterID;
+		string strContainerName;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1, strContainerName);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			if(strContainerName == "Inventory") g_pkScript->AddReturnValue(pkLua,pkCP->m_iHead);
+			if(strContainerName == "Head") 		g_pkScript->AddReturnValue(pkLua,pkCP->m_iHead);
+			if(strContainerName == "Gloves") 	g_pkScript->AddReturnValue(pkLua,pkCP->m_iGloves);
+			if(strContainerName == "Cape") 		g_pkScript->AddReturnValue(pkLua,pkCP->m_iCape);
+			if(strContainerName == "Necklace")	g_pkScript->AddReturnValue(pkLua,pkCP->m_iNecklace);
+			if(strContainerName == "Body")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iBody);
+			if(strContainerName == "LeftHand")	g_pkScript->AddReturnValue(pkLua,pkCP->m_iLeftHand);
+			if(strContainerName == "RightHand")	g_pkScript->AddReturnValue(pkLua,pkCP->m_iRightHand);
+			if(strContainerName == "Bracers")	g_pkScript->AddReturnValue(pkLua,pkCP->m_iBracers);
+			if(strContainerName == "Ring1")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iRing1);
+			if(strContainerName == "Ring2")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iRing2);
+			if(strContainerName == "Ring3")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iRing3);
+			if(strContainerName == "Ring4")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iRing4);
+			if(strContainerName == "Belt")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iBelt);
+			if(strContainerName == "Feets")		g_pkScript->AddReturnValue(pkLua,pkCP->m_iFeets);	
+			
+			return 1;		
+		}
+	
+		return 0;				
+	}
+	
+
 	//faction
 	int SetFactionLua(lua_State* pkLua)
 	{
@@ -1298,8 +1338,11 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);					
 
 	// Register Property Script Interface
+	
+	//item handling
 	g_pkScript->ExposeFunction("PickupItem",		SI_P_CharacterProperty::PickupItemLua);
 	g_pkScript->ExposeFunction("HaveItem",			SI_P_CharacterProperty::HaveItemLua);
+	g_pkScript->ExposeFunction("GetCharacterContainerID",		SI_P_CharacterProperty::GetCharacterContainerIDLua);
 
 	
 	//stats

@@ -77,7 +77,7 @@ void P_Item::UnEquip()
 {
 	if(m_iBuffEntityID == -1)
 	{
-		cout<<"Item not eqiped"<<endl;
+		//cout<<"Item not eqiped"<<endl;
 		return;
 	}
 

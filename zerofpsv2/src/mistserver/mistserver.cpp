@@ -1045,7 +1045,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 			{				
-				SendCharacterEqipment(pkData->m_iCharacterID, PkNetMessage->m_iClientID);
+				SendCharacterEquipment(pkData->m_iCharacterID, PkNetMessage->m_iClientID);
 				
 			}
 						
@@ -1529,7 +1529,7 @@ void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 
 }
 
-void MistServer::SendCharacterEqipment(int iCharacter,int iClientID)
+void MistServer::SendCharacterEquipment(int iCharacter,int iClientID)
 {
 	cout<<"sending eqipment for character "<<iCharacter<<" to client "<<iClientID<<endl;
 
