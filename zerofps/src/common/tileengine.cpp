@@ -252,7 +252,7 @@ void TileEngine::ClearUnits()
 			Tile* t = GetTile(x,y);
 
 			if(t)
-				if(t->kUnits.size() >0)
+				if(!t->kUnits.empty())
 					t->kUnits.clear();
 		}
 	}
@@ -284,7 +284,7 @@ void TileEngine::Draw()
 	{
 		for(int x = 0;x<m_iSizeX;x++)
 		{
-			if(!GetTile(x,y)->kUnits.empty())
+			if(!GetTile(x,y)->kUnits.empty() )
 			{
 				Vector3 pos;
 				pos.Set(x - ceil(m_iSizeX/2.0) + 0.5,4,y - ceil(m_iSizeY/2.0) + 0.5);

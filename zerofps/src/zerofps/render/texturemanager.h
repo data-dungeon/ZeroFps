@@ -64,7 +64,7 @@ class RENDER_API TextureManager : public ZFObject {
 		
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(const char *filename);	
-		Image* LoadImage2(const char *filename);	
+
 		bool LoadTexture(texture *pkTex,const char* acFilename);	
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
@@ -105,6 +105,7 @@ class RENDER_API TextureManager : public ZFObject {
 		SDL_Surface* GetImage();
 		bool SaveTexture(const char* acFile,int iLevel);
 		
+		Image* LoadImage2(const char *filename);	
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}

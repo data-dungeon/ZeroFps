@@ -16,6 +16,7 @@
 #include "light.h"
 
 class HeightMap;
+class Heightmap2;
 
 using namespace std;
 
@@ -94,6 +95,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		void DrawHMVertex(HeightMap* kMap);
 		void DrawBlocks(HeightMap* kmap);
+
+		void DrawHM2(Heightmap2* pkMap);
 
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);

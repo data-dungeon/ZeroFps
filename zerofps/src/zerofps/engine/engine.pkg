@@ -34,6 +34,8 @@ class HeightMap;
 
 #include "heightmap.h"
 
+#include "heightmap2.h"
+
 //#include "pathbuilder.h"
 //#include "pathfind.h"
 

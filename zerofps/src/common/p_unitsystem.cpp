@@ -146,7 +146,7 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 	{
 		case WT_DIRECT:
 		{
-			if(tg->kUnits.empty())
+			if(tg->kUnits.size() == 0 )
 			{		
 				cout<<"boom..miss"<<endl;
 				return true;

@@ -161,7 +161,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFScript*				m_pkScript;					///< script
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 		Application*			m_pkApp;						///< Application object.
-			
+		MechRenderer*			m_pkMechRenderer;			
+
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS

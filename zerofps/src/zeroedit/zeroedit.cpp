@@ -109,7 +109,7 @@ void ZeroEdit::OnInit(void)
 	m_iMaskColorA=16;
 	g_ZFObjSys.RegisterVariable("g_mcolora", &m_iMaskColorA,CSYS_INT);	
 	
-	
+	m_iLodLevel = 0;
 	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
@@ -154,9 +154,105 @@ void ZeroEdit::OnInit(void)
 	pkPhysics_Engine->AddPlane(ground);
 
 
-	pkInput->ToggleGrab();
+//	pkInput->ToggleGrab();
 	
 	plop= pkFps->GetGameTime();
+	
+/*
+	//mesh test 	
+	vector<MR_Vertex>	verts;
+		MR_Vertex tempv;	
+		tempv.kPos.Set(-1,1,1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(1,1,1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(-1,-1,1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(1,-1,1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(-1,1,-1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(0,1.1,0);
+		verts.push_back(tempv);
+		tempv.kPos.Set(0.3,1.1,0);
+		verts.push_back(tempv);
+		tempv.kPos.Set(1,1,0);
+		verts.push_back(tempv);
+		tempv.kPos.Set(2,0.7,1);
+		verts.push_back(tempv);
+		tempv.kPos.Set(1,0.7,-1.5);
+		verts.push_back(tempv);
+		
+	
+	vector<MR_Polygon>	polys;
+		MR_Polygon tempp;
+		tempp.iVerts[0] = 0;
+		tempp.iVerts[1] = 2;
+		tempp.iVerts[2] = 1;
+		polys.push_back(tempp);
+		
+		tempp.iVerts[0] = 4;
+		tempp.iVerts[1] = 0;
+		tempp.iVerts[2] = 1;
+		polys.push_back(tempp);
+		
+		tempp.iVerts[0] = 1;
+		tempp.iVerts[1] = 2;
+		tempp.iVerts[2] = 3;
+		polys.push_back(tempp);
+		
+		tempp.iVerts[0] = 4;
+		tempp.iVerts[1] = 1;
+		tempp.iVerts[2] = 5;
+		polys.push_back(tempp);
+		
+		tempp.iVerts[0] = 5;
+		tempp.iVerts[1] = 1;
+		tempp.iVerts[2] = 6;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 6;
+		tempp.iVerts[1] = 1;
+		tempp.iVerts[2] = 7;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 1;
+		tempp.iVerts[1] = 8;
+		tempp.iVerts[2] = 7;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 6;
+		tempp.iVerts[1] = 7;
+		tempp.iVerts[2] = 9;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 4;
+		tempp.iVerts[1] = 5;
+		tempp.iVerts[2] = 6;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 4;
+		tempp.iVerts[1] = 6;
+		tempp.iVerts[2] = 9;
+		polys.push_back(tempp);
+
+		tempp.iVerts[0] = 1;
+		tempp.iVerts[1] = 3;
+		tempp.iVerts[2] = 8;
+		polys.push_back(tempp);
+	
+		tempp.iVerts[0] = 7;
+		tempp.iVerts[1] = 8;
+		tempp.iVerts[2] = 9;
+		polys.push_back(tempp);
+	
+	pkMechRenderer->AddMesh(&verts,&polys);
+*/	
+	
+/*	testhm = new Heightmap2;	
+	
+	testhm->CreateHMFromImage("test.tga");
+	*/
 }
 
 
@@ -165,26 +261,14 @@ void ZeroEdit::OnIdle(void)
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();		
 	
-	
-/*	// fina bollar =)
-	if(pkFps->GetGameTime() - plop >2)
-	{
-		Object *object = new BallObject();
-		float x = ((rand()%6000)-3000) /1000.0;
-		float z = ((rand()%6000)-3000) /1000.0;		
-		object->SetPos(Vector3(x,10,z));	
-		object->SetPos(Vector3(x,10,z));					
-		
-		object->AttachToClosestZone();
-		
-		plop= pkFps->GetGameTime();
-	}
-*/
 	Input(); 	
  	pkFps->UpdateCamera(); 	
  	SetPointer();
 	DrawMarkers();
 
+//	pkMechRenderer->DrawMesh(0,m_iLodLevel,Vector3(0,10,0));
+
+//	pkRender->DrawHM2(testhm);
 }
 
 
@@ -717,6 +801,26 @@ void ZeroEdit::Input()
 		pkInput->SetInputEnabled(false);
 	}
 
+	if(pkInput->Pressed(KEY_H)) 
+	{
+		if(pkFps->GetTicks()-m_fTimer < 0.5)
+			return;			
+		m_fTimer=pkFps->GetTicks();	
+		
+		m_iLodLevel++;
+		cout<<"setting lodlevel "<<m_iLodLevel<<endl;		
+	}
+	
+	if(pkInput->Pressed(KEY_J)) 
+	{
+		if(pkFps->GetTicks()-m_fTimer < 0.5)
+			return;			
+		m_fTimer=pkFps->GetTicks();	
+	
+		m_iLodLevel--;
+		cout<<"setting lodlevel "<<m_iLodLevel<<endl;
+	}
+	
 	if(pkInput->Pressed(MOUSELEFT)) 
 	{
 		int x,y;

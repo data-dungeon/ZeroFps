@@ -40,7 +40,7 @@ void P_ServerInfo::PackTo(NetPacket* pkNetPacket)
 	int nrofevents = m_kServerEvents.size();
 	pkNetPacket->Write(&nrofevents,sizeof(nrofevents));	
 	
-	while(!m_kServerEvents.empty())
+	while(m_kServerEvents.size() > 0)
 	{
 		pkNetPacket->Write(&m_kServerEvents.front(),sizeof(Event));		
 		m_kServerEvents.pop();

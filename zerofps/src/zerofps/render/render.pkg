@@ -4,6 +4,7 @@ class TextureManager;
 class Frustum;
 class ZGuiRender;
 class GLGuiRender;
+class MechRenderer;
 
 #include "light.h"
 #include "render.h"
@@ -11,7 +12,7 @@ class GLGuiRender;
 #include "frustum.h"
 #include "zguirenderer.h"
 #include "glguirender.h"
-
+#include "mechrenderer.h"
 
 
 

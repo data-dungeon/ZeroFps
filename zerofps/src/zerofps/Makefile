@@ -6,6 +6,7 @@ all:
 	cd gui/; $(MAKE) $@	
 	cd physics_engine/; $(MAKE) $@	
 	cd script/; $(MAKE) $@		
+	cd render/; $(MAKE) $@
 	cd engine/; $(MAKE) $@	
 	
 clean:
@@ -13,5 +14,6 @@ clean:
 	cd gui/; $(MAKE) $@	
 	cd physics_engine/; $(MAKE) $@	
 	cd script/; $(MAKE) $@		
+	cd render/; $(MAKE) $@	
 	cd engine/; $(MAKE) $@	
 	

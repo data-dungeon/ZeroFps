@@ -35,6 +35,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkScript				=	pkFps->m_pkScript;
 	pkPhysics_Engine	=	pkFps->m_pkPhysics_Engine;
 	pkZFVFileSystem	=	pkFps->m_pkZFVFileSystem;
+	pkMechRenderer		=	pkFps->m_pkMechRenderer;
 
 }
 	

@@ -151,6 +151,10 @@ class ZeroEdit :public Application {
 	
 		int m_iCopyNetWorkID;
 
+		int m_iLodLevel;
+		
+		Heightmap2* testhm;
+
 		void Input();				
 		void SetPointer();	
 		void DrawMarkers();

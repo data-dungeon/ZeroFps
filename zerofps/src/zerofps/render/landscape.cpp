@@ -2,6 +2,7 @@
  
 #include "../engine/heightmap.h"
 
+#include "../engine/heightmap2.h"
 
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
@@ -1175,3 +1176,102 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	delete [] pkLandTextureCoo2;
 }
 
+
+
+void Render::DrawHM2(Heightmap2* pkMap)
+{
+	glPushMatrix();
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	
+	
+	glDisableClientState(GL_COLOR_ARRAY);	
+	glDisableClientState(GL_INDEX_ARRAY);	
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
+	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
+	
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glPolygonMode(GL_FRONT, GL_LINE);	
+	
+	int px =  pkMap->m_iWidth / pkMap->m_iPatchWidth;
+	int py =  pkMap->m_iHeight / pkMap->m_iPatchHeight;
+	
+	int iLevel = 0;
+	
+	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
+
+	for(int y = 0;y<py;y++)
+	{			
+		for(int x = 0;x<px;x++)
+		{
+			HM2_level* pkLevel = &((*m_kRenderData)[ (y*px) + x].kLevels[iLevel]);
+		
+			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
+			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
+			
+			glDrawElements(GL_TRIANGLES,pkLevel->kIndex.size()*3,GL_UNSIGNED_INT,&pkLevel->kIndex[0]);
+		
+		}
+	}
+	
+/*	
+	int px =  pkMap->m_iWidth / pkMap->m_iPatchWidth;
+	int py =  pkMap->m_iHeight / pkMap->m_iPatchHeight;
+	
+	int iLevel = 0;
+	
+	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
+	
+	for(int y = 0;y<py;y++)
+	{			
+		for(int x = 0;x<px;x++)
+		{
+			HM2_level* pkLevel = &((*m_kRenderData)[ (y*px) + x].kLevels[iLevel]);
+		
+			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
+			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
+			
+			int iSize = pkLevel->kVertex.size();
+			
+			glDrawArrays(GL_TRIANGLE_STRIP,0,iSize);
+		
+		}
+	}
+*/
+	
+	
+/*
+	HM2_vert* pkData = &pkMap->m_kBasicData[0];
+	
+	int w = pkMap->m_iWidth;
+	int h = pkMap->m_iHeight;
+	
+	srand(1);
+	
+	for(int y=0;y<h-1;y++)
+	{
+		glBegin(GL_TRIANGLE_STRIP);
+				
+			glColor3f(rand() %255 /255.0,rand()%255/255.0,rand()%255/255.0);
+				
+		for(int x=0;x<w;x++)
+		{
+			glNormal3fv((float*)&pkData[y*w+x].kNormal);						
+			glVertex3f((float)x,pkData[(y*w)+x].fHeight,(float)y);
+					
+			glNormal3fv((float*)&pkData[(y+1)*w+x].kNormal);									
+			glVertex3f((float)x,pkData[(y+1)*w+x].fHeight,(float)y+1);
+		
+		}
+		glEnd();
+	}
+
+	
+	*/
+	glPopAttrib();
+	glPopMatrix();
+}

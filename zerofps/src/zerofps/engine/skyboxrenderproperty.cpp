@@ -64,14 +64,14 @@ void SkyBoxRenderProperty::SetRotate(Vector3 kRotate)
 
 void SkyBoxRenderProperty::Update() 
 {	
-	
+	/* Dvoid
 	m_kHead = m_kHead + m_kRotateSpd * m_pkZeroFps->GetFrameTime();
 	
 	if(m_bModeSixSides)
 		m_pkRender->DrawSkyBox_SixSided(m_pkZeroFps->GetCam()->GetPos(),m_kHead, m_iTexture);
 	else
 		m_pkRender->DrawSkyBox(m_pkZeroFps->GetCam()->GetPos(),m_kHead,m_iHor,m_iTop);
-
+	*/
 }
 
 Property* Create_SkyBoxRenderProperty()
