@@ -145,7 +145,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "ToggleLight")
 			{
-				ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
+				ToogleLight( );
 			}
 		}
 		else

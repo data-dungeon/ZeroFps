@@ -246,7 +246,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	DrawCrossMarker(Vector3 kPos);
 
 		void	SetupGuiEnviroment();
-		void	ToogleLight(bool bEnabled);
+		void	ToogleLight();
 
 		//heightmap
 		HeightMap*	SetPointer();

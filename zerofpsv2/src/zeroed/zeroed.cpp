@@ -276,8 +276,6 @@ void ZeroEd::OnInit()
 
 void ZeroEd::Init()
 {	
-//	m_pkFps->m_bClientMode = true;
-
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
@@ -287,7 +285,6 @@ void ZeroEd::Init()
 	//zone defaults
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
-//	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
 	m_strActiveZoneName = "";
 	m_strActiveEnviroment = "data/enviroments/sun.env";
 
@@ -344,7 +341,7 @@ void ZeroEd::Init()
 	
 	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
-	m_kSun.kRot = Vector3(1,2,1);
+	m_kSun.kRot = Vector3(2,2,1);
 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
@@ -359,10 +356,8 @@ void ZeroEd::Init()
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
 
-	//Entity* test = m_pkEntityManager->CreateEntityFromScript("data/script/objects/weapons/t_sword.lua");
-	//test->SetWorldPosV(Vector3(0,2,2)); 
-	//test->SetParent( m_pkEntityManager->GetWorldEntity() ); 
-	//test->AddProperty("P_LightUpdate");
+	//enable sun as default
+	ToogleLight();
 
 }
 
@@ -373,16 +368,16 @@ void ZeroEd::OnServerStart(void)
 	m_pkZoneMarkerEntity = NULL;
 	
 	// Create and setup the Env on the server.
+	/*
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
 	pe->SetEnviroment("data/enviroments/zeroed.env");
-
+*/
+	
 	SoloToggleView();
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	SoloToggleView();
 	
-	//enable sun as default
-	ToogleLight(true);
 	
 	
 }
@@ -1014,12 +1009,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			strNewTitle = "ZeroEd - " + m_strWorldDir;
 			SetTitle(strNewTitle);
 
-/*			cout<<"saving world:"<<endl;
-			m_pkEntityManager->ForceSave();
-			m_pkEntityManager->SaveZones();			
-			cout<<"saved"<<endl;
-*	/
-
 			break;
 
 		case FID_SNAPSAVE:
@@ -1043,10 +1032,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		*/
 
 		case FID_EDITSUN:
-			if(m_bEditSun)
-				ToogleLight(false);
-			else
-				ToogleLight(true);
+				ToogleLight();
 
 			break;
 
@@ -1539,9 +1525,9 @@ void ZeroEd::SendRotateEntity(int iEntityID,const Vector3& kRot)
 }
 
 
-void ZeroEd::ToogleLight(bool bEnabled)
+void ZeroEd::ToogleLight()
 {
-	if(bEnabled)
+	if(!m_bEditSun)
 	{	
 		m_bEditSun = true;	
 		m_pkLight->Add(&m_kSun);
@@ -1551,14 +1537,6 @@ void ZeroEd::ToogleLight(bool bEnabled)
 		m_bEditSun = false;	
 		m_pkLight->Remove(&m_kSun);
 	}
-
-/*	if(bEnabled)
-		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
-	else
-		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-*/		
-	
-
 }
 
 

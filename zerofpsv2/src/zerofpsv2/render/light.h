@@ -65,7 +65,7 @@ class RENDER_API Light : public ZFSubSystem {
 	private:
 		Vector3 m_kCamPos;
 
-		list<LightSource*> m_kLights;
+		list<LightSource*> 	m_kLights;
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 

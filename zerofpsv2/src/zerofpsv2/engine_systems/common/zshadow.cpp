@@ -280,7 +280,8 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 		if(Mad_CoreMesh* pkCoreMech = pkCore->GetMeshByID(iShadowMesh))
 		{
 		 	//pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
-			pkCore->SetupBonePose();
+			//pkCore->SetupBonePose();
+			pkMad->UpdateBones();			
 			pkCore->PrepareMesh(pkCore->GetMeshByID(iShadowMesh));
 
 			//setup mesh pointers			
@@ -306,7 +307,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 			m_kModelMatrix.Identity();
 			m_kModelMatrix.Scale(pkMad->m_fScale,pkMad->m_fScale,pkMad->m_fScale);
 			m_kModelMatrix *= ori;
-			m_kModelMatrix.Translate(pkMad->GetEntity()->GetIWorldPosV());
+			m_kModelMatrix.Translate(pkMad->GetEntity()->GetIWorldPosV() + pkMad->GetOffset() );
 
 			//transform vertexs
 			for(int i = 0;i<m_iNrOfVerts;i++)
