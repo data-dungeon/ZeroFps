@@ -469,12 +469,18 @@ bool ZFAudioSystem::StartSound(SoundInfo kSound)
 	return true;
 }
 
+//
+// Ta bort det ljud som ligger närmast [kSound] och som 
+// heter samma som [kSound]. Avståndet mellan det funna ljudet
+// och [kSound] bestäms av parametern fMaxSearchRange.
+//
 bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
 {
 	SoundInfo* pkRemoveSound = NULL;
 
 	float fClosestDist = 100000.0f;
 
+	// Leta reda på det närmsta ljudet med det namnet
 	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
 	for( ; itSound != m_kActiveSounds.end(); itSound++)  
 	{
@@ -492,7 +498,7 @@ bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
 		}
 	}
 
-	// Remove sound
+	// Stanna och ladda ur ljudet om det är innom godkännt avstånd.
 	if(pkRemoveSound != NULL && sqrt(fClosestDist) < fMaxSearchRange)
 	{
 		for(int j=0; j<SOURCE_POOL_SIZE; j++)

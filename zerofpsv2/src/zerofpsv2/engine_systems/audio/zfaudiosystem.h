@@ -60,7 +60,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 public:
 	
 	bool StartSound(SoundInfo kSound);
-	bool EndSound(SoundInfo kSound, float fMaxRange = 5.0f);
+	bool EndSound(SoundInfo kSound, float fMaxSearchRange = 1000000.0f);
 
 	unsigned int GetNumActiveSounds();
 	unsigned int GetNumActiveChannels();
