@@ -11,8 +11,11 @@ FloatProperty::FloatProperty(ZeroFps *pkFps) {
 
 void FloatProperty::Update() {
 	if(m_pkObject->GetPos().y<0) {
-		m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
+		if(m_pkObject->GetVel().y<0.01) 
+			m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
 		m_pkObject->GetPos().y+=m_pkObject->GetVel().y * m_pkFps->GetFrameTime();
+		
+		m_pkObject->GetVel()*0.5;	
 	}
 }
 

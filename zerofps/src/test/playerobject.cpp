@@ -7,6 +7,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
 	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
 	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));
 	AddProperty(new GravityProperty(pkFps));
+	AddProperty(new FloatProperty(pkFps));	
 //	AddProperty(new ModelProperty());
 	
 	onGround=false;
