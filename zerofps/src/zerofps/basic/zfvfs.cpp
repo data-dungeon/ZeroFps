@@ -164,6 +164,11 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 	vector<string>::iterator end		=	pkFiles->end();
 	remove(start, end, string(".."));
 
+	// Remove All ..
+	start	=  pkFiles->begin();
+	end		=	pkFiles->end();
+	sort(start, end);
+
 	return true;
 }
 
