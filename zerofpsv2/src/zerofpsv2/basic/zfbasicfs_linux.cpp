@@ -9,15 +9,15 @@
 bool ZFBasicFS::DirExist(const char* acName)
 {
 	vector<string> pkFiles;
-	pkFiles.clear();
+	//pkFiles.clear();
 	
 	if(ListDir(&pkFiles,acName))
 	{
-		pkFiles.clear();
+		//pkFiles.clear();
 		return true;
 	}
 	
-	pkFiles.clear();
+	//pkFiles.clear();
 	return false;
 }
 

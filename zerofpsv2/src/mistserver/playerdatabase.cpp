@@ -57,6 +57,17 @@ vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
 	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
 
+	
+	//dvoids hax för o ta bort ".."
+	for(vector<string>::iterator it =kCharNames.begin();it != kCharNames.end();it++)
+	{
+		if(*it == "..")
+		{
+			kCharNames.erase(it);
+			break;
+		}
+	} 
+	
 /*	cout << strPlayerDataFile <<endl;
 	for(int i=0; i<kCharNames.size(); i++)
 		cout << "Name: " << i << " " <<  kCharNames[i] << endl;*/
