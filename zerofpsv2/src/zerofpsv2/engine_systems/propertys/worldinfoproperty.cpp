@@ -32,7 +32,7 @@ void WorldInfoProperty::Update()
 {
 }
 
-void WorldInfoProperty::Save(ZFMemPackage* pkPackage)
+void WorldInfoProperty::Save(ZFIoInterface* pkPackage)
 {
 	//skybox
 	char data[100];
@@ -61,7 +61,7 @@ void WorldInfoProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kAmbientColor,12,1);				
 }
 
-void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
+void WorldInfoProperty::Load(ZFIoInterface* pkPackage)
 {
 	//skybox
 	char data[100];

@@ -67,7 +67,7 @@ bool BillBoardRenderProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
-void BillBoardRenderProperty::Save(ZFMemPackage* pkPackage)
+void BillBoardRenderProperty::Save(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTexture.c_str());	
@@ -77,7 +77,7 @@ void BillBoardRenderProperty::Save(ZFMemPackage* pkPackage)
 
 }
 
-void BillBoardRenderProperty::Load(ZFMemPackage* pkPackage)
+void BillBoardRenderProperty::Load(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	

@@ -673,6 +673,135 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	g_ZFObjSys.Logf("net", "\n");
 }
 
+void Object::Load(ZFIoInterface* pkFile)
+{
+	Vector3 pos;
+	Matrix4 rot;
+
+	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
+	
+	pkFile->Read(&pos,sizeof(pos),1);	
+	pkFile->Read(&rot,sizeof(rot),1);	
+	
+	SetLocalRotM(rot);
+	SetLocalPosV(pos);
+	
+	pkFile->Read(&m_kVel,sizeof(m_kVel),1);	
+	pkFile->Read(&m_kAcc,sizeof(m_kAcc),1);	
+	pkFile->Read(&m_fRadius,sizeof(m_fRadius),1);		
+	
+	pkFile->Read(&m_iObjectType,sizeof(m_iObjectType),1);		
+	pkFile->Read(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
+	pkFile->Read(&m_bSave,sizeof(m_bSave),1);		
+	
+	pkFile->Read(&m_eRole,sizeof(m_eRole),1);		
+	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
+
+	char acTemp[128];
+	
+	//name
+	pkFile->Read(acTemp,128,1);		
+	m_strName = acTemp;
+	
+	//type
+	pkFile->Read(acTemp,128,1);		
+	m_strType = acTemp;
+	
+	//load script res
+	pkFile->Read(acTemp,128,1);		
+	
+	if(strcmp(acTemp,"none") == 0)
+		m_pScriptFileHandle->FreeRes();
+	else
+		m_pScriptFileHandle->SetRes(string(acTemp));
+		
+	
+	//nr of propertys
+	int iProps = 0;
+	pkFile->Read(&iProps,sizeof(iProps),1);	
+	//save all propertys
+	for(int i = 0;i< iProps;i++)
+	{
+		char name[50];		
+		pkFile->Read(&name,50,1);			
+		
+		Property* prop = AddProperty(name);
+		
+		if(prop)
+			prop->Load(pkFile);
+	}
+		
+	//nr of childs
+	int iChilds = 0;		
+	pkFile->Read(&iChilds,sizeof(iChilds),1);		
+	//save all childs
+	for(int i = 0;i<iChilds;i++)
+	{
+		Object* newobj = m_pkObjectMan->CreateObject();
+		newobj->SetParent(this);
+		newobj->Load(pkFile);		
+	}
+}
+
+
+void Object::Save(ZFIoInterface* pkFile)
+{
+	Vector3 pos = GetLocalPosV();
+	Matrix4 rot = GetLocalRotM();
+
+	pkFile->Write(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
+	pkFile->Write(&pos,sizeof(pos),1);	
+	pkFile->Write(&rot,sizeof(rot),1);	
+	
+	pkFile->Write(&m_kVel,sizeof(m_kVel),1);	
+	pkFile->Write(&m_kAcc,sizeof(m_kAcc),1);	
+	pkFile->Write(&m_fRadius,sizeof(m_fRadius),1);		
+	
+	pkFile->Write(&m_iObjectType,sizeof(m_iObjectType),1);		
+	pkFile->Write(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
+	pkFile->Write(&m_bSave,sizeof(m_bSave),1);		
+	
+	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
+	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
+
+	char acTemp[128];
+	
+	//name
+	strcpy(acTemp,m_strName.c_str());
+	pkFile->Write(acTemp,128,1);		
+	
+	//type
+	strcpy(acTemp,m_strType.c_str());	
+	pkFile->Write(acTemp,128,1);		
+		
+	//save script file
+	if(m_pScriptFileHandle->IsValid())
+		strcpy(acTemp,m_pScriptFileHandle->GetRes().c_str());	
+	else	
+		strcpy(acTemp,"none");	
+	pkFile->Write(acTemp,128,1);		
+		
+		
+	//nr of propertys
+	int iProps = m_akPropertys.size();		
+	pkFile->Write(&iProps,sizeof(iProps),1);	
+	//save all propertys
+	for(int i = 0;i<iProps;i++)
+	{
+		pkFile->Write(&m_akPropertys[i]->m_acName,50,1);	
+		m_akPropertys[i]->Save(pkFile);
+	}
+		
+		
+	//nr of childs
+	int iChilds = m_akChilds.size();		
+	pkFile->Write(&iChilds,sizeof(iChilds),1);		
+	//save all childs
+	for(int i = 0;i<iChilds;i++)
+	{
+		m_akChilds[i]->Save(pkFile);
+	}
+}
 
 
 
@@ -1300,7 +1429,5 @@ Matrix4 Object::GetLocalOriM()
 	
 	return m_kLocalOriM;
 }
-
-
 
 

@@ -45,21 +45,6 @@ void Property::HandleGameMessage(GameMessage& Msg)
 }
 
 
-// Virtuals
-void Property::Save(ZFMemPackage* pkPackage)
-{
-//	int i=1234;
-//	pkPackage->Write((void*)&i,4);
-}
-
-void Property::Load(ZFMemPackage* pkPackage)
-{  
-//	int i=0;
-//	pkPackage->Read((void*)&i,4);
-	
-//	if(i != 1234)
-//		cout<<"ERROR Loading property"<<endl;
-}
 
 bool Property::operator<(Property& kOther)
 {

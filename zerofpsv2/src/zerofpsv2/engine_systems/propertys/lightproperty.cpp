@@ -142,7 +142,7 @@ Property* Create_LightProperty()
 }
 
 
-void LightProperty::Save(ZFMemPackage* pkPackage)
+void LightProperty::Save(ZFIoInterface* pkPackage)
 {
 	
 	pkPackage->Write((void*)m_pkLightSource,sizeof(LightSource),1);
@@ -151,7 +151,7 @@ void LightProperty::Save(ZFMemPackage* pkPackage)
 	//pkPackage->Write((void*)&m_pkLight,sizeof(Light));
 }
 
-void LightProperty::Load(ZFMemPackage* pkPackage)
+void LightProperty::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
 	//pkPackage->Read((void*)pkPos, sizeof(Vector3));

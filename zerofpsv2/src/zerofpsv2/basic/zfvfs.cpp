@@ -147,27 +147,27 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 
 	//dvoid hack
 	//if file still not open and it was opened for writing create directory
-	string dir  = "";
-	
-{
-		for(int i = strFileName.size();i > 0 ;i--)
+	if(bWrite)
 	{
-		if( strFileName[i] == '/')
+		string dir  = "";
+		for(int i = strFileName.size();i > 0 ;i--)
 		{
-			dir  = strFileName.substr(0,i);
-			
-			//create directory
-			m_pkBasicFS->CreateDir(dir.c_str());
-			
-			//try to open the file now			
-			pkFp = fopen(strFileName.c_str(), szOptions);
-			if(pkFp)
-				return pkFp;
-			else
-				return NULL;
+			if( strFileName[i] == '/')
+			{
+				dir  = strFileName.substr(0,i);
+				
+				//create directory
+				m_pkBasicFS->CreateDir(dir.c_str());
+				
+				//try to open the file now			
+				pkFp = fopen(strFileName.c_str(), szOptions);
+				if(pkFp)
+					return pkFp;
+				else
+					return NULL;
+			}
 		}
 	}
-}	
 
 	// Failed to open file.
 	return NULL;

@@ -36,8 +36,8 @@ class ENGINE_SYSTEMS_API WaterRenderProperty: public Property {
 		void SetTexture(const char* acTexture);
 		void Update();
 
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);

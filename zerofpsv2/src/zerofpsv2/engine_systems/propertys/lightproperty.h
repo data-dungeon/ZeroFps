@@ -16,8 +16,8 @@ class ENGINE_SYSTEMS_API LightProperty: public Property {
 
 		vector<PropertyValues> GetPropertyValues();
 		
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 	 
 		void TurnOn();
 		void TurnOff();

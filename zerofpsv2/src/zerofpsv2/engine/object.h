@@ -167,16 +167,29 @@ class ENGINE_API Object
 			WORLD_POS_V,		
 		};
 	
+		PropertyFactory*			m_pkPropertyFactory;				// Ptr to property factory.
+		ZeroFps*						m_pkFps;								// Ptr to zerofps. // CHANGE TO ObjectManger?
+	
+		
+		ZFResourceHandle*			m_pScriptFileHandle;			//handle for the objects create script if any
+		
+		string						m_strName;								///< Object name
+		string						m_strType;							///< Object type name.
+	
+		bool							m_bSave;								///< True if this object should save to disk.
+	
 		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
+		int							m_iUpdateStatus;					
+		ObjectType					m_iObjectType;						
 	
 		// Rotation & Position.
 		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
-		Vector3						m_kLocalPosV;						///< Local position.
+		Vector3						m_kLocalPosV;	//important	///< Local position.
 		Vector3						m_kWorldPosV;						///< World position.
 
-		Matrix4						m_kLocalRotM;						///< Local rotation
+		Matrix4						m_kLocalRotM;	//important	///< Local rotation
 		Matrix4						m_kWorldRotM;
 		Matrix4						m_kWorldOriM;
 		Matrix4						m_kLocalOriM;
@@ -188,29 +201,12 @@ class ENGINE_API Object
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
 		float							m_fRadius;							///< Radius of object.
-		
-//		Vector3						m_kPos;								///< Position of object in world.
-//		Vector3						m_kRot;								///< Rotation of object in world.
-//		Vector3						m_kOldPos;
-//		Vector3						m_kOldRot;
-		
-		string						m_strName;								///< Object name
-		string						m_strType;							///< Object type name.
 
-		ZFResourceHandle*			m_pScriptFileHandle;			//handle for the objects create script if any
-
-		ObjectType					m_iObjectType;						
-		int							m_iUpdateStatus;					
 		int*							m_piDecorationStep;
-		bool							m_bSave;								///< True if this object should save to disk.
 		
-		PropertyFactory*			m_pkPropertyFactory;				// Ptr to property factory.
-		ZeroFps*						m_pkFps;								// Ptr to zerofps. // CHANGE TO ObjectManger?
 
-		float							m_fLastPosSetTime;
-		float							m_fLastRotSetTime;		
 
-		vector<Object*>				m_akChilds;							///< List of child objects.
+		vector<Object*>			m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 		Object();				
@@ -260,6 +256,9 @@ class ENGINE_API Object
 		void PackTo(NetPacket* pkNetPacket);					///< Pack Object.
 		void PackFrom(NetPacket* pkNetPacket);					///< Unpack Object.
 		void Save(ObjectDescriptor* ObjDesc);					///< Save object to object desc.
+
+		void Save(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile);		
 
 		// Collision / Shape.
 		float GetBoundingRadius();									///< Get radius of collision object or radius 1.0 if none found.

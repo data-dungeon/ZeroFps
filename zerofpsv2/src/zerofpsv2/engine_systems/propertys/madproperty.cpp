@@ -132,7 +132,7 @@ void MadProperty::SetBase(const char* acName)
 	//	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
 }
 
-void MadProperty::Save(ZFMemPackage* pkPackage)
+void MadProperty::Save(ZFIoInterface* pkPackage)
 {	
 	char temp[50];
 	strcpy(temp,m_kMadFile.c_str());
@@ -141,9 +141,9 @@ void MadProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_fScale,4,1);
 }
 
-void MadProperty::Load(ZFMemPackage* pkPackage)
+void MadProperty::Load(ZFIoInterface* pkPackage)
 {
-	pkPackage->Seek(0,0);
+	//pkPackage->Seek(0,0);
 	char temp[50];
 	pkPackage->Read((void*)temp,50,1);	
 	SetBase(temp);

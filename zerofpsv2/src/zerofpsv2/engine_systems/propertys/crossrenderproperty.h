@@ -33,8 +33,8 @@ class ENGINE_SYSTEMS_API CrossRenderProperty: public Property {
 		void SetScale(Vector3 kScale) {m_kScale=kScale;};
 		void UpdateSet();
 		
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 };
 

@@ -71,7 +71,7 @@ float PhysicProperty::GetBoundingRadius()
 	return 1;
 }
 
-void PhysicProperty::Save(ZFMemPackage* pkPackage)
+void PhysicProperty::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write((void*)&m_bGravity,4,1);
 	pkPackage->Write((void*)&m_bFloat,4,1);	
@@ -122,7 +122,7 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	
 }
 
-void PhysicProperty::Load(ZFMemPackage* pkPackage)
+void PhysicProperty::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)&m_bGravity,4,1);
 	pkPackage->Read((void*)&m_bFloat,4,1);

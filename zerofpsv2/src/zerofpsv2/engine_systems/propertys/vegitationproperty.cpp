@@ -162,7 +162,7 @@ void VegitationProperty::AddPos(Vector3 kPos)
 
 
 
-void VegitationProperty::Save(ZFMemPackage* pkPackage)
+void VegitationProperty::Save(ZFIoInterface* pkPackage)
 {
 	char data[256];
 	
@@ -184,7 +184,7 @@ void VegitationProperty::Save(ZFMemPackage* pkPackage)
 
 }
 
-void VegitationProperty::Load(ZFMemPackage* pkPackage)
+void VegitationProperty::Load(ZFIoInterface* pkPackage)
 {
 
 	char data[256];

@@ -29,8 +29,8 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 		void SetBase(const char* acName);
 		void Update();
 
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 
 
 		void PackTo(NetPacket* pkNetPacket);

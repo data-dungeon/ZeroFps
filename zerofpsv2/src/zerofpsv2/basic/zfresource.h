@@ -38,6 +38,7 @@ public:
 	ZFResourceHandle& operator=(const ZFResourceHandle& kOther);
 
 	bool SetRes(string strName);
+	string GetRes() {return m_strName;};
 	void FreeRes();
 	bool IsValid();
 

@@ -77,7 +77,7 @@ bool BoxRenderProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
-void BoxRenderProperty::Save(ZFMemPackage* pkPackage)
+void BoxRenderProperty::Save(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTex1.c_str());	
@@ -87,7 +87,7 @@ void BoxRenderProperty::Save(ZFMemPackage* pkPackage)
 
 }
 
-void BoxRenderProperty::Load(ZFMemPackage* pkPackage)
+void BoxRenderProperty::Load(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	

@@ -83,7 +83,7 @@ bool CrossRenderProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
-void CrossRenderProperty::Save(ZFMemPackage* pkPackage)
+void CrossRenderProperty::Save(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTex1.c_str());	
@@ -96,7 +96,7 @@ void CrossRenderProperty::Save(ZFMemPackage* pkPackage)
 
 }
 
-void CrossRenderProperty::Load(ZFMemPackage* pkPackage)
+void CrossRenderProperty::Load(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	

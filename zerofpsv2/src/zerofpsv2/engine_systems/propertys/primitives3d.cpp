@@ -20,6 +20,7 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
+	
 }
 
 
@@ -90,7 +91,7 @@ void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) {
 	
 }
 
-void P_Primitives3D::Save(ZFMemPackage* pkPackage)
+void P_Primitives3D::Save(ZFIoInterface* pkPackage)
 {	
 	pkPackage->Write((void*)&m_iType,4 ,1);		
 	pkPackage->Write((void*)&m_fRadius,4 ,1);		
@@ -99,7 +100,7 @@ void P_Primitives3D::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kColor,12,1 );	
 }
 
-void P_Primitives3D::Load(ZFMemPackage* pkPackage)
+void P_Primitives3D::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)&m_iType	,4 ,1);		
 	pkPackage->Read((void*)&m_fRadius,4,1 );		

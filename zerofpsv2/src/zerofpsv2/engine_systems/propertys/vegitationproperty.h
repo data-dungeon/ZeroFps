@@ -51,8 +51,8 @@ class ENGINE_SYSTEMS_API VegitationProperty: public Property {
 		
 		void CalculateRadius();
 		
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 };
 

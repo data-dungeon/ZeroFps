@@ -78,7 +78,7 @@ void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket)
 }
 
 
-void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
+void WaterRenderProperty::Save(ZFIoInterface* pkPackage)
 {
 
 	char data[256];	
@@ -91,7 +91,7 @@ void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
 
 }
 
-void WaterRenderProperty::Load(ZFMemPackage* pkPackage)
+void WaterRenderProperty::Load(ZFIoInterface* pkPackage)
 {
 	char data[300];	
 	

@@ -53,8 +53,8 @@ class ENGINE_SYSTEMS_API PhysicProperty :public Property
 
 		bool HandleSetValue( string kValueName ,string kValue );
 
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 };
 
 Property* Create_PhysicProperty();

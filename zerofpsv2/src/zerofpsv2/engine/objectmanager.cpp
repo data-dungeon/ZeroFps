@@ -1693,8 +1693,7 @@ void ObjectManager::LoadZone(int iId)
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,false))
 	{	
-		cout<<"error loading"<<endl;
-		
+		cout<<"error loading zone, creating a template zone"<<endl;
 		
 		
 		Vector3 kPos = kZData->m_kPos;
@@ -1708,6 +1707,7 @@ void ObjectManager::LoadZone(int iId)
 		pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
 		pkNode->SetParent(object);
 
+		/*
 		// Create Random Objects.
 		Vector3 kRandOffset;
 		Object* pkBall;
@@ -1718,7 +1718,7 @@ void ObjectManager::LoadZone(int iId)
 			pkBall->SetLocalPosV(kPos + kRandOffset);
 			pkBall->SetParent(object);				
 		}
-		
+		*/
 		return;
 	}
 
@@ -1726,34 +1726,6 @@ void ObjectManager::LoadZone(int iId)
 	
 	kFile.Close();
 	
-
-
-/*
-	Vector3 kPos = kZData->m_kPos;
-	object->SetLocalPosV(kPos);
-	object->SetParent(GetWorldObject());				
-	object->GetUpdateStatus()=UPDATE_DYNAMIC;
-	object->AddProperty("LightUpdateProperty");
-
-	kZData->m_pkZone = object;
-
-	// Create Ground Object
-	Object* pkNode;
-	pkNode = CreateObjectByArchType("Node4x");
-	pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
-	pkNode->SetParent(object);
-
-	// Create Random Objects.
-	Vector3 kRandOffset;
-	Object* pkBall;
-	int iNumOfBalls = rand() % 5;
-	for(i=0; i<iNumOfBalls; i++) {
-		kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
-		pkBall = CreateObjectByArchType("TVimBollus");
-		pkBall->SetLocalPosV(kPos + kRandOffset);
-		pkBall->SetParent(object);				
-		}
-*/		
 }
 
 void ObjectManager::UnLoadZone(int iId)

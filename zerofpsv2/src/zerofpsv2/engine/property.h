@@ -10,6 +10,7 @@
 #include <cfloat>
 #include "../basic/zfmempackage.h"
 #include <typeinfo> 
+#include "../basic/zfvfs.h"
 using namespace std;
 
 struct Collision;
@@ -221,8 +222,10 @@ class ENGINE_API Property
 		virtual void PackFrom(NetPacket* pkNetPacket) {} ;
 		
 		// Save / Load
-		virtual void Save(ZFMemPackage* pkPackage);				//save property
-		virtual void Load(ZFMemPackage* pkPackage);				//load property
+		virtual void Save(ZFIoInterface* pkFile){};
+		virtual void Load(ZFIoInterface* pkFile){};		
+//		virtual void Save(ZFMemPackage* pkPackage) {};				//save property
+//		virtual void Load(ZFMemPackage* pkPackage) {};				//load property
 		virtual void CloneOf(Property* pkProperty) = 0;
 
 		// Inlines

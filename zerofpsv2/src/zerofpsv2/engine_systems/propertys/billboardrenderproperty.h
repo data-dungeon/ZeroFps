@@ -33,8 +33,8 @@ class ENGINE_SYSTEMS_API BillBoardRenderProperty: public Property {
 		void SetScale(float fScale) {m_fScale=fScale;};
 		void UpdateSet();
 		
-		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 };
 
