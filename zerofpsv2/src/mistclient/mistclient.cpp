@@ -11,6 +11,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../mcommon/si_mistland.h"
 #include "../zerofpsv2/basic/zguifont.h"
@@ -119,7 +120,7 @@ void MistClient::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	
 	//register actions bös
 	RegisterActions();
@@ -619,6 +620,7 @@ void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistClient::OnServerStart(void)
 {		
+/*
 	m_pkTestobj = pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
 	if(m_pkTestobj)
 	{
@@ -653,6 +655,7 @@ void MistClient::OnServerStart(void)
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 	}
+*/	
 }
 
 void MistClient::OnClientStart(void)
@@ -1177,6 +1180,10 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 						cp->SetType(CAM_TYPE3PERSON);								
 						m_pkCamProp = cp;					
 					}				
+					
+					//enable skybox
+					P_SkyBoxRender* sb = (P_SkyBoxRender*)pkObj->AddProperty("P_SkyBoxRender");
+					sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");						
 						
 					//enable enviroment for this caracter
 					if(ep)
@@ -1185,7 +1192,6 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 					}
 					
 					//set current active character
-					//m_iActiveCaracter = iCaracter;
 					m_iActiveCaracterObjectID = id;
          	            
 					// set active character in clientcontrol property also
@@ -1214,6 +1220,9 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 				//disable camera
 				pkObj->DeleteProperty("P_Camera");
 				m_pkCamProp = NULL;
+				
+				//disable skybox
+				pkObj->DeleteProperty("P_SkyBoxRender");
 				
 				//disable enviroment for this character				
 				P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");

@@ -103,8 +103,11 @@ void Tcs::UpdateVel()
 		//apply gravity if enabled
 		if(m_kBodys[i]->m_bGravity)
 		{
-			Vector3 kVel = m_kBodys[i]->GetObject()->GetVel() + Vector3(0,-4,0)*m_pkZeroFps->GetGameFrameTime();
-			m_kBodys[i]->GetObject()->SetVel(kVel);
+			if(m_kBodys[i]->GetObject()->GetVel().y > - 10) //make sure it does not accelerate to to hi velocity
+			{
+				Vector3 kVel = m_kBodys[i]->GetObject()->GetVel() + Vector3(0,-4,0)*m_pkZeroFps->GetGameFrameTime();
+				m_kBodys[i]->GetObject()->SetVel(kVel);
+			}
 		}
 	}
 }

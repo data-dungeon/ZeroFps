@@ -1410,11 +1410,11 @@ Vector3 Entity::GetIWorldPosV()
 		return GetWorldPosV();
 
 	if(m_bInterpolate)
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*3);
 	else
 	{
 		//still calculate the interpolatet position, but return non interpolatet position
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*3);
 		return GetWorldPosV();
 	}
 
