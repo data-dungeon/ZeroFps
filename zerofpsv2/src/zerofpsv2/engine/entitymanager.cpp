@@ -2254,7 +2254,7 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	{
 		pp->SetPolygonTest(true);	
 		pp->SetRefetchPolygonData();
-		pp->SetStatic(true);
+		pp->SetGroup(0);
 	}
 
 }

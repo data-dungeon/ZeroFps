@@ -7,8 +7,23 @@
 
 #include "../tcs/tcs.h"
 
+#define TCS_GROUPS 10
+
 using namespace std;
 class Tcs;
+
+
+/*
+	GROUPS USED IN MISTLANDS
+	
+	0:   zone models
+	1:	 normal characters
+	2:	 spells fireballs etc
+	3:   non important visual effect objects
+
+
+
+*/
 
 class ENGINE_SYSTEMS_API P_Tcs : public Property
 {
@@ -18,8 +33,10 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool	m_bPolygonTest;
 		float	 m_fRadius;						
 		bool	m_bHavePolygonData;
-		bool	m_bStatic;
 		bool	m_bGravity;
+		
+		int	 m_iGroup;		
+		bitset<TCS_GROUPS>	m_akTestGroups;
 
 		//mesh data
 		int						m_iModelID;
@@ -34,6 +51,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float		m_fMSRadius;	
 
 		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( string kValueName, string kValue );
 		float GetBoundingRadius();
 		bool SetupMeshData();
 	
@@ -53,9 +71,11 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		
-		
+		bool CheckFlag(int iFlag) {return m_akTestGroups[iFlag];};
+		void SetGroup(int iGroup) {m_iGroup = iGroup;};
+		void ResetGroupFlags() {m_akTestGroups.set();};
+		void SetTestGroupFlag(int iFlag,bool bValue) {m_akTestGroups[iFlag] = bValue;};
 		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
-		void SetStatic(bool t) {m_bStatic = t;};
 		void SetRadius(float t) {m_fRadius = t;};
 		void SetRefetchPolygonData() {m_bHavePolygonData = false;};
 		void SetGravity(bool t) {m_bGravity = t;};

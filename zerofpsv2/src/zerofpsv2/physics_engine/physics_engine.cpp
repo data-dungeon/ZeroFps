@@ -613,7 +613,7 @@ Collission* Physics_Engine::FindNextCollission()
 	if(m_kCollissions.size() == 0)
 		return NULL;
 		
-	float fClosest = 9999999999;
+	float fClosest = 9999999999.0;
 	Collission* pkClosest = NULL;
 	
 	for(unsigned int i=0;i<m_kCollissions.size();i++)

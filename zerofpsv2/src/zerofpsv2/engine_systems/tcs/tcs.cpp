@@ -91,7 +91,7 @@ void Tcs::UpdateMotion()
 {
 	for(int i=0;i<m_kBodys.size();i++)
 	{	
-		if(!m_kBodys[i]->m_bStatic)
+//		if(!m_kBodys[i]->m_bStatic)
 			m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
 	}
 }
@@ -103,9 +103,14 @@ void Tcs::UpdateCollissions()
 	{
 		for(int B2=B1+1;B2<m_kBodys.size();B2++)
 		{
-			//dont collide two static objects
-			if(m_kBodys[B1]->m_bStatic && m_kBodys[B2]->m_bStatic)
+			//dont check collission groups
+			if(!m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup])
 				continue;
+			if(!m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])
+				continue;
+			
+			//if(m_kBodys[B1]->m_bStatic && m_kBodys[B2]->m_bStatic)
+			//	continue;
 			
 			bool bCollission=false;
 			
@@ -204,7 +209,7 @@ bool Tcs::TestMotionSphereVSMesh(P_Tcs* pkB1,P_Tcs* pkB2)
 	//both bodys cant have polygon test at the moment
 	if(b1pd && b2pd)
 	{
-		cout<<"no support for mesh VS mesh collissions"<<endl;
+		//cout<<"no support for mesh VS mesh collissions"<<endl;
 		return false;		
 	}
 	
