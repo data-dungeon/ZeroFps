@@ -115,7 +115,7 @@ bool ZFScript::ExposeClass(char *szName, ScripObjectType eType,
 						   lua_CFunction o_LuaSet)
 {
 	// check if type is already registered
-	bool bAlreadyExist = true;
+/*	bool bAlreadyExist = true;
 
 	if(m_kExposedClasses.find(string(szName)) == m_kExposedClasses.end())
 		bAlreadyExist = false;
@@ -137,7 +137,7 @@ bool ZFScript::ExposeClass(char *szName, ScripObjectType eType,
 
 	// Register class
 	m_kClassMap.insert( map<ScripObjectType,string>::value_type(eType, string(szName)) );
-
+*/
 	return true;
 }
 
@@ -147,7 +147,7 @@ bool ZFScript::ExposeClass(char *szName, ScripObjectType eType,
 //
 bool ZFScript::ExposeObject(const char* szName, void* pkData, ScripObjectType eType)
 {
-
+/*
 	map<ScripObjectType, string>::iterator itClass;
 	itClass = m_kClassMap.find(eType);
 	
@@ -161,7 +161,7 @@ bool ZFScript::ExposeObject(const char* szName, void* pkData, ScripObjectType eT
 	char *szClassName = (char*) itClass->second.c_str();
 
 	lua_pushusertag(m_pkLua, pkData, tolua_tag(m_pkLua, szClassName));
-	lua_setglobal(m_pkLua, szName);
+	lua_setglobal(m_pkLua, szName);*/
 	return true;
 }
 

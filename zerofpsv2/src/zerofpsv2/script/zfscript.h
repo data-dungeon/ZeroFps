@@ -8,7 +8,7 @@ extern "C"  {
 //	#include <lualib.h>
 }
 
-#include <tolua.h>
+//#include <tolua.h>
 
 #pragma warning (disable :4786)
 #include <set>
