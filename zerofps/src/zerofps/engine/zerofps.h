@@ -14,6 +14,8 @@
 #include "zfresourcedb.h"
 #include "mad_core.h"
 #include "../physics_engine/physics_engine.pkg"
+#include "fh.h"
+
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -94,10 +96,13 @@ class ENGINE_API ZeroFps : public ZFObject {
 		SDL_Surface* m_pkScreen;		
 		bool		m_bDevPagesVisible;
 		
-		float 	m_fLastFrameTime;
-		float 	m_fAvrageFpsTime;
-		int		m_iAvrageFrameCount;
+		float 		m_fLastFrameTime;
+		float 		m_fAvrageFpsTime;
+		int			m_iAvrageFrameCount;
+		DebugGraph	m_kFpsGraph;
+
 		
+
 		int		m_iWidth,m_iHeight,m_iDepth;
 		int		m_iFullScreen;
 		bool  	m_bCapture;							// True if we should capture this frame

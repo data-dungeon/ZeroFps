@@ -5,6 +5,7 @@
 #include "../basic/basic.pkg"
 #include "console.h"
 #include <SDL/SDL_net.h>
+#include "fh.h"
 
 #define MAX_PACKET_SIZE	1024
 #define MAX_NETWORKNAME	16
@@ -53,12 +54,39 @@ public:
 	unsigned int	m_iNumOfBytesSent;
 	unsigned int	m_iNumOfBytesRecv;
 	
+	int				m_iNumOfBytesRecvNetFrame;
+
 	float				m_fLastMessageTime;				// Time (Engine) of last message. Use to find time outs.
 	float				m_fPing;								// Ping 
 
 	int				m_iOutOfOrderRecv;
 	int				m_iPacketLossRecv;
+
+	DebugGraph		m_kRecvGraph;
+
+	int				m_iOutOfOrderNetFrame;
+
+	int				m_iLastRecvPacket;				// Order num of last recv packet.
 };
+
+/*
+	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
+*/
+#pragma pack( 1 )
+
+struct ZFNetHeader
+{
+	int				m_iOrder;			//  Order packet 
+	unsigned char	m_iPacketType;		//  Type of packet.
+};
+
+struct ZFNetPacketData
+{
+	ZFNetHeader		m_kHeader;
+	unsigned char	m_acData[MAX_PACKET_SIZE];
+};
+
+#pragma pack(  )
 
 class ENGINE_API NetPacket
 {
@@ -69,10 +97,11 @@ public:
 	
 	void SetTarget(const char* szIp);
 
-	unsigned char m_acData[MAX_PACKET_SIZE];
-	int  m_iLength;
-	int  m_iPos;
-	IPaddress m_kAddress;
+	ZFNetPacketData	m_kData;
+	int					m_iLength;
+	int					m_iPos;
+	IPaddress			m_kAddress;
+//	ZFNetHeader			m_kPacketHeader;
 
 	void Write_Str(const char* szString);
 	void Read_Str(char* szString);
@@ -81,7 +110,7 @@ public:
 	void Write(Any type) {
 		ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
 
-		unsigned char * add = &m_acData[m_iPos];
+		unsigned char * add = &m_kData.m_acData[m_iPos];
 		memcpy(add, &type, sizeof(type));
 		m_iPos += sizeof(type);
 		if(m_iPos > m_iLength)	m_iLength = m_iPos;
@@ -89,13 +118,15 @@ public:
 
 	template <class Any> 
 	void Read(Any& type) {
-		unsigned char * add = &m_acData[m_iPos];
+		unsigned char * add = &m_kData.m_acData[m_iPos];
 		memcpy(&type, add, sizeof(type));
 		m_iPos += sizeof(type);
 		}
 
 	void Write(void* ptr, int iSize);
 	void Read(void* ptr, int iSize);
+
+	void SetType(int iType);
 };
 
 enum NetWorkStatus
@@ -104,6 +135,7 @@ enum NetWorkStatus
 	NET_SERVER,
 	NET_CLIENT,
 };
+
 
 class ENGINE_API NetWork : public ZFObject 
 {
@@ -175,6 +207,7 @@ public:
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 
 	void ServerList(void);
+	void DrawConnectionGraphs();
 
 };
 

@@ -64,7 +64,7 @@ void DebugGraph::SetSize(int iSize,int iWidth, int iHeight)
 	m_iSize = iSize;
 
 	for(int i=0; i<m_kValues.size(); i++) {
-		m_kValues[i] = rand() % 100;
+		m_kValues[i] = 0;
 		}
 
 	m_iWritePos	= 0;
@@ -137,8 +137,6 @@ void DebugGraph::DrawGraph(int x, int y)
 	glDisable(GL_CULL_FACE);
 	glDisable(	GL_FOG);
 
-//	DrawSolidBox(0,0, m_iWidth, m_iHeight);
-
 	int iValueIndex = m_iWritePos;
 	int iOffset = 0;
 	float fSize;
@@ -160,6 +158,7 @@ void DebugGraph::DrawGraph(int x, int y)
 		}
 	glEnd();
 
+	DrawSolidBox(0,0, m_iWidth, m_iHeight);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();

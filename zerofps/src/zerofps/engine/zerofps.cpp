@@ -1,6 +1,5 @@
 #include "zerofps.h"
 #include "network.h"
-#include "fh.h"
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
@@ -113,6 +112,9 @@ ZeroFps::ZeroFps(void)
 	m_iRTSClientObject = -1;
 
 	m_bDevPagesVisible = true;
+
+	m_kFpsGraph.SetMinMax(0,10);		
+	m_kFpsGraph.SetSize(100,100,120);
 }
 
 ZeroFps::~ZeroFps()
@@ -425,13 +427,6 @@ void ZeroFps::Draw_EngineShell()
 }
 
 void ZeroFps::MainLoop(void) {
-/*	DebugGraph kDg;
-	DebugGraph kDg2;
-
-	kDg.SetMinMax(0,10);		kDg.SetSize(100,100,120);
-	kDg2.SetMinMax(0,10);	kDg2.SetSize(100,100,50);
-	float fTestValue;*/
-
 	while(m_iState!=state_exit) {
 		m_fEngineTime = GetTicks();
 
@@ -447,13 +442,9 @@ void ZeroFps::MainLoop(void) {
 			}
 
 		Draw_EngineShell();
-//		fTestValue = rand() % 50;
-/*		fTestValue = m_fFps;
-		kDg.PushValue(fTestValue);
-		kDg2.PushValue(fTestValue);
-		
-		kDg.DrawGraph(0,0);
-		kDg2.DrawGraph(200,0);*/
+//		m_kFpsGraph.DrawGraph(0,0);
+//		m_pkNetWork->DrawConnectionGraphs();
+
 	}
 }
 
@@ -537,6 +528,8 @@ void ZeroFps::Swap(void) {
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
 	m_fFps=1000.0/m_fFrameTime;	
+
+	m_kFpsGraph.PushValue( m_fFps);
 	
 	m_iAvrageFrameCount++;
 	

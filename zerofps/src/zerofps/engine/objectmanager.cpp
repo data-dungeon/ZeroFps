@@ -527,7 +527,8 @@ void ObjectManager::PackToClients()
 
 	NetPacket NP;
 	NP.Clear();
-	NP.Write((char) ZF_NETTYPE_UNREL);
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+//	NP.Write((char) ZF_NETTYPE_UNREL);
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
 	int iNumOfObjects = m_akObjects.size();
@@ -552,7 +553,8 @@ void ObjectManager::PackToClients()
 			net->SendToAllClients(&NP);
 
 			NP.Clear();
-			NP.Write((char) ZF_NETTYPE_UNREL);
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			//NP.Write((char) ZF_NETTYPE_UNREL);
 			NP.Write((char) ZFGP_OBJECTSTATE);
 
 			iPacketSize = 0;
@@ -568,7 +570,8 @@ void ObjectManager::PackToClients()
 
 	// Pack delete data.
 	NP.Clear();
-	NP.Write((char) ZF_NETTYPE_UNREL);
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	//NP.Write((char) ZF_NETTYPE_UNREL);
 	NP.Write((char) ZFGP_DELETEOBJECT);
 
 	for(int i=0; i<m_aiNetDeleteList.size(); i++) {
