@@ -394,10 +394,10 @@ void MistClient::Input()
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
 		else
-			RequestOpenInventory();
+		{	RequestOpenInventory();
 			
-		//			m_pkInventoryDlg->Open(); 
-			
+				//	m_pkInventoryDlg->Open(); 
+		}	
 	}
 			
 	// taunts

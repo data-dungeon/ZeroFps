@@ -53,6 +53,7 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVEN
 	m_iHighestZ = 1000;
 	m_iItemUnderCursor = -1;
 	m_iActiveContainerID = -1;
+	m_fPickUpTimer = 0;
 }
 
 InventoryDlg::~InventoryDlg()
@@ -113,24 +114,39 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 		float fTime = (float) SDL_GetTicks() / 1000.0f;
 
-		if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
+		if(bLeftButtonPressed)
+		{
+			if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
+			{
+				for(int i=0; i<m_vkInventoryItemList.size(); i++)
+					if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
+					{
+						if(bLeftButtonPressed)
+						{
+							m_kMoveSlot.bIsInventoryItem = true;
+							m_kMoveSlot.m_iIndex = i;
+
+							m_vkInventoryItemList[i].pkWnd->Show();
+							m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+							m_pkInventoryWnd->SortChilds(); 
+						}					
+						break;
+					}
+
+				m_iItemUnderCursor = -1;
+			}
+		}
+		else
 		{
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
 				{
-					if(bLeftButtonPressed)
-					{
-						m_kMoveSlot.bIsInventoryItem = true;
-						m_kMoveSlot.m_iIndex = i;
-
-						m_vkInventoryItemList[i].pkWnd->Show();
-						m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-						m_pkInventoryWnd->SortChilds(); 
-					}					
+					m_vkInventoryItemList[i].pkWnd->Show();
+					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					m_pkInventoryWnd->SortChilds(); 	
+					m_iItemUnderCursor = -1;
 					break;
 				}
-
-			m_iItemUnderCursor = -1;
 		}
 	}
 
@@ -336,6 +352,8 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 
 void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 {
+	printf("InventoryDlg::UpdateInventory\n");
+
 	m_iHighestZ = 1000;
 	m_kMoveSlot.m_iIndex = -1;
 
@@ -348,6 +366,8 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 	}
 
 	m_vkInventoryItemList.clear();
+
+//	m_fPickUpTimer = 0;
 
 	// Rebuild slotlist.
 	int x,y,w,h;
@@ -365,12 +385,14 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->Show();
 
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
+		{
 			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
 			{
 				float fTime = (float) SDL_GetTicks() / 1000.0f;
 				m_fPickUpTimer = fTime;
 				pkNewSlot->Hide();
 			}
+		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
@@ -594,6 +616,8 @@ void InventoryDlg::OnDropItem()
 			}
 		}
 	}
+
+//	m_fPickUpTimer = 0;
 }
 
 void InventoryDlg::CloseContainerWnd()
