@@ -103,7 +103,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetObjectType",				ObjectManagerLua::GetObjectTypeLua);		
 	pkScript->ExposeFunction("GetObjectName",				ObjectManagerLua::GetObjectNameLua);		
 	pkScript->ExposeFunction("SendEvent",					ObjectManagerLua::SendEventLua);			
-
 }
 
 void Reset()

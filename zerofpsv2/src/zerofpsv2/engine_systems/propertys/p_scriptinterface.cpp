@@ -54,7 +54,7 @@ void P_ScriptInterface::Update()
 }
 
 /*
-bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams)
+bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ScriptFuncArg>* pkParams)
 {
 	//set self id before calling the funktion
 	ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();	
@@ -77,14 +77,14 @@ bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObjec
 		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
 
 
-		vector<ARG_DATA> args(1);
-		args[0].eType = tSTRING;
-		args[0].pData = new char[strlen(acType)+1];
-		strcpy((char*)args[0].pData, acType);
+		vector<ScriptFuncArg> args(1);
+		args[0].m_kType.m_eType = tCSTRING;
+		args[0].m_pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].m_pData, acType);
 		
 		bool bSuccess = m_pkScriptSys->Call(m_pkEntity->GetEntityScript(), "Use", args);
 
-		delete[] args[0].pData;
+		delete[] args[0].m_pData;
 		
 		return bSuccess;
 	}
@@ -104,22 +104,22 @@ bool P_ScriptInterface::SendGroudClickEvent(const char* acType,Vector3 kPos,int 
 		//set caller id
 		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
 
-		vector<ARG_DATA> args(4);
-		args[0].eType = tSTRING;
-		args[0].pData = new char[strlen(acType)+1];
-		strcpy((char*)args[0].pData, acType);
+		vector<ScriptFuncArg> args(4);
+		args[0].m_kType.m_eType = tCSTRING;
+		args[0].m_pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].m_pData, acType);
 		
-		args[1].eType = tFLOAT;
-		args[1].pData = &kPos.x;
-		args[2].eType = tFLOAT;
-		args[2].pData = &kPos.y;
-		args[3].eType = tFLOAT;
-		args[3].pData = &kPos.z;
+		args[1].m_kType.m_eType = tFLOAT;
+		args[1].m_pData = &kPos.x;
+		args[2].m_kType.m_eType = tFLOAT;
+		args[2].m_pData = &kPos.y;
+		args[3].m_kType.m_eType = tFLOAT;
+		args[3].m_pData = &kPos.z;
 		
 		
 		bool bSuccess = m_pkScriptSys->Call( m_pkEntity->GetEntityScript(), "GroundClick", args);
 
-		delete[] args[0].pData;
+		delete[] args[0].m_pData;
 		
 		return bSuccess;
 	}
@@ -141,9 +141,9 @@ void P_ScriptInterface::SetHeartRate(float blub)
 
 void P_ScriptInterface::Touch(int iId)
 {
-	vector<ARG_DATA> args(1);
-	args[0].eType = tINT;
-	args[0].pData = &iId;
+	vector<ScriptFuncArg> args(1);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &iId;
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Collission",&args);	
 }

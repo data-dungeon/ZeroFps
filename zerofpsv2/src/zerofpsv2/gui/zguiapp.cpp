@@ -968,7 +968,7 @@ bool ZGuiApp::IsButtonChecked(char* szWnd)
 	return false;
 }
 
-void ZGuiApp::CheckButton(char* szWnd, bool bCheck)
+void ZGuiApp::CheckButton(const char* szWnd, bool bCheck)
 {
 	ZGuiWnd* pkWnd;
 	if((pkWnd = m_pkResMan->Wnd(szWnd)))
@@ -1197,6 +1197,8 @@ bool ZGuiApp::LoadGuiFromScript(char* szFileName)
 	}
 
 	m_pkScriptSystem->Call(&kScriptResHandle, "GUICreate", 0, 0);
+
+
 
 	return true;
 }

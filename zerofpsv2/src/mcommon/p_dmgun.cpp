@@ -309,15 +309,9 @@ bool P_DMGun::FireBullets(int iAmount)
 					//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)
 					//	pkClosest->GetProperty("P_ScriptInterface"))
 					//{
-						vector<ARG_DATA> kParams;
-
+						vector<ScriptFuncArg> kParams;
 						int iFoe = m_pkEntity->GetEntityID();
-
-						ARG_DATA kData;
-						kData.eType = tINT;
-						kData.pData = &iFoe;
-						kParams.push_back (kData);
-
+						kParams.push_back (ScriptFuncArg(&iFoe, tINT));
 						m_pkEntityManager->CallFunction(pkClosest, "OnTakingDmgFrom", &kParams);
 					//}
 

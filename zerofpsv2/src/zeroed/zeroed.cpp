@@ -38,9 +38,7 @@
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{static int oka = 0;
-
-
+{
 	switch(msg)
 	{
 	case ZGM_COMMAND:
@@ -97,6 +95,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZoneMarkerEntity 	=	NULL;
 	
 	strcpy(szCoolName , "Guldfisk");	
+
+	int olle = 2;
 
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
@@ -375,7 +375,6 @@ void ZeroEd::Init()
 
 	//enable sun as default
 	ToogleLight();
-
 }
 
 void ZeroEd::OnServerStart(void)

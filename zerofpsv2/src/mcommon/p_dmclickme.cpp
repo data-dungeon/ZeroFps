@@ -107,16 +107,8 @@ void P_DMClickMe::Click(int iObjID)
 		return;
 	}
 
-	vector<ARG_DATA> kParams;
-
-//	int iValue = iObjID;
-	
-	ARG_DATA kData;
-	kData.eType = tINT;
-	kData.pData = &iObjID;
-
-	kParams.push_back (kData);
-
+	vector<ScriptFuncArg> kParams;
+	kParams.push_back (ScriptFuncArg(&iObjID,tINT));
 	m_pkEntityManager->CallFunction (  m_pkEntity, "Click", &kParams );	
 }
 

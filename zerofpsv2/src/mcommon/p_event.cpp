@@ -77,8 +77,8 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 		MistLandLua::g_iCurrentPCID = iCallerObject;
 
 
-		vector<ARG_DATA> args(1);
-		args[0].eType = tSTRING;
+		vector<ScriptFuncArg> args(1);
+		args[0].eType = tCSTRING;
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
 		
@@ -104,8 +104,8 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObj
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
 
-		vector<ARG_DATA> args(4);
-		args[0].eType = tSTRING;
+		vector<ScriptFuncArg> args(4);
+		args[0].eType = tCSTRING;
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
 		

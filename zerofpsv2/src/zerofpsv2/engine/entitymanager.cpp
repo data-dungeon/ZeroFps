@@ -2685,7 +2685,7 @@ void EntityManager::UpdateZoneStatus()
 	}
 }
 
-bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ARG_DATA>* pkParams)
+bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams)
 {
 	//set self id before calling the funktion
 	ObjectManagerLua::g_iCurrentObjectID = pkEntity->m_iEntityID;	

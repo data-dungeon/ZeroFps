@@ -98,7 +98,7 @@ public:
 	ZGuiSkin* AddSkinFromScript2(char *szName, lua_State* pkResHandle, ZGuiSkin* pkSkin);
 
 	bool IsButtonChecked(char* szWnd);
-	void CheckButton(char* szWnd, bool bCheck);
+	void CheckButton(const char* szWnd, bool bCheck);
 	float GetTextFloat(char* szWnd, bool* pkSuccess);
 	int GetTextInt(char* szWnd, bool* pkSuccess);
 	char* GetText(char* szWnd);

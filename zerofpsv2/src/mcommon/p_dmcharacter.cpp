@@ -556,15 +556,10 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 		//if (pkSI)
 		//{
 			// send in characterID
-			vector<ARG_DATA> kParams;
+			vector<ScriptFuncArg> kParams;
 
-			int iValue = m_pkEntity->GetEntityID();;
-			
-			ARG_DATA kData;
-			kData.eType = tINT;
-			kData.pData = &iValue;
-
-			kParams.push_back (kData);
+			int iValue = m_pkEntity->GetEntityID();
+			kParams.push_back (ScriptFuncArg(&iValue, tINT));
 
 			m_pkEntityManager->CallFunction (m_pkEntity, "Use", &kParams );	
 		//}

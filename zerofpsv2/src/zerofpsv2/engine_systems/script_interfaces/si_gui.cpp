@@ -9,8 +9,6 @@
 //ZFScriptSystem*	GuiAppLua::g_pkScript;
 //ZGuiApp* 			GuiAppLua::g_pkGuiApp;
 
-static int g_iTest = 44;
-
 void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 {
 	g_pkGuiApp = pkGuiApp;
@@ -34,8 +32,6 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
-
-	pkScript->ExposeVariable("g_iTest", &g_iTest, VAR_INT);
 }
 
 // Name: CreateWndLua

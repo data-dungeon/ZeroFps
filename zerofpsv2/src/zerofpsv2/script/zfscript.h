@@ -10,6 +10,8 @@ extern "C"
 	#include <lauxlib.h>
 }
 
+#include <tolua++.h>
+
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 #pragma warning (disable : 4786)
 #include <set>
@@ -28,19 +30,12 @@ class ZFVFileSystem;
 enum ScripVarType
 {
 	tINT				= 1,
-	tDOUBLE			= 4,
+	tBOOL				= 2, 
 	tFLOAT			= 3,
-	tSTRING			= 5,
-};
-
-enum VAR_TYPE
-{
-	VAR_INT			= 1,
-	VAR_BOOL			= 2,
-	VAR_FLOAT		= 3,
-	VAR_DOUBLE		= 4,
-	VAR_CSTRING		= 5,
-	VAR_STLSTRING	= 6
+	tDOUBLE			= 4,
+	tCSTRING			= 5,
+	tSTLSTRING		= 6,
+	tUSERDATA		= 7, // only for function arguments var so far
 };
 
 struct SCRIPT_API TABLE_DATA
@@ -49,10 +44,35 @@ struct SCRIPT_API TABLE_DATA
 	bool bNumber;
 };
 
-struct SCRIPT_API ARG_DATA
+class SCRIPT_API ScriptFuncArg
 {
-	void* pData;
-	ScripVarType eType;
+public:
+	struct Type
+	{
+		ScripVarType m_eType;
+		char m_szType[50];
+	} m_kType;
+
+	void* m_pData;
+	
+	ScriptFuncArg(void* pData, const char* szTypeName) 
+	{ 
+		m_pData = pData; 
+		m_kType.m_eType = tUSERDATA; 
+		strcpy(m_kType.m_szType, szTypeName); 
+	};
+
+	ScriptFuncArg(void* pData, ScripVarType eType)
+	{ 
+		m_pData = pData; 
+		m_kType.m_eType = eType; 
+	};
+
+	ScriptFuncArg()
+	{
+		m_pData = NULL;
+		m_kType.m_eType = tINT;
+	}
 };
 
 /**	\brief	Script in the Resource SubSystem
@@ -60,19 +80,18 @@ struct SCRIPT_API ARG_DATA
 */
 class SCRIPT_API ZFScript : public ZFResource
 {
+	private:
+		char* m_szScriptName;		
+		
+		friend class ZFScriptSystem;
+
 	public:
+		lua_State* m_pkLuaState;
+
 		ZFScript();
 		~ZFScript();
 		bool Create(string strName);	// overloaded
-
 		int CalculateSize();
-		lua_State* m_pkLuaState;
-
-	private:
-
-		char* m_szScriptName;
-		
-		friend class ZFScriptSystem;
 };
 
 SCRIPT_API ZFResource* Create__ZFScript();
@@ -82,9 +101,49 @@ SCRIPT_API ZFResource* Create__ZFScript();
 */
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
+private:
+
+	struct GlobalFuncInfo
+	{
+		lua_CFunction pkFunction;
+		char* szName;
+	};
+
+	struct GlobalVarInfo
+	{
+		void* pvData;
+		ScripVarType eType;
+		char* szName;
+	};
+
+	lua_State* m_pkLua;
+	ZFVFileSystem* m_pkFileSys;
+
+	vector<GlobalFuncInfo*> m_vkGlobalFunctions;
+	vector<GlobalVarInfo*> m_vkGlobalVariables;
+	vector<lua_CFunction> m_vkGlobalModules;
+
+	static map<string,pair<void*,ScripVarType> > m_kVarMap;
+
+	void Close();
+	bool Open();
+
+	bool Run(ZFScript* pkScript);
+	void CreateMetatables(lua_State* L);
+	
+	static int GetVar(lua_State* L);
+	static int SetVar(lua_State* L);
+
+	void CopyGlobalData(lua_State* pkState);
+	
+protected:
+	lua_State* GetLua() { return m_pkLua; }
+
+	friend class ZFScript;
+
 public:
 
-	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, vector<ARG_DATA>& vkParams);
+	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, vector<ScriptFuncArg>& vkParams);
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
 	bool Run(ZFResourceHandle* pkResHandle);
 
@@ -106,58 +165,18 @@ public:
 	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
 	void DeleteTable(vector<TABLE_DATA>& data);
 
-	bool ExposeFunction(const char* szName, lua_CFunction o_Function, lua_State* pkState=NULL);
-	int ExposeVariable(const char* name, void* pVar, VAR_TYPE eType, lua_State* L=NULL);
+	void ExposeFunction(const char* szName, lua_CFunction o_Function, lua_State* pkState=NULL);
+	void ExposeVariable(const char* szName, void* pVar, ScripVarType eType, lua_State* L=NULL);
+	void ExposeModule(lua_CFunction o_OpenFunction, lua_State* L=NULL);
 	
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();	
-
-	void CopyGlobalData(lua_State* pkState);
 	
 	string FormatMultiLineTextFromLua(string strLuaText);
 	
 	ZFScriptSystem();
 	virtual ~ZFScriptSystem();
-
-private:
-
-	bool Run(ZFScript* pkScript);
-
-	struct GlobalFuncInfo
-	{
-		lua_CFunction pkFunction;
-		char* szName;
-	};
-
-	vector<GlobalFuncInfo*> m_vkGlobalFunctions;
-
-	struct GlobalVarInfo
-	{
-		void* pvData;
-		VAR_TYPE eType;
-		char* szName;
-	};
-
-	vector<GlobalVarInfo*> m_vkGlobalVariables;
-
-	void Close();
-	bool Open();
-
-	void CreateMetatables(lua_State* L);
-	
-	static int GetVar(lua_State* L);
-	static int SetVar(lua_State* L);
-	static map<string,pair<void*,VAR_TYPE> > m_kVarMap;
-
-	lua_State* m_pkLua;
-
-	ZFVFileSystem* m_pkFileSys;
-
-protected:
-	lua_State* GetLua() { return m_pkLua; }
-
-	friend class ZFScript;
 
 };
 

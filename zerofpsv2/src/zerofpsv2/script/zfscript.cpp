@@ -10,8 +10,7 @@
 
 using namespace std;
 
-map<string,pair<void*,VAR_TYPE> > ZFScriptSystem::m_kVarMap;
-
+map<string,pair<void*,ScripVarType> > ZFScriptSystem::m_kVarMap;
   
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -27,11 +26,8 @@ ZFScriptSystem::~ZFScriptSystem()
 	Close();
 }
 
-
 bool ZFScriptSystem::StartUp()
 { 
-	
-
 	return true; 
 }
 
@@ -54,35 +50,6 @@ bool ZFScriptSystem::Open()
 	// Open Lua
 	m_pkLua = lua_open();
 
-
-	// Create Lua tag for Int type.
-	//m_iLuaTagInt = lua_newtag(m_pkLua);
-	//lua_pushcfunction(m_pkLua, GetTypeInt);
-	//lua_settagmethod(m_pkLua, m_iLuaTagInt, "getglobal");
-	//lua_pushcfunction(m_pkLua, SetTypeInt); 
-	//lua_settagmethod(m_pkLua, m_iLuaTagInt, "setglobal");
-
-	//// Create Lua tag for Double type.
-	//m_iLuaTagDouble = lua_newtag(m_pkLua);
-	//lua_pushcfunction(m_pkLua, GetTypeDouble);
-	//lua_settagmethod(m_pkLua, m_iLuaTagDouble, "getglobal");
-	//lua_pushcfunction(m_pkLua, SetTypeDouble); 
-	//lua_settagmethod(m_pkLua, m_iLuaTagDouble, "setglobal");
-
-	//// Create Lua tag for Float type.
-	//m_iLuaTagFloat = lua_newtag(m_pkLua);
-	//lua_pushcfunction(m_pkLua, GetTypeFloat);
-	//lua_settagmethod(m_pkLua, m_iLuaTagFloat, "getglobal");
-	//lua_pushcfunction(m_pkLua, SetTypeFloat); 
-	//lua_settagmethod(m_pkLua, m_iLuaTagFloat, "setglobal");
-
-	//// Create Lua tag for String type.
-	//m_iLuaTagString = lua_newtag(m_pkLua);
-	//lua_pushcfunction(m_pkLua, GetTypeString);
-	//lua_settagmethod(m_pkLua, m_iLuaTagString, "getglobal");
-	//lua_pushcfunction(m_pkLua, SetTypeString); 
-	//lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
-
 	m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 
@@ -96,13 +63,14 @@ bool ZFScriptSystem::Open()
 	return true;	
 }
 
+
+
 void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
 {
-	//*ppkState = lua_open();
-
 	unsigned int i;
 	const unsigned int iNumFunctions = m_vkGlobalFunctions.size();
 	const unsigned int iNumVars = m_vkGlobalVariables.size();
+	const unsigned int iNumModules = m_vkGlobalModules.size();
 
 	// Add global functions
 	for(i=0; i<iNumFunctions;  i++)
@@ -116,6 +84,11 @@ void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
 			m_vkGlobalVariables[i]->pvData,
 			m_vkGlobalVariables[i]->eType,
 			pkState);
+
+	// Add global modules
+	for(i=0; i<iNumModules; i++)
+		ExposeModule(m_vkGlobalModules[i], pkState);
+		
 }
 
 void ZFScriptSystem::Close()
@@ -139,11 +112,22 @@ void ZFScriptSystem::Close()
 	printf("ZFScriptSystem::Close\n");
 }
 
+void ZFScriptSystem::ExposeModule(lua_CFunction o_Function, lua_State* pkState)
+{
+	if(pkState == NULL)
+		pkState = m_pkLua;
+
+	o_Function(pkState);
+
+	if(pkState == m_pkLua)
+		m_vkGlobalModules.push_back(o_Function);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		ExposeFunction
 // Description:	Registrera en C++ function som Lua kan se.
 //
-bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function, 
+void ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function, 
 												lua_State* pkState)
 {
 	if(pkState == NULL)
@@ -158,11 +142,8 @@ bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 		func_info->szName = new char[ strlen(szName) + 1 ];	// LEAK - MistServer, Nothing loaded.	(FIXED)
 		strcpy(func_info->szName, szName);
 		m_vkGlobalFunctions.push_back(func_info);
-
-		//printf(" Adding global function (%i) : %s\n", m_vkGlobalFunctions.size(), szName);
 	}
 
-	return true;
 }
 
 
@@ -275,10 +256,7 @@ bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
 
 	if(lua_isstring(state, iLuaIndex))
 	{
-		const char* val = lua_tostring(state, iLuaIndex);
-		//char* text = (char*) data;
-		
-      
+		const char* val = lua_tostring(state, iLuaIndex);      
       strcpy(data, val);
 		return true;
 	}
@@ -564,7 +542,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 }
 
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
-									vector<ARG_DATA>& vkParams)
+									vector<ScriptFuncArg>& vkParams)
 {
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
 
@@ -586,26 +564,40 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 	for(unsigned int j=0; j<vkParams.size(); j++)
 	{
-		switch(vkParams[j].eType)
+		switch(vkParams[j].m_kType.m_eType)
 		{
 		case tINT:
-			int* i; i = (int*) vkParams[j].pData; d = *i;
+			int* i; i = (int*) vkParams[j].m_pData; d = *i;
+			lua_pushnumber(pkScript->m_pkLuaState, d);
+			break;
+		case tBOOL:
+			lua_pushnumber(pkScript->m_pkLuaState,(double)(*(bool*) vkParams[j].m_pData));
+			break;
+		case tFLOAT:
+			float* f; f = (float*) vkParams[j].m_pData; d = *f;
 			lua_pushnumber(pkScript->m_pkLuaState, d);
 			break;
 		case tDOUBLE:			
-			lua_pushnumber(pkScript->m_pkLuaState, (*(double*) vkParams[j].pData));
+			lua_pushnumber(pkScript->m_pkLuaState, (*(double*) vkParams[j].m_pData));
 			break;
-		case tFLOAT:
-			float* f; f = (float*) vkParams[j].pData; d = *f;
-			lua_pushnumber(pkScript->m_pkLuaState, d);
+		case tCSTRING:
+			lua_pushstring(pkScript->m_pkLuaState, (char*) vkParams[j].m_pData);
 			break;
-		case tSTRING:
-			lua_pushstring(pkScript->m_pkLuaState, (char*) vkParams[j].pData);
+		case tSTLSTRING:
+			lua_pushstring(pkScript->m_pkLuaState,(char*)(*(string*)vkParams[j].m_pData).c_str());
+			break;
+		case tUSERDATA:
+			tolua_pushusertype(pkScript->m_pkLuaState, vkParams[j].m_pData, vkParams[j].m_kType.m_szType);
 			break;
 		}
 	}
 
-	return (lua_pcall(pkScript->m_pkLuaState, vkParams.size(), 0, 0) == 0);
+	lua_call(pkScript->m_pkLuaState, vkParams.size(), 0);
+
+	if(!vkParams.empty())
+		lua_pop(pkScript->m_pkLuaState, vkParams.size());
+
+	return true;
 }
 
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
@@ -795,7 +787,7 @@ void ZFScriptSystem::CreateMetatables(lua_State* L)
 // Name:		ExposeVariable
 // Description:	Registrera en standard variabel som Lua kan se.
 //
-int ZFScriptSystem::ExposeVariable (const char* name, void* pVar, VAR_TYPE eType, lua_State* L)
+void ZFScriptSystem::ExposeVariable (const char* name, void* pVar, ScripVarType eType, lua_State* L)
 {
 	if(L == NULL)
 		L = m_pkLua;
@@ -838,16 +830,17 @@ int ZFScriptSystem::ExposeVariable (const char* name, void* pVar, VAR_TYPE eType
 
 	lua_pop(L,1);
 
-	m_kVarMap[name] = pair<void*,VAR_TYPE>((void*)pVar, eType);
+	if(L == m_pkLua)
+	{
+		m_kVarMap[name] = pair<void*,ScripVarType>((void*)pVar, eType);
 
-	GlobalVarInfo* var_info = new GlobalVarInfo;
-	var_info->eType = eType;
-	var_info->szName = new char[ strlen(name) + 1 ];
-	strcpy(var_info->szName, name);
-	var_info->pvData = pVar;
-	m_vkGlobalVariables.push_back(var_info);
-
-	return 1;
+		GlobalVarInfo* var_info = new GlobalVarInfo;
+		var_info->eType = eType;
+		var_info->szName = new char[ strlen(name) + 1 ];
+		strcpy(var_info->szName, name);
+		var_info->pvData = pVar;
+		m_vkGlobalVariables.push_back(var_info);
+	}
 }
 
 
@@ -863,22 +856,22 @@ int ZFScriptSystem::GetVar(lua_State* L)
 
 	switch(t.second)
 	{
-	case VAR_INT:
+	case tINT:
 		lua_pushnumber(L,(double)(*(int*) t.first));
 		break;
-	case VAR_BOOL:
+	case tBOOL:
 		lua_pushnumber(L,(double)(*(bool*) t.first));
 		break;
-	case VAR_FLOAT:
+	case tFLOAT:
 		lua_pushnumber(L,(double)(*(float*) t.first));
 		break;
-	case VAR_DOUBLE:
+	case tDOUBLE:
 		lua_pushnumber(L,(double)(*(double*) t.first));
 		break;
-	case VAR_CSTRING:
+	case tCSTRING:
 		lua_pushstring(L,(char*) t.first);
 		break;
-	case VAR_STLSTRING:
+	case tSTLSTRING:
 		lua_pushstring(L,(char*)(*(string*)t.first).c_str());
 		break;
 	}
@@ -893,22 +886,22 @@ int ZFScriptSystem::SetVar(lua_State* L)
 
 	switch(t.second)
 	{
-	case VAR_INT:
+	case tINT:
 		(*(int*) t.first) = (int) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
 		break;
-	case VAR_BOOL:
+	case tBOOL:
 		(*(bool*) t.first) = (bool) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
 		break;
-	case VAR_FLOAT:
+	case tFLOAT:
 		(*(float*) t.first) = (float) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
 		break;
-	case VAR_DOUBLE:
+	case tDOUBLE:
 		(*(double*) t.first) = (double) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
 		break;
-	case VAR_CSTRING:
+	case tCSTRING:
 		strcpy((char*) t.first, (lua_gettop(L)<abs(2) ? "" : lua_tostring(L,2)));
-		break;
-	case VAR_STLSTRING:
+		break;		
+	case tSTLSTRING:
 		(*(string*) t.first) = (lua_gettop(L)<abs(2) ? "" : lua_tostring(L,2));
 		break;
 	}
