@@ -354,7 +354,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce.y -= 9.00 * m_kBodys[i]->m_fMass;
+				m_kBodys[i]->m_kLinearForce.y -= 15.00 * m_kBodys[i]->m_fMass;
 			}
 			
 			//apply some air friction		
