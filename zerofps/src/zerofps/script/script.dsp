@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin
+PostBuild_Cmds=copy  $(ProjDir)\release\*.lib ..\..\..\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "script - Win32 Debug"
@@ -125,7 +125,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin	copy $(ProjDir)\releaseprofile\*.map  ..\..\..\bin
+PostBuild_Cmds=copy  $(ProjDir)\releaseprofile\*.lib ..\..\..\bin	copy $(ProjDir)\releaseprofile\*.map  ..\..\..\bin
 # End Special Build Tool
 
 !ENDIF 

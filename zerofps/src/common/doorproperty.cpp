@@ -128,6 +128,10 @@ bool DoorProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
+COMMON_API Property* Create_GuldFiskProperty()
+{
+	return new DoorProperty();
+}
 
 
 COMMON_API Property* Create_DoorProperty()

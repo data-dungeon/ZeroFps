@@ -14,6 +14,8 @@
 #include <iostream>
 #include "common_x.h"
 
+#include "itemproperty.h"
+
 using namespace std;
 
 

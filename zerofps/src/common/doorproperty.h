@@ -48,7 +48,6 @@ class COMMON_API DoorProperty: public Property {
 
 COMMON_API Property* Create_DoorProperty();
 
-
 #endif
 
 

@@ -1,4 +1,5 @@
 #include "logproperty.h"
+#include "adaptorsniper.h"
 #include "itemproperty.h"
 
 LogProperty::LogProperty()

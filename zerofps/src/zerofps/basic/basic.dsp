@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                      $(ProjDir)\release\*.lib                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                       $(ProjDir)\release\*.lib                                        ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin
+PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib  ..\..\..\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Release Profile"
@@ -112,7 +112,7 @@ PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib          
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /c
 # SUBTRACT BASE CPP /YX
-# ADD CPP /nologo /MD /Ze /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
