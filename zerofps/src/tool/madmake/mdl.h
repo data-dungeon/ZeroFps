@@ -6,12 +6,6 @@
 
 #include "../../zerofps/basic/basicmath.pkg"
 
-/*class Vector3
-{
-public:
-	float x,y,z;
-};*/
-
 struct pmd_triangle_s
 {
 	int				texture_num;		// texture for this triangle.
@@ -110,6 +104,8 @@ public:
     int					new_skinwidth;		// New skinsize after resampling to power of 2.
 	int					new_skinheight;		
 	
+	vector<Image>		Skins;
+
 	void Read( const char* filename );			// Read data in own format to this.
 	bool Export(MadExporter* mad, const char* filename);			// Export this to mad.
 };

@@ -33,7 +33,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
 */                         
       
-#include <GL/extgl.h>
+#include "extgl.h"
 #include <stdio.h>
 #include <string.h>
 
