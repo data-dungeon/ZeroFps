@@ -43,6 +43,7 @@ public:
 	ZGuiListbox* GetListbox() { return m_pkListbox; }
 	const int GetNumVisibleRows() { return m_unNumVisibleRows; }
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
+	void KillFocus();
 
 private:
 	ZGuiLabel* m_pkLabel;

@@ -47,7 +47,6 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf,
 	m_oGuiCallback = cb;
 	Create(200,200, "../data/gui_resource_files/zgresource_rc.txt", "PropertyDlg");
 	m_pkSelProperty = NULL;
-	//OnOpenEditProperty();
 }
 
 EditPropertyDlg::~EditPropertyDlg()
@@ -80,110 +79,11 @@ bool EditPropertyDlg::Create(int x, int y, char* szResourceFile, char* szDlgName
 
 	m_pkZGui->AddKeyCommand(KEY_RETURN, pkDialog, pkPropOKBn);
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDialog, pkPropCancelBn);
-//	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
-
-	//m_pkWindow = pkDialog;
 	m_pkDlgBox = pkDialog;
 
 	m_pkZGui->ShowMainWindow(m_pkDlgBox, false);
 
 	return true;
-
-/*	// COMMENT OUT by: Zeb
-
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),
-		NULL,true,ID_PROPERTY_WND);
-	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_pkGui->m_pkEdit->m_iWidth,
-		m_pkGui->m_pkEdit->m_iHeight));
-	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
-
-	int y_pos;
-
-	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 
-		20, "x")->SetWindowFlag(WF_CENTER_TEXT);
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 
-		16*6, 20, 16*6+16*7*2, 20), "ObjectNameEB" );
-
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 50, 16*4, 20, "Pos:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 
-		16*6, 50, 16*6, 20), "ObjectPosXEB");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 
-		16*6+16*7, 50, 16*6, 20), "ObjectPosYEB"); 
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 
-		16*6+16*7*2, 50, 16*6, 20), "ObjectPosZEB");
-
-	y_pos = 80;
-
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Props:");
-
-	ZGuiCombobox* cb;
-	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 
-		16*6, y_pos, 16*6+16*7*2, 20, false), "PropertyCB");
-	cb->SetNumVisibleRows(20);
-
-	ZGuiButton* bn;
-	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 
-		16*6+16*6+16*7*2+10, y_pos, 70, 20, "Add"), "AddPropertyBN");
-	bn->SetWindowFlag(WF_CENTER_TEXT);
-
-	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_REMOVEPROPERTY_BN, 
-		16*6+16*6+16*7*2+10, y_pos+30, 70, 20, "Remove"), "RemovePropertyBN");
-	bn->SetWindowFlag(WF_CENTER_TEXT);
-
-	y_pos += 30;
-
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Values:");
-
-	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, 
-		ID_PROPERTY_VALUES_CB, 16*6, y_pos, 16*6+16*7*2, 20, 
-		false), "PropertyValuesCB");
-	cb->SetNumVisibleRows(20);
-
-	y_pos += 30;
-
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Change:");
-	
-	ZGuiWnd* pkPropValSetEB = m_pkGui->CreateTextbox(pkMainWindow, 
-		ID_PROPERTY_NEW_VALUE_EB, 
-		16*6, y_pos, 16*6+16*7*2, 20);
-	m_pkGui->Register(pkPropValSetEB, "PropertyValueSetEB" );
-	ZGuiWnd* pkSetNewValueBN = m_pkGui->CreateButton(pkMainWindow, 
-		ID_PROPERTY_SET_NEW_VALUE_BN, 
-		16*6+16*6+16*7*2+10, y_pos, 70, 20, "OK");
-	pkSetNewValueBN->SetWindowFlag(WF_CENTER_TEXT);
-
-	ZGuiWnd* pkPropOKBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, 
-		16*6+16*6+16*7*2+10, h-50, 70, 20, "OK");
-	pkPropOKBn->SetWindowFlag(WF_CENTER_TEXT);
-	ZGuiWnd* pkPropCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, 
-		16*6+16*6+16*7*2+10, h-25, 70, 20, "Cancel");
-	pkPropCancelBn->SetWindowFlag(WF_CENTER_TEXT);
-
-	y_pos += 30;
-
-	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 100, 20, "ObjectType");
-
-	vector<string> vkObjectTypeNames;
-	vkObjectTypeNames.push_back("OBJECT_TYPE_DYNAMIC");
-	vkObjectTypeNames.push_back("OBJECT_TYPE_STATIC");
-	vkObjectTypeNames.push_back("OBJECT_TYPE_PLAYER");
-	vkObjectTypeNames.push_back("OBJECT_TYPE_STATDYN");
-	vkObjectTypeNames.push_back("OBJECT_TYPE_DECORATION");
-
-	m_pkGui->CreateRadiobuttons(pkMainWindow, vkObjectTypeNames, 
-		"ObjectTypeRadioGroup", 
-		ID_OBJECTTYPE_RADIOGROUP, 10, 200, 16); 
-	
-	m_pkZGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, "PropertyDlg", 
-		PROPERTYPROC, true);
-
-	m_pkZGui->AddKeyCommand(KEY_RETURN, pkMainWindow, pkPropOKBn);
-	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkPropCancelBn);
-	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
-
-	return pkMainWindow;*/
 }
 
 void EditPropertyDlg::OnOpenEditProperty()
@@ -262,7 +162,7 @@ void EditPropertyDlg::OnOpenEditProperty()
 		if(((ZGuiCombobox*)pkPropertysCB)->GetListbox()->GetSelItem())
 		{
 			int* piParams = new int[2];
-			piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID // COMMENT OUT by: Zeb
+			piParams[0] = PropertyCB; 
 			piParams[1] = ((ZGuiCombobox*)pkPropertysCB)->GetListbox()->GetSelItem()->GetIndex(); // list item ID
 			DlgProc(pkPropertysCB->GetParent(), ZGM_CBN_SELENDOK, 2, piParams);
 			delete[] piParams;
@@ -286,34 +186,6 @@ void EditPropertyDlg::OnOpenEditProperty()
 			m_pkGui->Get("ObTypeDecorationRb")->Notify(NULL, NCODE_CLICK_UP);
 			break;
 		}
-
-	/*  // COMMENT OUT by: Zeb
-		int apa = m_pkCurrentChild->GetObjectType();
-
-		ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjectTypeRadioGroup");
-
-		if(pkWndGroup)
-		{
-			ZGuiRadiobutton* curr = ((ZGuiRadiobutton*)pkWndGroup);
-
-			while(1)
-			{
-				int index = curr->GetButton()->GetID() - ID_OBJECTTYPE_RADIOGROUP;
-
-				if(index == apa)
-				{
-					curr->GetButton()->CheckButton();
-				}
-				else
-				{
-					curr->GetButton()->UncheckButton();
-				}
-
-				curr = curr->GetNext();
-				if(curr == NULL)
-					break;
-			}
-		}*/
 	}
 }
 
@@ -368,47 +240,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 				m_pkCurrentChild->GetRot() = Vector3(rx,ry,rz);
 			}
 		}
-
 	}
-
-/*	// COMMENT OUT by: Zeb
-	int index = -1;
-	ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjectTypeRadioGroup");
-
-	if(pkWndGroup)
-	{
-		ZGuiRadiobutton* curr = ((ZGuiRadiobutton*)pkWndGroup);
-
-		while(1)
-		{
-			if(curr->GetButton()->IsChecked())
-			{
-				index = curr->GetButton()->GetID();
-				break;
-			}
-
-			curr = curr->GetNext();
-			if(curr == NULL)
-				break;
-		}
-	}
-	else
-	{
-		m_pkGui->CaptureInput(false);
-		printf("apa\n");
-		return false;
-	}
-
-	if(index != -1 && bSave)
-	{
-		int type_offset = index-ID_OBJECTTYPE_RADIOGROUP;
-		if(type_offset >= 0 && type_offset < 5)
-			m_pkCurrentChild->GetObjectType() = ObjectType(index-ID_OBJECTTYPE_RADIOGROUP);
-		else
-		{
-			printf("Failed to set object type\n");
-		}
-	}*/
 
 	if(bSave && m_pkCurrentChild != NULL)
 	{
@@ -432,7 +264,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 	{
 		// Send a message to the main winproc...
 		int* piParams = new int[1];
-		piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID // COMMENT OUT by: Zeb
+		piParams[0] = ChangeValueOKBn; 
 		DlgProc(m_pkDlgBox, ZGM_COMMAND, 1, piParams);
 		delete[] piParams;
 	}
@@ -550,21 +382,22 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 
 		switch(iControllID)
 		{
-		case /*ID_PROPERTY_CANCEL*/ ObjectPropCloseButton: // COMMENT OUT by: Zeb
-		case /*ID_PROPERTY_WND_CLOSE*/ ObjectPropertiesCancel: // COMMENT OUT by: Zeb
+		case ObjectPropCloseButton:
+		case ObjectPropertiesCancel:
 			if(OnCloseEditProperty(false))
 			{
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("PropertyDlg"), false);
 			}
 			break;
-		case /*ID_PROPERTY_OK*/ObjectPropOK: // COMMENT OUT by: Zeb
+		case ObjectPropOK:
 			if(OnCloseEditProperty(true))
 			{
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("PropertyDlg"), false);
 			}
 			break;
-		case /*ID_ADDPROPERTY_BN*/AddPropertiesBn: // COMMENT OUT by: Zeb
-			CreateAddPropertyDlg(0,0,300,500);
+		case AddPropertiesBn:
+			int w; w = 200;
+			CreateAddPropertyDlg(m_pkGui->GetScreenRect().Width()-w,20,w,520);
 			break;
 		case ID_ADDPROPERTY_CLOSE:
 			m_bAdd = false;
@@ -576,10 +409,10 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 			if(OnCloseAddProperty(true))
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("EditPropertyDlg"), false);
 			break;
-		case /*ID_REMOVEPROPERTY_BN*/ RemovePropertyBn: // COMMENT OUT by: Zeb
+		case RemovePropertyBn:
 			RemoveProperty();
 			break;
-		case /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn: // COMMENT OUT by: Zeb
+		case ChangeValueOKBn:
 			{
 				if(m_pkSelProperty)
 				{
@@ -622,7 +455,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 
 			switch(iID)
 			{
-			case /*ID_PROPERTIES_CB*/ PropertyCB: // COMMENT OUT by: Zeb
+			case PropertyCB:
 
 				pkSelItem = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->GetListbox()->GetSelItem();
 
@@ -634,7 +467,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 				UpdateStats(iID);
 				break;
 
-			case /*ID_PROPERTY_VALUES_CB*/ PropertyValuesCB: // COMMENT OUT by: Zeb
+			case PropertyValuesCB:
 
 				pkSelItem = ((ZGuiCombobox*)m_pkGui->Get("PropertyValuesCB"))->GetListbox()->GetSelItem();
 
@@ -671,7 +504,7 @@ void EditPropertyDlg::RemoveProperty()
 			{
 				// Send a message to the main winproc...
 				int* piParams = new int[2];
-				piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID
+				piParams[0] = PropertyCB; // Listbox ID
 				piParams[1] = ((ZGuiCombobox*)wnd)->GetListbox()->GetItemCount(); // list item ID
 				DlgProc(((ZGuiCombobox*)wnd)->GetParent(), ZGM_CBN_SELENDOK, 2, piParams);
 				delete[] piParams;
@@ -692,7 +525,7 @@ void EditPropertyDlg::RemoveProperty()
 
 void EditPropertyDlg::UpdateStats(int ComboBoxID)
 {
-	if(ComboBoxID == /*ID_PROPERTIES_CB*/ PropertyCB) // COMMENT OUT by: Zeb
+	if(ComboBoxID == PropertyCB)
 	{
 		if(!m_szSelProperty.empty() && m_pkCurrentChild != NULL)
 		{

@@ -10,9 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "gui.h"
-#include "dialogbox.h"
-//#include <string>
-//using namespace std;
+#include "../game/dialogbox.h"
 
 class PropertyFactory;
 class Property;
@@ -50,8 +48,7 @@ private:
 	Gui* m_pkGui;
 	ZGui* m_pkZGui;
 	callback m_oGuiCallback;
-//	ZGuiWnd* m_pkWindow;	
-
+	
 	ObjectManager* m_pkObjectManager;
 	PropertyFactory* m_pkPropFactory;
 	Property* m_pkSelProperty;

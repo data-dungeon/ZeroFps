@@ -310,16 +310,11 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 
 bool ZGui::OnMouseUpdate()
 {
+	static ZGuiWnd* pkApa = NULL;
+
   	int x,y;
 	m_pkInput->MouseXY(x,y);
 	m_pkCursor->SetPos(x,y);
-
-	static int cx = -1, cy = -1;
-	if(!(cx == x && cy == y))
-	{
-		//printf("Mouse cursor (%i, %i)\n", x, y);
-		cx = x; cy = y;
-	}
 
 	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
 	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
@@ -402,8 +397,11 @@ bool ZGui::OnMouseUpdate()
 					pkParent->SortChilds();
 				
 				if(bLeftPressed)
+				{
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
+					pkApa = ZGuiWnd::m_pkWndClicked;
+				}
 
 				// Send a Left Button Down Message...
 				int* pkParams = new int[2];
@@ -415,7 +413,7 @@ bool ZGui::OnMouseUpdate()
 			else
 			{
 				m_pnCursorRangeDiffX = x-rc.Left; 
-				m_pnCursorRangeDiffY = y-rc.Top; 
+				m_pnCursorRangeDiffY = y-rc.Top;
 			}
 		}
 		else
@@ -562,8 +560,19 @@ bool ZGui::OnMouseUpdate()
 		}
 	}
 
+/*	if(bLeftButtonDown)
+	{
+		if(pkApa && pkApa->GetScreenRect().Inside(x,y) == false)
+		{
+			pkApa->KillFocus();
+			pkApa = NULL;
+		}
+	}*/
+
 	m_bLeftButtonDown = bLeftButtonDown;
 	m_bRightButtonDown = bRightButtonDown;
+
+
 
 	return true;
 }

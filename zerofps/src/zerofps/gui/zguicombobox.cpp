@@ -209,8 +209,11 @@ bool ZGuiCombobox::AddItem(char* strText,int iIndex,bool bSelect)
 
 	if(m_bIsMenu)
 	{
-		Resize(m_pkListbox->GetScreenRect().Width(), 
-			m_pkListbox->GetItemCount()*m_pkListbox->GetItemHeight()); 
+		int height = m_pkListbox->GetItemCount()*m_pkListbox->GetItemHeight();
+		Resize(m_pkListbox->GetScreenRect().Width(), height); 
+
+		ZGuiWnd::Resize(m_pkLabel->GetScreenRect().Width(),
+			m_pkLabel->GetScreenRect().Height(),true);
 	}
 
 	if(bSelectItem)
@@ -346,23 +349,10 @@ void ZGuiCombobox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void ZGuiCombobox::KillFocus() 
+{  
+	if(m_bIsMenu)
+		Notify(this, NCODE_RELEASE);
+	
+	ZGuiWnd::KillFocus();
+}
