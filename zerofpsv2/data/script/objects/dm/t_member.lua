@@ -62,6 +62,8 @@ function Init()
 	SetTeam (SIGetSelfID(), 0);
 	SISetHeartRate(SIGetSelfID(),4);
 
+	PlayAnim(SIGetSelfID(), "idle");
+
 --	Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1);
 end
 
