@@ -420,6 +420,8 @@ bool Entity::AttachToZone(const Vector3& kPos)
 				return false;			
 			}
 			
+			//cout<<"atached entity:"<<GetEntityID()<<" to new zone "<<nZ<<endl;
+			
 			ZoneChange(m_iCurrentZone,nZ);
 			m_iCurrentZone = nZ;
 			SetParent((Entity*)cz->m_pkZone);				

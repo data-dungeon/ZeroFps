@@ -45,7 +45,7 @@ public:
 	bool					m_bTracked;					//is there a tracker touching this zone
 	int					m_iRange;						// Range to tracker i num of zones.
 	
-	bool IsInside(Vector3 kPoint);
+	bool IsInside(const Vector3& kPoint);
 	ZoneData();
 	void Clear();
 };
@@ -291,7 +291,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void 			SetZoneModel(const char* szName,int iId);
 		ZoneData*	GetZoneData(int iID);
 		int 			GetZoneIndex(int iEntityId);
-		int 			GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
+		int 			GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClosestZone);
 		void 			DeleteZone(int iId);
 		bool 			IsInsideZone(Vector3 kPos,Vector3 kSize);
 		bool 			ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize);
@@ -302,7 +302,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int 			GetUnusedZoneID();		
 		Vector3 		GetZoneCenter(int iZoneNum);
 		void 			SetTrackerLos(int iLos) 							{	m_iTrackerLOS = iLos;			};		
-		int 			GetZoneIndex(Entity* PkEntity,int iCurrentZone,bool bClosestZone);
 		ZoneData* 	GetZone(Entity* PkEntity);
 		
 		

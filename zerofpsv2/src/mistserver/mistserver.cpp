@@ -83,9 +83,11 @@ void MistServer::CreateEditCameras()
 	if(m_pkActiveCameraObject) 
 	{
 		m_pkActiveCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );
+		m_pkActiveCameraObject->SetSave(false);
+		
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
-		m_pkActiveCameraObject->SetSave(false);
+		
 		
 /*		P_Enviroment* pe = (P_Enviroment*)m_pkActiveCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		
@@ -103,6 +105,13 @@ void MistServer::CreateEditCameras()
 
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	m_pkCamera->m_bForceFullScreen = true;
+	
+	
+	if(m_pkActiveCameraObject->GetUseZones())
+		cout<<"using zones"<<endl;
+	else
+		cout<<"not using zones"<<endl;
+	
 }
 
 

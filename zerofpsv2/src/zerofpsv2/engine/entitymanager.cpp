@@ -42,10 +42,14 @@ void ZoneData::Clear()
 	m_strEnviroment = "";
 }
 
-bool ZoneData::IsInside(Vector3 kPoint)
+bool ZoneData::IsInside(const Vector3& kPoint)
 {
-	Vector3 half;
-	half.Set(m_kSize.x/2,m_kSize.y/2,m_kSize.z/2);
+	static Vector3 half;
+	
+	half.Set(m_kSize.x / 2.0,
+				m_kSize.y / 2.0,
+				m_kSize.z / 2.0
+				);
 
 	if(kPoint.x < (m_kTestPos.x - half.x))	return false;
 	if(kPoint.y < (m_kTestPos.y - half.y))	return false;
@@ -1580,52 +1584,39 @@ int EntityManager::GetZoneIndex(int iEntityId)
 }
 
 
-
-int EntityManager::GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone)
-{
-	return GetZoneIndex(PkObject->GetWorldPosV(),iCurrentZone,bClosestZone);
-}
-
-int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone)
+int EntityManager::GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClosestZone)
 {
 	//if theres a last visited zone
-	if(iCurrentZone >= 0 )
-	{
-		ZoneData* pkZd = GetZoneData(iCurrentZone);
-		
-		if(pkZd) 
-		{	
-			if(pkZd->m_iStatus != EZS_UNUSED)
+	if(ZoneData* pkZd = GetZoneData(iCurrentZone)) 
+	{	
+		if(pkZd->m_iStatus != EZS_UNUSED)
+		{
+			//first check current zone
+			if(pkZd->IsInside( kMyPos ))
+				return iCurrentZone;	
+
+			//check zones connected to the last visited zone
+			for(unsigned int i = 0;i < pkZd->m_iZoneLinks.size();i++)
 			{
-				//first check current zone
-				if(m_kZones[iCurrentZone].IsInside( kMyPos ))
-					return iCurrentZone;
-	
-	
-				//check zones connected to the last visited zone
-				ZoneData* pkZone = GetZoneData(iCurrentZone);
-				for(unsigned int i = 0;i < pkZone->m_iZoneLinks.size();i++)
-				{
-					if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
-					{	
-						//cout<<"moved to nearby zone"<<endl;
-						return pkZone->m_iZoneLinks[i];						
-					}
+				if(m_kZones[pkZd->m_iZoneLinks[i]].IsInside(kMyPos))
+				{	
+					//cout<<"moved to nearby zone"<<endl;
+					return pkZd->m_iZoneLinks[i];						
 				}
 			}
 		}
 	}
+
 	
 	//seccond go trough all zones in the world
+	//cout<<"entity was not in current zone ("<<iCurrentZone<<") nor a current zones neighbor, doing slow search"<<endl;		
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
 		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 			continue;
 		
 		if(m_kZones[iZ].IsInside(kMyPos))
-		{
 			return iZ;
-		}
 	}
 
 	//last take the closest zone in the world
@@ -1904,7 +1895,7 @@ bool EntityManager::SaveTrackers(string strSaveDir)
 
 	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{		
-		int iZone = GetZoneIndex((*iT)->GetEntity(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);				
+		int iZone = GetZoneIndex((*iT)->GetEntity()->GetWorldPosV(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);				
 		kFile.Write(&iZone, sizeof(iZone), 1);		
 		//cout<<"Saving tracker for zone:"<<iZone<<endl;			
 	}
@@ -2646,7 +2637,9 @@ void EntityManager::UpdateTrackers()
 		kTrackerPos = 	(*iT)->GetEntity()->GetWorldPosV();
 			
 		//get current zone
-		iZoneIndex = GetZoneIndex((*iT)->GetEntity(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);		
+		iZoneIndex = GetZoneIndex((*iT)->GetEntity()->GetWorldPosV(),(*iT)->m_iCurrentTrackedZone,(*iT)->m_bClosestZone);		
+		(*iT)->m_iCurrentTrackedZone = iZoneIndex;
+		
 		if(iZoneIndex == -1)
 		{
 			//cout<<"ERROR: Tracker not in zone"<<endl;

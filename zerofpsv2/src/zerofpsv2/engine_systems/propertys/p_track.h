@@ -26,7 +26,7 @@ class ENGINE_SYSTEMS_API P_Track : public Property {
 	public:
 		int				m_iConnectID;		// Client that should recv updates activated by this tracker.
 		bool				m_bClosestZone;
-		int				m_iZoneNum;
+		int				m_iCurrentTrackedZone;			//current zone
 		bool				m_bOneZoneOnly;
 
 		set<int>			m_iActiveZones;

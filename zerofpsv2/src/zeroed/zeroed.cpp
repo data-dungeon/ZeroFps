@@ -1579,7 +1579,7 @@ string ZeroEd::GetZoneEnviroment()
 {
 	string env;
 	
-	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,m_iCurrentMarkedZone,false);
 	ZoneData* z = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
@@ -1771,7 +1771,7 @@ int ZeroEd::GetZoneID(const Vector3& kPos)
 	}
 	else
 	{
-		return m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);		
+		return m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,m_iCurrentMarkedZone,false);		
 	}
 }
 

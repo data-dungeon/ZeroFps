@@ -9,11 +9,11 @@ P_Track::P_Track()
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER;
 
-	m_bOneZoneOnly		= false;
-	m_iZoneNum			= 0;
-	m_bClosestZone		= true;
-	m_iConnectID		= -1;	// No Client.
-	m_iVersion			=	2;
+	m_bOneZoneOnly				= false;
+	m_iCurrentTrackedZone	= -1;
+	m_bClosestZone				= true;
+	m_iConnectID				= -1;	// No Client.
+	m_iVersion					=	2;
 }
 
 P_Track::~P_Track() 
