@@ -421,7 +421,7 @@ void MistClient::DrawCrossHair()
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 		if(pkEnt->GetProperty("P_Ml"))
 			bActive = true;
-	
+			
 	//set material					
 	if(bActive)
 		m_pkZShaderSystem->BindMaterial(pkActivePointer);
@@ -1202,6 +1202,9 @@ Entity* MistClient::GetTargetObject()
 			continue;		
 		if(kObjects[i]->GetType() == "Entity")
 			continue;		
+		
+		if(kObjects[i]->GetEntityID() == m_iCharacterID)		//dont pick self
+			continue;
 		
 		//-------------
 		
