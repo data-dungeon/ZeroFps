@@ -1277,6 +1277,8 @@ void ZGui::CloseActiveMenu(void)
 	//}
 }
 
+// Bröt funktionen som man kräks av att titta i... Grötfunktionen nummer ett.
+
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
                          bool bRBnPressed, bool bMBnPressed,
                          float fGameTime)

@@ -145,6 +145,7 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionMenuMain", GuiMsgActionDlg));
 
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("InventoryWnd", GuiMsgInventoryDlg));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ContainerWnd", GuiMsgInventoryDlg));
 	
 
    // load software cursor

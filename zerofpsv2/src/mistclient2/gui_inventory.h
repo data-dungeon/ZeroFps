@@ -30,7 +30,7 @@ public:
 	MLContainer* GetContainer();
 	void OpenContainerWnd();
 	void CloseContainerWnd();
-
+	
 private:
 
 	struct ITEM_SLOT
@@ -41,6 +41,10 @@ private:
 
 	void OnDropItem();
 	void CreateContainerGrid(int slots_horz, int slots_vert);
+	bool TestForCollision(int iTestSlot);
+	Point SlotFromScreenPos(int x, int y);
+	Point SlotFromWnd(ZGuiWnd* pkWnd);
+	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
 
 	TextureManager* m_pkTexMan;
 
@@ -65,12 +69,6 @@ private:
 	const int SLOTTS_VERT;
 
 	const Point UPPER_LEFT;
-
-
-
-
-
-	
 };
 
 #endif

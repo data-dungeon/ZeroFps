@@ -10,7 +10,7 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 {
 	if(msg == ZGM_COMMAND)
 	{
-		if(strMainWnd == "InventoryWnd")
+		if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd")
 		{
 			g_kMistClient.m_pkInventoryDlg->OnCommand(strController);
 		}
@@ -112,6 +112,9 @@ void InventoryDlg::OnCommand(string strController)
 {
 	if(strController == "InventoryCloseButton")
 		Close();
+	else
+	if(strController == "ContainerCloseButton")
+		CloseContainerWnd();
 }
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
@@ -164,6 +167,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 			{	
 				m_iSelItemID = m_vkInventoryItemList[i].iItemID;
+				OpenContainerWnd();
 			}
 		}
 		else
@@ -269,24 +273,9 @@ void InventoryDlg::OnDropItem()
 		int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
 		int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
 
-		bool bMoveOK = true;
-		for(int i=0; i<m_vkInventoryItemList.size(); i++)
-		{
-			if(i!=m_iMoveSlot)
-			{
-				if(m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
-					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
-					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
-					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
-				{
-					// TODO: Check if collision slot is a container or ar stackable item.
-					bMoveOK = false; 
-					break;
-				}
-			}
-		}
+		bool bCollision = TestForCollision(m_iMoveSlot);
 
-		if(bMoveOK)
+		if(bCollision == false)
 		{
 			m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
 			g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
@@ -314,9 +303,17 @@ void InventoryDlg::OpenContainerWnd()
 	m_pkContainerWnd->Show();
 
 	int slots_x = 4;
-	int slots_y = 4;
+	int slots_y = 8;
 
 	CreateContainerGrid(slots_x, slots_y);
+
+	m_pkContainerWnd->m_bIncludeBorder = true;
+	m_pkContainerWnd->SetZValue(22);
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetZValue(44);
+	
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
+
+	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
 }
 
 void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
@@ -327,7 +324,7 @@ void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
 	const int MAX_WIDTH = slots_horz*32;
 	const int MAX_HEIGHT = slots_vert*32;
 
-	m_pkContainerWnd->Resize(MAX_WIDTH, MAX_HEIGHT);
+	m_pkContainerWnd->Resize(MAX_WIDTH+slots_horz/2, MAX_HEIGHT+slots_vert/2);
 
 	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
 	
@@ -335,10 +332,7 @@ void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
 	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize, 
 		rcInventory.Top + bdsize, true, true);
 
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(
-		rcInventory.Left - MAX_WIDTH - bdsize + MAX_WIDTH, 
-		rcInventory.Top + bdsize-20,true,true);
-
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -20, false, true);
 	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
 
 	int current_slot_x=0, current_slot_y=0;
@@ -368,8 +362,8 @@ void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
 				int w = rc.Width();
 				int h = rc.Height();
 
-				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
-				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
+				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left+slots_horz/2;
+				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top+slots_vert/2;
 
 				(*it)->Resize(w, h);
 			}
@@ -381,4 +375,59 @@ void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
 			}
 		}
 	}
+}
+
+bool InventoryDlg::TestForCollision(int iTestSlot)
+{
+	Point test_slot = SlotFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd);
+	Point test_size = SlotSizeFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd);
+
+	vector<Point> kSlotsTaken;
+
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+	{
+		if( i != iTestSlot)
+		{
+			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd);
+			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+
+			for(int y=0; y<kSlotSize.y; y++)
+				for(int x=0; x<kSlotSize.x; x++)
+					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+		}
+	}
+
+	for(int i=0; i<kSlotsTaken.size(); i++)
+	{
+		for(int y=0; y<test_size.y; y++)
+			for(int x=0; x<test_size.x; x++)
+			{
+				Point t(test_slot.x + x, test_slot.y + y);
+
+				if(t == kSlotsTaken[i])
+					return true;
+			}
+	}
+
+	return false;
+
+}
+
+Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd)
+{
+	Rect rcTest = pkWnd->GetScreenRect();
+	return SlotFromScreenPos(rcTest.Left, rcTest.Top);
+}
+
+Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
+{
+	Rect rcTest = pkWnd->GetScreenRect();
+	return Point(rcTest.Width()/ICON_WIDTH, rcTest.Height()/ICON_HEIGHT);
+}
+
+Point InventoryDlg::SlotFromScreenPos(int x, int y)
+{
+	int slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - UPPER_LEFT.x) / ICON_WIDTH; 
+	int slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - UPPER_LEFT.y) / ICON_HEIGHT;
+	return Point(slot_x, slot_y);
 }

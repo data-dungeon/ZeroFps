@@ -50,14 +50,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				g_kMistClient.ResizeChatDlg(false);
 			}
 		}
-		else
-		if(strMainWnd == "GuiMainWnd")
-		{
-			if(strController == "ContainerCloseButton")
-			{
-				g_kMistClient.m_pkInventoryDlg->CloseContainerWnd();
-			}
-		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////

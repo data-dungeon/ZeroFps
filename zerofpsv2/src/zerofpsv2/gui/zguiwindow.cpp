@@ -27,6 +27,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
 	m_bAcceptRightClicks = false; // om det skall gå att klicka på en knapp med höger musknapp
 	m_bUseAlhpaTest = true;
+	m_bIncludeBorder = false;
 
 	m_iResolutionX = ZGui::m_iResX;
 	m_iResolutionY = ZGui::m_iResY;
@@ -376,7 +377,7 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	{
 		if(pkFind)
 		{
-			if(pkFind->GetScreenRect().Inside(x,y) && pkFind->IsVisible())
+			if(pkFind->GetScreenRect(m_bIncludeBorder).Inside(x,y) && pkFind->IsVisible())
 			{
 				if(!m_bUseClipper || pkFind->m_kClipperArea.Inside(x,y))
 				{
@@ -504,6 +505,9 @@ Rect ZGuiWnd::GetWndRect()
 // Get the real screen area.
 Rect ZGuiWnd::GetScreenRect(bool bIncBorder)	
 {
+	if(bIncBorder == false)
+		bIncBorder = m_bIncludeBorder;
+
 	if(!bIncBorder)
 		return m_kArea;
 	else
