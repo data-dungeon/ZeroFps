@@ -3,17 +3,19 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "spelldlg.h"
+#include "quickboard.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-SpellDlg::SpellDlg(ZGuiApp* pkApp)
+SpellDlg::SpellDlg(ZGuiApp* pkApp, QuickBoard* pkQuickBoard)
 {
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 
+	m_pkQuickBoard = pkQuickBoard;
 	m_pkApp = pkApp;
 	Init();
 }
@@ -33,14 +35,18 @@ void SpellDlg::Init()
 	int screen_w = m_pkApp->GetWidth(); 
 	int screen_h = m_pkApp->GetHeight();
 
+	//
+	// Create main window
+	//
+
 	m_pkApp->CreateWnd(Wnd, "SpellBookMainWnd", "MainWnd", "", screen_w-400, 0, 400, 484, 0);
+	m_pkDialog = m_pkApp->GetWnd("SpellBookMainWnd");
+	m_pkDialog->SetSkin(new ZGuiSkin(
+		m_pkTexMan->Load("/data/textures/gui/spellbookwnd.bmp", 0),0));
 
-	char szName[50];
-
-	char* szLabel[10] =
-	{
-		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
-	};
+	//
+	// Create spellbuttons
+	//
 
 	ZGuiSkin* pkButtonSkinUp = new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/quickbn_u.bmp", 0),
@@ -50,8 +56,10 @@ void SpellDlg::Init()
 		m_pkTexMan->Load("/data/textures/gui/quickbn_d.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/quickbn_a.bmp", 0),0);
 
-	for(int y=0; y<4; y++)
-		for(int x=0; x<5; x++)
+	char szName[50];
+
+	for(int y=0; y<SPELL_ROWS; y++)
+		for(int x=0; x<SPELL_COLS; x++)
 		{
 			char szName[50];
 			sprintf(szName, "asfasdf%i", y*10+x);
@@ -63,12 +71,25 @@ void SpellDlg::Init()
 			pkButton->SetButtonDownSkin(pkButtonSkinDown);
 			pkButton->m_bUseAlhpaTest = false;
 
+			m_pkSpellButtons[y][x] = pkButton;
 		}
+
+	//
+	// Create a textbox to print spell desctription.
+	//
 
 	m_pkApp->CreateWnd(Textbox, "SpellDescTextbox", "SpellBookMainWnd", 
 		"", 32, 370, 300, 60, EB_IS_MULTILINE | READ_ONLY);
 
+	//
+	// Label that displayes selected spell school and selected spell
+	//
+
 	m_pkApp->CreateWnd(Label, "SpellBookLabel", "SpellBookMainWnd", "Spellbook School 1", 32, 71, 350, 16, 0);
+
+	//
+	// Create buttons for selection spell school
+	//
 
 	ZGuiSkin* pkFireSchoolSkinUp = new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/spell_category_fire_u.bmp", 0),
@@ -88,29 +109,34 @@ void SpellDlg::Init()
 
 	int i;
 
-	for(i=0; i<10; i++)
+	for(i=0; i<NUM_SCHOOLS; i++)
 	{
 		sprintf(szName, "SpellSchoolBn%i", i);
-		m_pkApp->CreateWnd(Button, szName, "SpellBookMainWnd", "", 32+i*32, 10, 32, 32, 0);
+		m_pkApp->CreateWnd(Checkbox, szName, "SpellBookMainWnd", "", 32+i*32, 10, 32, 32, 0);
 
-		ZGuiButton* pkButton = (ZGuiButton*) m_pkApp->GetWnd(szName);
+		ZGuiCheckbox* pkButton = (ZGuiCheckbox*) m_pkApp->GetWnd(szName);
 		m_pkSchoolButtons[i] = pkButton;
 
 		pkButton->m_bUseAlhpaTest = true;
-		pkButton->SetButtonUpSkin(pkFireSchoolSkinUp);
-		pkButton->SetButtonHighLightSkin(pkFireSchoolSkinUp);
-		pkButton->SetButtonDownSkin(pkFireSchoolSkinDown);
+		pkButton->SetButtonUncheckedSkin(pkFireSchoolSkinUp);
+		pkButton->SetButtonCheckedSkin(pkFireSchoolSkinDown);
 	}
 
-	m_pkSchoolButtons[0]->SetButtonUpSkin(pkFireSchoolSkinUp);
-	m_pkSchoolButtons[0]->SetButtonHighLightSkin(pkFireSchoolSkinUp);
-	m_pkSchoolButtons[0]->SetButtonDownSkin(pkFireSchoolSkinDown);
+	m_pkSchoolButtons[0]->SetButtonUncheckedSkin(pkFireSchoolSkinUp);
+	m_pkSchoolButtons[0]->SetButtonCheckedSkin(pkFireSchoolSkinDown);
 
-	m_pkSchoolButtons[1]->SetButtonUpSkin(pkNecromancerSchoolSkinUp);
-	m_pkSchoolButtons[1]->SetButtonHighLightSkin(pkNecromancerSchoolSkinUp);
-	m_pkSchoolButtons[1]->SetButtonDownSkin(pkNecromancerSchoolSkinDown);
+	m_pkSchoolButtons[1]->SetButtonUncheckedSkin(pkNecromancerSchoolSkinUp);
+	m_pkSchoolButtons[1]->SetButtonCheckedSkin(pkNecromancerSchoolSkinDown);
 
-	for(i=0; i<10; i++)
+	m_pkSchoolButtons[0]->CheckButton(); 
+
+	//
+	// Create buttons for changing page in spellbook
+	//
+
+	char* szLabel[NUM_PAGES] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+
+	for(i=0; i<NUM_PAGES; i++)
 	{
 		sprintf(szName, "Level1SpellBn%i", i);
 		m_pkApp->CreateWnd(Button, szName, "SpellBookMainWnd", szLabel[i], 32+i*28, 450, 24, 16, 0);
@@ -125,26 +151,54 @@ void SpellDlg::Init()
 			m_pkTexMan->Load("/data/textures/gui/spellbook_level_page_d.bmp", 0),0));
 	}
 
-	m_pkDialog = m_pkApp->GetWnd("SpellBookMainWnd");
+	m_pkApp->CreateWnd(Label, "TestSpell", "SpellBookMainWnd", "", 32, 100, 64, 64, 0);
+	m_pkApp->GetWnd("TestSpell")->SetSkin(new ZGuiSkin(
+		m_pkTexMan->Load("/data/textures/gui/spells/lightingball.bmp", 0),0));
 
-	m_pkDialog->SetSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbookwnd.bmp", 0),0));
+	SpellSlot* kNewSlot = new SpellSlot();
+	kNewSlot->pkLabel = (ZGuiLabel*) m_pkApp->GetWnd("TestSpell");
+	kNewSlot->x = 0;
+	kNewSlot->y = 0;
+
+	m_vkSpells.push_back(kNewSlot);
+
+	//
+	// Hide dialog from start
+	//
 
 	m_pkDialog->Hide();
 }
 
 void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
-	for(int i=0; i<10; i++)
+	for(int i=0; i<NUM_PAGES; i++)
 	{
 		if(pkWndClicked == m_pkSchoolButtons[i])
 		{
 			char szLabel[25];
 			sprintf(szLabel, "Spellbook School %i", i+1);
 			m_pkApp->GetWnd("SpellBookLabel")->SetText(szLabel);
-			break;
+
+			for(int j=0; j<NUM_PAGES; j++)
+			{
+				if(j!=i)
+					m_pkSchoolButtons[j]->UncheckButton();
+			}
 		}
 	}
+
+	for(int y=0; y<SPELL_ROWS; y++)
+		for(int x=0; x<SPELL_COLS; x++)
+		{
+			if(m_pkSpellButtons[y][x] == pkWndClicked)
+			{
+				int tex_id = FindSlot(x,y)->pkLabel->GetSkin()->m_iBkTexID;
+
+				const char* szID = m_pkTexMan->GetFileName(tex_id);
+
+				m_pkQuickBoard->AddQuickItem( (char*) "data/textures/gui/spells/lightingball2.bmp", NULL );
+			}
+		}
 }
 
 void SpellDlg::ToogleOpen()
@@ -153,4 +207,21 @@ void SpellDlg::ToogleOpen()
 		m_pkDialog->Hide();
 	else
 		m_pkDialog->Show();
+}
+
+SpellDlg::SpellSlot* SpellDlg::FindSlot(int x, int y)
+{
+	vector<SpellSlot*>::iterator it = m_vkSpells.begin();
+
+	for( ; it != m_vkSpells.end(); it++)
+	{
+		SpellSlot* pkCurrent = (*it);
+
+		if(pkCurrent->x == x && pkCurrent->y == y)
+		{
+			return pkCurrent;
+		}
+	}
+
+	return NULL;
 }

@@ -82,7 +82,7 @@ void QuickBoard::Init()
 	}
 }
 
-void QuickBoard::AddQuickItem(char *szItemName)
+void QuickBoard::AddQuickItem(char *szIcon, char* szIconAlpha)
 {
 	int index = -1;
 	for(int i=0; i<MAX_NUM_QUICK_ITEMS; i++)
@@ -100,8 +100,11 @@ void QuickBoard::AddQuickItem(char *szItemName)
 				
 	ZGuiSkin* pkLabelSkin = m_vkQuickItems[index]->pkLabel->GetSkin();
 
-	pkLabelSkin->m_iBkTexID = m_pkTexMan->Load("/data/textures/gui/items/meat.bmp", 0);
-	pkLabelSkin->m_iBkTexAlphaID = m_pkTexMan->Load("/data/textures/gui/items/meat_a.bmp", 0);
+	if(szIcon)
+		pkLabelSkin->m_iBkTexID = m_pkTexMan->Load(szIcon, 0);
+
+	if(szIconAlpha)
+		pkLabelSkin->m_iBkTexAlphaID = m_pkTexMan->Load(szIconAlpha, 0);
 }
 
 void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked)

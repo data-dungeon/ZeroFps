@@ -16,7 +16,7 @@ class QuickBoard
 public:
 	void Update();
 	void OnCommand(ZGuiWnd* pkWndClicked);
-	void AddQuickItem(char* szItemName);
+	void AddQuickItem(char *szIcon, char* szIconAlpha);
 	void Init();
 	QuickBoard(ZGuiApp* pkApp);
 	~QuickBoard();

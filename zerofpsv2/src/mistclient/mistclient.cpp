@@ -1161,9 +1161,9 @@ void MistClient::CreateGuiInterface()
 	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
 
 	m_pkQuickBoard = new QuickBoard(this);
-	m_pkQuickBoard->AddQuickItem("apple");
+	//m_pkQuickBoard->AddQuickItem("apple", NULL);
 	
-	m_pkSpellDlg = new SpellDlg(this);
+	m_pkSpellDlg = new SpellDlg(this, m_pkQuickBoard);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
