@@ -50,7 +50,6 @@ void P_Mad::Update()
    }
 */
 
-	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		

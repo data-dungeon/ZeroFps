@@ -32,6 +32,7 @@ void Mad_Modell::SetBasePtr(string strResName)
 
 	m_bActive = true;
 	LoadTextures();
+	m_kActiveMesh.clear();
 	AddMesh(0);
 //	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 //	Create_GLList(pkCore->GetMeshByID(0));
