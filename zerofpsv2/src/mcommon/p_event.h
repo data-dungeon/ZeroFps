@@ -30,7 +30,7 @@ class MCOMMON_API P_Event: public Property {
 		~P_Event();
 		
 		void Update();				
-		bool SendEvent(const char* acEvent, const char* acType="NoName");
+		bool SendEvent(const char* acEvent, const char* acType="NoName",int iCallerObject = -1);
 		void Touch(Collision* pkCol);					//executet when collision occurs
 };
 

@@ -54,6 +54,7 @@ class MistClient :public Application, public ZGuiApp {
 
 		//selected caracter
 		int					m_iActiveCaracter;
+		int					m_iActiveCaracterObjectID;
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.

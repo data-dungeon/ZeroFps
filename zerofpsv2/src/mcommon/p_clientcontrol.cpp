@@ -39,6 +39,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket )
 		pkNetPacket->Write_Str(m_kClientOrders.front().m_sOrderName.c_str());		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
+		pkNetPacket->Write(&m_kClientOrders.front().m_iCaracter,sizeof(m_kClientOrders.front().m_iCaracter));									
 		m_kClientOrders.pop(); 
 	}
 } 
@@ -61,14 +62,23 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket )
 		temporder.m_sOrderName=name;
 		pkNetPacket->Read(&temporder.m_iObjectID,sizeof(temporder.m_iObjectID));
 		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
+		pkNetPacket->Read(&temporder.m_iCaracter,sizeof(temporder.m_iCaracter));				
 		
 		//if we already gotten max nr of orders, dont add this one
 		if(i <= m_iMaxOrders)
-			if(temporder.m_iClientID == m_iClientID)
+			if(CheckValidOrder(&temporder))
 				m_kServerOrders.push(temporder);
 			else
 				cout<<"Client :"<<m_iClientID<<" is trying to cheat"<<endl;
 	}
+}
+
+bool P_ClientControl::CheckValidOrder(ClientOrder* temporder)
+{
+	if(temporder->m_iClientID != m_iClientID)
+		return false;
+		
+	return true;
 }
 
 void P_ClientControl::AddOrder(ClientOrder kNewOrder)

@@ -40,12 +40,15 @@ void P_Event::Update()
 }
 
 
-bool P_Event::SendEvent(const char* acEvent, const char* acType)
+bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObject)
 {
 	if(m_pkObject->GetObjectScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
 		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		
+		//set caller id
+		MistLandLua::g_iCurrentPCID = iCallerObject;
 
 		vector<ARG_DATA> args(1);
 		args[0].eType = tSTRING;

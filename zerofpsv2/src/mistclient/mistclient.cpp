@@ -59,7 +59,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
-
+	m_iActiveCaracterObjectID = -1;
 	m_iActiveCaracter			= -1;
 	m_iSelfObjectID			= -1;
 	m_pkClientObject			= NULL;
@@ -370,7 +370,8 @@ void MistClient::Input()
 					order.m_sOrderName = "Klicka";
 					order.m_iClientID = pkFps->GetConnectionID();
 					order.m_iObjectID = pkObject->iNetWorkID;				
-				
+					order.m_iCaracter = m_iActiveCaracterObjectID;
+					
 					m_pkClientControlP->AddOrder(order);
 				} 
 			}
@@ -687,6 +688,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 					m_pkCamProp = NULL;
 				}
 				m_iActiveCaracter = -1;
+				m_iActiveCaracterObjectID = -1;
 			}
 			
 			//if the new caracter is valid
@@ -714,6 +716,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 							
 							//set current active caracter
 							m_iActiveCaracter = iCaracter;
+							m_iActiveCaracterObjectID = id;
 							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;													
 						}
 					}

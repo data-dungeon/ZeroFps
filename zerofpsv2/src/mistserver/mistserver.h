@@ -79,6 +79,7 @@ class MistServer :public Application , public ZGuiApp {
 		void AddZone();
 
 		void HandleOrders();
+		bool CheckValidOrder(ClientOrder* pkOrder);
 
 		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. LOL*/
 			AStar*	m_pkAStar;

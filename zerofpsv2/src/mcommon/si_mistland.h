@@ -22,7 +22,7 @@ namespace MistLandLua
 	
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
-	extern int		MCOMMON_API				g_iCurrentPCID;
+	extern int						g_iCurrentPCID;
 
 	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
 	

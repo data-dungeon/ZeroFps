@@ -18,6 +18,7 @@ class MCOMMON_API ClientOrder
 		int		m_iObjectID;
 		int		m_iClientID;
 		
+		int		m_iCaracter;
 
 };
 
@@ -46,6 +47,7 @@ class MCOMMON_API P_ClientControl: public Property {
       void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 		
+		bool CheckValidOrder(ClientOrder* temporder);
 		
 		static ClientOrder* GetNextOrder();		
 		static int NrOfOrders(){return m_kServerOrders.size();};				
