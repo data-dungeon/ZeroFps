@@ -9,6 +9,8 @@ class ZFScriptSystem;
 class Entity;
 class Property;
 
+/**	Script Functions for ObjectManger.
+*/
 namespace ObjectManagerLua
 {
 	void ENGINE_SYSTEMS_API Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript);

@@ -1,24 +1,49 @@
+/**	\fn FuncName(Para1, Para2,...)
+ 	\relates MistLandScript
+   \brief A member function.
+   \param Para1 Desc.
+	\return a character pointer.
+
+	Long Desc. 
+*/
+
+/**	\brief Class To Collect Script Functions,
+	\ingroup si
+
+*/
+class MistLandScript
+{
+	
+};
+
+
+
 #include "../../script/zfscript.h"
 #include "si_objectmanager.h"
 #include "../../engine/entitymanager.h"
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 
-ZFScriptSystem* ObjectManagerLua::g_pkScript;
-EntityManager*  ObjectManagerLua::g_pkObjMan;
+namespace ObjectManagerLua
+{
+ZFScriptSystem* g_pkScript;
+EntityManager*  g_pkObjMan;
 
-Entity*			 ObjectManagerLua::g_pkLastObject;
-Entity*			 ObjectManagerLua::g_pkLastParent;
-Property*		 ObjectManagerLua::g_pkLastProperty;
-Entity*			 ObjectManagerLua::g_pkReturnObject;
+Entity*			 g_pkLastObject;
+Entity*			 g_pkLastParent;
+Property*		 g_pkLastProperty;
+Entity*			 g_pkReturnObject;
 
 //Object*			 ObjectManagerLua::g_pkLastObjectBak;
-Entity*			 ObjectManagerLua::g_pkLastParentBak;
-Property*		 ObjectManagerLua::g_pkLastPropertyBak;
-Entity*			 ObjectManagerLua::g_pkReturnObjectBak;
+Entity*			 g_pkLastParentBak;
+Property*		 g_pkLastPropertyBak;
+Entity*			 g_pkReturnObjectBak;
 
 
-void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
+
+
+
+void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
@@ -28,7 +53,7 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 		
 	//create
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
-	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
+	pkScript->ExposeFunction("InitProperty",	  		ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
@@ -53,7 +78,7 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
 }
 
-void ObjectManagerLua::Reset()
+void Reset()
 {
 	g_pkLastObject   = NULL;
 	g_pkLastProperty = NULL;
@@ -61,7 +86,7 @@ void ObjectManagerLua::Reset()
 	g_pkReturnObject = NULL;
 }
 
-void ObjectManagerLua::Push()
+void Push()
 {
 	//g_pkLastObjectBak   = g_pkLastObject;
 	g_pkLastPropertyBak = g_pkLastProperty;
@@ -71,7 +96,7 @@ void ObjectManagerLua::Push()
 	Reset();
 }
 
-void ObjectManagerLua::Pop()
+void Pop()
 {
 	//g_pkLastObject   = g_pkLastObjectBak;
 	g_pkLastProperty = g_pkLastPropertyBak;
@@ -79,7 +104,14 @@ void ObjectManagerLua::Pop()
 	g_pkReturnObject = g_pkReturnObjectBak;
 }
 
-int ObjectManagerLua::InitObjectLua(lua_State* pkLua)
+/**	\page InitObject InitObject(ScripName)
+
+	Is used to create objects.
+
+   \param ScripName Name of script to be used to create object. If not given a empty object will be
+		created.
+*/
+int InitObjectLua(lua_State* pkLua)
 {
 	
 	//if an object script has ben given creat that object
@@ -107,7 +139,7 @@ int ObjectManagerLua::InitObjectLua(lua_State* pkLua)
 	return 1;
 }	
 
-int ObjectManagerLua::SetParentObjectLua(lua_State* pkLua)
+int SetParentObjectLua(lua_State* pkLua)
 {
 	if(!g_pkLastObject)
 		return 0;
@@ -118,7 +150,7 @@ int ObjectManagerLua::SetParentObjectLua(lua_State* pkLua)
 
 	return 1;
 }
-int ObjectManagerLua::AttachToParent(lua_State* pkLua)
+int AttachToParent(lua_State* pkLua)
 {
 	if(!g_pkLastObject)
 		return 0;
@@ -133,7 +165,7 @@ int ObjectManagerLua::AttachToParent(lua_State* pkLua)
 	return 1;
 }	
 
-int ObjectManagerLua::InitPropertyLua(lua_State* pkLua)
+int InitPropertyLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
@@ -151,7 +183,7 @@ int ObjectManagerLua::InitPropertyLua(lua_State* pkLua)
 	return 1;
 }	
 
-int ObjectManagerLua::InitParameterLua(lua_State* pkLua)
+int InitParameterLua(lua_State* pkLua)
 {
 	if(g_pkLastProperty == NULL)
 		return 0;
@@ -176,7 +208,7 @@ int ObjectManagerLua::InitParameterLua(lua_State* pkLua)
 	return 0;
 }	
 
-int ObjectManagerLua::SetLocalPosLua(lua_State* pkLua)
+int SetLocalPosLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
@@ -196,7 +228,7 @@ int ObjectManagerLua::SetLocalPosLua(lua_State* pkLua)
 	return 0;
 }
 
-int ObjectManagerLua::HaveRelativOriLua(lua_State* pkLua)
+int HaveRelativOriLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
@@ -207,7 +239,7 @@ int ObjectManagerLua::HaveRelativOriLua(lua_State* pkLua)
 	return 0;
 }
 
-int ObjectManagerLua::IsStaticLua(lua_State* pkLua)
+int IsStaticLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
@@ -218,7 +250,7 @@ int ObjectManagerLua::IsStaticLua(lua_State* pkLua)
 	return 0;
 }
 
-int ObjectManagerLua::SetReturnObjectLua(lua_State* pkLua)
+int SetReturnObjectLua(lua_State* pkLua)
 {
 	if(g_pkLastObject == NULL)
 		return 0;
@@ -229,7 +261,7 @@ int ObjectManagerLua::SetReturnObjectLua(lua_State* pkLua)
 }
 //----end of create
 
-int ObjectManagerLua::DeleteLua(lua_State* pkLua)
+int DeleteLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
 		return 0;
@@ -246,8 +278,11 @@ int ObjectManagerLua::DeleteLua(lua_State* pkLua)
 	return 0;
 }
 
-
-int ObjectManagerLua::PlayAnim(lua_State* pkLua)
+/**	\fn PlayAnim(ObjectID, AnimName)
+ 	\relates MistLandScript
+   \brief Sets the playing animation.
+*/
+int PlayAnim(lua_State* pkLua)
 {
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -265,7 +300,11 @@ int ObjectManagerLua::PlayAnim(lua_State* pkLua)
 	return 1;
 }
 
-int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
+/**	\fn SetNextAnim(ObjectID, AnimName)
+ 	\relates MistLandScript
+   \brief Sets the next animation for a object to play.
+*/
+int SetNextAnim(lua_State* pkLua)
 {
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -281,7 +320,14 @@ int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
 	return 1;
 }
 
-int ObjectManagerLua::AddMesh(lua_State* pkLua)
+/**	\page AddMesh AddMesh(ObjectID, MeshID)
+
+	Adds a mesh to be rendered on the object.
+
+   \param	ObjectID	ID of object to add mesh to.
+   \param	MeshID	ID of mesh to add.
+*/
+int AddMesh(lua_State* pkLua)
 {
 	// Get ObjectID ID
 	double dTemp;
@@ -299,9 +345,16 @@ int ObjectManagerLua::AddMesh(lua_State* pkLua)
 	return 1;
 }
 
-//float fLocalTest;
+/**	\fn GetLocalDouble(ObjectID, VariableName)
+ 	\relates MistLandScript
+   \brief Get value of a double variable stored in Entity.
+   \param ObjectID Entity to get variable from.
+   \param VariableName Name of variable.
+	\return Return Return value of variable
 
-int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
+	Get value of a double variable stored in Entity.
+*/
+int GetLocalDouble(lua_State* pkLua)
 {
 	// Get ObjectID ID
 	double dTemp;
@@ -321,7 +374,18 @@ int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
 
 }
 
-int ObjectManagerLua::SetLocalDouble(lua_State* pkLua)
+/**	\fn SetLocalDouble(ObjectID, VariableName, Value)
+ 	\relates MistLandScript
+   \brief Set value of a double variable stored in Entity.
+   \param ObjectID ObjectID Entity to get variable from.
+   \param VariableName VariableName Name of variable.
+   \param Value New value to set variable to.
+
+	Set value of a double variable stored in Entity.
+*/
+
+
+int SetLocalDouble(lua_State* pkLua)
 {
 	// Get ObjectID ID
 	double dTemp;
@@ -348,7 +412,7 @@ int ObjectManagerLua::SetLocalDouble(lua_State* pkLua)
 */
 
 
-int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
+int SetObjectPosLua(lua_State* pkLua)
 {
 	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
 
@@ -379,7 +443,7 @@ int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
 	return 1;
 }
 
-int ObjectManagerLua::GetObjectPosLua(lua_State* pkLua)
+int GetObjectPosLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
@@ -420,4 +484,7 @@ int ObjectManagerLua::GetObjectPosLua(lua_State* pkLua)
 	}
 
 	return 1;
+}
+
+
 }

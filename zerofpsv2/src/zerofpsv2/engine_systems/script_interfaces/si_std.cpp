@@ -8,7 +8,10 @@ ZFVFileSystem*	StdLua::g_pkVFS;
 
 extern EntityManager* g_pkObjMan;
 
-void StdLua::Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
+namespace StdLua
+{
+
+void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 {
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
@@ -20,9 +23,11 @@ void StdLua::Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
 
-
-
-int StdLua::PrintLua(lua_State* pkLua)
+/**	\page Print Print(Text)
+	Print text to std out device.
+   \param Text	Text to print.
+*/
+int PrintLua(lua_State* pkLua)
 {
 	for(int i=0;i<g_pkScript->GetNumArgs(pkLua);i++)
 	{
@@ -37,7 +42,12 @@ int StdLua::PrintLua(lua_State* pkLua)
 	return 1;
 }
 
-int StdLua::SinLua(lua_State* pkLua)
+/**	\page Sin Sin(Angle)
+	Returns sinus of angle.
+   \param Angle Angle in radians.
+	\return Return Sin of angle.
+*/
+int SinLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 0)
 		return 0;
@@ -51,7 +61,12 @@ int StdLua::SinLua(lua_State* pkLua)
 	return 1;
 }
 
-int StdLua::CosLua(lua_State* pkLua)
+/**	\page Cos Cos(Angle)
+	Returns cosinus of angle.
+   \param Angle Angle in radians.
+	\return Return Cos of angle.
+*/
+int CosLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 0)
 		return 0;
@@ -65,7 +80,12 @@ int StdLua::CosLua(lua_State* pkLua)
 	return 1;
 }
 
-int StdLua::TanLua(lua_State* pkLua)
+/**	\page Tan Cos(Angle)
+	Returns tangent of angle.
+   \param Angle Angle in radians.
+	\return Return Tan of angle.
+*/
+int TanLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 0)
 		return 0;
@@ -80,8 +100,14 @@ int StdLua::TanLua(lua_State* pkLua)
 }
 
 // 1:st argument = Path to folder with files (char*)
-
-int StdLua::GetFilesInFolderLua(lua_State* pkLua)
+/**	\page GetFilesInFolder GetFilesInFolder(Path)
+	
+	Returns table of all files in the given path.
+   
+	\param Path The path to list the files. 
+	\return Table with filenames.
+*/
+int GetFilesInFolderLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
@@ -128,4 +154,6 @@ int StdLua::GetFilesInFolderLua(lua_State* pkLua)
 
 	return 1;
 	
+}
+
 }
