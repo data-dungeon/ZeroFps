@@ -32,6 +32,9 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		void Save(ZFIoInterface* pkFile);
 		void Load(ZFIoInterface* pkFile);
 
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+
 	protected:
 
 		vector<PropertyValues> GetPropertyValues();
