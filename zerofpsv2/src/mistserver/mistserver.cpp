@@ -366,6 +366,8 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
+
 	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
 	m_pkPropertyFactory->Register("P_DMMission", Create_P_DMMission);
 	m_pkPropertyFactory->Register("P_DMItem", Create_P_DMItem);

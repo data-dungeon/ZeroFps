@@ -3,19 +3,19 @@ MAKE = make		#make to use
 #CC = g++		#linker to use
 
 ### distcc compilation
-CXX = /usr/bin/dist/g++              #compiler to use
-CC = /usr/bin/dist/g++               #linker to use
-CXXFLAGS= -O3 -g -DNDEBUG #-pg -g                                               #compiler flags
-C_ARGS = -O3 -g #-pg -g
+#CXX = /usr/bin/dist/g++              #compiler to use
+#CC = /usr/bin/dist/g++               #linker to use
+#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g                                               #compiler flags
+#C_ARGS = -O3 -g #-pg -g
 #CXXFLAGS= -O0 -g -DNDEBUG #-pg -g                                               #compiler flags
 #C_ARGS = -O0 -g #-pg -g
 
 
 ### normal compilation
-#CXX = g++              #compiler to use
-#CC = g++               #linker to use
-#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g						#compiler flags
-#C_ARGS = -O3 -g #-pg -g				  					#linker flags
+CXX = g++              #compiler to use
+CC = g++               #linker to use
+CXXFLAGS= -O3 -g -DNDEBUG #-pg -g						#compiler flags
+C_ARGS = -O3 -g #-pg -g				  					#linker flags
 
 ### whit memman
 #CXXFLAGS= -O3 -g -DNDEBUG -include memman.h

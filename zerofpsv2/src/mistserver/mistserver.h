@@ -41,6 +41,7 @@
 #include "../mcommon/p_dmmission.h"
 #include "../mcommon/p_dmclickme.h"
 #include "../mcommon/p_dmshop.h"
+#include "../mcommon/p_car.h"
 
 #include "playerdatabase.h"
 
