@@ -529,6 +529,16 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 		m_pkGui->ShowCursor(true);
 	}
+
+	// Create Fps wnd
+	ZGuiWnd* pkFpsWnd = CreateWnd(Wnd, "fps_wnd", "", "", 2, 2, 50, 20, 0);
+	ZGuiSkin* fps_skin = new ZGuiSkin();
+	pkFpsWnd->SetSkin(fps_skin);
+
+	ZGuiWnd* pkFpsLabel = CreateWnd(Label, "fps_label", "fps_wnd", "", 0, 0, 50, 20, 0);
+	ZGuiSkin* fps_label_skin = new ZGuiSkin();
+	pkFpsLabel->SetSkin(fps_label_skin);
+
 }
 
 int ZGuiApp::GetTexID(char *szFile)
