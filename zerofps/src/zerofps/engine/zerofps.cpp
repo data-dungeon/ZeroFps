@@ -278,6 +278,8 @@ void ZeroFps::Draw_EngineShell()
 		// Update GUI
 		m_pkGui->Update();
 	}
+
+
 }
 
 void ZeroFps::MainLoop(void) {

@@ -319,7 +319,10 @@ void ZFObjectManger::Log_Destory(const char* szName)
 
 ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
 {
+	string strHataStl;
+
 	for(int i=0; i<m_kLogFiles.size(); i++) {
+		strHataStl = m_kLogFiles[i].m_strName ;
 		if(m_kLogFiles[i].m_strName == string(szName)) 
 			return &m_kLogFiles[i];
 		}

@@ -11,7 +11,7 @@ using namespace std;
 
 class PropertyDescriptor;
 class ObjectDescriptor;
-
+class ZeroFps;
 class GameMessage;
 
 class ENGINE_API ObjectManager : public ZFObject{
@@ -37,6 +37,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
 		void GetPropertys(int iType,int iSide);		// Fill propery list.
+
+		ZeroFps*	m_pkZeroFps;
 
 	public:
 		ObjectManager();
@@ -96,6 +98,13 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		void SendMsg();
 		void RouteMessage(GameMessage& Msg);
+
+		char* GetUpdateStatusName(int eStatus);
+		char* GetObjectTypeName(int eType);
+
+		char* GetPropertyTypeName(int iType);
+		char* GetPropertySideName(int iSide);
+
 };
 
 //		void Update();								//update all objects in manager

@@ -1,5 +1,6 @@
 #include "physicsengine.h"
 #include "cssphere.h"
+#include "zerofps.h"
 
 PhysicsEngine::PhysicsEngine() 
 : ZFObject("PhysicsEngine")
@@ -27,6 +28,8 @@ void PhysicsEngine::Update()
 	m_pkObjectMan->GetWorldObject()->GetAllPropertys(&m_kPropertys,PROPERTY_TYPE_PHYSIC,PROPERTY_SIDE_SERVER);
 
 	int iSize = m_kPropertys.size();
+	m_pkZeroFps->DevPrintf("om", "Phy::Update(%s, %s,%d) = %d",
+		"PROPERTY_TYPE_PHYSIC","PROPERTY_SIDE_SERVER",0,iSize);
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		static_cast<PhysicProperty*>(*it)->Update();		

@@ -30,6 +30,9 @@ ObjectManager::ObjectManager()
 	
 	m_pkWorldObject	=	new Object();	
 	m_pkWorldObject->GetName() = "WorldObject";
+
+	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+
 }
 
 void ObjectManager::Add(Object* pkObject) 
@@ -80,6 +83,10 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	
 	m_iNrOfActivePropertys = m_akPropertys.size();
 	
+	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
+		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
+
+
 	if(bSort){
 		m_akPropertys.sort(Less_Property);	
 	}
@@ -574,8 +581,64 @@ void ObjectManager::Update(int iType){
 
 
 
+char* ObjectManager::GetUpdateStatusName(int eStatus)
+{
+	char* pkName = "";
+
+	switch(eStatus) {
+		case UPDATE_NONE: 		pkName = "UPDATE_NONE";	break;
+		case UPDATE_ALL: 		pkName = "UPDATE_ALL";	break;
+		case UPDATE_STATIC: 	pkName = "UPDATE_STATIC";	break;
+		case UPDATE_DYNAMIC: 	pkName = "UPDATE_DYNAMIC";	break;
+		case UPDATE_PLAYERS: 	pkName = "UPDATE_PLAYERS";	break;
+		case UPDATE_DECORATION: pkName = "UPDATE_DECORATION";	break;
+		case UPDATE_LIGHT: 		pkName = "UPDATE_LIGHT";	break;
+		}
+
+	return pkName;
+}
+
+char* ObjectManager::GetObjectTypeName(int eType)
+{
+	char* pkName = "";
+
+	switch(eType) {
+		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
+		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
+		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
+		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
+		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;
+		}
+
+	return pkName;
+}
+
+char* ObjectManager::GetPropertyTypeName(int iType)
+{
+	char* pkName = "";
+
+	switch(iType) {
+		case PROPERTY_TYPE_ALL: 		pkName = "PROPERTY_TYPE_ALL";	break;
+		case PROPERTY_TYPE_NORMAL: 		pkName = "PROPERTY_TYPE_NORMAL";	break;
+		case PROPERTY_TYPE_RENDER: 		pkName = "PROPERTY_TYPE_RENDER";	break;
+		case PROPERTY_TYPE_PHYSIC: 		pkName = "PROPERTY_TYPE_PHYSIC";	break;
+		}
+
+	return pkName;
+
+}
+
+char* ObjectManager::GetPropertySideName(int iSide)
+{
+	char* pkName = "";
+
+	switch(iSide) {
+		case PROPERTY_SIDE_ALL: 		pkName = "PROPERTY_SIDE_ALL";	break;
+		case PROPERTY_SIDE_CLIENT: 		pkName = "PROPERTY_SIDE_CLIENT";	break;
+		case PROPERTY_SIDE_SERVER: 		pkName = "PROPERTY_SIDE_SERVER";	break;
+		}
+
+	return pkName;
 
 
-
-
-
+}
