@@ -1333,7 +1333,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 				int iIsMenu;
 				iIsMenu = atoi(pkINI->GetValue(vkSections[i].c_str(),
 					"is_menu"));
-				((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu); 
+				((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu == 1); 
 
 				break;
 			default:
@@ -1344,7 +1344,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			RegisterWindow(pkNewWnd, name);
 		}		
 
-		if(eWndType != BUTTON )
+		if(eWndType != BUTTON && eWndType != RADIOBUTTON)
 			pkNewWnd->SetSkin(new ZGuiSkin());
 
 		if(strcmp(text, "(null)") != 0) 
