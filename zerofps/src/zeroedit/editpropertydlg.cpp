@@ -75,7 +75,12 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	ZGuiButton* bn;
 	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 16*6+16*6+16*7*2+10, 
-		y_pos, 50, 20, "Add"), "AddPropertyBN");
+		y_pos, 70, 20, "Add"), "AddPropertyBN");
+	bn->SetWindowFlag(WF_CENTER_TEXT);
+
+	y_pos += 30;
+	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_REMOVEPROPERTY_BN, 16*6+16*6+16*7*2+10, 
+		y_pos, 70, 20, "Remove"), "AddPropertyBN");
 	bn->SetWindowFlag(WF_CENTER_TEXT);
 
 	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
@@ -238,11 +243,15 @@ bool EditPropertyDlg::OnCloseAddProperty(bool bSave)
 
 	if(bSave)
 	{
-		m_pkCurrentChild->AddProperty(strPropText);
-		printf("Adding property %s\n", strPropText);
+		// Add new property.
+		if(m_bAdd)
+		{
+			m_pkCurrentChild->AddProperty(strPropText);
+			printf("Adding property %s\n", strPropText);
 
-		ZGuiListbox* pkPropertysCB = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->GetListbox();
-		pkPropertysCB->AddItem(strPropText, pkPropertysCB->GetItemCount());
+			ZGuiListbox* pkPropertysCB = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->GetListbox();
+			pkPropertysCB->AddItem(strPropText, pkPropertysCB->GetItemCount());
+		}
 	}
 
 	return true;
@@ -277,12 +286,17 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 			CreateAddPropertyDlg(0,0,300,500);
 			break;
 		case ID_ADDPROPERTY_CLOSE:
+			m_bAdd = false;
 			if(OnCloseAddProperty(true))
 				m_pkGui->Get("AddPropWnd")->Hide();
 			break;
 		case ID_ADDPROPERTY_OK:
+			m_bAdd = true;
 			if(OnCloseAddProperty(true))
 				m_pkGui->Get("AddPropWnd")->Hide();
+			break;
+		case ID_REMOVEPROPERTY_BN:
+			RemoveProperty();
 			break;
 		}
 		break;
@@ -329,4 +343,28 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 		break;
 	}
 	return true;
+}
+
+void EditPropertyDlg::RemoveProperty()
+{
+	ZGuiListbox* pkPropertyList = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->GetListbox();
+
+	if(pkPropertyList)
+	{
+		ZGuiListitem* pkItem = pkPropertyList->GetSelItem();
+
+		if(pkItem)
+		{
+			m_pkCurrentChild->DeleteProperty(pkItem->GetText());
+			printf("Removing property %s\n", pkItem->GetText());
+			
+			int iID = pkItem->GetID();
+			pkPropertyList->RemoveItem(iID);
+
+			if(pkPropertyList->GetItemCount() == 0)
+			{
+				((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->SetLabelText("");
+			}
+		}
+	}
 }

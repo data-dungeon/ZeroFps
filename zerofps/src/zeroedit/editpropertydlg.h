@@ -28,6 +28,7 @@ public:
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 private:
+	void RemoveProperty();
 	ZGuiWnd* Create(int x, int y, int w, int h);
 
 	ZGuiWnd* CreateAddPropertyDlg(int x, int y, int w, int h);
@@ -45,6 +46,7 @@ private:
 	ObjectManager* m_pkObjectManager;
 	PropertyFactory* m_pkPropFactory;
 
+	bool m_bAdd;
 };
 
 #endif // !defined(AFX_EDITPROPERTYDLG_H__F0F656FE_74C5_4E19_93D9_61437FDA743A__INCLUDED_)
