@@ -45,10 +45,14 @@ class SCRIPT_API ZFScript : public ZFResource
 		bool Create(string strName);	// overloaded
 
 		int CalculateSize();
-		
+		lua_State* m_pkLuaState;
+
 	private:
 
 		char* m_szScriptName;
+		
+
+		friend class ZFScriptSystem;
 };
 
 SCRIPT_API ZFResource* Create__ZFScript();
@@ -57,6 +61,8 @@ SCRIPT_API ZFResource* Create__ZFScript();
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:
+	bool Call(ZFScript *pkScript, char* szFuncName, int iNumParams, int iNumResults);
+	bool Run(ZFScript* pkScript);
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
 	void AddReturnValue(lua_State* state, double dValue);
 
@@ -75,19 +81,38 @@ public:
 	bool ExposeClass(char *szName, ScripObjectType eType, 
 	lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
-	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType);
-	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
-	bool CallScript(char* szFuncName, int iNumParams, int iNumResults);
-	bool RunScript(char* szFileName);
+	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType, lua_State* pkState=NULL);
+	bool ExposeFunction(const char* szName, lua_CFunction o_Function, lua_State* pkState=NULL);
+	bool CallScript(char* szFuncName, int iNumParams, int iNumResults, lua_State* pkState=NULL);
+	int RunScript(char* szFileName, lua_State* pkState=NULL);
 	
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();	
+
+	void CopyGlobalData(lua_State* pkState);
 	
 	ZFScriptSystem();
 	virtual ~ZFScriptSystem();
 
 private:
+
+	struct GlobalFuncInfo
+	{
+		lua_CFunction pkFunction;
+		char* szName;
+	};
+
+	vector<GlobalFuncInfo*> m_vkGlobalFunctions;
+
+	struct GlobalVarInfo
+	{
+		void* pvData;
+		ScripVarType eType;
+		char* szName;
+	};
+
+	vector<GlobalVarInfo*> m_vkGlobalVariables;
 
 	static int SetTypeInt(lua_State* pkLua);
 	static int GetTypeInt(lua_State* pkLua);
@@ -102,6 +127,8 @@ private:
 	bool Open();
 	
 	lua_State* m_pkLua;
+
+	vector<lua_State*> m_vkStates;
 
 	int m_iLuaTagInt;
 	int m_iLuaTagDouble;

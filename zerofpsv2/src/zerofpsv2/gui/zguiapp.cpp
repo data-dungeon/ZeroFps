@@ -253,48 +253,50 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGu
 	double dData;
 	double dColMult = 1.0 / 255.0;
 
+	lua_State* pkLuaState = ((ZFScript*) m_kResHandle->GetResourcePtr())->m_pkLuaState;
+
 	// Textures
-	if(pkScript->GetGlobal(NULL, szName, "tex1", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex1", szData))
 		pkNewSkin->m_iBkTexID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex2", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex2", szData))
 		pkNewSkin->m_iHorzBorderTexID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex3", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex3", szData))
 		pkNewSkin->m_iVertBorderTexID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex4", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex4", szData))
 		pkNewSkin->m_iBorderCornerTexID = GetTexID(szData);
 
 	// Alpha maps
-	if(pkScript->GetGlobal(NULL, szName, "tex1a", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex1a", szData))
 		pkNewSkin->m_iBkTexAlphaID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex2a", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex2a", szData))
 		pkNewSkin->m_iHorzBorderTexAlphaID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex3a", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex3a", szData))
 		pkNewSkin->m_iVertBorderTexAlphaID = GetTexID(szData);
-	if(pkScript->GetGlobal(NULL, szName, "tex4a", szData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tex4a", szData))
 		pkNewSkin->m_iBorderCornerTexAlphaID = GetTexID(szData);
 
 	// Color Bk
-	if(pkScript->GetGlobal(NULL, szName, "bkR", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "bkR", dData))
 		pkNewSkin->m_afBkColor[0] = dColMult * dData;
-	if(pkScript->GetGlobal(NULL, szName, "bkG", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "bkG", dData))
 		pkNewSkin->m_afBkColor[1] = dColMult * dData;
-	if(pkScript->GetGlobal(NULL, szName, "bkB", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "bkB", dData))
 		pkNewSkin->m_afBkColor[2] = dColMult * dData;
 
 	// Color Border
-	if(pkScript->GetGlobal(NULL, szName, "borderR", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "borderR", dData))
 		pkNewSkin->m_afBorderColor[0] = dColMult * dData;
-	if(pkScript->GetGlobal(NULL, szName, "borderG", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "borderG", dData))
 		pkNewSkin->m_afBorderColor[1] = dColMult * dData;
-	if(pkScript->GetGlobal(NULL, szName, "borderB", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "borderB", dData))
 		pkNewSkin->m_afBorderColor[2] = dColMult * dData;
 
 	// Border size, Tile texture, Transparency
-	if(pkScript->GetGlobal(NULL, szName, "bd_size", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "bd_size", dData))
 		pkNewSkin->m_unBorderSize = (unsigned short) dData;
-	if(pkScript->GetGlobal(NULL, szName, "tile", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "tile", dData))
 		pkNewSkin->m_bTileBkSkin = dData > 0 ? true : false;
-	if(pkScript->GetGlobal(NULL, szName, "trans", dData))
+	if(pkScript->GetGlobal(pkLuaState, szName, "trans", dData))
 		pkNewSkin->m_bTransparent = dData > 0 ? true : false;
 
 	return pkNewSkin;
@@ -352,11 +354,14 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 
 	InitTextures(pkScript);
 
-	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("/data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("/data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// Låt skriptfilen skapa alla fönster.
-	pkScript->CallScript("CreateMainWnds", 0, 0);
+	//pkScript->CallScript("CreateMainWnds", 0, 0);
+
+	pkScript->Call(((ZFScript*) m_kResHandle->GetResourcePtr()), "CreateMainWnds", 0, 0);
+
 }
 
 int ZGuiApp::GetTexID(char *szFile)

@@ -77,7 +77,7 @@ void MistClient::Init()
 
 	// set caption
 	SDL_WM_SetCaption("Mistland", NULL);
-	
+	 
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
 
@@ -272,6 +272,28 @@ void MistClient::Input()
 		}
 		else
 			printf("Failed to stop sound\n");
+		break;
+
+	case KEY_L:
+		{
+/*			lua_State* pState1 = pkScript->GetNewState();
+			lua_State* pState2 = pkScript->GetNewState();
+
+			pkScript->RunScript("data/script/gui/test1.lua", pState1);
+			pkScript->RunScript("data/script/gui/test2.lua", pState2);
+
+			pkScript->CallScript("Test", 0, 0, pState1);
+			pkScript->CallScript("Test", 0, 0, pState2);*/
+
+
+			static ZFResourceHandle kResHandle;
+			if(!kResHandle.SetRes("data/script/gui/test2.lua"))
+				printf("Failed to load test script\n");
+
+			pkScript->Run( (ZFScript*) kResHandle.GetResourcePtr() );
+			pkScript->Call( (ZFScript*) kResHandle.GetResourcePtr(), "Test", 0, 0);
+
+		}
 		break;
 	}
 
