@@ -50,7 +50,7 @@ void P_Ml::PackFrom( NetPacket* pkNetPacket )
 	pkNetPacket->Read(&nr,sizeof(nr));
 	
 	m_kActions.clear();
-	for(int i=0;i<m_kActions.size();i++)
+	for(int i=0;i<nr;i++)
 	{
 		char temp[128];
 		pkNetPacket->Read_NetStr(temp);
