@@ -5,6 +5,7 @@
 #include "../audio/zfaudiosystem.h"
 #include "../../engine/entitymanager.h"
 #include "../../engine_systems/propertys/p_ambientsound.h"
+#include "../../engine_systems/propertys/p_sound.h"
 #include "si_audio.h"
 
 ZFScriptSystem* AudioLua::g_pkScript;
@@ -118,7 +119,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 
 	if(pkSound)
 	{
-		pkSound->Play(string("data/sound/") + string(acName));
+		pkSound->StartSound(string("data/sound/") + string(acName), false);
 	}
 	else
 	{

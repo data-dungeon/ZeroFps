@@ -99,7 +99,7 @@ void P_AI::Update()
 			
 				//play a nice sound
 				if(m_pkSound)
-					m_pkSound->Play("data/sound/hit.wav");
+					m_pkSound->StartSound("data/sound/hit.wav", false);
 
             string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
 

@@ -1,4 +1,5 @@
 #include "p_charactercontrol.h"
+#include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 
 
 P_CharacterControl::P_CharacterControl()
@@ -70,7 +71,32 @@ void P_CharacterControl::Update()
 	kRot.Identity();
 	kRot.Rotate(0,m_fYAngle,0);
 	kRot.Transponse();				
-	GetEntity()->SetLocalRotM(kRot);				
+	GetEntity()->SetLocalRotM(kRot);	
+
+	Entity* pkEnt = GetEntity();
+
+	// Spela upp ett walkljud
+	// OBS! Detta skall flyttas till en kommande Characterklass.
+	if(P_Sound* pkSound = (P_Sound*)pkEnt->GetProperty("P_Sound"))
+	{
+		enum MOVE_STATE { idle, moving };
+		static MOVE_STATE move_state = idle;
+
+		if(pkEnt->GetVel().NearlyZero(1))
+		{
+			if(move_state == moving)
+			{
+				move_state = idle;
+				pkSound->StopSound("data/sound/footstep_forest.wav");
+			}
+		}
+		else
+		if(move_state == idle)
+		{
+			move_state = moving;
+			pkSound->StartSound("data/sound/footstep_forest.wav", true);
+		}
+	}
 	
 }
 

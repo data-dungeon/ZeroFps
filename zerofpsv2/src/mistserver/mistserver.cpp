@@ -161,6 +161,13 @@ void MistServer::Init()
 
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
+
+	bool bMinimizeFromStart = true;
+
+	#ifdef WIN32
+		if(bMinimizeFromStart)
+			ShowWindow(GetFocus(), SW_MINIMIZE);
+	#endif 
 }
 
 
@@ -393,7 +400,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_NEW:
 			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkZeroFps->StartServer(false,true);
+			m_pkZeroFps->StartServer(false,true,4242);
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -418,7 +425,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkZeroFps->StartServer(false,true);
+			m_pkZeroFps->StartServer(false,true,4242);
 			
 			break;		
 		

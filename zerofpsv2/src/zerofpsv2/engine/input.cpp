@@ -258,8 +258,6 @@ void Input::Update(void)
 	if(m_bHaveReleasedMWDOWN)
 		m_akKeyState[MOUSEWDOWN].m_bDown=false;
 		
-			
-	Buttons iZfKey;
 	BasicKey kNewKey;
 	
 	SDL_Event m_kEvent;

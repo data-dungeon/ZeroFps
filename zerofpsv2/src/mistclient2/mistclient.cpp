@@ -12,7 +12,7 @@
 
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
-#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/p_arcadecharacter.h"
 #include "../mcommon/ml_netmessages.h"
@@ -250,13 +250,6 @@ void MistClient::UpdateCharacter()
 				pkEnv->SetEnviroment("data/enviroments/fogy.env");
 			}
 		}		
-
-		P_Sound* pkSound = (P_Sound*) pkEnt->GetProperty("P_Sound");
-		if(pkSound)
-		{
-			printf("oooolllle\n");
-		}
-
 	}
 }
 
@@ -317,42 +310,6 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}			
 
-		//case MLNM_PLAY_SOUND:
-
-		//	int iEntityID;
-		//	PkNetMessage->Read(iEntityID);
-
-		//	string strSound;
-		//	PkNetMessage->Read_Str(strSound);
-
-		//	bool bLoop;
-		//	PkNetMessage->Read(bLoop);
-
-		//	// Play footstep
-		//	enum MOVE_STATE { idle, moving };
-		//	static MOVE_STATE move_state = idle;
-
-		//	if(pkEnt->GetVel().NearlyZero(1))
-		//	{
-		//		if(move_state == moving)
-		//		{
-		//			move_state = idle;
-		//			m_pkAudioSys->StopSound("data/sound/footstep_forest.wav", pkEnt->GetWorldPosV());
-		//		}
-		//	}
-		//	else
-		//	{
-		//		move_state = moving;
-		//		if(!m_pkAudioSys->MoveSound("data/sound/footstep_forest.wav", 
-		//			pkEnt->GetWorldPosV(), pkEnt->GetWorldPosV(), m_pkAudioSys->GetListnerDir()))
-		//		{
-		//			m_pkAudioSys->StartSound("data/sound/footstep_forest.wav", pkEnt->GetWorldPosV(), 
-		//				m_pkAudioSys->GetListnerDir(), true);
-		//		}
-		//	}
-
-		//	break;
-		
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);

@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 
    using namespace std;
 
