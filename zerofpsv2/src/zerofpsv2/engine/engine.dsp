@@ -159,6 +159,10 @@ SOURCE=.\entity.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\entitymanager.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\ogl\extgl.c
 # End Source File
 # Begin Source File
@@ -204,10 +208,6 @@ SOURCE=.\main.cpp
 # Begin Source File
 
 SOURCE=.\network.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\objectmanager.cpp
 # End Source File
 # Begin Source File
 
@@ -363,6 +363,10 @@ SOURCE=.\entity.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\entitymanager.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\fh.h
 # End Source File
 # Begin Source File
@@ -408,10 +412,6 @@ SOURCE=.\main.h
 # Begin Source File
 
 SOURCE=.\network.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\objectmanager.h
 # End Source File
 # Begin Source File
 
