@@ -67,6 +67,8 @@ enum Buttons {
 	KEY_C=SDLK_c,	
 	KEY_R=SDLK_r,
 	KEY_F=SDLK_f,
+	KEY_V=SDLK_v,	
+	KEY_B=SDLK_b,	
 	
 	MOUSELEFT=397,
 	MOUSEMIDDLE,

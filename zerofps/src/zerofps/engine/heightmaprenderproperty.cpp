@@ -19,6 +19,8 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 void HeightMapRenderProperty::SetHeightMap(HeightMap* pkHeightMap)
 {
 	m_pkHeightMap=pkHeightMap;	
+	if(m_pkHeightMap!=NULL)
+		m_pkHeightMap->SetPosition(m_pkObject->GetPos());	
 }
 
 

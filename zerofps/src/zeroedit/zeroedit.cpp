@@ -377,7 +377,7 @@ void ZeroEdit::Input()
 			{
 				m_pkCurentParent=m_pkHeightMapObject;
 			}
-			if(pkInput->Pressed(KEY_X))
+			if(pkInput->Pressed(KEY_V))
 			{
 				if(pkFps->GetTicks()-m_fTimer < .5)
 					break;			
@@ -390,6 +390,15 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;								
 				m_pkCurentParent=object;
 			}
+			if(pkInput->Pressed(KEY_B))
+			{
+				if(pkFps->GetTicks()-m_fTimer < 1)
+					break;			
+				m_fTimer=pkFps->GetTicks();
+			
+				CreateZones();
+			}
+			
 			break;
 			
 	}
@@ -407,7 +416,7 @@ void ZeroEdit::CreateNew(int iSize)
 
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
-	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
+	
 //	pkObjectMan->Add(m_pkHeightMapObject);	
 	pkCollisionMan->Add(m_pkHeightMapObject);
 
@@ -416,6 +425,10 @@ void ZeroEdit::CreateNew(int iSize)
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
+
+	m_pkHeightMapObject->GetPos().Set(0,-4,0);				
+	m_pkMap->SetPosition(Vector3(0,-4,0));
+
 
 	cout<<"new map"<<endl;
 }
@@ -493,6 +506,22 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 	temp.clear();
 	
 	return minobject;
+}
+
+void ZeroEdit::CreateZones()
+{
+	int radius=250;
+
+	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
+
+	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
+		for(int z=0;z<m_pkMap->m_iHmSize;z+=radius/3){
+			ZoneObject *object = new ZoneObject();
+			object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
+			object->SetRadius(radius);
+			object->SetParent(pkObjectMan->GetWorldObject());			
+		}
+	}
 }
 
 

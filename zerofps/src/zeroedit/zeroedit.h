@@ -73,6 +73,8 @@ class ZeroEdit :public Application {
 		Object* GetClosest(Vector3 kPos);
 		void SelectChild();
 		void SelectParent();		
+		void CreateZones();
+		
 		
 		void RegisterPropertys();
 };
