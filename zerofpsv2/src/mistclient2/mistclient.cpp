@@ -794,6 +794,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			string strName;
 			string strIcon;
 			float  fTimeout;
+			float  fTimeLeft;
 			char   cType;
 
 			BUFF_ICON_INFO kInfo;
@@ -804,11 +805,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			{
 				pkNetMessage->Read_Str(strIcon);
 				pkNetMessage->Read(fTimeout);
+				pkNetMessage->Read(fTimeLeft);
 				pkNetMessage->Read(cType);							
 			
 				kInfo.m_strName = strName;
 				kInfo.m_strIcon = strIcon;
 				kInfo.m_fTimeout = fTimeout;
+				kInfo.m_fTimeLeft = fTimeLeft;
 				kInfo.m_cType = cType;
 				kInfoVector.push_back(kInfo);
 

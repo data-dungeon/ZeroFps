@@ -76,6 +76,7 @@ class MistClient :public Application, public ZGuiApp {
 			string m_strName;
 			string m_strIcon;
 			float  m_fTimeout;
+			float  m_fTimeLeft;
 			float  m_fStartTime;
 			char   m_cType;	
 			ZGuiLabel* m_pkWnd;

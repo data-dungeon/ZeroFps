@@ -544,6 +544,7 @@ void P_CharacterProperty::SendBuffList()
 				kNp.Write_Str(pkBuff->m_strName);
 				kNp.Write_Str(pkBuff->m_strIcon);
 				kNp.Write(pkBuff->m_fTimeOut);
+				kNp.Write(pkBuff->m_fTimeLeft);
 				kNp.Write(pkBuff->m_cType);
 			}
 		}

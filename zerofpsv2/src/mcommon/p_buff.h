@@ -24,9 +24,9 @@ class MCOMMON_API P_Buff: public Property
 		float		m_fTimeOut;
 		char		m_cType;
 		bool		m_bShow;		
+		float		m_fTimeLeft;
 		
-		
-		float		m_fAddTime;
+		float		m_fLastTime;
 		
 		
 		void Enable(P_CharacterProperty* pkCP);

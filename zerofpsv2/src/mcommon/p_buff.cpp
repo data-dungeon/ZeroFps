@@ -17,12 +17,11 @@ P_Buff::P_Buff()
 	
 	m_strName	= "Unkown";
 	m_strIcon	= "default";
-	m_fTimeOut	= -1;
+	m_fTimeOut	= -1;				//buff total time, if no timout -1
+	m_fTimeLeft = -1;				//remainng buff time
 	m_cType		= 0;
-	m_bShow		= true;
-	
-	
-	m_fAddTime	= 0;
+	m_bShow		= true;	
+	m_fLastTime = 0;				//ticks on last update
 }
 
 P_Buff::~P_Buff()
@@ -45,7 +44,12 @@ void P_Buff::Update()
 	{
 		if(m_fTimeOut != -1)
 		{
-			if(m_pkZeroFps->GetTicks() > m_fAddTime + m_fTimeOut)
+			//decrese timeout
+			m_fTimeLeft -= m_pkZeroFps->GetTicks() - m_fLastTime;
+			m_fLastTime = m_pkZeroFps->GetTicks();
+		
+			//time has expired,remove buff
+			if(m_fTimeLeft <= 0)
 			{
 				m_pkCharacter->RemoveBuff(this);
 			}
@@ -88,7 +92,8 @@ void P_Buff::Enable(P_CharacterProperty* pkCP)
 	
 	m_pkEntityManager->CallFunction(GetEntity(),"AddBuff",&kParams);
 	
-	m_fAddTime = m_pkZeroFps->GetTicks();
+	m_fLastTime = m_pkZeroFps->GetTicks();
+	m_fTimeLeft = m_fTimeOut;
 }
 
 void P_Buff::Disable()

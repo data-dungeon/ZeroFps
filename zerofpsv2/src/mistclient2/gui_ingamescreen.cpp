@@ -353,15 +353,26 @@ void MistClient::RebuildBuffIconList(vector<BUFF_ICON_INFO>* kList)
 			m_kBuffIcons[i].m_strIcon = string("buffs/") + (*kList)[i].m_strIcon;			
 			m_kBuffIcons[i].m_strName = (*kList)[i].m_strName;
 			m_kBuffIcons[i].m_cType = (*kList)[i].m_cType;
-			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;
+			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;			
 			m_kBuffIcons[i].m_fStartTime = m_pkZeroFps->GetTicks();
 			m_kBuffIcons[i].m_pkProgressBar->SetRange(0, m_kBuffIcons[i].m_fTimeout);
 
+			m_kBuffIcons[i].m_fTimeLeft = (*kList)[i].m_fTimeLeft;
+			if(m_kBuffIcons[i].m_fTimeLeft == -1) m_kBuffIcons[i].m_fTimeLeft = m_kBuffIcons[i].m_fTimeout;				//ful fix
+			
+			
 			((ZGuiLabel*)m_kBuffIcons[i].m_pkWnd)->m_eTextAlignment = ZGLA_TopLeft;
 
 	
 			m_kBuffIcons[i].m_pkWnd->GetSkin()->m_iBkTexAlphaID = 
 				LoadGuiTextureByRes(m_kBuffIcons[i].m_strIcon);	
+				
+			// !!!!!!!!! dvoid hax !!!!!!!!!!!!!!!
+			// visa inte progressbaren om timeout är -1
+			if(m_kBuffIcons[i].m_fTimeout == -1)
+				m_kBuffIcons[i].m_pkProgressBar->Hide();
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
+			
 		}
 		else
 		{
@@ -377,11 +388,14 @@ void MistClient::UpdateBuffIconList()
 {
 	for(int i=0; i<m_iNumBuffIcons; i++)
 	{
-		printf("%f - %f - %f\n", m_kBuffIcons[i].m_fStartTime, m_kBuffIcons[i].m_fTimeout, m_pkZeroFps->GetTicks());
+		if(m_kBuffIcons[i].m_fTimeout == -1)
+			continue;
+	
+		//printf("%f - %f - %f\n", m_kBuffIcons[i].m_fStartTime, m_kBuffIcons[i].m_fTimeout, m_pkZeroFps->GetTicks());		
+		//float fProcentAvTime = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) / m_kBuffIcons[i].m_fTimeout;
+		//m_kBuffIcons[i].m_pkProgressBar->SetPos((int)(fProcentAvTime*m_kBuffIcons[i].m_fTimeout));
 		
-		float fProcentAvTime = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) / m_kBuffIcons[i].m_fTimeout;
-		
-		
-		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)(fProcentAvTime*m_kBuffIcons[i].m_fTimeout));
+		float fDiff = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) + (m_kBuffIcons[i].m_fTimeout - m_kBuffIcons[i].m_fTimeLeft)  ;		
+		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)fDiff);		
 	}
 }
