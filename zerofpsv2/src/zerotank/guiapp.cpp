@@ -21,7 +21,28 @@ GuiApp::GuiApp(ZGui::callback oMainWndProc)
 
 GuiApp::~GuiApp()
 {
+	map<string, ZGuiSkin*>::iterator itSkins = m_kSkins.begin();
+	while(itSkins != m_kSkins.end())
+	{
+		delete itSkins->second;
+		itSkins++;
+	}
 
+/*	map<int, ZGuiWnd*>::iterator itWnds = m_kWindows.begin();
+	while(itWnds != m_kWindows.end())
+	{
+		bool bIsWnd = typeid(*itWnds->second) == 
+			typeid(ZGuiWnd) ? true : false;
+
+		// Förstör bara de fönster som är "windows" eftersom funktionen
+		// UnregisterWindow själv tar hand om att förstöra alla barn.
+		if(itWnds->first == 10)
+		{
+			m_pkGui->UnregisterWindow(itWnds->second);
+		}
+
+		itWnds++;
+	}*/
 }
 
 ZGuiWnd* GuiApp::GetWnd(int iID)

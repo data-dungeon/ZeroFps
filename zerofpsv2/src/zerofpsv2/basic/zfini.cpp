@@ -10,6 +10,7 @@
 #include "zfobjectmanger.h"
 #include "zfbasicfs.h"
 #include <iostream>
+#include "zfvfs.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -43,8 +44,14 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 
 	m_bCommandFile = bCommandFile;
 
-	FILE* pkFile = NULL;
-	if ((pkFile = fopen(strFileName, "rb")) == NULL)
+	ZFVFileSystem* pkVFFileSys = static_cast<ZFVFileSystem*>
+		(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+
+	//if ((pkFile = fopen(strFileName, "rb")) == NULL)
+
+	FILE* pkFile;
+
+	if ( (pkFile = pkVFFileSys->Open( strFileName, 0, false)) == NULL)
 	{
 		printf("Failed to load ini file %s\n", strFileName);
 		return (m_bFileReady = false);
@@ -77,7 +84,9 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 	}
 
 	if(pkFile)
+	{
 		fclose(pkFile);
+	}
 
 	if(m_bCommandFile == true)
 	{
