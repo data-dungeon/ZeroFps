@@ -58,6 +58,8 @@ HeightMap::HeightMap()
 
 	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	m_pkBasicFS			= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+
+
 }
 
 HeightMap::~HeightMap() 
@@ -78,6 +80,8 @@ bool HeightMap::AllocHMMemory(int iSize)
 	m_iNumOfHMVertex = iSize * iSize;
 	verts = new HM_vert[m_iNumOfHMVertex];	
 	m_pkTileFlags = new unsigned char [m_iTilesSide*m_iTilesSide];
+	
+	
 	return true;
 }
 
@@ -361,7 +365,7 @@ bool HeightMap::Load(const char* acFile)
 {
 	int i;
 
-// Load Vertex Data
+	// Load Vertex Data
 	string hmfile = acFile;
 	hmfile += ".hm";
 	
@@ -391,6 +395,9 @@ bool HeightMap::Load(const char* acFile)
 		kLayer.Load( &savefile );
 		m_kLayer.push_back(kLayer);
 		}
+
+	//read tileflags
+	savefile.Read((void*)m_pkTileFlags,sizeof(unsigned char), m_iTilesSide*m_iTilesSide);			
 
 	// Read VertexData
 	savefile.Read((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
@@ -424,6 +431,10 @@ bool HeightMap::Save(const char* acFile)
 	for(int i=0; i<m_kLayer.size(); i++) {
 		m_kLayer[i].Save( &savefile );
 		}
+	
+	
+	//write tileflags
+	savefile.Write((void*)m_pkTileFlags,sizeof(unsigned char), m_iTilesSide*m_iTilesSide);		
 
 	// Write VertexData
 	savefile.Write((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);

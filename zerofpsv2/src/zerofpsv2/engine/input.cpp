@@ -441,14 +441,16 @@ void Input::RelMouseXY(int &iX,int &iY)
 
 void Input::ToggleGrab(void) 
 {	
-	if(SDL_GetTicks()-m_iGrabtime>200) {
+	if(SDL_GetTicks()-m_iGrabtime>200) 
+	{
 		m_iGrabtime=SDL_GetTicks();
-		if(SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_OFF) {
+		if(SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_OFF) 
+		{
 			GrabInput();
-	  } else {
-	  	ReleaseInput();
-	  }
-  } 	
+		} else {
+			ReleaseInput();
+		}
+	} 	
 }
 
 void Input::ToggleGrab(bool bGrab) {

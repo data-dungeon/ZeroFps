@@ -819,7 +819,8 @@ void MistServer::Input()
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
 	
-	int x,z;		
+	int x = 0;
+	int z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	// First see if we clicked to change view port.

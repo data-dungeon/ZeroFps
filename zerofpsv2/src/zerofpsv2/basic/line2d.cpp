@@ -181,3 +181,6 @@ Line2D::LINE_CLASSIFICATION Line2D::Intersection(Line2D& Line, Vector2* pInterse
 
 	return LINES_INTERSECT;
 }
+
+
+

@@ -316,11 +316,6 @@ void ZeroFps::Run_EngineShell()
 		m_pkApp->m_pkInputHandle->SetTempDisable(true);
 
 
-/*	if(m_pkGui->m_bHandledMouse)
-		m_pkApp->m_pkInputHandle->SetActive(false);
-	else
-		m_pkApp->m_pkInputHandle->SetActive(true);	
-*/
 	//end of console input
 
 	//for debuging the input system
