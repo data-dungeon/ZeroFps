@@ -257,7 +257,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 				DMCharacterStats kStats = m_vkAgentsToHireBns[i].second;
 				char szText[150];
-				sprintf(szText, "Your agent %i/%i - %s", i+m_iStartHireAgent+1, 
+				sprintf(szText, "Agents to hire %i/%i - %s", i+m_iStartHireAgent+1, 
 					GetNumAgentsToHire(), kStats.m_strName.c_str() );
 				SetText("CurrentAgentToHireLabel", szText);
 
