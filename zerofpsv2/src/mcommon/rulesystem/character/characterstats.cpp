@@ -439,6 +439,7 @@ void CharacterStats::SetMP( string kValue )
 
 void CharacterStats::AddHP( int iValue )
 {
+	
    m_kPointStats["hp"] += iValue;
    m_uiVersion++;
 
@@ -471,9 +472,9 @@ void CharacterStats::AddHP( int iValue )
 // ------------------------------------------------------------------------------------------
 
 void CharacterStats::AddMP( int iValue )
-{
+{ 
    m_kPointStats["mp"] += iValue;
-   m_uiVersion++;
+   m_uiVersion++; 
 }
 
 // ------------------------------------------------------------------------------------------
@@ -482,7 +483,7 @@ void CharacterStats::SetCounter( string kName, int iValue )
 {
    m_kPointStats[kName] = iValue;
    m_kPointStats[kName].SetMaxValue(iValue);
-   m_uiVersion++;
+   m_uiVersion++; 
 }
 
 // ------------------------------------------------------------------------------------------

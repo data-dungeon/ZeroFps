@@ -17,7 +17,7 @@ public:
    
    void operator+= (int fValue);
    void operator- (int fValue);
-   void operator= (string kValue);
+   StatCounter& operator= (string kValue);
    void operator= (int fValue);
 
    int Value()                          { return m_iValue; }

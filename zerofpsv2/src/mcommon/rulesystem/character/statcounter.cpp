@@ -28,7 +28,7 @@ void StatCounter::operator- (int iValue)
 
 // ----------------------------------------------------------------------------------------------
 
-void StatCounter::operator= (string kValue)
+StatCounter& StatCounter::operator= (string kValue)
 {
    if ( kValue == "Max" )
       m_iValue = m_iMax;
@@ -42,6 +42,8 @@ void StatCounter::operator= (string kValue)
          m_iValue = m_iMin;
 
    }
+
+   return *this;
 
 }
 // ----------------------------------------------------------------------------------------------
