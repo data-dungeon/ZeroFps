@@ -970,7 +970,12 @@ void MistServer::HandleOrders()
 			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 			if(pe)
 			{	
-				pe->SendEvent("Use");
+				string strAction = "NoName";
+
+				if(ob->GetProperty("P_Item") != NULL)
+					strAction = "PickUp";
+
+				pe->SendEvent("Use", strAction.c_str() );
 			}			
 		}
 		

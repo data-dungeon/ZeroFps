@@ -40,20 +40,24 @@ void P_Event::Update()
 }
 
 
-bool P_Event::SendEvent(const char* acEvent)
+bool P_Event::SendEvent(const char* acEvent, const char* acType)
 {
-	if(m_pkObject->GetObjectScript())
+	if(m_pkObject->GetObjectScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
 		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+
+		vector<ARG_DATA> args(1);
+		args[0].eType = tSTRING;
+		args[0].pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].pData, acType);
 		
-		if(!m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent, 0, 0))
-		{
-			//cout<<"error calling "<<acEvent<<endl;
-			return false;
-		}
+		bool bSuccess = m_pkScriptSys->Call(
+			m_pkObject->GetObjectScript(), (char*)acEvent, args);
+
+		delete[] args[0].pData;
 		
-		return true;
+		return bSuccess;
 	}
 
 	return false;
