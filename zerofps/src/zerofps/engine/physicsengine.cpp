@@ -17,8 +17,6 @@ void PhysicsEngine::Update()
 	if(!m_bUpdate)
 		return;
 	
-//	cout<<"NEW TEST--------------"<<endl;
-	
 	//clear list
 	m_kPropertys.clear();
 	
@@ -31,17 +29,12 @@ void PhysicsEngine::Update()
 	int iSize = m_kPropertys.size();
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
-		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);		
-		//WARNING THIS CRAP SHULD NOT BE HERE!!!!!!!!!!!!!!
-		PP->Update();
+		static_cast<PhysicProperty*>(*it)->Update();		
 	}
-
 
 	CalcNewPos();
 	CheckCollisions();	
 	HandleCollisions();
-
-
 
 }
 
@@ -68,16 +61,16 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 			Acc+= (Vel*-1) *0.3;			//simulate water friktion		
 		}
 		
-	return Vel + (Acc *  m_fFrameTime);;//pkObject->GetVel() + (Acc *  m_fFrameTime);
+	return Vel + (Acc *  m_fFrameTime);
 }
 
 
 
-CollisionData* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
+Collision* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
 {
 //	cout<<"deep testing "<<endl;
 
-	CollisionData* pkCD=NULL;
+	Collision* pkCD=NULL;
 	
 	CollisionShape* CS1=pkPP1->GetColShape();
 	CollisionShape* CS2=pkPP2->GetColShape();
@@ -117,65 +110,46 @@ void PhysicsEngine::CheckCollisions()
 	//clear all known collisions
 	ClearCollisions();	
 	
-	m_bChanged=true;
 	
-	while(m_bChanged)
-	{
-		m_bChanged=false;
+	for(list<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
+	{	
+		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
 		
-		for(list<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
+		for(list<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
 		{	
-			PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
-			
-			for(list<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
-			{	
-				//dont collide with our self 
-				if(it1==it2)
-					continue;
-
+			//dont collide with our self 
+			if(it1==it2)
+				continue;
 				PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
-		
-				//dont collide two static objects =)
-				if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
-					PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
-					continue;
-		
-				if(TestMotionSpheres(PP1,PP2))
+	
+			//dont collide two static objects =)
+			if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
+				PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+				continue;
+	
+			if(TestMotionSpheres(PP1,PP2))
+			{
+				Collision* pkCD=NULL;
+				pkCD=DeepTest(PP1,PP2);
+				
+				if(pkCD!=NULL)
 				{
-					CollisionData* pkCD=NULL;
-					pkCD=DeepTest(PP1,PP2);
+					pkCD->m_bAdded=false;
+					pkCD->m_bChecked=false;						
 					
-					if(pkCD!=NULL)
-					{
-						//create collision data
-						Collision* temp=new Collision;
-						temp->m_pkPP1=pkCD->m_pkPP1;
-						temp->m_pkPP2=pkCD->m_pkPP2;
+					m_kCollisions.push_back(pkCD);
+									
+					//create collision pointers (for sorting)
+					CP* tempcp1=new CP;		
+					CP* tempcp2=new CP;								
+					tempcp1->m_pkPP=pkCD->m_pkPP1;
+					tempcp2->m_pkPP=pkCD->m_pkPP2;
+					tempcp1->m_pkCol=pkCD;
+					tempcp2->m_pkCol=pkCD;
 					
-						temp->m_kPos1=pkCD->m_kPos1;						
-						temp->m_kPos2=pkCD->m_kPos2;						
-						
-						temp->m_fDistance1=pkCD->m_fDistance1;
-						temp->m_fDistance2=pkCD->m_fDistance2;												
-						
-						temp->m_bAdded=false;
-						temp->m_bChecked=false;						
-						
-						m_kCollisions.push_back(temp);
-										
-						//create collision pointers (for sorting)
-						CP* tempcp1=new CP;		
-						CP* tempcp2=new CP;								
-						tempcp1->m_pkPP=pkCD->m_pkPP1;
-						tempcp2->m_pkPP=pkCD->m_pkPP2;
-						tempcp1->m_pkCol=temp;
-						tempcp2->m_pkCol=temp;
-						
-						m_kCPs.push_back(tempcp1);
-						m_kCPs.push_back(tempcp2);						
-						
-						delete pkCD;
-					}
+					m_kCPs.push_back(tempcp1);
+					m_kCPs.push_back(tempcp2);						
+					
 				}
 			}
 		}
@@ -197,8 +171,6 @@ bool PhysicsEngine::TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP
 	
 	float Dist= (sp1.m_kPos-sp2.m_kPos).Length();
 
-//	cout<<"HORA"<<endl;
-
 	if(Dist < (sp1.m_fRadius + sp2.m_fRadius))
 		return true;
 	else 		
@@ -219,18 +191,6 @@ void PhysicsEngine::HandleCollisions()
 	{
 		Collision* pkCol=(*itCp)->m_pkCol;		
 		
-/*		
-		cout<<"CHECKING: "<<(*itCp)->m_pkPP->GetObject()->GetName()<<endl;
-		cout<<"NAME1: "<<pkCol->m_pkPP1->GetObject()->GetName()<<endl;
-		cout<<"NAME2: "<<pkCol->m_pkPP2->GetObject()->GetName()<<endl;		
-		
-		cout<<"ColPos1: "<<pkCol->m_kPos1.x<<" "<<pkCol->m_kPos1.y<<" "<<pkCol->m_kPos1.z<<endl;
-		cout<<"ColPos2: "<<pkCol->m_kPos2.x<<" "<<pkCol->m_kPos2.y<<" "<<pkCol->m_kPos2.z<<endl;		
-		
-		cout<<"distance1: "<<pkCol->m_fDistance1<<endl;
-		cout<<"distance2: "<<pkCol->m_fDistance2<<endl;		
-*/		
-		
 		if((*itCp)->m_pkPP != pkSPP)
 		{
 			if(pkCol->m_bAdded==false)
@@ -238,13 +198,11 @@ void PhysicsEngine::HandleCollisions()
 				if(pkCol->m_bChecked==false)
 				{
 					pkCol->m_bChecked=true;
-//					cout<<"checked"<<endl;
 				}
 				else
 				{
 					pkCol->m_bAdded=true;
 					kCols.push_back(pkCol);
-//					cout<<"Added"<<endl;					
 				}
 			}
 	
@@ -260,9 +218,6 @@ void PhysicsEngine::HandleCollisions()
 			//check so the collision is not already added
 			if(pkCol->m_bAdded==false)
 			{
-//				cout<<"Old Newpos "<<(*itCp)->m_pkPP->m_kNewPos.x<<" "<<(*itCp)->m_pkPP->m_kNewPos.y<<" "<<(*itCp)->m_pkPP->m_kNewPos.z<<endl;
-				
-			
 				Vector3 kOldNewPos1=(*itCp)->m_pkPP->m_kNewPos;
 					
 				//set the objects m_kNewPos to the one after a collision with the last solide object
@@ -277,41 +232,24 @@ void PhysicsEngine::HandleCollisions()
 					//cout<<"taking new pos from "<<pkCO->m_pkPP2->GetObject()->GetName()<<endl;					
 				}
 				
-				/*
-				if((*itCp)->m_pkPP->m_kNewPos == kOldNewPos1)
-				{
-					//cout<<"New Possition is same as old one"<<endl;
-					continue;
-				}*/
-				
-				
-//				cout<<"New Newpos "<<(*itCp)->m_pkPP->m_kNewPos.x<<" "<<(*itCp)->m_pkPP->m_kNewPos.y<<" "<<(*itCp)->m_pkPP->m_kNewPos.z<<endl;
-	
-				CollisionData* pkCD=NULL;
 				//test collision with the new m_kNewPos that would be after a collision with the first object				
-				pkCD=DeepTest(pkCol->m_pkPP1,pkCol->m_pkPP2);
+				Collision* pkCD=DeepTest(pkCol->m_pkPP1,pkCol->m_pkPP2);
 						
 				//if a collision still occurs then update the collision data and puch it in kCols
 				if(pkCD!=NULL)
-				{
-				
-//					cout<<"pos1: " <<pkCol->m_kPos1.x<<" "<<pkCol->m_kPos1.y<<" "<<pkCol->m_kPos1.z<<endl;
-//					cout<<"pos2: " <<pkCol->m_kPos2.x<<" "<<pkCol->m_kPos2.y<<" "<<pkCol->m_kPos2.z<<endl;					
+				{				
+					//uppdate old data
 					pkCol->m_kPos1=pkCD->m_kPos1;						
 					pkCol->m_kPos2=pkCD->m_kPos2;						
-//					cout<<"pos1: " <<pkCD->m_kPos1.x<<" "<<pkCD->m_kPos1.y<<" "<<pkCD->m_kPos1.z<<endl;
-//					cout<<"pos2: " <<pkCD->m_kPos2.x<<" "<<pkCD->m_kPos2.y<<" "<<pkCD->m_kPos2.z<<endl;					
 											
 					if(pkCol->m_bChecked==false)
 					{
 						pkCol->m_bChecked=true;
-//						cout<<"checked"<<endl;
 					}
 					else
 					{
 						pkCol->m_bAdded=true;
 						kCols.push_back(pkCol);
-//						cout<<"added"<<endl;						
 					}
 					
 					delete pkCD;
@@ -343,7 +281,6 @@ void PhysicsEngine::HandleCollisions()
 		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
 		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;
 		(*it)->GetObject()->GetAcc().Set(0,0,0);		
-//		(*it)->GetObject()->GetAcc()=static_cast<PhysicProperty*>(*it)->m_kNewAcc;		
 	}
 
 	for(i=0;i<kCols.size();i++) 

@@ -6,8 +6,6 @@
 
 using namespace std;
 
-#define PROJECTILE_SPEED 150
-
 class MassDriverProperty: public InventoryProperty {
 
 	private:
@@ -23,6 +21,7 @@ class MassDriverProperty: public InventoryProperty {
 	
 		float m_fLastShot;
 		float m_fFireRate;
+		float m_fBulletVel;
 	
 		Sound *firesound;					
 	

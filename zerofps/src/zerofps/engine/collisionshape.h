@@ -2,13 +2,13 @@
 #define _COLLISIONSHAPE_H_
 
 #include <typeinfo>
-//#include "physicproperty.h"
 #include "physicsengine.h"
 #include "engine_x.h"
 
 using namespace std;
 
-struct Sphere;
+
+struct Collision;
 
 class ENGINE_API CollisionShape
 {
@@ -17,11 +17,10 @@ class ENGINE_API CollisionShape
 	public:
 		PhysicProperty* m_pkPP;			
 		PhysicsEngine* m_pkPhysEngine;
-//		Vector3 *m_pkPos;		
 		
 		void SetPPPointer(PhysicProperty* pkPP);
 		
-		virtual CollisionData* Test(CollisionShape* kOther,float fTime,bool bContinue)=0;
+		virtual Collision* Test(CollisionShape* kOther,float fTime,bool bContinue)=0;
 };
 
 #endif

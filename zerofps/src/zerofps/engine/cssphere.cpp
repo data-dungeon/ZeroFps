@@ -5,7 +5,7 @@ CSSphere::CSSphere(float fRadius)
 	m_fRadius=fRadius;
 }
 
-CollisionData* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
+Collision* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
 		CSSphere *kCs=dynamic_cast<CSSphere*>(kOther);
@@ -20,7 +20,7 @@ CollisionData* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
 	return NULL;
 }
 
-CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
+Collision* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 {
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
@@ -109,23 +109,17 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	
 	
 	//assemble collision data
-	CollisionData* tempdata = new CollisionData;
+	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = O2->GetPos()+(movevec2*bla);
-	tempdata->m_kVel2 = movevec2*bla;
-	tempdata->m_kAcc2 = O2->GetAcc();
-	tempdata->m_kRot2 = O2->GetRot();
 	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = O1->GetPos()+(movevec1*bla);
-	tempdata->m_kVel1 = movevec1*bla;
-//	tempdata->m_kAcc1 = O1->GetAcc();
-//	tempdata->m_kRot1 = O1->GetRot();
 	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
 
-	tempdata->m_kNormal=Vector3(0,0,0);
+//	tempdata->m_kNormal=Vector3(0,0,0);
 	
 	return tempdata;
 }

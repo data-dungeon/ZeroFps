@@ -17,8 +17,8 @@ class ENGINE_API HeightMapCS : public CollisionShape
 		HeightMap* m_pkMap;
 
 		HeightMapCS(HeightMap* pkMap);		
-		CollisionData* Test(CollisionShape* kOther,float fTime,bool bContinue);
-		CollisionData* Collide_CSSphere(CSSphere* kOther,float fTime);
+		Collision* Test(CollisionShape* kOther,float fTime,bool bContinue);
+		Collision* Collide_CSSphere(CSSphere* kOther,float fTime);
 
 };
 

@@ -21,6 +21,7 @@ using namespace std;
 class Object;
 class PhysicProperty;
 
+/*
 struct ENGINE_API CollisionData
 {
 	PhysicProperty* m_pkPP1;
@@ -42,6 +43,7 @@ struct ENGINE_API CollisionData
 	
 
 };
+*/
 
 struct ENGINE_API Collision
 {
@@ -53,6 +55,10 @@ struct ENGINE_API Collision
 
 	float m_fDistance1;
 	float m_fDistance2;
+	
+	Vector3 m_kNormal1;
+	Vector3 m_kNormal2;	
+	
 
 	bool m_bAdded;
 	bool m_bChecked;
@@ -134,7 +140,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		void CheckCollisions();
 		void GenerateMotionSpheres();
 		bool TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP2);
-		CollisionData* DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2);		
+		Collision* DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2);		
 		void HandleCollisions();
 		void ClearCollisions();	
 		

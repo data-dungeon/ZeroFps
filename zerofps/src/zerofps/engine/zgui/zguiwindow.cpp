@@ -476,3 +476,7 @@ void ZGuiWnd::ResetStaticClickWnds(ZGuiWnd* pkWnd)
 	if(pkWnd == ZGuiWnd::m_pkWndClicked)
 		ZGuiWnd::m_pkWndClicked = NULL;
 }
+
+
+
+

@@ -591,3 +591,5 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 		m_pkGui->Get("PropertyValueSetEB")->SetText((char*) strPropValue.c_str());
 	}
 }
+
+

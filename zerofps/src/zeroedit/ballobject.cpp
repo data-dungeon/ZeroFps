@@ -16,14 +16,14 @@ BallObject::BallObject() {
 	madp->SetBase("../data/mad/adaptor.mad");
 */
 	
-	m_iObjectType=OBJECT_TYPE_STATIC;
-//	m_iObjectType=OBJECT_TYPE_STATDYN;
+//	m_iObjectType=OBJECT_TYPE_STATIC;
+	m_iObjectType=OBJECT_TYPE_STATDYN;
 
 	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
 //	AddProperty("StatusProperty");
 //	AddProperty("AdaptorSniper");
-//	AddProperty("PhysicProperty");
+	AddProperty("PhysicProperty");
 //	AddProperty("AutoParentProperty");	
 //	AddProperty("TeleportProperty");
 //	TeleportProperty* tp = dynamic_cast<TeleportProperty*>(GetProperty("TeleportProperty"));

@@ -158,7 +158,7 @@ void OpenAlSystem::Update()
 					continue;
 				//else stop it and dealocate the sound source
 				} else {
-					cout<<"Sound disapeared in the distance"<<endl;
+					//cout<<"Sound disapeared in the distance"<<endl;
 					alSourceStop( m_kSources[Current->m_iSource]->m_iSource );
 					m_kSources[Current->m_iSource]->m_bUsed=false;
 					Current->m_iSource=-1;

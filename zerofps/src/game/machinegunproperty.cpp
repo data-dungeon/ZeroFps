@@ -23,6 +23,7 @@ MachineGunProperty::MachineGunProperty()
 	m_kAim.Set(0,0,1);
 	m_bAdded=false;
 	m_bFiring=false;
+	m_fBulletVel=150;
 	
 	m_fLastShot=m_pkFps->GetTicks();
 	
@@ -89,7 +90,7 @@ void MachineGunProperty::Use()
 	
 	Object* Bullet=new Object;
 	Bullet->GetName()="MachineGun_Bullet";
-	Bullet->GetVel()=m_kAim*PROJECTILE_SPEED;
+	Bullet->GetVel()=m_kAim * m_fBulletVel;
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.6,0) + Bullet->GetVel().Unit();		
 	Bullet->AddProperty("MachineGunProjectile");	
 	
