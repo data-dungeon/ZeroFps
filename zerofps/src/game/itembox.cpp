@@ -161,22 +161,11 @@ bool ItemBox::OnOpen(int x, int y)
 	int sx,sy;
 	m_pkContainer->GetSize(sx,sy);
 	PaintStaticSlots(sx,sy);
-
-	if(!(x==-1 && y==-1))
-		m_pkDlgBox->SetPos(x,y,true,true);
-
-	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
-
-	CenterCursor();
-
 	return true;
 }
 
 bool ItemBox::OnClose(bool bSave)
 {
-	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
-//	m_pkGui->ShowCursor(false);
-	KillFocus();
 	return true;
 }
 

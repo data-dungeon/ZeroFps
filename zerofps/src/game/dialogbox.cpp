@@ -66,8 +66,26 @@ void DlgBox::KillFocus()
 	m_pkDlgBox->KillFocus();
 }
 
-
 const ZGuiWnd* DlgBox::GetWnd()
 {
 	return m_pkDlgBox;
+}
+
+bool DlgBox::Open(int x, int y)
+{
+	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
+	
+	if(!(x==-1 && y==-1))
+		m_pkDlgBox->SetPos(x,y,true,true);
+
+	CenterCursor();
+
+	return OnOpen(x,y);
+}
+
+bool DlgBox::Close(bool bSave)
+{
+	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
+	KillFocus();
+	return OnClose(bSave);
 }

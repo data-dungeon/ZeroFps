@@ -39,8 +39,6 @@ public:
 		int iNumberOfParams,void *pkParams );
 
 	bool Create(int x, int y, char* szResourceFile, char* szDlgName);
-	bool OnClose(bool bSave);
-	bool OnOpen(int x, int y);
 	//slot* GetMoveItem() { return m_pkMoveItem; }
 	void RemoveSlot(int grid_x, int grid_y);
 	void AddSlot(GuiData* pkData);
@@ -49,6 +47,8 @@ public:
 	slot* m_pkMoveItem;
 
 private:
+	bool OnClose(bool bSave);
+	bool OnOpen(int x, int y);
 	void PaintStaticSlots(int container_size_x, int container_size_y);
 
 	void CreateStaticGrid();

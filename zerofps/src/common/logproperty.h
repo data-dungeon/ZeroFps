@@ -30,6 +30,7 @@ class COMMON_API LogProperty: public Property {
 	public:
 		string m_kLogIcon;
 		string m_sLog;
+	//	string m_sLogFile; // search path
 
 		LogProperty();
 		~LogProperty();		

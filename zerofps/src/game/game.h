@@ -9,6 +9,7 @@
 #include "../zerofps/engine/application.h"
 #include "itembox.h"
 #include "examinepumenu.h"
+#include "logbox.h"
 
 #include "../common/common.pkg"
 
@@ -35,7 +36,6 @@ class GameScript;
 
 class Game :public Application {
 	private:
-		
 //		HeightMap *m_pkMap;
 //		HeightMapObject *m_pkHeightMapObject;
 
@@ -70,10 +70,12 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
+		bool ProcessUseMsg(char* szMessage);
 	
 		bool DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem, 
 			ItemBox* pkItemBoxFrom, ItemBox* pkItemBoxTo);
-		void OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x=-1, int y=-1);
+		void OpenExamineMenu(ItemProperty* ip, Action_Type eActionType, int x=-1, int y=-1);
+		bool OpenLogWnd();
 		void OpenContainer();
 		void LockPlayerCamera(bool bTrue);
 		
@@ -82,6 +84,7 @@ class Game :public Application {
 		ItemBox* m_pkPlayerInventoryBox;
 		ItemBox* m_pkContainerBox;
 		ExaminePUMenu* m_pkExamineMenu;
+		LogBox* m_pkLogBox;
 
 		enum FuncId_e
 		{

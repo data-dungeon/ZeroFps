@@ -28,10 +28,13 @@ public:
 	virtual bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		int iNumberOfParams,void *pkParams ) = 0;
 
+	bool Open(int x=-1, int y=-1);
+	bool Close(bool bSave);
+
 protected:
 
-	virtual bool OnOpen(int x=-1, int y=-1) = 0;
-	virtual bool OnClose(bool bSave) = 0;
+	virtual bool OnOpen(int x=-1, int y=-1)=0;
+	virtual bool OnClose(bool bSave)=0;
 	void CenterCursor();
 
 	ZGuiResourceManager* m_pkGuiMan;

@@ -28,12 +28,12 @@ public:
 	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		int iNumberOfParams,void *pkParams );
 
-	bool OnOpen(int x=-1, int y=-1);
-	bool OnClose(bool bSave);
-
 	void SetUseState(Action_Type eNewActionType);
 
 private:
+
+	bool OnOpen(int x=-1, int y=-1);
+	bool OnClose(bool bSave);
 
 	char* GenMainWndName();
 	TextureManager* m_pkTexMan;

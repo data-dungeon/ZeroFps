@@ -160,6 +160,10 @@ SOURCE=.\gamescriptinterface.cpp
 
 SOURCE=.\itembox.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\logbox.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -187,6 +191,10 @@ SOURCE=.\gamescriptinterface.h
 # Begin Source File
 
 SOURCE=.\itembox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\logbox.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

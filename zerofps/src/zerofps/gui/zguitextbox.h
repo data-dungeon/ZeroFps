@@ -36,6 +36,8 @@ public:
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void SetFont(ZGuiFont* pkFont); //överlagrad
 
+	void SetReadOnly(bool bReadOnly);
+
 private:
 	void MoveDownOneRow();
 	void MoveUpOneRow();
@@ -50,6 +52,7 @@ private:
 	
 	vector<int> m_kRowOffsets;
 	
+	bool m_bReadOnly;
 	bool m_bMultiLine;
 	bool m_bBlinkCursor;
 	bool m_bScrollbarUpdated;

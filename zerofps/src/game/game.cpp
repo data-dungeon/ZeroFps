@@ -3,6 +3,7 @@
 #include "gamescriptinterface.h"
 #include "../../data/gui_resource_files/inventary_id.h"
 #include "../../data/gui_resource_files/container_id.h"
+#include "../../data/gui_resource_files/log_id.h"
 
 Game g_kGame("ZeroFPS game",1024,768,16);
 
@@ -40,7 +41,7 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		switch(((int*)parms)[0]) // control id
 		{
 		case InventCloseBN:
-			g_kGame.m_pkPlayerInventoryBox->OnClose(false);
+			g_kGame.m_pkPlayerInventoryBox->Close(false);
 			break;
 		}
 		break;
@@ -53,7 +54,19 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		pkSelObject = g_kGame.m_pkPlayerInventoryBox->GetItemObject(mx,my);
 
 		if(pkSelObject)
-			g_kGame.OpenExamineMenu(pkSelObject,INVENTORYUSE,mx,my);
+		{
+			ItemProperty* ip = static_cast<ItemProperty*>
+				(pkSelObject->GetProperty("ItemProperty"));
+
+			if(ip != NULL)
+				g_kGame.OpenExamineMenu(ip,INVENTORYUSE,mx,my);
+
+			LogProperty* lp = static_cast<LogProperty*>
+				(pkSelObject->GetProperty("LogProperty"));
+
+			if(lp != NULL)
+				g_kGame.m_pkLogBox->SetLogProperty(lp);  
+		}
 		break;
 
 	case ZGM_LBUTTONUP:
@@ -75,7 +88,7 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 		switch(((int*)parms)[0]) // control id
 		{
 		case ContainerClose:
-			g_kGame.m_pkContainerBox->OnClose(false);
+			g_kGame.m_pkContainerBox->Close(false);
 			break;
 		}
 		break;
@@ -99,17 +112,16 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 	case ZGM_SELECTLISTITEM:
 		char* szUseString;
 		szUseString = g_kGame.m_pkExamineMenu->GetUseString(((int*)parms)[1]);
-		
-		if(szUseString && strcmp(szUseString, "Open container") == 0)
-		{
-			g_kGame.m_pkExamineMenu->OnClose(true);
-			g_kGame.OpenContainer();
-			return true;
-		}
+		g_kGame.ProcessUseMsg(szUseString);
 		break;
 	}
 
 	return g_kGame.m_pkExamineMenu->DlgProc(wnd,msg,num,parms); 
+}
+
+static bool LOG_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
+{
+	return g_kGame.m_pkLogBox->DlgProc(wnd,msg,num,parms); 
 }
 
 void Game::Init()
@@ -181,7 +193,7 @@ void Game::OnIdle(void)
 			PlayerExamineObject();
 
 			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
-				m_pkExamineMenu->IsOpen())
+				m_pkExamineMenu->IsOpen() || m_pkLogBox->IsOpen())
 			{
 				LockPlayerCamera(true);
 			}
@@ -286,18 +298,22 @@ void Game::Input()
 	case KEY_I:
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
-			m_pkPlayerInventoryBox->OnOpen(-1,-1); 
+			m_pkPlayerInventoryBox->Open(-1,-1); 
 		else
-			m_pkPlayerInventoryBox->OnClose(false);
+			m_pkPlayerInventoryBox->Close(false);
 		break;
 
 	case KEY_ESCAPE:
 	
 		if(m_pkExamineMenu->IsOpen())
-			m_pkExamineMenu->OnClose(false);
+			m_pkExamineMenu->Close(false);
 
 		if(m_pkPlayerInventoryBox->IsOpen())
-			m_pkPlayerInventoryBox->OnClose(false);
+			m_pkPlayerInventoryBox->Close(false);
+		break;
+
+	case KEY_L:
+		OpenLogWnd();
 		break;
 	}
 }
@@ -480,6 +496,10 @@ void Game::InitGui()
 	// Create examine menu
 	m_pkExamineMenu = new ExaminePUMenu(pkGui, pkInput, EXAMINE_BOXPROC, pkTexMan);
 	m_pkExamineMenu->Create(0,0,NULL,NULL);
+
+	// Create log window
+	m_pkLogBox = new LogBox(pkGui, pkInput, pkTexMan, LOG_BOXPROC);
+	m_pkLogBox->Create(0,0,"../data/gui_resource_files/log_rc.txt","LogWnd");
 	
 	pkFps->m_bGuiTakeControl = false;
 
@@ -523,7 +543,21 @@ void Game::PlayerExamineObject()
 				m_pkContainerBox->SetContainer(&cp->m_kContainer);
 		}
 
-		OpenExamineMenu(pkObjectTouched, NORMALUSE);
+		ItemProperty* ip = static_cast<ItemProperty*>
+			(pkObjectTouched->GetProperty("ItemProperty"));
+
+		if(ip != NULL)
+		{
+			OpenExamineMenu(ip, NORMALUSE);
+		}
+
+		LogProperty* lp = static_cast<LogProperty*>
+			(pkObjectTouched->GetProperty("LogProperty"));
+
+		if(lp != NULL)
+			m_pkLogBox->SetLogProperty(lp);
+
+	
 	}
 }
 
@@ -560,7 +594,7 @@ void Game::OpenContainer()
 {
 	if(m_pkContainerBox->GetContainer() != NULL)
 	{
-		m_pkContainerBox->OnOpen(m_iWidth-m_pkContainerBox->Width(),0);
+		m_pkContainerBox->Open(m_iWidth-m_pkContainerBox->Width(),0);
 	}
 	else
 	{
@@ -568,30 +602,24 @@ void Game::OpenContainer()
 	}
 }
 
-void Game::OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x, int y)
+void Game::OpenExamineMenu(ItemProperty* ip, Action_Type eActionType, int x, int y)
 {
-	ItemProperty* ip = static_cast<ItemProperty*>
-		(pkObject->GetProperty("ItemProperty"));
+	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
+		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
-	if(ip != NULL)
+	m_pkExamineMenu->SetUseState(eActionType);
+	m_pkExamineMenu->SetItemProperty(ip);
+	m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
+
+	if(m_pkExamineMenu->IsOpen() == false)
 	{
-		PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
-			(m_pkPlayer->GetProperty("PlayerControlProperty"));
-
-		m_pkExamineMenu->SetUseState(eActionType);
-		m_pkExamineMenu->SetItemProperty(ip);
-		m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
-
-		if(m_pkExamineMenu->IsOpen() == false)
+		if(x == -1 && y== -1)
 		{
-			if(x == -1 && y== -1)
-			{
-				x = m_iWidth/2; 
-				y = m_iHeight/2;
-			}
-
-			m_pkExamineMenu->OnOpen(x,y);
+			x = m_iWidth/2; 
+			y = m_iHeight/2;
 		}
+
+		m_pkExamineMenu->Open(x,y);
 	}
 }
 
@@ -654,6 +682,47 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem,
 				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+bool Game::OpenLogWnd()
+{
+	if(m_pkLogBox == NULL)
+		return false;
+
+	if(!m_pkLogBox->IsOpen())
+	{
+		int x = m_iWidth/2 - m_pkLogBox->Width()/2;
+		int y = m_iHeight/2 - m_pkLogBox->Height()/2;
+		m_pkLogBox->Open(x,y);
+	}
+	else
+	{
+		m_pkLogBox->Close(false); 
+	}
+
+	return true;
+}
+
+bool Game::ProcessUseMsg(char *szMessage)
+{
+	if(szMessage == NULL || strlen(szMessage) < 1)
+		return false;
+
+	if(strcmp(szMessage, "Open container") == 0)
+	{
+		m_pkExamineMenu->Close(true);
+		OpenContainer();
+		return true;
+	}
+
+	if(strcmp(szMessage, "Read Log") == 0)
+	{
+		m_pkExamineMenu->Close(true);
+		OpenLogWnd();
+		return true;
 	}
 
 	return false;

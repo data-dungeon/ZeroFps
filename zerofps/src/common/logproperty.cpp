@@ -32,6 +32,7 @@ void LogProperty::RegisterActions()
 	if(pkIP != NULL)
 	{
 		pkIP->RegisterAction(INVENTORYUSE,"Read Log","ReadLog");
+		pkIP->RegisterAction(NORMALUSE,"Read Log","ReadLog");
 	}
 }	
 
@@ -42,6 +43,7 @@ void LogProperty::UnRegisterActions()
 	if(pkIP != NULL)
 	{
 		pkIP->UnRegisterAction(INVENTORYUSE,"Read Log");
+		pkIP->UnRegisterAction(NORMALUSE,"Read Log");
 	}
 }	
 

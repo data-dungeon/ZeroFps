@@ -23,6 +23,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 						 int iID, bool bMultiLine) : 
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_bReadOnly = false;
 	m_iCursorRow = 1	;
 	m_iRenderDistFromTop = 0;
 	m_bScrollbarUpdated = false;
@@ -85,6 +86,8 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		Rect kRect = GetScreenRect();
 
 		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
+		if(m_bReadOnly)
+			cursor_pos = -1;
 
 		int iLetters, iRows;
 		pkRenderer->RenderText(m_strText, kRect, cursor_pos, 
@@ -115,6 +118,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 bool ZGuiTextbox::ProcessKBInput(int nKey)
 {
+	if(m_bReadOnly == true)
+		return true;
+
 	if(IgnoreKey(nKey))
 		return true;
 
@@ -1012,4 +1018,9 @@ void ZGuiTextbox::ToggleMultiLine(bool bMultiLine)
 {
 	m_bMultiLine = bMultiLine;
 	CreateInternalControls();
+}
+
+void ZGuiTextbox::SetReadOnly(bool bReadOnly)
+{
+	m_bReadOnly = bReadOnly;
 }

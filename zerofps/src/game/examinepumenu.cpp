@@ -71,7 +71,7 @@ bool ExaminePUMenu::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMsg, int iNumParams,
 	// Command Messages
 	case ZGM_SELECTLISTITEM:
 		m_iPickedListIndex = ((int*)pkParams)[1]; // list item index
-		OnClose(true);
+		Close(true);
 		break;
 	}
 	return true;
@@ -114,8 +114,6 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	for(i=0; i<iNumItems; i++)
 		m_kListbox->AddItem((char*)akNames[i].c_str(), counter++, false);
 
-	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
-
 	if(!(x==-1 && y==-1))
 	{
 		x -= m_pkDlgBox->GetScreenRect().Width()/2;
@@ -149,12 +147,6 @@ bool ExaminePUMenu::OnClose(bool bSave)
 	m_iPickedListIndex = -1;
 	m_pkItemProperty = NULL;
 	m_pkPlayerProp = NULL;
-
-	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
-
-//	m_pkGui->ShowCursor(false);
-
-	KillFocus();
 
 	return true;
 }
