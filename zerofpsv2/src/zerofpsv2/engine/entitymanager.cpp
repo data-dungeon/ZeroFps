@@ -1361,7 +1361,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.Write((char) ZFGP_REQOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-//	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);

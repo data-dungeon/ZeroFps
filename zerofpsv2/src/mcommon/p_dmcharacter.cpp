@@ -280,7 +280,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		}
 	}
 
-//	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
+	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
 
 	pkP_Gun->m_iTeam = m_iTeam;
 

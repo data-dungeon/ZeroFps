@@ -407,7 +407,7 @@ bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
 	if(pkParent && !WndHaveBeenSaved(pkParent))
 		return false;
 
-	GuiType eType = m_pkScene->GetApp()->GetWndType(pkWnd);
+//	GuiType eType = m_pkScene->GetApp()->GetWndType(pkWnd);
 	GuiType eParentType = pkParent != NULL ? m_pkScene->GetApp()->GetWndType(pkParent) : GuiType_Error;
 
 	if( eParentType == TabControl ) // Är föräldern en tabuleringsbox?

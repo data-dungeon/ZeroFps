@@ -692,7 +692,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 		}
 	
 	//get texture pos
-//	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
+	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
 	float xpos = (float) ((kPos.x) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z) / (float)GetSize())  ;
 	

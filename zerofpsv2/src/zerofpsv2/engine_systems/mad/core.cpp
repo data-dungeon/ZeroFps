@@ -268,7 +268,7 @@ void Mad_Core::SetupBonePose()
 
 	float OneMinusFrameOffs = float(1.0) - fFrameOffs;
 
-//	int iBoneKeys = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose.size();
+	int iBoneKeys = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose.size();
 
    //if ( iBoneKeys != m_kSkelleton.size() )
    //   return;
@@ -428,9 +428,9 @@ bool Mad_Core::Create(string MadFileName)
 {
 	strcpy(Name,MadFileName.c_str());
 
-	//if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
-	//	int gam = 1;
-	//}
+	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
+		int gam = 1;
+	}
 
 	ZFVFile kZFile;
 	if( !kZFile.Open(MadFileName,0,false) ) {
