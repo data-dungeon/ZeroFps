@@ -64,3 +64,7 @@ void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	}
 }
+
+
+
+

@@ -11,7 +11,8 @@
 #include <cstdlib>
 #include "engine.pkg"
 #include "propertyfactory.h"
-
+#include <cstdio>
+#include <cstdarg>
 
 using namespace std;
 
