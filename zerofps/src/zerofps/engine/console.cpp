@@ -27,13 +27,33 @@ Console::Console()
 
 	m_nStartLine = 0;
 	m_nLastCommand = 0;
+	m_nStartLine = 0;
 
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
 	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
 }
 
 void Console::Update(void) {
-	m_pkRender->DrawConsole(m_aCommand,&m_kText/*,m_nStartLine*/);	
+	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
+
+	// Scroll console text
+	if(m_pkEngine->m_bConsoleMode)
+	{
+		if(m_pkInput->Pressed(KEY_PAGEDOWN))
+		{
+			if(m_nStartLine < m_kText.size())
+				m_nStartLine++;
+			m_pkInput->GetQueuedKey(); // remove latest
+			return;
+		}
+		if(m_pkInput->Pressed(KEY_PAGEUP))
+		{
+			if(m_nStartLine > 0)
+				m_nStartLine--;
+			m_pkInput->GetQueuedKey(); // remove latest
+			return;
+		}
+	}
 	
 	int iKey;
 	while(m_pkInput->SizeOfQueue() > 0) {
@@ -66,19 +86,6 @@ void Console::Update(void) {
 			m_bShift=true;
 		}else{
 			m_bShift=false;
-		}
-
-		if(iKey==KEY_PAGEDOWN)
-		{
-			if(m_nStartLine < m_kText.size())
-				m_nStartLine++;
-			continue;
-		}
-		if(iKey==KEY_PAGEUP)
-		{
-			if(m_nStartLine > 0)
-				m_nStartLine--;
-			continue;
 		}
 
 		if(iKey==KEY_DOWN)

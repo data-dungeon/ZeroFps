@@ -129,7 +129,7 @@ void Render::Dot(float x,float y,float z) {
 }
 
 
-void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
+void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) {
 	SetFont("file:../data/textures/text/console.tga");
 
 	glEnable(GL_BLEND);	
@@ -145,10 +145,12 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	
 	Print(Vector3(-.65,-.5,-.6),Vector3(0,0,0),Vector3(.04,.04,.04),m_aCommand);		
 	
-	for(int i=0;i<23;i++) {
+	if(iStartLine < 0)
+		iStartLine = 0;
+	
+	for(int i=iStartLine;i<iStartLine+23;i++) {
 		if((*m_kText)[i]!=NULL){
-			//Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
-			Print(Vector3(-.65,-.40+i/(float)25,-.6),Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);		
+			Print(Vector3(-0.65,-0.40+(i-iStartLine)/(float)25,-.6),Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);		
 		
 		}
 	}

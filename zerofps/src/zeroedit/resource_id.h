@@ -2,7 +2,7 @@
 #ifndef RES_ID
 #define RES_ID
 
-const int ID_MAINWND					= 9000;
+const int ID_MAINWND_MENU				= 9000;
 const int ID_FILEPATH_WND_MAIN			= 9001;
 const int ID_CLOSE						= 9002;
 const int ID_OPEN_TEMPLATE				= 9003;

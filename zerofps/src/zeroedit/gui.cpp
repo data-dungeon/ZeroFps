@@ -148,7 +148,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 bool Gui::CreateWindows()
 {	
-	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,IDM_MENU_WND);
+	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
 
 	Rect rc = Rect(0,0,128,32);
