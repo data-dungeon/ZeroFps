@@ -12,14 +12,13 @@ class ENGINE_API InputHandle
 		string	m_strHandleName;
 		Input*	m_pkInput;		
 		bool		m_bActive;
-		bool		m_bTempDisabled;
 
 	public:
 		InputHandle(string strHandleName);
 		~InputHandle();
 		
 		bool IsActive() {return m_bActive;};
-		bool SetTempDisable(bool bValue) {m_bTempDisabled = bValue;};
+		bool SetActive(bool bValue) {m_bActive = bValue;};				
 		
 		// INPUT WRAPER FUCTIONS
 		
