@@ -31,43 +31,11 @@ class MCOMMON_API CharacterStat
 
 class MCOMMON_API CharacterStats
 {
-	public:
-// 		int	m_iLevel; 
-// 		int	m_iExperience;
-// 		int	m_iNextLevel;		
-// 		
-// 		int	m_iSpeed;
-// 		int	m_iSpeedMod;
-// 		
-// 		int	m_iMana;
-// 		int	m_iManaMax;
-// 		int	m_iManaMaxMod;
-// 		
-// 		int	m_iLife;
-// 		int	m_iLifeMax;
-// 		int	m_iLifeMaxMod;
-// 		
-// 		int	m_iStrength;
-// 		int	m_iStrengthMod;
-// 		int	m_iDexterity;
-// 		int	m_iDexterityMod;
-// 		int	m_iVitality;
-// 		int	m_iVitalityMod;
-// 		int	m_iIntelligence;
-// 		int	m_iIntelligenceMod;
-// 		int	m_iWisdom;
-// 		int	m_iWisdomMod;
-// 		
-// 		int	m_iArmor;
-// 		int	m_iArmorMod;
-// 		
-// 		int	m_iDamageMin;
-// 		int	m_iDamageMinMod;
-// 		int	m_iDamageMax;
-// 		int	m_iDamageMaxMod;
-// 				
-		
+	private:
 		vector<CharacterStat>	m_kStats;
+
+	public:
+		
 		
 		CharacterStats()
 		{
@@ -95,14 +63,41 @@ class MCOMMON_API CharacterStats
 		{
 			for(int i=0;i<m_kStats.size();i++)
 				if(m_kStats[i].m_strName == strName)
+				{
 					m_kStats[i].m_iValue = iValue;
+					return;
+				}
 		}
-
+		
+		void ChangeStat(const string& strName,int iValue)
+		{
+			for(int i=0;i<m_kStats.size();i++)
+				if(m_kStats[i].m_strName == strName)
+				{
+					m_kStats[i].m_iValue += iValue;
+					return;
+				}
+		}
+		
+		
 		void SetMod(const string& strName,int iValue)
 		{
 			for(int i=0;i<m_kStats.size();i++)
 				if(m_kStats[i].m_strName == strName)
+				{
 					m_kStats[i].m_iMod = iValue;
+					return;
+				}
+		}
+		
+		void ChangeMod(const string& strName,int iValue)
+		{
+			for(int i=0;i<m_kStats.size();i++)
+				if(m_kStats[i].m_strName == strName)
+				{
+					m_kStats[i].m_iMod += iValue;
+					return;	
+				}
 		}
 
 };
@@ -118,7 +113,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Application*	m_pkApp;
 		
 		
-		CharacterStats	m_kCharacterStats;
 		
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -157,9 +151,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendBuffList();
 		
 	public:
+		CharacterStats	m_kCharacterStats;
+
+	
 		//containers
-		int	m_iInventory;
-		
+		int	m_iInventory;		
 		int	m_iHead;
 		int	m_iGloves;
 		int	m_iCape;		

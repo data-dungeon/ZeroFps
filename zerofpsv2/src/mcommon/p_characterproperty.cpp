@@ -687,6 +687,61 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_CharacterProperty
 {
+	//stat modification
+	int ChangeStatLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+		{
+			cout<<"WARNING: ChangeStat - wrong number of arguments"<<endl;
+			return 0;		
+		}
+			
+		int iCharcterID;
+		int iValue;
+		char czStat[128];
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->m_kCharacterStats.ChangeStat(czStat,iValue);		
+			
+			cout<<"changed stat "<<czStat<<" with "<<iValue<<endl;
+		}
+	
+		return 0;				
+	}
+		
+	int ChangeStatModLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+		{
+			cout<<"WARNING: ChangeStatMod - wrong number of arguments"<<endl;
+			return 0;		
+		}		
+
+			
+		int iCharcterID;
+		int iValue;
+		char czStat[128];
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->m_kCharacterStats.ChangeMod(czStat,iValue);		
+			
+			cout<<"changed stat mod "<<czStat<<" with "<<iValue<<endl;
+		}
+	
+		return 0;			
+	}
+	
+
 	int PickupItemLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -768,6 +823,9 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
 	g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
 
+	g_pkScript->ExposeFunction("ChangeStat",		SI_P_CharacterProperty::ChangeStatLua);
+	g_pkScript->ExposeFunction("ChangeStatMod",		SI_P_CharacterProperty::ChangeStatModLua);
+	
 }
 
 
