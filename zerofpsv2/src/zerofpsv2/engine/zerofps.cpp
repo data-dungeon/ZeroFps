@@ -285,6 +285,7 @@ void ZeroFps::Run_EngineShell()
 
 	DevPrintf("common","Collissions: %d", m_pkTcs->GetNrOfCollissions());
 	DevPrintf("common","Tests: %d", m_pkTcs->GetNrOfTests());
+	DevPrintf("common","ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
 	
 	
 	// Update Local Input.
@@ -331,7 +332,7 @@ void ZeroFps::Run_EngineShell()
 	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
 
 	// TAB Always handle console.
-	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
+	if(m_pkInputHandle->Pressed(KEY_TAB))
 	{		
 		m_pkConsole->Toggle();
 	}

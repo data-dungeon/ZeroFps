@@ -92,11 +92,12 @@ void Tcs::Update(float fAlphaTime)
 		return;
 	
 		
-	float fStartTime = m_pkZeroFps->GetTicks();
-	float fRTime = fAlphaTime;
-	m_iNrOfCollissions = 0;
-	m_iNrOfTests = 0;
-		
+	float fStartTime 		= m_pkZeroFps->GetTicks();
+	float fRTime 			= fAlphaTime;
+	m_iNrOfCollissions	= 0;
+	m_iNrOfTests			= 0;
+	m_iNrOfActiveBodies	= 0;	
+	
 	//synd all bodys to entitys
 	SyncBodys();
 	
@@ -334,6 +335,9 @@ void Tcs::UpdateForces()
 		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
 			continue;
 
+		//increse active body count
+		m_iNrOfActiveBodies++;
+			
 				
 		// LINEAR FORCE / ACCLERERATION			
 			m_kBodys[i]->m_kLinearForce.Set(0,0,0);

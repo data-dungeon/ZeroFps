@@ -308,7 +308,7 @@ void Console::Update(void)
 		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
 		if(kKey.m_iKey == KEY_BACKQUOTE)	eCmd = CONCMD_TOGGLE;
 		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
-		if(kKey.m_iKey == KEY_TAB)			
+		if( kKey.m_iKey == KEY_CAPSLOCK || kKey.m_iKey == KEY_F1)			
 		{
 			AutoComplete();
 			kKey.m_iKey = 0;

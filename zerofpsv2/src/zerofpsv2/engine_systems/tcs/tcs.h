@@ -60,6 +60,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 				
 		int					m_iNrOfCollissions;
 		int					m_iNrOfTests;
+		int					m_iNrOfActiveBodies;
 		
 		//settings
 		int 					m_iHandleCollission;
@@ -121,8 +122,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void AddBody(P_Tcs* pkPTcs);
 		void RemoveBody(P_Tcs* pkPTcs);		
 
-		int GetNrOfCollissions() {return m_iNrOfCollissions;};
-		int GetNrOfTests() { return m_iNrOfTests;};
+		int GetNrOfCollissions() 	{ return m_iNrOfCollissions	;};
+		int GetNrOfTests() 			{ return m_iNrOfTests			;};
+		int GetNrOfActiveBodies() 	{ return m_iNrOfActiveBodies	;};
 		
 		bool StartUp();
 		bool ShutDown();

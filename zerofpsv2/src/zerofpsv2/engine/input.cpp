@@ -230,8 +230,11 @@ void Input::Update(void)
 				//set button as pressed		
 				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
 
-				//printf( "Scancode: 0x%02X \n", m_kEvent.key.keysym.scancode );
+				//cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << " - "<<m_kEvent.key.keysym.sym<< endl;
+				//cout<<"CP:"<<m_kEvent.key.keysym.scancode<<endl;
+				//printf( "Scancode: 0x%02X \n", m_kEvent.key.keysym.scancode ); 				
 				//cout << "Key Pressed: " << (int) m_kEvent.key.keysym.scancode << " - " << GetKeyName(iZfKey) << endl;
+				
 				m_akKeyState[iZfKey].m_bDown = true;	
 
 				if(m_bBindMode)
