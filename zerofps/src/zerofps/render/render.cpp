@@ -300,36 +300,38 @@ void Render::Dot(float x,float y,float z) {
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
+	int slicesize=30;	//grid size of lod tiles
+	int detail=20;//height meens greater detail att longer range
+	
 	glPushMatrix();
-	glTranslatef(-4,0,-3);
+//	glTranslatef(-slicesize,0,-3);
 
 	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+//	glPolygonMode(GL_FRONT,GL_LINE);	
 	
 	GLfloat mat_specular[]={1,1,1,1};
-	GLfloat mat_shininess[]={10};
+	GLfloat mat_shininess[]={1};
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	SetColor(Vector3(255,255,255));
 
-//	glPolygonMode(GL_FRONT,GL_LINE);
+
 
 	Vector3 p1,p2;
-
 	
-	int slicesize=30;	
 	int slices=(kmap->m_iHmSize-1)/slicesize;
 	int step=1;
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
-			step=int((CamPos-Vector3(sx*slicesize,0,sz*slicesize)).length()/15);
+			step=int((CamPos-Vector3(sx*slicesize+slicesize/2,0,sz*slicesize+slicesize/2)).length()/detail);
 //			step=1;
 			if(step<1)
 				step=1;				
-			if(step>5)
-				step=5;
+			if(step>6)
+				step=6;
 				
 //			step=2;
 //			cout<<"Step:"<<step<<endl;
