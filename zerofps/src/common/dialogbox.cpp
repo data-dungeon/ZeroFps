@@ -85,7 +85,7 @@ bool DlgBox::Open(int x, int y)
 	if(!(x==-1 && y==-1))
 		m_pkDlgBox->SetPos(x,y,true,true);
 
-	//CenterCursor();
+	CenterCursor();
 
 	s_kTopDlgQueue.push_back(this);
 	

@@ -40,6 +40,8 @@ Input::Input()
 	
 	SetupButtons();	
 
+	
+
 
 };
 
@@ -534,6 +536,8 @@ void Input::SetupButtons()
 	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
 	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
 
+	for(int i=0; i<255; i++)
+		g_iKeyButtons[i] = Buttons(i);
 
 }
 
