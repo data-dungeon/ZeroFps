@@ -66,6 +66,8 @@ class MistClient :public Application, public ZGuiApp {
 			FID_SELECTCHAR,
 			FID_DELETECHAR,
 			FID_PLAY,
+
+			FID_SERVERORDER
 		};
 
 		//selected character

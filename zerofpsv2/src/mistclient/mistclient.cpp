@@ -103,7 +103,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("c_getchar",	FID_GETCHAR);			
 	Register_Cmd("c_selchar",	FID_SELECTCHAR);			
 	Register_Cmd("c_delchar",	FID_DELETECHAR);			
-	Register_Cmd("play",			FID_PLAY);			
+	Register_Cmd("play",			FID_PLAY);	
+	Register_Cmd("sorder",			FID_SERVERORDER);	
+	
 } 
 
 void MistClient::OnInit() 
@@ -652,6 +654,7 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_DELETECHAR:		SendOrder(string("(CC) Play"));	break;
 		case FID_PLAY:				SendOrder(string("(CC) Play"));	break;
+		case FID_SERVERORDER:		SendOrder(string("(ED) addzone 8 8 8 8 8 8"));	break;
 
 
 	}

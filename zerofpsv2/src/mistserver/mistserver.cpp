@@ -81,6 +81,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("save",FID_SAVE);		
 	Register_Cmd("users",FID_USERS);		
+	Register_Cmd("localorder",FID_LOCALORDER);		
 } 
 
 void MistServer::OnInit() 
@@ -393,12 +394,12 @@ void MistServer::Input()
 		{
 			if(m_pkInput->Pressed(MOUSELEFT))
 			{
-				AddZone();	
+				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
 			}
 			
 			if(m_pkInput->Pressed(KEY_T))
 			{
-				AddZone(true);	
+				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
 			}
 	
 			if(m_pkInput->Pressed(KEY_R))
@@ -581,6 +582,8 @@ void MistServer::OnHud(void)
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	ClientOrder kOrder;
+
 	unsigned int i;
 	vector<string>	kUsers;
 
@@ -634,9 +637,21 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			for(i=0; i<kUsers.size(); i++) {
 				cout << "User: " << kUsers[i] << endl;
 				}
-			
 			break;		
 			
+		case FID_LOCALORDER:
+			char szFullCmd[1024];
+			sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
+				m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
+			cout << "FullCmd " << szFullCmd << endl;
+			
+			P_ClientControl pkClient;
+			string strOrder;
+			kOrder.m_sOrderName = string("(ED) ") + string(szFullCmd);
+			kOrder.m_iCharacter = -1;
+			cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
+			pkClient.AddServerOrder(kOrder);
+			break;		
 	}
 
 }
@@ -886,12 +901,12 @@ Entity* MistServer::GetTargetObject()
 }
 
 
-void MistServer::AddZone(bool bEmpty)
+void MistServer::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 {
-	if(m_pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
+	if(m_pkObjectMan->IsInsideZone(kPos, kSize))
 		return;
 		
-	int id = m_pkObjectMan->CreateZone(m_kZoneMarkerPos,m_kZoneSize);
+	int id = m_pkObjectMan->CreateZone(kPos, kSize);
 
 	//force loading of this zone
 	m_pkObjectMan->LoadZone(id);
@@ -902,7 +917,7 @@ void MistServer::AddZone(bool bEmpty)
 	if(id != -1)
 	{
 		if(!bEmpty)
-			m_pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
+			m_pkObjectMan->SetZoneModel(strName.c_str(),id);
 		//pkObjectMan->SetUnderConstruction(id);
 	}	
 
@@ -1375,6 +1390,33 @@ void MistServer::PathTest()
 		}
 }
 
+void MistServer::HandleEditOrder(ClientOrder* pkOrder)
+{
+	CmdArgument kcmdargs;
+	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
+
+	char szCmd1[256];
+	char szCmd2[256];
+	Vector3 kPos;
+	Vector3 kSize;
+
+	if ( kcmdargs.m_kSplitCommand[1] == string("addzone") )
+	{
+		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to addzone." << endl;
+		cout << "m_sOrderName: " << pkOrder->m_sOrderName << endl;
+		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %f %f %f %f %f %f", szCmd1,szCmd2, &kPos.x,&kPos.y,&kPos.z,
+			&kSize.x,&kSize.y,&kSize.z) == 8) {
+
+			AddZone(kPos, kSize, m_strActiveZoneName);	
+			}
+	}
+	else if ( kcmdargs.m_kSplitCommand[1] == string("delzone") )
+	{
+		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to remove a zone." << endl;
+	}
+}
+
+			
 void MistServer::HandleOrders()
 {
 	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
@@ -1447,6 +1489,11 @@ void MistServer::HandleOrders()
 			}					
 		}
       
+		// Edit Order
+		else if(strncmp(order->m_sOrderName.c_str(),"(ED)",4) == 0) {
+			HandleEditOrder(order);
+			}
+
 		// Character Command
 		else if(strncmp(order->m_sOrderName.c_str(),"(CC)",4) == 0) {
 				CmdArgument kcmdargs;

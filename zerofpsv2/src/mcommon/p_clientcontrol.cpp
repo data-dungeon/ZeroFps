@@ -105,6 +105,11 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	}
 }
 
+void P_ClientControl::AddServerOrder(ClientOrder kOrder)
+{
+	m_kServerOrders.push(kOrder);
+}
+
 bool P_ClientControl::CheckValidOrder(ClientOrder* temporder)
 {
 	if(temporder->m_iClientID != m_iClientID)

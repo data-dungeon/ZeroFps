@@ -59,7 +59,8 @@ class MistServer :public Application , public ZGuiApp {
 			FID_NEW,
 			FID_LOAD,
 			FID_SAVE,
-			FID_USERS
+			FID_USERS,
+			FID_LOCALORDER
 		};
 
 		enum EditMode_e
@@ -105,9 +106,11 @@ class MistServer :public Application , public ZGuiApp {
 		void UpdateObjectMakerPos();
 		void DrawZoneMarker(Vector3 kPos);
 		void DrawCrossMarker(Vector3 kPos);
-		void AddZone(bool bEmpty=false);
+		void AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
 
 		void HandleOrders();
+		void HandleEditOrder(ClientOrder* pkOrder);
+
 		bool CheckValidOrder(ClientOrder* pkOrder);
 		void SendTextToMistClientInfoBox(char* szText);
 
