@@ -127,11 +127,11 @@ void MistServer::Init()
 
 void MistServer::RegisterPropertys()
 {
-	pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
-	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
-	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-	pkPropertyFactory->Register("P_Event", Create_P_Event);
-	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
+	pkPropertyFactory->Register("P_ClientControl",	Create_P_ClientControl);
+	pkPropertyFactory->Register("P_ServerInfo",		Create_P_ServerInfo);
+	pkPropertyFactory->Register("P_Ml",				Create_P_Ml);
+	pkPropertyFactory->Register("P_Event",			Create_P_Event);
+	pkPropertyFactory->Register("P_CharStats",		Create_P_CharStats);
 }
 
 
@@ -235,7 +235,23 @@ void MistServer::Input()
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 
-	if(pkInput->Pressed(KEY_F5)) {
+	MadProperty* mp;
+	Object* pkAnimObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	if(pkAnimObj)
+		mp = (MadProperty*)pkAnimObj->GetProperty("MadProperty");
+	
+	if(pkInput->Pressed(KEY_F5) && mp) {
+		mp->SetAnimationActive(false);
+		} 
+	if(pkInput->Pressed(KEY_F6) && mp) {
+		mp->SetAnimationActive(true);
+		} 
+	if(pkInput->Pressed(KEY_F7) && mp) {
+		mp->NextCoreAnimation();
+		} 
+	
+
+/*	if(pkInput->Pressed(KEY_F5)) {
 		kPathStart = m_kObjectMarkerPos;
 		cout << "Setting Start" << endl;
 		} 
@@ -254,7 +270,8 @@ void MistServer::Input()
 		else {
 			cout << "Path was NOT found" << endl;
 			}
-		}
+		}*/
+
 
 	if(m_pkCameraObject)	
 	{	

@@ -983,28 +983,31 @@ void ZeroFps::RegisterResources()
 
 void ZeroFps::RegisterPropertys()
 {
+	// Propertys Used in MistLand
+	m_pkPropertyFactory->Register("MadProperty",		Create_MadProperty);		
+	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);		
+	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);		
+	m_pkPropertyFactory->Register("LightProperty",		Create_LightProperty);			
+	m_pkPropertyFactory->Register("PSystemProperty",	Create_PSystemProperty);									
+	m_pkPropertyFactory->Register("LinkToJoint",		Create_LinkToJoint);									
+	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);						
+	m_pkPropertyFactory->Register("TrackProperty",		Create_TrackProperty);					
+
+	// Other Propertys.
 	m_pkPropertyFactory->Register("P_Heightmap2", Create_P_Heightmap2);
 	m_pkPropertyFactory->Register("BodyProperty", Create_BodyProperty);
 	m_pkPropertyFactory->Register("VegitationProperty", Create_VegitationProperty);
 	m_pkPropertyFactory->Register("BoxRenderProperty", Create_BoxRenderProperty);
 	m_pkPropertyFactory->Register("BillBoardRenderProperty", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);
-	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
-	m_pkPropertyFactory->Register("P_Primitives3D", Create_Prim3DProperty);
-	m_pkPropertyFactory->Register("P_AmbientSound", Create_AmbientSound);
-	m_pkPropertyFactory->Register("LightProperty", Create_LightProperty);
 	m_pkPropertyFactory->Register("WaterRenderProperty",Create_WaterRenderProperty);	
 	m_pkPropertyFactory->Register("SkyBoxRenderProperty",Create_SkyBoxRenderProperty);		
 	m_pkPropertyFactory->Register("HeightMapRenderProperty",Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("HMRP2",Create_HMRP2);			
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
-	m_pkPropertyFactory->Register("TrackProperty",Create_TrackProperty);				
-	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
 	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("PhysicProperty",Create_PhysicProperty);								
-	m_pkPropertyFactory->Register("PSystemProperty",Create_PSystemProperty);								
-	m_pkPropertyFactory->Register("LinkToJoint",Create_LinkToJoint);								
 }
 
 

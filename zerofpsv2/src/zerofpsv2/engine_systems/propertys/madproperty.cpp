@@ -9,37 +9,32 @@ extern float g_fMadLODScale;
 MadProperty::MadProperty()
 {
 	strcpy(m_acName,"MadProperty");
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iType = PROPERTY_TYPE_RENDER;
+	m_iSide = PROPERTY_SIDE_CLIENT;
 	
-	bNetwork			= true;
-	m_bIsVisible	= true;
-
-	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	bNetwork	 = true;
+	m_bIsVisible = true;
+	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_fScale	 = 1.0;
 }
 
 MadProperty::MadProperty(string strResName) 
 {
-	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	
-	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	bNetwork	 = true;
+	m_bIsVisible = true;
+	m_pkZeroFps  =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	pkResDB->GetResource(kMadHandle, strResName);
 
-	//pkCore = pkModell;
-	
 	PlayAnimation(0, 0.0);
-	m_fScale = 1.0;
+	m_fScale  = 1.0;
 	m_bActive = true;
-//	pkCore->ClearReplaceTexture();
 }
-
-
-//float fTestValue;
 
 void MadProperty::Update() 
 {
@@ -173,7 +168,7 @@ void MadProperty::PackFrom(NetPacket* pkNetPacket)
 
 	pkNetPacket->Read(m_fScale);
 
-	g_ZFObjSys.Logf("net", " .Mad Name: %s\n", temp);
+//	g_ZFObjSys.Logf("net", " .Mad Name: %s\n", temp);
 }
 
 

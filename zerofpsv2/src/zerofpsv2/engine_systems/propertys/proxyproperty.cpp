@@ -88,7 +88,7 @@ TrackProperty::TrackProperty()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
-	m_pkOBjM				= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkOBjM			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_fNextMove			= m_pkFps->GetGameTime() + 1.0;
 	m_iZoneNum			= 0;
