@@ -53,8 +53,8 @@ void LevelManager::CreateNew(int iSize)
 
 void LevelManager::CreateZones()
 {
-	for(float x=0;x< (float)m_pkMap->m_iHmSize;x+=m_fZoneRadius/2){
-		for(float z=0;z< (float)m_pkMap->m_iHmSize;z+=m_fZoneRadius/2){
+	for(float x=0;x< (float)m_pkMap->GetSize();x+=m_fZoneRadius/2){
+		for(float z=0;z< (float)m_pkMap->GetSize();z+=m_fZoneRadius/2){
 			if(m_pkMap->Height(x,z)>-1){
 				ZoneObject *object = new ZoneObject();
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
@@ -97,31 +97,7 @@ bool LevelManager::LoadLevel(const char* acFile)
 	ksuinifile=kBase+"suconfig.ini";
 
 
-/*
-	kHmfile=m_kMapBaseDir;
-	kHmfile+="/";
-	kHmfile+=acFile;
-	kHmfile+="/";	
-	kHmfile+="heightmap.hm";
 
-	kZolfile=m_kMapBaseDir;
-	kZolfile+="/";
-	kZolfile+=acFile;
-	kZolfile+="/";	
-	kZolfile+="objects.zol";
-
-	kpreinifile=m_kMapBaseDir;
-	kpreinifile+="/";
-	kpreinifile+=acFile;
-	kpreinifile+="/";	
-	kpreinifile+="preconfig.ini";
-
-	ksuinifile=m_kMapBaseDir;
-	ksuinifile+="/";
-	ksuinifile+=acFile;
-	ksuinifile+="/";	
-	ksuinifile+="suconfig.ini";
-*/
 
 	//clear world
 	Clear();
@@ -346,9 +322,9 @@ void LevelManager::Water(bool bWater)
 		if(m_pkObjectMan->GetObject("WorldWaterObject") == NULL)
 		{	
 			//water
-			WaterObject *water=new WaterObject(m_pkMap->m_iHmSize,50,"file:../data/textures/water2.bmp");
+			WaterObject *water=new WaterObject(m_pkMap->GetSize(),50,"file:../data/textures/water2.bmp");
 			water->GetName()="WorldWaterObject";
-			water->GetPos().Set(m_pkMap->m_iHmSize/2,0,m_pkMap->m_iHmSize/2);
+			water->GetPos().Set(m_pkMap->GetSize()/2,0,m_pkMap->GetSize()/2);
 			water->SetParent(m_pkObjectMan->GetWorldObject());		
 		}
 	} else

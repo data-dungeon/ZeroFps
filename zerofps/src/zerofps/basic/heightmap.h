@@ -16,6 +16,8 @@
 #include <vector>
 #include <string>
 
+#define HEIGHTMAP_SCALE 2
+
 struct BASIC_API HM_vert {
 	float height;	//land height
 	Vector3 normal;
@@ -66,6 +68,7 @@ class BASIC_API HeightMap: public ZFObject {
 		void SetPosition(Vector3 kNewPos);		
 		HM_vert* GetVert(int x,int z);		
 		
+		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
 		void AddSet(const char* acTexture,const char* acMask);
 		void ClearSet();
 };

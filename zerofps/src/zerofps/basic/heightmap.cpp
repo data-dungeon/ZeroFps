@@ -10,10 +10,10 @@ HeightMap::HeightMap()
  : ZFObject("HeightMap") {
  
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
-	m_iError=10;
+	m_iError=0;
 	
 	verts=NULL;
-	Create(100);
+	Create(128);
 	
 
 //	m_kPosition=Vector3(0,0,0);
@@ -50,6 +50,9 @@ void HeightMap::SetPosition(Vector3 kNewPos) {
 
 float HeightMap::Height(float x,float z) {
 	
+	x/=HEIGHTMAP_SCALE;
+	z/=HEIGHTMAP_SCALE;
+	
 	x-=m_kPosition.x;
 	z-=m_kPosition.z;
 
@@ -78,7 +81,7 @@ float HeightMap::Height(float x,float z) {
 		zp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;				
 	}	
 
-	return bp+m_kPosition.y+(xp*ox)+(zp*oz);	
+	return m_kPosition.y+(bp+(xp*ox)+(zp*oz))*HEIGHTMAP_SCALE;	
 }
 
 Vector3 HeightMap::Tilt(float x,float z) {

@@ -708,7 +708,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
 			
-			if(iFps<(m_iFpsLock-5) && m_iDetail>8){
+			if(iFps<(m_iFpsLock-5) && m_iDetail>16){
 				m_iDetail--;	
 			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
 				m_iDetail++;		
@@ -773,7 +773,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 {
-	int iPatchSize=64;
+	int iPatchSize=32;
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
@@ -785,6 +785,259 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 }
 
 void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
+{
+	int iStep;
+	float fDistance;
+	
+	Vector3 PatchCenter(kMap->m_kPosition.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
+							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
+							  kMap->m_kPosition.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
+		
+	fDistance=(CamPos-PatchCenter).Length();
+		
+	if(fDistance > m_iViewDistance)
+		return;
+		
+	//cull
+	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
+		return;
+		
+		
+	iStep=PowerOf2(int(fDistance / m_iDetail));
+		
+		
+//	iStep=32;	
+//	cout<<iStep<<endl;
+		
+	glPushMatrix();			
+		glTranslatef(-kMap->m_kPosition.x,-kMap->m_kPosition.y,-kMap->m_kPosition.z);
+		m_pkLight->Update(PatchCenter);
+	glPopMatrix();
+
+
+
+//	glPolygonMode(GL_FRONT,GL_LINE);
+
+	
+	for(int z = zp ; z < zp+iSize; z+=iStep){
+		if(z==kMap->m_iHmSize-iStep)
+			break;			
+			
+		glBegin(GL_TRIANGLE_STRIP);
+		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
+			
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,((float)z+iStep)/kMap->m_iHmSize);		 		 			 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,((float)z+iStep)/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[(z+iStep)*kMap->m_iHmSize+x].normal);			
+			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[(z+iStep)*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,(z+iStep)*HEIGHTMAP_SCALE);			
+		}		
+		glEnd();		
+	}
+	
+
+	//damn ulgly lod fix
+	
+	int z=zp;	
+	
+	glBegin(GL_TRIANGLE_STRIP);
+	for(int x=xp;x <=xp+iSize ; x+=iStep)
+	{
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+		glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
+		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+	}
+	glEnd();	
+	
+	z=zp+iSize;
+	
+	if(z==kMap->m_iHmSize-iStep)
+		z-=iStep;	
+	
+	glBegin(GL_TRIANGLE_STRIP);	
+	for(int x=xp;x <=xp+iSize ; x+=iStep)
+	{
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+		glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);											
+	}
+	glEnd();	
+
+	int x=xp;	
+	glBegin(GL_TRIANGLE_STRIP);
+	for(int z=zp;z <=zp+iSize ; z+=iStep)
+	{
+		if(z==kMap->m_iHmSize-iStep)
+			break;
+		
+		
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+		glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);										
+	}
+	glEnd();	
+	
+	x=xp+iSize;	
+	glBegin(GL_TRIANGLE_STRIP);
+	for(int z=zp;z <=zp+iSize ; z+=iStep)
+	{
+		if(z==kMap->m_iHmSize-iStep)
+			break;
+		
+		
+		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+		glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);			
+		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
+	}
+	glEnd();	
+
+
+//	glPolygonMode(GL_FRONT,GL_FILL);
+}
+
+/*
+//-------------------------Geforce 4 secttion
+
+
+void Render::G4DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
+{
+	if(m_iAutoLod>0){
+		if(SDL_GetTicks()>(m_iLodUpdate+500)){
+			m_iLodUpdate=SDL_GetTicks();
+			
+			if(iFps<(m_iFpsLock-5) && m_iDetail>8){
+				m_iDetail--;	
+			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
+				m_iDetail++;		
+			}
+		}
+	}
+	
+	glPushMatrix();
+	glPushAttrib(GL_DEPTH_BUFFER_BIT);
+	
+	glTranslatef(kMap->m_kPosition.x,kMap->m_kPosition.y,kMap->m_kPosition.z);
+	glColor4f(1,1,1,1);
+
+
+	//setup TUs
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glDisable(GL_TEXTURE_2D);//disable for the first texture
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);	
+
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	
+	glActiveTextureARB(GL_TEXTURE2_ARB);
+	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	
+	//Draw default texture
+	glActiveTextureARB(GL_TEXTURE1_ARB);	
+	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
+	G4DrawAllHM(kMap,CamPos);	
+	
+	
+	//set blending
+	glDepthFunc(GL_EQUAL);
+	glEnable(GL_BLEND);		
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);				
+
+	
+	//enable TU0 again
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glEnable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glEnable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE2_ARB);
+	glEnable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+	glEnable(GL_TEXTURE_2D);
+	
+	
+	
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	m_pkTexMan->BindTexture(kMap->m_kSets[1].m_acMask,0);
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	m_pkTexMan->BindTexture(kMap->m_kSets[1].m_acTexture,0);
+
+	glActiveTextureARB(GL_TEXTURE2_ARB);
+	m_pkTexMan->BindTexture(kMap->m_kSets[2].m_acMask,0);
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+	m_pkTexMan->BindTexture(kMap->m_kSets[2].m_acTexture,0);
+	
+	
+	
+	G4DrawAllHM(kMap,CamPos);	
+
+
+
+
+
+/*		
+	
+	for(int i=1;i<kMap->m_kSets.size();i++)
+	{		
+		glActiveTextureARB(GL_TEXTURE0_ARB);	
+		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acMask,0);	
+		
+		glActiveTextureARB(GL_TEXTURE1_ARB);
+		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acTexture,0);		
+		
+		DrawAllHM(kMap,CamPos);	
+	}
+*
+
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glDisable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE2_ARB);
+	glDisable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE3_ARB);
+	glDisable(GL_TEXTURE_2D);
+	
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glEnable(GL_TEXTURE_2D);
+
+	glDisable(GL_BLEND);		
+
+	glPopAttrib();
+	glPopMatrix();
+}
+
+void Render::G4DrawAllHM(HeightMap* kMap,Vector3 CamPos)
+{
+	int iPatchSize=64;
+
+	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
+	{
+		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
+		{
+			G4DrawPatch(kMap,CamPos,x,z,iPatchSize);		
+		}
+	}
+}
+
+void Render::G4DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 {
 	int iStep;
 	float fDistance;
@@ -816,11 +1069,19 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/8,(float)z/8);						
+			
+			glMultiTexCoord2fARB(GL_TEXTURE2_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE3_ARB,(float)x/8,(float)z/8);						
+			
 			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
 			glVertex3f(x,kMap->verts[z*kMap->m_iHmSize+x].height,z);					
 			
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,((float)z+iStep)/kMap->m_iHmSize);		 		 			 			 		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/8,((float)z+iStep)/8);						
+			glMultiTexCoord2fARB(GL_TEXTURE2_ARB,(float)x/kMap->m_iHmSize,((float)z+iStep)/kMap->m_iHmSize);		 		 			 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE3_ARB,(float)x/8,((float)z+iStep)/8);						
+			
+			
 			glNormal3fv((float*)&kMap->verts[(z+iStep)*kMap->m_iHmSize+x].normal);			
 			glVertex3f(x,kMap->verts[(z+iStep)*kMap->m_iHmSize+x].height,z+iStep);			
 		}		
@@ -882,7 +1143,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	}
 	glEnd();	
 }
-
+*/
 
 
 

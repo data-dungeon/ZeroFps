@@ -154,8 +154,8 @@ void Game::SetUpMenuScreen()
 {
 	pkLevelMan->LoadLevel("menu");
 
-	m_pkCamera->GetPos().Set(137,4,128);	
-	m_pkCamera->GetRot().Set(-14,40,0);	
+	m_pkCamera->GetPos().Set(252,11,149);	
+	m_pkCamera->GetRot().Set(15,-302,0);	
 
 	//default light
 	LightSource *sol=new LightSource;	
@@ -163,7 +163,7 @@ void Game::SetUpMenuScreen()
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1.0,1.0,1.0,1);	//Dag
+		sol->kDiffuse=Vector4(0.1,0.1,0.1,1);	//Dag
 		sol->kAmbient=Vector4(0.02,0.02,0.02,1);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;

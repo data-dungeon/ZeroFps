@@ -9,6 +9,13 @@ using namespace std;
 
 class BASIC_API Vector3 {
 	public:
+/*	
+		union 
+		{
+		   float data[3];
+		   float x,y,z;                                
+		};
+*/		
 		float x,y,z;												// NC
 	
 		Vector3(float fX,float fY,float fZ);						// NC
