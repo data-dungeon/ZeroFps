@@ -22,7 +22,7 @@
 class MistServer :public Application {
 	private:
 		
-		Camera*			m_pkCamera;
+		Camera*		m_pkCamera;
 		
 		// actions
 		int 			m_iActionCamLeft;
@@ -47,6 +47,8 @@ class MistServer :public Application {
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
+
+		Object*		m_pkCameraObject;
 
 	public:
 		bool InitializeScript();

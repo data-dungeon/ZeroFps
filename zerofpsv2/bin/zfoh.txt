@@ -1,4 +1,8 @@
 class object	
+	class camera
+		parent object
+		add CameraProperty
+	
 	class playertest
 		parent object
 		set MadProperty m_kMadFile /data/mad/orc.mad

@@ -52,19 +52,11 @@ void MistServer::Init()
 	//register property bös
 	RegisterPropertys();
 
-/*
-	srand( (int) (pkFps->GetGameTime()*1000) );
-
-	char* szRandom[] = {
-		"Mistland, the land of mist" };
-
-	char szTitle[150];
-	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
-*/
-	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
+	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 	
 	InitializeScript();
 	//InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+
 
 }
 
@@ -127,154 +119,58 @@ void MistServer::Input()
 
 	int mx,my;
 	pkInput->MouseXY(mx,my);
-
-	static int s_iCursorTex=-1; 
-	static int s_iCursorTex_a=-1;
-	int iNewCursorTex=0;
-	int iNewCursorTex_a=0;
-
-
-	if(pkInput->Action(m_iActionPrintServerInfo))
-	{
-	}
-
+	
+	int x,z;		
+	pkInput->RelMouseXY(x,z);
+	
 	float speed = 20;
 
-	//camera movements
-	if(pkInput->Pressed(KEY_X)){
-		speed*=0.25;
-	}
-	
-	Vector3 newpos = m_pkCamera->GetPos();
-	Vector3 rot = m_pkCamera->GetRot();
-	
-	if(pkInput->Pressed(KEY_D)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
-	}
-	if(pkInput->Pressed(KEY_A)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}	
-	if(pkInput->Pressed(KEY_W))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_S))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
-	}		
-	
-	if(pkInput->Pressed(KEY_Q))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_E))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
-
-	int x,z;		
-	pkInput->RelMouseXY(x,z);	
-	
-	rot.x+=z/5.0;
-	rot.y+=x/5.0;	
-	
-//	m_pkME->SetLocalPosV(newpos);
-//	m_pkME->SetLocalRotV(rot);	
-
-	float fSpeedScale = pkFps->GetFrameTime()*speed;
-
-	m_pkCamera->SetPos(newpos);
-	m_pkCamera->SetRot(rot);
-	
-
-	static float fRotate = 0;
-	static Vector3 kRotate(0,0,0); 
-	
-	
-/*	if(PRESSED_KEY == KEY_R)
+	if(m_pkCameraObject)
 	{
-		static int w = 0;
-		if(w++ > 400-16) w = 0;
-		ResizeWnd("ManaBarProgress", w, -1);		
-	}	
 
-	if(PRESSED_KEY == KEY_1)
-		pkScript->CallScript("OnClickBackpack", 0, 0); 
-	if(PRESSED_KEY == KEY_2)
-		pkScript->CallScript("OnClickStats", 0, 0);
-	if(PRESSED_KEY == KEY_3)
-		pkScript->CallScript("OnClickMap", 0, 0);
-*/
+		//camera movements
+		if(pkInput->Pressed(KEY_X)){
+			speed*=0.25;
+		}
 	
-/*	
-	if(m_pkME)	
-	{	
-newpos = m_pkME->GetLocalPosV();
-//	rot = m_pkME->GetLocalRotV();
-	
-	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=pkFps->GetFrameTime()*speed;			
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x-=pkFps->GetFrameTime()*speed;			
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.z+=pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.z-=pkFps->GetFrameTime()*speed;
-	}		
-
-	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
-	}		
-	
-	if(pkInput->Pressed(KEY_R))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_Y))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
+		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		Vector3 rot;
+		rot.Set(0,0,0);
 		
-
-  if(pkInput->Pressed(KEY_U))
-		rot.x += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_J))	
-		rot.x -= pkFps->GetFrameTime()*speed*10;
+		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
+		kRm.Transponse();
 	
-	if(pkInput->Pressed(KEY_I))
-		rot.y += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_K))	
-		rot.y -= pkFps->GetFrameTime()*speed*10;
-		 
-	if(pkInput->Pressed(KEY_O))
-		rot.z += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_L))	
-		rot.z -= pkFps->GetFrameTime()*speed*10;
+		if(pkInput->Pressed(KEY_D)){
+			newpos-=kRm.VectorRotate(Vector3(-1,0,0))* pkFps->GetFrameTime()*speed;		
+		}
+		if(pkInput->Pressed(KEY_A)){
+			newpos-=kRm.VectorRotate(Vector3(1,0,0))* pkFps->GetFrameTime()*speed;		
+		}	
+		if(pkInput->Pressed(KEY_W))	{
+			newpos-=kRm.VectorRotate(Vector3(0,0,1))* pkFps->GetFrameTime()*speed;
+		}					
+		if(pkInput->Pressed(KEY_S))	{
+			newpos-=kRm.VectorRotate(Vector3(0,0,-1))* pkFps->GetFrameTime()*speed;	
+		}		
+	
+		if(pkInput->Pressed(KEY_Q))
+			rot.z+= 5 * pkFps->GetFrameTime()*speed;
+		if(pkInput->Pressed(KEY_E))
+			rot.z-= 5 * pkFps->GetFrameTime()*speed;
 
-  m_pkME->SetLocalPosV(newpos);				
-		//rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
 		
-//	m_pkME->SetLocalPosV(newpos);		
-	//rot.y+=0.1;
+		rot.x+=z/5.0;
+		rot.y-=x/5.0;	
 
-  rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-	m_pkME->SetLocalRotV(rot);
+		m_pkCameraObject->SetLocalPosV(newpos);
+		m_pkCameraObject->RotateLocalRotV(rot);
+	
 	}
-	*/
-}
 
-void MistServer::OnHud(void) 
-{	
+};
+
+void MistServer::OnHud(void)
+{
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());	
 	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
 	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
@@ -373,41 +269,14 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
-/*	m_pkME = pkObjectMan->CreateObject();
-	m_pkME->AttachToClosestZone();
-	m_pkME->AddProperty("CameraProperty");
-	
-	CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-	cam->SetCamera(m_pkCamera);
-	*/
-
-/*	m_pkME = pkObjectMan->CreateObjectByArchType("body");
-	if(m_pkME) {
-		m_pkME->SetWorldPosV(Vector3(0,0,0));
-		m_pkME->AttachToClosestZone();
-	
-		
-		m_pkME->AddProperty("CameraProperty");
-	
-		CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
+	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
+	if(m_pkCameraObject)
+	{
+		m_pkCameraObject->AttachToClosestZone();
+		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		cam->SetCamera(m_pkCamera);
-		
 	}
-
-	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
-	if(pk1) {
-		pk1->SetParent(m_pkME);
-		pk1->SetLocalPosV(Vector3(0,0.81,0));
-		//pk1->AttachToClosestZone();		
-	}
-
-	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSGun");
-	if(pk2) {
-		pk2->SetParent(pk1);
-		pk2->SetLocalPosV(Vector3(0,0.0,0));
-	}*/
-
-
+	
 	pkObjectMan->Test_CreateZones();
 
 
@@ -415,30 +284,7 @@ void MistServer::OnServerStart(void)
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
-/*		for(int i=0; i<5; i++) {
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
-
-			}
-		}*/
-
-	
 	}
-
-
-	//add server info property
-	if(!pkObjectMan->GetObject("A ServerInfoObject"))
-	{
-		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
-		if(!pkObj)
-			cout<<"Faild to create serverinfoobject"<<endl;
-		 else
-			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}	
 }
 
 void MistServer::OnClientStart(void)

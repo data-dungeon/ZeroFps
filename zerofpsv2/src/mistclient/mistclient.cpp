@@ -193,27 +193,14 @@ void MistClient::Input()
 	float fSpeedScale = pkFps->GetFrameTime()*speed;
 
 	m_pkCamera->SetPos(newpos);
- 
+	m_pkCamera->RotateV(rot);
 	//m_pkCamera->SetRot(rot);
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
 	
 	
-/*	if(PRESSED_KEY == KEY_R)
-	{
-		static int w = 0;
-		if(w++ > 400-16) w = 0;
-		ResizeWnd("ManaBarProgress", w, -1);		
-	}	
 
-	if(PRESSED_KEY == KEY_1)
-		pkScript->CallScript("OnClickBackpack", 0, 0); 
-	if(PRESSED_KEY == KEY_2)
-		pkScript->CallScript("OnClickStats", 0, 0);
-	if(PRESSED_KEY == KEY_3)
-		pkScript->CallScript("OnClickMap", 0, 0);
-*/
 	
 	Object* m_pkME = m_pkTestobj;
 	
@@ -280,9 +267,9 @@ void MistClient::Input()
 	//rot.y+=0.1;
 
   //rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-		//m_pkME->RotateLocalRotV(rot);
+		m_pkME->RotateLocalRotV(rot);
 	
-		m_pkCamera->RotateV(rot);
+
 	}
 
 }
@@ -393,7 +380,7 @@ void MistClient::OnServerStart(void)
 		m_pkTestobj->AttachToClosestZone();
 	
 		CameraProperty* cam = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
-		//cam->SetCamera(m_pkCamera);
+		cam->SetCamera(m_pkCamera);
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,20,0));
 	}

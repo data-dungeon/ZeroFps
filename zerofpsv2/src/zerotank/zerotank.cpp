@@ -225,6 +225,54 @@ void ZeroTank::Input()
 	int iNewCursorTex_a=0;
 
 
+
+	int x,z;		
+	pkInput->RelMouseXY(x,z);
+	
+	float speed = 20;
+
+	if(m_pkCameraObject)
+	{
+
+		//camera movements
+		if(pkInput->Pressed(KEY_X)){
+			speed*=0.25;
+		}
+	
+		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		Vector3 rot;
+		rot.Set(0,0,0);
+		
+		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
+		kRm.Transponse();
+	
+		if(pkInput->Pressed(KEY_D)){
+			newpos-=kRm.VectorRotate(Vector3(-1,0,0))* pkFps->GetFrameTime()*speed;		
+		}
+		if(pkInput->Pressed(KEY_A)){
+			newpos-=kRm.VectorRotate(Vector3(1,0,0))* pkFps->GetFrameTime()*speed;		
+		}	
+		if(pkInput->Pressed(KEY_W))	{
+			newpos-=kRm.VectorRotate(Vector3(0,0,1))* pkFps->GetFrameTime()*speed;
+		}					
+		if(pkInput->Pressed(KEY_S))	{
+			newpos-=kRm.VectorRotate(Vector3(0,0,-1))* pkFps->GetFrameTime()*speed;	
+		}		
+	
+		if(pkInput->Pressed(KEY_Q))
+			rot.z+= 5 * pkFps->GetFrameTime()*speed;
+		if(pkInput->Pressed(KEY_E))
+			rot.z-= 5 * pkFps->GetFrameTime()*speed;
+
+		
+		rot.x+=z/5.0;
+		rot.y-=x/5.0;	
+
+		m_pkCameraObject->SetLocalPosV(newpos);
+		m_pkCameraObject->RotateLocalRotV(rot);
+	
+	}
+/*
 	if(pkInput->Action(m_iActionPrintServerInfo))
 	{
 	}
@@ -328,7 +376,7 @@ void ZeroTank::Input()
 		pkScript->CallScript("OnClickStats", 0, 0);
 	if(PRESSED_KEY == KEY_3)
 		pkScript->CallScript("OnClickMap", 0, 0);
-
+*/
 	
 /*	
 	if(m_pkME)	
@@ -553,6 +601,15 @@ void ZeroTank::SetupSpawnPoints()
 
 void ZeroTank::OnServerStart(void)
 {		
+	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
+	if(m_pkCameraObject)
+	{
+		m_pkCameraObject->AttachToClosestZone();
+		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
+		cam->SetCamera(m_pkCamera);
+	}
+	
+
 /*	m_pkME = pkObjectMan->CreateObject();
 	m_pkME->AttachToClosestZone();
 	m_pkME->AddProperty("CameraProperty");

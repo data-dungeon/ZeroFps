@@ -7,8 +7,8 @@
 CameraProperty::CameraProperty() 
 {
 	m_pkCamera = NULL;
-	//m_eCameraType = CAM_TYPEFIRSTPERSON;
-	m_eCameraType = CAM_TYPE3PERSON;	
+	m_eCameraType = CAM_TYPEFIRSTPERSON;
+	//m_eCameraType = CAM_TYPE3PERSON;	
 	strcpy(m_acName,"CameraProperty");	
 
 	m_iType=PROPERTY_TYPE_RENDER;

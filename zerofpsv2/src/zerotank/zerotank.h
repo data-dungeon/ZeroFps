@@ -28,6 +28,7 @@ class ZeroTank :public Application, public GuiApp {
 		
 		Camera*			m_pkCamera;
 		HeightMap*		m_pkMap;
+		Object*		m_pkCameraObject;
 		
 		// actions
 		int 			m_iActionCamLeft;
