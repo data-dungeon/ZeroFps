@@ -25,6 +25,14 @@ end
 
 function HeartBeat()
 
+	local Life = GetCharStats(SIGetSelfID(), 0)
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
+
+	-- Ropa på hjälp om han har blivit skadad igen.
+	if Life < prev_life then
+		CallForHelp(SIGetSelfID(), 1)
+		Print( "Mechanic call the cops!" )
+	end
 	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
