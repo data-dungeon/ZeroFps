@@ -26,19 +26,28 @@ DMCharacterStats::DMCharacterStats()
 void DMCharacterStats::Randomize()
 {
 	vector<string>	kNames;
-	kNames.push_back("Dvoid");
-	kNames.push_back("Vim");
-	kNames.push_back("Zeb");
-	kNames.push_back("Zerom");
-	kNames.push_back("Eld");
-	kNames.push_back("Arnold");
-	kNames.push_back("B I G");
-	kNames.push_back("Cobra");
-	kNames.push_back("Captain picard");
-	kNames.push_back("MR Data");
-	kNames.push_back("Lotta");
+		kNames.push_back("Dvoid");
+		kNames.push_back("Vim");
+		kNames.push_back("Zeb");
+		kNames.push_back("Zerom");
+		kNames.push_back("Eld");
+		kNames.push_back("Arnold");
+		kNames.push_back("BIG");
+		kNames.push_back("Cobra");
+		kNames.push_back("Captain");
+		kNames.push_back("Data");
+		kNames.push_back("Lotta");
 
-	m_strName = 		kNames[rand()%kNames.size()];
+	vector<string>	kSNames;
+		kSNames.push_back("Larsson");
+		kSNames.push_back("Andersson");
+		kSNames.push_back("Svensson");
+		kSNames.push_back("Kallsong");
+		kSNames.push_back("Blubbson");
+		kSNames.push_back("Arnoldsson");
+
+
+	m_strName = 		kNames[rand()%kNames.size()] + string(" ") + kSNames[rand()%kSNames.size()];
 	m_strIcon =			"portrait1.bmp";
 
 	m_iMaxLife = 		rand()%20 + 80;
