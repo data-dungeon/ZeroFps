@@ -122,7 +122,7 @@ void Pop()
 		\param Template Name of template script used to create entity.
 		\param Position Position to create new entity at.
 		\return Return id of new entity or -1 if no one was created.
-		\brief Delete the object given as a parameter.
+		\brief Create the entity given as a parameter.
 */
 int CreateEntityLua (lua_State* pkLua)
 {
@@ -147,9 +147,9 @@ int CreateEntityLua (lua_State* pkLua)
 	return 0;
 }
 
-/**	\fn Delete( Object )
+/**	\fn Delete( Entity )
  		\relates SIEntityManger
-		\param ID of entity to delete.
+		\param Entity of entity to delete.
 		\brief Delete a entity.
 */
 int DeleteLua(lua_State* pkLua)

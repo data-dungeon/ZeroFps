@@ -2,6 +2,9 @@
 #include "p_psystem.h"
 #include "../../engine/entity.h"
 #include "../../engine/entitymanager.h"
+#include "../script_interfaces/si_objectmanager.h" 
+
+using namespace ObjectManagerLua;
 
 // ------------------------------------------------------------------------------------------
 
@@ -224,8 +227,81 @@ P_PSystem::~P_PSystem()
 
 // ------------------------------------------------------------------------------------------
 
+/* ********************************** SCRIPT INTERFACE ****************************************/
+/**	\brief Script functions for Particle Systems
+	\ingroup si
+*/
+class SIPSystem { };
+
+namespace SI_PPSystem
+{
+/**	\fn SetPSystem( Entity, SystemName)
+ 	\relates SITcs
+	\brief Sets the particle system to use.
+
+	Impulse is given in the direction specified by xyz.
+*/
+int SetPSystemLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 0)
+		return 0;
+
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+		int iId = (int)dTemp;
+		
+		Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
+		
+		if(pkObject)
+			pkObject->DeleteProperty("P_PSystem");
+
+		return 0;
+	}
+	
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+		int iId = (int)dTemp;
+		
+		Entity* pkObject = g_pkObjMan->GetEntityByID(iId);
+		if(pkObject)
+		{
+			P_PSystem* ps = (P_PSystem*)pkObject->GetProperty("P_PSystem");
+			
+			if(!ps)
+				ps = (P_PSystem*)pkObject->AddProperty("P_PSystem");
+			
+			if(ps)
+			{
+				char	acType[128];
+				g_pkScript->GetArgString(pkLua, 1, acType);
+				
+				ps->SetPSType((string)acType);
+				return 0;
+			}
+		}
+
+		
+		return 0;
+	}
+	return 0;
+}
+}
+
+// ------------------------------------------------------------------------------------------
 Property* Create_PSystemProperty()
 {
 	return new P_PSystem;
 }
 
+void ENGINE_SYSTEMS_API Register_PPSystem(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_PSystem", Create_PSystemProperty);					
+
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("SetPSystem",	SI_PPSystem::SetPSystemLua);			
+}

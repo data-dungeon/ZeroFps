@@ -44,8 +44,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("RotateTowards",				MistLandLua::RotateTowardsLua);					
 	
 	// MOVE
-	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
-	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
+	//pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
+	//pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
 
 	
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
@@ -198,7 +198,7 @@ int MistLandLua::GetLastCollidedObjectLua(lua_State* pkLua)
 }
 
 
-
+/*
 int MistLandLua::RemoveObjectLua(lua_State* pkLua)
 {
 	int iId = ObjectManagerLua::g_iCurrentObjectID;
@@ -218,7 +218,7 @@ int MistLandLua::RemoveObjectLua(lua_State* pkLua)
 		g_pkObjMan->Delete(pkObj);
 	
 	return 0;
-}
+}*/
 
 int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 {
@@ -433,6 +433,7 @@ int MistLandLua::StartSoundLua(lua_State* pkLua)
 	return 0;
 }
 
+/*
 int MistLandLua::SetPSystemLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 0)
@@ -480,7 +481,7 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		return 0;
 	}
 	return 0;
-}
+}*/
 
 int MistLandLua::MakePathFindLua(lua_State* pkLua)
 {

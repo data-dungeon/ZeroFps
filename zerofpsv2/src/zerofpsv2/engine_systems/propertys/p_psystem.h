@@ -36,6 +36,7 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property {
 };
 
 Property* Create_PSystemProperty();
+void ENGINE_SYSTEMS_API Register_PPSystem(ZeroFps* pkZeroFps);
 
 #endif
 

@@ -1578,7 +1578,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
 	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
-	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
+	//m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 	//m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
 	//m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
 	//m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
@@ -1590,14 +1590,15 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
-//	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
-//	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
-//	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
+	//m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
+	//m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
+	//m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
 
 	Register_MadProperty(this);
 	Register_PTcs(this);
 	Register_PController(this);
 	Register_PScriptInterface(this);
+	Register_PPSystem(this);
 
 	Register_SIEntityProperty(this);
 }
