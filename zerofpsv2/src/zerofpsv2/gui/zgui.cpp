@@ -1548,7 +1548,16 @@ void ZGui::SetRes(int iResX, int iResY)
 
 void ZGui::SetInputFocus(ZGuiWnd* pkClikWnd, bool bSet)
 {
-	if(pkClikWnd->GetSkin())
-		if(!pkClikWnd->GetSkin()->m_bTransparent) 
-			m_bHaveInputFocus = true;
+	m_bHaveInputFocus = true;
+
+	if( typeid(*pkClikWnd) == typeid(ZGuiWnd) )
+	{
+		if(pkClikWnd->GetSkin())
+		{
+			if(pkClikWnd->GetSkin()->m_bTransparent)
+			{
+				m_bHaveInputFocus = false;
+			}
+		}
+	}
 }

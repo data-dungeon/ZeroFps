@@ -132,7 +132,11 @@ void MistServer::OnIdle()
 	pkFps->GetCam()->ClearViewPort();	
 
 	if(pkGui->m_bHaveInputFocus == false)
+	{
 		Input();	
+	}
+
+
 
  	pkFps->UpdateCamera(); 		
 
@@ -268,6 +272,7 @@ void MistServer::Input()
 
 		if(pkInput->Pressed(MOUSELEFT))
 		{
+			printf("Add zone\n");
 			AddZone();	
 		}
 	
