@@ -1673,9 +1673,15 @@ void ZeroFps::Disconnect(int iConnectionID)
 
 	if(!m_bServerMode)
 		return;
-	
+		
 	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
-	assert( m_kClient[iConnectionID].m_pkObject );
+	
+	if(!m_kClient[iConnectionID].m_pkObject)
+	{
+		cout<<"ERROR:WTF IS THIS, im already disconnected damit!!"<<endl;
+		return;
+	}
+	//assert( m_kClient[iConnectionID].m_pkObject );
 	
 	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
 	
