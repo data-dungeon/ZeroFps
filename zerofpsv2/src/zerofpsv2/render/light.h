@@ -24,10 +24,8 @@ using namespace std;
 class RENDER_API LightSource {
 	public:
 		//position and rotation
-		Vector3 *kPos;					///< Position of light source.
-		Vector3 *kRot;					
-		Vector3 kConstPos;
-		Vector3 kConstRot;
+		Vector3 kPos;					///< Position of light source.
+		Vector3 kRot;					
 	
 		//light color
 		Vector4 kDiffuse;

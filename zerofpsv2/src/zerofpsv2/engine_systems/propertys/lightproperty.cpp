@@ -10,22 +10,6 @@ LightProperty::LightProperty()
 	strcpy(m_acName,"LightProperty");
 	
 	m_pkLightSource=new LightSource();
-	//pkPos=new Vector3(0,0,0);
-	//pkRot=new Vector3(0,0,0);
-	m_pkLightSource->kPos=&kPos;
-	m_pkLightSource->kRot=&kRot;
-	
-/*	
-	spot->kDiffuse=Vector4(0,0,0,1.0);
-	spot->kAmbient=Vector4(0.0,0.0,0.0,1.0);
-	spot->iType=POINT_LIGHT;			
-	spot->iPriority=0;
-	spot->fCutoff=20;	
-	spot->fExp=5;
-	spot->fConst_Atten=1;
-	spot->fLinear_Atten=0;
-	spot->fQuadratic_Atten=0;
-*/
 
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 
@@ -40,23 +24,17 @@ LightProperty::~LightProperty()
 {
 	m_pkLight->Remove(m_pkLightSource);
 	delete m_pkLightSource;
-	//delete pkPos;
-	//delete pkRot;
 }
 
 void LightProperty::Init()
 {
-//	m_pkLightSource->kPos= m_pkObject->GetPosPointer();
-//	m_pkLightSource->kRot= m_pkObject->GetRotPointer();
+
 }
 
 void LightProperty::Update() 
 {
-	kPos = m_pkObject->GetWorldPosV(); 
-	kRot = m_pkObject->GetWorldRotV();
-
-	//m_pkLightSource->kPos->Set(pos.x,pos.y,pos.z);
-	//m_pkLightSource->kRot->Set(rot.x,rot.y,rot.z);	
+	m_pkLightSource->kPos = m_pkObject->GetWorldPosV(); 
+	m_pkLightSource->kRot = m_pkObject->GetWorldRotV();
 }
 
 void LightProperty::PackTo( NetPacket* pkNetPacket ) {
@@ -68,7 +46,6 @@ void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_pkLightSource->fConst_Atten);		
 	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);		
-	pkNetPacket->Write( m_pkLightSource->kConstPos);			
 }
 
 void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
@@ -80,12 +57,11 @@ void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_pkLightSource->fConst_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
-	pkNetPacket->Read( m_pkLightSource->kConstPos );			
 }
 
 vector<PropertyValues> LightProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(12);
+	vector<PropertyValues> kReturn(10);
 
 	kReturn[0].kValueName = "Ambient";
 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
@@ -127,13 +103,6 @@ vector<PropertyValues> LightProperty::GetPropertyValues()
 	kReturn[9].iValueType = VALUETYPE_INT;
 	kReturn[9].pkValue    = (void*)&m_pkLightSource->iType;
 	
-	kReturn[10].kValueName = "ConstPosition";
-	kReturn[10].iValueType = VALUETYPE_VECTOR3;
-	kReturn[10].pkValue    = (void*)&m_pkLightSource->kConstPos;
-	
-	kReturn[11].kValueName = "ConstRotation";
-	kReturn[11].iValueType = VALUETYPE_VECTOR3;
-	kReturn[11].pkValue    = (void*)&m_pkLightSource->kConstRot;
 	return kReturn;
 }
 
@@ -147,27 +116,11 @@ void LightProperty::Save(ZFIoInterface* pkPackage)
 {
 	
 	pkPackage->Write((void*)m_pkLightSource,sizeof(LightSource),1);
-	//pkPackage->Write((void*)pkPos, sizeof(Vector3));
-	//pkPackage->Write((void*)pkRot, sizeof(Vector3));
-	//pkPackage->Write((void*)&m_pkLight,sizeof(Light));
 }
 
 void LightProperty::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
-	//pkPackage->Read((void*)pkPos, sizeof(Vector3));
-	//pkPackage->Read((void*)pkRot,sizeof(Vector3));
-	//pkPackage->Read((void*)&m_pkLight,sizeof(Light));
-	
-
-	m_pkLightSource->kPos=&kPos;
-	m_pkLightSource->kRot=&kRot;
-
-	//m_pkLightSource->kPos= m_pkObject->GetPosPointer();
-	//pkLightSource->kRot= m_pkObject->GetRotPointer();
-	//delete pkPos;
-	//delete pkRot;
-	//cout<<"m_pkObject->GetPos():" <<m_pkObject->GetPos().x <<endl;
 }
 
 void LightProperty::TurnOn()

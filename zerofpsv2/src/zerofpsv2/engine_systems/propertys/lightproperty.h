@@ -9,8 +9,6 @@ using namespace std;
 class ENGINE_SYSTEMS_API LightProperty: public Property {
 	private:
 		LightSource*	m_pkLightSource;
-		Vector3			kPos;
-		Vector3			kRot;
 
 		Light*			m_pkLight;
 		
@@ -32,8 +30,8 @@ class ENGINE_SYSTEMS_API LightProperty: public Property {
 		void PackTo(NetPacket* pkNetPacket) ;
 		void PackFrom(NetPacket* pkNetPacket) ;
 		void Init();
-		inline void SetPos(Vector3 kPos){*m_pkLightSource->kPos=kPos;};	
-		inline void SetRot(Vector3 kRot){*m_pkLightSource->kRot=kRot;};	
+		inline void SetPos(Vector3 kPos){m_pkLightSource->kPos=kPos;};	
+		inline void SetRot(Vector3 kRot){m_pkLightSource->kRot=kRot;};	
 		inline void SetDiffuse(Vector4 kDiffuse){m_pkLightSource->kDiffuse=kDiffuse;};
 		inline void SetAmbient(Vector4 kAmbient){m_pkLightSource->kAmbient=kAmbient;};
 		inline void SetSpecular(Vector4 kSpecular){m_pkLightSource->kSpecular=kSpecular;};		

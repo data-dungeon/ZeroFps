@@ -6,12 +6,10 @@
 LightSource::LightSource() 
 {
 	//position and rotation
-	kPos					=	NULL;
-	kRot					=	NULL;
-	kConstPos			=	Vector3(0,0,0);
-	kConstRot			=	Vector3(0,0,0);
+	kPos					=	Vector3(0,0,0);
+	kRot					=	Vector3(0,0,0);
 	
-		//light color
+	//light color
 	kDiffuse				=	Vector4(1,1,1,1);
 	kAmbient				=	Vector4(0,0,0,1);
 	kSpecular			=	Vector4(0,0,0,1);
@@ -20,7 +18,7 @@ LightSource::LightSource()
 	fCutoff				=	20;
 	fExp					=	20;
 	
-		//distance attenuation 
+	//distance attenuation 
 	fConst_Atten		=	0;
 	fLinear_Atten		=	0;
 	fQuadratic_Atten	=	0.01;
@@ -114,7 +112,7 @@ void Light::Update(Vector3 kRefPos)
 		} else {
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
 			
-			Vector3 kPos = (*(*it)->kPos)+(*it)->kConstPos;		
+			Vector3 kPos = (*it)->kPos;		
 			float fDistance = (kRefPos-kPos).Length();		
 			float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
 		
@@ -194,7 +192,7 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 		float spotdir[]={0,0,-1};  		
   		switch (pkLight->iType) {
   			case DIRECTIONAL_LIGHT:
-				temp=(*pkLight->kRot)+pkLight->kConstRot;  			
+				temp=pkLight->kRot;  			
   				temp.w = 0;			
 				glLightfv(light,GL_POSITION,(float*)&temp);								//		&temp[0]		
   				
@@ -205,7 +203,7 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
   				
   				break;
   			case POINT_LIGHT:
-  				temp=(*pkLight->kPos)+pkLight->kConstPos;
+  				temp=pkLight->kPos;
   				temp.w=1;  						
 				glLightfv(light,GL_POSITION,(float*)&temp);	  //&temp[0]
 		  		
@@ -221,11 +219,11 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 				  				
   				break;
   			case SPOT_LIGHT:
-  				temp=(*pkLight->kPos)+pkLight->kConstPos;
+  				temp=pkLight->kPos;
   				temp.w=1;  						
 				glLightfv(light,GL_POSITION,(float*)&temp);	  // temp[0]
 				
-				temp=(*pkLight->kRot)+pkLight->kConstRot;
+				temp=pkLight->kRot;
 				glLightfv(light,GL_SPOT_DIRECTION,(float*)&temp);		//&temp[0]
 		  		
 		  		glLightf(light,GL_CONSTANT_ATTENUATION,pkLight->fConst_Atten);
