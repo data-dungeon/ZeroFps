@@ -1225,6 +1225,9 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 							((ZGuiTreebox*) m_pkFocusWnd)->InsertBranchSkin(2,pkNewSkin,true);
 						}
 					}
+					
+						printf("olle\n");
+					
 
 				}
 			}

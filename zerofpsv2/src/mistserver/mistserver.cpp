@@ -1111,18 +1111,32 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 		
 		if(strParentName == "MainMenu")
 		{
-			//pkGui->SetFocus(GetWnd("MainWnd"));
+			char *szItem = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
+
+			if(!pkIni->Open("data/script/gui/menu.txt", false))
+			{
+				cout << "Failed to load ini file for menu!\n" << endl;
+				return;
+			}
+
+			vector<string> akSections;
+			pkIni->GetSectionNames(akSections);
 
 			// Run Menu command
-			for(int i=0; i<m_uiNumMenuItems; i++)
+			for(int i=0; i<akSections.size(); i++)
 			{
-				if( m_pkMenuInfo[i].iIndex == iListboxIndex)
+				char* title = pkIni->GetValue(akSections[i].c_str(), "Title");
+
+				if(strcmp(title, szItem) == 0)
 				{
-					char* cmd = m_pkMenuInfo[i].szCommando;
+					char* cmd = pkIni->GetValue(akSections[i].c_str(), "Cmd");
+					printf("%s\n", title);
 					pkFps->m_pkConsole->Execute(cmd);
 					break;
 				}
 			}
+
+			pkIni->Close();
 		}
 
 	}
@@ -1878,7 +1892,7 @@ bool MistServer::CreateMenu(char* szFileName)
 			if(pkParent != NULL)
 			{
 				char szTitle[50];
-				sprintf(szTitle, " %s", pkIni->GetValue(akSections[i].c_str(), "Title"));
+				sprintf(szTitle, "%s", pkIni->GetValue(akSections[i].c_str(), "Title"));
 				((ZGuiCombobox*) pkParent)->AddItem(szTitle, item_counter++);
 
 				MENU_INFO mi;
