@@ -490,39 +490,68 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 
 int MistLandLua::SetVelToLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 3)
-		return 0;
-		
-	double dTemp;
-	
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
-		
-	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-	int iId2 = (int)dTemp;
-		
-	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
-	float fVel = (float)dTemp;
-		
-		
-	if(iId1 == iId2)
-		return 0;
-		
-	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-	Entity* o2 = g_pkObjMan->GetObjectByNetWorkID(iId2);
-
-
-	if(o1 && o2)
+	if(g_pkScript->GetNumArgs(pkLua) == 5)
 	{
-		if(o2->GetWorldPosV() == o1->GetWorldPosV())
+		double dId;
+			
+		double x,y,z;
+		double dVel;
+		Vector3 kPos;		
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgNumber(pkLua, 1, &x);		
+		g_pkScript->GetArgNumber(pkLua, 2, &y);		
+		g_pkScript->GetArgNumber(pkLua, 3, &z);		
+		g_pkScript->GetArgNumber(pkLua, 4, &dVel);				
+
+		kPos.x = x;
+		kPos.y = y;
+		kPos.z = z;
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+			
+		if(pkEnt)
+		{
+			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
+			
+			pkEnt->GetVel() = dir*dVel;
+		}
+		return 0;
+	}
+
+	if(g_pkScript->GetNumArgs(pkLua) == 3)
+	{
+		double dTemp;
+	
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+		int iId1 = (int)dTemp;
+		
+		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+		int iId2 = (int)dTemp;
+		
+		g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
+		float fVel = (float)dTemp;
+		
+		
+		if(iId1 == iId2)
 			return 0;
 		
-		Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
+		Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+		Entity* o2 = g_pkObjMan->GetObjectByNetWorkID(iId2);
+
+
+		if(o1 && o2)
+		{
+			if(o2->GetWorldPosV() == o1->GetWorldPosV())
+				return 0;
 		
-		o1->GetVel() = dir*fVel;
+			Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
+			
+			o1->GetVel() = dir*fVel;
 		
+		}
+		return 0;
 	}
-	return 0;
 }
 
 int MistLandLua::BounceLua(lua_State* pkLua)

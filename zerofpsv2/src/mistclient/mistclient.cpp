@@ -380,8 +380,6 @@ void MistClient::Input()
 	
 	if(pkInput->Pressed(MOUSELEFT))
 	{
-		printf("click\n");
-
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
 
@@ -406,10 +404,7 @@ void MistClient::Input()
 						order.m_iClientID = pkFps->GetConnectionID();
 						order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 						order.m_iCharacter = m_iActiveCaracterObjectID;
-						
-						//set this to -1 if its not a ground click
-						order.m_iFace = -1;
-						
+												
 						m_pkClientControlP->AddOrder(order);
 					} 
 				}
@@ -427,8 +422,6 @@ void MistClient::Input()
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 						
 						order.m_kPos = m_kTargetPos;
-						order.m_iZoneObjectID = m_iTargetZoneObject;										
-						order.m_iFace = m_iTargetFace;
 						
 						m_pkClientControlP->AddOrder(order);
 					} 
@@ -436,6 +429,31 @@ void MistClient::Input()
 			}
 			m_fClickDelay = pkFps->GetTicks();					
 		}
+	}
+
+	if(pkInput->Pressed(MOUSERIGHT)  && (pkInput->Pressed(KEY_RSHIFT) || pkInput->Pressed(KEY_LSHIFT)) )
+	{
+		//attack ground
+		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			if(PickZones())
+			{
+				if(m_pkClientControlP)
+				{
+					ClientOrder order;
+					
+					order.m_sOrderName = "G_Attack";
+					order.m_iClientID = pkFps->GetConnectionID();
+					order.m_iCharacter = m_iActiveCaracterObjectID;
+					
+					order.m_kPos = m_kTargetPos;
+					
+					m_pkClientControlP->AddOrder(order);
+				} 
+			}						
+	
+			m_fClickDelay = pkFps->GetTicks();					
+		}	
 	}
 
 	if(pkInput->Pressed(MOUSERIGHT))
@@ -672,8 +690,6 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
 
-									//set this to -1 if its not a ground click
-									order.m_iFace = -1;
 
 									m_pkClientControlP->AddOrder(order);
 
@@ -1189,7 +1205,6 @@ void MistClient::OnClientInputSend(char *szText)
 	order.m_sOrderName = message; 
 	order.m_iClientID = pkFps->GetConnectionID();
 	order.m_iCharacter = m_iActiveCaracterObjectID;				
-	order.m_iFace = -1;
 						
 	m_pkClientControlP->AddOrder(order);
 }

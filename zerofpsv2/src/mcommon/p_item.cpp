@@ -451,7 +451,7 @@ void P_Item::RequestUpdateFromServer (string kType)
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iFace = m_pkItemStats->m_pkContainer->m_uiVersion;     
+         kOrder.m_iUseLess = m_pkItemStats->m_pkContainer->m_uiVersion;     
 
          pkCC->AddOrder (kOrder);
 
@@ -472,7 +472,7 @@ void P_Item::RequestUpdateFromServer (string kType)
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iFace = m_pkItemStats->m_uiVersion;     
+         kOrder.m_iUseLess = m_pkItemStats->m_uiVersion;     
 
          pkCC->AddOrder (kOrder);        
       }

@@ -81,7 +81,7 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 }
 
 
-bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iFace,int iCallerObject,int iZoneObjectID)
+bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
 {
 	if(m_pkObject->GetObjectScript() && acType != NULL)
 	{
@@ -91,13 +91,18 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iFace,int 
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
 
-		m_pkObject->SetWorldPosV(kPos);
-		return true;
-
-		vector<ARG_DATA> args(1);
+		vector<ARG_DATA> args(4);
 		args[0].eType = tSTRING;
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
+		
+		args[1].eType = tFLOAT;
+		args[1].pData = &kPos.x;
+		args[2].eType = tFLOAT;
+		args[2].pData = &kPos.y;
+		args[3].eType = tFLOAT;
+		args[3].pData = &kPos.z;
+		
 		
 		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetObjectScript(), "GroundClick", args);
 

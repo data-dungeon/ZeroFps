@@ -43,8 +43,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
 		pkNetPacket->Write(&m_kClientOrders.front().m_iCharacter,sizeof(m_kClientOrders.front().m_iCharacter));									
 		pkNetPacket->Write(&m_kClientOrders.front().m_kPos,sizeof(m_kClientOrders.front().m_kPos));								
-		pkNetPacket->Write(&m_kClientOrders.front().m_iFace,sizeof(m_kClientOrders.front().m_iFace));										
-		pkNetPacket->Write(&m_kClientOrders.front().m_iZoneObjectID,sizeof(m_kClientOrders.front().m_iZoneObjectID));		
+		pkNetPacket->Write(&m_kClientOrders.front().m_iUseLess,sizeof(m_kClientOrders.front().m_iUseLess));										
 		m_kClientOrders.pop(); 
 	}
 } 
@@ -69,8 +68,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
 		pkNetPacket->Read(&temporder.m_iCharacter,sizeof(temporder.m_iCharacter));				
 		pkNetPacket->Read(&temporder.m_kPos,sizeof(temporder.m_kPos));						
-		pkNetPacket->Read(&temporder.m_iFace,sizeof(temporder.m_iFace));						
-		pkNetPacket->Read(&temporder.m_iZoneObjectID,sizeof(temporder.m_iZoneObjectID));						
+		pkNetPacket->Read(&temporder.m_iUseLess,sizeof(temporder.m_iUseLess));								
 		
 		//if we already gotten max nr of orders, dont add this one
 		if(i <= m_iMaxOrders)

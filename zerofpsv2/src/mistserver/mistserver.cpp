@@ -1253,7 +1253,18 @@ void MistServer::HandleOrders()
 				m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
 			}
 		}
-		else if(order->m_sOrderName == "Move" && order->m_iFace != -1) 		//else ground klick
+		else if(strncmp(order->m_sOrderName.c_str(),"G_",2)==0)
+		{
+			cout<<"Got ground click order"<<endl;
+		
+			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
+		
+			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+			if(pe)
+				pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
+								
+		}
+		else if(order->m_sOrderName == "Move") 		//else ground klick
 		{
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
@@ -1278,16 +1289,11 @@ void MistServer::HandleOrders()
 					cout << "Path was NOT found" << endl;
 					}
 
-				/*P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
-				if(pe)
-					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iFace,order->m_iCharacter ,order->m_iZoneObjectID);
-				*/
 			}
-
 		}
-
-      // request orders
-      else if ( order->m_sOrderName == "(rq)item" )
+		
+	  // request orders
+      else if ( order->m_sOrderName == "(rq)item" )    
       {
          // type of request
    		Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
@@ -1299,7 +1305,7 @@ void MistServer::HandleOrders()
             if ( pkItProp )
             {
                // if the items is of the same version, no need to send data
-                 if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
+                 if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
                  {
                      SendType kSendType;
                      kSendType.m_iClientID = order->m_iClientID;
@@ -1312,10 +1318,8 @@ void MistServer::HandleOrders()
             else
                cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
          }
-
-
       }
-
+      
       // container request
       else if ( order->m_sOrderName == "(rq)cont" )
       {
@@ -1332,7 +1336,7 @@ void MistServer::HandleOrders()
             if ( pkItProp )
             {
                // check versions...
-               if ( pkItProp->m_pkItemStats->m_pkContainer->m_uiVersion != order->m_iFace )
+               if ( pkItProp->m_pkItemStats->m_pkContainer->m_uiVersion != order->m_iUseLess )	//dvoid was here to
                {
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
@@ -1346,7 +1350,7 @@ void MistServer::HandleOrders()
             else if ( pkChar )
             {
                // check versions...
-               if ( pkChar->GetCharStats()->m_pkContainer->m_uiVersion != order->m_iFace )
+               if ( pkChar->GetCharStats()->m_pkContainer->m_uiVersion != order->m_iUseLess )  //and here =D
                {
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
@@ -1359,9 +1363,10 @@ void MistServer::HandleOrders()
          }
 
       }      
+		
+		//normal orders
 		else
 		{
-			//other orders
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 			if(ob)
 			{
