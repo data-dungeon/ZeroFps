@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <cmath>
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"

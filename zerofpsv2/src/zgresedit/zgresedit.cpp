@@ -55,14 +55,14 @@ void ZGResEdit::OnInit()
 {
 	glEnable(GL_LIGHTING );
 
-	pkLight->SetLighting(true);
+	m_pkLight->SetLighting(true);
 
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
 
 	// create gui script
-	GuiAppLua::Init(&g_kResEdit, pkScript);
+	GuiAppLua::Init(&g_kResEdit, m_pkScript);
 
-	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
+	InitializeGui(pkGui, pkTexMan, m_pkScript, m_pkGuiMan, 
 		"data/textures/text/small.bmp",
 		"data/script/gui/gui_res_edit.lua");
 
@@ -75,35 +75,35 @@ void ZGResEdit::OnInit()
 	m_pkScene = new Scene();
 	m_pkScene->Init(this);
 
-	pkFps->m_bClientMode = true;
+	m_pkFps->m_bClientMode = true;
 
-	pkInput->ToggleGrab(); // koppla på grab mode
+	m_pkInput->ToggleGrab(); // koppla på grab mode
 }
 
 void ZGResEdit::OnIdle()
 {
-	pkFps->SetCamera(m_pkCamera);		
-	pkFps->GetCam()->ClearViewPort();	
-	pkFps->UpdateCamera(); 	
+	m_pkFps->SetCamera(m_pkCamera);		
+	m_pkFps->GetCam()->ClearViewPort();	
+	m_pkFps->UpdateCamera(); 	
 
-	OnKeyDown(pkInput->GetQueuedKey());
+	OnKeyDown(m_pkInput->GetQueuedKey());
 
 	if(m_eEditMode == VIEW)
 		return;
 
 	int x,y;
-	pkInput->MouseXY(x,y);
+	m_pkInput->MouseXY(x,y);
 
 	pkGui->SetLineColor(255,0,0);
 
-	if(!pkInput->Pressed(KEY_LSHIFT))
+	if(!m_pkInput->Pressed(KEY_LSHIFT))
 	{
 		m_eEditMode = MOVE;
 	}
 
-	if(pkInput->Pressed(MOUSELEFT))
+	if(m_pkInput->Pressed(MOUSELEFT))
 	{
-		if(pkInput->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
+		if(m_pkInput->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
 		{
 			pkGui->SetLineColor(255,255,0);
 			m_eEditMode = RESIZE;
@@ -146,16 +146,16 @@ void ZGResEdit::OnIdle()
 		if(pkTabCtrl)
 		{
 			unsigned int pressed_keynumber = 1000;
-			if(pkInput->Pressed(KEY_1)) pressed_keynumber = 0;
-			else if(pkInput->Pressed(KEY_2)) pressed_keynumber = 1;
-			else if(pkInput->Pressed(KEY_3)) pressed_keynumber = 2;
-			else if(pkInput->Pressed(KEY_4)) pressed_keynumber = 3;
-			else if(pkInput->Pressed(KEY_5)) pressed_keynumber = 4;
-			else if(pkInput->Pressed(KEY_6)) pressed_keynumber = 5;
-			else if(pkInput->Pressed(KEY_7)) pressed_keynumber = 6;
-			else if(pkInput->Pressed(KEY_8)) pressed_keynumber = 7;
-			else if(pkInput->Pressed(KEY_9)) pressed_keynumber = 8;
-			else if(pkInput->Pressed(KEY_0)) pressed_keynumber = 9;
+			if(m_pkInput->Pressed(KEY_1)) pressed_keynumber = 0;
+			else if(m_pkInput->Pressed(KEY_2)) pressed_keynumber = 1;
+			else if(m_pkInput->Pressed(KEY_3)) pressed_keynumber = 2;
+			else if(m_pkInput->Pressed(KEY_4)) pressed_keynumber = 3;
+			else if(m_pkInput->Pressed(KEY_5)) pressed_keynumber = 4;
+			else if(m_pkInput->Pressed(KEY_6)) pressed_keynumber = 5;
+			else if(m_pkInput->Pressed(KEY_7)) pressed_keynumber = 6;
+			else if(m_pkInput->Pressed(KEY_8)) pressed_keynumber = 7;
+			else if(m_pkInput->Pressed(KEY_9)) pressed_keynumber = 8;
+			else if(m_pkInput->Pressed(KEY_0)) pressed_keynumber = 9;
 
 			if(pressed_keynumber < pkTabCtrl->GetNumPages() )
 			{
@@ -176,12 +176,12 @@ void ZGResEdit::OnIdle()
 
 void ZGResEdit::OnHud(void) 
 {	
-	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());	
-	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
-	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
+	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
+	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
+	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
 	
-	pkFps->m_bGuiMode = false;
-	pkFps->ToggleGui();
+	m_pkFps->m_bGuiMode = false;
+	m_pkFps->ToggleGui();
 }
 
 void ZGResEdit::OnKeyDown(int iKey)
@@ -218,7 +218,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_UP:
 		if(m_pkFocusWnd) 
 		{
-			if(pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInput->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width(),rc.Height()-1);
@@ -235,7 +235,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_DOWN:
 		if(m_pkFocusWnd) 
 		{
-			if(pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInput->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width(),rc.Height()+1);
@@ -252,7 +252,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_LEFT:
 		if(m_pkFocusWnd)
 		{
-			if(pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInput->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width()-1,rc.Height());
@@ -270,7 +270,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_RIGHT:
 		if(m_pkFocusWnd)
 		{
-			if(pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInput->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width()+1,rc.Height());
@@ -661,7 +661,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				return;
 			}
 
-			if(m_bSaveFile && m_bOverwriteWarning && pkBasicFS->FileExist(szFileName))
+			if(m_bSaveFile && m_bOverwriteWarning && m_pkBasicFS->FileExist(szFileName))
 			{
 				m_bOverwriteWarning = false;
 				SetText("OwerwriteWarning", "Overwrite?", true);
@@ -685,7 +685,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 					// Börja med att ta bort alla fönster
 					map<string, ZGuiWnd*> kWindows;
-					pkGuiMan->GetWindows(kWindows);
+					m_pkGuiMan->GetWindows(kWindows);
 					map<string, ZGuiWnd*>::iterator it2;
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
@@ -696,7 +696,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					kSerialize.LoadGUI(strLoadName.c_str(), this);
 
 					kWindows.clear();
-					pkGuiMan->GetWindows(kWindows);
+					m_pkGuiMan->GetWindows(kWindows);
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
 						if(m_pkScene->IsSceneWnd(it2->second) == false)
@@ -738,7 +738,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 {
-	if(pkInput->Pressed(KEY_A))
+	if(m_pkInput->Pressed(KEY_A))
 		pkGui->m_bDisableAlphatest = true;
 	else
 		pkGui->m_bDisableAlphatest = false;
@@ -882,7 +882,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	list<pair<ZGuiWnd*, int> > kTargets;
 
 	map<string,ZGuiWnd*> kWindows;
-	pkGuiMan->GetWindows(kWindows); 
+	m_pkGuiMan->GetWindows(kWindows); 
 	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
 	for( ; it != kWindows.end(); it++)
 	{
@@ -951,7 +951,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 			if(kTargets.empty())
 			{
-				if(!pkInput->Pressed(KEY_LSHIFT))
+				if(!m_pkInput->Pressed(KEY_LSHIFT))
 					return pkWnd;
 				else
 					return pkWnd->GetParent();
@@ -1270,7 +1270,7 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 	else
 		GetWnd("ParentLabel")->SetText( "-" );
 
-	if(pkInput->Pressed(KEY_LCTRL))
+	if(m_pkInput->Pressed(KEY_LCTRL))
 	{
 		int x = m_pkFocusWnd->GetScreenRect().Left;
 		int y = m_pkFocusWnd->GetScreenRect().Top;
@@ -1508,7 +1508,7 @@ void ZGResEdit::ClipLine(Line kLine, const vector<Rect> rects, vector<Line>& out
 void ZGResEdit::EnableWnds(bool bEnable)
 {
 	map<string, ZGuiWnd*> kWindows;
-	pkGuiMan->GetWindows(kWindows);
+	m_pkGuiMan->GetWindows(kWindows);
 	map<string, ZGuiWnd*>::iterator it2;
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
@@ -1524,7 +1524,7 @@ void ZGResEdit::EnableWnds(bool bEnable)
 
 void ZGResEdit::MoveWnd(int x, int y)
 {
-	if(m_pkMoveWnd != NULL && pkInput->Pressed(MOUSELEFT) && 
+	if(m_pkMoveWnd != NULL && m_pkInput->Pressed(MOUSELEFT) && 
 		m_kClickPos != Point(-1,-1))
 	{
 		Rect rc = m_pkMoveWnd->GetScreenRect();
@@ -1660,7 +1660,7 @@ void ZGResEdit::DrawSelectionRect(ZGuiWnd *pkWnd)
 
 	// Hämta rektanglarna på alla fönster som befinner sig ovanför fönstret.
 	map<string, ZGuiWnd*> kWindows;
-	pkGuiMan->GetWindows(kWindows);
+	m_pkGuiMan->GetWindows(kWindows);
 	map<string, ZGuiWnd*>::iterator it;
 	for( it = kWindows.begin(); it != kWindows.end(); it++)
 	{
@@ -1691,7 +1691,7 @@ void ZGResEdit::UpdateViewWnd()
 	ClearListbox("MainWndList");
 
 	map<string, ZGuiWnd*> kWindows;
-	pkGuiMan->GetWindows(kWindows);
+	m_pkGuiMan->GetWindows(kWindows);
 
 	map<string, ZGuiWnd*>::iterator it;
 	for( it = kWindows.begin(); it != kWindows.end(); it++)
