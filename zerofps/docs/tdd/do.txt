@@ -1,4 +1,62 @@
 
+**** NEDED!!! ****
+	
+5		Collision/Physic Engine:
+			Stationära (Statiska) objekt. Ex terrängen, byggnader, skog och träd.
+			Dynamiska object. Ex spelare, fordon, projektiler.
+			Punkt, Sfär, Linje, AABB, OOBB.	
+5		Game Object:	
+			Spelobject
+			PRopertys 
+			AI
+			BRA AI
+5		Nätverk:
+			C/S modell.
+			Antal Spelare (Mål/Max):	8 / 16
+			Anslutning:					LAN 10 
+5		Scene Graph:
+5		EDITOR:
+			Ingame editor för att skapa missions.
+			Landscape mod.	
+4		Singleton:
+4		Factory.
+			Object
+			Generel
+4		Log filer:
+3		Ini filer:
+2		Console:
+			Auto complete
+			Memory av senaste använda console commands.
+			Clear.
+			Scroll up/down.
+2		Image Klass:
+4		Timer:
+			Delay
+			GetCurrentTime:
+2		Slå ihop object name sys och cmd system:
+4		Math:
+			Plane:
+4		Resurs Hantering (Levels, Modells, Sound, Textures, Scripts):
+			Streaming av alla data för obegränsat stora världar.
+4		Input:
+			Bindable keys.
+			Save/Restore till config files.
+			Bindmode
+			Mouse, Keyb, Joystick.
+3		Terräng:
+			Snyggare mark på landskap.
+			Träd, buskar och skogar.
+			Vägar.
+			Floder.
+2		Skuggor:
+1		FOG:
+4		LOD på samtliga object som ritas ut.
+3		Particle Systems
+3		SOUND:
+3			OGG/MP3 stöd
+4			soundproperty
+4		GUI:
+
 BASIC:
 	Design Patterns
 		Singleton:
