@@ -1244,7 +1244,7 @@ ZFScript* ZGuiApp::GetGuiScript()
 }
 
 
-bool ZGuiApp::LoadGuiFromScript(char* szFileName)
+bool ZGuiApp::LoadGuiFromScript(const char* szFileName)
 {
 	ZFResourceHandle kScriptResHandle;
 

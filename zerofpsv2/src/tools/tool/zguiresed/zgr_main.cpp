@@ -129,6 +129,9 @@ void ZGuiResEd::OnInit()
 	if(m_pkRender->GetFullscreen() == false)
 		ShowWnd("GuiEd_Close", false);
 
+	//GetWnd("GuiEd_EditWnd")->m_bUseAlhpaTest = false;
+	//GetWnd("GuiEd_NewWnd")->m_bUseAlhpaTest = false;
+
 	Rect rc = 
 	rc = GetWnd("GuiEd_EditWnd")->GetScreenRect();
 	GetWnd("GuiEd_EditWnd")->SetPos(0, GetHeight()-rc.Height(), true, true); 

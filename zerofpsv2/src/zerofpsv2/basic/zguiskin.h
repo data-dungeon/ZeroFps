@@ -82,6 +82,7 @@ public:
 	unsigned short m_unBorderSize; // Bredden och höjden på ramen kring fönstret.
 	unsigned char m_ucRots90Degree; // Hur många gången texturen skall roteras åt vänster (0,1,2 eller 3)
 	bool m_bTileBkSkin;
+
 	bool m_bTransparent; // andvänds bla. av labels som inte skall ha nån bakgrundsfärg.
 
 	void SetAnimation(char* szName, int iMode, int iOptions, bool bPlay);

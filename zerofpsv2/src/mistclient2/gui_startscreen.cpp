@@ -31,7 +31,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			else
 			if(strController == "OptionsBn")
 			{
-				if(g_kMistClient.LoadGuiFromScript("data/script/gui/ml_option.lua"))
+				if(g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_OPTION].c_str()))
 				{
 					g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
 					g_kMistClient.m_pkOptionsDlg->Open();
@@ -209,7 +209,7 @@ void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 {
 	SetGuiCapture(true);
 
-	ShowWnd("GameGuiToolbar",	false);
+	ShowWnd("ActionBar",	false);
 	ShowWnd("ChatDlgMainWnd",	false);
 
 	ShowWnd("ConnectWnd", false);

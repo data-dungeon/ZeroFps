@@ -4,6 +4,7 @@
 #include "gui_inventory.h"
 #include "gui_equipwnd.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/basic/zfbasicfs.h"
 
 extern MistClient	g_kMistClient;
 
@@ -78,6 +79,10 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 
 void MistClient::SetupGUI()
 {
+	// Search the gui script folder and find the correct script for this app
+	// based on the resolution suffix of the file, like "800x600".
+	FindGUIScriptsByResSuffix();
+
 	// initialize gui system with default skins, font etc
 	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 		NULL, false, AUTO_SCALE); 
@@ -91,7 +96,7 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_pkGui->GetResMan()->Add("chatboxfont", font);
 
    // load startup screen 
-   if(!g_kMistClient.LoadGuiFromScript("data/script/gui/ml_start.lua"))
+   if(!g_kMistClient.LoadGuiFromScript(m_kGuiScrips[GSF_START].c_str()))
 	{
 		printf("Error loading gui script!\n");
 		return;
@@ -138,7 +143,7 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageController", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("RestartMsgBox", GuiMsgOptionsDlg));
 	
-	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GameGuiToolbar", GuiMsgIngameScreen));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionBar", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ChatDlgMainWnd", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GuiMainWnd", GuiMsgIngameScreen));
 
@@ -148,19 +153,20 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ContainerWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("SplitStockWnd", GuiMsgInventoryDlg));
 
-	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EquipmentDlg", GuiMsgEquipmentDlg));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EquipWnd", GuiMsgEquipmentDlg));
+
+
+
+	GetWnd("ContinueGameBn")->Hide();
+
+	
 
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 	g_kMistClient.m_pkGui->ShowCursor(false); 
    g_kMistClient.m_pkInput->ShowCursor(false);
-
-	GetWnd("ContinueGameBn")->Hide();
-
 	SetGuiCapture(true);
-
-	
 }
 
 
@@ -176,4 +182,114 @@ void MistClient::CloseActiveWindow()
 
 	if(IsWndVisible("SplitStockWnd"))
 		m_pkInventoryDlg->CloseSplitStockWnd(); 
+}
+
+
+void MistClient::FindGUIScriptsByResSuffix()
+{
+	vector<string> vkFolders;
+	m_pkZFVFileSystem->ListDir(&vkFolders, "data/script/gui/");
+
+	int w = GetWidth();
+	int h = GetHeight();
+
+	int iNumOfPixelsInCurrentResolution = w*h;
+	
+	struct SEARCH_INFO
+	{
+		char strFileName[50];
+		GUI_SCRIPT eScriptType;
+	};
+
+	SEARCH_INFO akInfo[] =
+	{
+	//	{ "ml_inventory_", GSF_INVENTORY },
+	//	{ "ml_equip_", GSF_EQUIPMENT },
+		{ "ml_gamegui_", GSF_GAMEGUI },
+		{ "ml_option_", GSF_OPTION },
+		{ "ml_start_", GSF_START },
+	};
+
+	const int NUM_SCRIPS = sizeof(akInfo)/sizeof(akInfo[0]);
+	
+	for(int si=0; si<NUM_SCRIPS; si++)
+	{
+		int min_diff = 999999999;
+
+		for(int i=0; i<vkFolders.size(); i++)
+		{
+			string strFile = vkFolders[i];
+
+			// Find file exten.
+			char *ext = strrchr( strFile.c_str(), '.');
+			if(ext == NULL)		
+				continue;
+
+			if(strcmp(ext,".lua") != 0)
+				continue;
+
+			const char* szSearchString = akInfo[si].strFileName;
+
+			if(strFile.find(szSearchString) != string::npos)
+			{
+				int p = strFile.find_last_of("x");
+				if(p != string::npos)
+				{			
+					char szWidth[10];
+					char szHeight[10];
+
+					for(int j=0; j<10; j++)
+					{
+						int index = p - 1 - j;
+						if( index >= 0 )
+						{
+							char ch = strFile[index];
+							if(ch > 47 && ch < 58)
+								szWidth[j] = ch;
+							else
+							{
+								szWidth[j] = '\0';
+								break;
+							}
+						}
+					}
+
+					for(int j=0; j<10; j++)
+					{
+						int index = p + 1 + j;
+						if( index < strFile.size() )
+						{
+							char ch = strFile[index];
+							if(ch > 47 && ch < 58)
+								szHeight[j] = ch;
+							else
+							{
+								szHeight[j] = '\0';
+								break;
+							}
+						}
+					}
+
+					char* rev = strrev(szWidth);
+					strcpy(szWidth, rev);
+
+					int sw = atoi(szWidth), sh = atoi(szHeight);
+					int iNumOfPixels = sw*sh;
+					int diff = abs(iNumOfPixelsInCurrentResolution-iNumOfPixels);
+
+					if(diff < min_diff)
+					{
+						min_diff = diff;
+						m_kGuiScrips[akInfo[si].eScriptType] = string("data/script/gui/") + strFile;
+					}
+				}
+			}
+		}
+	}
+
+	//printf("m_kGuiScrips[GSF_INVENTORY] = %s\n", m_kGuiScrips[GSF_INVENTORY].c_str());
+	//printf("m_kGuiScrips[GSF_EQUIPMENT] = %s\n", m_kGuiScrips[GSF_EQUIPMENT].c_str());
+	printf("m_kGuiScrips[GSF_GAMEGUI] = %s\n", m_kGuiScrips[GSF_GAMEGUI].c_str());
+	printf("m_kGuiScrips[GSF_OPTION] = %s\n", m_kGuiScrips[GSF_OPTION].c_str());
+	printf("m_kGuiScrips[GSF_START] = %s\n", m_kGuiScrips[GSF_START].c_str());
 }

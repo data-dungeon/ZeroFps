@@ -256,6 +256,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		m_pkTextureManger->BindTexture( texture );
 
 		int iTextureWidth, iTextureHeight;
+
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iTextureWidth);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iTextureHeight);
 

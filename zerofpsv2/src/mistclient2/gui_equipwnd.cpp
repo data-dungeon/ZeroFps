@@ -13,7 +13,7 @@ void GuiMsgEquipmentDlg( string strMainWnd, string strController,
 {
 	if(msg == ZGM_COMMAND)
 	{
-		if(strMainWnd == "EquipmentDlg")
+		if(strMainWnd == "EquipWnd")
 			g_kMistClient.m_pkEquipmentDlg->OnCommand(strController);
 	}
 	else
@@ -82,6 +82,8 @@ EquipmentDlg::EquipmentDlg() :
 {
 	m_pkEquipmentWnd = NULL;
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
+	m_bSkillWndOpen = false;
+	m_bStatsWndOpen = false;
 }
 
 EquipmentDlg::~EquipmentDlg()
@@ -95,13 +97,13 @@ void EquipmentDlg::Open()
 	// load inventory
 	if(m_pkEquipmentWnd == NULL)
 	{
-		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/ml_equip.lua"))
-		{
-			printf("Error loading inventory script!\n");
-			return;
-		}
+		//if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_EQUIPMENT].c_str()))
+		//{
+		//	printf("Error loading inventory script!\n");
+		//	return;
+		//}
 
-		m_pkEquipmentWnd = g_kMistClient.GetWnd("EquipmentDlg");		
+		m_pkEquipmentWnd = g_kMistClient.GetWnd("EquipWnd");		
 	}
 
 	// visa inventory fönstret
@@ -109,8 +111,14 @@ void EquipmentDlg::Open()
 	g_kMistClient.m_pkGui->SetFocus(m_pkEquipmentWnd, false);	
 
 	// dölj actionikonen och regruppera dom andra
-	g_kMistClient.GetWnd("OpenEquipWndBn")->Hide();
-	g_kMistClient.PositionActionButtons();
+//	g_kMistClient.GetWnd("OpenEquipWndBn")->Hide();
+//	g_kMistClient.PositionActionButtons();
+
+	if(m_bSkillWndOpen)
+		g_kMistClient.GetWnd("SkillWnd")->Show();
+
+	if(m_bStatsWndOpen)
+		g_kMistClient.GetWnd("StatsWnd")->Show();
 }
 
 void EquipmentDlg::Close()
@@ -122,17 +130,52 @@ void EquipmentDlg::Close()
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
 
+	g_kMistClient.GetWnd("SkillWnd")->Hide();
+	g_kMistClient.GetWnd("StatsWnd")->Hide();
+
 	// Show the button that opens the inventory again.
-	g_kMistClient.GetWnd("OpenEquipWndBn")->Show();
+//	g_kMistClient.GetWnd("OpenEquipWndBn")->Show();
 
 	// Reposition action buttons.
-	g_kMistClient.PositionActionButtons();
+//	g_kMistClient.PositionActionButtons();
 }
 
 void EquipmentDlg::OnCommand(string strController)
 {
-	if(strController == "EquipmentCloseBn")
-		Close();
+	if(strController == "OpenSkillsBn")
+	{
+		if(g_kMistClient.GetWnd("SkillWnd")->IsVisible()==false)
+		{
+			m_bSkillWndOpen = true;
+			m_bStatsWndOpen = false;
+			g_kMistClient.GetWnd("SkillWnd")->Show();
+			g_kMistClient.GetWnd("StatsWnd")->Hide();
+		}
+		else
+		{
+			m_bSkillWndOpen = false;
+			g_kMistClient.GetWnd("SkillWnd")->Hide();
+			g_kMistClient.GetWnd("StatsWnd")->Hide();
+		}
+	}
+
+	if(strController == "OpenStatsBn")
+	{
+		if(g_kMistClient.GetWnd("StatsWnd")->IsVisible()==false)
+		{
+			m_bStatsWndOpen = true;
+			m_bSkillWndOpen = false;
+			g_kMistClient.GetWnd("StatsWnd")->Show();
+			g_kMistClient.GetWnd("SkillWnd")->Hide();
+		}
+		else
+		{
+			m_bStatsWndOpen = false;
+			g_kMistClient.GetWnd("SkillWnd")->Hide();
+			g_kMistClient.GetWnd("StatsWnd")->Hide();
+		}
+	}
+
 }
 
 void EquipmentDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)

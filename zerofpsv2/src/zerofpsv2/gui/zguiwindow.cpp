@@ -33,6 +33,9 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_iResolutionX = ZGui::m_iResX;
 	m_iResolutionY = ZGui::m_iResY;
 
+	m_bDisableVertScaling = false;
+	m_bDisableHorzScaling = false;
+
 	m_ulFlags = 0;
 	m_iZValue = 0;
 	m_pkGUI = NULL;

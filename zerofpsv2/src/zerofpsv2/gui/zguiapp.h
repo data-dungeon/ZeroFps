@@ -107,7 +107,7 @@ public:
 	void ResizeWnd(char* szResName, int w, int h);
 	bool ChangeSkin(lua_State* pkState, char* szID, char* szSkinName, char* szSkinType);
 
-	bool LoadGuiFromScript(char* szFileName); ///< Open GUI enviroment from script.
+	bool LoadGuiFromScript(const char* szFileName); ///< Open GUI enviroment from script.
 
 	ZGuiSkin* AddSkinFromScript(char* szName, ZGuiSkin* pkSkin=NULL);
 	ZGuiSkin* AddSkinFromScript2(char *szName, lua_State* pkResHandle, ZGuiSkin* pkSkin);

@@ -96,7 +96,7 @@ InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6),
 										 BD_R(1), BD_G(1), BD_B(1),
 										 ICON_WIDTH(32), // in pixels
 										 ICON_HEIGHT(32), // in pixels
-										 UPPERLEFT_INVENTORY(35,193), // in pixels
+										 UPPERLEFT_INVENTORY(39,193), // in pixels
 										 UPPERLEFT_CONTAINER( 0,  0) // in pixels
 {
 	m_pkInventoryWnd = NULL;
@@ -128,15 +128,17 @@ void InventoryDlg::Open()
 	// load inventory
 	if(m_pkInventoryWnd == NULL)
 	{
-		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/inventory.lua"))
-		{
-			printf("Error loading inventory script!\n");
-			return;
-		}
+		//if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_INVENTORY].c_str()))
+		//{
+		//	printf("Error loading inventory script!\n");
+		//	return;
+		//}
 
 		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
 		m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 		m_pkSplitStockWnd = g_kMistClient.GetWnd("SplitStockWnd");
+
+		m_pkContainerWnd->GetSkin()->m_unBorderSize = (int)(32.0f*g_kMistClient.GetScaleX()); 
 
 		CreateContainerGrid();
 	}
@@ -148,7 +150,7 @@ void InventoryDlg::Open()
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 
 	// dölj actionikonen och regruppera dom andra
-	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
+	//g_kMistClient.GetWnd("ToggleInventoryBn")->Hide();
 	g_kMistClient.PositionActionButtons();
 
 	// Create tooltip
@@ -183,7 +185,7 @@ void InventoryDlg::Close()
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
 
 	// Show the button that opens the inventory again.
-	g_kMistClient.GetWnd("OpenInventoryBn")->Show();
+	//g_kMistClient.GetWnd("OpenInventoryBn")->Show();
 
 	// Reposition action buttons.
 	g_kMistClient.PositionActionButtons();
@@ -561,7 +563,7 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 	
 	m_pkContainerWnd->SetPos(rcInventory.Left - max_width, top, true, true);
 
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(max_width, -16, false, true);
+//	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(max_width, -16, false, true);
 }
 
 void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)

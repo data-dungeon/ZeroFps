@@ -49,6 +49,9 @@ void ZGuiResEd::OnIdle()
 		if(m_pkFocusWnd) 
 		{
 			m_pkFocusWnd->m_iZValue = m_iZValueCounter++;
+			if(m_pkFocusWnd->GetParent())
+				m_pkFocusWnd->GetParent()->SortChilds();
+
 			m_pkGui->PlaceWndFrontBack(m_pkFocusWnd,true); 
 			UpdateInfo();
 		}
@@ -612,7 +615,7 @@ bool ZGuiResEd::LoadGUI(const char* szFile)
 
 	FilterWnd();
 
-	SwitchDesignRes(m_kDesignResolution.x, m_kDesignResolution.y, true);
+	SwitchDesignRes(m_kDesignResolution.x, m_kDesignResolution.y, false);
 
 	return true;
 }
@@ -712,6 +715,10 @@ bool ZGuiResEd::NewGUI(bool bConfirm)
 
 	UpdateInfo();
 	SelNewSkin(0);
+
+	m_kDesignResolution.x = 800;
+	m_kDesignResolution.y = 600;
+	SwitchDesignRes(m_kDesignResolution.x, m_kDesignResolution.y, false);
 
 	return true;
 }
@@ -829,6 +836,9 @@ void ZGuiResEd::FilterWnd()
 void ZGuiResEd::UpdateInfo()
 {
 	ShowSpecialControls();
+
+	bool bScalingV = false; 
+	bool bScalingH = false;
 
 	if(m_pkFocusWnd == NULL)
 	{

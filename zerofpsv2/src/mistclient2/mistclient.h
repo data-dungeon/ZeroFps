@@ -14,6 +14,16 @@ class Entity;
 
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 
+enum GUI_SCRIPT
+{
+//	GSF_INVENTORY,
+//	GSF_EQUIPMENT,
+	GSF_GAMEGUI,
+	GSF_OPTION,
+	GSF_START,
+};
+
+
 /**	\brief	Da MistClient
 		\ingroup MistClient
 */
@@ -27,7 +37,7 @@ class MistClient :public Application, public ZGuiApp {
 			FID_KILLME,
 		};
 
-		
+
 		//delay
 		float			m_fDelayTime;
 
@@ -45,6 +55,7 @@ class MistClient :public Application, public ZGuiApp {
 		string		m_strQuickStartAddress;	
 		bool			m_bGuiCapture;
 		string		m_strLoginName, m_strLoginPW;
+		map<GUI_SCRIPT, string> m_kGuiScrips;
 		
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
 	
@@ -90,12 +101,13 @@ class MistClient :public Application, public ZGuiApp {
 		
 			
 		// gui stuff
+		void SetupGUI();
+		void FindGUIScriptsByResSuffix();
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
-		void SetupGUI();
 		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);
 		void PositionActionButtons();
 		void CloseActiveContainer();

@@ -11,33 +11,42 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 {
 	if(msg == ZGM_COMMAND)
 	{
-		if(strMainWnd == "GameGuiToolbar")
+		if(strMainWnd == "ActionBar")
 		{
-			if(strController == "OpenChatButton")
-			{
-				g_kMistClient.SetText("SayTextbox",	"");
-				g_kMistClient.ToogleChatWnd(true);
-				g_kMistClient.PositionActionButtons();
-			}
-			else
 			if(strController == "IngameBackBn")
 			{
 				g_kMistClient.LoadStartScreenGui(false);
 				g_kMistClient.PositionActionButtons();
 			}
 			else
-			if(strController == "OpenInventoryBn")
+			if(strController == "ToggleChatBn")
 			{
-				//g_kMistClient.m_pkInventoryDlg->Open(); 
-				g_kMistClient.RequestOpenInventory(); 
-				g_kMistClient.PositionActionButtons();
+				bool bOpen = !g_kMistClient.IsWndVisible("ChatDlgMainWnd");
+				g_kMistClient.SetText("SayTextbox",	"");
+				g_kMistClient.ToogleChatWnd(bOpen);
+				//g_kMistClient.PositionActionButtons();
 			}
 			else
-			if(strController == "OpenEquipWndBn")
+			if(strController == "ToggleInventoryBn")
 			{
-				g_kMistClient.SendRequestOpenEqipment();
+				bool bOpen = !g_kMistClient.IsWndVisible("InventoryWnd");
+				if(bOpen)
+					g_kMistClient.RequestOpenInventory(); 
+				else
+					g_kMistClient.m_pkInventoryDlg->Close(); 
+
+			}
+			else
+			if(strController == "ToggleEquipBn")
+			{
+				bool bOpen = !g_kMistClient.IsWndVisible("EquipWnd");
+				if(bOpen)
+					g_kMistClient.SendRequestOpenEqipment();
+				else
+					g_kMistClient.m_pkEquipmentDlg->Close();
+
 				//g_kMistClient.m_pkEquipmentDlg->Open(); 
-				g_kMistClient.PositionActionButtons();
+				//g_kMistClient.PositionActionButtons();
 			}
 		}
 		else
@@ -136,24 +145,41 @@ void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
 
 void MistClient::AddStringToChatBox(string strMsg)
 { 
+	ZGuiTextbox* pkChatEb = (ZGuiTextbox*)GetWnd("ChatTextbox");
+	if(pkChatEb == NULL)
+		return;
+
 	const int ROW_BUFFER_SIZE = 50;
+	const int MAX_NUM_VISIBLE_ROWS = pkChatEb->GetScreenRect().Height() / pkChatEb->GetFont()->m_iRowHeight;
 
 	string strText	= string("<clr:255,255,255>") + 
 		string(GetText("ChatTextbox")) + strMsg + string("\n");
 
-	if(((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount() >= ROW_BUFFER_SIZE)
+	int rows = pkChatEb->GetRowCount();
+
+	if(rows >= ROW_BUFFER_SIZE)
 	{
 		size_t pos = strText.find("\n");
 		if(pos != string::npos)
 			strText.erase(0, pos+1);
 	}
 
+	if(rows < MAX_NUM_VISIBLE_ROWS)
+	{
+		int saybox_h = GetWnd("SayTextbox")->GetScreenRect().Height();
+		int h = (rows+1) * pkChatEb->GetFont()->m_iRowHeight;
+		pkChatEb->SetPos(0, pkChatEb->GetParent()->GetScreenRect().Height()-h-saybox_h, false, true);
+	}
+	else
+	{
+		pkChatEb->SetPos(0, 0, false, true);
+	}
+
 	SetText("ChatTextbox",(char*) strText.c_str());
 
-	((ZGuiTextbox*)GetWnd("ChatTextbox"))->UpdateText();
+	pkChatEb->UpdateText();
 
-	((ZGuiTextbox*)GetWnd("ChatTextbox"))->ScrollRowIntoView(
-		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
+	pkChatEb->ScrollRowIntoView(pkChatEb->GetRowCount());
 
 	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);	
 }
@@ -225,7 +251,7 @@ void MistClient::LoadInGameGui()
 	ShowWnd("LoginWnd", false);
 	ShowWnd("RestartMsgBox", false);
 
-	if(!LoadGuiFromScript("data/script/gui/ml_gamegui.lua"))
+	if(!LoadGuiFromScript(m_kGuiScrips[GSF_GAMEGUI].c_str()))
 	{
 		printf("Failed to load GUI script!\n");
 		return;
@@ -270,6 +296,8 @@ void MistClient::LoadInGameGui()
 
 void MistClient::PositionActionButtons()
 {
+	return;
+
 	int x = 0, y = 0;
 	const int BUTTON_SIZE = 32 * GetScaleX();
 	const int NUM_BUTTONS = 4;

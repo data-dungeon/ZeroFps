@@ -83,6 +83,9 @@ private:
 	
 	ZGuiWnd* m_pkEquipmentWnd;	
 
+	bool m_bSkillWndOpen;
+	bool m_bStatsWndOpen;
+
 	// Kollisionsrektanglar för olika itemslots i fönsterkoordinater.
 	const Rect m_rcHelm;
 	const Rect m_rcGloves;

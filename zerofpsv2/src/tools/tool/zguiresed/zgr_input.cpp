@@ -560,9 +560,6 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 				ClearListbox("GuiEd_TextureList");		
 				AddFilesInFolderToListbox(m_strCurrTexDir.c_str());
 			}
-
-			printf("ZGuiWnd::m_pkFocusWnd = %s", ZGuiWnd::m_pkFocusWnd->GetName());
-
 		}
 		return;
 	}
@@ -1051,6 +1048,7 @@ void ZGuiResEd::ManageGuiFocus()
 			{
 				pkEditWnd->Show();
 				pkNewWnd->Show();
+
 			}
 
 			return;
@@ -1189,22 +1187,32 @@ void ZGuiResEd::SwitchDesignRes(int w, int h, bool rescale)
 		float fResModX =  (float )w  / (float) m_iDesignResX;
 		float fResModY =  (float) h  / (float) m_iDesignResY;
 
+		int iAntal = 0;
+
 		map<string, ZGuiWnd*> kWindows;
+		
 		m_pkGuiMan->GetWindows(kWindows);
 		for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
 		{
-			ZGuiWnd* pkWnd = (*it).second;
+			if(IsEditorWnd((*it).second) == false)
+			{
+				iAntal++;
+			}
+		}	
 
+		kWindows.clear();
+		m_pkGuiMan->GetWindows(kWindows);
+		
+		vector<ZGuiWnd*> kAddList;
+
+		printf("----------------------------------------\n");
+
+		for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+		{
+			ZGuiWnd* pkWnd = (*it).second;
+			
 			if(IsEditorWnd(pkWnd) == false)
 			{
-				// ignore pages in tabcontroll or else we translate dubbel
-				//if(pkWnd->GetParent() && GetWndType(pkWnd->GetParent()) == TabControl)
-				//	continue;
-
-				//// ignore pages in tabcontroll or else we translate dubbel
-				//if(GetWndType(pkWnd) == TabControl && GetWndType(pkWnd->GetParent()) == Wnd)
-				//	continue;
-
 				GuiType eType = GetWndType(pkWnd);
 
 				Rect rc = eType == Wnd ? pkWnd->GetScreenRect() : pkWnd->GetWndRect();
@@ -1221,6 +1229,7 @@ void ZGuiResEd::SwitchDesignRes(int w, int h, bool rescale)
 				{
 					pkWnd->SetPos((int)dx,(int)dy,(eType == Wnd),true);
 					pkWnd->Resize((int)dw,(int)dh,true);
+					printf("name = %s\n", pkWnd->GetName());
 				}
 			}
 		}

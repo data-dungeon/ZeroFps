@@ -122,8 +122,6 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_iVertBorderTexID			= -1;
 	m_iBorderCornerTexID		= -1;
 
-
-
 	m_iBkTexAlphaID				= -1;	
 	m_iHorzBorderTexAlphaID		= -1;
 	m_iVertBorderTexAlphaID		= -1;
@@ -277,6 +275,7 @@ ZGuiSkin::ZGuiSkin()
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
 }
 
 const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
@@ -342,6 +341,7 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_rcBkTile				= pkCopy->m_rcBkTile;
 
 	m_pkZIFAnimation		= pkCopy->m_pkZIFAnimation;
+
 }
 
 bool ZGuiSkin::operator==(ZGuiSkin d) 
