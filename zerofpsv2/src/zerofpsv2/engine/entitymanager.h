@@ -245,7 +245,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void SaveZone(int iId);				//save zone
 		void UnLoadZone(int iId);			//unload zone (saves and deletes)
 
-
 		//trackers
 		void AddTracker(P_Track* kObject);
 		void RemoveTracker(P_Track* kObject);

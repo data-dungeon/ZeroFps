@@ -61,7 +61,29 @@ MTL=midl.exe
 # Name "src - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\default.doxygen
+
+!IF  "$(CFG)" == "src - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "src - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\doxy.cpp
+
+!IF  "$(CFG)" == "src - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "src - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

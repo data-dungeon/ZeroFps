@@ -48,9 +48,14 @@ P_Ml::~P_Ml()
 						
 			if(m_iSpawnZon != m_pkObject->GetCurrentZone())
 			{
-				//cout<<"trying to load zone:"<<	m_iSpawnZon<<endl;		
-				m_pkEntityMan->LoadZone(m_iSpawnZon);
-				ent = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID(m_iSpawn);
+				//cout<<"trying to load zone:"<<	m_iSpawnZon<<endl;	
+				/***************
+					HACK FOR DEMO: Krash if -1
+				****************/
+				if(m_iSpawnZon != -1) {
+					m_pkEntityMan->LoadZone(m_iSpawnZon);
+					ent = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID(m_iSpawn);
+					}
 			}
 		}
 	

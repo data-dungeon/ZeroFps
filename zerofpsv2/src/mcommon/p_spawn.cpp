@@ -75,7 +75,11 @@ void P_Spawn::Update()
 					//cout<<"spawning: "<<nr<<endl;
 					for(int i = 0;i<nr;i++)
 					{
-						Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
+						/***************
+							HACK FOR DEMO: No Spawn radius
+						****************/
+						Vector3 kPos = m_pkObject->GetLocalPosV();
+						//Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
 						SpawnEntity(kPos);				
 					}
 				}				
