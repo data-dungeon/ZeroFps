@@ -215,8 +215,8 @@ bool Gui::InitSkins()
 	int arrow_next_down = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_down.bmp", 0);
 	int cbox_off = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_off.bmp",0);
 	int cbox_on = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_on.bmp",0);
-	int slider = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
-	int slider_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
+	int slider_triangle = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
+	int slider_triangle_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
 	int treenode_c = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_c.bmp",0);
 	int treenode_pc = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_pc.bmp",0);
 	int treenode_po = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_po.bmp",0);
@@ -267,8 +267,10 @@ bool Gui::InitSkins()
 		new ZGuiSkin(cbox_off,false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("cbox_on"), 
 		new ZGuiSkin(cbox_on,false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider"), 
-		new ZGuiSkin(slider, slider_a, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_triangle"), 
+		new ZGuiSkin(slider_triangle, slider_triangle_a, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_quad"), 
+		new ZGuiSkin(64, 64, 64, 0, 0, 0, 0)) );  
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_r"), 
 		new ZGuiSkin(255, 0, 0, 0, 0, 0, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_g"), 
@@ -936,13 +938,17 @@ bool Gui::IsButtonChecked(char *szName, char* szGroupName)
 	return ((ZGuiCheckbox*) pkButton)->IsChecked();
 }
 
-bool Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, int h, 
-					   bool bHorizontal, int min, int max, 
+ZGuiSlider* Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, int h, 
+					   int flags, int min, int max, int pos, 
 					   char *szResName, char* szBkSkin)
 {
 	ZGuiSlider* pkSlider = new ZGuiSlider(Rect(x,y,x+w,y+h),pkParent,true,
-		iID,min,max,SCF_HORZ|SCF_SLIDER_BOTTOM);
-	pkSlider->SetSliderSkin(GetSkin("slider"));
+		iID,min,max,flags);
+	if( (flags & SCF_SLIDER_BOTTOM) == SCF_SLIDER_BOTTOM)  
+		pkSlider->SetSliderSkin(GetSkin("slider_triangle"));
+	if( (flags & SCF_SLIDER_CENTER) == SCF_SLIDER_CENTER) 
+		pkSlider->SetSliderSkin(GetSkin("slider_quad"));
+
 	if(szBkSkin) pkSlider->SetBkSkin(GetSkin(szBkSkin));
 	pkSlider->SetGUI(m_pkGui);
 
@@ -951,7 +957,12 @@ bool Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, int h,
 		Register(pkSlider, szResName);
 	}
 
-	return true;
+	if(pos != -1)
+	{
+		pkSlider->SetPos(pos, true, false);
+	}
+
+	return pkSlider;
 }
 
 

@@ -35,8 +35,8 @@ enum SEARCH_TASK
 class Gui
 {
 private:
-	bool CreateSlider(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, 
-		bool bHorizontal, int min, int max, char* szResName, char* szBkSkin);
+	ZGuiSlider* CreateSlider(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, 
+		int flags, int min, int max, int pos, char* szResName, char* szBkSkin);
 	bool IsButtonChecked(char* szName, char* szGroupName=NULL);
 	bool CreateWorkPanel();
 	void OpenPropertyDlg();

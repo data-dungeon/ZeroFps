@@ -45,35 +45,41 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	m_pkDlgBox = m_pkGuiBuilder->CreateTabbedDialog("WorkPanel",12314124,2321323,
 		x,y,m_iWidth,m_iHeight,akTabNames,WORKPANELPROC);
 
+	int iHeight;
+	char szText[50];
+
 	ZGuiWnd* pkPage;
 	vector<string> vkNames;
 
 	// Create page 1: - Marker
 	pkPage = WorkPanel()->GetPage(0);
 
-	vkNames.clear();
-	vkNames.push_back("Small");
-	vkNames.push_back("Medium");
-	vkNames.push_back("Large");
-	vkNames.push_back("Extra-Large");
+	// Pensize
+	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 5, 50, 20, "Pen size");	
+	ZGuiSlider* pkPenSizeSlider = m_pkGuiBuilder->CreateSlider(pkPage, 
+		ID_PENSIZE_SL, 110,  5, 104, 16, SCF_HORZ|SCF_SLIDER_CENTER, 
+		1, 50, m_pkEdit->m_iPencilSize, "PenSizeSlider", "white");
+	sprintf(szText, "%i", m_pkEdit->m_iPencilSize);
+	pkPenSizeSlider->AddBuddyWindow(m_pkGuiBuilder->CreateTextbox(pkPage, 
+		ID_PENSIZE_EB, 70, 5, 30, 16, false, szText, "PenSizeEB"));
 
-	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 5, 50, 20, "Pen size");
-	int iHeight = m_pkGuiBuilder->CreateRadiobuttons(pkPage, vkNames, 
-		"PenSizeRadioGroup", ID_PENSIZE_RADIOGROUP, 5, 25, 16);
-	m_pkGuiBuilder->CheckRadioButton("PenSizeRadioGroup", "Medium");
-
-	char szRate[50]; sprintf(szRate, "%i", (int) (1000.0f * m_pkEdit->m_fDrawRate));
-	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 25+iHeight, 50, 20, "Draw rate:");
-	m_pkGuiBuilder->CreateTextbox(pkPage, ID_DRAWRATE_EB, 80, 25+iHeight, 30, 20, 
-		false, szRate, "DrawRateEB");
+	// Drawrate
+	int drawrate_pos = (int) 201 - (200.0f * m_pkEdit->m_fDrawRate);
+	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 25, 50, 20, "Draw rate");	
+	ZGuiSlider* pkDrawRateSlider = m_pkGuiBuilder->CreateSlider(pkPage, 
+		ID_DRAWRATE_SL, 110,  25, 104, 16, SCF_HORZ|SCF_SLIDER_CENTER, 
+		1, 200, drawrate_pos, "DrawRateSlider", "white");
+	sprintf(szText, "%i", drawrate_pos);
+	pkDrawRateSlider->AddBuddyWindow(m_pkGuiBuilder->CreateTextbox(pkPage, 
+		ID_DRAWRATE_EB, 70, 25, 30, 16, false, szText, "DrawRateEB"));
 
 	vkNames.clear();
 	vkNames.push_back("FreeFlight");
 	vkNames.push_back("Precision");
 	
-	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 45+iHeight, 50, 20, "Camera mode");
+	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 45, 50, 20, "Camera mode");
 	iHeight = m_pkGuiBuilder->CreateRadiobuttons(pkPage, vkNames, 
-		"CameraModeRadioGroup", ID_CAMERAMODE_RADIOGROUP, 5, 65+iHeight, 16);
+		"CameraModeRadioGroup", ID_CAMERAMODE_RADIOGROUP, 5, 65, 16);
 	m_pkGuiBuilder->CheckRadioButton("CameraModeRadioGroup", 
 		(char*) vkNames[m_pkEdit->m_eCameraMode].c_str());
 
@@ -106,14 +112,14 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5,  90, 10, 16, "B");
 	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 110, 10, 16, "A");
 
-	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_R_EB, 75,  50, 104, 16, true,  0, 255, 
-		"SliderRBn", "slider_bk_r");
-	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_G_EB, 75,  70, 104, 16, true,  0, 255, 
-		"SliderGBn", "slider_bk_g");
-	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_B_EB, 75,  90, 104, 16, true,  0, 255, 
-		"SliderBBn", "slider_bk_b");
-	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_A_EB, 75, 110, 104, 16, true, 16, 255, 
-		"SliderABn", "slider_bk_a");
+	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_R_EB, 75,  50, 104, 16, 
+		SCF_HORZ|SCF_SLIDER_BOTTOM,  0, 255, -1, "SliderRBn", "slider_bk_r");
+	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_G_EB, 75,  70, 104, 16, 
+		SCF_HORZ|SCF_SLIDER_BOTTOM,  0, 255, -1, "SliderGBn", "slider_bk_g");
+	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_B_EB, 75,  90, 104, 16, 
+		SCF_HORZ|SCF_SLIDER_BOTTOM,  0, 255, -1, "SliderBBn", "slider_bk_b");
+	m_pkGuiBuilder->CreateSlider(pkPage, ID_SLIDER_A_EB, 75, 110, 104, 16, 
+		SCF_HORZ|SCF_SLIDER_BOTTOM, 16, 255, -1, "SliderABn", "slider_bk_a");
 
 	char aszColor[4][50];
 	sprintf(aszColor[0], "%i", m_pkEdit->m_iMaskColorR);
@@ -206,6 +212,9 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 			if(m_bLockMaskSliders == true)
 				MoveColorSliders("SliderBBn");
 			break;
+		case ID_PENSIZE_SL:
+			MoveColorSliders("PenSizeSlider");
+			break;
 		}
 		break;
 
@@ -232,17 +241,8 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 		case ID_ELEVATIONMODE_RADIOGROUP+2: // smooth
 			m_pkEdit->m_iMode = SMOOTH;
 			break;
-		case ID_PENSIZE_RADIOGROUP:
-			m_pkEdit->m_iPencilSize = 4; // small
-			break;
-		case ID_PENSIZE_RADIOGROUP+1:
-			m_pkEdit->m_iPencilSize = 8; // medium
-			break;
-		case ID_PENSIZE_RADIOGROUP+2:
-			m_pkEdit->m_iPencilSize = 14; // large
-			break;
-		case ID_PENSIZE_RADIOGROUP+3:
-			m_pkEdit->m_iPencilSize = 20; // extra-large
+		case ID_AUTOSMOOTHGROUND_CHB:
+			m_pkEdit->m_iSmooth = m_pkGuiBuilder->IsButtonChecked("AutoSmoothGroundChB");
 			break;
 		case ID_LOADMADFILE_BN:
 			Object* pkCurObject;
@@ -334,20 +334,23 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 	case ZGM_EN_CHANGE:
 		char* szText = NULL;
 		int value = -1;
-		enum Color { red, green, blue, alhpha, error };
-		Color eColor = error; 
+		int id = ((int*)pkParams)[0];
 		ZGuiWnd* pkEBox = NULL;
 
 		switch(((int*)pkParams)[0])
 		{
 		case ID_MASKCOLOR_RED_EB:
-			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorREB"))->GetText(); eColor = red; break;
+			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorREB"))->GetText(); 
+			break;
 		case ID_MASKCOLOR_GREEN_EB:
-			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorGEB"))->GetText(); eColor = green;break;
+			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorGEB"))->GetText(); 
+			break;
 		case ID_MASKCOLOR_BLUE_EB: 
-			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorBEB"))->GetText(); eColor = blue; break;
+			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorBEB"))->GetText(); 
+			break;
 		case ID_MASKCOLOR_ALPHA_EB:
-			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorAEB"))->GetText(); eColor = alhpha; break;
+			szText = (pkEBox = m_pkGuiMan->Wnd("MaskColorAEB"))->GetText(); 
+			break;
 		case ID_DRAWRATE_EB:
 			if((szText = (pkEBox = m_pkGuiMan->Wnd("DrawRateEB"))->GetText()))
 			{
@@ -356,8 +359,8 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 				if(v < 0) 
 					{ bBad = true; v = 0; } 
 				else 
-					if(v > 1000) 
-					{ v = 1000; bBad = true; }
+					if(v > 200) 
+					{ v = 200; bBad = true; }
 
 				if(bBad)
 				{
@@ -365,7 +368,29 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 					sprintf(szNewText, "%i", v);
 					pkEBox->SetText(szNewText);
 				}
-				m_pkEdit->m_fDrawRate = (float) v / 1000;
+				v = 200-v;
+				m_pkEdit->m_fDrawRate = (float) v / 200;
+				szText = NULL;
+			}
+			break;
+		case ID_PENSIZE_EB:
+			if((szText = (pkEBox = m_pkGuiMan->Wnd("PenSizeEB"))->GetText()))
+			{
+				bool bBad = false;
+				int v = atoi(szText);
+				if(v < 0) 
+					{ bBad = true; v = 0; } 
+				else 
+					if(v > 50) 
+					{ v = 50; bBad = true; }
+
+				if(bBad)
+				{
+					char szNewText[50];
+					sprintf(szNewText, "%i", v);
+					pkEBox->SetText(szNewText);
+				}
+				m_pkEdit->m_iPencilSize = v;
 				szText = NULL;
 			}
 			break;
@@ -376,21 +401,35 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 
 		ZGuiSlider* pkSlider; pkSlider = NULL;
 		int *res; res = NULL;
-		int max, min; max=255; min=0;
-		switch(eColor)
+		int max=255, min=0;
+		
+		switch(id)
 		{
-			case red:    res = &(m_pkEdit->m_iMaskColorR = atoi(szText)); 
-				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderRBn"); break;
-			case green:  res = &(m_pkEdit->m_iMaskColorG = atoi(szText)); 
-				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderGBn"); break;
-			case blue:   res = &(m_pkEdit->m_iMaskColorB = atoi(szText)); 
-				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderBBn"); break;
-			case alhpha: res = &(m_pkEdit->m_iMaskColorA = atoi(szText)); 
-				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderABn"); min = 16; break;
+			case ID_MASKCOLOR_RED_EB:    
+				res = &(m_pkEdit->m_iMaskColorR = atoi(szText)); 
+				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderRBn"); 
+				break;
+			case ID_MASKCOLOR_GREEN_EB:  
+				res = &(m_pkEdit->m_iMaskColorG = atoi(szText)); 
+				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderGBn"); 
+				break;
+			case ID_MASKCOLOR_BLUE_EB:   
+				res = &(m_pkEdit->m_iMaskColorB = atoi(szText)); 
+				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderBBn"); 
+				break;
+			case ID_MASKCOLOR_ALPHA_EB: 
+				res = &(m_pkEdit->m_iMaskColorA = atoi(szText)); 
+				pkSlider = (ZGuiSlider*) m_pkGuiMan->Wnd("SliderABn"); min = 16; 
+				break;
 		}
 
 		if(res != NULL)
 		{
+			if(pkSlider != NULL)
+			{
+				pkSlider->GetRange(min,max);
+			}
+
 			char* szNewText = NULL;
 
 			if(*res < min)   
@@ -450,12 +489,12 @@ void WorkPanelDlg::MoveColorSliders(char *szLeader)
 	char szText[10];
 	sprintf(szText, "%i", pkSlider->GetPos());
 
-	if(strcmp(szLeader,"SliderRBn") != 0) 
-		((ZGuiSlider*)m_pkGuiMan->Wnd("SliderRBn"))->GetButton()->SetPos(x,y);
-	if(strcmp(szLeader,"SliderGBn") != 0) 
+//	if(strcmp(szLeader,"SliderRBn") != 0) 
+		((ZGuiSlider*)m_pkGuiMan->Wnd(szLeader))->GetButton()->SetPos(x,y);
+/*	if(strcmp(szLeader,"SliderGBn") != 0) 
 		((ZGuiSlider*)m_pkGuiMan->Wnd("SliderGBn"))->GetButton()->SetPos(x,y);
 	if(strcmp(szLeader,"SliderBBn") != 0) 
-		((ZGuiSlider*)m_pkGuiMan->Wnd("SliderBBn"))->GetButton()->SetPos(x,y);
+		((ZGuiSlider*)m_pkGuiMan->Wnd("SliderBBn"))->GetButton()->SetPos(x,y);*/
 }
 
 void WorkPanelDlg::UpdateMapTexList()

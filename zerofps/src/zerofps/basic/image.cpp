@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whatever loaded.
+int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whatever loaded.
 										
 // Defines
 #define BITMAP_ID				0x4D42	// universal id for a bitmap
@@ -457,7 +457,16 @@ bool Image::load(FILE* fp, const char* filename)
 	if(ext == NULL)		return false;
 	
 	if(strcmp(ext,".tga") == 0)	return load_tga(fp);
-	if(strcmp(ext,".bmp") == 0) 	return load_bmp(fp);	
+	if(strcmp(ext,".bmp") == 0) 
+	{	
+		if(strcmp("file:../data/textures/button_focus2.bmp", filename)==NULL) 
+		{
+			printf("---------------------------\n DEBUGGING FILE \"%s\"\n----------------------\n", filename); 
+			DEBUG_PRINT = true;
+		} 
+		
+		return load_bmp(fp);	
+	}
 
 	return false;	// Not supported.
 }
@@ -712,6 +721,7 @@ bool Image::load_bmp(FILE* pkFile)
 
 	if(DEBUG_PRINT)
 	{
+		printf("---------------------------------------\n\n\n");
 		printf("kBitmap.kFileheader.usType = %i\n", kBitmap.kFileheader.usType); 
 		printf("kBitmap.kFileheader.ulSize = %i\n", kBitmap.kFileheader.ulSize); 
 		printf("kBitmap.kFileheader.usReserved1 = %i\n", kBitmap.kFileheader.usReserved1); 
@@ -729,6 +739,9 @@ bool Image::load_bmp(FILE* pkFile)
 		printf("kBitmap.kInfoheader.lYPelsPerMeter = %i\n", kBitmap.kInfoheader.lYPelsPerMeter); 
 		printf("kBitmap.kInfoheader.ulClrUsed = %i\n", kBitmap.kInfoheader.ulClrUsed); 
 		printf("kBitmap.kInfoheader.ulClrImportant = %i\n", kBitmap.kInfoheader.ulClrImportant); 
+		printf("-------------------------------------------\n\n\n");
+
+		DEBUG_PRINT = false;
 	}
  
 	// Testa för om ulSizeImage är 0. Adobe Phoshop sätter denna 
@@ -814,19 +827,18 @@ bool Image::load_bmp(FILE* pkFile)
 			{
 				if(bZeroSize)
 				{
-					pixels[i].r = kBitmap.pkData[j++]; 
-					pixels[i].b = kBitmap.pkData[j++];
-					pixels[i].g = kBitmap.pkData[j++]; 
-					pixels[i].a = 0;
+					pixels[i].r = kBitmap.pkData[j++]; //r
+					pixels[i].g = kBitmap.pkData[j++]; //b
+					pixels[i].b = kBitmap.pkData[j++]; //g
+					pixels[i++].a = 0;
 				}
 				else
 				{
 					pixels[i].b = kBitmap.pkData[j++]; 
 					pixels[i].g = kBitmap.pkData[j++];
 					pixels[i].r = kBitmap.pkData[j++]; 
-					pixels[i].a = 0;
+					pixels[i++].a = 0;
 				}
-				i++;
 			}
 		break;
 
@@ -844,7 +856,9 @@ bool Image::load_bmp(FILE* pkFile)
 	if(kBitmap.pkData)
 		delete[] kBitmap.pkData;
 
-	flip(false, true);
+	// check height to see if the image is reversed or not.
+	if(kBitmap.kInfoheader.lHeight > 0)
+		flip(false, true);
 
 	return true;
 }

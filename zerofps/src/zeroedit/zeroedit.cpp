@@ -163,6 +163,8 @@ void ZeroEdit::OnInit(void)
 >>>>>>> 1.150
 	pkTexMan->SaveTexture("nisse.tga",0);
 */
+
+	pkInput->ToggleGrab();
 }
 
 
