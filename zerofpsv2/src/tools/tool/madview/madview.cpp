@@ -25,12 +25,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kZeroEd.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
 		break;
-	case ZGM_TCN_SELCHANGE:
-		int* data; data = (int*) params; 
-		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
-		break;
-	case ZGM_KEYPRESS:
-		break;
 	}
 	return true;
 }
@@ -41,7 +35,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.Log_Create("madview");
 
-	// Set Default values	
 	m_bIsEditor = true;
 	
 	m_fDelayTime   = 0.0;
@@ -176,7 +169,6 @@ void MadView::ToogleLight(bool bEnabled)
 		m_kSun.fLinear_Atten=0;
 		m_kSun.fQuadratic_Atten=0;
 
-
 		m_pkLight->Add(&m_kSun);
 		s_bAdded = true; 
 	}
@@ -208,11 +200,8 @@ void MadView::CreateViewObject()
 {
 	m_pkViewObject = m_pkEntityManager->CreateEntity();
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
-
 	ChangeMad(m_strMadFile.c_str());
-
 	m_pkViewObject->AddProperty("P_LightUpdate");
-
 	m_pkViewObject->SetWorldPosV(Vector3(0,0,5));
 }
 

@@ -93,7 +93,6 @@ class MadView :public Application , public ZGuiApp
 
 		MadView(char* aName,int iWidth,int iHeight,int iDepth);
 		
-		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *szClickNodeText, bool bHaveChilds);

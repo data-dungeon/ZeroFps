@@ -18,7 +18,7 @@ class BASIC_API ZFIoInterface
 		bool Write_Str(const string& strString)
 		{
 			Write(strString.size()+1);
-			Write((void*)strString.c_str(),strString.size()+1,1);					
+			Write((void*)strString.c_str(),(int)strString.size()+1,1);					
 			return true;
 		}
 		

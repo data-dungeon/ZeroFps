@@ -155,12 +155,9 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		if(szClickNodeText)
 			pkMad->SetAnimation(szClickNodeText, 0);
-	}
-}
 
-void MadView::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
-{
-	
+		m_pkGui->SetFocus(GetWnd("GuiMainWnd"));
+	}
 }
 
 void MadView::ChangeMad(string strName)
@@ -201,13 +198,10 @@ void MadView::ChangeMad(string strName)
 
 	if(iNumAnimations > 0)
 	{
-		printf("Num animations = %i\n", pkCore->GetNumOfAnimations());
-
 		for(int i=0; i<pkCore->GetNumOfAnimations(); i++)
 		{
 			string strName = pkCore->GetAnimationName(i); 
 			AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
 		}
 	}
-
 }
