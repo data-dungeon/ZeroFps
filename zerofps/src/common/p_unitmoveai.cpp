@@ -201,6 +201,8 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				}
 					
 				m_fSpeedMod = 1.0f - (float)(m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
+		
+				//cout<<m_fSpeedMod<<endl;
 
 				//make sure nothing is wrong
 				if(m_fSpeedMod < 0)
@@ -263,7 +265,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	if(kPos == m_pkObject->GetPos())
 		return false;
 
-	float fVel = 10;			
+	float fVel = 10.0;			
 	fVel *= m_fSpeedMod; 
 	
 	if(fVel < 0)
@@ -277,11 +279,11 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 		return false;
 	}
 
-	Vector3 kMoveV = (kPos - m_pkObject->GetPos());	//.Unit();
-	kMoveV.Unit();
+	Vector3 kMoveV = (kPos - m_pkObject->GetPos()).Unit();
+
 	Vector3 kNewPos = m_pkObject->GetPos() + kMoveV * (fVel * m_pkFps->GetGameFrameTime());
 
-
+	kMoveV.y = 0;
 	//set rotation   this rotation sux
 	Vector3 rot = kMoveV.Angels();
 	rot.x =0;
