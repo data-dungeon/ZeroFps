@@ -100,19 +100,29 @@ void ActionMenu::Open()
 	if(m_bGuiCaptureBeforOpen == true)
 		g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
 
-	m_pkMainWnd->SetPos(mx-m_kWidth/2, my-m_kHeight/2, true, true);
+	int mainwnd_pos_x = mx-m_kWidth/2, mainwnd_pos_y = my-m_kHeight/2;
+
+	const float icon_angle_horz_offset = 75;
+	const float icon_angle_vert_offset = 75;
+
+	// Check so mainwindow are visible on screen...
+	if(mainwnd_pos_y < -icon_angle_vert_offset) mainwnd_pos_y = -icon_angle_vert_offset;
+	if(mainwnd_pos_x < -icon_angle_horz_offset) mainwnd_pos_x = -icon_angle_horz_offset;
+	if(mainwnd_pos_y + m_kHeight > g_kMistClient.GetHeight()+icon_angle_vert_offset) 
+		mainwnd_pos_y = g_kMistClient.GetHeight()-m_kHeight+icon_angle_vert_offset;
+	if(mainwnd_pos_x + m_kWidth > g_kMistClient.GetWidth()+icon_angle_horz_offset ) 
+		mainwnd_pos_x = g_kMistClient.GetWidth()-m_kWidth+icon_angle_horz_offset;
+
+	m_pkMainWnd->SetPos(mainwnd_pos_x, mainwnd_pos_y, true, true);
 	m_pkMainWnd->Show();
 
 	char szIcon[512];
-	float fAngle = 245;
+	float fAngle = 225;
 	const int NUM_BUTTONS = m_kActions.size();
 	const float ANGLE_MULT = 360.0f/(float)NUM_BUTTONS;
 
 	int cx = m_kWidth / 2 - ICON_WIDTH / 2;
 	int cy = m_kHeight / 2 - ICON_HEIGHT / 2;
-
-	const float icon_angle_horz_offset = 100;
-	const float icon_angle_vert_offset = 50;
 
 	int iHeighestZValue = 0;
 
@@ -220,6 +230,10 @@ void ActionMenu::Close()
 		g_kMistClient.SetGuiCapture(m_bGuiCaptureBeforOpen);
 
 	printf("Close action menu\n");
+
+	// Must set focus on mainwnd to recive SPACE intput for chatbox...
+	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
+
 }
 
 ZGuiSkin* ActionMenu::GetFreeIconSkin()
@@ -253,22 +267,25 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
 	ZGuiWnd* pkWndButtonCursor = NULL;
 
+	// Kolla vilken knapp som är vald.
 	list<ZGuiWnd*> kChilds;
 	m_pkMainWnd->GetChildrens(kChilds);
 	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
 	{
-		if((*it) != m_pkIconSelection)
+		ZGuiWnd* pkChild = (*it);
+		if(pkChild != m_pkIconSelection && pkChild->IsVisible() )
 		{
-			Rect rc = (*it)->GetScreenRect();
+			Rect rc = pkChild->GetScreenRect();
 			if(rc.Inside(mx,my))
 			{
-				pkWndButtonCursor = (*it);
+				pkWndButtonCursor = pkChild;
 				m_pkIconSelection->SetPos(rc.Left,rc.Top,true,true);
 				break;
 			}
 		}
 	}
 
+	// Om höger musknapp har släpps skall vi sända valt action
 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
 	{
 		if(pkWndButtonCursor != NULL)
