@@ -25,11 +25,11 @@ enum MCOMMON_API eDMItemTypes
 
 class MCOMMON_API DMItemStats
 {
+public:
 	float	m_fArmourVal;
 	float	m_fSpeedVal;
 	float	m_iMaxLifeVal;
 
-public:
 	DMItemStats()
 	{
 		m_fArmourVal = 0;
@@ -49,12 +49,12 @@ class MCOMMON_API P_DMItem: public Property {
 		int		m_iSizeY;
 		int		m_iType;
 
-		DMItemStats m_kItemStats;
-	
 	public:
 		
 		P_DMItem();
 		~P_DMItem();
+
+		DMItemStats m_kItemStats;
 
 		void CloneOf(Property* pkProperty) { }
 		

@@ -1058,9 +1058,10 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 			pkLink->SetJoint( "righthand" );
 		}
 
-		if ( pkItemTypes->at(i) == DMITEM_ARMOUR )
+		if ( pkItemTypes->at(i) == DMITEM_ARMOUR || pkItemTypes->at(i) == DMITEM_IMPLANT )
 		{
-
+			Entity* pkOwner = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( pkDestContainer->GetOwnerID() );
+			((P_DMCharacter*)pkOwner->GetProperty("P_DMCharacter"))->Equip ( (P_DMItem*)pkEntity->GetProperty("P_DMItem") );
 		}
 	}
 

@@ -75,6 +75,10 @@ class MCOMMON_API P_DMCharacter: public Property {
 		// Set right animation and calls shoot function i p_dmgun
 		void Shoot (Vector3 kLocation);
 		bool WalkSoundIsPlaying() { return m_bPlayWalkSound; }
+
+		// add and removes item bonuses (defence, speed, life etc..)
+		void Equip (P_DMItem* pkDMItem);
+		void UnEquip (P_DMItem* pkDMItem);
 		
 		
 		void Init();		

@@ -141,15 +141,15 @@ void P_DMCharacter::Init()
 	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,4);
 	m_pkBody->SetMaxItems(1);
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
+	m_pkBelt->AddItemType(DMITEM_GRENADE);
+	m_pkBelt->AddItemType(DMITEM_CLIP);			
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
-	m_pkBelt->AddItemType(DMITEM_GRENADE);				
-	m_pkBelt->AddItemType(DMITEM_CLIP);						
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,2,false);
 	m_pkHand->AddItemType(DMITEM_GRENADE);	
 	m_pkHand->AddItemType(DMITEM_WEAPON);	
 	m_pkHand->SetMaxItems(1);	
 	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,3);
-
+	m_pkImplants->AddItemType(DMITEM_IMPLANT);
 	
 	//cout<< "New character created"<<endl;
 
@@ -381,7 +381,33 @@ void P_DMCharacter::Update()
 		}
 	}
 }
+
+// -----------------------------------------------------------------------------------------------
  
+void P_DMCharacter::Equip (P_DMItem* pkDMItem)
+{
+	if ( pkDMItem == 0 )
+		return;
+	
+	m_kStats.m_fArmour += pkDMItem->m_kItemStats.m_fArmourVal;
+	m_kStats.m_iMaxLife += pkDMItem->m_kItemStats.m_iMaxLifeVal;
+	m_kStats.m_fSpeed += pkDMItem->m_kItemStats.m_fSpeedVal;
+
+}
+
+// -----------------------------------------------------------------------------------------------
+
+void P_DMCharacter::UnEquip (P_DMItem* pkDMItem)
+{
+	if ( pkDMItem == 0 )
+		return;
+	
+	m_kStats.m_fArmour -= pkDMItem->m_kItemStats.m_fArmourVal;
+	m_kStats.m_iMaxLife -= pkDMItem->m_kItemStats.m_iMaxLifeVal;
+	m_kStats.m_fSpeed -= pkDMItem->m_kItemStats.m_fSpeedVal;
+}
+
+// -----------------------------------------------------------------------------------------------
 
 vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 {
