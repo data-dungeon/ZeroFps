@@ -159,6 +159,7 @@ void Matrix4::Identity() {
 
 }
 
+
 float &Matrix4::operator[](const int i)
 {
 	return data[i];

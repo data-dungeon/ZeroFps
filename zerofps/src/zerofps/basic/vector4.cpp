@@ -24,11 +24,13 @@ bool Vector4::operator!=(const Vector4 &kOtherV3) const
 	return !(kOtherV3 == *this); 
 }
 
+
 float &Vector4::operator[](const int i)
 {
 	return *((&x) + i);
 //	ZFAssert(0, "Vector4::operator[]: Index out of range");
 }
+
 
 Vector4 Vector4::operator*(const Matrix4 &f) const 
 {

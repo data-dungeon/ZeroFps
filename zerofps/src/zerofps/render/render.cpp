@@ -192,8 +192,8 @@ void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int i
 	glEnable(GL_ALPHA_TEST);
 
 //	glTranslatef(kPos.x,kPos.y,kPos.z);	
-	x.Set(kModelMatrix[0], kModelMatrix[4], kModelMatrix[8]);
-	y.Set(kModelMatrix[1], kModelMatrix[5], kModelMatrix[9]); 
+	x.Set(kModelMatrix.data[0], kModelMatrix.data[4], kModelMatrix.data[8]);
+	y.Set(kModelMatrix.data[1], kModelMatrix.data[5], kModelMatrix.data[9]); 
 
 /*	a = kPos + ((-x - y) * iSize);
    b = kPos + ((x - y) * iSize);
@@ -207,13 +207,13 @@ void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int i
 	
 	glBegin(GL_QUADS);
       glTexCoord2f(0.0f, 0.0f);
-      glVertex3fv(&a[0]);
+      glVertex3fv((float*) &a);
       glTexCoord2f(1.0f, 0.0f);
-      glVertex3fv(&b[0]);
+      glVertex3fv((float*) &b);
       glTexCoord2f(1.0f, 1.0f);
-      glVertex3fv(&c[0]);
+      glVertex3fv((float*) &c);
       glTexCoord2f(0.0f, 1.0f);
-      glVertex3fv(&d[0]);
+      glVertex3fv((float*) &d);
    glEnd();
 	
 	

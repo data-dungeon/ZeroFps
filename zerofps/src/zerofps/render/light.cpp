@@ -316,17 +316,17 @@ void Light::Update(Vector3 kRefPos)
   		}
 		glEnable(light);		
 			
-		glLightfv(light,GL_DIFFUSE, &m_kActiveLights[i]->kDiffuse[0]);
-		glLightfv(light,GL_SPECULAR,&m_kActiveLights[i]->kSpecular[0]);  
-		glLightfv(light,GL_AMBIENT, &m_kActiveLights[i]->kAmbient[0]);		
+		glLightfv(light,GL_DIFFUSE, (float*)&m_kActiveLights[i]->kDiffuse);		// &m_kActiveLights[i]->kDiffuse[0]
+		glLightfv(light,GL_SPECULAR,(float*)&m_kActiveLights[i]->kSpecular);	//&m_kActiveLights[i]->kSpecular[0]
+		glLightfv(light,GL_AMBIENT, (float*)&m_kActiveLights[i]->kAmbient);		//&m_kActiveLights[i]->kAmbient[0]
 		
 		Vector4 temp;
 		float spotdir[]={0,0,-1};  		
   		switch (m_kActiveLights[i]->iType) {
   			case DIRECTIONAL_LIGHT:
 				temp=(*m_kActiveLights[i]->kRot)+m_kActiveLights[i]->kConstRot;  			
-  				temp[3]=0;			
-				glLightfv(light,GL_POSITION,&temp[0]);	    				
+  				temp.w = 0;			
+				glLightfv(light,GL_POSITION,(float*)&temp);								//		&temp[0]		
   				
   				//seset spot
 				glLightfv(light,GL_SPOT_DIRECTION,spotdir);		  				  		  				
@@ -336,8 +336,8 @@ void Light::Update(Vector3 kRefPos)
   				break;
   			case POINT_LIGHT:
   				temp=(*m_kActiveLights[i]->kPos)+m_kActiveLights[i]->kConstPos;
-  				temp[3]=1;  						
-				glLightfv(light,GL_POSITION,&temp[0]);	  
+  				temp.w=1;  						
+				glLightfv(light,GL_POSITION,(float*)&temp);	  //&temp[0]
 		  		
   				
 		  		glLightf(light,GL_CONSTANT_ATTENUATION,m_kActiveLights[i]->fConst_Atten);
@@ -352,11 +352,11 @@ void Light::Update(Vector3 kRefPos)
   				break;
   			case SPOT_LIGHT:
   				temp=(*m_kActiveLights[i]->kPos)+m_kActiveLights[i]->kConstPos;
-  				temp[3]=1;  						
-				glLightfv(light,GL_POSITION,&temp[0]);	  
+  				temp.w=1;  						
+				glLightfv(light,GL_POSITION,(float*)&temp);	  // temp[0]
 				
 				temp=(*m_kActiveLights[i]->kRot)+m_kActiveLights[i]->kConstRot;
-				glLightfv(light,GL_SPOT_DIRECTION,&temp[0]);
+				glLightfv(light,GL_SPOT_DIRECTION,(float*)&temp);		//&temp[0]
 		  		
 		  		glLightf(light,GL_CONSTANT_ATTENUATION,m_kActiveLights[i]->fConst_Atten);
 		  		glLightf(light,GL_LINEAR_ATTENUATION,m_kActiveLights[i]->fLinear_Atten);

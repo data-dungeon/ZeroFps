@@ -180,13 +180,10 @@ Vector3 Vector3::Angels(void){
 	return temp;
 }
 
+
 float& Vector3::operator[] (const int i) 
 {
 	return *((&x) + i);
-/*	if(i==0)	return x;
-	if(i==1)	return y;
-	if(i==2)	return z;
-	return x;*/
 }
 
 

@@ -27,7 +27,7 @@ void Camera::Update(int iWidth,int iHeight)
 	
 		//load projection matrix
 		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf(&m_kCamProjectionMatrix[0]);
+		glLoadMatrixf((float*) &m_kCamProjectionMatrix.data);
 	}
 	
 	if(m_bViewPortChange){	
@@ -57,7 +57,7 @@ void Camera::Update(int iWidth,int iHeight)
 	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 	
 	//get modelview matrix
-	glGetFloatv(GL_MODELVIEW_MATRIX, &m_kCamModelViewMatrix[0]);
+	glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
 	
 }
 
@@ -75,7 +75,7 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	 	glLoadIdentity();													
 		gluPerspective(fFov, fAspect,fNear,fFar);	
 		//get projection matrix
-		glGetFloatv(GL_PROJECTION_MATRIX,&m_kCamProjectionMatrix[0]);
+		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);	
 	

@@ -304,7 +304,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 
 	float tx = float(SDL_GetTicks()/60000.0);
 	glBegin(GL_QUADS);
-		glColor4fv(&kColor[0]);
+		glColor4fv((float*)&kColor);
 //		glColor4f(.3,.3,.4,.99);
 		glNormal3f(0,1,0);
 		glTexCoord2f(tx,0);
@@ -625,7 +625,7 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
 	glHint(GL_FOG_HINT,GL_NICEST);	
 	
-	glFogfv(GL_FOG_COLOR,(float*)&kFogColor[0]);
+	glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
 //	glFogf(GL_FOG_DENSITY,FogDensity);
 	glFogf(GL_FOG_START,FogStart);
 	glFogf(GL_FOG_END,FogStop);	
