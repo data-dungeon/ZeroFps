@@ -1,4 +1,5 @@
 #include "../../p_item.h"
+#include "../../p_event.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "characterstats.h"
@@ -367,8 +368,17 @@ void CharacterStats::Print()
 void CharacterStats::SetHP( string kValue )
 {
    m_kPointStats["hp"] = kValue;
-
    m_uiVersion++;
+   
+   if(m_kPointStats["hp"].Value() <= 0)
+   {
+   	P_Event* pe = (P_Event*)m_pkParent->GetProperty("P_Event");
+   
+   	if(pe)
+   	{
+   		pe->SendEvent("OnDeath");
+   	}
+   }   
 }
 
 // ------------------------------------------------------------------------------------------
@@ -385,6 +395,16 @@ void CharacterStats::AddHP( int iValue )
 {
    m_kPointStats["hp"] += iValue;
    m_uiVersion++;
+   
+   if(m_kPointStats["hp"].Value() <= 0)
+   {
+   	P_Event* pe = (P_Event*)m_pkParent->GetProperty("P_Event");
+   
+   	if(pe)
+   	{
+   		pe->SendEvent("OnDeath");
+   	}
+   }
 }
 
 // ------------------------------------------------------------------------------------------

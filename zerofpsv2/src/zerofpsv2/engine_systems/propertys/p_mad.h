@@ -45,6 +45,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 
 		void SetBase(const char* acName);
 		void SetAnimation(char* szName, float fStartTime);
+		void SetNextAnimation(char* szName);		
 		void Update();
 
 		void Save(ZFIoInterface* pkPackage);

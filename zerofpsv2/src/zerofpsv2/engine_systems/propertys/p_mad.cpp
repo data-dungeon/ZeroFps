@@ -102,6 +102,13 @@ void P_Mad::SetAnimation(char* szName, float fStartTime)
 	SetNetUpdateFlag(true);	
 }
 
+void P_Mad::SetNextAnimation(char* szName)
+{
+	Mad_Modell::SetNextAnimation(szName);
+	SetNetUpdateFlag(true);	
+}
+
+
 void P_Mad::Save(ZFIoInterface* pkPackage)
 {	
 	char temp[128];
@@ -136,6 +143,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_fScale );
 	pkNetPacket->Write( m_bCanBeInvisible );	
 	pkNetPacket->Write( iActiveAnimation );
+	pkNetPacket->Write( m_iNextAnimation );
 	
 	unsigned char ucNumOfMesh = m_kActiveMesh.size();
 	int iMesh;
@@ -162,6 +170,12 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read( iNewAnim );
 	if(iNewAnim != iActiveAnimation)
 		PlayAnimation(iNewAnim, 0);
+
+	int iNewNextAnim;
+	pkNetPacket->Read( iNewNextAnim );
+	if(iNewNextAnim != m_iNextAnimation)
+		Mad_Modell::SetNextAnimation(iNewNextAnim);
+
 
 	unsigned char ucNumOfMesh;
 	int iMesh;
