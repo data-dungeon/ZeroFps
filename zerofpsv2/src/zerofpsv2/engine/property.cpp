@@ -520,7 +520,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 		return true;
 		
 	case VALUETYPE_FLOAT:
-		fTemp1= strtod( kValue.c_str(), &cStop );
+		fTemp1= (float) strtod( kValue.c_str(), &cStop );
 		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
 			if(fTemp1>(pkPropertyValue->fUpperBound))
 				return false;
@@ -534,7 +534,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 		if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
 			return false;		
 		kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
-		fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+		fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
 		if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
 			if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
 				return false;
@@ -545,7 +545,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 				if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 					return false;
 				kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
-				fTemp2= strtod( kTemp1.c_str(), &cStop ); 
+				fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
 				if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
 					if(fTemp2>(pkPropertyValue->fUpperBound))	   
 						return false;
@@ -554,7 +554,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 							return false;
 						
 						kTemp1=kValue.substr(iTemp2,kValue.length());
-						fTemp3= strtod( kTemp1.c_str(), &cStop ); 
+						fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
 						if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
 							if(fTemp3>(pkPropertyValue->fUpperBound))	   
 								return false;
@@ -569,7 +569,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 		if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
 			return false;		
 		kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
-		fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+		fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
 		if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
 			if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
 				return false;
@@ -580,7 +580,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 				if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 					return false;
 				kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
-				fTemp2= strtod( kTemp1.c_str(), &cStop ); 
+				fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
 				if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
 					if(fTemp2>(pkPropertyValue->fUpperBound))	   
 						return false;
@@ -591,7 +591,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 						if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
 							return false;
 						kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
-						fTemp3= strtod( kTemp1.c_str(), &cStop ); 
+						fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
 						if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
 							if(fTemp2>(pkPropertyValue->fUpperBound))	   
 								return false;
@@ -600,7 +600,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 									return false;
 								
 								kTemp1=kValue.substr(iTemp1,kValue.length());
-								fTemp4= strtod( kTemp1.c_str(), &cStop ); 
+								fTemp4= (float) strtod( kTemp1.c_str(), &cStop ); 
 								if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
 									if(fTemp3>(pkPropertyValue->fUpperBound))	   
 										return false;
