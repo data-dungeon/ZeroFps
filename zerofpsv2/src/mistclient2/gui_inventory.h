@@ -38,7 +38,12 @@ private:
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
 
-	vector<string> m_vkItemList;
+	struct ITEM_SLOT
+	{
+		string strWndName;
+	};
+
+	vector<ITEM_SLOT> m_vkItemList;
 };
 
 #endif

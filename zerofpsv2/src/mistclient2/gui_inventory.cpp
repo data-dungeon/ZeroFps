@@ -98,12 +98,12 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 {
-	printf("size of container list = %i\n", vkItemList.size());
+	printf("size of item list = %i\n", vkItemList.size());
 
 	// Ta bort alla gamla items
 	for(int i=0; i<m_vkItemList.size(); i++)
 	{
-		ZGuiWnd* pkWnd = g_kMistClient.GetWnd(m_vkItemList[i]);
+		ZGuiWnd* pkWnd = g_kMistClient.GetWnd(m_vkItemList[i].strWndName);
 		delete pkWnd->GetSkin();
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
@@ -129,6 +129,8 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
 
-		m_vkItemList.push_back(string(szItemName));
+		ITEM_SLOT kNewSlot;
+		kNewSlot.strWndName = string(szItemName);
+		m_vkItemList.push_back(kNewSlot);
 	}
 }
