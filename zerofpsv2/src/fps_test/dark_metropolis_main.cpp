@@ -516,7 +516,7 @@ void DarkMetropolis::Input()
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 								
-				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.8,0) );											
+				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.8,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
 					Vector3 kDir = m_pkPlayerEntity->GetWorldRotM().VectorTransform(Vector3(0,0,-1));					
@@ -1157,7 +1157,7 @@ bool DarkMetropolis::CreatePlayer()
 		
 			
 			//create entity
-			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_arcadeplayer.lua",kStartPos))
+			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/arcadeplayer.lua",kStartPos))
 			{			
 				//save id
 				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();

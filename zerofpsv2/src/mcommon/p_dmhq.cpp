@@ -46,7 +46,7 @@ void P_DMHQ::Init()
 
 void P_DMHQ::SpawnNewCharacter(int iNr)
 {
-	Entity* pkEnt = m_pkObjMan->CreateObjectFromScript("data/script/objects/t_member.lua");
+	Entity* pkEnt = m_pkObjMan->CreateObjectFromScript("data/script/objects/characters/member.lua");
 	
 	if(iNr != -1)
 	{

@@ -33,7 +33,7 @@ P_DMGun::P_DMGun()
 	m_iBulletsPerAmmo =	1;
 	m_iTeam = 				-1; // belongs to no team
 
-	m_strBarrelFirePS = "data/script/objects/t_bfire_gun.lua";
+	m_strBarrelFirePS = "data/script/objects/weapons/bfire_gun.lua";
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
@@ -293,7 +293,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			
 			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_gunsmoke.lua");
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 
@@ -327,7 +327,7 @@ bool P_DMGun::FireBullets(int iAmount)
 		else
 		{			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_gunsmoke.lua");
+			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 
