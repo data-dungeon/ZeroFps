@@ -234,7 +234,7 @@ Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName)
 	for(it = akAnimation.begin(); it != akAnimation.end(); it++)
 	{
 		if(strcmp(it->Name, ucaName) == 0)
-			return it;
+			return &(*it);
 	}
 
 	// Finns ingen animation med det namnet så skapa den och returnera den.

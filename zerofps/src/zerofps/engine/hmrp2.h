@@ -1,0 +1,34 @@
+#ifndef _HMRP2_H_
+#define _HMRP2_H_
+
+#include "../basic/basic.pkg"
+#include "../render/render.pkg"
+#include "property.h"
+#include <iostream>
+#include "../engine/engine.pkg"
+
+#include "GL/glut.h"
+
+using namespace std;
+
+
+class ENGINE_API HMRP2: public Property {
+		HeightMap* m_pkHeightMap;
+		Frustum* m_pkFrustum;
+		TextureManager* m_pkTexMan;
+		ZeroFps* m_pkZeroFps;
+		Render* m_pkRender;	
+	
+	
+	public:
+		HMRP2(HeightMap* pkHeightMap);
+		void Update();
+
+		void SetHeightMap(HeightMap* pkHeightMap);
+
+};
+
+Property* Create_HMRP2();
+
+#endif
+

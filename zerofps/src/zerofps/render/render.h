@@ -59,6 +59,9 @@ class RENDER_API Render : public ZFObject {
 //		void DrawQuad(HM_vert* vert,int width);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
+		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
+		void DrawPatch(HeightMap* kmap,Vector3 CamPos);
+		
 		void DrawHM(HeightMap* kmap);
 		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);

@@ -7,9 +7,14 @@ HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 
 	AddProperty(new CollisionProperty(pkMap));
 
+/*
 	AddProperty("HeightMapRenderProperty");
 	(static_cast<HeightMapRenderProperty*>(GetProperty("HeightMapRenderProperty")))->SetHeightMap(pkMap);	
+*/	
 	
-//	AddProperty(new HeightMapRenderPropertyMK2(pkMap));
+	AddProperty("HMRP2");
+	(static_cast<HMRP2*>(GetProperty("HMRP2")))->SetHeightMap(pkMap);	
+
+
 }
 

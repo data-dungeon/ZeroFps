@@ -99,9 +99,9 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(.7,.7,.7,1);	//Dag
+		sol->kDiffuse=Vector4(1.5,1.5,1.5,1);	//Dag
 //		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
-		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
+		sol->kAmbient=Vector4(0.01,0.01,0.01,1);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 		sol->fConst_Atten=1;
@@ -111,8 +111,6 @@ void ZeroEdit::OnInit(void)
 	pkLight->Add(sol);
 
 	InitGUI();
-
-	pkInput->ToggleGrab();
 
 
 }

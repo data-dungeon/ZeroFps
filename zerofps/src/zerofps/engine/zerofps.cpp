@@ -606,6 +606,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("WaterRenderProperty",Create_WaterRenderProperty);	
 	m_pkPropertyFactory->Register("SkyBoxRenderProperty",Create_SkyBoxRenderProperty);		
 	m_pkPropertyFactory->Register("HeightMapRenderProperty",Create_HeightMapRenderProperty);		
+	m_pkPropertyFactory->Register("HMRP2",Create_HMRP2);			
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
