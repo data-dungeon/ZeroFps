@@ -51,9 +51,12 @@ bool ZShaderSystem::StartUp()
 		cout<<"ZSHADER: No fragment program support"<<endl;
 	
 	//check for vertexbuffer support
+	/*
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
 		cout<<"ZSHADER: No vertexbuffer support"<<endl;
-	
+	*/
+	m_bSupportVertexBuffers = false;
+		
 	//setup ucculusion
 	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
 		cout<<"ZSHADER: No Occlusion support"<<endl;
@@ -926,7 +929,7 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);		
 
 	//set vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER_ARB,pkBuffer->m_iBufferID);
+//	glBindBuffer(GL_ARRAY_BUFFER_ARB,pkBuffer->m_iBufferID);
 	
 			
 	if(pkBuffer->m_iVertexType == VERTEXTYPE_3)
@@ -958,7 +961,7 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
 		}
 	}
 		
-	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);		
+//	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);		
 }
 
 void ZShaderSystem::DrawGeometry(const int& iDrawMode)
@@ -1406,7 +1409,8 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer(const int& iDrawMode)
 
 ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 {
-	if(!m_bSupportVertexBuffers)
+	return NULL;
+/*	if(!m_bSupportVertexBuffers)
 		return NULL;
 
 		
@@ -1442,7 +1446,7 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 	
 	//cout<<"+VB:"<<pkNewBuffer->m_iBufferID<<endl;
 	
-	return pkNewBuffer;
+	return pkNewBuffer;*/
 }
 
 void ZShaderSystem::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled)
