@@ -167,6 +167,9 @@
 				RelativePath=".\p_dmcharacter.cpp">
 			</File>
 			<File
+				RelativePath=".\p_dmclickme.cpp">
+			</File>
+			<File
 				RelativePath=".\p_dmgameinfo.cpp">
 			</File>
 			<File
@@ -235,6 +238,9 @@
 			</File>
 			<File
 				RelativePath=".\p_dmcharacter.h">
+			</File>
+			<File
+				RelativePath=".\p_dmclickme.h">
 			</File>
 			<File
 				RelativePath=".\p_dmgameinfo.h">

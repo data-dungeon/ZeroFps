@@ -390,7 +390,7 @@ int DMLua::AddMoneyLua(lua_State* pkLua)
 		return 0;
 	}
 
-	if ( g_pkScript->GetNumArgs(pkLua) < 1 )
+	if ( g_pkScript->GetNumArgs(pkLua) != 1 )
 	{
 		cout << "DMLua::AddMoneyLua: Wrong number of args given! Function takes AddMoney (int Money)" << endl;
 		return 0;

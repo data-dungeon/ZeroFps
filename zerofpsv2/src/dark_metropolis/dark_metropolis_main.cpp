@@ -10,6 +10,7 @@
 #include "members_dlg.h"
 #include "hq_dlg.h"
 #include "../mcommon/si_dm.h"
+#include "../mcommon/p_dmclickme.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
@@ -257,6 +258,7 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMGameInfo",		Create_P_DMGameInfo);	
 	m_pkPropertyFactory->Register("P_DMCharacter",		Create_P_DMCharacter);
 	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
+	m_pkPropertyFactory->Register("P_DMClickMe",		Create_P_DMClickMe);	
 }
 
 void DarkMetropolis::Input()
@@ -616,7 +618,13 @@ void DarkMetropolis::Input()
 					}
 				}
 				return;
-			}			
+			}
+
+			// Clicked a ClickMe object :)
+			if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
+			{
+				pkClick->Click();
+			}
 			
 			//pick item
 			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))

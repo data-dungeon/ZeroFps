@@ -221,7 +221,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	}
 
 	// check if character is equipped with at weapon
-	int iWeapID;
+	int iWeapID = 0;
 	Entity* pkWeapon;
 	P_DMGun* pkP_Gun;
 
