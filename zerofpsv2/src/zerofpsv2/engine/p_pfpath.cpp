@@ -144,7 +144,7 @@ void P_PfPath::Update()
 					
 		
 			if(pkTcs)
-				pkTcs->SetWalkVel(Vector3(0,0,0));
+				pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,0,0));
 		
 		}
 		else
@@ -163,7 +163,7 @@ void P_PfPath::Update()
 	//TCS TEST
 	if(pkTcs)
 	{
-		pkTcs->SetWalkVel(kdiff*20);	
+		pkTcs->ApplyForce(Vector3(0,0,0),kdiff*20);
 	}
 	else
 		m_pkObject->SetWorldPosV(kPos);

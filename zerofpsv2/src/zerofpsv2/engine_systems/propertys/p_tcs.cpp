@@ -45,7 +45,6 @@ P_Tcs::P_Tcs()
 	ResetWalkGroupFlags();
 
    m_kRotVel.Set(0,0,0);
-	m_kWalkVel.Set(0,0,0);
 	m_kExternalLinearForce.Set(0,0,0);
 	m_kExternalRotForce.Set(0,0,0);
 	
@@ -144,7 +143,6 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);					
 	pkPackage->Write((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 			
-	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
 	pkPackage->Write((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
@@ -179,7 +177,6 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
 	pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
 					
-	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
 	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 	
 	pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									

@@ -21,11 +21,6 @@ class ENGINE_SYSTEMS_API Tcs_collission
 		vector<Vector3> kTangents;
 		vector<Vector3> kRelVels;
 		
-		//Vector3	kPos;					//collission point
-		//Vector3	kNormal;				//pkBody2's normal
-		//Vector3	kRelVel;				//pkBody2's normal
-		//Vector3	kTangent;		
-	
 		float		fAtime;					//alpha time when collission occured	
 		
 		void Clear()
@@ -71,8 +66,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		int					m_iNrOfTests;
 		
 		//settings
-		int 				m_iHandleCollission;
-		int				m_iDebugGraph;
+		int 					m_iHandleCollission;
+		int					m_iDebugGraph;
 		
 		
 		//main funktions
@@ -118,11 +113,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestPolygonVSPolygon(Vector3* pkPolgyon1,Vector3* pkPolygon2);
 		float LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePos1,Vector3* pkLinePos2,Vector3* pkColPos);
 		
-		bool TestMotionSpheres(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
-		
-		//void GenerateModelMatrix();
-		//void GenerateModelMatrix(P_Tcs* pkMesh);		
-
+		bool TestMotionSpheres(P_Tcs* pkBody1,P_Tcs* pkBody2,const float& fAtime);
 		
 		
 	public:		

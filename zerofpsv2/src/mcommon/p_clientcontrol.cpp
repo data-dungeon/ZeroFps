@@ -179,7 +179,8 @@ void P_ClientControl::UpdateCharacter()
 			kVel = temp.VectorTransform(kVel) * fSpeed;
 		
 			//update walk velocity on the body
-			tcs->SetWalkVel(kVel);
+			tcs->ApplyForce(Vector3(0,0,0),kVel);
+			//tcs->SetWalkVel(kVel);
 		}
 	}
 }

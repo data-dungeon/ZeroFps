@@ -51,7 +51,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bNoColRespons;
 		
       Vector3	m_kRotVel;
-		Vector3	m_kWalkVel;
 
 		Vector3	m_kExternalLinearForce;
 		Vector3	m_kExternalRotForce;
@@ -134,7 +133,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 
-		void SetWalkVel(Vector3 kWalkVel) 		{m_kWalkVel = kWalkVel;};		
       void SetRotVel (Vector3 kRotVel)			{m_kRotVel = kRotVel; }		
 		void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
 		void SetRadius(float t) 					{m_fRadius = t;};
@@ -146,7 +144,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetHmap(HeightMap* pkMap) 			{ m_pkHmap = pkMap; }
 		
 		//gets		
-		Vector3 GetWalkVel() { return m_kWalkVel;}; 				
 		bool GetOnGround() { return m_bOnGround;};
 		
 		
