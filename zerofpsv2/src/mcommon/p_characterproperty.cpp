@@ -34,8 +34,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSwimSoundID 		= 	-1;
 	
 	//animations
-	m_strWalkForward		=	"run_foward";
-	m_strWalkBackward		=	"run_backward";
+	m_strWalkForward		=	"walk_foward";
+	m_strWalkBackward		=	"walk_backward";
 	m_strWalkLeft			=	"run_left";
 	m_strWalkRight			=	"run_right";
 	m_strRunForward		=	"run_foward";
