@@ -25,6 +25,7 @@ ZeroFps::ZeroFps(void)
 	m_pkNetWork = new NetWork;
 	m_pkGuiRenderer = new GLGuiRender();
 	m_pkGui = new ZGui();
+	m_pkIni = new ZFIni();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -77,6 +78,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkObjectMan;
 	delete m_pkCollisionMan;
 	delete m_pkNetWork;
+	delete m_pkIni;
 }
 
 void ZeroFps::SetApp() {
@@ -424,6 +426,8 @@ char g_szIpPort[256];
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	int i;
+
 	vector<string> kFiles;
 	
 	switch(cmdid) {
@@ -470,17 +474,28 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	
 		case FID_DIR:
-			m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str());
-			
-			m_pkConsole->Printf("Listing %s",m_kCurentDir.c_str());
-			for(int i=0;i<kFiles.size();i++)
 			{
-				m_pkConsole->Printf(kFiles[i].c_str());
+				vector<string> kFiles;
+
+				string kDir;
+				kDir=".";
+				m_pkBasicFS->ListDir(&kFiles,kDir.c_str());
+				
+				m_pkConsole->Printf("DIRECTORY %s",kDir.c_str());
+				for(i=0;i<kFiles.size();i++)
+				{
+					m_pkConsole->Printf(kFiles[i].c_str());
+				}
+				m_pkConsole->Printf("%i files",kFiles.size());		
+				m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str());
+
+				kFiles.clear();
+				m_pkConsole->Printf("Listing %s",m_kCurentDir.c_str());
+				for(int i=0;i<kFiles.size();i++)
+				{
+					m_pkConsole->Printf(kFiles[i].c_str());
+				}
 			}
-			m_pkConsole->Printf("%i files",kFiles.size());		
-		
-			kFiles.clear();
-		
 			break;
 			
 		case FID_CD:	

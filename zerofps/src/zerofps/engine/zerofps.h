@@ -89,7 +89,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Frustum* m_pkFrustum;
 		ZGui* m_pkGui;
 		GLGuiRender* m_pkGuiRenderer;
-
+		ZFIni* m_pkIni;
 
 		vector<Core>		akCoreModells;
 				
