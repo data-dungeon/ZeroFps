@@ -279,6 +279,20 @@ int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
 {
 	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
 
+/*	if(iNrArgs != 2)
+	{
+		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
+		return 0;
+	}*/
+
+	vector<TABLE_DATA> vkData;
+
+	
+
+	g_pkScript->GetArgTable(pkLua, 2, vkData); 
+
+	printf("vkData size = %i\n", vkData.size());
+
 	return 1;
 }
 

@@ -368,41 +368,48 @@ bool ZFScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
 
 bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
 {
-	int iLuaIndex = iIndex + 1;
+	lua_settop(state, -1);
 
-	if(lua_istable(state, iLuaIndex))
+	int iLuaIndex = /*2; //*/iIndex + 1;
+
+//	for(int i=0; i<10; i++) // fulhack!!
 	{
-		TABLE_DATA table_data;
-
-		int c=0;
-
-		while(1)
+		if(lua_istable(state, iLuaIndex))
 		{
-			lua_rawgeti(state, iLuaIndex, 1+c);
+			TABLE_DATA table_data;
 
-			if(lua_isnumber(state, 2+c))
+			int c=0;
+
+			while(1)
 			{
-				table_data.bNumber = true;
-				table_data.pData = new double;
-				(*(double*) table_data.pData) = lua_tonumber(state, 2+c);
-			}
-			else
-			if(lua_isstring(state, 2+c))
-			{
-				const char* text = lua_tostring(state, 2+c);
-				table_data.bNumber = false;
-				table_data.pData = new char[strlen(text)+1];
-				strcpy( (char*) table_data.pData, text);
-			}
-			else
-				break;
+				lua_rawgeti(state, iLuaIndex, 1+c);
 
-			c++;
+				if(lua_isnumber(state, 2+c))
+				{
+					table_data.bNumber = true;
+					table_data.pData = new double;
+					(*(double*) table_data.pData) = lua_tonumber(state, 2+c);
+				}
+				else
+				if(lua_isstring(state, 2+c))
+				{
+					const char* text = lua_tostring(state, 2+c);
+					table_data.bNumber = false;
+					table_data.pData = new char[strlen(text)+1];
+					strcpy( (char*) table_data.pData, text);
+				}
+				else
+					break;
 
-			vkData.push_back(table_data);
+				c++;
+
+				vkData.push_back(table_data);
+			}
+
+			return true;
 		}
 
-		return true;
+		iLuaIndex++;
 	}
 
 	return false;

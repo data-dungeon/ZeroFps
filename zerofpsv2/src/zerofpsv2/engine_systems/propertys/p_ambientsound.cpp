@@ -132,8 +132,6 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 	pkFile->Write( szFileName, sizeof(char), m_strFileName.size()); // filename
 	pkFile->Write( &m_fHearableDistance, sizeof(float), 1); // hearable distance
 	pkFile->Write( &m_bLoop, sizeof(bool), 1); // loop
-	pkFile->Write( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
-	pkFile->Write( m_pkFps, sizeof(ZeroFps), 1); 
 	pkFile->Write( &m_bManagedByAudioSystem, sizeof(bool), 1); 
 }
 
@@ -154,8 +152,6 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 	
 	pkFile->Read( &m_fHearableDistance, sizeof(float), 1); // hearable distance
 	pkFile->Read( &m_bLoop, sizeof(bool), 1); // loop
-	pkFile->Read( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
-	pkFile->Read( m_pkFps, sizeof(ZeroFps), 1); 
 	pkFile->Read( &m_bManagedByAudioSystem, sizeof(bool), 1); 
 	
 	if(szFileName)
