@@ -230,6 +230,10 @@ void Input::Update(void)
 				//set button as pressed		
 				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
 
+				//linux backquote hack deluxe
+				if(m_kEvent.key.keysym.sym == 167)
+					iZfKey = KEY_BACKQUOTE;
+				
 				//cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << " - "<<m_kEvent.key.keysym.sym<< endl;
 				//cout<<"CP:"<<m_kEvent.key.keysym.scancode<<endl;
 				//printf( "Scancode: 0x%02X \n", m_kEvent.key.keysym.scancode ); 				

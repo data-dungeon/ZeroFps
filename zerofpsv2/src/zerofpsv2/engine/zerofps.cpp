@@ -332,7 +332,7 @@ void ZeroFps::Run_EngineShell()
 	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
 
 	// TAB Always handle console.
-	if(m_pkInputHandle->Pressed(KEY_TAB))
+	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
 	{		
 		m_pkConsole->Toggle();
 	}

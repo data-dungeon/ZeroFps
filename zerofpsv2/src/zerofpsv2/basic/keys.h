@@ -59,7 +59,8 @@ enum Buttons
 	KEY_RIGHTBRACKET	= 93,			
 	KEY_CARET			= 94,				
 	KEY_UNDERSCORE		= 95,				
-	KEY_BACKQUOTE		= 96,	
+	KEY_BACKQUOTE		= 96,
+
 
 	KEY_A					= 97,				
 	KEY_B					= 98,					
