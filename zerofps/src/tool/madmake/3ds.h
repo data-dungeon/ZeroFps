@@ -6,6 +6,7 @@
 
 #include "3dsdef.h"
 #include <cstdio>
+#include "mad.h"
 
 #include <vector>
 using namespace std;
@@ -89,6 +90,41 @@ public:
 
 	vector<material_c>	Material;
 	int			num_of_materials;
+};
+
+struct Chunk3DS {
+	unsigned short		id;
+	long				len;
+};
+
+
+
+class Modell3DS : public IMadImport
+{
+private:
+	part_c part3DS;	
+
+public:
+	Modell3DS() {};
+	~Modell3DS() {};
+
+	void Read( char* filename );	// Read data in own format to this.
+	bool Export(MadExporter* mad);	// Export this to mad.
+
+	int Read3DSChunk(FILE *fp, Chunk3DS &chunk);
+	int Chunk_CHUNK3DS_POINT_ARRAY(FILE *fp, part_c *part);
+	int Chunk_CHUNK3DS_TEX_VERTS(FILE *fp, part_c *part);
+	int Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen, long FileSize, part_c *part);
+	void ReadTRIObject(FILE *fp, long FileStart, long FileLen, long FileSize);
+	void ReadNamedObject(FILE *fp, long FileStart, long FileLen, long FileSize);
+	rgb_c Read_Color(FILE *fp, long FileStart, long FileLen, long FileSize);
+	texture_s Read_Map(FILE *fp, long FileStart, long FileLen, long FileSize);
+	material_c Read_MATERIAL_EDITOR(FILE *fp, long FileStart, long FileLen, long FileSize);
+	void ReadMDATA(FILE *fp, long FileStart, long FileLen, long FileSize);
+	void ReadM3DChunk(FILE *fp,long FileStart, long FileLen, long FileSize);
+//	int MatNameToIndex(pmd_c* pmd, char* name);
+
+
 };
 
 

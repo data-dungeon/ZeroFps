@@ -1,8 +1,21 @@
 #ifndef FILE__MDL_H
 #define FILE__MDL_H
 
-#include "pmd.h"
 #include "qpack.h"
+#include "mad.h"
+
+class Vector3
+{
+public:
+	float x,y,z;
+};
+
+struct pmd_triangle_s
+{
+	int				texture_num;		// texture for this triangle.
+	int				vertex_index[3];	// Vertex index of triangle.
+	int				texcoo_index[3];	// Texture coo for each vertex.
+};
 
 /*
 	d*_x is on-disk and in-memory. 
@@ -143,9 +156,11 @@ struct q2frame_t
 	md2_dtrivertx_t* vertex;
 };
 
-class ModellMD2
+class ModellMD2 : public IMadImport
 {
 public:
+	ModellMD2() {};
+	~ModellMD2() {};
 
 	PAKFileFp    md2fp;
 	q2mdlhead_s head;
@@ -153,8 +168,12 @@ public:
 	md2_dtriangle_t* tris;
 	q2frame_t* frames;
 
-	void ReadMD2( char* filename );
-	bool Export(pmd_c* pmd);
+	void Read( char* filename );	// Read data in own format to this.
+	bool Export(MadExporter* mad);	// Export this to mad.
+
+//	void ReadMD2( char* filename );
+//	bool Export(pmd_c* pmd);
+//	bool Export(MadExporter* mad);
 
 };
 

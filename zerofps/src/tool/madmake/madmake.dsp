@@ -101,10 +101,6 @@ SOURCE=.\md2.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\pmd.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\qpack.cpp
 # End Source File
 # End Group
@@ -126,10 +122,6 @@ SOURCE=.\mad.h
 # Begin Source File
 
 SOURCE=.\mdl.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\pmd.h
 # End Source File
 # Begin Source File
 

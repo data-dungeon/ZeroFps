@@ -98,12 +98,6 @@ material_c& material_c::operator = ( material_c& s )
 
 char*	ChunkFindName(int id );
 
-part_c part3DS;	
-
-struct Chunk3DS {
-	unsigned short		id;
-	long				len;
-};
 
 void PrintUnknownChunkInfo(int id, char* parentname)
 {
@@ -158,7 +152,7 @@ void Read3DSString(FILE *fp, char *name, int len)
 }
 
 // Read chunk header
-int Read3DSChunk(FILE *fp, Chunk3DS &chunk)
+int Modell3DS::Read3DSChunk(FILE *fp, Chunk3DS &chunk)
 {
 	if(!ReadShort(fp, chunk.id))	return false;
 	if(!ReadLong(fp, chunk.len))	return false;
@@ -170,7 +164,7 @@ int Read3DSChunk(FILE *fp, Chunk3DS &chunk)
 }
 
 // Reads a chunk of vertex. Returns num_vertxex.
-int Chunk_CHUNK3DS_POINT_ARRAY(FILE *fp, part_c *part)
+int Modell3DS::Chunk_CHUNK3DS_POINT_ARRAY(FILE *fp, part_c *part)
 {
 	unsigned short num_vertex;
 	ReadShort(fp, num_vertex);
@@ -186,7 +180,7 @@ int Chunk_CHUNK3DS_POINT_ARRAY(FILE *fp, part_c *part)
 	return num_vertex;
 }
 
-int Chunk_CHUNK3DS_TEX_VERTS(FILE *fp, part_c *part)
+int Modell3DS::Chunk_CHUNK3DS_TEX_VERTS(FILE *fp, part_c *part)
 {
 	unsigned short num_vertex;
 	ReadShort(fp, num_vertex);
@@ -201,7 +195,7 @@ int Chunk_CHUNK3DS_TEX_VERTS(FILE *fp, part_c *part)
 	return num_vertex;
 }
 
-int Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen, long FileSize, part_c *part)
+int Modell3DS::Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen, long FileSize, part_c *part)
 {
 	unsigned short num_faces, evis;
 	ReadShort(fp, num_faces);
@@ -262,7 +256,7 @@ int Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen, long FileS
 
 
 
-void ReadTRIObject(FILE *fp, long FileStart, long FileLen, long FileSize)
+void Modell3DS::ReadTRIObject(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	long		ChunkStart = ftell(fp);
 	Chunk3DS	chunk;
@@ -301,7 +295,7 @@ void ReadTRIObject(FILE *fp, long FileStart, long FileLen, long FileSize)
 	part3DS.num_surfaces = num_faces;
 }
 
-void ReadNamedObject(FILE *fp, long FileStart, long FileLen, long FileSize)
+void Modell3DS::ReadNamedObject(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	long	ChunkStart;
 	Chunk3DS chunk;
@@ -330,7 +324,7 @@ void ReadNamedObject(FILE *fp, long FileStart, long FileLen, long FileSize)
 }
 
 
-rgb_c Read_Color(FILE *fp, long FileStart, long FileLen, long FileSize)
+rgb_c Modell3DS::Read_Color(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	rgb_c	resultat_color;
 	unsigned char	r,g,b;
@@ -385,7 +379,7 @@ rgb_c Read_Color(FILE *fp, long FileStart, long FileLen, long FileSize)
 	return resultat_color;
 }
 
-texture_s Read_Map(FILE *fp, long FileStart, long FileLen, long FileSize)
+texture_s Modell3DS::Read_Map(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	long	ChunkStart = ftell(fp);
 	Chunk3DS chunk;
@@ -424,7 +418,7 @@ texture_s Read_Map(FILE *fp, long FileStart, long FileLen, long FileSize)
 }
 
 
-material_c Read_MATERIAL_EDITOR(FILE *fp, long FileStart, long FileLen, long FileSize)
+material_c Modell3DS::Read_MATERIAL_EDITOR(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	long	ChunkStart = ftell(fp);
 	Chunk3DS chunk;
@@ -483,7 +477,7 @@ material_c Read_MATERIAL_EDITOR(FILE *fp, long FileStart, long FileLen, long Fil
 }
 
 
-void ReadMDATA(FILE *fp, long FileStart, long FileLen, long FileSize)
+void Modell3DS::ReadMDATA(FILE *fp, long FileStart, long FileLen, long FileSize)
 {
 	long	ChunkStart = ftell(fp);
 	Chunk3DS chunk;
@@ -522,7 +516,7 @@ void ReadMDATA(FILE *fp, long FileStart, long FileLen, long FileSize)
 
 
 
-void ReadM3DChunk(FILE *fp,long FileStart, long FileLen, long FileSize)
+void Modell3DS::ReadM3DChunk(FILE *fp,long FileStart, long FileLen, long FileSize)
 {
 	long ChunkStart = ftell(fp);
 	Chunk3DS chunk;
@@ -552,7 +546,8 @@ void ReadM3DChunk(FILE *fp,long FileStart, long FileLen, long FileSize)
 		}
 }
 
-int MatNameToIndex(pmd_c* pmd, char* name)
+/*
+int Modell3DS::MatNameToIndex(pmd_c* pmd, char* name)
 {
 	vector<material_c>::iterator mi;
 	int i = 0;
@@ -570,64 +565,78 @@ int MatNameToIndex(pmd_c* pmd, char* name)
 		{
 			return i;
 		}
-	}*/
+	}
 
 	cout << "MAteral NOT FOUND \n" << endl;
 	return 0;
-}
+}*/
 
-
-void transfer_to_part(pmd_c *to)
+bool Modell3DS::Export(MadExporter* mad)
+//void transfer_to_part(pmd_c *to)
 {
 	int i;
 
-	to->head.num_of_vertex		= part3DS.num_vertex;
-	to->head.num_of_triangles	= part3DS.num_surfaces;
-	to->head.num_of_frames      = 1;
-	to->head.num_of_vertexcoo   = part3DS.num_vertex;
+	/*
+	int		iVersionNum;				// Version num.
+	int		iNumOfTextures;				// Num of textures used by mesh.
+	int		iNumOfSubMeshes;			// Num of texture coo.
+	int		iNumOfAnimation;			// Antal Animationer.
+	*/
 
-	to->frames = new pmd_vertexframe [to->head.num_of_frames];
-	to->frames[0].vertex = new Vector3 [to->head.num_of_vertex];
+	mad->kHead.iNumOfVertex		= part3DS.num_vertex;
+	mad->kHead.iNumOfFaces		= part3DS.num_surfaces;
+	mad->kHead.iNumOfFrames		= 1;
+	mad->kHead.iNumOfVertex		= part3DS.num_vertex;
+	mad->kHead.iNumOfTextures	= part3DS.Material.size();
 
-	//to->vertex		= new Vector3 [to->head.num_of_vertex];
-	to->triangle	= new pmd_triangle_s [to->head.num_of_triangles];
-	to->texture_coo = new pmd_texcoo_s [to->head.num_of_vertex];
+	mad->akFrames.resize(1);
+//	to->frames = new pmd_vertexframe [to->head.num_of_frames];
+//	to->frames[0].vertex = new Vector3 [to->head.num_of_vertex];
+//*	to->triangle	= new pmd_triangle_s [to->head.num_of_triangles];
+//*	to->texture_coo = new pmd_texcoo_s [to->head.num_of_vertex];
 
 	// Copy texture names
-	to->head.num_of_textures = part3DS.Material.size();
 	vector<material_c>::iterator mi;
 	i = 0;
 	for (mi = part3DS.Material.begin(); mi != part3DS.Material.end(); mi++, i++)
 	{
-		strcpy(to->textures[i].texname, mi->Texture.File_name);
+		strcpy(mad->akTextures[i].ucTextureName, mi->Texture.File_name);
 		mi->print();
-		char* extpos = strchr(to->textures[i].texname,'.');
+/*		char* extpos = strchr(to->textures[i].texname,'.');
 		if(extpos)
-			extpos[0] = 0;
+			extpos[0] = 0;*/
 	}
 
+	mad->akFrames[0].akVertex.resize(mad->kHead.iNumOfVertex);
+	mad->akTextureCoo.resize(mad->kHead.iNumOfVertex);
 
-	for(i=0; i<part3DS.num_vertex; i++) {
-		to->frames[0].vertex[i] = part3DS.vertex[i];
+	for(i=0; i<mad->kHead.iNumOfVertex; i++) {
+		mad->akFrames[0].akVertex[i].x = part3DS.vertex[i].x;
+		mad->akFrames[0].akVertex[i].y = part3DS.vertex[i].y;
+		mad->akFrames[0].akVertex[i].z = part3DS.vertex[i].z;
 		}
 
 	if(part3DS.mapcoo)	{
 		for(i=0; i<part3DS.num_vertex; i++) {
-			to->texture_coo[i].s = part3DS.mapcoo[i].x;
-			to->texture_coo[i].t = part3DS.mapcoo[i].y;
+			mad->akTextureCoo[i].s = part3DS.mapcoo[i].x;
+			mad->akTextureCoo[i].t = part3DS.mapcoo[i].y;
 			}
 		}
 	else
 		cout << "No Mapping Coo" << endl;
 
+	mad->akFaces.resize(mad->kHead.iNumOfFaces);
 	for(i=0; i<part3DS.num_surfaces; i++) {
-		to->triangle[i].vertex_index[0] = part3DS.surface[i].index[0];
+		mad->akFaces[i].iIndex[0] = part3DS.surface[i].index[0];
+		mad->akFaces[i].iIndex[1] = part3DS.surface[i].index[1];
+		mad->akFaces[i].iIndex[2] = part3DS.surface[i].index[2];
+/*		to->triangle[i].vertex_index[0] = part3DS.surface[i].index[0];
 		to->triangle[i].texcoo_index[0] = part3DS.surface[i].index[0];
 		to->triangle[i].vertex_index[1] = part3DS.surface[i].index[1];
 		to->triangle[i].texcoo_index[1] = part3DS.surface[i].index[1];
 		to->triangle[i].vertex_index[2] = part3DS.surface[i].index[2];
 		to->triangle[i].texcoo_index[2] = part3DS.surface[i].index[2];
-		to->triangle[i].texture_num = 0;
+		to->triangle[i].texture_num = 0;*/
 
 		//to->set_surface(i,3,vertexidx,&color);
 		/*if(part3DS.mapcoo)	{
@@ -645,7 +654,7 @@ void transfer_to_part(pmd_c *to)
 			}*/
 		}
 
-	vector<facemat_c>::iterator fmi;
+/*	vector<facemat_c>::iterator fmi;
 	for(fmi = part3DS.MaterialGroups.begin(); fmi != part3DS.MaterialGroups.end(); fmi++)
 	{
 		int matindex = MatNameToIndex(to, fmi->Name);
@@ -653,13 +662,25 @@ void transfer_to_part(pmd_c *to)
 		{
 			to->triangle[fmi->faces[i]].texture_num = matindex;	
 		}
-	}
+	}*/
 
+	Mad_Animation kNyAnimation;
+	Mad_KeyFrame kNyKeyF;
+	kNyAnimation.Clear();
+	strcpy(kNyAnimation.Name, "freeze"); 
+	kNyKeyF.Clear();
+	kNyKeyF.iVertexFrame = 0;
+	kNyKeyF.fFrameTime = 0.1;
+	kNyAnimation.KeyFrame.push_back(kNyKeyF);
+	mad->akAnimation.push_back(kNyAnimation);
+	
 	i=0;
+	return 0;
 }
 
 // Returns 0 on succ, !0 annars.
-int Read3DS(char *filename, pmd_c* to)
+void Modell3DS::Read( char* filename )
+//int Read3DS(char *filename, pmd_c* to)
 {
 	FILE *fp;
 	long FileSize;
@@ -668,7 +689,7 @@ int Read3DS(char *filename, pmd_c* to)
 	// Open 3ds file.
 	fp=fopen(filename, "rb");
 
-	if(!fp)	return false;
+	if(!fp)	return;
 
 	long ChunkStart = ftell(fp);
 
@@ -692,11 +713,10 @@ int Read3DS(char *filename, pmd_c* to)
  
 	fclose(fp);
 
-	transfer_to_part(to);
-	part3DS.clear();
+//	part3DS.clear();
 //	to->create_vertexnormals();
 
-	return true;
+	return;
 }
 
 part_c::part_c()

@@ -3,15 +3,16 @@
 
 #include <cstring>
 #include <iostream>
-#include "pmd.h"
 #include "mad.h"
+#include "mdl.h"
+#include "3ds.h"
 #include "qpack.h"
 
 using namespace std;
 
 #define PMDMAKE_VERSION	"0.1"
 
-int Read3DS(char *filename, pmd_c* to);
+//int Read3DS(char *filename, pmd_c* to);
 
 /*
 	madmake [-options] [infile] [outfile]
@@ -49,7 +50,26 @@ bool Print_Help(void)
 	return true;
 }
 
-bool ReadQuakeSeriesModell(pmd_c* pmd, char* filename);
+IMadImport* GetImportObject(char *filename)
+{
+	IMadImport* pkImport = NULL;
+
+	char* ext = strchr(ucaInFile, '.');
+	
+	if(strcmp(ext, ".md2") == 0)
+	{
+		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
+		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
+		pkImport = new ModellMD2;
+	}
+
+	if(strcmp(ext, ".3ds") == 0) 
+	{
+		pkImport = new Modell3DS;
+	}
+
+	return pkImport;
+}
 
 int main(int argc, char* argv[])
 {
@@ -57,7 +77,7 @@ int main(int argc, char* argv[])
 	int FirstParameterIndex = 0;
 
     // Parse commandline options
-    int iCurArg;
+/*    int iCurArg;
     for( iCurArg = 1; iCurArg < argc; ++iCurArg ) {
 		// Check if its a option switch.
         if( *argv[ iCurArg ] == '-' ) 
@@ -100,32 +120,26 @@ int main(int argc, char* argv[])
 
 	strcpy(ucaInFile, argv[iCurArg]);
 	strcpy(ucaOutFile, argv[iCurArg + 1]);
-
+*/
 	
-	//strcpy(ucaInFile, "tris.md2");
-	//strcpy(ucaOutFile, "quad.mad");
+	strcpy(ucaInFile, "ship.3ds");
+	strcpy(ucaOutFile, "ship.mad");
 	strcpy(ucaTextureNames, "testtex.tga");
 
 	cout << "InFile: " << ucaInFile << endl;
 	cout << "ucaOutFile: " << ucaOutFile << endl;
 
-	char* ext = strchr(ucaInFile, '.');
 	
-	pmd_c Test;
-	
-	if(strcmp(ext, ".3ds") == 0)
-		Read3DS( ucaInFile ,&Test);
-	if(strcmp(ext, ".md2") == 0)
-	{
-		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
-		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
-		ReadQuakeSeriesModell(&Test,ucaInFile);
-	}
+	IMadImport* pkImport = GetImportObject(ucaInFile);
+	if(pkImport == NULL) {
+		cout << "No importer found for object of type " << ucaInFile << endl;
+		return 1;
+		}
 
 	MadExporter madexp;
-	madexp.ImportPMD(&Test);
+	pkImport->Read(ucaInFile);
+	pkImport->Export(&madexp);
 	madexp.Save(ucaOutFile);
 
 	return 0;
-
 }

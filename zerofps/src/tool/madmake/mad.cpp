@@ -8,7 +8,7 @@
 #include "mad.h"
 #include "vector"
 #include "iostream"
-#inclide <cstdio>
+#include <cstdio>
 
 using namespace std;
 
@@ -24,6 +24,7 @@ MadExporter::~MadExporter()
 
 }
 
+/*
 void MadExporter::ImportPMD(pmd_c* pmd)
 {
 	int i;
@@ -43,23 +44,27 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 	for(i=0; i<kHead.iNumOfTextures; i++)
 		strcpy(akTextures[i].ucTextureName, pmd->textures[i].texname);
 
-	pakFrames			= new Mad_VertexFrame [kHead.iNumOfFrames];
-	pakSubMeshes		= new Mad_SubMesh [kHead.iNumOfSubMeshes];
-	pakFaces			= new MadFace [kHead.iNumOfFaces];
-	pakVertexNormals	= new MadVertex [kHead.iNumOfVertex];
-	pakFaceNormals		= new MadVertex [kHead.iNumOfFaces];
+	akFrames.resize(kHead.iNumOfFrames);
+	akFaces.resize(kHead.iNumOfFaces);
+	akSubMeshes.resize(kHead.iNumOfSubMeshes);
+//	pakSubMeshes		= new Mad_SubMesh [kHead.iNumOfSubMeshes];
+//	pakFaces			= new MadFace [kHead.iNumOfFaces];
+//	pakFrames			= new Mad_VertexFrame [kHead.iNumOfFrames];
+//	pakVertexNormals	= new MadVertex [kHead.iNumOfVertex];
+//	pakFaceNormals		= new MadVertex [kHead.iNumOfFaces];
 
+	
 	// Copy Submeshes.
-	pakSubMeshes->iFirstTriangle	= 0;
-	pakSubMeshes->iTextureIndex		= 0;
-	pakSubMeshes->iNumOfTriangles	= kHead.iNumOfFaces;
+	akSubMeshes[0].iFirstTriangle	= 0;
+	akSubMeshes[0].iTextureIndex	= 0;
+	akSubMeshes[0].iNumOfTriangles	= kHead.iNumOfFaces;
 
 	// Copy Faces
 	for(i=0; i<kHead.iNumOfFaces; i++) 
 	{
-		pakFaces[i].iIndex[0] = pmd->triangle[i].vertex_index[0];
-		pakFaces[i].iIndex[1] = pmd->triangle[i].vertex_index[1];
-		pakFaces[i].iIndex[2] = pmd->triangle[i].vertex_index[2];
+		akFaces[i].iIndex[0] = pmd->triangle[i].vertex_index[0];
+		akFaces[i].iIndex[1] = pmd->triangle[i].vertex_index[1];
+		akFaces[i].iIndex[2] = pmd->triangle[i].vertex_index[2];
 	}
 
 	MadTextureCoo kNyTextureCoo;
@@ -79,7 +84,7 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 	{
 		for(int v = 0; v<3; v++)
 		{
-			int iActiveIndex = pakFaces[i].iIndex[v];
+			int iActiveIndex = akFaces[i].iIndex[v];
 			kNyTextureCoo.s = pmd->texture_coo[pmd->triangle[i].texcoo_index[v]].s;
 			kNyTextureCoo.t = pmd->texture_coo[pmd->triangle[i].texcoo_index[v]].t;
 
@@ -104,7 +109,7 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 					kTextureCoo.push_back(kNyTextureCoo);
 					// Insert ny vertex vid slutet av listan. Sätt index till orginal vertex index.
 					kVertexBufferIndex.push_back(iActiveIndex);
-					pakFaces[i].iIndex[v] = kVertexBufferIndex.size() - 1;
+					akFaces[i].iIndex[v] = kVertexBufferIndex.size() - 1;
 				}
 			}
 		}
@@ -118,22 +123,24 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 	// Cope Vertex Frame Data.
 	for(int f=0; f<kHead.iNumOfFrames; f++) {
 		// Create memory
-		pakFrames[f].pVertex = new MadVertex [iNewNumOfVertex];
+//		pakFrames[f].pVertex = new MadVertex [iNewNumOfVertex];
+		akFrames[f].akVertex.resize(iNewNumOfVertex);
 
 		for(int v=0; v < iNewNumOfVertex; v++) {
 
-			pakFrames[f].pVertex[v].x = pmd->frames[f].vertex[kVertexBufferIndex[v]].x;
-			pakFrames[f].pVertex[v].y = pmd->frames[f].vertex[kVertexBufferIndex[v]].y;
-			pakFrames[f].pVertex[v].z = pmd->frames[f].vertex[kVertexBufferIndex[v]].z;
+			akFrames[f].akVertex[v].x = pmd->frames[f].vertex[kVertexBufferIndex[v]].x;
+			akFrames[f].akVertex[v].y = pmd->frames[f].vertex[kVertexBufferIndex[v]].y;
+			akFrames[f].akVertex[v].z = pmd->frames[f].vertex[kVertexBufferIndex[v]].z;
 			}
 	}
 
 
-	pakTextureCoo		= new MadTextureCoo [kHead.iNumOfVertex];
+//	pakTextureCoo		= new MadTextureCoo [kHead.iNumOfVertex];
+	akTextureCoo.resize(kHead.iNumOfVertex);
 	for(i = 0; i<iNewNumOfVertex;i++)
 	{
-		pakTextureCoo[i].s = kTextureCoo[i].s;
-		pakTextureCoo[i].t = kTextureCoo[i].t;
+		akTextureCoo[i].s = kTextureCoo[i].s;
+		akTextureCoo[i].t = kTextureCoo[i].t;
 	}
 
 	// Import Animations.
@@ -156,9 +163,10 @@ void MadExporter::ImportPMD(pmd_c* pmd)
 			kNyAnimation.KeyFrame.push_back(kNyKeyF);
 		}
 
-		Animation.push_back(kNyAnimation);
+		akAnimation.push_back(kNyAnimation);
 	}
 }
+*/
 
 void MadExporter::Save(char* filename)
 {
@@ -170,23 +178,23 @@ void MadExporter::Save(char* filename)
 	fwrite((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
 
 	// Write Texture Coo
-	fwrite((void *)pakTextureCoo,sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
+	fwrite((void *)&akTextureCoo[0],sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
 
 	// Write Alla vertex Frames.
 	for(int i=0; i<kHead.iNumOfFrames; i++)
-		fwrite(pakFrames[i].pVertex,sizeof(MadVertex),kHead.iNumOfVertex,fp);
+		fwrite(&akFrames[i].akVertex[0],sizeof(MadVertex),kHead.iNumOfVertex,fp);
 
 	// Write triangles.
-	fwrite(pakFaces,sizeof(MadFace),kHead.iNumOfFaces,fp);
+	fwrite(&akFaces[0],sizeof(MadFace),kHead.iNumOfFaces,fp);
 
 	// Write Animations.
-	int iNumOfAnimations = this->Animation.size();
+	int iNumOfAnimations = this->akAnimation.size();
 	fwrite(&iNumOfAnimations,sizeof(int), 1 ,fp);
 
 	vector<Mad_Animation>::iterator		itAnim;
 	vector<Mad_KeyFrame>::iterator		itKeyF;
 
-	for(itAnim = Animation.begin(); itAnim != Animation.end(); itAnim++)
+	for(itAnim = akAnimation.begin(); itAnim != akAnimation.end(); itAnim++)
 	{
 		fwrite(itAnim->Name,sizeof(char), 64 ,fp);
 		int iNumOfKeyFrames = itAnim->KeyFrame.size();
@@ -201,7 +209,23 @@ void MadExporter::Save(char* filename)
 	fclose(fp);
 }
 
+Mad_Animation*	MadExporter::GetAnimation(char* ucaName)
+{
+	vector<Mad_Animation>::iterator it;
 
+	for(it = akAnimation.begin(); it != akAnimation.end(); it++)
+	{
+		if(strcmp(it->Name, ucaName) == 0)
+			return it;
+	}
+
+	// Finns ingen animation med det namnet så skapa den och returnera den.
+	Mad_Animation kNewAnim;
+	kNewAnim.Clear();
+	strcpy(kNewAnim.Name, ucaName);
+	akAnimation.push_back(kNewAnim);
+	return &akAnimation.back();
+}
 
 
 void Mad_KeyFrame::Clear(void)

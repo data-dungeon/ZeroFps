@@ -6,9 +6,20 @@
 #include <vector>
 using namespace std;
 
+class MadExporter;
+
+/*
+Bas klass för alla klasser som kan importeras till MAD.
+*/
+class IMadImport
+{
+public:
+	virtual ~IMadImport() {};
+	virtual	void Read( char* filename )	= 0;	// Read data in own format to this.
+	virtual	bool Export(MadExporter* mad) = 0;	// Export this to mad.
+};
+
 // MAD FILE STRUCTURES.
-
-
 struct MadVertex
 {
 	float x,y,z;
@@ -49,7 +60,7 @@ struct Mad_SubMesh
 
 struct Mad_VertexFrame
 {
-	MadVertex*	pVertex;				// Vertices.
+	vector<MadVertex>	akVertex;
 };
 
 class Mad_KeyFrame
@@ -75,26 +86,24 @@ public:
 class MadExporter
 {
 public:
-	Mad_Header			kHead;
-	Mad_Texture			akTextures[MAX_MAD_TEXTURES];
+	Mad_Header				kHead;
+	Mad_Texture				akTextures[MAX_MAD_TEXTURES];
 
-	MadTextureCoo*		pakTextureCoo;
-	Mad_VertexFrame*	pakFrames;
-	Mad_SubMesh*		pakSubMeshes;
-	MadFace*			pakFaces;
-
-	MadVertex*			pakVertexNormals;
-	MadVertex*			pakFaceNormals;
-
-	vector<Mad_Animation>	Animation;
-
+	vector<MadTextureCoo>	akTextureCoo;
+	vector<MadFace>			akFaces;
+	vector<Mad_VertexFrame>	akFrames;
+	vector<Mad_SubMesh>		akSubMeshes;
+	vector<Mad_Animation>	akAnimation;
+	
 	MadExporter();
 	~MadExporter();
 
 	void Save(char* filename);
 	void Load(char* filename);
 
-	void ImportPMD(pmd_c* pmd);
+//	void ImportPMD(pmd_c* pmd);
+
+	Mad_Animation*	GetAnimation(char* ucaName);
 };
 
 #endif
