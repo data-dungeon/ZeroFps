@@ -1,5 +1,11 @@
 #include "ZeroFps.h"
 
+ZeroFps::ZeroFps(void) {
+	m_pkCmdSystem=new CmdSystem;
+
+
+}
+
 
 void ZeroFps::SetApp() {
 	m_pkApp=Application::pkApp;
@@ -19,12 +25,6 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 	m_iState=state_normal;								//init gamestate to normal
 	
 	m_pkApp->OnInit();										//call the applications oninit funktion
-
-
-	blub=5;
-	m_pkCmdSystem->add(&blub,"blub",1);
-//	m_pkCmdSystem->list();
-	
 	
 	MainLoop();														//jump to mainloop
 }

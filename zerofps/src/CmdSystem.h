@@ -3,15 +3,16 @@
 
 #include <vector>
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
 enum data_types {
-	integer,
-	floatingpoint
+	type_int,
+	type_float,
+	type_double,
+	type_long	
 };
-
-
 
 struct variable {
 	char* aName;
@@ -22,15 +23,17 @@ struct variable {
 
 class CmdSystem {
 	private:
-		vector<int> kVars;
+		vector<variable*> kVars;
+		double GetVar(int i);
+		
 		
 	public:
 		CmdSystem(void);
 		
-		void add(void* pAddress,char* aName,int iType);
-		
-		void* get(char* aName);
+		void add(void* pAddress,char* aName,int iType);		
+		void get(char* aName);
 		void list(void);
+		void set(char* aName,double);
 
 };
 

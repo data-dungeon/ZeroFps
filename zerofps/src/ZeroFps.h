@@ -10,6 +10,7 @@
 
 class Application;
 
+#define pkCmd m_pkCmdSystem
 
 enum enginestates {
 	state_normal,
@@ -18,19 +19,17 @@ enum enginestates {
 	state_pause
 };
 
-
-
-
 class ZeroFps {
 	private:
 		Application* m_pkApp;		
 		CmdSystem* m_pkCmdSystem;
 		
 		int m_iState;
-		int blub;		
 		void HandleArgs(int iNrOfArgs, char** paArgs);
 
 	public:
+		ZeroFps(void);
+		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);
