@@ -87,3 +87,17 @@ ZGuiFont* ZGuiResourceManager::Add(string szName, ZGuiFont* pkNewFont)
 
 	return pkExisting;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
