@@ -80,7 +80,7 @@ bool P_ServerInfo::PlayerExist(int id)
 }
 
 
-void P_ServerInfo::AddObject(int id,int iObjID)
+void P_ServerInfo::AddObject(int id,int iObjID,int iRights)
 {
 	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
 	{
@@ -88,11 +88,11 @@ void P_ServerInfo::AddObject(int id,int iObjID)
 		{
 			for(int i = 0;i<(*it).kControl.size();i++)
 			{
-				if((*it).kControl[i] == iObjID)
+				if((*it).kControl[i].first == iObjID)
 					return;
 			}
 			
-			(*it).kControl.push_back(iObjID);
+			(*it).kControl.push_back(pair<int,int>(iObjID,iRights));
 		}
 	}
 }
@@ -103,9 +103,9 @@ void P_ServerInfo::RemoveObject(int id,int iObjID)
 	{
 		if((*it).iId == id)
 		{
-			for(vector<int>::iterator it2 = (*it).kControl.begin(); it2 != (*it).kControl.end(); it2++)
+			for(vector<pair<int,int> >::iterator it2 = (*it).kControl.begin(); it2 != (*it).kControl.end(); it2++)
 			{
-				if((*it2) == iObjID)
+				if((*it2).first == iObjID)
 				{
 					(*it).kControl.erase(it2);
 					return;
@@ -164,7 +164,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket )
 		
 		for(int i =0;i<objects;i++)
 		{	
-			int t;
+			pair<int,int> t;
 			pkNetPacket->Read(&t,sizeof(t));
 			temp.kControl.push_back(t);
 		}

@@ -75,9 +75,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistClient::OnInit() 
 {
-	pkConsole->Printf(" MistClient");
+	pkConsole->Printf(" MistClient , im scarred  =/");
 	pkConsole->Printf("--------------------------------");
-	pkConsole->Printf(" ugga?");
+	pkConsole->Printf(" ugga?  blub?");
 
 	Init();
 
@@ -239,7 +239,7 @@ void MistClient::OnSystem()
 		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
 		if(pi)
 		{
-			int id = pi->kControl[m_iActiveCaracter];	
+			int id = pi->kControl[m_iActiveCaracter].first;	
 			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
 			if(pkObj)
@@ -349,27 +349,23 @@ void MistClient::Input()
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
-			ClientOrder order;
-			order.m_sOrderName = "Klicka";
-			order.m_iClientID = pkFps->GetConnectionID();
-			order.m_iObjectID = 0;
-			
-	
-			if(m_pkClientControlP)
-				m_pkClientControlP->AddOrder(order);
-	
-	
 			Object* pkObject = GetTargetObject();
 			
 			if(pkObject)
 			{
-				P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");
-				if(pe)
-				{	
-					pe->SendEvent("Use");
-				}
-			} 
+				if(m_pkClientControlP)
+				{
+					ClientOrder order;
+					order.m_sOrderName = "Klicka";
+					order.m_iClientID = pkFps->GetConnectionID();
+					order.m_iObjectID = pkObject->iNetWorkID;				
+				
+					m_pkClientControlP->AddOrder(order);			
+				} 
+			}
+			
 			m_fClickDelay = pkFps->GetTicks();		
+			
 		}
 	}
 

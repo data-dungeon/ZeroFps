@@ -551,7 +551,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	if(m_pkServerInfoP)
 	{	
 		m_pkServerInfoP->AddPlayer(iConID,kNames[iConID].c_str());
-		m_pkServerInfoP->AddObject(iConID,iPlayerID);
+		m_pkServerInfoP->AddObject(iConID,iPlayerID,1);
 	}
 }
 
@@ -930,6 +930,17 @@ void MistServer::HandleOrders()
 	{
 		ClientOrder* order = P_ClientControl::GetNextOrder();
 		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
+		
+		Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+		if(ob)
+		{
+			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+			if(pe)
+			{	
+				pe->SendEvent("Use");
+			}			
+		}
+		
 		P_ClientControl::PopOrder();
 	}
 

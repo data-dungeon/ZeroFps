@@ -14,7 +14,7 @@ struct MCOMMON_API PlayerInfo
 {
 	int		iId;
 	string	sPlayerName;
-	vector<int>	kControl;
+	vector<pair<int,int> >	kControl;
 };
 
 class MCOMMON_API P_ServerInfo: public Property {
@@ -34,7 +34,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 		
 		PlayerInfo* GetPlayerInfo(int id);
 		
-		void AddObject(int id,int iObjID);
+		void AddObject(int id,int iObjID,int iRights);
 		void RemoveObject(int id,int iObjID);		
 		void AddPlayer(int id,string sName);
 		void RemovePlayer(int id);

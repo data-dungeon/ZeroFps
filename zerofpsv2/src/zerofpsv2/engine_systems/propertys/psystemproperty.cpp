@@ -37,7 +37,7 @@ PSystemProperty::PSystemProperty()
 	m_iSortPlace =	9;
 
 	strcpy(m_acName,"PSystemProperty");
-	m_pkPSystem = 0;
+	m_pkPSystem = NULL;
 
 }
 
@@ -120,7 +120,7 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
 
 void PSystemProperty::PackTo( NetPacket* pkNetPacket ) 
 {
-//   pkNetPacket->Write( m_pkPSystem->m_pkPSystemType->m_kName );
+   pkNetPacket->Write_Str( m_kPSType.c_str() );
 //	pkNetPacket->Write( m_pkPSystem->m_fAge );
 }
 
@@ -128,6 +128,16 @@ void PSystemProperty::PackTo( NetPacket* pkNetPacket )
 
 void PSystemProperty::PackFrom( NetPacket* pkNetPacket ) 
 {
+	char temp[128];
+	pkNetPacket->Read_Str(temp);
+	m_kPSType = temp;	
+	
+	if(!m_pkPSystem)
+		SetPSType( m_kPSType );
+	else	
+		if(m_pkPSystem->m_pkPSystemType->m_kName != m_kPSType)
+			SetPSType( m_kPSType );		
+
 //   pkNetPacket->Read( m_pkPSystem->m_pkPSystemType->m_kName );
 //	pkNetPacket->Read( m_pkPSystem->m_fAge );
 
