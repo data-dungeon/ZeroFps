@@ -12,6 +12,7 @@ function Create()
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 
+
 end
 
 function FirstRun()
