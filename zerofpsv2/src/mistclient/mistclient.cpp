@@ -1205,8 +1205,8 @@ void MistClient::SetActiveCaracter(bool bEnabled)
 					}				
 					
 					//enable skybox
-					P_SkyBoxRender* sb = (P_SkyBoxRender*)pkObj->AddProperty("P_SkyBoxRender");
-					sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");						
+//					P_SkyBoxRender* sb = (P_SkyBoxRender*)pkObj->AddProperty("P_SkyBoxRender");
+//					sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");						
 						
 					//enable enviroment for this caracter
 					if(ep)

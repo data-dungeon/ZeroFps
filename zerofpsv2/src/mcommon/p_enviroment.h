@@ -15,6 +15,7 @@
 
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "../zerofpsv2/engine_systems/propertys/p_light.h"
+#include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 
 using namespace std;
 
@@ -29,6 +30,8 @@ class MCOMMON_API EnvSetting : public ZFResource
 	
 		string	m_strMusic;
 		string	m_strParticles;
+		string	m_strSkybox1;		
+		string	m_strSkybox2;				
 		
 		Vector4	m_kSunDiffuseColor;
 		Vector4	m_kSunAmbientColor;		

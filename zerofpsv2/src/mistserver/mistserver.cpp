@@ -719,9 +719,9 @@ void MistServer::OnServerStart(void)
 		m_pkCameraObject->GetSave() = false;
 		
 		//eye candy for server
-		P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
+		//P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
 		//sb->SetTexture("data/textures/env/plainsky/sky","mode6");
-		sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");
+		//sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");
 		
 		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		

@@ -31,6 +31,11 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		if(m_kIni.KeyExist("enviroment","particles"))
 			m_strParticles = m_kIni.GetValue("enviroment","particles");
 	
+		//--------------Skybox
+		if(m_kIni.KeyExist("enviroment","skybox1"))
+			m_strSkybox1 = m_kIni.GetValue("enviroment","skybox1");	
+		if(m_kIni.KeyExist("enviroment","skybox2"))
+			m_strSkybox2 = m_kIni.GetValue("enviroment","skybox2");	
 	
 		//---------------FOG
 		//fog start/stop
@@ -95,6 +100,8 @@ void EnvSetting::Clear()
 {
 	m_strMusic		= "";
 	m_strParticles = "";
+	m_strSkybox1	= "";
+	m_strSkybox2	= "";
 	
 	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1);					
 	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
@@ -251,6 +258,14 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 		m_pkMusic->Play();
 	}
 
+	//setup skybox property
+	if(es->m_strSkybox1 != "" && es->m_strSkybox2 != "")
+	{
+		P_SkyBoxRender* ps = (P_SkyBoxRender*)m_pkObject->AddProperty("P_SkyBoxRender");	
+		if(ps)
+			ps->SetTexture(es->m_strSkybox1.c_str(),es->m_strSkybox2.c_str());
+	}
+
 
 	//setup particle property
 	if(es->m_strParticles != "")
@@ -260,8 +275,7 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 			ps->SetPSType(es->m_strParticles);
 	}
 	
-	//setup light property
-	
+	//setup light property	
 	P_Light* pl = (P_Light*)m_pkObject->GetProperty("P_Light");		
 	if(!pl)
 		pl = (P_Light*)m_pkObject->AddProperty("P_Light");	
@@ -296,6 +310,7 @@ void P_Enviroment::ResetEnviroment()
 	//m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
 	m_pkObject->DeleteProperty("P_PSystem");
 	m_pkObject->DeleteProperty("P_AmbientSound");
+	m_pkObject->DeleteProperty("P_SkyBoxRender");	
 	
 	m_pkCurrentLP = NULL;
 	m_kSunDiffuseColor.Set(1,1,1,1);
