@@ -71,7 +71,7 @@ class Game :public Application {
 
 	public:
 	
-		bool DragAndDropItem(int mx, int my, ItemBox::slot** ppkMoveItem, 
+		bool DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem, 
 			ItemBox* pkItemBoxFrom, ItemBox* pkItemBoxTo);
 		void OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x=-1, int y=-1);
 		void OpenContainer();

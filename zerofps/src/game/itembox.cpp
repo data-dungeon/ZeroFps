@@ -48,6 +48,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				m_pkMoveItem = &m_akSlots[i];
 				m_pkMoveItem->first->SetZValue(s_iButtonSlotIDCounter+1);
 				m_pkDlgBox->SortChilds();
+				m_pkGui->SetCaptureToWnd(m_pkDlgBox);
 				break;
 			}
 		}
@@ -55,6 +56,8 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 
 	case ZGM_LBUTTONUP:
 		{
+			m_pkGui->KillWndCapture();
+
 			if(m_pkMoveItem == NULL)
 				return false;
 
@@ -122,7 +125,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 
 	case ZGM_MOUSEMOVE:
 
-		if(m_pkMoveItem)
+		if(m_pkMoveItem && ((int*)pkParams)[0] == 1)
 		{
 			int mx = ((int*)pkParams)[1]; 
 			int my = ((int*)pkParams)[2]; 
@@ -185,12 +188,12 @@ void ItemBox::Update()
 		return;
 	}
 
-	unsigned int iNumItems = m_pkContainer->GetNrOfItems();
+	unsigned int uiNumItems = m_pkContainer->GetNrOfItems();
 
 	// Kolla om några nya knappar behövs läggas till.
-	if(iNumItems > m_akSlots.size())
+	if(uiNumItems > m_akSlots.size())
 	{
-		for(unsigned int i=0; i<iNumItems; i++)
+		for(unsigned int i=0; i<uiNumItems; i++)
 		{
 			GuiData kData = m_pkContainer->GetGuiData(i);  
 			if(!ButtonSlotExist(kData.iPosX, kData.iPosY))
@@ -198,17 +201,17 @@ void ItemBox::Update()
 		}
 	}
 	else
-	// Kolla om några nya knappar behövs ta borts.
-	if(m_akSlots.size() > iNumItems)
+	// Kolla om några knappar behövs ta borts.
+	if(m_akSlots.size() > uiNumItems)
 	{
 		vector<slot_pos> kRemoveVector;
-		vector<slot>::iterator it;
-		vector<slot_pos>::iterator it2;
 
+		vector<slot>::iterator it;
 		for(it = m_akSlots.begin(); it != m_akSlots.end(); it++)
 			if(m_pkContainer->GetItem(it->second.first,it->second.second)==NULL)
 				kRemoveVector.push_back(it->second);
 
+		vector<slot_pos>::iterator it2;
 		for(it2 = kRemoveVector.begin(); it2 != kRemoveVector.end(); it2++)
 			RemoveSlot(it2->first, it2->second);
 	}
@@ -403,3 +406,14 @@ Object* ItemBox::GetItemObject(int mx, int my)
 }
 
 
+
+void ItemBox::ResetMoveItem()
+{
+	if(m_pkMoveItem)
+	{
+	/*	int x = m_ciTopX + m_pkMoveItem->second.first*m_ciSlotSize;
+		int y = m_ciTopY + m_pkMoveItem->second.second*m_ciSlotSize;
+		m_pkMoveItem->first->SetPos(x, y,true,true);*/
+		m_pkMoveItem = NULL;
+	}
+}

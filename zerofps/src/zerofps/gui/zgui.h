@@ -60,6 +60,10 @@ class GUI_API ZGui
 {
 public:	
 	
+	ZGuiWnd* GetWndCapture();
+	void KillWndCapture();
+	void SetCaptureToWnd(ZGuiWnd* pkWnd);
+
 	ZGuiWnd* GetMainWindowFromPoint(int x, int y);
 	bool MouseHoverWnd();
 	bool ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName);
@@ -165,6 +169,8 @@ private:
 
 	map<int, ZGuiFont*> m_pkFonts;
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
+
+	ZGuiWnd* m_pkCapturedWindow;
 
 };
 

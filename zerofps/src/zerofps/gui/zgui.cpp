@@ -18,6 +18,7 @@
 
 ZGui::ZGui()
 {
+	m_pkCapturedWindow = NULL;
 	m_bHoverWindow = false;
 	m_iHighestZWndValue = 10;
 
@@ -320,29 +321,40 @@ bool ZGui::OnMouseUpdate()
 		cx = x; cy = y;
 	}
 
-
 	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
 	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
 
 	if(m_pkActiveMainWin == NULL)
 		return false;
 
-	// Skall vi byta main window?
-	MAIN_WINDOW* wnd;
-	if((bLeftButtonDown && m_bLeftButtonDown==false) && 
-		(wnd = FindMainWnd(x,y)))
+	if(m_pkCapturedWindow == NULL)
 	{
-		if(wnd != m_pkActiveMainWin)
+		// Skall vi byta main window?
+		MAIN_WINDOW* wnd;
+		if((bLeftButtonDown && m_bLeftButtonDown==false) && 
+			(wnd = FindMainWnd(x,y)))
 		{
-			SetFocus(wnd->pkWnd);
-			return true;
+			if(wnd != m_pkActiveMainWin)
+			{
+				SetFocus(wnd->pkWnd);
+				return true;
+			}
 		}
+	}
+	else
+	{
+		m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
 	}
 
 	if(!m_pkActiveMainWin->pkWnd) 
 		return false;
 
-	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
+	ZGuiWnd* pkFocusWindow;
+	
+	if(m_pkCapturedWindow == NULL)
+		pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
+	else 
+		pkFocusWindow = m_pkCapturedWindow;
 	
 	// Registrer if mouse pointer moves over a window.
 	if(pkFocusWindow == NULL)
@@ -1579,4 +1591,19 @@ ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)
 		return NULL;
 
 	return best->pkWnd; 
+}
+
+void ZGui::SetCaptureToWnd(ZGuiWnd* pkWnd)
+{
+	m_pkCapturedWindow = pkWnd;
+}
+
+void ZGui::KillWndCapture()
+{
+	m_pkCapturedWindow = NULL;
+}
+
+ZGuiWnd* ZGui::GetWndCapture()
+{
+	return m_pkCapturedWindow;
 }
