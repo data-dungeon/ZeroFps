@@ -32,9 +32,11 @@
 #include "p_renderselection.h"
 #include "p_fogrender.h"
 #include "p_unitmoveai.h"
+#include "p_unitattackai.h"
 #include "tileengine.h"
 #include "p_unitsystem.h"
 #include "p_unitattackai.h"
+#include "p_unitbuildai.h"
 
 
 

@@ -73,7 +73,9 @@ class object
 		class ZeroRTSJeep
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
-			add P_UnitAttackAI						
+			add P_UnitAttackAI
+			add P_UnitBuildAI
+			set P_UnitBuildAI m_uiTechLevel 1						
 			set MadProperty m_kMadFile /data/mad/rts/unit/jeep.mad
 			set MadProperty m_fScale 0.3
 

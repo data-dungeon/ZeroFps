@@ -58,7 +58,13 @@ void ConstructionManager::Init(char* szTechTreeINIFile)
 
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkTileEngine = TileEngine::GetInstance();
-	
+	//////////////////////////////////////
+	//// gubb was here :)
+	cout<<"----------------------------------------------------" <<endl
+		 <<"				ConstructionApa Init" <<endl
+		 <<"----------------------------------------------------" <<endl;
+
+	////////////////////////////////////////7
 	if(pkIni)
 	{
 		if(!pkIni->Open(szTechTreeINIFile, false))
@@ -96,7 +102,8 @@ void ConstructionManager::Init(char* szTechTreeINIFile)
 				kNewStructure.ucID, kNewStructure ) );
 
 			if(kNewStructure.ucTechLevel > m_cMaxTechLevel)
-				kNewStructure.ucTechLevel = m_cMaxTechLevel;
+				//kNewStructure.ucTechLevel = m_cMaxTechLevel;
+				m_cMaxTechLevel = kNewStructure.ucTechLevel ;
 
 			m_kAllStructures.push_back(kNewStructure);
 		}

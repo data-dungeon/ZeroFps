@@ -122,6 +122,7 @@ void ZeroRTS::RegisterActions()
 
 void ZeroRTS::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_UnitBuildAI", Create_P_UnitBuildAI);
 	pkPropertyFactory->Register("P_UnitAttackAI", Create_P_UnitAttackAI);
 	pkPropertyFactory->Register("P_UnitSystem", Create_P_UnitSystem);	
 	pkPropertyFactory->Register("P_UnitMoveAI", Create_P_UnitMoveAI);	
@@ -487,6 +488,9 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
+			//flyttade den här lite så den initieras innan objekten /gubb
+			m_pkConstructMan->Init("techtree.txt");
+			///
 			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
@@ -506,7 +510,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			//setup tile engine
 			m_pkTileEngine->CreateMap();
-			m_pkConstructMan->Init("techtree.txt");
+			
 			
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			g_ZFObjSys.RunCommand("server Default server");	
