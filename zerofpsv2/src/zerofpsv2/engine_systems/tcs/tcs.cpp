@@ -232,8 +232,8 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	Vector3 kRotVel2 = pkCol->pkBody2->m_kRotVelocity;
 
 	//if thers no relativ velocity, ther can be no collission
-	if(kLinearRelVel.Length() == 0)
-		return;	
+	//if(kLinearRelVel.Length() == 0)
+	//	return;	
 	
 	//setup Masses, treat static bodys as having infinit mass	
 	if(pkCol->pkBody1->m_bStatic)
@@ -268,6 +268,14 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		//Vector3 kRelVel = kLinearRelVel + (((pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos).Unit()*0.25).Cross(kRotVel1) - ((pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos).Unit()*0.25).Cross(kRotVel2));		
 		Vector3 kRelVel = kLinearRelVel + (-kRotVel1.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - -kRotVel2.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos));		
 		//Vector3 kRelVel = pkCol->pkBody1->GetVel(pkCol->kPositions[i],false) - pkCol->pkBody2->GetVel(pkCol->kPositions[i],false);
+		
+		if(kRelVel.Length() == 0)
+		{
+			//this shuld not hapen...but it does...=(
+			//TryToSleep(pkCol->pkBody1,pkCol->pkBody2);		
+			return;			
+		}
+		
 		Vector3 kTangent = (pkCol->kNormals[i].Cross(kRelVel.Unit())).Cross(pkCol->kNormals[i]);
 			
 			
@@ -276,8 +284,14 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 					  ( (pkCol->kNormals[i] * pkCol->kNormals[i]) *
 					  ( 1/fMass1 + 1/fMass2)); 	
 
-		//if(j<0)
-		//	cout<<"hora"<<endl;
+		/*			  
+		if(j<0)
+		{
+			cout<<"hora"<<endl;
+			return;
+		}
+		*/	
+		
 		
 		//make sure the impact force is not to small					  
 		if(j < m_fMinForce)
@@ -369,7 +383,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce.y -= 9.00;
+				m_kBodys[i]->m_kLinearForce.y -= 9.00 * m_kBodys[i]->m_fMass;
 			}
 			
 			//apply some air friction		
@@ -712,11 +726,14 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 			
-			
+				UpdateBodyVelnPos(m_pkBodyCopy1,0);
+				UpdateBodyVelnPos(m_pkBodyCopy2,0);				
+				
 				if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
 				{
 					//cout<<"Stuck sphere VS sphere"<<endl;
 					didpen = true;			
+					fAtime = 0;
 					break;					
 				}
 			}		
@@ -848,22 +865,25 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	
 		if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
 		{
-/*			//if first penetration do a check at time 0
+			//if first penetration do a check at time 0
 			if(!didpen)
 			{
 				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
-			
-			
+		
+				UpdateBodyVelnPos(m_pkBodyCopy1,0);
+				UpdateBodyVelnPos(m_pkBodyCopy2,0);	
+						
 				if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
 				{
 					//cout<<"Stuck Object detected"<<endl;
 					didpen = true;			
+					fAtime = 0;
 					break;
 					//return;
 				}
 			}
-*/							
+							
 			didpen = true;			
 			retry = true;
 			fAtime /=2;

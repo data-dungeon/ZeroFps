@@ -362,7 +362,7 @@ void ZeroFps::Run_Client()
 	
 	
 	//m_pkPhysics_Engine->Update(GetFrameTime());	
-//	m_pkTcs->Update(GetFrameTime());	
+	//m_pkTcs->Update(GetFrameTime());	
 
 
 	if(g_iLogRenderPropertys) 
@@ -387,7 +387,6 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System(bool bServer)
 {
-m_pkRender->SetFog(Vector4(1,0,0,1),1,10,true);	
 
 	int iLoops;
 
