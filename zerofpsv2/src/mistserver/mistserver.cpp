@@ -302,7 +302,14 @@ void MistServer::Input()
 	if(pkAnimObj)
 		mp = (P_Mad*)pkAnimObj->GetProperty("P_Mad");
 	
-	if(m_pkInput->Pressed(KEY_F5) && mp) {
+	if(m_pkInput->Pressed(KEY_F5)) {
+		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		ZoneData* z = m_pkObjectMan->GetZoneData(id);
+		m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
+	}  
+
+/*	if(m_pkInput->Pressed(KEY_F5) && mp) {
+		m_pkZeroFps->AddHMProperty();
 		mp->SetAnimationActive(false);
 		} 
 	if(m_pkInput->Pressed(KEY_F6) && mp) {
@@ -310,7 +317,7 @@ void MistServer::Input()
 		} 
 	if(m_pkInput->Pressed(KEY_F7) && mp) {
 		mp->NextCoreAnimation();
-		} 
+		} */
 	
 /*	if(pkInput->Pressed(KEY_F4)) {
 		vector<Entity*> ents;
@@ -746,7 +753,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(pcc)	
 		pcc->m_iClientID = iConID;
 	
-	bool bEditorConnect = true;
+	bool bEditorConnect = false;
 	if(bEditorConnect) {
 		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
 		pkTrack->SetClient(iConID);

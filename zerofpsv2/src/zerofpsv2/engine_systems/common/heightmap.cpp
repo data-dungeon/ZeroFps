@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "heightmap.h"
 #include "../../render/frustum.h"
+#include "../mad/mad_core.h"
 
 #include "../../engine/res_texture.h"
 //#include "../../engine/zfresource.h"
@@ -24,7 +25,7 @@ bool HeightMap::StartUp()
 { 
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-	Create(16);
+	Create(4);
 	return true; 
 }
 
@@ -67,6 +68,8 @@ void HeightMap::Create(int iHmSize)
 	
 	ClearSet();
 	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
+//	m_pkMap->ClearSet();
+//	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	CreateBlocks();
 }
 
@@ -98,7 +101,7 @@ bool HeightMap::IsAllZero()
 
 void HeightMap::SetPosition(Vector3 kNewPos) 
 {
-	m_kPosition		= kNewPos + Vector3(0,-4,0);
+	m_kPosition		= kNewPos;	// + Vector3(0,-4,0);
 
 	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
 		m_kPosition.y,
@@ -480,9 +483,9 @@ bool HeightMap::Save(const char* acFile) {
 
 
 void HeightMap::Random() {
-	int height=8000;
-	int peaks=3000;
-	int smooth=10;
+	int height=250;
+	int peaks=25;
+	int smooth=1;
 
 	srand(time(0));
 	
@@ -1180,6 +1183,25 @@ Vector3 HeightMap::GetPosFromSqr(Point square)
 	return Vector3(x,y,z);
 }
 
+void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal)
+{
+	int iIndex = 0;
+	Mad_Face kFace;
 
+	for(int z=0; z<m_iHmSize; z++) {
+		for(int x=0; x<m_iHmSize; x++) {
+			pkVertex->push_back( Vector3(x, verts[z*m_iHmSize+x].height, z) );				kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3(x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, z + 1) );		kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3(x + 1, verts[(z)*m_iHmSize+(x+1)].height, z) );			kFace.iIndex[2] = iIndex++;	
+			pkFace->push_back(kFace);
+
+			pkVertex->push_back( Vector3(x, verts[z*m_iHmSize+x].height, z) );				kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3(x , verts[(z+1)*m_iHmSize+x].height, z + 1) );			kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3(x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, z + 1) );			kFace.iIndex[2] = iIndex++;	
+			pkFace->push_back(kFace);
+			}
+		}
+
+}
 
 

@@ -6,8 +6,9 @@ P_Tcs::P_Tcs()
 {
 	strcpy(m_acName,"P_Tcs");
 	
-	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER;	
+	//m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 		
 	bNetwork  = false;
 
@@ -61,24 +62,49 @@ void P_Tcs::Disable()
 
 void P_Tcs::Update()
 {	
-	if(m_bPolygonTest)
-	{
-		if(!m_bHavePolygonData)
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+		if(m_bPolygonTest)
 		{
-			m_bHavePolygonData = SetupMeshData();
-			m_fRadius = GetBoundingRadius();
+			if(!m_bHavePolygonData)
+			{
+				m_bHavePolygonData = SetupMeshData();
+				m_fRadius = GetBoundingRadius();
+			}
+		}
+		else			//if no polygon test, check if we shuld at least get radius from mesh
+		{
+			if(m_fRadius == -1)
+			{	
+				m_fRadius = GetBoundingRadius();
+				m_bHavePolygonData = SetupMeshData();
+			}
 		}
 	}
-	else			//if no polygon test, check if we shuld at least get radius from mesh
-	{
-		if(m_fRadius == -1)
-		{	
-			m_fRadius = GetBoundingRadius();
-			m_bHavePolygonData = SetupMeshData();
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+		//Draw();
 		}
-	}
 }
 
+
+
+void P_Tcs::SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals, float fRadius )
+{
+	m_bLocalStoredData	= true;
+	m_bPolygonTest			= true;
+	m_bHavePolygonData	= true;
+
+	m_pkFaces	= new vector<Mad_Face>;
+	*m_pkFaces	= kFaces;
+
+	m_pkVertex	= new vector<Vector3>;
+	*m_pkVertex = kVertex;
+
+	m_pkNormal	= new vector<Vector3>;
+	*m_pkNormal = kNormals;
+	m_pkMad		= NULL;
+
+	m_fRadius				= fRadius;
+}
 
 void P_Tcs::Save(ZFIoInterface* pkPackage)
 {
@@ -247,6 +273,184 @@ bool P_Tcs::SetupMeshData()
 	cout<<"TCS: error mech NOT found"<<endl;
 	return false;
 }
+
+
+
+bool P_Tcs::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
+{
+	float		fDist = 9999999;
+	Vector3	kClosestColPos;
+	m_iColFace = -1;
+	
+	Vector3 data[3];
+	float d;
+
+	for(unsigned int i=0;i<m_pkFaces->size();i++)
+	{
+		
+		//get and transform vertexes		
+		for(int j=0;j<3;j++)
+			data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
+		
+		//setup a virtual point in space
+		Vector3 Point2 = kPos+(kDir*1000);
+		
+		
+		if(TestPolygon(data,kPos,Point2))
+		{	
+			d = (m_kColPos-kPos).Length(); 
+			
+			//if this point is closer than the last one, set it as closest
+			if(d < fDist)
+			{	
+				m_iColFace = i;
+				kClosestColPos=m_kColPos;
+				fDist = d;
+			}
+		}
+	}		
+
+	//if we colided whit something, set colpos 
+	if(m_iColFace != -1)
+	{
+		m_kColPos = kClosestColPos; 
+		return true;
+	}
+	
+	return false;
+}
+
+bool P_Tcs::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
+{		
+	Plane P;
+	
+
+
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[0];		
+	Vector3 Normal= V1.Cross(V2);
+	
+	
+	if(Normal.Length() == 0)
+	{
+		return false;
+	}
+	
+	Normal.Normalize();
+	P.m_fD = -Normal.Dot(kVerts[0]);	
+	P.m_kNormal = Normal;
+
+	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){
+		if(TestSides(kVerts,&Normal,m_kColPos))
+		{
+			
+			return true;
+		}
+	}
+	
+	
+	return false;
+}
+
+
+bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
+{
+	Plane side[6];
+	
+	
+/*	if(kVerts[0] == kVerts[1] || 
+		kVerts[2] == kVerts[1] ||
+		kVerts[0] == kVerts[2])
+		return false;*/
+	
+	
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[1];	
+	Vector3 V3 = kVerts[0] - kVerts[2];	
+	
+	side[0].m_kNormal = pkNormal->Cross(V1).Unit();
+	side[1].m_kNormal = pkNormal->Cross(V2).Unit();	
+	side[2].m_kNormal = pkNormal->Cross(V3).Unit();
+
+	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
+	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
+	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
+
+
+	side[0].m_fD = -side[0].m_kNormal.Dot(kVerts[0]);
+	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[1]);	
+	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[2]);	
+
+	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
+	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
+	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
+	
+	
+	bool inside = true;
+	
+	for(int i=0;i<6;i++)
+	{
+		if(!side[i].SphereInside(kPos,0.01)){
+			inside=false;
+		}
+	
+	}
+	
+	
+	return inside;	
+}
+
+void P_Tcs::Draw()
+{
+	if(!m_pkVertex)
+		return;
+
+	Vector3 data[3];
+
+	glPushAttrib(GL_DEPTH_BUFFER_BIT|GL_LIGHTING_BIT|GL_FOG_BIT);
+	glDisable(GL_LIGHTING);	//dont want lighting on the skybox		
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+
+	float fColor = 0.4;
+
+	GenerateModelMatrix();
+
+	for(int i=0; i<m_pkFaces->size(); i++) {
+		for(int j=0;j<3;j++) {
+			if(m_pkMad)
+				data[j] = m_kModelMatrix.VectorTransform((*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]]);
+			else
+				data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
+			}
+
+		glColor3f(fColor,fColor,fColor);
+		fColor+= 0.05;
+		if(fColor >= 1.0)
+			fColor = 0.4;
+
+		glBegin(GL_TRIANGLES );	//GL_TRIANGLES GL_LINE_LOOP
+		glVertex3fv( (float*) &data[0] );		
+		glVertex3fv( (float*) &data[1] );		
+		glVertex3fv( (float*) &data[2] );		
+		glEnd();
+		}
+	glPopAttrib();
+}
+
+void P_Tcs::GenerateModelMatrix()
+{
+	m_kModelMatrix.Identity();
+	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+	Matrix4 kMat;
+	kMat = m_pkObject->GetWorldRotM();
+	m_kModelMatrix *= kMat;	
+	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
+
+}
+
+
+
 
 Property* Create_P_Tcs()
 {

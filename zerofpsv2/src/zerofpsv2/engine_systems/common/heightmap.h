@@ -15,7 +15,7 @@
 //#include "../../basic/globals.h"
 //#include "../engine_systems_x.h"
 
-#define HEIGHTMAP_SCALE 2
+#define HEIGHTMAP_SCALE 1
 
 struct ENGINE_SYSTEMS_API HM_vert 
 {
@@ -40,6 +40,8 @@ struct TerrainBlock
 	Vector3 kAABB_Min;
 	Vector3 kAABB_Max;
 };
+
+struct Mad_Face;
 
 class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 	private:			
@@ -114,6 +116,7 @@ class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 		Point GetSqrFromPos(Vector3 pos);
 		Vector3 GetPosFromSqr(Point square);
 		
+		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		
 		friend class Render;
 

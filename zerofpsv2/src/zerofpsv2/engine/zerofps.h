@@ -278,6 +278,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void PrintToClient(int iConnectionID, const char* szMsg);
 
 		friend class NetWork;
+
+	
+		void AddHMProperty(ZoneData* pkZd,int iNetWorkId, Vector3 kZoneSize);
 };
 
 

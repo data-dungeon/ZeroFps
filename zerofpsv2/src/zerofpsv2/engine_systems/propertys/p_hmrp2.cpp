@@ -23,8 +23,8 @@ void P_HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
 	m_pkHeightMap	=	pkHeightMap;	
 	m_strMapName	=	strMapName;
 
-	if(m_pkHeightMap!=NULL)
-		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());	
+//	if(m_pkHeightMap!=NULL)
+//		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());	
 }
 
 

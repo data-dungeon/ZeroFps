@@ -1,5 +1,6 @@
 #include "tcs.h"
 #include "../propertys/p_tcs.h"
+#include "../common/heightmap.h"
 
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
@@ -497,6 +498,8 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 
 bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 {
+	Vector3 kColPos;
+
 	if(pkB->m_pkMad)
 	{	
 		if(pkB->m_pkMad->TestLine(kStart,kDir))
@@ -505,6 +508,13 @@ bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 			return true;
 		}
 	}
+	else if (pkB->m_pkHmap) {
+			if(pkB->LineVSMesh(kStart,kDir))
+			{
+				m_kLastLineTestColPos = pkB->m_kColPos;
+				return true;
+			}
+		}
 
 
 

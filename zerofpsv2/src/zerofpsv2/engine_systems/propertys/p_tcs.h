@@ -43,7 +43,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
       Vector3	m_kRotVel;
 		Vector3 m_kWalkVel;
 		
-		
+		bool						m_bLocalStoredData;
 		
 		//test flags
 		bitset<TCS_GROUPS>	m_akTestGroups;
@@ -54,6 +54,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		int						m_iModelID;
 		float 					m_fScale;
 		P_Mad*					m_pkMad;
+		HeightMap*				m_pkHmap;
 		vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		vector<Vector3>*		 m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>*		 m_pkNormal;
@@ -109,11 +110,23 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetGravity(bool t) {m_bGravity = t;};
 		bool GetOnGround() { return m_bOnGround;};
 		
+		void SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals , float fRadius);
+		void SetHmap(HeightMap* pkMap) { m_pkHmap = pkMap; }
+
+		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);
+		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2);
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
+
+		void Draw();
+		Matrix4		m_kModelMatrix;
+		void GenerateModelMatrix();
+
+		int		m_iColFace;
+		Vector3	m_kColPos;
 		friend class Tcs;
 };
 
 Property* Create_P_Tcs();
-
 
 #endif
 

@@ -1215,3 +1215,75 @@ int ZeroFps::GetClientObjectID()
 	
 	return ObjectManagerLua::g_pkReturnObject;
 }*/
+
+
+void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
+{
+	cout << "AddHM: "  << iNetWorkId << endl;
+	cout << "Size: "  << kZoneSize.x << endl;
+
+	// Add Property to object
+	Entity* pkEntity = this->m_pkObjectMan->GetObjectByNetWorkID(iNetWorkId);
+	if(!pkEntity)
+		return;
+	if(pkEntity->GetProperty("P_HMRP2")) {
+		cout << "Allready set HM" << endl;
+		return;
+		}
+
+
+
+	HeightMap* pkMap = new HeightMap;
+	pkMap->StartUp();
+	pkMap->Create(kZoneSize.x);
+	pkMap->Random();
+
+	P_HMRP2* pkhmrp2 = new P_HMRP2(pkMap, "Spya");
+
+	pkEntity->AddProperty(pkhmrp2);
+
+	vector<Mad_Face> kFace;
+	vector<Vector3> kVertex;
+	vector<Vector3> kNormal;
+
+	pkMap->GetCollData(&kFace,&kVertex,&kNormal);
+/*		Vector3 kMin = pkZd->m_kPos - pkZd->m_kSize/2;
+		Vector3 kMax = pkZd->m_kPos + pkZd->m_kSize/2;
+		Vector3 ANormal(0,1,0);
+		kNormal.push_back( ANormal );
+		kNormal.push_back( ANormal );
+		kVertex.push_back(Vector3(kMin.x,kMin.y + 3,kMin.z));
+		kVertex.push_back(Vector3(kMax.x,kMin.y + 3,kMin.z));
+		kVertex.push_back(Vector3(kMax.x,kMin.y + 3,kMax.z));
+		kVertex.push_back(Vector3(kMin.x,kMin.y + 3,kMax.z));
+		Mad_Face aFace;
+		aFace.iIndex[0] = 0;	aFace.iIndex[1] = 2;	aFace.iIndex[2] = 1;
+		kFace.push_back(aFace);
+		aFace.iIndex[0] = 0;	aFace.iIndex[1] = 3;	aFace.iIndex[2] = 2;
+		kFace.push_back(aFace);*/
+	
+	for(int i=0; i<kVertex.size(); i++) 
+		kVertex[i] += pkEntity->GetWorldPosV() + pkMap->m_kCornerPos;
+
+
+
+
+	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
+	
+	if(!pp)
+		pp = (P_Tcs*)pkEntity->AddProperty("P_Tcs");	
+	
+	if(pp)
+	{
+		pp->SetPolygonTest(true);	
+		pp->SetStatic(true);			
+		//pp->SetRefetchPolygonData();
+		pp->SetData(kFace,kVertex,kNormal,10);
+		pp->SetHmap(pkMap);
+		pp->SetGroup(0);
+	}
+
+
+}
+
+
