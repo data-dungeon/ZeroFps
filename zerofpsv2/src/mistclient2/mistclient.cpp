@@ -881,6 +881,9 @@ void MistClient::UpdateCharacter()
 {
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
+		//disable rotation from server
+		pkEnt->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,true);
+	
 		//if theres no camera property, create one and set it up
 		if(!pkEnt->GetProperty("P_Camera"))
 		{
@@ -901,7 +904,7 @@ void MistClient::UpdateCharacter()
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 			pkCP->SetOverHeadText(false);					
 		
-		
+		//enable enviroment 
 		if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->GetProperty("P_Enviroment"))
 		{
 			pkEnv->SetEnable(true);				

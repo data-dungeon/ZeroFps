@@ -127,7 +127,6 @@ class ENGINE_API Entity
 	private:
 		Entity*						m_pkParent;							///< Parent Entity. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
-//		vector<int>					m_aiNetDeleteList;				
 		vector<string>				m_kNetDeletePropertyList;
 		
 		vector<EntityVariable>  m_kVariables;
@@ -207,9 +206,12 @@ class ENGINE_API Entity
 		
 		//network
 		vector<bitset <MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
+		bitset<MAX_NETUPDATEFLAGS>					m_kNetIgnoreFlags;
 		vector<bool>									m_kExistOnClient;
 					
-		Entity();				
+		Entity();		
+		
+		//network flags		
 		void	SetNetUpdateFlag(int iFlagID,bool bValue);
 		void	SetNetUpdateFlagAndChilds(int iFlagID,bool bValue);		
 		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
@@ -218,9 +220,13 @@ class ENGINE_API Entity
 		void	ResetAllNetUpdateFlags();												// reset all update flags to true
 		void	ResetAllNetUpdateFlags(int iConID);									// reset all update flags to true		
 		void	ResetAllNetUpdateFlagsAndChilds(int iConID);						// reset all update flags to true				
+		
+		
 		void	SetNrOfConnections(int iConNR);
 
 		
+		
+		//property handling, or something
 		void 	PropertyLost(Property* pkProp);
 		
 				
@@ -235,8 +241,8 @@ class ENGINE_API Entity
 	
 		~Entity();
 		
-		// Entity Type Handling
-		bool IsA(string strStringType);									///< Returns true if this Entity is based on type.
+// 		// Entity Type Handling
+// 		bool IsA(string strStringType);									///< Returns true if this Entity is based on type.
 
 		// Property Mangment
 		Property* 	AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
@@ -260,9 +266,6 @@ class ENGINE_API Entity
 		int  	NrOfChilds();													///< Return num of childs to this Entity.
 		void 	DeleteAllChilds();											// Remove all childs from this Entity.
 		void 	GetAllEntitys(vector<Entity*> *pakEntitys ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
-		
-//		void 	AddToDeleteList(int iId);
-//		void 	UpdateDeleteList();
 		
 		void	AddToDeletePropertyList(const string& strName);
 		void	UpdateDeletePropertyList();
@@ -335,6 +338,7 @@ class ENGINE_API Entity
 		void			SetType(string strType);		
 		void			SetRadius(float fRadius);
 
+		//interpolation
 		void			SetInterpolate(bool bInterpolate);
 		bool			GetInterpolate()						{	return m_bInterpolate;		};
 		void			SetInterpolateFactor(float fIF)	{	m_fInterPolateFactor = fIF;};	
@@ -352,11 +356,13 @@ class ENGINE_API Entity
 		inline Vector3 GetVel()								{	return m_kVel;				};		
 		inline Vector3 GetAcc()								{	return m_kAcc;				};
 		inline float GetRadius()							{	return m_fRadius;			};		
-		inline Vector3* GetVelPointer()					{	return &m_kVel;			};		
-		inline Vector3* GetAccPointer()					{	return &m_kAcc;			};
-		inline float* GetRadiusPointer()					{	return &m_fRadius;		};		
 		inline int GetCurrentZone()  						{	return m_iCurrentZone;	};
 
+		//network ignore flags
+		void	SetNetIgnoreFlag(int iFlagID,bool bValue)			{	m_kNetIgnoreFlags[iFlagID] = bValue;	};
+		bool	GetNetIgnoreFlag(int iFlagID)							{	return m_kNetIgnoreFlags[iFlagID];		};
+		
+		
 		bool GetUseZones() 									{	return m_bUseZones;		};
 		void SetUseZones(bool bUz) 						{	m_bUseZones = bUz;		};		
       void SetUpdateStatus(int iUpdateStatus);

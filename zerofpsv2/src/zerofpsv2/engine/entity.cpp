@@ -67,6 +67,9 @@ Entity::Entity()
 	
 	//set nr of connections
 	SetNrOfConnections(m_pkZeroFps->GetMaxPlayers());
+	
+	//reset network ignore flags
+	m_kNetIgnoreFlags.reset();
 }
 
 Entity::~Entity() 
@@ -713,14 +716,14 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_NAME))	
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_NAME,false);	
-		pkNetPacket->Write_Str(m_strName.c_str());
+ 		pkNetPacket->Write_Str(m_strName);
 	}
 	
 	//send type
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_TYPE))	
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_TYPE,false);	
-		pkNetPacket->Write_Str(m_strType.c_str());
+		pkNetPacket->Write_Str(m_strType);
 		pkNetPacket->Write( m_ucIcon );
 	}	
 
@@ -772,95 +775,134 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get parent
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
 	{
-		int iParentID	=	-1;
-		
+		int iParentID;		
 		pkNetPacket->Read( iParentID );		
-		Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);
-		if(!parent)
-			parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
-		SetParent(parent);
-		LOGSIZE("Entity::ParentID", 4);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_PARENT))
+		{			
+			Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);			
+			if(!parent)
+				parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
+			
+			SetParent(parent);
+		}
+	
+		LOGSIZE("Entity::ParentID", 4);	
 	}
    
    // get update status
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_UPDATESTATUS))
 	{
-	   pkNetPacket->Read( m_iUpdateStatus );		   
+		static int iUpdateStatus;	
+	   pkNetPacket->Read( iUpdateStatus );		   
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_UPDATESTATUS))
+			m_iUpdateStatus = iUpdateStatus;		
 	}
 
 
 	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE) || GetNetUpdateFlag(0,NETUPDATEFLAG_ISZONE) )
 	{
-		unsigned char ucEntityFlags = 0;
+		unsigned char ucEntityFlags;
 		pkNetPacket->Read(ucEntityFlags );
 		
-		m_bRelativeOri = ucEntityFlags & 1;
-		m_bInterpolate = ucEntityFlags & 2;
-		m_bZone 			= ucEntityFlags & 4;
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_RELPOS)) 			m_bRelativeOri = ucEntityFlags & 1;
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_INTERPOLATE))	m_bInterpolate = ucEntityFlags & 2;
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ISZONE)) 			m_bZone 			= ucEntityFlags & 4;
 	}
 
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
 	{
-		Vector3 kPos;
+		static Vector3 kPos;		
 		pkNetPacket->Read(kPos);
-		SetLocalPosV(kPos);
-		LOGSIZE("Entity::Position", sizeof(kPos) );
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_POS))
+			SetLocalPosV(kPos);		
+	
+		LOGSIZE("Entity::Position", sizeof(kPos) );	
 	}
 	
 	//get rotation	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ROT))
 	{
-		Matrix3 kRot;
+		static Matrix3 kRot;
 		pkNetPacket->Read(kRot);
-		SetLocalRotM(kRot);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ROT))
+			SetLocalRotM(kRot);
+			
 		LOGSIZE("Entity::Rotation", sizeof(kRot));
 	}
 	
 	//get velocity	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_VEL))
 	{
-		Vector3 kVel;
+		static Vector3 kVel;
 		pkNetPacket->Read(kVel);
-		SetVel(kVel);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_VEL))
+			SetVel(kVel);
+				
 		LOGSIZE("Entity::Velocity", sizeof(kVel));
 	}
 	
 	//get acceleration	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
 	{
-		Vector3 kAcc;
+		static Vector3 kAcc;
 		pkNetPacket->Read(kAcc);
-		SetAcc(kAcc);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ACC))
+			SetAcc(kAcc);
+			
 		LOGSIZE("Entity::Acceleration", sizeof(kAcc));
 	}
 	
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
 	{
-		pkNetPacket->Read(m_fRadius);
+		static float fRadius;	
+		pkNetPacket->Read(fRadius);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_RADIUS))
+			m_fRadius = fRadius;		
+			
 		LOGSIZE("Entity::Radius", sizeof(m_fRadius));
 	}
 	
 	//get name
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_NAME))	
 	{
-		char szStr[256];
-		pkNetPacket->Read_Str(szStr);
-		m_strName = szStr;		
+		static string strName;	
+		pkNetPacket->Read_Str(strName);
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_NAME))
+			m_strName = strName;
+		
 		LOGSIZE("Entity::Name", strlen(szStr) + 1);
 	}	
 	
 	//get type
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_TYPE))	
 	{
-		char szStr[256];
-		pkNetPacket->Read_Str(szStr);
-		m_strType = szStr;		
-		pkNetPacket->Read( m_ucIcon );
-		if(m_ucIcon != 0 && m_pkZeroFps->m_bEditMode)
-			AddProxyProperty("P_EditIcon");
+ 		static string strType;
+		static unsigned char ucIcon;
+		
+		pkNetPacket->Read_Str(strType);
+		pkNetPacket->Read( ucIcon );
+		
+		if(!GetNetIgnoreFlag(NETUPDATEFLAG_TYPE))
+		{
+			m_strType = strType;
+			m_ucIcon	 = ucIcon;
+		
+			if(m_ucIcon != 0 && m_pkZeroFps->m_bEditMode)
+				AddProxyProperty("P_EditIcon");
+		
+		}
+		
 		LOGSIZE("Entity::Type", strlen(szStr) + 1);
 	}		
 	
