@@ -24,6 +24,7 @@ class COMMON_API DoorProperty: public Property {
 		void OpenDoor();
 		void CloseDoor();
 		void RegisterActions();
+		void UnRegisterActions();
 		
 		vector<PropertyValues> GetPropertyValues();		
 		bool HandleSetValue( string kValueName ,string kValue );
@@ -34,6 +35,8 @@ class COMMON_API DoorProperty: public Property {
 		string m_sKeyName;
 
 		DoorProperty();
+		~DoorProperty();		
+		void Init();
 
 		void HandleGameMessage(GameMessage& Msg);
 

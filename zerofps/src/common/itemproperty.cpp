@@ -9,7 +9,7 @@ ItemProperty::ItemProperty()
 
 	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 
-	m_bPickable	=	true;
+	m_bPickable	=	false;
 	m_iItemSizeX =	1;
 	m_iItemSizeY =	1;
 	m_kItemIcon	=	"noicon.tga";
@@ -129,6 +129,7 @@ bool ItemProperty::UnRegisterAction(int iType,const char* acName)
 
 bool ItemProperty::GetUses(int iType,vector<string>* m_kNames)
 {
+	//ClearActions();
 	UpdateActions();
 
 	m_kNames->clear();
@@ -178,6 +179,13 @@ void ItemProperty::UpdateActions()
 	m_pkObjectMan->RouteMessage(kTemp);
 	
 	cout<<"asking for propertys to register their actions"<<endl;
+}
+
+void ItemProperty::ClearActions()
+{
+	m_kUseData.clear();
+	
+	cout<<"Removing all registered actions"<<endl;
 }
 
 

@@ -13,6 +13,17 @@ DoorProperty::DoorProperty()
 
 }
 
+DoorProperty::~DoorProperty()
+{
+	UnRegisterActions();
+}
+
+void DoorProperty::Init()
+{
+	RegisterActions();
+
+}
+
 void DoorProperty::RegisterActions()
 {
 	ItemProperty* pkIP = static_cast<ItemProperty*>(m_pkObject->GetProperty("ItemProperty"));
@@ -24,6 +35,16 @@ void DoorProperty::RegisterActions()
 	}
 }	
 
+void DoorProperty::UnRegisterActions()
+{
+	ItemProperty* pkIP = static_cast<ItemProperty*>(m_pkObject->GetProperty("ItemProperty"));
+
+	if(pkIP != NULL)
+	{
+		pkIP->UnRegisterAction(NORMALUSE,"Open the door");
+		pkIP->UnRegisterAction(NORMALUSE,"Close the door");	
+	}
+}	
 
 void DoorProperty::OpenDoor()
 {

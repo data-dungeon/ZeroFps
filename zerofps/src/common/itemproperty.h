@@ -68,6 +68,7 @@ class COMMON_API ItemProperty: public Property {
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
 				
+		void ClearActions();
 		bool RegisterAction(int iType,const char* acName,const char* acSignal);
 		bool UnRegisterAction(int iType,const char* acName);
 		bool CheckIfActionExist(int iType,const char* acName);
