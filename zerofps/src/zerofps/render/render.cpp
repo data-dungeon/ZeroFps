@@ -10,7 +10,7 @@ Render::Render()
 	
 	m_iSlicesize = 32;		//grid size of lod tiles
 	m_iDetail = 30;				//height meens greater detail att longer range	
-	m_iViewDistance = 250;
+	m_iViewDistance = 300;
 	m_iFpsLock = 60;
 	m_iAutoLod = 1;
 	m_iLodUpdate = 0;	

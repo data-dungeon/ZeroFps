@@ -1,4 +1,4 @@
-g++ -c *.cpp
+g++ -c *.cpp -O3
 ./relink
 #g++ *.o -o ../../../bin/libbasic.so --shared -O3 -lSDL -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`
 #g++ *.cpp -o ../../../bin/libbasic.so --shared -O3 -lSDL -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`
