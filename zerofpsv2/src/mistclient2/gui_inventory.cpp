@@ -200,12 +200,12 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
-			{
-				m_kCursorRangeDiff.x = mx-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Left; 
-				m_kCursorRangeDiff.y = my-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Top;
-
+			{			
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
+					m_kCursorRangeDiff.x = mx-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Left; 
+					m_kCursorRangeDiff.y = my-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Top;
+
 					m_kItemWndPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
 					m_kItemWndPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
 
@@ -217,10 +217,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
 
-					int x = mx, y = my;
-					x -= m_kCursorRangeDiff.x;
-					y -= m_kCursorRangeDiff.y;
-
+					int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
 					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 				}
@@ -274,12 +271,12 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
-			{
-				m_kCursorRangeDiff.x = mx-m_vkContainerItemList[i].pkWnd->GetScreenRect().Left; 
-				m_kCursorRangeDiff.y = my-m_vkContainerItemList[i].pkWnd->GetScreenRect().Top;
-
+			{				
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
+					m_kCursorRangeDiff.x = mx-m_vkContainerItemList[i].pkWnd->GetScreenRect().Left; 
+					m_kCursorRangeDiff.y = my-m_vkContainerItemList[i].pkWnd->GetScreenRect().Top;
+
 					m_kItemWndPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
 					m_kItemWndPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
 
@@ -290,11 +287,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 					Point size = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
 					int id = m_vkContainerItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-
-					int x = mx, y = my;
-					x -= m_kCursorRangeDiff.x;
-					y -= m_kCursorRangeDiff.y;
-
+					
+					int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
 					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
@@ -531,9 +525,10 @@ void InventoryDlg::OnDropItem()
 {
 	float mx, my;
 	g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
-	g_kMistClient.m_pkGui->SetCursor((int)mx, (int)my, 
+	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);
 
 	Point upper_left;
 	Rect rcMain, rc, rcScreenMain, rcDropWnd;
@@ -682,6 +677,9 @@ void InventoryDlg::OnDropItem()
 				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
 				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
 					-1, slot_x, slot_y);
+				mx = x + m_kCursorRangeDiff.x + m_pkInventoryWnd->GetScreenRect().Left;
+				my = y + m_kCursorRangeDiff.y + m_pkInventoryWnd->GetScreenRect().Top;
+				g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx, my);
 			}
 			else
 			{
@@ -689,8 +687,11 @@ void InventoryDlg::OnDropItem()
 				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
 				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
 					-1, slot_x, slot_y);
+				mx = x + m_kCursorRangeDiff.x + m_pkContainerWnd->GetScreenRect().Left;
+				my = y + m_kCursorRangeDiff.y + m_pkContainerWnd->GetScreenRect().Top;
+				g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx, my);
 			}
-
+			
 			g_kMistClient.RequestOpenInventory();
 		}
 		else
