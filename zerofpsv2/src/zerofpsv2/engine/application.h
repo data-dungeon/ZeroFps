@@ -35,7 +35,6 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZFIni*					m_pkIni;
 		ZFResourceDB*			m_pkResourceDB;
 		ZFScriptSystem*		m_pkScript;
-		Physics_Engine*		m_pkPhysics_Engine;
 		FileIo*					m_pkFile;
 		ZShader*					m_pkZShader;
 		ZShadow*					m_pkZShadow;

@@ -4,7 +4,7 @@ include ../config
 all:
 	cd basic/; $(MAKE) $@
 	cd gui/; $(MAKE) $@	
-	cd physics_engine/; $(MAKE) $@	
+##	cd physics_engine/; $(MAKE) $@	
 	cd render/; $(MAKE) $@	
 	cd script/; $(MAKE) $@
 	cd engine_systems/; $(MAKE) $@	
@@ -13,7 +13,7 @@ all:
 clean:
 	cd basic/; $(MAKE) $@
 	cd gui/; $(MAKE) $@	
-	cd physics_engine/; $(MAKE) $@	
+##	cd physics_engine/; $(MAKE) $@	
 	cd render/; $(MAKE) $@	
 	cd script/; $(MAKE) $@
 	cd engine_systems/; $(MAKE) $@	

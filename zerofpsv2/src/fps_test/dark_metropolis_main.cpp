@@ -465,13 +465,13 @@ void DarkMetropolis::Input()
 		{
 			Vector3 kVel(0,0,0);	
 
-			if(m_pkInputHandle->VKIsDown("cam_up"))
+			if(m_pkInputHandle->Pressed(KEY_W))
 				kVel.z = -1;
-			if(m_pkInputHandle->VKIsDown("cam_down"))
+			if(m_pkInputHandle->Pressed(KEY_S))
 				kVel.z =  1;
-			if(m_pkInputHandle->VKIsDown("cam_left"))
+			if(m_pkInputHandle->Pressed(KEY_A))
 				kVel.x = -1;
-			if(m_pkInputHandle->VKIsDown("cam_right"))
+			if(m_pkInputHandle->Pressed(KEY_D))
 				kVel.x =  1;
 
 			kVel = m_pkPlayerEntity->GetWorldRotM().VectorTransform(kVel);							
@@ -483,9 +483,12 @@ void DarkMetropolis::Input()
 			
 			if(m_pkInputHandle->Pressed(MOUSERIGHT))
 				if(pkTcs->GetOnGround())
-					pkTcs->ApplyImpulsForce(Vector3(0,1,0));
-
-				
+					if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
+					{
+						m_fDelayTimer = m_pkFps->GetTicks();
+						pkTcs->ApplyImpulsForce(Vector3(0,10,0));
+					}
+			
 			pkTcs->ApplyForce(Vector3(0,0,0),kVel);					
 			//pkTcs->SetWalkVel(kVel);				
 		

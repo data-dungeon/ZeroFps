@@ -965,17 +965,59 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 
 void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collission* pkCollission)
 {
-	bool retry = true;
-	bool didpen = false;
-	int nroftests = 0;
-	float fLastColTime = 0;
-	
 	//make sure body 1 and 2 have all the pointers else get angry and cry
 	if( !pkBody2->m_pkVertex || !pkBody2->m_pkFaces || !pkBody1->m_pkVertex || !pkBody1->m_pkFaces)
-	{
 		return;		
+
+			
+	bool retry = 			true;
+	bool didpen = 			false;
+	int nroftests = 		1;
+	float fLastColTime = fAtime;
+	float fCT = 			0;
+	float	fLastNoColTime = 0;
+	float fStep = 			fAtime / 4.0;
+	
+	//first do a check att max time
+	memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
+	memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
+	UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
+	UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
+	m_iNrOfTests++;	
+	if(!CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
+		return;
+	
+	while(retry && (fCT <= fAtime) )
+	{
+		retry = false;
+		
+		//check if we already passed the first known collission
+		if(pkCollission->fAtime != -1)
+			if(fCT > pkCollission->fAtime)
+				return;
+				
+	
+		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
+		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
+		UpdateBodyVelnPos(m_pkBodyCopy1,fCT);
+		UpdateBodyVelnPos(m_pkBodyCopy2,fCT);			
+			
+		m_iNrOfTests++;		
+		if(CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
+		{			
+			fLastColTime = fCT;
+			didpen = true;
+			break;
+		}
+		else
+		{
+			fLastNoColTime = fCT;
+			retry = true;
+			fCT += fStep;
+		}		
 	}
 	
+	/*
 	while(retry && (fAtime > 0) )
 	{
 		retry = false;
@@ -1024,12 +1066,13 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collissi
 			return;
 		}	
 	}	
+	*/
 	
-	m_iNrOfTests += nroftests; 
+	//m_iNrOfTests += nroftests; 
 	
 	if(didpen)
 	{	
-		if((pkCollission->fAtime > fAtime) || (pkCollission->fAtime == -1))
+		if((pkCollission->fAtime > fLastNoColTime) || (pkCollission->fAtime == -1))
 		{	
 		
 			//Tcs_collission* pkTempCol = new Tcs_collission;	
@@ -1040,16 +1083,14 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collissi
 			memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
 			UpdateBodyVelnPos(m_pkBodyCopy1,fLastColTime);
 			UpdateBodyVelnPos(m_pkBodyCopy2,fLastColTime);		
+			m_iNrOfTests++;			
 			if(!CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,pkCollission))
 				cout<<"FUCKING DAM SHIT SOMEHING IS DAAAMN WRONG HERE"<<endl;
 		
 		
 			pkCollission->pkBody1 = pkBody1;
-			pkCollission->pkBody2 = pkBody2;
-		
-			pkCollission->fAtime =	fAtime;
-			
-			//m_kCollissions.push_back(pkTempCol);		
+			pkCollission->pkBody2 = pkBody2;		
+			pkCollission->fAtime =	fLastNoColTime;
 		}
 	}	
 }
@@ -1177,7 +1218,7 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
 	Matrix4 kModelMatrix2 = pkBody2->GetModelMatrix();
 
-	bool bHaveCleared = false;		
+	//bool bHaveCleared = false;		
 	bool bHaveColided = false;	
 	static Vector3 verts1[3];	
 	static Vector3 verts2[3];	
@@ -1245,13 +1286,15 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 				{
 					if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P1))
 					{
+						/*
 						if(!bHaveCleared)
 						{
 							bHaveCleared = true;
 							pkTempCol->kNormals.clear();
 							pkTempCol->kPositions.clear();
 						}					
-							
+						*/	
+						
 						pkTempCol->kPositions.push_back(m_kLastTestPos);
 						pkTempCol->kNormals.push_back(m_kLastTestNormal);
 							
@@ -1260,12 +1303,14 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 					
 					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2))
 					{
+						/*
 						if(!bHaveCleared)
 						{
 							bHaveCleared = true;
 							pkTempCol->kNormals.clear();
 							pkTempCol->kPositions.clear();
-						}					
+						}	
+						*/				
 							
 						pkTempCol->kPositions.push_back(m_kLastTestPos);
 						pkTempCol->kNormals.push_back(-m_kLastTestNormal);
@@ -1332,39 +1377,48 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				float f3 = (pkPolygon[2] - *pkPos1).Proj(n3).Length();
 				
 				
-				int i1 = -1;
-				int i2 = -1;
 				Vector3 v2;
 				
 				if((f1 < f2) && (f1 < f3))
 				{
 					m_kLastTestNormal = n1;
-				//	v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
+					v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
 				};
 				if((f2 < f1) && (f2 < f3))
 				{
 					m_kLastTestNormal = n2;
-				//	v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
+					v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
 				};
 				if((f3 < f1) && (f3 < f2))
 				{
 					m_kLastTestNormal = n3;
-				//	v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
+					v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
 				};			
 				
+				if( (f1 == f2) && (f2 == f3))
+					cout<<"FUCK!!!!!!!!!!!!!!!!!!!"<<endl;
 				
 				//compare to face normal to chose wich direction the normal shuld have
 				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
-					return true;
+	//				if(pkPlane->PointInside(m_kLastTestPos+m_kLastTestNormal))				
+					{
+				
+					//cout<<"Angle1:"<<m_kLastTestNormal.Angle(-pkPlane->m_kNormal)<<endl;
+						return true;
+					}
 					
 				m_kLastTestNormal = -m_kLastTestNormal;									
 				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
-					return true;
-					
+	//				if(pkPlane->PointInside(m_kLastTestPos+m_kLastTestNormal))				
+					{
+				
+					//cout<<"Angle1:"<<m_kLastTestNormal.Angle(-pkPlane->m_kNormal)<<endl;
+						return true;
+					}
+
 /*				//generate reference normal , in case of 90degredes angle, use a fuzzy calculated normal
 				Vector3 v1 = (*pkPos2 + *pkPos1) *0.5;
-				Vector3 refn = (v1 - v2).Unit();
-				
+				Vector3 refn = (v1 - v2).Unit();				
 				
 				if(m_kLastTestNormal.Angle(refn) < 1.5707)
 					return true;
@@ -1372,8 +1426,8 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				m_kLastTestNormal = -m_kLastTestNormal;													
 				if(m_kLastTestNormal.Angle(refn) < 1.5707)
 					return true;
-				
-	*/				
+*/				
+					
 				return false;		
 
 			}			

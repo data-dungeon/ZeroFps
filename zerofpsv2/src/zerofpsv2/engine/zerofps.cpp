@@ -40,7 +40,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
-	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkIni						= new ZFIni;
@@ -148,7 +147,6 @@ ZeroFps::~ZeroFps()
 	delete m_pkTexMan;
 	delete m_pkZFVFileSystem;
 	delete m_pkBasicFS;
-	delete m_pkPhysics_Engine;
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 	delete m_pkPSystemManager;
 	delete m_pkZShader;
@@ -1302,7 +1300,6 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
-	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);	
 	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
 	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
 }

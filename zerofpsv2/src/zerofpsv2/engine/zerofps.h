@@ -11,7 +11,6 @@
 #include "../ogl/zfpsgl.h"
 #include "network.h"
 #include "../basic/zfresourcedb.h"
-#include "../physics_engine/physics_engine.h"
 #include "fh.h"
 #include "entity.h"
 #include "camera.h"
@@ -207,7 +206,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZFIni*					m_pkIni;						///< Ini Files - Zeb
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScriptSystem*		m_pkScript;					///< script
-		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 		Application*			m_pkApp;						///< Application object.
 		ZShader*					m_pkZShader;				///< zerofps shader system
 		OggMusic*				m_pkMusic;
