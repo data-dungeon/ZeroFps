@@ -5,7 +5,6 @@
 #include "../engine/zerofps.h"
 
 	
-	
 ZeroFps* kEngine;
 	
 	

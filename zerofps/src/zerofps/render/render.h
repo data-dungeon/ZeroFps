@@ -96,7 +96,7 @@ class RENDER_API Render : public ZFObject {
 		void DrawHMVertex(HeightMap* kMap);
 		void DrawBlocks(HeightMap* kmap);
 
-		void DrawHM2(Heightmap2* pkMap);
+		void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
 
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);

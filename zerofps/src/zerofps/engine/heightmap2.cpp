@@ -6,10 +6,10 @@ Heightmap2::Heightmap2()
 	
 	cout<<"Heightmap 2 created"<<endl;
 	
-	m_iLodLevels = 1;
-
 	m_iPatchWidth = 32;
 	m_iPatchHeight = 32;
+	
+	m_fScale = 1;
 		
 }
 
@@ -37,7 +37,7 @@ bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
 	
 	delete kImage;
 	
-	cout<<"Loaded heightmap data "<<m_iWidth<<" "<<m_iHeight<<endl;
+	cout<<"Loaded heightmap data "<<m_iWidth<<" "<<m_iHeight<< " Vertexs,"<<endl;
 }
 
 
@@ -147,30 +147,28 @@ void Heightmap2::GenerateRenderData()
 	int nrx = m_iWidth  / m_iPatchWidth;
 	int nry = m_iHeight / m_iPatchHeight;
 
+	cout<<"Generating Render Data, please wait"<<endl;
 	cout<<"nr of patches "<<nrx<<" "<<nry<<endl;
 	
 	for(int y = 0;y<nry;y++)
 		for(int x = 0;x<nrx;x++)
 		{
 			int bx = x*m_iPatchWidth;
-			int hx = x*m_iPatchWidth + m_iPatchWidth;
+			int hx = x*m_iPatchWidth + m_iPatchWidth ;
 			
 			int by = y*m_iPatchHeight;
 			int hy = y*m_iPatchHeight + m_iPatchHeight;
 			
-			// these handle the last line of vertexs 
-			if(x == nrx-1)
-				hx--;
-			
-			if(y == nry-1)
-				hy--;
-			
-		
 			//cout<<"from :"<<bx<<" to "<<hx<<endl;
 		
 			HM2_patch temp;
 			
 			GeneratePatch(&temp,bx,by,hx,hy);
+			GenerateLodLevel(&temp,2);
+			GenerateLodLevel(&temp,4);
+			GenerateLodLevel(&temp,8);
+			GenerateLodLevel(&temp,16);
+			GenerateLodLevel(&temp,32);
 			
 			m_kRenderData.push_back(temp);
 		}
@@ -185,26 +183,39 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 	temp.kNormal.clear();
 	temp.kIndex.clear();
 	
+	/*
 	int w = iStopX - iStartX +1;
 	int h = iStopY - iStartY +1;
+	
+	pkPatch->iWidth = w;
+	pkPatch->iHeight = h;
 	
 	float fHeight;
 	Vector3 kNormal;
 	
 	//first generate all normals and vertex's
-	for(int y=iStartY;y <= iStopY;y++)
+	for(int y=iStartY;y < iStopY;y++)
 	{
 		for(int x = iStartX;x <= iStopX;x++)
 		{
+			//top
 			fHeight = GetVert(x,y)->fHeight;
 			kNormal = GetVert(x,y)->kNormal;
 			
 			temp.kVertex.push_back(Vector3(x,fHeight,y));
 			temp.kNormal.push_back(kNormal);				
+		
+			//bottom
+			fHeight = GetVert(x,y+1)->fHeight;
+			kNormal = GetVert(x,y+1)->kNormal;
+			
+			temp.kVertex.push_back(Vector3(x,fHeight,y+1));
+			temp.kNormal.push_back(kNormal);				
+		
 		}
-	}
+	}*/
 	
-	
+	/*
 	int i=0;
 	for(int y = 0;y < h-1;y++)
 	{
@@ -228,9 +239,19 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 		
 		}
 	}
-	
+	*/
 
-/*	bool right = true;
+	int w = iStopX - iStartX ;
+	int h = iStopY - iStartY ;
+	
+	pkPatch->iWidth = w;
+	pkPatch->iHeight = h;
+	pkPatch->iX = iStartX;
+	pkPatch->iY = iStartY;
+	
+	pkPatch->iReLev = 0;
+
+	bool right = true;
 	float fHeight;
 	Vector3 kNormal;
 	
@@ -277,14 +298,163 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 			right = true;
 		
 		}
-	}*/
+	}
+	
+	GeneratePatchMinMaxHeight(pkPatch);
 	
 	pkPatch->kLevels.push_back(temp);
 }
 
-void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,float iDiff)
+void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 {
+	HM2_level* pkOriginal = &pkPatch->kLevels[0];
+
+	HM2_level newlevel;
+	newlevel.kVertex.clear();
+	newlevel.kNormal.clear();
+	newlevel.kIndex.clear(); 
 	
-
-
+	int w =  m_iPatchWidth;//pkPatch->iWidth/iStep;
+	int h =  m_iPatchHeight;//pkPatch->iHeight/iStep;
+	
+	int sx = pkPatch->iX;
+	int sy = pkPatch->iY;
+	
+	bool right =true;
+	float fHeight; 
+	Vector3 kNormal;	
+	for(int y = sy; y < sy+pkPatch->iHeight;y+=iStep)	
+	{	
+		if(y+iStep >= m_iHeight)
+			continue;
+		
+		int x;
+		
+		if(right)
+		{	
+			right =false;
+			
+			for(x = sx; x <= sx+pkPatch->iWidth;x+=iStep)
+			{				
+			
+				//this handle the right edge patch, (it has one vertex less then the others)
+//				if(x+iStep > m_iWidth)
+//					continue;
+		
+				fHeight = GetVert(x,y)->fHeight;
+				kNormal = GetVert(x,y)->kNormal;				
+				newlevel.kVertex.push_back(Vector3(x,fHeight,y));
+				newlevel.kNormal.push_back(kNormal);	
+		
+				fHeight = GetVert(x,y+iStep)->fHeight;
+				kNormal = GetVert(x,y+iStep)->kNormal;				
+				newlevel.kVertex.push_back(Vector3(x,fHeight,y+iStep));
+				newlevel.kNormal.push_back(kNormal);				
+			
+			}
+				
+			
+			//add the last vertex twice else itill get messy
+			newlevel.kVertex.push_back(Vector3(x-iStep,fHeight,y+iStep));
+			newlevel.kNormal.push_back(kNormal);				
+			
+		}
+		else
+		{
+			right =true;		
+			
+			for(x = sx+pkPatch->iWidth ; x >= sx ;x-=iStep)
+			{
+				
+				//this handle the right edge patch, (it has one vertex less then the others)				
+/*				if(x+iStep > m_iWidth)
+				{	
+					x++;
+					x-=iStep;
+				}
+*/		
+				fHeight = GetVert(x,y)->fHeight;
+				kNormal = GetVert(x,y)->kNormal;				
+				newlevel.kVertex.push_back(Vector3(x,fHeight,y));
+				newlevel.kNormal.push_back(kNormal);			
+				
+				fHeight = GetVert(x,y+iStep)->fHeight;
+				kNormal = GetVert(x,y+iStep)->kNormal;				
+				newlevel.kVertex.push_back(Vector3(x,fHeight,y+iStep));
+				newlevel.kNormal.push_back(kNormal);					
+				
+			}
+						 
+			//add the last vertex twice
+			newlevel.kVertex.push_back(Vector3(x + iStep,fHeight,y+iStep));
+			newlevel.kNormal.push_back(kNormal);							
+			
+		}
+	}
+	
+	pkPatch->kLevels.push_back(newlevel);
 }
+
+void Heightmap2::UpdateRecLodLevel(Vector3 kCamPos)
+{
+	int px =  m_iWidth / m_iPatchWidth;
+	int py =  m_iHeight / m_iPatchHeight;
+
+	for(int y = 0;y<=py;y++)
+	{			
+		for(int x = 0;x<=px;x++)
+		{
+			HM2_patch* pkPatch  = &m_kRenderData[ (y*px) + x];
+				
+			Vector3 kCenter = Vector3(x*m_iPatchWidth + m_iPatchWidth/2,pkPatch->fAvrageHeight,y*m_iPatchHeight + m_iPatchHeight/2);
+			kCenter *= m_fScale;
+		
+			float fDist = (kCamPos - kCenter).Length();
+			
+			int iLevel = int(fDist / 50);
+			
+			if(iLevel < 0)
+				iLevel = 0;
+			
+			if(iLevel >5)
+				iLevel = 5;
+				
+			pkPatch->iReLev = iLevel;
+		} 
+	}
+}
+
+void Heightmap2::GeneratePatchMinMaxHeight(HM2_patch* pkPatch)
+{
+	int w = pkPatch->iWidth;
+	int h = pkPatch->iHeight;
+	
+	int sx = pkPatch->iX;
+	int sy = pkPatch->iY;	
+
+	float fMaxHeight = 0;
+	float fMinHeight = 99999999;
+	float fTotalHeight = 0;
+	
+	for(int y = sy; y < sy+h;y++)	
+	{	
+		for(int x = sx; x < sx+w;x++)
+		{
+			float fHeight = GetVert(x,y)->fHeight;
+			
+			fTotalHeight+=fHeight;
+			
+			if(fHeight > fMaxHeight)
+				fMaxHeight = fHeight;
+		
+			if(fHeight < fMinHeight)
+				fMinHeight = fHeight;
+		
+		}
+	}
+	
+	pkPatch->fMaxHeight = fMaxHeight;
+	pkPatch->fMinHeight = fMinHeight;
+	pkPatch->fAvrageHeight = fTotalHeight/(w*h);	
+}
+

@@ -1,4 +1,4 @@
 CC = g++									#compiler to use
-CXXFLAGS= -O3 #-pg -g			  #compiler flags
-C_ARGS = -O3 #-pg -g				#linker flags
+CXXFLAGS= -O3 -g #-pg -g			  #compiler flags
+C_ARGS = -O3 -g #-pg -g				#linker flags
 MAKE = make								#make to use

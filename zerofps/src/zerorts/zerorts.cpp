@@ -1,7 +1,7 @@
 #include "zerorts.h"
 #include "userpanel.h"
 #include "minimap.h" 
-//#include "../common/p_clientinput.h"
+
 
 ZeroRTS g_kZeroRTS("ZeroRTS",800,600,16);
 

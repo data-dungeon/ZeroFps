@@ -33,7 +33,18 @@ class ENGINE_API HM2_level
 class ENGINE_API HM2_patch
 {
 	public:
-		vector<HM2_level>	kLevels;
+		vector<HM2_level>	kLevels;	//list of lod levels
+
+		int iX;								//this patch pos in x
+		int iY;								//this patch pos in y
+		int iWidth;							//this patch width
+		int iHeight;						//this patch height
+		
+		int iReLev;							//recomended lod level
+		
+		float fMaxHeight;					//maximum vertex height in this patch
+		float fMinHeight;					//maximum vertex height in this patch
+		float fAvrageHeight;
 };
 
 
@@ -41,25 +52,19 @@ class ENGINE_API Heightmap2
 {
 	private:
 		
-		class LodVertex
-		{
-			public:			
-				
-		
-		};
-		
-		
 		TextureManager*	m_pkTexMan;
 	
 		vector<HM2_vert>	m_kBasicData;
 		vector<HM2_patch> m_kRenderData;
 		
+		
 		int					m_iWidth;
 		int					m_iHeight;
 		
-		int					m_iLodLevels;
 		int					m_iPatchWidth;		
 		int					m_iPatchHeight;		
+		
+		float					m_fScale;
 		
 		
 		bool LoadBasicDataFromImage(const char* acFile);
@@ -70,13 +75,35 @@ class ENGINE_API Heightmap2
 		
 		void GenerateRenderData();
 		void GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iStopX,int iStopY);		
-		void GenerateLodLevel(HM2_patch* pkPatch,float iDiff);
+		void GenerateLodLevel(HM2_patch* pkPatch,int iStep);
+		
+		void GeneratePatchMinMaxHeight(HM2_patch* pkPatch); 
 		
 	public:
 		Heightmap2();
 
 		bool CreateHMFromImage(const char* acFile);		
-		HM2_vert* GetVert(int x,int y){return &m_kBasicData[(y*m_iWidth)+x];};
+		void UpdateRecLodLevel(Vector3 kCamPos);
+		
+		HM2_vert* GetVert(int x,int y)
+		{
+			if(x >= m_iWidth)
+				cout<<"error X"<<x<<endl;
+			
+			if(x < 0)
+				cout<<"error X"<<x<<endl;
+				
+			if(y >= m_iHeight)
+				cout<<"error Y "<<y<<endl;
+			
+			if(y < 0)
+				cout<<"error Y"<<y<<endl;
+			
+			return &m_kBasicData[(y*m_iWidth)+x];
+		
+		}; 
+	
+	
 	
 	
 		//friends

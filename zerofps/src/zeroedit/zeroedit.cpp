@@ -1,7 +1,7 @@
 #include "zeroedit.h"
 #include "gui.h"
 #include "fh.h"
-
+ 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
 ZeroEdit Editor("ZeroEdit",1024,768,24);
@@ -11,7 +11,7 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 {	
 	m_eCameraMode = FreeFlight;
 }
-
+ 
 void ZeroEdit::OnInit(void) 
 {	
 	RegisterPropertys();
@@ -249,10 +249,10 @@ void ZeroEdit::OnInit(void)
 	pkMechRenderer->AddMesh(&verts,&polys);
 */	
 	
-/*	testhm = new Heightmap2;	
+	testhm = new Heightmap2;	
 	
 	testhm->CreateHMFromImage("test.tga");
-	*/
+	 
 }
 
 
@@ -268,7 +268,7 @@ void ZeroEdit::OnIdle(void)
 
 //	pkMechRenderer->DrawMesh(0,m_iLodLevel,Vector3(0,10,0));
 
-//	pkRender->DrawHM2(testhm);
+	pkRender->DrawHM2(testhm,pkFps->GetCam()->GetPos());
 }
 
 
