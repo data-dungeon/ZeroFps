@@ -81,7 +81,7 @@ void ZGuiSlider::CreateInternalControls()
 	m_pkButton->SetMoveArea(rcSliderMoveArea);
 }
 
-void ZGuiSlider::SetPos(int iPos, bool bRedraw)
+void ZGuiSlider::SetPos(int iPos, bool bRedraw, bool bUpdateBuddy)
 {
 	m_iPos = iPos;
 
@@ -102,11 +102,14 @@ void ZGuiSlider::SetPos(int iPos, bool bRedraw)
 				delete[] piParams;
 
 				// Update buddy windows.
-				char szText[25];
-				sprintf(szText,"%i", m_iPos);
-				for(vector<ZGuiWnd*>::iterator it=m_akBuddys.begin(); 
-					it != m_akBuddys.end(); it++)
-					(*it)->SetText(szText);
+				if(bUpdateBuddy==true)
+				{
+					char szText[25];
+					sprintf(szText,"%i", m_iPos);
+					for(vector<ZGuiWnd*>::iterator it=m_akBuddys.begin(); 
+						it != m_akBuddys.end(); it++)
+						(*it)->SetText(szText);
+				}
 
 				if(bRedraw == true)
 				{
@@ -117,12 +120,6 @@ void ZGuiSlider::SetPos(int iPos, bool bRedraw)
 					float fLength = (float) (iWidth-iBnWidth);
 					float fProcentOffLength = (float) m_iPos / (float) (m_iMax-m_iMin);
 					m_pkButton->SetPos((int) (fProcentOffLength * fLength),0);
-
-					char szText[25];
-					sprintf(szText,"%i", m_iPos);
-					for(vector<ZGuiWnd*>::iterator it=m_akBuddys.begin(); 
-						it != m_akBuddys.end(); it++)
-						(*it)->SetText(szText);
 				}
 			}
 		}

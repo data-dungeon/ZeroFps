@@ -34,7 +34,7 @@ public:
 	void RemoveAllBuddys();
 
 	ZGuiButton* GetButton();
-	void SetPos(int iPos, bool bRedraw);
+	void SetPos(int iPos, bool bRedraw, bool bUpdateBuddy=true);
 	void SetRange(int iMin, int iMax);
 	void SetCtrlStyle(unsigned long ulNewStyle); // replaces the previus
 	void SetSliderSkin(ZGuiSkin* pkSkin);
