@@ -68,6 +68,9 @@ Vector3 Body::SetRot(Vector3 kRot)
 {
 	m_kAngles = kRot;
 	m_kOrientation.FromAxes(&kRot); 
+	return Vector3(-1,-1,-1); // 777:e gången som du glömer returnera
+							  // ett värde i en funktion! (riktiga) 
+							  // kompilatorer gnäller över sånt...
 }
 
 Vector3 Body::GetRot()
