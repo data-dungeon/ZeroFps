@@ -7,6 +7,7 @@ ItemProperty::ItemProperty()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
+	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 
 	m_bPickable	=	true;
 	m_iItemSizeX =	1;
@@ -83,6 +84,84 @@ void ItemProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&data,300);
 	m_kItemName=data;
 
+}
+
+bool ItemProperty::CheckIfActionExist(int iType,const char* acName)
+{
+	for(int i=0;i<m_kUseData.size();i++)
+		if(m_kUseData[i].iType == iType)
+			if(m_kUseData[i].kName == acName)
+				return true;	
+
+	return false;
+}
+
+bool ItemProperty::RegisterAction(int iType,const char* acName,const char* acSignal)
+{
+	if(CheckIfActionExist(iType,acName))
+		return false;
+		
+	
+	UseFunktion kTemp;
+	kTemp.iType = iType;
+	kTemp.kName = acName;
+	kTemp.kSignal = acSignal;
+	
+	m_kUseData.push_back(kTemp);
+	
+	cout<<"Action "<<acName<<" Added to itemlist"<<endl;
+}
+
+bool ItemProperty::UnRegisterAction(int iType,const char* acName)
+{
+	for(vector<UseFunktion>::iterator it=m_kUseData.begin();it!=m_kUseData.end();it++)
+		if( (*it).iType == iType)
+			if( (*it).kName == acName)
+			{
+				m_kUseData.erase(it);
+				return true;
+			}
+
+	return false;	
+}
+
+bool ItemProperty::GetUses(int iType,vector<string>* m_kNames)
+{
+	m_kNames->clear();
+
+	for(int i=0;i<m_kUseData.size();i++)
+	{
+		if(m_kUseData[i].iType == iType)
+			m_kNames->push_back(m_kUseData[i].kName);	
+	}
+	
+	if(m_kNames->size() > 0)
+		return true;
+	else	
+		return false;	
+}
+
+bool ItemProperty::Use(int iType,const char* acName)
+{
+	bool bSentMessage = false;
+
+	for(int i=0;i<m_kUseData.size();i++)
+	{
+		if(m_kUseData[i].iType == iType)
+			if(m_kUseData[i].kName == acName)
+			{		
+				GameMessage kTemp;
+				kTemp.m_FromObject = m_pkObject->iNetWorkID;
+				kTemp.m_ToObject = m_pkObject->iNetWorkID;
+				kTemp.m_Name = m_kUseData[i].kSignal;
+				
+				m_pkObjectMan->RouteMessage(kTemp);
+				
+				bSentMessage=true;
+			}
+	}
+	
+	return bSentMessage;
 }
 
 

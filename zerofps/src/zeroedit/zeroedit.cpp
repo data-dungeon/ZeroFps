@@ -118,7 +118,7 @@ void ZeroEdit::OnInit(void)
 
 	// run zeroedit_autoexec.ini
 	if(!pkIni->ExecuteCommands("zeroedit_autoexec.ini"))
-		pkConsole->Printf("No zeroedit_autoexec.ini.ini found");
+		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
 }
 
@@ -899,6 +899,7 @@ void ZeroEdit::SetPointer()
 	m_kDrawPos.x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
 	m_kDrawPos.z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
 	m_kDrawPos.y = m_fPointerHeight+m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+	
 }
 
 
@@ -1020,6 +1021,7 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("DoorProperty", Create_DoorProperty);
 	pkPropertyFactory->Register("ContainerProperty", Create_ContainerProperty);
 	pkPropertyFactory->Register("ItemProperty", Create_ItemProperty);
 	pkPropertyFactory->Register("TreeIdleProperty", Create_TreeIdleProperty);

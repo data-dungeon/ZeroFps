@@ -17,7 +17,7 @@
 #include "treeidleproperty.h"
 #include "itemproperty.h"
 #include "containerproperty.h"
-
+#include "doorproperty.h"
 
 
 

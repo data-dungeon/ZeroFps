@@ -70,7 +70,6 @@ class ENGINE_API ObjectManager : public ZFObject{
 		bool LoadTemplate(const char* acFile);
 		bool SaveTemplate(const char* acName,const char* acFile);
 
-//		vector<ObjectTemplate*>	m_ObjectTemplates;
 		void Create_OT(int iID);
 		void Destory_OT(int iID);
 		void LoadGameObjects(const char* szFileName);
