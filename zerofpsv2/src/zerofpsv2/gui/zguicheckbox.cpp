@@ -148,10 +148,10 @@ void ZGuiCheckbox::SetText(char* szText, bool bResizeWnd)
 	m_pkLabel->Enable();
 }
 
-void ZGuiCheckbox::SetTextClr(unsigned char ucR, unsigned char ucG, 
+void ZGuiCheckbox::SetTextColor(unsigned char ucR, unsigned char ucG, 
 										unsigned char ucB)
 {
-	m_pkLabel->SetTextClr(ucR, ucG, ucB);
+	m_pkLabel->SetTextColor(ucR, ucG, ucB);
 	m_afTextColor[0] = ucR;
 	m_afTextColor[1] = ucG;
 	m_afTextColor[2] = ucB;

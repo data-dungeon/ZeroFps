@@ -1443,7 +1443,7 @@ bool ZGuiApp::SetFont(string strWnd, string strFont, int r, int g, int b, int gl
 		return false;
 
 	pkWnd->SetFont(pkFont); 
-	pkWnd->SetTextClr(r,g,b);
+	pkWnd->SetTextColor(r,g,b);
 
 	return true;	
 }

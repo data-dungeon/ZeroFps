@@ -118,7 +118,7 @@ public:
 	void GetChildrens(list<ZGuiWnd*>& kList);
 	virtual void SetText(char* strText, bool bResizeWnd=false);
 	virtual char* GetText() { return m_strText; }
-	virtual void SetTextClr(unsigned char ucR, unsigned char ucG, unsigned char ucB);
+	virtual void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB);
 	ZGui* GetGUI();
 	static void ResetStaticClickWnds(ZGuiWnd* pkWnd);
 

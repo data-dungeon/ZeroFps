@@ -77,7 +77,7 @@ void MistClient::SetupGUI()
 		font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
 
 		g_kMistClient.GetWnd("StarNewGameBn")->SetFont(font);
-		g_kMistClient.GetWnd("StarNewGameBn")->SetTextClr(164,0,0); 
+		g_kMistClient.GetWnd("StarNewGameBn")->SetTextColor(164,0,0); 
 
 		font = g_kMistClient.m_pkGui->GetResMan()->Font("defguifont");
 

@@ -111,7 +111,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 		}
 	}
 	else
-	if(iCode == NCODE_CLICK_DOWN || iCode == NCODE_OVER_CTRL)
+	if(iCode == NCODE_CLICK_DOWN || (iCode == NCODE_OVER_CTRL && m_bIsOpen))
 	{
 		int iMenuID = pkWindow->GetID();
 
@@ -129,7 +129,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				if ( res != m_mkSubMenuStateMap.end() )
 						res->second = !res->second;
 
-				if(pkSubMenu->pkParent == NULL && res->second == false && iCode == NCODE_CLICK_DOWN)
+				if(pkSubMenu->pkParent == NULL && res->second == true && iCode == NCODE_CLICK_DOWN)
 				{
 					HideAll();
 				}

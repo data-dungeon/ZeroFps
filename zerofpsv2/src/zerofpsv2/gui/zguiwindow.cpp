@@ -333,7 +333,7 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	
 }
 
-void ZGuiWnd::SetTextClr(unsigned char ucR, unsigned char ucG, unsigned char ucB)
+void ZGuiWnd::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)
 {
 	m_afTextColor[0] = (float) ucR / 255.0f;
 	m_afTextColor[1] = (float) ucG / 255.0f;

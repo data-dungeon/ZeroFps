@@ -212,8 +212,8 @@ void MistClient::LoadInGameGui()
 	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
 	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetLeftAlignedScrollbar(true);
 
-	g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
-	g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 
+	g_kMistClient.GetWnd("ChatTextbox")->SetTextColor(255,255,255); 
+	g_kMistClient.GetWnd("SayTextbox")->SetTextColor(255,255,255); 
 	g_kMistClient.GetWnd("SayTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("defguifont") );
 	g_kMistClient.GetWnd("ChatTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont") );
 

@@ -36,7 +36,7 @@ public:
 	void CheckButton();
 	void UncheckButton();
 	void SetText(char* strText, bool bResizeWnd=false); // overloaded
-	void SetTextClr(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
+	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
 
 	bool IsChecked();
 

@@ -265,9 +265,9 @@ void Scene::CreateUI()
    pkWnd[2] = m_pkApp->CreateWnd(Textbox, "BColorTb", "WorkSpace", "255", 45+68, 525, 30, 20, 0); 
    m_pkApp->CreateWnd(Button, "SetColorBn", "WorkSpace", "Set", 45+102, 525, 40, 20, 0); 
 	
-   pkWnd[0]->SetTextClr(255,0,0);
-   pkWnd[1]->SetTextClr(0,128,0);
-   pkWnd[2]->SetTextClr(0,0,255);
+   pkWnd[0]->SetTextColor(255,0,0);
+   pkWnd[1]->SetTextColor(0,128,0);
+   pkWnd[2]->SetTextColor(0,0,255);
 
 
 	//

@@ -53,7 +53,7 @@ void ZeroEd::SetupGuiEnviroment()
 	CreateWnd(Label, "vp4Label", "Front", GetWnd("vp4"), 2, 0, 100, 20, 0);
 
 	GetWnd("ZeroEdInfoLabel")->SetFont(pkOutLineFont);
-	GetWnd("ZeroEdInfoLabel")->SetTextClr(255,255,255); 
+	GetWnd("ZeroEdInfoLabel")->SetTextColor(255,255,255); 
 
 	
 	
@@ -732,5 +732,7 @@ void ZeroEd::InitMainMenu()
 
 		pkMenu->SetCheckMark("Menu_AiNavMesh", m_pkIni->GetIntValue("AStar", "ai_shownavmesh"));
 		pkMenu->SetCheckMark("Menu_AiShowPath", m_pkIni->GetIntValue("AStar", "ai_showpath"));
+
+		m_pkIni->Close();
 	}
 }

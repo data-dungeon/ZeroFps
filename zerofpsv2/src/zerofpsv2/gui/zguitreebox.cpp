@@ -136,7 +136,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	
 	pkButton->SetMoveArea(pkNewItem->pkButton->GetScreenRect());
 	pkButton->SetText(szText);
-	pkButton->SetTextClr(0,0,0); 
+	pkButton->SetTextColor(0,0,0); 
 
 	Rect rcClipper = GetScreenRect();
 	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
@@ -324,7 +324,7 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				// Change back to old font color
 				if(m_pkSelectedNode && m_pkSelectedNode->pkButton)
 					if(m_pkSelectedNode->kChilds.empty())
-						m_pkSelectedNode->pkButton->SetTextClr(0,0,0); 
+						m_pkSelectedNode->pkButton->SetTextColor(0,0,0); 
 				
 				// Öppna/stäng noden som har klickats.
 				bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked(); 
@@ -335,7 +335,7 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				// Change font color on selected node
 				if(m_pkSelectedNode && m_pkSelectedNode->pkButton)
 					if(m_pkSelectedNode->kChilds.empty())
-						m_pkSelectedNode->pkButton->SetTextClr(255,0,0); 
+						m_pkSelectedNode->pkButton->SetTextColor(255,0,0); 
 
 				// Send a message to the main winproc...
 
