@@ -293,7 +293,7 @@ void MistClient::Input()
 				COUNTER = 0;
 			}
 			
-			pkAudioSys->ActivateSound(kSound);
+			pkAudioSys->StartSound(kSound);
 		}
 		break;
 
@@ -304,7 +304,7 @@ void MistClient::Input()
 		kSound.m_bLoop = true;
 
 		strcpy(kSound.m_szFile, "data/sound/dummy.wav");
-		if(!pkAudioSys->DestroySound(kSound))
+		if(!pkAudioSys->EndSound(kSound))
 			printf("Failed to desroy sound\n");
 		else
 			printf("Succedded to desroy sound\n");

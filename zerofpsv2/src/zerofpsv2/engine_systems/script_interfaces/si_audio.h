@@ -5,6 +5,7 @@
 #ifndef _SI_GUI_H
 #define _SI_GUI_H
 
+#include "../../script/zfscript.h"
 #include "../engine_systems_x.h"
 
 class ZFScriptSystem;
@@ -22,6 +23,8 @@ namespace AudioLua
 
 	int ENGINE_SYSTEMS_API PlaySoundLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API PlayGuiSoundLua(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API StopSoundLua(lua_State* pkLua);
 };
 
 #endif // #ifndef _SI_GUI_H

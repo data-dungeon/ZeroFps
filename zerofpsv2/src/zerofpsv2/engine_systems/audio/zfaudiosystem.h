@@ -39,6 +39,7 @@ class ENGINE_SYSTEMS_API SoundInfo
 {
 	public:
 		SoundInfo();
+		SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop=false);
 		~SoundInfo();
 
 		bool m_bLoop;
@@ -57,10 +58,12 @@ class ENGINE_SYSTEMS_API SoundInfo
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
 public:
+	
+	bool StartSound(SoundInfo kSound);
+	bool EndSound(SoundInfo kSound, float fMaxRange = 5.0f);
+
 	unsigned int GetNumActiveSounds();
 	unsigned int GetNumActiveChannels();
-	bool DestroySound(SoundInfo kSound);
-	bool ActivateSound(SoundInfo kSound);
 
 	ZFAudioSystem();
 	virtual ~ZFAudioSystem();

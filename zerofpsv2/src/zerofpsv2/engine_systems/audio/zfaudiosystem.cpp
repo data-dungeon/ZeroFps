@@ -5,6 +5,7 @@
 #include <AL/al.h>
 #include <AL/alut.h>
 #include "../../basic/zfvfs.h"
+#include "../script_interfaces/si_audio.h"
 #include "zfaudiosystem.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -120,6 +121,18 @@ SoundInfo::SoundInfo()
 	m_bLoopingNoLongerHearable = false;
 }
 
+SoundInfo::SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop)
+{
+	strcpy(m_szFile, c_szFile);
+	m_bLoop = bLoop;
+	m_kPos = pos;
+	m_kDir = dir;
+
+	m_uiSourceBufferName = 0;
+	m_pkResource = NULL;
+	m_bLoopingNoLongerHearable = false;
+}
+
 SoundInfo::~SoundInfo()
 {
 	
@@ -137,8 +150,7 @@ ZFAudioSystem::ZFAudioSystem() : ZFSubSystem("ZFAudioSystem")
 
 ZFAudioSystem::~ZFAudioSystem()
 {
-//	if(m_pkMusic)
-//		delete m_pkMusic;
+
 }
 
 bool ZFAudioSystem::StartUp()
@@ -154,6 +166,15 @@ bool ZFAudioSystem::StartUp()
 	GenerateSourcePool();
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
+
+	ObjectManager* pkObjectMan = reinterpret_cast<ObjectManager*>(
+		g_ZFObjSys.GetObjectPtr("ObjectManager"));
+
+	ZFScriptSystem* pkScriptSys = reinterpret_cast<ZFScriptSystem*>(
+		GetSystem().GetObjectPtr("ZFScriptSystem"));
+
+	// Setup script interface.
+	AudioLua::Init(this,pkObjectMan,pkScriptSys);
 
 	m_bIsValid = true;
 
@@ -180,7 +201,7 @@ bool ZFAudioSystem::ShutDown()
 	map<string,ZFResourceHandle*>::iterator itRes = m_mkResHandles.begin();
 	for( ; itRes != m_mkResHandles.end(); itRes++)
 		if(itRes->second)
-			delete itRes->second;
+		 	delete itRes->second;
 
 	// Remove all sounds.
 	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
@@ -396,7 +417,7 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 
 // Det är OK att skapa ett lokalt SoundInfo objekt och skicka in till funktionen.
 // Funktioner skapar alltid en egen kopia på objektet som den tar hand om själv.
-bool ZFAudioSystem::ActivateSound(SoundInfo kSound)
+bool ZFAudioSystem::StartSound(SoundInfo kSound)
 {
 	SoundInfo *pkSound = new SoundInfo;
 	memcpy(pkSound, &kSound, sizeof(SoundInfo));
@@ -448,30 +469,31 @@ bool ZFAudioSystem::ActivateSound(SoundInfo kSound)
 	return true;
 }
 
-bool ZFAudioSystem::DestroySound(SoundInfo kSound)
+bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
 {
 	SoundInfo* pkRemoveSound = NULL;
+
+	float fClosestDist = 100000.0f;
 
 	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
 	for( ; itSound != m_kActiveSounds.end(); itSound++)  
 	{
 		SoundInfo* pkSound = (*itSound);
 
-		if(pkSound->m_kPos == kSound.m_kPos)
+		if(strcmp(pkSound->m_szFile, kSound.m_szFile) == 0)
 		{
-			if(strcmp(pkSound->m_szFile, kSound.m_szFile) == 0)
+			float fDistance = (kSound.m_kPos - pkSound->m_kPos).LengthSqr();
+
+			if(fDistance < fClosestDist)
 			{
-				if(pkSound->m_bLoop == kSound.m_bLoop)
-				{
-					pkRemoveSound = pkSound;
-					break;
-				}
+				pkRemoveSound = pkSound;
+				fClosestDist = fDistance;
 			}
 		}
 	}
 
 	// Remove sound
-	if(pkRemoveSound != NULL)
+	if(pkRemoveSound != NULL && sqrt(fClosestDist) < fMaxSearchRange)
 	{
 		for(int j=0; j<SOURCE_POOL_SIZE; j++)
 		{
