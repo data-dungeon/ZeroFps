@@ -14,6 +14,7 @@ P_PfPath::P_PfPath()
 	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
 	m_fSpeed = 3;
+	m_bTilt = false;
 	m_iNavMeshCell = 0;
 	
 	m_kOffset.Set(0,0,0);
@@ -114,7 +115,10 @@ void P_PfPath::Update()
 	m_pkObject->SetWorldPosV(kPos);
 
 
-	//set rot
+	//setup character orientation
+	if(!m_bTilt)
+		kdiff.y = 0;
+	
 	Matrix4 kRotM;
 	kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
 	kRotM.Transponse();
@@ -127,12 +131,14 @@ void P_PfPath::Update()
 
 void P_PfPath::Save(ZFIoInterface* pkFile)
 {
-
+	pkFile->Write((void*)&m_bTilt,sizeof(m_bTilt),1);
+	pkFile->Write((void*)&m_fSpeed,sizeof(m_fSpeed),1);	
 }
 
 void P_PfPath::Load(ZFIoInterface* pkFile)
 {
-
+	pkFile->Read((void*)&m_bTilt,sizeof(m_bTilt),1);
+	pkFile->Read((void*)&m_fSpeed,sizeof(m_fSpeed),1);	
 }
 
 void P_PfPath::PackTo(NetPacket* pkNetPacket, int iConnectionID )
@@ -142,11 +148,20 @@ void P_PfPath::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_PfPath::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+
+
 }
 
 vector<PropertyValues> P_PfPath::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(1);
+	
+	kReturn[0].kValueName="Tilt";
+	kReturn[0].iValueType=VALUETYPE_BOOL;
+	kReturn[0].pkValue=(void*)&m_bTilt;
+	
+	
+	
 	return kReturn;
 }
 

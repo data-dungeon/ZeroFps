@@ -19,7 +19,7 @@ P_Vegitation::P_Vegitation()
 	Clear();
 	
 	SetTexture("data/textures/grassp.tga");	
-	SetScale(Vector3(1,1,1));
+	SetScale(Vector3(1.5,1,1.5));
 	m_fWind = 10;	
 	
 	

@@ -17,6 +17,7 @@ class ENGINE_API P_PfPath : public Property
 		vector<Vector3>	m_kPath;				// The path we are following (if any).
 		int					m_iNextGoal;		// The point we are going to.		
 		float					m_fSpeed;			// Our walking speed.
+		bool					m_bTilt;				// Shuld the character tilt when walking (used for 4-leged creatures)
 		int					m_iNavMeshCell;	// The cell we are in. 0 if unknown.
 
 		Vector3				m_kOffset;
@@ -38,9 +39,16 @@ class ENGINE_API P_PfPath : public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		void SetPath(vector<Vector3> kPath);
-
 		bool MakePathFind(Vector3 kDestination);
-		bool HavePath();		
+		bool HavePath();				
+		
+		
+		void SetSpeed(float fSpeed) { m_fSpeed = fSpeed;};
+		void SetTilt(bool bTilt) { m_bTilt = bTilt;};
+		
+		bool GetTilt() {return m_bTilt;};
+		float GetSpeed() {return m_fSpeed;};
+		
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

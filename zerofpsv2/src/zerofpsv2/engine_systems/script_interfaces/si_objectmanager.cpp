@@ -167,7 +167,8 @@ int ObjectManagerLua::InitParameterLua(lua_State* pkLua)
 	
 
 
-	g_pkLastProperty->SetValue((string)acName,(string)acData);
+	if(!g_pkLastProperty->SetValue((string)acName,(string)acData))
+		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
 
 	
 	//cout<<"Setting Parameter in script: "<<acName<<" to "<<acData<<endl;
