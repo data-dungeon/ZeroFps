@@ -87,6 +87,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="C:\Program\codetool\include  "
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PHYSICS_ENGINE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"

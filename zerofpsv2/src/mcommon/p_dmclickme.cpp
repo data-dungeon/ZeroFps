@@ -43,6 +43,9 @@ void P_DMClickMe::Update()
 			else
 				pkVisiter->SetUpdateStatus(UPDATE_ALL);
 
+			// call script function exit
+			((P_ScriptInterface*)m_pkScript)->CallFunction ( "Exit" );
+
 			// remove from list
 			m_kVisiters.erase ( kIte++ );
 

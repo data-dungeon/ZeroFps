@@ -85,6 +85,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SwallowPlayer", DMLua::SwallowPlayerLua);
 	pkScript->ExposeFunction("SetIsHouse", DMLua::IsHouseLua);
 
+	// stuff
+	pkScript->ExposeFunction("Explosion", DMLua::ExplosionLua);
+
 	// shop functions
 	pkScript->ExposeFunction("AddItemToShop", DMLua::AddItemToShopLua);
 
@@ -1412,6 +1415,46 @@ int DMLua::IsHouseLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 1, &dBool);
 
 	pkClick->m_bIsHouse = dBool;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+// Takes radie, damage
+int DMLua::ExplosionLua(lua_State* pkLua)
+{
+	Entity* pkExpl = TestScriptInput (3, pkLua);
+
+	if ( pkExpl == 0 )
+	{
+		cout << "Warning! DMLua::ExplosionLua: Takes 3 arguments, objectID, radie and damage." << endl;
+		return 0;
+	}
+
+	double dRadie, dDamage;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dRadie);
+	g_pkScript->GetArgNumber(pkLua, 2, &dDamage);
+
+	vector<Entity*> kObj;
+
+	g_pkObjMan->GetAllObjects(&kObj);
+
+	for ( int i = 0; i < kObj.size(); i++ )
+	{
+		// check for characters
+		if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
+		{
+			// check distance
+			double dDist = kObj[i]->GetWorldPosV().DistanceTo(pkExpl->GetWorldPosV());
+
+			if ( dDist <= dRadie )
+			{
+				pkChar->Damage (0, int(dDamage * (1.0 - (dDist / dRadie))));
+			}
+		}
+	}
 
 	return 0;
 }

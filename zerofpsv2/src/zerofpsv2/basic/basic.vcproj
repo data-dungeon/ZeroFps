@@ -87,6 +87,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="C:\Program\codetool\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASIC_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -107,6 +108,7 @@
 				OutputFile="..\..\..\bin\basic.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="c:\cppdev\cppdev\"
 				ProgramDatabaseFile=".\Release/basic.pdb"
 				ImportLibrary=".\Release/basic.lib"/>
 			<Tool
