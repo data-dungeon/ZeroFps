@@ -243,7 +243,7 @@ bool Gui::CreateWindows()
 
 	//m_pkEdit->pkGui->Resize(1024,768,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight);
 
-	//CreateTestWnd();
+	CreateTestWnd();
 
 	return true;
 }
@@ -568,7 +568,7 @@ bool Gui::HaveFocus()
 void Gui::CreateTestWnd()
 {
 	int id = 5000;
-	int w = 300, h = 400;
+	int w = 400, h = 400;
 	int x = m_pkEdit->m_iWidth/2 - w/2;
 	int y = m_pkEdit->m_iHeight/2 - h/2;
 
@@ -579,14 +579,13 @@ void Gui::CreateTestWnd()
 
 	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
 
-	FILE* pkFile = fopen("../src/filehead.txt", "r+t");
+	FILE* pkFile = fopen("../src/kodstd.txt", "r+t");
 	if(pkFile)
 	{
 		int length = 0;
 		while(1)
 		{
 			int ret = getc(pkFile);
-
 			if(ret == EOF)
 				break;
 			else
@@ -601,10 +600,6 @@ void Gui::CreateTestWnd()
 		pkTextbox->SetText(szText);
 		delete[] szText;
 	}
-
-
-	
-
 
 	m_pkEdit->pkGui->RegisterWindow(pkTextbox, "TestTextBox");
 }
