@@ -168,14 +168,17 @@ bool OggMusic::Update()
 		int iProcessed = 0;
 		ALuint ALuiBufferID;
 		alGetSourcei(m_ALuiSource, AL_BUFFERS_PROCESSED, &iProcessed);
-		cout<<"pros: " <<iProcessed;
+		//cout<<"pros: " <<iProcessed;
 		if(iProcessed>0)
 		{
 			while(iProcessed)
 			{
+				
 				alSourceUnqueueBuffers(m_ALuiSource, 1 , &ALuiBufferID);	
 				if(QueueBuffer(&ALuiBufferID))
+				{
 					iProcessed--;
+				}
 				else 
 				{
 					iBuffersInQueue--;
@@ -198,18 +201,17 @@ bool OggMusic::Stop()
 
 bool OggMusic::QueueBuffer(ALuint *pALuiBuffer)
 {
-	int current_section = 1;
+	int current_section;
 	long bytes_read = ov_read(&m_kOggFile, m_pcTempBuffer, m_uiBufferSize,0,2,1, &current_section); 
 	if(!(bytes_read == 0|| bytes_read==OV_HOLE || bytes_read==OV_EBADLINK ))
 	{
-		cout<<bytes_read <<" ";
 		alBufferData(*pALuiBuffer, AL_FORMAT_STEREO16, m_pcTempBuffer, bytes_read, m_uiSamplingRate);  
 		if (alGetError()!=AL_NO_ERROR)
 		{
 			cout<<"error generating bufferDATA!" <<endl;
 		}
 		
-		alSourceQueueBuffers(m_ALuiSource, 1,m_pALuiBuffers );
+		alSourceQueueBuffers(m_ALuiSource, 1,pALuiBuffer );
 		if (alGetError()!=AL_NO_ERROR)
 		{
 			cout<<"error queuing bufferDATA!" <<endl;

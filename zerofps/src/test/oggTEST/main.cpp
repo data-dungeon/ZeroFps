@@ -98,8 +98,8 @@ void init(void)
 
 int main(int argc, char** argv) //finaly the main function
 {
-	_setmode( _fileno( stdin ), _O_BINARY );
-	_setmode( _fileno( stdout ), _O_BINARY );
+	//_setmode( _fileno( stdin ), _O_BINARY );
+	//_setmode( _fileno( stdout ), _O_BINARY );
 
 	//initialise openAL
 	/*alutInit(0,NULL) ;
@@ -140,8 +140,8 @@ int main(int argc, char** argv) //finaly the main function
 	
 	alutInit(0,NULL); 
 	
-	OggMusic Hej(16,4096);
-	Hej.LoadFile("test.ogg");
+	OggMusic Hej(12,4096);
+	Hej.LoadFile("test3.ogg");
 	if(Hej.Play()) cout <<"fdsf";
 	bool apa=true;
 	while(apa)
