@@ -209,7 +209,7 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 	bool right = true;
 	float fHeight;
 	Vector3 kNormal;
-	HM2_texcor kTexCor;
+	Vector2 kTexCor;
 	
 	for(int y = iStartY;y < iStopY; y++)
 	{	
@@ -293,7 +293,7 @@ void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 	bool right =true;
 	float fHeight; 
 	Vector3 kNormal;	
-	HM2_texcor kTexCor;
+	Vector2 kTexCor;
 	for(int y = sy; y < sy+pkPatch->iHeight;y+=iStep)	
 	{	
 		if(y+iStep >= m_iHeight)

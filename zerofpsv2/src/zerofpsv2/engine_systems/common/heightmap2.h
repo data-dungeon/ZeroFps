@@ -10,13 +10,14 @@
 #include "../../basic/zfobjectmanger.h"
 #include "../../basic/zfresource.h"
 #include "../../engine/zerofps.h"
+#include "../../basic/vector2.h"
 
-class ENGINE_SYSTEMS_API HM2_texcor
+/*class ENGINE_SYSTEMS_API HM2_texcor
 {
 	public:
 		float x;
 		float y;
-};
+};*/
 
 class ENGINE_SYSTEMS_API HM2_vert
 {
@@ -36,7 +37,7 @@ class ENGINE_SYSTEMS_API HM2_level
 	public:
 		vector<Vector3>	kVertex;
 		vector<Vector3>	kNormal;
-		vector<HM2_texcor> kTexCor;
+		vector<Vector2> 	kTexCor;
 };
 
 class ENGINE_SYSTEMS_API HM2_patch
