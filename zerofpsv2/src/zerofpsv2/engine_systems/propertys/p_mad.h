@@ -23,6 +23,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		float		m_fLod;
 		bool		m_bIsVisible;
 		int		m_iShadowGroup;
+		int			m_iCollisionMeshID;
 		
 		float		m_fLastAnimationUpdateTime;
 		
@@ -55,6 +56,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void SetBase(const char* acName);
 		void SetScale(float fScale);
 		bool AddMesh(int iSId);
+
+		int GetCollisionMeshID()			{ return m_iCollisionMeshID; }
 		
 		//animation
 		void SetAnimation(const char* szName, float fStartTime);

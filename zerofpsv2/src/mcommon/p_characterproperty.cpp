@@ -45,7 +45,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strJump				=	"attack";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"riding";
-	m_strIdleSwiming		=	"idle";
+	m_strIdleSWIMMING		=	"idle";
 }
 
 
@@ -136,10 +136,10 @@ void P_CharacterProperty::UpdateAnimation()
 				}						
 			}
 			//swiming
-			else if(pkCC->GetCharacterState(eSWIMING))
+			else if(pkCC->GetCharacterState(eSWIMMING))
 			{
-				if(pkMad->GetCurrentAnimationName() != m_strIdleSwiming)
-					pkMad->SetAnimation(m_strIdleSwiming.c_str(), 0);
+				if(pkMad->GetCurrentAnimationName() != m_strIdleSWIMMING)
+					pkMad->SetAnimation(m_strIdleSWIMMING.c_str(), 0);
 				
 			}
 			//sitting
@@ -202,9 +202,9 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 				
 		
 		//swim sound
-		if(pkCC->GetCharacterState(eSWIMING))
+		if(pkCC->GetCharacterState(eSWIMMING))
 		{
-			if(!m_kCurrentCharacterStates[eSWIMING])
+			if(!m_kCurrentCharacterStates[eSWIMMING])
 			{	
 				//m_pkAudioSystem->StopSound(m_iSwimSoundID);
 				m_iSwimSoundID = m_pkAudioSystem->StartSound(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
@@ -214,7 +214,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		}
 		else
 		{
-			if(m_kCurrentCharacterStates[eSWIMING])
+			if(m_kCurrentCharacterStates[eSWIMMING])
 				m_pkAudioSystem->StopSound(m_iSwimSoundID);
 		}			
 
@@ -228,7 +228,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		m_kCurrentCharacterStates[eRUNNING] =	pkCC->GetCharacterState(eRUNNING);
 		m_kCurrentCharacterStates[eWALKING] =	pkCC->GetCharacterState(eWALKING);
 		m_kCurrentCharacterStates[eJUMPING] =	pkCC->GetCharacterState(eJUMPING);
-		m_kCurrentCharacterStates[eSWIMING] =	pkCC->GetCharacterState(eSWIMING);
+		m_kCurrentCharacterStates[eSWIMMING] =	pkCC->GetCharacterState(eSWIMMING);
 	}
 }
 

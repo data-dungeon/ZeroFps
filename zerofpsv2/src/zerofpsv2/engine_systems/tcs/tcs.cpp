@@ -13,7 +13,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fSleepRotVel = 	0.3;
 	m_fMaxVel = 		10.0;
 	m_fTimeSlice = 	2.0;
-	m_fGravity =		15.0;
+	m_fGravity =		9.84;
 	
 	m_iHandleCollission =1;
 	m_iDebugGraph = 		0;
@@ -366,9 +366,10 @@ void Tcs::UpdateForces()
 					
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
-			{
 				m_kBodys[i]->m_kLinearForce.y -= m_fGravity * m_kBodys[i]->m_fMass;
-			}
+
+			Vector3 kY;
+			m_kBodys[i]->GetVel(kY);
 			
 			//apply some air friction		
 			m_kBodys[i]->m_kLinearForce -= m_kBodys[i]->m_kLinearVelocity * m_kBodys[i]->m_fAirFriction;

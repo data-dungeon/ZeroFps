@@ -29,6 +29,9 @@ P_Mad::P_Mad()
 	m_kOffset.Set(0,0,0);
 	
 	m_fLastAnimationUpdateTime = 0;
+
+	
+
 }
 
 void P_Mad::Update()
@@ -37,7 +40,21 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 
-		
+// TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
+// find lowpoly mesh, if exist
+
+// and MOVE to somewhere else..should need to be every update.. = ugly
+	if (pkCore->NumOfMeshes() > 1)
+		m_iCollisionMeshID = 1;
+	else
+		m_iCollisionMeshID = 0;
+/*	
+	for (int i = 0; i < pkCore->NumOfMeshes(); i++)
+	{
+		if ( strcmp(pkCore->GetMeshByID(i)->m_acName, "lowpoly") == 0 )
+			m_iCollisionMeshID = i;
+	}
+*/	 
 	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
@@ -389,7 +406,7 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	if(!pkCore)
 		return false;
 	
-	pkCoreMesh = pkCore->GetMeshByID(0);		
+	pkCoreMesh = pkCore->GetMeshByID(m_iCollisionMeshID);		
 	if(!pkCoreMesh)
 		return false;
 	

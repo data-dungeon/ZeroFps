@@ -244,7 +244,7 @@ void MadView::ChangeMad(string strName)
 	}
 
 	//dvoids flytta kameran hax :D
-	m_pkCameraObject->SetWorldPosV(Vector3(0,-2.5,-pkMad->GetRadius()*2));			
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2.35,-pkMad->GetRadius()*2));			
 	m_fObjectRadius = pkMad->GetRadius();
 	
 	char szText[100];

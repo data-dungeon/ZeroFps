@@ -21,7 +21,7 @@ enum CharcterStates
 {
 	eIDLE_STANDING=0,
 	eSITTING =		1,
-	eSWIMING =		2,
+	eSWIMMING =		2,
 	eWALKING	=		3,
 	eRUNNING	=		4,
 	eJUMPING	=		5,

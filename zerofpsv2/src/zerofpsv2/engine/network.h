@@ -42,7 +42,7 @@ using namespace std;
 
 #define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
 
-#define ZF_NET_MAXREL					200
+#define ZF_NET_MAXREL					20
 
 // Status of a remote node.
 enum ClientConnectStatus

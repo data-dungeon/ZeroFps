@@ -272,6 +272,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 
 	if(Mad_Core* pkCore = (Mad_Core*)pkMad->kMadHandle.GetResourcePtr())
 	{
+		// TODO: use collisionmodel version for shadows instead??
 		if(Mad_CoreMesh* pkCoreMech = pkCore->GetMeshByID(iShadowMesh))
 		{
 		 	//pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);

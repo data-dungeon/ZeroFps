@@ -339,7 +339,8 @@ bool P_Tcs::SetupMeshData()
 		{
 			//cout<<"found core"<<endl;
 			//look for mech pointer in core
-			Mad_CoreMesh* pkCoreMech = pkCore->GetMeshByID(m_iModelID);					
+	
+			Mad_CoreMesh* pkCoreMech = pkCore->GetMeshByID(pkMP->GetCollisionMeshID());					
 			if(pkCoreMech != NULL)		
 			{
 				//cout<<"found mech"<<endl;

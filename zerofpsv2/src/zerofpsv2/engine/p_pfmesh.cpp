@@ -319,7 +319,7 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 	if(pkCore == NULL)
 		return;
-	Mad_CoreMesh* pkCoreMesh = pkCore->GetMeshByID(0);
+	Mad_CoreMesh* pkCoreMesh = pkCore->GetMeshByID(pkMad->GetCollisionMeshID());
 	if(pkCoreMesh == NULL)
 		return;
 	
