@@ -1536,7 +1536,8 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	
 	if( szCmd == string("request_zones"))
 	{
-		SendZoneList(false,pkNetPacket->m_iClientID,-1);
+		if(pkNetPacket->m_iClientID != -1)		
+			SendZoneList(false,pkNetPacket->m_iClientID,-1);
 		//cout<<"sending zones to client editor"<<endl;	
 	}
 	
