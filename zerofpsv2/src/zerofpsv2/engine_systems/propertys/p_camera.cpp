@@ -75,10 +75,10 @@ void P_Camera::Update()
 		
 			case CAM_TYPE3PERSON:
 			{	
-				if(m_f3PPAngle > 60)
-					m_f3PPAngle = 60;
-				if(m_f3PPAngle < -60)
-					m_f3PPAngle = -60;
+				if(m_f3PPAngle > 85)
+					m_f3PPAngle = 85;
+				if(m_f3PPAngle < -85)
+					m_f3PPAngle = -85;
 
 				
 				Vector3 kCamPos;				

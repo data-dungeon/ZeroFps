@@ -989,6 +989,15 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							break;
 						}
 				
+					if(P_Item* pkItem = (P_Item*)pkObj->GetProperty("P_Item"))
+					{
+						if(pkItem->GetInContainerID() != -1)
+						{
+							SayToClients("This item is in a container",PkNetMessage->m_iClientID);
+							break;
+						}					
+					}
+					
 					//cout<<"character: "<<	pkData->m_strCharacterName<<" doint action: "<<strAction<<" on "<<iEntity<<endl;
 				
 					vector<ScriptFuncArg> args(2);

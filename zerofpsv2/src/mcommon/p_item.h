@@ -73,9 +73,10 @@ class MCOMMON_API P_Item: public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 
-		string 	GetIcon() { return m_strIcon; }
-		int 		GetType() { return m_iType;	}
-		string 	GetName() { return m_strName; }
+		string 	GetIcon() 			{ return m_strIcon; 				}
+		int 		GetType() 			{ return m_iType;					}
+		string 	GetName() 			{ return m_strName; 				}
+		int		GetInContainerID(){ return m_iInContainerID;	};
 		
 		friend class MLContainer;
 };
