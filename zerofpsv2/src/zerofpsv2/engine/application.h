@@ -15,7 +15,7 @@ class Console;
 class Render;
 class Input;
 class FileIo;
-class ZFClient;
+class ZFClient; 
 class ZShadow;
 
 /** \brief	The application object.
