@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy          $(ProjDir)\release\*.lib          ..\..\..\bin\ 
+PostBuild_Cmds=copy           $(ProjDir)\release\*.lib           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy          $(ProjDir)\debug\*.lib          ..\..\..\bin\ 
+PostBuild_Cmds=copy           $(ProjDir)\debug\*.lib           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -183,6 +183,10 @@ SOURCE=.\autoparentproperty.cpp
 # Begin Source File
 
 SOURCE=.\billboardrenderproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\bodyproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -599,6 +603,10 @@ SOURCE=.\autoparentproperty.h
 # Begin Source File
 
 SOURCE=.\billboardrenderproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\bodyproperty.h
 # End Source File
 # Begin Source File
 

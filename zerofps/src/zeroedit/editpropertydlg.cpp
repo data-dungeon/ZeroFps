@@ -1,4 +1,4 @@
-// editpropertydlg.cpp: implementation of the EditPropertyDlg class.
+ // editpropertydlg.cpp: implementation of the EditPropertyDlg class.
 //
 //////////////////////////////////////////////////////////////////////
 

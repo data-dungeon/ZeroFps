@@ -147,7 +147,8 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 
 	m_pkGuiBuilder->CreateCheckbox(pkPage, ID_LOCKMASKCOLOR_SLIDER_CH, 5, 135, 16, 16, 
 		m_bLockMaskSliders, "Lock", "LockMaskcolorSliderCb");
-/*
+
+////
 	// Create page 2: - Add object
 	pkPage = WorkPanel()->GetPage(3);
 
@@ -162,7 +163,7 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 
 	m_pkGuiBuilder->CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");
 	m_pkGuiBuilder->CreateButton(pkPage, ID_CREATEMADFILE_BN, 60, 170, 50, 20, "Create");
-*/	
+	
 	return true;
 }
 

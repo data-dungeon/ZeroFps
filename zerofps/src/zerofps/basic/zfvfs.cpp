@@ -127,8 +127,11 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
+	cout << "Adding to VFS root table: " <<  strRootPath.c_str();
+
 	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
+	int iSize = m_kstrRootPath.size();
 }
 
 string	ZFVFileSystem::GetCurrentWorkingDir()
@@ -150,6 +153,8 @@ bool ZFVFileSystem::RemoveDir(string strDir)
 bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
 {
 	string	strRootMerge;
+
+	int iSize = m_kstrRootPath.size();
 
 	// Try to open from all active RootPaths.
 	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {

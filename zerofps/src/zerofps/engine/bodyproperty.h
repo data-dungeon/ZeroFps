@@ -1,6 +1,8 @@
 #ifndef _BODYPROPERTY_H_
 #define _BODYPROPERTY_H_
 
+#include "iostream"
+
 using namespace std;
 
 #include "../physics_engine/physics_engine.pkg" 
