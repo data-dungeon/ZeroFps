@@ -662,7 +662,9 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 	}
 
 	ZGuiWnd::m_pkFocusWnd = pkWnd;
-	ZGuiWnd::m_pkFocusWnd->SetFocus();
+
+	if(pkWnd)
+		pkWnd->SetFocus();
 	
 	if(pkWnd->GetWindowFlag(WF_TOPWINDOW))
 	{

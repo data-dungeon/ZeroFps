@@ -615,7 +615,10 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
+			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
+				pkGui->SetFocus(GetWnd("InputBox"));
+			}
 			else
 			if(strClickWndName == "ToggleInfoBoxBn")
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);

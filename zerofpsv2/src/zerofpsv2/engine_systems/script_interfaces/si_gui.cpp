@@ -320,7 +320,7 @@ int GuiAppLua::ShowWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 2)
+	if(iNumArgs != 3)
 		return 0;
 
 	char szName[100];
@@ -329,6 +329,9 @@ int GuiAppLua::ShowWndLua(lua_State* pkLua)
 	double show;
 	g_pkScript->GetArg(pkLua, 1, &show);
 
+	double set_focus;
+	g_pkScript->GetArg(pkLua, 2, &set_focus);
+
 	ZGuiWnd* pkWnd;
 	if((pkWnd = g_pkGuiApp->GetWnd(szName)) != NULL)
 	{
@@ -336,6 +339,9 @@ int GuiAppLua::ShowWndLua(lua_State* pkLua)
 			pkWnd->Show();
 		else
 			pkWnd->Hide();
+
+		if(set_focus > 0)
+			pkWnd->SetFocus();
 	}
 		
 	return 1;
