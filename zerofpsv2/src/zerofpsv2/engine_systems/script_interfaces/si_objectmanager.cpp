@@ -4,7 +4,7 @@
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 #include "../propertys/p_tcs.h"
-//#include "../propertys/p_scriptinterface.h" <- FINNS EJ!
+#include "../propertys/p_scriptinterface.h"
 
 namespace ObjectManagerLua
 {
@@ -38,7 +38,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
 	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);	
-	pkScript->ExposeFunction("IsStatic",				ObjectManagerLua::IsStaticLua);		
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
 	//----
@@ -246,20 +245,6 @@ int HaveRelativOriLua(lua_State* pkLua)
 	return 0;
 }
 
-/**	\fn IsStatic()
- 	\relates MistLandScript
-	\brief Sets the last created object to be static.
-*/
-int IsStaticLua(lua_State* pkLua)
-{
-	if(g_pkLastObject == NULL)
-		return 0;
-
-	
-	g_pkLastObject->GetObjectType() = OBJECT_TYPE_STATIC;
-
-	return 0;
-}
 
 /**	\fn SetReturnObject(x,y,z)
  	\relates MistLandScript
@@ -549,8 +534,7 @@ int SIGetSelfIDLua(lua_State* pkLua)
 
 int SISetHeartRateLua(lua_State* pkLua)
 {
-	// <- RESULTAT AV ATT EN FIL INTE FINNS!
-/*	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;	
 		double dHeartRate;
@@ -567,9 +551,11 @@ int SISetHeartRateLua(lua_State* pkLua)
 		}
 	}
 	else
-		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	*/ 
+		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;
 	
 	return 0;
 }
 
 }
+
+

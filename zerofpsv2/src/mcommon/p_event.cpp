@@ -49,12 +49,12 @@ void P_Event::Update()
 
 bool P_Event::SendEvent(const char* acEvent)
 {
-	if(m_pkObject->GetObjectScript() != NULL)
+	if(m_pkObject->GetEntityScript() != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
-		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent,0,0);
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acEvent,0,0);
 
 		return bSuccess;
 	}
@@ -64,10 +64,10 @@ bool P_Event::SendEvent(const char* acEvent)
 
 bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )	
 {
-	if(m_pkObject->GetObjectScript() && acType != NULL)
+	if(m_pkObject->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
@@ -78,7 +78,7 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
 		
-		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetObjectScript(), "Use", args);
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), "Use", args);
 
 		delete[] args[0].pData;
 		
@@ -92,10 +92,10 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 
 bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
 {
-	if(m_pkObject->GetObjectScript() && acType != NULL)
+	if(m_pkObject->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
@@ -113,7 +113,7 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObj
 		args[3].pData = &kPos.z;
 		
 		
-		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetObjectScript(), "GroundClick", args);
+		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetEntityScript(), "GroundClick", args);
 
 		delete[] args[0].pData;
 		
@@ -131,9 +131,9 @@ void P_Event::Touch(int iId)
 	SendEvent("Collission");	
 	
 /*	if(pkCol->m_pkPP1->GetObject() == m_pkObject)
-		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->iNetWorkID;
+		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->GetEntityID();
 	else
-		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP1->GetObject()->iNetWorkID;
+		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP1->GetObject()->GetEntityID();
 */		
 
 }

@@ -22,12 +22,6 @@ class GameMessage;
 /*	When property should be updated. 
 */enum PROPERTY_TYPES
 {
-	/*
-	PROPERTY_TYPE_ALL		= 1,		// Run on all.
-	PROPERTY_TYPE_NORMAL	= 2,		// Run at normal update.
-	PROPERTY_TYPE_RENDER	= 4,		// Run at render update.
-	PROPERTY_TYPE_PHYSIC	= 8,		// Run at physics update.
-	*/
 	PROPERTY_TYPE_NORMAL	= 1,		// Run at normal update.
 	PROPERTY_TYPE_RENDER	= 2,		// Run at render update.
 	PROPERTY_TYPE_PHYSIC	= 4,		// Run at physics update.
@@ -155,7 +149,6 @@ class ENGINE_API Property
 		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
 		Entity*				m_pkObject;
 		EntityManager*    m_pkObjMan;
-		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
 		//netflags
 		void	SetNrOfConnections(int iConNR);
@@ -246,8 +239,6 @@ class ENGINE_API Property
 		// Save / Load
 		virtual void Save(ZFIoInterface* pkFile){};
 		virtual void Load(ZFIoInterface* pkFile){};		
-//		virtual void Save(ZFMemPackage* pkPackage) {};				//save property
-//		virtual void Load(ZFMemPackage* pkPackage) {};				//load property
 		virtual void CloneOf(Property* pkProperty) = 0;
 
 		// Inlines

@@ -26,7 +26,7 @@ void P_PSystem::Update()
       {
          if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish )
          {
-            m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+            m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
 			}
 
          delete m_pkPSystem;

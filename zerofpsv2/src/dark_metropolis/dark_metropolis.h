@@ -33,6 +33,17 @@ class CGameDlg;
 
 class DarkMetropolis : public Application, public ZGuiApp 
 {
+
+	//aaarrrg detta e fan fult så d skiter om det, flera public urk, kan inte m_eGameMode vara en int i stället?
+	public:
+		enum GameMode
+		{
+			ACTIVE,
+			PAUSED
+		};	
+		
+		
+
 	private:
 
 		enum FuncId_e
@@ -49,26 +60,28 @@ class DarkMetropolis : public Application, public ZGuiApp
 		};
 	
 
+	
 		P_DMGameInfo*	m_pkGameInfoProperty;
 		Entity*			m_pkGameInfoEntity;
 
-		LightSource	m_kSun;
+		LightSource m_kSun;
 
-		Camera*	m_pkCamera;
-		Entity*	m_pkCameraEntity;
-		P_Camera* m_pkCameraProp;
-		float		m_fDistance;		
-		float		m_fAngle;
-		float		m_fMinCamDistance;
-		float		m_fMaxCamDistance;
+		Camera*		m_pkCamera;
+		Entity*		m_pkCameraEntity;
+		P_Camera* 	m_pkCameraProp;
+		float			m_fDistance;		
+		float			m_fAngle;
+		float			m_fMinCamDistance;
+		float			m_fMaxCamDistance;
 		
-		float		m_fDelayTimer;
-		bool		m_bActionPressed;
-
-
-		vector<int>	m_kSelectedEntitys;					//list of selected entitys		
+		GameMode		m_eGameMode;		
+		float			m_fDelayTimer;
+		bool			m_bActionPressed;
+		
+		vector<int> m_kSelectedEntitys;					//list of selected entitys		
 		int			m_iCurrentFormation;					//what formation to use when moving characters
 		
+		int			m_iActiveHQ;							//id of the active HQ, used by the gui etc		
 		int			m_iHQID;									//network id of current selected hq, if any
 		
 		Vector3		m_kSelectSquareStart;				//start of selection square
@@ -78,7 +91,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		Vector3	m_kPickPos;									//exact possition of last cursor pick operation
 		string	m_strSaveDirectory;						//directory in wich savegames are stored
 
-		int m_iEnableMusic; 									//if the music should be played or not
+		int 		m_iEnableMusic; 									//if the music should be played or not
 		
 		
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
@@ -93,18 +106,11 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
+		int FindActiveHQ();
+	
 	public:
 
-		enum GameMode
-		{
-			ACTIVE,
-			PAUSED
-		};
-
-		private:
-			GameMode m_eGameMode;
-		public:
-
+		
 		enum SLOT_TYPE
 		{
 			ITEM,

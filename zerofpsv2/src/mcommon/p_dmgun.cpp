@@ -115,7 +115,7 @@ bool P_DMGun::FireBullets(int iAmount)
 	Vector3 kStart = m_pkObject->GetWorldPosV() + m_kGunOffset;
 	
 	vector<Entity*> kObjects;		
-	m_pkObjMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);	
+	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
 
 
 	for(int i =0;i<iAmount;i++)

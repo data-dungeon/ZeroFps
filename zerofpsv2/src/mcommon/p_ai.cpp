@@ -39,7 +39,7 @@ void P_AI::Update()
    {
       m_eAI_Mode = eATTACKMODE;
 
-      Entity* pkEnemy = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
+      Entity* pkEnemy = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 
       // if enemy is dead, remove order
       if ( !pkEnemy )
@@ -104,7 +104,7 @@ void P_AI::Update()
 
             // create splattblood PSystem
             if ( kWhenHit.size() )
-               m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );
+               m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );
 
             // change animation to attack animation
             ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
@@ -161,7 +161,7 @@ void P_AI::Update()
       // face object
       if ( m_pkCurrentOrder->m_iTargetID )
       {
-         Entity* pkFaceObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
+         Entity* pkFaceObj = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 
 		   //rotate to target
 		   Vector3 kdiff = pkFaceObj->GetWorldPosV() - m_pkObject->GetWorldPosV();
@@ -190,7 +190,7 @@ void P_AI::Update()
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
-      Entity* pkEnt = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
+      Entity* pkEnt = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 	
 		Vector3 kPos = m_pkObject->GetWorldPosV();
 
@@ -202,7 +202,7 @@ void P_AI::Update()
 
          // check if object still exists!!
          if ( pkEnt )
-            ((P_Event*)pkEnt->GetProperty("P_Event"))->SendObjectClickEvent( "PickUp", m_pkObject->iNetWorkID );
+            ((P_Event*)pkEnt->GetProperty("P_Event"))->SendObjectClickEvent( "PickUp", m_pkObject->GetEntityID() );
          
          NextOrder();
       }
@@ -416,7 +416,7 @@ void P_AI::CleanEnemies ()
 	for ( map<int, bool>::iterator kIte = m_kEnemies.begin();
 			kIte != m_kEnemies.end(); kIte++ )
 	{
-		if ( !m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte).first ) )
+		if ( !m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( (*kIte).first ) )
 			m_kEnemies.erase ( kIte++ );
 	}
 }

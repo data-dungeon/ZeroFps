@@ -155,7 +155,7 @@ EntityManager::~EntityManager()
 */
 void EntityManager::Link(Entity* pkObject,int iId) 
 {
-	if(pkObject->iNetWorkID != -1)
+	if(pkObject->m_iEntityID != -1)
 	{
 		if(IsLinked(pkObject))
 		{
@@ -166,26 +166,26 @@ void EntityManager::Link(Entity* pkObject,int iId)
 
 	if(iId == -1)
 	{
-		pkObject->iNetWorkID = iNextObjectID++;
+		pkObject->m_iEntityID = iNextObjectID++;
 	}
 	else
 	{
 		if(GetObjectByNetWorkID(iId))
 		{
 			cout<<"WARNING: "<<GetNumOfObjects()<<" Entity whit id:"<<iId<<" already exist"<<" setting new id "<<iNextObjectID<<endl;
-			pkObject->iNetWorkID = iNextObjectID++;			
+			pkObject->m_iEntityID = iNextObjectID++;			
 		}
 		else	
-			pkObject->iNetWorkID = iId;
+			pkObject->m_iEntityID = iId;
 	}
 		
 	//m_akObjects.push_back(pkObject);
-	m_akEntitys[pkObject->iNetWorkID] = pkObject; 
+	m_akEntitys[pkObject->m_iEntityID] = pkObject; 
 }
 
 bool EntityManager::IsLinked(Entity* pkObject)
 {
-	if(m_akEntitys.find(pkObject->iNetWorkID) == m_akEntitys.end())
+	if(m_akEntitys.find(pkObject->m_iEntityID) == m_akEntitys.end())
 		return false;
 	else
 		return true;
@@ -205,9 +205,9 @@ void EntityManager::UnLink(Entity* pkObject)
 {	
 	// If i own object mark so we remove it on clients.
 	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-	//		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
+	//		m_aiNetDeleteList.push_back(pkObject->m_iEntityID);
 	//m_akObjects.remove(pkObject);
-	m_akEntitys.erase(pkObject->iNetWorkID);
+	m_akEntitys.erase(pkObject->m_iEntityID);
 }
 
 /**	\brief	Delete all objects.
@@ -302,14 +302,14 @@ void EntityManager::Delete(Entity* pkObject)
 
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
-		if(pkObject->iNetWorkID == (*it)) {
-			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
+		if(pkObject->m_iEntityID == (*it)) {
+			Logf("net", "Object [%d] already in delete list\n", pkObject->m_iEntityID);
 			//cout << "Object already in delete list" << endl;
 			return;
 		}
 	}
 	
-	m_aiDeleteList.push_back(pkObject->iNetWorkID);
+	m_aiDeleteList.push_back(pkObject->m_iEntityID);
 }
 
 /**	\brief	Adds an object to delete qeue
@@ -427,7 +427,7 @@ Entity* EntityManager::CreateObjectByNetWorkID(int iNetID)
 	Entity *pkNew = CreateObject(false);
 
 	//	Add(pkNew);
-//	pkNew->iNetWorkID = iNetID;
+//	pkNew->m_iEntityID = iNetID;
 	Link(pkNew,iNetID);
 	
 	pkNew->SetParent(m_pkWorldObject);
@@ -550,7 +550,8 @@ bool EntityManager::IsA(Entity* pkObj, string strStringType)
 // Gets
 void EntityManager::GetAllObjects(vector<Entity*> *pakObjects)
 {
-	m_pkWorldObject->GetAllObjects(pakObjects);
+	//m_pkWorldObject->GetAllObjects(pakObjects);
+	m_pkWorldObject->GetAllEntitys(pakObjects,true);	
 }
 
 void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
@@ -574,7 +575,7 @@ void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,
 
 	
 	for(set<int>::iterator it=kZones.begin();it!=kZones.end();it++) {
-		GetZoneData(*it)->m_pkZone->GetAllObjects(pkEntitys);
+		GetZoneData(*it)->m_pkZone->GetAllEntitys(pkEntitys,true);
 	}		
 
 
@@ -636,7 +637,7 @@ Entity*	EntityManager::GetObjectByNetWorkID(int iNetID)
 		return NULL;
 
 /*	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->iNetWorkID == iNetID)
+		if((*it)->m_iEntityID == iNetID)
 		{	
 			return (*it);
 		}
@@ -725,10 +726,10 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			continue;
 		}
 
-		//NP.Write(pkPackObj->iNetWorkID);
-		m_OutNP.Write(pkPackObj->iNetWorkID);
+		//NP.Write(pkPackObj->m_iEntityID);
+		m_OutNP.Write(pkPackObj->m_iEntityID);
 		
-		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
+		//Logf("net", "Object [%d]\n",pkPackObj->m_iEntityID );
 		//pkPackObj->PackTo(&NP,iClient);
 		pkPackObj->PackTo(&m_OutNP,iClient);
 		iPacketSize++;
@@ -826,7 +827,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 	//dvoids was here ;)
 	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) 
 	{
-		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
+		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
 		
 		if(IsInsideVector(iLocalZoneID, kZones)) 
 		{
@@ -842,7 +843,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 
 	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
-		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
+		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
 		
 		if(IsInsideVector(iLocalZoneID, kZones) == false) {
 			Delete(m_pkZoneObject->m_akChilds[i]);
@@ -859,8 +860,8 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 			//if no staticentity was found, complain
 			if(!pkStaticEntity) {
-				GetStaticData(pkZone->iNetWorkID);
-//				printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
+				GetStaticData(pkZone->m_iEntityID);
+//				printf("Need Static Ents for Zone - %d\n", pkZone->m_iEntityID);
 				return;
 				}
 		}*/
@@ -924,7 +925,7 @@ void EntityManager::PackToClients()
 	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
-		m_pkWorldObject->GetAllObjects(&kObjects, true);
+		m_pkWorldObject->GetAllEntitys(&kObjects, true);
 
 		m_OutNP.Clear();
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -953,7 +954,7 @@ void EntityManager::PackToClients()
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == iClient)
-				(*it)->GetObject()->GetAllObjects(&kObjects, true);
+				(*it)->GetObject()->GetAllEntitys(&kObjects, true);
 		}		
 		PackToClient(iClient, kObjects,false);
 		
@@ -961,10 +962,10 @@ void EntityManager::PackToClients()
 		kObjects.clear();		
 		
 		// Pack and Send all Client Objects
-		m_pkClientObject->GetAllObjects(&kObjects, true);
+		m_pkClientObject->GetAllEntitys(&kObjects, true);
 
 		//pack and send global objects
-		m_pkGlobalObject->GetAllObjects(&kObjects, true);
+		m_pkGlobalObject->GetAllEntitys(&kObjects, true);
 
 		// Loop all zones activated by client.
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 
@@ -974,8 +975,8 @@ void EntityManager::PackToClients()
 			pkZone = m_kZones[iZoneID].m_pkZone;
 			assert(pkZone);
 
-			pkZone->GetAllDynamicEntitys(&kObjects);		//add objects to vector
-
+//			pkZone->GetAllDynamicEntitys(&kObjects);		//add objects to vector
+			pkZone->GetAllEntitys(&kObjects,true,true);
 		}
 		
 		//send all data
@@ -1055,15 +1056,15 @@ void EntityManager::PackToClients()
 	int iEndOfObject = -1;
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		//Logf("net", "Check Object [%d]\n",(*it)->iNetWorkID );
+		//Logf("net", "Check Object [%d]\n",(*it)->m_iEntityID );
 
 		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
 		
 		if((*it)->NeedToPack() == false)					continue;
 		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
 
-		NP.Write((*it)->iNetWorkID);
-		Logf("net", "Object [%d]\n",(*it)->iNetWorkID );
+		NP.Write((*it)->m_iEntityID);
+		Logf("net", "Object [%d]\n",(*it)->m_iEntityID );
 		(*it)->PackTo(&NP);
 		iPacketSize++;
 
@@ -1130,7 +1131,7 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 	if(!pkEnt)
 		return;
 
-	Entity* pkStatic = pkEnt->GetStaticEntity();
+	Entity* pkStatic = NULL;//pkEnt->GetStaticEntity();
 	if(!pkStatic)
 		return;
 
@@ -1138,7 +1139,7 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 	m_iForceNetUpdate = 0xFFFFFFFF;
 
 	kObjects.clear();
-	pkStatic->GetAllObjects(&kObjects);
+	pkStatic->GetAllEntitys(&kObjects);
 	PackToClient(iClient, kObjects,false);
 	
 }
@@ -1172,7 +1173,7 @@ void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->iNetWorkID );
+		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->m_iEntityID );
 		if((*it)->GetObject()->m_pkParent)
 			Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_strName.c_str() );
 	}
@@ -1217,20 +1218,22 @@ char* EntityManager::GetUpdateStatusName(int eStatus)
 	return pkName;
 }
 
+/*
 char* EntityManager::GetObjectTypeName(int eType)
 {
 	char* pkName = "";
 
 	switch(eType) {
-		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
-		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
+//		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
+//		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
 /*		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
 		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
-//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*/
+//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*
 		}
 
 	return pkName;
 }
+*/
 
 char* EntityManager::GetPropertyTypeName(int iType)
 {
@@ -1408,7 +1411,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);
-	Logf("net", " Sending Own Request for %d\n", pkObj->iNetWorkID);
+	Logf("net", " Sending Own Request for %d\n", pkObj->m_iEntityID);
 	
 }
 
@@ -1432,7 +1435,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 //	net->SendToAllClients(&NP);
 
 	OwnerShip_Give(pkObj);
-	Logf("net", " Gives away ownership of %d\n", pkObj->iNetWorkID);
+	Logf("net", " Gives away ownership of %d\n", pkObj->m_iEntityID);
 
 }
 
@@ -1442,7 +1445,7 @@ void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
 		return;
 
 	OwnerShip_Take(pkObj);
-	Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
+	Logf("net", " This node now own %d\n", pkObj->m_iEntityID);
 }
 
 Entity* EntityManager::CloneObject(int iNetID)
@@ -1587,7 +1590,7 @@ list<P_Track*>* EntityManager::GetTrackerList()
 
 void EntityManager::AddTracker(P_Track* kObject)
 {
-	cout << "Now tracking " << kObject->GetObject()->iNetWorkID << endl;
+	cout << "Now tracking " << kObject->GetObject()->m_iEntityID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 
@@ -2277,7 +2280,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		SetZoneModel("",iId);		
 
 		//set objectid in zonedata (sent to client when unloading
-		kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
+		kZData->m_iZoneObjectID = kZData->m_pkZone->m_iEntityID;
 
 	}
 	else	//else load zone from file
@@ -2287,7 +2290,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		kZData->m_pkZone->Load(&kFile);
 	
 		//set objectid in zonedata (sent to client when unloading
-		kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
+		kZData->m_iZoneObjectID = kZData->m_pkZone->m_iEntityID;
 	
 		kFile.Close();
 	}

@@ -96,7 +96,7 @@ void P_Spawn::RemoveEntity(Entity* pkEnt)
 {
 /*	for(vector<int>::iterator it = m_kEntitys.begin(); it != m_kEntitys.end(); it++) 
 	{
-		if((*it) == pkEnt->iNetWorkID)
+		if((*it) == pkEnt->GetEntityID())
 		{
 			m_kEntitys.erase(it);*/
 			m_iEntityCounter--;
@@ -120,9 +120,9 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 		
 		if(pkMl)
 		{
-			pkMl->SetSpawnPointer(m_pkObject->iNetWorkID,m_pkObject->GetCurrentZone());
+			pkMl->SetSpawnPointer(m_pkObject->GetEntityID(),m_pkObject->GetCurrentZone());
 			m_iEntityCounter++;
-			//m_kEntitys.push_back(ent->iNetWorkID);
+			//m_kEntitys.push_back(ent->GetEntityID());
 		}	
 		else
 		{

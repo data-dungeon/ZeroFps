@@ -53,13 +53,13 @@ void P_ScriptInterface::Update()
 bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams)
 {
 	//set self id before calling the funktion
-	ObjectManagerLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;	
+	ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();	
 		
 		
 	if(pkParams)
-		return m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acFunction,*pkParams);
+		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,*pkParams);
 	else
-		return m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acFunction,0,0);	
+		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,0,0);	
 
 }
 

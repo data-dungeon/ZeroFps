@@ -7,6 +7,7 @@ function Create()
 
 		InitProperty("P_Track");
 		InitProperty("P_DMHQ");
+			InitParameter("active","true");					
 		InitProperty("P_ScriptInterface");
 
 end

@@ -45,7 +45,6 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);	
 	
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);		
-	int ENGINE_SYSTEMS_API IsStaticLua(lua_State* pkLua);		
 	//---
 
 	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);		

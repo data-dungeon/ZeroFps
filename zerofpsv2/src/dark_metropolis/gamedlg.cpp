@@ -39,10 +39,10 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 	{
 	case HQ:
 		vector<Entity*> kObjects;	
-		m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
+		m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 		for(unsigned int i=0;i<kObjects.size();i++)
 			if((P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ"))
-				iID = kObjects[i]->iNetWorkID;
+				iID = kObjects[i]->GetEntityID();
 		break;
 	}
 
@@ -103,7 +103,7 @@ bool CGameDlg::LoadDlg(char* szScriptName)
 void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 {
 	vector<Entity*> kObjects;	
-	m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
+	m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if((P_DMHQ*)kObjects[i]->GetProperty("P_DMCharacter"))
 			kList.push_back(kObjects[i]);	

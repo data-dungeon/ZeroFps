@@ -103,9 +103,9 @@ bool CGamePlayDlg::InitDlg()
 			m_akAgetIcons[i].pkButton->Show();
 			m_akAgetIcons[i].pkLifeProgressbar->Show();
 			m_akAgetIcons[i].pkLifeBk->Show();
-			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->iNetWorkID;
+			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->GetEntityID();
 
-			string icon = GetAgentStats(kMembersInField[i]->iNetWorkID)->m_strIcon;
+			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
 			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
 			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName);
 		}

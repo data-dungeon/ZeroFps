@@ -19,6 +19,6 @@ function FirstRun()
 end
 
 function HeartBeat()
-	Print("Dudunk");
+--	Print("Dudunk");
 
 end

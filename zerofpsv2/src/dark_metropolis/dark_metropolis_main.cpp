@@ -51,6 +51,7 @@ void DarkMetropolis::OnInit()
 	m_iCurrentFormation =		FORMATION_CIRCLE;
 	m_bActionPressed = 			false;
 	m_iHQID = 						-1;
+	m_iActiveHQ = 					-1;
 	m_eGameMode	=					ACTIVE;
 	
 	//register commands
@@ -122,6 +123,7 @@ void DarkMetropolis::RenderInterface(void)
 		}	
 	}
 	
+	//draw HQ marker
 	if(m_iHQID != -1)
 	{
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID);
@@ -141,7 +143,13 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem() 
 {				
-
+	//if no hq has been found, try to find it
+	if(m_iActiveHQ == -1)
+	{
+		m_iActiveHQ = FindActiveHQ();
+		if(m_iActiveHQ != -1)
+			cout<<"Found Active HQ :"<<m_iActiveHQ<<endl;
+	}
 
 }
 
@@ -189,6 +197,7 @@ void DarkMetropolis::OnServerStart()
 	m_iCurrentFormation =	FORMATION_CIRCLE;
 	m_bActionPressed =		false;
 	m_iHQID =					-1;
+	m_iActiveHQ = 				-1;
 }
 
 void DarkMetropolis::OnClientStart()
@@ -262,6 +271,10 @@ void DarkMetropolis::Input()
 				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 					pkHQ->m_pkBackPack->DropAll();				
 				
+
+	if(m_pkInputHandle->Pressed(KEY_H))
+		m_pkHQDlg->OpenDlg(); // Open the HQ dialog
+
 
 	//check for camera movment	
 	if(m_pkCameraEntity)
@@ -350,8 +363,8 @@ void DarkMetropolis::Input()
 		if(m_bSelectSquare)
 		{
 			m_bSelectSquare = false;
-			if(!m_pkInputHandle->VKIsDown("multiselect"))
-				m_kSelectedEntitys.clear();			
+			if(!m_pkInputHandle->VKIsDown("multiselect"))			
+				SelectAgent(-1,false,true,false);
 			
 			//reset hq selection
 			m_iHQID = -1;	
@@ -363,14 +376,13 @@ void DarkMetropolis::Input()
 				if(pkEnt)
 					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 					{
-						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->iNetWorkID, false); 
-						SelectAgent(pkEnt->iNetWorkID, false,
-							!m_pkInputHandle->VKIsDown("multiselect"), false);
+						//((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);  //detta fuckar upp
+						SelectAgent(pkEnt->GetEntityID(), false,false, false);
 					}
 					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 					{
 						m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
-						m_iHQID = pkEnt->iNetWorkID;
+						m_iHQID = pkEnt->GetEntityID();
 					}
 			}
 			else  //else check for entitys inside the selection square
@@ -384,13 +396,13 @@ void DarkMetropolis::Input()
 								(m_kSelectSquareStart.z > m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);		
 				
 				vector<Entity*> kObjects;	
-				m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
+				m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 	
 				int last_object_selected = -1;
 				for(unsigned int i=0;i<kObjects.size();i++)
 				{		
 					//objects that should not be clicked on (special cases)
-					if(kObjects[i]->iNetWorkID <100000)
+					if(kObjects[i]->GetEntityID() <100000)
 						continue;
 							
 					Vector3 pos = kObjects[i]->GetWorldPosV();
@@ -399,14 +411,17 @@ void DarkMetropolis::Input()
 						if(pos.z > tl.z && pos.z < br.z)
 							if(kObjects[i]->GetProperty("P_DMCharacter"))
 							{
-								last_object_selected = kObjects[i]->iNetWorkID;
-								m_kSelectedEntitys.push_back(kObjects[i]->iNetWorkID);										
+								last_object_selected = kObjects[i]->GetEntityID();
+								
+								SelectAgent(kObjects[i]->GetEntityID(), false,false, false);
 							}
 				}
 
+/*				detta också, denna tycks anropa någon egen select funtion och tömmer selection listan helatiden så det går inte välja flera gubbar smatidigt
 				if(last_object_selected != false)
 					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(
 						last_object_selected, false); 
+*/			
 			}
 		}
 	}
@@ -517,7 +532,7 @@ void DarkMetropolis::Input()
 						{
 							if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 							{										
-								if(pkCh->m_pkBackPack->AddItem(pkPickEnt->iNetWorkID))
+								if(pkCh->m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
 								{	
 									cout<<"Pickup an item"<<endl;
 									return;
@@ -748,7 +763,7 @@ Entity* DarkMetropolis::GetTargetObject()
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
 	
 	float closest = 999999999;
 	float d;
@@ -758,7 +773,7 @@ Entity* DarkMetropolis::GetTargetObject()
 	{
 		
 		//objects that should not be clicked on (special cases)
-		if(kObjects[i]->iNetWorkID <100000)
+		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 		
 		//-------------
@@ -814,9 +829,6 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 	
 	}
 
-	// RETURN WHAT??????
-	// e:\programmering\zerofpsv2\src\dark_metropolis\dark_metropolis_main.cpp(668) : warning C4715: 'DarkMetropolis::GetFormationPos' : not all control paths return a value
-
 	return Vector3(0,0,0);
 }
 
@@ -828,6 +840,25 @@ void DarkMetropolis::PauseGame(bool bPause)
 		m_eGameMode = ACTIVE;
 }
 
+int DarkMetropolis::FindActiveHQ()
+{
+	vector<Entity*> kObjects;	
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
+
+	for(int i = 0;i<kObjects.size();i++)
+	{
+		if(P_DMHQ* pkHQ = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ"))
+		{
+			if(pkHQ->GetActive())
+				return kObjects[i]->GetEntityID();		
+		}
+	}
+	
+	return -1;
+}
+
+
+
 //
 // Har markerat en agent.
 //
@@ -836,6 +867,9 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 { 
 	if(bResetFirst)
 		m_kSelectedEntitys.clear(); 
+
+	if(id == -1)
+		return;
 
 	if(bToggleSelect=false)
 		m_kSelectedEntitys.push_back(id); 

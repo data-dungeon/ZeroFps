@@ -381,15 +381,15 @@ void MistServer::DeleteSelected()
 		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
 		if(!pkEntity)	continue;
 	
-		cout << " " << pkEntity->iNetWorkID << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
+		cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
 		if(pkEntity->GetName() == string("ZoneObject"))
 		{
-			int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->iNetWorkID );
+			int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->GetEntityID() );
 			m_pkObjectMan->DeleteZone(iZoneID);
 			cout << "Delete zone " << iZoneID << endl;
 		}
 		else
-			m_pkObjectMan->Delete(pkEntity->iNetWorkID);		
+			m_pkObjectMan->Delete(pkEntity->GetEntityID());		
 	}
 
 	m_SelectedEntitys.clear();
@@ -615,7 +615,7 @@ void MistServer::Input_EditZone()
 		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData && pkData->m_pkZone)
-			Select_Toggle(pkData->m_pkZone->iNetWorkID, m_pkInputHandle->Pressed(KEY_LSHIFT));
+			Select_Toggle(pkData->m_pkZone->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
@@ -641,7 +641,7 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 	{		
 		Entity* pkObj =  GetTargetObject();
 		if(pkObj)
-			Select_Toggle(pkObj->iNetWorkID, m_pkInputHandle->Pressed(KEY_LSHIFT));
+			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 	
 	//remove			
@@ -855,7 +855,7 @@ void MistServer::Input()
 		//int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		//ZoneData* z = m_pkObjectMan->GetZoneData(id);
 		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
-		m_pkFps->AddHMProperty(pkObj, pkObj->iNetWorkID,m_kZoneSize);
+		m_pkFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
 	}  
 
 	if(m_pkInputHandle->Pressed(KEY_F6)) 
@@ -1086,7 +1086,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SELNONE:		Select_None();		break;
 		case FID_DELETE:		DeleteSelected();	break;
 
-		case FID_CLONE:		Select_Toggle(m_pkObjectMan->CloneObject(m_iCurrentObject)->iNetWorkID,false );	break;
+		case FID_CLONE:		Select_Toggle(m_pkObjectMan->CloneObject(m_iCurrentObject)->GetEntityID(),false );	break;
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1537,14 +1537,14 @@ Entity* MistServer::GetTargetObject()
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
-		cout << " Check " << kObjects[i]->iNetWorkID << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
+		cout << " Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
 
 		if(kObjects[i] == m_pkCameraObject[0])	continue;
 		if(kObjects[i] == m_pkCameraObject[1])	continue;
 		if(kObjects[i] == m_pkCameraObject[2])	continue;
 		if(kObjects[i] == m_pkCameraObject[3])	continue;
 		
-		if(kObjects[i]->iNetWorkID <100000)
+		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 		
 		if(kObjects[i]->GetName() == "ZoneObject")
@@ -2005,7 +2005,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 			
 	cout<<"created character entity "<<csPlayer<<" -> "<<csCharacter<<endl;
 			
-	return pkObject->iNetWorkID;
+	return pkObject->GetEntityID();
 }
 
 void MistServer::DeletePlayer(int iConID)

@@ -215,7 +215,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		// Get Strings.
 		char* GetUpdateStatusName(int eStatus);				
-		char* GetObjectTypeName(int eType);
+//		char* GetObjectTypeName(int eType);
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 

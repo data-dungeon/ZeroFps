@@ -552,7 +552,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 				//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_CLIENTID);
-				kNetPRespons.Write((int) m_pkZeroFps->m_kClient[iClientID].m_pkObject->iNetWorkID);
+				kNetPRespons.Write((int) m_pkZeroFps->m_kClient[iClientID].m_pkObject->m_iEntityID);
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				SendRaw(&kNetPRespons);
 				}

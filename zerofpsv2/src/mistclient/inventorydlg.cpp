@@ -71,7 +71,7 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
       iContID = -1;
    			
 	AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-		pkItemProp->m_pkItemStats, iContID, pkEntity->iNetWorkID, m_iCurrentContainer);
+		pkItemProp->m_pkItemStats, iContID, pkEntity->GetEntityID(), m_iCurrentContainer);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -91,7 +91,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 	for(unsigned int i=0; i< vkItems.size(); i++)
 	{
 		printf("Item %i\n", i);
-		printf("\tiNetWorkID = %i\n", vkItems[i]->iNetWorkID);
+		printf("\tiNetWorkID = %i\n", vkItems[i]->GetEntityID());
 		
 		P_Item* pkItemProp = (P_Item*)(vkItems[i])->GetProperty ("P_Item");
 
@@ -148,7 +148,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		{
 			Slot kSlot = (*itInventory);
 
-			if ( kSlot.m_iNetWorkID == (*itNewItem)->iNetWorkID )
+			if ( kSlot.m_iNetWorkID == (*itNewItem)->GetEntityID() )
 			{
 				kSlot.m_pkItemStats = pkItemProp->m_pkItemStats;
 
@@ -160,7 +160,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		if(bAlreadyExist == false)
 		{
 			AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-				pkItemProp->m_pkItemStats, iContID, (*itNewItem)->iNetWorkID, m_iCurrentContainer);
+				pkItemProp->m_pkItemStats, iContID, (*itNewItem)->GetEntityID(), m_iCurrentContainer);
 		}
 		else
 		{
@@ -1014,7 +1014,7 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 
    // get client object
    kOrder.m_sOrderName = "equip";
-   kOrder.m_iObjectID = pkItemStats->m_pkProperty->GetObject()->iNetWorkID;
+   kOrder.m_iObjectID = pkItemStats->m_pkProperty->GetObject()->GetEntityID();
    kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
    kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
    kOrder.m_iUseLess = eCategory;

@@ -7,15 +7,13 @@ P_DMHQ::P_DMHQ()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
-//	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-//	m_pkEntityMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-//	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 
 	bNetwork = true;
 	
 
 	m_strName = "Unnamed HQ";
 	m_kExitOffset.Set(0,0,2);
+	m_bActiveHQ = false;
 }
 
 P_DMHQ::~P_DMHQ()
@@ -53,14 +51,14 @@ bool P_DMHQ::InsertCharacter(int iID)
 void P_DMHQ::GetCharacters(vector<int>* m_pkEntitys)
 {
 	vector<Entity*>	m_kEntitys;
-	m_pkObject->GetAllObjects(&m_kEntitys);
+	m_pkObject->GetAllEntitys(&m_kEntitys,true);
 	
 	
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(m_kEntitys[i]->GetProperty("P_DMCharacter"))
 		{
-			m_pkEntitys->push_back(m_kEntitys[i]->iNetWorkID);
+			m_pkEntitys->push_back(m_kEntitys[i]->GetEntityID());
 		}
 	}
 }
@@ -111,12 +109,26 @@ void P_DMHQ::Eject(Entity* pkEnt)
 
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(0);
+	vector<PropertyValues> kReturn(1);
 		
+	kReturn[0].kValueName = "active";
+	kReturn[0].iValueType = VALUETYPE_BOOL;
+	kReturn[0].pkValue    = &m_bActiveHQ;		
+
 
 	return kReturn;
 }
 
+void P_DMHQ::Save(ZFIoInterface* pkPackage)
+{	
+	pkPackage->Write(&m_bActiveHQ,sizeof(m_bActiveHQ),1);	
+
+}
+
+void P_DMHQ::Load(ZFIoInterface* pkPackage)
+{
+	pkPackage->Read(&m_bActiveHQ,sizeof(m_bActiveHQ),1);	
+}
 
 Property* Create_P_DMHQ()
 {

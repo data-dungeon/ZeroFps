@@ -29,11 +29,6 @@ enum UpdateStatus
 //	UPDATE_NOCHILDS		= 16,
 };
 
-enum ObjectType 
-{
-	OBJECT_TYPE_DYNAMIC,			// Full update, Full Collision
-	OBJECT_TYPE_STATIC,	
-};
 
 enum NetUpdateFlags
 {
@@ -146,10 +141,11 @@ class ENGINE_API Entity
 {
 	private:
 		Entity*						m_pkParent;							///< Parent Entity. NULL If None
-		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
+		vector<GameMessage>	  m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
 		vector<int>					m_aiNetDeleteList;				
 
-		vector<EntityVariable>	m_kVariables;
+		vector<EntityVariable>  m_kVariables;
+		int							m_iEntityID;						///< Uniq ID for every entiy in the world
 
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
@@ -165,8 +161,7 @@ class ENGINE_API Entity
 			WORLD_POS_V,		
 		};
 	
-		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.
-			
+		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.			
 		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this entity if any.
 		
 		/**	\brief	Entity type name.
@@ -190,7 +185,6 @@ class ENGINE_API Entity
 		bool							m_bSendChilds;						//shuld childs be sent to clients?
 		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
 		int							m_iUpdateStatus;					
-		ObjectType					m_iObjectType;						
 	
 		// Rotation & Position.
 		bool							m_bRelativeOri;					///< True if this entity transform is in the frame of its parent.
@@ -239,18 +233,14 @@ class ENGINE_API Entity
 		void	SetNrOfConnections(int iConNR);
 		
 	public:
-//		bool							m_bHavePlayedSound;				///< Litet test bara...
 
-		int							iNetWorkID;							///< ID used by network state code.
-		EntityManager*				m_pkObjectMan;						///< Ptr to object manger.
-  		ZeroFps*						m_pkFps;								///< Ptr to zerofps. 
+		EntityManager*				m_pkEntityMan;						///< Ptr to object manger.
+  		ZeroFps*						m_pkZeroFps;								///< Ptr to zerofps. 
 
-	
 		NetWorkRole					m_eRole;								///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
 		bool							m_bIsNetWork;	
 		bool							m_bHaveNetPropertys;				///< True of any property of this object needs to be sent over network.
-
       string                  m_strCreatedFromScript;			// which script the object was created from. used when splitting items
 
 
@@ -278,12 +268,9 @@ class ENGINE_API Entity
 		void SetParent(Entity* pkObject);						// Set the parent of this object.
 		Entity* GetParent(){return m_pkParent;};				///< Get parent of this object.
 		bool HasChild(Entity* pkObject);							
-		int NrOfChilds();												///< Return num of childs to this object.
+		int  NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										// Remove all childs from this object.
-		void GetAllObjects(vector<Entity*> *pakObjects     // Return this + all childs.
-                         ,bool bForceSendAll=false,bool bUpdateStatus = false);			
-		void GetAllDynamicEntitys(vector<Entity*> *pakObjects);	// Return this + all childs.
-		Entity* GetStaticEntity();
+		void GetAllEntitys(vector<Entity*> *pakObjects ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
 		
 		void AddToDeleteList(int iId);
 		void UpdateDeleteList();
@@ -293,8 +280,8 @@ class ENGINE_API Entity
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		
 
-		bool GetUseZones() {return m_bUseZones;};
-		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
+		void MakeCloneOf(Entity* pkOrginal);
+
 
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();															// True if this object has any netactive propertys.
@@ -361,28 +348,26 @@ class ENGINE_API Entity
 
 		void			SetInterpolate(bool bInterpolate);
 		
-		// Inlines
-		inline int GetUpdateStatus()				{	return m_iUpdateStatus;	};
-		inline ObjectType &GetObjectType()		{	return m_iObjectType;	};
-		inline bool& GetSave()						{	return m_bSave;			};
-		inline string GetName()					{	return m_strName;			};
-		inline string GetType()					{	return m_strType;			};
-		inline ZFResourceHandle* GetObjectScript()  { return m_pScriptFileHandle;};
+		// Inlines & get/set functions
+		inline int GetEntityID()							{	return m_iEntityID;		};
+		inline int GetUpdateStatus()						{	return m_iUpdateStatus;	};
+		inline bool& GetSave()								{	return m_bSave;			};
+		inline string GetName()								{	return m_strName;			};
+		inline string GetType()								{	return m_strType;			};
+		inline ZFResourceHandle* GetEntityScript()   { return m_pScriptFileHandle;};
 		
-		inline Vector3 GetVel()					{	return m_kVel;				};		
-		inline Vector3 GetAcc()					{	return m_kAcc;				};
-		inline float GetRadius()					{	return m_fRadius;			};		
-		inline Vector3* GetVelPointer()			{	return &m_kVel;			};		
-		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
-		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
-		inline EntityManager *GetObjectMan()	{	return m_pkObjectMan;	};				
-		inline int GetCurrentZone()  				{ return m_iCurrentZone;};
+		inline Vector3 GetVel()								{	return m_kVel;				};		
+		inline Vector3 GetAcc()								{	return m_kAcc;				};
+		inline float GetRadius()							{	return m_fRadius;			};		
+		inline Vector3* GetVelPointer()					{	return &m_kVel;			};		
+		inline Vector3* GetAccPointer()					{	return &m_kAcc;			};
+		inline float* GetRadiusPointer()					{	return &m_fRadius;		};		
+		inline int GetCurrentZone()  						{ return m_iCurrentZone;	};
 
+		bool GetUseZones() {return m_bUseZones;};
+		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
       void SetUpdateStatus(int iUpdateStatus);
 		
-		void MakeCloneOf(Entity* pkOrginal);
-		
-		float GetI();
 
 		// Entity Variables
 		EntityVariable* CreateVar(string& strName, EntityVariableType eType);
@@ -394,6 +379,9 @@ class ENGINE_API Entity
 		void	 SetVarString(string& strName, string strValue);		
 		void	 AddVarDouble(string strName, double fValueToAdd);
 
+		
+		//friends
+		friend class NetWork;
 		friend class EntityManager;
 		friend class Property;
 

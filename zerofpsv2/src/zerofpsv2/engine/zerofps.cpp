@@ -1194,13 +1194,13 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 
-	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
+	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());
 
 	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass);
 
 	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
 
-	return m_kClient[iConnectionID].m_pkObject->iNetWorkID;
+	return m_kClient[iConnectionID].m_pkObject->GetEntityID();
 }
 
 /**	\brief	Called when a connection is closed down.

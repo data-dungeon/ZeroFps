@@ -461,7 +461,7 @@ void MistClient::Input()
 						
 						order.m_sOrderName = vkActionNames[0]; //"Klicka";
 						order.m_iClientID = m_pkFps->GetConnectionID();
-						order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
+						order.m_iObjectID = m_pkTargetObject->GetEntityID();				
 						order.m_iCharacter = m_iActiveCaracterObjectID;
 												
 						m_pkClientControlP->AddOrder(order);
@@ -712,7 +712,7 @@ void MistClient::OnServerStart(void)
 		//m_pkCamProp->Set3PYPos(1.5);	
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
-		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
+		MistLandLua::g_iCurrentPCID = m_pkTestobj->GetEntityID();
 
 		// Skapa spelar panelen
 		if(GetWnd("IntroWnd") != NULL && GetWnd("IntroWnd")->IsVisible() )
@@ -948,7 +948,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 									order.m_sOrderName = res->second;
 									order.m_iClientID = m_pkFps->GetConnectionID();
 									
-									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
+									order.m_iObjectID = m_pkTargetObject->GetEntityID();				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
 
 									m_pkClientControlP->AddOrder(order);
@@ -1122,7 +1122,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//pkObjectMan->TestLine(&kObjects,start,dir);
 	
-	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
@@ -1132,10 +1132,10 @@ Entity* MistClient::GetTargetObject()
 	{
 		
 		//objects that should not be clicked on (special cases)
-		if(kObjects[i]->iNetWorkID <100000)
+		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 		
-		if(kObjects[i]->iNetWorkID == m_iActiveCaracterObjectID)
+		if(kObjects[i]->GetEntityID() == m_iActiveCaracterObjectID)
 			continue;		
 		
 		if(kObjects[i]->GetName() == "ZoneObject")
@@ -1549,7 +1549,7 @@ bool MistClient::PickZones()
 	Vector3 dir = Get3DMousePos();
 	
 	vector<Entity*> kObjects;	
-	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects);
 		
 	float closest = 999999999;
 	
@@ -1568,7 +1568,7 @@ bool MistClient::PickZones()
 					{
 						closest = d;										
 					
-						m_iTargetZoneObject = kObjects[i]->iNetWorkID;
+						m_iTargetZoneObject = kObjects[i]->GetEntityID();
 						m_iTargetFace = mp->GetLastColFace();
 						m_kTargetPos = mp->GetLastColPos();
 					

@@ -94,7 +94,7 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 			if(!m_kMembersInField.empty())
 			{
 				char text[50];
-				sprintf(text, "Agent %i", m_kMembersInField[0]->iNetWorkID);
+				sprintf(text, "Agent %i", m_kMembersInField[0]->GetEntityID());
 				SetText("CurrentMemberNumberLabel", text);
 				SetCharacterStats(m_kMembersInField[0]);
 			}
@@ -163,7 +163,7 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		}
 
 		sprintf(text, "Agent %i", 
-			m_kMembersInField[m_iCurrentCharacterPage]->iNetWorkID);
+			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID());
 		SetText("CurrentMemberNumberLabel", text);
 		break;
 

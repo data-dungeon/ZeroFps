@@ -213,7 +213,7 @@ void P_Camera::SetCamera(Camera *pkCamera)
 {
 	if(m_pkCamera)		m_pkCamera->m_iEntity = -1;
 	m_pkCamera = pkCamera; 
-	if(m_pkCamera)		m_pkCamera->m_iEntity = m_pkObject->iNetWorkID;
+	if(m_pkCamera)		m_pkCamera->m_iEntity = m_pkObject->GetEntityID();
 }
 
 

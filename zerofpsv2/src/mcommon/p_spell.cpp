@@ -72,7 +72,7 @@ void P_Spell::Update()
          if ( m_fAge >= m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_fStartTime )
          {
             // can't have more than one PSystem/object, so create a new object for each new PS *sigh*
-            Entity *pkNewObject = m_pkObject->m_pkObjectMan->CreateObject();
+            Entity *pkNewObject = m_pkObject->m_pkEntityMan->CreateObject();
 
             // create and attach PS to new object
             P_PSystem *pkPSProp =  (P_PSystem*)pkNewObject->AddProperty ("P_PSystem");
@@ -103,7 +103,7 @@ void P_Spell::Update()
       {
          // remove&delete PSystems spell used
          for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
-            m_pkObject->m_pkObjectMan->Delete( m_kPSystems[i] );
+            m_pkObject->m_pkEntityMan->Delete( m_kPSystems[i] );
 
          // delete spell-object or property
 //         if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
@@ -291,7 +291,7 @@ P_Spell* P_Spell::Copy()
    for ( unsigned int i = 0; i < m_kAttackedObjects.size(); i++ )
       pkNewP->m_kAttackedObjects.push_back ( m_kAttackedObjects[i] );
 
-   pkNewP->m_kAttackedObjects.push_back ( m_pkObject->iNetWorkID );
+   pkNewP->m_kAttackedObjects.push_back ( m_pkObject->GetEntityID() );
 
    return pkNewP;
 }
@@ -301,11 +301,11 @@ P_Spell* P_Spell::Copy()
 void P_Spell::DoCollisions()
 {
    // get zone spell is in
-   ZoneData* pkZone = m_pkObject->GetObjectMan()->GetZone( m_pkObject->GetWorldPosV() );
+   ZoneData* pkZone = m_pkObject->m_pkEntityMan->GetZone( m_pkObject->GetWorldPosV() );
 
    // get all objects in zone
    vector<Entity*> kObjects;
-   pkZone->m_pkZone->GetAllObjects(&kObjects);
+   pkZone->m_pkZone->GetAllEntitys(&kObjects);
 
    for ( unsigned int i = 0; i < kObjects.size(); i++ )
    {
@@ -325,7 +325,7 @@ void P_Spell::DoCollisions()
 
       // check if the object and the spell hasn't already collided
       for ( unsigned int h = 0; h < m_kAttackedObjects.size(); h++ )
-         if ( kObjects[i]->iNetWorkID == m_kAttackedObjects[h] )
+         if ( kObjects[i]->GetEntityID() == m_kAttackedObjects[h] )
             bOk = false;
 
       // if object was ok to test..
@@ -341,20 +341,20 @@ void P_Spell::DoCollisions()
             if ( kObjects[i]->GetProperty("P_CharStats") )
                bOk = true;
             else
-               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+               m_kAttackedObjects.push_back (kObjects[i]->GetEntityID());
 
          if ( m_pkSpellType->m_kAffectedObjects == "items" )
             if ( kObjects[i]->GetProperty("P_Item") )
                bOk = true;
             else
-               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+               m_kAttackedObjects.push_back (kObjects[i]->GetEntityID());
 
          if ( m_pkSpellType->m_kAffectedObjects == "characters_and_items" || 
               m_pkSpellType->m_kAffectedObjects == "items_and_characters" )
             if ( kObjects[i]->GetProperty("P_Item") || kObjects[i]->GetProperty("P_CharStats") )
                bOk = true;
             else
-               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+               m_kAttackedObjects.push_back (kObjects[i]->GetEntityID());
 
          // if the object had right to be affacted by the spell
          if ( bOk )
@@ -375,7 +375,7 @@ void P_Spell::DoCollisions()
                if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkObjectMan->CreateObjectFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
+                  m_pkObject->m_pkEntityMan->CreateObjectFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
 
                   if ( pkNewSpell )
                   {
@@ -388,20 +388,20 @@ void P_Spell::DoCollisions()
                      pkNewSpell->AttachToZone();
                      
                      // It's annoying to hit the new spell with the spell just casted so....
-                     m_kAttackedObjects.push_back (pkNewSpell->iNetWorkID);  
+                     m_kAttackedObjects.push_back (pkNewSpell->GetEntityID());  
                   }
 
                }
 
                // destroy spell (TODO!!!: after dealt damage!!! )
                if ( m_pkSpellType->m_kOnHit[0] == "destroyspell" ) 
-                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
 
                // creates a new spell at the hit location and removes the old one
                if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
+                  m_pkObject->m_pkEntityMan->CreateObjectFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
                                                                            kObjects[i]->GetWorldPosV() );
                   pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
                   /*
@@ -417,13 +417,13 @@ void P_Spell::DoCollisions()
                   pkNewSpellObject->AttachToZone();
                   */
 
-                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
                }
 
                // creates a psystem at the hit location and removes the spell
                if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
                {
-                  Entity *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
+                  Entity *pkNewPSystem = m_pkObject->m_pkEntityMan->CreateObject();
             
                   P_PSystem *pkNewPSProp = new P_PSystem;
                   kObjects[i]->AddProperty( pkNewPSProp );
@@ -434,7 +434,7 @@ void P_Spell::DoCollisions()
 
                   pkNewPSystem->AttachToZone();
 
-                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
                }
 
                // the spell maskes a copy of itself that attaches on the hit object
@@ -442,7 +442,7 @@ void P_Spell::DoCollisions()
                    kObjects[i]->AddProperty ( Copy() );
 
                // remember which objects is hit by the spell so it can't hit same object twice
-               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+               m_kAttackedObjects.push_back (kObjects[i]->GetEntityID());
 
                CharacterProperty* pkCP = (CharacterProperty*)kObjects[i]->GetProperty("P_CharStats");
 

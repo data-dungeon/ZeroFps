@@ -387,7 +387,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 
          // get client object
          kOrder.m_sOrderName = "(rq)item";
-         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iObjectID = m_pkObject->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
 
@@ -431,7 +431,7 @@ bool P_Item::UseOn ( Entity *pkCharacterObject )
       m_pkItemStats->EquipOn ( pkChar->GetCharStats() );
 
       // Object is destroyed when used
-      m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+      m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
 
       return true;
    }

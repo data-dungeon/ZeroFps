@@ -32,10 +32,10 @@ CharacterStats::CharacterStats( Entity *pkParent )
    m_bIsPlayer = m_pkParent->GetType() == "t_player.lua";
 
    // only on server
-   if ( m_pkParent->m_pkFps->m_bServerMode )
+   if ( m_pkParent->m_pkZeroFps->m_bServerMode )
    {
       // find serverInfoObject
-      Entity* pkEnt = m_pkParent->m_pkObjectMan->GetObject("A t_serverinfo.lua");
+      Entity* pkEnt = m_pkParent->m_pkEntityMan->GetObject("A t_serverinfo.lua");
 
       if ( !pkEnt )
          cout << "ERROR!!! CharStats couln't find ServerInfoObject!!! :(" << endl;
@@ -406,7 +406,7 @@ void CharacterStats::SetHP( string kValue )
    {
       for ( unsigned int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
          for ( unsigned int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
-            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
+            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->GetEntityID())
             {
                SendType kNewSend;
 
@@ -447,7 +447,7 @@ void CharacterStats::AddHP( int iValue )
    {
       for ( unsigned int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
          for ( unsigned int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
-            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
+            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->GetEntityID())
             {
                SendType kNewSend;
 

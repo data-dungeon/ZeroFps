@@ -196,8 +196,8 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 
 
 	//touch objects
-	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->iNetWorkID);
-	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->iNetWorkID);	
+	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
+	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	
 }
 
 void Tcs::SyncEntitys()

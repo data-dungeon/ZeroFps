@@ -34,7 +34,7 @@ void P_HMRP2::Init()
 	if(!m_pkHeightMap)
 		m_pkHeightMap = new HeightMap;
 
-	m_pkHeightMap->SetID( m_pkObject->iNetWorkID );
+	m_pkHeightMap->SetID( m_pkObject->GetEntityID() );
 }
 
 void P_HMRP2::Update() 
@@ -85,7 +85,7 @@ void P_HMRP2::SetPolyMode(PolygonMode eMode)
 void P_HMRP2::Save(ZFIoInterface* pkPackage)
 {
 	char hmapname[256];
-	sprintf(hmapname, "%s/hm%d",m_pkObject->m_pkObjectMan->GetWorldDir().c_str() ,m_pkObject->iNetWorkID);
+	sprintf(hmapname, "%s/hm%d",m_pkObject->m_pkEntityMan->GetWorldDir().c_str() ,m_pkObject->GetEntityID());
 
 	cout << "Should Save HMRP2: " << hmapname << endl;
 	if(m_pkHeightMap)
@@ -95,7 +95,7 @@ void P_HMRP2::Save(ZFIoInterface* pkPackage)
 void P_HMRP2::Load(ZFIoInterface* pkPackage)
 {
 	char hmapname[256];
-	sprintf(hmapname, "%s/hm%d", m_pkObject->m_pkObjectMan->GetWorldDir().c_str(), m_pkObject->iNetWorkID);
+	sprintf(hmapname, "%s/hm%d", m_pkObject->m_pkEntityMan->GetWorldDir().c_str(), m_pkObject->GetEntityID());
 	cout << "Should Load HMRP2: " << hmapname << endl;
 
 	m_pkHeightMap = new HeightMap;

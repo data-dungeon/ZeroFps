@@ -21,7 +21,7 @@ P_Container::P_Container()
 
 void P_Container::Init()
 {
-   m_iContainerID = m_pkObject->iNetWorkID;
+   m_iContainerID = m_pkObject->GetEntityID();
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ bool P_Container::AddObject ( int iAddToContainer )
    if ( (int) m_kContainedObjects.size() < m_iCapacity )
    {
 
-      Entity *pkEntity = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
+      Entity *pkEntity = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( iAddToContainer );
 
       if ( !pkEntity )
       {
@@ -87,7 +87,7 @@ bool P_Container::RemoveObject ( int iRemoveFromContainer )
          m_uiVersion++;
 
          Entity *pkEntity = 
-            m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte) );
+            m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( (*kIte) );
 
          // Set which container the item is in
          ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = -1;
@@ -132,7 +132,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
       for ( unsigned int i = 0; i < m_kContainedObjects.size(); i++ )
       {
          Entity *pkEntity = 
-            m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
+            m_pkObject->m_pkEntityMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
 
          // add item to container list
          pkItemList->push_back ( pkEntity );
@@ -165,7 +165,7 @@ void P_Container::RequestUpdateFromServer()
 
       // get client object
       kOrder.m_sOrderName = "(rq)cont";
-      kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+      kOrder.m_iObjectID = m_pkObject->GetEntityID();
       kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
       kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -291,7 +291,7 @@ void P_Container::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       AddObject (iID);
 
       // request update for item at the same time
-      Entity* pkObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(iID);
+      Entity* pkObj = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID(iID);
 
       cout << "GOT ITEM IN CONT" << endl;
 
