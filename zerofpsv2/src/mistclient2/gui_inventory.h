@@ -42,6 +42,9 @@ public:
 									// cursorn efter att ha klickat på ett object i världen.
 
 	int m_iActiveContainerID;
+
+	ZGuiWnd* m_pkSplitStockWnd;
+	int m_iSplitShareMax;
 	
 private:
 
@@ -92,6 +95,7 @@ private:
 
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;
+	
 
 	SPECIAL_SLOT m_kMoveSlot; 
 	SPECIAL_SLOT m_kSplitSlot; 

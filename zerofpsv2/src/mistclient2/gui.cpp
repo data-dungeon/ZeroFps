@@ -12,7 +12,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 	string strMainWnd;
 	string strController;
 	
-	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || msg == ZGM_CBN_SELENDOK)
+	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || msg == ZGM_CBN_SELENDOK || msg == ZGM_EN_CHANGE)
 	{
 		strMainWnd = win->GetName();
 
@@ -64,8 +64,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 			
 		return true;
 	}
-
-
+	
 	if(strController.empty())
 		return false;
 

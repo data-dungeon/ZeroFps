@@ -347,6 +347,28 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 	//}
 
 	//delete[] piParams;
+
+	SendUpdateMsg();
+}
+
+void ZGuiTextbox::SendUpdateMsg()
+{
+	// Send a update message
+	int* piParams = new int[1];
+	piParams[0] = GetID(); // Listbox ID
+
+	ZGui* pkGui = GetGUI();
+	if(pkGui)
+	{
+		callbackfunc cb = pkGui->GetActiveCallBackFunc();
+		ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
+
+		ZGuiWnd* pkActivMainWnd = GetParent() ; 
+		
+		cb(pkActivMainWnd, ZGM_EN_CHANGE, 2, piParams);
+	}
+
+	delete[] piParams;
 }
 
 void ZGuiTextbox::CreateInternalControls()

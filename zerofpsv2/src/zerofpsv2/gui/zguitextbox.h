@@ -66,6 +66,7 @@ private:
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ScrollText(int row);
 	void ResizeTextBuffer( int nCharacters );
+	void SendUpdateMsg();
 	
 	vector<int> m_kRowOffsets;
 	int* m_pkRowOffsets;
