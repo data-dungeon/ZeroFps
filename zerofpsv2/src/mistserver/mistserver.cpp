@@ -800,11 +800,6 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				BuildFileTree("ZoneModelTree", "data/mad/zones");
 				BuildFileTree("ObjectTree", "data/script/objects");
 				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
-
-				AddListItem("EnviromentPresetList", "Rain");
-				AddListItem("EnviromentPresetList", "Sun");
-				AddListItem("EnviromentPresetList", "Cave");				
-
 			}
 		}
 		else
@@ -855,8 +850,9 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 
 		if(szPreset)
 		{
-			printf("setting enviroment %s\n", szPreset);
-			SetZoneEnviroment( szPreset );  
+			string szFull = "data/enviroments/" + string(szPreset);
+			printf("setting enviroment %s\n", szFull.c_str());
+			SetZoneEnviroment( szFull.c_str()  );  
 		}
 	}
 }
