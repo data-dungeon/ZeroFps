@@ -557,7 +557,7 @@ void LevelManager::UpdateZones()
 		return;
 
 	for(unsigned int i=0;i<m_kZones.size();i++)
-		m_kZones[i]->GetUpdateStatus() = UPDATE_NONE;	//UPDATE_DYNAMIC | UPDATE_PLAYERS;	
+		m_kZones[i]->GetUpdateStatus() = /*UPDATE_NONE*/UPDATE_DYNAMIC;	//UPDATE_DYNAMIC | UPDATE_PLAYERS;	
 
 
 

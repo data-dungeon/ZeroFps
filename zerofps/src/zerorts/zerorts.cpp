@@ -442,9 +442,7 @@ bool ZeroRTS::RemoveSelectedObject(int iID)
 void ZeroRTS::ClearSelected()
 {
 	for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)		
-	{	
-		GetClientUnit((*it))->m_bSelected = false;			
-	}
+		GetClientUnit((*it))->m_bSelected = false;
 
 	m_kSelectedObjects.clear();
 }

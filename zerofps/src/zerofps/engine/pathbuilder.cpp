@@ -19,6 +19,7 @@ PathBuilder::PathBuilder(HeightMap* pkHeightMap, PathFind** ppkPathFind)
 	m_ppkPathFind = ppkPathFind;
 	m_piTerrain = NULL;
 	m_piCostMap = NULL;
+
 }
 
 PathBuilder::~PathBuilder()
@@ -30,22 +31,22 @@ PathBuilder::~PathBuilder()
 void PathBuilder::Build(int pkObjectTypeCost[5])
 {
 	int iMapSize = m_pkHeightMap->m_iHmSize;
-	int z,x;
+	int y,x;
 
 	if(m_piTerrain == NULL)
 	{
 		m_piTerrain = new int[iMapSize*iMapSize];
 
-		for(z=0; z<iMapSize; z++)
+		for(y=0; y<iMapSize; y++)
 			for(x=0; x<iMapSize; x++)
 			{
-				HM_vert* pkVert = m_pkHeightMap->GetVert(x,z);
+				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
 
 				int texture = 0; 
 				if(pkVert->height <= 2.0f)
 					texture = 1;
 
-				int iIndex = z*iMapSize+x;
+				int iIndex = y*iMapSize+x;
 				switch(texture)
 				{
 				case 0: // slättland
@@ -69,10 +70,10 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 
 	m_piCostMap = new int[iMapSize*iMapSize];
 
-	for(z=0; z<iMapSize; z++)
+	for(y=0; y<iMapSize; y++)
 		for(x=0; x<iMapSize; x++)
 		{
-			int iIndex = z*iMapSize+x;
+			int iIndex = y*iMapSize+x;
 			switch(m_piTerrain[iIndex])
 			{
 			case GRASS:
