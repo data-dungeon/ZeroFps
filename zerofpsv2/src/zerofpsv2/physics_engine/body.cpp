@@ -13,8 +13,8 @@ void Body::Reset()
 	m_bSolid	=				false;
 	m_bGravity =			true;
 	m_bResting =			false;
-	m_fBounce =				0.8;
-	
+	m_fBounce =				0.2;
+	m_fAirFriction =		0.001;
 	
 	m_pkFaces =				NULL;
 	m_pkVertex =			NULL;
@@ -22,23 +22,28 @@ void Body::Reset()
 	
 	m_fMass =				1;
 	m_kInertia.Identity();
-	m_kInertia.m_afData[0] = 0.5;
-	m_kInertia.m_afData[4] = 0.5;
-	m_kInertia.m_afData[8] = 0.5;
+	m_kInertia.m_afData[0] = 1;
+	m_kInertia.m_afData[4] = 1;
+	m_kInertia.m_afData[8] = 1;
+	
+/*	m_kInertia.m_afData[0] = 1.2;
+	m_kInertia.m_afData[4] = 1.2;
+	m_kInertia.m_afData[8] = 1.2;
+*/	
 	
 	m_kInertia.Inverse(m_kInertiaInverse,0.1);
-//	m_kInertiaInverse 
-	m_kMassCenter.Set(0,0,0);
 	
+	m_kInertiaInverse*=10;
+
+	m_kMassCenter.Set(0,0,0);	
 	m_kPosition.Set(0,0,0);
 	m_kVelocity.Set(0,0,0);
 	m_kBodyVelocity.Set(0,0,0);	
 	m_kAcceleration.Set(0,0,0);
 	
-	m_kAngles.Set(0,0,0);
 	m_kAngleVel.Set(0,0,0);
 	m_kAngleAcceleration.Set(0,0,0);									
-	m_kOrientation.Set(0,0,0,0);
+	m_kOrientation.Identity();
 	
 	m_kForces.Set(0,0,0);
 	m_kMoment.Set(0,0,0);
@@ -56,7 +61,7 @@ void Body::Reset()
 void Body::SetPos(Vector3 kPos)
 {
 	m_kPosition = kPos;
-
+	
 }
 
 Vector3 Body::GetPos()
@@ -64,20 +69,14 @@ Vector3 Body::GetPos()
 	return m_kPosition;
 }
 
-void Body::SetRot(Vector3 kRot)
+void Body::SetRot(Matrix3 kRot)
 {
-	m_kAngles = kRot;
-	m_kOrientation.FromAxes(&kRot); 
-/*
-	return Vector3(-1,-1,-1); // 777:e gången som du glömer returnera
-							  // ett värde i en funktion! (riktiga) 
-							  // kompilatorer gnäller över sånt...
-*/
+	m_kOrientation = kRot;
 }
 
-Vector3 Body::GetRot()
+Matrix3 Body::GetRot()
 {
-	return m_kAngles;
+	return m_kOrientation;
 }
 
 
@@ -88,12 +87,12 @@ void Body::Rest(Body* pkBody)
 	m_kVelocity.Set(0,0,0);
 	m_kAcceleration.Set(0,0,0);
 	m_kForces.Set(0,0,0);
-	
+	m_kAngleVel.Set(0,0,0);
 //	cout<<"Object going to sleep"<<endl;
 }
 
 void Body::Awaken()
-{
+{ 
 	m_bResting = false;
 //	cout<<"Objects Awakens"<<endl;
 
@@ -101,15 +100,22 @@ void Body::Awaken()
 
 Vector3 Body::TransRot(Vector3 kVert)
 {
-	Matrix3 rot;
-	m_kOrientation.ToRotationMatrix(rot);
-
-
 	Vector3 temp = kVert;
 	
 	kVert *=(*m_pfScale);	
-	kVert = rot.VectorTransform(kVert);
+	kVert = m_kOrientation.VectorTransform(kVert);
 	kVert += m_kPosition;
+
+	return kVert;
+
+}
+
+Vector3 Body::Rot(Vector3 kVert)
+{
+	Vector3 temp = kVert;
+	
+	kVert *=(*m_pfScale);	
+	kVert = m_kOrientation.VectorTransform(kVert);
 
 	return kVert;
 
@@ -130,10 +136,13 @@ bool Body::SetMad(Mad_Core* pkMad,int iMesh)
 		m_pkVertex = &pkCoreMech->akFrames[0].akVertex;
 		m_pkNormal = &pkCoreMech->akFrames[0].akNormal;
 		
-		m_fRadius = pkMad->m_fBoundRadius;
+		//get radius
+		m_fRadius = pkMad->m_fBoundRadius * (*m_pfScale);
 		
-		//found the mech return true
-		m_bPolygonCheck = true;
+		//calculate mass center		
+		m_kMassCenter = CalculateMassCenter();
+		//m_fRadius = CalculateRadius();
+		
 		return true;
 	}
 	
@@ -152,3 +161,76 @@ Mad_CoreMesh* Body::GetMeshByID(Mad_Core* pkMad,int iMesh)
 
 
 
+
+Vector3 Body::CalculateMassCenter()
+{
+	Vector3 mc = Vector3(0,0,0);	
+	if(m_pkVertex)
+	{
+		Vector3 max = Vector3(0,0,0);
+		Vector3 min = Vector3(0,0,0);
+	
+		for(int i = 0;i<m_pkVertex->size();i++)
+		{
+			if((*m_pkVertex)[i].x > max.x)
+				max.x = (*m_pkVertex)[i].x;			
+			if((*m_pkVertex)[i].y > max.y)
+				max.y = (*m_pkVertex)[i].y;
+			if((*m_pkVertex)[i].z > max.z)
+				max.z = (*m_pkVertex)[i].z;
+		
+			if((*m_pkVertex)[i].x < min.x)
+				min.x = (*m_pkVertex)[i].x;			
+			if((*m_pkVertex)[i].y < min.y)
+				min.y = (*m_pkVertex)[i].y;
+			if((*m_pkVertex)[i].z < min.z)
+				min.z = (*m_pkVertex)[i].z;
+		
+		}	
+
+		mc = (max + min) /2;
+	
+/*		for(int i = 0;i<m_pkVertex->size();i++)
+		{
+			mc +=	(*m_pkVertex)[i];		
+		}	
+		
+		mc = mc / m_pkVertex->size();
+*/		
+	}
+	
+	return mc;
+}
+
+float Body::CalculateRadius()
+{
+	float fRadius = 1;
+	
+	if(m_pkVertex)
+	{
+		Vector3 max = Vector3(0,0,0);
+		Vector3 min = Vector3(0,0,0);
+	
+		for(int i = 0;i<m_pkVertex->size();i++)
+		{
+			if((*m_pkVertex)[i].x > max.x)
+				max.x = (*m_pkVertex)[i].x;			
+			if((*m_pkVertex)[i].y > max.y)
+				max.y = (*m_pkVertex)[i].y;
+			if((*m_pkVertex)[i].z > max.z)
+				max.z = (*m_pkVertex)[i].z;
+		
+			if((*m_pkVertex)[i].x < min.x)
+				min.x = (*m_pkVertex)[i].x;			
+			if((*m_pkVertex)[i].y < min.y)
+				min.y = (*m_pkVertex)[i].y;
+			if((*m_pkVertex)[i].z < min.z)
+				min.z = (*m_pkVertex)[i].z;
+		
+		}	
+
+		fRadius = (max - min).Length()/2;
+	}
+	
+	return fRadius;
+}

@@ -323,7 +323,6 @@ void ZeroFps::Run_EngineShell()
 		m_pkInput->Reset();
 	}
 
-
 }
 
 void ZeroFps::Run_Server()
@@ -333,7 +332,6 @@ void ZeroFps::Run_Server()
 	
 	//update system
 	Update_System(true);
-	
 
 }
 
@@ -346,12 +344,12 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();
-	
+
 //	if(!m_bServerMode)
 //		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 	if(!m_bServerMode)
 		Update_System(false);
-		
+	
 
 	//update zones
 	m_pkObjectMan->UpdateZones();	
@@ -359,12 +357,19 @@ void ZeroFps::Run_Client()
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();
 	
+	
+
+	
 	if(m_bDrawAxisIcon)
 		m_pkRender->Draw_AxisIcon(5);
  
 	if(m_bRenderOn == 1)
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
-	
+
+	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
+	//update new super duper rigid body physics engine deluxe
+	m_pkPhysics_Engine->Update(GetFrameTime());	
+
 
 	if(g_iLogRenderPropertys) {
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
@@ -426,6 +431,7 @@ void ZeroFps::Update_System(bool bServer)
 		if(m_bServerMode)
 		{
 			if(m_bRunWorldSim) {			
+			
 				//update all normal propertys
 				if(bServer)					
 					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
@@ -434,12 +440,11 @@ void ZeroFps::Update_System(bool bServer)
 				
 				m_pkObjectMan->UpdateGameMessages();
 
+
 				//update physicsengine
 				m_pkPhysEngine->Update();	
 			
-				//update new super duper rigid body physics engine deluxe
-				m_pkPhysics_Engine->Update(m_fGameFrameTime);
-				
+	
 				//update Tiny Collission system
 				m_pkTcs->Update();	
 				
@@ -529,9 +534,9 @@ void ZeroFps::MainLoop(void) {
 		 
 		Run_EngineShell();
 
-		/*if(m_bServerMode)	{
+		if(m_bServerMode)	{
 			Run_Server();
-			}*/
+			}
 
 		if(m_bClientMode)
 			Run_Client();

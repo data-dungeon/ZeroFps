@@ -7,8 +7,8 @@ P_Body::P_Body()
 {
 	strcpy(m_acName,"P_Body");
 	
-	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER;	
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;	
 	
 	m_pkPhysics_Engine=static_cast<Physics_Engine*>(g_ZFObjSys.GetObjectPtr("Physics_Engine"));		
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -27,7 +27,12 @@ P_Body::~P_Body()
 
 void P_Body::Init()
 {
-	if(!Enable())
+	//m_pkObject->RotateLocalRotV(Vector3(15,0,0));
+	m_pkObject->SetInterpolate(false);
+
+	if(Enable())
+		SetBodyToObject();
+	else
 		cout<<"Body did not get enabled cos it collides with another body"<<endl;
 
 }
@@ -50,6 +55,8 @@ void P_Body::Update()
 		SetObjectToBody();
 	else
 		SetBodyToObject();
+		
+	
 }
 
 bool P_Body::Enable()
@@ -65,13 +72,15 @@ bool P_Body::Disable()
 void P_Body::SetBodyToObject()
 {
 	m_kBody.SetPos(m_pkObject->GetWorldPosV());
-	m_kBody.SetRot(m_pkObject->GetWorldRotV());	
+	m_kBody.SetRot(m_pkObject->GetLocalRotM());	
+//	m_kBody.SetRot(m_pkObject->GetWorldRotV());	
 }
 
 void P_Body::SetObjectToBody()
 {
 	m_pkObject->SetWorldPosV(m_kBody.GetPos());
-	m_pkObject->SetWorldRotV(m_kBody.GetRot());	
+	m_pkObject->SetLocalRotM(m_kBody.GetRot());
+//	m_pkObject->SetWorldRotV(m_kBody.GetRot());	
 }
 
 void P_Body::SetBodyPos(Vector3 kPos)

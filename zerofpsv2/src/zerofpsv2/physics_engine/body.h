@@ -31,10 +31,9 @@ class PHYSICSENGINE_API Body
 		Vector3		m_kBodyVelocity;		//Velocity in body coordinats		
 		Vector3		m_kAcceleration;		//acceleration of (Center of gravity) in body coordinats
 		
-		Vector3		m_kAngles;				//Euler Angle's in body coordinats
 		Vector3		m_kAngleVel;			 //angle velocity in body coordinats
 		Vector3		m_kAngleAcceleration; //angle acclereration in body coordinats		
-		Quaternion	m_kOrientation;		 //orientatiojn in world cordinats
+		Matrix3		m_kOrientation;
 		
 		float			m_fSpeed;
 		
@@ -55,25 +54,27 @@ class PHYSICSENGINE_API Body
 		float			m_fBounce;				//bounce factor		
 		float			m_fMass;					//object mass (constant)
 		float			m_fRadius;				//object bounding radius
-				
+		float			m_fAirFriction;		
 				
 				
 		Body();
 		void Reset();
 		void SetPos(Vector3 kPos);
 		Vector3 GetPos();								
-		Vector3 GetRot();
-		void SetRot(Vector3 kRot);
+		Matrix3 GetRot();
+		void SetRot(Matrix3 kRot);
 		
 		void Rest(Body* pkBody);				//set object to rest against pkBody
 		void Awaken();
 		Vector3 TransRot(Vector3 kVert);
+		Vector3 Rot(Vector3 kVert);		
 		
 		bool SetMad(Mad_Core* pkMad,int iMesh);
 		void SetScalep(float* pfScale) { m_pfScale = pfScale;};
 		Mad_CoreMesh* GetMeshByID(Mad_Core* pkMad,int iMesh);
 		
-		
+		Vector3 CalculateMassCenter();
+		float CalculateRadius();
 		
 		friend class Physics_Engine;
 };

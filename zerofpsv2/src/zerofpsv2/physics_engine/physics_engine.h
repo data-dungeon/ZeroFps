@@ -44,6 +44,8 @@ class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 		vector<Collission>	m_kCollissions;
 		vector<int>				m_kCollissionPoints;
 		
+		vector<Vector3>		m_kCollissionCords;
+		vector<Vector3>		m_kCollissionNormals;		
 		
 		Body						m_kBodyCopy1;
 		Body						m_kBodyCopy2;
@@ -53,6 +55,8 @@ class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 		float						m_fCtol;
 		int						m_iMaxTests;
 		
+		
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);		
 		
 	public:
 		int						m_iNrOfCollissions;
@@ -84,7 +88,9 @@ class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 
 		void TestBodys(float fATime);
 		bool TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime);
+		bool TestBodyMeshVSBodyMesh(Body* pkBody1,Body* pkBody2,float fATime);		
 		int CollideBody(Body* pkBody1,Body* pkBody2);
+		int CollideBodyMeshs(Body* pkBody1,Body* pkBody2);		
 
 		void UpdateResting(Body* pkBody1);
 		void HandleCollission(Collission* pkCol);
