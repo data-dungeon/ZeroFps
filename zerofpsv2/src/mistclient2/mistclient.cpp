@@ -86,7 +86,7 @@ void MistClient::OnInit()
 	RegisterResources();
 	
 	//setup referense sound distance
-	m_pkAudioSys->SetReferensDistance(0.25);
+	//m_pkAudioSys->SetReferensDistance(0.25);
 	
 	//m_pkZeroFps->SetSystemFps(30);
 	//m_pkZeroFps->SetNetworkFps(15);

@@ -140,7 +140,7 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 vector<PropertyValues> P_Sound::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
 
 	kReturn[0].kValueName = "filename";
 	kReturn[0].iValueType = VALUETYPE_STRING; 

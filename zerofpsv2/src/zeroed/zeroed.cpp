@@ -273,7 +273,7 @@ void ZeroEd::OnInit()
 
 
 	//set reference distance
-	m_pkAudioSys->SetReferensDistance(0.5);
+// 	m_pkAudioSys->SetReferensDistance(0.5);
 
 //	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 

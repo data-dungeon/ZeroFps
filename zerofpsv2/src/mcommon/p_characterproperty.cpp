@@ -15,14 +15,22 @@ CharacterStats::CharacterStats()
 	m_kStats.push_back(CharacterStat("Level"			,0,0));
 	m_kStats.push_back(CharacterStat("Experience"	,0,0));
 	m_kStats.push_back(CharacterStat("NextLevel"		,0,0));
+	
 	m_kStats.push_back(CharacterStat("Speed"			,0,0));
 	m_kStats.push_back(CharacterStat("Jump"			,0,0));
+	
 	m_kStats.push_back(CharacterStat("Mana"			,0,0));
 	m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
 	m_kStats.push_back(CharacterStat("ManaRegen"		,0,0));	
+	
 	m_kStats.push_back(CharacterStat("Health"			,0,0));
 	m_kStats.push_back(CharacterStat("HealthMax"		,0,0));
 	m_kStats.push_back(CharacterStat("HealthRegen"	,0,0));
+
+	m_kStats.push_back(CharacterStat("Stamina"		,0,0));
+	m_kStats.push_back(CharacterStat("StaminaMax"	,0,0));
+	m_kStats.push_back(CharacterStat("StaminaRegen"	,0,0));	
+		
 	m_kStats.push_back(CharacterStat("Strength"		,0,0));
 	m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
 	m_kStats.push_back(CharacterStat("Vitality"		,0,0));
@@ -30,14 +38,29 @@ CharacterStats::CharacterStats()
 	m_kStats.push_back(CharacterStat("Wisdom"			,0,0));
 	m_kStats.push_back(CharacterStat("Charisma"		,0,0));
 	m_kStats.push_back(CharacterStat("Armor"			,0,0));
-	m_kStats.push_back(CharacterStat("DamageMin"		,0,0));
-	m_kStats.push_back(CharacterStat("DamageMax"		,0,0));
 	m_kStats.push_back(CharacterStat("Attack"			,0,0));
-	m_kStats.push_back(CharacterStat("Stamina"		,0,0));
-	m_kStats.push_back(CharacterStat("StaminaMax"	,0,0));
-	m_kStats.push_back(CharacterStat("StaminaRegen"	,0,0));	
+	
+	
 	m_kStats.push_back(CharacterStat("Load"			,0,0));
 	m_kStats.push_back(CharacterStat("LoadMax"		,0,0));
+
+	m_kStats.push_back(CharacterStat("DamageSlashingMin"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageSlashingMax"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageCrushingMin"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageCrushingMax"	,0,0));
+	m_kStats.push_back(CharacterStat("DamagePiercingMin"	,0,0));
+	m_kStats.push_back(CharacterStat("DamagePiercingMax"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageFireMin"		,0,0));
+	m_kStats.push_back(CharacterStat("DamageFireMax"		,0,0));
+	m_kStats.push_back(CharacterStat("DamageIceMin"			,0,0));
+	m_kStats.push_back(CharacterStat("DamageIceMax"			,0,0));
+	m_kStats.push_back(CharacterStat("DamageLightningMin"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageLightningMax"	,0,0));
+	m_kStats.push_back(CharacterStat("DamageMagicMin"		,0,0));
+	m_kStats.push_back(CharacterStat("DamageMagicMax"		,0,0));
+	
+	
+
 }
 
 void CharacterStats::Save(ZFIoInterface* pkPackage)
@@ -708,6 +731,8 @@ void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
 
 void P_CharacterProperty::PlayCharacterMovementSounds()
 {
+	static float fWalkGain = 0.05;
+
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
 	{
 		//check states and play sounds
@@ -718,7 +743,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eWALKING])
 			{
 				//m_pkAudioSystem->StopAudio(m_iWalkSoundID);
-				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP);
+				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iWalkSoundID, GetEntity()->GetIWorldPosV());
@@ -735,7 +760,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eRUNNING])
 			{
 				//m_pkAudioSystem->StopSound(m_iRunSoundID);
-				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP);
+				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iRunSoundID, GetEntity()->GetIWorldPosV());
@@ -754,7 +779,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eSWIMMING])
 			{	
 				//m_pkAudioSystem->StopAudio(m_iSwimSoundID);
-				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP);
+				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iSwimSoundID,GetEntity()->GetIWorldPosV());
@@ -768,7 +793,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		//jump sound
 		if(pkCC->GetCharacterState(eJUMPING))
 			if(!m_kCurrentCharacterStates[eJUMPING])
-				m_pkAudioSystem->PlayAudio(m_strJumpSound,GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->PlayAudio(m_strJumpSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),0,fWalkGain*2);
 		
 														
 		//update staes
