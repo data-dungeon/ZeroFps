@@ -36,7 +36,7 @@ void P_Ml::Update()
 	if(!pkText)
 	{
 		pkText = new ZMaterial;
-		pkText->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/mltext.tga");
+		pkText->GetPass(0)->m_kTUs[0]->SetRes("n#data/textures/text/mltext.tga");
 		pkText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		pkText->GetPass(0)->m_bLighting = 				false;		

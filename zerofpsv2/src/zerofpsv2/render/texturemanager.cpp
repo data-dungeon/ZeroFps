@@ -46,11 +46,13 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 	pkTex->b_bClamp			= false;
 	pkTex->m_bCompression	= false;
 	pkTex->m_bMipMapping		= true;
+	pkTex->m_bNoFilter		= false;
 	pkTex->m_bAlphaOnly		= false;
 
-	if(iOption!=0) {	
-		if((iOption & T_NOMIPMAPPING)){
-			pkTex->m_bMipMapping	=	false;
+	if(iOption!=0) 
+	{	
+		if((iOption & T_NOMIPMAPPING)){			
+			pkTex->m_bMipMapping		=	false;
 		}
 		if((iOption & T_COMPRESSION)) {
 			pkTex->m_bCompression	=	true;
@@ -61,30 +63,29 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 		if((iOption & T_ALPHA)) {
 			pkTex->m_bAlphaOnly		=	true;
 		}	
+		if((iOption & T_NOFILTER)) {
+			pkTex->m_bNoFilter		=	true;
+		}			
 	}
 }
 
 string GetTextureFlags(string strName)
 {
-	string	strFlags;
-	char		szFlags[256];
-	strFlags = "";
-
-	char szName[256];
-	strcpy(szName, strName.c_str());
-	char* szSOFlags = strrchr(szName, '/');
-	if(!szSOFlags)
-		return strFlags;
+	string strFlags;
 	
-	char* szEOFlags = strchr(szSOFlags, '-');
-	if(!szEOFlags)
-		return strFlags;
-
-	int iNumOfFlags = szEOFlags - szSOFlags;
-//	cout << "There are " << iNumOfFlags << " in " << szName << endl;
-	strncpy(szFlags,szSOFlags,iNumOfFlags);
-	szFlags[iNumOfFlags] = 0;
-   strFlags = szFlags;
+	for(int i=strName.size();i>=0;i--)
+	{
+		if(strName[i] == '#')
+		{
+			for(int j=i-1;j>=0;j--)
+			{
+				strFlags.push_back(strName[j]);			
+			}
+			
+			break;
+		}
+	}
+	
 	return strFlags;
 }
 
@@ -92,13 +93,15 @@ int TextureManager::GetOptionsFromFileName(string strName)
 {
 	int iOptions = 0;
 	string StrFlags = GetTextureFlags(strName);
-	char		szFlags[256];
-	strcpy(szFlags,StrFlags.c_str());
-	if(strlen(szFlags) == 0)
+	
+	
+	if(StrFlags.size() == 0)
 		return 0;
 
-	for(unsigned int i=0; i<strlen(szFlags); i++) {
-		switch(szFlags[i]) {
+	for(unsigned int i=0; i<StrFlags.size(); i++) 
+	{
+		switch(StrFlags[i]) 
+		{
 			case 'c':
 				iOptions = iOptions | T_CLAMP;
 				break;
@@ -108,6 +111,10 @@ int TextureManager::GetOptionsFromFileName(string strName)
 			case 'a':
 				iOptions = iOptions | T_ALPHA; 
 				break;
+			case 'f':
+				iOptions = iOptions | T_NOFILTER; 
+				break;
+				
 		}
 	}
 
@@ -115,10 +122,21 @@ int TextureManager::GetOptionsFromFileName(string strName)
 }
 
 // Strip away any flags at the end of the filename
-string TextureManager::GetFileName(string strFileExtFlags)
+string TextureManager::StripFlags(string strName)
 {
-	string strnisse;
-	return strnisse;
+	string strNoFlags;
+
+	for(int i=0;i<strName.size();i++)
+	{
+		strNoFlags.push_back(strName[i]);
+	
+		if(strName[i] == '#')
+		{
+			strNoFlags = "";
+		}			
+	}
+	
+	return strNoFlags;
 }
 
 
@@ -183,21 +201,54 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		iInternalFormat=GL_RGBA8;
 	}
 
+	//is this a alphaonly textre
 	if(pkTex->m_bAlphaOnly) 
 	{
 		//cout << "Setting alpha on " <<acFilename << endl;
 		iInternalFormat=GL_ALPHA;
 	}
-
-	if(pkTex->b_bClamp){
+	
+	//setup clamping
+	if(pkTex->b_bClamp)
+	{
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);	
-	} else {
+	} 
+	else 
+	{
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
 	}
 
-	if(pkTex->m_bMipMapping){
+	//setup filters
+	if(pkTex->m_bNoFilter)
+	{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);	
+		
+		if(pkTex->m_bMipMapping)
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST_MIPMAP_NEAREST);
+		else
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);  
+	}
+	else
+	{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
+		
+		if(pkTex->m_bMipMapping)
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+		else
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+	}
+	
+	//create texture
+	if(pkTex->m_bMipMapping)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  			
+	else
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);		
+	
+/*	if(pkTex->m_bMipMapping)
+	{
+		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  		
@@ -206,7 +257,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
 		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
 	}
-
+*/
 	glBindTexture(GL_TEXTURE_2D,0);
 	m_iCurrentTexture = NO_TEXTURE;
 	delete pkImage;
@@ -277,6 +328,8 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
 
+	//cout<<"loading texture:"<<szFileName<<endl;
+		
 //	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", szFileName);
 
 	texture *pkTex = GetFreeTexture();
@@ -286,7 +339,7 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	SetOptions(pkTex, iOption);
 
 	// If texture can't be loaded, Load error texture.
-	if(!LoadTexture(pkTex,szFileName))
+	if(!LoadTexture(pkTex,StripFlags(szFileName).c_str()))
 	{
 		// If error texture fails to load cry a little and return NO_TEXTURE.
 		cout << "Failed to find texture '" << pkTex->file << "'" << endl;

@@ -22,7 +22,8 @@ enum OPTIONS
 	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
 	T_COMPRESSION	=	8,		// Use texture compression on this texture.
 	T_CLAMP			=	16,	// Use clamp on this texture (s and t).
-	T_ALPHA			=	32		// This is a alpha only texture.
+	T_ALPHA			=	32,		// This is a alpha only texture.
+	T_NOFILTER		=	64,		// use nearest mfilter .
 };
 
 #define ERROR_TEXTURE	"data/textures/notex.bmp"
@@ -41,7 +42,8 @@ struct texture
 	bool				m_bCompression;
 	bool				b_bClamp;			// Texture Clamping.
 	bool				m_bAlphaOnly;
-
+	bool				m_bNoFilter;
+	
 	bitset<20>		m_abLevels;			//	level x is true if mipmap level is loaded	
 	Image*			m_pkImage2;			//	for realtime editing of surface
 
@@ -83,7 +85,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 		void SetOptions(texture *pkTex, int iOptions);
 		int GetOptionsFromFileName(string strName);
-		string GetFileName(string strFileExtFlags);
+		string StripFlags(string strName);
 
 		bool	ValidIndex(int iTextureID);	// Returns true if iTextureID is a valid texture id.
 	
