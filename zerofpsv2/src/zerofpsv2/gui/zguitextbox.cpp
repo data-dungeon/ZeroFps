@@ -1157,6 +1157,11 @@ void ZGuiTextbox::SetReadOnly(bool bReadOnly)
 	m_bReadOnly = bReadOnly;
 }
 
+bool ZGuiTextbox::IsReadOnly()
+{
+	return m_bReadOnly;
+}
+
 bool ZGuiTextbox::SetCursorRow(int row, bool bUpdate)
 {
 	if(row < 0 || row > m_iNumRows-1)
@@ -1188,8 +1193,11 @@ bool ZGuiTextbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 
 void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
-	m_pkScrollbarVertical->SetPos(Width, 0, false, true);
-	m_pkScrollbarVertical->Resize(20,Height);
+	if(m_pkScrollbarVertical)
+	{
+		m_pkScrollbarVertical->SetPos(Width, 0, false, true);
+		m_pkScrollbarVertical->Resize(20,Height);
+	}
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
 }

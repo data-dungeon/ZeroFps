@@ -78,8 +78,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="4"
-				UsePrecompiledHeader="3"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
@@ -87,8 +89,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/dark_metropolis.exe"
+				AdditionalDependencies="opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib"
+				OutputFile="..\..\bin\dark_metropolis.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\bin"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"

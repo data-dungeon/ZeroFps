@@ -41,6 +41,7 @@ public:
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void SetFont(ZGuiFont* pkFont); //överlagrad
 
+	bool IsReadOnly();
 	void SetReadOnly(bool bReadOnly);
 	int GetRowCount() { return m_iNumRows; }
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);

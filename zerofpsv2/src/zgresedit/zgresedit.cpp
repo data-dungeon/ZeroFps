@@ -232,14 +232,19 @@ void ZGResEdit::OnKeyDown(int iKey)
 			m_pkScene->m_pkPropertyWnd->Show();
 			MoveWndToTop(m_pkScene->m_pkPropertyWnd);
 		}
-//		break;
 
-//	case KEY_F6:
 		if(m_pkScene->m_pkWorkSpace->IsVisible()) m_pkScene->m_pkWorkSpace->Hide();
 		else if(m_eEditMode != VIEW)
 		{
 			m_pkScene->m_pkWorkSpace->Show();
 			MoveWndToTop(m_pkScene->m_pkWorkSpace);
+		}
+
+		if(m_pkScene->m_pkOptionsWnd->IsVisible()) m_pkScene->m_pkOptionsWnd->Hide();
+		else if(m_eEditMode != VIEW)
+		{
+			if(m_pkScene->m_pkOptionsWnd->IsVisible())
+				MoveWndToTop(m_pkScene->m_pkOptionsWnd);
 		}
 
 		break;
@@ -259,6 +264,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		m_pkScene->m_pkPropertyWnd->Hide();
 		m_pkScene->m_pkViewWindow->Hide();
 		m_pkScene->m_pkSelectFileWnd->Hide();
+		m_pkScene->m_pkOptionsWnd->Hide();
 		EnableWnds(true);
 		break;
 	
@@ -266,6 +272,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		m_eEditMode = MOVE;
 		m_pkScene->m_pkWorkSpace->Show();
 		m_pkScene->m_pkPropertyWnd->Show();
+		m_pkScene->m_pkOptionsWnd->Hide();
 		EnableWnds(false);
 		break;
 
@@ -378,17 +385,12 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				m_pkScene->ScaleWndToTexSize(m_pkFocusWnd, szSkinType);
 		}
 		else
-		if(strClickWndName == "SelectMoveAreaBn")
+		if(strClickWndName == "OptionsBn")
 		{
-			if(m_eEditMode == SET_MOVE_AREA)
+			if(m_pkFocusWnd)
 			{
-				m_eEditMode = MOVE;
-				OpenWnd(m_pkScene->m_pkWorkSpace, true);
-			}
-			else
-			{
-				m_eEditMode = SET_MOVE_AREA;
-				OpenWnd(m_pkScene->m_pkWorkSpace, false);
+				OpenWnd(m_pkScene->m_pkOptionsWnd, !m_pkScene->m_pkOptionsWnd->IsVisible());
+				m_pkScene->UpdateOptionsWnd(m_pkFocusWnd);
 			}
 		}
 
@@ -559,8 +561,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strWndType == "V.Scrollbar")	eWndType = Scrollbar;	else
 			if(strWndType == "Slider")			eWndType = Slider;		else
 			if(strWndType == "TabControl")	eWndType = TabControl;	else
-			if(strWndType == "S.Textbox")		eWndType = Textbox;		else
-			if(strWndType == "M.Textbox")		{eWndType = Textbox;	dwFlag = EB_IS_MULTILINE; }	else
+			if(strWndType == "Textbox")		eWndType = Textbox;		else
 			if(strWndType == "Treebox")		eWndType = Treebox;
 
 			if(strWndType == "Radiobn.group" || (strWndType == "Radiobutton" &&
@@ -869,6 +870,39 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, false);
 
 			OnCommand( GetWnd("CreateWndBn")->GetID(), false, m_pkScene->m_pkWorkSpace); // skapa knappen...
+		}
+	}
+	else
+	if(strMainWndName == "OptionsWnd" && m_pkFocusWnd != NULL)
+	{
+		if(strClickWndName == "FreemoveCheckbox")
+		{
+			if(IsButtonChecked("FreemoveCheckbox"))
+				m_pkFocusWnd->SetMoveArea(Rect(0,0,800,600), true);
+			else
+				m_pkFocusWnd->SetMoveArea(m_pkFocusWnd->GetScreenRect(), false);
+		}
+		else
+		if(strClickWndName == "ReadOnlyCheckbox")
+		{
+			((ZGuiTextbox*)m_pkFocusWnd)->SetReadOnly(IsButtonChecked("ReadOnlyCheckbox"));
+		}
+		else
+		if(strClickWndName == "MultiLineCheckbox")
+		{
+			bool bCreateSkin = false;
+			if(((ZGuiTextbox*)m_pkFocusWnd)->IsMultiLine() == false)
+				bCreateSkin = true;
+
+			((ZGuiTextbox*)m_pkFocusWnd)->ToggleMultiLine(IsButtonChecked("MultiLineCheckbox"));
+
+			if(bCreateSkin) // måste skapa ett skin för scrollbaren
+			{
+				((ZGuiTextbox*)m_pkFocusWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+					GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
+					GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+					GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d") );
+			}
 		}
 	}
 }
@@ -1290,9 +1324,8 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 			else if(strWndType == "V.Scrollbar")	{ x=8; y=8; w=20;	 h=100; }
 			else if(strWndType == "Slider")			{ x=8; y=8; w=100; h=20; }
 			else if(strWndType == "TabControl")		{ x=8; y=8; w=150; h=100; }
-			else if(strWndType == "S.Textbox")		{ x=8; y=8; w=100; h=20; }
-			else if(strWndType == "M.Textbox")		{ x=8; y=8; w=100; h=50; }
-			else if(strWndType == "Treebox")		{ x=8; y=8; w=100; h=100; }
+			else if(strWndType == "Textbox")			{ x=8; y=8; w=100; h=20; }
+			else if(strWndType == "Treebox")			{ x=8; y=8; w=100; h=100; }
 
 			m_iXPos = x; m_iYPos = y;
 			m_iWidth = w; m_iHeight = h;
@@ -2066,6 +2099,10 @@ void ZGResEdit::UpdatePropertyWnd()
 	SetTextInt("PosYTextbox", rc.Top);
 	SetTextInt("WidthTextbox", rc.Width());
 	SetTextInt("HeightTextbox", rc.Height());
+
+	// update options window
+	if(m_pkScene->m_pkOptionsWnd->IsVisible()) 
+		m_pkScene->UpdateOptionsWnd( m_pkFocusWnd );
 }
 
 

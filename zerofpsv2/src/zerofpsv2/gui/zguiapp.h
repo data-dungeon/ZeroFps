@@ -17,8 +17,9 @@ class ZGuiResourceManager;
 class ZFResourceHandle;
 class ZFScript;
 
-#define EB_IS_MULTILINE   0x1
-#define READ_ONLY			  0x2
+#define EB_IS_MULTILINE			0x1
+#define READ_ONLY					0x2
+#define CREATE_WND_HIDDEN		0x3
 
 enum GuiType
 {

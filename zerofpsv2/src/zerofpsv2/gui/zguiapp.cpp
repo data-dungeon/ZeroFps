@@ -306,6 +306,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 //	pkWnd->Rescale(800,600, GetWidth(),GetHeight());
 
 	pkWnd->Show(); 
+
+	if(uiFlags & CREATE_WND_HIDDEN) 
+		pkWnd->Hide();
 	
 	return pkWnd;
 }

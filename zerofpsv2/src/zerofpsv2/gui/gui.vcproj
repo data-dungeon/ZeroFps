@@ -121,7 +121,7 @@
 				TypeLibraryName=".\Release/gui.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  $(ProjectDir)release\*.lib ..\..\..\bin"/>
+				CommandLine="copy               $(ProjectDir)release\*.lib               ..\..\..\bin\"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

@@ -700,6 +700,9 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 		return Vector3(iPos%iSide,0,int(iPos/iSide));
 	
 	}
+
+	// RETURN WHAT??????
+	// e:\programmering\zerofpsv2\src\dark_metropolis\dark_metropolis_main.cpp(668) : warning C4715: 'DarkMetropolis::GetFormationPos' : not all control paths return a value
 }
 
 

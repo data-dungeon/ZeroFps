@@ -74,8 +74,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="..\..\bin"
+			IntermediateDirectory="..\..\bin"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -85,7 +85,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/zgresedit.pch"
@@ -99,10 +99,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\Release/zgresedit.exe"
+				AdditionalDependencies="opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib"
+				OutputFile="..\..\bin\zgresedit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\bin"
 				ProgramDatabaseFile=".\Release/zgresedit.pdb"
 				SubSystem="1"/>
 			<Tool

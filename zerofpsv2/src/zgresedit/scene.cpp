@@ -47,12 +47,15 @@ void Scene::Init(ZGuiApp *pkApp)
 
 void Scene::CreateUI()
 {
+	const float aSceneWndBk[] = {1.0f, 0.25f, 0.25f};
 	//
 	// Create workspace
 	//
 
-	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16, 0);
+	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16-40, 0);
 	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
+	m_pkWorkSpace->GetSkin()->m_iBkTexID = -1;
+	memcpy(m_pkWorkSpace->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
 	m_pkApp->CreateWnd(Button, "UndoButton", "WorkSpace", "", 2, 0, 24, 22, 0);
 
@@ -122,8 +125,7 @@ void Scene::CreateUI()
 	m_pkApp->AddListItem("SelectWndType", "V.Scrollbar");
 	m_pkApp->AddListItem("SelectWndType", "Slider");
 	m_pkApp->AddListItem("SelectWndType", "TabControl");
-	m_pkApp->AddListItem("SelectWndType", "S.Textbox");
-	m_pkApp->AddListItem("SelectWndType", "M.Textbox");
+	m_pkApp->AddListItem("SelectWndType", "Textbox");
 	m_pkApp->AddListItem("SelectWndType", "Treebox");
 
 	((ZGuiCombobox*)m_pkApp->GetWnd("SelectWndType"))->SetNumVisibleRows(15);
@@ -204,6 +206,8 @@ void Scene::CreateUI()
 	//
 	m_pkApp->CreateWnd(Wnd, "PropertyWnd", "", "", 800/2-300/2, 600-138, 300, 110, 0);
 	(m_pkPropertyWnd = m_pkApp->GetWnd("PropertyWnd"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
+	m_pkPropertyWnd->GetSkin()->m_iBkTexID = -1;
+	memcpy(m_pkPropertyWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
 	m_pkApp->CreateWnd(Label, "NameLabel",  "PropertyWnd",  "Name:", 4,  4+2, 25, 20, 0);
 	m_pkApp->CreateWnd(Textbox, "WndNameTextbox", "PropertyWnd", "", 40,  4, 250, 20, 0);
@@ -255,13 +259,15 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Label, "ParentLabel2", "PropertyWnd",  "Parent:", 4, 80+2, 50, 20, 0);
 	m_pkApp->CreateWnd(Label, "ParentLabel", "PropertyWnd",  "", 54, 80+2, 150, 20, 0);
 
-	m_pkApp->CreateWnd(Checkbox, "SelectMoveAreaBn",  "PropertyWnd",  "", 300-44-28*2, 110-24, 24, 22, 0);
+	m_pkApp->CreateWnd(Button, "OptionsBn",  "PropertyWnd",  "", 300-44-28*2, 110-24, 24, 22, 0);
 	
-	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->SetButtonCheckedSkin(new ZGuiSkin());
-	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->SetButtonUncheckedSkin(new ZGuiSkin());
-	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetUncheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/move.bmp", 0);
-	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetCheckedSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/move.bmp", 0);
-	((ZGuiCheckbox*)m_pkApp->GetWnd("SelectMoveAreaBn"))->GetCheckedSkin()->m_afBkColor[0] = 0.5f;
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->SetButtonDownSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->SetButtonUpSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->SetButtonHighLightSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->GetButtonUpSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/options.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->GetButtonDownSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/options.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->GetButtonHighLightSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/options.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("OptionsBn"))->GetButtonDownSkin()->m_afBkColor[0] = 0.5f;
 
 	//
 	// Create view window
@@ -269,6 +275,8 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Wnd, "ViewWindow", "",  "", 580, 50, 200, 200, 0);
 	(m_pkViewWindow = m_pkApp->GetWnd("ViewWindow"))->SetMoveArea(Rect(-190,-190,800+190,600+190),true);
 	m_pkViewWindow->Hide();
+	m_pkViewWindow->GetSkin()->m_iBkTexID = -1;
+	memcpy(m_pkViewWindow->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
 	m_pkApp->CreateWnd(Checkbox, "ShowHideWndCB", "ViewWindow",  "Visible", 8, 8, 16, 16, 0);
 	m_pkApp->CreateWnd(Listbox, "MainWndList", "ViewWindow",  "", 8, 50, 200-16, 150-8, 0);
@@ -294,6 +302,8 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Wnd, "SelectFileWnd", "SelectFile", "", 180, 8, 400, 400, 0);
 	(m_pkSelectFileWnd = m_pkApp->GetWnd("SelectFileWnd"))->SetMoveArea(Rect(-390, -390, 800+390, 600+390),true);
 	m_pkGui->ShowMainWindow(m_pkSelectFileWnd, true);
+	m_pkSelectFileWnd->GetSkin()->m_iBkTexID = -1;
+	memcpy(m_pkSelectFileWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
 	m_pkApp->CreateWnd(Treebox, "FileTree", "SelectFileWnd", "", 8,8,400-16,400-16-64+15+2,0);
 
@@ -325,6 +335,15 @@ void Scene::CreateUI()
 
 	m_pkSelectMoveAreaWnd = m_pkApp->CreateWnd(Wnd, "SelectMoveAreaWnd", "", "", 0, 0, 200, 200, 0);
 	m_pkSelectMoveAreaWnd->Hide();
+
+	// Create options window
+
+	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", 0,118,300,100,0);
+	m_pkOptionsWnd->Hide();
+	m_pkOptionsWnd->GetSkin()->m_iBkTexID = -1;
+	memcpy(m_pkOptionsWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
+
+	
 	
 }
 
@@ -424,6 +443,8 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 	if(pkWnd == m_pkDefProp)
 		return true;
 	if(pkWnd == m_pkSelectMoveAreaWnd)
+		return true;
+	if(pkWnd == m_pkOptionsWnd)
 		return true;
 	if(pkWnd == NULL)
 		return true;
@@ -696,5 +717,40 @@ void Scene::AddStandardElements(ZGuiWnd *pkWnd)
 			sprintf(szText, "Item%i", i);
 			m_pkApp->AddListItem(szName, szText);
 		}
+	}
+}
+
+void Scene::UpdateOptionsWnd(ZGuiWnd* pkFocusWnd)
+{
+	if(pkFocusWnd == NULL)
+		return;
+
+	list<ZGuiWnd*> childs;
+	m_pkOptionsWnd->GetChildrens(childs);
+
+	for(list<ZGuiWnd*>::iterator it=childs.begin(); it!=childs.end(); it++)
+	{
+		m_pkGui->UnregisterWindow((*it));
+	}
+
+	switch(m_pkApp->GetWndType(pkFocusWnd))
+	{
+	case Wnd:
+		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "OptionsWnd", "Moveable", 10, 10, 16, 16, 0);
+		break;
+	case Textbox:
+		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "OptionsWnd", "Read-only", 10, 10, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "MultiLineCheckbox", "OptionsWnd", "Multi-line", 10, 10+20*1, 16, 16, 0);
+
+		if(((ZGuiTextbox*)pkFocusWnd)->IsReadOnly())
+			((ZGuiCheckbox*)m_pkApp->GetWnd("ReadOnlyCheckbox"))->CheckButton();
+		else
+			((ZGuiCheckbox*)m_pkApp->GetWnd("ReadOnlyCheckbox"))->UncheckButton();
+
+		if(((ZGuiTextbox*)pkFocusWnd)->IsMultiLine())
+			((ZGuiCheckbox*)m_pkApp->GetWnd("MultiLineCheckbox"))->CheckButton();
+		else
+			((ZGuiCheckbox*)m_pkApp->GetWnd("MultiLineCheckbox"))->UncheckButton();		
+		break;
 	}
 }

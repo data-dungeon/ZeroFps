@@ -29,10 +29,12 @@ public:
 	ZGuiWnd* m_pkSelectFileWnd;
 	ZGuiWnd* m_pkDefProp;
 	ZGuiWnd* m_pkSelectMoveAreaWnd;
+	ZGuiWnd* m_pkOptionsWnd;
 
 	void AddStandardElements(ZGuiWnd *pkWnd);
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension);
 	bool IsSceneWnd(ZGuiWnd* pkWnd);
+	void UpdateOptionsWnd(ZGuiWnd* pkFocusWnd);
 
 	ZGuiApp* GetApp() { return m_pkApp; }
 
