@@ -269,7 +269,8 @@ void OpenAlSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_MUSICLOAD:
-			m_pkMusic->LoadFile(kCommand->m_kSplitCommand[1]);
+			if(kCommand->m_kSplitCommand.size() > 1)
+				m_pkMusic->LoadFile(kCommand->m_kSplitCommand[1]);
 			break;
 		
 		case FID_MUSICPLAY:
@@ -281,16 +282,21 @@ void OpenAlSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		
 		case FID_MUSICVOLUME:
-			m_pkMusic->SetVolume((float) strtod( (kCommand->m_kSplitCommand[1]).c_str(),NULL));
+			if(kCommand->m_kSplitCommand.size() > 1)
+				m_pkMusic->SetVolume((float) strtod( (kCommand->m_kSplitCommand[1]).c_str(),NULL));
 			break;
 			
 		case FID_MUSICBUFFERS:
 			{
-				int iTemp = atoi((kCommand->m_kSplitCommand[1]).c_str());
-				if(iTemp > 0)
+				if(kCommand->m_kSplitCommand.size() > 1)
 				{
-					delete m_pkMusic;
-					m_pkMusic = new OggMusic(iTemp, 4096);
+					int iTemp = atoi((kCommand->m_kSplitCommand[1]).c_str());
+					if(iTemp > 0)
+					{
+						m_pkMusic->Stop();
+						delete m_pkMusic;
+						m_pkMusic = new OggMusic(iTemp, 4096);
+					}
 				}
 			}
 			break;
