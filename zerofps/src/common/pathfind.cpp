@@ -1,4 +1,6 @@
 // pathfind.cpp: implementation of the PathFind class.
+// blub
+
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -30,7 +32,7 @@ PathFind::~PathFind()
 
 bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
-	vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
+	//vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
 
 	if(m_bPathIsReversed == false)
 	{
@@ -41,18 +43,18 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 	memcpy(TEMP_TERRAIN, m_piMapTerrain, 
 		sizeof(int)*(m_siMapWidth*m_siMapWidth)); // kopiera den riktiga terrängen till en temp variabel.
 
-	unsigned int uiOffset;
+	int l = min(iStartPosX, iDestPosX); // 
+	int t = max(iStartPosY, iDestPosY); // T---R
+ 	int r = max(iStartPosX, iDestPosX); // |   |
+	int b = min(iStartPosY, iDestPosY); // L---B
+
 	for(int y=1; y<m_siMapWidth+1; y++)
 		for(int x=1; x<m_siMapWidth+1; x++)
 		{
-			if( x >= 0 && y >= 0 &&
-				x <  m_siMapWidth && y <  m_siMapWidth)
+			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
+			if( pkTile != NULL && pkTile->kUnits.size() > 0)
 			{
-				uiOffset = (y*m_siMapWidth) +x;
-				Tile* kTile = TileEngine::m_pkInstance->GetTile(x,y); // (*pkTiles)[uiOffset];
-		
-				if( kTile->kUnits.size() > 0)
-					TEMP_TERRAIN[uiOffset] = BLOCKED_VALUE;
+				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
 			}
 		}
 
