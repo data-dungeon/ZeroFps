@@ -140,12 +140,14 @@ void P_DMCharacter::Init()
 	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),7,8);
 	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,4);
 		m_pkBody->AddItemType(DMItemAmor);				
+		m_pkBody->SetMaxItems(1);
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
 		m_pkBelt->AddItemType(DMItemGrenade);				
 		m_pkBelt->AddItemType(DMItemClip);						
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
 		m_pkHand->AddItemType(DMItemGrenade);	
 		m_pkHand->AddItemType(DMItemWeapon);	
+		m_pkHand->SetMaxItems(1);	
 	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,3);
 		m_pkImplants->AddItemType(DMItemImplant);		
 	

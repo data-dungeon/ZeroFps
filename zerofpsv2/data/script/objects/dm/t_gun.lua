@@ -6,7 +6,7 @@ function Create()
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","gun");
-			InitParameter("sizex",2);
+			InitParameter("sizex",1);
 			InitParameter("sizey",2);
 			InitParameter("icon","stol.bmp");
 			InitParameter("type","5");
@@ -19,7 +19,6 @@ end
 function Init()
 	SetGunSound (SIGetSelfID(), "data/sound/9m_pistol.wav");
 	SetGunFireRate (SIGetSelfID(), 1);
---	SetGunBurstLenght (SIGetSelfID(), 0.5);
 	SetGunDamage (SIGetSelfID(), 15);
 	SetGunRange (SIGetSelfID(), 30);
 	SetGunRandom (SIGetSelfID(), 0.1);

@@ -36,7 +36,7 @@ class MCOMMON_API DMContainer
 
 		bool				m_bDisableItems;
 		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
-
+		int				m_iMaxItems;
 
 		void SetSize(int iX,int iY);
 		bool SetItem(int iID,int iX,int iY,int iW,int iH);
@@ -45,6 +45,7 @@ class MCOMMON_API DMContainer
 		void ClearItem(int iID);
 	
 		bool ItemTypeOK(int iType);
+		int GetNrOfItems();
 	
 	public:
 		
@@ -57,6 +58,8 @@ class MCOMMON_API DMContainer
 		
 		void AddItemType(int iType) {m_kItemTypes.push_back(iType);};
 		void ClearItemTypes() {m_kItemTypes.clear();};
+		
+		void SetMaxItems(int iItems) {m_iMaxItems = iItems;}; 
 		
 		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
 

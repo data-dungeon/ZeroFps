@@ -130,7 +130,7 @@ class ENGINE_API Camera
 		static float	m_fGridSpace;
 		static bool		m_bGridSnap;
 
-		friend			ZGuiWnd;
+		friend			class ZGuiWnd;
 
 		//float m_fX;
 		//float m_fY;

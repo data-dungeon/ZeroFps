@@ -175,6 +175,8 @@ bool P_DMGun::FireBullets(int iAmount)
 {
 	float t = m_pkObjMan->GetSimTime();
 	Vector3 kStart = m_pkObject->GetWorldPosV() + m_kGunOffset;
+//	float dist = (kStart - m_kDir).Length();
+//	Vector3 kSDir = (m_kDir - kStart).Unit();
 	
 	vector<Entity*> kObjects;		
 	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
@@ -182,7 +184,10 @@ bool P_DMGun::FireBullets(int iAmount)
 
 	for(int i =0;i<iAmount;i++)
 	{
-		Vector3 kDir = (m_kDir +  Vector3( rand() % int(m_fRandom*1000) / 1000.0, rand() % int(m_fRandom*1000) / 1000.0,rand() % int(m_fRandom*1000) / 1000.0)).Unit();
+		//Vector3 kDir = (m_kDir +  Vector3( (rand() % int(m_fRandom*1000) / 1000.0)-0.5, (rand() % int(m_fRandom*1000) / 1000.0)-0.5,(rand() % int(m_fRandom*1000) / 1000.0)-0.5)).Unit();
+		Vector3 kDir = m_kDir + Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom;
+		//Vector3 kDir = (kSDir + Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom) * dist;
+		//Vector3 kDir = kStart + (kSDir +  (Vector3( (rand() % 1000 / 1000.0)-0.5, (rand() % 1000 / 1000.0)-0.5,(rand() % 1000 / 1000.0)-0.5) * m_fRandom)) * dist;
 	
 		float d;	
 		Vector3 cp;

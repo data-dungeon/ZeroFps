@@ -6,7 +6,7 @@ DMContainer::DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 	m_pkEntMan = pkEntMan;
 	m_iOwnerID = iOwnerID;
 	m_bDisableItems = bDisable;
-	
+	m_iMaxItems = 0;
 	m_kItemTypes.clear();
 	
 	SetSize(iX,iY);
@@ -128,6 +128,14 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 {
 	if(HaveItem(iID))
 		return false;
+		
+	if(m_iMaxItems != 0)
+		if(GetNrOfItems() >= m_iMaxItems)
+		{
+			//cout<<":"<<GetNrOfItems()<<endl;
+			//cout<<"max nr of items already in container"<<endl;
+			return false;
+		}
 		
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))
 	{
@@ -331,7 +339,10 @@ void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
 
 	//find all individual item ids
 	for( int i = 0;i<m_kSlots.size();i++)
-		kItemIDs.insert(m_kSlots[i]);
+	{
+		if(m_kSlots[i] != -1)
+			kItemIDs.insert(m_kSlots[i]);
+	}
 
 	printf("kItemIDs size = %i\n", kItemIDs.size());
 	printf("kItemIDs[0] = %i\n", (*kItemIDs.begin()));
@@ -362,7 +373,19 @@ void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
 	}
 }
 
+int DMContainer::GetNrOfItems()
+{
+	set<int>	kItemIDs;
 
+	//find all individual item ids
+	for( int i = 0;i<m_kSlots.size();i++)
+	{
+		if(m_kSlots[i] != -1)
+			kItemIDs.insert(m_kSlots[i]);
+	}
+	
+	return kItemIDs.size();
+}
 
 void DMContainer::Print()
 {
@@ -378,13 +401,12 @@ void DMContainer::Print()
 		}
 		cout<<endl;
 	}
-		
-		
 }
 
 
 void DMContainer::Save(ZFIoInterface* pkPackage)
 {
+	pkPackage->Write(&m_iMaxItems,sizeof(m_iMaxItems),1);
 	pkPackage->Write(&m_bDisableItems,sizeof(m_bDisableItems),1);
 	
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
@@ -408,6 +430,7 @@ void DMContainer::Save(ZFIoInterface* pkPackage)
 
 void DMContainer::Load(ZFIoInterface* pkPackage)
 {
+	pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
 	pkPackage->Read(&m_bDisableItems,sizeof(m_bDisableItems),1);	
 	
 	pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
