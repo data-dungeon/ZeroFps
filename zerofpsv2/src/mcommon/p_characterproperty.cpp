@@ -720,6 +720,7 @@ void P_CharacterProperty::OnDeath()
 	{
 		pkMad->SetAnimation("die", 0);
 		pkMad->m_bLoop = false;
+		pkMad->SetNextAnimation(MAD_NOLOOP);
 	}
 		
 	//disable character movement
