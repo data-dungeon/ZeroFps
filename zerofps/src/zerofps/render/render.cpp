@@ -311,6 +311,74 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
+void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor)
+{
+	glPushMatrix();
+		
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kRot.x, 1, 0, 0);
+	glRotatef(kRot.y, 0, 1, 0);	
+	glRotatef(kRot.z, 0, 0, 1);
+	glScalef(kScale.x,kScale.y,kScale.z);
+	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+	glColor4f(kColor.x,kColor.y,kColor.z,1);		
+
+	glBegin(GL_QUADS);			
+		
+		//front
+		glNormal3f(0,0,1);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,0.5);    
+	
+		//back
+		glNormal3f(0,0,-1);
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,-0.5);			
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+	
+		//right
+		glNormal3f(1,0,0);
+		glTexCoord2f(0.0,0.0);glVertex3f(0.5  ,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,0.5);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,0.5);			
+		glTexCoord2f(0.0,1.0);glVertex3f(0.5  ,-0.5	,-0.5);				
+
+		//left
+		glNormal3f(-1,0,0);		
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(-0.5	,-0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(-0.5	,0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);   
+		
+		//top
+		glNormal3f(0,1,0);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,0.5	,0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,-0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);    		
+		
+		//botom
+		glNormal3f(0,-1,0);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,-0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,-0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,-0.5	 ,0.5);    		
+		
+		
+	glEnd();			
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+ 	
+	glPopMatrix();
+	
+}
+
+
 char* BoolStr(bool bFlag)
 {
 	if(bFlag)

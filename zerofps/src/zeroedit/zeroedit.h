@@ -85,6 +85,9 @@ class ZeroEdit :public Application {
 			FID_COPY,
 			FID_PASTE,
 			FID_DELETE,
+
+			FID_LINKOBJECT,
+			FID_UNLINKOBJECT,
 		};	
 	
 		Object* m_pkCamObj;

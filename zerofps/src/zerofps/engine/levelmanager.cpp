@@ -23,10 +23,12 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_iZpr					=	2;
 	m_fZoneDistance		=	64;
 	m_kMapBaseDir			=	"../data/maps";
+	m_bDrawZones			= false;
 	
 	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("l_showzones", &m_bDrawZones, CSYS_INT);
 
 //	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
@@ -56,6 +58,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	
 	SetSunColor(Vector3(1,1,1));
 	SetMoonColor(Vector3(0.1,0.1,0.3));
+
 	
 	m_pkLight->Add(m_bSun);
 	m_pkLight->Add(m_bMoon);
@@ -586,5 +589,17 @@ Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 	return ob;
 };
 
+void LevelManager::DrawZones()
+{
+	if(!m_bDrawZones)
+		return;
+
+	for(unsigned int i=0;i<m_kZones.size();i++) {
+		if(m_kZones[i]->GetUpdateStatus() & UPDATE_STATIC)
+			m_pkRender->DrawColorBox(m_kZones[i]->GetPos(),Vector3::ZERO, Vector3(1,1,1),Vector3(0,1,0));
+		else 
+			m_pkRender->DrawColorBox(m_kZones[i]->GetPos(),Vector3::ZERO, Vector3(1,1,1),Vector3(1,0,0));
+		}
+}
 
 

@@ -57,6 +57,9 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
+			
+	g_ZFObjSys.Register_Cmd("linkobject",FID_LINKOBJECT,this);			
+	g_ZFObjSys.Register_Cmd("unlinkobject",FID_UNLINKOBJECT,this);			
 
 	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
 //	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
@@ -586,6 +589,19 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_NEXTOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
 		case FID_PREVOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
+		
+		case FID_LINKOBJECT:	
+			if(m_pkCurentChild && m_pkCurentParent) {
+				m_pkCurentChild->SetParent(m_pkCurentParent);
+				m_pkCurentParent = NULL;
+				}
+			break;
+
+		case FID_UNLINKOBJECT:	
+			if(m_pkCurentChild) {
+				m_pkCurentChild->AttachToClosestZone();
+				}
+			break;
 
 //		case FID_VFS_SAVE:	TestFS_Write();	break;
 //		case FID_VFS_LOAD:	TestFS_Read();	break;
@@ -953,6 +969,7 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;
 				m_pkGui->UpdatePropertybox();
 			}
+
 			if(pkInput->Pressed(KEY_U))
 			{
 				cout<<"updating object"<<endl;
@@ -963,6 +980,8 @@ void ZeroEdit::Input()
 					(*it)->Update();				
 				}				
 			}
+			if(pkInput->Pressed(KEY_M))
+				SelectParent();
 					
 			break;			
 	}
@@ -1077,11 +1096,11 @@ void ZeroEdit::DrawMarkers()
 	
 	pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
 	
-/*	
+	
 	if(m_pkCurentParent!=NULL){
-		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentParent->GetPos(),m_pkCurentParent->GetBoundingRadius()*2,pkTexMan->Load("file:../data/textures/parentmarker.tga",T_NOMIPMAPPING));	
+		pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_pkCurentParent->GetPos(),m_pkCurentParent->GetBoundingRadius()*2,pkTexMan->Load("file:../data/textures/parentmarker.tga",T_NOMIPMAPPING));	
 	}
-*/	
+
 
 	if(m_pkCurentChild!=NULL){
 		float size=1;

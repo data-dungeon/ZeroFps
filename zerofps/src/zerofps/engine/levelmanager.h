@@ -50,6 +50,8 @@ class ENGINE_API LevelManager : public ZFObject {
 		vector<Object*> 	m_kZones;
 
 		Object*				CreateHeightMapObject(HeightMap* m_pkMap);
+		
+		bool					m_bDrawZones;
 
 	public:
 		LevelManager();
@@ -90,6 +92,8 @@ class ENGINE_API LevelManager : public ZFObject {
 		void UpdateZones();
 		void EnableZone(int xp,int zp,Vector3 &kPos);
 		Object* GetClosestZone(Vector3 &kPos);
+
+		void DrawZones();
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
 };

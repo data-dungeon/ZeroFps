@@ -8,6 +8,7 @@
 ;				; commando should be executed.
 ;
 
+;				EDIT MENU
 
 [Menu_Edit]
 Title=Edit
@@ -34,12 +35,42 @@ Title=Delete
 Parent=Menu_Edit
 Cmd=delete
 
+;				MODIFY MENU
+[Menu_Modify]
+Title=Modify
+Parent=NULL
+Cmd=NULL
+
+[Menu_ModifyLink]
+Title=Link
+Parent=Menu_Modify
+Cmd=linkobject
+
+[Menu_ModifyUnLink]
+Title=Unlink
+Parent=Menu_Modify
+Cmd=unlinkobject
+
+;				DEBUG MENU
+[Menu_Debug]
+Title=Debug
+Parent=NULL
+Cmd=NULL
+
+
+[Menu_DebugSimStart]
+Title=Sim Start
+Parent=Menu_Debug
+Cmd=set e_runsim 1
+
+[Menu_DebugSimStop]
+Title=Sim Stop
+Parent=Menu_Debug
+Cmd=set e_runsim 0
 
 
 
-
-
-
+;				LOAD MENU
 [Menu_Load]
 Title=Load
 Parent=NULL

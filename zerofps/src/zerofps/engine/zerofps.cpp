@@ -49,6 +49,7 @@ ZeroFps::ZeroFps(void)
 	g_fMadLODScale = 		1.0;
 	g_iMadLODLock = 		0;
 	m_pkCamera = 			NULL;
+	m_bRunWorldSim	=		true;
 
 	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
@@ -64,6 +65,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
+	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_INT);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -245,6 +247,7 @@ void ZeroFps::Run_Client()
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();	
 	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+	m_pkLevelMan->DrawZones();
 
 	//update openal sound system			
 	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
@@ -274,12 +277,14 @@ void ZeroFps::Update_System()
 	{
 		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
-		//update all normal propertys
-		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-		m_pkObjectMan->UpdateGameMessages();
+		if(m_bRunWorldSim) {
+			//update all normal propertys
+			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+			m_pkObjectMan->UpdateGameMessages();
 
-		//update physicsengine
-		m_pkPhysEngine->Update();	
+			//update physicsengine
+			m_pkPhysEngine->Update();	
+			}
 
 		//delete objects
 		m_pkObjectMan->UpdateDelete();
@@ -557,8 +562,13 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
-	if(!m_bDevPagesVisible)
+	int page;
+
+	if(!m_bDevPagesVisible) {
+		for(page = 0; page <m_DevStringPage.size(); page++ )
+			m_DevStringPage[page].m_akDevString.clear();
 		return;
+		}
 
 	string strPageName;
 		
@@ -570,7 +580,7 @@ void ZeroFps::DrawDevStrings()
 
 	float fYOffset = 0.75;
 
-	for(int page = 0; page <m_DevStringPage.size(); page++ ) {
+	for(page = 0; page <m_DevStringPage.size(); page++ ) {
 		if(m_DevStringPage[page].m_bVisible == true) {
 			strPageName = "[" + m_DevStringPage[page].m_kName + "]";
 

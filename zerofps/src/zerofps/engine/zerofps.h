@@ -91,6 +91,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		float m_fSystemUpdateTime;
 		float m_fGameTime;
 		float m_fGameFrameTime;
+		int	m_bRunWorldSim;
+
 		
 		vector<string>	AppArguments;		
 		
