@@ -80,6 +80,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bActionMenuIsOpen		= false;
 	m_pkQuickBoard				= NULL;
 	m_pkInventDlg				= NULL;
+	m_pkSpellDlg				= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
 } 
@@ -614,6 +615,9 @@ bool MistClient::ShutDown()
 
 	if(m_pkQuickBoard)
 		delete m_pkQuickBoard;
+
+	if(m_pkSpellDlg)
+		delete m_pkSpellDlg;
 
 	return true; 
 }
@@ -1156,8 +1160,9 @@ void MistClient::CreateGuiInterface()
 	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
 
 	m_pkQuickBoard = new QuickBoard(this);
-
-	m_pkQuickBoard->AddQuickItem("apple"); 
+	m_pkQuickBoard->AddQuickItem("apple");
+	
+	m_pkSpellDlg = new SpellDlg(this);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
