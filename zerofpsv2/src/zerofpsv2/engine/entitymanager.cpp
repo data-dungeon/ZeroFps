@@ -78,6 +78,8 @@ EntityManager::EntityManager()
 	m_fSimTime					= 0;			
 	m_fSimTimeScale			= 1.0;	
 
+	m_iSendType					= ZF_NETTYPE_REL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
+
 	// Register Variables
 	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
 	RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
@@ -663,7 +665,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 {
 	m_OutNP.Clear();
-	m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 	m_OutNP.TargetSetClient(iClient);
 		
 	m_OutNP.Write((char) ZFGP_DELETEOBJECT);
@@ -742,7 +744,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 			m_pkNetWork->Send2(&m_OutNP);
 
 			m_OutNP.Clear();
-			m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL ZF_NETTYPE_REL
+			m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;	
 			m_OutNP.Write((char) ZFGP_OBJECTSTATE);
 			m_OutNP.TargetSetClient(iClient);
 			iPacketSize = 0;
@@ -834,7 +836,7 @@ void EntityManager::PackToClients()
 		m_pkWorldEntity->GetAllEntitys(&kObjects, true);
 
 		m_OutNP.Clear();
-		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 		m_OutNP.TargetSetClient(0);
 		
 		PackEntityToClient(0, kObjects,false);
@@ -852,7 +854,7 @@ void EntityManager::PackToClients()
 					
 			
 		m_OutNP.Clear();
-		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL ZF_NETTYPE_REL
+		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;	
 		m_OutNP.TargetSetClient(iClient);
 
 		//pack and send clients delete list
@@ -988,7 +990,7 @@ void EntityManager::GetStaticData(int iEntityID)
 	NetPacket NP;
 
 	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 	NP.Write((char) ZFGP_GETSTATICDATA);
 	NP.Write(&iEntityID,sizeof(iEntityID));
 	NP.Write(ZFGP_ENDOFPACKET);
@@ -1243,7 +1245,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 
 	NetPacket NP;
 	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 	NP.Write((char) ZFGP_REQOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
@@ -1265,7 +1267,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 
 	NetPacket NP;
 	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 	NP.Write((char) ZFGP_GIVEOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 

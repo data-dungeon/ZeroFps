@@ -173,6 +173,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		//system time 
 		void	UpdateSimTime();											//this is called every system update, to calculate the new sim time
 				
+		int	m_iSendType;												// Packet used to send entitymanger data.
+
 	public:
 		
 
