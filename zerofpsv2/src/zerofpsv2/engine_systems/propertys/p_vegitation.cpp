@@ -336,8 +336,10 @@ void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_Str(m_strMaterialFile);
 	
-	pkNetPacket->Write(&m_iAmount,sizeof(m_iAmount));
-	pkNetPacket->Write(&m_iSize,sizeof(m_iSize));	
+	pkNetPacket->Write(m_iAmount);
+	pkNetPacket->Write(m_iSize);	
+	pkNetPacket->Write(m_kScale);	
+	
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
@@ -349,8 +351,9 @@ void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	int oldamount = m_iAmount;
 	int oldsize = m_iSize;
 	
-	pkNetPacket->Read(&m_iAmount,sizeof(m_iAmount));
-	pkNetPacket->Read(&m_iSize,sizeof(m_iSize));	
+	pkNetPacket->Read(m_iAmount);
+	pkNetPacket->Read(m_iSize);
+	pkNetPacket->Read(m_kScale);			
 	
 	if(m_iAmount != oldamount || m_iSize != oldsize)
 	{

@@ -54,6 +54,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		
 	public:
 		P_Camera();
+		~P_Camera();
 	
 		void Update();
 

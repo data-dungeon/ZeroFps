@@ -424,8 +424,13 @@ void Camera::RenderView()
 	//if this camera is attached with any camera property run an update on that 
 	//property to make sure the camera position is up to date
 	if(m_pkCameraProp)
+	{
+		if(!m_pkEntityMan->GetEntityByID(m_iEntity))
+			cout<<"entity does not exist"<<endl;
+		
 		m_pkCameraProp->Update();
-						
+	}
+							
 	//first make this camera matrises the current ones
 	InitView();
 	

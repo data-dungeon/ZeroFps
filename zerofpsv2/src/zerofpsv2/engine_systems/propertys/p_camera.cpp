@@ -31,6 +31,10 @@ P_Camera::P_Camera()
 	m_strBone			=		"eye";
 } 
 
+P_Camera::~P_Camera()
+{
+	SetCamera(NULL);
+}
 
 void P_Camera::Update() 
 {
@@ -263,7 +267,7 @@ void P_Camera::OrthoMove(Vector3 kMove)
 
 void P_Camera::SetCamera(Camera *pkCamera) 
 {
-	//set old camera's entityID to -1
+	//set old camera's entityID to -1 and reset cameraproperty pointer
 	if(m_pkCamera)
 	{		
 		m_pkCamera->m_iEntity = -1;
@@ -273,7 +277,7 @@ void P_Camera::SetCamera(Camera *pkCamera)
 	//set new camera
 	m_pkCamera = pkCamera; 
 	
-	//update camera entity ID 
+	//update camera entity ID and prop pointer
 	if(m_pkCamera)
 	{
 		m_pkCamera->m_iEntity = m_pkEntity->GetEntityID();		
