@@ -674,10 +674,11 @@ void ZeroEd::OnIdle()
 void ZeroEd::RenderInterface(void)
 {
 	DrawSelectedEntity();
-	if(m_iEditMode == EDIT_HMAP) {
+	if(m_iEditMode == EDIT_HMAP) 
+	{
 		HeightMap* pkMap = SetPointer();
 		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
-		}
+	}
 
 	if(m_iEditMode == EDIT_ZONES) DrawZoneMarker(m_kZoneMarkerPos);
 	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)	DrawCrossMarker(m_kObjectMarkerPos);		
@@ -726,7 +727,7 @@ void ZeroEd::RenderInterface(void)
 	
 	//draw zone list if connected to a server
 	if(m_bRemoteEditing)
-		DrawZoneList();
+		m_pkEntityManager->DrawZones(&m_kNetworkZones);
 }
 
 HeightMap* ZeroEd::SetPointer()
