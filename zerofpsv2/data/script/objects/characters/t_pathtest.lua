@@ -1,0 +1,35 @@
+function Create()
+	
+	InitObject();
+		InitProperty("P_Mad");	
+			InitParameter("m_kMadFile","/data/mad/fwarrior.mad");
+			InitParameter("m_fScale","0.165");
+		InitProperty("P_Event");
+		InitProperty("P_CharStats");
+		InitProperty("P_PfPath");
+		SetParentObject();
+		SetReturnObject();
+end
+
+function Init()
+	SetAttribute("str", 200);
+	SetDefence ("fire", 5);
+	SetSkill ("ata", 20);
+	SetData("Name", "mu");
+	SetAttack("hej", 20);
+	SetAttack("svej", 10);
+
+	SetHeartRate(GetSelfID(),1);
+end
+
+function HeartBeat()
+	if HavePath(GetSelfID()) then
+		return
+	end
+
+	pos = GetObjectPos(GetSelfID());
+	pos[1] = pos[1] + Random(32)-16;
+	pos[3] = pos[3] + Random(32)-16;
+	
+	MakePathFind(GetSelfID(),pos);
+end
