@@ -219,8 +219,7 @@ void P_PfMesh::Update()
 				SetHmap(pkHmap);
 		}
 	}
-
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	else if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkAStar->m_bDrawNaviMesh)
 			DrawNaviMesh();

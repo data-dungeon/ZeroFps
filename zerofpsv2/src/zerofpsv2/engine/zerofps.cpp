@@ -367,6 +367,8 @@ void ZeroFps::UpdateDevPages()
 		
 		
 
+		
+	
 	if(m_iProfileTotalTime != 0)
 	{
 		//profiling
@@ -374,12 +376,12 @@ void ZeroFps::UpdateDevPages()
 		{
 			char temp[3];
 			temp[0] = '#';
-			temp[1] = int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0);
+			temp[1] = int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0);
 			temp[2] = '/0';		
-			DevPrintf("profile","%s : %dns / %dms / %d%%",	m_kProfileData[i].first.c_str(), int((m_kProfileData[i].second / m_fAvrageFps)*1000.0) , m_kProfileData[i].second, int(( float(m_kProfileData[i].second) / float(m_iProfileTotalTime) ) *100.0));			
+			DevPrintf("profile","%s : %dns / %dms / %d%%",	m_kProfileData[i].m_strName.c_str(), int((m_kProfileData[i].m_iTime / m_fAvrageFps)*1000.0) , m_kProfileData[i].m_iTime, int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0));			
 			DevPrintf("profile",temp);
 		}	
-	}
+	} 
 	
 }
 
@@ -450,11 +452,11 @@ void ZeroFps::Run_EngineShell()
 	}
    else
    {
-		StartProfileTimer("gui input");	
+		StartProfileTimer("s__input");	
 	
 			UpdateGuiInput();
 
-		StopProfileTimer("gui input");	
+		StopProfileTimer("s__input");	
    }
 
 	//update delete
@@ -488,9 +490,9 @@ void ZeroFps::Run_Client()
 		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
 	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	
-	StartProfileTimer("sound");
+	StartProfileTimer("s__Sound");
 	m_pkAudioSystem->Update();
-	StopProfileTimer("sound");
+	StopProfileTimer("s__Sound");
 }
 
 void ZeroFps::Update_System()
@@ -601,7 +603,7 @@ void ZeroFps::Update_System()
 
 void ZeroFps::Draw_EngineShell()
 {
-	StartProfileTimer("Render");					
+	StartProfileTimer("r_Render");					
 
 	//render cameras	
 	Draw_RenderCameras();
@@ -626,7 +628,7 @@ void ZeroFps::Draw_EngineShell()
 			m_pkConsole->Draw();
 
 			
-	StopProfileTimer("Render");				
+	StopProfileTimer("r_Render");				
 }
 
 void ZeroFps::MainLoop(void) 
@@ -655,14 +657,14 @@ void ZeroFps::MainLoop(void)
 			Run_EngineShell();
 			
 			//update server only systems			
-			StartProfileTimer("System");			
+			StartProfileTimer("s_System");			
 			if(m_bServerMode)
 				Run_Server();		
 				
 			//update client only systems
 			if(m_bClientMode)
 				Run_Client();		
-			StopProfileTimer("System");							
+			StopProfileTimer("s_System");							
 				
 			//render stuff			
 			Draw_EngineShell();			
@@ -721,14 +723,14 @@ void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
 
 void ZeroFps::Draw_RenderCameras()
 {
-	StartProfileTimer("Draw_RenderCameras");	
+	StartProfileTimer("r__RenderCameras");	
 
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{		
 		m_kRenderCamera[i]->RenderView();
 	}
 	
-	StopProfileTimer("Draw_RenderCameras");	
+	StopProfileTimer("r__RenderCameras");	
 }
 
 Camera* ZeroFps::GetRenderCamera(string strName)
@@ -768,9 +770,9 @@ void ZeroFps::Swap(void) {
 		m_kProfileData.clear();					
 		g_ZFObjSys.GetProfileTimers(&m_kProfileData);
 		m_iProfileTotalTime = g_ZFObjSys.GetTotalTime();		
-		g_ZFObjSys.ClearProfileTimers();	
+		g_ZFObjSys.ClearProfileTimers();			
 
-	}
+	} 
 	 
 		
 	

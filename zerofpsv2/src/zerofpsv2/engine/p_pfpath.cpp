@@ -73,7 +73,7 @@ void P_PfPath::RenderPath()
 
 void P_PfPath::Update()
 {
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER)) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER)) 
 	{
 		RenderPath();
 		return;

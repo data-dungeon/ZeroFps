@@ -160,9 +160,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iMaxPlayers;
 				
 		//profile information
-		vector<pair<string,int> > 	m_kProfileData;		
-		int								m_iProfileTotalTime;
-		
+		vector<TimerInfo > 	m_kProfileData;		
+		int						m_iProfileTotalTime;
+				
 		//materials
 		ZMaterial*	m_pkDevPageMaterial;
 		

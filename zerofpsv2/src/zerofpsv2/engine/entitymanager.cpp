@@ -407,7 +407,7 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 	//sort all propertys
 	if(bSort)
 		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-	
+
 		
 	//run updat ein all propertys
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++)
@@ -2554,10 +2554,10 @@ bool EntityManager::LoadWorld(string strLoadDir)
 
 void EntityManager::UpdateZoneSystem()
 {
-	StartProfileTimer("ZoneSystem");	
+	StartProfileTimer("s__ZoneSystem");	
 	UpdateTrackers();
 	UpdateZoneStatus();
-	StopProfileTimer("ZoneSystem");	
+	StopProfileTimer("s__ZoneSystem");	
 }
 
 void EntityManager::UpdateTrackers()

@@ -100,7 +100,7 @@ void Tcs::Update(float fAlphaTime)
 	if(m_kBodys.empty())
 		return;
 	
-	StartProfileTimer("tcs");				
+	StartProfileTimer("s__tcs");				
 		
 	float fStartTime 		= m_pkZeroFps->GetTicks();
 	float fRTime 			= fAlphaTime;
@@ -165,7 +165,7 @@ void Tcs::Update(float fAlphaTime)
 	ResetForces();
 	
 	
-	StopProfileTimer("tcs");			
+	StopProfileTimer("s__tcs");			
 }
 
 void Tcs::UpdateLineTests(float fAlphaTime) 

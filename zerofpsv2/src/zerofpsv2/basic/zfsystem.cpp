@@ -889,7 +889,7 @@ void ZFSystem::DontUseStopProfileTimer(const char* czName)
 	
 	if(pkTimer->m_iStartime == -1)
 	{
-		cout<<"WARNING: tried to stop , already stoped profile timer"<<endl;
+		cout<<"WARNING: tried to stop , already stoped profile timer:"<<czName<<endl;
 		return;
 	}
 
@@ -907,20 +907,20 @@ void ZFSystem::ClearProfileTimers()
 	m_iTotalTime = SDL_GetTicks(); 
 }
 
-void ZFSystem::GetProfileTimers(vector<pair<string,int> >* pkTimers)
+void ZFSystem::GetProfileTimers(vector<TimerInfo >* pkTimers)
 {
 	if(!m_bProfileEnabled)
 		return;
 
-	pair<string,int> kPair;
+	TimerInfo kTemp;
 	
 	map<string,ProfileTimer>::iterator it;
 	for(it = m_kTimers.begin(); it != m_kTimers.end(); it++ )
 	{
 		//cout<<(*it).first<< " : "<<(*it).second.m_iTotalTime<<endl;
-		kPair.first = (*it).first;
-		kPair.second = (*it).second.m_iTotalTime;
-		pkTimers->push_back( kPair );
+		kTemp.m_strName = 	(*it).first;
+		kTemp.m_iTime = 		(*it).second.m_iTotalTime;
+		pkTimers->push_back( kTemp );
 	}
 	
 }

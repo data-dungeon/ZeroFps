@@ -67,6 +67,13 @@ class BASIC_API ProfileTimer
 		}
 };
 
+class BASIC_API TimerInfo
+{
+	public:
+		string	m_strName;
+		int		m_iTime;
+};
+
 #define DECLARE_SINGLETON( TClass)	\
 	static TClass* pkInstance;		\
 	static TClass* GetInstance();	\
@@ -136,7 +143,7 @@ public:
 	void DontUseStartProfileTimer(const char* czName);
 	void DontUseStopProfileTimer(const char* czName);
 	void ClearProfileTimers();
-	void GetProfileTimers(vector<pair<string,int> >* pkTimers);
+	void GetProfileTimers(vector<TimerInfo >* pkTimers);
 	int GetTotalTime()					{	return SDL_GetTicks() - m_iTotalTime;	};
 	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
 	

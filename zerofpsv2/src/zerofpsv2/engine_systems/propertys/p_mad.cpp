@@ -44,6 +44,8 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 		
+	StartProfileTimer("r___mad");		
+		
 // TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
 // find lowpoly mesh, if exist
 
@@ -69,7 +71,6 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-		StartProfileTimer("p_mad");
 		
 		
 		DoAnimationUpdate();
@@ -77,7 +78,7 @@ void P_Mad::Update()
 		//cull spwhere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 		{
-			StopProfileTimer("p_mad");
+			StopProfileTimer("r___mad");
 			return;
 		}
 			
@@ -95,7 +96,8 @@ void P_Mad::Update()
 		UpdateBones();
 		
 		if(m_bIsVisible)
-		{		
+		{
+					
 			m_pkZShaderSystem->MatrixPush();
 				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
 				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkEntity->GetWorldRotM()));
@@ -119,14 +121,13 @@ void P_Mad::Update()
 			//	m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
 			//glPopMatrix();
 		}
-		
-		StopProfileTimer("p_mad");		
-		
+				
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
-		
-		
+				
 	}
+	
+	StopProfileTimer("r___mad");			
 }
 
 void P_Mad::DoAnimationUpdate()
@@ -398,12 +399,10 @@ bool P_Mad::LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY )
 	static Plane P;
 	static Vector3 k;
 
-	StartProfileTimer("P_Mad::LineVSSphere");		
 	
 	P.Set(kDir,kPos);	
 	if(!P.SphereInside( m_pkEntity->GetWorldPosV(),GetRadius()))
 	{
-		StopProfileTimer("P_Mad::LineVSSphere");				
 		return false;
 	}
 
@@ -417,9 +416,7 @@ bool P_Mad::LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY )
 	float cdis=c.Length();
 	float kdis=k.Length();
 	float Distance = float( sqrt((cdis*cdis)-(kdis*kdis)) );
-	
-	StopProfileTimer("P_Mad::LineVSSphere");		
-	
+		
 	return (Distance < GetRadius());	
 }
 

@@ -7,7 +7,8 @@
 
 void P_PSystem::Update()
 {
-	StartProfileTimer("P_PSystem");
+
+	StartProfileTimer("r___PSystem");
 
 	m_pkZShaderSystem->Push("P_PSystem::Update");
 	
@@ -47,7 +48,7 @@ void P_PSystem::Update()
 	
 	m_pkZShaderSystem->Pop();
 	
-	StopProfileTimer("P_PSystem");	
+	StopProfileTimer("r___PSystem");	
 }
 
 // ------------------------------------------------------------------------------------------

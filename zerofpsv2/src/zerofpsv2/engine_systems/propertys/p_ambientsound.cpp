@@ -14,7 +14,7 @@ P_AmbientSound::P_AmbientSound()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")); // för att kunna kolla om debugutprintning skall göras...
 
 	bNetwork = true;
-	m_iType=PROPERTY_TYPE_RENDER;
+	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	m_strSound = "";
@@ -77,7 +77,7 @@ string P_AmbientSound::GetSound()
 
 void P_AmbientSound::Update()
 {
-	StartProfileTimer("P_AmbientSound");
+	StartProfileTimer("s__AmbientSound");
 
 	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_CLIENT))
 	{
@@ -114,7 +114,7 @@ void P_AmbientSound::Update()
 	if(m_pkZeroFps->GetDebugGraph())
 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.1,1,Vector3(1,1,0),true);
 
-	StopProfileTimer("P_AmbientSound");		
+	StopProfileTimer("s__AmbientSound");		
 }
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )

@@ -5,7 +5,7 @@
 P_Ml::P_Ml()
 {
 	strcpy(m_acName,"P_Ml");		
-	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
+	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			

@@ -36,7 +36,7 @@ void P_WaterRender::SetTexture(const char* acTexture)
 
 void P_WaterRender::Update() 
 {	
-	StartProfileTimer("P_WaterRender");
+	StartProfileTimer("r___WaterRender");
 
 	m_fBlendValue = 1.0f; // Disable blend effect...
 
@@ -59,7 +59,7 @@ void P_WaterRender::Update()
 		
 	}
 	
-	StopProfileTimer("P_WaterRender");	
+	StopProfileTimer("r___WaterRender");	
 }
 
 void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )

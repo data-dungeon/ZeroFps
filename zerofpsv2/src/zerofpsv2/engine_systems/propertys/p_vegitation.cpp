@@ -81,7 +81,7 @@ void P_Vegitation::Update()
 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
 		return;
 
-	StartProfileTimer("P_Vegitation");	
+	StartProfileTimer("r___Vegitation");	
 							
 	if(!m_CheckedForHM)
 	{
@@ -167,7 +167,7 @@ void P_Vegitation::Update()
 	}
 
 
-	StopProfileTimer("P_Vegitation");	
+	StopProfileTimer("r___Vegitation");	
 
 /*	for(unsigned int i=0;i<m_akPositions.size();i += iStep)
 //	for(unsigned int i=0;i<m_akPositions.size();i++)

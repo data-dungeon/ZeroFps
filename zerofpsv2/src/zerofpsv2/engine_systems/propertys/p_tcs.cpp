@@ -102,8 +102,7 @@ void P_Tcs::Update()
 			}
 		}
 	}
-	
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	else if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkTcs->GetDebugGraph() != 0)
 			Draw();

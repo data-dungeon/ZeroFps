@@ -65,7 +65,7 @@ void P_SkyBoxRender::SetRotate(Vector3 kRotate)
 
 void P_SkyBoxRender::Update()
 {	
-	StartProfileTimer("P_SkyBoxRender");
+	StartProfileTimer("r___SkyBoxRender");
 
 	//return;
 	// Dvoid
@@ -76,7 +76,7 @@ void P_SkyBoxRender::Update()
 	else
 		m_pkRender->DrawSkyBox(m_pkZeroFps->GetCam()->GetPos(),m_kHead,m_iHor,m_iTop);
 	
-	StopProfileTimer("P_SkyBoxRender");
+	StopProfileTimer("r___SkyBoxRender");
 }
 
 Property* Create_SkyBoxRenderProperty()

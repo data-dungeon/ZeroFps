@@ -311,7 +311,7 @@ bool ZGui::Render(int fps)
 	if(!m_bRenderEnabled)
 		return true;
 
-	StartProfileTimer("gui render");		
+	StartProfileTimer("r__Gui");		
 		
 	m_pkRenderer->StartRender(m_bClearScreen);
 	
@@ -377,7 +377,7 @@ bool ZGui::Render(int fps)
 
 	m_pkRenderer->EndRender(); 
 
-	StopProfileTimer("gui render");	
+	StopProfileTimer("r__Gui");	
 	
 	return true;
 }

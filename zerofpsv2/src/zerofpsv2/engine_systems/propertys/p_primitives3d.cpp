@@ -24,7 +24,6 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 
 void P_Primitives3D::Update() 
 {
-	StartProfileTimer("P_Primitives3D");
 
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
@@ -60,7 +59,6 @@ void P_Primitives3D::Update()
 		break;
 	}
 	
-	StopProfileTimer("P_Primitives3D");
 /*
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 //	glDisable(GL_LIGHTING);
