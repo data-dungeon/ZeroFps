@@ -507,14 +507,11 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 	if(iNetID == -1)
 		return NULL;
 
-//	int bla = 0;
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->iNetWorkID == iNetID)
 		{	
-//			cout<<"BLA:"<<bla<<endl;
 			return (*it);
 		}
-//		bla++;
 	}
 	
 
