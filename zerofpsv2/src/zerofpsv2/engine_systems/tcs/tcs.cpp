@@ -1306,7 +1306,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
-//	float fMinDist = 0.1;
+//	float fMinDist = 0.2;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
@@ -1314,7 +1314,7 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 		{
 			m_kLastTestNormal = -pkPlane->m_kNormal;		
 			return true;
-			/*
+/*			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
@@ -1329,11 +1329,38 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			}
 			else
 			{
-				m_kLastTestNormal = -pkPlane->m_kNormal;
+				Vector3 L = (*pkPos1 - *pkPos2);
+			
+				Vector3 n1 = L.Cross(pkPolygon[0] - pkPolygon[1]).Unit();
+				Vector3 n2 = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
+				Vector3 n3 = L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
+											
+				float f1 = L.Proj(n1).Length();
+				float f2 = L.Proj(n2).Length();
+				float f3 = L.Proj(n3).Length();
+				
+				
+				if(f1 < f2 && f1 < f3)
+				{
+					//cout<<"f1 is closest"<<endl;
+					m_kLastTestNormal = -L.Cross(pkPolygon[0] - pkPolygon[1]).Unit();					
+				}
+				if(f2 < f1 && f2 < f3)
+				{
+					//cout<<"f2 is closest"<<endl;
+					m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
+				}
+				if(f3 < f1 && f3 < f2)
+				{
+					//cout<<"f3 is closest"<<endl;
+					m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
+				}	
+					
+				//m_kLastTestNormal = -pkPlane->m_kNormal;
 				//m_kLastTestNormal.Set(0,0,0);
 				
 				//cout<<"EDGE:"<<endl;
-				m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
+				//m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				
 				//m_kLastTestNormal = ( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();

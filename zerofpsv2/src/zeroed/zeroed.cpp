@@ -74,7 +74,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	// Set Default values
 	m_bEditSun		= false;
 	m_bSoloMode     = true;
-	m_bPlaceObjectsOnGround = true;
+	m_bPlaceObjectsOnGround = false;
 
 	// Register Variables
 	

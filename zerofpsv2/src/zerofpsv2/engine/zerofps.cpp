@@ -1046,6 +1046,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void ZeroFps::StartServer(bool bClient,bool bNetwork,string strServerName)
 {
+	//reset all first
+	StopAll();
+	
 	if(bNetwork)
 		m_pkNetWork->ServerStart();
 	
@@ -1058,6 +1061,9 @@ void ZeroFps::StartServer(bool bClient,bool bNetwork,string strServerName)
 
 void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,int iPort)
 {
+	//reset all first
+	StopAll();
+
 	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
 	
 	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str());
