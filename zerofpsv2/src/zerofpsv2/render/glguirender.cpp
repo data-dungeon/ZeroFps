@@ -768,3 +768,12 @@ bool GLGuiRender::RenderRects(vector<tRGBRect>& akRects)
 
 	return true;
 }
+
+
+
+
+
+
+
+
+

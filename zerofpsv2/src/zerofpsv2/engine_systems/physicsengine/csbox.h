@@ -35,8 +35,8 @@ class ENGINE_SYSTEMS_API CSBox : public CollisionShape
 	
 		bool TestInside(Vector3 kPos1,Vector3 kPos2,float fR);
 
-		Vector3& Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
-		bool Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
+		Vector3& Closest(Vector3 kCurPos,Vector3& OPos1,Vector3& OPos2);
+		bool Closer(Vector3 kCurPos,Vector3& OPos1,Vector3& OPos2);
 };
 
 

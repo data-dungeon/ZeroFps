@@ -1159,8 +1159,8 @@ void HeightMap::GenerateTextures() {
 
 Point HeightMap::GetSqrFromPos(Vector3 pos)
 {
-	int iSquareX = m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
-	int iSquareY = m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE);
+	int iSquareX = int(m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE));
+	int iSquareY = int(m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE));
 
 	return Point(iSquareX,iSquareY);
 }

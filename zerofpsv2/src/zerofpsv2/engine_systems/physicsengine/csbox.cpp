@@ -388,7 +388,7 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	if(inside)
 	{
-		fDist = abs(fDist);	// CHECK-ME: Dvoid - Ska det vara fabs här?
+		fDist = fabs(fDist);	// CHECK-ME: Dvoid - Ska det vara fabs här?
 //		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
 //		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
 		
@@ -406,7 +406,7 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 
 
 
-Vector3& CSBox::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
+Vector3& CSBox::Closest(Vector3 kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
 	if( (kCurPos-OPos1).Length() < (kCurPos-OPos2).Length())
 		return OPos1;
@@ -414,7 +414,7 @@ Vector3& CSBox::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 		return OPos2;
 }
 
-bool CSBox::Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
+bool CSBox::Closer(Vector3 kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
 	if( (kCurPos-OPos2).Length() < (kCurPos-OPos1).Length())
 		return true;

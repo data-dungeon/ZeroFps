@@ -241,7 +241,7 @@ class ENGINE_API Object
 		inline bool& GetSave()		{	return m_bSave;	};
 		inline string& GetName()	{	return m_kName;	};
 		inline Vector3& GetPos()	{	return m_kPos;		};
-		inline Vector3& GetRot()	{	return m_kRot;		};
+		inline Vector3 GetRot()	{	return m_kRot;		};
 		inline Vector3& GetVel()	{	return m_kVel;		};		
 		inline Vector3& GetAcc()	{	return m_kAcc;		};
 		inline float& GetRadius()	{	return m_fRadius;		};		

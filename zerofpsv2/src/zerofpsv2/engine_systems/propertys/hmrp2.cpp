@@ -69,3 +69,8 @@ void HMRP2::SetPolyMode(PolygonMode eMode)
 {
 	m_pkRender->m_eLandscapePolygonMode = eMode;
 }
+
+
+
+
+

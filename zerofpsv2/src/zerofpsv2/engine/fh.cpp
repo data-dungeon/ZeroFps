@@ -117,7 +117,7 @@ void DebugGraph::DrawGraph(int x, int y)
 	for(;;) {
 		fSize = GetSampleHeight(m_kValues[iValueIndex]);
 		glVertex3i(m_iWidth - iOffset,0,0);
-		glVertex3i(m_iWidth - iOffset,fSize,0);
+		glVertex3i(m_iWidth - iOffset,(int)fSize,0);
 		iOffset++;
 		if(iOffset >= m_iWidth)
 			break;
