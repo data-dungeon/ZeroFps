@@ -113,6 +113,7 @@ class ZeroRTS :public Application {
 		void RegisterActions();		
 		void RegisterPropertys();
 		void Input();
+		void SetupGUI();
 		void OnServerStart(void);
 		void OnClientStart(void);
 		

@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "p_unitmoveai.h"
-
+#include "tileengine.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -126,8 +126,6 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			
 			return true;*/
 
-			printf("APAN MOVES\n");
-
 			int iX=-1, iY=-1;
 			if(!m_pkPathFind->GetNextStep(iX,iY))
 			{
@@ -135,6 +133,16 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			}
 			if(!(iX==-1&&iY==-1))
 			{
+				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
+					
+				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
+				{
+					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+					m_pkPathFind->Reset();
+					return NULL;
+				}
+				
+				
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
 
@@ -144,6 +152,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				float fY = m_pkMap->Height(fX,fZ);
 
 				m_pkObject->SetPos(Vector3(fX,fY,fZ));
+				m_pkObject->SetPos(Vector3(fX,fY,fZ));				
+				
+				TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
+				
 				return this;
 			}
 			else 

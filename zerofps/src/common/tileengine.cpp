@@ -1,5 +1,12 @@
 #include "tileengine.h"
 
+TileEngine* TileEngine::m_pkInstance = new TileEngine;		 
+
+TileEngine* TileEngine::GetInstance()
+{
+	return m_pkInstance;
+}
+
 
 TileEngine::TileEngine()
 {
@@ -205,6 +212,8 @@ void TileEngine::ClearUnits()
 
 void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
+	cout<<"adding unit on tile"<<endl;
+	
 	Point pos = GetSqrFromPos(kPos);
 		
 	int w = kSu->m_kInfo.m_cWidth;

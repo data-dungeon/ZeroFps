@@ -551,7 +551,7 @@ bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, 
 	// Är rutan i sig blockerad
 	if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
 		return true;
-
+/*
 	if( GetTerrainCost(iDestPosX+1, iDestPosY) == BLOCKED_VALUE
 		&& GetTerrainCost(iDestPosX, iDestPosY+1) == BLOCKED_VALUE
 		&& GetTerrainCost(iDestPosX-1, iDestPosY) == BLOCKED_VALUE
@@ -560,7 +560,7 @@ bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, 
 		printf("PathFind::ImpossibleToReach!\n"); 
 		return true;
 	}
-
+*/
 	return false;
 }
 

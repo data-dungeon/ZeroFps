@@ -26,13 +26,9 @@ void P_ClientInput::Update()
 
 void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
-	cout << "Jag hatar fisk" << endl;
-
 	if(m_bGod)	//if server's input
 	{
-		cout<<"GOD says"<<endl;
 		kCommand.m_cPlayerID = 255;
-		cout<<"bla:"<<(int)kCommand.m_cPlayerID<<endl;
 		m_kServerCommands.push_back(kCommand);
 	}
 	else

@@ -13,7 +13,7 @@ static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *p
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
-	m_pkTileEngine=new TileEngine();
+	m_pkTileEngine=TileEngine::m_pkInstance;
 
 	
 	m_pkMiniMap = NULL;
@@ -82,57 +82,8 @@ void ZeroRTS::Init()
 	//set fog timer
 	m_fFogTimer = pkFps->GetTicks();
 	
-	//gui bös
-	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
-	pkGui->ShowCursor(true);
-	SDL_ShowCursor(SDL_DISABLE);	
-
-	pkFps->m_bGuiMode = false;
-	pkFps->ToggleGui();
-
-	m_pkGuiBuilder = new GuiBuilder(pkTexMan, pkGui);
-	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
-
-	// load command icon names from file
-	if(pkIni->Open("cmdicons.txt", true))
-	{
-		vector<string> kNames;
-		pkIni->GetCommandStrings(&kNames);
-
-		for(unsigned int i=0; i<kNames.size(); i++)
-		{
-			m_pkUserPanel->m_kCmdIconNameMap.insert(
-				map<int,string>::value_type(i, kNames[i]));
-
-			m_pkUserPanel->m_kCmdIconIDMap.insert(
-				map<string,int>::value_type(kNames[i], i));
-
-			string szFileName = "file:../data/textures/cmdbuttons/";
-			szFileName += kNames[i];
-			szFileName += "_bnu.bmp";
-			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
-				kNames[i]+string("_bnu"));
-
-			szFileName = "file:../data/textures/cmdbuttons/";
-			szFileName += kNames[i];
-			szFileName += "_bnd.bmp";
-			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
-				kNames[i]+string("_bnd"));
-
-			szFileName = "file:../data/textures/cmdbuttons/";
-			szFileName += kNames[i];
-			szFileName += "_bnf.bmp";
-			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
-				kNames[i]+string("_bnf"));
-		}
-	}
-	else
-		printf("Failed to load command icon names!!!\n\n");
-
-	m_pkUserPanel->Create(100,100,NULL,NULL);
-	m_pkUserPanel->Open();
-
-	//pkInput->ToggleGrab();
+	//setup gui shit =P
+	SetupGUI();
 }
 
 void ZeroRTS::RegisterActions()
@@ -187,7 +138,7 @@ void ZeroRTS::OnIdle()
 			cout<<"Unit:"<<(*t->kUnits.begin())<<endl;
 
 	}
-*/	
+*/
 	
 /*	glDisable(GL_LIGHTING);
 		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
@@ -1081,4 +1032,60 @@ void ZeroRTS::SelectObjects(Vector3 p1, Vector3 p2)
 				AddSelectedObject(akAllObjs[i]->iNetWorkID);
 		}
 	}
+}
+
+
+void ZeroRTS::SetupGUI()
+{
+	//gui bös
+	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
+	pkGui->ShowCursor(true);
+	SDL_ShowCursor(SDL_DISABLE);	
+
+	pkFps->m_bGuiMode = false;
+	pkFps->ToggleGui();
+
+	m_pkGuiBuilder = new GuiBuilder(pkTexMan, pkGui);
+	m_pkUserPanel = new UserPanel(this, USERPANELPROC);
+
+	// load command icon names from file
+	if(pkIni->Open("cmdicons.txt", true))
+	{
+		vector<string> kNames;
+		pkIni->GetCommandStrings(&kNames);
+
+		for(unsigned int i=0; i<kNames.size(); i++)
+		{
+			m_pkUserPanel->m_kCmdIconNameMap.insert(
+				map<int,string>::value_type(i, kNames[i]));
+
+			m_pkUserPanel->m_kCmdIconIDMap.insert(
+				map<string,int>::value_type(kNames[i], i));
+
+			string szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnu.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnu"));
+
+			szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnd.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnd"));
+
+			szFileName = "file:../data/textures/cmdbuttons/";
+			szFileName += kNames[i];
+			szFileName += "_bnf.bmp";
+			m_pkGuiBuilder->AddSkin(pkTexMan->Load(szFileName.c_str(), 0), 
+				kNames[i]+string("_bnf"));
+		}
+	}
+	else
+		printf("Failed to load command icon names!!!\n\n");
+
+	m_pkUserPanel->Create(100,100,NULL,NULL);
+	m_pkUserPanel->Open();
+
+
 }

@@ -22,7 +22,6 @@ class COMMON_API Tile
 		list<int>	kUnits;		
 };
 
-
 class COMMON_API TileEngine 
 {
 	private:
@@ -35,12 +34,13 @@ class COMMON_API TileEngine
 		int				m_iSizeX,m_iSizeY;
 
 	public:
+		static TileEngine*		m_pkInstance;		
+		
 		TileEngine();
+		static TileEngine* GetInstance();
 		
 		void CreateMap();
-		
-		Tile* GetTile(int x,int y);
-		
+		Tile* GetTile(int x,int y);		
 		void Generate();
 		void GenerateHM(int x,int y,int w,int h);
 		
@@ -57,6 +57,7 @@ class COMMON_API TileEngine
 		Vector3 GetPosFromSqr(Point square);
 
 };
+
 
 #endif
 
