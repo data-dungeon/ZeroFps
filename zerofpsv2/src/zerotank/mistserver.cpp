@@ -107,6 +107,7 @@ void MistServer::Init()
 
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
+	pkGui->ShowCursor(false);
 
 	SDL_WM_SetCaption("MistServer", NULL);
 
@@ -127,6 +128,8 @@ void MistServer::Init()
 	pkInput->ToggleGrab(true);
 
  	pkFps->SetCamera(m_pkCamera);		
+
+	
 	
 	
 /*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
