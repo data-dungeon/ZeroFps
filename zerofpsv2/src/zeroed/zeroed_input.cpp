@@ -136,7 +136,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
 	NetPacket kNp;
 
-   if(m_pkInputHandle->VKIsDown("eventuse"))	
+   if(m_pkInputHandle->VKIsDown("eventuse")  && !DelayCommand())	
 	{
 		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);

@@ -518,7 +518,7 @@ Entity* EntityManager::CreateEntityFromScript(const char* acName)
 	}
 
 	//copy return entity pointer
-	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
+	Entity* pkReturnObj = ObjectManagerLua::g_kScriptState.g_pkReturnObject;
 	
 	//setup entity
 	pkReturnObj->m_strType	= &acName[pos];
@@ -2749,17 +2749,23 @@ void EntityManager::UpdateZoneStatus()
 
 bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams)
 {
-	//set self id before calling the funktion
-	ObjectManagerLua::g_iCurrentObjectID = pkEntity->m_iEntityID;	
-	
 	//cout << "Calling Func: " << acFunction << endl;
 	if(pkEntity->m_bZone)
 		return false;
 
+	ObjectManagerLua::Push();
+	//set self id before calling the funktion
+	ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = pkEntity->m_iEntityID;	
+
+	bool bRes;
+
 	if(pkParams)
-		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
+		bRes = m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
 	else
-		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
+		bRes =  m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
+	
+	ObjectManagerLua::Pop();
+	return bRes;
 }
 
 

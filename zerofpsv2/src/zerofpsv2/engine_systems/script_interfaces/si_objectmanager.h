@@ -16,6 +16,19 @@ class Vector3;
 */
 namespace ObjectManagerLua
 {
+	class ScriptState
+	{
+	public:
+		Entity*			 g_pkLastObject;
+		Entity*			 g_pkLastParent;
+		Property*		 g_pkLastProperty;
+		Entity*			 g_pkReturnObject;
+		
+		int				 g_iCurrentObjectID;
+		int				 g_iCurrentPCID;
+
+	};
+
 	Vector3 ENGINE_SYSTEMS_API GetVectorArg(lua_State* pkLua, int iIndex);
 
 	void ENGINE_SYSTEMS_API Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript);
@@ -26,6 +39,8 @@ namespace ObjectManagerLua
 	extern ENGINE_SYSTEMS_API ZFScriptSystem* 	g_pkScript;
 	extern ENGINE_SYSTEMS_API EntityManager*	g_pkObjMan;
 	
+	extern ENGINE_SYSTEMS_API	ScriptState	g_kScriptState;
+	/*
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObject;
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParent;
 	extern ENGINE_SYSTEMS_API	Property*	g_pkLastProperty;
@@ -39,6 +54,7 @@ namespace ObjectManagerLua
 
 	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
 	extern ENGINE_SYSTEMS_API 	int			g_iCurrentPCID;
+	*/
 
 	// Create/Destory Entitys
 	int ENGINE_SYSTEMS_API CreateEntityLua(lua_State* pkLua);							// (strName, kPosition)

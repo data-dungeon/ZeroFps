@@ -111,11 +111,16 @@ void P_Primitives3D::Load(ZFIoInterface* pkPackage,int iVersion)
 
 vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(2);
 
 	kReturn[0].kValueName="Radius";
 	kReturn[0].iValueType=VALUETYPE_FLOAT;
 	kReturn[0].pkValue=(void*)&m_fRadius;
+
+	kReturn[1].kValueName = "color";
+	kReturn[1].iValueType = VALUETYPE_VECTOR3;
+	kReturn[1].pkValue    = (void*)&m_kColor;
+
 
 	return kReturn;
 };

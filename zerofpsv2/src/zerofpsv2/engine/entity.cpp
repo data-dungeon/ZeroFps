@@ -1927,10 +1927,10 @@ bool Entity::SendObjectClickEvent(const char* acType,int iCallerObject )
 	if(GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		ObjectManagerLua::g_iCurrentObjectID = GetEntityID();
+		ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = GetEntityID();
 		
 		//set caller id
-		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+		ObjectManagerLua::g_kScriptState.g_iCurrentPCID = iCallerObject;
 
 
 		vector<ScriptFuncArg> args(1);
@@ -1955,10 +1955,10 @@ bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObje
 	if(GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		ObjectManagerLua::g_iCurrentObjectID = GetEntityID();
+		ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = GetEntityID();
 		
 		//set caller id
-		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+		ObjectManagerLua::g_kScriptState.g_iCurrentPCID = iCallerObject;
 
 		vector<ScriptFuncArg> args(4);
 		args[0].m_kType.m_eType = tCSTRING;
@@ -2018,7 +2018,7 @@ int AddPropertyLua(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	g_pkLastProperty = pkObject->AddProperty(acName);
+	ObjectManagerLua::g_kScriptState.g_pkLastProperty = pkObject->AddProperty(acName);
 	return 1;
 }		
 
@@ -2095,7 +2095,7 @@ int SetParameterLua(lua_State* pkLua)
 */
 int GetObjectTypeLua(lua_State* pkLua)
 {
-	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	int iId = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
 	
 	//get id
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
@@ -2121,7 +2121,7 @@ int GetObjectTypeLua(lua_State* pkLua)
 */
 int GetObjectNameLua(lua_State* pkLua)
 {
-	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	int iId = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
 	
 	//get id
 	if(g_pkScript->GetNumArgs(pkLua) == 1)

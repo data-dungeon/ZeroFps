@@ -6,6 +6,7 @@
 #include "../propertys/p_tcs.h"
 #include "../propertys/p_scriptinterface.h"
 #include "../script_interfaces/si_objectmanager.h" 
+#include <stack> 
 
 using namespace ObjectManagerLua;
 
@@ -15,24 +16,14 @@ using namespace ObjectManagerLua;
 class SIEntityManger { };
 
 
+
 namespace ObjectManagerLua
 {
 ZFScriptSystem* g_pkScript;
 EntityManager*  g_pkObjMan;
 
-Entity*			 g_pkLastObject;
-Entity*			 g_pkLastParent;
-Property*		 g_pkLastProperty;
-Entity*			 g_pkReturnObject;
-
-Entity*			 g_pkLastParentBak;
-Property*		 g_pkLastPropertyBak;
-Entity*			 g_pkReturnObjectBak;
-Entity*			 g_pkLastObjectBak;
-
-int				g_iCurrentObjectID;
-int				g_iCurrentPCID;
-int				g_iCurrentObjectBak;
+ScriptState				g_kScriptState;
+stack<ScriptState>	g_kScriptStateStack;
 
 Vector3 GetVectorArg(lua_State* pkLua, int iIndex)
 {
@@ -54,8 +45,8 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	
-	g_iCurrentObjectID = -1;
-	g_iCurrentPCID     = -1;
+	g_kScriptState.g_iCurrentObjectID = -1;
+	g_kScriptState.g_iCurrentPCID     = -1;
 
 	Reset();
 		
@@ -91,30 +82,26 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 void Reset()
 {
-	g_pkLastObject   = NULL;
-	g_pkLastProperty = NULL;
-	g_pkLastParent   = NULL;
-	g_pkReturnObject = NULL;
+	g_kScriptState.g_pkLastObject			= NULL;
+	g_kScriptState.g_pkLastParent			= NULL;
+	g_kScriptState.g_pkLastProperty		= NULL;
+	g_kScriptState.g_pkReturnObject		= NULL;
+	g_kScriptState.g_iCurrentObjectID	= -1;
+	g_kScriptState.g_iCurrentPCID			= -1;
 }
 
 void Push()
 {
-	g_iCurrentObjectBak  = g_iCurrentObjectID;
-	g_pkLastPropertyBak	= g_pkLastProperty;
-	g_pkLastParentBak		= g_pkLastParent;
-	g_pkReturnObjectBak	= g_pkReturnObject;
-	g_pkLastObjectBak    = g_pkLastObject;
-
+	g_kScriptStateStack.push( g_kScriptState );	
 	Reset();
 }
 
 void Pop()
 {
-	g_iCurrentObjectID   = g_iCurrentObjectBak;
-	g_pkLastProperty		= g_pkLastPropertyBak;
-	g_pkLastParent			= g_pkLastParentBak;
-	g_pkReturnObject		= g_pkReturnObjectBak;
-	g_pkLastObject			= g_pkLastObjectBak;
+	ZFAssert( !g_kScriptStateStack.empty(), "Trying to Pop a empty Script State");
+
+	g_kScriptState = g_kScriptStateStack.top();
+	g_kScriptStateStack.pop();
 }
 
 /**	\fn CreateEntity( Template, Position)
@@ -206,23 +193,23 @@ int InitObjectLua(lua_State* pkLua)
 		char acName[256];
 		g_pkScript->GetArg(pkLua, 0, acName);
 		
-		g_pkLastObject = g_pkObjMan->CreateEntityFromScript(acName);
-		g_pkScript->AddReturnValue( pkLua, g_pkLastObject->GetEntityID() );
+		g_kScriptState.g_pkLastObject = g_pkObjMan->CreateEntityFromScript(acName);
+		g_pkScript->AddReturnValue( pkLua, g_kScriptState.g_pkLastObject->GetEntityID() );
 		
 		//set return object of there is none
-		if(!g_pkReturnObject)
-			g_pkReturnObject = g_pkLastObject;
+		if(!g_kScriptState.g_pkReturnObject)
+			g_kScriptState.g_pkReturnObject = g_kScriptState.g_pkLastObject;
 		
 		return 1;
 	}
 		
 	//else create an empty object
-	g_pkLastObject = g_pkObjMan->CreateEntity();
-	g_pkScript->AddReturnValue( pkLua, g_pkLastObject->GetEntityID() );
+	g_kScriptState.g_pkLastObject = g_pkObjMan->CreateEntity();
+	g_pkScript->AddReturnValue( pkLua, g_kScriptState.g_pkLastObject->GetEntityID() );
 	
 	//set return object of there is none	
-	if(!g_pkReturnObject)
-		g_pkReturnObject = g_pkLastObject;
+	if(!g_kScriptState.g_pkReturnObject)
+		g_kScriptState.g_pkReturnObject = g_kScriptState.g_pkLastObject;
 	
 	return 1;
 }	
@@ -236,7 +223,7 @@ int InitObjectLua(lua_State* pkLua)
 */
 int InitPropertyLua(lua_State* pkLua)
 {
-	if(g_pkLastObject == NULL)
+	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 	
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -245,7 +232,7 @@ int InitPropertyLua(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 0, acName);
 
-	g_pkLastProperty = g_pkLastObject->AddProperty(acName);
+	g_kScriptState.g_pkLastProperty = g_kScriptState.g_pkLastObject->AddProperty(acName);
 	return 1;
 }		
 
@@ -260,7 +247,7 @@ int InitPropertyLua(lua_State* pkLua)
 */
 int InitParameterLua(lua_State* pkLua)
 {
-	if(g_pkLastProperty == NULL)
+	if(g_kScriptState.g_pkLastProperty == NULL)
 		return 0;
 	
 	if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -272,7 +259,7 @@ int InitParameterLua(lua_State* pkLua)
 	char acData[50];
 	g_pkScript->GetArgString(pkLua, 1, (char*)acData);
 	
-	if(!g_pkLastProperty->SetValue((string)acName,(string)acData))
+	if(!g_kScriptState.g_pkLastProperty->SetValue((string)acName,(string)acData))
 		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
 	return 0;
 }	
@@ -283,13 +270,13 @@ int InitParameterLua(lua_State* pkLua)
 */
 int AttachToParent(lua_State* pkLua)
 {
-	if(!g_pkLastObject)
+	if(!g_kScriptState.g_pkLastObject)
 		return 0;
 		
-	if(!g_pkLastParent)
+	if(!g_kScriptState.g_pkLastParent)
 		return 0;
 
-	g_pkLastObject->SetParent(g_pkLastParent);
+	g_kScriptState.g_pkLastObject->SetParent(g_kScriptState.g_pkLastParent);
 	
 	//cout<<"Attaching object to parent"<<endl;
 	
@@ -302,10 +289,10 @@ int AttachToParent(lua_State* pkLua)
 */
 int SetParentObjectLua(lua_State* pkLua)
 {
-	if(!g_pkLastObject)
+	if(!g_kScriptState.g_pkLastObject)
 		return 0;
 	
-	g_pkLastParent = g_pkLastObject;
+	g_kScriptState.g_pkLastParent = g_kScriptState.g_pkLastObject;
 
 	//cout<<"setting parent"<<endl;
 
@@ -318,11 +305,11 @@ int SetParentObjectLua(lua_State* pkLua)
 */
 int SetReturnObjectLua(lua_State* pkLua)
 {
-	if(g_pkLastObject == NULL)
+	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 	
-	g_pkReturnObject = g_pkLastObject;
-	g_iCurrentObjectID = g_pkReturnObject->GetEntityID();
+	g_kScriptState.g_pkReturnObject = g_kScriptState.g_pkLastObject;
+	g_kScriptState.g_iCurrentObjectID = g_kScriptState.g_pkReturnObject->GetEntityID();
 
 	return 0;
 }
@@ -333,10 +320,10 @@ int SetReturnObjectLua(lua_State* pkLua)
 
 int HaveRelativOriLua(lua_State* pkLua)
 {
-	if(g_pkLastObject == NULL)
+	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 	
-	g_pkLastObject->SetRelativeOri(true);
+	g_kScriptState.g_pkLastObject->SetRelativeOri(true);
 	return 0;
 }
 //----end of create
@@ -351,7 +338,7 @@ int HaveRelativOriLua(lua_State* pkLua)
 */
 int SetLocalPosLua(lua_State* pkLua)
 {
-	if(g_pkLastObject == NULL)
+	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 
 	if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -363,7 +350,7 @@ int SetLocalPosLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, &y);
 	g_pkScript->GetArg(pkLua, 2, &z);
 	
-	g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
+	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
 	
 	return 0;
 }
@@ -373,7 +360,7 @@ int SetLocalPosLua(lua_State* pkLua)
 
 int SIGetSelfIDLua(lua_State* pkLua)
 {
-	g_pkScript->AddReturnValue(pkLua,g_iCurrentObjectID);
+	g_pkScript->AddReturnValue(pkLua,g_kScriptState.g_iCurrentObjectID);
 	return 1;
 }
 
@@ -502,7 +489,7 @@ int SendEventLua(lua_State* pkLua)
 	
 	char acEvent[128];
 	g_pkScript->GetArgString(pkLua, 1, acEvent);
-	g_pkObjMan->SendMsg(string(acEvent), g_iCurrentObjectID, iTargetEntity);
+	g_pkObjMan->SendMsg(string(acEvent), g_kScriptState.g_iCurrentObjectID, iTargetEntity);
 	return 0;
 }
 
