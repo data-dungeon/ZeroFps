@@ -3,6 +3,7 @@
 #include "../basic/basicconsole.h"
 #include "../engine_systems/common/psystem.h"
 #include "../engine/psystemmanager.h"
+#include "../basic/globals.h"
   
 FILE* pkGlDumpLog;
   
@@ -1519,6 +1520,8 @@ void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 	kScreen.Save(szImageName ,false);
 }
 
+//char* BASIC_API BoolStr(bool bFlag);												//returns string "true" or "false" i think	
+
 char* BoolStr(bool bFlag)
 {
 	if(bFlag)
@@ -1526,6 +1529,7 @@ char* BoolStr(bool bFlag)
 	else
 		return "False";
 }
+
 
 void GlDump_IsEnabled(int iGlEnum, char* szName)
 {

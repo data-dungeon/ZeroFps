@@ -32,6 +32,8 @@ void BASIC_API StringReverse(char* czString)
 
 }
 
+
+
 void Gemens(char* aText) 
 {
 	int i=0;
