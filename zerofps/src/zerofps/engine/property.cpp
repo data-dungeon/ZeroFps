@@ -90,6 +90,9 @@ vector<string> Property::GetValueNames()
 
 string Property::GetValue(string kValueName)
 {
+//	if(HandleSetValue(kValueName, kValue))
+//		return;
+
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	string kBuffer;
 	if(!kTemp.empty())
@@ -100,11 +103,13 @@ string Property::GetValue(string kValueName)
 			if( kValueName == kItor->kValueName)
 			{	
 				char pk_chBuffer[50];
+				int  iDecimal, iSign;
+				string kBuffer1,kBuffer2;
+
 				switch(kItor->iValueType)
 				{	
 				case VALUETYPE_INT:
-					//itoa(*((int*)kItor->pkValue),pk_chBuffer,10); 
-					IntToChar(pk_chBuffer,*((int*)kItor->pkValue));
+					itoa(*((int*)kItor->pkValue),pk_chBuffer,10); 
 					return (kBuffer=pk_chBuffer);
 					
 				case VALUETYPE_STRING:
@@ -114,16 +119,66 @@ string Property::GetValue(string kValueName)
 					if(*((bool*)kItor->pkValue)) 
 						return (kBuffer="true");
 						else return(kBuffer="false");
-					
-				
+								
 				case VALUETYPE_FLOAT:
-					int  iDecimal, iSign;
 					kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
 					kBuffer.insert(iDecimal, ".");
 					if(iSign !=0)
 						kBuffer.insert(0, "-");
 					return kBuffer; 
-				};	
+
+				case VALUETYPE_VECTOR3:
+					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer=kBuffer1;	
+					
+					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer+=kBuffer1;
+					
+					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer+=kBuffer1;
+					return kBuffer; 
+				
+				case VALUETYPE_VECTOR4:
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer=kBuffer1;	
+					
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer+=kBuffer1;
+					
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer+=kBuffer1;
+
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](3), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer+=kBuffer1;
+					return kBuffer; 
+				}
+			
 			}	
 		kItor++;
 		};
@@ -134,6 +189,9 @@ string Property::GetValue(string kValueName)
 
 bool Property::SetValue(string kValueName, string kValue)
 {
+	if(HandleSetValue(kValueName, kValue))
+		return true;
+
 vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
@@ -142,20 +200,22 @@ vector<PropertyValues> kTemp= GetPropertyValues();
 		{
 			if( kValueName == kItor->kValueName)
 			{
-				int iTemp;
-				float fTemp;	
-			
+				int iTemp1,iTemp2;
+				float fTemp1, fTemp2,fTemp3, fTemp4;
+				string kTemp1, kTemp2, kTemp3;
+				char *cStop;
+
 				switch(kItor->iValueType)
 				{	
 				case VALUETYPE_INT:
-					iTemp=atoi(kValue.c_str());
+					iTemp1=atoi(kValue.c_str());
 					if((kItor->fUpperBound)!=FLT_MAX)
-						if(iTemp>(kItor->fUpperBound))
+						if(iTemp1>(kItor->fUpperBound))
 							return false;
 					if((kItor->fLowerBound)!=FLT_MIN)
-						if(iTemp<(kItor->fLowerBound))
+						if(iTemp1<(kItor->fLowerBound))
 							return false;
-					*((int*)kItor->pkValue)=iTemp;
+					*((int*)kItor->pkValue)=iTemp1;
 					return true;
 					
 				case VALUETYPE_STRING:
@@ -177,24 +237,114 @@ vector<PropertyValues> kTemp= GetPropertyValues();
 					return true;
 				
 				case VALUETYPE_FLOAT:
-					char *stop;
-					fTemp= strtod( kValue.c_str(), &stop );
-					
+					fTemp1= strtod( kValue.c_str(), &cStop );
 					if((kItor->fUpperBound)!=FLT_MAX)
-						if(fTemp>(kItor->fUpperBound))
+						if(fTemp1>(kItor->fUpperBound))
 							return false;
 					if((kItor->fLowerBound)!=FLT_MIN)
-						if(fTemp<(kItor->fLowerBound))
+						if(fTemp1<(kItor->fLowerBound))
 							return false;
-					*((float*)kItor->pkValue)=fTemp; 
+					*((float*)kItor->pkValue)=fTemp1; 
 					return true;
-				};
+					
+				case VALUETYPE_VECTOR3:
+					if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
+						return false;		
+					kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
+					fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+					if((kItor->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+						if(fTemp1>(kItor->fUpperBound))	   // kollar om talet är högre än upperbound
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	//kollar lowerbound
+						if(fTemp1<(kItor->fLowerBound))
+							return false;
+
+					if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
+						return false;
+					kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
+					fTemp2= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp2>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp2<(kItor->fLowerBound))
+							return false;
+												
+					kTemp1=kValue.substr(iTemp2,kValue.length());
+					fTemp3= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp3>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp3<(kItor->fLowerBound))
+							return false;
+				
+					((Vector3*)kItor->pkValue)->Set(fTemp1,fTemp2,fTemp3); 
+					return true;
+				
+				case VALUETYPE_VECTOR4:
+					if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
+						return false;		
+					kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
+					fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+					if((kItor->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+						if(fTemp1>(kItor->fUpperBound))	   // kollar om talet är högre än upperbound
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	//kollar lowerbound
+						if(fTemp1<(kItor->fLowerBound))
+							return false;
+
+					if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
+						return false;
+					kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
+					fTemp2= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp2>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp2<(kItor->fLowerBound))
+							return false;
+												
+					if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
+						return false;
+					kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
+					fTemp3= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp2>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp2<(kItor->fLowerBound))
+							return false;
+
+					kTemp1=kValue.substr(iTemp1,kValue.length());
+					fTemp4= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp3>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp3<(kItor->fLowerBound))
+							return false;
+				
+					((Vector4*)kItor->pkValue)->Set(fTemp1,fTemp2,fTemp3, fTemp4); 
+					return true;
+				}
 			}	
 		kItor++;
 		};
 	};
 	return false;
 }
+
+bool Property::HandleSetValue( string kValueName ,string kValue )
+{
+	return false;
+}
+
+bool Property::HandleGetValue( string kValueName )
+{
+	return false;
+}
+
 
 Property::PropertyValues::PropertyValues()
 {

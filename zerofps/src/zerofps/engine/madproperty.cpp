@@ -32,11 +32,11 @@ MadProperty::MadProperty(Mad_Core* pkModell)
 }
 
 
-float fTestValue;
+//float fTestValue;
 
 void MadProperty::Update() 
 {
-	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
+/*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
 	
 	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
 		if(pkInput->Pressed(KEY_F7))
@@ -52,7 +52,7 @@ void MadProperty::Update()
 			fTestValue = 1.0;
 	
 		pkCore->SetControll("lucka",fTestValue);
-		}
+		}*/
 	
 	if(!pkCore)
 		return;
@@ -60,20 +60,18 @@ void MadProperty::Update()
 	UpdateAnimation(m_pkZeroFps->GetFrameTime());
 	
 	Vector4 sphere=m_pkObject->GetPos();
-	sphere.w = pkCore->GetRadius();
+	sphere.w = GetRadius();
 
 	if(!m_pkFrustum->SphereInFrustum(sphere))
 		return;
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
-//		glScalef(m_fScale,m_fScale,m_fScale);
-		glScalef(0.01,0.01,0.01);
-//		glScalef(0.1,0.1,0.1);
+		glScalef(m_fScale * 0.01, m_fScale * 0.01, m_fScale * 0.01);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
-		//glRotatef(m_pkObject->GetRot().x ,1,0,0);
+		glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		// FH's Föreningens årsmöte.
-			glRotatef(- (m_pkObject->GetRot().y - 90) ,0,1,0);
+		glRotatef(- (m_pkObject->GetRot().y - 90) ,0,1,0);
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 
@@ -109,15 +107,32 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 	SetScale(scale);
 }
 
+
 vector<Property::PropertyValues> MadProperty::GetPropertyValues()
 {
-	vector<Property::PropertyValues> kReturn(1);
+	vector<Property::PropertyValues> kReturn(2);
 
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
 	kReturn[0].pkValue    = (void*)&m_fScale;
 
+	kReturn[1].kValueName = "m_kMadFile";
+	kReturn[1].iValueType = VALUETYPE_STRING;
+	kReturn[1].pkValue    = (void*)&m_kMadFile;
+
+	string	m_kMadFile;
+
 	return kReturn;
+}
+
+bool MadProperty::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
+		SetBase(kValue.c_str());
+		return true;
+		}
+
+	return false;
 }
 
 Property* Create_MadProperty()

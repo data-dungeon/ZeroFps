@@ -13,6 +13,7 @@ using namespace std;
 class ENGINE_API MadProperty : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( string kValueName ,string kValue );
 	
 
 	public:
@@ -28,6 +29,8 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
+
+
 };
 
 Property* Create_MadProperty();

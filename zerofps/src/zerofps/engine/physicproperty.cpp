@@ -41,7 +41,7 @@ float PhysicProperty::GetBoundingRadius()
 	MadProperty* mp = static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
 	if(mp!=NULL)
 	{
-		return mp->pkCore->GetRadius();	
+		return mp->GetRadius();	
 	}
 	
 	ModelProperty* mop = static_cast<ModelProperty*>(m_pkObject->GetProperty("ModelProperty"));

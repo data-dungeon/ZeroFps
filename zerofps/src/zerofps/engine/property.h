@@ -57,14 +57,22 @@ class ENGINE_API Property
 			VALUETYPE_FLOAT,
 			VALUETYPE_BOOL,
 			VALUETYPE_STRING,
+			VALUETYPE_VECTOR3,
+			VALUETYPE_VECTOR4,
+
 		};
-	virtual vector<PropertyValues> GetPropertyValues();
+
+		virtual vector<PropertyValues> GetPropertyValues();
+		virtual bool HandleSetValue( string kValueName ,string kValue );
+		virtual bool HandleGetValue( string kValueName );
 
 	public:
+
 		bool SetValue(string kValueName ,string kValue);
 		string GetValue(string kValueName);
 		vector<string> GetValueNames();
 		
+
 		int m_iSortPlace;		//place in update queue
 		bool m_bSortDistance;
 		

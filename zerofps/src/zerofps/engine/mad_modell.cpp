@@ -12,10 +12,15 @@ void SetGameTime(void)
 Mad_Modell::Mad_Modell()
 {
 	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	this->fCurrentTime = 0;
-	this->iActiveAnimation = 0;
-	this->fLastUpdate = 0;
-	this->m_bLoop = 0;
+	fCurrentTime = 0;
+	iActiveAnimation = 0;
+	fLastUpdate = 0;
+	m_bLoop		= 0;
+	m_fScale	= 1.0;
+	m_bActive	= true;
+
+	pkCore = NULL;
+
 }
 
 Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
@@ -454,3 +459,10 @@ void Mad_Modell::DrawSkelleton()
 	glPopAttrib();
 }
 
+float Mad_Modell::GetRadius()
+{
+	if(!pkCore)
+		return 0;
+
+	return pkCore->GetRadius() * m_fScale;	
+}
