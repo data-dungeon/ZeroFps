@@ -589,7 +589,15 @@ void DarkMetropolis::Input()
 							{
 								m_fBulletTime = m_pkFps->m_pkObjectMan->GetGameTime();
 
-								StartSong("data/music/dm action.ogg");
+								int* pGunID; // Start action music only if a bullet have been shoot.
+								if(*(pGunID = pkCharacter->m_pkHand->GetItem(0,0)) != -1)
+								{
+									Entity* gun = m_pkObjectMan->GetObjectByNetWorkID(*pGunID);
+									P_DMGun* pkGun = (P_DMGun*) gun->GetProperty("P_DMGun"); 
+									if(pkGun && pkGun->HasAmmo() )
+										StartSong("data/music/dm action.ogg");	
+								}
+
 								//pkCharacter->Shoot (m_kPickPos);
 								
 								DMOrder kOrder;
