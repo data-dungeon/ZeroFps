@@ -222,13 +222,10 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_OPENMAD:
-			GetWnd("MadViewInfoWnd")->Hide();
-			GetWnd("AnimationFileTree")->Hide();
 			ShowWnd("SelectFileWnd", true);
 			break;
 
 		case FID_OBJECTROTATIONMODE:
-
 			m_iObjRotMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 
 			if(m_iObjRotMode != 0)
@@ -258,7 +255,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkZeroFps->m_iMadDraw ^= mode;
 			else
 				m_pkZeroFps->m_iMadDraw |= mode;
-
 			break;
 
 		case FID_CHANGE_BKCOLOR_INFOWND:
@@ -278,8 +274,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[2] = 0.0f;		
 			}
 
-			toogle = !toogle;
-			
+			toogle = !toogle;		
 			break;
 	}
 }
