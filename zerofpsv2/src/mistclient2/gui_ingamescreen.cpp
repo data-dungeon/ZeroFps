@@ -106,7 +106,17 @@ void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
 
 void MistClient::AddStringToChatBox(string strMsg)
 { 
+	const int ROW_BUFFER_SIZE = 50;
+
 	string strText	= string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
+
+	if(((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount() >= ROW_BUFFER_SIZE)
+	{
+		size_t pos = strText.find("\n");
+		if(pos != string::npos)
+			strText.erase(0, pos+1);
+	}
+
 	g_kMistClient.SetText("ChatTextbox",(char*) strText.c_str());
 
 	((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->UpdateText();
@@ -115,6 +125,8 @@ void MistClient::AddStringToChatBox(string strMsg)
 		((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 
 	m_pkAudioSys->StartSound("data/sound/gui/turn_page.wav");
+
+	
 }
 
 void MistClient::ResizeChatDlg(bool	bMakeBigger)
