@@ -53,7 +53,7 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		Vector3 m_kDir;
 		char m_acFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
 
-		int m_iID;
+		long m_iID;
 			
 	private:
 		ZFSoundRes* m_pkResource;
