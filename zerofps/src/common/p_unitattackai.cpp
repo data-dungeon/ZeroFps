@@ -102,6 +102,28 @@ AIBase* P_UnitAttackAI::UpdateAI()
 				
 			else
 			{
+				if(!m_pkUnitSystem)
+				{
+					Object* sio = m_pkObject->m_pkObjectMan->GetObject("A ServerInfoObject");
+					if(sio)
+						m_pkUnitSystem=static_cast<P_UnitSystem*>(sio->GetProperty("P_UnitSystem"));
+				}
+				
+				if(!m_pkUnitSystem)
+					return NULL;
+				
+				
+				Weapon* pkWep = m_pkUnitSystem->GetWeaponPointer((int)m_pkUnit->m_kInfo.m_Info2.m_cTeam,(int)m_pkUnit->m_kInfo.m_Info2.m_cWeapon);
+				if(pkWep)
+				{	
+					m_fRange = pkWep->fRange;				
+					m_fRange *=m_fRange;
+				} else
+				{
+					cout<<"Error while getting weapon"<<endl;
+					return NULL;
+				}
+			
 			
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
 				float TempDist = (kDistVec.x * kDistVec.x) + (kDistVec.y * kDistVec.y) + (kDistVec.z * kDistVec.z);
@@ -126,12 +148,6 @@ AIBase* P_UnitAttackAI::UpdateAI()
 						strcpy(TempCommand.m_acCommandName, "Stop");
 						//TempCommand.m_iTarget = m_pkObject->iNetWorkID;
 						m_pkAi = m_pkUnit->RunExternalCommand(&TempCommand);
-					}
-					if(!m_pkUnitSystem)
-					{
-						Object* sio = m_pkObject->m_pkObjectMan->GetObject("A ServerInfoObject");
-						if(sio)
-							m_pkUnitSystem=static_cast<P_UnitSystem*>(sio->GetProperty("P_UnitSystem"));
 					}
 					if(m_pkUnitSystem)
 					{

@@ -46,8 +46,8 @@ void P_UnitSystem::SetupSystems()
 		Gun80mm.afModifiers[1] =0.8;	
 		Gun80mm.afModifiers[2] =1.0;	
 		Gun80mm.afModifiers[3] =1.0;	
-		Gun80mm.fRange = 		  6;
-		Gun80mm.fFireRate =	  1;
+		Gun80mm.fRange = 		  20;
+		Gun80mm.fFireRate =	  0.5;
 		Gun80mm.iHit = 			FX_88MMHIT;
 		Gun80mm.iFire = 			FX_88MMFIRE;	
 	
@@ -59,8 +59,8 @@ void P_UnitSystem::SetupSystems()
 		HeavyMG.afModifiers[1] =0.5;	
 		HeavyMG.afModifiers[2] =0.3;	
 		HeavyMG.afModifiers[3] =0.5;	
-		HeavyMG.fRange = 		  3;
-		HeavyMG.fFireRate =	  5;
+		HeavyMG.fRange = 		  10;
+		HeavyMG.fFireRate =	  4;
 		HeavyMG.iHit = 			FX_HEAVYMGHIT;
 		HeavyMG.iFire = 			FX_88MMFIRE;	
 											
