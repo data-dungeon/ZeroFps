@@ -4,7 +4,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=32;	//grid size of lod tiles
-	m_iDetail=30;//height meens greater detail att longer range	
+	m_iDetail=25;//height meens greater detail att longer range	
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -236,13 +236,13 @@ void Render::Dot(float x,float y,float z) {
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	SetFont("file:../data/textures/text/console.bmp");
 
-	Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
+	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.2,2.2,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp"));
 	
-	Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
+	Print(Vector3(-0.90,-0.90,-1),Vector3(0,0,0),Vector3(.06,.06,.06),m_aCommand);		
 	
 	for(int i=0;i<22;i++) {
 		if((*m_kText)[i]!=NULL){
-			Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),(*m_kText)[i]);		
+			Print(Vector3(-0.90,-0.80+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
 		}
 	}
 }

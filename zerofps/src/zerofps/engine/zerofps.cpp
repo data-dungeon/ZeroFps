@@ -120,10 +120,10 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
   glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
-	glFrustum(-0.10,0.10,-0.10,0.10,0.10,700.0);				//
+//	glFrustum(-1.00,1.00,-1.00,1.00,1,700.0);				//
 	
 	//set camera mode
-	m_iCamMode=cam_look;
+	m_iCamMode=cam_look; 
 	m_kCamPos=new Vector3(0,0,0);
 	m_kCamRot=new Vector3(0,0,0);
 
