@@ -347,13 +347,20 @@ void Mad_Modell::LoadTextures()
 			SelectSubMesh(iSubM);
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-			sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
+			
+			sprintf(szFullTexName,"../data/material/%s.zmt",pkTexInfo->ucTextureName);
+
+			 m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
+
+//massa ond jimmy kod som richard kommenterat bort
+
+/*			sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
+			
 			if(pkTexInfo->bIsAlphaTest)
 				sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
 			else 
 				sprintf(szFullTexName, "data/textures/%s.bmp", pkTexInfo->ucTextureName);
-
-
+*/
 			/*pkTexInfo->bClampTexture	= false;
 			pkTexInfo->bIsAlphaTest		= false;
 			pkTexInfo->bTwoSided		= false;
@@ -379,9 +386,8 @@ void Mad_Modell::LoadTextures()
 
 	
 			// här har dvoid haxat lite			
-			// m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);			
 			
-			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);
+//			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);
 			}
 		}
 }
