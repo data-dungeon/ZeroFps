@@ -80,7 +80,8 @@ void P_PfPath::Update()
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
-	if(fdist < 0.2) {
+	if(fdist < 0.2) 
+	{
 		m_pkObject->SetWorldPosV(kGoal);
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
@@ -99,17 +100,25 @@ void P_PfPath::Update()
 			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 			if(pm)
 				pm->SetAnimation("run",0);
-
-			
-
+		
 		}
 
 		return;
-		}
+	}
 
 	kdiff.Normalize();
 	kPos += (kdiff * m_fSpeed) * m_pkFps->GetFrameTime();
 	m_pkObject->SetWorldPosV(kPos);
+
+
+	//set rot
+	Matrix4 kRotM;
+	kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
+	kRotM.Transponse();
+		
+	m_pkObject->SetLocalRotM(kRotM);
+		
+
 
 }
 
