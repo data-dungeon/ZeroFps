@@ -50,9 +50,12 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 	test[2].Set(-1,-1,1);
 */
 
+	Vector3 kPos1 = O2->GetPos();
+	Vector3 kPos2 = kOther->m_pkPP->m_kNewPos;
+
 	
 	bool hit=false;
-	Vector3 HitPos = Vector3(99999,99999,99999);
+//	Vector3 HitPos = Vector3(99999,99999,99999);
 	Vector3 HitNormal;
 
 
@@ -63,14 +66,15 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 		for(int j=0;j<3;j++)
 			data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
 	
-		if(TestPolygon(data,O2->GetPos() , kOther->m_pkPP->m_kNewPos,kOther->m_fRadius))
+		if(TestPolygon(data,kPos1,kPos2,kOther->m_fRadius))
 		{
-			if(Closer(O2->GetPos(),HitPos,m_kColPos))
+			if(Closer(O2->GetPos(),kPos2,m_kColPos))
 			{
 				//cout<<"Blub"<<endl;
 				hit=true;
-				HitPos=m_kColPos;
+				kPos2=m_kColPos;
 				HitNormal=m_kColNormal;
+				//i=0;
 			}
 		}
 	}
@@ -79,20 +83,22 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 		return NULL;
 		
 	
+	cout<<"Colliding with "<<m_pkFaces->size()<<" polygon mech"<<endl;
+	
 	if(kOther->m_pkPP->m_bGlide)
 	{
 		Vector3 NewPos=kOther->m_pkPP->m_kNewPos + (HitNormal * kOther->m_fRadius);
 
-		Vector3 mov=NewPos - HitPos;
+		Vector3 mov=NewPos - kPos2;
 		Vector3 mov2=HitNormal.Proj(mov);
-		HitPos=NewPos-mov2;
+		kPos2=NewPos-mov2;
 	}		
 
 	
 	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
-	tempdata->m_kPos2 = HitPos;
+	tempdata->m_kPos2 = kPos2;
 	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
 	tempdata->m_kNormal2.Set(0,1,0);
 	
@@ -159,6 +165,11 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 {
 	Plane side[3];
+	
+	if(kVerts[0] == kVerts[1] || 
+		kVerts[2] == kVerts[1] ||
+		kVerts[1] == kVerts[2])
+		return false;
 	
 	Vector3 V1 = kVerts[0] - kVerts[1];
 	Vector3 V2 = kVerts[2] - kVerts[0];	
