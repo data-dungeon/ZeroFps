@@ -37,10 +37,13 @@ function Create()
 end
 
 function FirstRun()
-	SISetHeartRate(SIGetSelfID(),4);
+
 end
 
 function Init()
+	SISetHeartRate(SIGetSelfID(),2);
+	
+	
 	SetMoveSpeed (SIGetSelfID(), 1.9);
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_ahh_that_fuckin_hurt.wav")
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_careful.wav")

@@ -1612,7 +1612,7 @@ void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 
 	SetZoneEnviroment(m_strActiveEnviroment.c_str());
 }
-
+ 
 
 void ZeroEd::DrawZoneMarker(Vector3 kPos)
 {
