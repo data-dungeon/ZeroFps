@@ -41,6 +41,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		EnvSetting*		m_pkZoneEnvSetting;
 		EnvSetting		m_kCurrentEnvSetting;
 		
+		ZMaterial*		m_pkSunMat;
+		ZMaterial*		m_pkSunFlareMat;
 		
 		int				m_iMusicID;
 		float				m_fFadeTimer, m_fGain;
@@ -58,7 +60,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		
 		void UpdateEnviroment();		
 		void DrawSky();
-
+		void DrawSun();
+		
 		void UpdateTime();
 								
 	public:

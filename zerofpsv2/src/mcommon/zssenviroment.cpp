@@ -179,7 +179,10 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		if(m_kIni.KeyExist("enviroment","sunposZ"))
 			m_kSunPos.z = m_kIni.GetFloatValue("enviroment","sunposZ");
 		
+		if(m_kIni.KeyExist("enviroment","sunflare"))
+			m_bSunFlare = m_kIni.GetBoolValue("enviroment","sunflare");
 		
+						
 		m_kIni.Close();
 		return true;
 	}
@@ -222,6 +225,8 @@ void EnvSetting::Clear()
 	m_kFogColor[1].Set(1,1,1,1);
 	m_kFogColor[2].Set(1,1,1,1);
 	m_kFogColor[3].Set(1,1,1,1);
+	
+	m_bSunFlare = true;
 }
 
 

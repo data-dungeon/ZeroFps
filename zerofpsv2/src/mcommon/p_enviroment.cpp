@@ -12,7 +12,7 @@ P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
 	
-	m_iType=			PROPERTY_TYPE_RENDER;
+	m_iType=			PROPERTY_TYPE_RENDER|PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iSide=			PROPERTY_SIDE_CLIENT;
 		
 	m_iSortPlace=	-10;	
@@ -43,6 +43,30 @@ P_Enviroment::P_Enviroment()
 	m_fPosOfDay = 						0;
 	m_fPosOfPart =						0;
 	
+	
+	
+	m_pkSunMat = new ZMaterial;
+		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
+		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunMat->GetPass(0)->m_bFog = 					false;		
+		m_pkSunMat->GetPass(0)->m_bDepthTest = 			true;		
+		m_pkSunMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
+
+	m_pkSunFlareMat = new ZMaterial;
+		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sunflare.tga");
+		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
+		m_pkSunFlareMat->GetPass(0)->m_bFog = 						false;		
+		m_pkSunFlareMat->GetPass(0)->m_bDepthTest = 				true;		
+		m_pkSunFlareMat->GetPass(0)->m_bDepthMask = 				false;				
+		m_pkSunFlareMat->GetPass(0)->m_bBlend = 					true;		
+		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;	
 	
 	/*
 	if(!m_pkEnviroment)
@@ -84,13 +108,20 @@ void P_Enviroment::Update()
 {
 	if(m_bEnabled)
 	{
-		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NORMAL)
-			return;
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NORMAL)
+		{
 		
-		UpdateTime();
-		
-		DrawSky();
-		UpdateEnviroment();
+			UpdateTime();
+			
+			DrawSky();
+			UpdateEnviroment();
+		}
+
+		if(m_kCurrentEnvSetting.m_bSunFlare)
+		{
+			if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWED)		
+				DrawSun();
+		}
 	}
 }
 
@@ -680,7 +711,57 @@ void P_Enviroment::FadeGain(bool bOut)
 	m_fFadeTimer = fTime;
 }
 
-
+void P_Enviroment::DrawSun()
+{
+	//textures
+	static int iSunTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
+	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
+	
+	//max number of samples 
+	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
+	static float fMaxAngle = 45.0;
+	static float fFlareSize = 1.5;
+	
+	//positions for sun and flare
+	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos * 100;
+	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos;
+	
+	//calculate angle betwen sun and camera center
+	Matrix4 kRot = m_pkZeroFps->GetCam()->GetRotM();
+	kRot.Transponse();
+	Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));	
+	float fAmp = 0;
+	float fAngle = RadToDeg(kDir.Angle(m_kCurrentEnvSetting.m_kSunPos.Unit()));
+	
+	//check if  angle is lower than maxangle
+	if( fAngle < fMaxAngle)
+		fAmp = 1.0 - fAngle / fMaxAngle;
+	
+	
+	if(m_pkZShaderSystem->SupportOcculusion())
+	{
+		//do occulusion test	
+		m_pkZShaderSystem->OcculusionBegin();
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);
+		int iSamples = m_pkZShaderSystem->OcculusionEnd();
+		
+		float fSize = float(iSamples) / float(iMaxSamples);
+		if(fSize > 1.0)
+			fSize = 1.0;
+			
+		//draw flare
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fSize*fAmp,m_pkSunFlareMat);
+	}
+	else
+	{
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kSunPos,10,m_pkSunMat);	
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kFlarePos,fFlareSize*fAmp,m_pkSunFlareMat);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
+	}
+}
 
 /*
 	DrawSun();
