@@ -146,9 +146,10 @@ void Tcs::Update(float fAlphaTime)
 	//handle collisions
 	for(int i = 0;i< m_iCollisionIterations;i++)
 	{
+		//save old positions and velocitys		
 		PushVelPos();
 		
-		//save old positions and velocitys
+		//update velocity and position
 		UpdateBodyVels(fStepSize);					
 		UpdateBodyPos(fStepSize);
 		
@@ -158,6 +159,10 @@ void Tcs::Update(float fAlphaTime)
 	
 		PopVelPos();			
 
+ 		//breake if there was no collissions
+		if(m_kCollissions.size() == 0)
+ 			break;		
+		
 		//handle collission
 		m_iNrOfCollissions+=m_kCollissions.size();
 		HandleCollissions();
@@ -177,9 +182,10 @@ void Tcs::Update(float fAlphaTime)
 	//handle contacts
 	for(int i = 0;i< m_iContactIterations;i++)
 	{
+		//save old positions and velocitys
 		PushVelPos();
 		
-		//save old positions and velocitys
+		//update body pos
 		UpdateBodyPos(fStepSize);
 		
 		//do collissiontests
@@ -188,8 +194,13 @@ void Tcs::Update(float fAlphaTime)
 		
 		PopVelPos();			
 
+ 		//breake if there was no collissions
+		if(m_kCollissions.size() == 0)
+ 			break;				
+		
 		//handle collission
 		StopObjects(fStepSize);
+							
 	}
 	
 
@@ -226,6 +237,9 @@ void Tcs::PushVelPos()
 {
  	for(unsigned int i=0;i<m_kBodys.size();i++)
  	{
+		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
+			continue;
+			
 		m_kBodys[i]->m_kOldNewPos = m_kBodys[i]->m_kNewPos;
 		m_kBodys[i]->m_kOldLinearVelocity = m_kBodys[i]->m_kLinearVelocity;
 		
@@ -238,6 +252,10 @@ void Tcs::PopVelPos()
 {
  	for(unsigned int i=0;i<m_kBodys.size();i++)
  	{
+		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
+			continue;
+
+				
 		m_kBodys[i]->m_kNewPos = m_kBodys[i]->m_kOldNewPos;
 		m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->m_kOldLinearVelocity;
 		
