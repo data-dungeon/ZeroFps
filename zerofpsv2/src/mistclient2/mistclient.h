@@ -10,6 +10,7 @@
 #include <cmath>
 #include <list>
 #include "../zerofpsv2/engine/application.h"
+#include "../zerofpsv2/gui/zgui.h"
 
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_enviroment.h"
@@ -18,7 +19,7 @@
 /**	\brief	Da MistClient
 		\ingroup MistClient
 */
-class MistClient :public Application {
+class MistClient :public Application, public ZGuiApp {
 	private:
 		//console functions
 		enum FuncId_e

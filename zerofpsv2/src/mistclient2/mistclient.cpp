@@ -5,14 +5,25 @@
   MistClient is the Client of the game MistLands.
 */
 
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
+	#define _DONT_MAIN
+#endif
+
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{
+   return true;
+}
+
 
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth)
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistclient2");
 
@@ -40,6 +51,19 @@ void MistClient::OnInit()
 
 	//set window title		
  	SetTitle("MistClient");
+
+   // create gui script funktions
+	GuiAppLua::Init(&g_kMistClient, m_pkScript);
+
+	InitGui(m_pkScript, 
+		"data/textures/text/ms_sans_serif8.tga", 
+		"data/script/gui/defskins.lua", NULL, false); 
+
+   LoadGuiFromScript("data/script/gui/ml_start.lua");
+
+	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+   m_pkInput->ShowCursor(false);
 	
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
