@@ -56,12 +56,26 @@ void LightProperty::Update()
 }
 
 void LightProperty::PackTo( NetPacket* pkNetPacket ) {
-	pkNetPacket->Write( m_pkLightSource->kDiffuse );		
-	pkNetPacket->Write( m_pkLightSource->kConstPos );			
+	pkNetPacket->Write( m_pkLightSource->kDiffuse);
+	pkNetPacket->Write( m_pkLightSource->kAmbient);
+	pkNetPacket->Write( m_pkLightSource->iPriority);	
+	pkNetPacket->Write( m_pkLightSource->fCutoff);		
+	pkNetPacket->Write( m_pkLightSource->fExp);		
+	pkNetPacket->Write( m_pkLightSource->fConst_Atten);		
+	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);		
+	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);		
+	pkNetPacket->Write( m_pkLightSource->kConstPos);			
 }
 
 void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
+	pkNetPacket->Read( m_pkLightSource->kAmbient);
+	pkNetPacket->Read( m_pkLightSource->iPriority);	
+	pkNetPacket->Read( m_pkLightSource->fCutoff);		
+	pkNetPacket->Read( m_pkLightSource->fExp);		
+	pkNetPacket->Read( m_pkLightSource->fConst_Atten);		
+	pkNetPacket->Read( m_pkLightSource->fLinear_Atten);		
+	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
 	pkNetPacket->Read( m_pkLightSource->kConstPos );			
 }
 
