@@ -254,8 +254,7 @@ void InventoryDlg::OnDropItem()
 	if(bMoveOK)
 	{
 		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
-		MLContainer* pkContainer = GetContainer();
-		pkContainer->MoveItem(m_vkItemList[m_iMoveSlot].iItemID, 4, 8);
+		g_kMistClient.SendMoveItem(m_vkItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
 	}
 	else
 	{
