@@ -80,6 +80,9 @@ public:
 	void Update( Vector3 kNewPosition, Matrix4 kNewRotation );
 	void AddPSProperty ( ParticleProperty *pkPSProperty );
 
+   float Age()                               { return m_fAge; }
+   void SetAge (float fAge)                  { m_fAge = fAge; }
+
 	float* GetVertices()								{ return m_pfVertices; }
 	float* GetColors()								{ return m_pfColors;   }
 	float* GetTexCoords()							{ return m_pfTexCoords;}

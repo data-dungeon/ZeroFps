@@ -68,26 +68,48 @@ bool PSystemProperty::HandleSetValue( string kValueName, string kValue )
 void PSystemProperty::SetPSType( string kName )
 {
 	m_pkPSystem = PSystemManager::GetInstance()->GetPSSystem ( kName );
+   m_kPSType = kName;
 }
 
 // ------------------------------------------------------------------------------------------
-/*
+
 void PSystemProperty::Save(ZFIoInterface* pkPackage)
 {
+
    // PSType
-	pkPackage->Write ( (void*)&m_kPSType, sizeof(m_kPSType), 1 );
+   char temp[128];
+	strcpy(temp,m_kPSType.c_str());	
+	pkPackage->Write((void*)&temp,128,1);
 
    
    // PSAge
+   float fAge = m_pkPSystem->Age();
+   pkPackage->Write ( (void*)&fAge, sizeof(float), 1 );
 
-   // if PSystem lives forever...
-   if ( m_pkPSType->m_kPSystemBehaviour.m_fLifeTime == -1 )
-   {
-      int i
-      pkPackage->Write ( (void*)&m_pkPSystem->, sizeof(m_kPSType), 1 );
-   }
 }
-*/
+
+// ------------------------------------------------------------------------------------------
+
+void PSystemProperty::Load(ZFIoInterface* pkPackage)
+{
+
+   // Read PSType
+	char temp[128];
+	pkPackage->Read((void*)&temp,128,1);
+	m_kPSType=temp;
+
+   // Load PSType data and init PSystem
+   SetPSType( m_kPSType );
+   
+   // Read PSAge
+   float fAge = m_pkPSystem->Age();
+   pkPackage->Read ( (void*)&fAge, sizeof(float), 1 );
+   m_pkPSystem->SetAge (fAge);
+
+
+
+}
+
 // ------------------------------------------------------------------------------------------
 
 Property* Create_PSystemProperty()

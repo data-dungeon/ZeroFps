@@ -23,6 +23,9 @@ class ENGINE_SYSTEMS_API PSystemProperty: public Property {
 		bool HandleSetValue( string kValueName, string kValue );
 
 		void SetPSType ( string kName );
+
+      void Save(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage);
 };
 
 Property* Create_PSystemProperty();
