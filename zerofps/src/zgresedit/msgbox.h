@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../zerofps/engine/zgui/zguiwindow.h"
+#include "../zerofps/gui/zguiwindow.h"
 
 class ZGui;
 class ZGuiLabel;

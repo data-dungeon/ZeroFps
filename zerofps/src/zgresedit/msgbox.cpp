@@ -3,9 +3,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "msgbox.h"
-#include "../zerofps/engine/zgui/zgui.h"
-#include "../zerofps/engine/zgui/zguilabel.h"
-#include "../zerofps/engine/zgui/zguibutton.h"
+#include "../zerofps/gui/zgui.h"
+#include "../zerofps/gui/zguilabel.h"
+#include "../zerofps/gui/zguibutton.h"
 #include "../zerofps/basic/zguiskin.h"
 
 //////////////////////////////////////////////////////////////////////

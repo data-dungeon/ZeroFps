@@ -4,7 +4,7 @@
 
 #include "guibuilder.h"
 #include "resource_id.h"
-#include "../zerofps/engine/zgui/zguiresourcemanager.h"
+#include "../zerofps/gui/zguiresourcemanager.h"
 #include "../zerofps/render/texturemanager.h"
 #include "../zerofps/basic/zfassert.h"
 #include "../zerofps/engine/input.h"

@@ -18,7 +18,7 @@ class ZGuiFont;
 #pragma warning( disable : 4786 )
 
 #include "selectwnd.h"
-#include "../zerofps/engine/zgui/zgui.h"
+#include "../zerofps/gui/zgui.h"
 #include <map>
 #include <string>
 using namespace std;
