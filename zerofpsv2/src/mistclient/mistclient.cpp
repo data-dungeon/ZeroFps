@@ -429,7 +429,7 @@ void MistClient::Input()
 		}
 	}
 
-	if(pkInput->Pressed(MOUSELEFT))
+/*	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{		
@@ -447,7 +447,7 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();	
 		}	
 	}
-/*	
+
 	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 
