@@ -176,6 +176,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Update_System();
 		void MakeDelay(); 
 
+		void UpdateDevPages();
+		void UpdateGuiInput();
 		
 		void SetApp(void);
 		void Swap(void);											//	swap gl buffers		

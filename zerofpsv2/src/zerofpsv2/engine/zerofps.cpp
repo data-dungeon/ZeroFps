@@ -285,8 +285,7 @@ void ZeroFps::CreateMaterials()
 
 }
 
-/* Code that need to run on both client/server. */
-void ZeroFps::Run_EngineShell()
+void ZeroFps::UpdateDevPages()
 {
 	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) 
@@ -336,24 +335,37 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","  Fps       : %f",m_fFps);	
 	DevPrintf("common","  Avrage Fps: %f",m_fAvrageFps);			
 	
-	
+
+	// Describe Active Cam.
+	if(GetCam()) 
+	{
+		string strCamDesc = GetCam()->GetCameraDesc();
+		DevPrintf("common",strCamDesc.c_str());
+	}
+
+	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
+	DevPrintf("common" , "Zone: %d", this->m_pkEntityManager->m_kZones.size());
+
+	// TIME
+	DevPrintf("time","Ticks: %f",							GetTicks());
+	DevPrintf("time","FrameTime: %f",					GetFrameTime());
+	DevPrintf("time","SimTime: %f",						m_pkEntityManager->GetSimTime());
+	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
+	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
+	DevPrintf("time","EngineTime: %f",					GetEngineTime());
+	DevPrintf("time","Run: %i", m_bRunWorldSim);
+
+	m_iNumOfMadRender = 0;
+	g_iNumOfMadSurfaces = 0;
+		
+		
 	m_pkZShaderSystem->ResetStatistics();
-	
-	// Update Local Input.
-	m_pkInput->Update();
 
-	// TAB Always handle console.
-	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
-	{		
-		m_pkConsole->Toggle();
-	}
 
-	if(m_pkConsole->IsActive()) 
-	{		
-		m_pkConsole->Update();
-	}
-   else
-   {
+}
+
+void ZeroFps::UpdateGuiInput()
+{
 	   // Updata Gui input
 	   int mx, my;
 	   if(m_pkGui->m_bUseHardwareMouse == true)
@@ -392,19 +404,44 @@ void ZeroFps::Run_EngineShell()
 		   m_pkApp->m_pkInputHandle->SetTempDisable(true);
 	   else
 		   m_pkApp->m_pkInputHandle->SetTempDisable(false);
+}
+
+/* Code that need to run on both client/server. */
+void ZeroFps::Run_EngineShell()
+{
+	//update devpages
+	UpdateDevPages();
+
+	//run application main loop
+	m_pkApp->OnIdle();	
+	
+	// Update Local Input.
+	m_pkInput->Update();
+
+	// backquote Always handle console.
+	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
+	{		
+		m_pkConsole->Toggle();
+	}
+
+	//is the console active? , else update gui
+	if(m_pkConsole->IsActive()) 
+	{		
+		m_pkConsole->Update();
+	}
+   else
+   {
+		UpdateGuiInput();
    }
 
-	//end of console input
+	//update delete
+	m_pkEntityManager->UpdateDelete();
+	
 
 	//for debuging the input system
-	if(m_pkInputHandle->Pressed(KEY_F6))
-		m_pkInput->PrintInputHandlers();
-
-	if(m_pkInputHandle->VKIsDown("shot"))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
+	if(m_pkInputHandle->Pressed(KEY_F9))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
 	if(m_pkInputHandle->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
 	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
-
-
 
 }
 
@@ -413,33 +450,17 @@ void ZeroFps::Run_Server()
 	//update system
 	Update_System();
 
+	if(m_bTcsFullframe)
+		m_pkTcs->Update(GetFrameTime());	
 	
 }
 
 void ZeroFps::Run_Client()
 {
-
-	//run application main loop
-	m_pkApp->OnIdle();
-		
 	if(!m_bServerMode)
 		Update_System();	
-
-		
-		
-	//   _---------------------------------- fulhack deluxe 
-	Draw_RenderCameras();
+				
 	
-	if(m_bTcsFullframe)
-		m_pkTcs->Update(GetFrameTime());	
-	
-
-	if(g_iLogRenderPropertys) 
-	{
-		m_pkEntityManager->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
-		g_iLogRenderPropertys = 0;
-	}
-
 	//update sound system
 	if(m_kRenderCamera.size()  == 1)
 		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
@@ -448,8 +469,6 @@ void ZeroFps::Run_Client()
 
 	
 	
-	
-	m_pkEntityManager->UpdateDelete();
 
 	m_pkNetWork->DevShow_ClientConnections();
 
@@ -488,9 +507,6 @@ void ZeroFps::Update_System()
 		//update sim time for this systemupdate
 		m_pkEntityManager->UpdateSimTime();
 		
-		//client & server code
-
-						
 		//update network for client & server
 		m_pkNetWork->Run();				
 		
@@ -549,34 +565,14 @@ void ZeroFps::Update_System()
 
 void ZeroFps::Draw_EngineShell()
 {
-	// Describe Active Cam.
-	if(GetCam()) {
-		string strCamDesc = GetCam()->GetCameraDesc();
-		DevPrintf("common",strCamDesc.c_str());
-		}
-
-	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
-	DevPrintf("common" , "Zone: %d", this->m_pkEntityManager->m_kZones.size());
-
-	// TIME
-	DevPrintf("time","Ticks: %f",							GetTicks());
-	DevPrintf("time","FrameTime: %f",					GetFrameTime());
-	DevPrintf("time","SimTime: %f",						m_pkEntityManager->GetSimTime());
-	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
-	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
-	DevPrintf("time","EngineTime: %f",					GetEngineTime());
-	DevPrintf("time","Run: %i", m_bRunWorldSim);
-
-	m_iNumOfMadRender = 0;
-	g_iNumOfMadSurfaces = 0;
-	
+	//render cameras
+	Draw_RenderCameras();
 	
 	//render gui
 	m_pkGui->Render((int)m_fAvrageFps);
 	
 	//set console kamera matrisses, and clear depthbuffer
 	m_pkConsoleCamera->InitView();
-	//m_pkConsoleCamera->ClearViewPort(false);	
 	
 	//draw devstrings
 	DrawDevStrings();
@@ -584,7 +580,7 @@ void ZeroFps::Draw_EngineShell()
 	//on hud drawing
 	m_pkApp->OnHud();
 
-	
+	//draw console	
 	if(m_pkConsole->IsActive()) 
 		m_pkConsole->Draw();
 }
@@ -611,14 +607,18 @@ void ZeroFps::MainLoop(void)
 			//handle locked fps delay						
 			MakeDelay();			
 			
+			//update basic engine systems			
 			Run_EngineShell();
 
+			//update server only systems
 			if(m_bServerMode)
 				Run_Server();
 
+			//update client only systems
 			if(m_bClientMode)
 				Run_Client();		
 			
+			//render stuff
 			Draw_EngineShell();
 
 		}

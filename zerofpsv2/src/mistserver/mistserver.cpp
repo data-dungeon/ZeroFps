@@ -393,7 +393,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_NEW:
 			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkZeroFps->StartServer(true,true);
+			m_pkZeroFps->StartServer(false,true);
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -415,36 +415,10 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_strWorldDir = kCommand->m_kSplitCommand[1];
 			strNewTitle = "MistServer - " + m_strWorldDir;
 			SetTitle(strNewTitle);
-
-			/*			if(kCommand->m_kSplitCommand.size() <= 1)
-			{
-				m_pkConsole->Printf("load [mapdir]");
-				break;				
-			}
-			
-			cout<<"BLUB:"<<kCommand->m_kSplitCommand.size()<<endl;
-			cout<<"loading world:"<<kCommand->m_kSplitCommand[1]<<endl;
-			
-			if(kCommand->m_kSplitCommand.size() > 2)
-			{
-				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
-				
-				if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
-				{
-					cout<<"Error loading world"<<endl;
-					break;
-				}				
-			}
-			else if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
-			{
-				cout<<"Error loading world"<<endl;
-				break;
-			}				
-			
-*/						
+	
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkZeroFps->StartServer(true,true);
+			m_pkZeroFps->StartServer(false,true);
 			
 			break;		
 		
