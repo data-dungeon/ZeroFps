@@ -571,10 +571,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			
 			m_bTestGUI = !m_bTestGUI;
 			m_pkGui->Activate(m_bTestGUI); 
-			if(m_bTestGUI)
-			{
-				m_iTask = TASK_TEST_GUI;			
-			}
+			m_iTask = TASK_TEST_GUI;			
 
 			break;
 

@@ -771,7 +771,7 @@ void ZGuiEd::OnTestGUI()
 		for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
 		{
 			s_kZValueInfo.insert(map<string,int>::value_type(it->first, it->second->m_iZValue)); 
-			AddSampleCtrlItem(it->second);
+			//AddSampleCtrlItem(it->second);
 		}
 	}
 	else
@@ -850,8 +850,8 @@ void ZGuiEd::UpdateScriptList()
 	}
 }
 
-// Lägg till ett item till listboxar så att dessa skall synas
-// (annars ser man inte dom ändringar man gör).
+// Lägg till några item till listboxar så att knapparna skall synas
+// (annars ser man inte dom när ändringar görs).
 void ZGuiEd::AddSampleCtrlItem(ZGuiWnd* pkWnd)
 {
 	ZGuiListbox* pkListbox;
