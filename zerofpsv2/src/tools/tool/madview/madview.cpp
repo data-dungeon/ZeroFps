@@ -228,6 +228,8 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_iCurrRotAngle = m_iObjRotMode-1;
 			else
 				m_iCurrRotAngle = 0;
+
+			GetWnd("MadViewInfoWnd")->Show();
 			break;
 
 		case FID_OBJECTROTATIONSPEED:
@@ -236,6 +238,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(speed == 1) m_fObjRotDelay = 0.100f;
 			if(speed == 2) m_fObjRotDelay = 0.009f;
 			if(speed == 3) m_fObjRotDelay = 0.002f;
+			GetWnd("MadViewInfoWnd")->Show();
 			break;
 
 		case FID_MAD_DRAW_MODE:
@@ -246,7 +249,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkZeroFps->m_iMadDraw ^= mode;
 			else
 				m_pkZeroFps->m_iMadDraw |= mode;
-
+			GetWnd("MadViewInfoWnd")->Show();
 			break;
 
 		case FID_CHANGE_BKCOLOR_INFOWND:
@@ -267,7 +270,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 
 			toogle = !toogle;
-			
+			GetWnd("MadViewInfoWnd")->Show();
 			break;
 	}
 }

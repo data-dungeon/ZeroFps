@@ -64,7 +64,7 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 		if(strMainWnd == "MainMenu")
 		{
-			GetWnd("MadViewInfoWnd")->Disable();
+			GetWnd("MadViewInfoWnd")->Hide();
 
 			if(!m_pkIni->Open("data/script/gui/menu_madview.txt", false))
 			{
@@ -82,16 +82,18 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
 					m_pkZeroFps->m_pkConsole->Execute(cmd);
-					GetWnd("MadViewInfoWnd")->Enable();
+						
 					break;
 				}
 			}
+
+			m_pkGui->SetFocus(GetWnd("GuiMainWnd"));
 
 			m_pkIni->Close();
 		}
 		else
 		{
-			GetWnd("MadViewInfoWnd")->Enable();
+			//GetWnd("MadViewInfoWnd")->Enable();
 		}
 	}
 }
@@ -206,5 +208,14 @@ void MadView::ChangeMad(string strName)
 			string strName = pkCore->GetAnimationName(i); 
 			AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
 		}
+	}
+
+	printf("Num meshes = %i\n", pkCore->NumOfMeshes());
+	printf("Num sub meshes = %i\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeSubMesh() );
+	printf("Num textures = %i\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeTextures() );
+
+	for(int i=0; i<pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeTextures(); i++)
+	{
+		printf("%s\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].GetTextureName(i));
 	}
 }
