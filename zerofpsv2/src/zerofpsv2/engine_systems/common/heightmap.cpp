@@ -145,7 +145,7 @@ int HeightMap::GetTopLowTriangle(Vector3 kPos)
 //	kPos.z -= m_kPosition.z - m_iTilesSide/2;
 
 	if(kPos.x<0 || kPos.x>m_iTilesSide || kPos.z<0 || kPos.z>m_iTilesSide) 
-		return m_kPosition.y;
+		return int(m_kPosition.y);
 
 	int lx = int(kPos.x);
 	int lz = int(kPos.z);
@@ -773,8 +773,8 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 
 void HeightMap::DrawVisible(Vector3 kPos, bool bVisible)
 {
-	int iX = kPos.x / m_fTileSize;	
-	int iZ = kPos.z / m_fTileSize;	
+	int iX = int(kPos.x / m_fTileSize);	
+	int iZ = int(kPos.z / m_fTileSize);	
 	
 	int iIndex = iZ * m_iTilesSide + iX;
 	int iTri = GetTopLowTriangle( kPos );

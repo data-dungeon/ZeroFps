@@ -1189,7 +1189,7 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 					fTexOffset = (temp -(float) rcClipper.Top) / 
 						(float) pkFont->m_aChars[index].iSizeY * ( 
 						(float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight);
-					y = temp;
+					y = int(temp);
 
 					tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
 					ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight + fTexOffset;
@@ -1216,12 +1216,12 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 
 					if( y+fQuadHeight >= rcClipper.Bottom)
 					{
-						int height = y+fQuadHeight-rcClipper.Bottom;
+						int height = float(y+fQuadHeight-rcClipper.Bottom);
 						float procent = (float) height / (float) pkFont->m_iRowHeight;
 
 						th = th*procent;
 						fQuadHeight = fQuadHeight*procent;
-						y += (pkFont->m_iRowHeight-fQuadHeight);
+						y += float(pkFont->m_iRowHeight-fQuadHeight);
 					}
 
 					glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + fQuadHeight);		 

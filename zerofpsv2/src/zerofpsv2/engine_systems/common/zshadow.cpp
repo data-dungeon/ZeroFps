@@ -1014,3 +1014,17 @@ void ZShadow::SetupGL()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

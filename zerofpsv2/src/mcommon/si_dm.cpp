@@ -1137,7 +1137,7 @@ int DMLua::CallForHelpLua(lua_State* pkLua)
 
 		// Insert caller in list if not already there.
 		if(bFound == false)			
-			m_kCallsForHelp.push_back(dEntIDCalling);
+			m_kCallsForHelp.push_back(int(dEntIDCalling));
 	}
 	
 	return 0;

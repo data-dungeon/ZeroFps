@@ -191,7 +191,7 @@ int DMLua::SetStateLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 1, &dState);
 
 	if ( pkChar->GetStats()->m_iLife > 0 )
-		pkChar->ChangeState(dState);
+		pkChar->ChangeState(int(dState));
 
 	return 1;
 }
@@ -771,7 +771,7 @@ int DMLua::SetLeaderOfTeamLua(lua_State* pkLua)
 	double dTeam;
 	g_pkScript->GetArgNumber(pkLua, 1, &dTeam);
 
-	pkChar->m_iLeaderOfTeam = dTeam;
+	pkChar->m_iLeaderOfTeam = int(dTeam);
 
 	return 0;
 }
@@ -793,3 +793,26 @@ Vector3 DMLua::GetVectorArg(lua_State* pkLua, int iIndex)
 	g_pkScript->DeleteTable(vkData);
 	return kPos;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -508,3 +508,10 @@ void ZIFAnimation::DeallocateWorkMemory()
 		}
 	}
 }
+
+
+
+
+
+
+

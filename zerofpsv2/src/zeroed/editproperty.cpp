@@ -244,3 +244,15 @@ bool ZeroEd::SaveCurrentToScript()
  
    return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+

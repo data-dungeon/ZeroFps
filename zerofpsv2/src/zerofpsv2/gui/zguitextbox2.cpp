@@ -425,7 +425,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	now -= top;
 
 	float procent = now / bottom;
-	m_iRenderDistFromTop = -tomuch *procent;
+	m_iRenderDistFromTop = int(-tomuch *procent);
 
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;

@@ -519,7 +519,7 @@ bool ZFIni::SetIntValue(const char *szSearchSection, char *szSearchKey, int valu
 			}
 		}
 
-	return NULL;	
+	return false;	
 }
 
 void ZFIni::Save(const char* szFileName)
@@ -607,7 +607,7 @@ void ZFIni::Close()
 bool ZFIni::GetKeyNames(const char* strSection, vector<string>& kSectionList)
 {
 	if(m_bFileReady == false)
-		return NULL;
+		return false;
 
 	const char* pFindSec;
 

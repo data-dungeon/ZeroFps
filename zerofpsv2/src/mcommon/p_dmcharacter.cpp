@@ -438,7 +438,7 @@ void P_DMCharacter::Equip (P_DMItem* pkDMItem)
 		return;
 	
 	m_kStats.m_fArmour += pkDMItem->m_kItemStats.m_fArmourVal;
-	m_kStats.m_iMaxLife += pkDMItem->m_kItemStats.m_iMaxLifeVal;
+	m_kStats.m_iMaxLife += int(pkDMItem->m_kItemStats.m_iMaxLifeVal);
 	AddMoveSpeed ( pkDMItem->m_kItemStats.m_fSpeedVal );
 
 }
@@ -451,7 +451,7 @@ void P_DMCharacter::UnEquip (P_DMItem* pkDMItem)
 		return;
 	
 	m_kStats.m_fArmour -= pkDMItem->m_kItemStats.m_fArmourVal;
-	m_kStats.m_iMaxLife -= pkDMItem->m_kItemStats.m_iMaxLifeVal;
+	m_kStats.m_iMaxLife -= int(pkDMItem->m_kItemStats.m_iMaxLifeVal);
 	AddMoveSpeed ( -pkDMItem->m_kItemStats.m_fSpeedVal );
 }
 

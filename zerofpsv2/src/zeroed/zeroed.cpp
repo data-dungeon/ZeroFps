@@ -236,6 +236,9 @@ void ZeroEd::OnInit()
 	if(!m_pkIni->ExecuteCommands("zeroed_autoexec.ini"))
 		m_pkConsole->Printf("No zeroed_autoexec.ini found");
 
+
+	//set reference distance
+	m_pkAudioSys->SetReferensDistance(0.5);
 	
 }
 
@@ -1505,3 +1508,16 @@ void ZeroEd::RebuildZonePosArray()
 
 	m_bNeedToRebuildZonePosArray = false;
 }	
+
+
+
+
+
+
+
+
+
+
+
+
+

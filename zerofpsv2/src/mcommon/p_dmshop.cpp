@@ -194,7 +194,7 @@ int P_DMShop::GetBuyPrice(int iObjectToSell)
 
 	// Returnera samma värde * m_fTradeRate
 	if(itItem != m_kPricemap.end())
-		return (itItem->second * m_fTradeRate);
+		return int(itItem->second * m_fTradeRate);
 	
 	// Vi köper inga okända varor här.
 	return -1;

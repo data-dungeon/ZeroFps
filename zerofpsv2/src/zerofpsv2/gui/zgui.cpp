@@ -1111,7 +1111,7 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 
 		//unsigned long pixel;
 		color_rgba kColor;
-		if(!pkSurface->get_pixel(dx, dy, kColor))
+		if(!pkSurface->get_pixel(int(dx), int(dy), kColor))
 		{
 			printf("Image::get_pixel Failed\n");
 		}

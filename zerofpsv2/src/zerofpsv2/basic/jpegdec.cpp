@@ -872,3 +872,11 @@ void JpgDecoder::DecodeMCU1x2(DWORD uiImLoc)
 	Convert8x8YCbCrToRGBTab(m_aucY1,m_aucCb,m_aucCr,m_aucTab1,uiImLoc,m_uiXimageBytes,m_pImBuffer);
 	Convert8x8YCbCrToRGBTab(m_aucY2,m_aucCb,m_aucCr,m_aucTab3,uiImLoc+m_uiYincValue,m_uiXimageBytes,m_pImBuffer);
 }
+
+
+
+
+
+
+
+

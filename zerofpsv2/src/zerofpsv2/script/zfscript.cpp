@@ -842,18 +842,6 @@ void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 {
 	string temp;
@@ -889,6 +877,7 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 
 	return temp;
 }
+
 
 
 

@@ -422,3 +422,17 @@ char* ZeroEd::GetSelEnviromentString()
 
 	return NULL;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

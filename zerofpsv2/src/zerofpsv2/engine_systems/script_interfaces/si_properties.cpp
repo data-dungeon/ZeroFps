@@ -44,7 +44,7 @@ int BindKeyLua(lua_State* pkLua)
 			return 0;
 
 		if ( P_Controller* pkP_Controller = (P_Controller*)pkEntity->GetProperty("P_Controller") )
-			pkP_Controller->AddTrigger (string(strKeyName), dAxis, dForce);
+			pkP_Controller->AddTrigger (string(strKeyName), int(dAxis), dForce);
 	}
 
 	return 0;
