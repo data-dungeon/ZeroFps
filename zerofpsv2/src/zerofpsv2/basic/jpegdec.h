@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _JPEGDEC_H_
+#define _JPEGDEC_H_
 
 #define BYTE unsigned char
 #define WORD unsigned short int
@@ -130,6 +131,6 @@ private:
 
 
 
-
+#endif
 
 
