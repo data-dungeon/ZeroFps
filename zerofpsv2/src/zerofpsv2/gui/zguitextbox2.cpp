@@ -29,6 +29,8 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 						 int iID, bool bMultiLine) : 
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_fBlinkCursorTimer = -1;
+	m_iBlinkCursorPos = -1;
 	m_bUseDisplayList = true;
 	m_iDisplayListID = -1;
 	m_kHorzOffset = 0;
@@ -86,6 +88,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
 	}
 
+	//m_fBlinkCursorTimer = -1;
+	//m_iBlinkCursorPos = m_iCursorPos;
+
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
@@ -94,9 +99,12 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 	if(m_strText != NULL)
 	{
-		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
+		//int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
+		
+		//static int cursor_pos = -1;
+
 		if(m_bReadOnly)
-			cursor_pos = -1;
+			m_iBlinkCursorPos = -1;
 		
 		if(m_bMultiLine)
 		{
@@ -164,7 +172,30 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			Rect kRect = GetScreenRect();
 			kRect.Left += 2;
 			kRect.Right -= 2;
-			pkRenderer->RenderText(m_strText, kRect, cursor_pos, m_afTextColor, m_iRenderDistFromTop);
+
+			if(m_bBlinkCursor && GetGUI())
+			{
+				float fCurrTime = GetGUI()->m_fTime;
+
+				if(m_fBlinkCursorTimer == -1)
+					m_fBlinkCursorTimer = fCurrTime;
+
+				if(fCurrTime - m_fBlinkCursorTimer > 0.25f)
+				{
+					m_fBlinkCursorTimer = fCurrTime;
+
+					if(m_iBlinkCursorPos == -1)
+						m_iBlinkCursorPos = m_iCursorPos;
+					else
+						m_iBlinkCursorPos = -1;
+				}
+			}
+
+			if(m_bBlinkCursor && m_fBlinkCursorTimer == -2)
+				m_iBlinkCursorPos = m_iCursorPos;
+
+			pkRenderer->RenderText(m_strText, kRect, 
+				m_iBlinkCursorPos, m_afTextColor, m_iRenderDistFromTop);
 		}
 
 	}
@@ -195,6 +226,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 void ZGuiTextbox::SetFocus(bool bSetCapture)
 {
+	if(m_bEnabled == false)
+		return;
+
 	m_bBlinkCursor = true;
 
 	if(m_strText)
@@ -204,7 +238,6 @@ void ZGuiTextbox::SetFocus(bool bSetCapture)
 
 	printf("Set textboxfocus\n");
 	m_pkGUI->m_bForceGUICapture = bSetCapture;
-
 }
 
 void ZGuiTextbox::KillFocus()
@@ -218,6 +251,7 @@ void ZGuiTextbox::KillFocus()
 		m_bBlinkCursor = false;
 
 	m_pkGUI->m_bForceGUICapture = false;
+	m_iBlinkCursorPos = -1;
 }
 
 
@@ -608,6 +642,8 @@ void ZGuiTextbox::ScrollRowIntoView(int row)
 
 bool ZGuiTextbox::ProcessKBInput(int iKey)
 {	
+	m_fBlinkCursorTimer = -2;
+
 	if(m_bReadOnly == true)
 		return true;
 
@@ -633,7 +669,8 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 					if(m_kTextTags[i].iRow == m_iCursorRow)
 					{
 						m_iRenderDistFromTop -= m_kTextTags[i].iRowHeight;
-						m_iCursorRow++;
+						m_iCursorRow++; 
+						m_iBlinkCursorPos = m_iCursorPos;
 						UpdateScrollbar();
 						break;
 					}
@@ -652,6 +689,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 					{
 						m_iRenderDistFromTop +=  m_kTextTags[i].iRowHeight;					
 						m_iCursorRow--;
+						m_iBlinkCursorPos = m_iCursorPos;
 						UpdateScrollbar();
 						break;
 					}
@@ -863,6 +901,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			m_strText[m_iCursorPos] = iKey;
          m_strText[m_iCursorPos+1] = '\0'; // lade till 040801
 			m_iCursorPos++;
+			m_iBlinkCursorPos = m_iCursorPos;
 		}
 		else
 		{
@@ -871,6 +910,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			strLazy.insert(m_iCursorPos,szLetter);
 			strcpy(m_strText, strLazy.c_str());
 			m_iCursorPos++;
+			m_iBlinkCursorPos = m_iCursorPos;
 		}
 	}
 

@@ -1,6 +1,6 @@
 #include "guiserverinfo.h"
 #include <iostream.h>
-
+#include "zeroed.h"
 
 bool GUIServerInfo::ConvertFromFullName(string strFullName)
 {
@@ -76,4 +76,123 @@ void GUIServerInfo::Load(vector<GUIServerInfo>& rkServerAray)
 
 	if(pkFile)
 		fclose(pkFile);
+}
+
+void ZeroEd::GUIFillServerList()
+{
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+
+	if(!pkMenu)
+		return;
+
+	char szMenuText[100];
+
+	ClearListbox("ManageServerList");
+
+	// Remove menuitems
+	vector<string> kChilds;
+	pkMenu->GetItems("Menu_File_Connect", kChilds);
+	for(int i=0; i<kChilds.size(); i++)
+		if(kChilds[i] != "Menu_File_Connect_Manage")
+			pkMenu->RemoveItem( kChilds[i].c_str() );
+
+	for(int i=0; i<m_vkServerList.size(); i++)
+	{
+		sprintf(szMenuText, "To %s as %s", m_vkServerList[i].strServerName.c_str(),
+			m_vkServerList[i].strUserName.c_str());
+
+		AddListItem("ManageServerList", (char*)m_vkServerList[i].FullName().c_str());
+
+		pkMenu->AddItem(szMenuText, (char*)m_vkServerList[i].FullName().c_str(), 
+			"Menu_File_Connect", false);	
+	}
+
+	((ZGuiMenu*)GetWnd("MainMenu"))->ResizeMenu();
+}
+
+void ZeroEd::OnAddServer(bool bAdd)
+{
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+	ZGuiListbox* pkList = (ZGuiListbox*) GetWnd("ManageServerList");
+	char szMenuText[100];
+
+	if(bAdd)
+	{
+		GUIServerInfo info(
+			GetText("ServerNameTextbox"), GetText("ServerIPTextbox"),
+			GetText("UserNameTextbox"), GetText("PasswordTextbox"));
+
+		if(info.strServerName.size() < 1 ||
+			info.strServerIP.size() < 7 || (info.strServerIP.find(".") == string::npos) ||
+			info.strUserName.size() < 1 || info.strPassword.size() < 1)
+		{
+			printf("Bad names\n");
+			return;
+		}
+		
+		bool bExist = false;
+		vector<GUIServerInfo>::iterator it = m_vkServerList.begin();
+		for( ; it != m_vkServerList.end(); it++) 
+		{
+			if( (*it) == info ) 
+			{
+				int iID;
+				if((iID=pkList->Find((char*)(*it).FullName().c_str())) != -1)
+				{
+					pkList->RemoveItem(pkList->GetItem(iID), false);
+					pkMenu->RemoveItem((char*)(*it).FullName().c_str());
+				}
+
+				m_vkServerList.erase(it);
+				bExist = true;
+				break;
+			}
+		}
+
+		sprintf(szMenuText, "To %s as %s", GetText("ServerNameTextbox"), 
+			GetText("UserNameTextbox"));
+		AddListItem("ManageServerList", (char*)info.FullName().c_str());
+		pkMenu->AddItem(szMenuText, (char*)info.FullName().c_str(), 
+			"Menu_File_Connect", false);
+		m_vkServerList.push_back(info);
+
+		if(!bExist)
+		{
+			SetText("ServerNameTextbox", "");
+			SetText("ServerIPTextbox", "");
+			SetText("UserNameTextbox", "");
+			SetText("PasswordTextbox", "");
+		}
+
+	}
+	else
+	{
+		if(pkList->GetSelItem())
+		{
+			char szText[100];
+			sprintf(szText, "%s", pkList->GetSelItem()->GetText());
+
+			int iID;
+			if((iID=pkList->Find(szText)) != -1)
+			{
+				pkList->RemoveItem(pkList->GetItem(iID), false);
+				((ZGuiMenu*)GetWnd("MainMenu"))->RemoveItem(szText);
+				SetText("ServerNameTextbox", "");
+				SetText("ServerIPTextbox", "");
+				SetText("UserNameTextbox", "");
+				SetText("PasswordTextbox", "");
+
+				int counter = 0;
+				vector<GUIServerInfo>::iterator it = m_vkServerList.begin();
+				for( ; it != m_vkServerList.end(); it++) 
+				{
+					if(counter++ == iID)
+					{
+						m_vkServerList.erase(it);							
+						break;
+					}
+				}
+			}
+		}
+	}
 }

@@ -474,6 +474,9 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd, bool bSetCapture)
    if(pkWnd == NULL)
       return;
 
+	if(pkWnd->m_bEnabled == false)
+		return;
+
 	// Hitta det fönster som tidigare hade fokus och 
 	// ta bort fokuset från denna.
 	if(ZGuiWnd::m_pkFocusWnd)

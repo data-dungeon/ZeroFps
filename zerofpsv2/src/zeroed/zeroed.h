@@ -217,6 +217,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OpenObjectMenu();
 		void InitMainMenu();
 		void GUIFillServerList();
+		void OnAddServer(bool bAdd);
 
 		//camera stuff
 		void  CreateEditCameras();

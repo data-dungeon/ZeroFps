@@ -90,6 +90,9 @@ private:
 	bool m_bUseDisplayList;
 	int m_iDisplayListID;
 
+	float m_fBlinkCursorTimer;
+	int m_iBlinkCursorPos;
+
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	ZGuiRender* m_pkGuiRender;
 
