@@ -72,7 +72,14 @@ class MistClient :public Application, public ZGuiApp {
 
 		void SendAction(int iEntityID,const string& strAction);
 		void SendRequestIventory();
-		void SendMoveItem(int iItemID,int iTarget,int iContainerType,int iPosX,int iPosY);	
+		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY);	
+			/*SendMoveItem hjälp.
+				iItemID : alltid entity id't för itemet i fråga
+				iTraget : target container entity ID , om -1 så antas i spelarens inventory
+				iPosX   : position i containern som föremålet skall flyttas till, om -1 så sätts föremålet på en ledig plats
+			*/
+		
+		
 			
 		// gui stuff
 		bool NameIPFromServerList(string& strName, string& strIP);

@@ -317,9 +317,7 @@ bool MLContainer::DropItem(int iID,const Vector3& kPos)
 					//pkItem->SetParent(pkOwner->GetParent());				
 					pkPItem->m_iInContainerID = -1;
 	
-					pkItem->SetWorldPosV( Vector3( pkOwner->GetWorldPosV().x + ((rand()%200)-100)/100.f,
-													pkOwner->GetWorldPosV().y,
-													pkOwner->GetWorldPosV().z + ((rand()%200)-100)/100.f) );
+					pkItem->SetWorldPosV( kPos );
 					
 
 													

@@ -990,7 +990,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 			PkNetMessage->Read(iItemID);
 			PkNetMessage->Read(iTarget);
-			PkNetMessage->Read(iContainerType);
 			PkNetMessage->Read(iPosX);
 			PkNetMessage->Read(iPosY);			
 		
@@ -1045,16 +1044,34 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 								{
 									//moving within container
 									
-									//no target container, assuming inventory
-									if(iTarget == -1 && iPosX != -1)
+									//no target, assuming moving within container
+									if(iTarget == -1)
 									{
-										cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
-									
-										if(!pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
-											SayToClients("Could no move item",PkNetMessage->m_iClientID);
-
-										break;										
-									}			
+										// no position , assuming drop
+										if(iPosX == -1)
+										{
+											cout<<"trying to drop item"<<endl;
+											if(!pkCharProp->m_pkInventory->DropItem(iItemID,pkChar->GetWorldPosV()))
+												SayToClients("Could not drop item",PkNetMessage->m_iClientID);
+										
+											break;;
+										}
+										
+										//trying to move item
+										else
+										{
+											//no target container, assuming inventory
+											if(iTarget == -1 && iPosX != -1)
+											{
+												cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
+											
+												if(!pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
+													SayToClients("Could no move item",PkNetMessage->m_iClientID);
+		
+												break;										
+											}																							
+										}																						
+									}
 								}
 							}
 						}

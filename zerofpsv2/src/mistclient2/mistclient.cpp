@@ -463,7 +463,7 @@ void MistClient::Input()
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
-					SendMoveItem(m_iPickedEntityID,-1,-1,-1,-1);
+					SendMoveItem(m_iPickedEntityID,-1,-1,-1);
 				}
 				else 
 				// if not an item do first action
@@ -1055,14 +1055,13 @@ void MistClient::SendRequestIventory()
 	SendAppMessage(&kNp);			
 }
 
-void MistClient::SendMoveItem(int iItemID,int iTarget,int iContainerType,int iPosX,int iPosY)
+void MistClient::SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_MOVE_ITEM);
 	
 	kNp.Write(iItemID);
 	kNp.Write(iTarget);
-	kNp.Write(iContainerType);
 	kNp.Write(iPosX);
 	kNp.Write(iPosY);
 	
