@@ -616,6 +616,14 @@ Object* MistClient::GetTargetObject()
 	Object* pkClosest = NULL;	
 	for(int i=0;i<kObjects.size();i++)
 	{
+		if(kObjects[i]->iNetWorkID <100000)
+			continue;
+		
+		if(kObjects[i]->GetName() == "ZoneObject")
+			continue;
+		
+		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
+			continue;		
 		
 		float d = (start - kObjects[i]->GetWorldPosV()).Length();
 	

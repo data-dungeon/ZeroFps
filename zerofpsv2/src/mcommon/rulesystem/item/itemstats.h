@@ -107,7 +107,7 @@ public:
    bool Stock ( ItemStats *pkItemStats );
 
    bool operator== ( ItemStats &kItemStats );
-   operator= ( ItemStats &kItemStats );
+   ItemStats& operator= ( ItemStats &kItemStats );
 
    friend class P_Item;
 

@@ -419,7 +419,7 @@ bool ItemStats::CanEquipOn ( string kSlotName )
 
 // ---------------------------------------------------------------------------------------------
 
-ItemStats::operator= ( ItemStats &kItemStats )
+ItemStats& ItemStats::operator= ( ItemStats &kItemStats )
 {
   
    m_kItemName = kItemStats.m_kItemName;
@@ -440,6 +440,8 @@ ItemStats::operator= ( ItemStats &kItemStats )
 
    //int m_iContainerID; // id of this container
 	m_iCurrentContainer = kItemStats.m_iCurrentContainer;
+	
+	return *this;
 }
 
 // ---------------------------------------------------------------------------------------------
