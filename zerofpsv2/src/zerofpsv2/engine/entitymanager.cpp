@@ -565,11 +565,12 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 		}	
 }
 
-void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
+void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
 {
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
 	int iSentSize = 0;
+	unsigned int iObj = 0;	
 	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
 
 	Entity* pkPackObj;
@@ -579,7 +580,28 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
-	for(unsigned int iObj=0; iObj < kObjects.size(); iObj++)	{
+
+
+
+	
+	//if this is the zone object, do some special stuff =)
+	if(bZoneObject)
+	{
+		//cout<<"packing zone object"<<kObjects.size()<<endl;
+		
+		
+		if(m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject >=  kObjects.size())
+			m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = 0;
+		
+		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;
+	
+		//cout<<"nr of objects: "<<kObjects.size()<<endl;
+		//cout<<"starting from:"<<iObj<<endl;
+	
+	}
+	
+
+	for(; iObj < kObjects.size(); iObj++)	{
 		pkPackObj = kObjects[iObj];
 
 		pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
@@ -602,7 +624,6 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 			NP.Write(ZFGP_ENDOFPACKET);
 			NP.TargetSetClient(iClient);
 			m_pkNetWork->Send2(&NP);
-			//m_pkNetWork->SendToClient(iClient, &NP);
 
 			NP.Clear();
 			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -618,14 +639,21 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 			break;
 		}
 	}
-
-
+	
+	//cout<<"size is:"<<iSentSize<<endl;
+	
+	//if zone object save this object is, so that we can continue at this object next frame
+	if(bZoneObject)
+	{	
+		m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = iObj;		
+		//cout<<"stoped at: "<<iObj<<endl;
+	}
 
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
 	NP.TargetSetClient(iClient);
 	m_pkNetWork->Send2(&NP);
-//	m_pkNetWork->SendToClient(iClient, &NP);
+
 }
 
 void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
@@ -747,14 +775,16 @@ void EntityManager::PackToClients()
 
 
 	// Client Network send.
-	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) {
+	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
+	{
 		m_pkWorldObject->GetAllObjects(&kObjects);
-		PackToClient(0, kObjects);
+		PackToClient(0, kObjects,false);
 		return;
-		}
+	}
 
 	// Server Network send.
-	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) {
+	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) 
+	{
 		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
 
 		// Get Ptr to clients tracker.
@@ -764,32 +794,40 @@ void EntityManager::PackToClients()
 		//PackZoneListToClient(iClient, pkTrack);
 		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
 
+		
+		//collect objects
+		kObjects.clear();		
+		
 		// Pack and Send all Client Objects
-		kObjects.clear();
 		m_pkClientObject->GetAllObjects(&kObjects);
-		PackToClient(iClient, kObjects);
 
 		//pack and send global objects
-		kObjects.clear();
 		m_pkGlobalObject->GetAllObjects(&kObjects);
-		PackToClient(iClient, kObjects);
 
 		// Loop all zones activated by client.
-		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) {
+		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 
+		{
 			// Get Zone and all subobjects.
 			int iZoneID = (*itActiveZone);
 			pkZone = m_kZones[iZoneID].m_pkZone;
 			assert(pkZone);
 
-			kObjects.clear();
-			pkZone->GetAllDynamicEntitys(&kObjects);
-			PackToClient(iClient, kObjects);
-			}
-		}
+			pkZone->GetAllDynamicEntitys(&kObjects);		//add objects to vector
 
-	for(list<Entity*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) {
-		(*it)->m_aiNetDeleteList.clear();
 		}
+		
+		//send all data
+		PackToClient(iClient, kObjects,true);			//send in true to packtoclient 
+		
+		
+	}
+		
+		
+
+	for(list<Entity*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) 
+	{
+		(*it)->m_aiNetDeleteList.clear();
+	}
 
 /*	if(m_aiNetDeleteList.size() == 0)
 		return;
@@ -940,7 +978,7 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 
 	kObjects.clear();
 	pkStatic->GetAllObjects(&kObjects);
-	PackToClient(iClient, kObjects);
+	PackToClient(iClient, kObjects,false);
 	
 }
 

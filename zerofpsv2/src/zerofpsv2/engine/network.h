@@ -79,7 +79,10 @@ public:
 	int				m_iOutOfOrderNetFrame;
 
 	int				m_iLastRecvPacket;				// Order num of last recv packet.
+
+	unsigned int	m_iCurrentObject;						//current position in zoneobject list, for packtoclient
 	
+
 	deque<ZFNetPacketData>	m_RelPackages;
 };
 
@@ -133,6 +136,7 @@ private:
 
 	float						m_fStatsUpdate;
 	
+
 	// Console Variables
 	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.
@@ -205,6 +209,7 @@ public:
 	void DevShow_ClientConnections();
 
 	friend class NetPacket;
+	friend class EntityManager;	
 };
 
 #endif

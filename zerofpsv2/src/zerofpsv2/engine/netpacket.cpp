@@ -35,6 +35,7 @@ void RemoteNode::Clear()
 	m_iPacketLossRecv			= 0;
 	m_iOutOfOrderNetFrame	= 0;
 	m_iLastRecvPacket			= 0;
+	m_iCurrentObject			= 0;
 
 	m_kRecvGraph.SetMinMax(0,100000);		
 	m_kRecvGraph.SetSize(100,100,50);

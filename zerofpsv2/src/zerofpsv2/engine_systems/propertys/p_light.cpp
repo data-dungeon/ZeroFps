@@ -37,6 +37,8 @@ void P_Light::Init()
 void P_Light::Update() 
 {
 
+	m_pkLightSource->kPos = m_pkObject->GetWorldPosV();
+
 	switch(m_iMode)
 	{
 		case LMODE_TORCH:

@@ -163,7 +163,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
-		void PackToClient(int iClient, vector<Entity*> kObjects);
+		void PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject);
 		void PackToClients();												//Packs and Sends to ALL clients.
 
 		void StaticData(int iClient, NetPacket* pkNetPacket);
