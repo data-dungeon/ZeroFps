@@ -5,6 +5,9 @@
 #include <cstdio>
 #include "heightmap.h"
 
+#include "../../engine/fh.h"
+#include "../../engine/zfresource.h"
+
 int iNumOfHMVertex;
 
 HeightMap::HeightMap() 
@@ -448,7 +451,12 @@ bool HeightMap::Save(const char* acFile) {
 			file+=nr;
 			file+=".tga";
 			
-			m_pkTexMan->BindTexture(m_kSets[i].m_acMask,0);
+			ZFResourceHandle m_kConsoleText;
+			m_kConsoleText.SetRes(m_kSets[i].m_acMask);	
+			
+			ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+			m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
+			
 			m_pkTexMan->SaveTexture(file.c_str(),0);
 		}
 	}
@@ -715,7 +723,13 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 		return;
 	
 	
-	m_pkTexMan->BindTexture(m_kSets[iMask].m_acMask,0);
+	ZFResourceHandle m_kConsoleText;
+	m_kConsoleText.SetRes(m_kSets[iMask].m_acMask);	
+		
+	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
+
+	//m_pkTexMan->BindTexture(m_kSets[iMask].m_acMask,0);
 	
 	
 	if(!m_pkTexMan->MakeTextureEditable())
@@ -966,7 +980,13 @@ float HeightMap::GetAlpha(float x,float y,int iTexture)
 		return 1;
 			
 	//bind mask
-	m_pkTexMan->BindTexture(m_kSets[iTexture].m_acMask,0);
+	//m_pkTexMan->BindTexture(m_kSets[iTexture].m_acMask,0);
+		
+	ZFResourceHandle m_kConsoleText;
+	m_kConsoleText.SetRes(m_kSets[iTexture].m_acMask);			
+	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
+		
 		
 	float dw = m_pkTexMan->GetImage()->w / m_iHmSize;
 	float dh = m_pkTexMan->GetImage()->h / m_iHmSize;	

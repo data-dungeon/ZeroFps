@@ -77,16 +77,21 @@ class RENDER_API TextureManager : public ZFObject {
 
 		int GetOptionsFromFileName(string strName);
 
+		bool UnLoad(const char* acFileName);		
+
+
 	public:
 		void FreeTexture(texture* pkTex);
 
 		TextureManager();
-		int Load(const char* acFileName,int iOption);		
-		bool UnLoad(const char* acFileName);		
-		bool UnLoad(int iTextureID);		
 		bool AddMipMapLevel(int iLevel,const char* acNewFile);
-		void BindTexture(int iTexture);
 		void BindTexture(const char* acFileName,int iOption);
+		
+		void BindTexture(int iTexture);
+		bool UnLoad(int iTextureID);		
+		
+		int Load(const char* acFileName,int iOption);		
+		
 		void ClearAll();
 		int CurentTexture() { return m_iCurrentTexture;};
 
@@ -101,16 +106,19 @@ class RENDER_API TextureManager : public ZFObject {
 		bool PsetRGBA(int x,int y,int r,int g,int b,int a);
 		Uint32 GetPixel(int x,int y);
 		bool Blit(SDL_Surface* pkImage,int x,int y);
-		SDL_Surface* GetImage();
-		bool SaveTexture(const char* acFile,int iLevel);
 		
+		SDL_Surface* GetImage();		
+		bool SaveTexture(const char* acFile,int iLevel);		
 		Image* LoadImage2(const char *filename);	
+
+		void Debug_TestTexturesLoader(void);
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
 
-		void Debug_TestTexturesLoader(void);
+		
+		friend class ZFResourceDB;
 };
 
 

@@ -7,6 +7,8 @@
 
 #include "render_x.h"
 #include "zguirenderer.h"
+#include "../engine/fh.h"
+#include "../engine/zfresource.h"
 
 class TextureManager;
 

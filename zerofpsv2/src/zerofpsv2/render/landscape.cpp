@@ -713,6 +713,7 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 	glPopMatrix();
 }
 
+
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	if(!m_iDrawLandscape)
@@ -771,8 +772,15 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	
 	//Draw default texture	
-	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
+	ZFResourceHandle m_kConsoleText;
+	m_kConsoleText.SetRes(kMap->m_kSets[0].m_acTexture);		
+	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+	
+	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
+	
+//	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
+//	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
 		
 	DrawAllHM(kMap,CamPos,true);
 		
@@ -784,7 +792,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	
 	
-	//enable TU0 again
+ 	//enable TU0 again
 	glActiveTextureARB(GL_TEXTURE0_ARB);	
 	glEnable(GL_TEXTURE_2D);	
 		
