@@ -69,8 +69,6 @@ Vector2 ActionMenu::RotateXY(float angle, Vector2 size)
 
 void ActionMenu::Open()
 {
-
-
 	if(m_pkEntity == NULL)
 		return;
 
@@ -148,14 +146,16 @@ void ActionMenu::Open()
 		if(pkUpSkin)
 			pkButton->SetButtonUpSkin(pkUpSkin);
 
-		for(int u=0; u<m_kActions[i].size(); u++)
+		
+		string strTemp = m_kActions[i];
+		for(int u=0; u<strTemp.size(); u++)
 		{
-			char ch = m_kActions[i][u];
+			char ch = strTemp[u];
 			if(ch >= 65 && ch <= 90)
-				m_kActions[i][u] = (char) (ch + 32);
+				strTemp[u] = (char) (ch + 32);
 		}
 
-		sprintf(szIcon, "data/textures/gui/actions/%s.tga", m_kActions[i].c_str());
+		sprintf(szIcon, "data/textures/gui/actions/%s.tga", strTemp.c_str());
 
 		int iTexID = m_pkTexMan->Load(szIcon, 0);
 		

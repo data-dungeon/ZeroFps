@@ -407,19 +407,21 @@ void MistClient::Input()
 	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )
 	{
-		if(!DelayCommand())
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 		{
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 			{
-				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
-				{
+					m_pkActionDlg->SetEntity(pkEnt);			
+					m_pkActionDlg->Open();				
+				
+					/*
 					vector<string>	kActions;
 					pkMl->GetActions(kActions);
 					
 					cout<<"actions:"<<endl;
 					for(int i =0;i<kActions.size();i++)
 						cout<<i<<" "<<kActions[i]<<endl;
-				}
+					*/						
 			}
 		}
 	}
@@ -433,17 +435,17 @@ void MistClient::Input()
 			{
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
-	/*				vector<string>	kActions;
-					pkMl->GetActions(kActions);*/
+					vector<string>	kActions;
+					pkMl->GetActions(kActions);
 
-					m_pkActionDlg->SetEntity(pkEnt);			
-					m_pkActionDlg->Open();
+					//m_pkActionDlg->SetEntity(pkEnt);			
+					//m_pkActionDlg->Open();
 					
-		/*			if(!kActions.empty())
+					if(!kActions.empty())
 					{
 						SendAction(m_iPickedEntityID,kActions[0]);
 						
-					}*/
+					}
 				}			
 			}
 		}	
