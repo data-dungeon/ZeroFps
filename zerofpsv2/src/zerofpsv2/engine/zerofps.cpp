@@ -353,16 +353,14 @@ void ZeroFps::Run_Client()
 	m_pkObjectMan->UpdateZones();	
 
 	//   _---------------------------------- fulhack deluxe 
-	UpdateCamera();
-	
-	
-
+	Draw_RenderTargets();
+	/*UpdateCamera();
 	
 	if(m_bDrawAxisIcon)
 		m_pkRender->Draw_AxisIcon(5);
  
 	if(m_bRenderOn == 1)
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);*/
 
 	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
 	//update new super duper rigid body physics engine deluxe
@@ -375,7 +373,7 @@ void ZeroFps::Run_Client()
 		g_iLogRenderPropertys = 0;
 		}
 
-	m_pkObjectMan->Test_DrawZones();
+	//m_pkObjectMan->Test_DrawZones();
 
 	//update sound system			
 	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
@@ -558,6 +556,19 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 	
 }
 
+void ZeroFps::Draw_RenderTargets()
+{
+	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+	{
+		SetCamera(m_kRenderTarget[i]);
+		UpdateCamera();
+		if(m_bDrawAxisIcon)
+			m_pkRender->Draw_AxisIcon(5);
+		if(m_bRenderOn == 1)
+			m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+		m_pkObjectMan->Test_DrawZones();
+	}
+}
 
 void ZeroFps::Swap(void) {
 	DrawDevStrings();

@@ -53,7 +53,10 @@ class MistServer :public Application , public ZGuiApp {
 			FID_LOCALORDER,
 			FID_LIGHTMODE,
 			FID_EDITSUN,
+
 			FID_SETCAM,
+			FID_CAMLINK,
+			FID_CAMSOLO,
 		};
 
 		enum EditMode_e
@@ -83,8 +86,13 @@ class MistServer :public Application , public ZGuiApp {
 		string	m_strActiveZoneName, m_strPrevZoneName;
 		string	m_strActiveObjectName;
 		string	m_strActiveEnviroment;
-		Entity*	m_pkCameraObject;
-		Camera*	m_pkCamera;
+		
+		Entity*	m_pkCameraObject[4];
+		Camera*	m_pkCamera[4];
+		Entity*	m_pkActiveCameraObject;
+		Camera*	m_pkActiveCamera;
+		bool		m_bSoloMode;
+
 
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
@@ -99,6 +107,8 @@ class MistServer :public Application , public ZGuiApp {
 		Vector3 Get3DMouseDir(bool bMouse);
 
 		Entity*	GetTargetObject();		
+
+		void SetCamera(int iNum);
 
 		// Selection of Entitys.
 		set<int>	m_SelectedEntitys;

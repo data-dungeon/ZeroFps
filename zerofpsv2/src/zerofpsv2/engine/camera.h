@@ -52,6 +52,10 @@ class ENGINE_API Camera
 		//bool	m_bPerspective;
 		CamMode	m_eMode;
 
+		float m_fAppWidth;
+		float m_fAppHeight;
+
+
 	public:
 		Frustum m_kFrustum;
 		Vector3 m_kOrthoAxisX;
@@ -72,6 +76,9 @@ class ENGINE_API Camera
 		void ClearViewPort();
 		void SetFov(float fFov);
 		
+		Vector3 GetViewPortSize();
+		Vector3 GetViewPortCorner();
+
 		void OrthoZoom(float fZoom);
 		void OrthoMove(Vector3 kMove);
 

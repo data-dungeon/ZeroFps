@@ -65,6 +65,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_AcceptNewLogins = true;
 	m_bUpdateMarker	= true;
 	m_bEditSun			= false;
+	m_bSoloMode       = false;
 
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
@@ -79,13 +80,36 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("lightmode", FID_LIGHTMODE);		
 	Register_Cmd("editsun", FID_EDITSUN);		
 	Register_Cmd("setcam", FID_SETCAM);		
+	Register_Cmd("camlink", FID_CAMLINK);
+	Register_Cmd("camsolo", FID_CAMSOLO);
+	
 
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
 	m_iEditLayer	= 1;
+
+	m_pkActiveCameraObject	= NULL;
+	m_pkActiveCamera			= NULL;
 } 
+
+void MistServer::SetCamera(int iNum)
+{
+	m_pkActiveCameraObject	= m_pkCameraObject[iNum];
+	m_pkActiveCamera			= m_pkCamera[iNum];
+
+	if(m_bSoloMode) 
+	{
+		m_pkCamera[0]->SetViewPort(0,0,0,0);
+		m_pkCamera[1]->SetViewPort(0,0,0,0);
+		m_pkCamera[2]->SetViewPort(0,0,0,0);
+		m_pkCamera[3]->SetViewPort(0,0,0,0);
+		m_pkActiveCamera->SetViewPort(0,0,1,1);
+	}
+}
+
+
 
 void MistServer::OnInit() 
 {
@@ -130,7 +154,24 @@ void MistServer::Init()
 	RegisterResources();
 
 	//initiate our camera
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
+	m_pkFps->SetRenderTarget(m_pkCamera[0]);
+
+	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
+	m_pkCamera[1]->SetViewMode("top");
+	m_pkFps->SetRenderTarget(m_pkCamera[1]);
+	
+	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
+	m_pkCamera[2]->SetViewMode("left");
+	m_pkFps->SetRenderTarget(m_pkCamera[2]);
+
+	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
+	m_pkCamera[3]->SetViewMode("front");
+	m_pkFps->SetRenderTarget(m_pkCamera[3]);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -286,7 +327,7 @@ void MistServer::Select_Toggle(int iId)
 
 void MistServer::OnIdle()
 {	
-	m_pkFps->SetCamera(m_pkCamera);		
+	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
 	if(pkGui->m_bHaveInputFocus == false)
@@ -346,7 +387,7 @@ HeightMap* MistServer::SetPointer()
 	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
 
-	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
+	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
 /*	Vector3 start	= m_pkFps->GetCam()->GetPos();
@@ -603,19 +644,24 @@ void MistServer::Input_EditObject()
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
+	if(m_pkInput->Pressed(KEY_Z))		SetCamera(0);
+	if(m_pkInput->Pressed(KEY_X))		SetCamera(1);
+	if(m_pkInput->Pressed(KEY_C))		SetCamera(2);
+	if(m_pkInput->Pressed(KEY_V))		SetCamera(3);
+
 	if(m_pkInput->VKIsDown("slow")){
 		m_CamMoveSpeed *= 0.25;
 	}
 
 	float fSpeedScale = m_pkFps->GetFrameTime()*m_CamMoveSpeed;
 
-	if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
+	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 	{
 
-		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();
 		
 		Matrix4 kRm;
-		kRm = m_pkCameraObject->GetLocalRotM();
+		kRm = m_pkActiveCameraObject->GetLocalRotM();
 
 		kRm.Transponse();
 
@@ -648,12 +694,12 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		bla = kRm.VectorTransform(bla);
 		kRm.LookDir(bla,Vector3(0,1,0));
 		
-		m_pkCameraObject->SetLocalPosV(newpos);		
+		m_pkActiveCameraObject->SetLocalPosV(newpos);		
 		if(m_pkInput->VKIsDown("pancam"))
-			m_pkCameraObject->SetLocalRotM(kRm);	
+			m_pkActiveCameraObject->SetLocalRotM(kRm);	
 
-		if(m_pkInput->Pressed(KEY_F6))	m_pkCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
-		if(m_pkInput->Pressed(KEY_F7))	m_pkCamera->SetViewMode(Camera::CAMMODE_PERSP);	
+		if(m_pkInput->Pressed(KEY_F6))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
+		if(m_pkInput->Pressed(KEY_F7))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_PERSP);	
 	}
 
 	else 
@@ -665,10 +711,10 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInput->VKIsDown("right"))	kMove.x += fSpeedScale;
 		if(m_pkInput->VKIsDown("left"))		kMove.x -= fSpeedScale;	
 		
-		if(m_pkInput->VKIsDown("down"))		m_pkCamera->OrthoZoom(0.9);
-		if(m_pkInput->VKIsDown("up"))		m_pkCamera->OrthoZoom(1.1);
+		if(m_pkInput->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
+		if(m_pkInput->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
 
-		P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkCameraObject->GetProperty("P_Camera"));
+		P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
 		pkCam->OrthoMove(kMove);
 	}
 }
@@ -812,10 +858,51 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SETCAM:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
-			m_pkCamera->SetViewMode(kCommand->m_kSplitCommand[1]);
+			m_pkActiveCamera->SetViewMode(kCommand->m_kSplitCommand[1]);
 			break;
 	
+		case FID_CAMLINK:
+				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) {
+					// Unlink
+					cout << "Unlink" << endl;
+					m_pkCameraObject[1]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[1]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
+					m_pkCameraObject[2]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[2]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
+					m_pkCameraObject[3]->SetParent( m_pkObjectMan->GetWorldObject() );
+					m_pkCameraObject[3]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
+					}
+				else {
+					// Link
+					cout << "Link" << endl;
+					m_pkCameraObject[1]->SetParent( m_pkCameraObject[0] );
+					m_pkCameraObject[1]->SetLocalPosV(Vector3::ZERO);
+					m_pkCameraObject[2]->SetParent( m_pkCameraObject[0] );
+					m_pkCameraObject[2]->SetLocalPosV(Vector3::ZERO);
+					m_pkCameraObject[3]->SetParent( m_pkCameraObject[0] );
+					m_pkCameraObject[3]->SetLocalPosV(Vector3::ZERO);
+				}
 
+				break;
+
+		case FID_CAMSOLO:
+			if(m_bSoloMode) {
+				m_bSoloMode = false;
+				m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
+				m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
+				m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
+				m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
+				}
+			else {
+				m_bSoloMode = true;
+				m_pkCamera[0]->SetViewPort(0,0,0,0);
+				m_pkCamera[1]->SetViewPort(0,0,0,0);
+				m_pkCamera[2]->SetViewPort(0,0,0,0);
+				m_pkCamera[3]->SetViewPort(0,0,0,0);
+				m_pkActiveCamera->SetViewPort(0,0,1,1);
+				}
+			break;
+				
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -977,25 +1064,70 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
+	for(int i=0; i<4; i++) {
+		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+		if(m_pkCameraObject[i]) {
+			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );
+			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
+			m_pkCamProp->SetCamera(m_pkCamera[i]);
+			m_pkCameraObject[i]->GetSave() = false;
+			}
+		}
+
+	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
+	pe->SetEnable(true);		
+	pe->SetEnviroment("data/enviroments/server.env");
+
 	//create a camera for the server
-	m_pkCameraObject = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camera.lua");
+/*	m_pkCameraObject[0] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
 	if(m_pkCameraObject)
 	{	
-		m_pkCameraObject->SetParent(m_pkObjectMan->GetWorldObject());
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera);
-		m_pkCameraObject->GetSave() = false;
+		m_pkCameraObject[0]->SetParent(m_pkObjectMan->GetWorldObject());
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[0]->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera[0]);
+		m_pkCameraObject[0]->GetSave() = false;
 		
 		//eye candy for server
 		//P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
 		//sb->SetTexture("data/textures/env/plainsky/sky","mode6");
 		//sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");
 		
-		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
+		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		
 		pe->SetEnviroment("data/enviroments/server.env");
 	}
 	
+	// Create Cam 2 For the Server.
+	m_pkCameraObject[1] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	if(m_pkCameraObject[1])
+	{	
+		m_pkCameraObject[1]->SetParent(m_pkCameraObject[0] );	//m_pkObjectMan->GetWorldObject()
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[1]->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera[1]);
+		m_pkCameraObject[1]->GetSave() = false;
+	}
+
+	m_pkCameraObject[2] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	if(m_pkCameraObject[2])
+	{	
+		m_pkCameraObject[2]->SetParent(m_pkCameraObject[0]);
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[2]->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera[2]);
+		m_pkCameraObject[2]->GetSave() = false;
+	}
+
+	m_pkCameraObject[3] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	if(m_pkCameraObject[3])
+	{	
+		m_pkCameraObject[3]->SetParent(m_pkCameraObject[0]);
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[3]->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkCamera[3]);
+		m_pkCameraObject[3]->GetSave() = false;
+	}*/
+
+
+	SetCamera(0);
+
 	//create server info object
 	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
 	if(m_pkServerInfo)
@@ -1034,18 +1166,24 @@ Vector3 MistServer::Get3DMouseDir(bool bMouse)
 	//screen propotions
 	float xp=4;
 	float yp=3;
+
+	Vector3 kViewSize, kViewCorner;
+	kViewSize = m_pkActiveCamera->GetViewPortSize();
+	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
 	
 	if(bMouse)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda den position vi får därifrån.
 		//	m_pkInput->UnitMouseXY(x,y);
-		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		//x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+		//y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		x = -0.5f + (float) (m_pkInput->m_iSDLMouseX - kViewCorner.x) / (float) kViewSize.x;
+		y = -0.5f + (float) ((m_pkApp->m_iHeight - m_pkInput->m_iSDLMouseY) - kViewCorner.y) / (float) kViewSize.y;
 
-		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
 		{
-			dir.Set(x*xp,-y*yp,-1.5);
+			dir.Set(x*xp,y*yp,-1.5);
 			dir.Normalize();
 		}
 		else
@@ -1061,7 +1199,7 @@ Vector3 MistServer::Get3DMouseDir(bool bMouse)
 		dir.Normalize();	
 	}
 	
-	Matrix4 rm = m_pkCamera->GetRotM();
+	Matrix4 rm = m_pkActiveCamera->GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
 	
@@ -1071,32 +1209,39 @@ Vector3 MistServer::Get3DMouseDir(bool bMouse)
 /*	Returns 3D dir of mouse click in world. */
 Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 {
-
-
 	Vector3 dir;
 	float x,y;		
 	
 	//screen propotions
 	float xp=4;
 	float yp=3;
-	
+
+	Vector3 kViewSize, kViewCorner;
+	kViewSize = m_pkActiveCamera->GetViewPortSize();
+	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
+
 	if(m_bMouse)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda den position vi får därifrån.
 		//	m_pkInput->UnitMouseXY(x,y);
-		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		/*
+			x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+			y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		*/
+		x = -0.5f + (float) (m_pkInput->m_iSDLMouseX - kViewCorner.x) / (float) kViewSize.x;
+		y = -0.5f + (float) ((m_pkApp->m_iHeight - m_pkInput->m_iSDLMouseY) - kViewCorner.y) / (float) kViewSize.y;
+		
 
-		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 		{
-			dir.Set(x*xp,-y*yp,-1.5);
+			dir.Set(x*xp,y*yp,-1.5);
 			dir.Normalize();
 		}
 		else 
 		{
-			dir.x = x* m_pkCamera->m_kOrthoSize.x;
-			dir.y = -y* m_pkCamera->m_kOrthoSize.y;
+			dir.x = x* m_pkActiveCamera->m_kOrthoSize.x;
+			dir.y = y* m_pkActiveCamera->m_kOrthoSize.y;
 			dir.z = -1.5; 
 //			cout << "Cam XY: " << dir.x << "," << dir.y << endl;
 		}
@@ -1107,7 +1252,7 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 		dir.Normalize();	
 	}
 	
-	Matrix4 rm = m_pkCamera->GetRotM();
+	Matrix4 rm = m_pkActiveCamera->GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
 	
@@ -1135,8 +1280,10 @@ Entity* MistServer::GetTargetObject()
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
-		if(kObjects[i] == m_pkCameraObject)
-			continue;
+		if(kObjects[i] == m_pkCameraObject[0])	continue;
+		if(kObjects[i] == m_pkCameraObject[1])	continue;
+		if(kObjects[i] == m_pkCameraObject[2])	continue;
+		if(kObjects[i] == m_pkCameraObject[3])	continue;
 		
 		if(kObjects[i]->iNetWorkID <100000)
 			continue;
@@ -1238,7 +1385,7 @@ void MistServer::UpdateZoneMarkerPos()
 
 void MistServer::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
+	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
 }
 
 

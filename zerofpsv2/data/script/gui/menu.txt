@@ -75,6 +75,51 @@ Title=Light Mat
 Parent=Menu_View
 Cmd=lightmode 2
 
+[Menu_ViewCamPersp]
+Title=Cam - Persp
+Parent=Menu_View
+Cmd=setcam persp
+
+[Menu_ViewCamTop]
+Title=Cam - Top
+Parent=Menu_View
+Cmd=setcam top
+
+[Menu_ViewCamFront]
+Title=Cam - Front
+Parent=Menu_View
+Cmd=setcam front
+
+[Menu_ViewCamLeft]
+Title=Cam - Left
+Parent=Menu_View
+Cmd=setcam left
+
+[Menu_ViewCamBot]
+Title=Cam - Bot
+Parent=Menu_View
+Cmd=setcam bot
+
+[Menu_ViewCamBack]
+Title=Cam - Back
+Parent=Menu_View
+Cmd=setcam back
+
+[Menu_ViewCamRight]
+Title=Cam - Right
+Parent=Menu_View
+Cmd=setcam right
+
+[Menu_ViewLink]
+Title=Cam - Link (T)
+Parent=Menu_View
+Cmd=camlink
+
+[Menu_ViewSolo]
+Title=Cam - Solo (T)
+Parent=Menu_View
+Cmd=camsolo
+
 ; ------------- SYSTEM MENU -------------
 
 [Menu_Sys]
@@ -128,44 +173,6 @@ Cmd=set s_marker toggle
 Title=EditSun (T)
 Parent=Menu_Debug
 Cmd=editsun
-
-[Menu_DebugCamPersp]
-Title=Cam - Persp
-Parent=Menu_Debug
-Cmd=setcam persp
-
-[Menu_DebugCamTop]
-Title=Cam - Top
-Parent=Menu_Debug
-Cmd=setcam top
-
-[Menu_DebugCamFront]
-Title=Cam - Front
-Parent=Menu_Debug
-Cmd=setcam front
-
-[Menu_DebugCamLeft]
-Title=Cam - Left
-Parent=Menu_Debug
-Cmd=setcam left
-
-[Menu_DebugCamBot]
-Title=Cam - Bot
-Parent=Menu_Debug
-Cmd=setcam bot
-
-[Menu_DebugCamBack]
-Title=Cam - Back
-Parent=Menu_Debug
-Cmd=setcam back
-
-[Menu_DebugCamRight]
-Title=Cam - Right
-Parent=Menu_Debug
-Cmd=setcam right
-
-
-
 
 ; ------------- DEVPAGE MENU -------------
 

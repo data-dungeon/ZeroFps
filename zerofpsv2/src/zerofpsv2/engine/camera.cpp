@@ -6,6 +6,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetView(fFov,fAspect,fNear,fFar);
 	//SetOrthoView();
 	SetViewPort(0,0,1,1);
+	//SetViewPort(0.25,0.25,0.5,0.5);
 	SetPos(kPos);
 	SetRot(kRot);
 	m_kRotM.Identity();
@@ -25,6 +26,9 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 
 void Camera::Update(int iWidth,int iHeight) 
 {
+	m_fAppWidth  = iWidth;
+	m_fAppHeight = iHeight;
+
 	if(m_bViewChange)
 	{
 		m_bViewChange=false;
@@ -70,6 +74,23 @@ void Camera::Update(int iWidth,int iHeight)
 	//update the frustum
 	m_kFrustum.GetFrustum();
 }
+
+Vector3 Camera::GetViewPortSize()
+{
+	Vector3 kRes;
+	kRes.x = m_fAppWidth * m_fWidth;
+	kRes.y = m_fAppHeight * m_fHeight;
+	return kRes;
+}
+
+Vector3 Camera::GetViewPortCorner()
+{
+	Vector3 kRes;
+	kRes.x = m_fAppWidth * m_fX;
+	kRes.y = m_fAppHeight * m_fY;
+	return kRes;
+}
+
 
 void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 {
