@@ -103,10 +103,6 @@ void P_PfPath::Update()
 		}
 		else
 		{
-			//play run animation
-			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
-			if(pm)
-				pm->SetAnimation("run",0);
 		
 		}
 
@@ -175,6 +171,12 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 		//reverse(kPath.begin(), kPath.end());
 		//kPath.push_back(kPathEnd);
 		SetPath(kPath);
+		
+		//play run animation
+		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+		if(pm)
+			pm->SetAnimation("run",0);
+
 		return true;
 	}
 	
