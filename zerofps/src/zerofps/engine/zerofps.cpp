@@ -5,11 +5,12 @@
 
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
+
 	m_pkFile=new FileIo;
-	m_pkCmd=new CmdSystem;
 	m_pkTexMan=new TextureManager(m_pkFile);
 	m_pkRender=new Render();
 	m_pkConsole=new Console();	
+	m_pkCmd=new CmdSystem;
 	m_pkInput=new Input();
 	m_pkAudioMan=new AudioManager(this);
 	m_pkLight=new Light();
@@ -329,6 +330,33 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	//update all lights
 	m_pkLight->Update();	
 		
+}
+static char Devformat_text[4096];	//
+
+void ZeroFps::DevPrintf(const char *fmt, ...)
+{
+	va_list		ap;								// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);							// Parses The String For Variables
+		vsprintf(Devformat_text, fmt, ap);			// And Convert Symbols
+	va_end(ap);									// 
+
+	// Now call our print function.
+	akDevString.push_back(string(Devformat_text));
+}
+
+void ZeroFps::DrawDevStrings()
+{
+	float fYOffset = 0.85;
+	for(int i=0; i<akDevString.size(); i++) {
+		m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.04,0.04,0.04), const_cast<char*>(akDevString[i].c_str()));	
+		fYOffset -= 0.05;
+	}
+
+	akDevString.clear();
 }
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)

@@ -124,9 +124,9 @@ void ModellMD1::Read( char* filename )
 	ReadSkins();
 	ReadTriangles();
 	ReadFrames();
-	
-
 }
+
+extern void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame);
 
 bool ModellMD1::Export(MadExporter* mad)
 {
@@ -177,9 +177,35 @@ bool ModellMD1::Export(MadExporter* mad)
 	float x,y,z;
 	int f;
 
+	Mad_Animation* pkAnim;
+	Mad_KeyFrame kKeyFrame;
+	int iAnimNum, iFrameNum;
+	char AnimName[256];
+	char AnimNumAsString[256];
+
 	for(f=0; f<mad->kHead.iNumOfFrames; f++) {
 		// Alloc frame mem
 		af = &frames[f].head;
+
+		// Put this in correct anim.	
+		int iFrameNumIndex = strcspn( af->name, "1234567890" );
+
+		int iAnimFrameNum = atoi(&af->name[iFrameNumIndex]);
+		SplitAnimNumAndFrameNum(iAnimFrameNum, iAnimNum, iFrameNum);
+		strncpy( AnimName, af->name, iFrameNumIndex);
+		AnimName[iFrameNumIndex] = 0;
+		
+		cout << f << ": "<< af->name  << " = " << AnimName << "/" << iAnimFrameNum << endl; 
+
+ 		_itoa(iAnimNum,AnimNumAsString,10);
+		strcat(AnimName,AnimNumAsString);
+		pkAnim = mad->GetAnimation(AnimName);
+
+		kKeyFrame.Clear();
+		kKeyFrame.fFrameTime = 0.1;
+		kKeyFrame.iVertexFrame = f;
+		pkAnim->KeyFrame.push_back(kKeyFrame);
+
 
 		akVertexFrames[f].akVertex.resize(mad->kHead.iNumOfVertex);
 
@@ -291,7 +317,7 @@ bool ModellMD1::Export(MadExporter* mad)
 		mad->akTextureCoo[i].t = kTextureCoo[i].t;
 	}
 
-	Mad_Animation* pkAnim;
+/*	Mad_Animation* pkAnim;
 	Mad_KeyFrame kKeyFrame;
 	pkAnim = mad->GetAnimation("std");
 
@@ -300,7 +326,7 @@ bool ModellMD1::Export(MadExporter* mad)
 		kKeyFrame.fFrameTime = 0.1;
 		kKeyFrame.iVertexFrame = i;
 		pkAnim->KeyFrame.push_back(kKeyFrame);
-	}
+	}*/
 
 
 	return true;

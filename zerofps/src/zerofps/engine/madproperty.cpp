@@ -23,6 +23,7 @@ MadProperty::MadProperty(Core* pkModell) {
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
+	bFlipFace = false;
 }
 
 
@@ -39,11 +40,20 @@ void MadProperty::Update() {
 	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
 	pkCore->ClearReplaceTexture();
 
+	if(bFlipFace)
+		glCullFace(GL_FRONT);
+
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
 		glScalef(m_fScale,m_fScale,m_fScale);
+		//glRotatef(0,1,0,0);
+		glRotatef(m_pkObject->GetRot().y + 90,0,1,0);
+		//glRotatef(0,0,0,1);
 		pkCore->draw();
 	glPopMatrix();
+
+	if(bFlipFace)
+		glCullFace(GL_BACK);
 
 }
 

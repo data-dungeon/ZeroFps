@@ -20,6 +20,9 @@ using namespace std;
 
 float const degtorad = float(57.3248);
 
+float BASIC_API DegToRad(float fAngle);
+float BASIC_API RadToDeg(float fAngle);
+
 void BASIC_API Gemens(char* aText);
 void BASIC_API IntToChar(char* aText,int iValue);
 

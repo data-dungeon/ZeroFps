@@ -49,6 +49,8 @@ class ENGINE_API MadProperty: public Property {
 		
 		void	SetScale(float fScale);
 
+		bool	bFlipFace;
+
 /*
 		// NEED TO WRITE
 

@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                          $(ProjDir)\debug\*.lib                          ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                          $(ProjDir)\debug\*.lib                          ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -103,6 +103,10 @@ PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\basicconsole.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\cmdsystem.cpp
@@ -190,6 +194,10 @@ SOURCE=.\basic.pkg
 # Begin Source File
 
 SOURCE=.\basic_x.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\basicconsole.h
 # End Source File
 # Begin Source File
 

@@ -216,6 +216,14 @@ SOURCE=.\test.cpp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\walker.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\walkeraiproperty.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -259,6 +267,14 @@ SOURCE=.\playerobject.h
 # Begin Source File
 
 SOURCE=.\test.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\walker.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\walkeraiproperty.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

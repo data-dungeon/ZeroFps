@@ -8,21 +8,27 @@ BunnyObject::BunnyObject()
 	AddProperty(new GravityProperty());
 	AddProperty(new FloatProperty());	
 
-	AddProperty("ModelProperty");
+//	AddProperty("ModelProperty");
 	AddProperty(new BunnyAIProperty());
 
 	Vector3 kColor;
 	kColor.Set(rand()%1000/1000.0,rand()%1000/1000.0,rand()%1000/1000.0);
 	
 
-	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));
+/*	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));
 	if(mod) {
 		mod->m_fRadius=0.15;
 		mod->m_iSlices=6;
 		mod->m_iStacks=6;
 		mod->m_kColor = kColor;
-		}
+		}*/
 
+	AddProperty("MadProperty");
+	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/golem.mad"));
+	madp->SetScale(0.01);
+	madp->bFlipFace = true;
+	madp->PlayAnimation(4,0);
 
 	// Välj den kanin som ÄR.
 	AddProperty("LightProperty");

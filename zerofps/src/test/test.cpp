@@ -1,4 +1,5 @@
 #include "test.h"
+#include "walker.h"
 
 
 Test olle("MegaGame",1024,768,16);
@@ -10,7 +11,7 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Test::OnInit(void) {
 	
-	pkConsole->Print("MegaUltraSuper Duper Game");
+//	pkConsole->Print("MegaUltraSuper Duper Game");
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 //	pkFps->m_pkAudioMan->PlayMusic();
 
@@ -99,8 +100,8 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-/*	for( i=0;i<40;i++) {
-		Object *ball=new BallObject();
+	for( i=0;i<4;i++) {
+		Object *ball=new WalkerObject();
 		float x=290 + rand()%200;
 		float y=730 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
@@ -108,7 +109,7 @@ void Test::OnInit(void) {
 		pkCollisionMan->Add(ball);
 	}
 
-	Object *sussi;
+/*	Object *sussi;
 	for(i=0;i<5;i++) {
 		sussi=new BunnyObject();
 		float x=340 + rand()%10;
@@ -206,8 +207,12 @@ void Test::OnHud(void) {
 		IntToChar(fps,pkFps->m_iFps);
 		fpsupdate=0;
 	}
-	pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
-	pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
+	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
+	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
+
+	pkFps->DevPrintf("Fiskarna i havet");
+	pkFps->DevPrintf("Fps: %d aa",pkFps->m_iFps);
+	pkFps->DrawDevStrings();
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);

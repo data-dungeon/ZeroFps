@@ -17,6 +17,7 @@ class HeightMap;
 
 #include "zfobject.h"
 #include "zfobjectmanger.h"
+#include "basicconsole.h"
 
 #include "vector3.h"
 #include "vector4.h"

@@ -1,5 +1,8 @@
 #include "globals.h"
 
+#define NRDEG_IN_ONE_RAD	57.29577951
+#define NRRAD_IN_ONE_DEG	0.0174532952
+
 void Gemens(char* aText) 
 {
 	int i=0;
@@ -35,8 +38,13 @@ void IntToChar(char* aText,int iValue)
 		}
 	}
 }
+	
+float BASIC_API DegToRad(float fAngle)
+{
+	return (fAngle * NRRAD_IN_ONE_DEG);
+}
 
-
-
-
-
+float BASIC_API RadToDeg(float fAngle)
+{
+	return (fAngle * NRDEG_IN_ONE_RAD);
+}

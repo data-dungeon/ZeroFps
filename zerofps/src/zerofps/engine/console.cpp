@@ -6,14 +6,12 @@
 using namespace std;
 
 Console::Console()
-  : ZFObject("Console") {
+  : BasicConsole("Console") {
    	
-   m_pkEngine = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-//	m_pkEngine=pkEngine;	
-	m_pkCmd=m_pkEngine->m_pkCmd;
-	m_pkRender=m_pkEngine->m_pkRender;
-	m_pkTexMan=m_pkEngine->m_pkTexMan;
-//	m_pkInput=pkEngine->m_pkInput;
+	m_pkEngine	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkCmd		= m_pkEngine->m_pkCmd;
+	m_pkRender	= m_pkEngine->m_pkRender;
+	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 	
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
@@ -100,21 +98,6 @@ void Console::Update(void) {
 
 
 
-void Console::Print(const char* aText) {
-	delete[] m_kText[m_kText.size()-1];
-	
-	for(int i=m_kText.size()-1;i>0;i--){
-		if(m_kText[i-1]!=NULL){
-//			cout<<"moving pos:"<<i-1<<" "<<m_kText[i-1]<<" to pos:"<<i<<" "<<m_kText[i]<<endl;
-			m_kText[i]=m_kText[i-1];			
-		}
-	}
-	
-	m_kText[0]=new char[TEXT_MAX_LENGHT];
-	strcpy(m_kText[0],aText);
-
-//	cout<<"added "<<m_kText[0]<<endl;
-}
 
 void Console::Execute(char* aText) {
 	if(strlen(aText)==0){
@@ -126,40 +109,4 @@ void Console::Execute(char* aText) {
 }
 
 
-static char format_text[4096];	//
-
-void Console::Printf(const char *fmt, ...)
-{
-	va_list		ap;							// Pointer To List Of Arguments
-
-	// Make sure we got something to work with.
-	if (fmt == NULL)	return;					
-
-	va_start(ap, fmt);						// Parses The String For Variables
-		vsprintf(format_text, fmt, ap);		// And Convert Symbols
-	va_end(ap);								// 
-
-	// Now call our print function.
-	Print(format_text);
-}
-
-void Console::RunCommand(int cmdid, const CmdArgument* kCommand)
-{
-	switch(cmdid) {
-		case FID_VERSION:
-			Print("ZeroFps Beta 1.0");
-			break;
-
-		case FID_HELP:
-			Print("");
-			Print("### help ###");
-			Print(" quit        -exit program");
-			Print(" varlist     -list variables");		
-			Print(" set $n $v   -set variable");		
-			Print(" music 1/0   -music on/off");
-			Print(" togglegrab  -toggle input grab");
-			Print(" setdisplay  -reinit display");
-			break;
-	}
-}
 

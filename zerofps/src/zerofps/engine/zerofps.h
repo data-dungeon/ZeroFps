@@ -95,6 +95,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		inline float GetTicks(void) {return (SDL_GetTicks()/1000.0);};
 		inline float GetFrameTime() {return (m_fFrameTime/1000.0);};
+		inline float GetGameTime(void) {return (SDL_GetTicks()/1000.0);};
 		
 	
 		void SetCamera(Camera* pkCamera);
@@ -107,6 +108,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		int	NumberOfArgs(void);	// Return num of arg to app.
 		string GetArg(int iArgIndex);
+	
+		vector<string>	akDevString;
+		void DrawDevStrings();
+		void DevPrintf(const char *fmt, ...);
+
 };
 
 

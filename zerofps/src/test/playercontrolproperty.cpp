@@ -10,7 +10,6 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 	strcpy(m_acName,"PlayerControlProperty");
 };
 
-
 void PlayerControlProperty::Update() {
 	float speed=6;
 	

@@ -7,6 +7,7 @@
 #include "basic_x.h"
 #include "os.h"
 #include "zfobject.h"
+#include "basicconsole.h"
 
 using namespace std;
 
@@ -34,6 +35,8 @@ class BASIC_API CmdSystem : public ZFObject  {
 		vector<variable*> kVars;		
 		vector<funktion*> kFunks;		
 				
+		BasicConsole* m_pkCon;
+
 	public:
 		enum FuncId_e
 			{
