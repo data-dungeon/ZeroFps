@@ -33,7 +33,7 @@ void DarkMetropolis::OnInit()
 
 	Register_Cmd("load",FID_LOAD);		
 
-	//m_pkFps->m_bClientMode = true;
+	m_pkFps->m_bClientMode = true;
 
 	m_pkLight->SetLighting(true);
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
