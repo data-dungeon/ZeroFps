@@ -35,7 +35,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 		m_bFirstRun = false;
 	}
 
-
 	// Get Frametime
 	m_fFrameTime = m_pkFps->GetFrameTime();// - m_fLastTime;//GetTicks() - m_fLastTime;
 	m_fLastTime =  SDL_GetTicks();// m_pkFps->m_pkObjectMan->GetSimTime();
@@ -62,7 +61,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 			int iCreate = int(m_fTimeSinceLastCreatedParticle / m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec);
 			float fTempTime = m_fTimeSinceLastCreatedParticle / iCreate;
 
-
 			// more than one particle could be created / frame
 			for ( int i = 0; i < iCreate; i++)
 			{
@@ -78,7 +76,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 			}
 
 		}
-
 	}
 
 	// Update lifetime for particles
@@ -91,8 +88,10 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 		{
 			m_kParticles[i].m_fAge -= m_fFrameTime;
 
-			// if lifetime if over, particle is reseted
+			// if lifetime is over, particle is reseted
 			if ( m_kParticles[i].m_fAge < 0 )
+			{
+				m_iActiveParticles--;
 				// is particle system finished, don't reset particle
 				if ( m_fAge > 0 || m_fAge == -9999999)
 				{
@@ -100,20 +99,19 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 				}
 				else
 					DisableParticle ( i );
+			}
 		}
 	}
 
 	// Update properties
 	for ( i = 0; i < (int) m_kPSProperties.size(); i++ )
 		m_kPSProperties[i]->Update();
-
-	// Has PSystem reachet its age and has no active particles, return true (PS finished)
-	if ( m_fAge != -9999999 && m_fAge < 0 && m_uiLastParticle - m_uiFirstParticle < 1 )
+	
+	// Has PSystem reached its age and has no active particles, return true (PS finished)
+	if ( m_fAge != -9999999 && m_fAge < 0 && m_iActiveParticles < 1 )
       return true;
    else 
       return false;
-
-
 }
 
 // ------------------------------------------------------------------------------------------
@@ -155,6 +153,7 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 	m_uiFirstParticle = 0,
 	m_uiLastParticle = -1;
+	m_iActiveParticles = 0;
 
 	m_kPosition.Set (0,0,0);
 
@@ -175,6 +174,8 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 {
+	m_iActiveParticles++;
+
 	// set size of particle array stuff
 	if ( iParticleIndex > m_uiLastParticle )
 		m_uiLastParticle = iParticleIndex;
@@ -249,33 +250,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	// Set current particle to active
 	m_kParticles[iParticleIndex].m_bActive = true;
 
-	// if PSystem uses colors, reset color
-	if ( m_pfColors )
-		for ( int i = 0; i < 12; i += 4 )
-		{
-			m_pfColors[iClrIndex + i    ]	= m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.r - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r ) /
-													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
-
-			m_pfColors[iClrIndex + i + 1] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.g - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g ) /
-													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
-
-			m_pfColors[iClrIndex + i + 2] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.b - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b ) /
-													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
-
-			m_pfColors[iClrIndex + i + 3] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.a - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a ) /
-													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
-		
-		}
-
-
 	// Set and randomize lifetime
 	m_kParticles[iParticleIndex].m_fLifeTime = m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime
 															 * (1 + ((((rand()%100) / 100.f) 
@@ -285,10 +259,34 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	// Set age to max lifetime
 	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime - fTimeOffset;
 
-	// Randomize lifetime
-	if (m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)
-		m_kParticles[iParticleIndex].m_fAge *= 1 - (((rand()%m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)/100.f));
+	// if PSystem uses colors, reset color
+	if ( m_pfColors )
+		for ( int i = 0; i < 12; i += 4 )
+		{
+			m_pfColors[iClrIndex + i    ]	= m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.r - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r ) /
+													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
 
+			m_pfColors[iClrIndex + i + 1] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.g - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g ) /
+													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
+
+			m_pfColors[iClrIndex + i + 2] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.b - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b ) /
+													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
+
+			m_pfColors[iClrIndex + i + 3] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.a - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a ) /
+													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
+		
+		}
+
+
+	
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	
 	
@@ -369,9 +367,9 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 void PSystem::DisableParticle ( int iParticleIndex )
 {
-	m_kParticles[iParticleIndex].m_bActive = false;
-
 	int i;
+
+	m_kParticles[iParticleIndex].m_bActive = false;
 
 	// last...
 	for ( i = m_uiLastParticle; i > m_uiFirstParticle; i-- )
@@ -390,15 +388,14 @@ void PSystem::DisableParticle ( int iParticleIndex )
 	// if particle > first and particle < last
 	if ( iParticleIndex < m_uiLastParticle && iParticleIndex > m_uiFirstParticle )
 	{
-		//make copy of particle
-		Particle kTemp;
-		memcpy (&kTemp, &m_kParticles[i], sizeof(m_kParticles[i]));
+		// move clr
+		memcpy (&m_pfColors[iParticleIndex * 12], &m_pfColors[m_uiLastParticle * 12], sizeof(float) * 12);
+		// copy vertices
+		memcpy (&m_pfVertices[iParticleIndex * 9], &m_pfVertices[m_uiLastParticle * 9], sizeof(float) * 9);
 		
 		// move last active particle to disabled particles place
 		memcpy(&m_kParticles[iParticleIndex], &m_kParticles[m_uiLastParticle], sizeof(m_kParticles[i]));
 
-		// copy disabled particle to back
-		memcpy(&m_kParticles[m_uiLastParticle], &kTemp, sizeof(m_kParticles[i]));
 		m_uiLastParticle--;
 	}
 
@@ -417,7 +414,6 @@ void PSystem::TimeoffSet ()
 
 		ResetParticle ( i, i * m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec );
 	}
-
 }
 
 // ------------------------------------------------------------------------------------------
@@ -426,7 +422,7 @@ void PSystem::TestInsideFrustum()
 {
 	if(!m_pkFps->GetCam())
 	{
-		m_bInsideFrustum= false;
+		m_bInsideFrustum = false;
 		return;
 	}
 

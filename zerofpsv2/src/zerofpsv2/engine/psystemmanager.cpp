@@ -143,9 +143,18 @@ bool PSystemManager::LoadNewPSystem ( string kName )
 	CalculateMaxSize ( &kNewType );
 
 	// Calculate max number of particles the PSystem can emitt
-	kNewType.m_kPSystemBehaviour.m_iMaxParticles = 
-		int (kNewType.m_kParticleBehaviour.m_fLifeTime /
-		kNewType.m_kPSystemBehaviour.m_fParticlesPerSec );
+	if (kNewType.m_kParticleBehaviour.m_fLifeTime > kNewType.m_kPSystemBehaviour.m_fLifeTime &&
+			kNewType.m_kPSystemBehaviour.m_fLifeTime != -9999999)
+	{
+		kNewType.m_kPSystemBehaviour.m_iMaxParticles = int(kNewType.m_kPSystemBehaviour.m_fLifeTime /
+			kNewType.m_kPSystemBehaviour.m_fParticlesPerSec + 0.5f);
+	}
+	else
+	{
+		kNewType.m_kPSystemBehaviour.m_iMaxParticles = 
+			int (kNewType.m_kParticleBehaviour.m_fLifeTime /
+			kNewType.m_kPSystemBehaviour.m_fParticlesPerSec );
+	}
 
    kNewType.m_kName = kName;
 
@@ -449,6 +458,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_bBillBoardY = m_kIniLoader.GetBoolValue("billboard", "y");
 	else
 		pkPSType->m_kParticleBehaviour.m_bBillBoardY = true;
+
 
 	// Position offset
 	if ( m_kIniLoader.KeyExist("position_offset", "x") )

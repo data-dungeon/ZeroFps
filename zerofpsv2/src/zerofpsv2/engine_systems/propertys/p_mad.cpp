@@ -765,7 +765,7 @@ int SetNextAnim(lua_State* pkLua)
 */
 int PlayAnim(lua_State* pkLua)
 {
-	double dTemp;
+	double dTemp; 
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
 	int iEntityId = (int)dTemp;
 

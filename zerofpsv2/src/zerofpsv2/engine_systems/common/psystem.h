@@ -61,9 +61,8 @@ private:
 
 	vector<Particle> m_kParticles;
 
-	unsigned int 		
-		m_uiActiveParticles;
-	int
+	int 		
+		m_iActiveParticles,
 		m_uiFirstParticle,
 		m_uiParticles,
 		m_uiLastParticle;
@@ -100,7 +99,7 @@ public:
 	void SetColors	(float *pfColors)				{ m_pfColors = pfColors;       }
 	void SetIndices (unsigned int *pfIndices)	{ m_pfIndices = pfIndices;		 }
 
-	int Particles()									{ return m_uiLastParticle - m_uiFirstParticle;	 }
+	int Particles()									{ return m_uiLastParticle - m_uiFirstParticle + 1;	 }
 	int Start()											{ return m_uiFirstParticle; }
 	int End()											{ return m_uiLastParticle + 1; }
 

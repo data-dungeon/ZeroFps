@@ -36,18 +36,18 @@ void MovePSProp::Update()
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, afM);
 	
-	Vector3 x;
-	Vector3 y;
+	Vector3 kRightVect;
+	Vector3 kUpVect;
 	Vector3 a;
 	Vector3 b;	
 	Vector3 c;	
 
-	x.Set(afM[0], afM[4], afM[8]);
-	y.Set(afM[1], afM[5], afM[9]);
+	kRightVect.Set(afM[0], afM[4], afM[8]); // right_vector
+	kUpVect.Set(afM[1], afM[5], afM[9]); // up_vector
 
-	a = y;
-   b = x - y;
-   c = -x - y;
+	a = kUpVect;
+   b = -kUpVect + kRightVect;
+   c = -kUpVect - kRightVect;
 
 	// which dimesions to billboard
 	if ( !m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bBillBoardY )
@@ -64,17 +64,17 @@ void MovePSProp::Update()
 		float fWidth =  pkParticles->at(iPartIndex).m_kSize.x;
 		float fHeight = pkParticles->at(iPartIndex).m_kSize.y;
 
-		pfVertices[i + 0] = pkParticles->at(iPartIndex).m_kCenter.x + a.x; 
-		pfVertices[i + 1] = pkParticles->at(iPartIndex).m_kCenter.y + a.y * (fHeight / 2.333f);
-		pfVertices[i + 2] = pkParticles->at(iPartIndex).m_kCenter.z + a.z;
+		pfVertices[i + 0] = pkParticles->at(iPartIndex).m_kCenter.x + a.x * fWidth; 
+		pfVertices[i + 1] = pkParticles->at(iPartIndex).m_kCenter.y + a.y * fHeight;//(fHeight / 2.333f);
+		pfVertices[i + 2] = pkParticles->at(iPartIndex).m_kCenter.z + a.z * fHeight;
 
 		pfVertices[i + 6] = pkParticles->at(iPartIndex).m_kCenter.x + b.x * fWidth;
 		pfVertices[i + 7] = pkParticles->at(iPartIndex).m_kCenter.y + b.y * fHeight;
-		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fWidth;
+		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fHeight;
 
 		pfVertices[i + 3] = pkParticles->at(iPartIndex).m_kCenter.x + c.x * fWidth;
 		pfVertices[i + 4] = pkParticles->at(iPartIndex).m_kCenter.y + c.y * fHeight;
-		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fWidth;
+		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fHeight;
 	}
 	
 	delete [] afM;
