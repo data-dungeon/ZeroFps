@@ -183,7 +183,6 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(GetSkin("DefCBnDSkin"));
 		break;
 	case Scrollbar:
-		int apa; apa = 2;
 		static_cast<ZGuiCheckbox*>(pkWnd)->SetSkin(GetSkin("DefSBrBkSkin"));
 		static_cast<ZGuiScrollbar*>(pkWnd)->SetThumbButtonSkins(GetSkin("DefSBrNSkin"), 
 			GetSkin("DefSBrFSkin"));
@@ -211,6 +210,10 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemHighLightSkin(GetSkin("DefCBitemFSkin"));
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
 			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->GetScrollbar()->SetScrollButtonDownSkins( 
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d") );
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->GetScrollbar()->SetScrollButtonUpSkins( 
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d") );
 		break;
 	case Textbox:
 		static_cast<ZGuiTextbox*>(pkWnd)->SetSkin(GetSkin("DefTextboxSkin"));

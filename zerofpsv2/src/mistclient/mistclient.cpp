@@ -782,7 +782,6 @@ void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 
 		if(itIPInfo != MistLandLua::g_vkIpUsers.end())
 		{
-			GetWnd("UserEditbox")->SetText((char*)itIPInfo->first.c_str());
 			GetWnd("IPNumberEditbox")->SetText((char*)itIPInfo->second.c_str());
 		}
 	}
