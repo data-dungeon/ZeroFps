@@ -1,12 +1,10 @@
-// dark_metropolis.cpp
+// dark_metropolis_main.cpp
 
 #ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
 	#define _MAINAPPLICATION_		// just denna fil och inte flera ställen.
 	#define _DONT_MAIN
 #endif
 
-#include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/gui/zgui.h"
 #include "dark_metropolis.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 

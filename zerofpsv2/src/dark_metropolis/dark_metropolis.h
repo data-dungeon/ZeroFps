@@ -7,6 +7,9 @@
 #include <cmath>
 #include <list>
 
+#include "../zerofpsv2/engine/application.h"
+#include "../zerofpsv2/gui/zgui.h"
+
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
 /**	\brief	Daz DaaaaarkMetropolis

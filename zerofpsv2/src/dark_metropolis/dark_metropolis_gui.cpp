@@ -1,6 +1,5 @@
+// dark_metropolis_gui.cpp
 
-#include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/gui/zgui.h"
 #include "dark_metropolis.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
