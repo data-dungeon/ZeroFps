@@ -134,6 +134,8 @@ void MistServer::OnInit()
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
 		m_pkConsole->Printf("No mistserver_autoexec.ini found");
+
+
 }
 
 void MistServer::Init()
@@ -873,10 +875,35 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
+		case MLNM_CS_CHARADD:
+		{
+			string strChar;
+			PkNetMessage->Read_Str(strChar);
+			cout << "Plz Add: " << strChar << endl;
+
+			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
+			m_pkPlayerDB->CreateNewCharacter(strLogin, strChar);
+			SendCharacterList(PkNetMessage->m_iClientID);
+
+			break;
+		}
+
+		case MLNM_CS_CHARDEL:
+		{
+			string strChar;
+			PkNetMessage->Read_Str(strChar);
+			cout << "Plz Delete: " << strChar << endl;
+
+			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
+			m_pkPlayerDB->DeleteCharacter(strLogin, strChar);
+			SendCharacterList(PkNetMessage->m_iClientID);
+			break;
+		}
 
 		case MLNM_CS_REQPLAY:
 		{
 			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;
+			break;
 		}
 
 		case MLNM_CS_REQ_CHARACTERID:

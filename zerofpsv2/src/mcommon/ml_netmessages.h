@@ -15,6 +15,8 @@ enum MLNM_ClientToServer
 	MLNM_CS_MOVE_ITEM,
 	MLNM_CS_REQ_EQIPMENT,	
 	MLNM_CS_REQPLAY,
+	MLNM_CS_CHARDEL,
+	MLNM_CS_CHARADD,
 };
 
 //	A network message from the server to the client.

@@ -71,6 +71,8 @@ class PlayerDatabase
 		Entity* CreateCharacter(string strPlayer, string strCharacter);
 		bool SaveCharacter(Entity* pkEntity,string strPlayer);
 		
+		void DeleteCharacter(string strPlayer, string strCharacter);
+
 		bool LoginExist(string strLogin);
 		bool Login(string strPlayer,string strPassword);
 		void Logout(string strPlayer);

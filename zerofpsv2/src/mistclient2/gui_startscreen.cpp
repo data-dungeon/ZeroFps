@@ -20,6 +20,8 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 	////////////////////////////////////////////////////////////////////////////
 	if(msg == ZGM_COMMAND)
 	{
+		cout << "strController: " << strController << "\n";
+ 
 		if(strMainWnd == "MLStartWnd")
 		{
 			if(strController == "StarNewGameBn")
@@ -270,6 +272,21 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 			}
 			else
+			if(strController == "CharGen_DeleteSelChar")
+			{
+				char*	szSelItem =	g_kMistClient.GetSelItem("CharGen_CharList");
+				if(szSelItem)
+				{
+					NetPacket kNp;
+					kNp.Clear();
+					kNp.Write((char) MLNM_CS_CHARDEL);
+					kNp.Write_Str(string(szSelItem));
+					kNp.TargetSetClient(0);
+					g_kMistClient.SendAppMessage(&kNp);
+					cout << "Should delete sel char" << szSelItem << "\n";
+				}
+			}
+			else
 			if(strController == "CharGen_PickCharCacel")
 			{
 				g_kMistClient.ShowWnd("CharGen_SelectCharWnd", false);
@@ -342,11 +359,22 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				g_kMistClient.ShowWnd("CharGen_CreateCharWnd", false);
 				g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
 				g_kMistClient.m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));
+		
+				char*	szSelItem =	g_kMistClient.GetText("CharGen_CharNameEb");
+				if(szSelItem)
+				{
+					NetPacket kNp;
+					kNp.Clear();
+					kNp.Write((char) MLNM_CS_CHARADD);
+					kNp.Write_Str(string(szSelItem));
+					kNp.TargetSetClient(0);
+					g_kMistClient.SendAppMessage(&kNp);
+				}
+				/*
 				g_kMistClient.AddListItem("CharGen_CharList", g_kMistClient.GetText("CharGen_CharNameEb"), true);	
-
 				int iItem = ((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->GetListbox()->GetItemCount();
 				if(iItem > 20) iItem = 20;
-				((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->SetNumVisibleRows(iItem);
+				((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->SetNumVisibleRows(iItem);*/
 			}
 			else
 			if(strController == "CharGen_NewCharCancel")

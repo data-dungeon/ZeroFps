@@ -318,6 +318,12 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 	return true;
 }
 
+void PlayerDatabase::DeleteCharacter(string strPlayer, string strCharacter)
+{
+	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	string strCharacterDataFile = m_strPlayerDirectory + (strPlayer + "/") + strCharacter; 
+	pkVFS->RemoveDir(strCharacterDataFile);
+}
 
 
 
