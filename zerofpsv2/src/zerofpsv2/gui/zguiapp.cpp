@@ -10,7 +10,7 @@
 #include "zguiresourcemanager.h"
 #include <typeinfo>
 #include "../basic/zguifont.h"
-#include ".\zguiapp.h"
+#include "zguiapp.h"
 
 
 //////////////////////////////////////////////////////////////////////

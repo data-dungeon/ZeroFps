@@ -331,8 +331,9 @@ bool Console::Execute(char* aText) {
 	Printf("> %s", aText);				// Print command to screen.
 
 	// Put into command history. New command are pushed on front and oldest are poped from back of deque
-	if(m_kCommandHistory.front() != string(aText))
-		m_kCommandHistory.push_front( string(aText) );
+	if(!m_kCommandHistory.empty())
+		if(m_kCommandHistory.front() != string(aText))
+			m_kCommandHistory.push_front( string(aText) );
 	
 	// If deque is full remove last element.
 	if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
@@ -344,7 +345,6 @@ bool Console::Execute(char* aText) {
 	Printf("Cmd History'", aText);
 	for(int i=0; i<m_kCommandHistory.size(); i++)
 		Printf(" [%d] '%s'", i, m_kCommandHistory[i].c_str()); */
-
 
 	if(!GetSystem().RunCommand(aText,CSYS_SRC_CONSOLE))
 	{

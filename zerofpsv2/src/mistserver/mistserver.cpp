@@ -165,7 +165,7 @@ void MistServer::Init()
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
 	pkGui->GetToolTip()->SetSkin(kSkin);	
 
-	m_pkInput->ToggleGrab();
+//	m_pkInput->ToggleGrab();
 
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
