@@ -786,6 +786,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	{	
 		Vector3 kStartPos = Vector3(0,3,0);
 				
+		/*
 		//try to get recal position from characterstats
 		CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
       if(pkCP)
@@ -793,13 +794,14 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
    	   CharacterStats *pkCS = pkCP->GetCharStats();	
 			kStartPos = pkCS->GetRecalPos();		
 		}	
+		*/
 		
 		//make sure position is valid and zone is loaded
 		int zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);
 		if(zid == -1)
 		{
 			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
-			kStartPos = Vector3(0,0.5,0);
+			kStartPos = Vector3(0,1,0);
 			zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
 		}		
 		

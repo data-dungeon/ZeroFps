@@ -94,7 +94,7 @@ void PlayerDatabase::Logout(string strPlayer)
 
 bool PlayerDatabase::IsOnline(string strLogin)
 {
-	if(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strLogin))
+	if(  find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strLogin) != m_strActiveUsers.end()  )
 		return true;
 
 	return false;
@@ -156,6 +156,12 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	
 	//create new caracter and save it	
 	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/characters/hosplayer.lua");		// t_player
+	if(!pkEntity)
+	{
+		cout<<"could not create character entity"<<endl;
+		return false;
+	}
+	
 	pkEntity->SetName(strCharacter);
 	pkEntity->GetSave() = true;
 	pkEntity->SetUseZones(true);

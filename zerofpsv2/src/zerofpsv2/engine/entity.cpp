@@ -800,7 +800,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 			pProp->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);		//load property
 		else 
 		{
-			cout << "Error in netpacket" << endl;
+			cout <<"Error in netpacket" << endl;			
 			pkNetPacket->SetError(true);
 			return;
 		}

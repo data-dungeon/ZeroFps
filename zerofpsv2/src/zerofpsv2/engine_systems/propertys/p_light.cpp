@@ -92,7 +92,7 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read( m_pkLightSource->fConst_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
-	pkNetPacket->Read( m_iMode);				
+	pkNetPacket->Read( m_iMode);
 }
 
 vector<PropertyValues> P_Light::GetPropertyValues()

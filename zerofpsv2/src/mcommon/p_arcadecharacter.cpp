@@ -7,7 +7,7 @@ P_ArcadeCharacter::P_ArcadeCharacter()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	bNetwork = true;
+	bNetwork = false;
 
 	m_fSpeed = 100;
 	m_kDir.Set(0,0,-1);
