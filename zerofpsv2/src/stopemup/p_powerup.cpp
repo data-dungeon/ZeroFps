@@ -70,7 +70,7 @@ P_Powerup::P_Powerup()
 				break;	
 							
 			case 1:
-				if(iLevel >= 7 && iLevel <= 13)
+				if(iLevel >= 7 && iLevel <= 17)
 				{
 					m_iPowerupType = iRand;				
 					m_strPowerupName = "Yber Gun";	
@@ -78,7 +78,7 @@ P_Powerup::P_Powerup()
 				break;
 		
 			case 2:
-				if(iLevel >= 12 && iLevel <=30)
+				if(iLevel >= 15 && iLevel <=28)
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Flash Gun";	
