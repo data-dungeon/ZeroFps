@@ -52,7 +52,7 @@ void Scene::CreateUI()
 	// Create workspace
 	//
 
-	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16-40, 0);
+	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 700, 0);
 	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
 	m_pkWorkSpace->GetSkin()->m_iBkTexID = -1;
 	memcpy(m_pkWorkSpace->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
@@ -175,6 +175,7 @@ void Scene::CreateUI()
 
 	m_pkApp->CreateWnd(Label, "SkinTypeCBLabel",  "WorkSpace",  "Skin type", 2,  440, 190, 19, 0);
 	m_pkApp->CreateWnd(Combobox, "SkinTypeCB", "WorkSpace", "Skin type", 2, 460, 190, 20, 0);
+   ((ZGuiCombobox*)GetWnd("SkinTypeCB"))->SetNumVisibleRows(11); 
 
 	m_pkApp->CreateWnd(Checkbox, "StretchTextureCB", "WorkSpace", "Stretch", 2, 484, 16, 16, 0);
 	m_pkApp->CreateWnd(Checkbox, "TransparentTextureCB", "WorkSpace", "Transparent", 100, 484, 16, 16, 0);
@@ -255,7 +256,19 @@ void Scene::CreateUI()
 
       iRots++;
    }
+
+   ZGuiWnd* pkWnd[3];
+
+   m_pkApp->CreateWnd(Label, "ColorLabel",  "WorkSpace",  "Color:", 2, 525+3, 58-2, 16, 0);
+   pkWnd[0] = m_pkApp->CreateWnd(Textbox, "RColorTb", "WorkSpace", "255", 45, 525, 30, 20, 0); 
+   pkWnd[1] = m_pkApp->CreateWnd(Textbox, "GColorTb", "WorkSpace", "255", 45+34, 525, 30, 20, 0);  
+   pkWnd[2] = m_pkApp->CreateWnd(Textbox, "BColorTb", "WorkSpace", "255", 45+68, 525, 30, 20, 0); 
+   m_pkApp->CreateWnd(Button, "SetColorBn", "WorkSpace", "Set", 45+102, 525, 40, 20, 0); 
 	
+   pkWnd[0]->SetTextClr(255,0,0);
+   pkWnd[1]->SetTextClr(0,128,0);
+   pkWnd[2]->SetTextClr(0,0,255);
+
 
 	//
 	// Create Def.Properties Wnd
@@ -268,7 +281,7 @@ void Scene::CreateUI()
 	
 
 	//
-	// Create toolbar
+	// Create PropertyWnd
 	//
 	m_pkApp->CreateWnd(Wnd, "PropertyWnd", "", "", 800/2-300/2, 600-138, 300, 110, 0);
 	(m_pkPropertyWnd = m_pkApp->GetWnd("PropertyWnd"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
@@ -404,8 +417,7 @@ void Scene::CreateUI()
 
 	// Create options window
 
-	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", 0,118,300,100,0);
-	m_pkOptionsWnd->Hide();
+	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", -484,0,470,110,0);
 	m_pkOptionsWnd->GetSkin()->m_iBkTexID = -1;
 	memcpy(m_pkOptionsWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 

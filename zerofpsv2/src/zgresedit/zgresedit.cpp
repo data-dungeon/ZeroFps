@@ -672,11 +672,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "OptionsBn")
 		{
-			if(m_pkFocusWnd)
-			{
-				OpenWnd(m_pkScene->m_pkOptionsWnd, !m_pkScene->m_pkOptionsWnd->IsVisible());
-				m_pkScene->UpdateOptionsWnd(m_pkFocusWnd);
-			}
+			OpenWnd(m_pkScene->m_pkOptionsWnd, !m_pkScene->m_pkOptionsWnd->IsVisible());
+			m_pkScene->UpdateOptionsWnd(m_pkFocusWnd);
 		}
 
 		m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
@@ -846,6 +843,27 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					break;
 				}
 		}
+      else
+      if(strClickWndName == "SetColorBn")
+      {
+         float fR=1, fG=0, fB=0;
+
+         fR = (float) atoi(GetText("RColorTb")) / (float) 255;
+         fG = (float) atoi(GetText("GColorTb")) / (float) 255;
+         fB = (float) atoi(GetText("BColorTb")) / (float) 255;
+
+         vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+			char* szSkinType = GetSelItem("SkinTypeCB");
+			for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+				if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+				{
+               (*vkSkinDesc[i].first)->m_afBkColor[0] = fR;
+               (*vkSkinDesc[i].first)->m_afBkColor[1] = fG;
+               (*vkSkinDesc[i].first)->m_afBkColor[2] = fB;
+					break;
+				}
+      }
 		else
 		if(strClickWndName == "CreateWndBn")
 		{
@@ -1615,6 +1633,8 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 								((ZGuiCheckbox*)GetWnd("TransparentTextureCB"))->UncheckButton();
 
 	                  UpdateSkin(m_pkFocusWnd, (*vkSkinDesc[i].first), szSkinType);
+
+
 
                      
 						}
@@ -2587,4 +2607,18 @@ void ZGResEdit::UpdateSkin(ZGuiWnd* pkWnd, ZGuiSkin* pkSkin, char* szSkinType)
       !strcmp(szSkinType, "Tabctrl: prevtab: Button down") || 
       !strcmp(szSkinType, "Tabctrl: prevtab: Button focus") )
       ((ZGuiTabCtrl*)pkWnd)->GetTabButton(false)->SetSkin(pkSkin);
+
+   float fR=1, fG=0, fB=0;
+   fR = (float) atoi(GetText("RColorTb")) / (float) 255;
+   fG = (float) atoi(GetText("GColorTb")) / (float) 255;
+   fB = (float) atoi(GetText("BColorTb")) / (float) 255;
+
+   char red[20], green[20], blue[20];
+   sprintf(red, "%i", (int) (pkSkin->m_afBkColor[0] * 255.0f) ); 
+   sprintf(green, "%i", (int) (pkSkin->m_afBkColor[1] * 255.0f) ); 
+   sprintf(blue, "%i", (int) (pkSkin->m_afBkColor[2] * 255.0f) ); 
+
+   SetText("RColorTb", red);
+   SetText("GColorTb", green);
+   SetText("BColorTb", blue);
 }
