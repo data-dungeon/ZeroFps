@@ -189,9 +189,6 @@ class ENGINE_API Property
 		//////////////////////////////////////////////
 
 	public:
-		int						m_iNetUpdateFlags;					
-		int						NeedToSend( ) { return m_iNetUpdateFlags; }
-
 		Property();
 		virtual ~Property();
 

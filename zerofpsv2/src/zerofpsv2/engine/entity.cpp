@@ -43,7 +43,7 @@ Entity::Entity()
 
 	m_pScriptFileHandle	= new ZFResourceHandle;
 
-	m_iNetUpdateFlags		= 0;
+//	m_iNetUpdateFlags		= 0;
 
 	m_eRole					= NETROLE_AUTHORITY;
 	m_eRemoteRole			= NETROLE_PROXY;
@@ -423,13 +423,16 @@ bool Entity::AttachToZone()
 }
 
 
-bool Entity::AttachToZone(Vector3 kPos)
+bool Entity::AttachToZone(const Vector3& kPos)
 {
 	if(!m_bZone)
 	{
 		if(!m_bRelativeOri)
 		{		
 			int nZ = m_pkEntityMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+			
+			if(nZ == m_iCurrentZone)
+				return true;
 
 			if(nZ == -1)
 			{
@@ -444,14 +447,17 @@ bool Entity::AttachToZone(Vector3 kPos)
 				return  false;
 			}
 	
-			if( (!cz->m_pkZone) || (!cz->m_bTracked) )
+			if(cz->m_iStatus != EZS_LOADED)
+			{
+				//cout<<"Entity tried to move to a unloaded zone"<<endl;
+				return false;			
+			}
+/*			if( (!cz->m_pkZone) || (!cz->m_bTracked) )
 			{
 				//cout<<"Entity tried to move to a unloaded zone"<<endl;
 				return  false;
 			}
-	
-			if(nZ == m_iCurrentZone)
-				return true;
+*/	
 			
 			ZoneChange(m_iCurrentZone,nZ);
 			m_iCurrentZone = nZ;
@@ -556,30 +562,11 @@ bool Entity::IsNetWork()
 	Returns true if this Entity needs to be sent over network (if anything has changed since last
 	net update).
 */
-bool Entity::NeedToPack()
-{
-	// We can only send data for Entity we own.
-	if( m_eRole != NETROLE_AUTHORITY)			return false;
-	// We only send Entity that the other side need to know about
-	if( m_eRemoteRole	== NETROLE_NONE)		return false;
-
-	int iUpdateFlags = m_iNetUpdateFlags | m_pkEntityMan->m_iForceNetUpdate;
-
-	if(IsNetWork()) {
-		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-			iUpdateFlags |= (*it)->m_iNetUpdateFlags; 
-			}
-	
-		if(iUpdateFlags)
-			return true;
-		}
-
-	return false;
-}
-
-
 bool Entity::HaveSomethingToSend(int iConnectionID)
 {
+	if( m_eRole != NETROLE_AUTHORITY)		return false;
+	if( m_eRemoteRole	== NETROLE_NONE)		return false;
+	
 	bool bNeedUpdate = false;
 
 	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
@@ -1272,7 +1259,7 @@ void Entity::SetName(string strName)
 }
 
 
-void Entity::SetVel(Vector3 kVel)
+void Entity::SetVel(const Vector3& kVel)
 {
 	if(kVel == m_kVel)
 		return;
@@ -1282,7 +1269,7 @@ void Entity::SetVel(Vector3 kVel)
 	SetNetUpdateFlag(NETUPDATEFLAG_VEL,true);
 }
 
-void Entity::SetAcc(Vector3 kAcc)
+void Entity::SetAcc(const Vector3& kAcc)
 {
 	if(m_kAcc == kAcc)
 		return;
@@ -1309,7 +1296,7 @@ void Entity::ResetChildsGotData()
 	}	
 }
 
-void Entity::SetLocalRotM(Matrix3 kNewRot)
+void Entity::SetLocalRotM(const Matrix3& kNewRot)
 {
 	if(kNewRot == m_kLocalRotM)
 		return;
@@ -1317,11 +1304,10 @@ void Entity::SetLocalRotM(Matrix3 kNewRot)
 	ResetChildsGotData();
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);	
 	
-//	kNewRot.Identity();
 	m_kLocalRotM = kNewRot;
 }
 
-void Entity::SetLocalRotM(Matrix4 kNewRot)
+void Entity::SetLocalRotM(const Matrix4& kNewRot)
 {
 	Matrix3 kMat;
 	kMat = kNewRot;
@@ -1329,7 +1315,7 @@ void Entity::SetLocalRotM(Matrix4 kNewRot)
 }
 
 
-void Entity::SetLocalRotV(Vector3 kRot)
+void Entity::SetLocalRotV(const Vector3& kRot)
 {
 	ResetChildsGotData();
 
@@ -1365,9 +1351,8 @@ void Entity::SetWorldRotV(Vector3 kRot)
 	SetLocalRotV(newlocal);
 }
 
-void Entity::SetLocalPosV(Vector3 kPos)
+void Entity::SetLocalPosV(const Vector3& kPos)
 {
-
 	//check new zone
 	if(m_bUseZones)
 	{
@@ -1379,7 +1364,6 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	if(kPos == m_kLocalPosV)
 		return;
 
-	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_POS,true);
@@ -1393,32 +1377,33 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	}
 }
 
-void Entity::SetWorldPosV(Vector3 kPos)
+void Entity::SetWorldPosV(const Vector3& kPos)
 {
-	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
-	Vector3 kDiff = kPos - GetWorldPosV();
-	Vector3 newlocalpos = m_kLocalPosV + kDiff;
-	
-	SetLocalPosV(newlocalpos);
+	if(m_bRelativeOri)
+	{
+		Vector3 kDiff = kPos - GetWorldPosV();
+		Vector3 newlocalpos = m_kLocalPosV + kDiff;
+		SetLocalPosV(newlocalpos);
+	}
+	else
+		SetLocalPosV(kPos);
 }
 
-void Entity::RotateLocalRotV(Vector3 kRot)
+void Entity::RotateLocalRotV(const Vector3& kRot)
 {
 	ResetChildsGotData();
 	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);
 	
-	//m_kLocalRotM.Identity();
-	m_kLocalRotM.Rotate(kRot);
-	
+	m_kLocalRotM.Rotate(kRot);	
 }
 
 
 Vector3 Entity::GetLocalRotV()
 {
-	if(!m_kGotData[LOCAL_ROT_V])
+	if(!m_kGotOrientationData[LOCAL_ROT_V])
 	{
 		m_kLocalRotV = m_kLocalRotM.GetRotVector();
-		m_kGotData[LOCAL_ROT_V] = true;
+		m_kGotOrientationData[LOCAL_ROT_V] = true;
 	}
 
 	return m_kLocalRotV;
@@ -1471,7 +1456,7 @@ Vector3 Entity::GetIWorldPosV()
 
 Vector3 Entity::GetWorldPosV()
 {
-	if(!m_kGotData[WORLD_POS_V])
+	if(!m_kGotOrientationData[WORLD_POS_V])
 	{
 		if(m_bRelativeOri)
 		{
@@ -1479,19 +1464,19 @@ Vector3 Entity::GetWorldPosV()
 			if(m_pkParent)
 			{
 				m_kWorldPosV  = GetWorldOriM().GetPosVector();
-				m_kGotData[WORLD_POS_V] = true;
+				m_kGotOrientationData[WORLD_POS_V] = true;
 			}
 			else
 			{
 				m_kWorldPosV = m_kLocalPosV;
-				m_kGotData[WORLD_POS_V] = true;			
+				m_kGotOrientationData[WORLD_POS_V] = true;			
 			}
 		
 		}
 		else
 		{
 			m_kWorldPosV = m_kLocalPosV;
-			m_kGotData[WORLD_POS_V] = true;
+			m_kGotOrientationData[WORLD_POS_V] = true;
 		}
 	}
 	
@@ -1500,7 +1485,7 @@ Vector3 Entity::GetWorldPosV()
 
 Matrix3 Entity::GetWorldRotM()
 {
-	if(!m_kGotData[WORLD_ROT_M])
+	if(!m_kGotOrientationData[WORLD_ROT_M])
 	{	
 		if(m_bRelativeOri)
 		{
@@ -1508,19 +1493,19 @@ Matrix3 Entity::GetWorldRotM()
 			if(m_pkParent)
 			{
 				m_kWorldRotM  = m_kLocalRotM * m_pkParent->GetWorldRotM() ;
-				m_kGotData[WORLD_ROT_M] = true;
+				m_kGotOrientationData[WORLD_ROT_M] = true;
 			}
 			else
 			{
 				m_kWorldRotM = m_kLocalRotM;
-				m_kGotData[WORLD_ROT_M] = true;			
+				m_kGotOrientationData[WORLD_ROT_M] = true;			
 			}
 		
 		}
 		else
 		{
 			m_kWorldRotM = m_kLocalRotM;
-			m_kGotData[WORLD_ROT_M] = true;
+			m_kGotOrientationData[WORLD_ROT_M] = true;
 		}
 		
 	}
@@ -1530,10 +1515,10 @@ Matrix3 Entity::GetWorldRotM()
 
 Vector3 Entity::GetWorldRotV()
 {
-	if(!m_kGotData[WORLD_ROT_V])
+	if(!m_kGotOrientationData[WORLD_ROT_V])
 	{	
 		m_kWorldRotV = GetWorldRotM().GetRotVector();
-		m_kGotData[WORLD_ROT_V] = true;
+		m_kGotOrientationData[WORLD_ROT_V] = true;
 	}
 
 	return m_kWorldRotV;
@@ -1541,27 +1526,27 @@ Vector3 Entity::GetWorldRotV()
 
 Matrix4 Entity::GetWorldOriM()
 {
-	if(!m_kGotData[WORLD_ORI_M])
+	if(!m_kGotOrientationData[WORLD_ORI_M])
 	{	
 		if(m_bRelativeOri)
 		{
 			if(m_pkParent)
 			{			
 				m_kWorldOriM = GetLocalOriM() * m_pkParent->GetWorldOriM() ;
-				m_kGotData[WORLD_ORI_M] = true;						
+				m_kGotOrientationData[WORLD_ORI_M] = true;						
 			}
 			else
 			{
 				m_kWorldOriM = GetLocalOriM();
 				
-				m_kGotData[WORLD_ORI_M] = true;			
+				m_kGotOrientationData[WORLD_ORI_M] = true;			
 			}		
 		}
 		else
 		{
 			m_kWorldOriM = GetLocalOriM();
 			
-			m_kGotData[WORLD_ORI_M] = true;
+			m_kGotOrientationData[WORLD_ORI_M] = true;
 		}	
 	}
 	
@@ -1571,7 +1556,7 @@ Matrix4 Entity::GetWorldOriM()
 
 Matrix4 Entity::GetLocalOriM()
 {
-	if(!m_kGotData[LOCAL_ORI_M])
+	if(!m_kGotOrientationData[LOCAL_ORI_M])
 	{	
 		m_kLocalOriM = m_kLocalRotM;
 		m_kLocalOriM.Translate(m_kLocalPosV);
@@ -1900,3 +1885,26 @@ void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll,bool 
 
 
 
+
+/*
+bool Entity::NeedToPack()
+{
+	// We can only send data for Entity we own.
+	if( m_eRole != NETROLE_AUTHORITY)			return false;
+	// We only send Entity that the other side need to know about
+	if( m_eRemoteRole	== NETROLE_NONE)		return false;
+
+	int iUpdateFlags = m_iNetUpdateFlags | m_pkEntityMan->m_iForceNetUpdate;
+
+	if(IsNetWork()) {
+		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+			iUpdateFlags |= (*it)->m_iNetUpdateFlags; 
+			}
+	
+		if(iUpdateFlags)
+			return true;
+		}
+
+	return false;
+}
+*/ 

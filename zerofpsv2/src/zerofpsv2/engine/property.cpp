@@ -10,18 +10,15 @@ Property::Property()
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkObjMan        	= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	
-	bNetwork = false;
-	m_iNetUpdateFlags = 0;
-	m_bSave = true;
+	m_iType=				PROPERTY_TYPE_NORMAL;
+	m_iSide=				PROPERTY_SIDE_SERVER;	
+	bNetwork = 			false;
+	m_bSave = 			true;	
+	m_pkObject=			NULL;	
+	m_iSortPlace=		0;
+	m_bSortDistance=	false;
 	
-	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER;
-	m_pkObject=NULL;
 	strcpy(m_acName,"NoName");		 
-	
-	m_iSortPlace=0;
-	m_bSortDistance=false;
-	
 
 	SetNrOfConnections(m_pkZeroFps->GetMaxPlayers());	
 }

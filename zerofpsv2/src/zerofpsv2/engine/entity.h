@@ -185,12 +185,11 @@ class ENGINE_API Entity
 		bool							m_bSave;								///< True if this entity should save to disk.
 	
 		bool							m_bSendChilds;						//shuld childs be sent to clients?
-		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
 		int							m_iUpdateStatus;					
 	
 		// Rotation & Position.
 		bool							m_bRelativeOri;					///< True if this entity transform is in the frame of its parent.
-		bitset<8>					m_kGotData;							
+		bitset<8>					m_kGotOrientationData;							
 
 		/*	This is the Position and rotation of the Entity. It is stored as a Vector for position and a Matrix for
 			rotation. Local contains the objects transform and World is to total transform including any parent. */
@@ -280,12 +279,11 @@ class ENGINE_API Entity
 		bool IsAnyPropertyNetworkActive();
 
 		bool AttachToZone();		
-		bool AttachToZone(Vector3 kPos);		
+		bool AttachToZone(const Vector3& kPos);		
 		bool GetZoneNeighbours(vector<Entity*>* pkZones);
 		
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();															// True if this object has any netactive propertys.
-		bool NeedToPack();														// Returns true if there is any netactive properys in object
 		bool HaveSomethingToSend(int iConnectionID);						// Returns true if there is anything to send for selected connection,
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
@@ -328,19 +326,19 @@ class ENGINE_API Entity
 		Vector3		GetIWorldPosV();
 		
 		//set oritentation data
-		void			SetLocalRotM(Matrix3 kNewRot);
-		void			SetLocalRotM(Matrix4 kNewRot);
-		void			SetLocalRotV(Vector3);
-		void			SetLocalPosV(Vector3);
-		void			SetWorldPosV(Vector3);
-		void			SetWorldRotV(Vector3);
-		void			RotateLocalRotV(Vector3 kRot);
+		void			SetLocalRotM(const Matrix3& kNewRot);
+		void			SetLocalRotM(const Matrix4& kNewRot);
+		void			SetLocalRotV(const Vector3&);
+		void			SetLocalPosV(const Vector3&);
+		void			SetWorldPosV(const Vector3&);
+		void			SetWorldRotV(Vector3 kRot);
+		void			RotateLocalRotV(const Vector3& kRot);
 
-		void			ResetGotData(){m_kGotData.reset();};
+		void			ResetGotData()							{	m_kGotOrientationData.reset();	}
 		void			ResetChildsGotData();
 
-		void			SetVel(Vector3 kVel);
-		void			SetAcc(Vector3 kAcc);		
+		void			SetVel(const Vector3& kVel);
+		void			SetAcc(const Vector3& kAcc);		
 		void			SetName(string strName);
 		void			SetType(string strType);		
 		void			SetRadius(float fRadius);
