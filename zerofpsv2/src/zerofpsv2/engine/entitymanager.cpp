@@ -569,6 +569,8 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 {
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
+	int iSentSize = 0;
+	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
 
 	Entity* pkPackObj;
 
@@ -592,7 +594,10 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 
 		//Logf("net", " Size: %d\n\n",NP.m_iPos );
 
-		if(NP.m_iPos >= 512) {
+		if(NP.m_iPos >= 512) 
+		{
+			iSentSize += NP.m_iPos;			//increse total amount of data sent
+			
 			NP.Write(iEndOfObject);
 			NP.Write(ZFGP_ENDOFPACKET);
 			NP.TargetSetClient(iClient);
@@ -604,8 +609,15 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects)
 			NP.Write((char) ZFGP_OBJECTSTATE);
 
 			iPacketSize = 0;
-			}
+			
+			
 		}
+		
+		if(iSentSize > iMaxSendSize)
+		{
+			break;
+		}
+	}
 
 
 

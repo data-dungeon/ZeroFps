@@ -125,6 +125,8 @@ private:
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
 
+	int						m_iMaxSendSize;						// max bytes to send to client per frame
+
 	vector<RemoteNode>	m_RemoteNodes;							// Data About all our remote connections.
 	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
@@ -170,6 +172,7 @@ public:
 	int GetNumOfClients(void);
 	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
 	int GetFreeClientNum();
+	int GetMaxSendSize() {return m_iMaxSendSize;};
 	
 	// NetStrings
 	vector<ZFNet_String>		m_kStringTable;
