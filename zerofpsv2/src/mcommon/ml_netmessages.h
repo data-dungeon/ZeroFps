@@ -17,6 +17,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_REQPLAY,
 	MLNM_CS_CHARDEL,
 	MLNM_CS_CHARADD,
+	MLNM_CS_REQ_ITEMINFO,
 };
 
 //	A network message from the server to the client.
@@ -29,6 +30,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_PLAY,
 	MLNM_SC_CHARLIST,
 	MLNM_SC_BUFFLIST,
+	MLNM_SC_ITEMINFO,
 };
 
 //mistlands chatmessages ID's

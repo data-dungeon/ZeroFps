@@ -116,7 +116,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SendRequestOpenEqipment();			
 		void SendTaunt(int iID);
 		void SendTaunt(const string& strEmote);
-		
+		void RequestItemInfo(int iItemID);
 			/*SendMoveItem hj�p.
 				iItemID : alltid entity id't f� itemet i fr�a
 				iTraget : target container entity ID , om -1 s�antas i spelarens inventory

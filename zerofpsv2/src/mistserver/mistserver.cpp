@@ -885,6 +885,70 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
+		case MLNM_CS_REQ_ITEMINFO:
+		{
+			int 				iItemID 	= -1;
+			P_Item* 			pkItem = NULL;
+			P_Container* 	pkInContainer = NULL;			
+			Entity*			pkCharacter;
+			
+			//get item id
+			PkNetMessage->Read(iItemID);
+		
+			cout<<"client requested info on item "<<iItemID<<endl;
+			
+
+			//Get item
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
+				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
+				{
+					cout<<"WARNING: MLNM_CS_REQ_ITEMINFO  could not find item "<<iItemID<<endl;
+					break;
+				}
+
+			//get in container
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
+				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+				
+			//get players character entity
+			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
+				{
+					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
+					break;
+				}			
+			
+				
+			//is item in a container?
+			if(pkInContainer)
+			{
+				//do we own the container?
+				if(pkInContainer->GetOwnerID() != pkCharacter->GetEntityID())
+				{
+					SayToClients("That container is not yours","Server",-1,PkNetMessage->m_iClientID);
+					break;					
+				}
+			
+				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
+				break;
+			}
+			else
+			{
+				//do a distance check
+				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
+				{
+					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
+					break;
+				}			
+			
+				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
+				break;
+			}
+				
+		
+			break;
+		}
+	
 		case MLNM_CS_CHARADD:
 		{
 			string strChar;
@@ -1377,6 +1441,21 @@ void MistServer::SendPlayerListToClient(int iClient)
 	//send package
 	kNp.TargetSetClient(iClient);
 	SendAppMessage(&kNp);	
+}
+
+void MistServer::SendItemInfo(int iItemID,int iClientID)
+{
+	if(P_Item* pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(iItemID,"P_Item"))
+	{
+		NetPacket kNp;			
+		kNp.Write((char) MLNM_SC_ITEMINFO);		
+	
+		kNp.Write_Str(pkItem->GetInfo());
+		kNp.Write_Str(pkItem->GetImage());		
+		
+		kNp.TargetSetClient(iClientID);
+		SendAppMessage(&kNp);		
+	}	
 }
 
 void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)

@@ -10,7 +10,7 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 4;
+	m_iVersion = 5;
 
 	// ITEM STUFF
 	m_strName = "Unnamed Item";
@@ -22,12 +22,17 @@ P_Item::P_Item()
 	m_iStackSize = 1;
 	m_iStackMax = 1;	
 
+	//item info
+	m_strInfo = "Nothing is known about this item";
+	m_strImage = "default.tga";
+	
+	//container
 	m_iInContainerID = -1;
 	m_iInContainerPosX = 0;
 	m_iInContainerPosY = 0;
 	
 	
-	
+	//buff
 	m_strBuffName = "";
 	m_iBuffEntityID = -1;
 	
@@ -103,65 +108,141 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	
 	
 	pkPackage->Write_Str(m_strBuffName);
+	
+	pkPackage->Write_Str(m_strInfo);
+	pkPackage->Write_Str(m_strImage);
 }
 
 void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	if(iVersion == 3)
+	switch(iVersion)
 	{
-		pkPackage->Read_Str(m_strName);
-		pkPackage->Read_Str(m_strIcon);
+		case 2:
+		{
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);				
 		
-		pkPackage->Read(m_iSizeX);
-		pkPackage->Read(m_iSizeY);		
-		pkPackage->Read(m_iType);
+			break;
+		}
+	
+		case 3:
+		{
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);				
 		
-		pkPackage->Read(m_iStackSize);
-		pkPackage->Read(m_iStackMax);		
+			break;
+		}	
 		
-		pkPackage->Read(m_iInContainerID);		
-		pkPackage->Read(m_iInContainerPosX);
-		pkPackage->Read(m_iInContainerPosY);		
+		case 4:
+		{
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			break;
+		}	
+
+		case 5:
+		{
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			pkPackage->Read_Str(m_strInfo);
+			pkPackage->Read_Str(m_strImage);			
+			break;
+		}					
 	}
-	
-	if(iVersion == 2)
-	{
-		pkPackage->Read_Str(m_strName);
-		pkPackage->Read_Str(m_strIcon);
-		
-		pkPackage->Read(m_iSizeX);
-		pkPackage->Read(m_iSizeY);		
-		pkPackage->Read(m_iType);
-		
-		pkPackage->Read(m_iInContainerID);		
-		pkPackage->Read(m_iInContainerPosX);
-		pkPackage->Read(m_iInContainerPosY);		
-	}
-	
-	if(iVersion == 4)
-	{
-		pkPackage->Read_Str(m_strName);
-		pkPackage->Read_Str(m_strIcon);
-		
-		pkPackage->Read(m_iSizeX);
-		pkPackage->Read(m_iSizeY);		
-		pkPackage->Read(m_iType);
-		
-		pkPackage->Read(m_iStackSize);
-		pkPackage->Read(m_iStackMax);		
-		
-		pkPackage->Read(m_iInContainerID);		
-		pkPackage->Read(m_iInContainerPosX);
-		pkPackage->Read(m_iInContainerPosY);	
-	
-		pkPackage->Read_Str(m_strBuffName);
-	
-	}
+
+// 	if(iVersion == 3)
+// 	{
+// 		pkPackage->Read_Str(m_strName);
+// 		pkPackage->Read_Str(m_strIcon);
+// 		
+// 		pkPackage->Read(m_iSizeX);
+// 		pkPackage->Read(m_iSizeY);		
+// 		pkPackage->Read(m_iType);
+// 		
+// 		pkPackage->Read(m_iStackSize);
+// 		pkPackage->Read(m_iStackMax);		
+// 		
+// 		pkPackage->Read(m_iInContainerID);		
+// 		pkPackage->Read(m_iInContainerPosX);
+// 		pkPackage->Read(m_iInContainerPosY);		
+// 	}
+// 	
+// 	if(iVersion == 2)
+// 	{
+// 		
+// 	}
+// 	
+// 	if(iVersion == 4)
+// 	{
+// 		pkPackage->Read_Str(m_strName);
+// 		pkPackage->Read_Str(m_strIcon);
+// 		
+// 		pkPackage->Read(m_iSizeX);
+// 		pkPackage->Read(m_iSizeY);		
+// 		pkPackage->Read(m_iType);
+// 		
+// 		pkPackage->Read(m_iStackSize);
+// 		pkPackage->Read(m_iStackMax);		
+// 		
+// 		pkPackage->Read(m_iInContainerID);		
+// 		pkPackage->Read(m_iInContainerPosX);
+// 		pkPackage->Read(m_iInContainerPosY);	
+// 	
+// 		pkPackage->Read_Str(m_strBuffName);
+// 	
+// 	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(8);
+	vector<PropertyValues> kReturn(10);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -196,6 +277,14 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[7].iValueType = VALUETYPE_STRING;
 	kReturn[7].pkValue    = &m_strBuffName;	
 	
+	kReturn[8].kValueName = "info";
+	kReturn[8].iValueType = VALUETYPE_STRING;
+	kReturn[8].pkValue    = &m_strInfo;		
+
+	kReturn[9].kValueName = "image";
+	kReturn[9].iValueType = VALUETYPE_STRING;
+	kReturn[9].pkValue    = &m_strImage;		
+		
 	return kReturn;
 }
 

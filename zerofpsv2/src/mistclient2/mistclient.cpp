@@ -787,6 +787,22 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}			
 
+		
+		case MLNM_SC_ITEMINFO:
+		{
+			string strInfo;
+			string strImage;
+			
+			pkNetMessage->Read_Str(strInfo);
+			pkNetMessage->Read_Str(strImage);
+		
+			cout<<"-- Got item info --"<<endl;
+			cout<<"IMAGE:"<<strImage<<endl;			
+			cout<<"TEXT:"<<strInfo<<endl;			
+			
+			break;
+		}
+				
 		case MLNM_SC_BUFFLIST:
 		{
 			cout<<"got buff list from server"<<endl;
@@ -1312,6 +1328,14 @@ void MistClient::RequestPickup(int iEntityID,int iPosX,int iPosY)
 	}
 }
 
+void MistClient::RequestItemInfo(int iItemID)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_ITEMINFO);
+	kNp.Write(iItemID);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);			
+}
 
 void MistClient::SendRequestContainer(int iContainerID)
 {

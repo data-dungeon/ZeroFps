@@ -66,14 +66,19 @@ class MCOMMON_API P_Item: public Property
 		int		m_iStackSize;
 		int		m_iStackMax;
 		
+		//container
 		int		m_iInContainerID;					//last known container this item was in, if -1 it was not in any container
 		int		m_iInContainerPosX;				//last known position in a container this item had
 		int		m_iInContainerPosY;
  		
 		
-		
+		//buff
 		string	m_strBuffName;
 		int		m_iBuffEntityID;
+		
+		//item info
+		string	m_strInfo;
+		string	m_strImage;
 		
 		
 		vector<PropertyValues> GetPropertyValues();
@@ -92,7 +97,10 @@ class MCOMMON_API P_Item: public Property
 		string 	GetIcon() 				{ return m_strIcon; 				}
 		int 		GetType() 				{ return m_iType;					}
 		string 	GetName() 				{ return m_strName; 				}
-		int		GetInContainerID()	{ return m_iInContainerID;		};
+		int		GetInContainerID()	{ return m_iInContainerID;		}
+		
+		string	GetInfo()				{ return m_strInfo;				}
+		string	GetImage()				{ return m_strImage;				}
 		
 		
 		void		Equip(int iEntity);
