@@ -127,7 +127,7 @@ void ZeroRTS::OnIdle()
 		pkRender->Line(mpos-Vector3(0,0,1),mpos+Vector3(0,0,1));				
 	glEnable(GL_LIGHTING);
 */
-	//m_pkFogRender->Explore(mpos.x,mpos.x,vd);		
+//	m_pkFogRender->Explore(mpos.x,mpos.z,30);		
 
 	// tassa
 	if(m_pkMoveObject)
@@ -143,6 +143,9 @@ void ZeroRTS::OnIdle()
 		pkObj->SetPos(pkFps->GetCam()->GetPos());
 		pkObj->SetPos(pkFps->GetCam()->GetPos());
 		}
+
+	if(m_pkMiniMap)
+		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); 
 }
 
 void ZeroRTS::OnSystem() 
@@ -332,8 +335,8 @@ void ZeroRTS::OnHud(void)
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
-	if(m_pkMiniMap)
-		m_pkMiniMap->Draw(m_pkCamera, pkGui); 
+/*	if(m_pkMiniMap)
+		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); */
 }
 
 void ZeroRTS::OnServerStart(void)
@@ -365,8 +368,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;			
 			}
 
-			m_pkMiniMap = new MiniMap(m_pkGuiBuilder);
-			m_pkMiniMap->Create(pkTexMan, pkLevelMan); 
+			m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
+			m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
 			
 			pkConsole->Printf("Level loaded");
 

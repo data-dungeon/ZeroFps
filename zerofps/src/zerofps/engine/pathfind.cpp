@@ -15,6 +15,7 @@ PathFind::PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue
 {
 	m_piMapTerrain = piMapTerrain;
 	m_siMapWidth = iMapWidth;
+	m_bPathIsReversed = false;
 }
 
 PathFind::~PathFind()
@@ -27,24 +28,24 @@ bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDest
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
 		return false;
 
-	// Byt start och slut ruta så att sökvägen byggs upp
-	// åt andra hållet. Detta är en nödvändig optimering
-	// för att det skall gå fortare för algorithmen att
-	// upptäcka om man har klickat på en nod som inte går att
-	// nå (en ruta omringad av blockerad terrän, tex. en ö)
-/*	swap(iStartPosX, iDestPosX);
-	swap(iStartPosY, iDestPosY);*/
+	if(m_bPathIsReversed)
+	{
+		// Byt start och slut ruta så att sökvägen byggs upp
+		// åt andra hållet. Detta är en nödvändig optimering
+		// för att det skall gå fortare för algorithmen att
+		// upptäcka om man har klickat på en nod som inte går att
+		// nå (en ruta omringad av blockerad terrän, tex. en ö)
+		swap(iStartPosX, iDestPosX);
+		swap(iStartPosY, iDestPosY);
+	}
 
 	m_pkStartNode = new Node(iStartPosX, iStartPosY);
 	m_pkDestNode = new Node(iDestPosX, iDestPosY);
 
 	m_eState = ACTIVE;
-	
-	// Initialise the AStar specific parts of the Start Node
-	// The user only needs fill out the state information
-	m_pkStartNode->m_fGValue = 0; 
 
 	// Beräkna den heuristiska kostnaden
+	m_pkStartNode->m_fGValue = 0; 	
 	m_pkStartNode->m_fHValue = m_pkStartNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos);
 	m_pkStartNode->m_fFValue = m_pkStartNode->m_fGValue + m_pkStartNode->m_fHValue;
 	m_pkStartNode->m_pkParent = 0;
@@ -190,7 +191,6 @@ PathFind::SEARCH_STATE PathFind::SearchStep()
 			// Kolla om vi redan har undersökt denna granne, dvs. om den redan
 			// finns i någon av de 2 listorna. Gör den det och har lägre g värde
 			// så skippar vi denna granne.
-
 			vector<NodePtr>::iterator itOpenListResultat;
 			for( itOpenListResultat = m_kvOpenList.begin(); 
 			     itOpenListResultat != m_kvOpenList.end(); 
@@ -380,7 +380,6 @@ void PathFind::FreeAllNodes()
 //
 void PathFind::DeleteUnusedNodes()
 {
-
 	vector<NodePtr>::iterator itOpen = m_kvOpenList.begin();
 	while(itOpen != m_kvOpenList.end())
 	{
@@ -466,7 +465,9 @@ bool PathFind::FillQueue()
 		{
 			counter=0;
 			Reset();
-			return false;
+			m_bPathIsReversed = true;
+			return Rebuild(m_pkStartNode->m_kSqrPos.x, m_pkStartNode->m_kSqrPos.y, 
+				m_pkDestNode->m_kSqrPos.x, m_pkDestNode->m_kSqrPos.y);
 		}
 
 		uiSearchState = SearchStep();
@@ -497,8 +498,9 @@ bool PathFind::FillQueue()
 		return false;
 	}
 
-	//ReversePath();  // Eftersom vi byggde upp sökvägen från andra hållet
-					// måste vi nu vända på kön.
+	if(m_bPathIsReversed)
+		ReversePath();  // Eftersom vi byggde upp sökvägen från andra hållet
+						// måste vi nu vända på kön.
 	return true;
 }
 
@@ -581,4 +583,6 @@ void PathFind::ReversePath()
 
 	for(i=0; i<size; i++)
 		m_kqPath.push(apa[size-1-i]);
+
+	m_bPathIsReversed = false;
 }

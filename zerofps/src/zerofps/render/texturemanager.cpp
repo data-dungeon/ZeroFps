@@ -662,7 +662,8 @@ bool TextureManager::SwapTexture()
 	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
 		return false;
 		
-	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage,m_iTextures[m_iCurrentTexture]->m_bMipMapping);
+	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage,
+		m_iTextures[m_iCurrentTexture]->m_bMipMapping);
 	
 	if(works)
 	{

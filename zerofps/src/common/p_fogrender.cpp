@@ -14,6 +14,8 @@ P_FogRender::P_FogRender()
 	m_iSortPlace =		20;	
 	m_bHaveChanged =	false;
 	m_sFogTexture = 	"../data/textures/fog.tga";
+
+	memset(m_bExploredSqrs, 0, sizeof(bool)*FOG_TEXTURE_SIZE*FOG_TEXTURE_SIZE);
 	
 }
 
@@ -26,15 +28,17 @@ void P_FogRender::Update()
 		m_pkTexMan->SwapTexture();
 	}
 
+	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
-	
+
 	glDisable(GL_DEPTH_TEST);
 
-	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),Vector3(m_fScale,m_fScale,1),m_pkTexMan->Load(m_sFogTexture.c_str(),T_NOMIPMAPPING));
+	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),
+		Vector3(m_fScale,m_fScale,1),m_pkTexMan->Load(m_sFogTexture.c_str(),T_NOMIPMAPPING));
 
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_DEPTH_TEST);	
+	glPopAttrib();
 }
 
 void P_FogRender::Explore(float x,float y,float r)
@@ -62,6 +66,8 @@ void P_FogRender::Explore(float x,float y,float r)
 			yy+=y;
 			
 			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,0);
+
+			m_bExploredSqrs[(int)yy][(int)xx] = true;
 		}
 	}
 	
@@ -93,6 +99,8 @@ void P_FogRender::UnExplore(float x,float y,float r)
 			yy+=y;
 			
 			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,255);
+
+			m_bExploredSqrs[(int)yy][(int)xx] = false;
 		}
 	}
 	
@@ -108,7 +116,9 @@ void P_FogRender::UnExploreAll()
 	
 	for(int x=0;x<w;x++)
 		for(int y=0;y<h;y++)
-			m_pkTexMan->PsetRGBA(x,y,0,0,0,255);			
+			m_pkTexMan->PsetRGBA(x,y,0,0,0,255);
+		
+	memset(m_bExploredSqrs, 0, sizeof(bool)*FOG_TEXTURE_SIZE*FOG_TEXTURE_SIZE);
 
 	m_bHaveChanged = true;
 }
@@ -122,7 +132,9 @@ void P_FogRender::ExploreAll()
 	
 	for(int x=0;x<w;x++)
 		for(int y=0;y<h;y++)
-			m_pkTexMan->PsetRGBA(x,y,0,0,0,0);			
+			m_pkTexMan->PsetRGBA(x,y,0,0,0,0);
+		
+	memset(m_bExploredSqrs, 1, sizeof(bool)*FOG_TEXTURE_SIZE*FOG_TEXTURE_SIZE);
 
 	m_bHaveChanged = true;
 }

@@ -25,11 +25,14 @@ class COMMON_API P_FogRender: public Property {
 		TextureManager* m_pkTexMan;
 			
 		string 	m_sFogTexture;			
-		bool		m_bHaveChanged;
-		float 	m_fScale;			
+
+		float 	m_fScale;	
+		
 	public:
 
-		
+		bool m_bExploredSqrs[FOG_TEXTURE_SIZE][FOG_TEXTURE_SIZE];
+
+		bool		m_bHaveChanged;		
 		
 		P_FogRender();
 		void CloneOf(Property* pkProperty) { }

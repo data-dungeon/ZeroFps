@@ -369,7 +369,7 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 	glRotatef(kRot.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
-	m_pkTexMan->BindTexture(iTexture); 	
+	m_pkTexMan->BindTexture(iTexture);
 	glColor4f(1,1,1,1);		
 		
 	glBegin(GL_QUADS);			

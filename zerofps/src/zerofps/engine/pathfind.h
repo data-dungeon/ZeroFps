@@ -84,6 +84,7 @@ private:
 	vector<NodePtr> m_kvClosedList; 
 	vector<NodePtr> m_kvNeighbours;
 	queue<Point> m_kqPath;
+	bool m_bPathIsReversed;
 
 	// State
 	SEARCH_STATE m_eState;

@@ -13,9 +13,9 @@ class MiniMap
 {
 public:
 	void Show(bool bVisible);
-	void Create(TextureManager* pkTexMan, LevelManager* pkLevelMan);
-	void Draw(Camera* pkCamera, ZGui* pkGui);
-	MiniMap(GuiBuilder* pkGuiBuilder);
+	void Create(/*TextureManager* pkTexMan,*/ LevelManager* pkLevelMan);
+	void Draw(Camera* pkCamera, ZGui* pkGui, P_FogRender* pkFogRender, Render* pkRender);
+	MiniMap(GuiBuilder* pkGuiBuilder, TextureManager *pkTexMan);
 	virtual ~MiniMap();
 
 private:
@@ -31,6 +31,7 @@ private:
 	bool m_bVisible;
 
 	GuiBuilder* m_pkGuiBuilder;
+	TextureManager *m_pkTexMan;
 };
 
 #endif // !defined(AFX_MINIMAP_H__07AFEE97_DF3C_4279_A1BE_E29D50380DB4__INCLUDED_)
