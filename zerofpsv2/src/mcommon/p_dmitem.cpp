@@ -86,7 +86,7 @@ void P_DMItem::Save(ZFIoInterface* pkPackage)
 	
 }
 
-void P_DMItem::Load(ZFIoInterface* pkPackage)
+void P_DMItem::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 

@@ -222,7 +222,7 @@ void P_DMHQ::Save(ZFIoInterface* pkPackage)
 	m_pkStockroom->Save(pkPackage);		
 }
 
-void P_DMHQ::Load(ZFIoInterface* pkPackage)
+void P_DMHQ::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read(&m_bActiveHQ,sizeof(m_bActiveHQ),1);	
 //	pkPackage->Read(&m_iReputation,sizeof(m_iReputation),1);	

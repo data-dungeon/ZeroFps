@@ -78,7 +78,7 @@ void P_BillBoardRender::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_BillBoardRender::Load(ZFIoInterface* pkPackage)
+void P_BillBoardRender::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 	

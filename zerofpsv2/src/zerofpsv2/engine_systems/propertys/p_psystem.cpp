@@ -138,7 +138,7 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_PSystem::Load(ZFIoInterface* pkPackage)
+void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 
    // Read PSType

@@ -195,6 +195,8 @@ class ENGINE_API Property
 		int		m_iSortPlace;			//	place in update queue
 		bool		m_bSortDistance;
 		
+		int		m_iVersion;				//used for multiple versionsof load ,shuld be incresed if save data changes
+		
 		int		m_iType;				// property type
 		int		m_iSide;				// server or client property
 		
@@ -235,8 +237,8 @@ class ENGINE_API Property
 		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID)	{	};
 		
 		// Save / Load
-		virtual void Save(ZFIoInterface* pkFile){};
-		virtual void Load(ZFIoInterface* pkFile){};		
+		virtual void Save(ZFIoInterface* pkFile)									{	};
+		virtual void Load(ZFIoInterface* pkFile,int iVersion)					{	};		
 
 		// Inlines
 		inline void SetObject(Entity* pkObject)	{	m_pkObject=pkObject;	};

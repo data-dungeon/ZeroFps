@@ -76,7 +76,7 @@ void P_ShadowBlob::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_ShadowBlob::Load(ZFIoInterface* pkPackage)
+void P_ShadowBlob::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read(&m_kOffset,sizeof(m_kOffset),1);		
 	pkPackage->Read(&m_kScale,sizeof(m_kScale),1);		

@@ -41,7 +41,7 @@ class ENGINE_SYSTEMS_API P_Controller : public Property {
 		bool HandleSetValue( string kValueName, string kValue );
 
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -467,7 +467,7 @@ void P_Spell::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Spell::Load(ZFIoInterface* pkPackage)
+void P_Spell::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 
 }

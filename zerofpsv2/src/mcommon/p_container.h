@@ -30,7 +30,7 @@ public:
    void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
    void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 
-   void Load(ZFIoInterface* pkPackage);
+   void Load(ZFIoInterface* pkPackage,int iVersion);
    void Save(ZFIoInterface* pkPackage);
 
    // returns true if there was room for the object

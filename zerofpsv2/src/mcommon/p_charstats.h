@@ -33,7 +33,7 @@ class MCOMMON_API CharacterProperty: public Property
 		CharacterProperty();
 
       void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage,int iVersion);
 
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -158,7 +158,7 @@ void P_Light::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_iMode,sizeof(m_iMode),1);	
 }
 
-void P_Light::Load(ZFIoInterface* pkPackage)
+void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
 	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	

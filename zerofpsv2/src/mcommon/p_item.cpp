@@ -157,7 +157,7 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Item::Load(ZFIoInterface* pkPackage)
+void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 {
    int iSkillBonuses, iAttributeBonuses, iAttackBonuses, iDefenceBonuses, iEquipOn, iValue, i;
 

@@ -200,7 +200,7 @@ void P_PfPath::Save(ZFIoInterface* pkFile)
 }
 
 
-void P_PfPath::Load(ZFIoInterface* pkFile)
+void P_PfPath::Load(ZFIoInterface* pkFile,int iVersion)
 {
 	pkFile->Read((void*)&m_bTilt,sizeof(m_bTilt),1);
 	pkFile->Read((void*)&m_fSpeed,sizeof(m_fSpeed),1);	

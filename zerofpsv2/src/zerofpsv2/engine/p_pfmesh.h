@@ -87,7 +87,7 @@ class ENGINE_API P_PfMesh : public Property
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);
-		void Load(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile,int iVersion);
 
 		void BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal);
 		void SetMad(P_Mad* pkMad);

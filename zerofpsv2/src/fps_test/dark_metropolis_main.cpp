@@ -465,7 +465,7 @@ void DarkMetropolis::Input()
 			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));
 			
 			
-			pkCam->SetOffset(Vector3(0,1.9,0));
+			pkCam->SetOffset(Vector3(0,1.4,0));
 					
 
 			float fDistance = pkCam->Get3PDistance();
@@ -1140,7 +1140,8 @@ bool DarkMetropolis::CreatePlayer()
 				if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 				{
 					pkEnv->SetEnable(true);
-					pkEnv->SetEnviroment("data/enviroments/dm.env");			
+					pkEnv->SetEnviroment("data/enviroments/dm.env");		
+					cout<<"setting enviroment"<<endl;	
 				}					
 				
 				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");

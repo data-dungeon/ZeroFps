@@ -38,7 +38,7 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property {
 		void Update();
 
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -39,7 +39,7 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
 
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 };
 

@@ -100,7 +100,7 @@ void P_Primitives3D::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_kColor,12,1 );	
 }
 
-void P_Primitives3D::Load(ZFIoInterface* pkPackage)
+void P_Primitives3D::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read((void*)&m_iType	,4 ,1);		
 	pkPackage->Read((void*)&m_fRadius,4,1 );		

@@ -120,7 +120,7 @@ void P_DMMission::Save(ZFIoInterface* pkPackage)
 	//pkPackage->Write(temp,256,1);
 }
 
-void P_DMMission::Load(ZFIoInterface* pkPackage)
+void P_DMMission::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	//char temp[256];
 	//

@@ -148,7 +148,7 @@ class MCOMMON_API P_DMCharacter: public Property
 		void Init();		
 		void Update();		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		bool HasOrders()						{ return m_kOrderQueue.size(); }
 		

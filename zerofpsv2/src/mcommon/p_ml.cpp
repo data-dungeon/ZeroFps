@@ -219,7 +219,7 @@ void P_Ml::Save(ZFIoInterface* pkPackage)
 	m_bJustSaved = true;
 }
 
-void P_Ml::Load(ZFIoInterface* pkPackage)
+void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read((void*)&m_iSpawn,sizeof(m_iSpawn),1);		
 	pkPackage->Read((void*)&m_iSpawnZon,sizeof(m_iSpawnZon),1);	

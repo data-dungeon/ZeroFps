@@ -41,7 +41,7 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;
 
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 };
 

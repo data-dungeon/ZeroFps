@@ -52,7 +52,7 @@ class MCOMMON_API P_Spawn: public Property {
 		void RemoveEntity(Entity* pkEnt);
 			
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 			
 //		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 //		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

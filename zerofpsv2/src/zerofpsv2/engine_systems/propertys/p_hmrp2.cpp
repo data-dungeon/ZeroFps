@@ -92,7 +92,7 @@ void P_HMRP2::Save(ZFIoInterface* pkPackage)
 		m_pkHeightMap->Save(hmapname);
 }
 
-void P_HMRP2::Load(ZFIoInterface* pkPackage)
+void P_HMRP2::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char hmapname[256];
 	sprintf(hmapname, "%s/hm%d", m_pkObject->m_pkEntityMan->GetWorldDir().c_str(), m_pkObject->GetEntityID());

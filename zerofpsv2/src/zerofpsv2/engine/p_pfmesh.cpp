@@ -232,7 +232,7 @@ void P_PfMesh::Save(ZFIoInterface* pkFile)
 
 }
 
-void P_PfMesh::Load(ZFIoInterface* pkFile)
+void P_PfMesh::Load(ZFIoInterface* pkFile,int iVersion)
 {
 		
 }

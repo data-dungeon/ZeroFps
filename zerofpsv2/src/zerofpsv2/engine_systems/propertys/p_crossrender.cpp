@@ -91,7 +91,7 @@ void P_CrossRender::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_CrossRender::Load(ZFIoInterface* pkPackage)
+void P_CrossRender::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 	

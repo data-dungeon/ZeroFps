@@ -43,7 +43,7 @@ class MCOMMON_API P_Spell: public Property
       void Bonuses(bool bAddBonuses); //false = remove bonuses (on end of spell)
 
       void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage,int iVersion);
 
       void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);

@@ -46,7 +46,7 @@ class MCOMMON_API P_DMClickMe: public Property {
 		void Init();	
 	
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);		
+		void Load(ZFIoInterface* pkPackage,int iVersion);		
 };
 
 MCOMMON_API Property* Create_P_DMClickMe();

@@ -84,7 +84,7 @@ void P_WaterRender::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_WaterRender::Load(ZFIoInterface* pkPackage)
+void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char data[300];	
 	

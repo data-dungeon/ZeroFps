@@ -73,7 +73,7 @@ void P_DMClickMe::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_DMClickMe::Load(ZFIoInterface* pkPackage)
+void P_DMClickMe::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 }
 

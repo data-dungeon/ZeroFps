@@ -33,7 +33,7 @@ class ENGINE_SYSTEMS_API P_BillBoardRender : public Property {
 		void UpdateSet();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
 };
 

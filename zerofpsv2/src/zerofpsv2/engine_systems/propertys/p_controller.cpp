@@ -75,7 +75,7 @@ void P_Controller::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Controller::Load(ZFIoInterface* pkPackage)
+void P_Controller::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 
 }

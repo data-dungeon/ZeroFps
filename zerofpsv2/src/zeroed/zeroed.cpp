@@ -356,8 +356,7 @@ void ZeroEd::OnServerStart(void)
 	GetWnd("vp4")->SetZValue(0);
 	
 	//enable sun as default
-	m_bEditSun = true;	
-	m_pkLight->Add(&m_kSun);
+	ToogleLight(true);
 }
 
 void ZeroEd::OnClientStart()
@@ -948,12 +947,10 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		*/
 
 		case FID_EDITSUN:
-			m_bEditSun = !m_bEditSun;
-
 			if(m_bEditSun)
-				m_pkLight->Add(&m_kSun);
+				ToogleLight(false);
 			else
-				m_pkLight->Remove(&m_kSun);
+				ToogleLight(true);
 
 			break;
 
@@ -1358,11 +1355,24 @@ void ZeroEd::RotateActive()
 
 void ZeroEd::ToogleLight(bool bEnabled)
 {
+	if(bEnabled)
+	{	
+		m_bEditSun = true;	
+		m_pkLight->Add(&m_kSun);
+	}
+	else
+	{
+		m_bEditSun = false;	
+		m_pkLight->Remove(&m_kSun);
+	}
+
 /*	if(bEnabled)
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
 	else
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 */		
+	
+
 }
 
 void ZeroEd::UpdateStartLocatons()

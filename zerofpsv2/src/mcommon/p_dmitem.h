@@ -65,7 +65,7 @@ class MCOMMON_API P_DMItem: public Property {
 		void Init();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		string GetIcon() { return m_strIcon; }
 		int GetType() { return m_iType; }

@@ -58,7 +58,7 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);
-		void Load(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile,int iVersion);
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -215,7 +215,7 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
 // -----------------------------------------------------------------------------------------------
 
-void P_Container::Load(ZFIoInterface* pkPackage)
+void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {/*
    // load capacity
    pkPackage->Read ( (void*)&m_iCapacity, sizeof(int), 1 );

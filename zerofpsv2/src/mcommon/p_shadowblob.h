@@ -43,7 +43,7 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		
 			
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
 
 };

@@ -53,7 +53,7 @@ class MCOMMON_API P_DMMission: public Property {
 		void Update();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		bool SetCurrentMission(string strMissionScript);
 		void GetPossibleMissions(float fReputation, vector<DMMissionInfo>& vkInfo);

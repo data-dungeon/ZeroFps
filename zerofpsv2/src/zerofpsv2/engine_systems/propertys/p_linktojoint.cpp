@@ -96,7 +96,7 @@ void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)temp,50,1);
 }
 
-void P_LinkToJoint::Load(ZFIoInterface* pkPackage)
+void P_LinkToJoint::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[50];
 	pkPackage->Read((void*)temp,50,1);	

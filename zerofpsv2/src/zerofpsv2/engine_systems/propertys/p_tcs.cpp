@@ -157,7 +157,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 }
 
 
-void P_Tcs::Load(ZFIoInterface* pkPackage)
+void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read((void*)&m_bPolygonTest,sizeof(m_bPolygonTest),1);
 	pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	

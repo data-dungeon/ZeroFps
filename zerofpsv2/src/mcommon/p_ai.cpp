@@ -321,7 +321,7 @@ void P_AI::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_AI::Load(ZFIoInterface* pkPackage)
+void P_AI::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 }
 

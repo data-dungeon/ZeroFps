@@ -11,11 +11,11 @@ P_Mad::P_Mad()
 	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
-//	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
 	
 	strcpy(m_acName,"P_Mad");
 	bNetwork	 = true;
-
+	m_iVersion = 2;
+	
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	
@@ -23,8 +23,10 @@ P_Mad::P_Mad()
 	m_bCanBeInvisible = false;
 	m_iShadowGroup = 0;
 
-	m_fScale	 = 1.0;
+
 	
+	m_fScale	 = 1.0;
+	m_kOffset.Set(0,0,0);
 	
 	m_fLastAnimationUpdateTime = 0;
 }
@@ -63,7 +65,7 @@ void P_Mad::Update()
 		if(m_bIsVisible)
 		{		
 			m_pkZShaderSystem->MatrixPush();
-				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV());
+				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV() + m_kOffset);
 				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkObject->GetWorldRotM()));
 				m_pkZShaderSystem->MatrixScale(m_fScale);
 	
@@ -74,7 +76,7 @@ void P_Mad::Update()
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
 		{
 			m_pkZShaderSystem->MatrixPush();
-				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV());
+				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV() + m_kOffset);
 				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
 			m_pkZShaderSystem->MatrixPop();
 			
@@ -130,20 +132,52 @@ void P_Mad::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fScale,4,1);
 	pkPackage->Write((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
 	pkPackage->Write((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
+	pkPackage->Write((void*)&m_kOffset,sizeof(m_kOffset),1);
+	
 }
 
-void P_Mad::Load(ZFIoInterface* pkPackage)
+void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	char temp[128];
-	pkPackage->Read((void*)temp,128,1);	
-	SetBase(temp);
+	switch(iVersion)
+	{
+		case 1:
+		{
+			char temp[128];
+			pkPackage->Read((void*)temp,128,1);	
+			SetBase(temp);
+			
+			float scale;
+			pkPackage->Read((void*)&scale,4,1);
+			SetScale(scale);
+			
+			pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+			pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
+			break;
+		}
+		
+		case 2:
+		{
+			char temp[128];
+			pkPackage->Read((void*)temp,128,1);	
+			SetBase(temp);
+			
+			float scale;
+			pkPackage->Read((void*)&scale,4,1);
+			SetScale(scale);
+			
+			pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+			pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
+			pkPackage->Read((void*)&m_kOffset,sizeof(m_kOffset),1);
+			break;			
+		}
+		
+		default:
+		{
+			cout<<"Tried to load unkown version of p_mad"<<endl;
+			break;
+		}
+	}
 	
-	float scale;
-	pkPackage->Read((void*)&scale,4,1);
-	SetScale(scale);
-	
-	pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
-	pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
 	
 	//update object radius
 	m_pkObject->SetRadius(GetRadius());
@@ -158,6 +192,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_bCanBeInvisible );	
 	pkNetPacket->Write( iActiveAnimation );
 	pkNetPacket->Write( m_iNextAnimation );
+	pkNetPacket->Write( m_kOffset );
 	
 	unsigned char ucNumOfMesh = m_kActiveMesh.size();
 	int iMesh;
@@ -189,6 +224,8 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read( iNewNextAnim );	
 	Mad_Modell::SetNextAnimation(iNewNextAnim);
 
+	pkNetPacket->Read( m_kOffset );	
+	
 	unsigned char ucNumOfMesh;
 	int iMesh;
 
@@ -209,9 +246,7 @@ bool P_Mad::AddMesh(int iSId)
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(5);
-	
-	
+	vector<PropertyValues> kReturn(6);
 	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
@@ -232,7 +267,11 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	kReturn[4].kValueName = "m_iSortPlace";
 	kReturn[4].iValueType = VALUETYPE_INT;
 	kReturn[4].pkValue    = (void*)&m_iSortPlace;
-	
+
+	kReturn[5].kValueName = "m_kOffset";
+	kReturn[5].iValueType = VALUETYPE_VECTOR3;
+	kReturn[5].pkValue    = (void*)&m_kOffset;
+		
 	return kReturn;
 }
 

@@ -29,7 +29,7 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 		vector<PropertyValues> GetPropertyValues();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 	 
 		void TurnOn();
 		void TurnOff();

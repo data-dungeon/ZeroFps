@@ -41,7 +41,7 @@ class ENGINE_API P_PfPath : public Property
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);
-		void Load(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile,int iVersion);
 
 		void SetPath(vector<Vector3> kPath);
 		bool MakePathFind(Vector3 kDestination);

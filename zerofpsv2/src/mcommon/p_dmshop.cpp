@@ -96,7 +96,7 @@ void P_DMShop::Save(ZFIoInterface* pkPackage)
 //
 //-----------------------------------------------------------------------------
 
-void P_DMShop::Load(ZFIoInterface* pkPackage)
+void P_DMShop::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 	int value;

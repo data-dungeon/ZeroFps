@@ -33,7 +33,7 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		void OnEvent(GameMessage& Msg);
 
       void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		void SetHeartRate(float blub);
 		

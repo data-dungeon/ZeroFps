@@ -49,7 +49,7 @@ class MCOMMON_API P_DMHQ: public Property {
 		vector<DMCharacterStats>* GetHireList() {return &m_kForHireList;};
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		DMContainer*		m_pkStockroom;
 		

@@ -26,6 +26,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		float		m_fLastAnimationUpdateTime;
 		
+		Vector3	m_kOffset;
+		
 		//linetest stuff
 		Matrix4		m_kModelMatrix;
 		Vector3		m_kColPos;
@@ -45,7 +47,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		P_Mad();
 		void Update();
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 

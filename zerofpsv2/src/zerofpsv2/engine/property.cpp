@@ -17,6 +17,7 @@ Property::Property()
 	m_pkObject=			NULL;	
 	m_iSortPlace=		0;
 	m_bSortDistance=	false;
+	m_iVersion =		1;
 	
 	strcpy(m_acName,"NoName");		 
 

@@ -39,7 +39,7 @@ class MCOMMON_API P_Event: public Property {
 		void Touch(int iId);					//executet when collision occurs
 
       void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		void SetHeartRate(float blub);
 		

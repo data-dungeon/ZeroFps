@@ -60,7 +60,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void Random(P_HMRP2* pkHmrp2 = NULL);
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -202,7 +202,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void CharacterProperty::Load(ZFIoInterface* pkPackage)
+void CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 {
    char temp[128], temp2[128];
    float fValue;

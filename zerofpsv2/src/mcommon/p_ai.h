@@ -78,7 +78,7 @@ class MCOMMON_API P_AI: public Property
       ~P_AI();
 
       void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage,int iVersion);
 
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -133,7 +133,7 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 	pkFile->Write( &m_bManagedByAudioSystem, sizeof(bool), 1); 
 }
 
-void P_AmbientSound::Load(ZFIoInterface* pkFile)
+void P_AmbientSound::Load(ZFIoInterface* pkFile,int iVersion)
 {
 	char* szFileName = NULL;
 	unsigned int uiFileNameSize;

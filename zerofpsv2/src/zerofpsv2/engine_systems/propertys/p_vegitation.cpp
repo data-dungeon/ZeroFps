@@ -307,7 +307,7 @@ void P_Vegitation::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_Vegitation::Load(ZFIoInterface* pkPackage)
+void P_Vegitation::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 
 	char data[256];

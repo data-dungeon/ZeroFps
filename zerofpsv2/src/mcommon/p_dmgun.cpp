@@ -368,7 +368,7 @@ void P_DMGun::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(temp,128,1);
 }
 
-void P_DMGun::Load(ZFIoInterface* pkPackage)
+void P_DMGun::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 		char temp[128];
 

@@ -61,7 +61,7 @@ void P_WorldInfo::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_kAmbientColor,12,1);				
 }
 
-void P_WorldInfo::Load(ZFIoInterface* pkPackage)
+void P_WorldInfo::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	//skybox
 	char data[100];

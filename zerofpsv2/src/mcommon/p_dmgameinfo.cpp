@@ -64,7 +64,7 @@ void P_DMGameInfo::Save(ZFIoInterface* pkPackage)
 	
 }
 
-void P_DMGameInfo::Load(ZFIoInterface* pkPackage)
+void P_DMGameInfo::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[128];
 

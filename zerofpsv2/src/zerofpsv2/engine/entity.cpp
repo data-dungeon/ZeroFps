@@ -865,7 +865,8 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	pkFile->Read(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
 	EntityVariable kEntVar;
 
-	for(i=0; i<iNumOfEntVars; i++) {
+	for(i=0; i<iNumOfEntVars; i++) 
+	{
 		pkFile->Read(acTemp,128,1);		
 		kEntVar.m_strName = acTemp;
 		pkFile->Read(&kEntVar.m_eType ,sizeof(int), 1);		
@@ -873,7 +874,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		pkFile->Read(acTemp,128,1);		
 		kEntVar.m_strValue = acTemp;
 		m_kVariables.push_back(kEntVar);
-		}
+	}
 
 	//name
 	pkFile->Read(acTemp,128,1);		
@@ -898,12 +899,15 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	for(i = 0;i< iProps;i++)
 	{
 		char name[50];		
-		pkFile->Read(&name,50,1);			
+		pkFile->Read(&name,50,1);
+		int iVersion;
+		pkFile->Read(&iVersion,sizeof(int),1);
+					
 		
 		Property* prop = AddProperty(name);
 		
 		if(prop)
-			prop->Load(pkFile);
+			prop->Load(pkFile,iVersion);
 		else
 		{
 			cout<<"ERROR: Entity name: "<<m_strName<<" type:"<<m_strType<<" has unregistered property: "<<name<<endl;
@@ -914,6 +918,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	//Do we want to load the entitys attached childs?
 	if(bLoadChilds)
 	{
+		cout<<"loading childs"<<endl;
 		//nr of childs
 		int iChilds = 0;		
 		pkFile->Read(&iChilds,sizeof(iChilds),1);		
@@ -966,7 +971,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 	unsigned int iNumOfEntVars = m_kVariables.size();
 	pkFile->Write(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
 	
-	for(i=0; i<iNumOfEntVars; i++) {
+	for(i=0; i<iNumOfEntVars; i++) 
+	{
 		strcpy(acTemp,m_kVariables[i].m_strName.c_str());
 		pkFile->Write(acTemp,128,1);		
 		pkFile->Write(&m_kVariables[i].m_eType ,sizeof(int), 1);		
@@ -998,6 +1004,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 	for( i = 0;i<iProps;i++)
 	{
 		pkFile->Write(&m_akPropertys[i]->m_acName,50,1);	
+		pkFile->Write(&m_akPropertys[i]->m_iVersion,sizeof(int),1);	
 		m_akPropertys[i]->Save(pkFile);
 	}
 		

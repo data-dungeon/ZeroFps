@@ -30,7 +30,7 @@ class MCOMMON_API P_DMShop: public Property {
 		void Init();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		DMContainer* m_pkItems;		
 

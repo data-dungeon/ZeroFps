@@ -182,7 +182,7 @@ void P_Spawn::Save(ZFIoInterface* pkPackage)
 
 }
 
-void P_Spawn::Load(ZFIoInterface* pkPackage)
+void P_Spawn::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char temp[256];
 

@@ -34,7 +34,7 @@ class ENGINE_SYSTEMS_API P_WorldInfo : public Property {
 		void Update();
 		
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 };
 
 Property* Create_WorldInfoProperty();

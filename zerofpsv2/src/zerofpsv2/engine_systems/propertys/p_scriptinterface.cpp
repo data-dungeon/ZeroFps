@@ -168,7 +168,7 @@ void P_ScriptInterface::Save(ZFIoInterface* pkPackage)
    pkPackage->Write ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
 }
 
-void P_ScriptInterface::Load(ZFIoInterface* pkPackage)
+void P_ScriptInterface::Load(ZFIoInterface* pkPackage,int iVersion)
 {
    pkPackage->Read ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
    pkPackage->Read ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );

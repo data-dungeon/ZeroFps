@@ -107,7 +107,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Disable();
 
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
 		//resting
 		void Wakeup(bool bWakeChilds = true);
