@@ -289,7 +289,10 @@ void TileEngine::Draw()
 				Vector3 pos;
 				pos.Set(x - ceil(m_iSizeX/2.0) + 0.5,4,y - ceil(m_iSizeY/2.0) + 0.5);
 				pos *= HEIGHTMAP_SCALE;
-						
+
+				Vector3 p = m_pkMap->GetPosFromSqr(Point(x,y));
+				pos.y = m_pkMap->Height(p.x,p.z) + 0.1f;
+				
 				m_pkRender->Quad(pos,Vector3(-90,0,0),Vector3(2,2,2),1);
 			}	
 		}

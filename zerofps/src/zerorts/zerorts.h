@@ -103,17 +103,7 @@ class ZeroRTS :public Application {
 		void OnIdle(void);
 		void OnHud(void);
 		void OnSystem();
-		
-		// uncommented out by dvoid =P
-		// Pathfind test //////////////////////////////////////
-		PathFind* m_pkTestPath;
-		Point m_pkStart, m_pkEnd;
-		Object* m_pkMoveObject;
-		void BuildPath();
-		bool MovePath(Object* pkObject);
-		void SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject);
-		//////////////////////////////////////////////////////
-		
+				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
 		void RegisterActions();		

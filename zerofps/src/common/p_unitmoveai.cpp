@@ -271,6 +271,7 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
 		(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 	
+
 	if(!m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact))
 	{
 		//put this unit back

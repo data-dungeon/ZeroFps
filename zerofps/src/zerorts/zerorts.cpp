@@ -23,13 +23,8 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bDisableCameraScroll =	false;
 	m_iGameType =					1;
 	m_kClickPos = m_kDragPos = NO_SELECTION;
-	test_path_find_object =NULL;
+	test_path_find_object = NULL;
 	m_bDrawPath = false;
-
-/*	COMMENT OUT BY ZEB
-	m_pkTestPath = NULL;
-	m_pkStart = Point(-1,-1);
-	m_pkEnd = Point(-1,-1);*/
 }
 
 void ZeroRTS::OnInit() 
@@ -127,7 +122,7 @@ void ZeroRTS::OnIdle()
 	
 	TileEngine::m_pkInstance->Draw();
 
-/* //DVOID
+/* //COMMENT OUT BY DVOID
 	PickInfo p = Pick();
 	
 	Point bla = GetSqrFromPos(p.kHitPos);
@@ -153,15 +148,6 @@ void ZeroRTS::OnIdle()
 	glEnable(GL_LIGHTING);
 */
 //	m_pkFogRender->Explore(mpos.x,mpos.z,30);		
-
-/* COMMENT OUT BY ZEB
-	// tassa
-	if(m_pkMoveObject)
-		MovePath(m_pkMoveObject);
-<<<<<<< zerorts.cpp
-
-*/
-
 
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
@@ -378,38 +364,6 @@ void ZeroRTS::Input()
 	
 		PickInfo info = Pick();
 		
-		/* COMMENT OUT BY ZEB
-		// Test pathfind
-		if(info.iObject != -1)
-		{
-			m_pkMoveObject = pkObjectMan->GetObjectByNetWorkID(info.iObject);
-			m_pkEnd = m_pkStart = m_pkMap->GetSqrFromPos(m_pkMoveObject->GetPos());
-		}
-		else
-		{
-			if(m_pkStart != Point(-1,-1))
-			{
-				m_pkEnd = info.kSquare;
-				m_pkStart = m_pkMap->GetSqrFromPos(m_pkMoveObject->GetPos());
-				if(m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y) == false)
-				{
-					m_pkEnd = m_pkStart;
-					printf("Pathfinding Failed\n");
-				}
-
-				float fx=m_pkEnd.x, fy=m_pkEnd.y;
-				int tex = m_pkMap->GetMostVisibleTexture(fx,fy);
-				//printf("Texture=%i\n", tex);
-			}
-
-			float fx = info.kHitPos.x, fy = info.kHitPos.z;
-			Vector3 sqrnorm = m_pkMap->Tilt(fx,fy);
-			Vector3 ground_plane = Vector3(0,1,0);
-			float angle = sqrnorm.Angle(ground_plane);
-			//printf("Angle: %f\n", RadToDeg(angle));
-		}
-		*/
-
 		//do we want to clear?
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
@@ -501,7 +455,6 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Level loaded");
 
 			SetupSpawnPoints();
-		/*	BuildPath();*/
 			
 			//setup tile engine
 			m_pkTileEngine->CreateMap();
@@ -710,37 +663,6 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
 
-
-void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
-{	
-	if(pkObject == NULL)
-		return;
-
-	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
-
-	pkObject->SetPos(newp);
-	pkObject->SetPos(newp);
-}
-
-void ZeroRTS::BuildPath()
-{
-	static bool bDone = false;
-	if(bDone == false)
-		bDone = true;
-	else
-		return;
-
-	int aiCost[5];
-	aiCost[0] = 15; // gräs (grön nyans)
-	aiCost[1] = 1; // väg (röd nyans)
-	aiCost[2] = 7; // sten (blå nyans)
-	aiCost[3] = 10; // öken (röd nyans)
-	aiCost[4] = 999; // vatten
-
-	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
-	kPathBuilder.Build(aiCost);
-}
-
 Point ZeroRTS::GetSqrFromPos(Vector3 pos)
 {
 	int iSquareX = m_pkMap->m_iHmSize/2+floor(pos.x / HEIGHTMAP_SCALE);
@@ -760,29 +682,6 @@ Vector3 ZeroRTS::GetPosFromSqr(Point square)
 	float y = m_pkMap->Height(x,z);
 
 	return Vector3(x,y,z);
-}
-
-bool ZeroRTS::MovePath(Object* pkObject)
-{
-	static float prev_time = 0;
-
-	float time = pkFps->GetGameTime();
-
-	if(time - prev_time > 0.125f)
-	{
-		int x=-1, y=-1;
-		if(!m_pkTestPath->GetNextStep(x,y))
-		{
-			return true; // do nothing
-		}
-		
-		if(!(x==-1&&y==-1))
-			SetObjDstPos(x, y, pkObject);
-
-		prev_time = time;
-	}
-
-	return true;
 }
 
 void ZeroRTS::Explore()
@@ -1082,8 +981,11 @@ void ZeroRTS::SelectObjects(Vector3 p1, Vector3 p2)
 			if(GetClientUnit(akAllObjs[i]->iNetWorkID))
 			{
 				if( pkObjectInFocus == NULL)
+				{
 					pkObjectInFocus = pkObjectMan->GetObjectByNetWorkID(
 						akAllObjs[i]->iNetWorkID);
+					test_path_find_object = pkObjectInFocus;
+				}
 
 				AddSelectedObject(akAllObjs[i]->iNetWorkID);
 			}
