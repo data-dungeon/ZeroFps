@@ -290,12 +290,25 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 					pkItemProperty->GetIcon();
 				ZGuiButton* pkActiveWeaponBn = (ZGuiButton*) 
 					GetWnd("GamePlayDlgWeaponBn");
+				GetWnd("GamePlayDlgWeaponBn")->Show();
 				SetButtonIcon(pkActiveWeaponBn, szTexName, false, true);		
 			}
+		}
+		else
+		{
+			GetWnd("GamePlayDlgWeaponBn")->Hide();
 		}
 
 		for(int i=0; i<4; i++)
 		{
+			char szQuickItem[50];
+			sprintf(szQuickItem, "GamePlayDlgQuickItem%i", i+1);
+
+			ZGuiButton* pkQuickItemBn = (ZGuiButton*) 
+				GetWnd(szQuickItem);
+
+			pkQuickItemBn->Hide();
+
 			if((iItemID=*pkCharProperty->m_pkBelt->GetItem(i,0)) != -1)
 			{
 				Entity* pkEntity = GetObject( iItemID );
@@ -306,12 +319,7 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 					szTexName = string("data/textures/gui/dm/items/") +
 						pkItemProperty->GetIcon();
 
-					char szQuickItem[50];
-					sprintf(szQuickItem, "GamePlayDlgQuickItem%i", i+1);
-
-					ZGuiButton* pkQuickItemBn = (ZGuiButton*) 
-						GetWnd(szQuickItem);
-
+					pkQuickItemBn->Show();
 					SetButtonIcon(pkQuickItemBn, szTexName, false, true);		
 				}
 			}
