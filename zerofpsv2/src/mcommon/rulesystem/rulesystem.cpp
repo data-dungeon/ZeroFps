@@ -1,5 +1,6 @@
 #include "rulesystem.h"
 #include "character/characterstats.h"
+#include "../p_charstats.h"
 #include <iostream>
    using namespace std;
 
@@ -14,14 +15,74 @@ MCOMMON_API map<string, SpellStats*> g_kSpells;
 
 // -----------------------------------------------------------------------------------------------
 
-int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim )
+int DealDamage ( FightStats *pkAttacker, CharacterStats* pkVictim )
 {
-   float fTotalDmg = 0;
+   return DealDamage ( &pkAttacker->m_kAttack, pkVictim );
+}
 
+// -----------------------------------------------------------------------------------------------
+
+int DealDamage ( map<string,int>* pkDamage, Object* pkVictim )
+{
+   // check if victim has character stats
+   CharacterProperty* pkCharProp = (CharacterProperty*)pkVictim->GetProperty("P_CharStats");
+
+   if ( pkCharProp )
+   {
+      CharacterStats* pkCharStats = pkCharProp->GetCharStats();
+
+      return ( DealDamage ( pkDamage, pkCharStats ) );
+   }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+// the function that actually calculates the damage dealt
+int DealDamage ( map<string,int>* pkDamage, CharacterStats* pkVictim )
+{
    // räkna ut damage på nån vänster...
 
+   float fTotalDamage = 0;
+   int iDamage, iDefence;
+   string kDamageType;
 
-   return int(fTotalDmg);
+   map<string, int>::iterator kDefIte;
+   map<string, int>* pkDefStats = &pkVictim->GetFightStats()->m_kDefence;
+
+
+   // loop through types of damage
+   for ( map<string, int>::iterator kIte = pkDamage->begin();
+         kIte != pkDamage->end(); kIte++ )
+   {
+      iDamage = (*kIte).second;
+      kDamageType = (*kIte).first;
+
+      // check if character has defence against attacktype
+      kDefIte = pkDefStats->find( kDamageType );
+
+      if ( kDefIte != pkDefStats->end() )
+         iDefence = (*kDefIte).second;
+      else
+         iDefence = 0;
+
+
+      // TEMPTEMPTEMP...this armoursystem SUXXXX!!!!
+      iDamage -= rand()%iDefence;
+
+      if ( iDamage < 0 )
+         iDamage = 0;
+
+      fTotalDamage += rand()%iDamage;
+         
+   }
+
+   // lose life
+   pkVictim->AddHP ( -fTotalDamage );
+
+   return fTotalDamage;
+
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -87,9 +148,9 @@ bool LoadSpell (string kSpellName)
 
       
       // cast on..
-	   if ( kIniLoader.KeyExist("spell", "cast_on") )
+	   if ( kIniLoader.KeyExist("spell", "target") )
       {
-         string kCastOn = kIniLoader.GetValue("spell", "cast_on");
+         string kCastOn = kIniLoader.GetValue("spell", "target");
          if ( kCastOn == "ground" )
 		      pkNewSpell->m_iCastOn = eON_GROUND;
          if ( kCastOn == "enemy" )
@@ -98,9 +159,21 @@ bool LoadSpell (string kSpellName)
 		      pkNewSpell->m_iCastOn = eON_FRIEND;
          if ( kCastOn == "caster" )
 		      pkNewSpell->m_iCastOn = eON_CASTER;
+         if ( kCastOn == "from caster to enemy" )
+		      pkNewSpell->m_iCastOn = eFROM_CASTER_TO_ENEMY;
+         if ( kCastOn == "from enemy to caster" )
+		      pkNewSpell->m_iCastOn = eFROM_ENEMY_TO_CASTER;
+         if ( kCastOn == "from caster to ground" )
+		      pkNewSpell->m_iCastOn = eFROM_ENEMY_TO_CASTER;
       }
 	   else
          pkNewSpell->m_iCastOn = eON_GROUND;
+
+      // deal damage every X sec.
+      if ( kIniLoader.KeyExist("spell", "dealdamage_every") )
+         pkNewSpell->m_fDamageEvery = kIniLoader.GetFloatValue("spell", "dealdamage_every");
+      else
+         pkNewSpell->m_fDamageEvery = 1;
       
       
       // affect, which type of object is hit by the spell
@@ -111,7 +184,7 @@ bool LoadSpell (string kSpellName)
 
 
       // start and end radius for collisiondetecting
-	   if ( kIniLoader.KeyExist("collision", "start_radius") )
+      if ( kIniLoader.KeyExist("collision", "start_radius") )
          pkNewSpell->m_fStartRadius = kIniLoader.GetFloatValue("collision", "start_radius");
       else
          pkNewSpell->m_fStartRadius = 0;

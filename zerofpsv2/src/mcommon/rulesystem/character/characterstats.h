@@ -65,6 +65,8 @@ public:
 
 	CharacterStats( Object *pkParent );
 
+   FightStats* GetFightStats()             { return &m_kFightStats; }
+
    // Get stat.
 	int GetSkillValue				(string kName);
 	int GetAttributeValue		(string kName);

@@ -127,14 +127,14 @@ bool P_Spell::CastOn ( Object *pkObject )
 
    // temp, for now, all spells are projectiles :)
    //if ( m_pkSpellType->
-
+/*
    // add a physicproperty so we can move the spell
    if ( m_pkSpellType->m_kSpellName == "fire of evil death spell fireballstuff" )
    {
       PhysicProperty* pkPsyProp = (PhysicProperty*)m_pkObject->AddProperty("PhysicProperty");
       m_pkObject->GetAcc().x = 50.f;
    }
-
+*/
 
 
    return false;

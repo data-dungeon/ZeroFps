@@ -86,8 +86,8 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);
    pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
 
-   pkScript->ExposeFunction("AddBeforeItemName",			MistLandLua::AddBeforeItemNameLua);
-   pkScript->ExposeFunction("AddAfterItemName",	         MistLandLua::AddAfterItemNameLua);
+   pkScript->ExposeFunction("AddBeforeItemName",		MistLandLua::AddBeforeItemNameLua);
+   pkScript->ExposeFunction("AddAfterItemName",	      MistLandLua::AddAfterItemNameLua);
 
    // Lua Lua commands
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
@@ -1964,20 +1964,19 @@ int MistLandLua::GetRandomAttributeLua (lua_State* pkLua)
 // ----------------------------------------------------------------------------------------------
 
 int MistLandLua::RunScriptLua (lua_State* pkLua)
-{/*
+{
  	if( g_pkScript->GetNumArgs(pkLua) == 1 )
    {
      	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);
-
-      
 
       // save current Object ID
       int iOldObject = g_iCurrentObjectID;
       ZFScriptSystem* pkZFScriptSys = g_pkScript;
 
       // create the new object
-      Object* pkNewObj = g_pkObjMan->CreateObjectFromScript(acType);
+      Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
+                         g_pkObjMan->GetObjectByNetWorkID(iOldObject)->GetWorldPosV() );
 
       // return everything the way it was
       g_iCurrentObjectID = iOldObject;
@@ -1988,7 +1987,7 @@ int MistLandLua::RunScriptLua (lua_State* pkLua)
 
       return 1; // return newcreated-object_ID
       
-   }*/ 
+   } 
    return 0;  
 
 }
@@ -2018,6 +2017,35 @@ int MistLandLua::SetPropertyValueLua(lua_State* pkLua)
             pkProp->SetValue ( string(acPropData), string(acValue) );
          else
             cout << "Property " << acProp << " didn't exist on object." << endl;
+       }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+// spell
+int MistLandLua::CastSpellLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char acValue[128];
+			g_pkScript->GetArgString(pkLua, 0, acValue);
+
+
+         Object* pkSpell = 
+                 g_pkObjMan->CreateObjectFromScriptInZone (acValue, pkObject->GetWorldPosV() );
+
+         
+
+
+
        }
 
    }

@@ -10,7 +10,7 @@
 
 
 enum eSpellTarget {eON_CASTER, eON_FRIEND, eON_ENEMY, eFROM_CASTER_TO_ENEMY, 
-                   eFROM_ENEMY_TO_CASTER, eON_GROUND};
+                   eFROM_ENEMY_TO_CASTER, eON_GROUND, eFROM_CASTER_TO_GROUND};
 
 enum eOnDestrucion {eKILL_PARENT, eKILL_SELF};
 
@@ -35,7 +35,8 @@ public:
    float 
       m_fLifeTime, // how long the spell lasts
       m_fStartRadius, // collision radius, that is...
-      m_fEndRadius;
+      m_fEndRadius,
+      m_fDamageEvery;
 
    string 
       m_kSpellGroup, // which type of spell it is (fire, healing....)

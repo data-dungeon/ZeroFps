@@ -10,7 +10,10 @@
 class MCOMMON_API P_Spell: public Property 
 {
 	private:
-		float m_fAge;
+		float 
+         m_fAge,
+         m_fDamageTimer;
+
       int m_iPSIndex;
       vector<int> m_kAttackedObjects; // keep track of objects already affected by the spell
       vector<Object*> m_kPSystems; // which PSystems spell has created. If spell vanish, so shall Psystems

@@ -17,7 +17,7 @@ void ColorPSProp::Update()
 
 	for ( int i = m_pkParent->Start() * 12; i < m_pkParent->End() * 12; i += 4 )
 	{
-		int iPartIndex = i / 12;
+      int iPartIndex = i / 12;
 
 		// Prevent particle from use time_Color after age
 		if ( pkParticles->at(i / 12).m_fAge - fFrameTime > 0 )

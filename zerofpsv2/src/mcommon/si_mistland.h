@@ -115,6 +115,10 @@ namespace MistLandLua
    int MCOMMON_API GetRandomAttributeLua (lua_State* pkLua);
    int MCOMMON_API RandomLua(lua_State* pkLua); //takes a number and returns a number between 0-entered number
 
+   
+   // spell functions (inte för stavelsekontroll)
+   int MCOMMON_API CastSpellLua (lua_State* pkLua);
+
 
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
 

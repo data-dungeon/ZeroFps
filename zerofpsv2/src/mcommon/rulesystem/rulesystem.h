@@ -12,6 +12,7 @@
 	using namespace std;
 
 class CharacterStats;
+class Object;
 
 struct SkillType
 {
@@ -21,6 +22,9 @@ struct SkillType
 };
 
 int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim );
+int DealDamage ( map<string,int>* pkDamage, Object *pkVictim );
+int DealDamage ( map<string,int>* pkDamage, CharacterStats *pkVictim );
+
 void LoadStatTypes();
 bool LoadSpell(string kSpellName);
 
