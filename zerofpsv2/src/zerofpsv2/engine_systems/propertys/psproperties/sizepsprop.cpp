@@ -15,16 +15,16 @@ void SizePSProp::Update()
 	for ( int i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 	{
 		pkParticles->at(i).m_kSize.x += ( (pkParticles->at(i).m_kEndSize.x - 
-				  								    pkParticles->at(i).m_kStartSize.x) /
-				  								    pkParticles->at(i).m_fLifeTime )
-												  * fFrameTime;
+				  									pkParticles->at(i).m_kStartSize.x) /
+				  									pkParticles->at(i).m_fLifeTime )
+												* fFrameTime;
 
 		pkParticles->at(i).m_kSize.y += ( (pkParticles->at(i).m_kEndSize.y - 
-				  								    pkParticles->at(i).m_kStartSize.y) /
-				  								    pkParticles->at(i).m_fLifeTime )
-												  * fFrameTime;
+				  									pkParticles->at(i).m_kStartSize.y) /
+				  									pkParticles->at(i).m_fLifeTime )
+												* fFrameTime;
 	}
-	 
+
 }
 
 // ------------------------------------------------------------------------------------------
