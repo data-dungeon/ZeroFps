@@ -19,4 +19,5 @@ private:
 
 	bool SendOutAgent(int iID);
 	void UpdateAgentList(int iStartAgent);
+	int GetNumAgentsInBase();
 };

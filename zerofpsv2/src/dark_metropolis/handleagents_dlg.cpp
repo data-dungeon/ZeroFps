@@ -15,7 +15,7 @@ CHandleAgents::~CHandleAgents()
 
 void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
-	InitDlg();
+	//InitDlg();
 
 	if(strClickName == "AgentsClose")
 	{
@@ -71,15 +71,19 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "PrevAgentInHQBn")
 	{
 		if(m_iStartAgent > 0)
+		{
 			m_iStartAgent--;
-
-		UpdateAgentList(m_iStartAgent);
+			UpdateAgentList(m_iStartAgent);
+		}
 	}
 	else
 	if(strClickName == "NextAgentInHQ")
 	{
-		m_iStartAgent++;
-		UpdateAgentList(m_iStartAgent);
+		if(GetNumAgentsInBase()-m_iStartAgent > 7)
+		{
+			m_iStartAgent++;
+			UpdateAgentList(m_iStartAgent);
+		}
 	}
 
 	int pos;
@@ -102,9 +106,10 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			}
 			else
 			{
-				int AgentID = m_vkCharsInBaseBns[i].second;
+				m_iSelAgent = m_vkCharsInBaseBns[i].second;
 				char szText[50];
-				sprintf(szText, "Your agent %i/%i - Mr Smith %i", 0, 0, AgentID);
+				sprintf(szText, "Your agent %i/%i - Mr Smith %i", i+m_iStartAgent+1, 
+					GetNumAgentsInBase(), m_iSelAgent);
 				SetText("AgentInHQLabel", szText);
 			}
 		}
@@ -157,12 +162,11 @@ bool CHandleAgents::InitDlg()
 			m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = -1; 
 			m_vkCharsInBaseBns[i].second = -1;
 		}
-
-		UpdateAgentList(m_iStartAgent);
-
 	}
 
+	UpdateAgentList(m_iStartAgent);
 
+	SetText("AgentInHQLabel", "");
 
 	m_bInitialized = true;
 
@@ -203,6 +207,8 @@ void CHandleAgents::UpdateAgentList(int iStartAgent)
 
 		for(int i=0; i<7; i++)
 		{
+			m_vkCharsInBaseBns[i].first->UncheckButton();
+
 			if((i+iStartAgent)<vkCharsInBase.size())
 			{
 				P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
@@ -219,7 +225,12 @@ void CHandleAgents::UpdateAgentList(int iStartAgent)
 				m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
 				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_iBkTexID = tex_id; 
 				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0;
-				m_vkCharsInBaseBns[i].second = vkCharsInBase[i+iStartAgent];				
+				m_vkCharsInBaseBns[i].second = vkCharsInBase[i+iStartAgent];	
+
+				if(m_vkCharsInBaseBns[i].second == m_iSelAgent)
+				{
+					m_vkCharsInBaseBns[i].first->CheckButton();
+				}
 			}
 			else
 			{
@@ -232,4 +243,21 @@ void CHandleAgents::UpdateAgentList(int iStartAgent)
 	{
 		printf("Failed to get HQ entiry\n");
 	}
+}
+
+int CHandleAgents::GetNumAgentsInBase()
+{
+	Entity* pkHQObject = GetDMObject(HQ);
+
+	if(pkHQObject)
+	{
+		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
+
+		vector<int> vkCharsInBase;
+		pkHQ->GetCharacters(&vkCharsInBase);
+
+		return vkCharsInBase.size();
+	}
+
+	return -1;
 }
