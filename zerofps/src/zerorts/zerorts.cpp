@@ -4,11 +4,13 @@
 
 ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 
-ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
+static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) { 
+	return g_kZeroRTS.m_pkUserPanel->DlgProc(win,msg,numparms,params); }
 
-static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{ 
-	return g_kZeroRTS.m_pkUserPanel->DlgProc(win,msg,numparms,params); 
+ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth) 
+	: Application(aName,iWidth,iHeight,iDepth) 
+{
+	m_pkMiniMap = NULL;
 }
 
 void ZeroRTS::OnInit() 
@@ -213,7 +215,7 @@ void ZeroRTS::Input()
 	if(pkInput->Pressed(KEY_F))
 		pkLevelMan->ChangeLandscapeFillMode(FILL);
 
-	if(pkInput->GetQueuedKey() == KEY_M)
+	if(pkInput->GetQueuedKey() == KEY_M && m_pkMiniMap)
 		m_pkMiniMap->bDraw = !m_pkMiniMap->bDraw;
 			
 }
@@ -228,7 +230,8 @@ void ZeroRTS::OnHud(void)
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
-	m_pkMiniMap->Draw(m_pkCamera, pkGui); 
+	if(m_pkMiniMap)
+		m_pkMiniMap->Draw(m_pkCamera, pkGui); 
 }
 
 void ZeroRTS::OnServerStart(void)
@@ -303,7 +306,7 @@ Object* ZeroRTS::PickObject()
 	Object* close =NULL;
 	float dist= 999999999;
 	
-	for(int i=0;i<obs.size();i++)
+	for(unsigned int i=0;i<obs.size();i++)
 	{
 		if(obs[i]->GetName() == "ZoneObject")
 			continue;
