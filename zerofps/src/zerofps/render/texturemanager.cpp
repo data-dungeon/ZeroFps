@@ -1,5 +1,5 @@
 #include "texturemanager.h"
-#include "GL/glu.h"
+#include "../oglload/zfpsgl.h"
 
 
 TextureManager::TextureManager(FileIo* pkFile) {

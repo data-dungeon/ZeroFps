@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <GL/extgl.h>
+#include "../oglload/zfpsgl.h"
 #include "../basic/basic.pkg"
 #include "render_x.h"
 

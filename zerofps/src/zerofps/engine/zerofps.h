@@ -4,7 +4,7 @@
 #include "engine_x.h"
 #include <iostream>
 #include <cstdlib>
-#include <GL/extgl.h>
+#include "../oglload/zfpsgl.h"
 #include <SDL/SDL.h>
 
 #include "engine.pkg"

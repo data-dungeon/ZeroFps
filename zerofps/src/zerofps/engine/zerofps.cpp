@@ -1,5 +1,4 @@
 #include "zerofps.h"
-#include "GL/glu.h"
 
 ZeroFps::ZeroFps(void) {
 	m_pkFile=new FileIo;
