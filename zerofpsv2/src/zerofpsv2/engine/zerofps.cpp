@@ -101,7 +101,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 	m_bLockFps					= false;
-	m_bDrawAxisIcon			= true;
+	m_bDrawAxisIcon			= false;
 	m_fEngineTime				= 0;
 	m_bDebugGraph				= false;
 	m_iClientEntityID			= -1;
@@ -173,7 +173,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkTexMan;
 	delete m_pkZFVFileSystem;
 	delete m_pkBasicFS;
-	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
+	delete m_pkResourceDB;		//d krashar om denna ligger dï¿½ uppe =(, Dvoid
 	delete m_pkPSystemManager;
 	delete m_pkScript;
 	delete m_pkAStar;
@@ -395,45 +395,48 @@ void ZeroFps::UpdateDevPages()
 
 void ZeroFps::UpdateGuiInput()
 {
-	   // Updata Gui input
-	   int mx, my;
-	   if(m_pkGui->m_bUseHardwareMouse == true)
-		   m_pkGuiInputHandle->SDLMouseXY(mx,my);
-	   else
-		{
-		   float x,y;
-			m_pkGuiInputHandle->MouseXY(x,y);
-			mx = x;
-			my = y;
-		}
-			
-	   m_pkGui->UpdateMouse(mx, my,
-         m_pkGuiInputHandle->Pressed(MOUSELEFT),
-         m_pkGuiInputHandle->Pressed(MOUSERIGHT),
-		   m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
-         GetTicks());
+	if(!m_pkGui->IsActive())
+		return;
 
-      vector<ZGui::KEY_INFO> vkKeyInfo;
+	// Updata Gui input
+	int mx, my;
+	if(m_pkGui->m_bUseHardwareMouse == true)
+		m_pkGuiInputHandle->SDLMouseXY(mx,my);
+	else
+	{
+		float x,y;
+		m_pkGuiInputHandle->MouseXY(x,y);
+		mx = x;
+		my = y;
+	}
+		
+	m_pkGui->UpdateMouse(mx, my,
+		m_pkGuiInputHandle->Pressed(MOUSELEFT),
+		m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
+		GetTicks());
 
-      while(m_pkGuiInputHandle->SizeOfQueue() > 0)
-      {
-         QueuedKeyInfo kKey = m_pkGuiInputHandle->GetQueuedKey();
+	vector<ZGui::KEY_INFO> vkKeyInfo;
 
-         ZGui::KEY_INFO kKeyInfo;
-         kKeyInfo.key = kKey.m_iKey;
-         kKeyInfo.pressed = kKey.m_bPressed;
-         kKeyInfo.shift = (kKey.m_iModifiers & MODIFIER_SHIFT);
-			kKeyInfo.ctrl = (kKey.m_iModifiers & MODIFIER_CTRL);
-         vkKeyInfo.push_back(kKeyInfo);
-      }
-	
-      m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
+	while(m_pkGuiInputHandle->SizeOfQueue() > 0)
+	{
+		QueuedKeyInfo kKey = m_pkGuiInputHandle->GetQueuedKey();
 
-	   //disablar applicationens input om guit har hanterat den	
-	   if(m_pkGui->m_bHandledMouse == true)
-			m_pkApp->m_pkInputHandle->SetTempDisable(true);
-	   else
-		   m_pkApp->m_pkInputHandle->SetTempDisable(false);
+		ZGui::KEY_INFO kKeyInfo;
+		kKeyInfo.key = kKey.m_iKey;
+		kKeyInfo.pressed = kKey.m_bPressed;
+		kKeyInfo.shift = (kKey.m_iModifiers & MODIFIER_SHIFT);
+		kKeyInfo.ctrl = (kKey.m_iModifiers & MODIFIER_CTRL);
+		vkKeyInfo.push_back(kKeyInfo);
+	}
+
+	m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
+
+	//disablar applicationens input om guit har hanterat den	
+	if(m_pkGui->m_bHandledMouse == true)
+		m_pkApp->m_pkInputHandle->SetTempDisable(true);
+	else
+		m_pkApp->m_pkInputHandle->SetTempDisable(false);
 }
 
 /* Code that need to run on both client/server. */
@@ -819,6 +822,19 @@ void ZeroFps::ToggleGui(void)
 		m_pkGui->Activate(m_bGuiMode);
 	}
 }
+
+void ZeroFps::SetDevPageVisible(const char* szName,bool bVisible)
+{
+	if(DevStringPage* page = DevPrint_FindPage(szName))
+		page->m_bVisible = bVisible;
+	else if(bVisible)
+	{
+		DevPrintf(szName, "=)");	// Force creation of page.		
+		if(DevStringPage* page = DevPrint_FindPage(szName))
+			page->m_bVisible = bVisible;
+	}	
+}
+
 
 bool ZeroFps::DevPrintPageVisible(const char* szName)
 {
@@ -1677,7 +1693,7 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	kCreditsStrings.push_back( string("      Jimmy Magnusson		") );
 	kCreditsStrings.push_back( string("      Richard Svensson		") );
 	kCreditsStrings.push_back( string("         Erik Glans			") );
-	kCreditsStrings.push_back( string("       Magnus Jönsson 		") );
+	kCreditsStrings.push_back( string("       Magnus Jï¿½sson 		") );
 }
 
 /**	\brief	Called before someone would like to connect.
@@ -1778,7 +1794,7 @@ int ZeroFps::GetClientObjectID()
 }
 
 
-//vad gör denna här igentligen?
+//vad gï¿½ denna hï¿½ igentligen?
 void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.

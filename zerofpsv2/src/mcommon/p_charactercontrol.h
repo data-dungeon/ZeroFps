@@ -56,7 +56,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fSoundWalkDelay;
 		float			m_fSoundRunDelay;
 
-
+		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 	

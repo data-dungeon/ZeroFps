@@ -169,13 +169,16 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void RemoveBody(P_Tcs* pkPTcs);		
 
 		
-		void SetGravity(float fGravity)	{ m_fGravity=fGravity			;};
-		int GetNrOfCollissions() 			{ return m_iNrOfCollissions	;};
-		int GetNrOfTests() 					{ return m_iNrOfTests			;};
-		int GetNrOfActiveBodies() 			{ return m_iNrOfActiveBodies	;};
-		int GetNrOfContacts()				{ return m_iNrOfContacts		;};		
-		int GetDebugGraph()					{ return m_iDebugGraph			;};
-		Vector3 GetLastLineTestPos()		{ return m_kLastLineTestColPos;};
+		void SetGravity(float fGravity)	{ m_fGravity=fGravity				;};
+		void SetColIt(int iColIt)			{ m_iCollisionIterations = iColIt;};
+		void SetConIt(int iConIt)			{ m_iContactIterations = iConIt	;};
+		
+		int GetNrOfCollissions() 			{ return m_iNrOfCollissions		;};
+		int GetNrOfTests() 					{ return m_iNrOfTests				;};
+		int GetNrOfActiveBodies() 			{ return m_iNrOfActiveBodies		;};
+		int GetNrOfContacts()				{ return m_iNrOfContacts			;};		
+		int GetDebugGraph()					{ return m_iDebugGraph				;};
+		Vector3 GetLastLineTestPos()		{ return m_kLastLineTestColPos	;};
 		
 		
 		//some public tests that could be usefull =)

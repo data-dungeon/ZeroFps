@@ -96,12 +96,23 @@ void P_CharacterProperty::Init()
 
 }
 
+vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+		
+	kReturn[0].kValueName = "RunForwardAnim";
+	kReturn[0].iValueType = VALUETYPE_STRING;
+	kReturn[0].pkValue    = (void*)&m_strRunForward;
+
+	return kReturn;	
+}
+
 void P_CharacterProperty::SetupContainers()
 {
 	vector<Entity*>	kEntitys;
 	m_pkEntity->GetChilds(&kEntitys);
 	
-	cout<<"seting up character containers"<<endl;
+	//cout<<"seting up character containers"<<endl;
 	for(int i = 0;i<kEntitys.size();i++)
 	{
 		if(P_Container* pkContainer = (P_Container*)kEntitys[i]->GetProperty("P_Container"))
@@ -182,7 +193,7 @@ void P_CharacterProperty::SetupContainers()
 		P_Container* pkCon;
 		Entity* pkContainer;
 		
-		cout<<"no containers found, creating new ones"<<endl;
+		//cout<<"no containers found, creating new ones"<<endl;
 		
 		//inventory
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -366,7 +377,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->AddItemType(MLITEM_RING);	
 				
 																															
-		cout<<"done"<<endl;
+		//cout<<"done"<<endl;
 	}
 
 	//update network
@@ -677,6 +688,7 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strSwimSound);
 	
 	SetNetUpdateFlag(iConnectionID,false);
+	
 }
 
 void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 

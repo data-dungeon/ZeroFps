@@ -66,8 +66,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		void PlayCharacterMovementSounds();
 		void UpdateAnimation();
-
 		void SetupContainers();
+		
+		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		//containers

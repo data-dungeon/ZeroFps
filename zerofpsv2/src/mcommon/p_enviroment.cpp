@@ -10,9 +10,6 @@ Property* Create_P_Enviroment()
 
 P_Enviroment::P_Enviroment()
 {
-	cout<<"CREATING P_ENVIROMENT"<<endl;
-
-
 	strcpy(m_acName,"P_Enviroment");		
 	
 	m_iType=			PROPERTY_TYPE_RENDER;

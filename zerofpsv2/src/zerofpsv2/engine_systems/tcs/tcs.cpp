@@ -45,7 +45,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 
 Tcs::~Tcs()
 {
-	/*	 blir ju massa evil krasher här så...wtf får la va lite minnes lekage så länge =D
+	/*	 blir ju massa evil krasher hï¿½ sï¿½..wtf fï¿½ la va lite minnes lekage sï¿½lï¿½ge =D
 	delete m_pkBodyCopy1;	
 	delete m_pkBodyCopy2;
 	*/
@@ -489,6 +489,10 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 		}
 	}
 
+	
+	pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
+	pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
+	
 	//sync entitys before touching	
 /*	SyncEntitys();
 	//touch objects	

@@ -12,6 +12,7 @@ all:
 #	cd zgresedit; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
+	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	./gengdbinit.sh
 
@@ -26,6 +27,7 @@ clean:
 #	cd zgresedit/; $(MAKE) $@	
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
+	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 
 clean_engine:
@@ -37,6 +39,7 @@ clean_apps:
 	cd mistserver/; $(MAKE) clean
 	cd mistclient2/; $(MAKE) clean
 	cd tools/tool/madview/; $(MAKE) clean	
-#	cd zgresedit/; $(MAKE) clean
+	cd stopemup/; $(MAKE) $@
+
 		
 	

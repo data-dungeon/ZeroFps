@@ -233,13 +233,13 @@ float round2(float val)
 float Randomf(float fInterval)
 {
 	float r = (float)rand() / (float)(RAND_MAX);
-	return r*(fInterval-1);
+	return r*(fInterval);
 }
 
 int Randomi(int iInterval)
 {
 	float r = (float)rand() / (float)(RAND_MAX);
-	return int(r*iInterval);
+	return int(r * iInterval );
 }
 
 
@@ -363,8 +363,7 @@ ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErro
 
 bool GetClipboardText(string& r_strText)
 {
-	// zeb: Dvoid kan du skriva en funktion som hämtar clipboard datat i Linux miljö
-	// och sparar ner det i r_strText? Returnera true om texten gick att få.
+	// zeb: Dvoid kan du skriva en funktion som hï¿½tar clipboard datat i Linux miljï¿½	// och sparar ner det i r_strText? Returnera true om texten gick att fï¿½
 	return false;
 }
 

@@ -439,6 +439,9 @@ bool P_Mad::LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY )
 	float cdis=c.Length();
 	float kdis=k.Length();
 	float Distance = float( sqrt((cdis*cdis)-(kdis*kdis)) );
+	
+	//set col pos
+	m_kColPos = m_pkEntity->GetWorldPosV();
 		
 	return (Distance < GetRadius());	
 }

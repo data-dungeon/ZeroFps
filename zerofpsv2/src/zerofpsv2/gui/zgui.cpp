@@ -128,10 +128,10 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	if(pkWindow == NULL)
 		return false;
 
-	// Ta bort fönstret i listan hos managern
+	// Ta bort fï¿½stret i listan hos managern
 	m_pkResManager->RemoveWnd(string(pkWindow->m_szName));
 
-	// Ta först bort eventuellt main window
+	// Ta fï¿½st bort eventuellt main window
 	for(list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
 		 itMain != m_pkMainWindows.end(); itMain++)
 		 {
@@ -172,9 +172,9 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 		list<ZGuiWnd*> vkChildList;
 		pkWindow->GetChildrens(vkChildList);
 
-		// Ta bort alla barn fönster som tillhör detta fönster.
-		// Men bara om det är ett (main) fönster. I annat fall
-		// sköter kontrollerna det själva.
+		// Ta bort alla barn fï¿½ster som tillhï¿½ detta fï¿½ster.
+		// Men bara om det ï¿½ ett (main) fï¿½ster. I annat fall
+		// skï¿½er kontrollerna det sjï¿½va.
 		//if(pkWindow->GetParent() == NULL)
 		ZGuiWnd* pkWndParent = pkWindow->GetParent();
 		if( pkWndParent == NULL || typeid(*pkWndParent)==typeid(ZGuiTabCtrl) ) 
@@ -209,7 +209,7 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	return true;
 }
 
-// Lägg till ett huvudfönster
+// Lï¿½g till ett huvudfï¿½ster
 bool ZGui::AddMainWindow(int iMainWindowID,ZGuiWnd* pkWindow, char* szName,
 						 callback cb,bool bSetAsActive)
 {
@@ -222,7 +222,7 @@ bool ZGui::AddMainWindow(int iMainWindowID,ZGuiWnd* pkWindow, char* szName,
 		ZFAssert(0, szError );
 	}
 
-	// Ett main window skall inte ha någon parent!
+	// Ett main window skall inte ha nï¿½on parent!
 	pkWindow->SetParent(NULL);
 	
 	MAIN_WINDOW* pkNewMainWindow	= new MAIN_WINDOW;
@@ -265,7 +265,7 @@ void* ZGui::GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type)
 
 ZGuiWnd* ZGui::GetWindow(unsigned int iID)
 {
-	if(iID == 0) // statiskt fönster
+	if(iID == 0) // statiskt fï¿½ster
 		return NULL;
 
 	map<int,ZGuiWnd*>::iterator itWnd;
@@ -305,7 +305,7 @@ int ZGui::GetMainWindowID(char* strWindow)
 
 
 
-// Rendera det aktiva fönstret (och alla dess childs)
+// Rendera det aktiva fï¿½stret (och alla dess childs)
 bool ZGui::Render(int fps)
 {
 	if(!m_bRenderEnabled)
@@ -481,18 +481,18 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd, bool bSetCapture)
 	if(pkWnd->m_bEnabled == false)
 		return;
 
-	// Hitta det fönster som tidigare hade fokus och 
-	// ta bort fokuset från denna.
+	// Hitta det fï¿½ster som tidigare hade fokus och 
+	// ta bort fokuset frï¿½ denna.
 	if(ZGuiWnd::m_pkFocusWnd)
 	{		
 		if(ZGuiWnd::m_pkFocusWnd)
 			ZGuiWnd::m_pkFocusWnd->KillFocus();
 	}
 
-	// Kolla först om detta fönster kan ha keyboard fokus.
+	// Kolla fï¿½st om detta fï¿½ster kan ha keyboard fokus.
 	if(!pkWnd->GetWindowFlag(WF_CANHAVEFOCUS) || pkWnd == NULL)
 	{
-		// Försök sätta fokus på dess root parent istället.
+		// Fï¿½sï¿½ sï¿½ta fokus pï¿½dess root parent istï¿½let.
 		ZGuiWnd* pkRootParent = pkWnd->GetParent();
 		if(pkRootParent)
 			SetFocus(pkRootParent, bSetCapture);
@@ -791,14 +791,14 @@ ZGuiWnd* ZGui::FindNextTabWnd(ZGuiWnd *pkCurrentWnd, bool bNext)
 
 bool ZGui::RunKeyCommand(int iKey)
 {
-	// Kolla först om vi skall köra ett keycommand...
+	// Kolla fï¿½st om vi skall kï¿½a ett keycommand...
 	map<pair<ZGuiWnd*,int>,ZGuiWnd*>::iterator itKey;
 	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*,int>
 		(ZGuiWnd::m_pkFocusWnd,iKey));
 
 	if(itKey != m_KeyCommandTable.end() && m_pkActiveMainWin)
 	{		
-		// Skicka ett Command medelande till valt fönster.
+		// Skicka ett Command medelande till valt fï¿½ster.
 		int* pkParams = new int[2];
 		int id = itKey->second->GetID(); // control id
 		pkParams[0] = id;
@@ -830,13 +830,13 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 
 	unsigned int skins_this_wnd = kSkinList.size();
 
-	// Loopa igenom alla skins som detta fönster har
+	// Loopa igenom alla skins som detta fï¿½ster har
 	for(unsigned int i=0; i<skins_this_wnd; i++)
 	{
 		ZGuiSkin* pkSkin = *(&kSkinList[i])->first;
 		string strDesc = kSkinList[i].second;
 
-		// Loopa igenom alla skins som finns och välj ut ett som passar.
+		// Loopa igenom alla skins som finns och vï¿½j ut ett som passar.
 		for(unsigned int j=0; j<kAllSkinsTempArray.size(); j++)
 		{
 			if( kAllSkinsTempArray[j].first.first == strWndName &&
@@ -858,28 +858,28 @@ bool ZGui::ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName)
 {	
 	ZGuiWnd* pkExistingWnd = m_pkResManager->Wnd(string(pkNewName));
 
-	// Finns det redan ett fönster med det namnet och detta fönster
-	// är inte det fönster som skall döpas om?
+	// Finns det redan ett fï¿½ster med det namnet och detta fï¿½ster
+	// ï¿½ inte det fï¿½ster som skall dï¿½as om?
 	if(pkExistingWnd != NULL && pkWndToRename != pkExistingWnd) 
 	{
-		return false; // det finns redan ett fönster med detta namn.
+		return false; // det finns redan ett fï¿½ster med detta namn.
 	}
 
-	// Finns det redan ett fönster med det namnet och detta fönster
-	// är det fönster som skall döpas om?
+	// Finns det redan ett fï¿½ster med det namnet och detta fï¿½ster
+	// ï¿½ det fï¿½ster som skall dï¿½as om?
 	if(pkExistingWnd != NULL && pkWndToRename == pkExistingWnd) 
 	{
 		if(strcmp(pkExistingWnd->GetName(), pkWndToRename->GetName()) == 0) 
-			return true; // namnet har inte ändrats
+			return true; // namnet har inte ï¿½drats
 	}
 
 	if(pkExistingWnd == NULL)
 	{
-		// Radera (ej deallokera) fönstret i guimanagern.
+		// Radera (ej deallokera) fï¿½stret i guimanagern.
 		if(m_pkResManager->RemoveWnd(pkWndToRename->GetName()) == false)
 			return false;
 
-		// Lägg till fönstret på nytt, fast med ett annat namn.
+		// Lï¿½g till fï¿½stret pï¿½nytt, fast med ett annat namn.
 		strcpy(pkWndToRename->m_szName, pkNewName);
 		if(!m_pkResManager->Add(string(pkNewName), pkWndToRename))
 			return false;
@@ -1064,7 +1064,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		{
 			m_pkTexMan->EditEnd( alpha_tex );
 			m_pkZShaderSystem->Pop();
-			return false; // för zeroms skull :) Nu funkar det bara att picka på på Alpha pixlar i en tga bild.
+			return false; // fï¿½ zeroms skull :) Nu funkar det bara att picka pï¿½pï¿½Alpha pixlar i en tga bild.
 		}
 
 		if(dx < 0) dx = 0;
@@ -1200,12 +1200,9 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
 
-         if(iKey == 39) // ä
-            iKey = 'A';
-         if(iKey == 91) // å
-            iKey = 'A';
-         if(iKey == 59) // ö
-            iKey = 'O';
+         if(iKey == 39) // ï¿½            iKey = 'A';
+         if(iKey == 91) // ï¿½            iKey = 'A';
+         if(iKey == 59) // ï¿½            iKey = 'O';
 		}
 		else
 		{
@@ -1216,13 +1213,10 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 			if(iKey == '\\')
 				iKey = '\'';
 			if(iKey == '=')
-				iKey = '´';
-         if(iKey == 39) // ä
-            iKey = 'a';
-         if(iKey == 91) // å
-            iKey = 'a';
-         if(iKey == 59) // ö
-            iKey = 'o';
+				iKey = '';
+         if(iKey == 39) // ï¿½            iKey = 'a';
+         if(iKey == 91) // ï¿½            iKey = 'a';
+         if(iKey == 59) // ï¿½            iKey = 'o';
 		}	
 
 	#endif // #ifdef WIN32
@@ -1280,7 +1274,7 @@ void ZGui::CloseActiveMenu(void)
 	//}
 }
 
-// Bröt funktionen som man kräks av att titta i... Grötfunktionen nummer ett.
+// Brï¿½ funktionen som man krï¿½s av att titta i... Grï¿½funktionen nummer ett.
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
                          bool bRBnPressed, bool bMBnPressed,
@@ -1303,8 +1297,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		m_pkCursor->SetPos(x,y);
 
 	//////////////////////////////////////////////////////////////////////////////
-	// Pgr av att musmarkören som används i DM inte har sin klickpunkt i övre
-	// vänstra hörnet utan 2 pixlar längre ner, kompenserar vi för det här.
+	// Pgr av att musmarkï¿½en som anvï¿½ds i DM inte har sin klickpunkt i ï¿½re
+	// vï¿½stra hï¿½net utan 2 pixlar lï¿½gre ner, kompenserar vi fï¿½ det hï¿½.
 	//////////////////////////////////////////////////////////////////////////////
 	x+=2; y+=2;
 	m_iMouseX = x; m_iMouseY = y;
@@ -1338,7 +1332,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				m_pkActiveMenu->HideAll();
 			}
 
-			if((wnd = FindMainWnd(x,y)) != NULL) //if(wnd = FindMainWnd(x,y) ) -- Ändring 040701
+			if((wnd = FindMainWnd(x,y)) != NULL) //if(wnd = FindMainWnd(x,y) ) -- ï¿½dring 040701
 			{
 				if(wnd != m_pkActiveMainWin)
 				{
@@ -1388,7 +1382,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		}
 
 		//m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
-      if(bLeftButtonDown && m_bLeftButtonDown==false) // annars körs den alltid
+      if(bLeftButtonDown && m_bLeftButtonDown==false) // annars kï¿½s den alltid
       {
          SetFocus(m_pkCapturedWindow);
       }
@@ -1411,7 +1405,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	ZGuiWnd* pkFocusWindow;
 	
 	// Kolla vilken kontroll som har klickats, men inte om
-	// en kontroll är captured och ej är ett fönster.
+	// en kontroll ï¿½ captured och ej ï¿½ ett fï¿½ster.
 	if(m_pkCapturedWindow == NULL || (m_pkCapturedWindow != NULL && 
 		typeid(*m_pkCapturedWindow) == typeid(ZGuiWnd)))
 	{
@@ -1432,7 +1426,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
 	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
 	
-	// Har vänster musknapp klickats (men inte släppt)
+	// Har vï¿½ster musknapp klickats (men inte slï¿½pt)
 	if( bLeftPressed || bRightPressed )
 	{		
 		if(pkFocusWindow)
@@ -1443,7 +1437,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				{
 					m_bHandledMouse = false;
 
-					// Stäng eventuell meny
+					// Stï¿½g eventuell meny
 					CloseActiveMenu();
 
 					return true;
@@ -1545,10 +1539,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	
 
-	// Är vänster musknapp nertryckt?
+	// ï¿½ vï¿½ster musknapp nertryckt?
 	if( bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked)
 	{
-		// Skall fönstret flyttas?
+		// Skall fï¿½stret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
 			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,NCODE_MOVE);
@@ -1578,12 +1572,12 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	bool bSentCommandMessage = false;
 
-	// Har vänster musknapp släpts (men inte klickats)?
+	// Har vï¿½ster musknapp slï¿½ts (men inte klickats)?
 	if(bLeftReleased || bRightReleased)
 	{
 		m_bHandledMouse = false;
 
-		// Byt tillbaks till button_up skin om musknappen har släppts (fast inte på knappen).
+		// Byt tillbaks till button_up skin om musknappen har slï¿½pts (fast inte pï¿½knappen).
 		if(ZGuiWnd::m_pkWndClicked)
 			if( typeid(*ZGuiWnd::m_pkWndClicked)==typeid(ZGuiButton) )
 				((ZGuiButton*) ZGuiWnd::m_pkWndClicked)->SetSkin(
@@ -1591,7 +1585,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
-			// Informera fönstret innan att det har tappat fokus.
+			// Informera fï¿½stret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || 
 				(pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
 			{
@@ -1605,7 +1599,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					ZGuiWnd::m_pkPrevWndClicked = ZGuiWnd::m_pkWndUnderCursor;
 			}
 
-			// Är markören fortfarande innanför fönstrets gränser?
+			// ï¿½ markï¿½en fortfarande innanfï¿½ fï¿½strets grï¿½ser?
 			if(ZGuiWnd::m_pkWndClicked->GetScreenRect().Inside(x,y))
 			{
 				//SetFocus(ZGuiWnd::m_pkWndClicked);
@@ -1634,20 +1628,20 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						//	   parent_type!=typeid(ZGuiTreeboxNode) && 
 						//		parent_type!=typeid(ZGuiMenu) &&
 						//		typeid(*pkFocusWindow)!=typeid(ZGuiCheckbox) &&
-						//		typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+						//		typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfï¿½lig ful lï¿½ning fï¿½ att listboxitems inte skall generera COMMAND messages..
 						//{
-							ZGuiWnd* pkMainWnd = pkParent; //m_pkActiveMainWin->pkWnd; // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
+							ZGuiWnd* pkMainWnd = pkParent; //m_pkActiveMainWin->pkWnd; // Lade till 9 nov 2004 fï¿½ att controllers pï¿½en tabctrl inte fï¿½ msg annars.
 
-							// Menyalternativ har sitt egen förälderfönster.
+							// Menyalternativ har sitt egen fï¿½ï¿½derfï¿½ster.
 							if(pkParent && typeid(*pkParent)==typeid(ZGuiMenu))
 								pkMainWnd = pkParent;
 
-							// Har man klickat på en checkbox via en label så är klickfönstret checkboxen.
+							// Har man klickat pï¿½en checkbox via en label sï¿½ï¿½ klickfï¿½stret checkboxen.
 							if(pkParent && typeid(*pkParent)==typeid(ZGuiCheckbox))
 								ZGuiWnd::m_pkWndClicked = pkParent;
 
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
-							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
+							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // hï¿½er musknapp har triggat knapp kommandot
 							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);
 
 							bSentCommandMessage = true;
@@ -1704,10 +1698,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		}
 	}
 
-	// Är vänster musknapp inte nertryckt?
+	// ï¿½ vï¿½ster musknapp inte nertryckt?
 	if(m_bLeftButtonDown == false && bLeftButtonDown == false)
 	{
-		// Är det samma fönstret under musmarkören som innan?
+		// ï¿½ det samma fï¿½stret under musmarkï¿½en som innan?
 		if(ZGuiWnd::m_pkWndUnderCursor != NULL)
 		{
 			if(ZGuiWnd::m_pkWndUnderCursor != ZGuiWnd::m_pkPrevWndUnderCursor)

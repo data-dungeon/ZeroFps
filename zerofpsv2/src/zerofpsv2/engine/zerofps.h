@@ -306,6 +306,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		//devpage
 		void DevPrintf(const char* szName, const char *fmt, ...);
 		bool DevPrintPageVisible(const char* szName);
+		void SetDevPageVisible(const char* szName,bool bVisible);
 		void DevPrint_Show(bool bVisible);
 
 		//graphs

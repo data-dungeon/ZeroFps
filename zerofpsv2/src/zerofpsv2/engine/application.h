@@ -6,6 +6,9 @@
 #include "../basic/zfsubsystem.h"
 #include "network.h"
 
+#include "../gui/zgui.h"			//evil gui needs this
+
+
 using namespace std;
 
 class ZeroFps;

@@ -35,6 +35,17 @@ void P_CharacterControl::Init()
 	m_kControls.reset();
 }
 
+vector<PropertyValues> P_CharacterControl::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+	
+	kReturn[0].kValueName = "speed";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = &m_fSpeed;	
+	
+	return kReturn;
+}
+
 void P_CharacterControl::Update()
 {	
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
