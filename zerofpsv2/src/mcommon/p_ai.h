@@ -21,6 +21,7 @@ struct Order
       m_iTargetID2;
 
    Vector3 m_kPosition;
+   
 };
 
 enum { eIDLEMODE, eATTACKMODE };

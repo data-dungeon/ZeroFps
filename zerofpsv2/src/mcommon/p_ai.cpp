@@ -11,7 +11,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-void P_AI::Update()
+void P_AI::Update() 
 {
    // TODO!! damn this...
    if ( !m_pkCharProp )
@@ -280,6 +280,7 @@ void P_AI::ClearDynamicOrders()
       m_kDynamicOrders.pop_front();
    }
 
+	m_pkCurrentOrder = NULL;
 }
 
 // ------------------------------------------------------------------------------------------
