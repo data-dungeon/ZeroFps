@@ -287,22 +287,28 @@ int GuiAppLua::SetTextInt(lua_State* pkLua)
 // (1) [szParentName] char* name of the Parent
 // (2) [szNodeName] char* name of the Node
 // (3) [szNodeLabel] char* label of the Node
+// (4) [child node] double, if the node is a child that can be selected
 int GuiAppLua::AddTreeItemLua(lua_State* pkLua)
 {	
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 4)
+	if(iNumArgs != 5)
 		return 0;
 
 	char szTreeboxName[100], szParentName[100], 
 		  szNodeName[100], szNodeLabel[100];
+	double dIsChild;
 
 	g_pkScript->GetArg(pkLua, 0, szTreeboxName);
 	g_pkScript->GetArg(pkLua, 1, szParentName);
 	g_pkScript->GetArg(pkLua, 2, szNodeName);
 	g_pkScript->GetArg(pkLua, 3, szNodeLabel);
+	g_pkScript->GetArgNumber(pkLua, 4, &dIsChild);
 
-	g_pkGuiApp->AddTreeItem(szTreeboxName, szNodeName, szParentName, szNodeLabel, 1, 2);
+	if(dIsChild > 0)
+		g_pkGuiApp->AddTreeItem(szTreeboxName, szNodeName, szParentName, szNodeLabel, 0, 0);
+	else
+		g_pkGuiApp->AddTreeItem(szTreeboxName, szNodeName, szParentName, szNodeLabel, 1, 2);
 
 	return 1;
 }

@@ -56,7 +56,7 @@ bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 	}
 
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect()); 
+	pkRenderer->RenderQuad(GetScreenRect());
 
 	m_pkLabel->Render(pkRenderer); 
 	return false;

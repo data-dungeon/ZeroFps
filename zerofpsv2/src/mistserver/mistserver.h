@@ -69,8 +69,11 @@ class MistServer :public Application , public ZGuiApp {
 		void AddZone();
 
 	public:
+		
 		void OnClickListbox( ZGuiWnd* pkListBox, int iListboxIndex);
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
+		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
+			char *szClickNodeText, bool bHaveChilds);
 		
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);
 	 	

@@ -14,6 +14,7 @@ const int HORZ_ROW_SPACE = 1;
 const int VERT_SCROLLBAR_ID = 622;
 const int HORZ_SCROLLBAR_ID = 623;
 const int SCROLLBAR_WIDTH = 16;
+const int SEL_TREEBOX_LABEL = 132321;
 
 #define print_node(x) { if(x && x->pkButton) printf("%s\n", x->pkButton->GetText()); \
 	else printf("NULL\n"); }
@@ -294,7 +295,67 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked(); 
 				OpenNode((*it), bShow);
 				m_pkSelectedNode = (*it);
-				SetSelColor(m_pkSelectedNode);
+				SetSelectionMarker(m_pkSelectedNode);
+
+				// Send a message to the main winproc...
+
+				char** piParams = new char*[4];
+
+				piParams[0] = NULL; 
+				piParams[1] = NULL;
+				piParams[2] = NULL;
+				piParams[3] = new char[2];
+	
+				// 1:rd argument = name of the treebox
+				piParams[0] = new char[strlen(GetName())+1];
+				strcpy(piParams[0], GetName());
+
+				// 2:nd argument = text of the parents
+				if(m_pkSelectedNode->pkParent)
+				{
+					string szParent;
+					ZGuiTreeboxNode* pkSearchNode = m_pkSelectedNode;
+
+					while(1)
+					{
+						pkSearchNode = pkSearchNode->pkParent;
+
+						if(pkSearchNode == Root() || pkSearchNode == NULL)
+							break;
+
+						char szName[512];
+						sprintf(szName, "%s/", pkSearchNode->pkButton->GetText());
+						szParent.insert(0, szName);
+					}
+
+					if(!szParent.empty())
+					{
+						piParams[1] = new char[szParent.size()+1];
+						strcpy(piParams[1], szParent.c_str());
+					}
+				}
+
+				// 3:rd argument = text of the node
+				if(m_pkSelectedNode->pkButton)
+				{
+					const char* szNodeName = m_pkSelectedNode->pkButton->GetText();
+					piParams[2] = new char[strlen(szNodeName)+1];
+					strcpy(piParams[2], szNodeName);
+				}
+	
+				// 4:th argument = "0" = no childs (ie. a leaf), "1" = have childs (no leaf)
+				if(m_pkSelectedNode->kChilds.empty())
+				{
+					strcpy(piParams[3], "0");
+				}
+				else
+				{
+					strcpy(piParams[3], "1");
+				}
+
+				GetGUI()->GetActiveCallBackFunc()(
+					GetGUI()->GetActiveMainWnd(), ZGM_SELECTTREEITEM, 4, piParams);
+
 				break;
 			}
 		}
@@ -361,6 +422,19 @@ void ZGuiTreebox::CreateInternalControls()
 	// Create root node.
 	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
 	pkRoot->bIsOpen = true;
+
+	// Create sel label
+	m_pkSelLabel = new ZGuiLabel(Rect(0,0,BUTTON_SIZE,BUTTON_SIZE),
+		this,false,SEL_TREEBOX_LABEL);
+
+	ZGuiSkin* pkSelLabelSkin = new ZGuiSkin;
+	pkSelLabelSkin->m_bTransparent = true;
+	pkSelLabelSkin->m_unBorderSize = 1;
+	pkSelLabelSkin->m_afBorderColor[0] = 0;
+	pkSelLabelSkin->m_afBorderColor[1] = 0;
+	pkSelLabelSkin->m_afBorderColor[2] = 0;
+
+	m_pkSelLabel->SetSkin(pkSelLabelSkin);
 }
 
 void ZGuiTreebox::ChangeScrollbarRange(int width, int height)
@@ -421,6 +495,8 @@ void ZGuiTreebox::ScrollRows(bool bVertically)
 
 		PREV_VERT_SCROLLROW = m_iStartrow;
 	}
+
+	SetSelectionMarker(m_pkSelectedNode); // set selection marker pos
 }
 
 bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
@@ -507,9 +583,18 @@ void ZGuiTreebox::PrintHierarchy()
 	printf("-----------------------------------------------------\n");
 }
 
-void ZGuiTreebox::SetSelColor(ZGuiTreeboxNode* pkNode)
+void ZGuiTreebox::SetSelectionMarker(ZGuiTreeboxNode* pkNode)
 {
-
+	if(!node_have_childs(pkNode))
+	{
+		Rect rc = pkNode->pkButton->GetScreenRect();
+		m_pkSelLabel->SetPos(rc.Left, rc.Top, true, true);
+		m_pkSelLabel->Show();
+	}
+	else
+	{
+		m_pkSelLabel->Hide();
+	}
 }
 
 ZGuiTreeboxNode* ZGuiTreebox::Root()

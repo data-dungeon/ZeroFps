@@ -29,6 +29,22 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 			g_kMistServer.GetWnd(((int*)params)[0]), 
 			((int*)params)[1]);
 		break;
+
+	case ZGM_SELECTTREEITEM:
+		char** pszParams = (char**) params;
+		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
+			pszParams[2], pszParams[3][0] == '1' ? true : false);		
+
+		if(pszParams[0])
+			delete[] pszParams[0];
+		if(pszParams[1])
+			delete[] pszParams[1];
+		if(pszParams[2])
+			delete[] pszParams[2];
+		if(pszParams[3])
+			delete[] pszParams[3];
+
+		break;
 	}
 	return true;
 }
@@ -587,6 +603,13 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		string strName = pkWndClicked->GetName();
 
+		string strParent = "null";
+
+		if(pkWndClicked->GetParent())
+			strParent = pkWndClicked->GetParent()->GetName();
+
+		printf("strName=%s, strName->parent=%s\n", strName.c_str(), strParent.c_str());
+
 		if(strName == "OpenWorkTabButton")
 		{
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
@@ -625,6 +648,29 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 }
 
 
+void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
+											char *szClickNodeText, bool bHaveChilds)
+{
+	if(szClickNodeText && bHaveChilds == false)
+	{
+		string strFullpath = string("data/mad/zones/");
+
+		if(szParentNodeText)
+			strFullpath += string(szParentNodeText);
+
+		if(szClickNodeText)
+			strFullpath += string(szClickNodeText);
+
+		if(m_iCurrentMarkedZone != -1)
+		{
+			pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+
+			printf("Setting new zone modell to %s\n", strFullpath.c_str());
+		}
+	}
+}
+
+
 void MistServer::RotateActiveZoneObject()
 {
 	//int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);	
@@ -636,3 +682,5 @@ void MistServer::RotateActiveZoneObject()
 		pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
 	}
 }
+
+

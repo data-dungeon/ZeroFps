@@ -68,7 +68,7 @@ private:
 	ZGuiTreeboxNode* FindLastChild(ZGuiTreeboxNode* pkFrom);
 
 	bool ProcessKBInput(int iKey);
-	void SetSelColor(ZGuiTreeboxNode* pkNode);
+	void SetSelectionMarker(ZGuiTreeboxNode* pkNode);
 	void ScrollRows(bool bVertically);
 	void ChangeScrollbarRange(int width, int height);
 	void MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive=true);
@@ -92,6 +92,7 @@ private:
 	ZGuiTreeboxNode* m_pkSelectedNode;
 	ZGuiScrollbar* m_pkVertScrollbar;
 	ZGuiScrollbar* m_pkHorzScrollbar;
+	ZGuiLabel* m_pkSelLabel;
 	int m_iStartrow;
 	int m_iItemWidth, m_iItemHeight;
 	map<string,ZGuiTreeboxNode*> m_kNodeMap;

@@ -40,12 +40,12 @@ class ZGuiResourceManager;
  * Window Messages
  */
 
-#define ZGM_NULL                         0x0000
-#define ZGM_DESTROY                      0x0002
-#define ZGM_SETFOCUS					 0x0007
+#define ZGM_NULL                     0x0000
+#define ZGM_DESTROY                  0x0002
+#define ZGM_SETFOCUS						 0x0007
 #define ZGM_CBN_SELENDOK				 0x0009
 #define ZGM_KEYDOWN						 0x0100
-#define ZGM_KEYUP						 0x0101
+#define ZGM_KEYUP							 0x0101
 #define ZGM_COMMAND						 0x0111
 #define ZGM_SHOWWINDOW					 0x0018
 #define ZGM_MOUSEMOVE					 0x0200
@@ -59,6 +59,7 @@ class ZGuiResourceManager;
 #define ZGM_SCROLL						 0x0222
 #define ZGM_EN_CHANGE					 0x0300
 #define ZGM_SELECTLISTITEM				 0x0311
+#define ZGM_SELECTTREEITEM				 0x0312
 #define ZGM_TCN_SELCHANGE				 0x5501
 #define ZGM_SCN_SETPOS					 0x5601
 
