@@ -2252,47 +2252,47 @@ int MistLandLua::SetDefaultServerLua(lua_State* pkLua)
 // 1=event 2=target 3=user
 int MistLandLua::AIUseActionOnLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3 )
-	{
-      // action
-     	char acAction[128];
-		g_pkScript->GetArgString(pkLua, 0, acAction);
-
-      double dTarget;
-      g_pkScript->GetArgNumber(pkLua, 1, &dTarget);
-
-      double dUser;
-
-      if ( g_pkScript->GetNumArgs(pkLua) == 3 )
-         g_pkScript->GetArgNumber(pkLua, 2, &dUser);
-      else
-         dUser = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
-
-      Entity* pkObj = g_pkObjMan->GetEntityByID((int)dUser);
-
-      if ( !pkObj )
-         return 0;
-
-      Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
-
-      if ( !pkTarget )
-         return 0;
-
-      
-      P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
-
-      // check if user is a Character with AI and target an Item
-      if ( pkObj->GetProperty ("P_CharStats") && pkAI )
-      {
-         // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() )
-            pkAI->ClearDynamicOrders();
-
-         pkAI->AddDynamicOrder ("Action", (int) dTarget, 0, pkTarget->GetWorldPosV(), acAction );
-      }
-
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3 )
+// 	{
+//       // action
+//      	char acAction[128];
+// 		g_pkScript->GetArgString(pkLua, 0, acAction);
+// 
+//       double dTarget;
+//       g_pkScript->GetArgNumber(pkLua, 1, &dTarget);
+// 
+//       double dUser;
+// 
+//       if ( g_pkScript->GetNumArgs(pkLua) == 3 )
+//          g_pkScript->GetArgNumber(pkLua, 2, &dUser);
+//       else
+//          dUser = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
+// 
+//       Entity* pkObj = g_pkObjMan->GetEntityByID((int)dUser);
+// 
+//       if ( !pkObj )
+//          return 0;
+// 
+//       Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
+// 
+//       if ( !pkTarget )
+//          return 0;
+// 
+//       
+//       P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
+// 
+//       // check if user is a Character with AI and target an Item
+//       if ( pkObj->GetProperty ("P_CharStats") && pkAI )
+//       {
+//          // is AI is player, clear all other orders
+//          if ( pkAI->PlayerAI() )
+//             pkAI->ClearDynamicOrders();
+// 
+//          pkAI->AddDynamicOrder ("Action", (int) dTarget, 0, pkTarget->GetWorldPosV(), acAction );
+//       }
+// 
+// 
+//    }
 
    return 0;
 }
@@ -2302,39 +2302,39 @@ int MistLandLua::AIUseActionOnLua(lua_State* pkLua)
 // 1 = target, 2 = user
 int MistLandLua::AIAttackLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 || g_pkScript->GetNumArgs(pkLua) == 2 )
-	{
-      double dTarget, dAttacker;
-
-      g_pkScript->GetArgNumber(pkLua, 0, &dTarget);
-
-      if ( g_pkScript->GetNumArgs(pkLua) == 2 )
-         g_pkScript->GetArgNumber(pkLua, 1, &dAttacker);
-      else
-         dAttacker = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
-
-      Entity* pkObj = g_pkObjMan->GetEntityByID((int)dAttacker);
-
-      if ( !pkObj )
-         return 0;
-
-      Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
-
-      if ( !pkTarget )
-         return 0;
-
-      P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
-
-      // check if user is a Character with AI and target an character
-      if ( pkObj->GetProperty ("P_CharStats") && pkAI && pkTarget->GetProperty("P_CharStats") )
-      {
-         // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() )
-            pkAI->ClearDynamicOrders();
-
-         pkAI->AddDynamicOrder ("Attack", (int) dTarget, 0, pkTarget->GetWorldPosV(), "tjoff" );
-      }
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 || g_pkScript->GetNumArgs(pkLua) == 2 )
+// 	{
+//       double dTarget, dAttacker;
+// 
+//       g_pkScript->GetArgNumber(pkLua, 0, &dTarget);
+// 
+//       if ( g_pkScript->GetNumArgs(pkLua) == 2 )
+//          g_pkScript->GetArgNumber(pkLua, 1, &dAttacker);
+//       else
+//          dAttacker = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
+// 
+//       Entity* pkObj = g_pkObjMan->GetEntityByID((int)dAttacker);
+// 
+//       if ( !pkObj )
+//          return 0;
+// 
+//       Entity* pkTarget = g_pkObjMan->GetEntityByID((int)dTarget);
+// 
+//       if ( !pkTarget )
+//          return 0;
+// 
+//       P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
+// 
+//       // check if user is a Character with AI and target an character
+//       if ( pkObj->GetProperty ("P_CharStats") && pkAI && pkTarget->GetProperty("P_CharStats") )
+//       {
+//          // is AI is player, clear all other orders
+//          if ( pkAI->PlayerAI() )
+//             pkAI->ClearDynamicOrders();
+// 
+//          pkAI->AddDynamicOrder ("Attack", (int) dTarget, 0, pkTarget->GetWorldPosV(), "tjoff" );
+//       }
+//    }
 
    return 0;
 }
@@ -2343,98 +2343,98 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
 
 int MistLandLua::AIIdleLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-	{
-		double dId, dWaitTime;
-      
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgNumber(pkLua, 1, &dWaitTime);
-		
-		
-		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
-
-      if(pkEnt)
-		{
-         // check if object has AI
-         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
-
-         // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() )
-            pkAI->ClearDynamicOrders();
-         else if ( pkAI->PlayerAI() )
-         {
-            cout << "Warning! Tried to add static order to player" << endl;
-            return 0;
-         }
-
-         if ( pkAI )
-            pkAI->AddStaticOrder ("Idle", (int) (dWaitTime*10000), (int) (dWaitTime*10000), Vector3::ZERO, ".");
-		}
-      else
-         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
-	}
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+// 	{
+// 		double dId, dWaitTime;
+//       
+// 
+// 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+// 		g_pkScript->GetArgNumber(pkLua, 1, &dWaitTime);
+// 		
+// 		
+// 		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
+// 
+//       if(pkEnt)
+// 		{
+//          // check if object has AI
+//          P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
+// 
+//          // is AI is player, clear all other orders
+//          if ( pkAI->PlayerAI() )
+//             pkAI->ClearDynamicOrders();
+//          else if ( pkAI->PlayerAI() )
+//          {
+//             cout << "Warning! Tried to add static order to player" << endl;
+//             return 0;
+//          }
+// 
+//          if ( pkAI )
+//             pkAI->AddStaticOrder ("Idle", (int) (dWaitTime*10000), (int) (dWaitTime*10000), Vector3::ZERO, ".");
+// 		}
+//       else
+//          cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
+// 	}
 	return 0;
 }
 
 // -----------------------------------------------------------------------------------------------
 int MistLandLua::AIFaceDirectionLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-	{
-		double dId, dDirection;      
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgNumber(pkLua, 1, &dDirection);
-		
-		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
-
-      if(pkObj)
-		{
-         // check if object has AI
-         P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
-
-         if ( pkAI )
-         {
-            Vector3 kDir;
-            kDir.x = (float) cos ( dDirection / degtorad );
-            kDir.y = 0;
-            kDir.z = (float) sin ( dDirection / degtorad );
-            pkAI->AddStaticOrder ("Face", 0, 0, kDir, ".");
-         }
-         else
-            cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
-		}
-
-	}
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+// 	{
+// 		double dId, dDirection;      
+// 
+// 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+// 		g_pkScript->GetArgNumber(pkLua, 1, &dDirection);
+// 		
+// 		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
+// 
+//       if(pkObj)
+// 		{
+//          // check if object has AI
+//          P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+// 
+//          if ( pkAI )
+//          {
+//             Vector3 kDir;
+//             kDir.x = (float) cos ( dDirection / degtorad );
+//             kDir.y = 0;
+//             kDir.z = (float) sin ( dDirection / degtorad );
+//             pkAI->AddStaticOrder ("Face", 0, 0, kDir, ".");
+//          }
+//          else
+//             cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
+// 		}
+// 
+// 	}
 	return 0;
 }
 // -----------------------------------------------------------------------------------------------
 
 int MistLandLua::AIFaceObjectLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
-	{
-		double dId, dObjectFaceID;      
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
-		
-		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
-      Entity* pkFaceObj = g_pkObjMan->GetEntityByID((int)dObjectFaceID);
-
-      if(pkObj && pkFaceObj)
-		{
-         // check if object has AI
-         P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
-
-         if ( pkAI )
-            pkAI->AddDynamicOrder ("Face", (int)dObjectFaceID, 0, Vector3::ZERO, ".");
-         else
-            cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
-		}
-
-	}
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+// 	{
+// 		double dId, dObjectFaceID;      
+// 
+// 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+// 		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
+// 		
+// 		Entity* pkObj = g_pkObjMan->GetEntityByID((int)dId);
+//       Entity* pkFaceObj = g_pkObjMan->GetEntityByID((int)dObjectFaceID);
+// 
+//       if(pkObj && pkFaceObj)
+// 		{
+//          // check if object has AI
+//          P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+// 
+//          if ( pkAI )
+//             pkAI->AddDynamicOrder ("Face", (int)dObjectFaceID, 0, Vector3::ZERO, ".");
+//          else
+//             cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
+// 		}
+// 
+// 	}
 	return 0;
 }
 
@@ -2442,56 +2442,56 @@ int MistLandLua::AIFaceObjectLua(lua_State* pkLua)
 
 int MistLandLua::AIMoveToLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3)
-	{
-		double dId;
-      
-      char temp[128] = "dynamic";
-
-		Vector3 kPos;		
-		vector<TABLE_DATA> vkData;
-		
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-		
-      if ( g_pkScript->GetNumArgs(pkLua) == 3 )
-         g_pkScript->GetArgString(pkLua, 3, temp);
-
-/*		g_pkScript->GetArgNumber(pkLua, 1, &x);		
-		g_pkScript->GetArgNumber(pkLua, 2, &y);		
-		g_pkScript->GetArgNumber(pkLua, 3, &z);		
-*/			
-		kPos = Vector3(
-			(float) (*(double*) vkData[0].pData),
-			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData)); 
-		
-		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
-		if(pkEnt)
-		{
-         // check if object has AI
-         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
-
-         if ( pkAI )
-         {
-            // is AI is player, clear all other orders
-            if ( pkAI->PlayerAI() && strcmp(temp,"dynamic") == 0)
-               pkAI->ClearDynamicOrders();
-            else if ( pkAI->PlayerAI() && strcmp(temp,"static") == 0)
-            {
-               cout << "Warning! Tried to add static order to player" << endl;
-               return 0;
-            }
-
-               if ( strcmp(temp,"dynamic") == 0 )
-                  pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
-               else
-                  pkAI->AddStaticOrder ("MoveTo", 0, 0, kPos, ".");
-         }
-		}
-      else
-         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
-	}
+// 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3)
+// 	{
+// 		double dId;
+//       
+//       char temp[128] = "dynamic";
+// 
+// 		Vector3 kPos;		
+// 		vector<TABLE_DATA> vkData;
+// 		
+// 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+// 		g_pkScript->GetArgTable(pkLua, 2, vkData);
+// 		
+//       if ( g_pkScript->GetNumArgs(pkLua) == 3 )
+//          g_pkScript->GetArgString(pkLua, 3, temp);
+// 
+// /*		g_pkScript->GetArgNumber(pkLua, 1, &x);		
+// 		g_pkScript->GetArgNumber(pkLua, 2, &y);		
+// 		g_pkScript->GetArgNumber(pkLua, 3, &z);		
+// */			
+// 		kPos = Vector3(
+// 			(float) (*(double*) vkData[0].pData),
+// 			(float) (*(double*) vkData[1].pData),
+// 			(float) (*(double*) vkData[2].pData)); 
+// 		
+// 		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
+// 		if(pkEnt)
+// 		{
+//          // check if object has AI
+//          P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
+// 
+//          if ( pkAI )
+//          {
+//             // is AI is player, clear all other orders
+//             if ( pkAI->PlayerAI() && strcmp(temp,"dynamic") == 0)
+//                pkAI->ClearDynamicOrders();
+//             else if ( pkAI->PlayerAI() && strcmp(temp,"static") == 0)
+//             {
+//                cout << "Warning! Tried to add static order to player" << endl;
+//                return 0;
+//             }
+// 
+//                if ( strcmp(temp,"dynamic") == 0 )
+//                   pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
+//                else
+//                   pkAI->AddStaticOrder ("MoveTo", 0, 0, kPos, ".");
+//          }
+// 		}
+//       else
+//          cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
+// 	}
 	return 0;
 }
 
@@ -2685,63 +2685,63 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
 
 int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
 {
- 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-	{
-      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-      CharacterProperty* pkCP = (CharacterProperty*)pkObj->GetProperty("P_CharStats");
-
-      if ( !pkObj || !pkCP )
-         return 0;
-
-      Entity* pkClosestObject = 0;
-
-      float fDistance = 99999999;      
-      
-      // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
-
-      vector<Entity*>* pkList = new vector<Entity*>;
-
-      pkZone->m_pkZone->GetAllEntitys ( pkList );
-
-      for ( unsigned int i = 0; i < pkList->size(); i++ )
-      {
-         // check if object is character
-         if ( pkList->at(i)->GetType() == "t_player.lua" )
-         {
-            Vector3 kPos = pkList->at(i)->GetWorldPosV();
-
-            float fDist = (float) pkObj->GetWorldPosV().DistanceXZTo(kPos);
-
-            // check if player is seen
-            float fVisionRange = pkCP->GetCharStats()->m_fVision *
-               ((CharacterProperty*)pkList->at(i)->GetProperty("P_CharStats"))->GetCharStats()->m_fVisibility;
-
-            Plane kView;
-
-            // TODO!! Make a triangle with represents vision and test point inside it
-
-            float fAngle = 0;
-
-            // check if distance is smaller that the previos (if any) found
-            if ( fDist < fDistance && fVisionRange >= fDist && fAngle < 45 && fAngle > -45 )
-            {
-               fDistance = fDist;
-               pkClosestObject = pkList->at(i);
-            }
-         }
-      }
-
-      delete pkList;
-
-      if ( pkClosestObject )
-         g_pkScript->AddReturnValue(pkLua, pkClosestObject->GetEntityID());
-      else
-         g_pkScript->AddReturnValue(pkLua, -1);
-
-
-      return 1;
-   }
+//  	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+// 	{
+//       Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+//       CharacterProperty* pkCP = (CharacterProperty*)pkObj->GetProperty("P_CharStats");
+// 
+//       if ( !pkObj || !pkCP )
+//          return 0;
+// 
+//       Entity* pkClosestObject = 0;
+// 
+//       float fDistance = 99999999;      
+//       
+//       // TODO!!!: check more than the zone the user is in
+//       ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
+// 
+//       vector<Entity*>* pkList = new vector<Entity*>;
+// 
+//       pkZone->m_pkZone->GetAllEntitys ( pkList );
+// 
+//       for ( unsigned int i = 0; i < pkList->size(); i++ )
+//       {
+//          // check if object is character
+//          if ( pkList->at(i)->GetType() == "t_player.lua" )
+//          {
+//             Vector3 kPos = pkList->at(i)->GetWorldPosV();
+// 
+//             float fDist = (float) pkObj->GetWorldPosV().DistanceXZTo(kPos);
+// 
+//             // check if player is seen
+//             float fVisionRange = pkCP->GetCharStats()->m_fVision *
+//                ((CharacterProperty*)pkList->at(i)->GetProperty("P_CharStats"))->GetCharStats()->m_fVisibility;
+// 
+//             Plane kView;
+// 
+//             // TODO!! Make a triangle with represents vision and test point inside it
+// 
+//             float fAngle = 0;
+// 
+//             // check if distance is smaller that the previos (if any) found
+//             if ( fDist < fDistance && fVisionRange >= fDist && fAngle < 45 && fAngle > -45 )
+//             {
+//                fDistance = fDist;
+//                pkClosestObject = pkList->at(i);
+//             }
+//          }
+//       }
+// 
+//       delete pkList;
+// 
+//       if ( pkClosestObject )
+//          g_pkScript->AddReturnValue(pkLua, pkClosestObject->GetEntityID());
+//       else
+//          g_pkScript->AddReturnValue(pkLua, -1);
+// 
+// 
+//       return 1;
+//    }
 
    return 0;
 
@@ -2751,30 +2751,30 @@ int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
 
 int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-      if ( !pkObj )
-         return 0;
-
-      P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
-
-      if ( !pkAI )
-      {
-         cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
-         return 0;
-      }
-
-      double dTemp;
-      g_pkScript->GetArgNumber(pkLua, 0, &dTemp);	
-      
-	  if(dTemp > 0)
-	      pkAI->SetAIIsPlayer ( true );
-	  else
-		  pkAI->SetAIIsPlayer ( false );
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+// 	{
+//       Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+//       if ( !pkObj )
+//          return 0;
+// 
+//       P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+// 
+//       if ( !pkAI )
+//       {
+//          cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
+//          return 0;
+//       }
+// 
+//       double dTemp;
+//       g_pkScript->GetArgNumber(pkLua, 0, &dTemp);	
+//       
+// 	  if(dTemp > 0)
+// 	      pkAI->SetAIIsPlayer ( true );
+// 	  else
+// 		  pkAI->SetAIIsPlayer ( false );
+// 
+//    }
 
    return 0;
 }
@@ -2783,26 +2783,26 @@ int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
 
 int MistLandLua::AIHaveTargetLua(lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
-	{
-      Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-      if ( !pkObj )
-         return 0;
-
-      P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
-
-      if ( !pkAI )
-      {
-         cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
-         return 0;
-      }
-
-      
-      g_pkScript->AddReturnValue( pkLua, pkAI->HaveTarget() );
-
-
-   }
+// 	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+// 	{
+//       Entity* pkObj = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+//       if ( !pkObj )
+//          return 0;
+// 
+//       P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+// 
+//       if ( !pkAI )
+//       {
+//          cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
+//          return 0;
+//       }
+// 
+//       
+//       g_pkScript->AddReturnValue( pkLua, pkAI->HaveTarget() );
+// 
+// 
+//    }
 
    return 0;
 }

@@ -17,6 +17,10 @@ class P_Buff;
 class MCOMMON_API CharacterStats
 {
 	public:
+		int	m_iLevel; 
+		int	m_iExperience;
+		int	m_iNextLevel;		
+		
 		int	m_iSpeed;
 		int	m_iSpeedMod;
 		
@@ -32,13 +36,21 @@ class MCOMMON_API CharacterStats
 		int	m_iStrengthMod;
 		int	m_iDexterity;
 		int	m_iDexterityMod;
-		int	m_iConstitution;
-		int	m_iConstitutionMod;
+		int	m_iVitality;
+		int	m_iVitalityMod;
+		int	m_iIntelligence;
+		int	m_iIntelligenceMod;
+		int	m_iWisdom;
+		int	m_iWisdomMod;
 		
 		int	m_iArmor;
 		int	m_iArmorMod;
 		
-		int	m_iLevel;
+		int	m_iDamageMin;
+		int	m_iDamageMinMod;
+		int	m_iDamageMax;
+		int	m_iDamageMaxMod;
+				
 };
 
 
