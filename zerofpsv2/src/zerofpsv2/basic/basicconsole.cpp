@@ -3,15 +3,19 @@
 #include "basicconsole.h"
 #include "zfsystem.h"
 #include "globals.h"
+#include "zfassert.h"
 
-//extern ZFSystem g_ZFObjSys;
-  
 using namespace std;
+
+char acWordWrap[1024];
+char acPrint[1024];
 
 BasicConsole::BasicConsole(char* szName)
 : ZFSubSystem(szName)
 {
+	m_iMaxWidth = 50;	//TEXT_MAX_LENGHT;
 }
+
 
 BasicConsole::~BasicConsole()
 {
@@ -23,16 +27,20 @@ BasicConsole::~BasicConsole()
 	m_kText.clear();
 }
 
-void BasicConsole::Print(const char* aText) 
+
+/**	\brief	Prints a single row to console.
+		\ingroup Basic
+*/
+void BasicConsole::PrintOneRow(const char* aText)
 {
-	string strEndLined = string(aText) + "\n";
-	//g_ZFObjSys.Log("console", strEndLined.c_str());
-	GetSystem().Log("console", strEndLined.c_str());
+	ZFAssert(aText, "NULL Pointer argument");
 
 	delete[] m_kText[m_kText.size()-1];
 	
-	for(int i=m_kText.size()-1;i>0;i--){
-		if(m_kText[i-1]!=NULL){
+	for(int i=m_kText.size()-1;i>0;i--)
+	{
+		if(m_kText[i-1]!=NULL)
+		{
 			m_kText[i]=m_kText[i-1];			
 		}
 	}
@@ -41,12 +49,86 @@ void BasicConsole::Print(const char* aText)
 	strcpy(m_kText[0],aText);
 }
 
+
+/**	\brief	Prints a row and word wraps so it don't go beoynd edge of console.
+		\ingroup Basic
+*/
+void BasicConsole::PrintWordWrap(const char* aText)
+{
+	ZFAssert(aText, "NULL Pointer argument");
+
+	string strEndLined = string(aText) + "\n";
+	GetSystem().Log("console", strEndLined.c_str());
+
+	int iNumOfChars = strlen( aText );
+
+	while(iNumOfChars > m_iMaxWidth)
+	{
+		const char* szSpace = &aText[m_iMaxWidth];
+		int	iWidht  = m_iMaxWidth;
+
+		while(szSpace > aText && szSpace[0] != ' ')	szSpace--;
+		if(szSpace == aText)
+		{
+			szSpace =  &aText[m_iMaxWidth];
+		}
+		else
+		{
+			iWidht  = szSpace - aText;
+		}
+
+		strncpy(acWordWrap, aText, iWidht);
+		acWordWrap[iWidht] = 0;
+		PrintOneRow(acWordWrap);
+		aText += iWidht;
+		iNumOfChars -= iWidht;
+	}
+
+	if(aText[0])
+		PrintOneRow(aText);
+}
+
+
+/**	\brief	Prints one row and handles splitting it up at line breaks.
+		\ingroup Basic
+*/
+void BasicConsole::Print(const char* aText) 
+{
+	ZFAssert(aText, "NULL Pointer argument");
+
+	const char* pszText = aText;
+	
+	char* pszCr = strchr(pszText, 10);
+	while(pszCr)
+	{
+		strncpy(acPrint,pszText, pszCr - pszText);
+		acPrint[pszCr - pszText] = 0;
+      PrintWordWrap(acPrint);
+		//cout << " - '" << acPrint << "'"<< endl;
+		pszText = pszCr + 1;
+		pszCr = strchr(pszText, 10);
+	}
+
+	if(pszText[0])
+	{
+		//cout << "- '" << pszText << "'"<< endl;
+      PrintWordWrap(pszText);
+	}
+}
+
+
+/**	\brief	The function used to print to the console.
+		\ingroup Basic
+*/
 void BasicConsole::Printf(const char *fmt, ...)
 {
-	va_list		ap;							// Pointer To List Of Arguments
+	ZFAssert(fmt, "NULL Pointer argument");
 
-	// Make sure we got something to work with.
-	if (fmt == NULL)	return;					
+	// Make sure we got something to work with.	
+	if (fmt == NULL)			
+		return;							
+
+	va_list		ap;							// Pointer To List Of Arguments
 
 	va_start(ap, fmt);						// Parses The String For Variables
 		vsprintf(g_szFormatText, fmt, ap);		// And Convert Symbols

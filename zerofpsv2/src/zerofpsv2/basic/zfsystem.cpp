@@ -707,7 +707,7 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 	va_end(ap);								// 
 
 	// Now call our print function.
-	m_pkConsole->Print(g_LogFormatTxt2);
+	m_pkConsole->Printf(g_LogFormatTxt2);
 }
 
 

@@ -950,7 +950,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_ECHO:
-			m_pkConsole->Print( kCommand->m_strFullCommand.c_str() + kCommand->m_kSplitCommand[0].size() + 1 );
+			m_pkConsole->Printf( kCommand->m_strFullCommand.c_str() + kCommand->m_kSplitCommand[0].size() + 1 );
 			break;
 
 		case FID_PRINTOBJECT:
@@ -1079,7 +1079,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 			
 			case ZFGP_PRINT: 
 				pkNetPacket->Read_Str(szMsg);
-				m_pkConsole->Print(szMsg);
+				m_pkConsole->Printf(szMsg);
 				//Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
 				break;
 

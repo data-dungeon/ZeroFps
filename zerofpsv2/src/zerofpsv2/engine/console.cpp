@@ -395,7 +395,7 @@ void Console::Update(void)
 
 bool Console::Execute(char* aText) {
 	if(strlen(aText)==0){
-		Print("");
+		Printf("");
 		return false;
 	}
 	

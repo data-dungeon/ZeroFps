@@ -78,7 +78,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	// Register Commands
 	Register_Cmd("new",FID_NEW);		
 	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("save",FID_SAVE);		
+	Register_Cmd("save",FID_SAVE);
+	Register_Cmd("saveas",FID_SAVEAS);
 	Register_Cmd("users",FID_USERS);		
 	Register_Cmd("lo",FID_LOCALORDER);		
 	Register_Cmd("lightmode", FID_LIGHTMODE);		
@@ -97,6 +98,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("cut",		FID_CUT);
 	Register_Cmd("copy",		FID_COPY);
 	Register_Cmd("paste",	FID_PASTE);
+	Register_Cmd("jiddra",	FID_TEST_JIDDRA);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -104,7 +106,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fHMOutRadius = 2;
 	m_iEditLayer	= 1;
 	m_fDelayTime   = 0.0;
-	m_strWorldDir  = "Fisklandet";
+	m_strWorldDir  = "";
    
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
@@ -1148,6 +1150,27 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 		
 		case FID_SAVE:
+			if(kCommand->m_kSplitCommand.size() > 1)
+			{
+				m_pkConsole->Printf(" The save command is now only for saving a loaded level.\nCan it be the 'saveas' command you should use? ");
+				m_pkConsole->Printf(" To use save, enter it without a argument. Name of world dir can be found in title bar.");
+				break;				
+			}
+		
+			if(m_strWorldDir.empty()) 
+			{
+				m_pkConsole->Printf(" The current level has no name. Use saveas first");
+				break;				
+			}
+
+			if(!m_pkObjectMan->SaveWorld(m_strWorldDir,true))
+			{
+				m_pkConsole->Printf("Error saving world");
+				break;
+			}	
+			break;
+
+		case FID_SAVEAS:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
 				m_pkConsole->Printf("save [worlddir]");
@@ -1170,7 +1193,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkObjectMan->SaveZones();			
 			cout<<"saved"<<endl;
 */			
-			break;		
+			break;
+
 	
 		case FID_USERS:
 			kUsers = m_pkPlayerDB->GetUsers();
@@ -1201,6 +1225,20 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			fTest =  atof( kCommand->m_kSplitCommand[1].c_str());
 			Camera::m_fGridSpace = fTest;
+			break;
+
+		case FID_TEST_JIDDRA:
+			m_pkConsole->Printf("Long Text: ");
+			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
+			m_pkConsole->Printf("\n");
+			m_pkConsole->Printf("Long Text with no spaces: ");
+			m_pkConsole->Printf("Thisisanotherpointlesstextbutwithoutanyspacesthistimesoitisnotaseasytoreadunlessyouareapersonthatareusedtoreadbookwithoutspacesandifitissothenyouareinsane.");
+			m_pkConsole->Printf("\n\n");
+			m_pkConsole->Printf("Text with three rows.");
+			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)");
+			m_pkConsole->Printf("\n\n\n");
+			m_pkConsole->Printf("Mult rows with newline at the end.");
+			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
 			break;
 
 		case FID_CAMLINK:

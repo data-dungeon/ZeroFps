@@ -58,6 +58,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_NEW,
 			FID_LOAD,
 			FID_SAVE,
+			FID_SAVEAS,
 			FID_USERS,
 			FID_LOCALORDER,
 			FID_LIGHTMODE,
@@ -77,6 +78,9 @@ class MistServer :public Application , public ZGuiApp {
 			FID_CUT,
 			FID_COPY,
 			FID_PASTE,
+
+
+			FID_TEST_JIDDRA,		// Owned by Vim.
 		};
 
 		enum EditMode_e
