@@ -1176,10 +1176,10 @@ bool DarkMetropolis::CreatePlayer()
 				if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 				{
 					pkEnv->SetEnable(true);
-					pkEnv->SetEnviroment("data/enviroments/sun.env");			
+					pkEnv->SetEnviroment("data/enviroments/dm.env");			
 				}					
 				
-//				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
+				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
 				m_pkPlayerEntity->DeleteProperty("P_Mad");
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
