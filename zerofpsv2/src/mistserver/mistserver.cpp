@@ -1148,111 +1148,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					}					
 				}
 			}
-				
-			/*					
-			//get player data
-			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{
-				//get players character entity
-				if(Entity* pkChar = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID))
-				{
-					// get player character property
-					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkChar->GetProperty("P_CharacterProperty"))
-					{
-						//get item entity
-						if(Entity* pkItem = m_pkEntityManager->GetEntityByID(iItemID))
-						{
-							//get item property
-							if(P_Item* pkItemProp = (P_Item*)pkItem->GetProperty("P_Item"))
-							{
-							
-								//item is in world, asume pickup
-								if(pkItemProp->GetInContainerID() == -1)
-								{									
-									cout<<"trying to pickup entity"<<endl;
-								
-									//first do a distance check
-									if(pkItem->GetWorldPosV().DistanceTo(pkChar->GetWorldPosV()) > 2.0)
-									{
-										SayToClients("You are to far away",PkNetMessage->m_iClientID);
-										break;
-									}
-									
-									//get inventory  container
-									if(P_Container* pkContanerP = (P_Container*)m_pkEntityManager->GetEntityByID(pkCharProp->m_iInventory)->GetProperty("P_Container"))
-									{									
-										//no target position given assuming free position
-										if(iPosX == -1)
-										{
-											//try adding item on a free position in character inventory
-											if(pkContanerP->AddItem(iItemID))											
-												SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);											
-											else
-												SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-	
-											
-											break;
-										}
-										else
-										{
-											//try adding item on target position in character inventory
-											if(pkContanerP->AddItem(iItemID,iPosX,iPosY))											
-												SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);
-											else
-												SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-											
-											
-											break;																	
-										}
-									}										
-								}
-								else
-								{
-									//moving within container
-									
-									//no target, assuming moving within container
-									if(P_Container* pkContanerP = (P_Container*)m_pkEntityManager->GetEntityByID(pkCharProp->m_iInventory)->GetProperty("P_Container"))
-									{													
-									
-										if(iTarget == -1)
-										{
-											// no position , assuming drop
-											if(iPosX == -1)
-											{
-												cout<<"trying to drop item"<<endl;
-												if(pkContanerP->DropItem(iItemID,pkChar->GetWorldPosV()))
-													SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);											
-												else
-													SayToClients("Could not drop item",PkNetMessage->m_iClientID);
-											
-												break;;
-											}
-											
-											//trying to move item
-											else
-											{
-												//no target container, assuming inventory
-												if(iTarget == -1 && iPosX != -1)
-												{
-													cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
-												
-													if(pkContanerP->MoveItem(iItemID,iPosX,iPosY))
-														SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);
-													else
-														SayToClients("Could no move item",PkNetMessage->m_iClientID);
-			
-													break;										
-												}																							
-											}																						
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			*/
+
 			cout<<"WARNING: bad item movement"<<endl;
 			SayToClients("Bad item movement",PkNetMessage->m_iClientID);
 			
@@ -1264,27 +1160,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			int iContainerID;
 			PkNetMessage->Read(iContainerID);
 			
-			OpenContainer(iContainerID,PkNetMessage->m_iClientID);
-			
-			/*
-			//inventory
-			if(iContainerID == -1)
-			{
-				if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				{		
-					if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
-					{
-						if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
-						{
-							SendContainer(pkCP->m_pkInventory->GetOwner(),PkNetMessage->m_iClientID);
-							break;
-						}
-					}
-				}				
-				break;				
-			}
-			*/
-			
+			OpenContainer(iContainerID,PkNetMessage->m_iClientID);	
 					
 			break;
 		}
