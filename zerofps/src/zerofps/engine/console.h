@@ -9,8 +9,10 @@
 #include <vector>
 #include <deque>
 
+
 using namespace std;
 
+class Input;
 class ZeroFps;
 
 //max lenght of an entered command

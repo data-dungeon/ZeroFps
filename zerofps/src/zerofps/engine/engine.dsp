@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                $(ProjDir)\release\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                 $(ProjDir)\release\*.lib                                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                     $(ProjDir)\debug\*.lib                                                                     ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                      $(ProjDir)\debug\*.lib                                                                      ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -178,6 +178,14 @@ SOURCE=.\audiomanager.cpp
 # Begin Source File
 
 SOURCE=.\autoparentproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\billboardrenderproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\boxrenderproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -330,6 +338,10 @@ SOURCE=.\console.cpp
 # Begin Source File
 
 SOURCE=.\crossrenderproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\csbox.cpp
 # End Source File
 # Begin Source File
 
@@ -709,6 +721,14 @@ SOURCE=.\autoparentproperty.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\billboardrenderproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\boxrenderproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\camera.h
 # End Source File
 # Begin Source File
@@ -750,6 +770,10 @@ SOURCE=.\console.h
 # Begin Source File
 
 SOURCE=.\crossrenderproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\csbox.h
 # End Source File
 # Begin Source File
 
