@@ -85,7 +85,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
-		void GetNumOfRootPaths();						///< Get num of active rootpaths
+		int GetNumOfRootPaths()	{return m_kRootPath.size();};						///< Get num of active rootpaths
 
 		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
 
@@ -93,12 +93,12 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		bool Exists(string strFileName);				///< Returns true if a file was found.
 		
 		// Open / Close
-		void ArchiveOpen() { }					
+		void ArchiveOpen() 	{ }					
 		void ArchiveClose()  { }
 
 		// Create / Manage
-		void ArchiveUnpack()  { }
-		void ArchivePack()  { }
+		void ArchiveUnpack()	{ }
+		void ArchivePack()  	{ }
 	
 		string GetFullPath(string strFileName);
 		bool GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge);
@@ -107,8 +107,8 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		bool CreateDir(string strDir);
 		bool RemoveDir(string strDir);
 		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
-		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
-			string strName, bool bIgnoreMaps = false);
+		bool ListDirFilter(	vector<string>* pkFiles, vector<string>& pkFilters, 
+									string strName, bool bIgnoreMaps = false);
 		bool DirExist(string strName);
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);

@@ -232,7 +232,7 @@ void ZeroFps::SetApp()
 
 void ZeroFps::ConfigFileRun()
 {
-	string CfgName = string(m_pkApp->m_pTitle) + ".ini";
+	string CfgName = string("/") + string(m_pkApp->m_pTitle) + ".ini";
 	g_ZFObjSys.Config_Load(CfgName);
 }
 

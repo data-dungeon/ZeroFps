@@ -715,10 +715,11 @@ void ZFSystem::Config_Save(string strFileName)
 void ZFSystem::Config_Load(string strFileName)
 {
 	ZFIni			m_kIni;
-	if(m_kIni.Open(strFileName.c_str(), 0) == 0) {
+	if(m_kIni.Open(strFileName.c_str(), 0) == 0) 
+	{
 		cout << "Failed to find config file" << endl;
 		return;
-		}
+	}
 
 	char* pkVal;
 
