@@ -35,7 +35,6 @@
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
 
-
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -224,8 +223,8 @@ void ZeroEd::CreateEditCameras()
 			else
 				m_pkCameraObject[i]->SetParent( m_pkCameraObject[0] );				
 			
-			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
-			m_pkCamProp->SetCamera(m_pkCamera[i]);
+			P_Camera* pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
+			pkCamProp->SetCamera(m_pkCamera[i]);
 			m_pkCameraObject[i]->SetSave(false);
 		}
 	}
@@ -267,14 +266,8 @@ void ZeroEd::OnInit()
 
 //	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 
-	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
-	pkMenu->SetCheckMark("Menu_PageCommon", m_pkZeroFps->DevPrintPageVisible("common"));
-	pkMenu->SetCheckMark("Menu_PageConn", m_pkZeroFps->DevPrintPageVisible("conn"));
-	pkMenu->SetCheckMark("Menu_PageOm", m_pkZeroFps->DevPrintPageVisible("om"));
-	pkMenu->SetCheckMark("Menu_PageServer", m_pkZeroFps->DevPrintPageVisible("server"));
-	pkMenu->SetCheckMark("Menu_PageTime", m_pkZeroFps->DevPrintPageVisible("time"));	
-	pkMenu->SetCheckMark("Menu_PageEditor", m_pkZeroFps->DevPrintPageVisible("editor"));	
-	
+	InitMainMenu();
+
 }
 
 void ZeroEd::Init()
@@ -611,8 +604,8 @@ void ZeroEd::OnSystem()
 			m_pkCameraObject[0] = pkClient;
 			m_pkActiveCameraObject = m_pkCameraObject[0];
 			
-			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[0]->AddProperty("P_Camera");
-			m_pkCamProp->SetCamera(m_pkCamera[0]);
+			P_Camera* pkCamProp = (P_Camera*)m_pkCameraObject[0]->AddProperty("P_Camera");
+			pkCamProp->SetCamera(m_pkCamera[0]);
 		
 			SoloToggleView();
 			m_fDelayTime = m_pkZeroFps->GetEngineTime();
@@ -1169,7 +1162,7 @@ void ZeroEd::SoloToggleView()
 		GetWnd("vp1")->Show(); GetWnd("vp1")->SetPos(w+3,21,true,true); GetWnd("vp1")->Resize(w,h,true);
 		GetWnd("vp3")->Show(); GetWnd("vp3")->SetPos(1,h+21+2,true,true); GetWnd("vp3")->Resize(w,h,true);
 		GetWnd("vp4")->Show(); GetWnd("vp4")->SetPos(w+3,h+21+2,true,true); GetWnd("vp4")->Resize(w,h,true);
-} 
+	} 
 	else
 	{
 		m_bSoloMode = true;
@@ -1185,6 +1178,9 @@ void ZeroEd::SoloToggleView()
 			pkCam->m_bForceFullScreen = true;
 		}
 	}
+
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+	pkMenu->SetCheckMark("Menu_ViewSolo", m_bSoloMode);
 }
 
 void ZeroEd::CamFollow(bool bFollowMode)
@@ -1196,16 +1192,16 @@ void ZeroEd::CamFollow(bool bFollowMode)
 		if(!pkObj)
 			return;
 
-		P_Camera* m_pkCamProp;
+		P_Camera* pkCamProp;
 
 		// Remov old
-		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(NULL);
+		pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		pkCamProp->SetCamera(NULL);
 
 		// Add new.
 		pkObj->AddProperty("P_Camera");
-		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkActiveCamera);
+		pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
+		pkCamProp->SetCamera(m_pkActiveCamera);
 	}
 	else
 	{
@@ -1215,12 +1211,12 @@ void ZeroEd::CamFollow(bool bFollowMode)
 			return;	// Hey we are not following anyone.
 
 		// Remov old
-		P_Camera* m_pkCamProp;
-		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(NULL);
+		P_Camera* pkCamProp;
+		pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
+		pkCamProp->SetCamera(NULL);
 
-		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkActiveCamera);
+		pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		pkCamProp->SetCamera(m_pkActiveCamera);
 		
 		m_pkActiveCameraObject->SetWorldPosV(pkObj->GetWorldPosV());
 	}

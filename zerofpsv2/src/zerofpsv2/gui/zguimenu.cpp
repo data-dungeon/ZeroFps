@@ -129,9 +129,15 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				if ( res != m_mkSubMenuStateMap.end() )
 						res->second = !res->second;
 
-				OpenSubMenu(pkSubMenu, res->second);
-
-				Resize(GetScreenRect().Width(), 500);
+				if(pkSubMenu->pkParent == NULL && res->second == false && iCode == NCODE_CLICK_DOWN)
+				{
+					HideAll();
+				}
+				else
+				{
+					OpenSubMenu(pkSubMenu, res->second);
+					Resize(GetScreenRect().Width(), 500);
+				}
 				
 				break;
 			}

@@ -698,3 +698,27 @@ void ZeroEd::UpdatePreviewObject()
 
 	m_pkPreviewEntity->SetWorldRotV(kRot); 
 }
+
+void ZeroEd::InitMainMenu()
+{
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+	pkMenu->SetCheckMark("Menu_PageCommon", m_pkZeroFps->DevPrintPageVisible("common"));
+	pkMenu->SetCheckMark("Menu_PageConn", m_pkZeroFps->DevPrintPageVisible("conn"));
+	pkMenu->SetCheckMark("Menu_PageOm", m_pkZeroFps->DevPrintPageVisible("om"));
+	pkMenu->SetCheckMark("Menu_PageServer", m_pkZeroFps->DevPrintPageVisible("server"));
+	pkMenu->SetCheckMark("Menu_PageTime", m_pkZeroFps->DevPrintPageVisible("time"));	
+	pkMenu->SetCheckMark("Menu_PageEditor", m_pkZeroFps->DevPrintPageVisible("editor"));	
+	pkMenu->SetCheckMark("Menu_SysSimToggle", m_pkZeroFps->m_bRunWorldSim);
+	
+	vector<string> akSections;
+	if(m_pkIni->Open("ZeroEd.ini", false))
+	{
+		pkMenu->SetCheckMark("Menu_DebugShowZones", m_pkIni->GetIntValue("EntityManager", "l_showzones"));
+		pkMenu->SetCheckMark("Menu_DebugShowZoneConn", m_pkIni->GetIntValue("EntityManager", "l_showconn"));
+		pkMenu->SetCheckMark("Menu_SysRender", m_pkIni->GetIntValue("ZeroFps", "r_render"));
+		pkMenu->SetCheckMark("Menu_SysLockFps", m_pkIni->GetIntValue("ZeroFps", "e_lockfps"));
+
+		pkMenu->SetCheckMark("Menu_AiNavMesh", m_pkIni->GetIntValue("AStar", "ai_shownavmesh"));
+		pkMenu->SetCheckMark("Menu_AiShowPath", m_pkIni->GetIntValue("AStar", "ai_showpath"));
+	}
+}
