@@ -35,6 +35,7 @@ NetWork::NetWork()
 	
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
+	Register_Cmd("n_dns", FID_DNS);
 
 	m_kStringTable.resize( ZF_NET_MAXSTRINGS );
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
@@ -883,6 +884,47 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 	return true;
 }
 
+bool NetWork::StrToAddress(const char* szString, IPaddress* pkAddress)
+{
+	int ha1, ha2, ha3, ha4, hp;
+	int ip_addr;
+
+	// Scan addr string.
+	int iScanResultat = sscanf(szString, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
+	if(iScanResultat < 4)
+		return false;
+
+	// Build host ip.
+	ip_addr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
+	SDLNet_Write32(ip_addr, &pkAddress->host);	
+	SDLNet_Write16(hp, &pkAddress->port);	
+	
+	return true;
+}
+
+bool NetWork::IsValidIPAddress( const char* szString )
+{
+	int ha1, ha2, ha3, ha4, hp;
+	int iScanResultat = sscanf(szString, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
+
+	if(iScanResultat < 4)
+		return false;
+
+	if(ha1 < 0 || ha1 > 255)	return false;
+	if(ha2 < 0 || ha2 > 255)	return false;
+	if(ha3 < 0 || ha3 > 255)	return false;
+	if(ha4 < 0 || ha4 > 255)	return false;
+
+	if(iScanResultat == 5)
+	{
+		if(hp < 0 || hp > 65536)	return false;
+	}
+
+	return true;
+}
+
+
+
 /*
 void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 {
@@ -938,22 +980,54 @@ void NetWork::DisconnectAll()
 
 void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	float fMax;
+
 	switch(cmdid) {
 		case FID_NETGMAX:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 			
-			float fMax = (float) (atoi(kCommand->m_kSplitCommand[1].c_str()));
+			fMax = (float) (atoi(kCommand->m_kSplitCommand[1].c_str()));
 
 			for(unsigned int i=0;i<m_RemoteNodes.size(); i++)
 				m_RemoteNodes[i].m_kRecvGraph.SetMinMax(0, fMax);
 			break;
-	
+
+		case FID_DNS:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				return;
+
+			char szIP[256];
+			IPaddress kLookUpIP;
+			StrToAddress(kCommand->m_kSplitCommand[1].c_str(), &kLookUpIP);
+			strcpy(szIP, "Galla");
+			AddressToStr(&kLookUpIP, szIP);
+			m_pkConsole->Printf("Org: %s. New: %s", kCommand->m_kSplitCommand[1].c_str(), szIP);
+
+			/*IPaddress kLookUpIP = DnsLookUp( kCommand->m_kSplitCommand[1].c_str() );
+			char szIP[256];
+
+			AddressToStr(&kLookUpIP,szIP);
+			cout << "DNS: '" << "www.duds.org" << "' = " << szIP << endl;
+
+			m_pkConsole->Printf("DNS: %s [%s]", kCommand->m_kSplitCommand[1].c_str(), szIP);*/
+			break;
 		}	
 
 }
 
+bool NetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
+{
+	kIp.host	=	INADDR_NONE;
+	kIp.port	=  0;
 
+	if(!szHost)
+		return false;
+
+	char szIP[256];
+	SDLNet_ResolveHost(&kIp, szHost, 0);
+	return true;
+}
 
 
 

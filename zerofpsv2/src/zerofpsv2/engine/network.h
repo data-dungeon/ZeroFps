@@ -164,10 +164,12 @@ private:
 	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
+
 public:
 		enum FuncId_e
 		{
-			FID_NETGMAX
+			FID_NETGMAX,
+			FID_DNS,
 		};
 
 	string	GetLocalIP();			
@@ -232,6 +234,11 @@ public:
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
+	bool StrToAddress(const char* szString, IPaddress* pkAddress);
+
+	bool IsValidIPAddress( const char* szString );
+	bool DnsLookUp(const char* szHost,IPaddress& kIp);
+
 
 	// Debug
 	void DrawConnectionGraphs();

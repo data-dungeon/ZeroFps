@@ -41,6 +41,7 @@ void P_Mad::Update()
 	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
+		//m_pkRender->Draw_AxisIcon(5);
 		
 	 	//make sure theres only one animation update per frame		
 		//float fCurrentTime = m_pkObjMan->GetSimTime();

@@ -997,8 +997,25 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	//clear world   ---detta kan vara ganska evil ibland =D, 
 	m_pkEntityManager->Clear();
 	
+	// DNS LookUp.
+	if( !m_pkNetWork->IsValidIPAddress(strServerIP.c_str()) )
+	{
+		IPaddress kLookUpIP;
+		if(m_pkNetWork->DnsLookUp( strServerIP.c_str(),kLookUpIP ))
+		{
+			kLookUpIP.port = iPort;
+			m_pkNetWork->AddressToStr(&kLookUpIP, g_szIpPort);
+			cout << "StartClient IP = " << strServerIP << endl;
+		}
+	}
+	else
+	{
+		cout << "StartClient IP = " << strServerIP << endl;
+		sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
+	}
 	
-	sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
+	cout << "g_szIpPort = " << g_szIpPort << endl;
+
 	
 	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor);
 	m_bClientMode = true;
