@@ -170,7 +170,9 @@ AIBase* P_UnitAttackAI::UpdateAI()
 							if(!m_pkUnitSystem->FireWeapon(m_pkUnit,Target,0))//m_pkUnit->m_kInfo.m_cWeapon)
 							{
 								cout<<"fwpe: false" <<endl;
-								return m_pkAi;
+								if(m_pkAi)
+									return m_pkAi->UpdateAI();
+								else return NULL;
 							}
 							else
 							{

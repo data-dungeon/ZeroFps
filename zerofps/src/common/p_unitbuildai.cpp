@@ -43,14 +43,16 @@ bool P_UnitBuildAI::RegisterExternalCommands()
 		//for(int i = 0; i < m_kStructures.size(); i++)
 		while(kItor != m_kStructures.end())
 		{	
-			
+			cout<<"***************-" <<endl <<kItor->szName <<endl;
 			ExternalCommand* pkTempCommand = new ExternalCommand(this, m_uiCommandID);
 		//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedDestination = false;
 			pkTempCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 			strcpy(pkTempCommand->m_kUnitCommandInfo.m_acCommandName, kItor->szName);
 			strcpy(pkTempCommand->m_kUnitCommandInfo.m_acComments, kItor->szName);
 			pkTempCommand->m_kUnitCommandInfo.m_iIconIndex = 4;
-			m_pkUnit->RegisterExternalCommand(pkTempCommand);
+			if(m_pkUnit->RegisterExternalCommand(pkTempCommand))
+				cout << "registerd" <<endl;
+			else cout<< "not registerd" <<endl;
 			m_kExternalCommands.push_back(pkTempCommand);
 			m_uiCommandID++;
 			kItor++;
@@ -103,7 +105,10 @@ AIBase* P_UnitBuildAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDe
 			Point(iXDestinaton, iYDestinaton));
 			cout<<m_kStructures[iCommandID].szName <<endl;
 		if(bSuccess)
+		{
+			
 			cout<<"I am building " <<endl;
+		}
 		else cout<<"I want to build but i cant :(" <<endl;
 			
 	}
@@ -121,7 +126,7 @@ vector<PropertyValues> P_UnitBuildAI::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
 		
-	kReturn[0].kValueName="m_uiTechLevel";
+	kReturn[0].kValueName="TechLevel";
 	kReturn[0].iValueType=VALUETYPE_INT;
 	kReturn[0].pkValue=(void*)&m_uiTechLevel;
 	return kReturn;

@@ -248,9 +248,14 @@ void UserPanel::UpdateCmdButtons()
 			for(unsigned int i=0; i<pkClientUnit->m_kUnitCommands.size(); i++)
 			{
 				int iIconIndex = pkClientUnit->m_kUnitCommands[i].m_iIconIndex;
-				set<int>::iterator r = kSetMap.find(iIconIndex);
-				if(r == kSetMap.end())
-				{
+			
+			//Temp fullösning... 
+			//vilket ikonindex en byggnad ska ha måste läggas i techtree joxet..
+			//					/gubb
+
+			//	set<int>::iterator r = kSetMap.find(iIconIndex);
+			//	if(r == kSetMap.end())
+			//	{
 					ZGuiButton* pkButton = SetCmdButtonIcon(iIndex, iIconIndex, true);
 					
 					m_kClickInfoMap.insert(map<ZGuiButton*, UnitCommandInfo*>::value_type(
@@ -258,7 +263,7 @@ void UserPanel::UpdateCmdButtons()
 					
 					kSetMap.insert(set<int>::value_type(iIconIndex));
 					iIndex++;
-				}
+			//	}
 			}
 		}
 	}
