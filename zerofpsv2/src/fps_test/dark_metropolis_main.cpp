@@ -399,65 +399,6 @@ void DarkMetropolis::Input()
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
-/*
-	//check for camera movment
-	float fMx,fMy;
-	if(!m_pkInputHandle->VKIsDown("camera"))
-		m_pkInputHandle->UnitMouseXY(fMx,fMy);
-	else
-	{
-		fMx = 0;
-		fMy = 0;
-	}
-
-	if(m_pkCameraEntity)
-	{
-		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
-
-		float s = m_pkFps->GetFrameTime() * 10;
-
-		if(m_pkInputHandle->VKIsDown("cam_up") || (fMy == -0.5) )
-			pos += Vector3(-1 * sin(m_fAngle), 0, -1 * cos(m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_down") || (fMy ==  0.5) )
-			pos += Vector3(1 * sin(m_fAngle), 0, 1 * cos(m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_left") || (fMx == -0.5) )
-			pos += Vector3(-1 * cos((PI*2)-m_fAngle), 0, -1 * sin((PI*2)-m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_right") || (fMx ==  0.5) )
-			pos += Vector3(1 * cos((PI*2)-m_fAngle), 0, 1 * sin((PI*2)-m_fAngle)) * s;
-		
-	//	m_pkCameraEntity->SetWorldPosV(pos);
-	}
-
-
-	//setup player controls
-	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
-	{
-		m_pkInput->ShowCursor(false);
-
-		if(m_pkCameraProp)
-		{
-			m_fDistance += z/60.f;
-			m_fAngle -=x/300.f;
-	
-			if(m_fDistance < m_fMinCamDistance)
-				m_fDistance = m_fMinCamDistance;
-		
-			if(m_fDistance > m_fMaxCamDistance)
-				m_fDistance = m_fMaxCamDistance;				
-		
-			m_pkCameraProp->Set3PYAngle(m_fAngle);
-			//m_pkCameraProp->Set3PDistance(m_fDistance);				
-		}
-	}
-	else
-	{
-		if(m_pkGui->m_bUseHardwareMouse == true)
-			m_pkInput->ShowCursor(true);
-	}
-*/		
 
 	if(m_pkPlayerEntity)
 	{	
@@ -488,7 +429,7 @@ void DarkMetropolis::Input()
 					if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
 					{
 						m_fDelayTimer = m_pkFps->GetTicks();
-						pkTcs->ApplyImpulsForce(Vector3(0,10,0));
+						pkTcs->ApplyImpulsForce(Vector3(0,4,0));
 					}
 			
 			pkTcs->ApplyForce(Vector3(0,0,0),kVel);					
@@ -525,57 +466,7 @@ void DarkMetropolis::Input()
 					pkTcs->ApplyImpulsForce(kDir*10);				
 				} 								
 			}
-		}		
-		
-/*		if(P_ArcadeCharacter* pkChar = (P_ArcadeCharacter*)m_pkPlayerEntity->GetProperty("P_ArcadeCharacter"))
-		{
-			//reset all character action keys
-			pkChar->m_kActions.reset();
-					
-			//movement
-			if(m_pkInputHandle->VKIsDown("cam_up"))
-				pkChar->m_kActions[0] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_down"))
-				pkChar->m_kActions[1] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_left"))
-				pkChar->m_kActions[2] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_right"))
-				pkChar->m_kActions[3] = true;;
-
-			//fUre
-			if(m_pkInputHandle->VKIsDown("select"))
-				pkChar->m_kActions[4] = true;;
-				
-
-			//sett camera rotation
-			//pkChar->m_kCameraRotation = m_pkFps->GetCam()->GetRotM();				
-							
-			//set rotation
-			float x;
-			float y;
-			m_pkInputHandle->UnitMouseXY(x,y);	
-			pkChar->m_kDir.Set(x,0,y);
-		}
-		
-		
-		if(m_pkInputHandle->Pressed(KEY_H))
-			m_pkPlayerEntity->SetWorldPosV(Vector3(0,2,0));
-				
-		if(m_pkInputHandle->VKIsDown("action"))
-		{
-			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.15)
-			{
-				m_fDelayTimer = m_pkFps->GetTicks();
-								
-				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_particleball.lua",m_pkPlayerEntity->GetWorldPosV() );											
-				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
-				{
-					Vector3 kDir = m_pkPlayerEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));					
-					pkTcs->ApplyImpulsForce(kDir*10);				
-				} 								
-			}
-		}
-		*/
+		}				
 	}
 }
 

@@ -73,6 +73,11 @@ void InputHandle::RelMouseXY(int &iX,int &iY)
 {
 	if(m_bActive && !m_bTempDisable)
 		m_pkInput->RelMouseXY(iX,iY);
+	else
+	{
+		iX = 0;
+		iY = 0;	
+	}
 }
 
 void InputHandle::SetCursorInputPos(int x, int y)
