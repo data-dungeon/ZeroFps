@@ -26,8 +26,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		char** pszParams; pszParams = (char**) params;
 		g_kZeroEd.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
-
-		
 		break;
 	}
 	return true;
@@ -67,14 +65,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MadView::OnInit() 
 {
-	//open mad from command line
-	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
-	{
-		cout<<"open mad file:"<<g_ZFObjSys.GetArgument(1)<<endl;
-		m_strMadFile = g_ZFObjSys.GetArgument(1);
-		m_bHaveOpenMadFromCmdLine = true;
-	}
-
 	if(!m_pkIni->ExecuteCommands("/madview_autoexec.ini"))
 		m_pkConsole->Printf("No madview_autoexec.ini found");
 	
@@ -89,7 +79,6 @@ void MadView::Init()
 		"data/script/gui/menu_madview.txt", true, true); 
 
 	SetupGuiEnviroment();
-
 	SetTitle("MadView");
 
 	m_pkInput->ShowCursor(true);
@@ -97,42 +86,18 @@ void MadView::Init()
 	CreateViewObject();
 	CreateCamera();
 
-	ZFVFile kFile;
-	if(kFile.Open("madviewsettings.dot", 0, false))
-	{
-		Vector3 kCamerPos, kObjectPos;
-
-		char szMadFile[128];
-		if(!kFile.Read(szMadFile, sizeof(char), 128))
-		{
-			if(!m_bHaveOpenMadFromCmdLine)
-				m_strMadFile = "data/mad/cube.mad";
-		}
-
-		if(!m_bHaveOpenMadFromCmdLine)
-		{
-			m_strMadFile = szMadFile;
-			if(m_strMadFile.find(".mad") == string::npos)
-				m_strMadFile = "data/mad/cube.mad";
-		}
-
-		kFile.Read(&kCamerPos, sizeof(kCamerPos), 1);
-		kFile.Read(&kObjectPos, sizeof(kCamerPos), 1);
-		kFile.Read(&m_fObjRotX, sizeof(m_fObjRotX), 1);
-		kFile.Read(&m_fObjRotY, sizeof(m_fObjRotY), 1);
-		kFile.Read(&m_fObjRotZ, sizeof(m_fObjRotZ), 1);
-		m_pkCameraObject->SetWorldPosV(kCamerPos);
-		m_pkViewObject->SetWorldPosV(kObjectPos);
-		m_pkViewObject->SetWorldRotV(Vector3(m_fObjRotX,m_fObjRotY,m_fObjRotZ));
-	}
-
-	ChangeMad(m_strMadFile.c_str());
-
 	ToogleLight(true);
 
 	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
-	
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
+
+	//open mad from command line
+	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
+	{
+		cout<<"open mad file:"<<g_ZFObjSys.GetArgument(1)<<endl;
+		string strMadFile = g_ZFObjSys.GetArgument(1);
+		ChangeMad(strMadFile);
+	}
 }
 
 void MadView::OnIdle()
@@ -294,26 +259,9 @@ bool MadView::StartUp()
 
 bool MadView::ShutDown()	
 { 
-	Vector3 kCamerPos = m_pkCameraObject->GetWorldPosV();
-	Vector3 kObjectPos = m_pkViewObject->GetWorldPosV();
-
-	ZFVFile kFile;
-	kFile.Open("madviewsettings.dot", 0, true);
-	
-	char szMadFile[128];
-	strcpy(szMadFile, m_strMadFile.c_str());
-	kFile.Write(szMadFile, sizeof(char), 128);
-
-	kFile.Write(&kCamerPos, sizeof(kCamerPos), 1);
-	kFile.Write(&kObjectPos, sizeof(kCamerPos), 1);
-	kFile.Write(&m_fObjRotX, sizeof(m_fObjRotX), 1);
-	kFile.Write(&m_fObjRotY, sizeof(m_fObjRotY), 1);
-	kFile.Write(&m_fObjRotZ, sizeof(m_fObjRotZ), 1);
-
 	return true; 
 }
 
 void MadView::RenderInterface()
 {
-
 }

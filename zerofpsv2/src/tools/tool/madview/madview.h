@@ -8,7 +8,7 @@
 
 // Remove the console window
 #ifdef WIN32
-	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 #endif 
 
 /**	\brief	Da MadView

@@ -21,6 +21,9 @@ void MadView::SetupGuiEnviroment()
 		m_pkTexMan->Load("data/textures/gui/tn_po.tga", 0);
 
 	GetWnd("SelectFileWnd")->m_bUseAlhpaTest = false;
+
+	GetWnd("MaterialFileTree")->Hide();
+	GetWnd("AnimationFileTree")->Hide();
 	
 }
 
@@ -216,7 +219,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 void MadView::ChangeMad(string strName)
 {
-	cout<<"loading mad:"<<strName<<endl;
+	cout<<"loading mad: "<<strName<<endl;
 
 	P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
 	
@@ -230,7 +233,10 @@ void MadView::ChangeMad(string strName)
 
 	ZFAssert(pkCore, "Failed to get Mad_Core pointer!\n");
 	if(pkCore == NULL)
+	{
+		printf("Failed to get Mad_Core pointer!\n");
 		return;
+	}
 
 	//dvoids flytta kameran hax :D
 	m_pkCameraObject->SetWorldPosV(Vector3(0,-2.5,-pkMad->GetRadius()*2));			
@@ -295,5 +301,8 @@ void MadView::ChangeMad(string strName)
 		if(pkWnd->GetScreenRect().Width() > w) w = pkWnd->GetScreenRect().Width();
 	}
 	GetWnd("MadViewInfoWnd")->Resize(w+10, h); 
+
+	GetWnd("MaterialFileTree")->Show();
+	GetWnd("AnimationFileTree")->Show();
 
 }
