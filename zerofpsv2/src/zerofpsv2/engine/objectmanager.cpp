@@ -392,10 +392,16 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 		return NULL;
 	}
 	
-	ObjectManagerLua::Reset();
+	//push all pointers
+	ObjectManagerLua::Push();
 
 	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
+	{	
+		//pop pointers and return
+		ObjectManagerLua::Pop();		
 		return NULL;
+	}
+	
 	
 	//find last /
 	int len = strlen(acName);
@@ -413,7 +419,12 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
 	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
 	
-	return ObjectManagerLua::g_pkReturnObject;
+	Object* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
+	
+	//pop pointers
+	ObjectManagerLua::Pop();			
+	
+	return pkReturnObj;
 }
 
 

@@ -5,10 +5,17 @@
 
 ZFScriptSystem* ObjectManagerLua::g_pkScript;
 ObjectManager*  ObjectManagerLua::g_pkObjMan;
+
 Object*			 ObjectManagerLua::g_pkLastObject;
 Object*			 ObjectManagerLua::g_pkLastParent;
 Property*		 ObjectManagerLua::g_pkLastProperty;
 Object*			 ObjectManagerLua::g_pkReturnObject;
+
+//Object*			 ObjectManagerLua::g_pkLastObjectBak;
+Object*			 ObjectManagerLua::g_pkLastParentBak;
+Property*		 ObjectManagerLua::g_pkLastPropertyBak;
+Object*			 ObjectManagerLua::g_pkReturnObjectBak;
+
 
 void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
 {
@@ -18,7 +25,7 @@ void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
 	Reset();
 	
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
-	pkScript->ExposeFunction("InitProperty",	  		ObjectManagerLua::InitPropertyLua);
+	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
@@ -34,6 +41,24 @@ void ObjectManagerLua::Reset()
 	g_pkLastProperty = NULL;
 	g_pkLastParent   = NULL;
 	g_pkReturnObject = NULL;
+}
+
+void ObjectManagerLua::Push()
+{
+	//g_pkLastObjectBak   = g_pkLastObject;
+	g_pkLastPropertyBak = g_pkLastProperty;
+	g_pkLastParentBak   = g_pkLastParent;
+	g_pkReturnObjectBak = g_pkReturnObject;
+	
+	Reset();
+}
+
+void ObjectManagerLua::Pop()
+{
+	//g_pkLastObject   = g_pkLastObjectBak;
+	g_pkLastProperty = g_pkLastPropertyBak;
+	g_pkLastParent   = g_pkLastParentBak;
+	g_pkReturnObject = g_pkReturnObjectBak;
 }
 
 int ObjectManagerLua::InitObjectLua(lua_State* pkLua)

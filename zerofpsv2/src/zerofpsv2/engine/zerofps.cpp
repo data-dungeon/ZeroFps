@@ -358,7 +358,7 @@ void ZeroFps::Run_Client()
 	UpdateCamera();
 	
 	m_pkRender->Draw_AxisIcon(5);
-
+ 
 	if(m_iRenderOn == 1)
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 	
@@ -367,13 +367,12 @@ void ZeroFps::Run_Client()
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;
 		}
-//	m_pkLevelMan->DrawZones();
+
 	m_pkObjectMan->Test_DrawZones();
 
 	//update sound system			
-	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
-	up.x=90;
-	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
+	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
+	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());	
 	m_pkAudioSystem->Update();
 
 	//run application Head On Display 

@@ -6,15 +6,17 @@ P_ClientControl::P_ClientControl()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
+	bNetwork = true;
+	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 
-	cout<<"client Control created"<<endl;
+	cout<<"client Control created------------------------------"<<endl;
 }
 
 void P_ClientControl::Update()
 {
-	//cout<<"client control here"<<endl;
+	cout<<"client control here"<<endl;
 
 }
 

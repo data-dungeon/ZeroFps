@@ -151,6 +151,9 @@ void MadProperty::Load(ZFIoInterface* pkPackage)
 	float scale;
 	pkPackage->Read((void*)&scale,4,1);
 	SetScale(scale);
+	
+	//update object radius
+	m_pkObject->GetRadius() = GetRadius();
 }
 
 void MadProperty::PackTo(NetPacket* pkNetPacket)
@@ -194,11 +197,15 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 bool MadProperty::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
-		//cout << "Setting MadProperty MadFile:" << kValue.c_str();
-		//cout << endl;
 		SetBase(kValue.c_str());
 		return true;
-		}
+	}
+	
+	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
+		m_fScale = atof(kValue.c_str());
+		m_pkObject->GetRadius() = GetRadius();
+		return true;
+	}
 
 	return false;
 }
@@ -283,7 +290,7 @@ void LinkToJoint::Update()
 	Matrix4 kMat;
 	Vector3 kPos;
 	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
-	kPos = kMat.GetPos();
+	kPos = kMat.GetPos() * pkMad->m_fScale;
 	kMat.SetPos(Vector3(0,0,0));
 	m_pkObject->SetLocalRotM(kMat);
 	m_pkObject->SetLocalPosV( kPos );
@@ -291,15 +298,11 @@ void LinkToJoint::Update()
 
 vector<PropertyValues> LinkToJoint::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(1);
 	
-	kReturn[0].kValueName = "f_anka";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = (void*)&f_anka;
-
-	kReturn[1].kValueName = "m_strToJoint";
-	kReturn[1].iValueType = VALUETYPE_STRING;
-	kReturn[1].pkValue    = (void*)&m_strToJoint;
+	kReturn[0].kValueName = "m_strToJoint";
+	kReturn[0].iValueType = VALUETYPE_STRING;
+	kReturn[0].pkValue    = (void*)&m_strToJoint;
 
 	return kReturn;
 }

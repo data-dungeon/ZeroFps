@@ -13,14 +13,22 @@ namespace ObjectManagerLua
 {
 	void ENGINE_SYSTEMS_API Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript);
 	void ENGINE_SYSTEMS_API Reset();
+	void ENGINE_SYSTEMS_API Push();
+	void ENGINE_SYSTEMS_API Pop();	
 
 	extern ZFScriptSystem* 		g_pkScript;
 	
 	extern ObjectManager* g_pkObjMan;
+	
 	extern Object*			g_pkLastObject;
 	extern Object*			g_pkLastParent;
 	extern Property*		g_pkLastProperty;
 	extern Object*			g_pkReturnObject;
+
+	//extern Object*			g_pkLastObjectBak;
+	extern Object*			g_pkLastParentBak;
+	extern Property*		g_pkLastPropertyBak;
+	extern Object*			g_pkReturnObjectBak;
 
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);

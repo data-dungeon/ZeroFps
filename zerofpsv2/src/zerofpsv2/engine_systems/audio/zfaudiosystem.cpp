@@ -572,6 +572,16 @@ void ZFAudioSystem::Update()
 ///////////////////////////////////////////////////////////////////////////////
 // Sätt en ny position och orientering på lysnaren.
 ///////////////////////////////////////////////////////////////////////////////
+void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix4 kOri)
+{
+	kOri.Transponse();
+	Vector3 up = -kOri.GetAxis(1);
+	Vector3 dir = Vector3(0,0,1);
+	dir = kOri.VectorRotate(dir);
+
+	SetListnerPosition(kPos,dir,up);
+}
+
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 
 {
 	m_kPos=kPos;
@@ -857,7 +867,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set reference distance.
 	alGetError();
-	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 3.5f);
+	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 0.1f);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set reference distance!");
