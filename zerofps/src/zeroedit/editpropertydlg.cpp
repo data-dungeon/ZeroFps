@@ -446,18 +446,24 @@ ZGuiWnd* EditPropertyDlg::CreateAddPropertyDlg(int x, int y, int w, int h)
 	pkDlg->SetMoveArea(m_pkGui->GetScreenRect());
 	pkDlg->SetWindowFlag(WF_CLOSEABLE);
 
-	ZGuiWnd* pkAddPropCloseBn = m_pkGui->CreateButton(pkDlg, ID_ADDPROPERTY_CLOSE, w-20, 0, 20, 20, "x");
+	vector<string> vkPropNames;
+	m_pkPropFactory->GetAllProperties(vkPropNames);
+
+	int iHeight = m_pkGui->CreateRadiobuttons(pkDlg, vkPropNames, 
+		"PropRadioGroup", ID_PROPERTY_RADIOGROUP, 0, 0, 16);
+
+	h = iHeight+5;
+	pkDlg->Resize(w,h);
+
+	ZGuiWnd* pkAddPropCloseBn = m_pkGui->CreateButton(pkDlg, ID_ADDPROPERTY_CLOSE, 
+		w-20, 0, 20, 20, "x");
 	pkAddPropCloseBn->SetWindowFlag(WF_CENTER_TEXT);
-	ZGuiWnd* pkAddPropOKBn = m_pkGui->CreateButton(pkDlg, ID_ADDPROPERTY_OK, w-40, h-30, 40, 20, "OK");
+	ZGuiWnd* pkAddPropOKBn = m_pkGui->CreateButton(pkDlg, ID_ADDPROPERTY_OK, 
+		w-40, h-20, 40, 20, "OK");
 	pkAddPropOKBn->SetWindowFlag(WF_CENTER_TEXT);
 
 	m_pkZGui->AddKeyCommand(KEY_RETURN, pkDlg, pkAddPropOKBn);
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDlg, pkAddPropCloseBn);
-
-	vector<string> vkPropNames;
-	m_pkPropFactory->GetAllProperties(vkPropNames);
-
-	m_pkGui->CreateRadiobuttons(pkDlg, vkPropNames, "PropRadioGroup", ID_PROPERTY_RADIOGROUP, 0, 0, 16);
 
 	m_pkZGui->AddMainWindow(ID_ADDPROPERTY_WND_MAIN, pkDlg, "EditPropertyDlg", 
 		PROPERTYPROC, true); 

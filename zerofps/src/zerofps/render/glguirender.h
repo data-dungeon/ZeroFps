@@ -39,7 +39,9 @@ private:
 	//int m_iMaskTexture;
 	int m_iScreenWidth, m_iScreenHeight;
 	bool PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop, 
-		bool bMultiLine, int& chars_printed, int& rows_printed);
+		int& chars_printed, int& rows_printed);
+	bool PrintRow(char* text, Rect rc, int iCursorPos, 
+		int iRenderDistFromLeft, int& chars_printed);
 	TextureManager* m_pkTextureManger;
 	int m_iCursorPos;
 };

@@ -44,12 +44,18 @@ private:
 	bool Register(ZGuiFont* pkFont, char* strName);
 	bool Register(ZGuiSkin* pkSkin, char* strName);
 	bool Register(ZGuiWnd* pkWnd, char* strName);
-	void CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& strNames, char* strGroupName, int start_id, int x, int y, int size);
-	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
-	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
-	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
-	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y, int w, int h, char* pkName);
-	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText);
+	int CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& strNames, 
+		char* strGroupName, int start_id, int x, int y, int size); // returns height
+	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
+		int h, bool bMulitLine=false);
+	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
+		int h, bool bMenu);
+	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
+		int h);
+	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y,
+		int w, int h, char* pkName);
+	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w,
+		int h, char* strText);
 	ZGui* GetGUI() { return m_pkEdit->pkGui; }
 	
 	ZeroEdit* m_pkEdit;

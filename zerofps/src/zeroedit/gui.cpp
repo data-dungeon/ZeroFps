@@ -429,7 +429,7 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	return pkButton;
 }
 
-void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
+int Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 							 char* strRadioGroupName, int start_id, int x, 
 							 int y, int size)
 {
@@ -439,6 +439,7 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 	ZGuiRadiobutton* pkPrev = NULL;
 	Rect rc = Rect(x,y,x+size,y+size);
 	const int antal = vkNames.size();
+	int iRadiobuttonHeight = 20;
 
 	for(int i=0; i<antal; i++)
 	{
@@ -455,8 +456,10 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 		}
 
 		pkPrev = pkGroupbutton;
-		rc = rc.Move(0,20);
+		rc = rc.Move(0,iRadiobuttonHeight);
 	}
+
+	return iRadiobuttonHeight*antal; // return height of all radiobuttons.
 }
 
 ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
@@ -702,8 +705,12 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 
 	Rect rc = Rect(0,0,128,32);
 
-	int iMenuWidth = pkFont->GetLength("File")+5;
+	int iMenuOffset = 0;
+	int iMenuWidth = pkFont->GetLength("File")+6;
 	Rect rcMenu(0,0,iMenuWidth,20);
+	iMenuOffset += iMenuWidth;
+
+	printf("menu width:%i\n", iMenuWidth);
 
 	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,true,ID_MAINWND_MENU_CB,20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
@@ -747,21 +754,23 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 
 		if(strcmp(parent, "NULL") == 0)
 		{
-			rcMenu = rcMenu.Move(iMenuWidth,0);
+			char szTitle[50];
+			strcpy(szTitle, pkIni->GetValue(akSections[i].c_str(), "Title"));
+			iMenuWidth = pkFont->GetLength(szTitle) + 6; // move rc right
+
+			rcMenu = Rect(iMenuOffset,0,iMenuOffset+iMenuWidth,20);
 
 			ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,
 				true,iMenuIDCounter++,20,GetSkin("menu"),GetSkin("dark_blue"),
 				GetSkin("dark_blue"), GetSkin("menu"));
 
-			char szTitle[50];
-			strcpy(szTitle, pkIni->GetValue(akSections[i].c_str(), "Title"));
-			
 			pkMenuCBox->SetGUI(m_pkEdit->pkGui);
 			pkMenuCBox->SetLabelText(szTitle);
 			pkMenuCBox->SetNumVisibleRows(5);
 			pkMenuCBox->IsMenu(true);
 
-			iMenuWidth = pkFont->GetLength(szTitle) + 5; // move rc right
+			iMenuOffset += iMenuWidth;
+			rcMenu = rcMenu.Move(iMenuOffset,0);
 
 			m_pkEdit->pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
 			

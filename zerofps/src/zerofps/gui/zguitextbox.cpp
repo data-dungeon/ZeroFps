@@ -709,6 +709,7 @@ pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
 
 		if(text[i] == ' ')
 			break;
+
 	}
 
 	return pair<int,int>(char_counter, length_counter);

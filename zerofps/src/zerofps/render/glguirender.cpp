@@ -92,8 +92,8 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	glLoadIdentity();
 
-	float orginal_pos_x = rc.Left;
-	float orginal_pos_y = rc.Top;
+	float orginal_pos_x = (float) rc.Left;
+	float orginal_pos_y = (float) rc.Top;
 	
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
@@ -338,9 +338,13 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		m_pkTextureManger->BindTexture( fontTexture );
 		glDisable(GL_TEXTURE_2D);
 
-		glColor3f(1,1,1);							
-		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
-			bMultiLine, chars_printed, rows_printed);
+		glColor3f(1,1,1);
+		
+		if(bMultiLine)
+			PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+				chars_printed, rows_printed);
+		else
+			PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
 	}
 
 	int texture = fontTexture;
@@ -359,8 +363,12 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	}
 
 	glColor3f(1,1,1);
-	bool bFit = PrintRows(strText, rc, iCursorPos, iRenderDistFromTop,
-		bMultiLine, chars_printed, rows_printed);
+
+	if(bMultiLine)
+		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+			chars_printed, rows_printed);
+	else
+		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
 
 	if(bDrawMasked)
 		glDisable(GL_BLEND);
@@ -497,19 +505,16 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 }*/
 
 bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
-							bool bMultiLine, int& chars_printed, int& rows_printed) 
+							int& chars_printed, int& rows_printed) 
 {
-	vector<int> row_start_pos;
-	pair<int,int> curr_length;
+	int characters_totalt = strlen(text);
+	int width = rc.Width();
+	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
+	int rows = 0, offset = 0, max_width = rc.Width();
+
+	pair<int,int> kLength; // first = character, second = pixels.
 
 	glBegin(GL_QUADS);	 
-
-		int characters_totalt = strlen(text);
-		int width = rc.Width();
-		int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
-		int rows = 0, offset = 0, max_width = rc.Width();
-
-		pair<int,int> kLength; // first = character, second = pixels.
 
 		while(offset < characters_totalt) // antal ord
 		{
@@ -544,7 +549,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
 				ypos - iRenderDistFromTop;
 
-			if(rc.Inside(x,y+2) || !bMultiLine)
+			if(rc.Inside(x,y+2))
 				PrintWord(x, y, text, offset, kLength.first);
 
 			bool bRowBreak = false;
@@ -571,6 +576,40 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 
 	return true;
 }
+
+bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos, 
+						   int iRenderDistFromLeft, int &chars_printed)
+{
+	int characters_totalt = strlen(text);
+	int xpos=0, ypos=0;
+	int offset = 0, max_width = rc.Width();
+	int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize;
+
+	pair<int,int> kLength; // first = character, second = pixels.
+
+	glBegin(GL_QUADS);
+
+		while(offset < characters_totalt) // antal ord
+		{
+			kLength = GetWordLength(text, offset, max_width);
+
+			int x = rc.Left + xpos - iRenderDistFromLeft;
+			PrintWord(x, y, text, offset, kLength.first);
+
+			offset += kLength.first;
+			xpos += kLength.second;
+
+			if(xpos >= max_width)
+				break;
+		}
+
+	glEnd();
+
+	chars_printed = offset;
+
+	return true;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name: SetSkin
