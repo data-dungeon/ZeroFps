@@ -84,10 +84,51 @@ void Skill::SetLevel(int iLevel)
 }
 
 
-void Skill::Use(int iCharacterID,int iTargetID,const Vector3& kTarget)
+void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
+	cout<<"using skill "<<m_pkScriptFileHandle->GetRes()<<endl;
 
+	if(!m_pkScriptFileHandle->IsValid())
+	{
+		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
+		return;	
+	}
+	
+	static Vector3 kPosCopy,kDirCopy;
+	kPosCopy = kPos;
+	kDirCopy = kDir;
 
+	//setup parameters to Update function
+	vector<ScriptFuncArg> args(9);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &m_iOwnerID;			//owner character id
+	args[1].m_kType.m_eType = tINT;
+	args[1].m_pData = &m_iLevel;				//skill level
+	args[2].m_kType.m_eType = tINT;
+	args[2].m_pData = &iTargetID;		
+	
+	args[3].m_kType.m_eType = tFLOAT;
+	args[3].m_pData = &kPosCopy.x;		
+	args[4].m_kType.m_eType = tFLOAT;
+	args[4].m_pData = &kPosCopy.y;		
+	args[5].m_kType.m_eType = tFLOAT;
+	args[5].m_pData = &kPosCopy.z;		
+	
+	args[6].m_kType.m_eType = tFLOAT;
+	args[6].m_pData = &kDirCopy.x;		
+	args[7].m_kType.m_eType = tFLOAT;
+	args[7].m_pData = &kDirCopy.y;		
+	args[8].m_kType.m_eType = tFLOAT;
+	args[8].m_pData = &kDirCopy.z;		
+
+	
+		
+	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
+	{
+		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
+		return;
+	}			
+	
 }
 
 
@@ -295,11 +336,11 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	5;
+	m_iVersion = 	6;
 	
 	//initiate stuff
-	m_strSkillDir			=	"data/script/objects/skills/";
-	m_strBuffDir			=	"data/script/objects/buffs/";
+	m_strSkillDir			=	"data/script/objects/game objects/skills/";
+	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
 	
 	m_kCurrentCharacterStates.reset();
 	
@@ -967,6 +1008,18 @@ void P_CharacterProperty::SendBuffList()
 	m_pkApp->SendAppMessage(&kNp);		
 }
 
+void P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir)
+{
+	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
+	{
+		pkSkill->Use(iTarget,kPos,kDir);	
+	}
+	else
+	{
+		cout<<"WARNING: skill "<<strSkillScript<<" not found"<<endl;	
+	}
+}
+
 Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 {
 	static string strSkill;
@@ -975,6 +1028,8 @@ Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 
 	for(int i =0;i<m_kSkills.size();i++)
 	{
+		cout<<"skill "<<m_kSkills[i]->GetName()<<endl;
+	
 		if(m_kSkills[i]->GetName() == strSkill)
 			return m_kSkills[i];
 	};
@@ -984,17 +1039,36 @@ Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 
 void P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
 {
-	
-	//check if skill already exist
 	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 	{
 		pkSkill->SetLevel(pkSkill->GetLevel()+iValue);
 		
 	}
+}
 
+void P_CharacterProperty::SetSkill(const string& strSkillScript,int iLevel)
+{	
+	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
+	{
+		pkSkill->SetLevel(iLevel);
+		
+	}
+}
+
+void P_CharacterProperty::RemoveAllSkills()
+{
+	for(int i = 0;i < m_kSkills.size();i++)
+		delete m_kSkills[i];
+		
+	m_kSkills.clear();
 }
 
 bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& strParentSkill)
+{
+	AddSkillFullPath(m_strSkillDir+strSkillScript,strParentSkill);
+}
+
+bool P_CharacterProperty::AddSkillFullPath(const string& strSkillScript,const string& strParentSkill)
 {
 	
 	//check if skill already exist
@@ -1005,7 +1079,7 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 	}
 	
 	
-	Skill* pkNewSkill = new Skill(m_strSkillDir+strSkillScript,m_pkEntity->GetEntityID());	
+	Skill* pkNewSkill = new Skill(strSkillScript,m_pkEntity->GetEntityID());	
 	
 	m_kSkills.push_back(pkNewSkill);
 	
@@ -1076,6 +1150,16 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	
 	m_kCharacterStats.Save(pkPackage);
 	
+	
+	//save skills
+	pkPackage->Write(m_kSkills.size());
+	for(int i = 0;i<m_kSkills.size();i++)
+	{
+		pkPackage->Write_Str(m_kSkills[i]->GetName());
+		pkPackage->Write_Str(m_kSkills[i]->GetParent());
+		pkPackage->Write(m_kSkills[i]->GetLevel());
+	}
+	
 /*	//save container settings
 	m_pkInventory->Save(pkPackage);
 	m_pkHead->Save(pkPackage);
@@ -1141,6 +1225,40 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMarkerSize); 
 			
 			m_kCharacterStats.Load(pkPackage);
+			break;
+		}			
+		
+		
+		case 6:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int iNrOfSkills;
+			string strSkill;
+			string strParent;
+			int iLevel;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				
+				AddSkillFullPath(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+			}
+			
 			break;
 		}			
 	}

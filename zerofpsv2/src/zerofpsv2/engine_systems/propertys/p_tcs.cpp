@@ -970,6 +970,49 @@ namespace SI_PTcs
 		return 1;
 	}
 	
+	int SetObjectLinVelTowardsLua (lua_State* pkLua)
+	{
+		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+	
+		if(iNrArgs != 3)
+			return 0;
+			
+		double dID;
+		g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+			
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+	
+		double dVel;
+		g_pkScript->GetArgNumber(pkLua, 2, &dVel);		
+			
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID))
+		{	
+			// Get physic-property	
+			if(P_Tcs* pkTcs = (P_Tcs*)pkObject->GetProperty("P_Tcs"))
+			{
+				Vector3 kDir = Vector3(
+					(float) (*(double*) vkData[0].pData),
+					(float) (*(double*) vkData[1].pData),
+					(float) (*(double*) vkData[2].pData)) - pkObject->GetWorldPosV();
+			
+				kDir.Normalize();
+				kDir *= dVel;
+				
+				pkTcs->SetLinVel(kDir);
+			}
+			else
+				cout << "Warning! Tried to set LinVel on a object without P_Tcs!" << endl;
+	
+			
+		}
+		
+		g_pkScript->DeleteTable(vkData);
+		
+		return 1;
+	}	
+	
+	
 	int SetObjectLinVelLua (lua_State* pkLua)
 	{
 		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
@@ -1061,5 +1104,6 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("ApplyImpuls",			SI_PTcs::ApplyImpulsLua);
 	g_pkScript->ExposeFunction("SetRotVel",			SI_PTcs::SetObjectRotVelLua);
 	g_pkScript->ExposeFunction("SetLinVel",			SI_PTcs::SetObjectLinVelLua);	
+	g_pkScript->ExposeFunction("SetLinVelTowards",	SI_PTcs::SetObjectLinVelTowardsLua);	
 	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);				
 }

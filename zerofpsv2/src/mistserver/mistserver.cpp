@@ -1053,6 +1053,29 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		}
 		
 		
+		case MLNM_CS_USESKILL:
+		{
+			string 	strSkill;
+			int 		iTargetID;
+			Vector3 	kPos;
+			Vector3 	kDir;
+		
+			PkNetMessage->Read_Str(strSkill);
+			PkNetMessage->Read(iTargetID);
+			PkNetMessage->Read(kPos);
+			PkNetMessage->Read(kDir);				
+
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{		
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+				{
+					pkCP->UseSkill(strSkill,iTargetID,kPos,kDir);
+				}
+			}			
+			
+			break;
+		}		
+		
 		case MLNM_CS_ACTION:
 		{
 			int iEntity;

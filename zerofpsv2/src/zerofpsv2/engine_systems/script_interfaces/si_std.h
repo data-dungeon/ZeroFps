@@ -29,6 +29,7 @@ namespace StdLua
 	int ENGINE_SYSTEMS_API TanLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API NormalizeLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API VectorSubLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API GetTicksLua(lua_State* pkLua);
 

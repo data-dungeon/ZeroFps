@@ -24,6 +24,7 @@ class MCOMMON_API Skill
 		
 		//skill data
 		int		m_iLevel;
+		string	m_strParentSkill;
 		
 		void UpdateFromScript();
 		
@@ -32,7 +33,6 @@ class MCOMMON_API Skill
 	public:
 		string	m_strInGameName;
 		string	m_strSchool;
-		string	m_strParentSkill;
 		string	m_strIcon;
 		
 		
@@ -44,10 +44,11 @@ class MCOMMON_API Skill
 		
 		
 		void SetLevel(int iLevel);
-		void Use(int iCharacterID,int iTargetID,const Vector3& kTarget);
+		void Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
 		
 		string GetName()		{	return m_pkScriptFileHandle->GetRes();	};
 		int	 GetLevel()		{	return m_iLevel;								};
+		string GetParent()	{	return m_strParentSkill;					};
 };
 
 
@@ -208,9 +209,12 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		//skills
 		bool AddSkill(const string& strSkillScript,const string& strParentSkill);
+		bool AddSkillFullPath(const string& strSkillScript,const string& strParentSkill);
 		void ChangeSkill(const string& strSkillScript,int iValue);
+		void SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
-		
+		void UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
+		void RemoveAllSkills();
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);

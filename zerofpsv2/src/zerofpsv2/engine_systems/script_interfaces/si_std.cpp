@@ -22,6 +22,8 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 	g_pkZeroFps = pkZeroFps;
 	
 	pkScript->ExposeFunction("Normalize",	StdLua::NormalizeLua);
+	pkScript->ExposeFunction("VectorSub",	StdLua::VectorSubLua);
+	
 	pkScript->ExposeFunction("Print",		StdLua::PrintLua);
 	pkScript->ExposeFunction("Sin",			StdLua::SinLua);	
 	pkScript->ExposeFunction("Cos",			StdLua::CosLua);		
@@ -35,6 +37,71 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 	\brief Print text to std out device.
 	\param szText Text to print.
 */
+
+int VectorSubLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 1, vkData);
+
+		Vector3 kPos1 = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));
+			
+		//vector<TABLE_DATA> vkData;
+		vkData.clear();
+		g_pkScript->GetArgTable(pkLua, 3, vkData);  //FUNKAR FAN INTE
+
+		Vector3 kPos2 = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));			
+			
+		kPos1.Print();
+		kPos2.Print();
+			
+		Vector3 kPos = kPos1 - kPos2;
+
+		TABLE_DATA temp;
+		vkData.clear();
+
+		temp.bNumber = true;
+		temp.pData = new double(kPos.x);
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double(kPos.y);
+		vkData.push_back(temp);
+		
+		temp.bNumber = true;
+		temp.pData = new double(kPos.z);
+		vkData.push_back(temp);						
+// 		temp.bNumber = true;
+// 		temp.pData = new double;
+// 		(*(double*) temp.pData) = kPos.x;
+// 		vkData.push_back(temp);
+// 
+// 		temp.bNumber = true;
+// 		temp.pData = new double;
+// 		(*(double*) temp.pData) = kPos.y;
+// 		vkData.push_back(temp);
+// 
+// 		temp.bNumber = true;
+// 		temp.pData = new double;
+// 		(*(double*) temp.pData) = kPos.z;
+// 		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+		//cout<< "YEAH! :)" << endl;
+
+		return 1;
+	}
+	return 0;
+
+}
 
 int NormalizeLua(lua_State* pkLua)
 {
@@ -69,7 +136,7 @@ int NormalizeLua(lua_State* pkLua)
 
 		g_pkScript->AddReturnValueTable(pkLua, vkData);
 
-		cout<< "YEAH! :)" << endl;
+		//cout<< "YEAH! :)" << endl;
 
 		return 1;
 	}

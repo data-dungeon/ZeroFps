@@ -143,10 +143,10 @@ void MistClient::OnInit()
 	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 	
 	
-	//if(m_bQuickStart)
-	//{
-	//	g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
-	//}
+	if(m_bQuickStart)
+	{
+		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
+	}
 
  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
@@ -621,6 +621,16 @@ void MistClient::Input()
 		}
 	}
 
+	//fireball test
+	if(m_pkInputHandle->Pressed(KEY_G))
+	{
+		if(!DelayCommand() )
+		{			
+			if(m_iTargetID != -1)
+				SendUseSkill("skill-fireball.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+		}	
+	}
+	
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
@@ -1491,6 +1501,21 @@ void MistClient::RequestPickup(int iEntityID,int iPosX,int iPosY)
 			SendMoveItem(iEntityID,pkCharProp->m_iInventory,iPosX,iPosY);
 		}
 	}
+}
+
+void MistClient::SendUseSkill(const string& strSkill,int iTargetID,const Vector3& kPos,const Vector3& kDir)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_USESKILL);
+		
+	kNp.Write_Str(strSkill);
+	kNp.Write(iTargetID);
+	kNp.Write(kPos);
+	kNp.Write(kDir);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+
 }
 
 void MistClient::RequestItemInfo(int iItemID)

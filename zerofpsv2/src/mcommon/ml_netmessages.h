@@ -18,6 +18,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_CHARDEL,
 	MLNM_CS_CHARADD,
 	MLNM_CS_REQ_ITEMINFO,
+	MLNM_CS_USESKILL,
 };
 
 //	A network message from the server to the client.
