@@ -130,13 +130,7 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		int iPage; iPage = ((int*)pkParams)[0];
 		switch(iPage)
 		{
-		case 0: // Add object
-			m_pkEdit->m_iMode = ADDOBJECT;
-			break;
-		case 1: // Paint texture
-			m_pkEdit->m_iMode = TEXTURE;
-			break;
-		case 2: // Elevation tool
+		case 1: // Elevation tool
 			if(IsButtonChecked("Raise", "ElevationModeRadioGroup"))
 				m_pkEdit->m_iMode = RAISE;
 			else
@@ -147,6 +141,12 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				m_pkEdit->m_iMode = SMOOTH;
 			else
 				m_pkEdit->m_iMode = RAISE;
+			break;
+		case 2: // Paint texture
+			m_pkEdit->m_iMode = TEXTURE;
+			break;
+		case 3: // Add object
+			m_pkEdit->m_iMode = ADDOBJECT;
 			break;
 		}
 		break;
@@ -163,16 +163,16 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		case ID_ELEVATIONMODE_RADIOGROUP+2: // smooth
 			m_pkEdit->m_iMode = SMOOTH;
 			break;
-		case ID_PENCILSIZE_RADIOGROUP:
+		case ID_PENSIZE_RADIOGROUP:
 			m_pkEdit->m_iPencilSize = 4; // small
 			break;
-		case ID_PENCILSIZE_RADIOGROUP+1:
+		case ID_PENSIZE_RADIOGROUP+1:
 			m_pkEdit->m_iPencilSize = 8; // medium
 			break;
-		case ID_PENCILSIZE_RADIOGROUP+2:
+		case ID_PENSIZE_RADIOGROUP+2:
 			m_pkEdit->m_iPencilSize = 14; // large
 			break;
-		case ID_PENCILSIZE_RADIOGROUP+3:
+		case ID_PENSIZE_RADIOGROUP+3:
 			m_pkEdit->m_iPencilSize = 20; // extra-large
 			break;
 		case ID_LOADMADFILE_BN:
@@ -209,6 +209,78 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			((EditPropertyDlg*)GetDlg("PropertyDlg"))->m_pkCurrentChild = pkNewObject;
 			UpdatePropertybox();
 			break;
+		}
+		break;
+
+	case ZGM_EN_CHANGE:
+		char* szText = NULL;
+		int value = -1;
+		enum Color { red, green, blue, alhpha, error };
+		Color eColor = error; 
+		ZGuiWnd* pkEBox = NULL;
+
+		switch(((int*)pkParams)[0])
+		{
+		case ID_MASKCOLOR_RED_EB:
+			szText = (pkEBox = Get("MaskColorREB"))->GetText(); eColor = red; break;
+		case ID_MASKCOLOR_GREEN_EB:
+			szText = (pkEBox = Get("MaskColorGEB"))->GetText(); eColor = green;break;
+		case ID_MASKCOLOR_BLUE_EB: 
+			szText = (pkEBox = Get("MaskColorBEB"))->GetText(); eColor = blue; break;
+		case ID_MASKCOLOR_ALPHA_EB:
+			szText = (pkEBox = Get("MaskColorAEB"))->GetText(); eColor = alhpha; break;
+		case ID_DRAWRATE_EB:
+			if((szText = (pkEBox = Get("DrawRateEB"))->GetText()))
+			{
+				bool bBad = false;
+				int v = atoi(szText);
+				if(v < 0) 
+					{ bBad = true; v = 0; } 
+				else 
+					if(v > 1000) 
+					{ v = 1000; bBad = true; }
+
+				if(bBad)
+				{
+					char szNewText[50];
+					sprintf(szNewText, "%i", v);
+					pkEBox->SetText(szNewText);
+				}
+				m_pkEdit->m_fDrawRate = (float) v / 1000;
+				szText = NULL;
+			}
+			break;
+		}
+
+		if(szText == NULL)
+			break;
+
+		int *res = NULL;
+		switch(eColor)
+		{
+			case red:    res = &(m_pkEdit->m_iMaskColorR = atoi(szText)); break;
+			case green:  res = &(m_pkEdit->m_iMaskColorG = atoi(szText)); break;
+			case blue:   res = &(m_pkEdit->m_iMaskColorB = atoi(szText)); break;
+			case alhpha: res = &(m_pkEdit->m_iMaskColorA = atoi(szText)); break;
+		}
+
+		if(res != NULL)
+		{
+			char* szNewText = NULL;
+
+			if(*res < 0)   
+			{
+				*res = 0; szNewText = new char[20]; 
+				sprintf(szNewText, "%i", *res);
+			}
+			if(*res > 255) 
+			{
+				*res = 255; szNewText = new char[20]; 
+				sprintf(szNewText, "%i", *res);
+			}
+
+			if(szNewText != NULL)
+				pkEBox->SetText(szNewText);
 		}
 		break;
 	}
@@ -508,7 +580,8 @@ ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int 
 }
 
 ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
-								int h, bool bMulitLine, char* szText)
+								int h, bool bMulitLine, char* szText, char* szRegName,
+								bool bNumberOnly)
 {
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, 
 		iID, bMulitLine);
@@ -516,9 +589,16 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 	pkTextbox->SetGUI(m_pkGui);
+	pkTextbox->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 
 	if(szText != NULL)
 		pkTextbox->SetText(szText);
+
+	if(szRegName != NULL)
+		Register(pkTextbox, szRegName);
+
+	if(bNumberOnly)
+		pkTextbox->m_bNumberOnly = true;
 
 	return pkTextbox;
 }
@@ -943,9 +1023,10 @@ bool Gui::CreateWorkPanel()
 	int w = 224, y = 20, h = 224, x = m_pkEdit->m_iWidth-w;
 
 	vector<string> akTabNames;
-	akTabNames.push_back("Object");
-	akTabNames.push_back("Texture");
+	akTabNames.push_back("Marker");
 	akTabNames.push_back("Elevation");
+	akTabNames.push_back("Texture");
+	akTabNames.push_back("Object");
 
 	m_pkWorkPanel = CreateTabbedDialog("WorkPanel",12314124,2321323,
 		x,y,w,h,akTabNames,WORKPANELPROC);
@@ -953,41 +1034,60 @@ bool Gui::CreateWorkPanel()
 	ZGuiWnd* pkPage;
 	vector<string> vkNames;
 
-	// Create page 1: - Add object
+	// Create page 1: - Marker
 	pkPage = m_pkWorkPanel->GetPage(0);
-	CreateLabel(pkPage, 0, 5, 5, 50, 20, "MAD objects");
-	ZGuiListbox* pkMadList = CreateListbox(pkPage, ID_MADOBJECTS_LB, 5, 25, 209, 140);
-	Register(pkMadList, "MadFileList");
-	
-	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
-	for(unsigned int i=1; i<vkNames.size(); i++)
-		AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
-	CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");
-	CreateButton(pkPage, ID_CREATEMADFILE_BN, 60, 170, 50, 20, "Create");
-
-	// Create page 2: - Paint terrain
-	pkPage = m_pkWorkPanel->GetPage(1);
-
-	CreateLabel(pkPage, 0, 5, 25, 50, 20, "Brush size");
 	vkNames.clear();
 	vkNames.push_back("Small");
 	vkNames.push_back("Medium");
 	vkNames.push_back("Large");
 	vkNames.push_back("Extra-Large");
 
+	CreateLabel(pkPage, 0, 5, 5, 50, 20, "Pen size");
 	int iHeight = CreateRadiobuttons(pkPage, vkNames, 
-		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 50, 16);
-	CheckRadioButton("BrushSizeRadioGroup", "Medium");
+		"PenSizeRadioGroup", ID_PENSIZE_RADIOGROUP, 5, 25, 16);
+	CheckRadioButton("PenSizeRadioGroup", "Medium");
 
-	CreateLabel(pkPage, 0, 120, 50, 10, 16, "R");
-	CreateLabel(pkPage, 0, 120, 70, 10, 16, "G");
-	CreateLabel(pkPage, 0, 120, 90, 10, 16, "B");
-	CreateLabel(pkPage, 0, 120, 110, 10, 16, "A");
-	CreateTextbox(pkPage, ID_TEXCOLOR_RED_EB,   140, 50, 30, 16, false, "128"); 
-	CreateTextbox(pkPage, ID_TEXCOLOR_GREEN_EB, 140, 70, 30, 16, false, "128"); 
-	CreateTextbox(pkPage, ID_TEXCOLOR_BLUE_EB,  140, 90, 30, 16, false, "128");
-	CreateTextbox(pkPage, ID_TEXCOLOR_ALPHA_EB,  140, 110, 30, 16, false, "128");
+	char szRate[50]; sprintf(szRate, "%i", (int) (1000.0f * m_pkEdit->m_fDrawRate));
+	CreateLabel(pkPage, 0, 5, 25+iHeight, 50, 20, "Draw rate:");
+	CreateTextbox(pkPage, ID_DRAWRATE_EB, 80, 25+iHeight, 30, 20, 
+		false, szRate, "DrawRateEB");
+
+	// Create page 2: - Elevation tool
+	pkPage = m_pkWorkPanel->GetPage(1);
+
+	vkNames.clear();
+	vkNames.push_back("Raise");
+	vkNames.push_back("Lower");
+	vkNames.push_back("Smooth");
+
+	iHeight = CreateRadiobuttons(pkPage, vkNames, 
+		"ElevationModeRadioGroup", ID_ELEVATIONMODE_RADIOGROUP, 5, 5, 16);
+	CheckRadioButton("ElevationModeRadioGroup", "Raise");
+
+	CreateCheckbox(pkPage, ID_AUTOSMOOTHGROUND_CHB, 5, 5+iHeight, 16, 16, true,
+		"Auto-smooth", "AutoSmoothGroundChB");
+
+	// Create page 3: - Paint terrain
+	pkPage = m_pkWorkPanel->GetPage(2);
+
+	CreateLabel(pkPage, 0, 5,  50, 10, 16, "R");
+	CreateLabel(pkPage, 0, 5,  70, 10, 16, "G");
+	CreateLabel(pkPage, 0, 5,  90, 10, 16, "B");
+	CreateLabel(pkPage, 0, 5, 110, 10, 16, "A");
+	char aszColor[4][50];
+	sprintf(aszColor[0], "%i", m_pkEdit->m_iMaskColorR);
+	sprintf(aszColor[1], "%i", m_pkEdit->m_iMaskColorG);
+	sprintf(aszColor[2], "%i", m_pkEdit->m_iMaskColorB);
+	sprintf(aszColor[3], "%i", m_pkEdit->m_iMaskColorA);
+	CreateTextbox(pkPage, ID_MASKCOLOR_RED_EB,   25, 50, 30, 16, false, 
+		aszColor[0], "MaskColorREB", true); 
+	CreateTextbox(pkPage, ID_MASKCOLOR_GREEN_EB, 25, 70, 30, 16, false, 
+		aszColor[1], "MaskColorGEB", true); 
+	CreateTextbox(pkPage, ID_MASKCOLOR_BLUE_EB,  25, 90, 30, 16, false, 
+		aszColor[2], "MaskColorBEB", true);
+	CreateTextbox(pkPage, ID_MASKCOLOR_ALPHA_EB,  25, 110, 30, 16, false, 
+		aszColor[3], "MaskColorAEB", true);
 
 	CreateLabel(pkPage, 0, 5, 5, 209, 20, "Map");
 	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
@@ -996,33 +1096,20 @@ bool Gui::CreateWorkPanel()
 	pkTextureCB->AddItem("Texture 2", 1);
 	pkTextureCB->AddItem("Texture 3", 2);
 
-	// Create page 3: - Elevation tool
-	pkPage = m_pkWorkPanel->GetPage(2);
+	// Create page 2: - Add object
+	pkPage = m_pkWorkPanel->GetPage(3);
 
-	vkNames.clear();
-	vkNames.push_back("Raise");
-	vkNames.push_back("Lower");
-	vkNames.push_back("Smooth");
+	CreateLabel(pkPage, 0, 5, 5, 50, 20, "MAD objects");
+	ZGuiListbox* pkMadList = CreateListbox(pkPage, ID_MADOBJECTS_LB, 5, 25, 209, 140);
+	Register(pkMadList, "MadFileList");
+	
+	vkNames.clear(); 
+	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
+	for(unsigned int i=1; i<vkNames.size(); i++)
+		AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
-	CreateLabel(pkPage, 0, 5, 5, 50, 16, "Mode");
-	iHeight = CreateRadiobuttons(pkPage, vkNames, 
-		"ElevationModeRadioGroup", ID_ELEVATIONMODE_RADIOGROUP, 5, 30, 16);
-	CheckRadioButton("ElevationModeRadioGroup", "Raise");
-
-	CreateCheckbox(pkPage, ID_AUTOSMOOTHGROUND_CHB, 120, 5, 16, 16, true,
-		"Auto-smooth", "AutoSmoothGroundChB");
-
-	vkNames.clear();
-	vkNames.push_back("Small");
-	vkNames.push_back("Medium");
-	vkNames.push_back("Large");
-	vkNames.push_back("Extra-Large");
-
-	CreateLabel(pkPage, 0, 5, 90, 50, 20, "Pencil size");
-	iHeight = CreateRadiobuttons(pkPage, vkNames, 
-		"PencilSizeRadioGroup", ID_PENCILSIZE_RADIOGROUP, 5, 110, 16);
-	CheckRadioButton("PencilSizeRadioGroup", "Medium");
-
+	CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");
+	CreateButton(pkPage, ID_CREATEMADFILE_BN, 60, 170, 50, 20, "Create");
 	return true;
 }
 

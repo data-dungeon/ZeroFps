@@ -39,6 +39,8 @@ public:
 
 	void SetReadOnly(bool bReadOnly);
 
+	bool m_bNumberOnly;
+
 private:
 	void MoveDownOneRow();
 	void MoveUpOneRow();

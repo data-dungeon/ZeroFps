@@ -54,7 +54,8 @@ private:
 	int CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& strNames, 
 		char* strGroupName, int start_id, int x, int y, int size); // returns height
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
-		int h, bool bMulitLine=false, char* szText=NULL);
+		int h, bool bMulitLine=false, char* szText=NULL, 
+		char* szRegName=NULL, bool bNumberOnly=false);
 	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 		int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
