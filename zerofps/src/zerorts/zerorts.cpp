@@ -135,7 +135,7 @@ void ZeroRTS::OnIdle()
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
 
-	if(pkFps->m_bClientMode) {
+	if(pkFps->m_bClientMode && !pkFps->m_bServerMode) {
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
@@ -173,6 +173,7 @@ void ZeroRTS::OnSystem()
 			}
 		}
 	};
+	
 	
 	//if server is running
 	if(pkFps->m_bServerMode)
@@ -336,17 +337,20 @@ void ZeroRTS::Input()
 
 	if(pkInput->Action(m_iActionPrintServerInfo))
 	{
-		P_ServerInfo* si = (P_ServerInfo*)pkObjectMan->GetWorldObject()->GetProperty("P_ServerInfo");	
+		Object* sio = pkObjectMan->GetObject("ServerInfoObject");
 		
-		if(si != NULL)
-		{
-			pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
+		if(sio != NULL)
+		{		
+			P_ServerInfo* si = (P_ServerInfo*)sio->GetProperty("P_ServerInfo");	
+		
+			if(si != NULL)
+			{
+				pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
 			
+			}
 		}
-		else
-		{
+		else		
 			pkConsole->Printf("No server info found");		
-		}
 	}
 
 
@@ -384,9 +388,9 @@ void ZeroRTS::OnHud(void)
 void ZeroRTS::OnServerStart(void)
 {	
 	//add server info property
-	if(!pkObjectMan->GetWorldObject()->GetProperty("P_ServerInfo"))
+	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
-		pkObjectMan->GetWorldObject()->AddProperty("P_ServerInfo");
+		pkObjectMan->CreateObjectByArchType("ServerInfoObject");
 	}
 	
 }
