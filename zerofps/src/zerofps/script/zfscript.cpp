@@ -6,8 +6,9 @@
 #include <stdio.h>
 
 // package files
-#include "../basic/basicconsole.h"
-#include "../basic/basicconsole_script.h"
+#include "../basic/basic.pkg"
+#include "../engine/engine.pkg"
+#include "package_files/zfscript_bind.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -71,7 +72,7 @@ bool ZFScript::Open()
 
 void ZFScript::OpenPackageFiles()
 {
-	tolua_basicconsole_open(m_pkLua);
+	tolua_zfscript_bind_open(m_pkLua);
 }
 
 void ZFScript::Close()
@@ -93,8 +94,8 @@ bool ZFScript::RunScript(char* szFileName)
 // Name:		RegisterClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //
-bool ZFScript::RegisterClass(char *szName, LuaCallback o_LuaGet, 
-							 LuaCallback o_LuaSet)
+bool ZFScript::ExposeClass(char *szName, lua_CFunction o_LuaGet, 
+						   lua_CFunction o_LuaSet)
 {
 	// Create Lua tag for Test type.
 	lua_pushcfunction(m_pkLua, o_LuaGet);
@@ -120,7 +121,7 @@ bool ZFScript::ExposeObject(const char* szName, void* pkData, char* szClassName)
 // Name:		ExposeFunction
 // Description:	Registrera en C++ function som Lua kan se.
 //
-bool ZFScript::ExposeFunction(const char *szName, LuaCallback o_Function)
+bool ZFScript::ExposeFunction(const char *szName, lua_CFunction o_Function)
 {
 	lua_register( m_pkLua, szName, o_Function );
 	return true;

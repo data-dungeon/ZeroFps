@@ -26,17 +26,15 @@ enum VarType
 	tSTRING,
 };
 
-typedef int (*LuaCallback) (lua_State* lua);
+//typedef int (*LuaCallback) (lua_State* lua);
 
 class SCRIPT_API ZFScript  
 {
 public:
 
-	bool RegisterClass(char *szName, 
-		LuaCallback o_LuaGet, LuaCallback o_LuaSet);
-	
+	bool ExposeClass(char *szName, lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 	bool ExposeObject(const char* szName, void* pkData, char* szClassName);
-	bool ExposeFunction(const char* szName, LuaCallback o_Function);
+	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
 	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);
 

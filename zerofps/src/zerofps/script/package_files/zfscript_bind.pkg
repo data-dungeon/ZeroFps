@@ -1,0 +1,121 @@
+
+///////////////////////////////////////////////////////////////////////////////
+// BASIC_CONSOLE - START
+///////////////////////////////////////////////////////////////////////////////
+
+//#ifndef _BASIC_BASICCONSOLE_H_
+//#define _BASIC_BASICCONSOLE_H_
+
+$#include "os.h"
+$#include "zfobject.h"
+$#include "basic_x.h"
+$#include <iostream>
+$#include <vector>
+
+//using namespace std;
+
+#define TEXT_MAX_LENGHT 256
+
+/*
+ Basic console är ett object som kan ta in kommandon och skriva ut resultat 
+ från användaren. 
+*/
+class /* BASIC_API */ BasicConsole : public ZFObject {
+//protected:
+//		vector<char*>	m_kText;
+
+//public:
+		BasicConsole(char* szName);
+		
+		// Print output to console.
+		virtual void Print(const char* aText);
+		//virtual void Printf(const char *fmt, ...);
+		
+		enum FuncId_e
+			{
+			FID_HELP
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
+};
+
+//#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// BASIC_CONSOLE - END
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// CONSOLE - START
+///////////////////////////////////////////////////////////////////////////////
+
+//#ifndef _CONSOLE_H_
+//#define _CONSOLE_H_
+
+$#include "../basic/basic.pkg"
+$#include "../render/render.pkg"
+$#include "input.h"
+$#include "engine_x.h"
+$#include <iostream>
+$#include <vector>
+$#include <deque>
+
+
+//using namespace std;
+
+//class Input;
+//class ZeroFps;
+
+//max lenght of an entered command
+#define COMMAND_LENGHT 128
+
+class /*ENGINE_API*/ Console : public BasicConsole {
+//	private:
+//		void FormatKey(int& r_iKey);
+//		ZeroFps* m_pkEngine;		
+//		CmdSystem* m_pkCmd;
+//		Render* m_pkRender;
+//		Input* m_pkInput;
+//		TextureManager* m_pkTexMan;
+		
+//		SDL_Event m_kEvent;
+//		char m_aCommand[TEXT_MAX_LENGHT];
+//		int m_iBufferSize;
+//		bool m_bShift;
+
+//		unsigned int m_nStartLine;
+//		const unsigned int MAX_CMD_HISTRORY_LENGTH;
+//		unsigned int m_nLastCommand;
+//		deque<string> m_kCommandHistory;
+		
+
+//	public:
+		Console();
+		
+		void Update(void);
+		bool Execute(char* aText);
+
+		static int LuaSet(lua_State* pkLua) 
+		{
+			/*BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
+			BasicConsole* val=(BasicConsole*) lua_touserdata(pkLua,3);
+			var=val;*/
+			return 0;
+		}
+
+		static int LuaGet(lua_State* pkLua) 
+		{
+			/*BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
+			lua_pushusertag(pkLua, var, tolua_tag(pkLua, "BasicConsole"));*/
+			return 1;
+		}
+};
+
+
+
+//#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// CONSOLE - END
+///////////////////////////////////////////////////////////////////////////////

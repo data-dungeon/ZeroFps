@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <deque>
-
+#include <tolua.h>
 
 using namespace std;
 
@@ -37,12 +37,26 @@ class ENGINE_API Console : public BasicConsole {
 		unsigned int m_nLastCommand;
 		deque<string> m_kCommandHistory;
 		
-
 	public:
 		Console();
 		
 		void Update(void);
 		bool Execute(char* aText);
+
+		static int LuaSet(lua_State* pkLua) 
+		{
+			BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
+			BasicConsole* val=(BasicConsole*) lua_touserdata(pkLua,3);
+			var=val;
+			return 0;
+		}
+
+		static int LuaGet(lua_State* pkLua) 
+		{
+			BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
+			lua_pushusertag(pkLua, var, tolua_tag(pkLua, "BasicConsole"));
+			return 1;
+		}
 };
 
 

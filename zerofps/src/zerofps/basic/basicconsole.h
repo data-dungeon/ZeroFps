@@ -29,7 +29,6 @@ public:
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
 };
 
 #endif

@@ -49,6 +49,10 @@ void Game::Init()
 	InitGUI();
 
 	m_pkScript = new ZFScript();
+
+	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
+	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
+
 }
 
 void Game::OnServerStart(void)
@@ -173,14 +177,14 @@ void Game::Input()
 			printf("Failed to run script %s.\n", szFile);
 	}
 
-		/*
-	//Get mouse x,y		
-	int x,z;		
-	pkInput->RelMouseXY(x,z);
+	/*
+		//Get mouse x,y		
+		int x,z;		
+		pkInput->RelMouseXY(x,z);
 
-	//rotate the camera		
-	pkFps->GetCam()->GetRot().x+=z/5.0;
-	pkFps->GetCam()->GetRot().y+=x/5.0;
+		//rotate the camera		
+		pkFps->GetCam()->GetRot().x+=z/5.0;
+		pkFps->GetCam()->GetRot().y+=x/5.0;
 	*/
 }
 
