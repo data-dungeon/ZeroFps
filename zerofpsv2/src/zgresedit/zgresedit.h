@@ -52,6 +52,7 @@ class ZGResEdit : public Application, public ZGuiApp
 	private:
 		void OpenWnd(ZGuiWnd* pkWnd, bool bOpen=true);
 		void UpdateSkinList(ZGuiWnd* pkFocusWnd);
+		void OnClickPropertyOK();
 		void UpdatePropertyData();
 		void ExecuteCommand();
 		void MoveWndToTop(ZGuiWnd *pkWnd);

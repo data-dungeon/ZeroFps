@@ -132,7 +132,10 @@ void ZGResEdit::OnIdle()
 		MoveWnd(x,y);
 	else
 	if(m_eEditMode == RESIZE)
-		ResizeWnd(x,y);
+	{
+		if(m_eEditMode == RESIZE && m_pkInput->Pressed(MOUSELEFT))
+			ResizeWnd(x,y);
+	}
 
 	if(m_pkFocusWnd)
 	{
@@ -303,7 +306,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "UpdateWndDataBn" && m_pkFocusWnd)
 		{
-			UpdatePropertyData();
+			OnClickPropertyOK();
 		}
 		else
 		if(strClickWndName == "ResizeWndToTexBn")
@@ -604,6 +607,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 			UpdateViewWnd();
 			UpdateSkinList(pkWnd);
+			UpdatePropertyData();
 		}
 	}
 	else
@@ -770,7 +774,11 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 	ZGuiWnd* pkWnd = GetWndFromPoint(x,y);
 
 	if(pkWnd == NULL)
+	{
+		m_pkMoveWnd = NULL;
+		m_pkResizeWnd = NULL;
 		return;
+	}
 
 	if(m_pkScene->IsSceneWnd(pkWnd))
 	{
@@ -849,26 +857,29 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 				
 				Rect rc = pkWnd->GetScreenRect();
 
-				int dl = abs(x - rc.Left), dr = abs(x - rc.Right);
-				int dt = abs(y - rc.Top), db = abs(y - rc.Bottom);
+				int dist_left = abs(x - rc.Left), dist_right = abs(x - rc.Right);
+				int dist_top = abs(y - rc.Top), dist_bottom = abs(y - rc.Bottom);
+
+				float width_mod = (float) rc.Width() / rc.Height();
+				float height_mod = (float) rc.Height() / rc.Width();
 
 				m_eCurrentResizeType = None;
 
-				if(dl <= dr && dl <= dt && dl <= db)
+				if(dist_left <= dist_right && dist_left <= dist_top && dist_left <= dist_bottom)
 					m_eCurrentResizeType = LeftSide;
-				if(dr <= dl && dr <= dt && dr <= db)
+				if(dist_right <= dist_left && dist_right <= dist_top && dist_right <= dist_bottom)
 					m_eCurrentResizeType = RightSide;
-				if(dt <= dr && dt <= dl && dt <= db)
+				if(dist_top <= dist_right && dist_top <= dist_left && dist_top <= dist_bottom)
 					m_eCurrentResizeType = TopSide;
-				if(db <= dr && db <= dt && db <= dl)
+				if(dist_bottom <= dist_right && dist_bottom <= dist_top && dist_bottom <= dist_left)
 					m_eCurrentResizeType = BottomSide;
 				
 				switch(m_eCurrentResizeType)
 				{
-					case LeftSide:   if(dl > 20) m_pkResizeWnd = NULL; break;
-					case RightSide:  if(dr > 20) m_pkResizeWnd = NULL; break;
-					case TopSide:    if(dt > 20) m_pkResizeWnd = NULL; break;
-					case BottomSide: if(db > 20) m_pkResizeWnd = NULL; break;
+					case LeftSide:   if(dist_left > 20) m_pkResizeWnd = NULL; break;
+					case RightSide:  if(dist_right > 20) m_pkResizeWnd = NULL; break;
+					case TopSide:    if(dist_top > 20) m_pkResizeWnd = NULL; break;
+					case BottomSide: if(dist_bottom > 20) m_pkResizeWnd = NULL; break;
 				}
 			}
 		}
@@ -1220,6 +1231,8 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 					m_pkFocusWnd = pkTabCtrl;
 					m_pkMainWnd = pkTabCtrl;
 				}
+
+				UpdatePropertyData();
 				
 				return;
 			}
@@ -1232,6 +1245,7 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 
 		pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
+		UpdatePropertyData();
 	}
 }
 
@@ -1357,27 +1371,8 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 	unsigned int i=0;
 
 	UpdateSkinList(pkWnd);
+	UpdatePropertyData();
 	
-	const char* szAlias = m_pkScene->GetAlias(m_pkFocusWnd);
-
-	if(szAlias == NULL)
-		GetWnd("WndNameTextbox")->SetText( (char*) m_pkFocusWnd->GetName() );
-	else
-		GetWnd("WndNameTextbox")->SetText( (char*) szAlias );
-
-	GetWnd("WndTitleTextbox")->SetText( (char*) m_pkFocusWnd->GetText() );
-
-	if(m_pkFocusWnd->GetParent())
-	{
-		char* szName = (char*) m_pkScene->GetAlias(m_pkFocusWnd->GetParent());
-		if(szName)
-			GetWnd("ParentLabel")->SetText( szName );
-		else
-			GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
-	}
-	else
-		GetWnd("ParentLabel")->SetText( "-" );
-
 	if(m_pkInput->Pressed(KEY_LCTRL))
 	{
 		int x = m_pkFocusWnd->GetScreenRect().Left;
@@ -1633,6 +1628,10 @@ void ZGResEdit::ResizeWnd(int x, int y)
 {
 	if(m_pkResizeWnd)
 	{
+		int bds = 0;
+		if(m_pkResizeWnd->GetSkin())
+			bds = m_pkResizeWnd->GetSkin()->m_unBorderSize;
+
 		Rect rc = m_pkResizeWnd->GetScreenRect();
 		int w = rc.Width(), h = rc.Height();
 		int screen_x = x, screen_y = y;
@@ -1654,7 +1653,7 @@ void ZGResEdit::ResizeWnd(int x, int y)
 		case LeftSide:
 			screen_y = rc.Top;
 			w = rc.Right - x;	if(w < 2) w = 2; h = rc.Height();
-			Resize(m_pkResizeWnd, w,h);
+
 			if(screen_x > rc.Right-2) screen_x = rc.Right-2;
 			
 			if(m_pkResizeWnd->GetParent() != NULL)
@@ -1664,23 +1663,35 @@ void ZGResEdit::ResizeWnd(int x, int y)
 				rc.Top -= rcParent.Top;
 			}
 
+			if(screen_x <= bds)
+				return;
+
+			Resize(m_pkResizeWnd, w,h);
+
 			SetPos(m_pkResizeWnd, screen_x, rc.Top);
 			break;
 
 		case TopSide:
 			screen_x = rc.Left;
 			w = rc.Width(); h = rc.Bottom - y;	if(h < 2) h = 2;
-			Resize(m_pkResizeWnd, w,h);
-			if(screen_y > rc.Bottom-2) screen_y = rc.Bottom-2;
 
 			if(m_pkResizeWnd->GetParent() != NULL)
 			{
 				Rect rcParent = m_pkResizeWnd->GetParent()->GetScreenRect();
 				screen_y -= rcParent.Top;
-				rc.Left -= rcParent.Left;
+				rc.Left -= rcParent.Left;;
 			}
 
+			if(screen_y <= bds)
+				return;
+
+			Resize(m_pkResizeWnd, w,h);
+			
+			if(screen_y > rc.Bottom-2) 
+				screen_y = rc.Bottom-2;
+
 			SetPos(m_pkResizeWnd, rc.Left,screen_y);
+			
 			break;
 		}
 
@@ -1791,11 +1802,11 @@ void ZGResEdit::ExecuteCommand()
 	
 	if(pkTopWnd == m_pkScene->m_pkPropertyWnd)
 	{
-		UpdatePropertyData();
+		OnClickPropertyOK();
 	}
 }
 
-void ZGResEdit::UpdatePropertyData()
+void ZGResEdit::OnClickPropertyOK()
 {
 	if(m_pkFocusWnd)
 	{
@@ -1925,4 +1936,51 @@ void ZGResEdit::OpenWnd(ZGuiWnd *pkWnd, bool bOpen)
 		m_pkAudioSys->StartSound("/data/sound/close_door1.wav");
 		pkWnd->Hide();
 	}
+}
+
+void ZGResEdit::UpdatePropertyData()
+{
+	if(m_pkFocusWnd == NULL)
+	{
+		SetText("PosXTextbox", "");
+		SetText("PosYTextbox", "");
+		SetText("WidthTextbox", "");
+		SetText("HeightTextbox", "");
+		SetText("WndNameTextbox", "");
+		SetText("WndTitleTextbox", "");
+		SetText("ParentLabel", "");
+		return;
+	}
+
+	const char* szAlias = m_pkScene->GetAlias(m_pkFocusWnd);
+
+	if(szAlias == NULL)
+		GetWnd("WndNameTextbox")->SetText( (char*) m_pkFocusWnd->GetName() );
+	else
+		GetWnd("WndNameTextbox")->SetText( (char*) szAlias );
+
+	GetWnd("WndTitleTextbox")->SetText( (char*) m_pkFocusWnd->GetText() );
+
+	if(m_pkFocusWnd->GetParent())
+	{
+		char* szName = (char*) m_pkScene->GetAlias(m_pkFocusWnd->GetParent());
+		if(szName)
+			GetWnd("ParentLabel")->SetText( szName );
+		else
+			GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
+	}
+	else
+		GetWnd("ParentLabel")->SetText( "-" );
+
+	Rect rc;
+
+	if(m_pkFocusWnd->GetParent())
+		rc = m_pkFocusWnd->GetWndRect();
+	else
+		rc = m_pkFocusWnd->GetScreenRect();
+
+	SetTextInt("PosXTextbox", rc.Left);
+	SetTextInt("PosYTextbox", rc.Top);
+	SetTextInt("WidthTextbox", rc.Width());
+	SetTextInt("HeightTextbox", rc.Height());
 }
