@@ -5,5 +5,6 @@ HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 //	m_bStatic=true;
 	AddProperty(new CollisionProperty(pkMap));
 	AddProperty(new HeightMapRenderProperty(pkMap));
+//	AddProperty(new HeightMapRenderPropertyMK2(pkMap));
 }
 
