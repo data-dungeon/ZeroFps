@@ -20,8 +20,8 @@ GLGuiRender::GLGuiRender()
 {
 	m_pkFont = NULL;
 	m_pkSkin = NULL;
-	m_iScreenWidth = 1024;
-	m_iScreenHeight = 768;
+	m_iScreenWidth = 800;
+	m_iScreenHeight = 600;
 	m_bClipperEnabled = false;
 }
 
@@ -365,7 +365,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	Rect t = rc;
 
-	m_rcTextBox = Rect(t.Left,600-t.Bottom,t.Right,600-t.Top);
+	m_rcTextBox = Rect(t.Left,m_iScreenHeight-t.Bottom,t.Right,m_iScreenHeight-t.Top);
 
 	if(bDrawMasked)
 	{
@@ -707,7 +707,8 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 		{
 			if( !m_bClipperEnabled || (m_bClipperEnabled && 
 				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
-				 y < 600-m_rcClipperArea.Top && y+fh > 600-m_rcClipperArea.Bottom))
+				 y < m_iScreenHeight-m_rcClipperArea.Top && 
+				 y+fh > m_iScreenHeight-m_rcClipperArea.Bottom))
 			{
 				float tx = (float) fx / m_pkFont->m_iBMPWidth;
 				float ty = (float) fy / m_pkFont->m_iBMPWidth;

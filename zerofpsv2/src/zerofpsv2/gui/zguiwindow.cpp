@@ -406,7 +406,7 @@ void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 
 bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
-	ZGui* pkGui = GetGUI();
+/*	ZGui* pkGui = GetGUI();
 	if(pkGui == NULL)
 		return false;
 
@@ -465,7 +465,7 @@ bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeig
 		 win != m_kChildList.end(); win++)
 		 {
 			(*win)->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-		 }
+		 }*/
 
 	return true;
 }
