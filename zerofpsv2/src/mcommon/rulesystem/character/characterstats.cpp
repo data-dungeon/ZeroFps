@@ -255,7 +255,7 @@ void CharacterStats::RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty,
    // recieve group exps
    for ( kIte = g_kSkillExps[kName].m_kGroupExp.begin();
          kIte != g_kSkillExps[kName].m_kGroupExp.end(); kIte++ )
-      for ( int i = 0; i < g_kSkillGroups[(*kIte).first].size(); i++ )
+      for ( unsigned int i = 0; i < g_kSkillGroups[(*kIte).first].size(); i++ )
       {
          m_kSkills[ g_kSkillGroups[(*kIte).first].at(i) ].m_fExp += (*kIte).second;
          TestLevelUp ( &m_kSkills[ g_kSkillGroups[(*kIte).first].at(i) ] );
@@ -404,8 +404,8 @@ void CharacterStats::SetHP( string kValue )
    // if character is player, send updated life to client
    if ( m_bIsPlayer && m_pkServInf )
    {
-      for ( int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
-         for ( int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
+      for ( unsigned int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
+         for ( unsigned int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
             if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
             {
                SendType kNewSend;
@@ -445,8 +445,8 @@ void CharacterStats::AddHP( int iValue )
    // if character is player, send updated life to client
    if ( m_bIsPlayer && m_pkServInf )
    {
-      for ( int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
-         for ( int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
+      for ( unsigned int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
+         for ( unsigned int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
             if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
             {
                SendType kNewSend;
