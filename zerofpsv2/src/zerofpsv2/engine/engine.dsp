@@ -263,6 +263,10 @@ SOURCE=.\p_pfmesh.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_pfpath.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_physic.cpp
 # End Source File
 # Begin Source File
@@ -468,6 +472,10 @@ SOURCE=..\engine_systems\propertys\p_mad.h
 # Begin Source File
 
 SOURCE=.\p_pfmesh.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_pfpath.h
 # End Source File
 # Begin Source File
 

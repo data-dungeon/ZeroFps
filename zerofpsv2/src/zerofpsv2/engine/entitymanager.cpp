@@ -8,6 +8,7 @@
 #include "../engine_systems/propertys/p_mad.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
+#include "p_pfmesh.h"
 
 ZoneData& ZoneData::operator=(const ZoneData &kOther) 
 {
@@ -1770,6 +1771,7 @@ void EntityManager::LoadZone(int iId)
 		//object->GetUpdateStatus()=UPDATE_DYNAMIC;
 		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
+//		object->AddProperty("P_PfMesh");
 		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
 
 		//add static entity
@@ -2027,6 +2029,10 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	if(mp)
 	{
 		mp->SetBase(szName);
+		P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
+		if(pkMesh) {
+			pkMesh->SetMad(mp);
+			}
 	}
 }
 

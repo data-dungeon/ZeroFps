@@ -1136,6 +1136,7 @@ void Render::Draw_AxisIcon(float scale)
 void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 {
 	glPushMatrix();
+	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 	
@@ -1158,6 +1159,7 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
+	glPopAttrib();
 	glPopMatrix();
 }
 

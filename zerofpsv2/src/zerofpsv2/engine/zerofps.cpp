@@ -22,6 +22,8 @@ int		g_iLogRenderPropertys;
 char g_szIpPort[256];
 
 static char Devformat_text[4096];	//
+
+Property* Create_P_PfPath();
 Property* Create_P_PfMesh();
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
@@ -941,6 +943,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 
 	
+	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 
 	// Other Propertys.

@@ -10,7 +10,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
-#include "../zerofpsv2/engine/p_pfmesh.h"
+#include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/basic/zguifont.h"
@@ -1206,7 +1206,7 @@ void MistServer::HandleOrders()
 
 				if(bres) {
 					cout << "Path was found. Size " << kPath.size()  << endl;
-					P_PfMesh* pm = (P_PfMesh*)ob->GetProperty("P_PfMesh");
+					P_PfPath* pm = (P_PfPath*)ob->GetProperty("P_PfPath");
 					if(pm) {
 						reverse(kPath.begin(), kPath.end());
 						kPath.push_back(order->m_kPos);

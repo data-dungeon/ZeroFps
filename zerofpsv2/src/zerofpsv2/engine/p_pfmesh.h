@@ -4,13 +4,43 @@
 #include "property.h"
 #include "engine_x.h"
 
+class P_Mad;
+
 using namespace std;
+
+class NaviMeshCell
+{
+private:
+	
+	enum CELL_VERT
+	{
+		VERT_A = 0,
+		VERT_B,
+		VERT_C
+	};
+
+	enum CELL_SIDE
+	{
+		SIDE_AB = 0,
+		SIDE_BC,
+		SIDE_CA
+	};
+
+public:
+	
+	Vector3			m_kVertex[3];		// Vertex the made up the cell.
+	Vector3			m_kCenter;			// Center of the Cell.
+	NaviMeshCell*	m_apkLinks[3];		// Links to cells on each side. NULL if none.
+	
+	bool	IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB);
+};
+
 
 class ENGINE_API P_PfMesh : public Property 
 {
 	private:
-		vector<Vector3>	m_kPath;
-		int					m_iNextGoal;
+		vector<NaviMeshCell>		m_NaviMesh;
+		P_Mad*						m_pkMad;
 
 	public:
 		P_PfMesh();
@@ -25,7 +55,12 @@ class ENGINE_API P_PfMesh : public Property
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
-		void SetPath(vector<Vector3> kPath);
+		void SetMad(P_Mad* pkMad);
+		void DrawNaviMesh();
+		void LinkCells();
+		void LinkToConnectedCells(NaviMeshCell* pkNavCell);
+
+
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();
