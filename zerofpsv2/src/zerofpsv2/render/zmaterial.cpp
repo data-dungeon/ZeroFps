@@ -69,9 +69,16 @@ void ZMaterial::Clear()
 
 bool ZMaterial::LoadShader(const char* acFile)
 {
+	bool open=false;
+	
+	//try to open material file
+	if(m_kIni.Open(acFile,0))		
+		open=true;
+	else		//if file didt open, try to load a default texture
+		if(m_kIni.Open("../data/material/nomaterial.zmt",0))
+			open=true;
 
-	cout<<"trying to load"<<acFile<<endl;
-	if(m_kIni.Open(acFile,0))
+	if(open)
 	{
 		Clear();
 	
@@ -95,6 +102,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 		cout<<"error loading shader:"<<acFile<<endl;
 		return false;
 	}
+
 }
 
 bool ZMaterial::LoadGlobalSection()
