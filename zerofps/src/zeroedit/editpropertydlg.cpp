@@ -143,13 +143,13 @@ void EditPropertyDlg::OnOpenEditProperty()
 		sprintf(text, "%0.3f", p.y); ((ZGuiTextbox*) pkRotYEB)->SetText(text);
 		sprintf(text, "%0.3f", p.z); ((ZGuiTextbox*) pkRotZEB)->SetText(text);
 
-		list<Property*> akPropertys;
+		vector<Property*> akPropertys;
 		vector<string> akPropertyNames;
 
 		m_pkCurrentChild->GetPropertys(&akPropertys, PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
 
-		list<Property*>::iterator s = akPropertys.begin();
-		list<Property*>::iterator e = akPropertys.end();
+		vector<Property*>::iterator s = akPropertys.begin();
+		vector<Property*>::iterator e = akPropertys.end();
 
 		int antal = akPropertys.size();
  

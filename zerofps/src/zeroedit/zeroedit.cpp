@@ -153,7 +153,7 @@ void ZeroEdit::OnInit(void)
 
 
 void ZeroEdit::OnIdle(void) 
-{	
+{
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();		
 	
@@ -1011,10 +1011,10 @@ void ZeroEdit::Input()
 			if(pkInput->Pressed(KEY_U))
 			{
 				cout<<"updating object"<<endl;
-				list<Property*> kProp;
+				vector<Property*> kProp;
 				m_pkCurentChild->GetAllPropertys(&kProp,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL);
 				
-				for(list<Property*>::iterator it=kProp.begin();it!=kProp.end();it++) {
+				for(vector<Property*>::iterator it=kProp.begin();it!=kProp.end();it++) {
 					(*it)->Update();				
 				}				
 			}

@@ -81,7 +81,6 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 
 	if(bSort){
 		sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-		//m_akPropertys.sort(Less_Property);	
 	}
 	
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
