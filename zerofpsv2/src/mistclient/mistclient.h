@@ -22,8 +22,6 @@
 class MistClient :public Application {
 	private:
 		
-		Camera*			m_pkCamera;
-		
 		// actions
 		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
@@ -50,9 +48,11 @@ class MistClient :public Application {
 
 		Heightmap2*			m_pkMap2;
 		
-		
-		Object*	m_pkTestobj;
-
+		Camera*				m_pkCamera;
+		Object*				m_pkTestobj;
+		CameraProperty*	m_pkCamProp;		
+		float					m_fAngle;
+		float					m_fDistance;
 
 	public:
 		bool InitializeScript();

@@ -119,6 +119,8 @@ class BASIC_API Matrix4 {
 		float det(void);
 		Matrix3 submat(int i, int j);
 		Matrix4 Invert2( );
+		
+		void SetAxis(int iAxisNum, Vector3 kNewAxis);
 
 };
 

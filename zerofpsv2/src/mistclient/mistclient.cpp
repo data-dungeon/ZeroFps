@@ -192,9 +192,21 @@ void MistClient::Input()
 
 	float fSpeedScale = pkFps->GetFrameTime()*speed;
 
-	m_pkCamera->SetPos(newpos);
-	m_pkCamera->RotateV(rot);
+	//m_pkCamera->SetPos(newpos);
+	//m_pkCamera->RotateV(rot);
 	//m_pkCamera->SetRot(rot);
+	m_fAngle +=x/100.0;
+	m_fDistance += z/10.0;
+	
+	if(m_fDistance < 10)
+		m_fDistance = 10;
+	
+	if(m_fDistance > 50)
+		m_fDistance = 50;
+		
+	
+	m_pkCamProp->Set3PYAngle(m_fAngle);
+	m_pkCamProp->Set3PDistance(m_fDistance);
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
@@ -267,7 +279,7 @@ void MistClient::Input()
 	//rot.y+=0.1;
 
   //rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-		m_pkME->RotateLocalRotV(rot);
+		//m_pkME->RotateLocalRotV(rot);
 	
 
 	}
@@ -379,8 +391,9 @@ void MistClient::OnServerStart(void)
 	{
 		m_pkTestobj->AttachToClosestZone();
 	
-		CameraProperty* cam = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
-		cam->SetCamera(m_pkCamera);
+		m_pkCamProp = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
+		m_pkCamProp->SetCamera(m_pkCamera);
+		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,20,0));
 	}

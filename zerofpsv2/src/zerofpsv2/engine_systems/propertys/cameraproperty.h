@@ -10,21 +10,21 @@
 
 using namespace std;
 
+
+enum ENGINE_SYSTEMS_API CamType_e
+{
+	CAM_TYPEFIRSTPERSON,	// View from object. 
+	CAM_TYPETOPDOWN,		// Top down view from object.
+	CAM_TYPEISO,			// Isometric view of object.
+	CAM_TYPESIDE,
+	CAM_TYPECHASE,
+	CAM_TYPEDYNAMICISO,		
+	CAM_TYPEMAX,
+	CAM_TYPE3PERSON, 
+};
+
 class ENGINE_SYSTEMS_API CameraProperty:public Property 
 {
-	public:
-		enum CamType_e
-		{
-			CAM_TYPEFIRSTPERSON,	// View from object. 
-			CAM_TYPETOPDOWN,		// Top down view from object.
-			CAM_TYPEISO,			// Isometric view of object.
-			CAM_TYPESIDE,
-			CAM_TYPECHASE,
-			CAM_TYPEDYNAMICISO,		
-			CAM_TYPEMAX,
-			CAM_TYPE3PERSON,
-		};
-
 	private:
 		Camera*		m_pkCamera;			// Camera to refresh.
 		CamType_e	m_eCameraType;		// How the camera will behave.
@@ -32,9 +32,15 @@ class ENGINE_SYSTEMS_API CameraProperty:public Property
 		
 
 		float		m_fFov;
-		Vector3		m_kDynamicIso;
+		Vector3	m_kDynamicIso;		
+		Vector3	m_kInterPos;
+		float		m_f3PYAngle;
+		float		m_f3PYPos;
+		float		m_f3PDistance;
+
+		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
+		void Look(Vector3 kCamPosision,Vector3 kLookDir,Vector3 kCamUp);
 		
-		Vector3 m_kInterPos;
 
 	public:
 		CameraProperty();
@@ -43,6 +49,10 @@ class ENGINE_SYSTEMS_API CameraProperty:public Property
 		void Update();
 
 		void SetCamera(Camera *pkCamera) { m_pkCamera = pkCamera; };
+		
+		void Set3PYAngle(float fA) { m_f3PYAngle = fA;};
+		void Set3PYPos(float fP) { m_f3PYPos = fP;};
+		void Set3PDistance(float fD) { m_f3PDistance = fD;};
 		void SetType(CamType_e kType);
 		void NextType(CamType_e kType);
 		void SetFpFov(float fFov);		

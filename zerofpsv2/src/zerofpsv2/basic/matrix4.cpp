@@ -666,6 +666,13 @@ Vector3 Matrix4::GetPosVector()
 	return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
 }
 
+void Matrix4::SetAxis(int iAxisNum, Vector3 kNewAxis)
+{
+        RowCol[iAxisNum][0] = kNewAxis.x;
+        RowCol[iAxisNum][1] = kNewAxis.y;
+        RowCol[iAxisNum][2] = kNewAxis.z;
+}
+
 
 
 

@@ -1,17 +1,16 @@
 #include "cameraproperty.h"
 #include "madproperty.h"
 
-#define CHASE_CAM_DISTANCE	5
+#define CHASE_CAM_DISTANCE	5 
 
  
 CameraProperty::CameraProperty() 
 {
 	m_pkCamera = NULL;
 	m_eCameraType = CAM_TYPEFIRSTPERSON;
-	//m_eCameraType = CAM_TYPE3PERSON;	
 	strcpy(m_acName,"CameraProperty");	
 
-	m_iType=PROPERTY_TYPE_RENDER;
+	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -19,7 +18,9 @@ CameraProperty::CameraProperty()
 	m_fFov = 90;
 	m_kDynamicIso.Set(0,0,0);
 	m_kInterPos.Set(0,0,0);
-	
+	m_f3PYAngle = 0;
+	m_f3PYPos = 1;
+	m_f3PDistance = 20;
 }
 
 
@@ -44,7 +45,15 @@ void CameraProperty::Update()
 				
 				Vector3 dir = m_pkObject->GetWorldPosV() - m_kInterPos;
 				m_kInterPos +=dir/8;
-				m_pkCamera->SetPos(m_kInterPos + Vector3(0,20,0));
+				
+				
+				float xp = sin(m_f3PYAngle) *1 ;
+				float zp = cos(m_f3PYAngle) *1 ;				
+				
+				Vector3 campos = m_kInterPos + Vector3(xp,m_f3PYPos,zp).Unit() * m_f3PDistance;
+				
+				LookAt(campos, m_pkObject->GetWorldPosV(),Vector3(0,1,0));
+				
 				
 				strCamName = " 3P ";
 				if(madp)
@@ -143,6 +152,35 @@ void CameraProperty::SetFpFov(float fFov)
 	m_fFov = fFov;
 	
 }
+
+
+void CameraProperty::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp) {
+	Vector3 kLookDir = kCamPosition - kCamTarget;
+	Look(kCamPosition, kLookDir, kCamUp);
+}
+
+void CameraProperty::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
+	Matrix4 kCamera;
+	Vector3 kRight;
+	
+	kLookDir.Normalize();
+	kCamUp.Normalize();
+
+	kRight = kCamUp.Cross(kLookDir);
+	kRight.Normalize();
+	kCamUp = kLookDir.Cross(kRight);
+	kCamUp.Normalize();
+
+	kCamera.Identity();
+	kCamera.SetAxis(0,kRight);
+	kCamera.SetAxis(1,kCamUp);
+	kCamera.SetAxis(2,kLookDir);
+	kCamera.Transponse();
+
+	m_pkCamera->SetRotM(kCamera);
+	m_pkCamera->SetPos(kCamPosition);
+}
+
 
 
 Property* Create_CameraProperty()
