@@ -68,7 +68,6 @@ Importent: Only mono wav files should be used as resources!
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
 public:
-	void RemoveAllSounds();
 	
 	bool StartSound(ZFSoundInfo kSound);
 	bool RemoveSound(ZFSoundInfo kSound, float fMaxSearchRange = 1000000.0f);
@@ -125,7 +124,7 @@ private:
 	map<string, ZFResourceHandle*> m_mkResHandles;
 	map<string, unsigned short> m_mkResHandleCounter;
 
-	list<ZFSoundInfo*> m_kActiveSounds;
+	list<ZFSoundInfo*> m_kSoundList;
 
 	// Common
 	bool GenerateSourcePool();
