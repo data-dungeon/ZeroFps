@@ -32,7 +32,6 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 
-	Register_Cmd("newgame",			FID_NEWGAME);
 	
 	
 	m_iPlayerID = 		-1;
@@ -50,9 +49,15 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iLives 			=0;
 	m_iGoalEnt			=-1;
 	m_iCurrentLives	=-1;
-	m_iStopers			=0;
+	m_iStopers			=0;	
+	m_strMap				="../datafiles/stopemup/maps/dm2";
 	
-	m_strMap				="../datafiles/stopemup/maps/woods";
+
+	Register_Cmd("newgame",			FID_NEWGAME);
+	
+		
+	RegisterVariable("ap_startlevel",	&m_iStartLevel,CSYS_INT);
+	
 }
 
 void StopEmUp::OnInit()

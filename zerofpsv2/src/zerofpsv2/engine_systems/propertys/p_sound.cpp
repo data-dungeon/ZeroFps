@@ -67,6 +67,9 @@ void P_Sound::Update()
 
 		if(m_bLoop == false)
 		{
+			m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
+			
+			
 			m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
 				pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 			m_strFileName = "";
@@ -77,17 +80,20 @@ void P_Sound::Update()
 
 			if(m_bStarted == false)
 			{
+				m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
+				
+				
 				m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
 					pkEnt->GetIWorldPosV(), pkEnt->GetVel(), ZFAUDIO_LOOP);
 				m_bStarted = true;
 			}
 			else
 			{
-				if(!m_kPrevpos.NearlyEquals(currpos,0.1f))
-				{
+				//if(!m_kPrevpos.NearlyEquals(currpos,0.1f))
+				//{
 					m_pkAudioSystem->MoveAudio(m_iID, pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 					m_kPrevpos = pkEnt->GetIWorldPosV();
-				}
+				//}
 			}
 		}
 	}
