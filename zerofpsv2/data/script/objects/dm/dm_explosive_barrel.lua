@@ -6,6 +6,7 @@ function Create()
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_DMCharacter");
+			InitParameter("team",10);
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 

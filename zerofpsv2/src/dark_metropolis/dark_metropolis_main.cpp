@@ -188,7 +188,9 @@ void DarkMetropolis::RenderInterface(void)
 }
 
 void DarkMetropolis::OnSystem() 
-{				
+{	
+	float t = m_pkFps->m_pkObjectMan->GetGameTime();
+
 	//if no hq has been found, try to find it
 	if(m_iActiveHQ == -1)
 	{
@@ -208,15 +210,13 @@ void DarkMetropolis::OnSystem()
 	ValidateSelection();
 	ValidateAgentsOnField();
 
-	static int FULT = 0;
-
+	static float s_fUpdateGUICheckTime;
 	if(m_pkGamePlayDlg != NULL && m_pkGamePlayDlg->IsInitialized())
 	{
-		if(FULT == 0)
+		if(t - s_fUpdateGUICheckTime > 0.25f)
 		{
+			s_fUpdateGUICheckTime = t;
 			((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
-			printf(" ---------------------- Init GUI for the first time ---------------------- \n");
-			FULT = 1;
 		}
 	}
 

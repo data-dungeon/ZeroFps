@@ -417,8 +417,6 @@ void CGamePlayDlg::UpdateAgentList()
 	if(!m_bInitialized)
 		return;
 
-	printf("CGamePlayDlg::UpdateAgentList\n");
-
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
 	
