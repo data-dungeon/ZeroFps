@@ -960,10 +960,29 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(kInfo.m_fWeight);
 			pkNetMessage->Read(kInfo.m_iValue);
 		
+			//item stats
+			vector<Stat>	m_kStats;			
+			int iNr;
+			Stat kTemp("",0,0);
+			
+			pkNetMessage->Read(iNr);
+			for(int i = 0;i<iNr;i++)
+			{
+				pkNetMessage->Read_Str(kTemp.m_strName);
+				pkNetMessage->Read(kTemp.m_fValue);
+				pkNetMessage->Read(kTemp.m_fMod);
+				
+				m_kStats.push_back(kTemp);
+			}					
+			
 			cout<<"-- Got item info --"<<endl;
 			cout<<"IMAGE:"<<kInfo.strImage<<endl;			
 			cout<<"TEXT:"<<kInfo.strInfo<<endl;		
-
+			cout<<"STATS:"<<endl;
+			for(int i =0;i<m_kStats.size();i++)
+				cout<<m_kStats[i].m_strName<<"  "<<m_kStats[i].m_fValue<<" "<<m_kStats[i].m_fMod<<endl;
+			
+			
 			m_pkInventoryDlg->OpenItemInfoWnd(true, kInfo);
 			
 			break;

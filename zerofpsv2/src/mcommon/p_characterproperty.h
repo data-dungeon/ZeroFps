@@ -76,12 +76,10 @@ class MCOMMON_API Stat
 
 class MCOMMON_API Stats
 {
-	private:
+	private:		
 		vector<Stat>	m_kStats;
-		
 
 	public:
-		
 		
 		Stats();
 		
@@ -101,6 +99,7 @@ class MCOMMON_API Stats
 		void 	ChangeMod(const string& strName,float fValue);
 		float GetTotal(const string& strName);
  
+		void GetStatsList(vector<Stat>* pkStats);
 };
 
 

@@ -188,9 +188,17 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 
 Stats::Stats()
 {
-
 	
 }
+
+void Stats::GetStatsList(vector<Stat>* pkStats)
+{
+	for(int i = 0;i<m_kStats.size();i++)
+	{
+		pkStats->push_back(m_kStats[i]);	
+	}
+}
+
 
 void Stats::AddStat(const string& strName,float fValue,float fMod)
 {

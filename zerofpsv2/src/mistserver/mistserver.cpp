@@ -1492,6 +1492,19 @@ void MistServer::SendItemInfo(int iItemID,int iClientID)
 		kNp.Write(pkItem->GetValue());
 				
 		
+		//item stats
+		vector<Stat>	m_kStats;
+		pkItem->m_kItemStats.GetStatsList(&m_kStats);
+		
+		kNp.Write(m_kStats.size());
+		for(int i = 0;i<m_kStats.size();i++)
+		{
+			kNp.Write_Str(m_kStats[i].m_strName);
+			kNp.Write(m_kStats[i].m_fValue);
+			kNp.Write(m_kStats[i].m_fMod);		
+		}
+		
+		
 		kNp.TargetSetClient(iClientID);
 		SendAppMessage(&kNp);		
 	}	
