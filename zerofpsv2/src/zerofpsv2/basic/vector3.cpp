@@ -90,13 +90,13 @@ Vector3 Vector3::Proj(const Vector3& v )
 	return p;
 }
 
-Vector3 Vector3::Perp( Vector3& v )				
+Vector3 Vector3::Perp(const Vector3& v )				
 {
 	Vector3 p = v - Proj(v);
 	return p;
 }
 
-float Vector3::Angle( Vector3& v )				
+float Vector3::Angle(const Vector3& v )				
 {
 	return float(acos( Dot(v) )); 
 }

@@ -219,12 +219,13 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 		float scale = fRadius;
 		glScalef(scale,scale,scale);
 		
-		for (int i = 0; i < 20; i++) {    
+		for (int i = 0; i < 20; i++) 
+		{    
 		   glBegin(GL_TRIANGLES);    
 
 	   	SubDivide(&vdata[tindices[i][2]][0],       
-	   		      &vdata[tindices[i][1]][0],       
-						&vdata[tindices[i][0]][0],iRes); 
+	   		       &vdata[tindices[i][1]][0],       
+						 &vdata[tindices[i][0]][0],iRes); 
 
 		   glEnd(); 
 		}

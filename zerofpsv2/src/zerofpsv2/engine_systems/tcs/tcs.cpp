@@ -265,11 +265,12 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	for(int i = 0;i<	iNrOfPos;i++)
 	{	
 		if(m_iDebugGraph)
-		{
-			m_pkRender->Sphere(pkCol->kPositions[i],0.1,1,Vector3(0,1,0),false);
+		{		
+			//m_pkRender->Sphere(pkCol->kPositions[i],0.2,1,Vector3(0,1,0),false);			
 			m_pkRender->SetColor(Vector3(1,0,1));
 			m_pkRender->Line(pkCol->kPositions[i],pkCol->kPositions[i] + pkCol->kNormals[i]);		
 			m_pkRender->SetColor(Vector3(1,1,1));
+		
 		}
 		
 		if(!m_iHandleCollission)
@@ -1306,15 +1307,15 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
-//	float fMinDist = 0.2;
+	float fMinDist = 0.01;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
 		if(TestSides(pkPolygon,&(pkPlane->m_kNormal),m_kLastTestPos))
 		{
-			m_kLastTestNormal = -pkPlane->m_kNormal;		
-			return true;
-/*			
+//			m_kLastTestNormal = -pkPlane->m_kNormal;		
+//			return true;
+			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
@@ -1329,31 +1330,51 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			}
 			else
 			{
-				Vector3 L = (*pkPos1 - *pkPos2);
+				Vector3 L = (*pkPos2 - *pkPos1);
 			
 				Vector3 n1 = L.Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				Vector3 n2 = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
 				Vector3 n3 = L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
-											
-				float f1 = L.Proj(n1).Length();
-				float f2 = L.Proj(n2).Length();
-				float f3 = L.Proj(n3).Length();
 				
+										
+				float f1 = (pkPolygon[0] - *pkPos1).Proj(n1).Length();
+				float f2 = (pkPolygon[1] - *pkPos1).Proj(n2).Length();
+				float f3 = (pkPolygon[2] - *pkPos1).Proj(n3).Length();
 				
 				if(f1 < f2 && f1 < f3)
 				{
-					//cout<<"f1 is closest"<<endl;
-					m_kLastTestNormal = -L.Cross(pkPolygon[0] - pkPolygon[1]).Unit();					
+				//	cout<<"f1"<<endl;
+					if( (m_kLastTestNormal = L.Cross(pkPolygon[0] - pkPolygon[1]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
+						return true;
+									
+					if( (m_kLastTestNormal = -L.Cross(pkPolygon[0] - pkPolygon[1]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
+						return true;
 				}
 				if(f2 < f1 && f2 < f3)
 				{
-					//cout<<"f2 is closest"<<endl;
-					m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
+					if( (m_kLastTestNormal = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
+						return true;
+				
+					if( (m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
+						return true;
+				
+				//	cout<<"f2"<<endl;
+				//	if( (m_kLastTestNormal = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(pkPlane->m_kNormal) < 1.5707)
+				//		m_kLastTestNormal = -m_kLastTestNormal;					
+					
+				//	m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
 				}
 				if(f3 < f1 && f3 < f2)
 				{
-					//cout<<"f3 is closest"<<endl;
-					m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
+				//	cout<<"f3"<<endl;
+					if( (m_kLastTestNormal = L.Cross(pkPolygon[2] - pkPolygon[0]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
+						return true;
+						
+					if( (m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)					
+						return true;
+				//		m_kLastTestNormal = -m_kLastTestNormal;					
+				
+				//	m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
 				}	
 					
 				//m_kLastTestNormal = -pkPlane->m_kNormal;
@@ -1368,7 +1389,7 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			
 				return false;
 			}
-			*/
+			
 		}
 	}
 	

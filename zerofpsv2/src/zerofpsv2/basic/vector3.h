@@ -151,8 +151,8 @@ class BASIC_API Vector3 {
 		bool NearlyZero( const float e ) const; 					///< True if this is <0,0,0> within the range of +-e
 		
 		Vector3 Proj(const Vector3& v );									///< Projects v on this.
-		Vector3 Perp( Vector3& v );									///< Perp v on this.
-		float Angle( Vector3& v );									///< Angle (in rad) between two vectors. 
+		Vector3 Perp(const Vector3& v );									///< Perp v on this.
+		float Angle(const Vector3& v );									///< Angle (in rad) between two vectors. 
 		void Abs(void);												///< Do a fabs() on coo of this vectors.
 		int	AbsMaxCoo(void);										///< Returns Index för den coo med > fabs(value).
 		void Lerp(Vector3& from, Vector3& to, float flerp);			///< Linjär interpolering mellan två vectors.
