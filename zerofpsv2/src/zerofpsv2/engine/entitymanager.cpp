@@ -920,12 +920,16 @@ void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 	if(!pkStatic)
 		return;
 
+	//this zone is new for the client, so all objects in it shuld be sent
+	pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);
+
 	vector<Entity*>	kObjects;
 	m_iForceNetUpdate = 0xFFFFFFFF;
 
 	kObjects.clear();
 	pkStatic->GetAllObjects(&kObjects);
 	PackToClient(iClient, kObjects);
+	
 }
 
 /* Send Request for static data to server. */

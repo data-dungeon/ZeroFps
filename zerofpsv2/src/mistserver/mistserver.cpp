@@ -1297,7 +1297,7 @@ void MistServer::HandleOrders()
                      kSendType.m_iClientID = order->m_iClientID;
                      kSendType.m_kSendType = "itemdata";
                   
-                     pkItProp->m_kSends.push_back ( kSendType );
+                     pkItProp->AddSendsData ( kSendType );
                  }
 
             }
@@ -1327,7 +1327,7 @@ void MistServer::HandleOrders()
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
-                  pkItProp->m_kSends.push_back ( kSend );
+                  pkItProp->AddSendsData ( kSend );
 
                }
             }
@@ -1341,7 +1341,7 @@ void MistServer::HandleOrders()
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
-                  pkChar->m_kSends.push_back ( kSend );
+                  pkItProp->AddSendsData ( kSend );
                }
             }
             else

@@ -190,6 +190,7 @@ class ENGINE_API Entity
 		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
 		void	ResetAllNetUpdateFlags();											//reset all update flags to true
 		void	ResetAllNetUpdateFlags(int iConID);											//reset all update flags to true		
+		void	ResetAllNetUpdateFlagsAndChilds(int iConID);											//reset all update flags to true				
 		void	SetNrOfConnections(int iConNR);
 		
 	public:

@@ -1031,6 +1031,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 	if(!m_bServerMode)
 		return -1;
 
+	//reset all netupdate flags in the world
 	m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
 
 	m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);

@@ -56,6 +56,8 @@ class MCOMMON_API P_Item: public Property
       void GetAllItemsInContainer( vector<Entity*>* pkContainerList );
       void CancelOrder( vector<Entity*>* pkContainerList );
 
+		void AddSendsData(SendType);
+
       friend class Container;
 };
 

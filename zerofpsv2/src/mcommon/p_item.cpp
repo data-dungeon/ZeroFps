@@ -229,6 +229,8 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
 void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
+	//cout<<"Got item data"<<endl;
+	
 
    if ( !m_kSends.size() )
       pkNetPacket->Write_NetStr( "foo" );
@@ -296,6 +298,8 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          }
       }
    }
+   
+   SetNetUpdateFlag(iConnectionID,false);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -519,6 +523,13 @@ void P_Item::CancelOrder( vector<Entity*>* pkContainerList )
 }
 
 // ---------------------------------------------------------------------------------------------
+
+void P_Item::AddSendsData(SendType ns)
+{
+	SetNetUpdateFlag(true);		
+	
+	m_kSends.push_back(ns);
+}
 
 Property* Create_P_Item()
 {

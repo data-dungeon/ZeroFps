@@ -12,7 +12,7 @@ P_PfPath::P_PfPath()
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
-	m_fSpeed = 1;
+	m_fSpeed = 3;
 }
 
 P_PfPath::~P_PfPath()

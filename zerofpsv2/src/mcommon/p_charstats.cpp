@@ -289,6 +289,7 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
    }
 */
+	SetNetUpdateFlag(iConnectionID,false);
 }
 
 // ------------------------------------------------------------------------------------------

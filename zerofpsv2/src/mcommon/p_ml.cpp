@@ -27,6 +27,8 @@ void P_Ml::AddAction(const char* csAction)
 {
 	//cout<<"registering action:"<<csAction<<endl;
 	m_kActions.push_back(string(csAction));
+	
+	SetNetUpdateFlag(true);		
 }
 
 
@@ -38,9 +40,10 @@ void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	
 	for(unsigned int i=0;i<m_kActions.size();i++)
 	{
-		pkNetPacket->Write_NetStr(m_kActions[i].c_str());
+		pkNetPacket->Write_Str(m_kActions[i].c_str());
 	}
 
+	SetNetUpdateFlag(iConnectionID,false);
 } 
 
 void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
@@ -53,7 +56,7 @@ void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	for(int i=0;i<nr;i++)
 	{
 		char temp[128];
-		pkNetPacket->Read_NetStr(temp);
+		pkNetPacket->Read_Str(temp);
 		m_kActions.push_back(string(temp));
 	}
 }

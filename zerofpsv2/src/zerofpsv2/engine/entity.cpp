@@ -571,16 +571,16 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	//cout<<"BLIB:"<<sizeof(m_kNetUpdateFlags[iConnectionID])<<endl;
 	
 	//send parent
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
+/*	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT,false);		
-		
+*/		
 		int iParentID	=	-1;
 		if(m_pkParent)
 			iParentID = m_pkParent->iNetWorkID;
 
 		pkNetPacket->Write( iParentID );
-	}
+//	}
 
    // send update status
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_UPDATESTATUS))
@@ -730,15 +730,15 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	pkNetPacket->Read(m_kNetUpdateFlags[0]);			//con id is 0
 
 	//get parent
-	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
-	{
+//	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
+//	{
 		//cout<<"got parent update"<<endl;
 		
 		int iParentID	=	-1;
 
 		pkNetPacket->Read( iParentID );
 		SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
-	}
+//	}
 
    // get update status
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_UPDATESTATUS))
@@ -1612,6 +1612,26 @@ void	Entity::ResetAllNetUpdateFlags(int iConID)
 	{
 		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
 	}	
+}
+
+void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
+{
+	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
+	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
+	
+	//reset all propertys
+	for(int j = 0;j<m_akPropertys.size();j++)
+	{
+		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
+	}	
+	
+	//reset all childs
+	for(int i = 0;i<m_akChilds.size();i++)
+	{
+		m_akChilds[i]->ResetAllNetUpdateFlagsAndChilds(iConID);
+	}	
+	//cout<<"reseting object"<<endl;
+	
 }
 
 bool	Entity::GetNetUpdateFlag(int iConID,int iFlagID)
