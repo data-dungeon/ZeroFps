@@ -56,12 +56,14 @@ class ENGINE_API Camera
 		float m_fAppHeight;
 
 		void	DrawGrid();
-		float	m_fGridSpace;
 
 	public:
 		Frustum m_kFrustum;
-		Vector3 m_kOrthoAxisX;
-		Vector3 m_kOrthoAxisY;
+
+		Vector3	m_kOrthoAxisX;
+		Vector3	m_kOrthoAxisY;
+		Vector3	m_kOrthoAxisZ;
+
 		Vector3	m_kOrthoSize;
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
@@ -84,6 +86,7 @@ class ENGINE_API Camera
 		void OrthoZoom(float fZoom);
 		void OrthoMove(Vector3 kMove);
 		Vector3 GetOrthoMove(Vector3 kMove);
+		Vector3 SnapToGrid(Vector3 kPos);
 
 		void SetRotM(Matrix4 kRotM);
 		void RotateV(Vector3 kRot);
@@ -101,7 +104,10 @@ class ENGINE_API Camera
 
 		string GetCameraDesc();
 
-		static bool	m_bDrawOrthoGrid;
+		static bool		m_bDrawOrthoGrid;
+		static float	m_fGridSpace;
+		static bool		m_bGridSnap;
+
 };
 
 #endif

@@ -125,10 +125,62 @@ Title=Cam - Solo (T)
 Parent=Menu_View
 Cmd=camsolo
 
-[Menu_ViewGrid]
-Title=Cam - Grid (T)
-Parent=Menu_View
+
+; ------------- ORTHO GRID MENU -------------
+[Menu_Grid]
+Title=Grid
+Parent=NULL
+Cmd=NULL
+
+[Menu_GridShow]
+Title=Show (T)
+Parent=Menu_Grid
 Cmd=camgrid
+
+[Menu_GridSnap]
+Title=Snap (T)
+Parent=Menu_Grid
+Cmd=gridsnap
+
+[Menu_GridSize01]
+Title=Size 0.1
+Parent=Menu_Grid
+Cmd=gridsize 0.1
+
+[Menu_GridSize025]
+Title=Size 0.25
+Parent=Menu_Grid
+Cmd=gridsize 0.25
+
+[Menu_GridSize05]
+Title=Size 0.5
+Parent=Menu_Grid
+Cmd=gridsize 0.5
+
+[Menu_GridSize1]
+Title=Size 1
+Parent=Menu_Grid
+Cmd=gridsize 1
+
+[Menu_GridSize2]
+Title=Size 2
+Parent=Menu_Grid
+Cmd=gridsize 2
+
+[Menu_GridSize5]
+Title=Size 5
+Parent=Menu_Grid
+Cmd=gridsize 5
+
+[Menu_GridSize10]
+Title=Size 10
+Parent=Menu_Grid
+Cmd=gridsize 10
+
+[Menu_GridSize100]
+Title=Size 100
+Parent=Menu_Grid
+Cmd=gridsize 100
 
 ; ------------- SYSTEM MENU -------------
 
@@ -210,6 +262,16 @@ Cmd=devtog om
 Title=Server (T)
 Parent=Menu_Page
 Cmd=devtog server
+
+[Menu_PageTime]
+Title=Time (T)
+Parent=Menu_Page
+Cmd=devtog time
+
+[Menu_PageEditor]
+Title=Editor (T)
+Parent=Menu_Page
+Cmd=devtog editor
 
 ; ------------- AI MENU -------------
 [Menu_Ai]

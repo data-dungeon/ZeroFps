@@ -648,7 +648,7 @@ void Mad_Core::CalculateRadius()
 	}
 
 	m_fBoundRadius = fDist;
-//	cout << "Bound Radius for '" << GetName() << "' is = " << fDist << endl;
+	//cout << "Bound Radius for '" << GetName() << "' is = " << fDist << endl;
 }
 
 float Mad_Core::GetRadius()

@@ -148,7 +148,7 @@ void P_Camera::Update()
 		}
 	}
 
-	m_pkCamera->SetName(strCamName);
+//	m_pkCamera->SetName(strCamName);
 }
 
 void P_Camera::SetType(CamType_e kType)

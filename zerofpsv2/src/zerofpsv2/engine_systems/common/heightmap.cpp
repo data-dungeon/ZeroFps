@@ -53,10 +53,10 @@ HeightMap::HeightMap()
 	m_iNumOfHMVertex	= 0;
 	m_iID					= -1;
 	m_bInverted			= false;
+	m_fTileSize			= 8;
 
 	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	m_pkBasicFS			= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-//	Create(4);
 }
 
 HeightMap::~HeightMap() 
@@ -131,8 +131,8 @@ void HeightMap::SetPosition(Vector3 kNewPos)
 */
 float HeightMap::Height(float x,float z) 
 {
-	x /= HEIGHTMAP_SCALE;
-	z /= HEIGHTMAP_SCALE;
+	x /= m_fTileSize;
+	z /= m_fTileSize;
 	
 	x -= m_kPosition.x - m_iTilesSide/2;
 	z -= m_kPosition.z - m_iTilesSide/2;
@@ -164,7 +164,7 @@ float HeightMap::Height(float x,float z)
 		zp=verts[(lz+1)*m_iVertexSide+(lx)].height-bp;				
 	}	
 
-	return m_kPosition.y + (bp+(xp*ox)+(zp*oz)) * HEIGHTMAP_SCALE;	
+	return m_kPosition.y + (bp+(xp*ox)+(zp*oz)) * m_fTileSize;	
 }
 
 /**	\brief	Returns normal at one position in Hmap.
@@ -173,8 +173,8 @@ float HeightMap::Height(float x,float z)
 */
 Vector3 HeightMap::Tilt(float x,float z)
 {
-	x/=HEIGHTMAP_SCALE;
-	z/=HEIGHTMAP_SCALE;
+	x/=m_fTileSize;
+	z/=m_fTileSize;
 	
 	x-=m_kPosition.x-m_iTilesSide/2;
 	z-=m_kPosition.z-m_iTilesSide/2;
@@ -461,8 +461,8 @@ HM_vert* HeightMap::GetVert(int x,int z)
 
 void HeightMap::GetMapXZ(float& x,float& z)
 {
-	x /= HEIGHTMAP_SCALE;
-	z /= HEIGHTMAP_SCALE;
+	x /= m_fTileSize;
+	z /= m_fTileSize;
 	
 	x -= m_kPosition.x - m_iTilesSide/2;
 	z -= m_kPosition.z - m_iTilesSide/2;
@@ -585,7 +585,7 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 			// Calc World Pos of the vertex.
 			int iVertexIndex = z * (m_iTilesSide + 1) + x;
 			kSel.m_iIndex = iVertexIndex;
-			Vector3 kWorld = Vector3(x * HEIGHTMAP_SCALE, verts[iVertexIndex].height*HEIGHTMAP_SCALE ,z * HEIGHTMAP_SCALE);
+			Vector3 kWorld = Vector3(x * m_fTileSize, verts[iVertexIndex].height*m_fTileSize ,z * m_fTileSize);
 			kWorld += m_kCornerPos;
 			//kVertex += (CamPos + kMap->m_kCornerPos);
 	
@@ -646,16 +646,17 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	
 	//get texture pos
 	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
-	float xpos = (float) ((kPos.x * HEIGHTMAP_SCALE) / (float)GetSize())  ;
-	float ypos = (float) ((kPos.z * HEIGHTMAP_SCALE) / (float)GetSize())  ;
+	float xpos = (float) ((kPos.x) / (float)GetSize())  ;
+	float ypos = (float) ((kPos.z) / (float)GetSize())  ;
 	
 	xpos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth;
 	ypos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iHeight;
-	
+	cout << "Texture pos: "<< xpos << ", " << ypos << endl;
+
 	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
 	int size=fRealSize;
 	
-	//cout << "Brush size: " << fRealSize << endl;
+	cout << "Brush size: " << fRealSize << endl;
 	//cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
 
 	Image* pkImg = m_pkTexMan->EditGetImage( m_kLayer[iMask].m_strMask.c_str() );
@@ -731,7 +732,7 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 	float minz = kCenterPos.z - iWidth/2; 
 	float maxz = kCenterPos.z + iWidth/2; 
 	
-	kPos+=Vector3(1,0,1)*HEIGHTMAP_SCALE;
+	kPos+=Vector3(1,0,1)*m_fTileSize;
 
 	Vector3 kPos2 = kPos + (kDir * 500);
 	
@@ -770,9 +771,9 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 			verts[0]=Vector3(x,0,z);
 			verts[1]=Vector3(x,0,z+1);
 			verts[2]=Vector3(x+1,0,z);
-			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;
-			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;			
-			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;			
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*m_fTileSize)+m_kPosition.y;
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*m_fTileSize)+m_kPosition.y;			
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*m_fTileSize)+m_kPosition.y;			
 						
 			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
 			{
@@ -789,9 +790,9 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 			verts[0]=Vector3(x+1,0,z+1);
 			verts[1]=Vector3(x+1,0,z);
 			verts[2]=Vector3(x,0,z+1);
-			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;
-			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;		
-			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;		
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*m_fTileSize)+m_kPosition.y;
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*m_fTileSize)+m_kPosition.y;		
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*m_fTileSize)+m_kPosition.y;		
 			
 			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
 			{
@@ -809,9 +810,9 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 	if(closest != NULL)
 	{
 		kHitPos = (kHitPos - Vector3((float)(m_iTilesSide/2),0,(float)(m_iTilesSide/2))); 
-		kHitPos.x *= HEIGHTMAP_SCALE;
-		kHitPos.z *= HEIGHTMAP_SCALE;		
-		kHitPos-=Vector3(1,0,1)*HEIGHTMAP_SCALE;
+		kHitPos.x *= m_fTileSize;
+		kHitPos.z *= m_fTileSize;		
+		kHitPos-=Vector3(1,0,1)*m_fTileSize;
 		
 		//cout<<"HM: "<<kHitPos.x<< " "<<kHitPos.z<<endl;
 	}
@@ -891,19 +892,19 @@ bool HeightMap::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 Point HeightMap::GetSqrFromPos(Vector3 pos)
 {
-	int iSquareX = int(m_iTilesSide/2+ceil(pos.x / HEIGHTMAP_SCALE));
-	int iSquareY = int(m_iTilesSide/2+ceil(pos.z / HEIGHTMAP_SCALE));
+	int iSquareX = int(m_iTilesSide/2+ceil(pos.x / m_fTileSize));
+	int iSquareY = int(m_iTilesSide/2+ceil(pos.z / m_fTileSize));
 
 	return Point(iSquareX,iSquareY);
 }
 
 Vector3 HeightMap::GetPosFromSqr(Point square)
 {
-	float x = (float) (-(m_iTilesSide/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE);
-	float z = (float) (-(m_iTilesSide/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE);
+	float x = (float) (-(m_iTilesSide/2)*m_fTileSize + square.x*m_fTileSize);
+	float z = (float) (-(m_iTilesSide/2)*m_fTileSize + square.y*m_fTileSize);
 
-	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
-	z -= HEIGHTMAP_SCALE/2;	// of square.*/
+	x -= m_fTileSize/2;	// Translate to center 
+	z -= m_fTileSize/2;	// of square.*/
 
 	float y = Height(x,z);
 

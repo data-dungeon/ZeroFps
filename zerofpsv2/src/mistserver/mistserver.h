@@ -61,6 +61,8 @@ class MistServer :public Application , public ZGuiApp {
 			FID_CAMSOLO,
 			FID_CAMGRID,
 			FID_SELNONE,
+			FID_GRIDSIZE,
+			FID_GRIDSNAP,
 
 		};
 
@@ -73,7 +75,6 @@ class MistServer :public Application , public ZGuiApp {
 		
 		};
 
-		bool	m_bUpdateMarker;
 		bool	m_bEditSun;
 
 		//server stuff
@@ -105,7 +106,6 @@ class MistServer :public Application , public ZGuiApp {
 		Vector3	m_kObjectMarkerPos;
 		int		m_iCurrentObject;
 		
-		float		m_fClickDelay;
 		int 		m_iCurrentMarkedZone;
 
 		Vector3	Get3DMousePos(bool m_bMouse);
@@ -176,7 +176,7 @@ class MistServer :public Application , public ZGuiApp {
 		void Input_Camera(float fMouseX, float fMouseY);
 		void Input_EditTerrain();
 		void Input_EditZone();
-		void Input_EditObject();
+		void Input_EditObject(float fMouseX, float fMouseY);
 
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);

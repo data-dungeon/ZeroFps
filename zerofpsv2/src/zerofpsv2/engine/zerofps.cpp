@@ -264,12 +264,10 @@ void ZeroFps::Run_EngineShell()
 	m_pkNetWork->Run();
 	*/
 
-	
-	DevPrintf("common","Run: %i", m_bRunWorldSim);
-	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
+	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) {
 		for(int i=0; i<4; i++) {
-			DevPrintf("common","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
+			DevPrintf("conn","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
 			// Server gives upp object a time after connection
 			
 			if(m_kClient[i].m_pkObject) {
@@ -482,12 +480,14 @@ void ZeroFps::Draw_EngineShell()
 	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 	DevPrintf("common" , "Zone: %d", this->m_pkObjectMan->m_kZones.size());
 
-	DevPrintf("time" , "Ticks: %f", GetTicks());
-	DevPrintf("time" , "GetFrameTime: %f", GetFrameTime());
-	DevPrintf("time" , "GetGameTime: %f", GetGameTime());
-	DevPrintf("time" , "GetGameFrameTime: %f", GetGameFrameTime());
-	DevPrintf("time" , "GetLastGameUpdateTime: %f", GetLastGameUpdateTime());
-	DevPrintf("time" , "GetEngineTime: %f", GetEngineTime());
+	// TIME
+	DevPrintf("time","Ticks: %f",							GetTicks());
+	DevPrintf("time","FrameTime: %f",					GetFrameTime());
+	DevPrintf("time","GameTime: %f",						GetGameTime());
+	DevPrintf("time","GameFrameTime: %f",				GetGameFrameTime());
+	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
+	DevPrintf("time","EngineTime: %f",					GetEngineTime());
+	DevPrintf("time","Run: %i", m_bRunWorldSim);
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
@@ -1247,7 +1247,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
 	pkMap->SetID(iNetWorkId);
-	pkMap->Create( (int)kZoneSize.x / HEIGHTMAP_SCALE );
+	pkMap->Create( (int)kZoneSize.x / pkMap->GetTileSize() );
 	//pkMap->Random();
 
 	// Create a new Hmrp and set hmap and add it to Entity.

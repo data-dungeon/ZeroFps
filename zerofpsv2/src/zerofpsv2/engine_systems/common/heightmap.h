@@ -11,7 +11,7 @@
 #include "../../render/texturemanager.h"
 #include "../../engine/res_texture.h"
 
-#define HEIGHTMAP_SCALE 1
+//#define HEIGHTMAP_SCALE 1
 
 struct Mad_Face;
 
@@ -76,6 +76,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		int					m_iTilesSide;				// The number of edges/tiles on each side.
 		int					m_iVertexSide;				// The number of vertex on each side (tiles + 1)
 		int					m_iNumOfHMVertex;			// Total number of HMVertex that are in this map.
+		float					m_fTileSize;				// The size in meters of each Edge.
 
 		HM_vert*				verts;						// Ptr to array of HMVertex. 
 		vector<HM_Layer>	m_kLayer;					// All layers in the HM.
@@ -128,7 +129,8 @@ class ENGINE_SYSTEMS_API HeightMap
 		
 		void DrawMask(Vector3 kPos,int iMode,float fSize,int r,int g,int b,int a);
 		
-		int GetSize(){return m_iTilesSide*HEIGHTMAP_SCALE;};				// Return the size of one side of the Hm.
+		float GetTileSize() { return m_fTileSize; }
+		int	GetSize() {return m_iTilesSide * m_fTileSize; };				// Return the size of one side of the Hm.
 
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);

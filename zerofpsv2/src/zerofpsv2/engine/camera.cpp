@@ -3,6 +3,8 @@
 #include "../ogl/zfpsgl.h"
 
 bool Camera::m_bDrawOrthoGrid(false);
+float	Camera::m_fGridSpace(1.0);
+bool Camera::m_bGridSnap(false);
 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
@@ -144,12 +146,36 @@ void Camera::SetViewMode(CamMode eMode)
 		m_kRotM.Identity();
 
 		switch(eMode) {
-			case CAMMODE_ORTHO_TOP:		m_kRotM.Rotate(Vector3(-90,0,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,0,1);	break;
-			case CAMMODE_ORTHO_FRONT:	m_kRotM.Identity();					m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,1,0);	break;
-			case CAMMODE_ORTHO_LEFT:	m_kRotM.Rotate(Vector3(0,90,0));	m_kOrthoAxisX.Set(0,0,1);	m_kOrthoAxisY.Set(0,1,0);	break;
-			case CAMMODE_ORTHO_BOT:		m_kRotM.Rotate(Vector3(90,0,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,0,1);	break;
-			case CAMMODE_ORTHO_BACK:	m_kRotM.Rotate(Vector3(0,90,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,1,0);	break;
-			case CAMMODE_ORTHO_RIGHT:	m_kRotM.Rotate(Vector3(0,-90,0));	m_kOrthoAxisX.Set(0,0,1);	m_kOrthoAxisY.Set(0,1,0);	break;
+			case CAMMODE_ORTHO_TOP:		
+				m_kRotM.Rotate(Vector3(-90,0,0));	
+				m_kOrthoAxisX.Set(1,0,0);	
+				m_kOrthoAxisY.Set(0,0,-1);	
+				m_kOrthoAxisZ.Set(0,-1,0);	break;
+			case CAMMODE_ORTHO_FRONT:	
+				m_kRotM.Identity();						
+				m_kOrthoAxisX.Set(1,0,0);	
+				m_kOrthoAxisY.Set(0,1,0);	
+				m_kOrthoAxisZ.Set(0,0,-1);	break;
+			case CAMMODE_ORTHO_LEFT:	
+				m_kRotM.Rotate(Vector3(0,-90,0));		
+				m_kOrthoAxisX.Set(0,0,1);	
+				m_kOrthoAxisY.Set(0,1,0);	
+				m_kOrthoAxisZ.Set(-1,0,0);	break;
+			case CAMMODE_ORTHO_BOT:		
+				m_kRotM.Rotate(Vector3(90,0,0));		
+				m_kOrthoAxisX.Set(1,0,0);	
+				m_kOrthoAxisY.Set(0,0,1);	
+				m_kOrthoAxisZ.Set(0,1,0);	break;
+			case CAMMODE_ORTHO_BACK:	
+				m_kRotM.Rotate(Vector3(0,90,0));		
+				m_kOrthoAxisX.Set(1,0,0);	
+				m_kOrthoAxisY.Set(0,1,0);	
+				m_kOrthoAxisZ.Set(0,0,0);	break;
+			case CAMMODE_ORTHO_RIGHT:	
+				m_kRotM.Rotate(Vector3(0,90,0));	
+				m_kOrthoAxisX.Set(0,0,-1);	
+				m_kOrthoAxisY.Set(0,1,0);	
+				m_kOrthoAxisZ.Set(-1,0,0);	break;
 		
 			}
 		}
@@ -234,7 +260,7 @@ void Camera::DrawGrid()
 	fStart = m_fGridSpace * (float)iStart;
 
 	// Draw X-Grid Lines
-	for(int x = fStart; x < fToX; x += m_fGridSpace) {
+	for(float x = fStart; x < fToX; x += m_fGridSpace) {
 		kStart	= m_kOrthoAxisX * x + m_kOrthoAxisY * fFromY;	
 		kEnd		= m_kOrthoAxisX * x + m_kOrthoAxisY * fToY;	
 		glVertex3f(kStart.x,kStart.y,kStart.z);
@@ -244,7 +270,7 @@ void Camera::DrawGrid()
 	// Draw Y-Grid Lines
 	iStart = fFromY / m_fGridSpace;
 	fStart = m_fGridSpace * (float)iStart;
-	for(int y = fStart; y < fToY; y += m_fGridSpace) {
+	for(float y = fStart; y < fToY; y += m_fGridSpace) {
 		kStart	= m_kOrthoAxisX * fFromX	+ m_kOrthoAxisY * y;	
 		kEnd		= m_kOrthoAxisX * fToX		+ m_kOrthoAxisY * y;	
 		glVertex3f(kStart.x,kStart.y,kStart.z);
@@ -257,6 +283,52 @@ void Camera::DrawGrid()
 	glEnable(GL_LIGHTING);
 
 }
+
+float FSign(float fIn)
+{
+	if(fIn >= 0.0)	return 1;
+		else return -1;
+}
+
+Vector3 Camera::SnapToGrid(Vector3 kPos)
+{
+	// Ignore if not a Ortho View.
+	if(m_eMode == CAMMODE_PERSP)	return kPos;
+	if(m_bGridSnap == false)		return kPos;
+
+	int		iStart;
+	Vector3	kNewPos;
+	Vector3  kSign;
+	kSign.x  = FSign(kPos.x);
+	kSign.y  = FSign(kPos.y);
+	kSign.z  = FSign(kPos.z);
+   kPos.Abs();
+
+	kPos += Vector3(m_fGridSpace / 2.0, m_fGridSpace / 2.0, m_fGridSpace / 2.0);
+
+	iStart = kPos.x / m_fGridSpace;
+	kNewPos.x = m_fGridSpace * (float)iStart;
+	iStart = kPos.y / m_fGridSpace;
+	kNewPos.y = m_fGridSpace * (float)iStart;
+	iStart = kPos.z / m_fGridSpace;
+	kNewPos.z = m_fGridSpace * (float)iStart;
+	
+/*
+	if(m_kOrthoAxisZ.x)
+		kNewPos.x = kPos.x;
+	if(m_kOrthoAxisZ.y)
+		kNewPos.y = kPos.y;
+	if(m_kOrthoAxisZ.z)
+		kNewPos.z= kPos.z;
+*/
+
+	kNewPos.x *= kSign.x;
+	kNewPos.y *= kSign.y;
+	kNewPos.z *= kSign.z;
+
+	return kNewPos;
+}
+
 
 void Camera::ClearViewPort() 
 {
