@@ -194,17 +194,11 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 
 void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 {
-//	cout<<"loading"<<endl;
 	char namn[50];
 			
 	pkPackage->Read((void*)namn,50);
 						
 	m_kName=namn;
-//	cout<<"NAMN:"<<namn<<endl;
-			
-//	pkPackage->Read(m_kPos);	
-//	pkPackage->Read(m_kRot);	
-//	pkPackage->Read(m_kVel);
 			
 	pkPackage->Read((void*)&m_kPos,12);	
 	pkPackage->Read((void*)&m_kRot,12);	
@@ -215,8 +209,6 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 	int iNrOfPropertys;
 	pkPackage->Read((void*)&iNrOfPropertys,4);
 			
-//	cout<<"propertys "<<iNrOfPropertys<<endl;
-		
 	for(int i=0;i<iNrOfPropertys;i++)
 	{
 		//create a new propertydescription
@@ -225,14 +217,11 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 		//read property name
 		char propertyname[50];
 		pkPackage->Read((void*)propertyname,50);				
-//		cout<<"property name "<<propertyname<<endl;
 		newpropdesc->m_kName=propertyname;
 		
 		//read size
 		int iSize;
 		pkPackage->Read((void*)&iSize,4);
-		
-//		cout<<iSize<<endl;
 		
 		//read data
 		char data;
@@ -241,8 +230,6 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 			pkPackage->Read((void*)&data,1);
 			newpropdesc->m_kData.Write((void*)&data,1);
 		}
-		
-//		newpropdesc->m_kData.Write((void*)((char*)pkPackage->GetDataPointer())[pkPackage->GetPos()],iSize);
 		
 		//add property to list
 		m_acPropertyList.push_back(newpropdesc);
@@ -265,7 +252,6 @@ Object::Object() {
 	m_bLoadChilds=true;
 	m_bSave=true;
 	
-	
 	m_pkParent=NULL;
 	m_akChilds.clear();	
 }
@@ -276,16 +262,6 @@ Object::~Object() {
 		m_pkParent->RemoveChild(this);
 	
 	DeleteAllChilds();
-/*	
-	m_bLockedChilds=true;
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-//		m_pkObjectMan->Delete(*it);
-//		m_pkObjectMan->Remove(*it);
-//		delete (*it);
-		delete (*it);		
-	}
-	m_bLockedChilds=false;
-*/	
 	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		delete (*it);
@@ -307,6 +283,8 @@ Property* Object::GetProperty(const char* acName) {
 
 void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
+	//get this objects propertys
+	GetPropertys(akPropertys,iType,iSide);	
 	
 	//first get propertys from all childs
 	if(m_iUpdateStatus != UPDATE_NONE ){
@@ -314,35 +292,19 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 			(*it)->GetAllPropertys(akPropertys,iType,iSide);
 		}			
 	}
-	
-	GetPropertys(akPropertys,iType,iSide);
-/*	
-	//then get this objects propertys
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
-			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
-				akPropertys->push_back((*it));			
-			}
-		}	
-	}*/
 }
 
 
 
 void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
-//	int iNrOProps=0;
-	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
 			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
 				akPropertys->push_back((*it));			
-//				cout<<"NAME "<<(*it)->m_acName<<endl;
-//				iNrOProps++;
 			}
 		}	
 	}
-//	return iNrOProps;
 }
 
 
@@ -357,11 +319,6 @@ bool Object::AddProperty(Property* pkNewProperty) {
 
 bool Object::AddProperty(const char* acName)
 {
-/*	Property* pProp = m_pkPropFactory->CreateProperty(acName);
-	if(!pProp)
-		return;*/
-
-
 	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
 	
 	if(pProp==NULL)
@@ -369,7 +326,6 @@ bool Object::AddProperty(const char* acName)
 		cout<<"Error Property "<<acName<<" Not Registered"<<endl;
 		return false;
 	}
-
 
 	AddProperty(pProp);
 	return true;
@@ -397,42 +353,6 @@ bool Object::RemoveProperty(const char* acName) {
 	return false;
 }
 
-/*
-void Object::Update(){
-
-	//if the object is static then only update those propertys that are static propertys
-//	if(m_bStatic){
-//		Update(PROPERTY_TYPE_STATIC);
-//		return;
-//	}
-
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		(*it)->Update();
-	}
-}
-*/
-
-/*
-void Object::Update(int iType,int iSide){
-
-	//first update all childs
-	if(m_bUpdateChilds){
-		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-			(*it)->Update(iType,iSide);
-		}		
-	}	
-	
-	//thenupdate propertys
-	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
-		if((*it2)->m_iType == iType){
-			if((*it2)->m_iSide == iSide){
-				(*it2)->Update();
-			}
-		}
-	}
-}
-*/
-
 bool Object::Update(const char* acName){
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
@@ -442,21 +362,6 @@ bool Object::Update(const char* acName){
 	}
 	return false;
 }
-
-/*
-void Object::Remove() {
-	if(m_pkObjectMan!=NULL) {
-		m_pkObjectMan->Delete(this);	
-	}
-}
-*/
-
-/*
-void Object::ObjectUpdate() {
-	
-}
-
-*/
 
 void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 //	cout<<"This Object Has not Collision handler"<<endl;
@@ -643,11 +548,11 @@ void Object::PrintTree(int pos)
 
 void Object::GetAllObjects(list<Object*> *pakObjects)
 {
+	pakObjects->push_back(this);	
+	
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->GetAllObjects(pakObjects);
 	}	
-
-	pakObjects->push_back(this);
 }
 
 void Object::AttachToClosestZone()
@@ -656,12 +561,13 @@ void Object::AttachToClosestZone()
 	float mindistance=999999999;
 	Object* minobject=m_pkObjectMan->GetWorldObject();
 
-	
 	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
-	
 
 	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
 		if((*it)->GetName()=="ZoneObject"){
+			//dont attach this object to this object ;)
+			if((*it)==this)
+				continue;
 			float distance = abs(((*it)->GetPos() - m_kPos).Length());
 			if(distance<mindistance){
 				mindistance=distance;
@@ -677,12 +583,11 @@ void Object::AttachToClosestZone()
 
 void Object::Save(ObjectDescriptor* ObjDesc)
 {
-
-//	ObjectDescriptor* tempdesc = new ObjectDescriptor;
 	ObjDesc->Clear();
 	
 	//set name
-	ObjDesc->m_kName=GetName();
+	ObjDesc->m_kName=GetName();	
+	
 	ObjDesc->m_kPos=GetPos();
 	ObjDesc->m_kRot=GetRot();
 	ObjDesc->m_kVel=GetVel();
@@ -701,3 +606,41 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	}
 	
 }
+
+
+/*
+void Object::Update(int iType,int iSide){
+
+	//first update all childs
+	if(m_bUpdateChilds){
+		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+			(*it)->Update(iType,iSide);
+		}		
+	}	
+	
+	//thenupdate propertys
+	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
+		if((*it2)->m_iType == iType){
+			if((*it2)->m_iSide == iSide){
+				(*it2)->Update();
+			}
+		}
+	}
+}
+*/
+
+
+/*
+void Object::Remove() {
+	if(m_pkObjectMan!=NULL) {
+		m_pkObjectMan->Delete(this);	
+	}
+}
+*/
+
+/*
+void Object::ObjectUpdate() {
+	
+}
+
+*/

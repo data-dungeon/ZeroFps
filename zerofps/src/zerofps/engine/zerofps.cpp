@@ -13,11 +13,11 @@ ZeroFps::ZeroFps(void)
 	m_pkInput=new Input();		
 	m_pkPropertyFactory=new PropertyFactory();
 	m_pkFrustum = new Frustum;	
+	m_pkLight=new Light();	
 	m_pkRender=new Render();
 	m_pkConsole=new Console();	
 	m_pkCmd=new CmdSystem;
 	m_pkAudioMan=new AudioManager(this);
-	m_pkLight=new Light();
 	m_pkObjectMan=new ObjectManager();
 	m_pkCollisionMan=new CollisionManager();	
 	m_pkSBM=new SoundBufferManager(m_pkFile);	
@@ -374,10 +374,14 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	//get the frustrum for frustum culling
 //	m_pkRender->GetFrustum();				
 	m_pkFrustum->GetFrustum();				
+	
+	
 	//Lighting needs camera position for light calculation
-	m_pkLight->SetCamera(m_pkCamera->GetPos());				
+	//m_pkLight->SetCamera(m_pkCamera->GetPos());				
+	
+	
 	//update all lights
-	m_pkLight->Update();	
+	//m_pkLight->Update();	
 		
 }
 static char Devformat_text[4096];	//
@@ -605,4 +609,5 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("HeightMapRenderProperty",Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
+	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
 }

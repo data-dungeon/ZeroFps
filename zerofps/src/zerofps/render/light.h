@@ -84,6 +84,7 @@ class RENDER_API Light : public ZFObject {
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update();
+		void Update(Vector3 kPos);
 //		bool Comp(LightSource* l1,LightSource* l2);
 };
 

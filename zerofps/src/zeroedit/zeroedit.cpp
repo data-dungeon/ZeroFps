@@ -1,6 +1,6 @@
 #include "zeroedit.h"
 
-ZeroEdit Editor("ZeroEdit",800,600,16);
+ZeroEdit Editor("ZeroEdit",1024,768,16);
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
 {
@@ -76,8 +76,9 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1,1,1,1);	//Dag
-		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
+//		sol->kDiffuse=Vector4(.1,.1,.1,1);	//Dag
+		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
+//		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 		sol->fConst_Atten=1;
@@ -167,6 +168,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			} else  {
 				m_pkMap->GenerateNormals(); 
 				m_pkMap->GenerateTextures();
+				CreateZones();
 			}
 			
 			break;
@@ -190,6 +192,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Creating new map with size %d",size);
 			CreateNew(size);
+			CreateZones();
+			
 			break;
 			
 		case FID_MAKETEMPLATE:
@@ -225,8 +229,10 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 		
-			if(!pkObjectMan->LoadTemplate(kCommand->m_kSplitCommand[1].c_str()))
+			if(!pkObjectMan->LoadTemplate(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Error loading template");
+				break;
+			}
 			
 			pkConsole->Printf("Template %s Loaded",kCommand->m_kSplitCommand[1].c_str());
 			break;
@@ -498,8 +504,17 @@ void ZeroEdit::Input()
 				object->AttachToClosestZone();
 				m_pkCurentChild=object;
 			}
-			break;
-			
+			if(pkInput->Pressed(KEY_C))
+			{
+				list<Property*> kProp;
+				m_pkCurentChild->GetAllPropertys(&kProp,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL);
+				
+				for(list<Property*>::iterator it=kProp.begin();it!=kProp.end();it++) {
+					(*it)->Update();				
+				}				
+			}
+					
+			break;			
 	}
 }
 

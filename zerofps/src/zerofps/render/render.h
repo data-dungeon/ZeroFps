@@ -13,7 +13,7 @@
 #include "render_x.h"
 //#include "../engine/engine.pkg"
 #include "texturemanager.h"
-
+#include "light.h"
 
 using namespace std;
 
@@ -21,6 +21,8 @@ class RENDER_API Render : public ZFObject {
 	private:
 		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
+		Light* m_pkLight;
+		
 		char aCurentFont[256];
 		bool m_FogEnable;		
 		int m_iSlicesize;	  //height meens greater detail att longer range		

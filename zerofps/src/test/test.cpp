@@ -124,7 +124,7 @@ void Test::OnInit(void)
 	}
 */
 	CreateZones();
-	pkObjectMan->LoadAllObjects("forest.zol");
+	pkObjectMan->LoadAllObjects("forest2.zol");
 
 
 	glEnable(GL_LIGHTING );
@@ -180,7 +180,7 @@ void Test::OnInit(void)
 	pkAlSys->AddSound(welcome);
 
 	// Gui
-	InitUI();
+//	InitUI();
 
 	ZFObjectManger::GetInstance()->PrintObjects();
 }

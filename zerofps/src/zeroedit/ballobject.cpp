@@ -7,11 +7,18 @@ BallObject::BallObject() {
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
+/*
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 //	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 	madp->SetBase("../data/mad/tree.mad");
 	madp->SetScale(0.5);
+*/
+
+	AddProperty("ModelProperty");
+
+	AddProperty("LightProperty");
+
 
 	onGround = false;
 }

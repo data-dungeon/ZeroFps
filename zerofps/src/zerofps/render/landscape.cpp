@@ -282,10 +282,23 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
-			if(!m_pkFrustum->CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
+			Vector3 SliceCenter(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
+									  kmap->m_kPosition.y+34,
+									  kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2);
+		
+			if(!m_pkFrustum->CubeInFrustum(SliceCenter.x,SliceCenter.y,SliceCenter.z,m_iSlicesize/2,54,m_iSlicesize/2))
+				continue;
+		
+			//recalculate lights for this land slice
+			glPushMatrix();			
+				glTranslatef(-kmap->m_kPosition.x,-kmap->m_kPosition.y,-kmap->m_kPosition.z);
+				m_pkLight->Update(SliceCenter);
+			glPopMatrix();
+/*			if(!m_pkFrustum->CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
 													kmap->m_kPosition.y+34,
 													kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,54,m_iSlicesize/2))
 				continue;
+*/			
 		
 			//set lop steps depending on the distance to the center of the lod tile
 			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,

@@ -5,6 +5,7 @@ Render::Render()
  
  	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+ 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
 //	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=32;		//grid size of lod tiles

@@ -28,6 +28,9 @@ class ENGINE_API ModelProperty: public Property {
 		void PackTo(NetPacket* pkNetPacket) ;
 		void PackFrom(NetPacket* pkNetPacket) ;
 
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
+
 };
 
 Property* Create_ModelProperty();

@@ -54,7 +54,6 @@ void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 
 void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( spot->kDiffuse );		
-
 }
 
 Property* Create_LightProperty()
