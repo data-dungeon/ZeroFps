@@ -4,7 +4,7 @@
 #ifndef _DONT_MAIN
 	#define _MAINAPPLICATION_
 	#define _DONT_MAIN
-#endif _DONT_MAIN
+#endif
 
 #include <iostream>
 #include <cmath>

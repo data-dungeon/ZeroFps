@@ -11,6 +11,8 @@
 
 //class ZeroEdit;
 
+#define _DONT_MAIN
+
 #include "zeroedit.h"
 
 typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
