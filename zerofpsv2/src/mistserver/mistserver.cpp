@@ -237,6 +237,45 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	m_pkRender->DrawCircle(kVertexList, Vector3(1,1,0));
 }
 
+void MistServer::DrawSelectedEntity()
+{
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+	
+		if(pkEnt) {
+			float fRadius = pkEnt->GetRadius();
+			if(fRadius < 1.0)
+				fRadius = 1.0;
+
+			Vector3 kMin = pkEnt->GetWorldPosV() - fRadius/2;
+			Vector3 kMax = pkEnt->GetWorldPosV() + fRadius/2;
+
+			if(m_iCurrentObject == (*itEntity))
+				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,1 ) );
+			else
+				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+			}
+	}
+}
+
+void MistServer::Select_Toggle(int iId)
+{
+	cout << "Select_Toggle: " << iId;
+	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end() ) {
+		cout << "Add " << endl;
+		Select_Add(iId);
+		m_iCurrentObject = iId;
+		}
+	else {
+		cout << "Remove " << endl;
+		Select_Remove(iId);
+		if(iId == m_iCurrentObject)
+			m_iCurrentObject = -1;
+		}
+}
+
+
 void MistServer::OnIdle()
 {	
 	m_pkFps->SetCamera(m_pkCamera);		
@@ -267,42 +306,14 @@ void MistServer::OnIdle()
 	{
 		UpdateZoneMarkerPos();		
 		DrawZoneMarker(m_kZoneMarkerPos);		
-		
-		
-		//draw selected zone marker
-		if(m_iCurrentMarkedZone != -1)
-		{
-			ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		
-			if(z)
-			{
-				Vector3 kMin = z->m_kPos - z->m_kSize/2;
-				Vector3 kMax = z->m_kPos + z->m_kSize/2;
-		
-				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
-			}
-		}
-		
 	}
+	
+	DrawSelectedEntity();
 	
 	if(m_iEditMode == EDIT_OBJECTS)
 	{	
 		UpdateObjectMakerPos();
-		
 		DrawCrossMarker(m_kObjectMarkerPos);		
-	
-		if(m_iCurrentObject != -1)
-		{
-			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-			
-			if(pkObj)
-			{
-				Vector3 kMin = pkObj->GetWorldPosV() - pkObj->GetRadius()/2;
-				Vector3 kMax = pkObj->GetWorldPosV() + pkObj->GetRadius()/2;
-		
-				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
-			}
-		}
 	}
 
 	PathTest();
@@ -322,13 +333,10 @@ HeightMap* MistServer::SetPointer()
 
 	m_kDrawPos.Set(0,0,0);
 
-	int id = m_iCurrentMarkedZone;	//m_pkObjectMan->GetZoneIndex(m_iCurrentMarkedZone,-1,false);
-	
-	if(id ==-1)	return NULL;
-	ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
-	if(!kZData)	return NULL;
-	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
-	if(!hmrp)	return NULL;
+	Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	if(!pkEntity)	return NULL;
+	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+	if(!hmrp)		return NULL;
 
 	Vector3 start	= m_pkFps->GetCam()->GetPos();
 	Vector3 dir		= Get3DMousePos(true);
@@ -342,7 +350,7 @@ HeightMap* MistServer::SetPointer()
 	//m_kDrawPos = start + dir * (fDiff);
 	Plane kP;
 	kP.m_kNormal.Set(0,1,0);
-	kP.m_fD = - kZData->m_pkZone->GetWorldPosV().y;
+	kP.m_fD = - pkEntity->GetWorldPosV().y;
 
 	Vector3 kIsect;
 
@@ -362,13 +370,13 @@ void MistServer::HMModifyCommand(float fSize)
 {
 	float fTime = m_pkFps->GetGameFrameTime();
 
-	for(int i=0; i<m_pkObjectMan->GetNumOfZones(); i++) {
-		ZoneData* kZData = m_pkObjectMan->GetZoneData(i);
-		if(kZData == NULL)	continue;
-		if(kZData->m_pkZone == NULL)	continue;
-		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+		if(!pkEntity)			continue;
+		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
-	
+
 		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 
 		m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
@@ -380,42 +388,40 @@ void MistServer::HMModifyCommand(float fSize)
 			m_kSelectedHMVertex.clear();
 			}
 		}
-
 }
 
 // Handles input for EditMode Terrain.
 void MistServer::Input_EditTerrain()
 {
-	P_HMRP2* hmrp = NULL;
-
-	int id = m_iCurrentMarkedZone;
-	ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
-	if(kZData)
-		hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
-
-
-	if(m_pkInput->VKIsDown("inrad+"))	m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("inrad-"))	m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("outrad+"))	m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("outrad-"))	m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 
-	if(m_pkInput->VKIsDown("hmraise"))			HMModifyCommand(5); 
-	if(m_pkInput->VKIsDown("hmlower"))			HMModifyCommand(-5);
-	if(m_pkInput->VKIsDown("hmsm") ) 			HMModifyCommand(0.0); 
+	if(m_pkInput->VKIsDown("hmraise"))		HMModifyCommand(5); 
+	if(m_pkInput->VKIsDown("hmlower"))		HMModifyCommand(-5);
+	if(m_pkInput->VKIsDown("hmsm") ) 		HMModifyCommand(0.0); 
 
-	if(m_pkInput->VKIsDown("hmpaint")) {
-		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-		hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+	if(m_pkInput->VKIsDown("hmpaint")) 
+	{
+		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+		{
+			Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+			if(!pkEntity)			continue;
+			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+			if(hmrp == NULL)		continue;
+			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+			}
 		}
 
 	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		
 	if(m_pkInput->Pressed(KEY_2)) m_iEditLayer = 2;			
 	if(m_pkInput->Pressed(KEY_3)) m_iEditLayer = 3;			
 
-	if(m_pkInput->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
-
+//	if(m_pkInput->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
 }
 
 // Handles input for EditMode Zones.
@@ -477,6 +483,9 @@ void MistServer::Input_EditZone()
 	if(m_pkInput->VKIsDown("selectzone"))
 	{		
 		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		if(pkData && pkData->m_pkZone)
+			Select_Toggle(pkData->m_pkZone->iNetWorkID);
 	}
 
 	if(m_pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
@@ -518,6 +527,7 @@ void MistServer::Input_EditObject()
 			if(pkObj)
 			{
 				m_iCurrentObject = pkObj->iNetWorkID;
+				Select_Toggle(m_iCurrentObject);
 			}
 		}
 	}
@@ -659,9 +669,13 @@ void MistServer::Input()
 	m_pkInput->RelMouseXY(x,z);	
 
 	if(m_pkInput->VKIsDown("makeland")) {
-		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		ZoneData* z = m_pkObjectMan->GetZoneData(id);
-		m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+		if(!pkObj)
+			return;		
+		//int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		//ZoneData* z = m_pkObjectMan->GetZoneData(id);
+		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
+		m_pkFps->AddHMProperty(pkObj, pkObj->iNetWorkID,m_kZoneSize);
 	}  
 
 	Vector3 kMove(0,0,0);

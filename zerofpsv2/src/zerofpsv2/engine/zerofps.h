@@ -280,7 +280,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		friend class NetWork;
 
 	
-		void AddHMProperty(ZoneData* pkZd,int iNetWorkId, Vector3 kZoneSize);
+		void AddHMProperty(Entity* pkEntity,int iNetWorkId, Vector3 kZoneSize);
 };
 
 

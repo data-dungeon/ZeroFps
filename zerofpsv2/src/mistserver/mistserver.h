@@ -107,6 +107,14 @@ class MistServer :public Application , public ZGuiApp {
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Entity*	GetTargetObject();		
 
+		// Selection of Entitys.
+		set<int>	m_SelectedEntitys;
+		void Select_None(	)				{ m_SelectedEntitys.clear(); }
+		void Select_Add( int iId )		{ m_SelectedEntitys.insert(iId); }
+		void Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
+		void DrawSelectedEntity();
+		void Select_Toggle(int iId);
+
 		void SetZoneEnviroment(const char* szEnviroment);
 		string GetZoneEnviroment();
 		void UpdateZoneMarkerPos();

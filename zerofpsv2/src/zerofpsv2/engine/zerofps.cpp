@@ -1208,10 +1208,10 @@ int ZeroFps::GetClientObjectID()
 }*/
 
 
-void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
+void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.
-	Entity* pkEntity = this->m_pkObjectMan->GetObjectByNetWorkID(iNetWorkId);
+	//Entity* pkEntity = this->m_pkObjectMan->GetObjectByNetWorkID(iNetWorkId);
 	if(!pkEntity)										return;
 	if(pkEntity->GetProperty("P_HMRP2"))		return;
 
