@@ -142,23 +142,42 @@ void DarkMetropolis::RenderInterface(void)
 		else
 			m_strGameInfoText = "";
 	
+		P_DMClickMe* pkClickMe;
+		if((pkClickMe=(P_DMClickMe*)pkEnt->GetProperty("P_DMClickMe")))
+		{
+			if ( !pkClickMe->m_bIsHouse )
+			{
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GEQUAL, 0.1);
+				
+				glColor3f (0, 0, 1);
+
+				m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.5, 0.5, 0.5), m_iMarkerTextureID, Vector3(1,1,0) );
+
+				glDisable(GL_ALPHA_TEST);
+			}
+		}
+
 		if(P_DMCharacter* pkChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 		{
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GEQUAL, 0.1);
-			
-			Vector3 kColor;
+			if ( pkChar->GetStats()->m_iLife > 0 )
+			{
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GEQUAL, 0.1);
+				
+				Vector3 kColor;
 
-			if ( pkChar->m_iTeam == 0 )
-				kColor = Vector3 (0,255,0);
-			else if ( pkChar->m_iTeam == 1 )
-				kColor = Vector3 (0,0,255);
-			else
-				kColor = Vector3 (255,255,255);
+				if ( pkChar->m_iTeam == 0 )
+					kColor = Vector3 (0,255,0);
+				else if ( pkChar->m_iTeam == 1 )
+					kColor = Vector3 (0,0,255);
+				else
+					kColor = Vector3 (255,255,255);
 
-			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, kColor );
+				m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, kColor );
 
-			glDisable(GL_ALPHA_TEST);
+				glDisable(GL_ALPHA_TEST);
+			}
 
 			if(pkChar->m_iTeam == 0)
 				m_strGameInfoText = string("Agent: ") + pkChar->GetStats()->m_strName;

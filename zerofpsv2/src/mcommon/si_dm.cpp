@@ -86,6 +86,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetGunBulletsPerAmmo", DMLua::SetGunBulletsPerAmmoLua);	
 	pkScript->ExposeFunction("SetGunSound", DMLua::SetGunSoundLua);	
 	pkScript->ExposeFunction("SetGunShootAnim", DMLua::SetGunShootAnimLua);	
+	pkScript->ExposeFunction("SetGunBurstLenght", DMLua::SetGunBurstLenghtLua);	
 
 	// common
 	pkScript->ExposeFunction("SetVar", DMLua::SetVarLua);
@@ -343,13 +344,38 @@ int DMLua::SetGunBulletsPerAmmoLua (lua_State* pkLua)
 
 	if ( pkGunP == 0 )
 	{
-		cout << "Warning! DMLua::SetBurstLenghtLua: Must use on an object with P_DMGun!" << endl;
+		cout << "Warning! DMLua::SetGunBulletsPerAmmoLua: Must use on an object with P_DMGun!" << endl;
 		return 0;
 	}
 
 	double dBLenght;
 	g_pkScript->GetArgNumber(pkLua, 1, &dBLenght);
 	pkGunP->SetBulletsPerAmmo ( int(dBLenght) );
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetGunBurstLenghtLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetGunBurstLenghtLua: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	double dBLenght;
+	g_pkScript->GetArgNumber(pkLua, 1, &dBLenght);
+	pkGunP->SetBurstLengt( float(dBLenght) );
 
 	return 0;
 }
@@ -368,7 +394,7 @@ int DMLua::SetGunSoundLua (lua_State* pkLua)
 
 	if ( pkGunP == 0 )
 	{
-		cout << "Warning! DMLua::SetBurstLenghtLua: Must use on an object with P_DMGun!" << endl;
+		cout << "Warning! DMLua::SetGunSoundLua: Must use on an object with P_DMGun!" << endl;
 		return 0;
 	}
 

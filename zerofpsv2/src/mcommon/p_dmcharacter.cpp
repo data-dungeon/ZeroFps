@@ -191,7 +191,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	if ( m_kStats.m_iLife < 0 )
 		m_kStats.m_iLife = 0;
 	
-	cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
+	//cout<<"LifeLeft:" << m_kStats.m_iLife << endl;
 
 	if(m_kStats.m_iLife <= 0)
 	{
@@ -248,7 +248,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	if ( pkWeapon == 0 )
 	{
-		cout << "Warning! P_DMCharacter::Shoot: Tried to shoot without a weapon!" << endl;
+		//cout << "Warning! P_DMCharacter::Shoot: Tried to shoot without a weapon!" << endl;
 		return;
 	}
 
@@ -256,7 +256,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	if ( pkP_Gun == 0)
 	{
-		cout << "Error! P_DMCharacter::Shoot: Tried to shoot with a non-weapon!" << endl;
+		//cout << "Error! P_DMCharacter::Shoot: Tried to shoot with a non-weapon!" << endl;
 		return;
 	}
 
@@ -288,18 +288,6 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	kRotM.Transponse();
 	m_pkObject->SetLocalRotM(kRotM);
 
-	if ( fDist < pkP_Gun->Range() )
-	{
-		// fAim = degrees
-		float fRand = sin(m_kStats.m_fAim / (180.f / PI)) * fDist;
-
-		kLocation.x += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
-		kLocation.y += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
-		kLocation.z += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
-
-		pkP_Gun->Fire (kLocation);
-
-	}
 
 	// Start shoot animation, if gun isn't empty
 	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
@@ -314,6 +302,19 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 			if ( pkPath )
 				pkPath->ClearPath();
 		}
+	}
+
+	if ( fDist < pkP_Gun->Range() )
+	{
+		// fAim = degrees
+		float fRand = sin(m_kStats.m_fAim / (180.f / PI)) * fDist;
+
+		kLocation.x += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+		kLocation.y += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+		kLocation.z += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
+
+		pkP_Gun->Fire (kLocation);
+
 	}
 
 }
@@ -716,19 +717,16 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 					if( (pkPickEnt->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length() < 1) 
 					{
 						if(pkPickEnt->GetUseZones())
-						{							
+						{	
 							if(m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
 							{	
 								m_pkAudioSys->StartSound("data/sound/pick_up.wav", 
 									pkPickEnt->GetWorldPosV());
-								cout<<"Pickup an item"<<endl;
 								return true;
 							}
 							else
-							{
-								cout<<"could't pickup item"<<endl;
 								return true;
-							}
+
 						}
 					}
 				}
@@ -755,7 +753,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 						}
 						else
 						{
-							cout<<"Cant reach the door"<<endl;
+							//cout<<"Cant reach the door"<<endl;
 							return true;
 						}
 					}
@@ -776,14 +774,13 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 
 						if( kPos1.DistanceTo(kPos2) < 2)
 						{
-							cout<<"blub"<<endl;
 							pkClick->Click( m_pkObject->GetEntityID() );
 							//pkHQ->InsertCharacter(m_pkObject->GetEntityID());
 							return true;
 						}
 						else
 						{
-							cout<<"Cant reach clickme entity"<<endl;
+							//cout<<"Cant reach clickme entity"<<endl;
 							return true;
 						}
 					}

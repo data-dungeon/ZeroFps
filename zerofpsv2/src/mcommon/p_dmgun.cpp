@@ -48,6 +48,14 @@ void P_DMGun::Init()
 
 bool P_DMGun::Fire(Vector3 kTarget)
 {	
+	// update target position
+	Vector3 kTemp = m_pkObject->GetWorldPosV();
+	m_fTargetDist = kTarget.DistanceTo(kTemp);
+	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
+
+	if ( m_bFireing )
+		return false;
+
 	float t = m_pkObjMan->GetSimTime();
 
 	if(!m_bFireing)
@@ -58,10 +66,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	
 	m_fTimeFired = t;
 	m_bFireing = true;
-	Vector3 kTemp = m_pkObject->GetWorldPosV();
-	m_fTargetDist = kTarget.DistanceTo(kTemp);
-	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
-	
+
 	return true;
 }
 

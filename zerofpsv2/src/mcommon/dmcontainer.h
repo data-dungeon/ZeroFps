@@ -45,10 +45,11 @@ class MCOMMON_API DMContainer
 		void ClearItem(int iID);
 	
 		bool ItemTypeOK(int iType);
-		int GetNrOfItems();
-	
+
 	public:
-		
+
+		int GetNrOfItems();
+
 		DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true);		
 		
 		int GetOwnerID()			{ return m_iOwnerID; }
