@@ -46,6 +46,7 @@ struct texture
 /// Texture can be refered to by name	or id (not same thing as opengl handle).
 class RENDER_API TextureManager : public ZFSubSystem {
 	private:
+
 		enum FuncId_e
 		{
 			FID_LISTTEXTURES,										// List all Textures to the console.
@@ -83,7 +84,11 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 
 	public:
-		void FreeTexture(texture* pkTex);
+      static bool ms_bMipMap;
+
+      static void SetMipMap (bool bMipMap)       { ms_bMipMap = bMipMap; }
+
+      void FreeTexture(texture* pkTex);
 
 		TextureManager();
 		bool AddMipMapLevel(int iLevel,const char* acNewFile);
@@ -95,7 +100,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 		bool UnLoad(int iTextureID);		
 		
-		int Load(const char* acFileName,int iOption);		
+		int Load(const char* acFileName,int iOption=1);		
 		
 		void ClearAll();
 		int CurentTexture() { return m_iCurrentTexture;};

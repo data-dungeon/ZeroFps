@@ -7,6 +7,8 @@
 #include "../basic/basicconsole.h"
 
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
+
+bool TextureManager::ms_bMipMap;
  
 TextureManager::TextureManager()
  : ZFSubSystem("TextureManager") 
@@ -169,7 +171,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
 	}
 
-	if(pkTex->m_bMipMapping){
+	if(ms_bMipMap){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->width,pkImage->height,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->pixels);  		
