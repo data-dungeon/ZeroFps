@@ -354,6 +354,7 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
 }
 
+// Skapa bakgrundsbilden genom att klistra samman massa labels som har skapats från skript.
 void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 {
 	list<ZGuiWnd*> kChilds;
@@ -452,14 +453,12 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->Show();
 
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
-		{
 			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
 			{
 				float fTime = (float) SDL_GetTicks() / 1000.0f;
 				m_fPickUpTimer = fTime;
 				pkNewSlot->Hide();
 			}
-		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
@@ -476,7 +475,6 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
-
 		m_vkInventoryItemList.push_back(kNewSlot);
 	}	
 }
@@ -504,8 +502,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
-		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
-			szItemName, "", m_pkContainerWnd, x, y, w, h, 0);
+		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, szItemName, "", 
+			m_pkContainerWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 		pkNewSlot->SetZValue(12121);
 
@@ -583,9 +581,9 @@ void InventoryDlg::OnDropItem()
 	if(bInsideGrid == false) bInsideGrid = rcScreenMain.Inside(rcDropWnd.Right, rcDropWnd.Bottom);
 	if(bInsideGrid == false) bInsideGrid = rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Bottom);
 
-	if(!bInsideGrid)
+	if(bInsideGrid == false) // klickat utanför gridden eller i gridden för det andra fönstret.
 	{
-		if(m_kMoveSlot.bIsInventoryItem) // flyttar på ett inventoryitem till containern
+		if(m_kMoveSlot.bIsInventoryItem) // flytta ett inventory item till containern?
 		{
 			if(m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
 				(m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top) ||
@@ -594,21 +592,31 @@ void InventoryDlg::OnDropItem()
 				 m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Bottom) ) )
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
-				{
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 					{												
 						Point p = SlotFromWnd(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd, false);
 						Point s = SlotSizeFromWnd(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd);
-						if(TestForCollision(p, s, false))
+						
+						int container_id = m_iActiveContainerID;
+
+						int collision_slot = TestForCollision(p, s, false);
+						if(collision_slot > 0)
+						{
 							p = Point(-1,-1);
+							if(m_vkContainerItemList[collision_slot].bIsContainer)
+							{
+								container_id = m_vkContainerItemList[collision_slot].iItemID;	
+								if(container_id != m_iActiveContainerID)								
+									g_kMistClient.SendRequestContainer(container_id);								
+							}
+						}
 
 						g_kMistClient.SendMoveItem(
-							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,m_iActiveContainerID,p.x,p.y);
+							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,container_id,p.x,p.y);
 						m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
 						return;
 					}
-				}
 			}
 			else
 			{				
@@ -623,7 +631,7 @@ void InventoryDlg::OnDropItem()
 					}
 			}
 		}
-		else // flyttar på ett containeritem till inventoryt
+		else // flyttar ett containeritem till inventory fönstret?
 		{
 			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top) ||
 				m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Right, rcDropWnd.Top) ||
@@ -635,15 +643,26 @@ void InventoryDlg::OnDropItem()
 					{
 						Point p = SlotFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd, true);
 						Point s = SlotSizeFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd);
-						if(TestForCollision(p, s, true))
+
+						int container_id = pkCharProp->m_iInventory;
+						
+						int collision_slot = TestForCollision(p, s, true);
+						if(collision_slot > 0)
 						{
 							p = Point(-1,-1);
+							if(m_vkInventoryItemList[collision_slot].bIsContainer)
+							{
+								container_id = m_vkInventoryItemList[collision_slot].iItemID;	
+								if(container_id != m_iActiveContainerID)								
+									g_kMistClient.SendRequestContainer(container_id);								
+							}
 						}
 
 						g_kMistClient.SendMoveItem(
-							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID,pkCharProp->m_iInventory,p.x,p.y);
+							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, container_id, p.x, p.y);
 						m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
+					
 						return;
 					}
 			}
@@ -678,9 +697,9 @@ void InventoryDlg::OnDropItem()
 		int x = upper_left.x + slot_x * ICON_WIDTH + slot_x;
 		int y = upper_left.y + slot_y * ICON_HEIGHT + slot_y;
 
-		bool bCollision = TestForCollision(m_kMoveSlot.m_iIndex, m_kMoveSlot.bIsInventoryItem);
+		int iCollisionSlot = TestForCollision(m_kMoveSlot.m_iIndex, m_kMoveSlot.bIsInventoryItem);
 
-		if(bCollision == false)
+		if(iCollisionSlot == -1)
 		{
 			if(m_kMoveSlot.bIsInventoryItem)
 			{
@@ -705,14 +724,11 @@ void InventoryDlg::OnDropItem()
 			
 			g_kMistClient.RequestOpenInventory();
 		}
-		else
-		{
-			int x, y;
+		else // har släppt ett item på ett annat item.
+		{			
+			int x = rcDropWnd.Left + rcDropWnd.Width()/2;
+			int y = rcDropWnd.Top + rcDropWnd.Height()/2;
 
-			x = rcDropWnd.Left + rcDropWnd.Width()/2;
-			y = rcDropWnd.Top + rcDropWnd.Height()/2;
-
-			bool bDropedInContainer = false;
 			pair<int,bool> iItemUnderCursor = GetItemFromScreenPos(x, y);
 
 			if(iItemUnderCursor.second == true) // droped item to inventory
@@ -720,23 +736,17 @@ void InventoryDlg::OnDropItem()
 				if(iItemUnderCursor.first != -1)	
 					if(m_vkInventoryItemList[iItemUnderCursor.first].bIsContainer)		
 					{
-						int iContainerID = -1;
 						for(int i=0; i<m_vkInventoryItemList.size(); i++)						
-							if(i==iItemUnderCursor.first) {
-								iContainerID=m_vkInventoryItemList[i].iItemID;
+							if(i==iItemUnderCursor.first) 
+							{
+								g_kMistClient.SendMoveItem(
+									m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
+									m_vkInventoryItemList[i].iItemID, -1, -1);
+
+								if(m_vkInventoryItemList[i].iItemID != m_iActiveContainerID)								
+									g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);	
 								break;
 							}
-						
-						if(iContainerID != -1)
-						{
-							printf("---------------------------------------------\n");
-							printf("Trying to drop item %i to container %i in inventorywnd\n", 
-								m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, iContainerID);
-							printf("---------------------------------------------\n");
-							g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
-								iContainerID, -1, -1);
-							bDropedInContainer = true;
-						}
 					}				
 			}
 			else // droped item to container
@@ -744,23 +754,17 @@ void InventoryDlg::OnDropItem()
 				if(iItemUnderCursor.first != -1)	
 					if(m_vkContainerItemList[iItemUnderCursor.first].bIsContainer)
 					{
-						int iContainerID=-1;
 						for(int i=0; i<m_vkContainerItemList.size(); i++)						
-							if(i==iItemUnderCursor.first) {
-								iContainerID=m_vkContainerItemList[i].iItemID;
+							if(i==iItemUnderCursor.first) 
+							{								
+								g_kMistClient.SendMoveItem(
+									m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
+									m_vkContainerItemList[i].iItemID, -1, -1);
+
+								if(m_vkContainerItemList[i].iItemID != m_iActiveContainerID)								
+									g_kMistClient.SendRequestContainer(m_vkContainerItemList[i].iItemID);	
 								break;
 							}
-
-						if(iContainerID != -1)
-						{
-							printf("---------------------------------------------\n");
-							printf("Trying to drop item %i to container %i in containerwnd\n",
-								m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, iContainerID);
-							printf("---------------------------------------------\n");
-							g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
-								iContainerID, -1, -1);				
-							bDropedInContainer = true;
-						}
 					}
 			}
 
@@ -770,7 +774,7 @@ void InventoryDlg::OnDropItem()
 
 }
 
-bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
+int InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 {
 	Point test_slot, test_size;
 
@@ -788,9 +792,9 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 	return TestForCollision(test_slot, test_size, bInventory);
 }
 
-bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInventory)
+int InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInventory)
 {
-	vector<Point> kSlotsTaken;
+	vector< pair<Point, int> > kSlotsTaken; // slotpos, index
 
 	if(bInventory)
 	{
@@ -803,7 +807,7 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
-						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+						kSlotsTaken.push_back(pair<Point,int>(Point(kSlot.x+x, kSlot.y+y), i));
 			}
 		}
 	}
@@ -818,7 +822,7 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
-						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+						kSlotsTaken.push_back(pair<Point,int>(Point(kSlot.x+x, kSlot.y+y), i));
 			}
 		}
 	}
@@ -829,12 +833,13 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			{
 				Point t(test_slot.x + x, test_slot.y + y);
 
-				if(t == kSlotsTaken[i])
-					return true;
+				if(t == kSlotsTaken[i].first)
+				{
+					return kSlotsTaken[i].second;
+				}
 			}
 
-	return false;
-
+	return -1;
 }
 
 Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)

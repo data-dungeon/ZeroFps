@@ -59,8 +59,8 @@ private:
 
 	void OnDropItem();
 	void CreateContainerGrid(char slots_horz, char slots_vert);
-	bool TestForCollision(int iTestSlot, bool bInventory);
-	bool TestForCollision(Point test_slot, Point test_size, bool bInventory);
+	int TestForCollision(int iTestSlot, bool bInventory); // returns -1 if no collision or index to list eitherwise
+	int TestForCollision(Point test_slot, Point test_size, bool bInventory); // returns -1 if no collision or index to list eitherwise
 	Point SlotFromScreenPos(int x, int y, bool bInventory);
 	Point SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory);
 	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
