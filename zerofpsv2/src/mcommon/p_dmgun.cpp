@@ -26,6 +26,8 @@ P_DMGun::P_DMGun()
 	m_kDir.Set(0,0,-1);
 	m_fRandom = 	0.5;
 	m_fDamage =		5;
+
+	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
 
 P_DMGun::~P_DMGun()
@@ -49,6 +51,9 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_fTimeFired = m_pkObjMan->GetSimTime();
 	m_bFireing = true;
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
+
+	m_pkAudioSys->StartSound("data/sound/12ga_shotgun.wav",
+		m_pkObject->GetWorldPosV(), m_kDir, false);
 	
 	return true;
 }

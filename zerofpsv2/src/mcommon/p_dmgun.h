@@ -41,6 +41,7 @@ class MCOMMON_API P_DMGun: public Property {
 		
 		bool		FireBullets(int iAmount);
 
+		ZFAudioSystem* m_pkAudioSys;
 		
 
 	public:
