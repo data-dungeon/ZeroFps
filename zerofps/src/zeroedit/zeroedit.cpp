@@ -101,6 +101,8 @@ void ZeroEdit::OnInit(void)
 
 	m_pkGui = new Gui(this);
 
+	SDL_ShowCursor(SDL_DISABLE);
+
 /*	
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";

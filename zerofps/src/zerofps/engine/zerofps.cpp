@@ -345,7 +345,7 @@ void ZeroFps::ToggleGui(void)
 	{
 		if(m_bGuiTakeControl)
 		{
-			SDL_ShowCursor(SDL_DISABLE);
+			//SDL_ShowCursor(SDL_DISABLE);
 			m_bDrawDevList = !m_bGuiMode;
 		}
 		m_pkGui->Activate(m_bGuiMode);
@@ -354,7 +354,7 @@ void ZeroFps::ToggleGui(void)
 	{
 		if(m_bGuiTakeControl)
 		{
-			SDL_ShowCursor(SDL_ENABLE);
+			//SDL_ShowCursor(SDL_ENABLE);
 			m_bDrawDevList = !m_bGuiMode;
 		}
 		m_pkGui->Activate(m_bGuiMode);

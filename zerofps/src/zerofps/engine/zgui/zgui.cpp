@@ -561,8 +561,6 @@ bool ZGui::Update()
 bool ZGui::Activate(bool bActive)
 {
 	m_bActive = bActive;
-	if(m_pkCursor->IsVisible())
-		ShowCursor(m_bActive);
 	return m_bActive;
 }
 
