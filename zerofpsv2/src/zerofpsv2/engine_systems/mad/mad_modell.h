@@ -1,7 +1,7 @@
 #ifndef _ENGINE_MADMODELL_H_
 #define _ENGINE_MADMODELL_H_
 
-#include "../../engine/zfresourcedb.h"
+#include "../../basic/zfresourcedb.h"
 #include "../engine_systems_x.h"
 #include "mad_core.h"
 #include <vector>

@@ -5,7 +5,7 @@
 
 #include <vector>
 #include "../engine_systems_x.h"
-#include "../../engine/zfresource.h"
+#include "../../basic/zfresource.h"
 #include "../../engine/fh.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/zfvfs.h"

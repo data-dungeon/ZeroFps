@@ -11,7 +11,7 @@
 
 #include "../basic/zfobject.h"
 #include "engine_x.h"
-#include "zfresource.h"
+#include "../basic/zfresource.h"
 
 class ResourceCreateLink;
 class ZFResourceInfo;

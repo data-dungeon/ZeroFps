@@ -1,6 +1,7 @@
 #include "mad_modell.h"
 #include "../../render/render.h"
 #include "../../basic/zfobjectmanger.h"
+#include "../../engine/res_texture.h"
 
 float fGameTime;
 char szFullTexName[256];

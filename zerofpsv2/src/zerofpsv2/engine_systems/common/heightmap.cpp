@@ -5,8 +5,8 @@
 #include <cstdio>
 #include "heightmap.h"
 
-#include "../../engine/fh.h"
-#include "../../engine/zfresource.h"
+#include "../../engine/res_texture.h"
+//#include "../../engine/zfresource.h"
 
 int iNumOfHMVertex;
 

@@ -1206,8 +1206,7 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	glPushMatrix();
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);  
 
-	Vector3 kPos = pkIMap->GetPos() - Vector3(pkMap->GetWidth()*pkMap->GetScale() / 
-		2.0,0,pkMap->GetHeight()*pkMap->GetScale() / 2.0);
+	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
 	glTranslatef(kPos.x,kPos.y,kPos.z);
 
 

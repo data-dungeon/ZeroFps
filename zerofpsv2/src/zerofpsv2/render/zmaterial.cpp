@@ -21,6 +21,10 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bCullFace = 	true;
 	m_bAlphaTest =	false;
 	m_iDepthFunc =	LESS_DEPTH;
+	
+	m_bBlend	= false;
+	m_iBlendSrc = ONE_BLEND_SRC; 
+	m_iBlendDst = ZERO_BLEND_DST; 
 };
 
 ZMaterial::ZMaterial()
@@ -162,6 +166,13 @@ bool ZMaterial::LoadPass(int iPass)
 		newpass->m_iPolygonModeBack = m_kIni.GetIntValue(passname.c_str(),"polygonmodeback");
 	if(m_kIni.KeyExist(passname.c_str(),"depthfunc"))
 		newpass->m_iDepthFunc = m_kIni.GetIntValue(passname.c_str(),"depthfunc");
+	
+	if(m_kIni.KeyExist(passname.c_str(),"blend"))
+		newpass->m_bBlend = m_kIni.GetBoolValue(passname.c_str(),"blend");
+	if(m_kIni.KeyExist(passname.c_str(),"blendsrc"))
+		newpass->m_iBlendSrc = m_kIni.GetIntValue(passname.c_str(),"blendsrc");
+	if(m_kIni.KeyExist(passname.c_str(),"blenddst"))
+		newpass->m_iBlendDst = m_kIni.GetIntValue(passname.c_str(),"blenddst");
 	
 	
 	return true;

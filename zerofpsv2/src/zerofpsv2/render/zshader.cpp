@@ -336,8 +336,80 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 			glDepthFunc(GL_ALWAYS);			
 			break;			
 	}
-
-	glDepthFunc(pkSettings->m_iDepthFunc);
+	
+	//enable /disable blending
+	if(pkSettings->m_bBlend)
+		glEnable(GL_BLEND);
+	else
+		glDisable(GL_BLEND);
+		
+	//setup blending factors
+	int blendsrc;
+	int blenddst;
+	
+	//setup src blend factor
+	switch(pkSettings->m_iBlendSrc)
+	{
+		case ZERO_BLEND_SRC:
+			blendsrc = GL_ZERO;
+			break;
+		case ONE_BLEND_SRC:
+			blendsrc = GL_ONE;
+			break;
+		case DST_COLOR_BLEND_SRC:
+			blendsrc = GL_DST_COLOR;
+			break;
+		case ONE_MINUS_DST_COLOR_BLEND_SRC:
+			blendsrc = GL_ONE_MINUS_DST_COLOR;
+			break;	
+		case SRC_ALPHA_BLEND_SRC:
+			blendsrc = GL_SRC_ALPHA;
+			break;
+		case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
+			blendsrc = GL_ONE_MINUS_SRC_ALPHA;
+			break;
+		case DST_ALPHA_BLEND_SRC:
+			blendsrc = GL_DST_ALPHA;
+			break;
+		case ONE_MINUS_DST_ALPHA_BLEND_SRC:
+			blendsrc = GL_ONE_MINUS_DST_ALPHA;
+			break;
+		case SRC_ALPHA_SATURATE_BLEND_SRC:
+			blendsrc = GL_SRC_ALPHA_SATURATE;
+			break;	
+	}
+	
+	//setup dst blend factor	
+	switch(pkSettings->m_iBlendSrc)
+	{
+		case ZERO_BLEND_DST:
+			blenddst = GL_ZERO;
+			break;
+		case ONE_BLEND_DST:
+			blenddst = GL_ONE;
+			break;
+		case SRC_COLOR_BLEND_DST:
+			blenddst = GL_SRC_COLOR;
+			break;
+		case ONE_MINUS_SRC_COLOR_BLEND_DST:
+			blenddst = GL_ONE_MINUS_SRC_COLOR;
+			break;	
+		case SRC_ALPHA_BLEND_DST:
+			blenddst = GL_SRC_ALPHA;
+			break;
+		case ONE_MINUS_SRC_ALPHA_BLEND_DST:
+			blenddst = GL_ONE_MINUS_SRC_ALPHA;
+			break;
+		case DST_ALPHA_BLEND_DST:
+			blenddst = GL_DST_ALPHA;
+			break;
+		case ONE_MINUS_DST_ALPHA_BLEND_DST:
+			blenddst = GL_ONE_MINUS_DST_ALPHA;
+			break;
+	}
+	
+	//finaly set opengl blend function
+	glBlendFunc(blendsrc,blenddst);				
 	
 	//lighting setting
 	if(pkSettings->m_bLighting)

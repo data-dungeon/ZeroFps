@@ -12,29 +12,16 @@
 
 #ifndef _ENGINE_FH_H_
 #define _ENGINE_FH_H_
-#include "zfresource.h"
+//#include "zfresource.h"
 
 #include <vector>
 #include "../basic/vector3.h"
+#include "engine_x.h"
 
 using namespace std;
 
 /*** Start: Vim ***/
 void ENGINE_API DrawTest(float x, float y, float z);
-
-class ResTexture : public ZFResource
-{
-private:
-
-public:
-	int		m_iTextureID;
-	string	strTextureName;
-
-	ResTexture();
-	~ResTexture();
-
-	bool Create(string strName);
-};
 
 class DebugGraph
 {

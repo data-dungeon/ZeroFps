@@ -10,7 +10,7 @@
 #include <SDL/SDL.h>
 #include "../ogl/zfpsgl.h"
 #include "network.h"
-#include "zfresourcedb.h"
+#include "../basic/zfresourcedb.h"
 //#include "mad_core.h"
 #include "../physics_engine/physics_engine.h"
 #include "fh.h"

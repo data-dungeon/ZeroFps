@@ -1,4 +1,4 @@
-#include "zerofps.h"
+#include "../engine/zerofps.h"
 #include "../basic/zfobjectmanger.h"
 
 ZFResource* Create__Mad_Core();
@@ -78,7 +78,8 @@ ZFResource* ZFResourceHandle::GetResourcePtr()
 
 // ZFResourceDB ***********************************************************
 
-ZFResourceDB::ZFResourceDB() : I_ZFResourceDB("ZFResourceDB") 
+ZFResourceDB::ZFResourceDB()
+ : ZFSubSystem("ZFResourceDB") 
 {
 	m_iNextID = 0;
 
