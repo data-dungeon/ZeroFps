@@ -492,3 +492,5 @@ bool ZGResEdit::IsGuiWnd(ZGuiWnd *pkWnd)
 
 	return false;
 }
+
+

@@ -427,3 +427,13 @@ int GuiBuilder::GetTexture(char* strName)
 	
 	return fail_texture;
 }
+
+
+
+
+
+
+
+
+
+

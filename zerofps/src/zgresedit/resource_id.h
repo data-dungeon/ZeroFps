@@ -46,3 +46,12 @@ const int LAST_ID						= 35;		// får int vara lika med
 													// att överlappa av dessa id'n.
 
 #endif // #ifndef _RESOURCE_ID_H
+
+
+
+
+
+
+
+
+

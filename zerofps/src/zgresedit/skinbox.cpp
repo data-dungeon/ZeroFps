@@ -198,3 +198,6 @@ void SkinBox::SetSkinBorderColor(int r, int g, int b)
 	if(g > 0) m_pkGuiBuilder->GetWnd("BdGreen")->SetText(szGreen);
 	if(b > 0) m_pkGuiBuilder->GetWnd("BdBlue")->SetText(szBlue);
 }
+
+
+
