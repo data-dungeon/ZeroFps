@@ -797,12 +797,17 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	if(fDistance > m_iViewDistance)
 		return;
 		
-	iStep=PowerOf2(int(fDistance / m_iDetail));
-		
-		
 	//cull
 	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,iSize/2,54,iSize/2))
 		return;
+		
+		
+	iStep=PowerOf2(int(fDistance / m_iDetail));
+		
+	glPushMatrix();			
+		glTranslatef(-kMap->m_kPosition.x,-kMap->m_kPosition.y,-kMap->m_kPosition.z);
+		m_pkLight->Update(PatchCenter);
+	glPopMatrix();
 	
 	//draw
 	for(int z = zp ; z < zp+iSize ; z+=iStep){

@@ -1,6 +1,6 @@
 #include "game.h"
 
-Game olle("ZeroFPS game",640,480,16);
+Game olle("ZeroFPS game",1024,768,16);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
