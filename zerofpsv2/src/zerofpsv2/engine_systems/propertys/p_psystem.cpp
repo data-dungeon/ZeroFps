@@ -13,7 +13,7 @@ void P_PSystem::Update()
 
 	StartProfileTimer("r___PSystem");
 
-	m_pkZShaderSystem->Push("P_PSystem::Update");
+	//m_pkZShaderSystem->Push("P_PSystem::Update");
 	
 	if ( m_pkPSystem )
 	{
@@ -42,7 +42,7 @@ void P_PSystem::Update()
       }
 	}
 
-	m_pkZShaderSystem->Pop();
+	//m_pkZShaderSystem->Pop();
 	
 	StopProfileTimer("r___PSystem");	
 }
