@@ -88,6 +88,10 @@ function GUICreate()
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0, bkB=0, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
+	Skin25 = { tex1="dm/label_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/label_bk_a.bmp",
+	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
+	 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -114,6 +118,9 @@ function GUICreate()
 	ChangeSkin("item_button","Skin10","Button up")
 	ChangeSkin("item_button","Skin23","Button down")
 	ChangeSkin("item_button","Skin10","Button focus")
+
+	CreateWnd(4,"GamePlayInfoLabel","GamePlayScreen","Return to base! Mission done.",150,470,400,22,0)
+	ChangeSkin("GamePlayInfoLabel","Skin25","Label")
 
 
 

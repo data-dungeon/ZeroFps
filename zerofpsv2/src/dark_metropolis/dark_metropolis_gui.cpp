@@ -69,13 +69,37 @@ void DarkMetropolis::GUI_OnIdle()
 		((CNewGameDlg*) m_pkNewGameDlg)->UpdateFade(m_pkFps->GetFrameTime()); 
 		((CStartDMDlg*) m_pkStartDMDlg)->Update(m_pkFps->GetFrameTime());
 	}
+
+	if(m_pkGamePlayInfoLabel)
+	{
+		if(m_strGameInfoText.empty())
+		{
+			m_pkGamePlayInfoLabel->Hide();
+		}
+		else
+		{
+
+
+			m_pkGamePlayInfoLabel->Show();
+			m_pkGamePlayInfoLabel->SetText((char*)m_strGameInfoText.c_str(), true);
+
+			Rect rc = m_pkGamePlayInfoLabel->GetScreenRect();
+
+			int x,y;
+			m_pkInputHandle->MouseXY(x,y);
+			x-=rc.Width()/2;
+			y+=rc.Height()+32;
+
+			m_pkGamePlayInfoLabel->SetPos(x,y,true, true);
+		}
+	}
 }
 
 void DarkMetropolis::GUI_Init()
 {
 	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
 	bool bUseHardwareMouse = false;
-
+	m_pkGamePlayInfoLabel = NULL;
 	m_pkInput->ShowCursor(bUseHardwareMouse);
 
 	// Create gui script.

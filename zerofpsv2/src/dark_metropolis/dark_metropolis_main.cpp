@@ -58,6 +58,7 @@ void DarkMetropolis::OnInit()
 	m_iActiveHQ = 					-1;
 	m_eGameMode	=					ACTIVE;
 	m_fBulletTime =				-1;
+	m_pkGamePlayInfoLabel =		NULL;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -118,10 +119,12 @@ void DarkMetropolis::OnIdle()
 
 void DarkMetropolis::RenderInterface(void)
 {
+//	m_strGameInfoText = "";
 
 	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentPickedEntity))
 	{
-		if(pkEnt->GetProperty("P_DMItem"))
+		P_DMItem* pkItem;
+		if((pkItem=(P_DMItem*)pkEnt->GetProperty("P_DMItem")))
 		{
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GEQUAL, 0.1);
@@ -131,7 +134,11 @@ void DarkMetropolis::RenderInterface(void)
 			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.5, 0.5, 0.5), m_iMarkerTextureID, Vector3(1,1,0) );
 
 			glDisable(GL_ALPHA_TEST);
+
+			m_strGameInfoText = pkItem->GetName();
 		}
+		else
+			m_strGameInfoText = "";
 	
 		if(P_DMCharacter* pkChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 		{
@@ -150,6 +157,9 @@ void DarkMetropolis::RenderInterface(void)
 			m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, kColor );
 
 			glDisable(GL_ALPHA_TEST);
+
+			if(pkChar->m_iTeam == 0)
+				m_strGameInfoText = string("Agent: ") + pkChar->GetStats()->m_strName;
 		}
 	
 	}

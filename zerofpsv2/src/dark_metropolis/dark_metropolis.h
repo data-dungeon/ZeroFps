@@ -114,8 +114,12 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void ValidateSelection();
 		void ValidateAgentsOnField();
 		void UpdateAgentsOnField();
-	
+
+		
 	public:
+
+		ZGuiWnd* m_pkGamePlayInfoLabel;
+		string m_strGameInfoText; // text som visas i main fönstret (sätt till empty så försvinner fönstret)
 
 		
 		enum SLOT_TYPE

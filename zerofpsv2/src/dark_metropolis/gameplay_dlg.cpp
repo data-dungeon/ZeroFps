@@ -256,6 +256,8 @@ bool CGamePlayDlg::InitDlg()
 		GetWnd("GamePlayDlgQuickItem4")->Hide();
 		GetWnd("GamePlayDlgWeaponBn")->Hide();
 
+		m_pkDM->m_pkGamePlayInfoLabel = GetWnd("GamePlayInfoLabel");
+
 	}
 
 	if(m_iSelectedAgent == -1)
