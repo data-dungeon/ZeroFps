@@ -190,10 +190,12 @@ Vector3 RndColor()
 
 float round2(float val)
 {
-	int lower = (int) val;
+/*	int lower = (int) val;
 	if( (val - lower) > 0.499f)
 		return (float) lower + 1.0f;
-	return (float) lower;
+	return (float) lower;*/
+
+	return (float) (int) (val + 0.5f);
 }
 
 /*
