@@ -32,6 +32,8 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 		void Load(ZFMemPackage* pkPackage);
 
 
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
 
 };
 

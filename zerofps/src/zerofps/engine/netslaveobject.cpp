@@ -1,7 +1,8 @@
+
 #include "netslaveobject.h"
 
 NetSlaveObject::NetSlaveObject() {
-	AddProperty("ModelProperty");
+//	AddProperty("ModelProperty");
 
 }
 

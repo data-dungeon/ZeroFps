@@ -75,6 +75,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
 	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this,	 "sendmsg name id",2);	
+	g_ZFObjSys.Register_Cmd("debug",FID_LISTMAD,this);	
 
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
@@ -203,8 +204,8 @@ void ZeroFps::Run_EngineShell()
 		m_pkInput->ToggleGrab();
 			
 	//toggle fullscreen on X systems	// SHELL	
-	if(m_pkInput->Pressed(KEY_F11))
-		ToggleFullScreen();		
+//	if(m_pkInput->Pressed(KEY_F11))
+//		ToggleFullScreen();		
 
 	if(m_pkInput->Pressed(KEY_TAB))
 	{		
@@ -283,11 +284,17 @@ void ZeroFps::Draw_EngineShell()
 }
 
 void ZeroFps::MainLoop(void) {
+	int fGuldFisk;
 
 	while(m_iState!=state_exit) {
 
 		Swap();											//swap buffers n calculate fps
 		 
+		if(m_pkInput->Pressed(KEY_F11)) {
+			fGuldFisk = 0.0;
+			}
+
+
 		Run_EngineShell();
 
 		if(m_bServerMode)	Run_Server();
@@ -525,7 +532,7 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 void ZeroFps::DrawDevStrings()
 {
 	string strPageName;
-
+		
 	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
@@ -561,6 +568,7 @@ char g_szIpPort[256];
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	int i;
+	int iArghhh;
 
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
@@ -694,6 +702,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkRender->DumpGLState();
 			break;
 
+		case FID_LISTMAD:
+			iArghhh = 12;
+			break;
+
+
 		case FID_DEV_SHOWPAGE:
 			DevPrintf(kCommand->m_kSplitCommand[1].c_str(), "=)");	// Force creation of page.
 			page = DevPrint_FindPage(kCommand->m_kSplitCommand[1].c_str());
@@ -724,23 +737,24 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 	unsigned char ucGamePacketType;
 	
 	pkNetPacket->Read(ucGamePacketType);
+
 	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
 		switch(ucGamePacketType) {
 			case ZFGP_OBJECTSTATE: 
-				cout << "Recv: ZFGP_OBJECTSTATE" << endl;
+				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
 				m_pkObjectMan->UpdateState(pkNetPacket);
 				break;
 
 			case ZFGP_CLIENTSTATE: 
-				cout << "Recv: ZFGP_CLIENTSTATE" << endl;
+				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_CLIENTSTATE)\n");
 				break;
 		
 			case ZFGP_CLIENTCMD: 
-				cout << "Recv: ZFGP_CLIENTCMD" << endl;
+				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_CLIENTCMD)\n");
 				break;
 			
 			case ZFGP_PRINT: 
-				cout << "Recv: ZFGP_PRINT" << endl;
+				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
 				break;
 
 			default:
@@ -750,6 +764,8 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		pkNetPacket->Read(ucGamePacketType);
 		}
+
+
 }
 
 void ZeroFps::RegisterPropertys()

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                  $(ProjDir)\release\*.lib                                                   ..\..\..\bin\ 
+PostBuild_Cmds=copy                                   $(ProjDir)\release\*.lib                                                    ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                                       $(ProjDir)\debug\*.lib                                                                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                                        $(ProjDir)\debug\*.lib                                                                                        ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -538,19 +538,11 @@ SOURCE=.\proxyproperty.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\skyboxobject.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\soundbuffermanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\waterobject.cpp
 # End Source File
 # Begin Source File
 
@@ -792,19 +784,11 @@ SOURCE=.\proxyproperty.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\skyboxobject.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\skyboxrenderproperty.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\soundbuffermanager.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\waterobject.h
 # End Source File
 # Begin Source File
 

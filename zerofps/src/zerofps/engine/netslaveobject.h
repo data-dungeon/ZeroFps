@@ -1,6 +1,7 @@
 #ifndef _ENGINE_NETSLAVEOBJECT_H_
 #define _ENGINE_NETSLAVEOBJECT_H_
 
+
 #include "objects.pkg"
 #include "../basic/basic.pkg"
 

@@ -253,6 +253,8 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
+				g_ZFObjSys.Logf("net", "Recv: ZF_NETTYPE_UNREL\n");
+
 				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
 

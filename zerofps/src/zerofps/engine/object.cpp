@@ -724,11 +724,15 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	pkNetPacket->Read(m_kPos);
 	pkNetPacket->Read(m_kRot);
 
+	g_ZFObjSys.Logf("net", "<%f,%f,%f>", m_kPos.x,m_kPos.y,m_kPos.z);
+	g_ZFObjSys.Logf("net", "<%f,%f,%f>\n", m_kRot.x,m_kRot.y,m_kRot.z);
+
 	char szProperty[256];
 
 	pkNetPacket->Read_Str(szProperty);
-	g_ZFObjSys.Log("net", "Property:\n");
-	g_ZFObjSys.Log("net", szProperty);
+	g_ZFObjSys.Logf("net", "Property: %s\n", szProperty);
+//	g_ZFObjSys.Log("net", "Property:\n");
+//	g_ZFObjSys.Log("net", szProperty);
 
 	while(strcmp(szProperty,"") != 0) {
 		Property* pProp  = AddProxyProperty(szProperty);

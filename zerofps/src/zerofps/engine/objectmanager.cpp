@@ -178,10 +178,12 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 
 Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {
-	Object *pkNew;
-	pkNew = new NetSlaveObject;
-	Add(pkNew);
+	Object *pkNew = new NetSlaveObject;
+	//	Add(pkNew);
 	pkNew->iNetWorkID = iNetID;
+	pkNew->SetParent(m_pkWorldObject);
+	g_ZFObjSys.Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
+
 	return pkNew;
 }
 
@@ -415,18 +417,26 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Object* pkNetSlave;
 	int iObjectID;
+//	int iParentObjectID;
 	pkNetPacket->Read(iObjectID);
-	while(iObjectID != -1) {
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL)
-			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
 
+	while(iObjectID != -1) {
+		g_ZFObjSys.Logf("net", "UpdateState: Object %d\n", iObjectID);
+//		pkNetPacket->Read(iParentObjectID);
+
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
+				g_ZFObjSys.Logf("net", " Object '%d' not found. Trying to create...\n", iObjectID);	
+			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
+			}
+				
+		if( pkNetSlave ) {
+			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
 			pkNetSlave->PackFrom(pkNetPacket);
 			pkNetPacket->Read(iObjectID);
 			}
 		else {
-			g_ZFObjSys.Log("net", "Failed to read UpdateState Message:\n");
+			g_ZFObjSys.Logf("net", " Object '%d' not found (again) :(.\n", iObjectID);
 			return;
 			}
 		}	
@@ -450,10 +460,17 @@ void ObjectManager::PackToClients()
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->NeedToPack()) {
 			NP.Write((*it)->iNetWorkID);
+			/*if((*it)->GetParent()) {
+				NP.Write((*it)->GetParent()->iNetWorkID);
+				}
+			else
+				NP.Write(int (-1));*/
+
 			(*it)->PackTo(&NP);
+	
+			iPacketSize++;
 			}
 
-		iPacketSize++;
 
 		if(iPacketSize >= 10) {
 			NP.Write(iEndOfObject);

@@ -148,6 +148,24 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 //	pkPackage->Read(scale);
 	pkPackage->Read((void*)&scale,4);
 	SetScale(scale);
+
+	g_ZFObjSys.Logf("net", "Mad: %s, Scale: %f", temp, scale);
+	
+}
+
+void MadProperty::PackTo(NetPacket* pkNetPacket)
+{
+	pkNetPacket->Write_Str(m_kMadFile.c_str());
+	pkNetPacket->Write(m_fScale);
+}
+ 
+void MadProperty::PackFrom(NetPacket* pkNetPacket)
+{
+	char temp[50];
+	pkNetPacket->Read_Str(temp);
+	SetBase(temp);
+
+	pkNetPacket->Read(m_fScale);
 }
 
 
