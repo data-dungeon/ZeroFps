@@ -22,6 +22,7 @@ function Create()
 			InitParameter("bounce",0.8);
 			InitParameter("friction",0.8);
 --			InitParameter("activemoment","false");
+--			InitParameter("nocolrespons","true");
 			
 		SetParentObject();
 		SetReturnObject();
