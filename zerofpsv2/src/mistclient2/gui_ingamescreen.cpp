@@ -115,7 +115,6 @@ void MistClient::AddStringToChatBox(string strMsg)
 		((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 
 	m_pkAudioSys->StartSound("data/sound/gui/turn_page.wav");
-
 }
 
 void MistClient::ResizeChatDlg(bool	bMakeBigger)
@@ -198,6 +197,7 @@ void MistClient::LoadInGameGui()
 		g_kMistClient.GetSkin("DefSBrScrollDownSkin_d"));
 
 	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
+	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetLeftAlignedScrollbar(true);
 
 	g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
 	g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 

@@ -19,6 +19,8 @@ public:
 	void ScrollRowIntoView(int row);
 	bool SetCursorRow(int row, bool bUpdate);
 	void ToggleMultiLine(bool bMultiLine);
+	void SetLeftAlignedScrollbar(bool bLeftAligned);
+
 	int GetCursorRow();
 	bool IsMultiLine();
 	//int GetNumRows();
@@ -71,6 +73,7 @@ private:
 	bool m_bReadOnly;
 	bool m_bMultiLine;
 	bool m_bBlinkCursor;
+	bool m_bLeftAlignedScrollbar;
 	//bool m_bScrollbarUpdated;
 	//bool m_bTextFit;
 

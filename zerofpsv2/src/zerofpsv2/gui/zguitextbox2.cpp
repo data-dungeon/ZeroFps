@@ -44,6 +44,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_iCurrMaxText = 0;
 	m_pkScrollbarVertical = NULL;
 	m_rcOldScreenRect = Rect(-1,-1,-1,-1);
+	m_bLeftAlignedScrollbar = false;
 
 	CreateInternalControls();
 
@@ -319,7 +320,7 @@ void ZGuiTextbox::CreateInternalControls()
 	if(m_bMultiLine)
 	{
 		Rect rc = GetWndRect();
-		int x = rc.Width()-20;
+		int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-20;
 		int y = 0;
 		int w = 20;
 		int h = rc.Height();
@@ -546,7 +547,7 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 	if(m_pkScrollbarVertical)
 	{
-		m_pkScrollbarVertical->SetPos(Width-20, 0, false, true);
+		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-20, 0, false, true);
 		m_pkScrollbarVertical->Resize(20,Height);
 	}
 
@@ -1294,9 +1295,14 @@ void ZGuiTextbox::BuildTextStrings()
 	map<int,int> mkMaxRowHeight;
 	map<int,int> mkMaxBaselineHeight;
 
-	const int LEFT = MARG_SIZE, TOP = 0;
+	int LEFT = MARG_SIZE, TOP = 0;
 //	const int TOTAL_LENGTH = strlen(m_strText);
+
+	if(m_bLeftAlignedScrollbar && m_pkScrollbarVertical->IsVisible() )
+		LEFT += m_pkScrollbarVertical->GetScreenRect().Width();
+
 	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
+
 	int xPos = LEFT;
 	int iRow = 0;//, iLettersProcessed=0;
 
@@ -1470,6 +1476,8 @@ void ZGuiTextbox::UpdateText()
 {
 	if(m_bMultiLine)
 	{
+		bool before = m_pkScrollbarVertical->IsVisible();
+
 		BuildTagList();
 		BuildTextStrings();
 
@@ -1479,5 +1487,22 @@ void ZGuiTextbox::UpdateText()
       UpdateScrollbar();
 
       ScrollText(m_pkScrollbarVertical);
+
+		if(before != m_pkScrollbarVertical->IsVisible())
+			UpdateText();
 	}   
+}
+
+void ZGuiTextbox::SetLeftAlignedScrollbar(bool bLeftAligned)
+{
+	m_bLeftAlignedScrollbar = bLeftAligned;
+
+	Rect rc = GetWndRect();
+
+	int x = m_bLeftAlignedScrollbar ? 0 : rc.Width()-20;
+	int y = 0;
+	int w = 20;
+	int h = rc.Height();
+
+	m_pkScrollbarVertical->SetPos(x,y, false, true);
 }

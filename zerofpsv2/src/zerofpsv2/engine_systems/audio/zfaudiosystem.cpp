@@ -1112,6 +1112,7 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 	{
 		(*itFind)->m_kPos = kNewPos;
 		(*itFind)->m_kDir = kNewDir;
+		return true;
 	}
 
 	return false;

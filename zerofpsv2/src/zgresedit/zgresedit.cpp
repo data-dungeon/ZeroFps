@@ -1261,7 +1261,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		}
 	}
 	else
-	if(strMainWndName == "OptionsWnd" && m_pkFocusWnd != NULL)
+	if(strMainWndName == "ZGResOptionsWnd" && m_pkFocusWnd != NULL)
 	{
 		if(strClickWndName == "FreemoveCheckbox")
 		{

@@ -417,7 +417,7 @@ void Scene::CreateUI()
 
 	// Create options window
 
-	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", -374,0,360,110,0);
+	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "ZGResOptionsWnd", "PropertyWnd", "", -374,0,360,110,0);
 	m_pkOptionsWnd->GetSkin()->m_iBkTexID = -1;
 	memcpy(m_pkOptionsWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
@@ -833,20 +833,20 @@ void Scene::UpdateOptionsWnd(ZGuiWnd* pkFocusWnd)
 		m_pkGui->UnregisterWindow((*it));
 	}
 
-   m_pkApp->CreateWnd(Checkbox, "VisibleCheckbox", "OptionsWnd", "Visible", 10, 10, 16, 16, 0);
+   m_pkApp->CreateWnd(Checkbox, "VisibleCheckbox", "ZGResOptionsWnd", "Visible", 10, 10, 16, 16, 0);
 
 	switch(m_pkApp->GetWndType(pkFocusWnd))
 	{
 	case Wnd:
-		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "OptionsWnd", "Moveable", 10, 10+20, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "ZGResOptionsWnd", "Moveable", 10, 10+20, 16, 16, 0);
 		if(pkFocusWnd->GetMoveArea() == Rect(0,0,800,600) )
 			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->CheckButton();
 		else
 			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->UncheckButton();
 		break;
 	case Textbox:
-		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "OptionsWnd", "Read-only", 10, 10+20, 16, 16, 0);
-		m_pkApp->CreateWnd(Checkbox, "MultiLineCheckbox", "OptionsWnd", "Multi-line", 10, 10+20*2, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "ZGResOptionsWnd", "Read-only", 10, 10+20, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "MultiLineCheckbox", "ZGResOptionsWnd", "Multi-line", 10, 10+20*2, 16, 16, 0);
 
 		if(((ZGuiTextbox*)pkFocusWnd)->IsReadOnly())
 			((ZGuiCheckbox*)m_pkApp->GetWnd("ReadOnlyCheckbox"))->CheckButton();
