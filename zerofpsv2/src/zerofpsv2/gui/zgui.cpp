@@ -943,7 +943,12 @@ void ZGui::OnKeyPress(int iKey)
 
 		bool bMultiLine = false;
 		if(bIsTextbox)
+		{
 			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
+
+			if(iKey == gKEY_RETURN)
+				m_bHaveInputFocus = false;
+		}
 		else
 			m_bHaveInputFocus = false;
 

@@ -359,8 +359,6 @@ void MistClient::OnSystem()
 
 void MistClient::Input()
 {
-	printf("Input\n");
-
 	float speed = 20;
 	
 	int x,z;		
@@ -701,11 +699,12 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
 			{
-				printf("ToggleInputBoxBn\n");
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
-				//pkGui->SetFocus(GetWnd("InputBox"));
+
 				if ( GetWnd("InputWnd")->IsVisible() )
-					pkGui->SetFocus(GetWnd("InputWnd"));
+				{
+					pkGui->SetFocus(GetWnd("InputBox"));
+				}
 			}
 			else
 			if(strClickWndName == "ToggleInfoBoxBn")
