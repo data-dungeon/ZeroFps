@@ -174,9 +174,6 @@ class ZeroEd :public Application , public ZGuiApp {
 								
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
-
-		//ambient sound areas
-		void CreateASPDefaultArea(Entity* pkEnt);		
 		
 		// zone and object edit
 		void RebuildZonePosArray();

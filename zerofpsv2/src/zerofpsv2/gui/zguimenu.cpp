@@ -146,9 +146,9 @@ void ZGuiMenu::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiMenu::CreateInternalControls()
 {
-	const int Ru = 153;
-	const int Gu = 134;
-	const int Bu = 117;
+	const int Ru = 192;
+	const int Gu = 192;
+	const int Bu = 192;
 
 	const int Rf = 199;
 	const int Gf = 178;

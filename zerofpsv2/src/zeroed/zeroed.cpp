@@ -1356,10 +1356,33 @@ void ZeroEd::UpdateZoneMarkerPos()
 		//m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
 		//m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
 	
-	
 		m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
 		m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
 		m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+
+		//
+		// Tvinga kameran att behålla samma X,Y eller Z position som tidigare
+		// om man befinner sig i ortogonalt kameraläge.
+		//
+		static float s_fLastYPos = 0.0f;
+		static float s_fLastXPos = 0.0f;
+		static float s_fLastZPos = 0.0f;
+
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_LEFT ||
+			m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_RIGHT)
+			m_kZoneMarkerPos.x = s_fLastXPos; 
+		else
+			s_fLastXPos = m_kZoneMarkerPos.x;
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_TOP ||
+			m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_BOT)
+			m_kZoneMarkerPos.y = s_fLastYPos;
+		else
+			s_fLastYPos = m_kZoneMarkerPos.y;
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_FRONT ||
+			m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_ORTHO_BACK)
+			m_kZoneMarkerPos.z = s_fLastZPos; 
+		else
+			s_fLastZPos = m_kZoneMarkerPos.z;
 	}	
 }
 
