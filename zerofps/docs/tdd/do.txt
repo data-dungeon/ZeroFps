@@ -6,6 +6,7 @@ BASIC:
 		
 	Log filer:
 	Ini filer:
+	Fil Klass:
 
 	Console:
 		Auto complete
@@ -13,22 +14,17 @@ BASIC:
 		Clear.
 		Scroll up/down.
 
-	Fil Klass:
 	Image Klass:
-	Object Namn System:
-	Alla object som skapas kan ges ett unikt namn. Via namnet kan man få en pekare till ett object och med cast omvandla den så man kan anropa funktioner i objektet.
-	Command System:
-	Gör det möjligt för klasser att registrera funktioner.
+	Slå ihop object name sys och cmd system.
+	Command System som lagrar kommand tills dom körs.
+	Tokenizer:
+
 	Timer:
 		Delay
 		GetCurrentTime:
-	Tokenizer:
+
 	Math:
 		Plane:
-
-	Command System som lagrar kommand tills dom körs.
-	Developer String Display:
-
 
 ENGINE:
 	Collision/Physic Engine:
@@ -55,7 +51,6 @@ ENGINE:
 		Modells:
 		Levels:
 
-
 	Input:
 		Bindable keys.
 		Save/Restore till config files.
@@ -67,7 +62,8 @@ ENGINE:
 		Antal Spelare (Mål/Max):	8 / 16
 		Anslutning:					LAN 10 
 
-	AABB
+	Collision Primitives:
+		Punk, Sfär, Linje, AABB, OOBB.
 
 		
 AI:
@@ -118,6 +114,9 @@ SOUND:
 
 TOOLS:
 	MADMAKE:
+		Ta bort mellan steget med PMD.
+		Byt till STL helt och hållet och undvika pekare.
+	
 		Script .mm ska kunna hantera alla former av export.
 		Användbart stöd för 3DS, Mdl(Q),Mdl(Hl) och Md2.
 		
@@ -138,46 +137,41 @@ TOOLS:
 		? LOD Dynamisk, Textures, Skelletton/Anim LOD.
 		? Skinned Characters
 
-		Exportera 3DS filer liknande sättet I UT.
-		MAD Strip make som omvandlar triangel list till strips.
-		MAD Lod som skapar flera LOD triangel lists.
-		Ta bort mellan steget med PMD.
 		Class som importeras ska innehålla exporter kod och inte MAD klassen.
-		Skapa en 3DS export klass.
-		Byt till STL helt och hållet och undvika pekare.
 		Ta bort oanvända vertex från MAD's (vertex som inte används av någon triangel).
-		-Optimera mängden SubMeshes
 
 		3DS Exporter:
-		En 3DS per animation där objectet ska ha namnet "OBJxx" där xx är nummer på keyframe i ordningen. Nummer måste börja med 01. 
+		Skapa en 3DS export klass.
+		Exportera 3DS filer liknande sättet I UT.
+		En 3DS per animation där objectet ska ha namnet "OBJxx" där xx är nummer på keyframe
+		i ordningen. Nummer måste börja med 01. 
 		För flera animationer på samma object får man använda flera 3DS filer.
 		Materials: Skin, transp, weapons,  
 
-		 Error(char*,...)
-		 DevPrint(char*,...)
+		Error(char*,...)
+		DevPrint(char*,...)
   
-		 SetExtension
-		 GetFileName
-		 GetExtension
-		 GetPath
-		 SplitPathFileExt
+		SetExtension
+		GetFileName
+		GetExtension
+		GetPath
+		SplitPathFileExt
  
-		 LoadScriptFile(char*)
-		 UnGetToken
-		 GetToken
-		 TokenAvil
+		LoadScriptFile(char*)
+		UnGetToken
+		GetToken
+		TokenAvil
+	
 	MADEXPORT:
 		Gör till ett riktigt file export plugin.
 		Export skellet animation.
- 
+ 		Optimera mängden SubMeshes
+		MAD Lod som skapar flera LOD triangel lists.
+		MAD Strip make som omvandlar triangel list till strips.
+
 	EDITOR:
 		Ingame editor för att skapa missions.
 		Landscape mod.
-
-
-
-
-
 
 LINKS:
 Snapshot guide: http://dit.perm.ru/articles/3DMAX/Tutorial/
