@@ -96,10 +96,10 @@ void HeightMap::Create(int iTilesSide)
 	Zero();
 
 	// AddTestLayers
-	Layer_Create(string("layer0"), string("../data/textures/tgrass.bmp"));
-	Layer_Create(string("layer1"), string("../data/textures/tdirt.bmp"));
-	Layer_Create(string("layer2"), string("../data/textures/trock.bmp"));
-	Layer_Create(string("layer3"), string("../data/textures/tsand.bmp"));
+	Layer_Create(string("layer0"), string("data/textures/tgrass.bmp"));
+	Layer_Create(string("layer1"), string("data/textures/tdirt.bmp"));
+	Layer_Create(string("layer2"), string("data/textures/trock.bmp"));
+	Layer_Create(string("layer3"), string("data/textures/tsand.bmp"));
 }
 
 void HeightMap::Zero() 
