@@ -273,7 +273,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
 		void DeleteZone(int iId);
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
-		bool HasNeighbour(Vector3 kPos,Vector3 kSize);
+		bool ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize);
 		int CreateZone(Vector3 kPos,Vector3 kSize);
 		void LoadZone(int iId,string strLoadDir = "");			//load zone
 		void SaveZone(int iId,string strSaveDir = "");			//save zone

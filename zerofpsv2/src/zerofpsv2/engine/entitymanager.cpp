@@ -2206,14 +2206,14 @@ bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 	
 }
 
-bool EntityManager::HasNeighbour(Vector3 kPos,Vector3 kSize)
+bool EntityManager::ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize)
 {
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
 		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
+		if(!BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
 			if(BoxVSBox(kPos,kSize,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
 				return true;
 	}

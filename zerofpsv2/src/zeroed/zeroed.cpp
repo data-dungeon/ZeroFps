@@ -1832,8 +1832,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "RotateObjectButton")
 			{
-				RebuildZonePosArray();
-				//RotateActive();
+				RotateActive();
 			}
 			else
 			if(strWndClicked == "DeleteObjectButton")
