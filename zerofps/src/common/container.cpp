@@ -29,10 +29,16 @@ void Container::Clean()
 bool Container::CheckFreeSlot(int iX,int iY,int iSizeX,int iSizeY)
 {
 	for(int x=iX;x<(iX+iSizeX);x++)
+	{
 		for(int y=iY;y<(iY+iSizeY);y++)
+		{
+			if(x>=m_iSizeX || y>=m_iSizeY)
+				return false;
+			
 			if(GetID(x,y) != -1)
 				return false;
-	
+		}
+	}
 	return true;
 }
 
@@ -41,14 +47,15 @@ void Container::SetID(int iX,int iY,int iSizeX,int iSizeY,int iID)
 {
 	for(int x=iX;x<(iX+iSizeX);x++)
 		for(int y=iY;y<(iY+iSizeY);y++)
-			GetID(x,y) = iID;
+			if(x < m_iSizeX || y < m_iSizeY)
+				GetID(x,y) = iID;
 }
 
 
 int Container::GetItemPos(Object* pkObject)
 {
 	for(int i=0;i<m_kObjects.size();i++)
-		if(m_kObjects[i] == pkObject)
+		if(m_kObjects[i].pkObject == pkObject)
 			return i;
 			
 	return -1;
@@ -79,7 +86,7 @@ ItemProperty*	Container::GetItemProperty(Object* pkObject)
 bool Container::CheckIfAdded(Object* pkObject)
 {
 	for(int i=0;i<m_kObjects.size();i++)
-		if(m_kObjects[i] == pkObject)
+		if(m_kObjects[i].pkObject == pkObject)
 			return true;
 			
 	return false;
@@ -123,8 +130,14 @@ bool Container::AddItem(Object* pkObject)
 	if(!GetFreeSlot(pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,iX,iY))
 		return false;
 	
+	//create data	
+	ItemData kTemp;
+	kTemp.pkObject = pkObject;
+	kTemp.iX=iX;
+	kTemp.iY=iY;
+	
 	//add item to item list
-	m_kObjects.push_back(pkObject);
+	m_kObjects.push_back(kTemp);
 
 	//set slot to item ID
 	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
@@ -150,8 +163,14 @@ bool Container::AddItem(Object* pkObject,int iX,int iY)
 	if(!CheckFreeSlot(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX))
 		return false;
 	
+	//create data
+	ItemData kTemp;
+	kTemp.pkObject = pkObject;
+	kTemp.iX=iX;
+	kTemp.iY=iY;
+	
 	//add item to item list
-	m_kObjects.push_back(pkObject);
+	m_kObjects.push_back(kTemp);
 
 	//set slot iX,iY to ID
 	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
@@ -167,12 +186,12 @@ bool Container::RemoveItem(Object* pkObject)
 		return false;
 
 	int iID = GetItemPos(pkObject);
-	vector<Object*>::iterator kOit = m_kObjects.begin();
+	vector<ItemData>::iterator kOit = m_kObjects.begin();
 	
 	//loop trough item list to find the right one
-	for(vector<Object*>::iterator it=m_kObjects.begin();it!=m_kObjects.end();it++)
+	for(vector<ItemData>::iterator it=m_kObjects.begin();it!=m_kObjects.end();it++)
 	{
-		if( (*it) == pkObject)
+		if( (*it).pkObject == pkObject)
 		{
 			kOit = it;
 			break;		
@@ -217,5 +236,23 @@ void Container::PrintContainer()
 	}
 }
 
+
+GuiData Container::GetGuiData(int iNr)
+{
+	GuiData kTemp;
+	
+	Object* pkObject = m_kObjects[iNr].pkObject;
+	
+	kTemp.pkObject = pkObject;
+	kTemp.sTextureName = GetItemProperty(pkObject)->m_kItemIcon;	
+	kTemp.sItemName =  GetItemProperty(pkObject)->m_kItemName;	
+	kTemp.iPosX = m_kObjects[iNr].iX;	
+	kTemp.iPosY = m_kObjects[iNr].iY;	
+
+	kTemp.iSizeX = GetItemProperty(pkObject)->m_iItemSizeX;
+	kTemp.iSizeY = GetItemProperty(pkObject)->m_iItemSizeY;
+
+	return kTemp;
+}
 
 

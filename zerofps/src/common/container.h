@@ -13,10 +13,31 @@
 
 using namespace std;
 
+
+struct ItemData
+{
+	Object*  pkObject;
+	int		iX;
+	int		iY;
+};
+
+struct GuiData
+{
+	Object* 	pkObject;
+	
+	string	sTextureName;		
+	string	sItemName;	
+	
+	int		iPosX;
+	int		iPosY;
+	int		iSizeX;
+	int		iSizeY;
+};
+
 class COMMON_API Container 
 {
 	private:
-		vector<Object*> 	m_kObjects;
+		vector<ItemData> 	m_kObjects;
 		int*					m_piGrid;
 		
 		int					m_iSizeX;
@@ -45,8 +66,10 @@ class COMMON_API Container
 		int		GetFreeSlots();
 		void	GetSize(int& iX,int& iY){iX = m_iSizeX;iY = m_iSizeY;};
 		
-		void	PrintContainer();
-
+		void	PrintContainer();		
+		
+		int	GetNrOfItems() {return m_kObjects.size();};		
+		GuiData GetGuiData(int iNr);
 };
 
 #endif
