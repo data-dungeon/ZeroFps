@@ -4,6 +4,8 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../../engine/zerofps.h"
+#include "../../basic/zfresource.h"
+
 using namespace std;
 
 
@@ -17,14 +19,18 @@ enum ENGINE_SYSTEMS_API LIGHT_MODES
 /// Property to make an object cast light.
 class ENGINE_SYSTEMS_API P_Light : public Property {
 	private:
-		ZeroFps*			m_pkZeroFps;
-		LightSource*	m_pkLightSource;
-		Light*			m_pkLight;	
-		Render*			m_pkRender;
+		ZeroFps*				m_pkZeroFps;
+		LightSource*		m_pkLightSource;
+		Light*				m_pkLight;	
+		Render*				m_pkRender;
+		ZShaderSystem*		m_pkZShaderSystem;
 		
 		int				m_iMode;		
 		float				m_fTimer;
 		Vector3			m_kOffset;
+		float				m_fFlareSize;
+		
+		ZFResourceHandle* m_pkMaterial;
 		
 		vector<PropertyValues> GetPropertyValues();
 		
@@ -36,6 +42,7 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 
 		void UpdateLightMode();
 		
+		void DrawFlare();
 	public:
 		P_Light();
 		~P_Light();

@@ -7,14 +7,16 @@
  
 P_Light::P_Light()
 {
-	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
-	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
-
+	m_pkLight	= 			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkZeroFps = 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	
 	strcpy(m_acName,"P_Light");
 	bNetwork = true;
-	m_iVersion = 2;
-		
+	m_iVersion = 3;
+	m_iSortPlace=10;
+	
 	m_pkLightSource=new LightSource();
 
 	m_iType = PROPERTY_TYPE_RENDER;
@@ -23,12 +25,17 @@ P_Light::P_Light()
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = 0;
 	m_kOffset.Set(0,0,0);
+	m_fFlareSize = 0.0;
+	
+	m_pkMaterial = new ZFResourceHandle;
+	m_pkMaterial->SetRes("data/material/flare.zmt");	
 }
 
 P_Light::~P_Light()
 {
 	TurnOff();
 	delete m_pkLightSource;
+	delete m_pkMaterial;
 }
 
 void P_Light::Init()
@@ -39,20 +46,33 @@ void P_Light::Init()
 
 void P_Light::Update() 
 {
-	//draw ball on the server
-//	if(m_pkZeroFps->GetDebugGraph())
-//		m_pkRender->Sphere(m_pkEntity->GetIWorldPosV(),0.1,1,Vector3(1,0,1),true);
-
-
-	m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);
+	m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
 	
 	if(m_pkLightSource->iType == SPOT_LIGHT)	
 		m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
-		
-
 	UpdateLightMode();		
+
+	if(m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0)
+		DrawFlare();
 }
+
+void P_Light::DrawFlare()
+{
+	if(m_pkZShaderSystem->SupportOcculusion())
+	{
+		//do occulusion test	
+		m_pkZShaderSystem->OcculusionBegin();
+		m_pkRender->Line(m_pkLightSource->kPos-0.02,m_pkLightSource->kPos+0.02,Vector3(1,1,1));		
+		int iSamples = m_pkZShaderSystem->OcculusionEnd();
+		
+		if(iSamples > 0 )
+		{
+			m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,m_fFlareSize,(ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
+		}
+	}		
+}
+
 
 void P_Light::UpdateLightMode()
 {
@@ -89,6 +109,7 @@ void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 																						//sum 64 bytes
 	
 	pkNetPacket->Write(m_kOffset);
+	pkNetPacket->Write(m_fFlareSize);
 																						
 	SetNetUpdateFlag(iConnectionID,false);
 }
@@ -107,12 +128,12 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read( m_iMode);
 	
 	pkNetPacket->Read(m_kOffset);
-	
+	pkNetPacket->Read(m_fFlareSize);
 }
 
 vector<PropertyValues> P_Light::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(12);
+	vector<PropertyValues> kReturn(13);
 
 	kReturn[0].kValueName = "Ambient";
 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
@@ -162,7 +183,10 @@ vector<PropertyValues> P_Light::GetPropertyValues()
 	kReturn[11].iValueType = VALUETYPE_VECTOR3;
 	kReturn[11].pkValue    = (void*)&m_kOffset;
 	
-			
+	kReturn[12].kValueName = "FlareSize";
+	kReturn[12].iValueType = VALUETYPE_FLOAT;
+	kReturn[12].pkValue    = (void*)&m_fFlareSize;
+				
 	return kReturn;
 }
 
@@ -176,21 +200,30 @@ void P_Light::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(*m_pkLightSource);
 	pkPackage->Write(m_iMode);		
 	pkPackage->Write(m_kOffset);		
+	pkPackage->Write(m_fFlareSize);		
 }
 
 void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	if(iVersion == 1)
+	switch(iVersion)
 	{
-		pkPackage->Read(*m_pkLightSource);
-		pkPackage->Read(m_iMode);		
-	}
-	
-	if(iVersion == 2)
-	{
-		pkPackage->Read(*m_pkLightSource);
-		pkPackage->Read(m_iMode);		
-		pkPackage->Read(m_kOffset);	
+		case 1:
+			pkPackage->Read(*m_pkLightSource);
+			pkPackage->Read(m_iMode);		
+			break;
+			
+		case 2:
+			pkPackage->Read(*m_pkLightSource);
+			pkPackage->Read(m_iMode);		
+			pkPackage->Read(m_kOffset);	
+			break;
+			
+		case 3:
+			pkPackage->Read(*m_pkLightSource);
+			pkPackage->Read(m_iMode);		
+			pkPackage->Read(m_kOffset);	
+			pkPackage->Read(m_fFlareSize);	
+			break;	
 	}
 	
 	

@@ -500,7 +500,25 @@ void P_Enviroment::DrawSky()
 	
 }
 
+void P_Enviroment::FadeGain(bool bOut)
+{
+	const float FADE_TIME = 10.0f;
 
+	float fTime = m_pkEntityManager->GetSimTime();
+
+	if(m_fFadeTimer < 0)
+		m_fFadeTimer = fTime;
+
+	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
+	float dif = fTimeSinceLastFrame / FADE_TIME;
+
+	if(bOut)
+		m_fGain -= dif;
+	else
+		m_fGain += dif;
+
+	m_fFadeTimer = fTime;
+}
 
 
 
@@ -851,22 +869,3 @@ void P_Enviroment::ResetEnviroment()
 
 
 
-void P_Enviroment::FadeGain(bool bOut)
-{
-	const float FADE_TIME = 10.0f;
-
-	float fTime = m_pkEntityManager->GetSimTime();
-
-	if(m_fFadeTimer < 0)
-		m_fFadeTimer = fTime;
-
-	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
-	float dif = fTimeSinceLastFrame / FADE_TIME;
-
-	if(bOut)
-		m_fGain -= dif;
-	else
-		m_fGain += dif;
-
-	m_fFadeTimer = fTime;
-}
