@@ -24,6 +24,13 @@ enum GUIScaleMode
 	GUIScaleManually,
 };
 
+struct MULTI_LINE_TEXT_INFO
+{
+	int m_iRenderDistFromTop; // [in]
+	unsigned short** m_ppRowOffsets; // [out]
+	unsigned short* m_pNumRows;
+};
+
 /**	\brief	Render for GUI.
 		\ingroup Render
 */
@@ -43,8 +50,16 @@ public:
 	virtual bool RenderBorder(Rect kScreenRect) = 0;
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;
 	virtual bool SetFont(ZGuiFont* pkFont) = 0;
-	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, int iRenderDistFromTop,
-		bool bMultiLine, int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]) = 0;
+	//virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, int iRenderDistFromTop,
+	//	bool bMultiLine, int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]) = 0;
+
+	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
+		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL) = 0;
+	
+	virtual void StartDrawText() = 0;
+	virtual void DrawString(const char* text, const int length, int x, int y, 
+		const float color[3], const ZGuiFont* font) = 0;
+
 	virtual pair<int,int> GetWordLength(char *text, int offset, int max_width) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
 	virtual void GetScreenSize(int& x, int& y) = 0;

@@ -32,11 +32,12 @@ public:
 	int m_iTextureID;
 	int m_iTextureWidth, m_iTextureHeight;
 	int m_iRowHeight;	// Nr pixels each row
+	int m_iPixelsAboveBaseLine; // pixels above the base line
 	int m_iSpaceWidth; // Nr pixels a ' ' is
 	int m_iNumLetters; // Nr of letters in bitmap font
 	
 	bool Create(char* szInfoFile, int iTexID);
-	unsigned short GetLength(const char* c_szText) const;
+	unsigned short GetLength(const char* c_szText, int iLength=-1) const;
 };
 
 #endif // !defined(AFX_ZGUIFONT_H__52B0ABD1_BF56_4D1D_A173_BB1CCEE56658__INCLUDED_)

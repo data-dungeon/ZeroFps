@@ -47,11 +47,12 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_bVisible = bVisible;
 	m_bInternalControl = false;
 	m_bEnabled = true;
-	m_pkFont = NULL;
 	m_iTabOrderNumber = 0;
 
 	m_pkResMan=static_cast<ZGuiResourceManager*>
 		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));			
+
+	m_pkFont = m_pkResMan->Font("defguifont");
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)

@@ -19,6 +19,7 @@ int HORIZONTAL_OFFSET = 1;
 char STARTUPDIR[512];
 
 int g_iSpaceWidth = 0;
+int g_iPixelsAboveBaseLine = 0;
 
 char aLetters[] =
 {
@@ -121,8 +122,15 @@ void DrawFont2(HDC hdc, HWND hwnd)
 	static HPEN blue_pen = CreatePen(PS_SOLID,0,RGB(0,0,255));
 	static HPEN red_pen = CreatePen(PS_SOLID,0,RGB(255,0,0));
 
-	SelectObject (hdc, CreateFontIndirect (&lf)) ;
+	HFONT font = CreateFontIndirect(&lf);
+	SelectObject (hdc, font) ;
 	SelectObject (hdc, blue_pen) ;
+
+	TEXTMETRIC tm;
+	GetTextMetrics(hdc, &tm); 
+	g_iPixelsAboveBaseLine = tm.tmAscent;
+
+	
 
 	RECT rc = {0,0,0,0};
 
@@ -284,9 +292,9 @@ void SaveFontInfo(HDC hdc, HWND hwnd)
 	
 	fwrite(&IMAGE_WIDTH, sizeof(int), 1, pkFile); // bitmap width
 	fwrite(&IMAGE_HEIGHT, sizeof(int), 1, pkFile); // bitmap height
-	
 	fwrite(&ROW_HEIGHT, sizeof(int), 1, pkFile); // row height
-	fwrite(&g_iSpaceWidth, sizeof(int), 1, pkFile); // row height
+	fwrite(&g_iPixelsAboveBaseLine, sizeof(int), 1, pkFile); // pixels above the base line
+	fwrite(&g_iSpaceWidth, sizeof(int), 1, pkFile); // spcae width
 	fwrite(&NUM_LETTERS, sizeof(int), 1, pkFile); // num letters
 	fwrite(&aLetterRects, sizeof(int)*4, NUM_LETTERS, pkFile); // letters rect
 	fclose(pkFile);
@@ -504,7 +512,7 @@ static LRESULT CALLBACK WndProc (HWND hwnd, UINT uiMessage, WPARAM wParam, LPARA
 			if(ChooseFont(&cf) != 0)
 				lf = temp;
 
-			//lf.lfQuality = PROOF_QUALITY;
+			lf.lfQuality = PROOF_QUALITY;
 
 			bUpdate = true;
 			break;

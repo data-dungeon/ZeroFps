@@ -33,6 +33,7 @@ bool ZGuiFont::Create(char* szInfoFile, int iTexID)
 	fread(&m_iTextureWidth, sizeof(int), 1, kFile.m_pkFilePointer);
 	fread(&m_iTextureHeight, sizeof(int), 1, kFile.m_pkFilePointer);
 	fread(&m_iRowHeight, sizeof(int), 1, kFile.m_pkFilePointer);
+	fread(&m_iPixelsAboveBaseLine, sizeof(int), 1, kFile.m_pkFilePointer); 
 	fread(&m_iSpaceWidth, sizeof(int), 1, kFile.m_pkFilePointer);
 	fread(&m_iNumLetters, sizeof(int), 1, kFile.m_pkFilePointer);
 
@@ -77,16 +78,21 @@ bool ZGuiFont::Create(char* szInfoFile, int iTexID)
 	}
 
 	m_aChars[' '].iSizeX = m_iSpaceWidth;
+	m_aChars['\t'].iSizeX = 3*m_iSpaceWidth;
+	m_aChars['\n'].iSizeX = 0;
+	m_aChars['\0'].iSizeX = 0;
 	
 	return true;
 }
 
-unsigned short ZGuiFont::GetLength(const char* c_szText) const
+unsigned short ZGuiFont::GetLength(const char* c_szText, int iLength) const
 {
 	unsigned short usLength = 0;
-	const int c_iTextLegth = strlen(c_szText);
 
-	for(int i=0; i<c_iTextLegth; i++)
+	if(iLength == -1)
+		iLength = strlen(c_szText);
+
+	for(int i=0; i<iLength; i++)
 	{
 		int pos = c_szText[i];
 		if(pos >= 0 && pos < 256)

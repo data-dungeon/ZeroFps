@@ -20,7 +20,7 @@ public:
 	void ToggleMultiLine(bool bMultiLine);
 	int GetCursorRow();
 	bool IsMultiLine();
-	int GetNumRows();
+	//int GetNumRows();
 
 	ZGuiTextbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
 		int iID=0, bool m_bMultiLine=false);
@@ -43,7 +43,7 @@ public:
 
 	bool IsReadOnly();
 	void SetReadOnly(bool bReadOnly);
-	int GetRowCount() { return m_iNumRows; }
+	unsigned short GetRowCount() { return m_iNumRows; }
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool m_bNumberOnly;
@@ -56,12 +56,13 @@ private:
 	
 	bool UpdateScrollbar();
 	
-	int GetNumRows(char* szText);
+	//int GetNumRows(char* szText);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ScrollText(int row);
 	void ResizeTextBuffer( int nCharacters );
 	
 	vector<int> m_kRowOffsets;
+	unsigned short* m_pkRowOffsets;
 	
 	bool m_bReadOnly;
 	bool m_bMultiLine;
@@ -72,14 +73,38 @@ private:
 	int m_iCursorPos; 
 	int m_iCurrMaxText;
 	int m_iStartrow;
-	int m_iNumRows;
+	unsigned short m_iNumRows;
 	int m_iCursorRow;
 	int m_iRenderDistFromTop;
 	
 	int m_kHorzOffset;
+	int m_iTotalTextHeight;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	ZGuiRender* m_pkGuiRender;
+
+	struct TEXT_TAG
+	{
+		TEXT_TAG() 
+		{ 
+			iPos=-1; iNumChars=0; afColor[0]=afColor[1]=afColor[2]=-1; 
+			pkFont=NULL; x=y=0; 
+			iRow=-1;
+		};
+
+		int iRow; // vilken rad texten finns på
+		int iPos; // offset into m_strText
+		int iNumChars; // length of text
+		float afColor[3];
+		ZGuiFont* pkFont;
+		int x,y;
+		int iRowHeight;
+	};
+
+	bool BuildTagList();
+	vector<TEXT_TAG> m_kTextTags;
+	
+	void BuildTextStrings();
 };
 
 #endif // #ifndef _GUI_ZGUITEXTBOX_H

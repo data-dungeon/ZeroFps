@@ -39,8 +39,10 @@ void DMCharacterStats::Randomize()
 	{
 		if((pkFile = fopen("names1.txt", "r"))) {
 			while (!feof(pkFile)) {
-				fgets(strLine, MAX_LINE, pkFile);
-				kNames.push_back(strLine);
+				if(fgets(strLine, MAX_LINE, pkFile))
+				{
+					kNames.push_back(strLine);
+				}
 			}
 			fclose(pkFile);
 		}
@@ -50,8 +52,10 @@ void DMCharacterStats::Randomize()
 	{
 		if((pkFile = fopen("names2.txt", "r"))) {
 			while (!feof(pkFile)) {
-				fgets(strLine, MAX_LINE, pkFile);
-				kSNames.push_back(strLine);
+				if(fgets(strLine, MAX_LINE, pkFile))
+				{
+					kSNames.push_back(strLine);
+				}
 			}
 			fclose(pkFile);
 		}

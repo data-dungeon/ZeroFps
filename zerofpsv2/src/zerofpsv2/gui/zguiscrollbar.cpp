@@ -123,7 +123,11 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 		
 		real_bn_height = size;
 		
-		m_pkThumbButton->Resize(rc.Width(),size);
+		int test = size;
+		if(test < 10)
+			test = 10;
+		m_pkThumbButton->Resize(rc.Width(),test);
+		
 		m_usThumbSize = max(size, rc.Width());
 	}
 

@@ -228,6 +228,56 @@ void ZGResEdit::OnInit()
 
 	// Gör en första temp save.
 	TempSave(true);
+
+	ZGuiFont* pkNewFont = new ZGuiFont("arial26");
+	pkNewFont->Create("data/textures/text/arial26.fnt",
+		m_pkTexMan->Load("data/textures/text/arial26.tga"));
+	m_pkGuiMan->Add("arial26", pkNewFont);
+
+	pkNewFont = new ZGuiFont("apa48");
+	pkNewFont->Create("data/textures/text/apa48.fnt",
+		m_pkTexMan->Load("data/textures/text/apa48.tga"));
+	m_pkGuiMan->Add("apa48", pkNewFont);
+
+	pkNewFont = new ZGuiFont("syflen16");
+	pkNewFont->Create("data/textures/text/syflen16.fnt",
+		m_pkTexMan->Load("data/textures/text/syflen16.tga"));
+	m_pkGuiMan->Add("syflen16", pkNewFont);
+	
+	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 460, 460, 0);
+	ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 5, 5, 450, 450, 0);
+	textbox->ToggleMultiLine(true);
+	textbox->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
+
+	FILE* pkFile = fopen("textbox.txt", "rt");
+	if(pkFile)
+	{
+		string text;
+		int iLines=0;
+		const int max = 512;
+		char strLine[max];
+
+		while (!feof(pkFile))
+		{
+			if(fgets(strLine, max, pkFile))
+			{
+				text += string(strLine);
+				iLines++;
+			}
+		}
+
+		textbox->SetText((char*)text.c_str());
+		fclose(pkFile);
+	}
+	
+	//ZGuiFont* pkNewFont = new ZGuiFont("small");
+	//pkNewFont->Create("data/textures/text/small.fnt",
+	//	m_pkTexMan->Load("data/textures/text/small.tga"));
+	//m_pkGuiMan->Add("small", pkNewFont);
+	//textbox->SetFont(m_pkGuiMan->Font("small"));
 }
 
 void ZGResEdit::OnIdle()

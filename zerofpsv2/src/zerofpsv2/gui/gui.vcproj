@@ -198,6 +198,9 @@
 				RelativePath=".\zguitextbox.cpp">
 			</File>
 			<File
+				RelativePath=".\zguitextbox2.cpp">
+			</File>
+			<File
 				RelativePath=".\zguitooltip.cpp">
 			</File>
 			<File

@@ -620,11 +620,43 @@ void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs,
 // Font rendering
 ///////////////////////////////////////////////////////////////////////////////
 
-void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, 
-									   int iRenderDistFromTop, bool bMultiLine, 
-										int& chars_printed, int& rows_printed, 
-										float afTextcolor[3])
+//void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, 
+//									   int iRenderDistFromTop, bool bMultiLine, 
+//										int& chars_printed, int& rows_printed, 
+//										float afTextcolor[3])
+//{
+//	if(m_pkFont == NULL || m_pkFont->m_iTextureID < 0)
+//		return; 
+//
+//	m_iCursorPos = iCursorPos;
+//	m_rcTextBox = Rect(rc.Left,m_iScreenHeight-rc.Bottom,rc.Right,
+//		m_iScreenHeight-rc.Top);
+//
+//	m_afTextColor[0] = afTextcolor[0];
+//	m_afTextColor[1] = afTextcolor[1];
+//	m_afTextColor[2] = afTextcolor[2];
+//		 		
+//	m_pkTextureManger->BindTexture( m_pkFont->m_iTextureID );		
+//	glEnable(GL_TEXTURE_2D);
+//
+//	glColor4f(0.0f,0.0f,0.0f,1);		
+//	//glDisable(GL_LIGHTING);
+//	glAlphaFunc(GL_GREATER,0.1f);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glEnable(GL_BLEND);			
+//	glEnable(GL_ALPHA_TEST);
+//
+//	if(bMultiLine)
+//		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+//			chars_printed, rows_printed);
+//	else
+//		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
+//}
+
+void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, float afTextcolor[3], 
+										MULTI_LINE_TEXT_INFO* pkMultiLineInfo)
 {
+
 	if(m_pkFont == NULL || m_pkFont->m_iTextureID < 0)
 		return; 
 
@@ -646,11 +678,25 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 	glEnable(GL_BLEND);			
 	glEnable(GL_ALPHA_TEST);
 
-	if(bMultiLine)
-		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+	int chars_printed, rows_printed;
+
+	if(pkMultiLineInfo != NULL)
+	{
+		m_ppRowOffsets = pkMultiLineInfo->m_ppRowOffsets;
+
+		PrintRows(strText, rc, iCursorPos, 
+			pkMultiLineInfo->m_iRenderDistFromTop, 
 			chars_printed, rows_printed);
+
+		(*m_ppRowOffsets)[0] = 0;
+		//(*m_ppRowOffsets)[rows_printed-1] = chars_printed;
+		*pkMultiLineInfo->m_pNumRows = rows_printed;
+	}
 	else
-		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
+	{
+		PrintRow(strText, rc, iCursorPos, 0, chars_printed);
+	}
+
 }
 
 bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, 
@@ -674,24 +720,29 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 			{
 				// Räkna inte in sista tecknets längd om det är ett space.
 				// och om längden på ordet överskrider den tillåtna längden.
-				if(text[offset+kLength.first-1] == ' ')
+		/*		if(text[offset+kLength.first-1] == ' ')
 				{
 					int index = ' ' - 32;
 					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
-				}
+				}*/
 
-				if(xpos+kLength.second >= width)
-				{
-					if(text[offset+kLength.first-1] == ' ')
-					{
-						int index = ' ' - 32;
-						kLength.second += m_pkFont->m_aChars[index].iSizeX;
-					}
+				//if(xpos+kLength.second >= width)
+				//{
+				//	//if(text[offset+kLength.first-1] == ' ')
+				//	//{
+				//	//	int index = ' ' - 32;
+				//	//	kLength.second += m_pkFont->m_aChars[index].iSizeX;
+				//	//}
+
+				//	rows++;
+				//	ypos += row_height;
+				//	xpos = 0;
+				//}
 
 					rows++;
+					(*m_ppRowOffsets)[rows] = offset;
 					ypos += row_height;
 					xpos = 0;
-				}
 			}
 
 			int x,y;
@@ -713,6 +764,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 			if(text[offset+kLength.first-1] == '\n')
 			{	
 				rows++;
+				(*m_ppRowOffsets)[rows] = offset+kLength.first;
 				ypos += row_height;	
 				xpos = 0;
 
@@ -963,3 +1015,55 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 
 	return pair<int,int>(char_counter, length_counter);
 }
+
+
+void GLGuiRender::StartDrawText()
+{
+	glColor4f(0.0f,0.0f,0.0f,1);		
+	glAlphaFunc(GL_GREATER,0.1f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);			
+	glEnable(GL_ALPHA_TEST);
+}
+
+void GLGuiRender::DrawString(const char* text, const int length, int x, int y, 
+									  const float color[3], const ZGuiFont* pkFont)
+{		 		
+	m_pkTextureManger->BindTexture( pkFont->m_iTextureID );		
+	glEnable(GL_TEXTURE_2D);
+
+	int index;
+	GLfloat tx, ty, tw, th;
+
+	//const int CHARACTERS_TOTALT = strlen(text);
+	y = m_iScreenHeight-y-pkFont->m_iRowHeight;
+
+	glBegin(GL_QUADS);
+
+	glColor4f(color[0], color[1], color[2], 1);
+
+	for(int i=0; i<length; i++)
+	{		
+		index = text[i];
+		if(index < 0 || index > 255)
+			continue;
+	
+		if(text[i] != ' ' && text[i] != '\t')
+		{
+			tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
+			ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight;
+			tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
+			th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight;
+
+			glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + pkFont->m_aChars[index].iSizeY);		 
+			glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + pkFont->m_aChars[index].iSizeY);    
+			glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+			glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+		}
+
+		x += pkFont->m_aChars[index].iSizeX;
+	}
+
+	glEnd();
+}
+

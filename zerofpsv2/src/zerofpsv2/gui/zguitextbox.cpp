@@ -1,7 +1,7 @@
 // Textbox.cpp: implementation of the Textbox class.
 //
 //////////////////////////////////////////////////////////////////////
-
+/*
 #include "../basic/zguiskin.h"
 #include "../basic/keys.h"
 #include "zguilabel.h"
@@ -97,9 +97,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 		m_iNumRows = iRowsPrinted;
 
-	/*	if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
-			m_bTextFit = false;
-		else*/
+		//if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
+		//	m_bTextFit = false;
+		//else
 			m_bTextFit = true;
 	}
 
@@ -375,15 +375,15 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		}
 	}
 
-/*	int iRows = GetNumRows(m_strText);
-	if(!bSkip && iRows > 1 && m_bMultiLine == false && m_iCursorPos != 0)
-	{
-		// Remove last character put.
-		string strLazy = m_strText;
-		strLazy.erase(m_iCursorPos-1,1);
-		strcpy(m_strText, strLazy.c_str());
-		m_iCursorPos--;
-	}*/
+ //  int iRows = GetNumRows(m_strText);
+	//if(!bSkip && iRows > 1 && m_bMultiLine == false && m_iCursorPos != 0)
+	//{
+	//	// Remove last character put.
+	//	string strLazy = m_strText;
+	//	strLazy.erase(m_iCursorPos-1,1);
+	//	strcpy(m_strText, strLazy.c_str());
+	//	m_iCursorPos--;
+	//}
 
 	if(m_bMultiLine == false)
 	{
@@ -426,12 +426,12 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 void ZGuiTextbox::SetFocus()
 {
-/*	m_iCursorPos = 0;
+	//m_iCursorPos = 0;
 
-	if(m_strText)
-	{
-		m_iCursorPos = strlen(m_strText);
-	}*/
+	//if(m_strText)
+	//{
+	//	m_iCursorPos = strlen(m_strText);
+	//}
 	m_bBlinkCursor = true;
 
 	if(m_strText)
@@ -454,12 +454,12 @@ void ZGuiTextbox::SetFocus()
 		iClickPosY = pkGui->m_iMouseY;
 	}
 
-	if(bMouseLeftPressed/*pkInput->Pressed(MOUSELEFT)*/)
+	if(bMouseLeftPressed) //pkInput->Pressed(MOUSELEFT))
 	{
-	/*	int iClickPosX, iClickPosY;
-		pkInput->MouseXY(iClickPosX,iClickPosY);
-		iClickPosX -= GetScreenRect().Left;
-		iClickPosY -= GetScreenRect().Top;*/
+		//int iClickPosX, iClickPosY;
+		//pkInput->MouseXY(iClickPosX,iClickPosY);
+		//iClickPosX -= GetScreenRect().Left;
+		//iClickPosY -= GetScreenRect().Top;
 
 		// Placera markören där man klickade.
 		if(m_pkFont != NULL && m_strText != NULL)
@@ -501,12 +501,12 @@ void ZGuiTextbox::KillFocus()
 	else
 		m_bBlinkCursor = false;
 
-/*	// Send a message to the main winproc...
-	int* piParams = new int[1];
-	piParams[0] = GetID(); // Listbox ID
-	GetGUI()->GetActiveCallBackFunc()(
-		GetGUI()->GetActiveMainWnd(), ZGM_EN_CHANGE, 1, piParams);
-	delete[] piParams;*/
+	// Send a message to the main winproc...
+	//int* piParams = new int[1];
+	//piParams[0] = GetID(); // Listbox ID
+	//GetGUI()->GetActiveCallBackFunc()(
+	//	GetGUI()->GetActiveMainWnd(), ZGM_EN_CHANGE, 1, piParams);
+	//delete[] piParams;
 }
 
 // expand the text buffer to make more room
@@ -770,6 +770,7 @@ int ZGuiTextbox::GetNumRows(char* text)
 	{
 		int prev_row = rows;
 
+		m_pkGuiRender->SetFont(m_pkFont);
 		kLength = m_pkGuiRender->GetWordLength(text, offset, max_width);
 
 		if(xpos+kLength.second >= width)
@@ -1185,3 +1186,4 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 //
 //	return pair<int,int>(char_counter, length_counter);
 //}
+*/

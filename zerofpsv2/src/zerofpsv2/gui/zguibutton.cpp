@@ -80,14 +80,19 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	if(m_pkSkin)
 		pkRenderer->RenderBorder(GetScreenRect().Contract(m_pkSkin->m_unBorderSize));
 
-	if(m_strText != NULL)
+	if(m_strText != NULL && m_pkFont)
 	{
 		Rect rcTextRect = GetScreenRect();
 
-		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, rcTextRect, -1, 
-			m_bCenterTextHorz == true ? ZG_CENTER_TEXT_HORZ : 0, 
-			false, iLetters, iRows, m_afTextColor);
+		if(m_bCenterTextHorz)
+		{
+			int text_w = m_pkFont->GetLength(m_strText);
+			int x = rcTextRect.Left + rcTextRect.Width() / 2 - text_w / 2;
+			rcTextRect.Left = x;
+			rcTextRect.Right = x + text_w;
+		}
+		
+		pkRenderer->RenderText(m_strText, rcTextRect, -1, m_afTextColor);
 	}
 
 	return true;

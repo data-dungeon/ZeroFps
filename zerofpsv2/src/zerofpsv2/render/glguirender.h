@@ -42,9 +42,16 @@ public:
 	void SetClipperArea(Rect rc);
 
 	bool SetFont(ZGuiFont* pkFont);
-	void RenderText( char *stText, Rect kScreenRect, 
-		int iCursorPos, int iRenderDistFromTop, bool bMultiLine,
-		int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
+	//void RenderText( char *stText, Rect kScreenRect, 
+	//	int iCursorPos, int iRenderDistFromTop, bool bMultiLine,
+	//	int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
+
+	void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
+		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL);
+
+	void StartDrawText();
+	void DrawString(const char* text, const int length, int x, int y, 
+		const float color[3], const ZGuiFont* font);
 	
 private:
 
@@ -64,6 +71,7 @@ private:
 	TextureManager* m_pkTextureManger;
 	
 	int m_iCursorPos;
+	unsigned short** m_ppRowOffsets;
 
 	Rect m_rcTextBox;
 	Rect m_rcClipperArea;
