@@ -192,12 +192,15 @@ void Console::Update(void) {
 		return;
 	}
 	
-	int iKey = m_pkInput->GetQueuedKey();
-	if(iKey < 0)
-		return;
+	static bool s_bKeyrepeatActivated = false;
+	static int s_iLastKeyPressed;
+	static float s_fKeyrepeatCheckTime = m_pkEngine->GetGameTime();
+	static float s_fLastRepeatTime = m_pkEngine->GetGameTime();
+
+	int iKeyPressed = m_pkInput->GetQueuedKey();
 		
 	//press keys
-	if(iKey == KEY_TAB) {
+	if(iKeyPressed == KEY_TAB) {
 		glPopAttrib();
 		
 		m_pkEngine->m_bConsoleMode=false;
@@ -205,15 +208,11 @@ void Console::Update(void) {
 		return;
 	}
 
-	if(iKey==SDLK_RETURN){
+	if(iKeyPressed==SDLK_RETURN){
 		Execute(m_aCommand);
 		for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
 			m_aCommand[i]=' ';				
 		strcpy(m_aCommand,"");
-		return;
-	}
-	if(iKey==SDLK_BACKSPACE){
-		m_aCommand[strlen(m_aCommand)-1]='\0';
 		return;
 	}
 				
@@ -223,20 +222,21 @@ void Console::Update(void) {
 		m_bShift=false;
 	}
 
-	if(iKey==KEY_DOWN)
+	if(iKeyPressed==KEY_DOWN)
 	{
 		if(m_nLastCommand > 0)
 		{
 			m_nLastCommand--;
-			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());	
+			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
 		}
+		return;
 	}
-	if(iKey==KEY_UP)
+	if(iKeyPressed==KEY_UP)
 	{
 		if(m_nLastCommand+1 < m_kCommandHistory.size())
 		{
 			m_nLastCommand++;
-			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());		
+			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
 		}
 		else
 		{
@@ -244,37 +244,71 @@ void Console::Update(void) {
 			if(last >= 0)
 				strcpy(m_aCommand, m_kCommandHistory[last].c_str());		
 		}
+		return;
 	}
 	
 	//type text
 	if(strlen(m_aCommand)<COMMAND_LENGHT) 
 	{
-		int code=iKey;
+		// Registrera senast knappnedtryck.
+		if(iKeyPressed != -1 && 
+			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
+		{
+			// Formatera bokstaven.
+			FormatKey(iKeyPressed);
+
+			if(s_iLastKeyPressed != iKeyPressed)
+				s_bKeyrepeatActivated = false;
+
+			s_iLastKeyPressed = iKeyPressed; // registrera
+
+			// Har knappen tryckts ner?
+			if(s_iLastKeyPressed != SDLK_BACKSPACE)
+				strncat(m_aCommand,(char*)&(s_iLastKeyPressed),1);
+			else
+				m_aCommand[strlen(m_aCommand)-1]='\0';
+		}
 		
-		//shift?
-		if(m_bShift) {
-			if(code>96 && code<123){
-				code-=32;
-				strncat(m_aCommand,(char*)&(code),1);
+		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
+		if(m_pkInput->Pressed(s_iLastKeyPressed))
+		{
+			float fCurrTime = m_pkEngine->GetGameTime();
+
+			const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
+
+			if(s_bKeyrepeatActivated == false)
+			{
+				// Är det dags att aktivera Key Repeat?
+				if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
+				{
+					s_bKeyrepeatActivated = true;
+					s_fKeyrepeatCheckTime = fCurrTime;
+					s_fLastRepeatTime = fCurrTime;
+				}
 			}
-			if(code=='-'){
-				code='_';
-				strncat(m_aCommand,(char*)&(code),1);
+			else
+			{
+				// Är det dags att skriva ett nytt tecken?
+				if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
+				{
+					if(s_iLastKeyPressed != SDLK_BACKSPACE)
+						strncat(m_aCommand,(char*)&(s_iLastKeyPressed),1);
+					else
+						m_aCommand[strlen(m_aCommand)-1]='\0';
+
+					s_fLastRepeatTime = fCurrTime;
+				}
 			}
-			if(code=='.'){
-				code=':';
-				strncat(m_aCommand,(char*)&(code),1);
-			}					
-			if(code=='7'){
-				code='/';
-				strncat(m_aCommand,(char*)&(code),1);
-			}					
-		}else
-			strncat(m_aCommand,(char*)&(code),1);
+		}
+		// ... i annat fall nollställ statiska variabler.
+		else
+		{
+			s_bKeyrepeatActivated = false;
+			s_fKeyrepeatCheckTime = m_pkEngine->GetGameTime();
+			s_fLastRepeatTime = m_pkEngine->GetGameTime();
+		}	
 	}	
 }
-	
-	
 	
 /*	
 	while(SDL_PollEvent(&m_kEvent)) {
@@ -375,4 +409,23 @@ bool Console::Execute(char* aText) {
 	}
 
 	return true;
+}
+
+void Console::FormatKey(int& r_iKey)
+{
+	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
+	{
+		if(r_iKey>96 && r_iKey<123){
+			r_iKey-=32;
+		}
+		if(r_iKey=='-'){
+			r_iKey='_';
+		}
+		if(r_iKey=='.'){
+			r_iKey=':';
+		}					
+		if(r_iKey=='7'){
+			r_iKey='/';
+		}
+	}
 }
