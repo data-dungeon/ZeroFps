@@ -182,6 +182,15 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"alphatest"))
 		newpass->m_bAlphaTest = m_kIni.GetBoolValue(passname.c_str(),"alphatest");
 	
+
+   // added mipmap option // -magnus
+   bool bMipMapped = true;
+
+   if(m_kIni.KeyExist(passname.c_str(),"mipmapped"))
+      bMipMapped = m_kIni.GetBoolValue(passname.c_str(),"mipmapped");
+
+   TextureManager::SetMipMap (bMipMapped);
+
 	if(m_kIni.KeyExist(passname.c_str(),"tu0"))
 		newpass->m_kTUs[0]->SetRes(m_kIni.GetValue(passname.c_str(),"tu0"));
 	if(m_kIni.KeyExist(passname.c_str(),"tu1"))
