@@ -260,7 +260,7 @@ void ZGuiTextbox::SetFocus()
 	int iClickPosX, iClickPosY;
 	pkInput->MouseXY(iClickPosX,iClickPosY);
 
-	// Sätt markören på rätt ställe.
+	// Placera markören där man klickade.
 	Rect rcTextbox = GetScreenRect();
 	if(rcTextbox.Inside(iClickPosX,iClickPosY) && pkInput->Pressed(MOUSELEFT))
 	{
@@ -269,14 +269,27 @@ void ZGuiTextbox::SetFocus()
 
 		if(m_pkFont && m_strText && strlen(m_strText) > 0)
 		{
-			string strText = "";
-
+			// Adderar för vertikalt avstånd från ovankant.
 			int row = iVertOffset / m_pkFont->m_cCharCellSize;
-			if(row > GetNumRows()-1)
-				row = GetNumRows()-1;
+			int rows = GetNumRows();
 
 			for(int i=0; i<row; i++)
-				m_iCursorPos += GetRowLength(i);	
+				m_iCursorPos += GetRowLength(i);
+
+			// Adderar för horizontellt avstånd från vänsterkant.
+			int offset = 0;
+			int row_length = GetRowLength(row);
+			for( i=0; i<row_length; i++)
+			{
+				if(offset > iHorzOffset)
+					break;
+
+				int pos = m_strText[m_iCursorPos+i]-32;
+				if(pos >= 0 && pos < 256)
+					offset += m_pkFont->m_aChars[pos].iSizeX;
+			}
+
+			m_iCursorPos += i;
 		}
 	}
 }
