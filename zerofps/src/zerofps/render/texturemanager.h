@@ -40,6 +40,7 @@ class RENDER_API TextureManager {
 		int Load(char* acFileName,int iOption);		
 		void BindTexture(int iTexture);
 		void BindTexture(char* acFileName,int iOption);
+		void ClearAll();
 };
 
 

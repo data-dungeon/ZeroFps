@@ -74,7 +74,8 @@ void ZeroFps::MainLoop(void) {
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
-//					m_pkTempCamera=m_pkCamera;					
+//					m_pkTempCamera=m_pkCamera;										
+					
 					SetCamera(m_pkConsoleCamera);					
 					break;
 				}
@@ -112,8 +113,9 @@ void ZeroFps::MainLoop(void) {
 				m_pkConsole->Update();
 				Swap();
 				
-/*				
+				
 				//set the old camera when changing to in-game state
+/*				
 				if(m_iState==state_normal){
 					SetCamera(m_pkTempCamera);
 				}					
@@ -206,8 +208,11 @@ void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 
 void ZeroFps::SetDisplay()
 {
+	m_pkTexMan->ClearAll();
+	
 	//turn of opengl 
 	SDL_QuitSubSystem(SDL_OPENGL);
+
 	
 	//reinit opengl with the new configuration
 	SDL_InitSubSystem(SDL_OPENGL);

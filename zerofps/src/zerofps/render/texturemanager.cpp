@@ -121,7 +121,7 @@ int TextureManager::Load(char* acFileName,int iOption) {
 	//add the texture to the loaded textures vector
 	m_iTextures.push_back(temp);
 	
-//	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
+	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
 	
 	//return our new texture index
 	return m_iTextures.back()->index;
@@ -141,6 +141,16 @@ void TextureManager::BindTexture(char* acFileName,int iOption) {
 		glBindTexture(GL_TEXTURE_2D,iTexture);
 	}
 }
+
+
+void TextureManager::ClearAll() {
+	for(int i=0;i<m_iTextures.size();i++){
+		glDeleteTextures(1,&m_iTextures[i]->index);
+	}
+	m_iTextures.clear();
+
+}
+
 
 
 
