@@ -19,12 +19,12 @@ namespace AudioLua
 
 	extern ZFScriptSystem* g_pkScript;
 	extern ZFAudioSystem* g_pAudioSys;
-	extern EntityManager* g_pkObjectMan;
+	extern EntityManager* g_pkEntityMan;
 
 	int ENGINE_SYSTEMS_API PlaySoundLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API PlayGuiSoundLua(lua_State* pkLua);
-
 	int ENGINE_SYSTEMS_API StopSoundLua(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API PlayGuiSoundLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API PlayMusicLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API StopMusicLua(lua_State* pkLua);

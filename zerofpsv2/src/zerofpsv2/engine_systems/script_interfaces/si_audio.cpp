@@ -4,20 +4,19 @@
 
 #include "../audio/zfaudiosystem.h"
 #include "../../engine/entitymanager.h"
-#include "../../engine_systems/propertys/p_ambientsound.h"
 #include "../../engine_systems/propertys/p_sound.h"
 #include "si_audio.h"
 
 ZFScriptSystem* AudioLua::g_pkScript;
 ZFAudioSystem* AudioLua::g_pAudioSys;
-EntityManager* AudioLua::g_pkObjectMan;
+EntityManager* AudioLua::g_pkEntityMan;
 
 void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 						  ZFScriptSystem* pkScript)
 {
 	g_pkScript = pkScript;
 	g_pAudioSys = pkAudio;
-	g_pkObjectMan = pkObjMan;
+	g_pkEntityMan = pkObjMan;
 
 	pkScript->ExposeFunction("PlaySound",	AudioLua::PlaySoundLua);
 	pkScript->ExposeFunction("PlayGuiSound", AudioLua::PlayGuiSoundLua); 
@@ -29,78 +28,44 @@ void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 
 // PlaySound
 // Parameters:
-//		(0) name of sound (not the full path) (char*)
-// sedan antingen:
-//		(1) objekt id (int)
-//		(2) loop = 1, do not loop = 0 (int)
-//	eller
-//		(1,2,3) pos x, pos y, pos z (double, double, double)
-//		(4,5,6) dir x, dir y, dir z (double, double, double)
-//		(7) loop = 1, do not loop = 0 (int)
-/*int AudioLua::PlaySoundLua(lua_State* pkLua)
+// 	1:st arg - Object ID generating sound
+// 	2:nd arg - Name of file ("data/sound/plupp.wav")
+// 	3:rd arg - Loop or not (0: false, 1:true)
+int AudioLua::PlaySoundLua(lua_State* pkLua)
 {
-	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
-
-	double dValue;
-	Vector3 pos, dir;
-	string strFileName;
-	bool bLoop;
-	
-	switch(iNumArgs)
-	{
-	case 3:
-		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-		Entity* pkObject;
-		pkObject = g_pkObjectMan->GetObjectByNetWorkID((int)dValue);
-		if(pkObject == NULL)
-		{
-			char szFileName[100];
-			g_pkScript->GetArg(pkLua, 0, szFileName);
-			printf("Failed to play sound \"%s\" on object with id: %i\n", 
-				szFileName, (int)dValue);
-			return 0;
-		}
-		pos = pkObject->GetWorldPosV();
-		dir = pkObject->GetWorldRotV();
-
-		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
-		bLoop = (dValue < 1) ? false : true;
-		break;
-
-	case 8:
-		g_pkScript->GetArgNumber(pkLua, 1, &dValue); pos.x = dValue;
-		g_pkScript->GetArgNumber(pkLua, 2, &dValue); pos.y = dValue;
-		g_pkScript->GetArgNumber(pkLua, 3, &dValue); pos.z = dValue;
-
-		g_pkScript->GetArgNumber(pkLua, 4, &dValue); dir.x = dValue;
-		g_pkScript->GetArgNumber(pkLua, 5, &dValue); dir.y = dValue;
-		g_pkScript->GetArgNumber(pkLua, 6, &dValue); dir.z = dValue;
-
-		g_pkScript->GetArgNumber(pkLua, 7, &dValue);
-		bLoop = (dValue < 1) ? false : true;
-		break;
-
-	default:
-		printf("Failed to play sound! Wrong number of arguments.\n");
+	if(g_pkScript->GetNumArgs(pkLua) != 3)
 		return 0;
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iObjectID = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
+	int iLoop = (int)dTemp;
+
+	Entity* pkObject = g_pkEntityMan->GetEntityByID(iObjectID);
+	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
+
+	if(pkSound)
+	{
+		pkSound->StartSound(string(acName), (iLoop == 0) ? false : true);
+	}
+	else
+	{
+		printf("Object have no P_Sound property! Failed to play sound.\n");
 	}
 
-	// Name of the sound file (not the full path)
-	char szFileName[100];
-	g_pkScript->GetArg(pkLua, 0, szFileName);
-
-	// Create full path
-	strFileName = "data/sound/";
-	strFileName.append(szFileName);
-
-	g_pAudioSys->StartSound(strFileName, pos, dir, bLoop);
-
 	return 1;
-}*/
+}
 
-// 1:st arg Object ID generating sound
-// 2:st arg name of file
-int AudioLua::PlaySoundLua(lua_State* pkLua)
+// StopSound
+// Parameters:
+// 	1:st arg - Object ID generating sound
+// 	2:nd arg - Name of file ("data/sound/plupp.wav")
+int AudioLua::StopSoundLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 2)
 		return 0;
@@ -112,32 +77,27 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	printf("Play Sound '%s' on object %d\n", acName,  iObjectID);
-
-	Entity* pkObject = g_pkObjectMan->GetEntityByID(iObjectID);
+	Entity* pkObject = g_pkEntityMan->GetEntityByID(iObjectID);
 	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
 
 	if(pkSound)
 	{
-		pkSound->StartSound(string("data/sound/") + string(acName), true);
+		pkSound->StopSound(string(acName));
 	}
 	else
 	{
-		printf("Object have no P_Sound property! Failed to play sound.\n");
+		printf("Object have no P_Sound property! Failed to stop sound.\n");
 	}
 
 	return 1;
 }
 
-// PlaySound
+// PlayGuiSound
 // Parameters:
 //		(0) name of sound (not the full path) (char*)
-//		(1) loop = 1, do not loop = 0 (int)
 int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 {
-	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
-
-	if(iNumArgs != 2)
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
 		printf("Failed to play sound! Wrong number of arguments.\n");
 		return 0;
@@ -147,86 +107,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	char szFileName[100];
 	g_pkScript->GetArg(pkLua, 0, szFileName);
 
-	double dValue;
-	g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-
-//	bool bLoop = (dValue < 1) ? false : true;
-
-	// Create full path
-	string strFileName = "data/sound/";
-	strFileName.append(szFileName);
-
-	g_pAudioSys->StartSound(strFileName);
-
-	return 1;
-}
-
-// StopSoundLua
-// Parameters:
-//		(0) name of sound (not the full path) (char*)
-// sedan antingen:
-//		(1) objekt id (int)
-//    (2) max search range (float)
-//	eller
-//		(1,2,3) pos x, pos y, pos z (double, double, double)
-//    (4) max search range (float)
-int AudioLua::StopSoundLua(lua_State* pkLua)
-{
-	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
-
-	double dValue;
-	Vector3 pos;
-	string strFileName;
-	
-	float fMaxSearchRange;
-	
-	switch(iNumArgs)
-	{
-	case 3:
-		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-		Entity* pkObject;
-		pkObject = g_pkObjectMan->GetEntityByID((int)dValue);
-		if(pkObject == NULL)
-		{
-			char szFileName[100];
-			g_pkScript->GetArg(pkLua, 0, szFileName);
-			printf("Failed to play sound \"%s\" on object with id: %i\n", 
-				szFileName, (int)dValue);
-			return 0;
-		}
-		pos = pkObject->GetWorldPosV();
-
-		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
-		fMaxSearchRange = (float) dValue;
-		break;
-
-	case 5:
-		g_pkScript->GetArgNumber(pkLua, 1, &dValue); pos.x = (float) dValue;
-		g_pkScript->GetArgNumber(pkLua, 2, &dValue); pos.y = (float) dValue;
-		g_pkScript->GetArgNumber(pkLua, 3, &dValue); pos.z = (float) dValue;
-
-		g_pkScript->GetArgNumber(pkLua, 4, &dValue);
-		fMaxSearchRange = (float) dValue;
-		break;
-
-	default:
-		printf("Failed to play sound! Wrong number of arguments.\n");
-		return 0;
-	}
-
-	// Name of the sound file (not the full path)
-	char szFileName[100];
-	g_pkScript->GetArg(pkLua, 0, szFileName);
-
-	// Create full path
-	strFileName = "data/sound/";
-	strFileName.append(szFileName);
-
-/*	ZFSoundInfo sound(strFileName.c_str(), pos, Vector3(0,0,1), false);
-	if(!g_pAudioSys->RemoveSound(sound, fMaxSearchRange))
-	{
-		printf("Failed to stop sound!\n");
-	}*/
+	g_pAudioSys->StartSound(string(szFileName));
 
 	return 1;
 }
