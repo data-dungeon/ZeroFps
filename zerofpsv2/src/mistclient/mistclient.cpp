@@ -108,6 +108,7 @@ void MistClient::RegisterActions()
 
 void MistClient::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
 }
 
@@ -429,7 +430,6 @@ Object* MistClient::GetTargetObject()
 	kObjects.clear();
 	
 	pkObjectMan->TestLine(&kObjects,start,dir);
-	
 	
 	float closest = 9999999999;
 	Object* pkClosest = NULL;	
