@@ -86,6 +86,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		NetWork* m_pkNetWork;
 		Frustum* m_pkFrustum;
 		ZGui* m_pkGui;
+		ZGuiResourceManager* m_pkGuiMan;
 		GLGuiRender* m_pkGuiRenderer;
 		ZFIni* m_pkIni;
 		LevelManager* m_pkLevelMan;

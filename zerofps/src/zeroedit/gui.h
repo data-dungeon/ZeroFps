@@ -21,6 +21,9 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
+	bool Register(ZGuiFont* pkSkin, string szName);
+	bool Register(ZGuiSkin* pkSkin, string szName);
+	bool Register(ZGuiWnd* pkWnd, string szName);
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
 	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
@@ -48,6 +51,7 @@ private:
 	bool InitSkins();
 
 public:
+
 	
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool IsMenuActive() { return m_bMenuActive; }

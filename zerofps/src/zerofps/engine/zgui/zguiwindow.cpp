@@ -6,6 +6,7 @@
 #include "../../render/zguirenderer.h"
 #include "../../basic/zguiskin.h"
 #include "../../basic/zguifont.h"
+#include "zguiresourcemanager.h"
 
 ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;

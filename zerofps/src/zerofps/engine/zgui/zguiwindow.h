@@ -21,6 +21,7 @@ class ZGui;
 class ZGuiRender;
 class ZGuiSkin;
 class ZGuiFont;
+class ZGuiResourceManager;
 
 const int NCODE_CLICK_UP	= 78;
 const int NCODE_CLICK_DOWN	= 79;
@@ -35,7 +36,12 @@ const int NCODE_MOVE		= 83;
 
 class ENGINE_API ZGuiWnd  
 {
+
 public:
+
+	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
+	virtual ~ZGuiWnd();
+
 	virtual void SetFont(ZGuiFont* pkFont);
 	ZGuiFont* GetFont() { return m_pkFont; }
 
@@ -49,9 +55,6 @@ public:
 	typedef list<ZGuiWnd*>::iterator WINit;
 	typedef list<ZGuiWnd*>::reverse_iterator WINrit;
 	
-	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
-	virtual ~ZGuiWnd();
-
 	bool RemoveChild( ZGuiWnd *pkWindow );
 	bool AddChild(ZGuiWnd *pkWindow);					// Add a new childwindow
 	bool SetParent(ZGuiWnd *pkWindow);					// Set the parent window

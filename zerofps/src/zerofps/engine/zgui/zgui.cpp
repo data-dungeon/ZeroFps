@@ -24,6 +24,7 @@ ZGui::ZGui()
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkResManager = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkActiveMainWin = NULL;
 	m_pkPrevMainWnd = NULL;
 	m_bLeftButtonDown = false;

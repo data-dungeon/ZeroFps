@@ -91,7 +91,10 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				case IDM_LOAD_HEIGHTMAP:
 					{
 						if(m_pkFileDlgbox)
+						{
 							delete m_pkFileDlgbox;
+							m_pkFileDlgbox = NULL;
+						}
 
 						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS,
 							m_pkEdit->pkFps->m_pkLevelMan->GetMapBaseDir(), WINPROC,
@@ -102,7 +105,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				case IDM_CREATE_NEW_PROPERTY:
 					w = 500;
 					h = 500;
-					CreatePropertyDialog(100,200,w,h);
+					CreatePropertyDialog(0,0,w,h);
 					break;
 				}
 			}
@@ -324,7 +327,7 @@ ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 
 	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
 	CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
-	CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20);
+	Register(CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20), "PropertyName");
 
 	CreateLabel(pkMainWindow, 0, 20, 60, 16*4, 20, "Pos:");
 	CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 60, 16*6, 20);
@@ -386,4 +389,19 @@ void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id
 		ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
 		pkListbox->AddItem((char*)item, id);
 	}
+}
+
+bool Gui::Register(ZGuiWnd *pkWnd, string szName)
+{
+	return (m_pkEdit->pkGuiMan->Add(szName, pkWnd) != NULL);
+}
+
+bool Gui::Register(ZGuiSkin *pkSkin, string szName)
+{
+	return (m_pkEdit->pkGuiMan->Add(szName, pkSkin) != NULL);
+}
+
+bool Gui::Register(ZGuiFont *pkSkin, string szName)
+{
+	return (m_pkEdit->pkGuiMan->Add(szName, pkSkin) != NULL);
 }

@@ -33,6 +33,7 @@ class ZGuiControl;
 class ZGuiRender;
 class Input;
 class ZeroFps;
+class ZGuiResourceManager;
 
 /*
  * Window Messages
@@ -107,6 +108,7 @@ private:
 	MAIN_WINDOW* ChangeMainWindow(int x, int y);
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
+	ZGuiResourceManager* m_pkResManager;
 	Input* m_pkInput;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
