@@ -16,7 +16,7 @@ P_DMGun::P_DMGun()
 	m_fBurstLength = 		0.5;
 	m_bFireing =			false;
 	m_bFirstUpdateSinceFireing = false;
-	m_kGunOffset.Set(0,0,0);
+	m_kGunOffset.Set(0,-0.4,0);
 	
 	//default gun
 	m_strName = 	"YberGun";

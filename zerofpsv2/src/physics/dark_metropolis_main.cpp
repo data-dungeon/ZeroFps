@@ -478,6 +478,16 @@ void DarkMetropolis::Input()
 			m_pkInputHandle->UnitMouseXY(x,y);	
 			pkChar->m_kDir.Set(x,0,y);
 		}
+		
+		
+		if(m_pkInputHandle->VKIsDown("action"))
+		{
+			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 1)
+			{
+				m_fDelayTimer = m_pkFps->GetTicks();
+				m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/r_box.lua",m_pkPlayerEntity->GetWorldPosV() + Vector3(2,2,0));			
+			}
+		}
 	}
 }
 

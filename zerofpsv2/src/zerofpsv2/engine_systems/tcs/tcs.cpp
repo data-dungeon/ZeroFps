@@ -227,20 +227,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	
 //	cout<<"v1:"<<kRotVel1.Length()<<" "<<pkCol->pkBody1->m_kLinearVelocity.Length()<<endl;
 //	cout<<"v2:"<<kRotVel2.Length()<<" "<<pkCol->pkBody2->m_kLinearVelocity.Length()<<endl;
-	
-	if(pkCol->pkBody1->m_bStatic && (kRotVel1.Length() != 0) )
-		cout<<"CPPPPPPPPP"<<endl;
-
-	if(pkCol->pkBody2->m_bStatic && (kRotVel2.Length() != 0) )
-		cout<<"CPPPPPPPPP"<<endl;
 		
-		
-	if(kRotVel1.Length() != 0)
-	{
-		cout<<"buggga "<<kRotVel1.Length()<<endl;
-		//return;
-	}
-	
 	float fTotalj = 0;
 	
 	for(int i = 0;i<	iNrOfPos;i++)

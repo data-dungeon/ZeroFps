@@ -16,11 +16,11 @@ function Create()
 			InitParameter("group",1);
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);			
-			InitParameter("airfriction",0.1);
+			InitParameter("airfriction",0.5);
 			InitParameter("mass",1);
-			InitParameter("inertia",1);
-			InitParameter("bounce",0.0);
-			InitParameter("friction",1);
+			InitParameter("inertia",0.5);
+			InitParameter("bounce",0.5);
+			InitParameter("friction",0.8);
 --			InitParameter("activemoment","false");
 			
 		SetParentObject();

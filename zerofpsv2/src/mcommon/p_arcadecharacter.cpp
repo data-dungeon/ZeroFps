@@ -76,9 +76,10 @@ void P_ArcadeCharacter::Fire()
 {
 	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
 	{
-		pkGun->Fire( GetObject()->GetWorldPosV() + m_kDir.Unit());
+		pkGun->Fire( GetObject()->GetWorldPosV()+Vector3(0,-0.4,0) + m_kDir.Unit());
 	}
-
+	else
+		cout<<"missing P_DMGun"<<endl;
 }
 
 
