@@ -251,6 +251,11 @@ void MistServer::Input()
 		speed = 5;
 	
 
+	if(pkInput->Pressed(KEY_F5) ) {
+		if(m_pkServerInfoP)
+			m_pkServerInfoP->MessagePlayer(-1,"Tjena julle");
+	} 
+	
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 
@@ -269,6 +274,8 @@ void MistServer::Input()
 		mp->NextCoreAnimation();
 		} 
 	
+
+
 
 /*	if(pkInput->Pressed(KEY_F5)) {
 		kPathStart = m_kObjectMarkerPos;

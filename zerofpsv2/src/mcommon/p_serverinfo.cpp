@@ -133,6 +133,23 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Write(&objects,sizeof(objects));
 		for(int j =0;j<objects;j++)
 			pkNetPacket->Write(&m_kPlayers[i].kControl[j],sizeof(m_kPlayers[i].kControl[j]));
+			
+		//only send messages to the target player
+		if(iConnectionID == 	m_kPlayers[i].iId)	
+		{
+			int messages = m_kPlayers[i].kMessages.size();
+			pkNetPacket->Write(&messages,sizeof(messages));
+			while(!m_kPlayers[i].kMessages.empty())
+			{
+				pkNetPacket->Write_Str(m_kPlayers[i].kMessages.front().c_str());
+				m_kPlayers[i].kMessages.pop();		
+			}
+		}
+		else  //else send a dummy messages
+		{
+			int nomessages = 0;
+			pkNetPacket->Write(&nomessages,sizeof(nomessages));
+		}
 	}
 	
 }
@@ -156,18 +173,33 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	   char tm[120];		   
 		pkNetPacket->Read_Str(tm);		
 		temp.sPlayerName = tm;
-		
-		temp.kControl.clear();
-		
+			
+		//read kControl vector
+		temp.kControl.clear();		
 		int objects; 
-		pkNetPacket->Read(&objects,sizeof(objects));
-		
+		pkNetPacket->Read(&objects,sizeof(objects));		
 		for(int i =0;i<objects;i++)
 		{	
 			pair<int,int> t;
 			pkNetPacket->Read(&t,sizeof(t));
 			temp.kControl.push_back(t);
 		}
+		
+		//read messages
+		while(!temp.kMessages.empty())			//clean message queue
+			temp.kMessages.pop();
+
+		int messages; 
+		pkNetPacket->Read(&messages,sizeof(messages));		
+			
+		for(int i =0;i<messages;i++)
+		{	
+			char tempstr[256];
+			pkNetPacket->Read_Str(tempstr);
+			temp.kMessages.push(tempstr);
+			
+		}
+		
 		m_kPlayers.push_back(temp);
 	}
 }
@@ -181,6 +213,44 @@ PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
 	}
 	
 	return NULL;
+}
+
+
+void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
+{
+	for(int i =0 ;i< m_kPlayers.size();i++)
+	{	
+		if(m_kPlayers[i].sPlayerName == czName)
+		{	
+			m_kPlayers[i].kMessages.push(strMessage);	
+			return;
+		}
+	}
+}
+
+void P_ServerInfo::MessagePlayer(int id,string strMessage)
+{
+	//if target connection id is -1 send to everyone
+	if(id == -1)
+	{
+		for(int i =0 ;i< m_kPlayers.size();i++)
+		{	
+			m_kPlayers[i].kMessages.push(strMessage);			
+		}
+		return;
+	}
+
+	PlayerInfo* pi = GetPlayerInfo(id);
+	
+	if(!pi)
+	{
+		cout<<"trying to send message to player that does not exist:"<<id<<endl;
+		return;
+	}
+	
+	//add message to players message queue
+	pi->kMessages.push(strMessage);
+	
 }
 
 

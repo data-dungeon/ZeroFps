@@ -288,6 +288,7 @@ void MistClient::OnSystem()
 			int id = pi->kControl[m_iActiveCaracter].first;	
 			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
+			//setup camera for active caracter
 			if(pkObj)
 			{
 				P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
@@ -303,7 +304,15 @@ void MistClient::OnSystem()
 				}
 
 				m_pkActiveCharacter = pkObj;
-			}		
+			}	
+			
+			//print server messages
+			while(!pi->kMessages.empty())
+			{
+				PrintInfoBox(pi->kMessages.front().c_str());
+				pi->kMessages.pop();
+			}
+			
 		}else
 			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
 	}

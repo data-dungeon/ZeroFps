@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string.h>
 #include "mcommon_x.h"
+#include <queue>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ struct MCOMMON_API PlayerInfo
 	int		iId;
 	string	sPlayerName;
 	vector<pair<int,int> >	kControl; // objekt id, rättigheter
+	queue<string>	kMessages;
 };
 
 enum PlayerRights
@@ -48,6 +50,10 @@ class MCOMMON_API P_ServerInfo: public Property {
 		void RemovePlayer(string sName);
 		bool PlayerExist(string sName);
 		bool PlayerExist(int id);		
+	
+		void MessagePlayer(int id,string strMessage);
+		void MessagePlayer(const char* czName,string strMessage);
+
 
 		int GetNrOfPlayers(){return m_kPlayers.size();};
 		
