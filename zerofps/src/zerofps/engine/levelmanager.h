@@ -72,6 +72,8 @@ class ENGINE_API LevelManager : public ZFObject {
 		int GetNrOfTrackedObjects();
 		list<Object*>* GetTrackerList();
 		void ClearTrackers();
+
+		const string GetMapBaseDir() { return m_kMapBaseDir; }
 };
 
 

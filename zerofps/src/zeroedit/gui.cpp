@@ -102,7 +102,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				case IDM_CREATE_NEW_PROPERTY:
 					w = 500;
 					h = 500;
-					CreatePropertyDialog(100,100,w,h);
+					CreatePropertyDialog(0,0,w,h);
 					break;
 				}
 			}
@@ -150,6 +150,7 @@ bool Gui::CreateWindows()
 {	
 	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
+	pkMenu->SetZValue(102321);
 
 	Rect rc = Rect(0,0,128,32);
 

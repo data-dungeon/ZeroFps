@@ -4,11 +4,6 @@
 
 ZeroEdit Editor("ZeroEdit",1024,768,16);
 
-static bool g_ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
-{
-	return Editor.m_pkGui->ZGWinProc(pkWindow, uiMessage, iNumberOfParams, pkParams);
-}
-
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) 
 {
 	
@@ -92,7 +87,7 @@ void ZeroEdit::OnInit(void)
 
 
 
-	m_pkGui = new Gui(this, g_ZGWinProc);
+	m_pkGui = new Gui(this);
 
 /*	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(0,0,500,500),NULL,true,245123241);
 	pkMainWindow->SetSkin(m_pkGui->GetSkin("blue"));
