@@ -11,7 +11,7 @@ public:
 	class CreateWnd
 	{
 	public:
-		CreateWnd(ZGuiWnd* pkWnd) {m_pkWnd=pkWnd; m_bEnabled=false;}
+		CreateWnd(ZGuiWnd* pkWnd) {m_pkWnd=pkWnd; m_bEnabled=true;}
 		~CreateWnd(){}
 
 		ZGuiWnd* m_pkWnd;

@@ -460,7 +460,7 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 	vector<string> vkSections;
 	pkINI->GetSectionNames(vkSections);
 
-	vector<tSkinInf> kAllSkinsArray;
+	vector<tSkinInf> kAllSkinsTempArray;
 
 	// Load all skins to a temp array.
 	for(unsigned int i=0; i<vkSections.size(); i++)
@@ -479,22 +479,6 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			pkINI->GetValue((char*)vkSections[i].c_str(),"wnd_desc");
 		
 		ZGuiSkin* pkSkin = new ZGuiSkin;
-/*		pkSkin->m_iBkTexID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_tex"),0);
-		pkSkin->m_iHorzBorderTexID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_tex"),0);
-		pkSkin->m_iVertBorderTexID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_tex"),0);
-		pkSkin->m_iBorderCornerTexID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_tex"),0);
-		pkSkin->m_iBkTexAlphaID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_a_tex"),0);
-		pkSkin->m_iHorzBorderTexAlphaID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_a_tex"),0);
-		pkSkin->m_iVertBorderTexAlphaID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_a_tex"),0);
-		pkSkin->m_iBorderCornerTexAlphaID = pkTexMan->Load(
-			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_a_tex"),0);*/
 
 		char* tex[8] =
 		{
@@ -549,7 +533,7 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 
 		kNewSkinInfo.second = pkSkin;
 
-		kAllSkinsArray.push_back( kNewSkinInfo );
+		kAllSkinsTempArray.push_back( kNewSkinInfo );
 	}
 
 	// Skapa en nytt skin till fönstret.
@@ -576,8 +560,8 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			"parent_name");
 		bool bVisible = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
 			"visible")) == 0 ? false : true;
-		bool bEnabled = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
-			"enabled")) == 0 ? false : true;
+		bool bEnabled = /*atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
+			"enabled")) == 0 ? false : */true;
 		int x=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_left"));
 		int y=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_top"));
 		int w=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_right"))-x;
@@ -593,7 +577,7 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 		ZGuiWnd* pkWnd;
 		ZGuiWnd* pkParent;
 
-		if(eNewType != WINDOW) // Om det är en controll
+		if(eNewType != WINDOW) // Om det är en control
 		{
 			pkParent = m_pkGuiBuilder->GetWnd(parent_name);
 
@@ -659,10 +643,10 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			break;
 		}
 
-		pkWnd->SetMoveArea(rc_m);
-		pkWnd->SetWindowFlag(WF_CANHAVEFOCUS); 
+		pkWnd->SetMoveArea(Rect(0,0,1024,768)); // must set this to a high value
+		pkWnd->SetWindowFlag(WF_CANHAVEFOCUS); // to allow movement.
 
-		SelectSkins(kAllSkinsArray, pkWnd);
+		SelectSkins(kAllSkinsTempArray, pkWnd);
 
 		// Set last ID
 		if(m_pkGuiBuilder->m_iLastID < (int) pkWnd->GetID())
@@ -676,6 +660,12 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 
 	// Raise last ID by one
 	m_pkGuiBuilder->m_iLastID++;
+
+	// Clear temp skin vektor.
+	for( i=0; i<kAllSkinsTempArray.size(); i++)
+	{
+		delete kAllSkinsTempArray[i].second;
+	}
 	
 	return true;
 }
@@ -714,7 +704,7 @@ void ControlBox::ClearAll()
 	m_pkCreatedWindows.clear();
 }
 
-void ControlBox::SelectSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd)
+void ControlBox::SelectSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 {
 	vector<ZGuiWnd::SKIN_DESC> kSkinList;
 	pkWnd->GetWndSkinsDesc(kSkinList);
@@ -728,12 +718,12 @@ void ControlBox::SelectSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd)
 		string strDesc = kSkinList[i].second;
 
 		// Loopa igenom alla skins som finns och välj ut ett som passar.
-		for(unsigned int j=0; j<kAllSkinsArray.size(); j++)
+		for(unsigned int j=0; j<kAllSkinsTempArray.size(); j++)
 		{
-			if( kAllSkinsArray[j].first.first == strWndName &&
-				kAllSkinsArray[j].first.second == strDesc )
+			if( kAllSkinsTempArray[j].first.first == strWndName &&
+				kAllSkinsTempArray[j].first.second == strDesc )
 			{
-				*pkSkin = *kAllSkinsArray[j].second;
+				*pkSkin = *kAllSkinsTempArray[j].second;
 				break;
 			}
 		}

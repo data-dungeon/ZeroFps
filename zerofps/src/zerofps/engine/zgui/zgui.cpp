@@ -36,8 +36,6 @@ ZGui::ZGui()
 	m_pkCursor->SetSize(16,16);
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
-	
-
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
 	pkDefaultFont->CreateFromFile("../data/textures/text/font.bmp");
 	m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkDefaultFont->m_iID,
@@ -176,6 +174,7 @@ bool ZGui::AddMainWindow(int iMainWindowID,ZGuiWnd* pkWindow, char* szName,
 	// Ett main window skall inte ha någon parent!
 	pkWindow->SetParent(NULL);
 	
+
 	MAIN_WINDOW* pkNewMainWindow = new MAIN_WINDOW;
 	pkNewMainWindow->iID = iMainWindowID;
 	pkNewMainWindow->pkCallback = cb;
@@ -965,4 +964,329 @@ void ZGui::OnKeyPress(int iKey)
 		}
 	}
 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: LoadDialog
+// Description: Load a window (szWndResName), with all childrens and skins, 
+//				from a resource file (szResourceFile).
+//
+bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
+{
+	ZFIni *pkINI = static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
+	TextureManager* pkTexMan = static_cast<TextureManager*>
+		(g_ZFObjSys.GetObjectPtr("TextureManager"));
+
+	// Load ini file
+	pkINI->Open(szResourceFile, false);
+
+	// Get sections from ini file.
+	vector<string> vkSections;
+	pkINI->GetSectionNames(vkSections);
+
+	unsigned int i=0;
+
+	// Ladda in alla skins till en temp vektor.
+	vector<tSkinInf> kAllSkinsTempArray;
+
+	for( i=0; i<vkSections.size(); i++)
+	{
+		tSkinInf kNewSkinInfo;
+
+		char* szWindowName = pkINI->GetValue(vkSections[i].c_str(),"window_name");
+
+		// We have found the last skin. 
+		if(szWindowName == NULL)
+			break;
+
+		kNewSkinInfo.first.first=szWindowName;
+		kNewSkinInfo.first.second=
+			pkINI->GetValue((char*)vkSections[i].c_str(),"wnd_desc");
+		
+		ZGuiSkin* pkSkin = new ZGuiSkin;
+
+		char* tex[8] =
+		{
+			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_a_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_a_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_a_tex"),
+			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_a_tex"),
+		};
+
+		pkSkin->m_iBkTexID = strcmp(tex[0],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[0],0);
+		pkSkin->m_iHorzBorderTexID = strcmp(tex[1],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[1],0);
+		pkSkin->m_iVertBorderTexID = strcmp(tex[2],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[2],0);
+		pkSkin->m_iBorderCornerTexID = strcmp(tex[3],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[3],0);
+		pkSkin->m_iBkTexAlphaID = strcmp(tex[4],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[4],0);
+		pkSkin->m_iHorzBorderTexAlphaID = strcmp(tex[5],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[5],0);
+		pkSkin->m_iVertBorderTexAlphaID = strcmp(tex[6],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[6],0);
+		pkSkin->m_iBorderCornerTexAlphaID = strcmp(tex[7],"(null)")==0 ? - 1 : 
+			pkTexMan->Load(tex[7],0);
+
+		int bk_r  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_r"));
+		int bk_g  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_g"));
+		int bk_b  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_b"));
+		int bd_r  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_r"));
+		int bd_g  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_g"));
+		int bd_b  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_b"));
+		int bd_sz = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_size"));
+		int tile  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "tile_skin"));
+		int trans = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "transparent"));
+
+		pkSkin->m_afBkColor[0] = (1.0f/255)*bk_r;
+		pkSkin->m_afBkColor[1] = (1.0f/255)*bk_g;
+		pkSkin->m_afBkColor[2] = (1.0f/255)*bk_b;
+
+		pkSkin->m_afBorderColor[0] = (1.0f/255)*bd_r;
+		pkSkin->m_afBorderColor[1] = (1.0f/255)*bd_g;
+		pkSkin->m_afBorderColor[2] = (1.0f/255)*bd_b;
+
+		pkSkin->m_unBorderSize = (unsigned short) bd_sz;
+		pkSkin->m_bTileBkSkin = (tile == 0) ? false : true;
+		pkSkin->m_bTransparent = (trans == 0) ? false : true;
+
+		kNewSkinInfo.second = pkSkin;
+
+		kAllSkinsTempArray.push_back( kNewSkinInfo );
+	}
+
+	// Leta reda på start section
+	int iStartSection = -1;
+	for( i=0; i<vkSections.size(); i++)
+	{
+		char *szType = pkINI->GetValue(vkSections[i].c_str(), "type");
+		char *szName = pkINI->GetValue(vkSections[i].c_str(), "name");
+
+		if(szType != NULL && szName != NULL)
+		{
+			if(strcmp(szType,"Window")==0 && strcmp(szName,szWndResName)==0)
+			{
+				iStartSection = i;
+				break;
+			}
+		}
+	}
+
+	if(iStartSection == -1)
+	{
+		printf("Failed to load resorce file %s\n", szResourceFile);
+		return false;
+	}
+
+	enum WndType
+	{
+		WINDOW,					// 1
+		LABEL,					// 2
+		TEXTBOX,				// 3
+		BUTTON,					// 4
+		CHECKBOX,				// 5
+		RADIOBUTTON,			// 6
+		RADIOBUTTON_NEW_GROUP,	// 7
+		COMBOBOX,				// 8
+		LISTBOX,				// 9
+		SCROLLBAR,				// 10
+		NONE
+	};
+
+	// Ladda in alla fönster till en temp vektor
+	vector<ZGuiWnd*> kControllers;
+	
+	typedef pair<ZGuiWnd*, string> WNDNAME;
+	vector<WNDNAME> kMainWindows; // window and name
+
+	for( i=iStartSection; i<vkSections.size(); i++)
+	{
+		char* szType = pkINI->GetValue((char*)vkSections[i].c_str(), "type");
+		
+		// Find correct window type.
+		WndType eWndType;
+		if(strcmp(szType, "Textbox")==0)
+			eWndType = TEXTBOX;
+		else
+		if(strcmp(szType, "Scrollbar")==0)
+			eWndType = SCROLLBAR;
+		else
+		if(strcmp(szType, "Radiobutton")==0)
+			eWndType = RADIOBUTTON;
+		else
+		if(strcmp(szType, "Listbox")==0)
+			eWndType = LISTBOX;
+		else
+		if(strcmp(szType, "Label")==0)
+			eWndType = LABEL;
+		else
+		if(strcmp(szType, "Checkbox")==0)
+			eWndType = CHECKBOX;
+		else
+		if(strcmp(szType, "Button")==0)
+			eWndType = BUTTON;
+		else
+		if(strcmp(szType, "Window")==0)
+			eWndType = WINDOW;
+		else
+		if(strcmp(szType, "Combobox")==0)
+			eWndType = COMBOBOX;
+		else
+			continue;
+
+		// Get properties.
+		int wnd_id = atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"id"));
+		char* name = pkINI->GetValue((char*)vkSections[i].c_str(), "name");
+		int parentwnd_id = atoi(pkINI->GetValue(
+			(char*)vkSections[i].c_str(), "parent_id"));
+		char* parent_name = pkINI->GetValue((char*)vkSections[i].c_str(),
+			"parent_name");
+		bool bVisible = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
+			"visible")) == 0 ? false : true;
+		bool bEnabled = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
+			"enabled")) == 0 ? false : true;
+		Rect rc( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),
+			"area_left")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_top")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_right")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_bottom")));
+		Rect rc_m( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),
+			"move_area_left")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_top")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_right")),
+			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_bottom")));
+		int iTabOrder=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"tab_order"));
+		char* text = pkINI->GetValue((char*)vkSections[i].c_str(), "text");
+
+		//ZGuiWnd* pkParent = NULL;
+		ZGuiWnd* pkNewWnd = NULL;
+		ZGuiWnd* pkParent = NULL;
+		ZGuiRadiobutton* pkPrevRadiobutton = NULL;
+
+		if(eWndType == WINDOW)
+		{
+			// Create main window.
+			pkNewWnd = new ZGuiWnd(rc, NULL, bVisible, wnd_id);
+
+			WNDNAME kNewMainWnd;
+			kNewMainWnd.first = pkNewWnd;
+			kNewMainWnd.second = string(name);
+			kMainWindows.push_back(kNewMainWnd);
+
+			int main_wnd_id = atoi(pkINI->GetValue(vkSections[i].c_str(),
+						"mainwnd_id"));
+
+			AddMainWindow(main_wnd_id, pkNewWnd, name, cb, false);
+		}
+		else
+		{
+			pkParent = m_pkResManager->Wnd(parent_name);
+			ZFAssert(pkParent, "ZGui::LoadDialog, Failed to find parent!");
+	
+			// Create controller.
+			switch(eWndType)
+			{
+			case TEXTBOX:
+				{
+					bool bMultiLine = false; //pkINI->GetValue((char*)vkSections[i].c_str(), "text");
+					pkNewWnd = new ZGuiTextbox(rc,pkParent,bVisible,wnd_id,bMultiLine);
+				}
+				break;
+			case SCROLLBAR:
+				pkNewWnd = new ZGuiScrollbar(rc,pkParent,bVisible,wnd_id);
+				((ZGuiScrollbar*) pkNewWnd)->SetThumbButtonSkins(
+					new ZGuiSkin(), new ZGuiSkin()); 
+				break;
+			case RADIOBUTTON:
+				{
+					int radio_group = atoi(pkINI->GetValue(vkSections[i].c_str(),
+						"radio_group"));
+					pkNewWnd = new ZGuiRadiobutton(rc,pkParent,wnd_id,radio_group,
+						pkPrevRadiobutton,bVisible);
+					((ZGuiRadiobutton*) pkNewWnd)->SetButtonSelectedSkin(new ZGuiSkin());
+					((ZGuiRadiobutton*) pkNewWnd)->SetButtonUnselectedSkin(new ZGuiSkin());
+				}
+				break;
+			case LISTBOX:
+				pkNewWnd = new ZGuiListbox(rc,pkParent,bVisible,wnd_id,20,
+					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+				((ZGuiListbox*)pkNewWnd)->SetScrollbarSkin(
+					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+				break;
+			case LABEL:
+				pkNewWnd = new ZGuiLabel(rc,pkParent,bVisible,wnd_id); 
+				break;
+			case CHECKBOX:
+				pkNewWnd = new ZGuiCheckbox(rc,pkParent,bVisible,wnd_id); 
+				((ZGuiCheckbox*) pkNewWnd)->SetButtonCheckedSkin(new ZGuiSkin());
+				((ZGuiCheckbox*) pkNewWnd)->SetButtonUncheckedSkin(new ZGuiSkin());
+				break;
+			case BUTTON:
+				pkNewWnd = new ZGuiButton(rc,pkParent,bVisible,wnd_id); 
+				((ZGuiButton*) pkNewWnd)->SetButtonUpSkin(new ZGuiSkin());
+				((ZGuiButton*) pkNewWnd)->SetButtonDownSkin(new ZGuiSkin());
+				((ZGuiButton*) pkNewWnd)->SetButtonHighLightSkin(new ZGuiSkin());
+				break;
+			case COMBOBOX:
+				pkNewWnd = new ZGuiCombobox(rc,pkParent,bVisible,wnd_id,20,
+					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+				((ZGuiCombobox*)pkNewWnd)->SetScrollbarSkin(
+					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+				break;
+			default:
+				continue;
+				break;
+			}
+
+			RegisterWindow(pkNewWnd, name);
+		}		
+
+		if(eWndType != BUTTON)
+			pkNewWnd->SetSkin(new ZGuiSkin());
+
+		if(strcmp(text, "(null)") != 0) 
+			pkNewWnd->SetText(text);	
+
+		SetSkins(kAllSkinsTempArray, pkNewWnd);
+	}
+
+	// Clean up texture memory in temp buffer.
+	for(i=0; i<kAllSkinsTempArray.size(); i++)
+		delete kAllSkinsTempArray[i].second;
+
+	return true;
+}
+
+bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
+{
+	vector<ZGuiWnd::SKIN_DESC> kSkinList;
+	pkWnd->GetWndSkinsDesc(kSkinList);
+
+	string strWndName = pkWnd->GetName();
+
+	// Loopa igenom alla skins som detta fönster har
+	for(unsigned int i=0; i<kSkinList.size(); i++)
+	{
+		ZGuiSkin* pkSkin = kSkinList[i].first;
+		string strDesc = kSkinList[i].second;
+
+		// Loopa igenom alla skins som finns och välj ut ett som passar.
+		for(unsigned int j=0; j<kAllSkinsTempArray.size(); j++)
+		{
+			if( kAllSkinsTempArray[j].first.first == strWndName &&
+				kAllSkinsTempArray[j].first.second == strDesc )
+			{
+				*pkSkin = *kAllSkinsTempArray[j].second;
+				break;
+			}
+		}
+	}
+
+	return true;
 }

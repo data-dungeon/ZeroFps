@@ -103,11 +103,10 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	return true;
 }
 
-void ZGuiButton::SetButtonUpSkin(ZGuiSkin* pkSkin/*, int iMaskTexture*/)
+void ZGuiButton::SetButtonUpSkin(ZGuiSkin* pkSkin)
 {
-	m_pkSkin = m_pkSkinBnUp = pkSkin;
-//	m_iMaskTextureUp = iMaskTexture;
-//	m_iBkMaskTexture = m_iMaskTextureUp;
+	m_pkSkinBnUp = pkSkin;
+	m_pkSkin = m_pkSkinBnUp;
 }
 
 void ZGuiButton::SetButtonDownSkin(ZGuiSkin* pkSkin)

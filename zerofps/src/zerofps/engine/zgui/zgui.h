@@ -75,6 +75,7 @@ public:
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WINit;
+	typedef pair<pair<string,string>, ZGuiSkin*> tSkinInf; //window_name, wnd_desc, skin
 
 	ZGui();
 	~ZGui();
@@ -87,6 +88,7 @@ public:
 	ZGuiWnd* GetWindow(unsigned int iID);
 
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
+	bool LoadDialog( char* szResourceFile, char* szWndResName, callback cb);
 
 	bool UnregisterWindow(ZGuiWnd* pkWindow);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow, char* szName); // must be called if the window are created after the parent are created...
@@ -119,6 +121,7 @@ public:
 	} SortZCmp;
 
 private:
+	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
 	void FormatKey(int& iKey);
 	void CreateDefaultSkins();

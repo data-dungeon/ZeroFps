@@ -29,7 +29,7 @@ public:
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
 	void GetCommandStrings(vector<string>* pkCommands);
-	char* GetValue(char* strSection, char* strKey);
+	char* GetValue(const char* strSection, char* strKey);
 	void GetSectionNames(vector<string>& kSectionList);
 	bool Open(const char* strFileName, bool bCommandFile);
 	bool ExecuteCommands(const char* strName);

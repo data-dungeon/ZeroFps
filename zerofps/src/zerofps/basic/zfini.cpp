@@ -177,7 +177,7 @@ int ZFIni::GetKeyValuePos(int row)
 	return -1;
 }
 
-char* ZFIni::GetValue(char *strSection, char *strKey)
+char* ZFIni::GetValue(const char *strSection, char *strKey)
 {
 	if(m_bFileReady == false)
 		return NULL;

@@ -518,6 +518,8 @@ void ZGResEdit::ResizeWnd(ZGuiWnd* pkWnd,int x,int y) const
 //
 void ZGResEdit::MoveWnd(ZGuiWnd* pkWnd,int x,int y) const
 {
+	printf("hej\n");
+
 	Rect rc = pkWnd->GetScreenRect();
 	
 	switch(m_kMouseState)
@@ -564,7 +566,9 @@ bool ZGResEdit::IsGuiWnd(ZGuiWnd *pkWnd) const
 		"FOFileOpenDlg",
 	};
 
-	for(int i=0; i<sizeof(aGuiWnd) / sizeof(aGuiWnd[0]); i++)
+	int i;
+
+	for( i=0; i<sizeof(aGuiWnd) / sizeof(aGuiWnd[0]); i++)
 	{
 		if(pkWnd == pkGuiMan->Wnd(aGuiWnd[i]))
 			return true;
