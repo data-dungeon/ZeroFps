@@ -35,20 +35,21 @@ void DarkMetropolis::OnInit()
 	SetTitle("Dark Metropolis");
 	
 	//initiate variables
-	m_pkCameraProp	= NULL;	
-	m_pkCameraEntity = NULL;
-	m_pkFps->m_bClientMode = true;
-	m_fMinCamDistance = 2;
-	m_fMaxCamDistance = 10;
-	m_fDistance = 0;	
-	m_fAngle = 0;
-	m_strSaveDirectory = "clans/";
-	m_pkGameInfoProperty = NULL;
-	m_pkGameInfoEntity = NULL;
-	m_bSelectSquare = false;
-	m_fDelayTimer = 0;
-	m_iCurrentFormation = FORMATION_CIRCLE;
-	m_bActionPressed = false;
+	m_pkCameraProp	= 			NULL;	
+	m_pkCameraEntity = 			NULL;
+	m_pkFps->m_bClientMode =	true;
+	m_fMinCamDistance =			2;
+	m_fMaxCamDistance =			10;
+	m_fDistance =					0;	
+	m_fAngle =						0;
+	m_strSaveDirectory =			"clans/";
+	m_pkGameInfoProperty = 		NULL;
+	m_pkGameInfoEntity =			NULL;
+	m_bSelectSquare = 			false;
+	m_fDelayTimer = 				0;
+	m_iCurrentFormation =		FORMATION_CIRCLE;
+	m_bActionPressed = 			false;
+	m_iHQID = 						-1;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -143,39 +144,21 @@ void DarkMetropolis::RenderInterface(void)
 		}	
 	}
 	
+	if(m_iHQID != -1)
+	{
+		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID);
+		if(pkEnt)
+		{
+			float r = pkEnt->GetBoundingRadius();
+			m_pkRender->DrawAABB(pkEnt->GetWorldPosV()-Vector3(r,r,r),pkEnt->GetWorldPosV()+Vector3(r,r,r),Vector3(1,1,0));
+	
+		}
+	}
+	
 	//draw select square
 	if(m_bSelectSquare)
-	{
-		Vector3 tl( (m_kSelectSquareStart.x < m_kSelectSquareStop.x) ? m_kSelectSquareStart.x : m_kSelectSquareStop.x,
-						m_kSelectSquareStart.y,
-						(m_kSelectSquareStart.z < m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);
-						
-		Vector3 br( (m_kSelectSquareStart.x > m_kSelectSquareStop.x) ? m_kSelectSquareStart.x : m_kSelectSquareStop.x,
-						m_kSelectSquareStart.y,
-						(m_kSelectSquareStart.z > m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);
-						
-		m_pkRender->SetColor(Vector3(0,1,0));
-	
-		//botom
-		m_pkRender->Line(tl,Vector3(br.x,tl.y,tl.z));
-		m_pkRender->Line(tl,Vector3(tl.x,tl.y,br.z));				
-		m_pkRender->Line(Vector3(br.x,tl.y,tl.z),br);		
-		m_pkRender->Line(Vector3(tl.x,tl.y,br.z),br);				
-	
-		//top
-		Vector3 d(0,1,0);
-		m_pkRender->Line(tl+d,Vector3(br.x,tl.y,tl.z)+d);
-		m_pkRender->Line(tl+d,Vector3(tl.x,tl.y,br.z)+d);				
-		m_pkRender->Line(Vector3(br.x,tl.y,tl.z)+d,br+d);		
-		m_pkRender->Line(Vector3(tl.x,tl.y,br.z)+d,br+d);				
-	
-		//corners
-		m_pkRender->Line(tl,tl+d);
-		m_pkRender->Line(br,br+d);
-		m_pkRender->Line(Vector3(br.x,tl.y,tl.z),Vector3(br.x,tl.y,tl.z)+d);
-		m_pkRender->Line(Vector3(tl.x,tl.y,br.z),Vector3(tl.x,tl.y,br.z)+d);
-	
-	 
+	{				
+		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+1,m_kSelectSquareStop.z),Vector3(0,1,0));								
 	}
 }
 
@@ -213,6 +196,7 @@ void DarkMetropolis::OnServerStart()
 	m_bSelectSquare = 		false;
 	m_iCurrentFormation =	FORMATION_CIRCLE;
 	m_bActionPressed =		false;
+	m_iHQID =					-1;
 }
 
 void DarkMetropolis::OnClientStart()
@@ -249,6 +233,23 @@ void DarkMetropolis::Input()
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 		
+		
+	if(m_pkInputHandle->Pressed(KEY_P))
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
+			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
+			{
+				vector<int>	kChars;
+				pkHQ->GetCharacters(&kChars);
+				
+				cout<<"There is "<<kChars.size()<< " characters in this hq"<<endl;
+				/*
+				for(int i = 0;i<kChars.size();i++)
+				{
+					cout<<T					
+				}*/
+			}
+	
+
 
 	//setup player controls
 	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
@@ -318,14 +319,20 @@ void DarkMetropolis::Input()
 			if(!m_pkInputHandle->VKIsDown("multiselect"))
 				m_kSelectedEntitys.clear();			
 			
+			m_iHQID = -1;	// there is no hq selected
 			
-			//is there a box? , else to a quick check
+			//is there a box? , else do a quick check
 			if( (m_kSelectSquareStart-m_kSelectSquareStop).Length() < 0.1)
 			{
 				Entity* pkEnt = GetTargetObject();
 				if(pkEnt)
-					if(pkEnt->GetProperty("P_DMCharacter"))
+					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 						m_kSelectedEntitys.push_back(pkEnt->iNetWorkID);
+					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
+					{
+						m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
+						m_iHQID = pkEnt->iNetWorkID;
+					}
 			}
 			else  //else check for entitys inside the selection square
 			{
@@ -338,7 +345,7 @@ void DarkMetropolis::Input()
 								(m_kSelectSquareStart.z > m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);		
 				
 				vector<Entity*> kObjects;	
-				m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+				m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
 	
 				for(unsigned int i=0;i<kObjects.size();i++)
 				{		
@@ -365,10 +372,9 @@ void DarkMetropolis::Input()
 	{
 		m_bActionPressed = false;
 	
-		Entity* pkEnt = GetTargetObject();	
-		if(pkEnt)
+		if(Entity* pkPickEnt = GetTargetObject())
 		{
-			if(pkEnt->GetName() == "ZoneObject")	//we clicked on a zone
+			if(pkPickEnt->GetName() == "ZoneObject")	//we clicked on a zone , lets tae a walk
 			{
 				for(int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
@@ -388,6 +394,37 @@ void DarkMetropolis::Input()
 					}	
 				}
 			}
+			
+			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
+			{				
+				for(int i = 0;i < m_kSelectedEntitys.size();i++)
+				{
+					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
+					if(pkEnt)				
+					{
+					
+						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						{
+							cout<<"entering hq"<<endl;
+							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
+							
+						}
+						else
+						{
+							P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+							if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
+							{					
+						
+								//randomize position a bit if theres many characters selected
+								if(m_kSelectedEntitys.size() > 1)
+									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+								else
+									pkPF->MakePathFind(m_kPickPos);
+							}
+						}
+					}
+				}
+			}			
 		}
 	}
 
@@ -598,7 +635,7 @@ Entity* DarkMetropolis::GetTargetObject()
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+	m_pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects,false,true);
 	
 	float closest = 999999999;
 	float d;

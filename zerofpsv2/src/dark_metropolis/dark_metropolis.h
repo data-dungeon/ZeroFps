@@ -65,18 +65,19 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fDelayTimer;
 		bool		m_bActionPressed;
 		
-		vector<int>	m_kSelectedEntitys;
+		vector<int>	m_kSelectedEntitys;					//list of selected entitys		
+		int			m_iCurrentFormation;					//what formation to use when moving characters
 		
-		int			m_iCurrentFormation;
+		int			m_iHQID;									//network id of current selected hq, if any
 		
-		Vector3		m_kSelectSquareStart;
-		Vector3		m_kSelectSquareStop;
-		bool			m_bSelectSquare;
+		Vector3		m_kSelectSquareStart;				//start of selection square
+		Vector3		m_kSelectSquareStop;					//stop/current pos of selection square
+		bool			m_bSelectSquare;						//are we currently drawing a selection square
 		
-		Vector3	m_kPickPos;		
-		string	m_strSaveDirectory;
+		Vector3	m_kPickPos;									//exact possition of last cursor pick operation
+		string	m_strSaveDirectory;						//directory in wich savegames are stored
 
-		int m_iEnableMusic; // if the music should be played or not
+		int m_iEnableMusic; 									//if the music should be played or not
 		
 		
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);

@@ -274,42 +274,6 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	{	
 		(*it)->GetAllPropertys(akPropertys,iType,iSide);		
 	}		
-
-	
-/*		if(m_iUpdateStatus & UPDATE_ALL)
-		{
-
-		} 
-	}
-	
-		else
-		{
-			
-			switch((*it)->GetObjectType())
-			{				
-				case OBJECT_TYPE_DYNAMIC:
-					if(m_iUpdateStatus & UPDATE_DYNAMIC)		
-						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;	
-		
-				case OBJECT_TYPE_STATIC:
-					if(m_iUpdateStatus & UPDATE_STATIC)		
-						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;
-			
-				/*case OBJECT_TYPE_PLAYER:
-					if(m_iUpdateStatus & UPDATE_PLAYERS)		
-						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;
-		
-				case OBJECT_TYPE_STATDYN:
-					if(m_iUpdateStatus & UPDATE_STATDYN)		
-						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;*
-			}
-		}
-	}
-*/	
 }
 
 /**	\brief	Adds a property to an Entity if it does not have it yet.
@@ -517,15 +481,18 @@ void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
 
 /**	\brief	Adds ourself and all our children to the list of objects.
 */
-void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll)
+void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll,bool bUpdateStatus)
 {
 	if(m_iUpdateStatus & UPDATE_NONE && !bForceSendAll)
 		return;
 	
 	pakObjects->push_back(this);	
 	
+	if( bUpdateStatus && (m_iUpdateStatus & UPDATE_NOCHILDS))
+		return;
+	
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->GetAllObjects(pakObjects, bForceSendAll);
+		(*it)->GetAllObjects(pakObjects, bForceSendAll,bUpdateStatus);
 	}	
 }
 

@@ -1204,13 +1204,14 @@ char* EntityManager::GetUpdateStatusName(int eStatus)
 	char* pkName = "";
 
 	switch(eStatus) {
-		case UPDATE_NONE: 		pkName = "UPDATE_NONE";	break;
-		case UPDATE_ALL: 		pkName = "UPDATE_ALL";	break;
-		case UPDATE_STATIC: 	pkName = "UPDATE_STATIC";	break;
-		case UPDATE_DYNAMIC: 	pkName = "UPDATE_DYNAMIC";	break;
-//		case UPDATE_PLAYERS: 	pkName = "UPDATE_PLAYERS";	break;
-//		case UPDATE_DECORATION: pkName = "UPDATE_DECORATION";	break;
-//		case UPDATE_LIGHT: 		pkName = "UPDATE_LIGHT";	break;
+		case UPDATE_NONE:				pkName = "UPDATE_NONE";			break;
+		case UPDATE_ALL: 				pkName = "UPDATE_ALL";				break;
+		case UPDATE_NOCHILDS: 		pkName = "UPDATE_NOCHILDS";		break;		
+//		case UPDATE_STATIC: 			 pkName = "UPDATE_STATIC";			break;
+//		case UPDATE_DYNAMIC: 		 pkName = "UPDATE_DYNAMIC";		break;
+//		case UPDATE_PLAYERS:			 pkName = "UPDATE_PLAYERS";		break;
+//		case UPDATE_DECORATION:		 pkName = "UPDATE_DECORATION";	break;
+//		case UPDATE_LIGHT: 			pkName = "UPDATE_LIGHT";			break;
 		}
 
 	return pkName;

@@ -25,9 +25,43 @@ P_DMHQ::~P_DMHQ()
 void P_DMHQ::Init()
 {
 	cout<< "New HQ created"<<endl;
-
+	m_pkObject->SetUpdateStatus(UPDATE_NOCHILDS);
 }
 
+
+
+bool P_DMHQ::InsertCharacter(int iID)
+{
+	Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(iID);
+	if(pkEnt)
+	{
+		if(pkEnt->GetProperty("P_DMCharacter"))
+		{
+			cout<<"character entering HQ"<<endl;
+			
+			pkEnt->SetParent(m_pkObject);
+			
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void P_DMHQ::GetCharacters(vector<int>* m_pkEntitys)
+{
+	vector<Entity*>	m_kEntitys;
+	m_pkObject->GetAllObjects(&m_kEntitys);
+	
+	
+	for(int i = 0;i<m_kEntitys.size();i++)
+	{
+		if(m_kEntitys[i]->GetProperty("P_DMCharacter"))
+		{
+			m_pkEntitys->push_back(m_kEntitys[i]->iNetWorkID);
+		}
+	}
+}
 
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {

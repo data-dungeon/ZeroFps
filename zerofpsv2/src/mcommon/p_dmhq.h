@@ -29,6 +29,9 @@ class MCOMMON_API P_DMHQ: public Property {
 //		void Update();
 		void Init();
 		
+		bool InsertCharacter(int iID);
+		void GetCharacters(vector<int>* m_pkEntitys);
+		
 //		void Save(ZFIoInterface* pkPackage);
 //		void Load(ZFIoInterface* pkPackage);
 		

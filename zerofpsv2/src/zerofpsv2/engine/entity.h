@@ -23,9 +23,10 @@ enum UpdateStatus
 {
 	UPDATE_NONE				= 1,	
 	UPDATE_ALL				= 2,
-	UPDATE_STATIC			= 4,
-	UPDATE_DYNAMIC 		= 8,
-	UPDATE_NOCHILDS		= 16,
+	UPDATE_NOCHILDS		= 4,	
+//	UPDATE_STATIC			= 4,		//not used
+//	UPDATE_DYNAMIC 		= 8,		//not used
+//	UPDATE_NOCHILDS		= 16,
 };
 
 enum ObjectType 
@@ -238,7 +239,7 @@ class ENGINE_API Entity
 		void	SetNrOfConnections(int iConNR);
 		
 	public:
-		bool							m_bHavePlayedSound;				///< Litet test bara...
+//		bool							m_bHavePlayedSound;				///< Litet test bara...
 
 		int							iNetWorkID;							///< ID used by network state code.
 		EntityManager*				m_pkObjectMan;						///< Ptr to object manger.
@@ -280,7 +281,7 @@ class ENGINE_API Entity
 		int NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										// Remove all childs from this object.
 		void GetAllObjects(vector<Entity*> *pakObjects     // Return this + all childs.
-                         ,bool bForceSendAll=false);			
+                         ,bool bForceSendAll=false,bool bUpdateStatus = false);			
 		void GetAllDynamicEntitys(vector<Entity*> *pakObjects);	// Return this + all childs.
 		Entity* GetStaticEntity();
 		
