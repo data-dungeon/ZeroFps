@@ -2,8 +2,8 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/cube.mad");
-			--InitParameter("m_kMadFile","/data/mad/dm/baldie.mad");			
+			--InitParameter("m_kMadFile","/data/mad/cube.mad");
+			InitParameter("m_kMadFile","/data/mad/dm/baldie.mad");			
 			InitParameter("m_fScale","1");
 			InitParameter("m_iShadowGroup","2");
 		
@@ -18,7 +18,7 @@ function Create()
 			InitParameter("gravity","true");
 			InitParameter("character","true");
 			
-			InitParameter("radius",-1);
+			InitParameter("radius",0.5);
 			
 			InitParameter("group",1);
 			InitParameter("groupflag",0);

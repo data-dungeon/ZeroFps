@@ -9,7 +9,7 @@ P_ArcadeCharacter::P_ArcadeCharacter()
 
 	bNetwork = true;
 
-	m_fSpeed = 30;
+	m_fSpeed = 20;
 	m_kDir.Set(0,0,-1);
 }
 
