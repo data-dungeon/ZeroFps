@@ -34,15 +34,17 @@ class MCOMMON_API DMContainer
 		int	m_iSizeY;						//height
 		int	m_iOwnerID;						//owner entity ID, (owner is gona be the parent for all item entitys)
 
-		bool	m_bDisableItems;
+		bool				m_bDisableItems;
+		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
+
 
 		void SetSize(int iX,int iY);
-	
-		
 		bool SetItem(int iID,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
 		void ClearItem(int iID);
+	
+		bool ItemTypeOK(int iType);
 	
 	public:
 		
@@ -52,6 +54,9 @@ class MCOMMON_API DMContainer
 		
 		void SetDisableItems(bool bDisable) {m_bDisableItems = bDisable;};
 		bool GetDisableItems() {return m_bDisableItems;};
+		
+		void AddItemType(int iType) {m_kItemTypes.push_back(iType);};
+		void ClearItemTypes() {m_kItemTypes.clear();};
 		
 		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
 

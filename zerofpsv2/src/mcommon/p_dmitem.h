@@ -20,6 +20,7 @@ enum MCOMMON_API DMItemTypes
 	DMItemAmor = 3,
 	DMItemClip = 4,
 	DMItemWeapon = 5,
+	DMItemImplant = 6,	
 };
 
 

@@ -2,8 +2,8 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/fwarrior.mad");	
-			InitParameter("m_fScale","0.165");		
+			InitParameter("m_kMadFile","/data/mad/member.mad");	
+--			InitParameter("m_fScale","0.165");		
 
 		InitProperty("P_DMGun");
 		InitProperty("P_PfPath");

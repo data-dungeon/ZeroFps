@@ -6,7 +6,9 @@ DMContainer::DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 	m_pkEntMan = pkEntMan;
 	m_iOwnerID = iOwnerID;
 	m_bDisableItems = bDisable;
-
+	
+	m_kItemTypes.clear();
+	
 	SetSize(iX,iY);
 	
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID) )	
@@ -30,6 +32,19 @@ void DMContainer::SetSize(int iX,int iY)
 	for(int i = 0;i<iX*iY;i++)
 		m_kSlots.push_back(-1);
 }
+
+bool DMContainer::ItemTypeOK(int iType)
+{
+	if(m_kItemTypes.empty())
+		return true;
+
+	for(int i = 0;i<m_kItemTypes.size();i++)
+		if(m_kItemTypes[i] == iType)
+			return true;
+			
+	return false;
+}
+
 
 int* DMContainer::GetItem(int iX,int iY)
 {
@@ -113,13 +128,19 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 {
 	if(HaveItem(iID))
 		return false;
-
+		
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))
 	{
 		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
 		{
 			if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
 			{
+				if(!ItemTypeOK(pkPItem->m_iType))
+				{
+					cout<<"Item type not allowed in this container"<<endl;
+					return false;
+				}
+
 				if(!SetItem(iID,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
 				{
 					cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
@@ -290,6 +311,8 @@ bool DMContainer::MoveItem(int iID,int iX,int iY)
 			}
 		}
 	}
+	
+	return false;
 }
 
 void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
@@ -360,12 +383,19 @@ void DMContainer::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
 	
+	//save slots
 	int iSlots = m_kSlots.size();
-	pkPackage->Write(&iSlots,sizeof(iSlots),1);	
-	
+	pkPackage->Write(&iSlots,sizeof(iSlots),1);		
 	for(int i = 0 ;i < iSlots;i++)
 		pkPackage->Write(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
 
+	//save item types
+	int iTypes = m_kItemTypes.size();
+	pkPackage->Write(&iTypes,sizeof(iTypes),1);		
+	for(int i = 0 ;i < iTypes;i++)
+		pkPackage->Write(&m_kItemTypes[i],sizeof(m_kItemTypes[i]),1);	
+	
+	
 	//cout<<"saved DMContainer"<<endl;
 }
 
@@ -378,11 +408,23 @@ void DMContainer::Load(ZFIoInterface* pkPackage)
 
 	SetSize(m_iSizeX,m_iSizeY);
 	
+	//load slots
 	int iSlots;
-	pkPackage->Read(&iSlots,sizeof(iSlots),1);	
-	
+	pkPackage->Read(&iSlots,sizeof(iSlots),1);		
 	for(int i = 0 ;i < iSlots;i++)
 		pkPackage->Read(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
 
+
+	//load types
+	int iTypes;
+	pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+	m_kItemTypes.clear();
+	for(int i = 0 ;i < iTypes;i++)
+	{
+		int iT;
+		pkPackage->Read(&iT,sizeof(iT),1);				
+		m_kItemTypes.push_back(iT);
+	}
+	
 	//cout<<"loaded DMContainer"<<endl;
 }
