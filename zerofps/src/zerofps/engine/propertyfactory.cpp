@@ -59,3 +59,11 @@ void PropertyFactory::GetAllProperties(vector<string>& vkList)
 	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 		vkList.push_back( m_kProperyLinks[i].m_szName ); 
 }
+
+
+
+
+
+
+
+

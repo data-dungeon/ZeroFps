@@ -186,8 +186,6 @@ void ZeroFps::MainLoop(void) {
 					m_pkInput->SetInputEnabled(true);
 			}
 			
-			//run application main loop
-			m_pkApp->OnIdle();				
 				
 			//toggle keyboard/mouse grabing
 			if(m_pkInput->Pressed(KEY_F12))
@@ -196,6 +194,12 @@ void ZeroFps::MainLoop(void) {
 			//toggle fullscreen on X systems
 			if(m_pkInput->Pressed(KEY_F11))
 				ToggleFullScreen();		
+				
+			//run application main loop
+			m_pkApp->OnIdle();							
+			
+			//update zones
+			m_pkLevelMan->UpdateZones();			
 			
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
@@ -204,7 +208,7 @@ void ZeroFps::MainLoop(void) {
 			m_pkPhysEngine->Update();
 
 			//update all collisions
-//			m_pkCollisionMan->Update();				
+			m_pkCollisionMan->Update();				
 
 			//update openal sound system
 			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,180,0)).AToU(),(m_pkCamera->GetRot()-Vector3(-90,180,0)).AToU());

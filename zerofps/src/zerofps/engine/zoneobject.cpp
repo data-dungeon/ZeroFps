@@ -14,7 +14,7 @@ ZoneObject::ZoneObject()
 	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/zoneobject.mad"));
 
 
-	AddProperty("ProxyProperty");
+//	AddProperty("ProxyProperty");
 
 }
 

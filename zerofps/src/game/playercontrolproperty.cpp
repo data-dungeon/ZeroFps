@@ -63,7 +63,7 @@ void PlayerControlProperty::Update() {
 //	cout<<"LUTNING:"<<lutning<<endl;
 
 	
-	float speed=4;
+	float speed=16;
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
@@ -146,8 +146,8 @@ void PlayerControlProperty::Update() {
 
 	if(walking && onGround)
 		m_pkAlSys->AddSound(walksound);
-	else
-		m_pkAlSys->RemoveSound(walksound);
+//	else
+//		m_pkAlSys->RemoveSound(walksound);
 	
 	onGround=false;
 };

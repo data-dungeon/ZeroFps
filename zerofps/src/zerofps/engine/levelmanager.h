@@ -37,10 +37,14 @@ class ENGINE_API LevelManager : public ZFObject {
 		bool m_bVisibleZones;
 		float m_fZoneRadius;
 		
+		int m_iZpr;			//zones per radius
+		float m_fZoneDistance;
+		
 		string m_kMapBaseDir;
 		WorldInfoProperty m_kWIP;
 
-		list<Object*> m_kTrackedObjects;
+		list<Object*> m_kTrackedObjects;		
+		vector<Object*> m_kZones;
 
 	public:
 		LevelManager();
@@ -72,6 +76,9 @@ class ENGINE_API LevelManager : public ZFObject {
 		int GetNrOfTrackedObjects();
 		list<Object*>* GetTrackerList();
 		void ClearTrackers();
+
+		void UpdateZones();
+		void EnableZone(int x,int z);
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
 };

@@ -64,6 +64,7 @@ class ZeroEdit :public Application {
 			
 		};	
 	
+		Object* m_pkCamObj;
 		Camera* m_pkCamera;
 		HeightMap* m_pkMap;
 		

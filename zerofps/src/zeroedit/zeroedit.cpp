@@ -47,11 +47,11 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("            ZeroEdit ");
 	pkConsole->Printf("--------------------------------");
 
-
-	pkFps->ToggleFullScreen();
-
+	
 	m_pkMap=pkLevelMan->GetHeightMap();
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
+
+//	m_pkCamObj->AddProperty("CameraProperty");
 
 	glEnable(GL_LIGHTING);
 	

@@ -1,1 +1,4 @@
-g++ *.cpp -o ../../../bin/librender.so --shared -O3 -lGL -lGLU -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`
+g++ -c *.cpp
+./relink
+
+#g++ *.cpp -o ../../../bin/librender.so --shared -O3 -lGL -lGLU -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`

@@ -15,7 +15,9 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkMap=new HeightMap();
 	
 	m_bVisibleZones=true;
-	m_fZoneRadius=200;	
+	m_fZoneRadius=64;	
+	m_iZpr=2;
+	m_fZoneDistance=32;
 	m_kMapBaseDir="../data/maps";
 	
 	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
@@ -26,10 +28,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	//default light
 	m_bSun=new LightSource;	
 		m_bSun->kRot=new Vector3(1,2,1);
-//		m_bSun->kPos=new Vector3(10000,10000,10000);		
-//		m_bSun->kDiffuse=Vector4(1.0,1.0,1.0,1);	//Dag
 		m_bSun->kAmbient=Vector4(0.05,0.05,0.05,1);
-//		m_bSun->iType=POINT_LIGHT;			
 		m_bSun->iType=DIRECTIONAL_LIGHT;			
 		m_bSun->iPriority=10;
 		m_bSun->fConst_Atten=1;
@@ -38,8 +37,6 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 
 	m_bMoon=new LightSource;	
 		m_bMoon->kRot=new Vector3(-1,-2,-1);	
-//		m_bMoon->kPos=new Vector3(-10000,-10000,-10000);		
-//		m_bMoon->kDiffuse=Vector4(0.1,0.1,0.3,1);
 		m_bMoon->kAmbient=Vector4(0,0,0,1);
 		m_bMoon->iType=DIRECTIONAL_LIGHT;			
 		m_bMoon->iPriority=10;
@@ -86,18 +83,45 @@ void LevelManager::CreateNew(int iSize)
 
 void LevelManager::CreateZones()
 {
-	for(float x=(m_pkMap->GetPos().x-m_pkMap->GetSize()/2);x< (float)(m_pkMap->GetPos().x+m_pkMap->GetSize()/2);x+=m_fZoneRadius/2){
-		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneRadius/2){
+	m_kZones.clear();
+	
+	
+	for(float x=(m_pkMap->GetPos().x-m_pkMap->GetSize()/2);x< (float)(m_pkMap->GetPos().x+m_pkMap->GetSize()/2);x+=m_fZoneDistance){
+		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneDistance){	
+//			if(m_pkMap->Height(x,z)>-1){			
+				ZoneObject *object = new ZoneObject();
+				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
+				object->SetParent(m_pkObjectMan->GetWorldObject());				
+				if(!m_bVisibleZones)
+					object->DeleteProperty("MadProperty");
+				
+				object->GetUpdateStatus()=UPDATE_DYNAMIC;
+				
+				m_kZones.push_back(object);
+//			}
+		}
+	}	
+
+	
+
+/*
+	for(float x=(m_pkMap->GetPos().x-m_pkMap->GetSize()/2);x< (float)(m_pkMap->GetPos().x+m_pkMap->GetSize()/2);x+=m_fZoneRadius/m_iZpr){
+		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneRadius/m_iZpr){	
 			if(m_pkMap->Height(x,z)>-1){
 				ZoneObject *object = new ZoneObject();
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
 				object->SetRadius(m_fZoneRadius);
-				object->SetParent(m_pkObjectMan->GetWorldObject());			
+				object->SetParent(m_pkObjectMan->GetWorldObject());				
 				if(!m_bVisibleZones)
 					object->DeleteProperty("MadProperty");
+					
+				object->GetUpdateStatus()=UPDATE_DYNAMIC;
+					
+//				m_kZones.push_back(object);
 			}
 		}
 	}	
+*/	
 }
 
 
@@ -427,5 +451,69 @@ void LevelManager::SetSunColor(Vector3 kColor)
 	m_bSun->kDiffuse=kColor;
 	m_kWIP.m_kSunColor=kColor;	
 }
+
+
+void LevelManager::UpdateZones()
+{
+//	float zpr=m_fZoneRadius/m_iZpr;
+
+	int tot=int(m_pkMap->GetSize()/m_fZoneDistance);
+
+
+//	cout<<"TOT"<<tot<<endl;
+
+	for(int i=0;i<m_kZones.size();i++)
+		m_kZones[i]->GetUpdateStatus()=UPDATE_DYNAMIC;	
+
+
+
+	for(list<Object*>::iterator it=m_kTrackedObjects.begin();it!=m_kTrackedObjects.end();it++)
+	{
+		Vector3 pos=(*it)->GetPos();
+	
+		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
+		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
+
+		EnableZone(x,z);
+	}
+
+	if(m_kTrackedObjects.size()==0)
+	{
+		Vector3 pos=m_pkZeroFps->GetCam()->GetPos();
+	
+		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
+		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
+
+		EnableZone(x,z);
+	}		
+
+}
+
+void LevelManager::EnableZone(int xp,int zp)
+{
+//	float zpr=m_fZoneRadius/m_iZpr;
+	int w=int(m_fZoneRadius/m_fZoneDistance);
+	int tot=int(m_pkMap->GetSize()/m_fZoneDistance);	
+	
+//	cout<<"WIDTH"<<w<<endl;
+	
+	for(int x = xp-w;x <= xp +w;x++)
+	{
+		for(int z = zp-w;z <= zp +w;z++)
+		{
+			if(x<0 || z<0 || x>=tot-1 || z>=tot-1)
+				continue;
+			
+			m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
+		}
+	}
+}
+
+
+
+
+
+
+
 
 
