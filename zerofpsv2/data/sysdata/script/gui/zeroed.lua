@@ -130,6 +130,11 @@ function GUICreate()
 	CreateWnd(0,"ZonePage","WorkTabWnd","Zone",2,27,252,227,0,0,0)
 	ChangeSkin("ZonePage","Skin4","Window")
 
+	CreateWnd(1,"RotateZoneModellButton","ZonePage","",224,12,16,16,0,0,0)
+	ChangeSkin("RotateZoneModellButton","Skin20","Button up")
+	ChangeSkin("RotateZoneModellButton","Skin21","Button down")
+	ChangeSkin("RotateZoneModellButton","Skin22","Button focus")
+
 	CreateWnd(1,"DeleteZoneButton","ZonePage","",224,38,16,16,0,0,0)
 	ChangeSkin("DeleteZoneButton","Skin1","Button up")
 	ChangeSkin("DeleteZoneButton","Skin2","Button down")
@@ -149,14 +154,19 @@ function GUICreate()
 	ChangeSkin("ObjectTree","Skin11","Treebox: H.Scrollbar: Button down")
 	ChangeSkin("ObjectTree","Skin11","Treebox: H.Scrollbar: Button focus")
 
-	CreateWnd(2,"PlaceongroundButton","ObjectPage","",224,12,16,16,0,0,0)
+	CreateWnd(1,"RotateObjectButton","ObjectPage","",224,12,16,16,0,0,0)
+	ChangeSkin("RotateObjectButton","Skin20","Button up")
+	ChangeSkin("RotateObjectButton","Skin21","Button down")
+	ChangeSkin("RotateObjectButton","Skin22","Button focus")
+
+	CreateWnd(1,"DeleteObjectButton","ObjectPage","",224,38,16,16,0,0,0)
+	ChangeSkin("DeleteObjectButton","Skin1","Button up")
+	ChangeSkin("DeleteObjectButton","Skin2","Button down")
+	ChangeSkin("DeleteObjectButton","Skin3","Button focus")
+
+	CreateWnd(2,"PlaceongroundButton","ObjectPage","",224,64,16,16,0,0,0)
 	ChangeSkin("PlaceongroundButton","Skin17","Checkbox: Button up")
 	ChangeSkin("PlaceongroundButton","Skin18","Checkbox: Button down")
-
-	CreateWnd(1,"RotateZoneModellButton","ZonePage","",224,12,16,16,0,0,0)
-	ChangeSkin("RotateZoneModellButton","Skin20","Button up")
-	ChangeSkin("RotateZoneModellButton","Skin21","Button down")
-	ChangeSkin("RotateZoneModellButton","Skin22","Button focus")
 
 	CreateWnd(11,"ZoneModelTree","ZonePage","",10,20,200,200,0,0,0)
 	ChangeSkin("ZoneModelTree","Skin13","Treebox")

@@ -94,7 +94,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		void EditRunCommand(FuncId_e eEditCmd);
 
-		bool	m_bEditSun;
+		bool m_bEditSun;
 		bool m_bPlaceObjectsOnGround;
 
 		vector<pair<string,Vector3> >	m_kLocations;
@@ -112,15 +112,13 @@ class ZeroEd :public Application , public ZGuiApp {
 		Camera*	m_pkActiveCamera;
 		bool		m_bSoloMode;
 
-
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
 		
 		Vector3	m_kObjectMarkerPos;
 		int		m_iCurrentObject;
+		int 	m_iCurrentMarkedZone;
 		
-		int 		m_iCurrentMarkedZone;
-
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3 Get3DMouseDir(bool bMouse);
 
@@ -128,7 +126,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		string	m_strActiveViewPort;
 		void  CreateEditCameras();
-		bool	SetCamera(int iNum);
+		bool SetCamera(int iNum);
 		int	GetView(float x, float y);
 		void CamFollow(bool bFollowMode);
 
@@ -144,7 +142,6 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		void DeleteSelected();			// Removes selected entitys.
 
-
 		void SetZoneEnviroment(const char* szEnviroment);
 		string GetZoneEnviroment();
 		void UpdateZoneMarkerPos();
@@ -153,19 +150,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		void DrawCrossMarker(Vector3 kPos);
 		void AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
 
-		void SendTextToMistClientInfoBox(char* szText);
-
 		void SetupGuiEnviroment();
 		void ToogleLight(bool bEnabled);
-		void RotateActiveZoneObject();
-
-		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. LOL*/
-			AStar*	m_pkAStar;
-			vector<Vector3> kPath;
-			Vector3 kPathStart;
-			Vector3 kPathEnd;
-
-			void PathTest();
+		void RotateActive();
 
 		Vector3	m_kDrawPos;
 		HeightMap* SetPointer();
@@ -173,7 +160,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
 
 		LightSource	m_kSun;
-
 
 		vector<HMSelectVertex>	m_kSelectedHMVertex;
 		float m_fHMInRadius;
@@ -189,7 +175,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void Input_EditObject(float fMouseX, float fMouseY);
 
 	public:
-		bool	SetViewPort(const char* szVpName);
+		bool SetViewPort(const char* szVpName);
 
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
@@ -212,9 +198,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnServerStart(){};
 		void OnClientStart(){};
 
-		
-
-
+	
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
 

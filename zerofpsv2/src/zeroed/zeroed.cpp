@@ -344,7 +344,7 @@ void ZeroEd::Init()
 void ZeroEd::SetupGuiEnviroment()
 {
 	// Create from script.
-	LoadGuiFromScript("data/script/gui/server.lua");
+	LoadGuiFromScript("data/script/gui/zeroed.lua");
 	GetWnd("worktab")->Hide();
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
@@ -556,8 +556,6 @@ void ZeroEd::OnIdle()
 		UpdateObjectMakerPos();
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
-
-	PathTest();
 }
 
 
@@ -711,7 +709,7 @@ void ZeroEd::Input_EditZone()
 		ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		if(zd)
 			if(zd->m_bUnderContruction)*/
-		RotateActiveZoneObject();
+		RotateActive();
 	}
 	
 	/*
@@ -750,7 +748,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
 
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() && m_iCurrentMarkedZone > -1)
 	{
 		Entity* pkObj = m_pkObjectMan->CreateObjectFromScript(m_strActiveObjectName.c_str());
 		pkObj->SetWorldPosV(m_kObjectMarkerPos);
@@ -1418,7 +1416,6 @@ void ZeroEd::CamFollow(bool bFollowMode)
 
 bool ZeroEd::StartUp()	
 { 
-	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
 	return true; 
 }
 
@@ -1733,7 +1730,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "RotateZoneModellButton")
 			{
-				RotateActiveZoneObject();
+				RotateActive();
 			}
 			else
 			if(strWndClicked == "DeleteZoneButton")
@@ -1745,6 +1742,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strMainWnd == "ObjectPage")
 		{
+			if(strWndClicked == "RotateObjectButton")
+			{
+				RotateActive();
+			}
+			else
 			if(strWndClicked == "DeleteObjectButton")
 			{		
 				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
@@ -1913,9 +1915,23 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 	}
 }
 
-void ZeroEd::RotateActiveZoneObject()
+void ZeroEd::RotateActive()
 {
-	if(m_iCurrentMarkedZone != -1)
+	if(m_iCurrentObject != -1 && m_iEditMode == EDIT_OBJECTS)
+	{
+		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+		if(pkEnt) 
+		{
+			pkEnt->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+	
+			// Update PFind Mesh
+			P_PfMesh* pkMesh = (P_PfMesh*)pkEnt->GetProperty("P_PfMesh");
+			if(pkMesh)
+				pkMesh->CalcNaviMesh();
+		}
+	}
+	else
+	if(m_iCurrentMarkedZone != -1 && m_iEditMode == EDIT_ZONES)
 	{
 		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData) 
@@ -1930,7 +1946,6 @@ void ZeroEd::RotateActiveZoneObject()
 					pkMesh->CalcNaviMesh();
 			}		
 		}
-		
 	}
 }
 
@@ -1962,35 +1977,6 @@ Vector3 ZeroEd::GetPlayerStartLocation(const char* csName)
 	
 	return Vector3(0,0,0);
 }
-
-void ZeroEd::PathTest() 
-{
-	return;
-
-	int iNumOfZones = m_pkObjectMan->GetNumOfZones();
-	if(iNumOfZones < 10)
-		return; 
-
-	int iRuns = 10;
-
-	for(int i=0; i<iRuns; i++) {
-
-		int iStartZone  = 10;
-		int iEndZone	= 1;
-
-		kPathStart = m_pkObjectMan->GetZoneCenter(iStartZone);
-		kPathEnd   = m_pkObjectMan->GetZoneCenter(iEndZone);
-
-//		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
-		}
-}
-
-
-void ZeroEd::SendTextToMistClientInfoBox(char *szText)
-{
-	  
-}
-
 
 void ZeroEd::SetZoneEnviroment(const char* csEnviroment)
 {
@@ -2033,14 +2019,15 @@ char* ZeroEd::GetSelEnviromentString()
 	return NULL;
 }
 
-
-
 bool ZeroEd::PlaceObjectOnGround(int iObjectID, int iZoneID)
 {
 	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iObjectID);		
 	if(pkObj) 
 	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);					
+		ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);		
+		if(pkData->m_pkZone == NULL)
+			return false;
+
 		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
 		if(pkMesh == NULL)
 			return false;
