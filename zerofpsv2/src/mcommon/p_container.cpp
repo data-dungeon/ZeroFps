@@ -564,6 +564,9 @@ bool P_Container::DropItem(int iID,const Vector3& kPos)
 				{
 					ClearItem(iID);
 	
+					//uneqip item
+					pkPItem->UnEquip();
+					
 					// remove link to joint
 					pkItem->DeleteProperty("P_LinkToJoint");						
 	
