@@ -232,83 +232,6 @@ bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev)
 	return true;
 }
 
-/*bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove)
-{
-	printf("items in list: %i", m_pkItemList.size());
-
-	bool bFound=false;
-	int iYPosItemRemoved;
-	list<ZGuiListitem*>::iterator it;
-	list<ZGuiListitem*>::iterator itRemove;
-
-	for( it = m_pkItemList.begin();
-		 it != m_pkItemList.end(); it++)
-		 {
-			 if((*it) == pkItemToRemove)
-			 {
-				 ZGuiButton* pkButton = (*it)->GetButton();
-
-				 if(pkButton)
-				 {
-					 bFound = true;
-					 itRemove = it;
-					 iYPosItemRemoved = pkButton->GetScreenRect().Top;
-					 break;
-				 }
-			 }
-		 }
-	
-	if(bFound)
-	{
-		ZGuiWnd* pkButton = (*itRemove)->GetButton();
-		ResetStaticClickWnds(pkButton);
-
-		delete (*itRemove);
-		m_pkItemList.erase(itRemove);
-
-		printf("List item removed\n");
-	}
-	else
-	{
-		printf("Failed to remove list item.\n");
-		return false;
-	}
-
-	// Flytta upp alla element som är under denna.
-	for( it = m_pkItemList.begin();
-		 it != m_pkItemList.end(); it++)
-		 {
-			 Rect rcSearchItem = (*it)->GetButton()->GetScreenRect();
-			 if(rcSearchItem.Top > iYPosItemRemoved)
-			 {
-				 (*it)->Move(0,-m_unItemHeight);
-			 }
-		 }
-
-	m_pkSelectedItem = NULL;
-
-	int iElements = m_pkItemList.size();
-	
-	// Får alla elementen plats? Nehe, hur många för mycket är det då?
-	int iElementSize = m_unItemHeight * iElements;
-	int iListboxSize = GetScreenRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
-	if(iElementSize <= 0) iElementSize = 1; // don´t devide by zero
-	float fThumbSize = (float) iListboxSize / (float) iElementSize;
-
-	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);
-
-	if(fThumbSize >= 0.99f || iElements == 0)
-	{
-		m_pkScrollbarVertical->Hide();
-	}
-	else
-	{
-		m_pkScrollbarVertical->Show();
-	}
-
-	return true;
-}*/
-
 bool ZGuiListbox::RemoveAllItems()
 {
 	if(m_pkItemList.empty())
@@ -316,6 +239,8 @@ bool ZGuiListbox::RemoveAllItems()
 
 	if(m_pkSelectedItem)
 		ResetStaticClickWnds(m_pkSelectedItem->GetButton());
+
+	ZGuiWnd::m_pkPrevWndClicked = NULL;
 
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();

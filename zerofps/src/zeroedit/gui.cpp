@@ -73,8 +73,23 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
 				break;
 
-			case TEMPLATE:
-				sprintf(cmd, "loadtemplate %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
+			case LOAD_TEMPLATE:
+				sprintf(cmd, "loadtemplate %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
+
+				sprintf(cmd, "set g_template %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);			
+				break;
+
+			case SAVE_TEMPLATE:
+
+				char* name = (char*) m_pkFileDlgbox->m_szCurrentFile.c_str();
+				sprintf(cmd, "maketemplate %s", name); 
+				printf("\n%s\n",cmd);
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
+
+				sprintf(cmd, "savetemplate %s %s", name, name); 
+				printf("\n%s\n",cmd);
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);			
 				break;
 			}
@@ -112,7 +127,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						flags = DIRECTORIES_ONLY; 
 						break;
 					case IDM_LOAD_TEMPLATE:
-						m_kSearchTask = TEMPLATE;
+						m_kSearchTask = LOAD_TEMPLATE;
 						break;
 					}
 
@@ -130,7 +145,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					switch(iItemID)
 					{
 					case IDM_SAVE_TEMPLATE:
-						m_kSearchTask = TEMPLATE;
+						m_kSearchTask = SAVE_TEMPLATE;
 						flags = SAVE_FILES; 
 						break;
 					}

@@ -385,11 +385,10 @@ bool ZGui::OnMouseUpdate()
 			// Informera fönstret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor)
 			{
-				if(ZGuiWnd::m_pkPrevWndClicked && ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
-				{
+				if( ZGuiWnd::m_pkPrevWndClicked && 
+					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
 					if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
 						ZGuiWnd::m_pkPrevWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_RELEASE);
-				}
 
 				if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
 					ZGuiWnd::m_pkPrevWndClicked = ZGuiWnd::m_pkWndUnderCursor;

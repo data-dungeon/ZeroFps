@@ -26,7 +26,8 @@ private:
 	enum SEARCH_TASK
 	{
 		MAP,
-		TEMPLATE
+		LOAD_TEMPLATE,
+		SAVE_TEMPLATE
 	};
 
 	SEARCH_TASK m_kSearchTask;

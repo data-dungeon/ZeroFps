@@ -67,6 +67,9 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 			case ID_FILEPATH_OPEN_BN:
 				{
+					if(m_pkGui->Get("FilePathSelFileEB")->GetText())
+						m_szCurrentFile = m_pkGui->Get("FilePathSelFileEB")->GetText();
+
 					int* pkParams = new int[1];
 					pkParams[0] = ID_FILEPATH_OPEN_BN;
 					m_oGuiCallback(m_pkWindow, ZGM_COMMAND, 1, pkParams);
@@ -110,6 +113,8 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 						vector<string> vkDirectories;
 						m_pkBasicFS->ListDir(&vkDirectories, m_szSearchPath.c_str(), true);
 
+						bool bFoundDir = false;
+
 						for(unsigned int i=0; i<vkDirectories.size(); i++)
 						{
 							if(vkDirectories[i] == szFileName)
@@ -117,6 +122,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 								m_szSearchPath.append("\\");
 								m_szSearchPath.append(szFileName);
 								bFillPathlist = true;
+								bFoundDir = true;
 								break;
 							}
 						}
@@ -139,6 +145,16 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 						if(string::npos != pos)
 							m_szCurrentDir = m_szSearchPath.substr(pos+1, size-pos);
 						FillPathList(pkListbox, m_szSearchPath);
+					}
+					else
+					{
+						ZGuiWnd* pkWnd = m_pkZGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
+
+						if(pkWnd && !szFileName.empty())
+						{
+							ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
+							pkTextbox->SetText((char*)szFileName.c_str()); 
+						}							
 					}
 				}
 			}
@@ -211,7 +227,8 @@ ZGuiWnd* FileOpenDlg::Create(int x, int y, int w, int h)
 	pkLabel->SetSkin(m_pkGui->GetSkin("titlebar"));
 	m_pkGui->Register(pkLabel, "FileOpenLabel");
 	m_pkGui->CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, h-44, w-80, 20, NULL)->SetText((char*)m_szCurrentDir.c_str());
-	m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20);
+	ZGuiWnd* pkTextbox = m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20);
+	m_pkGui->Register(pkTextbox, "FilePathSelFileEB");
 
 	m_pkZGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, OPENFILEPROC, true);
 
