@@ -104,50 +104,67 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
 
 SDL_Surface *TextureManager::LoadImage(const char *acFilename) 
 {
-	bool bIsTga = false;
+/*	VIM
+	fprintf(stderr, "TextureManager::LoadImage(%s)\n", m_pkFile->File(acFilename));
+
+	  bool bIsTga = false;
 
 	if(strstr(acFilename,".tga"))
 		bIsTga = true;
 	
 	SDL_Surface *image;
 
+	fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
 	ZFVFile ZFFile;
 	if(! ZFFile.Open(m_pkFile->File(acFilename), 0, false)) {
-		//cout << "Failed to open file " << endl;
+		cout << "Failed to open file " << endl;
 		return NULL;
 		}
+	else
+		cout << "ZFFile open OK " << endl;
 
-	//cout << "ZFFile open OK " << endl;
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
 	
 	SDL_RWops* pkRWOps = SDL_RWFromFP(ZFFile.m_pkFilePointer, 0);
 	if(pkRWOps == NULL) {
-      //fprintf(stderr, "Unable to create RWop\n");
+      fprintf(stderr, "Unable to create RWop\n");
 		ZFFile.Close();
 		return NULL;
 		}
+	else
+		cout << "RWop created OK " << endl;
 
-	if(bIsTga)
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
+  if(bIsTga)
 		image = IMG_LoadTGA_RW(pkRWOps);
 	else
 		image = IMG_Load_RW(pkRWOps, 0);
-   
-	if ( image == NULL ) {
-		//fprintf(stderr, "Unable to load %s\n", m_pkFile->File(acFilename));
+   SDL_FreeRW(pkRWOps);
+
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
+  if ( image == NULL ) {
+		fprintf(stderr, "Unable to load %s\n", m_pkFile->File(acFilename));
 		ZFFile.Close();
       return(NULL);
     }
+	else
+		fprintf(stderr, "Image loaded %s\n", m_pkFile->File(acFilename));
+			
 
 	ZFFile.Close();
+*/
+	// VIM
+	SDL_Surface *image;
+	image = IMG_Load(m_pkFile->File(acFilename));
+	if ( image == NULL ) {
+		fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
+		return(NULL);
+	}
 
-/*	// VIM
-	//image = IMG_Load(m_pkFile->File(acFilename));
-
-  if ( image == NULL ) {
-    //  fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
-      return(NULL);
-    }*/
-
-  return(image);
+   return(image);
 };
 
 int TextureManager::Load(const char* acFileName,int iOption)
