@@ -589,11 +589,11 @@ void Gui::CreateTestWnd()
 		//text += oka;
 	}*/
 
-	char* szText = new char[1643+52+1]; //text.length()+1];
+	char* szText = new char[2000+1]; //text.length()+1];
 
 	FILE* pkFile = fopen("textbox.txt", "r+t");
-	fread(szText, sizeof(char), 1643+52, pkFile);
-	szText[1643+52] = '\0';
+	fread(szText, sizeof(char), 2000, pkFile);
+	szText[2000] = '\0';
 
 	//sprintf(szText, text.c_str());
 	pkTextbox->SetText(szText);//"Hej din tjockis,\nvill du ha smisk? Inte det??? Kan du multiplikationstabellen eller inte?");

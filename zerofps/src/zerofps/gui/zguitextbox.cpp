@@ -631,23 +631,26 @@ int ZGuiTextbox::GetNumRows(char* szText)
 		offset += kLength.first;
 		xpos += kLength.second;
 
-		bool bRowBreak = false;
-		//bool bCarr
+		bool bRowBreak = false, bCarriageReturn = false;
 
-		if(szText[offset] == '\n')
+		if(xpos >= max_width)
 			bRowBreak = true;
-		if(xpos > max_width)
-			bRowBreak = true;
+		if(szText[offset-1] == '\n')
+			bCarriageReturn = true;
 
-		if(bRowBreak)
+		if(bRowBreak || bCarriageReturn)
 		{
-			xpos = 0;
+			if(bCarriageReturn)
+				xpos = 0;
+			if(bRowBreak)
+				xpos = kLength.second;
+
 			ypos += row_height;
-			m_kRowOffsets[rows] = kLength.first;
+			rows++;
+			m_kRowOffsets[rows] = offset;
 		}
 			
 	}
-
 
 	return rows;
 }
