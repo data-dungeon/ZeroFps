@@ -19,20 +19,13 @@ class ENGINE_API HeightMapRenderProperty: public Property {
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	
 	
-//		int m_iAutoLod;
-//		int m_iDetail;
-//		int m_iViewDistance;
-//		int m_iFpsLock;
-//		int m_iSlicesize;
-//		int m_iLodUpdate;
-	
 	public:
 		HeightMapRenderProperty(HeightMap* pkHeightMap);
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);
-//		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);
-//		void GiveTexCor(float &iX,float &iY,int iNr);
+		HeightMap* GetHeightMap() {return m_pkHeightMap;};
+
 };
 
 Property* Create_HeightMapRenderProperty();

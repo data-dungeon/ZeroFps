@@ -30,12 +30,19 @@ void PhysicsEngine::Update()
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
-		
 		//WARNING THIS CRAP SHULD NOT BE HERE!!!!!!!!!!!!!!
 		PP->Update();
 		
+		Object* pkObject=PP->GetObject();		
+		glPushMatrix();
+			glTranslatef(pkObject->GetPos().x,pkObject->GetPos().y,pkObject->GetPos().z);
+			glutSolidSphere(static_cast<CSSphere*>(PP->GetColSphere())->m_fRadius, 10,10);
+		glPopMatrix();
+	
 		
+
 		MoveObject(PP);
+	
 	}
 
 	
@@ -147,7 +154,7 @@ void PhysicsEngine::DeepTest(Sphere* S1,Sphere* S2)
 		pkCD=CS1->Test(CSP2,m_fFrameTime,true);
 	else if(CS1==NULL && CS2!=NULL)	
 		pkCD=CSP1->Test(CS2,m_fFrameTime,true);
-	else if(CS1==NULL & CS2==NULL)
+	else if(CS1==NULL && CS2==NULL)
 		pkCD=CSP1->Test(CSP2,m_fFrameTime,true);
 
 	if(pkCD!=NULL)	

@@ -29,6 +29,9 @@ class ENGINE_API PhysicProperty :public Property
 		CollisionShape* GetColSphere(){return m_pkColSphere;};
 		CollisionShape* GetColShape(){return m_pkColObject;};
 
+		void SetColShape(CollisionShape* pkCs){m_pkColObject = pkCs;};
+
+
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
 };

@@ -4,6 +4,7 @@
 #include "objects.pkg"
 #include "../basic/heightmap.h"
 
+
 class ENGINE_API HeightMapObject: public Object {
 	private:
 		HeightMap *m_pkHeightMap;

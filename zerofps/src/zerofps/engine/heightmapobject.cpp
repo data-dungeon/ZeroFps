@@ -1,4 +1,5 @@
 #include "heightmapobject.h"
+#include "heightmapcs.h"
 
 HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 	m_kName="HeightMapObject";
@@ -6,6 +7,12 @@ HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 	m_bSave=false;
 
 	AddProperty(new CollisionProperty(pkMap));
+
+	AddProperty("PhysicProperty");
+	PhysicProperty* PP =static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
+	PP->SetColShape(new HeightMapCS(pkMap));	
+	PP->m_bFloat=false;		
+	PP->m_bGravity=false;		
 
 /*
 	AddProperty("HeightMapRenderProperty");
