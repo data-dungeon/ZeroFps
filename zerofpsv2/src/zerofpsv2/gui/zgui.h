@@ -1,6 +1,4 @@
 // Gui.h: interface for the Gui class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUI_H_
 #define _GUI_ZGUI_H_
@@ -64,8 +62,6 @@ class ZGuiResourceManager;
 #define ZGM_SCN_SETPOS					 0x5601
 
 #define ZG_DEFAULT_GUI_FONT				 1
-
-
 
 class GUI_API ZGui : public ZFSubSystem 
 {
@@ -175,7 +171,6 @@ private:
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
-	//Input* m_pkInput;
 	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows

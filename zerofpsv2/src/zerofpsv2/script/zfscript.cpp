@@ -100,6 +100,7 @@ bool ZFScript::ExposeClass(char *szName, ScripObjectType eType,
 {
 	// check if type is already registered
 	bool bAlreadyExist = true;
+
 	if(m_kExposedClasses.find(string(szName)) == m_kExposedClasses.end())
 		bAlreadyExist = false;
 

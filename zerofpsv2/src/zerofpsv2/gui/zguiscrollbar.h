@@ -1,6 +1,4 @@
 // zguiscrollbar.h: interface for the ZGuiScrollbar class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUISCROLLBAR_H_
 #define _GUI_ZGUISCROLLBAR_H_

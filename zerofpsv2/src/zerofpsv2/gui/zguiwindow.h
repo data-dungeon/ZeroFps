@@ -1,6 +1,4 @@
 // Window.h: interface for the Window class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUIWINDOW_H_
 #define _GUI_ZGUIWINDOW_H_

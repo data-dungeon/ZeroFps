@@ -48,6 +48,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
 
+	m_pkScript					= new ZFScript;
+
 	// Set Default values
 	m_iFullScreen				= 0;
 	m_fFrameTime				= 0;

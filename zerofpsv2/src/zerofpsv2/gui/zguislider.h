@@ -1,13 +1,7 @@
 // zguislider.h: interface for the ZGuiSlider class.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUISLIDER_H__EE01C27A_8259_4E6D_892B_F19BD250C844__INCLUDED_)
-#define AFX_ZGUISLIDER_H__EE01C27A_8259_4E6D_892B_F19BD250C844__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUISLIDER_H
+#define _GUI_ZGUISLIDER_H
 
 #include "gui_x.h"
 #include "zguiwindow.h"
@@ -60,4 +54,4 @@ private:
 
 };
 
-#endif // !defined(AFX_ZGUISLIDER_H__EE01C27A_8259_4E6D_892B_F19BD250C844__INCLUDED_)
+#endif // #ifndef _GUI_ZGUISLIDER_H

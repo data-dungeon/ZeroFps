@@ -381,6 +381,29 @@ void ZFObjectManger::Log(const char* szMessage)
 	if(!m_pkLogFile)
 		return;
 
+	///////////////////////////////////////////////////
+	// Zeb was here
+	static bool s_bNewLine = true;
+
+	if(s_bNewLine)
+	{
+		static int s_counter = 0;
+		static int s_iMaxPreZeros = (int) log10(9999);
+		int curr = (int) log10(s_counter);
+
+		int iNumPreZeros = s_iMaxPreZeros-curr;
+		for(int j=0; j<iNumPreZeros; j++)
+			fprintf(m_pkLogFile, "0");
+
+		fprintf(m_pkLogFile, "%i: ", s_counter++);
+	}
+
+	if(szMessage[strlen(szMessage)-1] == '\n')
+		s_bNewLine = true;
+	else
+		s_bNewLine = false;
+	///////////////////////////////////////////////////
+
 	fprintf(m_pkLogFile, szMessage);
 }
 

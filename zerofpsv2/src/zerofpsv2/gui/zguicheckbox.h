@@ -1,6 +1,4 @@
 // Check box.h: interface for the Checkbox class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUICHECKBOX_H_
 #define _GUI_ZGUICHECKBOX_H_

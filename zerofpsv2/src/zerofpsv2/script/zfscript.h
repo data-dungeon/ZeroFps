@@ -1,13 +1,7 @@
-// zfscript.h: interface for the ZFScript class.
-//
-//////////////////////////////////////////////////////////////////////
+// zfscript.h
 
-#if !defined(AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_)
-#define AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _ZFSCRIPT_H
+#define _ZFSCRIPT_H
 
 extern "C"  {
 	#include <lua.h>
@@ -81,4 +75,4 @@ protected:
 
 };
 
-#endif // !defined(AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_)
+#endif // #ifndef _ZFSCRIPT_H

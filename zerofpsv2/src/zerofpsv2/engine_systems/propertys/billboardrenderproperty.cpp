@@ -38,6 +38,7 @@ void BillBoardRenderProperty::Update()
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fScale))
 		return;
 		
+	
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),m_pkObject->GetPos(),m_fScale,m_iTexture);
 }
 

@@ -1,6 +1,4 @@
 // Listbox.h: interface for the Listbox class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUILISTBOX_H_
 #define _GUI_ZGUILISTBOX_H_

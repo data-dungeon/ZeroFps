@@ -1,6 +1,4 @@
 // zguilistitem.h: interface for the ZGuiListitem class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUILISTITEM_H_
 #define _GUI_ZGUILISTITEM_H_
@@ -37,7 +35,6 @@ public:
 		   return true;
 	}
 
-	
 private:
 	unsigned int m_iIndex;
 	ZGuiButton* m_pkButton;	

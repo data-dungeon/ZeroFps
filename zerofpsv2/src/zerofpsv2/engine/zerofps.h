@@ -25,6 +25,7 @@
 #include "i_zerofps.h"
 #include "../engine_systems/mad/mad_core.h"
 #include "res_texture.h"
+#include "../script/zfscript.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 

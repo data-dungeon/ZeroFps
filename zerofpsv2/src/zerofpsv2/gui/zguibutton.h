@@ -1,10 +1,7 @@
 // Button.h: interface for the Button class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUIBUTTON_H_
 #define _GUI_ZGUIBUTTON_H_
-
 
 #include "gui_x.h"
 #include "../basic/rect.h"

@@ -1,6 +1,4 @@
 // zguiradiobutton.h: interface for the ZGuiRadiobutton class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUIRADIOBUTTON_H_
 #define _GUI_ZGUIRADIOBUTTON_H_

@@ -1,13 +1,7 @@
 // zguitabctrl.h: interface for the ZGuiTabCtrl class.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUITABCTRL_H__B5B9295C_AB42_4D6F_A1AA_6F2C473C0EE5__INCLUDED_)
-#define AFX_ZGUITABCTRL_H__B5B9295C_AB42_4D6F_A1AA_6F2C473C0EE5__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUITABCTRL_H
+#define _GUI_ZGUITABCTRL_H
 
 #include "gui_x.h"
 #include "zguiwindow.h"
@@ -59,4 +53,4 @@ private:
 	const unsigned int TAB_HEIGHT;
 };
 
-#endif // !defined(AFX_ZGUITABCTRL_H__B5B9295C_AB42_4D6F_A1AA_6F2C473C0EE5__INCLUDED_)
+#endif // #ifndef _GUI_ZGUITABCTRL_H

@@ -15,7 +15,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_iSelfObjectID				= -1;
 	m_HaveFoundHMapObject		= false;
-	m_iGameType						= 1;
+	m_iGameType					= 1;
 	
 	g_ZFObjSys.Log_Create("zerorts");
  

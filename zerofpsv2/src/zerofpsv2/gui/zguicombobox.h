@@ -1,6 +1,4 @@
 // Combobox.h: interface for the Combobox class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUICOMBOBOX_H_
 #define _GUI_ZGUICOMBOBOX_H_

@@ -1,6 +1,4 @@
 // zguiresourcemanager.h: interface for the ZGuiResourceManager class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUIRESMANGER_H_
 #define _GUI_ZGUIRESMANGER_H_

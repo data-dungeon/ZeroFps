@@ -1,6 +1,4 @@
 // zguicursor.h: interface for the ZGuiCursor class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUICURSOR_H_
 #define _GUI_ZGUICURSOR_H_

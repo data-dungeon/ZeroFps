@@ -1,9 +1,7 @@
 // Textbox.h: interface for the Textbox class.
-//
-//////////////////////////////////////////////////////////////////////
 
-#ifndef _GUI_ZGUITEXTBOX_H_
-#define _GUI_ZGUITEXTBOX_H_
+#ifndef _GUI_ZGUITEXTBOX_H
+#define _GUI_ZGUITEXTBOX_H
 
 #include "gui_x.h"
 #include "zguiwindow.h"
@@ -71,6 +69,6 @@ private:
 	ZGuiScrollbar* m_pkScrollbarVertical;
 };
 
-#endif 
+#endif // #ifndef _GUI_ZGUITEXTBOX_H
 
 

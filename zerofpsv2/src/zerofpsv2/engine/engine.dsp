@@ -85,7 +85,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 physics_engine.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /pdbtype:sept /libpath:"..\..\..\bin"
+# ADD LINK32 script.lib physics_engine.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /pdbtype:sept /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
@@ -244,10 +244,6 @@ SOURCE=.\main.cpp
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\modelproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\audio\music.cpp
 # End Source File
 # Begin Source File
 
@@ -468,10 +464,6 @@ SOURCE=.\main.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\modelproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\audio\music.h
 # End Source File
 # Begin Source File
 

@@ -1,13 +1,7 @@
 // zguitreebox.h: interface for the ZGuiTreebox class.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUITREEBOX_H__BF9294AD_DC4A_4533_9A72_1D79F95BFE4F__INCLUDED_)
-#define AFX_ZGUITREEBOX_H__BF9294AD_DC4A_4533_9A72_1D79F95BFE4F__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUITREEBOX_H
+#define _GUI_ZGUITREEBOX_H
 
 #include "gui_x.h"
 #include "zguiwindow.h"
@@ -103,4 +97,4 @@ private:
 	map<string,ZGuiTreeboxNode*> m_kNodeMap;
 };
 
-#endif // !defined(AFX_ZGUITREEBOX_H__BF9294AD_DC4A_4533_9A72_1D79F95BFE4F__INCLUDED_)
+#endif // #ifndef _GUI_ZGUITREEBOX_H

@@ -1,6 +1,4 @@
 // Label.h: interface for the Label class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _GUI_ZGUILABEL_H_
 #define _GUI_ZGUILABEL_H_

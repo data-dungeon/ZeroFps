@@ -74,7 +74,7 @@ PostBuild_Cmds=copy  $(ProjDir)\release\*.lib ..\..\..\bin
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GUI_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GUI_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /WX /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GUI_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
@@ -115,10 +115,6 @@ SOURCE=.\zguicheckbox.cpp
 # Begin Source File
 
 SOURCE=.\zguicombobox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zguicontrol.cpp
 # End Source File
 # Begin Source File
 
@@ -191,10 +187,6 @@ SOURCE=.\zguicheckbox.h
 # Begin Source File
 
 SOURCE=.\zguicombobox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zguicontrol.h
 # End Source File
 # Begin Source File
 
