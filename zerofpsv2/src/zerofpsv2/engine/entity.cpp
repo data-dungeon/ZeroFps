@@ -48,6 +48,7 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
+	m_fLastGetIWorldPosUpdate = 0;
 	
 	//clear child list
 	m_akChilds.clear();	
@@ -1494,7 +1495,7 @@ Matrix4 Entity::GetLocalRotM()
 
 Vector3 Entity::GetIWorldPosV()
 {
-	m_kILocalPosV +=(GetWorldPosV() - m_kILocalPosV) / 12;
+	m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
 
 	return m_kILocalPosV;
 }

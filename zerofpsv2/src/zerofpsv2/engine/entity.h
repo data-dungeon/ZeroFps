@@ -172,7 +172,7 @@ class ENGINE_API Entity
 
 		Vector3						m_kILocalPosV;
 
-		bool							m_bFirstSetPos;
+		bool							m_bFirstSetPos;		
 
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
