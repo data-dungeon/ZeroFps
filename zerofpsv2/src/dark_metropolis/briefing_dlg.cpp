@@ -97,6 +97,26 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 
 bool CBriefingDlg::InitDlg()
 {
+	static ZGuiSkin* pkSkin[8];
+
+	if(m_bInitialized == false)
+	{
+		pkSkin[0] = new ZGuiSkin(GetTexID("data/textures/gui/dm/label_bk_a.bmp"),1);	// scroll area	
+		pkSkin[1] = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0);	// thumb button		
+		pkSkin[2] = new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0);	// thumb button focus
+		pkSkin[3] = new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0);	// top button up	
+		pkSkin[4] = new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0);	// top button down	
+		pkSkin[5] = new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0);	// bottom button up		
+		pkSkin[6] = new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0);  // bottom button down	
+
+		m_bInitialized = true;
+	}
+
+	((ZGuiTextbox*)GetWnd("MissionDetailEb"))->ToggleMultiLine(true);
+	((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetReadOnly(true);	
+	((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetScrollbarSkin( 
+		pkSkin[0],pkSkin[1],pkSkin[2],pkSkin[3],pkSkin[4],pkSkin[5],pkSkin[6]);
+
 	string strSelMission = ((CMissionDlg*)GetGameDlg(MISSION_DLG))->m_strSelMission;
 
 	P_DMMission* pkMissionProperty = (P_DMMission*) 
@@ -125,13 +145,10 @@ bool CBriefingDlg::InitDlg()
 	{
 		if(vkInfo[i].m_strName == strSelMission)
 		{
-			((ZGuiTextbox*)GetWnd("MissionDetailEb"))->ToggleMultiLine(true);
-			((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetReadOnly(true);
 			SetText("MissionDetailEb", (char*) vkInfo[i].m_strInfoTextLong.c_str());		
 			break;
 		}
 	}
-
 
 	return true;
 }

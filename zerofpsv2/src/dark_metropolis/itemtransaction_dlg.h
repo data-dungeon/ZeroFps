@@ -41,13 +41,13 @@ private:
 	void MoveItemToStockroom(ITEM_MOVE_INFO kItem);
 	void MoveItemToShop(ITEM_MOVE_INFO kItem);
 
-	void MoveItemFromInventory(ITEM_MOVE_INFO kItem);
+	bool MoveItemFromInventory(ITEM_MOVE_INFO kItem);
 
 	char* GetGetContainerName(int iContainer);
 
 	void PrintItemInfo(ITEM_MOVE_INFO* pkItem, bool bCharacterItem);
 
-	bool Buy(int iItemIndex);
+	int Buy(int iItemIndex); // returnerar antalet pengar som varan köptes för.
 	bool Sell(int iItemIndex);
 	
 	int m_iActiveContainer;
@@ -56,5 +56,7 @@ private:
 	
 	vector<ITEM_MOVE_INFO> m_vkFocusCharItems;
 	vector<ITEM_MOVE_INFO> m_vkInventoryItems;
+
+	string m_strErrorMsg;
 
 };

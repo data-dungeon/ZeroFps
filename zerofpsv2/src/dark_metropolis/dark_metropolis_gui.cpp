@@ -219,7 +219,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		strMainWnd == "panel_char" ||
 		strMainWnd == "wind_map" ||
 		strMainWnd == "item_bar" ||
-		strMainWnd == "MissionInfoWnd")
+		strMainWnd == "MissionInfoWnd" ||
+		strMainWnd == "HelpWnd")
 	{
 		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}

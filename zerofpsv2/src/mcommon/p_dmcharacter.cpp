@@ -33,7 +33,7 @@ void DMCharacterStats::Randomize()
 	static vector<string> kSNames;
 
 	const int MAX_LINE = 127;
-	char strLine[128];
+	char strLine[MAX_LINE+1];
 
 	if(kNames.empty())
 	{
@@ -655,7 +655,7 @@ void P_DMCharacter::AddXP(int iXP)
 
 vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(2);
 
 	kReturn[0].kValueName = "team";
 	kReturn[0].iValueType = VALUETYPE_INT;

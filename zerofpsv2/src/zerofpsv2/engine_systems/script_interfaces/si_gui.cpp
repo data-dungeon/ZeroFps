@@ -299,7 +299,7 @@ int GuiAppLua::SetTextInt(lua_State* pkLua)
 // SetText
 // Parameters:
 // (0) char* resName of the Listbox
-// (1) 
+// (1) en sträng, max 16 tusen tecken stor.
 int GuiAppLua::SetTextStringLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
@@ -310,8 +310,10 @@ int GuiAppLua::SetTextStringLua(lua_State* pkLua)
 	char szWndName[100];
 	g_pkScript->GetArg(pkLua, 0, szWndName);
 
-	char szText[500];
+	char szText[16000];
 	g_pkScript->GetArg(pkLua, 1, szText);
+	string temp = g_pkScript->FormatMultiLineTextFromLua(szText);
+	strcpy(szText, temp.c_str());
 
 	g_pkGuiApp->SetText(szWndName, szText);
 

@@ -92,7 +92,6 @@ function GUICreate()
 	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
 	 }
 
-
 	Skin26 = { tex1="dm/final/win_tile.bmp", 
 	 tex2="dm/final/window/win_edge_ver.bmp", 
 	 tex3="dm/final/window/win_edge_hor.bmp", 
@@ -102,7 +101,6 @@ function GUICreate()
 	 tex4a="dm/final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=32, tile=1, trans=0 }
 
-
 	Skin27 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
 	 bkB=92, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
 
@@ -111,20 +109,67 @@ function GUICreate()
 	 bkB=255, borderR=0, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 	Skin29 = { tex1="dm/pause_u.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 	Skin30 = { tex1="dm/pause_d.bmp", tex2="0", tex3="0", tex4="0", 
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 	Skin31 = { tex1="dm/map.bmp", tex2="0", tex3="0", tex4="0", 
 	 tex1a="dm/map_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-
 	Skin32 = { tex1="dm/map_icons/agent_map_icon.bmp", tex2="0", tex3="0", tex4="0", 
 	 tex1a="dm/map_icons/agent_map_icon_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin33 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=128, bkG=128,
+	 bkB=255, borderR=56, borderG=56, borderB=56, bd_size=2, tile=1, trans=0 }
+
+	Skin34 = { tex1="sb_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
+	Skin35 = { tex1="sb_n.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin36 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+
+
+	Skin37 = { tex1="dm/menubn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin38 = { tex1="dm/menubn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
+	Skin39 = { tex1="dm/helpbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin40 = { tex1="dm/helpbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
+	Skin41 = { tex1="dm/mapbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin42 = { tex1="dm/mapbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/miscbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
+
+	Skin43 = { tex1="dm/hqbn_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin44 = { tex1="dm/hqbn_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/hqbn_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
 
@@ -238,6 +283,35 @@ function GUICreate()
 	ChangeSkin("skill_button_ext","Skin13","Button focus")
 
 	--
+	-- Misc buttons
+	--
+
+	CreateWnd(1,"GamPlayMenuBn","wind_map","",133,183,24,24,0)
+	ChangeSkin("GamPlayMenuBn","Skin37","Button up")
+	ChangeSkin("GamPlayMenuBn","Skin38","Button down")
+	ChangeSkin("GamPlayMenuBn","Skin37","Button focus")
+
+	CreateWnd(1,"HelpBn","wind_map","",140,160,24,24,0)
+	ChangeSkin("HelpBn","Skin39","Button up")
+	ChangeSkin("HelpBn","Skin40","Button down")
+	ChangeSkin("HelpBn","Skin39","Button focus")
+
+	CreateWnd(1,"MapBn","wind_map","",157,142,24,24,0)
+	ChangeSkin("MapBn","Skin41","Button up")
+	ChangeSkin("MapBn","Skin42","Button down")
+	ChangeSkin("MapBn","Skin41","Button focus")
+
+	CreateWnd(1,"PauseBn","wind_map","",180,133,24,24,0)
+	ChangeSkin("PauseBn","Skin29","Button up")
+	ChangeSkin("PauseBn","Skin30","Button down")
+	ChangeSkin("PauseBn","Skin29","Button focus")
+
+	CreateWnd(1,"HQBn","wind_map","",160,161,92,92,0)
+	ChangeSkin("HQBn","Skin43","Button up")
+	ChangeSkin("HQBn","Skin44","Button down")
+	ChangeSkin("HQBn","Skin43","Button focus")
+
+	--
 	--
 
 	--  karaktärer..
@@ -290,29 +364,30 @@ function GUICreate()
 
 
 
+--	CreateWnd(1,"HelpBn","wind_map","?",160+16,200-35-35,24,24,0)
+--	ChangeSkin("HelpBn","Skin1","Button up")
+--	ChangeSkin("HelpBn","Skin2","Button down")
+--	ChangeSkin("HelpBn","Skin1","Button focus")
 
+--	CreateWnd(1,"HQBn","wind_map","HQ",160,200-35,32,32,0)
+--	ChangeSkin("HQBn","Skin1","Button up")
+--	ChangeSkin("HQBn","Skin2","Button down")
+--	ChangeSkin("HQBn","Skin1","Button focus")
 
-	CreateWnd(1,"HQBn","wind_map","HQ",160,200-35,32,32,0)
-	ChangeSkin("HQBn","Skin1","Button up")
-	ChangeSkin("HQBn","Skin2","Button down")
-	ChangeSkin("HQBn","Skin1","Button focus")
+--	CreateWnd(1,"PauseBn","wind_map","",160+35,200-35,32,32,0)
+--	ChangeSkin("PauseBn","Skin29","Button up")
+--	ChangeSkin("PauseBn","Skin30","Button down")
+--	ChangeSkin("PauseBn","Skin29","Button focus")
 
+--	CreateWnd(1,"MapBn","wind_map","Map",160,200,68,20,0)
+--	ChangeSkin("MapBn","Skin1","Button up")
+--	ChangeSkin("MapBn","Skin2","Button down")
+--	ChangeSkin("MapBn","Skin1","Button focus")
 
-	CreateWnd(1,"GamPlayMenuBn","wind_map","Menu",160,200,68,20,0)
-	ChangeSkin("GamPlayMenuBn","Skin1","Button up")
-	ChangeSkin("GamPlayMenuBn","Skin2","Button down")
-	ChangeSkin("GamPlayMenuBn","Skin1","Button focus")
-
-
-	CreateWnd(1,"PauseBn","wind_map","",160+35,200-35,32,32,0)
-	ChangeSkin("PauseBn","Skin29","Button up")
-	ChangeSkin("PauseBn","Skin30","Button down")
-	ChangeSkin("PauseBn","Skin29","Button focus")
-
-	CreateWnd(1,"MapBn","wind_map","Map",160,200+24,68,20,0)
-	ChangeSkin("MapBn","Skin1","Button up")
-	ChangeSkin("MapBn","Skin2","Button down")
-	ChangeSkin("MapBn","Skin1","Button focus")
+--	CreateWnd(1,"GamPlayMenuBn","wind_map","Menu",160,200+24,68,20,0)
+--	ChangeSkin("GamPlayMenuBn","Skin1","Button up")
+--	ChangeSkin("GamPlayMenuBn","Skin2","Button down")
+--	ChangeSkin("GamPlayMenuBn","Skin1","Button focus")
 
 
 
@@ -359,8 +434,45 @@ function GUICreate()
 	ChangeSkin("AgentMapIcon5","Skin32","Label")
 
 
-	
+	CreateWnd(0,"HelpWnd","GamePlayScreen","",150,32,512,380,0)
+	ChangeSkin("HelpWnd","Skin26","Window")
 
+	CreateWnd(10,"HelpWnd","GamePlayScreen","",150,32,512,380,0)
+	ChangeSkin("HelpWnd","Skin26","Window")
+
+	CreateWnd(10,"HelpTextEb","HelpWnd","",0,0,512-16,380-64,0)
+	ChangeSkin("HelpTextEb","Skin33","Textbox")
+
+	CreateWnd(1,"HelpTextOK","HelpWnd","OK",512/2-96/2,380-40,96,40,0)
+	ChangeSkin("HelpTextOK","Skin1","Button up")
+	ChangeSkin("HelpTextOK","Skin2","Button down")
+	ChangeSkin("HelpTextOK","Skin1","Button focus")
+
+
+	HelpText = [[The Minimoog Voyager is a true analog monophonic synthesizer (probably the most expensive one of its kind) and is 
+		based entirely on the original classic Minimoog Model D, which was produced by Moog Music, Inc. from 1970 to 1982. It 
+		introduces many new features, including a three dimensional touch pad, MIDI I/O, extensive patching facilities, patch storage, 
+		and more! It's cased in a beautiful, solid hardwood cabinet with a multi-position hinged control panel.
+		Just like the original, the Voyager has three analog wide-range voltage controlled oscillators, one noise source, as well as 
+		one audio preamplifier for externally-applied audio signals.\n\nTwo resonant Moog-style filters are on-board and function in dual 
+		lowpass or lowpass/highpass modes and can be modulated by one of the two ADSR envelopes, the LFO, or external control. All 
+		knobs and switches can have their settings stored into one of 128 Program memories. Program Banks as well as the Voyager's 
+		Operating System can be uploaded/downloaded via MIDI SysEx. Centered on its front panel is the ominous, black 3-D (XYZ) Touch 
+		Surface which provides three continuously-variable control signals which are derived from the up-down and left-right position 
+		of the player's finger, and the amount of area with which the player makes contact to the surface.\n\n
+		There's also a 44-note keyboard, this time with velocity and aftertouch sensitivity. Also on-board are Pitch and Mod wheels, 
+		Glide/Portamento, and a series of 1/4" CV and/or Pedal jacks lining the top/rear of the front panel. The Mod Wheel can be sent 
+		to control all oscillators, or just VCO2, VCO3, the filter cutoff, or LFO rate. The Mod can gets its source from the LFO 
+		(triangle/square/sample-n-hold waveforms), VCO3, or the external Mod2 input. A Mixer Module gives you a five-input mixer for 
+		combining various audio sources prior to filtering between the oscillators, noise and external audio input signals.\n\n
+		The new Minimoog Voyager is a first class synth; every bit as elegant in look as sound and quality. It is highly streamlined 
+		and offers all the functionality of a modern day (mono)synth with the classic, warm, unforgettable Moog sound. It WILL replace 
+		your original Minimoog (if you're lucky enough to have one). 
+		Signature models will become prized possessions for decades to come, and the Perfo]]
+
+
+	SetTextString("HelpTextEb", HelpText)
+	
 end
 
 -- Mistlands GUI Resource file, END

@@ -198,11 +198,11 @@ int DMLua::PatrolLua(lua_State* pkLua)
 							// gör pathfind till nästa punkt
 							pf->MakePathFind(it->second.m_vkPoints[it->second.m_iCurrent]);
 
-							printf("Step %i. Moving to (%i,%i,%i)\n", 
-								it->second.m_iCurrent,
-								(int)it->second.m_vkPoints[it->second.m_iCurrent].x,
-								(int)it->second.m_vkPoints[it->second.m_iCurrent].y,
-								(int)it->second.m_vkPoints[it->second.m_iCurrent].z);
+							//printf("Step %i. Moving to (%i,%i,%i)\n", 
+							//	it->second.m_iCurrent,
+							//	(int)it->second.m_vkPoints[it->second.m_iCurrent].x,
+							//	(int)it->second.m_vkPoints[it->second.m_iCurrent].y,
+							//	(int)it->second.m_vkPoints[it->second.m_iCurrent].z);
 						}
 					}
 				}

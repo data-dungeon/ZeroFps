@@ -25,6 +25,7 @@ private:
 	int m_iStartHireAgent;
 	
 	bool SendOutAgent(int iID);
+	bool BuyAgent(int iAgentID);
 	void UpdateAgentInBaseList(int iStartAgent);
 	void UpdateAgentToHireList(int iStartAgent);
 	int GetNumAgentsInBase();

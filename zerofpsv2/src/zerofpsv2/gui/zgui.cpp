@@ -1341,6 +1341,14 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	if(m_bUseHardwareMouse == false)
 		m_pkCursor->SetPos(x,y);
 
+	//////////////////////////////////////////////////////////////////////////////
+	// Pgr av att musmarkören som används i DM inte har sin klickpunkt i övre
+	// vänstra hörnet utan 2 pixlar längre ner, kompenserar vi för det här.
+	//////////////////////////////////////////////////////////////////////////////
+	x+=2; y+=2;
+	m_iMouseX = x; m_iMouseY = y;
+	//////////////////////////////////////////////////////////////////////////////
+
 	bool bLeftButtonDown = bLBnPressed;
 	bool bRightButtonDown = bRBnPressed;
 

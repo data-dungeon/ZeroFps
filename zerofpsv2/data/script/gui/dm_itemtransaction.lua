@@ -92,12 +92,12 @@ function GUICreate()
 
 
 
-	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-70/2,400,70,20,0)
+	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-150/2,400,150,32,0)
 	ChangeSkin("RemoveItemBn","Skin1","Button up")
 	ChangeSkin("RemoveItemBn","Skin2","Button down")
 	ChangeSkin("RemoveItemBn","Skin1","Button focus")
 
-	CreateWnd(1,"AddItemBn","ItemTransactionWnd","Buy",40+256/2-64/2,400,64,20,0)
+	CreateWnd(1,"AddItemBn","ItemTransactionWnd","Buy",40+256/2-150/2,400,150,32,0)
 	ChangeSkin("AddItemBn","Skin1","Button up")
 	ChangeSkin("AddItemBn","Skin2","Button down")
 	ChangeSkin("AddItemBn","Skin1","Button focus")

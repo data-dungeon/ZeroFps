@@ -303,7 +303,7 @@ bool P_DMMission::GetMissionInfoFromScript(DMMissionInfo** ppInfo)
 	return true;
 }
 
-Property* Create_P_DMMission()
+Property* Create_P_DMMission()	
 {
 	return new P_DMMission;
 }

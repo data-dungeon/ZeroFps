@@ -91,6 +91,17 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		UpdatateMap();
 	}
 	else
+	if(strClickName == "HelpBn" || strClickName == "HelpTextOK")
+	{
+		if(GetWnd("HelpWnd")->IsVisible())
+		{
+			GetWnd("HelpWnd")->Hide();
+			return;
+		}
+
+		GetWnd("HelpWnd")->Show();
+	}
+	else
 	if(strClickName == "HQBn")
 	{
 		if(IsWndVisible("HQWnd"))
@@ -321,9 +332,23 @@ bool CGamePlayDlg::InitDlg()
 
 		// Enable the round alpha border to use apha test (labels are disabled by default)
 		GetWnd("ActiveCharacterPortraitLabel")->Enable();
+
+		((ZGuiTextbox*)GetWnd("HelpTextEb"))->ToggleMultiLine(true);
+		((ZGuiTextbox*)GetWnd("HelpTextEb"))->SetReadOnly(true);	
+		((ZGuiTextbox*)GetWnd("HelpTextEb"))->SetScrollbarSkin( 
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/label_bk_a.bmp"),1),	// scroll area	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0),	// thumb button		
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0),	// thumb button focus	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0),	// top button up	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0),	// top button down	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0),	// bottom button up		
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0)  // bottom button down	
+			);
 	}
 
 	ShowWnd("MapWnd", false);
+	GetWnd("HelpWnd")->Hide();
+
 	GetWnd("GamePlayDlgQuickItem1")->Hide();
 	GetWnd("GamePlayDlgQuickItem2")->Hide();
 	GetWnd("GamePlayDlgQuickItem3")->Hide();
@@ -465,7 +490,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 						pkItemProperty->GetIcon();
 
 					pkQuickItemBn->Show();
-					SetButtonIcon(pkQuickItemBn, szTexName, false, true);		
+					SetButtonIcon(pkQuickItemBn, szTexName, true, true);		
 				}
 			}
 		}

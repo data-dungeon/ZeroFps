@@ -10,6 +10,7 @@ CItemTransactionDlg::CItemTransactionDlg() : CGameDlg(
 	m_iSelFocusCharItemIndex = -1;
 	m_iSelInventoryItemIndex = -1;
 	m_eViewMode = shop;
+	m_strErrorMsg = "";
 }
 
 CItemTransactionDlg::~CItemTransactionDlg() 
@@ -87,6 +88,12 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			}
 
 			InitDlg();
+
+			if(!m_strErrorMsg.empty())
+			{
+				SetText("ItemInfoLabel", (char*)m_strErrorMsg.c_str());
+				m_strErrorMsg="";
+			}
 		}
 	}
 	else
@@ -94,15 +101,36 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	{
 		if(m_iSelInventoryItemIndex != -1)
 		{
+			int price = 0;
+
 			// Köpa något från affären
 			if(m_eViewMode == shop)
 			{
-				if(Buy(m_iSelInventoryItemIndex) == false)
+				if((price=Buy(m_iSelInventoryItemIndex)) == 0)
+				{
+					if(!m_strErrorMsg.empty())
+					{
+						SetText("ItemInfoLabel", (char*)m_strErrorMsg.c_str());
+						m_strErrorMsg="";
+					}
 					return;
+				}
 			}
 
-			MoveItemFromInventory(m_vkInventoryItems[m_iSelInventoryItemIndex]);
+			if(!MoveItemFromInventory(m_vkInventoryItems[m_iSelInventoryItemIndex]))
+			{
+				P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+					GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+				pkGameInfo->m_iMoney += price;
+			}
+
 			InitDlg();
+
+			if(!m_strErrorMsg.empty())
+			{
+				SetText("ItemInfoLabel", (char*)m_strErrorMsg.c_str());
+				m_strErrorMsg="";
+			}
 		}
 	}
 	else
@@ -268,16 +296,6 @@ bool CItemTransactionDlg::InitDlg()
 
 				SetButtonIcon(pkButton, strIcon, true, true);
 
-				//pkSkinUp->m_iBkTexID = GetTexID((char*)strIcon.c_str());
-				//pkSkinDown->m_iBkTexID = GetTexID((char*)strIcon.c_str());
-				//pkSkinDown->m_unBorderSize = 2;
-				//pkSkinDown->m_afBorderColor[0] = 
-				//pkSkinDown->m_afBorderColor[1] = 
-				//pkSkinDown->m_afBorderColor[2] = 0;
-
-				//pkButton->SetButtonCheckedSkin(pkSkinDown);
-				//pkButton->SetButtonUncheckedSkin(pkSkinUp);
-
 				pkButton->m_bUseAlhpaTest = false;
 				pkButton->Show();
 
@@ -286,7 +304,6 @@ bool CItemTransactionDlg::InitDlg()
 				pkButton->m_iZValue = s_okaZ++;
 				GetWnd("ItemInfoLabel")->m_iZValue = s_okaZ++;
 
-
 				GetWnd("ItemAddTransactionNextPageBn")->m_iZValue = s_okaZ++;
 				GetWnd("ItemAddTransactionPrevPageBn")->m_iZValue = s_okaZ++;
 				GetWnd("ItemRemoveTransactionNextPageBn")->m_iZValue = s_okaZ++;
@@ -294,10 +311,7 @@ bool CItemTransactionDlg::InitDlg()
 
 				GetWnd("ItemAddContainerLabel")->m_iZValue = s_okaZ++;
 				GetWnd("ItemRemoveContainerLabel")->m_iZValue = s_okaZ++;
-				
-
-				
-
+			
 				GetWnd("ItemTransactionWnd")->SortChilds(); 
 
 				kMoveInfo.m_pkMoveButton = pkButton;
@@ -335,25 +349,27 @@ void CItemTransactionDlg::MoveItemToStockroom(ITEM_MOVE_INFO kItem)
 		printf("Failed to move item id %i from container id % to container id %i\n",
 			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
 			pkStookroom->GetOwnerID());
+
+		m_strErrorMsg = "Can't put that item in the stockroom!";
 	}
 }
 
-void CItemTransactionDlg::MoveItemFromInventory(ITEM_MOVE_INFO kItem)
+bool CItemTransactionDlg::MoveItemFromInventory(ITEM_MOVE_INFO kItem)
 {
 	if(m_iActiveContainer == -1)
-		return;
+		return false;
 
 	P_DMCharacter* pkCharProperty=NULL;
 
 	int iAgentID = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
 	
 	if(iAgentID == -1)
-		return;
+		return false;
 
 	if((pkCharProperty = (P_DMCharacter*) 
 			GetObject(iAgentID)->GetProperty("P_DMCharacter")) == NULL)
 	{
-		return;
+		return false;
 	}
 
 	DMContainer* akContainerObjects[] = 
@@ -381,7 +397,12 @@ void CItemTransactionDlg::MoveItemFromInventory(ITEM_MOVE_INFO kItem)
 		printf("Failed to move item id %i from container id % to container id %i\n",
 			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
 			pkContainer->GetOwnerID());
+
+		m_strErrorMsg = "Can't move that, no space or wrong container.";
+		return false;
 	}
+
+	return true;
 }
 
 
@@ -404,11 +425,13 @@ void CItemTransactionDlg::MoveItemToShop(ITEM_MOVE_INFO kItem) // ie.Sell item
 		printf("Failed to move item id %i from container id % to container id %i\n",
 			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
 			pkShop->GetOwnerID());
+
+		m_strErrorMsg = "The Shop will not buy that!";
 	}
 }
 
 
-bool CItemTransactionDlg::Buy(int iItemIndex)
+int CItemTransactionDlg::Buy(int iItemIndex)
 {
 	int iPrice=0;
 	bool bCanAfford = false;
@@ -449,13 +472,16 @@ bool CItemTransactionDlg::Buy(int iItemIndex)
 
 	if(bCanAfford == false)
 	{
-		printf("Can't afford to buy that! (price: %i, you have: %i)\n",
+		char text[150];
+		sprintf(text, "Can't afford to buy that! (price: %i, you have: %i)\n",
 			iPrice, pkGameInfo->m_iMoney);
 
-		return false;
+		m_strErrorMsg = text;
+
+		return 0;
 	}
 
-	return true;
+	return iPrice;
 }
 
 bool CItemTransactionDlg::Sell(int iItemIndex)
@@ -484,6 +510,7 @@ bool CItemTransactionDlg::Sell(int iItemIndex)
 	else
 	{
 		printf("The shop will not buy that item! (id: %i)\n", iItemIndex);
+		m_strErrorMsg = "The shop will not buy that item!";
 	}
 
 	return false;

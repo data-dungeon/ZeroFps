@@ -1,6 +1,9 @@
 -- Mistlands GUI Resource file, START
 
+
 function GUICreate()
+
+	local AgentPrice = 400 --  Pris på en agent i spelet
 
 	-------------------------------------------------------------------------
 	-- Skins.
@@ -71,7 +74,9 @@ function GUICreate()
 	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
 	ChangeSkin("GuiMainWnd","Skin7","Window")
 
-	CreateWnd(1,"HireAgentBn","AgentsWnd","Hire",218,315,80,33,0)
+	HireBnText = "Hire ("..AgentPrice..")"
+
+	CreateWnd(1,"HireAgentBn","AgentsWnd",HireBnText,512/2-120/2,315,120,33,0)
 	ChangeSkin("HireAgentBn","Skin2","Button up")
 	ChangeSkin("HireAgentBn","Skin3","Button down")
 	ChangeSkin("HireAgentBn","Skin4","Button focus")
