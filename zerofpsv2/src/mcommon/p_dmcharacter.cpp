@@ -1,10 +1,11 @@
-#include "p_dmcharacter.h" 
-#include "p_dmgun.h" 
-#include "../zerofpsv2/engine_systems/propertys/p_mad.h" 
+#include "p_dmcharacter.h"
+#include "p_dmgun.h"
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmhq.h"
+#include "p_dmclickme.h"
 
 // ---- DMCharacterStats
 DMCharacterStats::DMCharacterStats()
@@ -735,7 +736,13 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 				{
 					if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 					{
-						if( (pkPickEnt->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length() < 1) 
+						Vector3 kPos1 = pkPickEnt->GetWorldPosV();
+						Vector3 kPos2 = m_pkObject->GetWorldPosV();
+						kPos1.y = 0;
+						kPos2.y = 0;
+
+
+						if( kPos1.DistanceTo(kPos2) < 1)
 						{
 							pkHQ->InsertCharacter(m_pkObject->GetEntityID());
 							return true;
@@ -745,11 +752,39 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 							cout<<"Cant reach the door"<<endl;
 							return true;
 						}
-					}		
+					}
 				}
 				break;
-			}	
-		
+			}
+
+		case eClickMe:
+			{
+				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				{
+					if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
+					{
+						Vector3 kPos1 = pkPickEnt->GetWorldPosV();
+						Vector3 kPos2 = m_pkObject->GetWorldPosV();
+						kPos1.y = 0;
+						kPos2.y = 0;
+
+						if( kPos1.DistanceTo(kPos2) < 2)
+						{
+							cout<<"blub"<<endl;
+							pkClick->Click( m_pkObject->GetEntityID() );
+							//pkHQ->InsertCharacter(m_pkObject->GetEntityID());
+							return true;
+						}
+						else
+						{
+							cout<<"Cant reach clickme entity"<<endl;
+							return true;
+						}
+					}
+				}
+				break;
+			}
+
 		case eAttack:
 			{
 				Shoot(pkOrder->m_kPosition);

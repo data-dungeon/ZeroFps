@@ -636,7 +636,7 @@ void DarkMetropolis::Input()
 		{
 		
 			//walk
-			if(pkPickEnt->GetName() == "ZoneObject")	//we clicked on a zone , lets tae a walk
+			if(pkPickEnt->IsZone())	//we clicked on a zone , lets tae a walk
 			{
 				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
@@ -651,7 +651,7 @@ void DarkMetropolis::Input()
 								if(iNumMoveSounds > 0)
 								{
 									m_pkAudioSys->StartSound(
-										pkCharProp->m_vkMoveSounds[rand()%iNumMoveSounds], 
+										pkCharProp->m_vkMoveSounds[rand()%iNumMoveSounds],
 										pkEnt->GetIWorldPosV());
 								}
 							}
@@ -679,7 +679,7 @@ void DarkMetropolis::Input()
 				
 				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{					
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 					{
 						
 						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
@@ -710,7 +710,7 @@ void DarkMetropolis::Input()
 								}
 */
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-						{														
+						{
 							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
 							{
 								cout<<"entering hq"<<endl;
@@ -718,10 +718,10 @@ void DarkMetropolis::Input()
 
 								DMOrder kOrder;
 								kOrder.m_iOrderType = eEnterHQ;
-								kOrder.m_iEntityID = pkPickEnt->GetEntityID();							 
-								
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();
+
 								pkCh->ClearOrders();
-								pkCh->AddOrder(kOrder);	
+								pkCh->AddOrder(kOrder);
 							}
 							else
 							{
@@ -733,12 +733,12 @@ void DarkMetropolis::Input()
 								
 								//first walk to the item
 								kOrder.m_iOrderType = eWalk;
-								kOrder.m_kPosition = pkPickEnt->GetWorldPosV();								
+								kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
 								pkCh->AddOrder(kOrder);
 							
 								//then pick it up
 								kOrder.m_iOrderType = eEnterHQ;
-								kOrder.m_iEntityID = pkPickEnt->GetEntityID();								
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();
 								pkCh->AddOrder(kOrder);							
 								
 							}
@@ -754,10 +754,32 @@ void DarkMetropolis::Input()
 				// loop through all selected characters.. hmm :/
 				for ( int i = 0; i < m_kSelectedEntitys.size(); i++ )
 				{
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+					{
+						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+						{
+							//add move order
+							DMOrder kOrder;
+							kOrder.m_iOrderType = eWalk;
+							kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
+
+							pkCh->ClearOrders();
+							pkCh->AddOrder(kOrder);
+
+							//add click order
+							kOrder.m_iOrderType = eClickMe;
+							kOrder.m_iEntityID = pkPickEnt->GetEntityID();
+
+							pkCh->AddOrder(kOrder);
+
+							cout<<"clickmed"<<endl;
+						}
+					}
+/*
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 					{
 						// is the character close enough?
-						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4)
 						{
 							pkClick->Click( m_kSelectedEntitys[i] );
 
@@ -767,22 +789,22 @@ void DarkMetropolis::Input()
 						}
 						else
 						if(P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
-						{				
+						{
 							//randomize position a bit if theres many characters selected
 							if(m_kSelectedEntitys.size() > 1)
-								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));
 							else
 								pkPF->MakePathFind(m_kPickPos);
 						}
-					}
+					}*/
 				}
-				
+
 				//m_kSelectedEntitys.clear();
 			}
-			
+
 			//pick item
 			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))
-			{				
+			{
 				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
@@ -1193,7 +1215,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 
 	//
 	// TODO: Flytta kameran till samma plats.
-	// 
+	//
 
 	if(bMoveCamera)
 	{
@@ -1211,6 +1233,7 @@ void DarkMetropolis::ValidateSelection()
 		{
 			if(!pkEnt->GetParent()->IsZone())		
 			{
+				cout<<"avmarkerad"<<endl;
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
 
 				// Uppdatera GUI:t och berätta att ingen agent är i fokus.
@@ -1220,8 +1243,12 @@ void DarkMetropolis::ValidateSelection()
 				i = 0;
 
 				update_list = true;
-			}		
-		}	
+			}
+		}
+		else
+		{
+			SelectAgent(m_kSelectedEntitys[i], true, false,false);
+		}
 	}
 
 	if(m_pkGamePlayDlg && update_list == true)
@@ -1266,7 +1293,7 @@ void DarkMetropolis::ValidateAgentsOnField()
 
 			it = m_kAgentsOnField.begin();
 		}
-	}	
+	}
 }
 
 void DarkMetropolis::UpdateAgentsOnField()

@@ -21,7 +21,7 @@ enum eSTATE
 	DEAD			= 1, 
 	CROUCH		= 2, 
 	PANIC			= 3, 
-	AGGRESIVE	= 4, 
+	AGGRESIVE	= 4,
 };
 
 class MCOMMON_API DMCharacterStats
@@ -58,6 +58,7 @@ enum eOrders
 	eUse = 	2,
 	eAttack = 3,
 	eEnterHQ = 4,
+	eClickMe = 5,
 };
 
 class MCOMMON_API DMOrder
