@@ -3,8 +3,8 @@
 
 HeightMap::HeightMap() {
 	m_iHmSize=500;	
-	m_iBoxTresh=2;
-	m_iMaxSteps=5;
+//	m_iBoxTresh=2;
+//	m_iMaxSteps=5;
 	m_iError=10;
 	m_kPosition=Vector3(-50,0,-50);
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
@@ -33,6 +33,7 @@ void HeightMap::SetTileSet(char* acTileSet) {
 	
 }
 
+/*
 void HeightMap::MakeQuadTree() {
 	m_kCenter=CreateQuad(m_iHmSize/2,m_iHmSize/2,m_iHmSize,0,true);
 	
@@ -110,6 +111,7 @@ bool HeightMap::BoxTest(int x,int z,int width) {
 	else
 		return false;
 }
+*/
 
 
 void HeightMap::GenerateNormals() {
@@ -143,13 +145,66 @@ void HeightMap::GenerateNormals() {
 
 
 bool HeightMap::Load(char* acFile) {
-	cout<<"Loading new heightmap from file "<<acFile<<endl;
+	cout<<"Loading heightmap from file "<<acFile<<endl;
+	
+	//setup fileheader
+	HM_fileheader k_Fh;
+	
+	//open file
+	FILE* fp=fopen(acFile,"rb");
+	if(fp==NULL)
+		return false;
+	
+	//write header
+	fwrite(&m_iHmSize,sizeof(float),1,fp);	
+//	m_iHmSize=k_Fh.m_iHmSize;
+	cout<<"Size is:"<<m_iHmSize<<endl;
+	
+	
+	delete[] verts;
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
+		
+	for(int i=0;i<m_iHmSize*m_iHmSize;i++) {
+		fread(&verts[i].height,sizeof(float),1,fp);
+	}
+
+//	fread(&verts[0],sizeof(HM_vert),m_iHmSize*m_iHmSize,fp);
+	
+	
+	fclose(fp);
+		
 	
 	return true;
 }
 
 bool HeightMap::Save(char* acFile) {
 	cout<<"Save heightmap to file "<<acFile<<endl;
+	
+	//setup fileheader
+	HM_fileheader k_Fh;
+	k_Fh.m_iHmSize=m_iHmSize;
+	
+	//open file
+	FILE* fp=fopen(acFile,"wb");
+	if(fp==NULL)
+		return false;
+	
+	//write header
+	fwrite(&m_iHmSize,sizeof(float),1,fp);
+	
+	//write heightmap data
+	for(int i=0;i<m_iHmSize*m_iHmSize;i++) {
+		fwrite(&verts[i].height,sizeof(float),1,fp);
+	}
+
+//		fwrite(&verts[0],sizeof(HM_vert),m_iHmSize*m_iHmSize,fp);
+
+//	}
+	
+	
+	
+	//close file
+	fclose(fp);
 	
 	return true;
 }

@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <cmath>
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #include "../zerofps/engine/application.h"
 
 

@@ -18,6 +18,11 @@ void Test::OnInit(void) {
 	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
 	test->GenerateTextures();
+	
+//	test->Save("test.hm");
+//	test->Load("test.hm");
+//	test->GenerateNormals();
+//	test->GenerateTextures();
 
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;

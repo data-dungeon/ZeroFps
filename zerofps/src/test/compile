@@ -1,1 +1,1 @@
-g++ test.cpp -o ../../bin/test -L../../bin/ -lbasic -lglut -lengine -lrender 
+g++ test.cpp -o ../../bin/test -L../../bin/ -lbasic -lengine -lrender 

@@ -14,12 +14,12 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 		glRotatef(kHead.z, 0, 0, 1);
 		glScalef(kScale.x,kScale.y,kScale.z);
 
-// 		glBlendFunc(GL_ONE,GL_ZERO);
+ 		glBlendFunc(GL_ONE,GL_ZERO);
  		
   	m_pkTexMan->BindTexture(iTexture);  
 
     glBegin(GL_QUADS);			
-//			glColor4f(1.0,1.0,1.0,1.0);  	  
+			glColor4f(1.0,1.0,1.0,1.0);  	  
   	  glNormal3f(0,1,0);
     	glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
     	glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
@@ -252,6 +252,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	glPopMatrix();			
 }
 
+/*
 void Render::DrawHMQT(HeightMap *kmap) {
 	glPushMatrix();
 	glTranslatef(-50,-10,-50);
@@ -290,8 +291,9 @@ void Render::DrawQuad(HM_vert* vert,int width) {
 				
 				DrawQuad
 		}	
-	}*/
+	}
 }
+*/
 
 void Render::Dot(float x,float y,float z) {
 	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));

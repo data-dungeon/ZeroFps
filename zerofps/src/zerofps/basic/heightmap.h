@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cmath>
 #include <cstring>
+#include <cstdio>
 #include "basic.pkg"
 
 using namespace std;
@@ -18,7 +19,11 @@ struct BASIC_API HM_vert {
 	float height;	//land height
 	Vector3 normal;
 	int texture;	//what texture to use
-	HM_vert *childs[8];
+//	HM_vert *childs[8];
+};
+
+struct HM_fileheader {
+	int m_iHmSize;
 };
 
 
@@ -46,11 +51,12 @@ class BASIC_API HeightMap {
 		void SetTileSet(char* acTileSet);
 		void SetPosition(Vector3 kNewPos);
 
+		HM_vert* GetVert(int x,int z);		
 		
-		void MakeQuadTree();
-		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
-		HM_vert* GetVert(int x,int z);
-		bool BoxTest(int x,int z,int width);
+//		void MakeQuadTree();
+//		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);
+
+//		bool BoxTest(int x,int z,int width);
 };
 
 
