@@ -116,7 +116,7 @@ void Test::OnInit(void) {
 //	cam1->SetViewPort(0,.4,.6,.6);
 	
 	cam2=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
-	cam2->SetViewPort(0.6,0,.4,.4);
+	cam2->SetViewPort(0.6,0.1,.3,.3);
 	
 	
 	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
@@ -148,9 +148,6 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	
 
-
-
-
 	if(m_iGrass>0){
 		for(int ix=0;ix<1000;ix+=30)
 			for(int iy=0;iy<1000;iy+=30){
@@ -181,7 +178,7 @@ void Test::OnIdle(void) {
 	cam2->ClearViewPort();	
 	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-
+	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
 }
 
