@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "dialogbox.h"
+#include "../common/dialogbox.h"
 
 class TextureManager;	
 class PlayerControlProperty;

@@ -631,3 +631,11 @@ bool EditPropertyDlg::OnClose(bool bSave)
 	OnCloseEditProperty(bSave);
 	return true;
 }
+
+
+
+
+
+
+
+

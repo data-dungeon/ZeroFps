@@ -1,5 +1,6 @@
 #include "render.h"
  
+#include "../engine/heightmap.h"
 
 
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)

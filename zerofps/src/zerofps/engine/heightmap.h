@@ -9,8 +9,9 @@
 #include <vector>
 #include <string>
 
-#include "../basic/basic.pkg"
 
+#include "../basic/basic.pkg"
+#include "../render/render.pkg"
 
 #define HEIGHTMAP_SCALE 2
 
@@ -36,7 +37,9 @@ struct TileSet{
 
 
 class ENGINE_API HeightMap: public ZFObject {
-	private:		
+	private:			
+		TextureManager*	m_pkTexMan;
+		FileIo*				m_pkFile;	
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		
 	public:
@@ -52,8 +55,7 @@ class ENGINE_API HeightMap: public ZFObject {
 		char m_acTileSet[256];
 		Vector3 m_kPosition;
 		int m_iError;
-		FileIo *m_pkFile;
-		
+	
 		HeightMap();		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Create(int iHmSize);
@@ -72,7 +74,11 @@ class ENGINE_API HeightMap: public ZFObject {
 		Vector3 &GetPos(){return m_kPosition;};
 		HM_vert* GetVert(int x,int z);		
 		void GetMapXZ(float& x,float& z);
+		
 		void Smooth(int fStartx,int fStartz,int fWidth,int fHeight);
+		void Flatten(int iPosx,int iPosy,int iSize);
+		void Raise(int iPosx,int iPosy,int iMode,int iSize,bool bSmooth);
+		void DrawMask(int iPosX,int iPosy,int iMode,int iSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
 		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);

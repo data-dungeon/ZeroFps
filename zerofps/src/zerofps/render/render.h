@@ -16,7 +16,9 @@
 #include "texturemanager.h"
 #include "light.h"
 
-#include "../engine/heightmap.h"
+//#include "../engine/heightmap.h"
+
+class HeightMap;
 
 using namespace std;
 

@@ -86,14 +86,14 @@ public:
 
 	Image& operator = ( Image& v );		///< Make a copy of image.
 
-	bool load_tga(char* filename);					///< Load a .tga image.
+	bool load_tga(const char* filename);					///< Load a .tga image.
 	bool load_tga(FILE *fp);						///< Load a .tga image.
-	bool load_pcx(char* filename);					///< Load a .pcx image.
+	bool load_pcx(const char* filename);					///< Load a .pcx image.
 	bool load_pcx(FILE *fp, color_rgb* pal);		///< Load a .pcx image.
 
-	bool load(char* filename);						///< Load pcx or tga.
+	bool load(const char* filename);						///< Load pcx or tga.
 
-	void save(char* filename, bool alpha = false);	///< Save image as a 24 / 32 bit .tga file.
+	void save(const char* filename, bool alpha = false);	///< Save image as a 24 / 32 bit .tga file.
 
 	void flip(bool flipx, bool flipy);				///< Flip image along one or two axis.
 	void set_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b);	///< Set color of a pixel.

@@ -98,7 +98,7 @@ class ZeroEdit :public Application {
 		Camera* m_pkCamera;
 		HeightMap* m_pkMap;
 		
-		list<LandType> m_kLandTypes;
+//		list<LandType> m_kLandTypes;
 		
 		int m_iMode;
 	
@@ -113,15 +113,15 @@ class ZeroEdit :public Application {
 
 		string m_kCurentTemplate;
 		
-		int m_iPencilSize;
+		int m_iPencilSize;		
 		
 		int m_iEditMask;
+		bool m_iSmooth;
 		
 		float m_fTimer;
 		float m_fDrawRate;
-		int m_iLandType;
 		bool m_bDrawing;
-		int m_iRandom;
+		int m_iRandom;		
 
 		bool m_bMenuActive;
 	
@@ -136,14 +136,7 @@ class ZeroEdit :public Application {
 		void ListTemplates();		
 		void RegisterPropertys();
 		
-//		void AddLandtype(int iTexture,Vector3 kColor);
-//		bool RemoveLandtype(int iTexture,Vector3 kColor);		
-//		bool RemoveLandtype(int iNr);
-//		LandType GetLandType(int iNr);
-//		void ListLandTypes();
-//		bool LoadLandFromFile(const char* acFile);
-//		bool SaveLandToFile(const char* acFile);		
-		
+	
 		void HeightMapDraw(Vector3 kPencilPos);
 
 		void PasteObject(Vector3 kPos);	// Klistrar in markerat object.

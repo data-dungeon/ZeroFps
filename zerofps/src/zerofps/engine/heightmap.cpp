@@ -5,23 +5,22 @@
 #include <cstdio>
 #include "heightmap.h"
 
+#include "../render/render.pkg"
+
 
 HeightMap::HeightMap() 
  : ZFObject("HeightMap") {
  
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
+	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+	
 	m_iError=4;
 	
 	verts =NULL;
-//	m_pkVertex = NULL;
 
 	Create(128);
 	
 
-//	m_kPosition=Vector3(0,0,0);
-//	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
-//	Zero();
-//	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
 }
 
 void HeightMap::Create(int iHmSize)
@@ -551,3 +550,104 @@ void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
 	
 	GenerateNormals(iStartx,iStartz,iWidth,iHeight);
 }
+
+
+void HeightMap::Flatten(int iPosx,int iPosy,int iSize)
+{			
+	if(iPosx - (iSize/2) >=0 &&
+		iPosx + (iSize/2) <=m_iHmSize &&
+		iPosy - (iSize/2) >=0 &&
+		iPosy + (iSize/2) <=m_iHmSize)
+	{		
+
+		float height=GetVert(iPosx,iPosy)->height;
+
+		for(int xp=-(iSize/2);xp<=(iSize/2);xp++){
+			for(int yp=-(iSize/2);yp<=(iSize/2);yp++){
+				GetVert(iPosx+xp,iPosy+yp)->height=height;				
+			}
+		}
+				
+		GenerateNormals(iPosx - (iSize/2),iPosy- (iSize/2),iSize,iSize);
+	}
+}
+
+
+void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
+{
+	if(iPosx - (iSize/2) >=0 &&
+		iPosx + (iSize/2) <=m_iHmSize &&
+		iPosy - (iSize/2) >=0 &&
+		iPosy + (iSize/2) <=m_iHmSize)
+	{		
+	
+		for(int xp=-(iSize/5);xp<=(iSize/5);xp++){
+			for(int yp=-(iSize/5);yp<=(iSize/5);yp++){
+				GetVert(iPosx+xp,iPosy+yp)->height+=iMod;				
+			}
+		}
+			
+		if(bSmooth)
+			Smooth(iPosx-(iSize/2),iPosy-(iSize/2),iSize,iSize);				
+	}
+}
+
+void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int b,int a)
+{
+	if(iMask <= 0 || iMask >= m_kSets.size())
+		return;
+	
+	
+	m_pkTexMan->BindTexture(m_kSets[iMask].m_acMask,0);
+	
+	
+	if(!m_pkTexMan->MakeTextureEditable())
+		return;
+	
+	//get texture pos
+	float xpos =(iPosX * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->w)  ;
+	float ypos =(iPosy * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->h)  ;
+		
+	int size=iSize;
+
+	for(float i=0;i<size;i+=0.5)
+	{
+		for(int z=0;z<360;z+=10)
+		{
+			int x = int(xpos + sin(z/degtorad)*i);
+			int y = int(ypos + cos(z/degtorad)*i);
+		
+			Uint32 old = m_pkTexMan->GetPixel(x,y);
+			
+			Uint8 cr,cg,cb,ca;			
+			int pr,pg,pb,pa;
+			
+			SDL_GetRGBA(old,  m_pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
+					
+			pr=cr;
+			pg=cg;			
+			pb=cb;			
+			pa=ca;			
+			
+			pr+=r;
+			pg+=g;
+			pb+=b;			
+			pa+=a;
+			
+			if(pr >255)
+				pr = 255;
+			if(pg >255)
+				pg = 255;
+			if(pb >255)
+				pb = 255;
+			if(pa >255)
+				pa = 255;
+
+			m_pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
+		}
+	
+	}
+	m_pkTexMan->SwapTexture();
+}
+
+

@@ -2,6 +2,7 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfvfs.h"
 
+#include "../basic/image.h"
 #include "render.h"
 
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
@@ -464,6 +465,7 @@ bool TextureManager::SwapTexture()
 		
 	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage);	
 	
+	
 	if(works)
 	{
 		SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
@@ -625,6 +627,75 @@ Uint32 TextureManager::GetPixel(int x,int y)
 	}
 }
 
+bool TextureManager::SaveTexture(const char* acFile,int iLevel)
+{
+	Image temp;
+	
+	int iHeight;
+	int iWidth;
+	int iDepth;
+	int iInternalFormat;
+	int iRSize;
+	int iGSize;	
+	int iBSize;	
+	int iASize;	
+	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_WIDTH,&iWidth);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_HEIGHT,&iHeight);	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);			
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_RED_SIZE,&iRSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_GREEN_SIZE,&iGSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_BLUE_SIZE,&iBSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_ALPHA_SIZE,&iASize);		
+	
+	iDepth = iRSize+iGSize+iBSize+iASize;
+	
+/*	
+	cout << " iInternalFormat "<< iInternalFormat << "\n";
+	
+	cout<<"width: "<<iWidth<<endl;
+	cout<<"Height:"<<iHeight<<endl;
+	cout<<"Depth: "<<iDepth<<endl;		
+	
+	cout<<"red size:  "<<iRSize<<endl;
+	cout<<"green size:"<<iGSize<<endl;	
+	cout<<"blue size: "<<iBSize<<endl;	
+	cout<<"alpha size:"<<iASize<<endl;	
+*/	
+
+	int iFormat=-1;
+	int iType=-1;
+	
+		
+//	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4 || iInternalFormat == GL_RGBA8)
+	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4 || iInternalFormat == GL_RGBA8 || iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)	
+	{
+		//cout<<"GL_RGBA"<<endl;
+		iFormat = GL_RGBA;
+		iType = GL_UNSIGNED_INT_8_8_8_8;
+	}
+	
+	if(iFormat == -1)
+	{
+		cout<<"Cant download texture Unsupored format"<<endl;
+		return false;
+	}
+	
+
+	temp.create_empty(iWidth,iHeight);
+
+	if(iFormat == GL_RGBA)	
+	{
+		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.pixels);
+		//cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
+		
+		temp.save(acFile,true);
+	}
+
+
+
+	return true;
+}
 
 void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 { 

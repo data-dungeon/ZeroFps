@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "gui.h"
-#include "../game/dialogbox.h"
+#include "../common/dialogbox.h"
 
 class PropertyFactory;
 class Property;

@@ -83,8 +83,6 @@ void ZeroEdit::OnInit(void)
 	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
 	
-//	pkObjectMan->SetUpdate(false);
-//	pkPhysEngine->SetUpdate(false);
 	
 	m_pkCurentChild=NULL;
 	
@@ -95,10 +93,7 @@ void ZeroEdit::OnInit(void)
 	
 	m_iPencilSize=8;
 	g_ZFObjSys.RegisterVariable("g_pencilsize", &m_iPencilSize,CSYS_INT);
-	
-	m_iLandType=1;
-	g_ZFObjSys.RegisterVariable("g_landtype", &m_iLandType,CSYS_INT);
-	
+		
 	m_iRandom=1;
 	g_ZFObjSys.RegisterVariable("g_random", &m_iRandom,CSYS_INT);
 	
@@ -113,6 +108,9 @@ void ZeroEdit::OnInit(void)
 
 	m_iEditMask=1;
 	g_ZFObjSys.RegisterVariable("g_editmask", &m_iEditMask,CSYS_INT);
+	
+	m_iSmooth=1;
+	g_ZFObjSys.RegisterVariable("g_smooth", &m_iSmooth,CSYS_INT);	
 	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
@@ -132,10 +130,15 @@ void ZeroEdit::OnInit(void)
 
 	m_iCopyNetWorkID = -1;
 
+
+
+
 //	pkTexMan->BindTexture("pencil.tga",0);			
 //	SDL_Surface* bla=pkTexMan->GetTexture(0);
 	
+	/*
 	pkTexMan->BindTexture("../data/textures/stone.bmp",0);			
+	pkTexMan->SaveTexture("fuck.tga",0);
 //	pkTexMan->Blit(bla,10,20);
 	
 	for(int x=0;x<10;x++)
@@ -149,7 +152,7 @@ void ZeroEdit::OnInit(void)
 			pkTexMan->PsetRGB(x2,y2,255,0,0);
 			
 	pkTexMan->SwapTexture();				
-	
+	*/
 }
 
 
@@ -174,8 +177,6 @@ void ZeroEdit::OnHud(void)
 	glDisable(GL_DEPTH_TEST);
 
 	pkRender->SetFont("file:../data/textures/text/console.tga");
-	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
-	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
 	pkFps->DevPrintf("common","Fps: %d",pkFps->m_iFps);
 	pkFps->DevPrintf("common","Mode: %d",m_iMode);
@@ -191,7 +192,6 @@ void ZeroEdit::OnHud(void)
 	glEnable(GL_ALPHA_TEST);
 
 	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkCamera->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
-//	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(0.2,0.2,0),pkTexMan->Load("file:../data/textures/pointer.tga",0));	
 	
 	glDisable(GL_ALPHA_TEST);
 	
@@ -249,65 +249,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkLevelMan->SetMoonColor(kColor);			
 			break;	
 		}
-/*		
-		case FID_SAVELAND:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("saveland [filename]");
-				break;
-			}
-			
-			if(!SaveLandToFile(kCommand->m_kSplitCommand[1].c_str()))
-				break;
-				
-			pkConsole->Printf("LandTypes Saved");				
-		
-			break;		
-		
-		case FID_LOADLAND:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("loadland [filename]");
-				break;
-			}
-			
-			if(!LoadLandFromFile(kCommand->m_kSplitCommand[1].c_str()))
-				break;
-				
-			pkConsole->Printf("LandTypes Loaded");				
-		
-			break;
-		
-		case FID_ADDLAND:{
-			if(kCommand->m_kSplitCommand.size() < 5) {
-				pkConsole->Printf("addland [texture-nr] color[r][g][b]");
-				break;
-			}
-			
-			Vector3 kColor(atof(kCommand->m_kSplitCommand[2].c_str()),
-								atof(kCommand->m_kSplitCommand[3].c_str()),
-								atof(kCommand->m_kSplitCommand[4].c_str()));
-			
-			AddLandtype(atoi(kCommand->m_kSplitCommand[1].c_str()),kColor);			  
-					  
-			break;
-			}
-			
-		case FID_REMOVELAND:{
-			if(kCommand->m_kSplitCommand.size() < 2) {
-				pkConsole->Printf("addland [texture-nr] color[r][g][b]");
-				break;
-			}
-			
-			if(!RemoveLandtype(atoi(kCommand->m_kSplitCommand[1].c_str())))
-				pkConsole->Printf("Landtype not found");				
-					  
-			break;
-			}
-		
-		case FID_LISTLAND:
-			ListLandTypes();
-			
-			break;
-*/	
 		case FID_SKYBOX6: {
 			string strSkyPath = BaseEnvMap + kCommand->m_kSplitCommand[1] + "/sky";
 
@@ -867,29 +808,25 @@ void ZeroEdit::Input()
 		case FLATTEN:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();	
+			
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
-				float height=m_pkMap->GetVert(int(pos.x),int(pos.z))->height;
-				int texture=m_pkMap->GetVert(int(pos.x),int(pos.z))->texture;
-				Vector3 color=m_pkMap->GetVert(int(pos.x),int(pos.z))->color;
-
-				for(int xp=-(m_iPencilSize/2);xp<=(m_iPencilSize/2);xp++){
-					for(int yp=-(m_iPencilSize/2);yp<=(m_iPencilSize/2);yp++){
-						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->texture=texture;
-						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->color=color;//Vector3(.6,.45,0.3);		
-						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height=height;				
-					}
-				}
-				
-				m_pkMap->GenerateNormals((int)pos.x - (m_iPencilSize/2),(int)pos.z - (m_iPencilSize/2),m_iPencilSize,m_iPencilSize);
-				
+				m_pkMap->Flatten(int(pos.x),int(pos.z),m_iPencilSize);
+			
 			}
 			break;
 			
 		case SMOOTH:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();			
+			
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
@@ -901,17 +838,14 @@ void ZeroEdit::Input()
 		case RAISE:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();			
+			
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
-				for(int xp=-(m_iPencilSize/5);xp<=(m_iPencilSize/5);xp++){
-					for(int yp=-(m_iPencilSize/5);yp<=(m_iPencilSize/5);yp++){
-						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height+=2;				
-					}
-				}
-			
-
-				m_pkMap->Smooth(int(pos.x-(m_iPencilSize/2)),int(pos.z-(m_iPencilSize/2)),m_iPencilSize,m_iPencilSize);			
+				m_pkMap->Raise(int(pos.x),int(pos.z),2,m_iPencilSize,(bool)m_iSmooth);
 			
 			}
 			break;
@@ -919,17 +853,14 @@ void ZeroEdit::Input()
 		case LOWER:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();			
+			
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
-				for(int xp=-(m_iPencilSize/5);xp<=(m_iPencilSize/5);xp++){
-					for(int yp=-(m_iPencilSize/5);yp<=(m_iPencilSize/5);yp++){
-						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height-=2;				
-					}
-				}
-			
-
-				m_pkMap->Smooth(int(pos.x-(m_iPencilSize/2)),int(pos.z-(m_iPencilSize/2)),m_iPencilSize,m_iPencilSize);			
+				m_pkMap->Raise(int(pos.x),int(pos.z),-2,m_iPencilSize,(bool)m_iSmooth);			
 			
 			}
 			break;
@@ -1359,300 +1290,13 @@ void ZeroEdit::ListTemplates()
 
 void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 {
-
-/*	
-	for(int i=0;i<1;i++)
-	{
-		pkTexMan->BindTexture("smily.bmp",0);			
-	
-		float xx=rand()%50;
-		float yy=rand()%50;
-	
-		float r = rand() % 255;
-		float g = rand() % 255;
-		float b = rand() % 255;
-	
-		for(int x=0;x<10;x++)
-			for(int y=0;y<10;y++)
-				pkTexMan->PsetRGB(x+xx,y+yy,r,g,b);
-				
-		pkTexMan->SwapTexture();			
-	}
-*/	
-	
-/*	pkTexMan->BindTexture("pencil.tga",0);
-	SDL_Surface* pencil = pkTexMan->GetTexture(0);	
-*/	
-
 	m_pkMap->GetMapXZ(kPencilPos.x,kPencilPos.z);
 		
-	string map1 = pkLevelMan->GetCurrentMapDir() + "mask1.tga";
-	string map2 = pkLevelMan->GetCurrentMapDir() + "mask2.tga";
-	string map3 = pkLevelMan->GetCurrentMapDir() + "mask3.tga";	
-
-	switch(m_iEditMask)
-	{
-		case 1:
-			pkTexMan->BindTexture(map1.c_str(),0);	
-			break;
-		case 2:
-			pkTexMan->BindTexture(map2.c_str(),0);	
-			break;
-		case 3:
-			pkTexMan->BindTexture(map3.c_str(),0);	
-			break;
-	
-		default:
-			return;
-			
-	}
-
-	if(!pkTexMan->MakeTextureEditable())
-		return;
-
-
-	//SDL_Surface* pen = SDL_ConvertSurface(pencil, pkTexMan->GetImage()->format, SDL_SWSURFACE);
-//	SDL_SetAlpha(pencil,0, 255);
-	
-				
-	float xpos =(kPencilPos.x * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->w)  ;
-	float ypos =(kPencilPos.z * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->h)  ;
 		
-	//cout<<"pos:"<<xpos<<" "<<ypos<<endl;		
+	m_pkMap->DrawMask(int(kPencilPos.x),int(kPencilPos.z),m_iEditMask,m_iPencilSize,255,255,255,20);
 		
 
-		
-/*		
-	for(int x=0;x<5;x++)
-		for(int y=0;y<5;y++)
-			pkTexMan->PsetRGBA(xpos+x,ypos+y,255,255,255,200);
-*/			
-	
-//	pkTexMan->Blit(pencil,xpos,ypos);
-	
-	
-	
-	int size=m_iPencilSize;
-	int scale=2;
-
-
-
-	for(float i=0;i<size;i+=0.5)
-	{
-		for(int z=0;z<360;z+=10)
-		{
-			int x = int(xpos + sin(z/degtorad)*i);
-			int y = int(ypos + cos(z/degtorad)*i);
-		
-			Uint32 old = pkTexMan->GetPixel(x,y);
-			
-			Uint8 cr,cg,cb,ca;			
-			int pr,pg,pb,pa;
-			
-			SDL_GetRGBA(old,  pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
-					
-			pr=cr;
-			pg=cg;			
-			pb=cb;			
-			pa=ca;			
-			
-			pr+=5;
-			pg+=5;
-			pb+=5;
-			
-			pa+=20;
-			
-			if(pr >255)
-				pr = 255;
-			if(pg >255)
-				pg = 255;
-			if(pb >255)
-				pb = 255;
-			if(pa >255)
-				pa = 255;
-
-
-//			pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
-			pkTexMan->PsetRGBA(x,y,255,255,255,pa);
-		}
-	
-	}
-
-
-	pkTexMan->SwapTexture();
-
-/*			cout<<"r:"<<(int)c[0]<<endl;
-			cout<<"g:"<<(int)c[1]<<endl;					
-			cout<<"b:"<<(int)c[2]<<endl;					
-			cout<<"a:"<<(int)a<<endl;					
-*/			
-
-
-/*
-			c[0] += 2;
-			c[1] += 2;			
-			c[2] += 2;			
-					
-/*			if((c[0] + (size*scale-i)) >= 0  && (c[0] + (size*scale-i)) <= 255)
-				c[0] += (size*scale-i);					
-			if((c[1] + (size*scale-i)) >= 0  && (c[1] + (size*scale-i)) <= 255)
-				c[1] += (size*scale-i);					
-			if((c[2] + (size*scale-i)) >= 0  && (c[2] + (size*scale-i)) <= 255)
-				c[2] += (size*scale-i);					*/
-			
-//			a += 10;
-			
-/*			if((c[3] + (size-i)*scale) >= 0  && (c[3] + (size-i)*scale) <= 255)
-				 c[3] += (size-i)*scale;					
-*/			
-			
-	
-	
-	
-	
-	
-/*	
-	SDL_Rect bla;
-	bla.x=xpos;
-	bla.y=ypos;
-	bla.w=10;
-	bla.h=10;
-	
-	SDL_FillRect(pkTexMan->GetImage(), &bla, 0xffff);
-*/	
-	
-
-
 }
-
-/*
-void ZeroEdit::AddLandtype(int iTexture,Vector3 kColor)
-{
-	LandType temp;
-	temp.m_iTexture=iTexture;
-	temp.m_kColor=kColor;
-	
-	m_kLandTypes.push_back(temp);
-}
-
-bool ZeroEdit::RemoveLandtype(int iTexture,Vector3 kColor)
-{
-	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
-	{
-		if((*it).m_iTexture==iTexture && (*it).m_kColor==kColor){
-			m_kLandTypes.erase(it);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool ZeroEdit::RemoveLandtype(int iNr)
-{
-	int i=0;
-	
-	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
-	{	
-		i++;
-		if(i == iNr){
-			m_kLandTypes.erase(it);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void ZeroEdit::ListLandTypes()
-{
-	pkConsole->Printf("--Land Types--");
-	pkConsole->Printf("NR     Texture     Color");	
-	
-	int i=0;
-	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
-	{
-		i++;
-		pkConsole->Printf("%i    %i    %.3f %.3f %.3f",i,(*it).m_iTexture,(*it).m_kColor.x,(*it).m_kColor.y,(*it).m_kColor.z);
-	}
-
-}
-
-LandType ZeroEdit::GetLandType(int iNr)
-{
-	int i=0;
-	
-	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
-	{	
-		i++;
-		if(i == iNr){
-			return (*it);
-		}
-	}
-
-	LandType temp;
-	temp.m_iTexture=0;
-	temp.m_kColor.Set(0,0,0);
-	
-	return temp;
-}
-
-bool ZeroEdit::LoadLandFromFile(const char* acFile)
-{
-	ZFFile kFile;
-	
-	if(!kFile.Open(acFile,false))
-	{
-		pkConsole->Printf("Error opening file");
-		return false;
-	}
-	
-	m_kLandTypes.clear();
-	
-	int size; 
-	kFile.Read((void*)&size,4);
-	
-	for(int i=0;i<size;i++)
-	{
-		LandType temp;
-		
-		kFile.Read((void*)&temp.m_iTexture,4);		
-		kFile.Read((void*)&temp.m_kColor,12);		
-	
-		m_kLandTypes.push_back(temp);
-	}
-	
-	kFile.Close();
-
-	return true;
-}
-
-
-bool ZeroEdit::SaveLandToFile(const char* acFile)
-{
-	ZFFile kFile;
-	
-	if(!kFile.Open(acFile,true))
-	{
-		pkConsole->Printf("Error opening file");
-		return false;
-	}
-	
-	
-	int size=m_kLandTypes.size();
-	kFile.Write((void*)&size,4);
-	
-	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
-	{	
-		kFile.Write((void*)&(*it).m_iTexture,4);		
-		kFile.Write((void*)&(*it).m_kColor,12);	
-	}
-
-	kFile.Close();
-
-	return true;
-}
-*/
 
 
 

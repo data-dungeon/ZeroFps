@@ -14,6 +14,7 @@
 #include "../ogl/zfpsgl.h"
 #include <bitset>
 
+
 using namespace std;
 
 enum OPTIONS {
@@ -85,6 +86,7 @@ class RENDER_API TextureManager : public ZFObject {
 		Uint32 GetPixel(int x,int y);
 		bool Blit(SDL_Surface* pkImage,int x,int y);
 		SDL_Surface* GetImage();
+		bool SaveTexture(const char* acFile,int iLevel);
 		
 
 		bool StartUp()	{ return true;	}

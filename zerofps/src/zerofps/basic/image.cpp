@@ -158,7 +158,7 @@ void Image::read_rgb(color_rgba* dst, FILE* fp, int pixsize)
 	dst->a = alp;
 }
 
-void Image::save(char* filename, bool alpha)
+void Image::save(const char* filename, bool alpha)
 {
 	tgahead_t head;
 	memset(&head,0,sizeof(tgahead_t));
@@ -189,7 +189,7 @@ void Image::save(char* filename, bool alpha)
 	fclose(fp);
 }
 
-bool Image::load_tga(char* filename)
+bool Image::load_tga(const char* filename)
 {
 	FILE *fp = fopen(filename,"rb");
 	if(!fp)	return false;
@@ -302,7 +302,7 @@ bool Image::load_tga(FILE *fp)
 	return true;
 }
 
-bool Image::load_pcx(char* filename)
+bool Image::load_pcx(const char* filename)
 {
 	FILE *fp = fopen(filename,"rb");
 	if(!fp)	return false;
@@ -370,11 +370,11 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 			}
 		}
 
-	//delete [] data1;	//** Fix_me ** [Vim], [Läcker som ett såll :)]
+	//delete [] data1;	// ** Fix_me ** [Vim], [Läcker som ett såll :)]
 	return true;
 }
 
-bool Image::load(char* filename)
+bool Image::load(const char* filename)
 {	
 	// Find file exten.
 	char *ext = strrchr( filename, '.');
