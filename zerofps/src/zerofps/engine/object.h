@@ -2,9 +2,9 @@
 #define _OBJECT_H_
 
 #include "../basic/basic.pkg"
+#include "objects.pkg"
 #include <vector>
 #include <list>
-#include "objects.pkg"
 #include <string.h>
 
 class Object {

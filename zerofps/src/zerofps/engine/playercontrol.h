@@ -1,12 +1,13 @@
 #ifndef _PLAYERCONTROL_H_
 #define _PLAYERCONTROL_H_
 
-#include "property.h"
+//#include "property.h"
+#include "objects.pkg"
 #include <iostream>
 
-//class Property;
+using namespace std;
 
-class PlayerControl:public Property {
+class PlayerControl: public Property {
 	public:
 		PlayerControl();
 
