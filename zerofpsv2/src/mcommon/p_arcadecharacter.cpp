@@ -45,11 +45,13 @@ void P_ArcadeCharacter::Update()
 
 	//	cout<<fAng<<"  "<<kCurrentDir.Length()<<endl;
 		
-		if(fS > 0)
-			GetObject()->RotateLocalRotV(Vector3(0, 10 ,0));
-		else
-			GetObject()->RotateLocalRotV(Vector3(0,-10 ,0));
-
+		if(fAng > 0.01)
+		{
+			if(fS > 0)
+				GetObject()->RotateLocalRotV(Vector3(0, 10 * fAng,0));
+			else
+				GetObject()->RotateLocalRotV(Vector3(0,-10 * fAng ,0));
+		}
 /*		
 		
 		Vector3 kNewDir = m_kDir  ;
