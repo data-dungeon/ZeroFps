@@ -492,6 +492,9 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 
    pkReturnObj->m_strCreatedFromScript = acName;
 	
+	CallFunction(pkReturnObj, "FirstRun");
+
+
 	return pkReturnObj;
 }
 
@@ -2713,6 +2716,27 @@ void EntityManager::UpdateZoneStatus()
 		}
 	}
 }
+
+bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ARG_DATA>* pkParams)
+{
+	//set self id before calling the funktion
+	ObjectManagerLua::g_iCurrentObjectID = pkEntity->m_iEntityID;	
+		
+	if(pkParams)
+		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
+	else
+		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,0,0);	
+}
+
+
+
+
+
+
+
+
+
+
 
 
 /*

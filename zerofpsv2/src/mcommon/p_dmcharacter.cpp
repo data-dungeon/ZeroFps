@@ -566,10 +566,10 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 		if ( pkQItem == 0 )
 			break;
 		// get SI
-		P_ScriptInterface* pkSI = (P_ScriptInterface*)pkQItem->GetProperty("P_ScriptInterface");
+		//P_ScriptInterface* pkSI = (P_ScriptInterface*)pkQItem->GetProperty("P_ScriptInterface");
 
-		if (pkSI)
-		{
+		//if (pkSI)
+		//{
 			// send in characterID
 			vector<ARG_DATA> kParams;
 
@@ -581,8 +581,8 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 			kParams.push_back (kData);
 
-			pkSI->CallFunction ( "Use", &kParams );	
-		}
+			m_pkObjMan->CallFunction (m_pkObject, "Use", &kParams );	
+		//}
 
 		break;
 	}
@@ -826,14 +826,14 @@ void P_DMCharacter::ChangeState (int iState)
 	// if went to panic state, run script function
 	if ( m_iState == PANIC )
 	{
-		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-			pkSi->CallFunction("Panic");
+		//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+			m_pkObjMan->CallFunction(m_pkObject, "Panic");
 	}
 	// character died :_(
 	else if ( m_iState == DEAD )
 	{
-		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-			pkSi->CallFunction("Dead");
+		//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+			m_pkObjMan->CallFunction(m_pkObject, "Dead");
 
 		// clear orders
 		while ( !m_kOrderQueue.empty() )

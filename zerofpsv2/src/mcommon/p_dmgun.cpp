@@ -297,9 +297,9 @@ bool P_DMGun::FireBullets(int iAmount)
 			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
 			{
 					// Inform the victim that he have been hurt by someone.
-					if(P_ScriptInterface* pkSi = (P_ScriptInterface*)
-						pkClosest->GetProperty("P_ScriptInterface"))
-					{
+					//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)
+					//	pkClosest->GetProperty("P_ScriptInterface"))
+					//{
 						vector<ARG_DATA> kParams;
 
 						int iFoe = m_pkObject->GetEntityID();
@@ -309,8 +309,8 @@ bool P_DMGun::FireBullets(int iAmount)
 						kData.pData = &iFoe;
 						kParams.push_back (kData);
 
-						pkSi->CallFunction("OnTakingDmgFrom", &kParams);
-					}
+						m_pkObjMan->CallFunction(pkClosest, "OnTakingDmgFrom", &kParams);
+					//}
 
 					pkChar->Damage(0, int(m_fDamage));
 			}

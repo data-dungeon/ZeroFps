@@ -135,8 +135,8 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 	}*/
 
 	// if have scriptinterface, run OnSpawn
-	if(P_ScriptInterface* pkSI = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-		pkSI->CallFunction ( "OnSpawn" );
+	//if(P_ScriptInterface* pkSI = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+		m_pkObjMan->CallFunction (m_pkObject,  "OnSpawn" );
 }
 
 vector<PropertyValues> P_Spawn::GetPropertyValues()

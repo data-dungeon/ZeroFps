@@ -277,6 +277,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
+		bool CallFunction(Entity* pkEntity, const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
 
 		friend class Entity;
 		friend class ZeroFps;		

@@ -22,34 +22,36 @@ P_ScriptInterface::P_ScriptInterface()
 
 P_ScriptInterface::~P_ScriptInterface()
 {
-	CallFunction("Destroy");	
+	m_pkObjMan->CallFunction(m_pkObject, "Destroy");	
 }
 
 void P_ScriptInterface::Update()
 {
+/*	
 	if(m_bFirstRun)
 	{
 		m_bFirstRun=false;
 		
-		CallFunction("FirstRun");
+		m_pkObjMan->CallFunction(m_pkObject, "FirstRun");
 	}
+*/
 
 	if(!m_bHaveRunInit)
 	{
 		m_bHaveRunInit = true;		
-		CallFunction("Init");
+		m_pkObjMan->CallFunction(m_pkObject, "Init");
 	}
 
 	if(m_fHeartRate != -1)
 		if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fTimer > m_fHeartRate)
 		{
-			CallFunction("HeartBeat");
+			m_pkObjMan->CallFunction(m_pkObject, "HeartBeat");
 			
 			m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
 		}
 }
 
-
+/*
 bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams)
 {
 	//set self id before calling the funktion
@@ -60,8 +62,7 @@ bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pk
 		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,*pkParams);
 	else
 		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,0,0);	
-
-}
+}*/
 
 void P_ScriptInterface::SetHeartRate(float blub) 
 {
@@ -76,7 +77,7 @@ void P_ScriptInterface::Touch(int iId)
 	args[0].eType = tINT;
 	args[0].pData = &iId;
 	
-	CallFunction("Collission",&args);	
+	m_pkObjMan->CallFunction(m_pkObject, "Collission",&args);	
 }
 
 void P_ScriptInterface::OnEvent(GameMessage& Msg)
@@ -89,7 +90,7 @@ void P_ScriptInterface::OnEvent(GameMessage& Msg)
 	
 	string strName = string("on") + Msg.m_Name;
    
-	CallFunction(strName.c_str(), 0);
+	m_pkObjMan->CallFunction(m_pkObject, strName.c_str(), 0);
 }
 
 

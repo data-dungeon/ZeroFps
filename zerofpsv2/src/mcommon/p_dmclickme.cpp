@@ -46,7 +46,8 @@ void P_DMClickMe::Update()
 				pkVisiter->SetUpdateStatus(UPDATE_ALL);
 
 			// call script function exit
-			((P_ScriptInterface*)m_pkScript)->CallFunction ( "Exit" );
+			//((P_ScriptInterface*)m_pkScript)->CallFunction ( "Exit" );
+			m_pkObjMan->CallFunction ( m_pkObject, "Exit" );
 
 			// remove from list
 			m_kVisiters.erase ( kIte++ );
@@ -89,7 +90,8 @@ void P_DMClickMe::Click()
 		return;
 	}
 
-	((P_ScriptInterface*)m_pkScript)->CallFunction ("Click");
+	//((P_ScriptInterface*)m_pkScript)->CallFunction ("Click");
+	m_pkObjMan->CallFunction (m_pkObject, "Click");
 }
 
 // ------------------------------------------------------------------------------------------
@@ -115,7 +117,7 @@ void P_DMClickMe::Click(int iObjID)
 
 	kParams.push_back (kData);
 
-	((P_ScriptInterface*)m_pkScript)->CallFunction ( "Click", &kParams );	
+	m_pkObjMan->CallFunction (  m_pkObject, "Click", &kParams );	
 }
 
 // ------------------------------------------------------------------------------------------

@@ -25,12 +25,14 @@ P_Event::~P_Event()
 
 void P_Event::Update()
 {
+/*
 	if(m_bFirstRun)
 	{
 		m_bFirstRun=false;
 		
 		SendEvent("FirstRun");
 	}
+*/
 
 	if(!m_bHaveRunInit)
 	{

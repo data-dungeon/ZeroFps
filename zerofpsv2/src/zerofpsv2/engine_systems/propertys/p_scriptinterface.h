@@ -25,7 +25,7 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		~P_ScriptInterface();
 		
 		void Update();				
-		bool CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
+		//bool CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
 
 		void OnEvent(GameMessage& Msg);
 
