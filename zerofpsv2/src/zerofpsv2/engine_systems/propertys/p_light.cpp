@@ -13,7 +13,8 @@ P_Light::P_Light()
 
 	strcpy(m_acName,"P_Light");
 	bNetwork = true;
-	
+	m_iVersion = 2;
+		
 	m_pkLightSource=new LightSource();
 
 	m_iType = PROPERTY_TYPE_RENDER;
@@ -21,7 +22,7 @@ P_Light::P_Light()
  
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = 0;
-
+	m_kOffset.Set(0,0,0);
 }
 
 P_Light::~P_Light()
@@ -43,7 +44,7 @@ void P_Light::Update()
 //		m_pkRender->Sphere(m_pkEntity->GetIWorldPosV(),0.1,1,Vector3(1,0,1),true);
 
 
-	m_pkLightSource->kPos = m_pkEntity->GetWorldPosV();
+	m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);
 	
 	if(m_pkLightSource->iType == SPOT_LIGHT)	
 		m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
@@ -87,6 +88,8 @@ void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_iMode);												//4
 																						//sum 64 bytes
 	
+	pkNetPacket->Write(m_kOffset);
+																						
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
@@ -103,12 +106,13 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
 	pkNetPacket->Read( m_iMode);
 	
+	pkNetPacket->Read(m_kOffset);
 	
 }
 
 vector<PropertyValues> P_Light::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(11);
+	vector<PropertyValues> kReturn(12);
 
 	kReturn[0].kValueName = "Ambient";
 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
@@ -153,7 +157,12 @@ vector<PropertyValues> P_Light::GetPropertyValues()
 	kReturn[10].kValueName = "Mode";
 	kReturn[10].iValueType = VALUETYPE_INT;
 	kReturn[10].pkValue    = (void*)&m_iMode;
-		
+
+	kReturn[11].kValueName = "Offset";
+	kReturn[11].iValueType = VALUETYPE_VECTOR3;
+	kReturn[11].pkValue    = (void*)&m_kOffset;
+	
+			
 	return kReturn;
 }
 
@@ -163,16 +172,27 @@ Property* Create_LightProperty()
 }
 
 void P_Light::Save(ZFIoInterface* pkPackage)
-{
-	
-	pkPackage->Write((void*)m_pkLightSource,sizeof(LightSource),1);
-	pkPackage->Write((void*)&m_iMode,sizeof(m_iMode),1);	
+{	
+	pkPackage->Write(*m_pkLightSource);
+	pkPackage->Write(m_iMode);		
+	pkPackage->Write(m_kOffset);		
 }
 
 void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
-	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	
+	if(iVersion == 1)
+	{
+		pkPackage->Read(*m_pkLightSource);
+		pkPackage->Read(m_iMode);		
+	}
+	
+	if(iVersion == 2)
+	{
+		pkPackage->Read(*m_pkLightSource);
+		pkPackage->Read(m_iMode);		
+		pkPackage->Read(m_kOffset);	
+	}
+	
 	
 	SetNetUpdateFlag(true);	
 }

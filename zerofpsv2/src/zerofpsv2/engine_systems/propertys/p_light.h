@@ -22,9 +22,9 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 		Light*			m_pkLight;	
 		Render*			m_pkRender;
 		
-		int				m_iMode;
-		
+		int				m_iMode;		
 		float				m_fTimer;
+		Vector3			m_kOffset;
 		
 		vector<PropertyValues> GetPropertyValues();
 		
