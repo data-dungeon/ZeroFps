@@ -19,7 +19,8 @@ class MCOMMON_API ClientOrder
 		int		m_iClientID;
 		
 		int		m_iCaracter;
-
+		
+		Vector3	m_kPos;
 };
 
 

@@ -1062,22 +1062,31 @@ void MistServer::HandleOrders()
 		}
 		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
 		
-		Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-		if(ob)
+		//move order
+		if(order->m_sOrderName == "Move")
 		{
-			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
-			if(pe)
-			{	
-				pe->SendEvent("Use", order->m_sOrderName.c_str(), order->m_iCaracter );				
-				
-				/*string strAction = "NoName";
+			Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
+			if(ob)
+			{
+				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				if(pe)
+					pe->SendEvent("Move", order->m_sOrderName.c_str(), order->m_iCaracter ,order->m_kPos);
+			}
 
-				if(ob->GetProperty("P_Item") != NULL)
-				{
-					strAction = "PickUp";
-				*/
+		}
+		else
+		{
+			//other orders
+			Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+			if(ob)
+			{
+				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				if(pe)
+				{	
+					pe->SendEvent("Use", order->m_sOrderName.c_str(), order->m_iCaracter ,order->m_kPos);				
 				
-			}			
+				}			
+			}
 		}
 		
 		P_ClientControl::PopOrder();

@@ -40,7 +40,7 @@ void P_Event::Update()
 }
 
 
-bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObject)
+bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObject,Vector3 kPos)
 {
 	if(m_pkObject->GetObjectScript() && acType != NULL)
 	{
@@ -49,6 +49,15 @@ bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObjec
 		
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
+
+		//ful hack
+		if(strcmp(acType,"Move")==0)
+		{
+			//cout<<"Pos:"<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
+			m_pkObject->SetWorldPosV(kPos);
+			return true;
+		}
+
 
 		vector<ARG_DATA> args(1);
 		args[0].eType = tSTRING;

@@ -40,6 +40,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
 		pkNetPacket->Write(&m_kClientOrders.front().m_iCaracter,sizeof(m_kClientOrders.front().m_iCaracter));									
+		pkNetPacket->Write(&m_kClientOrders.front().m_kPos,sizeof(m_kClientOrders.front().m_kPos));								
 		m_kClientOrders.pop(); 
 	}
 } 
@@ -63,6 +64,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Read(&temporder.m_iObjectID,sizeof(temporder.m_iObjectID));
 		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
 		pkNetPacket->Read(&temporder.m_iCaracter,sizeof(temporder.m_iCaracter));				
+		pkNetPacket->Read(&temporder.m_kPos,sizeof(temporder.m_kPos));						
 		
 		//if we already gotten max nr of orders, dont add this one
 		if(i <= m_iMaxOrders)

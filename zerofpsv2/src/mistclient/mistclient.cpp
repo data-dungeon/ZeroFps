@@ -648,6 +648,9 @@ Object* MistClient::GetTargetObject()
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
 			continue;		
 		
+		if(kObjects[i]->GetProperty("P_Ml")==NULL)
+			continue;
+		
 		float d = (start - kObjects[i]->GetWorldPosV()).Length();
 	
 		if(d < closest)
