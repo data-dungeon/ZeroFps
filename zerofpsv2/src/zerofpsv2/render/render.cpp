@@ -84,7 +84,7 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	//reinitialize opengl
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
-		
+
 	//setup sdl_gl_attributes, this has to be done before creating the sdl opengl window
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
@@ -156,7 +156,11 @@ void Render::SetDisplay()
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;
 
-	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags);
+	if( (m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags)) == NULL)
+	{
+		cout<<"ERROR: Creating sdl video surface"<<endl;
+		return;
+	}
 
 	glViewport(0, 0,m_iWidth,m_iHeight);
 
