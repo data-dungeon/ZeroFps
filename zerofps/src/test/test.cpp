@@ -21,7 +21,7 @@ void Test::OnInit(void) {
 	
 //	test->Save("test.hm");
 //	test->Load("file:test.hm");
-	test->LoadImageHmap("file:test.bmp");
+	test->LoadImageHmap("file:test2.bmp");
 	test->GenerateNormals();
 	test->GenerateTextures();
 
@@ -33,7 +33,7 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	white_light = Vector4(1.2,1.2,1.2,1.2);
+	white_light = Vector4(1.5,1.5,1.5,1.5);
 	lmodel_ambient = Vector4(0.5,0.5,0.5,1);
 
   
@@ -50,7 +50,7 @@ void Test::OnInit(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   
-  pkRender->SetFog(Vector4(.5,.5,.5,1),0.25,200,300,true);
+  pkRender->SetFog(Vector4(.2,.2,.6,1),0.25,200,300,true);
   
 
 }
@@ -65,8 +65,8 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 
 
-	pkRender->DrawSimpleWater(Vector3(180,3,200),30);
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(250,0,250),Vector3(0,0,0),600,30);
+//	pkRender->DrawSimpleWater(Vector3(180,3,200),30);
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
 //	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
 	cout<<pkFps->m_iFps<<endl;
