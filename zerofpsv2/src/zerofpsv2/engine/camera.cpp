@@ -83,13 +83,16 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	//modelview matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
-	glLoadIdentity();					
+	m_pkZShaderSystem->MatrixIdentity();
+	//glLoadIdentity();					
 	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
 					kCenter.x,kCenter.y,kCenter.z,
 					0.0f, 1.0f, 0.0f);
-	glGetFloatv(GL_MODELVIEW_MATRIX, &m_kLightViewMatrix[0]);
-
-
+					
+	m_pkZShaderSystem->MatrixSave(&m_kLightViewMatrix);								
+	
+	
+	//glGetFloatv(GL_MODELVIEW_MATRIX, &m_kLightViewMatrix[0]);
 /*	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
 					0,0,0,
 					0.0f, 1.0f, 0.0f);		*/			
