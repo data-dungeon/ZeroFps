@@ -678,7 +678,9 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 void GLGuiRender::PrintWord(int x, int y, char *szWord, 
 							int offset, int length)
 {
-	for(int i=offset; i<offset+length; i++)
+	//fy fy dumma erik som använder en "obsolete binding at `i'" =P
+	int i;
+	for(i=offset; i<offset+length; i++)
 	{
 		// Print cursor
 		if(i == m_iCursorPos)

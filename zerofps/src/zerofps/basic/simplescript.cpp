@@ -1,4 +1,6 @@
 #include <cstring>
+#include <cstdlib>
+#include <cstdio>
 #include <iostream>
 #include "simplescript.h"
 
@@ -115,5 +117,8 @@ char* SimpleScriptFile::GetToken(void)
 
 	return NULL;
 }
+
+
+
 
 
