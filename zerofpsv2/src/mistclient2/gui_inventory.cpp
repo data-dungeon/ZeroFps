@@ -1004,6 +1004,7 @@ void InventoryDlg::OpenSplitStockWnd()
 
 	g_kMistClient.SetTextInt("SplitStockMaxEb", max);
 	g_kMistClient.SetTextInt("SplitStockSplitEb", split);
+	g_kMistClient.GetWnd("SplitStockSplitEb")->Disable();
 	g_kMistClient.GetWnd("SplitStockMaxEb")->Disable();
 
 	ZGuiSlider* pkSlider = (ZGuiSlider*) g_kMistClient.GetWnd("SplitStockSlider");
