@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="basic_debug.lib luad.lib lualibd.lib tolua++_debug.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="basic_debug.lib luad.lib lualibd.lib tolua++.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\script_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
