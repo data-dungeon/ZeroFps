@@ -11,17 +11,19 @@ using namespace std;
 
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
-//#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_event.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../zerofpsv2/engine/p_pfpath.h"
+
+
 #include "../mcommon/p_dmhq.h"
 #include "../mcommon/p_dmcharacter.h"
 #include "../mcommon/p_shadowblob.h"
 #include "../mcommon/p_dmgun.h"
-#include "../zerofpsv2/engine/p_pfpath.h"
+#include "../mcommon/p_dmitem.h"
 #include "p_dmgameinfo.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );

@@ -77,17 +77,8 @@ void DarkMetropolis::OnInit()
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 
 	// create gui script
-/*	GuiAppLua::Init(&g_kDM, m_pkScript);
-	InitGui(m_pkScript,
-		"data/textures/text/ms_sans_serif8.bmp",
-		"data/script/gui/defskins.lua",
-		NULL);
-
-	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
-
-	StartSong("data/music/dm menu.ogg");
-*/
 	GUI_Init();
+	
 	m_pkInput->ShowCursor(true);
 	
 	
@@ -149,10 +140,8 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem() 
 {				
-	if(m_pkCameraEntity)
-	{
-//		m_pkCameraEntity->DeleteProperty("P_Track");
-	}
+
+
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -223,12 +212,14 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
-	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
-	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
-	m_pkPropertyFactory->Register("P_DMGameInfo", Create_P_DMGameInfo);	
-	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
-	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);	
+	m_pkPropertyFactory->Register("P_DMItem", 			Create_P_DMItem);
+	m_pkPropertyFactory->Register("P_DMGun", 				Create_P_DMGun);
+	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);
+	m_pkPropertyFactory->Register("P_Enviroment",		Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_DMHQ", 				Create_P_DMHQ);
+	m_pkPropertyFactory->Register("P_DMGameInfo",		Create_P_DMGameInfo);	
+	m_pkPropertyFactory->Register("P_DMCharacter",		Create_P_DMCharacter);
+	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
 }
 
 void DarkMetropolis::Input()
@@ -238,6 +229,7 @@ void DarkMetropolis::Input()
 	m_pkInputHandle->RelMouseXY(x,z);	
 		
 		
+	//some debuging buttons
 	if(m_pkInputHandle->Pressed(KEY_P))
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
@@ -254,6 +246,42 @@ void DarkMetropolis::Input()
 			{
 				pkHQ->EjectAllCharacters();
 			}
+	
+	if(m_pkInputHandle->Pressed(KEY_P))
+		if(!m_kSelectedEntitys.empty())
+			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[0]))
+				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+				{
+					pkHQ->m_pkBackPack->Print();
+				}
+
+	if(m_pkInputHandle->Pressed(KEY_O))
+		if(!m_kSelectedEntitys.empty())
+			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[0]))
+				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+					pkHQ->m_pkBackPack->DropAll();				
+				
+
+	//check for camera movment	
+	if(m_pkCameraEntity)
+	{
+		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
+		float s = m_pkFps->GetFrameTime() * 10;
+		
+		if(m_pkInputHandle->VKIsDown("cam_left"))
+			pos += Vector3(-1,0,0) * s;
+		
+		if(m_pkInputHandle->VKIsDown("cam_right"))
+			pos += Vector3(1,0,0) * s;
+		
+		if(m_pkInputHandle->VKIsDown("cam_up"))
+			pos += Vector3(0,0,-1) * s;
+		
+		if(m_pkInputHandle->VKIsDown("cam_down"))
+			pos += Vector3(0,0,1) * s;
+		
+		m_pkCameraEntity->SetWorldPosV(pos);
+	}
 
 
 	//setup player controls
@@ -292,7 +320,7 @@ void DarkMetropolis::Input()
 		
 		
 		
-	//check if a selection has been made
+	//check for selection
 	if(m_pkInputHandle->VKIsDown("select"))
 	{
 		if(!m_bSelectSquare)
@@ -324,7 +352,8 @@ void DarkMetropolis::Input()
 			if(!m_pkInputHandle->VKIsDown("multiselect"))
 				m_kSelectedEntitys.clear();			
 			
-			m_iHQID = -1;	// there is no hq selected
+			//reset hq selection
+			m_iHQID = -1;	
 			
 			//is there a box? , else do a quick check
 			if( (m_kSelectSquareStart-m_kSelectSquareStop).Length() < 0.1)
@@ -376,7 +405,7 @@ void DarkMetropolis::Input()
 		//FIRE GUN
 		if(m_pkInputHandle->VKIsDown("multiselect"))			
 		{
-			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.2)
+			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.1)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 		
@@ -395,7 +424,7 @@ void DarkMetropolis::Input()
 				}
 			}	
 		}
-		else //WALK
+		else
 		{
 			m_bActionPressed = true;
 		}
@@ -406,6 +435,8 @@ void DarkMetropolis::Input()
 	
 		if(Entity* pkPickEnt = GetTargetObject())
 		{
+		
+			//walk
 			if(pkPickEnt->GetName() == "ZoneObject")	//we clicked on a zone , lets tae a walk
 			{
 				for(int i = 0;i < m_kSelectedEntitys.size();i++)
@@ -425,8 +456,10 @@ void DarkMetropolis::Input()
 						}
 					}	
 				}
+				return;
 			}
 			
+			//enter HQ
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
 				
@@ -457,31 +490,51 @@ void DarkMetropolis::Input()
 						}
 					}
 				}
+				return;
 			}			
+			
+			//pick item
+			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))
+			{				
+				for(int i = 0;i < m_kSelectedEntitys.size();i++)
+				{
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
+					{
+						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						{
+							if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+							{										
+								if(pkCh->m_pkBackPack->AddItem(pkPickEnt->iNetWorkID))
+								{	
+									cout<<"Pickup an item"<<endl;
+									return;
+								}
+								else
+									cout<<"could't pickup item"<<endl;
+							}
+						}
+						else
+						{							
+							//check if this thing can move
+							if(P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
+							{					
+						
+								//randomize position a bit if theres many characters selected
+								if(m_kSelectedEntitys.size() > 1)
+									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+								else
+									pkPF->MakePathFind(m_kPickPos);
+							}
+						}
+					}
+				}
+				return;			
+			}
 		}
 	}
 
 
-	//check for camera movment	
-	if(m_pkCameraEntity)
-	{
-		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
-		float s = m_pkFps->GetFrameTime() * 10;
-		
-		if(m_pkInputHandle->VKIsDown("cam_left"))
-			pos += Vector3(-1,0,0) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_right"))
-			pos += Vector3(1,0,0) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_up"))
-			pos += Vector3(0,0,-1) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_down"))
-			pos += Vector3(0,0,1) * s;
-		
-		m_pkCameraEntity->SetWorldPosV(pos);
-	}
+
 
 }
 

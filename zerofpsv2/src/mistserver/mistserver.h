@@ -32,10 +32,12 @@
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_ai.h"
 #include "../mcommon/p_spawn.h"
+
 #include "../mcommon/p_dmhq.h"
 #include "../mcommon/p_dmcharacter.h"
 #include "../mcommon/p_shadowblob.h"
 #include "../mcommon/p_dmgun.h"
+#include "../mcommon/p_dmitem.h"
 
 #include "playerdatabase.h"
 

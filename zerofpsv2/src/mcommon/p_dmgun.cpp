@@ -59,8 +59,17 @@ void P_DMGun::Update()
 	
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
+		float f;
+		Vector3 kColor;
 		for(int i = 0 ;i<m_kHitPos.size();i++)
-			m_pkZeroFps->m_pkRender->Sphere(m_kHitPos[i].first,0.2,1,Vector3(1,0,0),true);
+		{
+			f = (t - m_kHitPos[i].second )*2;
+			kColor.Set(0.8-f,0.8-f,0.8-f);
+		
+			m_pkZeroFps->m_pkRender->Sphere(m_kHitPos[i].first,0.1,1,kColor,true);
+			m_pkZeroFps->m_pkRender->SetColor(kColor);
+			m_pkZeroFps->m_pkRender->Line(m_kHitPos[i].first,m_pkObject->GetWorldPosV() + m_kGunOffset);
+		}
 	
 		//vector<pair<Vector3,float> >::iterator kIte2;
 	   for ( vector<pair<Vector3,float> >::iterator kIte = m_kHitPos.begin(); kIte != m_kHitPos.end(); kIte++ )	
@@ -142,9 +151,11 @@ bool P_DMGun::FireBullets(int iAmount)
 		}	
 		
 		if(pkClosest)
-		{
 			m_kHitPos.push_back(pair<Vector3,float>(kPickPos,t));			
-		}		
+		else
+			m_kHitPos.push_back(pair<Vector3,float>(kStart+kDir*100,t));			
+			
+	
 	}
 	
 	return true;
