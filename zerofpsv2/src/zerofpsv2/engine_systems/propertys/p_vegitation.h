@@ -24,11 +24,12 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		TextureManager*	m_pkTexMan;
 		Render*				m_pkRender;	
 		ZeroFps*				m_pkFps;
-
+		ZShaderSystem*		m_pkZShaderSystem;
+		
 		vector<vegitation>	m_akPositions;
 
-		ZFResourceHandle* m_pkTexture;	
-		string				m_kTexture; 		
+		ZFResourceHandle* m_pkMaterial;	
+		string				m_strMaterialFile; 		
 			
 		Vector3				m_kScale;
 		float					m_fRadius;		
@@ -48,7 +49,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void Update();
 		void Init();
 
-		void SetTexture(const char* acNewTex);
+		void SetMaterial(const char* acNewTex);
 		void SetScale(Vector3 kScale);
 		void UpdateSet();
 		

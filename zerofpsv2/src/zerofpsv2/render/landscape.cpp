@@ -627,9 +627,9 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 
 
-void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1) //,int iTexture2) 
+void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale)//,int& iTexture1) //,int iTexture2) 
 {
-	static ZMaterial* pkGrass = NULL;
+/*	static ZMaterial* pkGrass = NULL;
 	if(!pkGrass)
 	{ 
 		pkGrass = new ZMaterial;
@@ -648,7 +648,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 		pkGrass->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
 		pkGrass->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
 	}
-
+*/
 	static Vector3 normaldata[8] = { Vector3(0,1,0),
 												Vector3(0,1,0),
 												Vector3(0,1,0),
@@ -688,7 +688,7 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 		m_pkZShaderSystem->MatrixScale(kScale);		
 	
 		m_pkZShaderSystem->ResetPointers();
-		m_pkZShaderSystem->BindMaterial(pkGrass);
+//		m_pkZShaderSystem->BindMaterial(pkGrass);
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,atexdata);
 		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,apointdata);
 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);

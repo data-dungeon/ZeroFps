@@ -10,17 +10,19 @@ P_Vegitation::P_Vegitation()
 	
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkZShaderSystem=static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
 	m_iSortPlace=9;
 	bNetwork = true;
 	
 	m_CheckedForHM = false;
-	m_pkTexture = new ZFResourceHandle;
+	m_pkMaterial = new ZFResourceHandle;
 	
 	Clear();
 	
-	SetTexture("data/textures/grassp.tga");	
+	
+	SetMaterial("data/material/forest_grass.zmt");	
 	SetScale(Vector3(1,0.7,1));
 	m_fWind = 10;	
 	
@@ -31,8 +33,7 @@ P_Vegitation::P_Vegitation()
 
 P_Vegitation::~P_Vegitation()
 {
-	delete m_pkTexture;
-
+	delete m_pkMaterial;
 }
 
 void P_Vegitation::Init()
@@ -124,9 +125,9 @@ void P_Vegitation::Update()
 //	cout<<"grass "<<m_akPositions.size()<<endl;
 
 
-	ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr();
-	int iTexture;
-		
+	//ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr();
+	//int iTexture;
+	/*	
 	if(!pkRt)	
 	{
 		StopProfileTimer("P_Vegitation");
@@ -134,7 +135,12 @@ void P_Vegitation::Update()
 	}
 	else
 		iTexture = (pkRt)->m_iTextureID;
+	*/
 	
+	//setup material
+	
+	ZMaterial* pkMaterial = (ZMaterial*)(m_pkMaterial->GetResourcePtr());			
+	m_pkZShaderSystem->BindMaterial(pkMaterial);		
 	
 	float t=m_pkFps->GetTicks();
 
@@ -147,7 +153,7 @@ void P_Vegitation::Update()
 			rot = m_akPositions[i].kRot;  
 			kPos = m_akPositions[i].kPos + ObjectPos;
 			rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
-			m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
+			m_pkRender->DrawCross(kPos,rot,m_kScale);			
 		}
 	}
 	else
@@ -156,7 +162,7 @@ void P_Vegitation::Update()
 		for(unsigned int i=0;i<m_akPositions.size();i += iStep)
 		{
 			kPos = m_akPositions[i].kPos + ObjectPos;
-			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,iTexture);			
+			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale);			
 		}		
 	}
 
@@ -179,9 +185,9 @@ vector<PropertyValues> P_Vegitation::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(5);
 		
-	kReturn[0].kValueName = "m_kTexture";
+	kReturn[0].kValueName = "material";
 	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_kTexture;
+	kReturn[0].pkValue    = (void*)&m_strMaterialFile;
 
 	kReturn[1].kValueName = "m_kScale";
 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
@@ -205,8 +211,8 @@ vector<PropertyValues> P_Vegitation::GetPropertyValues()
 
 bool P_Vegitation::HandleSetValue( string kValueName ,string kValue )
 {
-	if(strcmp(kValueName.c_str(), "m_kTexture") == 0) {
-		SetTexture(kValue.c_str());
+	if(strcmp(kValueName.c_str(), "material") == 0) {
+		SetMaterial(kValue.c_str());
 		return true;
 	}
 		
@@ -226,18 +232,17 @@ bool P_Vegitation::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
-void P_Vegitation::SetTexture(const char* acNewTex)//,const char* acTex2)
+void P_Vegitation::SetMaterial(const char* acNewTex)//,const char* acTex2)
 {
-	m_pkTexture->SetRes(acNewTex);
-	
-	m_kTexture=acNewTex;	
+	m_pkMaterial->SetRes(acNewTex);	
+	m_strMaterialFile=acNewTex;	
 	
 	SetNetUpdateFlag(true);	
 }
 
 void P_Vegitation::UpdateSet()
 {
-	SetTexture(m_kTexture.c_str());
+	SetMaterial(m_strMaterialFile.c_str());
 }
 
 void P_Vegitation::SetScale(Vector3 kScale)
@@ -296,10 +301,7 @@ void P_Vegitation::AddPos(Vector3 kPos)
 
 void P_Vegitation::Save(ZFIoInterface* pkPackage)
 {
-	char data[256];
-	
-	strcpy(data,m_kTexture.c_str());		
-	pkPackage->Write((void*)&data,256,1);
+	pkPackage->Write_Str(m_strMaterialFile);
 	
 	pkPackage->Write((void*)&m_kScale,sizeof(m_kScale),1);
 	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);
@@ -314,10 +316,7 @@ void P_Vegitation::Save(ZFIoInterface* pkPackage)
 void P_Vegitation::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 
-	char data[256];
-	
-	pkPackage->Read((void*)&data,256,1);
-	m_kTexture = data;
+	pkPackage->Read_Str(m_strMaterialFile);
 	
 	pkPackage->Read((void*)&m_kScale,12,1);
 	pkPackage->Read((void*)&m_fRadius,4,1);
@@ -335,7 +334,7 @@ void P_Vegitation::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_Str(m_kTexture.c_str());
+	pkNetPacket->Write_Str(m_strMaterialFile);
 	
 	pkNetPacket->Write(&m_iAmount,sizeof(m_iAmount));
 	pkNetPacket->Write(&m_iSize,sizeof(m_iSize));	
@@ -345,9 +344,7 @@ void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
  
 void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-	char texture[255];
-	pkNetPacket->Read_Str(texture);	
-	m_kTexture=texture;
+	pkNetPacket->Read_Str(m_strMaterialFile);	
 	
 	int oldamount = m_iAmount;
 	int oldsize = m_iSize;
@@ -359,6 +356,8 @@ void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	{
 		Random();
 	}
+	
+	UpdateSet();
 }
 
 
