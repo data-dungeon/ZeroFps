@@ -34,8 +34,11 @@ void RemoteNode::Clear()
 	m_iNumOfBytesRecv    = 0;
 	m_iNumOfBytesRecvNetFrame = 0;
 
-	m_fLastMessageTime   = 0;
-	m_fPing					= 0;								
+	m_fLastMessageTime    = 0;
+	m_fPing					 = 0;
+	m_fPingSentEngineTime = 0;
+	m_iRelPingIndex		 = 0;
+
 	
 	m_iOutOfOrderRecv			= 0;
 	m_iPacketLossRecv			= 0;
@@ -55,6 +58,7 @@ void RemoteNode::Clear()
 
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
 		m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+		m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 		}
 }
 
@@ -87,6 +91,32 @@ void RemoteNode::FreeRelStore(int iRelID)
 			m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 	}
 }
+
+int RemoteNode::GetFreeRelRecv()
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++) {
+		if(m_akRelPackRecv[i].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
+			return i;
+		}
+
+	return -1;
+}
+
+int RemoteNode::GetRelRecv(int iID)
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++) {
+		if(m_akRelPackRecv[i].m_kHeader.m_iOrder == iID)
+			return i;
+		}
+
+	return -1;
+}
+
+void RemoteNode::FreeRelRecv(ZFNetPacketData* pkRel)
+{
+	pkRel->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+}
+
 
 
 
