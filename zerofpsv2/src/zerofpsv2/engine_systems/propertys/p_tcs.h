@@ -27,7 +27,8 @@ class P_Mad;
 class ENGINE_SYSTEMS_API P_Tcs : public Property
 {
 	private:
-		Tcs*	m_pkTcs;
+		Tcs*		m_pkTcs;
+		Render*	m_pkRender;
 			
 		bool		m_bPolygonTest;
 		bool		m_bStatic;		

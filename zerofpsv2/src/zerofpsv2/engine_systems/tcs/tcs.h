@@ -127,6 +127,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		int GetNrOfTests() 			{ return m_iNrOfTests			;};
 		int GetNrOfActiveBodies() 	{ return m_iNrOfActiveBodies	;};
 		
+		int GetDebugGraph()			{ return m_iDebugGraph			;};
+		
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

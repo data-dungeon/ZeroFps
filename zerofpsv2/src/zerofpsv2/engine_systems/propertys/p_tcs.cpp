@@ -12,8 +12,9 @@ P_Tcs::P_Tcs()
 		
 	bNetwork  = false;
 
-	m_pkTcs	= static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
-
+	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
+	m_pkRender = 	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	
 	m_bHavePolygonData=	false;
 	m_bPolygonTest=		false;
 	m_fRadius=				0.5;	
@@ -64,6 +65,8 @@ P_Tcs::~P_Tcs()
 
 void P_Tcs::Init()
 {
+
+
 	//cout<<"Tiny Collisions system property Added"<<endl;	
 	Enable();
 }
@@ -97,9 +100,11 @@ void P_Tcs::Update()
 			}
 		}
 	}
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
-		//Draw();
-		}
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	{
+		if(m_pkTcs->GetDebugGraph() != 0)
+			Draw();
+	}
 }
 
 
@@ -492,6 +497,9 @@ bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 void P_Tcs::Draw()
 {
+	m_pkRender->Sphere(GetObject()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
+
+/*
 	if(!m_pkVertex)
 		return;
 
@@ -526,6 +534,7 @@ void P_Tcs::Draw()
 		glEnd();
 		}
 	glPopAttrib();
+*/	
 }
 
 void P_Tcs::GenerateModelMatrix() 
