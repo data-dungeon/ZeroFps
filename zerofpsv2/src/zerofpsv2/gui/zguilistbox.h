@@ -65,6 +65,8 @@ public:
 
 	void SetResizeFlags(bool bHorz, bool bVert);
 
+	bool m_bCanHaveKeyboarFocus; // om det går att flytta runt i listboxen med tagenbordet
+
 private:
 
 	bool DoubleClicked();
@@ -80,6 +82,7 @@ private:
 	Rect m_kItemArea;
 	ZGuiListitem* m_pkSelectedItem;
 	bool m_bIsMenu;
+	
 	int m_iScrollbarWidth;
 };
 

@@ -28,6 +28,8 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 						 ZGuiSkin* pkSkinItemHighLight) :
 	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
+	m_bCanHaveKeyboarFocus = true;
+
 	m_iScrollbarWidth = 20;
 	m_bIsMenu = false;
 	m_bEnabled = true;
@@ -755,6 +757,9 @@ void ZGuiListbox::SendSelItemMsg(bool bDoubleClick)
 
 bool ZGuiListbox::ProcessKBInput(int iKey)
 {
+	if(m_bCanHaveKeyboarFocus == false)
+		return true;
+
 	if(iKey == KEY_DOWN)
 	{
 		int iIndex = m_pkSelectedItem == NULL ? 0 : m_pkSelectedItem->GetIndex()+1;

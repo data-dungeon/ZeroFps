@@ -160,9 +160,17 @@ void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
 void MistClient::ToggleEmoteList(bool bOpen)
 {
 	if(bOpen)
+	{
+		m_pkGui->PlaceWndFrontBack(GetWnd("EmoteWnd"), true);
 		GetWnd("EmoteWnd")->Show();
+	}
 	else
+	{
+		m_pkGui->PlaceWndFrontBack(GetWnd("EmoteWnd"), false);
 		GetWnd("EmoteWnd")->Hide();
+	}
+
+	((ZGuiListbox*)GetWnd("EmoteList"))->m_bCanHaveKeyboarFocus = false;
 
 	ClearListbox("EmoteList");
 
