@@ -69,6 +69,7 @@ void ZeroEd::SetupGuiEnviroment()
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = NULL;
+	string strMenuFile = "";
 
 	if(GetWndType(pkMainWnd) == Menu)
 	{
@@ -334,9 +335,55 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 		}
 		else
+		if(strMainWnd == "PreviewWnd")
+		{
+			if(strWndClicked == "PreviewOKBn")
+			{
+				AddPropertyVal();
+				ShowWnd("SelectFileWnd", false); // close window
+				ShowWnd("PreviewWnd", false); // close window
+			}
+			else
+			if(strWndClicked == "PreviewCancelBn")
+			{
+				ShowWnd("PreviewWnd", false); // close window
+			}
+		}
+		else
 		if(strMainWnd == "MainMenu")
 		{
-			if(!m_pkIni->Open("data/script/gui/menu.txt", false))
+			strMenuFile = "data/script/gui/menu.txt";
+		}
+		else
+		if(strMainWnd == "ObjectMenu")
+		{
+			strMenuFile = "data/script/gui/objectmenu.txt";
+
+			if(strWndClicked == "Remove_Object")
+			{
+				SendDeleteSelected();
+			}
+			else
+			if(strWndClicked == "Rotate_180_degree")
+			{
+				SendRotateEntity(m_iCurrentObject,Vector3(0,180,0));
+			}			
+			else
+			if(strWndClicked == "Rotate_90_degree")
+			{
+				SendRotateEntity(m_iCurrentObject,Vector3(0,90,0));
+			}
+			else
+			if(strWndClicked == "Rotate_45_degree")
+			{
+				SendRotateEntity(m_iCurrentObject,Vector3(0,45,0));
+			}
+		}
+
+		// Run menu command.
+		if(!strMenuFile.empty())
+		{
+			if(!m_pkIni->Open(strMenuFile.c_str(), false))
 			{
 				cout << "Failed to load ini file for menu!\n" << endl;
 				return;
@@ -359,46 +406,9 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 			m_pkIni->Close();
 		}
-		else
-		if(strMainWnd == "PreviewWnd")
-		{
-			if(strWndClicked == "PreviewOKBn")
-			{
-				AddPropertyVal();
-				ShowWnd("SelectFileWnd", false); // close window
-				ShowWnd("PreviewWnd", false); // close window
-			}
-			else
-			if(strWndClicked == "PreviewCancelBn")
-			{
-				ShowWnd("PreviewWnd", false); // close window
-			}
-		}
-		else
-		if(strMainWnd == "ObjectMenu")
-		{
-			if(strWndClicked == "Remove_Object")
-			{
-				SendDeleteSelected();
-			}
-			else
-			if(strWndClicked == "Rotate_180_degree")
-			{
-				SendRotateEntity(m_iCurrentObject,Vector3(0,180,0));
-			}			
-			else
-			if(strWndClicked == "Rotate_90_degree")
-			{
-				SendRotateEntity(m_iCurrentObject,Vector3(0,90,0));
-			}
-			else
-			if(strWndClicked == "Rotate_45_degree")
-			{
-				SendRotateEntity(m_iCurrentObject,Vector3(0,45,0));
-			}
-		}
-
 	}
+
+
 }
 
 void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)

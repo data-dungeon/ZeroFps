@@ -246,6 +246,9 @@ int ZFAudioSystem::StartSound(string strName, Vector3 pos,
 	// Lägg till ljudet till vektorn med ljud.
 	m_kSoundList.push_back( pkSound );
 
+	if(bLoop == true)
+		m_kLoopSoundMap.insert(map<int,ZFSoundInfo*>::value_type(pkSound->m_iID, pkSound));
+
 	//printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
 
 	return g_iIDCounter;
@@ -280,13 +283,23 @@ bool ZFAudioSystem::StopSound(int iID)
 {
 	ZFSoundInfo *pkSound = NULL;
 
-	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
-	for( ; itSound != m_kSoundList.end(); itSound++)  
+	map<int,ZFSoundInfo*>::iterator itLoopSound = m_kLoopSoundMap.find(iID);
+	if(itLoopSound != m_kLoopSoundMap.end())
 	{
-		if((*itSound)->m_iID == iID)
+		pkSound = itLoopSound->second;
+		m_kLoopSoundMap.erase(itLoopSound);
+	}
+
+	if(pkSound == NULL)
+	{
+		list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
+		for( ; itSound != m_kSoundList.end(); itSound++)  
 		{
-			pkSound = (*itSound);
-			break;
+			if((*itSound)->m_iID == iID)
+			{
+				pkSound = (*itSound);
+				break;
+			}
 		}
 	}
 
@@ -1177,6 +1190,16 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 
 bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir, float fVolume)
 {
+	map<int,ZFSoundInfo*>::iterator itLoopSound = m_kLoopSoundMap.find(iID);
+	if(itLoopSound != m_kLoopSoundMap.end())
+	{
+		itLoopSound->second->m_kPos = kNewPos;
+		itLoopSound->second->m_kDir = kNewDir;
+		if(fVolume > 0)
+			itLoopSound->second->m_fGain = fVolume;
+		return true;
+	}
+
 	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
 
 	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();

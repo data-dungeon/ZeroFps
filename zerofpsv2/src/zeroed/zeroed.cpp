@@ -845,6 +845,8 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 		kFile.Open("copybuffer.dat",0,true);
 		pkActiveEntity->Save(&kFile);
 		kFile.Close();
+
+		SendDeleteSelected();
 	}
 
 	if(eEditCmd == FID_COPY)
@@ -858,12 +860,13 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 	{
 		if( kFile.Open("copybuffer.dat",0,false) ) 
 		{
-			Entity* pkObjNew = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
+			Entity* pkObjNew = m_pkEntityManager->CreateEntityFromScriptInZone(
+				"data/script/objects/empty.lua", m_kObjectMarkerPos);
 
-			Vector3 kPos = pkObjNew->GetLocalPosV();
 			pkObjNew->Load(&kFile,false);
 			kFile.Close();
-			pkObjNew->SetLocalPosV(kPos);
+	
+			pkObjNew->SetWorldPosV(m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2);
 		}
 	}
 }

@@ -175,6 +175,10 @@ private:
 	
 	list<ZFSoundInfo*> m_kSoundList;
 
+	map<int,ZFSoundInfo*> m_kLoopSoundMap; // En map som används för att slippa
+														// söka igenom listan varje gång ett 
+														// loopat ljud skall flyttas
+
 	// Common
 	ZFResourceHandle* GetResHandle(string strFileName);
 	bool Hearable(ZFSoundInfo* pkSound);
