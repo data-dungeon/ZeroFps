@@ -47,6 +47,7 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 		g_kTo = Point(iDestPosX, iDestPosY);
 	}
 
+
 	memcpy(TEMP_TERRAIN, m_piMapTerrain, 
 		sizeof(int)*(m_siMapWidth*m_siMapWidth)); // kopiera den riktiga terrängen till en temp variabel.
 
@@ -58,12 +59,14 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 	for(int y=1; y<m_siMapWidth+1; y++)
 		for(int x=1; x<m_siMapWidth+1; x++)
 		{
+			//cout<<"tile:"<<x<<" "<<y<<endl;
 			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
 			if( pkTile != NULL && pkTile->kUnits.size() > 0)
 			{
 				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
 			}
 		}
+
 
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
 		return false;
@@ -101,6 +104,8 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 
 	// Fill a queue with all (x,y) positions 
 	// from the steps from start to end
+	
+	
 	return FillQueue();
 }
 

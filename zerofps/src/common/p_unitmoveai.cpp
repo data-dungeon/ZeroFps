@@ -121,10 +121,6 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_iCurrentState = -1;
 					return NULL;
 				}	
-				else
-				{
-					//m_kEndPoint = m_kEndPos = m_pkPathFind->GetEnd();
-				}
 				
 				//check if any new move order has been given
 				if(CheckForOrder())
@@ -136,12 +132,12 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return this;
 				}
 				
-				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
+				cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
 				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
 						
-/*				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
+				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
 					cout<<"Hit something trying to find a new way"<<endl;
 					TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
@@ -158,7 +154,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 							
 					return this;
 				}
-*/						
+						
 				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
@@ -194,7 +190,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			
 			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2)
 			{
-				cout<<"trying again " <<m_iRetries<<endl;				
+				//cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
 				
 				m_fWaitTime = m_pkFps->GetGameFrameTime();
@@ -243,6 +239,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	m_pkObject->SetRot(rot);		
 	m_pkObject->SetRot(rot);			
 	m_pkObject->SetPos(kNewPos);	
+	
 	return true;
 }
 

@@ -41,21 +41,7 @@ void P_ClientUnit::Update()
 		//disable rendering of selection
 		if(!m_bSelected && m_bCurrentSelectionRenderState)
 			DisableSelectionRender();
-	}
-	
-/*	if(m_bTemp)
-	{
-		TestCommand();
-		m_bTemp=false;
-	}
-	if(!m_pkObject->m_kGameMessages.empty())
-	{
-		for(int i =0; i<m_pkObject->m_kGameMessages.size; i++)
-			if m_pkObject->m_kGameMessages[i]->mName = string("apa")
-				TestCommand();
-	}*/
-	//if(m_bSelected)
-		//cout<<"Helth:"<<(int)m_kInfo.m_cHealth<<endl;
+	}	
 }
 
 void P_ClientUnit::HandleGameMessage(GameMessage& Msg)
