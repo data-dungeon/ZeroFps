@@ -166,6 +166,7 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	unsigned char ucNumOfMesh;
 	int iMesh;
 
+	ClearAllMesh();
 	pkNetPacket->Read( ucNumOfMesh );
 	for(int i=0; i<ucNumOfMesh; i++) {
 		pkNetPacket->Read( iMesh );
