@@ -6,22 +6,19 @@ P_CharacterControl::P_CharacterControl()
 	strcpy(m_acName,"P_CharacterControl");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
-
 	bNetwork = true;
-
-	m_iVersion = 1;
+	m_iVersion = 			1;
+		
 	
-	m_fYAngle = 0;
-	m_fPAngle = 0;	
-	m_fSoundWalkDelay = 0;
-	m_fSoundRunDelay = 0;
+	m_fYAngle = 			0;
+	m_fPAngle = 			0;	
+	m_fSoundWalkDelay = 	0;
+	m_fSoundRunDelay = 	0;
 	
-	m_fSpeed = 75.0;
-	m_fJumpForce = 4.0; 
-	
-	m_bHaveJumped = false;
-	
-	m_iDirection = eMOVE_NONE;
+	m_fSpeed = 				75.0;
+	m_fJumpForce = 		7.0; 	
+	m_bHaveJumped = 		false;	
+	m_iDirection = 		eMOVE_NONE;
 		
 	m_kCharacterStates.reset();
 	m_kControls.reset();
@@ -43,8 +40,6 @@ void P_CharacterControl::Update()
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
 		//reset character states
-		//SetCharacterState(eRUNNING,false);
-		//SetCharacterState(eWALKING,false);
 		SetCharacterState(eJUMPING,false);
 		SetCharacterState(eSWIMMING,false);
 			

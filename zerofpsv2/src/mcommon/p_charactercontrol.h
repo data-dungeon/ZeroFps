@@ -62,9 +62,11 @@ class MCOMMON_API P_CharacterControl: public Property
 	
 		P_CharacterControl();
 		~P_CharacterControl();	
-
 		void Update();
-		void Init();		
+		void Init();				
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
+		
 		 
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
@@ -75,9 +77,9 @@ class MCOMMON_API P_CharacterControl: public Property
 		bool GetCharacterState(int iState);		
 		bool GetControl(int iKey);																	
 																												
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
-																			
+		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
+		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
+		
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();
