@@ -104,9 +104,11 @@ void P_PfPath::Update()
 					return ;
 
 				NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kPos );
-				if(pkStartCell == NULL) {
+				if(pkStartCell == NULL) 
+				{
 					cout << "No StartCell Found at current position - Lets Ignore it and see what happens" << endl;
-					}
+					return;
+				}
 	
 
 	if(m_kPath.size() == 0)

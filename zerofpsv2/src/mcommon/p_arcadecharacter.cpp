@@ -11,6 +11,8 @@ P_ArcadeCharacter::P_ArcadeCharacter()
 
 	m_fSpeed = 20;
 	m_kDir.Set(0,0,-1);
+	m_kAim.Set(0,0,-1);
+	m_iTarget	= -1;
 	m_kActions.reset();
 }
 
@@ -48,9 +50,9 @@ void P_ArcadeCharacter::Update()
 		if(fAng > 0.01)
 		{
 			if(fS > 0)
-				GetObject()->RotateLocalRotV(Vector3(0, 10 * fAng,0));
+				GetObject()->RotateLocalRotV(Vector3(0, 15 * fAng,0));
 			else
-				GetObject()->RotateLocalRotV(Vector3(0,-10 * fAng ,0));
+				GetObject()->RotateLocalRotV(Vector3(0,-15 * fAng ,0));
 		}
 
 /*		
@@ -97,25 +99,86 @@ void P_ArcadeCharacter::Update()
 		cout<<"error p_arcadecjaracter missing p_tcs"<<endl;			
 
 
+	//update target
+	AutoAim();
+	//m_kAim = kCurrentDir;
 
+				
 	//fire gun 
 	if(m_kActions[4])
+	{
 		Fire();
+	}
 }
 
 void P_ArcadeCharacter::Fire()
 {
 	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
 	{
-		Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
+		//Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
 	
-		pkGun->Fire( GetObject()->GetWorldPosV()+Vector3(0,-0.4,0) + kDir.Unit());
+		pkGun->Fire( GetObject()->GetWorldPosV() + m_kAim.Unit());
 	}
 	else
 		cout<<"missing P_DMGun"<<endl;
 }
 
+Vector3 P_ArcadeCharacter::AutoAim()
+{
+	vector<Entity*> kObjects;		
+	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
+	
 
+	Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
+	Vector3 kStart = m_pkObject->GetWorldPosV()+kDir;
+
+	
+	float closest = 999999999;
+	float d ;
+	Entity* pkClosest = NULL;
+	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		if(kObjects[i] == m_pkObject)
+			continue;
+
+		if(kObjects[i]->IsZone())
+			continue;
+							
+		//get mad property and do a linetest		
+		if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+		{
+			if(mp->TestLine(kStart,kDir,true,true))
+			{
+				d = kStart.DistanceTo(kObjects[i]->GetWorldPosV());
+
+				if(d < closest)
+				{
+					closest = d;
+					pkClosest = kObjects[i];
+				}
+			}
+		}			
+	}
+	
+	if(pkClosest == NULL)
+	{
+		m_kAim = kDir.Unit();
+		m_iTarget = -1;
+	}
+	else
+	{
+		Vector3 kPos = kStart+kDir * closest;
+		kPos.y = pkClosest->GetWorldPosV().y;
+	
+		//float fY = (pkClosest->GetWorldPosV() - kStart).Unit();
+	
+		m_kAim = (kPos - m_pkObject->GetWorldPosV()).Unit();
+		m_iTarget = pkClosest->GetEntityID();
+		
+	//	cout<<"found"<<endl;
+	}
+}
 
 Property* Create_P_ArcadeCharacter()
 {

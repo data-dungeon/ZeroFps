@@ -292,21 +292,41 @@ bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
-bool P_Mad::TestLine(Vector3 kPos,Vector3 kDir)
+bool P_Mad::TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly ,bool bIgnoreY )
 {
-	if(LineVSSphere(kPos,kDir))
+	if(bIgnoreY)
 	{
+		kPos.y = 0;
+		kDir.y = 0;
+	}
+
+	if(LineVSSphere(kPos,kDir,bIgnoreY))
+	{
+		if(bSphereOnly)
+			return true;
+	
 		return LineVSMesh(kPos,kDir);
 	}
 
 	return false;
 }
 
-bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
+bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir,bool bIgnoreY )
 {
 	kDir.Normalize();		
 	
-	Vector3 c = m_pkObject->GetWorldPosV() - kPos;		
+	Plane P;
+	P.Set(kDir,kPos);
+	
+	if(!P.SphereInside( m_pkObject->GetWorldPosV(),GetRadius()))
+		return false;
+	
+	
+	Vector3 c = m_pkObject->GetWorldPosV() - kPos;
+	
+	if(bIgnoreY)
+		c.y = 0;
+			
 	Vector3 k = kDir.Proj(c);		
 	
 	float cdis=c.Length();

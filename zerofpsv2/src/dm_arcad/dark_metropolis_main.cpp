@@ -229,6 +229,30 @@ void DarkMetropolis::RenderInterface(void)
 		}
 	}
 	
+	if(m_pkPlayerEntity)
+	{
+		if(P_ArcadeCharacter* pkAC = (P_ArcadeCharacter*)m_pkPlayerEntity->GetProperty("P_ArcadeCharacter"))
+		{
+			//m_pkRender->Line(m_pkPlayerEntity->GetWorldPosV(),m_pkPlayerEntity->GetWorldPosV() + pkAC->m_kAim);
+		
+			if(pkAC->m_iTarget != -1)
+			{
+				if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(pkAC->m_iTarget))
+				{
+					glEnable(GL_ALPHA_TEST);
+					glAlphaFunc(GL_GEQUAL, 0.1);
+		
+					m_pkRender->Quad (pkEnt->GetWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
+		
+					glDisable(GL_ALPHA_TEST);
+				}
+			}			
+		
+		//	float r = 1;
+		//	m_pkRender->DrawAABB(pkAC->m_kAim-Vector3(r,r,r),pkAC->m_kAim+Vector3(r,r,r),Vector3(1,1,0));		
+		}
+	}
+	
 	//draw select square
 	if(m_bSelectSquare)
 		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
@@ -482,6 +506,8 @@ void DarkMetropolis::Input()
 			pkChar->m_kDir.Set(x,0,y);
 		}
 		
+		if(m_pkInputHandle->Pressed(KEY_H))
+			m_pkPlayerEntity->SetWorldPosV(Vector3(0,2,0));
 				
 		if(m_pkInputHandle->VKIsDown("action"))
 		{

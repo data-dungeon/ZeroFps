@@ -16,18 +16,18 @@ P_DMGun::P_DMGun()
 	m_fBurstLength = 		0.5;
 	m_bFireing =			false;
 	m_bFirstUpdateSinceFireing = false;
-	m_kGunOffset.Set(0,-0.4,0);
+	m_kGunOffset.Set(0,0,0);
 	
 	//default gun
 	m_strName = 	"YberGun";
 	m_strSound =	"data/sound/9m_pistol.wav";
-	m_fFireRate = 	20;
+	m_fFireRate = 	30;
 	m_fRange = 		10;
-	m_iAmmo = 		1000;
-	m_iMaxAmmo = 	1000;
+	m_iAmmo = 		10000;
+	m_iMaxAmmo = 	10000;
 	m_kDir.Set(0,0,-1);
-	m_fRandom = 	0.5;
-	m_fDamage =		25;
+	m_fRandom = 	10.0;
+	m_fDamage =		5;
 	m_iBulletsPerAmmo = 1;
 	m_iTeam = -1; // belongs to no team
 
@@ -97,7 +97,7 @@ void P_DMGun::Update()
 			// draw hit-sparkle
 			m_pkZeroFps->m_pkRender->DrawBillboard(
 				m_pkObject->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
-				m_kHitPos[i].first, 0.3, m_iHitSparkleTextureID);
+				m_kHitPos[i].first, 0.4, m_iHitSparkleTextureID);
 		}
 	
 		//vector<pair<Vector3,float> >::iterator kIte2;
@@ -197,10 +197,11 @@ bool P_DMGun::FireBullets(int iAmount)
 		// fAim = degrees
 		float fRand = sin(m_fRandom / (180.f / PI)) * m_fTargetDist;
 
-		Vector3 kDir = m_kDir + Vector3( (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f),
-										 (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f),
-										 (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f) );
+		Vector3 kDir = m_kDir.Unit() + Vector3( (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f),
+														 (rand()%int((fRand/3.0)*1000)) / 1000.f - ((fRand/3.0) / 2.f),
+														 (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f) );
 
+										 
 		float d;	
 		Vector3 cp;
 		float closest = 999999999;

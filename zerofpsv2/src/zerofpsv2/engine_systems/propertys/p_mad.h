@@ -31,7 +31,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int			m_iColFace;
 
 		//line test
-		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir);
+		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir,bool bIgnoreY = false);
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);		
 		void GenerateModelMatrix();		
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
@@ -69,7 +69,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		Vector3 GetJointPosition(char* szJointName);
 
 		//line test
-		bool TestLine(Vector3 kPos,Vector3 kDir);
+		bool TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly = false,bool bIgnoreY = false);
 		Vector3 GetLastColPos() 				{return m_kColPos;};
 		int GetLastColFace() 					{ return m_iColFace;};		
 				

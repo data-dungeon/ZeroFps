@@ -18,7 +18,8 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		float 		m_fSpeed;		
 		bitset<6>	m_kActions;
 		Vector3		m_kDir;
-
+		Vector3		m_kAim;
+		int			m_iTarget;
 		
 		P_ArcadeCharacter();
 		~P_ArcadeCharacter();
@@ -29,6 +30,8 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		void Init();
 		
 		void Fire();
+		
+		Vector3 AutoAim();
 
 		//void Save(ZFIoInterface* pkPackage);
 		//void Load(ZFIoInterface* pkPackage);
