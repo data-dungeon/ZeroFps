@@ -77,6 +77,7 @@ ObjectManager::ObjectManager()
 
 	Register_Cmd("newworld",FID_NEWWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("saveworld",FID_SAVEWORLD, CSYS_FLAG_SRC_ALL);		
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
 	
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
@@ -1106,12 +1107,22 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 			
 		case FID_NEWWORLD:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				GetSystem().Printf("newworld [mapname]");
+				break;
+			}
+		
 			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
 			NewWorld();
 			break;
 	
 		case FID_LOADWORLD:
 			LoadWorld(kCommand->m_kSplitCommand[1].c_str());
+			break;
+		
+		case FID_SAVEWORLD:
+			ForceUnload();
 			break;
 		
 		case FID_SETWORLDDIR:
@@ -1969,3 +1980,15 @@ void ObjectManager::SetZoneModel(const char* szName,int iId)
 }
 
 
+
+void ObjectManager::ForceUnload()
+{	
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+	
+		if(m_kZones[i].m_pkZone)
+			UnLoadZone(i);		
+	}
+}

@@ -27,7 +27,9 @@ class MistServer :public Application , public ZGuiApp {
 		//console funktions
 		enum FuncId_e
 		{
+			FID_NEW,
 			FID_LOAD,
+			FID_SAVE,
 		};
 
 

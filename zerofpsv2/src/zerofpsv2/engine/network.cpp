@@ -738,7 +738,7 @@ void NetWork::Run()
 
 	if( m_eNetStatus == NET_NONE )	return;
 
-	Logf("netpac", "Engine Time: %f\n", fEngineTime );
+	//Logf("netpac", "Engine Time: %f\n", fEngineTime );
 
 	unsigned int i;
 	for(i=0; i<m_RemoteNodes.size(); i++) {
@@ -813,7 +813,7 @@ void NetWork::Run()
 	NetString_Refresh();
 
 
-	Logf("netpac", " Num of bytes total: %d\n", iRecvBytes);
+	//Logf("netpac", " Num of bytes total: %d\n", iRecvBytes);
 }
 
 bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)

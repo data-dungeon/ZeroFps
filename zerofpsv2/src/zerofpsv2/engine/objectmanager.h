@@ -52,12 +52,13 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			FID_LOGOHTREE,
 			FID_LOGACTIVEPROPERTYS,
 			FID_SENDMESSAGE,
-			FID_LOADZONES,
-			FID_SAVEZONE,
 			
+			FID_LOADZONES,
+			FID_SAVEZONE,			
 			FID_NEWWORLD,
 			FID_LOADWORLD,
 			FID_SETWORLDDIR,
+			FID_SAVEWORLD,
 		};
 
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
@@ -220,6 +221,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
 		bool LoadWorld(const char* acDir);
 		
+		void ForceUnload();
 		bool LoadZones();
 		bool SaveZones();
 		void LoadZone(int iId);

@@ -49,7 +49,9 @@ void MistServer::Init()
 	m_kZoneSize.Set(8,8,8);
 	
 	//register commmands bös
+	Register_Cmd("new",FID_NEW);		
 	Register_Cmd("load",FID_LOAD);		
+	Register_Cmd("save",FID_SAVE);		
 
 	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
@@ -216,10 +218,23 @@ void MistServer::OnHud(void)
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		case FID_NEW:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				pkConsole->Printf("new [mapdir]");
+				break;				
+			}
+			
+			pkObjectMan->SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
+			pkObjectMan->NewWorld();
+			
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			break;
+		
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
-				pkConsole->Printf("load [mapname]");
+				pkConsole->Printf("load [mapdir]");
 				break;				
 			}
 			
@@ -236,6 +251,16 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;		
 		
+		case FID_SAVE:
+			
+			cout<<"saving world:"<<endl;
+			
+			pkObjectMan->ForceUnload();
+			pkObjectMan->SaveZones();			
+			
+			cout<<"saved"<<endl;
+			
+			break;		
 	
 	}
 
