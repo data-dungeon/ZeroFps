@@ -7,6 +7,7 @@
 #include "Primitives.h"
 #include "TextureManager.h"
 #include "Input.h"
+#include "Globals.h"
 
 class ZeroFps;
 
@@ -22,12 +23,13 @@ class Console {
 		vector<char*> m_kText;
 		char m_aCommand[TEXT_MAX_LENGHT];
 		int m_iBufferSize;
+		bool m_bShift;
 
 	public:
 		Console(ZeroFps* pkEngine);
 		
 		void Print(char* aText);
-		void Gemens(char* aTexT);
+//		void Gemens(char* aTexT);
 		
 		void Update(void);
 		void Draw(void);

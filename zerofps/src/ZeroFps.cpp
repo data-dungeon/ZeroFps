@@ -36,7 +36,7 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 }
 
 void ZeroFps::MainLoop(void) {
-	
+		
 	m_pkPrims->Pyra(0,0,-3);
 	m_pkPrims->Pyra(1,0,-2);	
 	
@@ -53,7 +53,6 @@ void ZeroFps::MainLoop(void) {
 				break;			
 			
 			case state_console:
-//				m_pkInput->Update();			
 				m_pkConsole->Update();
 				m_pkConsole->Draw();
 				Swap();

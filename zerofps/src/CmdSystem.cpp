@@ -7,11 +7,14 @@ CmdSystem::CmdSystem(void) {
 
 void CmdSystem::Add(void* pAddress,char* aName,int iType) {
 //	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
-	
+	char* aVarName=new char[256];
+	strcpy(aVarName,aName);
+	Gemens(aVarName);	
 	
 	variable *kNy=new variable;
 	
-	kNy->aName=aName;
+
+	kNy->aName=aVarName;
 	kNy->iType=iType;
 	kNy->pAddress=pAddress;
 
@@ -19,6 +22,7 @@ void CmdSystem::Add(void* pAddress,char* aName,int iType) {
 }
 
 void CmdSystem::Get(char* aName) {
+	Gemens(aName);
 	for(int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){
 			cout<<aName<<" = "<<GetVar(i)<<endl;			
@@ -49,9 +53,13 @@ double CmdSystem::GetVar(int i) {
 	return pdData;
 }
 
-void CmdSystem::Set(char* aName,double dData) {
+bool CmdSystem::Set(char* aName,double dData) {
+	Gemens(aName);
+	bool found=false;
+	
 	for(int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){
+			found=true;
 			switch(kVars[i]->iType) {
 				case type_int:
 					*(int*)kVars[i]->pAddress=(int)dData;break;
@@ -65,4 +73,5 @@ void CmdSystem::Set(char* aName,double dData) {
 			}				
 		}
 	}
+	return found;
 }	

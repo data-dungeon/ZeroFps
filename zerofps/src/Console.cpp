@@ -15,14 +15,19 @@ Console::Console(ZeroFps* pkEngine) {
 	
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
+	m_bShift=false;
 }
 
 void Console::Update(void) {
 	while(SDL_PollEvent(&m_kEvent)) {
+		
+		//press keys
 		if(m_kEvent.type==SDL_KEYDOWN){
 
 			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
 				Execute(m_aCommand);
+				for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
+					m_aCommand[i]=' ';				
 				strcpy(m_aCommand,"");
 				break;
 			}
@@ -30,27 +35,45 @@ void Console::Update(void) {
 				m_aCommand[strlen(m_aCommand)-1]='\0';
 				break;
 			}
-			
-			
-			if(strlen(m_aCommand)<TEXT_MAX_LENGHT) {
-//				int code=int(m_kEvent.key.keysym.sym);
-				
-//				if(m_kEvent.key.keysym.mod|KMOD_SHIFT==m_kEvent.key.keysym.mod ||m_kEvent.key.keysym.mod|KMOD_SHIFT==m_kEvent.key.keysym.mod )
-//					cout<<"balle "<<(int)(m_kEvent.key.keysym.mod|KMOD_SHIFT)<<endl;
-				
-/*				bool shift=m_kEvent.key.keysym.mod|KMOD_SHIFT;
-					
-				if(shift)
-					cout<<"ta mig i rva"<<endl;
-	*/				
-/*				if(code>96 && code <123 ){
-					(int)m_kEvent.key.keysym.sym-=32;
-					strncat(m_aCommand,&(char)(m_kEvent.key.keysym.sym),1);
-				}else{*/
-					strncat(m_aCommand,&(char)(m_kEvent.key.keysym.sym),1);
-//					cout<<"balle"<<endl;
-//				}
+						
+			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
+				m_bShift=true;
+				break;
 			}
+
+			
+			//type text
+			if(strlen(m_aCommand)<TEXT_MAX_LENGHT) {
+				int code=m_kEvent.key.keysym.sym;
+				
+				//shift?
+				if(m_bShift) {
+					if(code>96 && code<123){
+						code-=32;
+						strncat(m_aCommand,&(char)(code),1);
+						break;
+					}
+					if(code=='-'){
+						code='_';
+						strncat(m_aCommand,&(char)(code),1);
+						break;
+					}
+					if(code=='7'){
+						code='/';
+						strncat(m_aCommand,&(char)(code),1);
+						break;
+					}					
+				}
+				strncat(m_aCommand,&(char)(code),1);
+			}
+		}
+		
+		//release keys
+		if(m_kEvent.type==SDL_KEYUP){									
+			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
+				m_bShift=false;
+				break;
+			}		
 		}
 	}
 }
@@ -100,26 +123,66 @@ void Console::Execute(char* aText) {
 	}
 	
 	if(strcmp(aText,"help")==0){
-		Print("-------+ help +-------");
-		Print(" quit - exit program  ");
+		Print("");
+		Print("### help ###");
+		Print(" quit         -exit program");
+		Print(" varlist      -list variables");		
+		Print(" set $n $v    -set variable");		
 		return;
 	}
 	
-	if(strncmp(aText,"set",4)==0) {
+	if(strncmp(aText,"set ",4)==0) {
+		char name[256]="";
+		char value[20]="";
+		int i=4;		
+
+		while(aText[i]!='\0' && aText[i]!=' '){
+			strncat(name,&aText[i],1);
+			i++;
+		}
+		if(strlen(name)<1){
+			Print("Please Supply a varible name");
+			return;
+		}
+
+		i++;
+		while(aText[i]!='\0' && aText[i]!=' '){
+			strncat(value,&aText[i],1);
+			i++;
+		}
+
+		if(strlen(value)==0) {
+			Print("Please Supply a value");
+			return;
+		}
 		
+		
+		char text[255]="";
+		strcpy(text,"Setting ");
+		strcat(text,name);
+		strcat(text,"=");
+		strcat(text,value);
+		Print(text);
+		
+		if(!m_pkCmd->Set(name,atof(value))){
+			Print("Variable not found");
+			return;
+		}
+		
+		return;
 	}
 
 	if(strcmp(aText,"varlist")==0) {
-		Print("---+ variable list +---");
+		Print("");
+		Print("### variable list ###");
 		for(int i=0;i<m_pkCmd->GetList().size();i++){
 			char text[255]="";
+			char value[20]="";
 			strcpy(text,m_pkCmd->GetList()[i]->aName);
-//			strcat(text,"  ");
-//			cout<<"old:"<<text<<endl;
-//			Gemens(text);
-//			cout<<text<<endl;
-
 			strcat(text," = ");
+			
+			IntToChar(value,m_pkCmd->GetVar(i));
+			strcat(text,value);
 //			strcat(text,atoi(m_pkCmd->GetVar(i)))
 //			cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
 			Print(text);			
@@ -127,21 +190,7 @@ void Console::Execute(char* aText) {
 		return;
 	}
 
-	Print("-+ unknown command +-");
+	Print("### unknown command ###");
 }
 
 
-void Console::Gemens(char* aText) 
-{
-	int i=0;
-	
-	while(aText[i]!='\0'){
-		//gems  96>x<123     vers  64>x<91
-		int code=int(aText[i]);
-		
-		if(code>64 && code<91)
-			aText[i]=char(code+32);
-
-		i++;
-	}
-}

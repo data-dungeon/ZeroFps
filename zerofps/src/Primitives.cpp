@@ -91,10 +91,10 @@ void Primitives::PrintChar(char cChar) {
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
 	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
-	float width=glu*16;
+	float width=glu*FONTWIDTH;
 	
-	float y=1.0-(float(int(pos/texwidth)*FONTWIDTH)*glu+width*2+glu);
-	float x=float(pos%texwidth)*glu+width/2;
+	float y=1.0-(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
+	float x=float(pos%texwidth)*glu;//+width/2;
 	
 	
 //	cout<<"Att texture position:"<<pos<<" "<<x<<" "<<y<<endl;
@@ -107,10 +107,10 @@ void Primitives::PrintChar(char cChar) {
 		glColor4f(1.0,1.0,1.0,1.0);  	  
  	  glNormal3f(0,1,0);
  	  
-   	glTexCoord2f(x			,y);				glVertex3f(-.5,-0.5,0);		 
-   	glTexCoord2f(x+width,y);				glVertex3f(.5,-0.5,0);		
-	  glTexCoord2f(x+width,y+width*2);	glVertex3f(.5,0.5,0);    
-  	glTexCoord2f(x			,y+width*2);	glVertex3f(-0.5,0.5,0);    
+   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
+   	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
+	  glTexCoord2f(x+width	,y+width);	glVertex3f(.5,0.5,0);    
+  	glTexCoord2f(x				,y+width);	glVertex3f(-0.5,0.5,0);    
 	glEnd();			
 	
 	

@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
+#include "Globals.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ class CmdSystem {
 		void Add(void* pAddress,char* aName,int iType);		
 		void Get(char* aName);
 		void List(void);
-		void Set(char* aName,double);
+		bool Set(char* aName,double);
 		inline vector<variable*> &GetList(void) {return kVars;};
 		double GetVar(int i);
 };
