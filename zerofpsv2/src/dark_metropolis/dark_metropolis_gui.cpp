@@ -658,6 +658,25 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	
 	StartSong("data/music/dm ingame.ogg");	
 
+	int num_zones = m_pkObjectMan->GetNumOfZones();
+	float min_x = 99999, min_z = 9999999;
+	float max_x = -99999, max_z = -9999999;
+	for(int i=0; i<num_zones; i++)
+	{
+		ZoneData* pkData = m_pkObjectMan->GetZoneData(i);
+		if(min_x > pkData->m_kPos.x) min_x = pkData->m_kPos.x;
+		if(min_z > pkData->m_kPos.z) min_z = pkData->m_kPos.z;
+		if(max_x < pkData->m_kPos.x) max_x = pkData->m_kPos.x;
+		if(max_z < pkData->m_kPos.z) max_z = pkData->m_kPos.z;
+	}
+	printf("world min = %f, %f\n", min_x, min_z);
+	printf("world max = %f, %f\n", max_x, max_z);
+
+	m_fWorldMinX = min_x;
+	m_fWorldMinY = min_z;
+	m_fWorldMaxX = max_x;
+	m_fWorldMaxY = max_z;
+
 	return true;
 }
 

@@ -101,6 +101,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float			m_fMusicVolume;						// Music volume for Ogg
 		float			m_fBulletTime;
 
+
 		
 			
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
@@ -123,6 +124,11 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void CheckCameraPos();
 		
 	public:
+
+		float			m_fWorldMinX;
+		float			m_fWorldMinY;
+		float			m_fWorldMaxX;
+		float			m_fWorldMaxY;
 
 		ZGuiWnd* m_pkGamePlayInfoLabel;
 		string m_strGameInfoText; // text som visas i main fönstret (sätt till empty så försvinner fönstret)

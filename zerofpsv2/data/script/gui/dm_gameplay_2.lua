@@ -118,10 +118,15 @@ function GUICreate()
 	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
-
 	Skin31 = { tex1="dm/map.bmp", tex2="0", tex3="0", tex4="0", 
 	 tex1a="dm/map_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+
+	Skin32 = { tex1="dm/map_icons/agent_map_icon.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/map_icons/agent_map_icon_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
 
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
@@ -338,6 +343,21 @@ function GUICreate()
 	ChangeSkin("MapWnd","Skin31","Window")
 
 	
+	CreateWnd(4,"AgentMapIcon1","MapWnd","",0,0,16,16,0)
+	ChangeSkin("AgentMapIcon1","Skin32","Label")
+
+	CreateWnd(4,"AgentMapIcon2","MapWnd","",0,0,16,16,0)
+	ChangeSkin("AgentMapIcon2","Skin32","Label")
+
+	CreateWnd(4,"AgentMapIcon3","MapWnd","",0,0,16,16,0)
+	ChangeSkin("AgentMapIcon3","Skin32","Label")
+
+	CreateWnd(4,"AgentMapIcon4","MapWnd","",0,0,16,16,0)
+	ChangeSkin("AgentMapIcon4","Skin32","Label")
+
+	CreateWnd(4,"AgentMapIcon5","MapWnd","",0,0,16,16,0)
+	ChangeSkin("AgentMapIcon5","Skin32","Label")
+
 
 	
 
