@@ -117,7 +117,6 @@ void MistClient::Init()
 	//register resources
 	RegisterResources();
 
-
 	// set caption
 	SDL_WM_SetCaption("MistClient", NULL);
 	 
@@ -145,7 +144,12 @@ void MistClient::Init()
 
 	// Varde ljus!
 	pkLight->SetLighting(true);
-	//pkZShader->SetForceLighting(ALWAYS_OFF);
+	pkZShader->SetForceLighting(ALWAYS_OFF);
+
+	pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
+
+	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
+	pkFps->m_bClientMode = true;
 	
 }
 
@@ -240,8 +244,7 @@ void MistClient::OnSystem()
 					if(m_pkClientControlP)
 					{
 						pkConsole->Printf("Got client control");				
-					}
-				
+					}				
 				}
 			}
 		}
@@ -257,8 +260,9 @@ void MistClient::OnSystem()
 				pkConsole->Printf("Got server info");
 
 				// Skapa spelar panelen
-				if(GetWnd("PanelBkWnd") == NULL)
+				if(GetWnd("IntroWnd") != NULL && GetWnd("IntroWnd")->IsVisible() )
 				{
+					GetWnd("IntroWnd")->Hide();
 					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
 					CreateGuiInterface();
 				}
@@ -469,14 +473,15 @@ void MistClient::OnServerStart(void)
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 
-				// Skapa spelar panelen
-				if(GetWnd("PanelBkWnd") == NULL)
-				{
-					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
-					CreateGuiInterface();
-				}
+		// Skapa spelar panelen
+		if(GetWnd("IntroWnd") != NULL && GetWnd("IntroWnd")->IsVisible() )
+		{
+			GetWnd("IntroWnd")->Hide();
+			pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
+			CreateGuiInterface();
+		}
 
-				printf("Connecting to server\n");
+		printf("Connecting to server\n");
 	}
 
 
@@ -592,7 +597,25 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());  
 		}
 	}
+	else
+	if(strMainWndName == "IntroWnd")
+	{
+		if(strClickWndName == "OpenConnectButton")
+			pkScript->Call(m_pkScriptResHandle, "OnClickConnect",0,0);
+		else
+		if(strClickWndName == "ConnectToServerButton")
+		{
+			//GetWnd("IPNumberEditbox")->GetText()
 
+			pkFps->m_pkNetWork->ClientStart("192.168.0.160:4242");
+			pkApp->OnClientStart();
+			
+
+/*			CmdArgument* args = new CmdArgument;
+			args->m_kSplitCommand.insert("192.168.0.160:4242");
+			pkFps->RunCommand(ZeroFps::FID_CONNECT, args);*/
+		}
+	}
 	if(m_pkInventDlg)
 	{
 		m_pkInventDlg->OnCommand(iID); 

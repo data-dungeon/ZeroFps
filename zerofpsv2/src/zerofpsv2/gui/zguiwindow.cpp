@@ -163,6 +163,17 @@ bool ZGuiWnd::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 
 	UpdatePos(iPrevPosX, iPrevPosY, w, h, bFreeMovement);
 
+/*	if(m_bUseClipper)
+	{
+		int x_offset = m_kArea.Left-iPrevPosX;
+		int y_offset = m_kArea.Top-iPrevPosY;
+
+		m_kClipperArea.Left += x_offset;
+		m_kClipperArea.Right += x_offset;
+		m_kClipperArea.Top += y_offset;
+		m_kClipperArea.Bottom += y_offset;
+	}*/
+
 	return true;
 }
 
