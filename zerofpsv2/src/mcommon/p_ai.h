@@ -44,8 +44,8 @@ class MCOMMON_API P_AI: public Property
 
       void NextOrder();
 
-      void AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition );
-      void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition );
+      void AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );
+      void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );
 
 	   void Update();
 		void CloneOf(Property* pkProperty) {}
@@ -55,6 +55,7 @@ class MCOMMON_API P_AI: public Property
 
 		P_AI( string kName );
 		P_AI();
+      ~P_AI();
 
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);

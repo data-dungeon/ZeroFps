@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "../basic/zfvfs.h"
 #include "../basic/zfassert.h"
+#include <iostream>
+   using namespace std;
   
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -735,6 +737,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	if(lua_isnil( pkScript->m_pkLuaState, 1) )
 	{
 		lua_pop(pkScript->m_pkLuaState, 1);
+
 		return false;
 	}
 

@@ -1,10 +1,13 @@
 #include "p_ai.h"
 #include "rulesystem/character/characterfactory.h"
-#include "p_charstats.h"
-#include "p_item.h"
+#include "rulesystem/rulesystem.h"
+#include "p_event.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
+#include <iostream>
+   using namespace std;
 
 // ------------------------------------------------------------------------------------------
 
@@ -16,12 +19,56 @@ void P_AI::Update()
       NextOrder();
       return;
    }
-   
+
    // check if order is finished, and if so, go on to the next one
    if ( m_pkCurrentOrder->m_kOrderType == "MovingTowards" 
-        && m_pkObject->GetWorldPosV() == m_pkCurrentOrder->m_kPosition )
+        && m_pkObject->GetWorldPosV().DistanceTo(m_pkCurrentOrder->m_kPosition) < 0.8f )
    {
       NextOrder();
+   }
+   else if ( m_pkCurrentOrder->m_kOrderType == "Attack" )
+   {
+      Entity* pkEnemy = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
+
+      // if enemy is dead, remove order
+      if ( !pkEnemy )
+      {
+         NextOrder();
+         return;
+      }
+
+      // if character is to far away, move closer
+      if ( pkEnemy->GetWorldPosV().DistanceXZTo(m_pkObject->GetWorldPosV()) > 1 )
+      {
+
+         Order* pkMoveOrder = new Order;
+         pkMoveOrder->m_kOrderType = "MoveTo";
+         pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV();
+
+         m_kDynamicOrders.push_front ( pkMoveOrder );
+         m_pkCurrentOrder = m_kDynamicOrders.front();         
+      }
+      else
+      {
+         // stop the character
+         ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->ClearPath();
+
+         // if character has "reloaded", make attack move
+         if ( m_pkCharProp->ReadyForAction() )
+         {
+            cout << "Bashed the evil monster" << endl;
+
+            // change animation to attack animation
+            ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
+            ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
+
+
+            DealDamage( m_pkCharProp->GetCharStats()->GetFightStats(),
+               ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
+
+            m_pkCharProp->ResetActionTimer();
+         }
+      }
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "MoveTo" )
    {
@@ -30,7 +77,7 @@ void P_AI::Update()
 
       Order *pkMoveOrd = new Order;
 
-      pkMoveOrd->m_kType = "MovingTowards";
+      pkMoveOrd->m_kOrderType = "MovingTowards";
       pkMoveOrd->m_kPosition = m_pkCurrentOrder->m_kPosition;
 
       m_kDynamicOrders.pop_front();
@@ -38,22 +85,23 @@ void P_AI::Update()
 
       NextOrder();
    }
-   else if ( m_pkCurrentOrder->m_kOrderType == "PickUp" )
+   else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
       Entity* pkEnt = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 	
 		Vector3 kPos = m_pkObject->GetWorldPosV();
+
       // if character has reacher object position
-      if ( m_pkCurrentOrder->m_kPosition.DistanceTo(kPos) > 0.5f )
+      if ( m_pkCurrentOrder->m_kPosition.DistanceXZTo(kPos) <= 0.8f )
       {
+         // stop the character
+         ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->ClearPath();
 
          // check if object still exists!!
          if ( pkEnt )
-         {
-            ((P_Item*)m_pkObject->GetProperty("P_Item"))->m_pkItemStats->m_pkContainer->AddObject (m_pkCurrentOrder->m_iTargetID);
-            //m_pkCharProp->GetCharStats()->m_pkContainer->AddObject( m_pkCurrentOrder->m_iTargetID );
-            NextOrder();
-         }
+            ((P_Event*)pkEnt->GetProperty("P_Event"))->SendObjectClickEvent( "PickUp", m_pkObject->iNetWorkID );
+         
+         NextOrder();
       }
       else
       {
@@ -65,16 +113,7 @@ void P_AI::Update()
          m_pkCurrentOrder = m_kDynamicOrders.front();
       }
    }
-   else if ( m_pkCurrentOrder->m_kOrderType == "Use" )
-   {
-      Entity* pkObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 
-      if ( pkObj )
-      {
-         ((P_Item*)pkObj->GetProperty ("P_Item"))->UseOn ( m_pkObject );
-         NextOrder();
-      }
-   }
 
 }
 
@@ -85,27 +124,31 @@ void P_AI::NextOrder()
    // always prioriti dynamic orders
    if ( m_kDynamicOrders.size() )
    {
-      if ( m_pkCurrentOrder = (m_kDynamicOrders.front()) )
+      if ( m_pkCurrentOrder == (m_kDynamicOrders.front()) )
+      {
+         delete m_kDynamicOrders.front();
          m_kDynamicOrders.pop_front();
+      }
 
       if ( m_kDynamicOrders.size() )
          m_pkCurrentOrder = (m_kDynamicOrders.front());
-//      else
-//         m_pkCurrentOrder = 0;
+      else
+         m_pkCurrentOrder = 0;
 
    }
    else if ( m_kStaticOrders.size() )
    {
-      if ( m_pkCurrentOrder = (m_kDynamicOrders.front()) )
-         m_kDynamicOrders.pop_front();
+      if ( m_pkCurrentOrder == (m_kDynamicOrders.front()) )
+      {
+         // TODO!! Move pointer in orderlist
+      }
 
-      if ( m_kDynamicOrders.size() )
-         m_pkCurrentOrder = (m_kDynamicOrders.front());
-//      else
-//         m_pkCurrentOrder = 0;
+      if ( m_kStaticOrders.size() )
+         m_pkCurrentOrder = (m_kStaticOrders.front());
+      else
+         m_pkCurrentOrder = 0;
    }
 
-   cout << "new order:" << m_pkCurrentOrder << endl;
    
 }
 
@@ -180,34 +223,48 @@ void P_AI::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 // ------------------------------------------------------------------------------------------
 
-void P_AI::AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition )
+void P_AI::AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType )
 {
    Order* pkNewOrder = new Order;
 
    pkNewOrder->m_kOrderType = kOrderType;
+   pkNewOrder->m_kType = kType;
    pkNewOrder->m_iTargetID = iTargetID1;
    pkNewOrder->m_iTargetID2 = iTargetID2;
    pkNewOrder->m_kPosition = kPosition;
-
-   cout << "Added stat. order:" << kOrderType << endl;
 
    m_kStaticOrders.push_back ( pkNewOrder );
 }
 
 // ------------------------------------------------------------------------------------------
 
-void P_AI::AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition )
+void P_AI::AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType )
 {
    Order* pkNewOrder = new Order;
 
    pkNewOrder->m_kOrderType = kOrderType;
+   pkNewOrder->m_kType = kType;
    pkNewOrder->m_iTargetID = iTargetID1;
    pkNewOrder->m_iTargetID2 = iTargetID2;
    pkNewOrder->m_kPosition = kPosition;
 
-   cout << "Added dyn. order:" << kOrderType << endl;
+   cout << "Added order:" << kOrderType  << " type:" << kType << endl;
 
    m_kDynamicOrders.push_back ( pkNewOrder );
+}
+
+// ------------------------------------------------------------------------------------------
+
+P_AI::~P_AI()
+{
+   int i;
+
+   for ( i=0; i < m_kDynamicOrders.size(); i++ )
+      delete m_kDynamicOrders.at(i);
+
+   for ( i=0; i < m_kStaticOrders.size(); i++ )
+      delete m_kStaticOrders.at(i);
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -216,5 +273,6 @@ Property* Create_P_AI()
 {
 	return new P_AI;
 }
+
 
 

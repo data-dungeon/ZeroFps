@@ -31,6 +31,8 @@ class ENGINE_API P_PfPath : public Property
 	
 		void Init();
 
+      void ClearPath()                   { m_kPath.clear(); }
+
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 

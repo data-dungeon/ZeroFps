@@ -144,9 +144,12 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetDefaultServer", MistLandLua::SetDefaultServerLua);
 
    // AI stuff
-   pkScript->ExposeFunction("AIPickUp", MistLandLua::AIPickUpLua);
-   pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
+   pkScript->ExposeFunction("AIUseActionOn", MistLandLua::AIUseActionOnLua);
+   pkScript->ExposeFunction("AIAttack", MistLandLua::AIAttackLua);
 
+   pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
+   pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
+   
 /*
    int MCOMMON_API AIPickUpLua(lua_State* pkLua);
 	int MCOMMON_API AIUseItemLua(lua_State* pkLua);
@@ -2696,6 +2699,8 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 	
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
+      cout << "pickeduped" << endl;
+
       // the ID if the object who has the container
       double dChar;
 
@@ -2735,28 +2740,32 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 }
 // -----------------------------------------------------------------------------------------------
 
-int MistLandLua::AIPickUpLua(lua_State* pkLua) 
+int MistLandLua::AIUseActionOnLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
 	{
-      double dItemID;
-      g_pkScript->GetArgNumber(pkLua, 0, &dItemID);
+      // action
+     	char acAction[128];
+		g_pkScript->GetArgString(pkLua, 0, acAction);
+
+      double dObjectID;
+      g_pkScript->GetArgNumber(pkLua, 1, &dObjectID);
 
       Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID(dItemID);
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dObjectID);
 
-      if ( !pkItem )
+      if ( !pkTarget )
          return 0;
 
       // check if user is a Character with AI and target an Item
-      if ( pkObj->GetProperty ("P_CharStats") && pkObj->GetProperty ("P_AI") &&
-           pkItem->GetProperty ("P_Item") )
+      if ( pkObj->GetProperty ("P_CharStats") && pkObj->GetProperty ("P_AI") )
       {
-         ((P_AI*)pkObj->GetProperty ("P_AI"))->AddDynamicOrder ("PickUp", dItemID, 0, pkItem->GetWorldPosV() );
+         ((P_AI*)pkObj->GetProperty ("P_AI"))->AddDynamicOrder 
+            ("Action", dObjectID, 0, pkTarget->GetWorldPosV(), acAction );
       }
 
 
@@ -2767,8 +2776,34 @@ int MistLandLua::AIPickUpLua(lua_State* pkLua)
 
 // -----------------------------------------------------------------------------------------------
 
-int MistLandLua::AIUseItemLua(lua_State* pkLua) 
+int MistLandLua::AIAttackLua(lua_State* pkLua) 
 {
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+
+      double dObjectID;
+      g_pkScript->GetArgNumber(pkLua, 0, &dObjectID);
+
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+      if ( !pkObj )
+         return 0;
+
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dObjectID);
+
+      if ( !pkTarget )
+         return 0;
+
+      // check if user is a Character with AI and target an character
+      if ( pkObj->GetProperty ("P_CharStats") && pkObj->GetProperty ("P_AI") && pkTarget->GetProperty("P_CharStats") )
+      {
+         ((P_AI*)pkObj->GetProperty ("P_AI"))->AddDynamicOrder 
+            ("Attack", dObjectID, 0, pkTarget->GetWorldPosV(), "tjoff" );
+      }
+
+
+   }
+
    return 0;
 }
 
@@ -2818,7 +2853,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
 
       P_Item* pkItemProp = 0;
       
-      pkZone->m_pkZone->GetAllObjects( pkList );
+      pkZone->m_pkZone->GetAllDynamicEntitys( pkList );
 
       for ( int i = 0; i < pkList->size(); i++ )
       {
@@ -2849,8 +2884,59 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
       }
       else
       {
-         g_pkScript->AddReturnValue(pkLua, 0);
+         g_pkScript->AddReturnValue(pkLua, -1);
       }
+
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetClosestPlayerLua(lua_State* pkLua) 
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+	{
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+      if ( !pkObj )
+         return 0;
+
+      Entity* pkClosestPlayer = 0;
+
+      float fDistance = 99999999;      
+      
+      // TODO!!!: check more than the zone the user is in
+      ZoneData* pkZone = pkObj->GetObjectMan()->GetZone( pkObj->GetWorldPosV() );
+
+      vector<Entity*>* pkList = new vector<Entity*>;
+
+      pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
+
+      for ( int i = 0; i < pkList->size(); i++ )
+      {
+         // check if object has item property
+         if ( pkList->at(i)->GetType() == "t_player.lua" )
+         {
+            Vector3 kPos = pkList->at(i)->GetWorldPosV();
+            // check if distance is smaller that the previos (if any) found
+            if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
+            {
+               fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
+               pkClosestPlayer = pkList->at(i);
+            }
+         }
+      }
+
+      delete pkList;
+
+      if ( pkClosestPlayer )
+         g_pkScript->AddReturnValue(pkLua, pkClosestPlayer->iNetWorkID);
+      else
+         g_pkScript->AddReturnValue(pkLua, -1);
 
 
       return 1;

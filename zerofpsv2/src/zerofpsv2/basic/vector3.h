@@ -159,6 +159,7 @@ class BASIC_API Vector3 {
 		Vector3 AToU();												///< convert Angel Vector to a Unit Vector
 
       double DistanceTo (Vector3 &to);
+      double DistanceXZTo (Vector3 &to);
 
 		void Print(void);
 

@@ -33,7 +33,7 @@ bool ItemStats::EquipOn ( CharacterStats *pkCharStat )
       pkCharStat->AddDefenceValue ( (*kIte).first, (*kIte).second );
 
    // add speed modifier
-   pkCharStat->AddReloadTime ( m_fUseSpeed );
+//   pkCharStat->m_pkParent->AddReloadTime ( m_fUseSpeed );
   
    return true;
 }
@@ -65,7 +65,7 @@ bool ItemStats::UnEquip ( CharacterStats *pkCharStat )
       pkCharStat->AddDefenceValue ( (*kIte).first, -(*kIte).second );
 
    // remove speed modifier
-   pkCharStat->AddReloadTime ( -m_fUseSpeed );
+   //pkCharStat->AddReloadTime ( -m_fUseSpeed );
 
    return true;
 }

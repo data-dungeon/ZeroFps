@@ -39,7 +39,6 @@ void P_Event::Update()
 		}
 }
 
-
 bool P_Event::SendEvent(const char* acEvent)
 {
 	if(m_pkObject->GetObjectScript() != NULL)

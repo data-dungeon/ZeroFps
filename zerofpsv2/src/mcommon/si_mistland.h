@@ -166,13 +166,14 @@ namespace MistLandLua
 
       
    // AI stuff
-	int MCOMMON_API AIPickUpLua(lua_State* pkLua);
-	int MCOMMON_API AIUseItemLua(lua_State* pkLua);
+	int MCOMMON_API AIUseActionOnLua(lua_State* pkLua);
 	int MCOMMON_API AIMoveToLua(lua_State* pkLua);
    int MCOMMON_API AISetCommander(lua_State* pkLua);
    int MCOMMON_API AISetSlave(lua_State* pkLua);
 	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
+   int MCOMMON_API GetClosestPlayerLua(lua_State* pkLua);
    int MCOMMON_API DistanceToLua(lua_State* pkLua);
+   int MCOMMON_API AIAttackLua(lua_State* pkLua);
 
 
    

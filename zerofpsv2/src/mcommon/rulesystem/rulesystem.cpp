@@ -69,17 +69,21 @@ int DealDamage ( map<string,int>* pkDamage, CharacterStats* pkVictim )
 
 
       // TEMPTEMPTEMP...this armoursystem SUXXXX!!!!
-      iDamage -= rand()%iDefence;
+      if ( iDefence > 0 )
+         iDamage -= rand()%iDefence;
 
       if ( iDamage < 0 )
          iDamage = 0;
 
-      fTotalDamage += rand()%iDamage;
+      if ( iDamage > 0 )
+         fTotalDamage += rand()%iDamage;
          
    }
 
    // lose life
    pkVictim->AddHP ( -fTotalDamage );
+
+   cout << "Lost " << fTotalDamage << " life! " << pkVictim->GetHP() << " hp left." << endl;
 
    return fTotalDamage;
 

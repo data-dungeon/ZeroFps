@@ -259,3 +259,8 @@ double Vector3::DistanceTo (Vector3 &to)
 {
    return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
 }
+
+double Vector3::DistanceXZTo (Vector3 &to)
+{
+   return sqrt( pow(x - to.x,2) + pow(z - to.z,2) );
+}

@@ -7,6 +7,9 @@
 
 void CharacterProperty::Update()
 {
+   if ( m_fReloadTimer > 0 )
+      m_fReloadTimer -= m_pkObject->m_pkFps->GetFrameTime();
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -35,7 +38,10 @@ void CharacterProperty::Init()
 
 CharacterProperty::CharacterProperty()
 {
-	m_iSide = PROPERTY_SIDE_SERVER;
+   m_fReloadTime = 5;
+   m_fReloadTimer = 0;
+
+   m_iSide = PROPERTY_SIDE_SERVER;
 
 	strcpy(m_acName,"P_CharStats");
 
@@ -47,7 +53,11 @@ CharacterProperty::CharacterProperty()
 
 CharacterProperty::CharacterProperty( string kName )
 {
-	bNetwork = true;
+	
+   m_fReloadTime = 5;
+   m_fReloadTimer = 0;
+
+   bNetwork = true;
 
 	strcpy(m_acName,"P_CharStats");
 }

@@ -365,6 +365,7 @@ void CharacterStats::Print()
 void CharacterStats::SetHP( string kValue )
 {
    m_kPointStats["hp"] = kValue;
+
    m_uiVersion++;
 }
 

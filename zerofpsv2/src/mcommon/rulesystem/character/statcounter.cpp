@@ -1,4 +1,6 @@
 #include "statcounter.h"
+#include <iostream>
+   using namespace std;
 
 // ----------------------------------------------------------------------------------------------
 
@@ -34,12 +36,14 @@ void StatCounter::operator= (string kValue)
    {
       m_iValue = atoi ( kValue.c_str() );
 
-   if ( m_iValue > m_iMax )
-      m_iValue = m_iMax;
-   else if ( m_iValue < m_iMin )
-      m_iValue = m_iMin;
+      if ( m_iValue > m_iMax )
+         m_iValue = m_iMax;
+      else if ( m_iValue < m_iMin )
+         m_iValue = m_iMin;
 
    }
+
+   cout << "Set LifeTo (str)" << m_iValue << endl;
 
 }
 // ----------------------------------------------------------------------------------------------
@@ -52,6 +56,8 @@ void StatCounter::operator= (int iValue)
       m_iValue = m_iMax;
    else if ( m_iValue < m_iMin )
       m_iValue = m_iMin;
+
+   cout << "setLifeto(int)" << m_iValue << endl;
 }
 // ----------------------------------------------------------------------------------------------
 
