@@ -89,7 +89,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	float amp=0.5;
 	
 	glPushMatrix();
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glPushAttrib(GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	
 	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glRotatef(kHead.x, 1, 0, 0);
@@ -109,27 +109,21 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnable(GL_TEXTURE_2D);
-//	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
-//	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
 	m_pkTexMan->BindTexture(iTexture);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);	
-//	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
-//	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
 	m_pkTexMan->BindTexture(iTexture);	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 	float tx=SDL_GetTicks()/80000.0;	
 	
 	for(int x=0;x<iSize;x+=iStep){	
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);
-		glColor4f(.5,.5,.7,0.4);	
+		glColor4f(.5,.5,.7,0.5);	
 	
-
-		
 		for(int z=0;z<iSize;z+=iStep) {
 			float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;		
 		

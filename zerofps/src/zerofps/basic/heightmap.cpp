@@ -395,7 +395,8 @@ void HeightMap::GenerateTextures() {
 					GetVert(x,z)->texture=0;
 					GetVert(x,z)->color=Vector3(.80,.70,.60);
 					if(height<2) {//Make a big bad hole
-						GetVert(x,z)->color=Vector3(0.8 * GetVert(x,z)->height -.55, 0.7 * GetVert(x,z)->height -.55, 0.6 *GetVert(x,z)->height -.55); //(.001,.001,.51);					
+						GetVert(x,z)->color=Vector3(0.5 * GetVert(x,z)->height -0.5, 0.5 * GetVert(x,z)->height-0.5, 0.1 + 0.5 *GetVert(x,z)->height-0.5 ); //(.001,.001,.51);					
+//						GetVert(x,z)->color=Vector3(0,0, 1 * GetVert(x,z)->height ); //(.001,.001,.51);											
 						GetVert(x,z)->height-=10 + (1 - GetVert(x,z)->height)*10;
 						GetVert(x,z)->normal=Vector3(0,1,0);
 					}
@@ -405,7 +406,6 @@ void HeightMap::GenerateTextures() {
 					GetVert(x,z)->color=Vector3(.2,.5,.2);				
 				}
 			}
-//			GetVert(x,z)->color.Normalize();
 		}
 	}
 }

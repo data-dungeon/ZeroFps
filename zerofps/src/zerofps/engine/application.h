@@ -29,6 +29,7 @@ class ENGINE_API Application : public ZFObject {
 		CollisionManager* pkCollisionMan;
 		OpenAlSystem* pkAlSys;
 		ZGui* pkGui;		
+		ZFIni* pkIni;
 		
 	public:
 		static Application* pkApp;

@@ -180,6 +180,7 @@ bool Game::LoadLevel(const char* acFile)
 		
 	string kHmfile;
 	string kZolfile;
+	string kInifile;
 
 	kHmfile=m_kMapBaseDir;
 	kHmfile+="/";
@@ -193,13 +194,18 @@ bool Game::LoadLevel(const char* acFile)
 	kZolfile+="/";	
 	kZolfile+="objects.zol";
 
+	kInifile=m_kMapBaseDir;
+	kInifile+="/";
+	kInifile+=acFile;
+	kInifile+="/";	
+	kInifile+="config.ini";
+
 	Clear();
 	
 	if(!m_pkMap->Load(kHmfile.c_str())){
 		pkConsole->Printf("Error loading heightmap");
 		return false;
 	};
-	
 	cout<<"heightmap loaded"<<endl;
 	
 	//create zoneobjects
@@ -208,9 +214,12 @@ bool Game::LoadLevel(const char* acFile)
 	if(!pkObjectMan->LoadAllObjects(kZolfile .c_str())){
 		pkConsole->Printf("Error loading objects");
 		return false;
-	}	
-	
+	}		
 	cout<<"objects loaded"<<endl;
+
+	if(!pkIni->ExecuteCommands(kInifile.c_str())){
+		cout<<"No ini-file found"<<endl;
+	}
 
 	//setup player aso
 	SetupLevel();

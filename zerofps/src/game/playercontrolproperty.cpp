@@ -29,7 +29,7 @@ public:
 void PlayerControlProperty::Update() {
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
-	float speed=25;
+	float speed=3;
 	walking=false;
 	
 	//cant move fast while in air
@@ -65,32 +65,8 @@ void PlayerControlProperty::Update() {
 			m_pkObject->GetVel().y+=5;// *m_pkFps->GetFrameTime();;						
 		}
 	}
-	if(m_pkInput->Pressed(KEY_Q)){
-		Object *test = new BunnyObject();
-		test->GetPos()=m_pkObject->GetPos();
-		m_pkObjectMan->Add(test);
-		m_pkCollisionMan->Add(test);	
-	}	
-	if(m_pkInput->Pressed(KEY_E)){
-		Object *test = new BallObject();
-		test->GetPos()=m_pkObject->GetPos();
-		m_pkObjectMan->GetWorldObject()->AddChild(test);
-		m_pkObjectMan->Add(test);
-		m_pkCollisionMan->Add(test);	
-	}	
-/*	if(m_pkInput->Pressed(KEY_E))
-	{
-		float height=m_pkMap->GetVert(int(m_pkObject->GetPos().x),int(m_pkObject->GetPos().z))->height;
-		for(int xp=-1;xp<2;xp++){
-			for(int yp=-1;yp<2;yp++){
-				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->texture=2;
-				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->color=Vector3(.6,.45,0.3);		
-				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->height=height;				
-			}
-		}
-	}*/
 	
-//	cout<<"WALK:"<<walk<<endl;
+	
 	//camera tilting when walking
 	if(walk>6.28)
 		walk=0;
