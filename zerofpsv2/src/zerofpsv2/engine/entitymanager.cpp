@@ -449,7 +449,7 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	pkNew->SetUseZones(false);
 	
 	//setup interpolation
-	pkNew->SetInterpolate(true);
+	//pkNew->SetInterpolate(true);
 	pkNew->SetInterpolateFactor(4.0);
 	
 	return pkNew;
