@@ -78,6 +78,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("lo",FID_LOCALORDER);		
 	Register_Cmd("lightmode", FID_LIGHTMODE);		
 	Register_Cmd("editsun", FID_EDITSUN);		
+	Register_Cmd("setcam", FID_SETCAM);		
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -338,8 +339,11 @@ HeightMap* MistServer::SetPointer()
 	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
 
-	Vector3 start	= m_pkFps->GetCam()->GetPos();
-	Vector3 dir		= Get3DMousePos(true);
+	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
+	Vector3 dir		= Get3DMouseDir(true);
+
+/*	Vector3 start	= m_pkFps->GetCam()->GetPos();
+	Vector3 dir		= Get3DMouseDir(true);*/
 	Vector3 end    = start + dir * 1000;
 
 	if(dir.y >= 0) return NULL;
@@ -598,49 +602,68 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 
 	float fSpeedScale = m_pkFps->GetFrameTime()*m_CamMoveSpeed;
 
-	Vector3 newpos = m_pkCameraObject->GetLocalPosV();
-	
-	Matrix4 kRm;
-	kRm = m_pkCameraObject->GetLocalRotM();
+	if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
+	{
 
-	kRm.Transponse();
+		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		
+		Matrix4 kRm;
+		kRm = m_pkCameraObject->GetLocalRotM();
 
-	
-	Vector3 xv = kRm.GetAxis(0);
-	Vector3 zv = kRm.GetAxis(2);
+		kRm.Transponse();
 
-	xv.y = 0;
-	zv.y = 0;
-	
-	xv.Normalize();
-	zv.Normalize();
+		
+		Vector3 xv = kRm.GetAxis(0);
+		Vector3 zv = kRm.GetAxis(2);
 
-	if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
-	if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
-	if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
-	if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
+		xv.y = 0;
+		zv.y = 0;
+		
+		xv.Normalize();
+		zv.Normalize();
 
-	if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
-	if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
-			
+		if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
+		if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
+		if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
+		if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
 
-	Vector3 rot;
-	rot.Set(float(-fMouseY / 5.0),float(-fMouseX / 5.0),0);
+		if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
+		if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
+				
 
-	kRm.Transponse();		
-	kRm.Rotate(rot);
-	kRm.Transponse();		
-	Vector3 bla = Vector3(0,0,1);
-	bla = kRm.VectorTransform(bla);
-	kRm.LookDir(bla,Vector3(0,1,0));
-	
-	m_pkCameraObject->SetLocalPosV(newpos);		
-	if(m_pkInput->VKIsDown("pancam"))
-		m_pkCameraObject->SetLocalRotM(kRm);	
+		Vector3 rot;
+		rot.Set(float(-fMouseY / 5.0),float(-fMouseX / 5.0),0);
 
-	if(m_pkInput->Pressed(KEY_F6))	m_pkCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
-	if(m_pkInput->Pressed(KEY_F7))	m_pkCamera->SetViewMode(Camera::CAMMODE_PERSP);	
+		kRm.Transponse();		
+		kRm.Rotate(rot);
+		kRm.Transponse();		
+		Vector3 bla = Vector3(0,0,1);
+		bla = kRm.VectorTransform(bla);
+		kRm.LookDir(bla,Vector3(0,1,0));
+		
+		m_pkCameraObject->SetLocalPosV(newpos);		
+		if(m_pkInput->VKIsDown("pancam"))
+			m_pkCameraObject->SetLocalRotM(kRm);	
 
+		if(m_pkInput->Pressed(KEY_F6))	m_pkCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
+		if(m_pkInput->Pressed(KEY_F7))	m_pkCamera->SetViewMode(Camera::CAMMODE_PERSP);	
+	}
+
+	else 
+	{
+		Vector3 kMove = Vector3::ZERO;
+
+		if(m_pkInput->VKIsDown("forward"))	kMove.y += fSpeedScale;
+		if(m_pkInput->VKIsDown("back"))		kMove.y -= fSpeedScale;
+		if(m_pkInput->VKIsDown("right"))	kMove.x += fSpeedScale;
+		if(m_pkInput->VKIsDown("left"))		kMove.x -= fSpeedScale;	
+		
+		if(m_pkInput->VKIsDown("down"))		m_pkCamera->OrthoZoom(0.9);
+		if(m_pkInput->VKIsDown("up"))		m_pkCamera->OrthoZoom(1.1);
+
+		P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkCameraObject->GetProperty("P_Camera"));
+		pkCam->OrthoMove(kMove);
+	}
 }
 
 void MistServer::Input()
@@ -689,14 +712,14 @@ void MistServer::Input()
 	
 		if(m_pkInput->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 		if(m_pkInput->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
-		if(m_pkInput->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
+		if(m_pkInput->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
 
 		if(m_pkInput->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 		if(m_pkInput->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(m_pkInput->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
-		if(m_iEditMode == EDIT_HMAP)					Input_EditTerrain();
-		if(m_iEditMode == EDIT_ZONES)					Input_EditZone();
+		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
+		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
 		if(m_iEditMode == EDIT_OBJECTS)				Input_EditObject();
 	}
 };
@@ -782,7 +805,15 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkLight->Remove(&m_kSun);
 
 			break;
+
+		case FID_SETCAM:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				break;
+			m_pkCamera->SetViewMode(kCommand->m_kSplitCommand[1]);
+			break;
 	
+
+
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
@@ -991,8 +1022,54 @@ bool MistServer::StartUp()
 bool MistServer::ShutDown()	{ return true; }
 bool MistServer::IsValid()	{ return true; }
 
+/*	Return 3D postion of mouse in world. */
+Vector3 MistServer::Get3DMouseDir(bool bMouse)
+{
+	Vector3 dir;
+	float x,y;		
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+	
+	if(bMouse)
+	{
+		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
+		// alltså måste vi använda den position vi får därifrån.
+		//	m_pkInput->UnitMouseXY(x,y);
+		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+
+		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+		{
+			dir.Set(x*xp,-y*yp,-1.5);
+			dir.Normalize();
+		}
+		else
+		{
+			dir.Set(0,0,-1);
+			//dir.Normalize();
+			//return dir;
+		}
+	}
+	else
+	{
+		dir.Set(0,0,-1.5);
+		dir.Normalize();	
+	}
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+	return dir;
+}
+
+/*	Returns 3D dir of mouse click in world. */
 Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 {
+
+
 	Vector3 dir;
 	float x,y;		
 	
@@ -1008,8 +1085,18 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
 		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
 
-		dir.Set(x*xp,-y*yp,-1.5);
-		dir.Normalize();
+		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
+		{
+			dir.Set(x*xp,-y*yp,-1.5);
+			dir.Normalize();
+		}
+		else 
+		{
+			dir.x = x* m_pkCamera->m_kOrthoSize.x;
+			dir.y = -y* m_pkCamera->m_kOrthoSize.y;
+			dir.z = -1.5; 
+//			cout << "Cam XY: " << dir.x << "," << dir.y << endl;
+		}
 	}
 	else
 	{
@@ -1026,8 +1113,14 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 
 Entity* MistServer::GetTargetObject()
 {
-	Vector3 start = m_pkFps->GetCam()->GetPos();
-	Vector3 dir = Get3DMousePos();
+	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
+	Vector3 dir		= Get3DMouseDir(true);
+//	dir.Set(0,1,0);
+
+	start.Print();
+	cout << " - "; 
+	dir.Print();
+	cout << endl; 
 
 	vector<Entity*> kObjects;
 	kObjects.clear();

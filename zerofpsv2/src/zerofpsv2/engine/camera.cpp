@@ -12,6 +12,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_strName = "A Camera";
 	
+	m_kOrthoSize.Set(320,240,0);
 	
 	m_eMode = CAMMODE_PERSP; //just initiating it
 }
@@ -60,8 +61,8 @@ void Camera::Update(int iWidth,int iHeight)
 	//glRotatef(m_kRot.y,0,1,0);		
 	 	
 	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
-	if(m_eMode == CAMMODE_ORTHO_FRONT)
-		glTranslatef(320,240, 0);
+//	if(m_eMode == CAMMODE_ORTHO_FRONT)
+//		glTranslatef(320,240, 0);
 
 	//get modelview matrix
 	glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
@@ -98,7 +99,7 @@ void Camera::SetOrthoView()
 	glMatrixMode(GL_PROJECTION);	
 	glPushMatrix();
 		glLoadIdentity();													
-		glOrtho(0, 640, 0, 480, -500, 500); 	
+		glOrtho(-m_kOrthoSize.x, m_kOrthoSize.x, -m_kOrthoSize.y, m_kOrthoSize.y, -500, 500); 	
 		//get projection matrix
 		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();
@@ -112,9 +113,36 @@ void Camera::SetViewMode(CamMode eMode)
 	if(m_eMode == CAMMODE_PERSP) {
 		SetView(90,1.333,0.25,250);
 		}
-	if(m_eMode == CAMMODE_ORTHO_FRONT) {
+	if(m_eMode != CAMMODE_PERSP) {
 		SetOrthoView();
+
+		m_kRotM.Identity();
+
+		switch(eMode) {
+			case CAMMODE_ORTHO_TOP:		m_kRotM.Rotate(Vector3(-90,0,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,0,1);	break;
+			case CAMMODE_ORTHO_FRONT:	m_kRotM.Identity();					m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,1,0);	break;
+			case CAMMODE_ORTHO_LEFT:	m_kRotM.Rotate(Vector3(0,90,0));	m_kOrthoAxisX.Set(0,0,1);	m_kOrthoAxisY.Set(0,1,0);	break;
+			case CAMMODE_ORTHO_BOT:		m_kRotM.Rotate(Vector3(90,0,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,0,1);	break;
+			case CAMMODE_ORTHO_BACK:	m_kRotM.Rotate(Vector3(0,90,0));	m_kOrthoAxisX.Set(1,0,0);	m_kOrthoAxisY.Set(0,1,0);	break;
+			case CAMMODE_ORTHO_RIGHT:	m_kRotM.Rotate(Vector3(0,-90,0));	m_kOrthoAxisX.Set(0,0,1);	m_kOrthoAxisY.Set(0,1,0);	break;
+		
+			}
 		}
+}
+
+
+void Camera::SetViewMode(string strName)
+{
+	CamMode eMode = CAMMODE_PERSP;
+
+	if(strcmp(strName.c_str(), "persp") == 0)	eMode = CAMMODE_PERSP;
+	if(strcmp(strName.c_str(), "top") == 0)		eMode = CAMMODE_ORTHO_TOP;
+	if(strcmp(strName.c_str(), "front") == 0)	eMode = CAMMODE_ORTHO_FRONT;
+	if(strcmp(strName.c_str(), "left") == 0)	eMode = CAMMODE_ORTHO_LEFT;
+	if(strcmp(strName.c_str(), "bot") == 0)		eMode = CAMMODE_ORTHO_BOT;
+	if(strcmp(strName.c_str(), "back") == 0)	eMode = CAMMODE_ORTHO_BACK;
+	if(strcmp(strName.c_str(), "right") == 0)	eMode = CAMMODE_ORTHO_RIGHT;
+	SetViewMode(eMode);
 }
 
 void Camera::SetFov(float fFov)
@@ -152,4 +180,41 @@ string Camera::GetCameraDesc()
 	strDesc = desc;
 
 	return strDesc;
+}
+
+
+
+void Camera::SetRotM(Matrix4 kRotM)	
+{	
+	if(m_eMode != CAMMODE_PERSP)
+		return;
+	m_kRotM = kRotM;
+}
+
+void Camera::RotateV(Vector3 kRot)			
+{	
+	if(m_eMode != CAMMODE_PERSP)
+		return;
+	m_kRotM.Rotate(kRot);
+}
+
+void Camera::MultRotM(Matrix4 kRotM)
+{	
+	if(m_eMode != CAMMODE_PERSP)
+		return;
+	m_kRotM = kRotM * m_kRotM;
+}
+
+void Camera::OrthoZoom(float fZoom)
+{
+	m_kOrthoSize *= fZoom;
+	SetOrthoView();
+}
+
+void Camera::OrthoMove(Vector3 kMove)
+{
+	Vector3 kPos = GetPos();
+	kPos += m_kOrthoAxisX * kMove.x;
+	kPos += m_kOrthoAxisY * kMove.y;
+	SetPos(kPos);
 }

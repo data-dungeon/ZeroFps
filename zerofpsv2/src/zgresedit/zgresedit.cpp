@@ -80,7 +80,7 @@ void ZGResEdit::OnIdle()
 	m_pkFps->GetCam()->ClearViewPort();	
 	m_pkFps->UpdateCamera(); 	
 
-	OnKeyDown(m_pkInput->GetQueuedKey());
+	OnKeyDown(m_pkInput->GetQueuedKey().m_iKey);
 
 	if(m_eEditMode == VIEW)
 		return;

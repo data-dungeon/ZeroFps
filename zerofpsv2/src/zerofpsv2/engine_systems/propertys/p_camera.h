@@ -60,6 +60,9 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		void NextType(CamType_e kType);
 		void SetFpFov(float fFov);		
 		Vector3& GetDynamicAngles() { return m_kDynamicIso; } 
+
+		void OrthoMove(Vector3 kMove);
+
 };
 
 Property* Create_CameraProperty();

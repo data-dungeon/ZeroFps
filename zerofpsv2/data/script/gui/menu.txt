@@ -129,6 +129,44 @@ Title=EditSun (T)
 Parent=Menu_Debug
 Cmd=editsun
 
+[Menu_DebugCamPersp]
+Title=Cam - Persp
+Parent=Menu_Debug
+Cmd=setcam persp
+
+[Menu_DebugCamTop]
+Title=Cam - Top
+Parent=Menu_Debug
+Cmd=setcam top
+
+[Menu_DebugCamFront]
+Title=Cam - Front
+Parent=Menu_Debug
+Cmd=setcam front
+
+[Menu_DebugCamLeft]
+Title=Cam - Left
+Parent=Menu_Debug
+Cmd=setcam left
+
+[Menu_DebugCamBot]
+Title=Cam - Bot
+Parent=Menu_Debug
+Cmd=setcam bot
+
+[Menu_DebugCamBack]
+Title=Cam - Back
+Parent=Menu_Debug
+Cmd=setcam back
+
+[Menu_DebugCamRight]
+Title=Cam - Right
+Parent=Menu_Debug
+Cmd=setcam right
+
+
+
+
 ; ------------- DEVPAGE MENU -------------
 
 [Menu_Page]

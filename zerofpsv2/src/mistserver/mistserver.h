@@ -63,6 +63,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_LOCALORDER,
 			FID_LIGHTMODE,
 			FID_EDITSUN,
+			FID_SETCAM,
 		};
 
 		enum EditMode_e
@@ -105,6 +106,8 @@ class MistServer :public Application , public ZGuiApp {
 		int 		m_iCurrentMarkedZone;
 
 		Vector3	Get3DMousePos(bool m_bMouse);
+		Vector3 Get3DMouseDir(bool bMouse);
+
 		Entity*	GetTargetObject();		
 
 		// Selection of Entitys.

@@ -19,6 +19,9 @@ class ENGINE_API Camera
 			CAMMODE_ORTHO_TOP,
 			CAMMODE_ORTHO_FRONT,
 			CAMMODE_ORTHO_LEFT,
+			CAMMODE_ORTHO_BOT,
+			CAMMODE_ORTHO_BACK,
+			CAMMODE_ORTHO_RIGHT,
 		};
 
 	private:	
@@ -29,7 +32,8 @@ class ENGINE_API Camera
 		Vector3 m_kRot;	
 		Matrix4 m_kRotM;
 			
-		
+
+
 		bool m_bViewChange;
 		bool m_bViewPortChange;				
 		
@@ -50,20 +54,30 @@ class ENGINE_API Camera
 
 	public:
 		Frustum m_kFrustum;
+		Vector3 m_kOrthoAxisX;
+		Vector3 m_kOrthoAxisY;
+		Vector3	m_kOrthoSize;
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		void Update(int iWidth,int iHeight);
 		void UpdateAll(int iWidth,int iHeight);
 		void SetView(float fFov,float fAspect,float fNear,float fFar);
+	
 		void SetViewMode(CamMode eMode);
+		void SetViewMode(string strName);
+		Camera::CamMode GetViewMode()	{ return m_eMode; }
+
 		void SetOrthoView();
 		void SetViewPort(float iX,float iY,float iW,float iH);
 		void ClearViewPort();
 		void SetFov(float fFov);
 		
-		void SetRotM(Matrix4 kRotM)		{	m_kRotM = kRotM;};
-		void RotateV(Vector3 kRot)			{	m_kRotM.Rotate(kRot);};
-		void MultRotM(Matrix4 kRotM)		{	m_kRotM = kRotM * m_kRotM ;};
+		void OrthoZoom(float fZoom);
+		void OrthoMove(Vector3 kMove);
+
+		void SetRotM(Matrix4 kRotM);
+		void RotateV(Vector3 kRot);
+		void MultRotM(Matrix4 kRotM);
 		
 		Matrix4 GetRotM()						{	return m_kRotM;	};
 		void SetPos(Vector3 kPos)			{	m_kPos=kPos;		};
