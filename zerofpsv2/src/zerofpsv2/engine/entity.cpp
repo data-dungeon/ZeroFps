@@ -2293,6 +2293,12 @@ int SetLocalString(lua_State* pkLua)
 
 int SetLocalVector(lua_State* pkLua)
 {
+	if( !(g_pkScript->GetNumArgs(pkLua) == 3 || g_pkScript->GetNumArgs(pkLua) == 5) )
+	{
+		cout<<"SetLocalVector takes 3 or 5 argument(s)"<<endl;
+		return 0;
+	}	
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2302,15 +2308,24 @@ int SetLocalVector(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	double x,y,z;
-	g_pkScript->GetArgNumber(pkLua, 2, &x);		
-	g_pkScript->GetArgNumber(pkLua, 3, &y);		
-	g_pkScript->GetArgNumber(pkLua, 4, &z);		
-	Vector3 kPos(x,y,z);
-
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	o1->SetVarVector(acName, kPos);
-	return 1;	
+	
+	Vector3 kVector;
+	
+	if(g_pkScript->GetNumArgs(pkLua) == 3)
+		kVector = GetVectorArg(pkLua, 3);
+	else
+	{
+		double x,y,z;
+		g_pkScript->GetArgNumber(pkLua, 2, &x);		
+		g_pkScript->GetArgNumber(pkLua, 3, &y);		
+		g_pkScript->GetArgNumber(pkLua, 4, &z);		
+		kVector.Set(x,y,z);
+	}	
+	
+	if(Entity* o1 = g_pkObjMan->GetEntityByID(iId1))
+		o1->SetVarVector(acName, kVector);
+		
+	return 0;	
 }
 
 int GetLocalVector(lua_State* pkLua)
@@ -2365,7 +2380,7 @@ int SetObjectPosLua(lua_State* pkLua)
 
 	if(iNrArgs != 2)
 	{
-		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
+		cout<<"SetObjectPos takes 2 argument(s)"<<endl;
 		return 0;
 	}
 
@@ -2439,7 +2454,7 @@ int GetObjectPosLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
-		printf("Script funtion GetObjectPos failed! Expects 1 arguments.\n");
+		cout<<"SetObjectPos takes 1 argument(s)"<<endl;
 		return 0;
 	}
 

@@ -2,27 +2,31 @@
 #include <cmath>                    // for trigonometry functions
 #include "../../basic/zfvfs.h"
 #include "../../engine/entitymanager.h"
+#include "../../engine/zerofps.h"
 
 ZFScriptSystem* StdLua::g_pkScript;
 ZFVFileSystem*	StdLua::g_pkVFS;
+ZeroFps*	StdLua::g_pkZeroFps;
 
 extern EntityManager* g_pkObjMan;
 
 namespace StdLua
 {
 
-void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
+void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 {
 	cout << "Add SI: Std" << endl;
 
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
+	g_pkZeroFps = pkZeroFps;
 	
 	pkScript->ExposeFunction("Normalize",	StdLua::NormalizeLua);
 	pkScript->ExposeFunction("Print",		StdLua::PrintLua);
 	pkScript->ExposeFunction("Sin",			StdLua::SinLua);	
 	pkScript->ExposeFunction("Cos",			StdLua::CosLua);		
 	pkScript->ExposeFunction("Tan",			StdLua::TanLua);
+	pkScript->ExposeFunction("GetTicks",	StdLua::GetTicksLua);
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
 
@@ -95,9 +99,11 @@ int PrintLua(lua_State* pkLua)
 */
 int SinLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 0)
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		cout<<"Sin takes 1 argument(s)"<<endl;				
 		return 0;
-		
+	}	
 		
 	double dTal;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTal);
@@ -115,9 +121,11 @@ int SinLua(lua_State* pkLua)
 */
 int CosLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 0)
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		cout<<"Cos takes 1 argument(s)"<<endl;		
 		return 0;
-		
+	}	
 		
 	double dTal;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTal);
@@ -127,6 +135,19 @@ int CosLua(lua_State* pkLua)
 	return 1;
 }
 
+int GetTicksLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 0)
+	{
+		cout<<"GetTicks takes 0 argument(s)"<<endl;
+		return 0;
+	}
+		
+	g_pkScript->AddReturnValue(pkLua,g_pkZeroFps->GetTicks() );
+	
+	return 1;		
+}
+		
 /**	\fn Tan( Angle )
  		\relates MistLandStdScript
 		\brief Gets tan of angle.
@@ -135,9 +156,11 @@ int CosLua(lua_State* pkLua)
 */
 int TanLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 0)
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		cout<<"Tan takes 1 argument(s)"<<endl;
 		return 0;
-		
+	}	
 		
 	double dTal;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTal);

@@ -193,7 +193,7 @@ ZeroFps::~ZeroFps()
 bool ZeroFps::StartUp()	
 {
 	//std lua lib
-	StdLua::Init(m_pkScript, m_pkZFVFileSystem );
+	StdLua::Init(m_pkScript, m_pkZFVFileSystem ,this);
 		 
 	m_pkGuiInputHandle = new InputHandle("Gui");
 	m_pkInputHandle = new InputHandle("Zerofps");

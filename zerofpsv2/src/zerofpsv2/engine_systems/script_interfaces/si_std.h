@@ -11,14 +11,16 @@ class ZFScriptSystem;
 using namespace std;
 
 class ZFVFileSystem;
+class ZeroFps;
 
 namespace StdLua
 {
 
 	extern ZFScriptSystem* 		g_pkScript;
 	extern ZFVFileSystem*		g_pkVFS;
+	extern ZeroFps*				g_pkZeroFps;
 	
-	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkBasicFS);
+	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkBasicFS,ZeroFps* pkZeroFps);
 	
 	int ENGINE_SYSTEMS_API PrintLua(lua_State* pkLua);	
 	
@@ -28,6 +30,7 @@ namespace StdLua
 
 	int ENGINE_SYSTEMS_API NormalizeLua(lua_State* pkLua);
 
+	int ENGINE_SYSTEMS_API GetTicksLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API GetFilesInFolderLua(lua_State* pkLua);
 };
