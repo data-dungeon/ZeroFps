@@ -14,7 +14,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_pkMap=pkMap;
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
-	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
+//	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
 	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 
 	m_pkInput=pkInput;	
@@ -58,11 +58,21 @@ void PlayerControlProperty::Update() {
 
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
+
+	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;
+//	cout<<"LUTNING:"<<lutning<<endl;
+
 	
 	float speed=4;
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
+	
+	if(onGround && lutning>35)	{
+		Vector3 hora = m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
+		Vector3  res(hora.x,-4,hora.z);
+		vel+=res*5;
+	}
 	
 	if(m_pkInput->Pressed(KEY_X)){
 		speed*=0.5;
@@ -94,7 +104,7 @@ void PlayerControlProperty::Update() {
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(onGround){
-			vel.y+=5;
+			vel.y=5;
 			walking=false;
 		}
 	}

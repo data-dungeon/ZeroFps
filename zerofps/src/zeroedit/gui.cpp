@@ -618,3 +618,6 @@ bool Gui::OnCloseAddProperty(bool bSave)
 {
 	return true;
 }
+
+
+

@@ -91,6 +91,8 @@ float HeightMap::Height(float x,float z) {
 }
 
 Vector3 HeightMap::Tilt(float x,float z) {
+	x/=HEIGHTMAP_SCALE;
+	z/=HEIGHTMAP_SCALE;
 	
 	x-=m_kPosition.x-m_iHmSize/2;
 	z-=m_kPosition.z-m_iHmSize/2;
