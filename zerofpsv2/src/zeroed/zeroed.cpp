@@ -349,9 +349,6 @@ void ZeroEd::OnClientStart()
 	m_pkActiveCameraObject = NULL;
 }
 
-
-
-
 void ZeroEd::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
@@ -1320,7 +1317,7 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 				return true;
 			}
 		}
-/*			
+		
 		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
 		if(pkMesh == NULL)
 			return false;
@@ -1332,7 +1329,7 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 			pkObj->SetLocalPosV(pos); 
 			m_iCurrentObject = -1;
 		}
-*/
+
 		return true;
 	}
 

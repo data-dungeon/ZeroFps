@@ -128,13 +128,14 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write(m_kObjectMarkerPos);
 		m_pkFps->RouteEditCommand(&kNp);
 
-		/*Entity* pkObj = m_pkObjectMan->CreateObjectFromScriptInZone(m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
-
-		if(pkObj)
-			if(m_bPlaceObjectsOnGround)
-				if(pkObj->GetCurrentZone() != -1)
-					PlaceObjectOnGround(pkObj->GetEntityID());
-		*/
+      if(m_bPlaceObjectsOnGround)
+      {
+		   Entity* pkObj; 
+		   if((pkObj = GetTargetObject()))
+		      if(pkObj->GetCurrentZone() != -1)
+				   PlaceObjectOnGround(pkObj->GetEntityID());
+      }
+		
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
