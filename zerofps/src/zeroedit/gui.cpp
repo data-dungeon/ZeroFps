@@ -515,18 +515,21 @@ bool Gui::HaveFocus()
 	
 	bool bMouseHoverWnd = m_pkEdit->pkGui->MouseHoverWnd();
 
+	// Move window?
 	if(bMouseHoverWnd && m_pkEdit->pkInput->Pressed(MOUSELEFT) && !bWindowClicked)
 	{
 		bGiveGuiFocus = true;
 		bWindowClicked = true;
 	}
 
+	// Clicking outside window
 	if(m_pkEdit->pkInput->Pressed(MOUSELEFT) && !bWindowClicked)
 	{
 		bGiveGuiFocus = false;
 		bWindowClicked = false;
 	}
 
+	// Releasing mouse button after moving window
 	if(bWindowClicked == true && !m_pkEdit->pkInput->Pressed(MOUSELEFT))
 	{
 		bGiveGuiFocus = false;
@@ -535,6 +538,7 @@ bool Gui::HaveFocus()
 
 	if(ZGuiWnd::m_pkFocusWnd != NULL)
 	{
+		// Type text?
 		if( typeid(*ZGuiWnd::m_pkFocusWnd) == typeid(ZGuiTextbox) )
 		{
 			bGiveGuiFocus = true;
