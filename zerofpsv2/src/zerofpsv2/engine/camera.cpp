@@ -56,7 +56,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	}
 		
 	//SHADOW HACK
-	m_iShadowSize	= Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
+	m_iShadowSize	= 1024;//Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
 	m_iShadowTexture = -1;
 	
 	glGenTextures(1, &m_iShadowTexture);
@@ -124,8 +124,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	//Disable color writes, and use flat shading for speed
   	m_pkZShaderSystem->ForceColorMask(0);
-// 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
-	glDepthRange (0.003, 1.0);
+ 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+//	glDepthRange (0.003, 1.0);
 	
 	//reload last material
 	m_pkZShaderSystem->ReloadMaterial();		
@@ -143,7 +143,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowSize, m_iShadowSize);
 	
 	
-	glDepthRange (0.0, 1.0);
+//	glDepthRange (0.0, 1.0);
 	
  	m_pkLight->SetLighting(true);
  	glShadeModel(GL_SMOOTH);
