@@ -11,6 +11,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty(new FloatProperty());	
 //	AddProperty(new ModelProperty());
 	
+	AddProperty("AutoParentProperty");	
 	
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));

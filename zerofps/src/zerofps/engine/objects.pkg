@@ -8,6 +8,7 @@ class WaterRenderProperty;
 class ProxyProperty;
 class LightUpdateProperty;
 class WorldInfoProperty;
+class AutoParentProperty;
 
 class Object;
 class CollisionObject;
@@ -41,7 +42,7 @@ class CollisionHeightMap;
 #include "zoneobject.h"
 #include "lightupdateproperty.h"
 #include "worldinfoproperty.h"
-
+#include "autoparentproperty.h"
 
 
 

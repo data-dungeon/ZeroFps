@@ -16,7 +16,8 @@ BallObject::BallObject() {
 */
 
 	AddProperty("ModelProperty");
-	AddProperty("LightProperty");
+//	AddProperty("LightProperty");
+	AddProperty("AutoParentProperty");	
 
 	onGround = false;
 }

@@ -258,7 +258,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 			
-			Clear();		//clear objects
+			m_pkCurentChild=NULL;
+			
+			pkLevelMan->Clear();		//clear objects
 			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
 			} else {
@@ -273,7 +275,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 			
-			Clear();		//clear objects
+			m_pkCurentChild=NULL;
+			
+			pkLevelMan->Clear();		//clear objects
 			if(!m_pkMap->LoadImageHmap(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
 			} else  {
@@ -300,6 +304,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("Please Type a mapsize");
 				break;
 			}
+			
+			m_pkCurentChild=NULL;
+			
 			int size=atoi(kCommand->m_kSplitCommand[1].c_str());
 			
 			pkConsole->Printf("Creating new map with size %d",size);
@@ -383,6 +390,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
+			m_pkCurentChild=NULL;
+			
 			if(!pkObjectMan->LoadAllObjects(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Error loading");
 				break;			
@@ -397,6 +406,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
+			
+			m_pkCurentChild=NULL;
+			
 			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
@@ -643,6 +655,7 @@ void ZeroEdit::Input()
 	}
 }
 
+/*
 void ZeroEdit::Clear() 
 {
 	CreateNew(100);
@@ -677,9 +690,9 @@ void ZeroEdit::CreateNew(int iSize)
 
 
 	cout<<"new map"<<endl;
-*/
-}
 
+}
+*/
 
 
 void ZeroEdit::SetPointer()

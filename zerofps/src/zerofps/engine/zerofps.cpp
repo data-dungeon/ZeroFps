@@ -610,6 +610,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
 	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
+	m_pkPropertyFactory->Register("AutoParentProperty",Create_AutoParentProperty);							
 }
 
 void ZeroFps::QuitEngine()
