@@ -411,11 +411,18 @@ void P_Enviroment::MakeRainSplashes()
 	{
 		if(pkZD->m_pkZone)
 		{
-			if(!pkZD->m_pkZone->GetZoneNeighbours(&kObjects))
+			vector<Entity*> m_kZones;				
+		
+			if(pkZD->m_pkZone->GetZoneNeighbours(&m_kZones))
 			{
-				cout<<"not attacthed to a zone"<<endl;
-				return;
+				for(int i = 0;i<m_kZones.size();i++)
+				{
+					m_kZones[i]->GetAllEntitys(&kObjects);
+				}
+				
 			}
+			else
+				return;
 		}
 		else
 			return;
@@ -428,28 +435,47 @@ void P_Enviroment::MakeRainSplashes()
 	{
 		Vector3 kDropStart = m_pkObject->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
 		
+		float fTop = -999999;
+		Vector3 kPos;
 		for(int i = 0;i < kObjects.size() ;i++)
 		{
 			if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
 			{	
 				if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
 				{	
-					m_kDrops.push_back(pkMad->GetLastColPos()+Vector3(0,1,0));	
-					break;
+					if(pkMad->GetLastColPos().y > fTop)
+					{
+						fTop = pkMad->GetLastColPos().y;
+						kPos = pkMad->GetLastColPos();
+					}
+				
+//					break;
 				}
 			}
 		}
+		
+		if(fTop != -999999)
+		{
+			kPos.y += 0.1;
+			m_kDrops.push_back(kPos);	
+		}
+		
 	}
 }
 
 void P_Enviroment::DrawRainSplashes()
 {
+	static Vector3 v1(-0.1,0,0.1);
+	static Vector3 v2( 0.1,0,0.1);
+	static Vector3 v3( 0.1,0,-0.1);
+	static Vector3 v4(-0.1,0,-0.1);
+
 	for(int i = 0 ;i<m_kDrops.size();i++)
 	{
-		m_pkRender->Polygon4(m_kDrops[i] + Vector3(-0.1,0,0.1),
-									m_kDrops[i] + Vector3( 0.1,0,0.1),
-									m_kDrops[i] + Vector3( 0.1,0,-0.1),
-									m_kDrops[i] + Vector3(-0.1,0,-0.1),
+		m_pkRender->Polygon4(m_kDrops[i] + v1,
+									m_kDrops[i] + v2,
+									m_kDrops[i] + v3,
+									m_kDrops[i] + v4,
 									m_iRainTextureID);
 		//m_pkRender->Quad(m_kDrops[i],Vector3(-90,0,0),Vector3(0.3,0.3,0.3),m_iRainTextureID);
 	}

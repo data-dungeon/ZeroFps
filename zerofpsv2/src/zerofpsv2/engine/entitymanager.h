@@ -17,14 +17,22 @@ class NetWork;
 class ZoneObject;
 class P_Track;
 
+enum EZoneStatus
+{
+	EZS_LOADED,
+	EZS_UNLOADED,
+	EZS_CACHED,
+	EZS_UNUSED,
+};
 
 /// Data about a Zone in the World.
 class ZoneData
 {
 public:
 
+	int					m_iStatus;					//current status of zone
+
 	bool					m_bNew;
-	bool					m_bUsed;
 	unsigned int		m_iRevision;		
 	Entity*				m_pkZone;
 	int					m_iZoneObjectID;
@@ -35,13 +43,12 @@ public:
 	string				m_strEnviroment;
 
 	float					m_fInactiveTime;
-	bool					m_bActive;
+	bool					m_bTracked;					//is there a tracker touching this zone
 	int					m_iRange;						// Range to tracker i num of zones.
-	float					m_fDistance;					// distance to tracker in units
-
-	ZoneData& operator=(const ZoneData &kOther);
+	
 	bool IsInside(Vector3 kPoint);
 	ZoneData();
+	void Clear();
 };
 
 
@@ -62,8 +69,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 			FID_LOGACTIVEPROPERTYS,
 			FID_SENDMESSAGE,
 			
-		//	FID_LOADZONES,
-		//	FID_SAVEZONE,			
 			FID_NEWWORLD,
 			FID_LOADWORLD,
 			FID_SETWORLDDIR,
@@ -117,7 +122,24 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 
-
+		//private zone system functions
+		void UpdateTrackers();
+		void UpdateZoneStatus();		
+		
+		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
+		void Test_DrawZones();
+		void UpdateZones();
+		void ClearZoneLinks(int iId);
+		void UpdateZoneLinks(int iId);
+		
+		void ForceUnload();												//forcing unload of all loaded zones
+		void ForceSave();													//forcing save of all loaded zones
+		bool LoadZones(string strSaveDir ="");						//load zone info list
+		bool SaveZones(string strSaveDir ="");						//save zone info list
+		bool SaveTrackers(string strSaveDir = "");
+		bool LoadTrackers(string strSaveDir = "");
+		void UnLoadZone(int iId);										//unload zone (saves and deletes)
+		
 	public:
 		float		m_fSimTime;				// Time in the virtual world.
 		float		m_fSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 
@@ -179,12 +201,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void GetAllObjects(vector<Entity*> *pakObjects);
 		Entity* GetObject(const char* acName);							///< Get a ptr to object by name
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
-		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
-		void SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};
-		
 		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
-		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
@@ -224,44 +242,31 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
       
 		
-		//zone system
-		int GetNumOfZones();
-		void Test_DrawZones();
-		void UpdateZones();
-		ZoneData* GetZone(Entity* PkObject);
-		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
-		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
-		int GetZoneIndex(int iEntityId);
-		ZoneData* GetZone(Vector3 kPos);
-		Vector3 GetZoneCenter(int iZoneNum);
-		ZoneData*	GetZoneData(int iID);
-		int CreateZone();
-		int CreateZone(Vector3 kPos,Vector3 kSize);
-		void DeleteZone(int iId);
-		int GetUnusedZoneID();		
-//		void Zones_Refresh();
-		void ClearZoneLinks(int iId);
-		void SetZoneModel(const char* szName,int iId);
-		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
-		void UpdateZoneLinks(int iId);
-		
-
+		//zone system		
+		void UpdateZoneSystem();
 		void SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
 		string GetWorldDir() { return m_kWorldDirectory; };
-		
-		void ForceUnload();												//forcing unload of all loaded zones
-		void ForceSave();													//forcing save of all loaded zones
-		bool LoadZones(string strSaveDir ="");						//load zone info list
-		bool SaveZones(string strSaveDir ="");						//save zone info list
-		bool SaveTrackers(string strSaveDir = "");
-		bool LoadTrackers(string strSaveDir = "");
-		void LoadZone(int iId,string strLoadDir = "");			//load zone
-		void SaveZone(int iId,string strSaveDir = "");			//save zone
-		void UnLoadZone(int iId);										//unload zone (saves and deletes)
-
 		bool SaveWorld(string strSaveDir,bool bForce=false);
 		bool LoadWorld(string strLoadDir);
 
+		ZoneData* GetZone(Vector3 kPos);
+		void SetZoneModel(const char* szName,int iId);
+		ZoneData*	GetZoneData(int iID);
+		int GetZoneIndex(int iEntityId);
+		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
+		void DeleteZone(int iId);
+		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
+		int CreateZone(Vector3 kPos,Vector3 kSize);
+		void LoadZone(int iId,string strLoadDir = "");			//load zone
+		void SaveZone(int iId,string strSaveDir = "");			//save zone
+		int GetNumOfZones();
+		int GetUnusedZoneID();		
+		Vector3 GetZoneCenter(int iZoneNum);
+		void SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};		
+		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
+		ZoneData* GetZone(Entity* PkObject);
+		
+		
 		//trackers
 		void AddTracker(P_Track* kObject);
 		void RemoveTracker(P_Track* kObject);

@@ -276,7 +276,7 @@ void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
    SubDivide(v12, v23, v31, depth-1);
 }
 
-void Render::Polygon4(Vector3 kP1,Vector3 kP2,Vector3 kP3,Vector3 kP4,int iTexture)
+void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture)
 {
 	glPushMatrix();
 	glPushAttrib(GL_ENABLE_BIT);

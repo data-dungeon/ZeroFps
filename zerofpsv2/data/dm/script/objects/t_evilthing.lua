@@ -6,8 +6,10 @@ function Create()
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/spider.mad");			
 			InitParameter("m_fScale","1.0");
-			InitParameter("m_iShadowGroup","2");
+			InitParameter("m_iShadowGroup","3");
 
+		InitProperty("P_ShadowBlob");
+		
 		InitProperty("P_PfPath");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");

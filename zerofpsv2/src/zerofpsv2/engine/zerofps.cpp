@@ -425,8 +425,8 @@ void ZeroFps::Update_System(bool bServer)
 		if(m_bServerMode)
 		{
 			//update zones
-			m_pkObjectMan->UpdateZones();	
-		
+			//m_pkObjectMan->UpdateZones();	
+			m_pkObjectMan->UpdateZoneSystem();
 		
 			if(m_bRunWorldSim)
 			{			

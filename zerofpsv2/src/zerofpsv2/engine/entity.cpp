@@ -442,7 +442,7 @@ bool Entity::AttachToZone(Vector3 kPos)
 				return  false;
 			}
 	
-			if( (!cz->m_pkZone) || (!cz->m_bActive) )
+			if( (!cz->m_pkZone) || (!cz->m_bTracked) )
 			{
 				//cout<<"Entity tried to move to a unloaded zone"<<endl;
 				return  false;
@@ -1439,14 +1439,14 @@ Vector3 Entity::GetIWorldPosV()
 
 	if(m_bInterpolate)
 	{				
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/3.0;// * (m_pkZeroFps->GetFrameTime()*3);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/5.0;// * (m_pkZeroFps->GetFrameTime()*3);
 		
 		return m_kILocalPosV;
 	}
 	else
 	{
 		//still calculate the interpolatet position, but return non interpolatet position
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/3.0;// * (m_pkZeroFps->GetFrameTime()*3);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/5.0;// * (m_pkZeroFps->GetFrameTime()*3);
 		return GetWorldPosV();
 	}
 

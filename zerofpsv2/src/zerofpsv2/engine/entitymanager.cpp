@@ -12,36 +12,31 @@
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "p_pfmesh.h"
  
-ZoneData& ZoneData::operator=(const ZoneData &kOther) 
-{
-	m_pkZone				= kOther.m_pkZone;
-	m_iZoneID			= kOther.m_iZoneID;
-	m_kPos				= kOther.m_kPos;
-	m_kSize				= kOther.m_kSize;
-	m_iZoneLinks		= kOther.m_iZoneLinks;
-	m_fInactiveTime	= kOther.m_fInactiveTime;
-	m_bActive			= kOther.m_bActive;
-	m_iRange				= kOther.m_iRange;
-	return *this; 
-}
-  
+
+
 ZoneData::ZoneData()
 {
-	m_bNew = 		false;
-	m_bUsed = 		false;
-	m_pkZone =		NULL;
-	m_iZoneID = 	0;
-	
-	m_kPos.Set(0,0,0);
-	m_kSize.Set(0,0,0);
+	Clear();
+}
 
+void ZoneData::Clear()
+{
+	m_iStatus = 		EZS_UNUSED;
+
+	m_bNew = 			false;
+	m_pkZone =			NULL;
+	m_iZoneID = 		-1;
+	
 	m_fInactiveTime = 0;
-	m_bActive = 		false;
+	m_bTracked = 		false;
 	m_iZoneObjectID = -1;
 	m_iRange = 			0;		
-	m_fDistance = 		0;	
 	m_iRevision = 		0;
+
+	m_kPos.Set(0,0,0);
+	m_kSize.Set(0,0,0);
 	
+		
 	m_strEnviroment = "Default";
 }
 
@@ -500,30 +495,7 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 	return pkReturnObj;
 }
 
-/*
-bool EntityManager::IsA(Entity* pkObj, string strStringType)
-{
-	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
-	if(!pkAt)
-		return false;	// Object not created from archtype at all :(.
-	
-	ObjectArcheType* pkParentAt;
 
-
-	bool bDone = false;
-	while(bDone){
-		if(pkAt->m_strName == strStringType)
-			return true;
-
-		pkParentAt = GetArcheType(pkAt->m_strParentName);
-		if(!pkParentAt)
-			return false;
-		else
-			pkAt = pkParentAt;
-		}
-
-	return false;
-}*/
 
 // Gets
 void EntityManager::GetAllObjects(vector<Entity*> *pakObjects)
@@ -1452,39 +1424,6 @@ Entity* EntityManager::CloneObject(int iNetID)
 	return pkObjClone;
 }
 
-/*
-void EntityManager::Test_CreateZones()
-{
-	
-
-	m_kZones.clear();
-	int y = 0;
-	int iZonesSize = 10;
-	int iZonesSide = 100;
-	
-	Vector3 kPos;
-	Vector3 kRandOffset;
-
-	MazeGen GaaMaze;
-	GaaMaze.Load("./maze.bmp");
-
-
-	for(int x=0; x<iZonesSide; x++) 
-	{
-		for(int z=0; z<iZonesSide; z++) 
-		{
-			if(GaaMaze.aaiMaze[x][z] == 1) 
-			{
-				
-				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);								
-				CreateZone(kPos,Vector3(iZonesSize,iZonesSize,iZonesSize));//GetUnusedZoneID();
-			}
-		}
-	}
-
-//	AutoConnectZones();
-//	int ispya = 2;
-}*/
 
 /*
 	Draws the Zone's to the screen as colored boxes.
@@ -1500,22 +1439,41 @@ void EntityManager::Test_DrawZones()
 
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
-	for(unsigned int i=0;i<m_kZones.size();i++) {
-		if(!m_kZones[i].m_bUsed)
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
+
+
 			
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 	
-		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone)
+		switch(m_kZones[i].m_iStatus)
+		{
+			case EZS_LOADED:
+				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
+				break;
+		
+			case EZS_UNLOADED:
+				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
+				break;
+
+			case EZS_CACHED:
+				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
+				break;								
+		}
+			
+					
+/*		if(m_kZones[i].m_bTracked && m_kZones[i].m_pkZone)
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
-		else if(m_kZones[i].m_bActive)
+		else if(m_kZones[i].m_bTracked)
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneloading") );				
 		else if(m_kZones[i].m_pkZone)
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
 		else
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
-					
+*/					
 	
 		if(m_bDrawZoneConnections) {
 			Vector3 kConnectColor = m_pkRender->GetEditColor("inactive/zonebuild");
@@ -1530,36 +1488,7 @@ void EntityManager::Test_DrawZones()
 	}
 }
 
-/*
-void EntityManager::AutoConnectZones()
-{
-	Vector3 kCenterPos;
-	Vector3 kCheckPos;
-	ZoneData* pkZone;
-	
-	vector<Vector3>	kAutoConnectDirs;
-	kAutoConnectDirs.push_back(Vector3(10,0,0));
-	kAutoConnectDirs.push_back(Vector3(-10,0,0));
-	kAutoConnectDirs.push_back(Vector3(0,10,0));
-	kAutoConnectDirs.push_back(Vector3(0,-10,0));
-	kAutoConnectDirs.push_back(Vector3(0,0,10));
-	kAutoConnectDirs.push_back(Vector3(0,0,-10));
 
-	// For each Zone.
-	for(unsigned int i=0;i<m_kZones.size();i++) {
-		kCenterPos = m_kZones[i].m_kPos;
-
-		// For each possible zone around this one.
-		for(unsigned int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
-			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
-			pkZone = GetZone(kCheckPos);
-			// If a zone add a link.
-			if(pkZone && (i != pkZone->m_iZoneID)) {
-				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
-			}
-		}
-	}
-}*/
 
 Vector3 EntityManager::GetZoneCenter(int iZoneNum)
 {
@@ -1600,7 +1529,7 @@ void EntityManager::ClearTrackers()
 ZoneData* EntityManager::GetZone(Vector3 kPos)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(!m_kZones[iZ].m_bUsed)
+		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 			continue;
 
 		if(m_kZones[iZ].IsInside(kPos))
@@ -1614,7 +1543,7 @@ ZoneData* EntityManager::GetZone(Vector3 kPos)
 ZoneData* EntityManager::GetZone(Entity* PkObject)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(!m_kZones[iZ].m_bUsed)
+		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 			continue;
 		
 		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
@@ -1628,9 +1557,13 @@ int EntityManager::GetZoneIndex(int iEntityId)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
-		if(!m_kZones[iZ].m_bUsed)	continue;
-		if(m_kZones[iZ].m_iZoneObjectID == iEntityId)	return iZ;
-		}
+		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
+			continue;
+		
+		if(m_kZones[iZ].m_iZoneObjectID == iEntityId)	
+			return iZ;
+	
+	}
 
 	return -1;
 }
@@ -1651,7 +1584,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 		
 		if(pkZd) 
 		{	
-			if(pkZd->m_bUsed)
+			if(pkZd->m_iStatus != EZS_UNUSED)
 			{
 				//first check current zone
 				if(m_kZones[iCurrentZone].IsInside( kMyPos ))
@@ -1673,8 +1606,9 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 	}
 	
 	//seccond go trough all zones in the world
-	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(!m_kZones[iZ].m_bUsed)
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
+	{
+		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 			continue;
 		
 		if(m_kZones[iZ].IsInside(kMyPos))
@@ -1690,7 +1624,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 		int id = -1;
 	
 		for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-			if(!m_kZones[iZ].m_bUsed)
+			if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 				continue;
 			
 			float dis = m_kZones[iZ].m_kPos.DistanceTo(kMyPos);
@@ -1711,6 +1645,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 void EntityManager::UpdateZones()
 {
 
+
 	float fTime = m_pkZeroFps->GetEngineTime();
 	ZoneData* pkZone;
 	ZoneData* pkStartZone;
@@ -1722,9 +1657,8 @@ void EntityManager::UpdateZones()
 	// Set All Zones as inactive.
 	for(iZ=0;iZ<m_kZones.size();iZ++) 
 	{
-		m_kZones[iZ].m_bActive		= false;
+		m_kZones[iZ].m_bTracked		= false;
 		m_kZones[iZ].m_iRange		= 10000;
-		m_kZones[iZ].m_fDistance	= 10000;		
 		
 		if(m_kZones[iZ].m_pkZone)
 			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
@@ -1750,9 +1684,6 @@ void EntityManager::UpdateZones()
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			
-			float f = pkStartZone->m_kPos.DistanceTo((*iT)->GetObject()->GetWorldPosV());  
-			if(f < pkStartZone->m_fDistance)
-				pkStartZone->m_fDistance = f;			
 			
 			m_kFloodZones.push_back(pkStartZone);
 		}
@@ -1765,7 +1696,7 @@ void EntityManager::UpdateZones()
 
 			kNewActiveZones.insert(pkZone->m_iZoneID);
 
-			pkZone->m_bActive = true;
+			pkZone->m_bTracked = true;
 			int iRange = pkZone->m_iRange + 1;
 
 			if(iRange < m_iTrackerLOS) 
@@ -1780,10 +1711,6 @@ void EntityManager::UpdateZones()
 					//set new range 
 					pkOtherZone->m_iRange = iRange;
 					
-					//calculate distance from zone to current tracker, if the current tracker is closer then change value in zone
-					float f = pkOtherZone->m_kPos.DistanceTo((*iT)->GetObject()->GetWorldPosV());  
-					if(f < pkOtherZone->m_fDistance)
-						pkOtherZone->m_fDistance = f;
 					
 					
 					//add zone to flooded zones list
@@ -1821,7 +1748,7 @@ void EntityManager::UpdateZones()
 		if(iOperations < m_iMaxZoneIO)
 		{
 			// Load / Unload zones.
-			if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
+			if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone == NULL) 
 			{
 			//	cout<<"load "<<m_kZones[i].m_iZoneID<<endl;
 				
@@ -1830,7 +1757,7 @@ void EntityManager::UpdateZones()
 			}
 	
 			// Zones that need to unload
-			if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) 
+			if(pkZoneRefresh->m_bTracked == false && pkZoneRefresh->m_pkZone) 
 			{
 			
 				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
@@ -1845,7 +1772,7 @@ void EntityManager::UpdateZones()
 		}
 		
 		//all active zones 
-		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone)
+		if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone)
 		{
 		//	cout<<"setting as active "<<m_kZones[i].m_iZoneID<<endl;
 			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
@@ -1910,64 +1837,67 @@ vector<int>	EntityManager::GetActiveZoneIDs(int iTracker)
 	return Nisse;
 }
 
-int EntityManager::CreateZone()
-{
-	return CreateZone(Vector3(0,0,0),Vector3(8,8,8));
-}
 
 int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 {
-	
 	int id = GetUnusedZoneID();
-
-	m_kZones[id].m_bNew = true;
-	m_kZones[id].m_bUsed = true;
-	m_kZones[id].m_bActive = false;	
-	m_kZones[id].m_iZoneID = id;
-	m_kZones[id].m_pkZone = NULL;
-	m_kZones[id].m_kSize = kSize;
-	m_kZones[id].m_kPos = kPos;
-	m_kZones[id].m_iZoneLinks.clear();
-	m_kZones[id].m_fInactiveTime = 0;
-	m_kZones[id].m_iRange = 0;
-	m_kZones[id].m_iRevision = 0;
-	m_kZones[id].m_strEnviroment = "Default";
-	m_kZones[id].m_iZoneObjectID = -1;	
+	
+	if(ZoneData* pkZone = GetZoneData(id))
+	{
+		pkZone->Clear();
+	
+		pkZone->m_bNew = true;					
+		pkZone->m_iStatus = EZS_UNLOADED;
+		pkZone->m_kSize = kSize;
+		pkZone->m_kPos = kPos;
+	}
+	else
+	{
+		cout<<"ERROR: EntityManager::CreateZone , could not create zone"<<endl;
+		return -1; 	
+	}
+	
 	
 	UpdateZoneLinks(id);
 	
 	return id;
+
 }
 
 
 void EntityManager::DeleteZone(int iId)
 {
-	if(iId == -1)	return;
+/*	if(iId == -1)	return;
 
 	if(iId >= (int) m_kZones.size())
 	{
 		//cout<<"that zone is invalid"<<endl;
 		return;
 	}
-
-	m_kZones[iId].m_bUsed = false;
-	m_kZones[iId].m_bActive = false;
+*/	
 	
+	cout<<"deleted zone "<<iId<<endl;
+	
+	//remove zone entity
+	if(ZoneData* kZData = GetZoneData(iId))
+	{
+		if(kZData->m_pkZone)
+		{
+			Delete(kZData->m_pkZone);
+			kZData->m_pkZone = NULL;	
+		}
+	}
+	else
+		return;
+	
+	//clear links
 	ClearZoneLinks(iId);	
 	
-	//unload the zone
-	//UnLoadZone(iId);
+		
+	//set as unused	
+	m_kZones[iId].m_iStatus = EZS_UNUSED;
 	
-	
-	//delete zone object
-	ZoneData* kZData = GetZoneData(iId);
-	assert(kZData);
-	if(kZData->m_pkZone == NULL)
-		return;	
-	
-	Delete(kZData->m_pkZone);
-	kZData->m_pkZone = NULL;
-	
+	return;	
 }
 
 
@@ -2003,15 +1933,16 @@ bool EntityManager::LoadZones(string strSaveDir )
 	cout<<"Next objectID: "<<iNextObjectID<<endl;
 		
 	ZoneData kZData;
-	kZData.m_bUsed = true;
+	kZData.m_iStatus = EZS_UNLOADED;
+
 	
 	int i,zl;
 	int iLink;
 
-	for( i=0; i<iNumOfZone; i++) {
+	for( i=0; i<iNumOfZone; i++) 
+	{
 		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
 		kFile.Read(&kZData.m_iRevision, sizeof(kZData.m_iRevision), 1);								
-		kFile.Read(&kZData.m_bUsed, sizeof(kZData.m_bUsed), 1);						
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
 		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
@@ -2074,7 +2005,6 @@ bool EntityManager::SaveZones(string strSaveDir)
 
 		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
 		kFile.Write(&m_kZones[i].m_iRevision, sizeof(m_kZones[i].m_iRevision), 1);										
-		kFile.Write(&m_kZones[i].m_bUsed, sizeof(m_kZones[i].m_bUsed), 1);				
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
 		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
 		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
@@ -2194,7 +2124,6 @@ ZoneData* EntityManager::GetZoneData(int iID)
 void EntityManager::LoadZone(int iId,string strSaveDir)
 {	
 	ZoneData* kZData = GetZoneData(iId);
-	assert(kZData);
 
 	if(!kZData)
 		return;
@@ -2203,10 +2132,27 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	if(kZData->m_pkZone)
 		return;
 
+		
+				
+	if(kZData->m_iStatus == EZS_UNUSED)
+	{
+		cout<<"WARNING: tried to load an unused zone"<<endl;
+		return;
+	}
+		
+	if(kZData->m_iStatus != EZS_UNLOADED)
+	{
+		cout<<"zone is not unloaded"<<endl;
+		return;
+	}
+	 
+	//set status as loaded
+	kZData->m_iStatus = EZS_LOADED;
+
 	// Create Object.
-	Entity* object = CreateObject(false);
-	object->m_bZone = true;
-	kZData->m_pkZone = object;
+	Entity* kZoneEntity = CreateObject(false);
+	kZoneEntity->m_bZone = true;
+	kZData->m_pkZone = kZoneEntity;
 	kZData->m_pkZone->SetParent(GetZoneObject());	
 	kZData->m_pkZone->SetName("ZoneObject");
 	
@@ -2262,14 +2208,13 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		kZData->m_bNew = false;
 		
 		//link zone object
-		Link(object);
+		Link(kZoneEntity);
 		
-		//cout<<"error loading zone, creating a new template zone"<<endl;
-		
+		//cout<<"error loading zone, creating a new template zone"<<endl;		
 		Vector3 kPos = kZData->m_kPos;
-		object->SetLocalPosV(kPos);
+		kZoneEntity->SetLocalPosV(kPos);
 
-		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
+		kZoneEntity->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
 		SetZoneModel("",iId);		
 
@@ -2293,10 +2238,11 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 void EntityManager::UnLoadZone(int iId)
 {
 	ZoneData* kZData = GetZoneData(iId);
-	assert(kZData);
 	if(kZData->m_pkZone == NULL)
 		return;	
-	
+
+	kZData->m_iStatus = EZS_UNLOADED;
+			
 	SaveZone(iId);
 	
 	Delete(kZData->m_pkZone);
@@ -2347,7 +2293,7 @@ int EntityManager::GetUnusedZoneID()
 {
 	for(unsigned int i=0;i<m_kZones.size();i++)
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 		{	
 			return i;
 		}
@@ -2356,12 +2302,10 @@ int EntityManager::GetUnusedZoneID()
 	//if none can be found create a new one
 	
 	ZoneData newzone;
-
-	newzone.m_iZoneID = m_kZones.size() - 1;
-	
+	newzone.m_iZoneID = m_kZones.size();	
 	m_kZones.push_back(newzone);
 	
-	return m_kZones.size() - 1;
+	return newzone.m_iZoneID;
 }
 
 
@@ -2395,7 +2339,7 @@ bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 {
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 
 		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
@@ -2421,7 +2365,7 @@ void EntityManager::UpdateZoneLinks(int iId)
 	//go trough all zones and check if they are to be connected
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
 		if(i == iId)
@@ -2517,6 +2461,13 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 		return;
 	}	
 	
+	if(zd->m_iStatus == EZS_UNUSED)
+		cout<<"is unused "<<szName<<endl;
+
+	if(zd->m_iStatus != EZS_LOADED)
+		cout<<"not loaded "<<szName<<endl;
+		
+			
 	if(strlen(szName) == 0)
 	{
 		zd->m_pkZone->DeleteProperty("P_Mad");
@@ -2572,7 +2523,7 @@ void EntityManager::ForceUnload()
 	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
 		if(m_kZones[i].m_pkZone)
@@ -2590,7 +2541,7 @@ void EntityManager::ForceSave()
 	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
 		if(m_kZones[i].m_pkZone)
@@ -2651,7 +2602,7 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 	//now load zones and then save them in the save directory
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
 		//check if zone is loaded
@@ -2734,7 +2685,7 @@ bool EntityManager::LoadWorld(string strLoadDir)
 	//now load and save the zones (making a copy of the zones in the loaddirectory to the tempdirecotry)
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
-		if(!m_kZones[i].m_bUsed)
+		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
 		//check if zone is loaded
@@ -2763,11 +2714,177 @@ bool EntityManager::LoadWorld(string strLoadDir)
 			
 	
 	//do a zone update
-	UpdateZones();	
-
+//	UpdateZones();	
+	UpdateZoneSystem();
 	
 	return true;
 }
+
+
+void EntityManager::UpdateZoneSystem()
+{
+	UpdateTrackers();
+
+	UpdateZoneStatus();
+}
+
+void EntityManager::UpdateTrackers()
+{
+	int iZoneIndex;	
+	vector<ZoneData*>	kFloodZones;
+	
+
+	// Set All Zones as untracked
+	for(int iZ=0;iZ<m_kZones.size();iZ++) 
+	{
+		m_kZones[iZ].m_bTracked		= false;
+	}
+
+
+
+	// For each tracker.
+	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	{
+		// Find Active Zone.
+		set<int>			kNewActiveZones;
+		
+		//set initi range
+		for(int iZ=0;iZ<m_kZones.size();iZ++)
+			m_kZones[iZ].m_iRange							= 10000;
+		
+		//get current zone
+		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
+		
+		if(iZoneIndex == -1)
+		{
+			//cout<<"ERROR: Tracker not in zone"<<endl;
+			continue;
+		}
+		
+		//start zone
+		ZoneData* pkStartZone = GetZoneData(iZoneIndex);
+		pkStartZone->m_iRange = 0;						
+		kFloodZones.push_back(pkStartZone);
+
+		
+		// Flood Zones in rage to active.
+		while(kFloodZones.size()) 
+		{
+			ZoneData* pkZone = kFloodZones.back();
+			kFloodZones.pop_back();
+
+			kNewActiveZones.insert(pkZone->m_iZoneID);
+
+			pkZone->m_bTracked = true;
+			int iRange = pkZone->m_iRange + 1;
+
+			if(iRange < m_iTrackerLOS) 
+			{
+				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
+				{
+					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
+
+					//if zone has already been checked continue whit the next one
+					if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
+					
+					//set new range 
+					pkOtherZone->m_iRange = iRange;
+					
+					
+					
+					//add zone to flooded zones list
+					kFloodZones.push_back(pkOtherZone);
+				}				
+			}
+		}
+		
+		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
+		(*iT)->m_iNewActiveZones.clear();
+		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
+		
+		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
+		if((*iT)->m_iConnectID != -1)
+			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
+						
+		//save new active zones in tracker
+		(*iT)->m_iActiveZones = kNewActiveZones;
+	}
+}
+
+void EntityManager::UpdateZoneStatus()
+{
+	float fCurrentTime = m_pkZeroFps->GetEngineTime();
+
+
+	for(int i=0;i<m_kZones.size();i++) 
+	{
+		if(m_kZones[i].m_iStatus != EZS_UNUSED)
+		{
+			//the zone is currently tracked
+			if(m_kZones[i].m_bTracked)
+			{
+				//zone is cached , lets activate it
+				if(m_kZones[i].m_iStatus == EZS_CACHED)
+				{
+					cout<<"activating cached zone"<<endl;															
+					m_kZones[i].m_iStatus = EZS_LOADED;					
+					
+					if(m_kZones[i].m_pkZone)
+						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					
+					continue;
+				}
+			
+				//zone is unloaded , lests load it
+				if(m_kZones[i].m_iStatus == EZS_UNLOADED)
+				{
+					cout<<"Loading zone"<<endl;
+					
+					//m_kZones[i].m_iStatus = EZS_LOADED;
+					// zone status is set in loadzone()
+					LoadZone(i);
+					
+					if(m_kZones[i].m_pkZone)
+						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_ALL);
+						
+					continue;
+				}				
+			}
+			//the zone is not tracked
+			else
+			{
+				//zone is loaded, set it as cached
+				if(m_kZones[i].m_iStatus == EZS_LOADED)
+				{
+					cout<<"zone is no longer tracked, setting as cached and starting timout"<<endl;
+					
+					m_kZones[i].m_iStatus = EZS_CACHED;
+					
+					if(m_kZones[i].m_pkZone)
+						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_NONE);
+						
+					m_kZones[i].m_fInactiveTime = fCurrentTime;
+					continue;
+				}
+				
+				//zone is cached, wait for timeout
+				if(m_kZones[i].m_iStatus == EZS_CACHED)
+				{
+					if( (fCurrentTime - m_kZones[i].m_fInactiveTime) > m_fZoneUnloadTime)
+					{
+						m_kZones[i].m_iStatus = EZS_UNLOADED;
+						
+						cout<<"cached zone timed out, unloading"<<endl;
+						UnLoadZone(i);		
+						
+						continue;
+					}
+				}				
+			}
+		}
+	}
+}
+
 
 /*
 bool EntityManager::LoadWorld(string strWDir, string strTempWDir)
@@ -2960,3 +3077,99 @@ void EntityManager::UpdateDeleteList(NetPacket* pkNetPacket)
 
 
 
+/*
+bool EntityManager::IsA(Entity* pkObj, string strStringType)
+{
+	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
+	if(!pkAt)
+		return false;	// Object not created from archtype at all :(.
+	
+	ObjectArcheType* pkParentAt;
+
+
+	bool bDone = false;
+	while(bDone){
+		if(pkAt->m_strName == strStringType)
+			return true;
+
+		pkParentAt = GetArcheType(pkAt->m_strParentName);
+		if(!pkParentAt)
+			return false;
+		else
+			pkAt = pkParentAt;
+		}
+
+	return false;
+}*/
+
+/*
+void EntityManager::AutoConnectZones()
+{
+	Vector3 kCenterPos;
+	Vector3 kCheckPos;
+	ZoneData* pkZone;
+	
+	vector<Vector3>	kAutoConnectDirs;
+	kAutoConnectDirs.push_back(Vector3(10,0,0));
+	kAutoConnectDirs.push_back(Vector3(-10,0,0));
+	kAutoConnectDirs.push_back(Vector3(0,10,0));
+	kAutoConnectDirs.push_back(Vector3(0,-10,0));
+	kAutoConnectDirs.push_back(Vector3(0,0,10));
+	kAutoConnectDirs.push_back(Vector3(0,0,-10));
+
+	// For each Zone.
+	for(unsigned int i=0;i<m_kZones.size();i++) {
+		kCenterPos = m_kZones[i].m_kPos;
+
+		// For each possible zone around this one.
+		for(unsigned int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
+			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
+			pkZone = GetZone(kCheckPos);
+			// If a zone add a link.
+			if(pkZone && (i != pkZone->m_iZoneID)) {
+				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
+			}
+		}
+	}
+}*/
+
+/*
+void EntityManager::Test_CreateZones()
+{
+	
+
+	m_kZones.clear();
+	int y = 0;
+	int iZonesSize = 10;
+	int iZonesSide = 100;
+	
+	Vector3 kPos;
+	Vector3 kRandOffset;
+
+	MazeGen GaaMaze;
+	GaaMaze.Load("./maze.bmp");
+
+
+	for(int x=0; x<iZonesSide; x++) 
+	{
+		for(int z=0; z<iZonesSide; z++) 
+		{
+			if(GaaMaze.aaiMaze[x][z] == 1) 
+			{
+				
+				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);								
+				CreateZone(kPos,Vector3(iZonesSize,iZonesSize,iZonesSize));//GetUnusedZoneID();
+			}
+		}
+	}
+
+//	AutoConnectZones();
+//	int ispya = 2;
+}*/
+
+/*
+int EntityManager::CreateZone()
+{
+	return CreateZone(Vector3(0,0,0),Vector3(8,8,8));
+}
+*/

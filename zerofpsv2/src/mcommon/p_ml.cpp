@@ -52,10 +52,11 @@ P_Ml::~P_Ml()
 				/***************
 					HACK FOR DEMO: Krash if -1
 				****************/
-				if(m_iSpawnZon != -1) {
-					m_pkEntityMan->LoadZone(m_iSpawnZon);
+				if(m_iSpawnZon != -1) 
+				{
+				//	m_pkEntityMan->LoadZone(m_iSpawnZon);
 					ent = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID(m_iSpawn);
-					}
+				}
 			}
 		}
 	
