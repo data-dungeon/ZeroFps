@@ -107,16 +107,16 @@ bool ZFVFileSystem::StartUp()
 	if(szDiv)
 		szDiv[1] = 0;
 
-	AddRootPath(szWorkDir);
+	AddRootPath(szWorkDir,"");
 	
 	// Add Base / Rip to root also.
 	string strDir;
 	strDir = string(szWorkDir) + string("extdata/bas/");
-	AddRootPath(strDir.c_str());
+	AddRootPath(strDir.c_str(),"data/");
 	strDir = string(szWorkDir) + string("extdata/rip/");
-	AddRootPath(strDir.c_str());
+	AddRootPath(strDir.c_str(),"data/");
 	strDir = string(szWorkDir) + string("extdata/dmdata/");
-	AddRootPath(strDir.c_str());
+	AddRootPath(strDir.c_str(),"data/");
 
 //	AddRootPath("h:/");
 	////////////////////////////////////////////////// [/zeb]
@@ -142,6 +142,30 @@ ZFVFileSystem::~ZFVFileSystem()
 
 }
 
+bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge)
+{
+	if(m_kRootPath[iRootIndex].m_strVfsPath.length() == 0)
+	{
+		// This is a pure root path that maps to the base of the VFS
+		strRootMerge = m_kRootPath[ iRootIndex ].m_strRootPath + strFileName;
+	}
+	else
+	{
+		// This is a path that maps into the VFS system.
+		if(strncmp( m_kRootPath[ iRootIndex ].m_strVfsPath.c_str(), strFileName.c_str(), 
+			m_kRootPath[ iRootIndex ].m_strVfsPath.length()) == 0)
+		{
+			strFileName.erase(0, m_kRootPath[ iRootIndex ].m_strVfsPath.length() );
+			strRootMerge = m_kRootPath[ iRootIndex ].m_strRootPath + strFileName;
+		}
+		else
+			return false;
+	}
+
+	return true;
+}
+
+
 FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 {
 	FILE*	pkFp;
@@ -157,16 +181,22 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	if(pkFp)
 		return pkFp;
 
-	unsigned int num_paths = m_kstrRootPath.size();
-		
+	unsigned int num_paths = m_kRootPath.size();
+	
+	// m_kRootPath[i].m_strRootPath + strFileName;
+
 	// Try to open from all active RootPaths.
-	for(unsigned int i=0; i <num_paths; i++) {
-		strRootMerge = m_kstrRootPath[i] + strFileName;
-		pkFp = fopen(strRootMerge.c_str(), szOptions);
-		if(pkFp) {
-			return pkFp;
-			}
+	for(unsigned int i=0; i <num_paths; i++) 
+	{
+		if(GetRootMerge(i, strFileName, strRootMerge)) 
+		{
+			pkFp = fopen(strRootMerge.c_str(), szOptions);
+			if(pkFp) {
+				return pkFp;
+				}
+
 		}
+	}
 
 	//dvoid hack
 	//if file still not open and it was opened for writing create directory
@@ -203,25 +233,31 @@ string ZFVFileSystem::GetFullPath(string strFileName)
 	string strRootMerge;
 	
 	// Try to open from all active RootPaths.
-	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
-		strRootMerge = m_kstrRootPath[i] + strFileName;
-		pkFp = fopen(strRootMerge.c_str(), "rb");
-		if(pkFp) {
-			fclose(pkFp);
-			return strRootMerge;
+	for(unsigned int i=0; i <m_kRootPath.size(); i++) 
+	{
+		//strRootMerge = m_kRootPath[i].m_strRootPath + strFileName;
+		if(GetRootMerge(i, strFileName, strRootMerge)) 
+		{
+			pkFp = fopen(strRootMerge.c_str(), "rb");
+			if(pkFp) 
+			{
+				fclose(pkFp);
+				return strRootMerge;
 			}
 		}
+	}
 
 	strRootMerge = "";
 	return strRootMerge;
 }
 
 
-void ZFVFileSystem::AddRootPath(string strRootPath)
+void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 {
-	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
-	m_kstrRootPath.push_back(strRootPath);
-	int iSize = m_kstrRootPath.size();
+	g_Logf("Mapping system %s to VFS %s\n", strRootPath.c_str(),strVfsPath.c_str());
+	//m_kstrRootPath.push_back(strRootPath);
+	m_kRootPath.push_back( VfsRootPath(strRootPath, strVfsPath) );
+	//int iSize = m_kstrRootPath.size();
 }
 
 string	ZFVFileSystem::GetCurrentWorkingDir()
@@ -244,12 +280,13 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 {
 	string	strRootMerge;
 
-	int iSize = m_kstrRootPath.size();
+	int iSize = m_kRootPath.size();
 
 	// Try to open from all active RootPaths.
-	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
-		strRootMerge = m_kstrRootPath[i] + strName;
-		m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
+	for(unsigned int i=0; i <m_kRootPath.size(); i++) {
+		//strRootMerge = m_kRootPath[i].m_strRootPath + strName;
+		if(GetRootMerge(i, strName, strRootMerge)) 
+			m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
 		}
 
 	// Remove All ..
@@ -282,6 +319,7 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
 	unsigned int i;
 	vector<string> kFiles;
+	string strRootMerge;
 
 	switch(cmdid) {
 		case FID_CD:
@@ -345,9 +383,31 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_LISTROOT:
-			for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
-				GetSystem().Printf(" Root[%d] = %s", i, m_kstrRootPath[i].c_str()); 
+			// Check for file in all root dirs.
+			GetSystem().Printf("Now Checking for %s in rootpaths.", kCommand->m_kSplitCommand[1]); 
+
+			for(unsigned int i=0; i <m_kRootPath.size(); i++)
+			{
+				if(GetRootMerge(i, kCommand->m_kSplitCommand[1], strRootMerge))
+				{
+					GetSystem().Printf(" [%d] = Yes : %s ", i, strRootMerge.c_str()); 
 				}
+				else 
+				{
+					GetSystem().Printf(" [%d] = No : %s ", i, strRootMerge.c_str()); 
+				}
+
+
+
+			}
+
+
+
+/*			for(unsigned int i=0; i <m_kRootPath.size(); i++)
+			{
+				GetSystem().Printf(" Root[%d] = %s maps to %s", i, m_kRootPath[i].m_strRootPath.c_str(),
+					m_kRootPath[i].m_strVfsPath.c_str()); 
+			}*/
 			
 			break;
 	};

@@ -41,6 +41,14 @@ public:
 	int GetSize();																	// Get Size of file in bytes.
 };
 
+class VfsRootPath
+{
+public:
+	VfsRootPath(string strRoot, string strVfs) : m_strRootPath(strRoot), m_strVfsPath(strVfs) {}
+	string	m_strRootPath;
+	string	m_strVfsPath;
+};
+
 /**	\brief	ZeroFps Virtual File Systems.
 		\ingroup Basic
 
@@ -56,9 +64,10 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		friend class ZFVFile;
 		friend class ZFIni;
 		
-		ZFBasicFS*		m_pkBasicFS;					
-		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
-		string			m_kCurentDir;
+		ZFBasicFS*				m_pkBasicFS;					
+		vector<string>			m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
+		vector<VfsRootPath>	m_kRootPath;
+		string					m_kCurentDir;
 
 		enum FuncId_e
 			{
@@ -73,7 +82,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		ZFVFileSystem();
 		~ZFVFileSystem();
 
-		void AddRootPath(string strRootPath);		///< Add path to list of active roots
+		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
 		void GetNumOfRootPaths();						///< Get num of active rootpaths
 
@@ -82,7 +91,6 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		void Flush();										///< Close all unused archives.
 		bool Exists(string strFileName);				///< Returns true if a file was found.
 		
-
 		// Open / Close
 		void ArchiveOpen() { }					
 		void ArchiveClose()  { }
@@ -92,6 +100,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		void ArchivePack()  { }
 	
 		string GetFullPath(string strFileName);
+		bool GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge);
 
 		string GetCurrentWorkingDir();
 		bool CreateDir(string strDir);
