@@ -21,7 +21,10 @@ void ObjectManager::Remove(Object* pkObject) {
 void ObjectManager::Update(){
 	UpdateDelete();
 
+	
+
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->ObjectUpdate();	
 		(*it)->Update();
 	}
 }
@@ -31,8 +34,10 @@ void ObjectManager::Update(int iType){
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		//if the object is of specified type, then update it
-		if((*it)->GetType()==iType)
+		if((*it)->GetType()==iType){
+			(*it)->ObjectUpdate();				
 			(*it)->Update();
+		}
 	}
 }
 

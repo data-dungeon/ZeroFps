@@ -11,6 +11,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
 	AddProperty(new GravityProperty(pkFps));
 	
 	onGround=false;
+	m_pkFps=pkFps;
 
 }
 
@@ -25,9 +26,9 @@ void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)
 			pc->ner=0;			
 		}
 */		
-		GetPos()=kPos;
-		m_kVel.y=0;
-		onGround=true;
+	GetPos()=kPos;
+	m_kVel.y=0;
+	onGround=true;
 		
 	} else if(bContinue){
 		pkObject->HandleCollision(this,kPos,false);
@@ -35,3 +36,13 @@ void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)
 	
 
 }
+
+void PlayerObject::ObjectUpdate() {
+//	m_kPos+=m_kVel*m_pkFps->GetFrameTime();	
+
+
+}
+
+
+
+

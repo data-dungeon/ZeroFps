@@ -97,7 +97,7 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-
+/*
 
 	for(int i=0;i<1;i++) {
 		Object *ball=new BallObject(test);
@@ -112,7 +112,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-
+*/
 
 	glEnable(GL_LIGHTING );
 	

@@ -38,6 +38,7 @@ class ENGINE_API Object {
 		bool Update(char* acName);
 		
 
+
 //		inline void Static(bool newStatic){m_bStatic=newStatic;};
 		
 		inline Vector3 &GetPos(){return m_kPos;};
@@ -49,7 +50,7 @@ class ENGINE_API Object {
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-		
+		virtual void ObjectUpdate();		
 };
 
 #endif

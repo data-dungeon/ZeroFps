@@ -9,6 +9,7 @@
 
 class PlayerObject: public Object {
 	private:
+		ZeroFps *m_pkFps;
 
 	public:
 		bool onGround;
@@ -17,7 +18,7 @@ class PlayerObject: public Object {
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
-
+		void ObjectUpdate();
 };
 
 

@@ -54,7 +54,7 @@ bool Object::RemoveProperty(char* acName) {
 
 void Object::Update(){
 	//apply the velocity vector to the position vector
-	m_kPos+=m_kVel;
+//	m_kPos+=m_kVel;
 
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		(*it)->Update();
@@ -77,15 +77,18 @@ void Object::Remove() {
 	}
 }
 
+void Object::ObjectUpdate() {
+	
+}
+
+
+
 void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 //	cout<<"This Object Has not Collision handler"<<endl;
 	if(bContinue)
 		pkObject->HandleCollision(this,kPos,false);
-		
-		
-		
-	
-/*			EXAMPLE of how the collisionhandler may look like in a subclass of Object
+
+/*	EXAMPLE of how the collisionhandler may look like in a subclass of Object
 			
 
 	//if a ball colides with the player destroy it
@@ -98,7 +101,6 @@ void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 	}
 */
 }
-
 
 
 

@@ -51,8 +51,9 @@ void PlayerControlProperty::Update() {
 	
 	if(m_pkInput->Pressed(KEY_Q) || m_pkInput->Pressed(MOUSERIGHT) ){
 		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
-			m_pkObject->GetVel().y+=0.006*m_pkFps->GetFrameTime();;
-			m_pkObject->GetPos().y+=0.003;
+			m_pkObject->GetVel().y+=0.01;// *m_pkFps->GetFrameTime();;						
+			dynamic_cast<PlayerObject*>(m_pkObject)->onGround=false;
+//			m_pkObject->GetPos().y+=0.003;
 		}
 	}
 	
