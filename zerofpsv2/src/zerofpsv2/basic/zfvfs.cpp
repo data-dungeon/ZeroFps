@@ -115,6 +115,8 @@ bool ZFVFileSystem::StartUp()
 	AddRootPath(strDir.c_str());
 	strDir = string(szWorkDir) + string("extdata/rip/");
 	AddRootPath(strDir.c_str());
+	strDir = string(szWorkDir) + string("extdata/dmdata/");
+	AddRootPath(strDir.c_str());
 
 //	AddRootPath("h:/");
 	////////////////////////////////////////////////// [/zeb]
