@@ -32,7 +32,7 @@ void P_ArcadeCharacter::Update()
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
 		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
-/*		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
+		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
 
 		if(m_kDir.Length() == 0)
 			m_kDir = Vector3(0,0,-1);		
@@ -45,12 +45,14 @@ void P_ArcadeCharacter::Update()
 
 	//	cout<<fAng<<"  "<<kCurrentDir.Length()<<endl;
 		
-		
-		if(fS > 0)
-			GetObject()->RotateLocalRotV(Vector3(0, 10 *fAng,0));
-		else
-			GetObject()->RotateLocalRotV(Vector3(0,-10 *fAng,0));
-*/		
+		if(fAng != 0)
+		{		
+			if(fS > 0)
+				GetObject()->RotateLocalRotV(Vector3(0, 10 *fAng,0));
+			else
+				GetObject()->RotateLocalRotV(Vector3(0,-10 *fAng,0));
+		};
+/*		
 		
 		Vector3 kNewDir = m_kDir  ;
 		if(kNewDir.Length() == 0)
@@ -64,7 +66,7 @@ void P_ArcadeCharacter::Update()
 		kRot.LookDir(kNewDir,Vector3(0,1,0));		
 		kRot.Transponse();
 		GetObject()->SetLocalRotM(kRot);
-		
+*/		
 			
 		//move character
 		Vector3 kVel(0,0,0);	
