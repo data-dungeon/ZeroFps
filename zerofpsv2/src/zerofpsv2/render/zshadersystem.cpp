@@ -1187,9 +1187,9 @@ void ZShaderSystem::Waves()
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		//float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
-		float off = m_pkVertexPointer[i].x ;
-		float bla = float( sin((SDL_GetTicks()/200.0 + off )/10.0)*4.0 );		
-		m_pkVertexPointer[i] += Vector3(0,bla,0);
+		float off = m_pkVertexPointer[i].x * m_pkVertexPointer[i].y * m_pkVertexPointer[i].z;
+		float bla = float( sin((SDL_GetTicks()/200.0 + off )/10.0)*0.1 );		
+		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
 	}
 }
