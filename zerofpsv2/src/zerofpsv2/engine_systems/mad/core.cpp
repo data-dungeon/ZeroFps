@@ -173,6 +173,15 @@ int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 	return 0;
 }*/
 
+string Mad_Core::GetAnimationName(int iIndex)
+{
+	if( iIndex >= 0 && iIndex < m_kBoneAnim.size())
+		return m_kBoneAnim[iIndex].m_szName;
+	else
+		return "error";
+	
+}
+
 int Mad_Core::GetAnimIndex(char* szName)
 {
 	for(unsigned int i=0; i<m_kBoneAnim.size(); i++) {
@@ -235,6 +244,7 @@ void Mad_Core::SetupBonePose()
 		return;
 		}
 
+	// NÅTT CP CPCP CPCPPPPPPPPPPPP här...när en animation körs när maden sparas, och när man sedan laddar in den igen så blir dessa två värden helt cp
 	//DVOID FUL HACK...
 	if(iStartFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
 		iStartFrame = 0;

@@ -53,6 +53,9 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void SetNextAnimation(char* szName);		
 		void Update();
 
+		int GetCurrentAnimation();
+		string GetCurrentAnimationName();
+		
 		void SetVisible(bool bVisible);
 		void SetShadowGroup(int iGroup) {m_iShadowGroup = iGroup;};
 		int GetShadowGroup() {return m_iShadowGroup;};

@@ -83,15 +83,16 @@ public:
 	void UpdateAnimation(float dDelta);		// Move all animations forward.
 	
 	void PlayAnimation(int iAnimNum, float fStartTime);
-	 void  PlayAnimation(char* szName, float fStartTime);
-	int	 GetCurrentAnimation();
+	void PlayAnimation(char* szName, float fStartTime);
+	int  GetCurrentAnimation();
+	string GetCurrentAnimationName();
 	void SetLoopedStatus(bool bLoop);
 	bool IsLooped();
 
 	void SetNextAnimation(int iAnimNum);
 	virtual void SetNextAnimation(char* szName);
 	void PlayNextAnimations(void);
-	int	 GetNextAnimation();
+	int  GetNextAnimation();
 
 	void SetAnimationActive(bool bPause);
 	bool GetAnimationActive();

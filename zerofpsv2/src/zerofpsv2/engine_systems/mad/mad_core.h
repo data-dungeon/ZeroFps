@@ -566,6 +566,7 @@ public:
 	float GetAnimationLengthInS(int iAnim);
 //	int	  GetAnimationTimeInFrames(int iAnim);
 	int	GetAnimIndex(char* szName);
+	string GetAnimationName(int iIndex);
 	void  SetupBonePose();
 	void  SetUpBindPose();
 	int	  GetNumOfAnimations();

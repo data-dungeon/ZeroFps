@@ -137,6 +137,16 @@ void P_Mad::SetBase(const char* acName)
 	SetNetUpdateFlag(true);
 }
 
+int P_Mad::GetCurrentAnimation()
+{
+	return Mad_Modell::GetCurrentAnimation();
+}
+
+string P_Mad::GetCurrentAnimationName()
+{
+	return Mad_Modell::GetCurrentAnimationName();
+}
+
 void P_Mad::SetAnimation(char* szName, float fStartTime)
 {
 	PlayAnimation(szName,fStartTime);

@@ -210,7 +210,7 @@ vector<PropertyValues> P_PfPath::GetPropertyValues()
 void P_PfPath::SetPath(vector<Vector3> kPath)
 {
 	m_kPath = kPath;
-	m_iNextGoal = 1;
+	m_iNextGoal = 1;			//dvoid...satte till 1 så inte gubben rycker när man klickar många gånger
 }
 
 /**	\brief	Makes a pathfind to a choosen postition.

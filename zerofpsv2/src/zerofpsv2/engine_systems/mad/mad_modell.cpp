@@ -160,6 +160,18 @@ int		Mad_Modell::GetNextAnimation()
 	return m_iNextAnimation;
 }
 
+string Mad_Modell::GetCurrentAnimationName()
+{
+	if(kMadHandle.IsValid() == false)
+		return "error";
+	
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return "error";
+
+	return pkCore->GetAnimationName(iActiveAnimation);
+
+}
 
 int		Mad_Modell::GetCurrentAnimation()
 {
