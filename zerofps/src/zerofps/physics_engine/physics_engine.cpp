@@ -68,6 +68,9 @@ bool Physics_Engine::AddBody(Body* pkBody)
 	if(ExistBody(pkBody))
 		return false;
 
+//	if(BodyCollides(pkBody))
+//		return false;
+
 	m_kBodys.push_back(pkBody);
 	
 	cout<<"Body Added to physics engine"<<endl;
@@ -134,7 +137,7 @@ void Physics_Engine::UpdateForces()
 		if(!(*it)->m_bResting) 
 		{
 			if((*it)->m_bGravity)
-				(*it)->m_kForces += Vector3(0,-8.82,0);
+				(*it)->m_kForces += Vector3(0,-9.82,0);
 		}
 	}
 }
@@ -442,7 +445,7 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal) / pkCol->pkBody1->m_fMass;
 	
 		//apply friction force
-		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody1->m_fMass;
+		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.1)) / pkCol->pkBody1->m_fMass;
 
 		//check if body can rest
 		UpdateResting(pkCol->pkBody1);	
@@ -480,6 +483,27 @@ void Physics_Engine::UpdateResting(Body* pkBody1)
 	{
 		pkBody1->Rest(NULL);	
 	}
+}
+
+bool Physics_Engine::BodyCollides(Body* pkBody)
+{
+	for(list<Body*>::iterator bodyit2 =  m_kBodys.begin(); bodyit2 != m_kBodys.end(); bodyit2++) 
+	{
+		if( pkBody == (*bodyit2)) 
+			continue;
+		
+		if( pkBody->m_bResting && (*bodyit2)->m_bResting)
+			continue;
+		
+		int check = CollideBody(&m_kBodyCopy1,&m_kBodyCopy2);	
+
+		if(check == PENETRATING || check == COLLISSION)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 

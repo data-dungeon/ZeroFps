@@ -25,7 +25,8 @@ BodyProperty::~BodyProperty()
 
 void BodyProperty::Init()
 {
-	Enable();
+	if(!Enable())
+		cout<<"Body did not get enabled cos it collides with another body"<<endl;
 
 }
 

@@ -84,6 +84,7 @@ class PHYSICSENGINE_API Physics_Engine : public ZFObject
 		
 		Collission* FindNextCollission();
 
+		bool BodyCollides(Body* pkBody);
 };
 
 #endif

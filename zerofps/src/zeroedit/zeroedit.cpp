@@ -133,36 +133,26 @@ void ZeroEdit::OnInit(void)
 		
 	Plane* ground = new Plane;
 	ground->Set(Vector3(0,1,0),4);
+
+/*	Plane* left = new Plane;	
+	Plane* right = new Plane;
+	Plane* front = new Plane;
+	Plane* back = new Plane;
+
+	ground->Set(Vector3(0,1,0),4);
+	left->Set(Vector3(1,0,0),5);
+	right->Set(Vector3(-1,0,0),5);
+	front->Set(Vector3(0,0,-1),5);
+	back->Set(Vector3(0,0,1),5);
 	
-	pkPhysics_Engine->AddPlane(ground);
 	
-/*	
-	string kName = "../data/textures/pointer.tga";
-	Image kImg1;
-	if( kImg1.load(kName.c_str()))
-		kImg1.save("imgtest1.tga", false);
-	string kName2 = "../data/textures/text/devstr.bmp";
-	Image kImg2;
-	if( kImg2.load(kName2.c_str()))
-		kImg2.save("imgtest2.tga", false);
+	pkPhysics_Engine->AddPlane(left);
+	pkPhysics_Engine->AddPlane(right);
+	pkPhysics_Engine->AddPlane(front);
+	pkPhysics_Engine->AddPlane(back);
 */	
-/*
-	pkTexMan->BindTexture("grass2.tga",0);			
-<<<<<<< zeroedit.cpp
-	for(int x=0;x<100;x++)
-		for(int y=0;y<100;y++)
-			pkTexMan->PsetRGBA(x,y,255,255,255,255);
-	pkTexMan->SwapTexture();				
-=======
-	
-	for(int x=0;x<100;x++)
-		for(int y=0;y<100;y++)
-			pkTexMan->PsetRGB(x,y,255,255,255);
-			
-	pkTexMan->SwapTexture();					
->>>>>>> 1.150
-	pkTexMan->SaveTexture("nisse.tga",0);
-*/
+	pkPhysics_Engine->AddPlane(ground);
+
 
 	pkInput->ToggleGrab();
 	
@@ -175,12 +165,13 @@ void ZeroEdit::OnIdle(void)
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();		
 	
+	
 /*	// fina bollar =)
-	if(pkFps->GetGameTime() - plop >1)
+	if(pkFps->GetGameTime() - plop >2)
 	{
 		Object *object = new BallObject();
-		float x = ((rand()%1000)-500) /1000.0;
-		float z = ((rand()%1000)-500) /1000.0;		
+		float x = ((rand()%6000)-3000) /1000.0;
+		float z = ((rand()%6000)-3000) /1000.0;		
 		object->SetPos(Vector3(x,10,z));	
 		object->SetPos(Vector3(x,10,z));					
 		
@@ -188,7 +179,7 @@ void ZeroEdit::OnIdle(void)
 		
 		plop= pkFps->GetGameTime();
 	}
-*/	
+*/
 	Input(); 	
  	pkFps->UpdateCamera(); 	
  	SetPointer();
