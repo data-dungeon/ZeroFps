@@ -96,7 +96,6 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	*/
 	pkLight->Add(sol);
 	
-	int i;
 	
 /*	for( i=0;i<1;i++) {
 		Object *ball=new WalkerObject();
@@ -107,6 +106,8 @@ void Test::OnInit(void) {
 		pkCollisionMan->Add(ball);
 	}*/
 
+
+	int i;
 
 	Object *sussi;
 	for(i=0;i<1;i++) {
@@ -140,10 +141,17 @@ void Test::OnInit(void) {
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
-	
-	
+}
+
+void Test::OnServerStart(void)
+{
+}
+
+void Test::OnClientStart(void)
+{
 
 }
+
 
 
 void Test::OnIdle(void) {

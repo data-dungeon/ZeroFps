@@ -38,6 +38,7 @@ class ENGINE_API Object {
 //		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
 		void AddProperty(char* acName);
+		Property* AddProxyProperty(char* acName);
 		bool RemoveProperty(char* acName);
 		void Update();
 		void Update(int iType);		

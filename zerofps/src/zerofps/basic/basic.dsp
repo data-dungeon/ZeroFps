@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                            $(ProjDir)\debug\*.lib                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                            $(ProjDir)\debug\*.lib                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Release Profile"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                            $(ProjDir)\debug\*.lib                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -194,6 +194,14 @@ SOURCE=.\vector3.cpp
 
 SOURCE=.\vector4.cpp
 # SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\zffile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfiofile.cpp
 # End Source File
 # Begin Source File
 
@@ -300,6 +308,18 @@ SOURCE=.\vector4.h
 # Begin Source File
 
 SOURCE=.\zfassert.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zffile.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfio.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfiofile.h
 # End Source File
 # Begin Source File
 

@@ -54,6 +54,16 @@ void Object::AddProperty(char* acName)
 	AddProperty(pProp);
 }
 
+Property* Object::AddProxyProperty(char* acName)
+{
+	Property* pProp = GetProperty(acName);
+	if(pProp)
+		return pProp;
+	AddProperty(acName);
+	pProp = GetProperty(acName);
+	return pProp;
+}
+
 
 bool Object::RemoveProperty(char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
@@ -159,13 +169,20 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write(m_kPos);
 	pkNetPacket->Write(m_kRot);
 
+	char szPropertyName[256];
+
 	// Loop all properys med Propery::bNetwork = true
-/*	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork) {
+			cout << "Object::PackTo : " << (*it)->m_acName << endl;
+			strcpy(szPropertyName, (*it)->m_acName);
 			pkNetPacket->Write_Str((*it)->m_acName);
+			Property* hora = (*it);
 			(*it)->PackTo(pkNetPacket);
 			}
-	}*/
+	}
+
+	pkNetPacket->Write_Str("");
 }
 
 void Object::PackFrom(NetPacket* pkNetPacket)
@@ -173,12 +190,15 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	pkNetPacket->Read(m_kPos);
 	pkNetPacket->Read(m_kRot);
 
-/*
-	Read Pos, Rotation.
-	Så länge Read Propery Str.
-		Get Prop Ptr eller skapa om inte finns.
-		property->PackFrom(pacData)*/
+	char szProperty[256];
 
+	pkNetPacket->Read_Str(szProperty);
+	while(strcmp(szProperty,"") != 0) {
+		Property* pProp  = AddProxyProperty(szProperty);
+		pProp->PackFrom(pkNetPacket);
+	
+		pkNetPacket->Read_Str(szProperty);
+		}	
 }
 
 bool Object::NeedToPack()

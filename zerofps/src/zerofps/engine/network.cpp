@@ -87,6 +87,12 @@ NetWork::~NetWork()
 	cout << "SDLNet_Quit()" << endl;
 }
 
+int NetWork::GetNumOfClients(void)
+{
+	return RemoteNodes.size();
+}
+
+
 void NetWork::StartSocket(bool bStartServer)
 {
 	if(m_pkSocket) {

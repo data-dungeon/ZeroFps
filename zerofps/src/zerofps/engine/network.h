@@ -6,7 +6,7 @@
 #include "console.h"
 #include <SDL/SDL_net.h>
 
-#define MAX_PACKET_SIZE	256
+#define MAX_PACKET_SIZE	1024
 #define MAX_NETWORKNAME	16
 
 #define ZF_NETTYPE_CONTROL	1
@@ -107,6 +107,8 @@ public:
 	~NetWork();
 
 	NetWorkStatus	m_eNetStatus;
+
+	int GetNumOfClients(void);
 
 	bool Init();
 	bool Close();

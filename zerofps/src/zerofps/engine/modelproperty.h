@@ -21,8 +21,8 @@ class ENGINE_API ModelProperty: public Property {
 		ModelProperty();
 		void Update();
 
-		void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+		void PackTo(NetPacket* pkNetPacket) ;
+		void PackFrom(NetPacket* pkNetPacket) ;
 
 };
 

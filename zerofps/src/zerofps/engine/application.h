@@ -41,6 +41,9 @@ class ENGINE_API Application : public ZFObject {
 		virtual void OnIdle(void)=0;
 		virtual void OnHud(void)=0;
 
+		virtual void OnServerStart(void)=0;
+		virtual void OnClientStart(void)=0;
+
 };
 
 

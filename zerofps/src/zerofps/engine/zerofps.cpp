@@ -51,6 +51,9 @@ ZeroFps::ZeroFps(void)
 
 	RegisterPropertys(this);
 
+
+//	Property* ptest = new ModelProperty;
+
 }
 
 ZeroFps::~ZeroFps()
@@ -133,6 +136,7 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
+		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 
 		switch(m_iState){
 			case state_normal:{
@@ -396,10 +400,12 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
-			m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
-//			m_pkNetWork->ClientStart("192.168.0.7:4242"); // hugo
+			//m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
+			//m_pkNetWork->ClientStart("192.168.0.7:4242"); // hugo
+			m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
 			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
 			m_pkConsole->Printf("FID_CONNECT");
+			m_pkApp->OnClientStart();
 			break;
 
 		case FID_SERVER:
@@ -410,6 +416,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
 			m_pkNetWork->ServerStart();
+
+			m_pkApp->OnServerStart();
 			break;
 	}	
 }

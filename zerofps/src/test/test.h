@@ -51,6 +51,10 @@ class Test :public Application {
 		void OnIdle(void);
 		void OnHud(void);
 
+
+		void OnServerStart(void);
+		void OnClientStart(void);
+		
 		void input();
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);

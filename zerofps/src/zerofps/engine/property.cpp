@@ -7,6 +7,16 @@ Property::Property()
 	m_pkObject=NULL;
 }
 
+void Property::PackTo(NetPacket* pkNetPacket) 
+{
+
+}
+
+void Property::PackFrom(NetPacket* pkNetPacket) 
+{ 
+
+}
+
 
 
 

@@ -33,8 +33,8 @@ class ENGINE_API Property
 			
 		virtual ~Property(){};
 		virtual void Update()=0;			
-		void PackTo(NetPacket* pkNetPacket) { };
-		void PackFrom(NetPacket* pkNetPacket) { };
+		virtual void PackTo(NetPacket* pkNetPacket) ;
+		virtual void PackFrom(NetPacket* pkNetPacket) ;
 		
 		inline int GetType(){ return m_iType ;};
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
