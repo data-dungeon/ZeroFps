@@ -26,6 +26,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		enum FuncId_e
 		{
 			FID_LOAD,
+			FID_SAVE,
 		};
 
 		struct StartBaseInfo {
@@ -52,6 +53,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMinCamDistance;
 		float		m_fMaxCamDistance;
 		
+		string	m_strSaveDirectory;
+		
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);		
 		Entity*	GetTargetObject();			
@@ -59,7 +62,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void Input();
 		void RegisterPropertys();
 		
-		void StartNewGame(string strClanName,string strClanColor);
+		bool StartNewGame(string strClanName,string strClanColor);
+		bool LoadGame(string strClanName);
 		void SaveGame();
 	
 	public:

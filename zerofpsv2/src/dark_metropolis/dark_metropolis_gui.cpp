@@ -120,12 +120,18 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		{
 			if(!strlen(GetWnd("ClanNameEB")->GetText()) == 0)
 			{
-				LoadGuiFromScript(m_pkScript, 
-					"data/script/gui/dm_ingame.lua");
-				pkMainWnd->Hide();
 			
 				//start game
-				StartNewGame(GetWnd("ClanNameEB")->GetText(),GetWnd("TeamColorCB")->GetText());
+				if(StartNewGame(GetWnd("ClanNameEB")->GetText(),GetWnd("TeamColorCB")->GetText()))
+				{				
+					LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
+					pkMainWnd->Hide();
+				}
+				else
+				{
+					//här fär du gärna lägga till något klagomål på att en clan med det namnet redan fins
+				
+				}
 			}
 		}
 		else

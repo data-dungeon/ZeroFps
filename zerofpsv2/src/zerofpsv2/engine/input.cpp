@@ -435,6 +435,7 @@ void Input::RelMouseXY(int &iX,int &iY)
 
 		if(m_iMouseX==-1)
 			SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);		
+		
 		iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
 		iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
 

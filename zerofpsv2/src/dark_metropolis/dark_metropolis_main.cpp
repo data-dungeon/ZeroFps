@@ -38,8 +38,10 @@ void DarkMetropolis::OnInit()
 	m_fMaxCamDistance = 10;
 	m_fDistance = 0;	
 	m_fAngle = 0;
+	m_strSaveDirectory = "clans/";
 	
-	Register_Cmd("load",FID_LOAD);		
+	Register_Cmd("load",FID_LOAD);			
+	Register_Cmd("save",FID_SAVE);		
 
 
 	m_pkLight->SetLighting(true);
@@ -177,6 +179,7 @@ void DarkMetropolis::Input()
 	//setup player controls
 	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
 	{
+		m_pkInput->ShowCursor(false);
 
 		if(m_pkCameraProp)
 		{
@@ -194,6 +197,8 @@ void DarkMetropolis::Input()
 			
 		}
 	}
+	else
+		m_pkInput->ShowCursor(true);
 
 	if(m_pkInputHandle->VKIsDown("click"))
 	{
@@ -239,19 +244,55 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;		
 		}
+
+			
+		case FID_SAVE:
+			SaveGame();
+			break;
 	}
 }
 
-void DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
+
+bool DarkMetropolis::LoadGame(string strClanName)
+{
+	m_kGameInfo.strClanName = strClanName;
+
+	string strDir = m_strSaveDirectory + string("/") + strClanName;
+	string strBlub = string("load dmworld ") + strDir;
+
+	if(!m_pkBasicFS->DirExist(strDir.c_str()))
+	{
+		cout<<"ERROR clan "<<strClanName<<" does not exist"<<endl;	
+		return false;
+	}
+	
+	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);	
+	
+	return true;
+}
+
+bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 {
 	m_kGameInfo.strClanName = strClanName;
 	m_kGameInfo.strClanColor = strClanColor;
 	
-	string strBlub = "load dmworld "+strClanName;
+	//make sure samegame directory exist
+	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
+	
+	string strDir = m_strSaveDirectory + string("/") + strClanName;
+	string strBlub = string("load dmworld ") + strDir;
+	
+	if(m_pkBasicFS->DirExist(strDir.c_str()))
+	{
+		cout<<"ERROR clan already exist";
+		return false;
+	}
+	
+	
 
 	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);
 
-
+	return true;
 }
 
 void DarkMetropolis::SaveGame()
