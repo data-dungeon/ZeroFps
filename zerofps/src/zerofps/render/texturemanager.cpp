@@ -347,10 +347,11 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_ALPHA_SIZE,&iASize);		
 	
 	iDepth = iRSize+iGSize+iBSize+iASize;
-	cout << " iInternalFormat "<< iInternalFormat << "\n";
-	cout << " iDepth "<< iDepth << "\n";
 	
 	/*
+	cout << " iInternalFormat "<< iInternalFormat << "\n";
+	cout << " iDepth "<< iDepth << "\n";	
+	
 	cout<<"width: "<<iWidth<<endl;
 	cout<<"Height:"<<iHeight<<endl;
 	cout<<"Depth: "<<iDepth<<endl;		
@@ -603,7 +604,6 @@ Uint32 TextureManager::GetPixel(int x,int y)
 	SDL_Surface* surface = m_iTextures[m_iCurrentTexture]->m_pkImage;
 
 	int bpp = surface->format->BytesPerPixel;
-	/* Here p is the address to the pixel we want to retrieve */
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
 	switch(bpp) {
@@ -670,7 +670,6 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 //	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4 || iInternalFormat == GL_RGBA8)
 	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4 || iInternalFormat == GL_RGBA8 || iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)	
 	{
-		//cout<<"GL_RGBA"<<endl;
 		iFormat = GL_RGBA;
 		iType = GL_UNSIGNED_INT_8_8_8_8;
 	}

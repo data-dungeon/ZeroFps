@@ -98,8 +98,7 @@ class ZeroEdit :public Application {
 		Camera* m_pkCamera;
 		HeightMap* m_pkMap;
 		
-//		list<LandType> m_kLandTypes;
-		
+	
 		int m_iMode;
 	
 		Vector3 m_kDrawPos;
@@ -117,6 +116,12 @@ class ZeroEdit :public Application {
 		
 		int m_iEditMask;
 		bool m_iSmooth;
+		
+		int m_iMaskColorR;		
+		int m_iMaskColorG;				
+		int m_iMaskColorB;				
+		int m_iMaskColorA;				
+		
 		
 		float m_fTimer;
 		float m_fDrawRate;

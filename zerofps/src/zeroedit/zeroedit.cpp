@@ -112,6 +112,16 @@ void ZeroEdit::OnInit(void)
 	m_iSmooth=1;
 	g_ZFObjSys.RegisterVariable("g_smooth", &m_iSmooth,CSYS_INT);	
 	
+	m_iMaskColorR=255;
+	g_ZFObjSys.RegisterVariable("g_mcolorr", &m_iMaskColorR,CSYS_INT);	
+	m_iMaskColorG=255;
+	g_ZFObjSys.RegisterVariable("g_mcolorg", &m_iMaskColorG,CSYS_INT);	
+	m_iMaskColorB=255;
+	g_ZFObjSys.RegisterVariable("g_mcolorb", &m_iMaskColorB,CSYS_INT);	
+	m_iMaskColorA=16;
+	g_ZFObjSys.RegisterVariable("g_mcolora", &m_iMaskColorA,CSYS_INT);	
+	
+	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
 
@@ -1013,7 +1023,7 @@ void ZeroEdit::Input()
 			}
 			break;
 
-		case KEY_F12:
+		case KEY_F10:
 			if(m_pkGui->m_pkWorkPanel->IsVisible())
 				m_pkGui->m_pkWorkPanel->Hide();
 			else
@@ -1285,7 +1295,7 @@ void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 	m_pkMap->GetMapXZ(kPencilPos.x,kPencilPos.z);
 		
 		
-	m_pkMap->DrawMask(int(kPencilPos.x),int(kPencilPos.z),m_iEditMask,m_iPencilSize,255,255,255,20);
+	m_pkMap->DrawMask(int(kPencilPos.x),int(kPencilPos.z),m_iEditMask,m_iPencilSize,m_iMaskColorR,m_iMaskColorG,m_iMaskColorB,m_iMaskColorA);
 		
 
 }

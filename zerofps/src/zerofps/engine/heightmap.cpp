@@ -624,6 +624,7 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 			
 			SDL_GetRGBA(old,  m_pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
 					
+			//grr hata Uint8
 			pr=cr;
 			pg=cg;			
 			pb=cb;			
@@ -634,6 +635,7 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 			pb+=b;			
 			pa+=a;
 			
+			//fula men nödvändiga =P
 			if(pr >255)
 				pr = 255;
 			if(pg >255)
@@ -642,6 +644,15 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 				pb = 255;
 			if(pa >255)
 				pa = 255;
+
+			if(pr <0)
+				pr = 0;
+			if(pg <0)
+				pg = 0;
+			if(pb <0)
+				pb = 0;
+			if(pa <0)
+				pa = 0;
 
 			m_pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
 		}
