@@ -263,13 +263,14 @@ void MistClient::Input()
 
 	int iPressedKey = pkInput->GetQueuedKey();
 
+	SoundInfo kSound;
+
 	switch(iPressedKey)
 	{
 	case KEY_P:
 		{
 			static int COUNTER = 0;
 
-			SoundInfo kSound;
 			kSound.m_bLoop = true;
 			kSound.m_kDir = Vector3(0,0,-1);
 			kSound.m_kPos = Vector3(0,0,0);
@@ -294,6 +295,19 @@ void MistClient::Input()
 			
 			pkAudioSys->ActivateSound(kSound);
 		}
+		break;
+
+	case KEY_O:
+
+		kSound.m_kDir = Vector3(0,0,-1);
+		kSound.m_kPos = Vector3(0,0,0);
+		kSound.m_bLoop = true;
+
+		strcpy(kSound.m_szFile, "data/sound/dummy.wav");
+		if(!pkAudioSys->DestroySound(kSound))
+			printf("Failed to desroy sound\n");
+		else
+			printf("Succedded to desroy sound\n");
 		break;
 	}
 

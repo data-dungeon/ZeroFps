@@ -441,9 +441,52 @@ bool ZFAudioSystem::ActivateSound(SoundInfo kSound)
 	return true;
 }
 
-bool ZFAudioSystem::StopSound(SoundInfo kSound)
+bool ZFAudioSystem::DestroySound(SoundInfo kSound)
 {
-	return true;
+	SoundInfo* pkRemoveSound = NULL;
+
+	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
+	for( ; itSound != m_kActiveSounds.end(); itSound++)  
+	{
+		SoundInfo* pkSound = (*itSound);
+
+		if(pkSound->m_kPos == kSound.m_kPos)
+		{
+			if(strcmp(pkSound->m_szFile, kSound.m_szFile) == 0)
+			{
+				if(pkSound->m_bLoop == kSound.m_bLoop)
+				{
+					pkRemoveSound = pkSound;
+					break;
+				}
+			}
+		}
+	}
+
+	// Remove sound
+	if(pkRemoveSound != NULL)
+	{
+		for(int j=0; j<SOURCE_POOL_SIZE; j++)
+		{
+			if(m_akSourcePool[j].first == pkRemoveSound->m_uiSourceBufferName) 
+			{
+				// Stoppa ljudet
+				alSourceStop(pkRemoveSound->m_uiSourceBufferName);
+				
+				// Frigör poolen
+				m_akSourcePool[j].second = false;
+				pkRemoveSound->m_uiSourceBufferName = 0;
+				
+				// Ta bort ljudet ur listan.
+				m_kActiveSounds.remove( pkRemoveSound ) ;
+				delete pkRemoveSound; // radera	
+
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 //

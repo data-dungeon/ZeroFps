@@ -59,7 +59,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 public:
 	unsigned int GetNumActiveSounds();
 	unsigned int GetNumActiveChannels();
-	bool StopSound(SoundInfo kSound);
+	bool DestroySound(SoundInfo kSound);
 	bool ActivateSound(SoundInfo kSound);
 
 	ZFAudioSystem();
