@@ -61,6 +61,7 @@ void MassDriverProperty::Fire()
 	Bullet->AddProperty("PhysicProperty");	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
+//	Bullet->AttachToClosestZone();
 
 }
 
