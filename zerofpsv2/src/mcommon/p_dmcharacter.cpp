@@ -681,7 +681,9 @@ void P_DMCharacter::UpdateOrders()
 
 	if(HandleOrder(&m_kOrderQueue.front(),m_bNewOrder))
 	{
-		m_kOrderQueue.pop();
+		if(!m_kOrderQueue.empty())
+			m_kOrderQueue.pop();
+			
 		m_bNewOrder = true;
 		
 		//cout<<"order complete"<<endl;
@@ -756,7 +758,8 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 
 						if( kPos1.DistanceTo(kPos2) < 1)
 						{
-							pkHQ->InsertCharacter(m_pkObject->GetEntityID());
+							ClearOrders();
+							pkHQ->InsertCharacter(m_pkObject->GetEntityID());							
 							return true;
 						}
 						else

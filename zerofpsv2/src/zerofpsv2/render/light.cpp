@@ -78,13 +78,13 @@ void Light::SetCamera(Vector3 kCamPos) {
 
 void Light::Add(LightSource *kNewLight)
 {
-	cout << "Add Light" << endl;
+	//cout << "Add Light" << endl;
 	m_kLights.push_back(kNewLight);
 }
 
 void Light::Remove(LightSource *kLight) 
 {
-	cout << "Remove Light" << endl;
+	//cout << "Remove Light" << endl;
 	m_kLights.remove(kLight);
 }
 
