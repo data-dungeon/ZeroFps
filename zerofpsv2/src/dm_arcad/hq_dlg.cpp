@@ -94,3 +94,8 @@ void CHQDlg::OpenDlg()
 
 	m_pkDM->PauseGame(true);
 }
+
+
+
+
+

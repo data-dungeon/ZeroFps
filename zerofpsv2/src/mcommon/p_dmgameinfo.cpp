@@ -90,3 +90,12 @@ Property* Create_P_DMGameInfo()
 {
 	return new P_DMGameInfo;
 }
+
+
+
+
+
+
+
+
+

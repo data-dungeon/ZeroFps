@@ -447,3 +447,12 @@ void P_ServerInfo::SetServerName(string strName)
 	
 	m_sServerName = strName;
 }
+
+
+
+
+
+
+
+
+

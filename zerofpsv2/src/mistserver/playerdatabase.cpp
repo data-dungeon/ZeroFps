@@ -233,3 +233,13 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 	
 	return true;
 }
+
+
+
+
+
+
+
+
+
+

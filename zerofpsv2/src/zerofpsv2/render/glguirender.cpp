@@ -1241,3 +1241,10 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 //	else
 //		return true;
 //}
+
+
+
+
+
+
+

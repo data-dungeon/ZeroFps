@@ -241,3 +241,11 @@ int DMLua::PatrolLua(lua_State* pkLua)
 
 	return 0;
 }
+
+
+
+
+
+
+
+

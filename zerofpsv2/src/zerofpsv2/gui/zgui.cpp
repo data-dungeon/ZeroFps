@@ -299,6 +299,7 @@ int ZGui::GetMainWindowID(char* strWindow)
 // Rendera det aktiva fönstret (och alla dess childs)
 bool ZGui::Render(int fps)
 {
+
 	m_pkRenderer->StartRender();
 	
 	// Blit windows with lowest z order first.

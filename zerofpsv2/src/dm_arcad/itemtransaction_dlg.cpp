@@ -588,3 +588,9 @@ char* CItemTransactionDlg::GetGetContainerName(int iContainer)
 		return NULL;
 	}
 }
+
+
+
+
+
+

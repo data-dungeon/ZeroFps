@@ -266,3 +266,14 @@ SpellDlg::SpellSlot* SpellDlg::FindSlot(int x, int y)
 
 	return NULL;
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -1537,3 +1537,12 @@ int DMLua::HideAllMapIconsLua(lua_State* pkLua)
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+

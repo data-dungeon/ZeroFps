@@ -556,7 +556,7 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	glActiveTextureARB(GL_TEXTURE1_ARB);		
 	glClientActiveTextureARB(GL_TEXTURE1_ARB);
 	SetupTU(pkSettings,1);
-	
+
 	//setup TU 0
 	glActiveTextureARB(GL_TEXTURE0_ARB);		
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);

@@ -299,20 +299,23 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	}
 	
 	return pkTex->TexID;
-}
+}  
 
 // Bind Textures
 void TextureManager::BindTexture(int iTexture) 
 {
 	if(m_iTextures[iTexture] == NULL)
-		return;
+		return;		
 
+
+	//evil multitexturing bugfix, texturemanager does not understan multitexturing =(
 	m_iCurrentTexture = NO_TEXTURE;
 
 	if(iTexture != m_iCurrentTexture)
 	{
 		m_iCurrentTexture = iTexture;
 		glBindTexture(GL_TEXTURE_2D,m_iTextures[iTexture]->index);
+	//	cout<<"setting texture "<<iTexture<<"  "<<m_iTextures[iTexture]->index<<endl;
 	}
 }
 
@@ -930,3 +933,15 @@ bool TextureManager::TextureIsTGA(int iID)
 
 	return find->second;
 }
+
+
+
+
+
+
+
+
+
+
+
+

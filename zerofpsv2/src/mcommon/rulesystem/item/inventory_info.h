@@ -22,3 +22,12 @@ enum EquipmentCategory
 };
 
 #endif // #ifndef _MCOMMON_INVENTORY_INFO_H_
+
+
+
+
+
+
+
+
+

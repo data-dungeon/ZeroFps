@@ -302,3 +302,4 @@ ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErro
 	return ZFA_ABORT;
 }
 #endif // !WIN32
+

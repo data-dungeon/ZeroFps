@@ -50,3 +50,20 @@ class MCOMMON_API CharacterProperty: public Property
 MCOMMON_API Property* Create_P_CharStats();
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -239,3 +239,10 @@ int AudioLua::StopMusicLua(lua_State* pkLua)
 {
 	return 1;
 }
+
+
+
+
+
+
+

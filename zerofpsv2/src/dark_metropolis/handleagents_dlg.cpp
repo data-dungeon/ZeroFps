@@ -556,3 +556,12 @@ void CHandleAgents::PrintStats(DMCharacterStats* pkStats)
 	sprintf(szText, "HP: %i\n", pkStats->m_iLife);
 	SetText("AgentInFocusMemberHP", szText);
 }
+
+
+
+
+
+
+
+
+

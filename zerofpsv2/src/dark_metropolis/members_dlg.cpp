@@ -981,3 +981,11 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 	((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(
 		m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
 }
+
+
+
+
+
+
+
+

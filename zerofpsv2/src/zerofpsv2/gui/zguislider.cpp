@@ -240,3 +240,11 @@ void ZGuiSlider::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
 		pkSkinDesc[i].second.insert(0, "Slider: ");
 }
+
+
+
+
+
+
+
+

@@ -26,7 +26,7 @@ int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whate
 enum IMG_FORMAT {
 	IMG_FORMAT_RGB,
 	IMG_FORMAT_RGBA,
-	IMG_FORMAT_ALPHA,
+	IMG_FORMAT_ALPHA, 
 };
 
 

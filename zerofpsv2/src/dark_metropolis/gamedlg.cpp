@@ -277,3 +277,11 @@ void CGameDlg::SetButtonIcon(ZGuiWnd* pkButton, string strIconNameUp,
 
 	}
 }
+
+
+
+
+
+
+
+

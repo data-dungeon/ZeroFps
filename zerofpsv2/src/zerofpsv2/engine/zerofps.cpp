@@ -703,11 +703,13 @@ void ZeroFps::UpdateCamera()
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
 {
-	for(unsigned int i=0; i<m_DevStringPage.size(); i++) {
-		if(string(szName) == m_DevStringPage[i].m_kName) {
+	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 
+	{
+		if(string(szName) == m_DevStringPage[i].m_kName) 
+		{
 			return &m_DevStringPage[i];
-			}
 		}
+	}
 
 	return NULL;
 }

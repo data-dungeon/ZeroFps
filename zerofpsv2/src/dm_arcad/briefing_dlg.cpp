@@ -149,3 +149,12 @@ bool CBriefingDlg::InitDlg()
 
 	return true;
 }
+
+
+
+
+
+
+
+
+

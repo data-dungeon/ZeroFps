@@ -208,3 +208,11 @@ void CNewGameDlg::SetFade(float fColor)
 		}
 	}
 }
+
+
+
+
+
+
+
+

@@ -1187,3 +1187,17 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 //	return pair<int,int>(char_counter, length_counter);
 //}
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -337,3 +337,12 @@ int CStartDMDlg::GetNextPicture()
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

@@ -41,3 +41,12 @@ class MCOMMON_API P_DMGameInfo: public Property {
 MCOMMON_API Property* Create_P_DMGameInfo();
 
 #endif
+
+
+
+
+
+
+
+
+

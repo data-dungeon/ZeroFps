@@ -882,3 +882,11 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 
 	return temp;
 }
+
+
+
+
+
+
+
+

@@ -211,3 +211,12 @@ void CMissionDlg::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 			m_pkAudioSys->GetListnerPos()); 
 	}
 }
+
+
+
+
+
+
+
+
+

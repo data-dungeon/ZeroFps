@@ -204,3 +204,11 @@ Property* Create_P_DMShop()
 {
 	return new P_DMShop;
 }
+
+
+
+
+
+
+
+

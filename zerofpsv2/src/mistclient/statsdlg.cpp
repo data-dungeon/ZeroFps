@@ -176,3 +176,13 @@ void StatsDlg::SetCharacterProperty(CharacterProperty* pkCharProp)
 {
 	m_pkCharProperty = pkCharProp;
 }
+
+
+
+
+
+
+
+
+
+
