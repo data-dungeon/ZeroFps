@@ -1,5 +1,6 @@
 #include "dark_metropolis.h"
 #include "members_dlg.h"
+#include "gameplay_dlg.h"
 
 CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 {
@@ -91,12 +92,29 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 
 			m_iCurrentCharacterPage = 0;
 
+			int iSelAgentObject = 
+				((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
+
 			if(!m_kMembersInField.empty())
 			{
 				char text[50];
 				sprintf(text, "Agent %i", m_kMembersInField[0]->GetEntityID());
 				SetText("CurrentMemberNumberLabel", text);
-				SetCharacterStats(m_kMembersInField[0]);
+				
+				SetCharacterStats(GetObject(iSelAgentObject));
+			}
+
+			if(iSelAgentObject != 1)
+			{
+				for(int i=0; i<5; i++)
+				{
+					int iObjectID = m_kMembersInField[i]->GetEntityID();
+					if(iSelAgentObject == iObjectID)
+					{
+						m_iCurrentCharacterPage = i;
+						break;
+					}
+				}
 			}
 
 			break;
@@ -165,6 +183,9 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		sprintf(text, "Agent %i", 
 			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID());
 		SetText("CurrentMemberNumberLabel", text);
+
+		SetCharacterStats(m_kMembersInField[m_iCurrentCharacterPage]);
+
 		break;
 
 	}
@@ -173,8 +194,9 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 {
 	char szText[50];
-	P_DMCharacter* pkCharProperty;
-	DMCharacterStats* pkCharacterStats;
+	P_DMCharacter* pkCharProperty=NULL;
+	DMCharacterStats* pkCharacterStats=NULL;
+	DMContainer* pkBackPack=NULL;
 	
 	if(pkCharacterObject == NULL)
 	{
@@ -215,4 +237,64 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
 		GetTexID((char*)szTexName.c_str());
 
+	// Börja med att dölja alla ev item knappar
+
+	for(int i=0; i<m_vkItemButtons.size(); i++)
+		m_vkItemButtons[i]->Hide();
+
+	if(pkCharProperty)
+	{
+		pkBackPack = pkCharProperty->m_pkBackPack;
+	}
+
+	if(pkBackPack)
+	{
+		vector<ContainerInfo> kItemList;
+		pkBackPack->GetItemList(&kItemList);
+
+		int x, y, w, h;
+		char szName[50];
+		const int CELL_SIZE = 32;
+
+		for(int i=0; i<kItemList.size(); i++)
+		{
+			x = 422 + kItemList[i].m_iItemX*CELL_SIZE;
+			y = 28 + kItemList[i].m_iItemY*CELL_SIZE;
+			w = kItemList[i].m_iItemW*CELL_SIZE;
+			h = kItemList[i].m_iItemH*CELL_SIZE;
+
+			sprintf(szName, "ItemButton%i", i);
+
+			ZGuiButton* pkButton;
+			ZGuiSkin* pkSkinUp, *pkSkinDown, *pkSkinFocus;
+			
+			if((pkButton=(ZGuiButton*)GetWnd(szName)) != NULL)
+			{
+				pkSkinUp = pkButton->GetButtonUpSkin();
+				pkSkinDown = pkButton->GetButtonDownSkin();
+				pkSkinFocus = pkButton->GetButtonHighLightSkin();
+			}
+			else
+			{
+				pkSkinUp = new ZGuiSkin();
+				pkSkinDown = new ZGuiSkin();
+				pkSkinFocus = new ZGuiSkin();
+			}
+
+			pkButton = (ZGuiButton*) CreateWnd(Button, szName, 
+				"MembersWnd", "", x, y, w, h, 0);
+
+			pkButton->Resize(w,h,true);
+			pkButton->SetPos(x,y,false,true);
+			pkButton->SetMoveArea(pkButton->GetScreenRect());  
+
+			string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
+
+			SetButtonIcon(pkButton, strIcon, true);
+			pkButton->m_bUseAlhpaTest = false;
+			pkButton->Show();
+
+			m_vkItemButtons.push_back(pkButton);
+		}
+	}
 }

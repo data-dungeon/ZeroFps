@@ -34,8 +34,10 @@ private:
 	void SetCharacterStats(Entity* pkCharacterObject);
 
 	int m_iCurrentCharacterPage;
-
+	
 	vector<Entity*> m_kMembersInField;
+
+	vector<ZGuiButton*> m_vkItemButtons;
 
 	// void AddSlot(int 
 };

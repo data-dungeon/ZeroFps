@@ -22,7 +22,7 @@ public:
 
 protected:
 
-	void SetButtonIcon(ZGuiButton* pkButton, string strIconName);
+	void SetButtonIcon(ZGuiButton* pkButton, string strIconName, bool bSetAlphaTex);
 	void ShowWnd(char* szWndResName, bool bShow, bool bToogleCapture=false);
 	bool IsWndVisible(char* szWndResName) { return m_pkDM->IsWndVisible(szWndResName); } 
 	bool LoadDlg(char* szScriptName);
@@ -35,7 +35,7 @@ protected:
 	ZGuiWnd* GetWnd(char* szName) { return m_pkDM->GetWnd(szName); }
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags) {
-		m_pkDM->CreateWnd(eType, szWndName, szParentName, szLabel, x, y, w, h, uiFlags);
+		return m_pkDM->CreateWnd(eType, szWndName, szParentName, szLabel, x, y, w, h, uiFlags);
 	}
 	void SetCapture(char* szWnd);
 
@@ -54,6 +54,7 @@ protected:
 	ZGui* m_pkGui;
 
 	int GetTexID(char* szName);
+	int m_iFailTex;
 	
 	enum GAME_DLG
 	{

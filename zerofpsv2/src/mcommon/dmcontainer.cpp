@@ -258,6 +258,9 @@ void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
 	for( int i = 0;i<m_kSlots.size();i++)
 		kItemIDs.insert(m_kSlots[i]);
 
+	printf("kItemIDs size = %i\n", kItemIDs.size());
+	printf("kItemIDs[0] = %i\n", (*kItemIDs.begin()));
+
 	for(set<int>::iterator it=kItemIDs.begin();it!=kItemIDs.end();it++)
 	{
 		if(Entity* pkEnt = m_pkEntMan->GetObjectByNetWorkID(*it))

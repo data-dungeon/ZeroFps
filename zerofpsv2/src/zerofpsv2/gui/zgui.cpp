@@ -408,7 +408,7 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 	return candidates.front();
 }
 
-bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
+bool ZGui::OnMouseUpdate_OLD_UGLY(int x, int y, bool bLBnPressed, 
 						 bool bRBnPressed, bool bMBnPressed, 
 						 float fGameTime)
 {
@@ -454,11 +454,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			{
 				if(wnd != m_pkActiveMainWin)
 				{
+					printf("main wnd = %s\n", wnd->pkWnd->GetName());
+
 					SetFocus(wnd->pkWnd);
 					m_bHandledMouse = true;
 
 					return true;					
 				}
+			}
+			else
+			{
+				printf("Failed to find main wnd\n");
 			}
 		}
 	}
@@ -1414,8 +1420,6 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	
 	if(alpha_tex > 0)
 	{
-		printf("bind texture %i\n", alpha_tex);
-
 		m_pkTexMan->BindTexture( alpha_tex );
 
 		int horz_offset, vert_offset;
@@ -1439,13 +1443,21 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 
 		//unsigned long pixel;
 		color_rgba kColor;
-		pkSurface->get_pixel((int)(tex_w*x_offset),(int)(tex_h*y_offset), kColor);
+		if(!pkSurface->get_pixel((int)(tex_w*x_offset),(int)(tex_h*y_offset), kColor))
+		{
+			printf("Image::get_pixel Failed\n");
+		}
 		m_pkTexMan->EditEnd( alpha_tex );
 
-		if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0 && kColor.a == 0)
+		if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0 /*&& kColor.a == 0*/)
+		{
 			return true;
+		}
 		else 
+		{
+			//printf("Mouse click passing true\n");
 			return false;
+		}
 	}
 	else
 	{
@@ -1620,3 +1632,374 @@ void ZGui::CloseActiveMenu(void)
 		m_bClickedMenu = true;
 	}
 }
+
+
+
+
+
+
+bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
+						 bool bRBnPressed, bool bMBnPressed, 
+						 float fGameTime)
+{
+	m_bClickedMenu = false;
+
+	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
+	{
+		m_bHaveInputFocus = false;
+		return true;
+	}
+
+	TranslateMousePos(x,y);
+
+	// Register public variables needed by the editbox.
+	m_iMouseX = x; m_iMouseY = y;
+	m_bMouseLeftPressed = bLBnPressed;
+
+	m_pkCursor->SetPos(x,y);
+
+	bool bLeftButtonDown = bLBnPressed;
+	bool bRightButtonDown = bRBnPressed;
+
+	if(m_pkActiveMainWin == NULL)
+	{
+		return false;
+	}
+
+	if(m_pkCapturedWindow == NULL)
+	{
+		bool bClicked = false;
+
+		if( bLeftButtonDown && m_bLeftButtonDown==false)
+			bClicked = true;
+
+		if( bRightButtonDown && m_bRightButtonDown==false)
+			bClicked = true;
+
+		// Skall vi byta main window?
+		MAIN_WINDOW* wnd; // = FindMainWnd(x,y);
+		if( bClicked )
+		{ 
+			if(wnd = FindMainWnd(x,y) )
+			{
+				if(wnd != m_pkActiveMainWin)
+				{
+					SetFocus(wnd->pkWnd);
+
+					if(m_pkActiveMainWin->pkWnd->GetSkin()->m_bTransparent == false)
+						m_bHandledMouse = true;
+
+					return true;					
+				}
+			}
+			else
+			{
+				//printf("Failed to find main wnd\n");
+			}
+		}
+	}
+	else
+	{
+		m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
+	}
+
+	if(m_pkActiveMainWin == NULL)
+		return false;
+
+	if(!m_pkActiveMainWin->pkWnd) 
+		return false; 
+	
+	ZGuiWnd* pkFocusWindow;
+	
+	// Kolla vilken kontroll som har klickats, men inte om
+	// en kontroll är captured och ej är ett fönster.
+	if(m_pkCapturedWindow == NULL || (m_pkCapturedWindow != NULL && 
+		typeid(*m_pkCapturedWindow) == typeid(ZGuiWnd)))
+	{
+		pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
+	}
+	else 
+		pkFocusWindow = m_pkCapturedWindow;
+	
+	// Registrer if mouse pointer moves over a window.
+	if(pkFocusWindow == NULL)
+		m_bHoverWindow = false;
+	else
+		m_bHoverWindow = true;
+	
+	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
+
+	// Send a Mouse Move Message...
+	static int s_iPrevX=-1;
+	static int s_iPrevY=-1;
+	if(s_iPrevX != x || s_iPrevY != y && ZGuiWnd::m_pkFocusWnd)
+	{
+		int* pkParams = new int[3];
+		pkParams[0] = (int) bLeftButtonDown; pkParams[1] = x; pkParams[2] = y;
+		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
+			ZGM_MOUSEMOVE,3,pkParams);
+		delete[] pkParams;
+		s_iPrevX = x;
+		s_iPrevY = y;
+	}
+
+	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
+	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
+	
+
+	// Har vänster musknapp klickats (men inte släppt)
+	if( bLeftPressed || bRightPressed )
+	{		
+		if(pkFocusWindow)
+		{			
+			if(pkFocusWindow->m_bUseAlhpaTest)
+			{
+				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
+				{
+					m_bHaveInputFocus = false;
+
+					// Stäng eventuell meny
+					CloseActiveMenu();
+
+					return true;
+				}
+			}
+
+			if(pkFocusWindow->m_bUseClipper && !pkFocusWindow->m_kClipperArea.Inside(x,y))
+				return true;
+
+			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
+			SetFocus(ZGuiWnd::m_pkWndClicked);
+
+			Rect rc = ZGuiWnd::m_pkWndClicked->GetScreenRect();
+			
+			if(ZGuiWnd::m_pkWndClicked->GetMoveArea() == rc)
+			{
+				static long iHighestZWndValue=10;
+				iHighestZWndValue++;
+				ZGuiWnd::m_pkWndClicked->SetZValue(iHighestZWndValue);
+				ZGuiWnd* pkParent = ZGuiWnd::m_pkWndClicked->GetParent();
+				
+				if(pkParent) 
+					pkParent->SortChilds();
+				
+				if(bLeftPressed || (pkFocusWindow->m_bAcceptRightClicks && bRightPressed) )
+				{
+					SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
+					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
+						NCODE_CLICK_DOWN);
+
+					ZGuiWnd* pkClickDownParent = ZGuiWnd::m_pkWndClicked->GetParent();
+
+					if( pkClickDownParent)
+					{
+						if(typeid(*pkClickDownParent)==typeid(ZGuiMenu))
+						{
+							m_pkActiveMenu = (ZGuiMenu*) pkClickDownParent;
+							m_bClickedMenu = true;
+						}
+					}
+						
+					m_bHandledMouse = true;
+					//printf("m_bHandledMouse = true\n");
+				}
+
+				// Send a Left Button Down Message...
+				int* pkParams = new int[2];
+				pkParams[0] = x; pkParams[1] = y;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+					bLeftPressed ? ZGM_LBUTTONDOWN : ZGM_RBUTTONDOWN, 2,pkParams);
+				delete[] pkParams;
+				
+			}
+			else
+			{
+				m_pnCursorRangeDiffX = x-rc.Left; 
+				m_pnCursorRangeDiffY = y-rc.Top;
+			}
+		}
+		else
+		{
+			
+			if(ZGuiWnd::m_pkFocusWnd)
+				ZGuiWnd::m_pkFocusWnd->KillFocus();
+
+			ZGuiWnd::m_pkWndClicked = NULL;
+			ZGuiWnd::m_pkFocusWnd = NULL;
+		}
+
+		CloseActiveMenu();
+	}
+
+	
+
+	// Är vänster musknapp nertryckt?
+	if( bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked)
+	{		
+		// Skall fönstret flyttas?
+		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
+		{
+			SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
+
+			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,NCODE_MOVE);
+			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-
+				m_pnCursorRangeDiffY,true,false);
+
+			// Notify the main window that the window is moving
+			if(m_bLeftButtonDown == true)
+			{
+				int* pkParams = new int[5];
+				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID();
+				pkParams[1] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Left;
+				pkParams[2] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Top;
+				pkParams[3] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Right;
+				pkParams[4] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Bottom;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+					ZGM_MOVING,5,pkParams);
+				delete[] pkParams;
+			}
+		}
+	}
+
+	bool bLeftReleased =  (m_bLeftButtonDown  == true && bLeftButtonDown  == false);
+	bool bRightReleased = (m_bRightButtonDown == true && bRightButtonDown == false);
+
+	// Har vänster musknapp släpts (men inte klickats)?
+	if(bLeftReleased || bRightReleased)
+	{
+		m_bHaveInputFocus = false;
+
+		if(bLeftReleased){
+			m_bHandledMouse = false;
+			//printf("m_bHandledMouse = false\n");
+		}
+
+		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
+		{
+			//m_bHaveInputFocus = false;
+
+			// Informera fönstret innan att det har tappat fokus.
+			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || 
+				(pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
+			{
+				if(ZGuiWnd::m_pkPrevWndClicked && 
+					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
+					if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
+						ZGuiWnd::m_pkPrevWndClicked->Notify(
+							ZGuiWnd::m_pkWndClicked,NCODE_RELEASE);
+
+				if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
+					ZGuiWnd::m_pkPrevWndClicked = ZGuiWnd::m_pkWndUnderCursor;
+			}
+
+			// Är markören fortfarande innanför fönstrets gränser?
+			if(ZGuiWnd::m_pkWndClicked->GetScreenRect().Inside(x,y))
+			{
+				//SetFocus(ZGuiWnd::m_pkWndClicked);
+
+				if(bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased))
+					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
+						NCODE_CLICK_UP);
+
+				int* pkParams = new int[2];
+
+				// Notify the main window that the window have been clicked
+				if(bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased))
+				{
+					ZGuiWnd* pkParent = ZGuiWnd::m_pkWndClicked->GetParent();
+
+					if( pkParent)
+					{
+						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
+							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode)  ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+						{
+							ZGuiWnd* pkMainWnd = m_pkActiveMainWin->pkWnd;
+
+							// Menyalternativ har sitt egen förälderfönster.
+							if(pkParent && typeid(*pkParent)==typeid(ZGuiMenu))
+								pkMainWnd = pkParent;
+
+							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
+							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
+							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);
+
+							//m_bHaveInputFocus = true;
+						}
+					}
+					delete[] pkParams;
+				}
+
+				// Send a Left Button Up Message...
+				pkParams = new int[2];
+				pkParams[0] = x; pkParams[1] = y;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+					bLeftReleased ? ZGM_LBUTTONUP : ZGM_RBUTTONUP,2,pkParams);
+				delete[] pkParams;
+
+				static bool s_bClickedOnes = false;
+				static float s_fClickTime = fGameTime;
+
+				// Test for double click.
+				if(s_bClickedOnes == true && fGameTime-s_fClickTime<0.25f)
+				{
+					pkParams = new int[2];
+					pkParams[0] = x; pkParams[1] = y;
+					m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+						bLeftReleased ? ZGM_LBUTTONDBLCLK : ZGM_RBUTTONDBLCLK,2,pkParams);
+					s_bClickedOnes = false;
+					delete[] pkParams;
+				}
+
+				if(s_bClickedOnes == false)
+					s_bClickedOnes = true;
+
+				s_fClickTime = fGameTime; 
+
+				ZGuiWnd::m_pkWndClicked = NULL;
+			}
+			else
+			{
+				if(ZGuiWnd::m_pkPrevWndUnderCursor && (bLeftReleased || 
+					(pkFocusWindow->m_bAcceptRightClicks && bRightReleased)))
+					ZGuiWnd::m_pkWndClicked->Notify(
+						ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_RELEASE);
+
+				// Send a Left Button Up Message...
+				int* pkParams = new int[1];
+				pkParams = new int[2];
+				pkParams[0] = x; pkParams[1] = y;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
+					bLeftReleased ? ZGM_LBUTTONUP : ZGM_RBUTTONUP,2,pkParams);
+				delete[] pkParams;
+			}
+		}
+	}
+
+	// Är vänster musknapp inte nertryckt?
+	if(m_bLeftButtonDown == false && bLeftButtonDown == false)
+	{
+		// Är det samma fönstret under musmarkören som innan?
+		if(ZGuiWnd::m_pkWndUnderCursor != NULL)
+		{
+			if(ZGuiWnd::m_pkWndUnderCursor != ZGuiWnd::m_pkPrevWndUnderCursor)
+			{
+				ZGuiWnd::m_pkWndUnderCursor->Notify(
+					ZGuiWnd::m_pkWndUnderCursor,NCODE_OVER_CTRL);
+
+				if(ZGuiWnd::m_pkPrevWndUnderCursor)
+					ZGuiWnd::m_pkPrevWndUnderCursor->Notify(
+					ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_DEFAULT);
+				
+				ZGuiWnd::m_pkPrevWndUnderCursor = ZGuiWnd::m_pkWndUnderCursor;
+			}
+		}
+	}
+
+	m_bLeftButtonDown = bLeftButtonDown;
+	m_bRightButtonDown = bRightButtonDown;
+
+
+
+	return true;
+}
+

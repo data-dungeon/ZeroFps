@@ -4,7 +4,7 @@
 
 CGamePlayDlg::CGamePlayDlg() : CGameDlg("GamePlayScreen", &g_kDM)
 {
-	
+	m_iSelectedAgent = -1;
 }
 
 CGamePlayDlg::~CGamePlayDlg()
@@ -107,7 +107,7 @@ bool CGamePlayDlg::InitDlg()
 
 			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
 			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
-			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName);
+			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName, false);
 		}
 		else
 		{
@@ -145,11 +145,14 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
 			GetWnd("ActiveCharacterPortraitBn");
 
-		SetButtonIcon(pkActiveCharBn, szTexName);
+		SetButtonIcon(pkActiveCharBn, szTexName, false);
 
 		bool bMultiSelect = m_pkDM->m_pkInputHandle->VKIsDown("multiselect");
 
-		m_pkDM->SelectAgent(iAgent, true, !bMultiSelect, true);
+		if(bSelectModels)
+			m_pkDM->SelectAgent(iAgent, true, !bMultiSelect, true);
+
+		m_iSelectedAgent = iAgent;
 	}
 }
 

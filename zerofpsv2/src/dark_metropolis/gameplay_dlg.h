@@ -9,6 +9,7 @@ public:
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
 	void SelectAgent(int iAgent, bool bSelectModels);
+	int GetSelAgentObject() { return m_iSelectedAgent; } // object id
 	
 protected:
 	bool InitDlg();
@@ -24,5 +25,8 @@ protected:
 	};
 
 	AGENT_ICON m_akAgetIcons[5];
+
+private:
+	int m_iSelectedAgent;
 
 };

@@ -8,6 +8,8 @@ CGameDlg::CGameDlg(string strMainWndName, DarkMetropolis* pkDM)
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
 	m_bInitialized = false;
 	m_strMainWndName = strMainWndName;
+
+	m_iFailTex = m_pkDM->pkTexMan->Load(ERROR_TEXTURE, 0);
 }
 
 CGameDlg::~CGameDlg()
@@ -123,25 +125,47 @@ void CGameDlg::SetNumber(char* szWndName, int iNumber)
 	m_pkDM->SetText(szWndName, szText);
 }
 
-void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp)
+void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp, 
+									  bool bSetAlphaTex)
 {
 	string strIconNameDown="data/textures/notex.bmp";
+	string strIconNameA   ="data/textures/notex.bmp";
+
+	int alpha_tex = -1;
 
 	int pos;
 	if((pos=strIconNameUp.find(".bmp")) != string::npos)
 	{
+		// Down tex
 		string temp(strIconNameUp);
 		temp.erase(pos,strIconNameUp.length());
-		temp.insert(temp.length(), "b.bmp");
+		temp.insert(temp.length(), "_b.bmp");
 		strIconNameDown = temp;
+
+		// Alpha tex
+		if(bSetAlphaTex)
+		{
+			string temp2(strIconNameUp);
+			temp2.erase(pos,strIconNameUp.length());
+			temp2.insert(temp2.length(), "_a.bmp");
+			strIconNameA = temp2;
+			alpha_tex = GetTexID((char*)strIconNameA.c_str());
+		}
 	}
 
 	pkButton->GetSkin()->m_iBkTexID = 
 		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetSkin()->m_iBkTexAlphaID = alpha_tex;
+
 	pkButton->GetButtonUpSkin()->m_iBkTexID = 
 		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetButtonUpSkin()->m_iBkTexAlphaID = alpha_tex;
+
 	pkButton->GetButtonHighLightSkin()->m_iBkTexID = 
 		GetTexID((char*)strIconNameUp.c_str());
+	pkButton->GetButtonHighLightSkin()->m_iBkTexAlphaID = alpha_tex;
+
 	pkButton->GetButtonDownSkin()->m_iBkTexID = 
 		GetTexID((char*)strIconNameDown.c_str());
+	pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
 }

@@ -185,8 +185,13 @@ private:
 	unsigned char m_acLineColor[3];
 
 	void OnKeyPress(int iKey);
+	bool OnMouseUpdate_OLD_UGLY(int x, int y, bool bLBnPressed, 
+		bool bRBnPressed, bool bMBnPressed, float fGameTime);
+
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 
 		bool bRBnPressed, bool bMBnPressed, float fGameTime);
+
+	
 	void TranslateMousePos(int &x, int &y);
 	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object

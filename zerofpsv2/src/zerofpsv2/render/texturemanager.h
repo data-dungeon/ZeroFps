@@ -24,6 +24,7 @@ enum OPTIONS
 	T_ALPHA			=	32		// This is a alpha only texture.
 };
 
+#define ERROR_TEXTURE	"data/textures/notex.bmp"
 #define	NO_TEXTURE	-1		// Texuremanger index for a non existing texture.
 
 /**	\brief	Texture file name and all paramerers.
