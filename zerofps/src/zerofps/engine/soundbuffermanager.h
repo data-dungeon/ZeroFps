@@ -2,10 +2,9 @@
 #define _SOUNDBUFFERMANAGER_H_ 
 
 #include "../basic/basic.pkg"
+#include "AL/alut.h"
 #include <string.h>
 #include <vector>
-#include "AL/al.h"
-#include "AL/alut.h"
 #include "engine_x.h"
 
 class ENGINE_API SoundBuffer {

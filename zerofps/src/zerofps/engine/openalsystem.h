@@ -47,15 +47,16 @@ class ENGINE_API OpenAlSystem : public ZFObject {
 		void PlaySound(Sound* pkSound, int iSource);
 		
 	public:
+		void AddSound(Sound* pkSound);
+		void RemoveSound(Sound* pkSound);
+		void Update();
+
 		OpenAlSystem();
 		~OpenAlSystem();
 		
 		void Init();
 		void SetListnerPosition(Vector3 kPos,Vector3 kAngel,Vector3 kUp);
 		
-		void AddSound(Sound* pkSound);
-		void RemoveSound(Sound* pkSound);
-		void Update();
 };
 
 #endif

@@ -137,12 +137,12 @@ void Test::OnInit(void) {
 	pkCollisionMan->Add(hm);
 
 
-	Sound *welcome=new Sound();
+/*	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
 	
-	pkAlSys->AddSound(welcome);
+	pkAlSys->AddSound(welcome);*/
 
 }
 

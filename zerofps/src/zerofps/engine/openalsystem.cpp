@@ -154,11 +154,12 @@ void OpenAlSystem::Update()
 		}
 	}
 	
-	for(int i=0;i<kRemove.size();i++){
+	int i;
+	for(i=0;i<kRemove.size();i++){
 		RemoveSound(kRemove[i]);	
 	}
 		
-	for(int i=0;i<kPlay.size();i++){
+	for(i=0;i<kPlay.size();i++){
 		
 		int iSource=GetUnusedSource();
 		
@@ -187,8 +188,8 @@ ALint OpenAlSystem::GetState(Sound* pkSound)
 		return -1;
 	
 	ALint state;	
-	alGetSourceiv(m_kSources[pkSound->m_iSource]->m_iSource,AL_SOURCE_STATE,&state);
-	
+	alGetSourcei(m_kSources[pkSound->m_iSource]->m_iSource,AL_SOURCE_STATE,&state);
+	// alGetSourceiv ???
 	return state;
 }
 
