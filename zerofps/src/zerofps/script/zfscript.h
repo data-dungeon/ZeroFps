@@ -24,13 +24,13 @@ enum VarType
 	tSTRING,
 };
 
-//typeid int (*LuaCallback) (lua_State* lua);
+typedef int (*LuaCallback) (lua_State* lua);
 
 class SCRIPT_API ZFScript  
 {
 public:
 	
-	bool ExposeFunction(const char* szName);
+	bool ExposeFunction(const char* szName, LuaCallback o_Function);
 	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);
 

@@ -74,6 +74,16 @@ bool ZFScript::RunScript(char* szFileName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Name:		ExposeFunction
+// Description:	Registrera en C++ function som Lua kan se.
+//
+bool ZFScript::ExposeFunction(const char *szName, LuaCallback o_Function)
+{
+	lua_register( m_pkLua, szName, o_Function );
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Name:		ExposeVariable
 // Description:	Registrera en C++ variabel som Lua kan se.
 //
@@ -154,9 +164,4 @@ int ZFScript::GetTypeString(lua_State* pkLua) {
 	char* var=(char*) lua_touserdata(pkLua,2);
 	lua_pushstring(pkLua,var);
 	return 1;
-}
-
-bool ZFScript::ExposeFunction(const char *szName)
-{
-	return true;
 }
