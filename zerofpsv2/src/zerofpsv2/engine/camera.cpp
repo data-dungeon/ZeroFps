@@ -47,8 +47,10 @@ void Camera::Update(int iWidth,int iHeight)
 		m_bViewChange = false;
 	
 		// Load projection.
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf((float*) &m_kCamProjectionMatrix.data);
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+		m_pkZShaderSystem->MatrixLoad(&m_kCamProjectionMatrix);
+		//glMatrixMode(GL_PROJECTION);
+		//glLoadMatrixf((float*) &m_kCamProjectionMatrix.data);
 	}
 	
 	if(m_bViewPortChange)
@@ -82,15 +84,19 @@ void Camera::Update(int iWidth,int iHeight)
 	}
 	
 	//reset modelview matrix and setup the newone
-	glMatrixMode(GL_MODELVIEW);
- 	glLoadIdentity();													
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	//glMatrixMode(GL_MODELVIEW);
+	m_pkZShaderSystem->MatrixIdentity();
+ 	//glLoadIdentity();													
+	m_pkZShaderSystem->MatrixMult(m_kRotM);
 	
-	glMultMatrixf(&m_kRotM[0]);
-	 	
-	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
+	//glMultMatrixf(&m_kRotM[0]);
+	m_pkZShaderSystem->MatrixTranslate(-m_kPos);	 	
+	//glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 
 	//get modelview matrix
-	glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
+	//glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
+	m_pkZShaderSystem->MatrixSave(&m_kCamModelViewMatrix);
 	
 	//update the frustum
 	m_kFrustum.GetFrustum();
