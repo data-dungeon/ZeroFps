@@ -8,6 +8,7 @@
 #include "../render/texturemanager.h"
 #include "zguiresourcemanager.h"
 #include <typeinfo>
+#include <queue>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -762,19 +763,7 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 	if(m_bActive == true)
 	{
 		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, m_fGameTime);
-
-		static float s_fClickTime = m_fGameTime;
-		static bool bOK = true;
-
-		if( iKeyPressed != -1 && m_fGameTime - s_fClickTime > 0.05f && bOK == true)
-		{
-			OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
-			s_fClickTime = m_fGameTime;
-			bOK = false;
-		}
-
-		if( iKeyPressed == -1)
-			bOK = true;
+		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 	}
 
 	m_kPointsToDraw.clear();

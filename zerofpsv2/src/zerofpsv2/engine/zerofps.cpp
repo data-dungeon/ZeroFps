@@ -258,6 +258,8 @@ void ZeroFps::Run_EngineShell()
 
 	map<int,int>::iterator itKeyPressed;
 
+	static bool bReleased;
+
 	int iInputKey = -1; // = m_pkInput->GetQueuedKey(); // wtf
 
 	for(int i=0; i<255; i++)
@@ -269,10 +271,16 @@ void ZeroFps::Run_EngineShell()
 		}
 	}
 
-	static int iPrevKey = iInputKey;
+	if(iInputKey == -1)
+		bReleased = true;
+	else
+		bReleased = false;
+
+	static int iPrevKey;
+	
 	m_pkInput->FormatKey(iInputKey);
 
-	bool bGlobalFormat = (iPrevKey == iInputKey) ? true : false;
+	bool bGlobalFormat = true; //(iPrevKey == iInputKey) ? true : false;
 
 	if( (iInputKey >= 'a' && iInputKey <= 'z') ||
 		(iInputKey >= 'A' && iInputKey <= 'Z') ||
@@ -282,6 +290,12 @@ void ZeroFps::Run_EngineShell()
 		iInputKey == ':' || iInputKey == '.' ||
 		iInputKey == ' ')
 		bGlobalFormat = false;
+
+	if(iPrevKey == iInputKey && bReleased == false)
+	{
+		iInputKey = -1;
+		iPrevKey = iInputKey;
+	}
 
 	if(bGlobalFormat)
 	{
