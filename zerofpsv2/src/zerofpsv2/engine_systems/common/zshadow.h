@@ -79,6 +79,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void DrawCapings(ShadowMesh* pkShadowMesh);
 		void DrawExtrudedSiluet(ShadowMesh* pkShadowMesh);
 		void DrawShadow(float fItensity);
+		void DrawGradedShadow(float fItensity,Vector3 kPos,Vector3 kDir);
 
 		bool SetupMesh(P_Mad* pkMad);
 		void GenerateShadowMesh(ShadowMesh* pkShadowMesh);

@@ -154,13 +154,21 @@ void ZShadow::Update()
 			//find witch lights to enable
 			vector<LightSource*>	kLights;
 			m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetObject()->GetIWorldPosV(),false);
-
+			//m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetObject()->GetIWorldPosV(),true);
+			
 			for(int i = 0;i<kLights.size();i++)
 			{
 				if(kLights[i]->fIntensity < 0.5)
 					continue;
 
+				//clear
+				//SetupGL();
+					
 				MakeStencilShadow(pkMad,kLights[i]);
+				
+				//DrawShadow(m_fShadowIntensity);
+				//DrawGradedShadow(m_fShadowIntensity,pkMad->GetObject()->GetIWorldPosV(), (pkMad->GetObject()->GetIWorldPosV() - kLights[i]->kPos).Unit() );
+				
 				m_iCurrentShadows++;
 			}
 		}
@@ -417,6 +425,93 @@ void ZShadow::DrawShadow(float fItensity)
 	glPopAttrib();
 
 }
+
+void ZShadow::DrawGradedShadow(float fItensity,Vector3 kPos,Vector3 kDir)
+{	
+	glPushAttrib(GL_ENABLE_BIT);
+
+	//colormas
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	//culling
+	glCullFace(GL_BACK);
+
+	//depth buffer settings
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_EQUAL);
+	glDisable(GL_DEPTH_TEST);
+
+	//stencil buffer settings
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_EQUAL, 0, 255);
+	glStencilFunc(GL_ALWAYS, 0, 255);
+	glStencilFunc(GL_NOTEQUAL, 0x0, 0xff);
+	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	//blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	//disable lighting
+	glDisable(GL_LIGHTING);
+
+
+	float fSize = 15;
+	
+	Vector3 kCamPos = m_pkZeroFps->GetCam()->GetPos();
+	Vector3 kBah = (kDir.Cross( kCamPos - kPos).Unit())*fSize;
+	
+	kPos -= kDir * 3;
+	
+	Vector3 kV1 = kPos - kBah;	
+	Vector3 kV2 = kPos + kBah;	
+	
+	Vector3 kV3 = kPos + kBah + (kDir *fSize);	
+	Vector3 kV4 = kPos - kBah + (kDir *fSize);	
+
+	
+	
+	//draw
+	glBegin(GL_QUADS);
+		glColor4f(0.0f, 0.0f, 0.0f, fItensity);		
+		glVertex3fv(&kV1.x);
+		glVertex3fv(&kV2.x);
+		
+		glColor4f(0.0f, 0.0f, 0.0f, 0);				
+		glVertex3fv(&kV3.x);
+		glVertex3fv(&kV4.x);
+		
+	glEnd();
+	
+	
+/*	
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, 1, 1, 0, 0, 1);
+
+	glBegin(GL_QUADS);
+				glVertex2i(0, 0);
+				glVertex2i(0, 1);
+				glVertex2i(1, 1);
+				glVertex2i(1, 0);
+	glEnd();
+*/
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+
+	glPopAttrib();	
+
+}
+
 
 ShadowMesh*	ZShadow::GetShadowMesh(P_Mad* pkMad,LightSource* pkLightSource)
 {
