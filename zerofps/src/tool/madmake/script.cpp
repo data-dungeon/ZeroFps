@@ -27,30 +27,39 @@ int GetLengthOfFile (FILE* fp)
 }
 
 
-void Script::Load(const char* ucFileName)
+bool Script::Load(const char* ucFileName)
 {
 	FILE*	fp;
 	int		iSize;
 
 	fp = fopen(ucFileName,"rb");
+	if(fp == NULL)
+		return false;
+
 	iSize = GetLengthOfFile(fp);
 	cBuffer = new char [iSize + 1];
 	cBuffer[iSize] = 0;
 	cBufferEnd = cBuffer + iSize;
 	fread(cBuffer,iSize,1,fp);
 	fclose(fp);
+	return true;
+
 }
 
  
 
 
-void ScriptFile::LoadScript(const char* ucpFileName)
+bool ScriptFile::LoadScript(const char* ucpFileName)
 {
-	ActiveScript.Load(ucpFileName);
+	if(ActiveScript.Load(ucpFileName) == false)
+		return false;
+
+	
 	bIsTokenReady = false;
 	ucpScript		= ActiveScript.cBuffer;
 	ucpScriptEnd	= ActiveScript.cBufferEnd;
 	iLine = 1;
+	return true;
 }
 
 void ScriptFile::UnGetToken()

@@ -3,6 +3,9 @@
 
 #include "../../zerofps/basic/mad_core.h"
 
+void Error(char* SzError);
+void LogIt(const char *fmt, ...);
+
 class MadExporter;
 
 /*

@@ -80,7 +80,7 @@ private:
 	MStatus			GetShaderTextureFileName (MString &filename, MObject &set);
 	int				GetNumOfMeshTriangles(MDagPath path);
 
-	MStatus			CreateFile(char* filename);
+//	MStatus			CreateFile(char* filename);
 	MStatus			ShowHelp(void);
 
 	MStatus			Export_SX(const char* filename);

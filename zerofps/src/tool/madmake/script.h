@@ -19,7 +19,7 @@ public:
 	char*	cBufferEnd;
 	int		iLine;
 
-	void	Load(const char* ucFileName);
+	bool	Load(const char* ucFileName);
 };
 
 class ScriptFile
@@ -33,14 +33,14 @@ public:
 	char*	ucpScript;
 	char*	ucpScriptEnd;
 
-	void LoadScript(const char* ucpFileName);
+	bool	LoadScript(const char* ucpFileName);
 	
-	char* GetToken(void);
-	void UnGetToken();
+	char*	GetToken(void);
+	void	UnGetToken();
 
-	bool bIsTokenReady;
+	bool	bIsTokenReady;
 
-	bool SkipWhiteSpaces(void);
+	bool	SkipWhiteSpaces(void);
 
 };
 

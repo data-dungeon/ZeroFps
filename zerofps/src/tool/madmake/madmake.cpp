@@ -5,6 +5,9 @@
 #include <iostream>
 #include <conio.h>
 #include <string>
+#include <stdio.h>
+#include <stdarg.h>
+
 #include "madexport.h"
 //#include "mdl.h"
 //#include "3ds.h"
@@ -17,6 +20,9 @@ using namespace std;
 #define PATHSEPARATOR(c) ( (c) == '\\'  ||  (c)  ==  '/')
 
 #define MADMAKE_VERSION	"0.1"
+
+bool	g_bDeveloper;
+
 
 // FileName Support Functions
 string GetFileExt(string FileName)
@@ -132,6 +138,12 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 				bQuit = true;
 			}
 	
+			else if (!stricmp( argv[ iCurArg ], "-d" ) ) 
+			{
+                cout << "Developer Mode = On" << endl;
+				g_bDeveloper = true;
+			}
+
 			else if (!stricmp( argv[ iCurArg ], "-c" ) ) 
 			{
                 cout << "Ett -c :)" << endl;
@@ -178,17 +190,16 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 
 void MadMake::Run(int argc, char* argv[])
 {
-	
 	if(!Parse_CmdLine(argc, argv))
 		return;
 	if(bQuit)	
 		return;
 
-	if(argc < 3) 
+/*	if(argc < 3) 
 	{
 		cout << "To few argument" << endl;
 //		return;
-	}
+	}*/
 	
 	IMadImport* pkImport = GetImportObject(ucaInFile.c_str());
 	if(pkImport == NULL) {
@@ -205,6 +216,10 @@ void MadMake::Run(int argc, char* argv[])
 //	madexp.Save_AD(0, "test.ad");
 }
 
+void Error(char* SzError)
+{
+	cout << "Error: " << SzError << endl;
+}
 
 int main(int argc, char* argv[])
 {
@@ -213,3 +228,30 @@ int main(int argc, char* argv[])
 	_getch();
 	return 0;
 }
+
+
+
+
+
+char g_TempText[4096];	
+
+void LogIt(const char *fmt, ...)
+{
+	if(g_bDeveloper == false)
+		return;
+
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(g_TempText, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	cout << g_TempText;
+}
+
+
+ 

@@ -5,6 +5,21 @@
 float g_fExportScale;	
 float g_fUnitsMeter;	// Num of units to be one meter in real scale.
 float g_fTotalScale;	// 
+extern string ucaOutFile;
+
+bool IsATextureName(char* szName)
+{
+	char szTexName[256];
+	strcpy(szTexName, szName);
+	Gemens(szTexName);
+
+	if(strstr(szTexName, ".bmp") || strstr(szTexName, ".tga"))
+		return true;
+
+	return false;
+
+}
+
 
 /*int	ModellXXX::AddTexture(char* ucpTextureName)
 {
@@ -29,6 +44,21 @@ float g_fTotalScale;	//
 
 	return iTextureIndex; 
 }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 {
@@ -155,8 +185,16 @@ void ModellXXX::ReadBaseFrame(const char* filename)
 	m_akFrames.clear();	*/
 }
 
+char ErrorMsg[512];
+
 void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 {
+	FILE* fp = fopen(filename, "rt");
+	if(fp == NULL) {
+		sprintf(ErrorMsg, "Failed to find file %s.\n",filename);
+		Error(ErrorMsg);
+		}
+
 	Vector3					kVertex;
 	Vector3					kNormal;
 	Mad_Face				kFace;
@@ -178,12 +216,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 	float diff_s, diff_t;
 
-	cout << "CoreMesh: " << filename << endl;
-
 	char tmpstr[256];
-
-	FILE* fp = fopen(filename,"rt");
-
 	int iFrame = -1;
 	int iNumTris = -1;
 
@@ -197,6 +230,11 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 	for(int i=0; i < iNumTris; i++)
 	{
 		fscanf(fp, "%s", TextureName);
+		if(! IsATextureName(TextureName)) {
+			sprintf(ErrorMsg, "One (or more) triangles have no texture in file %s",filename);
+			Error(ErrorMsg);
+			}
+
 		iTexture = pkMesh->AddTexture(TextureName);
 
 		for(int v = 0; v < 3; v++)
@@ -307,11 +345,16 @@ void ModellXXX::ReadAnimation(const char* filename)
 
 void ModellXXX::ReadExportSD(const char* filename)
 {
-	cout << "Skelleton: " << filename << endl;
+	FILE* fp = fopen(filename, "rt");
+	if(fp == NULL) {
+		sprintf(ErrorMsg, "Failed to find file %s.\n",filename);
+		Error(ErrorMsg);
+		}
+
 	char tmpstr[256];
 	bool done = false;
 
-	FILE* fp = fopen(filename,"rt");
+//	FILE* fp = fopen(filename,"rt");
 
 //	vector<Mad_CoreBone>	Bones;
 	Mad_CoreBone NewBone;
@@ -416,12 +459,14 @@ void Mad_CoreAnimation::PrintAnimation(void)
 
 void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 {
-	cout << "Animation: " << filename << endl;
-//	cout << "m_kBoneAnim: " << m_kBoneAnim.size();
+	FILE* fp = fopen(filename, "rt");
+	if(fp == NULL) {
+		sprintf(ErrorMsg, "Failed to find file %s.\n",filename);
+		Error(ErrorMsg);
+		}
+
 	char tmpstr[256];
 	bool done = false;
-
-	FILE* fp = fopen(filename,"rt");
 
 	int res;
 	int iBoneId;
@@ -480,12 +525,7 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 
 	fclose(fp);
 
-//	cout << "HORA" << endl;
-//	cout << "kNewBoneAnim: " << kNewBoneAnim.Size() << endl;
-//	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
 	m_kBoneAnim.push_back(kNewBoneAnim);
-//	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
-//	cout << "HORA2" << endl;
 
 /*	kNewAnimation.PrintAnimation();
 
@@ -507,7 +547,6 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 
 }
 
-extern string ucaOutFile;
 
 
 void ModellXXX::Read( const char* filename )
@@ -515,10 +554,14 @@ void ModellXXX::Read( const char* filename )
 	g_fExportScale	= 1.0;
 	g_fUnitsMeter	= 100;	 
 	g_fTotalScale	= (1.0 / g_fUnitsMeter) * g_fExportScale;
-	cout << "g_fTotalScale: " << g_fTotalScale << endl;
+
+	LogIt("g_fTotalScale = %f\n", g_fTotalScale);
 
 	ScriptFile kMMScipt;
-	kMMScipt.LoadScript(filename);
+	if(kMMScipt.LoadScript(filename) == false) {
+		sprintf(ErrorMsg, "Failed to load script file %s.\n",filename);
+		Error(ErrorMsg);
+		}
 
 	char* ucpToken;
 	ucpToken = kMMScipt.GetToken();
@@ -546,20 +589,34 @@ void ModellXXX::Read( const char* filename )
 			ucaOutFile = ucpToken;
 		}
 
-		if (!strcmp (ucpToken, "!add-fd"))
+		if (!strcmp (ucpToken, "!sd-export"))
 		{
 			ucpToken = kMMScipt.GetToken();
-			cout << "Command add-fd: " << ucpToken << endl;
-			ReadBaseFrame(ucpToken);
+			cout << "Setting Bones" << ucpToken << endl;
+			ReadExportSD(ucpToken);
+		}
+
+		if (!strcmp (ucpToken, "!ad-export"))
+		{
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			cout << "Add Animation '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
+			ReadExportAD(strFileName.c_str(),strName.c_str());
 		}
 
 		if (!strcmp (ucpToken, "!add-md"))
 		{
 			strFileName = kMMScipt.GetToken();
 			strName = kMMScipt.GetToken();
-			cout << "Command add-md: " << strFileName.c_str() << endl;
-			cout << "Mesh Name: " << strName.c_str() << endl;
+			cout << "Add Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
 			ReadCoreMesh(strFileName.c_str(),strName.c_str());
+		}
+
+		if (!strcmp (ucpToken, "!add-fd"))
+		{
+			ucpToken = kMMScipt.GetToken();
+			cout << "Command add-fd: " << ucpToken << endl;
+			ReadBaseFrame(ucpToken);
 		}
 
 		if (!strcmp (ucpToken, "!add-meshanim"))
@@ -568,23 +625,7 @@ void ModellXXX::Read( const char* filename )
 			cout << "Command add-meshanim: " << ucpToken << endl;
 			ReadAnimation(ucpToken);
 		}
-
-		if (!strcmp (ucpToken, "!sd-export"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Command sd-export: " << ucpToken << endl;
-			ReadExportSD(ucpToken);
-		}
-
-		if (!strcmp (ucpToken, "!ad-export"))
-		{
-			strFileName = kMMScipt.GetToken();
-			strName = kMMScipt.GetToken();
-			cout << "Command ad-export: " << strFileName.c_str() << endl;
-			cout << "Animation Name: " << strName.c_str() << endl;
-			ReadExportAD(strFileName.c_str(),strName.c_str());
-		}
-
+		
 		ucpToken = kMMScipt.GetToken();
 	}
 }

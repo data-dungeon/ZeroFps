@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "script_x.h"
-#include "zfclasswrap.h"
+//#include "zfclasswrap.h"
 
 extern "C"  {
 	#include <lua.h>
