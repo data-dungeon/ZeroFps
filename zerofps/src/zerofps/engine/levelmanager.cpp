@@ -382,7 +382,7 @@ void LevelManager::Water(bool bWater)
 		if(m_pkObjectMan->GetObject("WorldWaterObject") == NULL)
 		{	
 			//water
-			WaterObject *water=new WaterObject(m_pkMap->GetSize(),50,"file:../data/textures/water2.bmp");
+			WaterObject *water=new WaterObject(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
 			water->GetName()="WorldWaterObject";
 			water->GetPos().Set(0,0,0);
 			water->SetParent(m_pkObjectMan->GetWorldObject());		
