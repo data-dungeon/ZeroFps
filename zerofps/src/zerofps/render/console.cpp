@@ -4,7 +4,7 @@
 Console::Console(ZeroFps* pkEngine) {
 	m_pkEngine=pkEngine;	
 	m_pkCmd=pkEngine->m_pkCmd;
-	m_pkPrims=pkEngine->m_pkPrims;
+	m_pkRender=pkEngine->m_pkRender;
 	m_pkTexMan=pkEngine->m_pkTexMan;
 //	m_pkInput=pkEngine->m_pkInput;
 	
@@ -86,15 +86,15 @@ void Console::Update(void) {
 }
 
 void Console::Draw(void) {
-	m_pkPrims->SetFont("file:../data/textures/text/console.bmp");
+	m_pkRender->SetFont("file:../data/textures/text/console.bmp");
 
-	m_pkPrims->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
+	m_pkRender->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
 	
-	m_pkPrims->Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
+	m_pkRender->Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
 	
 	for(int i=0;i<22;i++) {
 		if(m_kText[i]!=NULL){
-			m_pkPrims->Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_kText[i]);		
+			m_pkRender->Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_kText[i]);		
 		}
 	}
 }
