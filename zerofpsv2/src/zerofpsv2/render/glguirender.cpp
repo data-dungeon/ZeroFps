@@ -7,6 +7,8 @@
 #include "texturemanager.h"
 //#include "../engine/fh.h"
 //#include "../engine/zfresource.h"
+#include "../basic/zfresourcedb.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 ///////////////////////////////////////////////////////////////////////////////
@@ -318,14 +320,10 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	bool bDrawMasked = true;
 
-	/*
-	RES
-//	ZFResourceHandle m_kConsoleText;
-//	m_kConsoleText.SetRes(m_pkFont->m_szFileName.c_str());	
-	
+/*	ZFResourceHandle m_kConsoleText;
+	m_kConsoleText.SetRes(m_pkFont->m_szFileName.c_str());		
 //	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 //	int fontTexture = pkTexture->m_iTextureID;//m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
 	*/
 
 	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);

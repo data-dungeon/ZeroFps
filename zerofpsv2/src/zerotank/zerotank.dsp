@@ -86,12 +86,20 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\guibuilder.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zerotank.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\guibuilder.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\zerotank.h

@@ -41,7 +41,8 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
-	pkDefaultFont->CreateFromFile("../data/textures/text/ms_sans_serif8.bmp");
+	char defFontPath[] = "h:/data/textures/text/ms_sans_serif8.bmp"; // FULHACK efterom det inte går
+	pkDefaultFont->CreateFromFile(defFontPath);						 // att komma åt den riktiga sökvägen..
 	m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkDefaultFont->m_iID,
 		pkDefaultFont)); 
 
@@ -1494,3 +1495,9 @@ void ZGui::DrawRect(int x, int y, int w, int h,
 bool ZGui::StartUp()	{ return true; }
 bool ZGui::ShutDown() { return true; }
 bool ZGui::IsValid()	{ return true; }
+
+void ZGui::SetRes(int iResX, int iResY)
+{
+	m_iResX = iResX;
+	m_iResY = iResY;
+}

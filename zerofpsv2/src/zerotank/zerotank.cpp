@@ -1,5 +1,6 @@
 #include "zerotank.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
+#include "../zerofpsv2/gui/zgui.h"
 
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
 
@@ -88,6 +89,8 @@ void ZeroTank::Init()
 	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
 */
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
+
+	SetupGUI();
 }
 
 void ZeroTank::RegisterActions()
@@ -314,8 +317,7 @@ void ZeroTank::SetupSpawnPoints()
 }
 
 void ZeroTank::OnServerStart(void)
-{	
-	
+{		
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
@@ -324,10 +326,7 @@ void ZeroTank::OnServerStart(void)
 			cout<<"Faild to create serverinfoobject"<<endl;
 		 else
 			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}
-
-	
-	
+	}	
 }
 
 void ZeroTank::OnClientStart(void)
@@ -335,6 +334,21 @@ void ZeroTank::OnClientStart(void)
 }
 
 bool ZeroTank::StartUp()	{ return true; }
-bool ZeroTank::ShutDown() { return true; }
+bool ZeroTank::ShutDown()	{ return true; }
 bool ZeroTank::IsValid()	{ return true; }
 
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{ 
+	return true;
+}
+
+void ZeroTank::SetupGUI()
+{
+	// Setup Gui system.
+	m_pkGuiBuilder = new GuiBuilder(pkGui, pkTexMan, GUIPROC);
+	m_pkGuiBuilder->Initialize();
+
+	m_pkGuiBuilder->Create(Window, "TestWnd",    NULL,   10, -1, 0, 0, 200, 200, 0);
+	m_pkGuiBuilder->Create(Button, "TestButton", "Apa",  11, 10, 0, 0,  40,  20, 0);
+	m_pkGuiBuilder->Create(Label,  "TestLabel",  "Test", 12, 10, 0, 0,  40,  80, 0);
+}

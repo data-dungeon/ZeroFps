@@ -10,12 +10,12 @@ Render::Render()
 	// Set Our own local variables.
 	m_iSlicesize				= 32;						//grid size of lod tiles
 	m_iDetail					= 30;						//height meens greater detail att longer range	
-	m_iViewDistance			= 300;
+	m_iViewDistance				= 300;
 	m_iFpsLock					= 60;
 	m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
 	m_kOldCamPos				= Vector3(0,0,0);
-	m_iMaxLandscapeLayers	= 4;
+	m_iMaxLandscapeLayers		= 4;
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;

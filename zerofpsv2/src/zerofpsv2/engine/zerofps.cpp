@@ -523,6 +523,9 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth)
 		m_iDepth	= iDepth;
 		}
 
+	// Must call set res again or else GUI doesnt work..
+	m_pkGui->SetRes(m_iWidth, m_iHeight);
+
 	SetDisplay();
 
 #ifdef _WIN32
@@ -627,8 +630,6 @@ void ZeroFps::ToggleGui(void)
 
 void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 {
-//	m_pkGui->Resize(m_iWidth, m_iHeight, iWidth, iHeight);
-
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;

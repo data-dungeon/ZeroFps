@@ -153,6 +153,7 @@ public:
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
 
+	void SetRes(int iResX, int iResY); // should only be called one time before app start!
 	static int m_iResX;
 	static int m_iResY;
 

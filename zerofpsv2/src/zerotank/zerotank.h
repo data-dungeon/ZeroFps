@@ -16,6 +16,8 @@
 
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
 
+#include "guibuilder.h"
+
 //#include "../common/common.pkg"
 
 
@@ -62,6 +64,8 @@ class ZeroTank :public Application {
 		Heightmap2*			m_pkMap2;
 
 		Mad_Modell			m_pkTestMod;
+
+		GuiBuilder*			m_pkGuiBuilder;
 
 	public:
 		

@@ -105,7 +105,7 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 
 	//delete pkImage;
 
-	SDL_FreeSurface(pkImage);
+/*	SDL_FreeSurface(pkImage);*/
 
 	return true;
 }
