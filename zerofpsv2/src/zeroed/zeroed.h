@@ -204,6 +204,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnClientStart(){};
 
 		void AddPropertyVal();
+		void RemoveSelProperty();
 	
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();

@@ -111,3 +111,18 @@ void ZeroEd::AddPropertyVal()
 
 	m_pkGui->SetFocus(GetWnd("EditPropertyWnd"));
 }
+
+void ZeroEd::RemoveSelProperty()
+{
+	char* item;
+	Entity* pkEnt;
+	Property* pkProp;
+
+	if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
+		if((item = GetSelItem("PropertyList")))
+			if((pkProp = pkEnt->GetProperty(item)))
+			{
+				pkEnt->RemoveProperty(pkProp);
+				UpdatePropertyList(m_iCurrentObject);
+			}
+}

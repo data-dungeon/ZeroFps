@@ -1811,6 +1811,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				ShowWnd("EditPropertyWnd",!IsWndVisible("EditPropertyWnd"));
 				FillPropertyValList();
 			}
+			else
+			if(strWndClicked == "RemovePropertyBn")
+			{
+				RemoveSelProperty();
+			}
 		}
 		else
 		if(strMainWnd == "AddNewProperyWnd")
