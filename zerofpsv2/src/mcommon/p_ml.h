@@ -16,7 +16,7 @@ class MCOMMON_API P_Ml: public Property {
 	private:
 		ZeroFps* m_pkFps;
 		
-		vector<string>	m_kActions;	
+		vector<string>	m_kActions;	///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
 
 	public:
 

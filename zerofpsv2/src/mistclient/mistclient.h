@@ -33,7 +33,6 @@
 
 class MistClient :public Application, public ZGuiApp {
 	private:
-		
 		// actions
 		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
@@ -62,6 +61,7 @@ class MistClient :public Application, public ZGuiApp {
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 		Entity*				m_pkClientObject;
+		Entity*				m_pkTargetObject;
 		P_ClientControl*	m_pkClientControlP;
 
 		P_ServerInfo*		m_pkServerInfo;
@@ -80,7 +80,11 @@ class MistClient :public Application, public ZGuiApp {
 		//zone picking 
 		Vector3				m_kTargetPos;
 		int					m_iTargetZoneObject;
-		int					m_iTargetFace;		
+		int					m_iTargetFace;	
+		
+		bool					m_bActionMenuIsOpen;
+		const unsigned int MAX_NUM_ACTION_BUTTONS;
+		map<ZGuiButton*, string> m_kActionBnTranslator;
 		
 		Vector3	Get3DMousePos();
 		Entity*	GetTargetObject();	
@@ -95,8 +99,10 @@ class MistClient :public Application, public ZGuiApp {
 		HenchmanButton* m_pkSelHenchmanIcon;
 
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
-
+		
 	public:
+		void CloseActionMenu();
+		void OpenActionMenu(int x, int y);
 		void OnClientInputSend(char* szText);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd* pkWnd);
 		void PrintInfoBox(const char* strText);

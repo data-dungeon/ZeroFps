@@ -63,7 +63,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 }
 
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC), MAX_NUM_ACTION_BUTTONS(8)
 { 
 	m_iActiveCaracterObjectID = -1;
 	m_iActiveCaracter			= -1;
@@ -72,12 +72,14 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkClientControlP		= NULL;
 	m_pkServerInfo				= NULL;
 	m_pkActiveCharacter		= NULL;
+	m_pkTargetObject			= NULL;
 	
 	m_fMaxCamDistance			= 8;
 	m_fMinCamDistance			= 2;
 	
 	g_ZFObjSys.Log_Create("mistclient");
 
+	m_bActionMenuIsOpen = false;
 
  
 } 
@@ -158,32 +160,7 @@ void MistClient::Init()
 
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
-	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);	
-
-/*	CreateWnd(Button, "ActionButton1", "MainWnd", "", 400, 300, 32, 32, 0);
-	ZGuiButton* pkButton = static_cast<ZGuiButton*>(GetWnd("ActionButton1"));
-
-	ZGuiSkin* pkSkin = new ZGuiSkin[3];
-
-	pkSkin[0].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_u.bmp", 0);
-	pkSkin[1].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_d.bmp", 0);
-	pkSkin[2].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_f.bmp", 0);
-
-	pkSkin[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-	pkSkin[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-	pkSkin[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-
-	pkButton->SetButtonUpSkin(&pkSkin[0]);
-	pkButton->SetButtonDownSkin(&pkSkin[1]);
-	pkButton->SetButtonHighLightSkin(&pkSkin[2]);
-
-	CreateWnd(Label, "Action1Label", "ActionButton1", "", 0, 0, 32, 32, 0);
-
-	ZGuiSkin* pkSkin2 = new ZGuiSkin;
-	pkSkin2->m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_test.bmp", 0);
-	pkSkin2->m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_test_a.bmp", 0);
-
-	GetWnd("ActionButton1")->SetSkin(pkSkin2);*/
+	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);		
 }
 
 void MistClient::RegisterResources()
@@ -375,13 +352,16 @@ void MistClient::Input()
 
 	if(pkInput->Pressed(MOUSELEFT))
 	{
+		if(m_bActionMenuIsOpen) 
+			CloseActionMenu();
+
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
-			Entity* pkObject = GetTargetObject();
+			m_pkTargetObject = GetTargetObject();
 			
-			if(pkObject)
+			if(m_pkTargetObject)
 			{
-				P_Ml* pkMistLandProp = static_cast<P_Ml*>(pkObject->GetProperty("P_Ml")); 
+				P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject->GetProperty("P_Ml")); 
 
 				if(pkMistLandProp)
 				{
@@ -394,7 +374,7 @@ void MistClient::Input()
 						
 						order.m_sOrderName = vkActionNames[0]; //"Klicka";
 						order.m_iClientID = pkFps->GetConnectionID();
-						order.m_iObjectID = pkObject->iNetWorkID;				
+						order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 						order.m_iCaracter = m_iActiveCaracterObjectID;
 						
 						//set this to -1 if its not a ground click
@@ -426,6 +406,15 @@ void MistClient::Input()
 			}
 			m_fClickDelay = pkFps->GetTicks();					
 		}
+	}
+
+	if(pkInput->Pressed(MOUSERIGHT))
+	{
+		m_pkTargetObject = GetTargetObject();
+
+		int mx, my;
+		pkInput->MouseXY(mx,my);
+		OpenActionMenu(mx, my); 
 	}
 }
 
@@ -621,13 +610,58 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	else
 	if(strMainWndName == "MainWnd")
 	{
-		for(unsigned int i=0; i<m_vkHenchmanIcons.size(); i++)
+		unsigned int i;
+
+		for(i=0; i<m_vkHenchmanIcons.size(); i++)
 		{
 			bool IsClicked = (m_vkHenchmanIcons[i]->GetName() == strClickWndName);
 			m_vkHenchmanIcons[i]->Check(IsClicked);
 
 			if(IsClicked)
 				m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
+		}
+
+		char szActionButton[25];
+		for(i=0; i<10; i++)
+		{
+			sprintf(szActionButton, "ActionButton%i", i);
+			if(strClickWndName == szActionButton)
+			{
+				if(pkWndClicked)
+				{
+					map<ZGuiButton*,string>::iterator res =
+						m_kActionBnTranslator.find(static_cast<ZGuiButton*>(pkWndClicked));
+
+					if(res != m_kActionBnTranslator.end())
+					{
+						printf("selected order = %s\n", res->second.c_str());
+
+						if(m_pkClientControlP)
+						{
+							if(m_pkTargetObject)
+							{
+								if(m_iActiveCaracterObjectID != -1)
+								{
+									ClientOrder order;
+
+									order.m_sOrderName = res->second;
+									order.m_iClientID = pkFps->GetConnectionID();
+									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
+									order.m_iCaracter = m_iActiveCaracterObjectID;
+
+									//set this to -1 if its not a ground click
+									order.m_iFace = -1;
+
+									//m_pkClientControlP->AddOrder(order);
+								}
+							}
+						}
+					}
+				}
+
+				CloseActionMenu();
+				break;
+			}
 		}
 	}
 	else
@@ -830,7 +864,7 @@ void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 	for(; it != childs.end(); it++)
 	{
 		ZGuiWnd* pkWnd = (*it);
-		if(pkWnd->GetID() == ListBoxID)
+		if(pkWnd->GetID() == (unsigned int) ListBoxID)
 		{
 			if(typeid(*pkWnd)==typeid(ZGuiCombobox))
 			{
@@ -1121,4 +1155,119 @@ void MistClient::OnClientInputSend(char *szText)
 	order.m_iFace = -1;
 						
 	m_pkClientControlP->AddOrder(order);
+}
+
+void MistClient::OpenActionMenu(int mx, int my)
+{
+	if(m_bActionMenuIsOpen || m_pkTargetObject == NULL)
+		return;
+
+	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject->GetProperty("P_Ml")); 
+
+	if(!pkMistLandProp)
+		return;
+
+	vector<string> vkActions;
+	pkMistLandProp->GetActions(vkActions);
+
+	int x=0, y=0, knappar=vkActions.size();
+	float grad=0;
+	char name[25];
+	bool bWndExist;
+
+	const float fOffset = 35;
+	int apa_x = 16;
+	int apa_y = 0;
+
+	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
+	{
+		sprintf(name, "%s%i", "ActionButton", i);
+		bWndExist = GetWnd(name) != NULL;
+
+		CreateWnd(Button, name, "MainWnd", "", mx-apa_x+x-fOffset, my-apa_y+y-fOffset, 32, 32, 0);
+		ZGuiButton* pkButton = static_cast<ZGuiButton*>(GetWnd(name));
+
+		if(!bWndExist)
+		{
+			ZGuiSkin* pkButtonSkins = new ZGuiSkin[3];
+			pkButtonSkins[0].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_u.bmp", 0);
+			pkButtonSkins[1].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_d.bmp", 0);
+			pkButtonSkins[2].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_f.bmp", 0);
+
+			pkButtonSkins[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
+			pkButtonSkins[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
+			pkButtonSkins[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
+
+			pkButton->SetButtonUpSkin(&pkButtonSkins[0]);
+			pkButton->SetButtonDownSkin(&pkButtonSkins[1]);
+			pkButton->SetButtonHighLightSkin(&pkButtonSkins[2]);
+		}
+		else
+		{
+			ZGuiWnd* pkWnd = GetWnd(name);
+			pkWnd->Show();
+			pkWnd->SetPos(mx+x-fOffset-apa_x, my+y-fOffset-apa_y, true, true);
+		}
+
+		sprintf(name, "%s%i", "ActionLabel", i);
+		bWndExist = GetWnd(name) != NULL;
+
+		CreateWnd(Label, name, "MainWnd", "", mx-apa_x+x-fOffset, my-apa_y+y-fOffset, 32, 32, 0);
+
+		if(!bWndExist)
+		{
+			ZGuiSkin* pkActionSkin = new ZGuiSkin;
+			pkActionSkin->m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkActionSkin->m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
+			GetWnd(name)->SetSkin(pkActionSkin);
+		}
+		else
+		{
+			ZGuiWnd* pkWnd = GetWnd(name);
+			pkWnd->Show();
+			pkWnd->SetPos(mx+x-fOffset-apa_x, my+y-fOffset-apa_y, true, true);
+		}
+
+		if(i < vkActions.size())
+		{
+			char szActionIcon[128];
+			sprintf(szActionIcon, "data/textures/gui/actions/%s.bmp", vkActions[i].c_str());
+			GetWnd(name)->GetSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
+
+			map<ZGuiButton*,string>::iterator res =
+				m_kActionBnTranslator.find(pkButton);
+
+			if(res != m_kActionBnTranslator.end()) // om den fanns, ta bort den gamla först
+				m_kActionBnTranslator.erase(res); 
+	
+			m_kActionBnTranslator.insert(
+				map<ZGuiButton*,string>::value_type(pkButton,vkActions[i]));
+
+		}
+
+		x += sin(grad) * fOffset;
+		y += cos(grad) * fOffset;
+
+		grad += (zf_pi / (float) MAX_NUM_ACTION_BUTTONS);
+	}
+
+	m_bActionMenuIsOpen = true;
+}
+
+void MistClient::CloseActionMenu()
+{
+	ZGuiWnd* pkWnd;
+	char szName[25];
+	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
+	{
+		sprintf(szName, "%s%i", "ActionButton", i);
+		pkWnd = GetWnd(szName);
+		if(pkWnd) pkWnd->Hide();
+
+		sprintf(szName, "%s%i", "ActionLabel", i);
+		pkWnd = GetWnd(szName);
+		if(pkWnd) pkWnd->Hide();
+	}
+
+	m_bActionMenuIsOpen = false;
 }
