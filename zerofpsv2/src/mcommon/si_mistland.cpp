@@ -107,6 +107,8 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 
    pkScript->ExposeFunction("SetPropertyValue",	      MistLandLua::SetPropertyValueLua);
 
+   pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
+
 
 }
 
@@ -2061,12 +2063,19 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
 
 
          Object* pkSpell = 
-                 g_pkObjMan->CreateObjectFromScriptInZone (acValue, pkObject->GetWorldPosV() );
+                 g_pkObjMan->CreateObjectFromScript (acValue);
+
+         pkSpell->SetWorldPosV (g_pkObjMan->CreateObjectByNetWorkID(dCaster)->GetWorldPosV());
+
+         pkSpell->AttachToZone();
 
          P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
          pkSpellProp->SetCaster ( dCaster );
-       }
 
+         g_pkScript->AddReturnValue( pkLua, pkSpell->iNetWorkID );
+                
+         return 1;
+       }
    }
 
    return 0;
