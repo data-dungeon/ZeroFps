@@ -36,6 +36,10 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 	}
 }
 
+const float BD_R = 1;
+const float BD_G = 0;
+const float BD_B = 0;
+
 InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVENTORY(27,87),
 										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), UPPER_LEFT_CONTAINER(0,0)
 {
@@ -162,7 +166,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
 			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
 
 			if(bLeftButtonPressed)
 			{
@@ -202,7 +206,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
 			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
 
 			if(bLeftButtonPressed)
 			{
@@ -279,10 +283,10 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
 	
 	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
-	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize, 
-		rcInventory.Bottom - MAX_HEIGHT - bdsize - 8 /*no all is opaque*/, true, true);
+	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize + 16, 
+		rcInventory.Bottom - MAX_HEIGHT - bdsize  /*no all is opaque*/, true, true);
 
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -20, false, true);
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -16, false, true);
 	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
 
 	int current_slot_x=0, current_slot_y=0;
@@ -353,8 +357,8 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		sprintf(szItemName, "InventoryItemLabel%i", i);
 		x = UPPER_LEFT_INVENTORY.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
 		y = UPPER_LEFT_INVENTORY.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
-		w = vkItemList[i].m_cItemW * ICON_WIDTH;
-		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
+		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
+		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
 			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
@@ -372,7 +376,10 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
-			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
+			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;
+		pkNewSlot->GetSkin()->m_afBorderColor[0] = BD_R;
+		pkNewSlot->GetSkin()->m_afBorderColor[1] = BD_G;
+		pkNewSlot->GetSkin()->m_afBorderColor[2] = BD_B;
 
 		if(m_iSelItemID == vkItemList[i].m_iItemID)
 			pkNewSlot->GetSkin()->m_unBorderSize = 2;
@@ -405,10 +412,10 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "ContainerItemLabel%i", i);
-		x = UPPER_LEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = UPPER_LEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
-		w = vkItemList[i].m_cItemW * ICON_WIDTH;
-		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
+		x = 1+ UPPER_LEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = 1+ UPPER_LEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
+		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
 			szItemName, "", m_pkContainerWnd, x, y, w, h, 0);
@@ -428,6 +435,10 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
+
+		pkNewSlot->GetSkin()->m_afBorderColor[0] = BD_R;
+		pkNewSlot->GetSkin()->m_afBorderColor[1] = BD_G;
+		pkNewSlot->GetSkin()->m_afBorderColor[2] = BD_B;
 
 		if(m_iSelItemID == vkItemList[i].m_iItemID)
 			pkNewSlot->GetSkin()->m_unBorderSize = 2;
