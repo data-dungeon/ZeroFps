@@ -641,7 +641,10 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
             // order itemcontainer to begin gather iteminfo from server
             if ( GetWnd("BackPackWnd")->IsVisible() )
                ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
-		
+				else
+				{
+					pkGui->SetFocus(GetWnd("MainWnd")); 
+				}		
 			}
 			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);

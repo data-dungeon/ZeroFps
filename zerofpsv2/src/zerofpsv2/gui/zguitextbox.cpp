@@ -607,12 +607,11 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 			ZGuiWnd* pkActiveWnd = pkGui->GetActiveMainWnd();
 
 			if(pkActiveWnd)
-			{
 				cb(pkActiveWnd, ZGM_EN_CHANGE, 1, piParams);
-				delete[] piParams;
-			}
 		}
 	}
+
+	delete[] piParams;
 }
 
 void ZGuiTextbox::CreateInternalControls()
@@ -734,7 +733,10 @@ void ZGuiTextbox::ScrollText(int row)
 	if(pkGui)
 	{
 		int prev_cursor_pos = m_iCursorPos;
-		pkGui->SetFocus(this);
+
+		if(!m_bReadOnly)
+			pkGui->SetFocus(this);
+
 		m_iCursorPos = prev_cursor_pos;
 	}
 }
