@@ -72,11 +72,12 @@ class COMMON_API ItemProperty: public Property {
 		bool UnRegisterAction(int iType,const char* acName);
 		bool CheckIfActionExist(int iType,const char* acName);
 		
-		
+		void UpdateActions();		
 		bool GetUses(int iType,vector<string>* m_kNames);
 		bool Use(int iType,const char* acName);
 
 		bool UseOn(Object* pkObject);
+
 
 };
 

@@ -109,7 +109,8 @@ bool ItemProperty::RegisterAction(int iType,const char* acName,const char* acSig
 	
 	m_kUseData.push_back(kTemp);
 	
-	cout<<"Action "<<acName<<" Added to itemlist"<<endl;
+	cout<<"Action "<<acName<<" Added to actionlist"<<endl;
+	return true;
 }
 
 bool ItemProperty::UnRegisterAction(int iType,const char* acName)
@@ -119,6 +120,7 @@ bool ItemProperty::UnRegisterAction(int iType,const char* acName)
 			if( (*it).kName == acName)
 			{
 				m_kUseData.erase(it);
+				cout<<"Action "<<acName<<" removed to actionlist"<<endl;
 				return true;
 			}
 
@@ -127,6 +129,8 @@ bool ItemProperty::UnRegisterAction(int iType,const char* acName)
 
 bool ItemProperty::GetUses(int iType,vector<string>* m_kNames)
 {
+	UpdateActions();
+
 	m_kNames->clear();
 
 	for(int i=0;i<m_kUseData.size();i++)
@@ -162,6 +166,18 @@ bool ItemProperty::Use(int iType,const char* acName)
 	}
 	
 	return bSentMessage;
+}
+
+void ItemProperty::UpdateActions()
+{
+	GameMessage kTemp;
+	kTemp.m_FromObject = m_pkObject->iNetWorkID;
+	kTemp.m_ToObject = m_pkObject->iNetWorkID;
+	kTemp.m_Name = "Register_Actions";
+				
+	m_pkObjectMan->RouteMessage(kTemp);
+	
+	cout<<"asking for propertys to register their actions"<<endl;
 }
 
 
