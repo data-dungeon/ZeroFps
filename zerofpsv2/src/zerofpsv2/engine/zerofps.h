@@ -144,9 +144,11 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
 		bool		m_bDrawAxisIcon;
-		bool		m_bDebugGraph;							//shuld we show debug graphics, like spheres where theres lights etc
+		bool		m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
 				
-		int		m_iServerConnection;	// The Connection num we have on the server.		
+		bool		m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
+		
+		int		m_iServerConnection;				// The Connection num we have on the server.		
 		int		m_iClientEntityID;						
 		int		m_iMaxPlayers;
 

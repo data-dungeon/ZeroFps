@@ -47,7 +47,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		Vector3				m_kLastTestNormal;
 		float					m_fLastTestDist;
 		
-		float					m_fSleepVel;
+		float					m_fSleepLinVel;
+		float					m_fSleepRotVel;
 		float					m_fMaxDelay;
 		float					m_fMinTime;
 		float					m_fMinForce;

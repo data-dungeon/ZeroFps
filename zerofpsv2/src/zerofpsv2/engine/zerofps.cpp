@@ -89,7 +89,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bDebugGraph				= false;
 	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
-
+	m_bTcsFullframe			= false;
+	
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
@@ -101,6 +102,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
 	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
+	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -341,11 +343,10 @@ void ZeroFps::Run_EngineShell()
 
 void ZeroFps::Run_Server()
 {
-	
-	
 	//update system
 	Update_System(true);
 
+	
 }
 
 void ZeroFps::Run_Client()
@@ -362,10 +363,9 @@ void ZeroFps::Run_Client()
 	//   _---------------------------------- fulhack deluxe 
 	Draw_RenderTargets();
 	
+	if(m_bTcsFullframe)
+		m_pkTcs->Update(GetFrameTime());	
 	
-	//m_pkPhysics_Engine->Update(GetFrameTime());	
-	m_pkTcs->Update(GetFrameTime());	
-
 
 	if(g_iLogRenderPropertys) 
 	{
@@ -453,7 +453,8 @@ void ZeroFps::Update_System(bool bServer)
 				m_pkObjectMan->UpdateGameMessages();
 				
 				//update Tiny Collission system
-				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+				if(!m_bTcsFullframe)
+					m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}
