@@ -1021,7 +1021,6 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 	bool bIsTGA = pkSkin->m_iBkTexAlphaID == -1 ? true : false;
 	int alpha_tex;
 
-
 	if(bIsTGA)
 		alpha_tex = pkSkin->m_iBkTexID;
 	else
@@ -1046,7 +1045,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		Image* pkSurface = m_pkTexMan->EditGetImage( alpha_tex );
 
 		if(pkSurface == NULL)
-		{
+		{			
 			printf("Failed to call GetImage from texturemanager!\n");
 			m_pkZShaderSystem->Pop();
 			return false;
@@ -1058,7 +1057,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		float dx = (int)(tex_w*x_offset);
 		float dy = (int)(tex_h*y_offset);
 
-		if(bIsTGA)
+		if(pkSurface->m_bHasAlpha)
 			dy = tex_h - dy;
 
 		if(dx < 0) dx = 0;
@@ -1074,7 +1073,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 
 		m_pkZShaderSystem->Pop();
 
-		if(bIsTGA) 
+		if(pkSurface->m_bHasAlpha) 
 		{
 			if( kColor.a == 0 ) 
 				bTransparentPixelUnderCursor = true;
