@@ -730,9 +730,6 @@ void InventoryDlg::OnDropItem()
 		}
 	}
 
-	printf("dropping item\n");
-	
-
 //	m_fPickUpTimer = 0;
 }
 
