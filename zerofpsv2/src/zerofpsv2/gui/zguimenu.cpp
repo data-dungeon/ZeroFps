@@ -126,8 +126,22 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				ZGuiMenuItem* pkSubMenu = m_vkItems[i];
 
 				map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkSubMenu );
-				if ( res != m_mkSubMenuStateMap.end() )
-						res->second = !res->second;
+				//if ( res != m_mkSubMenuStateMap.end() )
+				//		res->second = !res->second;
+
+				if(pkSubMenu->pkParent == NULL && iCode == NCODE_CLICK_DOWN)
+				{
+					if(res->second == true)
+					{
+						OpenSubMenu(pkSubMenu, false);
+						HideAll();
+						m_bIsOpen = false;
+						return true;
+					}
+
+					OpenSubMenu(pkSubMenu, true);
+					return true;
+				}
 
 				if(pkSubMenu->pkParent == NULL && res->second == true && iCode == NCODE_CLICK_DOWN)
 				{
@@ -135,7 +149,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				}
 				else
 				{
-					OpenSubMenu(pkSubMenu, res->second);
+					OpenSubMenu(pkSubMenu, true);
 					//Resize(GetScreenRect().Width(), 500);
 				}
 				
@@ -468,6 +482,10 @@ void ZGuiMenu::OpenSubMenu(ZGuiMenuItem* pkSubMenu, bool bOpen)
 
 		pkCurr = pkCurr->pkParent;
 	}
+
+		map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkSubMenu );
+		if ( res != m_mkSubMenuStateMap.end() )
+				res->second = bOpen;
 }
 
 bool ZGuiMenu::MenuIsOpen(ZGuiMenuItem* pkMenu)
@@ -511,7 +529,7 @@ void ZGuiMenu::HideAll()
 	map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
 	for( ; it != m_mkSubMenuStateMap.end(); it++)
 	{
-		if(!it->first->pkButton->IsVisible())
+		//if(!it->first->pkButton->IsVisible())
 			it->second = false;
 	}	
 
