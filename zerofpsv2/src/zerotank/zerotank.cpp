@@ -78,17 +78,16 @@ void ZeroTank::Init()
 	//register property bös
 	RegisterPropertys();
 	
+/*
 	srand( (int) (pkFps->GetGameTime()*1000) );
 
-	char* szRandom[] =
-	{
-		"Mistland, the land of mist"
-	};
+	char* szRandom[] = {
+		"Mistland, the land of mist" };
 
 	char szTitle[150];
 	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
-
-	SDL_WM_SetCaption(szTitle, NULL);
+*/
+	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 }
 
 void ZeroTank::RegisterActions()
@@ -122,7 +121,7 @@ void ZeroTank::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	m_pkMap2->SetPos(Vector3(0,-5,-10));
-//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 //	m_pkTestMod.PlayAnimation(0,0);
 //	m_pkTestMod.Draw_All();

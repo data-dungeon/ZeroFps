@@ -36,7 +36,7 @@ bool Render::StartUp()
 	m_iHmTempList				= 0;
 
 	//setup material for heightmap rendering
-	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = GL_FILL;
+	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
 	m_kHeightmapMaterial.GetPass(0)->m_iDepthFunc = GL_LESS;
 	m_kHeightmapMaterial.GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 //	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
