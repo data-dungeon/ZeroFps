@@ -12,7 +12,7 @@ using namespace std;
 class ZeroFps;
 
 //max lenght of an entered command
-#define COMMAND_LENGHT 31
+#define COMMAND_LENGHT 37
 
 class ENGINE_API Console {
 	private:

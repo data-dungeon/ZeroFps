@@ -5,12 +5,10 @@ Render::Render(TextureManager* pkTexMan) {
 	
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	
-	m_iGrassLod=30;
 	m_iViewDistance=200;
 	m_iFpsLock=60;
-	m_iAutoLod=0;
+	m_iAutoLod=1;
 	m_iLodUpdate=0;	
-	m_iGrassLodUpdate=0;	
 	m_kOldCamPos=Vector3(0,0,0);
 }
 
@@ -174,13 +172,13 @@ void Render::Dot(float x,float y,float z) {
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	SetFont("file:../data/textures/text/console.tga");
 
-	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.2,2.2,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp",0));
+	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.64,1.98,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp",0));
 	
-	Print(Vector3(-0.90,-0.90,-1),Vector3(0,0,0),Vector3(.06,.06,.06),m_aCommand);		
+	Print(Vector3(-1.1,-0.82,-1),Vector3(0,0,0),Vector3(.06,.06,.06),m_aCommand);		
 	
-	for(int i=0;i<22;i++) {
+	for(int i=0;i<21;i++) {
 		if((*m_kText)[i]!=NULL){
-			Print(Vector3(-0.90,-0.80+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
+			Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
 		}
 	}
 }
@@ -291,7 +289,7 @@ bool Render::PointInFrustum( Vector3 kPoint)
    return true;
 }
 
-bool Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
+bool Render::SphereInFrustum(Vector4 kPoint)
 {
 //	kPoint.x+=CamPos.x;
 //	kPoint.z+=CamPos.z;

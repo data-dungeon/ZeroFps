@@ -1,7 +1,7 @@
 #include "test.h"
 
 
-Test olle("MegaGame",1024,768,16);
+Test olle("MegaGame",800,600,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -134,8 +134,8 @@ void Test::OnHud(void) {
 		IntToChar(fps,pkFps->m_iFps);
 		fpsupdate=0;
 	}
-	pkRender->Print(Vector3(-.9,.9,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),"FPS:");	
-	pkRender->Print(Vector3(-.7,.9,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),fps);
+	pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),"FPS:");	
+	pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),fps);
 
 }
 
