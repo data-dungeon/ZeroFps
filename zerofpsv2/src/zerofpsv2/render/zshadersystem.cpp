@@ -49,6 +49,10 @@ bool ZShaderSystem::StartUp()
 	else
 		SetupOcculusion();
 		
+		
+	//register console commands
+	Register_Cmd("setgamma",FID_SETGAMMA);			
+		
 	return true;
 }
 
@@ -1490,4 +1494,35 @@ unsigned int ZShaderSystem::OcculusionEnd()
 	
 	return iResult;
 }
+
+bool ZShaderSystem::SetGamma(float fGamma)
+{
+	return SetGamma(fGamma,fGamma,fGamma);
+}
+
+
+bool ZShaderSystem::SetGamma(float fRed,float fGreen,float fBlue)
+{
+	if( SDL_SetGamma(fRed, fGreen,fBlue)  == -1)
+		return false;
+	else
+		return true;
+}
+
+void ZShaderSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) 
+	{
+		case FID_SETGAMMA:
+			if(kCommand->m_kSplitCommand.size() <= 1) 
+				return;
+																			
+			float fGamma;
+			fGamma = atof(kCommand->m_kSplitCommand[1].c_str());
+			
+			SetGamma(fGamma);				
+			break;			
+	}
+}
+
 

@@ -176,6 +176,13 @@ class ZVertexBuffer;
 class RENDER_API ZShaderSystem : public ZFSubSystem
 {
 	private:
+		//consol commands
+		enum FuncId_e
+		{
+			FID_SETGAMMA,
+		};
+	
+	
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;	
 		
@@ -281,6 +288,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid() 	{return true;};
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		
 		//statistics
 		int GetMaterialReloads() 	{return m_iMaterialReloads;};
@@ -305,6 +313,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetClearColor(const Vector4& kColor);
 		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		unsigned int GetDepth(int iX,int iY);
+		
+		bool SetGamma(float fGamma);
+		bool SetGamma(float fRed,float fGreen,float fBlue);
 		
 		//ucculusion
 		void OcculusionBegin();
