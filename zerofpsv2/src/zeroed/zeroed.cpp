@@ -852,6 +852,8 @@ void ZeroEd::OnHud(void)
 {
 	if(m_pkActiveCamera) 
 	{
+		/*   //dvoid tyckte den va ivägen
+	
 		//m_kTestGraph.PushValue(m_pkZeroFps->m_fFps);
 		m_kTestGraph.DrawGraph(10,50); // [ m_kTestGraph.DrawGraph(10,10); ] < zeb: höjer upp den lite så den inte täcker infolabeln
 		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
@@ -859,7 +861,9 @@ void ZeroEd::OnHud(void)
 		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
 		/*m_pkRender->DrawAABB(m_pkActiveCamera->GetViewPortCorner(),
 			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
-			Vector3(1,1,1),1);*/
+			Vector3(1,1,1),1);*
+			
+		*/
 	}
 }
 

@@ -540,15 +540,12 @@ void ZeroFps::Update_System()
 		
 	for(int i=0;i<iLoops;i++)
 	{	
-		
 	
 		//update sim time for this systemupdate
 		m_pkEntityManager->UpdateSimTime();
 		
 		//update network for client & server
-		StartProfileTimer("network");	
 		m_pkNetWork->Run();				
-		StopProfileTimer("network");	
 		
 		//update application systems
 		m_pkApp->OnSystem();
@@ -564,37 +561,32 @@ void ZeroFps::Update_System()
 				//update all normal propertys
 				m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 				
-				//update game message system
-				m_pkEntityManager->UpdateGameMessages();
-				
 				//update Tiny Collission system
 				if(!m_bTcsFullframe)
 					m_pkTcs->Update(m_pkEntityManager->GetSimDelta());	
 			}	
 		}
-		
+	
+
 		//client only code
 		if(m_bClientMode)
 		{			
 			//update normal propertys
-			m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
-			
-			//update game message system
-			m_pkEntityManager->UpdateGameMessages();
-		
+			m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);					
 		}
-
 		
 		//client & server code
+
+		//update game message system				
+		m_pkEntityManager->UpdateGameMessages();
 		
+				
 		//pack objects to clients
-		StartProfileTimer("network");		
 		m_pkEntityManager->PackToClients();		
-		StopProfileTimer("network");		
 		
 		//delete objects
 		m_pkEntityManager->UpdateDelete();
-		
+				
 		//update the resource manager
 		m_pkResourceDB->Refresh();
 
@@ -604,6 +596,7 @@ void ZeroFps::Update_System()
 
 	//finaly add rest time
 	m_fSystemUpdateTime -= fRestTime;
+	
 }
 
 void ZeroFps::Draw_EngineShell()
@@ -649,8 +642,8 @@ void ZeroFps::MainLoop(void)
 		}
 		else
 		{
+			//current time
 			m_fEngineTime = GetTicks();
-			Swap();											//swap buffers n calculate fps
 			 			 
 			//check if application is minimized
 			m_bMinimized = ( !(SDL_GetAppState() & SDL_APPACTIVE) );	
@@ -660,25 +653,23 @@ void ZeroFps::MainLoop(void)
 			
 			//update basic engine systems			
 			Run_EngineShell();
-
 			
-			//update server only systems
+			//update server only systems			
 			StartProfileTimer("System");			
 			if(m_bServerMode)
-				Run_Server();
-
+				Run_Server();		
+				
 			//update client only systems
 			if(m_bClientMode)
 				Run_Client();		
-			StopProfileTimer("System");
+			StopProfileTimer("System");							
 				
 			//render stuff			
-			Draw_EngineShell();
+			Draw_EngineShell();			
 			
-
-		}
-		
-
+			//swap buffers n calculate fps
+			Swap();			
+		}		
 	}
 }
 

@@ -2554,9 +2554,10 @@ bool EntityManager::LoadWorld(string strLoadDir)
 
 void EntityManager::UpdateZoneSystem()
 {
-
+	StartProfileTimer("ZoneSystem");	
 	UpdateTrackers();
 	UpdateZoneStatus();
+	StopProfileTimer("ZoneSystem");	
 }
 
 void EntityManager::UpdateTrackers()
