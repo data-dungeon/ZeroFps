@@ -8,7 +8,7 @@ function Create()
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
-			InitParameter("team",2)
+			InitParameter("team",2);
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 
@@ -28,12 +28,14 @@ function Init()
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
-	SISetHeartRate(SIGetSelfID(),4);
-
-	
+--	SISetHeartRate(SIGetSelfID(),4);
+	Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
+	SetTeam (SIGetSelfID(), 2);
 end
 
 function FirstRun()
+
+	SISetHeartRate(SIGetSelfID(),4);
 end
 
 function HeartBeat()
@@ -46,6 +48,34 @@ function HeartBeat()
 	
 		return
 	end
+
+	local State = GetState(SIGetSelfID())
+
+	if State == 4 then -- aggresive
+
+		local closest_agent = GetDMCharacterClosest(SIGetSelfID())
+
+		-- Close enough?
+		agent_pos = GetEntityPos(closest_agent)
+		police_pos = GetEntityPos(SIGetSelfID())
+
+		range = GetRangeBetween(agent_pos, police_pos)
+
+		if range < 10 then
+			FireAtObject(SIGetSelfID(), closest_agent)
+		else
+
+			if HavePath(SIGetSelfID()) == 1 then
+				return
+			else
+				MakePathFind(SIGetSelfID(),agent_pos);
+			end
+		end
+
+		
+	end	
+
+	
 end
 
 function Dead()
@@ -55,3 +85,16 @@ function Dead()
 	SetEntityVar (SIGetSelfID(), "deadtime", 0);
 end
 
+function GetRangeBetween(a, b) -- tar 2 tabeller med 3 double vardera
+
+	local xdif = a[1] - b[1]
+	local zdif = a[3] - b[3]
+
+	-- vi är intresserade av avstånd
+	if xdif < 0 then xdif = -xdif end
+	if zdif < 0 then zdif = -zdif end
+
+	range = xdif + zdif
+
+	return range
+end

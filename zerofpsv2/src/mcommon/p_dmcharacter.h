@@ -15,7 +15,15 @@
 
 using namespace std;
 
-enum eSTATE { IDLE, DEAD, CROUCH, PANIC, AGGRESIVE };
+enum eSTATE 
+{ 
+	IDLE			= 0, 
+	DEAD			= 1, 
+	CROUCH		= 2, 
+	PANIC			= 3, 
+	AGGRESIVE	= 4, 
+};
+
 class MCOMMON_API DMCharacterStats
 {
 	public:
@@ -77,6 +85,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void MakeStringLowerCase(string& s);
 		void UpdateOrders();
 		bool HandleOrder(DMOrder* pkOrder,bool bNew);
+
+		static vector< pair<Vector3,int> > m_sCallMap; // < Fulhack delux 
 	
 	public:
 		//item slots

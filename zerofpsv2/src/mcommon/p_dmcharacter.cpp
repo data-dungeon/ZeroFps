@@ -6,6 +6,9 @@
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmhq.h"
 
+
+vector< pair< Vector3,int> > P_DMCharacter::m_sCallMap;
+
 // ---- DMCharacterStats
 DMCharacterStats::DMCharacterStats()
 {
@@ -162,6 +165,27 @@ void P_DMCharacter::Init()
 
 void P_DMCharacter::Damage(int iType,int iDmg)
 {
+	if(iDmg > 0)
+	{
+		if(m_iTeam == 1) // civil, call teh police!
+		{
+			bool bAlreadyInList = false;
+			for(int i=0; i<m_sCallMap.size(); i++)
+				if(m_sCallMap[i].second == m_pkObject->GetEntityID()){
+					bAlreadyInList = true;
+					break;
+				}
+
+			if(bAlreadyInList == false)
+			{
+				Vector3 pos = m_pkObject->GetWorldPosV();
+				m_sCallMap.push_back(vector< pair< Vector3,int> >::value_type(
+					pos, m_pkObject->GetEntityID()));
+				printf("---------- Scream for help ! --------\n");
+			}
+		}	
+	}
+
 	// one death should be enough for anyone ;)
 	if ( m_kStats.m_iLife <= 0 )
 		return;
@@ -362,6 +386,24 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 void P_DMCharacter::Update()
 {
 	UpdateOrders();
+
+	if(m_iTeam == 2) // the police looks for noise
+	{
+		Vector3 kPolicePos = m_pkObject->GetWorldPosV();
+
+		bool bAlreadyInList = false;
+		vector< pair<Vector3,int> >::iterator it = m_sCallMap.begin();
+		for( ; it != m_sCallMap.end(); it++) 
+		{
+			if((*it).first.DistanceTo(kPolicePos) < 10 )
+			{
+				printf("---------- I hear the Law calling! --------\n");
+				m_iState = AGGRESIVE;
+				m_sCallMap.erase(it); 
+				break;
+			}
+		}
+	}	
 
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{

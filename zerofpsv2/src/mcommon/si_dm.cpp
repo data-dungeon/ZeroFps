@@ -8,6 +8,7 @@
 #include "p_dmgameinfo.h"
 #include "p_dmshop.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 
 ZFScriptSystem*				DMLua::g_pkScript;
 EntityManager*				DMLua::g_pkObjMan;
@@ -28,6 +29,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// character functions
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
 	pkScript->ExposeFunction("IsDead", DMLua::IsDeadLua);
+	pkScript->ExposeFunction("GetState", DMLua::GetStateLua);
 	pkScript->ExposeFunction("Heal", DMLua::HealLua);
 	pkScript->ExposeFunction("BeamToLocation", DMLua::BeamToLocationLua);
 	pkScript->ExposeFunction("BeamToObject", DMLua::BeamToObjectLua);
@@ -188,12 +190,15 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 			if( dFromObjectID != kObjects[i]->GetEntityID() &&
 			    (pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
 			{
-				double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
-				// ignore if dead
-				if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
+				if(pkCharacter->m_iTeam == 0) // endast spelarens agenter
 				{
-					dClosestDistance = dDist;
-					iClosestCharID = kObjects[i]->GetEntityID();
+					double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
+					// ignore if dead
+					if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
+					{
+						dClosestDistance = dDist;
+						iClosestCharID = kObjects[i]->GetEntityID();
+					}
 				}
 			}
 
@@ -271,6 +276,30 @@ int DMLua::IsDeadLua(lua_State* pkLua)
 
 	return 1;
 }
+
+
+// takes a entityID and returns true if that character is dead
+int DMLua::GetStateLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (1, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	if ( pkChar->GetStats()->m_iLife > 0 )
+		g_pkScript->AddReturnValue(pkLua, double(pkChar->m_iState) );
+	else
+		g_pkScript->AddReturnValue(pkLua, -1);
+
+	return 1;
+}
+
+
 
 
 // ------------------------------------------------------------------------------------------------
@@ -1952,6 +1981,19 @@ int DMLua::EquipLua(lua_State* pkLua)
 		break;
 	case 1:
 		pkChar->m_pkHand->AddItem(pkNewObj->GetEntityID());
+
+
+		// equip weapon
+		
+			// Get owner object
+			Entity* pkOwner = pkEnt; 
+			pkNewObj->SetLocalPosV ( Vector3(0,0,0) );
+
+			P_LinkToJoint* pkLink = (P_LinkToJoint*)pkNewObj->AddProperty ("P_LinkToJoint");      
+			pkLink->SetJoint( "righthand" );
+		
+
+
 		break;
 	}
 

@@ -326,6 +326,7 @@ void DarkMetropolis::RegisterPropertys()
 
 void DarkMetropolis::MoveCamera(Vector3 pos)
 {
+	pos.y = m_pkCameraEntity->GetWorldPosV().y ;
 	m_pkCameraEntity->SetWorldPosV(pos);
 }
 

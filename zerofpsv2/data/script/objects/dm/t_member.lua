@@ -31,7 +31,7 @@ function Init()
 	SetTeam (SIGetSelfID(), 0);
 	SISetHeartRate(SIGetSelfID(),4);
 
-	Equip(SIGetSelfID(), "data/script/objects/dm/t_shotgun.lua", 1);
+	Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1);
 end
 
 function FirstRun()
