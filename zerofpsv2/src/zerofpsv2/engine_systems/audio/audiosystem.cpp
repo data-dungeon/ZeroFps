@@ -439,7 +439,7 @@ ZFResourceHandle* ZFAudioSystem::GetResHandle(string strFileName)
 
 ZFSound* ZFAudioSystem::GetFreeSound(string strFileName)
 {
-	ZFSound* pkSound;
+	ZFSound* pkSound = NULL;
 
 	// Check if resource handle exist.
 	map<string,ZFResourceHandle*>::iterator itRes;
@@ -447,31 +447,38 @@ ZFSound* ZFAudioSystem::GetFreeSound(string strFileName)
 	if(itRes != m_mkResHandles.end())
 	{
 		pkSound = static_cast<ZFSound*>(itRes->second->GetResourcePtr()); 
-		return pkSound; // return if exist.
 	}
 
 	// Add resource if not.
-	ZFResourceHandle* pkNewRes = new ZFResourceHandle;
-	m_mkResHandles.insert(map<string,ZFResourceHandle*>::value_type(
-		strFileName, pkNewRes)); 
-
-	if(!pkNewRes->IsValid())
+	if(pkSound == NULL)
 	{
-		// Try to create
+		ZFResourceHandle* pkNewRes = new ZFResourceHandle;
 		if(!pkNewRes->SetRes(strFileName))
+			printf("Already exist\n");
+		m_mkResHandles.insert(map<string,ZFResourceHandle*>::value_type(
+			strFileName, pkNewRes)); 
+
+		if(!pkNewRes->IsValid())
 		{
-			// Remove again if failed
-			map<string,ZFResourceHandle*>::iterator itRes;
-			itRes = m_mkResHandles.find(strFileName);
-			if(itRes != m_mkResHandles.end())
+			// Try to create
+			if(!pkNewRes->SetRes(strFileName))
 			{
-				m_mkResHandles.erase(itRes);
-				delete pkNewRes;
-				return false; // return false
+				// Remove again if failed
+				map<string,ZFResourceHandle*>::iterator itRes;
+				itRes = m_mkResHandles.find(strFileName);
+				if(itRes != m_mkResHandles.end())
+				{
+					m_mkResHandles.erase(itRes);
+					delete pkNewRes;
+					return false; // return false
+				}
 			}
 		}
+		
+		pkSound = static_cast<ZFSound*>(pkNewRes->GetResourcePtr()); 
 	}
-	
-	pkSound = static_cast<ZFSound*>(pkNewRes->GetResourcePtr()); 
+
+	printf("%i\n", (int) (int*) pkSound );
+
 	return pkSound; // return if exist.
 }

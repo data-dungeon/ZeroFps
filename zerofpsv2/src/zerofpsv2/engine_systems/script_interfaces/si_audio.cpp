@@ -20,6 +20,7 @@ void AudioLua::Init(ZFAudioSystem* pkAudio, ObjectManager* pkObjMan,
 	g_pkObjectMan = pkObjMan;
 
 	pkScript->ExposeFunction("PlaySound",	AudioLua::PlaySoundLua);
+	pkScript->ExposeFunction("PlayGuiSound", AudioLua::PlayGuiSoundLua); 
 }
 
 // PlaySound
@@ -44,6 +45,14 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
 		Object* pkObject;
 		pkObject = g_pkObjectMan->GetObjectByNetWorkID((int)dValue);
+		if(pkObject == NULL)
+		{
+			char szFileName[100];
+			g_pkScript->GetArg(pkLua, 0, szFileName);
+			printf("Failed to play sound \"%s\" on object with id: %i\n", 
+				szFileName, (int)dValue);
+			return 0;
+		}
 		pos = pkObject->GetWorldPosV();
 		dir = pkObject->GetWorldRotV();
 		break;
@@ -78,7 +87,39 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 
 	g_pAudioSys->AddSound(pkSound);
 
-	printf("Trying to play sound from script\n");
+	return 1;
+}
+
+// PlaySound
+// Parameters:
+//		(0) name of sound (not the full path) (char*)
+int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
+{
+	Vector3 pos = g_pAudioSys->GetListnerPos();
+	Vector3 dir = g_pAudioSys->GetListnerDir();
+
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 1)
+	{
+		printf("Failed to play sound! Wrong number of arguments.\n");
+		return 0;
+	}
+
+	// Name of the sound file (not the full path)
+	char szFileName[100];
+	g_pkScript->GetArg(pkLua, 0, szFileName);
+
+	// Create full path
+	string strFileName = "data/sound/";
+	strFileName.append(szFileName);
+
+	ZFSound* pkSound = g_pAudioSys->GetFreeSound(strFileName);
+	pkSound->m_kPos = pos;
+	pkSound->m_kVel = dir;
+	pkSound->m_bLoop = false;
+
+	g_pAudioSys->AddSound(pkSound);
 
 	return 1;
 }

@@ -258,7 +258,7 @@ void MistClient::Input()
 			ZFSound* pkSound1 = pkAudioSys->GetFreeSound("data/sound/dummy.wav");
 			pkSound1->m_kPos = Vector3(0,0,0);
 			pkSound1->m_kVel = Vector3(0,0,1);
-			pkSound1->m_bLoop = true;
+			pkSound1->m_bLoop = false;
 			pkAudioSys->AddSound(pkSound1);
 		}
 		break;

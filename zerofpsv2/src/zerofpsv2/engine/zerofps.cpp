@@ -40,6 +40,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
 	m_pkAudioSystem			= new ZFAudioSystem;
+	m_pkAudioSystem2			= new ZFAudioSystem2;
 	m_pkObjectMan				= new ObjectManager;
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;
@@ -115,6 +116,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkGuiRenderer;
 	delete m_pkNetWork;
 	delete m_pkAudioSystem;
+	delete m_pkAudioSystem2;
 //	delete m_pkSBM;
 	delete m_pkObjectMan;
 	delete m_pkCmd;

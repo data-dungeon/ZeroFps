@@ -37,6 +37,9 @@ class ENGINE_SYSTEMS_API ZFAudioSystem : public ZFSubSystem
 		bool ShutDown();
 		bool IsValid();
 
+		Vector3 GetListnerPos() { return m_kPos;  }
+		Vector3 GetListnerDir() { return m_kHead; }
+
 	private:
 		struct SourceAlloc
 		{
@@ -46,7 +49,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem : public ZFSubSystem
 		
 		Vector3 m_kPos, m_kHead;
 		Vector4 m_kUp;
-		
+
 		list<ZFSound*> m_akSounds;
 		vector<SourceAlloc*> m_kSources;
 		

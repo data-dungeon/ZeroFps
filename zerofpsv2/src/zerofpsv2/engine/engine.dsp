@@ -339,6 +339,10 @@ SOURCE=.\zerofps.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\audio\zfaudiosystem2.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\common\zoneobject.cpp
 # End Source File
 # End Group
@@ -576,6 +580,10 @@ SOURCE=..\engine_systems\propertys\worldinfoproperty.h
 # Begin Source File
 
 SOURCE=.\zerofps.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\audio\zfaudiosystem2.h
 # End Source File
 # Begin Source File
 

@@ -18,6 +18,7 @@
 #include "camera.h"
 #include "../basic/cmdsystem.h"
 #include "../engine_systems/audio/audiosystem.h"
+#include "../engine_systems/audio/zfaudiosystem2.h"
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../render/zshader.h"
@@ -165,6 +166,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
 		ObjectManager*			m_pkObjectMan;				///< In Game Object System.
 		ZFAudioSystem*			m_pkAudioSystem;			///< Sound
+		ZFAudioSystem2*		m_pkAudioSystem2;			///< Sound
 		NetWork*					m_pkNetWork;				///< NetWork Interface.
 		GLGuiRender*			m_pkGuiRenderer;			///< Gui - Zeb
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb
