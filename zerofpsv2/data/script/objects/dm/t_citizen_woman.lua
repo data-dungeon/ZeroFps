@@ -16,7 +16,6 @@ end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
-	SetEntityVar(SIGetSelfID(), "g_WomenLife", life)
 end
 
 function Init()
@@ -49,6 +48,7 @@ function Init()
 	SetCharStats(SIGetSelfID(), 1, 20);
 
 	PlayAnim(SIGetSelfID(), "idle");
+	SetEntityVar(SIGetSelfID(), "g_WomenLife", life)
 end
 
 function HeartBeat()

@@ -40,6 +40,8 @@ function Init()
 	SetCharStats(SIGetSelfID(), 0, 20);
 	SetCharStats(SIGetSelfID(), 1, 20);
 
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
+
 	PlayAnim(SIGetSelfID(), "idle");
 	SetTeam (SIGetSelfID(), 1);
 end

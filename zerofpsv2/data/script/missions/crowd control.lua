@@ -18,10 +18,10 @@ pos4 = {4.82, 0.66, 6.12};
 pos5 = {20.40, 1.58, 20.92};
 
 
-Skin1 = { tex1="dm/map_icons/a.bmp", tex2="0", tex3="0", tex4="0", 
+Skin1 = { tex1="map_icons/a.bmp", tex2="0", tex3="0", tex4="0", 
  tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
  bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
-Skin2 = { tex1="dm/map_icons/policestation.bmp", tex2="0", tex3="0", tex4="0", 
+Skin2 = { tex1="map_icons/policestation.bmp", tex2="0", tex3="0", tex4="0", 
  tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
  bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 

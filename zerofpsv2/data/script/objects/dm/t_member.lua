@@ -64,10 +64,10 @@ function Init()
 
 	PlayAnim(SIGetSelfID(), "idle");
 
---	Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1);
 end
 
 function FirstRun()
+	--Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1);
 end
 
 function HeartBeat()

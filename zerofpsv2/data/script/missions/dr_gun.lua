@@ -24,7 +24,7 @@ MissionText =
 }
 
 
-Skin1 = { tex1="dm/map_icons/hospital.bmp", tex2="0", tex3="0", tex4="0", tex1a="0",
+Skin1 = { tex1="map_icons/hospital.bmp", tex2="0", tex3="0", tex4="0", tex1a="0",
  tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
  }
 

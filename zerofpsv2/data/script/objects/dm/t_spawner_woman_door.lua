@@ -8,7 +8,7 @@ function Create()
 		InitProperty("P_Spawn");	
 			InitParameter("SpawnDelay",15);
 			InitParameter("SpawnMode",1);			
-			InitParameter("Template","data/script/objects/dm/t_woman_man.lua");	
+			InitParameter("Template","data/script/objects/dm/t_citizen_woman.lua");	
 			InitParameter("SpawnArea",1);			
 			InitParameter("MaxSpawn",6);	
 		InitProperty("P_Sound");

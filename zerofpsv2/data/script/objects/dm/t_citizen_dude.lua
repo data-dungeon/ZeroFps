@@ -15,7 +15,6 @@ end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
-	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
 function Init()
@@ -38,6 +37,8 @@ function Init()
 
 	PlayAnim(SIGetSelfID(), "idle");
 	SetTeam (SIGetSelfID(), 1);
+
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
 function HeartBeat()

@@ -22,7 +22,7 @@ end
 
 function HeartBeat()
 	if GetEntityVar(SIGetSelfID(), "activated") == 1 then
-		PlaySound (SIGetSelfID(), "tick.wav");
+		PlaySound (SIGetSelfID(), "beep1.wav");
 		AddToEntityVarLua (SIGetSelfID(), "timer", -1);
 
 		if GetEntityVar(SIGetSelfID(), "timer") < 1 then

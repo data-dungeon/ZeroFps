@@ -16,7 +16,6 @@ end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
-	SetEntityVar(SIGetSelfID(), "g_CitizenManLife", Life)
 end
 
 function Init()
@@ -40,6 +39,8 @@ function Init()
 	--set life
 	SetCharStats(SIGetSelfID(), 0, 20);
 	SetCharStats(SIGetSelfID(), 1, 20);
+
+	SetEntityVar(SIGetSelfID(), "g_CitizenManLife", Life)
 end
 
 function HeartBeat()

@@ -20,7 +20,7 @@ MissionText =
 	long = [[Wrong street\n\nLarge Leonard, the local drugdealer and maffia boss is pissed off. Someone has begun selling drugs in his neighborhood, and not just anyone - it's Harry Hair and his gang of baldies, a gang of lowly and petty thieves! They sure need to be taught a lesson or two.\nLeonard usually finishes his own buissnises, but thinks to highly of himself to do such a small work. That´s where you come in.\n\nHe wants you to make Harry and his gang a visit and teach them how hard it is to run your own buissness. Harry is recognized by his large afro hair, and all his gang members are bald.\n\nReward: 500 cash\n\nObjectives: Kill Harry and return to base.]]
 }
 
-Skin1 = { tex1="dm/map_icons/harry.bmp", tex2="0", tex3="0", tex4="0", 
+Skin1 = { tex1="map_icons/harry.bmp", tex2="0", tex3="0", tex4="0", 
  tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
  bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 

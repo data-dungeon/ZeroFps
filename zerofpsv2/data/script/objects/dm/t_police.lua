@@ -7,7 +7,6 @@ function Create()
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
-		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
 			InitParameter("team",2);
 		InitProperty("P_ScriptInterface");
@@ -29,7 +28,9 @@ function Init()
 --	SISetHeartRate(SIGetSelfID(),4);
 	SetTeam (SIGetSelfID(), 2);
 	AddItem(SIGetSelfID(), "data/script/objects/dm/t_rifle.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
-	
+
+	PlayAnim(SIGetSelfID(), "idle");
+
 end
 
 function FirstRun()
@@ -168,7 +169,15 @@ function HeartBeat()
 			end
 		end
 	else
-		Patrol(SIGetSelfID())
+		Patrol(SIGetSelfID());
+
+
+		if HavePath(SIGetSelfID()) == 0 then
+			pos = GetEntityPos(SIGetSelfID());
+			pos[1] = pos[1] + Random(20)-10;
+			pos[3] = pos[3] + Random(20)-10;
+			MakePathFind(SIGetSelfID(),pos);
+		end
 	end
 
 	
