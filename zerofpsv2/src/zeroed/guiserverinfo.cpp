@@ -105,12 +105,14 @@ void ZeroEd::GUIFillServerList()
 
 		pkMenu->AddItem(szMenuText, (char*)m_vkServerList[i].FullName().c_str(), 
 			"Menu_File_Connect", false);	
+		pkMenu->SetCheckMarkGroup((char*)m_vkServerList[i].FullName().c_str(), 191919);
+		pkMenu->UseCheckMark((char*)m_vkServerList[i].FullName().c_str(), true);
 	}
 
 	((ZGuiMenu*)GetWnd("MainMenu"))->ResizeMenu();
 }
 
-void ZeroEd::OnAddServer(bool bAdd)
+void ZeroEd::OnGUIAddServer(bool bAdd)
 {
 	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
 	ZGuiListbox* pkList = (ZGuiListbox*) GetWnd("ManageServerList");
@@ -154,6 +156,8 @@ void ZeroEd::OnAddServer(bool bAdd)
 		AddListItem("ManageServerList", (char*)info.FullName().c_str());
 		pkMenu->AddItem(szMenuText, (char*)info.FullName().c_str(), 
 			"Menu_File_Connect", false);
+		pkMenu->SetCheckMarkGroup((char*)info.FullName().c_str(), 191919);
+		pkMenu->UseCheckMark((char*)info.FullName().c_str(), true);
 		m_vkServerList.push_back(info);
 
 		if(!bExist)

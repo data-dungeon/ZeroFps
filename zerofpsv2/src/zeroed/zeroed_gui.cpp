@@ -414,12 +414,12 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "ManageConnectionsAddServerBn")
 			{
-				OnAddServer(true);
+				OnGUIAddServer(true);
 			}
 			else
 			if(strWndClicked == "ManageConnectionsRemoveServerBn")
 			{
-				OnAddServer(false);
+				OnGUIAddServer(false);
 			}
 		}
 		else
