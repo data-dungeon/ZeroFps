@@ -745,17 +745,6 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 }
 
 
-void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
-{
-	if(pkCharacter->m_akWalkableGroups[pkBody->m_iGroup])
-	{
-			
-		Vector3 dir = (m_kLastTestPos - pkCharacter->GetEntity()->GetWorldPosV()).Unit();
-		
-		pkCharacter->m_kNewPos = pkCharacter->GetEntity()->GetWorldPosV() - dir * 0.1;
-	}
-}
-
 bool Tcs::TestMotionSpheres(P_Tcs* pkBody1,P_Tcs* pkBody2,const float& fAtime)
 {
 	static Vector3 kMedPos1;

@@ -39,7 +39,9 @@ float Vector3::Dot( const Vector3& v  ) const
 Vector3 Vector3::Unit(void) const						
 {
 	float invlen = Length();
-	ZFAssert(invlen != 0.0, "Vector3::Unit: Vector has zero length");
+	
+	if(invlen == 0.0)
+		return Vector3(0,0,0);
 	
 	invlen = 1 / invlen;
 	return Vector3(x * invlen, y * invlen, z * invlen);
@@ -48,14 +50,16 @@ Vector3 Vector3::Unit(void) const
 void Vector3::Normalize(void)						
 {
 	float invlen = Length();
-	ZFAssert(invlen != 0.0, "Vector3::Normalize: Vector has zero length");
-
+	
+	if(invlen == 0.0)
+		return;
 	
 	invlen = 1 / invlen;
 	x *= invlen;
 	y *= invlen;
 	z *= invlen;
 }
+
 
 Vector3 Vector3::Cross( const Vector3& v )	const
 {

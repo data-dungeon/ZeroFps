@@ -138,9 +138,9 @@ class BASIC_API Vector3 {
 			return x*x + y*y +z*z;  
 			}
 
-		void Normalize(void);										///< Normalize this to unit vector.
+		void Normalize(void);												///< Normalize this to unit vector.
 		float Dot( const Vector3& v  )		const; 					///< Return dot product between this vec and another one.
-		Vector3 Unit(void)					const;					///< Return unit vector of this.		
+		Vector3 Unit(void)						const;					///< Return unit vector of this.		
 		Vector3 Cross( const Vector3& v )	const;					///< Return cross product between this vector and another one.
 		
 		Vector3 PEP(const Vector3 &fOther) const;				//per element pruduct

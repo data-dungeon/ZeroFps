@@ -136,7 +136,6 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 				
 		//line tests
 		void UpdateLineTests(float fAlphaTime);		
-		void HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody);
 		
 		P_Tcs* TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
 		bool TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB);
