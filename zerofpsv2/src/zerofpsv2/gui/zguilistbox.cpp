@@ -417,8 +417,6 @@ void ZGuiListbox::UpdateList()
 
 	if(iElements > 0)
 		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();
-
-	printf("m_unItemHeight = %i\n", m_unItemHeight);
 	
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
 	int iElementSize = m_unItemHeight * iElements;

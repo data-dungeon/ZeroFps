@@ -1577,8 +1577,6 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 	dir_list.push_back(string(szRootPath));
 	strPrevNode = "RootNode";
-
-	printf("---------------------olle\n");
 	
 	while(1)
 	{
@@ -1755,11 +1753,18 @@ bool MistServer::CreateMenu(char* szFileName)
 	// Skapa alla childrens.
 	char szCommando[512];
 	int item_counter = 0;
+
+	char szPrevParent[150];
+	strcpy(szPrevParent, "");
+
 	for(i=0; i<uiNumSections; i++)
 	{
 		char* parent = pkIni->GetValue(akSections[i].c_str(), "Parent");
 		if(parent == NULL)
 			continue;
+
+		if(strcmp(szPrevParent, parent) != 0)
+			item_counter = 0;
 
 		strcpy(szParentName, parent);
 		if(strcmp(szParentName, "NULL") != 0)
@@ -1786,6 +1791,8 @@ bool MistServer::CreateMenu(char* szFileName)
 				kTempVector.push_back(mi);
 			}
 		}
+
+		strcpy(szPrevParent, parent);
 	}
 
 	// Copy from tempvektor.

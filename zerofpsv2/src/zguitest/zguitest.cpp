@@ -90,14 +90,27 @@ void ZGuiTest::CreateUI()
 {
 	CreateWnd(Wnd, "TestWnd", "", "", 800-200, 600-200, 200, 200, 0);
 	CreateWnd(Combobox, "Testss", "TestWnd", "Apa", 0, 0, 150, 20*8, 0);
+	CreateWnd(Combobox, "Testss2", "TestWnd", "Kossa", 50, 0, 150, 20*8, 0);
 
 	((ZGuiCombobox*)GetWnd("Testss"))->SetNumVisibleRows(6);
+	((ZGuiCombobox*)GetWnd("Testss"))->IsMenu(true); 
+	((ZGuiCombobox*)GetWnd("Testss"))->SetLabelText("Apa1"); 
 	
 	char szName[20];
-	for(int i=0; i<10; i++)
+	for(int i=0; i<5; i++)
 	{
 		sprintf(szName, "apa %i\n", i);
 		AddListItem("Testss", szName);
+	}
+
+	((ZGuiCombobox*)GetWnd("Testss2"))->SetNumVisibleRows(6);
+	((ZGuiCombobox*)GetWnd("Testss2"))->IsMenu(true); 
+	((ZGuiCombobox*)GetWnd("Testss2"))->SetLabelText("Kossa"); 
+	
+	for(i=0; i<5; i++)
+	{
+		sprintf(szName, "kossa %i\n", i);
+		AddListItem("Testss2", szName);
 	}
 
 	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,600),true);

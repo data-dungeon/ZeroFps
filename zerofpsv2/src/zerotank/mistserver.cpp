@@ -1327,8 +1327,6 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 	dir_list.push_back(string(szRootPath));
 	strPrevNode = "RootNode";
-
-	printf("---------------------olle\n");
 	
 	while(1)
 	{
