@@ -1340,6 +1340,7 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 {
 	Vector3 kMyPos = PkObject->GetWorldPosV();
 
+	//if theres a last visited zone
 	if(iCurrentZone >= 0 )
 	{
 		//first check current zone
@@ -1347,13 +1348,12 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 			return iCurrentZone;
 	
 	
-		//first check zones connected to the last visited zone
+		//check zones connected to the last visited zone
 		ZoneData* pkZone = GetZoneData(iCurrentZone);
 		for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
 		{
 			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
 			{	
-				//cout<<"Got A close zone"<<endl;
 				return pkZone->m_iZoneLinks[i];						
 			}
 		}
@@ -1363,7 +1363,6 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(m_kZones[iZ].IsInside(kMyPos))
 		{
-			//cout<<"Got A not so close zone"<<endl;			
 			return iZ;
 		}
 	}
@@ -1383,10 +1382,6 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 				id = iZ;			
 			}
 		}
-	
-		//if(id != -1)
-		//	cout<<"Got A far away zone"<<endl;			
-				
 		return id;
 	}
 
@@ -1421,11 +1416,7 @@ void ObjectManager::UpdateZones()
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
 		pkTrack->m_iActiveZones.clear();
 		
-		// First we check if tracker is in the same zone as last time.,
-/*		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
-			iZoneIndex = pkTrack->m_iLastZoneIndex;
-		else	// if not we search for zone.
-*/		
+		//get current zone
 		iZoneIndex = GetZoneIndex((*iT),pkTrack->m_iLastZoneIndex,pkTrack->m_bClosestZone);
 
 		
@@ -1701,14 +1692,22 @@ void ObjectManager::LoadZone(int iId)
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
 		object->GetUpdateStatus()=UPDATE_DYNAMIC;
-		object->AddProperty("LightUpdateProperty");
+		object->AddProperty("LightUpdateProperty");	//always attach a lightupdateproperty to new zones
 
-		// Create Ground Object
-		Object* pkNode;
+		//create template object	
+		Object* pkTemp;
+		pkTemp = CreateObjectFromScript("data/script/objects/t_template.lua");
+		if(pkTemp)
+		{	
+			pkTemp->SetWorldPosV(kPos);
+			pkTemp->SetParent(object);
+		}
+		
+/*		Object* pkNode;
 		pkNode = CreateObjectByArchType("Node4x");
 		pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
 		pkNode->SetParent(object);
-
+*/
 		/*
 		// Create Random Objects.
 		Vector3 kRandOffset;
