@@ -251,7 +251,5 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 		pkListbox->AddItem(name, i); 
 	}
 
-	printf("Nr Items: %i\n", pkListbox->GetItemCount());
-
 	return true;
 }
