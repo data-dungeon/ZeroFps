@@ -25,8 +25,6 @@ enum CharcterStates
 	eSWIMING	=	3,
 };
 
-enum MOVE_STATE { idle, moving };
-
 class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
@@ -40,13 +38,10 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		bool			m_bHaveJumped;
 		
-		float			m_fJumpDelay;
+		float			m_fSoundFixDelay;
 
-		MOVE_STATE	m_eMoveState;
-		Vector3 		m_kPrevPos;
 
-		bool m_bMoveButtonReleased;
-
+		
 	public:
 	
 		P_CharacterControl();

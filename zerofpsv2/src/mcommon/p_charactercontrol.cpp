@@ -13,15 +13,11 @@ P_CharacterControl::P_CharacterControl()
 	
 	m_fYAngle = 0;
 	m_fPAngle = 0;	
-	m_fJumpDelay = 0;
+	m_fSoundFixDelay = 0;
 	
 	m_fSpeed = 75.0;
 	m_fJumpForce = 4.0; 
 	
-	m_eMoveState = idle;
-	m_kPrevPos = Vector3(-9999,-9999,-9999);
-	m_bMoveButtonReleased = true;
-
 	m_bHaveJumped = false;
 		
 	m_kCharacterStates.reset();
@@ -44,8 +40,8 @@ void P_CharacterControl::Update()
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
 		//reset character states
-		SetCharacterState(eRUNNING,false);
-		SetCharacterState(eWALKING,false);
+		//SetCharacterState(eRUNNING,false);
+		//SetCharacterState(eWALKING,false);
 		SetCharacterState(eJUMPING,false);
 		SetCharacterState(eSWIMING,false);
 			
@@ -79,12 +75,22 @@ void P_CharacterControl::Update()
 			
 			//check if where walking or running or nothing
 			if(kVel.Length() > 0 && pkTcs->GetOnGround())
-				if(m_kControls[eCRAWL])
+			{
+				m_fSoundFixDelay = m_pkZeroFps->GetTicks();												
+				if(m_kControls[eCRAWL])					
 					SetCharacterState(eWALKING,true);
 				else
 					SetCharacterState(eRUNNING,true);
+			}
+					
+			if(m_pkZeroFps->GetTicks() - m_fSoundFixDelay > 0.25)
+			{
+				SetCharacterState(eRUNNING,false);
+				SetCharacterState(eWALKING,false);
+			}
 			
 			
+			//jump
 			if(pkTcs->GetOnGround())
 			{
 				if(m_bHaveJumped)
@@ -97,7 +103,6 @@ void P_CharacterControl::Update()
 						{
 							m_bHaveJumped = true;
 							
-							m_fJumpDelay = m_pkZeroFps->GetTicks();
 							pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
 						}
 					}

@@ -24,6 +24,10 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strRunSound			=	"data/sound/footstep_forest.wav";
 	m_strJumpSound			=	"data/sound/jump.wav";
 	m_strSwimSound			=	"swim.wav";
+	
+	m_iWalkSoundID = -1;
+	m_iRunSoundID = -1;
+	m_iSwimSoundID = -1;
 }
 
 
@@ -54,16 +58,15 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(!m_kCurrentCharacterStates[eWALKING])
 			{
-				m_pkAudioSystem->StopSound(m_strWalkSound,GetEntity()->GetIWorldPosV());
-				m_pkAudioSystem->StartSound(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+				m_iWalkSoundID = m_pkAudioSystem->StartSound(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else
-				m_pkAudioSystem->MoveSound(m_strWalkSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->MoveSound(m_iWalkSoundID, GetEntity()->GetIWorldPosV());
 		}
 		else
 		{
 			if(m_kCurrentCharacterStates[eWALKING])
-				m_pkAudioSystem->StopSound(m_strWalkSound,GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->StopSound(m_iWalkSoundID);
 		}	
 		
 		//run sound
@@ -71,40 +74,40 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(!m_kCurrentCharacterStates[eRUNNING])
 			{
-				m_pkAudioSystem->StopSound(m_strRunSound,GetEntity()->GetIWorldPosV());
-				m_pkAudioSystem->StartSound(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+				m_iRunSoundID = m_pkAudioSystem->StartSound(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else
-				m_pkAudioSystem->MoveSound(m_strRunSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->MoveSound(m_iRunSoundID, GetEntity()->GetIWorldPosV());
 		}
 		else
 		{
 			if(m_kCurrentCharacterStates[eRUNNING])
-				m_pkAudioSystem->StopSound(m_strRunSound,GetEntity()->GetIWorldPosV());
-		}			
-			
+				m_pkAudioSystem->StopSound(m_iRunSoundID);
+		}	
+		
+				
+		
 		//swim sound
 		if(pkCC->GetCharacterState(eSWIMING))
 		{
 			if(!m_kCurrentCharacterStates[eSWIMING])
-			{
-				m_pkAudioSystem->StopSound(m_strSwimSound,GetEntity()->GetIWorldPosV());
-				m_pkAudioSystem->StartSound(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+			{	
+				m_iSwimSoundID = m_pkAudioSystem->StartSound(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else
-				m_pkAudioSystem->MoveSound(m_strSwimSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->MoveSound(m_iSwimSoundID,GetEntity()->GetIWorldPosV());
 		}
 		else
 		{
 			if(m_kCurrentCharacterStates[eSWIMING])
-				m_pkAudioSystem->StopSound(m_strSwimSound,GetEntity()->GetIWorldPosV());
+				m_pkAudioSystem->StopSound(m_iSwimSoundID);
 		}			
 
 		//jump sound
 		if(pkCC->GetCharacterState(eJUMPING))
 			if(!m_kCurrentCharacterStates[eJUMPING])
 				m_pkAudioSystem->StartSound(m_strJumpSound,GetEntity()->GetIWorldPosV());
-
+		
 														
 		//update staes
 		m_kCurrentCharacterStates[eRUNNING] = pkCC->GetCharacterState(eRUNNING);
@@ -134,12 +137,12 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
 	pkNetPacket->Write(m_bIsPlayerCharacter);
-/*	
+	
 	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
 	pkNetPacket->Write_Str(m_strSwimSound);
-*/	
+	
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
@@ -148,12 +151,12 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strName);
 	pkNetPacket->Read_Str(m_strOwnedByPlayer);
 	pkNetPacket->Read(m_bIsPlayerCharacter);
-/*
+
 	pkNetPacket->Read_Str(m_strWalkSound);
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);
 	pkNetPacket->Read_Str(m_strSwimSound);		
-*/	
+
 }
 
 

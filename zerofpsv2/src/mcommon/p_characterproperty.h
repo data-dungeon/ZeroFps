@@ -26,6 +26,9 @@ class P_CharacterProperty: public Property
 		string	m_strJumpSound;
 		string	m_strSwimSound;
 		
+		int		m_iWalkSoundID;
+		int		m_iRunSoundID;
+		int		m_iSwimSoundID;
 		
 		void PlayCharacterMovementSounds();
 		
