@@ -4,8 +4,8 @@ BunnyObject::BunnyObject()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	AddProperty(new GravityProperty());
-	AddProperty(new FloatProperty());	
+//	AddProperty(new GravityProperty());
+//	AddProperty(new FloatProperty());	
 	
 
 	AddProperty("ModelProperty");

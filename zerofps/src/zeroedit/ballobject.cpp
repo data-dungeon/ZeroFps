@@ -20,8 +20,6 @@ BallObject::BallObject() {
 
 //	AddProperty("ModelProperty");
 	AddProperty("LightProperty");
-//	AddProperty("FloatProperty");
-//	AddProperty("AutoParentProperty");
 	AddProperty("PhysicProperty");
 	
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));

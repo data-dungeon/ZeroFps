@@ -923,8 +923,8 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
-	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
-	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
+//	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
+//	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
 //	pkPropertyFactory->Register("WorldInfoProperty", Create_WorldInfoProperty);	
 }
 

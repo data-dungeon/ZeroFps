@@ -4,9 +4,9 @@
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include "playercontrolproperty.h"
-#include "gravityproperty.h"
+//#include "gravityproperty.h"
 #include "ballobject.h"
-#include "floatproperty.h"
+//#include "floatproperty.h"
 //#include "heightmapobject.h"
 
 class PlayerObject: public Object {

@@ -177,43 +177,7 @@ SOURCE=.\bunnyobject.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\floatproperty.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\game.cpp
-
-!IF  "$(CFG)" == "game - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "game - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "game - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\gravityproperty.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
 
@@ -283,15 +247,7 @@ SOURCE=.\bunnyobject.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\floatproperty.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\game.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gravityproperty.h
 # End Source File
 # Begin Source File
 

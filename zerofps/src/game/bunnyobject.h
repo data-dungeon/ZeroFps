@@ -4,8 +4,8 @@
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
 
-#include "floatproperty.h"
-#include "gravityproperty.h"
+//#include "floatproperty.h"
+//#include "gravityproperty.h"
 #include "ballobject.h"
 #include "bunnyaiproperty.h"
 

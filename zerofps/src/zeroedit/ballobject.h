@@ -5,8 +5,6 @@
 #include "../zerofps/basic/basic.pkg"
 //#include "normaldrawproperty.h"
 //#include "playerballobject.h"
-#include "gravityproperty.h"
-#include "floatproperty.h"
 
 class BallObject: public Object {
 	private:
