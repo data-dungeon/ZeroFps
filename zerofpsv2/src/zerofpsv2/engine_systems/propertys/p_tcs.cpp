@@ -1,6 +1,7 @@
 #include "p_tcs.h"
 #include "../script_interfaces/si_objectmanager.h" 
-//#include "p_mad.h"
+#include "../common/heightmap.h"
+
 using namespace ObjectManagerLua;
 
 

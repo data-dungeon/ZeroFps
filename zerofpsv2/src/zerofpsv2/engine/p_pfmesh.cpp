@@ -5,6 +5,7 @@
 #include "../engine_systems/propertys/p_hmrp2.h"
 #include "../engine_systems/mad/mad_core.h"
 #include "../render/render.h"
+#include "../engine_systems/common/heightmap.h"
 
 Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
 {

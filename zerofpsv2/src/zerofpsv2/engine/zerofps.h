@@ -27,7 +27,6 @@
 #include "../engine_systems/script_interfaces/si_std.h"
 #include "astar.h"
 //#include "inputhandle.h"
-#include "../engine_systems/propertys/propertys.pkg"
 
 
 

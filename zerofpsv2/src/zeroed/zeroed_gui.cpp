@@ -1,4 +1,5 @@
 #include "zeroed.h"
+#include "../zerofpsv2/engine_systems/propertys/propertys.pkg"
 
 void ZeroEd::SetupGuiEnviroment()
 {

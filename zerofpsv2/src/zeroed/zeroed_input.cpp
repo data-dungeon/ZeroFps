@@ -1,6 +1,7 @@
 #include "zeroed.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
+#include "../zerofpsv2/engine_systems/propertys/propertys.pkg"
 
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()

@@ -8,8 +8,6 @@
 #include "../../render/render.h"
 #include "../mad/mad_core.h"
 
-
-
 void HM_Layer::Load(ZFVFile* pkFile)
 {
 	char szString[256];
@@ -49,17 +47,11 @@ void HM_Layer::Save(ZFVFile* pkFile)
 
 HeightMap::HeightMap() 
 {
+	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+
 	verts					= NULL;
 	m_pkTileFlags		= NULL;
-	m_iNumOfHMVertex	= 0;
-	m_iID					= -1;
-	m_bInverted			= false;
-	m_fTileSize			= 1;
-
-	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
-//	m_pkBasicFS			= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-
-
+	Clear();
 }
 
 HeightMap::~HeightMap() 
@@ -69,6 +61,22 @@ HeightMap::~HeightMap()
 	if(m_pkTileFlags)
 		delete[] m_pkTileFlags;
 }
+
+void HeightMap::Clear()
+{
+	if(verts)
+		delete[] verts;
+	if(m_pkTileFlags)
+		delete[] m_pkTileFlags;
+
+	verts					= NULL;
+	m_pkTileFlags		= NULL;
+	m_iNumOfHMVertex	= 0;
+	m_iID					= -1;
+	m_bInverted			= false;
+	m_fTileSize			= 8;
+}
+
 
 bool HeightMap::AllocHMMemory(int iSize)
 {
@@ -89,8 +97,8 @@ void HeightMap::Create(int iTilesSide)
 {
 	m_iTilesSide   =  iTilesSide / m_fTileSize;
 	m_iVertexSide  =  m_iTilesSide + 1;
-	m_iHmScaleSize =	GetSize();
 	SetPosition(Vector3::ZERO);
+	//m_iHmScaleSize =	GetSize();
 
 	AllocHMMemory(m_iVertexSide);
 	Zero();
@@ -104,7 +112,8 @@ void HeightMap::Create(int iTilesSide)
 
 void HeightMap::Zero() 
 {
-	for(int i=0;i < m_iNumOfHMVertex;i++) {
+	for(int i=0;i < m_iNumOfHMVertex;i++) 
+	{
 		verts[i].height	=	0;
 		verts[i].normal.Set(0,1,0);
 	}
@@ -131,11 +140,13 @@ void HeightMap::SetPosition(Vector3 kNewPos)
 {
 	m_kPosition	= kNewPos;
 
-	m_kCornerOffset.Set(-m_iHmScaleSize/2, 0, -m_iHmScaleSize/2);
+	int iHmapSideSize = GetSize();
 
-	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
+	m_kCornerOffset.Set(-iHmapSideSize/2, 0, -iHmapSideSize/2);
+
+	m_kCornerPos.Set(m_kPosition.x	-	iHmapSideSize/2, 
 		m_kPosition.y,
-		m_kPosition.z	-	m_iHmScaleSize/2);
+		m_kPosition.z	-	iHmapSideSize/2);
 }
 
 int HeightMap::GetTopLowTriangle(Vector3 kPos)
@@ -412,7 +423,9 @@ bool HeightMap::Load(const char* acFile)
 	// Alloc Memory
 	m_iVertexSide		= k_Fh.m_iHmSize;
 	m_iTilesSide      = m_iVertexSide - 1;
-	m_iHmScaleSize		=	GetSize();
+	m_fTileSize       = k_Fh.m_fTileSize;
+	m_bInverted       = k_Fh.m_bInverted;
+	//m_iHmScaleSize		=	GetSize();
 
 	AllocHMMemory(m_iVertexSide);
 	
@@ -444,6 +457,8 @@ bool HeightMap::Save(const char* acFile)
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize			= m_iVertexSide;
 	k_Fh.m_iNumOfLayers	= m_kLayer.size();
+	k_Fh.m_fTileSize = m_fTileSize;
+	k_Fh.m_bInverted = m_bInverted;
 
 	ZFVFile savefile;
 	if(!savefile.Open(hmfile.c_str(),0,true))
@@ -752,7 +767,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 				continue;		
 			
 			color_rgba kColor;
-			pkImg->get_pixel(x,y,kColor);	// m_pkTexMan->GetPixel(x,y);
+			pkImg->get_pixel(x,y,kColor);	
 			
 			int pr,pg,pb,pa;
 			
@@ -1107,19 +1122,24 @@ vector<string>	HeightMap::Layers_GetNames()
 
 }
 
-/*
-void HeightMap::CreateBlocks()
-{
-	int iBlockSize = 32;
 
-	TerrainBlock kBlock;
 
-	for(int z=0; z<m_iVertexSide; z += iBlockSize) {
-		for(int x=0; x<m_iVertexSide; x += iBlockSize) {
-			kBlock.kAABB_Min.Set( float(x*HEIGHTMAP_SCALE),	1,	float(z*HEIGHTMAP_SCALE));
-			kBlock.kAABB_Max.Set(float((x + iBlockSize)*HEIGHTMAP_SCALE),1,float((z + iBlockSize)*HEIGHTMAP_SCALE));
-			m_kTerrainBlocks.push_back(kBlock);
-		}
-	}
-}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

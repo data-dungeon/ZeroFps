@@ -39,8 +39,9 @@ enum SkyBoxSides
 
 enum PolygonMode 
 { 
-	FILL, 
-	LINE 
+	LINE,			// Draw only edges of polygones.
+	FILL,			// Fill polygons. Normal mode.
+	FILLLINE,	// Fill and draw edges.
 };
 
 class EditColor

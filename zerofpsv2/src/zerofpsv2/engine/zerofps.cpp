@@ -9,7 +9,9 @@
 #include "../gui/zgui.h"
 #include "../basic/zfini.h"
 #include "inputhandle.h" 
- 
+#include "../engine_systems/common/heightmap.h"
+#include "../engine_systems/propertys/propertys.pkg"
+
 #define	ZF_MIN_PLAYERS	1
 #define	ZF_DEF_PLAYERS	8
 #define	ZF_MAX_PLAYERS	64
@@ -1597,7 +1599,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_BillBoardRender", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
-	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
+	//m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
 	//m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 	//m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
 	//m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
@@ -1619,6 +1621,7 @@ void ZeroFps::RegisterPropertys()
 	Register_PController(this);
 	Register_PScriptInterface(this);
 	Register_PPSystem(this);
+	Register_PHmrp(this);
 
 	Register_SIEntityProperty(this);
 }
@@ -1766,7 +1769,8 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	//pkMap->Random();
 
 	// Create a new Hmrp and set hmap and add it to Entity.
-	P_HMRP2* pkhmrp2 = new P_HMRP2(pkMap, "Spya");
+	P_HMRP2* pkhmrp2 = new P_HMRP2();
+	pkhmrp2->SetHeightMap(pkMap, "Spya");
 	pkEntity->AddProperty(pkhmrp2);
 	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
 	if(!pp)

@@ -7,7 +7,7 @@
 FILE* pkGlDumpLog;
   
 Render::Render()  
-:	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
+:	ZFSubSystem("Render")
 {
 
 	// Set Our own local variables.
@@ -20,6 +20,7 @@ Render::Render()
 	m_iMaxLandscapeLayers	= 4;
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
+	m_eLandscapePolygonMode = FILL;
 
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
@@ -31,8 +32,10 @@ Render::Render()
 	m_iFullScreen				= 0;
 	
 	// Register Our Own variables.
-	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers,CSYS_INT);
-	RegisterVariable("r_drawland",		&m_iDrawLandscape,CSYS_INT);
+	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers, CSYS_INT);
+	RegisterVariable("r_drawland",		&m_iDrawLandscape, CSYS_INT);
+	RegisterVariable("r_terrfill",		&m_eLandscapePolygonMode, CSYS_INT);
+
 	RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
 	RegisterVariable("r_viewdistance",	&m_iViewDistance,CSYS_INT);
 	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);

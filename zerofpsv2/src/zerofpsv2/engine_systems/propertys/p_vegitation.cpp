@@ -1,5 +1,6 @@
 #include "p_vegitation.h"
 #include "p_hmrp2.h"
+#include "../common/heightmap.h"
 
 P_Vegitation::P_Vegitation()
 {
