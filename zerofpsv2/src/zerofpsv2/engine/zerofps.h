@@ -22,6 +22,7 @@
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../render/zshader.h"
+#include "i_zerofps.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -78,7 +79,7 @@ public:
 };
 
 /// Main class for the ZeroFps engine. 
-class ENGINE_API ZeroFps : public ZFSubSystem {
+class ENGINE_API ZeroFps : public I_ZeroFps {
 	private:		
 		enum FuncId_e
 		{
@@ -201,16 +202,16 @@ class ENGINE_API ZeroFps : public ZFSubSystem {
 		void ToggleFullScreen(void);
 		void ToggleGui(void);
 		
-		inline float GetTicks() {return float((SDL_GetTicks()/1000.0));};
-		inline float GetFrameTime() {return float((m_fFrameTime/1000.0));};
-		inline float GetGameTime() {return m_fGameTime;};
-		inline float GetGameFrameTime() {return m_fGameFrameTime;};
-		inline float GetLastGameUpdateTime(){return m_fSystemUpdateTime;};
-		inline float GetEngineTime() { return m_fEngineTime; }
+		float GetTicks() {return float((SDL_GetTicks()/1000.0));};
+		float GetFrameTime() {return float((m_fFrameTime/1000.0));};
+		float GetGameTime() {return m_fGameTime;};
+		float GetGameFrameTime() {return m_fGameFrameTime;};
+		float GetLastGameUpdateTime(){return m_fSystemUpdateTime;};
+		float GetEngineTime() { return m_fEngineTime; }
 
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();
-		inline Camera *GetCam() {return m_pkCamera;};		
+		Camera *GetCam() {return m_pkCamera;};		
 		int	NumberOfArgs(void);										// Return num of arg to app.
 		string GetArg(int iArgIndex);
 	
@@ -235,7 +236,7 @@ class ENGINE_API ZeroFps : public ZFSubSystem {
 		void SetRenderTarget(Camera* pkCamera);
 		void RemoveRenderTarget(Camera* pkCamera);
 		
-		int GetWidth(){return m_iWidth;};
+		int GetWidth(){return m_iWidth;}
 		int GetHeight(){return m_iHeight;};		
 		int GetDepth(){return m_iDepth;};		
 

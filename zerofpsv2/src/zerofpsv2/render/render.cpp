@@ -1,6 +1,9 @@
 #include "render.h"
 #include "../ogl/zfpsgl.h"
 
+// Test för att använda Engine DLL. 
+//#include "../engine/zfresourcedb.h"
+
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) {
 
@@ -39,6 +42,7 @@ bool Render::StartUp()
 //	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
 //	m_kHeightmapMaterial.GetPass(1)->m_bCullFace = false;
 	m_kHeightmapMaterial.m_bCopyData = false;
+
 	m_kHeightmapMaterial.m_bWaves = false;	
 	m_kHeightmapMaterial.m_bRandomMovements = false;		
 
@@ -901,3 +905,16 @@ RENDER_API void RenderDLL_InitExtGL(void)
 
 
 
+
+void Render::TestDLLKit()
+{
+	// Test för att använda Engine DLL.
+/*	IZFResourceDB* link = dynamic_cast<IZFResourceDB*>
+		(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+
+	if(link)
+	{
+		int apa = link->GetNumChildren();
+		printf("%i\n", apa);
+	}*/
+}

@@ -8,8 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-I_ZFResourceDB::I_ZFResourceDB(char* szName)
-	: ZFObject(szName) 
+I_ZFResourceDB::I_ZFResourceDB(char* szName) : ZFSubSystem(szName) 
 {
 
 }

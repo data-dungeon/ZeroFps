@@ -78,8 +78,7 @@ ZFResource* ZFResourceHandle::GetResourcePtr()
 
 // ZFResourceDB ***********************************************************
 
-ZFResourceDB::ZFResourceDB()
- : ZFSubSystem("ZFResourceDB") 
+ZFResourceDB::ZFResourceDB() : I_ZFResourceDB("ZFResourceDB") 
 {
 	m_iNextID = 0;
 

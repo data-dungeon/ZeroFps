@@ -648,6 +648,8 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
 
+
+
 void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) //,int iTexture2) 
 {
 	glPushMatrix();

@@ -4,6 +4,7 @@
 #include "zfresource.h"
 #include "engine_x.h"
 #include "../basic/zfobject.h"
+#include "i_zfresourcedb.h"
 
 #include <list>
 
@@ -48,9 +49,7 @@ public:
 };
 
 
-
-
-class ENGINE_API ZFResourceDB : public ZFSubSystem {
+class ENGINE_API ZFResourceDB : public I_ZFResourceDB {
 	private:
 		enum FuncId_e
 		{

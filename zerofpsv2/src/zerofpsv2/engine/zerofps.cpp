@@ -17,9 +17,8 @@ int		g_iLogRenderPropertys;
 
 static char Devformat_text[4096];	//
 
-ZeroFps::ZeroFps(void) 
- : ZFSubSystem("ZeroFps") {
- 
+ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
+{
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkTexMan					= new TextureManager;

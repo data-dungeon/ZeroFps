@@ -3,7 +3,7 @@
 
 
 #include "../engine_systems_x.h"
-#include "../../basic/vector3.h"
+#include "i_heightmap2.h"
 #include <vector>
 #include "../../render/texturemanager.h"
 #include "../../render/frustum.h"
@@ -63,7 +63,7 @@ class TextureSet
 	char m_acMask[256];
 };
 
-class ENGINE_SYSTEMS_API Heightmap2
+class ENGINE_SYSTEMS_API Heightmap2 //: public I_HeightMap2 
 {
 	private:
 		
@@ -106,7 +106,7 @@ class ENGINE_SYSTEMS_API Heightmap2
 		void LocalToWorld(Vector3* pkPos);		
 		
 	public:
-		Heightmap2();
+		Heightmap2(/*char* szName*/);
 
 		bool CreateHMFromImage(const char* acFile);		
 		void UpdateRecLodLevel(Vector3 kCamPos);

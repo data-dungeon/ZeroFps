@@ -196,6 +196,18 @@ SOURCE=..\engine_systems\propertys\hmrp2.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\common\i_heightmap2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\i_zerofps.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\i_zfresourcedb.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\input.cpp
 # End Source File
 # Begin Source File
@@ -405,6 +417,18 @@ SOURCE=..\engine_systems\propertys\heightmaprenderproperty.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\hmrp2.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\common\i_heightmap2.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\i_zerofps.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\i_zfresourcedb.h
 # End Source File
 # Begin Source File
 

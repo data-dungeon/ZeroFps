@@ -69,7 +69,7 @@ void ZeroTank::Init()
 	//disable zones modells bös
 	pkLevelMan->SetVisibleZones(false);
 
-	m_pkMap2 = new Heightmap2;
+	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("test.tga");
 
 	//register actions bös
@@ -82,10 +82,7 @@ void ZeroTank::Init()
 
 	char* szRandom[] =
 	{
-		"The Ultimate Fulhack!",
-		"Does anything work yet?",
-		"Apa..",
-		"Made by gubb, vim, zeb, dvoid",
+		"Mistland, the land of mist"
 	};
 
 	char szTitle[150];
@@ -204,6 +201,9 @@ void ZeroTank::Input()
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_E))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
+
+	if(pkInput->Pressed(KEY_T))
+		pkRender->TestDLLKit();
 
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
@@ -326,9 +326,11 @@ void ZeroTank::OnServerStart(void)
 		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
 		if(!pkObj)
 			cout<<"Faild to create serverinfoobject"<<endl;
-		else
+		 else
 			pkObjectMan->GetWorldObject()->AddChild(pkObj);
 	}
+
+	
 	
 }
 

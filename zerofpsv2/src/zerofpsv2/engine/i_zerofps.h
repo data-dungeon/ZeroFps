@@ -16,7 +16,7 @@ class Camera;
 class DevStringPage;
 class NetPacket;
 
-class ENGINE_API I_ZeroFps : public ZFObject
+class ENGINE_API I_ZeroFps : public ZFSubSystem
 {
 public:
 	I_ZeroFps(char* szName);

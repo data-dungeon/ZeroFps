@@ -8,7 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-I_ZeroFps::I_ZeroFps(char* szName) : ZFObject(szName)
+I_ZeroFps::I_ZeroFps(char* szName) : ZFSubSystem(szName)
 {
 
 }

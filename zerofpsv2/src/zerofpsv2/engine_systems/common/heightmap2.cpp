@@ -1,6 +1,6 @@
 #include "heightmap2.h"
 
-Heightmap2::Heightmap2()
+Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 {
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));			
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));

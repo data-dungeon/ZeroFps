@@ -99,8 +99,7 @@ void Light::Update(Vector3 kRefPos)
 		}
 	}
 	
-	
-	
+		
 	sort(m_kSorted.begin(),m_kSorted.end(),More_Light);
 
 	//cout<<"LIGHTS:"<<m_kSorted.size()<<endl;

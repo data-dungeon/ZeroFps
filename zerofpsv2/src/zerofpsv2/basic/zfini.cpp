@@ -477,7 +477,7 @@ bool ZFIni::GetBoolValue(const char* strSection, char* strKey)
 	if(!str)
 		return false;
 		
-	if(strcasecmp(str,"true") == 0)
+	if(strcmp(str,"true") == 0)
 		return true;
 		
 	return false;

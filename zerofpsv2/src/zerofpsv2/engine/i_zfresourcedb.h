@@ -16,7 +16,7 @@
 class ResourceCreateLink;
 class ZFResourceInfo;
 
-class ENGINE_API I_ZFResourceDB : public ZFObject 
+class ENGINE_API I_ZFResourceDB : public ZFSubSystem 
 {
 public:
 	I_ZFResourceDB(char* szName);

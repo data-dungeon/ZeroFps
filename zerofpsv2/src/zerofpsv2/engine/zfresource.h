@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 class ENGINE_API ZFResource
 {
 private:

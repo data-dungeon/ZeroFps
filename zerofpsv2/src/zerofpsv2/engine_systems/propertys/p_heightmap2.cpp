@@ -1,6 +1,6 @@
 #include "p_heightmap2.h"
 
-P_Heightmap2::P_Heightmap2() 
+P_Heightmap2::P_Heightmap2() // : m_kMap("HeightMap2")
 {
 	strcpy(m_acName,"P_Heightmap2");		
 
