@@ -276,6 +276,10 @@ void MistServer::Input()
 		mp->NextCoreAnimation();
 		} 
 	
+/*	if(pkInput->Pressed(KEY_F4)) {
+		pkObjectMan->ResetNetUpdateFlags(0);
+	} 	
+*/	
 	if(m_pkCameraObject)	
 	{	
 		if(pkInput->Pressed(KEY_X)){
