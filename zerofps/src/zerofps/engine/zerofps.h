@@ -65,6 +65,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void HandleArgs(int iNrOfArgs, char** paArgs);		
 
+
 	public:
 		Application* m_pkApp;						//application
 		CmdSystem* m_pkCmd;							//realtime variable handler
@@ -141,6 +142,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void RegisterPropertys();
 		void QuitEngine();
 
+		// Statistik Data
+		int	m_iNumOfMadRender;
 };
 
 

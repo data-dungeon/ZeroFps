@@ -234,6 +234,9 @@ void ZeroFps::MainLoop(void) {
 			// Update GUI
 			m_pkGui->Update();
 
+			DevPrintf("Mad's: %d", m_iNumOfMadRender);
+			m_iNumOfMadRender = 0;
+			
 		}
 		
 		if(m_bConsoleMode)

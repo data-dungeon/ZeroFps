@@ -297,7 +297,10 @@ private:
 	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
 	vector<Mad_CoreBone>			m_kSkelleton;
 
-	Matrix4		g_MadkbonetransformI[MAX_BONES];	// Inverse bone transformation matrix for bind pose
+	Matrix4		g_MadkbonetransformI[MAX_BONES];		// Inverse bone transformation matrix for bind pose
+
+	// Radius from local origo that contain all of modell.
+	float							m_fBoundRadius;
 
 public:
 	Mad_Header	kMadHeader;
@@ -387,6 +390,8 @@ public:
 	int GetTextureID();
 	void PrepareMesh(Mad_CoreMesh* pkMesh);
 
+	float GetRadius();
+	void CalculateRadius();
 };
 
 #endif

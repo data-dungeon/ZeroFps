@@ -47,7 +47,7 @@ void DrawBoundSphere(float fRadius)
 
 	float x,y;
 	glBegin(GL_LINE_LOOP );
-	for(int i=0; i<360; i+=45) {
+	for(int i=0; i<360; i+=12.25) {
 		x = cos(DegToRad(i)) * fRadius;
 		y = sin(DegToRad(i)) * fRadius;
 		glVertex3f(x,y,0);
@@ -59,7 +59,7 @@ void DrawBoundSphere(float fRadius)
 
 void MadProperty::Update() 
 {
-//	return;
+	float fRadius = pkCore->GetRadius();
 
 	if(!pkCore)
 		return;
@@ -74,10 +74,14 @@ void MadProperty::Update()
 		glRotatef(m_pkObject->GetRot().y ,0,1,0);		
 		
 		Vector4 sphere=m_pkObject->GetPos();
-		sphere.w = 4;
+		sphere.w = fRadius;
 
 		if(m_pkFrustum->SphereInFrustum(sphere)) {
-//			DrawBoundSphere(sphere.w * (1 / m_fScale));
+			m_pkZeroFps->m_iNumOfMadRender++;
+			//DrawBoundSphere(sphere.w * (1 / m_fScale));
+//			DrawBoundSphere(fRadius * (1 / m_fScale));
+			DrawBoundSphere(fRadius);
+			
 			Draw_All();
 			}
 	

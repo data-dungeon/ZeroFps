@@ -22,7 +22,7 @@ Mad_Core::Mad_Core()
 	m_bDrawNormals = false;
 	iActiveAnimation = 0;
 	iBoneFrame = 0;
-
+	m_fBoundRadius = 0;
 }
 
 Mad_Core::~Mad_Core()
@@ -525,6 +525,8 @@ void Mad_Core::LoadMad(const char* MadFileName)
 		for(i=0; i<m_kMesh.size(); i++)
 			m_kMesh[i].bNotAnimated = true;
 		}
+
+	CalculateRadius();
 }
 
 Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
@@ -655,6 +657,57 @@ void Mad_Core::PrintCoreInfo()
 		cout << " [" << i << "]: " << m_kMesh[i].kHead.iNumOfSubMeshes << endl;
 
 	cout << "Num Of Bones: " << m_kSkelleton.size() << endl;
-
-
 }
+
+/*
+	Get radius of object (All mesh object).
+*/
+void Mad_Core::CalculateRadius()
+{
+	Mad_CoreMesh* pkMesh = &m_kMesh[0];		
+	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];		
+
+	Vector3 kMin = pkVertex[0];
+	Vector3 kMax = kMin;
+
+	for(int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) {
+		if(pkVertex[i].x < kMin.x)
+			kMin.x = pkVertex[i].x;
+		else if (pkVertex[i].x > kMax.x)
+			kMax.x = pkVertex[i].x;
+
+		if(pkVertex[i].y < kMin.y)
+			kMin.y = pkVertex[i].y;
+		else if (pkVertex[i].y > kMax.y)
+			kMax.y = pkVertex[i].y;
+
+		if(pkVertex[i].z < kMin.z)
+			kMin.z = pkVertex[i].z;
+		else if (pkVertex[i].z > kMax.z)
+			kMax.z = pkVertex[i].z;
+		}
+
+
+	Vector3 kDiagonal = (kMax - kMin) / 2;
+	float fRadius = kDiagonal.Length();
+
+	kMin.Abs();
+	kMax.Abs();
+	float fMaxDist = kMin.x;
+	if(kMin.y > fMaxDist)	fMaxDist = kMin.y;
+	if(kMin.z > fMaxDist)	fMaxDist = kMin.z;
+
+	if(kMax.x > fMaxDist)	fMaxDist = kMax.x;
+	if(kMax.y > fMaxDist)	fMaxDist = kMax.y;
+	if(kMax.z > fMaxDist)	fMaxDist = kMax.z;
+
+	m_fBoundRadius = fMaxDist * 1.42;
+	
+//	return fRadius;
+}
+
+float Mad_Core::GetRadius()
+{
+	return m_fBoundRadius;
+}
+
