@@ -288,6 +288,9 @@
 				RelativePath="..\engine_systems\propertys\p_psystem.cpp">
 			</File>
 			<File
+				RelativePath="..\engine_systems\propertys\p_scriptinterface.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\propertys\p_skyboxrender.cpp">
 			</File>
 			<File
@@ -461,6 +464,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_psystem.h">
+			</File>
+			<File
+				RelativePath="..\engine_systems\propertys\p_scriptinterface.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_skyboxrender.h">

@@ -161,6 +161,9 @@
 				RelativePath=".\p_container.cpp">
 			</File>
 			<File
+				RelativePath=".\p_dmcharacter.cpp">
+			</File>
+			<File
 				RelativePath=".\p_dmhq.cpp">
 			</File>
 			<File
@@ -205,6 +208,9 @@
 			</File>
 			<File
 				RelativePath=".\p_container.h">
+			</File>
+			<File
+				RelativePath=".\p_dmcharacter.h">
 			</File>
 			<File
 				RelativePath=".\p_dmhq.h">

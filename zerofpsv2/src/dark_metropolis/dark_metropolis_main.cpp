@@ -656,7 +656,7 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 	
 	if(iType == FORMATION_SQUARE)
 	{
-		int iSide = round(sqrt(float(iTotal)));
+		int iSide = round2(sqrt(float(iTotal)));
 	
 		return Vector3(iPos%iSide,0,int(iPos/iSide));
 	
