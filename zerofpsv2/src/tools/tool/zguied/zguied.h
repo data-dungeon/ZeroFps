@@ -70,6 +70,7 @@ private:
 	bool m_bSelectScriptSave;
 	unsigned char m_ucaPickColor[3];
 	bool m_bPickedColor;
+	bool m_bAlphaTextureMode;
 
 	struct SPECIAL_WND_INFO
 	{

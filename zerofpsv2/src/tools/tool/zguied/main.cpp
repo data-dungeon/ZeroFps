@@ -499,6 +499,8 @@ void ZGuiEd::OnInit()
 
 	m_bDisableGuiScaleMode = true;
 
+	m_bAlphaTextureMode = false;
+
 	// create gui script
 	GuiAppLua::
 		Init(&g_kZGuiEd, m_pkScript);

@@ -88,7 +88,7 @@ void InventoryDlg::Open()
 		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
 	}
 
-	OpenContainerWnd(4,4);
+	//OpenContainerWnd(4,4);
 
 	m_pkInventoryWnd->Show();
 

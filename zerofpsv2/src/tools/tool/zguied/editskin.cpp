@@ -115,6 +115,7 @@ void ZGuiEd::SelNewSkin(int iIndex)
 
 	int sel = 0;
 
+
 	if(iIndex == -1)
 		sel = SendDlgItemMessage(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST, LB_GETCURSEL, 0, 0);
 	else
@@ -133,19 +134,36 @@ void ZGuiEd::SelNewSkin(int iIndex)
 		SetDlgItemText(g_kDlgBoxBottom, IDC_ROTATION_EB, "");
 		CheckDlgButton(g_kDlgBoxBottom, IDC_TRANSPARENT_CB, BST_UNCHECKED);
 		CheckDlgButton(g_kDlgBoxBottom, IDC_TILE_CB, BST_UNCHECKED);
+		SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
 	}
 
 	ZGuiSkin** ppkSkin;
 	if(GetSelSkin(ppkSkin))
 	{
-		int id = (*ppkSkin)->m_iBkTexID;
+		int id;
 
-		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
-			id = (*ppkSkin)->m_iHorzBorderTexID;
-		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
-			id = (*ppkSkin)->m_iVertBorderTexID;
-		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
-			id = (*ppkSkin)->m_iBorderCornerTexID;
+		if(m_bAlphaTextureMode == false)
+		{
+			id = (*ppkSkin)->m_iBkTexID;
+
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
+				id = (*ppkSkin)->m_iHorzBorderTexID;
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
+				id = (*ppkSkin)->m_iVertBorderTexID;
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
+				id = (*ppkSkin)->m_iBorderCornerTexID;
+		}
+		else
+		{
+			id = (*ppkSkin)->m_iBkTexAlphaID;
+
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
+				id = (*ppkSkin)->m_iHorzBorderTexAlphaID;
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
+				id = (*ppkSkin)->m_iVertBorderTexAlphaID;
+			if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
+				id = (*ppkSkin)->m_iBorderCornerTexAlphaID;
+		}
 
 		if(id > 0)
 		{
@@ -158,7 +176,7 @@ void ZGuiEd::SelNewSkin(int iIndex)
 			// set name
 			strRealName = m_pkFileSys->GetFullPath(strName.c_str());		
 
-			// select in texture list
+			// select in texture list	
 			char *name = strrchr( strRealName.c_str(), '/');
 			if(name)
 			{
@@ -181,9 +199,16 @@ void ZGuiEd::SelNewSkin(int iIndex)
 					}
 				}
 
-				SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST,  LB_SELECTSTRING, -1, 
-					(LPARAM) (LPCSTR) name);
+				if(LB_ERR == SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST,  LB_SELECTSTRING, -1, 
+					(LPARAM) (LPCSTR) name))
+				{
+					SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
+				}
 			}
+		}
+		else
+		{
+			SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
 		}
 
 		char szText[50];
@@ -213,7 +238,6 @@ void ZGuiEd::SelNewSkin(int iIndex)
 			sprintf(szText, "%i", (int)((*ppkSkin)->m_afBorderColor[2]*255));
 			SetDlgItemText(g_kDlgBoxBottom, IDC_RGB_COLOR_B_EB, szText);
 		}
-
 
 		CheckDlgButton(g_kDlgBoxBottom, IDC_TRANSPARENT_CB, 
 			(*ppkSkin)->m_bTransparent ? BST_CHECKED : BST_UNCHECKED);
@@ -254,17 +278,35 @@ void ZGuiEd::SetTexture(bool bSet)
 					strFileName = m_strCurrTexDir + string("/") + string(szTexName);
 
 				ZGuiSkin* pSkin = *ppkSkin;
-				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
-					pSkin->m_iBkTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+
+				if(m_bAlphaTextureMode == false)
+				{
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
+						pSkin->m_iBkTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
+						pSkin->m_iHorzBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
+						pSkin->m_iVertBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
+						pSkin->m_iBorderCornerTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;				
+				}
 				else
-				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
-					pSkin->m_iHorzBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
-				else
-				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
-					pSkin->m_iVertBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
-				else
-				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
-					pSkin->m_iBorderCornerTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;				
+				{
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
+						pSkin->m_iBkTexAlphaID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
+						pSkin->m_iHorzBorderTexAlphaID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
+						pSkin->m_iVertBorderTexAlphaID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+					else
+					if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
+						pSkin->m_iBorderCornerTexAlphaID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
+				}
 			}
 		}
 	}

@@ -55,6 +55,7 @@
 #define IDC_                            1045
 #define IDC_SET_TEXTURE_BN              1046
 #define IDC_SKINELEMENTS_LIST           1047
+#define IDC_SET_TEXTURE_BN2             1047
 #define IDC_BRING_TO_FRONT3             1048
 #define IDC_REMOVE_TEXTURE_BN           1049
 #define IDC_SKINTYPE_BACKGROUND_RB      1050
@@ -83,6 +84,7 @@
 #define IDC_CHECK1                      1073
 #define IDC_ACTIVATE_HELP_CB            1074
 #define IDC_RADIO6                      1075
+#define IDC_ACTIVATE_HELP_CB2           1075
 #define IDC_RADIO7                      1076
 #define IDC_RADIO8                      1077
 #define IDC_RADIO9                      1078
@@ -122,8 +124,9 @@
 #define IDC_SELECTFILE_LIST             1111
 #define IDC_SELEC_SCRIPT_LABEL          1112
 #define IDC_SAVEFILE_NAME_EB            1113
-#define IDC_EDIT1                       1114
 #define IDC_CURRENT_PATH_EB             1114
+#define IDC_OPEN_IMAGE_BN               1115
+#define IDC_ALPHA_TEXTURE_CB            1116
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003

@@ -572,6 +572,11 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			m_iTask = TASK_PASTE_SKIN;
 			break;
 
+		case IDC_ALPHA_TEXTURE_CB:
+			m_bAlphaTextureMode = IsDlgButtonChecked(g_kDlgBoxRight, iCtrlID);
+			SelNewSkin();
+			break;
+
 		// Select window from list.
 		case IDC_WINDOW_LIST:
 			if(iEvent == LBN_SELCHANGE)
@@ -591,6 +596,29 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 							SelNewSkin(0);
 						}
 					}					
+				}
+			}
+			break;
+
+		case IDC_OPEN_IMAGE_BN:
+			{
+				int sel = SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_GETCURSEL, 0, 0);
+				if(sel != LB_ERR)
+				{
+					char szTexName[200];
+					if(SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_GETTEXT, sel, 
+						(LPARAM) (LPCSTR) szTexName) != LB_ERR)
+					{
+						string strName = m_strCurrTexDir + string("/") + string(szTexName);
+
+						ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
+								g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
+						string strRealName = m_pkFileSys->GetFullPath(strName.c_str());
+
+						ShellExecute(GetParent(g_kDlgBoxRight), "open", 
+							strRealName.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+					}
 				}
 			}
 			break;

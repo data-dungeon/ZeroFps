@@ -134,6 +134,26 @@ bool ZGuiEd::WriteSkins()
 					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
 					fprintf(m_pkSaveFile, "tex4=\"%s\"", GetTexNameFromID(pkSkin->m_iBorderCornerTexID, false).c_str());
 				}
+				if(pkSkin->m_iBkTexAlphaID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex1a=\"%s\"", GetTexNameFromID(pkSkin->m_iBkTexAlphaID, false).c_str());
+				}
+				if(pkSkin->m_iHorzBorderTexAlphaID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex2a=\"%s\"", GetTexNameFromID(pkSkin->m_iHorzBorderTexAlphaID, false).c_str());
+				}
+				if(pkSkin->m_iVertBorderTexAlphaID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex3a=\"%s\"", GetTexNameFromID(pkSkin->m_iVertBorderTexAlphaID, false).c_str());
+				}
+				if(pkSkin->m_iBorderCornerTexAlphaID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex4a=\"%s\"", GetTexNameFromID(pkSkin->m_iBorderCornerTexAlphaID, false).c_str());
+				}
 				if(pkSkin->m_afBkColor[0] != 1.0f || pkSkin->m_afBkColor[1] != 1.0f || pkSkin->m_afBkColor[2] != 1.0f )
 				{
 					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;

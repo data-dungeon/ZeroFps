@@ -26,8 +26,10 @@ public:
 	void Close();
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
-	bool IsVisible() { if(m_pkMainWnd == NULL) return false; return m_pkMainWnd && m_pkMainWnd->IsVisible(); }
+	bool IsVisible() { if(m_pkInventoryWnd == NULL) return false; return m_pkInventoryWnd && m_pkInventoryWnd->IsVisible(); }
 	MLContainer* GetContainer();
+	void OpenContainerWnd(int slots_horz, int slots_vert);
+	void CloseContainerWnd();
 
 private:
 
@@ -43,7 +45,9 @@ private:
 
 	vector<ITEM_SLOT> m_vkItemList;
 
-	ZGuiWnd* m_pkMainWnd;
+	ZGuiWnd* m_pkInventoryWnd;
+	ZGuiWnd* m_pkContainerWnd;
+
 	int m_iMoveSlot; // index of m_vkItemList
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
