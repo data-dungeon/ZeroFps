@@ -49,11 +49,73 @@ void Mad_CoreBoneAnimation::operator=(const Mad_CoreBoneAnimation& kOther)
 
 void Mad_CoreBoneAnimation::Save(FILE* fp)
 {
+	fwrite(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
 
+	int iNumOfFrames = m_kBoneKeyFrames.size();
+	fwrite(&iNumOfFrames,1,sizeof(int),fp);
+
+	for(int i=0; i<m_kBoneKeyFrames.size(); i++) 
+		m_kBoneKeyFrames[i].Save(fp);
 }
 
 void Mad_CoreBoneAnimation::Load(FILE* fp)
 {
+	cout << "Now loading: ";
+	Mad_BoneKeyFrame	NewBoneKeyFrame;
+	fread(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
+	cout << m_szName << endl;
 
+	int iNumOfFrames;
+	fread(&iNumOfFrames,1,sizeof(int),fp);
+
+	for(int i=0; i<iNumOfFrames; i++) 
+	{
+		NewBoneKeyFrame.Clear();
+		NewBoneKeyFrame.Load(fp);
+		m_kBoneKeyFrames.push_back(NewBoneKeyFrame);
+	}
 }
+
+
+
+void Mad_BoneKeyFrame::Save(FILE* fp)
+{
+	int iNumOfBones = m_kBonePose.size();
+	fwrite(&iNumOfBones,1,sizeof(int),fp);
+
+	for(int i=0; i<m_kBonePose.size(); i++)
+		m_kBonePose[i].Save(fp);
+}
+
+void Mad_BoneKeyFrame::Load(FILE* fp)
+{
+	Mad_BoneKey	NewBoneKey;
+
+	int iNumOfBones;
+	fread(&iNumOfBones,1,sizeof(int),fp);
+	
+	for(int i=0; i<iNumOfBones; i++)
+	{
+		NewBoneKey.Clear();
+		NewBoneKey.Load(fp);
+		m_kBonePose.push_back(NewBoneKey);
+	}
+}
+
+
+void Mad_BoneKey::Save(FILE* fp)
+{
+	fwrite(&m_kPosition, 1, sizeof(Vector3), fp);
+	fwrite(&m_kRotation, 1, sizeof(Vector3), fp);
+}
+
+void Mad_BoneKey::Load(FILE* fp)
+{
+	fread(&m_kPosition, 1, sizeof(Vector3), fp);
+	fread(&m_kRotation, 1, sizeof(Vector3), fp);
+}
+
+
+
+
 

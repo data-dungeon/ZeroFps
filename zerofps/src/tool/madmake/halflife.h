@@ -113,18 +113,88 @@ struct HLSequenceDesc
 
 struct HLAnimation
 {
-	
+	unsigned short		fAngleX;
+	unsigned short		fAngleY;
+	unsigned short		fAngleZ;
+	unsigned short		fTranslateX;
+	unsigned short		fTranslateY;
+	unsigned short		fTranslateZ;
 };
 
-typedef struct
+struct HLSeqHeader 
 {
-	unsigned short	offset[6];
-} mstudioanim_t;
+	int					m_iId;
+	int					m_iVersion;
+
+	char				m_szName[64];
+	int					m_iLength;
+};
+
+struct HLCacheUser
+{
+	void*				m_pvData;
+};
+
+struct HLSegGroup
+{
+	char				m_szLabel[32];	
+	char				m_szName[64];	
+	HLCacheUser			m_kCache;		
+	int					m_iData;		
+};
+
+struct HLBodyPart
+{
+	char				m_szName[64];
+	int					m_iNumOfModels;
+	int					m_iBase;
+	int					m_iModelIndex;
+};
+
+struct HLModel
+{
+	char				m_szName[64];
+	int					m_iType;
+	float				m_fBoundRadius;
+	int					m_iNumOfMesh;
+	int					m_iMeshIndex;
+
+	int					m_iNumOfVertex;
+	int					m_iVertexInfoIndex;
+	int					m_iVertexIndex;
+
+	int					m_iNumOfNormals;
+	int					m_iNormalInfoIndex;
+	int					m_iNormalIndex;
+	
+	int					m_iNumOfDeformationGroups;
+	int					m_iDeformationGroupIndex;
+};
+
+struct HLMesh
+{
+	int					m_iNumOfTriangles;
+	int					m_iTriangleIndex;
+	int					m_iSkinRef;
+	int					m_iNumOfNormals;
+	int					m_iNormalIndex;
+};
+
+struct HLMeshVertex
+{
+	short				m_VertexIndex;
+	short				m_NormalIndex;
+	short				m_TexCooS;
+	short				m_TexCooT;				
+};
+
 
 
 class ModellHalfLife : public IMadImport
 {
 private:
+	HLSeqHeader*	m_pkAnimationHeader[32];
+
 	HLHeader*		m_pkHeader;
 	HLBone*			m_pkBones;
 	HLSequenceDesc*	m_pkSeqDesc;
@@ -133,6 +203,8 @@ private:
 
 	void PrintHeader();
 	void PrintBones();
+
+	HLAnimation* ModellHalfLife::GetAnim( HLSequenceDesc* pkSeq );
 
 public:
 	ModellHalfLife();

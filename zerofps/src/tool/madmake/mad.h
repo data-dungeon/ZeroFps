@@ -105,14 +105,14 @@ public:
 	void operator=(const Mad_CoreMesh& kOther);
 
 
-	char					m_acName[64];
-	Mad_CoreMeshHeader		kHead;
+	char							m_acName[64];
+	Mad_CoreMeshHeader				kHead;
 
-	Mad_Texture				akTextures[MAD_MAX_TEXTURES];
-	vector<MadTextureCoo>	akTextureCoo;
-	vector<MadFace>			akFaces;
-	vector<Mad_VertexFrame>	akFrames;
-	vector<Mad_CoreSubMesh>	akSubMeshes;
+	Mad_Texture						akTextures[MAD_MAX_TEXTURES];
+	vector<MadTextureCoo>			akTextureCoo;
+	vector<MadFace>					akFaces;
+	vector<Mad_VertexFrame>			akFrames;
+	vector<Mad_CoreSubMesh>			akSubMeshes;
 	vector<Mad_CoreMeshAnimation>	akAnimation;
 
 	void Save(FILE* fp);
@@ -136,6 +136,10 @@ public:
 	int					m_iParent;
 	Vector3				m_kPosition;
 	Vector3				m_kRotation;
+
+	Vector3				m_kPosScale;
+	Vector3				m_kRotScale;
+
 };
 
 // MAD - AD
@@ -153,6 +157,10 @@ public:
 		m_kPosition = kOther.m_kPosition;
 		m_kRotation = kOther.m_kRotation;
 	}
+
+	void Save(FILE* fp);
+	void Load(FILE* fp);
+
 };
 
 class Mad_BoneKeyFrame
@@ -171,6 +179,9 @@ public:
 	{
 		m_kBonePose = kOther.m_kBonePose;
 	}
+
+	void Save(FILE* fp);
+	void Load(FILE* fp);
 };
 
 class Mad_CoreBoneAnimation
@@ -216,6 +227,7 @@ public:
 
 	void Save_SD(const char* filename);
 	void Save_MD(const char* filename);
+	void Save_AD(const char* filename);
 	void Save_MAD(const char* filename);
 };
 

@@ -18,8 +18,8 @@ public:
 	void Read( const char* filename );	// Read data in own format to this.
 	bool Export(MadExporter* mad, const char* filename);	// Export this to mad.
 
-//	vector<MadVertex>	m_akVertex;
-	vector<MadFace>		m_akFace;
+//	vector<MadVertex>			m_akVertex;
+	vector<MadFace>				m_akFace;
 
 	vector<Mad_VertexFrame>		m_akFrames;
 	vector<MadTextureCoo>		m_akTextureCoo;
@@ -27,6 +27,10 @@ public:
 
 	vector<Mad_CoreSubMesh>			m_akSubMesh;
 	vector<Mad_CoreMeshAnimation>	akAnimation;
+
+	vector<Mad_CoreBone>			m_akSkelleton;
+	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
+
 
 private:
 	void OptimizeSubMeshes(void);

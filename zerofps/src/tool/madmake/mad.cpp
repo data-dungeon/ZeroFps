@@ -39,6 +39,21 @@ void MadExporter::Save_SD(const char* filename)
 	fclose(fp);
 }
 
+void MadExporter::Save_AD(const char* filename)
+{
+	FILE* fp = fopen(filename, "wb");
+	
+	int iNumOfAnims = m_kBoneAnim.size();
+	fwrite(&iNumOfAnims, sizeof(int), 1, fp);
+	cout << "Nom of anima: "<< iNumOfAnims << endl;
+	for(int i=0; i < m_kBoneAnim.size(); i++) {
+		m_kBoneAnim[i].Save(fp);
+	}
+
+	fclose(fp);
+
+}
+
 Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
 {
 	vector<Mad_CoreMesh>::iterator it;

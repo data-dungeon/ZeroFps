@@ -205,13 +205,14 @@ void ModellXXX::ReadAnimation(char* filename)
 	fclose(fp);
 }
 
-struct BoneData
+
+/*struct BoneData
 {
 	int			m_iParent;
 	char		m_szName[64];
 	Vector3		m_kPosition;
 	Vector3		m_kRotation;
-};
+};*/
 
 /*
  0 left_ankle -1  3.663815 -46.230229 -2.260499  -0.000000 0.000000 -0.000000 
@@ -226,8 +227,8 @@ void ModellXXX::ReadExportSD(char* filename)
 
 	FILE* fp = fopen(filename,"rt");
 
-	vector<BoneData>	Bones;
-	BoneData NewBone;
+//	vector<Mad_CoreBone>	Bones;
+	Mad_CoreBone NewBone;
 	int res;
 	int iBoneId;
 
@@ -238,7 +239,7 @@ void ModellXXX::ReadExportSD(char* filename)
 		if(res ==  EOF)
 			break;
 
-		fscanf(fp, "%s",NewBone.m_szName);
+		fscanf(fp, "%s",NewBone.m_acName);
 		fscanf(fp, "%s",tmpstr);
 		NewBone.m_iParent = atoi(tmpstr);
 
@@ -256,22 +257,22 @@ void ModellXXX::ReadExportSD(char* filename)
 		fscanf(fp, "%s",tmpstr);
 		NewBone.m_kRotation.z = atof(tmpstr);
 
-		Bones.push_back(NewBone);
+		m_akSkelleton.push_back(NewBone);
 	}
 
 	fclose(fp);
 
 
 	// Write Down SD
-	fp = fopen("test.sd","wb");
+/*	fp = fopen("test.sd","wb");
 	int iNumOfBones = Bones.size();
 
 	fwrite(&iNumOfBones,1,sizeof(int),fp);
 	for(int i=0; i<Bones.size(); i++) {
-		fwrite(&Bones[i],1,sizeof(BoneData),fp);
+		fwrite(&Bones[i],1,sizeof(Mad_CoreBone),fp);
 		}
 
-	fclose(fp);
+	fclose(fp);*/
 
 
 }
@@ -321,7 +322,7 @@ void Mad_CoreAnimation::PrintAnimation(void)
 		
 		}
 }
-
+*/
 
 void ModellXXX::ReadExportAD(char* filename)
 {
@@ -334,10 +335,15 @@ void ModellXXX::ReadExportAD(char* filename)
 	int res;
 	int iBoneId;
 	int iFrameNum;
+	iFrameNum = -1;
 
-	Mad_CoreAnimation	kNewAnimation;
-	Mad_CoreTrack*		kNewTrack;
-	Mad_BoneKeyFrame	kNewBoneKey;
+	Mad_BoneKey				kNewBoneKey;
+	Mad_CoreBoneAnimation	kNewBoneAnim;
+	Mad_BoneKeyFrame		kNewBoneKeyFrame;
+
+	kNewBoneAnim.Clear();
+	kNewBoneKeyFrame.Clear();
+	kNewBoneAnim.Clear();
 
 	while(!done) {
 		res = fscanf(fp, "%s",tmpstr);
@@ -345,6 +351,11 @@ void ModellXXX::ReadExportAD(char* filename)
 			break;
 		
 		if(strcmp(tmpstr, "Frame") == 0) {
+			if(iFrameNum != -1) {
+				kNewBoneAnim.m_kBoneKeyFrames.push_back(kNewBoneKeyFrame);
+				kNewBoneKeyFrame.Clear();
+				}
+
 			res = fscanf(fp, "%s",tmpstr);
 			iFrameNum = atoi(tmpstr);
 			res = fscanf(fp, "%s",tmpstr);
@@ -365,14 +376,16 @@ void ModellXXX::ReadExportAD(char* filename)
 		kNewBoneKey.m_kRotation.y = atof(tmpstr);
 		fscanf(fp, "%s",tmpstr);
 		kNewBoneKey.m_kRotation.z = atof(tmpstr);
-
-		kNewTrack = kNewAnimation.GetTrackForBone(iBoneId);
-		kNewTrack->m_kKeyFrames.push_back(kNewBoneKey);
+		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
+//		kNewTrack = kNewAnimation.GetTrackForBone(iBoneId);
+//		kNewTrack->m_kKeyFrames.push_back(kNewBoneKey);
 	}
 
 	fclose(fp);
 
-	kNewAnimation.PrintAnimation();
+	m_kBoneAnim.push_back(kNewBoneAnim);
+
+/*	kNewAnimation.PrintAnimation();
 
 	// Write Down SD
 	fp = fopen("test.ad","wb");
@@ -388,10 +401,10 @@ void ModellXXX::ReadExportAD(char* filename)
 			fwrite(&kNewAnimation.m_kTracks[i].m_kKeyFrames[t].m_kRotation,1,sizeof(Vector3),fp);
 		}
 
-	fclose(fp);
+	fclose(fp);*/
 
 }
-*/
+
 
 void ModellXXX::Read( const char* filename )
 {
@@ -431,7 +444,7 @@ void ModellXXX::Read( const char* filename )
 		{
 			ucpToken = kMMScipt.GetToken();
 			cout << "Command ad-export: " << ucpToken << endl;
-//			ReadExportAD(ucpToken);
+			ReadExportAD(ucpToken);
 		}
 
 		ucpToken = kMMScipt.GetToken();
@@ -440,6 +453,10 @@ void ModellXXX::Read( const char* filename )
 
 bool ModellXXX::Export(MadExporter* mad, const char* filename)
 {
+	mad->m_akSkelleton = m_akSkelleton;
+	mad->m_kBoneAnim = m_kBoneAnim;
+	return true;
+
 	OptimizeSubMeshes();
 
 	int iTotalNumOfVertex = m_akFrames[0].akVertex.size();
