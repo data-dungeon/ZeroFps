@@ -76,7 +76,7 @@ public:
    float
       m_fHearing,     // How good the character can hear
       m_fVision,      // How good the character can see
-      m_fVisibility,  // How easy it is to detect the character
+      m_fVisibility,  // How easy it is to see the character
       m_fLoudness;    // How much noise the character make
 
    string 

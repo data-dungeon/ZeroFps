@@ -55,7 +55,7 @@ class MistClient :public Application, public ZGuiApp {
 		int			m_iActionPrintServerInfo;				
 		int			m_iActionDoOrder;
 		
-		//console funktions
+		//console functions
 		enum FuncId_e
 		{
 			FID_LOAD,
@@ -63,11 +63,11 @@ class MistClient :public Application, public ZGuiApp {
 			FID_MASSSPAWN,
 		};
 
-		//selected caracter
+		//selected character
 		int					m_iActiveCaracterObjectID;
 		Entity* 				m_pkActiveCharacter;
 
-		//clients own little qute object
+		//clients own little cute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 		Entity*				m_pkClientObject;
 		Entity*				m_pkTargetObject, *m_pkTargetObject2;
@@ -92,6 +92,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//gui
 		bool					m_bActionMenuIsOpen;
+		bool					m_bMouseMode; // if true, move mouse, else move camera	
 		const unsigned int MAX_NUM_ACTION_BUTTONS;
 		map<ZGuiButton*, string> m_kActionBnTranslator;		
 		

@@ -649,6 +649,24 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 		}
 	}
 
+	// added by zerom, buttons in client crashed the program else
+	if(iDepth == 32)
+	{
+		
+		if(iInternalFormat == GL_RGB)
+		{		
+			//ut<<"GL_RGB"<<endl;
+			
+			iFormat = GL_RGB;
+			iType = GL_UNSIGNED_BYTE;
+
+			rmask = 0x0000ff;
+			gmask = 0x00ff00;
+			bmask = 0xff0000;
+			amask = 0x000000;
+	
+		}
+	}
 	
 	if(iFormat == -1)
 	{
