@@ -193,26 +193,23 @@ void P_Mad::Update()
 
 void P_Mad::CreateAABB()
 {
+	static Vector3 kVert;
+	
 	m_AABBMax.Set(-99999999,-99999999,-99999999);
 	m_AABBMin.Set(99999999,99999999,99999999);
 	Matrix3 kRot = m_pkEntity->GetWorldRotM();
-	
+		
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
-
-
-	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
-	int iNumOfFaces;
-	int iNumOfSubMesh;
-
-	Vector3 kVert;
 	
+	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();	
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
 	{
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 		
-		int iVerts = GetNumVertices();
 		Vector3* kVertexPointer = GetVerticesPtr();
+		
+		int iVerts = GetNumVertices();		
 		for(int i = 0;i<iVerts;i++)
 		{
 			kVert = kRot.VectorTransform(kVertexPointer[i]) * m_fScale;
@@ -239,46 +236,7 @@ void P_Mad::CreateAABB()
 				m_AABBMin.z = kVert.z;				
 		}
 					
-	}
-		
-// 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
-// 		
-// 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
-// 		{
-// 			SelectSubMesh(iSubM);
-// 
-// 			if(iDrawFlags & MAD_DRAW_MESH) 
-// 			{
-// 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
-// 
-// 				ZFResourceHandle* pkRes;
-// 				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) 
-// 				{
-// 					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
-// 				}
-// 				else 
-// 				{
-// 					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
-// 				}
-// 				
-// 				//setup material
-// 				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
-// 				
-// 				if(iNumOfSubMesh == 1)
-// 					m_iFirstMaterialID = pkMaterial->GetID();
-// 				else
-// 					m_iFirstMaterialID = -1;
-// 				
-// 				m_pkShader->BindMaterial(pkMaterial);				
-// 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
-// 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
-// 				
-// 				m_pkShader->DrawArray();
-// 				g_iNumOfMadSurfaces += iNumOfFaces;
-// 			}
-// 		}
-// 	}
-		
+	}		
 	
 }
 
