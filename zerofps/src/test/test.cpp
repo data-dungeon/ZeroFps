@@ -68,6 +68,8 @@ void Test::OnIdle(void) {
 	float z=pkFps->m_kCamPos->z;
 	float x=pkFps->m_kCamPos->x;	
 	
+	if(pkFps->m_kCamPos->y<test->Height(x,z)+2.4)
+		pkFps->m_kCamPos->y=test->Height(x,z)+2.5;	
 //	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
 	glPushMatrix();
 		glTranslatef(x+30,test->Height(x+30,z),z);
