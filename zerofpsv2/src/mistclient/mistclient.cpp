@@ -513,7 +513,7 @@ void MistClient::ClientInit()
 	
 }
 
-void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
+void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	

@@ -140,7 +140,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//on client join, server runs this
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) { return true; }
-		void OnServerClientJoin(ZFClient* pkClient,int iConID);
+		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 
 		bool StartUp();

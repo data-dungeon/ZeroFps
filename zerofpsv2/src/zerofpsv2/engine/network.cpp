@@ -616,7 +616,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
 
 				// Tell ZeroFPS Someone has connected.
-				int iNetID = m_pkZeroFps->Connect(iClientID);
+				int iNetID = m_pkZeroFps->Connect(iClientID, szLogin, szPass);
 
 				// Send Connect Yes.
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
@@ -653,7 +653,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			pkNetPacket->Read( iObjId ); 
 			m_pkZeroFps->m_iServerConnection	= iConnID;
 			m_pkZeroFps->m_iRTSClientObject		= iObjId;
-			m_pkZeroFps->Connect(iClientID);
+			m_pkZeroFps->Connect(iClientID,NULL,NULL);
 			m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
 			break;
 

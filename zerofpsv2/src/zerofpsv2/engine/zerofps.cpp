@@ -1016,7 +1016,7 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char*
 	PreConnect returns true. It is called on Clients when they recive connect_yes from server.
 	Return value is the NetID off the client object on the server. It don't matter on the client.
 */
-int ZeroFps::Connect(int iConnectionID) 
+int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass) 
 {
 	if(!m_bServerMode)
 		return -1;
@@ -1040,7 +1040,7 @@ int ZeroFps::Connect(int iConnectionID)
 
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
 
-	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID);
+	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass);
 
 	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0;
 

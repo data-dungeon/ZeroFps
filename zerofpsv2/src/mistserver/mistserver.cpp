@@ -581,26 +581,11 @@ void MistServer::ClientInit()
 
 bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 {
-	printf("User %s tried to join with password %s\n", szLogin, szPass);
-	return true;
-}
-
-void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
-{
-	cout<<"Client "<<iConID<<" Joined"<<endl;
-	
-	//add client control to client object
-	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
-	if(pcc)	
-		pcc->m_iClientID = iConID;
-		
-	//update start locations  
-	UpdateStartLocatons();
-		
 	//dessa skall du fixa till vim =D
-	string strPlayer  = "Kalle";
-	string strPasswd = "hubba";
-	string strCharacter = "mrbad";
+	string strPlayer		= szLogin;
+	string strPasswd		= szPass;
+	string strCharacter	= "mrbad";
+
 	
 	//check valid password
 	if(!m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd))
@@ -613,7 +598,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 			
 			//KICKA O DÖDA SPELAREN!!! HÄRR!! FÖR HAN SKREV FAN FEL JÄVLA LÖSEEN DÖÖÖÖÖ!!!
 			
-			return;
+			return false;
 		}
 	}
 	
@@ -625,10 +610,32 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 		
 			//KICKA O DÖDA SPELARJÄVELN HÄR OCKSÅ FÖR HAN FÅR FAN INTE CONNECTA TVÅ GÅNGER!!!!
 		
-			return;
+			return false;
 		}
 	}
 	
+	printf("User %s tried to join with password %s\n", szLogin, szPass);
+	return true;
+}
+
+void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
+{
+	//dessa skall du fixa till vim =D
+	string strPlayer		= szLogin;
+	string strPasswd		= szPass;
+	string strCharacter	= "mrbad";
+
+	cout<<"Client "<<iConID<<" Joined"<<endl;
+	
+	//add client control to client object
+	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
+	if(pcc)	
+		pcc->m_iClientID = iConID;
+		
+	//update start locations  
+	UpdateStartLocatons();
+		
+
 	//create player object
 	int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
 	
