@@ -1273,7 +1273,7 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 			else
-			if(strWndClicked == "ToogleLight")
+			if(strWndClicked == "ToggleLight")
 			{
 				ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
 			}
