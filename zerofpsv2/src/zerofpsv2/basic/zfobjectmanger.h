@@ -58,8 +58,7 @@ public:
 	static TClass* pkInstance;		\
 	static TClass* GetInstance();	\
 
-
-/// Tracks all Engine Systems objects.
+/// Tracks all Engine Sub Systems objects.
 class BASIC_API ZFObjectManger
 {
 private:
@@ -69,12 +68,16 @@ private:
 	FILE*						m_pkLogFile;
 
 protected:
+		vector<string>	AppArguments;		
 
 public:
 	public:
 	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
 
 	//DECLARE_SINGLETON(ZFObjectManger);
+
+	void HandleArgs(int iNrOfArgs, char** paArgs);
+
 
 	static ZFObjectManger* pkInstance;
 	static ZFObjectManger* GetInstance();

@@ -544,14 +544,6 @@ SOURCE=.\zerofps.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zfresource.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfresourcedb.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\common\zoneobject.h
 # End Source File
 # End Group

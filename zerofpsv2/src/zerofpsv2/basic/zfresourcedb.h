@@ -48,9 +48,7 @@ public:
 
 };
 
-
-
-
+/// Resource manger.
 class BASIC_API ZFResourceDB : public ZFSubSystem {
 	private:
 		enum FuncId_e

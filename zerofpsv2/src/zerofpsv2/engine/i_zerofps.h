@@ -32,8 +32,8 @@ public:
 	virtual void SetCamera(Camera* pkCamera)= 0;	
 	virtual void UpdateCamera()= 0;
 	virtual Camera* GetCam()= 0;		
-	virtual	int	NumberOfArgs()= 0;			
-	virtual	string GetArg(int iArgIndex)= 0;
+//	virtual	int	NumberOfArgs()= 0;			
+//	virtual	string GetArg(int iArgIndex)= 0;
 						
 	virtual DevStringPage* DevPrint_FindPage(const char* szName)= 0;	
 	virtual	void DrawDevStrings()= 0;

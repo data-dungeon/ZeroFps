@@ -75,25 +75,30 @@ Kommentarer
 			sammt förenklar för den person som vill rensa undan och snygga upp filer.
 
 	Kommentarer ska anges i format som förstås av DoxyGen. 
+		///	Doxydoc kommentar.
+		/**	Doxydoc kommentar.	*/
+		///<	Doxydoc kommentar som skrivs efter det man vill kommentera.
 
-		För klasser och structs så använder man /// för att skapa kommentaret.
-			Dessa placeras ovanför det man ska dokumentera.
-		Korta kommentarer för medlemar i klassdeklarationer angers med /// på en enda
-			rad ovanför deklarationen eller med ///< på samma rad efter.
-		Detaljerade kommentarer anges för funktioner med /// ovanför implentationen.
+		Kommentarer skrivs före det man vill kommentera eller på samma rad som 
+		det med ///< (ex klassmedlemar).
 
 		För att dokumentera vad en fil gör så anger man följande högst upp i den.
+		Kommentarer kan ha en brief beskrivning och skrivs då som:
 
-		/**	\file 
-			Short Desc (One Line only).
-			Long Desc...
+			/**	\brief	Kort kommentar.
 
-		*/
+					Massa meningslöst sagg.
+				*/
 
-		/** \file file.h
-		* A brief file description.
-		* A more elaborated file description.
-		*/
+			/**	\file 
+				Short Desc (One Line only).
+				Long Desc...
+			*/
+
+			/** \file file.h
+			* A brief file description.
+			* A more elaborated file description.
+			*/
 
 Names:
 	Klass / Struct / Unions

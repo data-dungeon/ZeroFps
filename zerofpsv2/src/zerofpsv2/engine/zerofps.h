@@ -128,14 +128,13 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fGameFrameTime;
 		float		m_fEngineTime;						// Time since engine start.
 		
-		vector<string>	AppArguments;		
 		
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		string m_kCurentDir;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-		void HandleArgs(int iNrOfArgs, char** paArgs);		
+		//void HandleArgs(int iNrOfArgs, char** paArgs);		
 		void ConfigFileRun();
 		void ConfigFileSave();
 		void Run_EngineShell();
@@ -143,6 +142,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Run_Client();
 		void Draw_EngineShell();		
 		void Update_System();
+
+		
 
 	public:
 		/*
@@ -217,8 +218,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();
 		Camera *GetCam() {return m_pkCamera;};		
-		int	NumberOfArgs(void);										// Return num of arg to app.
-		string GetArg(int iArgIndex);
+		//int	NumberOfArgs(void);										// Return num of arg to app.
+		//string GetArg(int iArgIndex);
 	
 		vector<DevStringPage>	m_DevStringPage;					
 		DevStringPage*	DevPrint_FindPage(const char* szName);		

@@ -175,56 +175,6 @@ void ZeroFps::SetApp() {
 	m_pkApp->SetEnginePointer(this);
 }
 
-void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) 
-{
-	string	strFullArg;
-	string	strArg;
-	bool		bFoundArg = false;
-
-	for(int i = 0; i < iNrOfArgs; i++) {
-		strArg = string(paArgs[i]);
-
-		if(strArg.c_str()[0] == '-') {
-			bFoundArg = true;
-			// Start of new argument.
-			if(strFullArg.size())
-				AppArguments.push_back(strFullArg);
-	
-			strFullArg = "";
-			strArg.erase(0,1);
-			}
-
-		if(bFoundArg)
-			strFullArg = strFullArg + " " + strArg;
-		}
-
-	if(strFullArg.size())
-		AppArguments.push_back(strFullArg);
-
-	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
-	for(int ia = 0; ia < AppArguments.size(); ia++) {
-		
-		GetSystem().RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
-
-		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
-		}
-}
-
-int	ZeroFps::NumberOfArgs(void)
-{
-	return AppArguments.size();
-}
-
-string ZeroFps::GetArg(int iArgIndex)
-{
-	string strArg("");
-	if(iArgIndex < 0 || iArgIndex >= int(AppArguments.size()))
-		return strArg;
-
-	strArg = AppArguments[iArgIndex];
-	return strArg;
-}
-
 void ZeroFps::ConfigFileRun()
 {
 	string CfgName = string(m_pkApp->m_pTitle) + ".ini";
@@ -242,7 +192,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
 	SetApp();												//	setup class pointers	
 	ConfigFileRun();
-	HandleArgs(iNrOfArgs,paArgs);						//	handle arguments
+	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);		//	handle arguments
 
 
 	// StartUp SDL
