@@ -10,6 +10,7 @@
 #include "../zerofps/basic/zfini.h"
 #include "../zerofps/basic/zfassert.h"
 #include <set>
+#include <string.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction

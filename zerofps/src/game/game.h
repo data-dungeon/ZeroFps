@@ -65,6 +65,8 @@ class Game :public Application {
 		GameScript* m_pkScript;
 		GameScriptInterface* m_pkGameScriptInterface;
 
+		int m_iActionOpenInventory, m_iActionCloseInventory;
+
 	public:
 		
 //		Core	m_kTestCore;

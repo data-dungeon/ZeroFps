@@ -14,8 +14,8 @@ GLGuiRender::GLGuiRender()
 {
 	m_pkFont = NULL;
 	m_pkSkin = NULL;
-	m_iScreenWidth = 800;
-	m_iScreenHeight = 600;
+	m_iScreenWidth = 1024;
+	m_iScreenHeight = 768;
 	m_pkTextureManger=static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 }
@@ -92,6 +92,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	glLoadIdentity();
 
+	float orginal_pos_x = rc.Left;
+	float orginal_pos_y = rc.Top;
+	
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
 

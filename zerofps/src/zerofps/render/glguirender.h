@@ -35,8 +35,6 @@ private:
 	int m_iScreenWidth, m_iScreenHeight;
 	bool PrintRows(char* text, Rect rc, int iCursorPos);
 	TextureManager* m_pkTextureManger;
-
-
 };
 
 #endif

@@ -65,11 +65,11 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	// Initialize key commands to update values by pushing return while
 	// textbox have focus and closing window by pushing Return or Escape,
-	ZGuiWnd* pkDialog = m_pkGui->Get("PropertyDlg");
-	ZGuiWnd* pkPropOKBn = m_pkGui->Get("ObjectPropOK");
-	ZGuiWnd* pkPropCancelBn = m_pkGui->Get("ObjectPropertiesCancel");
-	ZGuiWnd* pkSetNewValueBN = m_pkGui->Get("ChangeValueOKBn");
-	ZGuiWnd* pkPropValSetEB = m_pkGui->Get("PropertyValueSetEB");
+	ZGuiWnd* pkDialog			= m_pkGui->Get("PropertyDlg");
+	ZGuiWnd* pkPropOKBn			= m_pkGui->Get("ObjectPropOK");
+	ZGuiWnd* pkPropCancelBn		= m_pkGui->Get("ObjectPropertiesCancel");
+	ZGuiWnd* pkSetNewValueBN	= m_pkGui->Get("ChangeValueOKBn");
+	ZGuiWnd* pkPropValSetEB		= m_pkGui->Get("PropertyValueSetEB");
 
 	m_pkZGui->AddKeyCommand(KEY_RETURN, pkDialog, pkPropOKBn);
 	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDialog, pkPropCancelBn);

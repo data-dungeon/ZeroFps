@@ -19,7 +19,6 @@ enum OPTIONS {
 	T_NOMIPMAPPING=1,
 	T_COMPRESSION=8,
 	T_CLAMP=16
-
 };
 
 #define	NO_TEXTURE	-1

@@ -445,6 +445,8 @@ void ZeroFps::ToggleGui(void)
 
 void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 {
+	m_pkGui->Resize(m_iWidth, m_iHeight, iWidth, iHeight);
+
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;
@@ -469,8 +471,8 @@ void ZeroFps::SetDisplay()
 	else
 		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
 
-	glViewport(0, 0,m_iWidth,m_iHeight);	
-
+	glViewport(0, 0,m_iWidth,m_iHeight);
+	
 	if(m_pkGuiRenderer->SetDisplay(m_iWidth,m_iHeight) == false)
 	{
 		printf("Failed to set GUI display!\n");

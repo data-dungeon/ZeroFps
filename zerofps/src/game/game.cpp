@@ -2,7 +2,9 @@
 #include "gamescript.h"
 #include "gamescriptinterface.h"
 
-Game g_kGame("ZeroFPS game",1024,768,24);
+//Game g_kGame("ZeroFPS game",320,240,24);
+Game g_kGame("ZeroFPS game",640,480,24);
+//Game g_kGame("ZeroFPS game",1024,768,24);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
@@ -16,13 +18,11 @@ void Game::OnInit()
 	pkConsole->Printf("--------------------------------");
 	pkConsole->Printf(" Use load [map] to load a map");
 	
-	SetUpMenuScreen();			
+	SetUpMenuScreen();
 }
 
-static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) 
-{
-	return true; 
-}
+static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
+	return true; }
 
 static bool INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
 	return g_kGame.m_pkInventoryBox->DlgProc(wnd,msg,num,parms); }
@@ -138,7 +138,7 @@ void Game::OnHud(void)
 	
 			glDisable(GL_ALPHA_TEST);
 
-			const int max_width = 100;
+	/*		const int max_width = 100;
 			float fMod = (float) pkGuiMan->Wnd("helthbar_bk")->GetScreenRect().Width() / max_width;
 
 			float fHelth = *m_pfPlayerHealth;
@@ -150,7 +150,7 @@ void Game::OnHud(void)
 				fArmor = 0;
 
 			pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*fHelth),10);
-			pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*fArmor),10);
+			pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*fArmor),10);*/
 
 			pkFps->m_bGuiMode = false;
 			pkFps->ToggleGui();
@@ -175,13 +175,25 @@ void Game::Input()
 				printf("Failed to run script %s.\n", szFile);
 		}
 		break;
-	case KEY_I:
+	}
+	
+	if(pkInput->Action(m_iActionOpenInventory))
+	{
+		int Width = m_pkInventoryBox->Width();
+		int Height = m_pkInventoryBox->Width();
+
 		// Open/Close inventory window
 		if(m_pkInventoryBox->IsOpen() == false)
-			m_pkInventoryBox->OnOpen(300,200); 
+			m_pkInventoryBox->OnOpen(m_iWidth/2-Width/2,m_iHeight/2-Height/2); 
 		else
 			m_pkInventoryBox->OnClose(false);
-		break;
+	}
+
+	if(pkInput->Action(m_iActionCloseInventory))
+	{
+		// Open/Close inventory window
+		if(m_pkInventoryBox->IsOpen())
+			m_pkInventoryBox->OnClose(false);
 	}
 
 
@@ -298,7 +310,7 @@ void Game::SetupLevel()
 void Game::InitGui()
 {
 	int id = 1;
-	int x = m_iWidth-200, y = m_iHeight-200;
+	int x = 1024-200, y = 768-200;
 
 	ZGuiSkin* pkMainSkin     =	new ZGuiSkin(192, 192, 192, 0,   0,   0,   2);
 	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
@@ -329,9 +341,16 @@ void Game::InitGui()
 	pkGui->RegisterWindow(pkArmorbarBk, "armorbar_bk");
 
 	// Create inventory window
+	m_iActionOpenInventory = pkInput->RegisterAction("inventory_open");
+	m_iActionCloseInventory = pkInput->RegisterAction("inventory_close");
 	m_pkInventoryBox = new InventoryBox(pkGui, INVENTORYPROC);
-	
+	ZGuiSkin* pkSkin = pkGuiMan->Wnd("InventoryWnd")->GetSkin();
+	pkSkin->m_iBkTexID = pkTexMan->Load("file:../data/textures/detail1.bmp", 0);
+	pkGuiMan->Wnd("InventoryWnd")->SetSkin(pkSkin);
+
 	pkFps->m_bGuiTakeControl = false;
+
+	pkGui->Resize(1024,768,m_iWidth,m_iHeight);
 }
 
 void Game::InitScript()
