@@ -30,7 +30,7 @@ Package=<4>
     Project_Dep_Name render
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name gui
+    Project_Dep_Name physics_engine
     End Project Dependency
 }}}
 
@@ -49,6 +49,21 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name render
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "physics_engine"=.\physics_engine\physics_engine.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
     End Project Dependency
 }}}
 

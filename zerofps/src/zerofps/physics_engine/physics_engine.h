@@ -2,6 +2,7 @@
 #define _PHYSICS_ENGINE_H_
 
 #include "../basic/basic.pkg"
+#include "physics_engine_x.h"
 
 #include <vector>
 #include <list>
@@ -10,7 +11,7 @@
 
 using namespace std;
 
-class Physics_Engine : public ZFObject
+class PHYSICSENGINE_API Physics_Engine : public ZFObject
 {
 	private:
 		list<Body*>		m_kBodys;
