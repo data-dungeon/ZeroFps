@@ -236,8 +236,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							SayToClients("You dont have that skill","Server",-1,PkNetMessage->m_iClientID);break;
 						case -2:
 							SayToClients("You are dead","Server",-1,PkNetMessage->m_iClientID);break;						
-						case 1:
-							SayToClients("Skill not reloaded yet","Server",-1,PkNetMessage->m_iClientID);break;
+// 						case 1:
+// 							SayToClients("Skill not reloaded yet","Server",-1,PkNetMessage->m_iClientID);break;
 						case 2:
 							SayToClients("You need at least level 1 to use a skill","Server",-1,PkNetMessage->m_iClientID);break;
 						case 3:
