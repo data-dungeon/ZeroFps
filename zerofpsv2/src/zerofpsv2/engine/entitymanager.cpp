@@ -887,7 +887,7 @@ void EntityManager::PackToClients()
 void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
 {
 	int iEntityID;
-	pkNetPacket->Read((int) iEntityID);
+	pkNetPacket->Read(&iEntityID,sizeof(iEntityID));
 	
 	Entity* pkEnt = GetObjectByNetWorkID( iEntityID );
 	if(!pkEnt)
@@ -913,7 +913,7 @@ void EntityManager::GetStaticData(int iEntityID)
 	NP.Clear();
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_GETSTATICDATA);
-	NP.Write((int) iEntityID);
+	NP.Write(&iEntityID,sizeof(iEntityID));
 	NP.Write(ZFGP_ENDOFPACKET);
 	m_pkNetWork->SendToClient(0, &NP);
 }

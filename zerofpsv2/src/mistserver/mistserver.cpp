@@ -973,6 +973,7 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			m_strActiveZoneName = strFullpath;
 			
+			m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			// Setting new zone modell
 			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
 			{
@@ -1337,17 +1338,21 @@ void MistServer::SetZoneEnviroment(const char* csEnviroment)
 	//set default enviroment
 	m_strActiveEnviroment=csEnviroment;
 	
+	m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 	ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
+	{
+		//cout<<"Setting enviroment to :"<<csEnviroment<<endl;
 		z->m_strEnviroment = csEnviroment;
-		
+	}	
 }
 
 string MistServer::GetZoneEnviroment()
 {
 	string env;
 	
+	m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 	ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
