@@ -21,12 +21,23 @@ P_Sound::P_Sound()
 
 P_Sound::~P_Sound()
 {
-	if(!m_strFileName.empty())
+	//if(!m_strFileName.empty())
+	//{
+	//	Entity* pkEnt = GetEntity();
+	//	m_pkAudioSystem->StopSound(m_strFileName, pkEnt->GetIWorldPosV());
+	//	m_strStopFileName = "";
+	//	m_strFileName = "";
+
+	//	m_bStarted = false;
+	//	m_kPrevpos = Vector3(-9999,-9999,-9999);
+	//}
+
+	if(m_iID > 0)
 	{
-		Entity* pkEnt = GetEntity();
-		m_pkAudioSystem->StopSound(m_strFileName, pkEnt->GetIWorldPosV());
+		m_pkAudioSystem->StopSound(m_iID);
 		m_strStopFileName = "";
 		m_strFileName = "";
+		m_iID = -1;
 
 		m_bStarted = false;
 		m_kPrevpos = Vector3(-9999,-9999,-9999);
@@ -143,6 +154,30 @@ void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 	pkFile->Read_Str( m_strFileName ); 
 	pkFile->Read( m_bLoop );
 	SetNetUpdateFlag(true);
+}
+
+bool P_Sound::HandleSetValue( string kValueName ,string kValue )
+{
+	bool res = false;
+
+	if(strcmp(kValueName.c_str(), "filename") == 0) 
+	{
+		res = true;
+		m_strFileName = kValue;
+	}
+	
+	if(strcmp(kValueName.c_str(), "loop") == 0) 
+	{
+		res = true;
+		if(kValue == "true")
+			m_bLoop = 1;
+		else
+			m_bLoop = 0;
+	}
+
+	SetNetUpdateFlag(true);
+
+	return res;
 }
 
 Property* Create_SoundProperty()
