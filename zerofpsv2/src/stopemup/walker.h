@@ -19,10 +19,12 @@ class P_Walker : public Property
 		};
 		
 		int	m_iTarget;
-		float m_fParaTime;
-		float m_fParaLength;
+		int	m_iGoalID;
 		
+		float m_fParaTime;
+		float m_fParaLength;		
 		float	m_fFindNewTargetTime;
+		
 		
 		void Paralize(float fTime);
 		int ClosestPlayer();

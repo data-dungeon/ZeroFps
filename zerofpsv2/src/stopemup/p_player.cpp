@@ -35,26 +35,32 @@ void P_Player::Touch(int iID)
 	
 		if(pkEnt->GetType() == "walker.lua")
 		{		
-			SetNetUpdateFlag(true);
-			
 			//play hit sound
 			if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
 				pkSound->StartSound("data/sound/hit.wav",false);
-			
-			
-			m_iEnergy-=5;
 		
-			//set inv time
-			m_fInv = m_pkZeroFps->GetTicks();
-			
-			if(m_iEnergy <= 0 )
-			{
-				cout<<"player died"<<endl;
-				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/playerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
-				m_pkEntityManager->Delete(GetEntity());		
-					
-			}
+				
+			Damage(5);
 		}
+	}
+}
+
+void P_Player::Damage(int iDmg)
+{
+	SetNetUpdateFlag(true);
+	
+	
+	m_iEnergy-=iDmg;
+
+	//set inv time
+	m_fInv = m_pkZeroFps->GetTicks();
+	
+	if(m_iEnergy <= 0 )
+	{
+		cout<<"player died"<<endl;
+		m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/playerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
+		m_pkEntityManager->Delete(GetEntity());		
+			
 	}
 }
 

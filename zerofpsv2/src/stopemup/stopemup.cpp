@@ -19,6 +19,7 @@
 #include "walker.h"
 #include "p_player.h"
 #include "p_powerup.h"
+#include "p_goal.h"
 
 StopEmUp g_kStopEmUp("StopEmUp",0,0,0);
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -44,6 +45,9 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iScore				=0;
 	m_iCurrentLevel	=0;
 	m_iStartLevel		=1;
+	m_iLives 			=0;
+	m_iGoalEnt			=-1;
+	m_iCurrentLives	=-1;
 	
 	m_strMap				="../datafiles/stopemup/maps/woods";
 }
@@ -66,10 +70,13 @@ void StopEmUp::OnInit()
 
 	//register mcommon
 	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
-	m_pkPropertyFactory->Register("P_Gun",	Create_P_Gun);
-	m_pkPropertyFactory->Register("P_Walker",	Create_P_Walker);
-	m_pkPropertyFactory->Register("P_Player",	Create_P_Player);
+	m_pkPropertyFactory->Register("P_Gun",			Create_P_Gun);
+	m_pkPropertyFactory->Register("P_Walker",		Create_P_Walker);
+	m_pkPropertyFactory->Register("P_Player",		Create_P_Player);
 	m_pkPropertyFactory->Register("P_Powerup",	Create_P_Powerup);
+	m_pkPropertyFactory->Register("P_Goal",		Create_P_Goal);
+	
+	
 	
 	//create camera
 	m_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -114,6 +121,13 @@ void StopEmUp::OnSystem(void)
 
 	if(m_bServerMode)
 	{
+		//check if level has a goal
+/*		if(m_bSearchForGoal)
+		{
+			m_bSearchForGoal = false;
+ 		
+		}		*/		
+	
 		//level stuff
 		static bool bWait=false;
 		static float fTime;
@@ -189,6 +203,7 @@ void StopEmUp::OnIdle()
 	
 	
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "LEVEL: %d",m_iCurrentLevel);
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "LIVES: %d",m_iCurrentLives);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "SCORE: %d",m_iScore);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", temp);
@@ -266,11 +281,16 @@ void StopEmUp::OnServerStart()
 {
 	cout<<"StopEmUp server started"<<endl;
 
-	m_pkEntityManager->LoadWorld(m_strMap);	
+	m_pkEntityManager->LoadWorld(m_strMap);
+		
 	CreateCamera();
-	
+
+	//check for goal
+	m_iGoalEnt = 		HasGoal();	
+		
 	m_bServerMode =	true;
 	m_iLevel = 			m_iStartLevel-1;
+	m_iLives =			20;
 	
 	SetTitle("StopEmUp - Server");
 }
@@ -432,7 +452,8 @@ void StopEmUp::OnNetworkMessage(NetPacket *pkNetMessage)
 		
 		case eSC_LEVELDATA:
 		{
-			pkNetMessage->Read(m_iCurrentLevel);					
+			pkNetMessage->Read(m_iCurrentLevel);
+			pkNetMessage->Read(m_iCurrentLives);
 			
 			break;
 		}				
@@ -493,8 +514,8 @@ void StopEmUp::SetupLevel(int iLevel)
 		float r = Randomf(360);
 		r = DegToRad(r);
 		Vector3 kRandomPos;
-		kRandomPos.x = sin(r)*8;
-		kRandomPos.z = cos(r)*8;
+		kRandomPos.x = sin(r)*7;
+		kRandomPos.z = cos(r)*7;
 		kRandomPos.y = 0;
 		
 		//randomize 
@@ -535,11 +556,49 @@ void StopEmUp::SendLevelData()
 	kNp.Clear();	
 	kNp.Write((char)eSC_LEVELDATA);
 	kNp.Write(m_iLevel);
+	kNp.Write(m_iLives);	
 	kNp.TargetSetClient(-2);
 	m_pkApp->SendAppMessage(&kNp);			
 }
 
+void StopEmUp::RemoveLife()
+{
+	m_iLives--;
+	
+	if(m_iLives <= 0)
+	{
+		cout<<"U LOOOOSE"<<endl;
+	
+		m_iLevel = 0;
+		
+		//delete all players
+		for(int i = 0;i<m_kPlayers.size();i++)
+		{
+			m_pkEntityManager->Delete(m_kPlayers[i].second);		
+		}
+	}
+	
+	SendLevelData();
+}
 
 
-
-
+int StopEmUp::HasGoal()
+{
+	vector<Entity*>	m_kEnts;
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEnts);
+	
+	for(int i= 0;i<m_kEnts.size();i++)
+	{
+		if(m_kEnts[i]->GetType() == "goal.lua" )
+		{
+			Vector3 kGoalPos = m_kEnts[i]->GetWorldPosV();			
+			m_pkEntityManager->Delete(m_kEnts[i]);
+		
+			Entity* kGoal = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/goal.lua",kGoalPos,-1);
+			
+			return kGoal->GetEntityID();
+		}
+	}
+	
+	return -1;
+}

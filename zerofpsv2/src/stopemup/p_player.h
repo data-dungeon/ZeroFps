@@ -25,6 +25,7 @@ class P_Player : public Property
 		
 		
 		void AddScore(int iScore)			{	m_iScore+= iScore;SetNetUpdateFlag(true);};
+		void Damage(int iDmg);
 };
 
 

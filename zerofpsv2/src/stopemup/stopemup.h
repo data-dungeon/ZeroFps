@@ -33,7 +33,9 @@ class StopEmUp :public Application , public ZGuiApp
 		float							m_fLevelWait;
 		vector<pair<int,int> >	m_kPlayers;
 		vector<int> 				m_kSpawners;
+		int							m_iLives;
 		
+		int							m_iGoalEnt;
 				
 		//client stuff
 		int			m_iPlayerID;
@@ -44,6 +46,7 @@ class StopEmUp :public Application , public ZGuiApp
 		int			m_iMaxEnergy;
 		int			m_iScore;
 		int			m_iCurrentLevel;
+		int			m_iCurrentLives;
 		string		m_strGunName;
 		
 		
@@ -62,7 +65,8 @@ class StopEmUp :public Application , public ZGuiApp
 		void SendLevelData();
 		
 		void SetupLevel(int iLevel);
-		bool LevelComplete();	
+		bool LevelComplete();
+		int  HasGoal();	
 		
 	public:
 		StopEmUp(char* aName,int iWidth,int iHeight,int iDepth);
@@ -84,6 +88,9 @@ class StopEmUp :public Application , public ZGuiApp
 		
 		int GetLevel()		{	return m_iLevel				;};
 		int GetPlayers()	{	return m_kPlayers.size()	;};
+		int GetGoalEnt()	{	return m_iGoalEnt				;};
+		void RemoveLife();
+		
 };
 
 

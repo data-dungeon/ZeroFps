@@ -18,7 +18,9 @@ P_Walker::P_Walker()
 	m_fParaTime = -1;
 	m_iTarget = -1;
 	m_fFindNewTargetTime = 0;
+	m_iGoalID = m_pkStopEmUp->GetGoalEnt();
 	
+			
 	//setup life depending on current level and number of players	
 	float fPlayers = m_pkStopEmUp->GetPlayers();
 	float fLevel =  m_pkStopEmUp->GetLevel();
@@ -89,7 +91,18 @@ void P_Walker::Update()
 				if(m_iTarget == -1)
 				{
 					m_fFindNewTargetTime = m_pkZeroFps->GetTicks();
-					m_iTarget = ClosestPlayer();					
+					m_iTarget = ClosestPlayer();
+					
+					//is there a goal,
+					if(m_iGoalID != -1)
+					{
+						if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iTarget))
+						{
+							//if player is farther away than 4 go for the goal
+							if(pkEnt->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 5)
+								m_iTarget = m_iGoalID;						
+						}				
+					}
 				}
 				
 				//folow target				
@@ -118,7 +131,8 @@ void P_Walker::Update()
 				}
 				
 				break;
-			}	
+			}
+
 		}
 	}
 }
@@ -212,7 +226,8 @@ void P_Walker::Damage(int iDmg,int iKiller)
 		m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/walkerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
 		
 		//create bouns
-		CreateBonus();
+		if(iKiller != -1)		
+			CreateBonus();
 		
 		//delete walker
 		m_pkEntityManager->Delete(GetEntity());			
