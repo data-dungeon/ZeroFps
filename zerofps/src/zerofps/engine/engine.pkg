@@ -6,7 +6,11 @@ class Console;
 class ObjectManager;
 class CollisionManager;
 class Camera;
+class SoundBufferManager;
+class OpenAlSystem;
 
+#include "soundbuffermanager.h"
+#include "openalsystem.h"
 #include "camera.h"
 #include "engine_x.h"
 #include "console.h"

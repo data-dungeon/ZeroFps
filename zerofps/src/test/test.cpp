@@ -2,7 +2,7 @@
 #include "walker.h"
 
 
-Test olle("MegaGame",800,600,16);
+Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -111,7 +111,7 @@ void Test::OnInit(void) {
 
 
 	Object *sussi;
-	for(i=0;i<500;i++) {
+	for(i=0;i<100;i++) {
 		sussi=new BunnyObject();
 		float x=300 + rand()%100;
 		float y=750 + rand()%100;
