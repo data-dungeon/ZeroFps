@@ -361,7 +361,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		return true;			
 
 	//no stacking, lets add item here	
-	if(!IsFree(iX,iY,pkItem->m_iSizeX,pkItem->m_iSizeY))
+	if(!IsFree(iX,iY,pkItem->m_iSizeX,pkItem->m_iSizeY,pkItemEnt->GetEntityID()))
 	{
 		cout<<"position not free"<<endl;
 		return false;
@@ -418,7 +418,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	return true;
 }
 
-bool P_Container::IsFree(int iX,int iY,int iW,int iH)
+bool P_Container::IsFree(int iX,int iY,int iW,int iH,int iSelfID)
 {
 	for(int y = iY ;y < iY+iH;y++)
 	{	
@@ -426,7 +426,7 @@ bool P_Container::IsFree(int iX,int iY,int iW,int iH)
 		{
 			if(int* i = GetItem(x,y))
 			{
-				if(*i != -1)
+				if( (*i != -1) && (*i != iSelfID) )
 					return false;
 			}
 			else
@@ -475,13 +475,14 @@ bool P_Container::FindFreePos(P_Item* pkItem,int& iX,int& iY)
 		}
 	}
 		
-		
+			
 	//go trough all possible possitions
+	int iSelfID = pkItem->GetEntity()->GetEntityID();
 	for( int iCY = 0;iCY<m_iSizeY;iCY++)
 	{
 		for( int iCX = 0;iCX<m_iSizeX;iCX++)
 		{
-			if(IsFree(iCX,iCY,iW,iH))
+			if(IsFree(iCX,iCY,iW,iH,iSelfID))
 			{
 				iX = iCX;
 				iY = iCY;

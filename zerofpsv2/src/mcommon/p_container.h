@@ -72,7 +72,7 @@ class MCOMMON_API P_Container: public Property
 		bool StackItem(P_Item* pkItem,int iX,int iY,int iCount);		
 		bool SetItem(P_Item* pkItem,int iX,int iY);
 		void ClearItem(int iID);			
-		bool IsFree(int iX,int iY,int iW,int iH);
+		bool IsFree(int iX,int iY,int iW,int iH,int iSelfID = -1);
 		bool AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount);
 		
 		bool HaveItem(int iID);
