@@ -22,6 +22,7 @@ ZGuiProgressbar::ZGuiProgressbar(Rect kRect, ZGuiWnd* pkParent, bool bVisible, i
 
 	m_eDir = eDir;
 	m_eTextOrient = eTextOrientation;
+	m_eTextType = PBTEXTTYPE_FRACTION;
 
 	m_bShowText = true;
 
@@ -144,12 +145,35 @@ bool ZGuiProgressbar::Render( ZGuiRender* pkRenderer )
 		if(m_strText && strlen(m_strText) > 0)
 			sprintf(text, "%s %i/%i\n", m_strText, m_iPos, m_iMax-m_iMin);
 		else
-			sprintf(text, "%i/%i\n", m_iPos, m_iMax-m_iMin);
+		{
+			switch(m_eTextType)
+			{
+			case PBTEXTTYPE_ONLYPOS:
+				if(m_strText && strlen(m_strText) > 0)
+					sprintf(text, "%s %i", m_strText, m_iPos);
+				else
+				{
+					if(PBDIR_RIGHT_TO_LEFT == m_eDir || PBDIR_BOTTOM_TO_TOP == m_eDir)
+						sprintf(text, "%i", (m_iMax-m_iMin) - m_iPos);
+					else
+						sprintf(text, "%i", m_iPos);
+				}
+				break;
+
+			case PBTEXTTYPE_FRACTION:
+				sprintf(text, "%i/%i\n", m_iPos, m_iMax-m_iMin);
+				break;
+
+			case PBTEXTTYPE_PERCENTAGE:
+				sprintf(text, "%i%", (int)((float)m_iPos/(float)(m_iMax-m_iMin)));
+				break;
+			}
+		}
 		
 		int text_h = m_pkFont->m_iRowHeight;
 		int text_w = m_pkFont->GetLength(text);
 
-		Rect rcTextRect = GetScreenRect();
+		Rect rcTextRect = GetScreenRect();    
 
 		switch(m_eTextOrient)
 		{
@@ -204,6 +228,16 @@ void ZGuiProgressbar::SetTextOrientation(ProgressbarTextOrientation eOrient)
 ProgressbarTextOrientation ZGuiProgressbar::GetTextOrientation()
 {
 	return m_eTextOrient;
+}
+
+void ZGuiProgressbar::SetTextType(ProgressbarTextType eType)
+{
+	m_eTextType = eType;
+}
+
+ProgressbarTextType ZGuiProgressbar::GetTextTextType()
+{
+	return m_eTextType;
 }
 
 void ZGuiProgressbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)

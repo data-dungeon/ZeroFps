@@ -21,7 +21,7 @@ enum GUI_SCRIPT
 	GSF_START,
 };
 
-const int MAX_NUM_BUFF_ICONS = 14;
+const int MAX_NUM_BUFF_ICONS = 32;
 
 
 /**	\brief	Da MistClient

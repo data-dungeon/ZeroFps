@@ -298,7 +298,7 @@ void MistClient::InitBuffWnd()
 		return;
 
 	char szName[25];
-	int x=2, y=0, w=32, h=32;
+	int w=32, h=32, pbh = 8, mrg = 2, x = mrg, y = 0;
 	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
 
 	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
@@ -310,21 +310,25 @@ void MistClient::InitBuffWnd()
 		m_kBuffIcons[i].m_fStartTime = 0;
 		m_kBuffIcons[i].m_fTimeout = 0;
 
-		sprintf(szName, "BuffProgressbar%i", i);
-
-		m_kBuffIcons[i].m_pkProgressBar = (ZGuiProgressbar*) 
-			CreateWnd(Progressbar, szName, "", pkBuffWnd, x, y+h+2, w, 8, 0);
-		m_kBuffIcons[i].m_pkProgressBar->Hide();
-		//m_kBuffIcons[i].m_pkProgressBar->SetFont(
-		g_kMistClient.SetFont(szName, "small7", 255, 255, 255, 0);
-
 		ZGuiSkin* pkSkin = new ZGuiSkin();
 		m_kBuffIcons[i].m_pkWnd->SetSkin(pkSkin);
 
-		y += 42;
-		if(y > pkBuffWnd->GetScreenRect().Height())
+		sprintf(szName, "BuffProgressbar%i", i);
+
+		y += h;
+
+		m_kBuffIcons[i].m_pkProgressBar = (ZGuiProgressbar*) 
+			CreateWnd(Progressbar, szName, "", pkBuffWnd, x, y, w, pbh, 0);
+		m_kBuffIcons[i].m_pkProgressBar->Hide();
+		m_kBuffIcons[i].m_pkProgressBar->SetTextType(PBTEXTTYPE_ONLYPOS); 
+		m_kBuffIcons[i].m_pkProgressBar->SetDir(PBDIR_RIGHT_TO_LEFT); 
+		g_kMistClient.SetFont(szName, "small7", 255, 255, 255, 0);
+
+		y += (pbh + mrg);
+
+		if((y + h) > (int)(float)pkBuffWnd->GetScreenRect().Height() / g_kMistClient.GetScaleY())
 		{
-			x += 34;
+			x += (w + mrg);
 			y = 0;
 		}
 	}
@@ -358,21 +362,15 @@ void MistClient::RebuildBuffIconList(vector<BUFF_ICON_INFO>* kList)
 			m_kBuffIcons[i].m_pkProgressBar->SetRange(0, m_kBuffIcons[i].m_fTimeout);
 
 			m_kBuffIcons[i].m_fTimeLeft = (*kList)[i].m_fTimeLeft;
-			if(m_kBuffIcons[i].m_fTimeLeft == -1) m_kBuffIcons[i].m_fTimeLeft = m_kBuffIcons[i].m_fTimeout;				//ful fix
+			if(m_kBuffIcons[i].m_fTimeLeft == -1) 
+				m_kBuffIcons[i].m_fTimeLeft = m_kBuffIcons[i].m_fTimeout;				//ful fix
 			
-			
-			((ZGuiLabel*)m_kBuffIcons[i].m_pkWnd)->m_eTextAlignment = ZGLA_TopLeft;
-
-	
-			m_kBuffIcons[i].m_pkWnd->GetSkin()->m_iBkTexAlphaID = 
+			m_kBuffIcons[i].m_pkWnd->GetSkin()->m_iBkTexID = 
 				LoadGuiTextureByRes(m_kBuffIcons[i].m_strIcon);	
 				
-			// !!!!!!!!! dvoid hax !!!!!!!!!!!!!!!
 			// visa inte progressbaren om timeout är -1
 			if(m_kBuffIcons[i].m_fTimeout == -1)
 				m_kBuffIcons[i].m_pkProgressBar->Hide();
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
-			
 		}
 		else
 		{
@@ -390,12 +388,9 @@ void MistClient::UpdateBuffIconList()
 	{
 		if(m_kBuffIcons[i].m_fTimeout == -1)
 			continue;
-	
-		//printf("%f - %f - %f\n", m_kBuffIcons[i].m_fStartTime, m_kBuffIcons[i].m_fTimeout, m_pkZeroFps->GetTicks());		
-		//float fProcentAvTime = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) / m_kBuffIcons[i].m_fTimeout;
-		//m_kBuffIcons[i].m_pkProgressBar->SetPos((int)(fProcentAvTime*m_kBuffIcons[i].m_fTimeout));
 		
-		float fDiff = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) + (m_kBuffIcons[i].m_fTimeout - m_kBuffIcons[i].m_fTimeLeft)  ;		
+		float fDiff = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) + 
+			(m_kBuffIcons[i].m_fTimeout - m_kBuffIcons[i].m_fTimeLeft)  ;		
 		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)fDiff);		
 	}
 }

@@ -26,6 +26,13 @@ enum ProgressbarTextOrientation
 	PBTEXTORIENT_UNDER	= 4
 };
 
+enum ProgressbarTextType
+{
+	PBTEXTTYPE_FRACTION = 0,
+	PBTEXTTYPE_PERCENTAGE = 1,
+	PBTEXTTYPE_ONLYPOS = 2,
+};
+
 /** \brief	A Progressbar control (monitors an operation's progress toward completion).
 	 \ingroup Gui
 */
@@ -46,6 +53,9 @@ public:
 
 	void SetTextOrientation(ProgressbarTextOrientation eOrient);
 	ProgressbarTextOrientation GetTextOrientation();
+
+	void SetTextType(ProgressbarTextType eType);
+	ProgressbarTextType GetTextTextType();
 	
 	void SetSkin(ZGuiSkin* pkFront, ZGuiSkin* pkBack);
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
@@ -64,6 +74,7 @@ private:
 
 	ProgressbarDir m_eDir;
 	ProgressbarTextOrientation m_eTextOrient;
+	ProgressbarTextType m_eTextType;
 };
 
 #endif // #ifndef _GUI_ZGUIPROGRESSBAR_H
