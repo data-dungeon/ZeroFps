@@ -15,8 +15,6 @@
 GameScript::GameScript() : ZFScript()
 {
 	OpenPackageFiles();
-
-	printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n");
 }
 
 GameScript::~GameScript()
