@@ -33,10 +33,9 @@ void MadProperty::Update() {
 
 	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
 	int iFrame = fCurrentTime / 0.1;
-	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
 	
+	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
 	pkCore->ClearReplaceTexture();
-	pkCore->SetReplaceTexture("c_pink");
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);

@@ -1,5 +1,9 @@
 #include "console.h"
 #include "../engine/zerofps.h"
+#include <cstdio>
+#include <cstdarg>
+
+using namespace std;
 
 Console::Console(ZeroFps* pkEngine)
   : ZFObject("Console") {
@@ -229,3 +233,19 @@ void Console::Execute(char* aText) {
 }
 
 
+static char format_text[4096];	//
+
+void Console::Printf(const char *fmt, ...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(format_text, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	Print(format_text);
+}

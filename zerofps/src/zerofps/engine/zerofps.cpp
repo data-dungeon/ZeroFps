@@ -75,9 +75,35 @@ void ZeroFps::SetApp() {
 
 
 void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
+	string strArg;
+	for(int i = 0; i < iNrOfArgs; i++) {
+		strArg = string(paArgs[i]);
+		AppArguments.push_back(strArg);
+		}
+
 	cout<<"Nr of arguments: "<<iNrOfArgs<<endl;
+	for(int ia = 0; ia < iNrOfArgs; ia++) {
+		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
+		}
 
 }
+
+int	ZeroFps::NumberOfArgs(void)
+{
+	return AppArguments.size();
+}
+
+string ZeroFps::GetArg(int iArgIndex)
+{
+	string strArg("");
+	if(iArgIndex < 0 || iArgIndex >= AppArguments.size())
+		return strArg;
+
+	strArg = AppArguments[iArgIndex];
+	return strArg;
+}
+
+
 
 void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
@@ -292,7 +318,7 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 
 
 
-int ZeroFps::LoadMAD(char* filename)
+int ZeroFps::LoadMAD(const char* filename)
 {
 	int iMadId = GetMADIndex(filename);
 
@@ -312,7 +338,7 @@ void ZeroFps::ClearMAD(void)
 	akCoreModells.clear();
 }
 
-int ZeroFps::GetMADIndex(char* filename)
+int ZeroFps::GetMADIndex(const char* filename)
 {
 	for(int i=0; i < akCoreModells.size(); i++)
 	{
@@ -323,7 +349,7 @@ int ZeroFps::GetMADIndex(char* filename)
 	return -1;
 }
 
-Core* ZeroFps::GetMADPtr(char* filename)
+Core* ZeroFps::GetMADPtr(const char* filename)
 {
 	int iMadId = LoadMAD(filename);
 

@@ -129,7 +129,7 @@ public:
 	void	ClearReplaceTexture(void);
 	void	SetReplaceTexture(char* szFileName);
 	
-	void Load(char* MadFileName);
+	void Load(const char* MadFileName);
 
 
 	void SetFrameI(int iFrame);

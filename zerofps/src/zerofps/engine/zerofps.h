@@ -9,6 +9,8 @@
 #include "engine.pkg"
 #include "../ogl/zfpsgl.h"
 #include "propertyfactory.h"
+#include <string>
+#include <vector>
 
 
 using namespace std;
@@ -39,6 +41,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Camera *m_pkGameCamera;		
 		Camera *m_pkDefaultCamera;
 	
+		vector<string>	AppArguments;
 
 	public:
 		Application* m_pkApp;						//application
@@ -55,10 +58,10 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		vector<Core>		akCoreModells;
 		
-		int LoadMAD(char* filename);
+		int LoadMAD(const char* filename);
 		void ClearMAD(void);
-		int GetMADIndex(char* filename);
-		Core* GetMADPtr(char* filename);
+		int GetMADIndex(const char* filename);
+		Core* GetMADPtr(const char* filename);
 
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS
@@ -99,6 +102,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 //		inline void SetConsoleCam(Camera* pkCamera) {m_pkConsoleCamera=pkCamera;};
 
 		PropertyFactory	m_kPropertyFactory;
+
+		int	NumberOfArgs(void);	// Return num of arg to app.
+		string GetArg(int iArgIndex);
 };
 
 

@@ -36,6 +36,7 @@ class ENGINE_API Console : public ZFObject {
 		void Update(void);
 //		void Draw(void);
 		void Execute(char* aText);
+		void Printf(const char *fmt, ...);
 };
 
 

@@ -22,7 +22,7 @@ Core::~Core()
 		delete [] pakFaces;
 }
 
-void Core::Load(char* MadFileName)
+void Core::Load(const char* MadFileName)
 {
 	int i;
 
