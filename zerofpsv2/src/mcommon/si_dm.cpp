@@ -57,6 +57,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	
 	// item stuff
 	pkScript->ExposeFunction("AddItem", DMLua::AddItemLua);
+	pkScript->ExposeFunction("GetWeaponRange", DMLua::GetWeaponRangeLua);
 	pkScript->ExposeFunction("GetItemByName", DMLua::GetItemByNameLua);
 
 	// character behaviours
@@ -1166,6 +1167,7 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 // 0 = HQ
 // 1 = Hospital
 // 2 = Polisstation
+// 3 = Harrys' house
 int DMLua::GetDMObjectLua(lua_State* pkLua)
 {
 	double dObjectType = -1;
@@ -1211,7 +1213,23 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 					}
 				}				
 				break;
+			case 3: // harrys' house
+				for ( i = 0; i < kObjs.size(); i++ )
+				{
+					P_DMClickMe* pkProperty = (P_DMClickMe*)kObjs[i]->GetProperty("P_DMClickMe");
+					if(pkProperty)
+					{
+						string strEntName = kObjs[i]->GetName();
 
+						// Kolla om det är ett sjukhus genom att titta på objektets namn
+						if( strEntName.find("t_door_harrys_house") != string::npos)
+						{
+							dEntID = (double)kObjs[i]->GetEntityID();
+							break;
+						}
+					}
+				}				
+				break;
 			case 2: // Polisstation
 				for ( i = 0; i < kObjs.size(); i++ )
 				{
@@ -1330,6 +1348,8 @@ int DMLua::AddItemLua(lua_State* pkLua)
 
 	return 0;
 }
+
+// ------------------------------------------------------------------------------------------------
 
 //
 // takes a item name (P_DMItem : name) and returns the Entity ID value for it

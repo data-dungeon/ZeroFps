@@ -55,6 +55,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// object orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
+	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
 
    // rotation functions
    pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
@@ -556,6 +557,35 @@ int SISetHeartRateLua(lua_State* pkLua)
 	return 0;
 }
 
+// takes objectID, objectID
+int DistanceToLua(lua_State* pkLua)
+{
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs != 2)
+	{
+		printf("Script function SetObjectPosLua failed! Expects 2 arguments.\n");
+		return 0;
+	}
+
+	double dID1, dID2;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID1);
+	g_pkScript->GetArgNumber(pkLua, 1, &dID2);
+
+	Entity* pkObject1 = g_pkObjMan->GetObjectByNetWorkID((int)dID1);
+	Entity* pkObject2 = g_pkObjMan->GetObjectByNetWorkID((int)dID2);
+
+	if( pkObject1 != 0 && pkObject2!= 0 )
+	{
+		double dDistance = pkObject1->GetWorldPosV().DistanceTo(pkObject2->GetWorldPosV());
+		g_pkScript->AddReturnValue(pkLua, dDistance);
+
+		return 1;
+	}
+
+	g_pkScript->AddReturnValue(pkLua, 999999);
+
+	return 1;
 }
 
-
+}

@@ -723,6 +723,9 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 
 void P_DMCharacter::ChangeState (int iState)
 {
+	if ( m_iState == iState )
+		return;
+
 	m_iState = iState;
 
 	// if went to panic state, run script function
@@ -755,9 +758,20 @@ void P_DMCharacter::DropAllItems()
 	m_pkImplants->DropAll();
 }
 
+int P_DMCharacter::GetGun()
+{
+	vector<ContainerInfo> kItems;
+
+	m_pkHand->GetItemList ( &kItems );
+
+	if ( kItems.size() )
+		return kItems.at(0).m_iItemID;
+	else
+		return 0;
+}
+
 Property* Create_P_DMCharacter()
 {
 	return new P_DMCharacter;
 }
-
 

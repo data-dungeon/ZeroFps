@@ -81,33 +81,34 @@ function HeartBeat()
 
 	-- Spela upp en liten kommentar då och då när personen står still och inte har blivit skadad
 	if Random(100) > 75 and Life == prev_life then
-
-		talk_sound = 
-		{
-		  "citizen_woman/talking/forgive me your highness, I did not see you2.wav",
-		  "citizen_woman/talking/forgive me your highness, I did not see you3.wav",
-		  "citizen_woman/talking/forgive me your highness, I did not see you.wav",
-		  "citizen_woman/talking/hello there mr nice guy!.wav",
-
-		  "citizen_woman/talking/i'm a dancer2.wav",
-		  "citizen_woman/talking/i'm a dancer3.wav",
-		  "citizen_woman/talking/i'm a dancer.wav",
-		  "citizen_woman/talking/so what do you like to do2.wav",
+		if GetState (SIGetSelfID()) == 0 then
+			talk_sound = 
+			{
+			  "citizen_woman/talking/forgive me your highness, I did not see you2.wav",
+			  "citizen_woman/talking/forgive me your highness, I did not see you3.wav",
+			  "citizen_woman/talking/forgive me your highness, I did not see you.wav",
+			  "citizen_woman/talking/hello there mr nice guy!.wav",
+	
+			  "citizen_woman/talking/i'm a dancer2.wav",
+			  "citizen_woman/talking/i'm a dancer3.wav",
+			  "citizen_woman/talking/i'm a dancer.wav",
+			  "citizen_woman/talking/so what do you like to do2.wav",
+			  
+			  "citizen_woman/talking/so what do you like to do.wav",
+			  "citizen_woman/talking/well hello there mr nice guy.wav",
+			  "citizen_woman/talking/well, you know2.wav",
+			  "citizen_woman/talking/well, you know.wav",
+			  
+			  "citizen_woman/talking/what do you do for a living2.wav",
+			  "citizen_woman/talking/what do you do for a living3.wav",
+			  "citizen_woman/talking/what do you do for a living.wav",
+			  "citizen_woman/talking/you married2.wav",
 		  
-		  "citizen_woman/talking/so what do you like to do.wav",
-		  "citizen_woman/talking/well hello there mr nice guy.wav",
-		  "citizen_woman/talking/well, you know2.wav",
-		  "citizen_woman/talking/well, you know.wav",
-		  
-		  "citizen_woman/talking/what do you do for a living2.wav",
-		  "citizen_woman/talking/what do you do for a living3.wav",
-		  "citizen_woman/talking/what do you do for a living.wav",
-		  "citizen_woman/talking/you married2.wav",
-		  
-		  "citizen_woman/talking/you married.wav",
-		}
-		
-		PlaySound (SIGetSelfID(), talk_sound[Random(17)+1] );
+			  "citizen_woman/talking/you married.wav",
+			}
+			
+			PlaySound (SIGetSelfID(), talk_sound[Random(17)+1] );
+		end
 	end
 
 end

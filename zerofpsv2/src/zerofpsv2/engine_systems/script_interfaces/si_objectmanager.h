@@ -61,9 +61,11 @@ namespace ObjectManagerLua
 	// Orientation
 	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
 
    // Rotation
    int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
+
 	
 	
 	// Common used functions , used together whit P_ScriptInterface

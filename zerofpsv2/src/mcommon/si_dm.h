@@ -58,6 +58,8 @@ namespace DMLua
 	int MCOMMON_API SetCharStatsLua(lua_State* pkLua);
 	int MCOMMON_API GetStateLua(lua_State* pkLua);
 	int MCOMMON_API SetStateLua(lua_State* pkLua);
+	int MCOMMON_API GetWeaponRangeLua(lua_State* pkLua);
+
 
 	// items
 	int MCOMMON_API AddItemLua(lua_State* pkLua);

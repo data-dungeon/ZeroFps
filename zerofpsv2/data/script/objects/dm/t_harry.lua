@@ -2,13 +2,14 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/citizen_man.mad");			
+			InitParameter("m_kMadFile","/data/mad/dm/harry.mad");			
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
+		InitProperty("P_Track");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
-			InitParameter("team",1)
+			InitParameter("team",4)
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 
@@ -16,15 +17,17 @@ end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
-	SetEntityVar(SIGetSelfID(), "g_CitizenManLife", Life)
+	SetEntityVar(SIGetSelfID(), "g_HarryLife", Life)
 end
 
 function Init()
-	SetMoveSpeed (SIGetSelfID(), 2.6);
-	SetTeam (SIGetSelfID(), 1);
+	SetMoveSpeed (SIGetSelfID(), 2.4);
+	SetTeam (SIGetSelfID(), 4);
+	SetState(SIGetSelfID(), 0);
 
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/help.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/have you lost your mind, dude.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/god damn! stop that, mr. military guy!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/do you want this jacket, take it2!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/listen crazy man, I can give you money!!!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/oh my god!.wav");
@@ -34,26 +37,22 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo2.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/I'm not afraid! I'm going to a world where anything is possible!.wav");
+
+	AddItem(SIGetSelfID(), "data/script/objects/dm/t_shotgun.lua", 1);
 end
 
-function Exit()
-	PlayAnim(SIGetSelfID(), "open");
-	SetNextAnim(SIGetSelfID(), "idle");
-end
 
 function HeartBeat()
 
 	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_CitizenManLife")
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_HarryLife")
 
-	-- Ropa på hjälp om han har blivit skadad igen.
 	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		CallForHelp(SIGetSelfID(), 1)
-		Panic();
+		SetState (SIGetSelfID(), 4); --agro
 	end
 
 	-- Registrera nuvarande liv
-	SetEntityVar(SIGetSelfID(), "g_CitizenManLife", Life)
+	SetEntityVar(SIGetSelfID(), "g_HarryLife", Life)
 
 	if HavePath(SIGetSelfID()) == 1 then
 		return
@@ -68,6 +67,61 @@ function HeartBeat()
 	
 		return
 	end
+
+	State = GetState(SIGetSelfID());
+
+
+	if State == 4 then
+		Aggro();
+	end
+
+	if State == 0 then
+		Idle();
+	end
+	
+
+
+end
+
+function Dead()
+	PlayAnim(SIGetSelfID(), "die");
+	SetNextAnim(SIGetSelfID(), "dead");
+	ClearPathFind(SIGetSelfID());
+	SetEntityVar(SIGetSelfID(), "deadtime", 0);
+
+	PanicArea (SIGetSelfID(), 13);
+
+	RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
+	RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
+	RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
+
+	SISetHeartRate(SIGetSelfID(),-1);
+end
+
+function Aggro()
+	local closest_agent = GetDMCharacterClosest(SIGetSelfID())
+
+	if closest_agent == -1 then
+		SetState(SIGetSelfID(),0) -- set Idle
+		return
+	end
+
+	-- Close enough?
+	range = DistanceTo(closest_agent, SIGetSelfID());
+
+	if range < GetWeaponRange(SIGetSelfID()) then
+		FireAtObject(SIGetSelfID(), closest_agent)
+	else
+		agent_pos = GetEntityPos(closest_agent);
+		agent_pos[1] = agent_pos[1] + Random(4)-2;
+		agent_pos[3] = agent_pos[3] + Random(4)-2;
+		MakePathFind(SIGetSelfID(),agent_pos);
+	end	
+end
+
+
+function Idle()
+	Print ("MEIdle");
 
 	local pos = GetObjectPos(SIGetSelfID());
 	pos[1] = pos[1] + Random(20)-10;
@@ -89,29 +143,11 @@ function HeartBeat()
 			PlaySound (SIGetSelfID(), talk_sound[Random(4)+1] );
 		end
 	end
-
-end
-
-function Dead()
-	PlayAnim(SIGetSelfID(), "die");
-	SetNextAnim(SIGetSelfID(), "dead");
-	ClearPathFind(SIGetSelfID());
-	SetEntityVar(SIGetSelfID(), "deadtime", 0);
-
-	PanicArea (SIGetSelfID(), 13);
-
-	if Random(10) < 4 then
-		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
-	end
-
-	SISetHeartRate(SIGetSelfID(),-1);
 end
 
 function Panic()
-	SetMoveSpeed (SIGetSelfID(), 5);
+	SetMoveSpeed (SIGetSelfID(), 7);
 	SetRunAnim (SIGetSelfID(), "panic");
 	SetIdleAnim (SIGetSelfID(), "panic_idle");	
 	PlayAnim(SIGetSelfID(), "panic_idle");
-	ClearPathFind(SIGetSelfID());
-	SISetHeartRate(SIGetSelfID(),2);
 end

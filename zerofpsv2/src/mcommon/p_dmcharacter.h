@@ -135,6 +135,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		// XP
 		void AddXP(int iXP);
 
+		int GetGun ();
+
 		
 		void Init();		
 		void Update();		

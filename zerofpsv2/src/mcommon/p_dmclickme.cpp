@@ -26,6 +26,8 @@ void P_DMClickMe::Init()
 
 void P_DMClickMe::Update()
 {
+	m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
+
 	for ( list<Visiter>::iterator kIte = m_kVisiters.begin(); kIte != m_kVisiters.end(); kIte++ )
 	{
 		(*kIte).m_fVisitTime -= m_pkObject->m_pkZeroFps->GetFrameTime();

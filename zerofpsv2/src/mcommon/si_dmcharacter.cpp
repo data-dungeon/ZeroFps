@@ -1,5 +1,6 @@
 #include "si_dm.h"
 #include "p_dmcharacter.h"
+#include "p_dmgun.h"
 #include "p_dmgameinfo.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
@@ -151,7 +152,7 @@ int DMLua::IsDeadLua(lua_State* pkLua)
 
 // ------------------------------------------------------------------------------------------------
 
-// takes a entityID and returns true if that character is dead
+// takes a entityID and returns character state (0=idle, 1=dead, 2=crouch, 3=panic, 4=agressive)
 int DMLua::GetStateLua(lua_State* pkLua)
 {
 	Entity* pkEntity = TestScriptInput (1, pkLua);
@@ -649,6 +650,55 @@ int DMLua::GetCharStatsLua(lua_State* pkLua)
 }
 
 // ------------------------------------------------------------------------------------------------
+
+int DMLua::GetWeaponRangeLua(lua_State* pkLua)
+{
+	if ( g_pkScript->GetNumArgs(pkLua) != 1 )
+	{
+		cout << "Warning! DMLua::GetWeaponRangeLua: Wrong number of arguments! Takes ID" << endl;
+		return 0;
+	}
+	
+	double dEntID;
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
+
+	Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) );
+
+	if ( pkEntity == 0 )
+	{
+		cout << "Warning! DMLua::GetWeaponRangeLua: no object with ID found." << endl;
+		return 0;
+	}
+
+	P_DMGun* pkGun = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGun )
+	{		
+		g_pkScript->AddReturnValue(pkLua, double(pkGun->Range()));
+		return 1;
+	}
+
+	if ( P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter") )
+	{
+		int iGunID = pkChar->GetGun();
+
+		if ( iGunID != 0 )
+		{
+			pkEntity = g_pkObjMan->GetObjectByNetWorkID( iGunID );
+			if ( pkEntity )
+			{		
+				g_pkScript->AddReturnValue(pkLua, double(((P_DMGun*)pkEntity->GetProperty("P_DMGun"))->Range()));
+				return 1;
+			}
+		}		
+	}
+
+
+	return 0;
+}
+
+// ---------------------------------------------------------------------------------------------
 
 // Takes a entityID, a type of stats value (a), and a stats value (b).
 // (a)	(ie. varible)
