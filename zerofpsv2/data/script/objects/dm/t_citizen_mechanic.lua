@@ -35,7 +35,7 @@ end
 
 function HeartBeat()
 
-	if HavePath(SIGetSelfID()) then
+	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
 
@@ -61,6 +61,7 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
+	PlaySound (SIGetSelfID(), "death/DEATH2.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
 	if Random(10) < 3 then

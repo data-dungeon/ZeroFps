@@ -24,7 +24,7 @@ end
 
 function HeartBeat()
 
-	if HavePath(SIGetSelfID()) then
+	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
 

@@ -19,12 +19,12 @@ function FirstRun()
 end
 
 function Init()
-	SetMoveSpeed (SIGetSelfID(), 3);
+	SetMoveSpeed (SIGetSelfID(), 2.7);
 end
 
 function HeartBeat()
 
-	if HavePath(SIGetSelfID()) then
+	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
 
@@ -50,7 +50,7 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
-	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
+	PlaySound (SIGetSelfID(), "death/DEATH7.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
 	if Random(10) < 4 then
