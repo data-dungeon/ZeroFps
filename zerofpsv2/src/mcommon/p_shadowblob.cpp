@@ -64,15 +64,50 @@ void P_ShadowBlob::Init()
 
 }
 
+void P_ShadowBlob::Save(ZFIoInterface* pkPackage)
+{	
+
+	pkPackage->Write(&m_kOffset,sizeof(m_kOffset),1);
+	pkPackage->Write(&m_kScale,sizeof(m_kScale),1);
+	pkPackage->Write(&m_bHaveSet,sizeof(m_bHaveSet),1);
+
+
+}
+
+void P_ShadowBlob::Load(ZFIoInterface* pkPackage)
+{
+	pkPackage->Read(&m_kOffset,sizeof(m_kOffset),1);		
+	pkPackage->Read(&m_kScale,sizeof(m_kScale),1);		
+	pkPackage->Read(&m_bHaveSet,sizeof(m_bHaveSet),1);		
+	
+}
+
 
 vector<PropertyValues> P_ShadowBlob::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(0);
+	vector<PropertyValues> kReturn(1);
 		
+	kReturn[0].kValueName = "scale";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = NULL;
+
 
 	return kReturn;
 }
 
+bool P_ShadowBlob::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "scale") == 0) 
+	{
+		float fScale = atof(kValue.c_str());	
+		m_kScale.Set(fScale,fScale,fScale);
+		
+		m_bHaveSet = true;
+		return true;
+	}
+	
+	return false;
+}
 
 Property* Create_P_ShadowBlob()
 {

@@ -89,9 +89,9 @@ void DarkMetropolis::OnInit()
 	
 	
 	//setup default lightsource
-	m_kSun.kRot = Vector3(1,2,1);
-	m_kSun.kDiffuse=Vector4(1,1,1,0);
-	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
+	m_kSun.kRot = Vector3(0.5,0.5,0);
+	m_kSun.kDiffuse=Vector4(0.9,0.9,0.7,0);
+	m_kSun.kAmbient=Vector4(2.4,2.0,2.0,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
 	m_kSun.iPriority=10;
 	m_kSun.fConst_Atten=1;

@@ -17,7 +17,7 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		Render*	m_pkRender;
 		
 		vector<PropertyValues> GetPropertyValues();
-	
+		bool HandleSetValue( string kValueName ,string kValue );			
 		
 		ZFResourceHandle* m_pkTexture;
 		
@@ -37,9 +37,10 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		
 		
 			
-//		void Save(ZFIoInterface* pkPackage);
-//		void Load(ZFIoInterface* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
+
 };
 
 MCOMMON_API Property* Create_P_ShadowBlob();
