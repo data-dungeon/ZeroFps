@@ -225,6 +225,8 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 
 				int index = ((int*)pkParams)[1];
 
+				//m_pkEdit->pkFps->DevPrint_Show(true);
+
 				switch(index)
 				{
 				case IDM_CLOSE:

@@ -58,10 +58,6 @@ bool GLGuiRender::StartRender()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-	glEnable(GL_BLEND);	
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(GL_FALSE);	
 		
 	return true;
 }
@@ -76,9 +72,6 @@ bool GLGuiRender::EndRender()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-
-	glDepthMask(GL_TRUE);
-	glDisable(GL_BLEND);
 	
 	return true;
 }
