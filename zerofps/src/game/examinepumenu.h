@@ -20,7 +20,7 @@ public:
 	char* GetUseString(int index);
 	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
 	void SetItemProperty(ItemProperty* pkItemProp);
-	ExaminePUMenu(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan);
+	ExaminePUMenu(ZGui* pkGui, Input* pkInput, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan);
 	virtual ~ExaminePUMenu();
 
 	bool Create(int x, int y, char* szResourceFile, char* szDlgName);

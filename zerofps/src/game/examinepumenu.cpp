@@ -17,9 +17,10 @@ ZGuiSkin* ExaminePUMenu::s_pkSkinItemHighLight = NULL;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ExaminePUMenu::ExaminePUMenu(ZGui* pkGui, ZGuiWndProc oMainWndProc, 
+ExaminePUMenu::ExaminePUMenu(ZGui* pkGui, Input* pkInput, 
+							 ZGuiWndProc oMainWndProc, 
 							 TextureManager* pkTexMan) 
-	:	DlgBox(pkGui, oMainWndProc)
+	:	DlgBox(pkGui, pkInput, oMainWndProc)
 {
 	m_kListbox = NULL;
 	m_pkItemProperty = NULL;
@@ -122,8 +123,7 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 		m_pkDlgBox->SetPos(x,y,true,true);
 	}
 
-	m_pkGui->ShowCursor(true,m_pkDlgBox->GetScreenRect().Left,
-		m_pkDlgBox->GetScreenRect().Top);
+	CenterCursor();
 
 	return true;
 }
@@ -150,7 +150,7 @@ bool ExaminePUMenu::OnClose(bool bSave)
 
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 
-	m_pkGui->ShowCursor(false);
+//	m_pkGui->ShowCursor(false);
 
 	KillFocus();
 

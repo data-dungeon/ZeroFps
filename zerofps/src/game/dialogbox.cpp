@@ -8,9 +8,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //
-DlgBox::DlgBox(ZGui* pkGui, ZGuiWndProc oMainWndProc)
+DlgBox::DlgBox(ZGui* pkGui, Input* pkInput, ZGuiWndProc oMainWndProc)
 {
 	m_pkGui = pkGui;
+	m_pkInput = pkInput;
 	m_pkGuiMan = m_pkGui->GetResMan();
 	m_oMainWndProc = oMainWndProc;
 }
@@ -43,12 +44,11 @@ void DlgBox::SetPos(int x, int y)
 	m_pkDlgBox->SetPos(x,y,true,true);
 }
 
-void DlgBox::CenterCursor(Input* pkInput)
+void DlgBox::CenterCursor()
 {
 	int mx = m_pkDlgBox->GetScreenRect().Left + m_pkDlgBox->GetScreenRect().Width() / 2;
 	int my = m_pkDlgBox->GetScreenRect().Top + m_pkDlgBox->GetScreenRect().Height() / 2;
-	m_pkGui->ShowCursor(true,mx,my);
-	pkInput->SetCursorInputPos(mx,my);
+	m_pkInput->SetCursorInputPos(mx,my);
 }
 
 void DlgBox::KillFocus()

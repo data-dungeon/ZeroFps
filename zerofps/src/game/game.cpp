@@ -262,40 +262,18 @@ void Game::Input()
 	case KEY_I:
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
-		{
 			m_pkPlayerInventoryBox->OnOpen(-1,-1); 
-		}
 		else
-		{
 			m_pkPlayerInventoryBox->OnClose(false);
-		}
 		break;
 
 	case KEY_ESCAPE:
 	
 		if(m_pkExamineMenu->IsOpen())
-		{
 			m_pkExamineMenu->OnClose(false);
-		}
 
 		if(m_pkPlayerInventoryBox->IsOpen())
-		{
 			m_pkPlayerInventoryBox->OnClose(false);
-		}
-		break;
-
-	case KEY_O:
-
-		int x = m_iWidth - m_pkContainerBox->Width();
-
-		if(m_pkContainerBox->IsOpen() == false)
-		{
-			m_pkContainerBox->OnOpen(x,0); 
-		}
-		else
-		{
-			m_pkContainerBox->OnClose(false);
-		}
 		break;
 	}
 }
@@ -468,7 +446,7 @@ void Game::InitGui()
 		"ContainerWnd");
 
 	// Create examine menu
-	m_pkExamineMenu = new ExaminePUMenu(pkGui, EXAMINE_BOXPROC, pkTexMan);
+	m_pkExamineMenu = new ExaminePUMenu(pkGui, pkInput, EXAMINE_BOXPROC, pkTexMan);
 	m_pkExamineMenu->Create(0,0,NULL,NULL);
 	
 	pkFps->m_bGuiTakeControl = false;
@@ -524,13 +502,15 @@ void Game::PlayerExamineObject()
 	}
 }
 
-void Game::LockPlayerCamera(bool bTrue)
+void Game::LockPlayerCamera(bool bLock)
 {
 	PlayerControlProperty* m_pkPlayerCtrl = static_cast<PlayerControlProperty*>
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
 	if(m_pkPlayerCtrl)
-		m_pkPlayerCtrl->m_bLockCamera = bTrue;
+		m_pkPlayerCtrl->m_bLockCamera = bLock;
+
+	pkGui->ShowCursor(bLock);
 }
 
 void Game::OpenContainer()

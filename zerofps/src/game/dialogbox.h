@@ -19,7 +19,7 @@ public:
 	
 	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
 	
-	DlgBox(ZGui* pkGui, ZGuiWndProc oMainWndProc);
+	DlgBox(ZGui* pkGui, Input* pkInput, ZGuiWndProc oMainWndProc);
 	virtual ~DlgBox();
 
 	virtual bool Create(int x, int y, char* szResourceFile, char* szDlgName)=0;
@@ -30,12 +30,13 @@ protected:
 
 	virtual bool OnOpen(int x=-1, int y=-1) = 0;
 	virtual bool OnClose(bool bSave) = 0;
-	void CenterCursor(Input* pkInput);
+	void CenterCursor();
 
 	ZGuiResourceManager* m_pkGuiMan;
 	ZGui* m_pkGui;
 	ZGuiWnd* m_pkDlgBox;
 	ZGuiWndProc m_oMainWndProc;
+	Input* m_pkInput;
 };
 
 #endif // #ifndef _DLGBOX_H
