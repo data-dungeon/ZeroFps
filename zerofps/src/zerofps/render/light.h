@@ -17,29 +17,32 @@ enum LIGHT_TYPE {
 };
 
 
-struct LightSource {
-	//position and rotation
-	Vector3 *kPos;	
-	Vector3 *kRot;
-	Vector3 kConstPos;
-	Vector3 kConstRot;
+class LightSource {
+	public:
+		LightSource();
 	
-	//light color
-	Vector4 kDiffuse;
-	Vector4 kAmbient;
-	Vector4 kSpecular;
+		//position and rotation
+		Vector3 *kPos;	
+		Vector3 *kRot;
+		Vector3 kConstPos;
+		Vector3 kConstRot;
 	
-	//spotlight
-	float fCutoff;
-	float fExp;
+		//light color
+		Vector4 kDiffuse;
+		Vector4 kAmbient;
+		Vector4 kSpecular;
 	
-	//distance attenuation 
-	float fConst_Atten;
-	float fLinear_Atten;
-	float fQuadratic_Atten;
+		//spotlight
+		float fCutoff;
+		float fExp;
 	
-	int iType;
-	int iPriority;
+		//distance attenuation 
+		float fConst_Atten;
+		float fLinear_Atten;
+		float fQuadratic_Atten;
+	
+		int iType;
+		int iPriority;
 };
 
 

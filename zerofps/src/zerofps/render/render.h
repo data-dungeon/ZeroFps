@@ -44,7 +44,6 @@ class RENDER_API Render {
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
-		void Pyra(float x,float y,float z);
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
 		void SetFont(char* aFont);

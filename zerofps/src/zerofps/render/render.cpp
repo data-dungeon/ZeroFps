@@ -39,64 +39,7 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glPopMatrix();
 }
 
-void Render::Pyra(float x,float y,float z) {
-//		glDepthMask(GL_FALSE);
-		GLfloat mat_specular[]={1,1,1,1};
-		GLfloat mat_shininess[]={10};
-		GLfloat mat_ambient[]={1,0,0,0};
-  	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-	  glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-	  glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
-
-		glPushMatrix();
-		glTranslatef(x,y,z);
-// 		glRotatef(i*1, 0.0, 0.1, 0.0);
-
-//		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-		glBegin(GL_TRIANGLES);				// start drawing a polygon
-			glColor4f(0,0,0,1.0);
-
-			glNormal3f(0.0,0.5,0.5);
-			glColor3f(1.0,0.0,0.0);
-			glVertex3f( 0.0f, .5f, 0.0f);		// Top
-			glColor3f(0.0,1.0,0.0);
-			glVertex3f( 0.5f,-.5f, .5f);		// Bottom Right
-			glColor3f(0.0,0.0,1.0);
-			glVertex3f(-.5f,-.5f,.5f);		// Bottom Left
-
-
-			glNormal3f(0.5,0.5,0.0);
-			glColor3f(1.0,0.0,0.0);
-			glVertex3f( 0.0f, .5f, 0.0f);		// Top
-			glColor3f(0.0,1.0,0.0);
-			glVertex3f( .5f,-.5f, .5f);		// Bottom Right
-			glColor3f(0.0,0.0,1.0);
-			glVertex3f(.5f,-.5f, -.5f);		// Bottom Left
-
-			glNormal3f(0.0,0.5,-0.5);
-			glColor3f(1.0,0.0,0.0);
-			glVertex3f( 0.0f, .5f, 0.0f);		// Top
-			glColor3f(0.0,0.0,1.0);
-			glVertex3f( .5f,-.5f, -.5f);		// Bottom Right
-			glColor3f(0.0,1.0,0.0);
-			glVertex3f(-.5f,-.5f, -.5f);		// Bottom Left
-
-			glNormal3f(-0.5,0.5,0.0);
-		  glColor3f(1.0,0.0,0.0);
-			glVertex3f( 0.0f, .5f, 0.0f);		// Top
-			glColor3f(0.0,1.0,0.0);
-			glVertex3f(-.5f,-.5f, -.5f);		// Bottom Right
-			glColor3f(0.0,0.0,1.0);
-			glVertex3f(-.5f,-.5f, .5f);		// Bottom Left
-
-		glEnd();					// we're done with the polygon
-		glPopMatrix();
-//		glDepthMask(GL_TRUE);
-}
-
 void Render::PrintChar(char cChar) {
-//	cout<<"CHAR: "<<cChar<<endl;
-	
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
 	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
@@ -106,11 +49,11 @@ void Render::PrintChar(char cChar) {
 	float x=float(pos%texwidth)*glu;//+width/2;
 	
 	
-//	cout<<"Att texture position:"<<pos<<" "<<x<<" "<<y<<endl;
-	
-	glDepthMask(GL_FALSE);	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ALPHA); 		
+	glPushAttrib(GL_LIGHTING_BIT);
+	glDisable(GL_LIGHTING);
+	glAlphaFunc(GL_GREATER,0.1);
+	glEnable(GL_ALPHA_TEST);
+ 	
  	m_pkTexMan->BindTexture(aCurentFont,0);  
 
 	glPushMatrix();
@@ -125,22 +68,10 @@ void Render::PrintChar(char cChar) {
 	glEnd();				
 	glPopMatrix();
 	
-//	m_pkTexMan->BindTexture(0);
 	
-/*	char aTexture[255]="data/textures/text/ .bmp";
-		
-	aTexture[19]=cChar;
-				
-	if(cChar=='+')			
-		strcpy(aTexture,"data/textures/text/plus.bmp");
-	if(cChar=='-')			
-		strcpy(aTexture,"data/textures/text/minus.bmp");	
-		
-				
-	if(aTexture[19]!=' ')
-		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));*/
+	glDisable(GL_ALPHA_TEST);
 
-
+	glPopAttrib();
 }
 
 void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {

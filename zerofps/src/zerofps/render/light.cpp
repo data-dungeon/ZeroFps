@@ -1,5 +1,31 @@
 #include "light.h"
 
+LightSource::LightSource() {
+//cout<<"new light"<<endl;
+	//position and rotation
+	kPos=NULL;
+	kRot=NULL;
+	kConstPos=Vector3(0,0,0);
+	kConstRot=Vector3(0,0,0);
+	
+		//light color
+	kDiffuse=Vector4(1,1,1,1);
+	kAmbient=Vector4(0,0,0,0);
+	kSpecular=Vector4(0,0,0,0);
+	
+	//spotlight
+	fCutoff=20;
+	fExp=20;
+	
+		//distance attenuation 
+	fConst_Atten=1;
+	fLinear_Atten=0;
+	fQuadratic_Atten=0;
+
+	iType=POINT_LIGHT;
+	iPriority=0;
+}
+
 Light::Light() {
 	m_iNrOfLights=8;
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);

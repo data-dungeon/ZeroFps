@@ -53,9 +53,12 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-//				m_pkApp->OnHud();									
+			
+
+				m_pkApp->OnHud();									
 
 				Camera();
+				m_pkLight->Update();				
 				m_pkRender->GetFrustum();															
 				m_pkApp->OnIdle();				
 				

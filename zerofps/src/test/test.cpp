@@ -49,57 +49,41 @@ void Test::OnInit(void) {
 	
 	pkLight->SetCamera(pkFps->m_kCamPos);
 	
-	LightSource *spot=new LightSource;
-	Vector3 *spotpos=new Vector3(50,33,50);
-	Vector3 *spotrot=new Vector3(0,-1,0);	
+	LightSource *spot=new LightSource();
+	Vector3 *spotpos=new Vector3(50,15,50);
+	Vector3 *spotrot=new Vector3(.8,-.2,0);	
 		spot->kPos=spotpos;
 		spot->kRot=spotrot;
-		spot->kConstPos=Vector3(0,0,0);
-		spot->kConstRot=Vector3(0,0,0);		
-		spot->kDiffuse=Vector4(2,2,1,1);
-		spot->kAmbient=Vector4(0,0,0,0);
-		spot->kSpecular=Vector4(0,0,0,0);
+		spot->kDiffuse=Vector4(0,0,8,1);
 		spot->fCutoff=20;	
 		spot->fExp=20;
-		spot->fConst_Atten=1;
-		spot->fLinear_Atten=0;
+		spot->fConst_Atten=0;
 		spot->fQuadratic_Atten=0.001;
 		spot->iType=SPOT_LIGHT;			
-		spot->iPriority=0;
 
-	LightSource *spot2=new LightSource;
-	Vector3 *spotpos2=new Vector3(50,33,70);
-	Vector3 *spotrot2=new Vector3(0,-1,0);	
+	LightSource *spot2=new LightSource();
+	Vector3 *spotpos2=new Vector3(370,100,420);
+	Vector3 *spotrot2=new Vector3(0,-.5,-.5);	
 		spot2->kPos=spotpos2;
 		spot2->kRot=spotrot2;
-		spot2->kConstPos=Vector3(0,0,0);
-		spot2->kConstRot=Vector3(0,0,0);		
-		spot2->kDiffuse=Vector4(4,0,0,1);
-		spot2->kAmbient=Vector4(0,0,0,0);
-		spot2->kSpecular=Vector4(0,0,0,0);
-		spot2->fCutoff=20;	
-		spot2->fExp=20;
-		spot2->fConst_Atten=1;
-		spot2->fLinear_Atten=0;
-		spot2->fQuadratic_Atten=0.001;
-		spot2->iType=SPOT_LIGHT;			
-		spot2->iPriority=0;
+		spot2->kDiffuse=Vector4(2,0,0,1);
+		spot2->fCutoff=15;	
+		spot2->fExp=15;
+		spot2->fConst_Atten=0;
+		spot2->fQuadratic_Atten=0.001;		
+		spot2->iType=SPOT_LIGHT;
+
 
 	LightSource *sol=new LightSource;	
 	Vector3 *solrot=new Vector3(0,0,0);	
 	m_kSolpos=new Vector3(300,20,350);
 		sol->kPos=m_kSolpos;
 		sol->kRot=solrot;
-		sol->kConstPos=Vector3(0,0,0);
-		sol->kConstRot=Vector3(0,0,0);		
 		sol->kDiffuse=Vector4(1.2,1.2,0.9,1);
 		sol->kAmbient=Vector4(.1,.1,.1,.1);
-		sol->kSpecular=Vector4(0,0,0,0);
 		sol->fCutoff=20;	
 		sol->fExp=20;
 		sol->fConst_Atten=1;
-		sol->fLinear_Atten=0;
-		sol->fQuadratic_Atten=0;
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 
@@ -113,10 +97,7 @@ void Test::OnInit(void) {
 
 void Test::OnIdle(void) {
 
-//	cout<<"ROT: X"<<pkFps->m_kCamRot->x<<" Y "<<pkFps->m_kCamRot->y<<" Z "<<pkFps->m_kCamRot->z<<endl;
-
-	pkLight->Update();
-
+//	pkLight->Update();
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 
@@ -142,7 +123,7 @@ void Test::OnIdle(void) {
 
 
 	glPushMatrix();
-		glTranslatef(370,test->Height(370,400),400);
+		glTranslatef(370,test->Height(370,405),405);
 		glColor3f(0,0,1);
 		glScalef(.025,.025,.025);
 		testa.draw();
@@ -162,13 +143,14 @@ void Test::OnIdle(void) {
 }
 
 void Test::OnHud(void) {	
-	pkRender->SetFont("file:../data/textures/text/console.bmp");
+	pkRender->SetFont("file:../data/textures/text/console.tga");
 	fpsupdate++;
 	if(fpsupdate>100){	
 		IntToChar(fps,pkFps->m_iFps);
 		fpsupdate=0;
 	}
-	pkRender->Print(Vector3(-0.2,0.2,-0.25),Vector3(0,0,0),Vector3(0.01,.01,.01),fps);
+	pkRender->Print(Vector3(-.9,.9,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),"FPS:");	
+	pkRender->Print(Vector3(-.7,.9,-1),Vector3(0,0,0),Vector3(0.06,.06,.06),fps);
 
 }
 
