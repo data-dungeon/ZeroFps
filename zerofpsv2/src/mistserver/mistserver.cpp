@@ -1142,6 +1142,21 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 	}
 }
 
+void MistServer::AutoSetZoneSize(string strName)
+{
+	int iPos = strName.find_last_of('-');
+	if( iPos == string::npos )
+		return;
+
+	int x,y,z;
+	char szString[256];
+	strcpy(szString, &strName.c_str()[iPos + 1]);
+	sscanf(szString,"%dx%dx%d", &x,&y,&z);
+	m_kZoneSize.Set(x,y,z);
+	cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
+}
+
+
 void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 											char *szClickNodeText, bool bHaveChilds)
 {
@@ -1158,7 +1173,7 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 				strFullpath += string(szClickNodeText);
 
 			m_strActiveZoneName = strFullpath;
-			
+
 			m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			// Setting new zone modell
 			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
@@ -1167,6 +1182,8 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 				pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
 				printf("Setting new zone modell to %s\n", strFullpath.c_str());
 			}
+
+			AutoSetZoneSize(m_strActiveZoneName);
 		}
 	}
 	else

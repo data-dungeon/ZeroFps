@@ -168,6 +168,8 @@ class MistServer :public Application , public ZGuiApp {
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 
+		void AutoSetZoneSize(string strName);
+
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
