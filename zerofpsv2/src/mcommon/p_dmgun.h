@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "p_dmcharacter.h"
+
 using namespace std;
 
 class MCOMMON_API P_DMGun: public Property {
@@ -29,6 +31,7 @@ class MCOMMON_API P_DMGun: public Property {
 		//gun info
 		string	m_strName;
 		float		m_fFireRate;
+		float		m_fDamage;
 		float		m_fRange;		
 		int		m_iAmmo;
 		int		m_iMaxAmmo;		

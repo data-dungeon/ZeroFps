@@ -48,6 +48,7 @@ class MCOMMON_API DMContainer
 		
 		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
 
+		bool MoveItem(int iID,int iX,int iY);
 		bool MoveItem(int iID,DMContainer* pkDest,int iX,int iY);
 		bool MoveItem(int iID,DMContainer* pkDest);
 		

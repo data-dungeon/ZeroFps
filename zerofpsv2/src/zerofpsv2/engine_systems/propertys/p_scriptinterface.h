@@ -27,10 +27,6 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		
 		void Update();				
 		bool CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
-//		bool SendEvent(const char* acEvent);
-//		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
-//		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
-//		void Touch(int iId);					//executet when collision occurs
 
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);

@@ -22,3 +22,8 @@ function HeartBeat()
 --	Print("Dudunk");
 
 end
+
+function Dead()
+	Print("IM DEAD!!!");
+	Delete(SIGetSelfID());
+end

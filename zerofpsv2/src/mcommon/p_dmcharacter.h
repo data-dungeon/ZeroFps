@@ -12,6 +12,7 @@
 
 #include "dmcontainer.h"
 
+
 using namespace std;
 
 class MCOMMON_API DMCharacterStats
@@ -64,17 +65,20 @@ class MCOMMON_API P_DMCharacter: public Property {
 		DMContainer*		m_pkHand;
 		DMContainer*		m_pkImplants;
 		
-		P_DMCharacter();
-		~P_DMCharacter();
-
-		void CloneOf(Property* pkProperty) { }
+		int					m_iTeam;
 		
-//		void Update();
-		void Init();
 		DMCharacterStats* GetStats() {return &m_kStats;};
+		void Damage(int iType,int iDmg);
 		
+		
+		void Init();		
+//		void Update();		
+		void CloneOf(Property* pkProperty) { }		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
+		
+		P_DMCharacter();
+		~P_DMCharacter();
 		
 };
 

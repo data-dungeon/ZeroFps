@@ -2,7 +2,7 @@
 #include "members_dlg.h"
 #include "gameplay_dlg.h"
 #include "handleagents_dlg.h"
-#include ".\members_dlg.h"
+#include "./members_dlg.h"
 
 CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 {

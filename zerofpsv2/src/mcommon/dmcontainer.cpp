@@ -110,6 +110,9 @@ bool DMContainer::GetItemPos(int iID,int& iRX,int& iRY)
 
 bool DMContainer::AddItem(int iID,int iX,int iY)
 {
+	if(HaveItem(iID))
+		return false;
+
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))
 	{
 		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
@@ -141,6 +144,9 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 
 bool DMContainer::AddItem(int iID)
 {
+	if(HaveItem(iID))
+		return false;
+
 	if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
 	{
 		if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
@@ -245,6 +251,35 @@ bool DMContainer::MoveItem(int iID,DMContainer* pkDest)
 	}
 	
 	return false;
+}
+
+bool DMContainer::MoveItem(int iID,int iX,int iY)
+{
+	if(HaveItem(iID))
+	{
+		if(Entity* pkItem = m_pkEntMan->GetObjectByNetWorkID(iID))
+		{
+			if(P_DMItem* pkPItem = (P_DMItem*)pkItem->GetProperty("P_DMItem"))
+			{	
+				int oldx,oldy;
+				GetItemPos(iID,oldx,oldy);
+		
+				ClearItem(iID);
+		
+				if(SetItem(iID,iX,iY,pkPItem->m_iSizeX,m_iSizeY))
+				{
+					return true;				
+				}
+				else
+				{
+					if(!SetItem(iID,oldx,oldy,pkPItem->m_iSizeX,m_iSizeY))
+						cout<<"ERROR: item's size has changed since added to container"<<endl;
+				
+					return false;
+				}
+			}
+		}
+	}
 }
 
 void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)

@@ -11,9 +11,9 @@ P_DMGun::P_DMGun()
 	
 	
 	m_fTimeBulletFired = 0;
-	m_fTimeFired = 0;
-	m_fBurstLength = 1;
-	m_bFireing =	false;
+	m_fTimeFired = 		0;
+	m_fBurstLength = 		1;
+	m_bFireing =			false;
 	
 	m_kGunOffset.Set(0,1,0);
 	
@@ -24,7 +24,8 @@ P_DMGun::P_DMGun()
 	m_iAmmo = 		100;
 	m_iMaxAmmo = 	100;
 	m_kDir.Set(0,0,-1);
-	m_fRandom = 	1;
+	m_fRandom = 	0.5;
+	m_fDamage =		5;
 }
 
 P_DMGun::~P_DMGun()
@@ -151,7 +152,15 @@ bool P_DMGun::FireBullets(int iAmount)
 		}	
 		
 		if(pkClosest)
+		{
 			m_kHitPos.push_back(pair<Vector3,float>(kPickPos,t));			
+			
+			
+			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
+			{			
+				pkChar->Damage(0,m_fDamage);
+			}
+		}
 		else
 			m_kHitPos.push_back(pair<Vector3,float>(kStart+kDir*100,t));			
 			

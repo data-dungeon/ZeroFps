@@ -869,7 +869,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 { 
 	if(bResetFirst)
 		m_kSelectedEntitys.clear(); 
-
+ 
 	if(id == -1)
 		return;
 

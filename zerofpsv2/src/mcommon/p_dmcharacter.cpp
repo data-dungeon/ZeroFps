@@ -1,4 +1,5 @@
 #include "p_dmcharacter.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
 P_DMCharacter::P_DMCharacter()
 {
@@ -15,6 +16,9 @@ P_DMCharacter::P_DMCharacter()
 	m_pkBelt =		NULL;
 	m_pkHand = 		NULL;
 	m_pkImplants = NULL;	
+	
+	
+	m_iTeam =		0;
 }
 
 P_DMCharacter::~P_DMCharacter()
@@ -45,6 +49,25 @@ void P_DMCharacter::Init()
 	//cout<< "New character created"<<endl;
 
 }
+
+
+void P_DMCharacter::Damage(int iType,int iDmg)
+{
+	m_kStats.m_iLife -= iDmg;
+	
+	cout<<"damaged:"<<m_kStats.m_iLife<<endl;
+
+	if(m_kStats.m_iLife <= 0)
+	{
+		cout<<"ARRRGGg *dead*"<<endl;		
+		
+		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+		{
+			pkSi->CallFunction("Dead");
+		}
+	}
+}
+
 
 void P_DMCharacter::Save(ZFIoInterface* pkPackage)
 {		
