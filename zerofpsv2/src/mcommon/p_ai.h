@@ -20,6 +20,9 @@ class MCOMMON_API P_AI: public Property
 
 		int	m_iState;
 		
+		//random walk
+		bool 	m_bWalk;
+		float m_fTime;
 		
 		vector<PropertyValues> GetPropertyValues(); 
  		bool HandleSetValue( string kValueName, string kValue );

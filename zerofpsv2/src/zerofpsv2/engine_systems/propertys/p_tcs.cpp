@@ -14,14 +14,17 @@ P_Tcs::P_Tcs()
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	//m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
-		
+	//m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
+	m_iSide=PROPERTY_SIDE_SERVER;	
+	
 	m_bNetwork		= false;
 	m_iVersion	= 3;
 	
 	
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
 	m_pkRender = 	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	
+	m_bHaveUpdated = false;
 	
 	m_bHavePolygonData=	false;
 	m_kBoxSize=				Vector3(1,1,1);
@@ -85,7 +88,7 @@ void P_Tcs::Init()
 
 
 	//cout<<"Tiny Collisions system property Added"<<endl;	
-	Enable();
+	//Enable();
 }
 
 void P_Tcs::Enable()
@@ -101,6 +104,12 @@ void P_Tcs::Update()
 {	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
+		if(!m_bHaveUpdated)
+		{
+			Enable();
+			m_bHaveUpdated = true;
+		}
+			
 		if( (m_iTestType == E_MESH) || (m_iTestType == E_HMAP))
 		{
 			if(!m_bHavePolygonData)

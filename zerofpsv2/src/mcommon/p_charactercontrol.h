@@ -93,6 +93,9 @@ class MCOMMON_API P_CharacterControl: public Property
 		void Init();				
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);		
+		
 		
 		void SetControl(int iControl,bool bState);
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}

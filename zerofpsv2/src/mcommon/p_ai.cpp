@@ -21,6 +21,10 @@ P_AI::P_AI()
 	m_pkCharacterControl = NULL;
 	
 	m_iState = 1;
+	
+	
+	m_bWalk = true;
+	m_fTime = 0;
 }
 
 P_AI::~P_AI()
@@ -32,6 +36,8 @@ P_AI::~P_AI()
 
 void P_AI::Init()
 {
+	m_fTime = m_pkZeroFps->GetTicks() + Randomf(5);
+
 }
 
 
@@ -44,20 +50,40 @@ void P_AI::Update()
 		m_pkCharacterControl->SetYAngle(Randomf(360));								
 	}
 		
-// 	switch(m_iState)
-// 	{
-// 		case 1:
-// 		{
-// 			float fRot = m_pkCharacterControl->GetYAngle();				
-// 			//fRot += Randomf(20)-10;
-// 			fRot +=4;
-// 			m_pkCharacterControl->SetYAngle(fRot);								
-// 			m_pkCharacterControl->SetControl(eUP,true);					
-// 		
-// 			break;
-// 		}
-// 	
-// 	}
+	switch(m_iState)
+	{
+		case 1:
+		{			
+			if(m_bWalk)
+			{
+				float fRot = m_pkCharacterControl->GetYAngle();				
+				fRot += Randomf(20)-10;
+				//fRot +=4;
+				m_pkCharacterControl->SetYAngle(fRot);								
+				m_pkCharacterControl->SetControl(eUP,true);					
+			
+				if(m_pkZeroFps->GetTicks() > m_fTime + 2)
+				{
+					m_bWalk = false;
+					m_fTime = m_pkZeroFps->GetTicks();
+				}
+			}
+			else
+			{
+				m_pkCharacterControl->SetControl(eUP,false);					
+			
+				if(m_pkZeroFps->GetTicks() > m_fTime + 5)
+				{
+					m_bWalk = true;
+					m_fTime = m_pkZeroFps->GetTicks();					
+				}			
+			}
+		
+					
+			break;
+		}
+	
+	}
 }
 
 void P_AI::Touch(int iID)

@@ -6,8 +6,8 @@ P_CharacterControl::P_CharacterControl()
 	strcpy(m_acName,"P_CharacterControl");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
-	m_bNetwork = true;
-	m_iVersion = 			1;
+	m_bNetwork = 			true;
+	m_iVersion = 			2;
 		
 	
 	m_fYAngle = 			0;
@@ -288,7 +288,25 @@ void P_CharacterControl::UpdateAnimation()
 	}
 }
 
+void P_CharacterControl::Save(ZFIoInterface* pkPackage)
+{
+	pkPackage->Write(m_fSpeed);
+	pkPackage->Write(m_fJumpForce);
+	pkPackage->Write_Str(m_strRunForward);
+	
+}
 
+void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
+{
+	if(iVersion == 2)
+	{
+		pkPackage->Read(m_fSpeed);
+		pkPackage->Read(m_fJumpForce);
+		pkPackage->Read_Str(m_strRunForward);
+	
+	}
+
+}
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {

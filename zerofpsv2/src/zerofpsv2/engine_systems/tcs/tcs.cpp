@@ -1080,6 +1080,11 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 		switch(m_kBodys[i]->m_iTestType)
 		{
 			case E_MESH:
+				/*if(!m_kBodys[i]->m_bHavePolygonData)
+				{
+					cout<<"NO Polygon data warning"<<endl;
+				}*/
+				
 				if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
 					if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
 					{
@@ -1146,6 +1151,9 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 
 bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tcs* pkMesh)
 {
+	//if(!pkMesh->m_bHavePolygonData)
+	//	return false;	
+		
 	static Matrix4 kModelMatrix;
 	static float closest;
 	static bool bHaveColided;

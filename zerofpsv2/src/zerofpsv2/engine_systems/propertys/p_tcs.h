@@ -39,6 +39,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Tcs*		m_pkTcs;
 		Render*	m_pkRender;
 		
+		bool		m_bHaveUpdated;
+		
 		bool		m_bHaveTriedToSetup;
 		Vector3	m_kBoxSize;
 		int		m_iTestType;
