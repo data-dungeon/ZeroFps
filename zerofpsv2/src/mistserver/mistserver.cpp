@@ -47,6 +47,9 @@ void MistServer::Init()
 	//register property bös
 	RegisterPropertys();
 
+	//init mistland script intreface
+	MistLandLua::Init(pkScript);
+
 	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 }
 

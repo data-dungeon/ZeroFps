@@ -16,6 +16,10 @@
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
+
+#include "../mcommon/p_event.h"
+#include "../mcommon/si_mistland.h"
+
 class MistServer :public Application , public ZGuiApp {
 	private:
 		//console funktions
