@@ -86,7 +86,7 @@ void P_CharacterProperty::UpdateAnimation()
 				if(pkMad->GetCurrentAnimationName() != m_strJump)
 				{
 					pkMad->SetAnimation(m_strJump.c_str(), 0);
-					pkMad->SetNextAnimation(m_strIdleStanding.c_str());
+					pkMad->SetNextAnimation(MAD_NOLOOP);
 				}			
 			}
 			//RUNNING

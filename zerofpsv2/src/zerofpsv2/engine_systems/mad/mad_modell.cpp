@@ -93,26 +93,24 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	float fAnimLength = pkCore->GetAnimationLengthInS(iActiveAnimation);
 
 	// If we pass the end of the anim
-	if(fCurrentTime >= fAnimLength) {
+	if(fCurrentTime >= fAnimLength) 
+	{
 		// If this is a looping anim we simply wrap around.
 		if(m_bLoop)
 			fCurrentTime -= fAnimLength;
-		else {
+		else 
+		{
 			fCurrentTime = fAnimLength;
 			m_bActive = false;
 
 			// We shall not loop so lets try to move on to the next anim if any.
-			if(m_iNextAnimation != MAD_NOANIMINDEX) {
+			if( (m_iNextAnimation != MAD_NOANIMINDEX) && (m_iNextAnimation != MAD_NOLOOP) ) 
+			{
 				PlayAnimation(m_iNextAnimation, 0);
 				m_iNextAnimation = MAD_NOANIMINDEX;
-				}
-			//else {
-				//
-			//	}
 			}
 		}
-
-//	printf("Current time %f\n", fCurrentTime);
+	}
 }
 
 void Mad_Modell::SetScale(float fScale)
@@ -124,11 +122,11 @@ void Mad_Modell::SetScale(float fScale)
 void	Mad_Modell::SetNextAnimation(int iAnimNum)
 {
 	m_iNextAnimation = iAnimNum;
-	
-	if(iAnimNum != -1)
-		SetLoopedStatus(false);
-	else
+	 
+	if( (iAnimNum == MAD_NOANIMINDEX))
 		SetLoopedStatus(true);
+	else 
+	 	SetLoopedStatus(false);
 	
 }
 
@@ -136,15 +134,16 @@ void Mad_Modell::SetNextAnimation(const char* szName)
 {
 	if(kMadHandle.IsValid() == false)
 		return;
+		
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 
 	int iAnimNum = pkCore->GetAnimIndex(szName);
-//	printf("Playing Anim %d", iAnimNum);
 
 	if(iAnimNum == -1)
 		return;
+		
 	m_iNextAnimation = iAnimNum;
 	SetLoopedStatus(false);
 }

@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		//animation
 		void SetAnimation(const char* szName, float fStartTime);
 		void SetNextAnimation(const char* szName);		
+		void SetNextAnimation(int iAnimID);
 		int GetCurrentAnimation();
 		string GetCurrentAnimationName();
 		

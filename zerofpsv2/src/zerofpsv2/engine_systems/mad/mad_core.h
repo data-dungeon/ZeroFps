@@ -26,6 +26,7 @@ using namespace std;
 #define MAD_MD_VERSION				1
 
 #define MAD_NOANIMINDEX				-1
+#define MAD_NOLOOP					-2
 
 // MAD - MD (Mesh Data)
 

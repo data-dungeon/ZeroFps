@@ -135,6 +135,12 @@ void P_Mad::SetNextAnimation(const char* szName)
 	SetNetUpdateFlag(true);	
 }
 
+void P_Mad::SetNextAnimation(int iAnimID)
+{
+	Mad_Modell::SetNextAnimation(iAnimID);
+	SetNetUpdateFlag(true);	
+}
+
 
 void P_Mad::Save(ZFIoInterface* pkPackage)
 {	
