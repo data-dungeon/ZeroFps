@@ -8,7 +8,9 @@
 
 using namespace std;
 
-/// A Class for vector math operations in 2D.
+/**	\brief	A Class for vector math operations in 2D.
+		\ingroup Basic
+*/
 class BASIC_API Vector2
 {
 	public:

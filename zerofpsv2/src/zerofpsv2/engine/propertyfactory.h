@@ -29,8 +29,8 @@ public:
 	}
 };
 
-/// 
 /**	\brief	Engine System that creates propertys.
+	 \ingroup Engine
 
 This class keeps a list of all type of propertys that exist in the game and creates
 them when requested by the ObjectManger.

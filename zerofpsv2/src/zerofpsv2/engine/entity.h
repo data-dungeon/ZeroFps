@@ -126,8 +126,8 @@ public:
 
 
 
-
 /**	\brief	Entity's for things in game 
+	 \ingroup Engine
 
 A entity is the lowest level of something that exist in the gameworld. All things like
 players, npcs, weapons, explosions, buildings and the ground are entity's. Entity don't
@@ -229,9 +229,9 @@ class ENGINE_API Entity
 		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
 		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
 		bool	IsAnyNetUpdateFlagTrue(int iConID);					
-		void	ResetAllNetUpdateFlags();											//reset all update flags to true
-		void	ResetAllNetUpdateFlags(int iConID);											//reset all update flags to true		
-		void	ResetAllNetUpdateFlagsAndChilds(int iConID);											//reset all update flags to true				
+		void	ResetAllNetUpdateFlags();												// reset all update flags to true
+		void	ResetAllNetUpdateFlags(int iConID);									// reset all update flags to true		
+		void	ResetAllNetUpdateFlagsAndChilds(int iConID);						// reset all update flags to true				
 		void	SetNrOfConnections(int iConNR);
 		
 	public:
@@ -247,26 +247,28 @@ class ENGINE_API Entity
 		bool							m_bIsNetWork;	
 		bool							m_bHaveNetPropertys;				///< True of any property of this object needs to be sent over network.
 
-      string                  m_strCreatedFromScript; // which script the object was created from. used when splitting items
+      string                  m_strCreatedFromScript;			// which script the object was created from. used when splitting items
 
+
+	
 		~Entity();
 		
 		// Object Type Handling
 		bool IsA(string strStringType);								///< Returns true if this object is based on type.
 
+		// Property Mangment
 		Property* AddProperty(Property* pkNewProperty);			// Add a propyrty by ptr.
 		Property* AddProperty(const char* acName);				// Create/Add a property by name.
 		void RemoveProperty(Property* pkProp);						// Remove property by pointer.
 		bool DeleteProperty(const char* acName);					// Remove property by name.
 		void PropertyLost(Property* pkProp);
-
 		Property* GetProperty(const char* acName);				// Returns property by name (first one only). 
 		void GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
 		void GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
 		Property* AddProxyProperty(const char* acName);		///< Add a property if not exist.
 		bool Update(const char* acName);							///< Run update on property 'name'.
 
-		// Child/Parent object mangement.
+		// Child/Parent Entity mangement.
 		void AddChild(Entity* pkObject);							// Set a object to be child to this.	
 		void RemoveChild(Entity* pkObject);						// Remove a child from this.
 		void SetParent(Entity* pkObject);						// Set the parent of this object.
@@ -381,14 +383,11 @@ class ENGINE_API Entity
 		EntityVariable* CreateVar(string& strName, EntityVariableType eType);
 		EntityVariable* GetVar(string& strName);
 		void GetAllVarNames(vector<string>& vkList);
-
-
 		double GetVarDouble(string& strName);
 		string GetVarString(string& strName);
 		void	 SetVarDouble(string& strName, double fValue);
 		void	 SetVarString(string& strName, string strValue);
 		void	 AddVarDouble(string strName, double fValueToAdd);
-
 
 		friend class EntityManager;
 		friend class Property;

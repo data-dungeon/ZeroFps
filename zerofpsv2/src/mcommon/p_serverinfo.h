@@ -28,6 +28,9 @@ enum PlayerRights
 	PR_LOOKAT=16,
 };
 
+/**	\brief	Da P_ServerInfo
+		\ingroup Common
+*/
 class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;

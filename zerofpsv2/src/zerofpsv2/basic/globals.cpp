@@ -67,7 +67,6 @@ void IntToChar(char* aText,int iValue)
 	for(int i=10000000;i>0;i/=10) {
 		if(iValue/i>0){
 			int nr=int(iValue/i);
-//			cout<<nr;
 			iValue-=i*nr;
 			found=true;
 			nr+=48;
@@ -75,7 +74,6 @@ void IntToChar(char* aText,int iValue)
 		} else {
 			if(found==true)
 				strcat(aText,"0");			
-//			cout<<0;		
 		}
 	}
 }
@@ -227,7 +225,6 @@ void ZFError(const char *fmt, ...)
 	cout << "ERROR: " <<  g_szFormatText << endl;
 //	getch();
 	exit(1);
-
 }
 
 void ZFWarning(const char *fmt, ...)

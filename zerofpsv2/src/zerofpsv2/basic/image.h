@@ -19,6 +19,7 @@ struct color_rgba {
 #pragma pack(  )
 
 /**	\brief	Class to load images in diffrent file formats.
+		\ingroup Basic
 
   Class to load Images. All loaded images are converted into RGBA-32 format.
 */

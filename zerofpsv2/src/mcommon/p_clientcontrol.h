@@ -50,6 +50,9 @@ class MCOMMON_API ClientOrder
 		
 };
 
+/**	\brief	Da P_ClientControl
+		\ingroup Common
+*/
 
 class MCOMMON_API P_ClientControl: public Property {
 	private:

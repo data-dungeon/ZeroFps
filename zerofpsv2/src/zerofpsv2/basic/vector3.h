@@ -10,7 +10,9 @@ using namespace std;
 
 class Matrix3;
 
-/// A Class for vector math operations in 3D.
+/**	\brief	A Class for vector math operations in 3D..
+		\ingroup Basic
+*/
 class BASIC_API Vector3 {
 	public:
 // Std Values

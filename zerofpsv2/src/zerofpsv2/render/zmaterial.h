@@ -41,7 +41,12 @@ class RENDER_API ZMaterialSettings
 		~ZMaterialSettings();
 };
 
-/// A Material (Used by the shader SubSys).
+/**	\brief	A Material (Used by the shader SubSys).
+		\ingroup Render
+
+A ZMaterial contains all the settings used for a surface or something that need
+to be rendered in the engine. 
+*/
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:

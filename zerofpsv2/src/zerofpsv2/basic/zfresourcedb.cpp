@@ -89,6 +89,46 @@ ZFResource* ZFResourceHandle::GetResourcePtr()
 
 // ZFResourceDB ***********************************************************
 
+ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName)
+{
+	char szFullName[256];
+	strcpy(szFullName, strResName.c_str());
+	Gemens(szFullName);
+
+
+	char* pcExt = strrchr(szFullName, '.');
+	if(!pcExt)
+		return NULL;
+
+	return FindResourceType(string(pcExt));
+}
+
+void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	list<ZFResourceInfo*>::iterator it;
+
+	switch (cmdid) {
+		case FID_LISTRES:
+
+		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+			string hora = (*it)->m_strName.c_str();
+			cout << "Hora: " <<  hora << endl;
+
+			GetSystem().Printf("- %s - %d - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers, (*it)->m_pkResource->GetSize());
+			}
+			break;
+
+		case FID_LISTTYPES:
+			GetSystem().Printf("Resource types: ");
+			for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
+				GetSystem().Printf(" [%d] = %s, %d",i, m_kResourceFactory[i].m_strName.c_str(),m_kResourceFactory[i].m_iActive);
+				}
+			break;
+		};
+}
+
+
+
 ZFResourceDB::ZFResourceDB()
  : ZFSubSystem("ZFResourceDB") 
 {
@@ -98,6 +138,11 @@ ZFResourceDB::ZFResourceDB()
 	Register_Cmd("res_list",	FID_LISTRES,	CSYS_FLAG_SRC_ALL);
 	Register_Cmd("res_types",	FID_LISTTYPES,	CSYS_FLAG_SRC_ALL);
 	g_ZFObjSys.Log_Create("resdb");
+}
+
+ZFResourceDB::~ZFResourceDB()
+{
+	
 }
 
 bool ZFResourceDB::StartUp()	
@@ -125,17 +170,24 @@ bool ZFResourceDB::ShutDown()
 			Logf("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
 		}
 
-
 	return true; 
 }
 
 bool ZFResourceDB::IsValid()	{ return true; }
 
-ZFResourceDB::~ZFResourceDB()
+/**	Register a new Resource and the function used to create it. */
+void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 {
-	
+	ResourceCreateLink kResLink;
+	kResLink.m_strName = strName;
+	kResLink.Create = Create;
+	kResLink.m_iActive = 0;
+	kResLink.m_iIndex = m_kResourceFactory.size();
+
+	m_kResourceFactory.push_back(kResLink);
 }
 
+/**	Refresh the resource DB by unloading unused resources. */
 bool ZFResourceDB::Refresh()
 {
 	bool bWasUnloaded = false;
@@ -177,11 +229,6 @@ bool ZFResourceDB::Refresh()
 ZFResourceInfo*	ZFResourceDB::GetResourceData(string strResName)
 {
 	return FindResource(strResName);
-/*	if(iResID == -1)
-		return NULL;
-
-	return m_kResources[iResID];*/
-
 }
 
 ZFResourceInfo*	ZFResourceDB::FindResource(string strResName)
@@ -195,7 +242,6 @@ ZFResourceInfo*	ZFResourceDB::FindResource(string strResName)
 
 	return NULL;
 }
-
 
 bool ZFResourceDB::IsResourceLoaded(string strResName)
 {
@@ -294,56 +340,9 @@ ZFResource*	ZFResourceDB::CreateResource(string strName)
 	return pkRes;
 }
 
-void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
-{
-	ResourceCreateLink kResLink;
-	kResLink.m_strName = strName;
-	kResLink.Create = Create;
-	kResLink.m_iActive = 0;
-	kResLink.m_iIndex = m_kResourceFactory.size();
-
-	m_kResourceFactory.push_back(kResLink);
-}
 
 
-ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName)
-{
-	char szFullName[256];
-	strcpy(szFullName, strResName.c_str());
-	Gemens(szFullName);
-
-
-	char* pcExt = strrchr(szFullName, '.');
-	if(!pcExt)
-		return NULL;
-
-	return FindResourceType(string(pcExt));
-}
-
-void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
-{
-	list<ZFResourceInfo*>::iterator it;
-
-	switch (cmdid) {
-		case FID_LISTRES:
-
-		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-			string hora = (*it)->m_strName.c_str();
-			cout << "Hora: " <<  hora << endl;
-
-			GetSystem().Printf("- %s - %d - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers, (*it)->m_pkResource->GetSize());
-			}
-			break;
-
-		case FID_LISTTYPES:
-			GetSystem().Printf("Resource types: ");
-			for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
-				GetSystem().Printf(" [%d] = %s, %d",i, m_kResourceFactory[i].m_strName.c_str(),m_kResourceFactory[i].m_iActive);
-				}
-			break;
-		};
-}
-
+/**	Returns total size of all loaded resources. */
 int ZFResourceDB::GetResSizeInBytes()
 {
 	int iTotalBytes = 0;

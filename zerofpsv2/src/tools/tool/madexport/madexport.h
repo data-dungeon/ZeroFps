@@ -55,7 +55,9 @@ typedef map<char *, int, struct lstr>	NameIntMap;
 typedef vector<MadExpBone *>			BoneList;
 typedef map<int, int>					PtLookupMap;
 
-/// Exports MAD from Maya
+/** \brief	Exports MAD from Maya
+	 \ingroup MadExport
+*/
 class MadExport : public MPxFileTranslator
 {
 private:

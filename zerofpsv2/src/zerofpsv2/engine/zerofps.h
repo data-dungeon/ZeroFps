@@ -85,7 +85,9 @@ public:
 	set<int>	m_iActiveZones;		// Activated Zones.
 };
 
-/// Main class for the ZeroFps engine. 
+/** \brief	Main class for the ZeroFps engine. 
+	 \ingroup Engine
+*/
 class ENGINE_API ZeroFps : public I_ZeroFps {
 	private:		
 		enum FuncId_e

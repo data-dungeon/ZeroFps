@@ -12,6 +12,9 @@
 
 using namespace std;
 
+/**	\brief	Da P_Spawn
+		\ingroup Common
+*/
 class MCOMMON_API P_Spawn: public Property {
 	private:
 		enum Spawn_Mode

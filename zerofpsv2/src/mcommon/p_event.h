@@ -13,6 +13,9 @@
 
 using namespace std;
 
+/**	\brief	Da P_Event
+		\ingroup Common
+*/
 class MCOMMON_API P_Event: public Property {
 	private:
 		ZeroFps* m_pkFps;

@@ -7,6 +7,9 @@
 #include "rulesystem/spell/spellstats.h"
 //#include "../zerofpsv2/basic/zfini.h"
 
+/**	\brief	Da P_Spell
+		\ingroup Common
+*/
 class MCOMMON_API P_Spell: public Property 
 {
 	private:

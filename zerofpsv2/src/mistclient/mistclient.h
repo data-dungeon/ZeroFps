@@ -37,6 +37,9 @@
 #include "statsdlg.h"
 #include "henchman_button.h"
 
+/**	\brief	Da MistClient
+		\ingroup MistClient
+*/
 class MistClient :public Application, public ZGuiApp {
 	private:
 		// actions

@@ -55,6 +55,7 @@ public:
 	static TClass* GetInstance();	\
 
 /**	\brief	Tracks all Engine Sub Systems objects.
+		\ingroup Basic
 
 ZFSystem is the master objekt that keep track of all other subsystems in ZeroFPS. 
 There should only be one of this in the program. 

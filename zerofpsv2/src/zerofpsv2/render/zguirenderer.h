@@ -18,6 +18,9 @@ const int ZG_CENTER_TEXT_HORZ = -2;
 typedef pair<Point,color_rgb> tRGBPoint;
 typedef pair<Rect,color_rgb> tRGBRect;
 
+/**	\brief	Render for GUI.
+		\ingroup Render
+*/
 class RENDER_API ZGuiRender : public ZFSubSystem 
 {
 public:

@@ -20,7 +20,9 @@ class BASIC_API ZFIo {
 		virtual bool SetPos(int iPos)=0;
 };*/
 
-/// Interface to read/write data.
+/**	\brief	Interface to read/write data.
+		\ingroup Basic
+*/
 class BASIC_API ZFIoInterface 
 {
 	public:

@@ -147,7 +147,6 @@ Vector3 Vector3::Angels(void){
 		temp.x+=180;
 */
 
-//	cout<<"BLUB: "<<z<<endl;
 	if(z<0.5 && z>0)
 		z=0.5;
 	if(z>-0.5 && z<0)

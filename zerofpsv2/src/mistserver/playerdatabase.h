@@ -6,6 +6,9 @@
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/basic/zfsystem.h"
 
+/**	\brief	Da PlayerDatabase
+		\ingroup MistServer
+*/
 class PlayerDatabase
 {
 	private:

@@ -36,6 +36,9 @@ enum PHYSICSENGINE_API CollisionState
 	NOT,
 };
 
+/**	\brief	Physics_Engine Liksom.
+		\ingroup Physics
+*/
 class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 {
 	private:

@@ -14,7 +14,9 @@ using namespace std;
 #include "zfsubsystem.h"
 #include "basic_x.h"
 
-/// Reads text based INI files (Basic Config Sys of ZeroFps).
+/**	\brief	Reads text based INI files (Basic Config Sys of ZeroFps).
+		\ingroup Basic
+*/
 class BASIC_API ZFIni /*: public ZFSubSystem*/
 {
 public:

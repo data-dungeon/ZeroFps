@@ -5,7 +5,9 @@
 #include "basic_x.h"
 #include "os.h"
 
-/// Descibes a Plane in 3D.
+/**	\brief	Descibes a Plane in 3D.
+		\ingroup Basic
+*/
 class BASIC_API Plane 
 {
 	public:

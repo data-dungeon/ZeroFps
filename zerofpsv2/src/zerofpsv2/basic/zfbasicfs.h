@@ -18,7 +18,9 @@
 
 using namespace std;
 
-/// SubSystem for LowLevel FileIO.
+/**	\brief	SubSystem for LowLevel FileIO.
+		\ingroup Basic
+*/
 class BASIC_API ZFBasicFS : public ZFSubSystem 
 {
 	char m_acDir[2048];

@@ -14,7 +14,9 @@ class Input;
 class FileIo;
 class ZFClient;
 
-/// The application object.
+/** \brief	The application object.
+	 \ingroup Engine
+*/
 class ENGINE_API Application : public ZFSubSystem {	
 	protected:
 		ZeroFps*					pkFps;

@@ -63,6 +63,7 @@ public:
 };
 
 /**	\brief	Base class for all engine sub systems like graphic, audio, input.
+		\ingroup Basic
 
 This class is the base for all engine subsystems. A engine subsystem is a single object 
 in the engine that is used in many other places. All Subsystems can be accessed by using

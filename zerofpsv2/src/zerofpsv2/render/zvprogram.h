@@ -14,7 +14,12 @@ using namespace std;
 
 #define	NO_VPROGRAM	-1
 
-/// A OpenGL Vertex Program.
+/**	\brief	A OpenGL Vertex Program.
+		\ingroup Render
+
+This is a OpenGL vertex program that can be assigned to a material and used
+in the rendering.
+*/
 class RENDER_API ZVProgram : public ZFResource
 {
 	private:

@@ -20,7 +20,9 @@ public:
 	}
 };
 
-/// Bone in Maya Mad Exporter.
+/** \brief		Bone in Maya Mad Exporter.
+	 \ingroup	MadExport
+*/
 class MadExpBone  
 {
 public:

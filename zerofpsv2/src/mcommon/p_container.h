@@ -10,6 +10,9 @@ class Entity;
 class Property;
 class ItemStats;
 
+/**	\brief	Da P_Container
+		\ingroup Common
+*/
 class MCOMMON_API P_Container: public Property 
 {
 private:

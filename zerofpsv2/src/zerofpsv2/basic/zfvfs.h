@@ -14,6 +14,7 @@ class ZFVFileSystem;
 class ZFIni;
 
 /**	\brief	A Open File in the VFS
+		\ingroup Basic
 
 This class is used to describe a file in the ZFPS Virtual File Systems (VFS).
 It should be used to open all files the ZeroFPS uses. 
@@ -41,6 +42,7 @@ public:
 };
 
 /**	\brief	ZeroFps Virtual File Systems.
+		\ingroup Basic
 
 The VFS should be used for all file operations i ZeroFPS. Use ZFVFile to open and
 close files with it.

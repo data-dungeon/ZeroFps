@@ -43,7 +43,10 @@ public:
 	ZoneData();
 };
 
+
+
 /**	\brief	SubSystem that handles all entity's in the world.
+	 \ingroup Engine
 
 Handles the mangment of all entity's that make up the game world. The EM are used to
 create, update and destroy entity's. It also handles to operation of replicating entity's

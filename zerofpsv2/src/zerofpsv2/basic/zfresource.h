@@ -8,6 +8,10 @@ using namespace std;
 
 /**	\brief	Base class for all resources.
 
+A resource is data/code that are shared and used in many places of the code. 
+It's is unloaded when no one is using it anymore. A resource need to be based
+on the ZFResource class and there are some rules that it must follow. Each type
+of resource need to be registred in the ZFResourceDB.
 */
 class BASIC_API ZFResource
 {
@@ -15,17 +19,27 @@ private:
 	int		m_iSizeInBytes;						// The size in bytes that this res takes. Does not include sub res.
 
 public:
+	int	m_iTypeIndex;								// Index of this resouce type in the resDB
+
 	ZFResource();
 	virtual ~ZFResource();
 
-	virtual bool Create(string strName) = 0;	// Loads the res. Return false if load fails.
-	virtual int  CalculateSize() = 0;			// Calc the num of bytes this res takes.
+	/**
+		Loads the Res. Returns false if loads fails.
+		*/
+	virtual bool Create(string strName) = 0;	
 
-	int GetSize();										// Returns the size in bytes of this res.
+	/**
+		Calc the num of bytes this res takes. This should not include the size of other Res that are used.
+		*/
+	virtual int  CalculateSize() = 0;			
+
+	/**
+		Returns the size in bytes of this res.
+		*/
+	int GetSize();									
 
 	friend class ZFResourceDB;
-	
-	int	m_iTypeIndex;							// Index of this resouce type in the resDB
 };
 
 /**	\brief	A Handle to a Resource.

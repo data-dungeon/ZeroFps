@@ -9,7 +9,9 @@ void LogIt(const char *fmt, ...);
 
 class MadExporter;
 
-/// Base class for all classes that import data to MAD.
+/** \brief	Base class for all classes that import data to MAD.
+	 \ingroup MadMake
+*/
 class IMadImport
 {
 public:
@@ -20,7 +22,9 @@ public:
 	virtual	bool Export(MadExporter* mad, const char* filename) = 0;
 };
 
-/// Exporter for MAD.
+/** \brief	Exporter for MAD.
+	 \ingroup MadMake
+*/
 class MadExporter : public Mad_Core
 {
 private:

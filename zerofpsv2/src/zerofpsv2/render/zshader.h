@@ -115,7 +115,12 @@ enum RENDER_API DRAW_MODE
 	POLYGON_MODE,
 };
 
-/// ZeroFPS Shader SubSystem.
+/**	\brief	ZeroFPS Shader SubSystem.
+		\ingroup Render
+
+The shader SubSystem handles the material that are assigned to meshes. Each material
+contain the texture to use and all options for it. 
+*/
 class RENDER_API ZShader : public ZFSubSystem
 {
 	private:

@@ -129,6 +129,32 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\md1.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\md2.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\qpack.cpp
 # End Source File
 # Begin Source File

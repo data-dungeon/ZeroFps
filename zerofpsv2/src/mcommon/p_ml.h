@@ -13,6 +13,9 @@
 
 using namespace std;
 
+/**	\brief	Da P_Ml
+		\ingroup Common
+*/
 class MCOMMON_API P_Ml: public Property {
 	private:
 		ZeroFps* m_pkFps;

@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 };
 
 /** \brief	Sub System for Sound. 
+	 \ingroup Engine
 
 Use this system to play (start) or stop sounds by 
 creating a (temporary) ZFSoundInfo object and call StartSound. Both loop sounds and

@@ -32,6 +32,7 @@ Headerfiler
 	/ används som sökvägsseparatortecken.
 
 	Layout är samma som källkodsfiler.
+	Funktioner och variabler ska anges i ordningen private, protected och public.
 
 Källkodsfiler:
 	Layout:

@@ -69,7 +69,9 @@ class SCRIPT_API ZFScript : public ZFResource
 
 SCRIPT_API ZFResource* Create__ZFScript();
 
-/// SubSys that handles scripts.
+/**	\brief	SubSys that handles scripts.
+		\ingroup Script
+*/
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:

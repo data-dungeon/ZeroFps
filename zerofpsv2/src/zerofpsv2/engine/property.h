@@ -134,6 +134,7 @@ private:
 /////END OF GUBB ULTRACLASS!!/// 
 
 /**	\brief	A property of a object.
+	 \ingroup Engine
 
   A Property is the things that make the objects in the world diffrent. 
 */

@@ -12,7 +12,9 @@
 
 using namespace std;
 
-
+/**	\brief	Body Liksom.
+		\ingroup Physics
+*/
 class PHYSICSENGINE_API Body
 {
 	private:

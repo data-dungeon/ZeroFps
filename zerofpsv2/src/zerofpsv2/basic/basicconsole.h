@@ -11,8 +11,11 @@ using namespace std;
 
 #define TEXT_MAX_LENGHT 256
 
-/// A base class to create objects that you can print text to.
-class BASIC_API BasicConsole : public ZFSubSystem {
+/**	\brief	A base class to create objects that you can print text to.
+		\ingroup Basic
+*/
+class BASIC_API BasicConsole : public ZFSubSystem 
+{
 protected:
 		vector<char*>	m_kText;										///< Text that the console have.
 

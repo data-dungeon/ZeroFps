@@ -35,6 +35,9 @@
 
 #include "playerdatabase.h"
 
+/**	\brief	Da MistServer
+		\ingroup MistServer
+*/
 class MistServer :public Application , public ZGuiApp {
 	private:
 

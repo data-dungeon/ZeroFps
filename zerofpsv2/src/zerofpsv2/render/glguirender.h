@@ -12,7 +12,9 @@
 
 class TextureManager;
 
-/// Handles rendering of ZGUI.
+/**	\brief	Handles rendering of ZGUI.
+		\ingroup Render
+*/
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:

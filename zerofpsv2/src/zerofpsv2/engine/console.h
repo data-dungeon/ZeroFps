@@ -16,8 +16,11 @@ class ZeroFps;
 //max lenght of an entered command
 #define COMMAND_LENGHT 128
 
-// 
-class ENGINE_API Console : public BasicConsole {
+/** \brief	The Console
+	 \ingroup Engine
+*/
+class ENGINE_API Console : public BasicConsole 
+{
 	private:
 		void FormatKey(int& r_iKey);
 		ZeroFps*		m_pkEngine;		

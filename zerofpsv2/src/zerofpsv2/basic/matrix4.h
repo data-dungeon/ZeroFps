@@ -12,7 +12,9 @@
 class Matrix3;
 class Quaternion;
 
-/// A Class for matrix math with 4 x 4 matrix.
+/**	\brief	A Class for matrix math with 4 x 4 matrix.
+		\ingroup Basic
+*/
 class BASIC_API Matrix4 
 {
 // Data

@@ -9,6 +9,9 @@
 #include <list>
    using namespace std;
 
+/**	\brief	Da P_Item
+		\ingroup Common
+*/
 class MCOMMON_API P_Item: public Property 
 {
 	private:

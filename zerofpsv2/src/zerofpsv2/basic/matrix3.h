@@ -11,7 +11,9 @@
 class Matrix4;
 class Quaternion;
 
-/// A Class for matrix math with 3 x 3 matrix.
+/**	\brief	A Class for matrix math with 3 x 3 matrix.
+		\ingroup Basic
+*/
 class BASIC_API Matrix3 
 {
 	public:

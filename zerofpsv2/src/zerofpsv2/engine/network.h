@@ -115,7 +115,9 @@ struct ZFNet_String
 };
 
 
-/// NetWork SubSystem
+/** \brief	NetWork SubSystem
+	 \ingroup Engine
+*/
 class ENGINE_API NetWork : public ZFSubSystem 
 {
 private:

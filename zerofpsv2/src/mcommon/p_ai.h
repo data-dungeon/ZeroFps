@@ -30,7 +30,9 @@ struct Order
 
 enum { eIDLEMODE, eATTACKMODE };
 
-
+/**	\brief	Da P_AI
+		\ingroup Common
+*/
 class MCOMMON_API P_AI: public Property 
 {
 	private:

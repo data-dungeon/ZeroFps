@@ -18,7 +18,9 @@
 
 using namespace std;
 
-//---start of EnvSetting
+/**	\brief	Da EnvSetting
+		\ingroup Common
+*/
 
 class MCOMMON_API EnvSetting : public ZFResource
 {

@@ -13,6 +13,7 @@
 using namespace std;
 
 /**	\brief	Used by ZFSystem to register it's own commands.
+		\ingroup Basic
 */
 class BASIC_API CmdSystem : public ZFSubSystem  
 {

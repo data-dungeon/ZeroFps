@@ -23,24 +23,17 @@ Plane& Plane::operator=( const Plane& kIn )
 }
 
 // Methods
-
 void Plane::Set(Vector3 kNormal, Vector3 kPos)
 {
 	m_kNormal=kNormal;
 
-//	cout<<"angle:"<<kPos.Dot(kNormal)<<endl;
 	if(kPos.Dot(kNormal) >0)
 	{
-//		cout<<"negativ"<<endl;
 		m_fD = -(kNormal.Proj(kPos).Length());
 	}
 	else {
-//		cout<<"possitiv"<<endl;
 		m_fD = kNormal.Proj(kPos).Length();	
 	}
-	
-//	cout<<"Distance:"<<m_fD<<endl;
-
 }
 
 bool Plane::PointInside(Vector3 kPoint)

@@ -109,7 +109,9 @@ struct Chunk3DS
 class Modell3DS : public IMadImport
 {
 private:
+	
 	part_c part3DS;	
+
 
 public:
 	Modell3DS() {};

@@ -14,8 +14,6 @@
 #include "render_x.h"
 #include "texturemanager.h"
 #include "light.h"
-//#include "../engine/fh.h"
-//#include "../engine/zfresource.h"
 #include "zshader.h"
 
 class PSystem;
@@ -43,7 +41,9 @@ enum PolygonMode
 	LINE 
 };
 
-/// Render SubSystem
+/**	\brief	Render SubSystem
+		\ingroup Render
+*/
 class RENDER_API Render : public ZFSubSystem {
 	private:
 		enum FuncId_e

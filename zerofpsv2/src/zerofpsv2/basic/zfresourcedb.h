@@ -51,20 +51,22 @@ public:
 };
 
 /**	\brief	Resource manger.
+		\ingroup Basic
 
+Handles all resources in the game. All Res types needs to be registred before they can be used.
+To use a resource one must first use a ZFResourceHandle to load the Res and the get the Res ptr 
+from it.   
 */
 class BASIC_API ZFResourceDB : public ZFSubSystem {
 	private:
-		bool	m_bInstantExpire;		
-
 		enum FuncId_e
 		{
 			FID_LISTRES,
 			FID_LISTTYPES,
 		};
 
-		int						m_iNextID;
-
+		bool								m_bInstantExpire;		
+		int								m_iNextID;
 		list<ZFResourceInfo*>		m_kResources;
 		vector<ResourceCreateLink>	m_kResourceFactory;
 
@@ -72,31 +74,34 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
+		// Creating Resources.
+		ZFResource*	CreateResource(string strName);
+		ResourceCreateLink*	FindResourceType(string strName);
+		ZFResourceInfo*	GetResourceData(string strResName);
+		ZFResourceInfo* FindResource(string strResName);
+
 	public:
 		ZFResourceDB();
 		~ZFResourceDB();
-
-		ResourceCreateLink*	FindResourceType(string strName);
-		ZFResource*	CreateResource(string strName);
-		void RegisterResource(string strName, ZFResource* (*Create)());
-
-		ZFResourceInfo*	GetResourceData(string strResName);
-
-		ZFResourceInfo* FindResource(string strResName);
-		bool IsResourceLoaded(string strResName);		
-		
-		void GetResource(ZFResourceHandle& kResHandle, string strResName);
-		//ZFResourceHandle GetResource(string strResName);
-		void FreeResource(ZFResourceHandle& kResHandle);
-
-		bool Refresh();
-
-		ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle);
 
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
 
+		// Resource Types
+		void RegisterResource(string strName, ZFResource* (*Create)());
+
+		// Accessing / Using.
+		bool IsResourceLoaded(string strResName);		
+		ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle);
+
+		
+		void GetResource(ZFResourceHandle& kResHandle, string strResName);
+		void FreeResource(ZFResourceHandle& kResHandle);
+
+		bool Refresh();
+
+		// Stats
 		int	GetResSizeInBytes();
 };
 

@@ -9,6 +9,9 @@
 
 enum { eATTRIBUTES, eSKILLS, eDATA, eHP, eCONT, eCONTID };
 
+/**	\brief	Da CharacterProperty
+		\ingroup Common
+*/
 class MCOMMON_API CharacterProperty: public Property 
 {
 	private:

@@ -7,8 +7,11 @@
 #include "matrix4.h"
 #include "matrix3.h"
 
-///	A class for quaternions (4d num that describes rotation).
-class BASIC_API Quaternion	{
+/**	\brief	A class for quaternions (4d num that describes rotation)
+		\ingroup Basic
+*/
+class BASIC_API Quaternion	
+{
 public:
 	//Vector3 vector;
 	float	x, y, z, w;

@@ -7,7 +7,9 @@
 
 using namespace std;
 
-/// Import for files from MayaExporter.
+/** \brief	Import for files from MayaExporter
+	 \ingroup MadMake
+*/
 class ModellXXX : public IMadImport
 {
 public:

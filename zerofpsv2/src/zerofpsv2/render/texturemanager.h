@@ -42,8 +42,13 @@ struct texture
 	int				m_iSizeInBytes;	// Size of texture in bytes.
 };
 
-/// The SubSystem that handles all textures in ZeroFPS.
-/// Texture can be refered to by name	or id (not same thing as opengl handle).
+/**	\brief	The SubSystem that handles all textures in ZeroFPS.
+		\ingroup Render
+
+Texture can be refered to by name or id (not same thing as opengl handle).
+The texturemanger loads textures and put them in OpenGl so they can be used by the
+Shader SubSystem.
+*/
 class RENDER_API TextureManager : public ZFSubSystem {
 	private:
 

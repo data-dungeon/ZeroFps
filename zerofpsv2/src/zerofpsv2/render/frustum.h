@@ -11,7 +11,9 @@
 
 using namespace std;
 
-/// A Frustum pyramid in 3D.
+/**	\brief	A Frustum pyramid in 3D.
+		\ingroup Render
+*/
 class RENDER_API Frustum 
 {
 	private:

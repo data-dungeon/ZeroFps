@@ -7,7 +7,9 @@
 #include "../render/frustum.h"
 #include "engine_x.h"
 
-/// A Camera (ViewPoint) in ZeroFPS
+/** \brief	A Camera (ViewPoint) in ZeroFPS
+	 \ingroup Engine
+*/
 class ENGINE_API Camera {
 	private:		
 		Matrix4 m_kCamProjectionMatrix;
