@@ -23,7 +23,7 @@ Entity::Entity()
 	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find EntityManager");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
 	ZFAssert(m_pkZeroFps,		   "Entity::Entity(): Failed to find ZeroFps");
-
+ 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
 	m_kLocalPosV= 	Vector3::ZERO;	

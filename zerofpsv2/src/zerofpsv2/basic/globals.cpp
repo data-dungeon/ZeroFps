@@ -257,6 +257,12 @@ void ZFWarning(const char *fmt, ...)
 	cout << "Warning: " <<  g_szFormatText << endl;
 }
 
+void BASIC_API ZFADisplayError2(char* szError,char* szErrorFile,int iLineNumber)
+{
+	cout<<"ERROR:"<<szError<<" File:"<<szErrorFile<< " Line:"<<iLineNumber<<endl;
+	exit(-1);
+}							  
+
 #ifdef WIN32
 #include <windows.h>
 

@@ -722,8 +722,8 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 	{
 		sprintf(szError, "Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
 		printf(szError);
-		ZFAssert(0, szError);
-//		return false; // TEST VC7!!!
+		//ZFAssert(0, szError);
+		//		return false; // TEST VC7!!!
 	}
 
 	int iDoFileRes = lua_dofile(pkScript->m_pkLuaState, strPath.c_str());
@@ -741,7 +741,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 
 		//sprintf(szError, "Failed to run script! \"%s\" does not exist.\n", strPath.c_str());
 		printf(szError);
-		ZFAssert(0, szError);	
+		//ZFAssert(0, szError);	
 	}
 
 	return true;

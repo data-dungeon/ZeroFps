@@ -4,7 +4,7 @@ MAKE = make		#make to use
 ### distcc compilation  , distcc hosts are added in ~/.distcc/hosts
 #CXX = /usr/lib/distcc/bin/g++              			#compiler to use
 #CC = /usr/lib/distcc/bin/g++               			#linker to use
-#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g                  #compiler flags
+#cXXFLAGS= -O3 -g -DNDEBUG #-pg -g                  #compiler flags
 #C_ARGS = -O3 -g #-pg -g
 #MAKEFLAGS= j2													#number of jobs to runt, equal to number of hosts
 
@@ -12,8 +12,11 @@ MAKE = make		#make to use
 ### normal compilation
 CXX = g++              #compiler to use
 CC = g++               #linker to use
-CXXFLAGS= -O3 -g -DNDEBUG# -pg 						#compiler flags
+#CXXFLAGS= -O3 -g -DNDEBUG# -pg 						#compiler flags
+CXXFLAGS= -O3 -g
 C_ARGS = -O3 -g# -pg 				  					#linker flags
+
+
 
 ## whit profiling
 #CXXFLAGS= -O3 -g -DNDEBUG -pg                                                 #compiler flags

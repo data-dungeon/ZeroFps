@@ -957,6 +957,7 @@ void NetWork::Run()
 				break;
 			
 			default:
+				cout<<"galet paket:"<<iClientID<<" o:"<<NetP.m_kData.m_kHeader.m_iOrder<<" t:"<<NetP.m_kData.m_kHeader.m_iPacketType<<" s:"<<NetP.m_iLength<<endl;
 				Logf("netpac", " UnKnown Packet: From: %d Order: %d: Type: %d Size: %d\n",
 					iClientID, 
 					NetP.m_kData.m_kHeader.m_iOrder,

@@ -98,6 +98,7 @@ void MistServer::CreateEditCameras()
 
 void MistServer::OnInit() 
 {
+
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 	//m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 	
@@ -246,6 +247,7 @@ void MistServer::RenderInterface(void)
 void MistServer::OnSystem()
 {
 
+	
 }
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
