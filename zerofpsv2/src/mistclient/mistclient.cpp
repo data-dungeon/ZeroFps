@@ -137,7 +137,8 @@ void MistClient::Init()
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, pkScript);
 
-	HenchmanButton::s_iHenchemanAlphaTex = pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
+	HenchmanButton::s_iHenchemanAlphaTex = 
+		pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
@@ -160,12 +161,15 @@ void MistClient::Init()
 
 	pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
 
+	pkGui->SetFocus(GetWnd("IntroWnd")); 
+
 	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
 	pkFps->m_bClientMode = true;
 
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
+
 
 /*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
 	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
@@ -684,6 +688,8 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
+	
+
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked == NULL)
@@ -691,6 +697,8 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 	string strMainWndName = pkMainWnd->GetName();
 	string strClickWndName = pkWndClicked->GetName();
+
+	printf("strMainWndName = %s\n", strClickWndName.c_str());
 
 	if(strMainWndName == "PanelBkWnd")
 	{
