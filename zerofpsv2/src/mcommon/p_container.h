@@ -44,6 +44,7 @@ class MCOMMON_API MLContainerInfo
 		char	m_cItemY;		
 		char	m_cItemW;
 		char	m_cItemH;
+		char	m_cItemType;
 		
 		int	m_iStackSize;
 		bool	m_bIsContainer;
@@ -125,7 +126,7 @@ class MCOMMON_API P_Container: public Property
 		void 				GetItemList(vector<MLContainerInfo>* pkItemList);
 		vector<int>* 	GetItemTypes ()		{ return &m_kItemTypes; }
 		int 				GetNrOfItems();
-		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..EEEVIL
+		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna sï¿½den blev public..EEEVIL
 		
 
 };

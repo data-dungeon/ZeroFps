@@ -789,7 +789,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read(kTemp.m_cItemX);
 				pkNetMessage->Read(kTemp.m_cItemY);
 				pkNetMessage->Read(kTemp.m_cItemW);
-				pkNetMessage->Read(kTemp.m_cItemH);				
+				pkNetMessage->Read(kTemp.m_cItemH);		
+				pkNetMessage->Read(kTemp.m_cItemType);			
 				pkNetMessage->Read(kTemp.m_iStackSize);				
 				pkNetMessage->Read(kTemp.m_bIsContainer);				
 				
