@@ -84,8 +84,6 @@ void MistServer::OnInit()
 
 void MistServer::Init()
 {	
-	printf("apa\n");
-
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
