@@ -169,7 +169,7 @@ bool OggMusic::Play()
 		return false;
 	} 
 	m_bPlaying=true;
-	ov_pcm_seek(&m_kOggFile,0);
+	//ov_pcm_seek(&m_kOggFile,0);
 	
 	return true;
 }
@@ -224,14 +224,25 @@ bool OggMusic::Stop()
 	int iPlaying;
 	alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
 	if(iPlaying==AL_PLAYING)
-			alSourceStop(m_ALuiSource);
+	{
+		alSourceStop(m_ALuiSource);
+		ALint iBuffersQueued;
+		ALuint ALuiBufferID;
+		alGetSourcei(m_ALuiSource, AL_BUFFERS_QUEUED, &iBuffersQueued);	
+		//cout<<"buffers still in queue:" <<iBuffersQueued <<endl;
+		while(iBuffersQueued > 0)
+		{
+			alSourceUnqueueBuffers(m_ALuiSource, 1, &ALuiBufferID);
+			iBuffersQueued--;
+		}
+	}
 	m_bPlaying=false;
 	//rewind
 
-	/*	Dvoid   krashar här för mig =(
+//	Dvoid   krashar här för mig =(
 	if(ov_pcm_seek(&m_kOggFile,0) != 0)
 		return false;
-	*/
+	
 	return true;
 }
 
