@@ -2,6 +2,10 @@
 #define _BASIC_RESOURCE_H_
 
 #include "engine_x.h"
+#include <string>
+
+using namespace std;
+
 
 class ENGINE_API ZFResource
 {
@@ -13,7 +17,7 @@ public:
 	virtual ~ZFResource();
 
 	void Clear();	
-	void Create();
+	virtual bool Create(string strName) = 0;
 	void Destroy();
 
 	int GetSize() ;

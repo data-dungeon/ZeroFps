@@ -182,7 +182,6 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::MainLoop(void) {
 
 	while(m_iState!=state_exit) {
-		m_pkResourceDB->Refresh();
 
 		Swap();				//swap buffers n calculate fps
 		m_pkNetWork->Run();
@@ -264,7 +263,8 @@ void ZeroFps::MainLoop(void) {
 			//delete objects
 			m_pkObjectMan->UpdateDelete();
 
-			DevPrintf("Mad's: %d / %d / %f", m_iNumOfMadRender, g_iNumOfMadSurfaces, g_fMadLODScale);
+//			DevPrintf("Mad's: %d / %d / %f", m_iNumOfMadRender, g_iNumOfMadSurfaces, g_fMadLODScale);
+			m_pkResourceDB->Refresh();
 			m_iNumOfMadRender = 0;
 			g_iNumOfMadSurfaces = 0;
 			

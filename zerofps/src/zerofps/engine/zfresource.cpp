@@ -21,10 +21,10 @@ void ZFResource::Clear()
 
 }
 	
-void ZFResource::Create() 
+/*bool ZFResource::Create(string strName) 
 {
-
-}
+	return true;
+}*/
 
 void ZFResource::Destroy() 
 {

@@ -1,5 +1,6 @@
-#include "zfresourcedb.h"
-#include "mad_core.h"
+#include "zerofps.h"
+
+ZFResource* Create__Mad_Core();
 
 int	g_iResourceHandleID;
 
@@ -83,6 +84,7 @@ ZFResourceDB::ZFResourceDB()
 {
 	m_iNextID = 0;
 
+	RegisterResource( string(".mad"), Create__Mad_Core );
 }
 
 ZFResourceDB::~ZFResourceDB()
@@ -92,15 +94,23 @@ ZFResourceDB::~ZFResourceDB()
 
 void ZFResourceDB::Refresh()
 {
-	for(int i=0; i<m_kResources.size(); i++ ) {
-		if(m_kResources[i]->m_iNumOfUsers == 0) {
-			cout << "ResDB: Remove '" << m_kResources[i]->m_strName << "'" << endl;
-			delete m_kResources[i];
-			m_kResources.erase(&m_kResources[i]);
+	vector<ZFResourceInfo*>::iterator it;
+
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+		if((*it)->m_iNumOfUsers == 0) {
+			cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
+			delete (*it);
+			m_kResources.erase(it);
 			}
 		}
 
+	ZeroFps* pkZeofps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+		pkZeofps->DevPrintf("%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+		}
 }
+
 
 
 ZFResourceInfo*	ZFResourceDB::GetResourceData(string strResName)
@@ -134,20 +144,21 @@ bool ZFResourceDB::IsResourceLoaded(string strResName)
 
 void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 {
-	ZFResourceInfo* pkRes = GetResourceData(strResName);
+	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
 	
 	// If Resource is loaded we inc ref and return handle to it.
-	if(pkRes) {
-		pkRes->m_iNumOfUsers++;
+	if(pkResInfo) {
+		pkResInfo->m_iNumOfUsers++;
 
-		kResHandle.m_strName	= pkRes->m_strName;
-		kResHandle.m_iID		= pkRes->m_iID;
+		kResHandle.m_strName	= pkResInfo->m_strName;
+		kResHandle.m_iID		= pkResInfo->m_iID;
 		return;
 		}
 
 	// Create Res Class
-	Mad_Core* pkCore = new Mad_Core;
-	if(pkCore->LoadMad(strResName.c_str()) == false) {
+	ZFResource* pkRes = CreateResource(strResName);
+	//Mad_Core* pkCore = new Mad_Core;
+	if(pkRes->Create(strResName.c_str()) == false) {
 		cout << "Failed to Load Resource " << strResName.c_str();
 		cout << "\n";
 		return;
@@ -159,7 +170,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 	kResInfo->m_iID			= m_iNextID++;
 	kResInfo->m_iNumOfUsers	= 1;
 	kResInfo->m_strName		= strResName;
-	kResInfo->m_pkResource	= pkCore;
+	kResInfo->m_pkResource	= pkRes;
 
 	m_kResources.push_back(kResInfo);
 
@@ -167,13 +178,6 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 	kResHandle.m_iID		= kResInfo->m_iID;
 	return;
 }
-
-/*
-ZFResourceHandle ZFResourceDB::GetResource(string strResName)
-{
-
-}*/
-
 
 void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 {
@@ -198,66 +202,56 @@ ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
 	return pkRes->m_pkResource;
 }
 
-
-/*
-	if(pkRes == NULL) {
-		// Not Found, should load here.
-		pkRes->m_pkResource = new Mad_Core;
-		//pkRes->m_pkResource->
-		return -1;
-		}
-
-	pkRes->m_iNumOfUsers++;
-	return pkRes->m_iID;
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-int ZFResourceDB::GetResource(string strResName)
+ResourceCreateLink*	ZFResourceDB::FindResourceType(string strName)
 {
+	for(int i=0; i<m_kResourceFactory.size(); i++) {
+		if(m_kResourceFactory[i].m_strName == strName)
+			return &m_kResourceFactory[i];
+	}
+
+	return NULL;
 }
 
-ZFResourceHandle ZFResourceDB::GetResource(string strResName)
+ZFResource*	ZFResourceDB::CreateResource(string strName)
 {
-	ZFResourceInfo* pkRes = GetResourceData(strResName);
-	if(pkRes == NULL) {
-		// Not Found, should load here.
-		pkRes->m_pkResource = new Mad_Core;
-		Mad_Core* pkMadCore = pkRes->m_pkResource;
-		
+	ResourceCreateLink* pkLink = FindResourceTypeFromFullName(strName);
+	if(pkLink == NULL)
+		return NULL;
 
-		pkRes->m_pkResource->
-		}
-	
+	ZFResource* pkRes = pkLink->Create();
+	return pkRes;
 }
 
-void ZFResourceDB::FreeResource(string strResName)
+void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 {
-	ZFResourceInfo* pkRes = GetResourceData(strResName);
-	if(pkRes == NULL)
-		return;
+	ResourceCreateLink kResLink;
+	kResLink.m_strName = strName;
+	kResLink.Create = Create;
 
-	pkRes->m_iNumOfUsers--;
-	return;
-}*/
+	m_kResourceFactory.push_back(kResLink);
+}
+
+
+ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName)
+{
+	char szFullName[256];
+	strcpy(szFullName, strResName.c_str());
+	Gemens(szFullName);
+
+
+	char* pcExt = strrchr(szFullName, '.');
+	if(!pcExt)
+		return NULL;
+
+	return FindResourceType(string(pcExt));
+}
+
+
+
+
+
+
+
+
 
 

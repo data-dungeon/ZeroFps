@@ -9,6 +9,14 @@
 
 using namespace std;
 
+/// Links a resource type with a creation function
+class ResourceCreateLink
+{
+public:
+	string		m_strName;			// Resource type name.
+	ZFResource*	(*Create)();		// Create function for resource type.
+};
+
 
 class ZFResourceInfo
 {
@@ -67,12 +75,19 @@ class ENGINE_API ZFResourceDB : public ZFObject {
 	private:
 		int						m_iNextID;
 
-		vector<ZFResourceInfo*>	m_kResources;
+		vector<ZFResourceInfo*>		m_kResources;
+		vector<ResourceCreateLink>	m_kResourceFactory;
+
+		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
+
 
 	public:
 		ZFResourceDB();
 		~ZFResourceDB();
 
+		ResourceCreateLink*	FindResourceType(string strName);
+		ZFResource*	CreateResource(string strName);
+		void RegisterResource(string strName, ZFResource* (*Create)());
 
 		ZFResourceInfo*	GetResourceData(string strResName);
 

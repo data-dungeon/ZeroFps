@@ -390,7 +390,8 @@ public:
 	void LoadSkelleton(const char* MadFileName);
 	void LoadAnimation(const char* MadFileName); 
 	void LoadMesh(const char* MDFileName);
-	bool LoadMad(const char* MadFileName);
+	//bool LoadMad(const char* MadFileName);
+	bool Create(string strName);
 
 	void SetAnimationTime(int iAnim, float fTime );
 	void SetBoneAnimationTime(int iAnim, float fTime );

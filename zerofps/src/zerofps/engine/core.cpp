@@ -483,14 +483,15 @@ void Mad_Core::LoadMesh(const char* MDFileName)
 }
 
 
-
-bool Mad_Core::LoadMad(const char* MadFileName)
+bool Mad_Core::Create(string MadFileName)
+//bool Mad_Core::LoadMad(const char* MadFileName)
 {
-	strcpy(Name,MadFileName);
+	strcpy(Name,MadFileName.c_str());
 
 	ZFVFile kZFile;
-	if( !kZFile.Open(string(MadFileName),0,false) ) {
-		cout << "Failed to find" << MadFileName << endl;
+	if( !kZFile.Open(MadFileName,0,false) ) {
+		cout << "Failed to find" << MadFileName.c_str();
+		cout << "\n";
 		return false;
 		}
 
@@ -853,3 +854,9 @@ int	Mad_Core::GetMeshIDByName(char* szName)
 	return -1;
 }
 
+
+
+ZFResource* Create__Mad_Core()
+{
+	return new Mad_Core;
+}
