@@ -3,6 +3,7 @@
 #include "../engine_systems/common/heightmap.h" 
 
 #include "../engine_systems/common/heightmap2.h"
+#include "../engine_systems/common/i_heightmap2.h"
  
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
@@ -339,7 +340,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 	glPopMatrix();	
 }
 
-/*
+/* COMMENT OUT BY DVOID
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 
 //	glEnable(GL_CULL_FACE);
@@ -1071,13 +1072,15 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	Vector3* pkLandTextureCoo1;
 	Vector3* pkLandTextureCoo2;
 
+	I_HeightMap2* pkIMap = dynamic_cast<I_HeightMap2*>(kMap);
+
 	// Get Patch Center
 	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.y + 34*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
-/*	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->m_iHmScaleSize/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.z-(kMap->m_iHmScaleSize/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);*/
+/*	Vector3 PatchCenter(kMap->GetPos().x-(kMap->GetScale()/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
+							  kMap->GetPos().y + 34*HEIGHTMAP_SCALE,
+							  kMap->GetPos().z-(kMap->GetScale()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);*/
 
 
 	DrawCross(PatchCenter,Vector3::ZERO, Vector3(1,1,1),-1);
@@ -1193,17 +1196,18 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 
 void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 {
-//	if(!pkMap->Loaded())
-//		return;
-		
-				
-//	pkMap->UpdateRecLodLevel(kCamPos); 
+	I_HeightMap2* pkIMap = dynamic_cast<I_HeightMap2*>(pkMap);
+
+	if(!pkIMap->Loaded()) 
+		return;
+					
+	pkIMap->UpdateRecLodLevel(kCamPos); 
 
 	glPushMatrix();
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);  
 
-//	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
-	Vector3 kPos(0,0,0);
+	Vector3 kPos = pkIMap->GetPos() - Vector3(pkMap->GetWidth()*pkMap->GetScale() / 
+		2.0,0,pkMap->GetHeight()*pkMap->GetScale() / 2.0);
 	glTranslatef(kPos.x,kPos.y,kPos.z);
 
 

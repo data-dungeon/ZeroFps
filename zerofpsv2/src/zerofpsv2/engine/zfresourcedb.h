@@ -49,7 +49,8 @@ public:
 };
 
 
-class ENGINE_API ZFResourceDB : public I_ZFResourceDB {
+class ENGINE_API ZFResourceDB : public I_ZFResourceDB 
+{
 	private:
 		enum FuncId_e
 		{

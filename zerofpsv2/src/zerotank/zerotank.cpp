@@ -201,9 +201,6 @@ void ZeroTank::Input()
 	if(pkInput->Pressed(KEY_E))
 		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
 
-	if(pkInput->Pressed(KEY_T))
-		pkRender->TestDLLKit();
-
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 	pkFps->GetCam()->GetRot().x+=z/5.0;

@@ -68,7 +68,6 @@ class RENDER_API Render : public ZFSubSystem {
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
    	
 	public:
-		void TestDLLKit();
 		int	m_iDetail;				//	grid size of lod tiles for the terran
 		int	m_iViewDistance;		//	how far until we cut the landscape	
 		int	m_iFpsLock;
