@@ -173,7 +173,7 @@ void MadProperty::PackFrom(NetPacket* pkNetPacket)
 vector<PropertyValues> MadProperty::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
-
+	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
 	kReturn[0].pkValue    = (void*)&m_fScale;
@@ -190,6 +190,8 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 bool MadProperty::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
+		cout << "Setting MadProperty MadFile:" << kValue.c_str();
+		cout << endl;
 		SetBase(kValue.c_str());
 		return true;
 		}

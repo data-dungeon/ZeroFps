@@ -9,10 +9,11 @@
 #include <list>
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
+#include "common_x.h"
 
 using namespace std;
 
-class Tile
+class COMMON_API Tile
 {
 	public:
 		float 		fAngle;
@@ -21,7 +22,7 @@ class Tile
 };
 
 
-class TileEngine 
+class COMMON_API TileEngine 
 {
 	private:
 		HeightMap*		m_pkMap;

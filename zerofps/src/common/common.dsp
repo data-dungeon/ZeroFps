@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\release\*.lib               ..\..\bin\ 
+PostBuild_Cmds=copy                $(ProjDir)\release\*.lib                ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                           $(ProjDir)\debug\*.lib                           ..\..\bin\ 
+PostBuild_Cmds=copy                            $(ProjDir)\debug\*.lib                            ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -253,6 +253,10 @@ SOURCE=.\teleportproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\tileengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\treeidleproperty.cpp
 # End Source File
 # Begin Source File
@@ -394,6 +398,10 @@ SOURCE=.\statusproperty.h
 # Begin Source File
 
 SOURCE=.\teleportproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\tileengine.h
 # End Source File
 # Begin Source File
 
