@@ -197,6 +197,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		DevStringPage*	DevPrint_FindPage(const char* szName);		
 		
 		
+		//zeroed network stuff
+		void SendZoneList(bool bRemove,int iClientID,int iZoneID = -1);
+		
 	public:
 
 		/*

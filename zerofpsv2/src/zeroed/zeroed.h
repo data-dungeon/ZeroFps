@@ -96,8 +96,6 @@ class ZeroEd :public Application , public ZGuiApp {
 			SELECT_MAD,
 		};
 
-		//ambient sound areas
-		void CreateASPDefaultArea(Entity* pkEnt);
 		
 		//wierd stuff
 		char		szCoolName[256];
@@ -177,6 +175,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
 
+		//ambient sound areas
+		void CreateASPDefaultArea(Entity* pkEnt);		
+		
 		// zone and object edit
 		void RebuildZonePosArray();
 		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);

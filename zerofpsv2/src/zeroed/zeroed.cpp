@@ -1599,8 +1599,12 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 
 		case ZPGP_ZED_ZONELIST:
 		{
-			bool bClear;			
+			//cout<<"got zone list"<<endl;
+		
+			bool bClear;	
+			bool bRemove;		
 			PkNetMessage->Read(bClear);
+			PkNetMessage->Read(bRemove);
 			
 			//shuld list be cleared
 			if(bClear)
@@ -1617,7 +1621,23 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 				PkNetMessage->Read(kTemp.m_kPos);
 				PkNetMessage->Read(kTemp.m_kSize);						
 
-				m_kNetworkZones.push_back(kTemp);
+				//remove or add zone?
+				if(!bRemove)
+				{					
+					m_kNetworkZones.push_back(kTemp);
+				}
+				else
+				{
+					for(vector<ZoneData>::iterator it=m_kNetworkZones.begin();it!=m_kNetworkZones.end();it++) 
+					{
+						if((*it).m_iZoneID == kTemp.m_iZoneID)
+						{
+							cout<<"remove zone:"<<kTemp.m_iZoneID<<endl;
+							m_kNetworkZones.erase(it);
+							break;
+						}
+					}
+				}
 							
 				PkNetMessage->Read(kTemp.m_iStatus);
 			}

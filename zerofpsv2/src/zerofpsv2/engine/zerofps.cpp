@@ -1193,8 +1193,13 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 				if(pkEntity->IsZone())
 				{
 					int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
+				
+					//send deleted zone to clients
+					SendZoneList(true,ZF_NET_ALLCLIENT,iZoneID);
+					
 					m_pkEntityManager->DeleteZone(iZoneID);
 					cout << "Delete zone " << iZoneID << endl;
+					
 				}
 				else
 				{					
@@ -1228,6 +1233,9 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		
 		if(id != -1)
 		{
+			//send added zone to client
+			SendZoneList(false,ZF_NET_ALLCLIENT,id);
+		
 			if(strZoneName.length() != 0)
 				m_pkEntityManager->SetZoneModel(strZoneName.c_str(),id);
 			//pkObjectMan->SetUnderConstruction(id);
@@ -1294,47 +1302,8 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	
 	if( szCmd == string("request_zones"))
 	{
-	
-		//cout<<"sending zones to client editor"<<endl;
-	
-		NetPacket kNp;
-		
-		//setup new list package
-		kNp.Clear();
-		kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
-		kNp.Write(bool(true));
-		
-		for(int i = 0;i<m_pkEntityManager->m_kZones.size();i++)
-		{
-			//if packet gets to big
-			if(kNp.m_iLength >= 800)
-			{
-				//send package
-				kNp.Write(int(-1));				
-				kNp.TargetSetClient(pkNetPacket->m_iClientID);
-				m_pkApp->SendAppMessage(&kNp);
-				
-				// and setup a new one
-				kNp.Clear();
-				kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
-				kNp.Write(bool(false));				
-			}
-			
-			//write zone info
-			if(m_pkEntityManager->m_kZones[i].m_iStatus != EZS_UNUSED)
-			{
-				kNp.Write(m_pkEntityManager->m_kZones[i].m_iStatus);
-				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneID);
-				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneObjectID);				
-				kNp.Write(m_pkEntityManager->m_kZones[i].m_kPos);
-				kNp.Write(m_pkEntityManager->m_kZones[i].m_kSize);			
-			}			
-		}
-		
-		//send package
-		kNp.Write(int(-1));
-		kNp.TargetSetClient(pkNetPacket->m_iClientID);
-		m_pkApp->SendAppMessage(&kNp);	
+		SendZoneList(false,pkNetPacket->m_iClientID,-1);
+		//cout<<"sending zones to client editor"<<endl;	
 	}
 	
 	if( szCmd == string("setzonemodel") )	
@@ -1366,6 +1335,76 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			}		
 		}		
 	}		
+}
+
+void ZeroFps::SendZoneList(bool bRemove,int iClientID,int iZoneID)
+{
+	NetPacket kNp;		
+	kNp.Clear();
+	
+	if(iZoneID == -1)
+	{		
+		kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
+		kNp.Write(bool(true));
+		kNp.Write(bool(bRemove));
+			
+		for(int i = 0;i<m_pkEntityManager->m_kZones.size();i++)
+		{
+			//if packet gets to big
+			if(kNp.m_iLength >= 800)
+			{
+				//send package
+				kNp.Write(int(-1));				
+				kNp.TargetSetClient(iClientID);
+				m_pkApp->SendAppMessage(&kNp);
+				
+				// and setup a new one
+				kNp.Clear();
+				kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
+				kNp.Write(bool(false));				
+				kNp.Write(bool(bRemove));
+			}
+			
+			//write zone info
+			if(m_pkEntityManager->m_kZones[i].m_iStatus != EZS_UNUSED)
+			{
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iStatus);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneID);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneObjectID);				
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_kPos);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_kSize);			
+			}			
+		}
+	
+		//send package
+		kNp.Write(int(-1));
+		kNp.TargetSetClient(iClientID);
+		m_pkApp->SendAppMessage(&kNp);					
+	}
+	else
+	{
+		kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
+		kNp.Write(bool(false));
+		kNp.Write(bool(bRemove));		
+		
+		if(ZoneData* pkZone = m_pkEntityManager->GetZoneData(iZoneID))
+		{
+			if( (pkZone->m_iStatus != EZS_UNUSED) )
+			{							
+				kNp.Write(pkZone->m_iStatus);
+				kNp.Write(pkZone->m_iZoneID);
+				kNp.Write(pkZone->m_iZoneObjectID);				
+				kNp.Write(pkZone->m_kPos);
+				kNp.Write(pkZone->m_kSize);			
+			}							
+		
+			//send package
+			kNp.Write(int(-1));
+			kNp.TargetSetClient(iClientID);
+			m_pkApp->SendAppMessage(&kNp);					
+						
+		}
+	}					
 }
 
 

@@ -64,7 +64,7 @@ void ZeroEd::Input_EditZone()
 			SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
 		
 		//request a new zone list
-		SendZoneListRequest();	
+		//SendZoneListRequest();	
 	}
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
@@ -72,14 +72,14 @@ void ZeroEd::Input_EditZone()
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,string(""));
 		
 		//request a new zone list
-		SendZoneListRequest();
+		//SendZoneListRequest();
 	}	
 	
 	if(m_pkInputHandle->VKIsDown("remove"))	
 	{	
 		//delete selected entity ( the server cheks if its a zone or an normal entity)
 		SendDeleteSelected();
-		SendZoneListRequest();
+		//SendZoneListRequest();
 	}
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
