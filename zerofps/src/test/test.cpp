@@ -99,7 +99,7 @@ void Test::OnInit(void) {
 	
 	for( i=0;i<20;i++) {
 		Object *ball=new BallObject();
-		float x=300 + rand()%100;
+		float x=400 + rand()%200;
 		float y=720 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);

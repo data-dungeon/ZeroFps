@@ -1,7 +1,10 @@
 #include "render.h"
 
-Render::Render(TextureManager* pkTexMan) {
-	m_pkTexMan=pkTexMan;
+Render::Render()  
+ :	ZFObject("Render") {
+ 
+ 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+//	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	

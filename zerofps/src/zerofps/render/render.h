@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class RENDER_API Render {
+class RENDER_API Render : public ZFObject {
 	private:
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];
@@ -32,7 +32,7 @@ class RENDER_API Render {
 		int m_iFpsLock;
 		int m_iAutoLod;
 	
-		Render(TextureManager* pkTexMan);
+		Render();
 		
 		void GetFrustum();
 		bool PointInFrustum(Vector3 kPoint);

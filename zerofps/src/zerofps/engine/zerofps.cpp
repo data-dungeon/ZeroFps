@@ -5,8 +5,8 @@ ZeroFps::ZeroFps(void)
 	m_pkFile=new FileIo;
 	m_pkCmd=new CmdSystem;
 	m_pkTexMan=new TextureManager(m_pkFile);
-	m_pkRender=new Render(m_pkTexMan);
-	m_pkConsole=new Console(this);	
+	m_pkRender=new Render();
+	m_pkConsole=new Console();	
 	m_pkInput=new Input();
 	m_pkAudioMan=new AudioManager(this);
 	m_pkLight=new Light();

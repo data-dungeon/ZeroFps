@@ -28,7 +28,7 @@ class ENGINE_API Console : public ZFObject {
 		bool m_bShift;
 
 	public:
-		Console(ZeroFps* pkEngine);
+		Console();
 		
 		void Print(char* aText);
 //		void Gemens(char* aTexT);

@@ -5,12 +5,14 @@
 
 using namespace std;
 
-Console::Console(ZeroFps* pkEngine)
+Console::Console()
   : ZFObject("Console") {
-	m_pkEngine=pkEngine;	
-	m_pkCmd=pkEngine->m_pkCmd;
-	m_pkRender=pkEngine->m_pkRender;
-	m_pkTexMan=pkEngine->m_pkTexMan;
+   	
+   m_pkEngine = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+//	m_pkEngine=pkEngine;	
+	m_pkCmd=m_pkEngine->m_pkCmd;
+	m_pkRender=m_pkEngine->m_pkRender;
+	m_pkTexMan=m_pkEngine->m_pkTexMan;
 //	m_pkInput=pkEngine->m_pkInput;
 	
 	m_iBufferSize=100;
