@@ -32,6 +32,7 @@ Entity::Entity()
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
 	m_kLocalPosV= Vector3::ZERO;	
+	m_kILocalPosV= Vector3::ZERO;	
 	m_kVel		= Vector3::ZERO;
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
@@ -441,7 +442,7 @@ bool Entity::AttachToZone(Vector3 kPos)
 				return  false;
 			}
 	
-			if(!cz->m_pkZone)
+			if( (!cz->m_pkZone) || (!cz->m_bActive) )
 			{
 				//cout<<"Entity tried to move to a unloaded zone"<<endl;
 				return  false;
@@ -1362,6 +1363,7 @@ void Entity::SetWorldRotV(Vector3 kRot)
 
 void Entity::SetLocalPosV(Vector3 kPos)
 {
+
 	//check new zone
 	if(m_bUseZones)
 	{
@@ -1435,7 +1437,11 @@ Vector3 Entity::GetIWorldPosV()
 		return GetWorldPosV();
 
 	if(m_bInterpolate)
+	{	
+		
 		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkZeroFps->GetFrameTime()*3);
+		
+	}
 	else
 	{
 		//still calculate the interpolatet position, but return non interpolatet position

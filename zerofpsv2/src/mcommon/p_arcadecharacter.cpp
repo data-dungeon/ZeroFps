@@ -25,12 +25,13 @@ P_ArcadeCharacter::~P_ArcadeCharacter()
 void P_ArcadeCharacter::Init()
 {
 	cout<< "New character created"<<endl;
-	GetObject()->SetInterpolate(true);
+//	GetObject()->SetInterpolate(true);
 
 }
 
 void P_ArcadeCharacter::Update()
 {
+	
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
 	
@@ -128,6 +129,8 @@ void P_ArcadeCharacter::Fire()
 
 Vector3 P_ArcadeCharacter::AutoAim()
 {
+
+
 	vector<Entity*> kObjects;	
 	m_pkObjMan->GetZoneObject()->GetAllEntitys(&kObjects);	
 	

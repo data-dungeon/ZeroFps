@@ -306,60 +306,10 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
-	m_pkCameraEntity = m_pkObjectMan->CreateObject();
-
-	if(m_pkCameraEntity)
-	{
-		m_pkCameraEntity->AddProperty("P_Camera");	
-	
-		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
-		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
-		
-		m_pkCameraProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");		
-		if(m_pkCameraProp)
-		{
-			m_pkCameraProp->SetCamera(m_pkCamera);
-			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
-			m_pkCameraProp->Set3PPAngle(1.30);
-			
-			m_pkCameraProp->Set3PYAngle(m_fAngle);
-			m_pkCameraProp->Set3PDistance(m_fDistance);							
-			
-			m_pkCameraEntity->GetSave() = false;
-		}
-		
-		
-		//add enviroment to camera
-		if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
-		{
-			pkEnv->SetEnable(true);
-			pkEnv->SetEnviroment("data/enviroments/dm.env");			
-		}
-
-				
-		//add tracker to camera
-		m_pkCameraEntity->AddProperty("P_Track");
-	}
-
-	
-	m_iPlayerEntityID =	-1;
-	m_pkPlayerEntity =	NULL;
-	
-//	for(int i = 0 ;i<10;i++)
-//		m_pkObjectMan->UpdateZones();		
-	
-		
 	if(!CreatePlayer())
 	{
 		cout<<"ERROR: PLAYER NOT CREATED"<<endl;
 		exit(1);	
-	}
-	else
-	{
-		m_pkCameraEntity->SetRelativeOri(true);
-		m_pkCameraEntity->SetLocalPosV(Vector3(0,0,0));
-		m_pkCameraEntity->SetParent(m_pkPlayerEntity);
-		
 	}
 	
 	/*
@@ -373,6 +323,8 @@ void DarkMetropolis::OnServerStart()
 	
 	UpdateAgentsOnField();
 	*/
+
+
 }
 
 void DarkMetropolis::OnClientStart()
@@ -426,7 +378,7 @@ void DarkMetropolis::Input()
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
-
+/*
 	//check for camera movment
 	float fMx,fMy;
 	if(!m_pkInputHandle->VKIsDown("camera"))
@@ -484,7 +436,7 @@ void DarkMetropolis::Input()
 		if(m_pkGui->m_bUseHardwareMouse == true)
 			m_pkInput->ShowCursor(true);
 	}
-		
+*/		
 
 	if(m_pkPlayerEntity)
 	{	
@@ -509,7 +461,9 @@ void DarkMetropolis::Input()
 			float y;
 			m_pkInputHandle->UnitMouseXY(x,y);	
 			pkChar->m_kDir.Set(x,0,y);
+		
 		}
+		
 		
 		if(m_pkInputHandle->Pressed(KEY_H))
 			m_pkPlayerEntity->SetWorldPosV(Vector3(0,2,0));
@@ -1094,12 +1048,33 @@ bool DarkMetropolis::CreatePlayer()
 			Vector3 kStartPos = m_kEntitys[i]->GetWorldPosV();		
 			m_pkObjectMan->Delete(m_kEntitys[i]);
 		
-			m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_arcadeplayer.lua",kStartPos);			
-			m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
-
-			return true;			
+			//create entity
+			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_arcadeplayer.lua",kStartPos))
+			{			
+				//save id
+				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
+								
+				//create camera
+				if(m_pkCameraProp = (P_Camera*)m_pkPlayerEntity->AddProperty("P_Camera"))
+				{
+					m_pkCameraProp->SetCamera(m_pkCamera);
+					m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
+					m_pkCameraProp->Set3PPAngle(1.30);					
+					m_pkCameraProp->Set3PYAngle(m_fAngle);
+					m_pkCameraProp->Set3PDistance(m_fDistance);							
+				}
+							
+				//create enviroment
+				
+				if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkPlayerEntity->AddProperty("P_Enviroment"))
+				{
+					pkEnv->SetEnable(true);
+					pkEnv->SetEnviroment("data/enviroments/dm.env");			
+				}					
+				
+				return true;
+			}
 		}
 	}
-	
 	return false;
 }

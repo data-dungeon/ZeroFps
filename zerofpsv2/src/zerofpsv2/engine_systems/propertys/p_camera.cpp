@@ -31,7 +31,6 @@ void P_Camera::Update()
 	if(!m_pkCamera)
 		return;
 
-		
 	Vector3		kYawVector;
 	string		strCamName;
 
@@ -47,10 +46,11 @@ void P_Camera::Update()
 				r.Rotate(Vector3(-90,0,0));
 				m_pkCamera->SetRotM(r);
 				
-				Vector3 dir = m_pkObject->GetIWorldPosV() - m_kInterPos;
+				Vector3 kPos = m_pkObject->GetIWorldPosV();
+				Vector3 dir = kPos - m_kInterPos;
+				
 				m_kInterPos +=dir/8;
-				
-				
+								
 				float xp = sin(m_f3PYAngle);
 				float zp = cos(m_f3PYAngle);				
 				float yp = tan(m_f3PPAngle);								
@@ -179,22 +179,6 @@ void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
 
 	kCamera.LookDir(kLookDir,kCamUp);
 
-/*	Vector3 kRight;
-	
-	kLookDir.Normalize();
-	kCamUp.Normalize();
-
-	kRight = kCamUp.Cross(kLookDir);
-	kRight.Normalize();
-	kCamUp = kLookDir.Cross(kRight);
-	kCamUp.Normalize();
-
-	kCamera.Identity();
-	kCamera.SetAxis(0,kRight);
-	kCamera.SetAxis(1,kCamUp);
-	kCamera.SetAxis(2,kLookDir);
-	kCamera.Transponse();
-*/
 	m_pkCamera->SetRotM(kCamera);
 	m_pkCamera->SetPos(kCamPosition);
 }
@@ -212,9 +196,20 @@ void P_Camera::OrthoMove(Vector3 kMove)
 
 void P_Camera::SetCamera(Camera *pkCamera) 
 {
-	if(m_pkCamera)		m_pkCamera->m_iEntity = -1;
+	if(m_pkCamera)		
+		m_pkCamera->m_iEntity = -1;
+	
 	m_pkCamera = pkCamera; 
-	if(m_pkCamera)		m_pkCamera->m_iEntity = m_pkObject->GetEntityID();
+	
+	if(m_pkCamera)
+	{
+		m_pkCamera->m_iEntity = m_pkObject->GetEntityID();		
+		
+		cout<<"Attached a new camera"<<endl;
+		
+		cout<<"current camera position "<<m_pkCamera->GetPos().x<<" "<<m_pkCamera->GetPos().y<<" "<<m_pkCamera->GetPos().z<<endl;
+		cout<<"new position "<<m_pkObject->GetWorldPosV().x<<" "<< m_pkObject->GetWorldPosV().y<<" "<<m_pkObject->GetWorldPosV().z<<endl;
+	}
 }
 
 

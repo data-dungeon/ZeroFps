@@ -628,7 +628,6 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Matrix4 kOri)
 
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 
 {
-
 	m_kPos=kPos;
 	m_kHead=kHead;
 	m_kUp=kUp;

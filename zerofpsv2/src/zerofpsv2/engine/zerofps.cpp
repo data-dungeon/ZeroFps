@@ -348,13 +348,15 @@ void ZeroFps::Run_Server()
 
 void ZeroFps::Run_Client()
 {
+
 	//run application main loop
 	m_pkApp->OnIdle();
-
 		
 	if(!m_bServerMode)
 		Update_System(false);	
 
+		
+		
 	//   _---------------------------------- fulhack deluxe 
 	Draw_RenderTargets();
 	
@@ -373,6 +375,7 @@ void ZeroFps::Run_Client()
 	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	m_pkAudioSystem->Update();
 
+	
 	//run application Head On Display
 	SetCamera(m_pkConsoleCamera);
 	m_pkApp->OnHud();
