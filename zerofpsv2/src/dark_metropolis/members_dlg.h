@@ -80,7 +80,7 @@ private:
 	bool GetContainer(int x, int y, CONTAINER_INFO& kContainer, int agent_obj_id);
 	bool GetItemPosFromCursor(int x, int y, int& itempos_x, 
 		int& itempos_y, int& slotpos_x, int& slotpos_y);
-	void DropItem(ITEM_MOVE_INFO* pkObject);
+	bool DropItem(ITEM_MOVE_INFO* pkObject);
 	void UpdateInventory(Entity* pkCharacterObject);
 	void UpdateLevelbar(DMCharacterStats* pkStats);
 	void CreateCamera();

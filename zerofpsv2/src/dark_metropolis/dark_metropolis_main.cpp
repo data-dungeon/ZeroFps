@@ -599,6 +599,8 @@ void DarkMetropolis::Input()
 							{										
 								if(pkCh->m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
 								{	
+									m_pkAudioSys->StartSound("data/sound/pick_up.wav", 
+										pkPickEnt->GetWorldPosV());
 									cout<<"Pickup an item"<<endl;
 									return;
 								}

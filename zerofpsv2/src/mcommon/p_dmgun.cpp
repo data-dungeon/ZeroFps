@@ -73,6 +73,8 @@ void P_DMGun::SetAmmo (int iAmmo)
 
 void P_DMGun::Update()
 {
+	static float prevAmmoPlayTime = 0;
+
 	float t = m_pkObjMan->GetSimTime();
 
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
@@ -106,6 +108,21 @@ void P_DMGun::Update()
 
 	if(!m_bFireing)	//firing?
 		return;
+
+	if(m_iAmmo <= 0)
+	{
+		if(t - prevAmmoPlayTime > 0.5f)
+		{
+			cout<<"IM OUT OF AMMO"<<endl;
+			m_pkAudioSys->StartSound("data/sound/no_ammo.wav",	
+				m_pkObject->GetWorldPosV(), m_kDir, false);
+			prevAmmoPlayTime = t;
+		}
+	}
+	else
+	{
+		prevAmmoPlayTime = 0;
+	}
 	
 	
 	if( t - m_fTimeFired > m_fBurstLength)   //should we stop fireing
@@ -132,7 +149,9 @@ void P_DMGun::Update()
 	
 	//if no bullets are to be fired, we return
 	if(iAmmoToFire <= 0)
+	{
 		return;
+	}
 	
 	m_fTimeBulletFired = t;
 	
@@ -144,8 +163,6 @@ void P_DMGun::Update()
 	//remove ammo
 	m_iAmmo-=iAmmoToFire;	
 
-	if(m_iAmmo <= 0)
-		cout<<"IM OUT OF AMMO"<<endl;
 }
 
 bool P_DMGun::FireBullets(int iAmount)

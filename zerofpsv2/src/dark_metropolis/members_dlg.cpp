@@ -91,10 +91,11 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "MembersDropItemBn")
 	{
-		DropItem(m_pkSelectInfo);
-
-		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-			m_pkAudioSys->GetListnerPos()); 
+		if(DropItem(m_pkSelectInfo))
+		{
+			m_pkAudioSys->StartSound("data/sound/drop_item.wav", 
+				m_pkAudioSys->GetListnerPos()); 
+		}
 	}
 
 	if(strClickName.find("ItemButton") != string::npos)
@@ -723,12 +724,12 @@ bool CMembersDlg::GetItemPosFromCursor(int x, int y,
 	return true;
 }
 
-void CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
+bool CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 {
 	if(pkObject == NULL)
 	{
 		printf("Failed to drop item\n");
-		return;
+		return false;
 	}
 
 	DMContainer* pkBackPack=NULL, *pkArmor=NULL;
@@ -755,11 +756,15 @@ void CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 
 		delete m_pkSelectInfo;
 		m_pkSelectInfo = NULL;
+
+		return true;
 	}
 	else
 	{
 		printf("Failed to drop item\n");
 	}
+
+	return false;
 }
 
 void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
