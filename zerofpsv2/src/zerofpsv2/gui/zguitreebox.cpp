@@ -596,6 +596,9 @@ void ZGuiTreebox::ScrollCols()
 			(*it)->pkButton->SetMoveArea((*it)->pkButton->GetScreenRect());
 		}
 
+		m_pkSelLabel->Move(-(offset*(m_iButtonSize+VERT_ROW_SPACE)), 0, true, true);
+		m_pkSelLabel->SetMoveArea(m_pkSelLabel->GetScreenRect());
+
 		PREV_HORZ_SCROLLCOL = m_iStartcol;
 	}
 }
