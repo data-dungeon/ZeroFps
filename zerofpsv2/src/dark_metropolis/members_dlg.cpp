@@ -336,16 +336,16 @@ void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 
 	char szText[150];	
 
-	sprintf(szText, "Name: %s", pkCharacterStats->m_strName);
+	sprintf(szText, "Name: %s", pkCharacterStats->m_strName.c_str());
 	GetWnd("MemberName")->SetText(szText);
 
-	sprintf(szText, "Armor: %i", (int) pkCharacterStats->m_fArmour);
+	sprintf(szText, "Armor: %i", (int) pkCharacterStats->m_fArmour.c_str());
 	GetWnd("MemeberArmor")->SetText(szText);
 
-	sprintf(szText, "Speed: %i", (int) pkCharacterStats->m_fSpeed);
+	sprintf(szText, "Speed: %i", (int) pkCharacterStats->m_fSpeed.c_str());
 	GetWnd("MemberSpeed")->SetText(szText);
 
-	sprintf(szText, "Wage: %i%", (int) pkCharacterStats->m_fWage);
+	sprintf(szText, "Wage: %i%", (int) pkCharacterStats->m_fWage.c_str());
 	GetWnd("MemeberWage")->SetText(szText);
 
 
