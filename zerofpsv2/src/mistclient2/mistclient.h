@@ -68,7 +68,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestKillMe();
 
 		void SendAction(int iEntityID,const string& strAction);
-<<<<<<< void SendRequestIventory();	
+		void SendRequestIventory();	
 			
 		// gui stuff
 		bool NameIPFromServerList(string& strName, string& strIP);

@@ -383,7 +383,9 @@ void MistClient::Input()
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
 		else
-			m_pkInventoryDlg->Open(); 
+		{
+			SendRequestIventory();			
+		}
 	}
 	
 
@@ -470,14 +472,7 @@ void MistClient::Input()
 			}
 		}	
 	}	
-	
-	if( m_pkInputHandle->Pressed(KEY_I) )
-	{
-		if(!DelayCommand())
-		{				
-			SendRequestIventory();
-		}	
-	}
+
 	
 		
 	//check buttons
@@ -754,6 +749,9 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			{
 				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
 			}
+			
+			
+			m_pkInventoryDlg->Open(); 
 				
 			break;
 		}		
