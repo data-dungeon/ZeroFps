@@ -21,9 +21,11 @@ ZGui::ZGui()
 
 	m_bActive = false;
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
-	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	m_pkRenderer = static_cast<ZGuiRender*>(
+		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkResManager = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
+	m_pkResManager = static_cast<ZGuiResourceManager*>(
+		g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkActiveMainWin = NULL;
 	m_pkPrevMainWnd = NULL;
 	m_bLeftButtonDown = false;
@@ -38,7 +40,8 @@ ZGui::ZGui()
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16, 16, 0, ZG_DEFAULT_GUI_FONT);
 	pkDefaultFont->CreateFromFile("../data/textures/text/font.bmp");
-	m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkDefaultFont->m_iID, pkDefaultFont)); 
+	m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkDefaultFont->m_iID, 
+		pkDefaultFont)); 
 }
 
 ZGui::~ZGui()
@@ -65,7 +68,8 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 		if(itFont != m_pkFonts.end())
 			pkNewWindow->SetFont(itFont->second);
 	}
-	m_pkWindows.insert( map<int, ZGuiWnd*>::value_type(pkNewWindow->GetID(), pkNewWindow) ); 
+	m_pkWindows.insert( map<int, ZGuiWnd*>::value_type(pkNewWindow->GetID(), 
+		pkNewWindow) ); 
 
 	return true;
 }
@@ -75,7 +79,7 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	if(pkWindow == NULL)
 		return false;
 
-	// Ta fösrt bort eventuellt main window
+	// Ta först bort eventuellt main window
 	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
 		 itMain != m_pkMainWindows.end(); itMain++ )
 		 {
@@ -89,7 +93,8 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 				
 				MAIN_WINDOW* best = NULL;
 				int heighest = -1;
-				for( list<MAIN_WINDOW*>::iterator itMain2 = m_pkMainWindows.begin();
+				for( list<MAIN_WINDOW*>::iterator itMain2 = 
+					m_pkMainWindows.begin();
 					 itMain2 != m_pkMainWindows.end(); itMain2++ )
 					 {
 						if((*itMain2)->iZValue > heighest && 
@@ -112,12 +117,9 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 
 	if(itWnd != m_pkWindows.end())
 	{
-		m_pkWindows.erase(itWnd);
-
-		ZGuiWnd::ResetStaticClickWnds(pkWindow);
-
 		delete pkWindow;
 		pkWindow = NULL;
+		m_pkWindows.erase(itWnd);
 	}
 	else
 	{
@@ -128,7 +130,8 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 }
 
 // Lägg till ett huvudfönster
-bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool bSetAsActive)
+bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, 
+						 callback cb, bool bSetAsActive)
 {
 	// Ett main window skall inte ha någon parent!
 	pkWindow->SetParent(NULL);
@@ -236,7 +239,8 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x, int y)
 	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
 		 it != m_pkMainWindows.end(); it++ )
 		 {
-			if( (*it)->pkWnd->IsVisible() && (*it)->pkWnd->GetScreenRect().Inside(x,y) )
+			if( (*it)->pkWnd->IsVisible() && 
+				(*it)->pkWnd->GetScreenRect().Inside(x,y) )
 			{
 				if( best->pkWnd->GetScreenRect().Inside(x,y) )
 				{
@@ -267,7 +271,8 @@ bool ZGui::OnMouseUpdate()
 
 	// Skall vi byta main window?
 	MAIN_WINDOW* wnd;
-	if((bLeftButtonDown && m_bLeftButtonDown==false) && (wnd = FindMainWnd(x,y)))
+	if( (bLeftButtonDown && m_bLeftButtonDown==false) && 
+		(wnd = FindMainWnd(x,y)))
 	{
 		if(wnd != m_pkActiveMainWin)
 		{
@@ -299,7 +304,8 @@ bool ZGui::OnMouseUpdate()
 				if(pkParent) 
 					pkParent->SortChilds();
 				
-				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_DOWN);
+				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, 
+					NCODE_CLICK_DOWN);
 			}
 			else
 			{
@@ -317,10 +323,12 @@ bool ZGui::OnMouseUpdate()
 	if(bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked != NULL)
 	{	
 		// Skall fönstret flyttas?
-		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
+		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == 
+			ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
 			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_MOVE);
-			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-m_pnCursorRangeDiffY,true,false);
+			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-
+				m_pnCursorRangeDiffY,true,false);
 
 			// Notify the main window that the window is moving
 			if(m_bLeftButtonDown == true)
@@ -331,7 +339,8 @@ bool ZGui::OnMouseUpdate()
 				pkParams[2] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Top;
 				pkParams[3] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Right;
 				pkParams[4] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Bottom;
-				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked, ZGM_MOVING, 5, pkParams);
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked, 
+					ZGM_MOVING, 5, pkParams);
 				delete[] pkParams;
 			}
 		}
@@ -348,7 +357,8 @@ bool ZGui::OnMouseUpdate()
 				if( ZGuiWnd::m_pkPrevWndClicked && 
 					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
 					if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
-						ZGuiWnd::m_pkPrevWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_RELEASE);
+						ZGuiWnd::m_pkPrevWndClicked->Notify(
+							ZGuiWnd::m_pkWndClicked, NCODE_RELEASE);
 
 				if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
 					ZGuiWnd::m_pkPrevWndClicked = ZGuiWnd::m_pkWndUnderCursor;
@@ -359,12 +369,14 @@ bool ZGui::OnMouseUpdate()
 			{
 				SetFocus(ZGuiWnd::m_pkWndClicked);
 
-				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_UP);
+				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, 
+					NCODE_CLICK_UP);
 				
 				// Notify the main window that the window have been clicked
 				int* pkParams = new int[1];
 				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
-				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, ZGM_COMMAND, 1, pkParams);
+				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, 
+					ZGM_COMMAND, 1, pkParams);
 				delete[] pkParams;
 
 				ZGuiWnd::m_pkWndClicked = NULL;
@@ -372,7 +384,8 @@ bool ZGui::OnMouseUpdate()
 			else
 			{
 				if(ZGuiWnd::m_pkPrevWndUnderCursor)
-					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_RELEASE);
+					ZGuiWnd::m_pkWndClicked->Notify(
+						ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_RELEASE);
 			}
 		}
 	}
@@ -385,10 +398,12 @@ bool ZGui::OnMouseUpdate()
 		{
 			if(ZGuiWnd::m_pkWndUnderCursor != ZGuiWnd::m_pkPrevWndUnderCursor)
 			{
-				ZGuiWnd::m_pkWndUnderCursor->Notify(ZGuiWnd::m_pkWndUnderCursor, NCODE_OVER_CTRL);
+				ZGuiWnd::m_pkWndUnderCursor->Notify(
+					ZGuiWnd::m_pkWndUnderCursor, NCODE_OVER_CTRL);
 
 				if(ZGuiWnd::m_pkPrevWndUnderCursor)
-					ZGuiWnd::m_pkPrevWndUnderCursor->Notify(ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_DEFAULT);
+					ZGuiWnd::m_pkPrevWndUnderCursor->Notify(
+					ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_DEFAULT);
 				
 				ZGuiWnd::m_pkPrevWndUnderCursor = ZGuiWnd::m_pkWndUnderCursor;
 			}
@@ -410,14 +425,16 @@ bool ZGui::OnKeyUpdate()
 
 	// Kolla först om vi skall köra ett keycommand...
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*>::iterator itKey;
-	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*, int>(ZGuiWnd::m_pkFocusWnd, iKey));
+	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*, int>
+		(ZGuiWnd::m_pkFocusWnd, iKey));
 	if(itKey != m_KeyCommandTable.end())
 	{		
 		// Skicka ett Command medelande till valt fönster.
 		int* pkParams = new int[1];
 		int id = itKey->second->GetID(); // control id
 		pkParams[0] = id;
-		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, ZGM_COMMAND, 1, pkParams);
+		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, ZGM_COMMAND, 
+			1, pkParams);
 		delete[] pkParams;
 	}
 
@@ -577,7 +594,8 @@ void ZGui::ShowMainWindow(int iID, bool bShow)
 
 					MAIN_WINDOW* best = NULL;
 					int heighest = -1;
-					for( list<MAIN_WINDOW*>::iterator itMain2 = m_pkMainWindows.begin();
+					for( list<MAIN_WINDOW*>::iterator itMain2 = 
+						m_pkMainWindows.begin();
 						 itMain2 != m_pkMainWindows.end(); itMain2++ )
 							if((*itMain2)->iZValue > heighest && 
 								(*itMain2)->pkWnd->IsVisible())
@@ -630,12 +648,16 @@ bool ZGui::IgnoreKey(int Key)
 
 }
 
-ZGuiFont* ZGui::AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID)
+ZGuiFont* ZGui::AddBitmapFont(char* strBitmapName, char cCharsOneRow, 
+							  char cCellSize, char cPixelGapBetweenChars, 
+							  int iID)
 {
-	ZGuiFont* pkNewFont = new ZGuiFont(cCharsOneRow,cCellSize,cPixelGapBetweenChars,iID);
+	ZGuiFont* pkNewFont = new ZGuiFont(cCharsOneRow,cCellSize,
+		cPixelGapBetweenChars,iID);
 	if(pkNewFont->CreateFromFile(strBitmapName))
 	{
-		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkNewFont->m_iID, pkNewFont) ); 
+		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkNewFont->m_iID, 
+			pkNewFont) ); 
 		return pkNewFont;
 	}
 
@@ -671,6 +693,7 @@ void ZGui::SetDefaultFont(ZGuiFont* pkFont)
 	{
 		delete (itFont->second);
 		m_pkFonts.erase(itFont);
-		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkFont->m_iID, pkFont)); 
+		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(
+			pkFont->m_iID, pkFont)); 
 	}
 }

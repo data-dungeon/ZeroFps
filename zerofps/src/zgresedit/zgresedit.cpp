@@ -42,21 +42,6 @@ ZGResEdit::~ZGResEdit()
 
 }
 
-void ClearConsol()
-{
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD coordScreen = { 0, 0 };
-	DWORD cCharsWritten;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	DWORD dwConSize;
-	GetConsoleScreenBufferInfo(hConsole, &csbi);
-	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-	FillConsoleOutputCharacter(hConsole, (TCHAR) ' ', dwConSize, coordScreen, &cCharsWritten);
-	GetConsoleScreenBufferInfo(hConsole, &csbi);
-	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
-	SetConsoleCursorPosition(hConsole, coordScreen);
-}
-
 void ZGResEdit::OnInit()
 {
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);
@@ -84,7 +69,6 @@ void ZGResEdit::OnInit()
 	pkFps->ToggleGui();
 
 	SDL_WM_SetCaption("Resource Editor", "mainicon.ico");
-	ClearConsol();
 }
 
 void ZGResEdit::OnIdle()
@@ -325,17 +309,8 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWindow, unsigned int uiMessage,
 		case KEY_DELETE:
 			if(!pkGui->UnregisterWindow(pkWindow))
 				cout << "Failed to unregister window!" << endl;
-		/*	delete pkWindow;
-			pkWindow = NULL;*/
-			break;
-		case KEY_SPACE:
-			//ClearScreen();
 			break;
 		}
-		break;
-
-	case ZGM_KEYUP:
-		//printf("key ZGM_KEYUP\n");
 		break;
 	}
 
