@@ -977,6 +977,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			P_Item* 			pkItem = 				NULL;
 			Entity*			pkCharacter = 			NULL;
 			
+			cout<<"got move package  item:"<<iItemID<<" targetcontainer:"<<iTargetContainer<<" pos:"<<iPosX<<"x"<<iPosY<<" count:"<<iCount<<endl;
+			
 			//get container
 			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))
 				pkTargetContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
@@ -1021,8 +1023,10 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						SayToClients("target container is not yours",PkNetMessage->m_iClientID);
 						break;					
 					}								
-		
-					//try adding item on a free position in character inventory										
+							
+					cout<<"picking up item from ground"<<endl;
+					
+					//try adding item from gound									
 					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
 					else
@@ -1056,6 +1060,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//if we have a position, try moving there
 					if(iPosX != -1)
 					{
+						cout<<"no target container, moving within this container"<<endl;
+					
 						if(pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
@@ -1066,6 +1072,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//no position, try drop
 					else
 					{
+						cout<<"got no position, droping item"<<endl;
 						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
 							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 						else
@@ -1084,6 +1091,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						break;					
 					}				
 				
+					cout<<"moving item to another container"<<endl;
 					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 					{
 						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);

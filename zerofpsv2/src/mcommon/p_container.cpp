@@ -163,6 +163,8 @@ bool P_Container::StackItem(P_Item* pkItem,int iX,int iY,int iCount)
 		//check if stackable
 		if(CanStack(pkTargetItem,pkItem))
 		{
+			cout<<"trying to stack"<<endl;
+			
 			//get free stack		
 			int iFree = pkTargetItem->m_iStackMax - pkTargetItem->m_iStackSize;
 			if(iFree <= 0)
@@ -203,6 +205,8 @@ bool P_Container::StackItem(P_Item* pkItem,int iX,int iY,int iCount)
 					m_pkEntMan->Delete(pkItem->GetEntity());
 				}
 			}
+			
+			cout<<"successfull stacking"<<endl;
 			
 			//have now handled the stacking
 			return true;
@@ -332,6 +336,8 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 	//place on free slot?
 	if(iX == -1)
 	{
+		cout<<"moving to freepos ,or free stack"<<endl;
+		
 		int iTargetPosX = -1;
 		int iTargetPosY = -1;
 								
@@ -344,6 +350,7 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 	}
 	else
 	{
+		cout<<"moving to position "<<iX<<" "<<iY<<endl;
 		if(AddItemAtPos(pkItem,iX,iY,iCount))
 			return true;			
 	}
@@ -366,6 +373,8 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		cout<<"position not free"<<endl;
 		return false;
 	}
+	
+	cout<<"setting item to new location"<<endl;
 		
 	//get current container, if any, and clear item from its current position
 	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))

@@ -729,10 +729,12 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
 	}
 
+	/* denna ska inte behövas, servern skickar automatiskt uppdates på containers när den fått move paketet
 	g_kMistClient.RequestOpenInventory();
 	if(m_iActiveContainerID)
 		g_kMistClient.SendRequestContainer(m_iActiveContainerID);
-	
+	*/
+		
 	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
@@ -1016,7 +1018,9 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 
 		if(iCount != 0)
 			g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, iCount);	
-		
+
+			
+		/*		denna ska inte behövas, servern skickar automatiskt uppdates på containers när den fått move paketet
 		if(m_kSplitSlot.bIsInventoryItem)
 			g_kMistClient.RequestOpenInventory();
 		else
@@ -1024,6 +1028,7 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 			if(m_iActiveContainerID)
 				g_kMistClient.SendRequestContainer(m_iActiveContainerID);
 		}
+		*/
 	}
 
 	m_kSplitSlot.m_iIndex = -1;

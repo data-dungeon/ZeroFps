@@ -430,8 +430,9 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 			return true;
 			}
 	}
-	else
-		cout << "Hit max per frame number"<< endl;
+	// dvoid tröttna på jobbiga utskrifter
+	//else
+	//	cout << "Hit max per frame number"<< endl;
 
 
 	for(int i=0; i<m_RemoteNodes.size(); i++)
