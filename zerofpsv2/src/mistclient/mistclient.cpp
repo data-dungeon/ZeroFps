@@ -85,7 +85,7 @@ void MistClient::Init()
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
 	//init mistland script intreface
-	MistLandLua::Init(pkScript);
+	MistLandLua::Init(pkObjectMan,pkScript);
 	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);

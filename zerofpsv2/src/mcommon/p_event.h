@@ -8,6 +8,8 @@
 #include <string.h>
 #include "mcommon_x.h"
 
+#include "si_mistland.h"
+
 using namespace std;
 
 class MCOMMON_API P_Event: public Property {
@@ -17,6 +19,9 @@ class MCOMMON_API P_Event: public Property {
 		ZFResourceHandle* m_pkScriptResHandle;
 
 		bool m_bHaveRunInit;
+		bool m_bRun1SUpdate;
+
+		float m_fTimer;
 
 	public:
 		void CloneOf(Property* pkProperty) { }

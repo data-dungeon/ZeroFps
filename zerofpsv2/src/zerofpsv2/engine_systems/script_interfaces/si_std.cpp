@@ -16,14 +16,16 @@ void StdLua::Init(ZFScriptSystem* pkScript)
 
 int StdLua::PrintLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	for(int i=0;i<g_pkScript->GetNumArgs(pkLua);i++)
 	{
 		char acText[256];
-		g_pkScript->GetArg(pkLua, 0, acText);
+		g_pkScript->GetArgString(pkLua, i, acText);
 	
-		cout<<acText<<endl;
+		cout<<acText;
 	}
-
+	
+	cout<<endl;
+	
 	return 1;
 }
 

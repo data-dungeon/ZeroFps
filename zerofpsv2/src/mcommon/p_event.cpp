@@ -12,7 +12,9 @@ P_Event::P_Event()
 	m_pkScriptResHandle = NULL;
 	
 	m_bHaveRunInit=false;
+	m_bRun1SUpdate=true;
 
+	m_fTimer = m_pkFps->GetGameTime();
 }
 
 void P_Event::Update()
@@ -20,6 +22,14 @@ void P_Event::Update()
 	if(!m_bHaveRunInit)	
 		m_bHaveRunInit = SendEvent("Init");
 
+
+	if(m_bRun1SUpdate)
+		if(m_pkFps->GetGameTime() - m_fTimer > 1.0)
+		{
+			m_bHaveRunInit = SendEvent("Update1S");
+			
+			m_fTimer = m_pkFps->GetGameTime();
+		}
 }
 
 
@@ -27,8 +37,9 @@ bool P_Event::SendEvent(const char* acEvent)
 {
 	if(m_pkObject->GetObjectScript())
 	{
-		//ZFScript* pkScriptRes = (ZFScript*)m_pkObject->GetObjectScript()->GetResourcePtr();
-
+		//set self id before calling the funktion
+		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		
 		if(!m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent, 0, 0))
 			return false;
 
