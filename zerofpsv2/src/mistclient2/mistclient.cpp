@@ -28,7 +28,8 @@ MistClient g_kMistClient("MistClient",0,0,0);
 
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) ;
 
-void GuiMsgIngameScreen( string strMainWnd, string	strController,	unsigned int msg, int numparms,	void *params )	;
+void GuiMsgIngameScreen( string strMainWnd, string	strController,	
+								 unsigned int msg, int numparms,	void *params )	;
 
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)

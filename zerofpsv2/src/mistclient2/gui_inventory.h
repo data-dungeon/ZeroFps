@@ -48,6 +48,7 @@ private:
 	{	
 		ZGuiWnd* pkWnd;
 		int iItemID;
+		bool bIsContainer;
 	};
 
 	struct MOVE_SLOT
@@ -63,7 +64,9 @@ private:
 	Point SlotFromScreenPos(int x, int y, bool bInventory);
 	Point SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory);
 	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
-	int GetItemIDFromScreenPos(int x, int y);
+	pair<int, bool> GetItemFromScreenPos(int x, int y); // Returns a index and a bool, 
+																		 // if the bool is true then its a index 
+																		 // into m_vkInventoryItemList.
 	
 	TextureManager* m_pkTexMan;
 

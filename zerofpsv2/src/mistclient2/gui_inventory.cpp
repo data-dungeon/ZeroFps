@@ -109,6 +109,7 @@ void InventoryDlg::Open()
 		}
 
 		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
+		m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 	}
 
 	m_pkInventoryWnd->Show();
@@ -423,8 +424,6 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 	m_vkInventoryItemList.clear();
 
-//	m_fPickUpTimer = 0;
-
 	// Rebuild slotlist.
 	int x,y,w,h;
 	char szItemName[128];
@@ -464,6 +463,15 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
+		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
+
+		if(kNewSlot.bIsContainer)
+		{
+			printf("--------------------------\n");
+			printf("Found container item ID %i\n", kNewSlot.iItemID);
+			printf("--------------------------\n");
+		}
+
 		m_vkInventoryItemList.push_back(kNewSlot);
 	}	
 }
@@ -514,6 +522,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
+		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		m_vkContainerItemList.push_back(kNewSlot);
 	}
 
@@ -600,8 +609,7 @@ void InventoryDlg::OnDropItem()
 				}
 			}
 			else
-			{
-				
+			{				
 				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
 
 				for(int i=0; i<m_vkInventoryItemList.size(); i++)
@@ -623,11 +631,12 @@ void InventoryDlg::OnDropItem()
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 					{
-
 						Point p = SlotFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd, true);
 						Point s = SlotSizeFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd);
 						if(TestForCollision(p, s, true))
+						{
 							p = Point(-1,-1);
+						}
 
 						g_kMistClient.SendMoveItem(
 							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID,pkCharProp->m_iInventory,p.x,p.y);
@@ -696,42 +705,67 @@ void InventoryDlg::OnDropItem()
 		}
 		else
 		{
-			//int id = GetItemIDFromScreenPos(rcDropWnd.Left, rcDropWnd.Top);
-			//g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, id, -1, -1);
+			int x, y;
 
-			//if(m_kMoveSlot.bIsInventoryItem)
-			//{
-			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
-			//	g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
-			//		id, -1, -1);
-			//}
-			//else
-			//{
-			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
-			//	g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
-			//		id, -1, -1);
-			//}
+			x = rcDropWnd.Left + rcDropWnd.Width()/2;
+			y = rcDropWnd.Top + rcDropWnd.Height()/2;
+
+			bool bDropedInContainer = false;
+			pair<int,bool> iItemUnderCursor = GetItemFromScreenPos(x, y);
+
+			if(iItemUnderCursor.second == true) // droped item to inventory
+			{				
+				if(iItemUnderCursor.first != -1)	
+					if(m_vkInventoryItemList[iItemUnderCursor.first].bIsContainer)		
+					{
+						int iContainerID = -1;
+						for(int i=0; i<m_vkInventoryItemList.size(); i++)						
+							if(i==iItemUnderCursor.first) {
+								iContainerID=m_vkInventoryItemList[i].iItemID;
+								break;
+							}
+						
+						if(iContainerID != -1)
+						{
+							printf("---------------------------------------------\n");
+							printf("Trying to drop item %i to container %i in inventorywnd\n", 
+								m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, iContainerID);
+							printf("---------------------------------------------\n");
+							g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
+								iContainerID, -1, -1);
+							bDropedInContainer = true;
+						}
+					}				
+			}
+			else // droped item to container
+			{
+				if(iItemUnderCursor.first != -1)	
+					if(m_vkContainerItemList[iItemUnderCursor.first].bIsContainer)
+					{
+						int iContainerID=-1;
+						for(int i=0; i<m_vkContainerItemList.size(); i++)						
+							if(i==iItemUnderCursor.first) {
+								iContainerID=m_vkContainerItemList[i].iItemID;
+								break;
+							}
+
+						if(iContainerID != -1)
+						{
+							printf("---------------------------------------------\n");
+							printf("Trying to drop item %i to container %i in containerwnd\n",
+								m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, iContainerID);
+							printf("---------------------------------------------\n");
+							g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
+								iContainerID, -1, -1);				
+							bDropedInContainer = true;
+						}
+					}
+			}
 
 			g_kMistClient.RequestOpenInventory();
-
-			//if(m_kMoveSlot.bIsInventoryItem)
-			//{
-			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
-			//		m_kItemWndPosBeforeMove.y, false, true);		
-			//}
-			//else
-			//{
-			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
-			//		m_kItemWndPosBeforeMove.y, false, true);	
-			//}
 		}
 	}
 
-//	m_fPickUpTimer = 0;
 }
 
 void InventoryDlg::CloseContainerWnd()
@@ -761,7 +795,6 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 	}
 
 	return TestForCollision(test_slot, test_size, bInventory);
-
 }
 
 bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInventory)
@@ -815,9 +848,6 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 
 }
 
-
-
-
 Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
 {
 	Rect rcTest = pkWnd->GetScreenRect();
@@ -848,39 +878,23 @@ Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 	return Point(slot_x, slot_y);
 }
 
-int InventoryDlg::GetItemIDFromScreenPos(int x, int y)
+pair<int, bool> InventoryDlg::GetItemFromScreenPos(int x, int y)
 {
 	Rect rc;
 
 	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{
 		rc = m_vkInventoryItemList[i].pkWnd->GetScreenRect();
-		if(rc.Inside(x,y))
-			return m_vkInventoryItemList[i].iItemID;
+		if(rc.Inside(x,y) && i != m_kMoveSlot.m_iIndex)
+			return pair<int,bool>(i,true);
 	}
 
 	for(int i=0; i<m_vkContainerItemList.size(); i++)
 	{
 		rc = m_vkContainerItemList[i].pkWnd->GetScreenRect();
-		if(rc.Inside(x,y))
-			return m_vkContainerItemList[i].iItemID;
+		if(rc.Inside(x,y) && i != m_kMoveSlot.m_iIndex)
+			return pair<int,bool>(i,false);
 	}
 
-	return -1;
+	return pair<int,bool>(-1,0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
