@@ -409,7 +409,6 @@ bool ZGui::OnMouseUpdate()
 				SetFocus(ZGuiWnd::m_pkWndClicked);
 				
 				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_UP);
-				
 				ZGuiWnd::m_pkWndClicked = NULL;
 			}
 			else

@@ -1,6 +1,7 @@
 #include "playercontrolproperty.h"
 
-PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
+PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
+{
 	m_pkMap=pkMap;
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
@@ -14,11 +15,11 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 
 	walk=0;
 	walking=false;
+
 	m_iActionForward=m_pkInput->RegisterAction("forward");
 	m_iActionStrafeRight=m_pkInput->RegisterAction("strafe_right");
 	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
 	m_iActionBack=m_pkInput->RegisterAction("backward");
-
 };
 
 /*

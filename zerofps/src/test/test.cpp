@@ -8,6 +8,11 @@ Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
+static bool g_ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+{
+	return olle.ZGWinProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
+}
+
 void Test::OnInit(void) 
 {
 	RegisterPropertys();
@@ -188,6 +193,16 @@ void Test::OnInit(void)
 	InitUI();
 
 	ZFObjectManger::GetInstance()->PrintObjects();
+
+	//pkBasicFS->CreateDir("ApDir");
+	
+/*	vector<string> list;
+	pkBasicFS->ListDir(&list, "C:\\Programming\\My projects\\zerofps\\bin\\ApDir");
+
+	for(i=0; i<list.size(); i++)
+	{
+		printf("%s\n", list[i].c_str());
+	}*/
 }
 
 void Test::OnServerStart(void)
@@ -293,7 +308,7 @@ void Test::OnHud(void)
 
 void Test::input() {
 
-	if(pkInput->Pressed(RIGHT)){
+/*	if(pkInput->Pressed(RIGHT)){
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
 	}
@@ -314,7 +329,7 @@ void Test::input() {
 	if(pkInput->Pressed(HOME))
 		pkFps->GetCam()->GetPos().y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(END))
-		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;
+		pkFps->GetCam()->GetPos().y-=2*pkFps->GetFrameTime()*speed;*/
 /*
 	if(pkInput->Pressed(HOME)) {
 		//pkFps->m_kPropertyFactory.Display();
@@ -375,72 +390,8 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-
-
-bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
-{
-	Rect rc;
-
-	switch(uiMessage)
-	{
-	case ZGM_COMMAND:
-		//pkFps->m_iState = state_exit;
-		break;
-	}
-	return false;
-}
-
-
 bool Test::InitUI()
 {
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+100/2));
-//	ZGuiWnd* pkMainWindow2 = new ZGuiWnd(Rect(1024/2-200/2,768/2-200/2,1024/2+200/2,768/2+200/2));
-
-//	int bk_image1 = pkRender->GetTexMangager()->Load("file:../data/textures/Image1.bmp", 0);
-//	int bk_image2 = pkRender->GetTexMangager()->Load("file:../data/textures/Image2.bmp", 0);
-//	int bk_image1_a = pkRender->GetTexMangager()->Load("file:../data/textures/Mask1.bmp", 0);
-//	int bn1_up = pkRender->GetTexMangager()->Load("file:../data/textures/button_up.bmp", 0);
-//	int bn1_down = pkRender->GetTexMangager()->Load("file:../data/textures/button_down.bmp", 0);
-//	int bn1_focus = pkRender->GetTexMangager()->Load("file:../data/textures/button_focus.bmp", 0);
-//	int radiobn_up = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_up.bmp", 0);
-//	int radiobn_down = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_down.bmp", 0);
-//	int radiobn_a = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_a.bmp", 0);
-//	int font = pkRender->GetTexMangager()->Load("file:../data/textures/font.bmp", 0);
-//	int font_a = pkRender->GetTexMangager()->Load("file:../data/textures/font_a.bmp", 0);
-
-	ZGuiSkin* sk_main = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
-	ZGuiSkin* sk_bn1_up = new ZGuiSkin(-1, -1, -1, -1, 223, 55, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_down = new ZGuiSkin(-1, -1, -1, -1, 0, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 23, 0, 0, 0, 0);
-//	ZGuiSkin* sn_sb1 = new ZGuiSkin(bk_image2, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_radio_bn_unsel = new ZGuiSkin(radiobn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_radio_bn_sel = new ZGuiSkin(radiobn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_font = new ZGuiSkin(font, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-//	ZGuiSkin* sn_white = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 8);
-//
-//	pkMainWindow->SetSkin(sk_main, bk_image1_a);
-//	pkMainWindow->SetMoveArea(Rect(0,0,1024,768));
-//
-//	pkMainWindow2->SetSkin(sn_white);
-//	pkMainWindow2->SetMoveArea(Rect(0,0,1024,768));
-//
-	ZGuiButton* pkButton = new ZGuiButton(Rect(100,100,180,150),pkMainWindow,true);
-	pkButton->SetButtonHighLightSkin(sn_bn1_focus);
-	pkButton->SetButtonDownSkin(sn_bn1_down);
-	pkButton->SetButtonUpSkin(sk_bn1_up);
-//	pkButton->SetText("Close");
-//	pkButton->SetTextSkin(sn_font, font_a);
-//
-//	ZGuiScrollbar* pkScrollbar = new ZGuiScrollbar(Rect(350,0,370,200),pkMainWindow,true,40);
-//	pkScrollbar->SetSkin(sn_sb1);
-//	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sk_bn1_up);
-//	
-//	pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
-//	
-	pkMainWindow->SetSkin(sk_main);
-	pkMainWindow->SetMoveArea(Rect(0,0,1024,768));
-	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow, ZGWinProc, true);
-
 	return true;
 }
 
@@ -473,9 +424,15 @@ void Test::RegisterPropertys()
 
 }
 
+bool Test::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+{
+	Rect rc;
+
+	return false;
+}
 
 
-bool Test::LoadLevel(const char* acFile)
+/*bool Test::LoadLevel(const char* acFile)
 {
 	for(int i=0;acFile[i]!='\0';i++)
 	{
@@ -521,14 +478,14 @@ bool Test::LoadLevel(const char* acFile)
 	cout<<"objects loaded"<<endl;
 
 	return true;
-}
+}*/
 
-void Test::Clear() 
+/*void Test::Clear() 
 {
 	CreateNew(100);
-}
+}*/
 
-void Test::CreateNew(int iSize) 
+/*void Test::CreateNew(int iSize) 
 {
 	delete m_pkMap;
 	m_pkMap=new HeightMap();	
@@ -572,4 +529,5 @@ void Test::CreateNew(int iSize)
 	water->SetParent(pkObjectMan->GetWorldObject());
 
 	cout<<"new map"<<endl;
-}
+}*/
+

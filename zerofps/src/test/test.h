@@ -74,6 +74,7 @@ class Test :public Application {
 
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 };
 
 

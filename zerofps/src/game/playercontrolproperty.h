@@ -12,6 +12,7 @@ using namespace std;
 
 class PlayerControlProperty: public Property {
 	private:
+		int FORWARD_ACTION;
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;

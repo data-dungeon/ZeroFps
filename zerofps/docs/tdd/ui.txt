@@ -29,6 +29,12 @@ Game Play Screen:
 används när man hackar olika saker. Dessa använder ochså ZFGUI men oftast med egna draw funktioner då 
 det krävs lite roligare former på dom.
 
+----------------------
+Hur man använder ZGui:
+----------------------
+
+
+
 
 
 

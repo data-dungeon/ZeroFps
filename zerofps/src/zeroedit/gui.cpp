@@ -102,7 +102,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				case IDM_CREATE_NEW_PROPERTY:
 					w = 500;
 					h = 500;
-					CreatePropertyDialog(0,0,w,h);
+					CreatePropertyDialog(100,200,w,h);
 					break;
 				}
 			}
