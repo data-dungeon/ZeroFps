@@ -231,13 +231,13 @@ AIBase* P_UnitMoveAI::UpdateAI()
 		{
 			CheckForOrder();
 			
-			if(m_iRetries >= 2)
+			if(m_iRetries >= 4)
 			{
 				return NULL;
 			
 			}
 			
-			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.0)
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.5)
 			{
 				//cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
