@@ -121,7 +121,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-	TileEngine::m_pkInstance->Draw();
+//	TileEngine::m_pkInstance->Draw();
 
 /* //COMMENT OUT BY DVOID
 	PickInfo p = Pick();
@@ -142,12 +142,16 @@ void ZeroRTS::OnIdle()
 	}
 */
 	
-/*	glDisable(GL_LIGHTING);
+/* Dvoid
+	Vector3 mpos = Get3DMousePos();
+	
+	glDisable(GL_LIGHTING);
 		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
 		pkRender->Line(mpos-Vector3(0,1,0),mpos+Vector3(0,1,0));		
 		pkRender->Line(mpos-Vector3(0,0,1),mpos+Vector3(0,0,1));				
 	glEnable(GL_LIGHTING);
 */
+
 //	m_pkFogRender->Explore(mpos.x,mpos.z,30);		
 
 	//update player possition
@@ -499,9 +503,14 @@ Vector3 ZeroRTS::Get3DMousePos()
 	pkInput->UnitMouseXY(mpos.x,mpos.z);
 	
 	//these have to be recalculated depending on camera distsance 
-	mpos.x*=75;
-	mpos.z*=56;
-	mpos.z-=10.5;
+//	mpos.x*=75;
+//	mpos.z*=56;
+//	mpos.z-=10.5;
+	
+	mpos.x*=62.5;
+	mpos.z*=47.2;
+	mpos.z-=8.5;
+	
 	
 	Matrix4 bla;
 	bla.Identity();
@@ -574,8 +583,8 @@ PickInfo ZeroRTS::Pick()
 
 void ZeroRTS::SetCamPos(Vector3 kPos)
 {
-	float wb = 0;//75;	//width border
-	float tb = 0;//74;	//top border
+	float wb = 75;	//width border
+	float tb = 74;	//top border
 	float bb = 10;	//bothom border
 
 	if(kPos.x < (-m_pkMap->GetSize()/2 + wb))

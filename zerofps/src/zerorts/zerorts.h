@@ -28,7 +28,7 @@ struct PickInfo
 	Point	kSquare;
 };
 
-const float CAMERA_HEIGHT = 30.0f;
+const float CAMERA_HEIGHT = 25.0f;
 
 class ZeroRTS :public Application {
 	private:

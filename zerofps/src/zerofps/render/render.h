@@ -88,8 +88,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
 
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
-		void DrawAllHM(HeightMap* kmap,Vector3 CamPos);
-		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
+		void DrawAllHM(HeightMap* kmap,Vector3 CamPos,bool bBorders);
+		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders);
 		
 		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		void DrawHMVertex(HeightMap* kMap);

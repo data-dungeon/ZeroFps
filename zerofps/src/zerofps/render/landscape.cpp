@@ -735,7 +735,6 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 	
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
-	//glTranslatef(kMap->m_kPosition.x-kMap->m_iHmScaleSize/2,kMap->m_kPosition.y,kMap->m_kPosition.z-kMap->m_iHmScaleSize/2);
 	glColor4f(1,1,1,1);
 	
 //	DrawHMVertex(kMap);
@@ -746,6 +745,19 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 //	DrawBlocks(kMap);
 //	if(m_iHmTempList==0)
 //		m_iHmTempList = glGenLists(1);
+	
+	
+	//set polygon mode
+	switch(m_eLandscapePolygonMode)
+	{
+		case LINE:
+			glPolygonMode(GL_FRONT, GL_LINE);
+			break;
+		case FILL:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+	}
+	
 	
 	//setup TUs
 	glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -761,13 +773,15 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
 	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
 		
-	DrawAllHM(kMap,CamPos);
+	DrawAllHM(kMap,CamPos,true);
 		
 	//set blending
 	glDepthFunc(GL_EQUAL);
 	glEnable(GL_BLEND);		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);				
 
+	
+	
 	
 	//enable TU0 again
 	glActiveTextureARB(GL_TEXTURE0_ARB);	
@@ -787,7 +801,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acTexture,0);		
 		m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[i].m_acDetailTexture);					
 		
-		DrawAllHM(kMap,CamPos);	
+		DrawAllHM(kMap,CamPos,true);	
 	}
 
 
@@ -801,7 +815,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glPopMatrix();
 }
 
-void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
+void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 {
 /*	int iBlockSize = 17;
 
@@ -813,30 +827,19 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 		}
 	}*/
 
-	int iPatchSize = 64;
-
-	switch(m_eLandscapePolygonMode)
-	{
-	case LINE:
-		glPushAttrib(GL_POLYGON_BIT);
-		glPolygonMode(GL_FRONT, GL_LINE);
-		break;
-	case FILL:
-		glPushAttrib(GL_POLYGON_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		break;
-	}
+	int iPatchSize = 32;
+	
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
 		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
 		{
-			DrawPatch(kMap,CamPos,x,z,iPatchSize);		
+			DrawPatch(kMap,CamPos,x,z,iPatchSize,bBorders);		
 			//DrawPatch_Vim1(kMap,CamPos,x,z,iPatchSize);	
 		}
 	}
 
-	glPopAttrib(); // m_eLandscapePolygonMode
+
 }
 
 void Render::DrawHMVertex(HeightMap* kMap)
@@ -889,14 +892,14 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 	}
 }
 
-void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
+void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
 {
 	int iStep;
 	float fDistance;
 	
-	// See if we can Cull away this patch.
+	// See if we can Cull away this patch...this is optimized for zeroRTS at the moment..Dvoid  assuming max height of 30
 	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
-							  kMap->m_kCornerPos.y + 34*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.y + 7.5*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
 	fDistance=(CamPos-PatchCenter).Length();
@@ -905,7 +908,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		return;
 		
 	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
-		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
+		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
 		
 	iStep=PowerOf2(int(fDistance / m_iDetail));
@@ -965,73 +968,75 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	}
 
 	//damn ulgly lod fix
-
-	z=zp;	
-	
-	glBegin(GL_TRIANGLE_STRIP);
-	for( x=xp;x <=xp+iSize ; x+=iStep)	{
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-	
-//		glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-	}
-	glEnd();	
-	
-	z=zp+iSize;
-	
-	if(z==kMap->m_iHmSize-iStep)
-		z-=iStep;	
-	
-	glBegin(GL_TRIANGLE_STRIP);	
-	for(x=xp;x <=xp+iSize ; x+=iStep)
+	if(bBorders)
 	{
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		z=zp;	
 	
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);											
-	}
-	glEnd();	
-
-	x=xp;	
-	glBegin(GL_TRIANGLE_STRIP);
-	for(z=zp;z <=zp+iSize ; z+=iStep)
-	{
+		glBegin(GL_TRIANGLE_STRIP);
+		for( x=xp;x <=xp+iSize ; x+=iStep)	{
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+//			glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+		}
+		glEnd();	
+	
+		z=zp+iSize;
+	
 		if(z==kMap->m_iHmSize-iStep)
-			break;
-		
-		
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-		
-		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);										
-	}
-	glEnd();	
+			z-=iStep;	
 	
-	x=xp+iSize;	
-	glBegin(GL_TRIANGLE_STRIP);
-	for( z=zp;z <=zp+iSize ; z+=iStep)
-	{
-		if(z==kMap->m_iHmSize-iStep)
-			break;
-		
-		
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-		
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);			
-		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
-	}
-	glEnd();	
+		glBegin(GL_TRIANGLE_STRIP);	
+		for(x=xp;x <=xp+iSize ; x+=iStep)
+		{
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);											
+		}
+		glEnd();	
 
-//	glPolygonMode(GL_FRONT,GL_FILL);
+		x=xp;	
+		glBegin(GL_TRIANGLE_STRIP);
+		for(z=zp;z <=zp+iSize ; z+=iStep)
+		{
+			if(z==kMap->m_iHmSize-iStep)
+				break;
+		
+		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);										
+		}
+		glEnd();	
+	
+		x=xp+iSize;	
+		glBegin(GL_TRIANGLE_STRIP);
+		for( z=zp;z <=zp+iSize ; z+=iStep)
+		{
+			if(z==kMap->m_iHmSize-iStep)
+				break;
+		
+		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);			
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
+		}
+		glEnd();	
+	};
+
+
 }
 
 int iPatchIndex[4096];
