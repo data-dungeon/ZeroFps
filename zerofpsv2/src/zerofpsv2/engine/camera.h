@@ -13,7 +13,10 @@ class ENGINE_API Camera {
 		Matrix4 m_kCamModelViewMatrix;
 		Vector3 m_kPos;
 		Vector3 m_kRot;	
+		Matrix4 m_kRotM;
 			
+		
+		
 		bool m_bViewChange;
 		bool m_bViewPortChange;				
 		
@@ -38,6 +41,11 @@ class ENGINE_API Camera {
 		void SetView(float fFov,float fAspect,float fNear,float fFar);
 		void SetViewPort(float iX,float iY,float iW,float iH);
 		void ClearViewPort();
+		
+		void SetRotM(Matrix4 kRotM) { m_kRotM = kRotM;};
+		void RotateV(Vector3 kRot) { m_kRotM.Rotate(kRot);};
+		void MultRotM(Matrix4 kRotM) { m_kRotM = kRotM * m_kRotM ;};
+		
 		void SetPos(Vector3 kPos){ m_kPos=kPos;};
 		void SetRot(Vector3 kRot){ m_kRot=kRot;};
 		Vector3 &GetPos(){return m_kPos;};

@@ -10,7 +10,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetViewPort(0,0,1,1);
 	SetPos(kPos);
 	SetRot(kRot);
-
+	m_kRotM.Identity();
+	
 	m_strName = "A Camera";
 }
 
@@ -53,9 +54,10 @@ void Camera::Update(int iWidth,int iHeight)
 	glMatrixMode(GL_MODELVIEW);
  	glLoadIdentity();													
 	
-	glRotatef(m_kRot.z,0,0,1);	
-	glRotatef(m_kRot.x,1,0,0);	
-	glRotatef(m_kRot.y,0,1,0);		
+	glMultMatrixf(&m_kRotM[0]);
+	//glRotatef(m_kRot.z,0,0,1);	
+	//glRotatef(m_kRot.x,1,0,0);	
+	//glRotatef(m_kRot.y,0,1,0);		
 	 	
 	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 	
@@ -116,8 +118,8 @@ string Camera::GetCameraDesc()
 	char desc[512];
 	string strDesc;
 
-	sprintf(desc, "Cam '%s': <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_strName.c_str(), m_kPos.x,m_kPos.y,m_kPos.z,
-		m_kRot.x,m_kRot.y,m_kRot.z);
+//	sprintf(desc, "Cam '%s': <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_strName.c_str(), m_kPos.x,m_kPos.y,m_kPos.z,
+//		m_kRot.x,m_kRot.y,m_kRot.z);
 	strDesc = desc;
 
 	return strDesc;

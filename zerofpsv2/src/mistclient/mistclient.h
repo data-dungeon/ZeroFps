@@ -16,7 +16,7 @@
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
-//#include "../common/common.pkg"
+#include "../zerofpsv2/engine_systems/common/heightmap2.h"
 
 
 class MistClient :public Application {
@@ -47,6 +47,12 @@ class MistClient :public Application {
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
+
+		Heightmap2*			m_pkMap2;
+		
+		
+		Object*	m_pkTestobj;
+
 
 	public:
 		bool InitializeScript();

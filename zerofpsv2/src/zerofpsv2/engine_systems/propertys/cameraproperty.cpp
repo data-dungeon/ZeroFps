@@ -7,7 +7,8 @@
 CameraProperty::CameraProperty() 
 {
 	m_pkCamera = NULL;
-	m_eCameraType = CAM_TYPEFIRSTPERSON;
+	//m_eCameraType = CAM_TYPEFIRSTPERSON;
+	m_eCameraType = CAM_TYPE3PERSON;	
 	strcpy(m_acName,"CameraProperty");	
 
 	m_iType=PROPERTY_TYPE_RENDER;
@@ -17,6 +18,7 @@ CameraProperty::CameraProperty()
 
 	m_fFov = 90;
 	m_kDynamicIso.Set(0,0,0);
+	m_kInterPos.Set(0,0,0);
 	
 }
 
@@ -33,11 +35,29 @@ void CameraProperty::Update()
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
+			case CAM_TYPE3PERSON:
+			{
+				Matrix4 r;
+				r.Identity();
+				r.Rotate(Vector3(-90,0,0));
+				m_pkCamera->SetRotM(r);
+				
+				Vector3 dir = m_pkObject->GetWorldPosV() - m_kInterPos;
+				m_kInterPos +=dir/8;
+				m_pkCamera->SetPos(m_kInterPos + Vector3(0,20,0));
+				
+				strCamName = " 3P ";
+				if(madp)
+					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(m_fFov);				
+				break;
+			}	
 			case CAM_TYPEFIRSTPERSON:
 //				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
 //				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0.95,0));
-				m_pkCamera->SetRot(m_pkObject->GetWorldRotV() + Vector3(0,90,0));
+				//m_pkCamera->SetRot(m_pkObject->GetWorldRotV() + Vector3(0,90,0));
+				m_pkCamera->SetRotM(m_pkObject->GetWorldRotM());
 				
 				strCamName = " 1P ";
 				if(madp)

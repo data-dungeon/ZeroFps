@@ -1162,7 +1162,7 @@ Matrix4 Object::GetWorldOriM()
 		{
 			if(m_pkParent)
 			{			
-				m_kWorldOriM = GetLocalOriM() *m_pkParent->GetWorldOriM() ;
+				m_kWorldOriM = GetLocalOriM() * m_pkParent->GetWorldOriM() ;
 				m_kGotData[WORLD_ORI_M] = true;						
 			}
 			else

@@ -22,6 +22,7 @@ class ENGINE_SYSTEMS_API CameraProperty:public Property
 			CAM_TYPECHASE,
 			CAM_TYPEDYNAMICISO,		
 			CAM_TYPEMAX,
+			CAM_TYPE3PERSON,
 		};
 
 	private:
@@ -33,6 +34,7 @@ class ENGINE_SYSTEMS_API CameraProperty:public Property
 		float		m_fFov;
 		Vector3		m_kDynamicIso;
 		
+		Vector3 m_kInterPos;
 
 	public:
 		CameraProperty();

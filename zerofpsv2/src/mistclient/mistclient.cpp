@@ -44,7 +44,6 @@ void MistClient::Init()
 	
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
-//	m_pkCamera->SetViewPort(0,0.24,1,0.76);
 	
 	//register actions bös
 	RegisterActions();
@@ -52,6 +51,8 @@ void MistClient::Init()
 	//register property bös
 	RegisterPropertys();
 
+	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
+	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 /*
 	srand( (int) (pkFps->GetGameTime()*1000) );
 
@@ -100,6 +101,9 @@ void MistClient::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	
+	m_pkMap2->SetPos(Vector3(0,0,0));
+
+	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
 
 }
 
@@ -146,7 +150,8 @@ void MistClient::Input()
 	}
 	
 	Vector3 newpos = m_pkCamera->GetPos();
-	Vector3 rot = m_pkCamera->GetRot();
+	Vector3 rot;// = m_pkCamera->GetRot();
+	rot.Set(0,0,0);// = m_pkCamera->GetRot();
 	
 	if(pkInput->Pressed(KEY_D)){
 		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
@@ -182,8 +187,8 @@ void MistClient::Input()
 	float fSpeedScale = pkFps->GetFrameTime()*speed;
 
 	m_pkCamera->SetPos(newpos);
-	m_pkCamera->SetRot(rot);
-	
+	//m_pkCamera->RotateV(rot); 
+	//m_pkCamera->SetRot(rot);
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
@@ -204,11 +209,12 @@ void MistClient::Input()
 		pkScript->CallScript("OnClickMap", 0, 0);
 */
 	
-/*	
+	Object* m_pkME = m_pkTestobj;
+	
 	if(m_pkME)	
 	{	
-newpos = m_pkME->GetLocalPosV();
-//	rot = m_pkME->GetLocalRotV();
+		newpos = m_pkME->GetLocalPosV();
+		//rot.Set(0,0,0);// = m_pkME->GetLocalRotV();
 	
 	if(pkInput->Pressed(KEY_H)){
 		newpos.x+=pkFps->GetFrameTime()*speed;			
@@ -223,7 +229,7 @@ newpos = m_pkME->GetLocalPosV();
 		newpos.z-=pkFps->GetFrameTime()*speed;
 	}		
 
-	if(pkInput->Pressed(KEY_H)){
+/*	if(pkInput->Pressed(KEY_H)){
 		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
 		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
 	}
@@ -239,14 +245,14 @@ newpos = m_pkME->GetLocalPosV();
 		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
 		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
 	}		
-	
+*/	
 	if(pkInput->Pressed(KEY_R))
 		newpos.y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_Y))
 		newpos.y-=2*pkFps->GetFrameTime()*speed;
 		
 
-  if(pkInput->Pressed(KEY_U))
+	if(pkInput->Pressed(KEY_U))
 		rot.x += pkFps->GetFrameTime()*speed*10;	
 	if(pkInput->Pressed(KEY_J))	
 		rot.x -= pkFps->GetFrameTime()*speed*10;
@@ -267,10 +273,10 @@ newpos = m_pkME->GetLocalPosV();
 //	m_pkME->SetLocalPosV(newpos);		
 	//rot.y+=0.1;
 
-  rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-	m_pkME->SetLocalRotV(rot);
+  //rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
+		//m_pkME->RotateLocalRotV(rot);
 	}
-	*/
+
 }
 
 void MistClient::OnHud(void) 
@@ -373,6 +379,18 @@ void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistClient::OnServerStart(void)
 {		
+	m_pkTestobj = pkObjectMan->CreateObjectByArchType("playertest");
+	if(m_pkTestobj)
+	{
+		m_pkTestobj->AttachToClosestZone();
+	
+		CameraProperty* cam = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
+		cam->SetCamera(m_pkCamera);
+	
+		m_pkTestobj->SetWorldPosV(Vector3(0,20,0));
+	}
+
+
 /*	m_pkME = pkObjectMan->CreateObject();
 	m_pkME->AttachToClosestZone();
 	m_pkME->AddProperty("CameraProperty");
