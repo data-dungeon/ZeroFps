@@ -37,69 +37,19 @@ class MCOMMON_API CharacterStats
 	public:
 		
 		
-		CharacterStats()
-		{
-			m_kStats.push_back(CharacterStat("Level"			,0,0));
-			m_kStats.push_back(CharacterStat("Experience"	,0,0));
-			m_kStats.push_back(CharacterStat("NextLevel"		,0,0));
-			m_kStats.push_back(CharacterStat("Speed"			,0,0));
-			m_kStats.push_back(CharacterStat("Mana"			,0,0));
-			m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
-			m_kStats.push_back(CharacterStat("Life"			,0,0));
-			m_kStats.push_back(CharacterStat("LifeMax"		,0,0));
-			m_kStats.push_back(CharacterStat("Strength"		,0,0));
-			m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
-			m_kStats.push_back(CharacterStat("Vitality"		,0,0));
-			m_kStats.push_back(CharacterStat("Intelligence"	,0,0));
-			m_kStats.push_back(CharacterStat("Wisdom"			,0,0));
-			m_kStats.push_back(CharacterStat("Charisma"		,0,0));
-			m_kStats.push_back(CharacterStat("Armor"			,0,0));
-			m_kStats.push_back(CharacterStat("DamageMin"		,0,0));
-			m_kStats.push_back(CharacterStat("DamageMax"		,0,0));
+		CharacterStats();
 		
-		}
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
-		void SetStat(const string& strName,int iValue)
-		{
-			for(int i=0;i<m_kStats.size();i++)
-				if(m_kStats[i].m_strName == strName)
-				{
-					m_kStats[i].m_iValue = iValue;
-					return;
-				}
-		}
-		
-		void ChangeStat(const string& strName,int iValue)
-		{
-			for(int i=0;i<m_kStats.size();i++)
-				if(m_kStats[i].m_strName == strName)
-				{
-					m_kStats[i].m_iValue += iValue;
-					return;
-				}
-		}
-		
-		
-		void SetMod(const string& strName,int iValue)
-		{
-			for(int i=0;i<m_kStats.size();i++)
-				if(m_kStats[i].m_strName == strName)
-				{
-					m_kStats[i].m_iMod = iValue;
-					return;
-				}
-		}
-		
-		void ChangeMod(const string& strName,int iValue)
-		{
-			for(int i=0;i<m_kStats.size();i++)
-				if(m_kStats[i].m_strName == strName)
-				{
-					m_kStats[i].m_iMod += iValue;
-					return;	
-				}
-		}
-
+		void 	SetStat(const string& strName,int iValue);
+		int 	GetStat(const string& strName);
+		void 	ChangeStat(const string& strName,int iValue);
+		void 	SetMod(const string& strName,int iValue);
+		int 	GetMod(const string& strName);
+		void 	ChangeMod(const string& strName,int iValue);
+		int 	GetTotal(const string& strName);
+ 
 };
 
 
@@ -143,12 +93,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 	
 		void PlayCharacterMovementSounds();
-		void SetupContainers();
-		
-		vector<PropertyValues> GetPropertyValues();
-		
-		
+		void SetupContainers();		
+		vector<PropertyValues> GetPropertyValues();				
 		void SendBuffList();
+		
+		void UpdateStats();
 		
 	public:
 		CharacterStats	m_kCharacterStats;

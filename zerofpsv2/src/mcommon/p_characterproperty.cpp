@@ -7,7 +7,163 @@
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
+//-------CharacterStats-----------
 
+
+CharacterStats::CharacterStats()
+{
+	m_kStats.push_back(CharacterStat("Level"			,0,0));
+	m_kStats.push_back(CharacterStat("Experience"	,0,0));
+	m_kStats.push_back(CharacterStat("NextLevel"		,0,0));
+	m_kStats.push_back(CharacterStat("Speed"			,0,0));
+	m_kStats.push_back(CharacterStat("Jump"			,0,0));
+	m_kStats.push_back(CharacterStat("Mana"			,0,0));
+	m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
+	m_kStats.push_back(CharacterStat("Life"			,0,0));
+	m_kStats.push_back(CharacterStat("LifeMax"		,0,0));
+	m_kStats.push_back(CharacterStat("Strength"		,0,0));
+	m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
+	m_kStats.push_back(CharacterStat("Vitality"		,0,0));
+	m_kStats.push_back(CharacterStat("Intelligence"	,0,0));
+	m_kStats.push_back(CharacterStat("Wisdom"			,0,0));
+	m_kStats.push_back(CharacterStat("Charisma"		,0,0));
+	m_kStats.push_back(CharacterStat("Armor"			,0,0));
+	m_kStats.push_back(CharacterStat("DamageMin"		,0,0));
+	m_kStats.push_back(CharacterStat("DamageMax"		,0,0));
+	m_kStats.push_back(CharacterStat("Attack"			,0,0));
+	m_kStats.push_back(CharacterStat("Stamina"		,0,0));
+	m_kStats.push_back(CharacterStat("Load"			,0,0));
+	m_kStats.push_back(CharacterStat("LoadMax"		,0,0));
+}
+
+void CharacterStats::Save(ZFIoInterface* pkPackage)
+{
+	for(int i = 0;i<m_kStats.size();i++)
+	{
+		pkPackage->Write_Str(m_kStats[i].m_strName);
+		pkPackage->Write(m_kStats[i].m_iValue);
+		pkPackage->Write(m_kStats[i].m_iMod);	
+	}
+
+	pkPackage->Write_Str(string(""));
+	
+	
+	cout<<"saved stats"<<endl;
+}
+
+void CharacterStats::Load(ZFIoInterface* pkPackage)
+{
+	static string strName;
+	static int iValue,iMod;
+	
+	
+	m_kStats.clear();
+	
+	
+	pkPackage->Read_Str(strName);
+	while(!strName.empty())
+	{
+		pkPackage->Read(iValue);
+		pkPackage->Read(iMod);
+		
+		m_kStats.push_back(CharacterStat(strName,iValue,0)); //dont load mod value
+		
+		pkPackage->Read_Str(strName);
+	}
+
+	
+	cout<<"loaded stats"<<endl;
+}
+
+void CharacterStats::SetStat(const string& strName,int iValue)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			m_kStats[i].m_iValue = iValue;
+			return;
+		}
+		
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+}
+
+int CharacterStats::GetStat(const string& strName)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			return m_kStats[i].m_iValue;
+		}		
+
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	return -1;
+}
+		
+void CharacterStats::ChangeStat(const string& strName,int iValue)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			m_kStats[i].m_iValue += iValue;
+			return;
+		}
+		
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+}
+
+
+void CharacterStats::SetMod(const string& strName,int iValue)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			m_kStats[i].m_iMod = iValue;
+			return;
+		}
+	
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+}
+
+int CharacterStats::GetMod(const string& strName)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			return m_kStats[i].m_iMod;
+		}		
+
+		
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	return -1;
+}		
+
+void CharacterStats::ChangeMod(const string& strName,int iValue)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			m_kStats[i].m_iMod += iValue;
+			return;	
+		}
+		
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+}
+
+int CharacterStats::GetTotal(const string& strName)
+{
+	for(int i=0;i<m_kStats.size();i++)
+		if(m_kStats[i].m_strName == strName)
+		{
+			return m_kStats[i].m_iValue + m_kStats[i].m_iMod;
+		}				
+		
+		
+	cout<<"WARNING: requested stat "<<strName<<" was not found"<<endl;
+	return -1;
+}
+
+
+//-------P_CharacterProperty---------
 P_CharacterProperty::P_CharacterProperty()
 {
 	m_pkAudioSystem = 	static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));			
@@ -21,7 +177,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	1;
+	m_iVersion = 	2;
 	
 	
 	
@@ -91,6 +247,20 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 
 
 	return kReturn;	
+}
+
+void P_CharacterProperty::UpdateStats()
+{
+	
+	if(P_CharacterControl* pkCP = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+	{
+		//speed
+		pkCP->SetSpeed((float)m_kCharacterStats.GetTotal("Speed"));
+	
+		//jump
+		pkCP->SetJumpForce((float)m_kCharacterStats.GetTotal("Jump"));		
+	}
+	
 }
 
 void P_CharacterProperty::SetupContainers()
@@ -410,7 +580,8 @@ void P_CharacterProperty::Update()
 				SetupContainers();
 			}
 		
-			//UpdateAnimation();
+			//update stats
+			UpdateStats();
 		}
 			
 		//CLIENT
@@ -614,6 +785,9 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
 		
+	
+	m_kCharacterStats.Save(pkPackage);
+	
 /*	//save container settings
 	m_pkInventory->Save(pkPackage);
 	m_pkHead->Save(pkPackage);
@@ -625,9 +799,29 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read_Str(m_strName);	
-	pkPackage->Read_Str(m_strOwnedByPlayer);	
-	pkPackage->Read(m_bIsPlayerCharacter); 
+	switch(iVersion)
+	{
+		case 1:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 
+		
+			break;		
+		}
+		
+		case 2:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+		
+			m_kCharacterStats.Load(pkPackage);
+			break;
+		}
+	
+	}
+	
 	
 /*	//load container settings
 	m_pkInventory->Load(pkPackage);
@@ -761,6 +955,33 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
+	int SetStatLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+		{
+			cout<<"WARNING: SetStat - wrong number of arguments"<<endl;
+			return 0;		
+		}
+			
+		int iCharcterID;
+		int iValue;
+		char czStat[128];
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,czStat);
+		g_pkScript->GetArgInt(pkLua, 2, &iValue);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->m_kCharacterStats.SetStat(czStat,iValue);		
+			
+			cout<<"set stat "<<czStat<<" to "<<iValue<<endl;
+		}
+	
+		return 0;				
+	}	
+	
+	//buffs
 	int AddBuffLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -881,9 +1102,14 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("PickupItem",		SI_P_CharacterProperty::PickupItemLua);
 	g_pkScript->ExposeFunction("HaveItem",			SI_P_CharacterProperty::HaveItemLua);
 
+	
+	//stats
+	g_pkScript->ExposeFunction("SetStat",			SI_P_CharacterProperty::SetStatLua);
 	g_pkScript->ExposeFunction("ChangeStat",		SI_P_CharacterProperty::ChangeStatLua);
 	g_pkScript->ExposeFunction("ChangeStatMod",	SI_P_CharacterProperty::ChangeStatModLua);
 	
+	
+	//buffs
 	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
 	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);
 	
