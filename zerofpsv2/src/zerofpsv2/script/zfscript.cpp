@@ -100,6 +100,9 @@ bool ZFScript::RunScript(char* szFileName)
 	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(szFileName);
 
+	if(strPath.empty())
+		return false;
+
 	if(lua_dofile(m_pkLua, strPath.c_str()) == 0)
 		bSuccess = true;
 	else
@@ -121,7 +124,15 @@ bool ZFScript::CallScript(char* szFuncName, int iNumParams, int iNumResults)
 {
 	//printf("SCRIPT_API: Calling script function %s\n", szFuncName);
 	lua_getglobal( m_pkLua, szFuncName);
+	
+	// Måste kolla så att den global funktion finns. 
+	// Låser sig fett om den int gör det!
+	if(lua_isnil( m_pkLua, 1) )
+		return false;
+
 	return (lua_call(m_pkLua, iNumParams, iNumResults) == 0);
+
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -58,6 +58,12 @@ bool ZFSound::Load()
 
 	string strFull = pkFileSys->GetFullPath(m_szFileName);
 
+	if(strFull.empty())
+	{
+		cout<<"cold not load file: " << m_szFileName << ", from vf" << endl;	
+		return false;
+	}
+
 	// Load file
    alutLoadWAVFile((ALbyte*)strFull.c_str(), &format, &data, &size, &freq, &loop);   
 	if(size==0)
@@ -79,11 +85,12 @@ bool ZFSound::Load()
 	return true;
 }
 
-void ZFSound::Start(int iSourceIndex, int iSourceName)
+bool ZFSound::Start(int iSourceIndex, int iSourceName)
 {
 	m_iSourceIndex = iSourceIndex;
 
-	Load();
+	if(!Load())
+		return false;
 
   	alSourcei(iSourceName, AL_BUFFER, m_uiIndex);	
    alSourcef(iSourceName, AL_REFERENCE_DISTANCE, 3.5f);
@@ -102,7 +109,12 @@ void ZFSound::Start(int iSourceIndex, int iSourceName)
 
 	int error;
 	if ((error = alGetError()) != AL_NO_ERROR)
+	{
 		printf("Failed to play sound!\n");
+		return false;
+	}
+
+	return true;
 }
 
 ZFResource* Create__WavSound()
@@ -207,7 +219,6 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 	if(pkSound==NULL)
 		return;
 
-	
 	bool found=false;
 	list<ZFSound*>::iterator it;
 	for(it=m_akSounds.begin();it!=m_akSounds.end();it++)
@@ -283,9 +294,12 @@ void ZFAudioSystem::Update()
 		}
 	}
 	
+	// Ta bort stoppade ljud.
 	unsigned int i;
 	for(i=0;i<kRemove.size();i++)
 		RemoveSound(kRemove[i]);	
+
+	kRemove.clear();
 		
 	for(i=0;i<kPlay.size();i++)
 	{
@@ -293,8 +307,14 @@ void ZFAudioSystem::Update()
 		if(iSource==-1)
 			break;
 
-		kPlay[i]->Start(iSource, m_kSources[iSource]->m_iSource);
+		// Vi har misslyckats att spela upp ljudet så vi tar bor det.
+		if(!kPlay[i]->Start(iSource, m_kSources[iSource]->m_iSource))
+			kRemove.push_back(kPlay[i]);
 	}
+
+	// Ta bort misslyckade uppspelade ljud.
+	for(i=0;i<kRemove.size();i++)
+		RemoveSound(kRemove[i]);
 }
 
 bool ZFAudioSystem::Hearable(ZFSound* pkSound)

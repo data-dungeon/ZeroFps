@@ -73,7 +73,7 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		ZFSound();
 		~ZFSound();
 		bool Create(string strName);	// overloaded
-		void Start(int iSourceIndex, int iSourceName);
+		bool Start(int iSourceIndex, int iSourceName);
 		bool Load();
 
 		Vector3 m_kPos;					// sounds position
