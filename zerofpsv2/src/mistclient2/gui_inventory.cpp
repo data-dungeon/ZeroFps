@@ -493,16 +493,6 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->Show();
 		pkNewSlot->SetZValue(12121);
 
-		//if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
-		//{
-		//	if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
-		//	{
-		//		float fTime = (float) SDL_GetTicks() / 1000.0f;
-		//		m_fPickUpTimer = fTime;
-		//		pkNewSlot->Hide();
-		//	}
-		//}
-
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
@@ -527,7 +517,9 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 // When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem()
 {
-	g_kMistClient.m_pkGui->SetCursor( 0, 0, 
+	float mx, my;
+	g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
+	g_kMistClient.m_pkGui->SetCursor((int)mx, (int)my, 
 		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
@@ -567,7 +559,7 @@ void InventoryDlg::OnDropItem()
 		if(m_kMoveSlot.bIsInventoryItem) // flyttar på ett inventoryitem till containern
 		{
 			if(m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
-				m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
+				(m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top)) )
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 				{
@@ -700,8 +692,6 @@ void InventoryDlg::CloseContainerWnd()
 	}
 }
 
-
-
 bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 {
 	Point test_slot, test_size;
@@ -717,55 +707,9 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 		test_size = SlotSizeFromWnd(m_vkContainerItemList[iTestSlot].pkWnd);
 	}
 
-	//vector<Point> kSlotsTaken;
-
-	//if(bInventory)
-	//{
-	//	for(int i=0; i<m_vkInventoryItemList.size(); i++)
-	//		if( i != iTestSlot)
-	//		{
-	//			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
-	//			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
-
-	//			for(int y=0; y<kSlotSize.y; y++)
-	//				for(int x=0; x<kSlotSize.x; x++)
-	//					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
-	//		}
-	//}
-	//else
-	//{
-	//	for(int i=0; i<m_vkContainerItemList.size(); i++)
-	//		if( i != iTestSlot)
-	//		{
-	//			Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
-	//			Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
-
-	//			for(int y=0; y<kSlotSize.y; y++)
-	//				for(int x=0; x<kSlotSize.x; x++)
-	//					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
-	//		}
-	//}
-
-	//for(int i=0; i<kSlotsTaken.size(); i++)
-	//	for(int y=0; y<test_size.y; y++)
-	//		for(int x=0; x<test_size.x; x++)
-	//		{
-	//			Point t(test_slot.x + x, test_slot.y + y);
-
-	//			if(t == kSlotsTaken[i])
-	//				return true;
-	//		}
-
 	return TestForCollision(test_slot, test_size, bInventory);
 
 }
-
-
-
-
-
-
-
 
 bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInventory)
 {
