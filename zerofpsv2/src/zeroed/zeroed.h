@@ -196,7 +196,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void RegisterPropertys();
 		void RegisterResources();		
 		void Input();
-		void OnServerStart(){};
+		void OnServerStart();
 		void OnClientStart(){};
 
 	

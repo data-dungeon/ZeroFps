@@ -201,7 +201,7 @@ void ZeroEd::OnInit()
 	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/zeroed/") ,"data/");
 	
-	m_pkConsole->Printf(" ZeroEd (mistland dedicated server)");
+	m_pkConsole->Printf(" ZeroEd ");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");
 
@@ -211,15 +211,15 @@ void ZeroEd::OnInit()
 	//DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
-	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
-		m_pkConsole->Printf("No mistserver_autoexec.ini found");
+	if(!m_pkIni->ExecuteCommands("zeroed_autoexec.ini"))
+		m_pkConsole->Printf("No zeroed_autoexec.ini found");
 
 	
 }
 
 void ZeroEd::Init()
 {	
-	m_pkFps->m_bClientMode = true;
+//	m_pkFps->m_bClientMode = true;
 
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
@@ -304,6 +304,15 @@ void ZeroEd::Init()
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
 
+	//start a clean world
+	m_pkObjectMan->Clear();
+	m_pkFps->StartServer(true,false);
+	m_strWorldDir = "";
+
+}
+
+void ZeroEd::OnServerStart(void)
+{		
 	CreateEditCameras();
 
 	// Create and setup the Env on the server.
@@ -1087,8 +1096,12 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	switch(cmdid) {
 		case FID_NEW:
+			if(m_bSoloMode)
+				SoloToggleView();		
+		
 			m_pkObjectMan->Clear();
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			m_pkFps->StartServer(true,false);
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
 			break;
@@ -1141,7 +1154,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 */						
 			cout<<"starting server"<<endl;
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			m_pkFps->StartServer(true,false);
 			
 			break;		
 		
@@ -1200,7 +1214,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				SoloToggleView();
 			GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
 			m_pkObjectMan->LoadWorld("snapshot");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			m_pkFps->StartServer(true,false);
 			break;
 
 		/*case FID_USERS:
