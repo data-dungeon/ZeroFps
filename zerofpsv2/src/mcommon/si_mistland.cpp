@@ -5,6 +5,7 @@
 #include "p_charstats.h"
 #include "p_item.h"
 #include "p_spell.h"
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <cmath>                    // for trigonometry functions
 
@@ -113,10 +114,14 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetPropertyValue",	      MistLandLua::SetPropertyValueLua);
 
    pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
+   
+   pkScript->ExposeFunction("SetDrawingOrder",	      MistLandLua::SetDrawingOrderLua);
 
 	// setup ip
 	pkScript->ExposeFunction("AddServer", MistLandLua::AddServerLua);
 	pkScript->ExposeFunction("SetDefaultServer", MistLandLua::SetDefaultServerLua);
+
+
 	
 
 }
@@ -1774,7 +1779,6 @@ int MistLandLua::AddAfterItemNameLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
-
 int MistLandLua::UnEquipLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -2152,6 +2156,8 @@ int MistLandLua::AddServerLua(lua_State* pkLua)
 	return 1;
 }
 
+// -----------------------------------------------------------------------------------------------
+
 // 1:st arg = server name (string)
 int MistLandLua::SetDefaultServerLua(lua_State* pkLua)
 {
@@ -2170,3 +2176,29 @@ int MistLandLua::SetDefaultServerLua(lua_State* pkLua)
 
 	return 1;
 }
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetDrawingOrderLua(lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+
+      // caster
+      double dOrder;
+      g_pkScript->GetArgNumber(pkLua, 0, &dOrder);
+
+      Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+  		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
+
+      if ( pkMAD )
+         pkMAD->m_iSortPlace = dOrder;
+      else
+         cout << "Warning! Tried to set drawing order on a non-MAD object." << endl;
+ }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------

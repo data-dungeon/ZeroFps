@@ -16,6 +16,7 @@
 #include "../zerofpsv2/basic/zguifont.h"
 #include <set> 
 #include <algorithm>
+#include <mbstring.h>
 
 MistServer g_kMistServer("MistServer",0,0,0);
 
@@ -1155,7 +1156,7 @@ void MistServer::HandleOrders()
 		
 		if(!CheckValidOrder(order))
 		{
-			cout<<"Bad order from:"<<order->m_iClientID<<endl;
+			cout << "Bad order from:" << order->m_iClientID << endl;
 			P_ClientControl::PopOrder();
 			continue;
 		}
@@ -1190,7 +1191,7 @@ void MistServer::HandleOrders()
 		}
 		else if(order->m_iFace != -1) 		//else ground klick
 		{
-			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
+			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
 			{
 				/* Vim Test Path*/
@@ -1217,11 +1218,46 @@ void MistServer::HandleOrders()
 
 				/*P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
-					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iFace,order->m_iCaracter ,order->m_iZoneObjectID);
+					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iFace,order->m_iCharacter ,order->m_iZoneObjectID);
 				*/
 			}
 
 		}
+
+      // request orders
+      else if (strncmp(order->m_sOrderName.c_str(),"(rq)",4) == 0 )
+      {
+         // type of request
+
+         unsigned char* strRequest = _mbsninc( (const unsigned char*)order->m_sOrderName.c_str(), 4 );
+
+         // item request
+         if ( strncmp(order->m_sOrderName.c_str(), "item", 4) )
+         {
+   			Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+
+            if ( pkItemObject )
+            {
+               P_Item *pkItProp = (P_Item*) pkItemObject->GetProperty("P_Item");
+               
+               if ( pkItProp )
+               {
+                  // if the items is of the same version, no need to send data
+                  if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
+                  {
+                     pkItProp->m_kSends.push_back ( order->m_iClientID );
+                  }
+
+               }
+               else
+                  cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
+            }
+
+
+         }
+
+      }
+
 		else
 		{
 			//other orders
@@ -1231,7 +1267,7 @@ void MistServer::HandleOrders()
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
 				{	
-					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCaracter);				
+					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCharacter);				
 				
 				}			
 			}
@@ -1243,7 +1279,7 @@ void MistServer::HandleOrders()
 
 bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 {
-	if(pkOrder->m_iCaracter == -1)
+	if(pkOrder->m_iCharacter == -1)
 		return true;
 		
 	if(m_pkServerInfoP)
@@ -1255,7 +1291,7 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 			for(unsigned int i = 0;i<pi->kControl.size();i++)
 			{
 				//found objectID
-				if(pi->kControl[i].first == pkOrder->m_iCaracter)
+				if(pi->kControl[i].first == pkOrder->m_iCharacter)
 					if(pi->kControl[i].second & PR_CONTROLS)
 						return true;				
 			}

@@ -359,6 +359,11 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 			glPolygonMode(GL_FRONT, GL_POINT);
 			break;						
 	}
+
+   if ( pkSettings->m_bDepthTest )
+      glEnable (GL_DEPTH_TEST);
+   else
+      glDisable (GL_DEPTH_TEST);
 	
 	//polygon mode settings		back	
 	switch(pkSettings->m_iPolygonModeBack)

@@ -132,8 +132,10 @@ namespace MistLandLua
 
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 
+   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
 
-   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua); //which property, data in property and last, value
+   
+   int MCOMMON_API SetDrawingOrderLua(lua_State* pkLua); // changes the order the object is drawn in(mad function)
 
 
 };

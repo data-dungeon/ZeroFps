@@ -22,6 +22,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bLighting =	 true;
 	m_bCullFace = 	true;
 	m_bAlphaTest =	false;
+   m_bDepthTest = true;
 	m_iDepthFunc =	LESS_DEPTH;
 	
 	m_bBlend	= false;
@@ -182,15 +183,6 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"alphatest"))
 		newpass->m_bAlphaTest = m_kIni.GetBoolValue(passname.c_str(),"alphatest");
 	
-
-   // added mipmap option // -magnus
-   bool bMipMapped = true;
-
-   if(m_kIni.KeyExist(passname.c_str(),"mipmapped"))
-      bMipMapped = m_kIni.GetBoolValue(passname.c_str(),"mipmapped");
-
-   TextureManager::SetMipMap (bMipMapped);
-
 	if(m_kIni.KeyExist(passname.c_str(),"tu0"))
 		newpass->m_kTUs[0]->SetRes(m_kIni.GetValue(passname.c_str(),"tu0"));
 	if(m_kIni.KeyExist(passname.c_str(),"tu1"))
@@ -227,6 +219,8 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"blenddst"))
 		newpass->m_iBlendDst = m_kIni.GetIntValue(passname.c_str(),"blenddst");
 	
+   if(m_kIni.KeyExist(passname.c_str(),"depthtest"))
+      newpass->m_bDepthTest = m_kIni.GetBoolValue(passname.c_str(),"depthtest");
 	
 	return true;
 }

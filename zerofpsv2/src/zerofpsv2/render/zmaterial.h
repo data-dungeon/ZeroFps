@@ -31,6 +31,9 @@ class RENDER_API ZMaterialSettings
 		bool	m_bAlphaTest;
 	
 		bool	m_bBlend;
+
+      bool m_bDepthTest;
+
 		int	m_iBlendSrc;
 		int	m_iBlendDst;
 	

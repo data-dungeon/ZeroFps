@@ -68,6 +68,8 @@ void ItemStats::SetQuality(float fQuality)
 {
    m_fQuality = fQuality;
 
+   m_uiVersion++;
+
    if ( m_fQuality < 0 )
       // destroy object?
       m_fQuality = 0;
@@ -80,6 +82,8 @@ void ItemStats::SetQuality(float fQuality)
 void ItemStats::AddQuality(float fAddQ)
 {
    m_fQuality += fAddQ;
+
+   m_uiVersion++;
 
    if ( m_fQuality < 0 )
       // destroy object?
@@ -94,6 +98,8 @@ void ItemStats::SetQuantity(int iQuantity)
 {
    m_iQuantity = iQuantity;
 
+   m_uiVersion++;
+
    if ( m_iQuantity < 1 )
       m_iQuantity = 1;
 }
@@ -104,6 +110,8 @@ void ItemStats::AddQuantity(int iAddQ)
 {
    m_iQuantity += iAddQ;
 
+   m_uiVersion++;
+
    // destroy object?
    if ( m_iQuantity < 0 )
       m_iQuantity = 0;
@@ -113,6 +121,8 @@ void ItemStats::AddQuantity(int iAddQ)
 
 void ItemStats::SetSkillBonus ( string kSkillName, int iValue )
 {
+   m_uiVersion++;
+
    m_kSkillBonus[kSkillName] = iValue;
 }
 
@@ -120,6 +130,8 @@ void ItemStats::SetSkillBonus ( string kSkillName, int iValue )
 
 void ItemStats::SetAttributeBonus ( string kAttributeName, int iValue )
 {
+   m_uiVersion++;
+
    m_kAttributeBonus[kAttributeName] = iValue;
 }
 
@@ -127,6 +139,8 @@ void ItemStats::SetAttributeBonus ( string kAttributeName, int iValue )
 
 void ItemStats::SetAttackBonus ( string kAttackName, int iValue )
 {
+   m_uiVersion++;
+
    m_kFightStats.m_kAttack[kAttackName] = iValue;
 }
 
@@ -134,6 +148,8 @@ void ItemStats::SetAttackBonus ( string kAttackName, int iValue )
 
 void ItemStats::SetDefenceBonus ( string kDefenceName, int iValue )
 {
+   m_uiVersion++;
+
    m_kFightStats.m_kDefence[kDefenceName] = iValue;
 }
 
@@ -141,6 +157,8 @@ void ItemStats::SetDefenceBonus ( string kDefenceName, int iValue )
 
 void ItemStats::SetEquipmentCategory ( EquipmentCategory eCategory)
 {
+   m_uiVersion++;
+
    m_eEquipmentCategory = eCategory;
 }
 
@@ -148,6 +166,8 @@ void ItemStats::SetEquipmentCategory ( EquipmentCategory eCategory)
 
 void ItemStats::AddCanEquipOn ( string kEquipOn )
 {
+   m_uiVersion++;
+
    m_kEquippableOn.push_back ( kEquipOn );
 }
 
@@ -155,6 +175,8 @@ void ItemStats::AddCanEquipOn ( string kEquipOn )
 
 void ItemStats::AddToSkillBonus ( string kSkillName, int iValue )
 {
+   m_uiVersion++;
+
    m_kSkillBonus[kSkillName] += iValue;
 }
 
@@ -162,6 +184,8 @@ void ItemStats::AddToSkillBonus ( string kSkillName, int iValue )
 
 void ItemStats::AddToAttributeBonus ( string kAttributeName, int iValue )
 {
+   m_uiVersion++;
+
    m_kAttributeBonus[kAttributeName] += iValue;
 }
 
@@ -169,6 +193,8 @@ void ItemStats::AddToAttributeBonus ( string kAttributeName, int iValue )
 
 void ItemStats::AddToAttackBonus ( string kAttackName, int iValue )
 {
+   m_uiVersion++;
+
    m_kFightStats.m_kAttack[kAttackName] += iValue;
 }
 
@@ -176,6 +202,8 @@ void ItemStats::AddToAttackBonus ( string kAttackName, int iValue )
 
 void ItemStats::AddToDefenceBonus ( string kDefenceName, int iValue )
 {
+   m_uiVersion++;
+
    m_kFightStats.m_kDefence[kDefenceName] += iValue;
 }
 
@@ -288,6 +316,8 @@ ItemStats::ItemStats()
 	strcpy(m_szPic[1], "dummy_a.bmp");
    m_iIconID[0] = 0;
    m_iIconID[1] = 0;
+   m_uiVersion = 0;
+
 
 }
 
@@ -296,6 +326,8 @@ ItemStats::ItemStats()
 void ItemStats::AddItemValue ( int iValue )
 {
    m_iValue += iValue;
+
+   m_uiVersion++;
 
    if ( m_iValue < 0 )
       m_iValue = 0;
@@ -310,6 +342,9 @@ bool ItemStats::operator== ( ItemStats &kItemStats )
         m_fQuality != kItemStats.m_fQuality ||
         m_fWeight != kItemStats.m_fWeight )
       return false;
+
+   // copy version???
+   //m_uiVersion = kItemStats;
 
    
    map<string, int>::iterator kIte, kSearch;
@@ -450,6 +485,8 @@ bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
 
 void ItemStats::AddAfterName ( string kAddName )
 {
+   m_uiVersion++;
+
    m_kItemName += " " + kAddName;
 }
 
@@ -457,6 +494,8 @@ void ItemStats::AddAfterName ( string kAddName )
 
 void ItemStats::AddBeforeName ( string kAddName )
 {
+   m_uiVersion++;
+
    m_kItemName = kAddName + " " + m_kItemName;
 }
 
@@ -464,6 +503,8 @@ void ItemStats::AddBeforeName ( string kAddName )
 
 void ItemStats::RegisterAsContainer()
 { 
-	s_iContainerCounter++;
+   m_uiVersion++;
+
+   s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
 }

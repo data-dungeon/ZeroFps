@@ -45,6 +45,7 @@ public:
 	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
    int m_iIconID[2];
 
+   unsigned int m_uiVersion;    // version of the object, server always have lastversion
 
    ItemStats();
 

@@ -1,6 +1,8 @@
 #include "p_item.h"
+#include "p_clientcontrol.h"
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/entitymanager.h"
+#include "../zerofpsv2/engine/zerofps.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -32,6 +34,7 @@ P_Item::P_Item()
 	bNetwork = true;
 
 	strcpy(m_acName,"P_Item");
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -45,6 +48,7 @@ P_Item::P_Item( string kName )
 	bNetwork = true;
 
 	strcpy(m_acName,"P_Item");
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -225,12 +229,49 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
 void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
+   for (vector<int>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
+   {
+      //  if a object which has requested info was found...
+      if ( (*kIte) == iConnectionID )
+      {
+         pkNetPacket->Write_NetStr( "data" );
+
+         // icon
+         pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[0] );
+
+         // icon mask
+         pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[1] );
+
+         m_kSends.erase ( kIte );
+      }
+      else
+         pkNetPacket->Write_NetStr( "null" );
+   }
 }
 
 // ------------------------------------------------------------------------------------------
 
 void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+	char temp[128];
+
+	pkNetPacket->Read_NetStr(temp);
+
+	string kDataType = temp;	
+	
+	if(kDataType == "null")
+		return;
+   else if ( kDataType == "data" )
+   {
+      cout << "Item got data from server!!! :)" << endl;
+      // get icon
+      pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic[0]);
+
+      // get iconmask
+      pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic[1]);
+   }
+	
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -276,6 +317,37 @@ bool P_Item::Stock ( Entity *pkObject )
       }
 
    return false;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+void P_Item::RequestUpdateFromServer ()
+{
+   
+   int iClientObjectID = m_pkZeroFps->GetClientObjectID();
+   Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID );
+
+   if ( pkClientObj )
+   {
+      // get ClientControlProperty
+      P_ClientControl* pkCP = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
+
+      ClientOrder kOrder;
+
+      kOrder.m_sOrderName = "(rq)item";
+      kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+      kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+      kOrder.m_iCharacter = iClientObjectID;
+
+      // use this useless variabel to send which version of the item this prop. has
+      kOrder.m_iFace = m_pkItemStats->m_uiVersion;      
+     
+
+      pkCP->AddOrder (kOrder);
+   }
+   else
+      cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;
+   
 }
 
 // ---------------------------------------------------------------------------------------------

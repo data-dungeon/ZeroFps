@@ -8,10 +8,6 @@
 
 #define ERROR_TEXTURE	"data/textures/notex.bmp"
 
-
-bool TextureManager::ms_bMipMap;
-
- 
 TextureManager::TextureManager()
  : ZFSubSystem("TextureManager") 
 {

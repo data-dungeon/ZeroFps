@@ -84,9 +84,6 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 
 	public:
-      static bool ms_bMipMap;
-
-      static void SetMipMap (bool bMipMap)       { ms_bMipMap = bMipMap; }
 
       void FreeTexture(texture* pkTex);
 

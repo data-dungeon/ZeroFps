@@ -5,14 +5,17 @@
 #include "mcommon_x.h"
 #include "rulesystem/item/itemstats.h"
 #include "../zerofpsv2/basic/zfini.h"
+#include <vector>
+   using namespace std;
 
 class MCOMMON_API P_Item: public Property 
 {
 	private:
       string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
-		
    public:
+      vector<int> m_kSends;       // the clients to recieve data from this property
+
 		ItemStats *m_pkItemStats;
 
 	   void Update();
@@ -32,6 +35,8 @@ class MCOMMON_API P_Item: public Property
 
       Entity* Split ( int iTookens );
       bool Stock ( Entity *pkObject );
+
+      void RequestUpdateFromServer ();
 };
 
 MCOMMON_API Property* Create_P_Item();

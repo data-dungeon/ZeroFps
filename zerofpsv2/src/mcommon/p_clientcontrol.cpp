@@ -39,7 +39,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Write_Str(m_kClientOrders.front().m_sOrderName.c_str());		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
-		pkNetPacket->Write(&m_kClientOrders.front().m_iCaracter,sizeof(m_kClientOrders.front().m_iCaracter));									
+		pkNetPacket->Write(&m_kClientOrders.front().m_iCharacter,sizeof(m_kClientOrders.front().m_iCharacter));									
 		pkNetPacket->Write(&m_kClientOrders.front().m_kPos,sizeof(m_kClientOrders.front().m_kPos));								
 		pkNetPacket->Write(&m_kClientOrders.front().m_iFace,sizeof(m_kClientOrders.front().m_iFace));										
 		pkNetPacket->Write(&m_kClientOrders.front().m_iZoneObjectID,sizeof(m_kClientOrders.front().m_iZoneObjectID));		
@@ -65,7 +65,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		temporder.m_sOrderName=name;
 		pkNetPacket->Read(&temporder.m_iObjectID,sizeof(temporder.m_iObjectID));
 		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
-		pkNetPacket->Read(&temporder.m_iCaracter,sizeof(temporder.m_iCaracter));				
+		pkNetPacket->Read(&temporder.m_iCharacter,sizeof(temporder.m_iCharacter));				
 		pkNetPacket->Read(&temporder.m_kPos,sizeof(temporder.m_kPos));						
 		pkNetPacket->Read(&temporder.m_iFace,sizeof(temporder.m_iFace));						
 		pkNetPacket->Read(&temporder.m_iZoneObjectID,sizeof(temporder.m_iZoneObjectID));						
