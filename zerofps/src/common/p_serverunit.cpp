@@ -12,7 +12,7 @@ P_ServerUnit::P_ServerUnit()
 	m_kInfo.m_cWeapon = 	0;
 	m_kInfo.m_cArmor = 		0;
 	m_kInfo.m_cPropultion =0;
-	m_kInfo.m_kName = 		"NoName";
+	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_pkClientUnit = NULL;
 	m_bHaveSetRadius = false;
@@ -85,7 +85,7 @@ void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(2);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_INT;
@@ -95,10 +95,6 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[1].iValueType=VALUETYPE_INT;
 	kReturn[1].pkValue=(void*)&m_kInfo.m_cHealth;
 
-	kReturn[2].kValueName="m_kName";
-	kReturn[2].iValueType=VALUETYPE_STRING;
-	kReturn[2].pkValue=(void*)&m_kInfo.m_kName;
-	
 	return kReturn;
 }
 

@@ -389,7 +389,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	//	Write Pos, Rotation.	
 	pkNetPacket->Write(m_kPos);
 	pkNetPacket->Write(m_kRot);
-
+	pkNetPacket->Write(m_fRadius);
+	
 	char szPropertyName[256];
 
 	// Loop all properys med Propery::bNetwork = true
@@ -409,11 +410,14 @@ void Object::PackTo(NetPacket* pkNetPacket)
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
 	Vector3 kVec;
+	float	  fFloat;
 
 	pkNetPacket->Read(kVec);
 	SetPos(kVec);
 	pkNetPacket->Read(kVec);
 	SetRot(kVec);
+	pkNetPacket->Read(fFloat);
+	GetRadius() = fFloat;
 
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>", m_kPos.x,m_kPos.y,m_kPos.z);
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>\n", m_kRot.x,m_kRot.y,m_kRot.z);

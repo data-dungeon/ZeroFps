@@ -575,9 +575,9 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 					pkCol->pkBody1->m_kInertiaInverse).Cross(pkCol->kMassCenterToPos1))));
 
 		//if objects r almost resting give it a little extra push		
-		if(j <= 0.0005)
+		if(j <= 0.001)
 		{	
-			j+=0.2;
+			j+=0.3;
 		}
 		
 		float friction = 0.1;

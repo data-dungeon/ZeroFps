@@ -17,7 +17,7 @@ P_ClientUnit::P_ClientUnit()
 	m_kInfo.m_cWeapon = 	0;
 	m_kInfo.m_cArmor = 		0;
 	m_kInfo.m_cPropultion =0;
-	m_kInfo.m_kName = 		"NoName";
+	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_bSelected =	false;
 	
@@ -39,6 +39,9 @@ void P_ClientUnit::Update()
 			DisableSelectionRender();
 	}
 
+
+	if(m_bSelected)
+		cout<<"Helth:"<<(int)m_kInfo.m_cHealth<<endl;
 }
 
 
