@@ -21,7 +21,7 @@ P_PfPath::P_PfPath()
 	m_bTilt = false;
 	m_iNavMeshCell = 0;
 	
-	m_kOffset.Set(0,0,0);
+	m_kOffset.Set(0,0.1,0);
 	m_bHaveOffset = false;
 }
 

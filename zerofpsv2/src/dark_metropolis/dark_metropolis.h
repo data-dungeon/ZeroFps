@@ -18,6 +18,7 @@ using namespace std;
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_dmhq.h"
 #include "../mcommon/p_dmcharacter.h"
+#include "../mcommon/p_shadowblob.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmgameinfo.h"
 

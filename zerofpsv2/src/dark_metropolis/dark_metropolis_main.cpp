@@ -230,10 +230,11 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+//	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
 	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_DMGameInfo", Create_P_DMGameInfo);	
 	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
+	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);	
 }
 
 void DarkMetropolis::Input()

@@ -34,6 +34,7 @@
 #include "../mcommon/p_spawn.h"
 #include "../mcommon/p_dmhq.h"
 #include "../mcommon/p_dmcharacter.h"
+#include "../mcommon/p_shadowblob.h"
 
 #include "playerdatabase.h"
 

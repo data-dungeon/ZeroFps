@@ -9,7 +9,7 @@ function Create()
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
 		InitProperty("P_ScriptInterface");
-		
+		InitProperty("P_ShadowBlob");
 
 end
 

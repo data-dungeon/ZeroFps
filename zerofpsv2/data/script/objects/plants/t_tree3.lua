@@ -11,6 +11,7 @@ function Create()
 			InitParameter("group",4);		
 			InitParameter("polygontest","true");
 		
+		InitProperty("P_ShadowBlob");
 		
 		SetParentObject();
 		SetReturnObject();
