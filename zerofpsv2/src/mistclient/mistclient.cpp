@@ -110,7 +110,7 @@ void MistClient::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),60,1.333,0.25,100);	
 	
 	//register actions bös
 	RegisterActions();
@@ -159,9 +159,10 @@ void MistClient::Init()
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
 
-	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+/*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
 	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
 	pkMusic->Play();
+*/	
 }
 
 void MistClient::RegisterResources()

@@ -1,9 +1,17 @@
 #include "playerdatabase.h"
 
+#include "../zerofpsv2/basic/zfbasicfs.h"
+
 PlayerDatabase::PlayerDatabase()
 {
 	m_pkEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_strPlayerDirectory="players/";
+	
+	
+	//make sure that player directory exist
+	ZFBasicFS* pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
+	if(pkBFPS)
+		pkBFPS->CreateDir(m_strPlayerDirectory.c_str());
 }
 
 bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)

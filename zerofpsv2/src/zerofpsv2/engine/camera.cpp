@@ -81,6 +81,7 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	glPushMatrix();
 	 	glLoadIdentity();													
 		gluPerspective(fFov, fAspect,fNear,fFar);	
+		//cout<<"fov:"<<fFov<<endl;
 		//get projection matrix
 		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();

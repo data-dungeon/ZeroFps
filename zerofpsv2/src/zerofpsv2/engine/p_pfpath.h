@@ -3,14 +3,18 @@
 
 #include "property.h"
 #include "engine_x.h"
+#include "zerofps.h"
 
 using namespace std;
 
 class ENGINE_API P_PfPath : public Property 
 {
 	private:
+		ZeroFps*				m_pkFps;
 		vector<Vector3>	m_kPath;
 		int					m_iNextGoal;
+		
+		float					m_fSpeed;
 
 	public:
 		P_PfPath();

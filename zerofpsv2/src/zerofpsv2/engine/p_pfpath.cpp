@@ -6,9 +6,12 @@
 P_PfPath::P_PfPath()
 {
 	strcpy(m_acName,"P_PfPath");
-	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
+	m_iType = PROPERTY_TYPE_NORMAL;// | PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
+	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	m_fSpeed = 1;
 }
 
 P_PfPath::~P_PfPath()
@@ -50,7 +53,7 @@ void P_PfPath::Update()
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
-	if(fdist < 0.5) {
+	if(fdist < 0.2) {
 		m_pkObject->SetWorldPosV(kGoal);
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
@@ -60,7 +63,7 @@ void P_PfPath::Update()
 		}
 
 	kdiff.Normalize();
-	kPos += (kdiff * 0.1);
+	kPos += (kdiff * m_fSpeed) * m_pkFps->GetGameFrameTime();
 	m_pkObject->SetWorldPosV(kPos);
 }
 
