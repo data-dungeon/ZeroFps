@@ -1769,7 +1769,7 @@ void EntityManager::LoadZone(int iId)
 		Entity* staticentity = new Entity;
 		staticentity->GetName() = "StaticEntity";
 		staticentity->SetParent(kZData->m_pkZone);
-		
+		staticentity->GetObjectType() = OBJECT_TYPE_STATIC;
 
 		return;
 	}
