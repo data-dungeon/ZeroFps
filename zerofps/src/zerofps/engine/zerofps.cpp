@@ -90,6 +90,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_COLOR_MATERIAL);	
+	glEnable(GL_CULL_FACE);
 
   glShadeModel(GL_SMOOTH);
   glClearColor(0, 0, 0, 0);

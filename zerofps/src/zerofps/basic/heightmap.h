@@ -4,6 +4,7 @@
 #define _HEIGHTMAP_H_
 
 #include "vector3.h"
+#include <cstdlib>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ class HeightMap {
 		
 		HeightMap();		
 		void Zero();
+		void Random();
 		bool Load(char* acFile);
 		
 };

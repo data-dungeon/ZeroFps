@@ -14,7 +14,7 @@ void Test::OnInit(void) {
 	pkFps->m_pkAudioMan->PlayMusic();
 
 	test=new HeightMap();
-	test->Zero();
+	test->Random();
 }
 
 
@@ -24,8 +24,8 @@ void Test::OnIdle(void) {
 	
 	
 	
-	for(int i=2;i<60;i++)
-		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
+//	for(int i=2;i<60;i++)
+//		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
 
 
 }
