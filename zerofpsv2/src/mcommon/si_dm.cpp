@@ -45,6 +45,8 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddMoveCharSound", DMLua::AddMoveCharSoundLua);
 	pkScript->ExposeFunction("AddSelectCharSound", DMLua::AddSelectCharSoundLua);
 	pkScript->ExposeFunction("SetTeam", DMLua::SetTeamLua);
+	pkScript->ExposeFunction("GetCharStats", DMLua::GetCharStatsLua);
+	pkScript->ExposeFunction("SetCharStats", DMLua::SetCharStatsLua);
 
 	// character behaviours
 	pkScript->ExposeFunction("PanicArea", DMLua::PanicAreaLua);
@@ -324,6 +326,108 @@ int DMLua::HealLua(lua_State* pkLua)
 
 	return 0;
 }
+
+
+// ------------------------------------------------------------------------------------------------
+
+// Takes a entityID and a type of stats value (a).
+// (a)	(ie. varible)
+// 0 = 	m_iLife;
+// 1 = 	m_iMaxLife;
+// 2 = 	m_fSpeed;	
+// 3 = 	m_fArmour;
+// 4 = 	m_fWage;
+// 5 = 	m_fAim;
+// 6 = 	m_fExperience;
+// 7 = 	m_fNextLevel;
+// 8 = 	m_iLevel;
+
+int DMLua::GetCharStatsLua(lua_State* pkLua)
+{
+	double dStatsValue = -1.0f;
+
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity != 0)
+	{
+		P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+		if ( pkChar != 0 )
+		{
+			double dStatsType;
+			
+			g_pkScript->GetArgNumber(pkLua, 1, &dStatsType);
+
+			switch((int)dStatsType)
+			{
+			case 0: dStatsValue = pkChar->GetStats()->m_iLife; break; 
+			case 1: dStatsValue = pkChar->GetStats()->m_iMaxLife; break;
+			case 2: dStatsValue = pkChar->GetStats()->m_fSpeed; break;
+			case 3: dStatsValue = pkChar->GetStats()->m_fArmour; break;
+			case 4: dStatsValue = pkChar->GetStats()->m_fWage; break;
+			case 5: dStatsValue = pkChar->GetStats()->m_fAim; break; 
+			case 6: dStatsValue = pkChar->GetStats()->m_fExperience; break;
+			case 7: dStatsValue = pkChar->GetStats()->m_fNextLevel; break; 
+			case 8: dStatsValue = pkChar->GetStats()->m_iLevel; break;
+			}								
+		}
+	}
+
+	g_pkScript->AddReturnValue(pkLua,double(dStatsValue));
+
+	return 1;
+}
+
+
+
+// ------------------------------------------------------------------------------------------------
+
+// Takes a entityID, a type of stats value (a), and a stats value (b).
+// (a)	(ie. varible)
+// 0 = 	m_iLife;
+// 1 = 	m_iMaxLife;
+// 2 = 	m_fSpeed;	
+// 3 = 	m_fArmour;
+// 4 = 	m_fWage;
+// 5 = 	m_fAim;
+// 6 = 	m_fExperience;
+// 7 = 	m_fNextLevel;
+// 8 = 	m_iLevel;
+
+int DMLua::SetCharStatsLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (3, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	double dStatsType;
+	double dStatsValue = -1.0f;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dStatsType);
+	g_pkScript->GetArgNumber(pkLua, 2, &dStatsValue);
+
+	switch((int)dStatsType)
+	{
+	case 0: pkChar->GetStats()->m_iLife = dStatsValue; break; 
+	case 1: pkChar->GetStats()->m_iMaxLife = dStatsValue; break;
+	case 2: pkChar->GetStats()->m_fSpeed = dStatsValue; break;
+	case 3: pkChar->GetStats()->m_fArmour = dStatsValue; break;
+	case 4: pkChar->GetStats()->m_fWage = dStatsValue; break;
+	case 5: pkChar->GetStats()->m_fAim = dStatsValue; break; 
+	case 6: pkChar->GetStats()->m_fExperience = dStatsValue; break;
+	case 7: pkChar->GetStats()->m_fNextLevel = dStatsValue; break; 
+	case 8: pkChar->GetStats()->m_iLevel = dStatsValue; break;
+	}																			 
+
+	return 0;
+}
+
 
 // ------------------------------------------------------------------------------------------------
 

@@ -46,6 +46,8 @@ namespace DMLua
 	int MCOMMON_API AddMoveCharSoundLua(lua_State* pkLua);
 	int MCOMMON_API AddSelectCharSoundLua(lua_State* pkLua);
 	int MCOMMON_API SetTeamLua(lua_State* pkLua);
+	int MCOMMON_API GetCharStatsLua(lua_State* pkLua);
+	int MCOMMON_API SetCharStatsLua(lua_State* pkLua);
 	
 	// behaviours for characters
 	int MCOMMON_API PanicAreaLua(lua_State* pkLua);
