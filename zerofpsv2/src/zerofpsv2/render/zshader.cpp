@@ -19,8 +19,17 @@ bool ZShader::StartUp()
 		m_bVertexProgram = false;
 	}
 
+	//check if we have arb_fragment_program support
+	if(HaveFragmentProgramExt())
+		m_bFragmentProgram = true;
+	else
+	{
+		cout<<"ARB Fragment program not supported"<<endl;
+		m_bFragmentProgram = false;
+	}	
 
 	SetVertexProgram(NO_VPROGRAM);
+	SetFragmentProgram(NO_FPROGRAM);
 
 	m_iForceLighting = LIGHT_MATERIAL;
 	m_iForceBledning = BLEND_MATERIAL;
@@ -155,7 +164,7 @@ void ZShader::SetupClientStates()
 	glDisableClientState(GL_INDEX_ARRAY);	
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
-	
+ 
 	glClientActiveTextureARB(GL_TEXTURE3_ARB);	
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
 	glClientActiveTextureARB(GL_TEXTURE2_ARB);	
@@ -260,6 +269,21 @@ void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)
 		
 
 	SetVertexProgram(iVP);
+}
+
+void ZShader::SetupFragmentProgram(ZMaterialSettings* pkSettings)
+{
+	int iFP;
+	ZFProgram* pkRt = (ZFProgram*)pkSettings->m_pkFP->GetResourcePtr();
+
+	
+	if(!pkRt)
+		iFP = NO_FPROGRAM;
+	else
+		iFP = pkRt->m_iId;
+		
+
+	SetFragmentProgram(iFP);
 }
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
@@ -567,6 +591,10 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 
 	//setup vertex program
 	SetupVertexProgram(pkSettings);
+
+	//setup fragment program
+	SetupFragmentProgram(pkSettings);
+
 }
 
 void ZShader::CopyVertexData()
@@ -692,6 +720,19 @@ bool ZShader::HaveVertexProgramExt()
 	return false;
 }
 
+bool ZShader::HaveFragmentProgramExt()
+{
+	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
+	
+	if(strstr((const char*)pcExt,"GL_ARB_fragment_program") != NULL)
+	{
+		return true;	
+	}
+	
+	return false;
+}
+
+
 void ZShader::SetVertexProgram(int iVPID)
 {
 		
@@ -711,6 +752,25 @@ void ZShader::SetVertexProgram(int iVPID)
 	m_iCurrentVertexProgram=iVPID;
 }
 
+void ZShader::SetFragmentProgram(int iFPID)
+{
+    
+	if(iFPID == NO_VPROGRAM)
+	{
+		glDisable(GL_FRAGMENT_PROGRAM_ARB);
+	}
+	else 
+	{
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+
+		if(m_iCurrentFragmentProgram != iFPID)
+			glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, iFPID);
+	}
+
+
+	m_iCurrentFragmentProgram=iFPID;
+
+}
 
 
 

@@ -10,6 +10,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_kTUs[3] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
 	
 	m_pkVP = new ZFResourceHandle();					// LEAK - MistClient, Level loaded.
+	m_pkFP = new ZFResourceHandle();
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
@@ -49,8 +50,13 @@ ZMaterialSettings::~ZMaterialSettings()
 
 	if(m_pkVP)
 		delete m_pkVP;
-	
+
+	if(m_pkFP)
+		delete m_pkFP;
+		
+			
 	m_pkVP = NULL;
+	m_pkFP = NULL;
 }
 
 ZMaterial::ZMaterial()
@@ -226,7 +232,12 @@ bool ZMaterial::LoadPass(int iPass)
 
 	if(m_kIni.KeyExist(passname.c_str(),"vertexprogram"))
 		newpass->m_pkVP->SetRes(m_kIni.GetValue(passname.c_str(),"vertexprogram"));
-	
+
+	if(m_kIni.KeyExist(passname.c_str(),"fragmentprogram"))
+		newpass->m_pkFP->SetRes(m_kIni.GetValue(passname.c_str(),"fragmentprogram"));
+
+				
+			
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords0"))
 		newpass->m_iTUTexCords[0] = m_kIni.GetIntValue(passname.c_str(),"tutexcords0");
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords1"))

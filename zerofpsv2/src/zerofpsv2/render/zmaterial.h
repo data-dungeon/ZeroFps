@@ -21,6 +21,7 @@ class RENDER_API ZMaterialSettings
 	public:
 		ZFResourceHandle*	m_kTUs[4];	
 		ZFResourceHandle*	m_pkVP;
+		ZFResourceHandle*	m_pkFP;
 		
 		Vector4	m_kVertexColor;
 		bool		m_bColorMaterial;

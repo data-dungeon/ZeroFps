@@ -1,7 +1,7 @@
 SRC=../../
 BINARY=librender.so
 BINDIR=$(SRC)../bin/
-LIBS=--shared -L$(BINDIR) -lSDL -lGLee -lGLU  -L/usr/X11R6/lib `sdl-config --cflags --libs`
+LIBS=--shared -L$(BINDIR) -lSDL -lGLee -lGL -lGLU  -L/usr/X11R6/lib `sdl-config --cflags --libs`
 
 OBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 

@@ -8,11 +8,17 @@
 
 #else
 // Sweet Linux.
-	#define GL_GLEXT_PROTOTYPES   //experimental
 	
+	#define GL_GLEXT_PROTOTYPES   //experimental	
+	#define GLAPI
+	
+//	#include <GL/GLee.h>
+
 	#include <GL/gl.h>
 	#include <GL/glx.h>
-	
+	#include <GL/glext.h>
+
+		
 #endif
 
 #include "GL/glu.h"

@@ -100,7 +100,8 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	RenderDLL_InitExtGL();
 	//extgl_Initialize();
 	GLeeInit();
-#endif
+#endif	
+
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);

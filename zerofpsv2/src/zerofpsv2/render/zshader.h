@@ -14,6 +14,7 @@
 #include "light.h"
 #include "../engine/res_texture.h"
 #include "zvprogram.h"
+#include "zfprogram.h"
 
 #include <stack>
 
@@ -183,9 +184,13 @@ class RENDER_API ZShader : public ZFSubSystem
 	
 		//do we have vertex program support
 		bool			m_bVertexProgram;
+		bool			m_bFragmentProgram;
 	
 		//vertex program is NO_VPROGRAM if no vertex program is active
 		int			m_iCurrentVertexProgram;
+		
+		//fragment program is NO_FPROGRAM if no fragment  program is active
+		int			m_iCurrentFragmentProgram; 
 		
 	
 		//this enable/disable client states if pointers have been set
@@ -199,6 +204,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		
 		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
 		void SetupVertexProgram(ZMaterialSettings* pkSettings);
+		void SetupFragmentProgram(ZMaterialSettings* pkSettings);
 		
 		//makes a memcopy of all none null pointers data, and sets the pointers to the new location
 		void CopyVertexData();
@@ -212,7 +218,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		void ColorEffect(ZMaterialSettings* pkSettings);
 	
 		bool HaveVertexProgramExt();
-
+		bool HaveFragmentProgramExt();
 
 	public:
 		ZShader();
@@ -228,9 +234,13 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetDrawMode(int iDrawMode);
 
 		void SetVertexProgram(int iVPID);
-		int  GetCurrentVertexProgram() {return m_iCurrentVertexProgram;};
-		bool SupportVertexProgram() { return m_bVertexProgram;};
+		void SetFragmentProgram(int iVPID);
+		int  GetCurrentVertexProgram() 	{ return m_iCurrentVertexProgram;};
+		int  GetCurrentFragmentProgram() { return m_iCurrentFragmentProgram;};
+		bool SupportVertexProgram() 		{ return m_bVertexProgram;};
+		bool SupportFragmentProgram() 	{ return m_bFragmentProgram;};
 
+		
 		//matrix manipulation
 		void MatrixIdentity()						{m_kModelMatrix.Identity();};
 		void MatrixTranslate(Vector3 kPos)		{m_kModelMatrix.Translate(kPos.x,kPos.y,kPos.z);};
