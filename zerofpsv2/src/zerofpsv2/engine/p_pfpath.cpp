@@ -184,7 +184,8 @@ void P_PfPath::SetupOffset()
 	P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 	if(pm)
 	{	
-		m_kOffset = pm->GetJointPosition("fem_run_c_root");
+		//m_kOffset = pm->GetJointPosition("fem_run_c_root");
+		m_kOffset = Vector3(0,1.1,0);
 		m_bHaveOffset = true;
 		
 		cout<<"Got offset: "<<m_kOffset.x<<" "<<m_kOffset.y<<" "<<m_kOffset.z<<endl;

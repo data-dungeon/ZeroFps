@@ -1388,6 +1388,7 @@ void MistServer::HandleOrders()
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 			if(ob)
 			{
+			
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
 				{	

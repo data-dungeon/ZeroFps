@@ -268,16 +268,24 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 {
 	SetNetUpdateFlag(true);	
 
+	cout<<"number of players"<<m_kPlayers.size()<<endl;
+	
+
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
+		cout<<"player "<<i<<" controls "<<m_kPlayers[i].kControl.size()<<"characters"<<endl;
+		
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
+			
 			//check for object in player kontrol list
-			if(m_kPlayers[i].kControl[i].first == iObjectID)
+			if(m_kPlayers[i].kControl[j].first == iObjectID)
 			{
+				cout<<"foudn character"<<endl;
 				//check rights 
-				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+				if(m_kPlayers[i].kControl[j].second & PR_CONTROLS) 
 				{
+					cout<<"sending "<<endl;
 					m_kPlayers[i].kMessages.push(strMessage);	
 				}
 			}		
@@ -343,10 +351,10 @@ void P_ServerInfo::AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSo
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
 			//check for object in player kontrol list
-			if(m_kPlayers[i].kControl[i].first == iPlayerObjectID)
+			if(m_kPlayers[i].kControl[j].first == iPlayerObjectID)
 			{
 				//check rights 
-				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+				if(m_kPlayers[i].kControl[j].second & PR_CONTROLS) 
 				{
 					m_kPlayers[i].kSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
 					//printf("P_ServerInfo::AddSoundToPlayer\n");
@@ -366,7 +374,7 @@ void P_ServerInfo::AddSound(int iObjectGenSoundID, char *szFileName)
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
 			//check rights 
-			if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+			if(m_kPlayers[i].kControl[j].second & PR_CONTROLS) 
 			{
 				m_kPlayers[i].kSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
 				printf("P_ServerInfo::AddSoundToPlayer\n");

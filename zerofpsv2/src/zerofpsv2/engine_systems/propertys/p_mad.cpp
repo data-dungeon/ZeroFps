@@ -397,8 +397,11 @@ Vector3 P_Mad::GetJointPosition(char* szJointName)
 	if(pkMc)
 	{
 	 	//animate object
-	 	//pkMc->SetBoneAnimationTime(0, 0, 0);
+	 	//cout<<"bla:"<<iActiveAnimation<<" "<<fCurrentTime<<" "<<m_bLoop<<endl;
+	 	
+	 	//pkMc->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 		//pkMc->SetupBonePose();
+
 	
 	
 		if( pkMc->GetJointID(szJointName) == -1)
@@ -410,8 +413,8 @@ Vector3 P_Mad::GetJointPosition(char* szJointName)
 		
 		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
 		kPos = kMat.GetPos() * m_fScale;
-		
-		//kPos = pkMc->GetJointPosition(szJointName);
+				
+		//kPos = -pkMc->GetJointPosition(szJointName);
 		
 		return kPos;	
 	}
