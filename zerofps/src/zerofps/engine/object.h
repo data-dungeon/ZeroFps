@@ -133,12 +133,19 @@ class ENGINE_API Object {
 
 		inline UpdateStatus &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};
-		inline bool &GetSave(){return m_bSave;};
-		inline string &GetName(){return m_kName;};
-		inline Vector3 &GetPos(){return m_kPos;};
-		inline Vector3 &GetRot(){return m_kRot;};
-		inline Vector3 &GetVel(){return m_kVel;};		
-		inline Vector3 &GetAcc(){return m_kAcc;};				
+		inline bool& GetSave(){return m_bSave;};
+		inline string& GetName(){return m_kName;};
+		inline Vector3& GetPos(){return m_kPos;};
+		inline Vector3& GetRot(){return m_kRot;};
+		inline Vector3& GetVel(){return m_kVel;};		
+		inline Vector3& GetAcc(){return m_kAcc;};
+		
+		inline Vector3* GetPosPointer(){return &m_kPos;};
+		inline Vector3* GetRotPointer(){return &m_kRot;};
+		inline Vector3* GetVelPointer(){return &m_kVel;};		
+		inline Vector3* GetAccPointer(){return &m_kAcc;};
+
+
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
