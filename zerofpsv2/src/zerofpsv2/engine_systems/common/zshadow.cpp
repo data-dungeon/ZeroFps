@@ -368,7 +368,7 @@ void ZShadow::DrawExtrudedSiluet(ShadowMesh* pkShadowMesh)
 	}
 	else
 	{	
-
+	
 		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&pkShadowMesh->m_kExtrudedSiluet[0].x);
 		m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kExtrudedSiluet.size());
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);
@@ -655,11 +655,12 @@ void ZShadow::GenerateShadowMesh(ShadowMesh* pkShadowMesh)
 	}
 
 	for(int i = 0;i<iVerts; i+=3)
-	{
+	{					
 		v[0] = m_kTransFormedVertexs[ m_pkFaces[i]   ];
 		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
 		v[2] = m_kTransFormedVertexs[ m_pkFaces[i+2] ];
 
+		
 		// tror inte .Unit() behövs då d's värde inte spelar så stor roll, bara om det är positivt eller negativt
 		//Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
 		//Vector3 RefV = ( kSourcePos - (v[0]) ).Unit();
