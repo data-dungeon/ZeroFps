@@ -37,8 +37,8 @@ Title=Property dialog
 Parent=Menu_File
 Cmd=opendlg PropertyDlg
 
-[Menu_Quit]
-Title=Quit
+[Menu_Exit]
+Title=Exit
 Parent=Menu_File
 Cmd=quit
 

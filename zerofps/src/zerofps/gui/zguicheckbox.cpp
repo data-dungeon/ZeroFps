@@ -26,6 +26,7 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent,
 	m_pkLabel->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	m_pkLabel->Enable();
 	m_pkLabel->Move(20,0);
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ZGuiCheckbox::~ZGuiCheckbox()

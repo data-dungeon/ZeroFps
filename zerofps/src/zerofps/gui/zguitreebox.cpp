@@ -19,6 +19,7 @@ ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkCloseBnSkin = new ZGuiSkin(0,255,0,0,0,0,0);
 	m_pkOpenBnSkin = new ZGuiSkin(255,0,0,0,0,0,0);
 	m_iID = 33212;
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ZGuiTreebox::~ZGuiTreebox()

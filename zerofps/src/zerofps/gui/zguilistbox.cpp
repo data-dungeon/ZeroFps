@@ -47,6 +47,7 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 	m_unOriginalHeight = GetScreenRect().Height();
 
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ZGuiListbox::~ZGuiListbox()

@@ -40,6 +40,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_bTextFit = true; 
 
 	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 
 	m_kRowOffsets.reserve(1000); 
 	m_kRowOffsets.assign(1000,0);

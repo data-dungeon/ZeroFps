@@ -52,6 +52,7 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle,ZGuiWnd* pkParent,
 	m_pkListbox->GetItemArea().Top -= 20;
 
 	RemoveWindowFlag(WF_CANHAVEFOCUS);
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ///////////////////////////////////////////////////////////////////////////////

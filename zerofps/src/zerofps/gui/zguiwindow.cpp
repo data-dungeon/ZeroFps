@@ -44,8 +44,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_pkFont = NULL;
 	m_iTabOrderNumber = 0;
 
-	m_pkGuiMan=static_cast<ZGuiResourceManager*>
-		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));			
+/*	m_pkGuiMan=static_cast<ZGuiResourceManager*>
+		(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));	*/		
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -58,8 +58,9 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_kMoveArea = m_kArea;
 
 	SetWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	SetWindowFlag(WF_TOPWINDOW); // ett vanligt fönster kan vara ett top fönster
 
-	afBkColorBuffer[0]=afBkColorBuffer[1]=afBkColorBuffer[2]=-1.0f;
+	//afBkColorBuffer[0]=afBkColorBuffer[1]=afBkColorBuffer[2]=-1.0f;
 }
 
 ZGuiWnd::~ZGuiWnd()
@@ -609,18 +610,8 @@ void ZGuiWnd::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	m_pkFont = pkSrc->m_pkFont;
 	m_kArea = pkSrc->m_kArea;
 	m_kMoveArea = pkSrc->m_kMoveArea;
-	m_pkGuiMan = pkSrc->m_pkGuiMan;
+	//m_pkGuiMan = pkSrc->m_pkGuiMan;
 	m_pkParent = pkSrc->m_pkParent;
 	m_pkGUI =pkSrc->m_pkGUI;
 	m_pkCallback = pkSrc->m_pkCallback;
 }
-
-
-
-
-
-
-
-
-
-

@@ -33,6 +33,7 @@ enum SEARCH_TASK
 class Gui
 {
 private:
+	bool CreateWorkPanel();
 	void OpenPropertyDlg();
 	
 	struct MENU_INFO
@@ -79,6 +80,7 @@ private:
 	
 	Rect GetScreenRect() { return Rect(0,0,m_pkEdit->m_iWidth, m_pkEdit->m_iHeight); }
 
+	bool CheckRadioButton(char* szGroup, char* szName);
 	void AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id, bool bSelect);
 	void AddItemsToList(ZGuiWnd* pkWnd, bool bCombobox, char** items, int Number, bool bSelectLast=true);
 	ZGuiWnd* CreateEditPropertyDialog(int x, int y, int Widht, int Height);
@@ -101,6 +103,7 @@ public:
 	void OpenPropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
+	bool WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 	void CaptureInput(bool bCapture);
 	bool HaveFocus();
@@ -108,6 +111,7 @@ public:
 	Gui(ZeroEdit* pkEdit);
 	virtual ~Gui();
 
+	ZGuiTabCtrl* m_pkWorkPanel;
 	FileOpenDlg* m_pkFileDlgbox;
 //	EditPropertyDlg* m_pkEditPropDlgBox;
 

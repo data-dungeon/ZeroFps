@@ -27,6 +27,7 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID,
 		kRectangle.Height()), this, true, iID);
 	m_pkCheckbox->Disable();
 	RemoveWindowFlag(WF_CANHAVEFOCUS);
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;

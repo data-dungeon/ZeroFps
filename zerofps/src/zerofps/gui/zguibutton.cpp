@@ -19,6 +19,7 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	m_pkSkinBnDown=NULL;
 	m_pkSkinBnHLight=NULL;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 	m_bCenterTextHorz = true;
 }
 

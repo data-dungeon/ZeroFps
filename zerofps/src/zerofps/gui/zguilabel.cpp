@@ -16,6 +16,7 @@ ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
 	m_bEnabled = false; // labels are static by default
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ZGuiLabel::~ZGuiLabel()

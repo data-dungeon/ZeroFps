@@ -24,6 +24,7 @@ ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int i
 	m_bAutoHideScrollbar = true;
 	m_usThumbSize = 20;
 	m_fPageSize = 1.0f;
+	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
 
 ZGuiScrollbar::~ZGuiScrollbar()

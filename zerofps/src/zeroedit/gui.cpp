@@ -23,6 +23,9 @@ static bool MENUPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPa
 static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
 
+static bool WORKPANELPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
+	return Editor.m_pkGui->WorkPanelProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
+
 //////////////////////////
 
 Gui::Gui(ZeroEdit* pkEdit)
@@ -31,8 +34,9 @@ Gui::Gui(ZeroEdit* pkEdit)
 	m_iScreenCY = pkEdit->m_iHeight / 2;
 	m_pkEdit = pkEdit;
 	m_pkFileDlgbox = NULL;
+	m_pkWorkPanel = NULL;
 	m_uiNumMenuItems = 0;
-	
+
 	InitSkins();
 	CreateWindows();
 
@@ -116,10 +120,19 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 	return true;
 }
 
-
+bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
+						 int iNumberOfParams, void *pkParams )
+{
+	switch(uiMessage)
+	{
+	case ZGM_COMMAND:
+		break;
+	}
+	return true;
+}
 
 bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
-				   int iNumberOfParams, void *pkParams )
+				    int iNumberOfParams, void *pkParams )
 {
 	Rect rc;
 
@@ -171,6 +184,12 @@ bool Gui::CreateWindows()
 		m_pkEdit->m_pkCurentChild, 
 		m_pkEdit->pkInput, MAINWINPROC);
 
+	if(!CreateWorkPanel())
+	{
+		printf("Failed to create work panel!\n");
+		return false;
+	}
+
 	m_kDialogs.insert(map<string,DlgBox*>::value_type(
 		string("PropertyDlg"), pkEditPropBox));
 
@@ -191,6 +210,12 @@ bool Gui::InitSkins()
 	int bd2 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_horz.bmp", 0);
 	int bd3 = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner.bmp", 0);
 	int bda = m_pkEdit->pkTexMan->Load("file:../data/textures/border_corner_a.bmp", 0);
+	int arrow_prev_up = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_up.bmp", 0);
+	int arrow_prev_down = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_down.bmp", 0);
+	int arrow_prev_end = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_end.bmp", 0);
+	int arrow_next_up = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_up.bmp", 0);
+	int arrow_next_down = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_down.bmp", 0);
+	int arrow_next_end = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_end.bmp", 0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -222,6 +247,22 @@ bool Gui::InitSkins()
 		new ZGuiSkin(rbn_up, rbn_a, false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_up"), 
 		new ZGuiSkin(rbn_down, rbn_a, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_prev_up"), 
+		new ZGuiSkin(arrow_prev_up, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_prev_down"), 
+		new ZGuiSkin(arrow_prev_down, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_prev_end"), 
+		new ZGuiSkin(arrow_prev_end, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_up"), 
+		new ZGuiSkin(arrow_next_up, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_down"), 
+		new ZGuiSkin(arrow_next_down, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("arrow_next_end"), 
+		new ZGuiSkin(arrow_next_end, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("tabbn_back"), 
+		new ZGuiSkin(128,128,128,92,92,92,1)));
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("tabbn_front"), 
+		new ZGuiSkin(214,211,206,0,0,0,0)));
 
 	return true;
 }
@@ -363,6 +404,35 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkLabel->SetGUI(m_pkEdit->pkGui);
 
 	return pkLabel;
+}
+
+bool Gui::CheckRadioButton(char* szGroupName, char *szButtonText)
+{
+	ZGuiWnd* pkGroup = Get(szGroupName);
+
+	if(pkGroup == NULL)
+		return false;
+
+	ZGuiRadiobutton* pkSearchButton = (ZGuiRadiobutton*) pkGroup;
+
+	while(1)
+	{
+		char* szText = pkSearchButton->GetButton()->GetText();
+
+		if(szText)
+		{
+			if(strcmp(szText, szButtonText) == 0)
+				pkSearchButton->GetButton()->CheckButton();
+			else
+				pkSearchButton->GetButton()->UncheckButton();
+		}
+
+		pkSearchButton = pkSearchButton->GetNext();
+		if(pkSearchButton == NULL)
+			break;
+	}
+
+	return true;
 }
 
 void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber, 
@@ -737,3 +807,42 @@ bool Gui::OpenFileDlg(SEARCH_TASK eTask)
 
 	return true;
 }
+
+bool Gui::CreateWorkPanel()
+{
+	int w = 224, y = 20, h = 224, x = m_pkEdit->m_iWidth-w;
+
+	m_pkWorkPanel = new ZGuiTabCtrl(Rect(x,y,x+w,y+h),NULL,true,12314124);
+	m_pkWorkPanel->SetSkin(GetSkin("menu"));
+	m_pkWorkPanel->SetFont(m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+	m_pkWorkPanel->SetNextButtonSkin( GetSkin("arrow_next_up"), 
+		GetSkin("arrow_next_down"), GetSkin("arrow_next_up"));
+	m_pkWorkPanel->SetPrevButtonSkin( GetSkin("arrow_prev_up"), 
+		GetSkin("arrow_prev_down"), GetSkin("arrow_prev_up"));
+	m_pkWorkPanel->InsertTabSkin(0, GetSkin("tabbn_back"));
+	m_pkWorkPanel->InsertTabSkin(1, GetSkin("tabbn_front"));
+	m_pkWorkPanel->InsertPage(0, "Paint terrain", 0);
+	m_pkWorkPanel->InsertPage(1, "Elevation tool", 0);
+	m_pkWorkPanel->SetCurrentPage(0);
+
+	m_pkEdit->pkGui->AddMainWindow(2321323,m_pkWorkPanel,"WorkPanel",MAINWINPROC,false);
+
+	ZGuiWnd* pkPage1 = m_pkWorkPanel->GetPage(0);
+
+	CreateLabel(pkPage1, 0, 5, 5, 50, 20, "Brush size");
+	
+	vector<string> vkNames;
+	vkNames.push_back("Small");
+	vkNames.push_back("Medium");
+	vkNames.push_back("Large");
+	vkNames.push_back("Extra-Large");
+
+	int iHeight = CreateRadiobuttons(pkPage1, vkNames, 
+		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 30, 16);
+
+	this->CheckRadioButton("BrushSizeRadioGroup", "Medium");
+
+	return true;
+}
+
+

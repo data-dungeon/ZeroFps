@@ -19,6 +19,7 @@
 #include "zguicursor.h"
 #include "zguitextbox.h"
 #include "zguitreebox.h"
+#include "zguitabctrl.h"
 
 #pragma warning( disable : 4786) // truncate long names
 #include <list>

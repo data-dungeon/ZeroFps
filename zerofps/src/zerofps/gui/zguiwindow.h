@@ -32,6 +32,7 @@ const int NCODE_MOVE		= 83;
 #define WF_CLOSEABLE		0x0001
 #define WF_CENTER_TEXT		0x0002
 #define WF_CANHAVEFOCUS		0x0003
+#define WF_TOPWINDOW		0x0004	// Kan detta fönster användas som mainwindow?
 
 class GUI_API ZGuiWnd  
 {
@@ -165,8 +166,8 @@ private:
 	bool m_bInternalControl;
 	int m_iTabOrderNumber;
 
-	ZGuiResourceManager* m_pkGuiMan;
-	float afBkColorBuffer[3];
+//	ZGuiResourceManager* m_pkGuiMan;
+//	float afBkColorBuffer[3];
 
 };
 
