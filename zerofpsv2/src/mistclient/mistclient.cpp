@@ -329,8 +329,6 @@ void MistClient::Input()
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
-			PickZones();
-			
 			Object* pkObject = GetTargetObject();
 			
 			if(pkObject)
@@ -355,7 +353,24 @@ void MistClient::Input()
 					} 
 				}
 			}
-			
+			else
+			{
+				if(PickZones())
+				{
+					if(m_pkClientControlP)
+					{
+						ClientOrder order;
+						
+						order.m_sOrderName = "Move";
+						order.m_iClientID = pkFps->GetConnectionID();
+						order.m_iObjectID = -1;				
+						order.m_iCaracter = m_iActiveCaracterObjectID;
+						order.m_kPos = m_kTargetPos;
+						
+						m_pkClientControlP->AddOrder(order);
+					} 
+				}			
+			}
 			m_fClickDelay = pkFps->GetTicks();					
 		}
 
@@ -907,7 +922,7 @@ void MistClient::PrintInfoBox(const char *c_szText)
 }
 
 
-void MistClient::PickZones()
+bool MistClient::PickZones()
 {
 	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir = Get3DMousePos();
@@ -929,11 +944,17 @@ void MistClient::PickZones()
 				if(mp->TestLine(start,dir))
 				{	
 					//cout<<"clicked on zone: "<<i<<endl;
+					m_iTargetZoneObject = kObjects[i]->iNetWorkID;
+					m_iTargetFace = mp->GetLastColFace();
+					m_kTargetPos = mp->GetLastColPos();
+					
 					pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
-				}
-				
+					return true;
+				}				
 			}
 		}
 	}
+	
+	return false;
 	//cout<<"nr of zones picked:"<<iNrOfZones<<endl;
 }
