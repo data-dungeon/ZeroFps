@@ -234,11 +234,6 @@ void ZeroEd::CreateEditCameras()
 	GetWnd("vp3")->SetRenderTarget(m_pkCamera[2]);
 	GetWnd("vp4")->SetRenderTarget(m_pkCamera[3]);
 
-	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp2")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp3")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp4")->SetMoveArea(Rect(0,0,800,600), false);
-
 	SetViewPort("vp1");
 }
 
