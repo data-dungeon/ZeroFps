@@ -65,7 +65,6 @@ protected:
 	TextureManager* GetTexMan() { return m_pkDM->Application::pkTexMan; }
 
 	int GetTexID(char* szName);
-	int m_iFailTex;
 	
 	enum GAME_DLG
 	{

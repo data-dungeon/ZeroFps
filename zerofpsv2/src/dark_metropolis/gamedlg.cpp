@@ -11,8 +11,6 @@ CGameDlg::CGameDlg(string strMainWndName, DarkMetropolis* pkDM)
 	m_strMainWndName = strMainWndName;
 
 	m_pkAudioSys = pkDM->m_pkAudioSys;
-
-	m_iFailTex = m_pkDM->pkTexMan->Load(ERROR_TEXTURE, 0);
 }
 
 CGameDlg::~CGameDlg()
@@ -148,8 +146,6 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 	}
 
 }
-
-// Mycket jobb med att få tag på gubbar från mission skripten sen också... Finns ingen funktionalitet för sånt.
 
 void CGameDlg::SetNumber(char* szWndName, float fNumber)
 { 

@@ -23,11 +23,13 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_pkScript = pkScript;
 	
 	pkScript->ExposeFunction("GetNumOfLivingAgents", DMLua::GetNumOfLivingAgentsLua);
+
+	// character functions
+
 	pkScript->ExposeFunction("GetDMCharacterByName", DMLua::GetDMCharacterByNameLua);
 	pkScript->ExposeFunction("SetDMCharacterName", DMLua::SetDMCharacterNameLua);
 	pkScript->ExposeFunction("GetDMCharacterClosest", DMLua::GetDMCharacterClosestLua);
 
-	// character functions
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
 	pkScript->ExposeFunction("IsDead", DMLua::IsDeadLua);
 	pkScript->ExposeFunction("GetState", DMLua::GetStateLua);
@@ -115,105 +117,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	cout << "DM LUA Scripts Loaded" << endl;
 
 }
-// ------------------------------------------------------------------------------------------------
 
-int DMLua::GetDMCharacterByNameLua(lua_State* pkLua) 
-{
-	double dObjectID = -1;
-
-	P_DMCharacter* pkCharacter;
-	char szName[256];
-
-	g_pkScript->GetArgString(pkLua, 0, szName);
-
-	vector<Entity*> kObjects;		
-	g_pkObjMan->GetAllObjects(&kObjects);
-
-	for(unsigned int i=0;i<kObjects.size();i++)
-		if((pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")))
-		{
-			if( pkCharacter->GetStats()->m_strName.c_str() == string(szName) )
-			{
-				dObjectID = kObjects[i]->GetEntityID();
-				break;
-			}
-		}
-
-	g_pkScript->AddReturnValue(pkLua, dObjectID);
-
-	return 1; // this function returns one (1) argument
-}
-// ------------------------------------------------------------------------------------------------
-
-int DMLua::SetDMCharacterNameLua(lua_State* pkLua) 
-{
-	Entity* pkEntity = TestScriptInput (2, pkLua);
-
-	if ( pkEntity == 0 )
-	{
-		cout << "Warning! DMLua::SetDMCharacterNameLua: To few arguments (ID, Name) or object not found." << endl;
-		return 0;
-	}
-
-	P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
-
-	if ( pkCharacter == 0 )
-	{
-		cout << "Warning! DMLua::SetDMCharacterNameLua: Object didn't have P_DMCharacter!" << endl;
-		return 0;
-	}
-
-	char szName[256];
-	g_pkScript->GetArgString(pkLua, 1, szName);
-
-	pkCharacter->GetStats()->m_strName == szName;
-
-	return 0;
-}
-// ------------------------------------------------------------------------------------------------
-
-// takes CharacterID, and optional 
-int DMLua::GetDMCharacterClosestLua(lua_State* pkLua) 
-{
-	double dObjectID = -1;
-
-	int iClosestCharID = 0;
-
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-		P_DMCharacter* pkCharacter;
-		double dFromObjectID, dClosestDistance = 999999999;
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dFromObjectID);
-
-		// if it crashed here sometime, give zerom a kick
-		Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(int(dFromObjectID))->GetWorldPosV();
-
-		vector<Entity*> kObjects;		
-		g_pkObjMan->GetAllObjects(&kObjects);
-
-		for(unsigned int i=0;i<kObjects.size();i++)
-			if( dFromObjectID != kObjects[i]->GetEntityID() &&
-			    (pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
-			{
-				if(pkCharacter->m_iTeam == 0) // endast spelarens agenter
-				{
-					double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
-					// ignore if dead
-					if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
-					{
-						dClosestDistance = dDist;
-						iClosestCharID = kObjects[i]->GetEntityID();
-					}
-				}
-			}
-
-	}
-
-	g_pkScript->AddReturnValue(pkLua, iClosestCharID);
-
-	return 1; // this function returns one (1) argument
-}
 
 int DMLua::GetNumOfLivingAgentsLua(lua_State* pkLua)
 {
