@@ -207,3 +207,13 @@ Property* Create_P_ArcadeCharacter()
 {
 	return new P_ArcadeCharacter;
 }
+
+
+
+
+
+
+
+
+
+
