@@ -16,7 +16,7 @@ class GUI_API ZGuiToolTip
 {
 public:
 	void SetSkin(ZGuiSkin kSkin);
-	ZGuiToolTip(float fDisplayTime=2.0f);
+	ZGuiToolTip(float fDisplayTime=3.0f);
 	virtual ~ZGuiToolTip();
 
 	void Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime);

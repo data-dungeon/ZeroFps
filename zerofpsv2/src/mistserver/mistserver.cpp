@@ -149,14 +149,13 @@ void MistServer::Init()
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
 
+	// Init tooltip
 	pkGui->GetToolTip()->SetToolTip(GetWnd("ToogleLight"),"Light");
 	pkGui->GetToolTip()->SetToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
 	
 	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
-
 	kSkin.m_unBorderSize = 1;
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
-
 	pkGui->GetToolTip()->SetSkin(kSkin);
 	
 }

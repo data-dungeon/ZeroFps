@@ -1247,6 +1247,20 @@ void MistClient::CreateGuiInterface()
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
+
+	// Init tooltip
+	pkGui->GetToolTip()->SetToolTip(GetWnd("MapButton"),"Map");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("BackPackButton"),"Inventory");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("StatsButton"),"Character");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("SelectSpellBn"),"Spellbook");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("SelectSkillBn"),"Skills");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("ToggleInputBoxBn"),"Inputbox on/off");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("ToggleInfoBoxBn"),"Infobox on/off");
+	
+	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
+	kSkin.m_unBorderSize = 1;
+	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
+	pkGui->GetToolTip()->SetSkin(kSkin);
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)

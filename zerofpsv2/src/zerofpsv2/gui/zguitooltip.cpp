@@ -42,6 +42,9 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 				m_pkLastToolTipWnd = NULL;
 		}
 	}
+
+	int screen_w, screen_h;
+	m_pkGui->GetResolution(screen_w, screen_h);
 	
 	m_pkToolTipWnd->Hide();
 
@@ -65,11 +68,11 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 				int x = rc.Left + (rc.Right - rc.Left)/2 - w/2;
 				int y = rc.Top - h;
 
-				if(x + w > 800)
-					x -= (rc.Right-800);
+				if(x + w > screen_w)
+					x -= (rc.Right-screen_w);
 
-				if(y + h > 600)
-					y -= (rc.Bottom-600);
+				if(y + h > screen_h)
+					y -= (rc.Bottom-screen_h);
 
 				m_pkToolTipWnd->SetPos( x, y, true, true);
 
@@ -87,14 +90,20 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	{
 		m_pkToolTipWnd->Hide();
 	}
-
-/*	if(bMouseClick)
+	else
 	{
-		m_fToolTipDisplayTime = fGameTime;
-	//	m_pkLastToolTipWnd = NULL;
-		m_pkToolTipWnd->Hide();
+		// show tooltip first after 0,75 sec
+		if(fGameTime - m_fToolTipDisplayTime > 0.75f && m_pkLastToolTipWnd)
+		{
+			if(m_pkLastToolTipWnd->GetScreenRect().Inside(mouse_x,mouse_y))
+				m_pkToolTipWnd->Show();
+		}
+		else
+		{
+			m_pkToolTipWnd->Hide();
+		}
 	}
-*/
+
 	m_iPrevCursorX = mouse_x;
 	m_iPrevCursorY = mouse_y;
 }
