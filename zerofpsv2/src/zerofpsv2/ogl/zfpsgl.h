@@ -15,7 +15,7 @@
 #endif
 
 #include "GL/glu.h"
-#include "GL/glut.h"
+//#include "GL/glut.h"
 
 
 #define FOG_DISTANCE_MODE_NV 	0x855A

@@ -5,7 +5,7 @@
 #include "../../engine/property.h"
 #include <iostream>
 #include "../engine_systems_x.h"
-#include "GL/glut.h"
+//#include "GL/glut.h"
 
 using namespace std;
 

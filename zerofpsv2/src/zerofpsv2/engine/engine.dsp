@@ -375,6 +375,10 @@ SOURCE=..\engine_systems\physicsengine\cssphere.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\engine_systems_x.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\engine_x.h
 # End Source File
 # Begin Source File
