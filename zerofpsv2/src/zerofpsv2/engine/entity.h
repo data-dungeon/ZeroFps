@@ -4,22 +4,17 @@
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
 #include <vector>
-#include <list>
 #include <string.h>
 #include <bitset>
 #include "engine_x.h"
-//#include "property.h"
-#include "propertyfactory.h"
 #include "network.h"
 #include "../basic/quaternion.h"
-#include "../basic/zfvfs.h"
-#include "../script/zfscript.h"
 
 using namespace std;
 
 class		EntityManager;
 class		Property;
-
+class		PropertyFactory;
 
 enum UpdateStatus 
 {
