@@ -5,7 +5,7 @@ function Create()
 			InitParameter("m_kMadFile","/data/mad/dm/dm_machinegun.mad");			
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMItem");	
-			InitParameter("name","rifle");
+			InitParameter("name","Machinegun");
 			InitParameter("sizex",3);
 			InitParameter("sizey",2);
 			InitParameter("icon","machinegun.bmp");

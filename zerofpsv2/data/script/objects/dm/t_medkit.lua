@@ -8,7 +8,7 @@ function Create()
 			InitParameter("name","Medkit");
 			InitParameter("sizex",1);
 			InitParameter("sizey",1);
-			InitParameter("icon","stol.bmp");
+			InitParameter("icon","medkit.bmp");
 			InitParameter("type","7");
 		InitProperty("P_ScriptInterface");
 
