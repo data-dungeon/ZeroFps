@@ -153,9 +153,9 @@ function BlowupPoliceStation()
 	Delete(BombEntID)
 	Delete(PoliceStationID)
 
-	bomb_loc = GetEntityPos(BombEntID)
+	local pos = { 24.1077,6.72032,30.4777 } --GetEntityPos(BombEntID)
 
-	zonid = GetZoneIDAtPos(bomb_loc)
+	zonid = GetZoneIDAtPos(pos)
 	SetZoneModel(zonid, "data/mad/zones/dm/zon_ruin.mad")
 
 	----------------------------------------------------
