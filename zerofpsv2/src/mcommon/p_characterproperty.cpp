@@ -887,7 +887,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
-				pkCon->SetJoint("hand_left");
+				pkCon->SetJoint("equip_left");
 				pkCon->SetEquip(true);
 				
 		//right hand
@@ -901,7 +901,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
-				pkCon->SetJoint("hand_right");
+				pkCon->SetJoint("equip_right");
 				pkCon->SetEquip(true);
 				
 		//eGloves

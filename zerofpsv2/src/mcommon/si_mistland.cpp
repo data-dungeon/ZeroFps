@@ -129,6 +129,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AIAttack", MistLandLua::AIAttackLua);
    pkScript->ExposeFunction("SetAIIsPlayer", MistLandLua::SetAIIsPlayerLua);
    pkScript->ExposeFunction("AIMoveTo", MistLandLua::AIMoveToLua);
+	pkScript->ExposeFunction("SetAIState", MistLandLua::SetAIStateLua);
 
    pkScript->ExposeFunction("GetSeenPlayer", MistLandLua::GetSeenPlayerLua);
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
@@ -2812,8 +2813,8 @@ int MistLandLua::SetAIStateLua(lua_State* pkLua)
     	char	acType[128];
 		g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
 		g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
-	
-      Entity* pkObj = g_pkObjMan->GetEntityByID(dEntID);
+
+		Entity* pkObj = g_pkObjMan->GetEntityByID(dEntID);
 
       if ( !pkObj )
          return 0;

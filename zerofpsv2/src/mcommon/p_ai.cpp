@@ -256,7 +256,7 @@ void P_AI::Update()
 		case 6:
 		{
 			// hello, I'm dead, not much too do..not much AI
-	
+			cout << "im so dead" << endl;
          break;							
 		}
 	}
