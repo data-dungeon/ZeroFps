@@ -18,14 +18,15 @@ P_CharacterControl::P_CharacterControl()
 	m_fPAngle = 			0;	
 	m_fSoundWalkDelay = 	0;
 	m_fSoundRunDelay = 	0;
+	m_fJumpDelay =			0;
 	
 	m_fSpeed = 				40.0;
 	m_fJumpForce = 		5.0; 	
 	m_bHaveJumped = 		false;	
 	m_bInWater=				false;
 	m_iDirection = 		eMOVE_NONE;
-		
-	m_kCharacterStates.reset();
+	m_iCharacterState	=	eIDLE_STANDING;	
+	
 	m_kControls.reset();
 	
 	
@@ -99,10 +100,7 @@ void P_CharacterControl::Update()
 
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
-	
-		//reset character states
-		SetCharacterState(eJUMPING,false);
-		SetCharacterState(eSWIMMING,false);
+
 			
 		if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 		{
@@ -125,7 +123,7 @@ void P_CharacterControl::Update()
 			if(m_bInWater)
 			{
 				pkTcs->SetGravity(false);
-				SetCharacterState(eSWIMMING,true);
+				SetCharacterState(eIDLE_SWIMING);
 			}
 			else
 				pkTcs->SetGravity(true);
@@ -149,7 +147,8 @@ void P_CharacterControl::Update()
 				SetMoveDirection(eMOVE_RIGHT);			
 			else if(kVel.x > 0)
 				SetMoveDirection(eMOVE_LEFT);
-				
+			
+					
 			//transform velocity
 			kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
 			kVel.y = 0;
@@ -170,30 +169,39 @@ void P_CharacterControl::Update()
 			//apply movement force					
 			if(!kVel.IsZero())
 			{
+				if(m_bInWater)
+					SetCharacterState(eSWIMMING);
+			
 				pkTcs->ClearExternalForces();
 				pkTcs->ApplyForce(Vector3(0,0,0),kVel);
 			}
 				
+
+			
+			
 			//check if where walking or running or nothing
 			if(kVel.Length() > 0 && pkTcs->GetOnGround())
 			{
 				if(m_kControls[eCRAWL])
 				{
 					m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
-					SetCharacterState(eWALKING,true);
+					SetCharacterState(eWALKING);
 				}
 				else
 				{
-					m_fSoundRunDelay = m_pkZeroFps->GetEngineTime();
-					SetCharacterState(eRUNNING,true);
+					m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
+					SetCharacterState(eRUNNING);
 				}
 			}
-					
-			//only stop play walk/run sound when we havent touch the ground for 0.25 sec
-			if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
-				SetCharacterState(eWALKING,false);				
-			if(m_pkZeroFps->GetEngineTime() - m_fSoundRunDelay > 0.25)
-				SetCharacterState(eRUNNING,false);				
+			
+			//set idle standing i we havent touched the ground for some time
+			if(GetCharacterState() == eWALKING || GetCharacterState() == eRUNNING)
+			{
+				if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
+				{
+					SetCharacterState(eIDLE_STANDING);
+				}
+			}			
 			
 			
 			//jump
@@ -202,16 +210,22 @@ void P_CharacterControl::Update()
 				if(pkTcs->GetOnGround())
 				{
 					if(m_bHaveJumped)
+					{
+						SetCharacterState(eIDLE_STANDING);
 						m_bHaveJumped = false;
+						m_fJumpDelay = m_pkZeroFps->GetEngineTime();								
+					}
 					else
 					{
 						if(m_kControls[eJUMP])
 						{
-							if(pkTcs->GetOnGround())
+							if(m_pkZeroFps->GetEngineTime() - m_fJumpDelay > 0.5)
 							{
-								m_bHaveJumped = true;
-								
-								pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
+								if(pkTcs->GetOnGround())
+								{
+									m_bHaveJumped = true;
+									pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
+								}
 							}
 						}
 					}
@@ -231,7 +245,7 @@ void P_CharacterControl::Update()
 							
 			if(m_bHaveJumped)
 			{
-				SetCharacterState(eJUMPING,true);
+				SetCharacterState(eJUMPING);
 			}			
 		}
 	
@@ -300,8 +314,10 @@ void P_CharacterControl::UpdateAnimation()
 {
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{
+		int iState = GetCharacterState();
+	
 		//jumping
-		if(GetCharacterState(eJUMPING))
+		if(iState == eJUMPING)
 		{							
 			if(pkMad->GetCurrentAnimationName() != m_strJump)
 			{
@@ -310,7 +326,7 @@ void P_CharacterControl::UpdateAnimation()
 			}			
 		}
 		//RUNNING
-		else if(GetCharacterState(eRUNNING))
+		if(iState == eRUNNING)
 		{
 			switch(GetMovedirection())
 			{
@@ -333,7 +349,7 @@ void P_CharacterControl::UpdateAnimation()
 			}			
 		}
 		//WALKING
-		else if(GetCharacterState(eWALKING))
+		else if(iState == eWALKING)
 		{
 			switch(GetMovedirection())
 			{
@@ -356,7 +372,7 @@ void P_CharacterControl::UpdateAnimation()
 			}						
 		}
 		//swiming
-		else if(GetCharacterState(eSWIMMING))
+		else if(iState == eSWIMMING)
 		{
 			switch(GetMovedirection())
 			{
@@ -365,8 +381,8 @@ void P_CharacterControl::UpdateAnimation()
 						pkMad->SetAnimation(m_strSwimForward.c_str(), 0);
 					break;
 				case eMOVE_BACKWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strWalkBackward)
-						pkMad->SetAnimation(m_strWalkBackward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != m_strSwimBackward)
+						pkMad->SetAnimation(m_strSwimBackward.c_str(), 0);
 					break;
 				case eMOVE_LEFT:
 					if(pkMad->GetCurrentAnimationName() != m_strSwimLeft)
@@ -376,28 +392,29 @@ void P_CharacterControl::UpdateAnimation()
 					if(pkMad->GetCurrentAnimationName() != m_strSwimRight)
 						pkMad->SetAnimation(m_strSwimRight.c_str(), 0);
 					break;										
-					
-				default:
-					if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
-					pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);
-					break;					
+		
 			}					
 			
 			
 		}
 		//sitting
-		else if(GetCharacterState(eSITTING))
+ 		else if(iState == eSITTING)
 		{
 			if(pkMad->GetCurrentAnimationName() != m_strIdleSitting)
 				pkMad->SetAnimation(m_strIdleSitting.c_str(), 0);			
 		}
 		//idle standing
-		else
+		else if(iState == eIDLE_STANDING)
 		{
 			if( pkMad->GetCurrentAnimationName() != m_strIdleStanding
 				&& pkMad->GetCurrentAnimationName().compare(0,5,m_strEmote) )
 				pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);			// walk_foward	 m_strIdleStanding "taunt1"
-		}		
+		}
+		else if(	iState == eIDLE_SWIMING)
+		{
+			if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
+				pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);		
+		}	
 	}
 }
 
@@ -442,7 +459,8 @@ void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
-	pkNetPacket->Write(m_kCharacterStates);
+// 	pkNetPacket->Write(m_kCharacterStates);
+	pkNetPacket->Write(m_iCharacterState);
 	pkNetPacket->Write(m_iDirection);
 	
 	SetNetUpdateFlag(iConnectionID,false);
@@ -450,7 +468,8 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	pkNetPacket->Read(m_kCharacterStates);
+// 	pkNetPacket->Read(m_kCharacterStates);
+	pkNetPacket->Read(m_iCharacterState);
 	pkNetPacket->Read(m_iDirection);
 }
 
@@ -473,26 +492,17 @@ void P_CharacterControl::SetMoveDirection(int iDir)
 	SetNetUpdateFlag(true);
 }
 
-void P_CharacterControl::SetCharacterState(int iState,bool bValue)
+
+void P_CharacterControl::SetCharacterState(int iState)
 {
-	if(iState < 0 || iState >= 8)
+	if(m_iCharacterState == iState)
 		return;
+
 		
-	if(m_kCharacterStates[iState] == bValue)
-		return;
-
-			
-	m_kCharacterStates[iState] = bValue;
+	m_iCharacterState = iState;
 	SetNetUpdateFlag(true);
-}
+};
 
-bool P_CharacterControl::GetCharacterState(int iState)
-{
-	if(iState < 0 || iState >= 8)
-		return false;
-
-	return m_kCharacterStates[iState];
-}
 
 bool P_CharacterControl::GetControl(int iKey)
 {

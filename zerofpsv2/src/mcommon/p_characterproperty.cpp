@@ -39,6 +39,7 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_iTargetType		=	0;	
 	m_iSkillType		=	0;
 	m_fRange				=	0;
+	
 }
 
 Skill::~Skill()
@@ -440,7 +441,9 @@ P_CharacterProperty::P_CharacterProperty()
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
 	
-	m_kCurrentCharacterStates.reset();
+// 	m_kCurrentCharacterStates.reset();
+	m_iCurrentCharacterState = eIDLE_STANDING;
+
 	
 	m_iConID					=	-1;
 	m_strName 				=	"NoName";
@@ -616,14 +619,23 @@ void P_CharacterProperty::UpdateStats()
 		
 		//stamina
 		int iDrain = 0;
-		if(pkCC->GetCharacterState(eWALKING))
-			iDrain = 2;		
-		if(pkCC->GetCharacterState(eRUNNING))
-			iDrain = 5;
-		if(pkCC->GetCharacterState(eJUMPING))
-			iDrain = 10;
-		if(pkCC->GetCharacterState(eSWIMMING))
-			iDrain = 8;
+		
+		switch(pkCC->GetCharacterState())
+		{
+			case eWALKING: iDrain = 2; break;
+			case eRUNNING: iDrain = 5; break;
+			case eJUMPING: iDrain = 10; break;
+			case eSWIMMING: iDrain = 4; break;		
+		}
+		
+//  		if(pkCC->GetCharacterState(eWALKING))
+//  			iDrain = 2;		
+//  		if(pkCC->GetCharacterState(eRUNNING))
+//  			iDrain = 5;
+//  		if(pkCC->GetCharacterState(eJUMPING))
+//  			iDrain = 10;
+//  		if(pkCC->GetCharacterState(eSWIMMING))
+//  			iDrain = 4;
 
 			
 		string strStamina("Stamina");		
@@ -1121,29 +1133,39 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
 	{
-		//check states and play sounds
+		//get current character state
+		int iState = pkCC->GetCharacterState();
 		
 		//walk sound
-		if(pkCC->GetCharacterState(eWALKING))
+		if(iState == eWALKING)
 		{
-			if(!m_kCurrentCharacterStates[eWALKING])
+			if(m_iCurrentCharacterState != eWALKING)
 			{
+				cout<<"starting to walk"<<endl;
 				//m_pkAudioSystem->StopAudio(m_iWalkSoundID);
 				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
+			{
+				cout<<"is walking"<<endl;
 				m_pkAudioSystem->MoveAudio(m_iWalkSoundID, GetEntity()->GetIWorldPosV());
+			}
 		}
 		else
 		{
-			if(m_kCurrentCharacterStates[eWALKING])
+			if(m_iCurrentCharacterState == eWALKING)
+			{
+				cout<<"stoped walking"<<endl;
 				m_pkAudioSystem->StopAudio(m_iWalkSoundID);
+			}
 		}	
 		
 		//run sound
-		if(pkCC->GetCharacterState(eRUNNING))
+		if(iState == eRUNNING)
 		{
-			if(!m_kCurrentCharacterStates[eRUNNING])
+			cout<<"is runnting"<<endl;
+			
+			if(m_iCurrentCharacterState != eRUNNING)
 			{
 				//m_pkAudioSystem->StopSound(m_iRunSoundID);
 				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
@@ -1153,16 +1175,16 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		}
 		else
 		{
-			if(m_kCurrentCharacterStates[eRUNNING])
+			if(m_iCurrentCharacterState == eRUNNING)
 				m_pkAudioSystem->StopAudio(m_iRunSoundID);
 		}	
 		
 				
 		
 		//swim sound
-		if(pkCC->GetCharacterState(eSWIMMING))
+		if(iState == eSWIMMING)
 		{
-			if(!m_kCurrentCharacterStates[eSWIMMING])
+			if(m_iCurrentCharacterState != eSWIMMING)
 			{	
 				//m_pkAudioSystem->StopAudio(m_iSwimSoundID);
 				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
@@ -1172,21 +1194,22 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		}
 		else
 		{
-			if(m_kCurrentCharacterStates[eSWIMMING])
+			if(m_iCurrentCharacterState == eSWIMMING)
 				m_pkAudioSystem->StopAudio(m_iSwimSoundID);
 		}			
 
 		//jump sound
-		if(pkCC->GetCharacterState(eJUMPING))
-			if(!m_kCurrentCharacterStates[eJUMPING])
+		if(iState == eJUMPING)
+		{
+			if(m_iCurrentCharacterState != eJUMPING)
+			{
 				m_pkAudioSystem->PlayAudio(m_strJumpSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),0,fWalkGain*2);
-		
-														
+			}
+		}
+															
 		//update staes
-		m_kCurrentCharacterStates[eRUNNING] =	pkCC->GetCharacterState(eRUNNING);
-		m_kCurrentCharacterStates[eWALKING] =	pkCC->GetCharacterState(eWALKING);
-		m_kCurrentCharacterStates[eJUMPING] =	pkCC->GetCharacterState(eJUMPING);
-		m_kCurrentCharacterStates[eSWIMMING] =	pkCC->GetCharacterState(eSWIMMING);
+		m_iCurrentCharacterState =	iState;
+
 	}
 }
 

@@ -166,7 +166,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		int			m_iConID;					//player connection ID if any				
 		bool			m_bFirstUpdate;
 		
-		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
+		int			m_iCurrentCharacterState;
 			
 		//basic sounds
 		bool		m_bWalkSound;		

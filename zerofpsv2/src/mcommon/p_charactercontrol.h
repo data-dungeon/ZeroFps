@@ -25,6 +25,7 @@ enum CharcterStates
 	eWALKING	=		3,
 	eRUNNING	=		4,
 	eJUMPING	=		5,
+	eIDLE_SWIMING= 6,
 };
 
 enum CharacterMoveDirection
@@ -44,8 +45,9 @@ class MCOMMON_API P_CharacterControl: public Property
 	
 		//control stuff
 		bitset<6>	m_kControls;
-		bitset<CHARACTER_STATES>	m_kCharacterStates;			//sent to client
-		int								m_iDirection;
+		int			m_iDirection;
+		
+		int			m_iCharacterState;
 		
 		float			m_fLockTime;
 		bool			m_bEnabled;
@@ -61,6 +63,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		float			m_fSoundWalkDelay;
 		float			m_fSoundRunDelay;
+		float			m_fJumpDelay;
 
 		
 		//animation
@@ -112,9 +115,10 @@ class MCOMMON_API P_CharacterControl: public Property
 							
 		void SetMoveDirection(int iDir);
 		int  GetMovedirection()									{	return m_iDirection;			}
-		void SetCharacterState(int iState,bool bValue);
-		bool GetCharacterState(int iState);		
-		bool GetControl(int iKey);																	
+		bool GetControl(int iKey);																			
+		void SetCharacterState(int iState);
+		int  GetCharacterState()								{	return m_iCharacterState;	};
+		
 																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
 		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
