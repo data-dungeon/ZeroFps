@@ -62,8 +62,9 @@ ObjectManager::ObjectManager()
 	Register_Cmd("newworld",FID_NEWWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
-	//Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
-	//Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
+	
+	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
 	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 }
@@ -946,68 +947,29 @@ void ObjectManager::Test_CreateZones()
 	int y = 0;
 	int iZonesSize = 10;
 	int iZonesSide = 100;
-//	int iNumOfBalls;
-//	Object *pkBall;
+	
 	Vector3 kPos;
 	Vector3 kRandOffset;
 
 	MazeGen GaaMaze;
 	GaaMaze.Load("./maze.bmp");
 
-//	ZoneData kZData;
 
-	for(int x=0; x<iZonesSide; x++) {
-		for(int z=0; z<iZonesSide; z++) {
-			if(GaaMaze.aaiMaze[x][z] == 1) {
-				int id = CreateZone();//GetUnusedZoneID();
-			
-
-			
-/*				ZoneObject *object = new ZoneObject();
-				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
-				object->SetLocalPosV(kPos);
-				object->SetParent(GetWorldObject());				
-				object->GetUpdateStatus()=UPDATE_DYNAMIC;
-*/				
-				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
+	for(int x=0; x<iZonesSide; x++) 
+	{
+		for(int z=0; z<iZonesSide; z++) 
+		{
+			if(GaaMaze.aaiMaze[x][z] == 1) 
+			{
 				
-				m_kZones[id].m_bUsed = true;
-				m_kZones[id].m_bActive = false;
-				m_kZones[id].m_pkZone = NULL;
-				m_kZones[id].m_kSize = Vector3(iZonesSize,iZonesSize,iZonesSize);
-				m_kZones[id].m_kPos   = kPos; 
-				
-/*				m_kZones[id].m_bActive = true;	
-				m_kZones[id].m_bUsed = true;
-				m_kZones[id].m_pkZone = object;
-				m_kZones[id].m_kPos   = kPos;
-				m_kZones[id].m_kMin = - (object->m_kSize * 0.5);
-				m_kZones[id].m_kMax =   (object->m_kSize * 0.5);
-				m_kZones[id].m_iZoneID = id;
-//				m_kZones.push_back(kZData);
-
-				// Create Ground Box.
-/*				object->AddProperty(new P_Primitives3D(SOLIDBBOX));
-				P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
-				pk3d->m_kMin =  - (object->m_kSize * 0.5);
-				pk3d->m_kMax =    (object->m_kSize * 0.5);
-				pk3d->m_kMax.y = - 4;
-				pk3d->m_kColor = RndColor();
-
-				// Create Random Objects.
-				iNumOfBalls = rand() % 1;
-				for(int i=0; i<iNumOfBalls; i++) {
-					kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
-					pkBall = CreateObjectByArchType("TVimBollus");
-					pkBall->SetLocalPosV(kPos + kRandOffset);
-					pkBall->SetParent(object);				
-				}*/
+				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);								
+				CreateZone(kPos,Vector3(iZonesSize,iZonesSize,iZonesSize));//GetUnusedZoneID();
 			}
 		}
 	}
 
-	AutoConnectZones();
-	int ispya = 2;
+//	AutoConnectZones();
+//	int ispya = 2;
 }
 
 void ObjectManager::Test_DrawZones()
@@ -1060,11 +1022,9 @@ void ObjectManager::AutoConnectZones()
 			// If a zone add a link.
 			if(pkZone && (i != pkZone->m_iZoneID)) {
 				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
-				}
-
 			}
-
 		}
+	}
 }
 
 Vector3 ObjectManager::GetZoneCenter(int iZoneNum)
@@ -1306,17 +1266,18 @@ int ObjectManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	
 	int id = GetUnusedZoneID();
 
+	m_kZones[id].m_bNew = true;
 	m_kZones[id].m_bUsed = true;
 	m_kZones[id].m_bActive = false;	
 	m_kZones[id].m_iZoneID = id;
 	m_kZones[id].m_pkZone = NULL;
 	m_kZones[id].m_kSize = kSize;
 	m_kZones[id].m_kPos = kPos;
-
 	m_kZones[id].m_iZoneLinks.clear();
-
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
+	
+	UpdateZoneLinks(id);
 	
 	return id;
 }
@@ -1399,8 +1360,8 @@ bool ObjectManager::SaveZones()
 	kFile.Write(&iNumOfZone,sizeof(int),1);
 
 	
-	for(int i=0; i<iNumOfZone; i++) {
-		//m_kZones[i].m_iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
+	for(int i=0; i<iNumOfZone; i++) 
+	{
 		int iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
 
 		kFile.Write(&iNumOfLinks, sizeof(iNumOfLinks), 1);
@@ -1410,7 +1371,7 @@ bool ObjectManager::SaveZones()
 
 		for(int zl=0; zl < iNumOfLinks; zl++)
 			kFile.Write(&m_kZones[i].m_iZoneLinks[zl], sizeof(m_kZones[i].m_iZoneLinks[zl]), 1);
-		}
+	}
 
 
 
@@ -1448,6 +1409,8 @@ void ObjectManager::LoadZone(int iId)
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetWorldObject());	
 	
+	
+	
 	//load
 	char nr[10];
 	IntToChar(nr,iId);
@@ -1460,10 +1423,17 @@ void ObjectManager::LoadZone(int iId)
 	cout<<"load from :"<<filename<<endl;
 	
 	ZFVFile kFile;
-	if(!kFile.Open(filename.c_str(),0,false))
+	
+	if(!kZData->m_bNew)
+		if(!kFile.Open(filename.c_str(),0,false))
+			kZData->m_bNew = true;
+	
+	
+	if(kZData->m_bNew)
 	{	
-		cout<<"error loading zone, creating a template zone"<<endl;
+		kZData->m_bNew = false;
 		
+		cout<<"error loading zone, creating a new template zone"<<endl;
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
@@ -1479,28 +1449,10 @@ void ObjectManager::LoadZone(int iId)
 			pkTemp->SetParent(object);
 		}
 		
-/*		Object* pkNode;
-		pkNode = CreateObjectByArchType("Node4x");
-		pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
-		pkNode->SetParent(object);
-*/
-		/*
-		// Create Random Objects.
-		Vector3 kRandOffset;
-		Object* pkBall;
-		int iNumOfBalls = rand() % 5;
-		for(int i=0; i<iNumOfBalls; i++) {
-			kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
-			pkBall = CreateObjectByArchType("TVimBollus");
-			pkBall->SetLocalPosV(kPos + kRandOffset);
-			pkBall->SetParent(object);				
-		}
-		*/
 		return;
 	}
 
 	kZData->m_pkZone->Load(&kFile);
-	
 	kFile.Close();
 	
 }
@@ -1642,10 +1594,7 @@ void ObjectManager::UpdateZoneLinks(int iId)
 			m_kZones[iId].m_iZoneLinks.push_back(i);
 			m_kZones[i].m_iZoneLinks.push_back(iId);
 		}
-		
 	}
-	
-
 }
 
 
@@ -1716,7 +1665,6 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 
 	return false;
 }
-
 
 
 

@@ -307,7 +307,7 @@ void MistServer::AddZone(Vector3 kPos )
 		
 	
 	int id = pkObjectMan->CreateZone(kSnap,m_kZoneSize);
-	pkObjectMan->UpdateZoneLinks(id);
+//	pkObjectMan->UpdateZoneLinks(id);
 	
 
 }
