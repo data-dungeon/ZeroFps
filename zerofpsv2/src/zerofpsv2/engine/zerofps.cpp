@@ -367,6 +367,8 @@ void ZeroFps::Run_Client()
 	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
 	//update new super duper rigid body physics engine deluxe
 	m_pkPhysics_Engine->Update(GetFrameTime());	
+	m_pkTcs->Update(GetFrameTime());	
+
 
 	if(g_iLogRenderPropertys) {
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
@@ -443,7 +445,7 @@ void ZeroFps::Update_System(bool bServer)
 			
 	
 				//update Tiny Collission system
-				m_pkTcs->Update(m_fGameFrameTime);	
+//				m_pkTcs->Update(m_fGameFrameTime);	
 				
 			}	
 		}

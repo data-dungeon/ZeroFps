@@ -72,7 +72,6 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void GenerateModelMatrix(P_Tcs* pkMesh);		
 		
 		
-		bool MeshVSSphereTest(P_Tcs* pkMesh,P_Tcs* pkSphere);
 		bool TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
 		

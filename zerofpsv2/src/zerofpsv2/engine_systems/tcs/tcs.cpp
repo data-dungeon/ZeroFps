@@ -169,11 +169,11 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 			
 			
 	//make sure the power is not to small
-	if(j < 2)
-		j = 2;
+	if(j < 0.5)
+		j = 0.5;
 			
-	if(j > 10)
-		return;
+//	if(j > 10)
+//		return;
 			
 	//cout<<"J:"<<j<<endl;
 			
@@ -322,37 +322,6 @@ void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
 }
 
 
-bool Tcs::MeshVSSphereTest(P_Tcs* pkMesh,P_Tcs* pkSphere)
-{
-	
-	GenerateModelMatrix(pkMesh);
-	
-	
-	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
-	{
-		Vector3 verts[3];
-		
-		verts[0] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
-		verts[1] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
-		verts[2] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
-	
-/*		//debug		
-		m_pkRender->SetColor(Vector3(1,1,1));
-		m_pkRender->Line(verts[0],verts[1]);
-		m_pkRender->Line(verts[1],verts[2]);		
-		m_pkRender->Line(verts[2],verts[0]);		
-*/		
-		
-		
-		if(TestSphereVSPolygon(verts,pkSphere))
-			return true;
-		
-		
-	}
-	
-	return false;
-}
-
 bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 {
 	Vector3 kPos1 = pkSphere->m_kNewPos;
@@ -385,19 +354,46 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	}
 	
 	//do edge tests
-	if(TestLineVSSphere(kVerts[0], kVerts[1],pkSphere))
+	bool didcollide = false;
+	float closest = 99999999;
+	
+	int p1,p2;
+	
+	for(int i = 0;i<3;i++)
 	{
-		m_kLastTestNormal = Normal;
-		return true;
+		switch(i)
+		{
+			case 0:
+				p1 = 0;
+				p2 = 1;
+				break;
+			case 1:
+				p1 = 1;
+				p2 = 2;
+				break;
+			case 2:
+				p1 = 2;
+				p2 = 0;
+				break;
+		}
+			
+	
+		if(TestLineVSSphere(kVerts[p1], kVerts[p2],pkSphere))
+		{
+			float d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+			if( d < closest)
+			{
+				closest = d;
+				kColPos = m_kLastTestPos;
+				didcollide = true;
+			}
+		}		
 	}
-	if(TestLineVSSphere(kVerts[1], kVerts[2],pkSphere))
+	
+	if(didcollide)
 	{
 		m_kLastTestNormal = Normal;
-		return true;
-	}
-	if(TestLineVSSphere(kVerts[2], kVerts[0],pkSphere))
-	{
-		m_kLastTestNormal = Normal;
+		m_kLastTestPos = kColPos;
 		return true;
 	}
 	
@@ -510,7 +506,7 @@ bool Tcs::TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 
 	Vector3 c=pkB->m_kNewPos - kP1;		
 
-	float d = kDir.Dot(c);
+	float d = kDir.Unit().Dot(c);
 	if(d < 0)
 		return false;
 	if(d > kDir.Length())
@@ -728,6 +724,10 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	
 	GenerateModelMatrix(pkMesh);
 	
+	float closest = 99999999;
+	Vector3 kClosestNormal;
+	Vector3 kClosestPos;
+	bool bHaveColided = false;
 	
 	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
 	{
@@ -737,14 +737,26 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		verts[1] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
 		verts[2] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 	
-/*		//debug		
-		m_pkRender->SetColor(Vector3(1,1,1));
-		m_pkRender->Line(verts[0],verts[1]);
-		m_pkRender->Line(verts[1],verts[2]);		
-		m_pkRender->Line(verts[2],verts[0]);		
-*/		
+		
 		if(TestSphereVSPolygon(verts,pkSphere))
-			return true;
+		{	
+			float d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+		
+			if( d < closest)
+			{
+				closest = d;
+				bHaveColided = true;
+				kClosestPos = m_kLastTestPos;
+				kClosestNormal = m_kLastTestNormal;
+			}
+		}
+	}
+	
+	if(bHaveColided)
+	{
+		m_kLastTestPos = kClosestPos;
+		m_kLastTestNormal = kClosestNormal;	
+		return true;
 	}
 	
 	return false;
