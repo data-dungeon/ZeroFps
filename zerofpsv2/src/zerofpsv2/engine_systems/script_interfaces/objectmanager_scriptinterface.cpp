@@ -30,9 +30,28 @@ void ObjectManagerLua::Reset()
 
 int ObjectManagerLua::InitObjectLua(lua_State* pkLua)
 {
+	
+	//if an object script has ben given creat that object
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		char acName[256];
+		g_pkScript->GetArg(pkLua, 0, acName);
+		
+		g_pkLastObject = g_pkObjMan->CreateObjectFromScript(acName);
+		
+		//set return object of there is none
+		if(!g_pkReturnObject)
+			g_pkReturnObject = g_pkLastObject;
+		
+		return 1;
+	}
+		
+	//else create an empty object
 	g_pkLastObject = g_pkObjMan->CreateObject();
 	
-	//cout<<"Creating object in script"<<endl;
+	//set return object of there is none	
+	if(!g_pkReturnObject)
+		g_pkReturnObject = g_pkLastObject;
 	
 	return 1;
 }	

@@ -22,6 +22,7 @@ namespace ObjectManagerLua
 	Property*		g_pkLastProperty;
 	Object*			g_pkReturnObject;
 
+	
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);

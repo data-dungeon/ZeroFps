@@ -91,7 +91,7 @@ void ZFScript::Close()
 //
 bool ZFScript::RunScript(char* szFileName)
 {
-	printf("SCRIPT_API: Executing script %s\n", szFileName);
+	//printf("SCRIPT_API: Executing script %s\n", szFileName);
 	return (lua_dofile(m_pkLua, szFileName) == 0);
 }
 
@@ -101,7 +101,7 @@ bool ZFScript::RunScript(char* szFileName)
 //
 bool ZFScript::CallScript(char* szFuncName, int iNumParams, int iNumResults)
 {
-	printf("SCRIPT_API: Calling script function %s\n", szFuncName);
+	//printf("SCRIPT_API: Calling script function %s\n", szFuncName);
 	lua_getglobal( m_pkLua, szFuncName);
 	return (lua_call(m_pkLua, iNumParams, iNumResults) == 0);
 }

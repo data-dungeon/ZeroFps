@@ -42,9 +42,15 @@ void MistClient::OnInit()
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 
 
-	Object* test = pkObjectMan->CreateObjectFromScript("test.lua");
-//	if(test)
-//		test->AttachToClosestZone();
+	for(int x=0;x<5;x++)
+	{
+		for(int y=0;y<5;y++)
+		{
+			Object* test = pkObjectMan->CreateObjectFromScript("h:/data/objects/test.lua");
+			if(test)
+				test->SetLocalPosV(Vector3(x*4,0,y*4));
+		}
+	}
 }
 
 void MistClient::Init()
@@ -114,7 +120,7 @@ void MistClient::OnIdle()
 	
 	if(m_pkMap2) {
 		m_pkMap2->SetPos(Vector3(0,0,0));
-		pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
+		//pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
 		}
 
 	Vector3 pos = Get3DMousePos();
@@ -321,7 +327,7 @@ void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistClient::OnServerStart(void)
 {		
-	m_pkTestobj = pkObjectMan->CreateObjectFromScript("t_player.lua");
+	m_pkTestobj = pkObjectMan->CreateObjectFromScript("h:/data/objects/t_player.lua");
 	if(m_pkTestobj)
 	{
 		m_pkTestobj->AttachToClosestZone();
