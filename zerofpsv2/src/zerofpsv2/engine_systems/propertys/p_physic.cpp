@@ -1,4 +1,4 @@
-#include "physicproperty.h"
+#include "p_physic.h"
 #include "primitives3d.h"
 #include "hmrp2.h"
 #include <typeinfo>

@@ -1,7 +1,7 @@
 #include "../../script/zfscript.h"
 #include "si_objectmanager.h"
 #include "../../engine/objectmanager.h"
-#include "../../engine_systems/propertys/madproperty.h"
+#include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 
 ZFScriptSystem* ObjectManagerLua::g_pkScript;

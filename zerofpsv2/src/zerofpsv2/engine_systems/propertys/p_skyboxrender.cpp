@@ -1,4 +1,4 @@
-#include "skyboxrenderproperty.h"
+#include "p_skyboxrender.h"
 
 P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop) 
 {

@@ -3,7 +3,7 @@
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../basic/zfsystem.h"
 #include "objectmanager.h"
-#include "../engine_systems/propertys/physicproperty.h"
+#include "../engine_systems/propertys/p_physic.h"
  
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;

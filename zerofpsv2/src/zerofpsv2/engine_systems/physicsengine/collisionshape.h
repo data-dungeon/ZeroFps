@@ -4,7 +4,7 @@
 #include <typeinfo>
 #include "physicsengine.h"
 #include "../engine_systems_x.h"
-#include "../propertys/physicproperty.h"
+#include "../propertys/p_physic.h"
 
 using namespace std;
 

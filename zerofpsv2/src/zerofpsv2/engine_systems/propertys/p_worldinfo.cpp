@@ -1,4 +1,4 @@
-#include "worldinfoproperty.h"
+#include "p_worldinfo.h"
 #include "../../engine/zerofps.h"
  
 P_WorldInfo::P_WorldInfo()

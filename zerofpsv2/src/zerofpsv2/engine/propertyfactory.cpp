@@ -1,6 +1,6 @@
 #include "zerofps.h"
-#include "../engine_systems/propertys/madproperty.h"
-#include "../engine_systems/propertys/lightproperty.h"
+#include "../engine_systems/propertys/p_mad.h"
+#include "../engine_systems/propertys/p_light.h"
 #include "network.h"
 #include "../basic/zfsystem.h"
  

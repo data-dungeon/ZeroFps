@@ -1,4 +1,4 @@
-#include "waterrenderproperty.h"
+#include "p_waterrender.h"
  
 P_WaterRender::P_WaterRender()
 {

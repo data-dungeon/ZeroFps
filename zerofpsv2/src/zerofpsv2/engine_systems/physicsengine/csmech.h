@@ -5,7 +5,7 @@
 #include "../engine_systems_x.h"
 #include "cssphere.h"
 #include "csbox.h"
-#include "../propertys/madproperty.h"
+#include "../propertys/p_mad.h"
 #include "../mad/mad_core.h"
 
 using namespace std;

@@ -7,7 +7,7 @@
 #include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/primitives3d.h"
 #include "../engine_systems/propertys/proxyproperty.h"
-#include "../engine_systems/propertys/madproperty.h"
+#include "../engine_systems/propertys/p_mad.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 

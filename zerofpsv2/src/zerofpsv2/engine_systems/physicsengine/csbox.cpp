@@ -1,5 +1,5 @@
 #include "csbox.h"
-#include "../propertys/physicproperty.h"
+#include "../propertys/p_physic.h"
 
  
 CSBox::CSBox(Vector3 kScale)

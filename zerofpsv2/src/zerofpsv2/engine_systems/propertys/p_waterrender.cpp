@@ -1,4 +1,4 @@
-#include "vegitationproperty.h"
+#include "p_vegitation.h"
 
 P_Vegitation::P_Vegitation()
 {

@@ -3,7 +3,7 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "../zerofpsv2/engine/zerofps.h"
-#include "../zerofpsv2/engine_systems/propertys/physicproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_physic.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include <string.h>

@@ -111,23 +111,7 @@ SOURCE=.\astar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\billboardrenderproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\bodyproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\boxrenderproperty.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\camera.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\cameraproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -156,10 +140,6 @@ SOURCE=..\engine_systems\mad\core_mesh.cpp
 # Begin Source File
 
 SOURCE=..\engine_systems\mad\core_meshanim.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\crossrenderproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -219,19 +199,7 @@ SOURCE=.\input.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\lightproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\lightupdateproperty.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\mad\mad_modell.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\madproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -267,7 +235,35 @@ SOURCE=..\engine_systems\propertys\p_ambientsound.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_billboardrender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_body.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_camera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_crossrender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_heightmap2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_light.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_lightupdate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_mad.cpp
 # End Source File
 # Begin Source File
 
@@ -275,7 +271,23 @@ SOURCE=.\p_pfmesh.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\physicproperty.cpp
+SOURCE=..\engine_systems\propertys\p_physic.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_skyboxrender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_vegitation.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_waterrender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_worldinfo.cpp
 # End Source File
 # Begin Source File
 
@@ -307,22 +319,6 @@ SOURCE=.\res_texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\vegitationproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\waterrenderproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\worldinfoproperty.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zerofps.cpp
 # End Source File
 # Begin Source File
@@ -347,23 +343,7 @@ SOURCE=.\astar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\billboardrenderproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\bodyproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\boxrenderproperty.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\camera.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\cameraproperty.h
 # End Source File
 # Begin Source File
 
@@ -372,10 +352,6 @@ SOURCE=..\engine_systems\physicsengine\collisionshape.h
 # Begin Source File
 
 SOURCE=.\console.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\crossrenderproperty.h
 # End Source File
 # Begin Source File
 
@@ -435,23 +411,11 @@ SOURCE=.\input.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\lightproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\lightupdateproperty.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\mad\mad_core.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\engine_systems\mad\mad_modell.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\madproperty.h
 # End Source File
 # Begin Source File
 
@@ -483,7 +447,23 @@ SOURCE=..\engine_systems\propertys\p_ambientsound.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_billboardrender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_body.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_camera.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_clientinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_crossrender.h
 # End Source File
 # Begin Source File
 
@@ -491,11 +471,39 @@ SOURCE=..\engine_systems\propertys\p_heightmap2.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_light.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_lightupdate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_mad.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_pfmesh.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\physicproperty.h
+SOURCE=..\engine_systems\propertys\p_physic.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_skyboxrender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_vegitation.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_waterrender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_worldinfo.h
 # End Source File
 # Begin Source File
 
@@ -528,22 +536,6 @@ SOURCE=..\engine_systems\propertys\psystemproperty.h
 # Begin Source File
 
 SOURCE=.\res_texture.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\vegitationproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\waterrenderproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\worldinfoproperty.h
 # End Source File
 # Begin Source File
 

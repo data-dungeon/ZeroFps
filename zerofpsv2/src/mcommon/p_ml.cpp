@@ -1,5 +1,5 @@
 #include "p_ml.h" 
-#include "../zerofpsv2/engine_systems/propertys/madproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 
 P_Ml::P_Ml()
 {
