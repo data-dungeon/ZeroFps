@@ -54,8 +54,11 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetTeam", DMLua::SetTeamLua);
 	pkScript->ExposeFunction("GetCharStats", DMLua::GetCharStatsLua);
 	pkScript->ExposeFunction("SetCharStats", DMLua::SetCharStatsLua);
-	pkScript->ExposeFunction("AddItem", DMLua::AddItemLua);
 	
+	// item stuff
+	pkScript->ExposeFunction("AddItem", DMLua::AddItemLua);
+	pkScript->ExposeFunction("GetItemByName", DMLua::GetItemByNameLua);
+
 	// character behaviours
 	pkScript->ExposeFunction("PanicArea", DMLua::PanicAreaLua);
 	pkScript->ExposeFunction("CallForHelp", DMLua::CallForHelpLua);
@@ -1307,4 +1310,41 @@ int DMLua::AddItemLua(lua_State* pkLua)
 	}
 
 	return 0;
+}
+
+//
+// takes a item name (P_DMItem : name) and returns the Entity ID value for it
+// or -1 if not Item was found
+//
+int DMLua::GetItemByNameLua(lua_State* pkLua)
+{
+	double dItem = -1;
+	string strItemToFind = "";
+
+	char temp[256];
+	if(g_pkScript->GetArgString(pkLua, 1, temp))
+	{
+		strItemToFind = temp;
+	
+		vector<Entity*> kObjs;
+		g_pkObjMan->GetAllObjects(&kObjs);
+
+		for ( int i = 0; i < kObjs.size(); i++ )
+		{
+			P_DMItem* pkItemProperty = (P_DMItem*)kObjs[i]->GetProperty("P_DMItem");
+			if(pkItemProperty)
+			{
+				// Equipa till högkvarteret
+				if(pkItemProperty->GetName() == strItemToFind)
+				{
+					dItem = kObjs[i]->GetEntityID();
+					break;
+				}
+			}
+		}
+	}
+
+	g_pkScript->AddReturnValue( pkLua, dItem );
+
+	return 1;
 }
