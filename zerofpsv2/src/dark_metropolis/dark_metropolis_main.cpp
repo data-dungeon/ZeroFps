@@ -1078,9 +1078,17 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 void DarkMetropolis::PauseGame(bool bPause)
 {
 	if(bPause)
+	{
+		GetSystem().RunCommand("set e_runsim 0",CSYS_SRC_SUBSYS);
+		GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
 		m_eGameMode = PAUSED;
+	}
 	else
+	{
+		GetSystem().RunCommand("set e_runsim 1",CSYS_SRC_SUBSYS);
+		GetSystem().RunCommand("set e_simspeed 0.33",CSYS_SRC_SUBSYS);
 		m_eGameMode = ACTIVE;
+	}
 }
 
 int DarkMetropolis::FindActiveHQ()
