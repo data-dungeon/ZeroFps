@@ -145,7 +145,9 @@ private:
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
 
-	int						m_iMaxSendSize;						// max bytes to send to client per frame
+	int						m_iNetSpeed;							// Max amount of bytes to send on a connection. 
+	int						m_iMaxSendSize;						// Max bytes to send to client per frame
+
 
 	vector<RemoteNode>	m_RemoteNodes;							// Data About all our remote connections.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
@@ -193,8 +195,14 @@ public:
 	int GetNumOfClients(void);
 	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
 	int GetFreeClientNum();
-	int GetMaxSendSize() {return m_iMaxSendSize;};
 	
+	int GetMaxSendSize() {return m_iMaxSendSize;} 
+	void SetMaxSendSize(int iMaxSend) { m_iMaxSendSize = iMaxSend; }
+	int GetNetSpeed() { return m_iNetSpeed; }
+
+	void UpdateNetSpeed();
+
+
 	bool IsConnected(int iId);
 	
 	// NetStrings

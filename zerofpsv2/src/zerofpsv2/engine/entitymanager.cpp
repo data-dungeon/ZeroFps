@@ -677,14 +677,14 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	int iSentSize = 		0;
 	int iMaxPacketSize = 800;
 	unsigned int iObj = 	0;	
-	int iMaxSendSize = 	m_pkNetWork->GetMaxSendSize();
+	
 	Entity* pkPackObj;
-
+	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
 
 	//if max allowed sendsize is less then the package size, shrink the package
 	if(bZoneObject)
 		if(iMaxSendSize < iMaxPacketSize)
-			iMaxPacketSize = iMaxSendSize;
+			 iMaxPacketSize = iMaxSendSize;
 
 	//set packate type
 	m_OutNP.Write((char) ZFGP_OBJECTSTATE);
@@ -848,6 +848,9 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 void EntityManager::PackToClients()
 {
+	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps();
+	m_pkNetWork->SetMaxSendSize(iMaxSendSize);
+
 	// If no clients we don't send anything.
 	if(m_pkNetWork->GetNumOfClients() == 0)
 		return;

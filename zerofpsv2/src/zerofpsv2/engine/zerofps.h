@@ -277,6 +277,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}
 		void SetSystemFps(int iFps) 		{	m_fSystemUpdateFps = float(iFps);			}
+		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
 		
 		//camera
