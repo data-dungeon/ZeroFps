@@ -64,6 +64,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// lua lua scripts
 	pkScript->ExposeFunction("RunScript", DMLua::RunScriptLua);	
 
+	cout << "DM LUA Scripts Loaded" << endl;
 
 }
 // ------------------------------------------------------------------------------------------------

@@ -51,7 +51,7 @@ bool ZFScriptSystem::Open()
 	m_pkLua = lua_open(0);
 
 	// Open base lib for access to some useful functions.
-//	lua_baselibopen(m_pkLua);
+	//lua_baselibopen(m_pkLua);
 
 	// Create Lua tag for Int type.
 	m_iLuaTagInt = lua_newtag(m_pkLua);
@@ -719,9 +719,20 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 //		return false; // TEST VC7!!!
 	}
 
-	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
+	int iDoFileRes = lua_dofile(pkScript->m_pkLuaState, strPath.c_str());
+
+	if( iDoFileRes )
 	{
-		sprintf(szError, "Failed to run script! \"%s\" does not exist.\n", strPath.c_str());
+		switch(iDoFileRes)
+		{
+			case LUA_ERRRUN:		sprintf(szError, "LUA_ERRRUN");		break;
+			case LUA_ERRSYNTAX:	sprintf(szError, "LUA_ERRSYNTAX");		break;
+			case LUA_ERRMEM:		sprintf(szError, "LUA_ERRMEM");		break;
+			case LUA_ERRERR:		sprintf(szError, "LUA_ERRERR");		break;
+			case LUA_ERRFILE:		sprintf(szError, "LUA_ERRFILE");		break;
+		}
+
+		//sprintf(szError, "Failed to run script! \"%s\" does not exist.\n", strPath.c_str());
 		printf(szError);
 		ZFAssert(0, szError);	
 	}

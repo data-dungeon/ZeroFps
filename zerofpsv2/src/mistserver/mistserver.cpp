@@ -22,6 +22,7 @@
 #include "../mcommon/rulesystem/sendtype.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../mcommon/si_dm.h"
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 
@@ -233,6 +234,9 @@ void MistServer::OnInit()
 	m_pkConsole->Printf("");
 
 	Init();
+
+	//init dm script interface (register script functions for gameplay)
+	DMLua::Init(m_pkObjectMan,m_pkScript);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
