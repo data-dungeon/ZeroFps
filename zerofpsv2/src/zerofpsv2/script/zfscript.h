@@ -27,17 +27,20 @@ class ZFVFileSystem;
 
 enum ScripVarType
 {
-	tINT,
-	tDOUBLE,
-	tFLOAT,
-	tSTRING,
+	tINT				= 1,
+	tDOUBLE			= 4,
+	tFLOAT			= 3,
+	tSTRING			= 5,
 };
 
-enum ScripObjectType
+enum VAR_TYPE
 {
-	tGame,
-	tConsole,
-	tVector3,
+	VAR_INT			= 1,
+	VAR_BOOL			= 2,
+	VAR_FLOAT		= 3,
+	VAR_DOUBLE		= 4,
+	VAR_CSTRING		= 5,
+	VAR_STLSTRING	= 6
 };
 
 struct SCRIPT_API TABLE_DATA
@@ -103,11 +106,8 @@ public:
 	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
 	void DeleteTable(vector<TABLE_DATA>& data);
 
-	bool ExposeClass(char *szName, ScripObjectType eType, 
-	lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
-	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
-	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType, lua_State* pkState=NULL);
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function, lua_State* pkState=NULL);
+	int ExposeVariable(const char* name, void* pVar, VAR_TYPE eType, lua_State* L=NULL);
 	
 	bool StartUp();
 	bool ShutDown();
@@ -135,33 +135,22 @@ private:
 	struct GlobalVarInfo
 	{
 		void* pvData;
-		ScripVarType eType;
+		VAR_TYPE eType;
 		char* szName;
 	};
 
 	vector<GlobalVarInfo*> m_vkGlobalVariables;
 
-	static int SetTypeInt(lua_State* pkLua);
-	static int GetTypeInt(lua_State* pkLua);
-	static int SetTypeDouble(lua_State* pkLua);
-	static int GetTypeDouble(lua_State* pkLua);
-	static int SetTypeFloat(lua_State* pkLua);
-	static int GetTypeFloat(lua_State* pkLua);
-	static int SetTypeString(lua_State* pkLua);
-	static int GetTypeString(lua_State* pkLua);
-
 	void Close();
 	bool Open();
+
+	void CreateMetatables(lua_State* L);
 	
+	static int GetVar(lua_State* L);
+	static int SetVar(lua_State* L);
+	static map<string,pair<void*,VAR_TYPE> > m_kVarMap;
+
 	lua_State* m_pkLua;
-
-	int m_iLuaTagInt;
-	int m_iLuaTagDouble;
-	int m_iLuaTagFloat;
-	int m_iLuaTagString;
-
-	set<string> m_kExposedClasses;
-	map<ScripObjectType, string> m_kClassMap;
 
 	ZFVFileSystem* m_pkFileSys;
 

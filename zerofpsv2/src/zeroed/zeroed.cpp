@@ -1574,7 +1574,7 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 	if(pkObj) 
 	{
 		ZoneData* pkData = m_pkEntityManager->GetZoneData(pkObj->GetCurrentZone());		
-		if(pkData->m_pkZone == NULL)
+		if(pkData == NULL || pkData->m_pkZone == NULL)
 			return false;
 
 		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))

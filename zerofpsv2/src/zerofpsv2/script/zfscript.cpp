@@ -9,6 +9,9 @@
 #include <iostream>
 
 using namespace std;
+
+map<string,pair<void*,VAR_TYPE> > ZFScriptSystem::m_kVarMap;
+
   
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -95,45 +98,11 @@ bool ZFScriptSystem::Open()
 
 void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 {
-	*ppkState = lua_open();
-
-	/////////////////////////////////////////////////////////////////////
-	// OBS! Ändring gjord: 040401 - som kanske funkar upp skriptsystemet
-	/////////////////////////////////////////////////////////////////////
-
-	// Create Lua tag for Int type.
-	//m_iLuaTagInt = lua_newtag(*ppkState);
-	//lua_pushcfunction(*ppkState, GetTypeInt);
-	//lua_settagmethod(*ppkState, m_iLuaTagInt, "getglobal");
-	//lua_pushcfunction(*ppkState, SetTypeInt); 
-	//lua_settagmethod(*ppkState, m_iLuaTagInt, "setglobal");
-
-	//// Create Lua tag for Double type.
-	//m_iLuaTagDouble = lua_newtag(*ppkState);
-	//lua_pushcfunction(*ppkState, GetTypeDouble);
-	//lua_settagmethod(*ppkState, m_iLuaTagDouble, "getglobal");
-	//lua_pushcfunction(*ppkState, SetTypeDouble); 
-	//lua_settagmethod(*ppkState, m_iLuaTagDouble, "setglobal");
-
-	//// Create Lua tag for Float type.
-	//m_iLuaTagFloat = lua_newtag(*ppkState);
-	//lua_pushcfunction(*ppkState, GetTypeFloat);
-	//lua_settagmethod(*ppkState, m_iLuaTagFloat, "getglobal");
-	//lua_pushcfunction(*ppkState, SetTypeFloat); 
-	//lua_settagmethod(*ppkState, m_iLuaTagFloat, "setglobal");
-
-	//// Create Lua tag for String type.
-	//m_iLuaTagString = lua_newtag(*ppkState);
-	//lua_pushcfunction(*ppkState, GetTypeString);
-	//lua_settagmethod(*ppkState, m_iLuaTagString, "getglobal");
-	//lua_pushcfunction(*ppkState, SetTypeString); 
-	//lua_settagmethod(*ppkState, m_iLuaTagString, "setglobal");
-
-	////////////////////////////////////////////////////////////////
+	//*ppkState = lua_open();
 
 	unsigned int i;
-	unsigned int iNumFunctions = m_vkGlobalFunctions.size();
-	unsigned int iNumVars = m_vkGlobalVariables.size();
+	const unsigned int iNumFunctions = m_vkGlobalFunctions.size();
+	const unsigned int iNumVars = m_vkGlobalVariables.size();
 
 	// Add global functions
 	for(i=0; i<iNumFunctions;  i++)
@@ -145,7 +114,7 @@ void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 	for(i=0; i<iNumVars; i++)
 		ExposeVariable(m_vkGlobalVariables[i]->szName,
 			m_vkGlobalVariables[i]->pvData,
-			m_vkGlobalVariables[i]->eType, 
+			m_vkGlobalVariables[i]->eType,
 			*ppkState);
 }
 
@@ -168,64 +137,6 @@ void ZFScriptSystem::Close()
 	}
 
 	printf("ZFScriptSystem::Close\n");
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Name:		RegisterClass
-// Description:	Registrera en C++ klass som Lua kan se.
-//
-bool ZFScriptSystem::ExposeClass(char *szName, ScripObjectType eType, 
-						   lua_CFunction o_LuaGet, lua_CFunction o_LuaSet)
-{
-	// check if type is already registered
-/*	bool bAlreadyExist = true;
-
-	if(m_kExposedClasses.find(string(szName)) == m_kExposedClasses.end())
-		bAlreadyExist = false;
-
-	if(bAlreadyExist)
-	{
-		printf("SCRIPT_API: Class [%s] already exposed %s\n", szName);
-		return true;
-	}
-
-	// Create Lua tag for Test type.
-	lua_pushcfunction(m_pkLua, o_LuaGet);
-	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "getglobal");
-
-	lua_pushcfunction(m_pkLua, o_LuaSet);
-	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "setglobal");
- 
-	m_kExposedClasses.insert(string(szName));
-
-	// Register class
-	m_kClassMap.insert( map<ScripObjectType,string>::value_type(eType, string(szName)) );
-*/
-	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Name:		ExposeClass
-// Description:	Registrera en C++ klass som Lua kan se.
-//
-bool ZFScriptSystem::ExposeObject(const char* szName, void* pkData, ScripObjectType eType)
-{
-/*
-	map<ScripObjectType, string>::iterator itClass;
-	itClass = m_kClassMap.find(eType);
-	
-	// no such element exists
-	if(itClass == m_kClassMap.end())
-	{
-		printf("SCRIPT_API: Error accessing class object!");
-		return false;
-	}
-
-	char *szClassName = (char*) itClass->second.c_str();
-
-	lua_pushusertag(m_pkLua, pkData, tolua_tag(m_pkLua, szClassName));
-	lua_setglobal(m_pkLua, szName);*/
-	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -254,95 +165,6 @@ bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Name:		ExposeVariable
-// Description:	Registrera en C++ variabel som Lua kan se.
-//
-bool ZFScriptSystem::ExposeVariable(const char* szName, void* pkData, ScripVarType eType,
-												lua_State* pkState)
-{
-	if(pkState == NULL)
-		pkState = m_pkLua;
-
-	switch(eType)
-	{
-	case tDOUBLE:
-		lua_pushnumber(pkState, (double)(*(double*)pkData));
-		lua_setglobal(pkState, szName);
-		break;
-	case tSTRING:
-		lua_pushstring(pkState, (char*) pkData);
-		lua_setglobal(pkState, szName);
-		break;
-	}
-
-	if(pkState == m_pkLua)
-	{
-		GlobalVarInfo* var_info = new GlobalVarInfo;
-		var_info->eType = eType;
-		var_info->szName = new char[ strlen(szName) + 1 ];
-		strcpy(var_info->szName, szName);
-		var_info->pvData = pkData;
-		m_vkGlobalVariables.push_back(var_info);
-
-		//printf("  Adding global variable (%i) : %s\n", m_vkGlobalVariables.size(), szName);
-	}
-	
-	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Ett gäng statiska funktioner som triggas från Lua när man behöver komma åt
-// en global c++ variabel från skript (som i förväg har blivit exponerad).
-//
-// Int
-int ZFScriptSystem::SetTypeInt(lua_State* pkLua) {
-	int* var=(int*) lua_touserdata(pkLua,2);
-	int  val=(int)  lua_tonumber(pkLua,3);
-	*var=val;
-	return 0;
-}
-int ZFScriptSystem::GetTypeInt(lua_State* pkLua) {
-	int* var=(int*) lua_touserdata(pkLua,2);
-	lua_pushnumber(pkLua,*var);
-	return 1;
-}
-// Double
-int ZFScriptSystem::SetTypeDouble(lua_State* pkLua) {
-	double* var=(double*) lua_touserdata(pkLua,2);
-	double  val=(double)  lua_tonumber(pkLua,3);
-	*var=val;
-	return 0;
-}
-int ZFScriptSystem::GetTypeDouble(lua_State* pkLua) {
-	double* var=(double*) lua_touserdata(pkLua,2);
-	lua_pushnumber(pkLua,*var);
-	return 1;
-}
-// Float
-int ZFScriptSystem::SetTypeFloat(lua_State* pkLua) {
-	float* var=(float*) lua_touserdata(pkLua,2);
-	float  val=(float)  lua_tonumber(pkLua,3);
-	*var=val;
-	return 0;
-}
-int ZFScriptSystem::GetTypeFloat(lua_State* pkLua) {
-	float* var=(float*) lua_touserdata(pkLua,2);
-	lua_pushnumber(pkLua,*var);
-	return 1;
-}
-// C-String
-int ZFScriptSystem::SetTypeString(lua_State* pkLua) {
-	char* var= (char*) lua_touserdata(pkLua,2);
-	char* val= (char*) lua_tostring(pkLua,3);
-	var=val;
-	return 0;
-}
-int ZFScriptSystem::GetTypeString(lua_State* pkLua) {
-	char* var=(char*) lua_touserdata(pkLua,2);
-	lua_pushstring(pkLua,var);
-	return 1;
-}
 
 int ZFScriptSystem::GetNumArgs(lua_State* state)
 {
@@ -654,6 +476,7 @@ bool ZFScript::Create(string strName)
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 
+	pkScriptSys->CreateMetatables(m_pkLuaState);
 	pkScriptSys->CopyGlobalData(&m_pkLuaState);
 
 	return pkScriptSys->Run(this);
@@ -871,64 +694,226 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 	return temp;
 }
 
+static string g_strCurrVariable = "";
 
-    typedef struct NumArray {
-      int size;
-      double values[1];  /* variable part */
-    } NumArray;
+// Module index function
+static int module_index_event (lua_State* L)
+{
+	lua_pushstring(L,".get");
+	lua_rawget(L,-3);
+	if (lua_istable(L,-1))
+	{
+		lua_pushvalue(L,2);  // key
+		lua_rawget(L,-2);
+		if (lua_iscfunction(L,-1))
+		{
+			g_strCurrVariable = lua_tostring(L,-3);
+			lua_call(L,0,1);
+			return 1;
+		}
+		else if (lua_istable(L,-1))
+			return 1;
+	}
+	// call old index meta event
+	if (lua_getmetatable(L,1))
+	{
+		lua_pushstring(L,"__index");
+		lua_rawget(L,-2);
+		lua_pushvalue(L,1);
+		lua_pushvalue(L,2);
+		if (lua_isfunction(L,-1))
+		{
+			lua_call(L,2,1);
+			return 1;
+		}
+		else if (lua_istable(L,-1))
+		{
+			lua_gettable(L,-3);
+			return 1;
+		}
+	}
+	lua_pushnil(L);
+	return 1;
+}
 
-    static int newarray (lua_State *L) {
-      int n = luaL_checkint(L, 1);
-      size_t nbytes = sizeof(NumArray) + (n - 1)*sizeof(double);
-      NumArray *a = (NumArray *)lua_newuserdata(L, nbytes);
-      a->size = n;
-      return 1;  /* new userdatum is already on the stack */
-    }
+// Module newindex function
+static int module_newindex_event (lua_State* L)
+{
+	lua_pushstring(L,".set");
+	lua_rawget(L,-4);
+	if (lua_istable(L,-1))
+	{
+		lua_pushvalue(L,2);  // key
+		lua_rawget(L,-2);
+		if (lua_iscfunction(L,-1))
+		{
+			g_strCurrVariable = lua_tostring(L,-4);
 
-    static int setarray (lua_State *L) {
-      NumArray *a = (NumArray *)lua_touserdata(L, 1);
-      int index = luaL_checkint(L, 2);
-      double value = luaL_checknumber(L, 3);
-    
-      luaL_argcheck(L, a != NULL, 1, "`array' expected");
-    
-      luaL_argcheck(L, 1 <= index && index <= a->size, 2,
-                       "index out of range");
-    
-      a->values[index-1] = value;
-      return 0;
-    }
+			lua_pushvalue(L,1); // only to be compatible with non-static vars
+			lua_pushvalue(L,3); // value
+			lua_call(L,2,0);
+			return 0;
+		}
+	}
+	// call old newindex meta event
+	if (lua_getmetatable(L,1) && lua_getmetatable(L,-1))
+	{
+		lua_pushstring(L,"__newindex");
+		lua_rawget(L,-2);
+		if (lua_isfunction(L,-1))
+		{
+		 lua_pushvalue(L,1);
+		 lua_pushvalue(L,2);
+		 lua_pushvalue(L,3);
+			lua_call(L,3,0);
+		}
+	}
+	lua_settop(L,3);
+	lua_rawset(L,-3);
+	return 0;
+}
 
-    static int getarray (lua_State *L) {
-      NumArray *a = (NumArray *)lua_touserdata(L, 1);
-      int index = luaL_checkint(L, 2);
-    
-      luaL_argcheck(L, a != NULL, 1, "`array' expected");
-    
-      luaL_argcheck(L, 1 <= index && index <= a->size, 2,
-                       "index out of range");
-    
-      lua_pushnumber(L, a->values[index-1]);
-      return 1;
-    }
 
-    static int getsize (lua_State *L) {
-      NumArray *a = (NumArray *)lua_touserdata(L, 1);
-      luaL_argcheck(L, a != NULL, 1, "`array' expected");
-      lua_pushnumber(L, a->size);
-      return 1;
-    }
 
-    static const struct luaL_reg arraylib [] = {
-      {"new", newarray},
-      {"set", setarray},
-      {"get", getarray},
-      {"size", getsize},
-      {NULL, NULL}
-    };
-    
-    int luaopen_array (lua_State *L) {
-      luaL_openlib(L, "array", arraylib, 0);
-      return 1;
-    }
+void ZFScriptSystem::CreateMetatables(lua_State* L)
+{
+	// Create meta funktions for get/set
+	lua_pushvalue(L,LUA_GLOBALSINDEX); // push module
+		lua_newtable(L);
+		lua_pushstring(L,"__index");
+		lua_pushcfunction(L,module_index_event);
+		lua_rawset(L,-3);
+		lua_pushstring(L,"__newindex");
+		lua_pushcfunction(L,module_newindex_event);
+		lua_rawset(L,-3);
+		lua_setmetatable(L,-2);
+	lua_pop(L,1);               // pop module
+}
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Name:		ExposeVariable
+// Description:	Registrera en standard variabel som Lua kan se.
+//
+int ZFScriptSystem::ExposeVariable (const char* name, void* pVar, VAR_TYPE eType, lua_State* L)
+{
+	if(L == NULL)
+		L = m_pkLua;
+
+	CreateMetatables(L);
+
+	lua_pushvalue(L,LUA_GLOBALSINDEX);
+
+		// get func
+		lua_pushstring(L,".get");
+		lua_rawget(L,-2);
+		if (!lua_istable(L,-1))
+		{
+			// create .get table, leaving it at the top 
+			lua_pop(L,1);
+			lua_newtable(L);
+			lua_pushstring(L,".get");
+			lua_pushvalue(L,-2);
+			lua_rawset(L,-4);
+		}
+		lua_pushstring(L,name);
+		lua_pushcfunction(L,GetVar);
+		lua_rawset(L,-3);                  // store variable 
+		lua_pop(L,1);                      // pop .get table 
+
+		// set func 
+		lua_pushstring(L,".set");
+		lua_rawget(L,-2);
+		if (!lua_istable(L,-1))
+		{
+			// create .set table, leaving it at the top 
+			lua_pop(L,1);
+			lua_newtable(L);
+			lua_pushstring(L,".set");
+			lua_pushvalue(L,-2);
+			lua_rawset(L,-4);
+		}
+		lua_pushstring(L,name);
+		lua_pushcfunction(L,SetVar);
+		lua_rawset(L,-3);                  // store variable 
+		lua_pop(L,1);                      // pop .set table 
+
+	lua_pop(L,1);
+
+	m_kVarMap[name] = pair<void*,VAR_TYPE>((void*)pVar, eType);
+
+	GlobalVarInfo* var_info = new GlobalVarInfo;
+	var_info->eType = eType;
+	var_info->szName = new char[ strlen(name) + 1 ];
+	strcpy(var_info->szName, name);
+	var_info->pvData = pVar;
+	m_vkGlobalVariables.push_back(var_info);
+
+	return 1;
+}
+
+
+
+
+
+
+
+// get function: g_iExpIntVar
+int ZFScriptSystem::GetVar(lua_State* L)
+{
+	pair<void*, int> t = m_kVarMap[g_strCurrVariable];
+
+	switch(t.second)
+	{
+	case VAR_INT:
+		lua_pushnumber(L,(double)(*(int*) t.first));
+		break;
+	case VAR_BOOL:
+		lua_pushnumber(L,(double)(*(bool*) t.first));
+		break;
+	case VAR_FLOAT:
+		lua_pushnumber(L,(double)(*(float*) t.first));
+		break;
+	case VAR_DOUBLE:
+		lua_pushnumber(L,(double)(*(double*) t.first));
+		break;
+	case VAR_CSTRING:
+		lua_pushstring(L,(char*) t.first);
+		break;
+	case VAR_STLSTRING:
+		lua_pushstring(L,(char*)(*(string*)t.first).c_str());
+		break;
+	}
+
+	return 1;
+}
+
+// set function: g_iExpIntVar
+int ZFScriptSystem::SetVar(lua_State* L)
+{
+	pair<void*, int> t = m_kVarMap[g_strCurrVariable];
+
+	switch(t.second)
+	{
+	case VAR_INT:
+		(*(int*) t.first) = (int) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
+		break;
+	case VAR_BOOL:
+		(*(bool*) t.first) = (bool) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
+		break;
+	case VAR_FLOAT:
+		(*(float*) t.first) = (float) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
+		break;
+	case VAR_DOUBLE:
+		(*(double*) t.first) = (double) (lua_gettop(L)<abs(2) ? 0 : lua_tonumber(L,2));
+		break;
+	case VAR_CSTRING:
+		strcpy((char*) t.first, (lua_gettop(L)<abs(2) ? "" : lua_tostring(L,2)));
+		break;
+	case VAR_STLSTRING:
+		(*(string*) t.first) = (lua_gettop(L)<abs(2) ? "" : lua_tostring(L,2));
+		break;
+	}
+
+	return 0;
+}
