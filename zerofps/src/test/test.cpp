@@ -38,7 +38,7 @@ void Test::OnInit(void) {
   	
   	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
-  	m_iGrassVolyme=300;	
+  	m_iGrassVolyme=150;	
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
@@ -68,10 +68,12 @@ void Test::OnIdle(void) {
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 	
+//	cout<<"HORA "<<(1|MIPMAPING)<<endl;
+	
 	if(m_iGrass>0)
 		for(int ix=0;ix<1000;ix+=50)
 			for(int iy=0;iy<1000;iy+=50)
-				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(3.5,.8,3.5),50,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga"),pkFps->m_iFps);
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(3.5,.8,3.5),50,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
 
 

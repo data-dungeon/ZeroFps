@@ -131,16 +131,17 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_iCamMode=cam_look; 
 	m_kCamPos=new Vector3(0,0,0);
 	m_kCamRot=new Vector3(0,0,0);
-
+  
+  glMatrixMode(GL_MODELVIEW);
 }
 
 void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 	
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		// Reset view and clea
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-  glMatrixMode(GL_MODELVIEW);
- 	glLoadIdentity();													//
+
+ 	glLoadIdentity();													
   
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;

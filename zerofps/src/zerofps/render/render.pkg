@@ -1,9 +1,10 @@
 class Render;
 class TextureManager;
+class Light;
 
 #include "render.h"
 #include "texturemanager.h"
-
+#include "light.h"
 
 
 

@@ -6,8 +6,30 @@ TextureManager::TextureManager(FileIo* pkFile) {
 }	
 
 
-bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename) {
+bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {	
 	bool isTga=false;
+	bool MipMapping=true;
+	bool Compression=false;
+	GLint iInternalFormat=GL_RGB;
+	GLint iFormat=GL_BGR;
+	
+	if(iOption!=0) {	
+		if((iOption & T_NOMIPMAPPING)){
+//			cout<<"NOMIPMAPING"<<endl;
+			MipMapping=false;
+		}
+		if((iOption & T_COMPRESSION)) {
+//			cout<<"COMPRESSION"<<endl;
+			Compression=true;
+		}
+	}
+	
+	//is this a tga?
+  if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
+		iInternalFormat=GL_RGBA;
+		iFormat=GL_BGRA;
+	}
+	
 	
 	SDL_Surface *image;
 
@@ -16,20 +38,21 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename) {
     return false;
   };
   
-  if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0)
-		isTga=true;  	
 
   glGenTextures(1,&iNr);
   glBindTexture(GL_TEXTURE_2D,iNr);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-//  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 
-//  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,image->w,image->h,0,GL_RGB,GL_UNSIGNED_BYTE,image->pixels);
-  if(isTga)
-		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA,image->w,image->h,GL_BGRA,GL_UNSIGNED_BYTE,image->pixels);  
-  else 
-	  gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,image->w,image->h,GL_BGR,GL_UNSIGNED_BYTE,image->pixels);
+	if(MipMapping)
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+	else
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+
+	if(MipMapping)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,GL_UNSIGNED_BYTE,image->pixels);  	
+	else
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,image->w,image->h,0,iFormat,GL_UNSIGNED_BYTE,image->pixels);
+
   
   glBindTexture(GL_TEXTURE_2D,0);
   return true;
@@ -77,7 +100,7 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
   return(image);
 };
 
-int TextureManager::Load(char* acFileName) {
+int TextureManager::Load(char* acFileName,int iOption) {
 	
 	//first check if the texture has already been loaded,and return its index
 	for(int i=0;i<m_iTextures.size();i++){
@@ -92,7 +115,7 @@ int TextureManager::Load(char* acFileName) {
 	temp->file=acFileName;
 	
 	//if the texture cant be loaded then complain and return 0 
-	if(!LoadTexture(temp->index,acFileName)){
+	if(!LoadTexture(temp->index,acFileName,iOption)){
 		cout<<"Error Loading texture: "<<temp->file<<endl;
 		return 0;
 	}
@@ -112,8 +135,8 @@ void TextureManager::BindTexture(int iTexture) {
 	}
 }
 
-void TextureManager::BindTexture(char* acFileName) {
-	int iTexture=Load(acFileName);
+void TextureManager::BindTexture(char* acFileName,int iOption) {
+	int iTexture=Load(acFileName,iOption);
 	if(iTexture!=m_iCurrentTexture){
 		m_iCurrentTexture=iTexture;
 		glBindTexture(GL_TEXTURE_2D,iTexture);

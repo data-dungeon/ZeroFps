@@ -6,7 +6,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	
 	m_iGrassLod=30;
-	m_iViewDistance=450;
+	m_iViewDistance=350;
 	m_iFpsLock=60;
 	m_iAutoLod=1;
 	m_iLodUpdate=0;	
@@ -111,7 +111,7 @@ void Render::PrintChar(char cChar) {
 	glDepthMask(GL_FALSE);	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ALPHA); 		
- 	m_pkTexMan->BindTexture(aCurentFont);  
+ 	m_pkTexMan->BindTexture(aCurentFont,0);  
 
 	glPushMatrix();
 	glBegin(GL_QUADS);			
@@ -243,7 +243,7 @@ void Render::Dot(float x,float y,float z) {
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	SetFont("file:../data/textures/text/console.tga");
 
-	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.2,2.2,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp"));
+	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.2,2.2,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp",0));
 	
 	Print(Vector3(-0.90,-0.90,-1),Vector3(0,0,0),Vector3(.06,.06,.06),m_aCommand);		
 	

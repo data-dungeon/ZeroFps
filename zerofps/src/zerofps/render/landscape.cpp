@@ -9,11 +9,11 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	
 	int iSize=501;	
 
-	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
-	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
-	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));	
-	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
-	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
+	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp",0));
+	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));	
+	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
+	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
 
 /*
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
@@ -55,12 +55,12 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnable(GL_TEXTURE_2D);	
-	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp"));
+	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);	
-	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp"));
+	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD);
 	
 	float tx=SDL_GetTicks()/80000.0;	
@@ -106,7 +106,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	glEnable(GL_BLEND);
 		
-	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp");
+	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp",0);
 
 	float tx=SDL_GetTicks()/60000.0;
 	glBegin(GL_QUADS);
@@ -165,7 +165,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	//translate to map position
 	glTranslatef(kmap->m_kPosition.x,kmap->m_kPosition.y,kmap->m_kPosition.z);
 
-	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+	m_pkTexMan->BindTexture(kmap->m_acTileSet,0);
 	
 	GLfloat mat_specular[]={0,0,0,0};
 	GLfloat mat_diffuse[]={1,1,1,1};	
@@ -315,7 +315,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p4;
 	
 	glTranslatef(-50,-10,-50);
-	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+	m_pkTexMan->BindTexture(kmap->m_acTileSet,0);
 	
 	GLfloat mat_specular[]={1,1,1,1};
 	GLfloat mat_shininess[]={10};
@@ -539,7 +539,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 	
 	glAlphaFunc(GL_GREATER,0.3);
-   glEnable(GL_ALPHA_TEST);
+	glEnable(GL_ALPHA_TEST);
 	
 	m_pkTexMan->BindTexture(iTexture); 	
 	
