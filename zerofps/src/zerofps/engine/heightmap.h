@@ -104,6 +104,7 @@ class ENGINE_API HeightMap: public ZFObject {
 
 		bool IsAllZero();
 
+
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);

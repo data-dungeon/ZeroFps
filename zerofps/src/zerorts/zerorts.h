@@ -14,6 +14,8 @@
 #include "../common/common.pkg"
 
 class UserPanel;
+#include "guibuilder.h"
+
 
 struct PickInfo
 {
@@ -22,6 +24,7 @@ struct PickInfo
 	
 	Vector3 kHitPos;
 };
+
 
 
 class ZeroRTS :public Application {
@@ -73,6 +76,8 @@ class ZeroRTS :public Application {
 		void SetCamPos(Vector3 kPos);
 		Vector3 GetCamPos();
 		void MoveCam(Vector3 kVel);
+
+		GuiBuilder* m_pkGuiBuilder;
 };
 
 

@@ -14,6 +14,7 @@
 #define _DONT_MAIN
 
 class ZeroRTS;
+class GuiBuilder;
 
 class UserPanel : public DlgBox
 {
@@ -31,6 +32,9 @@ private:
 	bool OnClose(bool bSave);
 
 	ZeroRTS* m_pkZeroRts;
+	GuiBuilder* m_pkGuiBuilder;
+
+	vector<ZGuiButton*> m_akCommandBns;
 
 };
 

@@ -4,6 +4,7 @@
 
 #include "userpanel.h"
 #include "zerorts.h"
+#include "resource_id.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -13,6 +14,7 @@ UserPanel::UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc)
 	: DlgBox( pkZeroRts->pkGui, pkZeroRts->pkInput, oMainWndProc)
 {
 	m_pkZeroRts = pkZeroRts;
+	m_pkGuiBuilder = pkZeroRts->m_pkGuiBuilder;
 }
 
 UserPanel::~UserPanel()
@@ -30,7 +32,33 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	pkMainWndSkin->m_iBkTexAlphaID = m_pkZeroRts->pkTexMan->Load("../data/textures/player_panel_rts_a.bmp", 0);
 	m_pkDlgBox->SetSkin(pkMainWndSkin);
 
+	int id = ID_CMDBN1;
+	Rect rc(m_pkZeroRts->m_iWidth-48-10,10,0,0);
+	rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;
+
+	char* strNames[] = 
+	{
+		"attack_bnu", "attack_bnd", "attack_bnf",
+		"build_bnu", "build_bnd", "build_bnf",
+		"move_bnu", "move_bnd", "move_bnf",
+		"stop_bnu", "stop_bnd", "stop_bnf",
+		"repair_bnu", "repair_bnd", "repair_bnf",
+		"guard_bnu", "guard_bnd", "guard_bnf",
+	};
+
+	for(int i=0; i<(sizeof(strNames) / sizeof(strNames[1]))/3; i++)
+	{
+		ZGuiButton* pkButton = new ZGuiButton(rc,m_pkDlgBox,true,id++);
+		pkButton->SetMoveArea(pkButton->GetScreenRect());
+		pkButton->SetButtonUpSkin(m_pkGuiBuilder->GetSkin(strNames[i*3]));
+		pkButton->SetButtonDownSkin(m_pkGuiBuilder->GetSkin(strNames[i*3+1]));
+		pkButton->SetButtonHighLightSkin(m_pkGuiBuilder->GetSkin(strNames[i*3+2]));
+		m_akCommandBns.push_back(pkButton);
+		rc = rc.Move(-50,0);
+	}
+
 	m_pkGui->AddMainWindow(15424+1, m_pkDlgBox, "UserPanelDlg", m_oMainWndProc, false);
+
 
 	return true;
 }
