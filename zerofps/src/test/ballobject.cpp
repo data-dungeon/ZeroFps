@@ -47,6 +47,6 @@ bool BallObject::Save(void *pkData,int iSize) {
 	
 //	pkData->kPos=m_kPos
 
-
+	return true;
 }
 

@@ -66,11 +66,8 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 //	SetCamera(m_pkDefaultCamera);	
 
 	m_pkApp->OnInit();										//call the applications oninit funktion
-	
 	m_fFrameTime=0;
-	m_fLastFrameTime=SDL_GetTicks();
-
-	
+	m_fLastFrameTime = SDL_GetTicks();
 	MainLoop();														//jump to mainloop
 }
 

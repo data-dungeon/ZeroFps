@@ -43,7 +43,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "NDEBUG"
@@ -53,7 +54,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
+# ADD LINK32 render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# SUBTRACT LINK32 /profile
+# Begin Special Build Tool
+ProjDir=.
+SOURCE="$(InputPath)"
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
@@ -83,7 +90,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                        $(ProjDir)\debug\*.lib                        ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -98,90 +105,288 @@ PostBuild_Cmds=copy                        $(ProjDir)\debug\*.lib               
 # Begin Source File
 
 SOURCE=.\application.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\audiomanager.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\camera.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\cameraproperty.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\collisionheightmap.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\collisionmanager.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\collisionpoint.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\collisionproperty.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\collisionsphere.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\console.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\ogl\extgl.c
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\heightmapobject.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\input.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\madproperty.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\main.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\modelproperty.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\music.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\object.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\objectmanager.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\property.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\propertyfactory.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\zerofps.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"

@@ -85,7 +85,7 @@ public:
 	float	fFrameTime;					// Antal Sekunder denna frame ska vara.
 };
 
-class Mad_Animation
+class RENDER_API Mad_Animation
 {
 public:
 	void Clear(void);

@@ -39,9 +39,11 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GR /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x41d /d "NDEBUG"
 # ADD RSC /l 0x41d /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
 
 !ELSEIF  "$(CFG)" == "test - Win32 Debug"
 
@@ -87,30 +89,132 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\ballobject.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\bunnyaiproperty.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\bunnyobject.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\floatproperty.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\gravityproperty.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\normaldrawproperty.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\playerballobject.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\playercontrolproperty.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\playerobject.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\test.cpp
+
+!IF  "$(CFG)" == "test - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "test - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -119,6 +223,18 @@ SOURCE=.\test.cpp
 # Begin Source File
 
 SOURCE=.\ballobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\bunnyaiproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\bunnyobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\floatproperty.h
 # End Source File
 # Begin Source File
 

@@ -108,7 +108,6 @@ void Test::OnInit(void) {
 	}*/
 
 	for(int i=0;i<100;i++) {
-
 		Object *sussi=new BunnyObject(test,pkFps);
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;

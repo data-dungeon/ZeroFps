@@ -8,12 +8,13 @@ BunnyObject::BunnyObject(HeightMap *pkMap,ZeroFps *pkFps)
 	AddProperty(new ModelProperty());
 	AddProperty(new BunnyAIProperty(pkFps,pkMap));
 	
-	
 	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));
-	mod->m_fRadius=0.15;
-	mod->m_iSlices=6;
-	mod->m_iStacks=6;
-	mod->m_kColor.Set(rand()%1000/1000.0,rand()%1000/1000.0,rand()%1000/1000.0);
+	if(mod) {
+		mod->m_fRadius=0.15;
+		mod->m_iSlices=6;
+		mod->m_iStacks=6;
+		mod->m_kColor.Set(rand()%1000/1000.0,rand()%1000/1000.0,rand()%1000/1000.0);
+		}
 	
 	AddProperty(new CollisionProperty(&m_kPos,new float(.15)));
 //	AddProperty(new CollisionProperty(&m_kPos));
