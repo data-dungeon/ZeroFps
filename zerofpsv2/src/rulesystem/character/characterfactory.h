@@ -3,7 +3,7 @@
 #ifndef _RULESYSTEM_CHARACTERFACTORY_H_
 #define _RULESYSTEM_CHARACTERFACTORY_H_
 
-#include "../../mcommon/mcommon_x.h"
+#include "../../mcommon_x.h"
 
 #include "../rulesystem.h"
 #include "characterstats.h"

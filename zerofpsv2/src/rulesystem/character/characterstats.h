@@ -4,14 +4,14 @@
 #pragma warning (disable :4786)
 
 //#include "../rulesystemx.h"
-#include "../../mcommon/mcommon_x.h"
+#include "../../mcommon_x.h"
 #include "../rulesystem.h"
 #include "statcounter.h"
 
 #include <string>
 #include <map>
 #include <vector>
-#include "../../zerofpsv2/basic/zfini.h"
+#include "../../../zerofpsv2/basic/zfini.h"
 	using namespace std;
 
 struct StatDescriber
