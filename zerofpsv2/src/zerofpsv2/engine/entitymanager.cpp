@@ -152,9 +152,9 @@ EntityManager::~EntityManager()
 
 	g_ZFObjSys.Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
 	
-	//LOGF("net", "apan är löst");
+	//LOGF("net", "apan ï¿½ lï¿½t");
 	
-	// Obs! Här skall resursen laddas ur, går dock inte pga timeout expire.
+	// Obs! Hï¿½ skall resursen laddas ur, gï¿½ dock inte pga timeout expire.
 	//delete m_pScriptFileHandle;
 
 }
@@ -1434,7 +1434,7 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 		pkMatText->GetPass(0)->m_bDepthTest = 				true;	
 	}
 		
-	ZGuiFont* m_pkFont=NULL;
+	static ZGuiFont* m_pkFont=NULL;
 	if(!m_pkFont)
 	{
 		m_pkFont = new ZGuiFont("defguifont");
@@ -1994,7 +1994,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	// Create Object.
 	Entity* kZoneEntity = CreateEntity(false);
 	kZoneEntity->m_bZone = true;
-	kZoneEntity->m_iCurrentZone = iId;						//hack för att snabbt kunna se villken zon zonentityt tillhör
+	kZoneEntity->m_iCurrentZone = iId;						//hack fï¿½ att snabbt kunna se villken zon zonentityt tillhï¿½
 	kZData->m_pkZone = kZoneEntity;
 	kZData->m_pkZone->SetParent(GetZoneEntity());	
 	kZData->m_pkZone->SetName("ZoneObject");
@@ -2680,7 +2680,7 @@ void EntityManager::UpdateTrackers()
 						ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 	
 						//if zone has already been checked continue whit the next one
-						if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
+						if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ï¿½drade till <= frï¿½ <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lï¿½ger till samma zon flera gï¿½ger)
 						
 						//set new range 
 						pkOtherZone->m_iRange = iRange;

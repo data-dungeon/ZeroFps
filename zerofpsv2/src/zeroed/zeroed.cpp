@@ -5,8 +5,8 @@
   ZeroEd is the Editor Application of the game MistLands.
 */
 
-#ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
-	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte pï¿½denna. Mï¿½te ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte pï¿½flera stï¿½len.
 	#define _DONT_MAIN
 #endif
 
@@ -44,7 +44,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 	case ZGM_TCN_SELCHANGE:
 		int* data; data = (int*) params; 
-		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
+		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med slï¿½gan
 		break;
 	case ZGM_KEYPRESS:
 		g_kZeroEd.OnKeyPress(((int*)params)[0], win);
@@ -303,7 +303,7 @@ void ZeroEd::Init()
 	//enable debug graphics
 	m_pkZeroFps->SetDebugGraph(true);
 	
-	//register property bös
+	//register property bï¿½
 	RegisterPropertys();
 
 	//register resources
@@ -839,10 +839,10 @@ void ZeroEd::OnHud(void)
 {
 	if(m_pkActiveCamera) 
 	{
-		/*   //dvoid tyckte den va ivägen
+		/*   //dvoid tyckte den va ivï¿½en
 	
 		//m_kTestGraph.PushValue(m_pkZeroFps->m_fFps);
-		m_kTestGraph.DrawGraph(10,50); // [ m_kTestGraph.DrawGraph(10,10); ] < zeb: höjer upp den lite så den inte täcker infolabeln
+		m_kTestGraph.DrawGraph(10,50); // [ m_kTestGraph.DrawGraph(10,10); ] < zeb: hï¿½er upp den lite sï¿½den inte tï¿½ker infolabeln
 		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkZeroFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
@@ -1483,8 +1483,8 @@ void ZeroEd::UpdateZoneMarkerPos()
 		}
 		
 		//
-		// Tvinga kameran att behålla samma X,Y eller Z position som tidigare
-		// om man befinner sig i ortogonalt kameraläge.
+		// Tvinga kameran att behï¿½la samma X,Y eller Z position som tidigare
+		// om man befinner sig i ortogonalt kameralï¿½e.
 		//
 		static float s_fLastYPos = 0.0f;
 		static float s_fLastXPos = 0.0f;

@@ -450,16 +450,19 @@ void Camera::RenderView()
 	//update all render propertys that shuld NOT be shadowed
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 
+
+		
 	if(m_bDebugGraphs) 
 	{
-		m_pkEntityMan->DrawZones();
-		m_pkZeroFps->m_pkApp->RenderInterface();
+		m_pkEntityMan->DrawZones();				
+		m_pkZeroFps->m_pkApp->RenderInterface();	
 		
 		//draw axes icon
 		if(m_pkZeroFps->GetDrawAxesIcon())
 			m_pkRender->Draw_AxisIcon(5);	
 	}
 		
+	
 	//reset camera
 	m_pkZeroFps->m_pkCamera=NULL;
 

@@ -95,7 +95,7 @@ void MistServer::CreateEditCameras()
 */
 	}
 
-/* mega över super evil
+/* mega ï¿½er super evil
 	GetWnd("vp1")->SetRenderTarget(m_pkCamera);
 	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
 */
@@ -153,7 +153,7 @@ void MistServer::Init()
 	//register script functions
 	RegisterScriptFunctions();
 	
-	//register property bös
+	//register property bï¿½
 	RegisterPropertys();
 
 	//register resources
@@ -634,7 +634,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = szLogin;  //använder spelar namnet som karaktärs namn så länge..
+	pkClient->m_strCharacter = szLogin;  //anvï¿½der spelar namnet som karaktï¿½s namn sï¿½lï¿½ge..
 	pkClient->m_strLogin = szLogin;
 
 	if(!pkClient->m_pkObject)
