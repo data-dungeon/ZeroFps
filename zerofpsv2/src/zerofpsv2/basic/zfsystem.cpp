@@ -54,9 +54,13 @@ void ZFSystem::PrintCommands()
 
 void ZFSystem::PrintObjects(void)
 {
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
-	}
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
+// 	}
+		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		{
+			g_Logf(" %s, %d\n",(*it).second.m_strName.c_str(), (*it).second.m_iNumOfRequests );
+		}
 }
 
 void ZFSystem::LogVariables(void)
@@ -137,7 +141,8 @@ ZFSystem::~ZFSystem()
 #endif
 
 	// Check that we don't have any objects left.
-	if(kObjectNames.size() > 0) {
+ 	if(m_kObjectNames.size() > 0) {
+// 	if(kObjectNames.size() > 0) {
 		g_Logf("WARNING: Some Engine Systems have not been closed down\n");
 		PrintObjects();
 		}
@@ -167,24 +172,34 @@ void ZFSystem::Register(ZFSubSystem* pkObject, char* acName)
 #endif
 
 	// Make sure that there is no other object with the same name.
-	ZFSubSystem* pkCheck = GetObjectPtr(acName,false);
-	if(pkCheck) {
+// 	ZFSubSystem* pkCheck = GetObjectPtr(acName,false);
+// 	if(pkCheck) 
+	if(GetObjectPtr(acName,false))
+	{
 		g_Logf("Fail\n");
 		g_Logf("Warning: There was already a object with name '%s'\n", acName);
 		return;
-		}
+	}
 
+	static int iRegisterOrder = 0;
+	
 	NameObject kObjName;
 	kObjName.m_strName			= string(acName);
 	kObjName.pkObject				= pkObject;
 	kObjName.m_iNumOfRequests	= 0;
 	kObjName.m_bStarted			= false;
+	kObjName.m_iRegisterOrder	= iRegisterOrder;
 	
-	kObjectNames.push_back(kObjName);
+	//increse register order
+	iRegisterOrder++;
+	
+// 	kObjectNames.push_back(kObjName);	
+	m_kObjectNames.insert(map<const char*,NameObject>::value_type(kObjName.m_strName.c_str(),kObjName));
+	
 	pkObject->m_strZFpsName		= string(acName);
-
 	pkObject->m_pkSystem = this;
 
+	
 #ifdef _DEBUG
 	g_Logf("ok\n");
 #endif
@@ -200,18 +215,35 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 	g_Logf("UnRegister '%s' ", pkObject->m_strZFpsName.c_str());
 #endif
 
-	vector<NameObject>::iterator itNames;
-	for(itNames = kObjectNames.begin(); itNames != kObjectNames.end(); )
+	cout<<"unregistering "<<pkObject->m_strZFpsName.c_str()<<endl;
+
+	hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator itNames;
+	for(itNames = m_kObjectNames.begin(); itNames != m_kObjectNames.end(); itNames++)
 	{
-		if(itNames->pkObject == pkObject) {
-			itNames = kObjectNames.erase(itNames);
+		if((*itNames).second.pkObject == pkObject) 
+		{
+// 			itNames = m_kObjectNames.erase(itNames);
+			m_kObjectNames.erase(itNames);
+			break;
 #ifdef _DEBUG
 			g_Logf(".");
 #endif
-			}
-		else
-			itNames++;
+		}
 	}
+
+
+// 	vector<NameObject>::iterator itNames;
+// 	for(itNames = kObjectNames.begin(); itNames != kObjectNames.end(); )
+// 	{
+// 		if(itNames->pkObject == pkObject) {
+// 			itNames = kObjectNames.erase(itNames);
+// #ifdef _DEBUG
+// 			g_Logf(".");
+// #endif
+// 			}
+// 		else
+// 			itNames++;
+// 	}
 
 	UnRegister_Cmd(pkObject);
 
@@ -227,19 +259,32 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 ZFSubSystem* ZFSystem::GetObjectPtr(char* acName,bool bWarning)
 {
 // cout<<"requesting:"<<acName<<endl;
-
-	for(unsigned int i=0; i < kObjectNames.size();i++) 
+	static hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it;
+	
+	it = m_kObjectNames.find(acName);
+	
+	if(it == m_kObjectNames.end())
 	{
-		if(kObjectNames[i].m_strName == acName) 
-		{
-			kObjectNames[i].m_iNumOfRequests ++;
-			return kObjectNames[i].pkObject;
-		}
+		if(bWarning)
+			cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
+	
+		return NULL;
 	}
 
-	if(bWarning)
-		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
-		
+	return it->second.pkObject;
+	
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) 
+// 	{
+// 		if(kObjectNames[i].m_strName == acName) 
+// 		{
+// 			kObjectNames[i].m_iNumOfRequests ++;
+// 			return kObjectNames[i].pkObject;
+// 		}
+// 	}
+// 
+// 	if(bWarning)
+// 		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
+// 		
 	
 		
 	return NULL;
@@ -253,21 +298,41 @@ bool ZFSystem::StartUp()
 {
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
-//	int iSize = kObjectNames.size();
-	ZFSubSystem* pkTestObject;
-
-	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
-		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
-		pkTestObject = kObjectNames[i].pkObject;
-
-		if(!kObjectNames[i].pkObject->StartUp()) {
-			g_Logf("Fail\n");
-			return false;
-			}
-
-		kObjectNames[i].m_bStarted = true;
-		g_Logf("Ok\n");
+	for(int i = m_kObjectNames.size()-1;i >= 0;i--)
+	{
+		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		{
+			if(it->second.m_iRegisterOrder == i)
+			{
+			
+				g_Logf(" -  %s: ",it->second.m_strName.c_str());
+			
+				if(!it->second.pkObject->StartUp()) 
+				{
+					g_Logf("Fail\n");
+					return false;
+				}			
+				
+				it->second.m_bStarted = true;
+				
+				g_Logf("Ok\n");
+				
+				break;
+			}	
+		}
 	}
+	
+// 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
+// 		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
+// 
+// 		if(!kObjectNames[i].pkObject->StartUp()) {
+// 			g_Logf("Fail\n");
+// 			return false;
+// 			}
+// 
+// 		kObjectNames[i].m_bStarted = true;
+// 		g_Logf("Ok\n");
+// 	}
 	
 	return true;
 }
@@ -281,17 +346,40 @@ bool ZFSystem::ShutDown()
 	g_Logf("ShutDown Engine SubSystems: \n");
 
 	// Engine Systems Shutdown backwards.
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		strcpy(szName, kObjectNames[i].m_strName.c_str());
-		if(kObjectNames[i].m_bStarted == false)	continue;
+	for(int i = 0;i < m_kObjectNames.size();i++)
+	{
+		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		{
+			if(it->second.m_iRegisterOrder == i)
+			{
+				if(it->second.m_bStarted == false)
+					continue;
+				
+				g_Logf(" -  %s: ",it->second.m_strName.c_str());
+				if(!it->second.pkObject->ShutDown()) 
+				{
+					g_Logf("Fail\n");
+					return false;
+				}
+				
+				g_Logf("Ok\n");				
 
-		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
-		if(!kObjectNames[i].pkObject->ShutDown()) {
-			g_Logf("Fail\n");
-			return false;
-			}
-		g_Logf("Ok\n");
-	}
+				break;
+			}	
+		}
+	}	
+	
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		strcpy(szName, kObjectNames[i].m_strName.c_str());
+// 		if(kObjectNames[i].m_bStarted == false)	continue;
+// 
+// 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
+// 		if(!kObjectNames[i].pkObject->ShutDown()) {
+// 			g_Logf("Fail\n");
+// 			return false;
+// 			}
+// 		g_Logf("Ok\n");
+// 	}
 
 
 	
@@ -300,11 +388,15 @@ bool ZFSystem::ShutDown()
 
 bool ZFSystem::IsValid()
 {
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		if(!kObjectNames[i].pkObject->IsValid())
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		if(!kObjectNames[i].pkObject->IsValid())
+// 			return false;
+// 	}
+	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		if(!it->second.pkObject->IsValid())
 			return false;
-	}
 	
+
 	return true;
 }
 
@@ -776,21 +868,43 @@ void ZFSystem::Config_Save(string strFileName)
 	string strVar;
 	FILE* fp = fopen(strFileName.c_str(), "wt");
 
-	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) {
+	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
+	{
 		// Write Header to config
-		fprintf(fp,"\n\n[%s]\n", kObjectNames[SubIndex].m_strName.c_str());
+		fprintf(fp,"\n\n[%s]\n", it->second.m_strName.c_str());
 
-		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+		{
 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
 			
 			// Check so this variable is owned by the current section.
-			if(m_kCmdDataList[i].m_pkObject == kObjectNames[SubIndex].pkObject) {
+			if(m_kCmdDataList[i].m_pkObject == it->second.pkObject) 
+			{
 				strVar = GetVarValue(&m_kCmdDataList[i]);
 				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
-				}
 			}
 		}
+	}
+		
+// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
+// 	{
+// 		// Write Header to config
+// 		fprintf(fp,"\n\n[%s]\n", kObjectNames[SubIndex].m_strName.c_str());
+// 
+// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+// 		{
+// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+// 			
+// 			// Check so this variable is owned by the current section.
+// 			if(m_kCmdDataList[i].m_pkObject == kObjectNames[SubIndex].pkObject) 
+// 			{
+// 				strVar = GetVarValue(&m_kCmdDataList[i]);
+// 				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
+// 			}
+// 		}
+// 	}
 
 	fclose(fp);
 }
@@ -806,21 +920,41 @@ void ZFSystem::Config_Load(string strFileName)
 
 	char* pkVal;
 
-	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) {
+	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
+	{
 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
 
-		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+		{
 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
 			
-			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
-			if(pkVal) {
+			pkVal = m_kIni.GetValue(it->second.m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
+			if(pkVal) 
+			{
 				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
 				//cout << " " << pkVal << endl;
 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
-				}
 			}
 		}
+	}	
+	
+// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
+// 	{
+// 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
+// 
+// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+// 			
+// 			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
+// 			if(pkVal) {
+// 				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
+// 				//cout << " " << pkVal << endl;
+// 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
+// 				}
+// 			}
+// 	}
 }
 
 void ZFSystem::Printf(const char* szMessageFmt,...)

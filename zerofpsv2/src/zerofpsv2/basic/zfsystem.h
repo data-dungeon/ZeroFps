@@ -7,7 +7,10 @@
 #include <vector>
 #include "zfsubsystem.h"
 #include "cstdio"
-#include <map>
+
+
+#include <hash_map.h> 
+#include <map> 
 
 
 using namespace std;
@@ -34,7 +37,8 @@ struct NameObject
 	string			m_strName;				// Name of object.
 	ZFSubSystem*	pkObject;				// Ptr to object.
 	int				m_iNumOfRequests;		// Num times name was checked.
-	int				m_bStarted;				// True if this subsystem has started ok.
+	bool				m_bStarted;				// True if this subsystem has started ok.
+	int				m_iRegisterOrder;		// place this system was registered
 };
 
 /// Contains data about a stored command.
@@ -73,6 +77,14 @@ class BASIC_API TimerInfo
 		string	m_strName;
 		int		m_iTime;
 };
+
+	struct BASIC_API eqstr
+	{
+		bool operator()(const char* s1, const char* s2) const
+		{
+			return strcmp(s1, s2) == 0;
+		}
+	};
 
 #define DECLARE_SINGLETON( TClass)	\
 	static TClass* pkInstance;		\
@@ -125,7 +137,8 @@ protected:
 	BasicConsole*			m_pkConsole;			///< Ptr to ZeroFps Console.
 
 public:
-	vector<NameObject>	kObjectNames;			///< List of all object names/ptrs.
+//	vector<NameObject>	kObjectNames;			///< List of all object names/ptrs.
+ 	hash_map<const char*,NameObject ,hash<const char*>, eqstr> m_kObjectNames;
 
 	void HandleArgs(int iNrOfArgs, char** paArgs);
 

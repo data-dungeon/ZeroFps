@@ -37,6 +37,19 @@ using namespace std;
 
 #endif 
 
+
+//EVIL hash_map fix
+// namespace std 
+// { 
+// 	template<> struct hash< std::string > 
+// 	{ 
+// 		size_t operator()( const std::string& x ) const 
+// 		{ 
+// 			return hash< const char* >()( x.c_str() ); 
+// 		} 
+// 	}; 
+// }
+
 //some constants
 #define PId2	1.5707963279489
 #define PI		3.1415926535897932384626433832795f

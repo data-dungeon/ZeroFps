@@ -59,9 +59,14 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_SYS:
 			// Draw All Systems to console.
-			for(unsigned int i=0; i < m_pkSystem->kObjectNames.size();i++) {
-				GetSystem().Printf(" %s, %d\n", m_pkSystem->kObjectNames[i].m_strName.c_str(), m_pkSystem->kObjectNames[i].m_iNumOfRequests );
+// 			for(unsigned int i=0; i < m_pkSystem->kObjectNames.size();i++) {
+// 				GetSystem().Printf(" %s, %d\n", m_pkSystem->kObjectNames[i].m_strName.c_str(), m_pkSystem->kObjectNames[i].m_iNumOfRequests );
+// 			}
+			for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_pkSystem->m_kObjectNames.begin();it != m_pkSystem->m_kObjectNames.end();it++)
+			{
+				GetSystem().Printf(" %s, %d\n",(*it).second.m_strName.c_str(), (*it).second.m_iNumOfRequests );
 			}
+
 
 			break;
 

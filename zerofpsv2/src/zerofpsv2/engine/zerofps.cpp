@@ -202,7 +202,8 @@ ZeroFps::~ZeroFps()
 	delete m_pkResourceDB;		//d krashar om denna ligger d� uppe =(, Dvoid
 	delete m_pkPSystemManager;
 	delete m_pkScript;
-	delete m_pkAStar;
+	delete m_pkAStar;	
+	delete m_pkZShaderSystem;
 }
 
 bool ZeroFps::StartUp()	
@@ -773,7 +774,8 @@ void ZeroFps::MainLoop(void)
 			Draw_EngineShell();			
 			
 			//swap buffers n calculate fps
-			Swap();			
+			Swap();	
+
 		}		
 	}
 }
