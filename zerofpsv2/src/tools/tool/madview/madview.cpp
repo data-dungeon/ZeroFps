@@ -262,11 +262,13 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(toogle)
 			{
 				GetWnd("MadViewInfoWnd")->GetSkin()->m_bTransparent = false;
+				GetWnd("SelectFileWnd")->GetSkin()->m_bTransparent = false;
 
 			}
 			else
 			{
 				GetWnd("MadViewInfoWnd")->GetSkin()->m_bTransparent = true;
+				GetWnd("SelectFileWnd")->GetSkin()->m_bTransparent = true;
 			}
 
 			toogle = !toogle;		

@@ -50,9 +50,7 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	if(pkWndClicked)
 	{
 		string strMainWnd = pkMainWnd->GetName();
-
 		string strWndClicked = pkWndClicked->GetName();
-
 		string strParent = "null";
 
 		if(pkWndClicked->GetParent())
@@ -63,8 +61,6 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 		if(strMainWnd == "MainMenu")
 		{
-			GetWnd("MadViewInfoWnd")->Hide();
-
 			if(!m_pkIni->Open("data/script/gui/menu_madview.txt", false))
 			{
 				cout << "Failed to load ini file for menu!\n" << endl;
@@ -81,18 +77,12 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
 					m_pkZeroFps->m_pkConsole->Execute(cmd);
-						
 					break;
 				}
 			}
 
 			m_pkGui->SetFocus(GetWnd("GuiMainWnd"));
-
 			m_pkIni->Close();
-		}
-		else
-		{
-			//GetWnd("MadViewInfoWnd")->Enable();
 		}
 	}
 }
@@ -144,8 +134,6 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 		{
 			ChangeMad(strFullpath);
 			ShowWnd("SelectFileWnd", false); // close window
-			GetWnd("MadViewInfoWnd")->Show();
-			GetWnd("AnimationFileTree")->Show();
 		}
 	}
 	else
