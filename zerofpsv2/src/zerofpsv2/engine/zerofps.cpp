@@ -1236,10 +1236,12 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		string 	strZoneName;
 		Vector3	kZoneMarkerPos;
 		Vector3	kZoneSize;
+		Vector3	kModelRot;
 		
 		pkNetPacket->Read_Str(strZoneName);
 		pkNetPacket->Read(kZoneMarkerPos);		
 		pkNetPacket->Read(kZoneSize);
+		pkNetPacket->Read(kModelRot);
 	
 		//cout<<"creating zone:"<<strZoneName<< " size:"<<kZoneSize.x<<" "<<kZoneSize.y<<" "<<kZoneSize.z<< "  position:"<<kZoneMarkerPos.x<<" "<<kZoneMarkerPos.y<<" "<<kZoneMarkerPos.z<<endl;
 	
@@ -1260,7 +1262,9 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		
 			if(strZoneName.length() != 0)
 				m_pkEntityManager->SetZoneModel(strZoneName.c_str(),id);
-			//pkObjectMan->SetUnderConstruction(id);
+			
+			
+			RotateZoneModel(id,kModelRot);
 		}						
 	}
 	
@@ -1344,17 +1348,22 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		int 		iZoneID;
 		
 		pkNetPacket->Read(iZoneID);
-				
-		if(ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID)) 
+		RotateZoneModel(iZoneID,Vector3(0,90,0));
+	}		
+}
+
+
+void ZeroFps::RotateZoneModel(int iZoneID,Vector3 kRot)
+{
+	if(ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID)) 
+	{
+		if(pkData->m_pkZone)
 		{
-			if(pkData->m_pkZone)
-			{
-				pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
-		
-				// Update PFind Mesh				
-				if(P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh"))
-					pkMesh->CalcNaviMesh();
-			}		
+			pkData->m_pkZone->RotateLocalRotV( kRot ); 
+	
+			// Update PFind Mesh				
+			if(P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh"))
+				pkMesh->CalcNaviMesh();
 		}		
 	}		
 }

@@ -85,16 +85,18 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("zeroed");
 
 	// Set Default values	
-	m_bEditSun		= 					false;
-	m_bSoloMode     = 				true;
-	m_bPlaceObjectsOnGround = 		false;
-	m_bIsEditor =  					true;
-	strcpy(szCoolName , "Guldfisk");
-   strMasterSmiley = "Vim";
-	m_iSelectFileState = NONE;
-	m_pkPreviewEntity = NULL;
-
-	m_bRemoteEditing	=				false;
+	m_bEditSun					=	false;
+	m_bSoloMode					=	true;
+	m_bPlaceObjectsOnGround	=	false;
+	m_bIsEditor					=	true;
+   strMasterSmiley			=	"Vim";
+	m_iSelectFileState		= 	NONE;
+	m_pkPreviewEntity			= 	NULL;
+	m_bRemoteEditing			=	false;
+	m_kZoneModelRotation		= 	Vector3(0,0,0);
+	m_pkZoneMarkerEntity 	=	NULL;
+	
+	strcpy(szCoolName , "Guldfisk");	
 	
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
@@ -214,6 +216,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 
 void ZeroEd::CreateEditCameras()
 {
+	//create edit cameras
 	for(int i=0; i<4; i++) 
 	{
 		m_pkCameraObject[i] = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
@@ -367,6 +370,8 @@ void ZeroEd::OnServerStart(void)
 {		
 	CreateEditCameras();
 	
+	m_pkZoneMarkerEntity = NULL;
+	
 	// Create and setup the Env on the server.
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
@@ -378,6 +383,8 @@ void ZeroEd::OnServerStart(void)
 	
 	//enable sun as default
 	ToogleLight(true);
+	
+	
 }
 
 void ZeroEd::OnClientStart()
@@ -389,6 +396,7 @@ void ZeroEd::OnClientStart()
 	SetTitle(szTitle);
 
 	m_pkActiveCameraObject = NULL;
+	m_pkZoneMarkerEntity = NULL;
 }
 
 void ZeroEd::RegisterResources()
@@ -688,6 +696,13 @@ void ZeroEd::RenderInterface(void)
 		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 	}
 
+	
+	if(m_iEditMode == EDIT_ZONES)
+		UpdateModelMarker(m_kZoneMarkerPos,true);
+	else
+		UpdateModelMarker(m_kZoneMarkerPos,false);
+
+		
 	if(m_iEditMode == EDIT_ZONES) DrawZoneMarker(m_kZoneMarkerPos);
 	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)	DrawCrossMarker(m_kObjectMarkerPos);		
 	
@@ -1325,7 +1340,7 @@ Entity* ZeroEd::GetTargetObject()
 }
 
 
-void ZeroEd::SendAddZone(Vector3 kPos, Vector3 kSize, string strName)
+void ZeroEd::SendAddZone(Vector3 kPos, Vector3 kSize, Vector3 kModelRot,string strName)
 {
 	NetPacket kNp;
 	kNp.Write((char) ZFGP_EDIT);
@@ -1333,6 +1348,7 @@ void ZeroEd::SendAddZone(Vector3 kPos, Vector3 kSize, string strName)
 	kNp.Write_Str(strName);
 	kNp.Write(kPos);
 	kNp.Write(kSize);		
+	kNp.Write(kModelRot);		
 	m_pkZeroFps->RouteEditCommand(&kNp);		
 
 	//SetZoneEnviroment(m_strActiveEnviroment.c_str());	
@@ -1388,6 +1404,33 @@ void ZeroEd::DrawCrossMarker(Vector3 kPos)
 	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	
 }
 
+void ZeroEd::UpdateModelMarker(Vector3 kPos,bool bEnabled)
+{
+	//create zonemaker entity if none
+	if(!m_pkZoneMarkerEntity)
+	{	
+		//create zonemodelmarker
+		m_pkZoneMarkerEntity = m_pkEntityManager->CreateEntity();
+		m_pkZoneMarkerEntity->SetParent(m_pkEntityManager->GetWorldEntity());
+		m_pkZoneMarkerEntity->SetSave(false);
+		m_pkZoneMarkerEntity->SetInterpolate(false);
+		m_pkZoneMarkerEntity->AddProperty("P_LightUpdate");
+		m_pkZoneMarkerEntity->AddProperty("P_Mad");
+	}	
+	
+	
+	if(m_pkZoneMarkerEntity)
+	{
+		m_pkZoneMarkerEntity->SetWorldPosV(kPos);
+		m_pkZoneMarkerEntity->SetLocalRotV(m_kZoneModelRotation);
+		
+		if(P_Mad* pkMad = (P_Mad*)m_pkZoneMarkerEntity->GetProperty("P_Mad"))
+		{
+			pkMad->SetBase(m_strActiveZoneName.c_str());		
+			pkMad->SetVisible(bEnabled);
+		}		
+	}
+}
 
 void ZeroEd::UpdateZoneMarkerPos()
 {

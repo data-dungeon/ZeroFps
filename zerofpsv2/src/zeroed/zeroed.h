@@ -142,11 +142,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		//edit stuff
 		int		m_iEditMode;
 
-		//zone data
-		string	m_strActiveZoneName;
-		string	m_strActiveObjectName;
-		string	m_strActiveEnviroment;
-		
 		//camera
 		Entity*	m_pkCameraObject[4];
 		Camera*	m_pkCamera[4];
@@ -157,13 +152,18 @@ class ZeroEd :public Application , public ZGuiApp {
 		string	m_strActiveViewPort;		//active view port
 
 		//zone data
+		string	m_strActiveZoneName;		
+		string	m_strActiveEnviroment;		
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
+		Vector3	m_kZoneModelRotation;
 		Vector3  m_kLastZonePos;
 		Vector3  m_kLastZoneSize;
 		
+		Entity*	m_pkZoneMarkerEntity;
 		
 		//entity data
+		string	m_strActiveObjectName;		
 		Vector3	m_kObjectMarkerPos;
 		int		m_iCurrentObject;
 		int 		m_iCurrentMarkedZone;
@@ -238,6 +238,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		string 	GetZoneEnviroment();
 		char* 	GetSelEnviromentString();
 		
+		void	UpdateModelMarker(Vector3 kPos,bool bEnabled);
 		void	UpdateZoneMarkerPos();
 		void	UpdateObjectMakerPos();
 		void	DrawZoneMarker(Vector3 kPos);
@@ -264,7 +265,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendRotateZoneModel(int iZoneID);
 		void	SendZoneListRequest();
 		void	SendDeleteSelected();			// Removes selected entitys.
-		void	SendAddZone(Vector3 kPos, Vector3 kSize, string strName);		
+		void	SendAddZone(Vector3 kPos, Vector3 kSize, Vector3 kModelRot, string strName);		
 		void	SendRotateEntity(int iEntityID,const Vector3& kRot);
 		
 	public:

@@ -60,7 +60,7 @@ void ZeroEd::Input_EditZone()
 
 	if((m_pkInputHandle->Pressed(MOUSELEFT) || m_pkInputHandle->Pressed(KEY_KP0)) && !DelayCommand())
 	{
-		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,m_strActiveZoneName);
 		m_kLastZonePos=m_kZoneMarkerPos; 
 		m_kLastZoneSize=m_kZoneSize;
 		
@@ -70,7 +70,7 @@ void ZeroEd::Input_EditZone()
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
 	{
-		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,string(""));
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
 
 		//request a new zone list
 		//SendZoneListRequest();
@@ -105,6 +105,14 @@ void ZeroEd::Input_EditZone()
 			Select_Toggle(pkData->m_iZoneObjectID, m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 
+	if(m_pkInputHandle->VKIsDown("rotatesize") && !DelayCommand())
+	{
+		float oz = m_kZoneSize.z;	
+		m_kZoneSize.z = m_kZoneSize.x;
+		m_kZoneSize.x = oz;
+		m_kZoneModelRotation.y += 90;
+	}
+	
 	//some default zone sizes, a hack kind of =D
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
