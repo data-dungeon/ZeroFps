@@ -19,7 +19,7 @@ int		g_iNumOfMadSurfaces;
 float		g_fMadLODScale;
 int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
-char 		g_szIpPort[256];
+//char 		g_szIpPort[256];
 
 static char Devformat_text[4096];	//
 
@@ -882,7 +882,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				strPass = kCommand->m_kSplitCommand[3];
 			
 			
-			m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());			
+			//m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());			
 			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
 
 			break;
@@ -998,7 +998,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	m_pkEntityManager->Clear();
 	
 	// DNS LookUp.
-	if( !m_pkNetWork->IsValidIPAddress(strServerIP.c_str()) )
+/*	if( !m_pkNetWork->IsValidIPAddress(strServerIP.c_str()) )
 	{
 		IPaddress kLookUpIP;
 		if(m_pkNetWork->DnsLookUp( strServerIP.c_str(),kLookUpIP ))
@@ -1009,15 +1009,15 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 		}
 	}
 	else
-	{
-		cout << "StartClient IP = " << strServerIP << endl;
-		sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
-	}
+	{*/
+//		cout << "StartClient IP = " << strServerIP << endl;
+//		sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
+//	}
 	
-	cout << "g_szIpPort = " << g_szIpPort << endl;
+//	cout << "g_szIpPort = " << g_szIpPort << endl;
 
 	
-	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor);
+	m_pkNetWork->ClientStart(strServerIP.c_str(), strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor);
 	m_bClientMode = true;
 
 	m_pkApp->OnClientStart();

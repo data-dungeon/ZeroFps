@@ -27,6 +27,7 @@ NetWork::NetWork()
 	m_iMaxNumberOfNodes	= 0;
 	m_iNetSpeed				= 3300;
 	m_iMaxSendSize			= m_iNetSpeed / 20;
+	m_iDefPort				= 4242;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
@@ -346,18 +347,42 @@ void NetWork::ServerEnd(void)
 
 void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor)
 {
-	//szIp = "127.0.0.1:4242";
-
 	if(m_eNetStatus == NET_SERVER)
 		return;
 
 	StartSocket(false);
 	m_eNetStatus = NET_CLIENT;
 
+
+	// DNS LookUp.
+/*	IPaddress kTargetIP;
+	strFinalTarget = szIp;
+
+	if( !IsValidIPAddress( szIp ))
+	{
+		if( DnsLookUp( szIp, kTargetIP ))
+		{
+			kTargetIP.port = m_iDefPort;
+			AddressToStr(&kTargetIP, szFinalTarget);
+		}
+	}
+	else 
+	{*/
+//		kTargetIP.port = m_iDefPort;
+//	}
+
+	IPaddress kTargetIP;
+	char szFinalTarget[256];
+	sprintf(szFinalTarget, "%s:%d", szIp, m_iDefPort);
+	StrToAddress(szFinalTarget,&kTargetIP); 
+
+	cout << "FinalTarget IP = " << szFinalTarget << endl;
+
 	NetPacket NetP;
 
 	NetP.Clear();
-	NetP.SetTarget(szIp);
+	NetP.m_kAddress = kTargetIP;
+	//NetP.SetTarget(szIp);
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
 	NetP.Write_Str(szLogin);
@@ -613,8 +638,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_JOINYES:
-			cout << "CONNECT YES RECVD" << endl;
-
 			// Client can join.
 			iClientID = GetFreeClientNum();
 			assert(iClientID != ZF_NET_NOCLIENT);
@@ -915,13 +938,11 @@ void NetWork::Run()
 				// Only clients can send rel packets.
 				if(iClientID != ZF_NET_NOCLIENT) 
 				{
-					cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << ". Current OrderID: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+					//cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << ". Current OrderID: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
 
 					// Check if it is the correct packet.
 					if(m_RemoteNodes[iClientID].m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
 					{
-						cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << endl;
-	
 						m_pkZeroFps->HandleNetworkPacket(&NetP);
 						m_RemoteNodes[iClientID].m_iReliableRecvOrder++;
 						m_RemoteNodes[iClientID].m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );
@@ -1149,18 +1170,14 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			char szIP[256];
 			IPaddress kLookUpIP;
-			StrToAddress(kCommand->m_kSplitCommand[1].c_str(), &kLookUpIP);
-			strcpy(szIP, "Galla");
-			AddressToStr(&kLookUpIP, szIP);
-			m_pkConsole->Printf("Org: %s. New: %s", kCommand->m_kSplitCommand[1].c_str(), szIP);
 
-			/*IPaddress kLookUpIP = DnsLookUp( kCommand->m_kSplitCommand[1].c_str() );
-			char szIP[256];
-
-			AddressToStr(&kLookUpIP,szIP);
-			cout << "DNS: '" << "www.duds.org" << "' = " << szIP << endl;
-
-			m_pkConsole->Printf("DNS: %s [%s]", kCommand->m_kSplitCommand[1].c_str(), szIP);*/
+			if( DnsLookUp( kCommand->m_kSplitCommand[1].c_str(),kLookUpIP ))
+			{
+				AddressToStr(&kLookUpIP, szIP);
+				m_pkConsole->Printf("Org: %s. New: %s", kCommand->m_kSplitCommand[1].c_str(), szIP);
+			}
+			else
+				m_pkConsole->Printf("Failed to find ip for: %s.", kCommand->m_kSplitCommand[1].c_str());
 			break;
 		}	
 
@@ -1174,8 +1191,9 @@ bool NetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
 	if(!szHost)
 		return false;
 
-	char szIP[256];
-	SDLNet_ResolveHost(&kIp, szHost, 0);
+	if( SDLNet_ResolveHost(&kIp, szHost, 0) == -1)
+		return false;
+
 	return true;
 }
 
