@@ -254,7 +254,8 @@ void MistServer::OnIdle()
 
 	
 	//print current mistlands time
-	m_pkZeroFps->DevPrintf("server","date: %s", m_pkTime->GetDateString().c_str());		
+	m_pkTime->AddTime(m_pkZeroFps->GetFrameTime());	
+	m_pkZeroFps->DevPrintf("server","date: %s", m_pkTime->GetDateString().c_str());
 }
 
 
@@ -265,10 +266,7 @@ void MistServer::RenderInterface(void)
 
 void MistServer::OnSystem()
 {
-	m_pkTime->SetTime(m_pkZeroFps->m_pkEntityManager->GetSimTime());
 	m_pkEnviroment->Update();
-
-
 }
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)

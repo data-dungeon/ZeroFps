@@ -20,7 +20,7 @@ P_Enviroment::P_Enviroment()
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkAudioSystem =		static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_pkEnviroment =		static_cast<ZSSEnviroment*>(g_ZFObjSys.GetObjectPtr("ZSSEnviroment"));
-
+	m_pkMLTime =			static_cast<ZSSMLTime*>(g_ZFObjSys.GetObjectPtr("ZSSMLTime"));
 	
 	m_bEnabled = 						false;	
 	m_strCurrentZoneEnviroment =	"Default";
@@ -29,12 +29,18 @@ P_Enviroment::P_Enviroment()
 	
 	m_iMusicID =						-1;
 	
+	m_fTimeScale =						1;
+	m_iCurrentSecond = 				0;
+	
 	if(!m_pkEnviroment)
 	{
 		cout<<"WARNING: no enviroment subsystem found in application, enviroments will be disabled"<<endl;	
 	}
-
 	
+	if(!m_pkMLTime)
+	{
+		cout<<"WARNING: no mistlands time system found in application ( client dont need this )"<<endl;
+	}
 }
 
 P_Enviroment::~P_Enviroment()
@@ -71,6 +77,8 @@ void P_Enviroment::Update()
 
 void P_Enviroment::UpdateEnviroment()
 {
+	m_iCurrentSecond += m_pkZeroFps->GetFrameTime()*m_fTimeScale;
+
 	float fIf = m_pkZeroFps->GetFrameTime()*0.3;
 	
 	if(fIf > 1.0)
@@ -86,37 +94,33 @@ void P_Enviroment::UpdateEnviroment()
 		pkLight = (P_Light*)GetEntity()->AddProperty("P_Light");
 	
 	
-	kCurrentDiffuse.Lerp(kCurrentDiffuse,m_kCurrentEnvSetting.m_kSunDiffuseColor,fIf);
-	kCurrentAmbient.Lerp(kCurrentAmbient,m_kCurrentEnvSetting.m_kSunAmbientColor,fIf);
+	if(m_kCurrentEnvSetting.m_kSunDiffuseColor.x == -1)
+	{
+		float fT = float(m_iCurrentSecond) / 86400.0;
+		float fA = 2*PI * fT;
+		float fS = sin(fA - PI/2)/2.5 + 0.4;
+				
+		Vector4 kSunDColor(1,0.9,0.9,1);
+		Vector4 kSunAColor(0.9,0.9,1,1);
+		
+		kSunDColor*=fS;
+		kSunAColor*=fS * 0.5;
+		
+		kCurrentDiffuse.Lerp(kCurrentDiffuse,kSunDColor,fIf);
+		kCurrentAmbient.Lerp(kCurrentAmbient,kSunAColor,fIf);
+	}
+	else
+	{		
+		kCurrentDiffuse.Lerp(kCurrentDiffuse,m_kCurrentEnvSetting.m_kSunDiffuseColor,fIf);
+		kCurrentAmbient.Lerp(kCurrentAmbient,m_kCurrentEnvSetting.m_kSunAmbientColor,fIf);
+	}
 	
 	pkLight->SetType(DIRECTIONAL_LIGHT);
 	pkLight->SetDiffuse(kCurrentDiffuse);
 	pkLight->SetAmbient(kCurrentAmbient);		
 	pkLight->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
 			
-/*	
-	//sky box
-	//setup skybox property
-	static string strCurrentSpace;
-	if(m_kCurrentEnvSetting.m_strSpace != "" )
-	{
-		if( strCurrentSpace != m_kCurrentEnvSetting.m_strSpace  )
-		{
-			strCurrentSpace = m_kCurrentEnvSetting.m_strSpace;
-		
-			P_SkyBoxRender* pkSB;
-			if( !(pkSB = (P_SkyBoxRender*)m_pkEntity->GetProperty("P_SkyBoxRender") ) )		
-				pkSB = (P_SkyBoxRender*)GetEntity()->AddProperty("P_SkyBoxRender");
-			
-			pkSB->SetTexture(m_kCurrentEnvSetting.m_strSpace.c_str(),m_kCurrentEnvSetting.m_strSpace.c_str());
-		}
-	}
-	else
-	{
-		strCurrentSpace = "";
-		GetEntity()->DeleteProperty("P_SkyBoxRender");
-	}
-*/	
+
 	//particles
 	//setup particle property
 	static string strCurrentParticles;
@@ -172,6 +176,30 @@ void P_Enviroment::UpdateEnviroment()
 			
 		}	
 	}
+	
+/*	
+	//sky box
+	//setup skybox property
+	static string strCurrentSpace;
+	if(m_kCurrentEnvSetting.m_strSpace != "" )
+	{
+		if( strCurrentSpace != m_kCurrentEnvSetting.m_strSpace  )
+		{
+			strCurrentSpace = m_kCurrentEnvSetting.m_strSpace;
+		
+			P_SkyBoxRender* pkSB;
+			if( !(pkSB = (P_SkyBoxRender*)m_pkEntity->GetProperty("P_SkyBoxRender") ) )		
+				pkSB = (P_SkyBoxRender*)GetEntity()->AddProperty("P_SkyBoxRender");
+			
+			pkSB->SetTexture(m_kCurrentEnvSetting.m_strSpace.c_str(),m_kCurrentEnvSetting.m_strSpace.c_str());
+		}
+	}
+	else
+	{
+		strCurrentSpace = "";
+		GetEntity()->DeleteProperty("P_SkyBoxRender");
+	}
+*/		
 }
 
 void P_Enviroment::UpdateEnvSetting(EnvSetting* pkEnvSetting)
@@ -221,6 +249,11 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_iRain);			
 	
+	//pack time of day
+	int iTotalSecond = m_pkMLTime->GetHour()*3600 + m_pkMLTime->GetMinute()*60 + m_pkMLTime->GetSecond();
+	pkNetPacket->Write(iTotalSecond);	
+	pkNetPacket->Write(m_pkMLTime->GetScale());	
+	
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
@@ -246,6 +279,9 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_iRain);	
 	
+	//time
+	pkNetPacket->Read(m_iCurrentSecond);
+	pkNetPacket->Read(m_fTimeScale);
 }
 
 void P_Enviroment::SetEnable(bool bNew)

@@ -16,6 +16,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 
 #include "zssenviroment.h"
+#include "zssmltime.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZSSEnviroment*	m_pkEnviroment;
 		ZFAudioSystem*	m_pkAudioSystem;
+		ZSSMLTime*		m_pkMLTime;
 		
 		bool				m_bEnabled;		
 		string			m_strCurrentZoneEnviroment;
@@ -41,6 +43,10 @@ class MCOMMON_API P_Enviroment: public Property {
 		
 		
 		int				m_iMusicID;
+		
+		//time
+		int				m_iCurrentSecond;				//current second of a day
+		float				m_fTimeScale;				
 		
 		void UpdateEnviroment();		
 		void DrawSky();

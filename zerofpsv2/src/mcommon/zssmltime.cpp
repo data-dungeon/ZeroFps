@@ -11,11 +11,12 @@ ZSSMLTime::ZSSMLTime() : ZFSubSystem("ZSSMLTime")
 	m_iMinute		=	0;
 	m_iSecond		=	0;
 	
-	m_dTotalTime	=	0;
+	m_dTotalTimeMT	=	0;
+	m_dTotalTimeRT =	0;
 	m_fScale 		=	6.0;	
 
 	
-	//RegisterVariable("mltimescale",&m_fScale,CSYS_FLOAT);			
+	RegisterVariable("mltimescale",&m_fScale,CSYS_FLOAT);			
 }
 
 bool ZSSMLTime::StartUp()
@@ -25,42 +26,49 @@ bool ZSSMLTime::StartUp()
 }
 
 
-void ZSSMLTime::SetTime(double dSecondsST)
+void ZSSMLTime::SetTime(double dNewSeconds)
 {
+	m_dTotalTimeRT = dNewSeconds;
+
 	//scale time
-	dSecondsST *= m_fScale;
+	dNewSeconds *= m_fScale;
 	
 	//save total time
-	m_dTotalTime = dSecondsST;
+	m_dTotalTimeMT = dNewSeconds;
 
 	//year
-	m_iYear = int(dSecondsST /  44236800);
-	dSecondsST -= double(m_iYear) * 44236800;
+	m_iYear = int(dNewSeconds /  44236800);
+	dNewSeconds -= double(m_iYear) * 44236800;
 
 	//month
-	m_iMonth = int(dSecondsST / 5529600);
-	dSecondsST -= double(m_iMonth) *5529600;
+	m_iMonth = int(dNewSeconds / 5529600);
+	dNewSeconds -= double(m_iMonth) *5529600;
 	
 	
 	//week
-	m_iWeek = int(dSecondsST / 691200);
-	dSecondsST -= double(m_iWeek) * 691200;
+	m_iWeek = int(dNewSeconds / 691200);
+	dNewSeconds -= double(m_iWeek) * 691200;
 
 	//day
-	m_iDay = int(dSecondsST / 86400);
-	dSecondsST -= double(m_iDay) * 86400;
+	m_iDay = int(dNewSeconds / 86400);
+	dNewSeconds -= double(m_iDay) * 86400;
 	
 	//hour
-	m_iHour = int(dSecondsST / 3600);
-	dSecondsST -= double(m_iHour) * 3600;
+	m_iHour = int(dNewSeconds / 3600);
+	dNewSeconds -= double(m_iHour) * 3600;
 	
 	//minute
-	m_iMinute = int(dSecondsST / 60);
-	dSecondsST -= double(m_iMinute) * 60;
+	m_iMinute = int(dNewSeconds / 60);
+	dNewSeconds -= double(m_iMinute) * 60;
 	
 	//m_iSecond
-	m_iSecond = int(dSecondsST);
+	m_iSecond = int(dNewSeconds);
 };
+
+void ZSSMLTime::AddTime(float fSecondsRT)
+{
+	SetTime(m_dTotalTimeRT + fSecondsRT);
+}
 
 string ZSSMLTime::GetDateString()
 {

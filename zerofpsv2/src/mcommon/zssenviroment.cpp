@@ -187,8 +187,10 @@ void EnvSetting::Clear()
 	m_strCloudHi	= "";			
 	
 		
-	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1.0);					
-	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
+	//m_kSunDiffuseColor.Set(1.6,1.6,1.6,1.0);					
+	m_kSunDiffuseColor.Set(-1,-1,-1,-1);					
+	//m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
+	m_kSunAmbientColor.Set(-1,-1,-1,-1);		
 	m_kSunPos.Set(0.5,0.5,0.0);		
 	m_iRain = 0;
 	

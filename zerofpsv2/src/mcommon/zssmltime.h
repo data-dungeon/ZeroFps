@@ -25,21 +25,32 @@ class MCOMMON_API ZSSMLTime : public ZFSubSystem
 		int	m_iMinute;			// 60 second 
 		int	m_iSecond;			// 1 second 
 		
-		double	m_dTotalTime;		// total time in seconds GT				
+		double	m_dTotalTimeMT;		// total time in seconds GT				
+		double	m_dTotalTimeRT;
 		float 	m_fScale;
 		
 
 	public:
 		ZSSMLTime();
-		void SetTime(double dSecondsST);
+		bool StartUp();
+		bool ShutDown()		{return true;};
+		bool IsValid()			{return true;};				
+		
+		void SetTime(double dSecondsRT);		
+		void AddTime(float fSecondsRT);
 				
 		string GetDayName(int iDay);
 		string GetMonthName(int iMonth);
 		string GetDateString();
 		
-		bool StartUp();
-		bool ShutDown()		{return true;};
-		bool IsValid()			{return true;};		
+		int	GetYear()			{	return m_iYear;	};
+		int	GetMonth()			{	return m_iMonth;	};
+		int	GetWeek()			{	return m_iWeek;	};
+		int	GetDay()				{	return m_iDay;		};
+		int	GetHour()			{	return m_iHour;	};
+		int	GetMinute()			{	return m_iMinute;	};
+		int	GetSecond()			{	return m_iSecond;	};
+		float GetScale()			{	return m_fScale;	};
 };
 
 
