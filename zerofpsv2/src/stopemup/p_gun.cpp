@@ -124,7 +124,7 @@ void P_Gun::FireBullet()
 			if(P_Walker* pkWalk = (P_Walker*)pkClosest->GetProperty("P_Walker"))
 			{
 			
-				pkWalk->Damage(m_iDamage);
+				pkWalk->Damage(m_iDamage,GetEntity()->GetEntityID());
 				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Randomf(0.5)-0.25,-Randomf(0.5),Randomf(0.5)-0.25);
 				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/bullethit.lua",kHitPos,GetEntity()->GetCurrentZone());				
 			

@@ -22,18 +22,22 @@ class P_Walker : public Property
 		float m_fParaTime;
 		float m_fParaLength;
 		
+		float	m_fFindNewTargetTime;
+		
 		void Paralize(float fTime);
+		int ClosestPlayer();
 		
 	public:
-		int m_iState;
-		int m_iLife;
+		int 	m_iState;
+		int 	m_iLife;
+		int	m_iMaxLife;
 		
 			
 		P_Walker();
 		void Update();
 
 		void Touch(int iID);
-		void Damage(int iDmg);
+		void Damage(int iDmg,int iKiller);
 };
 
 

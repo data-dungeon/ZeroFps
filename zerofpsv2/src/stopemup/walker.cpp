@@ -1,6 +1,7 @@
 #include "walker.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "stopemup.h"
+#include "p_player.h"
 
 P_Walker::P_Walker()
 {
@@ -16,7 +17,7 @@ P_Walker::P_Walker()
 	
 	m_fParaTime = -1;
 	m_iTarget = -1;
-
+	m_fFindNewTargetTime = 0;
 	
 	//setup life depending on current level and number of players	
 	int iPlayers = m_pkStopEmUp->GetPlayers();
@@ -29,8 +30,9 @@ P_Walker::P_Walker()
 	
 	if(iLevel < 1)
 		iLevel = 1;
-	
-	m_iLife = (5 * iLevel) * iPlayers ;
+			
+	m_iMaxLife = (5 * iLevel) * iPlayers ;
+	m_iLife = m_iMaxLife;
 }
 
 void P_Walker::Update()
@@ -77,31 +79,20 @@ void P_Walker::Update()
 			case eKILL_PLAYERS:
 			{
 			
+				//reset target every 4 second
+				if(m_pkZeroFps->GetTicks() > m_fFindNewTargetTime + 4)
+				{
+					m_iTarget = -1;				
+				}
+			
 				//find target if there is none
 				if(m_iTarget == -1)
 				{
-					vector<Entity*> kEnts;
-					m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kEnts);
-					
-					float fClosest = 999999999;
-					int iID = -1;
-					
-					for(int i = 0;i<kEnts.size();i++)
-					{
-						if(kEnts[i]->GetType() == "stopemupplayer.lua")
-						{
-							float d = GetEntity()->GetWorldPosV().DistanceTo(kEnts[i]->GetWorldPosV());
-							if(d < fClosest)
-							{
-								fClosest = d;
-								iID = kEnts[i]->GetEntityID();
-							}
-						}
-					}
-					
-					m_iTarget = iID;					
+					m_fFindNewTargetTime = m_pkZeroFps->GetTicks();
+					m_iTarget = ClosestPlayer();					
 				}
 				
+				//folow target				
 				if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iTarget))
 				{
 					Vector3 kTargetPos = pkEnt->GetWorldPosV();
@@ -121,12 +112,41 @@ void P_Walker::Update()
 					
 				}
 				else
+				{
 					m_iTarget = -1;
+					pkCC->SetControl(eUP,false);					
+				}
 				
 				break;
 			}	
 		}
 	}
+}
+
+int P_Walker::ClosestPlayer()
+{
+
+	vector<Entity*> kEnts;
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kEnts);
+	
+	float fClosest = 999999999;
+	int iID = -1;
+	
+	for(int i = 0;i<kEnts.size();i++)
+	{
+		if(kEnts[i]->GetType() == "stopemupplayer.lua")
+		{
+			float d = GetEntity()->GetWorldPosV().DistanceTo(kEnts[i]->GetWorldPosV());
+			if(d < fClosest)
+			{
+				fClosest = d;
+				iID = kEnts[i]->GetEntityID();
+			}
+		}
+	}
+
+	
+	return iID;
 }
 
 void P_Walker::Paralize(float fTime )
@@ -171,14 +191,14 @@ void P_Walker::Touch(int iID)
 		//hit by bullet
 		if(pkEnt->GetType() == "bullet.lua")
 		{
-			Damage(1);
+			Damage(1,-1);
 			m_pkEntityManager->Delete(pkEnt);
 		}
 	}
 }
 
 
-void P_Walker::Damage(int iDmg)
+void P_Walker::Damage(int iDmg,int iKiller)
 {
 	//Paralize(0.1);
 	
@@ -190,7 +210,15 @@ void P_Walker::Damage(int iDmg)
 		m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/walkerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
 		
 		//delete walker
-		m_pkEntityManager->Delete(GetEntity());						
+		m_pkEntityManager->Delete(GetEntity());			
+		
+		
+		//find killer and give him some bonus 
+		if(P_Player* pkPlayer = (P_Player*)m_pkEntityManager->GetPropertyFromEntityID(iKiller,"P_Player"))
+		{
+			pkPlayer->AddScore(m_iMaxLife);
+		}
+					
 	}
 
 }

@@ -22,6 +22,9 @@ class P_Player : public Property
 		
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );		
+		
+		
+		void AddScore(int iScore)			{	m_iScore+= iScore;SetNetUpdateFlag(true);};
 };
 
 
