@@ -243,10 +243,7 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             pkNetPacket->Write_NetStr( "data" );
 
             // icon
-            pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[0] );
-
-            // icon mask
-            pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[1] );
+            pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic );
 
             // item name
             pkNetPacket->Write_NetStr( m_pkItemStats->m_kItemName.c_str() );
@@ -311,10 +308,7 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
    if ( kDataType == "data" )
    {
       // get icon
-      pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic[0]);
-
-      // get iconmask
-      pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic[1]);
+      pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic);
 
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );

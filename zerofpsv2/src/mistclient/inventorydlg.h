@@ -58,7 +58,7 @@ public:
       int m_iNetWorkID;
 		ZGuiLabel* m_pkLabel;
 		
-		char m_szPic[2][75];
+		char m_szPic[75];
 		SlotType m_eType;
 		Point m_kSqr;
 		Point m_kRealSqr;
@@ -83,9 +83,9 @@ private:
 	void DropItemsToContainer(int iContainer);
 	void DropItems();
 	void SwitchContainer(int iNewContainer);
-	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-		SlotType eType, ItemStats* pkItemStats, int iNetworkID, int iContainer);
-	bool RemoveSlot(/*Point sqr,*/ Slot* pkSlot); //bool bDragItem=false);
+	void AddSlot(const char *szPic, Point sqr, SlotType eType, 
+		ItemStats* pkItemStats, int iNetworkID, int iContainer);
+	bool RemoveSlot(Slot* pkSlot);
 	bool GetFreeSlotPos(Point& refSqr, int iContainer);
 	bool SlotExist(int sx, int sy);
 	static int GenerateID(Point sqr);

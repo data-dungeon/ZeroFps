@@ -57,8 +57,8 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 
    P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item");
    			
-	AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], sqr, 
-		CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, MAIN_CONTAINER);
+	AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
+		pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, MAIN_CONTAINER);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -101,8 +101,8 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		
 		if(bAlreadyExist == false)
 		{
-			AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], 
-				sqr, CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, MAIN_CONTAINER);
+			AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
+				pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, MAIN_CONTAINER);
 		}
 		else
 		{
@@ -123,7 +123,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 
 	Slot* pkSlot = FindSlot(x,y);
 
-	char szPic[50], szPicA[50];
+	char szPic[50];
 
 	//
 	// Left click
@@ -135,39 +135,12 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 			// ta tag i ett föremål?
 			if(bMouseDown)
 			{
-				strcpy(szPic, pkSlot->m_szPic[0]);
-				strcpy(szPicA, pkSlot->m_szPic[1]);
+				strcpy(szPic, pkSlot->m_szPic);
+
 				ItemStats* pkStats = pkSlot->m_pkItemStats;
 				SlotType prev_type = pkSlot->m_eType;
             int iNetworkID = pkSlot->m_iNetWorkID;
 				
-/*				EntityManager* pkObjectMan = static_cast<EntityManager*>(
-					g_ZFObjSys.GetObjectPtr("EntityManager"));
-
-				if(pkObjectMan) // SKALL GÖRAS EFTER REMOVE (se nedan)
-				{
-					Entity* pkObject = pkObjectMan->GetObjectByNetWorkID( pkSlot->m_iNetWorkID );
-
-					if(pkObject)
-					{
-						P_Item* pkItemProp = (P_Item*)pkObject->GetProperty ("P_Item"); 
-
-						if(pkItemProp)
-						{
-							if(pkItemProp->m_pkItemStats)
-								printf("iNetworkID = %s\n", pkItemProp->m_pkItemStats->m_szPic[0]);
-
-							ZGuiSkin* pkSkin = pkSlot->m_pkLabel->GetSkin();
-							string strFullPath = string("/data/textures/gui/items/") 
-								+ string(pkItemProp->m_pkItemStats->m_szPic[0]);
-
-							pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
-							pkSlot->m_pkLabel->SetSkin(pkSkin);
-						}
-					}
-					
-				}*/
-
 				if(RemoveSlot(pkSlot))
 				{
 					if(prev_type == SPECIAL_SLOTS)
@@ -176,7 +149,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 						sqr.y = -y;					
 					}
 
-					AddSlot(szPic, szPicA, sqr, UNDER_MOUSE, pkStats, iNetworkID, m_iCurrentContainer);
+					AddSlot(szPic, sqr, UNDER_MOUSE, pkStats, iNetworkID, m_iCurrentContainer);
 
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
 						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
@@ -225,8 +198,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 										 // om slot:en inte fanns.
 			}
 		
-			strcpy(szPic, kSlotToAdd.m_szPic[0]);
-			strcpy(szPicA, kSlotToAdd.m_szPic[1]);
+			strcpy(szPic, kSlotToAdd.m_szPic);
 			ItemStats* pkStats = kSlotToAdd.m_pkItemStats;
 			
 			if(RemoveSlot(&kSlotToAdd))
@@ -266,7 +238,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 					type = CONTAINTER_SLOTS;					
 				}
 		
-				AddSlot(szPic, szPicA, sqr, type, pkStats, kSlotToAdd.m_iNetWorkID, m_iCurrentContainer);
+				AddSlot(szPic, sqr, type, pkStats, kSlotToAdd.m_iNetWorkID, m_iCurrentContainer);
 
 				if(m_kDragSlots.empty())
 					m_pkGui->KillWndCapture(); // remove capture
@@ -600,7 +572,7 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 	return false;
 }
 
-void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr, 
+void InventoryDlg::AddSlot(const char *szPic, Point sqr, 
 									SlotType eType, ItemStats* pkItemStats, 
 									int iNetworkID, int iContainer)
 {   
@@ -635,8 +607,11 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 	string strFileName = strPath; strFileName += szPic;
 	int tex = m_pkTexMan->Load(strFileName.c_str(), 0);
 
-	strFileName = strPath; strFileName += szPicA;
-	int texa = m_pkTexMan->Load(strFileName.c_str(), 0);
+	string strAlphaTex = strFileName;
+	int pos = strAlphaTex.find_last_of(".");
+	strAlphaTex.insert(pos, "_a", 2);
+
+	int texa = m_pkTexMan->Load(strAlphaTex.c_str(), 0);
 
 	ZGuiSkin* pkSkin = new ZGuiSkin( tex, texa, false);
 
@@ -644,8 +619,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 
 	Slot kNewSlot;
 	
-	strcpy(kNewSlot.m_szPic[0], szPic);
-	strcpy(kNewSlot.m_szPic[1], szPicA);
+	strcpy(kNewSlot.m_szPic, szPic);
 
 	kNewSlot.m_kSqr = sqr;
 	kNewSlot.m_pkLabel = pkNewLabel;
@@ -779,7 +753,7 @@ void InventoryDlg::DropItems()
 			{
 				Slot s = (*it);
 
-				AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
+				AddSlot( s.m_szPic, sqr, CONTAINTER_SLOTS, 
 					s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
 			}
 		}
@@ -812,7 +786,7 @@ void InventoryDlg::DropItemsToContainer(int iContainer)
 		{
 			Slot s = (*it);
 
-			AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
+			AddSlot( s.m_szPic, sqr, CONTAINTER_SLOTS, 
 				s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
 
 			m_pkGui->UnregisterWindow((*it).m_pkLabel);
@@ -887,9 +861,9 @@ void InventoryDlg::UpdateSkin(Slot slot)
 			{
 				ZGuiSkin* pkSkin = slot.m_pkLabel->GetSkin();
 				string strFullPath = string("/data/textures/gui/items/") 
-					+ string(pkItemProp->m_pkItemStats->m_szPic[0]);
+					+ string(pkItemProp->m_pkItemStats->m_szPic);
 
-				if(strcmp(pkItemProp->m_pkItemStats->m_szPic[0], "dummy.bmp") == 0)
+				if(strcmp(pkItemProp->m_pkItemStats->m_szPic, "dummy.bmp") == 0)
 				{
 					slot.m_pkLabel->Hide();
 				}
@@ -899,7 +873,6 @@ void InventoryDlg::UpdateSkin(Slot slot)
 					pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
 
 					string strAlphaTex = strFullPath;
-
 					int pos = strAlphaTex.find_last_of(".");
 					strAlphaTex.insert(pos, "_a", 2);
 					pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load(strAlphaTex.c_str(), 0);

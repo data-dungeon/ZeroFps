@@ -89,6 +89,10 @@ LINK32=link.exe
 
 SOURCE=.\mistserver.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\playerdatabase.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -96,6 +100,10 @@ SOURCE=.\mistserver.cpp
 # Begin Source File
 
 SOURCE=.\mistserver.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\playerdatabase.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

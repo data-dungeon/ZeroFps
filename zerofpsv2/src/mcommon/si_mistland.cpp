@@ -1218,22 +1218,19 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
 
 int MistLandLua::SetIconLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	if( g_pkScript->GetNumArgs(pkLua) == 2 ) // ändra till 1 och ändra alla skriptfiler...
    {
 		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
-     		char	acPic[50];
+     		char	acPic[75];
 			g_pkScript->GetArgString(pkLua, 0, acPic);
-
-     		char	acPicMask[50];
-			g_pkScript->GetArgString(pkLua, 1, acPicMask);
 
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkIP )
-            pkIP->m_pkItemStats->SetIcon ( acPic, acPicMask );
+            pkIP->m_pkItemStats->SetIcon ( acPic );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  

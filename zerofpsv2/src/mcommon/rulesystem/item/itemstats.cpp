@@ -316,8 +316,7 @@ ItemStats::ItemStats(P_Item* pkProperty)
    m_iQuantity = 1;
    m_eEquipmentCategory = Item;
    m_iContainerID = -1;
-	strcpy(m_szPic[0], "dummy.bmp");
-	strcpy(m_szPic[1], "dummy_a.bmp");
+	strcpy(m_szPic, "dummy.bmp");
    m_uiVersion = 0;
    
    m_pkContainer = 0;//new Container (this);
@@ -511,11 +510,10 @@ void ItemStats::RegisterAsContainer()
 
 // ---------------------------------------------------------------------------------------------
 
-void ItemStats::SetIcon ( char* kIcon, char* kIconMask )
+void ItemStats::SetIcon ( char* kIcon)
 {
-   strcpy( m_szPic[0], kIcon );
-   strcpy( m_szPic[1], kIconMask );
-
+   strcpy( m_szPic, kIcon );
+  
    m_uiVersion++;
 }
 
