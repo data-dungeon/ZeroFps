@@ -44,16 +44,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		char** pszParams; pszParams = (char**) params;
 		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
-
-		if(pszParams[0])
-			delete[] pszParams[0];
-		if(pszParams[1])
-			delete[] pszParams[1];
-		if(pszParams[2])
-			delete[] pszParams[2];
-		if(pszParams[3])
-			delete[] pszParams[3];
-
 		break;
 
 	case ZGM_TCN_SELCHANGE:

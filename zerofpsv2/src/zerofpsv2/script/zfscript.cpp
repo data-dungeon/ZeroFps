@@ -710,6 +710,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 		sprintf(szError, "Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
 		printf(szError);
 		ZFAssert(0, szError);
+//		return false; // TEST VC7!!!
 	}
 
 	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )

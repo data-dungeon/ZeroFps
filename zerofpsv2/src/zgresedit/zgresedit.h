@@ -102,6 +102,7 @@ class ZGResEdit : public Application, public ZGuiApp
 		bool m_bSaveFile, m_bOverwriteWarning;
 
 		bool m_bLeftButtonPressed;
+		bool m_bUpdateSize, m_bUpdatePos;
 		int m_iHighestZValue;
 
 		Point m_kSelStart, m_kClickPos;

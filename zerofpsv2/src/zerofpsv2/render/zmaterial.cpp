@@ -176,10 +176,16 @@ bool ZMaterial::LoadGlobalSection()
 bool ZMaterial::LoadPass(int iPass)
 {
 	string passname;
-	passname="pass-";	
-	char nr;
-	IntToChar(&nr,iPass);			
-	passname+=nr;
+
+	// Funkar inte i VC7...
+	//passname="pass-";	
+	//char nr; 
+	//IntToChar(&nr,iPass);			
+	//passname+=nr;
+
+	char temp[50];
+	sprintf(temp, "pass-%i", iPass);
+	passname = temp;
 	
 	if(!m_kIni.SectionExist(passname.c_str()))
 	{

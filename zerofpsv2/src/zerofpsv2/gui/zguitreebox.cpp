@@ -384,6 +384,17 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				GetGUI()->GetActiveCallBackFunc()(
 					GetGUI()->GetActiveMainWnd(), ZGM_SELECTTREEITEM, 4, piParams);
 
+				if(piParams[0])
+					delete[] piParams[0];
+				if(piParams[1])
+					delete[] piParams[1];
+				if(piParams[2])
+					delete[] piParams[2];
+				if(piParams[3])
+					delete[] piParams[3];
+
+				delete[] piParams;
+
 				break;
 			}
 		}

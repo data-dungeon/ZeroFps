@@ -33,6 +33,9 @@ Serialization::~Serialization()
 
 bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 {
+//	return false; // TEST VC7!!!
+
+
 	m_kSavedWnds.clear();
 	
 	string strFileName = ChangeExtension(szFileName); // byt ändelse till .lua
@@ -246,16 +249,19 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 				vector< pair<ZGuiSkin**, string> >::iterator itSkin = kSkins.begin(); 
 				for( ; itSkin != kSkins.end(); itSkin++)
 				{
-					ZGuiSkin kSkin = *(*itSkin->first);
+					if(*itSkin->first)
+					{
+						ZGuiSkin kSkin = *(*itSkin->first);
 
-					// leta rätt på namnet på skin'en och printa
-					for(unsigned int k=0; k<kSkinTable.size(); k++)
-						if(kSkin == kSkinTable[k].first)
-						{
-							fprintf(pkFile, "\tChangeSkin(\"%s\",\"%s\",\"%s\")\n", 
-								szName, kSkinTable[k].second.c_str(), itSkin->second.c_str());
-							break;
-						}
+						// leta rätt på namnet på skin'en och printa
+						for(unsigned int k=0; k<kSkinTable.size(); k++)
+							if(kSkin == kSkinTable[k].first)
+							{
+								fprintf(pkFile, "\tChangeSkin(\"%s\",\"%s\",\"%s\")\n", 
+									szName, kSkinTable[k].second.c_str(), itSkin->second.c_str());
+								break;
+							}
+					}
 				}
 
 				kSkins.clear(); 

@@ -129,7 +129,7 @@ bool EntityManager::IsValid()	{ return true; }
 
 EntityManager::~EntityManager() 
 {
-	float fAvgObjSize;
+	float fAvgObjSize = -1;
 
 	if(m_iNumOfNetObjects) {
 		fAvgObjSize = float(m_iTotalNetObjectData / m_iNumOfNetObjects);

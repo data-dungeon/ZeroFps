@@ -23,14 +23,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		char** pszParams; pszParams = (char**) params;
 		g_kResEdit.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
-		if(pszParams[0])
-			delete[] pszParams[0];
-		if(pszParams[1])
-			delete[] pszParams[1];
-		if(pszParams[2])
-			delete[] pszParams[2];
-		if(pszParams[3])
-			delete[] pszParams[3];
+
 		break;
 	case ZGM_SELECTLISTITEM:
 		g_kResEdit.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
@@ -48,7 +41,8 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kSelStart = Point(-1,-1);
 	m_iRadiogroupCounter = RADIO_GROUP_COUNTER_START;
 	m_bLeftButtonPressed = false;
-	//m_iHighestZValue = 10;
+	m_bUpdatePos = false;
+	m_bUpdateSize = false;
 }
 
 void ZGResEdit::OnInit()
@@ -197,28 +191,29 @@ void ZGResEdit::OnKeyDown(int iKey)
 		ExecuteCommand();
 		break;
 
+	case KEY_Z:
+		if(m_pkInput->Pressed(KEY_LCTRL))
+			TempSave(false);
+		break;
+
 	case KEY_F1:
-/*		m_eEditMode = VIEW;
+		m_eEditMode = VIEW;
 		m_pkScene->m_pkWorkSpace->Hide();
 		m_pkScene->m_pkPropertyWnd->Hide();
 		m_pkScene->m_pkViewWindow->Hide();
 		m_pkScene->m_pkSelectFileWnd->Hide();
-		EnableWnds(true);*/
-
-		TempSave(true);
+		EnableWnds(true);
 		break;
 	
 	case KEY_F2:
-/*		m_eEditMode = MOVE;
+		m_eEditMode = MOVE;
 		m_pkScene->m_pkWorkSpace->Show();
 		m_pkScene->m_pkPropertyWnd->Show();
-		EnableWnds(false);*/
-
-		TempSave(false);
+		EnableWnds(false);
 		break;
 
 	case KEY_DELETE:
-		m_pkFocusWnd = /*m_pkScene->*/DeleteWnd(m_pkFocusWnd);
+		m_pkFocusWnd = DeleteWnd(m_pkFocusWnd);
 		
 		m_pkMainWnd = m_pkFocusWnd;
 		UpdatePropertyWnd();
@@ -315,6 +310,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "ResizeWndToTexBn")
 		{
+			TempSave(true);
+
 			char* szSkinType = GetSelItem("SkinTypeCB");
 
 			if(szSkinType != NULL && m_pkFocusWnd != NULL )
@@ -348,7 +345,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "DeleteWnd")
 		{
-			ZGuiWnd* pkNewMain = /*m_pkScene->*/DeleteWnd(m_pkFocusWnd);
+			ZGuiWnd* pkNewMain = DeleteWnd(m_pkFocusWnd);
 
 			m_pkFocusWnd = pkNewMain;
 			m_pkMainWnd = pkNewMain;
@@ -371,6 +368,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "StretchTextureCB" && m_pkFocusWnd)
 		{
+			TempSave(true);
+
 			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
 
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
@@ -394,6 +393,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "RemoveTextureBn" && m_pkFocusWnd)
 		{
+			TempSave(true);
+
 			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
 
 			// Ta bort textur på vald kontroll
@@ -434,6 +435,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "TransparentTextureCB" && m_pkFocusWnd)
 		{
+			TempSave(true);
+
 			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
 
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
@@ -504,6 +507,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				printf("Failed to create control! No parent selected\n");
 				return;
 			}
+
+			TempSave(true);
 
 			if(eWndType == Label || eWndType == Radiobutton || eWndType == Checkbox)
 				strcpy(szLabel, szName);
@@ -621,6 +626,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			UpdateViewWnd();
 			UpdateSkinList(pkWnd);
 			UpdatePropertyWnd();
+
+			SetPos(pkWnd, m_iXPos, m_iYPos);
 		}
 	}
 	else
@@ -906,14 +913,27 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 			m_pkResizeWnd = NULL;
 		}
 
-		if(m_eEditMode == RESIZE && m_pkResizeWnd != NULL)
+/*		if(m_eEditMode == RESIZE && m_pkResizeWnd != NULL)
 		{
+			m_bUpdateSize = false;
 			TempSave(true);
 		}
 		else
 		if(m_eEditMode == MOVE && m_pkMoveWnd != NULL)
 		{
+			m_bUpdatePos = false;
 			TempSave(true);
+		}*/
+
+		if(m_pkFocusWnd)
+		{
+			static Rect prev = Rect(0,0,0,0);
+
+			if( prev != m_pkFocusWnd->GetScreenRect())
+			{
+				prev = m_pkFocusWnd->GetScreenRect();
+				TempSave(true);
+			}
 		}
 
 	}
@@ -1033,7 +1053,6 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 {
-
 	bool bLegalMoveWnd = true;
 	ZGuiWnd* pkParent = pkWnd->GetParent();
 
@@ -1087,6 +1106,9 @@ void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 	}
 
 	pkWnd->SetPos(x, y, bScreenSpace, true); 
+
+	if(rc.Left != x || rc.Top != y)
+		m_bUpdatePos = true;
 }
 
 void ZGResEdit::Resize(ZGuiWnd *pkWnd, int w, int h)
@@ -1123,6 +1145,9 @@ void ZGResEdit::Resize(ZGuiWnd *pkWnd, int w, int h)
 	}
 
 	pkWnd->Resize(w, h, true); 
+	
+	if(rc.Width() != w || rc.Height() != h)
+		m_bUpdateSize = true;
 }
 
 void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
@@ -1954,7 +1979,9 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 
 	if(pkWnd != NULL)
 	{
-		//m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
+		TempSave(true);
+
+		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
 
 		if(pkWnd->GetParent())
 		{
@@ -1962,7 +1989,7 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 
 			m_pkScene->RemoveAlias(pkWnd);
 
-/*			m_pkFocusWnd = pkWnd->GetParent();
+			/*m_pkFocusWnd = pkWnd->GetParent();
 			m_pkGui->SetFocus(m_pkFocusWnd);
 			m_pkMainWnd = m_pkFocusWnd;*/
 
@@ -2004,12 +2031,20 @@ void ZGResEdit::TempSave(bool bSave)
 	{
 		string prev_focus_wnd_name;
 		string prev_focus_wnd_parent_name;
+		string prev_main_wnd_name;
+
 		if(m_pkFocusWnd)
 		{
 			prev_focus_wnd_name = m_pkFocusWnd->GetName();
-			
 			if(m_pkFocusWnd->GetParent())
 				prev_focus_wnd_parent_name = m_pkFocusWnd->GetParent()->GetName();
+		}
+
+		if(m_pkMainWnd)
+		{
+			prev_main_wnd_name = m_pkMainWnd->GetName();	
+			if(m_pkMainWnd->GetParent())
+				prev_main_wnd_name = m_pkMainWnd->GetParent()->GetName();
 		}
 
 		kSerialize.TempLoad(m_pkScene);
@@ -2018,10 +2053,14 @@ void ZGResEdit::TempSave(bool bSave)
 
 		if(!prev_focus_wnd_name.empty())
 			m_pkFocusWnd = m_pkGuiMan->Wnd(prev_focus_wnd_name);
-
+		
 		if(m_pkFocusWnd == NULL && !prev_focus_wnd_parent_name.empty() != NULL)
 			m_pkFocusWnd = m_pkGuiMan->Wnd(prev_focus_wnd_parent_name);
 
+		if(!prev_main_wnd_name.empty())
+			m_pkMainWnd = m_pkGuiMan->Wnd(prev_main_wnd_name);
+
 		UpdateViewWnd();
+		UpdatePropertyWnd();
 	}
 }
