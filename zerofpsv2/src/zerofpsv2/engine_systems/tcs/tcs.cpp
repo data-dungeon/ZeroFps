@@ -58,7 +58,7 @@ bool Tcs::ShutDown()
 { 
 	return true; 
 }
-bool Tcs::IsValid()	
+bool Tcs::IsValid()
 { 
 	return true; 
 }

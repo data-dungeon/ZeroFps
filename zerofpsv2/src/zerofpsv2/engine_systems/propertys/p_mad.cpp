@@ -44,7 +44,6 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 		
-	StartProfileTimer("r___mad");		
 		
 // TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
 // find lowpoly mesh, if exist
@@ -71,7 +70,8 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-		
+		StartProfileTimer("r___mad");		
+			
 		
 		DoAnimationUpdate();
 		
@@ -125,9 +125,8 @@ void P_Mad::Update()
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
 				
-	}
-	
-	StopProfileTimer("r___mad");			
+		StopProfileTimer("r___mad");			
+	}	
 }
 
 void P_Mad::DoAnimationUpdate()

@@ -84,7 +84,8 @@ void P_Tcs::Disable()
 
 void P_Tcs::Update()
 {	
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) {
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
+	{
 		if(m_bPolygonTest)
 		{
 			if(!m_bHavePolygonData)
@@ -98,7 +99,7 @@ void P_Tcs::Update()
 			if(m_fRadius == -1)
 			{	
 				m_fRadius = GetBoundingRadius();
-				m_bHavePolygonData = SetupMeshData();
+				//m_bHavePolygonData = SetupMeshData();
 			}
 		}
 	}
@@ -312,13 +313,10 @@ bool P_Tcs::HandleSetValue( string kValueName, string kValue )
 }
 
 float P_Tcs::GetBoundingRadius()
-{
-	P_Mad* mp = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));
-	if(mp)
+{	
+	if( P_Mad* mp = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad")) )
 	{
-		float frad = mp->GetRadius();
-		//cout<<"got radius from mad " << frad << endl;
-		return frad;	
+		return mp->GetRadius();	
 	}
 	
 	return -1;

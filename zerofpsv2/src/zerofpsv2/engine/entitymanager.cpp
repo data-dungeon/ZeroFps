@@ -2584,13 +2584,11 @@ void EntityManager::UpdateTrackers()
 	int iZoneIndex;	
 	vector<ZoneData*>	kFloodZones;
 	
-
 	// Set All Zones as untracked
 	for(int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
 		m_kZones[iZ].m_bTracked		= false;
 	}
-
 
 
 	// For each tracker.
@@ -2601,7 +2599,7 @@ void EntityManager::UpdateTrackers()
 		
 		//set initi range
 		for(int iZ=0;iZ<m_kZones.size();iZ++)
-			m_kZones[iZ].m_iRange							= 10000;
+			m_kZones[iZ].m_iRange = 10000;
 		
 		//get trackerpos
 		kTrackerPos = 	(*iT)->GetEntity()->GetWorldPosV();

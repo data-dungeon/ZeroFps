@@ -189,7 +189,6 @@ P_PfMesh::P_PfMesh()
 {
 	strcpy(m_acName,"P_PfMesh");
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
-//	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	m_pkMad			= NULL;
