@@ -84,6 +84,7 @@ bool GLGuiRender::EndRender()
 
 bool GLGuiRender::RenderQuad(Rect kScreenRect, bool bMask)
 {
+	glLoadIdentity();
 
 	//glDisable(GL_TEXTURE_2D);
 	//glBindTexture(GL_TEXTURE_2D, 0);
@@ -305,12 +306,12 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 {
 	bool bDrawMasked = (bMask == true && m_iMaskTexture > 0) ? true : false;
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);       // Linear Filtered
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);       // Linear Filtered
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);       // Linear Filtered
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);       // Linear Filtered
 
-	glPushMatrix();
+	//glPushMatrix();
 
-	glLoadIdentity();
+	//glLoadIdentity();
 
 	int iTextWidth = strlen(strText) * iFontSize;
 	int iYPos = m_iScreenHeight-kScreenRect.Top - kScreenRect.Height()/2 - iFontSize/2; 
@@ -331,7 +332,7 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 
 	int texture = m_pkSkin->m_iBkTexID;
 		 		
-	if(texture > 0)
+	if(texture >=0 )
 	{
 		m_pkTextureManger->BindTexture( texture );
 		glEnable(GL_TEXTURE_2D);
@@ -354,7 +355,7 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 		glDisable(GL_BLEND);								// Disable Blending
 	}
 
-	glPopMatrix();
+	//glPopMatrix();
 
 	return true;
 }
@@ -432,6 +433,11 @@ bool GLGuiRender::SetDisplay(int w, int h)
 {
 	m_iScreenWidth = w, 
 	m_iScreenHeight = h;
+	BuildFont();
+
+	if(glIsList(m_iFontDisplaylistID) != GL_TRUE)
+		return false;
+
 	return true;
 }
 

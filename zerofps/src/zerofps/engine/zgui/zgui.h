@@ -19,6 +19,7 @@
 #include "zguilistbox.h"
 #include "zguicombobox.h"
 #include "zguiradiobutton.h"
+#include "zguicursor.h"
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
 #include <list>
@@ -44,6 +45,9 @@ class Input;
 class ENGINE_API ZGui  
 {
 public:
+	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
+
+	void ShowCursor(bool bShow) { m_pkCursor->Show(bShow); }
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WIN;
@@ -88,6 +92,7 @@ private:
 	MAIN_WINDOW* ChangeMainWindow(int x, int y);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow);
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
+	ZGuiCursor* m_pkCursor;
 	Input* m_pkInput;
 	
 	bool WindowSortCmp(MAIN_WINDOW* a, MAIN_WINDOW* b);
@@ -103,6 +108,7 @@ private:
 	ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
 
 	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
+	ZGuiSkin* m_pkCursorSkin;
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)

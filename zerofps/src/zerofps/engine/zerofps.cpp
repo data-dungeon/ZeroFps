@@ -240,7 +240,6 @@ void ZeroFps::MainLoop(void) {
 			
 			m_pkInput->SetInputEnabled(true);			
 			m_pkConsole->Update();
-
 		}
 	}
 }
@@ -341,8 +340,6 @@ void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 void ZeroFps::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
-
-	m_pkGuiRenderer->SetDisplay(m_iWidth,m_iHeight);
 	
 	//turn of opengl 
 	SDL_QuitSubSystem(SDL_OPENGL);
@@ -357,6 +354,11 @@ void ZeroFps::SetDisplay()
 		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
 	
 	glViewport(0, 0,m_iWidth,m_iHeight);	
+
+	if(m_pkGuiRenderer->SetDisplay(m_iWidth,m_iHeight) == false)
+	{
+		printf("Failed to set GUI display!\n");
+	}
 }
 
 
@@ -436,7 +438,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_QUIT:
-			m_iState = state_exit;
+			QuitEngine();
 			break;
 
 		case FID_SLIST:
@@ -625,4 +627,9 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
+}
+
+void ZeroFps::QuitEngine()
+{
+	m_iState = state_exit;
 }

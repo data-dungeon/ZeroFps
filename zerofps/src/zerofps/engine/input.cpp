@@ -82,6 +82,7 @@ void Input::Update(void) {
 
 void Input::MouseXY(int &iX,int &iY) {		
 	if(m_bInputEnabled) {
+		SDL_PumpEvents();
 		SDL_GetMouseState(&iX, &iY);
 		iX=int(float(iX)*m_fMouseSensitivity);	
 		iY=int(float(iY)*m_fMouseSensitivity);		

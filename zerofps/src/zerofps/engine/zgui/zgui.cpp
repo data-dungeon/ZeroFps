@@ -37,6 +37,12 @@ ZGui::ZGui(/*int uiScreenWidth, int uiScreenHeight, Input* pkInput*/)
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
 	m_pnCursorRangeDiffX=m_pnCursorRangeDiffY=0;
+	m_pkCursor = new ZGuiCursor();
+	m_pkCursorSkin = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+	
+	m_pkCursor->SetPos(0,0);
+	m_pkCursor->SetSize(16,16);
+	m_pkCursor->SetSkin(m_pkCursorSkin);
 }
 
 ZGui::~ZGui()
@@ -167,6 +173,9 @@ bool ZGui::Render()
 				break;
 	}
 
+	// Draw cursor
+	m_pkCursor->Render();
+
 	m_pkRenderer->EndRender(); 
 
 	return true;
@@ -251,9 +260,10 @@ void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
 
 bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButtonDown*/)
 {
-
   	int x, y;
-	m_pkInput->MouseXY(x, y);
+	m_pkInput->MouseXY(x,y);
+
+	m_pkCursor->SetPos(x,y);
 
 	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
 	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
@@ -400,11 +410,13 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 	}
 }
 
+void ZGui::SetCursor(int TextureID, int MaskTextureID, int Width, int Height)
+{
+	m_pkCursorSkin->m_iBkTexID = TextureID;
+	m_pkCursor->SetSkin(m_pkCursorSkin, MaskTextureID);
+	m_pkCursor->SetSize(Width,Height);
 
-
-
-
-
-
-
-
+	int x, y;
+	m_pkInput->MouseXY(x,y);
+	m_pkCursor->SetPos(x,y);
+}

@@ -18,6 +18,7 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	m_kSkinDown=NULL;
 	m_kSkinHighLight=NULL;
 	m_iMaskTextureUp = -1;
+	m_bCenterText = true;
 }
 
 ZGuiButton::~ZGuiButton()
@@ -76,8 +77,22 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 			if(m_iTextMaskTexture > 0)
 				pkRenderer->SetMaskTexture(m_iTextMaskTexture);
 
+			Rect rcTextRect = GetScreenRect();
+			if(m_bCenterText == true)
+			{
+				int textwidth = 12 * strlen(GetText());
+				int buttonWidth = GetScreenRect().Width();
+				int x_diff = buttonWidth/2-textwidth/2;
+				rcTextRect.Left += x_diff;
+
+				int textheight = 12;
+				int buttonHeight = GetScreenRect().Height();
+				int y_diff = buttonHeight/2-textheight/2;
+				rcTextRect.Top += y_diff;
+			}
+
 			pkRenderer->SetSkin(m_pkTextSkin); 
-			pkRenderer->RenderText(m_strText, GetScreenRect(), 12, -1, (m_iTextMaskTexture > 0));
+			pkRenderer->RenderText(m_strText, rcTextRect, 12, -1, (m_iTextMaskTexture > 0));
 		}
 	}
 

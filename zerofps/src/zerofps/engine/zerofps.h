@@ -141,6 +141,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 		
 		void RegisterPropertys();
+		void QuitEngine();
 
 };
 
