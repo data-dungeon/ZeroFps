@@ -38,6 +38,7 @@ Entity::Entity()
 
 	m_eRole					= NETROLE_AUTHORITY;
 	m_eRemoteRole			= NETROLE_PROXY;
+	m_bHaveNetPropertys	= false;
 
 	m_iObjectType			= OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		= UPDATE_ALL;
@@ -120,6 +121,8 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
 	pkNewProperty->Init();
+	m_bHaveNetPropertys |= pkNewProperty->bNetwork;
+	
 	return pkNewProperty;
 }
 
@@ -158,6 +161,7 @@ void Entity::RemoveProperty(Property* pkProp)
    }
 
 	PropertyLost(pkProp);
+	m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
 }
 
 /**	\brief	Removes and deletes the property. 
@@ -179,6 +183,7 @@ bool Entity::DeleteProperty(const char* acName)
 			m_akPropertys.pop_back();
 			delete (TempProp);
 			
+			m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
 			return true;
 		}
 		++kIt;
@@ -511,12 +516,27 @@ void Entity::GetAllObjects(vector<Entity*> *pakObjects)
 	}	
 }
 
+bool Entity::IsAnyPropertyNetworkActive()
+{
+	bool bNetwork;
+	bNetwork = false;
+
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->bNetwork == true) {
+			bNetwork = true;
+			break;
+		}
+	}
+
+	return bNetwork;
+}
 
 /**	\brief	Returns true if Entity is one that need to be sent over network.
 */
 bool Entity::IsNetWork()
 {
 	m_bIsNetWork = false;
+//	bool bNetPropertys = false;
 
 	if(m_strName == "ZoneObject")
 	{
@@ -526,14 +546,22 @@ bool Entity::IsNetWork()
 	{
 		m_bIsNetWork = true;
 	}
-	else {
-		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-			if((*it)->bNetwork == true) {
-				m_bIsNetWork = true;
-				break;
-			}
+
+//	else {
+//	}
+
+/*	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->bNetwork == true) {
+			bNetPropertys = true;
+			break;
 		}
-	}
+	}*/
+
+/*	if(bNetPropertys != m_bHaveNetPropertys) {
+		cout << "VIM: ARGGGGGGGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHHH" << endl;
+		}*/
+
+	m_bIsNetWork |= m_bHaveNetPropertys;
 	
 	return m_bIsNetWork;
 }

@@ -240,9 +240,10 @@ class ENGINE_API Entity
   		ZeroFps*						m_pkFps;								///< Ptr to zerofps. 
 
 	
-		NetWorkRole					m_eRole;							///< This node power on object.
+		NetWorkRole					m_eRole;								///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
-		bool							m_bIsNetWork;
+		bool							m_bIsNetWork;	
+		bool							m_bHaveNetPropertys;				///< True of any property of this object needs to be sent over network.
 
       string                  m_strCreatedFromScript; // which script the object was created from. used when splitting items
 
@@ -278,7 +279,8 @@ class ENGINE_API Entity
 		void AddToDeleteList(int iId);
 		void UpdateDeleteList();
 
-		
+		bool IsAnyPropertyNetworkActive();
+
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		
 
