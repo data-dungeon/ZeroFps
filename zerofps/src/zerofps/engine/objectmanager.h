@@ -105,7 +105,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object* GetWorldObject()	{	return m_pkWorldObject;				};
 		int	GetNumOfObjects()		{	return m_akObjects.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
-		void GetAllObjects(list<Object*> *pakObjects);
+		void GetAllObjects(vector<Object*> *pakObjects);
 		Object* GetObject(const char* acName);							///< Get a ptr to object by name
 		Object*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 		void	GetArchObjects(vector<string>* pkFiles, string strParentName);

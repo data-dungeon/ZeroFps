@@ -10,20 +10,28 @@ P_FogRender::P_FogRender()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	m_kScale.Set(512,512,1);
-	m_iSortPlace	=	20;	
-	m_sFogTexture = "../data/textures/fog.tga";
+	m_fScale =			512;
+	m_iSortPlace =		20;	
+	m_bHaveChanged =	false;
+	m_sFogTexture = 	"../data/textures/fog.tga";
 	
 }
 
 void P_FogRender::Update()
 {
+	if(m_bHaveChanged)
+	{
+		m_bHaveChanged = false;
+		m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);	
+		m_pkTexMan->SwapTexture();
+	}
+
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
 	
 	glDisable(GL_DEPTH_TEST);
 
-	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),m_kScale,m_pkTexMan->Load(m_sFogTexture.c_str(),0));
+	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),Vector3(m_fScale,m_fScale,1),m_pkTexMan->Load(m_sFogTexture.c_str(),0));
 
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);	
@@ -31,7 +39,17 @@ void P_FogRender::Update()
 
 void P_FogRender::Explore(float x,float y,float r)
 {
+ 
+	x+=m_fScale/2;
+	y+=m_fScale/2;	
+	
+	//apply fog scale
+	x*=(FOG_TEXTURE_SIZE/m_fScale);
+	y*=(FOG_TEXTURE_SIZE/m_fScale);
+	r*=(FOG_TEXTURE_SIZE/m_fScale);
+
 	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	
 	
 	for(int i=1;i<r;i++)
 	{
@@ -43,9 +61,70 @@ void P_FogRender::Explore(float x,float y,float r)
 			xx+=x;
 			yy+=y;
 			
-			m_pkTexMan->PsetRGBA(xx,yy,0,0,0,255);
+			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,0);
 		}
 	}
+	
+	m_bHaveChanged = true;
+}
+
+void P_FogRender::UnExplore(float x,float y,float r)
+{
+ 
+	x+=m_fScale/2;
+	y+=m_fScale/2;	
+	
+	//apply fog scale
+	x*=(FOG_TEXTURE_SIZE/m_fScale);
+	y*=(FOG_TEXTURE_SIZE/m_fScale);
+	r*=(FOG_TEXTURE_SIZE/m_fScale);
+
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	
+	
+	for(int i=1;i<r;i++)
+	{
+		for(int j=0;j<360;j+=5)
+		{
+			float xx=sin(j)*i;
+			float yy=cos(j)*i;
+			
+			xx+=x;
+			yy+=y;
+			
+			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,255);
+		}
+	}
+	
+	m_bHaveChanged = true;
+}
+
+void P_FogRender::UnExploreAll()
+{
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	
+	float w = m_pkTexMan->GetImage()->w;
+	float h = m_pkTexMan->GetImage()->h;
+	
+	for(int x=0;x<w;x++)
+		for(int y=0;y<h;y++)
+			m_pkTexMan->PsetRGBA(x,y,0,0,0,255);			
+
+	m_bHaveChanged = true;
+}
+
+void P_FogRender::ExploreAll()
+{
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	
+	float w = m_pkTexMan->GetImage()->w;
+	float h = m_pkTexMan->GetImage()->h;
+	
+	for(int x=0;x<w;x++)
+		for(int y=0;y<h;y++)
+			m_pkTexMan->PsetRGBA(x,y,0,0,0,0);			
+
+	m_bHaveChanged = true;
 }
 
 COMMON_API Property* Create_P_FogRender()

@@ -24,7 +24,8 @@ struct COMMON_API UnitInfo
 	unsigned char		m_cWeapon;
 	unsigned char		m_cArmor;
 	unsigned char		m_cPropultion;
-	char					m_cName[64];
+	unsigned char		m_cViewDistance;
+	char					m_cName[64];	
 };
 
 #include "p_clientunit.h"

@@ -383,11 +383,11 @@ bool ObjectManager::SaveAllObjects(const char* acFile)
 	
 	ObjectDescriptor kObd;
 	
-	list<Object*> kObjectlist;
+	vector<Object*> kObjectlist;
 	
 	GetAllObjects(&kObjectlist);
 	
-	for(list<Object*>::iterator it=kObjectlist.begin();it!=kObjectlist.end();it++)
+	for(vector<Object*>::iterator it=kObjectlist.begin();it!=kObjectlist.end();it++)
 	{
 		//the the object dont want to save dont save it
 		if(!(*it)->GetSave())
@@ -427,17 +427,17 @@ bool ObjectManager::LoadAllObjects(const char* acFile)
 }
 
 // Gets
-void ObjectManager::GetAllObjects(list<Object*> *pakObjects)
+void ObjectManager::GetAllObjects(vector<Object*> *pakObjects)
 {
 	m_pkWorldObject->GetAllObjects(pakObjects);
 }
 
 Object* ObjectManager::GetObject(const char* acName)
 {
-	list<Object*> kObjects;		
+	vector<Object*> kObjects;		
 	GetAllObjects(&kObjects);
 	
-	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
+	for(vector<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName() == acName)
 		{
 			return (*it);

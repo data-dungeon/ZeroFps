@@ -339,7 +339,7 @@ void Object::DeleteAllChilds()
 //	m_bLockedChilds=false;	
 }
 
-void Object::GetAllObjects(list<Object*> *pakObjects)
+void Object::GetAllObjects(vector<Object*> *pakObjects)
 {
 	pakObjects->push_back(this);	
 	
@@ -351,13 +351,13 @@ void Object::GetAllObjects(list<Object*> *pakObjects)
 
 void Object::AttachToClosestZone()
 {
-	list<Object*> temp;
+	vector<Object*> temp;
 	float mindistance=999999999;
 	Object* minobject=m_pkObjectMan->GetWorldObject();
 
 	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
 
-	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
+	for(vector<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
 		if((*it)->GetName()=="ZoneObject"){
 			//dont attach this object to this object ;)
 			if((*it)==this)

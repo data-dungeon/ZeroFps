@@ -204,7 +204,7 @@ class ENGINE_API Object
 		bool HasChild(Object* pkObject);							
 		int NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										///< Remove all childs from this object.
-		void GetAllObjects(list<Object*> *pakObjects);		///< Return this + all childs.
+		void GetAllObjects(vector<Object*> *pakObjects);		///< Return this + all childs.
 		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
 
 		// NetWork/Demo/Save/Load Code.

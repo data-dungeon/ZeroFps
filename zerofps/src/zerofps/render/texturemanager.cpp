@@ -619,13 +619,13 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 		
 	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
 	{		
-		cout<<"GL_RGB"<<endl;
+		//cout<<"GL_RGB"<<endl;
 		iFormat = GL_RGB;
 	}
 	
 	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4)
 	{
-		cout<<"GL_RGBA"<<endl;	
+		//cout<<"GL_RGBA"<<endl;	
 		iFormat = GL_RGBA;		
 	}
 
@@ -637,17 +637,6 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 	}
 	
 	
-	//load texture to opengl from sdl surface *image
-/*	if(iFormat == GL_RGB) {
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  		
-		}		
-	if(iFormat == GL_RGBA) {
-		//gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
-		glTexImage2D(GL_TEXTURE_2D,0, iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
-		}
-
-	cout << "PutTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
-*/	
 	if(bMipMaping)
 	{
 		//cout<<"rebuilding mipmaps"<<endl;	

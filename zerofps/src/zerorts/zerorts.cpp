@@ -28,10 +28,12 @@ void ZeroRTS::OnInit()
 	if(!pkIni->ExecuteCommands("zerorts_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 		
+	//SetUp FOG render property
 	pkObjectMan->GetWorldObject()->AddProperty("P_FogRender");
-	P_FogRender* fr = (P_FogRender*)pkObjectMan->GetWorldObject()->GetProperty("P_FogRender");
-	fr->SetScale(Vector3(512,512,1));
+	m_pkFogRender = (P_FogRender*)pkObjectMan->GetWorldObject()->GetProperty("P_FogRender");
 	
+	//FULHACK..
+	m_pkFogRender->SetScale(512);
 }
 
 void ZeroRTS::Init()
@@ -62,6 +64,9 @@ void ZeroRTS::Init()
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
 	
+	//set fog timer
+	m_fFogTimer = pkFps->GetTicks();	
+	
 	//gui bös
 	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
 	pkGui->ShowCursor(true);
@@ -81,6 +86,8 @@ void ZeroRTS::Init()
 
 void ZeroRTS::RegisterActions()
 {
+	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
+	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
 	m_iActionCamLeft=pkInput->RegisterAction("CamLeft");
 	m_iActionCamRight=pkInput->RegisterAction("CamRight");
 	m_iActionCamUp=pkInput->RegisterAction("CamUp");
@@ -114,6 +121,8 @@ void ZeroRTS::OnIdle()
 		pkRender->Line(mpos-Vector3(0,0,1),mpos+Vector3(0,0,1));				
 	glEnable(GL_LIGHTING);
 */
+	//m_pkFogRender->Explore(mpos.x,mpos.x,vd);		
+
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
@@ -121,6 +130,13 @@ void ZeroRTS::OnIdle()
 
 void ZeroRTS::OnSystem() 
 {
+	//update fog once every 1 sec
+	if(pkFps->GetTicks() - m_fFogTimer > 0.5)
+	{			
+		Explore();		
+		m_fFogTimer = pkFps->GetTicks();
+	}
+	
 
 
 }
@@ -193,6 +209,12 @@ void ZeroRTS::Input()
 	{
 		MoveCam(Vector3(0,0,100));
 	}
+	
+	if(pkInput->Action(m_iActionExploreAll))
+		m_pkFogRender->ExploreAll();
+	
+	if(pkInput->Action(m_iActionUnExploreAll))
+		m_pkFogRender->UnExploreAll();
 
 	if(pkInput->Action(m_iActionSelect))
 	{
@@ -554,4 +576,22 @@ bool ZeroRTS::MovePath(Object* pkObject)
 	}
 
 	return true;
+}
+
+void ZeroRTS::Explore()
+{
+	vector<Object*> kObject;
+	
+	pkObjectMan->GetAllObjects(&kObject);
+	
+	for(int i=0;i<kObject.size();i++)
+	{
+		P_ClientUnit* cu =(P_ClientUnit*)kObject[i]->GetProperty("P_ClientUnit");
+		if(cu == NULL)
+			continue;
+		
+		float vd = (float)cu->m_kInfo.m_cViewDistance;
+	
+		m_pkFogRender->Explore(kObject[i]->GetPos().x,kObject[i]->GetPos().z,vd);		
+	}
 }

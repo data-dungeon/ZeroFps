@@ -332,12 +332,12 @@ Object* LevelManager::AddWorldInfoObject()
 
 bool LevelManager::RemoveWorldInfoObject()
 {
-	list<Object*> kObjects;	
+	vector<Object*> kObjects;	
 	Object* pkInfoObject=NULL;
 	
 	m_pkObjectMan->GetAllObjects(&kObjects);
 	
-	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
+	for(vector<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName()=="WorldInfoObject")
 		{
 			pkInfoObject=(*it);			
@@ -363,7 +363,7 @@ bool LevelManager::RemoveWorldInfoObject()
 
 bool LevelManager::ExtractWorldInfoObject()
 {	
-	list<Object*> kObjects;	
+	vector<Object*> kObjects;	
 	ZFMemPackage pkg;	
 	Object* pkInfoObject=NULL;
 	WorldInfoProperty* pkWi=NULL;	
@@ -372,7 +372,7 @@ bool LevelManager::ExtractWorldInfoObject()
 	m_pkObjectMan->GetAllObjects(&kObjects);
 	
 	
-	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
+	for(vector<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName()=="WorldInfoObject")
 		{
 			pkInfoObject=(*it);			
@@ -673,3 +673,12 @@ void LevelManager::ChangeLandscapeFillMode(PolygonMode eMode)
 	HMRP2* hp= static_cast<HMRP2*>(m_pkHeightMapObject->GetProperty("HMRP2"));
 	hp->SetPolyMode(eMode);
 }
+
+
+
+
+
+
+
+
+

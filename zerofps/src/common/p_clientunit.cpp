@@ -12,11 +12,12 @@ P_ClientUnit::P_ClientUnit()
 	
 	bNetwork = true;
 
-	m_kInfo.m_cTeam = 		0;
-	m_kInfo.m_cHealth = 	255;
-	m_kInfo.m_cWeapon = 	0;
+	m_kInfo.m_cTeam =			0;
+	m_kInfo.m_cHealth =		255;
+	m_kInfo.m_cWeapon =		0;
 	m_kInfo.m_cArmor = 		0;
-	m_kInfo.m_cPropultion =0;
+	m_kInfo.m_cPropultion =	0;
+	m_kInfo.m_cViewDistance=20;
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_bSelected =	false;

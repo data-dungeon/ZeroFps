@@ -17,15 +17,18 @@
 using namespace std;
 
 
+#define FOG_TEXTURE_SIZE 256
+
 class COMMON_API P_FogRender: public Property {
 	private:
 		Render*	m_pkRender;
 		TextureManager* m_pkTexMan;
 			
-		string 	m_sFogTexture;
-			
+		string 	m_sFogTexture;			
+		bool		m_bHaveChanged;
+		float 	m_fScale;			
 	public:
-		Vector3 	m_kScale;
+
 		
 		
 		P_FogRender();
@@ -34,7 +37,10 @@ class COMMON_API P_FogRender: public Property {
 		
 		void Explore(float x,float y,float r);
 		void UnExplore(float x,float y, float r);
-		void SetScale(Vector3 kScale) {m_kScale = kScale;};
+		void UnExploreAll();
+		void ExploreAll();
+		
+		void SetScale(float fScale) {m_fScale = fScale;};
 
 };
 

@@ -35,7 +35,9 @@ class ZeroRTS :public Application {
 		
 		Camera*		m_pkCamera;
 		HeightMap*	m_pkMap;
-		MiniMap*	m_pkMiniMap;
+		MiniMap*		m_pkMiniMap;
+		P_FogRender* m_pkFogRender;
+		
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -45,6 +47,8 @@ class ZeroRTS :public Application {
 		int 			m_iActionSelect;
 		int 			m_iActionScroll;		
 		int 			m_iActionSelectManyModifier;		
+		int			m_iActionExploreAll;
+		int			m_iActionUnExploreAll;		
 		
 		//console funktions
 		enum FuncId_e
@@ -58,6 +62,9 @@ class ZeroRTS :public Application {
 		//client delay
 		float			m_fClickTimer;
 		float			m_fClickDelay;
+		
+		//fog update
+		float			m_fFogTimer;
 
 	public:
 
@@ -108,9 +115,13 @@ class ZeroRTS :public Application {
 		bool RemoveSelectedObject(int iID);
 		list<int>* GetSelectedObjects(){return &m_kSelectedObjects;};
 		bool AlreadySelected(int iID);
-		void ClearSelected();
+		void ClearSelected();		
 		
 		P_ClientUnit* GetClientUnit(int iID);
+		
+		//fog stuff
+		void Explore();
+		
 
 	//Palls (friends) =)
 	friend class UserPanel;
