@@ -83,7 +83,15 @@ Property* Object::AddProperty(Property* pkNewProperty)
 {
 	if(pkNewProperty == NULL)
 		return NULL;
-
+	
+	///EVIL GUBB/////
+	list<Property*>::iterator kIt = m_akPropertys.begin();
+	while(kIt != m_akPropertys.end())
+	{
+		(*kIt)->PropertyFound(pkNewProperty);
+		++kIt;
+	}
+	/////////////////7
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
 	
@@ -109,18 +117,40 @@ Property* Object::AddProperty(const char* acName)
 void Object::RemoveProperty(Property* pkProp) 
 {
 	m_akPropertys.remove(pkProp);
+	///EVIL GUBB/////
+	PropertyLost(pkProp);
+}
+
+//EVIL GUBB
+void Object::PropertyLost(Property* pkProp)
+{
+	if(pkProp->m_pkObject == this)
+	{
+		list<Property*>::iterator kIt = m_akPropertys.begin();
+		while(kIt != m_akPropertys.end())
+		{
+			(*kIt)->PropertyLost(pkProp);
+			++kIt;
+		}
+		pkProp->m_pkObject = 0;
+	}	
 }
 
 bool Object::DeleteProperty(const char* acName) 
 {
+	
+	
 	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			delete (*it);
-			m_akPropertys.erase(it);
+			//EVIL GUBB//////
+			//Property* TempProp = (*it)
+			//m_akPropertys.erase(it);
+			//PropertyLost(TempProp);
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 

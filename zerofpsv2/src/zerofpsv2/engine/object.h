@@ -231,6 +231,7 @@ class ENGINE_API Object
 		Property* AddProperty(const char* acName);			///< Create/Add a property by name.
 		void RemoveProperty(Property* pkProp);					///< Remove property by pointer.
 		bool DeleteProperty(const char* acName);				///< Remove property by name.
+		void PropertyLost(Property* pkProp);
 
 		Property* GetProperty(const char* acName);											///< Returns property by name (first one only). 
 		void GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.

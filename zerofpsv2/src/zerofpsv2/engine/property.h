@@ -66,7 +66,64 @@ public:
 			bVector(false) {} 
 };
 
+/////GUBB ULTRACLASS!!/// 
+class Property; 
+class TPointerBase
+{
+public:
+	
+	virtual bool Set(Property*) = 0;
+	virtual bool Unset(Property*) = 0;
+	virtual const type_info& GetType() = 0;
+	
+};
 
+template <typename T> class TPointer : public TPointerBase
+{
+public:
+	TPointer(T **pPointer) : m_ppPointer(pPointer) {cout<<"s" <<*m_ppPointer <<"s";}
+	bool Set(Property *pProp) 
+	{
+		if(*m_ppPointer)
+		{
+			return false;
+		}
+		else
+		{
+			if((*m_ppPointer) = dynamic_cast<T*>(pProp))
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+	}
+	bool Unset(Property *pProp)
+	{
+		if(!(*m_ppPointer))
+		{
+			return false;
+		}
+		if((*m_ppPointer) == pProp)
+		{
+			*m_ppPointer= 0;
+			return true;
+		}
+		else 
+			return true;
+	}
+	const type_info& GetType()
+	{
+		return typeid(T*);
+	}
+	
+private:
+	T **m_ppPointer;
+};
+
+/////END OF GUBB ULTRACLASS!!/// 
 
 /// A property of a object.
 class ENGINE_API Property 
@@ -77,8 +134,11 @@ class ENGINE_API Property
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
 		bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
-		////////////////////////////////////////////7
-
+		
+		vector<TPointerBase*> m_kPointerVector;
+		void PropertyFound(Property* pkProperty); 
+		void PropertyLost(Property* pkProperty); 
+		///////////////////////////////////////////
 	protected:
 		Object*					m_pkObject;
 		PropertyFactory*		m_pkPropertyFactory;
@@ -87,13 +147,38 @@ class ENGINE_API Property
 		virtual vector<PropertyValues> GetPropertyValues();
 		virtual bool HandleSetValue( string kValueName ,string kValue );
 		virtual bool HandleGetValue( string kValueName );
+		
+		///////////EVIL GUBB WAS HERE
+		virtual void PointerFound(const type_info& Type) {};
+		virtual void PointerLost(const type_info& Type) {};
+		
+		template<class T> void GetProperty(T *&pT)
+		{
+			pT = 0;
+			if(m_pkObject)
+			{
+				vector<Property*>::iterator kIt = m_pkObject->m_kPropertyVector.begin();
+				while(kIt != m_pkObject->m_kPropertyVector.end())
+				{
+					if(pT = dynamic_cast<T*>(*kIt))
+					{
+						this->PointerFound(typeid(T*));
+						kIt = m_pkObject->m_kPropertyVector.end();
+					}
+					else
+						++kIt;
+				}
+			}
+			m_kPointerVector.push_back(new TPointer<T>(&pT));
+		}
+		//////////////////////////////////////////////
 
 	public:
 		int						m_iNetUpdateFlags;					
 		int						NeedToSend( ) { return m_iNetUpdateFlags; }
 
 		Property();
-		virtual ~Property() { };
+		virtual ~Property();
 
 		int	m_iSortPlace;		//	place in update queue
 		bool	m_bSortDistance;

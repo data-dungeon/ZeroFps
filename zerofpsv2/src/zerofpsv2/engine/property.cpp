@@ -21,6 +21,18 @@ Property::Property()
 	m_bSortDistance=false;
 }
 
+Property::~Property()
+{
+	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+	while(kIt != this->m_kPointerVector.end())
+	{
+		delete (*kIt);
+		++kIt;
+	}
+	if(m_pkObject)
+		m_pkObject->RemoveProperty(this);
+}
+
 // Game Messages
 void Property::HandleGameMessage(GameMessage& Msg)	
 {	
@@ -765,4 +777,36 @@ bool Property::Resize(string kValueName, unsigned int uiNewSize)
 		};
 	}
 	return false;
+}
+
+void Property::PropertyFound(Property* pkProperty)
+{
+	
+	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+	while(kIt != this->m_kPointerVector.end())
+	{
+		if((*kIt)->Set(pkProperty))
+		{
+			this->PointerFound((*kIt)->GetType());
+			kIt = this->m_kPointerVector.end();
+		}
+		else
+			++kIt;
+	}
+}
+void Property::PropertyLost(Property* pkProperty)
+{
+	
+	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+	while(kIt != this->m_kPointerVector.end())
+	{
+		if((*kIt)->Unset(pkProperty))
+		{
+			this->PointerLost((*kIt)->GetType());
+			kIt = this->m_kPointerVector.end();
+		}
+		else
+			++kIt;
+	}
+
 }
