@@ -46,7 +46,7 @@ void MistClient::OnInit()
 	{
 		for(int y=0;y<5;y++)
 		{*/
-			Object* test = pkObjectMan->CreateObjectFromScript("h:/data/script/objects/test.lua");
+			Object* test = pkObjectMan->CreateObjectFromScript("data/script/objects/test.lua");
 //			if(test)
 //				test->SetLocalPosV(Vector3(x*4,0,y*4));
 //		}
@@ -329,7 +329,7 @@ void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistClient::OnServerStart(void)
 {		
-	m_pkTestobj = pkObjectMan->CreateObjectFromScript("h:/data/script/objects/t_player.lua");
+	m_pkTestobj = pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
 	if(m_pkTestobj)
 	{
 		m_pkTestobj->AttachToClosestZone();

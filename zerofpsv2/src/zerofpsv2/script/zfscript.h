@@ -19,6 +19,8 @@ using namespace std;
 #include "script_x.h"
 #include "../basic/zfobjectmanger.h"
 
+class ZFVFileSystem;
+
 #pragma warning (disable : 4251)
 
 enum ScripVarType
@@ -95,6 +97,8 @@ private:
 
 	set<string> m_kExposedClasses;
 	map<ScripObjectType, string> m_kClassMap;
+
+	ZFVFileSystem* m_pkFileSys;
 
 protected:
 	lua_State* GetLua() { return m_pkLua; }

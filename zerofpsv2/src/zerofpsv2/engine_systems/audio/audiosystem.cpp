@@ -45,6 +45,9 @@ bool ZFSound::Create(string strName)
 
 bool ZFSound::Load()
 {
+	if(m_szFileName == NULL)
+		return false;
+
 	ALsizei size=0, freq;
    ALenum format;
    ALvoid *data;
@@ -53,7 +56,7 @@ bool ZFSound::Load()
 	ZFVFileSystem* pkFileSys;
 	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
 
-	string strFull = pkFileSys->GetFullPath("data/sound/walk.wav");
+	string strFull = pkFileSys->GetFullPath(m_szFileName);
 
 	// Load file
    alutLoadWAVFile((ALbyte*)strFull.c_str(), &format, &data, &size, &freq, &loop);   

@@ -336,7 +336,7 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkS
 {
 	// Start skript filen för GUI:t.
 	// Läs in tex filnamn på textuerer osv.
-	pkScript->RunScript("gui_script.lua");
+	pkScript->RunScript("data/script/gui/gui_script.lua");
 
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;

@@ -4,6 +4,7 @@
  
 #include "zfscript.h"
 #include <stdio.h>
+#include "../basic/zfvfs.h"
   
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -24,6 +25,7 @@ ZFScript::~ZFScript()
 bool ZFScript::StartUp()
 { 
 	
+
 	return true; 
 }
 
@@ -77,6 +79,8 @@ bool ZFScript::Open()
 	lua_pushcfunction(m_pkLua, SetTypeString); 
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
 
+	m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
 	return true;	
 }
 
@@ -91,8 +95,22 @@ void ZFScript::Close()
 //
 bool ZFScript::RunScript(char* szFileName)
 {
-	//printf("SCRIPT_API: Executing script %s\n", szFileName);
-	return (lua_dofile(m_pkLua, szFileName) == 0);
+	bool bSuccess = false;
+
+	// Försök att hitta sökvägen via det virituella filsystemet.
+	string strPath = m_pkFileSys->GetFullPath(szFileName);
+
+	if(lua_dofile(m_pkLua, strPath.c_str()) == 0)
+		bSuccess = true;
+	else
+	{
+		// Om det misslyckades, försök ladda filen utan att använda det 
+		// virituella filsystemet.
+		if(lua_dofile(m_pkLua, szFileName) == 0)
+			bSuccess = true;
+	}
+		
+	return bSuccess;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
