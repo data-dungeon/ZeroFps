@@ -52,11 +52,11 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 			break;
 
 		case ID_FILEPATH_WND_CLOSE:
-			m_pkEdit->pkGui->GetMainWindow(ID_FILEPATH_WND_MAIN)->Hide();
+			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
 			break;
 
 		case ID_PROPERTY_WND_CLOSE:
-			m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN)->Hide();
+			m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
 			break;
 		}
 		break;
@@ -274,7 +274,8 @@ int Gui::CreateFilePathDialog(int x, int y, int w, int h)
 {
 	if( m_pkEdit->pkGui->GetMainWindow(ID_FILEPATH_WND_MAIN))
 	{
-		m_pkEdit->pkGui->SetActiveMainWindow(ID_FILEPATH_WND_MAIN);
+		//m_pkEdit->pkGui->SetActiveMainWindow(ID_PROPERTY_WND_MAIN);
+		m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, true);
 		return false;
 	}
 
@@ -367,7 +368,8 @@ int Gui::CreatePropertyDialog(int x, int y, int w, int h)
 {
 	if( m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
 	{
-		m_pkEdit->pkGui->SetActiveMainWindow(ID_PROPERTY_WND_MAIN);
+		//m_pkEdit->pkGui->SetActiveMainWindow(ID_PROPERTY_WND_MAIN);
+		m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
 		return false;
 	}
 

@@ -46,6 +46,7 @@ class Input;
 class ENGINE_API ZGui  
 {
 public:
+	void ShowMainWindow(int iID, bool bShow);
 	bool ToogleGui();
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow) { m_pkCursor->Show(bShow); }
@@ -63,7 +64,7 @@ public:
 
 	bool RemoveMainWindow(int iMainWindowID);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
-	bool SetActiveMainWindow(int iID);									// Select a new active main window
+	//bool SetActiveMainWindow(int iID);									// Select a new active main window
 
 	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
 
@@ -100,6 +101,7 @@ private:
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window
+	MAIN_WINDOW* m_pkPrevMainWnd;
 
 	map<int, ZGuiWnd*> m_pkWindows;
 	//int m_uiScreenWidth, m_uiScreenHeight;

@@ -18,6 +18,7 @@ ZGui::ZGui()
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkActiveMainWin = NULL;
+	m_pkPrevMainWnd = NULL;
 //	m_pkFocusWnd = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
@@ -214,7 +215,7 @@ bool ZGui::Render()
 	return true;
 }
 
-bool ZGui::SetActiveMainWindow(int iMainWindowID)
+/*bool ZGui::SetActiveMainWindow(int iMainWindowID)
 {
 	// Find the window
 	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
@@ -228,7 +229,7 @@ bool ZGui::SetActiveMainWindow(int iMainWindowID)
 		 }
 
 	return true;
-}
+}*/
 
 bool ZGui::SetMainWindowCallback( int iMainWindowID, callback cb )
 {
@@ -251,7 +252,7 @@ ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
 	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
 		 it != m_pkMainWindows.end(); it++ )
 		 {
-			if( (*it)->pkWin->GetScreenRect().Inside(x,y) )
+			if( (*it)->pkWin->IsVisible() && (*it)->pkWin->GetScreenRect().Inside(x,y) )
 			{
 				if( best->pkWin->GetScreenRect().Inside(x,y) )
 				{
@@ -280,13 +281,14 @@ void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
 	// Minska Z-order på alla fönster som har högre z-order än pWndToBeActivated
 	int Min = pWndToBeActivated->iZValue;	
 
-	for( list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
-		 it != m_pkMainWindows.rend(); it++ )
+	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		 it != m_pkMainWindows.end(); it++ )
 		 {
 			if((*it)->iZValue > Min)
 				(*it)->iZValue = (*it)->iZValue-1;
 		 }
 
+	m_pkPrevMainWnd = m_pkActiveMainWin;
 	m_pkActiveMainWin = p_iIDWndToSelect;
 
 	// Sätt z-order till max på det fönster som har valts.
@@ -347,6 +349,8 @@ bool ZGui::OnMouseUpdate()
 	// Är vänster musknapp nertryckt?
 	if(bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked != NULL)
 	{
+		printf("%i\n", m_pkActiveMainWin->iID);
+		
 		// Skall fönstret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
@@ -490,5 +494,40 @@ bool ZGui::ToogleGui()
 {
 	m_bActive = !m_bActive;
 	ShowCursor(m_bActive);
+
+	if(m_bActive == false)
+		SDL_ShowCursor(SDL_ENABLE);
+	else
+		SDL_ShowCursor(SDL_DISABLE);
+
 	return m_bActive;
+}
+
+
+void ZGui::ShowMainWindow(int iID, bool bShow)
+{
+	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		 it != m_pkMainWindows.end(); it++ )
+		 {
+			if( (*it)->iID == iID)
+			{
+				if(bShow == true)
+				{
+					(*it)->pkWin->Show();
+					RearrangeWnds((*it));
+				}
+				else
+				{
+					(*it)->pkWin->Hide();
+					
+					if(m_pkPrevMainWnd)
+					{
+						if(m_pkPrevMainWnd->pkWin->IsVisible())
+							RearrangeWnds(m_pkPrevMainWnd);
+					}
+				}
+
+				break;
+			}
+		 }
 }
