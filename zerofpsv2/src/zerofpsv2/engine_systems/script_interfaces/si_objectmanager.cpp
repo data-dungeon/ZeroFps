@@ -55,7 +55,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("InitProperty",		  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);
-	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
 	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
@@ -336,35 +335,6 @@ int HaveRelativOriLua(lua_State* pkLua)
 //----end of create
 
 
-// Position/Rotations.
-
-
-/**	\fn SetLocalPos(x,y,z)
- 	\relates SIEntityManger
-	\brief Sets the local pos of the last object.
-*/
-int SetLocalPosLua(lua_State* pkLua)
-{
-	if(g_kScriptState.g_pkLastObject == NULL)
-		return 0;
-
-	if(g_pkScript->GetNumArgs(pkLua) != 3)
-		return 0;	
-
-	double x,y,z;
-	
-	g_pkScript->GetArg(pkLua, 0, &x);
-	g_pkScript->GetArg(pkLua, 1, &y);
-	g_pkScript->GetArg(pkLua, 2, &z);
-	
-	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
-	
-	return 0;
-}
-
-
-
-
 int SIGetSelfIDLua(lua_State* pkLua)
 {
 	g_pkScript->AddReturnValue(pkLua,g_kScriptState.g_iCurrentObjectID);
@@ -502,6 +472,23 @@ int SendEventLua(lua_State* pkLua)
 
 	g_pkObjMan->SendMsg(string(acEvent), string(acEventParam), g_kScriptState.g_iCurrentObjectID, iTargetEntity);
 	return 0;
+}
+
+Entity* GetEntityPtr(lua_State* pkLua, int iIndex)
+{
+	// Get EntityID
+	int iEntityID;
+	g_pkScript->GetArgInt(pkLua, iIndex, &iEntityID);
+
+	// Get Entity Ptr
+	Entity* pkEnt = g_pkObjMan->GetEntityByID(iEntityID);
+
+	if(pkEnt == NULL)
+	{
+		g_pkScript->Error(pkLua, "Warning: Non valid Entity %d ", iEntityID);
+	}
+
+	return pkEnt;
 }
 
 }

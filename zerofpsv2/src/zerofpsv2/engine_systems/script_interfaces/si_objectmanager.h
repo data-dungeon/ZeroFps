@@ -40,21 +40,6 @@ namespace ObjectManagerLua
 	extern ENGINE_SYSTEMS_API EntityManager*	g_pkObjMan;
 	
 	extern ENGINE_SYSTEMS_API	ScriptState	g_kScriptState;
-	/*
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObject;
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParent;
-	extern ENGINE_SYSTEMS_API	Property*	g_pkLastProperty;
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObject;
-
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParentBak;
-	extern ENGINE_SYSTEMS_API	Property*	g_pkLastPropertyBak;
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObjectBak;
-	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObjectBak;
-	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectBak;
-
-	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
-	extern ENGINE_SYSTEMS_API 	int			g_iCurrentPCID;
-	*/
 
 	// Create/Destory Entitys
 	int ENGINE_SYSTEMS_API CreateEntityLua(lua_State* pkLua);							// (strName, kPosition)
@@ -71,26 +56,7 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);
 	
 	// Position/Orientation.
-	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
-
-	// Object Variables
-/*	
-	//int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
-	//int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
-	//int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
-
-	int ENGINE_SYSTEMS_API GetLocalDouble(lua_State* pkLua);		
-	int ENGINE_SYSTEMS_API SetLocalDouble(lua_State* pkLua);		
-	int ENGINE_SYSTEMS_API GetLocalString(lua_State* pkLua);		
-	int ENGINE_SYSTEMS_API SetLocalString(lua_State* pkLua);		
-
-	// Entity Information
-	//int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
-	//int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
-	// Physics
-	//int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
-	//int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
-*/
+	//int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
 
 	int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua);
 
@@ -105,6 +71,8 @@ namespace ObjectManagerLua
 	// Common used functions , used together whit P_ScriptInterface
 	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
 	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
+
+	Entity* GetEntityPtr(lua_State* pkLua, int iIndex);
 
 };
 

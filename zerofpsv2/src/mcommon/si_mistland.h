@@ -34,29 +34,16 @@ namespace MistLandLua
 	extern P_ServerInfo*			g_pkServerInfo;
 
 	extern int						g_iLastCollidedID;
-//	extern int						g_iCurrentObjectID;
-//	extern int MCOMMON_API 		g_iCurrentPCID;
-//int MCOMMON_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
-//int MCOMMON_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
-//int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
-//	int MCOMMON_API SetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object
-
-
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
-	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);						//() return the callers object id
 	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);				//() return the callers object id	
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);			//(int objectid) return the closest object to the caller or a parameter id
-//	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);					//(int objectid) removes the caller or a parameter id
-// 	int MCOMMON_API AddActionLua(lua_State* pkLua);						//(int objectid,string action) add action to action list of object
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
-
 
 	// sound crap
 	int MCOMMON_API StartPrivateSoundLua(lua_State* pkLua);
-	//int MCOMMON_API StartSoundLua(lua_State* pkLua);
 
 	// ip crap
 	extern map<string,LogInInfo*> MCOMMON_API	g_kServerList;
@@ -138,16 +125,9 @@ namespace MistLandLua
 
    int MCOMMON_API UsesSkillLua (lua_State* pkLua);
 
-   // equip / unequip character
-
-   int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);
-   int MCOMMON_API EquipLua (lua_State* pkLua);
-   int MCOMMON_API UnEquipLua (lua_State* pkLua);
-
 */	
    // Lua lua functions :)
-   int MCOMMON_API RunScriptLua (lua_State* pkLua);
-
+   //int MCOMMON_API RunScriptLua (lua_State* pkLua);
 
    // returns a stat-category (fire, ice, lightning, poision etc...)
    int MCOMMON_API GetRandomCategoryLua (lua_State* pkLua);
@@ -155,29 +135,13 @@ namespace MistLandLua
    int MCOMMON_API GetRandomAttributeLua (lua_State* pkLua);
    int MCOMMON_API RandomLua(lua_State* pkLua); //takes a number and returns a number between 0-entered number
 
-
-/*   
-   // container stuff..hmm
-   int MCOMMON_API SetContainerSizeLua (lua_State* pkLua); // takes size
-   int MCOMMON_API PutInContainerLua (lua_State* pkLua); // takes object and containerObject ID (or only container)
-   int MCOMMON_API GetPickedUpByLua (lua_State* pkLua);     // takes character
-*/   
-   
    // spell functions (inte för stavelsekontroll)
-//  int MCOMMON_API CastSpellLua (lua_State* pkLua);
-
+	// int MCOMMON_API CastSpellLua (lua_State* pkLua);
 
 	//movement
-	int MCOMMON_API BounceLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 	int MCOMMON_API MakePathFindLua(lua_State* pkLua);				//(int objectid,table (x,y,z)) do a pathfind for the object
 	int MCOMMON_API HavePathLua(lua_State* pkLua);				//(int objectid) returns 1 if object has a path to walk
-	
 	int MCOMMON_API RotateTowardsLua(lua_State* pkLua);				//(int objectid) returns 1 if object has a path to walk
-	
-	
-	//set particle system
-	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,vector pos) rotate object so that it faces pos
-
       
    // AI stuff
 	int MCOMMON_API AIUseActionOnLua(lua_State* pkLua);
@@ -186,26 +150,14 @@ namespace MistLandLua
    int MCOMMON_API AIAttackLua(lua_State* pkLua);
    int MCOMMON_API AIFaceDirectionLua(lua_State* pkLua);
    int MCOMMON_API AIFaceObjectLua(lua_State* pkLua);
-
    int MCOMMON_API AISetCommander(lua_State* pkLua);
    int MCOMMON_API AISetSlave(lua_State* pkLua);
 	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
    int MCOMMON_API GetClosestPlayerLua(lua_State* pkLua);
 	int MCOMMON_API GetClosestObjectOfTypeLua(lua_State* pkLua);	// (string type,flaot radius)
-
    int MCOMMON_API GetSeenPlayerLua(lua_State* pkLua);
-
-   int MCOMMON_API DistanceToLua(lua_State* pkLua);
    int MCOMMON_API SetAIIsPlayerLua(lua_State* pkLua);
-
    int MCOMMON_API AIHaveTargetLua(lua_State* pkLua);
-
-
-   
-   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
-   int MCOMMON_API SetDrawingOrderLua(lua_State* pkLua); // changes the order the object is drawn in(mad function)
-
-
 };
 
 #endif

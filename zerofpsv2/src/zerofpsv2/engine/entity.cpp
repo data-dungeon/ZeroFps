@@ -2028,16 +2028,19 @@ int AddPropertyLua(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	double dTemp;
+/*	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
 	if(!pkObject)
-		return 0;
+		return 0;*/
+
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	ObjectManagerLua::g_kScriptState.g_pkLastProperty = pkObject->AddProperty(acName);
+	ObjectManagerLua::g_kScriptState.g_pkLastProperty = pkEnt->AddProperty(acName);
 	return 1;
 }		
 
@@ -2054,16 +2057,19 @@ int DelPropertyLua(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	double dTemp;
+/*	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
 	if(!pkObject)
-		return 0;
+		return 0;*/
+
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	pkObject->DeleteProperty( acName );
+	pkEnt->DeleteProperty( acName );
 	return 1;
 }		
 
@@ -2084,17 +2090,23 @@ int SetParameterLua(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 4))
 		return 0;
 
-	double dTemp;
+	/*double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
 	if(!pkObject)
-		return 0;
+		return 0;*/
+
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	char acProperty[50];
 	g_pkScript->GetArg(pkLua, 1, acProperty);
-	Property* pkProp = pkObject->GetProperty(acProperty);
+	Property* pkProp = pkEnt->GetProperty(acProperty);
 	if(!pkProp)
+	{
+		g_pkScript->Error(pkLua, "Warning: Entity %d dont have property %s", pkEnt->GetEntityID(), acProperty);
 		return 0;
+	}
 
 	char acName[50];
 	g_pkScript->GetArg(pkLua, 2, acName);
@@ -2175,18 +2187,15 @@ int GetLocalDouble(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	// Get Variable Name
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
-	double dValue = o1->GetVarDouble(arne);
+	double dValue = pkEnt->GetVarDouble(arne);
 	//printf("GetLocalDouble Entity[%d] = %s is %f\n", iId1, acName, dValue);
 	g_pkScript->AddReturnValue(pkLua, dValue);
 	return 1;
@@ -2208,22 +2217,20 @@ int SetLocalDouble(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 3))
 		return 0;
 
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	// Get Variable Name
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
+	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
 	float fValue = (float) dTemp;
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
 	string arne = acName;
-	o1->SetVarDouble(arne, fValue);
+	pkEnt->SetVarDouble(arne, fValue);
 	return 1;	
 }
 
@@ -2243,18 +2250,15 @@ int GetLocalString(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	// Get Variable Name
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
-	string strValue = o1->GetVarString(arne);
+	string strValue = pkEnt->GetVarString(arne);
 
 	g_pkScript->AddReturnValue(pkLua,(char*)strValue.c_str(),strValue.size());
 	return 1;
@@ -2276,18 +2280,8 @@ int SetLocalString(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua,3))
 		return 0;
 
-	// Get EntityID
-	int iEntityID;
-	g_pkScript->GetArgInt(pkLua, 0, &iEntityID);
-
-	// Get Entity Ptr
-	Entity* pkEnt = g_pkObjMan->GetEntityByID(iEntityID);
-
-	if(pkEnt == NULL)
-	{
-		g_pkScript->Error(pkLua, "Warning: Non valid Entity %d ", iEntityID);
-		return 0;
-	}
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	// Get Variable Name
 	char acName[100];
@@ -2343,17 +2337,14 @@ int GetLocalVector(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
 	// Get Variable Name
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	Vector3 pos = o1->GetVarVector(acName);
+	Vector3 pos = pkEnt->GetVarVector(acName);
 
 		vector<TABLE_DATA> vkData;
 
@@ -2392,20 +2383,10 @@ int SetObjectPosLua(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	/*int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
 
-	if(iNrArgs != 2)
-	{
-		cout<<"SetObjectPos takes 2 argument(s)"<<endl;
-		return 0;
-	}*/
-
-	double dID;
-	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
-
-	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dID);
-
-	if(pkObject)
+	if(pkEnt)
 	{
 		Vector3 kPos;
 		kPos = GetVectorArg(pkLua, 2);
@@ -2416,7 +2397,7 @@ int SetObjectPosLua(lua_State* pkLua)
 			(float) (*(double*) vkData[0].pData),
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)) );*/
-		pkObject->SetWorldPosV(kPos);
+		pkEnt->SetWorldPosV(kPos);
 		//g_pkScript->DeleteTable(vkData);
 	}
 
