@@ -102,7 +102,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="glee.lib basic.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="glee.lib  basic.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\render.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
