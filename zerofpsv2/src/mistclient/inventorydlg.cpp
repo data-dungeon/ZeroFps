@@ -35,7 +35,6 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkSelectionLabel = new ZGuiLabel(Rect(264,16,264+32,16+32),m_pkDlgWnd,true,23443);
 	m_pkSelectionLabel->SetSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,0,0, 255,0,0, 2, 0, 1));
 	m_pkSelectionLabel->Hide();
-	m_iCurrentContainer = MAIN_CONTAINER;
 
 	m_kContainerStack.push(m_iCurrentContainer); 
 
@@ -54,7 +53,7 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 {
 	Point sqr;
 
-	if(!GetFreeSlotPos(sqr, MAIN_CONTAINER))
+	if(!GetFreeSlotPos(sqr, m_iCurrentContainer))
 	{
 		printf("Failed to find free slot!\n");
 		return false;
@@ -63,7 +62,7 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
    P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item"); 
    			
 	AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-		pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, MAIN_CONTAINER);
+		pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, m_iCurrentContainer);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -115,7 +114,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 	{
 		Point sqr;
 
-		if(!GetFreeSlotPos(sqr, MAIN_CONTAINER))
+		if(!GetFreeSlotPos(sqr, m_iCurrentContainer))
 		{
 			printf("Failed to find free slot, InventoryDlg::AddItems Failed!\n");
 			return false;
@@ -143,7 +142,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		if(bAlreadyExist == false)
 		{
 			AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-				pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, MAIN_CONTAINER);
+				pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, m_iCurrentContainer);
 		}
 		else
 		{
@@ -783,7 +782,7 @@ void InventoryDlg::DropItems()
 	itSlot it;
 	for( it = m_kDragSlots.begin(); it != m_kDragSlots.end(); it++)
 	{
-		if((*it).m_pkItemStats->GetCurrentContainer() != MAIN_CONTAINER)
+		if((*it).m_pkItemStats->GetCurrentContainer() != m_iMainContainer)
 		{
 			int iNewContainer = GetPrevContainer();
 
@@ -856,7 +855,7 @@ void InventoryDlg::DropItemsToContainer(int iContainer)
 int InventoryDlg::GetPrevContainer()
 {
 	if(m_kContainerStack.size() <= 1)
-		return MAIN_CONTAINER;
+		return m_iMainContainer;
 	
 	printf("%i\n", m_kContainerStack.size());
 
@@ -939,4 +938,14 @@ void InventoryDlg::UpdateSkin(Slot slot)
 			}
 		}		
 	}
+}
+
+void InventoryDlg::SetCurrentContainer(int iContainerID)
+{
+	m_iCurrentContainer = iContainerID;
+}
+
+void InventoryDlg::SetMainContainer(int iContainerID)
+{
+	m_iMainContainer = iContainerID;
 }

@@ -41,6 +41,9 @@ public:
 	void OnScroll(int iID, int iPos);
 	void OnCommand(int iID);
 	void OnMouseMove(int x, int y, bool bMouseDown);
+
+	void SetCurrentContainer(int iContainerID);
+	void SetMainContainer(int iContainerID);
 	
 	enum SlotType
 	{
@@ -118,6 +121,7 @@ private:
 	
 	int m_iCurrentScrollPos;
 	int m_iCurrentContainer;
+	int m_iMainContainer;
 
 	Point m_kClickOffset;
 };

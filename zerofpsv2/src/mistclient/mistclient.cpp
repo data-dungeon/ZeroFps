@@ -636,7 +636,14 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0);
 
 				if(bExist == false)
+				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
+
+					// Set current contatiner and main container
+					P_Item* pkItem = (P_Item*) m_pkActiveCharacter->GetProperty("P_Item");
+					m_pkInventDlg->SetCurrentContainer( pkItem->m_pkItemStats->m_iContainerID );
+					m_pkInventDlg->SetMainContainer( pkItem->m_pkItemStats->m_iContainerID );
+				}
 
             // order itemcontainer to begin gather iteminfo from server
             if ( GetWnd("BackPackWnd")->IsVisible() )
