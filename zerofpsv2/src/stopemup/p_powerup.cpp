@@ -187,7 +187,10 @@ void P_Powerup::Touch(int iID)
 							break;
 						}					
 						
-					}						
+					}
+					
+					//reset powerup
+					m_iPowerupType = -1;						
 						
 				}
 				else
