@@ -737,8 +737,26 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 		pkPackObj->PackTo(&kEntityNp,iClient);
 		iPacketSize++; 
 
+		
+		/*
+		//failsafe check
+		if(kEntityNp.m_iPos >=  iMaxPacketSize)
+		{
+			cout<<"ERROR: entity "<<pkPackObj->m_iEntityID<<" is to big to be sent. size:"<<kEntityNp.m_iPos<< " max size is:"<<iMaxPacketSize<<endl;			
+			cout<<"Propertys"<<endl;
+			
+			vector<Property*> kProps;
+			
+			pkPackObj->GetPropertys(&kProps,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
+			
+			for(int i =0;i<kProps.size();i++)
+			{
+				cout<<i<<string(" : ")<<kProps[i]->m_acName<<endl;
+			}			
+		}
+		*/
+		
 		// If this entity will overflow the current UDP message, send it and start a new one.
-
 		if( (m_OutNP.m_iPos + kEntityNp.m_iPos) >= iMaxPacketSize) 
 		{
 			iSentSize += m_OutNP.m_iPos;			//increse total amount of data sent
@@ -925,13 +943,13 @@ void EntityManager::PackToClients()
 		m_pkNetWork->Send2(&m_OutNP);
 	}
 		
-/*
+
+	//DANGER ..this must be here..else we will have an evil propertydeletelist lekage
 	for(map<int,Entity*>::iterator it = m_akEntitys.begin(); it != m_akEntitys.end(); it++) 
 	{
-		//(*it)->m_aiNetDeleteList.clear();
-		(*it).second->UpdateDeleteList();
+		(*it).second->UpdateDeletePropertyList();
 	}
-*/
+
 	
 /*	if(m_aiNetDeleteList.size() == 0)
 		return;

@@ -67,16 +67,17 @@ void P_Light::Update()
 
 void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
-	pkNetPacket->Write( m_pkLightSource->kDiffuse);
-	pkNetPacket->Write( m_pkLightSource->kSpecular);	
-	pkNetPacket->Write( m_pkLightSource->kAmbient);
-	pkNetPacket->Write( m_pkLightSource->iPriority);	
-	pkNetPacket->Write( m_pkLightSource->fCutoff);		
-	pkNetPacket->Write( m_pkLightSource->fExp);		
-	pkNetPacket->Write( m_pkLightSource->fConst_Atten);		
-	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);		
-	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);		
-	pkNetPacket->Write( m_iMode);			
+	pkNetPacket->Write( m_pkLightSource->kDiffuse);						//12
+	pkNetPacket->Write( m_pkLightSource->kSpecular);					//12
+	pkNetPacket->Write( m_pkLightSource->kAmbient);						//12
+	pkNetPacket->Write( m_pkLightSource->iPriority);					//4
+	pkNetPacket->Write( m_pkLightSource->fCutoff);						//4
+	pkNetPacket->Write( m_pkLightSource->fExp);							//4
+	pkNetPacket->Write( m_pkLightSource->fConst_Atten);				//4
+	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);				//4
+	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);			//4
+	pkNetPacket->Write( m_iMode);												//4
+																						//sum 64 bytes
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }

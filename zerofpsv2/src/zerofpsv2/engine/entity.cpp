@@ -588,6 +588,8 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	
 		pkNetPacket->Write((int) m_kNetDeletePropertyList.size() );
 
+		cout<<"hubba:"<<m_kNetDeletePropertyList.size()<<endl;
+		
 		for(unsigned int i=0; i<m_kNetDeletePropertyList.size(); i++)
 		{
 			pkNetPacket->Write_Str(	m_kNetDeletePropertyList[i]);
