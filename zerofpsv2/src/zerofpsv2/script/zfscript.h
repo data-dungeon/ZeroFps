@@ -113,6 +113,8 @@ public:
 
 	void CopyGlobalData(lua_State** ppkState);
 	
+	string FormatMultiLineTextFromLua(string strLuaText);
+	
 	ZFScriptSystem();
 	virtual ~ZFScriptSystem();
 

@@ -377,6 +377,20 @@ void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	m_pkThumbButton->GetWndSkinsDesc(pkSkinDesc);
 	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
 		pkSkinDesc[i].second.insert(0, "Scrollbar: ");
+
+	////////////////
+	// Ny kod 04-04-13
+	iStart = pkSkinDesc.size(); 
+	m_pkArrowBnUp->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Scrollbar: Top: ");
+
+	iStart = pkSkinDesc.size(); 
+	m_pkArrowBnDown->GetWndSkinsDesc(pkSkinDesc);
+	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
+		pkSkinDesc[i].second.insert(0, "Scrollbar: Bottom: ");
+	////////////////
+
 }
 
 void ZGuiScrollbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)

@@ -79,7 +79,7 @@ void DarkMetropolis::OnInit()
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->SetRender(true);
 
-	LoadResourcesOnStartup();
+//	LoadResourcesOnStartup();
 
 	//init dm script interface (register script functions for gameplay)
 	DMLua::Init(m_pkObjectMan,m_pkScript);

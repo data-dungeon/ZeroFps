@@ -907,12 +907,18 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript,
 
 	GuiType eType = GetWndType(pkWnd);
 
-	if( eType == Button || eType == Checkbox )
+	if( eType == Button || eType == Checkbox || eType == Scrollbar)
 	{
 		if(strcmp(szSkinType, "Button up") == 0)
 			pkWnd->SetSkin(pkSkin);
 		if(strcmp(szSkinType, "Checkbox: Button up") == 0)
 			pkWnd->SetSkin(pkSkin);
+		if(strcmp(szSkinType, "Scrollbar: Button up") == 0)
+			((ZGuiScrollbar*)pkWnd)->SetThumbButtonSkins(pkSkin, pkSkin);
+		if(strcmp(szSkinType, "Scrollbar: Top: Button up") == 0)
+			((ZGuiScrollbar*)pkWnd)->SetScrollButtonUpSkins(pkSkin, pkSkin);
+		if(strcmp(szSkinType, "Scrollbar: Bottom: Button up") == 0)
+			((ZGuiScrollbar*)pkWnd)->SetScrollButtonDownSkins(pkSkin, pkSkin);
 	}
 
 	return true;

@@ -831,3 +831,54 @@ void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
 			delete data[i].pData;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
+{
+	string temp;
+
+	// Ta först bort Lua's alla radtecken.
+	for(int j=0; j<strLuaText.size(); j++)
+	{
+		if(strLuaText[j] != '\n')
+			temp.push_back(strLuaText[j]);
+	}
+
+	strLuaText = temp;
+	temp.clear();
+
+	// Lägg sedan till radtecken där ett '\n' finns.
+	for(int j=0; j<strLuaText.size(); j++)
+	{
+		if(j!=strLuaText.size()-1 && j!=0)
+		{
+			if(strLuaText[j] == '\\' && strLuaText[j+1] == 'n')
+				temp.push_back('\n');
+			else
+			if(strLuaText[j] == 'n' && strLuaText[j-1] == '\\')
+				continue;
+			else
+				temp.push_back(strLuaText[j]);
+		}
+		else
+		{
+			temp.push_back(strLuaText[j]);
+		}
+	}
+
+	return temp;
+}

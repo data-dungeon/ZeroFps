@@ -298,7 +298,7 @@ bool P_DMMission::GetMissionInfoFromScript(DMMissionInfo** ppInfo)
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "short", szInfoTextShort);	
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "long", szInfoTextLong);
 	(*ppInfo)->m_strInfoTextShort = szInfoTextShort;
-	(*ppInfo)->m_strInfoTextLong = szInfoTextLong;
+	(*ppInfo)->m_strInfoTextLong = m_pkScriptSys->FormatMultiLineTextFromLua(szInfoTextLong);
 
 	return true;
 }
@@ -323,7 +323,6 @@ void P_DMMission::GetPossibleMissions(float fReputation, vector<DMMissionInfo>& 
 			kInfo.m_strInfoTextShort = m_vkMissions[i]->m_strInfoTextShort;
 			kInfo.m_strName = m_vkMissions[i]->m_strName;
 			kInfo.m_strScript = m_vkMissions[i]->m_strScript;
-
 			vkInfo.push_back( kInfo );
 		}
 	}
