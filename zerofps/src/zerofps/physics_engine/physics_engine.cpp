@@ -22,7 +22,7 @@ void Physics_Engine::Update(float fAlphaTime)
 	
 	//make sure there is no collissions	
 	m_kCollissions.clear();	
-	int iNrOfCollissions=0;
+	m_iNrOfCollissions=0;
 
 	UpdateForces();	
 	while(m_fRTime > 0)
@@ -30,9 +30,9 @@ void Physics_Engine::Update(float fAlphaTime)
 		TestWithPlanes(m_fRTime);
 		TestBodys(m_fRTime);
 		
-		if(m_kCollissions.size() > 0)
+		if(m_kCollissions.size() > 0 )
 		{
-			iNrOfCollissions++;	
+			m_iNrOfCollissions++;	
 		
 			//get next closest collission	
 			Collission* pkCol = FindNextCollission();
@@ -60,7 +60,8 @@ void Physics_Engine::Update(float fAlphaTime)
 		}
 	}
 
-	//cout<<"TOTAL NR OF COLLISSIONS: "<<iNrOfCollissions<<endl;
+//	if(m_iNrOfCollissions >0)
+//		cout<<"TOTAL NR OF COLLISSIONS: "<<m_iNrOfCollissions<<endl;
 }
 
 bool Physics_Engine::AddBody(Body* pkBody)
@@ -131,7 +132,7 @@ void Physics_Engine::UpdateForces()
 	{
 		(*it)->m_kForces.Set(0,0,0);
 	
-		if(!(*it)->m_bResting)
+		if(!(*it)->m_bResting) 
 		{
 			if((*it)->m_bGravity)
 				(*it)->m_kForces += Vector3(0,-8.82,0);
@@ -251,9 +252,7 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		tempcol.kRelVelocity = BodyCopy.m_kVelocity;
 		tempcol.kRelAcceleration = BodyCopy.m_kAcceleration;
 		tempcol.fAtime =	atime;	
-		
-		//har ingen jävla aning om vad denna skall sättas till för tillfället =(
-		tempcol.kCollissionTangent = Vector3(0,0,0);	
+		tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
 	
 		m_kCollissions.push_back(tempcol);	
 	
@@ -370,25 +369,18 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 		//only collide if relative velocity is towards each other
 		//cout<<norm.Dot(relv)<<endl;
 		
-//		if( norm.Dot(relv) < 0)
-//		{
+		Collission temp;
+		temp.pkBody1 = pkBody1;
+		temp.pkBody2 = pkBody2;
 	
-			Collission temp;
-			temp.pkBody1 = pkBody1;
-			temp.pkBody2 = pkBody2;
+		temp.kNormal = norm;
+		temp.kPos = BodyCopy1.m_kPosition - (temp.kNormal * BodyCopy1.m_fRadius);	
+		temp.kRelVelocity = relv;
+		temp.kRelAcceleration = BodyCopy1.m_kAcceleration - BodyCopy2.m_kAcceleration;
+		temp.fAtime =	atime;
+		temp.kCollissionTangent = (temp.kNormal.Cross(temp.kRelVelocity.Unit())).Cross(temp.kNormal);		
 		
-			temp.kNormal = norm;
-			temp.kPos = BodyCopy1.m_kPosition - (temp.kNormal * BodyCopy1.m_fRadius);	
-			temp.kRelVelocity = relv;
-			temp.kRelAcceleration = BodyCopy1.m_kAcceleration - BodyCopy2.m_kAcceleration;
-			temp.fAtime =	atime;
-
-		
-			//har ingen jävla aning om vad denna skall sättas till för tillfället =(
-			temp.kCollissionTangent = Vector3(0,0,0);
-		
-			m_kCollissions.push_back(temp);		
-//		}
+		m_kCollissions.push_back(temp);		
 	}
 }
 
@@ -421,11 +413,22 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 					 ( (pkCol->kNormal*pkCol->kNormal) *
 					 ( 1/pkCol->pkBody1->m_fMass + 1/pkCol->pkBody2->m_fMass));
 
-	
+		//if objects r almost resting towards each other give em a little extra push
+		if(j <= 0.0005)
+		{	
+			j+=0.2;
+		}
+
+		//apply impulse force
 		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal) / pkCol->pkBody1->m_fMass;
 		pkCol->pkBody2->m_kVelocity -= (j*pkCol->kNormal) / pkCol->pkBody2->m_fMass;
 
-//		UpdateResting(pkCol->pkBody1,pkCol->pkBody2);	
+		//apply friction force
+		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody1->m_fMass;
+		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody2->m_fMass;
+
+
+		UpdateResting(pkCol->pkBody1,pkCol->pkBody2);				
 	}	
 	else //body vs plane collission
 	{		
@@ -434,9 +437,20 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 					 ( (pkCol->kNormal*pkCol->kNormal) *
 					 ( 1/pkCol->pkBody1->m_fMass + 1/9999999999));			
 		
+		//if objects r almost resting give it a little extra push		
+		if(j <= 0.0005)
+		{	
+			j+=0.2;
+		}
+		
+		//apply impulse force
 		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal) / pkCol->pkBody1->m_fMass;
+	
+		//apply friction force
+		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody1->m_fMass;
 
-//		UpdateResting(pkCol->pkBody1,NULL);
+
+		UpdateResting(pkCol->pkBody1,NULL);	
 	}
 }
 
@@ -469,8 +483,9 @@ void Physics_Engine::UpdateResting(Body* pkBody1,Body* pkBody2)
 	{
 		pkBody1->m_bResting=true;
 		pkBody1->m_kVelocity.Set(0,0,0);
+		pkBody1->m_kAcceleration.Set(0,0,0);
+		pkBody1->m_kForces.Set(0,0,0);
 	
-		cout<<"SLEEEP"<<endl;
 	}
 	
 	if(pkBody2 != NULL)
@@ -479,13 +494,11 @@ void Physics_Engine::UpdateResting(Body* pkBody1,Body* pkBody2)
 		{	
 			pkBody2->m_bResting=true;
 			pkBody2->m_kVelocity.Set(0,0,0);
+			pkBody2->m_kAcceleration.Set(0,0,0);
+			pkBody2->m_kForces.Set(0,0,0);
 		
-			cout<<"SLEEP"<<endl;
 		}	
 	}
-
-
-
 }
 
 

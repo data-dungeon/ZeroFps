@@ -194,6 +194,7 @@ void ZeroEdit::OnHud(void)
 	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);	pkFps->DevPrintf("common","Mode: %d",m_iMode);
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	pkFps->DevPrintf("common","Pointer Altidude: %f",m_fPointerHeight);
+	pkFps->DevPrintf("common","Collissions: %d",pkPhysics_Engine->m_iNrOfCollissions);
 
 	if(m_pkCurentChild) {
 		pkFps->DevPrintf("common","Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName().c_str());

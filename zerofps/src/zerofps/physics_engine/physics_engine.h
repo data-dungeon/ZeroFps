@@ -48,6 +48,8 @@ class PHYSICSENGINE_API Physics_Engine : public ZFObject
 		int						m_iMaxTests;
 		
 	public:
+		int						m_iNrOfCollissions;
+
 
 		Physics_Engine();
 		
