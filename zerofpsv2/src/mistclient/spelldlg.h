@@ -53,6 +53,9 @@ private:
 	vector<SpellSlot*> m_vkSpells;
 
 	SpellSlot* FindSlot(int x, int y);
+
+	ZGuiCheckbox* m_pkAutoCloseSpellCheckBox;
+	bool m_bAutoCloseWnd;
 };
 
 #endif // !defined(AFX_SPELLDLG_H__0C1929AC_DAE0_4FC3_8711_E568BCADA733__INCLUDED_)

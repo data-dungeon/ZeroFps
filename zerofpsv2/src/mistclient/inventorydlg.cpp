@@ -72,7 +72,6 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 
 bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 {   
-
 	// Printar ut lite crap för att kolla så att datat som kommer in stämmer...
 
 	printf("----INFO---Adding/updating items----INFO-----\n");

@@ -16,6 +16,7 @@ SpellDlg::SpellDlg(ZGuiApp* pkApp, QuickBoard* pkQuickBoard)
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 
+	m_bAutoCloseWnd = false;
 	m_pkQuickBoard = pkQuickBoard;
 	m_pkApp = pkApp;
 	Init();
@@ -44,6 +45,14 @@ void SpellDlg::Init()
 	m_pkDialog = m_pkApp->GetWnd("SpellBookMainWnd");
 	m_pkDialog->SetSkin(new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/spellbookwnd.bmp", 0),0));
+
+	//
+	// Create auto close button
+	//
+
+	m_pkApp->CreateWnd(Checkbox, "AutoCloseSpellWnd", "SpellBookMainWnd", "", 358, 450, 16, 16, 0);
+	m_pkAutoCloseSpellCheckBox = (ZGuiCheckbox*) m_pkApp->GetWnd("AutoCloseSpellWnd");
+
 
 	//
 	// Create spellbuttons
@@ -172,6 +181,12 @@ void SpellDlg::Init()
 
 void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
+	if(pkWndClicked == m_pkAutoCloseSpellCheckBox)
+	{
+		m_bAutoCloseWnd = !m_bAutoCloseWnd;
+		return;
+	}
+
 	for(int i=0; i<NUM_SCHOOLS; i++)
 	{
 		if(pkWndClicked == m_pkSchoolButtons[i])
@@ -204,6 +219,9 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
 							m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+
+					if(m_bAutoCloseWnd == true)
+						ToogleOpen();
 				}
 
 				break;
