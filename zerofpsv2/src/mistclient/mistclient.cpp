@@ -65,24 +65,17 @@ void MistClient::Init()
 
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
-/*
-	srand( (int) (pkFps->GetGameTime()*1000) );
 
-	char* szRandom[] = {
-		"Mistland, the land of mist" };
-
-	char szTitle[150];
-	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
-*/
-	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
+	// set caption
+	SDL_WM_SetCaption("Mistland", NULL);
 	
-/*	GuiAppLua::g_pkGuiApp = &g_kMistClient;
-	GuiAppLua::g_pkScript = GetScript();*/
-
+	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
 
-	InitializeScript();
+	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+
+	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
 }
@@ -405,23 +398,4 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	if(iID == 4)
 		pkScript->CallScript("OnClickMap", 0, 0);
 
-}
-
-
-bool MistClient::InitializeScript()
-{
-	// Script functions for using the gui
-	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
-	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
-	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
-	pkScript->ExposeFunction("ClearListbox", GuiAppLua::ClearListboxLua);
-	pkScript->ExposeFunction("GetWnd", GuiAppLua::GetWndLua);
-	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
-	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
-	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 
-	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
-	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
-	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
-
-	return true;
 }

@@ -100,20 +100,8 @@ void ZeroTank::Init()
 	m_pkTestObject->AttachToClosestZone();
 	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
 	
-/*
-	srand( (int) (pkFps->GetGameTime()*1000) );
-
-	char* szRandom[] = {
-		"Mistland, the land of mist" };
-
-	char szTitle[150];
-	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
-*/
-	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 	
 	GuiAppLua::Init(&g_kZeroTank, GetScript());
-
-	InitializeScript();
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
 	SDL_ShowCursor(SDL_DISABLE);
@@ -740,22 +728,4 @@ void ZeroTank::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	if(iID == 4)
 		pkScript->CallScript("OnClickMap", 0, 0);
 
-}
-
-bool ZeroTank::InitializeScript()
-{
-	// Script functions for using the gui
-	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
-	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
-	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
-	pkScript->ExposeFunction("ClearListbox", GuiAppLua::ClearListboxLua);
-	pkScript->ExposeFunction("GetWnd", GuiAppLua::GetWndLua);
-	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
-	pkScript->ExposeFunction("ChangeSkin", GuiAppLua::ChangeSkinLua); 
-	pkScript->ExposeFunction("GetScreenWidth", GuiAppLua::GetScreenWidthLua); 
-	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
-	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
-	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
-
-	return true;
 }

@@ -56,7 +56,6 @@ class MistClient :public Application, public ZGuiApp {
 		float					m_fDistance;
 
 	public:
-		bool InitializeScript();
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
