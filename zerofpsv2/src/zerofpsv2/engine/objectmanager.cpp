@@ -1684,8 +1684,9 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 	kTestDirs2.push_back(Vector3(x2,-y2,-z2));
 	kTestDirs2.push_back(Vector3(-x2,-y2,-z2));
 
+	int i;
 	// box1 vs box2
-	for(int i = 0 ;i<kTestDirs1.size();i++)
+	for( i = 0 ;i<kTestDirs1.size();i++)
 	{
 		Vector3 kPoint = kPos1 + kTestDirs1[i];
 		
@@ -1699,7 +1700,7 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 	}
 
 	// box2 vs box1
-	for(int i = 0 ;i<kTestDirs2.size();i++)
+	for( i = 0 ;i<kTestDirs2.size();i++)
 	{
 		Vector3 kPoint = kPos2 + kTestDirs2[i];
 		
@@ -1711,6 +1712,7 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 		if(kPoint.z > (kPos1.z + z1))	continue;
 		return true;
 	}
+
 
 	return false;
 }

@@ -40,6 +40,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTankGun		= NULL;
 	m_pkZeroTank_Modify	= NULL;
 	m_pkZeroTankClientObject = NULL;
+	m_pkGoblinLord = NULL;
 
 } 
 
@@ -123,6 +124,10 @@ void ZeroTank::OnIdle()
 		}
 	}	
 
+	if(m_pkGoblinLord)
+		m_pkGoblinSlave->SetLocalRotM( m_pkGoblinLord->GetLocalRotM() );
+
+
 /*	if(pkObj) {
 		m_pkZeroTank_Modify = pkObj;
 		pkObjectMan->OwnerShip_Take( pkObj );
@@ -167,6 +172,8 @@ void ZeroTank::Input()
 	if(pkInput->Pressed(KEY_3))	m_pkZeroTank_Modify = m_pkZeroTankTower;
 	if(pkInput->Pressed(KEY_4))	m_pkZeroTank_Modify = m_pkZeroTankGun;
 	if(pkInput->Pressed(KEY_5))	m_pkZeroTank_Modify = m_pkZeroTankTrack;
+	if(pkInput->Pressed(KEY_6))	m_pkZeroTank_Modify = m_pkGoblinLord;
+
 
 
 	if(m_pkZeroTank_Modify)
@@ -549,7 +556,8 @@ void ZeroTank::OnServerStart(void)
 
 	// goblin
 	Object *pkGob = pkObjectMan->CreateObjectByArchType("Goblin");
-	
+
+
 	// minoutar
 	Object* pk8 = pkObjectMan->CreateObjectByArchType("VimTest1");		// Minoutar VimTest1
 	Object* pk11 = pkObjectMan->CreateObjectByArchType("Min_axe");
@@ -604,6 +612,14 @@ void ZeroTank::OnServerStart(void)
 //	pk14->AttachToClosestZone();
 //	pkGob->AttachToClosestZone();
 
+	m_pkGoblinLord =  pkObjectMan->CreateObjectByArchType("Goblin");
+	m_pkGoblinLord->SetWorldPosV ( Vector3 (20,30,20) );
+	m_pkGoblinLord->AttachToClosestZone();
+	m_pkGoblinLord->AddProperty("P_Primitives3D");
+
+	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
+	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );
+	m_pkGoblinSlave->AttachToClosestZone();
 
 }
 

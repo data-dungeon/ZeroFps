@@ -75,6 +75,10 @@ class ZeroTank :public Application, public ZGuiApp {
 
 		Object*				m_pkZeroTank_Modify;
 
+		// Test for rotations - Vim
+		Object*				m_pkGoblinLord;
+		Object*				m_pkGoblinSlave;
+
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);

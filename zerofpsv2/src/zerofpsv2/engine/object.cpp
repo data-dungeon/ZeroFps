@@ -474,6 +474,7 @@ bool Object::NeedToPack()
 	return false;
 }
 
+
 /**	\brief	Pack Object.
 */
 void Object::PackTo(NetPacket* pkNetPacket)
@@ -485,7 +486,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write( iParentID );
 
 	// Force Pos Updates
-//	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
+	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
 
 	// Write Object Update Flags.
 	pkNetPacket->Write( m_iNetUpdateFlags );
@@ -496,8 +497,9 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
 		pkNetPacket->Write(GetWorldPosV());
 	
+	Matrix4 kRotMatrix = GetLocalRotM();
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
-		pkNetPacket->Write(GetWorldRotV());
+		pkNetPacket->Write( kRotMatrix );
 
 	pkNetPacket->Write(m_fRadius);
 
@@ -556,10 +558,11 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		}
 
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
-		pkNetPacket->Read(kVec);
+		Matrix4 kRotMatrix;
+		pkNetPacket->Read(kRotMatrix);
 		//SetWorldPosV(kVec);
-		SetWorldRotV(kVec);
-		SetWorldRotV(kVec);
+		SetLocalRotM(kRotMatrix);
+		//SetWorldRotV(kVec);
 		g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
 		}
 
@@ -899,6 +902,7 @@ void Object::ResetChildsGotData()
 
 void Object::SetLocalRotM(Matrix4 kNewRot)
 {
+	m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
 	ResetChildsGotData();
 	
 	m_kLocalRotM = kNewRot;
