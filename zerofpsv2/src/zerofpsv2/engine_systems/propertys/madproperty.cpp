@@ -192,8 +192,8 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 bool MadProperty::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
-		cout << "Setting MadProperty MadFile:" << kValue.c_str();
-		cout << endl;
+		//cout << "Setting MadProperty MadFile:" << kValue.c_str();
+		//cout << endl;
 		SetBase(kValue.c_str());
 		return true;
 		}

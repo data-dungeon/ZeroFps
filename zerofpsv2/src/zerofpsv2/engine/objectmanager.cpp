@@ -6,7 +6,43 @@
 #include "../basic/simplescript.h"
 #include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/primitives3d.h"
+#include "../engine_systems/propertys/proxyproperty.h"
 #include "fh.h"
+
+
+
+ZoneData& ZoneData::operator=(const ZoneData &kOther) 
+{
+	m_pkZone				= kOther.m_pkZone;
+	m_iZoneID			= kOther.m_iZoneID;
+	m_kPos				= kOther.m_kPos;
+	m_kMin				= kOther.m_kMin;
+	m_kMax				= kOther.m_kMax;
+	m_iNumOfLinks		= kOther.m_iNumOfLinks;
+	m_iZoneLinks		= kOther.m_iZoneLinks;
+	m_fInactiveTime	= kOther.m_fInactiveTime;
+	m_bActive			= kOther.m_bActive;
+	m_iRange				= kOther.m_iRange;
+	return *this;
+}
+
+bool ZoneData::IsInside(Vector3 kPoint)
+{
+	if(kPoint.x < (m_kPos.x + m_kMin.x))	return false;
+	if(kPoint.y < (m_kPos.y + m_kMin.y))	return false;
+	if(kPoint.z < (m_kPos.z + m_kMin.z))	return false;
+
+	if(kPoint.x > (m_kPos.x + m_kMax.x))	return false;
+	if(kPoint.y > (m_kPos.y + m_kMax.y))	return false;
+	if(kPoint.z > (m_kPos.z + m_kMax.z))	return false;
+
+	return true;
+}
+
+
+
+
+
 
 ObjectManager::ObjectManager() 
 : ZFSubSystem("ObjectManager") 
@@ -20,6 +56,9 @@ ObjectManager::ObjectManager()
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
 	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
+
+	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
+	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
 	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 }
@@ -35,6 +74,8 @@ bool ObjectManager::StartUp()
 	m_pkWorldObject->GetName()			= "WorldObject";
 	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
+
+	iNextObjectID = 100000;
 
 	TESTVIM_LoadArcheTypes("zfoh.txt");
 
@@ -77,15 +118,28 @@ void ObjectManager::Remove(Object* pkObject)
 
 void ObjectManager::Delete(Object* pkObject) 
 {
+/*
 	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
 	{
 		if(pkObject == (*it)) {
+			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
 			cout << "Object already in delete list" << endl;
 			return;
 		}
 	}
 	
-	m_akDeleteList.push_back(pkObject);
+	m_akDeleteList.push_back(pkObject);*/
+
+	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	{
+		if(pkObject->iNetWorkID == (*it)) {
+			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
+			cout << "Object already in delete list" << endl;
+			return;
+		}
+	}
+	
+	m_aiDeleteList.push_back(pkObject->iNetWorkID);
 }
 
 void ObjectManager::Clear()
@@ -131,7 +185,7 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 
 void ObjectManager::UpdateDelete()
 {
-	int i=0;
+/*	int i=0;
 	for(vector<Object*>::iterator it2=m_akDeleteList.begin();it2!=m_akDeleteList.end();it2++) 
 	{
 		Object* pkObject = (*it2);
@@ -153,7 +207,34 @@ void ObjectManager::UpdateDelete()
 		delete (*it);		
 	}
 
-	m_akDeleteList.clear();
+	m_akDeleteList.clear();*/
+
+/*	int i=0;
+	for(vector<int>::iterator it2=m_aiDeleteList.begin();it2!=m_aiDeleteList.end();it2++) 
+	{
+		
+		Object* pkObject = GetObjectByNetWorkID((*it2));
+		//cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
+		i++;
+	}*/
+
+	int iSize = m_aiDeleteList.size();
+
+	if(m_aiDeleteList.size()==0)
+		return;
+	
+	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	{
+		Object* pkObject = GetObjectByNetWorkID((*it));
+		if(pkObject) { // If i own object mark so we remove it on clients.
+			if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+				m_aiNetDeleteList.push_back((*it));
+			delete pkObject;		
+			}
+	}
+
+	m_aiDeleteList.clear();
+
 }
 
 void ObjectManager::UpdateGameMessages(void)
@@ -909,6 +990,15 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 //			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
 			//RouteMessage(gm);
 			break;
+
+		case FID_LOADZONES:
+			LoadZones();
+			break;
+
+		case FID_SAVEZONE:
+			SaveZones();
+			break;
+			
 	}	
 
 }
@@ -977,13 +1067,6 @@ void ObjectManager::OwnerShip_OnGrant(Object* pkObj)
 	Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
 }
 
-/*
-void ObjectManager::TESTVIM_SpawnArcheTypes()
-{
-
-}
-*/
-
 Object* ObjectManager::CloneObject(int iNetID)
 {
 	Object* pkObjOrginal = GetObjectByNetWorkID(iNetID);
@@ -1024,21 +1107,16 @@ void ObjectManager::Test_CreateZones()
 				
 				kZData.m_pkZone = object;
 				kZData.m_kPos   = kPos;
-				kZData.m_kMin.Set(0,0,0);
-				kZData.m_kMax.Set(0,0,0);
+				kZData.m_kMin = - (object->m_kSize * 0.5);
+				kZData.m_kMax =   (object->m_kSize * 0.5);
 				kZData.m_iZoneID = object->iNetWorkID;
-				kZData.m_iNumOfLinks = object->m_kZoneLinks.size();
-				for(int zl=0; zl <object->m_kZoneLinks.size(); zl++)
-					kZData.m_iZoneLinks.push_back(object->m_kZoneLinks[zl]->iNetWorkID);
-				//m_kZones.push_back(object);
 				m_kZones.push_back(kZData);
 
 				// Create Ground Box.
-				//object->AddProperty("P_Primitives3D");
 				object->AddProperty(new P_Primitives3D(SOLIDBBOX));
 				P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
-				pk3d->m_kMin = /*object->GetWorldPosV()*/ - (object->m_kSize * 0.5);
-				pk3d->m_kMax = /*object->GetWorldPosV()*/ (object->m_kSize * 0.5);
+				pk3d->m_kMin =  - (object->m_kSize * 0.5);
+				pk3d->m_kMax =    (object->m_kSize * 0.5);
 				pk3d->m_kMax.y = - 4;
 				pk3d->m_kColor = RndColor();
 
@@ -1049,7 +1127,6 @@ void ObjectManager::Test_CreateZones()
 					pkBall = CreateObjectByArchType("TVimBollus");
 					pkBall->SetLocalPosV(kPos + kRandOffset);
 					pkBall->SetParent(object);				
-					//pkBall->SetParent(GetWorldObject());				
 					}
 				}
 		}
@@ -1067,31 +1144,21 @@ void ObjectManager::Test_DrawZones()
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
 	for(unsigned int i=0;i<m_kZones.size();i++) {
-		Vector3 kMin = m_kZones[i].m_pkZone->GetWorldPosV() - (m_kZones[i].m_pkZone->m_kSize * 0.5);
-		Vector3 kMax = m_kZones[i].m_pkZone->GetWorldPosV() + (m_kZones[i].m_pkZone->m_kSize * 0.5);
+		Vector3 kMin = m_kZones[i].m_kPos + m_kZones[i].m_kMin;
+		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kMax;
 
-		if(m_kZones[i].m_pkZone->m_bActive)
+		if(m_kZones[i].m_bActive)
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
 		else 
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
-			//m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(0,1,0));
-
-/*
-		if(m_kZones[i]->GetUpdateStatus() & UPDATE_STATIC)
-			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(0,1,0));
-		else 
-			//m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(1,0,0));
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
-*/
 		}
-
 }
 
 void ObjectManager::AutoConnectZones()
 {
 	Vector3 kCenterPos;
 	Vector3 kCheckPos;
-	ZoneObject* pkZone;
+	ZoneData* pkZone;
 	
 	vector<Vector3>	kAutoConnectDirs;
 	kAutoConnectDirs.push_back(Vector3(10,0,0));
@@ -1110,9 +1177,8 @@ void ObjectManager::AutoConnectZones()
 			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
 			pkZone = GetZone(kCheckPos);
 			// If a zone add a link.
-			if(pkZone && (m_kZones[i].m_pkZone != pkZone)) {
-				cout << "Connecting Zone" << endl;
-				m_kZones[i].m_pkZone->m_kZoneLinks.push_back(pkZone);
+			if(pkZone && (m_kZones[i].m_pkZone != pkZone->m_pkZone)) {
+				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_pkZone->iNetWorkID);
 				}
 
 			}
@@ -1122,7 +1188,7 @@ void ObjectManager::AutoConnectZones()
 
 Vector3 ObjectManager::GetZoneCenter(int iZoneNum)
 {
-	return m_kZones[iZoneNum].m_pkZone->GetWorldPosV();
+	return m_kZones[iZoneNum].m_kPos;
 }
 
 int ObjectManager::GetNumOfZones()
@@ -1156,83 +1222,145 @@ void ObjectManager::ClearTrackers()
 	m_kTrackedObjects.clear();
 }
 
-ZoneObject* ObjectManager::GetZone(Vector3 kPos)
+ZoneData* ObjectManager::GetZone(Vector3 kPos)
 {
-	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(m_kZones[iZ].m_pkZone->IsInside(kPos))
-			return m_kZones[iZ].m_pkZone;
+		if(m_kZones[iZ].IsInside(kPos))
+			return &m_kZones[iZ];
 		}
 
 	return NULL;
 }
 
-ZoneObject* ObjectManager::GetZone(Object* PkObject)
+ZoneData* ObjectManager::GetZone(Object* PkObject)
 {
-	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(m_kZones[iZ].m_pkZone->IsInside(PkObject->GetWorldPosV()))
-			return m_kZones[iZ].m_pkZone;
+		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
+			return &m_kZones[iZ];
 		}
 
 	return NULL;
 }
+
+int ObjectManager::GetZoneIndex(Object* PkObject)
+{
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
+			return iZ;
+		}
+
+	return -1;
+}
+
 
 void ObjectManager::UpdateZones()
 {
 	float fTime = m_pkZeroFps->GetGameTime();
-	ZoneObject* pkZone;
-	ZoneObject* pkStartZone;
+	ZoneData* pkZone;
+	ZoneData* pkStartZone;
 
 
-	int iTrackerLOS = 5;
+	int iTrackerLOS = 3;
 
 	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		m_kZones[iZ].m_pkZone->m_bActive					= false;
-		m_kZones[iZ].m_pkZone->m_fInactiveTime			= fTime;
-		m_kZones[iZ].m_pkZone->m_iRange					= 1000;
-		m_kZones[iZ].m_pkZone->GetUpdateStatus()		= UPDATE_NONE;
+		m_kZones[iZ].m_bActive							= false;
+		m_kZones[iZ].m_fInactiveTime					= fTime;
+		m_kZones[iZ].m_iRange							= 1000;
+		if(m_kZones[iZ].m_pkZone)
+			m_kZones[iZ].m_pkZone->GetUpdateStatus()	= UPDATE_NONE;
 		}
 
-	vector<ZoneObject*>	m_kFloodZones;
+	vector<ZoneData*>	m_kFloodZones;
+	int iZoneIndex;
 
 	// For each tracker.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
-		pkStartZone = GetZone((*iT));
-		if(pkStartZone) {
+		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
+		pkTrack->m_iActiveZones.clear();
+
+		// First we check if tracker is in the same zone as last time.,
+		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
+			iZoneIndex = pkTrack->m_iLastZoneIndex;
+		else	// if not we search for zone.
+			iZoneIndex = GetZoneIndex((*iT));
+
+		if(iZoneIndex >= 0) {
+			pkTrack->m_iLastZoneIndex = iZoneIndex;
+			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			m_kFloodZones.push_back(pkStartZone);
+			cout << "pkStartZone: " << pkStartZone->m_iZoneID << endl;
 			}
 
+		// Flood Zones in rage to active.
 		while(m_kFloodZones.size()) {
 			pkZone = m_kFloodZones.back();
 			m_kFloodZones.pop_back();
 
+			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
+
 			pkZone->m_bActive = true;
-			pkZone->GetUpdateStatus()		= UPDATE_ALL;
 			int iRange = pkZone->m_iRange + 1;
 
 			if(iRange < iTrackerLOS) {
-				for(int i=0; i<pkZone->m_kZoneLinks.size(); i++) {
-					if(pkZone->m_kZoneLinks[i]->m_iRange < iRange)	continue;
-					pkZone->m_kZoneLinks[i]->m_iRange = iRange;
-					if(pkZone->m_kZoneLinks[i]->m_iRange < iTrackerLOS)
-						m_kFloodZones.push_back(pkZone->m_kZoneLinks[i]);
+				for(int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+					ZoneData* pkOtherZone = pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
+
+					if(pkOtherZone->m_iRange < iRange)	continue;
+					pkOtherZone->m_iRange = iRange;
+					if(pkOtherZone->m_iRange < iTrackerLOS)
+						m_kFloodZones.push_back(pkOtherZone);
 					}
 				}
 			}
 		}
 
-	// Flood Zones in rage to active.
 
 	// Age Inactive Zones.
 
 	// If Inactive Zone to old let it die.
+	ZoneData* pkZoneRefresh;
 
+	for(int i=0; i<m_kZones.size(); i++) {
+		pkZoneRefresh = &m_kZones[i];
 
+		// Zones that need to load.
+		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) {
+			LoadZone(pkZoneRefresh->m_iZoneID);
+			cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
+			}
+
+		// Zones that need to unload
+		if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) {
+			UnLoadZone(pkZoneRefresh->m_iZoneID);
+			cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
+			}
+
+		if(pkZoneRefresh->m_bActive)
+			pkZoneRefresh->m_pkZone->GetUpdateStatus()		= UPDATE_ALL;
+	}
 }
+
+void ObjectManager::Zones_Refresh()
+{
+	for(int i=0; i<m_kZones.size(); i++) {
+		// Zones that need to load.
+		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone == NULL) {
+			LoadZone(m_kZones[i].m_iZoneID);
+			cout << "Load Zone: " << m_kZones[i].m_iZoneID << endl;
+			}
+
+		// Zones that need to unload
+		if(m_kZones[i].m_bActive == false && m_kZones[i].m_pkZone) {
+			UnLoadZone(m_kZones[i].m_iZoneID);
+			cout << "UnLoad Zone: " << m_kZones[i].m_iZoneID << endl;
+			}
+
+	}
+}
+
 
 vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
 {
@@ -1243,23 +1371,135 @@ vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
 
 void ObjectManager::LoadZones()
 {
+	ZFVFile kFile;
+	kFile.Open("zones.dat",0,false);
+
+	int iNumOfZone;
+	kFile.Read(&iNumOfZone,sizeof(int),1);
+
+	ZoneData kZData;
+	int i,zl;
+	int iLink;
+
+	for( i=0; i<iNumOfZone; i++) {
+		kFile.Read(&kZData.m_iNumOfLinks, sizeof(kZData.m_iNumOfLinks), 1);
+		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
+		kFile.Read(&kZData.m_kMax, sizeof(kZData.m_kMax), 1);
+		kFile.Read(&kZData.m_kMin, sizeof(kZData.m_kMin), 1);
+		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
+
+		for(zl=0; zl < kZData.m_iNumOfLinks; zl++) {
+			kFile.Read(&iLink, sizeof(iLink), 1);
+			kZData.m_iZoneLinks.push_back(iLink);
+			}
 		
+		kZData.m_pkZone = NULL;
+		m_kZones.push_back(kZData);
+		kZData.m_iZoneLinks.clear();
+		}
+
+	kFile.Close();
+
+	// Set upp all links.
+	for( i=0; i<iNumOfZone; i++) {
+		for(zl=0; zl < m_kZones[i].m_iZoneLinks.size(); zl++) {
+			ZoneData* pkOtherZone = GetZoneData(m_kZones[i].m_iZoneLinks[zl]);
+			m_kZones[i].m_pkZoneLinks.push_back(pkOtherZone);
+			}
+		}
+
 }
 
 void ObjectManager::SaveZones()
 {
-	ZoneData kZData;
-
 	ZFVFile kFile;
 	kFile.Open("zones.dat",0,true);
 
-	int iNumOfZone = m_kZones.size();
+ 	int iNumOfZone = m_kZones.size();
 	kFile.Write(&iNumOfZone,sizeof(int),1);
 
-//	for(int i=0; i<iNumOfZone; i++) {
-//		kZData.m_iZoneID = m_kZones[i]->
-//		}
+	for(int i=0; i<iNumOfZone; i++) {
+		m_kZones[i].m_iNumOfLinks = m_kZones[i].m_iZoneLinks.size();
+
+		kFile.Write(&m_kZones[i].m_iNumOfLinks, sizeof(m_kZones[i].m_iNumOfLinks), 1);
+		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
+		kFile.Write(&m_kZones[i].m_kMax, sizeof(m_kZones[i].m_kMax), 1);
+		kFile.Write(&m_kZones[i].m_kMin, sizeof(m_kZones[i].m_kMin), 1);
+		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
+
+		for(int zl=0; zl < m_kZones[i].m_iNumOfLinks; zl++)
+			kFile.Write(&m_kZones[i].m_iZoneLinks[zl], sizeof(m_kZones[i].m_iZoneLinks[zl]), 1);
+		}
 
 	kFile.Close();
+}
+
+void ObjectManager::LinkZones(int iFromId, int iToId)
+{
+	
+}
+
+ZoneData* ObjectManager::GetZoneData(int iID)
+{
+	int i;
+	ZoneData* kZData = NULL;
+	for(i=0; i<m_kZones.size(); i++) {
+		if(m_kZones[i].m_iZoneID == iID)
+			return &m_kZones[i];
+		}
+
+	return NULL;
+}
+
+void ObjectManager::LoadZone(int iId)
+{	
+	int i;
+	ZoneData* kZData = GetZoneData(iId);
+	assert(kZData);
+
+	// Check if zone is loaded. If soo return.
+	if(kZData->m_pkZone)
+		return;
+
+	// Create Object.
+	ZoneObject *object = new ZoneObject;
+	object->iNetWorkID = iId;
+
+	Vector3 kPos = kZData->m_kPos;
+	object->SetLocalPosV(kPos);
+	object->SetParent(GetWorldObject());				
+	object->GetUpdateStatus()=UPDATE_DYNAMIC;
+
+	kZData->m_pkZone = object;
+
+	// Create Ground Box.
+	object->AddProperty(new P_Primitives3D(SOLIDBBOX));
+	P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
+	pk3d->m_kMin =  - (object->m_kSize * 0.5);
+	pk3d->m_kMax =  (object->m_kSize * 0.5);
+	pk3d->m_kMax.y = - 4;
+	pk3d->m_kColor = RndColor();
+
+	// Create Random Objects.
+/*	Vector3 kRandOffset;
+	Object* pkBall;
+	int iNumOfBalls = rand() % 5;
+	for(i=0; i<iNumOfBalls; i++) {
+		kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
+		pkBall = CreateObjectByArchType("TVimBollus");
+		pkBall->SetLocalPosV(kPos + kRandOffset);
+		pkBall->SetParent(object);				
+		}*/
+}
+
+void ObjectManager::UnLoadZone(int iId)
+{
+	ZoneData* kZData = GetZoneData(iId);
+	assert(kZData);
+	if(kZData->m_pkZone == NULL)
+		return;
+
+	Delete(kZData->m_pkZone);
+	kZData->m_pkZone = NULL;
 }
 

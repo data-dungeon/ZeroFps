@@ -9,6 +9,7 @@
 #include "../../engine/levelmanager.h"
 #include <string.h>
 #include "../engine_systems_x.h"
+#include <set>
 //#include "GL/glut.h"
 
 using namespace std;
@@ -52,9 +53,12 @@ class ENGINE_SYSTEMS_API TrackProperty: public Property {
 		ObjectManager*		m_pkOBjM;
 		ZeroFps*				m_pkFps;
 		float					m_fNextMove;
-
 		
 	public:
+		int					m_iZoneNum;
+		int					m_iLastZoneIndex;	// Index of last zone we was close to.
+		set<int>				m_iActiveZones;
+
 		void Update();
 		TrackProperty();
 		~TrackProperty();

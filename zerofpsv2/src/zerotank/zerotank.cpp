@@ -3,6 +3,7 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
+#include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
@@ -398,7 +399,19 @@ void ZeroTank::OnHud(void)
 	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
 	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
 	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
+	
+	if(m_pkZeroTankTrack) {
+		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroTankTrack->GetProperty("TrackProperty"));
 
+		for(set<int>::iterator it = pkTrack->m_iActiveZones.begin(); it != pkTrack->m_iActiveZones.end(); it++) {
+			pkFps->DevPrintf("common"," %d", (*it));	
+			}
+
+		}
+
+
+
+	
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
@@ -406,6 +419,8 @@ void ZeroTank::OnHud(void)
 
 void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	int i;
+
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -433,6 +448,35 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_UNLOAD:
 			break;
 	
+		case FID_MASSSPAWN:
+			for(i=0; i < 1;i++) {
+				m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+				if(m_pkZeroTankTrack) {
+					int iRandZone = rand() % pkObjectMan->GetNumOfZones();
+					Vector3 kPos = pkObjectMan->GetZoneCenter(iRandZone);
+					kPos.y = -4;
+					m_pkZeroTankTrack->SetWorldPosV( kPos );
+					//m_pkZeroTankTrack->AttachToClosestZone();
+					m_pkZeroTankTrack->SetParent(pkObjectMan->GetWorldObject());
+					pkObjectMan->AddTracker(m_pkZeroTankTrack);
+				}
+			}
+
+
+			
+/*		for(int i=0; i<5; i++) {
+			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+			if(m_pkZeroTankTrack) {
+				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
+				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
+				m_pkZeroTankTrack->AttachToClosestZone();
+				pkObjectMan->AddTracker(m_pkZeroTankTrack);
+
+			}
+		}*/
+			break;
+
+
 	}
 }
 
@@ -584,16 +628,6 @@ void ZeroTank::OnServerStart(void)
 			}
 		}*/
 
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone = 0;	// rand() % pkObjectMan->GetNumOfZones();
-				Vector3 kPos = pkObjectMan->GetZoneCenter(iRandZone);
-				kPos.y = -4;
-				m_pkZeroTankTrack->SetWorldPosV( kPos );
-				//m_pkZeroTankTrack->AttachToClosestZone();
-				m_pkZeroTankTrack->SetParent(pkObjectMan->GetWorldObject());
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
-			}
 	
 	}
 

@@ -23,15 +23,25 @@ class ZoneObject;
 class ZoneData
 {
 public:
-	ZoneObject*		m_pkZone;
-	int				m_iZoneID;
-	Vector3			m_kPos;
-	Vector3			m_kMin;
-	Vector3			m_kMax;
-	int				m_iNumOfLinks;
-	vector<int>		m_iZoneLinks;
-	// int	m_iZoneLinks[ m_iNumOfLinks ];
+	ZoneData& operator=(const ZoneData &kOther);
+	bool IsInside(Vector3 kPoint);
+
+	ZoneObject*			m_pkZone;
+	int					m_iZoneID;
+	Vector3				m_kPos;
+	Vector3				m_kMin;
+	Vector3				m_kMax;
+	int					m_iNumOfLinks;
+	vector<int>			m_iZoneLinks;
+	vector<ZoneData*>	m_pkZoneLinks;
+
+	float		m_fInactiveTime;
+	bool		m_bActive;
+	int		m_iRange;						// Range to tracker i num of zones.
+
 };
+
+
 
 
 class ENGINE_API ObjectManager : public ZFSubSystem{
@@ -41,6 +51,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			FID_LOGOHTREE,
 			FID_LOGACTIVEPROPERTYS,
 			FID_SENDMESSAGE,
+			FID_LOADZONES,
+			FID_SAVEZONE,
 		};
 
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
@@ -57,7 +69,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void AddArchPropertys(Object* pkObj, string strName);
 
 		list<Object*>		m_akObjects;									///< List of all objects.
-		vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
+		//vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
+		vector<int>			m_aiDeleteList;
 		vector<int>			m_aiNetDeleteList;
 
 		vector<Property*>	m_akPropertys;									///< List of Active Propertys.	
@@ -183,8 +196,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void Test_CreateZones();
 		void Test_DrawZones();
 		void UpdateZones();
-		ZoneObject* GetZone(Object* PkObject);
-		ZoneObject* GetZone(Vector3 kPos);
+		ZoneData* GetZone(Object* PkObject);
+		int GetZoneIndex(Object* PkObject);
+
+		ZoneData* GetZone(Vector3 kPos);
 		void AutoConnectZones();
 		Vector3 GetZoneCenter(int iZoneNum);
 
@@ -200,6 +215,13 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 		void LoadZones();
 		void SaveZones();
+
+		void LoadZone(int iId);
+		void UnLoadZone(int iId);
+		void LinkZones(int iFromId, int iToId);
+		ZoneData*	GetZoneData(int iID);
+
+		void Zones_Refresh();
 };
 
 #endif

@@ -398,7 +398,9 @@ void ZeroFps::Draw_EngineShell()
 		string strCamDesc = GetCam()->GetCameraDesc();
 		DevPrintf("common",strCamDesc.c_str());
 		}
+
 	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
+	DevPrintf("common" , "Zone: %d", this->m_pkObjectMan->m_kZones.size());
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;

@@ -3,7 +3,9 @@
  
 ZoneObject::ZoneObject()
 {
-	m_kName="ZoneObject";
+	m_strType	= "ZoneObject";
+	m_kName		= "A ZoneObject";
+
 	m_bSave=false;	
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -11,12 +13,13 @@ ZoneObject::ZoneObject()
 //	AddProperty("P_Primitives3D");
 
 	m_eRole			= NETROLE_AUTHORITY;
-	m_eRemoteRole	= NETROLE_NONE;
+//	m_eRemoteRole	= NETROLE_NONE;
+	m_eRemoteRole	= NETROLE_PROXY;
 
 	m_kSize.Set(10,10,10);
-	m_bActive = true;
+//	m_bActive = true;
 }
-
+/*
 bool ZoneObject::IsInside(Vector3 kPos)
 {
 	Vector3 kMin = GetWorldPosV() - (m_kSize * 0.5);
@@ -32,7 +35,7 @@ bool ZoneObject::IsInside(Vector3 kPos)
 
 	return true;
 }
-
+*/
 
 void ZoneObject::SetRadius(float fRadius)
 {

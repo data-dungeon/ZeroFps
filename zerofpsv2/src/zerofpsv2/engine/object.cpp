@@ -30,7 +30,7 @@ Object::Object() {
 //	m_kOldPos	= Vector3::ZERO;
 //	m_kOldRot	= Vector3::ZERO;	
 	
-	m_kName		= "Object";	
+	m_kName		= "A Object";	
 	m_strType	= "Object";
 
 	m_iNetUpdateFlags = 0;
@@ -336,7 +336,7 @@ void Object::DeleteAllChilds()
 	while(m_akChilds.size()) {
 		pkChildObject = (*m_akChilds.begin());
 
-		cout << "Child " << pkChildObject->m_kName << endl; 
+		//cout << "Child " << pkChildObject->m_kName << endl; 
 		pkChildObject->DeleteAllChilds();
 		delete pkChildObject;
 		}
@@ -746,14 +746,14 @@ void Object::MakeCloneOf(Object* pkOrginal)
 
 	for(itListProperty it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
 		pkProp = AddProperty((*it)->m_acName);
-		cout << "Creating '" << (*it)->m_acName << "'\n";
+		//cout << "Creating '" << (*it)->m_acName << "'\n";
 		
 		// Get Values
 		akPropertyNames = (*it)->GetValueNames();
 
 		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
 			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
-			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
+			//cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
 			}
 		
 		// *pkProp = (*it);
