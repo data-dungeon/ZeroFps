@@ -159,13 +159,195 @@ bool MadProperty::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
+bool MadProperty::TestLine(Vector3 kPos,Vector3 kDir)
+{
+	if(LineVSSphere(kPos,kDir))
+	{
+		return LineVSMesh(kPos,kDir);
+	}
+
+	return false;
+}
+
+bool MadProperty::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
+{
+	Vector3 c=m_pkObject->GetWorldPosV() - kPos;		
+	kDir.Normalize();		
+	Vector3 k=kDir.Proj(c);		
+	
+	float cdis=c.Length();
+	float kdis=k.Length();
+	float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+	
+	if(Distance < GetRadius())
+		return true;
+
+	return false;
+}
+
+bool MadProperty::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
+{
+	vector<Mad_Face>*			pkFaces;			// Faces in mesh.
+	vector<Vector3>*			pkVertex;			// Vertex frames for mesh.
+	vector<Vector3>*			pkNormal;
+
+	Mad_Core*					pkCore;
+	Mad_CoreMesh*				pkCoreMesh;
+
+	//setup all pointers
+	pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
+	if(!pkCore)
+		return false;
+	
+	pkCoreMesh = pkCore->GetMeshByID(0);		
+	if(!pkCoreMesh)
+		return false;
+	
+	pkFaces =	pkCoreMesh->GetFacesPointer();
+	pkVertex = (*pkCoreMesh->GetVertexFramePointer())[0].GetVertexPointer();
+	pkNormal = (*pkCoreMesh->GetVertexFramePointer())[0].GetNormalPointer();
+	
+	GenerateModelMatrix();
+	
+	
+	float		fDist = 9999999;
+	Vector3	kClosestColPos;
+	m_iColFace = -1;
+	
+	Vector3 data[3];
+	for(unsigned int i=0;i<pkFaces->size();i++)
+	{
+		
+		//get and transform vertexes		
+		for(int j=0;j<3;j++)
+			data[j] = m_kModelMatrix.VectorTransform((*pkVertex)[ (*pkFaces)[i].iIndex[j]]);
+		
+		//setup a virtual point in space
+		Vector3 Point2 = kPos+(kDir*1000);
+		
+		
+		if(TestPolygon(data,kPos,Point2))
+		{	
+			float d = (m_kColPos-kPos).Length(); 
+			
+			//if this point is closer than the last one, set it as closest
+			if(d < fDist)
+			{	
+				m_iColFace = i;
+				kClosestColPos=m_kColPos;
+				fDist = d;
+			}
+		}
+	}		
+	
+	//if we colided whit something, set colpos 
+	if(m_iColFace != -1)
+	{
+		m_kColPos=kClosestColPos; 
+		//m_pkZeroFps->m_pkRender->Sphere(m_kColPos,0.1,5,Vector3(1,0,0),true);					
+		return true;
+	}
+	
+	return false;
+}
+
+bool MadProperty::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
+{		
+	Plane P;
+	
+
+
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[0];		
+	Vector3 Normal= V1.Cross(V2);
+	
+	
+	if(Normal.Length() == 0)
+	{
+		return false;
+	}
+	
+	Normal.Normalize();
+	P.m_fD = -Normal.Dot(kVerts[0]);	
+	P.m_kNormal = Normal;
+
+	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){
+		if(TestSides(kVerts,&Normal,m_kColPos))
+		{
+			
+			return true;
+		}
+	}
+	
+	
+	return false;
+}
+
+bool MadProperty::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
+{
+	Plane side[6];
+	
+	
+/*	if(kVerts[0] == kVerts[1] || 
+		kVerts[2] == kVerts[1] ||
+		kVerts[0] == kVerts[2])
+		return false;*/
+	
+	
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[1];	
+	Vector3 V3 = kVerts[0] - kVerts[2];	
+	
+	side[0].m_kNormal = pkNormal->Cross(V1).Unit();
+	side[1].m_kNormal = pkNormal->Cross(V2).Unit();	
+	side[2].m_kNormal = pkNormal->Cross(V3).Unit();
+
+	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
+	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
+	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
+
+
+	side[0].m_fD = -side[0].m_kNormal.Dot(kVerts[0]);
+	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[1]);	
+	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[2]);	
+
+	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
+	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
+	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
+	
+	
+	bool inside = true;
+	
+	for(int i=0;i<6;i++)
+	{
+		if(!side[i].SphereInside(kPos,0.01)){
+			inside=false;
+		}
+	
+	}
+	
+	
+	return inside;	
+}
+
+
+void MadProperty::GenerateModelMatrix()
+{
+	m_kModelMatrix.Identity();
+	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+	m_kModelMatrix*=m_pkObject->GetWorldRotM();	
+	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
+
+}
+
+
 Property* Create_MadProperty()
 {
 	return new MadProperty;
 }
 
 
-
+//-------------LinkToJoinit
 
 LinkToJoint::LinkToJoint() 
 {
@@ -233,6 +415,9 @@ void LinkToJoint::Load(ZFIoInterface* pkPackage)
 	m_strToJoint = temp;
 
 }
+
+
+
 
 Property* Create_LinkToJoint()
 {

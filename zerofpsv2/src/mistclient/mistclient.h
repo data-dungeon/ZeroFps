@@ -114,6 +114,8 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientStart(void);
 		
 		
+		void PickZones();
+		
 		void SetActiveCaracter(int iCaracter);
 		
 		

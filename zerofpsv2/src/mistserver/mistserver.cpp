@@ -92,7 +92,7 @@ void MistServer::Init()
 	m_iCurrentMarkedZone = -1;
 	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
 	m_strActiveObjectName = "data/script/objects/t_test.lua";
-	m_strActiveEnviroment = "Default";
+	m_strActiveEnviroment = "data/enviroments/sun.env";
 
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
@@ -365,6 +365,15 @@ void MistServer::Input()
 			{
 				int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 				pkObjectMan->DeleteZone(id);
+			}
+			
+			if(pkInput->Pressed(KEY_F))
+			{
+				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+				{	
+					m_fClickDelay = pkFps->GetTicks();						
+					RotateActiveZoneObject();
+				}
 			}
 	
 			if(pkInput->Pressed(MOUSEMIDDLE))
@@ -928,7 +937,8 @@ void MistServer::RotateActiveZoneObject()
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+		if(pkData)
+			pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
 	}
 }
 

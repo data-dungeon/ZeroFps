@@ -18,6 +18,18 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 	
 		float	m_fLod;
 
+		//linetest stuff
+		Matrix4	m_kModelMatrix;
+		Vector3	m_kColPos;
+		int		m_iColFace;
+		
+		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir);
+		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);		
+		void GenerateModelMatrix();
+		
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
+		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);
+
 	public:
 		MadProperty();
 		//MadProperty(string strResName);
@@ -37,6 +49,10 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
+
+		bool TestLine(Vector3 kPos,Vector3 kDir);
+		Vector3 GetLastColPos() {return m_kColPos;};
+		int GetLastColFace() { return m_iColFace;};
 };
 
 Property* Create_MadProperty();

@@ -329,6 +329,8 @@ void MistClient::Input()
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
+			PickZones();
+			
 			Object* pkObject = GetTargetObject();
 			
 			if(pkObject)
@@ -357,7 +359,7 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();					
 		}
 
-		PickUp();
+		//PickUp();
 	}
 }
 
@@ -902,4 +904,36 @@ void MistClient::PrintInfoBox(const char *c_szText)
 
 	pkInfoBoxWnd->SetText((char*)strText.c_str());
 	pkInfoBoxWnd->ScrollRowIntoView(rows-3);
+}
+
+
+void MistClient::PickZones()
+{
+	Vector3 start = m_pkCamera->GetPos();
+	Vector3 dir = Get3DMousePos();
+	
+	vector<Object*> kObjects;	
+	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
+		
+	int iNrOfZones=0;
+	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		if(kObjects[i]->GetName() == "ZoneObject")
+		{
+			iNrOfZones++;
+		
+			MadProperty* mp = (MadProperty*)kObjects[i]->GetProperty("MadProperty");
+			if(mp)
+			{
+				if(mp->TestLine(start,dir))
+				{	
+					//cout<<"clicked on zone: "<<i<<endl;
+					pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
+				}
+				
+			}
+		}
+	}
+	//cout<<"nr of zones picked:"<<iNrOfZones<<endl;
 }
