@@ -188,7 +188,7 @@ namespace MistLandLua
    int MCOMMON_API AISetSlave(lua_State* pkLua);
 	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
    int MCOMMON_API GetClosestPlayerLua(lua_State* pkLua);
-	int MCOMMON_API GetClosestObjectOfTypeLua(lua_State* pkLua);
+	int MCOMMON_API GetClosestObjectOfTypeLua(lua_State* pkLua);	// (string type,flaot radius)
 
    int MCOMMON_API GetSeenPlayerLua(lua_State* pkLua);
 

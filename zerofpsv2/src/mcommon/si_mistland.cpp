@@ -3240,8 +3240,11 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
 
 int MistLandLua::GetClosestPlayerLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
+  		double dRadius;
+  		g_pkScript->GetArgNumber(pkLua, 0, &dRadius);				
+      
       Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
       if ( !pkObj )
@@ -3256,7 +3259,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
 
       vector<Entity*>* pkList = new vector<Entity*>;
 
-      pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
+      g_pkObjMan->GetAllObjectsInArea(pkList,pkObj->GetWorldPosV(),(float)dRadius);
 
       for ( int i = 0; i < pkList->size(); i++ )
       {
@@ -3291,10 +3294,12 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
 
 int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
 	{
+    	double dRadius;
     	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);		
+		g_pkScript->GetArgNumber(pkLua, 1, &dRadius);				
 	
       Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
@@ -3305,29 +3310,25 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
 
       float fDistance = 99999999;      
       
-      // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->GetObjectMan()->GetZone( pkObj->GetWorldPosV() );
+      vector<Entity*> kList;
 
-      vector<Entity*>* pkList = new vector<Entity*>;
+      g_pkObjMan->GetAllObjectsInArea(&kList,pkObj->GetWorldPosV(),(float)dRadius);
 
-      pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
-
-      for ( int i = 0; i < pkList->size(); i++ )
+      for ( int i = 0; i <kList.size(); i++ )
       {
          // check if object has item property
-         if ( pkList->at(i)->GetType() == acType )
+         if ( kList[i]->GetType() == acType )
          {
-            Vector3 kPos = pkList->at(i)->GetWorldPosV();
+            Vector3 kPos = kList[i]->GetWorldPosV();
             // check if distance is smaller that the previos (if any) found
             if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
             {
                fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
-               pkClosestObject = pkList->at(i);
+               pkClosestObject = kList[i];
             }
          }
       }
 
-      delete pkList;
 
       if ( pkClosestObject )
          g_pkScript->AddReturnValue(pkLua, pkClosestObject->iNetWorkID);
