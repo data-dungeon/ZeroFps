@@ -83,6 +83,14 @@ function GUICreate()
 	Skin36 = { tex1="move.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0,
 	 bkB=0, borderR=0, borderG=0, borderB=255, bd_size=0, tile=0, trans=0, rots90deg=2 }
 
+
+	Skin37 = { tex1="save_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0, rots90deg=0 }
+	Skin38 = { tex1="save_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=0,
+	 bkB=0, borderR=0, borderG=0, borderB=255, bd_size=0, tile=0, trans=0, rots90deg=0 }
+
+
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -180,6 +188,19 @@ function GUICreate()
 	ChangeSkin("PlaceongroundButton","Skin17","Checkbox: Button up")
 	ChangeSkin("PlaceongroundButton","Skin18","Checkbox: Button down")
 
+
+	CreateWnd(1,"AddToScriptBn","ObjectPage","",224,90,24,22,0,0,0)
+	ChangeSkin("AddToScriptBn","Skin37","Button up")
+	ChangeSkin("AddToScriptBn","Skin38","Button down")
+	ChangeSkin("AddToScriptBn","Skin37","Button focus")
+
+	CreateWnd(4,"SaveScriptFileNameLabel","ObjectPage","Enter name (and press Return):",10,180,200,20,0,0,0)
+	CreateWnd(10,"SaveScriptFileNameEb","ObjectPage","",10,200,200,20,0,0,0)
+	ChangeSkin("SaveScriptFileNameEb","Skin30","Textbox")
+	ShowWnd("SaveScriptFileNameEb",0,0)
+
+
+
 	CreateWnd(11,"ZoneModelTree","ZonePage","",10,20,200,200,0,0,0)
 	ChangeSkin("ZoneModelTree","Skin13","Treebox")
 	ChangeSkin("ZoneModelTree","Skin9","Treebox: V.Scrollbar")
@@ -211,27 +232,6 @@ function GUICreate()
 	ChangeSkin("OpenEditPropertyWnd","Skin34","Button down")
 	ChangeSkin("OpenEditPropertyWnd","Skin11","Button focus")
 
-	CreateWnd(0,"CustomEntitiesPage","WorkTabWnd","Custom",10,20,200,200,0,0,0)
-	CreateWnd(11,"CustomEntitiesTree","CustomEntitiesPage","",10,20,200,200,0,0,0)
-	ChangeSkin("CustomEntitiesTree","Skin13","Treebox")
-	ChangeSkin("CustomEntitiesTree","Skin9","Treebox: V.Scrollbar")
-	ChangeSkin("CustomEntitiesTree","Skin10","Treebox: V.Scrollbar: Button up")
-	ChangeSkin("CustomEntitiesTree","Skin11","Treebox: V.Scrollbar: Button down")
-	ChangeSkin("CustomEntitiesTree","Skin11","Treebox: V.Scrollbar: Button focus")
-	ChangeSkin("CustomEntitiesTree","Skin9","Treebox: H.Scrollbar")
-	ChangeSkin("CustomEntitiesTree","Skin10","Treebox: H.Scrollbar: Button up")
-	ChangeSkin("CustomEntitiesTree","Skin11","Treebox: H.Scrollbar: Button down")
-	ChangeSkin("CustomEntitiesTree","Skin11","Treebox: H.Scrollbar: Button focus")
-
-	CreateWnd(1,"AddToScriptBn","CustomEntitiesPage","+",224,12,16,16,0,0,0)
-	ChangeSkin("AddToScriptBn","Skin11","Button up")
-	ChangeSkin("AddToScriptBn","Skin34","Button down")
-	ChangeSkin("AddToScriptBn","Skin11","Button focus")
-
-	CreateWnd(4,"SaveScriptFileNameLabel","CustomEntitiesPage","Enter name (and press Return):",10,180,200,20,0,0,0)
-	CreateWnd(10,"SaveScriptFileNameEb","CustomEntitiesPage","",10,200,200,20,0,0,0)
-	ChangeSkin("SaveScriptFileNameEb","Skin30","Textbox")
-	ShowWnd("SaveScriptFileNameEb",0,0)
 
 	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0,0,0)
 	ChangeSkin("EnviromentPage","Skin4","Window")

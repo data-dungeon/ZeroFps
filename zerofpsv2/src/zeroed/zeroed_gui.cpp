@@ -148,6 +148,17 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(m_bPlaceObjectsOnGround)
 					PlaceObjectOnGround(m_iCurrentObject);
 			}
+         else
+		   if(strWndClicked == "AddToScriptBn")
+			{            
+            if(IsWndVisible("SaveScriptFileNameEb"))
+               SaveCurrentToScript();
+            else
+            {
+               ShowWnd("SaveScriptFileNameEb",true);
+               GetWnd("ObjectTree")->Resize(200, 200-60, false);
+            }
+			}
 		}
 		else
 		if(strMainWnd == "PropertyPage")
@@ -171,20 +182,20 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				RemoveSelProperty();
 			}
 		}
-      else
-      if(strMainWnd == "CustomEntitiesPage")
-      {
-			if(strWndClicked == "AddToScriptBn")
-			{            
-            if(IsWndVisible("SaveScriptFileNameEb"))
-               SaveCurrentToScript();
-            else
-            {
-               ShowWnd("SaveScriptFileNameEb",true);
-               GetWnd("CustomEntitiesTree")->Resize(200, 200-60, false);
-            }
-			}
-      }
+   //   else
+   //   if(strMainWnd == "CustomEntitiesPage")
+   //   {
+			//if(strWndClicked == "AddToScriptBn")
+			//{            
+   //         if(IsWndVisible("SaveScriptFileNameEb"))
+   //            SaveCurrentToScript();
+   //         else
+   //         {
+   //            ShowWnd("SaveScriptFileNameEb",true);
+   //            GetWnd("ObjectTree")->Resize(200, 200-60, false);
+   //         }
+			//}
+   //   }
 		else
 		if(strMainWnd == "AddNewProperyWnd")
 		{
@@ -371,11 +382,9 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			m_iEditMode = EDIT_OBJECTS;
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+         ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
+         BuildFileTree("ObjectTree", "data/script/objects/", ".lua");
 			break;
-      case 3:
-         ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
-         BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
-         break;
 		case 4:
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();

@@ -149,6 +149,8 @@ bool ZeroEd::SaveCurrentToScript()
    string strFileName = GetText("SaveScriptFileNameEb");
 
    bool bUpdate = false;
+
+   string CREATED_SCRIPTS_DIR = "data/script/objects/";
    
 	if((pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"))) &&
       (pkPropFuck = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
@@ -157,11 +159,11 @@ bool ZeroEd::SaveCurrentToScript()
       if( strFileName.find(".lua") == string::npos )
          strFileName += string(".lua");
 
-      if(!pkBFPS->DirExist(CREATED_SCRIPTS_DIR.c_str()))
-	      pkBFPS->CreateDir(CREATED_SCRIPTS_DIR.c_str());
+      //if(!pkBFPS->DirExist(CREATED_SCRIPTS_DIR.c_str()))
+	     // pkBFPS->CreateDir(CREATED_SCRIPTS_DIR.c_str());
 
-      ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
-      BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+      ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
+      BuildFileTree("ObjectTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
 
       ZFVFile kFile;
       if(kFile.Open(CREATED_SCRIPTS_DIR + strFileName, 0,true))
@@ -194,13 +196,17 @@ bool ZeroEd::SaveCurrentToScript()
    }
 
    ShowWnd("SaveScriptFileNameEb",false);
-   GetWnd("CustomEntitiesTree")->Resize(200, 200, false);
+   GetWnd("ObjectTree")->Resize(200, 200, false);
    ((ZGuiTextbox*) GetWnd("SaveScriptFileNameEb"))->KillFocus();
 
    if(bUpdate)
    {
-      ((ZGuiTreebox*)GetWnd("CustomEntitiesTree"))->Clear(); 
-      BuildFileTree("CustomEntitiesTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+      ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
+      BuildFileTree("ObjectTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
+
+      ShowWnd("SaveScriptFileNameEb",false);
+      GetWnd("ObjectTree")->Resize(200, 200, false);
+      ((ZGuiTextbox*) GetWnd("SaveScriptFileNameEb"))->KillFocus();
    }
  
    return true;

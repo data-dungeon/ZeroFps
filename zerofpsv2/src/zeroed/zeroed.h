@@ -39,7 +39,7 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
-const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
+//const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
 
 /**	\brief	Da ZeroEd
 		\ingroup ZeroEd
