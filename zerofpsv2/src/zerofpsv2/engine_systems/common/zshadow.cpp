@@ -157,13 +157,14 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
 		v[2] = m_kTransFormedVertexs[ m_pkFaces[i+2]];
 
-		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
-		Vector3 RefV = ( kSourcePos - (v[0]) ).Unit();
+		// tror inte .Unit() behövs då d's värde inte spelar så stor roll, bara om det är positivt eller negativt
+		//Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
+		//Vector3 RefV = ( kSourcePos - (v[0]) ).Unit();
 
-		float d = Normal.Dot(RefV);
-		//cout<<"DOT:"<<<<endl;
+		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
+		Vector3 RefV = ( kSourcePos - (v[0]) );
 
-		if(d > 0)
+		if(Normal.Dot(RefV) > 0)
 		{
 			pair<int,int> p;
 
@@ -228,6 +229,11 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
 		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
 
+/*		glBegin(GL_LINES);
+			glVertex3f(v[0].x,v[0].y,v[0].z);
+			glVertex3f(v[1].x,v[1].y,v[1].z);
+		glEnd();
+*/
 		glBegin(GL_QUADS);
 			glVertex3f(v[0].x,v[0].y,v[0].z);
 			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
