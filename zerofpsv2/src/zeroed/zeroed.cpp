@@ -1597,6 +1597,10 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 	}
 }
 
+void ZeroEd::OnDisconnect(int iConnectionID)
+{
+	cout << "NOOOOOOOOOOOO im disconnected" << endl;
+}
 
 
 

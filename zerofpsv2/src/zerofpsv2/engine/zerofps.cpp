@@ -1339,6 +1339,11 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 */
 void ZeroFps::Disconnect(int iConnectionID)
 {
+	if(m_bClientMode && !m_bServerMode)
+	{
+		m_pkApp->OnDisconnect( iConnectionID );
+	}
+
 	if(!m_bServerMode)
 		return;
 	

@@ -397,6 +397,12 @@ void MistClient::OnClientConnected()
 	LoadInGameGui();
 }
 
+void MistClient::OnDisconnect(int iConnectionID)
+{
+	cout << "NOOOOOOOOOOOO im disconnected" << endl;
+}
+
+
 void MistClient::AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd)
 {
    if(bAdd)

@@ -239,6 +239,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnServerClientPart(ZFClient* pkClient,int iConID){};
 		void RenderInterface(void);
 		void OnNetworkMessage(NetPacket *PkNetMessage);
+		void OnDisconnect(int iConnectionID);
 
 		void AutoSetZoneSize(string strName);
 		void SoloToggleView();

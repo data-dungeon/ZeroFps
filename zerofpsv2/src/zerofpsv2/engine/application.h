@@ -69,6 +69,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)	{};
 		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)			{};
 		virtual void OnClientConnected()			{};
+		virtual void OnDisconnect(int iConnectionID)				{};
 
 		virtual void RenderInterface(void)		{};
 
