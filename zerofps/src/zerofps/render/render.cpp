@@ -4,7 +4,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=20;	//grid size of lod tiles
-	m_iDetail=20;//height meens greater detail att longer range	
+	m_iDetail=30;//height meens greater detail att longer range	
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -458,6 +458,20 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 	iY=1-iY;
 	
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
+}
+
+
+void Render::DrawSkyBox(Vector3 CamPos) {
+	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	
+	glDisable(GL_LIGHTING);
+	Quad(Vector3(0,0,-200),Vector3(0,0,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+	Quad(Vector3(0,200,0),Vector3(90,0,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/top.bmp"));
+	Quad(Vector3(0,0,200),Vector3(180,0,180),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/back.bmp"));
+	
+	Quad(Vector3(200,0,0),Vector3(0,-90,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/left.bmp"));
+	Quad(Vector3(-200,0,0),Vector3(0,90,0),Vector3(400,400,400),m_pkTexMan->Load("file:../data/textures/right.bmp"));
+	glEnable(GL_LIGHTING);
 }
 
 

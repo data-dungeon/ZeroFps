@@ -56,6 +56,7 @@ void ZeroFps::MainLoop(void) {
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
+					break;
 				}
 				if(m_pkInput->Pressed(F12)){
 					m_pkInput->ToggleGrab();
@@ -63,6 +64,7 @@ void ZeroFps::MainLoop(void) {
 //				m_pkApp->OnHud();
 				Camera();//camera translations/rotations				
 				m_pkApp->OnIdle();		
+				m_pkRender->DrawSkyBox(*m_kCamPos);
 				Swap();
 
 				break;			
@@ -116,7 +118,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
   glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
-	glFrustum(-0.10,0.10,-0.10,0.10,0.10,300.0);				//
+	glFrustum(-0.10,0.10,-0.10,0.10,0.10,340.0);				//
 	
 	//set camera mode
 	m_iCamMode=cam_look;
