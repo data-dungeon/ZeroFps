@@ -14,16 +14,30 @@ class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;
 
+		struct PlayerInfo
+		{
+			int		iId;
+			string	sPlayerName;
+		
+		};
+
+		vector<PlayerInfo>	m_kPlayers;
+		
 
 	public:
 		string m_sServerName;				
-		int	m_iNrOfPlayers;
-		
 		
 		void CloneOf(Property* pkProperty) { }
 		P_ServerInfo();
 		
-		void Update();
+		
+		void AddPlayer(int id,string sName);
+		void RemovePlayer(int id);
+		void RemovePlayer(string sName);
+		bool PlayerExist(string sName);
+		bool PlayerExist(int id);		
+
+		int GetNrOfPlayers(){return m_kPlayers.size();};
 };
 
 MCOMMON_API Property* Create_P_ServerInfo();

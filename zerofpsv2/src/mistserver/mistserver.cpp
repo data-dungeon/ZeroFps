@@ -105,7 +105,7 @@ void MistServer::OnIdle()
 	if(m_pkServerInfoP)
 	{
 		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->m_sServerName.c_str());
-		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->m_iNrOfPlayers);
+		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());
 	
 	}
 }
@@ -283,8 +283,6 @@ void MistServer::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
 	
-	m_pkServerInfoP->m_iNrOfPlayers++;
-	
 	cout<<"Join Complete"<<endl;
 }
 
@@ -296,13 +294,16 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	pkClient->m_pkObject->SetUseZones(false);
 
+
+	if(m_pkServerInfoP)
+		m_pkServerInfoP->AddPlayer(iConID,"UnKnownPlayer");
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
-	m_pkServerInfoP->m_iNrOfPlayers--;	
+	if(m_pkServerInfoP)
+		m_pkServerInfoP->RemovePlayer(iConID);	
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
 }
 
@@ -317,8 +318,6 @@ void MistServer::OnServerStart(void)
 		CameraProperty* m_pkCamProp = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		
-		//the builder/server shuld not connect to zones
-		m_pkCameraObject->SetUseZones(false);		
 	}
 	
 	//create server info object

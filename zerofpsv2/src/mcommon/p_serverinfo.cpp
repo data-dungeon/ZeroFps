@@ -9,16 +9,72 @@ P_ServerInfo::P_ServerInfo()
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 
-
 	m_sServerName	= 	"NoName";
-	m_iNrOfPlayers	=	0;
 }
 
-void P_ServerInfo::Update()
+
+void P_ServerInfo::AddPlayer(int id,string sName)
 {
+	if(PlayerExist(sName))
+	{
+		cout<<"Error: player "<<sName<<" already connected"<<endl;
+		return;
+	}
 
+	PlayerInfo temp;
+	temp.iId = id;
+	temp.sPlayerName = sName;
+
+	m_kPlayers.push_back(temp);
 }
 
+void P_ServerInfo::RemovePlayer(int id)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			m_kPlayers.erase(it);
+			break;
+		}
+	}
+}
+
+void P_ServerInfo::RemovePlayer(string sName)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).sPlayerName == sName)
+		{
+			m_kPlayers.erase(it);
+			break;
+		}
+	}
+}
+
+bool P_ServerInfo::PlayerExist(string sName)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).sPlayerName == sName)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool P_ServerInfo::PlayerExist(int id)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 Property* Create_P_ServerInfo()
 {
