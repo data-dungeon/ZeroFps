@@ -31,7 +31,7 @@ void QuickBoard::Init()
 	int screen_w = m_pkApp->GetWidth();
 	int screen_h = m_pkApp->GetHeight();
 
-	m_pkApp->CreateWnd(Wnd, "QuickItemMainWnd", "MainWnd", "", 0, screen_h-155, 272, 48, 0);
+	m_pkApp->CreateWnd(Wnd, "QuickItemMainWnd", "PanelBkWnd", "", 0, -46, 272, 48, 0);
 
 	m_pkDialog = m_pkApp->GetWnd("QuickItemMainWnd");
 

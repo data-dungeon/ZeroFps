@@ -161,7 +161,7 @@ void MistClient::Init()
 	pkMusic->Play();
 */
 	// give focus to main window
-//	pkGui->SetFocus(GetWnd("MainWnd")); 
+	pkGui->SetFocus(GetWnd("MainWnd")); 
 }
 
 void MistClient::RegisterResources()
@@ -674,10 +674,21 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
 
-				if ( !GetWnd("InfoBoxWnd")->IsVisible() )
-					GetWnd("ActionWnd")->SetPos(10, GetHeight()-84, true, true); 
+				ZGuiWnd* pkQuickItemMainWnd = GetWnd("QuickItemMainWnd");
+
+				if ( GetWnd("InfoBoxWnd")->IsVisible() )
+				{
+					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-48-85, true, true);
+				}
 				else
-					GetWnd("ActionWnd")->SetPos(10, GetHeight()-170, true, true); 
+				{
+					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-44, true, true); 	
+					
+					pkQuickItemMainWnd->m_iZValue = -12121212212;
+					GetWnd("PanelBkWnd")->m_iZValue = 1212121-5;
+
+					GetWnd("MainWnd")->SortChilds(); 
+				}
 			}
 		}
 	}
@@ -1147,6 +1158,9 @@ void MistClient::CreateGuiInterface()
 	m_pkQuickBoard = new QuickBoard(this);
 
 	m_pkQuickBoard->AddQuickItem("apple"); 
+
+	// give focus to main window
+	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
