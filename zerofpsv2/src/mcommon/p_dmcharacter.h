@@ -62,11 +62,12 @@ class MCOMMON_API P_DMCharacter: public Property {
 		int					m_iTeam;
 		int					m_iState; // dead, crouching, shooting, idle..etc
 
-		vector<string> m_vkMoveSounds;
-		vector<string> m_vkDeathSounds;
-		vector<string> m_vkOffenciveActionQuots;
-		vector<string> m_vkDefenciveActionQuots;
-		vector<string> m_vkPickUpSounds;
+		vector<string> m_vkMoveSounds;	// fått en action att gå någonstans
+		vector<string> m_vkSelectSounds;		// har blivit markerad
+		vector<string> m_vkDeathSounds; // dör
+		vector<string> m_vkOffenciveActionQuots; // försöker tuffa sig
+		vector<string> m_vkDefenciveActionQuots; // blir skadad, ber om nåd etc
+		vector<string> m_vkPickUpSounds; // plockar upp, undersöker något
 		
 		DMCharacterStats* GetStats() {return &m_kStats;};
 		void Damage(int iType,int iDmg);

@@ -536,9 +536,19 @@ void DarkMetropolis::Input()
 						{					
 							if(i==0)
 							{
-								m_pkAudioSys->StartSound("/data/sound/run.wav", pkEnt->GetIWorldPosV());
-
+								P_DMCharacter* pkCharProp = 
+									(P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter");
 								
+								if(pkCharProp)
+								{
+									int iNumMoveSounds = pkCharProp->m_vkMoveSounds.size();
+									if(iNumMoveSounds > 0)
+									{
+										m_pkAudioSys->StartSound(
+											pkCharProp->m_vkMoveSounds[rand()%iNumMoveSounds], 
+											pkEnt->GetIWorldPosV());
+									}
+								}
 							}
 
 							//randomize position a bit if theres many characters selected
@@ -964,8 +974,28 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		}
 	}
 
-	m_pkAudioSys->StartSound("/data/sound/yes_my_lord.wav",
-		m_pkObjectMan->GetObjectByNetWorkID(id)->GetIWorldPosV() );
+	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(id);
+
+	if(pkEnt)
+	{
+		
+
+		P_DMCharacter* pkCharProp = 
+			(P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter");
+		
+		if(pkCharProp)
+		{
+			printf("APAPAPA\n");
+
+			int iNumSelSounds = pkCharProp->m_vkSelectSounds.size();
+			if(iNumSelSounds > 0)
+			{
+				m_pkAudioSys->StartSound(
+					pkCharProp->m_vkSelectSounds[rand()%iNumSelSounds], 
+					pkEnt->GetIWorldPosV());
+			}
+		}
+	}
 
 	//
 	// TODO: Flytta kameran till samma plats.
