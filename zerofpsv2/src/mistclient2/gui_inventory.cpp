@@ -727,19 +727,13 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	}
 	else
 	{
-		if( !( (m_kMoveSlot.bIsInventoryItem && bTargetIsInventoryItem) || 
-			   (!m_kMoveSlot.bIsInventoryItem && !bTargetIsInventoryItem) ) ) // not dropping in same window?
-		{
-			if(eDropTarget == DropTarget_Inventory)
-				pkVector = &m_vkInventoryItemList;				
-			else
-				pkVector = &m_vkContainerItemList;
-		}
-
 		if(eDropTarget == DropTarget_Ground)
 			iTarget = iSlotX = iSlotY = -1;
 		else		
-			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
+		if(eDropTarget == DropTarget_Inventory)
+			iTarget = GetInventoryContainerID(); 
+		else
+			iTarget = m_iActiveContainerID;
 
 		if((*pkVector)[kTargetSlot.first].bIsContainer)
 			iSlotX = iSlotY = -1;
@@ -748,6 +742,8 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		{
 			if(g_kMistClient.m_pkInputHandle->Pressed(KEY_LCTRL))  
 				bTryExecuteSlplit = true;
+
+
 		
 			m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
 			m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;
@@ -849,31 +845,43 @@ int InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInven
 	return -1;
 }
 
+Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
+{
+	float dx = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetWidth()/1024.0f);
+	float dy = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetHeight()/768.0f);
+	Rect rcTest = pkWnd->GetScreenRect();
+	return Point(rcTest.Width()/dx, rcTest.Height()/dy);
+}
+
 Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
 {
 	Rect rcTest = pkWnd->GetScreenRect();
 	return SlotFromScreenPos(rcTest.Left, rcTest.Top, bInventory);
 }
 
-Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
-{
-	Rect rcTest = pkWnd->GetScreenRect();
-	return Point(rcTest.Width()/ICON_WIDTH, rcTest.Height()/ICON_HEIGHT);
-}
-
 Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 {
+
+	float dx = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetWidth()/1024.0f);
+	float dy = (float) ICON_HEIGHT * (float)((float)g_kMistClient.GetHeight()/768.0f);
+
 	int slot_x, slot_y;
 
 	if(bInventory)
 	{
-		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - UPPER_LEFT_INVENTORY.x) / ICON_WIDTH; 
-		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - UPPER_LEFT_INVENTORY.y) / ICON_HEIGHT;
+		float ulx = (float) UPPER_LEFT_INVENTORY.x * (float)((float)g_kMistClient.GetWidth()/1024.0f);
+		float uly = (float) UPPER_LEFT_INVENTORY.y * (float)((float)g_kMistClient.GetHeight()/768.0f);
+
+		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - ulx) / dx; 
+		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - uly) / dy;
 	}
 	else
 	{
-		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - UPPER_LEFT_CONTAINER.x) / ICON_WIDTH; 
-		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - UPPER_LEFT_CONTAINER.y) / ICON_HEIGHT;
+		float ulx = (float) UPPER_LEFT_CONTAINER.x * (float)((float)g_kMistClient.GetWidth()/1024.0f);
+		float uly = (float) UPPER_LEFT_CONTAINER.y * (float)((float)g_kMistClient.GetHeight()/768.0f);
+
+		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - ulx) / dx; 
+		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - uly) / dy;
 	}
 
 	return Point(slot_x, slot_y);
@@ -923,9 +931,9 @@ InventoryDlg::InventoryDropTarget InventoryDlg::GetDropTargetFromScreenPos(int m
 	bool bDropInContainer = m_pkContainerWnd->IsVisible() && 
 		m_pkContainerWnd->GetScreenRect().Inside(mx, my);
 
-	EquipmentSlot eEqSlot = g_kMistClient.m_pkEquipmentDlg->GetSlot(mx, my, true);
+	int iSlotType = g_kMistClient.m_pkEquipmentDlg->GetSlot(mx, my, true);
 
-	bool bDropInEuipmentDlg = (eEqSlot == EqS_None) ? false : true;
+	bool bDropInEuipmentDlg = (iSlotType == -1) ? false : true;
 	
 	if(bDropInInventory == true && bDropInContainer == false)
 		return DropTarget_Inventory;
