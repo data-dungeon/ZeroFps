@@ -264,6 +264,9 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 		}
 	}
 
+   // Rensa AlignementSettings mappen...
+   pkScene->m_kWndAlignentMap.clear();
+
 	printf("Loading file %s\n", szFileName);
 
 	ZFResourceHandle* pkScriptResHandle = new ZFResourceHandle;
@@ -285,7 +288,6 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 	}
 
 	pkApp->m_pkScriptResHandle->FreeRes(); 
-
 	return true;
 }
 
@@ -354,6 +356,8 @@ ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 				it->second->Disable();
 			}
 		}
+
+
 	}
 	else
 	{
@@ -448,10 +452,15 @@ bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
 	else
 		rc = pkWnd->GetWndRect();
 
-	fprintf(m_pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0,0,0)\n", iType, 
-		szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height());
+   int iAlignment = pkWnd->m_iWndAlignment;
+   int iResizeType = pkWnd->m_iResizeType;
+
+	fprintf(m_pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0,%i,%i)\n", iType, 
+		szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height(), iAlignment,iResizeType);
 
 	m_kSavedWnds.push_back(pkWnd);
+
+
 
 	return true;
 }

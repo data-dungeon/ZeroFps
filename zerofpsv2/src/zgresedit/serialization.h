@@ -56,6 +56,8 @@ private:
 		bool operator() (ZGuiWnd* x, ZGuiWnd* y); // { return (rand()%10 > 5) ? true : false; }
 	} RandomSort;
 
+   
+
 };
 
 #endif // !defined(AFX_SERIALIZATION_H__B6B5F30F_CC16_4E88_9C62_1FE103B767B7__INCLUDED_)

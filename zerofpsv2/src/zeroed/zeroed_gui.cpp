@@ -3,7 +3,7 @@
 void ZeroEd::SetupGuiEnviroment()
 {
 	// Create from script.
-	LoadGuiFromScript("data/script/gui/zeroed.lua");
+	LoadGuiFromScript("data/script/gui/zeroed2.lua");
 	GetWnd("worktab")->Hide();
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),

@@ -461,8 +461,10 @@ bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
 	if(lua_isstring(state, iLuaIndex))
 	{
 		const char* val = lua_tostring(state, iLuaIndex);
-		char* text = (char*) data;
-		strcpy(text, val);
+		//char* text = (char*) data;
+		
+      
+      strcpy(data, val);
 		return true;
 	}
 

@@ -943,6 +943,11 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					printf("Failed to create window!\n");
 					return;
 				}
+            else
+            {
+               m_pkScene->m_kWndAlignentMap[string(szName)] = 0;
+               CheckButton("WndAlignentTopLeftBn", true);
+            }
 			}
 
 			ZGuiWnd* pkWnd = m_pkScene->GetWnd(szName);
@@ -1015,6 +1020,27 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 			SetPos(pkWnd, m_iXPos, m_iYPos);
 		}
+      else
+      if(strClickWndName == "WndAlignentTopLeftBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 0;
+      else
+      if(strClickWndName == "WndAlignentTopRightBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 1;
+      else
+      if(strClickWndName == "WndAlignentBottomLeftBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 2;
+      else
+      if(strClickWndName == "WndAlignentBottomRightBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 3;
+      else
+      if(strClickWndName == "WndAlignentCenterHorzBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 4;
+      else
+      if(strClickWndName == "WndAlignentCenterVertBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 5;
+      else
+      if(strClickWndName == "WndAlignentCenterBn" && m_pkFocusWnd)
+         m_pkFocusWnd->m_iWndAlignment = m_pkScene->m_kWndAlignentMap[string(m_pkFocusWnd->GetName())] = 6;
 	}
 	else
 	if(strMainWndName == "ViewWindow")
@@ -2327,6 +2353,20 @@ void ZGResEdit::UpdatePropertyWnd()
 	// update options window
 	if(m_pkScene->m_pkOptionsWnd->IsVisible()) 
 		m_pkScene->UpdateOptionsWnd( m_pkFocusWnd );
+
+   char* szNames[] =
+   {
+      "WndAlignentTopLeftBn", 
+      "WndAlignentTopRightBn", 
+      "WndAlignentBottomLeftBn", 
+      "WndAlignentBottomRightBn", 
+      "WndAlignentCenterHorzBn", 
+      "WndAlignentCenterVertBn", 
+      "WndAlignentCenterBn", 
+   };
+
+   CheckButton(szNames[m_pkFocusWnd->m_iWndAlignment], true);
+
 }
 
 

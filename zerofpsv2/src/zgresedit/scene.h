@@ -31,6 +31,8 @@ public:
 	ZGuiWnd* m_pkSelectMoveAreaWnd;
 	ZGuiWnd* m_pkOptionsWnd;
 
+   map<string,int> m_kWndAlignentMap;
+
 	void AddStandardElements(ZGuiWnd *pkWnd);
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension);
 	bool IsSceneWnd(ZGuiWnd* pkWnd);

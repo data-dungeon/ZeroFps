@@ -121,6 +121,7 @@ public:
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags,
 		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);
+
 	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags,
 		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);

@@ -198,6 +198,60 @@ void Scene::CreateUI()
 
    m_pkApp->CreateWnd(Button, "ResizeSkinTypeListBn",  "WorkSpace",  "+", 162,  440, 30, 16, 0);
 
+   float aCheckClr[3] = {0.75f,0.75f,0.75f};
+   char* szTexNames[] = { "data/textures/gui/wndalignent_topleft.bmp", "data/textures/gui/wndalignent_centerhorz.bmp",
+      "data/textures/gui/wndalignent_center.bmp" };
+   char* szNames[] =
+   {
+      "WndAlignentTopLeftBn", 
+      "WndAlignentTopRightBn", 
+      "WndAlignentBottomLeftBn", 
+      "WndAlignentBottomRightBn", 
+      "WndAlignentCenterHorzBn", 
+      "WndAlignentCenterVertBn", 
+      "WndAlignentCenterBn", 
+   };
+   int iRots = 0;
+   int iNameCounter = 0, x = 0;
+
+   
+   m_pkApp->CreateNewRadiobuttonGroup("WndAlignentLabelRadioGroup",25142);
+
+   m_pkApp->CreateWnd(Label, "WndAlignentLabel",  "WorkSpace",  "Alignent", 2, 506, 58-2, 16, 0);
+
+   for(int i=0; i<7; i++)
+   {
+      switch(i)
+      {
+      case 4:
+      case 6:
+         iRots=0;
+         iNameCounter++;
+         break;
+      }
+
+      m_pkApp->CreateWnd(Radiobutton, szNames[i],  "WorkSpace",  "", 58+x,  504, 16, 16, 0);
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->SetButtonUnselectedSkin(new ZGuiSkin());
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->SetButtonSelectedSkin(new ZGuiSkin());
+      
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetUncheckedSkin()->m_iBkTexID = m_pkTexMan->Load(szTexNames[iNameCounter], 0);
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_iBkTexID = m_pkTexMan->Load(szTexNames[iNameCounter], 0);
+
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetUncheckedSkin()->m_ucRots90Degree = iRots;
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_ucRots90Degree = iRots;
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_unBorderSize = 2;
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_afBorderColor[0] =
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_afBorderColor[1] =
+      ((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetCheckedSkin()->m_afBorderColor[2] = 0.25f;
+
+      memcpy(((ZGuiRadiobutton*)m_pkApp->GetWnd(szNames[i]))->GetButton()->GetUncheckedSkin()->m_afBkColor, aCheckClr, sizeof(float)*3);
+      
+      x += 20;
+
+      iRots++;
+   }
+	
+
 	//
 	// Create Def.Properties Wnd
 	//

@@ -318,6 +318,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		}
 	}
 
+   pkWnd->m_iWndAlignment = eAlignment;
+   pkWnd->m_iResizeType = eResizeType;
+
 	if(szText)
 	{
 		pkWnd->SetText(szText);
@@ -637,6 +640,8 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	main_skin->m_bTransparent = true;
 	pkWnd->SetSkin(main_skin);
 
+   
+
 	// Låt skriptfilen skapa alla fönster.
 	//pkScript->Call(m_pkScriptResHandle, "CreateMainWnds", 0, 0);
 
@@ -940,6 +945,7 @@ void ZGuiApp::CheckButton(char* szWnd, bool bCheck)
 	{
 		if(GetWndType(pkWnd) == Radiobutton)
 		{
+         ((ZGuiRadiobutton*)pkWnd)->Check(); 
 			//return ((ZGuiRadiobutton*)pkWnd)->GetButton()->IsChecked();
 		}
 		else

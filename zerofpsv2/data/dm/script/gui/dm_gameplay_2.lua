@@ -453,7 +453,7 @@ function GUICreate()
 	ChangeSkin("HelpTextOK","Skin1","Button focus")
 
 
-	HelpText = [[Dark Metropolis - Help text\n----------------------------------\n\nMove camera:\na,d,w,s buttons or move the mouse to the end of the screen.
+	local HelpText = [[Dark Metropolis - Help text\n----------------------------------\n\nMove camera:\na,d,w,s buttons or move the mouse to the end of the screen.
 	\n\nRotate and zoom camera:\nPress space or third mouse button and move mouse.\n\nSelect a character:\nLeft click on the character you want to select. 
 	A green circle appears under the characters you can select if you hold the mouse over one.\nYou can also select a character by left clicking on his portrait.
 	\n\nSelecting multiple characters:\nYou can select many characters at once by dragging out a select box. Also, if you have shift pressed while selecting a 
