@@ -96,8 +96,7 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
-
-	for(int i=0;i<100;i++) {
+	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test,pkFps);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
 		float x=300 + rand()%100;
