@@ -11,10 +11,12 @@
 #include "zerofps.h"
 #include "application.h"
 #include "../engine_systems/common/zshadow.h"
+#include "../engine_systems/propertys/p_camera.h"
 
 #include "i_camera.h"
 
 class Render;
+class P_Camera;
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
@@ -97,10 +99,10 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bDebugGraphs;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
-		int		m_iEntity;							// ID Of entity that this camera is connected to.
-		int		m_iRootEntity;		
-		bool		m_bRootOnly;
-		
+		int			m_iEntity;							// ID Of entity that this camera is connected to.
+		int			m_iRootEntity;		
+		bool			m_bRootOnly;
+		P_Camera*	m_pkCameraProp;		
 		
 		
 		void		DrawGrid();

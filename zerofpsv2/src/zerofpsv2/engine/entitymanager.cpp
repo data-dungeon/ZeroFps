@@ -446,7 +446,7 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
-	pkNew->SetInterpolateFactor(5.0);
+	pkNew->SetInterpolateFactor(4.0);
 	
 	return pkNew;
 }

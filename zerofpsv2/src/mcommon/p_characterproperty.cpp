@@ -151,19 +151,19 @@ void P_CharacterProperty::UpdateAnimation()
 				{
 					case eMOVE_FORWARD:
 						if(pkMad->GetCurrentAnimationName() != m_strRunForward)
-							pkMad->SetAnimation(m_strRunForward.c_str(), pkMad->fCurrentTime);
+							pkMad->SetAnimation(m_strRunForward.c_str(), 0);
 						break;
 					case eMOVE_BACKWARD:
 						if(pkMad->GetCurrentAnimationName() != m_strRunBackward)
-							pkMad->SetAnimation(m_strRunBackward.c_str(), pkMad->fCurrentTime);
+							pkMad->SetAnimation(m_strRunBackward.c_str(), 0);
 						break;
 					case eMOVE_LEFT:
 						if(pkMad->GetCurrentAnimationName() != m_strRunLeft)
-							pkMad->SetAnimation(m_strRunLeft.c_str(), pkMad->fCurrentTime);
+							pkMad->SetAnimation(m_strRunLeft.c_str(), 0);
 						break;
 					case eMOVE_RIGHT:
 						if(pkMad->GetCurrentAnimationName() != m_strRunRight)
-							pkMad->SetAnimation(m_strRunRight.c_str(), pkMad->fCurrentTime);
+							pkMad->SetAnimation(m_strRunRight.c_str(), 0);
 						break;										
 				}			
 			}

@@ -10,6 +10,7 @@
 
 using namespace std;
 
+class Camera;
 
 enum ENGINE_SYSTEMS_API CamType_e
 {

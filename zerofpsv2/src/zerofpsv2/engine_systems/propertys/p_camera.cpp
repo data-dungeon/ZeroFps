@@ -6,15 +6,17 @@
  
 P_Camera::P_Camera() 
 {
-	m_pkCamera = NULL;
-	m_eCameraType = CAM_TYPEFIRSTPERSON;
 	strcpy(m_acName,"P_Camera");	
 
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	//no sides no nothing, this property is always updated manualy by the camera
+	m_iType=0;
+	m_iSide=0;
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	
+
+	m_pkCamera = NULL;
+	m_eCameraType = CAM_TYPEFIRSTPERSON;
+		
 	m_kDynamicIso = 			Vector3(0,0,0);
 	m_kInterPos =				Vector3(0,0,0);		
 	m_fFov = 					90;
@@ -39,9 +41,6 @@ void P_Camera::Update()
 		
 	Vector3		kYawVector;
 	string		strCamName;
-
-
-	//P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
@@ -82,7 +81,10 @@ void P_Camera::Update()
 				if(m_bAttachToMadBone)
 				{				
 					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+					{
 						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset;			
+						
+					}
 				}
 				else					
 					kCamPos = m_pkEntity->GetIWorldPosV() + m_kOffset;					
@@ -111,6 +113,7 @@ void P_Camera::Update()
 					kOffset = kRot.VectorTransform(Vector3(0,0,-1));
 					kOffset *= fDist;	
 				}
+				
 				
 				LookAt(kCamPos + kOffset,kCamPos,Vector3(0,1,0));
 
@@ -261,9 +264,12 @@ void P_Camera::OrthoMove(Vector3 kMove)
 void P_Camera::SetCamera(Camera *pkCamera) 
 {
 	//set old camera's entityID to -1
-	if(m_pkCamera)		
+	if(m_pkCamera)
+	{		
 		m_pkCamera->m_iEntity = -1;
-	
+		m_pkCamera->m_pkCameraProp = NULL;
+	}
+		
 	//set new camera
 	m_pkCamera = pkCamera; 
 	
@@ -271,10 +277,7 @@ void P_Camera::SetCamera(Camera *pkCamera)
 	if(m_pkCamera)
 	{
 		m_pkCamera->m_iEntity = m_pkEntity->GetEntityID();		
-		
-		//cout<<"Attached a new camera to" << m_pkEntity->GetType() << endl;		
-		//cout<<"current camera position "<<m_pkCamera->GetPos().x<<" "<<m_pkCamera->GetPos().y<<" "<<m_pkCamera->GetPos().z<<endl;
-		//cout<<"new position "<<m_pkObject->GetWorldPosV().x<<" "<< m_pkObject->GetWorldPosV().y<<" "<<m_pkObject->GetWorldPosV().z<<endl;
+		m_pkCamera->m_pkCameraProp = this;
 	}
 }
 

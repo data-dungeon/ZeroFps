@@ -29,6 +29,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iEntity		= 		-1;
 	m_iRootEntity	= 		-1;
 	m_bRootOnly		= 		false;
+	m_pkCameraProp =		NULL;
 	m_eMode			= 		CAMMODE_PERSP;		//	just initiating it
 	m_fGridSpace	= 		1.0;					// Defualt grid space is one meter.
 	m_iRenderTarget= 		RENDERTARGET_SCREEN;
@@ -419,7 +420,12 @@ void Camera::RenderView()
 {
 	//set current camera in engine ( render propertys wants to know this)
 	m_pkZeroFps->m_pkCamera=this;			
-				
+
+	//if this camera is attached with any camera property run an update on that 
+	//property to make sure the camera position is up to date
+	if(m_pkCameraProp)
+		m_pkCameraProp->Update();
+						
 	//first make this camera matrises the current ones
 	InitView();
 	
