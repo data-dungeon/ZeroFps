@@ -60,6 +60,9 @@ void MistServer::Init()
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
 	
+	//click delay
+	m_fClickDelay = pkFps->GetTicks();
+	
 	//register commmands bös
 	Register_Cmd("new",FID_NEW);		
 	Register_Cmd("load",FID_LOAD);		
@@ -119,6 +122,7 @@ void MistServer::OnIdle()
 	
 	}
 	
+	//draw selected zone marker
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
@@ -212,7 +216,11 @@ void MistServer::Input()
 	
 		if(pkInput->Pressed(KEY_SPACE))
 		{
-			pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
+			if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+			{	
+				m_fClickDelay = pkFps->GetTicks();		
+				pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
+			}
 		}
 	
 		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);

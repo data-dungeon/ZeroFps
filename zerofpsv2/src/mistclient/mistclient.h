@@ -54,6 +54,9 @@ class MistClient :public Application, public ZGuiApp {
 		Object*				m_pkClientObject;
 		P_ClientControl*	m_pkClientControlP;
 
+		P_ServerInfo*		m_pkServerInfo;
+
+
 		Heightmap2*			m_pkMap2;
 		
 		Camera*				m_pkCamera;
