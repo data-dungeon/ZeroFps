@@ -29,15 +29,15 @@ class ENGINE_API ZoneData
 {
 public:
 
-	int					m_iStatus;					//current status of zone
-
-	bool					m_bNew;
-	unsigned int		m_iRevision;		
+	unsigned int		m_iStatus;					//current status of zone
+	int					m_iVersion;
+	bool				m_bNew;
 	Entity*				m_pkZone;
 	int					m_iZoneObjectID;
 	int					m_iZoneID;
 	Vector3				m_kPos;
 	Vector3				m_kSize;
+	Vector3				m_kTestPos; // zones with odd sizes must be offseted in some tests
 	vector<int>			m_iZoneLinks;
 	string				m_strEnviroment;
 

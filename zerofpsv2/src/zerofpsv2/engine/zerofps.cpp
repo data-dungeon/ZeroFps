@@ -1633,11 +1633,11 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 
 	kCreditsStrings.push_back( string("		  ZeroFps Engine		") );
 	kCreditsStrings.push_back( string("		       by				") );
-	kCreditsStrings.push_back( string("									") );
-	kCreditsStrings.push_back( string("   Jimmy Magnusson			") );
-	kCreditsStrings.push_back( string("   Richard Svensson		") );
-	kCreditsStrings.push_back( string("   Erik Glans				") );
-	kCreditsStrings.push_back( string("   Magnus 'Zerom' 			") );
+	kCreditsStrings.push_back( string("								") );
+	kCreditsStrings.push_back( string("      Jimmy Magnusson		") );
+	kCreditsStrings.push_back( string("      Richard Svensson		") );
+	kCreditsStrings.push_back( string("         Erik Glans			") );
+	kCreditsStrings.push_back( string("       Magnus Jönsson 		") );
 }
 
 /**	\brief	Called before someone would like to connect.

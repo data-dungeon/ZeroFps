@@ -146,6 +146,9 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	m_bGrabing = false;
 
+	m_fZoneMarkerDistance = 15;
+	m_fObjectMarkerDistance = 2;
+
 	m_fSnapSize = 2;
 	m_kLastZonePos = Vector3(0,0,0);
 
@@ -1371,8 +1374,13 @@ void ZeroEd::SendAddZone(Vector3 kPos, Vector3 kSize, Vector3 kModelRot,string s
 void ZeroEd::DrawZoneMarker(Vector3 kPos)
 {
 
-	Vector3 bla = m_kZoneSize / 2;
-	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
+	Vector3 kMarkerSize = m_kZoneSize / 2;
+	// fix for zones with odd sizes
+	kPos.x += kMarkerSize.x - int(kMarkerSize.x);
+	kPos.y += kMarkerSize.y - int(kMarkerSize.y);
+	kPos.z += kMarkerSize.z - int(kMarkerSize.z);
+
+	m_pkRender->DrawAABB(kPos-kMarkerSize, kPos+kMarkerSize, m_pkRender->GetEditColor( "zonemarker" ));
 
 	if(m_iAutoSnapZoneCorner != -1)
 	{
@@ -1449,7 +1457,7 @@ void ZeroEd::UpdateZoneMarkerPos()
 {
 	if(m_pkActiveCameraObject)
 	{
-		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*m_fZoneMarkerDistance;
 		
 		if(m_iAutoSnapZoneCorner == -1)
 		{
@@ -1495,12 +1503,12 @@ void ZeroEd::UpdateZoneMarkerPos()
 
 void ZeroEd::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
+	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*m_fObjectMarkerDistance;
 
 
 	if(m_pkActiveCameraObject && m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{
-		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false) * 15;
 	
 		m_kObjectMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
 		m_kObjectMarkerPos.y = 0;

@@ -31,8 +31,9 @@ void ZoneData::Clear()
 	m_bTracked = 		false;
 	m_iZoneObjectID = -1;
 	m_iRange = 			0;		
-	m_iRevision = 		0;
+	m_iVersion =		1;
 
+	m_kTestPos.Set(0,0,0);
 	m_kPos.Set(0,0,0);
 	m_kSize.Set(0,0,0);
 	
@@ -45,13 +46,13 @@ bool ZoneData::IsInside(Vector3 kPoint)
 	Vector3 half;
 	half.Set(m_kSize.x/2,m_kSize.y/2,m_kSize.z/2);
 
-	if(kPoint.x < (m_kPos.x - half.x))	return false;
-	if(kPoint.y < (m_kPos.y - half.y))	return false;
-	if(kPoint.z < (m_kPos.z - half.z))	return false;
+	if(kPoint.x < (m_kTestPos.x - half.x))	return false;
+	if(kPoint.y < (m_kTestPos.y - half.y))	return false;
+	if(kPoint.z < (m_kTestPos.z - half.z))	return false;
 
-	if(kPoint.x > (m_kPos.x + half.x))	return false;
-	if(kPoint.y > (m_kPos.y + half.y))	return false;
-	if(kPoint.z > (m_kPos.z + half.z))	return false;
+	if(kPoint.x > (m_kTestPos.x + half.x))	return false;
+	if(kPoint.y > (m_kTestPos.y + half.y))	return false;
+	if(kPoint.z > (m_kTestPos.z + half.z))	return false;
 
 	return true;
 }
@@ -1391,14 +1392,21 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 		if((*pkZoneList)[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-		Vector3 kMin = (*pkZoneList)[i].m_kPos - (*pkZoneList)[i].m_kSize/2;
-		Vector3 kMax = (*pkZoneList)[i].m_kPos + (*pkZoneList)[i].m_kSize/2;
-	
+		Vector3 kMin = (*pkZoneList)[i].m_kPos;
+		Vector3 kMax = (*pkZoneList)[i].m_kPos + (*pkZoneList)[i].m_kSize / 2;
+		kMin.x -= int( (*pkZoneList)[i].m_kSize.x / 2 );
+		kMin.y -= int( (*pkZoneList)[i].m_kSize.y / 2 );
+		kMin.z -= int( (*pkZoneList)[i].m_kSize.z / 2 );
+
+		kMax.x += (*pkZoneList)[i].m_kSize.x/2 - int((*pkZoneList)[i].m_kSize.x)/2;
+		kMax.y += (*pkZoneList)[i].m_kSize.y/2 - int((*pkZoneList)[i].m_kSize.y)/2;
+		kMax.z += (*pkZoneList)[i].m_kSize.z/2 - int((*pkZoneList)[i].m_kSize.z)/2;
+
 		switch((*pkZoneList)[i].m_iStatus)
 		{
 			case EZS_LOADED:
 				m_pkZShaderSystem->BindMaterial(pkMatZoneOn);
-				m_pkRender->DrawAABB( kMin,kMax);
+				m_pkRender->DrawAABB(kMin,kMax);
 				break;
 		
 			case EZS_UNLOADED:
@@ -1572,7 +1580,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 			if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 				continue;
 			
-			float dis = float(m_kZones[iZ].m_kPos.DistanceTo(kMyPos));
+			float dis = float(m_kZones[iZ].m_kTestPos.DistanceTo(kMyPos));
 		
 			if(dis < d)
 			{
@@ -1602,7 +1610,7 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	
 	if(ZoneData* pkZone = GetZoneData(id))
 	{
-		//warnig this realy clears all zone data, make sure that the folowing code sets it up correctly again
+		//warnig this really clears all zone data, make sure that the following code sets it up correctly again
 		pkZone->Clear();
 	
 		pkZone->m_bNew = true;					
@@ -1610,6 +1618,10 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 		pkZone->m_kSize = kSize;
 		pkZone->m_kPos = kPos; 
 		pkZone->m_iZoneID = id;
+		pkZone->m_iVersion = 1;
+		pkZone->m_kTestPos.x = kPos.x + ( (kSize.x / 2) - int(kSize.x / 2) );
+		pkZone->m_kTestPos.y = kPos.y + ( (kSize.y / 2) - int(kSize.y / 2) );
+		pkZone->m_kTestPos.z = kPos.z + ( (kSize.z / 2) - int(kSize.z / 2) );
 	}
 	else
 	{
@@ -1703,10 +1715,17 @@ bool EntityManager::LoadZones(string strSaveDir )
 	{
 		kFile.Read(&kZData.m_iStatus, 	sizeof(kZData.m_iStatus), 1);
 		kFile.Read(&kZData.m_bNew, 		sizeof(kZData.m_bNew), 1);
-		kFile.Read(&kZData.m_iRevision,	sizeof(kZData.m_iRevision), 1);								
+		kFile.Read(&kZData.m_iVersion,	sizeof(kZData.m_iVersion), 1);
 		kFile.Read(&kZData.m_iZoneID, 	sizeof(kZData.m_iZoneID), 1);
-		kFile.Read(&kZData.m_kSize, 		sizeof(kZData.m_kSize), 1);
+		kFile.Read(&kZData.m_kSize, 	sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);
+		
+		cout << "version:" << kZData.m_iVersion << endl;
+
+		if ( kZData.m_iVersion > 0 )
+			kFile.Read(&kZData.m_kTestPos, 		sizeof(kZData.m_kTestPos), 1);
+		else
+			kZData.m_kTestPos = kZData.m_kPos;
 
 		//make sure a zone is iether unused or unloaded
 		if(kZData.m_iStatus != EZS_UNUSED)
@@ -1773,12 +1792,13 @@ bool EntityManager::SaveZones(string strSaveDir)
 	{
 		kFile.Write(&m_kZones[i].m_iStatus, 	sizeof(m_kZones[i].m_iStatus), 1);
 		kFile.Write(&m_kZones[i].m_bNew, 		sizeof(m_kZones[i].m_bNew), 1);
-		kFile.Write(&m_kZones[i].m_iRevision,	sizeof(m_kZones[i].m_iRevision), 1);										
+		kFile.Write(&m_kZones[i].m_iVersion,	sizeof(m_kZones[i].m_iVersion), 1);										
 		kFile.Write(&m_kZones[i].m_iZoneID, 	sizeof(m_kZones[i].m_iZoneID), 1);
 		kFile.Write(&m_kZones[i].m_kSize, 		sizeof(m_kZones[i].m_kSize), 1);		
 		kFile.Write(&m_kZones[i].m_kPos, 		sizeof(m_kZones[i].m_kPos), 1);
-
+		kFile.Write(&m_kZones[i].m_kTestPos, 	sizeof(m_kZones[i].m_kTestPos), 1);
 		
+
 		char temp[128];
 		strcpy(temp,m_kZones[i].m_strEnviroment.c_str());
 		kFile.Write(temp, 128, 1);
@@ -2112,12 +2132,17 @@ void EntityManager::ClearZoneLinks(int iId)
 
 bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 {
+	Vector3 kOddSize;
+	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
+	kOddSize.y = (kSize.y/2 - int(kSize.y/2));
+	kOddSize.z = (kSize.z/2 - int(kSize.z/2));
+
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
 		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
+		if(BoxVSBox(kPos+kOddSize,kSize-0.1,m_kZones[i].m_kTestPos,m_kZones[i].m_kSize))
 			return true;
 	}
 	return false;
@@ -2126,13 +2151,22 @@ bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 
 bool EntityManager::ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize)
 {
+	Vector3 kOddSize, kOddSize2;
+	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
+	kOddSize.y = (kSize.y/2 - int(kSize.y/2));
+	kOddSize.z = (kSize.z/2 - int(kSize.z/2));
+
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
 		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-		if(!BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
-			if(BoxVSBox(kPos,kSize,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
+		kOddSize.x = (kSize.x/2 - int(kSize.x/2));
+		kOddSize.y = (kSize.y/2 - int(kSize.y/2));
+		kOddSize.z = (kSize.z/2 - int(kSize.z/2));
+
+		if(!BoxVSBox(kPos+kOddSize,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
+			if(BoxVSBox(kPos+kOddSize,kSize,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
 				return true;
 	}
 	return false;
@@ -2149,9 +2183,9 @@ void EntityManager::UpdateZoneLinks(int iId)
 	ClearZoneLinks(iId);
 	
 	
-	Vector3 kPos = m_kZones[iId].m_kPos;
+	Vector3 kPos = m_kZones[iId].m_kTestPos;
 	Vector3 kSize = m_kZones[iId].m_kSize;
-	
+
 	//go trough all zones and check if they are to be connected
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
@@ -2161,7 +2195,7 @@ void EntityManager::UpdateZoneLinks(int iId)
 		if((int)i == iId)
 			continue;
 			
-		if(BoxVSBox(kPos,kSize ,m_kZones[i].m_kPos, m_kZones[i].m_kSize))
+		if(BoxVSBox(kPos,kSize ,m_kZones[i].m_kTestPos, m_kZones[i].m_kSize))
 		{
 			m_kZones[iId].m_iZoneLinks.push_back(i);
 			m_kZones[i].m_iZoneLinks.push_back(iId);

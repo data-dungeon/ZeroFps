@@ -367,11 +367,23 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInputHandle->VKIsDown("down"))		newpos.y += fSpeedScale;
 		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;
 				
-		//mouse wheel test
+		//zonemarker distance toggle
 		if(m_iAutoSnapZoneCorner == -1)
 		{
-			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	newpos.y += 1.0;
-			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	newpos.y -= 1.0;
+			if(m_iEditMode == EDIT_ZONES)
+			{
+				if(m_pkInputHandle->Pressed(MOUSEWUP))
+					m_fZoneMarkerDistance += 1.0;
+				if(m_pkInputHandle->Pressed(MOUSEWDOWN))
+					m_fZoneMarkerDistance -= 1.0;
+			}
+			else if(m_iEditMode == EDIT_OBJECTS)
+			{
+				if(m_pkInputHandle->Pressed(MOUSEWUP))
+					m_fObjectMarkerDistance += 0.2;
+				if(m_pkInputHandle->Pressed(MOUSEWDOWN))
+					m_fObjectMarkerDistance -= 0.2;
+			}
 		}
 		
 		Vector3 rot;

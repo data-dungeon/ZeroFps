@@ -134,6 +134,10 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		// snapsize
 		float	m_fSnapSize;
+
+		// camera->marker distance
+		float	m_fZoneMarkerDistance;
+		float	m_fObjectMarkerDistance;
 		
 		//edit sun
 		bool 			m_bEditSun;
