@@ -110,7 +110,9 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool GetConsole();
 		
 		void UpdateMousePos();
-
+		
+		void UpdateInputHandles();
+	
 		//int m_iNrActions;		
 		//map<const string, pair<const string, int>**>		m_kActions;
 		//map<const string, pair<const string, int>*>		m_kPendingActions;

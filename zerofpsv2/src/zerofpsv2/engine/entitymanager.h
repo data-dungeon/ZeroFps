@@ -68,6 +68,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 			FID_NEWWORLD,
 			FID_LOADWORLD,
 			FID_SETWORLDDIR,
+			FID_SETTEMPWORLDDIR,
 			FID_SAVEWORLD,
 		};
 
@@ -88,6 +89,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
+		string						m_kTempWorldDirectory;		//if this is not "" all new zones will be saved and loaded from this directory
 		
 //		list<Entity*>				m_akObjects;												///< List of all objects.
 		map<int,Entity*>			m_akEntitys;
@@ -251,9 +253,12 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void SetUnderConstruction(int iId);
 		void CommitZone(int iId);
 
-		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
+		void SetTempWorldDir(string strDir) {m_kTempWorldDirectory = strDir;};
+		void SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
 		string GetWorldDir() { return m_kWorldDirectory; };
-		bool LoadWorld(const char* acDir);
+		string GetTempWorldDir() { return m_kTempWorldDirectory; };
+		bool LoadWorld(string strWDir, string strTempWDir = "");
+		
 		void ForceUnload();					//forcing unload of all loaded zones
 		void ForceSave();						//forcing save of all loaded zones
 		bool LoadZones();						//load zone info list

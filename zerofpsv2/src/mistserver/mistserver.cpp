@@ -898,13 +898,25 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			cout<<"loading world:"<<kCommand->m_kSplitCommand[1].c_str()<<endl;
+			cout<<"BLUB:"<<kCommand->m_kSplitCommand.size()<<endl;
+			cout<<"loading world:"<<kCommand->m_kSplitCommand[1]<<endl;
 			
-			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1].c_str()))
+			if(kCommand->m_kSplitCommand.size() > 2)
+			{
+				m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());
+				
+				if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
+				{
+					cout<<"Error loading world"<<endl;
+					break;
+				}				
+			}
+			else if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
-			}
+			}				
+			
 						
 			cout<<"starting server"<<endl;
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			

@@ -92,6 +92,7 @@ EntityManager::EntityManager()
 	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("saveworld",FID_SAVEWORLD, CSYS_FLAG_SRC_ALL);		
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
+	Register_Cmd("settempworlddir",FID_SETTEMPWORLDDIR, CSYS_FLAG_SRC_ALL);			
 	
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
@@ -113,6 +114,7 @@ bool EntityManager::StartUp()
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
 	m_kWorldDirectory = "../data/testmap";
+	m_kTempWorldDirectory = "";
 
 	//create all base objects
 	Clear();
@@ -1353,7 +1355,10 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	
 		case FID_LOADWORLD:
-			LoadWorld(kCommand->m_kSplitCommand[1].c_str());
+			if(kCommand->m_kSplitCommand.size() > 2)  //is there a temporary directory argument?
+				LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]);
+			else
+				LoadWorld(kCommand->m_kSplitCommand[1]);
 			break;
 		
 		case FID_SAVEWORLD:
@@ -1364,6 +1369,11 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());		
 			SaveZones();
 			break;
+		
+		case FID_SETTEMPWORLDDIR:
+			SetTempWorldDir(kCommand->m_kSplitCommand[1].c_str());		
+			break;
+			
 	}	
 
 }
@@ -2100,23 +2110,48 @@ void EntityManager::LoadZone(int iId)
 	
 	
 	//load
-	char nr[10];
-	IntToChar(nr,iId);
-	
-	string filename(m_kWorldDirectory);
-	filename+="/";
-	filename+=nr;
-	filename+=".dynamic.zone";
-	
-	//cout<<"load from :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	
+	//if this is not set to be a new zone , i shuld try to load it
 	if(!kZData->m_bNew)
-		if(!kFile.Open(filename.c_str(),0,false))
-			kZData->m_bNew = true;
+	{
+		char nr[10];
+		IntToChar(nr,iId);
 	
+		string tempzonefilename(m_kTempWorldDirectory);
+		tempzonefilename+="/";
+		tempzonefilename+=nr;
+		tempzonefilename+=".dynamic.zone";
+		
+		
+		string zonefilename(m_kWorldDirectory);
+		zonefilename+="/";
+		zonefilename+=nr;
+		zonefilename+=".dynamic.zone";
 	
+
+		kZData->m_bNew = true;
+		
+		
+		//first try to load the temporary zone, if the temporaryworld directory has been set 
+		if(!m_kTempWorldDirectory.empty())
+			if(kFile.Open(tempzonefilename.c_str(),0,false))
+			{
+				cout<<"load from temporary zonefile:"<<tempzonefilename<<endl;				
+				kZData->m_bNew = false;
+			}
+		
+		//if the zone still is not loaded try to load it from the default world directory
+		if(kZData->m_bNew == true)
+			if(kFile.Open(zonefilename.c_str(),0,false))
+			{
+				cout<<"load from zonefile:"<<zonefilename<<endl;								
+				kZData->m_bNew = false;		
+			}
+	}
+	
+	//this zone could not be loaded, or we want to create a new zone, either the case we create a new zone =)
 	if(kZData->m_bNew)
 	{	
 		kZData->m_bNew = false;
@@ -2131,30 +2166,23 @@ void EntityManager::LoadZone(int iId)
 
 		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
-		//SetZoneModel("data/mad/zones/emptyzone.mad",iId);
 		SetZoneModel("",iId);		
-
-/*		
-		//add static entity
-		Entity* staticentity = CreateObject();
-		staticentity->SetName("StaticEntity");
-		staticentity->SetParent(kZData->m_pkZone);
-		staticentity->GetObjectType() = OBJECT_TYPE_STATIC;
-*/		
 
 		//set objectid in zonedata (sent to client when unloading
 		kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
 
-		return;
 	}
+	else	//else load zone from file
+	{
+
+		//load zone from file
+		kZData->m_pkZone->Load(&kFile);
 	
-	kZData->m_pkZone->Load(&kFile);
+		//set objectid in zonedata (sent to client when unloading
+		kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
 	
-	//set objectid in zonedata (sent to client when unloading
-	kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
-	
-	kFile.Close();
-	
+		kFile.Close();
+	}
 }
 
 void EntityManager::UnLoadZone(int iId)
@@ -2180,13 +2208,20 @@ void EntityManager::SaveZone(int iId)
 	char nr[10];
 	IntToChar(nr,iId);
 	
-	string filename(m_kWorldDirectory);
+	//setup filename
+	string filename;
+	
+	if(!m_kTempWorldDirectory.empty())
+		filename = m_kTempWorldDirectory;
+	else
+		filename = m_kWorldDirectory;
+	
 	filename+="/";
 	filename+=nr;
 	filename+=".dynamic.zone";
 
 	
-	//cout<<"saving to :"<<filename<<endl;
+	cout<<"saving to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -2224,9 +2259,10 @@ int EntityManager::GetUnusedZoneID()
 }
 
 
-bool EntityManager::LoadWorld(const char* acDir)
+bool EntityManager::LoadWorld(string strWDir, string strTempWDir)
 {
-	SetWorldDir(acDir);
+	SetWorldDir(strWDir);
+	SetTempWorldDir(strTempWDir);	
 	
 	//clear the world
 	Clear();
