@@ -51,6 +51,7 @@ InventoryDlg::~InventoryDlg()
 	g_kMistClient.m_pkGui->UnregisterWindow(m_pkInventoryWnd);
 }
 
+/*
 MLContainer* InventoryDlg::GetContainer()
 {
 	Entity* pkPlayer = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID);
@@ -68,12 +69,10 @@ MLContainer* InventoryDlg::GetContainer()
 
 	return NULL;
 }
+*/
 
 void InventoryDlg::Open()
 {	
-	//send iventory request to server
-	g_kMistClient.SendRequestIventory();		
-
 	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
 
 	// load inventory

@@ -81,6 +81,7 @@ class MCOMMON_API P_Item: public Property
 		int		GetInContainerID(){ return m_iInContainerID;	};
 		
 		friend class MLContainer;
+		friend class P_Container;
 };
 
 MCOMMON_API Property* Create_P_Item();

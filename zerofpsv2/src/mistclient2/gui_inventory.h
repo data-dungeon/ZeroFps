@@ -3,7 +3,7 @@
 
 #include "../zerofpsv2/basic/vector2.h"
 #include "../zerofpsv2/basic/zguiskin.h"
-#include "../mcommon/mlcontainer.h"
+#include "../mcommon/p_container.h"
 
 class TextureManager;
 class ZGuiWnd;
@@ -27,7 +27,7 @@ public:
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
 	bool IsVisible() { if(m_pkInventoryWnd == NULL) return false; return m_pkInventoryWnd && m_pkInventoryWnd->IsVisible(); }
-	MLContainer* GetContainer();
+//	MLContainer* GetContainer();
 	void OpenContainerWnd();
 	void CloseContainerWnd();
 	

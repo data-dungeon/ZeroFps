@@ -1022,65 +1022,73 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 										break;
 									}
 									
-									//no target position given assuming free position
-									if(iPosX == -1)
-									{
-										//try adding item on a free position in character inventory
-										if(pkCharProp->m_pkInventory->AddItem(iItemID))											
-											SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);											
+									//get inventory  container
+									if(P_Container* pkContanerP = (P_Container*)m_pkEntityManager->GetEntityByID(pkCharProp->m_iInventory)->GetProperty("P_Container"))
+									{									
+										//no target position given assuming free position
+										if(iPosX == -1)
+										{
+											//try adding item on a free position in character inventory
+											if(pkContanerP->AddItem(iItemID))											
+												SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);											
+											else
+												SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+	
+											
+											break;
+										}
 										else
-											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-
-										
-										break;
-									}
-									else
-									{
-										//try adding item on target position in character inventory
-										if(pkCharProp->m_pkInventory->AddItem(iItemID,iPosX,iPosY))											
-											SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);
-										else
-											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
-										
-										
-										break;																	
-									}															
+										{
+											//try adding item on target position in character inventory
+											if(pkContanerP->AddItem(iItemID,iPosX,iPosY))											
+												SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);
+											else
+												SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+											
+											
+											break;																	
+										}
+									}										
 								}
 								else
 								{
 									//moving within container
 									
 									//no target, assuming moving within container
-									if(iTarget == -1)
-									{
-										// no position , assuming drop
-										if(iPosX == -1)
+									if(P_Container* pkContanerP = (P_Container*)m_pkEntityManager->GetEntityByID(pkCharProp->m_iInventory)->GetProperty("P_Container"))
+									{													
+									
+										if(iTarget == -1)
 										{
-											cout<<"trying to drop item"<<endl;
-											if(pkCharProp->m_pkInventory->DropItem(iItemID,pkChar->GetWorldPosV()))
-												SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);											
-											else
-												SayToClients("Could not drop item",PkNetMessage->m_iClientID);
-										
-											break;;
-										}
-										
-										//trying to move item
-										else
-										{
-											//no target container, assuming inventory
-											if(iTarget == -1 && iPosX != -1)
+											// no position , assuming drop
+											if(iPosX == -1)
 											{
-												cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
-											
-												if(pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
-													SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);
+												cout<<"trying to drop item"<<endl;
+												if(pkContanerP->DropItem(iItemID,pkChar->GetWorldPosV()))
+													SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);											
 												else
-													SayToClients("Could no move item",PkNetMessage->m_iClientID);
-		
-												break;										
-											}																							
-										}																						
+													SayToClients("Could not drop item",PkNetMessage->m_iClientID);
+											
+												break;;
+											}
+											
+											//trying to move item
+											else
+											{
+												//no target container, assuming inventory
+												if(iTarget == -1 && iPosX != -1)
+												{
+													cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
+												
+													if(pkContanerP->MoveItem(iItemID,iPosX,iPosY))
+														SendContainer(pkCharProp->m_iInventory,PkNetMessage->m_iClientID,false);
+													else
+														SayToClients("Could no move item",PkNetMessage->m_iClientID);
+			
+													break;										
+												}																							
+											}																						
+										}
 									}
 								}
 							}
@@ -1095,20 +1103,33 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;	
 		}		
 		
-		case MLNM_CS_REQ_INVENTORY:
+		case MLNM_CS_REQ_CONTAINER:
 		{
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{		
-				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
-				{
-					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+			int iContainerID;
+			PkNetMessage->Read(iContainerID);
+			
+			OpenContainer(iContainerID,PkNetMessage->m_iClientID);
+			
+			/*
+			//inventory
+			if(iContainerID == -1)
+			{
+				if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				{		
+					if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 					{
-						SendContainer(pkCP->m_pkInventory,PkNetMessage->m_iClientID);
-						break;
+						if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+						{
+							SendContainer(pkCP->m_pkInventory->GetOwner(),PkNetMessage->m_iClientID);
+							break;
+						}
 					}
-				}
+				}				
+				break;				
 			}
-		
+			*/
+			
+					
 			break;
 		}
 		
@@ -1119,6 +1140,43 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			return;
 	}
 }
+
+void MistServer::OpenContainer(int iContainerID,int iClientID)
+{
+	if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(iClientID))
+	{		
+		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+		{
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iContainerID))
+			{
+				if(P_Container* pkContainerP = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
+				{				
+					//check owner
+					if(pkContainerP->GetOwnerID() != -1)
+					{
+						cout<<"this container is owned by someone"<<endl;
+						
+						if(pkContainerP->GetOwnerID() != pkData->m_iCharacterID)
+						{
+							cout<<"and its not me =("<<endl;
+							return;
+						}
+						else
+							cout<<"and its ME! =)"<<endl;
+					}
+				
+				
+					//is this a inventory container
+					if(pkContainerP->GetContainerType() == eInventory)
+					{
+						SendContainer(iContainerID,iClientID,true);
+					}				
+				}
+			}
+		}
+	}
+}
+
 
 void MistServer::SendPlayerListToClient(int iClient)
 {
@@ -1144,48 +1202,58 @@ void MistServer::SendPlayerListToClient(int iClient)
 	SendAppMessage(&kNp);	
 }
 
-void MistServer::SendContainer(MLContainer* pkContainer,int iClientID)
+void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 {	
-	cout<<"sending container to client:"<<iClientID<<endl;
-
-	vector<MLContainerInfo> kItemList;
-	pkContainer->GetItemList(&kItemList);
-	
-	
-	NetPacket kNp;			
-	kNp.Write((char) MLNM_SC_CONTAINER);
-	
-	kNp.Write(pkContainer->GetOwnerID());
-	kNp.Write(pkContainer->GetContainerType());
-	kNp.Write(pkContainer->GetSizeX());
-	kNp.Write(pkContainer->GetSizeY());
-	
-	int iItems = kItemList.size();
-	kNp.Write(iItems);
-	
-	for(int i = 0;i<kItemList.size();i++)
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iContainerID))
 	{
-		kNp.Write_Str(kItemList[i].m_strName);
-		kNp.Write_Str(kItemList[i].m_strIcon);
-		
-		kNp.Write(kItemList[i].m_iItemID);
-		kNp.Write(kItemList[i].m_cItemX);
-		kNp.Write(kItemList[i].m_cItemY);
-		kNp.Write(kItemList[i].m_cItemW);
-		kNp.Write(kItemList[i].m_cItemH);						
-		kNp.Write(kItemList[i].m_iStackSize);				
-
-		
-		if(kNp.m_iPos > 1000)
+		if(P_Container* pkContainer = (P_Container*)pkEnt->GetProperty("P_Container"))
 		{
-			cout<<"container to big, lets krash =P"<<endl;
+			vector<MLContainerInfo> kItemList;
+			pkContainer->GetItemList(&kItemList);
 			
+			
+			NetPacket kNp;			
+			kNp.Write((char) MLNM_SC_CONTAINER);
+			
+			kNp.Write(bOpen);
+			kNp.Write(iContainerID);
+			kNp.Write(pkContainer->GetContainerType());
+			kNp.Write(pkContainer->GetSizeX());
+			kNp.Write(pkContainer->GetSizeY());
+			
+			int iItems = kItemList.size();
+			kNp.Write(iItems);
+			
+			for(int i = 0;i<kItemList.size();i++)
+			{
+				kNp.Write_Str(kItemList[i].m_strName);
+				kNp.Write_Str(kItemList[i].m_strIcon);
+				
+				kNp.Write(kItemList[i].m_iItemID);
+				kNp.Write(kItemList[i].m_cItemX);
+				kNp.Write(kItemList[i].m_cItemY);
+				kNp.Write(kItemList[i].m_cItemW);
+				kNp.Write(kItemList[i].m_cItemH);						
+				kNp.Write(kItemList[i].m_iStackSize);				
+		
+				
+				if(kNp.m_iPos > 1000)
+				{
+					cout<<"container to big, lets krash =P"<<endl;
+					
+				}
+			}
+			
+			kNp.TargetSetClient(iClientID);
+			SendAppMessage(&kNp);
+		
 		}
+		else
+			cout<<"WARNING: requested container did not have any p_container"<<endl;
 	}
-	
-	kNp.TargetSetClient(iClientID);
-	SendAppMessage(&kNp);
-	
+	else
+		cout<<"container not found"<<endl;
+
 }
 
 void MistServer::SayToClients(const string& strMsg,int iClientID)

@@ -2,12 +2,14 @@
 #include "p_container.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "mlcontainer.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+#include <iomanip>
 
 // -----------------------------------------------------------------------------------------------
 
 P_Container::P_Container()
 {
-	m_pkEntityMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
+	m_pkEntMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
 	
 	strcpy(m_acName,"P_Container");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -18,22 +20,24 @@ P_Container::P_Container()
 
 	m_bFirstUpdate = true;
 	
-	m_pkContainer = NULL;
-	m_iSizeX  = 6;
-	m_iSizeY  = 6;	
+	m_iOwnerID 				= -1;
+	m_iMaxItems 			= 0;
+	m_iContainerType		= eNormal;
+	m_kItemTypes.clear();
 	
+	SetSize(4,4);		
 }
 
 P_Container::~P_Container()
 {
-	delete m_pkContainer;
+	//delete m_pkContainer;
 
 }
 
 
 void P_Container::Init()
 {
-	m_pkContainer		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),m_iSizeX,m_iSizeY,true);	
+	//m_pkContainer		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),m_iSizeX,m_iSizeY,true);	
 }
 
 void P_Container::Update()
@@ -42,15 +46,15 @@ void P_Container::Update()
 	if(m_bFirstUpdate)
 	{
 		m_bFirstUpdate = false;
-		m_pkContainer->FindMyItems();	
+		FindMyItems();	
 	}
 
 }
 
 vector<PropertyValues> P_Container::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
-			
+	vector<PropertyValues> kReturn(0);
+			/*
 	kReturn[0].kValueName = "sizex";
 	kReturn[0].iValueType = VALUETYPE_INT;
 	kReturn[0].pkValue    = &m_iSizeX;		
@@ -58,6 +62,7 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 	kReturn[1].kValueName = "sizey";
 	kReturn[1].iValueType = VALUETYPE_INT;
 	kReturn[1].pkValue    = &m_iSizeY;		
+	*/
 	
 	return kReturn;	
 }
@@ -65,6 +70,7 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 
 bool P_Container::HandleSetValue( string kValueName ,string kValue )
 {
+/*
 	if(strcmp(kValueName.c_str(), "sizex") == 0) {
 		m_iSizeX = atoi(kValue.c_str()) ;
 		return true;
@@ -76,26 +82,576 @@ bool P_Container::HandleSetValue( string kValueName ,string kValue )
 	}
 
 	m_pkContainer->SetSize(m_iSizeX,m_iSizeY);
+*/	
+	return false;
+}
+
+void P_Container::SetSize(int iX,int iY)
+{
+	m_iSizeX = iX;
+	m_iSizeY = iY;
+
+	m_kSlots.clear();
 	
+	for(int i = 0;i<iX*iY;i++)
+		m_kSlots.push_back(-1);
+}
+
+bool P_Container::ItemTypeOK(int iType)
+{
+	if(m_kItemTypes.empty())
+		return true;
+
+	for(int i = 0;i<m_kItemTypes.size();i++)
+		if(m_kItemTypes[i] == iType)
+			return true;
+			
 	return false;
 }
 
 
+int* P_Container::GetItem(int iX,int iY)
+{
+	if(iX >= 0 && iX < m_iSizeX && iY >= 0 && iY < m_iSizeY)
+		return &m_kSlots[iY*m_iSizeX + iX];
+	else
+		return NULL;
+}
+
+bool P_Container::SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH)
+{
+	//check if this space is free
+	for(int iYP = iY ;iYP < iY+iH;iYP++)
+	{	
+		for(int iXP = iX ;iXP< iX+iW;iXP++)
+		{
+			if(int* i = GetItem(iXP,iYP))
+			{
+				if(*i != -1)
+					return false;
+			}		
+			else
+				return false;				
+		}
+	}
+	
+	//get id
+	int iID = pkItem->GetEntity()->GetEntityID();
+	
+
+	//now set spaces
+	for(int iYP = iY ;iYP < iY+iH;iYP++)
+	{	
+		for(int iXP = iX ;iXP< iX+iW;iXP++)
+		{
+			int* i = GetItem(iXP,iYP);
+			
+			if(i)
+				*i = iID;
+			else
+				return false;
+		}
+	}
+	
+	//update position saved in item
+	pkItem->m_iInContainerPosX = iX;
+	pkItem->m_iInContainerPosY = iY;		
+	
+	return true;
+}
+
+bool P_Container::HaveItem(int iID)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+		for( int iX = 0;iX<m_iSizeX;iX++)
+			if( *GetItem(iX,iY) == iID)
+				return true;
+
+	return false;
+}
+
+int P_Container::HaveItem(const string strItemName)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+	{
+		for( int iX = 0;iX<m_iSizeX;iX++)
+		{
+			if(Entity* pkEnt = m_pkEntMan->GetEntityByID(*GetItem(iX,iY)))
+			{
+				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+				{
+					if(pkItem->m_strName == strItemName)
+						return *GetItem(iX,iY);				
+				}
+			}
+		}
+	}
+		
+	return -1;
+}
+
+void P_Container::ClearItem(int iID)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+		for( int iX = 0;iX<m_iSizeX;iX++)
+		{
+			int* i = GetItem(iX,iY);
+			
+			if(*i == iID)
+				*i = -1;
+		}	
+}
+
+bool P_Container::GetItemPos(int iID,int& iRX,int& iRY)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+		for( int iX = 0;iX<m_iSizeX;iX++)	
+			if( *GetItem(iX,iY) == iID)
+			{
+				iRX = iX;
+				iRY = iY;
+				return true;
+			}
+			
+	return false;
+}
+
+bool P_Container::AddItem(int iID,int iX,int iY)
+{
+	if(HaveItem(iID))
+	{
+		cout<<"Item already in container"<<endl;
+		return false;
+	}
+		
+	if(m_iMaxItems != 0)
+		if(GetNrOfItems() >= m_iMaxItems)
+		{
+			//cout<<":"<<GetNrOfItems()<<endl;
+			cout<<"max nr of items already in container"<<endl;
+			return false;
+		}
+		
+	if(Entity* pkOwner = GetEntity())
+	{
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+		{
+			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+			{
+				if(!ItemTypeOK(pkPItem->m_iType))
+				{
+					cout<<"Item type not allowed in this container"<<endl;
+					return false;
+				}
+
+				if(!SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
+				{
+					cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
+					return false;
+				}
+				
+				pkItem->SetUseZones(false);				
+				pkItem->SetParent(pkOwner);				
+				
+				pkItem->SetUpdateStatus(UPDATE_NONE);									
+				//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
+				m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
+
+				
+				//set item's owned by setting
+				pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
+				//Print();
+				
+				return true;
+			}
+			else
+				cout<<"WARNING: trying to add item that does not have any P_DMItem property"<<endl;
+		}
+		else
+			cout<<"WARNING: trying to add item that does not exist"<<endl;			
+	}
+	else
+		cout<<"WARNING: could not find owner entity"<<endl;
+
+	
+	return false;
+}
+
+bool P_Container::AddItem(int iID)
+{
+	if(HaveItem(iID))
+	{
+		cout<<"Item already in container"<<endl;
+		return false;
+	}
+		
+	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+	{
+		if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+		{
+			int iW = pkPItem->m_iSizeX;
+			int iH = pkPItem->m_iSizeY;			
+			
+			//go trough all possible possitions
+			for( int iCY = 0;iCY<m_iSizeY;iCY++)
+			{
+				for( int iCX = 0;iCX<m_iSizeX;iCX++)
+				{
+					bool bFree=true;
+					//check if this space is free + W & H
+					for(int iYP = iCY ;iYP < iCY+iH;iYP++)
+					{	
+						for(int iXP = iCX ;iXP< iCX+iW;iXP++)
+						{
+							if(int* i = GetItem(iXP,iYP))
+							{
+								if(*i != -1)
+									bFree = false;
+							}		
+							else
+								bFree = false;				
+						}
+					}	
+					
+					//looks like this space is free lets try to add the item here
+					if(bFree)
+					{
+						return AddItem(iID,iCX,iCY);
+					}
+				}
+			}
+		}
+	}
+	
+	cout<<"no free space"<<endl;
+	
+	return false;
+}
+
+bool P_Container::RemoveItem(int iID)
+{
+	if(!HaveItem(iID))
+		return false;	
+
+	ClearItem(iID);	
+	m_pkEntMan->Delete(iID);
+	
+	return true;
+}
+
+bool P_Container::RemoveItem(int iX,int iY)
+{
+	int* i = GetItem(iX,iY);
+	if(i)
+		return RemoveItem(*i);
+	
+	return false;
+}
+
+bool P_Container::DropItem(int iID,const Vector3& kPos)
+{
+	if(Entity* pkOwner = GetEntity())
+	{
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+		{
+			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+			{							
+				if(HaveItem(iID))
+				{
+					ClearItem(iID);
+	
+					// check for joint stuff...
+					//if ( pkItem->GetProperty("P_LinkToJoint") )
+					//	pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
+					pkItem->DeleteProperty("P_LinkToJoint");
+						
+	
+					// reset rotation
+					pkItem->SetWorldRotV (Vector3(0,pkItem->GetWorldRotV().y,0));
+					
+					cout<<"enabling item"<<endl;
+					pkItem->SetUpdateStatus(UPDATE_ALL);				
+					pkItem->SetUseZones(true);
+					//pkItem->SetParent(pkOwner->GetParent());				
+					pkPItem->m_iInContainerID = -1;
+	
+					pkItem->SetWorldPosV( kPos );
+					
+
+													
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+void P_Container::DropAll(const Vector3& kPos)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+	{
+		for( int iX = 0;iX<m_iSizeX;iX++)
+		{	
+			int* i = GetItem(iX,iY);
+		
+			if(*i != -1)
+			{
+				DropItem(*i,kPos);
+			}
+		}
+	}
+}
+
+bool P_Container::MoveItem(int iID,MLContainer* pkDest,int iX,int iY)
+{
+	if(HaveItem(iID))
+	{
+		if(pkDest->AddItem(iID,iX,iY))
+		{
+			ClearItem(iID);
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool P_Container::MoveItem(int iID,MLContainer* pkDest)
+{
+	if(HaveItem(iID))
+	{
+		if(pkDest->AddItem(iID))
+		{
+			ClearItem(iID);
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool P_Container::MoveItem(int iID,int iX,int iY)
+{
+	if(HaveItem(iID))
+	{
+		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+		{
+			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+			{	
+				int oldx,oldy;
+				GetItemPos(iID,oldx,oldy);
+		
+				ClearItem(iID);
+		
+				if(SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
+				{
+					return true;				
+				}
+				else
+				{
+					if(!SetItem(pkPItem,oldx,oldy,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
+						cout<<"ERROR: item's size has changed since added to container"<<endl;
+				
+					return false;
+				}
+			}
+		}
+	}
+	
+	return false;
+}
+
+void P_Container::GetItemList(vector<MLContainerInfo>* pkItemList)
+{
+	//make sure list is clean
+	pkItemList->clear();
+	
+	set<int>	kItemIDs;
+
+	//find all individual item ids
+	for( int i = 0;i<m_kSlots.size();i++)
+	{
+		if(m_kSlots[i] != -1)
+			kItemIDs.insert(m_kSlots[i]);
+	}
+
+	//printf("kItemIDs size = %i\n", kItemIDs.size());
+	//printf("kItemIDs[0] = %i\n", (*kItemIDs.begin()));
+
+	for(set<int>::iterator it=kItemIDs.begin();it!=kItemIDs.end();it++)
+	{
+		if(Entity* pkEnt = m_pkEntMan->GetEntityByID(*it))
+		{		
+			if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+			{		
+				int iX,iY;
+				GetItemPos(*it,iX,iY);
+					
+				MLContainerInfo kTemp;
+				kTemp.m_strName = pkItem->m_strName;
+				kTemp.m_strIcon = pkItem->m_strIcon;				
+				kTemp.m_iItemID = *it;
+				kTemp.m_cItemX = iX;
+				kTemp.m_cItemY = iY;
+				kTemp.m_cItemW = pkItem->m_iSizeX;
+				kTemp.m_cItemH = pkItem->m_iSizeY;
+				kTemp.m_iStackSize = pkItem->m_iStackSize;
+				
+				
+				pkItemList->push_back(kTemp);
+			}
+		}
+	}
+}
+
+int P_Container::GetNrOfItems()
+{
+	set<int>	kItemIDs;
+
+	//find all individual item ids
+	for( int i = 0;i<m_kSlots.size();i++)
+	{
+		if(m_kSlots[i] != -1)
+			kItemIDs.insert(m_kSlots[i]);
+	}
+	
+	return kItemIDs.size();
+}
+
+void P_Container::Print()
+{
+	cout<<"Printing Inventory :"<<m_iSizeX<<" x "<<m_iSizeY<<endl;
+	
+	for( int iY = 0;iY<m_iSizeY;iY++)
+	{
+		for( int iX = 0;iX<m_iSizeX;iX++)
+		{
+			int* i = GetItem(iX,iY);
+			
+			cout<<setw(10)<<*i;
+		}
+		cout<<endl;
+	}
+}
 
 
 void P_Container::Save(ZFIoInterface* pkPackage)
-{	
-	//save container settings
-	m_pkContainer->Save(pkPackage);
+{
+
+	
+	pkPackage->Write(&m_iMaxItems,sizeof(m_iMaxItems),1);
+	
+	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
+	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
+	
+	pkPackage->Write(m_iContainerType);
+	
+	
+/*	
+	//save slots
+	int iSlots = m_kSlots.size();
+	pkPackage->Write(&iSlots,sizeof(iSlots),1);		
+	for(int i = 0 ;i < iSlots;i++)
+		pkPackage->Write(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
+*/
+		
+	//save item types
+	int iTypes = m_kItemTypes.size();
+	pkPackage->Write(&iTypes,sizeof(iTypes),1);		
+	for(int i = 0 ;i < iTypes;i++)
+		pkPackage->Write(&m_kItemTypes[i],sizeof(m_kItemTypes[i]),1);	
+	
 }
 
 void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	//save container settings
-	m_pkContainer->Load(pkPackage);
+	pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+	
+	pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+	pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+
+	SetSize(m_iSizeX,m_iSizeY);
+
+	pkPackage->Read(m_iContainerType);
+		
+/*	
+	//load slots
+	int iSlots;
+	pkPackage->Read(&iSlots,sizeof(iSlots),1);		
+	for(int i = 0 ;i < iSlots;i++)
+		pkPackage->Read(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
+*/
+
+	//load types
+	int iTypes;
+	pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+	m_kItemTypes.clear();
+	for(int i = 0 ;i < iTypes;i++)
+	{
+		int iT;
+		pkPackage->Read(&iT,sizeof(iT),1);				
+		m_kItemTypes.push_back(iT);
+	}
+	
+}
+
+void P_Container::FindMyItems()
+{
+	vector<Entity*>	kEntitys;
+	GetEntity()->GetChilds(&kEntitys);
+
+	//cout<<"parent has :"<<kEntitys.size()<<" childs"<<endl;
+	
+	for(int i = 0;i<kEntitys.size();i++)
+	{
+		if(P_Item* pkItem = (P_Item*)kEntitys[i]->GetProperty("P_Item"))
+		{
+			if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
+			{
+				cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
+				AddItem(kEntitys[i]->GetEntityID());
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+// SCRIPT INTERFACE FOR P_CharacterProperty
+using namespace ObjectManagerLua;
+
+namespace SI_P_Container
+{
+	int OpenContainerLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;			
+			
+			
+	}
 }
 
 Property* Create_P_Container()
 {
 	return new P_Container;
+}
+
+
+void Register_P_Container(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Container", Create_P_Container);					
+
+	// Register Property Script Interface
+	//g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
+	//g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
+
 }

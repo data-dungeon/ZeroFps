@@ -8,31 +8,9 @@
 using namespace std;
 
 
-enum MCOMMON_API ContainerTypes
-{
-	eNormal,
-	eInventory,
-	eLeftHand,
-	eRightHand,
-	eHead,
-	eBody,
-};
 
 
-class MCOMMON_API MLContainerInfo
-{
-	public:
-		string	m_strName;
-		string	m_strIcon;
-			
-		int	m_iItemID;		
-		char	m_cItemX;
-		char	m_cItemY;		
-		char	m_cItemW;
-		char	m_cItemH;
-		
-		int	m_iStackSize;
-};
+
 
 
 class MCOMMON_API MLContainer
@@ -50,13 +28,14 @@ class MCOMMON_API MLContainer
 		int				m_iMaxItems;
 		
 		int				m_iContainerType;
-
-		bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
+		int				m_iCurrentUser;
+		
+				bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
-		void ClearItem(int iID);
-	
-		bool ItemTypeOK(int iType);
+		void ClearItem(int iID);	
+		bool ItemTypeOK(int iType);		
+
 
 		
 	public:
@@ -95,7 +74,7 @@ class MCOMMON_API MLContainer
 		bool RemoveItem(int iID);
 		bool RemoveItem(int iX,int iY);
 		
-		void 				GetItemList(vector<MLContainerInfo>* pkItemList);
+//		void 				GetItemList(vector<MLContainerInfo>* pkItemList);
 		vector<int>* 	GetItemTypes ()		{ return &m_kItemTypes; }
 		int 				GetNrOfItems();
 		int 				GetOwnerID()			{ return m_iOwnerID; }

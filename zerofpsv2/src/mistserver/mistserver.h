@@ -101,8 +101,10 @@ class MistServer :public Application , public ZGuiApp
 		void DeletePlayerCharacter(int iConID);		
 		
 		void SendPlayerListToClient(int iClient);
-		void SendContainer(MLContainer* pkContainer,int iClientID);
+		void SendContainer(int iContainerID,int iClientID,bool bOpen);
 				
+		void OpenContainer(int iContainerID,int iClientID);
+		
 		Vector3 GetPlayerStartPos();
 
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		

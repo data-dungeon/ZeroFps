@@ -64,6 +64,8 @@ class MistClient :public Application, public ZGuiApp {
 		void Input();
 		bool DelayCommand();
 		
+		void RequestOpenInventory();
+		
 		//chat system
 		void Say(string strMsg);
 		void SendMessage(string strMsg,int iChannel,string strToWho);
@@ -71,7 +73,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestKillMe();
 
 		void SendAction(int iEntityID,const string& strAction);
-		void SendRequestIventory();
+		void SendRequestContainer(int iContainerID);
 		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY);	
 			/*SendMoveItem hjälp.
 				iItemID : alltid entity id't för itemet i fråga

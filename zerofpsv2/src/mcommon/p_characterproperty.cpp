@@ -26,8 +26,12 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bOverHeadText		=	true;	
 	m_bFirstUpdate			=	true;
 	
-	m_pkInventory			=	NULL;
-	
+	m_iInventory			=	-1;
+	m_iHead					=	-1;
+	m_iBody					=	-1;
+	m_iLeftHand				=	-1;
+	m_iRightHand			=	-1;
+		
 		
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
@@ -89,34 +93,34 @@ void P_CharacterProperty::SetupContainers()
 	{
 		if(P_Container* pkContainer = (P_Container*)kEntitys[i]->GetProperty("P_Container"))
 		{
-			switch(pkContainer->m_pkContainer->GetContainerType())
+			switch(pkContainer->GetContainerType())
 			{
 				case eInventory:
 					cout<<"found inventory"<<endl;
-					m_pkInventory = pkContainer->m_pkContainer;
+					m_iInventory = kEntitys[i]->GetEntityID();
 					break;
 				case eBody:
 					cout<<"found body"<<endl;
-					m_pkBody = pkContainer->m_pkContainer;
+					m_iBody = kEntitys[i]->GetEntityID();
 					break;
 				case eHead:
 					cout<<"found head"<<endl;
-					m_pkHead = pkContainer->m_pkContainer;
+					m_iHead= kEntitys[i]->GetEntityID();
 					break;
 				case eLeftHand:
 					cout<<"found left hand"<<endl;
-					m_pkLeftHand = pkContainer->m_pkContainer;
+					m_iLeftHand = kEntitys[i]->GetEntityID();
 					break;
 				case eRightHand:
 					cout<<"found right hand"<<endl;
-					m_pkRightHand = pkContainer->m_pkContainer;
+					m_iRightHand = kEntitys[i]->GetEntityID();
 					break;
 			
 			}
 		}
 	}
 
-	if(!m_pkInventory)
+	if(m_iInventory == -1)
 	{
 		P_Container* pkCon;
 		Entity* pkContainer;
@@ -125,43 +129,48 @@ void P_CharacterProperty::SetupContainers()
 		
 		//inventory
 		pkContainer = m_pkEntityMan->CreateEntity();
-			pkContainer->SetParent(GetEntity());
-			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				m_pkInventory = pkCon->m_pkContainer;
-				m_pkInventory->SetSize(6,12);
-				m_pkInventory->SetContainerType(eInventory);
-		
+			m_iInventory = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());			
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(6,12);
+				pkCon->SetContainerType(eInventory);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				
 		//body	
 		pkContainer = m_pkEntityMan->CreateEntity();
-			pkContainer->SetParent(GetEntity());
+			m_iBody = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());			
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				m_pkBody = pkCon->m_pkContainer;
-				m_pkBody->SetSize(4,4);
-				m_pkBody->SetContainerType(eBody);
-
+				pkCon->SetSize(4,4);
+				pkCon->SetContainerType(eBody);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				
 		//head
 		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iHead = pkContainer->GetEntityID();		
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				m_pkHead = pkCon->m_pkContainer;
-				m_pkHead->SetSize(4,4);
-				m_pkHead->SetContainerType(eHead);
+				pkCon->SetSize(4,4);
+				pkCon->SetContainerType(eHead);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 
 		//left hand
 		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iLeftHand = pkContainer->GetEntityID();		
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				m_pkLeftHand = pkCon->m_pkContainer;
-				m_pkLeftHand->SetSize(2,8);
-				m_pkLeftHand->SetContainerType(eLeftHand);
+				pkCon->SetSize(2,8);
+				pkCon->SetContainerType(eLeftHand);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iRightHand = pkContainer->GetEntityID();
 			pkContainer->SetParent(GetEntity());
-			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				m_pkRightHand = pkCon->m_pkContainer;
-				m_pkRightHand->SetSize(2,8);
-				m_pkRightHand->SetContainerType(eRightHand);
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,8);
+				pkCon->SetContainerType(eRightHand);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				
 																		
 		cout<<"done"<<endl;
@@ -452,6 +461,12 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
+	pkNetPacket->Write(m_iInventory);
+	pkNetPacket->Write(m_iHead);
+	pkNetPacket->Write(m_iBody);
+	pkNetPacket->Write(m_iLeftHand);
+	pkNetPacket->Write(m_iRightHand);
+
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
 	pkNetPacket->Write(m_bIsPlayerCharacter);
@@ -466,6 +481,13 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 
 void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
+	pkNetPacket->Read(m_iInventory);
+	pkNetPacket->Read(m_iHead);
+	pkNetPacket->Read(m_iBody);
+	pkNetPacket->Read(m_iLeftHand);
+	pkNetPacket->Read(m_iRightHand);
+
+
 	pkNetPacket->Read_Str(m_strName);
 	pkNetPacket->Read_Str(m_strOwnedByPlayer);
 	pkNetPacket->Read(m_bIsPlayerCharacter);
@@ -500,14 +522,18 @@ namespace SI_P_CharacterProperty
 		
 		if(Entity* pkEnt = g_pkObjMan->GetEntityByID(iCharcterID))
 			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))		
-			{	
-				if(pkCP->m_pkInventory->AddItem(iItemID))
-				{
-					cout<<"sucessfully picked up item"<<endl;
-					return 0;
-				}
-				else
-					cout<<"could not pick that up"<<endl;
+			{
+				if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(pkCP->m_iInventory))
+					if(P_Container* pkContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
+					{
+						if(pkContainer->AddItem(iItemID))
+						{
+							cout<<"sucessfully picked up item"<<endl;
+							return 0;
+						}
+						else
+							cout<<"could not pick that up"<<endl;
+					}
 			}
 			else
 				cout<<"WARNING: entity without P_CharacterProperty tried to pickup an item"<<endl;
@@ -531,8 +557,10 @@ namespace SI_P_CharacterProperty
 		g_pkScript->GetArgString(pkLua, 1,czItemName);
 		
 		if(Entity* pkEnt = g_pkObjMan->GetEntityByID(iCharcterID))
-			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))		
-				dItemID = pkCP->m_pkInventory->HaveItem(czItemName);
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+				if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(pkCP->m_iInventory))
+					if(P_Container* pkContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
+						dItemID = pkContainer->HaveItem(czItemName);
 			
 
 		g_pkScript->AddReturnValue(pkLua, dItemID);							

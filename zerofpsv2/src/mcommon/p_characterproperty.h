@@ -69,11 +69,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 	public:
 		//containers
-		MLContainer*	m_pkInventory;
-		MLContainer*	m_pkHead;
-		MLContainer*	m_pkBody;
-		MLContainer*	m_pkLeftHand;
-		MLContainer*	m_pkRightHand;
+		int	m_iInventory;
+		int	m_iHead;
+		int	m_iBody;
+		int	m_iLeftHand;
+		int	m_iRightHand;
 	
 	
 		P_CharacterProperty();

@@ -1,3 +1,4 @@
+
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "mlcontainer.h"
 #include <iomanip>
@@ -8,7 +9,8 @@ MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 	m_iOwnerID 				= iOwnerID;
 	m_bDisableItems 		= true;
 	m_iMaxItems 			= 0;
-	m_iContainerType		= eNormal;
+//	m_iContainerType		= eNormal;
+	m_iCurrentUser			= -1;
 	m_kItemTypes.clear();
 	
 	SetSize(iX,iY);
@@ -410,7 +412,7 @@ bool MLContainer::MoveItem(int iID,int iX,int iY)
 	
 	return false;
 }
-
+/*
 void MLContainer::GetItemList(vector<MLContainerInfo>* pkItemList)
 {
 	//make sure list is clean
@@ -453,7 +455,7 @@ void MLContainer::GetItemList(vector<MLContainerInfo>* pkItemList)
 		}
 	}
 }
-
+*/
 int MLContainer::GetNrOfItems()
 {
 	set<int>	kItemIDs;

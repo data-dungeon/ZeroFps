@@ -390,11 +390,15 @@ void MistClient::Input()
 	}
 
 	if(m_pkInputHandle->Pressed(KEY_I) && !DelayCommand())
-	{
+	{	
+		
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
 		else
-			m_pkInventoryDlg->Open(); 
+			RequestOpenInventory();
+			
+		//			m_pkInventoryDlg->Open(); 
+			
 	}
 			
 	// taunts
@@ -713,15 +717,17 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			cout<<"got container"<<endl;
 		
-			int iOwnerID;
+			int iContainerID;
 			int iContainerType;
 			char cSizeX;
 			char cSizeY;
 			int  iItems;
+			bool bOpen;
 			
 			vector<MLContainerInfo> kItemList;			
 			
-			pkNetMessage->Read(iOwnerID);
+			pkNetMessage->Read(bOpen);
+			pkNetMessage->Read(iContainerID);
 			pkNetMessage->Read(iContainerType);
 			pkNetMessage->Read(cSizeX);
 			pkNetMessage->Read(cSizeY);
@@ -754,8 +760,17 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<" stack:"<<kItemList[i].m_iStackSize<<endl;			
 			}
 			
-			m_pkInventoryDlg->Update(kItemList);
-
+			
+			//is this and inventory?
+			if(iContainerType == eInventory)
+			{
+				//do we want to open the container window?
+				if(bOpen)
+					if(!m_pkInventoryDlg->IsVisible())
+						m_pkInventoryDlg->Open(); 
+					
+				m_pkInventoryDlg->Update(kItemList);
+			}
 				
 			break;
 		}		
@@ -1058,11 +1073,23 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	SendAppMessage(&kNp);			
 }
 
-void MistClient::SendRequestIventory()
+void MistClient::RequestOpenInventory()
+{
+	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+	{
+		if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+		{
+			SendRequestContainer(pkCharProp->m_iInventory);
+		}
+	}
+}
+
+
+void MistClient::SendRequestContainer(int iContainerID)
 {
 	NetPacket kNp;			
-	kNp.Write((char) MLNM_CS_REQ_INVENTORY);
-	
+	kNp.Write((char) MLNM_CS_REQ_CONTAINER);
+	kNp.Write(iContainerID);
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
 }
