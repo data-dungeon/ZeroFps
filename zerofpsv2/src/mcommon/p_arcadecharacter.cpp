@@ -52,6 +52,7 @@ void P_ArcadeCharacter::Update()
 			else
 				GetObject()->RotateLocalRotV(Vector3(0,-10 * fAng ,0));
 		}
+
 /*		
 		
 		Vector3 kNewDir = m_kDir  ;

@@ -10,6 +10,11 @@ function Create()
 		InitProperty("P_DMGun");				
 		InitProperty("P_Track");
 --		InitProperty("P_Sound");			
+		InitProperty("P_Light");	
+			InitParameter("Quadratic_Atten",0.005);
+			InitParameter("Diffuse","0.5 0.4 0.4 1");
+			InitParameter("Type",2);
+				
 		InitProperty("P_ScriptInterface");
 		
 		InitProperty("P_ArcadeCharacter");			

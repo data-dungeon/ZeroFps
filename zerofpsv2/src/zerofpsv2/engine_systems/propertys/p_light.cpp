@@ -44,6 +44,9 @@ void P_Light::Update()
 
 
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV();
+	
+	if(m_pkLightSource->iType == SPOT_LIGHT)	
+		m_pkLightSource->kRot = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
 	switch(m_iMode)
 	{

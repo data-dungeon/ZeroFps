@@ -13,9 +13,9 @@
 
 using namespace std;
 enum LIGHT_TYPE {
-	DIRECTIONAL_LIGHT,
-	POINT_LIGHT,
-	SPOT_LIGHT
+	DIRECTIONAL_LIGHT =	0,
+	POINT_LIGHT = 			1,
+	SPOT_LIGHT =			2,
 };
 
 using namespace std;

@@ -260,6 +260,11 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 
 	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++)
 	{
+		//skip spotlights
+		if((*it)->iType==SPOT_LIGHT)
+			continue;
+	
+		//always add point lights
 		if((*it)->iType==DIRECTIONAL_LIGHT)
 		{
 			if(!bNoDirectional)
@@ -274,7 +279,7 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 
 			(*it)->fIntensity = 1.0 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
 
-			//cout<< "INT:"<<(*it)->fIntensity<<endl;
+			cout<< "INT:"<<(*it)->fIntensity<<endl;
 
 			kSorted.push_back(*it);
 		}
