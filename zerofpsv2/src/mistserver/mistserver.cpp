@@ -26,6 +26,8 @@
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../mcommon/ml_netmessages.h"
+#include "../mcommon/p_charactercontrol.h"
+
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 Entity* pkEntTestArc;
@@ -176,6 +178,8 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);
+
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
 
@@ -346,6 +350,7 @@ void MistServer::Input()
 	if(m_pkInputHandle->Pressed(KEY_8))	assert(0);
 	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
 
+	/*
 	if(pkEntTestArc)
 	{
 		P_ArcadeCharacter* pkArc = dynamic_cast<P_ArcadeCharacter*>( pkEntTestArc->GetProperty("P_ArcadeCharacter"));
@@ -358,14 +363,9 @@ void MistServer::Input()
 			
 		}
 	}
-	
+	*/
 
 	Input_Camera(float(x),float(z));
-/*
-	if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-	if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-	if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
-*/	
 };
 
 void MistServer::OnHud(void)
@@ -703,8 +703,7 @@ void MistServer::SpawnPlayer(int iConID)
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
-	DeletePlayer(iConID);
-	
+	DeletePlayerCharacter(iConID);
 	m_pkPlayerDB->Logout(pkClient->m_strLogin);
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
 }
@@ -832,8 +831,20 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	return pkObject->GetEntityID();
 }
 
-void MistServer::DeletePlayer(int iConID)
+void MistServer::DeletePlayerCharacter(int iConID)
 {
+	if(PlayerData* pkPD = m_pkPlayerDB->GetPlayerData(	iConID ))
+	{
+		//first save and delete the player character
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(pkPD->m_iCharacterID);
+		if(pkObj)
+		{
+			m_pkPlayerDB->SaveCharacter(pkObj,pkPD->m_strPlayerName);
+			m_pkObjectMan->Delete(pkObj);
+		}
+	}
+
+/*	
 	if(m_pkServerInfoP)
 	{
 		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
@@ -862,6 +873,7 @@ void MistServer::DeletePlayer(int iConID)
 			}		
 		}
 	}
+	*/
 }
 
 void MistServer::HSO_Character(ClientOrder* pkOrder)
@@ -1240,6 +1252,33 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			}
 			break;
 		}
+		
+		case MLNM_CS_CONTROLS:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				bitset<6> kControls;
+				float	fYAngle;
+				float fPAngle;
+				
+				PkNetMessage->Read(kControls);
+				PkNetMessage->Read(fYAngle);
+				PkNetMessage->Read(fPAngle);
+				
+				if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(pkData->m_iCharacterID))
+				{
+					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
+					{
+						pkCC->SetKeys(&kControls);
+						pkCC->SetRotation(fYAngle,fPAngle);
+					}
+					else
+						cout<<"character has no controls ...WHYYYYYYYY!!!!!!!!"<<endl;
+				}
+			}
+			break;
+		}
+		
 			
 			
 		default:

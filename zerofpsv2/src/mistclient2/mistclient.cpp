@@ -94,22 +94,120 @@ void MistClient::RegisterPropertys()
 
 void MistClient::OnIdle() 
 {
+	Input();
+}
 
+void MistClient::Input()
+{
+	//get mouse
+	int x,z;		
+	m_pkInputHandle->RelMouseXY(x,z);	
+	
+	//check buttons
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_W);
+	m_kCharacterControls[eDOWN] =	m_pkInputHandle->Pressed(KEY_S);			
+	m_kCharacterControls[eLEFT] = m_pkInputHandle->Pressed(KEY_A);			
+	m_kCharacterControls[eRIGHT]= m_pkInputHandle->Pressed(KEY_D);
+	m_kCharacterControls[eJUMP] = m_pkInputHandle->Pressed(MOUSERIGHT);
+	
+	//update camera
+	if(Entity* pkCharacter = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
+	{
+		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
+		{			
+			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
+			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
+			pkCam->SetOffset(Vector3(0,1.0,0)); 
+
+			float fDistance = pkCam->Get3PDistance();
+			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	fDistance -= 0.5;
+			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	fDistance += 0.5;
+			
+			//make sure camera is nto to far away
+			if(fDistance > 8.0)
+				fDistance = 8.0;
+			
+			//make sure camera is not to close
+			if(fDistance < 0.2)
+				fDistance = 0.2;
+
+			//select first or 3d view camera
+			if(fDistance < 0.3)	
+			{	
+				pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+				
+				//disable player model in first person
+				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+					pkMad->SetVisible(false);
+			}
+			else			
+			{
+				pkCam->SetType(CAM_TYPE3PERSON);
+				
+				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+					pkMad->SetVisible(true);	
+			}			 
+				
+			pkCam->Set3PDistance(fDistance);
+		}			
+	}	
 }
 
 void MistClient::OnSystem() 
 {
-/*	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID()))
+	UpdateCharacter();
+	SendControlInfo();
+}
+
+void MistClient::SendControlInfo()
+{
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
 	{
+		//if theres no camera property, create one and set it up
+		if(P_Camera* pkCam = (P_Camera*)pkEnt->GetProperty("P_Camera"))
+		{
+			//request character entityID
+			NetPacket kNp;				
+			kNp.Clear();
+			kNp.Write((char) MLNM_CS_CONTROLS);
+			
+			kNp.Write(m_kCharacterControls);
+			kNp.Write(pkCam->Get3PYAngle() );
+			kNp.Write(pkCam->Get3PPAngle() );
+			
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);		
+		}
+	}
+}
+
+void MistClient::UpdateCharacter()
+{
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCharacterID))
+	{
+		//if theres no camera property, create one and set it up
 		if(!pkEnt->GetProperty("P_Camera"))
 		{
 			if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
 			{
 				pkCam->SetCamera(m_pkCamera);
-				cout<<"attached camera to client property"<<endl;
+				pkCam->SetType(CAM_TYPE3PERSON);
+				pkCam->Set3PPAngle(.30);					
+				pkCam->Set3PYAngle(0);
+				pkCam->Set3PDistance(4);									
 			}
 		}
-	}*/
+		
+		//setup enviroment
+		if(!pkEnt->GetProperty("P_Enviroment"))
+		{
+			if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
+			{
+				pkEnv->SetEnable(true);				
+				pkEnv->SetEnviroment("data/enviroments/sun.env");
+			}
+		}
+	}
 }
 
 

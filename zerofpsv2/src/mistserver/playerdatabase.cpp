@@ -130,7 +130,10 @@ void PlayerDatabase::Logout(string strPlayer)
 	for(vector<PlayerData>::iterator it = m_strActivePlayers.begin();it != m_strActivePlayers.end(); it++)
 	{
 		if( (*it).m_strPlayerName == strPlayer)
+		{
 			m_strActivePlayers.erase(it);
+			return;
+		}
 	}
 
 	//m_strActiveUsers.erase(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strPlayer));

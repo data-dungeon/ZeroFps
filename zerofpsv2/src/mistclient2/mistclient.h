@@ -9,7 +9,7 @@
 
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_enviroment.h"
-
+#include "../mcommon/p_charactercontrol.h"
 
 /**	\brief	Da MistClient
 		\ingroup MistClient
@@ -22,14 +22,21 @@ class MistClient :public Application, public ZGuiApp {
 
 		};
 
-		Camera*				m_pkCamera;
-		int					m_iCharacterID;
+		Camera*		m_pkCamera;				//main camera
+		int			m_iCharacterID;		//current active character ID
       
-		bool              m_bSkipLoginScreen;
+		
+		bitset<6>	m_kCharacterControls;
+		
+		bool			m_bSkipLoginScreen;
 
       vector<pair<string,string> > m_kServerList;
       bool ReadWriteServerList(bool bRead);
 
+		void UpdateCharacter();
+		void SendControlInfo();
+		void Input();
+		
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
@@ -46,9 +53,6 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientStart(void);
 				
 		//on client join, server runs this
-		//bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
-		//void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
-		//void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void OnClientConnected();
 		void OnNetworkMessage(NetPacket *PkNetMessage);
 		

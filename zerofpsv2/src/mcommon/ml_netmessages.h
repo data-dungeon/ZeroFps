@@ -8,6 +8,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_MAX,
 	
 	MLNM_CS_REQ_CHARACTERID,
+	MLNM_CS_CONTROLS,
 };
 
 //	A network message from the server to the client.

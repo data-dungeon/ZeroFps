@@ -918,7 +918,6 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	//Do we want to load the entitys attached childs?
 	if(bLoadChilds)
 	{
-		cout<<"loading childs"<<endl;
 		//nr of childs
 		int iChilds = 0;		
 		pkFile->Read(&iChilds,sizeof(iChilds),1);		
