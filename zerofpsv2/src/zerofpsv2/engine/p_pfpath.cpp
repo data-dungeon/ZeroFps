@@ -47,9 +47,12 @@ void P_PfPath::Update()
 		return;
 		}
 
+	static Vector3 kOffset = Vector3(0,1,0);;
+	
+
 	// Get Distance to next goal.
 	Vector3 kPos = m_pkObject->GetWorldPosV();
-	Vector3 kGoal = m_kPath[m_iNextGoal];
+	Vector3 kGoal = m_kPath[m_iNextGoal] + kOffset;
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
