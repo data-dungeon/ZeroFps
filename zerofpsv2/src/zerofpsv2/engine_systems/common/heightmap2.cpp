@@ -414,9 +414,9 @@ void Heightmap2::GeneratePatchMinMaxHeight(HM2_patch* pkPatch)
 	float fMinHeight = 99999999;
 	float fTotalHeight = 0;
 	
-	for(int y = sy; y < sy+h;y++)	
+	for(int y = sy; y <= sy+h;y++)	
 	{	
-		for(int x = sx; x < sx+w;x++)
+		for(int x = sx; x <= sx+w;x++)
 		{
 			float fHeight = GetVert(x,y)->fHeight;
 			
