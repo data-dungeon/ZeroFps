@@ -1,4 +1,5 @@
 #include "p_vegitation.h"
+#include "p_hmrp2.h"
 
 P_Vegitation::P_Vegitation()
 {
@@ -14,6 +15,7 @@ P_Vegitation::P_Vegitation()
 	m_iSortPlace=9;
 	bNetwork = true;
 	
+	m_CheckedForHM = false;
 	m_pkTexture = new ZFResourceHandle;
 	
 	Clear();
@@ -39,14 +41,34 @@ void P_Vegitation::Init()
 	
 }
 
-void P_Vegitation::Random()
+void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 {
 	int size = m_iSize * 100;
 
 	Clear();
-	for(int i=0;i<m_iAmount;i++)
+	
+	if(pkHmrp2)
 	{
-		AddPos(Vector3( (rand()%size -(size/2)) /100.0f,0, (rand()%size -(size/2)) /100.0f));
+		float sx = m_pkObject->GetWorldPosV().x;
+		float sz = m_pkObject->GetWorldPosV().z;
+		float sy = m_pkObject->GetWorldPosV().y;
+	
+		for(int i=0;i<m_iAmount;i++)
+		{
+			float x = (rand()%size -(size/2)) /100.0f;
+			float z = (rand()%size -(size/2)) /100.0f;
+			
+			float y = pkHmrp2->m_pkHeightMap->Height(x+sx,z+sz);
+			
+			AddPos(Vector3(x,y-sy -0.1,z));
+		}
+	}
+	else
+	{
+		for(int i=0;i<m_iAmount;i++)
+		{
+			AddPos(Vector3( (rand()%size -(size/2)) /100.0f,0, (rand()%size -(size/2)) /100.0f));
+		}
 	}
 	
 	SetNetUpdateFlag(true);	
@@ -58,13 +80,31 @@ void P_Vegitation::Update()
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
 		return;
 			
+	if(!m_CheckedForHM)
+	{
+		m_CheckedForHM = true;
+	
+		//check if theres a heightmap in this zone	
+		Entity* hme = m_pkObject->GetParent();
+		if(hme)
+		{
+			P_HMRP2* pkhmrp = (P_HMRP2*)hme->GetProperty("P_HMRP2");
+			if(pkhmrp)
+			{
+				cout<<"this zone has a heightmap, using it to get Y values"<<endl;
+				
+				Random(pkhmrp);
+			}
+		}		
+	}
+			
 			
 	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
 	
 	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
-	if(fDistance > 40)
-		return;
+	//if(fDistance > 40)
+	//	return;
 						
 					
 	//draw a ball on the server

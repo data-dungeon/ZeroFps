@@ -36,6 +36,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		int					m_iSize;		
 		float					m_fWind;
 		
+		bool					m_CheckedForHM;
+		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
@@ -56,7 +58,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		void CalculateRadius();
 		
-		void Random();
+		void Random(P_HMRP2* pkHmrp2 = NULL);
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
