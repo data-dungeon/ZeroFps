@@ -28,9 +28,9 @@ class BASIC_API Matrix4
 // Constructors
 		Matrix4(void);
 		Matrix4(float v1,float v2,float v3 ,float v4,
-						float v5,float v6,float v7 ,float v8,						
-						float v9,float v10,float v11 ,float v12,
-						float v13,float v14,float v15 ,float v16);
+					float v5,float v6,float v7 ,float v8,						
+					float v9,float v10,float v11 ,float v12,
+					float v13,float v14,float v15 ,float v16);
 		
 			
 // Operators
@@ -38,6 +38,11 @@ class BASIC_API Matrix4
 		Matrix4 operator=(const Matrix4 &kOther);
 		void operator=(const Matrix3 &rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
+		float &operator[](const int i);				
+		void Set(float v1,float v2,float v3 ,float v4,
+				 	float v5,float v6,float v7 ,float v8,						
+				 	float v9,float v10,float v11 ,float v12,
+				 	float v13,float v14,float v15 ,float v16);		
 		
 		// Comparison
 		bool operator== (const Matrix4& rkMatrix) const;
@@ -54,16 +59,18 @@ class BASIC_API Matrix4
 		Matrix4 operator*(const float &f) const;
 		Matrix4 operator*=(const float &f);		
 		Vector4 operator*(const Vector4 &f);
-
+	
+		
 // Methods
-		void Zero();								// Set whole matrix to zero.
-		void Identity();							// Set matrix to the identity matrix.
+		void 		Zero();								// Set whole matrix to zero.
+		void 		Identity();							// Set matrix to the identity matrix.
+		void 		Transponse();
+		void 		SetZeroDelta(float delta);
+		float 	Determinant(void);
+		Matrix3 	submat(int i, int j);
+		Matrix4 	Inverse( );
 
-		void Transponse();
-
-		void OldTranslate(float x, float y, float z);
-		
-		
+				
 		void RadRotate(float fX, float fY, float fZ);
 		void RadRotate(Vector3 kRot);
 		
@@ -72,12 +79,17 @@ class BASIC_API Matrix4
 		
 		void Scale(float fX, float fY, float fZ);
 		void Scale(Vector3 kScale);
+		
+		void OldTranslate(float x, float y, float z);		
 		void Translate(float fX, float fY, float fZ);
 		void Translate(Vector3 kPos);
 		
 		void LookDir(Vector3 kDir,Vector3 kUp);
 
 		// ************************************************
+		
+		Vector3 VectorIRotate (const Vector3& kVec);
+		
 		Vector3 VectorRotate (const Vector3& kVec)
 		{
 			return Vector3 (
@@ -85,16 +97,7 @@ class BASIC_API Matrix4
 				kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1],
 				kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2]
 				);
-/*
-			Vector3 res;
-			res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
-			res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
-			res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
-			return res;
-*/		
 		}
-		
-		Vector3 VectorIRotate (const Vector3& kVec);
 
 		Vector3 VectorTransform (const Vector3& kVec) 
 		{
@@ -105,17 +108,14 @@ class BASIC_API Matrix4
 				);
 		}
 
-		void SetZeroDelta(float delta);
-
-//		bool Inverse(void);
-		float Determinant(void);
-		Matrix3 submat(int i, int j);
-		Matrix4 Inverse( );
 
 // Accessors 
 		Vector3 GetRotVector();
 		Vector3 GetPosVector();
+		void SetAxis(int iAxisNum, Vector3 kNewAxis);
+		Vector3 GetAxis(int iAxisNum);
 
+				
 		Vector3 GetPos()
 		{
 			return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
@@ -128,10 +128,6 @@ class BASIC_API Matrix4
 			RowCol[3][2] = kPos.z;
 		}
 
-		float &operator[](const int i);				
-
-		void SetAxis(int iAxisNum, Vector3 kNewAxis);
-		Vector3 GetAxis(int iAxisNum);
 
 // Other
 		void Print();

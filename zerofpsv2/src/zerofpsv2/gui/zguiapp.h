@@ -56,7 +56,7 @@ enum WndAlignent
 
 enum WndResizeType
 {
-	None,				// 0. Fönstret skall inte skalas om.
+	eNone,				// 0. Fönstret skall inte skalas om.
 	ResizeWidth,	// 1
 	ResizeHeight,	// 2
 	Resize,			// 3
@@ -117,10 +117,10 @@ public:
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags,
-		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=None);
+		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);
 	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
 		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags,
-		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=None);
+		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);
 
 	void CloseWindow(char* szResName);
 	ZGuiWnd* GetWnd(int iID);

@@ -63,6 +63,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int			m_iCurrentShadows;
 		int			m_iCurrentVerts;
 		int			m_iCurrentActiveShadows;
+		float			m_fShadowIntensity;
 
 		int			m_iStencilBits;
 		bool			m_bHaveCheckedBits;		//have we checked that the stencil buffer is ok

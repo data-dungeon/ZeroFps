@@ -73,7 +73,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3	m_kLinearForce;
 		Vector3	m_kRotForce;
 		Vector3	m_kNewPos;
-		Matrix3	m_kNewRotation;
+		Matrix4	m_kNewRotation;
 		
 		Vector3	m_kMSPos;
 		float		m_fMSRadius;	
@@ -117,7 +117,9 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void ApplyForce(const Vector3& kForce);
 		void ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
 		void ApplyImpulsForce(const Vector3& kForce);
+		void ApplyRotationImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
 		
+		void ApplyRotationForce(Vector3 kNewVel);		
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 

@@ -510,8 +510,10 @@ Matrix4 P_Tcs::GetModelMatrix()
 {
 	Matrix4 kMat;
 	kMat.Identity();
-	kMat.Scale(m_fScale,m_fScale,m_fScale);
-	kMat *= GetObject()->GetWorldOriM();
+	kMat.Scale(m_fScale,m_fScale,m_fScale);	
+	kMat *= m_kNewRotation; 
+	kMat.Translate(m_kNewPos);
+	
 	return kMat;
 }
 
@@ -556,22 +558,48 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 	}
 }
 
+void P_Tcs::ApplyRotationImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
+{	
+	if(m_bActiveMoment)
+	{	
+		//are we using local cordinats or not, if so rotate it
+		if(bLocal)
+			kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
+		else
+			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
+				
+		m_kRotVelocity += kForce.Cross(kAttachPos) / m_fInertia;
+		
+	}
+}
+
 void P_Tcs::ApplyImpulsForce(const Vector3& kForce)
 {
 	m_kLinearVelocity +=  kForce / m_fMass;
-}
+} 
 
+void P_Tcs::ApplyRotationForce(Vector3 kNewVel)
+{
+	m_kRotVelocity	+= kNewVel / m_fInertia;
+
+}
 
 Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
 {
-	//are we using local cordinats or not, if so rotate it
-	if(bLocal)
-		kPos = GetObject()->GetLocalRotM().VectorTransform(kPos);	
+	if(m_bActiveMoment)
+	{
+		//are we using local cordinats or not, if so rotate it
+		if(bLocal)
+			kPos = GetObject()->GetLocalRotM().VectorTransform(kPos);	
+		else
+			kPos = kPos - GetObject()->GetWorldPosV();
+	
+	
+		return m_kLinearVelocity - m_kRotVelocity.Cross(kPos);
+	}
 	else
-		kPos = kPos - GetObject()->GetWorldPosV();
+		return m_kLinearVelocity; 
 
-
-	return m_kLinearVelocity - m_kRotVelocity.Cross(kPos);
 }
 
 Property* Create_P_Tcs()

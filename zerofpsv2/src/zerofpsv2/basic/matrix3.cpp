@@ -29,6 +29,23 @@ Matrix3::Matrix3(float f00,float f01,float f02,
 	m_aafRowCol[2][2] = f22;
 };
 
+void Matrix3::Set(float f00,float f01,float f02,
+						float f10,float f11,float f12,						
+						float f20,float f21,float f22)
+{							 	 
+	m_aafRowCol[0][0] = f00;
+	m_aafRowCol[0][1] = f01;
+	m_aafRowCol[0][2] = f02;
+
+	m_aafRowCol[1][0] = f10;
+	m_aafRowCol[1][1] = f11;
+	m_aafRowCol[1][2] = f12;
+
+	m_aafRowCol[2][0] = f20;
+	m_aafRowCol[2][1] = f21;
+	m_aafRowCol[2][2] = f22;
+};
+
 
 // Operators	-	Assignment
 Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)
@@ -248,6 +265,18 @@ float Matrix3::Determinant(void)	 const
 	return det;
 }
 
+void Matrix3::Scale(float fX, float fY, float fZ)
+{
+	*this *= Matrix3(fX		,0 	,0		,
+						  0		,fY	,0		,
+						  0		,0		,fZ	);;
+}
+
+void Matrix3::Scale(Vector3 kScale){
+	Scale(kScale.x, kScale.y, kScale.z);
+}
+
+
 void Matrix3::Rotate(float fX, float fY, float fZ)
 {
 	RadRotate(DegToRad(fX),DegToRad(fY),DegToRad(fZ));
@@ -260,7 +289,7 @@ void Matrix3::Rotate(Vector3 kRot){
 
 void Matrix3::RadRotate(float fX, float fY, float fZ)
 {
-
+	static Matrix3 rotatex,rotatey,rotatez;
 	
 	float cx = float(cos(fX));
 	float sx = float(sin(fX));
@@ -271,20 +300,19 @@ void Matrix3::RadRotate(float fX, float fY, float fZ)
 	float cz = float(cos(fZ));
 	float sz = float(sin(fZ));
 
-	Matrix3 rotatex = Matrix3(1			,0			,0,
-									0			,cx		  ,-sx,
-									0			,sx	 		,cx);	
+	 rotatex.Set(1		,0		,0,
+					0		,cx	,-sx,
+					0		,sx	,cx);	
 												 
-	Matrix3 rotatey = Matrix3(cy			 ,0			,sy,
-									0			,1			,0	,
-									-sy	 	,0			,cy);	
+	 rotatey.Set(cy	,0		,sy,
+					0		,1		,0	,
+					-sy	,0		,cy);	
 												 
-	Matrix3 rotatez = Matrix3(cz			 ,-sz			,0,
-									sz			 ,cz	 		,0,
-									0			,0			,1);	
+	 rotatez.Set(cz	,-sz	,0,
+					sz		,cz	,0,
+					0		,0		,1);	
 						 
-	// *this = (rotatex*rotatey*rotatez) * (*this); 						 
-	// *this = (rotatex*rotatey*rotatez) * (*this); 
+	 
 	 *this *= rotatez*rotatey*rotatex;
 }
 
@@ -308,27 +336,13 @@ Vector3 Matrix3::GetRotVector()
 	C           = float(cos( angle_y ));
 	angle_y    *= degtorad;
     
-//	if ( fabs( angle_y ) > 0.0005 )
-//   {
-		ftrx      =  m_afData[7] / C;
-		ftry      = -m_afData[6]  / C;
-		angle_x  = float( atan2( ftry, ftrx ) * degtorad );
-		ftrx      =  m_afData[0] / C;
-		ftry      = -m_afData[1] / C;
-   	angle_z  = float(atan2( ftry, ftrx ) * degtorad );
-/*   }
-	else
-	{
-   	angle_x  = 0;
-      ftrx      = data[5];
-      ftry      = data[4];
-      angle_z  = atan2( ftry, ftrx ) * degtorad;
-	}
-*/
-/*	ftrx = data[10];
-	ftry = data[8];	
-	angle_y = atan2(ftry,ftrx) * degtorad;
-	*/
+	ftrx      =  m_afData[7] / C;
+	ftry      = -m_afData[6]  / C;
+	angle_x  = float( atan2( ftry, ftrx ) * degtorad );
+	ftrx      =  m_afData[0] / C;
+	ftry      = -m_afData[1] / C;
+	angle_z  = float(atan2( ftry, ftrx ) * degtorad );
+
 
 	angle_x = Clamp( angle_x, 0, 360 );
 	angle_y = Clamp( angle_y, 0, 360 );

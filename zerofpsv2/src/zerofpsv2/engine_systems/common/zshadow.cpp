@@ -88,10 +88,12 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	m_iDebug = 				0;
 	m_iShadowMode =		ezFail;
 	m_fFrontCapOffset =	0.05;
-
+	m_fShadowIntensity = 0.3;
+	
 	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
 	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
+	RegisterVariable("r_shadowintensity",	&m_fShadowIntensity,CSYS_FLOAT);
 }
 
 bool ZShadow::StartUp()
@@ -170,7 +172,7 @@ void ZShadow::Update()
 	//draw shadow
 	if(m_iCurrentShadows != 0)
 	{
-		DrawShadow(0.3);
+		DrawShadow(m_fShadowIntensity);
 	}
 
 	glPopAttrib();

@@ -64,18 +64,30 @@ float Plane::SphereTest(const Vector3& kPoint,const float& fRadius)
 
 bool Plane::LineTest(const Vector3& kP1,const Vector3& kP2,Vector3* kColPos)
 {
-	float i0=m_kNormal.Dot(kP1);
-	float i1=m_kNormal.Dot(kP2);
+	if( ((PointTest(kP1) > 0) && (PointTest(kP2) < 0)) ||
+		 ((PointTest(kP1) < 0) && (PointTest(kP2) > 0)) )
+	{
+
+		float i0=m_kNormal.Dot(kP1);
+		float i1=m_kNormal.Dot(kP2);
+		
+		float final_t= -(i1 + m_fD) / (i0-i1);
+		
+		
+		if(final_t >= 0 && final_t <= 1)
+		{
+			*kColPos = (kP1*final_t) + (kP2*(1 - final_t));		
+			return true;
+		}
+		else
+			return false;
 	
-	float final_t= -(i1 + m_fD) / (i0-i1);
-	
-	
-	if(final_t >= 0 && final_t <= 1){
-		*kColPos = (kP1*final_t) + (kP2*(1 - final_t));		
-		return true;
 	}
 	else
+	{
 		return false;
+	}
+
 }
 
 void Plane::Set(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2)

@@ -5,7 +5,21 @@
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	Logf("zerofps","Tiny Collission system created");
+
+ 	m_iMaxTests = 5;
+	m_fMinTime = 0.000;
+	m_fMinForce = 0.1;
+	m_fAlmostZero = 0.001;
+
+	m_iHandleCollission = 1;
+	m_iDebugGraph = 0;
 	
+	m_iNrOfCollissions = 0;
+	
+	RegisterVariable("p_tcshandle",	&m_iHandleCollission,CSYS_INT);
+	RegisterVariable("p_tcsdebug",	&m_iDebugGraph,CSYS_INT);
+	RegisterVariable("p_tcstests",	&m_iMaxTests,CSYS_INT);
+	RegisterVariable("p_tcsminforce",&m_fMinForce,CSYS_FLOAT);
 }
 
 Tcs::~Tcs()
@@ -19,16 +33,10 @@ bool Tcs::StartUp()
 { 
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));		
-	
- 	m_iMaxTests = 1000;
-	m_fMinTime = 0.001;
-	m_fMinForce = 0.001;
-	
-	m_pkBodyCopy1 = new P_Tcs;
-	m_pkBodyCopy2 = new P_Tcs;	
-	
-	m_iNrOfCollissions = 0;
-	
+
+	m_pkBodyCopy1 = new P_Tcs();
+	m_pkBodyCopy2 = new P_Tcs();	
+		
 	return true; 
 }
 
@@ -88,7 +96,7 @@ void Tcs::Update(float fAlphaTime)
 	SyncBodys();
 	
 	//make sure there is no collissions	
-	m_kCollissions.clear();	
+	ClearCollissions();
 	
 	//calculate current forces
 	UpdateForces();
@@ -120,8 +128,11 @@ void Tcs::Update(float fAlphaTime)
 			fRTime -= pkCol->fAtime;			
 			
 			//clear all collissions
-			m_kCollissions.clear();
-		
+			ClearCollissions();
+
+			if(m_iNrOfCollissions >= m_iMaxTests)
+				break;
+					
 		}
 		//no collissions, just update time and continue
 		else 
@@ -140,8 +151,8 @@ void Tcs::Update(float fAlphaTime)
 	//clear all forces
 	ResetForces();
 	
-	if(m_iNrOfCollissions > 0 )
-		cout<<"collissions:"<<m_iNrOfCollissions<<endl;
+	//if(m_iNrOfCollissions > 0 )
+	//	cout<<"collissions:"<<m_iNrOfCollissions<<endl;
 	
 }
 
@@ -171,11 +182,124 @@ void Tcs::UpdateLineTests()
 }
 
 void Tcs::HandleCollission(Tcs_collission* pkCol)
-{
-	m_pkRender->Sphere(pkCol->kPos,0.1,1,Vector3(1,1,0),false);
-//	m_pkRender->Line(pkCol->pkBody1->m_kNewPos,pkCol->pkBody1->m_kNewPos + pkCol->kNormal);	
+{	
+	//cout<<"collission points:"<<pkCol->kPositions.size()<<endl;	
+	int iNrOfPos = pkCol->kPositions.size();
+ 	//iNrOfPos = 1;
+	
+	
+	Vector3 kNewLinearVel1(0,0,0);
+	Vector3 kNewLinearVel2(0,0,0);
+	Vector3 kNewRotVel1(0,0,0);
+	Vector3 kNewRotVel2(0,0,0);
+	
+	
+	//setup Masses, treat static bodys as having infinit mass
+	float fMass1 = pkCol->pkBody1->m_fMass;
+	float fMass2 = pkCol->pkBody2->m_fMass;
+		
+	if(pkCol->pkBody1->m_bStatic)
+		fMass1 = 999999999;	
+	if(pkCol->pkBody2->m_bStatic)
+		fMass2 = 999999999;	
+		
+	//fMass1 /= float(iNrOfPos);
+	//fMass2 /= float(iNrOfPos);
+		
+			
+	//bounce
+	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
+	//fBounce = 1;
+	
+	//friction
+	float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
+	
+	float fTotalj = 0;
+	
+	
+	Vector3 kLinearRelVel = pkCol->pkBody1->m_kLinearVelocity - pkCol->pkBody2->m_kLinearVelocity;
+	Vector3 kRotVel1 = pkCol->pkBody1->m_kRotVelocity;
+	Vector3 kRotVel2 = pkCol->pkBody2->m_kRotVelocity;
+
+	
+	//for(int i = 0;i<	pkCol->kPositions.size();i++)
+	for(int i = 0;i<	iNrOfPos;i++)
+	{	
+	
+		if(m_iDebugGraph)
+		{
+			m_pkRender->Sphere(pkCol->kPositions[i],0.1,1,Vector3(0,1,0),false);
+			m_pkRender->SetColor(Vector3(1,0,1));
+			m_pkRender->Line(pkCol->kPositions[i],pkCol->kPositions[i] + pkCol->kNormals[i]);		
+			m_pkRender->SetColor(Vector3(1,1,1));
+		}
+		
+		if(!m_iHandleCollission)
+			continue;
+
+		
+		Vector3 kRelVel = kLinearRelVel + (-kRotVel1.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - -kRotVel2.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos));
+		
+		//Vector3 kRelVel = pkCol->pkBody1->GetVel(pkCol->kPositions[i],false) - pkCol->pkBody2->GetVel(pkCol->kPositions[i],false);
+		Vector3 kTangent = (pkCol->kNormals[i].Cross(kRelVel.Unit())).Cross(pkCol->kNormals[i]);
+
+			
+		float j  = (-(1+fBounce) * (kRelVel * pkCol->kNormals[i])) /
+					  ( (pkCol->kNormals[i] * pkCol->kNormals[i]) *
+					  ( 1/fMass1 + 1/fMass2)); 	
+
+		if(j  <0)
+			continue;
+					  					  
+		//j = fabs(j);					  					  
+				  
+		//make sure the impact force is not to small					  
+		if(j < m_fMinForce)
+			j = m_fMinForce;  
+		
+		j /= float(iNrOfPos);
+					  
 
 
+		//cout<<"j:"<<j<<endl;
+					
+  		fTotalj+=j;
+					  	
+			
+								  
+		// APPLY IMPULSES					
+		if(!pkCol->pkBody1->m_bStatic)
+		{
+			//pkCol->pkBody1->ApplyImpulsForce(pkCol->kNormals[i] * j);
+			//pkCol->pkBody1->ApplyImpulsForce((-kTangent * j)*fFriction);
+			
+			
+			pkCol->pkBody1->ApplyImpulsForce(pkCol->kPositions[i],pkCol->kNormals[i] * j ,false);							
+			pkCol->pkBody1->ApplyImpulsForce(pkCol->kPositions[i],(-kTangent * j)*fFriction ,false);
+		}		
+		
+		if(!pkCol->pkBody2->m_bStatic)
+		{
+			
+			//pkCol->pkBody2->ApplyImpulsForce(-pkCol->kNormals[i] * j);
+			//pkCol->pkBody2->ApplyImpulsForce((kTangent * j)*fFriction);
+			
+			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],-pkCol->kNormals[i] * j ,false);							
+			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],(kTangent * j)*fFriction ,false);
+		}					  
+	}
+	
+	/*
+	pkCol->pkBody1->ApplyImpulsForce(kNewLinearVel1);
+	pkCol->pkBody2->ApplyImpulsForce(kNewLinearVel2);
+
+	pkCol->pkBody1->ApplyRotationForce(kNewRotVel1);
+	pkCol->pkBody2->ApplyRotationForce(kNewRotVel2);
+	*/
+		
+	//cout<<"totalj:"<<fTotalj<<endl;
+	
+/*	
 	//setup Masses, treat static bodys as having infinit mass
 	float fMass1;
 	float fMass2;
@@ -227,7 +351,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		//pkCol->pkBody1->m_kLinearVelocity += (pkCol->kNormal * j) / pkCol->pkBody1->m_fMass;	
 		//pkCol->pkBody1->ApplyImpulsForce(Vector3(0,0,0),pkCol->kNormal * j,true);	
 		
-		
+		//correct
 		pkCol->pkBody1->ApplyImpulsForce(pkCol->kPos,pkCol->kNormal * j ,false);							
 		pkCol->pkBody1->ApplyImpulsForce(pkCol->kPos,(-pkCol->kTangent * j)*fFriction ,false);
 	}
@@ -239,6 +363,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		//pkCol->pkBody2->m_kLinearVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;		
 		//pkCol->pkBody2->ApplyImpulsForce(Vector3(0,0,0),-pkCol->kNormal * j,true);	
 		
+		//correct
 		pkCol->pkBody2->ApplyImpulsForce(pkCol->kPos,-pkCol->kNormal * j ,false);							
 		pkCol->pkBody2->ApplyImpulsForce(pkCol->kPos,(pkCol->kTangent * j)*fFriction ,false);
 	}
@@ -247,7 +372,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	//touch objects
 	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
 	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	
-
+*/
 }
 
 void Tcs::SyncEntitys()
@@ -355,7 +480,11 @@ void Tcs::UpdateCollissions(float fAtime)
 	for(unsigned int B1=0;B1<m_kBodys.size();B1++)
 	{
 		for(unsigned int B2=B1+1;B2<m_kBodys.size();B2++)
-		{		
+		{
+			//dont test if both bodys are static
+			if(m_kBodys[B1]->m_bStatic && m_kBodys[B2]->m_bStatic)
+				continue;
+				
 			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
 				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])			
 			{
@@ -609,10 +738,10 @@ Tcs_collission* Tcs::FindNextCollission()
 	
 	for(unsigned int i=0;i<m_kCollissions.size();i++)
 	{
-		if(m_kCollissions[i].fAtime < fClosest)
+		if(m_kCollissions[i]->fAtime < fClosest)
 		{
-			fClosest = m_kCollissions[i].fAtime;
-			pkClosest = &m_kCollissions[i];
+			fClosest = m_kCollissions[i]->fAtime;
+			pkClosest = m_kCollissions[i];
 		}
 	}
 	
@@ -629,10 +758,13 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	bool didpen = false;
 	int nroftests = 0;
 	
-	while(retry && nroftests < m_iMaxTests)
+	while(retry && (fAtime > 0 ))
 	{
 		retry = false;
 		nroftests++;
+		
+		if(fAtime < m_fAlmostZero)
+			fAtime = 0;
 		
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));
@@ -648,11 +780,10 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 			
-				//UpdateBodyVelnPos(m_pkBodyCopy1,0);
-				//UpdateBodyVelnPos(m_pkBodyCopy2,0);	
 			
 				if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
 				{
+					//cout<<"Stuck sphere VS sphere"<<endl;
 					didpen = true;			
 					break;					
 				}
@@ -676,18 +807,26 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	{	
 		
 		
-		Tcs_collission temp;
-		temp.pkBody1 = pkBody1;
-		temp.pkBody2 = pkBody2;
+		Tcs_collission* temp = new Tcs_collission;
+		temp->Clear();
+		
+		temp->pkBody1 = pkBody1;
+		temp->pkBody2 = pkBody2;
 	
-		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
-		temp.kPos = m_pkBodyCopy1->m_kNewPos - (temp.kNormal * m_pkBodyCopy1->m_fRadius);	
-		temp.kRelVel = m_pkBodyCopy1->GetVel(temp.kPos,false) - m_pkBodyCopy2->GetVel(temp.kPos,false);
-		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity - m_pkBodyCopy2->m_kLinearVelocity);						
-		temp.fAtime =	fAtime;
-		temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
-			
+		temp->kNormals.push_back((m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit());
+		temp->kPositions.push_back(m_pkBodyCopy1->m_kNewPos - (temp->kNormals[0] * m_pkBodyCopy1->m_fRadius));
+		temp->fAtime =	fAtime;
+		
 		m_kCollissions.push_back(temp);		
+		
+		//temp->kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
+		//temp->kPos = m_pkBodyCopy1->m_kNewPos - (temp->kNormal * m_pkBodyCopy1->m_fRadius);	
+		//temp->kRelVel = m_pkBodyCopy1->GetVel(temp->kPos,false) - m_pkBodyCopy2->GetVel(temp->kPos,false);
+		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity - m_pkBodyCopy2->m_kLinearVelocity);						
+		
+		//temp->kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
+			
+		
 	}
 
 }
@@ -721,82 +860,90 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	
 	//make sure body2 have all the pointers else get angry and cry
 	if(!pkBody2->m_pkVertex)
-		return;
-		
+		return;		
 	if(!pkBody2->m_pkFaces)
 		return;
 		
 		
 	
-	while(retry && nroftests < m_iMaxTests)
+	while(retry && (fAtime >0.0) )
 	{
 		retry = false;
 		nroftests++;
-			
+
+		if(fAtime < 0.001)
+			fAtime = 0;
+					
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 		
 		UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
 		UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
 	
-		if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
-			if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
-			{
+		if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
+		{
 				//if first penetration do a check at time 0
 				if(!didpen)
 				{
 					memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 					memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 				
-					//UpdateBodyVelnPos(m_pkBodyCopy1,0);
-					//UpdateBodyVelnPos(m_pkBodyCopy2,0);	
 				
 					if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
 					{
 						//cout<<"Stuck Object detected"<<endl;
 						didpen = true;			
 						break;
+						//return;
 					}
 				}
-			
-			
-			
-				didpen = true;			
-				retry = true;
-				fAtime /=1.5;
+							
+			didpen = true;			
+			retry = true;
+			fAtime /=1.5;
 		
-				continue;
-			}
-			else if(didpen)
-				break;
-			else
-				return;
-		
+		}
+		else if(didpen)
+			break;
+		else
+		{
+			if(nroftests == 1)
+				return;		
+		}
 	}	
 	
 	if(didpen)
 	{	
+		Tcs_collission* temp = new Tcs_collission ;
+		temp->Clear();
 		
-		
-		Tcs_collission temp;
-		temp.pkBody1 = pkBody1;
-		temp.pkBody2 = pkBody2;
+		temp->pkBody1 = pkBody1;
+		temp->pkBody2 = pkBody2;
 	
-		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit();
-		temp.kPos = m_kLastTestPos;	
-		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
-		temp.kRelVel = m_pkBodyCopy1->GetVel(temp.kPos,false) - m_pkBodyCopy2->GetVel(temp.kPos,false);
-		temp.fAtime =	fAtime;
-		temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
+		temp->kNormals.push_back((m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit());
+		temp->kPositions.push_back(m_kLastTestPos);
+		
+		temp->fAtime =	fAtime;
 		
 		m_kCollissions.push_back(temp);		
+		
+		//temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit();
+		//temp.kPos = m_kLastTestPos;	
+		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
+		//temp.kRelVel = m_pkBodyCopy1->GetVel(temp.kPos,false) - m_pkBodyCopy2->GetVel(temp.kPos,false);
+		
+		//temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
+		
+		
 	}	
 }
 
 bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 {
+	if(!CollideSphereVSSphere(pkSphere,pkMesh))
+		return false;
 	
-	//GenerateModelMatrix(pkMesh);
+	
 	Matrix4 kModelMatrix = pkMesh->GetModelMatrix();
 	
 	float closest = 99999999;
@@ -843,112 +990,155 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 
 void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 {
-
 	bool retry = true;
 	bool didpen = false;
 	int nroftests = 0;
 	
+
+	Tcs_collission* pkTempCol = new Tcs_collission;	
+	pkTempCol->Clear();
 	
 	//make sure body 1 and 2 have all the pointers else get angry and cry
-	if(!pkBody2->m_pkVertex)
-		return;		
-	if(!pkBody2->m_pkFaces)
-		return;
-	
-	if(!pkBody1->m_pkVertex)
-		return;		
-	if(!pkBody1->m_pkFaces)
-		return;
-		
-		
-	
-	while(retry && nroftests < m_iMaxTests)
+	if( !pkBody2->m_pkVertex || !pkBody2->m_pkFaces || !pkBody1->m_pkVertex || !pkBody1->m_pkFaces)
 	{
+		delete pkTempCol;
+		return;		
+	}
+	
+	float fTd = 0.001;
+							
+	while(retry && (fAtime > 0) )
+	{
+	
 		retry = false;
 		nroftests++;
 			
+		if(fAtime < 0.001)
+			fAtime = 0;
+		
 		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
+		
+		//cout<<"fAtime:"<<fAtime<<endl;
 		
 		UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
 		UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
 	
-		if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
-			if(CollideMeshVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
+		if(CollideMeshVSMesh(m_pkBodyCopy1,m_pkBodyCopy2,pkTempCol))
+		{
+			//if first penetration do a check at time 0
+			if(!didpen)
 			{
-				//if first penetration do a check at time 0
-				if(!didpen)
+				if(CollideMeshVSMesh(pkBody1,pkBody2,pkTempCol))
 				{
-					memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-					memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
-				
-				
-					if(CollideMeshVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
-					{
-						didpen = true;			
-						break;
-					}
+					//cout<<"Stuck mesh VS mesh detected"<<endl;
+					//fAtime = 1;
+					didpen = true;
+					
+					break;
+					
+					//return;
 				}
+			}	 
+
 			
-			
-			
-				didpen = true;			
-				retry = true;
-				fAtime /=1.2;
-		
-				continue;
-			}
-			else if(didpen)
-				break;
-			else
-				return;
-		
+			didpen = true;			
+			retry = true;
+			fAtime /= 1.5;	
+		}
+		else if(didpen)
+			break;
+		else
+		{
+			delete pkTempCol;
+			return;
+		}	
 	}	
+	
+/*	
+	if(didpen)
+	{	
+		Tcs_collission* temp = new Tcs_collission ;
+		temp->Clear();
+		
+		temp->pkBody1 = pkBody1;
+		temp->pkBody2 = pkBody2;
+	
+		temp->kNormals.push_back(m_kLastTestNormal);
+		temp->kPositions.push_back(m_kLastTestPos);
+		
+		temp->fAtime =	fAtime;
+		
+		m_kCollissions.push_back(temp);		
+	}
+*/	
+	
 	
 	if(didpen)
 	{	
+		//cout<<"tests:"<<nroftests<<endl;
+	
+		//cout<<"Collidded "<<fAtime<<endl;
+	
 		//m_kLastTestPos	 = m_pkBodyCopy1->m_kNewPos + Vector3(0,-0.5,0);
 	
-		Tcs_collission temp;
-		temp.pkBody1 = pkBody1;
-		temp.pkBody2 = pkBody2;
-	
-		//temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit();
-		//temp.kNormal = (m_kLastTestPos - m_pkBodyCopy2->m_kNewPos).Unit();
-		temp.kNormal = Vector3(0,-1,0);
-		temp.kPos = m_kLastTestPos;	
-		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
-		temp.kRelVel = m_pkBodyCopy1->GetVel(temp.kPos,false) - m_pkBodyCopy2->GetVel(temp.kPos,false);
-		temp.fAtime =	fAtime;
-		temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
-
 		
-		m_kCollissions.push_back(temp);		
+		pkTempCol->pkBody1 = pkBody1;
+		pkTempCol->pkBody2 = pkBody2;
+	
+		pkTempCol->fAtime =	fAtime;
+		
+		m_kCollissions.push_back(pkTempCol);		
+		
+		//kTempCol.kNormal = -m_kLastTestNormal;
+		//temp.kNormal = (m_kLastTestPos - m_pkBodyCopy2->m_kNewPos).Unit();
+		//temp.kNormal = Vector3(0,-1,0);
+		//temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
+		//kTempCol.kPos = m_kLastTestPos;	
+		//temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
+		//kTempCol.kRelVel = m_pkBodyCopy1->GetVel(temp.kPos,false) - m_pkBodyCopy2->GetVel(temp.kPos,false);
+		
+		//temp.kNormal = -temp.kRelVel.Unit();
+		
+		
+		
+		//kTempCol.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
+		
+		
 	}	
 
 }
 
-bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2)
+bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol)
 {
+	if(!CollideSphereVSSphere(pkBody1,pkBody2))
+		return false;
+		
+		
+	bool bHaveCleared = false;	
+		
 
 	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
 	Matrix4 kModelMatrix2 = pkBody2->GetModelMatrix();
 
-	
+	/*	
 	float closest = 99999999;
 	Vector3 kClosestNormal;
 	Vector3 kClosestPos;
 	Vector3 kAvragePos(0,0,0);
 	Vector3 kMinPos(999999999,999999999,999999999);
 	Vector3 kMaxPos(-999999999,-999999999,-999999999);
+	Vector3 kAvrageNormal(0,0,0);
 	
 	int iNrOfPos = 0;
+	*/
 	bool bHaveColided = false;
 	
 	Vector3 verts1[3];	
 	Vector3 verts2[3];	
-	float d;
+//	float d;
 	Plane P;
+	Vector3 Normal;
 
 	for(unsigned int f=0;f<pkBody1->m_pkFaces->size();f++)
 	{
@@ -957,27 +1147,27 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2)
 		verts1[2] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[2]]);		
 	
 		if(verts1[0] == verts1[1])
-			return false;		
+			continue;		
 		if(verts1[0] == verts1[2])
-			return false;
+			continue;
 		if(verts1[1] == verts1[2])
-			return false;
+			continue;
 			
 									
-		Vector3 Normal= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();		
+		Normal= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();				
+		P.Set(Normal,verts1[0]);
 		
-		/*
-		//debug stuff
-		m_pkRender->Line(verts1[0],verts1[1]);
-		m_pkRender->Line(verts1[1],verts1[2]);		
-		m_pkRender->Line(verts1[2],verts1[0]);				
-		m_pkRender->Line(verts1[0],verts1[0] + Normal);		
-		m_pkRender->Line(verts1[1],verts1[1] + Normal);				
-		m_pkRender->Line(verts1[2],verts1[2] + Normal);
-		*/
+		if(m_iDebugGraph)
+		{
+			//debug stuff
+			m_pkRender->Line(verts1[0],verts1[1]);
+			m_pkRender->Line(verts1[1],verts1[2]);		
+			m_pkRender->Line(verts1[2],verts1[0]);				
+			m_pkRender->Line(verts1[0],verts1[0] + Normal);		
+			m_pkRender->Line(verts1[1],verts1[1] + Normal);				
+			m_pkRender->Line(verts1[2],verts1[2] + Normal);
+		}
 		
-		P.m_fD = -Normal.Dot(verts1[0]);	
-		P.m_kNormal = Normal;		
 		
 		for(unsigned int g=0;g<pkBody2->m_pkFaces->size();g++)
 		{
@@ -985,103 +1175,267 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2)
 			verts2[1] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[1]]);		
 			verts2[2] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[2]]);		
 			
-			/*
-			m_pkRender->Line(verts2[0],verts2[1]);
-			m_pkRender->Line(verts2[1],verts2[2]);		
-			m_pkRender->Line(verts2[2],verts2[0]);				
-			*/
+			
+			if(m_iDebugGraph)
+			{
+				//debug stuff
+				m_pkRender->Line(verts2[0],verts2[1]);
+				m_pkRender->Line(verts2[1],verts2[2]);		
+				m_pkRender->Line(verts2[2],verts2[0]);				
+			}
 			
 			
 			if(TestLineVSPolygon(verts1,&verts2[0],&verts2[1],&P))
 			{
-				kAvragePos += m_kLastTestPos;
-				iNrOfPos++;
-				//kClosestPos = m_kLastTestPos;
-				bHaveColided = true;	
-				return true;					
+				if(!bHaveCleared)
+				{
+					bHaveCleared = true;
+					pkTempCol->kNormals.clear();
+					pkTempCol->kPositions.clear();
+				}
 				
-				//setup min max pos
-				if(m_kLastTestPos.x < kMinPos.x)  kMinPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y < kMinPos.y)  kMinPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z < kMinPos.z)  kMinPos.z = m_kLastTestPos.z;
-			
-				if(m_kLastTestPos.x > kMaxPos.x)  kMaxPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y > kMaxPos.y)  kMaxPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z > kMaxPos.z)  kMaxPos.z = m_kLastTestPos.z;			
-			}
+				
+				pkTempCol->kPositions.push_back(m_kLastTestPos);
+				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				bHaveColided = true;	
 
-			if(TestLineVSPolygon(verts1,&verts2[0],&verts2[2],&P))
-			{
-				kAvragePos += m_kLastTestPos;
-				iNrOfPos++;
-				//kClosestPos = m_kLastTestPos;
-				bHaveColided = true;
-				//break;
-				return true;
-				//setup min max pos
-				if(m_kLastTestPos.x < kMinPos.x)  kMinPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y < kMinPos.y)  kMinPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z < kMinPos.z)  kMinPos.z = m_kLastTestPos.z;
-			
-				if(m_kLastTestPos.x > kMaxPos.x)  kMaxPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y > kMaxPos.y)  kMaxPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z > kMaxPos.z)  kMaxPos.z = m_kLastTestPos.z;				
 			}
 
 			if(TestLineVSPolygon(verts1,&verts2[1],&verts2[2],&P))
 			{
-				kAvragePos += m_kLastTestPos;
-				iNrOfPos++;
-				//kClosestPos = m_kLastTestPos;
-				bHaveColided = true;
-				//break;
-				return true;
-				//setup min max pos
-				if(m_kLastTestPos.x < kMinPos.x)  kMinPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y < kMinPos.y)  kMinPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z < kMinPos.z)  kMinPos.z = m_kLastTestPos.z;
-			
-				if(m_kLastTestPos.x > kMaxPos.x)  kMaxPos.x = m_kLastTestPos.x;
-				if(m_kLastTestPos.y > kMaxPos.y)  kMaxPos.y = m_kLastTestPos.y;
-				if(m_kLastTestPos.z > kMaxPos.z)  kMaxPos.z = m_kLastTestPos.z;				
+				if(!bHaveCleared)
+				{
+					bHaveCleared = true;
+					pkTempCol->kNormals.clear();
+					pkTempCol->kPositions.clear();
+				}
+				
+				pkTempCol->kPositions.push_back(m_kLastTestPos);
+				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				bHaveColided = true;	
 			}
 
-						
-		}
-/*		
-		if(TestSphereVSPolygon(verts,pkSphere))
-		{	
-			d = pkSphere->m_kNewPos.DistanceTo(m_kLastTestPos);
-		
-			if( d < closest)
+			if(TestLineVSPolygon(verts1,&verts2[2],&verts2[0],&P))
 			{
-				closest = d;
-				bHaveColided = true;
-				kClosestPos = m_kLastTestPos;
-				kClosestNormal = m_kLastTestNormal;
-			}
+				if(!bHaveCleared)
+				{
+					bHaveCleared = true;
+					pkTempCol->kNormals.clear();
+					pkTempCol->kPositions.clear();
+				}
+			
+			
+				pkTempCol->kPositions.push_back(m_kLastTestPos);
+				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				bHaveColided = true;	
+			}				
 		}
-	*/
 	}
 	
 	if(bHaveColided)
-	{
-		//cout<<"collided"<<endl;
-		//m_kLastTestPos = kAvragePos / iNrOfPos;
-		m_kLastTestPos = (kMaxPos + kMinPos) / 2;
-		//m_kLastTestNormal = (pkBody1->m_kNewPos - pkBody2->m_kNewPos).Unit();	
 		return true;
-	}
 	
 	return false;
 }
 
+bool Tcs::CollideMeshVSMesh2(P_Tcs* pkBody1,P_Tcs* pkBody2)
+{
+	if(!CollideSphereVSSphere(pkBody1,pkBody2))
+		return false;
+		
+		
+	bool bHaveCleared = false;	
+		
+
+	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
+	Matrix4 kModelMatrix2 = pkBody2->GetModelMatrix();
+
+	bool bHaveColided = false;
+	
+	Vector3 verts1[3];	
+	Vector3 verts2[3];	
+	
+	float fClosest=1;
+	Vector3 kPos;
+	Vector3 kNormal;
+
+
+	for(unsigned int f=0;f<pkBody1->m_pkFaces->size();f++)
+	{
+		verts1[0] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[0]]);
+		verts1[1] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[1]]);		
+		verts1[2] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[2]]);		
+	
+		if(verts1[0] == verts1[1])
+			continue;		
+		if(verts1[0] == verts1[2])
+			continue;
+		if(verts1[1] == verts1[2])
+			continue;
+			
+		
+		
+		for(unsigned int g=0;g<pkBody2->m_pkFaces->size();g++)
+		{
+			verts2[0] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[0]]);
+			verts2[1] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[1]]);		
+			verts2[2] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[2]]);		
+			
+			if(verts1[0] == verts1[1])
+				continue;		
+			if(verts1[0] == verts1[2])
+				continue;
+			if(verts1[1] == verts1[2])
+				continue;
+			
+			if(TestPolygonVSPolygon(verts1,verts2))
+			{
+				if(m_fLastTestDist < fClosest)
+				{
+					bHaveColided = true;
+				
+					fClosest = m_fLastTestDist;
+					
+					kPos = m_kLastTestPos;
+					kNormal = m_kLastTestNormal;
+				}
+			}
+		
+		
+		}
+	}
+	
+	if(bHaveColided)
+		return true;
+	
+	return false;
+}
+
+
+bool Tcs::TestPolygonVSPolygon(Vector3* pkPolygon1,Vector3* pkPolygon2)
+{
+	Plane kPlane1;	
+	Plane kPlane2;	
+	
+	Vector3 kNormal1= ((pkPolygon1[1] - pkPolygon1[0]).Cross(pkPolygon1[2] - pkPolygon1[0])).Unit();				
+	Vector3 kNormal2= ((pkPolygon2[1] - pkPolygon2[0]).Cross(pkPolygon2[2] - pkPolygon2[0])).Unit();				
+	
+	kPlane1.Set(kNormal1,pkPolygon1[0]);
+	kPlane2.Set(kNormal2,pkPolygon2[0]);
+	
+		
+	m_fLastTestDist = 1;	
+	int i1,i2;	
+	for(int i = 0;i<6;i++)
+	{
+		switch(i)
+		{
+			case 0:
+			case 3:
+				i1 = 0;
+				i2 = 1; 
+				break;
+
+			case 1:
+			case 4:
+				i1 = 1;
+				i2 = 2; 
+				break;
+
+			case 2:
+			case 5:
+				i1 = 2;
+				i2 = 1; 
+				break;
+										
+		}
+	
+		float d;
+		Vector3 kPos;
+		
+		if(i <= 2)
+			d = LineInsidePolygon(pkPolygon2,&kPlane2,&pkPolygon1[i1],&pkPolygon1[i2],&kPos);
+		else
+			d = LineInsidePolygon(pkPolygon1,&kPlane1,&pkPolygon2[i1],&pkPolygon2[i2],&kPos);
+			
+		if(d < m_fLastTestDist)
+		{
+			m_fLastTestDist = d;
+			m_kLastTestPos = kPos;
+			
+			if(i <= 2)			
+				m_kLastTestNormal = kPlane2.m_kNormal;
+			else
+				m_kLastTestNormal = -kPlane1.m_kNormal;
+		}
+	}
+
+	if(m_fLastTestDist != 1)
+		return true;
+}
+
+float Tcs::LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePos1,Vector3* pkLinePos2,Vector3* pkColPos)
+{
+	if(pkPlane->LineTest(*pkLinePos1,*pkLinePos2,pkColPos))
+	{
+		if(TestSides(pkPolgyon,&(pkPlane->m_kNormal),*pkColPos,0))
+		{
+			float d1 = pkPlane->PointInside(*pkLinePos1);
+			float d2 = pkPlane->PointInside(*pkLinePos2);
+					
+			if(d1 < d2)
+			{
+				//*pkColPos = *pkLinePos1;
+				return d1;
+			}
+			else
+			{
+				//*pkColPos = *pkLinePos2;
+				return d2;
+			}
+		}		
+	}
+	
+	return 1;
+}
+
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
+	float fMinDist = 0.05;
+
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
-		if(TestSides(pkPolygon,&pkPlane->m_kNormal,m_kLastTestPos,0))
-			return true;
+		if(TestSides(pkPolygon,&(pkPlane->m_kNormal),m_kLastTestPos,0))
+		{
+			//m_kLastTestNormal = -pkPlane->m_kNormal;		
+			//return true;
+			
+			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
+				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
+				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
+				 m_kLastTestPos.DistanceTo(pkPolygon[1]) < fMinDist ||
+				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist)
+			{
+				//cout<<"Vertex"<<endl;
+
+				m_kLastTestNormal = -pkPlane->m_kNormal;
+
+				return true;
+			}
+			else
+			{
+				//cout<<"EDGE:"<<endl;
+				
+				//m_kLastTestNormal = ( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
+				m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
+				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
+			
+				return false;
+			}
+		}
 	}
 	
 	return false;
@@ -1100,6 +1454,15 @@ void Tcs::ResetForces()
 	}
 }
 
+void Tcs::ClearCollissions()
+{
+	for(int i = 0;i<m_kCollissions.size();i++)
+	{
+		delete m_kCollissions[i];	
+	}
+
+	m_kCollissions.clear();
+}
 
 /*
 void Tcs::GenerateModelMatrix(P_Tcs* pkMesh)

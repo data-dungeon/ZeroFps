@@ -21,6 +21,18 @@ Matrix4::Matrix4( float v1,float v2,float v3 ,float v4,
 	data[8]=v9;		data[9]=v10;	data[10]=v11;	data[11]=v12;	
 	data[12]=v13;	data[13]=v14;	data[14]=v15;	data[15]=v16;	
 };
+
+void Matrix4::Set( float v1,float v2,float v3 ,float v4,
+						float v5,float v6,float v7 ,float v8,						
+						float v9,float v10,float v11 ,float v12,
+						float v13,float v14,float v15 ,float v16)
+{							 	 
+	data[0]=v1;		data[1]=v2;		data[2]=v3;		data[3]=v4;
+	data[4]=v5;		data[5]=v6;		data[6]=v7;		data[7]=v8;
+	data[8]=v9;		data[9]=v10;	data[10]=v11;	data[11]=v12;	
+	data[12]=v13;	data[13]=v14;	data[14]=v15;	data[15]=v16;	
+};
+
 	
 // Operators	-	Assignment
 Matrix4 Matrix4::operator=(const Matrix4 &kOther)
@@ -148,34 +160,6 @@ Matrix4 Matrix4::operator*(const Matrix4 &kOther) const
         }
     }
     return kProd;
-
-/*
-	Matrix4 ny;
-	
-	for(int y=0;y<4;y++){
-		for(int x=0;x<4;x++){
-			ny.data[y*4+x]=0;			
-			for(int i=0;i<4;i++){
-				ny.data[y*4+x]+=data[y*4+i]*kOther.data[i*4+x];	
-
-			}
-		}
-	}
-
-	return ny;*/
-	
-/*	
-//	float *ny=new float[4];
-	Vector4 ny;
-
-	for(int i=0;i<4;i++)
-		ny[i]=0;
-	
-	for(int y=0;y<4;y++)
-		for(int x=0;x<4;x++)
-			ny[y]+=data[y*4+x]*kOther.data[x*4+y];		
-*/
-
 }
 
 Matrix4 Matrix4::operator*= (const Matrix4& rkMatrix)
@@ -257,15 +241,6 @@ void Matrix4::Transponse()
 
 	swap(RowCol[2][3], RowCol[3][2]);
 
-/*    Matrix4 trans;
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-            trans.RowCol[iRow][iCol] = RowCol[iCol][iRow];
-    }
-    *this = trans;*/
-//	return trans;
-
 }
 
 void Matrix4::OldTranslate(float x, float y, float z)
@@ -285,6 +260,8 @@ void Matrix4::Rotate(Vector3 kRot){
 
 void Matrix4::RadRotate(float fX, float fY, float fZ)
 {
+	static Matrix4 rotatex,rotatey,rotatez;	
+
 
 	float cx = float(cos(fX));
 	float sx = float(sin(fX));
@@ -296,43 +273,23 @@ void Matrix4::RadRotate(float fX, float fY, float fZ)
 	float sz = float(sin(fZ));
 
 
-	/*
-	
-	Matrix4 rotatez=Matrix4(float(cos(fZ))	,float(-sin(fZ))  ,0				,0,
-									float(sin(fZ))	,float(cos(fZ))	,0				,0,
-									0			,0			,1				,0,
-									0			,0			,0				,1);	
-	
-	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
-									0			,float(cos(fX))	,float(-sin(fX))	,0,
-									0			,float(sin(fX)) ,float(cos(fX))		,0,
-									0			,0			,0				,1);	
+	rotatex.Set(1			,0			,0				,0,
+					0			,cx		,-sx			,0,
+					0			,sx		,cx	  		,0,
+					0			,0			,0				,1);	
 												 
-	Matrix4 rotatey=Matrix4(float(cos(fY))	,0			,float(sin(fY))		,0,
-									0			,1			,0				,0,
-									float(-sin(fY))	 ,0			,float(cos(fY))		,0,
-									0			,0			,0				,1);	
-											*/
-
-	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
-									0			,cx		  ,-sx			,0,
-									0			,sx	 		,cx	  		,0,
-									0			,0			,0				,1);	
+	rotatey.Set(cy			,0			,sy		   ,0,
+					0			,1			,0				,0,
+					-sy	 	,0			,cy			,0,
+					0			,0			,0				,1);	
 												 
-	Matrix4 rotatey=Matrix4(cy			 ,0			,sy		   ,0,
-									0			,1			,0				,0,
-									-sy	 	,0			,cy			,0,
-									0			,0			,0				,1);	
-												 
-	Matrix4 rotatez=Matrix4(cz			 ,-sz			,0				,0,
-									sz			 ,cz	 		,0				,0,
-									0			,0			,1				,0,
-									0			,0			,0				,1);	
+	rotatez.Set(cz			,-sz		,0				,0,
+					sz			,cz		,0				,0,
+					0			,0			,1				,0,
+					0			,0			,0				,1);	
 						 
-	// *this = (rotatex*rotatey*rotatez) * (*this); 						 
-	// *this = (rotatex*rotatey*rotatez) * (*this); 
+									
 	 *this *= rotatez*rotatey*rotatex;
-
 }
 
 void Matrix4::RadRotate(Vector3 kRot){
@@ -341,12 +298,10 @@ void Matrix4::RadRotate(Vector3 kRot){
 
 void Matrix4::Scale(float fX, float fY, float fZ)
 {
-	Matrix4 scale=Matrix4(fX	,0 	,0		,0,
-								 0		,fY	,0		,0,
-								 0		,0		,fZ	,0,
-								 0		,0		,0		,1);	
-							 
-	*this *= scale;
+	*this *= Matrix4(fX		,0 	,0		,0,
+						  0		,fY	,0		,0,
+						  0		,0		,fZ	,0,
+						  0		,0		,0		,1);;
 }
 
 void Matrix4::Scale(Vector3 kScale){
@@ -356,12 +311,10 @@ void Matrix4::Scale(Vector3 kScale){
 
 void Matrix4::Translate(float fX, float fY, float fZ)
 {
-	Matrix4 translate=Matrix4(	 1		,0 	,0		,0		,
-								 		0		,1		,0		,0		,
-								 		0		,0		,1		,0		,
-								 		fX	,fY	,fZ	,1		);	
-							 
-	*this *= translate;
+	*this *= Matrix4(	1		,0 	,0		,0		,
+							0		,1		,0		,0		,
+							0		,0		,1		,0		,
+							fX		,fY	,fZ	,1		);
 }
 
 void Matrix4::Translate(Vector3 kTrans)
@@ -390,16 +343,6 @@ void Matrix4::LookDir(Vector3 kDir,Vector3 kUp)
 }
 
 
-/*
-Vector3 Matrix4::VectorRotate (const Vector3& kVec)
-{
-	Vector3 res;
-	
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
-	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
-	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
-	return res;
-}*/
 
 Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
 {
@@ -423,46 +366,7 @@ void Matrix4::SetZeroDelta(float delta)
     }
 }
 
-/*
-Vector3 Matrix4::VectorTransform (const Vector3& kVec)
-{
-	Vector3 res;
 
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0];
-	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1];
-	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2];
-	
-
-
-//	res.x = kVec.x * data[0] + kVec.y * data[4] + kVec.z * data[8] + data[12];
-//	res.y = kVec.x * data[1] + kVec.y * data[5] + kVec.z * data[9] + data[13];
-//	res.z = kVec.x * data[2] + kVec.y * data[6] + kVec.z * data[10] + data[14];
-	
-
-	return res;
-}*/
-
-/*
-bool Matrix4::Inverse(void)
-{
-	float d = Determinant();
-	Matrix3 mtmp;
-	Matrix4	calc;
-
-	int i,j,sign;
-
-	if(fabs(d) < 0.0005)	return 0;
-
-	for(i=0; i<4; i++) {
-		for(j=0; j<4; j++) {
-			sign = 1 - ((i+j) % 2) * 2;
-			mtmp = submat(i,j);
-		    calc.RowCol[i][j] = (mtmp.Determinant() * sign) / d;
-			}
-		}
-
-	return true;
-}*/
 
 float Matrix4::Determinant(void)
 {
@@ -593,52 +497,9 @@ Matrix4 Matrix4::Inverse( )
 
 
 
-
-
-
-
-
-
 // Accessors 
 Vector3 Matrix4::GetRotVector()
 {
-/*	float D;
-	float C;
-	float angle_x;
-	float angle_y;				
-	float angle_z;
-	float ftrx;
-	float ftry;
-	
-	
-	angle_y = D = asin( data[2]);
-	C           =  cos( angle_y );
-	angle_y    *= degtorad;
-    
-//	if ( fabs( angle_y ) > 0.0005 )
-//   {
-		ftrx      =  data[10] / C;
-		ftry      = -data[6]  / C;
-		angle_x  = atan2( ftry, ftrx ) * degtorad;
-		ftrx      =  data[0] / C;
-		ftry      = -data[1] / C;
-   	angle_z  = atan2( ftry, ftrx ) * degtorad;
-/*   }
-	else
-	{
-   	angle_x  = 0;
-      ftrx      = data[5];
-      ftry      = data[4];
-      angle_z  = atan2( ftry, ftrx ) * degtorad;
-	}
-
-	angle_x = Clamp( angle_x, 0, 360 );
-	angle_y = Clamp( angle_y, 0, 360 );
-	angle_z = Clamp( angle_z, 0, 360 );
-	
-
-	return Vector3(angle_x,angle_y,angle_z);*/
-	
 	float D;
 	float C;
 	float angle_x;
@@ -652,27 +513,12 @@ Vector3 Matrix4::GetRotVector()
 	C           =  float(cos( angle_y ));
 	angle_y    *= degtorad;
     
-//	if ( fabs( angle_y ) > 0.0005 )
-//   {
-		ftrx      =  data[9] / C;
-		ftry      = -data[8]  / C;
-		angle_x  = float(atan2( ftry, ftrx ) * degtorad);
-		ftrx      =  data[0] / C;
-		ftry      = -data[1] / C;
-   	angle_z  = float(atan2( ftry, ftrx ) * degtorad);
-/*   }
-	else
-	{
-   	angle_x  = 0;
-      ftrx      = data[5];
-      ftry      = data[4];
-      angle_z  = atan2( ftry, ftrx ) * degtorad;
-	}
-*/
-/*	ftrx = data[10];
-	ftry = data[8];	
-	angle_y = atan2(ftry,ftrx) * degtorad;
-	*/
+	ftrx      =  data[9] / C;
+	ftry      = -data[8]  / C;
+	angle_x  = float(atan2( ftry, ftrx ) * degtorad);
+	ftrx      =  data[0] / C;
+	ftry      = -data[1] / C;
+	angle_z  = float(atan2( ftry, ftrx ) * degtorad);
 
 	angle_x = Clamp( angle_x, 0, 360 );
 	angle_y = Clamp( angle_y, 0, 360 );
@@ -681,44 +527,6 @@ Vector3 Matrix4::GetRotVector()
 
 	return Vector3(angle_x,angle_y,angle_z);
 	
-/*	const double fEpsilon = 1e-12;
-	
-	double angleX, angleY, angleZ;
-
-	angleY = atan2(data[8], sqrt(data[9]*data[9]+data[10]*data[10]));
-	double cosangleY = cos(angleY);
-
-	if(fabs(cosangleY) > epsilon)
-	{
-		angleZ = atan2(-data[4]/cosangleY,data[0]/cosangleY);
-		angleX = atan2(-data[9]/cosangleY, data[10]/cosangleY);
-	}
-	else
-	{
-		if(fabs(PId2-angleY) < epsilon)
-		{
-			angleX = atan2(data[1], data[5]);
-			angleY = PId2;
-			angleZ = 0.0;
-		}
-		else
-		{
-			angleX = atan2(-data[1], data[5]);
-			angleY = -PId2;
-			angleZ = 0.0;
-		}
-	}
-
-	// We set the result:
-//	xT = (float) (-angleX*PIUNDER180);
-//	yT = (float) (-angleY*PIUNDER180);
-//	zT = (float) (-angleZ*PIUNDER180);
-	
-	angleX = -angleX * degtorad;
-	angleY = -angleY * degtorad;
-	angleZ = -angleZ * degtorad;
-	
-	return Vector3(angleX,angleY,angleZ);*/
 }
 
 
@@ -759,3 +567,54 @@ void Matrix4::Print()
 
 }
 
+/*
+Vector3 Matrix4::VectorRotate (const Vector3& kVec)
+{
+	Vector3 res;
+	
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
+	return res;
+}*/
+
+/*
+Vector3 Matrix4::VectorTransform (const Vector3& kVec)
+{
+	Vector3 res;
+
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2];
+	
+
+
+//	res.x = kVec.x * data[0] + kVec.y * data[4] + kVec.z * data[8] + data[12];
+//	res.y = kVec.x * data[1] + kVec.y * data[5] + kVec.z * data[9] + data[13];
+//	res.z = kVec.x * data[2] + kVec.y * data[6] + kVec.z * data[10] + data[14];
+	
+
+	return res;
+}*/
+
+/*
+bool Matrix4::Inverse(void)
+{
+	float d = Determinant();
+	Matrix3 mtmp;
+	Matrix4	calc;
+
+	int i,j,sign;
+
+	if(fabs(d) < 0.0005)	return 0;
+
+	for(i=0; i<4; i++) {
+		for(j=0; j<4; j++) {
+			sign = 1 - ((i+j) % 2) * 2;
+			mtmp = submat(i,j);
+		    calc.RowCol[i][j] = (mtmp.Determinant() * sign) / d;
+			}
+		}
+
+	return true;
+}*/

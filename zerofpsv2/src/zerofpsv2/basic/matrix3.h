@@ -31,14 +31,19 @@ class BASIC_API Matrix3
 // Constructors
 		Matrix3(void) { };
 		Matrix3(float f00,float f01,float f02,
-				float f10,float f11,float f12,						
-				float f20,float f21,float f22);
+					float f10,float f11,float f12,						
+					float f20,float f21,float f22);
 		
 // Operators
 		// assignment and comparison
 		Matrix3& operator= (const Matrix3& rkMatrix);
 		void operator= (const Matrix4& rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
+		void Set(float f00,float f01,float f02,
+					float f10,float f11,float f12,						
+					float f20,float f21,float f22);
+
+		
 		
 		// Comparison
 		bool operator== (const Matrix3& rkMatrix) const;
@@ -58,12 +63,22 @@ class BASIC_API Matrix3
 // Methods
 		void Zero();								// Set whole matrix to zero.
 		void Identity();							// Set matrix to the identity matrix.
-
 		void Transponse();
-		Matrix3 GetTransponse() const;
-
 		bool Inverse (Matrix3& inv, float tolerance) const;
 		float Determinant(void)	 const;
+		
+		Matrix3 GetTransponse() const;
+		
+		void Scale(float fX, float fY, float fZ);
+		void Scale(Vector3 kScale);		
+				
+		void RadRotate(float fX, float fY, float fZ);
+		void RadRotate(Vector3 kRot);
+		void Rotate(float fX, float fY, float fZ);
+		void Rotate(Vector3 kRot);
+		
+		
+		Vector3 GetRotVector();
 
 		Vector3 VectorTransform (const Vector3& kVec) 
 		{
@@ -73,14 +88,8 @@ class BASIC_API Matrix3
 				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
 				);
 		}
-
-		void RadRotate(float fX, float fY, float fZ);
-		void RadRotate(Vector3 kRot);
-
-		void Rotate(float fX, float fY, float fZ);
-		void Rotate(Vector3 kRot);
-		Vector3 GetRotVector();
-
+		
+		
 // Accessors 
 		Vector3 GetColumn (int iCol) const;
 		
