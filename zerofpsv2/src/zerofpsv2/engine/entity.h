@@ -126,7 +126,6 @@ class ENGINE_API Entity
 		};
 	
 		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.
-		ZeroFps*						m_pkFps;								///< Ptr to zerofps. 
 			
 		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this object if any.
 		
@@ -200,6 +199,8 @@ class ENGINE_API Entity
 
 		int							iNetWorkID;							///< ID used by network state code.
 		EntityManager*				m_pkObjectMan;						///< Ptr to object manger.
+  		ZeroFps*						m_pkFps;								///< Ptr to zerofps. 
+
 	
 		NetWorkRole					m_eRole;							///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.

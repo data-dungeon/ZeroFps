@@ -37,7 +37,13 @@ P_Item::P_Item()
    m_pkInventoryList = 0;
 
 	strcpy(m_acName,"P_Item");
-  
+
+   // TODO!! Move the below code to charstats
+
+   // check if object is on client side, if so, request a containerupdate
+//   if ( m_pkObject->m_pkFps->m_bServerMode )
+//      RequestUpdateFromServer ("container");
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -230,19 +236,14 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
 void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	//cout<<"Got item data"<<endl;
-	
 
-   if ( !m_kSends.size() )
-      pkNetPacket->Write_NetStr( "foo" );
-   else
+   if ( m_kSends.size() )
    {
       for (list<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
       {
          //  if a object which has requested info was found...
          if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "itemdata" )
          {
-            cout << "wrote itemdata" << endl;
 
             pkNetPacket->Write_NetStr( "data" );
 
@@ -252,13 +253,6 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // category
             pkNetPacket->Write( &m_pkItemStats->m_eEquipmentCategory, 
 					sizeof(m_pkItemStats->m_eEquipmentCategory) );
-
-            // contatiner id (if it's a container)
-            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-            // which container the object is in
-            pkNetPacket->Write( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
-
 
             // item name
             pkNetPacket->Write_NetStr( m_pkItemStats->m_kItemName.c_str() );
@@ -277,8 +271,6 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // if object isn't a container, don't send anything
             if ( m_pkItemStats->m_pkContainer )
             {
-               cout << "wrote container stuff" << endl;
-
                pkNetPacket->Write_NetStr( "cont" );
 
                // get container vector
@@ -300,17 +292,26 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
                pkNetPacket->Write( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
 
             }
-            else
-               pkNetPacket->Write_NetStr( "foo" );
-
 
             m_kSends.erase ( kIte++ );
 
          }
       }
    }
+   else
+   {
+      pkNetPacket->Write_NetStr( "foo" );
+
+      // container id (if it's a container)
+      pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
+
+      // which container the object is in
+      pkNetPacket->Write( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
+
+   }
+
    
-   SetNetUpdateFlag(iConnectionID,false);
+   SetNetUpdateFlag(iConnectionID, false);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -329,20 +330,12 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
    if ( kDataType == "data" )
    {
-      cout << "got iteminfo data" << endl;
-
       // get icon
       pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic);
 
       // category
       pkNetPacket->Read( &m_pkItemStats->m_eEquipmentCategory, 
 			sizeof(m_pkItemStats->m_eEquipmentCategory) );
-
-		// contatiner id (if it's a container)
-      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-      // which container the object is in
-      pkNetPacket->Read( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
 
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );
@@ -353,16 +346,11 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       pkNetPacket->Read( &m_pkItemStats->m_uiVersion, sizeof(unsigned int) );
 
       if ( m_pkInventoryList )
-      {
-         cout << "Got obj from server" << endl;
          m_pkInventoryList->push_back ( m_pkObject );
-      }
 
    }
    else if ( kDataType == "cont" )
    {
-      cout << "got container info" << endl;
-
       // if object isn't a container, better make it one, or it crashes!
       if ( !m_pkItemStats->m_pkContainer )
          m_pkItemStats->MakeContainer();
@@ -392,13 +380,20 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       pkNetPacket->Read( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
 
       if ( m_pkInventoryList )
-      {
-         cout << "Got cont from server" << endl;
          m_pkItemStats->m_pkContainer->GetAllItemsInContainer( m_pkInventoryList );
-      }
    }
-//   else
-//      cout << "Error! Illegal networkdata sent to P_Item:" << kDataType << endl;
+   else
+   {
+      // contatiner id (if it's a container)
+      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
+
+      // which container the object is in
+      pkNetPacket->Read( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
+
+      // tjoff
+      if ( m_pkItemStats->m_iContainerID != -1 )
+         m_pkItemStats->MakeContainer();
+   }
 	
 
 }
@@ -472,8 +467,8 @@ void P_Item::RequestUpdateFromServer (string kType)
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkItemStats->m_pkContainer->m_uiVersion;     
-
+         kOrder.m_iUseLess = m_pkItemStats->m_pkContainer->m_uiVersion; 
+         
          pkCC->AddOrder (kOrder);
 
       }
@@ -497,7 +492,7 @@ void P_Item::RequestUpdateFromServer (string kType)
          pkCC->AddOrder (kOrder);        
       }
       else
-         cout << "The request:" << kOrder.m_sOrderName << " in P_Item::RequestUpdateFromServer was illegal" << endl;
+         cout << "The request:" << kType << " in P_Item::RequestUpdateFromServer was illegal" << endl;
    }
    else
       cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;

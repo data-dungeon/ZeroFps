@@ -1398,6 +1398,8 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 
 	glDisableClientState (GL_NORMAL_ARRAY);
 
+   glDisable (GL_FOG);
+
 	// PSystem uses color&alpha values
 	if ( pkPSystem->GetColors() )
 	{

@@ -9,7 +9,7 @@
 Container::Container( Property* pkParent )
 {
    m_pkParent = pkParent;
-   m_iCapacity = 5;
+   m_iCapacity = 500;
    m_uiVersion = 0;
 }
 
@@ -122,8 +122,8 @@ void Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
          pkItemList->push_back ( pkEntity );
 
          // if item in container is a container itself, request update to that container...
-   //      if ( pkItem->m_pkItemStats->m_pkContainer )
-     //       ((P_Item*)m_pkParent)->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );         
+         if ( pkItem->m_pkItemStats->m_pkContainer )
+            ((P_Item*)m_pkParent)->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );         
 
       }
    else

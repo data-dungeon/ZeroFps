@@ -641,7 +641,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
-					// Set current contatiner and main container
+					// Set current container and main container
 					P_Item* pkItem = (P_Item*) m_pkActiveCharacter->GetProperty("P_Item");
 					m_pkInventDlg->SetCurrentContainer( pkItem->m_pkItemStats->m_iContainerID );
 					m_pkInventDlg->SetMainContainer( pkItem->m_pkItemStats->m_iContainerID );
@@ -651,9 +651,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
             if ( GetWnd("BackPackWnd")->IsVisible() )
                ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
 				else
-				{
 					pkGui->SetFocus(GetWnd("MainWnd")); 
-				}		
 			}
 			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
