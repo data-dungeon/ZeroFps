@@ -2,6 +2,7 @@
 #define _CONSOLE_H_
 
 #include "../basic/basic.pkg"
+#include "input.h"
 #include "../render/render.pkg"
 #include "engine_x.h"
 #include <iostream>
@@ -19,6 +20,7 @@ class ENGINE_API Console : public BasicConsole {
 		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;
 		Render* m_pkRender;
+		Input* m_pkInput;
 		TextureManager* m_pkTexMan;
 		
 		SDL_Event m_kEvent;

@@ -4,7 +4,7 @@ ProxyProperty::ProxyProperty()
 {
 	strcpy(m_acName,"ProxyProperty");		
 	m_fRadius=250;
-	m_iAktion=UPDATECHILDS;
+	m_iAktion=UPDATESTATUS;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -18,15 +18,15 @@ void ProxyProperty::Update()
 	if(fDistance < m_fRadius){		
 		//if camera is inside the proximity
 		switch(m_iAktion) {
-			case UPDATECHILDS:
-				m_pkObject->GetUpdateChilds()=true;
+			case UPDATESTATUS:
+				m_pkObject->GetUpdateStatus()=UPDATE_ALL;
 				break;				
 		}
 	} else {
 		//if the camera is outside the proximity
 		switch(m_iAktion) {
-			case UPDATECHILDS:
-				m_pkObject->GetUpdateChilds()=false;
+			case UPDATESTATUS:
+				m_pkObject->GetUpdateStatus()=UPDATE_NONE;
 				break;				
 		}		
 	}

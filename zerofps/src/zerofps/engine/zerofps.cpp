@@ -9,12 +9,12 @@ ZeroFps::ZeroFps(void)
 
 	m_pkFile=new FileIo;
 	m_pkTexMan=new TextureManager(m_pkFile);
+	m_pkInput=new Input();		
 	m_pkPropertyFactory=new PropertyFactory();
 	m_pkFrustum = new Frustum;	
 	m_pkRender=new Render();
 	m_pkConsole=new Console();	
 	m_pkCmd=new CmdSystem;
-	m_pkInput=new Input();
 	m_pkAudioMan=new AudioManager(this);
 	m_pkLight=new Light();
 	m_pkObjectMan=new ObjectManager();
@@ -142,8 +142,8 @@ void ZeroFps::MainLoop(void) {
 
 
 		//handle input
-		if(!m_bConsoleMode)
-			m_pkInput->Update();
+//		if(!m_bConsoleMode)
+		m_pkInput->Update();
 
 
 		if(m_bServerMode)
@@ -160,6 +160,7 @@ void ZeroFps::MainLoop(void) {
 			if(m_pkInput->Pressed(TAB))
 			{			
 				m_bConsoleMode=true;		
+				m_bClientMode=false;				
 				m_pkInput->Reset();
 			}
 			

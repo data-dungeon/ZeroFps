@@ -30,41 +30,46 @@ void Input::Update(void) {
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
 			
+			
 			//keyboard
 			case SDL_KEYDOWN:
+				//put key in list
+				m_aPressedKeys.push(m_kEvent.key.keysym.sym);
+				//set button ass pressed		
 				m_akButtonList[m_kEvent.key.keysym.sym]=true;					    	
     		break;			
 			case SDL_KEYUP:
+				//set  button as unpressed
 				m_akButtonList[m_kEvent.key.keysym.sym]=false;					    	
     		break;    		
     		
-    	//mouse    		
-    	case SDL_MOUSEBUTTONDOWN:
-    		switch(m_kEvent.button.button){
-    			case SDL_BUTTON_LEFT:
-    				m_akButtonList[MOUSELEFT]=true;
-    			break;
-    			case SDL_BUTTON_MIDDLE:
-    				m_akButtonList[MOUSEMIDDLE]=true;
-    			break;
-    			case SDL_BUTTON_RIGHT:
-    				m_akButtonList[MOUSERIGHT]=true;
-    			break;	
-    		}
-    		break;
-    	case SDL_MOUSEBUTTONUP:
-    		switch(m_kEvent.button.button){
-    			case SDL_BUTTON_LEFT:
-    				m_akButtonList[MOUSELEFT]=false;
-    			break;
-    			case SDL_BUTTON_MIDDLE:
-    				m_akButtonList[MOUSEMIDDLE]=false;
-    			break;
-    			case SDL_BUTTON_RIGHT:
-    				m_akButtonList[MOUSERIGHT]=false;
-    			break;	
-    		}    	
-    		break;
+	    	//mouse    		
+   	 	case SDL_MOUSEBUTTONDOWN:
+    			switch(m_kEvent.button.button){
+    				case SDL_BUTTON_LEFT:
+    					m_akButtonList[MOUSELEFT]=true;
+	    			break;
+   	 			case SDL_BUTTON_MIDDLE:
+    					m_akButtonList[MOUSEMIDDLE]=true;
+    				break;
+    				case SDL_BUTTON_RIGHT:
+    					m_akButtonList[MOUSERIGHT]=true;
+	    			break;	
+   	 		}
+   	 		break;
+	    	case SDL_MOUSEBUTTONUP:
+   	 		switch(m_kEvent.button.button){
+    				case SDL_BUTTON_LEFT:
+    					m_akButtonList[MOUSELEFT]=false;
+    				break;
+	    			case SDL_BUTTON_MIDDLE:
+   	 				m_akButtonList[MOUSEMIDDLE]=false;
+    				break;
+    				case SDL_BUTTON_RIGHT:
+    					m_akButtonList[MOUSERIGHT]=false;
+	    			break;	
+   	 		}    	
+    			 break;
 		}	
 	}
 }
@@ -122,7 +127,11 @@ void Input::Reset(void) {
 	
 	for(int i =0;i<400;i++) 
 	m_akButtonList[i]=false;
-
+	
+	//clear queue
+	while(!m_aPressedKeys.empty()){
+		m_aPressedKeys.pop();
+	}
 }
 
 
@@ -138,3 +147,20 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 		}
 }
 
+int Input::GetQueuedKey()
+{
+	int value;
+	
+	if(!m_aPressedKeys.empty()){
+		value = m_aPressedKeys.front();
+		m_aPressedKeys.pop();
+		return value;
+	}
+	
+	return -1;
+}
+
+int Input::SizeOfQueue()
+{
+	return m_aPressedKeys.size();
+}

@@ -40,10 +40,10 @@ void ZeroEdit::OnInit(void)
 	
 	m_fPointerHeight=1;
 	
-	m_iRandom=0;
+	m_iRandom=1;
 	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
 	
-	m_fDrawRate=0.2;
+	m_fDrawRate=0.1;
 	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
 	m_iMode=ADDOBJECT;		
@@ -341,8 +341,7 @@ void ZeroEdit::Input()
 			if(pkInput->Pressed(MOUSELEFT))
 			{
 				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
-					break;
-			
+					break;			
 				m_fTimer=pkFps->GetTicks();
 			
 				Object *object = new BallObject();
@@ -362,7 +361,7 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;
 //				pkCollisionMan->Add(object);
 	
-				cout<<"CHILDS: "<<m_pkCurentParent->NrOfChilds()<<endl;
+//				cout<<"CHILDS: "<<m_pkCurentParent->NrOfChilds()<<endl;
 	
 			}
 			if(pkInput->Pressed(MOUSERIGHT))
@@ -465,8 +464,11 @@ void ZeroEdit::DrawMarkers()
 		if(size < .5)
 			size=.5;
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
-	}
-
+		
+		if(m_pkCurentChild->GetParent()){
+			pkRender->Line(m_pkCurentChild->GetParent()->GetPos(),m_pkCurentChild->GetPos());
+		}
+	}	
 }
 
 
@@ -512,14 +514,16 @@ void ZeroEdit::CreateZones()
 {
 	int radius=250;
 
-	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
+//	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
 
 	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
 		for(int z=0;z<m_pkMap->m_iHmSize;z+=radius/3){
-			ZoneObject *object = new ZoneObject();
-			object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
-			object->SetRadius(radius);
-			object->SetParent(pkObjectMan->GetWorldObject());			
+			if(m_pkMap->Height(x,z)>-1){
+				ZoneObject *object = new ZoneObject();
+				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
+				object->SetRadius(radius);
+				object->SetParent(pkObjectMan->GetWorldObject());			
+			}
 		}
 	}
 }

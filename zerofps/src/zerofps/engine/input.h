@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>
+#include <queue>
 #include "engine_x.h"
 
 using namespace std;
@@ -83,9 +84,8 @@ class ENGINE_API Input : public ZFObject {
 		unsigned int m_iGrabtime;
 			
 		int m_iMouseX,m_iMouseY;
-			
-		void GrabInput(void);
-		void ReleaseInput(void);
+		
+		queue<int> m_aPressedKeys;
 	
 		enum FuncId_e
 			{
@@ -93,6 +93,8 @@ class ENGINE_API Input : public ZFObject {
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void GrabInput(void);
+		void ReleaseInput(void);
 	
 	public:
 		float m_fMouseSensitivity;
@@ -101,6 +103,8 @@ class ENGINE_API Input : public ZFObject {
 		
 		void Update(void);
 		inline bool Pressed(int iButton){return m_akButtonList[iButton];};
+		int GetQueuedKey();
+		int SizeOfQueue();
 		void MouseXY(int &iX,int &iY);
 		void RelMouseXY(int &iX,int &iY);
 		void ToggleGrab(void);

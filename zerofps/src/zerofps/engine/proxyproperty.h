@@ -13,7 +13,7 @@
 using namespace std;
 
 enum PROXYPROPERTY_AKTIONS{
-	UPDATECHILDS,
+	UPDATESTATUS,
 	WAKEUP
 };
 

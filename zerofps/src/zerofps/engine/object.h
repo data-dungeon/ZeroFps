@@ -15,6 +15,14 @@ using namespace std;
 
 class ObjectManager;
 
+enum UPDATE_STATUS{
+	UPDATE_NONE,
+	UPDATE_ALL,
+	UPDATE_STATIC,
+	UPDATE_DYNAMIC,
+	UPDATE_PLAYERS
+};
+
 class ENGINE_API Object {
 	protected:
 		Vector3 m_kPos;
@@ -23,7 +31,8 @@ class ENGINE_API Object {
 		
 		string m_kName;		
 
-		bool m_bUpdateChilds;		
+//		bool m_bUpdateChilds;
+		int m_iUpdateStatus;
 		bool m_bLoadChilds;
 		bool m_bLockedChilds;
 		
@@ -43,8 +52,8 @@ class ENGINE_API Object {
 		Object();		
 		~Object();
 		
-		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
-		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		
+		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);		
+		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		//used mainly for updates
 		Property* GetProperty(char* acName);
 
 		void AddProperty(Property* pkNewProperty);
@@ -55,7 +64,8 @@ class ENGINE_API Object {
 		
 		void AddChild(Object* pkObject);
 		void RemoveChild(Object* pkObject);
-		void SetParent(Object* pkObject);				
+		void SetParent(Object* pkObject);
+		Object* GetParent(){return m_pkParent;};
 		bool HasChild(Object* pkObject);
 		int NrOfChilds();
 		void DeleteAllChilds();
@@ -69,7 +79,7 @@ class ENGINE_API Object {
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 
-		inline bool &GetUpdateChilds() {return m_bUpdateChilds;};
+		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 
 		inline string &GetName(){return m_kName;};
 		inline Vector3 &GetPos(){return m_kPos;};

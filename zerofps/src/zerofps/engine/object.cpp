@@ -12,7 +12,7 @@ Object::Object() {
 	m_kName="Object";
 		
 	m_bLockedChilds=false;
-	m_bUpdateChilds=true;
+	m_iUpdateStatus=UPDATE_ALL;
 	m_bLoadChilds=true;
 	
 	m_pkParent=NULL;
@@ -53,11 +53,12 @@ Property* Object::GetProperty(char* acName) {
 	return NULL;
 }
 
+
 void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
 	
 	//first get propertys from all childs
-	if(m_bUpdateChilds){
+	if(m_iUpdateStatus != UPDATE_NONE ){
 		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 			(*it)->GetAllPropertys(akPropertys,iType,iSide);
 		}			
