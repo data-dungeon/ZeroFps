@@ -516,7 +516,13 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_MASSSPAWN:
-			pkConsole->Printf("Nu fettar vi till det igen.");				
+			m_iGameType = 3;
+			CreateClientUnits(0);
+			CreateClientUnits(1);
+			CreateClientUnits(2);
+			CreateClientUnits(3);
+
+			/*pkConsole->Printf("Nu fettar vi till det igen.");				
 			int x,y;
 			x = y = 0;
 			int iAntal = 0;
@@ -533,7 +539,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 					}
 				}
 			
-			pkConsole->Printf("Spawned %d",iAntal);				
+			pkConsole->Printf("Spawned %d",iAntal);*/				
 			break;
 	}
 }
@@ -942,7 +948,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSLightTank");	
-			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,-5);
+			Vector3 pos = m_kSpawnPoints[iID] + Vector3((i*3)-3,0,-5);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -954,7 +960,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSHeavyTank");	
-			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,0);			
+			Vector3 pos = m_kSpawnPoints[iID] + Vector3((i*3)-3,0,0);			
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -966,7 +972,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSJeep");	
-			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,5);
+			Vector3 pos = m_kSpawnPoints[iID] + Vector3((i*3)-3,0,5);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -975,6 +981,59 @@ void ZeroRTS::CreateClientUnits(int iID)
 			su->m_kInfo.m_Info2.m_cTeam = iID;		
 		}			
 	
+	}
+
+	// Test mode that spawns the max amount of objects.
+	vector<string>	kBuildNames;
+	kBuildNames.push_back("ZeroRTSCommandCenter");
+	kBuildNames.push_back("ZeroRTSFactory");
+	kBuildNames.push_back("ZeroRTSPowerPlant");
+	kBuildNames.push_back("ZeroRTSRadar");
+	kBuildNames.push_back("ZeroRTSSuply");
+	kBuildNames.push_back("ZeroRTSFactory");
+
+	vector<string>	kUnitNames;
+	kUnitNames.push_back("ZeroRTSEngineringCrew");
+	kUnitNames.push_back("ZeroRTSLightTank");
+	kUnitNames.push_back("ZeroRTSHeavyTank");
+	kUnitNames.push_back("ZeroRTSJeep");
+
+	if(m_iGameType == 3)
+	{
+		int i;
+		int iRnd;
+
+		// Spawn några byggnader runt spawn point.
+		for(i=0; i<kBuildNames.size(); i++) {
+			// Pick a random building to make
+			iRnd = i;	//rand() % kBuildNames.size();
+			
+			Object* ob = pkObjectMan->CreateObjectByArchType( kBuildNames[iRnd].c_str() );	
+			Vector3 pos = m_kSpawnPoints[iID] + Vector3( 10 - rand() % 20, 0, 10 - rand() % 20);
+			ob->SetPos(pos);
+			ob->SetPos(pos);		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
+			su->m_kInfo.m_Info2.m_cTeam = iID;		
+		}
+
+		// Spawn några units.
+		for(i=0; i<100; i++) {
+			// Pick a random building to make
+			iRnd = rand() % kUnitNames.size();
+			
+			Object* ob = pkObjectMan->CreateObjectByArchType( kUnitNames[iRnd].c_str() );	
+			Vector3 pos = Vector3( 250 - rand() % 500, 0, 250 - rand() % 500);
+			ob->SetPos(pos);
+			ob->SetPos(pos);		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
+			su->m_kInfo.m_Info2.m_cTeam = iID;		
+		}
+
+
 	}
 }
 

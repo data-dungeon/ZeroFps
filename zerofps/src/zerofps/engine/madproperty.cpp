@@ -151,14 +151,16 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 
 void MadProperty::PackTo(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Write_Str(m_kMadFile.c_str());
+//	pkNetPacket->Write_Str(m_kMadFile.c_str());
+	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
 	pkNetPacket->Write(m_fScale);
 }
  
 void MadProperty::PackFrom(NetPacket* pkNetPacket)
 {
 	char temp[50];
-	pkNetPacket->Read_Str(temp);
+	//pkNetPacket->Read_Str(temp);
+	pkNetPacket->Read_NetStr(temp);
 	SetBase(temp);
 
 	pkNetPacket->Read(m_fScale);

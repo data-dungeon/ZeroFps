@@ -23,6 +23,7 @@
 #define ZF_NETCONTROL_REQCLIENTID	7
 #define ZF_NETCONTROL_CLIENTID		8
 #define ZF_NETCONTROL_NETSTRINGS		9
+#define ZF_NETCONTROL_REQNETSTRING	10	
 
 #define MAX_NET_CLIENTS				4
 #define ZF_NET_NOCLIENT				-1
@@ -198,6 +199,7 @@ public:
 	void NetString_ReSendAll();
 	void Send_NetStrings();
 	bool NetStringIsUpdated();
+	void NetString_Request(int iIndex);
 
 	bool Init();
 	bool Close();

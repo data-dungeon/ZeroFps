@@ -277,7 +277,8 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 		return false;
 	}
 
-	Vector3 kMoveV = (kPos - m_pkObject->GetPos()).Unit();
+	Vector3 kMoveV = (kPos - m_pkObject->GetPos());	//.Unit();
+	kMoveV.Unit();
 	Vector3 kNewPos = m_pkObject->GetPos() + kMoveV * (fVel * m_pkFps->GetGameFrameTime());
 
 
