@@ -22,6 +22,11 @@ class ENGINE_API Camera {
 
 		string	m_strName;		// Is used in GetCameraDesc.
 
+		float	m_fFov;
+		float	m_fAspect;
+		float	m_fNear;
+		float	m_fFar;
+
 	public:
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
@@ -36,6 +41,7 @@ class ENGINE_API Camera {
 		Vector3 &GetRot(){return m_kRot;};
 		Matrix4 GetModelMatrix();
 
+		void SetFov(float fFov);
 		void SetName(string strName) { m_strName = strName; } 
 		string GetName( ) { return m_strName; }
 

@@ -18,7 +18,8 @@ class PlayerControlProperty: public Property {
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;
 		OpenAlSystem* m_pkAlSys;
-	
+
+
 		ObjectManager *m_pkObjectMan;
 		CollisionManager *m_pkCollisionMan;
 		
@@ -34,6 +35,9 @@ class PlayerControlProperty: public Property {
 		
 		Sound *walksound;		
 		
+		CameraProperty*	m_pkCameraProperty;
+		float	m_fFov;	// Sniper Zoom
+
 	public:
 		bool onGround;
 		

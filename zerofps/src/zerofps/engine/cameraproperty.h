@@ -24,17 +24,17 @@ class ENGINE_API CameraProperty:public Property{
 	private:
 		Camera*		m_pkCamera;
 		CamType_e	m_eCameraType;
-		
+		float		m_fFov;
+
 	public:
 		CameraProperty();
-		//CameraProperty(Camera * pkCamera);
-		
+	
 		void Update();
 
 		void SetCamera(Camera *pkCamera) { m_pkCamera = pkCamera; };
 		void SetType(CamType_e kType);
 		void NextType(CamType_e kType);
-				
+		void SetFpFov(float fFov);		
 };
 
 Property* Create_CameraProperty();

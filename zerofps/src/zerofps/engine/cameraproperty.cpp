@@ -19,6 +19,8 @@ CameraProperty::CameraProperty()
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
+
+	m_fFov = 90;
 }
 
 
@@ -41,6 +43,7 @@ void CameraProperty::Update()
 				strCamName = " 1P ";
 				if(madp)
 					madp->m_bIsVisible = false;
+				m_pkCamera->SetFov(m_fFov);
 				break;
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
@@ -48,6 +51,7 @@ void CameraProperty::Update()
 				strCamName = " TD ";
 				if(madp)
 					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(90);
 				break;
 
 			case CAM_TYPEISO:
@@ -57,6 +61,7 @@ void CameraProperty::Update()
 				m_pkCamera->SetRot(Vector3(0,0,0));
 				if(madp)
 					madp->m_bIsVisible = true;
+				m_pkCamera->SetFov(90);
 				/*kYawVector = GetYawVector2(m_pkObject->GetRot().y);
 				fYawAngle  = m_pkObject->GetRot().y;
 				m_pkCamera->SetPos(m_pkObject->GetPos() + kYawVector*10);
@@ -95,6 +100,12 @@ void CameraProperty::NextType(CamType_e kType)
 		iType = CAM_TYPEFIRSTPERSON;
 
 	SetType((CamType_e)iType);
+}
+
+void CameraProperty::SetFpFov(float fFov)
+{
+	m_fFov = fFov;
+	
 }
 
 

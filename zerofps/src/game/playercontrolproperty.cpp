@@ -3,10 +3,11 @@
 
 PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 {
-	m_pkMap=pkMap;
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
-	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
+	m_pkMap			= pkMap;
+	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
+	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 
 	m_pkStatusProperty=NULL;
 
@@ -24,10 +25,11 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
 	m_iActionBack=m_pkInput->RegisterAction("backward");
 	
-	
 	walksound=new Sound();
 	walksound->m_acFile="file:../data/sound/walk.wav";
 	walksound->m_bLoop=false;
+
+	m_fFov = 90;
 };
 
 PlayerControlProperty::~PlayerControlProperty()
@@ -121,25 +123,19 @@ void PlayerControlProperty::Update() {
 		walk*=0.99;
 	m_pkObject->GetRot().z = (sin(walk))*2.5;	
 	
-	//Get mouse x,y		
+	// Get mouse x,y		
 	int x,z;		
 	m_pkInput->RelMouseXY(x,z);
 
-	//rotate the camera		
-	m_pkObject->GetRot().x+=z/5.0;
-	m_pkObject->GetRot().y+=x/5.0;
+	// Rrotate the camera and scale with fov.		
+	m_pkObject->GetRot().x += z / (180 / m_fFov);
+	m_pkObject->GetRot().y += x / (180 / m_fFov);
 	
 	if(m_pkObject->GetRot().x>90)
 		m_pkObject->GetRot().x=90;
 	
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
-	
-/*	
-	Vector3 kShowDirYaw = GetYawVector2(m_pkObject->GetRot().y);
-	Render *pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-	pkRender->Line(m_pkObject->GetPos(), (m_pkObject->GetPos() + kShowDirYaw * 2));
-*/	
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();
@@ -148,7 +144,25 @@ void PlayerControlProperty::Update() {
 		m_pkAlSys->AddSound(walksound);
 //	else
 //		m_pkAlSys->RemoveSound(walksound);
-	
+
+// Set FOV
+	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
+	if(m_pkCameraProperty) {
+		if(m_pkInput->Pressed(KEY_W)) {
+			m_fFov -= 5;
+			if(m_fFov < 2)
+				m_fFov = 2;
+			m_pkCameraProperty->SetFpFov(m_fFov);
+			}
+
+		if(m_pkInput->Pressed(KEY_R)) {
+			m_fFov += 5;
+			if(m_fFov > 90)
+				m_fFov = 90;
+			m_pkCameraProperty->SetFpFov(m_fFov);
+			}
+		}
+
 	onGround=false;
 };
 
