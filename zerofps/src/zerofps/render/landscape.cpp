@@ -148,14 +148,13 @@ void Render::DrawSimpleWater(Vector3 kPosition,int iSize) {
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	if(m_iAutoLod>0){
-//		cout<<"BLA:"<<m_iLodUpdate<<endl;
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
 			
 			//dont update lod if the camera has't moved
 //			if(CamPos!=m_kOldCamPos){
 //				m_kOldCamPos=CamPos;
-				if(iFps<(m_iFpsLock-5) && m_iDetail>5){
+				if(iFps<(m_iFpsLock-5) && m_iDetail>20){
 					m_iDetail--;	
 				} else if(iFps>(m_iFpsLock+5) && m_iDetail<80){
 					m_iDetail++;		
