@@ -12,7 +12,7 @@ P_Event::P_Event()
 	m_pkScriptResHandle = NULL;
 	
 	m_bHaveRunInit=false;
-	m_bRun1SUpdate=false;
+	m_fHeartRate=-1;
 
 	m_fTimer = m_pkFps->GetGameTime();
 }
@@ -24,17 +24,16 @@ P_Event::~P_Event()
 
 void P_Event::Update()
 {
-
 	if(!m_bHaveRunInit)
 	{
 		m_bHaveRunInit = true;		
 		SendEvent("Init");
 	}
 
-	if(m_bRun1SUpdate)
-		if(m_pkFps->GetGameTime() - m_fTimer > 1.0)
+	if(m_fHeartRate != -1)
+		if(m_pkFps->GetGameTime() - m_fTimer > m_fHeartRate)
 		{
-			SendEvent("Update1S");
+			SendEvent("HeartBeat");
 			
 			m_fTimer = m_pkFps->GetGameTime();
 		}
@@ -129,13 +128,15 @@ void P_Event::Touch(int iId)
 */		
 
 }
-/*
-void P_Event::ZoneChange(int iCurrent,int iNew)
-{
-	cout<<"changed zone from "<<iCurrent<<" to "<<iNew<<endl;
 
+
+void P_Event::SetHeartRate(float blub) 
+{
+	m_fHeartRate = blub;
+	
+	m_fTimer += rand() % (int)m_fHeartRate;
 }
-*/
+
 
 Property* Create_P_Event()
 {

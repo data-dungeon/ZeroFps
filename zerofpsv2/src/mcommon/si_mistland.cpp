@@ -46,7 +46,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
 	
-	pkScript->ExposeFunction("HaveHeartbeat",				MistLandLua::HaveHeartbeatLua);
+	pkScript->ExposeFunction("SetHeartRate",				MistLandLua::SetHeartRateLua);
 	
 	pkScript->ExposeFunction("StartPrivateSound",		MistLandLua::StartPrivateSoundLua);
 	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
@@ -375,12 +375,14 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 	return 0;
 }
 
-int MistLandLua::HaveHeartbeatLua(lua_State* pkLua)
+int MistLandLua::SetHeartRateLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;	
+		double dHeartRate;
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
 
 		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 		
@@ -388,11 +390,11 @@ int MistLandLua::HaveHeartbeatLua(lua_State* pkLua)
 		{	
 			P_Event* ep = (P_Event*)pkObject->GetProperty("P_Event");
 			if(ep)
-				ep->Set1SUpdate(true);			
+				ep->SetHeartRate(dHeartRate);			
 		}
 	}
 	else
-		cout<<"Forgot object id argument to HaveHeartbeat()"<<endl;	
+		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	
 	
 	return 0;
 }

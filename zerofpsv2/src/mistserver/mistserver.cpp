@@ -457,7 +457,8 @@ void MistServer::Input()
 						return;
 					}
 				*/						
-					cout<<"Deleting object:"<<m_iCurrentObject<<endl;					
+					cout<<"Deleting Name:"<<pkObj->GetName()<<" Type:"<<pkObj->GetType()<<endl;
+					
 					pkObjectMan->Delete(pkObj);				
 				}
 

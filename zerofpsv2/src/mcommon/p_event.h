@@ -20,7 +20,7 @@ class MCOMMON_API P_Event: public Property {
 		ZFResourceHandle* m_pkScriptResHandle;
 
 		bool m_bHaveRunInit;
-		bool m_bRun1SUpdate;
+		float m_fHeartRate;
 
 		float m_fTimer;
 
@@ -29,15 +29,13 @@ class MCOMMON_API P_Event: public Property {
 		P_Event();
 		~P_Event();
 		
-		//void ZoneChange(int iCurrent,int iNew);
-		
 		void Update();				
 		bool SendEvent(const char* acEvent);
 		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
 		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
 		void Touch(int iId);					//executet when collision occurs
 
-		void Set1SUpdate(bool blub) {m_bRun1SUpdate = blub;};
+		void SetHeartRate(float blub);
 		
 };
 
