@@ -1,3 +1,4 @@
+#include <time.h>
 #include "psystemmanager.h"
 #include "zerofps.h"
 #include "network.h"
