@@ -33,7 +33,7 @@ public:
 
 	void Update();
 	void OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked);
-	void AddSlot(char *szIcon, char* szIconAlpha);
+	void AddSlot(ActionType type, char *szIcon, char* szIconAlpha);
 	void RemoveSlot(int iIndex);
 	void Init();
 	QuickBoard(ZGuiApp* pkApp);

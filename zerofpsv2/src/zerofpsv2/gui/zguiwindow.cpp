@@ -235,7 +235,7 @@ void ZGuiWnd::SetMoveArea(Rect rc, bool bFreeMovement)
 
 	ZGuiWnd* pkParent = GetParent();
 
-	if(pkParent != NULL)
+	if(pkParent != NULL && bFreeMovement == false)
 	{
 		int min_x = pkParent->m_kArea.Left;
 		int max_x = pkParent->m_kArea.Right;
@@ -313,7 +313,10 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 		if(pkFind)
 		{
 			if(pkFind->GetScreenRect().Inside(x,y) && pkFind->IsVisible())
-				return pkFind;
+			{
+				if(!m_bUseClipper || pkFind->m_kClipperArea.Inside(x,y))
+					return pkFind;
+			}
 		}
 	}
 

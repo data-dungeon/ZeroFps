@@ -1197,7 +1197,7 @@ void MistClient::CreateGuiInterface()
 	
 	m_pkSpellDlg = new SpellDlg(this, m_pkQuickBoard);
 
-	m_pkSkillDlg = new SkillDlg(this);
+	m_pkSkillDlg = new SkillDlg(this, m_pkQuickBoard);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 

@@ -328,10 +328,19 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 
 			if(pkWnd->IsVisible() && pkWnd->GetScreenRect().Inside(x,y))
 			{
-				if(best->pkWnd->GetScreenRect().Inside(x,y))
+				bool bInsideClipperArea = true;
+
+				if((*it)->pkWnd->m_bUseClipper)
+				{
+					bInsideClipperArea = (*it)->pkWnd->m_kClipperArea.Inside(x,y);
+				}
+
+				if(best->pkWnd->GetScreenRect().Inside(x,y) && bInsideClipperArea)
 				{
 					if((*it)->iZValue > best->iZValue)
+					{
 						best = (*it);
+					}
 				}
 				else
 				{
@@ -344,8 +353,8 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 }
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
-								 bool bRBnPressed, bool bMBnPressed, 
-								 float fGameTime)
+						 bool bRBnPressed, bool bMBnPressed, 
+						 float fGameTime)
 {
 
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
@@ -393,7 +402,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 
 	if(!m_pkActiveMainWin->pkWnd) 
-		return false;
+		return false; 
 
 	ZGuiWnd* pkFocusWindow;
 	
@@ -432,6 +441,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{		
 		if(pkFocusWindow)
 		{
+			printf("%s\n", m_pkActiveMainWin->pkWnd->GetName());
+			
 			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
@@ -440,6 +451,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					return true;
 				}
 			}
+
+			if(pkFocusWindow->m_bUseClipper && !pkFocusWindow->m_kClipperArea.Inside(x,y))
+				return true;
 
 			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
 			SetFocus(ZGuiWnd::m_pkWndClicked);

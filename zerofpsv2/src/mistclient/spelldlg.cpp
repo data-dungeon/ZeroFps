@@ -183,6 +183,7 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
 	if(pkWndClicked == m_pkAutoCloseSpellCheckBox)
 	{
+		printf(pkWndClicked->GetName());
 		m_bAutoCloseWnd = !m_bAutoCloseWnd;
 		return;
 	}
@@ -215,7 +216,7 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 					const char* szID = m_pkTexMan->GetFileName(tex_id);
 
-					m_pkQuickBoard->AddSlot( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+					m_pkQuickBoard->AddSlot( QuickBoard::Spell, (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
 
 					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
 							m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);

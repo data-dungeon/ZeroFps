@@ -14,13 +14,15 @@
 #include "../zerofpsv2/render/texturemanager.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
+class QuickBoard;
+
 const int SKILL_ROWS = 8;
 const int SKILL_COLS = 5;
 
 class SkillDlg  
 {
 public:
-	SkillDlg(ZGuiApp* pkApp);
+	SkillDlg(ZGuiApp* pkApp, QuickBoard* pkQuickBoard);
 	~SkillDlg();
 
 	void Update();
@@ -36,6 +38,7 @@ private:
 	TextureManager* m_pkTexMan;
 	ZFAudioSystem* m_pkAudioSys;
 	ZGuiWnd* m_pkDialog;
+	QuickBoard* m_pkQuickBoard;
 
 	ZGuiButton* m_pkSkillButtons[SKILL_ROWS][SKILL_COLS];
 

@@ -82,7 +82,7 @@ void QuickBoard::Init()
 	}
 }
 
-void QuickBoard::AddSlot(char *szIcon, char* szIconAlpha)
+void QuickBoard::AddSlot(ActionType type, char *szIcon, char* szIconAlpha)
 {
 	int index = -1;
 	for(int i=0; i<MAX_NUM_QUICK_ITEMS; i++)

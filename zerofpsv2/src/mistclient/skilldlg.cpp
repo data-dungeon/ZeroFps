@@ -3,17 +3,19 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "skilldlg.h"
+#include "quickboard.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-SkillDlg::SkillDlg(ZGuiApp* pkApp)
+SkillDlg::SkillDlg(ZGuiApp* pkApp, QuickBoard* pkQuickBoard)
 {
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkQuickBoard = pkQuickBoard;
 
 	m_iTopRow = 0;
 	m_pkApp = pkApp;
@@ -39,24 +41,23 @@ void SkillDlg::Init()
 	// Create main window
 	//
 
-	m_pkApp->CreateWnd(Wnd, "SelectSkillsMainWnd", "MainWnd", "", screen_w-336, screen_h-400-64, 336, screen_h-(screen_h-400-64), 0);
+	m_pkApp->CreateWnd(Wnd, "SelectSkillsMainWnd", "MainWnd", "", screen_w-336, screen_h-400, 336, 64*5+20, 0);
 	m_pkDialog = m_pkApp->GetWnd("SelectSkillsMainWnd");
 	m_pkDialog->SetSkin(new ZGuiSkin());
-	m_pkDialog->GetSkin()->m_iBkTexAlphaID = m_pkTexMan->Load("/data/textures/gui/white.bmp",0);
-	m_pkDialog->GetSkin()->m_iBkTexID = m_pkTexMan->Load("/data/textures/gui/black.bmp",0);
+	m_pkDialog->GetSkin()->m_bTransparent = true;
 
 	//
 	// Create scrollbar
 	//
 
-	m_pkApp->CreateWnd(Scrollbar, "SelectSkillsScrollbar", "SelectSkillsMainWnd", "", 320, 20+64, 16, 320, 0);
+	m_pkApp->CreateWnd(Scrollbar, "SelectSkillsScrollbar", "SelectSkillsMainWnd", "", 320, 20, 16, 320, 0);
 	((ZGuiScrollbar*)m_pkApp->GetWnd("SelectSkillsScrollbar"))->SetScrollInfo(0,100,0.10f,0);
 
 	//
 	// Create label
 	//
 
-	m_pkApp->CreateWnd(Label, "SelectSkillsLabel", "SelectSkillsMainWnd", "", 0, 64, 320, 20, 0);
+	m_pkApp->CreateWnd(Label, "SelectSkillsLabel", "SelectSkillsMainWnd", "", 0, 0, 320, 20, 0);
 	m_pkApp->GetWnd("SelectSkillsLabel")->SetText("Select skill: ");
 
 	//
@@ -66,10 +67,12 @@ void SkillDlg::Init()
 	ZGuiSkin* pkButtonSkinUp = new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/quickbn_u.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/quickbn_a.bmp", 0),0);
+	pkButtonSkinUp->m_bTileBkSkin = true;
 
 	ZGuiSkin* pkButtonSkinDown = new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/quickbn_d.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/quickbn_a.bmp", 0),0);
+	pkButtonSkinDown->m_bTileBkSkin = true;
 
 	Rect rcClipperArea = Rect(
 		screen_w-336, screen_h-400+20,
@@ -94,9 +97,9 @@ void SkillDlg::Init()
 			m_pkSkillButtons[y][x] = pkButton;
 		}	
 
-	m_pkApp->CreateWnd(Label, "ApaTest", "SelectSkillsMainWnd", "", 0, 64+20, 64, 64, 0);
+	m_pkApp->CreateWnd(Label, "ApaTest", "SelectSkillsMainWnd", "", 0, 20, 64, 64, 0);
 	m_pkApp->GetWnd("ApaTest")->SetSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spells/lightingball.bmp", 0),0));
+		m_pkTexMan->Load("/data/textures/gui/skills/lockpick.bmp", 0),0));
 	m_pkApp->GetWnd("ApaTest")->SetClipperArea(rcClipperArea); 
 	m_pkApp->GetWnd("ApaTest")->m_bUseClipper = true; 
 	m_pkApp->GetWnd("ApaTest")->GetSkin()->m_bTileBkSkin = true; 
@@ -106,11 +109,17 @@ void SkillDlg::Init()
 
 void SkillDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
+	if(!pkWndClicked->IsVisible())
+		return;
+	
+	printf("olle %s\n", pkWndClicked->GetName());
+
 	for(int y=0; y<SKILL_ROWS; y++)
 		for(int x=0; x<SKILL_COLS; x++)
 		{
 			if(pkWndClicked == m_pkSkillButtons[y][x])
 			{
+				m_pkQuickBoard->AddSlot( QuickBoard::Skill, (char*) "data/textures/gui/skills/lockpick.bmp", NULL );
 				ToogleOpen();
 				break;
 			}
@@ -122,7 +131,7 @@ void SkillDlg::ToogleOpen()
 	if(!m_pkDialog->IsVisible())
 	{
 		m_pkAudioSys->StartSound( "/data/sound/open_window.wav",
-				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				m_pkAudioSys->GetListnerPos(),Vector3(0,0,0),false);
 		m_pkDialog->Show();
 		m_pkDialog->SetFocus();
 		m_pkGui->SetFocus( m_pkDialog);
@@ -130,7 +139,7 @@ void SkillDlg::ToogleOpen()
 	else
 	{
 		m_pkAudioSys->StartSound( "/data/sound/close_window.wav",
-				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				m_pkAudioSys->GetListnerPos(),Vector3(0,0,0),false);
 		m_pkDialog->Hide();
 		m_pkGui->SetFocus(m_pkApp->GetWnd("PanelBkWnd") );
 	}
