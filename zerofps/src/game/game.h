@@ -16,6 +16,8 @@
 #include "adaptorsniper.h"
 #include "treeidleproperty.h"
 
+class ZFScript;
+
 enum GAME_STATE
 {
 	GAME_STATE_INGAME,

@@ -171,7 +171,7 @@ tolua_lerror:
 }
 
 /* method: LuaSet of class  Console */
-static int toluaI_zfscript_bind_Console_LuaSet00(lua_State* tolua_S)
+/*static int toluaI_zfscript_bind_Console_LuaSet00(lua_State* tolua_S)
 {
  if (
  !tolua_istype(tolua_S,2,tolua_tag(tolua_S,"lua_State"),0) ||
@@ -190,10 +190,10 @@ static int toluaI_zfscript_bind_Console_LuaSet00(lua_State* tolua_S)
 tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'LuaSet'.");
  return 0;
-}
+}*/
 
 /* method: LuaGet of class  Console */
-static int toluaI_zfscript_bind_Console_LuaGet00(lua_State* tolua_S)
+/*static int toluaI_zfscript_bind_Console_LuaGet00(lua_State* tolua_S)
 {
  if (
  !tolua_istype(tolua_S,2,tolua_tag(tolua_S,"lua_State"),0) ||
@@ -212,7 +212,7 @@ static int toluaI_zfscript_bind_Console_LuaGet00(lua_State* tolua_S)
 tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'LuaGet'.");
  return 0;
-}
+}*/
 
 /* Open function */
 int tolua_zfscript_bind_open (lua_State* tolua_S)
@@ -230,8 +230,8 @@ int tolua_zfscript_bind_open (lua_State* tolua_S)
  tolua_function(tolua_S,"Console","new",toluaI_zfscript_bind_Console_new00);
  tolua_function(tolua_S,"Console","Update",toluaI_zfscript_bind_Console_Update00);
  tolua_function(tolua_S,"Console","Execute",toluaI_zfscript_bind_Console_Execute00);
- tolua_function(tolua_S,"Console","LuaSet",toluaI_zfscript_bind_Console_LuaSet00);
- tolua_function(tolua_S,"Console","LuaGet",toluaI_zfscript_bind_Console_LuaGet00);
+ //tolua_function(tolua_S,"Console","LuaSet",toluaI_zfscript_bind_Console_LuaSet00);
+ //tolua_function(tolua_S,"Console","LuaGet",toluaI_zfscript_bind_Console_LuaGet00);
  return 1;
 }
 /* Close function */

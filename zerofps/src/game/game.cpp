@@ -323,7 +323,5 @@ void Game::InitGui()
 void Game::InitScript()
 {
 	m_pkScript = new GameScript();
-
-	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
 	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
 }
