@@ -596,7 +596,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			
 			break;
-			
 	}
 }
 
@@ -612,12 +611,12 @@ void ZeroEdit::Input()
 {
 	if(m_pkGui->HaveFocus()) 
 	{
-		printf("gui have focus!");
+	//	printf("gui have focus!");
 		pkInput->SetInputEnabled(false); 
 	}
 	else
 	{
-		printf("camera have focus!");
+	//	printf("camera have focus!");
 		pkInput->SetInputEnabled(true); 
 	}
 
