@@ -81,7 +81,7 @@ int Mad_CoreBoneAnimation::GetSizeInBytes()
 {
 	int iSizeInBytes = 0;
 	iSizeInBytes += sizeof(Mad_CoreBoneAnimation);
-	for(int i=0; i<m_kBoneKeyFrames.size(); i++) 
+	for(unsigned int i=0; i<m_kBoneKeyFrames.size(); i++) 
 		iSizeInBytes += m_kBoneKeyFrames[i].GetSizeInBytes();
 
 	return iSizeInBytes;

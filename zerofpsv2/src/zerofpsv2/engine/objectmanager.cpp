@@ -554,7 +554,7 @@ void ObjectManager::PackToClient(int iClient, vector<Entity*> kObjects)
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
-	for(int iObj=0; iObj < kObjects.size(); iObj++)	{
+	for(unsigned int iObj=0; iObj < kObjects.size(); iObj++)	{
 		pkPackObj = kObjects[iObj];
 
 		pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
@@ -615,7 +615,7 @@ void ObjectManager::PackZoneListToClient(int iClient, set<int>& iZones)
 
 bool IsInsideVector(int iVal, vector<int>& iArray)
 {
-	for(int i=0; i<iArray.size(); i++) {
+	for(unsigned int i=0; i<iArray.size(); i++) {
 		if(iArray[i] == iVal)
 			return true;
 		}
@@ -626,7 +626,7 @@ bool IsInsideVector(int iVal, vector<int>& iArray)
 
 void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
 {
-	int i;
+	unsigned int i;
 
 	vector<int>	kZones;
 	int iZoneID;
@@ -655,7 +655,7 @@ void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 	//m_pkZeroFps->DevPrintf("common", "%s", strZones.c_str());
 
-	for(i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
+	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
 		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
 		
 		if(IsInsideVector(iLocalZoneID, kZones) == false) {

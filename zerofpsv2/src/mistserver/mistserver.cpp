@@ -168,7 +168,7 @@ void MistServer::OnIdle()
 
  	pkFps->UpdateCamera(); 		
 
-	for(int iPath = 0; iPath < kPath.size(); iPath++)
+	for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
 		pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
    
 	if(m_pkServerInfoP)
@@ -678,7 +678,7 @@ Entity* MistServer::GetTargetObject()
 	
 	float closest = 9999999999;
 	Entity* pkClosest = NULL;	
-	for(int i=0;i<kObjects.size();i++)
+	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i] == m_pkCameraObject)
 			continue;
@@ -960,7 +960,7 @@ void MistServer::UpdateStartLocatons()
 
 Vector3 MistServer::GetPlayerStartLocation(const char* csName)
 {
-	for(int i=0;i<m_kLocations.size();i++)
+	for(unsigned int i=0;i<m_kLocations.size();i++)
 		if(m_kLocations[i].first == csName)
 		{	
 			cout<<"found location: "<<csName<<endl;
@@ -1006,7 +1006,7 @@ void MistServer::DeletePlayer(int iConID)
 		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
 		if(pi)
 		{
-			for(int i = 0;i<pi->kControl.size();i++)
+			for(unsigned int i = 0;i<pi->kControl.size();i++)
 			{
 				if(pi->kControl[i].second & PR_OWNER)
 				{
@@ -1103,7 +1103,7 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 		
 		if(pi)
 		{
-			for(int i = 0;i<pi->kControl.size();i++)
+			for(unsigned int i = 0;i<pi->kControl.size();i++)
 			{
 				//found objectID
 				if(pi->kControl[i].first == pkOrder->m_iCaracter)
@@ -1141,7 +1141,7 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 		// Hämta filerna i den aktuella katalogen och sortera listan.
 		vector<string> t;
 		pkZFVFileSystem->ListDir(&t, currentFolder);
-		for(int i=0; i<t.size(); i++)
+		for(unsigned int i=0; i<t.size(); i++)
 			vkFileNames.push_back(t[i]); 
 		t.clear(); vkFileNames.sort(SortFiles);
 

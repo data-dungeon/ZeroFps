@@ -19,7 +19,7 @@ BasicConsole::BasicConsole(char* szName)
 
 BasicConsole::~BasicConsole()
 {
-	for(int i =0;i<m_kText.size();i++)
+	for(unsigned int i =0;i<m_kText.size();i++)
 	{
 		delete[] m_kText[i];	
 	}

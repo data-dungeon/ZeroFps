@@ -587,12 +587,12 @@ int Mad_CoreMesh::GetSizeInBytes()
 	iSizeInBytes += sizeof(Mad_TextureCoo)  * akTextureCoo.size();
 	iSizeInBytes += sizeof(Mad_Face)			 * akFaces.size();
 	
-	for(int iVf = 0; iVf < akFrames.size(); iVf++)
+	for(unsigned int iVf = 0; iVf < akFrames.size(); iVf++)
 		iSizeInBytes += akFrames[iVf].GetSizeInBytes();
 
 	iSizeInBytes += sizeof(Mad_CoreSubMesh) * akSubMeshes.size();
 
-	for(int iMa = 0; iMa < akAnimation.size(); iMa++)
+	for(unsigned int iMa = 0; iMa < akAnimation.size(); iMa++)
 		iSizeInBytes += akAnimation[iMa].GetSizeInBytes();
 
 	iSizeInBytes += sizeof(int) * akBoneConnections.size();

@@ -194,7 +194,7 @@ int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 
 int Mad_Core::GetAnimIndex(char* szName)
 {
-	for(int i=0; i<m_kBoneAnim.size(); i++) {
+	for(unsigned int i=0; i<m_kBoneAnim.size(); i++) {
 		//printf("Anim Name %s\n",  m_kBoneAnim[i].m_szName);
 		if(strcmp(szName, m_kBoneAnim[i].m_szName) == 0)
 			return i;
@@ -332,6 +332,13 @@ void Mad_Core::SetupBonePose()
 	Quaternion kStart, kEnd;
 
 	float OneMinusFrameOffs = float(1.0) - fFrameOffs;
+
+
+//	int iNumOfBones = m_kSkelleton.size();
+//	int iNumOfFrames = m_kBoneAnim.size();
+//	int i
+	int iBoneKeys = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose.size();
+
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		// Get Start/End Keys
@@ -599,10 +606,10 @@ int Mad_Core::CalculateSize()
 	
 	iSizeInBytes += sizeof(Mad_CoreBone) * m_kSkelleton.size();
 	
-	for(int iBa=0; iBa<m_kBoneAnim.size(); iBa++)
+	for(unsigned int iBa=0; iBa<m_kBoneAnim.size(); iBa++)
 		iSizeInBytes += m_kBoneAnim[iBa].GetSizeInBytes();
 	
-	for(int iM=0; iM<m_kMesh.size(); iM++)
+	for(unsigned int iM=0; iM<m_kMesh.size(); iM++)
 		iSizeInBytes += m_kMesh[iM].GetSizeInBytes();
 
 	return iSizeInBytes;

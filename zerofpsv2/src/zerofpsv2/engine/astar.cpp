@@ -18,7 +18,7 @@ bool AStar::StartUp()
 
 AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 {
-	for(int i=0; i<List.size(); i++) {
+	for(unsigned int i=0; i<List.size(); i++) {
 		if(List[i]->m_iZoneID == iID)
 			return List[i];
 		}
@@ -75,7 +75,7 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
 
 		// 5: Let C be a node connected to B.
-		for(int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+		for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
 			// 5:a Assign f,g and h values to C.
 			pkNewNode = new AStarNode( pkZone->m_iZoneLinks[i] );
 			pkNewNode->m_pParent = pkNode;

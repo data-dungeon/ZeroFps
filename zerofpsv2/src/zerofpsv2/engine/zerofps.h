@@ -27,7 +27,7 @@
 #include "../engine_systems/script_interfaces/si_std.h"
 #include "astar.h"
 
-#define ZF_VERSION_NUM		"ZF 0.0"
+#define ZF_VERSION_NUM		"ZF 0.01"
 
 
 using namespace std;

@@ -95,7 +95,7 @@ void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 		AppArguments.push_back(strFullArg);
 
 	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
-	for(int ia = 0; ia < AppArguments.size(); ia++) {
+	for(unsigned int ia = 0; ia < AppArguments.size(); ia++) {
 		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
 		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
 		}

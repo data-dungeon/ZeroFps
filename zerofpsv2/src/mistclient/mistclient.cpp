@@ -981,7 +981,7 @@ bool MistClient::PickZones()
 		
 	int iNrOfZones=0;
 	
-	for(int i=0;i<kObjects.size();i++)
+	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i]->GetName() == "ZoneObject")
 		{

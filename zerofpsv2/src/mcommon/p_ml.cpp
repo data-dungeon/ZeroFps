@@ -36,7 +36,7 @@ void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	
 	pkNetPacket->Write(&nr,sizeof(nr));
 	
-	for(int i=0;i<m_kActions.size();i++)
+	for(unsigned int i=0;i<m_kActions.size();i++)
 	{
 		pkNetPacket->Write_NetStr(m_kActions[i].c_str());
 	}
