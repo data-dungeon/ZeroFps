@@ -82,6 +82,8 @@ public:
 	bool LoadSound(string strFileName);
 	bool UnLoadSound(string strFileName);
 
+	bool MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos, Vector3 kNewDir=Vector3(0,0,1));
+
 	unsigned int GetNumSounds();
 	unsigned int GetNumActiveChannels();
 	unsigned int GetCurrentCachSize() { return m_uiCurrentCachSize; }

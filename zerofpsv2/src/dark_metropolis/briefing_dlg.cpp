@@ -50,6 +50,9 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 					m_pkGui->KillWndCapture();
 					m_pkDM->PauseGame(false); 
 
+					m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+						m_pkAudioSys->GetListnerPos()); 
+
 					break;
 				}
 			}
@@ -61,6 +64,9 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 }
 

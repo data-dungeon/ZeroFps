@@ -28,6 +28,9 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
 		m_pkDM->PauseGame(false);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "HQMissionBn") // the noteboard button
@@ -35,6 +38,9 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		LoadDlg("data/script/gui/dm_mission.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("MissionWnd"));
 		GetGameDlg(MISSION_DLG)->InitDlg();
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "HQMembersBn") // the folder button
@@ -46,6 +52,9 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		if(pkMembersDlg)
 			pkMembersDlg->SetWindowMode(CMembersDlg::HQ_EQUIP_MEMBERS); 
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "HQHireBn") // the telephone button
@@ -53,6 +62,9 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		LoadDlg("data/script/gui/dm_agents.lua");
 		GetGameDlg(HANDLE_AGENTS_DLG)->InitDlg();
 		m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "HQInventoryBn") // the rifle on the wall
@@ -62,6 +74,9 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		SetText("RemoveItemBn", "Sell");
 		SetText("AddItemBn", "Buy");
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 
 	/*if(strClickName == "MenuBn")
@@ -132,7 +147,7 @@ void CHQDlg::OpenDlg()
 {
 	//P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ")
 
-	m_pkAudioSys->StartSound("data/sound/click1.WAV");
+	m_pkAudioSys->StartSound("data/sound/computer beep 6.WAV");
 
 	ShowWnd("GamePlayScreen", false);
 	ShowWnd("GamePlayPanelWnd", false);

@@ -14,6 +14,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
 	if(strClickName == "StarNewGameBn")
 	{
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
+
 		LoadDlg("data/script/gui/dm_start_new_game.lua");
 	//	m_pkGui->PlaceWndFrontBack(GetWnd("StartNewGameWnd"), false);
 
@@ -58,16 +61,22 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "LoadNewGameBn")
 	{
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 		m_pkDM->GUI_LoadSave(false);
 	}
 	else
 	if(strClickName == "SaveNewGameBn")
 	{
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 		m_pkDM->GUI_LoadSave(true);
 	}
 	else
 	if(strClickName == "QuitBn")
 	{
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 		m_pkFps->QuitEngine();
 	}
 	else
@@ -77,6 +86,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		LoadDlg("data/script/gui/dm_gameplay_2.lua");
 		GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 		m_pkGui->KillWndCapture(); 
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 }
 

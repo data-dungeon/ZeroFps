@@ -27,6 +27,9 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				m_pkDM->GUI_NewGame(pkMainWnd);
 				GetGameDlg(GAMEPLAY_DLG)->InitDlg();
 			}
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 /*	else
@@ -50,6 +53,9 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				(*m_pkDM->m_itStartBase)->szName);
 			GetWnd("StartBaseIconLabel")->SetSkin(
 				(*m_pkDM->m_itStartBase)->pkIcon);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 	else
@@ -62,6 +68,9 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				(*m_pkDM->m_itStartBase)->szName);
 			GetWnd("StartBaseIconLabel")->SetSkin(
 				(*m_pkDM->m_itStartBase)->pkIcon);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 }

@@ -208,6 +208,9 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					GUI_NewGame(pkMainWnd);				
 				}
 			}
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 }

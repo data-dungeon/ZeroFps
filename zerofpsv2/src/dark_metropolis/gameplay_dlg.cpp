@@ -23,6 +23,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		LoadDlg("data/script/gui/dm_start.lua");
 		pkMainWnd->Hide();
 		m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}	
 	else
 	if(strClickName == "HQBn")
@@ -53,6 +56,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkDM->PauseGame(true);
 		else
 			m_pkDM->PauseGame(false);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "skill_button_ext")
@@ -101,7 +107,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("char_panel_button_ext", false);
 		m_bCharbarIsOut = true;
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+		m_pkAudioSys->StartSound("data/sound/panel_out.wav",
 			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
@@ -112,7 +118,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("char_panel_button_ext", true);
 		m_bCharbarIsOut = false;
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 3.wav",
+		m_pkAudioSys->StartSound("data/sound/panel_in.wav",
 			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
@@ -122,7 +128,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("item_button_ext", false);
 		m_bItembarIsOut=true;
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 2.wav",
+		m_pkAudioSys->StartSound("data/sound/panel_out.wav",
 			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
@@ -132,7 +138,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("item_button_ext", true);
 		m_bItembarIsOut=false;
 
-		m_pkAudioSys->StartSound("data/sound/computer beep 3.wav",
+		m_pkAudioSys->StartSound("data/sound/panel_in.wav",
 			m_pkAudioSys->GetListnerPos() ); 
 	}
 	

@@ -18,6 +18,7 @@ P_AmbientSound::P_AmbientSound()
 	bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT;
+
 }
 
 P_AmbientSound::~P_AmbientSound()

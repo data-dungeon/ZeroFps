@@ -56,6 +56,9 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		{
 			m_pkGui->KillWndCapture();
 		}
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "MembersEquipBn")
@@ -65,21 +68,33 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		ShowWnd("ItemTransactionWnd", true/*, true*/);
 		SetText("RemoveItemBn", "Unequip");
 		SetText("AddItemBn", "Equip");
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "PrevMemberBn")
 	{
 		SwitchCharacter(false);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "NextMemberBn")
 	{
 		SwitchCharacter(true);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "MembersDropItemBn")
 	{
 		DropItem(m_pkSelectInfo);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 
 	if(strClickName.find("ItemButton") != string::npos)
@@ -92,6 +107,9 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkSelWnd->SetPos(rc.Left, rc.Top, true, true);
 		pkSelWnd->Resize(rc.Width(), rc.Height(), true);  
 		pkSelWnd->SetMoveArea(rc, true);
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	//else
 	//{
@@ -392,6 +410,8 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
 							bMoveOK = true;
 
+							m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+								m_pkAudioSys->GetListnerPos()); 
 						}
 					}
 					else
@@ -407,6 +427,9 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
 								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
 							bMoveOK = true;
+
+							m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+								m_pkAudioSys->GetListnerPos()); 
 						}
 					}
 				}
@@ -495,6 +518,9 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 							GetWnd("MembersWnd")->GetScreenRect(), false); 
 
 						m_bNothingSelected = false;
+
+						m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+							m_pkAudioSys->GetListnerPos()); 
 					}
 					else
 					{
@@ -894,6 +920,9 @@ void CMembersDlg::UpdateCamera()
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
+	m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+		m_pkAudioSys->GetListnerPos()); 
+
 	Entity* pkEntity = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( iItemID );
 
 	// check type of item equipped

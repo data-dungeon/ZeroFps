@@ -23,6 +23,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkMainWnd->Hide();	
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "AgentsInfoBn")
@@ -54,6 +57,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 					CMembersDlg::HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING); 
 
 			m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 	else
@@ -63,6 +69,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		{
 			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
+				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+					m_pkAudioSys->GetListnerPos()); 
+
 				if(SendOutAgent(m_vkCharsInBaseBns[i].second))
 					m_vkCharsInBaseBns[i].first->Hide();
 				break;
@@ -76,6 +85,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		{
 			m_iStartAgent--;
 			UpdateAgentList(m_iStartAgent);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 	else
@@ -85,6 +97,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		{
 			m_iStartAgent++;
 			UpdateAgentList(m_iStartAgent);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
 
@@ -113,6 +128,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				sprintf(szText, "Your agent %i/%i - Mr Smith %i", i+m_iStartAgent+1, 
 					GetNumAgentsInBase(), m_iSelAgent);
 				SetText("AgentInHQLabel", szText);
+
+				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+					m_pkAudioSys->GetListnerPos()); 
 			}
 		}
 	}

@@ -10,6 +10,7 @@
 #include "members_dlg.h"
 #include "hq_dlg.h"
 #include "../mcommon/si_dm.h"
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -200,7 +201,6 @@ void DarkMetropolis::OnServerStart()
 			pkEnv->SetEnviroment("data/enviroments/sun.env");
 			
 		}
-
 	}
 			
 	m_kSelectedEntitys.clear();

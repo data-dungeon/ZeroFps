@@ -604,6 +604,9 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 	alListenerfv(AL_POSITION, &kPos[0]);
 	
 	float orientation[]={kHead.x,kHead.y,kHead.z, kUp.x,kUp.y,kUp.z};
+	
+	float listenerVel[] = {0,0,0};
+	alListenerfv(AL_VELOCITY, listenerVel);
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 
@@ -613,7 +616,7 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::PrintError(ALenum error, char *szDesc)
 {
-	printf("%s Error: ", szDesc);
+	printf("%s Error: \n", szDesc);
 
 /*	switch(error)
 	{
@@ -1029,4 +1032,43 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 	}
 
 	return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Leta rätt på det närmsta ljudet med det namnet och flytta på det till ny postion
+///////////////////////////////////////////////////////////////////////////////
+
+bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos,
+										Vector3 kNewDir)
+{
+	ZFSoundInfo* pkClosest = NULL;
+	float fClosestDist = 100000.0f;
+
+	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
+
+	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
+	for( ; itSound != m_kSoundList.end(); itSound++)  
+	{
+		ZFSoundInfo* pkSound = (*itSound);
+
+		if(strcmp(pkSound->m_acFile, szName) == 0)
+		{
+			float fDistance = (kOldPos - pkSound->m_kPos).LengthSqr();
+			if(fDistance < fClosestDist)
+			{
+				pkClosest = pkSound;
+				fClosestDist = fDistance;
+				itFind = itSound;
+			}
+		}
+	}
+
+	if(itFind != m_kSoundList.end())
+	{
+		(*itFind)->m_kPos = kNewPos;
+		(*itFind)->m_kDir = kNewDir;
+	}
+
+	return false;
 }
