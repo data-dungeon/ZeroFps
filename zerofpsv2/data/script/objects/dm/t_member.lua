@@ -20,6 +20,10 @@ function Init()
 end
 
 function FirstRun()
+
+--	SISetHeartRate(SIGetSelfID(),1);
+--	PlayAnim(GetSelfID(), "idle");
+
 end
 
 function HeartBeat()
