@@ -201,68 +201,83 @@ void MistClient::Input()
 	m_pkInputHandle->RelMouseXY(x,z);	
 	
 	//check buttons
-	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
-	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
-	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
-	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
-	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
-	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
+	if(!IsWndVisible("MLStartWnd"))
+	{
+		m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
+		m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
+		m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
+		m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
+		m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
+		m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
+	}
 
 	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
 	{
 		if(IsWndVisible("ChatDlgMainWnd"))
 			LoadStartScreenGui(false);
 	}
-	
-	//update camera
-	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+
+	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
 	{
-		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
-		{			
-			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
-			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
-			pkCam->SetOffset(Vector3(0,0,0)); 
+		if(IsWndVisible("OptionsWnd"))
+			ShowWnd("OptionsWnd", 0,0,0);
+		else
+		if(IsWndVisible("MLStartWnd"))
+			LoadInGameGui();
+	}
 
-			float fDistance = pkCam->Get3PDistance();
-			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
-			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
-			
-			//make sure camera is nto to far away
-			if(fDistance > 8.0)
-				fDistance = 8.0;
-			
-			//make sure camera is not to close
-			if(fDistance < 0.2)
-				fDistance = 0.2;
+	if(!IsWndVisible("MLStartWnd"))
+	{
+		//update camera
+		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+		{
+			if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
+			{			
+				pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
+				pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
+				pkCam->SetOffset(Vector3(0,0,0)); 
 
+				float fDistance = pkCam->Get3PDistance();
+				if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
+				if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
 				
-			//select first or 3d view camera
-			if(fDistance < 0.3)	
-			{	
-				pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+				//make sure camera is nto to far away
+				if(fDistance > 8.0)
+					fDistance = 8.0;
 				
-				//disable player model in first person
-				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-					pkMad->SetVisible(false);					
+				//make sure camera is not to close
+				if(fDistance < 0.2)
+					fDistance = 0.2;
+
+					
+				//select first or 3d view camera
+				if(fDistance < 0.3)	
+				{	
+					pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+					
+					//disable player model in first person
+					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+						pkMad->SetVisible(false);					
+				}
+				else			
+				{
+					pkCam->SetType(CAM_TYPE3PERSON);
+					
+					//enable player model i 3d person
+					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+						pkMad->SetVisible(true);				
+				}			 
+					
+				pkCam->Set3PDistance(fDistance);
+			
+				//rotate character
+				Matrix4 kRot;
+				kRot.Identity();
+				kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+				kRot.Transponse();				
+				pkCharacter->SetLocalRotM(kRot);			
+
 			}
-			else			
-			{
-				pkCam->SetType(CAM_TYPE3PERSON);
-				
-				//enable player model i 3d person
-				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-					pkMad->SetVisible(true);				
-			}			 
-				
-			pkCam->Set3PDistance(fDistance);
-		
-			//rotate character
-			Matrix4 kRot;
-			kRot.Identity();
-			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
-			kRot.Transponse();				
-			pkCharacter->SetLocalRotM(kRot);			
-
 		}
 	}
 }
