@@ -14,6 +14,8 @@ HeightMap::HeightMap()
 	
 	verts=NULL;
 	Create(100);
+	
+
 //	m_kPosition=Vector3(0,0,0);
 //	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
 //	Zero();
@@ -28,6 +30,10 @@ void HeightMap::Create(int iHmSize)
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
 	Zero();
 	SetTileSet("file:../data/textures/landbw.bmp");
+	
+	ClearSet();
+	AddSet("file:detail1.bmp","FEL");
+	AddSet("file:detail2.bmp","land1.tga");	
 }
 
 void HeightMap::Zero() {
@@ -496,85 +502,21 @@ void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
-/*
-void HeightMap::MakeQuadTree() {
-	m_kCenter=CreateQuad(m_iHmSize/2,m_iHmSize/2,m_iHmSize,0,true);
+void HeightMap::AddSet(const char* acTexture,const char* acMask)
+{
+	TileSet temp;
+	strcpy(temp.m_acTexture,acTexture);
+	strcpy(temp.m_acMask,acMask);
 	
-	cout<<"Generation of Quad-tree is complete"<<endl;
+	m_kSets.push_back(temp);
+}
 
+void HeightMap::ClearSet()
+{
+	m_kSets.clear();
 }
 
 
-HM_vert* HeightMap::CreateQuad(int x,int z,int width,int step,bool more) {
-	if(more==true)		
-		cout<<"adding quad "<<x<<" "<<z;
-	else
-		cout<<"adding vertex "<<x<<" "<<z;
-	cout<<" step:"<<step<<endl;
-
-
-	step++;
-	HM_vert *nVert=new HM_vert;	
-	nVert->height=GetVert(x,z)->height;
-	nVert->normal=GetVert(x,z)->normal;
-	for(int i=0;i<8;i++) 				
-		nVert->childs[i]=NULL;
-	
-	//check if we are on an edge
-	if(x<1 || x>m_iHmSize-1 || z<0 || z>m_iHmSize-1){
-		cout<<"neer edge"<<endl;
-		return nVert;   
-	}	
-	
-	//check if we have reached max child steps
-	if(step>m_iMaxSteps) {
-		cout<<"max steps reached"<<endl;
-		return nVert;
-	}
-	
-	
-	if(more) {
-		int i=0;
-		for(int q=-1;q<2;q++){
-			for(int w=-1;w<2;w++) {
-				if(q==0 && w==0) {
-//					nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,false);
-				} else {			
-					if(BoxTest(x+(width/4)*w,z+(width/4)*q,width))
-						nVert->childs[i]=CreateQuad(x+(width/4)*w,z+(width/44)*q,width/2,step,true);
-					else
-						nVert->childs[i]=CreateQuad(x+(width/2)*w,z+(width/2)*q,width/2,step,false);
-					i++;
-				}
-			}
-		}		
-	}
-	return nVert;
-}
-
-bool HeightMap::BoxTest(int x,int z,int width) {
-	float total=0;
-	for(int q=-1;q<2;q++){
-		for(int w=-1;w<2;w++) {
-			if(q==0 && w==0) {
-			
-			}else {
-				if((GetVert(x,z)->height-GetVert(x+w,z+w)->height)<0)
-					total-=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);					
-				else
-					total+=(GetVert(x,z)->height-GetVert(x+w,z+w)->height);
-			}
-		}
-	}
-	cout<<"TOTAL FOR "<<x<<" "<<z<<" is "<<total<<endl;
-	
-	//check if the diference is more then the treshold
-	if(total>m_iBoxTresh)
-		return true;
-	else
-		return false;
-}
-*/
 
 
 

@@ -13,7 +13,8 @@
 #include "zffile.h"
 #include "zfobject.h"
 #include "zfobjectmanger.h"
-
+#include <vector>
+#include <string>
 
 struct BASIC_API HM_vert {
 	float height;	//land height
@@ -28,6 +29,10 @@ struct HM_fileheader {
 	int m_iHmSize;
 };
 
+struct TileSet{
+	char m_acTexture[256];
+	char m_acMask[256];
+};
 
 
 class BASIC_API HeightMap: public ZFObject {
@@ -35,19 +40,17 @@ class BASIC_API HeightMap: public ZFObject {
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		
 	public:
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
+		vector<TileSet> m_kSets;
+		
 		HM_vert* verts;		
 		int m_iHmSize;
-//		int m_iBoxTresh;
-//		int m_iMaxSteps;
 		char m_acTileSet[256];
-//		HM_vert *m_kCenter;
 		Vector3 m_kPosition;
 		int m_iError;
 		FileIo *m_pkFile;
 		
 		HeightMap();		
+		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Create(int iHmSize);
 		void Zero();
 		void Random();
@@ -60,10 +63,11 @@ class BASIC_API HeightMap: public ZFObject {
 		float Height(float x,float z);
 		Vector3 Tilt(float x,float z);		
 		void SetTileSet(char* acTileSet);
-		void SetPosition(Vector3 kNewPos);
-
+		void SetPosition(Vector3 kNewPos);		
 		HM_vert* GetVert(int x,int z);		
-
+		
+		void AddSet(const char* acTexture,const char* acMask);
+		void ClearSet();
 };
 
 
