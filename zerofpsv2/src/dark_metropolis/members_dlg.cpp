@@ -890,5 +890,5 @@ void CMembersDlg::UpdateCamera()
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
-
+	pkDestContainer->Print();
 }

@@ -43,8 +43,18 @@ Entity* CGameDlg::GetDMObject(DM_OBJECT eDmObject)
 		vector<Entity*> kObjects;	
 		m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 		for(unsigned int i=0;i<kObjects.size();i++)
-			if((P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ"))
-				iID = kObjects[i]->GetEntityID();
+		{
+			P_DMHQ* pkHQProperty = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ");
+
+			if(pkHQProperty)
+			{
+				if(pkHQProperty->GetActive())
+				{
+					iID = kObjects[i]->GetEntityID();
+					break;
+				}
+			}
+		}
 		break;
 	}
 
