@@ -212,7 +212,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	
+//	pkClient->m_pkObject->SetUseZones(false);
 
 }
 
@@ -232,6 +232,9 @@ void MistServer::OnServerStart(void)
 		CameraProperty* m_pkCamProp = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		//m_pkCamProp->SetType(CAM_TYPE3PERSON);
+		
+		//the builder/server shuld not connect to zones
+		m_pkCameraObject->SetUseZones(false);		
 	}
 	
 	

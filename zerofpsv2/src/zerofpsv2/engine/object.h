@@ -171,7 +171,9 @@ class ENGINE_API Object
 			be set to 'A' + m_strType by defualt.
 			*/
 		string						m_strName;							
-	
+		
+		
+		bool							m_bZone;
 		bool							m_bSave;								///< True if this object should save to disk.
 	
 		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
@@ -199,7 +201,9 @@ class ENGINE_API Object
 		float							m_fRadius;							///< Radius of object.
 
 		//int*							m_piDecorationStep;
-
+	
+		int							m_bUseZones;
+		int							m_iCurrentZone;
 		vector<Object*>			m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
@@ -240,7 +244,9 @@ class ENGINE_API Object
 		void GetAllObjects(vector<Object*> *pakObjects);	// Return this + all childs.
 
 		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
-		void AttachToZone();											///< Attacth to ZoneObject if inside any.
+
+		bool GetUseZones() {return m_bUseZones;};
+		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
 
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();												// True if this object has any netactive propertys.

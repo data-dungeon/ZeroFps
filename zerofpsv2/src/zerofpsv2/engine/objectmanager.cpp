@@ -1087,8 +1087,11 @@ ZoneData* ObjectManager::GetZone(Object* PkObject)
 
 int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone)
 {
-	Vector3 kMyPos = PkObject->GetWorldPosV();
+	return GetZoneIndex(PkObject->GetWorldPosV(),iCurrentZone,bClosestZone);
+}
 
+int ObjectManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone)
+{
 	//if theres a last visited zone
 	if(iCurrentZone >= 0 )
 	{
@@ -1103,6 +1106,7 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 		{
 			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
 			{	
+				//cout<<"moved to nearby zone"<<endl;
 				return pkZone->m_iZoneLinks[i];						
 			}
 		}
@@ -1131,10 +1135,6 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 				id = iZ;			
 			}
 		}
-
-//		if(id != -1)
-//			cout<<"Got A far away zone"<<endl;			
-				
 		return id;
 	}
 
@@ -1170,18 +1170,13 @@ void ObjectManager::UpdateZones()
 		pkTrack->m_iActiveZones.clear();
 		
 		//get current zone
-		iZoneIndex = GetZoneIndex((*iT),pkTrack->m_iLastZoneIndex,pkTrack->m_bClosestZone);
-
+		iZoneIndex = GetZoneIndex((*iT),(*iT)->m_iCurrentZone,pkTrack->m_bClosestZone);
 		
 		if(iZoneIndex >= 0) {
-			pkTrack->m_iLastZoneIndex = iZoneIndex;
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			m_kFloodZones.push_back(pkStartZone);
-			//cout << "pkStartZone: " << pkStartZone->m_iZoneID << endl;
 		}
-		else
-			pkTrack->m_iLastZoneIndex = -1;
 
 		// Flood Zones in rage to active.
 		while(m_kFloodZones.size()) {
@@ -1421,7 +1416,7 @@ void ObjectManager::LoadZone(int iId)
 	filename+=nr;
 	filename+=".dynamic.zone";
 	
-	cout<<"load from :"<<filename<<endl;
+	//cout<<"load from :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	
@@ -1434,7 +1429,7 @@ void ObjectManager::LoadZone(int iId)
 	{	
 		kZData->m_bNew = false;
 		
-		cout<<"error loading zone, creating a new template zone"<<endl;
+		//cout<<"error loading zone, creating a new template zone"<<endl;
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
@@ -1474,7 +1469,7 @@ void ObjectManager::UnLoadZone(int iId)
 	filename+=".dynamic.zone";
 
 	
-	cout<<"saving to :"<<filename<<endl;
+	//cout<<"saving to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))

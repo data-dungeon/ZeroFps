@@ -56,7 +56,7 @@ class ENGINE_SYSTEMS_API TrackProperty: public Property {
 	public:
 		bool					m_bClosestZone;
 		int					m_iZoneNum;
-		int					m_iLastZoneIndex;	// Index of last zone we was close to.
+		//int					m_iLastZoneIndex;	// Index of last zone we was close to.
 		set<int>				m_iActiveZones;
 
 		void Update();

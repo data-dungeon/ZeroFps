@@ -92,7 +92,7 @@ TrackProperty::TrackProperty()
 	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_fNextMove			= m_pkFps->GetGameTime() + 1.0;
 	m_iZoneNum			= 0;
-	m_iLastZoneIndex	= -1;
+	//m_iLastZoneIndex	= -1;
 	m_bClosestZone		= true;
 }
 

@@ -199,6 +199,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void UpdateZones();
 		ZoneData* GetZone(Object* PkObject);
 		int GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone);
+		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
 
 		ZoneData* GetZone(Vector3 kPos);
 		void AutoConnectZones();

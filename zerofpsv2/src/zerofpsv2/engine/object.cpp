@@ -21,8 +21,8 @@ Object::Object()
 	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
 
 	// SetDefault Values.
-	SetLocalPosV(Vector3(0,0,0));
-	SetLocalRotV(Vector3(0,0,0));
+	m_kLocalRotM.Identity();
+	m_kLocalPosV= Vector3::ZERO;	
 	m_kVel		= Vector3::ZERO;
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
@@ -39,7 +39,10 @@ Object::Object()
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		=	UPDATE_ALL;
-	m_bSave					=	true;
+	m_bZone					=	false;
+	m_iCurrentZone			=	-1;
+	m_bUseZones				=	true;
+	m_bSave					=	true;	
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
 	
@@ -425,10 +428,6 @@ void Object::AttachToClosestZone()
 	SetParent(minobject);
 }
 
-void Object::AttachToZone()
-{
-
-}
 
 /**	\brief	Returns true if object is one that need to be sent over network.
 */
@@ -944,6 +943,44 @@ void Object::SetWorldRotV(Vector3 kRot)
 
 void Object::SetLocalPosV(Vector3 kPos)
 {
+	
+	//check new zone
+	if(m_bUseZones)
+	{
+		if(!m_bZone)
+		{
+			if(m_pkParent)
+			{
+				if(!m_bRelativeOri)
+				{		
+					int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+					if(nZ == -1)
+					{
+						cout<<"object tried to move outside zone"<<endl;
+						return;
+					}
+					
+					ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
+					if(!cz)
+					{
+						cout<<"zone does not exist"<<endl;
+						return;
+					}
+			
+					if(!cz->m_pkZone)
+					{
+						cout<<"object tried to move to a unloaded zone"<<endl;
+						return;
+					}
+			
+					m_iCurrentZone = nZ;
+					SetParent((Object*)cz->m_pkZone);				
+				}
+			}
+		}
+	}
+
+	
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	

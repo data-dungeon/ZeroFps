@@ -7,7 +7,7 @@ ZoneObject::ZoneObject()
 	m_strName		=	"A ZoneObject";
 
 	m_bSave		=	false;	
-	
+	m_bZone		=	true;
 //	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	m_eRole			= NETROLE_AUTHORITY;
