@@ -487,7 +487,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 
 	// Är vänster musknapp nertryckt?
-	if( bLeftButtonDown == true)
+	if( bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked)
 	{	
 		// Skall fönstret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))

@@ -12,6 +12,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/render/texturemanager.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 const int NUM_PAGES = 10;
 const int NUM_SCHOOLS = 10;
@@ -36,6 +37,7 @@ private:
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;
+	ZFAudioSystem* m_pkAudioSys;
 	ZGuiWnd* m_pkDialog;
 	ZGuiButton* m_pkPageButton[10];
 	ZGuiCheckbox* m_pkSchoolButtons[10];

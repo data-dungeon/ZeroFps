@@ -693,12 +693,12 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
 
-				ZGuiWnd* pkQuickItemMainWnd = GetWnd("QuickItemMainWnd");
+				ZGuiWnd* pkQuickSlotMainWnd = GetWnd("QuickSlotMainWnd");
 
 				if(GetWnd("InfoBoxWnd")->IsVisible() )
-					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-48-85, true, true);
+					pkQuickSlotMainWnd->SetPos(0, GetHeight()-21-48-85, true, true);
 				else
-					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-44, true, true); 	
+					pkQuickSlotMainWnd->SetPos(0, GetHeight()-21-44, true, true); 	
 			}
 			else
 			if(strClickWndName == "SelectSpellBn")
@@ -826,7 +826,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		}
 	}
 	else
-	if(strMainWndName == "QuickItemMainWnd")
+	if(strMainWndName == "QuickSlotMainWnd")
 	{
 		m_pkQuickBoard->OnCommand(pkWndClicked, bRMouseBnClick);
 	}

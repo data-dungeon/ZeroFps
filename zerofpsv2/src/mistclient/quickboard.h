@@ -8,22 +8,15 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/render/texturemanager.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 const int MAX_NUM_QUICK_ITEMS = 7;
 
 class QuickBoard  
 {
 public:
-	void Update();
-	void OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked);
-	void AddQuickItem(char *szIcon, char* szIconAlpha);
-	void Init();
-	QuickBoard(ZGuiApp* pkApp);
-	~QuickBoard();
 
-private:
-
-	struct QuickItem
+	struct QuickSlot
 	{
 		char szActionName[50];
 		ZGuiButton* pkButton;
@@ -31,12 +24,23 @@ private:
 		int iPos;
 	};
 
-	vector<QuickItem*> m_vkQuickItems;
+	void Update();
+	void OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked);
+	void AddSlot(char *szIcon, char* szIconAlpha);
+	void RemoveSlot(int iIndex);
+	void Init();
+	QuickBoard(ZGuiApp* pkApp);
+	~QuickBoard();
+
+private:
+
+	vector<QuickSlot*> m_vkQuickSlots;
 
 	ZGuiApp* m_pkApp;
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;
+	ZFAudioSystem* m_pkAudioSys;
 	ZGuiWnd* m_pkDialog;
 };
 

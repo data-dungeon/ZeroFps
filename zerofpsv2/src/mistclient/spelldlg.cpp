@@ -14,6 +14,7 @@ SpellDlg::SpellDlg(ZGuiApp* pkApp, QuickBoard* pkQuickBoard)
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 
 	m_pkQuickBoard = pkQuickBoard;
 	m_pkApp = pkApp;
@@ -195,7 +196,10 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 				const char* szID = m_pkTexMan->GetFileName(tex_id);
 
-				m_pkQuickBoard->AddQuickItem( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+				m_pkQuickBoard->AddSlot( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+
+				m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
+						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 			}
 		}
 }
@@ -203,9 +207,17 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 void SpellDlg::ToogleOpen()
 {
 	if(m_pkDialog->IsVisible())
+	{
+		m_pkAudioSys->StartSound( "/data/sound/close_window.wav",
+				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 		m_pkDialog->Hide();
+	}
 	else
+	{
+		m_pkAudioSys->StartSound( "/data/sound/open_window.wav",
+				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 		m_pkDialog->Show();
+	}
 }
 
 SpellDlg::SpellSlot* SpellDlg::FindSlot(int x, int y)
