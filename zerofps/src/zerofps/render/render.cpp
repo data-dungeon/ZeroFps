@@ -164,6 +164,53 @@ void Render::SetFont(char* aFont) {
 
 }
 
+void Render::Line(Vector3 kPos1,Vector3 kPos2)
+{
+	glDisable(GL_TEXTURE_2D);
+	glBegin(GL_LINES);
+		glVertex3f(kPos1.x,kPos1.y,kPos1.z);
+		glVertex3f(kPos2.x,kPos2.y,kPos2.z);		
+	glEnd();
+	glEnable(GL_TEXTURE_2D);
+}
+
+void Render::SetColor(Vector3 kColor)
+{
+	glColor3f(kColor.x,kColor.y,kColor.z);
+}
+
+void Render::DrawHM(HeightMap *kmap) {
+	glPushMatrix();
+	Vector3 p1;
+	Vector3 p2;
+	Vector3 p3;
+	glTranslatef(0,0,0);
+	
+	SetColor(Vector3(255,255,255));
+	glScalef(0.05,.05,.05);
+	
+	
+	
+	for(int z=0;z<HM_SIZE-1;z++){
+		for(int x=0;x<HM_SIZE-1;x++) {
+			p1=Vector3(x,kmap->verts[z*HM_SIZE+x].height,-z);
+			p2=Vector3(x+1,kmap->verts[z*HM_SIZE+x+1].height,-z);
+			p3=Vector3(x,kmap->verts[(z+1)*HM_SIZE+x].height,-z-1);
+
+			
+			Line(p1,p2);
+			Line(p1,p3);
+			
+//			Pyra(x,kmap->verts[z*HM_SIZE+x].height,z);
+//			Line(p1,p2);
+//			Line(Vector3(x,0,z),Vector3(x+0.1,0,z));
+			
+			
+		}		
+	}
+	glPopMatrix();
+}
+
 
 
 

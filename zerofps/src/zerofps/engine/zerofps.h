@@ -15,11 +15,18 @@ using namespace std;
 
 class Application;
 
-enum enginestates {
+enum enginestates 
+{
 	state_normal,
 	state_exit,
 	state_console,
 	state_pause
+};
+
+enum CamMode
+{
+	cam_look,
+	cam_target,
 };
 
 class ZeroFps {
@@ -44,19 +51,29 @@ class ZeroFps {
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
 		
-		int CMD_PLAYMUSIC;
-		int CMD_STOPMUSIC;
-			
+		Vector3 *m_kCamPos;
+		Vector3 *m_kCamRot;
+		int m_iCamMode;
+		
+					
 		ZeroFps(void);
 		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
-		void MainLoop(void);
-		
+		void MainLoop(void);		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers
 		
 		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
+		inline float GetFrameTime() {return m_fFrameTime;};
+		
+		inline Vector3& CamPos(Vector3 kCamPos){*m_kCamPos=kCamPos;return *m_kCamPos;};
+		inline Vector3& CamPos(void){return *m_kCamPos;};
+		inline void SetCamPosPointer(Vector3* pkNewCamPos) {m_kCamPos=pkNewCamPos;};
+		
+		inline Vector3& CamRot(Vector3 kCamRot){*m_kCamPos=kCamRot;return *m_kCamRot;};
+		inline Vector3& CamRot(void){return *m_kCamRot;};		
+		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
 		
 };
 

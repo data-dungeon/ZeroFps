@@ -5,10 +5,12 @@
 #define _RENDER_H_
 
 #include "render_x.h"
+#include "../basic/basic.pkg"
 #include <cstring>
 #include <iostream>
 #include "texturemanager.h"
 #include "../engine/engine.pkg"
+
 
 using namespace std;
 
@@ -24,6 +26,9 @@ class RENDER_API Render {
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
 		void SetFont(char* aFont);
+		void Line(Vector3 kPos1,Vector3 kPos2);
+		void SetColor(Vector3 kColor);
+		void DrawHM(HeightMap* kmap);
 };
 
 

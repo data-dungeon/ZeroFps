@@ -1,11 +1,12 @@
+class HeightMap;
 class CmdSystem;
 class FileIo;
 class Vector3;
 class HalfEdge;
 class Vector4;
 class Matrix4;
-class HeightMap;
 
+#include "heightmap.h"
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"
@@ -13,7 +14,7 @@ class HeightMap;
 #include "halfedge.h"
 #include "matrix4.h"
 #include "vector4.h"
-#include "heightmap.h"
+
 
 
 

@@ -11,12 +11,14 @@ using namespace std;
 class ZeroFps;
 class Console;
 class Render;
+class Input;
 
 class ENGINE_API Application {	
 	protected:
 		ZeroFps* pkFps;
 		Console* pkConsole;			
 		Render* pkRender;
+		Input* pkInput;
 		
 	public:
 		static Application* pkApp;

@@ -9,7 +9,7 @@
 
 
 class Test :public Application {
-	
+	HeightMap *test;
 
 
 	public:
@@ -18,6 +18,7 @@ class Test :public Application {
 		void OnIdle(void);
 
 
+		void input();
 };
 
 

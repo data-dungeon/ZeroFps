@@ -18,6 +18,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkFps=pkZeroFps;
 	pkConsole=pkFps->m_pkConsole;
 	pkRender=pkFps->m_pkRender;
+	pkInput=pkFps->m_pkInput;
 }
 	
 	

@@ -1,6 +1,5 @@
 #include "globals.h"
 
-
 void Gemens(char* aText) 
 {
 	int i=0;

@@ -46,7 +46,7 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
-			case state_normal:
+			case state_normal:{
 				m_pkInput->Update();				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
@@ -55,13 +55,15 @@ void ZeroFps::MainLoop(void) {
 				}
 				m_pkApp->OnIdle();			
 				Swap();
+
 				break;			
-			
-			case state_console:				
+			}
+			case state_console: {
 				m_pkConsole->Update();
 				m_pkConsole->Draw();
 				Swap();
 				break;
+			}
 		}
 	}
 }
@@ -83,11 +85,11 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	glViewport(0, 0,iWidth,iHeight);	
 
 
-		//setup some opengl stuff =)
+	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
-  glEnable(GL_COLOR_MATERIAL);	
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glEnable(GL_COLOR_MATERIAL);	
 
   glShadeModel(GL_SMOOTH);
   glClearColor(0, 0, 0, 0);
@@ -100,19 +102,44 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
   SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	
+	//set camera mode
+	m_iCamMode=cam_look;
+	m_kCamPos=new Vector3(0,0.5,0);
+	m_kCamRot=new Vector3(0,0,0);
 
 }
 
 void ZeroFps::Swap(void) {
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapBuffers();  //guess
 	
-	glLoadIdentity();
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-  glFrustum(-0.25,0.25,-0.25,0.25,0.25,50.0);
-
+	glLoadIdentity();													//
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		// Reset view and clea
+	glFrustum(-0.25,0.25,-0.25,0.25,0.25,50.0);				//
+	
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
-	m_iFps=int(1000/m_fFrameTime);
+	m_iFps=int(1000/m_fFrameTime);	
+
+	if(m_iState==state_normal) {
+		// Update Camera
+		switch(m_iCamMode)
+		{
+		case cam_look:
+			//rotate the camera
+			glRotatef(m_kCamRot->x,1,0,0);	
+			glRotatef(m_kCamRot->y,0,1,0);	
+			glRotatef(m_kCamRot->z,0,0,1);	
+		
+			//translate the camera
+			glTranslatef(-m_kCamPos->x,-m_kCamPos->y-0.2,-m_kCamPos->z);
+			break;
+		case cam_target:
+			gluLookAt(m_kCamPos->x,m_kCamPos->y,m_kCamPos->z,
+				m_kCamRot->x,m_kCamRot->y,m_kCamRot->z,0,1,0);
+			break;
+		}
+	}
 }
 

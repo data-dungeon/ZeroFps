@@ -1,4 +1,4 @@
-#define SIZE 100
+#define HM_SIZE 100
 
 #ifndef _HEIGHTMAP_H_
 #define _HEIGHTMAP_H_
@@ -13,13 +13,13 @@ struct HM_vert {
 };
 
 class HeightMap {
-	private:
-		HM_vert verts[SIZE*SIZE];
-		
 	public:
+		HM_vert verts[HM_SIZE*HM_SIZE];		
+		
 		HeightMap();		
 		void Zero();
 		bool Load(char* acFile);
+		
 };
 
 
