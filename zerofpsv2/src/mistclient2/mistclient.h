@@ -43,7 +43,7 @@ class MistClient :public Application, public ZGuiApp {
 		void Say(string strMsg);
 
       bool NameIPFromServerList(string& strName, string& strIP);
-	  void ToogleChatWnd(bool bSetInputFocus=false);
+	  void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
      void ResizeChatDlg(bool bBigger); 
      	
 	  void LoadInGameGui();

@@ -471,6 +471,9 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 
 void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {	
+   if(pkWnd == NULL)
+      return;
+
 	// Hitta det fönster som tidigare hade fokus och 
 	// ta bort fokuset från denna.
 	if(ZGuiWnd::m_pkFocusWnd)

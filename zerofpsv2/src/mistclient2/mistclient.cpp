@@ -179,8 +179,15 @@ void MistClient::Input()
    else
       if(s_bReturnPressed)
       {
-         s_bReturnPressed = false,
-         g_kMistClient.ToogleChatWnd(true);
+         s_bReturnPressed = false;
+
+         ZGuiTextbox* pkSayTb = (ZGuiTextbox*) GetWnd("SayTextbox");
+         ZGuiWnd* pkFocusWnd = ZGuiWnd::m_pkFocusWnd;
+
+         if( ! (pkSayTb != NULL && pkFocusWnd == pkSayTb) )
+         {
+            g_kMistClient.ToogleChatWnd(true, true);
+         }
       }
 	
 	//check buttons
