@@ -148,17 +148,14 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		int iControllID; iControllID = ((int*)pkParams)[0];
 		switch(iControllID)
 		{
-		case ID_RAISLOWERGROUND_CHB:
-			if(IsButtonChecked("RaiseLowerGroundChB"))
-				m_pkEdit->m_iMode = RAISE;
-			else
-				m_pkEdit->m_iMode = LOWER;
+		case ID_ELEVATIONMODE_RADIOGROUP:	// raise
+			m_pkEdit->m_iMode = RAISE;
 			break;
-		case ID_SMOOTHGROUND_CHB:
-			if(IsButtonChecked("SmoothGroundChB"))
-				m_pkEdit->m_iMode = SMOOTH;
-			else
-				m_pkEdit->m_iMode = RAISE;
+		case ID_ELEVATIONMODE_RADIOGROUP+1: // lower
+			m_pkEdit->m_iMode = LOWER;
+			break;
+		case ID_ELEVATIONMODE_RADIOGROUP+2: // smooth
+			m_pkEdit->m_iMode = SMOOTH;
 			break;
 		case ID_PENCILSIZE_RADIOGROUP:
 			m_pkEdit->m_iPencilSize = 4; // small
@@ -188,7 +185,6 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				Property* pkModelProp;
 				if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
 					pkCurObject->RemoveProperty(pkModelProp);
-
 			}
 			break;
 		}
@@ -490,7 +486,7 @@ ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int 
 }
 
 ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
-								int h, bool bMulitLine)
+								int h, bool bMulitLine, char* szText)
 {
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, 
 		iID, bMulitLine);
@@ -498,6 +494,9 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 	pkTextbox->SetGUI(m_pkGui);
+
+	if(szText != NULL)
+		pkTextbox->SetText(szText);
 
 	return pkTextbox;
 }
@@ -922,9 +921,9 @@ bool Gui::CreateWorkPanel()
 	int w = 224, y = 20, h = 224, x = m_pkEdit->m_iWidth-w;
 
 	vector<string> akTabNames;
-	akTabNames.push_back("Add object");
-	akTabNames.push_back("Paint texture");
-	akTabNames.push_back("Elevation tool");
+	akTabNames.push_back("Object");
+	akTabNames.push_back("Texture");
+	akTabNames.push_back("Elevation");
 
 	m_pkWorkPanel = CreateTabbedDialog("WorkPanel",12314124,2321323,
 		x,y,w,h,akTabNames,WORKPANELPROC);
@@ -947,7 +946,7 @@ bool Gui::CreateWorkPanel()
 	// Create page 2: - Paint terrain
 	pkPage = m_pkWorkPanel->GetPage(1);
 
-	CreateLabel(pkPage, 0, 5, 5, 50, 20, "Brush size");
+	CreateLabel(pkPage, 0, 5, 25, 50, 20, "Brush size");
 	vkNames.clear();
 	vkNames.push_back("Small");
 	vkNames.push_back("Medium");
@@ -955,20 +954,48 @@ bool Gui::CreateWorkPanel()
 	vkNames.push_back("Extra-Large");
 
 	int iHeight = CreateRadiobuttons(pkPage, vkNames, 
-		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 30, 16);
+		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 50, 16);
 	CheckRadioButton("BrushSizeRadioGroup", "Medium");
+
+	CreateLabel(pkPage, 0, 120, 50, 10, 16, "R");
+	CreateLabel(pkPage, 0, 120, 80, 10, 16, "G");
+	CreateLabel(pkPage, 0, 120, 110, 10, 16, "B");
+	CreateTextbox(pkPage, ID_TEXCOLOR_RED_EB,   140, 50, 30, 16, false, "128"); 
+	CreateTextbox(pkPage, ID_TEXCOLOR_GREEN_EB, 140, 80, 30, 16, false, "128"); 
+	CreateTextbox(pkPage, ID_TEXCOLOR_BLUE_EB,  140, 110, 30, 16, false, "128");
+
+	CreateLabel(pkPage, 0, 5, 5, 209, 20, "Map");
+	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
+		50, 5, 150, 20, false);
+	pkTextureCB->AddItem("Texture 1", 0);
+	pkTextureCB->AddItem("Texture 2", 1);
+	pkTextureCB->AddItem("Texture 3", 2);
 
 	// Create page 3: - Elevation tool
 	pkPage = m_pkWorkPanel->GetPage(2);
 
-	CreateCheckbox(pkPage, ID_RAISLOWERGROUND_CHB, 5, 5, 16, 16, true,
-		"Raise", "RaiseLowerGroundChB");
-	CreateCheckbox(pkPage, ID_SMOOTHGROUND_CHB, 5, 25, 16, 16, true,
-		"Smooth", "SmoothGroundChB");
+	vkNames.clear();
+	vkNames.push_back("Raise");
+	vkNames.push_back("Lower");
+	vkNames.push_back("Smooth");
 
-	CreateLabel(pkPage, 0, 5, 50, 50, 20, "Pencil size");
+	CreateLabel(pkPage, 0, 5, 5, 50, 16, "Mode");
 	iHeight = CreateRadiobuttons(pkPage, vkNames, 
-		"PencilSizeRadioGroup", ID_PENCILSIZE_RADIOGROUP, 5, 70, 16);
+		"ElevationModeRadioGroup", ID_ELEVATIONMODE_RADIOGROUP, 5, 30, 16);
+	CheckRadioButton("ElevationModeRadioGroup", "Raise");
+
+	CreateCheckbox(pkPage, ID_AUTOSMOOTHGROUND_CHB, 120, 5, 16, 16, true,
+		"Auto-smooth", "AutoSmoothGroundChB");
+
+	vkNames.clear();
+	vkNames.push_back("Small");
+	vkNames.push_back("Medium");
+	vkNames.push_back("Large");
+	vkNames.push_back("Extra-Large");
+
+	CreateLabel(pkPage, 0, 5, 90, 50, 20, "Pencil size");
+	iHeight = CreateRadiobuttons(pkPage, vkNames, 
+		"PencilSizeRadioGroup", ID_PENCILSIZE_RADIOGROUP, 5, 110, 16);
 	CheckRadioButton("PencilSizeRadioGroup", "Medium");
 
 	return true;
