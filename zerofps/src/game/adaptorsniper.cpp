@@ -80,7 +80,7 @@ void AdaptorSniper::Update()
 	}
 	else
 	{
-		if((m_pkObject->GetPos() - m_pkPlayer->GetPos()).Length() < 30){		
+		if((m_pkObject->GetPos() - m_pkPlayer->GetPos()).Length() < 40){		
 			m_kDir.y=GetYawAngle(m_pkObject->GetPos() - m_pkPlayer->GetPos())+90;
 			
 			//activate adaptor
@@ -91,7 +91,7 @@ void AdaptorSniper::Update()
 			{
 				m_fHitTime=m_pkFps->GetTicks();			
 								
-				Vector3 kAim= m_pkPlayer->GetPos()-m_pkObject->GetPos();
+				Vector3 kAim = m_pkPlayer->GetPos()-m_pkObject->GetPos();
 				kAim.Normalize();
 				Fire(kAim);
 				//Vector3 kAim=m_pkObject->GetRot().AToU();
@@ -159,7 +159,11 @@ void AdaptorSniper::Fire(Vector3 kAim)
 
 	
 //	dynamic_cast<ModelProperty*>(Bullet->AddProperty("ModelProperty"))->m_fRadius=0.1;	
-	static_cast<CSSphere*>(static_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"))->GetColSphere())->m_fRadius=0.1;		
+	PhysicProperty* sp = static_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"));
+	static_cast<CSSphere*>(sp->GetColSphere())->m_fRadius=0.1;
+	sp->m_bGravity = false;
+	sp->m_bFloat = false;
+	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
 
 }
