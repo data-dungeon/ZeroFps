@@ -39,6 +39,7 @@ float BASIC_API GetYawAngle(Vector3 kDir);
 
 
 //character handling
+void BASIC_API ConvertToLower(string& strText);
 void BASIC_API Gemens(char* aText);									///< Turn a string into lowcase.
 void BASIC_API IntToChar(char* aText,int iValue);				//
 char* BoolStr(bool bFlag);												//returns string "true" or "false" i think	

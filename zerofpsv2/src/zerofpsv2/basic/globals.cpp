@@ -33,6 +33,19 @@ void Gemens(char* aText)
 	}
 };
 
+void ConvertToLower(string& strText)
+{
+	//gems  96>x<123     vers  64>x<91
+	
+	int iCode;
+	for(int i = 0;i<strText.length();i++)
+	{
+		iCode = int(strText[i]);		
+		if(iCode>64 && iCode<91)
+			strText[i]=char(iCode+32);
+	}	
+}
+
 // Compares strings and ignore case
 bool IsSameIgnoreCase(const char* szString1,const char* szString2)
 {

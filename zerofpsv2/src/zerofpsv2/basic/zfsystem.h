@@ -86,6 +86,7 @@ private:
 	void* GetVar(ZFCmdData* pkArea);
 	string GetVarValue(ZFCmdData* pkArea);
 
+	
 protected:
 	vector<string>			AppArguments;			///< Arguments sent to app at startup.
 	BasicConsole*			m_pkConsole;			///< Ptr to ZeroFps Console.

@@ -88,15 +88,17 @@ ZFVFileSystem::ZFVFileSystem()
 {
 	m_pkBasicFS = static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 	
+	m_strCurentDir = "";
+	m_bCaseSensitive = true;
 	
 	Register_Cmd("cd",		FID_CD);
 	Register_Cmd("root",	 	FID_LISTROOT);
 	Register_Cmd("dir",		FID_DIR);
 	Register_Cmd("ls",		FID_DIR);
 	Register_Cmd("vfspath",	FID_VFSPATH);
-	m_strCurentDir = "";
-
-
+	
+	RegisterVariable("f_casesensitive",		&m_bCaseSensitive,	CSYS_BOOL);
+	
 	AddRootPath("./","/"); 
 	AddRootPath("../datafiles/sysdata" ,"/data");
 	AddRootPath("../datafiles/extdata" ,"/data");
@@ -179,6 +181,11 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	{
 		if(GetRootMerge(i, strFileName, strRootMerge)) 
 		{
+			//if not case sensetive, try to find the real filename
+			if(!m_bCaseSensitive)
+				strRootMerge = GetRealName(strRootMerge);
+			
+		
 			pkFp = fopen(strRootMerge.c_str(), szOptions);
 			if(pkFp) {
 				return pkFp;
@@ -243,6 +250,7 @@ string ZFVFileSystem::GetFullPath(string strFileName)
 
 void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 {
+
 	//always absolut vfs paths
 	if(strVfsPath[0] != '/')
 		strVfsPath = string("/") + strVfsPath; 
@@ -342,6 +350,7 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 		}
 	}
 	
+		
 	return true;
 }
 
@@ -363,6 +372,77 @@ bool ZFVFileSystem::DirExist(string strName)
 		return true;
 	
 	return false;
+}
+
+bool ZFVFileSystem::FileExists(string strName)
+{
+	string strDir;
+	string strFile;
+	
+	int pos = strName.rfind('/');
+	if(pos == -1)
+	{
+		strDir="/";
+		strFile = strName;
+	}
+	else
+	{
+		strDir.append(strName,0,pos);
+		strFile.append(strName,pos+1,strName.length() - pos);
+	}
+	
+	//try to list directory
+	vector<string> kDirs;
+	ListDir(&kDirs,strDir);
+	
+	if(m_bCaseSensitive)
+	for(int i = 0;i<kDirs.size();i++)
+	{
+		if(m_bCaseSensitive)
+		{
+			if(kDirs[i] == strName)
+				return true;
+		}
+		else
+		{
+			if(IsSameIgnoreCase(kDirs[i].c_str(),strFile.c_str()))
+				return true;		
+		}	
+	}
+	
+	return false;
+}
+
+string ZFVFileSystem::GetRealName(const string& strName)
+{
+	string strDir;
+	string strFile;
+	
+	int pos = strName.rfind('/');
+	if(pos == -1)
+	{
+		strDir="/";
+		strFile = strName;
+	}
+	else
+	{
+		strDir.append(strName,0,pos);
+		strFile.append(strName,pos+1,strName.length() - pos);
+	}
+			
+	//try to list directory
+	vector<string> kDirs;
+	ListDir(&kDirs,strDir);
+		
+	for(int i = 0;i<kDirs.size();i++)
+	{
+		if(IsSameIgnoreCase(kDirs[i].c_str(),strFile.c_str()))
+		{
+			return strDir+string("/")+kDirs[i];			
+		}
+	}
+	
+	return strName;
 }
 
 void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -461,3 +541,7 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 	};
 }
+
+
+
+

@@ -61,13 +61,6 @@ The VFS can be set to many root paths. The base one is one step above the exe fi
 class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
-		friend class ZFVFile;
-		friend class ZFIni;
-		
-		ZFBasicFS*				m_pkBasicFS;					
-		vector<VfsRootPath>	m_kRootPath;
-		string					m_strCurentDir;
-
 		enum FuncId_e
 		{
 			FID_CD,
@@ -77,7 +70,16 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 			
 		};
 
+				
+		ZFBasicFS*				m_pkBasicFS;					
+		vector<VfsRootPath>	m_kRootPath;
+		string					m_strCurentDir;
+
+		bool						m_bCaseSensitive;
+		
+
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
+
 
 	public:
 		ZFVFileSystem();
@@ -85,12 +87,12 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
-		int GetNumOfRootPaths()	{return int(m_kRootPath.size());};						///< Get num of active rootpaths
+		int GetNumOfRootPaths()				{	return int(m_kRootPath.size());}						///< Get num of active rootpaths
 
 		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
-
+		bool GetCaseSensitive()				{	return m_bCaseSensitive;	}
+		
 		void Flush();										///< Close all unused archives.
-		bool Exists(string strFileName);				///< Returns true if a file was found.
 		
 		// Open / Close
 		void ArchiveOpen() 	{ }					
@@ -103,6 +105,8 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		string GetFullPath(string strFileName);
 		bool GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge);
 
+		string GetRealName(const string& strName);
+		
 		string GetCurrentWorkingDir();
 		bool CreateDir(string strDir);
 		bool RemoveDir(string strDir);
@@ -110,12 +114,17 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		bool ListDirFilter(	vector<string>* pkFiles, vector<string>& pkFilters, 
 									string strName, bool bIgnoreMaps = false);
 		bool DirExist(string strName);
+		bool FileExists(string strFileName);				///< Returns true if a file was found.
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+
+		friend class ZFVFile;
+		friend class ZFIni;
 };	
 
 
