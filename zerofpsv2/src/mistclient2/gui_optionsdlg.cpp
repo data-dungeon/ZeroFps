@@ -117,6 +117,9 @@ void OptionsDlg::Open()
 	m_pkMC->CheckButton("ShadowmapCheckbox", m_pkMC->m_pkZeroFps->GetShadowMap() );
 	m_kOptionsValues.m_bPrevShadowMapState = m_pkMC->m_pkZeroFps->GetShadowMap(); 
 
+	m_pkMC->CheckButton("VegetationCheckbox", m_pkMC->m_pkZeroFps->GetVegetation() );
+	m_kOptionsValues.m_bPrevVegetationState = m_pkMC->m_pkZeroFps->GetVegetation(); 	
+	
 	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
 		m_kOptionsValues.m_iCurrentShadowGroup]);	
 
@@ -183,6 +186,9 @@ void OptionsDlg::Close(bool bSave)
 		sprintf(cmd, "r_shadowmap %i", m_kOptionsValues.m_bPrevShadowMapState);
 		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 
+		sprintf(cmd, "r_vegetation %i", m_kOptionsValues.m_bPrevVegetationState);
+		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);				
+		
 		sprintf(cmd, "n_netspeed %i", m_kOptionsValues.m_iPrevNetSpeed);
 		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 
@@ -288,6 +294,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 			{
 				char cmd[50];
 				sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("ShadowmapCheckbox"));
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+			}
+			else
+			if(strController == "VegetationCheckbox")
+			{
+				char cmd[50];
+				sprintf(cmd, "r_vegetation %i", (int) g_kMistClient.IsButtonChecked("VegetationCheckbox"));
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
 			}
 		}

@@ -151,6 +151,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool				m_bDrawAxisIcon;
 		bool				m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
 		bool				m_bShadowMap;
+		bool				m_bVegetation;
 				
 		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
@@ -330,6 +331,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
 		bool GetShadowMap()					{	return m_bShadowMap;		}
+		bool GetVegetation()					{	return m_bVegetation;	}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

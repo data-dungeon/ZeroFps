@@ -15,6 +15,7 @@ public:
 		bool m_bLockGammaColors;
 		bool m_abEnabledShadowGroups[6]; // 0:an använs inte...
 		bool m_bPrevShadowMapState;
+		bool m_bPrevVegetationState;
 		int m_iCurrentShadowGroup;
 		int m_iCurrentPage;
 		float m_fPrevMusicVolume;

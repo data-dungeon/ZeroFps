@@ -81,6 +81,11 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 
 void P_Vegitation::Update()
 {
+	//want vegitation
+	if(!m_pkZeroFps->GetVegetation())
+		return;
+
+
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWMAP)
 		return;
 
@@ -116,9 +121,9 @@ void P_Vegitation::Update()
 	kObjectPos = m_pkEntity->GetWorldPosV();			
 					
 					
-	//draw a ball on the server
-	if(m_pkFps->GetDebugGraph())
-		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
+// 	//draw a ball on the server
+// 	if(m_pkFps->GetDebugGraph())
+// 		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
 
 	
 	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
