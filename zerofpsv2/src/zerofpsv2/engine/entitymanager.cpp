@@ -627,6 +627,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
+			cout << "Spawnin: " << iObjectID << endl;
 			}
 				
 		if( pkNetSlave ) {
@@ -799,7 +800,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 		if(IsInsideVector(iLocalZoneID, kZones)) 
 		{
 			Delete(m_pkZoneObject->m_akChilds[i]);
-			//cout << "Removing Zone: " << iLocalZoneID << endl;
+			cout << "Removing Zone: " << iLocalZoneID << endl;
 		}
 	}
 
@@ -914,6 +915,13 @@ void EntityManager::PackToClients()
 		// Pack And Send unload list to client
 		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iUnloadZones);		
 //		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
+
+		// Loop and clear send data flag for those zone to this client
+		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
+		{
+			int iZoneID = (*itActiveZone);
+			m_kZones[iZoneID].m_pkZone->ResetAllNetUpdateFlagsAndChilds( iClient );
+		}
 
 		//send all tracked object first =)
 		kObjects.clear();	
@@ -1288,6 +1296,9 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 { 
 	string strName;
 	int iTo;
+			unsigned int i;
+			vector<int>	kZones;
+			int iZoneID;
 
 	switch(cmdid) {
 		case FID_LOGOHTREE:
@@ -1295,7 +1306,13 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_LOGACTIVEPROPERTYS:
-			DumpActiverPropertysToLog("Active propertys");
+			//DumpActiverPropertysToLog("Active propertys");
+
+			for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) 
+			{
+				int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->m_iEntityID;
+				m_pkZoneObject->m_akChilds[i]->SetUpdateStatus(UPDATE_ALL);
+			}
 			break;
 
 		case FID_SENDMESSAGE:
@@ -2689,7 +2706,7 @@ void EntityManager::UpdateTrackers()
 		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
 		if((*iT)->m_iConnectID != -1)
 			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
-						
+		
 		//save new active zones in tracker
 		(*iT)->m_iActiveZones = kNewActiveZones;
 	}
@@ -2715,7 +2732,6 @@ void EntityManager::UpdateZoneStatus()
 					
 					if(m_kZones[i].m_pkZone)
 						m_kZones[i].m_pkZone->SetUpdateStatus(UPDATE_ALL);
-					
 					continue;
 				}
 			
