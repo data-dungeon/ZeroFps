@@ -21,7 +21,13 @@ void Game::OnInit()
 	pkConsole->Printf(" Use load [map] to load a map");
 	
 	SetUpMenuScreen();
+	
+	//run autoexec script
+	if(!pkIni->ExecuteCommands("game_autoexec.ini"))
+		pkConsole->Printf("No game_autoexec.ini.ini found");
 }
+
+
 
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return true; }
@@ -75,7 +81,6 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 	return g_kGame.m_pkExamineMenu->DlgProc(wnd,msg,num,parms); 
 }
 
-
 void Game::Init()
 {
 	//setup some default variables
@@ -100,9 +105,7 @@ void Game::Init()
 	InitGui();
 	InitScript();
 	
-	//run autoexec script
-	if(!pkIni->ExecuteCommands("game_autoexec.ini"))
-		pkConsole->Printf("No game_autoexec.ini.ini found");
+
 }
 
 void Game::OnServerStart(void)
@@ -511,3 +514,5 @@ void Game::LockPlayerCamera(bool bTrue)
 	if(m_pkPlayerCtrl)
 		m_pkPlayerCtrl->m_bLockCameraRot = bTrue;
 }
+
+

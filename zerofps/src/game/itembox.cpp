@@ -352,3 +352,16 @@ void ItemBox::CreateStaticGrid()
 			s_iStaticGridIDCounter++;
 		}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
