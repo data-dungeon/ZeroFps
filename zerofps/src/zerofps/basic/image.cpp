@@ -295,7 +295,6 @@ bool Image::load_tga(FILE *fp)
 		}
 
 	if(head.id_length != 0) {
-		cout << "TGA: Hava ID data" << endl;
 		fseek(fp, head.id_length, SEEK_CUR);
 		}
 

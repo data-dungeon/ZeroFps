@@ -211,8 +211,6 @@ void Mad_Core::SetUpBindPose()
 {
 	Matrix4		kMadkBoneMatrix;					
 	
-	cout << "Setup bind pose" << endl;
-
 	unsigned int i;
 	Vector3 Angles;
 
@@ -237,7 +235,6 @@ void Mad_Core::SetUpBindPose()
 	}
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
-		cout << "Invert " << m_kSkelleton[i].m_acName << endl ;
 		m_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
 		//InversTransformMatrix(g_Madkbonetransform[i],g_MadkbonetransformI[i]);
 		}	
@@ -534,7 +531,7 @@ bool Mad_Core::Create(string MadFileName)
 
 //	fclose(MadFp);
 	kZFile.Close();
-	PrintCoreInfo();
+//	PrintCoreInfo();
 
 	if(m_kSkelleton.size() == 1) {
 		for(i=0; i<m_kMesh.size(); i++)

@@ -25,20 +25,19 @@ ZFResourceInfo::~ZFResourceInfo()
 ZFResourceHandle::ZFResourceHandle()
 {
 	m_iHandleID = g_iResourceHandleID ++;
-//	cout << "ZFResourceHandle::ZFResourceHandle: " << m_iHandleID << endl;
 	m_iID = -1;
 }
 
 ZFResourceHandle::~ZFResourceHandle()
 {
 	FreeRes();
-//	cout << "ZFResourceHandle::~ZFResourceHandle: " << m_iHandleID <<endl;
 }
 
 bool ZFResourceHandle::SetRes(string strName)
 {
 	FreeRes();
-	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
+	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::SetRes %d to  %s\n", m_iHandleID, strName.c_str());
+//	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
 
 	m_strName = strName;
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
@@ -88,8 +87,7 @@ ZFResourceDB::ZFResourceDB()
 	RegisterResource( string(".bmp"), Create__ResTexture	);
 
 	g_ZFObjSys.Register_Cmd("res_list",FID_LISTRES,this);
-	
-
+	g_ZFObjSys.Log_Create("resdb");
 }
 
 ZFResourceDB::~ZFResourceDB()
@@ -103,7 +101,7 @@ void ZFResourceDB::Refresh()
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
 		if((*it)->m_iNumOfUsers == 0) {
-			cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
+			g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
 			delete (*it);
 			it = m_kResources.erase(it);
 			}
@@ -165,21 +163,19 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 	// Create Res Class
 	ZFResource* pkRes = CreateResource(strResName);
 
-	// Failed to crate resource.
+	// Failed to create resource.
 	if(!pkRes) {
-		cout << "Failed to create resource " << strResName.c_str();
-		cout << "\n";
+		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
 		return;
 		}
 
 	//Mad_Core* pkCore = new Mad_Core;
 	if(pkRes->Create(strResName.c_str()) == false) {
-		cout << "Failed to Load Resource " << strResName.c_str();
-		cout << "\n";
+		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", strResName.c_str());
 		return;
 		}
 
-	cout << "ResDB: Loaded '" << strResName << "'" << endl;
+	g_ZFObjSys.Logf("resdb", "Resource %s loaded\n", strResName.c_str());
 
 	ZFResourceInfo* kResInfo = new ZFResourceInfo;
 	kResInfo->m_iID			= m_iNextID++;
@@ -198,14 +194,13 @@ void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 {
 	ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName);
 	if(pkRes == NULL) {
-		cout << "Handle with no valid resource "<< endl;
+		g_ZFObjSys.Logf("resdb", "FreeResource on non valid handle.\n", kResHandle.m_strName.c_str());
 		return;
 		}
 
 	pkRes->m_iNumOfUsers --;
 	kResHandle.m_iID = -1;
 	kResHandle.m_strName = "";
-	
 }
 
 ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)

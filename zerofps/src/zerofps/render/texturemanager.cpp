@@ -268,14 +268,10 @@ bool TextureManager::UnLoad(const char* acFileName)
 {
 	int iTexture;
 	iTexture = GetIndex(acFileName);
-	if(iTexture != NO_TEXTURE)
+	if(iTexture == NO_TEXTURE)
 		return false;
 
 	FreeTexture(m_iTextures[iTexture]);
-/*	glDeleteTextures(1, &m_iTextures[iTexture]->index);
-	delete m_iTextures[iTexture];
-	m_iTextures[iTexture] = NULL;*/
-
 	return true;
 }
 
@@ -285,10 +281,6 @@ bool TextureManager::UnLoad(int iTextureID)
 		return true;
 
 	FreeTexture(m_iTextures[iTextureID]);
-/*	glDeleteTextures(1, &m_iTextures[iTextureID]->index);
-	delete m_iTextures[iTextureID];
-	m_iTextures[iTextureID] = NULL;*/
-
 	return true;
 }
 
@@ -335,7 +327,7 @@ void TextureManager::BindTexture(int iTexture)
 	m_iCurrentTexture = NO_TEXTURE;
 
 	if(iTexture != m_iCurrentTexture){
-		m_iCurrentTexture=iTexture;
+		m_iCurrentTexture = iTexture;
 		glBindTexture(GL_TEXTURE_2D,m_iTextures[iTexture]->index);
 	}
 }

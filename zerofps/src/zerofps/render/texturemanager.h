@@ -46,15 +46,18 @@ class RENDER_API TextureManager : public ZFObject {
 	private:
 		enum FuncId_e
 		{
-			FID_LISTTEXTURES,
-			FID_FORCERELOAD,
+			FID_LISTTEXTURES,										// List all Textures to the console.
+			FID_FORCERELOAD,										// Reload all textures.
 			FID_TESTLOADER,
 			FID_UNLOAD,
 		};
 
+//		int					m_iCurrentTexture;				// TexMgr ID of Active Texture.
+//		vector<texture*>	m_iTextures;				
+//		vector<int>			m_iFreeIndex;
+
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
-
 		vector<int>			m_iFreeID;
 		texture*	GetFreeTexture();
 
