@@ -105,7 +105,7 @@ Tile* TileEngine::GetTile(int x,int y)
 		return &m_kTiles[(y*m_iSizeX) +x];
 	else
 	{
-		cout<<"get tile out of index "<< x << " " << y << endl;
+		//cout<<"get tile out of index "<< x << " " << y << endl;
 		return NULL;
 	}
 }
@@ -154,8 +154,8 @@ void TileEngine::RemoveUnit(int x,int y,int iID)
 	
 	if(t)
 		t->kUnits.remove(iID);
-	else
-		cout<<"Invalid tile when removing unit"<<endl;
+//	else
+//		cout<<"Invalid tile when removing unit"<<endl;
 
 }
 

@@ -445,7 +445,7 @@ void ZeroFps::MainLoop(void) {
 
 		Draw_EngineShell();
 //		m_kFpsGraph.DrawGraph(0,200);
-		m_pkNetWork->DrawConnectionGraphs();
+//		m_pkNetWork->DrawConnectionGraphs();
 
 	}
 }

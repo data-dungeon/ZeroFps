@@ -552,7 +552,7 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	int iType=-1;
 	
 	
-	if(iDepth == 16)
+	if(iDepth == 16 )
 	{
 		if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
 		{		
@@ -581,6 +581,24 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 		}
 	}
 	
+	if(iDepth == 24)
+	{
+		
+		if(iInternalFormat == GL_RGB)
+		{		
+			//ut<<"GL_RGB"<<endl;
+			
+			iFormat = GL_RGB;
+			iType = GL_UNSIGNED_BYTE;
+
+			rmask = 0x0000ff;
+			gmask = 0x00ff00;
+			bmask = 0xff0000;
+			amask = 0x000000;
+	
+		}
+	}
+
 	
 	if(iFormat == -1)
 	{
@@ -596,12 +614,13 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 		return NULL;
 	}
 	
-//	cout << "TextureManager::GetTexture: " glGetError(); << endl;
-//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+	//	cout << "TextureManager::GetTexture: " glGetError(); << endl;
+	//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	//download pixels from opengl
 	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
-//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+	
+	//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	return image;
 }
@@ -614,8 +633,21 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 	int iInternalFormat;
 	int iFormat=-1;
 	
+	int iDepth;
+	int iRSize;
+	int iGSize;	
+	int iBSize;	
+	int iASize;	
+	
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
-		
+	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_RED_SIZE,&iRSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_GREEN_SIZE,&iGSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_BLUE_SIZE,&iBSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_ALPHA_SIZE,&iASize);		
+	
+	iDepth = iRSize+iGSize+iBSize+iASize;
+
 		
 	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
 	{		
@@ -636,22 +668,47 @@ bool TextureManager::PutTexture(SDL_Surface* pkImage,bool bMipMaping)
 		return false;
 	}
 	
-	
 	if(bMipMaping)
 	{
-		//cout<<"rebuilding mipmaps"<<endl;	
-		if(iFormat == GL_RGB)
-			gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
-		if(iFormat == GL_RGBA)
-			gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
+		if(iDepth == 16)
+		{
+			//cout<<"rebuilding mipmaps"<<endl;	
+			if(iFormat == GL_RGB)
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
+			if(iFormat == GL_RGBA)
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
+		}
+		
+		if(iDepth == 24)
+		{
+			if(iFormat == GL_RGB)
+				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  					
+			if(iFormat == GL_RGBA)
+				cout<<"putting unsuported format GL_RGBA in 24bit depth"<<endl;
+				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
+		}
+		
 	}
 	else
 	{
-		//cout<<"no mipmaps"<<endl;		
-		if(iFormat == GL_RGB)
-			glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
-		if(iFormat == GL_RGBA)
-			glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  								
+		if(iDepth == 16)
+		{	
+			//cout<<"no mipmaps"<<endl;		
+			if(iFormat == GL_RGB)
+				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
+			if(iFormat == GL_RGBA)
+				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  								
+		}
+	
+		if(iDepth == 24)
+		{
+			if(iFormat == GL_RGB)
+				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  					
+			if(iFormat == GL_RGBA)
+				cout<<"putting unsuported format GL_RGBA in 24bit depth"<<endl;
+				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
+		}
+	
 	}
 	
 	return true;

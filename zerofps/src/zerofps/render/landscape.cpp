@@ -722,7 +722,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
 			
-			if(iFps<(m_iFpsLock-5) && m_iDetail>20){
+			if(iFps<(m_iFpsLock-5) && m_iDetail>15){
 				m_iDetail--;	
 			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
 				m_iDetail++;		
