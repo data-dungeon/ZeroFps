@@ -17,6 +17,8 @@ class MCOMMON_API ContainerInfo
 		int	m_iItemID;		
 		int	m_iItemX;
 		int	m_iItemY;		
+		int	m_iItemW;
+		int	m_iItemH;
 		
 		int	m_iType;
 };

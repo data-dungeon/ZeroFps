@@ -273,6 +273,9 @@ void DMContainer::GetItemList(vector<ContainerInfo>* pkItemList)
 				kTemp.m_iItemID = *it;
 				kTemp.m_iItemX = iX;
 				kTemp.m_iItemY = iY;
+				kTemp.m_iItemW = pkItem->m_iSizeX;
+				kTemp.m_iItemH = pkItem->m_iSizeY;
+				
 				kTemp.m_iType = pkItem->m_iType;
 				
 				pkItemList->push_back(kTemp);
