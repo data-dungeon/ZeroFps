@@ -18,8 +18,15 @@ namespace DMLua
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 
+	struct PATROL_POINTS
+	{
+		int m_iCurrent;
+		vector<Vector3> m_vkPoints;
+	};
+
 	extern map<string, double> m_kVars;
 	extern vector<int> m_kCallsForHelp;
+	extern map<int, PATROL_POINTS> m_kPatrolPoints;
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
 	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
@@ -85,6 +92,8 @@ namespace DMLua
 	int MCOMMON_API ClearPathFindLua(lua_State* pkLua);
 	int MCOMMON_API SetRunAnimLua(lua_State* pkLua);
 	int MCOMMON_API SetIdleAnimLua(lua_State* pkLua);
+	int MCOMMON_API AddPatrolPointLua(lua_State* pkLua);
+	int MCOMMON_API PatrolLua(lua_State* pkLua);
 
 	// math
 	int MCOMMON_API RandomLua(lua_State* pkLua);

@@ -1,5 +1,4 @@
 
-g_MechLife = -1
 
 function Create()
 	
@@ -19,6 +18,8 @@ end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
+	local life = GetCharStats(SIGetSelfID(), 0)
+	SetEntityVar(SIGetSelfID(), "g_MechLife", life)
 end
 
 function Init()
@@ -36,21 +37,20 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 
 	SetTeam (SIGetSelfID(), 1);
-
-	g_MechLifePrevHeartBeat = GetCharStats(SIGetSelfID(), 0)
 end
 
 function HeartBeat()
 
 	local Life = GetCharStats(SIGetSelfID(), 0)
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
 
 	-- Ropa på hjälp om han har blivit skadad igen.
-	if Life < g_MechLife then
+	if Life < prev_life then
 		CallForHelp(SIGetSelfID(), 1)
 		Print( "Mechanic call the cops!" )
 	end
 
-	g_MechLife = Life
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 
 	if HavePath(SIGetSelfID()) == 1 then
 		return

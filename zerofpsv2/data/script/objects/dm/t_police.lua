@@ -1,6 +1,4 @@
 
-g_HelpingCharacterID = -1
-
 function Create()
 	
 	InitObject();
@@ -37,6 +35,17 @@ end
 function FirstRun()
 
 	SISetHeartRate(SIGetSelfID(),1);
+
+	SetEntityVar(SIGetSelfID(), "g_HelpingCharacterID", -1)
+
+	local civilian_list = GetCharsByFraction(1)
+	local num_civilians = civilian_list[1]
+
+	for x = 2, num_civilians+1, 1
+	do
+		local civilian_pos = GetEntityPos(civilian_list[x])
+		AddPatrolPoint(SIGetSelfID(), civilian_pos)
+	end
 end
 
 function HeartBeat()
@@ -53,30 +62,32 @@ function HeartBeat()
 	-- Lyssna om någon ropar på hjälp
 	person_calling = GetClosestCaller(SIGetSelfID())
 
-	if person_calling > 0 and g_HelpingCharacterID == -1 then
+	HelpingCharacterID = GetEntityVar(SIGetSelfID(), "g_HelpingCharacterID")
+
+	if person_calling > 0 and HelpingCharacterID == -1 then
 
 		civilian_pos = GetEntityPos(person_calling)
 		police_pos = GetEntityPos(SIGetSelfID())
 		range = GetRangeBetween(civilian_pos, police_pos)
 
 		if range < 30 then
-			g_HelpingCharacterID = person_calling
-			Print( "Hearing person calling : ", g_HelpingCharacterID)
+			SetEntityVar(SIGetSelfID(), "g_HelpingCharacterID", person_calling)
+			Print( "Hearing person calling : ", person_calling)
 		else
 			--Print( "A person is calling for help, but thed istance to far, police dont hear call from person, range is: ", range)
 		end
 	end
 
 	-- Sök reda på personen i nöd.
-	if g_HelpingCharacterID > 0 then
+	if HelpingCharacterID > 0 then
 
-		civilian_pos = GetEntityPos(g_HelpingCharacterID)
+		civilian_pos = GetEntityPos(HelpingCharacterID)
 		police_pos = GetEntityPos(SIGetSelfID())
 		range = GetRangeBetween(civilian_pos, police_pos)
 
 		if range > 10 then -- Inte framme hos den som ropar?
 
-			Print( "Moving to person calling : ", g_HelpingCharacterID)
+			Print( "Moving to person calling : ", HelpingCharacterID)
 
 			if HavePath(SIGetSelfID()) == 1 then
 				return
@@ -86,10 +97,11 @@ function HeartBeat()
 
 		else -- Är framme hos den som ropar?
 
-			CallForHelp(g_HelpingCharacterID, -1) -- Säg till personen att sluta skrika (annars springer polisen till personen i nöd hela tiden)
+			CallForHelp(HelpingCharacterID, -1) -- Säg till personen att sluta skrika (annars springer polisen till personen i nöd hela tiden)
 
 			SetState(SIGetSelfID(),4) -- Get Aggro
-			g_HelpingCharacterID = -1 -- Don't run to that person anymore
+			HelpingCharacterID = -1 -- Don't run to that person anymore
+			SetEntityVar(SIGetSelfID(), "g_HelpingCharacterID", HelpingCharacterID)
 		end
 	end
 
@@ -119,7 +131,9 @@ function HeartBeat()
 				MakePathFind(SIGetSelfID(),agent_pos);
 			end
 		end
-	end	
+	else
+		Patrol(SIGetSelfID())
+	end
 
 	
 end
