@@ -33,20 +33,20 @@ void P_SuplyGiver::Update()
 
 
 	if(m_pkServerUnit && m_pkServerInfo)
-	{
 		if(m_pkFps->GetGameTime() - m_fTime >2)
 		{
 			m_fTime = m_pkFps->GetGameTime();
-		
+	
 			int team = int(m_pkServerUnit->m_kInfo.m_Info2.m_cTeam);
-			
+		
+			cout<<"TEAM:"<<team<<endl;
+		
 			if(team >= 0 && team <= 4)			
 				m_pkServerInfo->m_kSInfo.m_aiPlayerResourses[team] += m_iAmount;
 			else			
 				cout<<"Gods dont need money"<<endl;
-	
+
 		}
-	}
 }
 
 

@@ -1350,6 +1350,7 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_SuplyGiver", Create_P_SuplyGiver);
 	pkPropertyFactory->Register("P_UnitBuildAI", Create_P_UnitBuildAI);
 	pkPropertyFactory->Register("P_UnitAttackAI", Create_P_UnitAttackAI);
 	pkPropertyFactory->Register("P_UnitMoveAI", Create_P_UnitMoveAI);
