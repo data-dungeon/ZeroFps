@@ -84,7 +84,6 @@ class MistServer :public Application , public ZGuiApp
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		
-		PlayerDatabase*					m_pkPlayerDB;
 		bool									m_AcceptNewLogins;
 		bool									m_bStartMinimized;
 
@@ -101,13 +100,22 @@ class MistServer :public Application , public ZGuiApp
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);		
 		
-		void SayToClients(const string& strMsg,int iClientID = -2);		
 		void SendPlayerListToClient(int iClient);				
 		Vector3 GetPlayerStartPos();
-		
+
+		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
+		void SpawnPlayer(int iConID);	
+
+		void RegisterScriptFunctions();
+		void RegisterPropertys();
+		void RegisterResources();		
+
+						
 	public:
-		MistServer(char* aName,int iWidth,int iHeight,int iDepth);
-	 	
+		PlayerDatabase*	m_pkPlayerDB;				
+		
+		
+		MistServer(char* aName,int iWidth,int iHeight,int iDepth);	 	
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);
@@ -115,8 +123,6 @@ class MistServer :public Application , public ZGuiApp
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
-		void RegisterPropertys();
-		void RegisterResources();		
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);
@@ -124,8 +130,6 @@ class MistServer :public Application , public ZGuiApp
 		//init client
 		void ClientInit();
 		
-		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
-		void SpawnPlayer(int iConID);
 
 		//on client join, server runs this
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);
@@ -138,6 +142,15 @@ class MistServer :public Application , public ZGuiApp
 		bool ShutDown();
 		bool IsValid();
 
+		void SayToClients(const string& strMsg,int iClientID = -2);				
+		
+};
+
+
+//script interface for mistserver
+namespace SI_MistServer
+{
+	int SayToCharacterLua(lua_State* pkLua);
 };
 
 

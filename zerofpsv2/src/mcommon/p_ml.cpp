@@ -228,9 +228,7 @@ void Register_P_Ml(ZeroFps* pkZeroFps)
 
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("AddAction",	SI_P_Ml::AddActionLua);
-/*	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
-	g_pkScript->ExposeFunction("SetRotVel",	SI_PTcs::SetObjectRotVelLua);
-	g_pkScript->ExposeFunction("Bounce",		SI_PTcs::BounceLua);				*/
+
 }
 
 

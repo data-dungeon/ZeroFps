@@ -73,6 +73,19 @@ bool PlayerDatabase::LoginExist(string strLogin)
 	return true;
 }
 
+PlayerData* PlayerDatabase::GetPlayerDataByCharacterID(int iEntityID)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_iCharacterID == iEntityID)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;	
+}
+
 PlayerData*	PlayerDatabase::GetPlayerData(string	strPlayer)
 {
 	for(int i = 0 ;i<m_strActivePlayers.size();i++)

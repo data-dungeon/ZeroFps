@@ -25,6 +25,8 @@
 #include "../mcommon/zssmltime.h"
 
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+
+using namespace ObjectManagerLua;
  
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 Entity* pkEntTestArc;
@@ -48,6 +50,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	// Set Default values
 	m_AcceptNewLogins = true;
+
 
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
@@ -137,6 +140,9 @@ void MistServer::Init()
 	//enable debug graphics
 	m_pkZeroFps->SetDebugGraph(true);
 	
+	//register script functions
+	RegisterScriptFunctions();
+	
 	//register property bös
 	RegisterPropertys();
 
@@ -203,6 +209,10 @@ void MistServer::RegisterResources()
 	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
+void MistServer::RegisterScriptFunctions()
+{
+	g_pkScript->ExposeFunction("SayToCharacter",	SI_MistServer::SayToCharacterLua);
+}
 
 void MistServer::RegisterPropertys()
 {
@@ -1068,323 +1078,22 @@ Vector3 MistServer::GetPlayerStartPos()
 
 
 
-
-
-
-
-
-
-
-/*
-	Handle Server Orders, that is commands sent from clients to the server.
-*/			
-/*
-void MistServer::HandleOrders()
+//script interface for mistserver
+int SI_MistServer::SayToCharacterLua(lua_State* pkLua)
 {
-	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
 	
-	while(P_ClientControl::NrOfOrders() > 0 )
-	{
-		ClientOrder* order = P_ClientControl::GetNextOrder();	
-		
-		if(!CheckValidOrder(order))
-		{
-			cout << "Bad order from:" << order->m_iClientID << endl;
-			P_ClientControl::PopOrder();
-			continue;
-		}
-		
-		cout << "handling order "<<order->m_sOrderName<<" from client:" << order->m_iClientID << endl;
-		
-		// Edit Order
-		cout << order->m_sOrderName.c_str() << endl;
+	int id;
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	id = (int)dTemp;
 
-		// Character Command
-		if(strncmp(order->m_sOrderName.c_str(),"CC",2) == 0) {
-			HSO_Character(order);
-			}
-		
-		// OLD UNFIXED ORDERS BELOW.
-		//handle input messages from client
-		else if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
-		{
-			order->m_sOrderName.erase(0,4);
-			string playername=""; 
-			string message="";
-					
-			unsigned int pos=0;
-			
-			if(strncmp(order->m_sOrderName.c_str(),"/w",2)==0)
-			{
-				for(pos=3;pos<order->m_sOrderName.size();pos++)
-				{
-					if(order->m_sOrderName[pos] == ' ' && playername.size()>0)
-						break;
-					playername+=order->m_sOrderName[pos];
-				}
-			}
-			
-			for(;pos<order->m_sOrderName.size();pos++)
-			{	
-				message+=order->m_sOrderName[pos];
-			}
-			 
-			//cout<<"got message to "<<playername<<": "<<message<<endl;
-			
-			if(m_pkServerInfoP)
-			{
-				PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(order->m_iClientID);
-				
-				if(pi)
-				{
-					message = pi->sPlayerName + " : " + message;
-				
-				}
-				
-				if(playername == "")
-					m_pkServerInfoP->MessagePlayer(-1,message);
-				else
-					m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
-			}
-		}
-		else if(strncmp(order->m_sOrderName.c_str(),"G_",2)==0)
-		{
-			cout<<"Got ground click order"<<endl;
-		
-			Entity* ob = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);			
-		
-			if(ob)
-			{
-				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
-				if(pe)
-					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
-			}					
-		}
-      
-      // equip
-      else if ( order->m_sOrderName == "equip" )
-      {
-   		Entity* pkChar = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);
-
-         if ( pkChar )
-         {
-            // get item to equip
-            Entity* pkItem = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-
-            CharacterProperty* pkCP = (CharacterProperty*)pkChar->GetProperty ("P_CharStats");
-            P_Item* pkIP = (P_Item*)pkItem->GetProperty("P_Item");
-
-            if ( pkIP && pkCP )
-               pkCP->GetCharStats()->Equip( pkItem, order->m_iUseLess );              
-         }
-      }
-
-	  // request orders
-      else if ( order->m_sOrderName == "(rq)item" )    
-      {
-   		Entity* pkItemObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkItemObject )
-         {
-            P_Item *pkItProp = (P_Item*) pkItemObject->GetProperty("P_Item");
-            
-            if ( pkItProp )
-            {
-               // if the items is of the same version, no need to send data
-                 if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
-                 {
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "itemdata";
-                  
-                     pkItProp->AddSendsData ( kSendType );
-                 }
-
-            }
-            else
-               cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }
-      
-      // container request
-      else if ( order->m_sOrderName == "(rq)cont" )
-      {
-         cout << "Sever hgot cont req" << endl;
-
-   		Entity* pkObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-         
-         if ( pkObject )
-         {
-
-            P_Container* pkC = (P_Container*) pkObject->GetProperty("P_Container");
-
-            if ( pkC )
-            {
-               // check versions...
-               //if ( pkC->m_uiVersion != order->m_iUseLess )
-                  pkC->AddSendsData(order->m_iClientID);
-            }            
-            else
-               cout << "Error! Non-P_Container requested for updated containerinfo!" << endl;
-         }
-      }
-      // request character skills
-      else if ( order->m_sOrderName == "(rq)skil" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-                 //if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )
-                 //{
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "skills";
-                  
-                     pkCP->AddSendsData ( kSendType );
-                 //}
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      } 
-      // request character data
-      else if ( order->m_sOrderName == "(rq)cdat" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-               //  if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )
-               //  {
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "data";
-                  
-                     pkCP->AddSendsData ( kSendType );
-               //  }
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }  
-      // request character skills
-      else if ( order->m_sOrderName == "(rq)attr" )
-      {
-           // type of request
-   		Entity* pkCharObject = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-
-         if ( pkCharObject  )
-         {
-            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
-            
-            if ( pkCP )
-            {
-               // if the items is of the same version, no need to send data
-                 //if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
-                 //{
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "attributes";
-                  
-                     pkCP->AddSendsData ( kSendType );
-                 //}
-
-            }
-            else
-               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
-         }
-      }  
-
-
-      // drop item from inventory to ground
-      else if ( order->m_sOrderName == "DropItem" )
-      {
-         Entity* pkEntity = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-         Entity* pkPlayer = m_pkEntityManager->GetObjectByNetWorkID(order->m_iCharacter);
-
-         if ( pkEntity && pkPlayer )
-         {
-            pkEntity->SetUpdateStatus (UPDATE_ALL);
-            pkEntity->GetParent()->RemoveChild (pkEntity);
-
-            pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
-
-            ((P_Container*)pkPlayer->GetProperty("P_Container"))->RemoveObject(order->m_iObjectID);         
-         }
-
-         if ( !pkEntity )
-            cout << "Error! Client wanted to drop a non-existing item!" << endl;
-      }  
-		
-		//normal orders
-		else if(order->m_iObjectID != -1)
-		{
-			Entity* ob = m_pkEntityManager->GetObjectByNetWorkID(order->m_iObjectID);
-			if(ob)
-			{
-			
-				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
-				if(pe)
-				{	
-					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCharacter);				
-				
-				}			
-			}
-		}
-		else
-		{
-			cout<<"CLICK"<<endl;
-
-		
-		}
-		
-		
-		P_ClientControl::PopOrder();
-	} 
-}
-
-bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
-{
-	if(pkOrder->m_iCharacter == -1)
-		return true;
-		
-	if(m_pkServerInfoP)
-	{
-		if(pkOrder->m_iCharacter  == m_pkServerInfoP->GetCharacterID(pkOrder->m_iClientID))
-			return true;
-		
-/*	
-		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(pkOrder->m_iClientID);
-		
-		if(pi)
-		{
-			for(unsigned int i = 0;i<pi->kControl.size();i++)
-			{
-				//found objectID
-				if(pi->kControl[i].first == pkOrder->m_iCharacter)
-					if(pi->kControl[i].second & PR_CONTROLS)
-						return true;				
-			}
-		}
-*		
-	}
+	char	acMessage[256];
+	g_pkScript->GetArgString(pkLua, 1, acMessage);		
 	
-	return false;
+	if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
+		g_kMistServer.SayToClients(acMessage,pkData->m_iConnectionID);
+		
+	return 0;
 }
-*/
-

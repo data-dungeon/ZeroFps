@@ -74,6 +74,7 @@ class PlayerDatabase
 		void Logout(string strPlayer);
 		bool IsOnline(string strLogin);
 
+		PlayerData*	GetPlayerDataByCharacterID(int iEntityID);
 		PlayerData*	GetPlayerData(string	strPlayer);
 		PlayerData* GetPlayerData(int iConnection);
 		
