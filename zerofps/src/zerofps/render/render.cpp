@@ -115,6 +115,41 @@ void Render::PrintChar(char cChar) {
 	glPopAttrib();
 }
 
+void Render::PrintChar2(char cChar)
+{
+	int texwidth	=	FONTWIDTH*16;	
+	int pos			=	int(cChar)*FONTWIDTH;		
+	float glu		=	1.0/texwidth;				//opengl texture cordinats is 0-1
+	float width		=	glu*FONTWIDTH;
+	
+	float y	=	(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
+	float x	=	float(pos%texwidth)*glu;//+width/2;
+
+ 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+
+	int iFontSize = 8;
+/*
+	if(glIsEnabled(GL_LIGHTING))
+		cout << "Horrrrrrrrrrraa " << endl;
+	glDisable(GL_LIGHT0);	
+	glDisable(GL_LIGHT1);	
+	glDisable(GL_LIGHT2);	
+	glDisable(GL_LIGHT3);	
+	glDisable(GL_LIGHT4);	
+	glDisable(GL_LIGHT5);	
+	glDisable(GL_LIGHT6);	
+	glDisable(GL_LIGHT7);	*/	
+
+	glBegin(GL_QUADS);		
+		glNormal3f(0,0,1);
+ 	  
+		glTexCoord2f(x,y);				glVertex3f(0,0,0);		 
+		glTexCoord2f(x+width,y);		glVertex3f(iFontSize,0,0);		
+		glTexCoord2f(x+width,y-width);glVertex3f(iFontSize,iFontSize,0);    
+		glTexCoord2f(x,y-width);		glVertex3f(0,iFontSize,0);    
+	glEnd();				
+}
+
 void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	char paText[TEXT_MAX_LENGHT];
 	
@@ -132,6 +167,25 @@ void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 		while(paText[i]!='\0') {
 			PrintChar(paText[i]);
 			glTranslatef(1,0,0);
+		
+			i++;
+		}
+
+	glPopMatrix();
+}
+
+void Render::Print2(Vector3 kPos,char* aText) {
+	char paText[TEXT_MAX_LENGHT];
+	
+	strcpy(paText,aText);
+	
+	glPushMatrix();
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+		
+		int i=0;
+		while(paText[i]!='\0') {
+			PrintChar2(paText[i]);
+			glTranslatef(8,0,0);
 		
 			i++;
 		}
@@ -170,33 +224,51 @@ void Render::Dot(float x,float y,float z) {
 
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
 {
-	SetFont("file:../data/textures/text/console.tga");
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, 1024, 0, 768);
 
-	glEnable(GL_BLEND);	
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(GL_FALSE);	
-		
-	Quad(Vector3(0,0,-.5),Vector3(0,0,0),Vector3(1.2,.9,1),
-		m_pkTexMan->Load("file:../data/textures/background.tga",0));
-	
-	glDepthMask(GL_TRUE);
-	glDisable(GL_BLEND);
-	
-	Print(Vector3(-.65,-.5,-.6),Vector3(0,0,0),Vector3(.04,.04,.04),m_aCommand);		
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	SetFont("file:../data/textures/text/devstr.bmp");
+
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	glDisable(		GL_BLEND						);
+	glDisable(		GL_LIGHTING					);
+	glDisable(		GL_ALPHA_TEST				);
+	glDepthMask(	GL_FALSE						);	
+	glDisable(		GL_CULL_FACE				);
+	glDisable(		GL_COLOR_MATERIAL 		);
+	glDisable(		GL_FOG);
+
+	Print2(Vector3(8,8,0),m_aCommand);		
 	
 	if(iStartLine < 0)
 		iStartLine = 0;
 	
-	for(int i=iStartLine;i<iStartLine+23;i++) 
+	int iEndLine = iStartLine + 93;
+	if(iEndLine >= (*m_kText).size())
+		iEndLine = (*m_kText).size();
+
+	for(int i=iStartLine;	i<iEndLine;	i++) 
 	{
-		if((*m_kText)[i]!=NULL)
+		if((*m_kText)[i] != NULL)
 		{
-			Print(Vector3(-0.65,-0.40+(i-iStartLine)/(float)25,-.6),
-				Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);
+			Print2(Vector3(8, 16 + 8 * i,0),(*m_kText)[i]);		
 		}
 	}
-}
+	
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
 
+	glPopAttrib();
+}
 
 void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) {
 	fSize/=2;

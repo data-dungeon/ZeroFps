@@ -18,12 +18,14 @@
 
 ResTexture::ResTexture()
 {
+	m_iTextureID = -1;
 
 }
 
 ResTexture::~ResTexture()
 {
-
+	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	pkTex->UnLoad(m_iTextureID);
 }
 
 

@@ -18,6 +18,7 @@ TextureManager::TextureManager(FileIo* pkFile)
 	g_ZFObjSys.Register_Cmd("t_list",FID_LISTTEXTURES,this);
 	g_ZFObjSys.Register_Cmd("t_reload",FID_FORCERELOAD,this);
 	g_ZFObjSys.Register_Cmd("t_testload",FID_TESTLOADER,this);
+	g_ZFObjSys.Register_Cmd("t_unload",FID_UNLOAD,this);
 }	
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
@@ -39,8 +40,38 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 	}
 }
 
+texture*	TextureManager::GetFreeTexture()
+{
+	int iTexID;
+	texture* pkTex;
 
-bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {	
+	if(m_iFreeID.size() > 0) {
+		iTexID = m_iFreeID[m_iFreeID.size() - 1];
+		m_iFreeID.pop_back();
+		pkTex = new texture;
+		m_iTextures[ iTexID ] = pkTex;
+		pkTex->TexID = iTexID;
+		}
+	else {
+		pkTex = new texture;
+		m_iTextures.push_back(pkTex);
+		pkTex->TexID = m_iTextures.size() - 1;
+		}
+
+	return pkTex;
+}
+
+void TextureManager::FreeTexture(texture* pkTex)
+{
+	glDeleteTextures(1, &pkTex->index);
+	m_iTextures[pkTex->TexID] = NULL;
+	m_iFreeID.push_back(pkTex->TexID);
+	delete pkTex;
+}
+
+
+bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) 
+{	
 	GLint iInternalFormat	=	GL_RGB;
 	GLint iFormat				=	GL_RGB;
 	GLint iType					=	GL_UNSIGNED_BYTE;
@@ -240,8 +271,25 @@ bool TextureManager::UnLoad(const char* acFileName)
 	if(iTexture != NO_TEXTURE)
 		return false;
 
+	FreeTexture(m_iTextures[iTexture]);
+/*	glDeleteTextures(1, &m_iTextures[iTexture]->index);
+	delete m_iTextures[iTexture];
+	m_iTextures[iTexture] = NULL;*/
+
 	return true;
-	
+}
+
+bool TextureManager::UnLoad(int iTextureID)
+{
+	if(m_iTextures[iTextureID] == NULL)
+		return true;
+
+	FreeTexture(m_iTextures[iTextureID]);
+/*	glDeleteTextures(1, &m_iTextures[iTextureID]->index);
+	delete m_iTextures[iTextureID];
+	m_iTextures[iTextureID] = NULL;*/
+
+	return true;
 }
 
 int TextureManager::Load(const char* acFileName,int iOption)
@@ -250,10 +298,11 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	iTexture = GetIndex(acFileName);
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
+
 	cout << "Load Texture: "<<  acFileName << endl;
 	
 	//else load it
-	texture *temp = new texture;
+	texture *temp = GetFreeTexture();
 	temp->file=acFileName;
 	
 	// If texture can't be loaded, Load error texture.
@@ -268,16 +317,21 @@ int TextureManager::Load(const char* acFileName,int iOption)
 		}
 	}
 	//add the texture to the loaded textures vector
-	m_iTextures.push_back(temp);
+//	m_iTextures.push_back(temp);
 	
 //	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
 	
 	//return our new texture index
 //	return m_iTextures.back()->index;
-	return m_iTextures.size() - 1;
+//	return m_iTextures.size() - 1;
+	return temp->TexID;
 }
 
-void TextureManager::BindTexture(int iTexture) {
+void TextureManager::BindTexture(int iTexture) 
+{
+	if(m_iTextures[iTexture] == NULL)
+		return;
+
 	m_iCurrentTexture = NO_TEXTURE;
 
 	if(iTexture != m_iCurrentTexture){
@@ -286,7 +340,8 @@ void TextureManager::BindTexture(int iTexture) {
 	}
 }
 
-void TextureManager::BindTexture(const char* acFileName,int iOption) {
+void TextureManager::BindTexture(const char* acFileName,int iOption) 
+{
 	int iTexture=Load(acFileName,iOption);
 	m_iCurrentTexture = NO_TEXTURE;
 	BindTexture(iTexture);
@@ -301,24 +356,19 @@ void TextureManager::ClearAll()
 	}
 
 	m_iTextures.clear();
+	m_iFreeID.clear();
 }
 
 int TextureManager::GetIndex(const char* szFileName)
 {
-/*	
-	for(list<texture*>::iterator it=m_iTextures.begin();it!=m_iTextures.end();it++)
-	{
-		if((*it)->file == szFileName) {
-			return i;		
-	}
-*/	
-
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
+		if(m_iTextures[i] == NULL)
+			continue;
+		
 		if(m_iTextures[i]->file == szFileName) {
 			return i;		
 		}		
 	}
-
 
 	return NO_TEXTURE;
 }
@@ -326,8 +376,11 @@ int TextureManager::GetIndex(const char* szFileName)
 const char* TextureManager::GetFileName(unsigned int uiIndex)
 {
     for(unsigned int i=0; i<m_iTextures.size(); i++){
-        if(m_iTextures[i]->index == uiIndex+1) { // måste lägga till 1!
-            return m_iTextures[i]->file.c_str();        
+		if(m_iTextures[i] == NULL)
+			continue;
+
+		if(m_iTextures[i]->index == uiIndex+1) { // måste lägga till 1!
+			return m_iTextures[i]->file.c_str();        
         }        
 	}
 
@@ -340,7 +393,10 @@ void TextureManager::ListTextures(void)
 
 	pkConsole->Printf("Texture Dump");
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
-		pkConsole->Printf("[%d]: %s", i, m_iTextures[i]->file.c_str());
+		if(m_iTextures[i] == NULL)
+			pkConsole->Printf("[%d]: %s", i, "NULL");
+		else
+			pkConsole->Printf("[%d]: %s", i, m_iTextures[i]->file.c_str());
 	}
 }
 
@@ -351,6 +407,9 @@ void TextureManager::ReloadAll(void)
 
 	pkConsole->Printf("Texture Force Reload");
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
+		if(m_iTextures[i] == NULL)
+			continue;
+
 		pkTex = m_iTextures[i];
 		
 		// Free Old Texture Object.
@@ -704,6 +763,9 @@ bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
 
 SDL_Surface* TextureManager::GetImage()
 {
+	if(!m_iTextures[m_iCurrentTexture])
+		return NULL;
+
 	return m_iTextures[m_iCurrentTexture]->m_pkImage;
 }
 
@@ -810,9 +872,13 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 { 
 	switch(cmdid) {
-		case FID_LISTTEXTURES:	ListTextures();	break;
-		case FID_FORCERELOAD:	ReloadAll();	break;
-		case FID_TESTLOADER:	Debug_TestTexturesLoader();	break;
+		case FID_LISTTEXTURES:	ListTextures();					break;
+		case FID_FORCERELOAD:	ReloadAll();						break;
+		case FID_TESTLOADER:		Debug_TestTexturesLoader();	break;
+		
+		case FID_UNLOAD:			
+			UnLoad(atoi(kCommand->m_kSplitCommand[1].c_str()));	
+			break;
 		
 
 	};

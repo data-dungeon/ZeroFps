@@ -68,7 +68,9 @@ class RENDER_API Render : public ZFObject {
 		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
 		
 		void PrintChar(char cChar);
+		void PrintChar2(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
+		void Print2(Vector3 kPos, char* aText);
 		void SetFont(char* aFont);
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
