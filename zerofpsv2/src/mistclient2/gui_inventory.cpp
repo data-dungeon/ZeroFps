@@ -416,6 +416,8 @@ void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int m
 	m_kItemWndPosBeforeMove.x = (*pkVector)[iSlotIndex].pkWnd->GetWndRect().Left;
 	m_kItemWndPosBeforeMove.y = (*pkVector)[iSlotIndex].pkWnd->GetWndRect().Top;
 
+	g_kMistClient.m_pkEquipmentDlg->HighlightSlot( (*pkVector)[iSlotIndex].iItemType );
+
 	m_kMoveSlot.bIsInventoryItem = bInventory;
 	m_kMoveSlot.m_iIndex = iSlotIndex; // select new item
 
@@ -626,6 +628,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
+		kNewSlot.iItemType = vkItemList[i].m_cItemType;
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		m_vkInventoryItemList.push_back(kNewSlot);
 
@@ -683,13 +686,13 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
+		kNewSlot.iItemType = vkItemList[i].m_cItemType;
 		m_vkContainerItemList.push_back(kNewSlot);
 
 		//SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
 		//	m_pkContainerWnd->IsVisible()));
 
 		SetSelectionBorder(i, false, true);
-
 	}
 
 	m_pkContainerWnd->SortChilds();
@@ -698,6 +701,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 // When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem(int mx, int my)
 {
+	g_kMistClient.m_pkEquipmentDlg->HighlightSlot( NULL );
+
 	vector<ITEM_SLOT>* pkVector;
 	int iTarget = -1, iSlotX = -1, iSlotY = -1, iItemID = -1;
 

@@ -35,6 +35,7 @@ public:
 	
 	int GetSlotType(int mx, int my);
 	int GetSlotContainerID(int mx, int my);
+	void HighlightSlot(int iContainerType);
 		
 private:
 
@@ -98,6 +99,7 @@ private:
 	EQUIPMENT_SLOT m_kBoots;
 
 	EQUIPMENT_SLOT* m_pkMoveSlot; 
+	EQUIPMENT_SLOT* m_pkHighLightslot; 
 };
 
 #endif // _GUI_EQUIPMENTDLG_H_

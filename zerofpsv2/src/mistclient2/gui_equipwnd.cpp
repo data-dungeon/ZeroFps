@@ -69,6 +69,7 @@ EquipmentDlg::EquipmentDlg()
 {
 	m_pkMainWnd = NULL;
 	m_pkMoveSlot = NULL;
+	m_pkHighLightslot = NULL;
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
 	m_bSkillWndOpen = false;
 	m_bStatsWndOpen = false;
@@ -207,6 +208,29 @@ void EquipmentDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	}
 }
 
+void EquipmentDlg::HighlightSlot(int iContainerType)
+{
+	if(m_pkMainWnd == NULL)
+		return;
+
+	EQUIPMENT_SLOT* pSlot;
+	GetEquipmentSlotFromContainerType(iContainerType, pSlot);
+
+	if(m_pkHighLightslot)
+	{
+		m_pkHighLightslot->m_pkWnd->GetSkin()->m_unBorderSize = 0;  
+	}
+
+	m_pkHighLightslot = NULL;
+
+	if(pSlot != NULL)
+	{
+		m_pkHighLightslot = pSlot;
+		m_pkHighLightslot->m_pkWnd->Show();
+		pSlot->m_pkWnd->GetSkin()->m_unBorderSize = 4;  
+	}
+}
+
 EquipmentDlg::EQUIPMENT_SLOT* EquipmentDlg::GetSlot(int mx, int my)
 {
 	if(m_pkMainWnd == NULL)
@@ -334,6 +358,7 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 			RescaleSlotIcon((*pSlot), (*pSlot).m_iSlotsW, (*pSlot).m_iSlotsH);
 		}
 	}
+
 }
 
 void EquipmentDlg::RescaleSlotIcon(EQUIPMENT_SLOT& r_kSlot, int iSlotsX, int iSlotsY)

@@ -67,6 +67,7 @@ private:
 		ZGuiWnd* pkWnd;
 		int iItemID;
 		bool bIsContainer;
+		int iItemType;
 		int iStackSize;
 	};
 
