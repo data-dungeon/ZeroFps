@@ -61,12 +61,12 @@ public:
 	void Clear();
 
 	// Stats
-	int				m_iNumOfPacketsSent;
-	int				m_iNumOfPacketsRecv;
-	unsigned int	m_iNumOfBytesSent;
-	unsigned int	m_iNumOfBytesRecv;
+	int				m_iNumOfPacketsSent;				// Total num of packets sent (Any type).
+	int				m_iNumOfPacketsRecv;				// Total num of packets recv (Any type).
+	unsigned int	m_iNumOfBytesSent;				// Total num of bytes sent.
+	unsigned int	m_iNumOfBytesRecv;				// Total num of bytes recv
 	
-	int				m_iNumOfBytesRecvNetFrame;
+	int				m_iNumOfBytesRecvNetFrame;		
 
 	float				m_fLastMessageTime;				// Time (Engine) of last message. Use to find time outs.
 	float				m_fPing;								// Ping 
@@ -79,7 +79,7 @@ public:
 	int				m_iOutOfOrderNetFrame;
 
 	int				m_iLastRecvPacket;				// Order num of last recv packet.
-
+	
 	deque<ZFNetPacketData>	m_RelPackages;
 };
 

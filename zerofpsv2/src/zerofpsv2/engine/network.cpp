@@ -370,6 +370,15 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 		assert(0);
 
 	// Update order num of package.
+	if(pkNetPacket->m_iClientID != ZF_NET_NOCLIENT) {
+		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[ pkNetPacket->m_iClientID ].m_iNumOfPacketsSent;
+		m_RemoteNodes[pkNetPacket->m_iClientID].m_iNumOfPacketsSent ++;
+		m_RemoteNodes[pkNetPacket->m_iClientID].m_iNumOfBytesSent += pkNetPacket->m_iLength;
+		
+		//m_RemoteNodes[pkNetPacket->m_iClientID].m_RelPackages.push_back( pkNetPacket->m_kData );
+		//m_RemoteNodes[pkNetPacket->m_iClientID].m_RelPackages.pop_back( );
+
+		}
 
 	// Send it.
 	UDPpacket kPacket;
@@ -380,14 +389,6 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 	kPacket.address	= pkNetPacket->m_kAddress;
 
 	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
-
-	// Update stats.
-	int iClientID;
-	iClientID = GetClientNumber(&pkNetPacket->m_kAddress);
-	if(iClientID != ZF_NET_NOCLIENT) {
-		m_RemoteNodes[iClientID].m_iNumOfPacketsSent ++;
-		m_RemoteNodes[iClientID].m_iNumOfBytesSent += pkNetPacket->m_iLength;
-		}
 
 	return true;
 }
@@ -402,7 +403,6 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 			
 			pkNetPacket->m_iClientID = pkNetPacket->m_iTargetClients[i];
 			pkNetPacket->m_kAddress = m_RemoteNodes[ pkNetPacket->m_iClientID ].m_kAddress;
-			pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[ pkNetPacket->m_iClientID ].m_iNumOfPacketsSent;
 
 			SendRaw(pkNetPacket);
 			}

@@ -58,8 +58,10 @@ void RemoteNode::SetAddress(IPaddress* pkAddress)
 
 NetPacket::NetPacket()
 {
-	m_iLength = 0;
-	m_iPos = 0;
+	m_iLength	= 0;
+	m_iPos		= 0;
+	m_iClientID = ZF_NET_NOCLIENT;
+
 }
 
 NetPacket::~NetPacket()
