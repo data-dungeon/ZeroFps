@@ -83,6 +83,7 @@ public:
 	string		m_strName;			// Name of player.
 	Entity*		m_pkObject;			// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
+	set<int>	m_iUnloadZones;		// Activated Zones.	
 };
 
 /** \brief	Main class for the ZeroFps engine. 

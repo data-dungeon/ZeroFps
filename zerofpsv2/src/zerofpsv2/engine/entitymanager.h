@@ -28,6 +28,7 @@ public:
 	bool					m_bUnderContruction;	
 	unsigned int		m_iRevision;		
 	Entity*				m_pkZone;
+	int					m_iZoneObjectID;
 	int					m_iZoneID;
 	Vector3				m_kPos;
 	Vector3				m_kSize;

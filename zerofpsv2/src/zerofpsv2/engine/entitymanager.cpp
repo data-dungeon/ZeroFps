@@ -36,6 +36,7 @@ ZoneData::ZoneData()
 
 	m_fInactiveTime = 0;
 	m_bActive = false;
+	m_iZoneObjectID = -1;
 	m_iRange = 0;		
 	m_fDistance = 0;	
 	m_bUnderContruction = false;
@@ -793,29 +794,18 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 {
-	//cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
+	//if(iZones.size() != 0)
+	//	cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
 		
-	int iNetID;
-
-	//NetPacket NP;
-	//NP.Clear();
-	//NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	m_OutNP.Write((char) ZFGP_ZONELIST);
+
 
 	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) 
 	{
-		int iZoneID = (*itActiveZone);
-		iNetID = m_kZones[iZoneID].m_pkZone->iNetWorkID;
-
-		m_OutNP.Write(iNetID);
+		m_OutNP.Write(m_kZones[ (*itActiveZone) ].m_iZoneObjectID);
 	}
-
-		
+	
 	m_OutNP.Write(-1);
-	//NP.Write(ZFGP_ENDOFPACKET);
-	//NP.TargetSetClient(iClient);
-	//m_pkNetWork->Send2(&NP);
-
 }
 
 bool IsInsideVector(int iVal, vector<int>& iArray)
@@ -837,11 +827,27 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 	int iZoneID;
 
 	pkNetPacket->Read(iZoneID);
-	while(iZoneID != -1) {
+	while(iZoneID != -1) 
+	{
 		kZones.push_back(iZoneID);
 		pkNetPacket->Read(iZoneID);
-		}
+	}
 
+	//dvoids was here ;)
+	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) 
+	{
+		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
+		
+		if(IsInsideVector(iLocalZoneID, kZones)) 
+		{
+			Delete(m_pkZoneObject->m_akChilds[i]);
+			//cout << "Removing Zone: " << iLocalZoneID << endl;
+		}
+	}
+
+
+
+/*
 //	LOGSIZE("EntityManager::ZoneList", kZones.size() * 4 + 4);
 
 
@@ -867,7 +873,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 //				printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
 				return;
 				}
-		}
+		}*/
 }
 
 
@@ -902,14 +908,27 @@ void EntityManager::PackToClients()
 
 	// Clear Active Zones for clients.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++)
+	{
 		m_pkZeroFps->m_kClient[iClient].m_iActiveZones.clear();
+		m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.clear();		
+	}
 	
 	// Refresh list of active Zones for each client.
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {		
+	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	{		
 		if((*iT)->m_iConnectID != -1)
-				m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_iActiveZones.insert(
-					(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end());
-		}		
+		{
+			//setup active zones list
+			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_iActiveZones = (*iT)->m_iActiveZones;			
+					
+			//setup unload zones list
+			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_iUnloadZones = (*iT)->m_iUnloadZones;
+					
+			//when object has been sent , reset list in tracker	
+			(*iT)->m_iUnloadZones.clear();					
+					
+		}
+	}		
 
 
 	// Client Network send.
@@ -935,13 +954,9 @@ void EntityManager::PackToClients()
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 		m_OutNP.TargetSetClient(iClient);
 
-		// Get Ptr to clients tracker.
-		//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
-
-		// Pack And Sent Active Zones to client
-		//PackZoneListToClient(iClient, pkTrack);
-		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
-
+		// Pack And Send unload list to client
+		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iUnloadZones);		
+//		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
 
 		//send all tracked object first =)
 		kObjects.clear();	
@@ -1762,6 +1777,13 @@ void EntityManager::UpdateZones()
 		(*iT)->m_iNewActiveZones.clear();
 		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
 		
+		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
+		if((*iT)->m_iConnectID != -1)
+			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
+		
+		//if((*iT)->m_iNewActiveZones.size() != 0) cout<<"loaded:"<<(*iT)->m_iNewActiveZones.size()<<endl;
+		//if((*iT)->m_iUnloadZones.size() != 0) cout<<"unloaded:"<<(*iT)->m_iUnloadZones.size()<<endl;
+				
 		//save new active zones in tracker
 		(*iT)->m_iActiveZones = kNewActiveZones;
 	}
@@ -1886,6 +1908,7 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_bUnderContruction = false;
 	m_kZones[id].m_iRevision = 0;
 	m_kZones[id].m_strEnviroment = "Default";
+	m_kZones[id].m_iZoneObjectID = -1;	
 	
 	UpdateZoneLinks(id);
 	
@@ -2098,18 +2121,24 @@ void EntityManager::LoadZone(int iId)
 		//SetZoneModel("data/mad/zones/emptyzone.mad",iId);
 		SetZoneModel("",iId);		
 
+/*		
 		//add static entity
 		Entity* staticentity = CreateObject();
 		staticentity->SetName("StaticEntity");
 		staticentity->SetParent(kZData->m_pkZone);
 		staticentity->GetObjectType() = OBJECT_TYPE_STATIC;
+*/		
 
-
+		//set objectid in zonedata (sent to client when unloading
+		kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
 
 		return;
 	}
 	
 	kZData->m_pkZone->Load(&kFile);
+	
+	//set objectid in zonedata (sent to client when unloading
+	kZData->m_iZoneObjectID = kZData->m_pkZone->iNetWorkID;
 	
 	kFile.Close();
 	
