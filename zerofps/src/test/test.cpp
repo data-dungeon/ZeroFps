@@ -112,6 +112,16 @@ void Test::OnInit(void) {
 	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,400);	
 	cam2->SetViewPort(0.7,0.7,0.29,0.29);
 
+	//camera rabit
+	Object *sussi = new BunnyObject();
+	float x=300 + rand()%100;
+	float y=750 + rand()%100;
+	sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+	sussi->AddProperty(new CameraProperty(cam2));
+	pkObjectMan->Add(sussi);
+	pkCollisionMan->Add(sussi);
+
+	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos()=Vector3(300,25,785);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
@@ -140,7 +150,6 @@ void Test::OnServerStart(void)
 		float x=300 + rand()%100;
 		float y=750 + rand()%100;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
-		sussi->AddProperty(new CameraProperty(cam2));
 		
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
