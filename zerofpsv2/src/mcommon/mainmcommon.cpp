@@ -24,7 +24,7 @@
 #include "p_dmmission.h"
 #include "p_dmshop.h"
 */
-#include "p_spell.h"
+
 
 
 void MCommon_RegisterResources() { }
@@ -56,7 +56,7 @@ void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFa
 	pkPropertyFactory->Register("P_ServerInfo",			Create_P_ServerInfo);
 	pkPropertyFactory->Register("P_ShadowBlob",			Create_P_ShadowBlob);
 	pkPropertyFactory->Register("P_Spawn",					Create_P_Spawn);
-	pkPropertyFactory->Register("P_Spell",					Create_P_Spell);
+
 
 	cout << "Registred MCommon property" << endl;
 }

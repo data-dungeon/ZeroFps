@@ -1,6 +1,4 @@
 #include "p_ai.h"
-#include "rulesystem/character/characterfactory.h"
-#include "rulesystem/rulesystem.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/entity.h"

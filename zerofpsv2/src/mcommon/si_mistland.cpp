@@ -1,12 +1,7 @@
 #include "si_mistland.h"
-#include "rulesystem/character/characterstats.h"
-#include "rulesystem/rulesystem.h" // for getting all types of skills&attributes
-#include "rulesystem/item/itemstats.h"
 #include "p_ai.h"
-#include "p_charstats.h"
 #include "p_container.h"
 #include "p_item.h"
-#include "p_spell.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
@@ -2073,12 +2068,12 @@ int MistLandLua::GetRandomCategoryLua (lua_State* pkLua)
 
 int MistLandLua::GetRandomSkillLua (lua_State* pkLua)
 {
-	// if stat-types isn't loaded
-	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
-      LoadStatTypes();
-   
-   int iRand = rand()%g_kSkills.size();
-   g_pkScript->AddReturnValue(pkLua, (char*)g_kSkills[iRand].c_str(), g_kSkills[iRand].size() );
+// 	// if stat-types isn't loaded
+// 	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
+//       LoadStatTypes();
+//    
+//    int iRand = rand()%g_kSkills.size();
+//    g_pkScript->AddReturnValue(pkLua, (char*)g_kSkills[iRand].c_str(), g_kSkills[iRand].size() );
 
    return 1;
 }
@@ -2087,12 +2082,12 @@ int MistLandLua::GetRandomSkillLua (lua_State* pkLua)
 
 int MistLandLua::GetRandomAttributeLua (lua_State* pkLua)
 {
-	// if stat-types isn't loaded
-	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
-      LoadStatTypes();
-
-   int iRand = rand()%g_kAttributes.size();
-   g_pkScript->AddReturnValue(pkLua, (char*)g_kAttributes[iRand].c_str(), g_kAttributes[iRand].size() );
+// 	// if stat-types isn't loaded
+// 	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
+//       LoadStatTypes();
+// 
+//    int iRand = rand()%g_kAttributes.size();
+//    g_pkScript->AddReturnValue(pkLua, (char*)g_kAttributes[iRand].c_str(), g_kAttributes[iRand].size() );
 
    return 1;
 }
