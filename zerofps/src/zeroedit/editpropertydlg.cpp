@@ -121,7 +121,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	vkObjectTypeNames.push_back("OBJECT_TYPE_STATDYN");
 
 	m_pkGui->CreateRadiobuttons(pkMainWindow, vkObjectTypeNames, "ObjecttypeRadioGroup", 
-		ID_OBJECTTYPE_RADIOGROUP, 10, 100, 16); 
+		ID_OBJECTTYPE_RADIOGROUP, 10, 200, 16); 
 	
 	m_pkZGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, PROPERTYPROC, true);
 

@@ -345,7 +345,7 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 		}
 
 		pkPrev = pkGroupbutton;
-		rc = rc.Move(0,12);
+		rc = rc.Move(0,20);
 	}
 }
 
