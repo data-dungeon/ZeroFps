@@ -74,18 +74,18 @@ void MistClient::OnInit()
    // initialize gui system with default skins, font etc
 	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
 
+   char szFontData[512], szFontTex[512];
+   sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "defguifont");
+   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "defguifont");
+
+   ZGuiFont* font = new ZGuiFont("listboxfont");
+   font->Create(szFontData, m_pkTexMan->Load(szFontTex, 0));
+	m_pkGui->GetResMan()->Add("listboxfont", font);
+
    // load startup screen 
    if(!m_bSkipLoginScreen)
    {
       LoadGuiFromScript("data/script/gui/ml_start.lua");
-
-      char szFontData[512], szFontTex[512];
-      sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "defguifont");
-      sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "defguifont");
-      
-      ZGuiFont* font = new ZGuiFont("listboxfont");
-      font->Create(szFontData, m_pkTexMan->Load(szFontTex, 0));
-	   m_pkGui->GetResMan()->Add("listboxfont", font);
 
       GetWnd("ServerList")->SetFont(font); 
       GetWnd("LoginNameEB")->SetFont(font); 
@@ -170,25 +170,6 @@ void MistClient::Input()
 	//get mouse
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
-
-   // check gui input
-   static bool s_bReturnPressed = false;
-
-   if(m_pkInputHandle->Pressed(KEY_RETURN))
-      s_bReturnPressed = true;
-   else
-      if(s_bReturnPressed)
-      {
-         s_bReturnPressed = false;
-
-         ZGuiTextbox* pkSayTb = (ZGuiTextbox*) GetWnd("SayTextbox");
-         ZGuiWnd* pkFocusWnd = ZGuiWnd::m_pkFocusWnd;
-
-         if( ! (pkSayTb != NULL && pkFocusWnd == pkSayTb) )
-         {
-            g_kMistClient.ToogleChatWnd(true, true);
-         }
-      }
 	
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_W);

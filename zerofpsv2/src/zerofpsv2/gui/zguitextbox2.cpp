@@ -58,6 +58,8 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_iTotalTextHeight = 0;
 
 	m_pkGuiRender = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+
+   m_strText = NULL;
 }
 
 ZGuiTextbox::~ZGuiTextbox()
@@ -1464,9 +1466,18 @@ void ZGuiTextbox::UpdateDisplayList()
 	}
 }
 
+void ZGuiTextbox::UpdateText()
+{
+	if(m_bMultiLine)
+	{
+		BuildTagList();
+		BuildTextStrings();
 
+      m_bUseDisplayList = true;  // lade till 0408226
+	   m_iDisplayListID = -1; // lade till 0408226
 
+      UpdateScrollbar();
 
-
-
-
+      ScrollText(m_pkScrollbarVertical);
+	}   
+}

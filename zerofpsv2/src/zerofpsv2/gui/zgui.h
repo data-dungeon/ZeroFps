@@ -111,9 +111,10 @@ public:
 	ZGui(int iResX, int iResY);
 	~ZGui();
 
-	bool Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
-		bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed, 
-		bool bMBnPressed);
+	bool UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bMBnPressed, float fTime);
+
+   struct KEY_INFO { int key; bool pressed; bool shift; };
+   void UpdateKeys( vector<KEY_INFO>& kKeysPressed, float time);
 
 	bool IsActive();
 
@@ -191,17 +192,14 @@ public:
 private:
 
 	void FormatKey(int& iKey, bool bShiftIsPressed);
-	void KeyboardInput(int key, bool shift, float time);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
 	unsigned char m_acLineColor[3];
 
-	void OnKeyPress(int iKey);
-
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 
-		bool bRBnPressed, bool bMBnPressed, float fGameTime);
+      bool bRBnPressed, bool bMBnPressed, float fGameTime);
 	
 	void TranslateMousePos(int &x, int &y);
 	

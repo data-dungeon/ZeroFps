@@ -15,6 +15,7 @@ class ZGuiScrollbar;
 class GUI_API ZGuiTextbox : public ZGuiWnd
 {
 public:
+   void UpdateText();
 	void ScrollRowIntoView(int row);
 	bool SetCursorRow(int row, bool bUpdate);
 	void ToggleMultiLine(bool bMultiLine);

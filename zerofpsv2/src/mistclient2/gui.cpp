@@ -27,8 +27,11 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	   }
    }
    else
-   if(msg == ZGM_KEYPRESS /*&& win != NULL*/)
+   if(msg == ZGM_KEYPRESS)
    {      
+      if(win == NULL)
+         win = g_kMistClient.GetWnd("GuiMainWnd");
+
       string strWnd = win->GetName();
 
       if( ((int*)params)[0] == KEY_TAB)
@@ -53,9 +56,14 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
             {
                g_kMistClient.Say(text);
                g_kMistClient.SetText("SayTextbox", "");
-               ZGuiWnd::m_pkFocusWnd->KillFocus();
-               g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));
             }
+
+            ZGuiWnd::m_pkFocusWnd->KillFocus();
+            g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));
+         }
+         else
+         {
+            g_kMistClient.ToogleChatWnd(true, true);
          }
 		}
 		else
@@ -327,11 +335,11 @@ void MistClient::ResizeChatDlg(bool bBigger)
       iVerticalOffset = -RESIZE_VALUE;
    }
 
-   g_kMistClient.GetWnd("ChatDlgMainWnd")->Resize(512, rcChatDlgMainWnd.Height());
-   g_kMistClient.GetWnd("ChatTextbox")->Resize(512, rcChatTextbox.Height());
-
    g_kMistClient.GetWnd("ChatDlgMainWnd")->SetPos(rcChatDlgMainWnd.Left, rcChatDlgMainWnd.Top, true, true);
    g_kMistClient.GetWnd("ChatTextbox")->SetPos(rcChatTextbox.Left, rcChatTextbox.Top, true, true);
+
+   g_kMistClient.GetWnd("ChatDlgMainWnd")->Resize(512, rcChatDlgMainWnd.Height());
+   g_kMistClient.GetWnd("ChatTextbox")->Resize(512, rcChatTextbox.Height());
 
    g_kMistClient.GetWnd("SayTextbox")->Move(0,iVerticalOffset);
    g_kMistClient.GetWnd("SayButton")->Move(0,iVerticalOffset);
@@ -341,6 +349,10 @@ void MistClient::ResizeChatDlg(bool bBigger)
 	pkScrollbar->GetScrollInfo(min,max,pos);
 	pkScrollbar->SetScrollPos(max-1);
 
+   ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->UpdateText();
+
+   ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->ScrollRowIntoView(
+      ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 }
 
 void MistClient::LoadInGameGui()
@@ -373,13 +385,8 @@ void MistClient::LoadInGameGui()
    g_kMistClient.GetWnd("ChatTextbox")->SetFont( 
 					  g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
 
-
 	g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit (för att kunna ändra trasparens med färgvärdet)
 	g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest = false;
 
 	g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
-
-		
-              
-
 }
