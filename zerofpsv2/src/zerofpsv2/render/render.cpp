@@ -175,10 +175,10 @@ void Render::PrintChar2(char cChar)
 	glBegin(GL_QUADS);		
 		glNormal3f(0,0,1);
  	  
-		glTexCoord2f(x,y);				glVertex3f(0,0,0);		 
-		glTexCoord2f(x+width,y);		glVertex3f(iFontSize,0,0);		
-		glTexCoord2f(x+width,y-width);glVertex3f(iFontSize,iFontSize,0);    
-		glTexCoord2f(x,y-width);		glVertex3f(0,iFontSize,0);    
+		glTexCoord2f(x,y);				glVertex3i(0,0,0);		 
+		glTexCoord2f(x+width,y);		glVertex3i(iFontSize,0,0);		
+		glTexCoord2f(x+width,y-width);	glVertex3i(iFontSize,iFontSize,0);    
+		glTexCoord2f(x,y-width);		glVertex3i(0,iFontSize,0);    
 	glEnd();				
 }
 
@@ -290,7 +290,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	{
 		if((*m_kText)[i] != NULL)
 		{
-			Print2(Vector3(8, 16 + 8 * i,0),(*m_kText)[i]);		
+			Print2(Vector3(float( 8.0, 16.0 + 8.0 * float(i) ),0),(*m_kText)[i]);		
 		}
 	}
 	
@@ -379,8 +379,8 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 	float x,y;
 	glBegin(GL_LINE_LOOP );
 	for(int i=0; i<360; i+=(int)12.25) {
-		x = cos(DegToRad(i)) * fRadius;
-		y = sin(DegToRad(i)) * fRadius;
+		x = float( cos(DegToRad( float(i) )) * fRadius );
+		y = float( sin(DegToRad( float(i) )) * fRadius );
 		glVertex3f(x,y,0);
 	}
 	
@@ -676,7 +676,7 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 	
-	float fHScale = cos(45.0) * fScale;
+	float fHScale = cos(float(45.0)) * fScale;
 
 	glTranslatef(kPos.x, kPos.y, kPos.z);
 
