@@ -900,13 +900,13 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	return pkObject->iNetWorkID;
 }
 
-void MistServer::PathTest()
+void MistServer::PathTest() 
 {
 	return;
 
 	int iNumOfZones = pkObjectMan->GetNumOfZones();
 	if(iNumOfZones < 10)
-		return;
+		return; 
 
 	int iRuns = 10;
 
@@ -924,11 +924,12 @@ void MistServer::PathTest()
 
 void MistServer::HandleOrders()
 {
-	cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
+	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
 	
 	while(P_ClientControl::NrOfOrders() > 0 )
 	{
-		cout<<"handling order "<<P_ClientControl::GetNextOrder().m_csOrderName<<" from client:"<<P_ClientControl::GetNextOrder().m_iClientID<<endl;
+		ClientOrder* order = P_ClientControl::GetNextOrder();
+		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
 		P_ClientControl::PopOrder();
 	}
 

@@ -343,17 +343,18 @@ void MistClient::Input()
 		if(newpos.Length() > 0)
 			m_pkME->GetVel() = newpos;
 		m_pkME->RotateLocalRotV(rot);
-	}
+	} 
 
 	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
 			ClientOrder order;
-			strcpy(order.m_csOrderName,"Klicka");
+			order.m_sOrderName = "Klicka";
 			order.m_iClientID = pkFps->GetConnectionID();
 			order.m_iObjectID = 0;
 			
+	
 			if(m_pkClientControlP)
 				m_pkClientControlP->AddOrder(order);
 	

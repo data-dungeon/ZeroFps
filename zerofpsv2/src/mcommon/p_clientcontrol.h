@@ -14,9 +14,11 @@ using namespace std;
 class MCOMMON_API ClientOrder
 {
 	public:
-		char		m_csOrderName[20];
+		string	m_sOrderName;
 		int		m_iObjectID;
 		int		m_iClientID;
+		
+
 };
 
 
@@ -45,7 +47,7 @@ class MCOMMON_API P_ClientControl: public Property {
 		void PackFrom(NetPacket* pkNetPacket);
 		
 		
-		static ClientOrder GetNextOrder();		
+		static ClientOrder* GetNextOrder();		
 		static int NrOfOrders(){return m_kServerOrders.size();};				
 		static void PopOrder(){m_kServerOrders.pop();};
 };

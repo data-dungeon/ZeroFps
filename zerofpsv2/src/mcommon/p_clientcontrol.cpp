@@ -2,6 +2,9 @@
 
 queue<ClientOrder> P_ClientControl::m_kServerOrders;
 
+
+
+
 P_ClientControl::P_ClientControl()
 {
 	strcpy(m_acName,"P_ClientControl");		
@@ -31,37 +34,36 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket )
 	
 	pkNetPacket->Write(&iNrOO,sizeof(iNrOO));	
 
-	//cout<<"sending orders:"<<iNrOO<<endl;
-
 	while(!m_kClientOrders.empty())
 	{
-		pkNetPacket->Write_Str(m_kClientOrders.front().m_csOrderName);		
+		pkNetPacket->Write_Str(m_kClientOrders.front().m_sOrderName.c_str());		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
 		m_kClientOrders.pop(); 
 	}
-}
+} 
 
 void P_ClientControl::PackFrom( NetPacket* pkNetPacket ) 
 {
 	int iNrOO;
 	pkNetPacket->Read(&iNrOO,sizeof(iNrOO));
 	
-	//cout<<"got orders:"<<iNrOO<<endl;
 	//never process more orders then clients are allowed to do
 	if(iNrOO > m_iMaxOrders)
 		cout<<"Error client has added to many orders in queue:"<<endl;
 
 	ClientOrder temporder;
 	
+	char name[128];
 	for(int i = 0;i<iNrOO;i++)
 	{
-		pkNetPacket->Read_Str(temporder.m_csOrderName);
+		pkNetPacket->Read_Str(name);
+		temporder.m_sOrderName=name;
 		pkNetPacket->Read(&temporder.m_iObjectID,sizeof(temporder.m_iObjectID));
 		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
 		
 		//if we already gotten max nr of orders, dont add this one
-		if(i > m_iMaxOrders)
+		if(i <= m_iMaxOrders)
 			if(temporder.m_iClientID == m_iClientID)
 				m_kServerOrders.push(temporder);
 			else
@@ -75,14 +77,14 @@ void P_ClientControl::AddOrder(ClientOrder kNewOrder)
 	cout<<"added order"<<endl;
 }
 
-ClientOrder P_ClientControl::GetNextOrder()
+ClientOrder* P_ClientControl::GetNextOrder()
 {
-	ClientOrder temp;
-	
 	if(!m_kServerOrders.empty())
-		ClientOrder temp =  m_kServerOrders.front();
-
-	return temp;
+	{	
+		return &m_kServerOrders.front();
+	}
+	
+	return NULL;
 }
 
 
