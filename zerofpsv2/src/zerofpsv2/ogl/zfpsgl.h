@@ -3,7 +3,8 @@
 
 #ifdef _WIN32
 // Bloody Windows
-	#include "extgl.h"
+//	#include "extgl.h"
+	#include <GL/glee.h>
 
 #else
 // Sweet Linux.

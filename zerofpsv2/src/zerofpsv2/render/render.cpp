@@ -88,7 +88,8 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 
 #ifdef _WIN32
 	RenderDLL_InitExtGL();
-	extgl_Initialize();
+	//extgl_Initialize();
+	GLeeInit();
 #endif
 
 	//setup some opengl stuff =)
@@ -1896,7 +1897,7 @@ RENDER_API void RenderDLL_InitExtGL(void)
 {
 #ifdef _WIN32
 	//int res; 
-	extgl_Initialize();
+	//extgl_Initialize();
 //	cout << "extgl_Initialize: "<< res << endl;
 #endif
 }
