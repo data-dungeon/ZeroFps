@@ -7,10 +7,12 @@ function Create()
 
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
+		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
 			InitParameter("team",0)
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
+
 
 
 end
@@ -18,16 +20,45 @@ end
 
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 6.5);
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/I give him my best.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/If it bleeds, we can kill it.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/he's already dead.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/are you ready to be fucked, man.wav");
-	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/well done, junior.wav");
-	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/what.wav");
-	AddDeathSound(SIGetSelfID(), "data/sound/cyborg/death1.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
-	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
+
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/are you ready to be fucked, man.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/didn't I promise you fireworks.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/how many lives do you got, man.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/i give him my best!.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/if it bleeds, we can kill it.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/oh, sorry.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/where are you going.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/agent/offensive/you scared, man.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/he's already dead.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/i'm too old for this shit!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/that was a bullet, wasn't it.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/well done, junior!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/ohh fuck.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/fuck.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/fuck2.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/agent/defensive/fuck3.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/agent/death/nooo.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/agent/death/nooo2.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/agent/death/nooo3.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/agent/death/nooo4.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/what.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/if we gonna work together, you might try and be polite.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/speek2.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/what2.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/what do you want from me, my soul.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/what.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/yeah, so.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/agent/select/yes my lord.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/my bags are packed!.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/im already there.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/i'm back in five minutes!.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/i'm done here!.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/no action here.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/of course2!.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/of course!.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/says who.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/agent/move/slaving for you!.wav");
+
 	SetTeam (SIGetSelfID(), 0);
 	SISetHeartRate(SIGetSelfID(),4);
 
@@ -47,6 +78,25 @@ function HeartBeat()
 	
 		return
 	end
+
+	if HavePath(SIGetSelfID()) == 1 then
+		return
+	end	
+
+	-- Spela upp en liten kommentar då och då när personen står still och inte har blivit skadad
+	if Random(100) > 75 then
+			
+		talk_sound = 
+		{
+		  "agent/talking/i want to do something for humanity.wav",
+		  "agent/talking/one man alone cant fight the future.wav",
+		  "agent/talking/i'm extremely nervous right now.wav",
+		}		
+		PlaySound (SIGetSelfID(), talk_sound[Random(3)+1] );
+		
+	end
+
+	
 end
 
 function Dead()

@@ -21,6 +21,19 @@ end
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 2.6);
 	SetTeam (SIGetSelfID(), 1);
+
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/help.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/have you lost your mind, dude.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/god damn! stop that, mr. military guy!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/do you want this jacket, take it2!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/listen crazy man, I can give you money!!!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/oh my god!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/you can't talk with me like that!.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/damn.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/god!.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo2.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/nooo.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/citizen_man/death/I'm not afraid! I'm going to a world where anything is possible!.wav");
 end
 
 function Exit()
@@ -31,13 +44,17 @@ end
 function HeartBeat()
 
 	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_CitizenManLife")
 
 	-- Ropa på hjälp om han har blivit skadad igen.
 	if Life < prev_life then
 		CallForHelp(SIGetSelfID(), 1)
-		Print( "Mechanic call the cops!" )
+		Print( "Citizen call the cops!" )
 	end
+
+	-- Registrera nuvarande liv
+	SetEntityVar(SIGetSelfID(), "g_CitizenManLife", Life)
+
 	if HavePath(SIGetSelfID()) == 1 then
 		return
 	end	
@@ -58,15 +75,27 @@ function HeartBeat()
 
 	MakePathFind(SIGetSelfID(),pos);
 
+	-- Spela upp en liten kommentar då och då när personen står still och inte har blivit skadad
+	if Random(100) > 75 and Life == prev_life then
+
+		talk_sound = 
+		{
+		  "citizen_man/talking/are you drunk.wav",
+		  "citizen_man/talking/hello there mr nice guy!.wav",
+		  "citizen_man/talking/that gun you have there looks powerful.wav",
+		  "citizen_man/talking/you look like a normal person...skratt.wav",
+		}
+		
+		PlaySound (SIGetSelfID(), talk_sound[Random(4)+1] );
+	end
+
 end
 
 function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
-	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
 	SetEntityVar(SIGetSelfID(), "deadtime", 0);
-
 
 	PanicArea (SIGetSelfID(), 13);
 
