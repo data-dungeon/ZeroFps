@@ -620,8 +620,8 @@ void Camera::RenderView()
 			//disable diffuse and specular lighting for the shadowcasting lightsource
 			Vector4 kDiffuseBak  = pkLight->kDiffuse;
 			Vector4 kSpecularBak = pkLight->kSpecular;;			
-			pkLight->kDiffuse.Set(0,0,0,0);
-			pkLight->kSpecular.Set(0,0,0,0);
+			pkLight->kDiffuse = kDiffuseBak*0.2;
+			pkLight->kSpecular = kSpecularBak*0.2;
 		
 			m_iCurrentRenderMode = RENDER_SHADOW;
 			DrawShadowedScene();			
