@@ -119,12 +119,9 @@ void P_PfPath::Update()
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
 		{
-			//m_kPath.clear();
-			//m_kRawPath.clear();
-
 			m_kPath.clear(); // added again by zerom, havepath didn't work else
-			
-			
+			m_kRawPath.clear();
+
 			//play idle
 			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 			if(pm)
