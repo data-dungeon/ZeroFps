@@ -30,6 +30,7 @@ private:
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;
 	ZGuiWnd* m_pkDialog;
+	ZGuiWnd* m_pkLevelPages[10];
 };
 
 #endif // !defined(AFX_SPELLDLG_H__0C1929AC_DAE0_4FC3_8711_E568BCADA733__INCLUDED_)

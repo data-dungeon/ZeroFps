@@ -39,29 +39,17 @@ void SpellDlg::Init()
 
 	char* szLabel[10] =
 	{
-		"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
+		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 	};
 
-	m_pkApp->CreateWnd(Button, "SpellBookPrevPageBn", "SpellBookMainWnd", "", 20, 61, 16, 16, 0);
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookPrevPageBn"))->SetButtonUpSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_prevpage_u.bmp", 0),0));
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookPrevPageBn"))->SetButtonHighLightSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_prevpage_u.bmp", 0),0));
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookPrevPageBn"))->SetButtonDownSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_prevpage_d.bmp", 0),0));
-
-	m_pkApp->CreateWnd(Button, "SpellBookNextPageBn", "SpellBookMainWnd", "", 360, 62, 16, 16, 0);
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookNextPageBn"))->SetButtonUpSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_nextpage_u.bmp", 0),0));
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookNextPageBn"))->SetButtonHighLightSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_nextpage_u.bmp", 0),0));
-	((ZGuiButton*)m_pkApp->GetWnd("SpellBookNextPageBn"))->SetButtonDownSkin(new ZGuiSkin(
-		m_pkTexMan->Load("/data/textures/gui/spellbook_nextpage_d.bmp", 0),0));
+	m_pkApp->CreateWnd(Label, "SpellBookLabel", "SpellBookMainWnd", "Spellbook Level 1", 122, 71, 350, 16, 0);
 
 	for(int i=0; i<10; i++)
 	{
 		sprintf(szName, "Level1SpellBn%i", i);
-		m_pkApp->CreateWnd(Button, szName, "SpellBookMainWnd", szLabel[i], 36+i*32, 62, 32, 16, 0);
+		m_pkApp->CreateWnd(Button, szName, "SpellBookMainWnd", szLabel[i], 48+i*28, 20, 24, 16, 0);
+
+		m_pkLevelPages[i] = m_pkApp->GetWnd(szName);
 
 		((ZGuiButton*)m_pkApp->GetWnd(szName))->SetButtonUpSkin(new ZGuiSkin(
 			m_pkTexMan->Load("/data/textures/gui/spellbook_level_page_u.bmp", 0),0));
@@ -81,7 +69,18 @@ void SpellDlg::Init()
 
 void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
+	printf("pkWndClicked = %s\n", pkWndClicked->GetName());
 
+	for(int i=0; i<10; i++)
+	{
+		if(pkWndClicked == m_pkLevelPages[i])
+		{
+			char szLabel[25];
+			sprintf(szLabel, "Spellbook Level %i", i);
+			m_pkApp->GetWnd("SpellBookLabel")->SetText(szLabel);
+			break;
+		}
+	}
 }
 
 void SpellDlg::ToogleOpen()

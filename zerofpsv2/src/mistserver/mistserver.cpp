@@ -1443,6 +1443,8 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 	dir_list.push_back(string(szRootPath));
 	strPrevNode = "RootNode";
+
+	printf("---------------------olle\n");
 	
 	while(1)
 	{
@@ -1464,7 +1466,7 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 			bool bIsFolder = strLabel.find(".") == string::npos;
 
-			if(kSearchedFiles.find(strLabel) == kSearchedFiles.end())
+			if(kSearchedFiles.find(id) == kSearchedFiles.end())
 			{			
 				if(bIsFolder)
 				{
@@ -1478,7 +1480,7 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 					AddTreeItem(szTreeBoxName, id.c_str(), 
 						strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
 
-				kSearchedFiles.insert(strLabel);
+				kSearchedFiles.insert(id);
 			}
 		}
 

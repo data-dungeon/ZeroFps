@@ -815,6 +815,11 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		m_pkQuickBoard->OnCommand(pkWndClicked);
 	}
+	else
+	if(strMainWndName == "SpellBookMainWnd")
+	{
+		m_pkSpellDlg->OnCommand(pkWndClicked);
+	}
 	if(m_pkInventDlg)
 	{
 		m_pkInventDlg->OnCommand(iID); 
