@@ -57,8 +57,8 @@ void Test::OnIdle(void) {
 	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
 //	glutSolidSphere(5,20,20);
-
-pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
+	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 
 
 //	pkRender->DrawHM(test);		

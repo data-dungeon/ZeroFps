@@ -1,6 +1,7 @@
 #include "render.h"
 
 void Render::DrawSkyBox(Vector3 CamPos) {
+	glPushMatrix();
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
 	
 	int iSize=801;
@@ -13,6 +14,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
 	glEnable(GL_LIGHTING);
+	glPopMatrix();
 }
 
 

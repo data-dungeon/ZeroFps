@@ -66,7 +66,7 @@ void ZeroFps::MainLoop(void) {
 //				m_pkApp->OnHud();
 				Camera();
 				m_pkApp->OnIdle();		
-				m_pkRender->DrawSkyBox(*m_kCamPos);
+
 				Swap();
 
 				break;			
