@@ -266,13 +266,13 @@ bool DMContainer::MoveItem(int iID,int iX,int iY)
 		
 				ClearItem(iID);
 		
-				if(SetItem(iID,iX,iY,pkPItem->m_iSizeX,m_iSizeY))
+				if(SetItem(iID,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
 				{
 					return true;				
 				}
 				else
 				{
-					if(!SetItem(iID,oldx,oldy,pkPItem->m_iSizeX,m_iSizeY))
+					if(!SetItem(iID,oldx,oldy,pkPItem->m_iSizeX,pkPItem->m_iSizeY))
 						cout<<"ERROR: item's size has changed since added to container"<<endl;
 				
 					return false;

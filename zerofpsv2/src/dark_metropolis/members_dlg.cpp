@@ -381,9 +381,14 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 				{
 					if(kContainer.pkContainer == m_pkMoveInfo->m_kFromContainer.pkContainer)
 					{
-						// Funkar inte i nuläget.
-						//printf("Don't work right now\n");
-						kContainer.pkContainer->MoveItem(*m_pkMoveInfo->m_pMoveObject, sx, sy);
+						if(m_pkMoveInfo->m_kFromContainer.pkContainer->MoveItem(
+							*m_pkMoveInfo->m_pMoveObject, sx, sy))
+						{
+							m_pkMoveInfo->m_pkMoveButton->SetPos(dx,dy,true,true); 
+							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
+								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
+							bMoveOK = true;
+						}
 					}
 					else
 					if((*kContainer.pkContainer->GetItem(sx,sy)) == -1)
