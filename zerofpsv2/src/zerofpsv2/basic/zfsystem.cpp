@@ -540,6 +540,13 @@ void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue)
 				}
 
 			break;
+		case CSYS_STRING:
+		{
+			string* pstrValue = (string*)pkArea->m_vValue;
+			*pstrValue = szValue;
+			break;	
+		}
+		
 		case CSYS_BOOLVECTOR:
 		{
 			vector<bool>* pkBoolVec = 	(vector<bool>*)pkArea->m_vValue;
@@ -614,8 +621,10 @@ string ZFSystem::GetVarValue(ZFCmdData* pkArea)
 			break;
 		case CSYS_STRING:
 		{
-			string* pstrValue = (string*)pkArea->m_vValue;
-			sprintf(szValue, "%s", pstrValue->c_str());		
+			//string* pstrValue = (string*)pkArea->m_vValue;
+			//sprintf(szValue, "%s", pstrValue->c_str());		
+			
+			strValue = *(string*)pkArea->m_vValue;
 			break;
 		}
 		case CSYS_BOOLVECTOR:
