@@ -21,7 +21,8 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 						 ZGuiSkin* pkSkinItemSelected, ZGuiSkin* pkSkinItemHighLight) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
-	m_unTopItem = 0;
+	m_iScrollbarWidth = 20;
+	m_bSelitemDisabled = false;
 	kRectangle.Bottom = 50;
 
 	m_pkSelectedItem = NULL;
@@ -35,8 +36,10 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 	m_unItemHeight = iItemHeight;
 
 	int w = GetWndRect().Width();
-	int h = GetWndRect().Height();// h=m_unItemHeight*10;//GetWndRect().Height() % m_unItemHeight;
-	Resize(w,h);
+	int h = GetWndRect().Height();
+	
+	// h=m_unItemHeight*10;//GetWndRect().Height() % m_unItemHeight;
+	ZGuiWnd::Resize(w,h);
 
 	CreateInternalControls();
 
@@ -46,11 +49,18 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 		m_kItemArea.Right -= m_pkScrollbarVertical->GetWndRect().Width(); 
 /*	if(m_pkScrollbarHorizontal != NULL)
 		m_kItemArea.Bottom -= m_pkScrollbarHorizontal->GetWndRect().Height(); */
+
+	//Resize(w, m_kItemArea.Height());
 }
 
 ZGuiListbox::~ZGuiListbox()
 {
+	for( itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+	{
+		delete (*it);
+	}
 
+	m_pkItemList.clear(); 
 }
 
 bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
@@ -68,14 +78,15 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
 	pkRenderer->RenderBorder(GetScreenRect(),(m_iBkMaskTexture > 0)); 
 
-	m_pkScrollbarHorizontal->Render( pkRenderer );
-	m_pkScrollbarVertical->Render( pkRenderer );
+	//m_pkScrollbarHorizontal->Render( pkRenderer );
+	if(m_pkScrollbarVertical->IsVisible())
+		m_pkScrollbarVertical->Render( pkRenderer );
 
 	if(m_pkSelectedItem)
 		m_pkSelectedItem->Select();
 
 	// Render childrens
-	for( WINit w = m_kChildList.begin();
+/*	for( WINit w = m_kChildList.begin();
 		 w != m_kChildList.end(); w++)
 		 {
 			 Rect item = (*w)->GetWndRect();
@@ -83,7 +94,24 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 			 if(item.Top + m_unItemHeight < m_kItemArea.Height() &&
 				 item.Top >= m_kItemArea.Top-20)
 				(*w)->Render( pkRenderer );
-		 }
+		 }*/
+
+	for( itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+		{
+			Rect itemTempRect = (*it)->GetButton()->GetWndRect();
+
+			if(itemTempRect.Top + m_unItemHeight <= m_kItemArea.Height() &&
+				itemTempRect.Top >= m_kItemArea.Top/*-20*/)
+				{
+					if(m_pkScrollbarVertical->IsVisible() == false)
+						(*it)->GetButton()->Resize(itemTempRect.Width()+20, itemTempRect.Height());
+
+					(*it)->GetButton()->Render( pkRenderer );
+
+					if(m_pkScrollbarVertical->IsVisible() == false)
+						(*it)->GetButton()->Resize(itemTempRect.Width(), itemTempRect.Height());
+				}
+		}
 
 	return true;
 }
@@ -109,24 +137,26 @@ void ZGuiListbox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinT
 	m_pkScrollbarVertical->SetSkin(pkSkinScrollArea);
 	m_pkScrollbarVertical->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
 
-	m_pkScrollbarHorizontal->SetSkin(pkSkinScrollArea);
-	m_pkScrollbarHorizontal->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
+	//m_pkScrollbarHorizontal->SetSkin(pkSkinScrollArea);
+	//m_pkScrollbarHorizontal->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
 }
 
 void ZGuiListbox::CreateInternalControls()
 {
 	Rect rc = GetWndRect();
-	int x = rc.Width()-20;
-	int y = 0;
-	int w = 20;
-	int h = rc.Height()-20;
+	int x = rc.Width()-m_iScrollbarWidth;
+	int y = rc.Top;
+	int w = m_iScrollbarWidth;
+	int h = rc.Height()-rc.Top;
+
+	//h -= (rc.Height() % m_unItemHeight);
 
 	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,VERT_SCROLLBAR_ID); 
 
 	m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
 
-	x = 0;
+/*	x = 0;
 	y = rc.Height()-20;
 	w = rc.Width()-20;
 	h = 20;
@@ -134,28 +164,94 @@ void ZGuiListbox::CreateInternalControls()
 	m_pkScrollbarHorizontal = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,HORZ_SCROLLBAR_ID);
 
-	m_pkScrollbarHorizontal->SetScrollInfo(0,0,1.0f,0); 
+	m_pkScrollbarHorizontal->SetScrollInfo(0,0,1.0f,0); */
 }
 
 bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 {
-	ZGuiListitem* pkNewItem = new ZGuiListitem(this, strText, iID, 
-		m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight, 
-		m_pkSkinItemFont, m_iTextMaskTexture);
+	ZGuiListitem* pkNewItem;
+	
+	if(m_bSelitemDisabled == false)
+	{
+		pkNewItem = new ZGuiListitem(this, strText, iID, 
+			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight, 
+			m_pkSkinItemFont, m_iTextMaskTexture);
+		pkNewItem->GetButton()->SetGUI(GetGUI());
+		pkNewItem->m_bMenuItem = false;
+	}
+	else
+	{
+		pkNewItem = new ZGuiListitem(this, strText, iID, 
+			m_pkSkinItem, m_pkSkinItem, m_pkSkinItemSelected, 
+			m_pkSkinItemFont, m_iTextMaskTexture);
+		pkNewItem->GetButton()->SetGUI(GetGUI());
+		pkNewItem->m_bMenuItem = true;
+	}
 
 	m_pkItemList.push_back(pkNewItem);
 
-	int iElements = m_pkItemList.size();
-	int y = (iElements - 1) * m_unItemHeight; 
-	m_pkItemList.back()->SetPos(0, y);
-	m_pkItemList.back()->Resize(m_kItemArea.Width(), m_unItemHeight);
+	UpdateList();
+	return true;
+}
 
-	// Får alla elementen plats? Nehe, hur många för mycket är det då?
-	int iElementSize = m_unItemHeight * iElements;
-	int iListboxSize = GetWndRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
-	float fThumbSize = (float) iListboxSize / (float) iElementSize;
+bool ZGuiListbox::RemoveItem(unsigned int iID)
+{
+	Rect rcRemoveItem, rcSearchItem;
 
-	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0); 
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 if((*it)->GetID() == iID)
+			 {
+				 ZGuiButton* pkButton = (*it)->GetButton();
+
+				 if(pkButton)
+				 {
+					 rcRemoveItem = pkButton->GetScreenRect();
+
+					 delete (*it);
+					 m_pkItemList.erase(it);
+				 }
+				 break;
+			 }
+		 }
+
+	// Flytta upp alla element som är under denna.
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 rcSearchItem = (*it)->GetButton()->GetScreenRect();
+			 if(rcSearchItem.Top > rcRemoveItem.Top)
+			 {
+				 (*it)->Move(0,-m_unItemHeight);
+			 }
+		 }
+
+	UpdateList();
+	return false;
+}
+
+bool ZGuiListbox::RemoveAllItems()
+{
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			delete (*it);
+		 }
+
+	m_pkSelectedItem = NULL;
+
+	m_pkItemList.clear();
+	UpdateList();
+
+	ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
+	ZGuiWnd::m_pkPrevWndClicked = NULL;
+	ZGuiWnd::m_pkFocusWnd = NULL;
+	ZGuiWnd::m_pkWndUnderCursor = NULL;
+	ZGuiWnd::m_pkWndClicked = NULL;
+
 	return true;
 }
 
@@ -166,12 +262,12 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		ScrollItems(m_pkScrollbarVertical);
 		return true;
 	}
-	else
+/*	else
 	if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
 	{
 		ScrollItems(m_pkScrollbarHorizontal);
 		return true;
-	}
+	}*/
 
 	if(iCode == NCODE_CLICK_DOWN)
 	{
@@ -215,6 +311,18 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 		 it != m_pkItemList.end(); it++)
 		 {
 			 (*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+
+
+			Rect itemTempRect = (*it)->GetButton()->GetWndRect();
+			if(itemTempRect.Top + m_unItemHeight <= m_kItemArea.Height() &&
+				itemTempRect.Top >= m_kItemArea.Top)
+				{
+					(*it)->GetButton()->Show();
+				}
+				else
+				{
+					(*it)->GetButton()->Hide();
+				}
 		 }	
 
 	// Reset parameter
@@ -228,7 +336,6 @@ ZGuiListitem* ZGuiListbox::GetSelItem()
 
 ZGuiListitem* ZGuiListbox::GetItem(int iID)
 {
-	// Move all items
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
@@ -240,6 +347,56 @@ ZGuiListitem* ZGuiListbox::GetItem(int iID)
 	return NULL;
 }
 
+void ZGuiListbox::DisableSelItem(bool bDisable)
+{
+	m_bSelitemDisabled = bDisable;
+}
 
+void ZGuiListbox::UpdateList()
+{
+	int iElements = m_pkItemList.size();
+	int y = (iElements - 1) * m_unItemHeight; 
 
+	if(iElements > 0)
+	{
+		m_pkItemList.back()->SetPos(0, y);
+		m_pkItemList.back()->Resize(m_kItemArea.Width(), m_unItemHeight);
+	}
 
+	// Får alla elementen plats? Nehe, hur många för mycket är det då?
+	int iElementSize = m_unItemHeight * iElements;
+	int iListboxSize = GetWndRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
+	float fThumbSize = (float) iListboxSize / (float) iElementSize;
+
+	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);
+	ScrollItems(m_pkScrollbarVertical);
+
+	if(fThumbSize >= 0.99f)
+	{
+		m_pkScrollbarVertical->Hide();
+	}
+	else
+	{
+		m_pkScrollbarVertical->Show();
+	}
+}
+
+void ZGuiListbox::Resize(int Width, int Height)
+{
+	Rect rc = GetWndRect();
+	rc.Bottom = rc.Top + Height;
+	rc.Right = rc.Left + Width-m_iScrollbarWidth;
+
+	ZGuiWnd::Resize(Width, Height); 
+
+	m_kItemArea = rc;
+
+	if(m_pkScrollbarVertical)
+		m_pkScrollbarVertical->Resize(m_iScrollbarWidth, 
+			m_kItemArea.Height()-m_unItemHeight);
+	
+/*	if(m_pkScrollbarHorizontal)
+		m_pkScrollbarHorizontal->Resize(rc.Width()-20, 20);*/
+
+	UpdateList();
+}

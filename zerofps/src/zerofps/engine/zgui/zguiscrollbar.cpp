@@ -58,10 +58,21 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, float page
 
 	Rect rc = GetWndRect();
 
+	int real_bn_height = m_pkThumbButton->GetWndRect().Height(); 
+
 	if(m_bHorzintal)
 		m_pkThumbButton->Resize((int)(page_size*rc.Width()),rc.Height());
 	else
-		m_pkThumbButton->Resize(rc.Width(),(int)(page_size*rc.Height()));
+	{
+		int size = (int)(page_size*rc.Height());
+		
+		real_bn_height = size;
+		
+/*		if(size < 5)
+			size = 5;*/
+		
+		m_pkThumbButton->Resize(rc.Width(),size);
+	}
 
 	float x=0, y=0;
 
@@ -72,40 +83,48 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, float page
 	}
 	else
 	{
-		int bn_width = m_pkThumbButton->GetWndRect().Height(); 
+		int bn_width = real_bn_height; 
 		y = ((float) pos / (float) (max - min)) * rc.Height()  - bn_width/2;	
 	}
 
 	m_pkThumbButton->SetMoveArea(GetScreenRect());
-	m_pkThumbButton->SetPos((int)x, (int)y, false, false);
+	m_pkThumbButton->SetPos(x, y, false, false);
 
 	m_nMax = max, m_nMin = min, m_nPos = pos;
 }
 
 bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 {
-	if(pkWnd->GetID() == SCROLLTHUMB_ID)
+	if(iCode == NCODE_MOVE)
 	{
-		int iThumPos = m_pkThumbButton->GetWndRect().Top;
-		int iThumMax = GetWndRect().Bottom;
-		float fProcentAvMax = (float) iThumPos / (float) iThumMax;
+		if(pkWnd->GetID() == SCROLLTHUMB_ID)
+		{
+			int iThumPos = m_pkThumbButton->GetWndRect().Top;
+			int iThumMax = GetWndRect().Bottom;
+			float fProcentAvMax = (float) iThumPos / (float) iThumMax;
 
-		static bool NEW_CLICK = true;
-		static int POS_BEFORE;
+			static int POS_BEFORE;
+			POS_BEFORE = (int)m_nPos;
 
-		NEW_CLICK = false;
-		POS_BEFORE = (int)m_nPos;
+			m_nPos = fProcentAvMax * (m_nMax-m_nMin+1);
 
-		m_nPos = (unsigned int) (fProcentAvMax * (m_nMax-m_nMin+1));
+			int change = abs(POS_BEFORE-(int)m_nPos);
 
-		int change = abs(POS_BEFORE-(int)m_nPos);
+			if(m_nPos < POS_BEFORE)
+				m_iScrollChange = change;
+			else
+				m_iScrollChange = -change;
+		}
 
-		if(m_nPos < (unsigned int) POS_BEFORE)
-			m_iScrollChange = change;
-		else
-			m_iScrollChange = -change;
+		// Send a scroll message to the main winproc...
+		int* piParams = new int[3];
+		piParams[0] = GetID(); // id
+		piParams[1] = m_bHorzintal; // horizontal or vertical
+		piParams[2] = GetPos();
+		GetGUI()->GetActiveCallBackFunc()(
+			GetGUI()->GetActiveMainWnd(), ZGM_SCROLL, 1, piParams);
 
-		NEW_CLICK = true;
+		delete[] piParams;
 	}
 
 	if(m_pkParent)
@@ -136,6 +155,7 @@ void ZGuiScrollbar::CreateInternalControls()
 	rcThumb.Bottom	= m_unThumbSize;
 
 	m_pkThumbButton = new ZGuiButton(rcThumb, this, true, SCROLLTHUMB_ID);
+	m_pkThumbButton->SetInternalControlState(true);
 
 	SetScrollInfo(0,100,0.15f,0);
 }

@@ -31,7 +31,10 @@ public:
 	void Deselect();
 	void SetPos(int x, int y);
 	void Resize(int w, int h);
+	ZGuiButton* GetButton() { return m_pkButton; }
 	unsigned int GetID();
+
+	bool m_bMenuItem;
 	
 private:
 	unsigned int m_iID;

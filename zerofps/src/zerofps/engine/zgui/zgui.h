@@ -20,6 +20,7 @@
 #include "zguicombobox.h"
 #include "zguiradiobutton.h"
 #include "zguicursor.h"
+#include "zguitextbox.h"
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
 #include <list>
@@ -45,8 +46,8 @@ class Input;
 class ENGINE_API ZGui  
 {
 public:
+	bool ToogleGui();
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
-
 	void ShowCursor(bool bShow) { m_pkCursor->Show(bShow); }
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
@@ -60,11 +61,15 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
+	bool RemoveMainWindow(int iMainWindowID);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
 	bool SetActiveMainWindow(int iID);									// Select a new active main window
-//	bool SetRenderer( ZGuiRender* pkRender );							// Set a new gui render object
+
 	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
-	
+
+	bool UnregisterWindow(ZGuiWnd* pkWindow);
+	bool RegisterWindow(ZGuiWnd* pkNewWindow); // must be called if the window are created after the parent are created...
+	ZGuiWnd* GetMainWindow(int iID);
 	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWin; return NULL; }
 	callback GetActiveCallBackFunc() 
 	{ 
@@ -83,19 +88,16 @@ public:
 	};
 
 private:
-
 	bool Render(); // Render the active main window
 	void SetFocus(ZGuiWnd* pkWnd);
 	bool OnKeyUpdate(/*unsigned long nKey*/);
 	bool OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButtonDown*/);
 	void RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect);
 	MAIN_WINDOW* ChangeMainWindow(int x, int y);
-	bool RegisterWindow(ZGuiWnd* pkNewWindow);
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	Input* m_pkInput;
 	
-	bool WindowSortCmp(MAIN_WINDOW* a, MAIN_WINDOW* b);
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window
 
@@ -104,11 +106,12 @@ private:
 	bool m_bLeftButtonDown; // previus state of the left mouse button.
 	bool m_bRightButtonDown; // previus state of the left mouse button.
 
-	ZGuiWnd* m_pkWndClicked, *m_pkWndUnderCursor;
-	ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
+//	ZGuiWnd* m_pkWndClicked, *m_pkWndUnderCursor;
+//	ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
 
 	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
 	ZGuiSkin* m_pkCursorSkin;
+	bool m_bActive;
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)

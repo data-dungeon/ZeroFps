@@ -5,6 +5,7 @@
 #include "zguicombobox.h"
 #include "zguilabel.h"
 #include "zguilistbox.h"
+#include "zgui.h"
 
 const int COMBOBOX_LABEL_ID = 800;
 const int LISTBOX_ID = 801;
@@ -19,30 +20,29 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 						 ZGuiSkin* pkTopItemSkin, int iTopItemTextureMask) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
+	m_pkLabelIsDisabled = false;
 	Rect rc = GetWndRect();
+	rc.Left = 0;
+	rc.Right = rc.Left + kRectangle.Width();
 	rc.Top = 0;
 	rc.Bottom = iItemHeight;
 	
 	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);
-	m_pkLabel->SetText("Hello!");
 	m_pkLabel->SetSkin(pkTopItemSkin, iTopItemTextureMask);
 	m_pkLabel->SetTextSkin(pkTextSkin,iFontTextureMask); 
 
-	rc.Top = iItemHeight;
-	rc.Bottom = rc.Top+iItemHeight*5;
+	m_unNumVisibleRows = 7;
+	rc.Top = 20;
+	rc.Bottom = rc.Top+iItemHeight*m_unNumVisibleRows;
 
 	m_pkListbox = new ZGuiListbox(rc,this,true,LISTBOX_ID,iItemHeight,
 		pkTextSkin, iFontTextureMask, pkSkinItem, pkSkinItemSelected, pkSkinItemHighLight);
-	//m_pkListbox->SetSkin(pkSkinItem);
-	//pkListbox->SetScrollbarSkin(bk2, bn1_upp, bn1_hlight);
-
-/*	rc = GetScreenRect(); 
-	rc.Top +=20;
-	m_pkListbox->SetMoveArea(rc,true);*/
 
 	m_pkListbox->Hide();
+	Resize(m_pkLabel->GetScreenRect().Width(),
+		m_pkLabel->GetScreenRect().Height());
 
-	CreateInternalControls();
+	m_pkListbox->GetItemArea().Top -= 20;
 }
 
 ZGuiCombobox::~ZGuiCombobox()
@@ -55,33 +55,6 @@ bool ZGuiCombobox::Render( ZGuiRender* pkRenderer )
 	m_pkLabel->Render(pkRenderer);
 	m_pkListbox->Render(pkRenderer);
 	return true;
-}
-
-void ZGuiCombobox::CreateInternalControls()
-{
-/*	Rect rc = GetWndRect();
-	int x = 0;
-	int y = 0;
-	int w = rc.Width()-20;
-	int h = 20;
-	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);*/
-
-/*	Rect rc = GetWndRect();
-	int x = rc.Width()-20;
-	int y = 0;
-	int w = 20;
-	int h = rc.Height()-20;
-
-	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
-		this,true,VERT_SCROLLBAR_ID);
-
-	x = 0;
-	y = rc.Height()-20;
-	w = rc.Width()-20;
-	h = 20;
-
-	m_pkScrollbarHorizontal = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
-		this,true,HORZ_SCROLLBAR_ID);*/
 }
 
 void ZGuiCombobox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
@@ -102,10 +75,65 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 	{
 		ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
  
-		if(pkSelItem)
+		if(pkSelItem && m_pkLabelIsDisabled == false)
 			m_pkLabel->SetText(pkSelItem->GetText());
 
-		m_pkListbox->IsVisible() ? m_pkListbox->Hide() : m_pkListbox->Show();
+		if(m_pkListbox->IsVisible())
+		{
+			m_pkListbox->Hide();
+	
+			Resize(m_pkLabel->GetScreenRect().Width(),
+				m_pkLabel->GetScreenRect().Height());
+
+			// Send a message to the main winproc...
+			int* piParams = new int[2];
+			piParams[0] = GetID(); // Listbox ID
+			if(pkSelItem != NULL)
+			{
+				piParams[1] = pkSelItem->GetID(); // list item ID
+				GetGUI()->GetActiveCallBackFunc()(
+					GetGUI()->GetActiveMainWnd(), ZGM_CBN_SELENDOK, 2, piParams);
+			}
+			delete[] piParams;
+		}
+		else
+		{
+			m_pkListbox->Show();
+
+			Resize(GetScreenRect().Width(),
+				m_pkLabel->GetScreenRect().Height()+
+				m_pkListbox->GetScreenRect().Height());
+		}
+	}
+	else
+	if(iCode == NCODE_RELEASE)
+	{
+		if(m_pkListbox->IsVisible() )
+		{
+			if(pkWnd != m_pkListbox->GetVScrollbar()->GetButton())
+			{
+				ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
+ 
+				if(pkSelItem && m_pkLabelIsDisabled == false)
+					m_pkLabel->SetText(pkSelItem->GetText());
+
+				m_pkListbox->Hide();
+		
+				Resize(m_pkLabel->GetScreenRect().Width(),
+					m_pkLabel->GetScreenRect().Height());
+
+				// Send a message to the main winproc...
+				int* piParams = new int[2];
+				piParams[0] = GetID(); // Listbox ID
+				if(pkSelItem != NULL)
+				{
+					piParams[1] = pkSelItem->GetID(); // list item ID
+					GetGUI()->GetActiveCallBackFunc()(
+						GetGUI()->GetActiveMainWnd(), ZGM_CBN_SELENDOK, 2, piParams);
+				}
+				delete[] piParams;
+			}
+		}
 	}
 
 	return true;
@@ -113,9 +141,43 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 bool ZGuiCombobox::AddItem(char* strText, unsigned int iID)
 {
-	return m_pkListbox->AddItem(strText, iID);
+	m_pkListbox->AddItem(strText, iID);
+	return true;
 }
 
+void ZGuiCombobox::SetLabelText(char* strText)
+{ 
+	m_pkLabel->SetText(strText); 
+}
 
+void ZGuiCombobox::SetLabelWidth(int iWidth)
+{ 
+	m_pkLabel->Resize(iWidth, m_pkLabel->GetScreenRect().Height());
+}
 
+void ZGuiCombobox::DisableLabelText(bool bDisable)
+{
+	m_pkLabelIsDisabled = bDisable; 
 
+	if(m_pkLabelIsDisabled)
+		m_pkListbox->DisableSelItem();
+}
+
+void ZGuiCombobox::SetNumVisibleRows(unsigned short iNumVisibleRows)
+{ 
+	m_unNumVisibleRows = iNumVisibleRows;
+	
+	Rect rc = m_pkListbox->GetScreenRect();
+	int iNewHeight = (m_unNumVisibleRows+1)*m_pkListbox->GetItemHeight();
+	m_pkListbox->Resize(rc.Width(), iNewHeight);
+
+	m_pkListbox->GetItemArea().Top -= m_pkListbox->GetItemHeight();
+	m_pkListbox->GetItemArea().Bottom -= m_pkListbox->GetItemHeight()*2;
+
+	Resize(m_pkLabel->GetScreenRect().Width(),
+			m_pkLabel->GetScreenRect().Height());
+
+/*	Resize(m_pkLabel->GetScreenRect().Width(),
+			m_pkLabel->GetScreenRect().Height()+
+			m_pkListbox->GetScreenRect().Height());*/
+}

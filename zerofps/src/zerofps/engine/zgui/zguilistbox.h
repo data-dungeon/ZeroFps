@@ -25,6 +25,11 @@ public:
 		ZGuiSkin *pkSkinItemHighLight=NULL);
 	virtual ~ZGuiListbox();
 
+	void Resize(int Width, int Height);
+	void UpdateList();
+	bool RemoveAllItems();
+	bool RemoveItem(unsigned int iID);
+	void DisableSelItem(bool bDisable=true);
 	ZGuiListitem* GetItem(int iID);
 	bool AddItem(char* strText, unsigned int iID); 
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
@@ -34,9 +39,16 @@ public:
 	void SetItemHighLightSkin(ZGuiSkin* pkSkin);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool Render( ZGuiRender* renderer );
+	unsigned short GetItemHeight() { return m_unItemHeight; }
 	ZGuiListitem* GetSelItem();
+	ZGuiScrollbar* GetVScrollbar() { return m_pkScrollbarVertical; }
+
+	typedef list<ZGuiListitem*>::iterator itItemList;
+
+	Rect& GetItemArea() { return m_kItemArea; }
 
 private:
+	
 	void ScrollItems(ZGuiScrollbar* pkScrollbar);
 	void CreateInternalControls();
 
@@ -46,7 +58,8 @@ private:
 	unsigned short m_unItemHeight;
 	Rect m_kItemArea;
 	ZGuiListitem* m_pkSelectedItem;
-	unsigned short m_unTopItem;
+	bool m_bSelitemDisabled;
+	int m_iScrollbarWidth;
 };
 
 #endif // !defined(AFX_LISTBOX_H__F667D216_3A7B_4606_907F_E48FFD386301__INCLUDED_)

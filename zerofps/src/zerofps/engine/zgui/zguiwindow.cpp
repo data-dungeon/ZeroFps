@@ -6,10 +6,16 @@
 #include "../../render/zguirenderer.h"
 #include "../../basic/zguiskin.h"
 
+ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
+ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;
+ZGuiWnd* ZGuiWnd::m_pkFocusWnd = NULL;
+
+ZGuiWnd* ZGuiWnd::m_pkWndClicked = NULL;
+ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
@@ -25,6 +31,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_iBkMaskTexture = -1;
 	m_iBorderMaskTexture = -1;
 	m_bVisible = bVisible;
+	m_bInternalControl = false;
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -38,7 +45,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 		m_kArea += pkParent->GetScreenRect();
 
-		// Får inte befinna sig utanför sin föräldrers gränser.
+/*		// Får inte befinna sig utanför sin föräldrers gränser.
 		if(m_kArea.Bottom + bsz > pkParent->GetScreenRect().Bottom)
 		{
 			int height = m_kArea.Height(); 
@@ -50,7 +57,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 			int width = m_kArea.Width(); 
 			m_kArea.Right = pkParent->GetScreenRect().Right;
 			m_kArea.Left = m_kArea.Right-width;
-		}
+		}*/
 	}
 
 /*	if(iID != 520 && iID != 620)*/
@@ -59,10 +66,18 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 ZGuiWnd::~ZGuiWnd()
 {
+	ZGuiWnd* pkParent = GetParent();
+	if(pkParent)
+		pkParent->RemoveChild(this);
+
 	for( WINit w = m_kChildList.begin();
 		 w != m_kChildList.end(); w++)
 		 {
-			delete (*w);
+			if((*w) != NULL)
+			{
+				delete (*w);
+				(*w) = NULL;
+			}
 		 }
 
 	m_kChildList.clear();
@@ -75,6 +90,21 @@ bool ZGuiWnd::AddChild( ZGuiWnd *pkWindow )
 	pkWindow->SetParent( this );
 	m_kChildList.push_back( pkWindow );
     return true;
+}
+
+bool ZGuiWnd::RemoveChild( ZGuiWnd *pkWindow )
+{
+	for( WINit w = m_kChildList.begin();
+		 w != m_kChildList.end(); w++)
+		 {
+			 if(pkWindow == (*w))
+			 {
+				 m_kChildList.erase(w);
+				 return true;
+			 }
+		 }
+
+    return false;
 }
 
 bool ZGuiWnd::SetParent( ZGuiWnd *pkWindow )
@@ -253,7 +283,9 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	}
 
 	if( pkFind==NULL && m_kArea.Inside(x,y))
+	{
 		return this;
+	}
 	else
 	{
 		return pkFind;
@@ -327,14 +359,18 @@ Rect ZGuiWnd::GetScreenRect()
 
 void ZGuiWnd::Resize(int Width, int Height)
 {
+
 	m_kArea.Right = m_kArea.Left + Width;
 	m_kArea.Bottom = m_kArea.Top + Height;
 
 	m_kMoveArea = m_kArea;
 }
 
-void ZGuiWnd::Move(int dx, int dy)
+void ZGuiWnd::Move(int dx, int dy, bool bScreenSpace, bool bFreeMovement)
 {
+	int iPrevPosX = m_kArea.Left, 
+		iPrevPosY = m_kArea.Top;
+
 	m_kArea.Left += dx;
 	m_kArea.Right += dx;
 	m_kArea.Top += dy;
@@ -344,6 +380,11 @@ void ZGuiWnd::Move(int dx, int dy)
 	m_kMoveArea.Right += dx;
 	m_kMoveArea.Top += dy;
 	m_kMoveArea.Bottom += dy;
+
+	int w = m_kArea.Width();
+	int h = m_kArea.Height();
+
+	UpdatePos(iPrevPosX, iPrevPosY, w, h, bFreeMovement);
 }
 
 ZGui* ZGuiWnd::GetGUI()
@@ -363,6 +404,3 @@ ZGui* ZGuiWnd::GetGUI()
 
 	return pkGui;
 }
-
-
-

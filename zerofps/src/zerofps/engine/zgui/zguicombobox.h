@@ -16,6 +16,7 @@
 class ZGuiRender;
 class ZGuiLabel;
 class ZGuiListbox;
+class ZGuiListitem;
 
 class ENGINE_API ZGuiCombobox : public ZGuiControl
 {
@@ -31,12 +32,21 @@ public:
 	void SetSkin(ZGuiSkin* pkSkin); // ersätter ZGuiWnd::SetSkin...
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool AddItem(char* strText, unsigned int iID);
+	void SetLabelText(char* strText);
+	void SetLabelWidth(int iWidth);
+	void DisableLabelText(bool bDisable=true);
+	void SetNumVisibleRows(unsigned short iNumVisibleRows);
+
+	ZGuiListitem* GetItem(int iID);
+
+	ZGuiListbox* GetListbox() { return m_pkListbox; }
 
 private:
-	void CreateInternalControls();
 	ZGuiLabel* m_pkLabel;
 	ZGuiListbox* m_pkListbox;
 //	ZGuiSkin m_kDropDownIcon;
+	bool m_pkLabelIsDisabled;
+	unsigned short m_unNumVisibleRows;
 };
 
 #endif // !defined(AFX_COMBOBOX_H__942928D7_8B6B_421F_B821_742984902F7D__INCLUDED_)

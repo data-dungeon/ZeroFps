@@ -2,16 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-/*
-
-  	int x, y;
-	m_pkInput->MouseXY(x, y);
-
-	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
-	bool bRightButtonDown = m_pkInput->Pressed(MOUSERIGHT);
-
-  */
-
 #include "../../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
@@ -22,18 +12,13 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-
-ZGui::ZGui(/*int uiScreenWidth, int uiScreenHeight, Input* pkInput*/)
+ZGui::ZGui()
 {
-	//m_pkInput = pkInput;
+	m_bActive = true;
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkActiveMainWin = NULL;
-	m_pkFocusWnd = NULL;
-/*	m_uiScreenWidth = uiScreenWidth;
-	m_uiScreenHeight = uiScreenHeight;*/
-	m_pkWndClicked = NULL;
-	m_pkWndUnderCursor = NULL;
+//	m_pkFocusWnd = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
 	m_pnCursorRangeDiffX=m_pnCursorRangeDiffY=0;
@@ -50,26 +35,6 @@ ZGui::~ZGui()
 
 }
 
-/*bool ZGui::Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
-{
-	m_uiScreenWidth = uiScreenWidth;
-	m_uiScreenHeight = uiScreenHeight;
-	m_pkInput = pkInput;
-	return true;
-}*/
-
-bool ZGui::Update()
-{
-	if(!OnMouseUpdate())
-		return false;
-	if(!OnKeyUpdate())
-		return false;
-
-	Render();
-
-	return true;
-}
-
 bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 {
 	if(pkNewWindow == NULL)
@@ -77,6 +42,22 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 
 	pkNewWindow->SetGUI(this);
 	m_pkWindows.insert( map<int, ZGuiWnd*>::value_type(pkNewWindow->GetID(), pkNewWindow) ); 
+
+	return true;
+}
+
+bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
+{
+	if(pkWindow == NULL)
+		return false;
+
+	map<int, ZGuiWnd*>::iterator itWnd;
+	itWnd = m_pkWindows.find(pkWindow->GetID());
+
+	if(itWnd == m_pkWindows.end())
+		return false;
+
+	m_pkWindows.erase(itWnd);
 
 	return true;
 }
@@ -113,7 +94,48 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 		RegisterWindow((*w));
 	}
 
-	m_pkFocusWnd = pkWindow;
+	return true;
+}
+
+bool ZGui::RemoveMainWindow(int iMainWindowID)
+{
+	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
+		 itMain != m_pkMainWindows.end(); itMain++ )
+		 {
+			if( (*itMain)->iID == iMainWindowID)
+			{
+				ZGuiWnd* pkWndMain = (*itMain)->pkWin;
+
+				list<ZGuiWnd*> kChildList;
+				pkWndMain->GetChildrens(kChildList);
+
+				WIN it = kChildList.begin(); 
+
+/*				if(kChildList.size() > 0)
+				{
+					//UnregisterWindow( (*it) );
+
+					delete (*it);
+					(*it) = NULL;
+
+					kChildList.erase( it ); 
+
+					//pkWndMain->RemoveChild( (*it) );	
+				}*/
+
+				delete (*itMain);
+				(*itMain) = NULL;
+
+				m_pkMainWindows.erase(itMain);				
+
+				if(m_pkMainWindows.size() == 0)
+					m_pkActiveMainWin = NULL;
+				else
+					m_pkActiveMainWin = m_pkMainWindows.back();
+
+				break;
+			}
+		 }
 
 	return true;
 }
@@ -127,33 +149,30 @@ ZGuiWnd* ZGui::GetWindow(unsigned int iID)
 	itWnd = m_pkWindows.find(iID);
 
 	if(itWnd == m_pkWindows.end())
+	{
 		return NULL;
+	}
 	 
 	return itWnd->second;
 }
 
-/*bool ZGui::SetRenderer(ZGuiRender* pkRenderer)
+ZGuiWnd* ZGui::GetMainWindow(int iID)
 {
-	m_pkRenderer = pkRenderer;
-	m_pkActiveMainWin = NULL;
-	return true;
-}*/
+	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		 it != m_pkMainWindows.end(); it++ )
+		 {
+			if( (*it)->iID == iID)
+				return (*it)->pkWin;
+		 }
+
+	return NULL;
+}
 
 // Rendera det aktiva fönstret (och alla dess childs)
 bool ZGui::Render()
 {
 	m_pkRenderer->StartRender();
 	
-/*	if(m_pkActiveMainWin)
-		if(m_pkActiveMainWin->pkWin)
-			return m_pkActiveMainWin->pkWin->Render(m_pkRenderer);
-*/
-/*	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++ )
-		 {
-			(*it)->pkWin->Render(m_pkRenderer);
-		 }*/
-
 	// Blit windows	with lowest z order first.
 	int l_iNumWindows = m_pkMainWindows.size();
 	int l_iCurrZOrder = 0;
@@ -258,11 +277,10 @@ void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
 	m_pkActiveMainWin->iZValue = m_pkMainWindows.size()-1;
 }
 
-bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButtonDown*/)
+bool ZGui::OnMouseUpdate()
 {
   	int x, y;
 	m_pkInput->MouseXY(x,y);
-
 	m_pkCursor->SetPos(x,y);
 
 	bool bLeftButtonDown = m_pkInput->Pressed(MOUSELEFT);
@@ -278,27 +296,25 @@ bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButton
 		RearrangeWnds(wnd);
 	}
 
-	static ZGuiWnd* pkPrevWndUnderCursor = NULL;
-
 	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWin->Find(x, y);
 
 	if(pkFocusWindow == NULL)
 		pkFocusWindow = m_pkActiveMainWin->pkWin;
 
-	m_pkWndUnderCursor = pkFocusWindow;
+	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
 	// Har vänster musknapp klickats (men inte släppt)
 	if(m_bLeftButtonDown == false && bLeftButtonDown == true)
 	{
 		if(pkFocusWindow)
 		{
-			m_pkWndClicked = pkFocusWindow;
+			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
 
-			Rect rc = m_pkWndClicked->GetScreenRect();
+			Rect rc = ZGuiWnd::m_pkWndClicked->GetScreenRect();
 			
-			if(m_pkWndClicked->GetMoveArea() == rc)
+			if(ZGuiWnd::m_pkWndClicked->GetMoveArea() == rc)
 			{
-				m_pkWndClicked->Notify(m_pkWndClicked, NCODE_CLICK_DOWN);
+				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_DOWN);
 			}
 			else
 			{
@@ -308,29 +324,29 @@ bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButton
 		}
 		else
 		{
-			m_pkWndClicked = NULL;
+			ZGuiWnd::m_pkWndClicked = NULL;
 		}
 	}
 
 	// Är vänster musknapp nertryckt?
-	if(bLeftButtonDown == true && m_pkWndClicked != NULL)
+	if(bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked != NULL)
 	{
 		// Skall fönstret flyttas?
-		if(!(m_pkWndClicked->GetMoveArea() == m_pkWndClicked->GetScreenRect()))
+		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
-			m_pkWndClicked->Notify(m_pkWndClicked, NCODE_MOVE);
-			m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-m_pnCursorRangeDiffY,true,false);
+			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_MOVE);
+			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-m_pnCursorRangeDiffY,true,false);
 
 			// Notify the main window that the window is moving
 			if(m_bLeftButtonDown == true)
 			{
 				int* pkParams = new int[5];
-				pkParams[0] = m_pkWndClicked->GetID();
-				pkParams[1] = m_pkWndClicked->GetScreenRect().Left;
-				pkParams[2] = m_pkWndClicked->GetScreenRect().Top;
-				pkParams[3] = m_pkWndClicked->GetScreenRect().Right;
-				pkParams[4] = m_pkWndClicked->GetScreenRect().Bottom;
-				m_pkActiveMainWin->pkCallback(m_pkWndClicked, ZGM_MOVING, 5, pkParams);
+				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID();
+				pkParams[1] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Left;
+				pkParams[2] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Top;
+				pkParams[3] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Right;
+				pkParams[4] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Bottom;
+				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked, ZGM_MOVING, 5, pkParams);
 				delete[] pkParams;
 			}
 		}
@@ -339,25 +355,40 @@ bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButton
 	// Har vänster musknapp släpts (men inte klickats)?
 	if(m_bLeftButtonDown == true && bLeftButtonDown == false)
 	{
-		if(pkFocusWindow && m_pkWndClicked != NULL)
+		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
+			// Informera fönstret innan att det har tappat fokus.
+			if(ZGuiWnd::m_pkWndUnderCursor)
+			{
+				if(ZGuiWnd::m_pkPrevWndClicked && ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
+				{
+					if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
+						ZGuiWnd::m_pkPrevWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_RELEASE);
+				}
+
+				if(!ZGuiWnd::m_pkWndClicked->IsInternalControl())
+					ZGuiWnd::m_pkPrevWndClicked = ZGuiWnd::m_pkWndUnderCursor;
+			}
+
 			// Är markören fortfarande innanför fönstrets gränser?
-			if(m_pkWndClicked->GetScreenRect().Inside(x, y))
+			if(ZGuiWnd::m_pkWndClicked->GetScreenRect().Inside(x, y))
 			{
 				// Notify the main window that the window have been clicked
 				int* pkParams = new int[1];
-				pkParams[0] = m_pkWndClicked->GetID(); // control id
+				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
 				delete[] pkParams;
 
-				SetFocus(m_pkWndClicked);
+				SetFocus(ZGuiWnd::m_pkWndClicked);
 				
-				m_pkWndClicked->Notify(m_pkWndClicked, NCODE_CLICK_UP);
-				m_pkWndClicked = NULL;
+				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_UP);
+				
+				ZGuiWnd::m_pkWndClicked = NULL;
 			}
 			else
 			{
-				m_pkWndClicked->Notify(m_pkWndClicked, NCODE_RELEASE);
+				if(ZGuiWnd::m_pkPrevWndUnderCursor)
+					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_RELEASE);
 			}
 		}
 	}
@@ -366,16 +397,16 @@ bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButton
 	if( m_bLeftButtonDown == false && bLeftButtonDown == false)
 	{
 		// Är det samma fönstret under musmarkören som innan?
-		if(m_pkWndUnderCursor != NULL)
+		if(ZGuiWnd::m_pkWndUnderCursor != NULL)
 		{
-			if(m_pkWndUnderCursor != pkPrevWndUnderCursor)
+			if(ZGuiWnd::m_pkWndUnderCursor != ZGuiWnd::m_pkPrevWndUnderCursor)
 			{
-				m_pkWndUnderCursor->Notify(m_pkWndUnderCursor, NCODE_OVER_CTRL);
+				ZGuiWnd::m_pkWndUnderCursor->Notify(ZGuiWnd::m_pkWndUnderCursor, NCODE_OVER_CTRL);
 
-				if(pkPrevWndUnderCursor)
-					pkPrevWndUnderCursor->Notify(pkPrevWndUnderCursor, NCODE_DEFAULT);
+				if(ZGuiWnd::m_pkPrevWndUnderCursor)
+					ZGuiWnd::m_pkPrevWndUnderCursor->Notify(ZGuiWnd::m_pkPrevWndUnderCursor, NCODE_DEFAULT);
 				
-				pkPrevWndUnderCursor = m_pkWndUnderCursor;
+				ZGuiWnd::m_pkPrevWndUnderCursor = ZGuiWnd::m_pkWndUnderCursor;
 			}
 		}
 	}
@@ -386,13 +417,13 @@ bool ZGui::OnMouseUpdate(/*int x, int y, bool bLeftButtonDown, bool bRightButton
 	return true;
 }
 
-bool ZGui::OnKeyUpdate(/*unsigned long nKey*/)
+bool ZGui::OnKeyUpdate()
 {
 	unsigned long nKey = m_pkInput->GetQueuedKey();
 
-	if(m_pkFocusWnd != NULL)
+	if(ZGuiWnd::m_pkFocusWnd != NULL)
 	{
-		m_pkFocusWnd->ProcessKBInput(nKey);
+		ZGuiWnd::m_pkFocusWnd->ProcessKBInput(nKey);
 		return true;
 	}
 
@@ -403,11 +434,14 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {
 	// Hitta det fönster som tidigare hade fokus och 
 	// ta bort fokuset från denna.
-	if(m_pkFocusWnd)
+	if(ZGuiWnd::m_pkFocusWnd)
 	{		
-		if(m_pkFocusWnd)
-			m_pkFocusWnd->KillFocus();
+		if(ZGuiWnd::m_pkFocusWnd)
+			ZGuiWnd::m_pkFocusWnd->KillFocus();
 	}
+
+	ZGuiWnd::m_pkFocusWnd = pkWnd;
+	ZGuiWnd::m_pkFocusWnd->SetFocus();
 }
 
 void ZGui::SetCursor(int TextureID, int MaskTextureID, int Width, int Height)
@@ -419,4 +453,26 @@ void ZGui::SetCursor(int TextureID, int MaskTextureID, int Width, int Height)
 	int x, y;
 	m_pkInput->MouseXY(x,y);
 	m_pkCursor->SetPos(x,y);
+}
+
+bool ZGui::Update()
+{
+	if(m_bActive)
+	{
+		if(!OnMouseUpdate())
+			return false;
+		if(!OnKeyUpdate())
+			return false;
+
+		Render();
+	}
+
+	return true;
+}
+
+bool ZGui::ToogleGui()
+{
+	m_bActive = !m_bActive;
+	ShowCursor(m_bActive);
+	return m_bActive;
 }

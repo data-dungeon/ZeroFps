@@ -27,7 +27,10 @@ public:
 	void SetThumbButtonSkins(ZGuiSkin* pkSkinNormal, ZGuiSkin* pkSkinHighLight);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	int GetPos() { return m_nPos; }
-int m_iScrollChange;
+	
+	int m_iScrollChange;
+
+	ZGuiButton* GetButton() { return m_pkThumbButton; }
 private:
 	ZGuiButton* m_pkThumbButton;
 	bool m_bHorzintal;

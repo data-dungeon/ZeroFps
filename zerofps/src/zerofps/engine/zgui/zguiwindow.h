@@ -44,6 +44,7 @@ public:
 	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
 	virtual ~ZGuiWnd();
 
+	bool RemoveChild( ZGuiWnd *pkWindow );
 	bool AddChild(ZGuiWnd *pkWindow);					// Add a new childwindow
 	bool SetParent(ZGuiWnd *pkWindow);					// Set the parent window
 	ZGuiWnd* GetParent();								// Get the parent window
@@ -62,21 +63,29 @@ public:
 	virtual void SetFocus()	 { m_bHaveFocus = true;  }
 	virtual void KillFocus() { m_bHaveFocus = false; }
 	virtual bool ProcessKBInput(unsigned long nKey) { return false; }
+	virtual bool IsInternalControl() { return m_bInternalControl; } // tex knappen på en scrollbar.
+	virtual void CreateInternalControls() { /* do nothing */ }
 
 	bool IsVisible()	{ return m_bVisible; }
-	void Move(int dx, int dy);
-
-	virtual void CreateInternalControls() { /* do nothing */ }
+	void Move(int dx, int dy, bool bScreenSpace=false, bool bFreeMovement=false);
 
 	Rect GetMoveArea() { return m_kMoveArea; }
 	Rect GetWndRect();		// Get the windows area, relative to it´s parent.
 	Rect GetScreenRect();	// Get the real screen area.
 
+	void SetInternalControlState(bool IsInternalControl) { m_bInternalControl = IsInternalControl; }
 	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); // the rect is in screen space.
 	void GetChildrens(list<ZGuiWnd*>& kList);
 	virtual void SetText(char* strText);
 	virtual char* GetText() { return m_strText; }
 	ZGui* GetGUI();
+
+	static ZGuiWnd* m_pkPrevWndUnderCursor;
+	static ZGuiWnd* m_pkPrevWndClicked;
+	static ZGuiWnd* m_pkWndClicked;
+	static ZGuiWnd* m_pkWndUnderCursor;
+
+	static ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
 
 protected:
 	
@@ -99,6 +108,7 @@ private:
 	void UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h, bool bFreeMovement);
 	Rect m_kArea, m_kMoveArea;
 	bool m_bHaveFocus;
+	bool m_bInternalControl;
 
 };
 
