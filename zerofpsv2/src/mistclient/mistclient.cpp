@@ -1026,30 +1026,36 @@ bool MistClient::PickZones()
 	vector<Entity*> kObjects;	
 	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 		
-	int iNrOfZones=0;
+	float closest = 9999999999;
 	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i]->GetName() == "ZoneObject")
 		{
-			iNrOfZones++;
-		
 			P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
 			if(mp)
 			{
 				if(mp->TestLine(start,dir))
 				{	
-					//cout<<"clicked on zone: "<<i<<endl;
-					m_iTargetZoneObject = kObjects[i]->iNetWorkID;
-					m_iTargetFace = mp->GetLastColFace();
-					m_kTargetPos = mp->GetLastColPos();
+					float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+					if(d < closest)
+					{
+						closest = d;										
 					
-					pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
-					return true;
+						m_iTargetZoneObject = kObjects[i]->iNetWorkID;
+						m_iTargetFace = mp->GetLastColFace();
+						m_kTargetPos = mp->GetLastColPos();
+					
+						pkRender->Sphere(mp->GetLastColPos(),0.1,4,Vector3(1,0.5,1),false);
+					}						
 				}				
 			}
 		}
 	}
+	
+	if(closest != 9999999999)
+		return true;
 	
 	return false;
 	//cout<<"nr of zones picked:"<<iNrOfZones<<endl;
