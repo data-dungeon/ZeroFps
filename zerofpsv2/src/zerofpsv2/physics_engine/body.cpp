@@ -144,7 +144,7 @@ Mad_CoreMesh* Body::GetMeshByID(Mad_Core* pkMad,int iMesh)
 {
 	if(iMesh < 0)	
 		return NULL;
-	if(iMesh >= pkMad->m_kMesh.size())
+	if(iMesh >= int(pkMad->m_kMesh.size()))
 		return NULL;
 
 	return &pkMad->m_kMesh[iMesh];

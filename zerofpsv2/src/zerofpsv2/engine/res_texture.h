@@ -4,6 +4,7 @@
 #include "../basic/zfresource.h"
 #include "../render/texturemanager.h"
 #include "../basic/zfobjectmanger.h"
+#include "engine_x.h"
 
 class ResTexture : public ZFResource
 {
@@ -19,7 +20,7 @@ public:
 	bool Create(string strName);
 };
 
-ENGINE_SYSTEMS_API ZFResource* Create__ResTexture();
+ENGINE_API ZFResource* Create__ResTexture();
 
 #endif
 
