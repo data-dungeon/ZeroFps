@@ -90,7 +90,6 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 		if(szUseString && strcmp(szUseString, "Open container") == 0)
 		{
 			g_kGame.m_pkExamineMenu->OnClose(true);
-
 			g_kGame.OpenContainer();
 			return true;
 		}

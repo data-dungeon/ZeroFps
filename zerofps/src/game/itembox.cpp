@@ -389,8 +389,7 @@ Object* ItemBox::GetItemObject(int mx, int my)
 
 	int sx, sy;
 	m_pkContainer->GetSize(sx,sy);
-
-	if(sx > kSlot.first || sy > kSlot.second)
+	if(kSlot.first >= sx || kSlot.second >= sy)
 		return NULL;
 
 	Object* pkObject = m_pkContainer->GetItem(kSlot.first, kSlot.second);

@@ -11,11 +11,11 @@
 
 #include "dialogbox.h"
 
-class TextureManager;
+class TextureManager;	
 class PlayerControlProperty;
 #include "../common/itemproperty.h"
 
-class ExaminePUMenu : public DlgBox  
+class ExaminePUMenu : public DlgBox
 {
 public:
 	char* GetUseString(int index);
