@@ -149,6 +149,9 @@ void PhysicsEngine::CheckCollisions()
 						temp->m_kPos1=pkCD->m_kPos1;						
 						temp->m_kPos2=pkCD->m_kPos2;						
 						
+						temp->m_fDistance1=pkCD->m_fDistance1;
+						temp->m_fDistance2=pkCD->m_fDistance2;												
+						
 						temp->m_bAdded=false;
 						temp->m_bChecked=false;						
 						
@@ -210,16 +213,32 @@ void PhysicsEngine::HandleCollisions()
 	{
 		Collision* pkCol=(*itCp)->m_pkCol;		
 		
+/*		
+		cout<<"CHECKING: "<<(*itCp)->m_pkPP->GetObject()->GetName()<<endl;
+		cout<<"NAME1: "<<pkCol->m_pkPP1->GetObject()->GetName()<<endl;
+		cout<<"NAME2: "<<pkCol->m_pkPP2->GetObject()->GetName()<<endl;		
+		
+		cout<<"ColPos1: "<<pkCol->m_kPos1.x<<" "<<pkCol->m_kPos1.y<<" "<<pkCol->m_kPos1.z<<endl;
+		cout<<"ColPos2: "<<pkCol->m_kPos2.x<<" "<<pkCol->m_kPos2.y<<" "<<pkCol->m_kPos2.z<<endl;		
+		
+		cout<<"distance1: "<<pkCol->m_fDistance1<<endl;
+		cout<<"distance2: "<<pkCol->m_fDistance2<<endl;		
+*/		
 		
 		if((*itCp)->m_pkPP != pkSPP)
 		{
 			if(pkCol->m_bAdded==false)
 			{
 				if(pkCol->m_bChecked==false)
+				{
 					pkCol->m_bChecked=true;
-				else{
+//					cout<<"checked"<<endl;
+				}
+				else
+				{
 					pkCol->m_bAdded=true;
 					kCols.push_back(pkCol);
+//					cout<<"Added"<<endl;					
 				}
 			}
 	
@@ -235,17 +254,31 @@ void PhysicsEngine::HandleCollisions()
 			//check so the collision is not already added
 			if(pkCol->m_bAdded==false)
 			{
+//				cout<<"Old Newpos "<<(*itCp)->m_pkPP->m_kNewPos.x<<" "<<(*itCp)->m_pkPP->m_kNewPos.y<<" "<<(*itCp)->m_pkPP->m_kNewPos.z<<endl;
+				
 			
-//				Vector3 kOldNewPos1=(*it)->m_pkPP->m_kNewPos;
-				
-//				Vector3 kOldNewPos2=pkCol->m_pkPP2->m_kNewPos;
-				
+				Vector3 kOldNewPos1=(*itCp)->m_pkPP->m_kNewPos;
+					
 				//set the objects m_kNewPos to the one after a collision with the last solide object
 				if(pkCO->m_pkPP1==(*itCp)->m_pkPP)
+				{
 					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+					//cout<<"taking new pos from "<<pkCO->m_pkPP1->GetObject()->GetName()<<endl;
+				}
 				else
+				{
 					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos2;
-
+					//cout<<"taking new pos from "<<pkCO->m_pkPP2->GetObject()->GetName()<<endl;					
+				}
+				
+				if((*itCp)->m_pkPP->m_kNewPos == kOldNewPos1)
+				{
+					cout<<"New Possition is same as old one"<<endl;
+					continue;
+				}
+				
+				
+//				cout<<"New Newpos "<<(*itCp)->m_pkPP->m_kNewPos.x<<" "<<(*itCp)->m_pkPP->m_kNewPos.y<<" "<<(*itCp)->m_pkPP->m_kNewPos.z<<endl;
 	
 				CollisionData* pkCD=NULL;
 				//test collision with the new m_kNewPos that would be after a collision with the first object				
@@ -254,25 +287,30 @@ void PhysicsEngine::HandleCollisions()
 				//if a collision still occurs then update the collision data and puch it in kCols
 				if(pkCD!=NULL)
 				{
-//					cout<<"multi collision"<<endl;
 				
+//					cout<<"pos1: " <<pkCol->m_kPos1.x<<" "<<pkCol->m_kPos1.y<<" "<<pkCol->m_kPos1.z<<endl;
+//					cout<<"pos2: " <<pkCol->m_kPos2.x<<" "<<pkCol->m_kPos2.y<<" "<<pkCol->m_kPos2.z<<endl;					
 					pkCol->m_kPos1=pkCD->m_kPos1;						
 					pkCol->m_kPos2=pkCD->m_kPos2;						
+//					cout<<"pos1: " <<pkCD->m_kPos1.x<<" "<<pkCD->m_kPos1.y<<" "<<pkCD->m_kPos1.z<<endl;
+//					cout<<"pos2: " <<pkCD->m_kPos2.x<<" "<<pkCD->m_kPos2.y<<" "<<pkCD->m_kPos2.z<<endl;					
 											
 					if(pkCol->m_bChecked==false)
+					{
 						pkCol->m_bChecked=true;
+//						cout<<"checked"<<endl;
+					}
 					else
 					{
 						pkCol->m_bAdded=true;
 						kCols.push_back(pkCol);
+//						cout<<"added"<<endl;						
 					}
 					
 					delete pkCD;
 				}
-
-//				pkCol->m_pkPP1->m_kNewPos=kOldNewPos1;
-//				pkCol->m_pkPP2->m_kNewPos=kOldNewPos2;					
 				
+				(*itCp)->m_pkPP->m_kNewPos=kOldNewPos1;				
 			}
 		}
 	}

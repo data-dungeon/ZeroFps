@@ -21,6 +21,11 @@ void MassDriverProjectile::Update()
 
 void MassDriverProjectile::Touch(Object* pkObject)
 {
+//	m_pkObject->GetVel().Set(0,0,0);
+	
+//	m_pkObject->DeleteProperty("PhysicProperty");
+	
+	
 	StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
 	if(sp!=NULL)
 	{
@@ -28,6 +33,7 @@ void MassDriverProjectile::Touch(Object* pkObject)
 	}
 	
 	m_pkObjectMan->Delete(m_pkObject);	
+
 }
 
 

@@ -43,7 +43,7 @@ void TeleportProperty::Update()
 	}
 	else
 	{
-		if(m_pkStatusProperty->m_fHealth < 0)
+		if(m_pkStatusProperty->m_fHealth <= 0)
 			m_pkObjectMan->Delete(m_pkObject);		
 	}
 }

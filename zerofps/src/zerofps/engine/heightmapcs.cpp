@@ -88,12 +88,14 @@ CollisionData* HeightMapCS::Collide_CSSphere(CSSphere* kOther,float fTime)
 	tempdata->m_kVel2 = O2->GetVel();
 	tempdata->m_kAcc2 = O2->GetAcc();
 	tempdata->m_kRot2 = O2->GetRot();
+	tempdata->m_fDistance2 = (kNewPos - O2->GetPos()).Length();	
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = m_pkPP->m_kNewPos;//O1->GetPos();
 	tempdata->m_kVel1 = O1->GetVel();
 	tempdata->m_kAcc1 = O1->GetAcc();
 	tempdata->m_kRot1 = O1->GetRot();
+	tempdata->m_fDistance1 = 0;
 		
 	tempdata->m_kNormal=Vector3(0,0,0);
 	

@@ -107,8 +107,6 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	if(bla<0)
 		bla=0;
 	
-//	movevec1.Normalize();
-//	movevec2.Normalize();
 	
 	//assemble collision data
 	CollisionData* tempdata = new CollisionData;
@@ -118,12 +116,14 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	tempdata->m_kVel2 = movevec2*bla;
 	tempdata->m_kAcc2 = O2->GetAcc();
 	tempdata->m_kRot2 = O2->GetRot();
+	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = O1->GetPos()+(movevec1*bla);
 	tempdata->m_kVel1 = movevec1*bla;
-	tempdata->m_kAcc1 = O1->GetAcc();
-	tempdata->m_kRot1 = O1->GetRot();
+//	tempdata->m_kAcc1 = O1->GetAcc();
+//	tempdata->m_kRot1 = O1->GetRot();
+	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
 
 	tempdata->m_kNormal=Vector3(0,0,0);
 	

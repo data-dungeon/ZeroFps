@@ -10,14 +10,20 @@ StatusProperty::StatusProperty()
 	m_fArmor=100;
 	m_fHealth=100;
 	m_fArmorModifier=1;
-	m_fHealthModifier=50;	
+	m_fHealthModifier=5;	
 }
 
 void StatusProperty::Damage(float fDamage)
 {
-	float rest = m_fArmor - fDamage*m_fArmorModifier;
-	m_fArmor -= fDamage * m_fArmorModifier;	
-	m_fHealth -= rest * m_fArmorModifier;
+	if(m_fArmor <= 0)
+		m_fHealth -= fDamage * m_fHealthModifier;
+	else	
+		m_fArmor -= fDamage * m_fArmorModifier;		
+	
+
+	cout<<"armor "<<m_fArmor<<endl;
+	cout<<"health "<<m_fHealth<<endl;	
+
 }
 
 

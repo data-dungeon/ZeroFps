@@ -23,17 +23,20 @@ class PhysicProperty;
 
 struct ENGINE_API CollisionData
 {
-	PhysicProperty* m_pkPP2;
-	Vector3 m_kPos2;
-	Vector3 m_kVel2;
-	Vector3 m_kAcc2;
-	Vector3 m_kRot2;	
-	
 	PhysicProperty* m_pkPP1;
 	Vector3 m_kPos1;
 	Vector3 m_kVel1;
 	Vector3 m_kAcc1;
 	Vector3 m_kRot1;	
+	float   m_fDistance1;
+	
+	PhysicProperty* m_pkPP2;
+	Vector3 m_kPos2;
+	Vector3 m_kVel2;
+	Vector3 m_kAcc2;
+	Vector3 m_kRot2;	
+	float   m_fDistance2;
+	
 
 	Vector3 m_kNormal;
 	
@@ -47,6 +50,9 @@ struct ENGINE_API Collision
 
 	Vector3 m_kPos1;
 	Vector3 m_kPos2;
+
+	float m_fDistance1;
+	float m_fDistance2;
 
 	bool m_bAdded;
 	bool m_bChecked;
@@ -74,10 +80,20 @@ class ENGINE_API PhysicsEngine : public ZFObject
 				//its the same object then check wich collided first
 				if(x->m_pkPP == y->m_pkPP)
 				{
-					float Distance1 = (x->m_pkCol->m_kPos1 - x->m_pkCol->m_kPos2).Length();
-					float Distance2 = (y->m_pkCol->m_kPos1 - y->m_pkCol->m_kPos2).Length();
+					float Distance1;
+					float Distance2;
+				
+					if(x->m_pkPP == x->m_pkCol->m_pkPP1)
+						Distance1 = x->m_pkCol->m_fDistance1;					
+					else
+						Distance1 = x->m_pkCol->m_fDistance2;					
 					
-					return Distance1 > Distance2;
+					if(y->m_pkPP == y->m_pkCol->m_pkPP1)
+						Distance2 = y->m_pkCol->m_fDistance1;					
+					else
+						Distance2 = y->m_pkCol->m_fDistance2;					
+													
+					return Distance1 < Distance2;
 				}
 				
 				return x->m_pkPP < y->m_pkPP; 			
