@@ -148,8 +148,7 @@ void PhysicsEngine::CheckCollisions()
 			P_Physic* PP2 = static_cast<P_Physic*>(*it2);
 	
 			//dont collide two static objects =)
-			if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
-				PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+			if(PP1->m_bStatic && PP2->m_bStatic)
 				continue;
 	
 
@@ -533,8 +532,7 @@ Collision* PhysicsEngine::CheckIfColliding(P_Physic* pkPP)
 			continue;
 
 		//dont collide two static objects =)
-		if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
-			PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+		if(PP1->m_bStatic && PP2->m_bStatic)
 			continue;
 
 		if(TestMotionSpheres(PP1,PP2))

@@ -21,7 +21,8 @@ P_Physic::P_Physic()
 	m_bSolid=false;	
 	m_bGlide=true;
 	m_bStride=false;
-		
+	m_bStatic=false;
+	
 	m_bStrideHeight=0.7;
 
 	m_pkColSphere=NULL;
@@ -54,6 +55,7 @@ float P_Physic::GetBoundingRadius()
 	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 	if(mp!=NULL)
 	{
+		//cout<<"got radius from mad"<<endl;
 		return mp->GetRadius();	
 	}
 	
@@ -105,18 +107,19 @@ void P_Physic::Save(ZFIoInterface* pkPackage)
 		
 	pkPackage->Write((void*)&type,4,1);		
 	
+	
 
 	switch(type)
 	{
 		case 1:
-			pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);						
+			//pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);						
 			break;
 		case 2:
-			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);						
+			//pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);						
 			break;
 		case 3:
-			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
-			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);													
+			//pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
+			//pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);													
 //			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
 			break;
 			
@@ -138,24 +141,9 @@ void P_Physic::Load(ZFIoInterface* pkPackage)
 	int type;
 	pkPackage->Read((void*)&type,4,1);
 	
-	m_fColShape=type;
 	
-	switch(type)
-	{
-		case 1:
-			SetColShape(new CSSphere(0));	
-			pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);
-			break;
-		case 2:
-			SetColShape(new CSBox(Vector3(1,1,1)));	
-			pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);
-			break;
-		case 3:
-			SetColShape(new CSMech());	
-			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
-			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);																			
-			break;		
-	}		
+	SetColShape(type);
+	
 }
 
 
@@ -165,6 +153,40 @@ void P_Physic::SetColShape(CollisionShape* pkCs)
 	m_pkColObject->SetPPPointer(this);	
 }
 
+void P_Physic::SetColShape(int iType)
+{
+	if(m_fColShape != iType)
+	{
+		if(m_pkColObject)
+		{			
+			delete m_pkColObject;
+			
+			m_fColShape=0;
+			m_pkColObject=NULL;
+		}
+		
+		//set new type		
+		m_fColShape= iType;
+		
+		switch(iType)
+		{
+			case 1:			
+				SetColShape(new CSSphere(0));	
+				//pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4,1);
+				break;
+			case 2:
+				SetColShape(new CSBox(Vector3(1,1,1)));	
+				//pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12,1);
+				break;
+			case 3:
+				SetColShape(new CSMech());	
+				((CSSphere*)m_pkColSphere)->m_fRadius=0;
+				//pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4,1);										
+				//pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4,1);																			
+				break;		
+		}				
+	}
+}
 
 vector<PropertyValues> P_Physic::GetPropertyValues()
 {

@@ -28,6 +28,8 @@ class ENGINE_SYSTEMS_API P_Physic : public Property
 		bool m_bGlide;
 		bool m_bStride;
 		
+		bool m_bStatic;
+		
 		float m_bStrideHeight;
 		
 		float m_fColShape;
@@ -51,6 +53,7 @@ class ENGINE_SYSTEMS_API P_Physic : public Property
 		CollisionShape* GetColShape(){return m_pkColObject;};
 
 		void SetColShape(CollisionShape* pkCs);
+		void SetColShape(int iType);
 
 		bool HandleSetValue( string kValueName ,string kValue );
 

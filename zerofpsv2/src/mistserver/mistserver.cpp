@@ -484,6 +484,11 @@ void MistServer::Input()
 			//return if its a static object
 			if(pkObj->GetParent()->GetName() == "StaticEntity")
 				return;
+				
+				
+			//hack for collisions test
+			if(pkInput->Pressed(KEY_SPACE))
+					pkObj->GetVel()=Vector3(1,0,0);
 		
 			//move left
 			if(pkInput->Pressed(KEY_LEFT))

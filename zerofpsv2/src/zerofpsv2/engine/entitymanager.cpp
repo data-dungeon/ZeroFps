@@ -6,6 +6,7 @@
 #include "../engine_systems/propertys/p_primitives3d.h"
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/propertys/p_mad.h"
+#include "../engine_systems/propertys/p_physic.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "p_pfmesh.h"
@@ -2019,14 +2020,34 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 		return;
 	}	
 
+	//setup mad
 	P_Mad* mp = (P_Mad*)zd->m_pkZone->GetProperty("P_Mad");
 	
 	if(!mp)
-	{
 		mp = (P_Mad*)zd->m_pkZone->AddProperty("P_Mad");
-	}
 		
 	if(mp)
+		mp->SetBase(szName);
+
+	//setup pathfinding
+	P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
+	
+	if(!pkMesh)
+		pkMesh = (P_PfMesh*)zd->m_pkZone->AddProperty("P_PfMesh");
+	
+	if(pkMesh) {
+		pkMesh->SetMad(mp);
+	}
+
+
+
+/*	//setup physics
+	P_Physic* pp = (P_Physic*)zd->m_pkZone->GetProperty("P_Physic");
+	
+	if(!pp)
+		pp = (P_Physic*)zd->m_pkZone->AddProperty("P_Physic");	
+	
+	if(pp)
 	{
 		mp->SetBase(szName);
 		P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
@@ -2034,6 +2055,7 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 			pkMesh->SetMad(mp);
 			}
 	}
+*/	
 }
 
 

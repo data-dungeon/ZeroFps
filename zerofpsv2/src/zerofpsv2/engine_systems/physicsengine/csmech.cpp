@@ -144,8 +144,8 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	for(int i=0;i<3;i++){
 		kNLVerts[i] = m_kModelMatrix.VectorTransform(kVerts[i]);
 	
+		
 	}
-
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
@@ -263,7 +263,7 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 		pkRender->Line(kVerts[0],kVerts[0]+*pkNormal);
 		pkRender->Line(kVerts[2],kVerts[2]+*pkNormal);		
 		
-/*		pkRender->Line(kVerts[0],kVerts[0]+side[0].m_kNormal);
+		pkRender->Line(kVerts[0],kVerts[0]+side[0].m_kNormal);
 		pkRender->Line(kVerts[1],kVerts[1]+side[0].m_kNormal);		
 	
 		pkRender->Line(kVerts[1],kVerts[1]+side[1].m_kNormal);
@@ -281,6 +281,7 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 
 bool CSMech::SetUpMech()
 {
+	//cout<<"setting up mesh:"<<endl;
 	//look for mad property
 	P_Mad* pkMP = static_cast<P_Mad*>(m_pkPP->GetObject()->GetProperty("P_Mad"));	
 	if(pkMP != NULL)
