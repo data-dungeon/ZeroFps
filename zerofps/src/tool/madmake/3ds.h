@@ -5,6 +5,7 @@
 #define MAX_MAPNAME			256
 
 #include "3dsdef.h"
+#include <cstdio>
 
 #include <vector>
 using namespace std;

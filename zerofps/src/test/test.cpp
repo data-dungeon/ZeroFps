@@ -90,7 +90,7 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
-/*	
+	
 	Object *kul=new Object;
 	kul->AddProperty(new NormalDrawProperty(test,pkRender));	
 	kul->AddProperty(new PlayerControlProperty(pkInput));		
@@ -104,13 +104,17 @@ void Test::OnInit(void) {
 	pkObjectMan->Add(kul);
 	pkObjectMan->Add(ball);
 
-	CollisionSphere *sp1=new CollisionSphere;
-	CollisionSphere *sp2=new CollisionSphere;
+	CollisionSphere *sp1=new CollisionSphere(Vector3(0,0,0),8);
+	CollisionSphere *sp2=new CollisionSphere(Vector3(4,0,0),4);
 	CollisionPoint *p1=new CollisionPoint(Vector3(1,1,1));
+	CollisionPoint *p2=new CollisionPoint(Vector3(0,2,0));
 	
-	p1->Collide(sp1,true);
-	sp1->Collide(sp2,true);	*/
-
+	if(p1->Collide(p2,true))
+		cout<<"fuck ass"<<endl;
+	if(sp1->Collide(sp2,true))
+		cout<<"KROOOOOCK"<<endl;
+	if(p2->Collide(sp1,true))
+		cout<<"BLAAAAAAM"<<endl;
 }
 
 

@@ -12,9 +12,9 @@ class ENGINE_API CollisionPoint:public CollisionObject{
 	public:
 		Vector3 m_kPos;
 	
-		CollisionPoint(Vector3 kNewPos);
-		
-		bool Collide(CollisionObject *kOther,bool bContinue);
+		CollisionPoint(Vector3 kNewPos);		
+		bool Collide(CollisionObject *kOther,bool bContinue);		
+		bool CollidePoint(CollisionPoint *kCp);
 
 };
 

@@ -1,29 +1,38 @@
 #include "collisionsphere.h"
 
-CollisionSphere::CollisionSphere() {
-
-
+CollisionSphere::CollisionSphere(Vector3 kPos,float fRadius) {
+	m_kPos=kPos;	
+	m_fRadius=fRadius;
 }
 
 bool CollisionSphere::Collide(CollisionObject *kOther,bool bContinue) {
-//	cout<<typeid(*kOther).name()<<endl;
-//	cout<<typeid(CollisionSphere).name()<<endl;	
 	if(typeid(*kOther)==typeid(CollisionSphere)){
-		cout<<"SPHERE VS SPHERE"<<endl;
+		CollisionSphere *kCs=dynamic_cast<CollisionSphere*>(kOther);
+		return CollideSphere(kCs);
 
 	} else if(typeid(*kOther)==typeid(CollisionPoint)){
-		cout<<"SPHERE VS POINT"<<endl;
-	
+		CollisionPoint *kCp = dynamic_cast<CollisionPoint*>(kOther);			
+		return CollidePoint(kCp);
+		
 	} else if(bContinue){
 		cout<<"Unhandled Collision,Asking kOther"<<endl;	
-		kOther->Collide(this,false);
+		return kOther->Collide(this,false);
 	
 	}
 		
 	return false;
 }
 
+bool CollisionSphere::CollideSphere(CollisionSphere *kCs) {
+	float fDistance=(m_kPos-kCs->m_kPos).Length();
+	
+	return fDistance<(m_fRadius+kCs->m_fRadius);
+}
 
+bool CollisionSphere::CollidePoint(CollisionPoint *kCp) {
+	float fDistance=(m_kPos-kCp->m_kPos).Length();
+	return fDistance<m_fRadius;
+}
 
 
 

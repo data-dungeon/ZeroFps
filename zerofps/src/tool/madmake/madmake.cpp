@@ -1,7 +1,7 @@
 // PmdMake.cpp : Defines the entry point for the console application.
 //
 
-#include <string>
+#include <cstring>
 #include <iostream>
 #include "pmd.h"
 #include "mad.h"

@@ -8,6 +8,7 @@
 #include "mad.h"
 #include "vector"
 #include "iostream"
+#inclide <cstdio>
 
 using namespace std;
 
