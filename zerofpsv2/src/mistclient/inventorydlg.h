@@ -55,6 +55,7 @@ public:
 		char m_szPic[2][75];
 		SlotType m_eType;
 		Point m_kSqr;
+		Point m_kRealSqr;
 
 		int m_iContainer;
 		int m_iContainerID; // only if this slot is a container
@@ -102,9 +103,8 @@ private:
 	static int s_iSlotZCounter;
 	
 	int m_iCurrentScrollPos;
-	int m_iPrevScrollPos;
 	int m_iCurrentContainer;
-	int m_iPrevContainer;
+
 
 	Point m_kClickOffset;
 

@@ -18,14 +18,14 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_kClickOffset = Point(0,0);
-	m_iCurrentScrollPos = m_iPrevScrollPos = 0;
+	m_iCurrentScrollPos = 0;
 	m_pkDlgWnd = pkDlgWnd;
 	m_pkSelectedSlot = NULL;
 
 	m_pkSelectionLabel = new ZGuiLabel(Rect(264,16,264+32,16+32),m_pkDlgWnd,true,23443);
 	m_pkSelectionLabel->SetSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,0,0, 255,0,0, 2, 0, 1));
 	m_pkSelectionLabel->Hide();
-	m_iCurrentContainer = m_iPrevContainer = MAIN_CONTAINER;
+	m_iCurrentContainer = MAIN_CONTAINER;
 
 	m_pkBackButton = new ZGuiButton(Rect(472,259,472+28,259+19), m_pkDlgWnd, true, 33333);
 	m_pkBackButton->SetButtonUpSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 155,0,0, 0,0,0, 0, 0, 0));
@@ -425,7 +425,7 @@ void InventoryDlg::OnCommand(int iID)
 
 			int new_container = m_kContainerStack.top();
 
-			SwitchContainer(new_container);
+			SwitchContainer(new_container);		
 		}
 	}
 }
@@ -578,6 +578,12 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 		m_kDragSlots.push_back(kNewSlot);
 		break;
 	default:
+		if(eType == CONTAINTER_SLOTS)
+		{
+			kNewSlot.m_kRealSqr = sqr;
+			kNewSlot.m_kRealSqr.y += m_iCurrentScrollPos;
+		}
+
 		m_kItemSlots.push_back(kNewSlot);
 		break;
 	}
@@ -607,7 +613,10 @@ bool InventoryDlg::SlotExist(int sx, int sy)
 
 void InventoryDlg::SwitchContainer(int iNewContainer)
 {
-	m_iPrevContainer = m_iCurrentContainer;
+	static_cast<ZGuiScrollbar*>(m_pkResMan->Wnd(
+		"SlotListScrollbar"))->SetScrollInfo(0,100,0.15f,0);
+	m_iCurrentScrollPos = 0;
+
 	m_iCurrentContainer = iNewContainer;
 
 	itSlot it;
@@ -617,20 +626,23 @@ void InventoryDlg::SwitchContainer(int iNewContainer)
 
 		if(slot.m_eType == CONTAINTER_SLOTS)
 		{
+			// Placer föremålen på rätt ställen i den nya gridden.
 			if(slot.m_iContainer == iNewContainer)
-				slot.m_pkLabel->Show();
+			{
+				int nx = 264 + slot.m_kRealSqr.x * 48;
+				int ny = 16  + slot.m_kRealSqr.y * 48;
+
+				slot.m_pkLabel->SetPos(nx, ny, true, true);
+				
+				if(ny < 0 || ny > 192)
+					slot.m_pkLabel->Hide();
+				else
+					slot.m_pkLabel->Show();
+			}
 			else
 				slot.m_pkLabel->Hide();
 		}
 	}
-
-	//
-	// Scroll items
-	//
-
-/*	static_cast<ZGuiScrollbar*>(m_pkResMan->Wnd(
-		"SlotListScrollbar"))->SetScrollInfo(0,100,0.15f,0);*/
-
 }
 
 string InventoryDlg::GetWndByID(int iID)
