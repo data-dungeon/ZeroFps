@@ -104,10 +104,17 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	else
 	if(strClickName == "HQBn")
 	{
-		if(IsWndVisible("HQWnd"))
-			ShowWnd("HQWnd", false);
+		Entity* pkEnt = GetDMObject(HQ); 
+
+		if(pkEnt && bRMouseBnClick)
+			m_pkDM->MoveCamera(pkEnt->GetWorldPosV());
 		else
-			GetGameDlg(HQ_DLG)->OpenDlg();
+		{
+			if(IsWndVisible("HQWnd"))
+				ShowWnd("HQWnd", false);
+			else
+				GetGameDlg(HQ_DLG)->OpenDlg();
+		}
 	}
 	else
 	//
@@ -338,6 +345,8 @@ bool CGamePlayDlg::InitDlg()
 			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0),		// bottom button up		
 			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0)		// bottom button down	
 			);
+
+		GetWnd("HQBn")->m_bAcceptRightClicks = true;
 	}
 
 	ShowWnd("MapWnd", false);
@@ -518,8 +527,6 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 		m_iSelectedAgent = -1;
 		pkActiveCharBn->Hide();
 	}
-
-	//ZFAssert(pkAgentObject, "CGamePlayDlg::SelectAgent - Bad agent ID");
 }
 
 DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
