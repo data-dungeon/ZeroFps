@@ -196,19 +196,22 @@ void MistServer::Input()
 		kRm.LookDir(bla,Vector3(0,1,0));
 
 		m_pkCameraObject->SetLocalPosV(newpos);
-		m_pkCameraObject->SetLocalRotM(kRm);	
+		
+		if(pkInput->Pressed(MOUSERIGHT))
+			m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
 		if(pkInput->Pressed(MOUSELEFT))
 		{
 			AddZone();	
 		}
-		if(pkInput->Pressed(MOUSERIGHT))
+		
+		if(pkInput->Pressed(KEY_R))
 		{
 			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			pkObjectMan->DeleteZone(id);
-	
 		}
+		
 		if(pkInput->Pressed(MOUSEMIDDLE))
 		{		
 			m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
