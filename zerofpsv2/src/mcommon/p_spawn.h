@@ -25,7 +25,7 @@ class MCOMMON_API P_Spawn: public Property {
 		EntityManager* m_pkObjectMan;
 		Render*			m_pkRender;
 		
-		vector<Entity*>	m_kEntitys;
+		vector<int>	m_kEntitys;
 
 		int	m_iEntityCounter;
 		int	m_iMaxEntitys;

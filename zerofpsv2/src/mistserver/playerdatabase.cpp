@@ -128,7 +128,7 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 	}	
 	
 	Entity* pkEntity = m_pkEntityMan->CreateObject();
-	pkEntity->Load(&kFile);
+	pkEntity->Load(&kFile,false);
 	kFile.Close();
 	
 	//set save to false so it wont we saved whit the rest of the world

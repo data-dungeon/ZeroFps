@@ -130,6 +130,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void Clear();															///< Delete all objects.
 		void CreateBaseObjects();											/// create all base objects	
 
+
 		// Create 
 		Entity* CreateObject();												///< Create a empty object.
 		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID

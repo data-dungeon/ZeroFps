@@ -1004,10 +1004,16 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 /**	\brief	Load Entity.
 */
-void Entity::Load(ZFIoInterface* pkFile)
+void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 {
 	Vector3 pos;
 	Matrix4 rot;
+
+	int iNewID;
+	pkFile->Read(&iNewID,sizeof(iNewID),1);	
+	if(bLoadID)
+		iNetWorkID = iNewID;
+	
 
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	
@@ -1090,7 +1096,7 @@ void Entity::Load(ZFIoInterface* pkFile)
 	{
 		Entity* newobj = m_pkObjectMan->CreateObject();
 		newobj->SetParent(this);
-		newobj->Load(pkFile);		
+		newobj->Load(pkFile,bLoadID);		
 	}
 	
 	//reset alla update flags for this object
@@ -1104,6 +1110,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 	Vector3 pos = GetLocalPosV();
 	Matrix4 rot = GetLocalRotM();
 
+	pkFile->Write(&iNetWorkID,sizeof(iNetWorkID),1);	
+	
 	pkFile->Write(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	pkFile->Write(&pos,sizeof(pos),1);	
 	pkFile->Write(&rot,sizeof(rot),1);	

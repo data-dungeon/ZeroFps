@@ -1740,7 +1740,9 @@ bool EntityManager::LoadZones()
    // load latest created entityID
    kFile.Read(&iNextObjectID,sizeof(int),1);
 
-	cout<<"Nr of zones:"<<iNumOfZone<<endl;
+	cout<<"Nr of zones  : "<<iNumOfZone<<endl;
+	cout<<"Next objectID: "<<iNextObjectID<<endl;
+		
 	ZoneData kZData;
 	kZData.m_bUsed = true;
 	

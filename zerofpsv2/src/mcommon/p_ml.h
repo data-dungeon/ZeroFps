@@ -20,6 +20,7 @@ class MCOMMON_API P_Ml: public Property {
 		vector<string>	m_kActions;	///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
 		
 		P_Spawn* 		m_pkSpawn;
+		int				m_iSpawn;
 
 	public:
 
@@ -35,6 +36,8 @@ class MCOMMON_API P_Ml: public Property {
 		
 		void SetSpawnPointer(P_Spawn* pkSpawn) {m_pkSpawn = pkSpawn;};
 		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

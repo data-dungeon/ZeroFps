@@ -293,7 +293,7 @@ class ENGINE_API Entity
 
 		
 
-		void Load(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile,bool bLoadID = true);
 		void Save(ZFIoInterface* pkFile);
 
 		void StaticData(int iClient, NetPacket* pkNetPacket);

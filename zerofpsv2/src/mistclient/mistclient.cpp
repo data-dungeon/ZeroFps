@@ -165,6 +165,8 @@ void MistClient::Init()
 */
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
+
+
 }
 
 void MistClient::RegisterResources()

@@ -38,6 +38,7 @@ void P_Spawn::Update()
 	if(m_strTemplate == "")
 		return;
 	
+	
 	switch(m_iSpawnMode)
 	{
 		case POINT_SPAWN:
@@ -56,6 +57,9 @@ void P_Spawn::Update()
 		case AREA_SPAWN:
 		{			
 			float fAtime = m_pkFps->GetGameTime() - m_fTimer;
+			if(fAtime < 0)
+				m_fTimer = m_pkFps->GetGameTime();
+			
 			if(fAtime >= m_fSpawnDelay)
 			{				
 				//dont do anything if spawnded objects is at max
@@ -84,9 +88,9 @@ void P_Spawn::Update()
 
 void P_Spawn::RemoveEntity(Entity* pkEnt)
 {
-	for(vector<Entity*>::iterator it = m_kEntitys.begin(); it != m_kEntitys.end(); it++) 
+	for(vector<int>::iterator it = m_kEntitys.begin(); it != m_kEntitys.end(); it++) 
 	{
-		if((*it) == pkEnt)
+		if((*it) == pkEnt->iNetWorkID)
 		{
 			m_kEntitys.erase(it);
 			m_iEntityCounter--;
@@ -102,15 +106,13 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 
 	if(ent)
 	{
-		ent->GetSave() = false;
-	
 		P_Ml* pkMl = (P_Ml*)ent->GetProperty("P_Ml");
 		
 		if(pkMl)
 		{
 			pkMl->SetSpawnPointer(this);
 			m_iEntityCounter++;
-			m_kEntitys.push_back(ent);
+			m_kEntitys.push_back(ent->iNetWorkID);
 		}	
 		else
 		{
