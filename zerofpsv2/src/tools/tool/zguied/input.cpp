@@ -480,18 +480,12 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 				if(bHorizontal)
 				{
 					if(GetWndType(m_pkFocusWnd) == Slider)
-						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_HORZ);
-										
-					if(rc.Height() > rc.Width())					
-						m_pkFocusWnd->Resize(rc.Height(), rc.Width());					
+						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_HORZ);										
 				}
 				else
 				{
 					if(GetWndType(m_pkFocusWnd) == Slider)
-						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_VERT);
-					
-					if(rc.Width() > rc.Height())					
-						m_pkFocusWnd->Resize(rc.Width(), rc.Height());
+						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_VERT);				
 				}
 
 				if(GetWndType(m_pkFocusWnd) == Scrollbar)

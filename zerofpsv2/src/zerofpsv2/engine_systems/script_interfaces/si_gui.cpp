@@ -544,8 +544,13 @@ int GuiAppLua::ChangeWndParameterLua(lua_State* pkLua)
 			else
 			if(!strcmp("PBTEXTORIENT_UNDER", szParameter))
 				((ZGuiProgressbar*)pkWnd)->SetTextOrientation(PBTEXTORIENT_UNDER); 
-		}
 
+			//Hide text
+			if(!strcmp("PB_HIDETEXT", szParameter))
+				((ZGuiProgressbar*)pkWnd)->m_bShowText = false; 
+			
+		}
+		else
 		if(eWndType == Textbox)
 		{
 			if(!strcmp("TOGGLE_MULTILINE", szParameter))
@@ -562,6 +567,18 @@ int GuiAppLua::ChangeWndParameterLua(lua_State* pkLua)
 					g_pkGuiApp->GetSkin("DefSBrScrollDownSkin_d"));
 			}
 		}
+		else
+		if(eWndType == Slider)
+		{
+			if(!strcmp("SCF_VERT", szParameter))
+			{
+				((ZGuiSlider*)pkWnd)->SetCtrlStyle(SCF_VERT);			
+				
+				Rect rc = pkWnd->GetScreenRect();
+				pkWnd->Resize(rc.Width(),rc.Height(),true); 
+			}
+		}
+		
 	}
 
 	return 1;

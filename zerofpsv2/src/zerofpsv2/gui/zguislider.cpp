@@ -175,7 +175,24 @@ bool ZGuiSlider::ProcessKBInput(int nKey)
 
 void ZGuiSlider::SetCtrlStyle(unsigned long ulNewStyle) // replaces the previus
 {
+	unsigned long uiCtrlStyleBefore = m_uiCtrlStyle;
 	m_uiCtrlStyle = ulNewStyle;
+
+	//if(uiCtrlStyleBefore != m_uiCtrlStyle)
+	{
+		Rect rc = GetScreenRect();
+
+		if(GetCtrlStyle(SCF_HORZ))
+		{
+			if(rc.Height() > rc.Width())					
+				Resize(rc.Height(), rc.Width(), false);	
+		}
+		else
+		{
+			if(rc.Width() > rc.Height())					
+				Resize(rc.Width(), rc.Height(), false);
+		}
+	}
 }
 
 bool ZGuiSlider::GetCtrlStyle(unsigned long ulValue)

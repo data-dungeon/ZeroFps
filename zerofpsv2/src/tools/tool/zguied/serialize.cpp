@@ -381,6 +381,53 @@ bool ZGuiEd::WriteSpecialProperties()
 				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"TOGGLE_MULTILINE\")\n", 
 					pkWnd->GetName());			
 		}
+		else
+		if(eType == Progressbar)
+		{
+			char szParameter[50];
+			ZGuiProgressbar* pkProgressbar = (ZGuiProgressbar*) pkWnd;
+			
+			if(pkProgressbar->GetDir() != PBDIR_LEFT_TO_RIGHT)
+			{				
+				if(pkProgressbar->GetDir() == PBDIR_RIGHT_TO_LEFT)
+					strcpy(szParameter, "PBDIR_RIGHT_TO_LEFT");
+				if(pkProgressbar->GetDir() == PBDIR_TOP_TO_BOTTOM)
+					strcpy(szParameter, "PBDIR_TOP_TO_BOTTOM");
+				if(pkProgressbar->GetDir() == PBDIR_BOTTOM_TO_TOP)
+					strcpy(szParameter, "PBDIR_BOTTOM_TO_TOP");
+				
+				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"%s\")\n", 
+						pkWnd->GetName(), szParameter);	
+			}
+
+			if(pkProgressbar->GetTextOrientation() != PBTEXTORIENT_CENTER)
+			{
+				if(pkProgressbar->GetTextOrientation() == PBTEXTORIENT_LEFT)
+					strcpy(szParameter, "PBTEXTORIENT_LEFT");
+				if(pkProgressbar->GetTextOrientation() == PBTEXTORIENT_OVER)
+					strcpy(szParameter, "PBTEXTORIENT_OVER");
+				if(pkProgressbar->GetTextOrientation() == PBTEXTORIENT_RIGHT)
+					strcpy(szParameter, "PBTEXTORIENT_RIGHT");
+				if(pkProgressbar->GetTextOrientation() == PBTEXTORIENT_UNDER)
+					strcpy(szParameter, "PBTEXTORIENT_UNDER");
+				
+				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"%s\")\n", 
+						pkWnd->GetName(), szParameter);	
+			}
+
+			if(pkProgressbar->m_bShowText == false)
+				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"%s\")\n", 
+						pkWnd->GetName(), "PB_HIDETEXT");
+		}
+		else
+		if(eType == Slider)
+		{
+			if(((ZGuiSlider*)pkWnd)->GetCtrlStyle(SCF_VERT))
+			{
+				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"SCF_VERT\")\n", 
+						pkWnd->GetName());
+			}
+		}
 	}	
 
 	map<string,SPECIAL_WND_INFO>::iterator it;
