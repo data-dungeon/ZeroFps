@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
+				AdditionalOptions="/MACHINE:I386 /nodefaultlib:msvcrt.lib"
 				AdditionalDependencies="opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mistclient.exe"
 				LinkIncremental="2"
