@@ -137,7 +137,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				//remove old marker
 				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
 						
-				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
+/*				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
 					cout<<"Hit something trying to find a new way"<<endl;
 					TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
@@ -154,8 +154,8 @@ AIBase* P_UnitMoveAI::UpdateAI()
 							
 					return this;
 				}
-						
-				m_fSpeedMod = 1.0f - ((float)m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
+*/						
+				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
