@@ -197,7 +197,7 @@ void Game::SetupLevel()
 			m_pkPlayer->GetRot() = (*it)->GetRot();			
 			m_pkPlayer->AddProperty(new CameraProperty(m_pkCamera));
 			m_pkPlayer->AttachToClosestZone();
-			pkCollisionMan->Add(m_pkPlayer);			
+//			pkCollisionMan->Add(m_pkPlayer);			
 			pkLevelMan->AddTracker(m_pkPlayer);
 			
 			po=(*it);

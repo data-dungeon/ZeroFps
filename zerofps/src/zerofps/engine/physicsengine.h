@@ -35,6 +35,7 @@ struct ENGINE_API CollisionData
 	Vector3 m_kRot;	
 
 	Vector3 m_kNormal;
+	
 
 };
 

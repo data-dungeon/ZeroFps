@@ -204,7 +204,7 @@ void ZeroFps::MainLoop(void) {
 			m_pkPhysEngine->Update();
 
 			//update all collisions
-			m_pkCollisionMan->Update();				
+//			m_pkCollisionMan->Update();				
 
 			//update openal sound system
 			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),Vector3(0,0,-1),Vector3(0,1,0));

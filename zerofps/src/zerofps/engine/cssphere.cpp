@@ -5,22 +5,22 @@ CSSphere::CSSphere(float fRadius)
 	m_fRadius=fRadius;
 }
 
-CollisionData* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
+CollisionData* CSSphere::Test(CollisionShape* kOther,Sphere* pkSThis,Sphere* pkSOther,float fTime,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
 		CSSphere *kCs=dynamic_cast<CSSphere*>(kOther);
 		
-		return Collide_CSSphere(kCs,fTime);		
+		return Collide_CSSphere(kCs,pkSThis,pkSOther,fTime);		
 	} else if(bContinue)
 	{
-		return kOther->Test(this,fTime,false);
+		return kOther->Test(this,pkSOther,pkSThis,fTime,false);
 	};
 	
 	cout<<"Unhandled collision"<<endl;
 	return NULL;
 }
 
-CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
+CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,Sphere* pkSThis,Sphere* pkSOther,float fTime)
 {
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
@@ -103,9 +103,10 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 //	cout<<"OLD MV:"<<movevec.Length()<<endl;
 
 	float bla = distance / abs(movevec.Length());
+	if(bla<0)
+		return NULL;
 //	cout<<"Förhållande "<<bla<<endl;
 			
-	
 //	O1->GetVel()=movevec1*bla;
 //	O2->GetVel()=movevec2*bla;
 	

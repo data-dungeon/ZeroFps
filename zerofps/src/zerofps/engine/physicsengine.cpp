@@ -33,10 +33,8 @@ void PhysicsEngine::Update()
 		//WARNING THIS CRAP SHULD NOT BE HERE!!!!!!!!!!!!!!
 		PP->Update();
 		
+/*		
 		Object* pkObject=PP->GetObject();		
-		
-//		cout<<"radius "<<PP->GetColSphere()->m_fRadius<<endl;
-		
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		glColor3f(1,1,1);		
@@ -46,7 +44,7 @@ void PhysicsEngine::Update()
 		glPopMatrix();
 		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);		
 		glEnable(GL_CULL_FACE);
-		
+*/		
 
 		MoveObject(PP);
 	
@@ -118,9 +116,18 @@ void PhysicsEngine::TestCollisions()
 	{
 		for(int j=i+1;j<m_kMotionSpheres.size();j++)		
 		{
+			
+			
+			if(m_kMotionSpheres[i].m_pkPP->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
+				m_kMotionSpheres[j].m_pkPP->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+				continue;
+			
+			
+/*			
 			if(m_kMotionSpheres[i].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0) &&
 				m_kMotionSpheres[j].m_pkPP->GetObject()->GetVel()==Vector3(0,0,0))
 				continue;
+*/		
 		
 			if(TestSphere(&m_kMotionSpheres[i],&m_kMotionSpheres[j]))
 				DeepTest(&m_kMotionSpheres[i],&m_kMotionSpheres[j]);	
@@ -156,13 +163,13 @@ void PhysicsEngine::DeepTest(Sphere* S1,Sphere* S2)
 	
 	
 	if(CS1!=NULL && CS2!=NULL)	
-		pkCD=CS1->Test(CS2,m_fFrameTime,true);
+		pkCD=CS1->Test(CS2,S1,S2,m_fFrameTime,true);
 	else if(CS1!=NULL && CS2==NULL)	
-		pkCD=CS1->Test(CSP2,m_fFrameTime,true);
+		pkCD=CS1->Test(CSP2,S1,S2,m_fFrameTime,true);
 	else if(CS1==NULL && CS2!=NULL)	
-		pkCD=CSP1->Test(CS2,m_fFrameTime,true);
+		pkCD=CSP1->Test(CS2,S1,S2,m_fFrameTime,true);
 	else if(CS1==NULL && CS2==NULL)
-		pkCD=CSP1->Test(CSP2,m_fFrameTime,true);
+		pkCD=CSP1->Test(CSP2,S1,S2,m_fFrameTime,true);
 
 	if(pkCD!=NULL)	
 	{

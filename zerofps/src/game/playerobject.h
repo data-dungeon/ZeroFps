@@ -14,13 +14,13 @@ class PlayerObject: public Object {
 		ZeroFps *m_pkFps;
 
 	public:
-		bool onGround;
+//		bool onGround;
 	
 		PlayerObject(HeightMap *pkMap,Input *pkInput);
 		
-		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
+//		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
-		void ObjectUpdate();
+//		void ObjectUpdate();
 };
 
 

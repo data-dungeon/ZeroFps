@@ -34,8 +34,12 @@ public:
 void PlayerControlProperty::Update() {
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
-	float speed=3;
+	cout<<"POS :"<<m_pkObject->GetPos().y<<endl;
+	
+	
+	float speed=2;
 	walking=false;
+	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
 	//cant move fast while in air
 //	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround==false)
@@ -47,29 +51,49 @@ void PlayerControlProperty::Update() {
 	
 	if(m_pkInput->Action(m_iActionStrafeRight)){
 		walking=true;		
-		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		
+		vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
+		vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;
+
+//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
 	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
-		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		
+		vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
+		vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;
+		
+//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
 	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
-		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		
+		vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
+		vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;
+		
+//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
 	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
-		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		
+		vel.x+=cos((m_pkObject->GetRot().y-270)/degtorad)*speed;
+		vel.z+=sin((m_pkObject->GetRot().y-270)/degtorad)*speed;
+		
+//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
-		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
-			m_pkObject->GetVel().y+=5;// *m_pkFps->GetFrameTime();;						
+		if(onGround){
+			vel.y+=5;// *m_pkFps->GetFrameTime();;						
 		}
 	}
+	
+	cout<<"VEL "<<vel.y<<endl;
+	
+	m_pkObject->GetVel()=vel;
 	
 	
 	//camera tilting when walking
@@ -98,18 +122,25 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetRot().x=-90;
 	
 	
-	dynamic_cast<PlayerObject*>(m_pkObject)->onGround=false;
+	onGround=false;
 };
 
-void PlayerControlProperty::Bounce(Vector3 kPos){
-//	ner=abs((ner*0.7));
-//	m_pkObject->GetPos().y+=0.25;
+void PlayerControlProperty::Touch(CollisionData* Data)
+{
+	if(Data->m_pkOther->GetName() == "HeightMapObject")
+	{
+		m_pkObject->GetPos()=Data->m_kPos;
+		m_pkObject->GetVel().y=0;
+		onGround=true;
+	}
+	else
+	{
+		m_pkObject->GetPos()=Data->m_kPos;
+//		m_pkObject->GetVel()=Data->m_kVel;
+		onGround=true;	
+	}
+//	m_pkObject->GetAcc()=Data->m_kAcc;
 
-	m_pkObject->GetPos()=kPos;
 }
-
-
-
-
 
 

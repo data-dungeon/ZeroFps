@@ -1,17 +1,22 @@
 #include "playerobject.h"
-
+#include "../zerofps/engine/cssphere.h"
 
 
 PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	AddProperty(new CollisionProperty(&m_kPos,new float(.8)));
+//	AddProperty(new CollisionProperty(&m_kPos,new float(.8)));
 	AddProperty(new PlayerControlProperty(pkInput,pkMap));
-	AddProperty(new GravityProperty());
-	AddProperty(new FloatProperty());	
+//	AddProperty(new GravityProperty());
+//	AddProperty(new FloatProperty());	
 //	AddProperty(new ModelProperty());
 	
 	AddProperty("AutoParentProperty");	
+	
+	AddProperty("PhysicProperty");
+	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
+	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=2;
+	
 	
 /*	
 	AddProperty("LightProperty");
@@ -20,8 +25,10 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	pkJumpLight->SetQuadratic_Atten(0.01);
 */	
 	
-	onGround=false;
+
 }
+
+/*
 
 void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)
 {
@@ -49,7 +56,7 @@ void PlayerObject::ObjectUpdate() {
 
 
 }
-
+*/
 
 
 

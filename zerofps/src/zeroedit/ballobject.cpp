@@ -15,17 +15,17 @@ BallObject::BallObject() {
 	madp->SetScale(0.5);
 */
 	
-	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+	m_iObjectType=OBJECT_TYPE_STATIC;
 
 	AddProperty("ModelProperty");
-//	AddProperty("LightProperty");
-	AddProperty("FloatProperty");
+	AddProperty("LightProperty");
+//	AddProperty("FloatProperty");
 	AddProperty("AutoParentProperty");
 	AddProperty("PhysicProperty");
 	
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-	pp->m_bGravity=true;
-
+	pp->m_bGravity=false;
+	pp->m_bFloat=false;
 
 //	m_kAcc.Set(0,-9.82,0);
 

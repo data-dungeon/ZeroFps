@@ -27,11 +27,9 @@ void FloatProperty::Update() {
 void FloatProperty::Touch(CollisionData* Data)
 {
 	m_pkObject->GetPos()=Data->m_kPos;
-	m_pkObject->GetVel()=Data->m_kVel;
-	m_pkObject->GetAcc()=Data->m_kAcc;
+	m_pkObject->GetVel()=Vector3(0,0,0);
+//	m_pkObject->GetAcc()=Data->m_kAcc;
 
-	cout<<"NAME "<<Data->m_pkOther->GetName().c_str()<<endl;
-	
 }
 
 

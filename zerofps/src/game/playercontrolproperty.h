@@ -25,14 +25,14 @@ class PlayerControlProperty: public Property {
 
 		float walk;
 		bool walking;
-				
+		
 	public:
+		bool onGround;
 		
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 
 		void Update();
-		void Bounce(Vector3 kPos);
-		
+		void Touch(CollisionData* Data);		
 };
 
 
