@@ -176,7 +176,7 @@ class RENDER_API Render : public ZFSubSystem {
 		
 		// primitives and such
 		void DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale);//,int& iTexture1);//,int iTexture2);
-		void DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite);
+		void DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend);
 		void DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial);
 
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor = Vector3(1,1,1));

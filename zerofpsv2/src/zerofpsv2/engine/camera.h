@@ -94,18 +94,19 @@ class ENGINE_API Camera : public I_Camera
 		float		m_fFar;
 		
 		//mode
-		CamMode	m_eMode;
+		CamMode	m_eMode;								// The camera mode this camera is in.
 
-		float		m_fAppWidth;
-		float		m_fAppHeight;
+		float		m_fAppWidth;						// Width of application (OpenGl) window in pixels.
+		float		m_fAppHeight;						// Height of application (OpenGl) window in pixels.
 
 		Frustum	m_kFrustum;
 
-		Vector3	m_kOrthoAxisX;
+		/* OrthoAxis maps the local screen coo to world. Used to draw grid and move ortho views around. */
+		Vector3	m_kOrthoAxisX;							
 		Vector3	m_kOrthoAxisY;
 		Vector3	m_kOrthoAxisZ;
 
-		Vector3	m_kOrthoSize;
+		Vector3	m_kOrthoSize;						// How many units the camera cover in ortho view. z not used. 
 		
 		//camera settings
 		bool		m_bRender;							// False if no need to render from this camera (not visible on screen).
@@ -116,10 +117,10 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bShadowMap;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
-		int			m_iEntity;							// ID Of entity that this camera is connected to.
-		int			m_iRootEntity;		
-		bool			m_bRootOnly;
-		P_Camera*	m_pkCameraProp;		
+		int			m_iEntity;						// ID Of entity that this camera is connected to (if any).
+		int			m_iRootEntity;					// ID of entity to render from. 	
+		bool			m_bRootOnly;					// Render only rootentity. 
+		P_Camera*	m_pkCameraProp;				
 		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
@@ -140,10 +141,10 @@ class ENGINE_API Camera : public I_Camera
 		void		DrawGrid();
 		
 	public:
-		bool				m_bForceFullScreen;
-		static bool		m_bDrawOrthoGrid;
-		static float	m_fGridSpace;
-		static bool		m_bGridSnap;
+		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
+		static bool		m_bDrawOrthoGrid;		// Draw grid when rendering from ortho cameras.
+		static float	m_fGridSpace;			// Distance between each grid line.
+		static bool		m_bGridSnap;			// Snap postions to grid when use Camera::SnapToGrid
 
 				
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);

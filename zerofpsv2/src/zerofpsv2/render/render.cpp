@@ -698,7 +698,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	Mode2D_End();
 }
 
-void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite) 
+void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend) 
 {
 	m_pkZShaderSystem->Push("DrawBillboard");
 
@@ -722,13 +722,19 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	glColor4f(1,1,1,1);
 	m_pkTexMan->BindTexture(iTexture); 	
 	
-	//glAlphaFunc(GL_GREATER,0.3);
-	//glEnable(GL_ALPHA_TEST);
+	if(bAlpha)
+	{
+		glAlphaFunc(GL_GREATER,0.3);
+		glEnable(GL_ALPHA_TEST);
+	}
 	if(!DepthWrite)
 		glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	if(bBlend)
+	{
+		glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	}
 	
 
 //	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -765,7 +771,6 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
 		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 			
 	glEnd();*/
-		
 	
 	glDisable(GL_ALPHA_TEST);
 

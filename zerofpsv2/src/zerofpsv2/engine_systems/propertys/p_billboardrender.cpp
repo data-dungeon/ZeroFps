@@ -39,7 +39,7 @@ void P_BillBoardRender::Update()
 		return;
 		
 	Vector3 pos = m_pkEntity->GetIWorldPosV();
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture,false);
+	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture,false,false,true);
 }
 
 vector<PropertyValues> P_BillBoardRender::GetPropertyValues()

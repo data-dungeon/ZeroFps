@@ -13,7 +13,7 @@ P_EditIcon::P_EditIcon()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_bSave = false;	
-	m_bNetwork = true;
+	m_bNetwork = false;
 	
 	m_kTexture="NONE";
 	m_fScale=1;	
@@ -22,7 +22,7 @@ P_EditIcon::P_EditIcon()
 	UpdateSet();
 }
 
-void P_EditIcon::SetTexture(const char* acTexure)//,const char* acTex2)
+void P_EditIcon::SetTexture(const char* acTexure)
 {
 	m_kTexture=acTexure;	
 	m_iTexture=m_pkTexMan->Load(acTexure,0);
@@ -44,14 +44,15 @@ void P_EditIcon::Update()
 	switch(iIcon)
 	{
 		case 0:	return;	break;
-		case 1:	SetTexture("/data/textures/editicon/camera.bmp");	break;
-		case 2:	SetTexture("/data/textures/editicon/light.bmp");	break;
-		case 3:	SetTexture("/data/textures/editicon/psystem.bmp");	break;
+		case 1:	SetTexture("/data/textures/editicon/camera.tga");	break;
+		case 2:	SetTexture("/data/textures/editicon/light.tga");	break;
+		case 3:	SetTexture("/data/textures/editicon/psystem.tga");	break;
+		case 4:	SetTexture("/data/textures/editicon/water.tga");	break;
 		default:
-			SetTexture("/data/textures/editicon/noedit.bmp");
+			SetTexture("/data/textures/editicon/noedit.tga");
 	}
 
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture, true);
+	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture, true,true,false);
 }
 
 vector<PropertyValues> P_EditIcon::GetPropertyValues()
