@@ -811,6 +811,8 @@ void ZeroEdit::Input()
 					object->AttachToClosestZone();
 
 					m_pkCurentChild=object;
+
+					m_pkGui->UpdatePropertybox();
 				}
 				if(pkInput->Pressed(MOUSERIGHT) && pkInput->Pressed(KEY_LSHIFT) ||
 					pkInput->Pressed(MOUSEMIDDLE) )
@@ -852,6 +854,7 @@ void ZeroEdit::Input()
 				
 				object->AttachToClosestZone();
 				m_pkCurentChild=object;
+				m_pkGui->UpdatePropertybox();
 			}
 			if(pkInput->Pressed(KEY_C))
 			{
