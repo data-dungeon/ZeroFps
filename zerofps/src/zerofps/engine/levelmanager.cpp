@@ -473,7 +473,7 @@ void LevelManager::UpdateZones()
 		return;
 
 	for(unsigned int i=0;i<m_kZones.size();i++)
-		m_kZones[i]->GetUpdateStatus()=UPDATE_DYNAMIC;	
+		m_kZones[i]->GetUpdateStatus() = UPDATE_DYNAMIC | UPDATE_PLAYERS;	
 
 
 
@@ -515,7 +515,8 @@ void LevelManager::EnableZone(int xp,int zp,Vector3 &kPos)
 				continue;
 			
 			if(( kPos - m_kZones[x*tot+z]->GetPos()).Length()<m_fZoneRadius)			
-				m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
+				m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_STATIC|UPDATE_DYNAMIC|UPDATE_PLAYERS|UPDATE_STATDYN|UPDATE_LIGHT;					
+				//m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
 		}
 	}
 }

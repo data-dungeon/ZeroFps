@@ -377,11 +377,70 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
-	switch(m_iUpdateStatus)
-	{
+//	switch(m_iUpdateStatus)
+//	{
 		//if UPDATE_NONE dont return any child propertys
-		case UPDATE_NONE:
-			return;
+//		case UPDATE_NONE:
+//			return;
+	
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
+	{	
+		if(m_iUpdateStatus & UPDATE_ALL)
+		{
+			(*it)->GetAllPropertys(akPropertys,iType,iSide);
+		} 
+		else
+		{
+			
+			switch((*it)->GetObjectType())
+			{				
+				case OBJECT_TYPE_DYNAMIC:
+					if(m_iUpdateStatus & UPDATE_DYNAMIC)		
+						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					break;	
+		
+				case OBJECT_TYPE_STATIC:
+					if(m_iUpdateStatus & UPDATE_STATIC)		
+						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					break;
+			
+				case OBJECT_TYPE_PLAYER:
+					if(m_iUpdateStatus & UPDATE_PLAYERS)		
+						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					break;
+		
+				case OBJECT_TYPE_STATDYN:
+					if(m_iUpdateStatus & UPDATE_STATDYN)		
+						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					break;
+			
+				case OBJECT_TYPE_DECORATION:
+					if(m_iUpdateStatus & UPDATE_DECORATION)		
+						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					break;
+			}
+		}
+	}
+}
+/*	
+		if(iType == OBJECT_TYPE_DYNAMIC)	
+			if(m_iUpdateStatus & UPDATE_DYNAMIC)		
+				(*it)->GetAllPropertys(akPropertys,iType,iSide);
+		
+		if(iType == OBJECT_TYPE_STATIC)	
+			if(m_iUpdateStatus & UPDATE_STATIC)		
+				(*it)->GetAllPropertys(akPropertys,iType,iSide);
+	
+	
+	
+	
+	}
+		
+	if(m_iUpdateStatus & UPDATE_DYNAMIC)
+	{
+		
+	
+	}
 		
 		//update both players and dynamic objects
 		case UPDATE_DYNAMIC:{
@@ -412,7 +471,9 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 			break;
 		}
 	}
+
 }
+*/
 
 Property* Object::AddProxyProperty(char* acName)
 {

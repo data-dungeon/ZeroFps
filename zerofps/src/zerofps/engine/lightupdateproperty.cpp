@@ -12,7 +12,7 @@ LightUpdateProperty::LightUpdateProperty()
 
 void LightUpdateProperty::Update()
 {
-	if(m_pkObject->GetUpdateStatus()==UPDATE_ALL)
+	if(m_pkObject->GetUpdateStatus() & UPDATE_LIGHT)
 		m_pkLight->Update(m_pkObject->GetPos());
 
 }

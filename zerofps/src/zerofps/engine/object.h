@@ -20,11 +20,14 @@ struct CollisionData;
 class LevelManager;
 
 enum UpdateStatus {
-	UPDATE_NONE,
-	UPDATE_ALL,
-	UPDATE_STATIC,
-	UPDATE_DYNAMIC,
-	UPDATE_PLAYERS,
+	UPDATE_NONE			=1,
+	UPDATE_ALL			=2,
+	UPDATE_STATIC		=4,
+	UPDATE_DYNAMIC 	=8,
+	UPDATE_PLAYERS 	=16,
+	UPDATE_STATDYN 	=32,
+	UPDATE_DECORATION =64,
+	UPDATE_LIGHT		=128,
 };
 
 enum ObjectType {
@@ -32,6 +35,7 @@ enum ObjectType {
 	OBJECT_TYPE_STATIC,
 	OBJECT_TYPE_PLAYER,
 	OBJECT_TYPE_STATDYN,	
+	OBJECT_TYPE_DECORATION,
 };
 
 class ENGINE_API PropertyDescriptor{
@@ -77,7 +81,7 @@ class ENGINE_API Object {
 		string				m_kName;							// Object type name
 
 		ObjectType			m_iObjectType;						
-		UpdateStatus		m_iUpdateStatus;					
+		int					m_iUpdateStatus;					
 //		bool				m_bLockedChilds;					
 		
 		bool				m_bSave;							// True if this object should save to disk.
@@ -131,7 +135,7 @@ class ENGINE_API Object {
 		float GetBoundingRadius();							// Get radius of collision object or radius 1.0 if none found.
 		void Touch(Object* pkObject);						// Run touch on all properys of this object.
 
-		inline UpdateStatus &GetUpdateStatus() {return m_iUpdateStatus;};
+		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};
 		inline bool& GetSave(){return m_bSave;};
 		inline string& GetName(){return m_kName;};

@@ -1,6 +1,6 @@
 #include "game.h"
 
-Game olle("ZeroFPS game",1024,768,16);
+Game olle("ZeroFPS game",1024,768,24);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
@@ -218,13 +218,9 @@ void Game::SetUpMenuScreen()
 {
 //	pkLevelMan->LoadLevel("menu");
 	pkLevelMan->LoadLevel("adaptors");
-
-//	m_pkCamera->GetPos().Set(36,19,18);	
-//	m_pkCamera->GetRot().Set(17,18,0);	
 	
-	m_pkCamera->GetPos().Set(25,10,-205);	
-	m_pkCamera->GetRot().Set(15,-305,0);	
-		
+	m_pkCamera->GetPos().Set(18,7,-130);	
+	m_pkCamera->GetRot().Set(21,360,0);	
 	
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
 	pkFps->m_pkAudioMan->PlayMusic();
