@@ -98,7 +98,7 @@ bool Body::SetMad(Mad_Core* pkMad,int iMesh)
 		m_pkVertex = &pkCoreMech->akFrames[0].akVertex;
 		m_pkNormal = &pkCoreMech->akFrames[0].akNormal;
 		
-		m_fRadius = pkMad->GetRadius();
+		m_fRadius = pkMad->m_fBoundRadius;
 		
 		//found the mech return true
 		m_bPolygonCheck = true;
