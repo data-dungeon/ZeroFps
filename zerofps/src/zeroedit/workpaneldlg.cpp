@@ -166,7 +166,10 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	m_pkGuiBuilder->Register(pkMadList, "MadFileList");
 	
 	vkNames.clear(); 
-	m_pkEdit->pkZFVFileSystem->ListDir(&vkNames, "data/mad", false);
+	/* Vim - Changed to display Archtypes instead of mad's */
+	// m_pkEdit->pkZFVFileSystem->ListDir(&vkNames, "data/mad", false);
+	m_pkEdit->pkObjectMan->GetArchObjects(&vkNames, "");
+
 	for(unsigned int i=0; i<vkNames.size(); i++)
 		m_pkGuiBuilder->AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
@@ -256,7 +259,8 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 			m_pkEdit->m_iSmooth = m_pkGuiBuilder->IsButtonChecked("AutoSmoothGroundChB");
 			break;
 		case ID_LOADMADFILE_BN:
-			Object* pkCurObject;
+			/* Vim - Changed to display Archtypes instead of mad's */
+			/*Object* pkCurObject;
 			if((pkCurObject=m_pkEdit->m_pkCurentChild) != NULL)
 			{
 				Property* pkMadProp;
@@ -276,18 +280,34 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 					if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
 						pkCurObject->RemoveProperty(pkModelProp);
 				}
-			}
+			}*/
 			break;
 		case ID_CREATEMADFILE_BN:
+			{
+			/* Vim - Changed to display Archtypes instead of mad's */
 			Object *pkNewObject;
-			//pkNewObject = new BallObject();					
+
+			ZGuiListitem* pkItem = ((ZGuiListbox*)m_pkGuiMan->Wnd(
+				"MadFileList"))->GetSelItem();
+
+			if(pkItem)
+			{
+				string szMadFile = pkItem->GetText();
+				pkNewObject = m_pkEdit->pkObjectMan->CreateObjectByArchType( szMadFile.c_str() );	
+				pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
+				pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
+   			pkNewObject->AttachToClosestZone();
+				m_pkEdit->m_pkCurentChild=pkNewObject;
+			}
+
+			}
+
+			/*
 			pkNewObject = m_pkEdit->pkObjectMan->CreateObject();	//  new BallObject();					
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
-			
-			pkNewObject->AttachToClosestZone();
+   		pkNewObject->AttachToClosestZone();
 			m_pkEdit->m_pkCurentChild=pkNewObject;
-
 			int* pkParams;
 			pkParams = new int[1];
 			pkParams[0] = (int) ID_LOADMADFILE_BN; // control id
@@ -295,7 +315,7 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 			delete[] pkParams;
 
 			((EditPropertyDlg*)m_pkGuiBuilder->GetDlg("PropertyDlg"))->m_pkCurrentChild = pkNewObject;
-			m_pkGuiBuilder->UpdatePropertybox();
+			m_pkGuiBuilder->UpdatePropertybox();*/
 			break;
 
 		case ID_CAMERAMODE_RADIOGROUP:

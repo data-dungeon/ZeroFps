@@ -392,6 +392,8 @@ void ZeroRTS::Input()
 		MoveCam(Vector3(x*10,0,y*10));		
 	}
 
+	int i;
+
 	if(pkInput->Action(m_iActionPrintServerInfo))
 	{
 		Object* sio = pkObjectMan->GetObject("A ServerInfoObject");
@@ -404,7 +406,7 @@ void ZeroRTS::Input()
 			{
 				pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
 			
-				for(int i=0;i<4;i++)				
+				for(i=0;i<4;i++)				
 					pkConsole->Printf("Player %d has color %d",i,si->m_kSInfo.m_acColor[i]);			
 			
 				for( i=0;i<4;i++)				

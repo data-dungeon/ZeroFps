@@ -13,6 +13,24 @@ class object
 		add P_ServerInfo
 		add P_UnitSystem
 
+	class ZeroRTSDeco
+		parent object
+
+		class ZeroRTSDeco_Tree1
+			parent ZeroRTSDeco
+			set MadProperty m_kMadFile /data/mad/tree.mad
+			set MadProperty m_fScale 1
+
+		class ZeroRTSDeco_Tree2
+			parent ZeroRTSDeco
+			set MadProperty m_kMadFile /data/mad/bush1.mad
+			set MadProperty m_fScale 1
+
+		class ZeroRTSDeco_Tree3
+			parent ZeroRTSDeco
+			set MadProperty m_kMadFile /data/mad/bwtree.mad
+			set MadProperty m_fScale 1
+
 	class ZeroRTSUnit
 		parent object
 		add P_ServerUnit
