@@ -131,6 +131,7 @@ class MistClient :public Application, public ZGuiApp {
 		void FindGUIScriptsByResSuffix();
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
+		void ToggleEmoteList(bool bOpen);
 		//void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);

@@ -54,6 +54,11 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			{
 				g_kMistClient.ToogleChatWnd(false);
 			}
+			else
+			if(strController == "OpenEmoteListBn")
+			{
+				g_kMistClient.ToggleEmoteList(!g_kMistClient.GetWnd("EmoteWnd")->IsVisible());
+			}
 			//else
 			//if(strController == "ChangeSizeUpChatButton")
 			//{
@@ -64,6 +69,18 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			//{
 			//	g_kMistClient.ResizeChatDlg(false);
 			//}
+		}
+	}
+
+	if(msg == ZGM_SELECTLISTITEM)
+	{
+		if(strMainWnd == "EmoteWnd");
+		{
+			if(strController == "EmoteList")
+			{
+				string strSelItem = g_kMistClient.GetSelItem("EmoteList");
+				g_kMistClient.SendTaunt(strSelItem);
+			}
 		}
 	}
 
@@ -138,6 +155,20 @@ void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
 		m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox"), true); 
 		SetGuiCapture(true);
 	}
+}
+
+void MistClient::ToggleEmoteList(bool bOpen)
+{
+	if(bOpen)
+		GetWnd("EmoteWnd")->Show();
+	else
+		GetWnd("EmoteWnd")->Hide();
+
+	ClearListbox("EmoteList");
+
+	for(int i=0; i<m_kEmotes.size(); i++)
+		AddListItem("EmoteList", (char*)m_kEmotes[i].c_str(), false);
+	
 }
 
 void MistClient::AddStringToChatBox(string strMsg)

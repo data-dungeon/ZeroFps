@@ -15,7 +15,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 	string strMainWnd;
 	string strController;
 	
-	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || msg == ZGM_CBN_SELENDOK || msg == ZGM_EN_CHANGE)
+	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || 
+		msg == ZGM_CBN_SELENDOK || msg == ZGM_EN_CHANGE ||
+		msg == ZGM_SELECTLISTITEM)
 	{
 		strMainWnd = win->GetName();
 
@@ -223,6 +225,7 @@ void MistClient::SetupGUI()
 	
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionBar", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ChatDlgMainWnd", GuiMsgIngameScreen));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EmoteWnd", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GuiMainWnd", GuiMsgIngameScreen));
 
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionMenuMain", GuiMsgActionDlg));
