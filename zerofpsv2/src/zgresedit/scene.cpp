@@ -189,7 +189,7 @@ void Scene::CreateUI()
 	(m_pkPropertyWnd = m_pkApp->GetWnd("PropertyWnd"))->SetMoveArea(Rect(-290,-100,800+290,600+100),true);
 
 	m_pkApp->CreateWnd(Label, "NameLabel",  "PropertyWnd",  "Name:", 4,  4+2, 25, 20, 0);
-	m_pkApp->CreateWnd(Textbox, "WndNameTextbox", "PropertyWnd", "", 40,  4, 250, 20, READ_ONLY);
+	m_pkApp->CreateWnd(Textbox, "WndNameTextbox", "PropertyWnd", "", 40,  4, 250, 20, 0);
 
 	m_pkApp->CreateWnd(Label, "TextLabel",  "PropertyWnd",  "Title:", 4,  28+2, 25, 20, 0);
 	m_pkApp->CreateWnd(Textbox, "WndTitleTextbox", "PropertyWnd", "", 40,  28, 250, 20, 0);
@@ -236,6 +236,19 @@ void Scene::CreateUI()
 
 	m_pkApp->CreateWnd(Checkbox, "ShowHideWndCB", "ViewWindow",  "Visible", 8, 8, 16, 16, 0);
 	m_pkApp->CreateWnd(Listbox, "MainWndList", "ViewWindow",  "", 8, 50, 200-16, 150-8, 0);
+
+	m_pkApp->CreateWnd(Button, "CloseViewWnd", "ViewWindow", "", 200-20, 4, 16, 16, 0);
+
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->SetButtonUpSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->SetButtonHighLightSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->SetButtonDownSkin(new ZGuiSkin());
+
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->GetButtonUpSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/delete_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->GetButtonHighLightSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/delete_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("CloseViewWnd"))->GetButtonDownSkin()->
+		m_iBkTexID = m_pkTexMan->Load("data/textures/gui/delete_d.bmp", 0);
 
 	m_pkGui->ShowMainWindow(m_pkViewWindow, false);
 
@@ -378,4 +391,74 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 		return IsSceneWnd(pkParent);
 
 	return false;
+}
+
+bool Scene::RenameWnd(ZGuiWnd *pkWnd, const char *szName)
+{
+	ZGuiWnd* pkExistingWnd = m_pkGui->GetResMan()->Wnd(string(szName));
+
+	if( pkExistingWnd == NULL || pkExistingWnd == pkWnd ) // om inget annat fönster heter så...
+	{
+		map<ZGuiWnd*, string>::iterator itWnd;
+		for(itWnd = m_kNickNameWnds.begin(); itWnd != m_kNickNameWnds.end(); itWnd++)
+		{
+			if(itWnd->second == szName && itWnd->first != pkWnd) 
+			{
+				return false; // avbryt om ett annat fönster är döpt till det..
+			}
+		}
+
+		map<ZGuiWnd*, string>::iterator itWnd2;
+		itWnd2 = m_kNickNameWnds.find(pkWnd);
+		if(itWnd2 != m_kNickNameWnds.end())
+		{
+			itWnd2->second = szName; // fönstret fanns redan med i tabellen... byt namn
+		}
+		else
+		{
+			// lägg till fönstret till aliastabellen
+			m_kNickNameWnds.insert( 
+				map<ZGuiWnd*, string>::value_type(pkWnd, string(szName)) );
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+const char* Scene::GetAlias(ZGuiWnd *pkWnd)
+{
+	map<ZGuiWnd*, string>::iterator itWnd;
+	itWnd = m_kNickNameWnds.find(pkWnd);
+	if(itWnd != m_kNickNameWnds.end())
+	{
+		return itWnd->second.c_str();
+	}	
+
+	return NULL;
+}
+
+ZGuiWnd* Scene::GetWnd(const char* szName)
+{
+	map<ZGuiWnd*, string>::iterator itWnd;
+	for(itWnd = m_kNickNameWnds.begin(); itWnd != m_kNickNameWnds.end(); itWnd++)
+	{
+		if(itWnd->second == szName) 
+		{
+			return itWnd->first; // avbryt om ett annat fönster är döpt till det..
+		}
+	}
+
+	return m_pkApp->GetWnd(szName);
+}
+
+void Scene::RemoveAlias(ZGuiWnd *pkWnd)
+{
+	map<ZGuiWnd*, string>::iterator itWnd;
+	itWnd = m_kNickNameWnds.find(pkWnd);
+	if(itWnd != m_kNickNameWnds.end())
+	{
+		m_kNickNameWnds.erase(itWnd);
+	}	
 }

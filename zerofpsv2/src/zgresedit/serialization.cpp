@@ -188,12 +188,21 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 				int iType = (int) pkScene->GetApp()->GetType(pkWnd); 
 
-				const char* szName = pkWnd->GetName();
+				const char* szName = pkScene->GetAlias(pkWnd);
+				if(szName == NULL)
+					szName = pkWnd->GetName();
 
-				char szParent[50], szLabel[50];
+				char szParent[75], szLabel[75];
 
 				if(pkWnd->GetParent())
-					strcpy(szParent, pkWnd->GetParent()->GetName());
+				{
+					const char* szAliasParent = pkScene->GetAlias(pkWnd->GetParent());
+
+					if(szAliasParent)
+						strcpy(szParent, szAliasParent);
+					else
+						strcpy(szParent, pkWnd->GetParent()->GetName());
+				}
 				else
 					strcpy(szParent, "");
 

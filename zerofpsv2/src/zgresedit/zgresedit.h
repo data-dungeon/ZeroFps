@@ -50,6 +50,8 @@ class ZGResEdit : public Application, public ZGuiApp
 		ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth);
 
 	private:
+		void MoveWndToTop(ZGuiWnd *pkWnd);
+		void UpdateViewWnd();
 		void DrawSelectionRect(ZGuiWnd* pkWnd);
 		void MoveWnd(int x, int y);
 		void ResizeWnd(int x, int y);
@@ -89,9 +91,13 @@ class ZGResEdit : public Application, public ZGuiApp
 		int m_iWidth, m_iHeight;
 		bool m_bSaveFile, m_bOverwriteWarning;
 
+		bool m_bLeftButtonPressed;
+		int m_iHighestZValue;
+
 		Point m_kSelStart, m_kClickPos;
 
 		struct SORT_MOST_PARENTS : public binary_function<pair<ZGuiWnd*, int>, pair<ZGuiWnd*, int>, bool> {
+			void MoveWndToTop(ZGuiWnd* pkWnd);
 			bool operator()(pair<ZGuiWnd*, int> x, pair<ZGuiWnd*, int> y) { 
 				return (x.second > y.second);
 			};

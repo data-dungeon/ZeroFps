@@ -34,6 +34,11 @@ public:
 
 	ZGuiApp* GetApp() { return m_pkApp; }
 
+	bool RenameWnd(ZGuiWnd* pkWnd, const char* szName);
+	const char* GetAlias(ZGuiWnd* pkWnd);
+	ZGuiWnd* GetWnd(const char* szName); // letar först igenom alias sedan bland fönster registrerade i resman.
+	void RemoveAlias(ZGuiWnd* pkWnd);
+
 private:
 	void CreateUI();
 	
@@ -46,6 +51,8 @@ private:
 			return (x.find(".") == string::npos);
 		};
 	} SortFiles;
+
+	map<ZGuiWnd*, string> m_kNickNameWnds;
 
 };
 

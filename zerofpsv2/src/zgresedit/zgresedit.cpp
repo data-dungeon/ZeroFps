@@ -47,6 +47,8 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iXPos = 0;  m_iYPos = 0; m_iWidth = 200; m_iHeight = 150;
 	m_kSelStart = Point(-1,-1);
 	m_iRadiogroupCounter = RADIO_GROUP_COUNTER_START;
+	m_bLeftButtonPressed = false;
+	m_iHighestZValue = 10;
 }
 
 void ZGResEdit::OnInit()
@@ -93,24 +95,22 @@ void ZGResEdit::OnIdle()
 	int x,y;
 	pkInput->MouseXY(x,y);
 
-	static s_bLeftButtonPressed = false;
-
 	if(pkInput->Pressed(MOUSELEFT))
 	{
-		if(!s_bLeftButtonPressed)
+		if(!m_bLeftButtonPressed)
 		{
 			OnMouseClick(false, x, y);
-			s_bLeftButtonPressed = false;
+			m_bLeftButtonPressed = false;
 		}
 		
-		s_bLeftButtonPressed = true;
+		m_bLeftButtonPressed = true;
 	}
 	else
 	{
-		if(s_bLeftButtonPressed)
+		if(m_bLeftButtonPressed)
 		{
 			OnMouseClick(true, x, y);
-			s_bLeftButtonPressed = false;
+			m_bLeftButtonPressed = false;
 		}
 	}
 
@@ -211,6 +211,24 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				bool bResize = GetType(m_pkFocusWnd) == Radiobutton;
 				m_pkFocusWnd->SetText( GetText("WndTitleTextbox"), bResize );
 
+				// Försök byta namn på fönstret
+				const char* szNewName = GetText("WndNameTextbox");
+				if( strcmp( m_pkFocusWnd->GetName(), szNewName ) != 0) // om fönstrets namn har ändrats
+				{
+					if(m_pkScene->RenameWnd(m_pkFocusWnd, szNewName) == false)
+					{
+						const char* old_alias = m_pkScene->GetAlias(m_pkFocusWnd);
+						if(old_alias)
+						{
+							SetText( "WndNameTextbox", (char*) old_alias );
+						}
+						else
+						{
+							SetText( "WndNameTextbox", (char*) m_pkFocusWnd->GetName() );
+						}
+					}
+				}
+
 				// change borde size on selected control type.
 				char* szSkinType = GetSelItem("SkinTypeCB");
 				vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
@@ -240,14 +258,14 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		if(strClickWndName == "OpenBn")
 		{
 			m_bSaveFile = false;
-			pkGui->ShowMainWindow(m_pkScene->m_pkSelectFileWnd, true);
+			MoveWndToTop(m_pkScene->m_pkSelectFileWnd);
 			SetText("OwerwriteWarning", "", true);
 		}
 		else
 		if(strClickWndName == "SaveBn")
 		{
 			m_bSaveFile = true;
-			pkGui->ShowMainWindow(m_pkScene->m_pkSelectFileWnd, true);
+			MoveWndToTop(m_pkScene->m_pkSelectFileWnd);
 			m_bOverwriteWarning = true;
 			SetText("OwerwriteWarning", "", true);
 		}
@@ -269,6 +287,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		if(strClickWndName == "DeleteWnd")
 		{
 			DeleteWnd(m_pkFocusWnd);
+			UpdateViewWnd();
 		}
 		else
 		if(strClickWndName == "ToogleViewWnd")
@@ -277,19 +296,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				m_pkScene->m_pkViewWindow->Hide();
 			else
 			{
-				ClearListbox("MainWndList");
-
-				map<string, ZGuiWnd*> kWindows;
-				pkGuiMan->GetWindows(kWindows);
-
-				map<string, ZGuiWnd*>::iterator it;
-				for( it = kWindows.begin(); it != kWindows.end(); it++)
-				{		
-					if( GetType((*it).second) == Wnd && !m_pkScene->IsSceneWnd((*it).second))
-						AddListItem("MainWndList", (char*) (*it).first.c_str());
-				}
-
-				m_pkScene->m_pkViewWindow->Show();
+				UpdateViewWnd();
+				MoveWndToTop(m_pkScene->m_pkViewWindow);
 			}
 		}
 		else
@@ -455,7 +463,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 
-			ZGuiWnd* pkWnd = GetWnd(szName);
+			ZGuiWnd* pkWnd = m_pkScene->GetWnd(szName);
 
 			if(pkWnd == NULL)
 			{
@@ -497,7 +505,12 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				GetListbox()->GetSelItem()->GetText(), rand()%1000);
 			SetText("NewWndNameTextbox", szNewName);
 
+			m_iHighestZValue++;
+			pkWnd->m_iZValue = m_iHighestZValue;
+
 			pkWnd->Disable(); // Disable wnd (otherwise some ctrls like listoboxes can't be moved easily)
+
+			UpdateViewWnd();
 		}
 	}
 	else
@@ -510,10 +523,12 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(szItem)
 			{
 				if(IsButtonChecked("ShowHideWndCB"))
-					GetWnd(szItem)->Show();
+				{
+					m_pkScene->GetWnd(szItem)->Show();
+				}
 				else
 				{
-					ZGuiWnd* pkWnd = GetWnd(szItem);
+					ZGuiWnd* pkWnd = m_pkScene->GetWnd(szItem);
 
 					if(m_pkFocusWnd)
 					{
@@ -537,6 +552,11 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					pkWnd->Hide();
 				}
 			}
+		}
+		else
+		if(strClickWndName == "CloseViewWnd")
+		{
+			m_pkScene->m_pkViewWindow->Hide();
 		}
 	}
 	else
@@ -630,9 +650,27 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 	if(pkWnd == NULL)
 		return;
 
+	static ZGuiWnd* pkPrev = NULL;
+
+	if(pkPrev != pkWnd)
+	{
+		m_iHighestZValue++;
+		pkPrev = pkWnd;
+	}
+
+	if(pkWnd->GetParent()) // om man tex har klickat på en label så skall förädrar fönstert 
+	{								// under få högsta z-värde och barnet högsta z värde+1
+		pkWnd->GetParent()->m_iZValue = m_iHighestZValue;
+		m_iHighestZValue++;
+	}
+
+	pkWnd->m_iZValue = m_iHighestZValue; 
+
 	if(m_pkScene->IsSceneWnd(pkWnd))
 	{
 		m_pkResizeWnd = NULL;
+		m_pkMoveWnd = NULL;
+
 		m_kSelStart = Point(-1,-1);
 		m_kClickPos = Point(-1,-1);
 
@@ -649,7 +687,21 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 
 		if(m_pkMoveWnd == NULL)
 		{
-			m_pkMoveWnd = pkWnd;
+			bool bLegalMoveWnd = true;
+			ZGuiWnd* pkParent = pkWnd->GetParent();
+
+			if(pkParent)
+			{
+				GuiType parent_type = GetType(pkParent);
+				if(parent_type == TabControl)
+				{
+					bLegalMoveWnd = false;
+				}
+			}
+
+			if(bLegalMoveWnd)
+				m_pkMoveWnd = pkWnd;
+
 			Rect rc = pkWnd->GetScreenRect();
 			m_iXPosBeforeMove = rc.Left; 
 			m_iYPosBeforeMove = rc.Top;
@@ -671,19 +723,26 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 				}
 
 				m_pkFocusWnd = pkWnd;
-				m_pkResizeWnd = pkWnd;
+
+
+				bool bLegalResizeWnd = true;
+				ZGuiWnd* pkParent = pkWnd->GetParent();
+
+				if(pkParent)
+				{
+					GuiType parent_type = GetType(pkParent);
+					if(parent_type == TabControl)
+					{
+						bLegalResizeWnd = false;
+					}
+				}
+
+				if(bLegalResizeWnd)
+					m_pkResizeWnd = pkWnd;
 
 				OnSelectWnd(m_pkFocusWnd);
 				
 				Rect rc = pkWnd->GetScreenRect();
-
-				GetWnd("WndNameTextbox")->SetText( (char*) m_pkFocusWnd->GetName() );
-				GetWnd("WndTitleTextbox")->SetText( (char*) m_pkFocusWnd->GetText() );
-
-				if(m_pkFocusWnd->GetParent())
-					GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
-				else
-					GetWnd("ParentLabel")->SetText( "-" );
 
 				int dl = abs(x - rc.Left), dr = abs(x - rc.Right);
 				int dt = abs(y - rc.Top), db = abs(y - rc.Bottom);
@@ -715,6 +774,27 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 	else
 	{
 		OnReleaseButton(x,y);
+	}
+
+	if(pkWnd && m_bLeftButtonPressed)
+	{
+		GuiType type = GetType(pkWnd);
+
+		if(type == TabControl)
+		{
+			ZGuiTabCtrl* pkTab = (ZGuiTabCtrl*) pkWnd;
+
+			int max_pages = pkTab->GetNumPages();
+
+			int current_page = pkTab->GetCurrentPage();
+
+			current_page++;
+
+			if(current_page > max_pages-1)
+				current_page = 0;
+			
+			pkTab->SetCurrentPage(current_page); 
+		}
 	}
 }
 
@@ -752,22 +832,46 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
 	for( ; it != kWindows.end(); it++)
 	{
-		if(ClickInsideWnd((*it).second, x,y))
-			kTargets.push_back( pair<ZGuiWnd*, int>((*it).second,0) );
+		if(GetType((*it).second) == Wnd )
+		{
+			if(ClickInsideWnd((*it).second, x,y))
+				kTargets.push_back( pair<ZGuiWnd*, int>((*it).second,0) );
+		}
 	}
 
 	if(kTargets.empty())
-		return NULL;
+		return NULL; // inte klickat på någon mainwindow
 
-	list<pair<ZGuiWnd*, int> >::iterator it2 = kTargets.begin(); 
-	for( ; it2 != kTargets.end(); it2++)
-		(*it2).second = GetNumParent((*it2).first, (*it2).second);
-
-	kTargets.sort(SortMostParents);
 	kTargets.sort(SortZValue);
+
+	ZGuiWnd* pkMainWnd = kTargets.front().first; // best mainwindow
+
+	list<ZGuiWnd*> childs;
+	pkMainWnd->GetChildrens(childs);
+
+	if(childs.empty())
+		return pkMainWnd; // finns inga barn så vi returnerar null
+
+	kTargets.clear();
+
+	list<ZGuiWnd*>::iterator it2 = childs.begin();
+	for( ; it2 != childs.end(); it2++)
+	{
+		if(ClickInsideWnd((*it2), x,y))
+			kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
+	}
+
+	if(kTargets.empty())
+		return pkMainWnd; // klickade inte på något barn
+
+	kTargets.sort(SortZValue);
+
+	ZGuiWnd* pkChild = kTargets.front().first; // best child
 	
-	return kTargets.front().first;
+	return pkChild;
 }
+
+
 
 void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 {
@@ -881,6 +985,8 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 			m_pkFocusWnd = pkWnd->GetParent();
 			pkGui->SetFocus(m_pkFocusWnd);
 		}
+
+		m_pkScene->RemoveAlias(pkWnd);
 
 		if(m_pkMainWnd == pkWnd)
 			m_pkMainWnd = NULL;
@@ -1039,6 +1145,20 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 			SetTextInt("BdSizeTextbox", (*vkSkinDesc[i].first)->m_unBorderSize);
 			break;
 		}
+	
+	const char* szAlias = m_pkScene->GetAlias(m_pkFocusWnd);
+
+	if(szAlias == NULL)
+		GetWnd("WndNameTextbox")->SetText( (char*) m_pkFocusWnd->GetName() );
+	else
+		GetWnd("WndNameTextbox")->SetText( (char*) szAlias );
+
+	GetWnd("WndTitleTextbox")->SetText( (char*) m_pkFocusWnd->GetText() );
+
+	if(m_pkFocusWnd->GetParent())
+		GetWnd("ParentLabel")->SetText( (char*) m_pkFocusWnd->GetParent()->GetName() );
+	else
+		GetWnd("ParentLabel")->SetText( "-" );
 }
 
 void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
@@ -1076,11 +1196,13 @@ void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMai
 
 			if(szItem)
 			{
-				if(IsWndVisible(szItem))
+				ZGuiWnd* pkWnd = m_pkScene->GetWnd(szItem);
+
+				if(pkWnd->IsVisible())
 				{
 					((ZGuiCheckbox*)GetWnd("ShowHideWndCB"))->CheckButton();
 
-					ZGuiWnd* pkNewActiveWnd = GetWnd(szItem);
+					ZGuiWnd* pkNewActiveWnd = m_pkScene->GetWnd(szItem);
 					m_pkFocusWnd = pkNewActiveWnd;
 					m_pkMainWnd = pkNewActiveWnd;
 				}
@@ -1102,7 +1224,7 @@ void ZGResEdit::AddStandardElements(ZGuiWnd *pkWnd)
 	//
 	if(eWndType == Treebox)
 	{
-		((ZGuiTreebox*) GetWnd(szName))->Clear();
+		((ZGuiTreebox*) m_pkScene->GetWnd(szName))->Clear();
 
 		AddTreeItem(szName, "ParentNode", "RootNode", "Parent", 1, 2);
 
@@ -1151,7 +1273,8 @@ void ZGResEdit::OpenDefPropWnd(string strWndType)
 		CreateWnd(Textbox, "NewRadiogroupNameEB", "DefPropWnd", "", 10, 40, 150, 22, 0);
 	}
 
-	pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, true);
+	//pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, true);
+	MoveWndToTop(m_pkScene->m_pkDefProp);
 }
 
 void ZGResEdit::OnReleaseButton(int mx, int my)
@@ -1398,12 +1521,23 @@ void ZGResEdit::DrawSelectionRect(ZGuiWnd *pkWnd)
 		Line(Point(min_x, max_y), Point(max_x, max_y)),
 	}; 
 
+	int z_value = pkWnd->m_iZValue;
+
 	vector<Rect> tmp;
-	if(m_pkScene->m_pkPropertyWnd->IsVisible()) tmp.push_back(m_pkScene->m_pkPropertyWnd->GetScreenRect(true));
-	if(m_pkScene->m_pkWorkSpace->IsVisible()) tmp.push_back(m_pkScene->m_pkWorkSpace->GetScreenRect(true));
-	if(m_pkScene->m_pkViewWindow->IsVisible()) tmp.push_back(m_pkScene->m_pkViewWindow->GetScreenRect(true));
-	if(m_pkScene->m_pkSelectFileWnd->IsVisible()) tmp.push_back(m_pkScene->m_pkSelectFileWnd->GetScreenRect(true));
-	if(m_pkScene->m_pkDefProp->IsVisible()) tmp.push_back(m_pkScene->m_pkDefProp->GetScreenRect(true));
+
+	// Hämta rektanglarna på alla fönster som befinner sig ovanför fönstret.
+	map<string, ZGuiWnd*> kWindows;
+	pkGuiMan->GetWindows(kWindows);
+	map<string, ZGuiWnd*>::iterator it;
+	for( it = kWindows.begin(); it != kWindows.end(); it++)
+	{
+		ZGuiWnd* pkSearchWnd = (*it).second;
+		if(pkSearchWnd != pkWnd && pkSearchWnd->IsVisible() )
+		{
+			if(pkSearchWnd->m_iZValue > z_value)
+				tmp.push_back(pkSearchWnd->GetScreenRect(true));
+		}
+	}
 	
 	unsigned int i; 
 	vector< Line > out;
@@ -1417,4 +1551,34 @@ void ZGResEdit::DrawSelectionRect(ZGuiWnd *pkWnd)
 
 		out.clear();
 	}
+}
+
+void ZGResEdit::UpdateViewWnd()
+{
+	ClearListbox("MainWndList");
+
+	map<string, ZGuiWnd*> kWindows;
+	pkGuiMan->GetWindows(kWindows);
+
+	map<string, ZGuiWnd*>::iterator it;
+	for( it = kWindows.begin(); it != kWindows.end(); it++)
+	{		
+		ZGuiWnd* pkWnd = (*it).second;
+		if( GetType(pkWnd) == Wnd && !m_pkScene->IsSceneWnd(pkWnd) )
+		{
+			const char* szAlias = m_pkScene->GetAlias(pkWnd);
+			if(szAlias == NULL)
+				szAlias = (*it).first.c_str();
+
+			AddListItem("MainWndList", (char*) szAlias);
+		}
+	}
+}
+
+void ZGResEdit::MoveWndToTop(ZGuiWnd *pkWnd)
+{
+	m_iHighestZValue++;
+	pkWnd->m_iZValue = m_iHighestZValue;
+	pkWnd->Show();
+	pkGui->SetFocus(pkWnd);
 }
