@@ -135,15 +135,17 @@ public:
 	typedef pair<ZGuiSkin*, string> SKIN_DESC;
 
 	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
-	void SetClipperArea(Rect rc);
+	void SetClipperArea(Rect rc, bool bEnable=true);
 
 	bool m_bUseClipper;
 	bool m_bUseAlhpaTest; ///< true om systemet skall ta hänsyn till om man har klickat på en alpha yta
 	bool m_bAcceptRightClicks;
 
+	virtual bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+
 protected:
 
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+
 	int m_iResolutionX, m_iResolutionY;
 	
 	ZGuiWnd* m_pkParent;

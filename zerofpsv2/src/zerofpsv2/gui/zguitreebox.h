@@ -62,6 +62,8 @@ public:
 		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
 		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
 
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
@@ -88,6 +90,7 @@ private:
 
 	void CreateInternalControls();
 	int m_iID;
+	int m_iButtonSize;
 
 	list<ZGuiSkin*> m_kItemSkinList;
 	list<ZGuiTreeboxNode*> m_kNodeList;

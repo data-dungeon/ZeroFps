@@ -75,7 +75,7 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	{
 		int curr_res_x, curr_res_y;
 		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
 	}
 
 	if(m_pkFont)

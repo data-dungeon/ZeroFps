@@ -8,7 +8,6 @@
 #include "zguitreebox.h"
 #include "zgui.h"
 
-const int BUTTON_SIZE = 16;
 const int VERT_ROW_SPACE = 1;
 const int HORZ_ROW_SPACE = 1;
 const int VERT_SCROLLBAR_ID = 622;
@@ -31,6 +30,7 @@ const int SEL_TREEBOX_LABEL = 132321;
 ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) 
 	: ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_iButtonSize = 16;
 	m_pkSelectedNode = NULL;
 	m_pkVertScrollbar = NULL;
 	m_pkHorzScrollbar = NULL;
@@ -119,7 +119,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	}
 	else
 	{
-		x = y = -BUTTON_SIZE;
+		x = y = -m_iButtonSize;
 	}
 
 	pkNewItem->pkNext = NULL;
@@ -129,7 +129,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	pkNewItem->ucSkinIndex = ucSkinIndex;
 	pkNewItem->ucSkinIndexSelected = ucSkinIndexSelected;
 
-	Rect rcButton = Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE);
+	Rect rcButton = Rect(x,y,x+m_iButtonSize,y+m_iButtonSize);
 	ZGuiCheckbox* pkButton = (pkNewItem->pkButton = 
 		new ZGuiCheckbox(rcButton, this, (pkParent == NULL), m_iID++));
 	
@@ -137,8 +137,8 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	pkButton->SetText(szText);
 
 	Rect rcClipper = GetScreenRect();
-	rcClipper.Right -= SCROLL_BUTTON_HEIGHT;
-	rcClipper.Bottom -= SCROLL_BUTTON_HEIGHT;
+	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
+	rcClipper.Bottom -= m_pkHorzScrollbar->GetScreenRect().Height();
 	pkButton->SetClipperArea(rcClipper); 
 	pkButton->m_bUseClipper = true;
 
@@ -186,11 +186,11 @@ void ZGuiTreebox::OpenChilds(list<ZGuiTreeboxNode*> kChilds, bool bOpen)
 		int x = (*n)->pkParent->pkButton->GetScreenRect().Right + HORZ_ROW_SPACE;
 		int y = (*n)->pkParent->pkButton->GetScreenRect().Bottom + VERT_ROW_SPACE;
 
-		y += (bOpen) ? iCounter * (BUTTON_SIZE+VERT_ROW_SPACE) : 
-			-iCounter * (BUTTON_SIZE+VERT_ROW_SPACE);
+		y += (bOpen) ? iCounter * (m_iButtonSize+VERT_ROW_SPACE) : 
+			-iCounter * (m_iButtonSize+VERT_ROW_SPACE);
 
 		(*n)->pkButton->SetPos(x,y,true,true);
-		(*n)->pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
+		(*n)->pkButton->SetMoveArea(Rect(x,y,x+m_iButtonSize,y+m_iButtonSize));
 		
 		if(bOpen)
 		{
@@ -237,7 +237,7 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 			int height_diff = next->pkButton->GetScreenRect().Top -
 				pkClickNode->pkButton->GetScreenRect().Bottom;
 
-			childs = height_diff / (BUTTON_SIZE+VERT_ROW_SPACE);
+			childs = height_diff / (m_iButtonSize+VERT_ROW_SPACE);
 		}
 	}
 
@@ -293,18 +293,18 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 		}
 	}
 
-	min_y += BUTTON_SIZE; // räkna inte med root noden.
-	min_x += BUTTON_SIZE; 
+	min_y += m_iButtonSize; // räkna inte med root noden.
+	min_x += m_iButtonSize; 
 
 	if(!(max_y == -10000000 && min_y == 10000000))
 		m_iItemHeight = abs(max_y-min_y);
 	else
-		m_iItemHeight = BUTTON_SIZE+VERT_ROW_SPACE;
+		m_iItemHeight = m_iButtonSize+VERT_ROW_SPACE;
 
 	if(!(max_x == -10000000 && min_x == 10000000))
 		m_iItemWidth = abs(max_x-min_x);
 	else
-		m_iItemWidth = BUTTON_SIZE+VERT_ROW_SPACE;
+		m_iItemWidth = m_iButtonSize+VERT_ROW_SPACE;
 
 	// Change range of vertical scrollbar
 	ChangeScrollbarRange(m_iItemWidth,m_iItemHeight,true);
@@ -422,9 +422,9 @@ void ZGuiTreebox::MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive)
 	int x = pkNode->pkButton->GetScreenRect().Left;
 	int y = pkNode->pkButton->GetScreenRect().Top;
 
-	y += steps * (VERT_ROW_SPACE+BUTTON_SIZE);
+	y += steps * (VERT_ROW_SPACE+m_iButtonSize);
 	pkNode->pkButton->SetPos(x, y, true, true);
-	pkNode->pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
+	pkNode->pkButton->SetMoveArea(Rect(x,y,x+m_iButtonSize,y+m_iButtonSize));
 
 	if(bRecursive)
 	{
@@ -460,7 +460,7 @@ void ZGuiTreebox::CreateInternalControls()
 	pkRoot->bIsOpen = true;
 
 	// Create sel label
-	m_pkSelLabel = new ZGuiLabel(Rect(0,0,BUTTON_SIZE,BUTTON_SIZE),
+	m_pkSelLabel = new ZGuiLabel(Rect(0,0,m_iButtonSize,m_iButtonSize),
 		this,false,SEL_TREEBOX_LABEL);
 
 	ZGuiSkin* pkSelLabelSkin = new ZGuiSkin;
@@ -473,8 +473,9 @@ void ZGuiTreebox::CreateInternalControls()
 	m_pkSelLabel->SetSkin(pkSelLabelSkin);
 
 	Rect rcClipper = GetScreenRect();
-	rcClipper.Right -= SCROLL_BUTTON_HEIGHT;
-	rcClipper.Bottom -= SCROLL_BUTTON_HEIGHT;
+	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
+	rcClipper.Bottom -= m_pkHorzScrollbar->GetScreenRect().Height();
+
 	m_pkSelLabel->SetClipperArea(rcClipper); 
 	m_pkSelLabel->m_bUseClipper = true;
 }
@@ -482,12 +483,15 @@ void ZGuiTreebox::CreateInternalControls()
 void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScrollbar)
 {
 	float fPageSize;
+	float bn_size;
 
 	// Change range of vertical scrollbar
 	if(bVerticalScrollbar)
 	{
-		int iRows = (int) ((float) height / (BUTTON_SIZE+VERT_ROW_SPACE));
-		fPageSize = (float) (m_pkVertScrollbar->GetScreenRect().Height()-SCROLL_BUTTON_HEIGHT*2) / height; 
+		bn_size = (float) m_pkVertScrollbar->GetArrowButtonHeight();
+			
+		int iRows = (int) ((float) height / (m_iButtonSize+VERT_ROW_SPACE));
+		fPageSize = (float) (m_pkVertScrollbar->GetScreenRect().Height()-bn_size*2) / height; 
 		if(fPageSize > 1.0f)
 			fPageSize = 1.0f;
 
@@ -497,8 +501,10 @@ void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScro
 	}
 	else
 	{
+		bn_size = (float) m_pkVertScrollbar->GetArrowButtonWidth();
+
 		int iMax = 100;
-		fPageSize = (float) (m_pkHorzScrollbar->GetScreenRect().Width()-SCROLL_BUTTON_HEIGHT*2) / width; 
+		fPageSize = (float) (m_pkHorzScrollbar->GetScreenRect().Width()-bn_size*2) / width; 
 		if(fPageSize > 1.0f)
 			fPageSize = 1.0f;
 
@@ -525,7 +531,7 @@ void ZGuiTreebox::ScrollRows()
 
 		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
 		{
-			(*it)->pkButton->Move(0, -(offset*(BUTTON_SIZE+VERT_ROW_SPACE)), 
+			(*it)->pkButton->Move(0, -(offset*(m_iButtonSize+VERT_ROW_SPACE)), 
 				true, true);
 
 			(*it)->pkButton->SetMoveArea((*it)->pkButton->GetScreenRect());
@@ -562,7 +568,7 @@ void ZGuiTreebox::ScrollCols()
 			offset -= PREV_HORZ_SCROLLCOL;
 
 		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++) {
-			(*it)->pkButton->Move(-(offset*(BUTTON_SIZE+VERT_ROW_SPACE)), 0, true, true);
+			(*it)->pkButton->Move(-(offset*(m_iButtonSize+VERT_ROW_SPACE)), 0, true, true);
 			(*it)->pkButton->SetMoveArea((*it)->pkButton->GetScreenRect());
 		}
 
@@ -872,20 +878,23 @@ bool ZGuiTreebox::ProcessKBInput(int iKey)
 	return true;
 }
 
+bool ZGuiTreebox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
+	for(itNode it = m_kNodeList.begin(); it != m_kNodeList.end(); it++)
+	{
+		ZGuiCheckbox* pkWnd = (*it)->pkButton;
+		pkWnd->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	}
 
+	m_pkSelLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
+	m_pkHorzScrollbar->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	m_pkVertScrollbar->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	m_iButtonSize = (int) ((float) m_iButtonSize * (float) ((float)iNewHeight/(float)iOldHeight));
+	
+	return true;
+}

@@ -262,7 +262,7 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	{
 		int curr_res_x, curr_res_y;
 		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
 	}
 
 	pkRenderer->SetSkin(m_pkSkin); 
@@ -412,6 +412,46 @@ void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 
 bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
+	printf("ZGuiWnd::Rescale %s\n", GetName());
+
+	int xpos, ypos, width, height;
+	float fXChange = (float) iNewWidth / iOldWidth;
+	float fYChange = (float) iNewHeight / iOldHeight;
+	Rect rcA = m_kArea, rcM = m_kMoveArea, rcC = m_kClipperArea;
+
+	// Change screen area
+	xpos = (int) ((float) fXChange * (float)rcA.Left);
+	ypos = (int) ((float) fYChange * (float)rcA.Top);
+	width = (int) ((float) fXChange * (float)rcA.Width());
+	height = (int) ((float) fYChange * (float)rcA.Height());
+
+	m_kArea.Left = xpos;
+	m_kArea.Right = xpos+width;
+	m_kArea.Top = ypos;
+	m_kArea.Bottom = ypos+height;
+
+	// Change move area
+	xpos = (int) ((float) fXChange * (float)rcM.Left);
+	ypos = (int) ((float) fYChange * (float)rcM.Top);
+	width = (int) ((float) fXChange * (float)rcM.Width());
+	height = (int) ((float) fYChange * (float)rcM.Height());
+
+	m_kMoveArea.Left = xpos;
+	m_kMoveArea.Right = xpos+width;
+	m_kMoveArea.Top = ypos;
+	m_kMoveArea.Bottom = ypos+height;
+
+	// Change clipper area
+	xpos = (int) ((float) fXChange * (float)rcC.Left);
+	ypos = (int) ((float) fYChange * (float)rcC.Top);
+	width = (int) ((float) fXChange * (float)rcC.Width());
+	height = (int) ((float) fYChange * (float)rcC.Height());
+
+	m_kClipperArea.Left = xpos;
+	m_kClipperArea.Right = xpos+width;
+	m_kClipperArea.Top = ypos;
+	m_kClipperArea.Bottom = ypos+height;
+
 /*	ZGui* pkGui = GetGUI();
 	if(pkGui == NULL)
 		return false;
@@ -646,7 +686,8 @@ void ZGuiWnd::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	m_pkCallback = pkSrc->m_pkCallback;
 }
 
-void ZGuiWnd::SetClipperArea(Rect rc)
+void ZGuiWnd::SetClipperArea(Rect rc, bool bEnable)
 {
 	m_kClipperArea = rc;
+	m_bUseClipper = bEnable;
 }

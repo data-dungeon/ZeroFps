@@ -201,7 +201,9 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemSelectedSkin( GetSkin("DefLBitemDSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemHighLightSkin(GetSkin("DefLBitemFSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
-			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),			
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
 		break;
 	case Combobox:
 		static_cast<ZGuiCombobox*>(pkWnd)->SetSkin( GetSkin("DefCBBkSkin") );
@@ -210,7 +212,9 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemSelectedSkin( GetSkin("DefCBitemDSkin"));
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemHighLightSkin(GetSkin("DefCBitemFSkin"));
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
-			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d") );
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->GetScrollbar()->SetScrollButtonDownSkins( 
 			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d") );
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->GetScrollbar()->SetScrollButtonUpSkins( 
@@ -789,5 +793,4 @@ ZFScript* ZGuiApp::GetGuiScript()
 {
 	return (ZFScript*) m_pkScriptResHandle->GetResourcePtr();  
 }
-
 

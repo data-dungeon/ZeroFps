@@ -45,7 +45,6 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 	CreateInternalControls();
 
 	m_kItemArea = GetWndRect();
-	m_unOriginalHeight = GetScreenRect().Height();
 
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
@@ -76,7 +75,7 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 	{
 		int curr_res_x, curr_res_y;
 		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
 	}
 
 	pkRenderer->SetSkin(m_pkSkin);
@@ -114,10 +113,15 @@ void ZGuiListbox::SetItemHighLightSkin(ZGuiSkin* pkSkin)
 }
 
 void ZGuiListbox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
-								   ZGuiSkin* pkSkinThumbButtonHighLight)
+								   ZGuiSkin* pkSkinThumbButtonHighLight,
+									ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+									ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown)
 {
 	m_pkScrollbarVertical->SetSkin(pkSkinScrollArea);
 	m_pkScrollbarVertical->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
+
+	m_pkScrollbarVertical->SetScrollButtonUpSkins(pkSkinTopBnUp, pkSkinTopBnDown);
+	m_pkScrollbarVertical->SetScrollButtonDownSkins(pkSkinBottomBnUp, pkSkinBottomBnDown);
 }
 
 void ZGuiListbox::CreateInternalControls()
@@ -324,21 +328,26 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 {
+	if(!m_pkItemList.empty())
+		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();  
+
 	// Move all items
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
 		 {
+			ZGuiListitem* pkItem = (*it);
+
 			if(g_bInv) // fulhack för att unvika att scrollbaren flytar items fel
-				(*it)->Move(0,-pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+				pkItem->Move(0,-pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
 			else
-				(*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+				pkItem->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
 
-			Rect rc = (*it)->GetButton()->GetScreenRect();
+			Rect rc = pkItem->GetButton()->GetScreenRect();
 
-			if( rc.Bottom > GetScreenRect().Top && rc.Top < GetScreenRect().Bottom)  
-				(*it)->GetButton()->Show();
+			if( rc.Top >= GetScreenRect().Top && rc.Bottom <= GetScreenRect().Bottom)  
+				pkItem->GetButton()->Show();
 			else
-				(*it)->GetButton()->Hide();
+				pkItem->GetButton()->Hide();
 		 }	
 
 	// Reset parameter
@@ -381,6 +390,9 @@ void ZGuiListbox::IsMenu(bool bMenu)
 void ZGuiListbox::UpdateList()
 {
 	int iElements = m_pkItemList.size();
+
+	if(iElements > 0)
+		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();
 	
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
 	int iElementSize = m_unItemHeight * iElements;
@@ -410,15 +422,11 @@ void ZGuiListbox::UpdateList()
 		 it != m_pkItemList.end(); it++)
 			(*it)->Resize( iNewWidth, m_unItemHeight);
 
-
 	ScrollItems(m_pkScrollbarVertical);
 }
 
 void ZGuiListbox::Resize(int Width, int Height)
 {
-/*	if(Height > m_unOriginalHeight)
-		Height = m_unOriginalHeight;*/
-
 	Rect rc = GetWndRect();
 	rc.Bottom = rc.Top + Height;
 	rc.Right = rc.Left + Width;
@@ -546,3 +554,26 @@ void ZGuiListbox::SetEnable(bool bEnable)
 		 }
 }
 
+bool ZGuiListbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+
+	for(itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+		(*it)->GetButton()->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+
+	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
+
+	m_unItemHeight = (int) ((float) m_unItemHeight * (float) ((float)iNewHeight/(float)iOldHeight));
+	m_iScrollbarWidth = (int) ((float) m_iScrollbarWidth * (float) ((float)iNewWidth/(float)iOldWidth));
+
+	int iWidth = GetScreenRect().Width();
+
+	m_kItemArea = GetWndRect();
+	m_kItemArea = m_kItemArea.Left + iWidth;
+
+	UpdateList();
+
+	printf("adasdfasdfasfasdfasd\n");
+
+	return true;
+}

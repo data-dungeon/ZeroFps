@@ -36,6 +36,8 @@ public:
 
 	bool IsChecked();
 
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight); // overloaded
+
 protected:
 	ZGuiSkin* m_pkSkinBnDown, *m_pkSkinBnUp;
 	ZGuiLabel* m_pkLabel;

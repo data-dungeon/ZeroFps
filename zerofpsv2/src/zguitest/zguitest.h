@@ -35,6 +35,7 @@ class ZGuiTest :public Application, public ZGuiApp
 		void OnServerClientPart(ZFClient* pkClient,int iConID) {};
 
 	private:
+		void OnScreenSizeChange(Point kPrevSize, Point kNewSize);
 		void CreateUI();
 
 		Camera*				m_pkCamera;

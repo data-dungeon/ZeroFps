@@ -52,7 +52,7 @@ bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 	{
 		int curr_res_x, curr_res_y;
 		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
 	}
 
 	pkRenderer->SetSkin(m_pkSkin);
@@ -206,11 +206,12 @@ void ZGuiCheckbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }
 
+bool ZGuiCheckbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	printf("ZGuiCheckbox::Rescale %s\n", GetName());
 
-
-
-
-
-
-
-
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	
+	return true;
+}

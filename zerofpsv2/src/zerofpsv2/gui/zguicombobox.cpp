@@ -90,7 +90,7 @@ bool ZGuiCombobox::Render( ZGuiRender* pkRenderer )
 	{
 		int curr_res_x, curr_res_y;
 		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
+//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
 	}
 
 	m_pkLabel->Render(pkRenderer);
@@ -104,10 +104,13 @@ bool ZGuiCombobox::Render( ZGuiRender* pkRenderer )
 //
 void ZGuiCombobox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea,
 									ZGuiSkin* pkSkinThumbButton,
-								    ZGuiSkin* pkSkinThumbButtonHighLight)
+								    ZGuiSkin* pkSkinThumbButtonHighLight,
+									 ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+									 ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown)
 {
 	m_pkListbox->SetScrollbarSkin(pkSkinScrollArea,pkSkinThumbButton,
-		pkSkinThumbButtonHighLight);
+		pkSkinThumbButtonHighLight, pkSkinTopBnUp, 
+		pkSkinTopBnDown, pkSkinBottomBnUp, pkSkinBottomBnDown);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

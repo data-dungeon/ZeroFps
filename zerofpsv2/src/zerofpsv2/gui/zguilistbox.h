@@ -30,13 +30,18 @@ public:
 	void IsMenu(bool bMenu=true);
 	ZGuiListitem* GetItem(unsigned int iIndex);
 	ZGuiListitem* AddItem(char* strText, unsigned int iIndex, bool bSelect); 
+	
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
-		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight,
+		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
+
 	void SetItemNormalSkin(ZGuiSkin* pkSkin);
 	void SetItemSelectedSkin(ZGuiSkin* pkSkin);
 	void SetItemHighLightSkin(ZGuiSkin* pkSkin);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool Render( ZGuiRender* renderer );
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	void SetZValue(int iValue); // överlagrad
 	unsigned short GetItemHeight() { return m_unItemHeight; }
@@ -60,7 +65,6 @@ private:
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	list<ZGuiListitem*> m_pkItemList;
 	unsigned short m_unItemHeight;
-	unsigned short m_unOriginalHeight;
 	Rect m_kItemArea;
 	ZGuiListitem* m_pkSelectedItem;
 	bool m_bIsMenu;

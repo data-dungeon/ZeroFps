@@ -1,5 +1,6 @@
 #include "zguitest.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 ZGuiTest g_kGuiTest("GuiTest",0,0,0);
 
@@ -62,6 +63,8 @@ void ZGuiTest::OnInit()
 
 	CreateUI();
 
+	OnScreenSizeChange(Point(800,600), Point(GetWidth(),GetHeight()));
+
 	pkFps->m_bClientMode = true;
 }
 
@@ -84,5 +87,24 @@ void ZGuiTest::OnHud(void)
 
 void ZGuiTest::CreateUI()
 {
-	CreateWnd(Wnd, "TestWnd", "", "", 100, 100, 200, 200, 0);	
+	CreateWnd(Wnd, "TestWnd", "", "", 800-200, 600-200, 200, 200, 0);
+	/*CreateWnd(Button, "TestLabel", "TestWnd", "Apa", 200/2-50/2, 200/2-20/2, 50, 20, 0);
+	CreateWnd(Textbox, "TestTextbox", "TestWnd", "Lulle", 0, 0, 50, 20, 0);*/
+	CreateWnd(Listbox, "TestListbox", "TestWnd", "Lulle", 8, 8, 150, 150, 0);
+
+	for(int i=0; i<20; i++)
+		AddListItem("TestListbox", "apa");
+
+}
+
+void ZGuiTest::OnScreenSizeChange(Point kPrevSize, Point kNewSize)
+{
+	map<string,ZGuiWnd*> kWindows;
+	pkGuiMan->GetWindows(kWindows); 
+
+	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
+	for( ; it != kWindows.end(); it++)
+	{
+		(*it).second->Rescale(kPrevSize.x, kPrevSize.y, kNewSize.x, kNewSize.y);
+	}
 }

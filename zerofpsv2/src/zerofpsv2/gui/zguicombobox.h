@@ -24,7 +24,9 @@ public:
 
 	virtual bool Render( ZGuiRender* renderer );
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton,
-		ZGuiSkin* pkSkinThumbButtonHighLight);
+		ZGuiSkin* pkSkinThumbButtonHighLight,
+		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
 	void SetSkin(ZGuiSkin* pkSkin); // ersätter ZGuiWnd::SetSkin...
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool AddItem(char* strText, int iIndex, bool bSelect=true); // if index is -1 it set index to getitemcount+1
