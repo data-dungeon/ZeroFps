@@ -542,11 +542,11 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       m_uiVersion++;
 
       // stick Object to MAD model
-      pkObject->SetRelativeOri (true);
+      //pkObject->SetRelativeOri (true);
       m_pkParent->AddChild ( pkObject );
 
       P_LinkToJoint* pkLink = (P_LinkToJoint*)pkObject->AddProperty ("P_LinkToJoint");
-      pkLink->m_strToJoint = kSlot;
+      pkLink->SetJoint(kSlot.c_str());
 
       return true;
    }
