@@ -73,7 +73,7 @@ void MadView::OnInit()
 
 	//m_pkZFVFileSystem->AddRootPath( "/" , "/");
 	//m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
-	m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
+	//m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
 
 	m_pkConsole->Printf(" MadView ");
 	m_pkConsole->Printf("--------------------------------");

@@ -66,8 +66,8 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 			FID_CD,
 			FID_DIR,
 			FID_LISTROOT,
-			FID_VFSPATH,
-			
+			FID_VFSPATH,			
+			FID_ADDROOTPATH,
 		};
 
 				

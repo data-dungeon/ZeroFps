@@ -91,14 +91,16 @@ ZFVFileSystem::ZFVFileSystem()
 	m_strCurentDir = "";
 	m_bCaseSensitive = false;
 	
-	Register_Cmd("cd",		FID_CD);
-	Register_Cmd("root",	 	FID_LISTROOT);
-	Register_Cmd("dir",		FID_DIR);
-	Register_Cmd("ls",		FID_DIR);
-	Register_Cmd("vfspath",	FID_VFSPATH);
+	Register_Cmd("cd",			FID_CD);
+	Register_Cmd("root",	 		FID_LISTROOT);
+	Register_Cmd("dir",			FID_DIR);
+	Register_Cmd("ls",			FID_DIR);
+	Register_Cmd("vfspath",		FID_VFSPATH);
+	Register_Cmd("addrootpath",FID_ADDROOTPATH); 
 	
 	RegisterVariable("f_casesensitive",		&m_bCaseSensitive,	CSYS_BOOL);
 	
+//	AddRootPath("/","/"); 
 	AddRootPath("./","/"); 
 	AddRootPath("../datafiles/sysdata" ,"/data");
 	AddRootPath("../datafiles/extdata" ,"/data");
@@ -169,11 +171,12 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	else
 		szOptions = "rb";
 	
+	
 	// Try to open file directly.  (this should not exist)
 	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)
 		return pkFp;
-
+	
 	
 	// Try to open from all active RootPaths.
 	unsigned int num_paths = m_kRootPath.size();	
@@ -538,7 +541,20 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 			break;		
 		}
+		
+		case FID_ADDROOTPATH:
+		{
+			if(kCommand->m_kSplitCommand.size() != 3)
+			{
+				m_pkConsole->Printf("addrootpath [realdir] [vfsdir]");
+				break;		
+			}
 			
+			m_pkConsole->Printf("Adding root path: %s at %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
+			AddRootPath(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]);
+		
+			break;
+		}					
 	};
 }
 
