@@ -60,6 +60,9 @@ bool ZGui::StartUp()
 		g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkZeroFps = static_cast<I_ZeroFps*>(
 		g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(
+		g_ZFObjSys.GetObjectPtr("ZShaderSystem"));		
+		
 	m_pkActiveMainWin = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
@@ -1006,7 +1009,7 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 }
 
 bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
-{
+ {
 	if(m_bDisableAlphatest)
 	{
 		printf("Disabled\n");
@@ -1065,6 +1068,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	
 	if(alpha_tex > 0)
 	{
+		m_pkZShaderSystem->Push("ZGui::ClickedWndAlphaTex");
+		
 		m_pkTexMan->BindTexture( alpha_tex );
 
 		int horz_offset, vert_offset;
@@ -1080,6 +1085,7 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		if(pkSurface == NULL)
 		{
 			printf("Failed to call GetImage from texturemanager!\n");
+			m_pkZShaderSystem->Pop();
 			return false;
 		}
 
@@ -1104,6 +1110,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		}
 		m_pkTexMan->EditEnd( alpha_tex );
 
+		m_pkZShaderSystem->Pop();
+		
 		if(bIsTGA) 
 		{
 			if(kColor.a == 0) // En alpha pixel. Vi har INTE klickat på fönstret.

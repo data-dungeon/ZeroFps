@@ -219,7 +219,7 @@ void ZeroEd::CreateEditCameras()
 
 void ZeroEd::OnInit() 
 {
-//	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/zeroed/") ,"data/");
 
@@ -1235,6 +1235,7 @@ void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 
 void ZeroEd::DrawZoneMarker(Vector3 kPos)
 {
+
 	Vector3 bla = m_kZoneSize / 2;
 	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
 }
@@ -1242,6 +1243,7 @@ void ZeroEd::DrawZoneMarker(Vector3 kPos)
 
 void ZeroEd::DrawCrossMarker(Vector3 kPos)
 {
+
 	// Set Color here.
 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
 	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	

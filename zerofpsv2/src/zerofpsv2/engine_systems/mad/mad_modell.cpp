@@ -10,7 +10,7 @@ extern float g_fMadLODScale;
 Mad_Modell::Mad_Modell()
 {
 	m_pkTex		= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	m_pkShader	= static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader"));	
+	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
 	
 	fCurrentTime		= 0;
 	iActiveAnimation	= MAD_NOANIMINDEX;
@@ -416,27 +416,27 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	pkCore->SetupBonePose();
 
 
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+//	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
-	glColor3f(1,1,1);
-	if(iDrawFlags & MAD_DRAW_NOLIGHT)
-		glDisable(GL_LIGHTING);
+//	glColor3f(1,1,1);
+/*	if(iDrawFlags & MAD_DRAW_NOLIGHT)
+		glDisable(GL_LIGHTING);		
 	glEnable(GL_TEXTURE_2D );
-
+*/
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 
-	if(iDrawFlags &	MAD_DRAW_LINES)
+/*	if(iDrawFlags &	MAD_DRAW_LINES)
 		glPolygonMode(GL_FRONT, GL_LINE);
-
+*/
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
 
-		//if(g_fMadLODScale == 1)
-			pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
-
+		m_pkShader->ResetPointers();
+			
 		//setup all texture pointers
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
 		m_pkShader->SetPointer(TEXTURE_POINTER1,GetTextureCooPtr());
@@ -450,45 +450,46 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
-		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
-			
-			
+		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
+		{
 			SelectSubMesh(iSubM);
 
-			if(iDrawFlags & MAD_DRAW_MESH) {
+			if(iDrawFlags & MAD_DRAW_MESH) 
+			{
 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
 
-//				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-
 				ZFResourceHandle* pkRes;
-				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) {
+				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) 
+				{
 					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
-					}
-				else {
+				}
+				else 
+				{
 					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
-					}
+				}
 				
-				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());				
-				m_pkShader->SetMaterial(pkMaterial);				
+				//setup material
+				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
+				m_pkShader->BindMaterial(pkMaterial);				
 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
 				
-				m_pkShader->Draw();
+				m_pkShader->DrawArray();
 				g_iNumOfMadSurfaces += iNumOfFaces;
-				}
+			}
 
 			if(iDrawFlags & MAD_DRAW_NORMAL)
 				DrawNormal(GetVerticesPtr(), GetNormalsPtr());
-			}
 		}
+	}
 
-	glDisable(GL_ALPHA_TEST);
+//	glDisable(GL_ALPHA_TEST);
 	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
-	if(iDrawFlags &	MAD_DRAW_LINES)
-	glPolygonMode(GL_FRONT, GL_FILL );
+//	if(iDrawFlags &	MAD_DRAW_LINES)
+//	glPolygonMode(GL_FRONT, GL_FILL );
 
-	glPopAttrib();
+//	glPopAttrib();
 }
 
 

@@ -32,6 +32,8 @@
 #include "../basic/zfassert.h"
 #include "../basic/zfini.h"
 
+#include "../render/zshadersystem.h"
+
 #include <list>
 #include <vector>
 #include <map>
@@ -207,6 +209,7 @@ private:
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
 	TextureManager* m_pkTexMan;
+	ZShaderSystem*	m_pkZShaderSystem;
 	I_ZeroFps*	m_pkZeroFps;
 	ZGuiToolTip* m_pkToolTip;
 	ZGuiMenu* m_pkActiveMenu; // den meny som senast klickades

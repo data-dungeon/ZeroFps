@@ -214,16 +214,18 @@ void P_Enviroment::Update()
 				m_fCurrentFogStop = m_fCurrentFogStop*(1-fIf) + m_fFogStop*fIf;				
 									
 				m_pkRender->SetClearColor(m_kCurrentFogColor);	
-			
+				
+				//fog has to be set every frame...it seems, some evil push/pop attrib somewhere that fucks it up =(
+				if( (m_fFogStart < 0) )
+					m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,false);	
+				else
+					m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,true);	
+
+							
 				m_pkCurrentLP->SetRot(m_kSunPos);
 			}
 			
 			
-			//fog has to be set every frame...it seems, some evil push/pop attrib somewhere that fucks it up =(
-			if( (m_fFogStart < 0) )
-				m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,false);	
-			else
-				m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,true);	
 
 		}
 		

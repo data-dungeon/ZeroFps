@@ -4,6 +4,7 @@
 #include "../zerofpsv2/engine/property.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/script/zfscript.h"
+#include "../zerofpsv2/render/zshadersystem.h"
 #include <iostream>
 #include <string.h>
 #include "mcommon_x.h"
@@ -14,17 +15,20 @@ using namespace std;
 
 class MCOMMON_API P_ShadowBlob: public Property {
 	private:
-		Render*	m_pkRender;
+		//Render*	m_pkRender;
+		ZShaderSystem*	m_pkZShaderSystem;
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );			
 		
-		ZFResourceHandle* m_pkTexture;
+		//ZFResourceHandle* m_pkTexture;
 		
 		bool		m_bHaveSet;
 		Vector3	m_kOffset;
 		Vector3	m_kScale;
 	
+		ZMaterial*	m_pkMaterial;
+		
 	public:
 
 		void SetScale (float fWidth, float fLenght);

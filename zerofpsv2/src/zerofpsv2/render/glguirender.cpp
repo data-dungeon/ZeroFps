@@ -29,6 +29,12 @@ bool GLGuiRender::StartUp()
 { 
 	m_pkTextureManger=static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));	
+		
+	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
+/*		
+	m_pkTextureManger=static_cast<TextureManager*>
+		(g_ZFObjSys.GetObjectPtr("TextureManager"));			
+*/		
 	return true; 
 }
 
@@ -64,6 +70,8 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 //
 bool GLGuiRender::StartRender()
 {
+	m_pkShader->Push("gui");
+
 	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
 		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); 
 	glDisable(GL_CULL_FACE);
@@ -71,6 +79,9 @@ bool GLGuiRender::StartRender()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_FOG);
 
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -130,6 +141,8 @@ bool GLGuiRender::EndRender()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+	
+	m_pkShader->Pop();
 	
 	return true;
 }

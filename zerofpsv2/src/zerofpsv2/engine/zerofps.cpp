@@ -303,6 +303,11 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Tests: %d", m_pkTcs->GetNrOfTests());
 	DevPrintf("common","ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
 	
+	DevPrintf("common","MaterialBinds  : %d", m_pkZShaderSystem->GetMaterialBinds());
+	DevPrintf("common","MaterialReloads: %d", m_pkZShaderSystem->GetMaterialReloads());
+	DevPrintf("common","SavedReloads   : %d", m_pkZShaderSystem->GetSavedReloads());
+	DevPrintf("common","GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
+	m_pkZShaderSystem->ResetStatistics();
 	
 	// Update Local Input.
 	m_pkInput->Update();
@@ -395,6 +400,8 @@ void ZeroFps::Run_Client()
 	//run application Head On Display
 	SetCamera(m_pkConsoleCamera);
 	m_pkApp->OnHud();
+	
+	
 	m_pkObjectMan->UpdateDelete();
 
 	m_pkNetWork->DevShow_ClientConnections();
@@ -628,14 +635,14 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
 		
 	//dvoid fog fix, problem då fog states skall sparas mellan varje frame....någon vettigare lösning kanske kommer =D
-	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | 
+/*	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | 
 		GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
 	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-
+*/
 
 	//set this camera as active
 	SetCamera(pkCamera);
@@ -666,12 +673,14 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	m_pkObjectMan->Test_DrawZones();
 	m_pkApp->RenderInterface();
 
+/*	
 	// Restore State
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();
+*/	
 }
 
 
@@ -796,12 +805,17 @@ void ZeroFps::DrawDevStrings()
 		}
 
 	string strPageName;
+	
+	m_pkZShaderSystem->Push("ZeroFps::DrawDevStrings");
+	
 		
 	glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT );
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
- 
+ 	glEnable(GL_TEXTURE_2D);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	
 	m_pkRender->SetFont("data/textures/text/devstr.bmp");
 
 	glColor3f(1,1,1);
@@ -828,6 +842,8 @@ void ZeroFps::DrawDevStrings()
 	}
 
 	glPopAttrib();
+	
+	m_pkZShaderSystem->Pop();
 }
 
 void ZeroFps::DevPrint_Show(bool bVisible)

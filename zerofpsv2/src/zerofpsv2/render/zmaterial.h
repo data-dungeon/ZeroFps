@@ -27,6 +27,8 @@ class RENDER_API ZMaterialSettings
 		Vector4	m_kVertexColor;
 		bool		m_bColorMaterial;
 		
+		float		m_fLineWidth;
+		
 		int		m_iTUTexCords[4];
 		
 		int		m_iPolygonModeFront;
@@ -39,6 +41,8 @@ class RENDER_API ZMaterialSettings
 
 		bool		m_bAlphaTest;
 	
+		bool		m_bFog;
+		
 		bool		m_bBlend;
 
 		bool		m_bDepthTest;
@@ -64,20 +68,16 @@ to be rendered in the engine.
 */
 class RENDER_API ZMaterial : public ZFResource
 {
-	private:
-		
+	private:		
 		vector<ZMaterialSettings*> m_kPasses;		//material passes
 		ZFIni								m_kIni;			//inifile
 		static map<string,int> 		m_kEnums;		//enums for loading
 		
-		//global material settings
-		bool	m_bCopyData;
 		
-		//software effects
-		bool	m_bRandomMovements;
-		bool	m_bWaves;
-		bool	m_bTextureOffset;
-		float	m_faTextureOffset[2];
+		static int	m_iNextID;							//next created material will get this id
+		int			m_iID;								//uniq id for this material
+		
+		string		m_strName;
 		
 		
 		bool LoadGlobalSection();
@@ -86,7 +86,16 @@ class RENDER_API ZMaterial : public ZFResource
 		void SetupEnums();
 		
 	public:		
+		//global material settings
+		bool	m_bCopyData;
 		
+		bool	m_bRandomMovements;
+		bool	m_bWaves;
+		bool	m_bTextureOffset;
+		float	m_faTextureOffset[2];
+		
+	
+	
 		ZMaterial();
 		~ZMaterial();
 
@@ -100,7 +109,10 @@ class RENDER_API ZMaterial : public ZFResource
 		bool LoadShader(const char* acFile);
 		void Clear();
 	
+		
+		
 	friend class ZShader;
+	friend class ZShaderSystem;
 };
 
 RENDER_API ZFResource* Create__Material();

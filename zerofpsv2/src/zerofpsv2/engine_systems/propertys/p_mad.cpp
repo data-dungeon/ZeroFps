@@ -82,8 +82,8 @@ void P_Mad::Update()
 
 
 		//set force transparent if not visible
-		if(!m_bIsVisible)
-			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
+		//if(!m_bIsVisible)
+		//	m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
 
 /*
 		m_pkShader->MatrixPush();
@@ -105,8 +105,9 @@ void P_Mad::Update()
 			Vector3 pos;
 
 			pos = m_pkObject->GetIWorldPosV();
-			m_pkShader->Reset();
+			//m_pkShader->Reset();
 
+			
 			glTranslatef(pos.x,pos.y,pos.z);
 
 			Matrix4 ori;
@@ -130,8 +131,8 @@ void P_Mad::Update()
 		m_pkZeroFps->m_iNumOfMadRender++;
 
 		//reset blend
-		if(!m_bIsVisible)
-			m_pkShader->SetForceBlending(BLEND_MATERIAL);
+		//if(!m_bIsVisible)
+		//	m_pkShader->SetForceBlending(BLEND_MATERIAL);
 	
 	}
 }

@@ -7,6 +7,8 @@
 
 void P_PSystem::Update()
 {
+	m_pkZShaderSystem->Push("P_PSystem::Update");
+
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if ( m_pkPSystem )
@@ -38,6 +40,8 @@ void P_PSystem::Update()
 	}
 
 	glPopAttrib();
+	
+	m_pkZShaderSystem->Pop();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -66,6 +70,8 @@ P_PSystem::P_PSystem()
 	strcpy(m_acName,"P_PSystem");
 	m_pkPSystem = NULL;
 
+	
+	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 }
 
 // ------------------------------------------------------------------------------------------

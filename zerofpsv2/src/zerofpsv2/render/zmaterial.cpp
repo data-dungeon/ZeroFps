@@ -4,6 +4,7 @@
  
 
 map<string,int> ZMaterial::m_kEnums;
+int ZMaterial::m_iNextID = 1;
 
 ZMaterialSettings::ZMaterialSettings()
 {
@@ -25,16 +26,19 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_kVertexColor.Set(1,1,1,1);
 	
-	m_bColorMaterial = false;
-	m_bLighting =	 true;
-	m_bCullFace = 	true;
-	m_bAlphaTest =	false;
-   m_bDepthTest = true;
-	m_iDepthFunc =	LESS_DEPTH;
+	m_fLineWidth = 	1.0;
 	
-	m_bBlend	= false;
-	m_iBlendSrc = ONE_BLEND_SRC; 
-	m_iBlendDst = ZERO_BLEND_DST; 
+	m_bColorMaterial= false;
+	m_bLighting =		true;
+	m_bCullFace = 		true;
+	m_bAlphaTest =		false;
+   m_bDepthTest = 	true;
+	m_iDepthFunc =		LESS_DEPTH;
+	m_bFog=				true;
+	
+	m_bBlend	= 			false;
+	m_iBlendSrc = 		ONE_BLEND_SRC; 
+	m_iBlendDst = 		ZERO_BLEND_DST; 
 		
 	m_iTextureColorEffect = -1;
 	
@@ -64,6 +68,10 @@ ZMaterialSettings::~ZMaterialSettings()
 
 ZMaterial::ZMaterial()
 {
+	//setup material ID
+	m_iID = m_iNextID;
+	m_iNextID++;
+	
 	SetupEnums();
 	Clear();
 
@@ -105,6 +113,8 @@ void ZMaterial::Clear()
 	m_bCopyData = false;
 	m_bRandomMovements = false;
 	m_bWaves = false;	
+	
+	m_strName = "UnNamed";
 }
 
 bool ZMaterial::LoadShader(const char* acFile)
@@ -125,6 +135,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 	{
 		Clear();
 	
+		m_strName = acFile;
 		
 		if(!LoadGlobalSection())
 			return false;
@@ -263,6 +274,10 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"depthfunc"))
 		newpass->m_iDepthFunc =GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"depthfunc"));
 	
+	if(m_kIni.KeyExist(passname.c_str(),"fog"))
+		newpass->m_bFog = m_kIni.GetBoolValue(passname.c_str(),"fog");
+	
+	
 	if(m_kIni.KeyExist(passname.c_str(),"blend"))
 		newpass->m_bBlend = m_kIni.GetBoolValue(passname.c_str(),"blend");
 	if(m_kIni.KeyExist(passname.c_str(),"blendsrc"))
@@ -275,7 +290,12 @@ bool ZMaterial::LoadPass(int iPass)
 	
 	if(m_kIni.KeyExist(passname.c_str(),"colormaterial"))
       newpass->m_bColorMaterial = m_kIni.GetBoolValue(passname.c_str(),"colormaterial");		
-	
+
+	//line width
+	if(m_kIni.KeyExist(passname.c_str(),"linewidth"))
+      newpass->m_fLineWidth = m_kIni.GetFloatValue(passname.c_str(),"linewidth");	
+
+			
 	//get vertexcolor R G B A values
 	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-r"))
       newpass->m_kVertexColor.x = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-r");	

@@ -4,12 +4,14 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../common/psystem.h"
+#include "../../render/zshadersystem.h"
 
 /// Property for a particle system.
 class ENGINE_SYSTEMS_API P_PSystem : public Property {
 
 	private:
-		PSystem *m_pkPSystem;
+		PSystem 			*m_pkPSystem;
+		ZShaderSystem*	m_pkZShaderSystem;
 		string m_kPSType;
 
 	public:

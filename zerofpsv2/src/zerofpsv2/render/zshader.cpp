@@ -254,10 +254,6 @@ void ZShader::SetupPrerenderStates()
 
 	if(m_pkCurentMaterial->m_bWaves)
 		Waves();
-
-
-	
-
 }
 
 void ZShader::SetupVertexProgram(ZMaterialSettings* pkSettings)

@@ -5,6 +5,7 @@
     
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
+	m_pkZShaderSystem->Push("Render::DrawSkyBox_SixSided");
 
 	glPushMatrix();
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -13,6 +14,7 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);	//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);	//want the skybox to be faaaaaar away =)
+	glPolygonMode(GL_FRONT, GL_FILL);
 
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
  
@@ -93,10 +95,16 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 	glPopAttrib();
 	glPopMatrix();
 
+	
+	m_pkZShaderSystem->Pop();
 }
 
 
-void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
+void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) 
+{
+	m_pkZShaderSystem->Push("Render::DrawSkyBox_SixSided");
+	
+	
 	float fYpos;
 	
 
@@ -113,6 +121,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
+	glPolygonMode(GL_FRONT, GL_FILL);
 	
 	glTranslatef(CamPos.x,CamPos.y+fYpos,CamPos.z);
 	glRotatef(kHead.x, 1, 0, 0);
@@ -170,10 +179,16 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();
 
+	
+	m_pkZShaderSystem->Pop();
+	
 }
 
 
-void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue) {
+void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue) 
+{
+	m_pkZShaderSystem->Push("Render::DrawWater");
+
 
 	float freq=500.0;
 	float amp=0.5;
@@ -263,6 +278,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glPopMatrix();
 
 	glColor4f(1,1,1, 1);	
+	
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture) {
@@ -601,15 +618,7 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 {
 	if(FogEnabled)
 	{
-		//cout<<"fog enabled"<<endl;
-		
 		m_FogEnable=true;		
-		
-		glEnable(GL_FOG);
-	
-		glHint(GL_FOG_HINT,GL_NICEST);		
-		glFogi(GL_FOG_MODE,GL_LINEAR);
-		glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
 		
 		glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
 	//	glFogf(GL_FOG_DENSITY,FogDensity);
@@ -618,9 +627,9 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 	} 
 	else 
 	{
-		//cout<<"fog disabled"<<endl;
+		glFogf(GL_FOG_START,1000);
+		glFogf(GL_FOG_END,2000);	
 		
-		glDisable(GL_FOG);
 		m_FogEnable=false;
 	}	
 }
@@ -643,17 +652,19 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1) //,int iTexture2) 
 {
-	static Vector3 pointdata[8] = { Vector3(-0.5,0.5,0),
-												Vector3(-0.5,-0.5,0),
-												Vector3(0.5,-0.5,0),
-												Vector3(0.5,0.5,0),
-										
-												Vector3(0,0.5,-0.5),
-												Vector3(0,0.5,0.5),
-												Vector3(0,-0.5,0.5),
-												Vector3(0,-0.5,-0.5)};
+	static ZMaterial* pkGrass = NULL;
+	if(!pkGrass)
+	{ 
+		pkGrass = new ZMaterial;
+		pkGrass->GetPass(0)->m_kTUs[0]->SetRes("data/textures/grassp.tga");	
+		pkGrass->GetPass(0)->m_iPolygonModeBack = FILL_POLYGON;
+		pkGrass->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+		pkGrass->GetPass(0)->m_bCullFace = true;		
+		pkGrass->GetPass(0)->m_bAlphaTest = true;
+		pkGrass->GetPass(0)->m_bLighting = true;
+	}
 
-/*	static Vector3 normaldata[8] = { Vector3(0,1,0),
+	static Vector3 normaldata[8] = { Vector3(0,1,0),
 												Vector3(0,1,0),
 												Vector3(0,1,0),
 												Vector3(0,1,0),
@@ -662,9 +673,19 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 												Vector3(0,1,0),
 												Vector3(0,1,0),
 												Vector3(0,1,0),};
-*/
 
-	static Vector2 texdata[8] = { Vector2(0,1),
+	
+	static Vector3 apointdata[8] = { Vector3(-0.5,1,0),
+												Vector3(-0.5,0,0),
+												Vector3( 0.5,0,0),
+												Vector3( 0.5,1,0),
+										
+												Vector3(0,1,-0.5),
+												Vector3(0,1, 0.5),
+												Vector3(0,0, 0.5),
+												Vector3(0,0,-0.5)};
+
+	static Vector2 atexdata[8] = { Vector2(0,1),
 											Vector2(0,0),
 											Vector2(1,0),
 											Vector2(1,1),
@@ -673,54 +694,26 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 											Vector2(0,1),
 											Vector2(0,0),
 											Vector2(1,0)};
+	
+	
+	m_pkZShaderSystem->MatrixPush();		
 
-	glPushMatrix();
+		m_pkZShaderSystem->MatrixTranslate(kPos);		
+		m_pkZShaderSystem->MatrixRotate(kHead);		
+		m_pkZShaderSystem->MatrixScale(kScale);		
 	
-	glTranslatef(kPos.x,kPos.y,kPos.z);	
-	glRotatef(kHead.x, 1, 0, 0);
-	glRotatef(kHead.y, 0, 1, 0);	
-	glRotatef(kHead.z, 0, 0, 1);
-	glScalef(kScale.x,kScale.y,kScale.z);
-	
-	
-	glDisable(GL_CULL_FACE);			
-	glAlphaFunc(GL_GREATER,0.3);
-   glEnable(GL_ALPHA_TEST);
-
-	m_pkTexMan->BindTexture(iTexture1);  	
-	
-/*	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,texdata);						
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,pointdata);					
-	
-//	glEnableClientState(GL_NORMAL_ARRAY);
-//	glVertexPointer(3,GL_FLOAT,0,normaldata);						
-	
-	
-	glNormal3f(0,1,0);
-	
-	glDrawArrays(GL_QUADS,0,8);
-*/	
-
-	glBegin(GL_QUADS);
-		glNormal3f(0,1,0);
-		glTexCoord2f(0,1);glVertex3f(-0.5,1,0); 
-		glTexCoord2f(0,0);glVertex3f(-0.5,0,0); 
-		glTexCoord2f(1,0);glVertex3f(0.5,0,0); 
-		glTexCoord2f(1,1);glVertex3f(0.5,1,0); 
+		m_pkZShaderSystem->ResetPointers();
+		m_pkZShaderSystem->BindMaterial(pkGrass);
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,atexdata);
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,apointdata);
+		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);
+		m_pkZShaderSystem->SetNrOfVertexs(8);
 		
-		glTexCoord2f(1,1);glVertex3f(0,1,-0.5); 
-		glTexCoord2f(0,1);glVertex3f(0,1,0.5); 
-		glTexCoord2f(0,0);glVertex3f(0,0,0.5); 
-		glTexCoord2f(1,0);glVertex3f(0,0,-0.5); 
-	glEnd();
-		
+		m_pkZShaderSystem->SetDrawMode(QUADS_MODE);		
+		m_pkZShaderSystem->DrawArray();							
 	
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_CULL_FACE);
-	glPopMatrix();
+	
+	m_pkZShaderSystem->MatrixPop();
 }
 
 

@@ -65,7 +65,8 @@ bool Render::StartUp()
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
  	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader"));
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
-
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
+	
 	InitDisplay(m_iWidth,m_iHeight,m_iDepth);
 //	SetDisplay();
 
@@ -102,6 +103,12 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	GLeeInit();
 #endif	
 
+	//fog stuff
+	glHint(GL_FOG_HINT,GL_NICEST);		
+	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
+	
+
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
@@ -117,6 +124,8 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	glMatrixMode(GL_MODELVIEW);
 
 
+	
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -192,7 +201,9 @@ bool Render::HaveExtension(string strExt)
 
 void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
 {
-	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	m_pkZShaderSystem->Push("render::sphere");
+
+//	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
@@ -225,7 +236,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 	
 	glColor3f(kColor.x,kColor.y,kColor.z);
 	
-	glPushMatrix();
+//	glPushMatrix();
 	
 		glTranslatef(kPos.x,kPos.y,kPos.z);
 		float scale = fRadius;
@@ -242,8 +253,11 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 		   glEnd(); 
 		}
 		
-	glPopMatrix();
-	glPopAttrib();
+//	glPopMatrix();
+//	glPopAttrib();
+	
+	
+	m_pkZShaderSystem->Pop();	
 }
 
 void Render::Normalize(float v[3]) {    
@@ -292,6 +306,8 @@ void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
 
 void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture)
 {
+	m_pkZShaderSystem->Push("polygon4");
+
 	glPushMatrix();
 	glPushAttrib(GL_ENABLE_BIT);
 	
@@ -319,11 +335,16 @@ void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,c
 		
 	glPopAttrib();
 	glPopMatrix();
+	
+	m_pkZShaderSystem->Pop();
 }
 
-void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor){
-	glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT);
-	glPushMatrix();
+void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor)
+{
+	m_pkZShaderSystem->Push("render::sphere");	
+
+//	glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT);
+//	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
 	glRotatef(kHead.x, 1, 0, 0);
@@ -348,13 +369,14 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	glEnd();			
 
 
-	glPopMatrix();
-	glPopAttrib();
+//	glPopMatrix();
+//	glPopAttrib();
+	
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::PrintChar(unsigned char cChar) 
 {
-
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
 	float glu = float(1.0/texwidth);				//opengl texture cordinats is 0-1
@@ -403,7 +425,7 @@ void Render::PrintChar2(char cChar)
 // 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 // RES	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 // RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
+//	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
 
 
 	int iFontSize = 8;
@@ -419,6 +441,19 @@ void Render::PrintChar2(char cChar)
 	glDisable(GL_LIGHT6);	
 	glDisable(GL_LIGHT7);	*/	
 
+	
+	m_pkZShaderSystem->ClearGeometry();
+	m_pkZShaderSystem->AddQuadV(	Vector3(0,0,0),						Vector3(iFontSize,0,0),
+											Vector3(iFontSize,iFontSize,0),	Vector3(0,iFontSize,0));
+
+												
+	m_pkZShaderSystem->AddQuadUV(	Vector2(x,y),							Vector2(x+width,y),
+											Vector2(x+width,y-width),			Vector2(x,y-width));
+					
+	m_pkZShaderSystem->SetDrawMode(QUADS_MODE);
+	m_pkZShaderSystem->DrawGeometry();
+									
+/*																						
 	glBegin(GL_QUADS);		
 		glNormal3f(0,0,1);
  	  
@@ -427,6 +462,7 @@ void Render::PrintChar2(char cChar)
 		glTexCoord2f(x+width,y-width);	glVertex3i(iFontSize,iFontSize,0);    
 		glTexCoord2f(x,y-width);		glVertex3i(0,iFontSize,0);    
 	glEnd();				
+*/	
 }
 
 
@@ -507,18 +543,22 @@ void Render::Print2(Vector3 kPos,char* aText) {
 	
 	strcpy(paText,aText);
 	
-	glPushMatrix();
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
+	m_pkZShaderSystem->MatrixPush();
+	//glPushMatrix();
+		//glTranslatef(kPos.x,kPos.y,kPos.z);	
+		m_pkZShaderSystem->MatrixTranslate(kPos);
 		
 		int i=0;
 		while(paText[i]!='\0') {
 			PrintChar2(paText[i]);
-			glTranslatef(8,0,0);
+			m_pkZShaderSystem->MatrixTranslate(Vector3(8,0,0));
+			//glTranslatef(8,0,0);
 		
 			i++;
 		}
 
-	glPopMatrix();
+	m_pkZShaderSystem->MatrixPop();		
+	//glPopMatrix();
 }
 
 
@@ -529,6 +569,24 @@ void Render::SetFont(char* aFont) {
 
 void Render::Line(Vector3 kPos1,Vector3 kPos2)
 {
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_bCullFace = true;		
+		pkLine->GetPass(0)->m_bLighting = false;
+	}
+
+	m_pkZShaderSystem->BindMaterial(pkLine);
+	m_pkZShaderSystem->ClearGeometry();
+	
+	m_pkZShaderSystem->AddLineV(kPos1,kPos2);
+	
+	m_pkZShaderSystem->SetDrawMode(LINES_MODE);
+	m_pkZShaderSystem->DrawGeometry();
+	
+/*
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
 	
@@ -539,12 +597,12 @@ void Render::Line(Vector3 kPos1,Vector3 kPos2)
 	
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
-
+*/
 }
 
 void Render::SetColor(Vector3 kColor)
 {
-	glColor3f(kColor.x,kColor.y,kColor.z);
+	//glColor3f(kColor.x,kColor.y,kColor.z);
 }
 
 void Render::SetClearColor(Vector4 kColor)
@@ -563,15 +621,24 @@ void Render::Dot(float x,float y,float z)
 
 void Render::Mode2D_Start()
 {
-	glMatrixMode(GL_PROJECTION);
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixIdentity();
+
+/*	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	glLoadIdentity();
+	glLoadIdentity();*/
 	gluOrtho2D(0, 800, 0, 600);
 
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixIdentity();
+/*	
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-
+*/	
+/*
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	glDisable(		GL_BLEND					);
@@ -581,29 +648,57 @@ void Render::Mode2D_Start()
 	glDisable(		GL_CULL_FACE			);
 	glDisable(		GL_COLOR_MATERIAL 	);
 	glDisable(		GL_FOG					);
+	
+*/	
 }
 
 void Render::Mode2D_End()
 {
-	glMatrixMode(GL_MODELVIEW);
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPop();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPop();
+	
+/*	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
-
-	glPopAttrib();
+*/
+//	glPopAttrib();
 }
 
 
 
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine, int iMarkerPos, int iMarker) 
 {
+	static ZMaterial* pkConsole = NULL;
+	if(!pkConsole)
+	{
+		pkConsole = new ZMaterial;
+		pkConsole->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/devstr.bmp");
+		pkConsole->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+		pkConsole->GetPass(0)->m_bCullFace = true;		
+		pkConsole->GetPass(0)->m_bLighting = false;		
+		pkConsole->GetPass(0)->m_bColorMaterial = true;
+		pkConsole->GetPass(0)->m_bFog = false;		
+		
+		pkConsole->m_bCopyData = true;
+		pkConsole->m_bWaves = true;
+	}
+	
+	pkConsole->GetPass(0)->m_kVertexColor = m_kConsoleColor;
+	
+	m_pkZShaderSystem->BindMaterial(pkConsole);
+		
+
 	Mode2D_Start();
-	SetFont("data/textures/text/devstr.bmp");
+	//SetFont("data/textures/text/devstr.bmp");
 
-	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
-	SetClearColor(Vector4(0,0,0,0));
-	glClear(GL_COLOR_BUFFER_BIT);	
-
+	//glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
+	//SetClearColor(Vector4(0,0,0,0));
+	//glClear(GL_COLOR_BUFFER_BIT);	
+	//glPolygonMode(GL_FRONT, GL_FILL);
+	
 	Print2(Vector3(8,8,0),m_aCommand);		
 	
 	char kMarker[3];
@@ -635,6 +730,8 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 
 void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) 
 {
+	m_pkZShaderSystem->Push("DrawBillboard");
+
 	fSize/=2;
 	
 	Vector3 x;
@@ -649,6 +746,8 @@ void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int i
 	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
 
 	glColor4f(1,1,1,1);
 	m_pkTexMan->BindTexture(iTexture); 	
@@ -698,6 +797,7 @@ void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int i
 	glPopAttrib();
 	glEnable(GL_CULL_FACE);	
 	
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
@@ -720,6 +820,8 @@ void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
 
 void Render::DrawBoundSphere(float fRadius, Vector3)
 {
+	cout<<"Render::DrawBoundSphere"<<endl;
+
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glColor3f(1,1,1);
 	glDisable(GL_LIGHTING);
@@ -741,6 +843,8 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 
 void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 {
+	cout<<"Render::DrawBox"<<endl;
+
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -805,6 +909,8 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,int iTexture)
 {
+	cout<<"Render::DrawBox"<<endl;
+
 	glPushMatrix();
 
 	glDisable (GL_CULL_FACE);
@@ -885,6 +991,8 @@ void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,
 
 void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSolid)
 {
+	cout<<"Render::DrawPyramid"<<endl;
+
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -979,6 +1087,8 @@ void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSol
 void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, 
 					  Vector3 kColor, bool bSolid, int iSegments)
 {
+	cout<<"Render::DrawCone"<<endl;
+
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -1067,6 +1177,8 @@ void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight,
 
 void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor)
 {
+	cout<<"Render::DrawBoundingBox"<<endl;
+
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -1117,6 +1229,10 @@ void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 k
 
 void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor)
 {
+	cout<<"Render::DrawColorBox"<<endl;
+
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -1175,61 +1291,62 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 		
 		
 	glEnd();			
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
- 	
+//	glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_LIGHTING);
+	glPopAttrib(); 	
+
 	glPopMatrix();
 	
 }
 
 void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize )
 {
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_bCullFace = false;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+		
+	}
+	pkLine->GetPass(0)->m_kVertexColor = Vector4(kColor.x,kColor.y,kColor.z,1);
+	pkLine->GetPass(0)->m_fLineWidth = fLineSize;
+	
+	
+	m_pkZShaderSystem->BindMaterial(pkLine);
+	m_pkZShaderSystem->ReloadMaterial();
+	
+	
 	Vector3 kCubeNeg = kMin; 
 	Vector3 kCubePos = kMax; 
 
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING );
-	glEnable( GL_DEPTH_TEST );
+	m_pkZShaderSystem->ClearGeometry();
+	
 
-	glLineWidth( fLineSize );
+	//botom
+	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMax.x,kMin.y,kMin.z),
+										 Vector3(kMax.x,kMin.y,kMax.z),Vector3(kMin.x,kMin.y,kMax.z));
+	//top
+	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMax.x,kMax.y,kMin.z),
+										 Vector3(kMin.x,kMax.y,kMin.z),Vector3(kMin.x,kMax.y,kMax.z));
 
-	glColor3f(kColor.x,kColor.y,kColor.z);
-	glBegin(GL_LINES);
-		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
-		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);
-
-		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
-		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
-
-		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
-		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
-
-		/*		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
-
-		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
-		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);*/
-
-	glEnd();
-
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-
-	glLineWidth( 1.0 );
+	//front
+	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMin.x,kMax.y,kMin.z),
+										 Vector3(kMax.x,kMax.y,kMin.z),Vector3(kMax.x,kMin.y,kMin.z));
+	
+	//back									 										 
+	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMin.x,kMax.y,kMax.z),
+										 Vector3(kMin.x,kMin.y,kMax.z),Vector3(kMax.x,kMin.y,kMax.z));
+										 										 
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
 void Render::DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
 {
+	cout<<"Render::DrawSolidAABB"<<endl;
+
 	Vector3 kCubeNeg = kMin; 
 	Vector3 kCubePos = kMax; 
 
@@ -1278,6 +1395,8 @@ void Render::DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
 
 void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor )
 {
+	cout<<"Render::DrawAABB"<<endl;
+
 	Vector3 kCubeNeg(x - sizex, y - sizey, z - sizez); 
 	Vector3 kCubePos(x + sizex, y + sizey, z + sizez); 
 
@@ -1320,10 +1439,14 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 
 void Render::Draw_AxisIcon(float scale)
 {
+	m_pkZShaderSystem->Push("Draw_AxisIcon");
+
+//	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
-
-
+	
+	
 	glColor3f(1,0,0);
 	glBegin(GL_LINES);
 		glVertex3f(0,0,0);			glVertex3f(scale,0,0);
@@ -1339,14 +1462,19 @@ void Render::Draw_AxisIcon(float scale)
 		glVertex3f(0,0,0);			glVertex3f(0,0,scale);
 	glEnd();
 
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
+//	glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_LIGHTING);
+//	glPopAttrib();
+
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 {
-	glPushMatrix();
-	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	m_pkZShaderSystem->Push("Draw_AxisIcon");
+
+//	glPushMatrix();
+//	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 	
@@ -1367,10 +1495,11 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 		glVertex3f(fHScale,fHScale,-fHScale);		glVertex3f(-fHScale,-fHScale,fHScale);
 	glEnd();
 
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-	glPopAttrib();
-	glPopMatrix();
+	
+//	glPopAttrib();
+//	glPopMatrix();
+	
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )

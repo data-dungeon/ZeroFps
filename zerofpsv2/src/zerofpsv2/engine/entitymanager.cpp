@@ -105,7 +105,8 @@ bool EntityManager::StartUp()
 	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	m_pkScript  = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
 	m_pkBasicFS	=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
-
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
+	
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
 	m_kWorldDirectory = "worldtemp";
@@ -1485,15 +1486,27 @@ void EntityManager::Test_DrawZones()
 	if(!m_bDrawZones)
 		return;
 
+	//fuuuuuuuult ..men vem orkar ändra
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
+			
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_bCullFace = true;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+		pkLine->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zonebuild");
+	}		
+		
+	//draw zones
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
 		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 
-
-			
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 	
@@ -1511,28 +1524,25 @@ void EntityManager::Test_DrawZones()
 				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
 				break;								
 		}
-			
-					
-/*		if(m_kZones[i].m_bTracked && m_kZones[i].m_pkZone)
-			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
-		else if(m_kZones[i].m_bTracked)
-			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneloading") );				
-		else if(m_kZones[i].m_pkZone)
-			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
-		else
-			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
-*/					
+	}
 	
-		if(m_bDrawZoneConnections) {
-			Vector3 kConnectColor = m_pkRender->GetEditColor("inactive/zonebuild");
-			glColor3f( kConnectColor.x,kConnectColor.y,kConnectColor.z);
-			
+	if(m_bDrawZoneConnections) 
+	{
+		m_pkZShaderSystem->BindMaterial(pkLine);		
+		m_pkZShaderSystem->ClearGeometry();
+	
+		for(unsigned int i=0;i<m_kZones.size();i++) 
+		{
+			if(m_kZones[i].m_iStatus == EZS_UNUSED)
+				continue;
+	
 			for(unsigned int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
 			{	
-				m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
+				m_pkZShaderSystem->AddLineV(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
 			}
 		}
-	
+		
+		m_pkZShaderSystem->DrawGeometry(LINES_MODE);				
 	}
 }
 

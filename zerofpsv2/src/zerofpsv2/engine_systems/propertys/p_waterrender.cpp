@@ -51,9 +51,11 @@ void P_WaterRender::Update()
 				m_bBlendDirUp = true;
 			}
 		}
-	else {
+	else 
+	{
 		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
-		}
+		
+	}
 }
 
 void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )

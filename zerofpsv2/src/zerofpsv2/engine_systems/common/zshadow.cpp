@@ -98,11 +98,11 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 
 bool ZShadow::StartUp()
 {
-	m_pkLight 		= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
-	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
-
+	m_pkLight 			= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+	m_pkZeroFps			= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkRender			= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkEntityMan		= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
+	m_pkZShaderSystem	= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
 	//EnableShadowGroup(0); 
 	//EnableShadowGroup(1); 	
@@ -117,6 +117,8 @@ void ZShadow::Update()
 	if( (m_iNrOfShadows == 0) || m_bDisabled)
 		return;
 
+	m_pkZShaderSystem->Push("ZShadow::Update");
+		
 	//setup stencil buffert
 	if(!m_bHaveCheckedBits)
 		SetupStencilBuffer();
@@ -186,6 +188,8 @@ void ZShadow::Update()
 	
 	glPopAttrib();
 
+	
+	m_pkZShaderSystem->Pop();
 }
 
 bool ZShadow::SetupMesh(P_Mad* pkMad)
@@ -353,6 +357,11 @@ void ZShadow::SetupGL()
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glDepthMask(GL_FALSE);
 	glEnable(GL_CULL_FACE);
+	
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glDisable(GL_ALPHA_TEST);
+	
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);

@@ -7,15 +7,11 @@ P_ShadowBlob::P_ShadowBlob()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-//	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-//	m_pkEntityMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
-
+	m_pkZShaderSystem=static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
+	
 	bNetwork = true;
 	m_iSortPlace	=	11;
 	
-	
-	m_pkTexture = new ZFResourceHandle;
 	m_kOffset.Set(0,0.01,0);
 	m_kScale.Set(1,1,1);
 	m_bHaveSet = false;
@@ -23,8 +19,7 @@ P_ShadowBlob::P_ShadowBlob()
 
 P_ShadowBlob::~P_ShadowBlob()
 {
-	delete m_pkTexture;
-
+	delete m_pkMaterial;
 }
 
 void P_ShadowBlob::Update()
@@ -36,32 +31,37 @@ void P_ShadowBlob::Update()
 		if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
 		{
 			m_kScale.Set(pkMad->GetRadius(),pkMad->GetRadius(),pkMad->GetRadius());
-			//m_kOffset.Set(0,-pkMad->GetRadius(),0);			
 		}
 	}
 	
+	
+	m_pkZShaderSystem->BindMaterial(m_pkMaterial);
+	m_pkZShaderSystem->ClearGeometry();
+	
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV()+m_kOffset);
+	
+	
+	m_pkZShaderSystem->AddQuadV(	Vector3(-m_kScale.x,0,m_kScale.z),Vector3(m_kScale.x,0,m_kScale.z),
+											Vector3(m_kScale.x,0,-m_kScale.z),Vector3(-m_kScale.x,0,-m_kScale.z));												
 
-	if(ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr())
-	{
-		int iTexture = (pkRt)->m_iTextureID;
-		
-		glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT|GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_LIGHTING);
-		glEnable(GL_BLEND);		
-		glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-		glDepthMask(GL_FALSE);
-		
-		m_pkRender->Quad(m_pkObject->GetIWorldPosV()+m_kOffset,Vector3(-90,0,0),m_kScale,iTexture);
-		
-		glPopAttrib();
-	}
+	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
+												
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);	
+	m_pkZShaderSystem->MatrixPop();
+
 }
 
 void P_ShadowBlob::Init()
 {
-	
-	m_pkTexture->SetRes("data/textures/shadowblob.bmp");
 
+	m_pkMaterial = new ZMaterial;
+	m_pkMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/shadowblob.bmp");
+	m_pkMaterial->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+	m_pkMaterial->GetPass(0)->m_bLighting = true;		
+	m_pkMaterial->GetPass(0)->m_bBlend = true;
+	m_pkMaterial->GetPass(0)->m_iBlendDst = ZERO_BLEND_DST;
+	m_pkMaterial->GetPass(0)->m_iBlendSrc = SRC_COLOR_BLEND_DST;
 }
 
 void P_ShadowBlob::Save(ZFIoInterface* pkPackage)

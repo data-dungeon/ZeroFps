@@ -15,6 +15,7 @@
 #include "texturemanager.h"
 #include "light.h"
 #include "zshader.h"
+#include "zshadersystem.h"
 
 class PSystem;
 class HeightMap;
@@ -68,6 +69,7 @@ class RENDER_API Render : public ZFSubSystem {
 		Light*				m_pkLight;
 		ZShader*				m_pkZShader;
 		BasicConsole*		m_pkConsole;
+		ZShaderSystem*		m_pkZShaderSystem;
 		
 		char			aCurentFont[256];
 		bool			m_FogEnable;		

@@ -8,6 +8,7 @@
 #include "render_x.h"
 #include "zguirenderer.h"
 #include "../engine/fh.h"
+#include "zshadersystem.h"
 //#include "../engine/zfresource.h"
 
 class TextureManager;
@@ -74,7 +75,8 @@ private:
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font
 	
-	TextureManager* m_pkTextureManger;
+	TextureManager*	m_pkTextureManger;
+	ZShaderSystem*		m_pkShader;
 	
 	int m_iCursorPos;
 	unsigned short** m_ppRowOffsets;

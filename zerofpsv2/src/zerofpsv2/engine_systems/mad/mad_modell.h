@@ -7,6 +7,7 @@
 #include <vector>
 #include "../../render/texturemanager.h"
 #include "../../render/zshader.h"
+#include "../../render/zshadersystem.h"
 
 #define MAD_DRAW_MESH		1
 #define MAD_DRAW_NORMAL		2
@@ -53,7 +54,7 @@ private:
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
 protected:
-	ZShader*			m_pkShader;
+	ZShaderSystem*					m_pkShader;
 	vector<int>				m_kActiveMesh;
 
 public:
