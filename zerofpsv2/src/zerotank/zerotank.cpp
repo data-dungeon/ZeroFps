@@ -417,7 +417,7 @@ void ZeroTank::OnServerStart(void)
 	cam->SetCamera(m_pkCamera);
 	*/
 
-	m_pkME = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	m_pkME = pkObjectMan->CreateObjectByArchType("body");
 	if(m_pkME) {
 		m_pkME->SetWorldPosV(Vector3(0,0,0));
 		m_pkME->AttachToClosestZone();
