@@ -55,6 +55,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	ZGuiWnd* test = m_pkGui->Get("PropertyDlg");
 	if(test)
 	{
+		ClearAllFileds();
 		m_pkZGui->ShowMainWindow(test, true);
 		return test;
 	}
@@ -734,4 +735,36 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 	}
 }
 
+bool EditPropertyDlg::IsOpen()
+{
+	ZGuiWnd* test = m_pkGui->Get("PropertyDlg");
+	if(test)
+	{
+		return test->IsVisible();
+	}	
 
+	return false;
+}
+
+void EditPropertyDlg::ClearAllFileds()
+{
+	m_pkGui->Get("PropertyValueSetEB")->SetText("");
+	
+	m_pkGui->Get("ObjectID")->SetText("");
+	m_pkGui->Get("ObjectNameEB")->SetText("");
+	m_pkGui->Get("ObjectPosXEB")->SetText("");
+	m_pkGui->Get("ObjectPosYEB")->SetText("");
+	m_pkGui->Get("ObjectPosZEB")->SetText("");
+	m_pkGui->Get("ObjectRotX")->SetText("");
+	m_pkGui->Get("ObjectRotY")->SetText("");
+	m_pkGui->Get("ObjectRotZ")->SetText("");
+
+	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeDynamicRb"))->GetButton()->UncheckButton();
+	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeStaticRb"))->GetButton()->UncheckButton();
+	((ZGuiRadiobutton*)m_pkGui->Get("ObTypePlayerRb"))->GetButton()->UncheckButton();
+	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeStaticDynamicRb"))->GetButton()->UncheckButton();
+	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeDecorationRb"))->GetButton()->UncheckButton();
+
+	((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->RemoveAllItems();
+	((ZGuiCombobox*)m_pkGui->Get("PropertyValuesCB"))->RemoveAllItems();
+}

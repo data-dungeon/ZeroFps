@@ -489,19 +489,34 @@ void Gui::CaptureInput(bool bCapture)
 {
 	m_bGuiHaveFocus = bCapture;
 }
+
 void Gui::UpdatePropertybox()
 {
-	if(m_pkEditPropDlgBox)
+	if(m_pkEditPropDlgBox && m_pkEditPropDlgBox->IsOpen())
 	{
 		m_pkEditPropDlgBox->OnCloseAddProperty(false);
 		m_pkEditPropDlgBox->OnCloseEditProperty(false);
 
 		delete m_pkEditPropDlgBox;
 		m_pkEditPropDlgBox = NULL;
-	}
 
-	m_pkEditPropDlgBox = new EditPropertyDlg(this, 
-		m_pkEdit->pkPropertyFactory, 
-		m_pkEdit->pkObjectMan, 
-		m_pkEdit->m_pkCurentChild, MAINWINPROC);
+		m_pkEditPropDlgBox = new EditPropertyDlg(this, 
+			m_pkEdit->pkPropertyFactory, 
+			m_pkEdit->pkObjectMan, 
+			m_pkEdit->m_pkCurentChild, MAINWINPROC);
+	}
+}
+
+void Gui::ClosePropertybox()
+{
+	if(m_pkEditPropDlgBox && m_pkEditPropDlgBox->IsOpen())
+	{
+		m_pkEditPropDlgBox->OnCloseAddProperty(false);
+		m_pkEditPropDlgBox->OnCloseEditProperty(false);
+
+		delete m_pkEditPropDlgBox;
+		m_pkEditPropDlgBox = NULL;
+
+		m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
+	}
 }

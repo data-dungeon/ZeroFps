@@ -19,6 +19,7 @@ class Property;
 class EditPropertyDlg  
 {
 public:
+	bool IsOpen();
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
@@ -32,6 +33,7 @@ public:
 	bool OnCloseAddProperty(bool bSave);
 
 private:
+	void ClearAllFileds();
 	void UpdateStats(int iComboBoxID);
 	void RemoveProperty();
 	ZGuiWnd* Create(int x, int y, int w, int h);

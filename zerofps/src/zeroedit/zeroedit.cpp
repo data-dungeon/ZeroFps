@@ -696,9 +696,13 @@ void ZeroEdit::Input()
 		if(pkInput->Pressed(KEY_BACKSPACE)) {
 			if(m_pkCurentChild!=NULL)
 				if(m_pkCurentChild->GetName() != "HeightMapObject") 
-					if(m_pkCurentChild->GetName() != "WorldObject"){					
+					if(m_pkCurentChild->GetName() != "WorldObject")
+					{	
+						m_pkGui->ClosePropertybox();
+
 						delete m_pkCurentChild;
 						m_pkCurentChild=NULL;
+						
 //						m_pkCurentParent=m_pkHeightMapObject;
 					}
 

@@ -66,6 +66,7 @@ private:
 
 public:
 	void UpdatePropertybox();
+	void ClosePropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 	void CaptureInput(bool bCapture);
