@@ -141,9 +141,9 @@ int CreateEntityLua (lua_State* pkLua)
 */
 int DeleteLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	if(!g_pkScript->VerifyArg(pkLua, 1))
 		return 0;
-	
+
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	
@@ -160,9 +160,9 @@ int DeleteLua(lua_State* pkLua)
 */
 int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	if(!g_pkScript->VerifyArg(pkLua, 1))
 		return 0;
-	
+
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	
@@ -233,7 +233,7 @@ int InitPropertyLua(lua_State* pkLua)
 	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 	
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	if(!g_pkScript->VerifyArg(pkLua, 1))
 		return 0;
 
 	char acName[100];
@@ -257,7 +257,7 @@ int InitParameterLua(lua_State* pkLua)
 	if(g_kScriptState.g_pkLastProperty == NULL)
 		return 0;
 	
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
 	char acName[50];
@@ -487,9 +487,9 @@ int SetZoneModelLua(lua_State* pkLua)
 */
 int SendEventLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
-	
+
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	int iTargetEntity = (int)dTemp;

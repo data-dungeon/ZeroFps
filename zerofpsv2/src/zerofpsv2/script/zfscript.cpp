@@ -902,3 +902,60 @@ int ZFScriptSystem::SetVar(lua_State* L)
 
 	return 0;
 }
+
+string ZFScriptSystem::GetFunctionName(lua_State* pkLua, int iStackPosition)
+{
+	string strName;
+
+	lua_Debug kDbgInfo;
+	memset(&kDbgInfo, 0, sizeof(lua_Debug));
+	lua_getstack(pkLua, iStackPosition ,&kDbgInfo);
+	lua_getinfo(pkLua,"nSlu",&kDbgInfo);
+	strName = kDbgInfo.name;
+	return strName;
+}
+
+string ZFScriptSystem::GetCallAdress(lua_State* pkLua)
+{
+	string strAdress;
+
+	lua_Debug kDbgInfo;
+	memset(&kDbgInfo, 0, sizeof(lua_Debug));
+
+	lua_getstack(pkLua,1,&kDbgInfo);
+	lua_getinfo(pkLua,"nSlu",&kDbgInfo);
+
+	char szMessage[512];
+	sprintf(szMessage, "%s - %d", kDbgInfo.source,  kDbgInfo.currentline);  
+
+	strAdress = szMessage;
+	return strAdress;
+
+/*
+	cout << "currentline: " << kDbgInfo.currentline << endl;
+	cout << "event: " << kDbgInfo.event << endl;
+	cout << "i_ci: " << kDbgInfo.i_ci << endl;
+	cout << "linedefined: " << kDbgInfo.linedefined << endl;
+	cout << "name: " << kDbgInfo.name << endl;
+	cout << "namewhat: " << kDbgInfo.namewhat << endl;
+	cout << "nups: " << kDbgInfo.nups << endl;
+	cout << "short_src: " << kDbgInfo.short_src << endl;
+	cout << "source: " << kDbgInfo.source << endl;
+	cout << "what: " << kDbgInfo.what<< endl;
+*/
+}
+
+bool ZFScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
+{
+	int iNumOfArg = GetNumArgs(pkLua);
+
+	if(iNumOfArg == iRequiredNumOfArg)
+		return true;
+
+	string strName = GetFunctionName(pkLua, 0);
+	string strFileLine = GetCallAdress(pkLua);
+
+	cout << "Error: '" << strName << "' does not take " << iNumOfArg << " arguments. ";
+	cout << strFileLine << endl;
+	return false;
+}

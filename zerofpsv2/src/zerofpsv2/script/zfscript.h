@@ -169,6 +169,12 @@ public:
 	void ExposeVariable(const char* szName, void* pVar, ScripVarType eType, lua_State* L=NULL);
 	void ExposeModule(lua_CFunction o_OpenFunction, lua_State* L=NULL);
 	
+	string GetCallAdress(lua_State* pkLua);
+	string GetFunctionName(lua_State* pkLua, int iStackPosition);
+	
+	bool VerifyArg(lua_State* pkLua, int iNumOfArgument);
+
+
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();	

@@ -2041,7 +2041,7 @@ namespace SI_Entity
 */
 int AddPropertyLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
 	double dTemp;
@@ -2067,7 +2067,7 @@ int AddPropertyLua(lua_State* pkLua)
 */
 int DelPropertyLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
 	double dTemp;
@@ -2097,7 +2097,7 @@ int DelPropertyLua(lua_State* pkLua)
 */
 int SetParameterLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 4)
+	if(!g_pkScript->VerifyArg(pkLua, 4))
 		return 0;
 
 	double dTemp;
@@ -2188,6 +2188,9 @@ int GetObjectNameLua(lua_State* pkLua)
 */
 int GetLocalDouble(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2218,6 +2221,9 @@ int GetLocalDouble(lua_State* pkLua)
 */
 int SetLocalDouble(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua, 3))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2250,6 +2256,9 @@ int SetLocalDouble(lua_State* pkLua)
 */
 int GetLocalString(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2280,6 +2289,9 @@ int GetLocalString(lua_State* pkLua)
 */
 int SetLocalString(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua,3))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2337,6 +2349,9 @@ int SetLocalVector(lua_State* pkLua)
 
 int GetLocalVector(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2383,13 +2398,16 @@ int GetLocalVector(lua_State* pkLua)
 */
 int SetObjectPosLua(lua_State* pkLua)
 {
-	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
+	/*int iNrArgs = g_pkScript->GetNumArgs(pkLua);
 
 	if(iNrArgs != 2)
 	{
 		cout<<"SetObjectPos takes 2 argument(s)"<<endl;
 		return 0;
-	}
+	}*/
 
 	double dID;
 	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
@@ -2459,11 +2477,14 @@ int SetVelToLua(lua_State* pkLua)
 */
 int GetObjectPosLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	if(!g_pkScript->VerifyArg(pkLua, 1))
+		return 0;
+
+	/*if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
 		cout<<"SetObjectPos takes 1 argument(s)"<<endl;
 		return 0;
-	}
+	}*/
 
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2506,11 +2527,14 @@ int GetObjectPosLua(lua_State* pkLua)
 */
 int GetObjectRotLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	if(!g_pkScript->VerifyArg(pkLua, 1))
+		return 0;
+
+	/*if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
 		printf("Script funtion GetObjectRot failed! Expects 1 arguments.\n");
 		return 0;
-	}
+	}*/
 
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2549,6 +2573,9 @@ int GetObjectRotLua(lua_State* pkLua)
 
 int SetEditIcon(lua_State* pkLua)
 {
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
 	// Get ObjectID ID
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		

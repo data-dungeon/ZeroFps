@@ -184,8 +184,10 @@ namespace SI_P_Ml
 {
 	int AddActionLua(lua_State* pkLua)
 	{
-		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		if(!g_pkScript->VerifyArg(pkLua, 2))
 			return 0;
+			//if(g_pkScript->GetNumArgs(pkLua) != 2)
+				//	return 0;
 		
 		int id;
 		double dTemp;
