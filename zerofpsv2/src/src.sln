@@ -69,6 +69,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dark_metropolis", "dark_met
 		{7B1956AB-8670-4D72-9E48-83B4B6FCF3EA} = {7B1956AB-8670-4D72-9E48-83B4B6FCF3EA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "physics", "physics\physics.vcproj", "{ADDC4CF2-D158-4CCA-AF6C-1015DC6DB6C0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -123,6 +127,10 @@ Global
 		{1AEB0349-A7B5-429F-9128-1BE342C1162F}.Debug.Build.0 = Debug|Win32
 		{1AEB0349-A7B5-429F-9128-1BE342C1162F}.Release.ActiveCfg = Release|Win32
 		{1AEB0349-A7B5-429F-9128-1BE342C1162F}.Release.Build.0 = Release|Win32
+		{ADDC4CF2-D158-4CCA-AF6C-1015DC6DB6C0}.Debug.ActiveCfg = Debug|Win32
+		{ADDC4CF2-D158-4CCA-AF6C-1015DC6DB6C0}.Debug.Build.0 = Debug|Win32
+		{ADDC4CF2-D158-4CCA-AF6C-1015DC6DB6C0}.Release.ActiveCfg = Release|Win32
+		{ADDC4CF2-D158-4CCA-AF6C-1015DC6DB6C0}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

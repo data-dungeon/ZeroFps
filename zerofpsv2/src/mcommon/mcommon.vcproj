@@ -156,6 +156,9 @@
 				RelativePath=".\p_ai.cpp">
 			</File>
 			<File
+				RelativePath=".\p_arcadecharacter.cpp">
+			</File>
+			<File
 				RelativePath=".\p_car.cpp">
 			</File>
 			<File
@@ -239,6 +242,9 @@
 			</File>
 			<File
 				RelativePath=".\p_ai.h">
+			</File>
+			<File
+				RelativePath=".\p_arcadecharacter.h">
 			</File>
 			<File
 				RelativePath=".\p_car.h">
