@@ -254,6 +254,19 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {	
+/*	vector<string> kStuff;
+	kStuff = m_pkPlayerDB->GetLoginCharacters(string("Psykosmurfan"));
+	//this->m_pkZeroFps->m_pkZFVFileSystem->ListDir(&kStuff, "logins/Psykosmurfan", true);
+
+	if(kStuff.size())
+	{
+		for(int i=0; i<kStuff.size(); i++)
+			cout << "Char " << i << ": " << kStuff[i] << endl; 
+	}
+	else
+		cout << "No char for login" << endl;*/
+
+
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
@@ -682,7 +695,8 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	else
 		SpawnPlayer(iConID);
 		
-		
+	SendCharacterList(iConID);
+
 	SayToClients(strPlayer + string(" connected"));
 }
 
@@ -859,6 +873,12 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
+
+		case MLNM_CS_REQPLAY:
+		{
+			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;
+		}
+
 		case MLNM_CS_REQ_CHARACTERID:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
@@ -1250,6 +1270,30 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 			}
 		}
 	}
+}
+
+void MistServer::SendCharacterList(int iClient)
+{
+	NetPacket kNp;
+	vector<string>	kCharacters;	
+
+	kCharacters = m_pkPlayerDB->GetLoginCharacters( m_pkZeroFps->m_kClient[iClient].m_strLogin );
+	kCharacters.erase(kCharacters.begin());
+
+	//clear package and write pkg id
+	kNp.Clear();
+	kNp.Write((char) MLNM_SC_CHARLIST);
+	
+	//write player names			
+	kNp.Write(kCharacters.size());
+	for(int i = 0;i<kCharacters.size();i++)
+	{
+		kNp.Write_Str(kCharacters[i]);
+	}
+
+	//send package
+	kNp.TargetSetClient(iClient);
+	SendAppMessage(&kNp);	
 }
 
 

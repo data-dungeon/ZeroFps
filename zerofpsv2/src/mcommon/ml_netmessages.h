@@ -14,6 +14,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_REQ_CONTAINER,
 	MLNM_CS_MOVE_ITEM,
 	MLNM_CS_REQ_EQIPMENT,	
+	MLNM_CS_REQPLAY,
 };
 
 //	A network message from the server to the client.
@@ -23,6 +24,8 @@ enum MLNM_ServerToClient
 	MLNM_SC_SAY,
 	MLNM_SC_PLAYERLIST,
 	MLNM_SC_CONTAINER,
+	MLNM_SC_PLAY,
+	MLNM_SC_CHARLIST,
 };
 
 //mistlands chatmessages ID's

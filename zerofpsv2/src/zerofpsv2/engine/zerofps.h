@@ -17,18 +17,9 @@
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
 
-//#include "../engine_systems/mad/mad_core.h"
-//#include "../engine_systems/tcs/tcs.h"
-//#include "../engine_systems/common/zshadow.h"
-//#include "inputhandle.h"
-
-
-
 #define ZF_VERSION_NUM		"ZF 0.01"
 
-
 using namespace std;
-
 
 class Basic;
 class Render;
@@ -54,7 +45,6 @@ enum enginestates
 	state_pause
 };
 
-
 #define	ZFGP_OBJECTSTATE		1
 #define	ZFGP_CLIENTSTATE		2
 #define	ZFGP_CLIENTCMD			3
@@ -62,7 +52,7 @@ enum enginestates
 #define	ZFGP_DELETEOBJECT		5
 #define	ZFGP_REQOWNOBJECT		6
 #define	ZFGP_GIVEOWNOBJECT	7
-#define	ZFGP_ZONELIST			8		 //depricated // LIst of active zones sent to client.
+#define	ZFGP_ZONELIST			8		//depricated // LIst of active zones sent to client.
 #define	ZFGP_GETSTATICDATA	9		//depricated
 #define	ZFGP_STATICDATA		10		//depricated
 #define	ZFGP_COMMAND			12
@@ -77,7 +67,7 @@ class DevStringPage
 {
 private:
 public:
-	bool			m_bVisible;
+	bool				m_bVisible;
 	string			m_kName;
 	vector<string>	m_akDevString;
 };
@@ -86,16 +76,17 @@ public:
 class ENGINE_API ZFClient
 {
 public:
+	bool		m_bLogin;					// True if client is in login state.
 	float		m_fConnectTime;
-	string	m_strLogin;				// Login Name
+	string	m_strLogin;					// Login Name
 	string	m_strCharacter;
-	Entity*	m_pkObject;				// Object used for client.
+	Entity*	m_pkObject;					// Object used for client.
 
 	bool		m_bIsEditor;
 	
 	set<int>		m_iActiveZones;		// Activated Zones.
 	set<int>		m_iUnloadZones;		// Activated Zones.
-	queue<int>	m_kDeleteQueue;	// clients delete queue (contains is of entitys that shuld be deleted on the client)
+	queue<int>	m_kDeleteQueue;		// clients delete queue (contains is of entitys that shuld be deleted on the client)
 };
 
 /** \brief	Main class for the ZeroFps engine.

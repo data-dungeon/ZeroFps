@@ -6,6 +6,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_enviroment.h"
 #include "../zerofpsv2/engine/inputhandle.h"
+#include "../mcommon/ml_netmessages.h"
 
 extern MistClient g_kMistClient;
 
@@ -141,6 +142,29 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 		{
 			if(strController == "LoginOK")
 			{
+					string strLogin, strPassword,	strServerName,	strServerIP;
+
+					char*	text;
+
+					if(g_kMistClient.NameIPFromServerList(strServerName, strServerIP))
+					{
+						if((text	= g_kMistClient.GetText("LoginNameEB")))
+							strLogin	= text;
+
+						if((text	= g_kMistClient.GetText("LoginPWEb")))
+							strPassword	= text;
+
+						if(!strLogin.empty()	&&	!strPassword.empty()	&&	!strServerIP.empty())
+						{
+							g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
+							g_kMistClient.m_strLoginName = strLogin;
+							g_kMistClient.m_strLoginPW	= strPassword;
+							g_kMistClient.m_strQuickStartAddress = strServerIP;
+						}
+						else
+							printf("Input error,	failed to connect.");
+					}
+
 				if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_CHARGEN].c_str()))
 				{
 					printf("failed to load character generation screen\n");
@@ -208,9 +232,18 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 		else
 		if(strMainWnd == "CharGen_SelectCharWnd")
 		{
+			
 			if(strController == "CharGen_PlayBn")
 			{
-				string strLogin, strPassword,	strServerName,	strServerIP;
+				NetPacket kNp;
+				kNp.Clear();
+				kNp.Write((char) MLNM_CS_REQPLAY);
+				kNp.TargetSetClient(0);
+				g_kMistClient.SendAppMessage(&kNp);
+				g_kMistClient.LoadInGameGui();
+
+
+			/*	string strLogin, strPassword,	strServerName,	strServerIP;
 
 				char*	text;
 
@@ -231,7 +264,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					}
 					else
 						printf("Input error,	failed to connect.");
-				}
+				}*/
 
 			}
 			else

@@ -775,6 +775,39 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}			
 
+		case MLNM_SC_CHARLIST:
+		{
+			int iNumOfChar;
+			string strChar;
+			vector<string> kCharList;
+			
+			pkNetMessage->Read(iNumOfChar);
+			
+			m_pkConsole->Printf("Listing Players : %d",iNumOfChar);
+			
+			int i;
+			for(i = 0;i<iNumOfChar;i++)
+			{
+				pkNetMessage->Read_Str(strChar);
+				kCharList.push_back(strChar);					
+			}
+
+			g_kMistClient.ClearListbox("CharGen_CharList");
+			for(i=0; i<kCharList.size(); i++ )
+			{
+				char szArghhh[256];
+				strcpy(szArghhh, kCharList[i].c_str());
+				g_kMistClient.AddListItem("CharGen_CharList",szArghhh , true);	
+			}
+
+			int iItem = ((ZGuiCombobox*)GetWnd("CharGen_CharList"))->GetListbox()->GetItemCount();
+			if(iItem > 20) iItem = 20;
+			((ZGuiCombobox*)GetWnd("CharGen_CharList"))->SetNumVisibleRows(iItem);
+
+
+			break;
+		}
+
 		case MLNM_SC_PLAYERLIST:
 		{
 			int iPlayers;
@@ -922,7 +955,7 @@ void MistClient::OnClientConnected()
 	SendAppMessage(&kNp);	
 
 	//load ingame gui	
-	LoadInGameGui();
+	//LoadInGameGui();
 }
 
 void MistClient::OnDisconnect(int iConnectionID)

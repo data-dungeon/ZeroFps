@@ -50,7 +50,9 @@ bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
 {
 	vector<string>	kCharNames;
-	string strPlayerDataFile = "bin/" + m_strPlayerDirectory + strLogin; 
+	//string strPlayerDataFile = "bin/" + m_strPlayerDirectory + strLogin; 
+	string strPlayerDataFile = m_strPlayerDirectory + strLogin; 
+	cout << "***Scaning in" << strPlayerDataFile << endl;
 
 	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);

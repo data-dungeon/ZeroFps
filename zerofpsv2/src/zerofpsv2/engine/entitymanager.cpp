@@ -912,6 +912,8 @@ void EntityManager::PackToClients()
 		//if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
 		if(!m_pkNetWork->IsConnected(iClient))	
 			continue;
+		if(m_pkZeroFps->m_kClient[iClient].m_bLogin)
+			continue;
 		
 		//connection speed
 	 	int iSendSize;		
