@@ -115,30 +115,33 @@ void MistClient::OnInit()
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
 	
-	//test
-	if(m_bShowMenulevel)
-	{
-		m_pkEntityManager->SetWorldDir("clienttemp");
-		if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
-		{
-			m_pkEntityManager->SetTrackerLos(50);
-			
-			Entity* pkEnt = m_pkEntityManager->CreateEntity();
-			pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
-			
-			pkEnt->AddProperty("P_Track");
-			P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-			pkEnv->LoadEnviroment("data/enviroments/menu.env");
-			pkEnv->SetEnable(true);	
-		}
-		else
-			cout<<"WARNING: could not find menulevel"<<endl;	
-	}
-	else
-	{
-		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
-	}
+// 	//test
+// 	if(m_bShowMenulevel)
+// 	{
+// 		m_pkEntityManager->SetWorldDir("clienttemp");
+// 		if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
+// 		{
+// 			m_pkEntityManager->SetTrackerLos(50);
+// 			
+// 			Entity* pkEnt = m_pkEntityManager->CreateEntity();
+// 			pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
+// 			
+// 			pkEnt->AddProperty("P_Track");
+// 			P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
+// 			pkEnv->LoadEnviroment("data/enviroments/menu.env");
+// 			pkEnv->SetEnable(true);	
+// 		}
+// 		else
+// 			cout<<"WARNING: could not find menulevel"<<endl;	
+// 	}
+// 	else
+// 	{
+// 		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+// 	}
 
+	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+	
+	
 	if(m_bQuickStart)
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
@@ -1014,6 +1017,11 @@ void MistClient::OnClientConnected()
 {
 	m_pkConsole->Printf("Successfully connected to server");
 
+	ShowWnd("CharGen_SelectCharWnd", true, true, true);
+
+	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
+	m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));	
+
 	//request character entityID
 // 	NetPacket kNp;				
 // 	kNp.Clear();
@@ -1030,8 +1038,11 @@ void MistClient::OnDisconnect(int iConnectionID)
 	// Clear Entity Manger.
 	m_pkEntityManager->Clear();
    
-	// Load start screen.
-	LoadStartScreenGui(true);
+	// Load start screen if where ingame, 
+	if(m_iCharacterID != -1)
+		LoadStartScreenGui(true);
+	else
+		ShowWnd("CharGen_SelectCharWnd", false);
 
 	m_iCharacterID = -1;
 

@@ -57,7 +57,9 @@ class MistServer :public Application , public ZGuiApp
 		
 		bool									m_AcceptNewLogins;
 		bool									m_bStartMinimized;
-
+		int									m_iServerPort;
+		
+		
 		//edit stuff
 		Entity*	m_pkCameraObject;
 		Camera*	m_pkCamera;
@@ -78,12 +80,12 @@ class MistServer :public Application , public ZGuiApp
 		void SendItemInfo(int iItemID,int iClientID);
 		void SendCharacterEqipment(int iCharacter,int iClientID);				
 		void SendCharacterList(int iClient);
-
+		void SendClientCharacterID(int iClientID);
 
 		//player creation
 		Vector3 GetPlayerStartPos();
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
-		void SpawnPlayer(int iConID);	
+		bool SpawnPlayer(int iConID);	
 		void DeletePlayerCharacter(int iConID);		
 
 		//register stuff

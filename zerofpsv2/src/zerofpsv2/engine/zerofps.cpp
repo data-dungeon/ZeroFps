@@ -1091,7 +1091,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			
 			//m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());			
-			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
+
+			
+			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str());
 
 			break;
 		}
@@ -1197,7 +1199,7 @@ void ZeroFps::StartServer(bool bClient,bool bNetwork,int iPort,string strServerN
 	m_pkApp->OnServerStart();
 }
 
-void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,int iPort)
+void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP)
 {
 	//reset all first
 	StopAll();
@@ -1208,27 +1210,19 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	//clear world   ---detta kan vara ganska evil ibland =D, 
 	m_pkEntityManager->Clear();
 	
-	// DNS LookUp.
-/*	if( !m_pkNetWork->IsValidIPAddress(strServerIP.c_str()) )
+
+	//break out port from ip adress
+	int iPort = 4242;
+	int iPos = strServerIP.find(":");
+	if( iPos != -1)
 	{
-		IPaddress kLookUpIP;
-		if(m_pkNetWork->DnsLookUp( strServerIP.c_str(),kLookUpIP ))
-		{
-			kLookUpIP.port = iPort;
-			m_pkNetWork->AddressToStr(&kLookUpIP, g_szIpPort);
-			cout << "StartClient IP = " << strServerIP << endl;
-		}
+		iPort = atoi(&strServerIP.c_str()[iPos+1]);			
+		strServerIP = strServerIP.substr(0,iPos);
+		//cout<<"ip:"<<strServerIP<<" port:"<<iPort<<endl;
 	}
-	else
-	{*/
-//		cout << "StartClient IP = " << strServerIP << endl;
-//		sprintf(g_szIpPort, "%s:%d", strServerIP.c_str(),iPort);
-//	}
-	
-//	cout << "g_szIpPort = " << g_szIpPort << endl;
 
 	
-	m_pkNetWork->ClientStart(strServerIP.c_str(), strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor,m_iConnectionSpeed);
+	m_pkNetWork->ClientStart(strServerIP.c_str(),iPort,strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor,m_iConnectionSpeed);
 	m_bClientMode = true;
 
 	m_pkApp->OnClientStart();

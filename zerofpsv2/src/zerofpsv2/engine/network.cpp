@@ -348,7 +348,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
+void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;
@@ -356,6 +356,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	StartSocket(false);
 	m_eNetStatus = NET_CLIENT;
 
+	
 
 	// DNS LookUp.
 	IPaddress kTargetIP;
@@ -369,8 +370,8 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 			if(kTargetIP.port == 0)
 			{
 				kTargetIP.port = 0;
-				kTargetIP.port = kTargetIP.port | ((m_iDefPort >> 8) & 0xff);  
-				kTargetIP.port = kTargetIP.port | ((m_iDefPort << 8) & 0xff00);  							
+				kTargetIP.port = kTargetIP.port | ((iPort >> 8) & 0xff);  
+				kTargetIP.port = kTargetIP.port | ((iPort << 8) & 0xff00);  							
 			}
 		
 			char res[256];
@@ -386,7 +387,7 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	else //else asume normal ip
 	{
 		char szFinalTarget[256];
-		sprintf(szFinalTarget, "%s:%d", szIp, m_iDefPort);
+		sprintf(szFinalTarget, "%s:%d", szIp, iPort);
 		StrToAddress(szFinalTarget,&kTargetIP); 		
 	}
 

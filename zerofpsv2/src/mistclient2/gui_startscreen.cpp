@@ -221,10 +221,12 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				//	}
 				//}
 
+				/*
 				g_kMistClient.ShowWnd("CharGen_SelectCharWnd", true, true, true);
 
 				g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
 				g_kMistClient.m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));
+				*/
 				
 			}
 			else

@@ -58,15 +58,19 @@ vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
 	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
 
 	
-	//dvoids hax för o ta bort ".."
-	for(vector<string>::iterator it =kCharNames.begin();it != kCharNames.end();it++)
+ 	//dvoids hax för o ta bort ".."	och "."
+	vector<string>::iterator it =kCharNames.begin();
+	while(it != kCharNames.end())
 	{
-		if(*it == "..")
+		if( *it == ".." || *it == ".") 
 		{
 			kCharNames.erase(it);
-			break;
-		}
-	} 
+			it = kCharNames.begin();
+			continue;
+		}			
+		it++;
+	}
+	
 	
 /*	cout << strPlayerDataFile <<endl;
 	for(int i=0; i<kCharNames.size(); i++)

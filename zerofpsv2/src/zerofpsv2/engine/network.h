@@ -207,7 +207,7 @@ public:
 	void CloseSocket();
 	void ServerStart(int iPort);
 	void ServerEnd(void);
-	void ClientStart(const char* szIp, const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed);
+	void ClientStart(const char* szIp, int iPort,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed);
 	void ClientEnd(void);
 
 	void	SetMaxNodes(int iMaxNode);			

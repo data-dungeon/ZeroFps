@@ -51,13 +51,13 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	// Set Default values
 	m_AcceptNewLogins = true;
-
-
-	// Register Variables
-	RegisterVariable("ap_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
-
+	m_iServerPort 		= 4242;
 	m_bStartMinimized = false;
-	RegisterVariable("ap_startminimized", 	&m_bStartMinimized, CSYS_BOOL);
+	
+	// Register Variables
+	RegisterVariable("ap_newlogins",			&m_AcceptNewLogins,	CSYS_BOOL);	
+	RegisterVariable("ap_startminimized", 	&m_bStartMinimized, 	CSYS_BOOL);
+	RegisterVariable("ap_serverport",	 	&m_iServerPort, 		CSYS_INT);
 
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
@@ -450,7 +450,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_NEW:
 			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkZeroFps->StartServer(false,true,4242);
+			m_pkZeroFps->StartServer(false,true,m_iServerPort);
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -476,7 +476,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkZeroFps->StartServer(false,true,4242);
+			m_pkZeroFps->StartServer(false,true,m_iServerPort);
 			
 			break;		
 		
@@ -708,13 +708,13 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	SayToClients(strPlayer + string(" connected"));
 }
 
-void MistServer::SpawnPlayer(int iConID)
+bool MistServer::SpawnPlayer(int iConID)
 {
 	cout << "MistServer::SpawnPlayer" << endl;
 	if(m_pkZeroFps->m_kClient[iConID].m_strCharacter.size() == 0) 
 	{
 		m_pkZeroFps->PrintToClient(iConID, "You must select a character before you can join" );
-		return;
+		return false;
 	}
 
 	//create player object
@@ -723,6 +723,7 @@ void MistServer::SpawnPlayer(int iConID)
 	if(iPlayerID == -1)
 	{
 		cout<<"Error creating playercharacter"<<endl;
+		return false;
 	}
 	
 	
@@ -731,6 +732,8 @@ void MistServer::SpawnPlayer(int iConID)
 	{
 		pkNewPlayer->m_iCharacterID = iPlayerID;		
 	}	
+	
+	return true;
 }
 
 
@@ -885,70 +888,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
-		case MLNM_CS_REQ_ITEMINFO:
-		{
-			int 				iItemID 	= -1;
-			P_Item* 			pkItem = NULL;
-			P_Container* 	pkInContainer = NULL;			
-			Entity*			pkCharacter;
-			
-			//get item id
-			PkNetMessage->Read(iItemID);
-		
-			cout<<"client requested info on item "<<iItemID<<endl;
-			
-
-			//Get item
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
-				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
-				{
-					cout<<"WARNING: MLNM_CS_REQ_ITEMINFO  could not find item "<<iItemID<<endl;
-					break;
-				}
-
-			//get in container
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
-				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
-				
-			//get players character entity
-			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
-				{
-					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
-					break;
-				}			
-			
-				
-			//is item in a container?
-			if(pkInContainer)
-			{
-				//do we own the container?
-				if(pkInContainer->GetOwnerID() != pkCharacter->GetEntityID())
-				{
-					SayToClients("That container is not yours","Server",-1,PkNetMessage->m_iClientID);
-					break;					
-				}
-			
-				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
-				break;
-			}
-			else
-			{
-				//do a distance check
-				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
-				{
-					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
-					break;
-				}			
-			
-				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
-				break;
-			}
-				
-		
-			break;
-		}
-	
+		// ----------- LOGIN STUFF -------------	
 		case MLNM_CS_CHARADD:
 		{
 			string strChar;
@@ -982,39 +922,31 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			cout << "Play with character: " << strChar << endl;
 
 			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strCharacter = strChar;
-			SpawnPlayer( PkNetMessage->m_iClientID );
-			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;
 			
-			
-			//send character id to client
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			//create character, 
+			if(!SpawnPlayer( PkNetMessage->m_iClientID ))
 			{
-				NetPacket kNp;
-				
-				kNp.Clear();
-				kNp.Write((char) MLNM_SC_CHARACTERID);
-				kNp.Write(pkData->m_iCharacterID);
-				kNp.TargetSetClient(PkNetMessage->m_iClientID);
-				SendAppMessage(&kNp);
-			}			
+				cout<<"WARNING: could not create character "<<strChar<<" for client "<<PkNetMessage->m_iClientID<<endl;
+				break;
+			}
+			
+			//player is now no longer in login screen
+			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;			
+			
+			//send character id to clients
+			SendClientCharacterID(PkNetMessage->m_iClientID);			
 			
 			break;
 		}
 
 		case MLNM_CS_REQ_CHARACTERID:
 		{
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{
-				NetPacket kNp;
-				
-				kNp.Clear();
-				kNp.Write((char) MLNM_SC_CHARACTERID);
-				kNp.Write(pkData->m_iCharacterID);
-				kNp.TargetSetClient(PkNetMessage->m_iClientID);
-				SendAppMessage(&kNp);
-			}
+			SendClientCharacterID(PkNetMessage->m_iClientID);		
+			
 			break;
 		}
+		
+		// -------------------------------------------
 		
 		case MLNM_CS_REQ_KILLME:
 		{
@@ -1163,6 +1095,70 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			}
 			break;
 		}
+		
+		case MLNM_CS_REQ_ITEMINFO:
+		{
+			int 				iItemID 	= -1;
+			P_Item* 			pkItem = NULL;
+			P_Container* 	pkInContainer = NULL;			
+			Entity*			pkCharacter;
+			
+			//get item id
+			PkNetMessage->Read(iItemID);
+		
+			cout<<"client requested info on item "<<iItemID<<endl;
+			
+
+			//Get item
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
+				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
+				{
+					cout<<"WARNING: MLNM_CS_REQ_ITEMINFO  could not find item "<<iItemID<<endl;
+					break;
+				}
+
+			//get in container
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
+				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+				
+			//get players character entity
+			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
+				{
+					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
+					break;
+				}			
+			
+				
+			//is item in a container?
+			if(pkInContainer)
+			{
+				//do we own the container?
+				if(pkInContainer->GetOwnerID() != pkCharacter->GetEntityID())
+				{
+					SayToClients("That container is not yours","Server",-1,PkNetMessage->m_iClientID);
+					break;					
+				}
+			
+				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
+				break;
+			}
+			else
+			{
+				//do a distance check
+				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
+				{
+					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
+					break;
+				}			
+			
+				SendItemInfo(iItemID,PkNetMessage->m_iClientID);
+				break;
+			}
+				
+		
+			break;
+		}		
 		
 		case MLNM_CS_MOVE_ITEM:
 		{
@@ -1346,6 +1342,23 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 	}
 }
 
+void MistServer::SendClientCharacterID(int iClientID)
+{
+	//send character id to client
+	if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(iClientID))
+	{
+		NetPacket kNp;
+		
+		kNp.Clear();
+		kNp.Write((char) MLNM_SC_CHARACTERID);
+		kNp.Write(pkData->m_iCharacterID);
+		kNp.TargetSetClient(iClientID);
+		SendAppMessage(&kNp);
+	}	
+
+}
+
+
 void MistServer::OpenContainer(int iContainerID,int iClientID)
 {
 	if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(iClientID))
@@ -1400,7 +1413,7 @@ void MistServer::SendCharacterList(int iClient)
 	vector<string>	kCharacters;	
 
 	kCharacters = m_pkPlayerDB->GetLoginCharacters( m_pkZeroFps->m_kClient[iClient].m_strLogin );
-	kCharacters.erase(kCharacters.begin());
+	//kCharacters.erase(kCharacters.begin()); //gjorde mega krash i windows
 
 	//clear package and write pkg id
 	kNp.Clear();
