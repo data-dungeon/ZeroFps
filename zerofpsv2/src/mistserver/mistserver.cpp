@@ -695,15 +695,16 @@ void MistServer::AddZone()
 	//force loading of this zone
 	pkObjectMan->LoadZone(id);
 
+	//set to active
+	m_iCurrentMarkedZone = id;
 
 	if(id != -1)
 	{
 		pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
 	}	
 
-	//set to active
-	m_iCurrentMarkedZone = id;
 	
+	SetZoneEnviroment(m_strActiveEnviroment.c_str());
 }
 
 
@@ -1140,11 +1141,14 @@ void MistServer::SendTextToMistClientInfoBox(char *szText)
 
 void MistServer::SetZoneEnviroment(const char* csEnviroment)
 {
+	//set default enviroment
+	m_strActiveEnviroment=csEnviroment;
+	
 	ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)
 		z->m_strEnviroment = csEnviroment;
-
+		
 }
 
 string MistServer::GetZoneEnviroment()

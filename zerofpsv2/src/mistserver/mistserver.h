@@ -58,6 +58,7 @@ class MistServer :public Application , public ZGuiApp {
 
 		string	m_strActiveZoneName, m_strPrevZoneName;
 		string	m_strActiveObjectName;
+		string	m_strActiveEnviroment;
 		Object*	m_pkCameraObject;
 		Camera*	m_pkCamera;
 

@@ -18,7 +18,6 @@ P_Enviroment::P_Enviroment()
 
 void P_Enviroment::Update()
 {
-	//if(!m_bEnabled)
 	
 	
 }
@@ -43,6 +42,46 @@ void P_Enviroment::SetEnviroment(char* csEnviroment)
 
 	m_StrCurrentEnviroment = csEnviroment;
 
+	ResetEnviroment();
+
+	if(m_StrCurrentEnviroment == "Rain" )
+	{
+		PSystemProperty* ps = (PSystemProperty*)m_pkObject->AddProperty("PSystemProperty");	
+		if(ps)
+			ps->SetPSType("rain");
+			
+			
+		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+		if(pl)
+		{	
+			pl->SetType(DIRECTIONAL_LIGHT);
+			pl->SetRot(Vector3(0.5,0.5,0));			
+			pl->SetDiffuse(Vector4(.8,.8,.85,1));
+		}
+	}
+
+	if(m_StrCurrentEnviroment == "Sun" || m_StrCurrentEnviroment == "Default")
+	{
+		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+		if(pl)
+		{
+			pl->SetType(DIRECTIONAL_LIGHT);
+			pl->SetRot(Vector3(0.5,0.5,0));
+			pl->SetDiffuse(Vector4(2,2,2,1));		
+			pl->SetAmbient(Vector4(0.8,0.8,0.8,1.0));					
+		}
+	}
+
+
+
+}
+
+void P_Enviroment::ResetEnviroment()
+{
+	m_pkObject->DeleteProperty("PSystemProperty");
+	m_pkObject->DeleteProperty("P_AmbientSound");
+	m_pkObject->DeleteProperty("LightProperty");
+	
 }
 
 void P_Enviroment::PackTo(NetPacket* pkNetPacket)
@@ -56,8 +95,10 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket)
 	
 	pkNetPacket->Read_NetStr(temp);
 	
-	SetEnviroment(temp);
-
+	if(m_bEnabled)
+		SetEnviroment(temp);
+	else
+		SetEnviroment("");
 }
 
 Property* Create_P_Enviroment()

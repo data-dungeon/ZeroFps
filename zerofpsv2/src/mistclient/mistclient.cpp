@@ -140,7 +140,7 @@ void MistClient::Init()
 
 	// Varde ljus!
 	pkLight->SetLighting(true);
-	pkZShader->SetForceLighting(ALWAYS_OFF);
+	//pkZShader->SetForceLighting(ALWAYS_OFF);
 	
 }
 

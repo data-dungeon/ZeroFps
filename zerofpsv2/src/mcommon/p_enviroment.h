@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 
+#include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "../zerofpsv2/engine_systems/propertys/lightproperty.h"
+
 using namespace std;
 
 class MCOMMON_API P_Enviroment: public Property {
@@ -30,6 +33,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		void ZoneChange(int iCurrent,int iNew);
 
 		void SetEnviroment(char* csEnviroment);
+		void ResetEnviroment();
 
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
