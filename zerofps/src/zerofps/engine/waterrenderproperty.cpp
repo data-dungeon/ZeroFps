@@ -27,15 +27,69 @@ void WaterRenderProperty::SetProperty(int iSize,int iStep,const char* acTexture)
 void WaterRenderProperty::SetTexture(const char* acTexture)
 {
 	m_iTexture = m_pkTexMan->Load(acTexture,0);
+	m_sTexture = acTexture;
 }
 
 void WaterRenderProperty::Update() 
 {	
-
-//	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),Vector3(0,0,0),m_iSize,m_iStep,m_iTexture);	
-//	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));	
 	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture);
 }
+
+void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
+{
+	char data[256];	
+	
+	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize));
+	pkPackage->Write((void*)&m_iStep,sizeof(m_iStep));
+	
+	strcpy(data,m_sTexture.c_str());		
+	pkPackage->Write((void*)&data,256);
+}
+
+void WaterRenderProperty::Load(ZFMemPackage* pkPackage)
+{
+	char data[300];	
+	
+	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize));
+	pkPackage->Read((void*)&m_iStep,sizeof(m_iStep));
+	
+	strcpy(data,m_sTexture.c_str());		
+	pkPackage->Read((void*)&data,256);
+	m_sTexture = data;
+	
+	SetTexture(m_sTexture.c_str());
+}
+
+vector<PropertyValues> WaterRenderProperty::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(3);
+			
+	kReturn[0].kValueName="m_iSize";
+	kReturn[0].iValueType=VALUETYPE_INT;
+	kReturn[0].pkValue=(void*)&m_iSize;
+	
+	kReturn[1].kValueName="m_iStep";
+	kReturn[1].iValueType=VALUETYPE_INT;
+	kReturn[1].pkValue=(void*)&m_iStep;
+	
+	kReturn[2].kValueName="m_sTexture";
+	kReturn[2].iValueType=VALUETYPE_STRING;
+	kReturn[2].pkValue=(void*)&m_sTexture;
+
+	return kReturn;
+}
+
+bool WaterRenderProperty::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "m_sTexture") == 0) {
+		SetTexture(kValue.c_str());		
+		return true;
+	}
+
+	return false;
+}
+
+
 
 Property* Create_WaterRenderProperty()
 {

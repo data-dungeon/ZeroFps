@@ -82,12 +82,9 @@ void LevelManager::ClearObjects()
 }
 
 void LevelManager::CreateNew(int iSize) 
-{
-	
+{	
 	ClearObjects();
 	
-//	m_pkCollisionMan->Add(m_pkHeightMapObject);
-
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
@@ -165,9 +162,6 @@ bool LevelManager::LoadLevel(const char* acFile)
 	kZolfile=kBase+"objects.zol";
 	kpreinifile=kBase+"preconfig.ini";
 	ksuinifile=kBase+"suconfig.ini";
-
-
-
 
 	//clear world
 	Clear();
@@ -396,7 +390,12 @@ void LevelManager::Water(bool bWater)
 		if(m_pkObjectMan->GetObject("WorldWaterObject") == NULL)
 		{	
 			//water
-			WaterObject *water=new WaterObject(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
+//			WaterObject *water=new WaterObject(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
+			Object* water = new Object();
+			water->AddProperty("WaterRenderProperty");
+			WaterRenderProperty* wrp= static_cast<WaterRenderProperty*>(water->GetProperty("WaterRenderProperty"));
+			wrp->SetProperty(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
+			
 			water->GetName()="WorldWaterObject";
 			water->GetPos().Set(0,0,0);
 			water->SetParent(m_pkObjectMan->GetWorldObject());		

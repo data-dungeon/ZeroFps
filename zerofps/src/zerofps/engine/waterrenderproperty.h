@@ -19,11 +19,13 @@ class ENGINE_API WaterRenderProperty: public Property {
 		Render* m_pkRender;	
 	
 		int m_iTexture;		
+		string m_sTexture;
 	
-//		Vector3 m_kPos;
-//		Vector3 m_kHead;
 		int m_iSize;
 		int m_iStep;
+		
+		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( string kValueName ,string kValue );		
 		
 	public:
 		WaterRenderProperty();
@@ -31,6 +33,10 @@ class ENGINE_API WaterRenderProperty: public Property {
 		void SetProperty(int iSize,int iStep,const char* acTexture);
 		void SetTexture(const char* acTexture);
 		void Update();
+
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
+
 
 };
 
