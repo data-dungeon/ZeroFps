@@ -43,7 +43,7 @@ function GUICreate()
 	CreateWnd(4,"dvoidLabel","DMIntroWnd","",300,260,256,64,0)
 	ChangeSkin("dvoidLabel","Skin2","Label")
 
-	CreateWnd(4,"zeromLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"zeromLabel","DMIntroWnd","",144,172,512,256,0)
 	ChangeSkin("zeromLabel","Skin3","Label")
 
 	CreateWnd(4,"vimLabel","DMIntroWnd","",300,260,256,64,0)
