@@ -491,6 +491,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize) {
 	glPushMatrix();
 	
+
 	
 	glRotatef(kHead.x, 1, 0, 0);
 	glRotatef(kHead.y, 0, 1, 0);	
@@ -498,6 +499,10 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 	glTranslatef(kPosition.x-kSize/2,kPosition.y,kPosition.z-kSize/2);
 	
 	glDisable(GL_LIGHTING);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glEnable(GL_BLEND);
+		
+	glDepthMask(GL_FALSE);
 	
 	m_pkTexMan->BindTexture("file:../data/textures/water.bmp");
 	int step=30;
@@ -505,7 +510,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 	for(int z=0;z<kSize;z+=step){
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);		
-		glColor3f(1,1,1);
+		glColor4f(.7,.7,.9,.9);
 		for(int x=0;x<kSize;x+=step) {
 			float y=sin((SDL_GetTicks()+x*300)/1000.0);
 			
@@ -520,6 +525,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 		}
 		glEnd();
 	}
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
