@@ -789,8 +789,15 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 	va_end(ap);									// 
 
 	// Now call our print function.
+	/*
 	if(strlen(Devformat_text) >= 200)
 		assert(0);
+	*/
+
+	//add null value if string is to long to shorten it
+	if(strlen(Devformat_text) >= 200)
+		Devformat_text[199] = '\0';	
+	
 	page->m_akDevString.push_back(string(Devformat_text));
 }
 
