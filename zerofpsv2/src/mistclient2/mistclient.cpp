@@ -148,7 +148,7 @@ void MistClient::Input()
 		{			
 			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
 			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
-			pkCam->SetOffset(Vector3(0,2.0,0)); 
+			pkCam->SetOffset(Vector3(0,1.0,0)); 
 
 			float fDistance = pkCam->Get3PDistance();
 			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	fDistance -= 0.5;
