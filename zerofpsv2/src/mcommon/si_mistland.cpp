@@ -32,6 +32,8 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);		
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 
+	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
+
    // char.stats-scipts
    pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
    pkScript->ExposeFunction("RollAttributeDice",		MistLandLua::RollAttributeDiceLua);			
@@ -260,6 +262,37 @@ int MistLandLua::SendEventLua(lua_State* pkLua)
 	
 	return 0;
 }
+
+int MistLandLua::AddActionLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+	
+	int id;
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	id = (int)dTemp;
+	
+	Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
+	if(pkObject)
+	{
+		P_Ml* pe = (P_Ml*)pkObject->GetProperty("P_Ml");	
+		
+		if(pe)
+		{
+			char	acEvent[128];
+			g_pkScript->GetArgString(pkLua, 1, acEvent);
+		
+			pe->AddAction(acEvent);
+			return 0;
+		}
+		else
+			cout<<"Error tried to add action on object whitout P_Ml property"<<endl;
+	}
+	
+	return 0;
+}
+
 
 
 int MistLandLua::SetPSystemLua(lua_State* pkLua)

@@ -23,14 +23,39 @@ void P_Ml::Update()
 
 }
 
+void P_Ml::AddAction(const char* csAction)
+{
+	//cout<<"registering action:"<<csAction<<endl;
+	m_kActions.push_back(string(csAction));
+}
+
+
 void P_Ml::PackTo( NetPacket* pkNetPacket ) 
 {
+	int nr = m_kActions.size();
+	
+	pkNetPacket->Write(&nr,sizeof(nr));
+	
+	for(int i=0;i<m_kActions.size();i++)
+	{
+		pkNetPacket->Write_NetStr(m_kActions[i].c_str());
+	}
 
 } 
 
 void P_Ml::PackFrom( NetPacket* pkNetPacket ) 
 {
-
+	int nr;	
+	
+	pkNetPacket->Read(&nr,sizeof(nr));
+	
+	m_kActions.clear();
+	for(int i=0;i<m_kActions.size();i++)
+	{
+		char temp[128];
+		pkNetPacket->Read_NetStr(temp);
+		m_kActions.push_back(string(temp));
+	}
 }
 
 Property* Create_P_Ml()

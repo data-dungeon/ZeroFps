@@ -11,6 +11,7 @@ class PSystemProperty;
 #include "../zerofpsv2/engine/objectmanager.h"
 #include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
 #include "p_event.h"
+#include "p_ml.h"
 
 using namespace std;
 
@@ -33,6 +34,8 @@ namespace MistLandLua
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
 	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
 	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
+
+	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
 
 
    // character status

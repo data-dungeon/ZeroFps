@@ -7,19 +7,24 @@
 #include <iostream>
 #include <string.h>
 #include "mcommon_x.h"
+#include <string>
+#include <vector>
 
 using namespace std;
 
 class MCOMMON_API P_Ml: public Property {
 	private:
 		ZeroFps* m_pkFps;
-
+		
+		vector<string>	m_kActions;	
 
 	public:
 		void CloneOf(Property* pkProperty) { }
 		P_Ml();
 		
 		void Update();
+		
+		void AddAction(const char* csAction);
 		
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
