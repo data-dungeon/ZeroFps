@@ -10,7 +10,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-EngineScriptInterface::EngineScriptInterface()
+/*EngineScriptInterface::EngineScriptInterface()
 {
 	m_pkObjMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 }
@@ -31,34 +31,18 @@ Vector3 EngineScriptInterface::GetObjectPos(OBJECT obj)
 	return pkObject->GetPos(); 
 }
 
-OBJECT_TYPE EngineScriptInterface::GetObjectType(OBJECT obj) 
-{
-	return ObjTypeNone;
-}
-
-OBJECT EngineScriptInterface::GetPlayer() 
-{
-	printf("apa apa apa apa apa apa apa apa apa\n");
-	return -1;
-}
-
-OBJECT EngineScriptInterface::GetClosestEnemy(OBJECT kFocusObj) 
-{
-	return -1;
-}
-
 OBJECT EngineScriptInterface::GetClosestObject(OBJECT kFocusObj) 
 {
 	return -1;
 }
 
-void EngineScriptInterface::DestroyObject(int obj)
+void EngineScriptInterface::DestroyObject(OBJECT obj)
 {
-/*	Object* pkObject = GetObject(obj);
+	Object* pkObject = GetObject(obj);
 	if(pkObject)
 	{
 		m_pkObjMan->Delete(pkObject);
-	}*/
+	}
 }
 
 float EngineScriptInterface::GetMetersBetween(OBJECT obj1, OBJECT obj2)
@@ -71,4 +55,4 @@ float EngineScriptInterface::GetMetersBetween(OBJECT obj1, OBJECT obj2)
 	Vector3 fPos2 = ob2->GetPos(); 
 
 	return Vector3(fPos1-fPos2).Length();
-}
+}*/

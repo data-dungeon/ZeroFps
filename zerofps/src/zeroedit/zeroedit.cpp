@@ -1,7 +1,6 @@
 #include "zeroedit.h"
 #include "gui.h"
 #include "fh.h"
-#include "../zerofps/script/gamescript.h"
 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 

@@ -1,7 +1,7 @@
 // enginescriptinterface.h: interface for the EngineScriptInterface class.
 //
 //////////////////////////////////////////////////////////////////////
-
+/*
 #ifndef _ENGINE_ENGINESCRIPTINTERFACE
 #define _ENGINE_ENGINESCRIPTINTERFACE
 
@@ -12,15 +12,6 @@
 #include "engine_x.h"
 
 class Object;
-
-enum OBJECT_TYPE
-{
-	ObjTypeSelf,		
-	ObjTypeCreature,
-	ObjTypeDoor,
-	ObjTypeItem,
-	ObjTypeNone
-};
 
 typedef int OBJECT; // same as network id
 
@@ -35,25 +26,15 @@ public:
 	/// Recives the position for the object.
 	Vector3 GetObjectPos(OBJECT obj);
 	
-	/// Recives the first-person-player for the client.
-	OBJECT GetPlayer();
-
 	/// Recives the closes object from kFocusObj or -1 if no object exist,
 	/// or if kFocusObj doesn´t exist.
 	OBJECT GetClosestObject(OBJECT kFocusObj);
-
-	/// Recives the closes hostile object from kFocusObj or -1 if no object exist,
-	/// or if kFocusObj doesn´t exist.
-	OBJECT GetClosestEnemy(OBJECT kFocusObj);
-
-	/// Recives the type of obj (or -1 if obj doesn´t exist)
-	OBJECT_TYPE GetObjectType(OBJECT obj);
 
 	/// Recives rhe distance in meters between two objects or -1 if either of the 
 	/// two objects doesn´t exist.
 	float GetMetersBetween(OBJECT obj1, OBJECT obj2);
 
-	void DestroyObject(int obj);
+	void DestroyObject(OBJECT obj);
 
 // Internal functions:
 private:
@@ -61,4 +42,4 @@ private:
 	Object* GetObject(int iNetworkID);
 };
 
-#endif // #ifndef _ENGINE_ENGINESCRIPTINTERFACE
+#endif // #ifndef _ENGINE_ENGINESCRIPTINTERFACE*/

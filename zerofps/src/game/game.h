@@ -20,7 +20,8 @@
 #include "treeidleproperty.h"
 */
 
-class ZFScript;
+class GameScript;
+class GameScriptInterface;
 
 enum GAME_STATE
 {
@@ -61,6 +62,7 @@ class Game :public Application {
 		float* m_pfPlayerArmor;
 
 		GameScript* m_pkScript;
+		GameScriptInterface* m_pkGameScriptInterface;
 
 	public:
 		
@@ -82,6 +84,8 @@ class Game :public Application {
 		void OnClientStart(void);
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
+		friend class GameScriptInterface;
 };
 
 

@@ -103,10 +103,6 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\gamescript.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfscript.cpp
 
 !IF  "$(CFG)" == "script - Win32 Release"
@@ -122,10 +118,6 @@ SOURCE=.\zfscript.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\gamescript.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\script.pkg

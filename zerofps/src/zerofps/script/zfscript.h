@@ -34,7 +34,7 @@ enum ScripVarType
 
 enum ScripObjectType
 {
-	tEngine,
+	tGame,
 	tConsole,
 	tVector3,
 };
@@ -42,6 +42,8 @@ enum ScripObjectType
 class SCRIPT_API ZFScript  
 {
 public:
+bool ExposeClass(char *szName, ScripObjectType eType, 
+		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
 	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType);
@@ -76,8 +78,7 @@ private:
 
 protected:
 
-	bool ExposeClass(char *szName, ScripObjectType eType, 
-		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
+	
 
 	lua_State* GetLua() { return m_pkLua; }
 

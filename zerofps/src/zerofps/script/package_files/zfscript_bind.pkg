@@ -275,12 +275,8 @@ class /*BASIC_API*/ Vector3 {
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// EngineScriptInterface - START
+// GameScriptInterface - START
 ///////////////////////////////////////////////////////////////////////////////
-
-//#include "engine_x.h"
-
-//class Object;
 
 enum OBJECT_TYPE
 {
@@ -293,23 +289,14 @@ enum OBJECT_TYPE
 
 typedef int OBJECT; // same as network id
 
-class /*ENGINE_API*/ EngineScriptInterface
+class GameScriptInterface  
 {
-
-// Export functions:
 //public:
-	EngineScriptInterface();
-	virtual ~EngineScriptInterface();
+	GameScriptInterface();
+	virtual ~GameScriptInterface();
 
-	/// Recives the position for the object.
-	Vector3 GetObjectPos(OBJECT obj);
-	
 	/// Recives the first-person-player for the client.
 	OBJECT GetPlayer();
-
-	/// Recives the closes object from kFocusObj or -1 if no object exist,
-	/// or if kFocusObj doesn´t exist.
-	OBJECT GetClosestObject(OBJECT kFocusObj);
 
 	/// Recives the closes hostile object from kFocusObj or -1 if no object exist,
 	/// or if kFocusObj doesn´t exist.
@@ -318,18 +305,8 @@ class /*ENGINE_API*/ EngineScriptInterface
 	/// Recives the type of obj (or -1 if obj doesn´t exist)
 	OBJECT_TYPE GetObjectType(OBJECT obj);
 
-	/// Recives rhe distance in meters between two objects or -1 if either of the 
-	/// two objects doesn´t exist.
-	float GetMetersBetween(OBJECT obj1, OBJECT obj2);
-
-	void DestroyObject(int obj);
-
-// Internal functions:
-//private:
-//	ObjectManager* m_pkObjMan;
-//	Object* GetObject(int iNetworkID);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// EngineScriptInterface - END
+// GameScriptInterface - END
 ///////////////////////////////////////////////////////////////////////////////

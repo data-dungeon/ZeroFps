@@ -1,2 +1,3 @@
+#include "script_x.h"
 #include "zfscript.h"
-#include "gamescript.h"
+//#include "gamescript.h"

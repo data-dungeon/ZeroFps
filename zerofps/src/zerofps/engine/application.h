@@ -6,6 +6,7 @@
 #include "../render/render.pkg"
 #include "../engine/engine.pkg"
 #include "../gui/gui.pkg"
+#include "../script/script.pkg"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ class ENGINE_API Application : public ZFObject {
 		ZFIni* pkIni;
 		LevelManager* pkLevelMan;
 		PhysicsEngine* pkPhysEngine;
-		EngineScriptInterface* pkEngineScriptInterface;
+		ZFScript* pkScript;
 		
 	public:
 		static Application* pkApp;

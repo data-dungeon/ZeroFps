@@ -26,6 +26,7 @@ class Render;
 class ZGui;
 class ZGuiResourceManager;
 class GLGuiRender;
+class ZFScript;
 
 class Application;
 class NetPacket;
@@ -118,7 +119,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		LevelManager*			m_pkLevelMan;				///< 
 		PhysicsEngine*			m_pkPhysEngine;				///< 
 		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
-		EngineScriptInterface*	m_pkEngineScriptInterface;	///< script interface API
+		ZFScript*				m_pkScript;					///< script
 
 		Application*			m_pkApp;					///< Application object.
 			

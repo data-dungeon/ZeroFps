@@ -1,7 +1,8 @@
 #include "game.h"
-#include "../zerofps/script/gamescript.h"
+#include "gamescript.h"
+#include "gamescriptinterface.h"
 
-Game olle("ZeroFPS game",1024,768,24);
+Game g_kGame("ZeroFPS game",1024,768,24);
 
 Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) { }
 
@@ -315,5 +316,7 @@ void Game::InitScript()
 {
 	m_pkScript = new GameScript();
 	m_pkScript->ExposeObject("pkConsole", pkConsole, tConsole);
-	m_pkScript->ExposeObject("pkEngine", pkEngineScriptInterface, tEngine);
+
+	m_pkGameScriptInterface = new GameScriptInterface();
+	m_pkScript->ExposeObject("game", m_pkGameScriptInterface, tGame);
 }

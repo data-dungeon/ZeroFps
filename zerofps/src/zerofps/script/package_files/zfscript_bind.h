@@ -1,6 +1,6 @@
 /*
 ** Lua binding: zfscript_bind
-** Generated automatically by tolua 4.0 on 02/03/03 18:24:59.
+** Generated automatically by tolua 4.0 on 02/04/03 14:18:30.
 */
 
 #include "tolua.h"
@@ -13,10 +13,10 @@ void tolua_zfscript_bind_close (lua_State* tolua_S);
 /* function to register type */
 static void toluaI_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"EngineScriptInterface");
  tolua_usertype(tolua_S,"OBJECT_TYPE");
  tolua_usertype(tolua_S,"Vector3");
  tolua_usertype(tolua_S,"CmdArgument");
+ tolua_usertype(tolua_S,"GameScriptInterface");
  tolua_usertype(tolua_S,"BasicConsole");
  tolua_usertype(tolua_S,"Console");
 }
@@ -797,8 +797,8 @@ tolua_lerror:
  return 0;
 }
 
-/* method: new of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_new00(lua_State* tolua_S)
+/* method: new of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_new00(lua_State* tolua_S)
 {
  if (
  !tolua_isnoobj(tolua_S,2)
@@ -807,8 +807,8 @@ static int toluaI_zfscript_bind_EngineScriptInterface_new00(lua_State* tolua_S)
  else
  {
  {
-  EngineScriptInterface* toluaI_ret = (EngineScriptInterface*)  new EngineScriptInterface();
- tolua_pushusertype(tolua_S,(void*)toluaI_ret,tolua_tag(tolua_S,"EngineScriptInterface"));
+  GameScriptInterface* toluaI_ret = (GameScriptInterface*)  new GameScriptInterface();
+ tolua_pushusertype(tolua_S,(void*)toluaI_ret,tolua_tag(tolua_S,"GameScriptInterface"));
  }
  }
  return 1;
@@ -817,17 +817,17 @@ tolua_lerror:
  return 0;
 }
 
-/* method: delete of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_delete00(lua_State* tolua_S)
+/* method: delete of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_delete00(lua_State* tolua_S)
 {
  if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
  !tolua_isnoobj(tolua_S,2)
  )
  goto tolua_lerror;
  else
  {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'");
  delete self;
  }
@@ -838,56 +838,24 @@ tolua_lerror:
 }
 
 /* method: raw_delete; called by garbage collector */
-static int tolua_EngineScriptInterface_tolua_raw_delete(lua_State* tolua_S)
+static int tolua_GameScriptInterface_tolua_raw_delete(lua_State* tolua_S)
 {
-  EngineScriptInterface* self = (EngineScriptInterface*)  lua_touserdata(tolua_S,1);
+  GameScriptInterface* self = (GameScriptInterface*)  lua_touserdata(tolua_S,1);
  delete self;
  return 0;
 }
 
-/* method: GetObjectPos of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetObjectPos00(lua_State* tolua_S)
+/* method: GetPlayer of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetPlayer00(lua_State* tolua_S)
 {
  if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
- !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
- !tolua_isnoobj(tolua_S,3)
- )
- goto tolua_lerror;
- else
- {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
-  OBJECT obj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetObjectPos'");
- {
-  Vector3 toluaI_ret = (Vector3)  self->GetObjectPos(obj);
- {
-#ifdef __cplusplus
- void* toluaI_clone = new Vector3(toluaI_ret);
-#else
- void* toluaI_clone = tolua_copy(tolua_S,(void*)&toluaI_ret,sizeof(Vector3));
-#endif
- tolua_pushusertype(tolua_S,tolua_doclone(tolua_S,toluaI_clone,tolua_tag(tolua_S,"Vector3")),tolua_tag(tolua_S,"Vector3"));
- }
- }
- }
- return 1;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'GetObjectPos'.");
- return 0;
-}
-
-/* method: GetPlayer of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetPlayer00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
  !tolua_isnoobj(tolua_S,2)
  )
  goto tolua_lerror;
  else
  {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetPlayer'");
  {
   OBJECT toluaI_ret = (OBJECT)  self->GetPlayer();
@@ -900,43 +868,18 @@ tolua_lerror:
  return 0;
 }
 
-/* method: GetClosestObject of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetClosestObject00(lua_State* tolua_S)
+/* method: GetClosestEnemy of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetClosestEnemy00(lua_State* tolua_S)
 {
  if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
  !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
  !tolua_isnoobj(tolua_S,3)
  )
  goto tolua_lerror;
  else
  {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
-  OBJECT kFocusObj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetClosestObject'");
- {
-  OBJECT toluaI_ret = (OBJECT)  self->GetClosestObject(kFocusObj);
- tolua_pushnumber(tolua_S,(double)toluaI_ret);
- }
- }
- return 1;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'GetClosestObject'.");
- return 0;
-}
-
-/* method: GetClosestEnemy of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetClosestEnemy00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
- !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
- !tolua_isnoobj(tolua_S,3)
- )
- goto tolua_lerror;
- else
- {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
   OBJECT kFocusObj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetClosestEnemy'");
  {
@@ -950,18 +893,18 @@ tolua_lerror:
  return 0;
 }
 
-/* method: GetObjectType of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetObjectType00(lua_State* tolua_S)
+/* method: GetObjectType of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetObjectType00(lua_State* tolua_S)
 {
  if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
  !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
  !tolua_isnoobj(tolua_S,3)
  )
  goto tolua_lerror;
  else
  {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
   OBJECT obj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetObjectType'");
  {
@@ -979,57 +922,6 @@ static int toluaI_zfscript_bind_EngineScriptInterface_GetObjectType00(lua_State*
  return 1;
 tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'GetObjectType'.");
- return 0;
-}
-
-/* method: GetMetersBetween of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_GetMetersBetween00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
- !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
- !tolua_istype(tolua_S,3,LUA_TNUMBER,0) ||
- !tolua_isnoobj(tolua_S,4)
- )
- goto tolua_lerror;
- else
- {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
-  OBJECT obj1 = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
-  OBJECT obj2 = ((OBJECT)  tolua_getnumber(tolua_S,3,0));
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetMetersBetween'");
- {
-  float toluaI_ret = (float)  self->GetMetersBetween(obj1,obj2);
- tolua_pushnumber(tolua_S,(double)toluaI_ret);
- }
- }
- return 1;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'GetMetersBetween'.");
- return 0;
-}
-
-/* method: DestroyObject of class  EngineScriptInterface */
-static int toluaI_zfscript_bind_EngineScriptInterface_DestroyObject00(lua_State* tolua_S)
-{
- if (
- !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"EngineScriptInterface"),0) ||
- !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
- !tolua_isnoobj(tolua_S,3)
- )
- goto tolua_lerror;
- else
- {
-  EngineScriptInterface* self = (EngineScriptInterface*)  tolua_getusertype(tolua_S,1,0);
-  int obj = ((int)  tolua_getnumber(tolua_S,2,0));
- if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DestroyObject'");
- {
-  self->DestroyObject(obj);
- }
- }
- return 0;
-tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'DestroyObject'.");
  return 0;
 }
 
@@ -1084,17 +976,13 @@ int tolua_zfscript_bind_open (lua_State* tolua_S)
  tolua_constant(tolua_S,NULL,"ObjTypeDoor",ObjTypeDoor);
  tolua_constant(tolua_S,NULL,"ObjTypeItem",ObjTypeItem);
  tolua_constant(tolua_S,NULL,"ObjTypeNone",ObjTypeNone);
- tolua_cclass(tolua_S,"EngineScriptInterface","");
- tolua_function(tolua_S,"EngineScriptInterface","new",toluaI_zfscript_bind_EngineScriptInterface_new00);
- tolua_function(tolua_S,"EngineScriptInterface","delete",toluaI_zfscript_bind_EngineScriptInterface_delete00);
- tolua_function(tolua_S,"EngineScriptInterface","tolua_raw_delete",tolua_EngineScriptInterface_tolua_raw_delete);
- tolua_function(tolua_S,"EngineScriptInterface","GetObjectPos",toluaI_zfscript_bind_EngineScriptInterface_GetObjectPos00);
- tolua_function(tolua_S,"EngineScriptInterface","GetPlayer",toluaI_zfscript_bind_EngineScriptInterface_GetPlayer00);
- tolua_function(tolua_S,"EngineScriptInterface","GetClosestObject",toluaI_zfscript_bind_EngineScriptInterface_GetClosestObject00);
- tolua_function(tolua_S,"EngineScriptInterface","GetClosestEnemy",toluaI_zfscript_bind_EngineScriptInterface_GetClosestEnemy00);
- tolua_function(tolua_S,"EngineScriptInterface","GetObjectType",toluaI_zfscript_bind_EngineScriptInterface_GetObjectType00);
- tolua_function(tolua_S,"EngineScriptInterface","GetMetersBetween",toluaI_zfscript_bind_EngineScriptInterface_GetMetersBetween00);
- tolua_function(tolua_S,"EngineScriptInterface","DestroyObject",toluaI_zfscript_bind_EngineScriptInterface_DestroyObject00);
+ tolua_cclass(tolua_S,"GameScriptInterface","");
+ tolua_function(tolua_S,"GameScriptInterface","new",toluaI_zfscript_bind_GameScriptInterface_new00);
+ tolua_function(tolua_S,"GameScriptInterface","delete",toluaI_zfscript_bind_GameScriptInterface_delete00);
+ tolua_function(tolua_S,"GameScriptInterface","tolua_raw_delete",tolua_GameScriptInterface_tolua_raw_delete);
+ tolua_function(tolua_S,"GameScriptInterface","GetPlayer",toluaI_zfscript_bind_GameScriptInterface_GetPlayer00);
+ tolua_function(tolua_S,"GameScriptInterface","GetClosestEnemy",toluaI_zfscript_bind_GameScriptInterface_GetClosestEnemy00);
+ tolua_function(tolua_S,"GameScriptInterface","GetObjectType",toluaI_zfscript_bind_GameScriptInterface_GetObjectType00);
  return 1;
 }
 /* Close function */
@@ -1110,5 +998,5 @@ void tolua_zfscript_bind_close (lua_State* tolua_S)
  lua_pushnil(tolua_S); lua_setglobal(tolua_S,"ObjTypeDoor");
  lua_pushnil(tolua_S); lua_setglobal(tolua_S,"ObjTypeItem");
  lua_pushnil(tolua_S); lua_setglobal(tolua_S,"ObjTypeNone");
- lua_pushnil(tolua_S); lua_setglobal(tolua_S,"EngineScriptInterface");
+ lua_pushnil(tolua_S); lua_setglobal(tolua_S,"GameScriptInterface");
 }
