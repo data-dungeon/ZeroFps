@@ -20,6 +20,11 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 	
 	if(m_kIni.Open(czName,false))
 	{
+	
+		//music
+		if(m_kIni.KeyExist("enviroment","music"))
+			m_strMusic = m_kIni.GetValue("enviroment","music");
+
 
 		//---------------PARTICLES
 		//particle effect
@@ -88,6 +93,7 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 
 void EnvSetting::Clear()
 {
+	m_strMusic		= "";
 	m_strParticles = "";
 	
 	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1);					
@@ -127,6 +133,7 @@ P_Enviroment::P_Enviroment()
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 
 	bNetwork =		true;
 	m_bEnabled =	false;
@@ -198,7 +205,7 @@ void P_Enviroment::Update()
 
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
-	//cout<<"zonechange"<<endl;
+	cout<<"zonechange"<<endl;
 	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
 
 	if(zd)	
@@ -233,9 +240,20 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 	}
 
 
-
 	//get enviroment pointer
 	EnvSetting* es = (EnvSetting*)pkTempenv->GetResourcePtr();
+
+
+	//setup music
+	if(es->m_strMusic == "")
+	{
+		m_pkMusic->Stop();
+	}
+	else
+	{
+		m_pkMusic->LoadFile(es->m_strMusic.c_str());
+		m_pkMusic->Play();
+	}
 
 
 	//setup particle property

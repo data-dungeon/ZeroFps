@@ -25,7 +25,7 @@ class MCOMMON_API EnvSetting : public ZFResource
 	private:
 		ZFIni		m_kIni;
 	
-		
+		string	m_strMusic;
 		string	m_strParticles;
 		
 		Vector4	m_kSunDiffuseColor;
@@ -58,6 +58,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		ZeroFps* 		m_pkFps;
 		EntityManager* m_pkObjectMan;
 		Render*			m_pkRender;
+		OggMusic*		m_pkMusic;		
 		
 		float				m_fTimer;
 		
