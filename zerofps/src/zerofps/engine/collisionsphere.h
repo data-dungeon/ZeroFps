@@ -16,10 +16,10 @@ class ENGINE_API CollisionSphere:public CollisionObject{
 		CollisionSphere(Vector3 kPos,float fRadius);
 		CollisionSphere(Vector3 *kPos,float *fRadius);
 		
-		bool Collide(CollisionObject *kOther,bool bContinue);
+		bool Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue);
 		
-		bool CollideSphere(CollisionSphere *kCs);
-		bool CollidePoint(CollisionPoint *kCp);
+		bool CollideSphere(CollisionSphere *kCs,Vector3 *pkPos);
+		bool CollidePoint(CollisionPoint *kCp,Vector3 *pkPos);
 
 };
 

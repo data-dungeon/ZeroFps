@@ -14,7 +14,7 @@ class BallObject: public Object {
 	public:
 		BallObject(HeightMap *pkMap);
 		
-		void HandleCollision(Object* pkObject,bool bContinue);
+		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
 
 };

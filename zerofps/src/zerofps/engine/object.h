@@ -43,7 +43,7 @@ class ENGINE_API Object {
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
-		virtual void HandleCollision(Object* pkObject,bool bContinue);
+		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 		
 };
 

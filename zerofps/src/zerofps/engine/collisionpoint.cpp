@@ -8,14 +8,14 @@ CollisionPoint::CollisionPoint(Vector3 kNewPos) {
 	*m_kPos=kNewPos;
 }
 
-bool CollisionPoint::Collide(CollisionObject *kOther,bool bContinue) {
+bool CollisionPoint::Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue) {
 	if(typeid(*kOther)==typeid(CollisionPoint)){
 		CollisionPoint *kCp = dynamic_cast<CollisionPoint*>(kOther);			
-		return CollidePoint(kCp);
+		return CollidePoint(kCp,pkPos);
 		
 	} else if(bContinue){
 //		cout<<"Unhandled Collision,Asking kOther"<<endl;	
-		return kOther->Collide(this,false);
+		return kOther->Collide(this,pkPos,false);
 	
 	}
 		
@@ -23,8 +23,12 @@ bool CollisionPoint::Collide(CollisionObject *kOther,bool bContinue) {
 }
 
 
-bool CollisionPoint::CollidePoint(CollisionPoint *kCp) {
-	return ((*kCp->m_kPos)==(*m_kPos));
+bool CollisionPoint::CollidePoint(CollisionPoint *kCp,Vector3 *pkPos) {
+	if((*kCp->m_kPos)==(*m_kPos)){
+		*pkPos=*m_kPos;
+		return true;
+	}
+	return false;
 }
 
 

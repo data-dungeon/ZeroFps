@@ -8,9 +8,11 @@ class ENGINE_API CollisionObject {
 
 
 	public:
-//		int m_iType;
 	
-		virtual bool Collide(CollisionObject *kOther,bool bContinue)=0;
+		// kOther  : the collisionobject to check collision against	
+		// pkPos   : pointer where the collision funktion stores the exact collision point
+		// bContinue:  if true and the object could not handle the collision sen collision test to kOther
+		virtual bool Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue)=0;
 };
 
 #endif

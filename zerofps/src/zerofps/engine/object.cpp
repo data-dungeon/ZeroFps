@@ -72,10 +72,10 @@ void Object::Remove() {
 	}
 }
 
-void Object::HandleCollision(Object* pkObject,bool bContinue){
+void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 //	cout<<"This Object Has not Collision handler"<<endl;
 	if(bContinue)
-		pkObject->HandleCollision(this,false);
+		pkObject->HandleCollision(this,kPos,false);
 		
 		
 		

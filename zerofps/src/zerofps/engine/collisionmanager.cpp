@@ -12,13 +12,13 @@ void CollisionManager::Add(Object *kObject)
 	pkColProp->SetColMan(this);
 	m_akColPropertys.push_back(pkColProp);
 }
-
+/*
 void CollisionManager::Add(CollisionProperty* kColProperty)
 {
 	kColProperty->SetColMan(this);
 	m_akColPropertys.push_back(kColProperty);
 }
-
+*/
 void CollisionManager::Remove(Object *pkObject)
 {
 	CollisionProperty *pkColProp=dynamic_cast<CollisionProperty*>(pkObject->GetProperty("CollisionProperty"));
@@ -44,8 +44,11 @@ void CollisionManager::Update()
 			if(itx==ity)
 				continue;
 			
-			if((*itx)->GetColObject()->Collide((*ity)->GetColObject(),true)){
-				(*itx)->GetObject()->HandleCollision((*ity)->GetObject(),true);
+			Vector3 kCollisionPoint(0,0,0);			
+			
+			if((*itx)->GetColObject()->Collide((*ity)->GetColObject(),&kCollisionPoint,true)){
+
+				(*itx)->GetObject()->HandleCollision((*ity)->GetObject(),kCollisionPoint,true);
 			}
 		}
 	}

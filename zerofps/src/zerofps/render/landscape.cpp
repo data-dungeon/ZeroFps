@@ -211,8 +211,8 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 			
 			if(step<1)//step cant be lower than 1
 				step=1;				
-			if(step>8)//if the step get to high it will look realy bad
-				step=8;			
+			if(step>6)//if the step get to high it will look realy bad
+				step=6;			
 			
 			bool flip=false;	//texture fliper
 			float t=0;

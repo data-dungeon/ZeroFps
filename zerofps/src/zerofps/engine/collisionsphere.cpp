@@ -13,33 +13,50 @@ CollisionSphere::CollisionSphere(Vector3 kPos,float fRadius) {
 
 
 
-bool CollisionSphere::Collide(CollisionObject *kOther,bool bContinue) {
+bool CollisionSphere::Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue) {
 	if(typeid(*kOther)==typeid(CollisionSphere)){
 		CollisionSphere *kCs=dynamic_cast<CollisionSphere*>(kOther);
-		return CollideSphere(kCs);
+		return CollideSphere(kCs,pkPos);
 
 	} else if(typeid(*kOther)==typeid(CollisionPoint)){
 		CollisionPoint *kCp = dynamic_cast<CollisionPoint*>(kOther);			
-		return CollidePoint(kCp);
+		return CollidePoint(kCp,pkPos);
 		
 	} else if(bContinue){
 //		cout<<"Unhandled Collision,Asking kOther"<<endl;	
-		return kOther->Collide(this,false);
+		return kOther->Collide(this,pkPos,false);
 	
 	}
 		
 	return false;
 }
 
-bool CollisionSphere::CollideSphere(CollisionSphere *kCs) {
-	float fDistance=((*m_kPos)-(*kCs->m_kPos)).Length();
+bool CollisionSphere::CollideSphere(CollisionSphere *kCs,Vector3 *pkPos) {
+	Vector3 kDistance=((*m_kPos)-(*kCs->m_kPos));
 	
-	return fDistance<(*m_fRadius+(*kCs->m_fRadius));
+	if( kDistance.Length() < (*m_fRadius + (*kCs->m_fRadius)) ){
+		if(kDistance.Length()==0)
+			*pkPos = *m_kPos;
+		else
+			*pkPos= *m_kPos + (kDistance.Unit()* (*m_fRadius));
+
+		return true;
+	}
+	
+	return false;
 }
 
-bool CollisionSphere::CollidePoint(CollisionPoint *kCp) {
-	float fDistance=((*m_kPos)-(*kCp->m_kPos)).Length();
-	return fDistance<(*m_fRadius);
+bool CollisionSphere::CollidePoint(CollisionPoint *kCp,Vector3 *pkPos) {
+//	float fDistance=((*m_kPos)-(*kCp->m_kPos)).Length();
+	Vector3 kDistance=((*m_kPos)-(*kCp->m_kPos));
+	
+	if( kDistance.Length() < (*m_fRadius) ){
+		*pkPos= *m_kPos + kDistance;
+	
+		return true;
+	}
+	
+	return false;
 }
 
 

@@ -96,19 +96,20 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-/*
 
-	for(int i=0;i<20;i++) {
+
+	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test);
 		ball->AddProperty(new MadProperty(&akCoreModells[0]));
-		float x=rand()%20;
-		float y=rand()%20;
+		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+		float x=rand()%50;
+		float y=rand()%50;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
-		ball->GetStatic()=true;
+//		ball->GetStatic()=true;
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-*/
+
 
 	glEnable(GL_LIGHTING );
 	

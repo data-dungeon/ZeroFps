@@ -15,10 +15,10 @@ class ENGINE_API CollisionHeightMap:public CollisionObject
 	public:
 		CollisionHeightMap(HeightMap *pkHeightMap);		
 		
-		bool Collide(CollisionObject *kOther,bool bContinue);
+		bool Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue);
 
-		bool CollideSphere(CollisionSphere *pkCs);
-		bool CollidePoint(CollisionPoint *pkCp);
+		bool CollideSphere(CollisionSphere *pkCs,Vector3 *pkPos);
+		bool CollidePoint(CollisionPoint *pkCp,Vector3 *pkPos);
 };
 
 #endif
