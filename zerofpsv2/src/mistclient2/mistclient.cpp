@@ -467,21 +467,7 @@ void MistClient::Input()
 					
 					if(!kActions.empty())
 					{
-						if(kActions[0] == "Pickup")
-						{
-							if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-							{
-								m_pkInventoryDlg->Open(); 
-								if(m_bGuiCapture == false)
-									SetGuiCapture(true);
-
-								SendAction(m_iPickedEntityID,kActions[0]);
-							}
-						}
-						else
-						{
-							SendAction(m_iPickedEntityID,kActions[0]);						
-						}
+						SendAction(m_iPickedEntityID,kActions[0]);
 					}
 				}			
 			}
