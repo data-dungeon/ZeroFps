@@ -823,9 +823,12 @@ void EntityManager::PackToClients()
 	bool bCheckSendStatus = true;
 	bool bForceAll = false;
 
-
-	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetNetworkFps();
-	m_pkNetWork->SetMaxSendSize(iMaxSendSize);
+	//calculate max send size
+	if(m_pkZeroFps->GetSyncNetwork())
+		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps());
+	else	
+		m_pkNetWork->SetMaxSendSize(m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetNetworkFps());
+		
 
 	// If no clients we don't send anything.
 	if(m_pkNetWork->GetNumOfClients() == 0)

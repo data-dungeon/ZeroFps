@@ -169,7 +169,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int						m_iProfileTotalTime;
 				
 		//materials
-		ZMaterial*	m_pkDevPageMaterial;
+		ZMaterial*		m_pkDevPageMaterial;
 		
 		
 		vector<Camera*>	m_kRenderCamera;
@@ -297,6 +297,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
 		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
+		
+		// gets
+		bool GetSyncNetwork()				{	return m_bSyncNetwork;							}
 		
 		//camera
 		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can be NULL

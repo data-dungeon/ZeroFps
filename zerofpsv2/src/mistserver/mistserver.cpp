@@ -149,8 +149,12 @@ void MistServer::Init()
 	//set tracker los
 	m_pkEntityManager->SetTrackerLos(25);
 	
-	//set gravity
+	
+	//setup physics
 	m_pkTcs->SetGravity(15);
+	m_pkTcs->SetColIt(2);
+	m_pkTcs->SetConIt(2);	
+	
 	
 	//enable debug graphics
 	m_pkZeroFps->SetDebugGraph(true);
