@@ -16,7 +16,7 @@ P_Vegitation::P_Vegitation()
 	m_pkFps = 				static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
 	
-	m_iSortPlace=9;
+	m_iSortPlace=2;
 	m_bNetwork = true;
 	
 	m_CheckedForHM = false;

@@ -9,7 +9,7 @@ P_FogPlane::P_FogPlane()
 
 	m_bNetwork = true;	
 	m_iVersion = 2;
-	m_iSortPlace=10;
+	m_iSortPlace=3;
 	
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
 

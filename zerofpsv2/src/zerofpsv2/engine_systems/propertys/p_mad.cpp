@@ -22,6 +22,8 @@ P_Mad::P_Mad()
 	m_bNetwork	 = true;
 	m_iVersion = 4;
 	
+	m_iSortPlace = 0;
+	
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	
@@ -623,10 +625,10 @@ void P_Mad::SetVisible(bool bVisible)
 {
 	m_bIsVisible = bVisible;
 	
-	if(m_bIsVisible)
-		m_iSortPlace = 0;
-	else
-		m_iSortPlace = 10;
+// 	if(m_bIsVisible)
+// 		m_iSortPlace = 9;
+// 	else
+// 		m_iSortPlace = 10;
 }
 
 
