@@ -11,16 +11,16 @@ P_DMGun::P_DMGun()
 	bNetwork = true;
 	
 	
-	m_fTimeBulletFired = 0;
-	m_fTimeFired = 		0;
-	m_fBurstLength = 		0.5;
-	m_bFireing =			false;
-	m_bFirstUpdateSinceFireing = false;
+	m_fTimeBulletFired = 			0;
+	m_fTimeFired = 					0;
+	m_fBurstLength = 					0.5;
+	m_bFireing =						false;
+	m_bFirstUpdateSinceFireing =	false;
 	m_kGunOffset.Set(0,0,0);
 	
 	//default gun
 	m_strName = 	"YberGun";
-	m_strSound =	"data/sound/9m_pistol.wav";
+	m_strSound =	"data/sound/auto_gun.wav";
 	m_fFireRate = 	30;
 	m_fRange = 		10;
 	m_iAmmo = 		10000;
@@ -29,7 +29,7 @@ P_DMGun::P_DMGun()
 	m_fRandom = 	10.0;
 	m_fDamage =		5;
 	m_iBulletsPerAmmo = 1;
-	m_iTeam = -1; // belongs to no team
+	m_iTeam = 		-1; // belongs to no team
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
@@ -44,6 +44,7 @@ void P_DMGun::Init()
 {
 	//cout<< "New GUN created"<<endl;
 	m_iHitSparkleTextureID = m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/dm/gun_sparkle.tga", 0);
+	m_iGunFireTextureID =  m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/gunfire.tga", 0);
 }
 
 bool P_DMGun::Fire(Vector3 kTarget)
@@ -87,6 +88,31 @@ void P_DMGun::Update()
 
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
+		//ugly barelfire test
+		if(m_bFireing)
+		{
+			static bool bOn = true;
+			
+			if(bOn)
+			{
+				bOn=false;				
+			}else
+			{
+				bOn=true;
+				return;
+			}
+		
+			Vector3 kDir = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0,0,1)).Unit();
+			Vector3 kPos = m_pkObject->GetIWorldPosV();
+			
+			kDir*= 0.9+(rand()%100 / 1000.0);
+			
+			Vector3 kOffset = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0.2,0,0));
+			
+			m_pkZeroFps->m_pkRender->Polygon4(kPos+kOffset,kPos-kOffset,kPos+kDir-kOffset,kPos+kDir+kOffset,m_iGunFireTextureID);
+		}
+		
+		
 		float f;
 		Vector3 kColor;
 		for(unsigned int i = 0 ;i<m_kHitPos.size();i++)
@@ -109,7 +135,8 @@ void P_DMGun::Update()
 				return;
 			}
 		}	
-	
+		
+		
 		return;
 	}
 	

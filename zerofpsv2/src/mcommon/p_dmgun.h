@@ -28,7 +28,7 @@ class MCOMMON_API P_DMGun: public Property {
 		bool		m_bFirstUpdateSinceFireing;
 		
 		Vector3	m_kGunOffset;
-		float m_fTargetDist;
+		float 	m_fTargetDist;
 		
 		//gun info
 		string	m_strName;
@@ -37,18 +37,18 @@ class MCOMMON_API P_DMGun: public Property {
 		float		m_fFireRate;
 		float		m_fDamage;
 		float		m_fRange;		
-		int			m_iAmmo;
-		int			m_iMaxAmmo;		
-		Vector3		m_kDir;
+		int		m_iAmmo;
+		int		m_iMaxAmmo;		
+		Vector3	m_kDir;
 		float		m_fRandom;
-		int			m_iBulletsPerAmmo;
+		int		m_iBulletsPerAmmo;
 		
 		bool		FireBullets(int iAmount);
 
 		ZFAudioSystem* m_pkAudioSys;
 
 		int			m_iHitSparkleTextureID;
-		
+		int			m_iGunFireTextureID;
 
 	public:
 

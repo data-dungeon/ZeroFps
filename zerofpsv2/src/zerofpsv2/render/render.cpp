@@ -276,6 +276,36 @@ void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
    SubDivide(v12, v23, v31, depth-1);
 }
 
+void Render::Polygon4(Vector3 kP1,Vector3 kP2,Vector3 kP3,Vector3 kP4,int iTexture)
+{
+	glPushMatrix();
+	glPushAttrib(GL_ENABLE_BIT);
+	
+	
+	//glAlphaFunc(GL_GREATER,0.3);
+	//glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glDisable(GL_LIGHTING);
+		
+	m_pkTexMan->BindTexture(iTexture);  
+	
+	glBegin(GL_QUADS);
+				
+	
+	glNormal3f(0,0,1);
+   glTexCoord2f(0.0,1.0);glVertex3fv(&kP1.x);		 
+   glTexCoord2f(1.0,1.0);glVertex3fv(&kP2.x);		 
+ 	glTexCoord2f(1.0,0.0);glVertex3fv(&kP3.x);		 
+	glTexCoord2f(0.0,0.0);glVertex3fv(&kP4.x);		 
+	
+	glEnd();			
+
+		
+	glPopAttrib();
+	glPopMatrix();
+}
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor){
 	glPushMatrix();
