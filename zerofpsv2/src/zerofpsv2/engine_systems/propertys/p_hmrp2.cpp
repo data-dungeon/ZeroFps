@@ -43,7 +43,7 @@ void P_HMRP2::Update()
 		m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
 		m_pkLight->Update(m_pkEntity->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
-//		m_pkRender->DrawNormals(m_pkHeightMap,m_pkObject->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
+//		m_pkRender->DrawNormals(m_pkHeightMap,m_pkEntity->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}
 	
@@ -60,15 +60,21 @@ void P_HMRP2::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	char temp[50];
 	pkNetPacket->Read_Str(temp);
 
-	if(strcmp(m_strMapName.c_str(), temp) == 0) 
-		return;
+	cout << "P_HMRP2 PackFrom: " << temp << endl;
+	//if(strcmp(m_strMapName.c_str(), temp) == 0) 
+	//	return;
 
 //	LevelManager* pkLev = static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));		
 //	pkLev->LoadLevelHmapOnly(temp);
 	
 	m_strMapName = temp;	
 //	SetHeightMap(pkLev->GetHeightMap(),m_strMapName);
+	char hmapname[256];
+	sprintf(hmapname, "%s/hm%d", m_pkEntity->m_pkEntityManager->GetWorldDir().c_str(), m_pkEntity->GetEntityID());
+	cout << "Should Load HMRP2: " << hmapname << endl;
 
+	m_pkHeightMap = new HeightMap;
+	m_pkHeightMap->Load(hmapname);
 }
 
 Property* Create_HMRP2()
@@ -100,6 +106,11 @@ void P_HMRP2::Load(ZFIoInterface* pkPackage,int iVersion)
 
 	m_pkHeightMap = new HeightMap;
 	m_pkHeightMap->Load(hmapname);
+}
+
+float P_HMRP2::GetRadius()
+{
+	return m_pkHeightMap->GetSize();
 }
 
 

@@ -738,6 +738,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		glEnable(GL_LIGHTING);
 	*/
 		
+	glEnable(GL_LIGHTING);
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
 	glColor4f(1,1,1,1);
 	if(kMap->m_bInverted) glCullFace(GL_FRONT);
@@ -792,7 +793,10 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 //	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
 		
 	DrawAllHM(kMap,CamPos,true);
-		
+	glPopAttrib();
+	glPopMatrix();
+	return;	
+
 	//set blending
 	glDepthFunc(GL_EQUAL);
 	glEnable(GL_BLEND);		
@@ -855,7 +859,7 @@ void Render::DrawHMVertex(HeightMap* kMap)
 	HM_vert* pkHmVertex = kMap->verts;
 
 	//glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING );
+	//glDisable(GL_LIGHTING );
 	glColor3f(1,1,1);
 
 	glBegin(GL_POINTS);

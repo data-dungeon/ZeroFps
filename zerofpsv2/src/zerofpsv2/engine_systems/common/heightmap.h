@@ -93,6 +93,7 @@ class ENGINE_SYSTEMS_API HeightMap
 
 	public:
 		Vector3				m_kCornerPos;				// Position of the Corner of the HM (for rendering).
+		Vector3				m_kCornerOffset;			// Offset of Corner of the HM from the center.
 
 		// Construct & Destruct
 		HeightMap();		

@@ -25,6 +25,7 @@ P_Tcs::P_Tcs()
 	m_fLegLength=			1;
 	m_fScale=				1;
 	m_pkMad=					NULL;
+	m_pkHmap=				NULL;
 	m_pkFaces =				NULL;
 	m_pkVertex =			NULL;	
 	m_pkNormal =			NULL;	
@@ -319,19 +320,24 @@ float P_Tcs::GetBoundingRadius()
 		return mp->GetRadius();	
 	}
 	
+	P_HMRP2* pkHm = static_cast<P_HMRP2*>(m_pkEntity->GetProperty("P_HMRP2"));	
+	if(pkHm)
+	{
+		return pkHm->GetRadius();
+	}
+
 	return -1;
 }
 
 bool P_Tcs::SetupMeshData()
 {
-	//cout<<"setting up mesh:"<<endl;
-	//look for mad property
+	// cout << "Setting up TCS Mesh: ";
+
 	P_Mad* pkMP = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));	
 	if(pkMP != NULL)
 	{
-		//cout<<"found mad property"<<endl;
+		// cout << "Found MAD" <<endl;
 		//look for core pointer in mad property
-		//m_pkCore = pkMP->pkCore;	
 		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr()); 
 
 		if(pkCore != NULL)
@@ -352,18 +358,39 @@ bool P_Tcs::SetupMeshData()
 				m_fScale = pkMP->m_fScale;
 				
 				//printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
-						
-				
-					
-				
-				
-				
 				return true;
 			}
 		}	
 	}
 	
-	//cout<<"TCS: error mech NOT found"<<endl;
+	P_HMRP2* pkHm = static_cast<P_HMRP2*>(m_pkEntity->GetProperty("P_HMRP2"));	
+	if(pkHm)
+	{
+		// cout << "found Hmap" << endl;
+		// Setup Collision Data
+		vector<Mad_Face>	kFace;
+		vector<Vector3>	kVertex;
+		vector<Vector3>	kNormal;
+		pkHm->m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
+		pkHm->m_pkHeightMap->GetCollData(&kFace,&kVertex,&kNormal);
+
+		printf("TCS: Found The Mesh (%d, %d, %d)\n",kFace.size(), kVertex.size(), kNormal.size() );
+
+		// Transform all vertex from Local to World.
+		for(unsigned int i=0; i<kVertex.size(); i++) 
+			kVertex[i] += pkHm->m_pkHeightMap->m_kCornerOffset;	//m_pkEntity->GetWorldPosV();	// + pkHm->m_pkHeightMap->m_kCornerPos;
+
+		// Set Data.
+		SetPolygonTest(true);	
+		SetStatic(true);			
+		SetData(kFace,kVertex,kNormal, 1);	 
+		SetHmap(pkHm->m_pkHeightMap);
+		SetGroup(0);
+
+		return true;
+	}
+
+	// cout<<"TCS: error mech NOT found"<<endl;
 	return false;
 }
 
@@ -498,44 +525,58 @@ bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 void P_Tcs::Draw()
 {
+	// Draw TCS bound sphere.
 	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
 
-/*
 	if(!m_pkVertex)
 		return;
 
-	Vector3 data[3];
-
 	glPushAttrib(GL_DEPTH_BUFFER_BIT|GL_LIGHTING_BIT|GL_FOG_BIT);
-	glDisable(GL_LIGHTING);	//dont want lighting on the skybox		
+	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-
-	float fColor = 0.4;
+	glEnable(GL_DEPTH_TEST);
 
 	GenerateModelMatrix();
 
-	for(unsigned int i=0; i<m_pkFaces->size(); i++) {
-		for(int j=0;j<3;j++) {
-			if(m_pkMad)
-				data[j] = m_kModelMatrix.VectorTransform((*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]]);
-			else
-				data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
-			}
+	Vector3 data[3];
+	float fColor = 0.4;
 
+	for(unsigned int i=0; i<m_pkFaces->size(); i++)
+	{
+		for(int j=0;j<3;j++)
+         data[j] = m_kModelMatrix.VectorTransform((*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]]);
+
+		// Update Color
 		glColor3f(fColor,fColor,fColor);
 		fColor+= 0.05;
 		if(fColor >= 1.0)
 			fColor = 0.4;
 
-		glBegin(GL_TRIANGLES );	//GL_TRIANGLES GL_LINE_LOOP
-		glVertex3fv( (float*) &data[0] );		
-		glVertex3fv( (float*) &data[1] );		
-		glVertex3fv( (float*) &data[2] );		
+		// Draw Triangle
+		glEnable(GL_POLYGON_OFFSET_FILL);	glPolygonOffset(-1,-5);
+		glBegin(GL_TRIANGLES );	
+			glVertex3fv( (float*) &data[0] );		
+			glVertex3fv( (float*) &data[1] );		
+			glVertex3fv( (float*) &data[2] );		
 		glEnd();
-		}
+		glDisable(GL_POLYGON_OFFSET_FILL);	glPolygonOffset(0,0);	
+
+		// Calculate Center of Triangle
+		Vector3 kCenter(0,0,0);
+		for(int iIndex=0; iIndex<3; iIndex++)
+			kCenter += data[ iIndex ];
+		kCenter *= 0.333;
+
+		// Draw Normal of triangle
+		Vector3 kNormEnd = kCenter + (*m_pkNormal)[i];
+		glColor3f(1,0,0);
+		glBegin( GL_LINES  );	
+			glVertex3fv( (float*) &kCenter );		
+			glVertex3fv( (float*) &kNormEnd );		
+		glEnd();
+	}
+
 	glPopAttrib();
-*/	
 }
 
 void P_Tcs::GenerateModelMatrix() 

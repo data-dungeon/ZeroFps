@@ -7,6 +7,7 @@
 
 //#include "../tcs/tcs.h"
 #include "p_mad.h"
+#include "p_hmrp2.h"
 
 #define TCS_GROUPS 10
 

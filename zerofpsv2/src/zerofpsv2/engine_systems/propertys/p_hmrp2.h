@@ -20,6 +20,8 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 	
 	
 	public:
+		float GetRadius();
+
 		HeightMap* m_pkHeightMap;
 
 		string	m_strMapName;

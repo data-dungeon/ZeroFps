@@ -1752,8 +1752,18 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	// Create a new Hmrp and set hmap and add it to Entity.
 	P_HMRP2* pkhmrp2 = new P_HMRP2(pkMap, "Spya");
 	pkEntity->AddProperty(pkhmrp2);
+	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
+	if(!pp)
+	{
+		pp = (P_Tcs*)pkEntity->AddProperty("P_Tcs");	
+		pp->SetPolygonTest(true);	
+		pp->SetStatic(true);			
+	}
+
+	//	pp->SetupMeshData();
 
 	// Setup Collision Data
+	/*
 	vector<Mad_Face>	kFace;
 	vector<Vector3>	kVertex;
 	vector<Vector3>	kNormal;
@@ -1775,10 +1785,11 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 		pp->SetPolygonTest(true);	
 		pp->SetStatic(true);			
 		//pp->SetRefetchPolygonData();
-		pp->SetData(kFace,kVertex,kNormal,	10);	 //(int)kZoneSize.x * 2
+		pp->SetData(kFace,kVertex,kNormal,	50);	 //(int)kZoneSize.x * 2
 		pp->SetHmap(pkMap);
 		pp->SetGroup(0);
 	}
+	*/
 
 /*		Vector3 kMin = pkZd->m_kPos - pkZd->m_kSize/2;
 		Vector3 kMax = pkZd->m_kPos + pkZd->m_kSize/2;

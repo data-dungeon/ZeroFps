@@ -96,9 +96,9 @@ void HeightMap::Create(int iTilesSide)
 	Zero();
 
 	// AddTestLayers
-	Layer_Create(string("layer0"), string("data/textures/tgrass.bmp"));
+	Layer_Create(string("layer0"), string("data/textures/trock.bmp"));
 	Layer_Create(string("layer1"), string("data/textures/tdirt.bmp"));
-	Layer_Create(string("layer2"), string("data/textures/trock.bmp"));
+	Layer_Create(string("layer2"), string("data/textures/tgrass.bmp"));
 	Layer_Create(string("layer3"), string("data/textures/tsand.bmp"));
 }
 
@@ -130,6 +130,8 @@ bool HeightMap::IsAllZero()
 void HeightMap::SetPosition(Vector3 kNewPos) 
 {
 	m_kPosition	= kNewPos;
+
+	m_kCornerOffset.Set(-m_iHmScaleSize/2, 0, -m_iHmScaleSize/2);
 
 	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
 		m_kPosition.y,
@@ -978,7 +980,8 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 {
 	int iIndex = 0;
 	Mad_Face kFace;
-	
+	Vector3 kNorm;
+	Vector3 V1,V2,V3;
 	int iTileIndex;
 
 	for(int z=0; z<m_iTilesSide; z++) {
@@ -987,18 +990,35 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 
 			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE2)
 			{
-				pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
-				pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[1] = iIndex++;		
-				pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z) );				kFace.iIndex[2] = iIndex++;	
+				V1 = Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z);
+				V2 = Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f);
+				V3 = Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z);
+				pkVertex->push_back( V1 );		kFace.iIndex[0] = iIndex++;		
+				pkVertex->push_back( V2 );		kFace.iIndex[1] = iIndex++;		
+				pkVertex->push_back( V3 );		kFace.iIndex[2] = iIndex++;	
 				pkFace->push_back(kFace);
+				Vector3 kDir1 = V1 - V2;
+				Vector3 kDir2 = V3 - V2;
+				kNorm = kDir2.Cross(kDir1);
+				kNorm.Normalize();
+				pkNormal->push_back( kNorm );
 			}
 
 			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE1)
 			{
-				pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
-				pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f) );				kFace.iIndex[1] = iIndex++;		
-				pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[2] = iIndex++;	
+				V1 = Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z); 
+				V2 = Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f);
+				V3 = Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f);
+
+				pkVertex->push_back( V1 );	kFace.iIndex[0] = iIndex++;		
+				pkVertex->push_back( V2 );	kFace.iIndex[1] = iIndex++;		
+				pkVertex->push_back( V3 );	kFace.iIndex[2] = iIndex++;	
 				pkFace->push_back(kFace);
+				Vector3 kDir1 = V1 - V2;
+				Vector3 kDir2 = V3 - V2;
+				kNorm = kDir2.Cross(kDir1);
+				kNorm.Normalize();
+				pkNormal->push_back( kNorm );
 			}
 			}
 		}
