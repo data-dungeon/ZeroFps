@@ -202,6 +202,27 @@ ZeroFps::~ZeroFps()
 
 bool ZeroFps::StartUp()	
 {
+	
+// 	// dvoids test kåd =D
+// 	Vector3 x(123.23,12.23,2.213);
+// 	Vector3 y(4.25,434.235,345.11);	
+// 	float res;
+// 	int iLoops = 0;
+// 	float t = GetTicks();	
+// 	while(GetTicks() < t+5)
+// 	{
+// 		for(int i =0;i<1000;i++)
+// 		{
+// 			res = x.DistanceTo(y);
+// 		}
+// 		
+// 		iLoops++;
+// 	}	
+// 	cout<<"loops "<<iLoops<<endl;
+// 	//cout<<"fuppla:"<<x<<" blub:"<<y<<endl;
+// 	exit(1);
+	
+
 	//std lua lib
 	StdLua::Init(m_pkScript, m_pkZFVFileSystem ,this);
 		 

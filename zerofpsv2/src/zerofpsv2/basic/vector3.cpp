@@ -42,16 +42,16 @@ void Vector3::Normalize(void)
 }
 
 
-Vector3 Vector3::Cross( const Vector3& v )	const
-{
-	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
-}
+// Vector3 Vector3::Cross( const Vector3& v )	const
+// {
+// 	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
+// }
 
 
-bool Vector3::IsZero(void) const
-{
-	return (x == 0.0f && y == 0.0f && z == 0.0f); 
-}
+// bool Vector3::IsZero(void) const
+// {
+// 	return (x == 0.0f && y == 0.0f && z == 0.0f); 
+// }
 
 bool Vector3::NearlyEquals( const Vector3& v, const float e ) const	
 {
@@ -65,20 +65,26 @@ bool Vector3::NearlyZero( const float e ) const
 
 Vector3 Vector3::Proj(const Vector3& v )				
 {
-	float dot = Dot(v);
-	float len = Length();
+	static float dot,len,scale;
+	static Vector3 p;
+
+
+	dot = Dot(v);
+	len = Length();
 	len *= len;
 
 	//	vector_c p = (dot / len) * (*this) ;	??
-	Vector3 p = (*this);
-	float scale = (dot / len);
+	p = (*this);
+	scale = (dot / len);
 	p *= scale;
 	return p;
 }
 
 Vector3 Vector3::Perp(const Vector3& v )				
 {
-	Vector3 p = v - Proj(v);
+	static Vector3 p;
+
+	p = v - Proj(v);
 	return p;
 }
 
@@ -124,12 +130,13 @@ Vector3 operator * ( const float& s, const Vector3& v )
 
 ostream& operator<<(ostream& os, const Vector3 &v)
 {
-	os <<  2345; 
+	os << v.x << "," << v.y << "," << v.z; 
 	return os;
 }
+ 
 
-
-Vector3 Vector3::Angels(void){
+Vector3 Vector3::Angels(void)
+{
 	Vector3 temp=Vector3(0,0,0);
 
 	temp.x= float(-atan(y/z) * degtorad);	
@@ -243,40 +250,43 @@ Vector3 Vector3::operator*(const Matrix4 &f) const
 	return ny;
 }
 */
-double Vector3::DistanceTo (const Vector4& to) const
-{
-   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
-}
+// double Vector3::DistanceTo (const Vector4& to) const
+// {
+//    //return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+// 	return sqrt( (x - to.x)*(x - to.x) + (y - to.y)*(y - to.y) + (z - to.z)*(z - to.z) );
+// }
 
-double Vector3::DistanceTo (const Vector3& to) const
-{
-/*	float fX = x - to.x;
-	float fY = y - to.y;
-	float fZ = z - to.z;
+// double Vector3::DistanceTo (const Vector3& to) const
+// {
+// /*	float fX = x - to.x;
+// 	float fY = y - to.y;
+// 	float fZ = z - to.z;
+// 
+// 	// this is called "Taylor series distance" and is supposed to be faster than sqrt
+// 	int iSwapValue;
+// 
+// 	int iDistance;
+// 	int iX = (int)fabs(fX) * 1024;
+// 	int iY = (int)fabs(fY) * 1024;
+// 	int iZ = (int)fabs(fZ) * 1024;
+// 
+// 	if(iY < iX)
+// 		SWAP(iX, iY, iSwapValue);
+// 	if(iZ < iY)
+// 		SWAP(iY, iZ, iSwapValue);
+// 	if(iY < iX)
+// 		SWAP(iX, iY, iSwapValue);
+// 
+// 	iDistance = (iZ + 11 * (iY >> 5) + (iX >> 2));
+// 
+// 	return((double)(iDistance >> 10));
+// */
+//    //return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+// 	return sqrt( (x - to.x)*(x - to.x) + (y - to.y)*(y - to.y) + (z - to.z)*(z - to.z) );	
+// }
 
-	// this is called "Taylor series distance" and is supposed to be faster than sqrt
-	int iSwapValue;
-
-	int iDistance;
-	int iX = (int)fabs(fX) * 1024;
-	int iY = (int)fabs(fY) * 1024;
-	int iZ = (int)fabs(fZ) * 1024;
-
-	if(iY < iX)
-		SWAP(iX, iY, iSwapValue);
-	if(iZ < iY)
-		SWAP(iY, iZ, iSwapValue);
-	if(iY < iX)
-		SWAP(iX, iY, iSwapValue);
-
-	iDistance = (iZ + 11 * (iY >> 5) + (iX >> 2));
-
-	return((double)(iDistance >> 10));
-*/
-   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
-}
-
-double Vector3::DistanceXZTo (const Vector3& to)
-{
-   return sqrt( pow(x - to.x,2) + pow(z - to.z,2) );
-}
+// double Vector3::DistanceXZTo (const Vector3& to)
+// {
+//    //return sqrt( pow(x - to.x,2) + pow(z - to.z,2) );
+// 	return sqrt( (x-to.x)*(x-to.x) + (z-to.z)*(z-to.z) );
+// }
