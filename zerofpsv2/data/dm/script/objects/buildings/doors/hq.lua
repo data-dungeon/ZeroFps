@@ -47,12 +47,12 @@ function FirstRun()
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/mine.lua", 100);
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/mine.lua", 100);
 
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/pickup gears/medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/pickup gears/medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/pickup gears/medkit.lua", 300);
 
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/armour.lua", 1700);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/armour.lua", 1700);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/armours/armour.lua", 1700);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/armours/armour.lua", 1700);
 end
 
 function HeartBeat()
