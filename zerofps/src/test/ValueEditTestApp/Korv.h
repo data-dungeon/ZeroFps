@@ -27,6 +27,7 @@ private:
 	float Storlek;
 	string Status;
 	Vector4 Vek;
+	vector<int> TestVek;
 };
 
 #endif // !defined(AFX_KORV_H__1C2A8B4F_306B_4E8C_946F_2914CBB65A1F__INCLUDED_)

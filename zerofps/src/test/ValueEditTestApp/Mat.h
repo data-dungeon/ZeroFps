@@ -24,11 +24,14 @@ class Mat
 {
 public:
 	bool SetValue(string kValueName ,string kValue);
-	bool SetValue(string kValueName, int iIndex ,string kValue);
+	bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
+	bool CheckIfResize(string kValueName);
 	int GetNumberOfValues(string kValueName);
 	string GetValue(string kValueName);
-	string GetValue(string kValueName, int iIndex);
+	string GetValue(string kValueName, unsigned int iIndex);
 	vector<string> GetValueNames();
+	float GetUpperBound(string kValueName);
+	float GetLowerBound(string kValueName);
 	Mat();
 	virtual ~Mat();
 
@@ -42,6 +45,7 @@ protected:
 		float fLowerBound;
 		PropertyValues();
 		int iNumberOfValues;
+		bool bResize;
 	};	
 	
 	enum ValueTypes
@@ -54,6 +58,11 @@ protected:
 		VALUETYPE_VECTOR4,
 	};
 	virtual vector<PropertyValues> GetPropertyValues();
+
+private:
+	string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
+	bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
+	//bool FindPropertyValue(string kValueName, PropertyValues* pkPropertyValues);
 };
 
 #endif // !defined(AFX_MAT_H__44E3E6D4_C30F_45E3_807E_F848F395A3FB__INCLUDED_)

@@ -14,7 +14,11 @@ Storlek=1231231233.3111125435435435;
 Skin=true;
 Status="stinkig";
 Vek.set(1.34534,2.1,-0.0001, 131234234234234234.0);
+TestVek.push_back(44);
+TestVek.push_back(1);
+TestVek.push_back(5);
 }
+
 
 Korv::~Korv()
 {
@@ -23,7 +27,7 @@ Korv::~Korv()
 
 vector<Mat::PropertyValues> Korv::GetPropertyValues()
 {
-vector<Mat::PropertyValues> kReturn(3);
+vector<Mat::PropertyValues> kReturn(4);
 
 kReturn[0].kValueName="Storlek";
 kReturn[0].iValueType=VALUETYPE_FLOAT;
@@ -43,6 +47,12 @@ kReturn[2].pkValue=(void*)&Status;
 kReturn[2].fUpperBound=5.0;
 kReturn[2].fLowerBound=2.0;
 
+kReturn[3].kValueName="TestVek";
+kReturn[3].iValueType=VALUETYPE_INT;
+kReturn[3].pkValue=(void*)&TestVek;
+//out <<"TestVek.size:" <<TestVek.size() <<endl; 
+kReturn[3].iNumberOfValues=TestVek.size();
+kReturn[3].fUpperBound=5.0;
 
 return kReturn;
 };
