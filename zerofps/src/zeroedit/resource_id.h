@@ -10,7 +10,7 @@ const int ID_LOAD_MAP					= 9004;
 const int IDM_CLOSE						= 9005;
 const int ID_FILEPATH_WND				= 9006;
 const int ID_FILEPATH_WND_LABEL_PATH	= 9007;
-const int ID_FILEPATH_WND_LABEL_FILE	= 9008;
+const int ID_FILEPATH_WND_FILE_EB		= 9008;
 const int ID_FILEPATH_WND_CLOSE			= 9009;
 const int IDM_OPEN						= 9010;
 const int IDM_MENU_WND					= 9011;
@@ -24,7 +24,10 @@ const int ID_POSY_TEXTBOX				= 9018;
 const int ID_POSZ_TEXTBOX				= 9019;
 const int ID_OBJECTS_CB					= 9020;
 const int ID_PROPERTIES_CB				= 9021;
+const int ID_FILEPATH_OPEN_BN			= 9022;
+const int ID_FILEPATH_CLOSE_BN			= 9023;
+const int ID_BITMAP_FONT				= 9024;
 
-static int iLastIDNr = 9022;
+static int iLastIDNr = 9025;
 
 #endif

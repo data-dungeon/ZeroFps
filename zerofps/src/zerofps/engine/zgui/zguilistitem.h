@@ -20,9 +20,7 @@ class ENGINE_API ZGuiListitem
 public:
 	void SetText(char* strText);
 	ZGuiListitem(ZGuiWnd* pkParent,char* strText=0, unsigned int iID=0, 
-		ZGuiSkin* pkSkin=0, ZGuiSkin* pkSelected=0, 
-		ZGuiSkin* pkHighLigtSkin=0, ZGuiSkin* pkTextSkin=0,
-		int iFontMaskTexture=-1);
+		ZGuiSkin* pkSkin=0, ZGuiSkin* pkSelected=0, ZGuiSkin* pkHighLigtSkin=0);
 	virtual ~ZGuiListitem();
 
 	char* GetText();

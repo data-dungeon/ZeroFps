@@ -34,7 +34,6 @@ public:
 
 	void CheckButton();
 	void UncheckButton();
-	void SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture = -1);
 	void SetText(char* strText);
 
 protected:

@@ -7,6 +7,7 @@
 #include "engine_x.h"
 #include <iostream>
 #include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -28,6 +29,10 @@ class ENGINE_API Console : public BasicConsole {
 		int m_iBufferSize;
 		bool m_bShift;
 
+		unsigned int m_nStartLine;
+		const unsigned int MAX_CMD_HISTRORY_LENGTH;
+		unsigned int m_nLastCommand;
+		deque<string> m_kCommandHistory;
 		
 
 	public:

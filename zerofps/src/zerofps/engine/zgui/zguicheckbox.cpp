@@ -28,6 +28,9 @@ ZGuiCheckbox::~ZGuiCheckbox()
 
 bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 {
+	if(m_pkFont)
+		pkRenderer->SetFont(m_pkFont);
+
 	if(m_iBkMaskTexture > 0)
 		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
 
@@ -85,11 +88,6 @@ void ZGuiCheckbox::UncheckButton()
 	m_bChecked = false;
 	m_pkSkin = m_pkSkinButtonUnchecked;
 	m_iBkMaskTexture = m_iMaskTexUnchecked;
-}
-
-void ZGuiCheckbox::SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture)
-{
-	m_pkLabel->SetTextSkin(kSkin, iMaskTexture);
 }
 
 void ZGuiCheckbox::SetText(char* strText)

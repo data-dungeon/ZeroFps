@@ -186,7 +186,6 @@ void ZeroFps::MainLoop(void) {
 			
 			//run application main loop
 			m_pkApp->OnIdle();				
-			
 				
 			//toggle keyboard/mouse grabing
 			if(m_pkInput->Pressed(KEY_F12))
@@ -196,7 +195,6 @@ void ZeroFps::MainLoop(void) {
 			if(m_pkInput->Pressed(KEY_F11))
 				ToggleFullScreen();		
 			
-
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
 

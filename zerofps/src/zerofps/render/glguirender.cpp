@@ -15,14 +15,15 @@
 
 GLGuiRender::GLGuiRender(/*int w, int h, TextureManager* pkTextureManger*/)
 {
+	m_pkFont = NULL;
 	m_pkSkin = NULL;
 	m_iScreenWidth = 0;
 	m_iScreenHeight = 0;
 	m_iMaskTexture = -1;
 	//m_pkTextureManger = pkTextureManger;
 	m_pkTextureManger=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_iFontDisplaylistID = 0;
-	BuildFont();
+//	m_iFontDisplaylistID = 0;
+//	BuildFont();
 
 }
 
@@ -68,6 +69,13 @@ bool GLGuiRender::StartRender()
 		glShadeModel(GL_SMOOTH);							// Enables Smooth Color Shading
 		glEnable(GL_TEXTURE_2D);							// Enable 2D Texture Mapping*/
 		
+	return true;
+}
+
+bool GLGuiRender::SetDisplay(int w, int h)
+{
+	m_iScreenWidth = w, 
+	m_iScreenHeight = h;
 	return true;
 }
 
@@ -288,55 +296,26 @@ bool GLGuiRender::SetSkin(ZGuiSkin* pkSkin)
 	m_pkSkin = pkSkin;
 	return true;
 }
-/*
-GLvoid GLGuiRender::glPrint(GLint x, GLint y, char *string, int set, int bind_texture_id)	// Where The Printing Happens
+
+bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically)
 {
-	if (set>1)
-	{
-		set=1;
-	}
-	//glBindTexture(GL_TEXTURE_2D, bind_texture_id);	// Select Our Font Texture
-	glLoadIdentity();									// Reset The Modelview Matrix
-	glTranslated(x,y,0);								// Position The Text (0,0 - Bottom Left)
-	glListBase(m_iFontDisplaylistID-32+(128*set));		// Choose The Font Set (0 or 1)
-	glCallLists(strlen(string),GL_BYTE,string);			// Write The Text To The Screen
-}
-*/
+	bool bDrawMasked = true;
 
-GLvoid GLGuiRender::glPrint(GLint x, GLint y, char *string, int RowWidth, int bind_texture_id)	// Where The Printing Happens
-{
-	int set = 0;
-	//glBindTexture(GL_TEXTURE_2D, bind_texture_id);		// Select Our Font Texture
-	glLoadIdentity();									// Reset The Modelview Matrix
-	glTranslated(x,y,0);								// Position The Text (0,0 - Bottom Left)
-	glListBase(m_iFontDisplaylistID-32+(128*set));						// Choose The Font Set (0 or 1)
-	glCallLists(RowWidth,GL_BYTE,string);			// Write The Text To The Screen
-}
+	if(m_pkFont == NULL)
+		return false;
 
-bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, int iCursorPos, 
-							  bool bMask, bool bCenterTextVertically)
-{
-	bool bDrawMasked = (bMask == true && m_iMaskTexture > 0) ? true : false;
-
-	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);       // Linear Filtered
-	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);       // Linear Filtered
-
-	//glPushMatrix();
-
-	//glLoadIdentity();
-
-	unsigned int iCharsOneRow = (kScreenRect.Width()-5) / iFontSize;
-	int iTextWidth = strlen(strText) * iFontSize;
-	int iMaxRows = kScreenRect.Height() / iFontSize;
-	if(iMaxRows < 1)
-		iMaxRows = 1;
-	int iXPos = kScreenRect.Left/* + kScreenRect.Width()/2 - iTextWidth/2*/; 
-	int iYPos;
-	
 	if(bCenterTextVertically)
-		iYPos = m_iScreenHeight-kScreenRect.Top - kScreenRect.Height()/2 - iFontSize/2; 
+	{
+		int h = kScreenRect.Height();
+		kScreenRect = kScreenRect.Move(0, h/4-m_pkFont->m_cCharCellSize/4);
+	}
+
+	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(), 0);
+
+	if(fontTexture)
+		m_iMaskTexture = fontTexture;
 	else
-		iYPos = m_iScreenHeight-kScreenRect.Top-iFontSize;
+		return false;
 
 	if(bDrawMasked)
 	{
@@ -347,12 +326,11 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 		m_pkTextureManger->BindTexture( m_iMaskTexture );
 		glDisable(GL_TEXTURE_2D);
 
-		glColor3f(1,1,1);
-		//glPrint(iXPos, iYPos, strText, 1, m_iMaskTexture);							
-		PrintRows(strText, iXPos, iYPos, iFontSize, iCharsOneRow, iMaxRows, iCursorPos);
+		glColor3f(1,1,1);							
+		PrintRows(strText, kScreenRect, iCursorPos);
 	}
 
-	int texture = m_pkSkin->m_iBkTexID;
+	int texture = fontTexture;
 		 		
 	if(texture >=0 )
 	{
@@ -360,8 +338,7 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 		glEnable(GL_TEXTURE_2D);
 
 		if(bDrawMasked)
-			//glBlendFunc(GL_ONE, GL_ONE);					// Copy Image 1 Color To The Screen
-			glBlendFunc(GL_ZERO, GL_SRC_COLOR);					// Copy Image 1 Color To The Screen
+			glBlendFunc(GL_ZERO, GL_SRC_COLOR);				
 	}
 	else
 	{
@@ -369,159 +346,77 @@ bool GLGuiRender::RenderText( char *strText, Rect kScreenRect, int iFontSize, in
 	}
 
 	glColor3f(1,1,1);
-	//glPrint(iXPos, iYPos, strText, 0, m_pkSkin->m_iBkTexID);
-	PrintRows(strText, iXPos, iYPos, iFontSize, iCharsOneRow, iMaxRows, iCursorPos);
+	bool bFit = PrintRows(strText, kScreenRect, iCursorPos);
 
 	if(bDrawMasked)
 	{
-		//glEnable(GL_DEPTH_TEST);							// Enable Depth Testing
-		glDisable(GL_BLEND);								// Disable Blending
+		glDisable(GL_BLEND);								
 	}
 
-	//glPopMatrix();
-
-	return true;
+	return bFit;
 }
 
-void GLGuiRender::PrintChar(char cChar, int xoffset, int yoffset, int iFontSize) 
+bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos) 
 {
-	int texwidth=iFontSize*16;	
-	int pos=int(cChar)*iFontSize;		
-	float glu=1.0f/texwidth;				//opengl texture cordinats is 0-1
-	float width=glu*iFontSize;
-	
-	float y=1.0f-(float(int(pos/texwidth)*iFontSize)*glu+width);
-	float x=float(pos%texwidth)*glu;//+width/2;
-	
-	glPushAttrib(GL_LIGHTING_BIT);
-	glDisable(GL_LIGHTING);
-	glAlphaFunc(GL_GREATER,0.1f);
-	glEnable(GL_ALPHA_TEST);                                                // Enable Texture Mapping
+	bool bFit = true;
 
- 	int texture = m_pkSkin->m_iBkTexID; 
+	unsigned int x = rc.Left;
+	unsigned int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize;
 
-	if(texture > 0)
-	{
-		m_pkTextureManger->BindTexture(texture);
-		glEnable(GL_TEXTURE_2D);
-	}
-	else
-	{
-		return;
-	}
+	int row=0;
+	int num_chars = strlen(text);
+	int max_rows = rc.Height() / m_pkFont->m_cCharCellSize;
 
-	Rect kScreenRect(xoffset,yoffset,xoffset+iFontSize,yoffset+iFontSize);
-		
-		glBegin(GL_QUADS);	 
-			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],m_pkSkin->m_afBkColor[2]);
-			glTexCoord2f(x,y);				glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom);		 
-			glTexCoord2f(x+width,y);		glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom);    
-			glTexCoord2f(x+width,y-width);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);    
-			glTexCoord2f(x,y-width);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);		
-		glEnd();			
-	
-	glDisable(GL_ALPHA_TEST);
-}
+	glBegin(GL_QUADS);	 
 
-
-void GLGuiRender::BuildFont()
-{
-	float	cx;											// Holds Our X Character Coord
-	float	cy;											// Holds Our Y Character Coord
-
-	m_iFontDisplaylistID=glGenLists(256);				// Creating 256 Display Lists
-
-	for (GLuint loop=0; loop<256; loop++)				// Loop Through All 256 Lists
-	{
-		cx=float(loop%16)/16.0f;						// X Position Of Current Character
-		cy=float(loop/16)/16.0f;						// Y Position Of Current Character
-
-		glNewList(m_iFontDisplaylistID+loop,GL_COMPILE);// Start Building A List
-			glBegin(GL_QUADS);							// Use A Quad For Each Character
-				glTexCoord2f(cx,1-cy-0.0625f);			// Texture Coord (Bottom Left)
-				glVertex2i(0,0);						// Vertex Coord (Bottom Left)
-				glTexCoord2f(cx+0.0625f,1-cy-0.0625f);	// Texture Coord (Bottom Right)
-				glVertex2i(16,0);						// Vertex Coord (Bottom Right)
-				glTexCoord2f(cx+0.0625f,1-cy);			// Texture Coord (Top Right)
-				glVertex2i(16,16);						// Vertex Coord (Top Right)
-				glTexCoord2f(cx,1-cy);					// Texture Coord (Top Left)
-				glVertex2i(0,16);						// Vertex Coord (Top Left)
-			glEnd();									// Done Building Our Quad (Character)
-			glTranslated(12,0,0);						// Move To The Right Of The Character
-		glEndList();									// Done Building The Display List
-	}													// Loop Until All 256 Are Built
-}
-
-bool GLGuiRender::SetDisplay(int w, int h)
-{
-	m_iScreenWidth = w, 
-	m_iScreenHeight = h;
-	BuildFont();
-
-	if(glIsList(m_iFontDisplaylistID) != GL_TRUE)
-		return false;
-
-	return true;
-}
-
-void GLGuiRender::PrintRows(char* text, unsigned int iXPos, unsigned int iYPos, 
-							unsigned int nFontSize, unsigned int iCharsOneRow, 
-							unsigned int nMaxRows, int iCursorPos) 
-{
-	// Print cursor
-	if(iCursorPos != -1)
-	{
-		int iCursorRow = iCursorPos / iCharsOneRow;
-
-		if(iCursorRow >= nMaxRows) 
-			iCursorRow = nMaxRows-1;
-
-		int iCursorCol = strlen(text) - (iCursorRow * iCharsOneRow);
-		if(iCursorCol > iCharsOneRow)
-			iCursorCol = iCharsOneRow;
-
-		glPrint(iXPos+iCursorCol*nFontSize, iYPos-iCursorRow*nFontSize, 
-			"|", 1, m_iMaskTexture);
-	}
-
-	unsigned int iRow = 0, iPrintedChars = 0;
-	while(1)
-	{
-		int chars_to_print = iCharsOneRow;
-		if( strlen(text) - iPrintedChars  < iCharsOneRow)
-			chars_to_print = strlen(text) - iPrintedChars;
-
-		bool skip = false;
-		int i;
-		for(i=0; i<iCharsOneRow; i++)
+		for(unsigned int i=0; i<num_chars; i++)
 		{
-			if(text[iPrintedChars]=='\r')
+			int pos = text[i]-32;
+			if(pos < 0 || pos > 255)
+				continue;
+
+			int fx = m_pkFont->m_aChars[pos].iPosX;
+			int fy = m_pkFont->m_aChars[pos].iPosY;
+			int fw = m_pkFont->m_aChars[pos].iSizeX;
+			int fh = m_pkFont->m_aChars[pos].iSizeY;
+
+			float tx = (float) fx / m_pkFont->m_iBMPWidth;
+			float ty = (float) fy / m_pkFont->m_iBMPWidth;
+			float tw = (float) fw / m_pkFont->m_iBMPWidth;
+			float th = (float) fh / m_pkFont->m_iBMPWidth;
+
+			glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
+			glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
+			glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
+			glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+
+			if(text[i] != ' ')
+				x += (fw + m_pkFont->m_cPixelGapBetweenChars);
+			else
+				x += fw;
+
+			if(x > rc.Right-m_pkFont->m_cCharCellSize)
 			{
-				skip =true;
-				glPrint(iXPos, iYPos-iRow*nFontSize, text+iRow*iCharsOneRow, i, m_iMaskTexture);		
+				x = rc.Left;
+				y -= m_pkFont->m_cCharCellSize;
+				row++;
+			}
+
+			if(row >= max_rows)
+			{
+				bFit = false;
+				break;
 			}
 		}
-
-		if(skip)
-		{
-			iRow++;
-			iPrintedChars += i;
-			continue;
-		}
-
-		glPrint(iXPos, iYPos-iRow*nFontSize, text+iRow*iCharsOneRow, chars_to_print, m_iMaskTexture);
 		
-		iPrintedChars += iCharsOneRow;
-		iRow++;
+	glEnd();
 
-		if(iPrintedChars >= strlen(text) || nMaxRows <= iRow)
-			break;
-	}
+	return bFit;
 }
 
 
-
-
-
-
-
+bool GLGuiRender::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	return true;
+}

@@ -20,6 +20,7 @@ using namespace std;
 class ZGui;
 class ZGuiRender;
 class ZGuiSkin;
+class ZGuiFont;
 
 const int NCODE_CLICK_UP	= 78;
 const int NCODE_CLICK_DOWN	= 79;
@@ -28,14 +29,20 @@ const int NCODE_OVER_CTRL	= 81;
 const int NCODE_DEFAULT		= 82; 
 const int NCODE_MOVE		= 83;
 
+// Window flags
+#define WF_CLOSEABLE		0x0001
+#define WF_CENTER_TEXT		0x0002
+
 class ENGINE_API ZGuiWnd  
 {
 public:
+	virtual void SetFont(ZGuiFont* pkFont);
+	ZGuiFont* GetFont() { return m_pkFont; }
+
 	void Resize(int Width, int Height);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
 	virtual void SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture = -1, int iBorderMaskTexture = -1);
-	virtual void SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture = -1);
-
+	
 	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
 	ZGuiWnd* Find(int x, int y);
@@ -74,14 +81,13 @@ public:
 	Rect GetWndRect();		// Get the windows area, relative to it´s parent.
 	Rect GetScreenRect();	// Get the real screen area.
 
-
-	struct Bigger_ZValue : public binary_function<ZGuiWnd*, ZGuiWnd*, bool> {
-		bool operator()(ZGuiWnd* x, ZGuiWnd* y) { return x->m_iZValue > y->m_iZValue; };
-	} ZValue_Cmp;
-
 	int m_iZValue;
 	virtual void SetZValue(int iValue);
 	void SortChilds();
+
+	bool GetWindowFlag(unsigned long ulValue);
+	void SetWindowFlag(unsigned long ulValue);
+	void RemoveWindowFlag(unsigned long ulValue);
 
 	void SetInternalControlState(bool IsInternalControl) { m_bInternalControl = IsInternalControl; }
 	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); // the rect is in screen space.
@@ -97,6 +103,16 @@ public:
 
 	static ZGuiWnd* m_pkFocusWnd; // window with the keyboard focus
 
+	unsigned long m_ulFlags; // se lista
+
+	struct SORTZ_CMP : public binary_function<ZGuiWnd*, ZGuiWnd*, bool> 
+	{
+		bool operator()(ZGuiWnd* x, ZGuiWnd* y) 
+		{ 
+			return x->m_iZValue > y->m_iZValue; 
+		};
+	} SortZCmp;
+
 protected:
 	
 	ZGuiWnd* m_pkParent;
@@ -104,14 +120,14 @@ protected:
 	ZGui* m_pkGUI;
 	bool m_bVisible, m_bEnabled;
 	callbackfunc m_pkCallback;
-	ZGuiSkin* m_pkSkin, *m_pkTextSkin;
+	ZGuiSkin* m_pkSkin;//, *m_pkTextSkin;
+	ZGuiFont* m_pkFont;
 	char* m_strText;
 	int m_iTextLength;
 
 	// Kan vara 0 och är i så fall ett statisk fönster.
 	unsigned int m_iID;
 	int m_iBkMaskTexture; // -1 innebär att det inte finns någon alpha textur
-	int m_iTextMaskTexture; // -1 innebär att det inte finns någon alpha textur
 	int m_iBorderMaskTexture; // -1 innebär att det inte finns någon alpha textur
 
 private:

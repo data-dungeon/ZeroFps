@@ -34,7 +34,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, 
 	int Width = kArea.Width() - m_iFontSize;
 	int Height = kArea.Height() - 10;
 
-	m_iMaxCharsOneRow = Width / m_iFontSize;
+	m_iMaxCharsOneRow = 1; // Width / m_iFontSize;
 	m_iMaxVisibleRows = Height / m_iFontSize;
 
 	if(m_iMaxVisibleRows < 1)
@@ -51,31 +51,26 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 	if(m_iBkMaskTexture > 0)
 		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
 
+	if(m_pkFont)
+		pkRenderer->SetFont(m_pkFont);
+
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 
 	if(m_strText != NULL)
 	{
-		if(m_pkTextSkin && m_pkTextSkin->m_iBkTexID != -1)
+		Rect kRect = GetScreenRect();
+
+		int dd = m_iStartrow-m_iMaxVisibleRows+1;
+		if(dd<0) dd=0;
+
+		if(!pkRenderer->RenderText(m_strText, kRect, m_iCursorPos, false))
 		{
-			if(m_iTextMaskTexture > 0)
-				pkRenderer->SetMaskTexture(m_iTextMaskTexture);
-
-			pkRenderer->SetSkin(m_pkTextSkin); 
-
-			Rect kRect = GetScreenRect();
-			kRect.Right -= m_iFontSize;
-			kRect.Top += 5;
-			kRect.Bottom -= 5;
-
-			int dd = m_iStartrow-m_iMaxVisibleRows+1;
-			if(dd<0) dd=0;
-
-			pkRenderer->RenderText(m_strText+(m_iMaxCharsOneRow*(dd)), 
-				kRect, 12, m_bBlinkCursor ? m_iCursorPos : -1, (m_iTextMaskTexture > 0),
-				false);
+			m_iMaxCharsOneRow = 0;
 		}
+		else
+			m_iMaxCharsOneRow = 1;
 	}
 
 	if(m_bMultiLine)
@@ -100,15 +95,18 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	}
 	else
 	{
-		m_strText[m_iCursorPos] = nKey;
-		m_iCursorPos++;
+		if(m_iMaxCharsOneRow == 1)
+		{
+			m_strText[m_iCursorPos] = nKey;
+			m_iCursorPos++;
+		}
 	}
 
 	// Scroll scrollbar
 	if(m_bMultiLine == false)
 	{
-		if(m_iCursorPos > m_iMaxCharsOneRow)
-			m_iCursorPos = m_iMaxCharsOneRow;
+/*		if(m_iCursorPos > m_iMaxCharsOneRow)
+			m_iCursorPos = m_iMaxCharsOneRow;*/
 	}
 	else
 	if(m_pkScrollbarVertical)
@@ -202,12 +200,12 @@ void ZGuiTextbox::SetText(char* strText)
 		strcpy(m_strText, strText);
 	}
 	
-	m_iCurrMaxText = strlen(strText)-1;
+	m_iCurrMaxText = strlen(strText);
 
 	if(m_iCurrMaxText < 0)
 		m_iCurrMaxText = 0;
 
-	m_iCursorPos = strlen(strText)-1;
+	m_iCursorPos = strlen(strText);
 
 	if(m_iCursorPos < 0)
 		m_iCursorPos = 0;

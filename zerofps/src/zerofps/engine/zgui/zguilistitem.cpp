@@ -14,15 +14,15 @@
 
 ZGuiListitem::ZGuiListitem(ZGuiWnd* pkParent, char* strText, unsigned int iID, 
 						   ZGuiSkin* pkBkSkin, ZGuiSkin* pkSelected, 
-						   ZGuiSkin* pkHighLigtSkin, ZGuiSkin* pkTextSkin,
-						   int iFontMaskTexture)
+						   ZGuiSkin* pkHighLigtSkin/*, ZGuiSkin* pkTextSkin,
+						   int iFontMaskTexture*/)
 {	
 	int w = pkParent->GetScreenRect().Width()-20;
 	m_pkButton = new ZGuiButton(Rect(0,0,w,20),pkParent,true, iID);
 	m_pkButton->SetButtonDownSkin(pkSelected);
 	m_pkButton->SetButtonUpSkin(pkBkSkin);
 	m_pkButton->SetButtonHighLightSkin(pkHighLigtSkin);
-	m_pkButton->SetTextSkin(pkTextSkin, iFontMaskTexture);
+//	m_pkButton->SetTextSkin(pkTextSkin, iFontMaskTexture);
 	m_pkButton->SetText(strText);  
 	m_iID = iID;
 }
@@ -42,9 +42,7 @@ void ZGuiListitem::SetText(char* strText)
 void ZGuiListitem::SetPos(int x, int y)
 {
 	if(m_pkButton)
-	{
 		m_pkButton->SetPos(x, y, false, true); 
-	}
 }
 
 void ZGuiListitem::Resize(int w, int h)

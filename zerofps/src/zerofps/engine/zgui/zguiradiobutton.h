@@ -24,8 +24,6 @@ public:
 	void SetButtonUnselectedSkin(ZGuiSkin* pkSkin, int iMaskSkin);
 	ZGuiCheckbox* GetButton() { return m_pkCheckbox; }
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
-
-	void SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture);
 	void SetText(char* strText);
 
 private:

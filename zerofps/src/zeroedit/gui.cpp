@@ -15,7 +15,6 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 {
 	m_iScreenCX = pkEdit->m_iWidth / 2;
 	m_iScreenCY = pkEdit->m_iHeight / 2;
-	//m_bMenuActive = true;
 	m_pkEdit = pkEdit;
 
 	m_pkWndProc = cb;
@@ -26,8 +25,6 @@ Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
-//	pkEdit->pkInput->ToggleGrab();
-	//ToogleMenu();
 }
 
 Gui::~Gui()
@@ -59,17 +56,6 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 		case ID_PROPERTY_WND_CLOSE:
 			m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
 			break;
-
-		case ID_OBJECTS_CB:
-			{
-				ZGuiWnd *win = m_pkEdit->pkGui->GetWindow(iControllID);
-				if(win)
-				{
-					win->SetZValue(122);
-					win->GetParent()->SortChilds();
-				}
-			}
-			break;
 		}
 		break;
 
@@ -94,7 +80,7 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 				case IDM_OPEN:
 					w = 500;
 					h = 500;
-					CreateFilePathDialog(m_iScreenCX-w/2,m_iScreenCY-h/2,w,h);
+					CreateFileOpenDlgbox(m_iScreenCX-w/2,m_iScreenCY-h/2,w,h);
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
@@ -158,10 +144,13 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 				{
 					string szFileName = pkItem->GetText();
 
+					bool bFillPathlist = false;
+
 					if(szFileName == string("..") )
 					{
 						int new_path_length = m_szSearchBoxPath.find_last_of('\\'); 
 						m_szSearchBoxPath.resize(new_path_length); 
+						bFillPathlist = true;
 					}
 					else
 					if(szFileName.find(".") == string::npos)
@@ -175,22 +164,24 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 							{
 								m_szSearchBoxPath.append("\\");
 								m_szSearchBoxPath.append(szFileName);
+								bFillPathlist = true;
 								break;
 							}
 						}
 					}
 					else
 					{
-						ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND_LABEL_FILE);
+						ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
 
 						if(pkWnd)
 						{
-							ZGuiLabel* pkLabel = (ZGuiLabel*) pkWnd;
-							pkLabel->SetText((char*)szFileName.c_str()); 
+							ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
+							pkTextbox->SetText((char*)szFileName.c_str()); 
 						}
 					}
 
-					FillPathList(pkListbox, m_szSearchBoxPath);
+					if(bFillPathlist)
+						FillPathList(pkListbox, m_szSearchBoxPath);
 				}
 			}
 
@@ -201,24 +192,8 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 	return true;
 }
 
-void Gui::ToogleMenu()
-{
-	//m_bMenuActive = m_pkEdit->pkGui->ToogleGui();
-
-	if(m_bMenuActive)
-	{	
-		m_pkEdit->pkFps->m_bDrawDevList = false;
-	}
-	else
-	{
-		m_pkEdit->pkFps->m_bDrawDevList = true;
-	}
-}
-
 bool Gui::CreateWindows()
 {
-	int tex_font_a = m_pkEdit->pkTexMan->Load("file:../data/textures/text/font_a.bmp", 0);
-
 	ZGuiWnd* pkMainWnd1 = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,IDM_MENU_WND);
 	pkMainWnd1->SetSkin(GetSkin("menu"));
 
@@ -226,8 +201,7 @@ bool Gui::CreateWindows()
 
 	rc = Rect(0,0,200,200);
 	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMainWnd1, true, iLastIDNr++, 20,
-		GetSkin("font"), tex_font_a, GetSkin("menu"), GetSkin("dark_blue"), 
-		GetSkin("dark_blue"), GetSkin("menu"), -1);
+		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
@@ -246,10 +220,6 @@ bool Gui::InitSkins()
 	int bn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
 	int bn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
-	int font = m_pkEdit->pkTexMan->Load("file:../data/textures/text/font.bmp", 0);
-
-	m_kTextureMap.insert( map<string, int>::value_type(string("font_a"), 
-		m_pkEdit->pkTexMan->Load("file:../data/textures/text/font_a.bmp", 0)));
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 8)) ); 
@@ -261,8 +231,6 @@ bool Gui::InitSkins()
 		new ZGuiSkin(bn_down, -1, -1, -1) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_focus"), 
 		new ZGuiSkin(bn_focus, -1, -1, -1) ) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("font"), 
-		new ZGuiSkin(font, -1, -1, -1) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item"), 
 		new ZGuiSkin(bn_up, -1, -1, -1) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item_hl"), 
@@ -275,6 +243,8 @@ bool Gui::InitSkins()
 		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("white"), 
 		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("titlebar"), 
+		new ZGuiSkin(-1, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
 
 	return true;
 }
@@ -318,28 +288,24 @@ int Gui::GetTexture(char* strName)
 	return fail_texture;
 }
 
-ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, char *pkName)
+ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char *pkName)
 {
-	int w = strlen(pkName) * 16;
-	w += (20 % w); // avrunda till närmsta 20 tal
-	int h = 20;
-
 	ZGuiButton* pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),pkParent,true,iID);
 	pkButton->SetButtonHighLightSkin(GetSkin("bn_focus"));
 	pkButton->SetButtonDownSkin(GetSkin("bn_down"));
 	pkButton->SetButtonUpSkin(GetSkin("bn_up"));
-	pkButton->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
 	pkButton->SetText(pkName);
+
 	return pkButton;
 }
 
 ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
 {
-	h += (20 % h); // avrunda till närmsta 20 tal
+	//h += (20 % h); // avrunda till närmsta 20 tal
 
 	ZGuiListbox* pkListbox = new ZGuiListbox(Rect(x,y,x+w,y+h),pkParent,true,iID,20,
-		GetSkin("font"), GetTexture("font_a"), GetSkin("menu_item"), GetSkin("menu_item_sel"), 
-		GetSkin("menu_item_hl"));
+		GetSkin("menu_item"), GetSkin("menu_item_sel"), GetSkin("menu_item_hl"));
+	pkListbox->SetSkin( GetSkin("dark_blue") );
 	pkListbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 	return pkListbox;
@@ -347,11 +313,10 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 
 ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu)
 {
-	h += (20 % h); // avrunda till närmsta 20 tal
+//	h += (20 % h); // avrunda till närmsta 20 tal
 
 	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 20,
-		GetSkin("font"), GetTexture("font_a"), GetSkin("menu"), GetSkin("dark_blue"), 
-		GetSkin("dark_blue"), GetSkin("menu"), -1);
+		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 
 	if(bMenu == false)
 	{
@@ -367,7 +332,6 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID, bMulitLine);
 	pkTextbox->SetSkin(GetSkin("white"));
-	pkTextbox->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 
@@ -376,18 +340,17 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 
 ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText)
 {
-	h += (20 % h); // avrunda till närmsta 20 tal
+	//h += (20 % h); // avrunda till närmsta 20 tal
 
 	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
-	pkLabel->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
-
+	
 	if(strText)
 		pkLabel->SetText(strText);
 
 	return pkLabel;
 }
 
-ZGuiWnd* Gui::CreateFilePathDialog(int x, int y, int w, int h)
+ZGuiWnd* Gui::CreateFileOpenDlgbox(int x, int y, int w, int h)
 {
 	if( m_pkEdit->pkGui->GetMainWindow(ID_FILEPATH_WND_MAIN))
 	{
@@ -398,16 +361,21 @@ ZGuiWnd* Gui::CreateFilePathDialog(int x, int y, int w, int h)
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_FILEPATH_WND);
 	pkMainWindow->SetSkin(GetSkin("blue"));
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
+	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
 
-	ZGuiListbox* pkListbox = CreateListbox(pkMainWindow, ID_FILEPATH_WND, 0, 20, w, h-50);
+	ZGuiListbox* pkListbox = CreateListbox(pkMainWindow, ID_FILEPATH_WND, 0, 21, w, h-80);
 	FillPathList(pkListbox, m_szSearchBoxPath);
 
-	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, 0, w-20, 20, NULL);
-	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_FILE, 0, h-20, w-20, 20, NULL);
-	CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, "x");
+	CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
+	CreateButton(pkMainWindow, ID_FILEPATH_OPEN_BN, w-80, h-44, 80, 20, "Open")->SetWindowFlag(WF_CENTER_TEXT);
+	CreateButton(pkMainWindow, ID_FILEPATH_CLOSE_BN, w-80, h-22, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
+
+	ZGuiLabel* pkLabel = CreateLabel(pkMainWindow, 0, 0, 0, w, 22, "Open");
+	pkLabel->SetSkin(GetSkin("titlebar"));
+	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, h-44, w-80, 20, NULL);
+	CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20, NULL);
 
 	m_pkEdit->pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, m_pkWndProc, true);
-
 	return pkMainWindow;
 }
 
@@ -425,10 +393,11 @@ ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
 	pkMainWindow->SetSkin(GetSkin("blue"));
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
+	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
 
 	int y_pos;
 
-	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, "x");
+	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
 	CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
 	CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20);
 
@@ -511,6 +480,8 @@ bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
 
 void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber)
 {
+	int test = 2;
+
 	if(bCombobox)
 	{
 		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;

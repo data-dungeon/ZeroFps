@@ -2,6 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+// test
+
 #include "../../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
@@ -16,13 +18,14 @@
 
 ZGui::ZGui()
 {
+	m_iHighestZWndValue = 10;
+
 	m_bActive = false;
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkActiveMainWin = NULL;
 	m_pkPrevMainWnd = NULL;
-//	m_pkFocusWnd = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
 	m_pnCursorRangeDiffX=m_pnCursorRangeDiffY=0;
@@ -32,6 +35,10 @@ ZGui::ZGui()
 	m_pkCursor->SetPos(0,0);
 	m_pkCursor->SetSize(16,16);
 	m_pkCursor->SetSkin(m_pkCursorSkin);
+
+	ZGuiFont* pkDefaultFont = new ZGuiFont(16, 16, 0, ZG_DEFAULT_GUI_FONT);
+	pkDefaultFont->CreateFromFile("../data/textures/text/font.bmp");
+	m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkDefaultFont->m_iID, pkDefaultFont)); 
 }
 
 ZGui::~ZGui()
@@ -50,6 +57,14 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 	}
 
 	pkNewWindow->SetGUI(this);
+	if(pkNewWindow->GetFont() == NULL)
+	{
+		// Add stanadard font
+		map<int, ZGuiFont*>::iterator itFont;
+		itFont = m_pkFonts.find(ZG_DEFAULT_GUI_FONT);
+		if(itFont != m_pkFonts.end())
+			pkNewWindow->SetFont(itFont->second);
+	}
 	m_pkWindows.insert( map<int, ZGuiWnd*>::value_type(pkNewWindow->GetID(), pkNewWindow) ); 
 
 	return true;
@@ -188,6 +203,8 @@ ZGuiWnd* ZGui::GetMainWindow(int iID)
 bool ZGui::Render()
 {
 	m_pkRenderer->StartRender();
+
+	m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 	
 	// Blit windows	with lowest z order first.
 	int l_iNumWindows = m_pkMainWindows.size();
@@ -215,22 +232,6 @@ bool ZGui::Render()
 
 	return true;
 }
-
-/*bool ZGui::SetActiveMainWindow(int iMainWindowID)
-{
-	// Find the window
-	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++ )
-		 {
-			if( (*it)->iID == iMainWindowID)
-			{
-				m_pkActiveMainWin = (*it);
-				m_pkActiveMainWin->pkWin->Show(); 
-			}
-		 }
-
-	return true;
-}*/
 
 bool ZGui::SetMainWindowCallback( int iMainWindowID, callback cb )
 {
@@ -333,6 +334,13 @@ bool ZGui::OnMouseUpdate()
 			
 			if(ZGuiWnd::m_pkWndClicked->GetMoveArea() == rc)
 			{
+				m_iHighestZWndValue++;
+				ZGuiWnd::m_pkWndClicked->SetZValue(m_iHighestZWndValue);
+				ZGuiWnd* pkParent = ZGuiWnd::m_pkWndClicked->GetParent();
+				
+				if(pkParent) 
+					pkParent->SortChilds();
+				
 				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_DOWN);
 			}
 			else
@@ -449,6 +457,17 @@ bool ZGui::OnKeyUpdate()
 		{
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			if(iKey == '0')
+				iKey = '=';
+			if(iKey == ',') 
+				iKey = ';';
+			if(iKey == '.')
+				iKey = ':';
+			if(iKey == '-')
+				iKey = '_';
+			
 		}
 
 		if(iKey == KEY_F10)
@@ -456,6 +475,22 @@ bool ZGui::OnKeyUpdate()
 			m_pkZeroFps->ToggleGui();
 		}
 		else
+		if(iKey == KEY_ESCAPE)
+		{
+			if(m_pkActiveMainWin)
+			{
+				if(m_pkActiveMainWin->pkWin->GetWindowFlag(WF_CLOSEABLE))
+				{
+					m_pkActiveMainWin->pkWin->Hide();
+
+					// Notify the window that it are going to hidden
+					int* pkParams = new int[1];
+					pkParams[0] = false; // window are beeing hidden
+					m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_SHOWWINDOW, 1, pkParams);
+					delete[] pkParams;
+				}
+			}
+		}
 		if(ZGuiWnd::m_pkFocusWnd != NULL)
 		{
 			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
@@ -583,4 +618,26 @@ bool ZGui::IgnoreKey(int Key)
 			return false;
 	};
 
+}
+
+ZGuiFont* ZGui::AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID)
+{
+	ZGuiFont* pkNewFont = new ZGuiFont(cCharsOneRow,cCellSize,cPixelGapBetweenChars,iID);
+	if(pkNewFont->CreateFromFile(strBitmapName))
+	{
+		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkNewFont->m_iID, pkNewFont) ); 
+		return pkNewFont;
+	}
+
+	return NULL;
+}
+
+ZGuiFont* ZGui::GetBitmapFont(int iID)
+{
+	map<int, ZGuiFont*>::iterator itFont;
+	itFont = m_pkFonts.find(iID);
+	if(itFont != m_pkFonts.end())
+		return itFont->second;
+	
+	return NULL;
 }

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy       $(ProjDir)\release\*.lib                        ..\..\..\bin\ 
+PostBuild_Cmds=copy        $(ProjDir)\release\*.lib                         ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -279,6 +279,10 @@ SOURCE=.\zfobjectmanger.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zguifont.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zguiskin.cpp
 # End Source File
 # End Group
@@ -404,6 +408,10 @@ SOURCE=.\zfobject.h
 # Begin Source File
 
 SOURCE=.\zfobjectmanger.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguifont.h
 # End Source File
 # Begin Source File
 

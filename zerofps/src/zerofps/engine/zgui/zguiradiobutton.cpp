@@ -31,6 +31,9 @@ ZGuiRadiobutton::~ZGuiRadiobutton()
 
 bool ZGuiRadiobutton::Render( ZGuiRender* pkRenderer )
 {
+	if(m_pkFont)
+		pkRenderer->SetFont(m_pkFont);
+
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
@@ -74,11 +77,6 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 		m_pkCheckbox->CheckButton();
 	}
 	return true;
-}
-
-void ZGuiRadiobutton::SetTextSkin(ZGuiSkin* kSkin, int iMaskTexture)
-{
-	m_pkCheckbox->SetTextSkin(kSkin, iMaskTexture);
 }
 
 void ZGuiRadiobutton::SetText(char* strText)

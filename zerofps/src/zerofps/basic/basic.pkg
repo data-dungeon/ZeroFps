@@ -10,6 +10,7 @@ class ZFObject;
 class HeightMap;
 class Rect;
 class ZGuiSkin;
+class ZGuiFont;
 
 class ZFIo;
 class ZFIoFile;
@@ -50,6 +51,7 @@ class ZFIni;
 #include "zfmempackage.h"
 #include "rect.h"
 #include "zguiskin.h"
+#include "zguifont.h"
 
 #include "zfini.h"
 #include "mad_core.h"

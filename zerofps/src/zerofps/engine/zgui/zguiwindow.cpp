@@ -5,6 +5,7 @@
 #include "zguiwindow.h"
 #include "../../render/zguirenderer.h"
 #include "../../basic/zguiskin.h"
+#include "../../basic/zguifont.h"
 
 ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;
@@ -19,6 +20,7 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+	m_ulFlags = 0;
 	m_iZValue = 0;
 	m_pkGUI = NULL;
 	m_pkCallback = NULL;
@@ -27,13 +29,12 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_strText = NULL;
 	m_iTextLength = 0;
 	m_pkSkin = NULL;
-	m_pkTextSkin = NULL;
-	m_iTextMaskTexture = -1;
 	m_iBkMaskTexture = -1;
 	m_iBorderMaskTexture = -1;
 	m_bVisible = bVisible;
 	m_bInternalControl = false;
 	m_bEnabled = true;
+	m_pkFont = NULL;
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -62,8 +63,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 		}*/
 	}
 
-/*	if(iID != 520 && iID != 620)*/
-		m_kMoveArea = m_kArea;
+	m_kMoveArea = m_kArea;
 }
 
 ZGuiWnd::~ZGuiWnd()
@@ -309,10 +309,9 @@ void ZGuiWnd::SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture, int iBorderMaskTextu
 	m_iBorderMaskTexture = iBorderMaskTexture;
 }
 
-void ZGuiWnd::SetTextSkin(ZGuiSkin* pkSkin, int iMaskTexture)
+void ZGuiWnd::SetFont(ZGuiFont* pkFont)
 {
-	m_pkTextSkin = pkSkin;
-	m_iTextMaskTexture = iMaskTexture;
+	m_pkFont = pkFont;
 }
 
 void ZGuiWnd::SetGUI(ZGui* pkGui)
@@ -420,5 +419,20 @@ void ZGuiWnd::SetZValue(int iValue)
 
 void ZGuiWnd::SortChilds()
 {
-	m_kChildList.sort(ZValue_Cmp);
+	m_kChildList.sort(SortZCmp);
+}
+
+void ZGuiWnd::SetWindowFlag(unsigned long ulValue)
+{
+	m_ulFlags |= ulValue;
+}
+
+void ZGuiWnd::RemoveWindowFlag(unsigned long ulValue)
+{
+	m_ulFlags &= ~ulValue;
+}
+
+bool ZGuiWnd::GetWindowFlag(unsigned long ulValue)
+{
+	return ((m_ulFlags & ulValue) == ulValue) ? true : false;
 }

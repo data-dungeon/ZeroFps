@@ -6,6 +6,7 @@
 #include "zguilabel.h"
 #include "zguilistbox.h"
 #include "zgui.h"
+#include "../../render/zguirenderer.h"
 #include <iostream>
 #include <cstdio>
 
@@ -17,8 +18,7 @@ const int LISTBOX_ID = 801;
 //////////////////////////////////////////////////////////////////////
 
 ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID, int iItemHeight,
-						 ZGuiSkin* pkTextSkin, int iFontTextureMask, ZGuiSkin* pkSkinItem, 
-						 ZGuiSkin* pkSkinItemSelected, ZGuiSkin* pkSkinItemHighLight,
+						 ZGuiSkin* pkSkinItem, ZGuiSkin* pkSkinItemSelected, ZGuiSkin* pkSkinItemHighLight,
 						 ZGuiSkin* pkTopItemSkin, int iTopItemTextureMask) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
@@ -31,14 +31,13 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	
 	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);
 	m_pkLabel->SetSkin(pkTopItemSkin, iTopItemTextureMask);
-	m_pkLabel->SetTextSkin(pkTextSkin,iFontTextureMask); 
 
 	m_unNumVisibleRows = 7;
 	rc.Top = 20;
 	rc.Bottom = rc.Top+iItemHeight*m_unNumVisibleRows;
 
 	m_pkListbox = new ZGuiListbox(rc,this,true,LISTBOX_ID,iItemHeight,
-		pkTextSkin, iFontTextureMask, pkSkinItem, pkSkinItemSelected, pkSkinItemHighLight);
+		pkSkinItem, pkSkinItemSelected, pkSkinItemHighLight);
 
 	m_pkListbox->GetScrollbar()->Move(0,-20);
 	int w = m_pkListbox->GetScrollbar()->GetScreenRect().Width();
@@ -53,7 +52,6 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 
 void ZGuiCombobox::SetZValue(int iValue)
 {
-	printf("ZValue ZGuiCombobox: %i\n", iValue);
 	ZGuiWnd::SetZValue(iValue);
 	m_pkListbox->SetZValue(iValue-1);
 }
@@ -65,6 +63,9 @@ ZGuiCombobox::~ZGuiCombobox()
 
 bool ZGuiCombobox::Render( ZGuiRender* pkRenderer )
 {
+	if(m_pkFont)
+		pkRenderer->SetFont(m_pkFont);
+
 	m_pkLabel->Render(pkRenderer);
 	m_pkListbox->Render(pkRenderer);
 	return true;
@@ -167,9 +168,7 @@ void ZGuiCombobox::SetLabelWidth(int iWidth)
 void ZGuiCombobox::IsMenu(bool bIsMenu)
 {
 	m_bIsMenu = bIsMenu; 
-
-	if(m_bIsMenu)
-		m_pkListbox->IsMenu(bIsMenu);
+	m_pkListbox->IsMenu(bIsMenu);
 }
 
 void ZGuiCombobox::SetNumVisibleRows(unsigned short iNumVisibleRows)

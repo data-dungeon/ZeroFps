@@ -5,6 +5,7 @@
 #include "../../basic/zguiskin.h"
 #include "zguilabel.h"
 #include "../../render/zguirenderer.h"
+#include "zgui.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -32,14 +33,10 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 
 	if(m_strText != NULL)
 	{
-		if(m_pkTextSkin && m_pkTextSkin->m_iBkTexID != -1)
-		{
-			if(m_iTextMaskTexture > 0)
-				pkRenderer->SetMaskTexture(m_iTextMaskTexture);
+		if(m_pkFont)
+			pkRenderer->SetFont(m_pkFont);
 
-			pkRenderer->SetSkin(m_pkTextSkin); 
-			pkRenderer->RenderText(m_strText, GetScreenRect(), 16, -1, (m_iTextMaskTexture > 0));
-		}
+		pkRenderer->RenderText(m_strText, GetScreenRect(), -1);
 	}
 	return true;
 } 

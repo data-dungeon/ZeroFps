@@ -22,8 +22,8 @@ class ENGINE_API ZGuiCombobox : public ZGuiControl
 {
 public:
 	ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0, int iItemHeight=20, 
-		ZGuiSkin* pkTextSkin=NULL, int iTextureMask=-1, ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, 
-		ZGuiSkin *pkSkinItemHighLight=NULL, ZGuiSkin* pkTopItemSkin=NULL, int iTopItemTextureMask=-1);
+		ZGuiSkin* pkSkinItem=NULL, ZGuiSkin* pkSkinItemSelected=NULL, ZGuiSkin *pkSkinItemHighLight=NULL, 
+		ZGuiSkin* pkTopItemSkin=NULL, int iTopItemTextureMask=-1);
 	virtual ~ZGuiCombobox();
 
 	virtual bool Render( ZGuiRender* renderer );

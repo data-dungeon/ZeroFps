@@ -478,7 +478,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			Object *pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
 			pkmad->GetPos()=m_kDrawPos;
 			pkmad->AttachToClosestZone();
-			
 			break;
 	}
 }

@@ -17,7 +17,7 @@ class TextureManager;
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:
-	GLGuiRender(/*int w=0, int h=0, TextureManager* pkTextureManger=NULL*/);
+	GLGuiRender();
 	virtual ~GLGuiRender();
 
 	bool EndRender();
@@ -26,22 +26,19 @@ public:
 	bool RenderBorder(Rect kScreenRect, bool bMask=false);
 	bool SetSkin(ZGuiSkin* pkSkin);
 	bool SetMaskTexture(int iID) { m_iMaskTexture = iID; return true; }
-	bool RenderText( char *stText, Rect kScreenRect, int iFontSize, int iCursorPos, 
-					 bool bMask=false, bool bCenterTextVertically=true);
+	bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true);
 	bool SetDisplay(int w, int h);
+	bool SetFont(ZGuiFont* pkFont);
 
 private:
-	GLvoid glPrint(GLint x, GLint y, char *string, int set, int bind_texture_id);	// Where The Printing Happens;
-	void BuildFont();
-	void PrintRows(char* text, unsigned int iXPos, unsigned int iYPos, 
-					unsigned int nFontSize, unsigned int iCharsOneRow, 
-					unsigned int nMaxRows, int iCursorPos);
+
 	ZGuiSkin* m_pkSkin; // current skin
+	ZGuiFont* m_pkFont; // current font
 	int m_iMaskTexture;
 	int m_iScreenWidth, m_iScreenHeight;
-	void PrintChar(char cChar, int xoffset, int yoffset, int iFontSize);
+	bool PrintRows(char* text, Rect rc, int iCursorPos);
 	TextureManager* m_pkTextureManger;
-	GLuint m_iFontDisplaylistID;
+
 
 };
 

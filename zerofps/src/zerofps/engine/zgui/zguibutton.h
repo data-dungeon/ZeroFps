@@ -32,7 +32,6 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	ZGuiSkin* m_kSkinUp, *m_kSkinDown, *m_kSkinHighLight;
 	int m_iMaskTextureUp;
-	bool m_bCenterText;
 };
 
 #endif // !defined(AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_)
