@@ -31,7 +31,8 @@ Property* Create_LinkToJoint();
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
 	// StartUp SDL
-	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0)
+//	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0)
+	if(SDL_Init(SDL_OPENGL)<0)
 	{
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	
@@ -411,7 +412,7 @@ void ZeroFps::Update_System(bool bServer)
 	
 	
 	for(int i=0;i<iLoops;i++)
-	{
+	{	
 		//calculate current game time
 		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 	
@@ -531,15 +532,11 @@ void ZeroFps::MainLoop(void) {
 		 
 		Run_EngineShell();
 
-		if(m_bServerMode)	{
+		if(m_bServerMode)
 			Run_Server();
-			}
 
 		if(m_bClientMode)
-			Run_Client();
-		
-		if(m_bServerMode)
-			Run_Server();			
+			Run_Client();		
 		
 		Draw_EngineShell();
 	}

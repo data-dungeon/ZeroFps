@@ -116,12 +116,9 @@ void Tcs::UpdateMotion()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
-//		if(!m_kBodys[i]->m_bStatic)
 		m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
-		m_kBodys[i]->GetObject()->RotateLocalRotV (m_kBodys[i]->m_kRotVel * m_pkZeroFps->GetGameFrameTime() );
+		m_kBodys[i]->GetObject()->RotateLocalRotV(m_kBodys[i]->m_kRotVel * m_pkZeroFps->GetGameFrameTime() );
 		
-		
-//		m_pkRender->Sphere(m_kBodys[i]->GetObject()->GetWorldPosV(),m_kBodys[i]->m_fRadius,2,Vector3(1,0,0),false);
 	}
 }
 
@@ -185,7 +182,7 @@ void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
 			
 		Vector3 dir = (m_kLastTestPos - pkCharacter->GetObject()->GetWorldPosV()).Unit();
 		
-		pkCharacter->m_kNewPos = pkCharacter->GetObject()->GetWorldPosV() - dir * 0.05;
+		pkCharacter->m_kNewPos = pkCharacter->GetObject()->GetWorldPosV() - dir * 0.1;
 	}
 }
 
