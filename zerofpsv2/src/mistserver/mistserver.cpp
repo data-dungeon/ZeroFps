@@ -990,6 +990,24 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			}
 			break;
 		}
+		
+		case MLNM_CS_REQ_INVENTORY:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{		
+				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+				{
+					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+					{
+						SendContainer(pkCP->m_pkInventory,PkNetMessage->m_iClientID);
+						break;
+					}
+				}
+			}
+		
+			break;
+		}
+		
 
 		case MLNM_CS_LOOK:
 		{
@@ -1043,6 +1061,41 @@ void MistServer::SendPlayerListToClient(int iClient)
 	//send package
 	kNp.TargetSetClient(iClient);
 	SendAppMessage(&kNp);	
+}
+
+void MistServer::SendContainer(MLContainer* pkContainer,int iClientID)
+{	
+	cout<<"sending container to client:"<<iClientID<<endl;
+
+	vector<MLContainerInfo> kItemList;
+	pkContainer->GetItemList(&kItemList);
+	
+	
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_SC_CONTAINER);
+	
+	kNp.Write(pkContainer->GetContainerType());
+	kNp.Write(pkContainer->GetSizeX());
+	kNp.Write(pkContainer->GetSizeY());
+	
+	int iItems = kItemList.size();
+	kNp.Write(iItems);
+	
+	for(int i = 0;i<kItemList.size();i++)
+	{
+		kNp.Write_Str(kItemList[i].m_strName);
+		kNp.Write_Str(kItemList[i].m_strIcon);
+		
+		kNp.Write(kItemList[i].m_iItemID);
+		kNp.Write(kItemList[i].m_cItemX);
+		kNp.Write(kItemList[i].m_cItemY);
+		kNp.Write(kItemList[i].m_cItemW);
+		kNp.Write(kItemList[i].m_cItemH);				
+	}
+	
+	
+	kNp.TargetSetClient(iClientID);
+	SendAppMessage(&kNp);
 }
 
 void MistServer::SayToClients(const string& strMsg,int iClientID)

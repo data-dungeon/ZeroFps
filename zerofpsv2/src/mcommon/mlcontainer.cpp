@@ -9,6 +9,7 @@ MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 	m_bDisableItems 		= bDisable;
 	m_iMaxItems 			= 0;
 	m_iContainerID			= iContainerID;
+	m_iContainerType		= eNormal;
 	m_kItemTypes.clear();
 	
 	SetSize(iX,iY);
@@ -200,7 +201,7 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 				pkPItem->m_iInContainerPosX = iX;
 				pkPItem->m_iInContainerPosY = iY;
 				
-				Print();
+				//Print();
 				
 				return true;
 			}
@@ -419,8 +420,8 @@ void MLContainer::GetItemList(vector<MLContainerInfo>* pkItemList)
 			kItemIDs.insert(m_kSlots[i]);
 	}
 
-	printf("kItemIDs size = %i\n", kItemIDs.size());
-	printf("kItemIDs[0] = %i\n", (*kItemIDs.begin()));
+	//printf("kItemIDs size = %i\n", kItemIDs.size());
+	//printf("kItemIDs[0] = %i\n", (*kItemIDs.begin()));
 
 	for(set<int>::iterator it=kItemIDs.begin();it!=kItemIDs.end();it++)
 	{
@@ -435,12 +436,11 @@ void MLContainer::GetItemList(vector<MLContainerInfo>* pkItemList)
 				kTemp.m_strName = pkItem->m_strName;
 				kTemp.m_strIcon = pkItem->m_strIcon;				
 				kTemp.m_iItemID = *it;
-				kTemp.m_iItemX = iX;
-				kTemp.m_iItemY = iY;
-				kTemp.m_iItemW = pkItem->m_iSizeX;
-				kTemp.m_iItemH = pkItem->m_iSizeY;
+				kTemp.m_cItemX = iX;
+				kTemp.m_cItemY = iY;
+				kTemp.m_cItemW = pkItem->m_iSizeX;
+				kTemp.m_cItemH = pkItem->m_iSizeY;
 				
-				kTemp.m_iType = pkItem->m_iType;
 				
 				pkItemList->push_back(kTemp);
 			}

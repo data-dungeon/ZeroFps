@@ -79,6 +79,8 @@ void P_CharacterProperty::Init()
 	m_pkLeftHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
 	m_pkRightHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
 	
+	m_pkInventory->SetContainerType(eInventory);
+	
 	m_pkHead->SetMaxItems(1);
 	m_pkBody->SetMaxItems(1);
 	m_pkLeftHand->SetMaxItems(1);

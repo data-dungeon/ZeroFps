@@ -66,7 +66,9 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestKillMe();
 
 		void SendAction(int iEntityID,const string& strAction);
-				
+		void SendRequestIventory();		
+		
+		
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	

@@ -462,22 +462,15 @@ void MistClient::Input()
 		}	
 	}	
 	
-/*	if ( m_pkInputHandle->VKIsDown("look") )
+	if( m_pkInputHandle->Pressed(KEY_I) )
 	{
 		if(!DelayCommand())
-		{
-			if(m_pkHighlight)
-			{
-				NetPacket kNp;			
-				kNp.Write((char) MLNM_CS_LOOK);
-				kNp.Write(m_pkHighlight->GetEntityID());
-				kNp.TargetSetClient(0);
-				SendAppMessage(&kNp);		
-			}
-		}
+		{				
+			SendRequestIventory();
+		}	
 	}
-	*/
 	
+		
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -638,12 +631,12 @@ void MistClient::UpdateCharacter()
 
 
 
-void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
+void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 {
 	unsigned char ucType;
 
 	// Read Type of Message.
-	PkNetMessage->Read(ucType);
+	pkNetMessage->Read(ucType);
 
 	switch(ucType)
 	{
@@ -666,7 +659,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 		case MLNM_SC_CHARACTERID:
 		{
 			cout<<"got character entityID from server"<<endl;
-			PkNetMessage->Read(m_iCharacterID);
+			pkNetMessage->Read(m_iCharacterID);
 		
 			break;
 		}
@@ -675,7 +668,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 		case MLNM_SC_SAY:
 		{
 			string strMsg;
-			PkNetMessage->Read_Str(strMsg);
+			pkNetMessage->Read_Str(strMsg);
 			//m_pkConsole->Printf("Msg> %s",strMsg.c_str());
 			AddStringToChatBox(strMsg);
 						
@@ -689,14 +682,14 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 			m_kPlayerList.clear();
 			
-			PkNetMessage->Read(iPlayers);
+			pkNetMessage->Read(iPlayers);
 			
 			//m_pkConsole->Printf("Listing Players : %d",iPlayers);
 			AddStringToChatBox("Requesting playerlist");
 			
 			for(int i = 0;i<iPlayers;i++)
 			{
-				PkNetMessage->Read_Str(strName);
+				pkNetMessage->Read_Str(strName);
 				//m_pkConsole->Printf("%d %s",i,strName.c_str());
 				AddStringToChatBox(strName);
 				m_kPlayerList.push_back(strName);					
@@ -710,9 +703,56 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_SC_CONTAINER:
+		{
+			cout<<"got container"<<endl;
+		
+			int iContainerType;
+			char cSizeX;
+			char cSizeY;
+			int  iItems;
+			
+			vector<MLContainerInfo> kItemList;			
+			
+			
+			pkNetMessage->Read(iContainerType);
+			pkNetMessage->Read(cSizeX);
+			pkNetMessage->Read(cSizeY);
+
+			pkNetMessage->Read(iItems);			
+			
+			
+			MLContainerInfo kTemp;
+			for(int i = 0;i<iItems;i++)
+			{
+				pkNetMessage->Read_Str(kTemp.m_strName);
+				pkNetMessage->Read_Str(kTemp.m_strIcon);
+				
+				pkNetMessage->Read(kTemp.m_iItemID);
+				pkNetMessage->Read(kTemp.m_cItemX);
+				pkNetMessage->Read(kTemp.m_cItemY);
+				pkNetMessage->Read(kTemp.m_cItemW);
+				pkNetMessage->Read(kTemp.m_cItemH);				
+				
+				kItemList.push_back(kTemp);
+			}
+			
+			cout<<"type:"<<iContainerType<<endl;
+			cout<<"size:"<<int(cSizeX)<<" x "<<int(cSizeY)<<endl;
+			cout<<"number of items:"<<iItems<<endl;						
+		
+			for(int i = 0;i<kItemList.size();i++)
+			{
+				cout<<i<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
+			}
+				
+			break;
+		}		
+		
+		
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
-			PkNetMessage->SetError(true);
+			pkNetMessage->SetError(true);
 			return;
 	}
 } 
@@ -1005,3 +1045,11 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	SendAppMessage(&kNp);			
 }
 
+void MistClient::SendRequestIventory()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_INVENTORY);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);			
+}

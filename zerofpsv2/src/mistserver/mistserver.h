@@ -100,7 +100,9 @@ class MistServer :public Application , public ZGuiApp
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);		
 		
-		void SendPlayerListToClient(int iClient);				
+		void SendPlayerListToClient(int iClient);
+		void SendContainer(MLContainer* pkContainer,int iClientID);
+				
 		Vector3 GetPlayerStartPos();
 
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		

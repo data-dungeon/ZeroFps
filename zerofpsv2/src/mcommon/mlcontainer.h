@@ -8,6 +8,13 @@
 using namespace std;
 
 
+enum MCOMMON_API ContainerTypes
+{
+	eNormal,
+	eInventory,
+};
+
+
 class MCOMMON_API MLContainerInfo
 {
 	public:
@@ -15,12 +22,10 @@ class MCOMMON_API MLContainerInfo
 		string	m_strIcon;
 	
 		int	m_iItemID;		
-		int	m_iItemX;
-		int	m_iItemY;		
-		int	m_iItemW;
-		int	m_iItemH;
-		
-		int	m_iType;
+		char	m_cItemX;
+		char	m_cItemY;		
+		char	m_cItemW;
+		char	m_cItemH;
 };
 
 
@@ -39,6 +44,8 @@ class MCOMMON_API MLContainer
 		bool				m_bDisableItems;
 		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
 		int				m_iMaxItems;
+		
+		int				m_iContainerType;
 
 		void SetSize(int iX,int iY);
 		bool SetItem(int iID,int iX,int iY,int iW,int iH);
@@ -62,6 +69,12 @@ class MCOMMON_API MLContainer
 		
 		void SetMaxItems(int iItems) 				{m_iMaxItems = iItems;}; 
 
+		void SetContainerType(int iType)			{m_iContainerType = iType;};
+		int  GetContainerType()						{return m_iContainerType;};
+		
+		char GetSizeX()								{return char(m_iSizeX);};
+		char GetSizeY()								{return char(m_iSizeY);};
+		
 		bool MoveItem(int iID,int iX,int iY);
 		bool MoveItem(int iID,MLContainer* pkDest,int iX,int iY);
 		bool MoveItem(int iID,MLContainer* pkDest);
@@ -89,6 +102,7 @@ class MCOMMON_API MLContainer
 		void Load(ZFIoInterface* pkPackage);
 
 		void Print();
+
 };
 
 
