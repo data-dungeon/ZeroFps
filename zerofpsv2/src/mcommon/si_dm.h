@@ -21,8 +21,11 @@ namespace DMLua
 
 	extern int g_iMissionStatus;
 
+	extern map<string, double> m_kVars;
+
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
 	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
+	int MCOMMON_API SetDMCharacterNameLua(lua_State* pkLua);
 	int MCOMMON_API GetDMCharacterClosestLua(lua_State* pkLua);
 	int MCOMMON_API SetNewMissionLua(lua_State* pkLua);
 	int MCOMMON_API GetNumOfLivingAgentsLua(lua_State* pkLua);
@@ -60,6 +63,10 @@ namespace DMLua
 
 	// math
 	int MCOMMON_API RandomLua(lua_State* pkLua);
+
+	// common
+	int MCOMMON_API SetVarLua(lua_State* pkLua);
+	int MCOMMON_API GetVarLua(lua_State* pkLua);
 
 	// functions to get less code
 	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
