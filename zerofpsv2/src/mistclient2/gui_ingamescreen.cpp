@@ -108,7 +108,8 @@ void MistClient::AddStringToChatBox(string strMsg)
 { 
 	const int ROW_BUFFER_SIZE = 50;
 
-	string strText	= string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
+	string strText	= string("<clr:255,255,255>") + 
+		string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
 
 	if(((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount() >= ROW_BUFFER_SIZE)
 	{
@@ -213,8 +214,8 @@ void MistClient::LoadInGameGui()
 
 	g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
 	g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 
-	g_kMistClient.GetWnd("SayTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
-	g_kMistClient.GetWnd("ChatTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
+	g_kMistClient.GetWnd("SayTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("defguifont") );
+	g_kMistClient.GetWnd("ChatTextbox")->SetFont(g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont") );
 
 	g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit	(för att	kunna	ändra	trasparens med	färgvärdet)
 	g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest =	false;

@@ -155,6 +155,7 @@ void DrawFont2(HDC hdc, HWND hwnd)
 	GetTextExtentPoint32(hdc, text, 1, &s);
 	g_iSpaceWidth = s.cx;
 
+	ROW_HEIGHT = max_char_height;
 	max_char_height += VERTICAL_OFFSET;
 
 	bool bFinished = false;
@@ -206,8 +207,7 @@ void DrawFont2(HDC hdc, HWND hwnd)
 		OffsetRect(&rc, 0, max_char_height);
 	}
 
-	ROW_HEIGHT = max_char_height;
-	IMAGE_HEIGHT = (rows * ROW_HEIGHT) + 0;
+	IMAGE_HEIGHT = (rows * max_char_height) + 0;
 	
 	if(IMAGE_HEIGHT < 8) IMAGE_HEIGHT = 8;
 	else if(IMAGE_HEIGHT < 16) IMAGE_HEIGHT = 16;

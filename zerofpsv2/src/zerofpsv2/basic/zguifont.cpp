@@ -19,7 +19,7 @@ ZGuiFont::~ZGuiFont()
 
 }
 
-bool ZGuiFont::Create(char* szInfoFile, int iTexID)
+bool ZGuiFont::Create(char* szInfoFile, int iTexID, int iGlyphWidth)
 {
 	ZFVFile kFile;
 	if(!kFile.Open(szInfoFile,0,false))
@@ -71,9 +71,9 @@ bool ZGuiFont::Create(char* szInfoFile, int iTexID)
 	for(int i=0; i<m_iNumLetters; i++)
 	{
 		int index = (int)aLetters[i];
-		m_aChars[index].iPosX = piLettersRect[i*4];
+		m_aChars[index].iPosX = piLettersRect[i*4]-iGlyphWidth;
 		m_aChars[index].iPosY = piLettersRect[i*4+1];
-		m_aChars[index].iSizeX = piLettersRect[i*4+2]-m_aChars[index].iPosX;
+		m_aChars[index].iSizeX = piLettersRect[i*4+2]-m_aChars[index].iPosX+iGlyphWidth;
 		m_aChars[index].iSizeY = piLettersRect[i*4+3]-m_aChars[index].iPosY;
 	}
 

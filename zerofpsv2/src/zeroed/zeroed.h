@@ -11,6 +11,7 @@
 
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/si_dm.h"

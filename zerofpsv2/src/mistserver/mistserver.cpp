@@ -166,10 +166,10 @@ void MistServer::Init()
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
-	#ifdef WIN32
-		if(m_bStartMinimized)
-			ShowWindow(GetFocus(), SW_MINIMIZE);
-	#endif 
+	//#ifdef WIN32
+	//	if(m_bStartMinimized)
+	//		ShowWindow(GetFocus(), SW_MINIMIZE);
+	//#endif 
 }
 
 

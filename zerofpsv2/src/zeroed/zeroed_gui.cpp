@@ -8,6 +8,14 @@ void ZeroEd::SetupGuiEnviroment()
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
+
+   char szFontData[512], szFontTex[512];
+   sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "book_antiqua_10_bold_outlined");
+   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
+
+   ZGuiFont* pkOutLineFont = new ZGuiFont("OutLineFont");
+   pkOutLineFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), 1);
+	m_pkGuiMan->Add("OutLineFont", pkOutLineFont);
 	
 	// Fill zone- and object treebox.
 	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
@@ -43,6 +51,9 @@ void ZeroEd::SetupGuiEnviroment()
 	CreateWnd(Label, "vp2Label", "Top", GetWnd("vp2"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp3Label", "Left", GetWnd("vp3"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp4Label", "Front", GetWnd("vp4"), 2, 0, 100, 20, 0);
+
+	GetWnd("ZeroEdInfoLabel")->SetFont(pkOutLineFont);
+	GetWnd("ZeroEdInfoLabel")->SetTextClr(255,255,255); 
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)

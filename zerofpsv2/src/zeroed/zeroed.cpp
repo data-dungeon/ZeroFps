@@ -801,7 +801,7 @@ void ZeroEd::OnHud(void)
 	if(m_pkActiveCamera) 
 	{
 		//m_kTestGraph.PushValue(m_pkZeroFps->m_fFps);
-		m_kTestGraph.DrawGraph(10,10);
+		m_kTestGraph.DrawGraph(10,50); // [ m_kTestGraph.DrawGraph(10,10); ] < zeb: höjer upp den lite så den inte täcker infolabeln
 		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkZeroFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			

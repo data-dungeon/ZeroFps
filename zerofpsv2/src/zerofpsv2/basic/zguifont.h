@@ -36,7 +36,7 @@ public:
 	int m_iSpaceWidth; // Nr pixels a ' ' is
 	int m_iNumLetters; // Nr of letters in bitmap font
 	
-	bool Create(char* szInfoFile, int iTexID);
+	bool Create(char* szInfoFile, int iTexID, int iGlyphWidth=0);
 	unsigned short GetLength(const char* c_szText, int iLength=-1) const;
 };
 

@@ -1103,7 +1103,7 @@ bool ZGuiTextbox::BuildTagList()
 	}
 
 	// Remove doubles
-	ZGuiFont* pkPrevFont = m_pkResMan->Font("defguifont");
+	ZGuiFont* pkPrevFont = m_pkFont == NULL ? m_pkResMan->Font("defguifont") : m_pkFont;
 	float prevcolor[] = {0,0,0};
 
 	vector<TEXT_TAG> temp;
