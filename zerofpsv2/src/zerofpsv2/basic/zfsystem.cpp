@@ -14,79 +14,91 @@ ZFSystem* ZFSystem::pkInstance;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /*
-Manger:
-	Register:		Registrerar object i object name sys.
-	Unregister:		Removes object från object name sys.
-
-	Link:			Länkar ett object till ett annat som child.
-	UnLink:			Tar bort child från en parent.
-
-	IsOk:
-
-Object:
-	Name				Namn på object.
-	Childs:				Lista på children.
-	Parent:				Pekare till parent.
-	
-	GetParent()			Get ptr to parent of object.
-	GetNumChildren()	Totalt antal children.
-	GetChild()			Pekare till child i.
-	GetName()			Returnerar namnet på object.
-
-	Get
-
-Object Data:
-	Objekt:				Pekare till object.
-
+	Print all system variables.
 */
-
-void CmdArgument::Set(const char* szCmdArgs)
+void ZFSystem::PrintVariables()
 {
-	m_strFullCommand = string(szCmdArgs);
-	m_kSplitCommand.clear();
-	string	kNewArg;
+	BasicConsole*		m_pkCon;
+	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	string strValue;
 
-	if(strlen(szCmdArgs) == 0) {
-		m_kSplitCommand.push_back("");
-		return;
-	}
+	m_pkCon->Printf("### variable list ###");
 
-	int args = 0;	// Number of arguments
-	kNewArg = "";
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+		if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't print none valid data.
+		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't print functions.
 
-	for(unsigned int i=0; i<strlen(szCmdArgs); i++) {
-
-		while((unsigned int)(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
-			kNewArg.append(1,szCmdArgs[i]);						//add to argument nr args
-			i++;
-		}
-
-		if(kNewArg.size() !=0 ) {
-		//if nothing was added to the argument use it in the next loop
-			m_kSplitCommand.push_back(kNewArg);		
-			kNewArg = "";
-		}
-			args++;
+		strValue = GetVarValue(&m_kCmdDataList[i]);
+		m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
 	}
 }
 
 
+void ZFSystem::PrintCommands()
+{
+	BasicConsole*		m_pkCon;
+	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	string strValue;
 
+	m_pkCon->Printf("### variable list ###");
 
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION) {
+			strValue = GetVarValue(&m_kCmdDataList[i]);
+			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
+			}
+	}
+}
 
+void ZFSystem::PrintObjects(void)
+{
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
+	}
+}
 
+void ZFSystem::LogVariables(void)
+{
+	for(unsigned int i=0; i < m_kCmdDataList.size();i++) {
+		g_Logf(" %s\n", m_kCmdDataList[i].m_strName.c_str());
+	}
+}
+
+void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
+{
+	string	strFullArg;
+	string	strArg;
+	bool		bFoundArg = false;
+
+	for(int i = 0; i < iNrOfArgs; i++) {
+		strArg = string(paArgs[i]);
+
+		if(strArg.c_str()[0] == '-') {
+			bFoundArg = true;
+			// Start of new argument.
+			if(strFullArg.size())
+				AppArguments.push_back(strFullArg);
+	
+			strFullArg = "";
+			strArg.erase(0,1);
+			}
+
+		if(bFoundArg)
+			strFullArg = strFullArg + " " + strArg;
+		}
+
+	if(strFullArg.size())
+		AppArguments.push_back(strFullArg);
+
+	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
+	for(int ia = 0; ia < AppArguments.size(); ia++) {
+		
+		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
+
+		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
+		}
+}
 
 ZFSystem::ZFSystem()
 {
@@ -124,16 +136,13 @@ ZFSystem::~ZFSystem()
 	m_pkConsole = NULL;
 }
 
+/**	\brief	Registers a SubSystem
 
-ZFSystem* ZFSystem::GetInstance()
+	Registers a SubSystem to be accsessible t the ZFSystem. Set the name and parent
+	subsystem (NULL) if no parent. Name must be uniqe or reg will fail.
+*/
+void ZFSystem::Register(ZFSubSystem* pkObject, char* acName /*, ZFSubSystem* pkParent*/)
 {
-	return ZFSystem::pkInstance;
-}
-
-
-void ZFSystem::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent)
-{
-
 #ifdef _DEBUG
 	g_Logf("Register '%s'", acName);
 #endif
@@ -162,6 +171,10 @@ void ZFSystem::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkPare
 #endif
 }
 
+/**	\brief	UnRegister a SubSystem
+
+  Unregister all the names that the subsystem pointed to by pkObject have registred.
+*/
 void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 {
 #ifdef _DEBUG
@@ -188,6 +201,10 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 #endif
 }
 
+/**	\brief	Get pointer to SubSystem by name.
+
+	Get a Ptr to the SubSystem with the choosen name. Null if no SubSystem found with this name.
+*/
 ZFSubSystem* ZFSystem::GetObjectPtr(char* acName)
 {
 	string Test(acName);
@@ -202,8 +219,69 @@ ZFSubSystem* ZFSystem::GetObjectPtr(char* acName)
 	return NULL;
 }
 
+/**	\brief	Startup all SubSystems.
+	Loop all subsystems from last created to first and run their startup function. 
+	If any subsystems fail and return false.
+*/
+bool ZFSystem::StartUp()
+{
+	cout << "Start ZeroFps Engine SubSystems:" << endl;
+	g_Logf("Start ZeroFps Engine SubSystems: \n");
+
+	int iSize = kObjectNames.size();
+	ZFSubSystem* pkTestObject;
+
+	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
+		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
+
+		pkTestObject = kObjectNames[i].pkObject;
+
+		if(!kObjectNames[i].pkObject->StartUp()) {
+			g_Logf("Fail\n");
+			return false;
+			}
+
+		kObjectNames[i].m_bStarted = true;
+		g_Logf("Ok\n");
+	}
+	
+	return true;
+}
+
+/**	\brief	Shutdown all SubSystem.
+*/
+bool ZFSystem::ShutDown()
+{
+	g_Logf("ShutDown Engine SubSystems: \n");
+
+	// Engine Systems Shutdown backwards.
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		if(kObjectNames[i].m_bStarted == false)	continue;
+
+		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
+		if(!kObjectNames[i].pkObject->ShutDown()) {
+			g_Logf("Fail\n");
+			return false;
+			}
+		g_Logf("Ok\n");
+	}
 
 
+	
+	return true;
+}
+
+bool ZFSystem::IsValid()
+{
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
+		if(!kObjectNames[i].pkObject->IsValid())
+			return false;
+	}
+	
+	return true;
+}
+
+/*
 void ZFSystem::Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject)
 {
 	pkObject->m_pkParent = pkParent;
@@ -219,20 +297,6 @@ void ZFSystem::UnLink(ZFSubSystem* pkObject)
 	
 }
 
-void ZFSystem::PrintObjects(void)
-{
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
-	}
-}
-
-void ZFSystem::LogVariables(void)
-{
-	for(unsigned int i=0; i < m_kCmdDataList.size();i++) {
-		g_Logf(" %s\n", m_kCmdDataList[i].m_strName.c_str());
-	}
-}
-
 void ZFSystem::PrintObjectsHer(void)
 {
 	g_Logf("ZFSystem::PrintObjectsHer\n");
@@ -243,7 +307,7 @@ void ZFSystem::PrintObjectsHer(void)
 		}
 	}
 
-}
+}*/
 
 ZFCmdData* ZFSystem::FindArea(const char* szName)
 {
@@ -334,6 +398,131 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 	}
 
 	return true;
+}
+
+/**	\brief	Register a variable.
+
+  Registers a variable to be accsessible t the ZFSystem. Set the name, type, object
+  that own it and flags for the variable.
+*/
+bool ZFSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject,int iFlags)
+{
+	// Validate parameters
+	if(szName == NULL)		return false;
+	if(pvAddress == NULL)	return false;
+
+	// Check if there is already something with this name.
+	if(FindArea(szName)) 
+		return false;
+
+	ZFCmdData kNewCmd;
+	kNewCmd.m_strName			= string(szName);
+	kNewCmd.m_eType			= eType;
+	kNewCmd.m_iFlags			= iFlags;
+	kNewCmd.m_vValue			= pvAddress;
+	kNewCmd.m_pkObject		= kObject;
+	kNewCmd.m_iCmdID			= 0;
+	kNewCmd.m_iMinNumOfArgs = 0;
+
+	m_kCmdDataList.push_back(kNewCmd);
+
+#ifdef _DEBUG
+	Logf("Variable '%s' registred.\n", szName);
+#endif
+	return true;
+}
+
+bool ZFSystem::SetVariable(const char* szName, const char* szValue)
+{
+	ZFCmdData* pkArea = FindArea(szName);
+	if(!pkArea)
+		return false;
+
+	if(pkArea->m_eType == CSYS_STRING)
+		SetString (pkArea, szValue);											
+	else 
+		SetValue  (pkArea, szValue);											
+
+	return true;
+}
+
+
+void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue) 
+{
+	float dData = float(atof(szValue));
+	bool	bValue;
+
+	switch(pkArea->m_eType) {
+		case CSYS_INT:
+			*(int*)pkArea->m_vValue = (int)dData;break;
+		case CSYS_FLOAT:
+			*(float*)pkArea->m_vValue=(float)dData;break;
+		case CSYS_DOUBLE:
+			*(double*)pkArea->m_vValue=(double)dData;break;
+		case CSYS_LONG:
+			*(long*)pkArea->m_vValue=(long)dData;break;
+		case CSYS_BOOL:
+			if(IsSameIgnoreCase(szValue, "false"))
+				*(bool*)pkArea->m_vValue = false;
+			else if(IsSameIgnoreCase(szValue, "true"))
+				*(bool*)pkArea->m_vValue = true;
+			else if(IsSameIgnoreCase(szValue, "toggle")) {
+				bValue = *(bool*)pkArea->m_vValue;
+				*(bool*)pkArea->m_vValue = !bValue;
+				}
+			else 
+				*(bool*)pkArea->m_vValue=(bool)dData;
+
+			break;
+	}
+}	
+
+void ZFSystem::SetString(ZFCmdData* pkArea, const char* szValue) 
+{
+	(*(string*)pkArea->m_vValue)=szValue;
+}
+
+void* ZFSystem::GetVar(ZFCmdData* pkArea)
+ {
+	return (void*)pkArea->m_vValue;
+}
+
+string ZFSystem::GetVarValue(ZFCmdData* pkArea)
+{
+	char szValue[256];
+	strcpy(szValue, "");
+	string strValue;
+
+	switch(pkArea->m_eType) {
+		case CSYS_FUNCTION:
+			sprintf(szValue, "(%s)", pkArea->m_strHelpText.c_str());
+			break;
+		case CSYS_FLOAT:
+			sprintf(szValue, "%.3f", *(float*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%.3f]",kVars[i]->aName,*(float*)GetVar(i));break;
+			break;
+		case CSYS_DOUBLE:
+			sprintf(szValue, "%.3d", *(double*)pkArea->m_vValue);
+			//	m_pkCon->Printf(" %s = [%.3d]",kVars[i]->aName,*(double*)GetVar(i));break;
+			break;
+		case CSYS_LONG:
+			sprintf(szValue, "%l", *(long*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
+			break;
+		case CSYS_BOOL:
+			sprintf(szValue, "%d", *(bool*)pkArea->m_vValue);
+			break;
+		case CSYS_INT:
+			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);
+			break;
+		case CSYS_STRING:
+			sprintf(szValue, "%s", (string*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
+			break;
+		}
+
+	strValue = szValue;
+	return strValue;
 }
 
 bool ZFSystem::Log_Create(const char* szName)
@@ -444,226 +633,6 @@ void ZFSystem::Logf(const char* szName, const char* szMessageFmt,...)
 }
 
 
-
-
-
-bool ZFSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject,int iFlags)
-{
-	// Validate parameters
-	if(szName == NULL)		return false;
-	if(pvAddress == NULL)	return false;
-
-	// Check if there is already something with this name.
-	if(FindArea(szName)) 
-		return false;
-
-	ZFCmdData kNewCmd;
-	kNewCmd.m_strName			= string(szName);
-	kNewCmd.m_eType			= eType;
-	kNewCmd.m_iFlags			= iFlags;
-	kNewCmd.m_vValue			= pvAddress;
-	kNewCmd.m_pkObject		= kObject;
-	kNewCmd.m_iCmdID			= 0;
-	kNewCmd.m_iMinNumOfArgs = 0;
-
-	m_kCmdDataList.push_back(kNewCmd);
-
-#ifdef _DEBUG
-	Logf("Variable '%s' registred.\n", szName);
-#endif
-	return true;
-	
-}
-
-bool ZFSystem::SetVariable(const char* szName, const char* szValue)
-{
-	ZFCmdData* pkArea = FindArea(szName);
-	if(!pkArea)
-		return false;
-
-	if(pkArea->m_eType == CSYS_STRING)
-		SetString (pkArea, szValue);											
-	else 
-		SetValue  (pkArea, szValue);											
-
-	return true;
-}
-
-
-void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue) 
-{
-	float dData = float(atof(szValue));
-	bool	bValue;
-
-	switch(pkArea->m_eType) {
-		case CSYS_INT:
-			*(int*)pkArea->m_vValue = (int)dData;break;
-		case CSYS_FLOAT:
-			*(float*)pkArea->m_vValue=(float)dData;break;
-		case CSYS_DOUBLE:
-			*(double*)pkArea->m_vValue=(double)dData;break;
-		case CSYS_LONG:
-			*(long*)pkArea->m_vValue=(long)dData;break;
-		case CSYS_BOOL:
-			if(IsSameIgnoreCase(szValue, "false"))
-				*(bool*)pkArea->m_vValue = false;
-			else if(IsSameIgnoreCase(szValue, "true"))
-				*(bool*)pkArea->m_vValue = true;
-			else if(IsSameIgnoreCase(szValue, "toggle")) {
-				bValue = *(bool*)pkArea->m_vValue;
-				*(bool*)pkArea->m_vValue = !bValue;
-				}
-			else 
-				*(bool*)pkArea->m_vValue=(bool)dData;
-
-			break;
-	}
-}	
-
-void ZFSystem::SetString(ZFCmdData* pkArea, const char* szValue) 
-{
-	(*(string*)pkArea->m_vValue)=szValue;
-}
-
-void* ZFSystem::GetVar(ZFCmdData* pkArea)
- {
-	return (void*)pkArea->m_vValue;
-}
-
-string ZFSystem::GetVarValue(ZFCmdData* pkArea)
-{
-	char szValue[256];
-	strcpy(szValue, "");
-	string strValue;
-
-	switch(pkArea->m_eType) {
-		case CSYS_FUNCTION:
-			sprintf(szValue, "(%s)", pkArea->m_strHelpText.c_str());
-			break;
-		case CSYS_FLOAT:
-			sprintf(szValue, "%.3f", *(float*)pkArea->m_vValue);
-			//m_pkCon->Printf(" %s = [%.3f]",kVars[i]->aName,*(float*)GetVar(i));break;
-			break;
-		case CSYS_DOUBLE:
-			sprintf(szValue, "%.3d", *(double*)pkArea->m_vValue);
-			//	m_pkCon->Printf(" %s = [%.3d]",kVars[i]->aName,*(double*)GetVar(i));break;
-			break;
-		case CSYS_LONG:
-			sprintf(szValue, "%l", *(long*)pkArea->m_vValue);
-			//m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
-			break;
-		case CSYS_BOOL:
-			sprintf(szValue, "%d", *(bool*)pkArea->m_vValue);
-			break;
-		case CSYS_INT:
-			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);
-			break;
-		case CSYS_STRING:
-			sprintf(szValue, "%s", (string*)pkArea->m_vValue);
-			//m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
-			break;
-		}
-
-	strValue = szValue;
-	return strValue;
-}
-
-
-/*
-	Print all system variables.
-*/
-void ZFSystem::PrintVariables()
-{
-	BasicConsole*		m_pkCon;
-	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
-	string strValue;
-
-	m_pkCon->Printf("### variable list ###");
-
-	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-		if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't print none valid data.
-		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't print functions.
-
-		strValue = GetVarValue(&m_kCmdDataList[i]);
-		m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
-	}
-}
-
-
-void ZFSystem::PrintCommands()
-{
-	BasicConsole*		m_pkCon;
-	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
-	string strValue;
-
-	m_pkCon->Printf("### variable list ###");
-
-	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION) {
-			strValue = GetVarValue(&m_kCmdDataList[i]);
-			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
-			}
-	}
-}
-
-
-
-bool ZFSystem::StartUp()
-{
-	cout << "Start ZeroFps Engine SubSystems:" << endl;
-	g_Logf("Start ZeroFps Engine SubSystems: \n");
-
-	int iSize = kObjectNames.size();
-	ZFSubSystem* pkTestObject;
-
-	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
-		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
-
-		pkTestObject = kObjectNames[i].pkObject;
-
-		if(!kObjectNames[i].pkObject->StartUp()) {
-			g_Logf("Fail\n");
-			return false;
-			}
-
-		kObjectNames[i].m_bStarted = true;
-		g_Logf("Ok\n");
-	}
-	
-	return true;
-}
-
-bool ZFSystem::ShutDown()
-{
-	g_Logf("ShutDown Engine SubSystems: \n");
-
-	// Engine Systems Shutdown backwards.
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		if(kObjectNames[i].m_bStarted == false)	continue;
-
-		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
-		if(!kObjectNames[i].pkObject->ShutDown()) {
-			g_Logf("Fail\n");
-			return false;
-			}
-		g_Logf("Ok\n");
-	}
-
-
-	
-	return true;
-}
-
-bool ZFSystem::IsValid()
-{
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		if(!kObjectNames[i].pkObject->IsValid())
-			return false;
-	}
-	
-	return true;
-}
-
 void ZFSystem::Config_Save(string strFileName)
 {
 	string strVar;
@@ -713,43 +682,6 @@ void ZFSystem::Config_Load(string strFileName)
 				}
 			}
 		}
-		
-}
-
-
-void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
-{
-	string	strFullArg;
-	string	strArg;
-	bool		bFoundArg = false;
-
-	for(int i = 0; i < iNrOfArgs; i++) {
-		strArg = string(paArgs[i]);
-
-		if(strArg.c_str()[0] == '-') {
-			bFoundArg = true;
-			// Start of new argument.
-			if(strFullArg.size())
-				AppArguments.push_back(strFullArg);
-	
-			strFullArg = "";
-			strArg.erase(0,1);
-			}
-
-		if(bFoundArg)
-			strFullArg = strFullArg + " " + strArg;
-		}
-
-	if(strFullArg.size())
-		AppArguments.push_back(strFullArg);
-
-	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
-	for(int ia = 0; ia < AppArguments.size(); ia++) {
-		
-		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
-
-		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
-		}
 }
 
 void ZFSystem::Printf(const char* szMessageFmt,...)
@@ -772,3 +704,42 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 	// Now call our print function.
 	m_pkConsole->Print(g_LogFormatTxt2);
 }
+
+
+
+void CmdArgument::Set(const char* szCmdArgs)
+{
+	m_strFullCommand = string(szCmdArgs);
+	m_kSplitCommand.clear();
+	string	kNewArg;
+
+	if(strlen(szCmdArgs) == 0) {
+		m_kSplitCommand.push_back("");
+		return;
+	}
+
+	int args = 0;	// Number of arguments
+	kNewArg = "";
+
+	for(unsigned int i=0; i<strlen(szCmdArgs); i++) {
+
+		while((unsigned int)(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
+			kNewArg.append(1,szCmdArgs[i]);						//add to argument nr args
+			i++;
+		}
+
+		if(kNewArg.size() !=0 ) {
+		//if nothing was added to the argument use it in the next loop
+			m_kSplitCommand.push_back(kNewArg);		
+			kNewArg = "";
+		}
+			args++;
+	}
+}
+/**	\brief	Get a ptr to the ZFSystem object.
+	FittHORA
+*/
+/*ZFSystem* ZFSystem::GetInstance()
+{
+	return ZFSystem::pkInstance;
+}*/

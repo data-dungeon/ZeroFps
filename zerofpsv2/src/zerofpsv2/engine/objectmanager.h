@@ -39,7 +39,12 @@ public:
 
 };
 
-/// SubSystem that handles all objects in the world.
+/**	\brief	SubSystem that handles all objects in the world.
+Handles the mangment of all objects that make up the game world. The OM are used to
+create, update and destroy objects. It also handles to operation of replicating objects
+to other connected users that need to now about them.
+*/
+
 class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
 		enum FuncId_e

@@ -144,7 +144,19 @@ public:
 #define OBJ_NETFLAG_ROT		2
 
 
-/// Game Object for things in game 
+/**	\brief	Game Object for things in game 
+
+A Object is the lowest level of something that exist in the gameworld. All things like
+players, npcs, weapons, explosions, buildings and the ground are objects. Objects don't
+have to be something visible that one can see, things like mission goals and triggers
+are also objects. All objects are handled by the ObjectManger.
+
+All objects in the game have somethings that are common for all of them. The are all
+stored in the OM, the all have a type, a ID, a name and some other things. The things that make
+each and every object diffrent are the type of properties they have. 
+
+
+*/
 class ENGINE_API Object 
 {
 	friend class Property;

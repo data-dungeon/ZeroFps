@@ -6,7 +6,9 @@
 
 using namespace std;
 
-/// Base class for all resources.
+/**	\brief	Base class for all resources.
+
+*/
 class BASIC_API ZFResource
 {
 private:
@@ -24,7 +26,9 @@ public:
 	friend class ZFResourceDB;						
 };
 
-/// A Handle to a Resource.
+/**	\brief	A Handle to a Resource.
+
+*/
 class BASIC_API ZFResourceHandle
 {
 private:

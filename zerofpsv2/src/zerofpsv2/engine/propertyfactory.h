@@ -29,7 +29,12 @@ public:
 	}
 };
 
-/// Engine System that creates propertys.
+/// 
+/**	\brief	Engine System that creates propertys.
+
+This class keeps a list of all type of propertys that exist in the game and creates
+them when requested by the ObjectManger.
+*/
 class ENGINE_API PropertyFactory : public ZFSubSystem
 {
 private:

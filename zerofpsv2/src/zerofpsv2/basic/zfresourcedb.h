@@ -18,7 +18,9 @@ public:
 	ZFResource*	(*Create)();		// Create function for resource type.
 };
 
-/// Data that the Resource manger have about a resource.
+/**	\brief	Data that the Resource manger have about a resource.
+
+*/
 class ZFResourceInfo
 {
 private:
@@ -46,7 +48,9 @@ public:
 		}	
 };
 
-/// Resource manger.
+/**	\brief	Resource manger.
+
+*/
 class BASIC_API ZFResourceDB : public ZFSubSystem {
 	private:
 		enum FuncId_e

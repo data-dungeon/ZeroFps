@@ -12,6 +12,7 @@ using namespace std;
 
 class ZFSubSystem;
 class BasicConsole;
+class CmdSystem;
 
 /// A Log File.
 class ZFLogFile
@@ -20,7 +21,7 @@ public:
 	string	m_strName;
 	string	m_strFileName;
 
-	FILE*	m_pkFilePointer;
+	FILE*		m_pkFilePointer;
 };
 
 /// Links Names to ZFObjects
@@ -31,7 +32,6 @@ struct NameObject
 	int				m_iNumOfRequests;		// Num times name was checked.
 	int				m_bStarted;				// True if this subsystem has started ok.
 };
-
 
 /// Contains data about a stored command.
 class BASIC_API ZFCmdData
@@ -60,54 +60,60 @@ public:
 	static TClass* pkInstance;		\
 	static TClass* GetInstance();	\
 
-/// 
 /**	\brief	Tracks all Engine Sub Systems objects.
 
+ZFSystem is the master objekt that keep track of all other subsystems in ZeroFPS. 
+There should only be one of this in the program. 
+
+- Have a list of all SubSystems.<BR>
+- Handles cmd functions and variables.<BR>
+- Handles Log files.<BR>
+- Handles ini files.<BR>
 */
 class BASIC_API ZFSystem	/*	ZFSystem	*/
 {
 private:
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
-
-	vector<ZFLogFile>		m_kLogFiles;
+	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
 	FILE*						m_pkLogFile;
 
+	void PrintVariables();
+	void PrintCommands();
+	void PrintObjects(void);
+	void LogVariables(void);
+//	void PrintObjectsHer(void);
+
 protected:
-	vector<string>			AppArguments;		
-	BasicConsole*			m_pkConsole;
+	vector<string>			AppArguments;			///< Arguments sent to app at startup.
+	BasicConsole*			m_pkConsole;			///< Ptr to ZeroFps Console.
 
 public:
-	public:
-	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
-
-	//DECLARE_SINGLETON(ZFSystem);
+	vector<NameObject>	kObjectNames;			///< List of all object names/ptrs.
 
 	void HandleArgs(int iNrOfArgs, char** paArgs);
 
-
 	static ZFSystem* pkInstance;
-	static ZFSystem* GetInstance();
+	static ZFSystem* GetInstance() { return ZFSystem::pkInstance; }
 
 	ZFSystem();
 	~ZFSystem();
 
-	void Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent);	///< Register a Object.
-	void UnRegister(ZFSubSystem* pkObject);									///< UnRegister a objects.
-	ZFSubSystem* GetObjectPtr(char* acName);									///< Get pointer to object by name.
+	void Register(ZFSubSystem* pkObject, char* acName /*, ZFSubSystem* pkParent*/);		// Register a SubSystem.
+	void UnRegister(ZFSubSystem* pkObject);													// UnRegister a objects.
+	ZFSubSystem* GetObjectPtr(char* acName);													// Get pointer to SubSystem by name.
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
 
-	void Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject);						///< Links a object as a child to another.
-	void UnLink(ZFSubSystem* pkObject);										///< Unlinks a object from another.
-
-	void PrintObjects(void);
-	void PrintObjectsHer(void);
-	void LogVariables(void);
+//	void Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject);								///< Links a object as a child to another.
+//	void UnLink(ZFSubSystem* pkObject);															///< Unlinks a object from another.
 
 // Cmd / Functions.
-	ZFCmdData* FindArea(const char* szName);
-	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, int iFlags, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
-	bool UnRegister_Cmd(ZFSubSystem* kObject);									///< UnRegister all cmd's bound to a object.
-	///< Run a cmd by passing it along to the correct object
-	bool RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource);				
+	ZFCmdData* FindArea(const char* szName);	// GALLA
+	/// Register a Cmd and object that will handle it.
+	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, int iFlags, char* szHelp = NULL, int iNumOfArg = 0);	
+	bool UnRegister_Cmd(ZFSubSystem* kObject);												///< UnRegister all cmd's bound to a object.
+	bool RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource);						///< Run a cmd by passing it along to the correct object
 
 // Variables
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject, int iFlags);
@@ -116,30 +122,26 @@ public:
 	void SetValue(ZFCmdData* pkArea, const char* szValue);
 	void SetString(ZFCmdData* pkArea, const char* szValue);
 
-	void PrintVariables();
-	void PrintCommands();
 	void* GetVar(ZFCmdData* pkArea);
 	string GetVarValue(ZFCmdData* pkArea);
 
 // Log Files
-	void Log(const char* szMessage);
 	bool Log_Create(const char* szName);
 	void Log_Destory(const char* szName);
 	ZFLogFile*	Log_Find(const char* szName);
 	void Log_DestroyAll();
+
+	void Log(const char* szMessage);
 	void Log(const char* szName, const char* szMessage);
 	void Logf(const char* szName, const char* szMessageFmt,...);
-
-	void Printf(const char* szMessageFmt,...);			// Print to console if created.
-
-
-	bool StartUp();
-	bool ShutDown();
-	bool IsValid();
 
 	// Config Files
 	void Config_Save(string strFileName);
 	void Config_Load(string strFileName);
+
+	void Printf(const char* szMessageFmt,...);			// Print to console if created.
+
+	friend class CmdSystem;
 };
 
 extern BASIC_API ZFSystem g_ZFObjSys;

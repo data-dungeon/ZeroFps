@@ -126,7 +126,9 @@ private:
 
 /////END OF GUBB ULTRACLASS!!/// 
 
-/// A property of a object.
+/**	\brief	A property of a object.
+A Property is the things that make the objects in the world diffrent. 
+*/
 class ENGINE_API Property 
 {
 	private:

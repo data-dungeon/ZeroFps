@@ -172,19 +172,19 @@ SOURCE=.\zfmempackage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\zfobject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfobjectmanger.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfresource.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\zfresourcedb.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfsubsystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfsystem.cpp
 # End Source File
 # Begin Source File
 
@@ -296,19 +296,19 @@ SOURCE=.\zfmempackage.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zfobject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfobjectmanger.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfresource.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\zfresourcedb.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfsubsystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfsystem.h
 # End Source File
 # Begin Source File
 

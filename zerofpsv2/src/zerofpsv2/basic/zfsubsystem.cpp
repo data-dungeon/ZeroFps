@@ -13,22 +13,21 @@
 using namespace std;
 
 BASIC_API ZFSystem g_ZFObjSys;
-
  
 ZFSubSystem::ZFSubSystem(char *szName)
 {
 	m_strZFpsName = string("");
-	m_pkParent = NULL;
+//	m_pkParent = NULL;
 	m_pkSystem = NULL;
-	g_ZFObjSys.Register(this, szName, NULL);
+	g_ZFObjSys.Register(this, szName);
 }
 
 ZFSubSystem::~ZFSubSystem()
 {
-	DestroyChildren();
+//	DestroyChildren();
 	g_ZFObjSys.UnRegister(this);
 }
-
+/*
 int ZFSubSystem::GetNumChildren() const
 {
 	return m_akChild.size();
@@ -118,6 +117,12 @@ void ZFSubSystem::DestroyChildren()
 	}
 
 }
+*/
+
+ZFSystem& ZFSubSystem::GetSystem()
+{
+	return *m_pkSystem;
+}
 
 bool ZFSubSystem::Register_Cmd(char* szName, int iCmdID, int iFlags, char* szHelp, int iNumOfArg)
 {
@@ -127,12 +132,6 @@ bool ZFSubSystem::Register_Cmd(char* szName, int iCmdID, int iFlags, char* szHel
 bool ZFSubSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags)
 {
 	return g_ZFObjSys.RegisterVariable(szName,pvAddress,eType, this, iFlags);	
-
-}
-
-ZFSystem& ZFSubSystem::GetSystem()
-{
-	return *m_pkSystem;
 }
 
 char g_LogFormatTxt3[4096];	
@@ -152,32 +151,20 @@ void ZFSubSystem::Logf(const char* szName, const char* szMessageFmt,...)
 	GetSystem().Log(szName, g_LogFormatTxt3);
 }
 
-
-
-
-
-/**
-	dfsad
-  */
+/*
 bool ZFSubSystem::StartUp()
 {
 	return true;
 }
 
-/**
-	sgdsfg
-  */
 bool ZFSubSystem::ShutDown()
 {
 	return true;
 	
 }
 
-/**
-	dghdfj
-*/
 bool ZFSubSystem::IsValid()
 {
 	return true;
-
 }
+*/

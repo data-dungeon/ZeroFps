@@ -18,7 +18,10 @@ struct color_rgba {
 
 #pragma pack(  )
 
-/// Class to load images in diffrent file formats.
+/**	\brief	Class to load images in diffrent file formats.
+
+  Class to load Images. All loaded images are converted into RGBA-32 format.
+*/
 class BASIC_API Image 
 {
 private:

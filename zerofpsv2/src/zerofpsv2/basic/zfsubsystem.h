@@ -46,8 +46,6 @@ enum ZFCmdSource
 #define	CSYS_FLAG_SRC_UNKNOWN	16
 #define	CSYS_FLAG_SRC_ALL			(CSYS_FLAG_SRC_CMDLINE | CSYS_FLAG_SRC_INITFILE | CSYS_FLAG_SRC_CONSOLE | CSYS_FLAG_SRC_SUBSYS | CSYS_FLAG_SRC_UNKNOWN)
 
-
-
 class BASIC_API CmdArgument
 {
 public:
@@ -65,59 +63,60 @@ in the engine that is used in many other places. All Subsystems can be accessed 
 the ZFSystem. A subsystem can make its variables changeable from the console and
 other places and also respond to commands sent from console, cmd line and init files.
 
-The create a subsystem one need to create the following functions:
+To create a subsystem one need to create the following functions:
 
 Constructor:	Init variables, register variables and commands. Do NOT acces any other
-					subsystem.
-StartUp:			Get Ptr's to other subsystems we will use. Startup ourself
-ShutDown:		Sutdown ourself.
-Destructor:		
+					subsystem.<BR>
+StartUp:			Get Ptr's to other subsystems we will use. Startup ourself. Only use subsystems
+					that started before ourself.<BR>
+ShutDown:		Sutdown ourself.<BR>
+Destructor:		<BR>
 
 RunCommand:		This is used to handles the commands that we have registred. Evey commands
-					is registred by a name and i sent to us as a Int ID that we can specify when
+					is registred by a name and is sent to us as a Int ID that we can specify when
 					we registred it.
+
+To get access to the other subsystem one should use GetSystem() to get a ptr to 
+the ZeroFps System and request a ptr to the other subsystem.
 */
 class BASIC_API ZFSubSystem
 {
 private:
 	string					m_strZFpsName;					///<	Name of this objekt.
-	void DestroyChildren();									///<	Remove and delete children.
+//	void DestroyChildren();									///<	Remove and delete children.
 		
 protected:
-	vector<ZFSubSystem*>		m_akChild;					///<	List of all object we own.
-	ZFSubSystem*				m_pkParent;					///<	Ptr to object that own us.
+//	vector<ZFSubSystem*>		m_akChild;					///<	List of all object we own.
+//	ZFSubSystem*				m_pkParent;					///<	Ptr to object that own us.
 
 	ZFSubSystem(char *szName);		
-			
 
 public:
-	ZFSystem*			m_pkSystem;	
+	ZFSystem*					m_pkSystem;					///<  Ptr to the System.
 	
 	ZFSystem&	GetSystem();
 
-	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
-
-	ZFSubSystem*	GetParent() const;					///< Get ptr to object parent.
+/*	ZFSubSystem*	GetParent() const;					///< Get ptr to object parent.
 
 	int GetNumChildren() const;							///< Get num of children we have.
 	int GetChildIndex(ZFSubSystem* pkChild);			///< Get index for child.
 	int GetChildIndex(char* szName);						///< Get index for child.
 	ZFSubSystem* GetChildPtr(int iIndex);				///< Get ptr to child.
 	ZFSubSystem* GetChildPtr(char* szName);			///< Get ptr to child.
-
 	void AddChild(ZFSubSystem* pkObject);				///< Make a object child to this.
 	void RemoveChild(ZFSubSystem* pkObject);			///< Remove one of our children.
-
 	void PrintChilds(const char* szParentName);		///< Debug: Prints childs from this object. 
-	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd for this SubSys.
+*/
+
+	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);		///< Register a Cmd for this SubSys.
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);			///< Register a var for this SubSys
- 
-	void Logf(const char* szName, const char* szMessageFmt,...);
+ 	void Logf(const char* szName, const char* szMessageFmt,...);
 
 	virtual ~ZFSubSystem();
 
 	friend class ZFSystem;
 
+	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
 	virtual bool StartUp()  = 0;
 	virtual bool ShutDown() = 0;
 	virtual bool IsValid()  = 0;
