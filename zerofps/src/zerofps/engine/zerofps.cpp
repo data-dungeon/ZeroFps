@@ -1,13 +1,17 @@
 #include "zerofps.h"
 
 ZeroFps::ZeroFps(void) {
+	m_pkFile=new FileIo;
 	m_pkCmd=new CmdSystem;
-	m_pkTexMan=new TextureManager;
+	m_pkTexMan=new TextureManager(m_pkFile);
 	m_pkPrims=new Primitives(m_pkTexMan);
 	m_pkConsole=new Console(this);	
 	m_pkInput=new Input();
+	m_pkModMan=new ModellManager(m_pkFile);
 	
 	m_pkCmd->Add(&m_iState,"m_iState",type_int);
+	m_pkCmd->Add(&m_iFps,"m_iFps",type_int);
+	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
 }
 
 
@@ -95,6 +99,10 @@ void ZeroFps::Swap(void) {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   glFrustum(-0.25,0.25,-0.25,0.25,0.25,50.0);
 
+	//count FPS
+	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
+	m_fLastFrameTime=SDL_GetTicks();
+	m_iFps=int(1000/m_fFrameTime);
 }
 
 

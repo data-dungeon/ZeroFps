@@ -1,10 +1,13 @@
 #include "texturemanager.h"
 
 
+TextureManager::TextureManager(FileIo* pkFile) {
+	m_pkFile=pkFile;
+}	
 
 
 bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename) {
-        SDL_Surface *image;
+	SDL_Surface *image;
 
   image= LoadImage(acFilename);
   if(!image) {    
@@ -28,7 +31,8 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
   SDL_Surface *image;
   int i, j;
 
-  image = SDL_LoadBMP(acFilename);
+
+	image = SDL_LoadBMP(m_pkFile->File(acFilename));
     if ( image == NULL ) {
     //  fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
       return(NULL);

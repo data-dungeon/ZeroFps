@@ -80,9 +80,9 @@ void Console::Update(void) {
 }
 
 void Console::Draw(void) {
-	m_pkPrims->SetFont("../data/textures/text/console.bmp");
+	m_pkPrims->SetFont("file:../data/textures/text/console.bmp");
 
-	m_pkPrims->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("../data/textures/background.bmp"));
+	m_pkPrims->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
 	
 	m_pkPrims->Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
 	

@@ -26,16 +26,22 @@ class ZeroFps {
 		SDL_Surface* m_pkScreen;		
 		void HandleArgs(int iNrOfArgs, char** paArgs);
 
+		float m_fLastFrameTime;
+
 	public:
-		Application* m_pkApp;		
-		CmdSystem* m_pkCmd;
-		TextureManager* m_pkTexMan;
-		Input* m_pkInput;
-		Primitives* m_pkPrims;
-		Console* m_pkConsole;	
+		Application* m_pkApp;						//application
+		CmdSystem* m_pkCmd;							//realtime variable handler
+		TextureManager* m_pkTexMan;			//texture manager
+		ModellManager* m_pkModMan;			//texture manager		
+		Input* m_pkInput;								//keyboard mouse input
+		Primitives* m_pkPrims;					//graphic primitives
+		Console* m_pkConsole;						//console handler
+		FileIo* m_pkFile;								//file io
 	
-		int m_iState;
-	
+		int m_iState;										//curent game state see enum enginestates
+		int m_iFps;											//curent FPS
+		float m_fFrameTime;							//frametime in MS
+			
 		ZeroFps(void);
 		
 		void SetApp(void);
@@ -43,7 +49,7 @@ class ZeroFps {
 		void MainLoop(void);
 		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
-		void Swap(void);
+		void Swap(void);								//swap gl buffers
 		
 		
 };
