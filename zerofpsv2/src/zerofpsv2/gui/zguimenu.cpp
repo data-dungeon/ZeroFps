@@ -51,10 +51,10 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 			{
 				if(m_vkItems[i]->bOpenSubMenu)
 				{
-					m_bIsOpen = true;
-
 					if(m_vkItems[i]->pkParent == NULL)
 						HideAll();
+
+					m_bIsOpen = true;
 
 					ZGuiMenuItem* pkSubMenu = m_vkItems[i];
 
@@ -419,6 +419,8 @@ void ZGuiMenu::HideAll()
 	{
 		it->second = false;
 	}
+
+	m_bIsOpen = false;
 }
 
 void ZGuiMenu::ResizeMenu()

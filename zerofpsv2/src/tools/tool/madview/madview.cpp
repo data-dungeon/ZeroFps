@@ -65,8 +65,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MadView::OnInit() 
 {
-	m_strMadFile = "data/mad/cube.mad";
-
 	//open mad from command line
 	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
 	{

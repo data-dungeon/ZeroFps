@@ -3,6 +3,18 @@
 
 void MadView::Input()
 {
+	if(GetWnd("MainMenu"))
+	{
+		if(((ZGuiMenu*)GetWnd("MainMenu"))->IsOpen())
+		{
+			ShowWnd("MadViewInfoWnd", false);
+		}
+		else
+		{
+			if(!IsWndVisible("SelectFileWnd"))
+				ShowWnd("MadViewInfoWnd", true);	
+		}
+	}
 	Vector3 kCamerPos = m_pkCameraObject->GetWorldPosV();
 
 	if(m_pkInputHandle->Pressed(KEY_W))
