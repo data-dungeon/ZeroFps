@@ -175,9 +175,7 @@ bool ZeroFps::StartUp()
 {
 	//std lua lib
 	StdLua::Init(m_pkScript, m_pkZFVFileSystem );
-	
-	m_strCurentDir = "/";
-	 
+		 
 	m_pkGuiInputHandle = new InputHandle("Gui");
 	m_pkInputHandle = new InputHandle("Zerofps");
 	m_pkInput->SetActiveInputHandle("Zerofps");
@@ -1113,10 +1111,10 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 {
-	char szCmd[512];
-	Vector3 kPos;
-	int iEntId;
-	Vector3 kMove;
+	char 		szCmd[512];
+	Vector3 	kPos;
+	int 		iEntId;
+	Vector3 	kMove;
 
 	pkNetPacket->Read_Str(szCmd);
 
@@ -1269,6 +1267,61 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		{
 			pkEnt->DeleteProperty(strPropertyName.c_str());							
 		}
+	}
+	
+	if( szCmd == string("request_zones"))
+	{
+	
+		cout<<"sending zones to client editor"<<endl;
+	
+		NetPacket kNp;
+		
+		//setup new list package
+		kNp.Clear();
+		kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
+		kNp.Write(bool(true));
+		
+		for(int i = 0;i<m_pkEntityManager->m_kZones.size();i++)
+		{
+			//if packet gets to big
+			if(kNp.m_iLength >= 800)
+			{
+				//send package
+				kNp.Write(int(-1));				
+				kNp.TargetSetClient(pkNetPacket->m_iClientID);
+				m_pkApp->SendAppMessage(&kNp);
+				
+				// and setup a new one
+				kNp.Clear();
+				kNp.Write((unsigned char ) ZPGP_ZED_ZONELIST);		
+				kNp.Write(bool(false));				
+			}
+			
+			//write zone info
+			if(m_pkEntityManager->m_kZones[i].m_iStatus != EZS_UNUSED)
+			{
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iStatus);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneID);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_kPos);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_kSize);			
+			}			
+		}
+		
+		//send package
+		kNp.Write(int(-1));
+		kNp.TargetSetClient(pkNetPacket->m_iClientID);
+		m_pkApp->SendAppMessage(&kNp);	
+	}
+	
+	if( szCmd == string("setzonemodel") )	
+	{	
+		int 		iZoneID;
+		string	strModel;
+		
+		pkNetPacket->Read(iZoneID);
+		pkNetPacket->Read_Str(strModel);	
+		
+		m_pkEntityManager->SetZoneModel(strModel.c_str(),iZoneID);
 	}	
 }
 

@@ -94,7 +94,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
-   RegisterVariable("r_loginstart", &m_strPlayerName, CSYS_STRING);
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
@@ -710,6 +709,10 @@ void ZeroEd::RenderInterface(void)
 		//m_pkRender->SetColor(Vector3(1,1,1));
 		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
 	}
+	
+	//draw zone list if connected to a server
+	DrawZoneList();
+	
 }
 
 HeightMap* ZeroEd::SetPointer()
@@ -1415,25 +1418,6 @@ void ZeroEd::ToogleLight(bool bEnabled)
 
 }
 
-void ZeroEd::UpdateStartLocatons()
-{
-	m_kLocations.clear();
-
-	pair<string,Vector3> temp("Start",Vector3(0,1,0));
-	m_kLocations.push_back(temp);
-}
-
-Vector3 ZeroEd::GetPlayerStartLocation(const char* csName)
-{
-	for(unsigned int i=0;i<m_kLocations.size();i++)
-		if(m_kLocations[i].first == csName)
-		{	
-			cout<<"found location: "<<csName<<endl;
-			return m_kLocations[i].second+Vector3( float((rand()%1000)/1000.0),  0,  float((rand()%1000)/1000.0));
-		}
-	
-	return Vector3(0,0,0);
-}
 
 void ZeroEd::SetZoneEnviroment(const char* csEnviroment)
 {
@@ -1590,10 +1574,118 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 			GetSystem().RunCommand("r_maddraw 5",CSYS_SRC_SUBSYS);
 			break;
 
+		case ZPGP_ZED_ZONELIST:
+		{
+			bool bClear;			
+			PkNetMessage->Read(bClear);
+			
+			//shuld list be cleared
+			if(bClear)
+				m_kNetworkZones.clear();
+					
+			ZoneData	kTemp;
+			
+			//read first zone status
+			PkNetMessage->Read(kTemp.m_iStatus);
+			while(kTemp.m_iStatus != -1)
+			{
+				PkNetMessage->Read(kTemp.m_iZoneID);
+				PkNetMessage->Read(kTemp.m_kPos);
+				PkNetMessage->Read(kTemp.m_kSize);						
+
+				m_kNetworkZones.push_back(kTemp);
+							
+				PkNetMessage->Read(kTemp.m_iStatus);
+			}
+			break;
+		}
+			
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);
 			return;
+	}
+}
+
+void	ZeroEd::DrawZoneList()
+{
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+		pkLine->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zonebuild");
+	}		
+		
+	static ZMaterial* pkMatZoneOn = NULL;
+	if(!pkMatZoneOn)
+	{
+		pkMatZoneOn = new ZMaterial;
+		pkMatZoneOn->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOn->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkMatZoneOn->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+		pkMatZoneOn->GetPass(0)->m_bLighting = false;
+		pkMatZoneOn->GetPass(0)->m_bFog = false;
+		pkMatZoneOn->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneOn->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneon");
+	}			
+
+	static ZMaterial* pkMatZoneOff = NULL;
+	if(!pkMatZoneOff)
+	{
+		pkMatZoneOff = new ZMaterial;
+		pkMatZoneOff->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOff->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkMatZoneOff->GetPass(0)->m_iCullFace = CULL_FACE_NONE;			
+		pkMatZoneOff->GetPass(0)->m_bLighting = false;
+		pkMatZoneOff->GetPass(0)->m_bFog = false;
+		pkMatZoneOff->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneOff->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneoff");
+	}				
+	
+	static ZMaterial* pkMatZoneCache = NULL;	
+	if(!pkMatZoneCache)
+	{
+		pkMatZoneCache = new ZMaterial;
+		pkMatZoneCache->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneCache->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkMatZoneCache->GetPass(0)->m_iCullFace = CULL_FACE_NONE;			
+		pkMatZoneCache->GetPass(0)->m_bFog = false;
+		pkMatZoneCache->GetPass(0)->m_bLighting = false;
+		pkMatZoneCache->GetPass(0)->m_bColorMaterial = true;
+		pkMatZoneCache->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneunloading");
+	}		
+	
+	//draw zones
+	for(unsigned int i=0;i<m_kNetworkZones.size();i++) 
+	{
+		if(m_kNetworkZones[i].m_iStatus == EZS_UNUSED)
+			continue;
+
+		Vector3 kMin = m_kNetworkZones[i].m_kPos - m_kNetworkZones[i].m_kSize/2;
+		Vector3 kMax = m_kNetworkZones[i].m_kPos + m_kNetworkZones[i].m_kSize/2;
+	
+		switch(m_kNetworkZones[i].m_iStatus)
+		{
+			case EZS_LOADED:
+				m_pkZShaderSystem->BindMaterial(pkMatZoneOn);
+				m_pkRender->DrawAABB( kMin,kMax);
+				break;
+		
+			case EZS_UNLOADED:
+				m_pkZShaderSystem->BindMaterial(pkMatZoneOff);
+				m_pkRender->DrawAABB( kMin,kMax);
+				break;
+
+			case EZS_CACHED:
+				m_pkZShaderSystem->BindMaterial(pkMatZoneCache);
+				m_pkRender->DrawAABB( kMin,kMax);
+				break;								
+		}
 	}
 }
 
@@ -1602,10 +1694,29 @@ void ZeroEd::OnDisconnect(int iConnectionID)
 	cout << "NOOOOOOOOOOOO im disconnected" << endl;
 }
 
+void	ZeroEd::SendZoneListRequest()
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("request_zones");
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);
+}
 
 
+void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("setzonemodel");
+	kNp.Write(iZoneID);
+	kNp.Write_Str(strModel);	
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);
 
-
+}
 
 
 

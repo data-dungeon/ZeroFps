@@ -71,6 +71,7 @@ enum enginestates
 #define	ZFGP_COMMAND			12
 #define	ZFGP_EDIT				13
 #define  ZPGP_SS_APP				14		
+#define  ZPGP_ZED_ZONELIST		15
 
 #define	ZFGP_ENDOFPACKET		128
 
@@ -154,8 +155,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iServerConnection;				// The Connection num we have on the server.		
 		int		m_iClientEntityID;						
 		int		m_iMaxPlayers;
-
-		string	m_strCurentDir;							//current console dir , used by cd,dir
 				
 		//materials
 		ZMaterial*	m_pkDevPageMaterial;

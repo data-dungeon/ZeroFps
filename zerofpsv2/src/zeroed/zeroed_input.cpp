@@ -53,6 +53,12 @@ void ZeroEd::Input_EditTerrain()
 // Handles input for EditMode Zones.
 void ZeroEd::Input_EditZone()
 {
+	if(m_pkInputHandle->Pressed(KEY_L) && !DelayCommand())
+	{
+		SendZoneListRequest();
+	
+	}
+
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
 		//AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);

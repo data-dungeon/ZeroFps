@@ -264,8 +264,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//zone system		
 		void 		UpdateZoneSystem();
-		void 		SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
-		string 	GetWorldDir() { return m_kWorldDirectory; };
+		void 		SetWorldDir(string strDir) 							{	m_kWorldDirectory = strDir;	};
+		string 	GetWorldDir() 												{	return m_kWorldDirectory;		};
 		bool 		SaveWorld(string strSaveDir,bool bForce=false);
 		bool 		LoadWorld(string strLoadDir);
 
@@ -283,7 +283,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int 			GetNumOfZones();
 		int 			GetUnusedZoneID();		
 		Vector3 		GetZoneCenter(int iZoneNum);
-		void 			SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};		
+		void 			SetTrackerLos(int iLos) 							{	m_iTrackerLOS = iLos;			};		
 		int 			GetZoneIndex(Entity* PkEntity,int iCurrentZone,bool bClosestZone);
 		ZoneData* 	GetZone(Entity* PkEntity);
 		

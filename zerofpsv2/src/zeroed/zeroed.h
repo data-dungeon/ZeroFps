@@ -47,17 +47,6 @@
 */
 class ZeroEd :public Application , public ZGuiApp {
 	private:
-		char		szCoolName[256];
-		string	strMasterSmiley;
-      string     m_strPlayerName;
-
-		void RebuildZonePosArray();
-		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
-		void FillPropertyValList();
-		bool FillPropertyList();
-		bool UpdatePropertyList(int iID);
-		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
-		char* GetSelEnviromentString();
 
 		//console funktions
 		enum FuncId_e
@@ -90,42 +79,58 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
 		};
-
+			
 		enum EditMode_e
 		{
 			EDIT_ZONES,
 			EDIT_OBJECTS,
 			EDIT_HMAP,
-			EDIT_MAX,
-		
+			EDIT_MAX,		
 		};
+		
+		
+		//wierd stuff
+		char		szCoolName[256];
+		string	strMasterSmiley;
 
-
-		bool m_bEditSun;
-
+		
 		bool m_bPlaceObjectsOnGround;
 		bool m_bDisableFreeZonePlacement;
 		vector< pair<Vector3,Vector3> > m_kAddedZonePlacement;
 		bool m_bNeedToRebuildZonePosArray;
 
-		vector<pair<string,Vector3> >	m_kLocations;
+		
+		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
+
+		//delay
+		float	m_fDelayTime;
+		
+		//edit sun
+		bool 			m_bEditSun;
+		LightSource	m_kSun;				
 		
 		//edit stuff
 		int		m_iEditMode;
 
+		//zone data
 		string	m_strActiveZoneName, m_strPrevZoneName;
 		string	m_strActiveObjectName;
 		string	m_strActiveEnviroment;
 		
+		//camera
 		Entity*	m_pkCameraObject[4];
 		Camera*	m_pkCamera[4];
 		Entity*	m_pkActiveCameraObject;
 		Camera*	m_pkActiveCamera;
 		bool		m_bSoloMode;
+		float 	m_CamMoveSpeed;		
+		string	m_strActiveViewPort;		//active view port
 
+		//zone data
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
 		
+		//entity data
 		Vector3	m_kObjectMarkerPos;
 		int		m_iCurrentObject;
 		int 		m_iCurrentMarkedZone;
@@ -137,36 +142,64 @@ class ZeroEd :public Application , public ZGuiApp {
 		int		m_iGrabEntity;
 		float		m_fArmLength;
 		bool		m_bGrabing;
+
+		//graphs
+		DebugGraph m_kTestGraph;
+				
+		//selected entitys
+		set<int>	m_SelectedEntitys;
 		
-		
+		//heightmap stuff
+		Vector3						m_kDrawPos;
+		vector<HMSelectVertex>	m_kSelectedHMVertex;
+		float 						m_fHMInRadius;
+		float 						m_fHMOutRadius;
+		int							m_iEditLayer;
+
+		//network
+		vector<ZoneData>			m_kNetworkZones;
+								
+		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
 		
-		Vector3	Get3DMousePos(bool m_bMouse);
-		Vector3 Get3DMouseDir(bool bMouse);
+		//gui stuff...or something 
+		void RebuildZonePosArray();
+		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
+		void FillPropertyValList();
+		bool FillPropertyList();
+		bool UpdatePropertyList(int iID);
+		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
+		bool PlaceObjectOnGround(int iObjectID);
+		
 
-		Entity*	GetTargetObject();		
-		int		GetTargetTCS(Vector3* pkPos);
-
-		string	m_strActiveViewPort;
+		//camera stuff
 		void  CreateEditCameras();
-		bool SetCamera(int iNum);
+		bool 	SetCamera(int iNum);
 		int	GetView(float x, float y);
-		void CamFollow(bool bFollowMode);
+		void 	CamFollow(bool bFollowMode);
 
-		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
 		// Selection of Entitys.
-		set<int>	m_SelectedEntitys;
 		void Select_None(	)				{ m_SelectedEntitys.clear(); }
 		void Select_Add( int iId )		{ m_SelectedEntitys.insert(iId); }
 		void Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
 		void DrawSelectedEntity();
 		void Select_Toggle(int iId, bool bMultiSelect);
 
-		void DeleteSelected();			// Removes selected entitys.
+		void 		DeleteSelected();			// Removes selected entitys.
 
-		void SetZoneEnviroment(const char* szEnviroment);
-		string GetZoneEnviroment();
+		//picking
+		Vector3	Get3DMousePos(bool m_bMouse);
+		Vector3	Get3DMouseDir(bool bMouse);
+		Entity*	GetTargetObject();		
+		int		GetTargetTCS(Vector3* pkPos);		
+		
+		
+		//enviroment
+		void 		SetZoneEnviroment(const char* szEnviroment);
+		string 	GetZoneEnviroment();
+		char* 	GetSelEnviromentString();
+		
 		void UpdateZoneMarkerPos();
 		void UpdateObjectMakerPos();
 		void DrawZoneMarker(Vector3 kPos);
@@ -177,30 +210,21 @@ class ZeroEd :public Application , public ZGuiApp {
 		void ToogleLight(bool bEnabled);
 		void RotateActive();
 
-		Vector3	m_kDrawPos;
-		HeightMap* SetPointer();
+		HeightMap* 	SetPointer();
+		void 			DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
+		void 			HMModifyCommand(float fSize);
 
-		void DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
-
-		LightSource	m_kSun;
-
-		vector<HMSelectVertex>	m_kSelectedHMVertex;
-		float m_fHMInRadius;
-		float m_fHMOutRadius;
-		int	m_iEditLayer;
-
-		void HMModifyCommand(float fSize);
-
-		float m_CamMoveSpeed;
-		void Input_Camera(float fMouseX, float fMouseY);
-		void Input_EditTerrain();
-		void Input_EditZone();
-		void Input_EditObject(float fMouseX, float fMouseY);
-
-		bool PlaceObjectOnGround(int iObjectID);
-
-		DebugGraph m_kTestGraph;
+		//input
+		void 	Input_Camera(float fMouseX, float fMouseY);
+		void 	Input_EditTerrain();
+		void 	Input_EditZone();
+		void 	Input_EditObject(float fMouseX, float fMouseY);		
+		bool	DelayCommand();			//make a delay
 		
+		//network
+		void	SendSetZoneModel(string strModel,int iZoneID);
+		void	SendZoneListRequest();
+		void	DrawZoneList();
 		
 	public:
 		bool SetViewPort(const char* szVpName);
@@ -209,7 +233,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
-			char *szClickNodeText, bool bHaveChilds);
+									char *szClickNodeText, bool bHaveChilds);
 		
 		ZeroEd(char* aName,int iWidth,int iHeight,int iDepth);
 	 	
@@ -231,9 +255,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void RemoveSelProperty();
       bool SaveCurrentToScript();
 	
-		Vector3 GetPlayerStartLocation(const char* csName);
-		void UpdateStartLocatons();
-
 		//on client join, server runs this
 		bool OnPreConnect(IPaddress, char*, char*, bool bIsEditor, string& strWhy){return true;}
 		void OnServerClientJoin(ZFClient*,int, char*, char*, bool bIsEditor){};
@@ -245,8 +266,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void AutoSetZoneSize(string strName);
 		void SoloToggleView();
 
-		float	m_fDelayTime;
-		bool	DelayCommand();
 
 		bool StartUp()		{ return true; }
 		bool ShutDown()	{ return true; }

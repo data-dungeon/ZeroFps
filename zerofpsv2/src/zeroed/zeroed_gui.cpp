@@ -345,7 +345,11 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
 			{
 				//pkObjectMan->LoadZone(m_iCurrentMarkedZone);
-				m_pkEntityManager->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+				//m_pkEntityManager->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+				
+				SendSetZoneModel(strFullpath,m_iCurrentMarkedZone);
+				
+				
 				printf("Setting new zone modell to %s\n", strFullpath.c_str());
 			}
 
