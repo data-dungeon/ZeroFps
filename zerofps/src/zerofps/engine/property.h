@@ -36,18 +36,30 @@ enum PROPERTY_SIDE{
 class ENGINE_API PropertyValues
 {
 public:
-	PropertyValues();
 	string kValueName;
 	void* pkValue;
 	int iValueType;
 	float fUpperBound;
 	float fLowerBound;
+	int iNumberOfValues;
+	bool bResize;
+	bool bVector;
+	inline PropertyValues() : 
+			fLowerBound(FLT_MIN),
+			fUpperBound(FLT_MAX),
+			iNumberOfValues(1),
+			bResize(false),
+			bVector(false) {} 
 };
 
 class ENGINE_API Property 
 {
 	private:
 		ZeroFps* m_pkZeroFps;
+		///beware of the the code /Gubb  //////////////
+		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
+		bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
+		////////////////////////////////////////////7
 
 	protected:
 		Object *m_pkObject;
@@ -79,12 +91,23 @@ class ENGINE_API Property
 
 	public:
 		
-		
-
+		//evil gubb code! haha/////////////////////////////////////////7
 		bool SetValue(string kValueName ,string kValue);
+		bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
+		bool CheckIfResize(string kValueName);
+		int GetNumberOfValues(string kValueName);
 		string GetValue(string kValueName);
+		string GetValue(string kValueName, unsigned int iIndex);
 		vector<string> GetValueNames();
+		float GetUpperBound(string kValueName);
+		float GetLowerBound(string kValueName);
+		bool Resize(string kValueName, unsigned int uiNewSize);
+		bool CheckIfVector(string kValueName);
 		
+		//bool SetValue(string kValueName ,string kValue);
+		//string GetValue(string kValueName);
+		//vector<string> GetValueNames();
+		/////////////////////////////////////////////////////////7
 
 		int m_iSortPlace;		//place in update queue
 		bool m_bSortDistance;
