@@ -9,38 +9,42 @@
 #include <vector>
 	using namespace std;
 
+class ItemStats;
+
 struct ItemType
 {
 	string m_kName;
 	float m_fWeight;  //kg
 	int m_iValue;     // gold value
-   int m_iAntal;     // how many in a heap from start
+   int m_iQuantity;  // how many in a heap from start
+   float m_fQuality; // default = 1 = perfect quality
 
    // when equipped
-	map<string, float> m_kStatModifier_equipped;
-	map<string, float> m_kAttributeModifier_equipped;
-   map<string, float> m_kAttack_equipped;
-   map<string, float> m_kDefence_equipped;
+	map<string, int> m_kSkillModifier_equipped;
+	map<string, int> m_kAttributeModifier_equipped;
+   map<string, int> m_kAttack_equipped;
+   map<string, int> m_kDefence_equipped;
    
    // when unequipped
-   map<string, float> m_kStatModifier_unequipped;
-	map<string, float> m_kAttributeModifier_unequipped;
-   map<string, float> m_kAttack_unequipped;
-   map<string, float> m_kDefence_unequipped;
+   map<string, int> m_kSkillModifier_unequipped;
+	map<string, int> m_kAttributeModifier_unequipped;
+   map<string, int> m_kAttack_unequipped;
+   map<string, int> m_kDefence_unequipped;
 
    vector<string> m_kEquippableOn;
 
 };
 
 
-class MCOMMON_API ItemDataBase
+class ItemDataBase
 {
 private:
-	map<string, ItemType> m_kItemType;
+	static map<string, ItemType> m_kItemType;
 
 
 public:
-	bool LoadItemData (string kItemName);
+   static bool LoadItemData (string kItemName);
+   static ItemStats* GetItem (string kName);
 
 };
 

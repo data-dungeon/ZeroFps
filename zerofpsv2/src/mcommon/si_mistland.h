@@ -54,6 +54,10 @@ namespace MistLandLua
    int MCOMMON_API AddMpLua (lua_State* pkLua);
    int MCOMMON_API PrintStatsLua (lua_State* pkLua);
 
+   // item stuff
+   int MCOMMON_API EquipLua (lua_State* pkLua);
+   int MCOMMON_API UnEquipLua (lua_State* pkLua);
+
 
 	
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters

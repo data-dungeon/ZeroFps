@@ -107,6 +107,8 @@ CharacterStats* CharacterFactory::GetCharacterData(string kCharacterName)
 
 	*pkNewStats = g_kCharacters[kCharacterName];
 
+   cout << "Created a " << kCharacterName << " character." << endl;
+
 	return pkNewStats;
 }
 

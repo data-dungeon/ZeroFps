@@ -108,6 +108,10 @@ SOURCE=.\p_event.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_item.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_ml.cpp
 # End Source File
 # Begin Source File
@@ -137,6 +141,10 @@ SOURCE=.\p_clientcontrol.h
 # Begin Source File
 
 SOURCE=.\p_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_item.h
 # End Source File
 # Begin Source File
 
@@ -196,6 +204,10 @@ SOURCE=.\rulesystem\item\itemdatabase.cpp
 # Begin Source File
 
 SOURCE=.\rulesystem\item\itemdatabase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\rulesystem\item\itemstats.cpp
 # End Source File
 # Begin Source File
 

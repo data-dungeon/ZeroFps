@@ -81,9 +81,11 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/goblin.mad
 		set MadProperty m_fScale 1
-		Add CharacterProperty
-		Set CharacterProperty Rase Goblin
+		Add P_CharStats
+		Set P_CharStats Rase Goblin
 		set MadProperty m_fScale 0.4
+		Add P_Item
+		Set P_Item Type thering
 
 	class ZeroRTSTestBox
 		parent object
