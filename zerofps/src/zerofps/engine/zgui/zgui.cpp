@@ -560,7 +560,7 @@ bool ZGui::IgnoreKey(int Key)
 		case KEY_LCTRL:
 		case KEY_F12:
 		case KEY_F11:
-		case KEY_F10:
+		//case KEY_F10: can´t ignore this key, it´s used to close the menu system.
 		case KEY_F9:
 		case KEY_F8:
 		case KEY_F7:

@@ -197,7 +197,7 @@ bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 	int iHeight = GetScreenRect().Height();
 	int iNewWidth = FONT_SIZE * (strlen(strText)+1);
 
-	if(iNewWidth > iWidth)
+	if(iNewWidth > iWidth && m_bIsMenu == true)
 	{
 		ZGuiWnd::Resize( iNewWidth, iHeight);
 
