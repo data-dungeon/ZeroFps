@@ -79,6 +79,7 @@ function Init()
 	PlayAnim(SIGetSelfID(), "idle");
 	SetTeam (SIGetSelfID(), 1);
 
+	local Life = 25
 	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
