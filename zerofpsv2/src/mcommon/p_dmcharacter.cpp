@@ -53,6 +53,10 @@ void P_DMCharacter::Init()
 
 void P_DMCharacter::Damage(int iType,int iDmg)
 {
+	// one death should be enough for anyone ;)
+	if ( m_kStats.m_iLife <= 0 )
+		return;
+
 	m_kStats.m_iLife -= iDmg;
 	
 	cout<<"damaged:"<<m_kStats.m_iLife<<endl;

@@ -257,7 +257,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		void QuitEngine();
 
-		void SetSystemFps(int iFps) {m_fSystemUpdateFps = iFps;};
+		void SetSystemFps(int iFps) {m_fSystemUpdateFps = float(iFps);};
 
 		bool GetDebugGraph() {return m_bDebugGraph;};
 		void SetDebugGraph(bool bDebug) {m_bDebugGraph = bDebug;};
