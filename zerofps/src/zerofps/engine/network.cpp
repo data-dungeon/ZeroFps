@@ -341,6 +341,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			kNetPRespons.Clear();
 
 			if(GetNumOfClients() == m_iMaxNumberOfNodes) {
+				
 				m_pkConsole->Printf("Join Ignored: To many connected clients.");
 				kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);

@@ -760,11 +760,14 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
 			
 			
-			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim")) {
+			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim") == 0) {
 				strcpy(g_szIpPort, "192.168.0.145:4242");
 				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "hugo")) {
+			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "hugo") == 0) {
 				strcpy(g_szIpPort, "192.168.0.101:4242");
+				}
+			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "dvoid") == 0) {
+				strcpy(g_szIpPort, "192.168.0.126:4242");
 				}
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());

@@ -59,8 +59,10 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 		pkNetPacket->Read(&tempcommand,sizeof(UnitCommand));
 		
 		//only add commands if its a server
-		if(m_pkFps->m_bServerMode)
+		if(m_pkFps->m_bServerMode) {
+			cout << "Inserting command" << endl;
 			m_kServerCommands.push_back(tempcommand);
+			}
 	}
 	
 }

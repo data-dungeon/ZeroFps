@@ -226,6 +226,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int iObjectID;
 	Object *pkmad;
 	Vector3 kRot(0,0,0);
+	Vector3 kPos(0,0,0);
+	int iAntal;
+
 	string BaseEnvMap("../data/textures/env/");
 
 	switch(cmdid) {
@@ -623,13 +626,17 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Die FPS, DIE.");				
 			int x,y;
 			x = y = 0;
-			for( x=0; x < 10; x+=1) {
-				for(y=0; y < 10; y+=1) {
+			iAntal = 0;
+			for( x=-200; x < 200; x+=25) {
+				for(y=-200; y < 200; y+=25) {
 					pkmad = pkObjectMan->CreateObjectByArchType("tree");
 					if(pkmad) {
-						pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
+						kPos = Vector3(x,0,y);
+						pkmad->SetPos(kPos);
+						pkmad->SetPos(kPos);
 						pkmad->AttachToClosestZone();
 						}
+					iAntal++;
 					//pkmad  = new FHObject("../data/mad/cube.mad");
 					/*pkmad = new FHObject(NULL);
 					pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
@@ -637,6 +644,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 					}
 				}
 			
+			pkConsole->Printf("Spawned %d",iAntal);				
 			break;
 
 		case FID_QUIT:

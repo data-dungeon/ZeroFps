@@ -135,7 +135,7 @@ void ZeroRTS::OnIdle()
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
 
-	if(pkFps->m_bServerMode) {
+	if(pkFps->m_bClientMode) {
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
