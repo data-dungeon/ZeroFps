@@ -12,7 +12,7 @@ class object
 
 	class body
 		parent object
-		set MadProperty m_kMadFile /data/mad/rts/unit/tankl.mad
+		set MadProperty m_kMadFile /data/mad/minoutar.mad
 		set MadProperty m_fScale 1
 	
 	class ZeroRTSTestBox

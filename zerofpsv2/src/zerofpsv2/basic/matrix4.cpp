@@ -502,6 +502,8 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 	
 	float cz = cos(fZ);
 	float sz = sin(fZ);
+
+
 	/*
 	
 	Matrix4 rotatez=Matrix4(float(cos(fZ))	,float(-sin(fZ))  ,0				,0,
@@ -519,7 +521,7 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 									float(-sin(fY))	 ,0			,float(cos(fY))		,0,
 									0			,0			,0				,1);	
 											*/
-	
+
 	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
 									0			,cx		  ,-sx			,0,
 									0			,sx	 		,cx	  		,0,
@@ -578,7 +580,7 @@ void Matrix4::Translate(Vector3 kTrans){
 
 Vector3 Matrix4::GetRotVector()
 {
-	float D;
+/*	float D;
 	float C;
 	float angle_x;
 	float angle_y;				
@@ -595,6 +597,43 @@ Vector3 Matrix4::GetRotVector()
 //   {
 		ftrx      =  data[10] / C;
 		ftry      = -data[6]  / C;
+		angle_x  = atan2( ftry, ftrx ) * degtorad;
+		ftrx      =  data[0] / C;
+		ftry      = -data[1] / C;
+   	angle_z  = atan2( ftry, ftrx ) * degtorad;
+/*   }
+	else
+	{
+   	angle_x  = 0;
+      ftrx      = data[5];
+      ftry      = data[4];
+      angle_z  = atan2( ftry, ftrx ) * degtorad;
+	}
+
+	angle_x = Clamp( angle_x, 0, 360 );
+	angle_y = Clamp( angle_y, 0, 360 );
+	angle_z = Clamp( angle_z, 0, 360 );
+	
+
+	return Vector3(angle_x,angle_y,angle_z);*/
+	
+	float D;
+	float C;
+	float angle_x;
+	float angle_y;				
+	float angle_z;
+	float ftrx;
+	float ftry;
+	
+	
+	angle_y = D = -asin( data[2]);
+	C           =  cos( angle_y );
+	angle_y    *= degtorad;
+    
+//	if ( fabs( angle_y ) > 0.0005 )
+//   {
+		ftrx      =  data[9] / C;
+		ftry      = -data[8]  / C;
 		angle_x  = atan2( ftry, ftrx ) * degtorad;
 		ftrx      =  data[0] / C;
 		ftry      = -data[1] / C;

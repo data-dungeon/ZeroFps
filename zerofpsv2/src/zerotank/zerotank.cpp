@@ -608,7 +608,7 @@ void ZeroTank::OnServerStart(void)
 	cam->SetCamera(m_pkCamera);
 	*/
 
-/*	m_pkME = pkObjectMan->CreateObjectByArchType("body");
+	m_pkME = pkObjectMan->CreateObjectByArchType("body");
 	if(m_pkME) {
 		m_pkME->SetWorldPosV(Vector3(0,0,0));
 		m_pkME->AttachToClosestZone();
@@ -616,15 +616,15 @@ void ZeroTank::OnServerStart(void)
 		
 		m_pkME->AddProperty("CameraProperty");
 	
-		CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-		cam->SetCamera(m_pkCamera);
+		//CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
+		//cam->SetCamera(m_pkCamera);
 		
 	}
 
 	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
 	if(pk1) {
 		pk1->SetParent(m_pkME);
-		pk1->SetLocalPosV(Vector3(0,0.81,0));
+		pk1->SetLocalPosV(Vector3(5,0.81,0));
 		//pk1->AttachToClosestZone();		
 	}
 
@@ -632,7 +632,7 @@ void ZeroTank::OnServerStart(void)
 	if(pk2) {
 		pk2->SetParent(pk1);
 		pk2->SetLocalPosV(Vector3(0,0.0,0));
-	}*/
+	}
 
 
 	pkObjectMan->Test_CreateZones();

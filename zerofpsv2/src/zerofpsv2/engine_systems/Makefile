@@ -3,7 +3,7 @@ BINARY=libengine_systems.so
 BINDIR=$(SRC)../bin/
 LIBS=--shared -L$(BINDIR) -lSDL_net -lopenal -logg -lvorbis -lvorbisfile -lGL -lGLU -lphysics_engine -L/usr/X11R6/lib `sdl-config --cflags --libs`
 
-OBJS=$(patsubst %.cpp,%.o,$(wildcard audio/*.cpp common/*.cpp mad/*.cpp physicsengine/*.cpp propertys/*.cpp))
+OBJS=$(patsubst %.cpp,%.o,$(wildcard audio/*.cpp common/*.cpp mad/*.cpp physicsengine/*.cpp propertys/*.cpp script_interfaces/*.cpp))
 
 include $(SRC)config
      
