@@ -99,6 +99,7 @@ public:
 	friend class Mad_CoreMesh;
 	friend class Mad_Core;
 	friend class Body;
+	friend class Modell3DS;
 };
 
 /// Key frame in a Vertex Animation.
@@ -135,6 +136,7 @@ public:
 	int  GetSizeInBytes();					
 
 	friend class Mad_Core;
+	friend class Modell3DS;
 
 };
 
@@ -240,6 +242,7 @@ public:
 
 	friend class Mad_Core;
 	friend class Body;
+	friend class Modell3DS;
 };
 
 // MAD - SD (Skeletal Data)
@@ -317,7 +320,7 @@ public:
 	int  GetSizeInBytes();
 
 	friend class Mad_Core;
-
+	friend class ModellHalfLife;
 };
 
 /// Contains all bone keyframes in a bone animation.
@@ -341,7 +344,9 @@ public:
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreBoneKeyFrame kBoneKeyFrame);
 	int  GetSizeInBytes();
+	
 	friend class Mad_Core;
+	friend class ModellHalfLife;	
 };
 
 enum ControllAxis

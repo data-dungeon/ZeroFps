@@ -307,6 +307,7 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	m_iColFace = -1;
 	
 	Vector3 data[3];
+	float d;
 	for(unsigned int i=0;i<pkFaces->size();i++)
 	{
 		
@@ -320,7 +321,7 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 		
 		if(TestPolygon(data,kPos,Point2))
 		{	
-			float d = (m_kColPos-kPos).Length(); 
+			d = (m_kColPos-kPos).Length(); 
 			
 			//if this point is closer than the last one, set it as closest
 			if(d < fDist)

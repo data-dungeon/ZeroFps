@@ -61,23 +61,23 @@ void P_Vegitation::Update()
 			
 	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
-	/*
+	
 	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
-	if(fDistance > 50)
+	if(fDistance > 40)
 		return;
-	*/					
+						
 					
 	//draw a ball on the server
 	if(m_pkFps->m_bServerMode)
 		m_pkRender->Sphere(ObjectPos,0.5,1,Vector3(1,1,1),true);
 					
 					
-/*	int iStep = int(fDistance / 8.0);
+	int iStep = int(fDistance / 5.0);
 	if(iStep < 1)
 		iStep = 1;
 
 	iStep = PowerOf2(iStep);
-*/
+
 //	cout<<"step "<<iStep<<endl;
 //	cout<<"grass "<<m_akPositions.size()<<endl;
 
@@ -95,8 +95,32 @@ void P_Vegitation::Update()
 	
 	float t=m_pkFps->GetTicks();
 
-//	for(unsigned int i=0;i<m_akPositions.size();i += iStep){
-	for(unsigned int i=0;i<m_akPositions.size();i++)
+	if(iStep == 1)
+	{
+		Vector3 rot;
+		Vector3 kPos;
+		for(unsigned int i=0;i<m_akPositions.size();i++)
+		{
+			rot = m_akPositions[i].kRot;  
+			kPos = m_akPositions[i].kPos + ObjectPos;
+			rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
+			m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
+		}
+	}
+	else
+	{
+		Vector3 kPos;
+		for(unsigned int i=0;i<m_akPositions.size();i += iStep)
+		{
+			kPos = m_akPositions[i].kPos + ObjectPos;
+			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,iTexture);			
+		}		
+	}
+
+
+
+/*	for(unsigned int i=0;i<m_akPositions.size();i += iStep)
+//	for(unsigned int i=0;i<m_akPositions.size();i++)
 	{
 		Vector3 rot = m_akPositions[i].kRot;  
 //		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
@@ -104,6 +128,7 @@ void P_Vegitation::Update()
 		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
 		m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
 	}
+*/
 }
 
 vector<PropertyValues> P_Vegitation::GetPropertyValues()
