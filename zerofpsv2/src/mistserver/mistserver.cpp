@@ -725,20 +725,26 @@ void MistServer::UpdateZoneMarkerPos()
 {
 	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
 
+	float fStep = 2.0;
 
-	m_kZoneMarkerPos.x = int(temp.x/4.0) * 4.0;
-	m_kZoneMarkerPos.y = int(temp.y/4.0) * 4.0;
-	m_kZoneMarkerPos.z = int(temp.z/4.0) * 4.0;
+	m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
+	m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
+	m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
 
-	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round2(temp.x/4.0) * 4.0;
-		else  m_kZoneMarkerPos.x = round2(temp.x/4.0) * 4.0 + 2;						
 
-	if(m_kZoneSize.y != 4) m_kZoneMarkerPos.y = round2(temp.y/4.0) * 4.0;
-		else  m_kZoneMarkerPos.y = round2(temp.y/4.0) * 4.0 + 2;						
+	m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
+	m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
+	m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+	
+/*	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
+		else  m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep + 2;						
 
-	if(m_kZoneSize.z != 4) m_kZoneMarkerPos.z = round2(temp.z/4.0) * 4.0;
-		else  m_kZoneMarkerPos.z = round2(temp.z/4.0) * 4.0 + 2;						
+	if(m_kZoneSize.y != 4) m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
+		else  m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep + 2;						
 
+	if(m_kZoneSize.z != 4) m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+		else  m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep + 2;						
+*/
 //	m_kZoneMarkerPos.y = round2(temp.y/4.0) * 4.0;
 //	m_kZoneMarkerPos.z = round2(temp.z/4.0) * 4.0;
 
