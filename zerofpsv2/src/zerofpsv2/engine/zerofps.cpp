@@ -526,7 +526,7 @@ void ZeroFps::MainLoop(void)
 	while(m_iState!=state_exit) {
 
 		// check if app is iconized
-		if(m_bAlwaysWork && !(SDL_GetAppState() & SDL_APPACTIVE))
+		if(m_bAlwaysWork == false && !(SDL_GetAppState() & SDL_APPACTIVE))
 		{
 			SDL_WaitEvent(NULL);
 		}
