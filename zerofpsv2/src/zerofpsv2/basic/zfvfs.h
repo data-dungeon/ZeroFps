@@ -65,16 +65,17 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		friend class ZFIni;
 		
 		ZFBasicFS*				m_pkBasicFS;					
-		//vector<string>			m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
 		vector<VfsRootPath>	m_kRootPath;
-		string					m_kCurentDir;
+		string					m_strCurentDir;
 
 		enum FuncId_e
-			{
+		{
 			FID_CD,
 			FID_DIR,
-			FID_LISTROOT
-			};
+			FID_LISTROOT,
+			FID_VFSPATH,
+			
+		};
 
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 

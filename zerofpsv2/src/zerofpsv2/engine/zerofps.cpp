@@ -176,7 +176,7 @@ bool ZeroFps::StartUp()
 	//std lua lib
 	StdLua::Init(m_pkScript, m_pkZFVFileSystem );
 	
-	m_kCurentDir = m_pkBasicFS->GetCWD();
+	m_strCurentDir = "/";
 	 
 	m_pkGuiInputHandle = new InputHandle("Gui");
 	m_pkInputHandle = new InputHandle("Zerofps");
@@ -824,7 +824,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	unsigned int i;
 
-	vector<string> kFiles;
+	//vector<string> kFiles;
 	vector<string> kCreditsStrings;
 	DevStringPage* page;
 	
@@ -884,67 +884,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//start server
 			StartServer(true,true,kCommand->m_kSplitCommand[1].c_str());
 			break;
-	
-		case FID_DIR:
-			{
-				vector<string> kFiles;
-
-				m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str(),false);
-				
-				m_pkConsole->Printf("DIRECTORY %s",m_kCurentDir.c_str());
-				for(i=0;i<kFiles.size();i++)
-				{
-					m_pkConsole->Printf(kFiles[i].c_str());
-				}
-				m_pkConsole->Printf("%i files",kFiles.size());		
-				m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str());
-
-				kFiles.clear();
-				m_pkConsole->Printf("Listing %s",m_kCurentDir.c_str());
-				for(unsigned int i=0;i<kFiles.size();i++)
-				{
-					m_pkConsole->Printf(kFiles[i].c_str());
-				}
-			}
-			break;
 			
-		case FID_CD:	
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				m_pkConsole->Printf(m_kCurentDir.c_str());
-				return;
-			}
-			
-			// special case when entering .. directory
-			if(kCommand->m_kSplitCommand[1]=="..")
-			{
-				for(int i=m_kCurentDir.length()-1;i>0;i--)
-				{
-					if(m_kCurentDir[i]=='/'){
-						m_kCurentDir[i]='\0';						
-						m_kCurentDir=m_kCurentDir.c_str();
-						break;
-					}
-				}
-				m_pkConsole->Printf(m_kCurentDir.c_str());				
-				break;
-			}					
-				
-			//enter a normal directory
-			if(m_pkBasicFS->ListDir(&kFiles,(m_kCurentDir+"/"+kCommand->m_kSplitCommand[1]).c_str()))
-			{
-				m_kCurentDir += "/";
-				m_kCurentDir += kCommand->m_kSplitCommand[1];
-				m_pkConsole->Printf(m_kCurentDir.c_str());
-			} else
-			{
-				m_pkConsole->Printf("Cant change directory");
-				break;
-			}
-					
-			kFiles.clear();
-					
-			break;
-
 		case FID_ECHO:
 			m_pkConsole->Printf( kCommand->m_strFullCommand.c_str() + kCommand->m_kSplitCommand[0].size() + 1 );
 			break;

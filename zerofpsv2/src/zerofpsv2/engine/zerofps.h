@@ -105,8 +105,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			FID_SLIST,			// List all servers
 			FID_CONNECT,		// Connect to server.
 			FID_SERVER,			// Start a Server.
-			FID_DIR,
-			FID_CD,
 			FID_LISTMAD,		// List all loaded mad's.
 			FID_PRINTOBJECT,	// Print all objects to external console.
 
@@ -154,6 +152,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iClientEntityID;						
 		int		m_iMaxPlayers;
 
+		string	m_strCurentDir;							//current console dir , used by cd,dir
+				
 		//materials
 		ZMaterial*	m_pkDevPageMaterial;
 		
@@ -163,7 +163,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		Camera *m_pkCamera;							//current camera
 		Camera *m_pkConsoleCamera;					//camera for console
-		string m_kCurentDir;
+
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void ConfigFileRun();
@@ -191,7 +191,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		
 	public:
-//		Object* CreateScriptObject(const char* szName);
+
 		/*
 			All Engine Systems in ZeroFps. Listed in the same order they are created in
 			ZeroFps();

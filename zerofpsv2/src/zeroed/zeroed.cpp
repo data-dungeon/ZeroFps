@@ -227,9 +227,9 @@ void ZeroEd::CreateEditCameras()
 
 void ZeroEd::OnInit() 
 {
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/zeroed/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"data/");
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/dm/" ,			"data/");
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/zeroed/" ,		"data/");
 
 	m_pkConsole->Printf(" ZeroEd ");
 	m_pkConsole->Printf("--------------------------------");
