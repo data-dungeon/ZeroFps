@@ -164,6 +164,20 @@ void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText)
 	m_vkWindowList.push_back(ttinfo);
 }
 
+void ZGuiToolTip::RemoveToolTip(ZGuiWnd* pkWnd)
+{
+	vector<TOOLTIP_INFO>::iterator it = m_vkWindowList.begin();
+	for( ; it != m_vkWindowList.end(); it++ )
+	{
+		if((*it).pkWnd == pkWnd)
+		{
+			m_vkWindowList.erase(it);
+			break;
+		}
+	}
+}
+
+
 
 void ZGuiToolTip::SetSkin(ZGuiSkin kSkin)
 {

@@ -103,6 +103,21 @@ void InventoryDlg::Open()
 	// dölj actionikonen och regruppera dom andra
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
 	g_kMistClient.PositionActionButtons();
+
+	ZGuiSkin* pkToolTipSkin = new ZGuiSkin();
+	pkToolTipSkin->m_unBorderSize = 8;
+
+	pkToolTipSkin->m_iBkTexID = m_pkTexMan->Load( "data/textures/gui/textbox.bmp", 0 );
+	pkToolTipSkin->m_iVertBorderTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_top.bmp", 0 );
+	pkToolTipSkin->m_iHorzBorderTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_left.bmp", 0 );
+	pkToolTipSkin->m_iBorderCornerTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_corner.bmp", 0 );
+	  
+	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetFont(
+			g_kMistClient.m_pkGuiMan->Font("chatboxfont"));
+	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetTextColor(255,255,255); 
+
+	g_kMistClient.m_pkGui->GetToolTip()->SetSkin(pkToolTipSkin);
+
 }
 
 void InventoryDlg::Close()
@@ -432,6 +447,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		if(pkWnd->GetSkin())
 			delete pkWnd->GetSkin();
 		
+		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd);
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
@@ -455,8 +471,11 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
 			szItemName, text, m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
+
+		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(pkNewSlot, vkItemList[i].m_strName);
 		
 		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
+
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
@@ -493,6 +512,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 	{
 		ZGuiWnd* pkWnd = m_vkContainerItemList[i].pkWnd;
 		delete pkWnd->GetSkin();
+		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd);
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
@@ -515,6 +535,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->SetZValue(12121);
 		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
+
+		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(pkNewSlot, vkItemList[i].m_strName);
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
@@ -615,8 +637,10 @@ void InventoryDlg::OnDropItem()
 							if(m_vkContainerItemList[collision_slot].bIsContainer)
 							{
 								container_id = m_vkContainerItemList[collision_slot].iItemID;	
-								if(container_id != m_iActiveContainerID)								
-									g_kMistClient.SendRequestContainer(container_id);								
+								if(container_id != m_iActiveContainerID)			
+								{
+									g_kMistClient.SendRequestContainer(container_id);
+								}
 							}
 						}
 
@@ -624,6 +648,10 @@ void InventoryDlg::OnDropItem()
 							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,container_id,p.x,p.y);
 						m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
+
+						//if(collision_slot > 0)
+						//	g_kMistClient.RequestOpenInventory();
+						
 						return;
 					}
 			}
@@ -671,6 +699,9 @@ void InventoryDlg::OnDropItem()
 							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, container_id, p.x, p.y);
 						m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
+
+						//if(collision_slot > 0)
+						//	g_kMistClient.SendRequestContainer(m_iActiveContainerID);
 					
 						return;
 					}
@@ -788,7 +819,7 @@ void InventoryDlg::OnDropItem()
 							-1, slot_x, slot_y);
 					}
 
-					g_kMistClient.SendRequestContainer(m_iActiveContainerID);	
+					//g_kMistClient.SendRequestContainer(m_iActiveContainerID);	
 			}
 
 			g_kMistClient.RequestOpenInventory();

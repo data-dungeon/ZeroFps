@@ -24,6 +24,7 @@ public:
 
 	void Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime);
 	void AddToolTip(ZGuiWnd* pkWnd, string strText);
+	void RemoveToolTip(ZGuiWnd* pkWnd);
 
 	ZGuiWnd* GetWnd() { return m_pkToolTipWnd; }
 
