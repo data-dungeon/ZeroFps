@@ -300,8 +300,9 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 				if(pkCam == NULL)
 				{
-					g_kMistClient.AddListItem("CharGen_ModellList", "Good guy");
-					g_kMistClient.AddListItem("CharGen_ModellList", "Bad guy");
+					g_kMistClient.AddListItem("CharGen_ModellList", "human_male");
+					g_kMistClient.AddListItem("CharGen_ModellList", "human_female");
+					g_kMistClient.AddListItem("CharGen_ModellList", "goblin_male");
 					((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(2);
 
 					g_kMistClient.SelListItemByIndex("CharGen_ModellList", 1);
@@ -413,11 +414,12 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 					string szMadFile = string("data/mad/");
 					
-					if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "Good guy")
+					if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "human_female")
 						szMadFile += string("player.mad");
-					else
-					if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "Bad guy")
+					else if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "human_male")
 						szMadFile += string("player2.mad");
+					else if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "goblin_male")
+						szMadFile += string("goblin.mad");
 
 					P_Mad* pkMad = ((P_Mad*)pkEnt->GetProperty("P_Mad"));
 

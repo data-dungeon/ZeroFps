@@ -239,8 +239,12 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, s
 		return false;
 	}	
 	
+	//wich character script to use?
+	string strScipt = "data/script/objects/characters/playable/"+strModell+".lua";
+	
 	//create new caracter and save it	
-	Entity* pkEntity = m_pkEntityMan->CreateEntityFromScript("data/script/objects/game objects/hosplayer.lua");		// t_player
+	//Entity* pkEntity = m_pkEntityMan->CreateEntityFromScript("data/script/objects/game objects/hosplayer.lua");		// t_player
+	Entity* pkEntity = m_pkEntityMan->CreateEntityFromScript(strScipt.c_str());		// t_player
 	if(!pkEntity)
 	{
 		cout<<"could not create character entity"<<endl;
@@ -250,11 +254,11 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, s
 	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
 	if(!pkMad)
 		return false;
-
+/*
 	if(strModell == "Good guy")
       pkMad->SetBase("/data/mad/player.mad");
 	if(strModell == "Bad guy")
-      pkMad->SetBase("/data/mad/player2.mad");
+      pkMad->SetBase("/data/mad/player2.mad");*/
 
 	//setup entity
 	pkEntity->SetName(strCharacter);
