@@ -43,6 +43,8 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 
 		bool SetupMesh(P_Mad* pkMad);
 
+		void SetupGL();
+
 	public:
 
 		ZShadow();

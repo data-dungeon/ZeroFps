@@ -17,13 +17,13 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 
 bool ZShadow::StartUp()
 {
-	m_iNrOfShadows = 3;
+	m_iNrOfShadows = 2;
  	m_fExtrudeDistance = 10000;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
 
-	EnableShadowGroup(0);
+	//EnableShadowGroup(0);
 	EnableShadowGroup(1);
 	EnableShadowGroup(2);
 
@@ -34,12 +34,12 @@ void ZShadow::Update()
 {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
+	//setup gl states for shadows rendering
+	SetupGL();
+
 	//get all render propertys
 	vector<Property*>	kRenderPropertys;
 	m_pkEntityMan->GetWorldObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
-
-	//clear stencil buffert
-	glClear(GL_STENCIL_BUFFER_BIT);
 
 	int iNrOfShadows = 0;
 
@@ -53,10 +53,12 @@ void ZShadow::Update()
 			if(!m_kShadowGroups[pkMad->GetShadowGroup()])
 				continue;
 
+			//get mesh and transform vertexs
 			if(SetupMesh(pkMad))
 			{
+				//find witch lights to enable
 				vector<LightSource*>	kLights;
-				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows,m_pkMad->GetObject()->GetIWorldPosV(),false);
+				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, m_pkMad->GetObject()->GetIWorldPosV(),false);
 
 				for(int i = 0;i<kLights.size();i++)
 				{
@@ -75,7 +77,6 @@ void ZShadow::Update()
 					{
 						MakeStencilShadow(kLights[i]->kRot * 10000);
 						iNrOfShadows++;
-
 					}
 				}
 			}
@@ -88,7 +89,9 @@ void ZShadow::Update()
 
 	//draw shadow
 	if(iNrOfShadows != 0)
-		DrawShadow(0.5);
+	{
+		DrawShadow(0.3);
+	}
 
 	glPopAttrib();
 
@@ -105,22 +108,22 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 		{
 		 	//pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 			//pkCore->SetupBonePose();
-			pkCore->PrepareMesh(pkCore->GetMeshByID(0));
+			pkCore->PrepareMesh(pkCore->GetMeshByID(iShadowMesh));
 
-			m_pkMad = pkMad;
-			//m_pkFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer();
-			//m_pkVertex = pkCore->GetVerticesPtr();
-			m_pkFaces = pkMad->GetFacesPtr();
-			m_pkVertex = pkMad->GetVerticesPtr();
+			//setup mesh pointers
+			m_pkMad =		pkMad;
+			m_pkFaces =		pkMad->GetFacesPtr();
+			m_pkVertex =	pkMad->GetVerticesPtr();
 			m_iNrOfFaces = pkMad->GetNumFaces();
 			m_iNrOfVerts = pkMad->GetNumVertices();
 
-			//m_pkVertex = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+
+			//setup model matrix
+			Matrix4 m_kModelMatrix;
 
 			Matrix4 ori;
 			ori = pkMad->GetObject()->GetWorldRotM();
 
-			Matrix4 m_kModelMatrix;
 			m_kModelMatrix.Identity();
 			m_kModelMatrix.Scale(pkMad->m_fScale,pkMad->m_fScale,pkMad->m_fScale);
 			m_kModelMatrix *= ori;
@@ -128,10 +131,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 
 			//transform vertexs
 			for(int i = 0;i<m_iNrOfVerts;i++)
-			{
-				//m_kTransFormedVertexs.push_back( m_kModelMatrix.VectorTransform((*m_pkVertex)[i]) );
 				m_kTransFormedVertexs.push_back( m_kModelMatrix.VectorTransform(m_pkVertex[i]) );
-			}
 
 			return true;
 		}
@@ -144,8 +144,8 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 {
 	Vector3 v[3];
 
-	int verts = m_iNrOfFaces*3;
-	for(int i = 0;i<verts; i+=3)
+	int iVerts = m_iNrOfFaces*3;
+	for(int i = 0;i<iVerts; i+=3)
 	{
 		v[0] = m_kTransFormedVertexs[ m_pkFaces[i] ];
 		v[1] = m_kTransFormedVertexs[ m_pkFaces[i+1] ];
@@ -188,6 +188,7 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 //						 ( ( (*it).second == p.first ) 	&& ( (*it).first == p.second  ) ) )
 					if( ( ( m_kTransFormedVertexs[(*it).first] == m_kTransFormedVertexs[p.first] ) 	&&
 							( m_kTransFormedVertexs[(*it).second] == m_kTransFormedVertexs[p.second] ) ) ||
+
 							( ( m_kTransFormedVertexs[(*it).second] == m_kTransFormedVertexs[p.first] ) 	&&
 							( m_kTransFormedVertexs[(*it).first] == m_kTransFormedVertexs[p.second]  ) ) )
 					{
@@ -195,7 +196,6 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 						it = m_kTowardsEdges.begin();
 						bFound =true;
 
-						//cout<<"removing"<<endl;
 						break;
 					}
 				}
@@ -237,6 +237,23 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	m_kTowardsEdges.clear();
 	FindSiluetEdges(kSourcePos);
 
+	//draw front
+	glCullFace(GL_BACK);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+	ExtrudeSiluet(kSourcePos);
+
+	//draw back
+	glCullFace(GL_FRONT);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+	ExtrudeSiluet(kSourcePos);
+
+}
+
+void ZShadow::SetupGL()
+{
+	//clear stencil buffert
+	glClear(GL_STENCIL_BUFFER_BIT);
+
 	//setop
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_ALWAYS, 0, ~0);
@@ -247,38 +264,39 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	glDepthMask(GL_FALSE);
 
 	glEnable(GL_CULL_FACE);
-
-	//draw back
-	glCullFace(GL_BACK);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-	ExtrudeSiluet(kSourcePos);
-
-	//draw front
-	glCullFace(GL_FRONT);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
-	ExtrudeSiluet(kSourcePos);
-
 }
 
 void ZShadow::DrawShadow(float fItensity)
 {
+	glPushAttrib(GL_ENABLE_BIT);
 
-	//draw shadow
+	//colormas
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDepthFunc(GL_EQUAL);
-	glStencilFunc(GL_EQUAL, 0, ~0);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
+	//culling
 	glCullFace(GL_BACK);
 
+	//depth buffer settings
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_EQUAL);
+	glDisable(GL_DEPTH_TEST);
+
+	//stencil buffer settings
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_EQUAL, 0, ~0);
 	glStencilFunc(GL_ALWAYS, 0, ~0);
 	glStencilFunc(GL_NOTEQUAL, 0x0, 0xff);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
+	//blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ZERO);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
+
+	//disable lighting
+	glDisable(GL_LIGHTING);
 
 
 	//draw
@@ -288,10 +306,7 @@ void ZShadow::DrawShadow(float fItensity)
 	glPushMatrix();
 	glLoadIdentity();
 	glOrtho(0, 1, 1, 0, 0, 1);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
 
-	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
 	glBegin(GL_QUADS);
 				glVertex2i(0, 0);
 				glVertex2i(0, 1);
@@ -299,13 +314,11 @@ void ZShadow::DrawShadow(float fItensity)
 				glVertex2i(1, 0);
 	glEnd();
 
-	glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 
-	glDisable(GL_STENCIL_TEST);
-	glDisable(GL_BLEND);
+	glPopAttrib();
 
 }
