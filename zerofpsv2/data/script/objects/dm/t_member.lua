@@ -29,21 +29,27 @@ function Init()
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
 	SetTeam (SIGetSelfID(), 0);
+	SISetHeartRate(SIGetSelfID(),4);
 end
 
 function FirstRun()
-
---	SISetHeartRate(SIGetSelfID(),1);
---	PlayAnim(GetSelfID(), "idle");
-
 end
 
 function HeartBeat()
+	if ( IsDead(SIGetSelfID()) == 1) then
+		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
 
+		if GetEntityVar(SIGetSelfID(), "deadtime") > 9 then
+			Delete(SIGetSelfID());
+		end
+	
+		return
+	end
 end
 
 function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
+	ClearPathFind(SIGetSelfID());
 end
 
