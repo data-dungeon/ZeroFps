@@ -216,9 +216,6 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 	{
 	case ZGM_LBUTTONDOWN:
 
-		static int c;
-		printf("counter: %i\n", c++);
-
 		m_pkEdit->pkFps->DevPrint_Show(true);
 
 		unsigned int i;
