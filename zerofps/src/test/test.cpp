@@ -31,8 +31,8 @@ void Test::OnInit(void) {
 	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
 	
-	IntToChar(fps,pkFps->m_iFps);
-	fpsupdate=0;
+//	IntToChar(fps,pkFps->m_iFps);
+//	fpsupdate=0;
 
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
 	speed=30;
@@ -100,25 +100,25 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-	for( i=0;i<200;i++) {
+/*	for( i=0;i<200;i++) {
 		Object *ball=new WalkerObject();
 		float x=227;	// + rand()%200;
 		float y=785;	// + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}
+	}*/
 
 
-/*	Object *sussi;
-	for(i=0;i<5;i++) {
+	Object *sussi;
+	for(i=0;i<500;i++) {
 		sussi=new BunnyObject();
 		float x=340 + rand()%10;
 		float y=780 + rand()%10;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
-	}*/
+	}
 
 
 
@@ -146,17 +146,11 @@ void Test::OnInit(void) {
   glFogf(GL_FOG_START, 0.0);              // Set the start position for the depth at 0
   glFogf(GL_FOG_END, 50.0);               // Set the end position for the detph at 50
 */
-
 }
-
-
-
 
 void Test::OnIdle(void) {
 //	m_pkPlayer->GetPos().print();
-
 //	glFogCoordfEXT(-20);
-	
 
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
@@ -203,11 +197,6 @@ void Test::OnHud(void) {
 	glDisable(GL_LIGHTING);
 
 	pkRender->SetFont("file:../data/textures/text/console.tga");
-	fpsupdate++;
-	if(fpsupdate>100){	
-		IntToChar(fps,pkFps->m_iFps);
-		fpsupdate=0;
-	}
 	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
 	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
