@@ -93,7 +93,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		string	m_strSaveDirectory;						//directory in wich savegames are stored
 
 		int 		m_iEnableMusic; 									//if the music should be played or not
-		
+		float		m_fBulletTime;
 		
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
 		

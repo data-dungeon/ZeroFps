@@ -55,6 +55,7 @@ void DarkMetropolis::OnInit()
 	m_iHQID = 						-1;
 	m_iActiveHQ = 					-1;
 	m_eGameMode	=					ACTIVE;
+	m_fBulletTime =				-1;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -246,6 +247,15 @@ void DarkMetropolis::Input()
 	//get mouse
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
+
+	// Byt tillbaks till bakgrundsmusik om det har gått 10 sek efter det 
+	// att ingen kula har avlossats.
+	if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fBulletTime > 10 &&
+		m_fBulletTime != -1)
+	{
+		m_fBulletTime = -1;
+		StartSong("data/music/dm ingame.ogg");	
+	}
 		
 		
 	//some debuging buttons
@@ -488,7 +498,12 @@ void DarkMetropolis::Input()
 						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 						{
 							if(P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+							{
+								m_fBulletTime = m_pkFps->m_pkObjectMan->GetGameTime();
+
+								StartSong("data/music/dm action.ogg");
 								pkCharacter->Shoot (m_kPickPos);
+							}
 						}
 					}
 				}
@@ -845,12 +860,16 @@ Entity* DarkMetropolis::GetTargetObject()
 
 void DarkMetropolis::StartSong(char* szName)
 {
-	if(m_iEnableMusic == 1)
+	static string prev_song = "";
+
+	if(m_iEnableMusic == 1 && prev_song != szName)
 	{
 		OggMusic* pkMusic = static_cast<OggMusic*>(
 			g_ZFObjSys.GetObjectPtr("OggMusic")); 
 		pkMusic->LoadFile(szName);
 		pkMusic->Play();
+
+		prev_song = szName;
 	}
 }
 

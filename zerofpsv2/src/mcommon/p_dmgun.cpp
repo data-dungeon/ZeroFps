@@ -52,7 +52,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_bFireing = true;
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 
-	m_pkAudioSys->StartSound("data/sound/12ga_shotgun.wav",
+	m_pkAudioSys->StartSound("data/sound/9m_pistol.wav",
 		m_pkObject->GetWorldPosV(), m_kDir, false);
 	
 	return true;
