@@ -250,6 +250,9 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 */
 void ObjectManager::Delete(Object* pkObject) 
 {
+	if(pkObject == NULL)
+		return;
+
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
 		if(pkObject->iNetWorkID == (*it)) {
