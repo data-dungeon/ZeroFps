@@ -1105,6 +1105,33 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						break;
 					}
 				}
+				else
+				{
+					//we have a target container, lets try to move item to it
+			
+					//first do we own this container?						
+					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
+					{
+						SayToClients("Target container is not yours",PkNetMessage->m_iClientID);
+						break;					
+					}				
+				
+					//no position, move anywhere
+					if(iPosX == -1)
+					{
+						if(!pkInContainer->MoveItem(iItemID,pkTargetContainer))
+							SayToClients("Could not move there",PkNetMessage->m_iClientID);
+						
+						break;				
+					}
+					//we have a position try to move item there
+					else
+					{
+						if(!pkInContainer->MoveItem(iItemID,pkTargetContainer,iPosX,iPosY))
+							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
+						break;
+					}					
+				}
 			}
 				
 			/*					
