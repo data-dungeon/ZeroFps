@@ -68,6 +68,7 @@ class ZeroEdit :public Application {
 		void SetPointer();	
 		void DrawMarkers();
 		void Clear();
+		void SelectChild();
 };
 
 

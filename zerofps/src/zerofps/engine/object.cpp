@@ -35,6 +35,8 @@ Object::~Object() {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		delete (*it);
 	}
+	
+	cout<<"Object Destroyed"<<endl;
 }
 
 Property* Object::GetProperty(char* acName) {
@@ -364,15 +366,21 @@ void Object::PrintTree(int pos)
 {
 	for(int i=0;i<pos;i++)
 		cout<<" ";
-	cout<<"Object";
+	cout<<""<<endl;
 
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->PrintTree(pos+1);
 	}
-	
-	
 }
 
+void Object::GetAllObjects(list<Object*> *pakObjects)
+{
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		(*it)->GetAllObjects(pakObjects);
+	}	
+
+	pakObjects->push_back(this);
+}
 
 
 

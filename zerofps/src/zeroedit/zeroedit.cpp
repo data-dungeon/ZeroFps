@@ -256,6 +256,22 @@ void ZeroEdit::Input()
 		if(pkInput->Pressed(PAGEDOWN)) {
 			m_pkCurentChild->GetRot().z-=pkFps->GetFrameTime()*childrotatespeed;
 		}
+		
+		//child delete mohahaha
+		if(pkInput->Pressed(BACKSPACE)) {
+			if(m_pkCurentChild==pkObjectMan->GetWorldObject())
+				cout<<"WOLRD OBJECT"<<endl;
+		
+			if(m_pkCurentChild!=NULL)
+				if(m_pkCurentChild!=m_pkHeightMapObject) 
+					if(m_pkCurentChild!=pkObjectMan->GetWorldObject()){					
+						delete m_pkCurentChild;
+						m_pkCurentChild=NULL;
+					}
+
+		}
+		
+		
 	}
 	
 
@@ -326,6 +342,10 @@ void ZeroEdit::Input()
 				cout<<"CHILDS: "<<m_pkHeightMapObject->NrOfChilds()<<endl;
 	
 			}
+			if(pkInput->Pressed(MOUSERIGHT))
+			{
+				SelectChild();
+			}
 			break;
 			
 	}
@@ -391,5 +411,32 @@ void ZeroEdit::DrawMarkers()
 	}
 
 }
+
+
+void ZeroEdit::SelectChild()
+{
+	list<Object*> temp;
+	float mindistance=999999999;
+	Object* minobject=NULL;
+	
+	
+	
+	pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
+	
+	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
+		float distance = abs(((*it)->GetPos() - m_kDrawPos).Length());
+		if(distance<mindistance){
+			mindistance=distance;
+			minobject=(*it);
+		}
+	}			
+	
+	m_pkCurentChild=minobject;
+	
+	temp.clear();
+}
+
+
+
 
 
