@@ -10,20 +10,18 @@ class MCOMMON_API P_Item: public Property
 {
 	private:
 		ItemStats *m_pkItemStats;
-
+		
    public:
 	   void Update();
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
-      ItemStats* GetItemStats()                 { return m_pkItemStats; }
-
+		ItemStats* GetItemStats()                 { return m_pkItemStats; }
 
 		P_Item( string kName );
 		P_Item();
 
 		bool HandleSetValue( string kValueName, string kValue );
-
 };
 
 MCOMMON_API Property* Create_P_Item();

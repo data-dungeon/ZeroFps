@@ -500,10 +500,41 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 				if(bExist == false)
 				{
-					m_pkInventDlg = new InventoryDlg();
-					m_pkInventDlg->AddSlot("dagger.bmp", "dagger_a.bmp", Point(0,0) );
-					m_pkInventDlg->AddSlot("spellbook.bmp", "spellbook_a.bmp", Point(4,2) );
-					m_pkInventDlg->AddSlot("gembag1.bmp", "gembag1_a.bmp", Point(3,3) );
+					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
+
+					const int ANTAL = 250;
+
+					ItemStats* pkTestItems = new ItemStats[ANTAL];
+
+					typedef pair<EquipmentCategory, pair<string,string> > tInfo;
+
+					tInfo info[250];
+					int i;
+
+					for( i=0; i<250; i++)
+					{
+						info[i] = tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp"));
+					}
+
+
+			/*		{
+						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
+						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
+						tInfo(Item, pair<string, string>("spellbook.bmp", "spellbook_a.bmp")),
+						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
+					};*/
+
+					vector<InventoryDlg::itItem> kItems;
+
+					for( i=0; i<ANTAL; i++)
+					{
+						pkTestItems[i].SetEquipmentCategory(info[i].first); 
+						kItems.push_back( InventoryDlg::itItem(
+							pair<string,string>(info[i].second.first, 
+							info[i].second.second), &pkTestItems[i]) );
+					}
+					
+					m_pkInventDlg->AddItems(kItems);
 				}
 			}
 			if(strName == "StatsButton")
@@ -602,6 +633,9 @@ void MistClient::OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
 
 void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 {
+	if(pkMain == NULL)
+		return;
+
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
 	{
 		m_pkInventDlg->OnScroll(iID,iPos);

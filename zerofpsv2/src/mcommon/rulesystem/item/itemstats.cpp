@@ -137,6 +137,13 @@ void ItemStats::SetDefenceBonus ( string kDefenceName, int iValue )
 
 // ---------------------------------------------------------------------------------------------
 
+void ItemStats::SetEquipmentCategory ( EquipmentCategory eCategory)
+{
+   m_eEquipmentCategory = eCategory;
+}
+
+// ---------------------------------------------------------------------------------------------
+
 void ItemStats::AddCanEquipOn ( string kEquipOn )
 {
    m_kEquippableOn.push_back ( kEquipOn );
@@ -259,6 +266,13 @@ void ItemStats::Print()
 
 // ---------------------------------------------------------------------------------------------
 
+EquipmentCategory ItemStats::GetEquipmentCategory()
+{
+	return m_eEquipmentCategory;
+}
+
+// ---------------------------------------------------------------------------------------------
+
 ItemStats::ItemStats()
 {
    m_kItemName = "nameless item";
@@ -266,6 +280,7 @@ ItemStats::ItemStats()
    m_fWeight = 0;
    m_fQuality = 1;
    m_iQuantity = 1;
+   m_eEquipmentCategory = Item;
 
 }
 

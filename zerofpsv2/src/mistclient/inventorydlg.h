@@ -14,17 +14,33 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/render/texturemanager.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "../mcommon/rulesystem/item/itemstats.h"
 
 #include <vector>
+#include <string>
 using namespace std;
 
 class InventoryDlg// : public ZFSubSystem  
 {
 public:
+	
+
+	typedef pair<pair<string, string>,ItemStats*> itItem;
+
+	bool AddItems(vector<pair<pair<string,string>,ItemStats*> >&vkItems);
+	bool AddItem(const char* szPic, const char* szPicA, ItemStats* pkItemStats);
 	void OnScroll(int iID, int iPos);
 	void OnCommand(int iID);
 	void OnMouseMove(int x, int y, bool bMouseDown);
-	void RemoveSlot(Point sqr, bool bUnregister, bool bDragItem=false);
+	
+
+	enum SlotType
+	{
+		CONTAINTER_SLOTS,
+		UNDER_MOUSE,
+		SPECIAL_SLOTS,
+	};	
 
 	class Slot
 	{
@@ -32,26 +48,35 @@ public:
 		Slot() {};
 		~Slot() {};
 
-		ZGuiLabel* pkLabel;
-		Point sqr;
-
-		char szPic[2][50];
+		ItemStats* m_pkItemStats;
+		ZGuiLabel* m_pkLabel;
+		
+		char m_szPic[2][75];
+		SlotType m_eType;
+		Point m_kSqr;
 	};
 
-	Slot* FindSlot(Point sq);
+	Slot* FindSlot(int mouse_x, int mouse_y);
 	void OnClick(int x, int y, bool bMouseDown);
-	void AddSlot(char *szPic, char *szPicA, Point sqr, bool bDragItem=false);
-	InventoryDlg();
+	
+	InventoryDlg(ZGuiWnd* pkDlgWnd);
 	~InventoryDlg();
 
 	static int GetID(Point sqr);
 
 private:
+	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
+		SlotType eType, ItemStats* pkItemStats);
+	bool RemoveSlot(/*Point sqr,*/ Slot* pkSlot); //bool bDragItem=false);
+	bool GetFreeSlotPos(Point& refSqr);
+	bool SlotExist(int sx, int sy);
+
 	void ScrollItems(int iPos);
 	
 	void RegisterSlot(Slot slot);
 	Point MousePosToSqr(int x, int y);
-	vector<Slot> m_kSlots;
+	Point MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCategory);
+	vector<Slot> m_kItemSlots;
 	vector<Slot> m_kDragSlots;
 
 	typedef vector<Slot>::iterator itSlot;
@@ -59,8 +84,12 @@ private:
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;
+	ZFAudioSystem* m_pkAudioSys;
+	ZGuiWnd* m_pkDlgWnd;
 
 	static int s_iSlotZCounter;
+	
+	int m_iCurrentScrollPos;
 
 	Point m_kClickOffset;
 

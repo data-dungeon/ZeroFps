@@ -5,6 +5,7 @@
 
 #include "../../mcommon_x.h"
 #include "../character/characterstats.h"
+#include "inventory_info.h"
 
 #include <map>
 #include <string>
@@ -34,6 +35,9 @@ private:
 
    vector<string> m_kEquippableOn;
 
+   // vart det är tillåtet att placera föremålet
+   EquipmentCategory m_eEquipmentCategory;
+
 public:
    ItemStats();
 
@@ -46,6 +50,7 @@ public:
    int GetAttributeBonus ( string kAttributeName );
    int GetAttackBonus ( string kAttackName );
    int GetDefenceBonus ( string kDefenceName );
+   EquipmentCategory GetEquipmentCategory();
 
    void SetSkillBonus ( string kSkillName, int iValue );
    void SetAttributeBonus ( string kAttributeName, int iValue );
@@ -70,6 +75,7 @@ public:
 
    void SetItemName ( string kName )          { m_kItemName = kName; }
    void SetItemWeight ( float fWeight )       { m_fWeight = fWeight; }
+   void SetEquipmentCategory( EquipmentCategory eCategory);
 
    void SetItemValue ( int iValue )           { m_iValue = iValue; }
    int GetItemValue ()                        { return int(m_iValue * m_iQuantity * m_fQuality); }

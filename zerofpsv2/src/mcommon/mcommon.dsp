@@ -191,6 +191,10 @@ SOURCE=.\rulesystem\character\statcounter.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\rulesystem\item\inventory_info.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\rulesystem\item\itemstats.cpp
 # End Source File
 # Begin Source File
