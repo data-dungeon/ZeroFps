@@ -159,7 +159,7 @@ unsigned int* PSystemManager::CreateIndices ( int iParticles )
 
 bool PSystemManager::LoadNewPSystem ( string kName )
 {
-	string kLoadName = "../data/psystems/" + kName + ".zps";
+	string kLoadName = "/data/psystems/" + kName + ".zps";
 
 	// Open file
 	if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		

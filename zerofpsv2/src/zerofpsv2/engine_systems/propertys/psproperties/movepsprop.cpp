@@ -15,8 +15,10 @@ void MovePSProp::Update()
 
 	vector<Particle>* pkParticles = &m_pkParent->m_kParticles;
 
+
+	int i;
 	// Update velocity
-	for ( int i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
+	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 	{
 		// if force inherits direction of PSystem
 		if ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bForceInheritDirection )
