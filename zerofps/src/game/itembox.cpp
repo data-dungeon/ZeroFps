@@ -15,6 +15,7 @@ ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan
 	:	DlgBox(pkGui, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
 		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
+	m_pkMoveItem = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
 	Create(0,0,0,0,oMainWndProc);
@@ -46,7 +47,6 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		{
 			if(pkWnd == m_akSlots[i].first)
 			{
-				printf("apa apa apa apa apa apa\n");
 				m_pkMoveItem = &m_akSlots[i];
 				break;
 			}
@@ -276,20 +276,15 @@ pair<int,int> ItemBox::GetSlot(int x, int y)
 
 void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
 {
-	const float fStaticColor[] = 
-	{
-		(1.0f/255)*132,
-		(1.0f/255)*130,
-		(1.0f/255)*132
-	};
+	const float fStaticColor[] = {
+		(1.0f/255)*132,(1.0f/255)*130,(1.0f/255)*132 };
 
-	int counter = 1;
-	char szName[50];
-	for(int y=0; y<m_ciRows; y++)
-		for(int x=0; x<m_ciCols; x++)
+	char szSearchName[50];
+	for(int y=0, counter=1; y<m_ciRows; y++)
+		for(int x=0; x<m_ciCols; x++, counter++)
 		{
-			sprintf(szName, "ItemboxSlotGridST%i", counter);
-			ZGuiWnd* pkWnd = m_pkGuiMan->Wnd(string(szName));
+			sprintf(szSearchName, "ItemboxSlotGridST%i", counter);
+			ZGuiWnd* pkWnd = m_pkGuiMan->Wnd(string(szSearchName));
 			if(pkWnd != NULL )
 			{
 				slot_pos cell = GetSlot(pkWnd->GetScreenRect().Left, 
@@ -299,6 +294,5 @@ void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
 					memcpy(pkWnd->GetSkin()->m_afBkColor, 
 						fStaticColor, sizeof(float) * 3);
 			}
-			counter++;
 		}
 }
