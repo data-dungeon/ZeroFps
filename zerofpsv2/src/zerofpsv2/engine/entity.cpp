@@ -6,6 +6,7 @@
 #include "zerofps.h"
 //#include "../engine_systems/propertys/p_physic.h"
  
+
 typedef list<Entity*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
  
