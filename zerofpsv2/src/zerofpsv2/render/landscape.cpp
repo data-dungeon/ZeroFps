@@ -839,7 +839,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 {
-	int iPatchSize = 4;
+	int iPatchSize = 1;
 	
 	//glDisable(GL_TEXTURE_2D);
 	glColor3f(1,1,1);
@@ -870,7 +870,7 @@ void Render::DrawHMVertex(HeightMap* kMap)
 			int iVertexIndex = z*kMap->m_iTilesSide+x;
 			float fScaleX = float(x * kMap->m_fTileSize);
 			float fScaleZ = float(z * kMap->m_fTileSize);
-			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height*kMap->m_fTileSize, fScaleZ);
+			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height, fScaleZ);	//*kMap->m_fTileSize
 				
 		}
 	}
@@ -899,7 +899,7 @@ void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 			float fScaleZ = float(z * kMap->m_fTileSize);
 			int iVertexIndex = z*kMap->m_iVertexSide+x;
 
-			kVertex.Set(fScaleX ,pkHmVertex[iVertexIndex].height*kMap->m_fTileSize, fScaleZ);
+			kVertex.Set(fScaleX ,pkHmVertex[iVertexIndex].height, fScaleZ);	//*kMap->m_fTileSize
 			kVertex += (kMap->m_kCornerPos);
 			glVertex3f(kVertex.x,kVertex.y,kVertex.z);					
 			
@@ -927,7 +927,7 @@ void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& 
 	int iTestX = kMap->m_iVertexSide;
 	int iVertexIndex = int(z*iTestX+x);
 	kPos.x = float(x * kMap->m_fTileSize);
-	kPos.y = kMap->verts[iVertexIndex].height*kMap->m_fTileSize;
+	kPos.y = kMap->verts[iVertexIndex].height;  //kMap->m_fTileSize;
 	kPos.z = float(z * kMap->m_fTileSize);
 
 	kNormal = kMap->verts[ iVertexIndex ].normal;
@@ -943,9 +943,10 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	
 	// See if we can Cull away this patch...this is optimized for zeroRTS at the moment..Dvoid  assuming max height of 30
 	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*kMap->m_fTileSize,
-							  kMap->m_kCornerPos.y + 7.5f*kMap->m_fTileSize,
+							  kMap->m_kCornerPos.y + 7.5f,	
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*kMap->m_fTileSize);
-		
+	//*kMap->m_fTileSize	
+
 	fDistance = (CamPos-PatchCenter).Length() ;
 	if(fDistance > m_iViewDistance)
 		return;

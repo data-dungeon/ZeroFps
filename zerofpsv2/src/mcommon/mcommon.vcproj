@@ -235,6 +235,9 @@
 			<File
 				RelativePath=".\si_mistland.cpp">
 			</File>
+			<File
+				RelativePath=".\zssenviroment.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -325,6 +328,9 @@
 			</File>
 			<File
 				RelativePath=".\si_mistland.h">
+			</File>
+			<File
+				RelativePath=".\zssenviroment.h">
 			</File>
 		</Filter>
 		<Filter

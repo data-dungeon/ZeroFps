@@ -164,6 +164,9 @@ class ENGINE_SYSTEMS_API HeightMap
  
 		float GetBrushSizeInAlphaUVSpace(float fSize);
 
+		Vector3 WorldToMap(Vector3 kVec);
+		Vector3 MapToLocal(Vector3 kVec);
+
 		friend class Render;
 
 //		float GetAlpha(float x,float y,int iTexture);

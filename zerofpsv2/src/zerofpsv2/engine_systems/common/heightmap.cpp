@@ -87,7 +87,7 @@ bool HeightMap::AllocHMMemory(int iSize)
 
 void HeightMap::Create(int iTilesSide)
 {
-	m_iTilesSide   =  iTilesSide;
+	m_iTilesSide   =  iTilesSide / m_fTileSize;
 	m_iVertexSide  =  m_iTilesSide + 1;
 	m_iHmScaleSize =	GetSize();
 	SetPosition(Vector3::ZERO);
@@ -166,6 +166,27 @@ int HeightMap::GetTopLowTriangle(Vector3 kPos)
 //	return 0;
 }
 
+Vector3 HeightMap::WorldToMap(Vector3 kVec)
+{
+	kVec.x -= m_kPosition.x;	
+	kVec.z -= m_kPosition.z;
+
+	kVec.x -= m_kCornerOffset.x;
+	kVec.z -= m_kCornerOffset.z;
+	return kVec;
+}
+
+Vector3 HeightMap::MapToLocal(Vector3 kVec)
+{
+	kVec.x += m_kCornerOffset.x;
+	kVec.z += m_kCornerOffset.z;
+
+	kVec.x += m_kPosition.x;	
+	kVec.z += m_kPosition.z;
+	return kVec;
+}
+
+
 /**	\brief	Returns height at one position in Hmap.
 
 	Takes the x,z world coo and returns the world y position of the hmap or as if had a height of 0.0 if the position
@@ -173,14 +194,19 @@ int HeightMap::GetTopLowTriangle(Vector3 kPos)
 */
 float HeightMap::Height(float x,float z) 
 {
+	x -= m_kPosition.x;	//m_iTilesSide/2;
+	z -= m_kPosition.z;	//m_iTilesSide/2;
+
+	x -= m_kCornerOffset.x;
+	z -= m_kCornerOffset.z;
+
 	x /= m_fTileSize;
 	z /= m_fTileSize;
-	
-	x -= m_kPosition.x - m_iTilesSide/2;
-	z -= m_kPosition.z - m_iTilesSide/2;
 
 	if(x<0 || x>m_iTilesSide || z<0 || z>m_iTilesSide) 
+	{
 		return m_kPosition.y;
+	}
 
 	int lx = int(x);
 	int lz = int(z);
@@ -206,7 +232,7 @@ float HeightMap::Height(float x,float z)
 		zp=verts[(lz+1)*m_iVertexSide+(lx)].height-bp;				
 	}	
 
-	return m_kPosition.y + (bp+(xp*ox)+(zp*oz)) * m_fTileSize;	
+	return m_kPosition.y + (bp+(xp*ox)+(zp*oz));	// * m_fTileSize;	
 }
 
 /**	\brief	Returns normal at one position in Hmap.
@@ -634,7 +660,7 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 			// Calc World Pos of the vertex.
 			int iVertexIndex = z * (m_iTilesSide + 1) + x;
 			kSel.m_iIndex = iVertexIndex;
-			Vector3 kWorld = Vector3(x * m_fTileSize, verts[iVertexIndex].height*m_fTileSize ,z * m_fTileSize);
+			Vector3 kWorld = Vector3(x * m_fTileSize, verts[iVertexIndex].height ,z * m_fTileSize);	//*m_fTileSize
 			kWorld += m_kCornerPos;
 			//kVertex += (CamPos + kMap->m_kCornerPos);
 	
@@ -836,9 +862,9 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 			verts[0]=Vector3(x,0,z);
 			verts[1]=Vector3(x,0,z+1);
 			verts[2]=Vector3(x+1,0,z);
-			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*m_fTileSize)+m_kPosition.y;
-			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*m_fTileSize)+m_kPosition.y;			
-			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*m_fTileSize)+m_kPosition.y;			
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height))+m_kPosition.y;	// *m_fTileSize
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height))+m_kPosition.y; // *m_fTileSize
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height))+m_kPosition.y;	// *m_fTileSize	 	
 						
 			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
 			{
@@ -855,9 +881,9 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 			verts[0]=Vector3(x+1,0,z+1);
 			verts[1]=Vector3(x+1,0,z);
 			verts[2]=Vector3(x,0,z+1);
-			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*m_fTileSize)+m_kPosition.y;
-			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*m_fTileSize)+m_kPosition.y;		
-			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*m_fTileSize)+m_kPosition.y;		
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height))+m_kPosition.y; // *m_fTileSize
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height))+m_kPosition.y;	// *m_fTileSize	 
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height))+m_kPosition.y;	// *m_fTileSize	
 			
 			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
 			{
@@ -990,9 +1016,9 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 
 			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE2)
 			{
-				V1 = Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z);
-				V2 = Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f);
-				V3 = Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z);
+				V1 = Vector3((float)x*m_fTileSize, verts[z*m_iVertexSide+x].height, (float)z*m_fTileSize);
+				V2 = Vector3((float)(x + 1)*m_fTileSize, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)(z + 1.0f)*m_fTileSize);
+				V3 = Vector3((float)(x + 1)*m_fTileSize, verts[(z)*m_iVertexSide+(x+1)].height, (float)z*m_fTileSize);
 				pkVertex->push_back( V1 );		kFace.iIndex[0] = iIndex++;		
 				pkVertex->push_back( V2 );		kFace.iIndex[1] = iIndex++;		
 				pkVertex->push_back( V3 );		kFace.iIndex[2] = iIndex++;	
@@ -1006,9 +1032,9 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 
 			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE1)
 			{
-				V1 = Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z); 
-				V2 = Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f);
-				V3 = Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f);
+				V1 = Vector3((float)x*m_fTileSize, verts[z*m_iVertexSide+x].height, (float)z*m_fTileSize); 
+				V2 = Vector3((float)x*m_fTileSize , verts[(z+1)*m_iVertexSide+x].height, (float)(z + 1.0f)*m_fTileSize);
+				V3 = Vector3((float)(x + 1)*m_fTileSize, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)(z + 1.0f)*m_fTileSize);
 
 				pkVertex->push_back( V1 );	kFace.iIndex[0] = iIndex++;		
 				pkVertex->push_back( V2 );	kFace.iIndex[1] = iIndex++;		

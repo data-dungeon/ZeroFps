@@ -1746,7 +1746,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
 	pkMap->SetID(iNetWorkId);
-	pkMap->Create( int(kZoneSize.x / pkMap->GetTileSize()) );
+	pkMap->Create( int(kZoneSize.x) );
 	//pkMap->Random();
 
 	// Create a new Hmrp and set hmap and add it to Entity.
