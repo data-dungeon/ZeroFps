@@ -698,8 +698,8 @@ void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs,
 //		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
 //}
 
-void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, float afTextcolor[3], 
-										MULTI_LINE_TEXT_INFO* pkMultiLineInfo)
+void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, 
+							  float afTextcolor[3], int iRenderDistFromLeft)
 {
 
 	if(m_pkFont == NULL || m_pkFont->m_iTextureID < 0)
@@ -723,24 +723,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, float afTe
 	glEnable(GL_BLEND);			
 	glEnable(GL_ALPHA_TEST);
 
-	int chars_printed, rows_printed;
-
-	if(pkMultiLineInfo != NULL)
-	{
-		m_ppRowOffsets = pkMultiLineInfo->m_ppRowOffsets;
-
-		PrintRows(strText, rc, iCursorPos, 
-			pkMultiLineInfo->m_iRenderDistFromTop, 
-			chars_printed, rows_printed);
-
-		(*m_ppRowOffsets)[0] = 0;
-		//(*m_ppRowOffsets)[rows_printed-1] = chars_printed;
-		*pkMultiLineInfo->m_pNumRows = rows_printed;
-	}
-	else
-	{
-		PrintRow(strText, rc, iCursorPos, 0, chars_printed);
-	}
+	int chars_printed;
+	PrintRow(strText, rc, iCursorPos, iRenderDistFromLeft, chars_printed);
 
 }
 

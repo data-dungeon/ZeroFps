@@ -19,6 +19,8 @@
 
 #define MARG_SIZE 4
 
+int g_iSingleLineOffset = 0;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -159,7 +161,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			Rect kRect = GetScreenRect();
 			kRect.Left += 2;
 			kRect.Right -= 2;
-			pkRenderer->RenderText(m_strText, kRect, cursor_pos, m_afTextColor, NULL);
+			pkRenderer->RenderText(m_strText, kRect, cursor_pos, m_afTextColor, m_iRenderDistFromTop);
 		}
 
 	}
@@ -265,7 +267,7 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 	//if(m_iCurrMaxText < 0)
 	//	m_iCurrMaxText = 0;
 
-	//m_iCursorPos = strlen(strText);
+	m_iCursorPos = strlen(strText);
 
 	//if(m_iCursorPos < 0)
 	//	m_iCursorPos = 0;
@@ -849,20 +851,40 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		int length_counter = 0;
 		int length = strlen(m_strText);
 
-		if(m_iCursorPos >= length)
-		{
-			for(int i=0; i<length; i++)
-			{
-				int index = m_strText[i]-32;
-				if(!(index < 0 || index > 255))
-					length_counter += m_pkFont->m_aChars[index].iSizeX;
-			}
+		//if(m_iCursorPos >= length)
+		//{
+		//	for(int i=0; i<length; i++)
+		//	{
+		//		int index = m_strText[i]-32;
+		//		if(!(index < 0 || index > 255))
+		//			length_counter += m_pkFont->m_aChars[index].iSizeX;
+		//	}
 
-			if(length_counter >= GetScreenRect().Width())
-			{
-				int dif = length_counter-GetScreenRect().Width();
-				m_iRenderDistFromTop = dif; 
-			}
+		//	if(length_counter >= GetScreenRect().Width())
+		//	{
+		//		int dif = length_counter-GetScreenRect().Width();
+		//		m_iRenderDistFromTop = dif; 
+		//	}
+		//}
+
+		int index;
+		for(int i=0; i<m_iCursorPos; i++)
+		{
+			index = m_strText[i];
+			if(!(index < 0 || index > 255))
+				length_counter += m_pkFont->m_aChars[index].iSizeX;
+
+		}
+
+		if(length_counter >= GetScreenRect().Width())
+		{
+			char last = 32;
+			
+			if(m_iCursorPos > 0)
+				last = m_strText[m_iCursorPos-1];
+
+			int dif = length_counter-GetScreenRect().Width();
+			m_iRenderDistFromTop = dif+m_pkFont->m_aChars[last].iSizeX; 
 		}
 	}
 

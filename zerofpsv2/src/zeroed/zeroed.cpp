@@ -74,7 +74,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	// Set Default values
 	m_bEditSun		= false;
 	m_bSoloMode     = true;
-	m_bPlaceObjectsOnGround = false;
+	m_bPlaceObjectsOnGround = true;
 
 	// Register Variables
 	
@@ -1940,6 +1940,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 		ShowWnd("AddNewProperyWnd",false);
 		ShowWnd("EditPropertyWnd",true);
 		FillPropertyValList();
+		SetText("PropertyValEb", "");
 	}
 
 	if(strListBox == "PropertyValList")

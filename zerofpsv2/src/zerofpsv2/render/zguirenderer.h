@@ -24,12 +24,12 @@ enum GUIScaleMode
 	GUIScaleManually,
 };
 
-struct MULTI_LINE_TEXT_INFO
-{
-	int m_iRenderDistFromTop; // [in]
-	unsigned short** m_ppRowOffsets; // [out]
-	unsigned short* m_pNumRows;
-};
+//struct MULTI_LINE_TEXT_INFO
+//{
+//	int m_iRenderDistFromTop; // [in]
+//	unsigned short** m_ppRowOffsets; // [out]
+//	unsigned short* m_pNumRows;
+//};
 
 /**	\brief	Render for GUI.
 		\ingroup Render
@@ -54,7 +54,7 @@ public:
 	//	bool bMultiLine, int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]) = 0;
 
 	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
-		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL) = 0;
+		float afTextcolor[3], int iRenderDistFromLeft=0) = 0;
 	
 	virtual int StartDrawText(bool bCreateDisplayList=false) = 0;
 	virtual void DrawString(const char* text, const int length, int x, int y, 

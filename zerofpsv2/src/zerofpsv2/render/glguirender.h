@@ -47,7 +47,7 @@ public:
 	//	int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
 
 	void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
-		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL);
+		float afTextcolor[3], int iRenderDistFromLeft);
 
 	int StartDrawText(bool bCreateDisplayList=false);
 	void DrawString(const char* text, const int length, int x, int y, 
