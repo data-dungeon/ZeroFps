@@ -771,7 +771,6 @@ void InventoryDlg::OnDropItem()
 			g_kMistClient.RequestOpenInventory();
 		}
 	}
-
 }
 
 int InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
