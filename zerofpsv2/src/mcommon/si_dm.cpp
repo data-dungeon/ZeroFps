@@ -10,6 +10,7 @@
 #include "../zerofpsv2/engine/p_pfpath.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/gui/zguiwindow.h"
 
 ZFScriptSystem*						DMLua::g_pkScript;
 EntityManager*							DMLua::g_pkObjMan;

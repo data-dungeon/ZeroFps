@@ -91,6 +91,8 @@ bool GLGuiRender::StartRender()
 	//gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
 	gluOrtho2D(0, m_iScreenWidth , 0, m_iScreenHeight);
 
+	glScissor  ( 0, 0,	m_iScreenWidth, m_iScreenHeight ); // lade till 22 okt 2004 för att kunna rendera camera i fönster	
+	glViewport ( 0, 0,	m_iScreenWidth, m_iScreenHeight  );	// lade till 22 okt 2004 för att kunna rendera camera i fönster	
 
 
 		glDisable(GL_COLOR_MATERIAL);	 // lade till 19 okt 2004

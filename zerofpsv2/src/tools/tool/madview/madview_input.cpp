@@ -132,7 +132,6 @@ void MadView::Input()
 	//if(m_pkInputHandle->Pressed(MOUSEMIDDLE))
 	if(m_pkInputHandle->Pressed(MOUSERIGHT) && m_pkInputHandle->Pressed(KEY_LSHIFT))
 	{
-		printf("olle\n");
 		if(pressed3 == false)
 		{
 			m_pkInputHandle->SDLMouseXY(press_pos3.x, press_pos3.y);

@@ -98,6 +98,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",m_pkAudioSys->GetListnerPos());
 					GetWnd("worktab")->Show(); 
+					m_pkGui->PlaceWndFrontBack(GetWnd("worktab"), true);
 
 					if(state[0] == true)
 						GetWnd("AddNewProperyWnd")->Show();

@@ -12,8 +12,8 @@
 #include "../basic/globals.h"
 #include "../basic/keys.h"
 #include "./zgui.h"
-#include "../engine/i_zerofps.h"
-#include "../engine/camera.h"
+//#include "../engine/i_zerofps.h"
+#include "../engine/i_camera.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -64,8 +64,8 @@ bool ZGui::StartUp()
 		g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(
 		g_ZFObjSys.GetObjectPtr("TextureManager"));
-	m_pkZeroFps = static_cast<I_ZeroFps*>(
-		g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	//m_pkZeroFps = static_cast<I_ZeroFps*>(
+	//	g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZShaderSystem"));		
 		
@@ -333,9 +333,11 @@ bool ZGui::Render(int fps)
 
 		if(pkWnd->m_pkCamera && pkWnd->IsVisible()) 
 		{
-			//m_pkRenderer->EndRender(); 
-			m_pkZeroFps->Draw_RenderCamera(pkWnd->m_pkCamera);
-			//m_pkRenderer->StartRender();
+			m_pkRenderer->EndRender(); 
+
+			pkWnd->m_pkCamera->RenderView(); 
+
+			m_pkRenderer->StartRender();
 		}
 	 }
 
@@ -857,8 +859,6 @@ void ZGui::GetResolution(int& res_x, int& res_y)
 {
    res_x = m_iResX;
    res_y = m_iResY;
-
-	//m_pkRenderer->GetScreenSize(res_x, res_y);
 }
 
 ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)
@@ -1306,6 +1306,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(wnd != m_pkActiveMainWin)
 				{
 					SetFocus(wnd->pkWnd);
+
+					PlaceWndFrontBack(wnd->pkWnd, true); // lade till 22 okt 2004
 
 					ZGuiWnd* test = wnd->pkWnd->Find(x,y);
 

@@ -12,7 +12,7 @@
 
 // Remove the console window in windows
 #ifdef WIN32
-	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 #endif 
 
 /**	\brief	Da MadView
@@ -86,6 +86,8 @@ class MadView :public Application , public ZGuiApp
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void CreateViewObject();
 		void ChangeMad(string strName);
+
+		void RenderInterface();
 				
 	public:
 

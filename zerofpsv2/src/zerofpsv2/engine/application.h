@@ -19,6 +19,8 @@ class FileIo;
 class ZFClient; 
 class ZShadow;
 class Tcs;
+class ZGuiResourceManager;
+class ZGui;
 
 /** \brief	The application object.
 	 \ingroup Engine

@@ -226,6 +226,12 @@ void MadView::ChangeMad(string strName)
 	m_strMadFile = strName;
 	pkMad->SetBase(m_strMadFile.c_str());
 
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+
+	ZFAssert(pkCore, "Failed to get Mad_Core pointer!\n");
+	if(pkCore == NULL)
+		return;
+
 	char szText[100];
 
 	// Update information in textboxes
@@ -246,7 +252,6 @@ void MadView::ChangeMad(string strName)
 	// Add items to animations list
 	((ZGuiTreebox*)GetWnd("AnimationFileTree"))->Clear(); 
 
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 	int iNumAnimations = pkCore->GetNumOfAnimations();
 
 	sprintf(szText, "Bones: %i", pkCore->GetNumOfBones());

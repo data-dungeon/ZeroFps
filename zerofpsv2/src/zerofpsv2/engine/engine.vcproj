@@ -190,6 +190,9 @@
 				RelativePath="..\engine_systems\common\heightmap.cpp">
 			</File>
 			<File
+				RelativePath=".\i_camera.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.cpp">
 			</File>
 			<File
@@ -336,6 +339,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\heightmap.h">
+			</File>
+			<File
+				RelativePath=".\i_camera.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.h">

@@ -7,6 +7,7 @@ float	Camera::m_fGridSpace(1.0);
 bool Camera::m_bGridSnap(false);
 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
+ : I_Camera(kPos,kRot,fFov,fAspect,fNear,fFar) 
 {
 	m_pkRender = 			dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	m_pkZShaderSystem =	dynamic_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
@@ -30,7 +31,6 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bRootOnly		= 		false;
 	m_eMode			= 		CAMMODE_PERSP;		//	just initiating it
 	m_fGridSpace	= 		1.0;					// Defualt grid space is one meter.
-	m_pkWnd			= 		NULL;
 	m_iRenderTarget= 		RENDERTARGET_SCREEN;
 	m_bClearViewPort=		true;	
 	m_bForceFullScreen = false;
@@ -52,21 +52,6 @@ void Camera::InitView()//int iWidth,int iHeight)
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 	m_pkZShaderSystem->MatrixLoad(&m_kCamProjectionMatrix);
 
-	//do we have a gui window?
-	if(m_pkWnd) 
-	{
-		Rect kJagVillSpelUT2k4 = m_pkWnd->GetScreenRect();
-		m_kViewPortCorner.x = float(kJagVillSpelUT2k4.Left);
-		m_kViewPortCorner.y = float(600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height());
-		m_kViewPortSize.x  = float(kJagVillSpelUT2k4.Width()); 
-		m_kViewPortSize.y  = float(kJagVillSpelUT2k4.Height()); 
-	
-		m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ float(800.0) * m_pkRender->GetWidth();
-		m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / float(600.0) * m_pkRender->GetHeight();
-		m_kViewPortSize.x		= float(m_kViewPortSize.x)		/ float(800.0) * m_pkRender->GetWidth();
-		m_kViewPortSize.y		= float(m_kViewPortSize.y)		/ float(600.0) * m_pkRender->GetHeight();
-	}
-
 	//force full screen
 	if(m_bForceFullScreen)
 	{
@@ -79,8 +64,7 @@ void Camera::InitView()//int iWidth,int iHeight)
 	//setup viewport
 	glScissor  ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y) );
 	glViewport ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y)  );		
-	
-	
+		
 	//reset modelview matrix and setup the newone
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
 	m_pkZShaderSystem->MatrixIdentity();									

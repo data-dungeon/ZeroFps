@@ -5,7 +5,7 @@
 #include "zguiapp.h"
 #include "../basic/zfassert.h"
 #include "../basic/zfresourcedb.h"
-#include "../engine/res_texture.h"
+//#include "../engine/res_texture.h"
 #include "../render/texturemanager.h"
 #include "../render/glguirender.h"
 #include "zguiresourcemanager.h"

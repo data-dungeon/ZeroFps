@@ -8,7 +8,7 @@
 #include "../basic/zguifont.h"
 #include "zguiresourcemanager.h"
 #include "zgui.h"
-#include "../engine/camera.h"
+#include "../engine/i_camera.h"
 #include <typeinfo>
 #include <math.h>
 
@@ -189,6 +189,13 @@ bool ZGuiWnd::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 		m_kClipperArea.Bottom += y_offset;
 	}*/
 
+	if(m_pkCamera)
+	{
+		m_pkCamera->SetViewPort( m_kArea.Left, 
+			m_pkGUI->m_iResY-m_kArea.Top-m_kArea.Height(), 
+			m_kArea.Width(), m_kArea.Height());
+	}
+
 	return true;
 }
 
@@ -269,10 +276,17 @@ void ZGuiWnd::SetMoveArea(Rect rc, bool bFreeMovement)
 	}
 }
 
-void ZGuiWnd::SetRenderTarget(Camera* pkCam) 
+void ZGuiWnd::SetRenderTarget(I_Camera* pkCam)
 { 
 	m_pkCamera = pkCam;
-	pkCam->m_pkWnd = this;
+
+	if(m_pkCamera)
+	{
+		m_pkCamera->SetViewPort( m_kArea.Left, 
+			m_pkGUI->m_iResY-m_kArea.Top-m_kArea.Height(), 
+			m_kArea.Width(), m_kArea.Height());
+	}
+	//pkCam->m_pkWnd = this;
 }
 
 
@@ -492,76 +506,6 @@ void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 	if(bChangeMoveArea)
 		m_kMoveArea = m_kArea;
 }
-
-
-//bool ZGuiWnd::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-//{
-//	printf("Rescaling window = %s\n", GetName());
-//
-//	int xpos, ypos, width, height;
-//	float fXChange = (float) iNewWidth / iOldWidth;
-//	float fYChange = (float) iNewHeight / iOldHeight;
-//	Rect rcA = m_kArea, rcM = m_kMoveArea, rcC = m_kClipperArea;
-//
-//	// Change screen area
-//	xpos = (int) floor(((float) fXChange * (float)rcA.Left));
-//	ypos = (int) floor(((float) fYChange * (float)rcA.Top));
-//	
-//	if(m_bResizeHorz)
-//		width = (int) ceil(((float) fXChange * (float)rcA.Width()));
-//	else
-//		width = rcA.Width();
-//
-//	if(m_bResizeVert)
-//		height = (int) ceil(((float) fYChange * (float)rcA.Height()));
-//	else
-//		height = rcA.Height();
-//
-//	m_kArea.Left = xpos;
-//	m_kArea.Right = xpos+width;
-//	m_kArea.Top = ypos;
-//	m_kArea.Bottom = ypos+height;
-//
-//	// Change move area
-//	xpos = (int) floor(((float) fXChange * (float)rcM.Left));
-//	ypos = (int) floor(((float) fYChange * (float)rcM.Top));
-//	
-//	if(m_bResizeHorz)
-//		width = (int) ceil(((float) fXChange * (float)rcM.Width()));
-//	else
-//		width = rcM.Width();
-//
-//	if(m_bResizeVert)
-//		height = (int) ceil(((float) fYChange * (float)rcM.Height()));
-//	else
-//		height = rcM.Height();
-//
-//	m_kMoveArea.Left = xpos;
-//	m_kMoveArea.Right = xpos+width;
-//	m_kMoveArea.Top = ypos;
-//	m_kMoveArea.Bottom = ypos+height;
-//
-//	// Change clipper area
-//	xpos = (int) floor(((float) fXChange * (float)rcC.Left));
-//	ypos = (int) floor(((float) fYChange * (float)rcC.Top));
-//	
-//	if(m_bResizeHorz)
-//		width = (int) ceil(((float) fXChange * (float)rcC.Width()));
-//	else
-//		width = rcC.Width();
-//
-//	if(m_bResizeVert)
-//		height = (int) ceil(((float) fYChange * (float)rcC.Height()));
-//	else
-//		height = rcC.Height();
-//
-//	m_kClipperArea.Left = xpos;
-//	m_kClipperArea.Right = xpos+width;
-//	m_kClipperArea.Top = ypos;
-//	m_kClipperArea.Bottom = ypos+height;
-//
-//	return true;
-//}
 
 void ZGuiWnd::Move(int dx, int dy, bool bScreenSpace, bool bFreeMovement)
 {

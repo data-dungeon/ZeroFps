@@ -191,7 +191,8 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	if(!pkWnd->IsVisible())
 		return false;
 
-	Camera* pkCam = pkWnd->GetRenderTarget();
+	Camera* pkCam = dynamic_cast<Camera*>(pkWnd->GetRenderTarget());
+	//Camera* pkCam = pkWnd->GetRenderTarget();
 	if(!pkCam)
 		return false;
 
@@ -1136,8 +1137,9 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 void ZeroEd::SoloToggleView()
 {
 	if(DelayCommand())	return;
-	
-	Camera* pkCam = GetWnd(m_strActiveViewPort)->GetRenderTarget();
+
+	Camera* pkCam = dynamic_cast<Camera*>(GetWnd(m_strActiveViewPort)->GetRenderTarget());
+	//Camera* pkCam = GetWnd(m_strActiveViewPort)->GetRenderTarget();
 
 	if(m_bSoloMode) 
 	{
@@ -1145,11 +1147,15 @@ void ZeroEd::SoloToggleView()
 		m_pkZeroFps->ClearRenderCameras();
 		pkCam->m_bForceFullScreen = false;
 		m_bSoloMode = false;
-		GetWnd("vp1")->Show();	GetWnd("vp1")->SetPos(400,0,true,true);		GetWnd("vp1")->Resize(400,300,false);
-		GetWnd("vp2")->Show();	GetWnd("vp2")->SetPos(0,0,true,true);			GetWnd("vp2")->Resize(400,300,false);
-		GetWnd("vp3")->Show();	GetWnd("vp3")->SetPos(0,300,true,true);		GetWnd("vp3")->Resize(400,300,false);
-		GetWnd("vp4")->Show();	GetWnd("vp4")->SetPos(400,300,true,true);		GetWnd("vp4")->Resize(400,300,false);
-	} 
+
+		int w = m_pkGui->m_iResX / 2 - 2;
+		int h = (m_pkGui->m_iResY-20) / 2 - 2;
+
+		GetWnd("vp2")->Show(); GetWnd("vp2")->SetPos(1,21,true,true); GetWnd("vp2")->Resize(w,h,false);
+		GetWnd("vp1")->Show(); GetWnd("vp1")->SetPos(w+3,21,true,true); GetWnd("vp1")->Resize(w,h,false);
+		GetWnd("vp3")->Show(); GetWnd("vp3")->SetPos(1,h+21+2,true,true); GetWnd("vp3")->Resize(w,h,false);
+		GetWnd("vp4")->Show(); GetWnd("vp4")->SetPos(w+3,h+21+2,true,true); GetWnd("vp4")->Resize(w,h,false);
+} 
 	else
 	{
 		m_bSoloMode = true;

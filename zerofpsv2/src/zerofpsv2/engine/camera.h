@@ -1,12 +1,10 @@
 #ifndef _ENGINE_CAMERA_H_
 #define _ENGINE_CAMERA_H_
 
-
 #include "../basic/vector3.h"
 #include "../basic/matrix4.h"
 #include "../render/frustum.h"
 #include "engine_x.h"
-#include "../gui/zguiwindow.h"
 #include "../render/zshadersystem.h"
 
 #include "entitymanager.h"
@@ -14,12 +12,14 @@
 #include "application.h"
 #include "../engine_systems/common/zshadow.h"
 
+#include "i_camera.h"
+
 class Render;
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
 */
-class ENGINE_API Camera 
+class ENGINE_API Camera : public I_Camera
 {
 	public:
 		enum CamMode 
@@ -41,7 +41,6 @@ class ENGINE_API Camera
 		};
 
 	private:	
-		ZGuiWnd*	m_pkWnd;
 
 		EntityManager*	m_pkEntityMan;
 		Render*			m_pkRender;
@@ -173,9 +172,6 @@ class ENGINE_API Camera
 		Vector3	GetViewPortSize();
 		Vector3	GetViewPortCorner();
 
-
-		
-		friend	class ZGuiWnd;
 		friend	class P_Camera;
 };
 

@@ -8,6 +8,7 @@
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../../../zerofpsv2/basic/zfvfs.h"
+#include "../../../zerofpsv2/engine/i_camera.h"
 
 MadView g_kZeroEd("MadView", 0, 0, 0);
 
@@ -60,7 +61,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_strMadFile = "data/mad/cube.mad";
 
-	RegisterVariable("data/mad/cube.mad", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
+	RegisterVariable("madfile", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
 } 
 
 void MadView::OnInit() 
@@ -91,8 +92,9 @@ void MadView::Init()
 
 	m_pkInput->ShowCursor(true);
 
-	CreateCamera();
 	CreateViewObject();
+	CreateCamera();
+
 	
 	ToogleLight(true);
 
@@ -179,7 +181,7 @@ void MadView::ToogleLight(bool bEnabled)
 void MadView::CreateCamera()
 {
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
-	m_pkCamera->m_bForceFullScreen = true;
+	m_pkCamera->m_bForceFullScreen = false;
 	m_pkCamera->SetName("persp");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
@@ -286,4 +288,9 @@ bool MadView::ShutDown()
 	kFile.Write(&m_fObjRotZ, sizeof(m_fObjRotZ), 1);
 
 	return true; 
+}
+
+void MadView::RenderInterface()
+{
+
 }
