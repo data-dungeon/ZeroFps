@@ -102,6 +102,9 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("paste",	FID_PASTE);
 	Register_Cmd("jiddra",	FID_TEST_JIDDRA);
 
+	Register_Cmd("snapsave",	FID_SNAPSAVE);
+	Register_Cmd("snapload",	FID_SNAPLOAD);
+
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;
@@ -1130,6 +1133,9 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
+			if(m_bSoloMode)
+				SoloToggleView();
+
 			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
@@ -1218,7 +1224,18 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */			
 			break;
 
-	
+		case FID_SNAPSAVE:
+			m_pkObjectMan->SaveWorld("snapshot",true);
+			break;
+
+		case FID_SNAPLOAD:
+			if(m_bSoloMode)
+				SoloToggleView();
+			GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
+			m_pkObjectMan->LoadWorld("snapshot");
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			break;
+
 		case FID_USERS:
 			kUsers = m_pkPlayerDB->GetUsers();
 			for(i=0; i<kUsers.size(); i++) {

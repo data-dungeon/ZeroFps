@@ -1276,6 +1276,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	{
 		pp->SetPolygonTest(true);	
 		pp->SetStatic(true);			
+		//pp->SetRefetchPolygonData();
 		pp->SetData(kFace,kVertex,kNormal,	10);	 //(int)kZoneSize.x * 2
 		pp->SetHmap(pkMap);
 		pp->SetGroup(0);

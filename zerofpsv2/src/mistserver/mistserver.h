@@ -84,7 +84,8 @@ class MistServer :public Application , public ZGuiApp {
 			FID_COPY,
 			FID_PASTE,
 
-
+			FID_SNAPSAVE,
+			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
 		};
 

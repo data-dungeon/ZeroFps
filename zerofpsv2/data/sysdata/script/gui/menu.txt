@@ -33,7 +33,19 @@ Cmd=fileopendlg save map
 Title=Save As
 Parent=Menu_File
 Cmd=fileopendlg saveas map
+[Menu_File_Snap]
+Title=Snapshot +
+Parent=Menu_File
+OpenSubMenu=1
+Cmd=NULL
 
+[Menu_File_SnapSave]
+Title=Save
+Parent=Menu_File_Snap
+Cmd=snapsave[Menu_File_SnapLoad]
+Title=Load
+Parent=Menu_File_Snap
+Cmd=snapload
 [Menu_Exit]
 Title=Exit
 Parent=Menu_File
@@ -85,7 +97,7 @@ OpenSubMenu=1
 Cmd=NULL
 
 [Menu_View_Light]
-Title=Light Mode >
+Title=Light Mode +
 Parent=Menu_View
 OpenSubMenu=1
 Cmd=NULL
@@ -185,7 +197,7 @@ Parent=Menu_Grid
 Cmd=gridsnap
 
 [Menu_Grid_Size]
-Title=Grid Size >
+Title=Grid Size +
 Parent=Menu_Grid
 OpenSubMenu=1
 Cmd=NULL
@@ -254,7 +266,7 @@ Parent=Menu_Sys
 Cmd=set e_runsim toggle
 
 [Menu_Sys_Speed]
-Title=Sim Speed >
+Title=Sim Speed +
 Parent=Menu_Sys
 OpenSubMenu=1
 Cmd=NULL

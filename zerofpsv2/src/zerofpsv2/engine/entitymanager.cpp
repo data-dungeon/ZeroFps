@@ -1921,6 +1921,9 @@ bool EntityManager::LoadZones(string strSaveDir )
 
 	Clear();
 
+	kFile.Read(&m_fSimTime,sizeof(float),1);
+
+
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
 
@@ -1992,6 +1995,8 @@ bool EntityManager::SaveZones(string strSaveDir)
 		cout<<"Could not open zone save file"<<endl;
 		return false;
 	}
+	
+	kFile.Write(&m_fSimTime,sizeof(float),1);
 	
  	int iNumOfZone = m_kZones.size();
 	kFile.Write(&iNumOfZone,sizeof(int),1);
