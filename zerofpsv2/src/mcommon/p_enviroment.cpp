@@ -27,6 +27,7 @@ P_Enviroment::P_Enviroment()
 	m_strLastSetEnviroment=			"";	
 	m_pkZoneEnvSetting = 			NULL;
 	
+	m_iMusicID =						-1;
 	
 	if(!m_pkEnviroment)
 	{
@@ -93,28 +94,26 @@ void P_Enviroment::UpdateEnviroment()
 	pkLight->SetAmbient(kCurrentAmbient);		
 	pkLight->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
 			
-/*	//sky box
+/*	
+	//sky box
 	//setup skybox property
-	static string strCurrentSkyBox1;
-	static string strCurrentSkyBox2;
-	if(m_kCurrentEnvSetting.m_strSkybox1 != "" && m_kCurrentEnvSetting.m_strSkybox2 != "")
+	static string strCurrentSpace;
+	if(m_kCurrentEnvSetting.m_strSpace != "" )
 	{
-		if( (strCurrentSkyBox1 != m_kCurrentEnvSetting.m_strSkybox1) || (strCurrentSkyBox2 != m_kCurrentEnvSetting.m_strSkybox2) )
+		if( strCurrentSpace != m_kCurrentEnvSetting.m_strSpace  )
 		{
-			strCurrentSkyBox1 = m_kCurrentEnvSetting.m_strSkybox1;
-			strCurrentSkyBox2 = m_kCurrentEnvSetting.m_strSkybox2;
+			strCurrentSpace = m_kCurrentEnvSetting.m_strSpace;
 		
 			P_SkyBoxRender* pkSB;
 			if( !(pkSB = (P_SkyBoxRender*)m_pkEntity->GetProperty("P_SkyBoxRender") ) )		
 				pkSB = (P_SkyBoxRender*)GetEntity()->AddProperty("P_SkyBoxRender");
 			
-			pkSB->SetTexture(m_kCurrentEnvSetting.m_strSkybox1.c_str(),m_kCurrentEnvSetting.m_strSkybox2.c_str());
+			pkSB->SetTexture(m_kCurrentEnvSetting.m_strSpace.c_str(),m_kCurrentEnvSetting.m_strSpace.c_str());
 		}
 	}
 	else
 	{
-		strCurrentSkyBox1 = "";
-		strCurrentSkyBox2 = "";	
+		strCurrentSpace = "";
 		GetEntity()->DeleteProperty("P_SkyBoxRender");
 	}
 */	
@@ -145,9 +144,6 @@ void P_Enviroment::UpdateEnviroment()
 	static float fCurrentStart = 0;
 	static float fCurrentStop = 0;
 	
-	//kCurrentFogColor = (kCurrentFogColor + m_kCurrentEnvSetting.m_kFogColor) * 0.5;
-	//fCurrentStart = (fCurrentStart + m_kCurrentEnvSetting.m_fFogStart) * 0.5;
-	//fCurrentStop = (fCurrentStop + m_kCurrentEnvSetting.m_fFogStop) * 0.5;
 	kCurrentFogColor.Lerp(kCurrentFogColor,m_kCurrentEnvSetting.m_kFogColor,fIf);	
 	fCurrentStart = fCurrentStart*(1-fIf) + m_kCurrentEnvSetting.m_fFogStart*fIf;
 	fCurrentStop =  fCurrentStop*(1-fIf) +  m_kCurrentEnvSetting.m_fFogStop*fIf;				
@@ -155,7 +151,27 @@ void P_Enviroment::UpdateEnviroment()
 	m_pkZeroFps->GetCam()->SetClearColor(kCurrentFogColor);
 	m_pkZeroFps->GetCam()->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
 	
+
+	//music
 		
+	static string strCurrentMusic;
+	if(m_kCurrentEnvSetting.m_strMusic != strCurrentMusic)
+	{
+		if(m_iMusicID != -1)
+		{
+			m_pkAudioSystem->StopAudio(m_iMusicID,true);
+			m_iMusicID = -1;
+			strCurrentMusic = "";
+		}
+	
+		if(m_kCurrentEnvSetting.m_strMusic.length() != 0)
+		{
+			strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
+			m_iMusicID = m_pkAudioSystem->PlayAudio(m_kCurrentEnvSetting.m_strMusic, 
+																Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP);
+			
+		}	
+	}
 }
 
 void P_Enviroment::UpdateEnvSetting(EnvSetting* pkEnvSetting)
@@ -271,7 +287,7 @@ void P_Enviroment::DrawSky()
 		pkSpace = new ZMaterial;
 			pkSpace->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
 			pkSpace->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/space.tga");
-			pkSpace->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
+			//pkSpace->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSpace->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
 			pkSpace->GetPass(0)->m_iCullFace = 			CULL_FACE_NONE;		
@@ -331,6 +347,12 @@ void P_Enviroment::DrawSky()
 										1,0,
 										0,0};	
 	
+	static float afSpaceUvs[] = {	0,5,
+							 				5,5,
+											5,0,
+											0,0};	
+
+											
 	//UV's for moving clouds
 	float fP = m_pkZeroFps->GetTicks()* 0.01;
 	float fPS = m_pkZeroFps->GetTicks()*0.005;
@@ -359,26 +381,30 @@ void P_Enviroment::DrawSky()
 	
 	m_pkZShaderSystem->ResetPointers();											
 	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,afVerts);
-	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 
 	//space
 	if(m_kCurrentEnvSetting.m_strSpace.length() != 0)
 	{
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afSpaceUvs);
+	
 		m_pkZShaderSystem->BindMaterial(pkSpace);											
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);	
 	}
 
 	//sky
 	if(m_kCurrentEnvSetting.m_strSky.length() != 0)
-	{				
+	{			
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);		
 		m_pkZShaderSystem->BindMaterial(pkSkyMat);											
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);	
 	}
 
 	//cloud HI (moving faster
 	if(m_kCurrentEnvSetting.m_strCloudHi.length() != 0)
-	{						
+	{	
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);						
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afMUVsS);	
 		m_pkZShaderSystem->BindMaterial(pkCloudMatHi);											
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);	
@@ -386,7 +412,8 @@ void P_Enviroment::DrawSky()
 	
 	//cloud LOW (moving slower
 	if(m_kCurrentEnvSetting.m_strCloudLow.length() != 0)
-	{								
+	{	
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);								
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afMUVsF);	
 		m_pkZShaderSystem->BindMaterial(pkCloudMatLow);											
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);	

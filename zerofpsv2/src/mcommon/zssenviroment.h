@@ -98,6 +98,11 @@ class MCOMMON_API EnvList
 class MCOMMON_API ZSSEnviroment : public ZFSubSystem 
 {	
 	private:
+		enum FuncId_e
+		{
+			FID_CHANGEENVIROMENT,
+		};
+	
 		ZeroFps*						m_pkZeroFps;
 	
 		vector<P_Enviroment*>	m_kPEnviroments;
@@ -117,6 +122,7 @@ class MCOMMON_API ZSSEnviroment : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown()		{return true;};
 		bool IsValid()			{return true;};
+		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		
 		void Update();
 		

@@ -40,8 +40,9 @@ class MCOMMON_API P_Enviroment: public Property {
 		EnvSetting		m_kCurrentEnvSetting;
 		
 		
-		void UpdateEnviroment();
+		int				m_iMusicID;
 		
+		void UpdateEnviroment();		
 		void DrawSky();
 						
 	public:

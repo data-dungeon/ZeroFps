@@ -204,6 +204,8 @@ ZSSEnviroment::ZSSEnviroment() : ZFSubSystem("ZSSEnviroment")
 {
 	m_fEnviromentChange = 300;
 	m_fEnviromentTimeout = 300;
+	
+	Register_Cmd("changeenviroment",			FID_CHANGEENVIROMENT);
 }
 
 bool ZSSEnviroment::StartUp()
@@ -211,6 +213,23 @@ bool ZSSEnviroment::StartUp()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	return true;
+}
+
+void ZSSEnviroment::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) 
+	{
+		case FID_CHANGEENVIROMENT:
+		{
+			//reset last updated timer (forces enviroment changes at next update)
+			for(int i = 0;i<m_kEnvLists.size();i++)
+			{			
+				m_kEnvLists[i]->m_fLastUpdated = -m_fEnviromentChange;
+			}
+		
+			break;
+		}
+	}	
 }
 
 void ZSSEnviroment::Update()
