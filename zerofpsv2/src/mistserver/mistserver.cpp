@@ -682,6 +682,11 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		{
 			RotateActiveZoneObject();
 		}
+
+		if(strName == "ToogleLight")
+		{
+			ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
+		}
 	}
 
 }
@@ -757,6 +762,10 @@ void MistServer::RotateActiveZoneObject()
 	}
 }
 
-
-
-
+void MistServer::ToogleLight(bool bEnabled)
+{
+	if(bEnabled)
+		pkZShader->SetForceLighting(ALWAYS_ON);
+	else
+		pkZShader->SetForceLighting(ALWAYS_OFF);
+}

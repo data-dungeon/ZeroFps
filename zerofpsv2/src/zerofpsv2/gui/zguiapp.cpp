@@ -673,6 +673,7 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID,
 
 	if( eType == Wnd || eType == Label )
 		pkWnd->SetSkin(pkSkin);
+	else
 	if( eType == Button )
 	{
 		if(strcmp(szSkinType, "Button up") == 0)
@@ -684,6 +685,16 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID,
 		if(strcmp(szSkinType, "Button focus") == 0)
 			static_cast<ZGuiButton*>(pkWnd)->SetButtonHighLightSkin(pkSkin);
 	}
+	else
+	if( eType == Checkbox)
+	{
+		if(strcmp(szSkinType, "Button up") == 0)
+			static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonUncheckedSkin(pkSkin);
+		else
+		if(strcmp(szSkinType, "Button down") == 0)
+			static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(pkSkin);
+	}
+
  
 	//printf("Changing skin to %s\n", szSkinName);
 

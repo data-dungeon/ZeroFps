@@ -26,6 +26,7 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
+		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();
 		//console funktions
 		enum FuncId_e
