@@ -206,14 +206,14 @@ Image* TextureManager::LoadImage2(const char *filename)
 	ZFVFile kFile;
 	if(! kFile.Open(filename,0, false)) {
 		delete kImage;
-		fprintf(stderr, "Unable to load %s: \n", filename);
+		fprintf(stderr, "Unable to Open %s: \n", filename);
 		return(NULL);
 		}
 
 	if(! kImage->load(kFile.m_pkFilePointer, filename)) {
 		delete kImage;
 		kFile.Close();
-		fprintf(stderr, "Unable to load %s: \n", filename);
+		fprintf(stderr, "Unable to Read %s: \n", filename);
 		return(NULL);
 		}
 

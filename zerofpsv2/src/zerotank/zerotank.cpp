@@ -46,11 +46,14 @@ void ZeroTank::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(70,0,0),90,1.6,0.25,250);	
-	m_pkCamera->SetViewPort(0,0.24,1,0.76);
+	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
+//	m_pkCamera->SetViewPort(0,0.24,1,0.76);
 	
 	//disable zones modells bös
 	pkLevelMan->SetVisibleZones(false);
+
+	m_pkMap2 = new Heightmap2;
+	m_pkMap2->CreateHMFromImage("test.tga");
 
 	//register actions bös
 	RegisterActions();
@@ -102,6 +105,10 @@ void ZeroTank::OnIdle()
 			
 	Input();
 	
+ 	pkFps->UpdateCamera(); 	
+	
+	m_pkMap2->SetPos(Vector3(0,-5,-10));
+	pkRender->DrawHM2(m_pkMap2,Vector3(0,0,0));
 
 	
 	//update player possition
@@ -112,7 +119,6 @@ void ZeroTank::OnIdle()
 		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-10,0));
 	}
 
-
 }
 
 void ZeroTank::OnSystem() 
@@ -122,26 +128,6 @@ void ZeroTank::OnSystem()
 	{
 		g_ZFObjSys.Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
-/*		if(m_pkClientInput == NULL)		
-		{
-			g_ZFObjSys.Logf("net","??? m_pkClientInput == NULL\n");
-			if(m_iSelfObjectID != -1)
-			{
-				g_ZFObjSys.Logf("net","??? m_iSelfObjectID != -1\n");
-				Object* pkClientObj = pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);
-				if(pkClientObj) {
-					g_ZFObjSys.Logf("net","??? pkClientObj found\n");
-					m_pkClientInput = (P_ClientInput*)pkClientObj->GetProperty("P_ClientInput");
-
-					if(m_pkClientInput != NULL)
-					{
-						g_ZFObjSys.Logf("net","??? Found client input property %d\n", m_pkClientInput->m_iPlayerID);
-						cout<<"Found client input property"<<endl;					
-						cout << "My Num: " << m_pkClientInput->m_iPlayerID;
-					}
-				}
-			}
-		}*/
 
 
 
@@ -170,11 +156,33 @@ void ZeroTank::Input()
 	{
 	}
 
-	if(pkInput->Pressed(KEY_W))
+	float speed = 10;
+
+	//camera movements
+	if(pkInput->Pressed(KEY_X)){
+		speed*=0.25;
+	}
+	if(pkInput->Pressed(KEY_D)){
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
+	}
+	if(pkInput->Pressed(KEY_A)){
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
+	}	
+	if(pkInput->Pressed(KEY_W))	{
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+	}					
+	if(pkInput->Pressed(KEY_S))	{
+		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
+		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
+	}		
+/*	if(pkInput->Pressed(KEY_W))
 		pkLevelMan->ChangeLandscapeFillMode(LINE);
 	if(pkInput->Pressed(KEY_F))
 		pkLevelMan->ChangeLandscapeFillMode(FILL);
-
+*/
 }
 
 void ZeroTank::OnHud(void) 

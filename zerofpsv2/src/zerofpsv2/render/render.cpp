@@ -97,7 +97,10 @@ void Render::PrintChar(char cChar) {
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
  	
- 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+ 	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+	
 
 	glPushMatrix();
 	glBegin(GL_QUADS);		
@@ -126,7 +129,10 @@ void Render::PrintChar2(char cChar)
 	float y	=	(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
 	float x	=	float(pos%texwidth)*glu;//+width/2;
 
- 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+// 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
+	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+
 
 	int iFontSize = 8;
 /*
@@ -196,8 +202,8 @@ void Render::Print2(Vector3 kPos,char* aText) {
 
 
 void Render::SetFont(char* aFont) {
-	strcpy(aCurentFont,aFont);
-
+//	strcpy(aCurentFont,aFont);
+	m_kConsoleText.SetRes(aFont);
 }
 
 void Render::Line(Vector3 kPos1,Vector3 kPos2)
@@ -234,7 +240,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	glPushMatrix();
 	glLoadIdentity();
 
-	SetFont("../data/textures/text/devstr.bmp");
+	SetFont("data/textures/text/devstr.bmp");
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <vector>
 #include <deque>
-//#include <tolua.h>
 
 using namespace std;
 
@@ -38,6 +37,8 @@ class ENGINE_API Console : public BasicConsole {
 		
 		bool			m_bActive;
 		float			m_fToggleTime;
+
+
 
 	public:
 		Console();

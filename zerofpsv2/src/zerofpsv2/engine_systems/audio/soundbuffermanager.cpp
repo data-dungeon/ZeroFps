@@ -31,7 +31,7 @@ int SoundBufferManager::Load(char* acFile)
    
 	if(size==0){
 	   cout<<"cold not load file "<<acFile<<", Loading Dummy"<<endl;		
-		char DummyFile[]="file:../data/sound/dummy.wav";
+		char DummyFile[]="../data/sound/dummy.wav";
 	   alutLoadWAVFile((ALbyte*)DummyFile,&format,&data, &size, &freq,&loop);
    }
 

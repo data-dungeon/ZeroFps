@@ -696,7 +696,7 @@ void ZeroFps::DrawDevStrings()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
 
-	m_pkRender->SetFont("file:../data/textures/text/devstr.bmp");
+	m_pkRender->SetFont("data/textures/text/devstr.bmp");
 
 	float fYOffset = 0.75;
 

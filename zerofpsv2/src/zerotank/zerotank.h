@@ -12,6 +12,7 @@
 #include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/engine/levelmanager.h"
+#include "../zerofpsv2/engine_systems/common/heightmap2.h"
 
 //#include "../common/common.pkg"
 
@@ -55,6 +56,8 @@ class ZeroTank :public Application {
 		//wich gametype for server to use
 		int					m_iGameType;
 
+
+		Heightmap2*			m_pkMap2;
 
 	public:
 		

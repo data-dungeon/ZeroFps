@@ -12,7 +12,7 @@ WaterRenderProperty::WaterRenderProperty()
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL ;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	
-	SetProperty(100,10,"file:../data/textures/water2.bmp");
+	SetProperty(100,10,"../data/textures/water2.bmp");
 	m_iSortPlace	=	10;
 	m_fBlendValue	=	0.7;
 	m_bBlendDirUp	=  false;

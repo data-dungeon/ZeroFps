@@ -47,10 +47,10 @@ void HeightMap::Create(int iHmSize)
 	AllocHMMemory(iHmSize);
 
 	Zero();
-	SetTileSet("file:../data/textures/landbw.bmp");
+	SetTileSet("../data/textures/landbw.bmp");
 	
 	ClearSet();
-	AddSet("file:../data/textures/nodetail1.bmp","file:../data/textures/detail1.bmp","FEL");
+	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	CreateBlocks();
 }
 

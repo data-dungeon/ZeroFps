@@ -9,6 +9,7 @@
 #include "../../render/frustum.h"
 #include "../../basic/zfobjectmanger.h"
 
+
 class ENGINE_SYSTEMS_API HM2_texcor
 {
 	public:
