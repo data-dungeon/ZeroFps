@@ -1026,16 +1026,22 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 									if(iPosX == -1)
 									{
 										//try adding item on a free position in character inventory
-										if(!pkCharProp->m_pkInventory->AddItem(iItemID))											
+										if(pkCharProp->m_pkInventory->AddItem(iItemID))											
+											SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);											
+										else
 											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+
 										
 										break;
 									}
 									else
 									{
 										//try adding item on target position in character inventory
-										if(!pkCharProp->m_pkInventory->AddItem(iItemID,iPosX,iPosY))											
+										if(pkCharProp->m_pkInventory->AddItem(iItemID,iPosX,iPosY))											
+											SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);
+										else
 											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+										
 										
 										break;																	
 									}															
@@ -1051,7 +1057,9 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 										if(iPosX == -1)
 										{
 											cout<<"trying to drop item"<<endl;
-											if(!pkCharProp->m_pkInventory->DropItem(iItemID,pkChar->GetWorldPosV()))
+											if(pkCharProp->m_pkInventory->DropItem(iItemID,pkChar->GetWorldPosV()))
+												SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);											
+											else
 												SayToClients("Could not drop item",PkNetMessage->m_iClientID);
 										
 											break;;
@@ -1065,7 +1073,9 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 											{
 												cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
 											
-												if(!pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
+												if(pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
+													SendContainer(pkCharProp->m_pkInventory,PkNetMessage->m_iClientID);
+												else
 													SayToClients("Could no move item",PkNetMessage->m_iClientID);
 		
 												break;										
