@@ -72,9 +72,6 @@ class BASIC_API Matrix3
 				);
 		}
 
-		void RadRotate(float fX, float fY, float fZ);
-		void RadRotate(Vector3 kRot);
-
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(Vector3 kRot);
 		Vector3 GetRotVector();

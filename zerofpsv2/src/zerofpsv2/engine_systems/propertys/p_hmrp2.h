@@ -5,7 +5,7 @@
 #include <iostream>
 #include "../common/heightmap.h"
 #include "../engine_systems_x.h"
-//#include "GL/glut.h"
+#include "GL/glut.h"
 
 using namespace std;
 

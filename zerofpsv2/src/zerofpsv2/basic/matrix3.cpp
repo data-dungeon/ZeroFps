@@ -248,27 +248,12 @@ float Matrix3::Determinant(void)	 const
 	return det;
 }
 
+
 void Matrix3::Rotate(float fX, float fY, float fZ)
 {
 	fX=DegToRad(fX);
 	fY=DegToRad(fY);
 	fZ=DegToRad(fZ);	
-	
-	RadRotate(fX,fY,fZ);
-}
-
-void Matrix3::Rotate(Vector3 kRot){
-	kRot.x=DegToRad(kRot.x);
-	kRot.y=DegToRad(kRot.y);
-	kRot.z=DegToRad(kRot.z);	
-	
-	RadRotate(kRot.x,kRot.y,kRot.z);
-
-}
-
-void Matrix3::RadRotate(float fX, float fY, float fZ)
-{
-
 
 	
 	float cx = float(cos(fX));
@@ -297,7 +282,7 @@ void Matrix3::RadRotate(float fX, float fY, float fZ)
 	 *this *= rotatez*rotatey*rotatex;
 }
 
-void Matrix3::RadRotate(Vector3 kRot){
+void Matrix3::Rotate(Vector3 kRot){
 	Rotate(kRot.x, kRot.y, kRot.z);
 }
 

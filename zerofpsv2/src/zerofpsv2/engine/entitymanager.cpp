@@ -1646,7 +1646,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 	//last take the closest zone in the world
 	if(bClosestZone)
 	{
-		float d = 999999999;
+		float d = 99999999999;
 		int id = -1;
 	
 		for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {

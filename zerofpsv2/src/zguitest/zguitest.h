@@ -17,6 +17,7 @@
 class ZGuiTest :public Application, public ZGuiApp 
 {
 	public:
+		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void OnMouseClick(bool bReleased, int x, int y);
 		void OnKeyDown(int iKey, ZGuiWnd* pkWnd);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd);
@@ -39,6 +40,13 @@ class ZGuiTest :public Application, public ZGuiApp
 		ZGuiTest(char* aName,int iWidth,int iHeight,int iDepth);
 
 	private:
+		void DeleteWnd(ZGuiWnd* pkWnd);
+		
+		bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
+
+		
+		void Resize(ZGuiWnd* pkWnd, int w, int h);
+		void SetPos(ZGuiWnd* pkWnd, int x, int y);
 		
 		bool IsResWnd(ZGuiWnd* pkWnd);
 		ZGuiWnd* GetWndFromPoint(int x, int y);
@@ -49,13 +57,35 @@ class ZGuiTest :public Application, public ZGuiApp
 		ZGuiWnd* m_pkToolbar;
 		ZGuiWnd* m_pkEditbar;
 
-		ZGuiWnd*	m_pkMoveWnd;
 		ZGuiWnd* m_pkFocusWnd;
 		ZGuiWnd* m_pkResizeWnd;
-		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide } m_eCurrentResizeType;
-		enum EditMode { Move, Resize } m_eEditMode;
+		ZGuiWnd* m_pkMainWnd;
 
-		int m_iCursorRangeDiffX, m_iCursorRangeDiffY;
+		struct MOVE_INFO
+		{
+			ZGuiWnd* pkWnd;
+			int m_iXPosBeforeMove, m_iYPosBeforeMove;
+		};
+
+		vector<MOVE_INFO> m_vkMoveWnds;
+
+		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide } m_eCurrentResizeType;
+		enum EditMode { MOVE, RESIZE } m_eEditMode;
+
+		int m_iXPos, m_iYPos;
+		int m_iWidth, m_iHeight;
+
+		int m_iXPosBeforeResize, m_iYPosBeforeResize;
+
+		Point m_kSelStart;
+
+		Point m_kClickPos;
+
+			struct SORT_FILES : public binary_function<string, string, bool> {
+				bool operator()(string x, string y) { 
+					return (x.find(".") == string::npos);
+				};
+			} SortFiles;
 };
 
 #endif // #ifndef _ZGUITEST_H_

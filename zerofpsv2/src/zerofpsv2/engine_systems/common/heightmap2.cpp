@@ -1,6 +1,4 @@
 #include "heightmap2.h"
-#include "../../engine/zerofps.h"
-#include "../../render/texturemanager.h"
 
 Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 {

@@ -60,8 +60,8 @@ void Physics_Engine::Update(float fAlphaTime)
 			HandleCollission(pkCol);
 			
 			//dont shrink rest time with to little not good for FPS =)
-//			if(pkCol->fAtime < 0.001)
-//				pkCol->fAtime = 0.001;
+			if(pkCol->fAtime < 0.001)
+				pkCol->fAtime = 0.001;
 					
 			//set new Resttime			
 			m_fRTime -= pkCol->fAtime;			
@@ -88,8 +88,8 @@ void Physics_Engine::Update(float fAlphaTime)
 	}
 
 
-	if(m_iNrOfCollissions >0)
-		cout<<"TOTAL NR OF COLLISSIONS: "<<m_iNrOfCollissions<<endl;
+//	if(m_iNrOfCollissions >0)
+//		cout<<"TOTAL NR OF COLLISSIONS: "<<m_iNrOfCollissions<<endl;
 }
 
 bool Physics_Engine::AddBody(Body* pkBody)
@@ -179,7 +179,49 @@ void Physics_Engine::UpdateVelNPos(float fAtime)
 	}
 }
 
+void Physics_Engine::UpdateBodyVelNPos(Body* pkBody,float fAtime)
+{
+		//position
 
+		Vector3 kAe;
+			
+		//Calculate acceleration in world space
+		kAe = pkBody->m_kForces / pkBody->m_fMass;
+		pkBody->m_kAcceleration = kAe;
+		
+		//Calculate velocity in world space
+		pkBody->m_kVelocity += kAe * fAtime;
+		
+		//Calculate position in world space
+		pkBody->m_kPosition += pkBody->m_kVelocity * fAtime;
+		
+		
+
+		//rotation
+		
+		//calculate angular acceleration
+		pkBody->m_kAngleAcceleration = pkBody->m_kInertiaInverse * (pkBody->m_kMoment - pkBody->m_kAngleVel.Cross(pkBody->m_kInertia*pkBody->m_kAngleVel) );
+	
+		//calculate new rotation velocity
+		pkBody->m_kAngleVel += pkBody->m_kAngleAcceleration * fAtime;
+		
+		//apply air friction
+		pkBody->m_kAngleVel-= (pkBody->m_kAngleVel*pkBody->m_fAirFriction);
+		
+		//calculate new orientation		
+		pkBody->m_kOrientation.Rotate(pkBody->m_kAngleVel*fAtime);
+
+		//calculate velocity in body cordinats
+		pkBody->m_kBodyVelocity = pkBody->m_kOrientation.VectorTransform(pkBody->m_kVelocity);
+		
+		
+/*		//calculate body speed
+		pkBody->m_fSpeed = pkBody->m_kVelocity.Length();
+*/		
+		//get euler angles
+//		pkBody->m_kOrientation.ToAxes(&pkBody->m_kAngles);
+
+}
 
 void Physics_Engine::TestWithPlanes(float fATime)
 {
@@ -218,66 +260,8 @@ void Physics_Engine::TestBodys(float fATime)
 
 bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 {
-	bool retry = true;
-	bool didpen = false;
-	int nroftests = 0;
-	
-	
-	while(retry && nroftests < m_iMaxTests)
-	{
-		retry = false;
-		nroftests++;
-		
-		memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
-		UpdateBodyVelNPos(&m_kBodyCopy1,fATime);
-	
-		if(CollideSphereVSPlane(&m_kBodyCopy1,pkPlane))
-		{
-			didpen = true;			
-			retry = true;
-			fATime /=1.5;
-			
-			continue;
-		}		
-
-	}
-	
-	if(didpen)
-	{	
-		Collission tempcol;
-
-		tempcol.pkBody1 = pkBody;
-		tempcol.pkBody2 = NULL;
-		
-		
-		tempcol.kNormal = pkPlane->m_kNormal;			
-		tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity;		
-		
-		//if objects are moveing away from each other then they cant collide
-		if(tempcol.kRelVelocity *  tempcol.kNormal > 0.0)
-		{
-			return false;		
-		}
-		
-		tempcol.kPos = m_kBodyCopy1.m_kPosition - (pkPlane->m_kNormal * m_kBodyCopy1.m_fRadius);
-		tempcol.kMassCenterToPos1 = tempcol.kPos - (tempcol.pkBody1->m_kPosition + tempcol.pkBody1->m_kMassCenter);
-		tempcol.kMassCenterToPos2 = Vector3(0,0,0);
-		tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration;
-		tempcol.fAtime =	fATime;	
-		tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
-	
-		m_kCollissions.push_back(tempcol);	
-	
-		return true;
-	}
-	
-	return false;
-}
-
-bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
-{
-//	float atime = fATime;	
-//	float dtime = atime;
+	float atime = fATime;	
+	float dtime = atime;
 	bool retry = true;
 	bool didpen = false;
 	bool collission = false;
@@ -290,19 +274,116 @@ bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		nroftests++;
 		
 		memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
-		UpdateBodyVelNPos(&m_kBodyCopy1,fATime);
+		UpdateBodyVelNPos(&m_kBodyCopy1,atime);
 	
-		if(CollideSphereVSPlane(&m_kBodyCopy1,pkPlane))
+		int check = CollideSphereVSPlane(&m_kBodyCopy1,pkPlane);			
+		
+		if(check == PENETRATING || check == COLLISSION)
 		{
-			if(CollideMeshVSPlane(&m_kBodyCopy1,pkPlane))						
+			//is it the first penetration in test?
+			if(didpen != true)
 			{
-				didpen = true;			
-				retry = true;
-				fATime /=1.25;
+				memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
+		
+				int check2 = CollideSphereVSPlane(&m_kBodyCopy1,pkPlane);			
 			
-				continue;
+				//check if there still is a penetration if atime is 0 	
+				if(check2 == PENETRATING || check2 == COLLISSION)
+				{
+					atime = 0;
+					didpen = true;
+					break;
+				}
 			}
+		
+			didpen = true;			
+			retry = true;
+			atime /=1.5;
+			
+			continue;
 		}
+		
+		if(check == NOT && didpen)
+		{
+			break;
+		}
+		
+		if(check == NOT && didpen == false)
+			return false;
+		
+		//if time is infinit short set it to 0	
+		if(atime < 0.0001)
+		{	
+			atime =0;
+			break;
+		}	
+
+	}
+	
+	if(didpen)
+	{	
+		Collission tempcol;
+
+		tempcol.pkBody1 = pkBody;
+		tempcol.pkBody2 = NULL;
+		
+		tempcol.kPos = m_kBodyCopy1.m_kPosition - (pkPlane->m_kNormal * m_kBodyCopy1.m_fRadius);
+		tempcol.kMassCenterToPos1 = (tempcol.pkBody1->m_kPosition + tempcol.pkBody1->m_kMassCenter) - tempcol.kPos;
+		tempcol.kMassCenterToPos2 = Vector3(0,0,0);
+		tempcol.kNormal = pkPlane->m_kNormal;	
+		tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity;
+		tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration;
+		tempcol.fAtime =	atime;	
+		tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
+	
+		m_kCollissions.push_back(tempcol);	
+	
+		return true;
+	}
+	
+	return false;
+}
+
+bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
+{
+	float atime = fATime;	
+	float dtime = atime;
+	bool retry = true;
+	bool didpen = false;
+	bool collission = false;
+	int nroftests = 0;
+	
+	
+	while(retry && nroftests < m_iMaxTests)
+	{
+		retry = false;
+		nroftests++;
+		
+		memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
+		UpdateBodyVelNPos(&m_kBodyCopy1,atime);
+	
+		int check = NOT;
+		if(CollideSphereVSPlane(&m_kBodyCopy1,pkPlane) != NOT)
+			check = CollideMeshVSPlane(&m_kBodyCopy1,pkPlane);			
+		
+		
+		if(check == PENETRATING || check == COLLISSION)
+		{
+			didpen = true;			
+			retry = true;
+			atime /=2;
+			
+			continue;
+		}
+		
+		if(check == NOT && didpen)
+		{
+			break;
+		}
+		
+		if(check == NOT && didpen == false)
+			return false;
+		
 	}
 	
 	if(didpen)
@@ -318,35 +399,15 @@ bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 			tempcol.pkBody1 = pkBody;
 			tempcol.pkBody2 = NULL;
 		
-			
+
 			tempcol.kPos = m_kBodyCopy1.TransRot((*m_kBodyCopy1.m_pkVertex)[m_kCollissionPoints[i]]);						
-			
-//			cout<<"VELasd:"<< tempcol.pkBody1->m_kAngleVel.Cross(tempcol.kPos).Length()<<endl;
-//			cout<<"VEL:"<< tempcol.pkBody1->m_kBodyVelocity.Length()<<endl;			
-			
-			tempcol.kRelVelocity = tempcol.pkBody1->m_kBodyVelocity ;
-			;//m_kBodyCopy1.Rot(tempcol.pkBody1->m_kBodyVelocity + tempcol.pkBody1->m_kAngleVel.Cross((*m_kBodyCopy1.m_pkVertex)[m_kCollissionPoints[i]]));
-//			tempcol.kRelVelocity = m_kBodyCopy1.m_kOrientation.VectorTransform(tempcol.pkBody1->m_kBodyVelocity + tempcol.pkBody1->m_kAngleVel.Cross(tempcol.kPos));			
-//			tempcol.kRelVelocity = m_kBodyCopy1.Rot(tempcol.pkBody1->m_kVelocity + tempcol.pkBody1->m_kAngleVel.Cross((*m_kBodyCopy1.m_pkVertex)[m_kCollissionPoints[i]]));			
-//			m_kBodyCopy1.m_kOrientation.VectorTransform(tempcol.kRelVelocity);
-			
-//			cout<<"CP:"<<tempcol.kRelVelocity.Length()<<endl;
-			
-			tempcol.kNormal = pkPlane->m_kNormal;	
-
-			//if objects are moveing away from each other then they cant collide
-			if(tempcol.kRelVelocity *  tempcol.kNormal > 0.0)
-			{
-				//cout<<"DP"<<endl;
-				return false;		
-			}
-
-
-			tempcol.kMassCenterToPos1 = tempcol.kPos - (m_kBodyCopy1.m_kPosition + kMassCenter);
+			tempcol.kMassCenterToPos1 = (tempcol.pkBody1->m_kPosition + kMassCenter)- tempcol.kPos;
 			tempcol.kMassCenterToPos2.Set(0,0,0);
+			tempcol.kNormal = pkPlane->m_kNormal;	
+			tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity;
 			tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration;
-			tempcol.fAtime =	fATime;	
-			tempcol.kCollissionTangent = ((tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal));
+			tempcol.fAtime =	atime;	
+			tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
 	
 			m_kCollissions.push_back(tempcol);	
 		}
@@ -358,14 +419,17 @@ bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 
 
 
-bool Physics_Engine::CollideSphereVSPlane(Body* pkBody,Plane* pkPlane)
+int Physics_Engine::CollideSphereVSPlane(Body* pkBody,Plane* pkPlane)
 {
 	float d = pkPlane->SphereTest(pkBody->m_kPosition,pkBody->m_fRadius);
 		
-	if(d <= 0)
-		return true;
-	else			
-		return false;
+	if(fabs(d) <= m_fCtol)	
+		return COLLISSION;
+	
+	if(d < 0)
+		return PENETRATING;
+				
+	return NOT;
 }
 
 bool Physics_Engine::TestBodyMeshVSBodyMesh(Body* pkBody1,Body* pkBody2,float fATime)
@@ -427,45 +491,17 @@ bool Physics_Engine::TestBodyMeshVSBodyMesh(Body* pkBody1,Body* pkBody2,float fA
 			tempcol.pkBody1 = pkBody1;
 			tempcol.pkBody2 = pkBody2;
 		
-			tempcol.kPos = m_kCollissionCords[i];											
+
+			tempcol.kPos = m_kCollissionCords[i];						
+			tempcol.kMassCenterToPos1 = (tempcol.pkBody1->m_kPosition + kMassCenter1)- tempcol.kPos;
+			tempcol.kMassCenterToPos2 = (tempcol.pkBody2->m_kPosition + kMassCenter2)- tempcol.kPos;
+			tempcol.kNormal = (m_kBodyCopy1.m_kPosition - m_kBodyCopy2.m_kPosition).Unit();	
 			tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity - m_kBodyCopy2.m_kVelocity;
-			tempcol.kNormal = m_kCollissionNormals[i];//(m_kBodyCopy2.m_kPosition - m_kBodyCopy1.m_kPosition).Unit();				
-
-			//if objects are moveing away from each other then they cant collide
-			if(tempcol.kRelVelocity *  tempcol.kNormal > 0.0)
-			{
-				//cout<<"DP"<<endl;
-				return false;		
-			}
-			
-			static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-			pkRender->Line(tempcol.kPos,tempcol.kPos+tempcol.kNormal);
-
-			tempcol.kMassCenterToPos1 = tempcol.kPos - (m_kBodyCopy1.m_kPosition + kMassCenter1);
-			tempcol.kMassCenterToPos2 = tempcol.kPos - (m_kBodyCopy2.m_kPosition + kMassCenter2);
 			tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration - m_kBodyCopy2.m_kAcceleration;
 			tempcol.fAtime =	atime;	
 			tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
 	
 			m_kCollissions.push_back(tempcol);	
-			
-/*			
-		Vector3 kMassCenter1 = m_kBodyCopy1.Rot(pkBody1->m_kMassCenter);
-		Vector3 kMassCenter2 = m_kBodyCopy2.Rot(pkBody2->m_kMassCenter);	
-		
-		Collission temp;
-		temp.pkBody1 = pkBody1;
-		temp.pkBody2 = pkBody2;
-	
-		temp.kNormal = (m_kBodyCopy1.m_kPosition - m_kBodyCopy2.m_kPosition).Unit();
-		temp.kPos = m_kBodyCopy1.m_kPosition - (temp.kNormal * m_kBodyCopy1.m_fRadius);	
-		temp.kMassCenterToPos1 = (m_kBodyCopy1.m_kPosition + kMassCenter1) - temp.kPos;
-		temp.kMassCenterToPos2 = (m_kBodyCopy2.m_kPosition + kMassCenter2) - temp.kPos;					
-		temp.kRelVelocity = m_kBodyCopy1.m_kVelocity - m_kBodyCopy2.m_kVelocity;
-		temp.kRelAcceleration = m_kBodyCopy1.m_kAcceleration - m_kBodyCopy2.m_kAcceleration;
-		temp.fAtime =	atime;
-		temp.kCollissionTangent = (temp.kNormal.Cross(temp.kRelVelocity.Unit())).Cross(temp.kNormal);				
-*/			
 		}
 		return true;
 	}
@@ -526,26 +562,21 @@ int Physics_Engine::CollideBodyMeshs(Body* pkBody1,Body* pkBody2)
 			//test against plane
 			for(int b = 0 ;b<3;b++)
 			{
-
-			
-				int p1,p2,p3;
+				int p1,p2;
 		
 				switch(b)
 				{
 					case 0:
 						p1 = 0;
 						p2 = 1;
-						p3 = 2;
 						break;
 					case 1:
 						p1 = 1;
 						p2 = 2;
-						p3 = 0;
 						break;
 					case 2:
 						p1 = 2;
 						p2 = 0;
-						p2 = 1;						
 						break;			
 				}
 		
@@ -560,20 +591,12 @@ int Physics_Engine::CollideBodyMeshs(Body* pkBody1,Body* pkBody2)
 						if(!clear)
 						{	
 							m_kCollissionCords.clear();
-							m_kCollissionNormals.clear();
 							clear=true;
 						}
 						 
 						//add point to list
 						m_kCollissionCords.push_back(kColPos);
 						
-						//caclulate normal
-						Vector3 u = (point2[p1] - point2[p2]).Unit();
-						Vector3 p = (point2[p1] - point2[p3]).Unit();
-						Vector3 kColNormal = ((u.Cross(p)).Cross(u)).Unit();
-						
-						//add to normal list	
-						m_kCollissionNormals.push_back(kColNormal);
 					}			
 				}
 			}
@@ -652,8 +675,7 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 	
 	if(didpen)
 	{	
-		Vector3 kMassCenter1 = m_kBodyCopy1.Rot(pkBody1->m_kMassCenter);
-		Vector3 kMassCenter2 = m_kBodyCopy2.Rot(pkBody2->m_kMassCenter);	
+		
 		
 		Collission temp;
 		temp.pkBody1 = pkBody1;
@@ -661,8 +683,8 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 	
 		temp.kNormal = (m_kBodyCopy1.m_kPosition - m_kBodyCopy2.m_kPosition).Unit();
 		temp.kPos = m_kBodyCopy1.m_kPosition - (temp.kNormal * m_kBodyCopy1.m_fRadius);	
-		temp.kMassCenterToPos1 = temp.kPos - (m_kBodyCopy1.m_kPosition + kMassCenter1);
-		temp.kMassCenterToPos2 = temp.kPos - (m_kBodyCopy2.m_kPosition + kMassCenter2);					
+		temp.kMassCenterToPos1 = (temp.pkBody1->m_kPosition + temp.pkBody1->m_kMassCenter) - temp.kPos;
+		temp.kMassCenterToPos2 = (temp.pkBody2->m_kPosition + temp.pkBody2->m_kMassCenter) - temp.kPos;					
 		temp.kRelVelocity = m_kBodyCopy1.m_kVelocity - m_kBodyCopy2.m_kVelocity;
 		temp.kRelAcceleration = m_kBodyCopy1.m_kAcceleration - m_kBodyCopy2.m_kAcceleration;
 		temp.fAtime =	atime;
@@ -686,90 +708,6 @@ int Physics_Engine::CollideBody(Body* pkBody1,Body* pkBody2)
 	return NOT;	
 }
 
-void Physics_Engine::UpdateBodyVelNPos(Body* pkBody,float fAtime)
-{
-		//position
-
-		Vector3 kAe;
-			
-		//Calculate acceleration in world space
-		kAe = pkBody->m_kForces / pkBody->m_fMass;
-		pkBody->m_kAcceleration = kAe;
-		
-		//Calculate velocity in world space
-		pkBody->m_kVelocity += kAe * fAtime;
-		
-		//Calculate position in world space
-		pkBody->m_kPosition += pkBody->m_kVelocity * fAtime;
-		
-		
-
-		//rotation
-		
-		//calculate angular acceleration
-		pkBody->m_kAngleAcceleration = pkBody->m_kInertiaInverse * (pkBody->m_kMoment - pkBody->m_kAngleVel.Cross(pkBody->m_kInertia*pkBody->m_kAngleVel) );
-	
-		//calculate new rotation velocity
-		pkBody->m_kAngleVel += pkBody->m_kAngleAcceleration * fAtime;
-		
-		//apply air friction
-		//pkBody->m_kAngleVel-= (pkBody->m_kAngleVel*pkBody->m_fAirFriction);
-		
-		//calculate new orientation		
-		pkBody->m_kOrientation.RadRotate( pkBody->m_kAngleVel * fAtime);
-
-
-		//calculate velocity in body cordinats
-		pkBody->m_kBodyVelocity = pkBody->m_kOrientation.VectorTransform(pkBody->m_kVelocity);
-		
-		//calculate body speed
-		pkBody->m_fSpeed = pkBody->m_kVelocity.Length();
-		
-		
-/*		
-		//hack
-		Vector3 pos[4];
-		pos[0] = Vector3(-2,0,-2);
-		pos[1] = Vector3(2,0,-2);		
-		pos[2] = Vector3(-2,0,2);		
-		pos[3] = Vector3(2,0,2);
-		
-
-		Vector3 dir = Vector3(0,1,0);
-		Vector3 normal = Vector3(0,1,0);
-		
-		for(int i =0;i<4;i++)
-		{
-			pos[i] = pkBody->Rot(pos[i]);		
-		
-			float j = (0.1 / ( (pkBody->m_kPosition.y + pos[i].y) * (pkBody->m_kPosition.y + pos[i].y) ) );
-			
-			
-			if(j<0)
-				j = 0;
-		
-		
-			cout<<"j:"<<j<<endl;
-		
-			pkBody->m_kVelocity += (j*normal)  / pkBody->m_fMass;
-			//pkBody->m_kVelocity.Set(0,0,0);
-		
-			dir = pkBody->Rot(dir);
-
-			Vector3 f = (j*dir).Cross(pos[i]);				
-			pkBody->m_kAngleVel += f;		
-		
-			static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-			pkRender->SetColor(Vector3(1,0,0));
-			pkRender->Line(	pkBody->m_kPosition  + pos[i],pkBody->m_kPosition + pos[i]  + dir);	
-		}	
-*/		
-
-
-		
-		
-} 
-
 
 void Physics_Engine::HandleCollission(Collission* pkCol)
 {		
@@ -783,65 +721,19 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		
 		float bounce = pkCol->pkBody1->m_fBounce*pkCol->pkBody2->m_fBounce;
 		
-/*		
+		
 		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
 					 ( (pkCol->kNormal*pkCol->kNormal) *
 					 ( 1/pkCol->pkBody1->m_fMass + 1/pkCol->pkBody2->m_fMass));
-*/		
-
-
-//		Vector3 pt1 = pkCol->kPos - pkCol->pkBody1->m_kPosition;
-//		Vector3 pt2 = pkCol->kPos - pkCol->pkBody2->m_kPosition;
-
-		Vector3 pt1 = pkCol->kMassCenterToPos1;
-		Vector3 pt2 = pkCol->kMassCenterToPos2;
-
-
-		float j = (-(1+bounce) * (pkCol->kRelVelocity*pkCol->kNormal)) / 
-					 ( (1/pkCol->pkBody1->m_fMass + 1/pkCol->pkBody2->m_fMass) +
-					 (pkCol->kNormal * ((pt1.Cross(pkCol->kNormal)) * pkCol->pkBody1->m_kInertia).Cross(pt1)) +
- 					 (pkCol->kNormal * ((pt2.Cross(pkCol->kNormal)) * pkCol->pkBody2->m_kInertia).Cross(pt2)));
-
-		if(j<0)
-			j*=-1;
 		
-		//cout<<"J:"<<j<<endl;
-		if(j <= 0.001)
-		{	
-			j=0.1; 
-		}
-		float friction = 0.1;			 				
-				
-		float Vrt = pkCol->kRelVelocity * pkCol->kCollissionTangent;
-			
-		if(fabs(Vrt) > 0.0)
-		{
-			//liner impulse whit friction
-			pkCol->pkBody1->m_kVelocity += ((j*pkCol->kNormal) + ((friction*j) * pkCol->kCollissionTangent))/ pkCol->pkBody1->m_fMass;
-			pkCol->pkBody2->m_kVelocity -= ((j*pkCol->kNormal) + ((friction*j) * pkCol->kCollissionTangent))/ pkCol->pkBody2->m_fMass;
-		
-//			pkCol->pkBody1->m_kAngleVel += (pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody1->m_kInertiaInverse;  
-//			pkCol->pkBody2->m_kAngleVel -= (pkCol->kMassCenterToPos2.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody2->m_kInertiaInverse;  
-			pkCol->pkBody1->m_kAngleVel += (j *pkCol->kNormal ).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-			pkCol->pkBody1->m_kAngleVel += (( friction* j) * -pkCol->kCollissionTangent).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-		
-			pkCol->pkBody2->m_kAngleVel -= (j *pkCol->kNormal ).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-			pkCol->pkBody2->m_kAngleVel -= (( friction* j) * -pkCol->kCollissionTangent).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-		
-		}		 
-		else
-		{
-			//liner impulse
-			pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal) / pkCol->pkBody1->m_fMass;
-			pkCol->pkBody2->m_kVelocity -= (j*pkCol->kNormal) / pkCol->pkBody2->m_fMass;
-		
-		
-//			pkCol->pkBody1->m_kAngleVel += (pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal))) * pkCol->pkBody1->m_kInertiaInverse;  
-//			pkCol->pkBody2->m_kAngleVel -= (pkCol->kMassCenterToPos2.Cross((j *pkCol->kNormal))) * pkCol->pkBody2->m_kInertiaInverse;  			
-
-		}
-
 /*
+		float j = -pkCol->kRelVelocity*(bounce+1) / 
+					 ( (1/pkCol->pkBody1->m_fMass + 1/pkCol->pkBody2->m_fMass) +
+					 (pkCol->kNormal * ((pkCol->kMassCenterToPos1.Cross(pkCol->kNormal)) / pkCol->pkBody1->m_kInertia).Cross(pkCol->kMassCenterToPos1)) +
+ 					 (pkCol->kNormal * ((pkCol->kMassCenterToPos2.Cross(pkCol->kNormal)) / pkCol->pkBody2->m_kInertia).Cross(pkCol->kMassCenterToPos2)));
+*/
+					 
+
 		//if objects r almost resting towards each other give em a little extra push
 		//cout<<"J:"<<j<<endl;
 		if(j<0)
@@ -855,7 +747,7 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 
 		//cout<<"BL:"<<j<<endl;
 
-
+		float friction = 0.1;
 
 		//apply impulse force
 		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal)  / pkCol->pkBody1->m_fMass;
@@ -872,8 +764,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		pkCol->pkBody2->m_kAngleVel += (pkCol->kMassCenterToPos2.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody2->m_kInertiaInverse;  
 */
 		//apply friction force
-//		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*friction)) / pkCol->pkBody1->m_fMass;
-//		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*friction)) / pkCol->pkBody2->m_fMass;
+		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*friction)) / pkCol->pkBody1->m_fMass;
+		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*friction)) / pkCol->pkBody2->m_fMass;
 
 /*		//apply impulse force
 		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal) / pkCol->pkBody1->m_fMass;
@@ -889,14 +781,11 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 	{		
 		float bounce = pkCol->pkBody1->m_fBounce;
 		
-//		cout<<"relvel in handler:"<<pkCol->kRelVelocity.Length()<<endl;
-//		cout<<"body1vel in handler:"<<pkCol->pkBody1->m_kVelocity.Length()<<endl;		
-		
-/*		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
+		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
 					 ( (pkCol->kNormal*pkCol->kNormal) *
 					 ( 1/pkCol->pkBody1->m_fMass ));			
-*/
-		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
+		
+/*		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
 					( (1/pkCol->pkBody1->m_fMass) + 
 					(pkCol->kNormal * (((pkCol->kMassCenterToPos1.Cross(pkCol->kNormal)) *
 					pkCol->pkBody1->m_kInertiaInverse).Cross(pkCol->kMassCenterToPos1))));
@@ -905,47 +794,29 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 					(pkCol->kNormal * ((pkCol->kMassCenterToPos1.Cross(pkCol->kNormal) * pkCol->pkBody1->m_kInertiaInverse).Cross(pkCol->kMassCenterToPos1))));
 	*/	
 		
-//		cout<<"j:"<<j<<endl;
+		if(j<0)
+			j*=-1;
 		
 		//if objects r almost resting give it a little extra push		
-		if(j <= 0.05)
+		if(j <= 0.001)
 		{	
 			j=0.1;
-//			cout<<"applying"<<endl;
 		}
 		
 		float friction = 0.1;
 		
-	
 		//apply impulse force
-		float Vrt = pkCol->kRelVelocity * pkCol->kCollissionTangent;
-			
-		if(fabs(Vrt) > 0.0)
-		{
-			pkCol->pkBody1->m_kVelocity += ((j*pkCol->kNormal) - ((friction*j) * pkCol->kCollissionTangent)) / pkCol->pkBody1->m_fMass;
-		}
-		else
-		{
-			pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal)  / pkCol->pkBody1->m_fMass;
-		}
+		pkCol->pkBody1->m_kVelocity += (j*pkCol->kNormal)  / pkCol->pkBody1->m_fMass;		
+		//pkCol->pkBody1->m_kVelocity += ((j*pkCol->kNormal) - ((friction*j) * pkCol->kCollissionTangent)) / pkCol->pkBody1->m_fMass;
 		
-		//Vector3 newvel = (pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody1->m_kInertiaInverse;  		
-//			Vector3 f = (j*dir).Cross(pos[i]);				
+//		Vector3 newvel = (pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody1->m_kInertiaInverse;  		
 
-		pkCol->pkBody1->m_kAngleVel += (j *pkCol->kNormal ).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-		pkCol->pkBody1->m_kAngleVel += (( friction* j) * -pkCol->kCollissionTangent).Cross(pkCol->kMassCenterToPos1) * pkCol->pkBody1->m_kInertiaInverse;
-
-		static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-		pkRender->SetColor(Vector3(1,0,0));
-		//pkRender->Line(	pkCol->kPos,pkCol->kPos+  pkCol->kNormal);		
-		pkRender->Line(	pkCol->kPos,pkCol->kPos+  pkCol->kCollissionTangent);				
-//		pkRender->Line(	pkCol->kPos,pkCol->kPos+  pkCol->kMassCenterToPos1.Cross(pkCol->kNormal));
-		pkRender->SetColor(Vector3(1,1,1));
-
-//		pkCol->pkBody1->m_kAngleVel = Vector3(11,1,1);
-//		pkCol->pkBody1->m_kAngleVel += newvel;//(pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody1->m_kInertiaInverse;  
-
-
+		pkCol->pkBody1->m_kAngleVel += (pkCol->kMassCenterToPos1.Cross((j *pkCol->kNormal) + (( friction* j) *pkCol->kCollissionTangent))) * pkCol->pkBody1->m_kInertiaInverse;  
+//		cout<<"bla:"<<newvel.x<<" "<<newvel.y<<" "<<newvel.z<<endl;
+		
+	
+		//apply friction force
+		pkCol->pkBody1->m_kVelocity -= (pkCol->kCollissionTangent * (j*friction)) / pkCol->pkBody1->m_fMass;
 
 		//check if body can rest
 		//UpdateResting(pkCol->pkBody1);	
@@ -975,7 +846,7 @@ Collission* Physics_Engine::FindNextCollission()
 	static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	
 		// Vim - is this the wrong way?
-	 pkRender->Sphere(pkClosest->kPos,0.1,1,Vector3(1,1,0),true);
+	// pkRender->Sphere(pkClosest->kPos,0.2,1,Vector3(1,0,0),true);
 	
 	
 	return pkClosest;
@@ -1012,7 +883,7 @@ bool Physics_Engine::BodyCollides(Body* pkBody)
 	return false;
 }
 
-bool Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
+int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 {
 	if(pkBody->m_pkVertex == NULL)
 		return NOT;
@@ -1047,10 +918,10 @@ bool Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 	
 	if(clear == true)
 	{	
-		return true;
+		return PENETRATING;
 	}
 	else
-		return false;
+		return NOT;
 }
 
 

@@ -82,8 +82,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 	{
 		Rect kRect = GetScreenRect();
 		kRect.Top += 4; 
-		//kRect.Left += m_kHorzOffset;
-
+		
 		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
 		if(m_bReadOnly)
 			cursor_pos = -1;

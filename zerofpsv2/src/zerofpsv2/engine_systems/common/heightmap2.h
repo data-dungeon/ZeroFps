@@ -5,14 +5,12 @@
 #include "../engine_systems_x.h"
 #include "i_heightmap2.h"
 #include <vector>
-//#include "../../render/texturemanager.h"
-//#include "../../render/frustum.h"
+#include "../../render/texturemanager.h"
+#include "../../render/frustum.h"
 #include "../../basic/zfsystem.h"
 #include "../../basic/zfresource.h"
+#include "../../engine/zerofps.h"
 #include "../../basic/vector2.h"
-
-class ZeroFps;
-class TextureManager;
 
 /// Vertex in a Hmap.
 class ENGINE_SYSTEMS_API HM2_vert

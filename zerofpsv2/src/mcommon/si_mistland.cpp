@@ -285,7 +285,7 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 	
 	
 	
-	float closest = 999999999;
+	float closest = 9999999999;
 	Entity* pkClosest = NULL;
 	
 	for(int i=0;i<kObjects.size();i++)

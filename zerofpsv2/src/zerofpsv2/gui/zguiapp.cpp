@@ -248,7 +248,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		break;
 	}
 
-	if(eType == Wnd)
+	if(eType == Wnd && pkParent == NULL) // <- OBS! Kommer göra att GUI't mistclient inte funkar tror jag...
 	{
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 		{
