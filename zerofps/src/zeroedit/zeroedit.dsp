@@ -96,6 +96,10 @@ SOURCE=.\fh.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\fileopendlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\floatproperty.cpp
 # End Source File
 # Begin Source File
@@ -124,6 +128,10 @@ SOURCE=.\fh.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\fileopendlg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\floatproperty.h
 # End Source File
 # Begin Source File
@@ -133,6 +141,10 @@ SOURCE=.\gravityproperty.h
 # Begin Source File
 
 SOURCE=.\gui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\resource_id.h
 # End Source File
 # Begin Source File
 

@@ -4,20 +4,26 @@
 
 //#include "zeroedit.h"
 #include "gui.h"
+#include "fileopendlg.h"
 #include "resource_id.h"
 #include <algorithm>
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+extern ZeroEdit Editor;
 
-Gui::Gui(ZeroEdit* pkEdit, ZGuiCallBack cb)
+// Window proc wrappers
+//////////////////////////
+
+static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
+	return Editor.m_pkGui->WndProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
+
+//////////////////////////
+
+Gui::Gui(ZeroEdit* pkEdit)
 {
 	m_iScreenCX = pkEdit->m_iWidth / 2;
 	m_iScreenCY = pkEdit->m_iHeight / 2;
 	m_pkEdit = pkEdit;
-
-	m_pkWndProc = cb;
+	m_pkFileDlgbox = NULL;
 
 	InitSkins();
 	CreateWindows();
@@ -32,7 +38,7 @@ Gui::~Gui()
 
 }
 
-bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {
 	Rect rc;
 
@@ -49,12 +55,17 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 			m_pkEdit->pkFps->QuitEngine();
 			break;
 
-		case ID_FILEPATH_WND_CLOSE:
-			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-			break;
-
 		case ID_PROPERTY_WND_CLOSE:
 			m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
+			break;
+
+		case ID_FILEPATH_OPEN_BN:
+			char cmd[512];
+			sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
+			m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
+
+			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+			//m_pkEdit->pkFps->ToggleGui();
 			break;
 		}
 		break;
@@ -77,10 +88,15 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 					m_pkEdit->pkFps->QuitEngine();
 					break;
 
-				case IDM_OPEN:
-					w = 500;
-					h = 500;
-					CreateFileOpenDlgbox(m_iScreenCX-w/2,m_iScreenCY-h/2,w,h);
+				case IDM_LOAD_HEIGHTMAP:
+					{
+						if(m_pkFileDlgbox)
+							delete m_pkFileDlgbox;
+
+						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS,
+							m_pkEdit->pkFps->m_pkLevelMan->GetMapBaseDir(), WINPROC,
+							DIRECTORIES_ONLY | DISALLOW_DIR_CHANGE);
+					}
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
@@ -126,91 +142,28 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 			}
 		}
 		break;
-
-
-	case ZGM_SELECTLISTITEM:
-		{
-			int iIDListBox = ((int*)pkParams)[0];
-			int iIDListItem = ((int*)pkParams)[1];
-
-			ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(iIDListBox);
-
-			if(pkWnd != NULL)
-			{			
-				ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
-				ZGuiListitem* pkItem = pkListbox->GetItem(iIDListItem);
-
-				if(pkItem != NULL)
-				{
-					string szFileName = pkItem->GetText();
-
-					bool bFillPathlist = false;
-
-					if(szFileName == string("..") )
-					{
-						int new_path_length = m_szSearchBoxPath.find_last_of('\\'); 
-						m_szSearchBoxPath.resize(new_path_length); 
-						bFillPathlist = true;
-					}
-					else
-					if(szFileName.find(".") == string::npos)
-					{
-						vector<string> vkDirectories;
-						m_pkEdit->pkFps->m_pkBasicFS->ListDir(&vkDirectories, m_szSearchBoxPath.c_str(), true);
-
-						for(unsigned int i=0; i<vkDirectories.size(); i++)
-						{
-							if(vkDirectories[i] == szFileName)
-							{
-								m_szSearchBoxPath.append("\\");
-								m_szSearchBoxPath.append(szFileName);
-								bFillPathlist = true;
-								break;
-							}
-						}
-					}
-					else
-					{
-						ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND_FILE_EB);
-
-						if(pkWnd)
-						{
-							ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
-							pkTextbox->SetText((char*)szFileName.c_str()); 
-						}
-					}
-
-					if(bFillPathlist)
-						FillPathList(pkListbox, m_szSearchBoxPath);
-				}
-			}
-
-		}
-		break;
-
 	}
 	return true;
 }
 
 bool Gui::CreateWindows()
-{
-	ZGuiWnd* pkMainWnd1 = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,IDM_MENU_WND);
-	pkMainWnd1->SetSkin(GetSkin("menu"));
+{	
+	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,IDM_MENU_WND);
+	pkMenu->SetSkin(GetSkin("menu"));
 
 	Rect rc = Rect(0,0,128,32);
 
 	rc = Rect(0,0,200,200);
-	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMainWnd1, true, iLastIDNr++, 20,
+	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMenu, true, iLastIDNr++, 20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
-	pkMenuCBox->AddItem("Open...", IDM_OPEN);
-	pkMenuCBox->AddItem("Create new property...", IDM_CREATE_NEW_PROPERTY);
+	pkMenuCBox->AddItem("Load heightmap...", IDM_LOAD_HEIGHTMAP);
+	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
 
-	m_pkEdit->pkGui->AddMainWindow(ID_MAINWND1, pkMainWnd1, m_pkWndProc, true);
-	
-	m_szSearchBoxPath = m_pkEdit->pkFps->m_pkBasicFS->GetCWD();
+	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, WINPROC, true);
+
 	return true;
 }
 
@@ -350,35 +303,6 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	return pkLabel;
 }
 
-ZGuiWnd* Gui::CreateFileOpenDlgbox(int x, int y, int w, int h)
-{
-	if( m_pkEdit->pkGui->GetMainWindow(ID_FILEPATH_WND_MAIN))
-	{
-		m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, true);
-		return false;
-	}
-
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_FILEPATH_WND);
-	pkMainWindow->SetSkin(GetSkin("blue"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
-	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
-
-	ZGuiListbox* pkListbox = CreateListbox(pkMainWindow, ID_FILEPATH_WND, 0, 21, w, h-80);
-	FillPathList(pkListbox, m_szSearchBoxPath);
-
-	CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
-	CreateButton(pkMainWindow, ID_FILEPATH_OPEN_BN, w-80, h-44, 80, 20, "Open")->SetWindowFlag(WF_CENTER_TEXT);
-	CreateButton(pkMainWindow, ID_FILEPATH_CLOSE_BN, w-80, h-22, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
-
-	ZGuiLabel* pkLabel = CreateLabel(pkMainWindow, 0, 0, 0, w, 22, "Open");
-	pkLabel->SetSkin(GetSkin("titlebar"));
-	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, h-44, w-80, 20, NULL);
-	CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20, NULL);
-
-	m_pkEdit->pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, m_pkWndProc, true);
-	return pkMainWindow;
-}
-
 ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 {
 	list<Object*> pkObjectList;
@@ -423,60 +347,13 @@ ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 	for( ; s != e; s++ )
 		AddItemToList(cb, true, (*s)->GetName().c_str(), counter++);
 
-	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, m_pkWndProc, true);
+	CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
+	CreateButton(pkMainWindow, ID_PROPERTY_CANEL, w-100, h-25, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
+
+	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, WINPROC, true);
 
 	return pkMainWindow;
 }
-
-bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
-{
-	ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_FILEPATH_WND_LABEL_PATH);
-	if(pkWnd != NULL)
-	{
-		const int MAX_LENGTH = 35;
-
-		ZGuiLabel* pkLabel = (ZGuiLabel*) pkWnd;
-		
-		int length = m_szSearchBoxPath.length(); 
-		int start = length - MAX_LENGTH;
-		
-		string szLabelText;
-
-		if(start < 0)
-			start = 0;
-		else
-			szLabelText = "...";
-
-		szLabelText += m_szSearchBoxPath;
-		szLabelText += start;
-		
-		pkLabel->SetText((char*)szLabelText.c_str());
-	}
-
-	vector<string> vkFiles;
-	m_pkEdit->pkFps->m_pkBasicFS->ListDir(&vkFiles, strDir.c_str() );
-
-	pkListbox->RemoveAllItems();
-
-	if(vkFiles.size() > 0)
-	{
-		char name[450];
-		for( unsigned int i=0; i<vkFiles.size(); i++)
-		{
-			sprintf(name, "%s", vkFiles[i]);
-			pkListbox->AddItem(name, i); 
-		}
-	}
-	else
-	{
-		printf("Dir have no files!\n");
-		return false;
-	}
-
-	return true;
-}
-
-
 
 void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber)
 {

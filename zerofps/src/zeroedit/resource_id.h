@@ -2,7 +2,7 @@
 #ifndef RES_ID
 #define RES_ID
 
-const int ID_MAINWND1					= 9000;
+const int ID_MAINWND					= 9000;
 const int ID_FILEPATH_WND_MAIN			= 9001;
 const int ID_CLOSE						= 9002;
 const int ID_OPEN_TEMPLATE				= 9003;
@@ -27,6 +27,9 @@ const int ID_PROPERTIES_CB				= 9021;
 const int ID_FILEPATH_OPEN_BN			= 9022;
 const int ID_FILEPATH_CLOSE_BN			= 9023;
 const int ID_BITMAP_FONT				= 9024;
+const int ID_PROPERTY_OK				= 9025;
+const int ID_PROPERTY_CANEL				= 9026;
+const int IDM_LOAD_HEIGHTMAP			= 9027;
 
 static int iLastIDNr = 9025;
 
