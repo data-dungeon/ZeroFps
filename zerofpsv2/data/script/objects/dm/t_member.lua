@@ -25,6 +25,7 @@ function Init()
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/robot/what.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/robot/death1.wav");
 	AddMoveCharSound(SIGetSelfID(), "data/sound/robot/slaving for you.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/robot/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/robot/yes my lord.wav");
 end
 

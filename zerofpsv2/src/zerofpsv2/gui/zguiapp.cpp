@@ -1204,7 +1204,7 @@ bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 	return true;
 }
 
-bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath)
+bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension)
 {
 	ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
@@ -1255,8 +1255,11 @@ bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 						strPrevNode.c_str(), (char*) strLabel.c_str(), 1, 2);
 				}
 				else
-					AddTreeItem(szTreeBoxName, id.c_str(), 
-						strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
+				{
+					if(szExtension == NULL || id.find(szExtension) != string::npos)
+						AddTreeItem(szTreeBoxName, id.c_str(), 
+							strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
+				}
 
 				kSearchedFiles.insert(id);
 			}

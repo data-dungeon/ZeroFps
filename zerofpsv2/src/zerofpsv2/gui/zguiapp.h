@@ -46,7 +46,7 @@ class GUI_API ZGuiApp
 {
 public:
 
-	bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
+	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension=NULL);
 	bool CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);

@@ -160,7 +160,7 @@ void P_DMGun::Update()
 	//play sound
 	if(t - prevShotPlayTime > 1.0f) // spela max 1 ljud/ sek (eller när nytt skott avlossas)
 	{
-		m_pkAudioSys->StartSound(m_strSound,	m_pkObject->GetWorldPosV(), m_kDir, false);
+		m_pkAudioSys->StartSound(m_strSound, m_pkObject->GetWorldPosV(), m_kDir, false);
 		prevShotPlayTime = t;
 	}
 	

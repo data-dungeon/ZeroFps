@@ -338,8 +338,8 @@ void MistServer::SetupGuiEnviroment()
 	GetWnd("worktab")->Hide();
 	
 	// Fill zone- and object treebox.
-	BuildFileTree("ZoneModelTree", "data/mad/zones");
-	BuildFileTree("ObjectTree", "data/script/objects");
+	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
+	BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 
 	// Fill enviroment listbox.
 	vector<string> vkFileNames;
