@@ -448,9 +448,16 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
+		char text[20] = "";
+		if(vkItemList[i].m_iStackSize > 1)
+			sprintf(text, "%i", vkItemList[i].m_iStackSize);
+
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
-			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
+			szItemName, text, m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
+		
+		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
+		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
 			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
@@ -506,6 +513,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 			m_pkContainerWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 		pkNewSlot->SetZValue(12121);
+		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
+		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;

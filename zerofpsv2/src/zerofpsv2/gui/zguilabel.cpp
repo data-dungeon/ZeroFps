@@ -14,7 +14,7 @@
 ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
-	m_bCenterTextHorz = false;
+	m_eTextAlignment = ZGLA_TopLeft;
 	m_bEnabled = false; // labels are static by default
    m_bMultiLine = false;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
@@ -58,10 +58,21 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		{
 			pkRenderer->SetFont(m_pkFont);
 
-			if(!m_bMultiLine && m_bCenterTextHorz)
+			if(!m_bMultiLine)
 			{
 				int tw = m_pkFont->GetLength(m_strText);
-				r.Left = r.Left + r.Width()/2 - tw/2;
+
+				switch(m_eTextAlignment)
+				{				
+				case ZGLA_Center:
+					r.Left = r.Left + r.Width()/2 - tw/2;
+					break;
+
+				case ZGLA_BottomRight:
+					r.Left = r.Right - tw;
+					r.Top = r.Bottom - m_pkFont->m_iRowHeight;
+					break;
+				}
 			}
 		}
 

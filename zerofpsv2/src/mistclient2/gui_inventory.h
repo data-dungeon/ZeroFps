@@ -72,7 +72,7 @@ private:
 	void OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory);
 	
 	TextureManager* m_pkTexMan;
-
+	
 	vector<ITEM_SLOT> m_vkInventoryItemList;
 	vector<ITEM_SLOT> m_vkContainerItemList;
 

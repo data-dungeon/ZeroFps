@@ -8,6 +8,15 @@
 
 class ZGuiRender;
 
+enum ZGuiLabelTextAlignment
+{
+	ZGLA_TopLeft		= 1,
+	ZGLA_TopRight		= 2,
+	ZGLA_BottomLeft	= 3,
+	ZGLA_BottomRight	= 4,
+	ZGLA_Center			= 0,
+};
+
 /** \brief	A label in the gui.
 	 \ingroup Gui
 */
@@ -20,6 +29,7 @@ public:
 	virtual bool Render( ZGuiRender* renderer );
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
+	ZGuiLabelTextAlignment m_eTextAlignment;
 	bool m_bCenterTextHorz;
    bool m_bMultiLine;
 };
