@@ -15,7 +15,7 @@ ObjectManager::ObjectManager()
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
-	Register_Cmd("sendmsg",FID_SENDMESSAGE, "sendmsg name id",2);	
+	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
 }
 
 bool ObjectManager::StartUp()	

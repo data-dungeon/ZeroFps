@@ -413,7 +413,7 @@ bool ZFIni::ExecuteCommands(const char* strName)
 		if(m_pkCommandData)
 		{
 			for(int i=0; i<m_pkCommandData->iNumCommands; i++)
-				g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i]);
+				g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i], CSYS_SRC_UNKNOWN);
 		}
 
 		return true;

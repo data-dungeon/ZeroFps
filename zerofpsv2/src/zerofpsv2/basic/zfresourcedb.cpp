@@ -89,7 +89,7 @@ ZFResourceDB::ZFResourceDB()
 	RegisterResource( string(".bmp"), Create__ResTexture	);
 */
 
-	Register_Cmd("res_list",FID_LISTRES);
+	Register_Cmd("res_list",FID_LISTRES, CSYS_FLAG_SRC_ALL);
 	g_ZFObjSys.Log_Create("resdb");
 }
 

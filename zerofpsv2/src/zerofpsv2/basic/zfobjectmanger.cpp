@@ -254,7 +254,7 @@ ZFCmdData* ZFObjectManger::FindArea(const char* szName)
 }
 
 
-bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,char* szHelp, int iNumOfArg)
+bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int iFlags, char* szHelp, int iNumOfArg)
 {
 	// Validate parameters
 	if(szName == NULL)	return false;
@@ -266,12 +266,12 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject
 	
 
 	ZFCmdData kNewCmd;
-	kNewCmd.m_strName	= string(szName);
-	kNewCmd.m_eType		= CSYS_FUNCTION;
-	kNewCmd.m_iFlags	= 0;
-	kNewCmd.m_vValue	= NULL;
-	kNewCmd.m_pkObject	= kObject;
-	kNewCmd.m_iCmdID	= iCmdID;
+	kNewCmd.m_strName			= string(szName);
+	kNewCmd.m_eType			= CSYS_FUNCTION;
+	kNewCmd.m_iFlags			= iFlags;
+	kNewCmd.m_vValue			= NULL;
+	kNewCmd.m_pkObject		= kObject;
+	kNewCmd.m_iCmdID			= iCmdID;
 	kNewCmd.m_iMinNumOfArgs = iNumOfArg;
 
 	if(szHelp)
@@ -306,7 +306,7 @@ bool ZFObjectManger::UnRegister_Cmd(ZFSubSystem* kObject)
 	return true;
 }
 
-bool ZFObjectManger::RunCommand(const char* szCmdArg)
+bool ZFObjectManger::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 {
 	CmdArgument kcmdargs;
 	kcmdargs.Set(szCmdArg);
@@ -418,7 +418,7 @@ void ZFObjectManger::Logf(const char* szName, const char* szMessageFmt,...)
 
 
 
-bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject)
+bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject,int iFlags)
 {
 	// Validate parameters
 	if(szName == NULL)		return false;
@@ -431,7 +431,7 @@ bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmd
 	ZFCmdData kNewCmd;
 	kNewCmd.m_strName			= string(szName);
 	kNewCmd.m_eType			= eType;
-	kNewCmd.m_iFlags			= 0;
+	kNewCmd.m_iFlags			= iFlags;
 	kNewCmd.m_vValue			= pvAddress;
 	kNewCmd.m_pkObject		= kObject;
 	kNewCmd.m_iCmdID			= 0;

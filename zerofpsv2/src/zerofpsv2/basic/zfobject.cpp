@@ -119,14 +119,14 @@ void ZFSubSystem::DestroyChildren()
 
 }
 
-bool ZFSubSystem::Register_Cmd(char* szName, int iCmdID, char* szHelp, int iNumOfArg)
+bool ZFSubSystem::Register_Cmd(char* szName, int iCmdID, int iFlags, char* szHelp, int iNumOfArg)
 {
-	return g_ZFObjSys.Register_Cmd(szName,iCmdID,this, szHelp, iNumOfArg);	
+	return g_ZFObjSys.Register_Cmd(szName,iCmdID,this, iFlags, szHelp, iNumOfArg);	
 }
 
-bool ZFSubSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType)
+bool ZFSubSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags)
 {
-	return g_ZFObjSys.RegisterVariable(szName,pvAddress,eType, this);	
+	return g_ZFObjSys.RegisterVariable(szName,pvAddress,eType, this, iFlags);	
 
 }
 

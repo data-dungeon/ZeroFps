@@ -95,12 +95,13 @@ public:
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);
-	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
+	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, int iFlags, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
 	bool UnRegister_Cmd(ZFSubSystem* kObject);									///< UnRegister all cmd's bound to a object.
-	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
+	///< Run a cmd by passing it along to the correct object
+	bool RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource);				
 
 // Variables
-	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject);
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject, int iFlags);
 	bool SetVariable(const char* szName, const char* szValue);
 
 	void SetValue(ZFCmdData* pkArea, const char* szValue);

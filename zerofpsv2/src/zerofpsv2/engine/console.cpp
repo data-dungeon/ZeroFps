@@ -408,7 +408,7 @@ bool Console::Execute(char* aText) {
 	}
 	
 	Printf("> %s", aText);				// Print command to screen.
-	if(!GetSystem().RunCommand(aText))
+	if(!GetSystem().RunCommand(aText,CSYS_SRC_CONSOLE))
 	{
 		Printf("No Command was Found for '%s'", aText);
 		return false;

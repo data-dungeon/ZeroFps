@@ -46,6 +46,7 @@ class RENDER_API Render : public ZFSubSystem {
 		enum FuncId_e
 		{
 			FID_GLINFO,
+			FID_CONSOLECOLOR,
 		};
 
 		Frustum*			m_pkFrustum;
@@ -73,6 +74,8 @@ class RENDER_API Render : public ZFSubSystem {
 		
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
+		Vector3		m_kConsoleColor;
    	
 	public:
 		int	m_iDetail;				//	grid size of lod tiles for the terran

@@ -22,10 +22,6 @@ Kodstandard
 	const ska användas för att markera att funktion/metod inte ändrar på 
 		någon variabel.
 
-	ZFAssert ska användas för assert. Finns i basic och tar test som första 
-		parameter och en sträng som andra parameter. Strängen ska vara 
-		"class::function: Beskrivning".
-
 Headerfiler
 	#ifndef skrivs som MODUL_FILNAMN_H_
 	En .h fil ska endast innehålla det som krävs för interfacet till klassen
@@ -72,6 +68,11 @@ Kommentarer
 			funktion fungerar som den ska.
 		BM-BUG "namn" "beskrivning"
 			Anger att en bug har hittats och ska rättas till.
+		BM-OUT "namn"
+			Stora mängder utkommenterad kod singneras på detta sätt.
+			Detta förhindrar att någon av misstag råkar ta bort kod som i själva verket inte skulle 
+			tas bort utan som bara kommenterats ut så länge (tex. för att testa ny funktionalitet)
+			sammt förenklar för den person som vill rensa undan och snygga upp filer.
 
 	Kommentarer ska anges i format som förstås av DoxyGen. 
 
@@ -89,23 +90,10 @@ Kommentarer
 
 		*/
 
-
 		/** \file file.h
- * A brief file description.
- * A more elaborated file description.
- */
-
-	Stora mängder utkommenterad kod singneras.
-
-		Ex: /* COMMENT OUT by: Zeb .... */
-
-		Detta förhindrar att någon av misstag råkar ta bort kod som i själva verket inte skulle 
-		tas bort utan som bara kommenterats ut så länge (tex. för att testa ny funktionalitet)
-		sammt förenklar för den person som vill rensa undan och snygga upp filer.
-
-		Är ett kodblock utkommenterat men inte signerat så klassas detta som skräpkod och
-		riskeras att raderas.
-		
+		* A brief file description.
+		* A more elaborated file description.
+		*/
 
 Names:
 	Klass / Struct / Unions
@@ -154,6 +142,9 @@ Names:
 
 
 Felhantering
+	ZFAssert ska användas för assert. Finns i basic och tar test som första 
+		parameter och en sträng som andra parameter. Strängen ska vara 
+		"class::function: Beskrivning".
 
 
  

@@ -7,10 +7,12 @@
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
 {
-	Register_Cmd("set",			FID_SET, "set name value", 2);
-	Register_Cmd("varlist",		FID_VARLIST);
-	Register_Cmd("commands",	FID_COMMANDS);
-	Register_Cmd("sys",			FID_SYS);
+	m_pkCon = NULL;
+
+	Register_Cmd("set",			FID_SET,			CSYS_FLAG_SRC_ALL,	"set name value", 2);
+	Register_Cmd("varlist",		FID_VARLIST,	CSYS_FLAG_SRC_ALL);
+	Register_Cmd("commands",	FID_COMMANDS,	CSYS_FLAG_SRC_ALL);
+	Register_Cmd("sys",			FID_SYS,			CSYS_FLAG_SRC_ALL);
 }
 
 bool CmdSystem::StartUp()	
@@ -39,10 +41,12 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_SET:
 			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
-				m_pkCon->Printf("Variable not found");
+				if(m_pkCon)
+					m_pkCon->Printf("Variable not found");
 				return;
 			} else {
-				m_pkCon->Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
+				if(m_pkCon)
+					m_pkCon->Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
 			}
 			
 			

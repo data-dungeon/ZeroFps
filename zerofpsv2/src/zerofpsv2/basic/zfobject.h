@@ -26,6 +26,28 @@ enum ZFCmdDataType
 	CSYS_STRING,					// /0 terminated string.
 };
 
+/*	Cmd Source is used to describe from were a commands come*/
+enum ZFCmdSource
+{
+	CSYS_SRC_CMDLINE,				// Cmd is from the program cmd line.
+	CSYS_SRC_INITFILE,			// Cmd is from the ini files that is run at startup
+	CSYS_SRC_CONSOLE,				// Cmd is from the console.
+	CSYS_SRC_SUBSYS,				// Cmd was sent from a subsystem.
+	CSYS_SRC_UNKNOWN,
+};
+
+/* Flags changes settings for variables/commands.
+		SRC* flags are used to select from what src's a variable/command can be changed.
+*/
+#define	CSYS_FLAG_SRC_CMDLINE	1
+#define	CSYS_FLAG_SRC_INITFILE	2
+#define	CSYS_FLAG_SRC_CONSOLE	4
+#define	CSYS_FLAG_SRC_SUBSYS		8
+#define	CSYS_FLAG_SRC_UNKNOWN	16
+#define	CSYS_FLAG_SRC_ALL			(CSYS_FLAG_SRC_CMDLINE | CSYS_FLAG_SRC_INITFILE | CSYS_FLAG_SRC_CONSOLE | CSYS_FLAG_SRC_SUBSYS | CSYS_FLAG_SRC_UNKNOWN)
+
+
+
 class BASIC_API CmdArgument
 {
 public:
@@ -68,8 +90,8 @@ public:
 	void RemoveChild(ZFSubSystem* pkObject);			///< Remove one of our children.
 
 	void PrintChilds(const char* szParentName);		///< Debug: Prints childs from this object. 
-	bool Register_Cmd(char* szName, int iCmdID, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd for this SubSys.
-	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType);			///< Register a var for this SubSys
+	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd for this SubSys.
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);			///< Register a var for this SubSys
 
 	void Logf(const char* szName, const char* szMessageFmt,...);
 

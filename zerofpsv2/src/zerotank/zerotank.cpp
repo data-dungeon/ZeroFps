@@ -257,7 +257,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 						
 			pkConsole->Printf("Everything is loaded ,Starting server");
-			GetSystem().RunCommand("server Default server");	
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	
 			break;		
 		
 		case FID_UNLOAD:

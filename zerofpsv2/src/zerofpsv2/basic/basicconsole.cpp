@@ -15,7 +15,6 @@ using namespace std;
 BasicConsole::BasicConsole(char* szName)
 : ZFSubSystem(szName)
 {
-
 }
 
 void BasicConsole::Print(const char* aText) 

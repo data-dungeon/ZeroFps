@@ -18,6 +18,7 @@ Render::Render()
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;
+	m_kConsoleColor.Set(1,1,1);
 
 	// Register Our Own variables.
 	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers,CSYS_INT);
@@ -27,8 +28,10 @@ Render::Render()
 	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
 	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
 
+
 	// Register Our Own commands.
 	Register_Cmd("glinfo",FID_GLINFO);	
+	Register_Cmd("ccolor",FID_CONSOLECOLOR);	
 	
 }
 
@@ -292,6 +295,8 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	int iEndLine = iStartLine + 93;
 	if(iEndLine >= (*m_kText).size())
 		iEndLine = (*m_kText).size();
+
+	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
 
 	for(int i=iStartLine;	i<iEndLine;	i++) 
 	{
@@ -925,6 +930,7 @@ void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
 		case FID_GLINFO:	GlInfo();	break;
+		case FID_CONSOLECOLOR:	m_kConsoleColor.Set(1,0,0);	break;
 		}
 }
 

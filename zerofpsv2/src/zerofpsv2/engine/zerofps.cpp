@@ -20,35 +20,8 @@ static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
-
-	// Create Engine SubSystems
-/*	
-	m_pkBasicFS					= new ZFBasicFS;
-	m_pkZFVFileSystem			= new ZFVFileSystem;
-	m_pkTexMan					= new TextureManager;
-	m_pkInput					= new Input;		
-	m_pkPropertyFactory		= new PropertyFactory;
-	m_pkFrustum					= new Frustum;	
-	m_pkLight					= new Light;	
-	m_pkRender					= new Render;
-	m_pkConsole					= new Console;
-	m_pkCmd						= new CmdSystem;
-	m_pkObjectMan				= new ObjectManager;
-	m_pkSBM						= new SoundBufferManager;	
-	m_pkOpenAlSystem			= new OpenAlSystem;
-	m_pkMusic					= new OggMusic(24,4096);
-
-	m_pkNetWork					= new NetWork;
-	m_pkGuiRenderer			= new GLGuiRender;
-	m_pkGuiMan					= new ZGuiResourceManager;
-	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
-	m_pkIni						= new ZFIni;
-	m_pkLevelMan				= new LevelManager;
-	m_pkPhysEngine				= new PhysicsEngine;
-	m_pkResourceDB				= new ZFResourceDB;
-	m_pkPhysics_Engine		= new Physics_Engine;
-	m_pkZShader					= new ZShader;
-	*/
+	/* Create Engine SubSystems 
+		*/
 
 	m_pkZShader					= new ZShader;
 	m_pkPhysics_Engine		= new Physics_Engine;
@@ -74,9 +47,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
-
-	cout<<"200"<<endl;	
-
 
 	// Set Default values
 	m_iFullScreen				= 0;
@@ -103,14 +73,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iDepth						= 16;
 
 	// Register Commands
-	//RegisterVariable("m_sens",			&m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
-/*
-	RegisterVariable("r_landlod",			&m_pkRender->m_iDetail,CSYS_INT);
-	RegisterVariable("r_viewdistance",	&m_pkRender->m_iViewDistance,CSYS_INT);
-	RegisterVariable("r_autolod",			&m_pkRender->m_iAutoLod,CSYS_INT);
-	RegisterVariable("r_fpslock",			&m_pkRender->m_iFpsLock,CSYS_INT);
-*/
-//	RegisterVariable("r_maxlights",		&m_pkLight->m_iNrOfLights,CSYS_INT);
 	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
 	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
 	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
@@ -133,12 +95,10 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("credits",FID_CREDITS);	
 	Register_Cmd("echo",FID_ECHO);	
 	Register_Cmd("gldump",FID_GLDUMP);	
-	Register_Cmd("devshow",FID_DEV_SHOWPAGE, "devshow name", 1);	
-	Register_Cmd("devhide",FID_DEV_HIDEPAGE, "devhide name", 1);	
+	Register_Cmd("devshow",FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
+	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
-
-	cout<<"300"<<endl;
 }
 
 ZeroFps::~ZeroFps()
@@ -173,8 +133,6 @@ ZeroFps::~ZeroFps()
 
 bool ZeroFps::StartUp()	
 {
-	cout<<"400"<<endl;
-	
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
 	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
@@ -217,17 +175,39 @@ void ZeroFps::SetApp() {
 	m_pkApp->SetEnginePointer(this);
 }
 
-void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
-	string strArg;
+void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) 
+{
+	string	strFullArg;
+	string	strArg;
+	bool		bFoundArg = false;
+
 	for(int i = 0; i < iNrOfArgs; i++) {
 		strArg = string(paArgs[i]);
-		AppArguments.push_back(strArg);
+
+		if(strArg.c_str()[0] == '-') {
+			bFoundArg = true;
+			// Start of new argument.
+			if(strFullArg.size())
+				AppArguments.push_back(strFullArg);
+	
+			strFullArg = "";
+			strArg.erase(0,1);
+			}
+
+		if(bFoundArg)
+			strFullArg = strFullArg + " " + strArg;
 		}
 
-/*	cout<<"Nr of arguments: "<<iNrOfArgs<<endl;
-	for(int ia = 0; ia < iNrOfArgs; ia++) {
+	if(strFullArg.size())
+		AppArguments.push_back(strFullArg);
+
+	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
+	for(int ia = 0; ia < AppArguments.size(); ia++) {
+		
+		GetSystem().RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
+
 		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
-		}*/
+		}
 }
 
 int	ZeroFps::NumberOfArgs(void)
@@ -260,9 +240,10 @@ void ZeroFps::ConfigFileSave()
 
 bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
-	HandleArgs(iNrOfArgs,paArgs);						//	handle arguments
 	SetApp();												//	setup class pointers	
 	ConfigFileRun();
+	HandleArgs(iNrOfArgs,paArgs);						//	handle arguments
+
 
 	// StartUp SDL
 	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
