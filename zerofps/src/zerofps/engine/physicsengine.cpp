@@ -17,6 +17,9 @@ void PhysicsEngine::Update()
 	if(!m_bUpdate)
 		return;
 	
+	//clear list
+	m_kPropertys.clear();
+	
 	//get frame time
 	m_fFrameTime=m_pkZeroFps->GetFrameTime();
 	
@@ -37,7 +40,7 @@ void PhysicsEngine::Update()
 	HandleCollisions();
 
 
-	m_kPropertys.clear();
+
 }
 
 Vector3 PhysicsEngine::GetNewPos(PhysicProperty* pkPP)
@@ -337,6 +340,8 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
 		
 		float fRadius=static_cast<CSSphere*>(static_cast<PhysicProperty*>(*it)->GetColSphere())->m_fRadius;
+		
+//		cout<<"DISTANCE:"<<Distance<<endl;
 		
 		if(Distance < fRadius)
 		{			

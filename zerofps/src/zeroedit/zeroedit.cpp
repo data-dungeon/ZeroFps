@@ -111,8 +111,24 @@ void ZeroEdit::OnIdle(void)
 	pkFps->GetCam()->ClearViewPort();	
 
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
-//	m_pkHeightMapObject->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		
+		
+//	Vector3 ba(-45,180,0);
+//	cout<<"x = "<<ba.AToU().x<<" Y = "<<ba.AToU().y<<" Z = "<<ba.AToU().z<<endl;	
+/*	
+	pkRender->Line(Vector3(0,10,0),Vector3(0,10,0) + pkFps->GetCam()->GetRot().AToU()*5);
+	
+	list<PhysicProperty*> bla;
+	bla.clear();
+	pkPhysEngine->TestLine(&bla,Vector3(0,10,0),pkFps->GetCam()->GetRot().AToU());
+
+	cout<<"BLA"<<bla.size()<<endl;
+
+	for(list<PhysicProperty*>::iterator it=bla.begin();it!=bla.end();it++) 
+	{	
+//		cout<<"OBJECT "<<(*it)->GetObject()->GetName().c_str()<<endl;
+	}
+*/	
 	SetPointer();
 	DrawMarkers();
 
@@ -145,6 +161,7 @@ void ZeroEdit::OnHud(void)
 	glEnable(GL_ALPHA_TEST);
 
 	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkCamera->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
+	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(0.2,0.2,0),pkTexMan->Load("file:../data/textures/pointer.tga",0));	
 	
 	glDisable(GL_ALPHA_TEST);
 	
@@ -828,18 +845,37 @@ void ZeroEdit::DrawMarkers()
 
 void ZeroEdit::SelectChild()
 {
-	Object* temp=GetClosest(m_kDrawPos);
+		
+	list<PhysicProperty*> kPPs;
+	kPPs.clear();
+	pkPhysEngine->TestLine(&kPPs,pkFps->GetCam()->GetPos(),pkFps->GetCam()->GetRot().AToU());
 	
-	if(temp==NULL){
-		m_pkCurentChild=NULL;	
+	PhysicProperty* pp=NULL;
+	float closest=99999999;
+
+	for(list<PhysicProperty*>::iterator it=kPPs.begin();it!=kPPs.end();it++) 
+	{	
+		if( (*it)->GetObject()->GetName() == "ZoneObject" ||
+			 (*it)->GetObject()->GetName() == "WorldObject" ||
+			 (*it)->GetObject()->GetName() == "HeightMapObject")
+			continue;
+		
+		float Distance= (pkFps->GetCam()->GetPos() - (*it)->GetObject()->GetPos()).Length();
+
+		if(Distance < closest)
+		{
+			pp=(*it);
+			closest=Distance;
+		}			
+	}
+	
+	
+	if(pp==NULL){
+		m_pkCurentChild=NULL;
 		return;
 	}
 	
-	if(temp->GetName() == "ZoneObject"){
-		temp=NULL;
-	}	
-
-	m_pkCurentChild=temp;
+	m_pkCurentChild=pp->GetObject();
 }
 
 void ZeroEdit::SelectParent()

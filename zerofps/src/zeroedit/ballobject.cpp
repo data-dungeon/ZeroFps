@@ -25,7 +25,7 @@ BallObject::BallObject() {
 	AddProperty("PhysicProperty");
 	
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-	pp->SetColShape(new CSSphere(0.2));		
+//	pp->SetColShape(new CSSphere(0.2));		
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.5;
 	pp->m_bGravity=false;
 	pp->m_bFloat=false;
