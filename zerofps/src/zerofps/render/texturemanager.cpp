@@ -16,16 +16,33 @@ TextureManager::TextureManager(FileIo* pkFile)
 
 }	
 
+void TextureManager::SetOptions(texture *pkTex, int iOption)
+{
+	pkTex->b_bClamp			= false;
+	pkTex->m_bCompression	= false;
+	pkTex->m_bMipMapping	= true;
+	
+	if(iOption!=0) {	
+		if((iOption & T_NOMIPMAPPING)){
+			pkTex->m_bMipMapping	=	false;
+		}
+		if((iOption & T_COMPRESSION)) {
+			pkTex->m_bCompression	=	true;
+		}
+		if((iOption & T_CLAMP)) {
+			pkTex->b_bClamp			=	true;
+		}	
+	}
+}
 
-bool TextureManager::LoadTexture(GLuint &iNr,const char *acFilename,int iOption) {	
-	bool isTga=false;
-	bool MipMapping=true;
+bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {	
+/*	bool MipMapping=true;
 	bool Compression=false;
-	bool Clamp=false;
+	bool Clamp=false;*/
 	GLint iInternalFormat=GL_RGB;
 	GLint iFormat=GL_BGR;
 	
-	if(iOption!=0) {	
+/*	if(iOption!=0) {	
 		if((iOption & T_NOMIPMAPPING)){
 //			cout<<"NOMIPMAPING"<<endl;
 			MipMapping=false;
@@ -38,8 +55,10 @@ bool TextureManager::LoadTexture(GLuint &iNr,const char *acFilename,int iOption)
 			Clamp=true;
 		}	
 	}
+*/
 	
 	//is this a tga?
+	bool isTga=false;
   if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
 		iInternalFormat=GL_RGBA;
 		iFormat=GL_BGRA;
@@ -54,10 +73,10 @@ bool TextureManager::LoadTexture(GLuint &iNr,const char *acFilename,int iOption)
   };
   
 
-  glGenTextures(1,&iNr);
-  glBindTexture(GL_TEXTURE_2D,iNr);
+  glGenTextures(1,&pkTex->index);
+  glBindTexture(GL_TEXTURE_2D,pkTex->index);
 
-	if(Clamp){
+	if(pkTex->b_bClamp){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);	
 	} else {
@@ -65,7 +84,7 @@ bool TextureManager::LoadTexture(GLuint &iNr,const char *acFilename,int iOption)
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
 	}
 
-	if(MipMapping){
+	if(pkTex->m_bMipMapping){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,GL_UNSIGNED_BYTE,image->pixels);  		
@@ -136,11 +155,12 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	temp->file=acFileName;
 	
 	// If texture can't be loaded, Load error texture.
-	if(!LoadTexture(temp->index,acFileName,iOption)) {
+	SetOptions(temp, iOption);
+	if(!LoadTexture(temp,acFileName)) {
 		// If error texture fails to load cry a little and return NO_TEXTURE.
 		cout << "Failed to find texture '" << acFileName << "'" << endl;
 
-		if(!LoadTexture(temp->index,ERROR_TEXTURE,iOption)) {
+		if(!LoadTexture(temp,ERROR_TEXTURE)) {
 			cout<<"Error Loading texture: "<<temp->file<<endl;
 			return NO_TEXTURE;
 		}
@@ -235,11 +255,12 @@ void TextureManager::ReloadAll(void)
 		glDeleteTextures(1,&pkTex->index);
 
 		// If texture can't be loaded, Load error texture.
-		if(!LoadTexture(pkTex->index,pkTex->file.c_str(),0)) {
+		//SetOptions(temp, iOption);
+		if(!LoadTexture(pkTex,pkTex->file.c_str())) {
 			// If error texture fails to load cry a little and return NO_TEXTURE.
 			cout << "Failed to find texture '" << pkTex->file.c_str() << "'" << endl;
 
-			if(!LoadTexture(pkTex->index,ERROR_TEXTURE,0)) {
+			if(!LoadTexture(pkTex,ERROR_TEXTURE)) {
 				cout<<"Error Loading texture: "<< ERROR_TEXTURE <<endl;
 			}
 		}

@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include "network.h"
-#include "zfresourcedb.h"
+//#include "zfresourcedb.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -116,7 +116,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFIni*					m_pkIni;					///< Ini Files - Zeb
 		LevelManager*			m_pkLevelMan;				///< 
 		PhysicsEngine*			m_pkPhysEngine;				///< 
-		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
+//		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
 
 		Application*			m_pkApp;					///< Application object.
 			

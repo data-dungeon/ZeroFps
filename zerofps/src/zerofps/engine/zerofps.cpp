@@ -304,6 +304,12 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	extgl_Initialize();
 #endif
 
+	cout << "Gl Version: "		<< glGetString(GL_VERSION) << endl;
+	cout << "Gl Vendor: "		<< glGetString(GL_VENDOR) << endl;
+	cout << "Gl Render: "		<< glGetString(GL_RENDERER) << endl;
+	cout << "Gl Extensions: "	<< glGetString(GL_EXTENSIONS) << endl;
+
+
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);

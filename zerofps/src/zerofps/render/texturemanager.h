@@ -51,11 +51,12 @@ class RENDER_API TextureManager : public ZFObject {
 		
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(const char *filename);	
-		bool LoadTexture(GLuint &iNr,const char* acFilename,int iOption);	
+		bool LoadTexture(texture *pkTex,const char* acFilename);	
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 		void ListTextures(void);
 		void ReloadAll(void);
+		void SetOptions(texture *pkTex, int iOptions);
 
 	public:
 		TextureManager(FileIo* pkFile);
