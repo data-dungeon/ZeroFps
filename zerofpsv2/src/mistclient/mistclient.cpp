@@ -694,6 +694,11 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					GetWnd("MainWnd")->SortChilds(); 
 				}
 			}
+			else
+			if(strClickWndName == "SelectSpellBn")
+			{
+				m_pkSpellDlg->ToogleOpen();
+			}
 		}
 	}
 	else

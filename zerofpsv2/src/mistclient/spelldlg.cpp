@@ -72,9 +72,19 @@ void SpellDlg::Init()
 
 	m_pkDialog->SetSkin(new ZGuiSkin(
 		m_pkTexMan->Load("/data/textures/gui/spellbookwnd.bmp", 0),0));
+
+	m_pkDialog->Hide();
 }
 
 void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 {
 
+}
+
+void SpellDlg::ToogleOpen()
+{
+	if(m_pkDialog->IsVisible())
+		m_pkDialog->Hide();
+	else
+		m_pkDialog->Show();
 }

@@ -22,6 +22,7 @@ public:
 	void Update();
 	void Init();
 	void OnCommand(ZGuiWnd* pkWndClicked);
+	void ToogleOpen();
 
 private:
 	ZGuiApp* m_pkApp;
