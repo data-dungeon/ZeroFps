@@ -62,7 +62,7 @@ namespace DMLua
 	
 	// behaviours for characters
 	int MCOMMON_API PanicAreaLua(lua_State* pkLua);
-	int MCOMMON_API CallForHelp(lua_State* pkLua);
+	int MCOMMON_API CallForHelpLua(lua_State* pkLua);
 
 	// police functions
 	int MCOMMON_API GetClosestCallerLua(lua_State* pkLua);
