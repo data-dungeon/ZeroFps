@@ -3,6 +3,8 @@
 Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
+	m_iSlicesize=20;	//grid size of lod tiles
+	m_iDetail=20;//height meens greater detail att longer range	
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -302,8 +304,7 @@ void Render::Dot(float x,float y,float z) {
 
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
-	int slicesize=10;	//grid size of lod tiles
-	int detail=30;//height meens greater detail att longer range
+
 	
 	glPushMatrix();
 	
@@ -326,13 +327,13 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	Vector3 p1,p2;
 	
 	//calculate number slices depending on the size of the lod tiles size
-	int slices=(kmap->m_iHmSize)/slicesize;
+	int slices=(kmap->m_iHmSize)/m_iSlicesize;
 	int step=1;
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
 			//set lop steps depending on the distance to the center of the lod tile
-			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*slicesize+slicesize/2,kmap->m_kPosition.y,kmap->m_kPosition.z+sz*slicesize+slicesize/2)).length()/detail);
+			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,kmap->m_kPosition.y,kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)).length()/m_iDetail);
 			if(step<1)//step cant be lower than 1
 				step=1;				
 			if(step>6)//if the step get to high it will look realy bad
@@ -344,9 +345,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			float nt,ns;
 			
 			//start going trouh all vertexes in the slice
-			for(int z=sz*slicesize;z<sz*slicesize+slicesize;z+=step){
+			for(int z=sz*m_iSlicesize;z<sz*m_iSlicesize+m_iSlicesize;z+=step){
 				glBegin(GL_TRIANGLE_STRIP);						
-				for(int x=sx*slicesize;x<sx*slicesize+slicesize+step+1;x+=step){
+				for(int x=sx*m_iSlicesize;x<sx*m_iSlicesize+m_iSlicesize+step+1;x+=step){
 					
 					//fulhack ultradeluxe to make sure that we dont go outside the grid
 					if(x>=kmap->m_iHmSize)

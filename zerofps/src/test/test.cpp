@@ -24,6 +24,8 @@ void Test::OnInit(void) {
 //	test->GenerateNormals();
 //	test->GenerateTextures();
 
+	test->SetPosition(Vector3(-50,-10,-50));
+
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
@@ -58,9 +60,9 @@ pkRender->DrawHMlod(test,*pkFps->m_kCamPos);
 
 
 //	pkRender->DrawHM(test);		
-	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
+	pkRender->Quad(Vector3(0,-9,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
-//	cout<<pkFps->m_iFps<<endl;
+	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	

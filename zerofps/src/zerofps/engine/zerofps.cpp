@@ -10,10 +10,13 @@ ZeroFps::ZeroFps(void) {
 	m_pkModMan=new ModellManager(m_pkFile);
 	m_pkAudioMan=new AudioManager(this);
 	
-	m_pkCmd->Add(&m_iState,"m_iState",type_int);
-	m_pkCmd->Add(&m_iFps,"m_iFps",type_int);
-	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
-	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_fMouseSens",type_float);			
+	//add some nice variables =)
+	m_pkCmd->Add(&m_iState,"G_State",type_int);
+//	m_pkCmd->Add(&m_iFps,"G_Fps",type_int);
+//	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
+	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
+	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
+	
 }
 
 
