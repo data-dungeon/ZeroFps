@@ -421,6 +421,18 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			m_iTask = TASK_PASTE_WND;
 			break;
 
+		case IDC_COPY_SKIN:
+			m_iTask = TASK_COPY_SKIN;
+			break;
+
+		case IDC_COPY_ALL_SKINS:
+			m_iTask = TASK_COPY_ALL_SKINS;
+			break;
+			
+		case IDC_PASTE_SKIN:
+			m_iTask = TASK_PASTE_SKIN;
+			break;
+
 		// Select window from list.
 		case IDC_WINDOW_LIST:
 			if(iEvent == LBN_SELCHANGE)

@@ -132,6 +132,67 @@ void ZGuiEd::OnIdle()
 		PasteWnd();
 		m_iTask = TASK_DO_NOTHING;
 	}
+	if(m_iTask == TASK_COPY_ALL_SKINS)
+	{
+		m_vCopySkinDesc.clear();
+		m_pkFocusWnd->GetWndSkinsDesc(m_vCopySkinDesc);
+	
+		m_pkCopySkin = NULL;
+		m_iTask = TASK_DO_NOTHING;
+	}
+	if(m_iTask == TASK_COPY_SKIN)
+	{	
+		ZGuiSkin** pkSkin;
+		if(GetSelSkin(pkSkin))
+			m_pkCopySkin = *pkSkin;
+
+		m_iTask = TASK_DO_NOTHING;
+	}
+	if(m_iTask == TASK_PASTE_SKIN)
+	{
+		if(m_pkCopySkin)
+		{
+			string strSelSkin = GetSelItemText(IDC_SKINELEMENTS_LIST, false);
+
+			if(strSelSkin != "")
+			{
+				vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+				m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+				for(int i=0; i<vkSkinDesc.size(); i++)
+				{
+					if(vkSkinDesc[i].second == strSelSkin)
+					{
+						*(*vkSkinDesc[i].first) = m_pkCopySkin;
+						RedrawCtrlSkin();
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			vector<ZGuiWnd::SKIN_DESC> vkPasteWndSkinDesc;
+			m_pkFocusWnd->GetWndSkinsDesc(vkPasteWndSkinDesc);
+
+			for(int i=0; i<vkPasteWndSkinDesc.size(); i++)
+			{
+				string strPasteWndSkinName = vkPasteWndSkinDesc[i].second;
+
+				for(int j=0; j<m_vCopySkinDesc.size(); j++)
+				{
+					string strCpyWndSkinName = m_vCopySkinDesc[j].second;
+
+					if(strPasteWndSkinName.find(strCpyWndSkinName) != string::npos)
+						*(*vkPasteWndSkinDesc[i].first) = *(*m_vCopySkinDesc[j].first);
+				}
+			}
+		}
+
+		RedrawCtrlSkin();
+		
+
+		m_iTask = TASK_DO_NOTHING;
+	}
 
 	// Hantera input
 	HandleInput();
@@ -218,7 +279,32 @@ void ZGuiEd::DeleteSelWindow(bool bConfirm)
 
 		if(m_pkCopyWnd == m_pkFocusWnd)
 			m_pkCopyWnd = NULL;
+		
+		vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+		m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+		
+		bool bSameSkinDesc = true;
+		for(int i=0; i<vkSkinDesc.size(); i++)
+		{
+			if(m_vCopySkinDesc.size() == vkSkinDesc.size())
+			{
+				if(m_vCopySkinDesc[i].second != vkSkinDesc[i].second)
+				{
+					bSameSkinDesc = false;
+					break;
+				}
+			}
 
+			if(m_pkCopySkin == (*vkSkinDesc[i].first))
+			{
+				printf("NULLing skin\n");
+				m_pkCopySkin = NULL;
+			}
+		}
+
+		if(bSameSkinDesc)
+			m_vCopySkinDesc.clear();
+			
 		if(m_pkFocusWnd->GetParent() && GetWndType(m_pkFocusWnd->GetParent()) == TabControl)
 		{
 			ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*) m_pkFocusWnd->GetParent();
@@ -619,6 +705,9 @@ bool ZGuiEd::NewGUI(bool bConfirm)
 
 	m_pkFocusWnd = NULL;
 	m_pkCopyWnd = NULL;
+	m_pkCopySkin = NULL;
+	m_vCopySkinDesc.clear();
+
 	SetWindowText(GetCtrl(IDC_WINDOW_NAMEID_EB, 0), "");
 	SetWindowText(GetCtrl(IDC_PARENT_WINDOW_NAMEID, 0), "");
 	SetWindowText(GetCtrl(IDC_TEXTLABEL_EB, 0), "");
@@ -970,6 +1059,9 @@ void ZGuiEd::CutWnd()
 
 void ZGuiEd::PasteWnd()
 {
+	if(m_pkCopyWnd == NULL)
+		return;
+
 	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
 
 	ZGuiWnd* kNewSelWnd = NULL;

@@ -110,7 +110,7 @@ void ZGuiEd::SelNewSkin(int iIndex)
 	string strRealName = "";
 
 	int sel = 0;
-	
+
 	if(iIndex == -1)
 		sel = SendDlgItemMessage(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST, LB_GETCURSEL, 0, 0);
 	else
@@ -479,7 +479,6 @@ bool ZGuiEd::CloneSkins(ZGuiWnd* pkDst, ZGuiWnd* pkSrc)
 	for(int i=0; i<vkSrcSkinDesc.size(); i++)
 	{
 		*(*vkDstSkinDesc[i].first) = *(*vkSrcSkinDesc[i].first);
-
 	}
 
 	return true;

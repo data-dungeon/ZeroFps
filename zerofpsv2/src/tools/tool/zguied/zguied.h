@@ -47,6 +47,9 @@ private:
 		TASK_TEST_GUI					= 11,
 		TASK_COPY_WND					= 12,
 		TASK_PASTE_WND					= 13,
+		TASK_COPY_SKIN					= 14,
+		TASK_COPY_ALL_SKINS			= 15,
+		TASK_PASTE_SKIN				= 16
 	};
 
 	int m_iTask; // 0 do nothing, 1 = create new window, 2 = delete sel window
@@ -55,6 +58,8 @@ private:
 	Camera* m_pkCamera;
 	ZFBasicFS* m_pkBasicFS;
 	ZGuiWnd* m_pkFocusWnd, *m_pkCopyWnd;
+	ZGuiSkin* m_pkCopySkin;
+	vector<ZGuiWnd::SKIN_DESC> m_vCopySkinDesc;
 	int m_iZValueCounter;
 	bool m_bResize;
 	enum ResizeDir { Left, Up } m_eResizeDir;
@@ -62,7 +67,7 @@ private:
 	bool m_bForceCaptureToSel;
 	float	m_fDelayTime;
 
-	vector< pair<ZGuiSkin, string> > m_kSkinTable;
+	vector< pair<ZGuiSkin, string> > m_kSkinTable; // used while saving
 
 	string m_strNewFileToLoad;
 	string m_strCurrTexDir;
