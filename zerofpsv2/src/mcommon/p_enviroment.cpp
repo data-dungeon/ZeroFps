@@ -181,6 +181,15 @@ P_Enviroment::P_Enviroment()
 
 }
 
+P_Enviroment::~P_Enviroment()
+{
+	if(m_bEnabled)
+	{
+		m_pkMusic->Stop();
+	}
+}
+
+
 void P_Enviroment::Init()
 {
 	ResetEnviroment();

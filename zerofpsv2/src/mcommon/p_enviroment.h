@@ -106,7 +106,7 @@ class MCOMMON_API P_Enviroment: public Property {
 	public:
 
 		P_Enviroment();
-		
+		~P_Enviroment();
 		
 		void Init();
 		void Update();

@@ -12,8 +12,14 @@ class P_CharacterProperty: public Property
 {
 	private:
 		ZFAudioSystem*	m_pkAudioSystem;
-	
-	 
+		Render*			m_pkRender;	
+		ZShaderSystem*	m_pkZShaderSystem;
+
+		//over head text
+		ZMaterial*	m_pkTextMaterial;
+		ZGuiFont*	m_pkFont;		
+		bool			m_bOverHeadText;			//shuld overhead text be drawn?
+			 
 		string	m_strName;			
 		
 		bool		m_bIsPlayerCharacter;
@@ -62,6 +68,7 @@ class P_CharacterProperty: public Property
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
+		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
 		
 		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}

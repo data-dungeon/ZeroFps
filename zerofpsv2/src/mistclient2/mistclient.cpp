@@ -213,14 +213,15 @@ void MistClient::Input()
 				
 				//disable player model in first person
 				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-					pkMad->SetVisible(false);
+					pkMad->SetVisible(false);					
 			}
 			else			
 			{
 				pkCam->SetType(CAM_TYPE3PERSON);
 				
+				//enable player model i 3d person
 				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-					pkMad->SetVisible(true);	
+					pkMad->SetVisible(true);				
 			}			 
 				
 			pkCam->Set3PDistance(fDistance);
@@ -234,8 +235,6 @@ void MistClient::Input()
 
 		}			
 	}	
-
-	
 }
 
 void MistClient::OnSystem() 
@@ -282,11 +281,12 @@ void MistClient::UpdateCharacter()
 				
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("maNus_c_head_0");
-			}
-			
-			if(!pkEnt->GetInterpolate())
-				cout<<"NO INTERPOLATION WTF!!"<<endl;
+			}			
 		}
+		
+		//disable overhead text for own playercharacter
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+			pkCP->SetOverHeadText(false);					
 		
 		//setup enviroment
 		if(!pkEnt->GetProperty("P_Enviroment"))
@@ -297,7 +297,6 @@ void MistClient::UpdateCharacter()
 				pkEnv->SetEnviroment("data/enviroments/rain.env");
 			}
 		}		
-
 	}
 }
 
@@ -308,11 +307,9 @@ void MistClient::OnHud(void)
 }
 
 
-
 void MistClient::OnClientStart(void)
 {
-	m_pkConsole->Printf("Trying to connect");
-	
+	m_pkConsole->Printf("Trying to connect");	
 	m_iCharacterID = -1;
 }
 
@@ -325,7 +322,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
-		case MLNM_SC_SETVIEW:
+/*		case MLNM_SC_SETVIEW:
 			int iEntityID;
 			PkNetMessage->Read(iEntityID);
 
@@ -339,7 +336,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 				}
 			}
 
-			break;
+			break;*/
 
 		case MLNM_SC_CHARACTERID:
 		{

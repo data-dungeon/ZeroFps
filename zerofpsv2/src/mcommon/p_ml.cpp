@@ -45,12 +45,14 @@ void P_Ml::Init()
 
 P_Ml::~P_Ml()
 {
-
+	delete m_pkTextMaterial;
+	delete m_pkFont;
 }
 
 
 void P_Ml::Update()
 {
+/*
 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		if(m_bShowText)
@@ -58,15 +60,17 @@ void P_Ml::Update()
 			//check if this is a character
 			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)GetEntity()->GetProperty("P_CharacterProperty"))
 			{
-				string strText = pkCP->GetName()+string(" <")+pkCP->GetOwnedByPlayer()+string(">");
+				if(pkCP->GetIsPlayerCharacter())
+				{
+					string strText = pkCP->GetName()+string(" <")+pkCP->GetOwnedByPlayer()+string(">");
 				
-				m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
-								Vector3(0,GetEntity()->GetRadius(),0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
+									Vector3(0,GetEntity()->GetRadius(),0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
+				}
 			}
-				
-			//m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),0.3,GetEntity()->GetName(),pkText,pkFont,true);
 		}
 	}
+*/
 }
 
 

@@ -5,10 +5,13 @@
 
 P_CharacterProperty::P_CharacterProperty()
 {
-	m_pkAudioSystem = m_pkZeroFps->m_pkAudioSystem;
+	m_pkAudioSystem = 	static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));			
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
+	
 	strcpy(m_acName,"P_CharacterProperty");
-	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	bNetwork = 		true;
@@ -19,6 +22,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strName 				=	"NoName";
 	m_strOwnedByPlayer 	=	"NoPlayer";
 	m_bIsPlayerCharacter =	false;
+	m_bOverHeadText		=	true;
 	
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
@@ -46,6 +50,23 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"riding";
 	m_strIdleSWIMMING		=	"idle";
+	
+	
+	//setup material
+	m_pkTextMaterial = new ZMaterial;
+	m_pkTextMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkTextMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+	m_pkTextMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+	m_pkTextMaterial->GetPass(0)->m_bLighting = 				false;		
+	m_pkTextMaterial->GetPass(0)->m_bColorMaterial = 		true;
+	m_pkTextMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,1,0);
+	m_pkTextMaterial->GetPass(0)->m_bFog = 					true;		
+	m_pkTextMaterial->GetPass(0)->m_bAlphaTest =				true;		
+	m_pkTextMaterial->GetPass(0)->m_bDepthTest = 			true;
+
+	//setup font
+	m_pkFont = new ZGuiFont("CharacterFont");
+	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);	
 }
 
 
@@ -56,22 +77,38 @@ P_CharacterProperty::~P_CharacterProperty()
 	m_pkAudioSystem->StopSound(m_iRunSoundID);
 	m_pkAudioSystem->StopSound(m_iSwimSoundID);
 
+	delete m_pkTextMaterial;
+	delete m_pkFont;
 }
 
 
 void P_CharacterProperty::Update()
 {
-	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
+	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
-		UpdateAnimation();
+		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
+		{
+			UpdateAnimation();
+		}
+			
+		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
+		{
+			PlayCharacterMovementSounds();			
+		}
 	}
+	else if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
+	{
+		if(GetIsPlayerCharacter())
+		{
+			if(m_bOverHeadText)
+			{
+				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string(">");
 		
-	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
-	{
-		PlayCharacterMovementSounds();			
-	}
-	
-	
+				m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
+								Vector3(0,GetEntity()->GetRadius(),0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
+			}
+		}	
+	}		
 }
 
 void P_CharacterProperty::UpdateAnimation()
