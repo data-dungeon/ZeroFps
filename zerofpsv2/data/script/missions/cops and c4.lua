@@ -73,6 +73,8 @@ function BlowupPoliceStation()
 	end
 
 	RunScript("data/script/objects/dm/t_explosion.lua",BombEntID);
+	Delete(BombEntID)
+	Delete(PoliceStationID)
 
 end
 
@@ -131,9 +133,9 @@ function IsMissionDone()
 	end
 
 	-----------------------------------------------------------------------
-	-- Vänta 3 sek * 4 = 12 sek innan bomben sprängs
+	-- Vänta 3 * 3 = 9 sek innan bomben sprängs
 	-----------------------------------------------------------------------
-	if BombTicks > 4 then
+	if BombTicks > 3 then
 
 		BlowupPoliceStation()
 		MissionInfo.success = 1
