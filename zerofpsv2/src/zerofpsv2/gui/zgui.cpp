@@ -1498,6 +1498,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			{
 				m_pnCursorRangeDiffX = x-rc.Left; 
 				m_pnCursorRangeDiffY = y-rc.Top;
+
+				ZGuiWnd* pkParent = pkFocusWindow->GetParent();
+
+				if(pkParent && typeid(*pkParent)==typeid(ZGuiScrollbar))
+				{
+					m_bHandledMouse = true;
+				}
 			}
 		}
 		else
