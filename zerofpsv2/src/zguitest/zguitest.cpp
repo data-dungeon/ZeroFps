@@ -89,8 +89,18 @@ void ZGuiTest::OnHud(void)
 void ZGuiTest::CreateUI()
 {
 	CreateWnd(Wnd, "TestWnd", "", "", 800-200, 600-200, 200, 200, 0);
-	CreateWnd(Textbox, "Testss", "TestWnd", "Apa", 0, 0, 150, 150, EB_IS_MULTILINE);
-	//((ZGuiScrollbar*)GetWnd("Testss"))->SetScrollInfo(0,0,0.25f,0); 
+	CreateWnd(Combobox, "Testss", "TestWnd", "Apa", 0, 0, 150, 20*8, 0);
+
+	((ZGuiCombobox*)GetWnd("Testss"))->SetNumVisibleRows(6);
+	
+	char szName[20];
+	for(int i=0; i<10; i++)
+	{
+		sprintf(szName, "apa %i\n", i);
+		AddListItem("Testss", szName);
+	}
+
+	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,600),true);
 
 }
 

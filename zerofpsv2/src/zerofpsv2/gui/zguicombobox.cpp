@@ -198,7 +198,7 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 bool ZGuiCombobox::AddItem(char* strText,int iIndex,bool bSelect)
 {
 	if(iIndex == -1)
-		iIndex = m_pkListbox->GetItemCount()+1;
+		iIndex = m_pkListbox->GetItemCount();
 
 	bool bSelectItem = bSelect && !m_bIsMenu;
 
@@ -355,13 +355,12 @@ void ZGuiCombobox::KillFocus()
 	ZGuiWnd::KillFocus();
 }
 
+bool ZGuiCombobox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
+	m_pkLabel->ZGuiLabel::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
+	m_pkListbox->ZGuiListbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
 
-
-
-
-
-
-
-
-
+	return true;
+}
