@@ -31,6 +31,10 @@ void ZGuiResEd::UpdatePreviewImage(const char* szFileName)
 					float width = (float) pkSurface->m_iWidth;
 					float height = (float) pkSurface->m_iHeight;
 
+					char szInfo[50];
+					sprintf(szInfo, "%ix%i", (int) width, (int) height);
+					SetText("GuiEd_TextureSizeLabel", szInfo);
+
 					if(width > height)
 					{
 						float mod = width / 92.0f;
@@ -47,7 +51,7 @@ void ZGuiResEd::UpdatePreviewImage(const char* szFileName)
 					m_pkTexMan->EditEnd( id );
 
 					pkPreviewLabel->Resize(width, height);
-					pkPreviewLabel->Show();
+					pkPreviewLabel->Show();					
 				}
 			}
 		}

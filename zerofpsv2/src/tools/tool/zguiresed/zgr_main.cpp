@@ -30,7 +30,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	else
 	if(msg == ZGM_KEYPRESS && win != NULL)
 	{
-		if(g_kZGuiEd.m_bTestGUI && ((int*)params)[0] ==KEY_ESCAPE)
+		if(g_kZGuiEd.m_bTestGUI && ((int*)params)[0] == KEY_ESCAPE)
 			g_kZGuiEd.m_iTask = ZGuiResEd::TASK_TEST_GUI;		
 
 		g_kZGuiEd.OnTextboxInput(string(win->GetName()), ((int*)params)[0]);
@@ -148,6 +148,8 @@ void ZGuiResEd::OnInit()
 
 	m_pkGui->PlaceWndFrontBack(GetWnd("GuiEd_EditWnd"), true);
 	m_pkGui->PlaceWndFrontBack(GetWnd("GuiEd_NewWnd"), true);
+
+	CheckButton("GuiEd_SelBackgroundTexture", true);
 }
 
 bool ZGuiResEd::IsEditorWnd(ZGuiWnd* pkWnd)

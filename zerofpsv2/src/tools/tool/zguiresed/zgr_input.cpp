@@ -60,8 +60,6 @@ void ZGuiResEd::HandleInput()
 		}
 		else
 		{
-			//GetWnd("GuiEd_NewWnd")->Hide();
-			//GetWnd("GuiEd_EditWnd")->Hide();
 			m_bEditorMode = false;
 		}
 
@@ -484,6 +482,8 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 				SelNewSkin(0);
 			}				
 		}
+
+		m_pkGui->SetFocus(GetWnd("GuiEd_WidgetList"), false); // set focus on listbox again		
 		return; 
 	}
 
@@ -560,6 +560,8 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 				ClearListbox("GuiEd_TextureList");		
 				AddFilesInFolderToListbox(m_strCurrTexDir.c_str());
 			}
+
+			printf("ZGuiWnd::m_pkFocusWnd = %s", ZGuiWnd::m_pkFocusWnd->GetName());
 
 		}
 		return;

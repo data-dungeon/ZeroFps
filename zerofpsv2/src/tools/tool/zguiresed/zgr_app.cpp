@@ -278,8 +278,11 @@ void ZGuiResEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 	}
 	else
 	{
-	
-		strcpy(szWnd, GetSelItem("GuiEd_WidgetTypeList"));
+		
+		if(char* selitem = GetSelItem("GuiEd_WidgetTypeList"))
+			strcpy(szWnd, selitem);
+		else
+			return;
 
 		string strText = szWnd;
 		text = strText;

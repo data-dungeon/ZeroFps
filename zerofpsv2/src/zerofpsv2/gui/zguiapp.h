@@ -19,10 +19,12 @@ class ZGuiResourceManager;
 class ZFResourceHandle;
 class ZFScript;
 
-#define EB_IS_MULTILINE			1
-#define READ_ONLY					2
-#define CREATE_WND_HIDDEN		4
-#define MENU_IS_POPUP			8
+// Flags for CreateWnd
+#define EB_IS_MULTILINE			 1
+#define READ_ONLY					 2
+#define CREATE_WND_HIDDEN		 4
+#define MENU_IS_POPUP			 8
+#define CREATE_NEW_GROUP		16 // The radiobutton is the leader for a new group.
 
 enum GuiType
 {

@@ -182,6 +182,13 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		pkWnd = new ZGuiLabel( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Radiobutton:
+
+		if(iFlags & CREATE_NEW_GROUP)
+		{
+			char szRGCName[50]; 
+			sprintf(szRGCName, "DefGUIRadioGroup%i", m_iLastRadioBGroup);
+			CreateNewRadiobuttonGroup(szRGCName, -1); // by passing in -1 we alse raise m_iLastRadioBGroup by 1.
+		}
 		pkWnd = new ZGuiRadiobutton( Rect(x,y,x+w,y+h), pkParent, iID, 
 			m_iLastRadioBGroup, m_szLastRadioBGroup, NULL, true);
 		break;

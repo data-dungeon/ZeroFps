@@ -308,9 +308,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 						m_pkSelectedItem->Deselect();
 
 					// Select new item
-					m_pkSelectedItem = (*it);
-
-					printf("pkWnd = %s\n", pkWnd->GetName()); 
+					m_pkSelectedItem = (*it);					
 
 					SendSelItemMsg(DoubleClicked());
 					break;
@@ -767,6 +765,69 @@ bool ZGuiListbox::ProcessKBInput(int iKey)
 	{
 		int iIndex = m_pkSelectedItem == NULL ? 0 : m_pkSelectedItem->GetIndex()-1;
 		return SelItem(iIndex);
+	}
+	else
+	{
+		list<ZGuiListitem*>::iterator itStart;
+
+		ZGuiListitem* start = m_pkSelectedItem;
+
+		list<ZGuiListitem*>::iterator it;
+		for(  it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+		{
+			if(start == NULL)
+			{
+				itStart = it++;
+				break;
+			}
+
+			if((*it) == start)
+			{
+				itStart = it;
+				itStart++;
+
+				if(itStart == m_pkItemList.end())
+					itStart = m_pkItemList.begin();
+
+				break;
+			}
+		}
+
+		bool bFound = false;
+
+		for(int i=0; i<2; i++)
+		{
+			for(  it = itStart; it != m_pkItemList.end(); it++)
+			{
+				ZGuiListitem* pkItem = (*it);
+
+				if(pkItem->GetText())
+				{
+					if(strlen(pkItem->GetText()) > 0)
+					{
+						if(pkItem->GetText()[0] == iKey || pkItem->GetText()[0] == iKey-32)
+						{
+							if(m_pkSelectedItem)
+								m_pkSelectedItem->GetButton()->SetSkin(
+									m_pkSelectedItem->GetButton()->GetButtonUpSkin());
+
+							m_pkSelectedItem = (*it);
+							m_pkScrollbarVertical->SetScrollPos(m_pkSelectedItem->GetIndex()); 
+							SendSelItemMsg(false);
+							bFound = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if(bFound == true)
+				break;
+			else
+				itStart = m_pkItemList.begin();
+		}
+
+
 	}
 
 	return true;
