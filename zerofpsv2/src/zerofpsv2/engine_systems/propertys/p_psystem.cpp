@@ -30,7 +30,8 @@ void P_PSystem::Update()
  		}
       else
       {
-         if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish )
+         if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
+				m_pkEntity->m_eRole == NETROLE_AUTHORITY )
          {
             m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
 			}

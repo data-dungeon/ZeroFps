@@ -310,12 +310,15 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 	m_kParticles[iParticleIndex].m_kVelocity = kRandomDir * fStartSpeed;
 
-	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x;
-	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y;
-
 	m_kParticles[iParticleIndex].m_kEndSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kEndSize.x;
 	m_kParticles[iParticleIndex].m_kEndSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kEndSize.y;
 
+	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x
+		+ (( m_kParticles[iParticleIndex].m_kEndSize.x - m_kParticles[iParticleIndex].m_kStartSize.x) / 
+		m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
+	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y
+		+ (( m_kParticles[iParticleIndex].m_kEndSize.y - m_kParticles[iParticleIndex].m_kStartSize.y) / 
+		m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
 
 	
 	// Randomize size startvalues
