@@ -29,7 +29,6 @@ public:
 
 typedef AStarNode* AStarNodePtr;
 
-
 // Klass som STL använder för att sortera noderna i nodlistorna
 class HeapComp
 {
@@ -39,6 +38,8 @@ class HeapComp
 			return a->m_fFValue > b->m_fFValue;
 		}
 };
+
+
 
 
 class ENGINE_API AStar : public ZFSubSystem 
@@ -57,6 +58,7 @@ public:
 	virtual ~AStar() {}
 
 	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
+	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
 	void CalcCoset(AStarNode* pkNode);
 	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
 

@@ -1,4 +1,5 @@
 #include "astar.h"
+#include "p_pfmesh.h"
 
 
 
@@ -129,3 +130,29 @@ void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
 	} while(pkNode);
 }
 
+bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
+{
+	printf("Creating full path");
+
+	kPath.clear();
+
+	m_kStart			= kStart;
+	m_kGoal			= kEnd;
+	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
+	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
+
+	if(m_iStartZone != m_iEndZone)
+		return false;
+
+	ZoneData* pkZone;
+	pkZone = m_pkObjectManger->GetZoneData(m_iEndZone);
+	if(pkZone->m_pkZone == NULL)
+		return false;
+
+	P_PfMesh* pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+	if(pkMesh) {
+		pkMesh->GetCell(m_kGoal);
+		}
+
+	return false;
+}

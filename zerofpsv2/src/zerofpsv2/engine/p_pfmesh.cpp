@@ -71,7 +71,8 @@ P_PfMesh::P_PfMesh()
 	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
-	m_pkMad = NULL;
+	m_pkMad			= NULL;
+	m_pkSelected	= NULL;
 }
 
 P_PfMesh::~P_PfMesh()
@@ -127,10 +128,21 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 
 	NaviMeshCell kNaviMesh;
 
+	printf("Vertex/Normals: %d,%d\n",(*pkVertex).size(),(*pkNormal).size());
+	Vector3 kNormal;
+
 	for(int i=0; i<pkFace->size(); i++) {
+		kNormal.Set(0,0,0);
+		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[0] ];
+		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[1] ];
+		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[2] ];
+		kNormal.Normalize();
+		if(kNormal.y <= 0.9)	continue;
+			
 		kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 		kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
 		kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
+
 		kNaviMesh.m_kCenter = (kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
 		kNaviMesh.m_apkLinks[0] = NULL;
 		kNaviMesh.m_apkLinks[1] = NULL;
@@ -141,6 +153,7 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 
 	LinkCells();
 	printf("NaviMesh Size: %d \n", m_NaviMesh.size());
+	m_pkSelected = &m_NaviMesh[0];
 }
 
 void P_PfMesh::DrawNaviMesh()
@@ -157,13 +170,17 @@ void P_PfMesh::DrawNaviMesh()
 
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
+	glLineWidth(3.0);
 
 	glColor3f(1,1,1);
+	Vector3 kColor;
 
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 	for(int i=0; i<m_NaviMesh.size(); i++) {
-		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, Vector3(1,1,1), 0.1);
+		if(&m_NaviMesh[i] == m_pkSelected)	kColor.Set(0,0,1);
+			else										kColor.Set(1,1,1);
+		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
 
 		glBegin(GL_LINES);
 			if(m_NaviMesh[i].m_apkLinks[0])	glColor3f(0,1,0);
@@ -180,6 +197,7 @@ void P_PfMesh::DrawNaviMesh()
 		glEnd();
 		}
 
+	glLineWidth(1.0);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 
@@ -217,6 +235,29 @@ void P_PfMesh::LinkCells()
 		}
 
 }
+
+NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
+{
+	kPos -= m_pkObject->GetWorldPosV();
+
+	float fClosest = 100000000;
+	int iIndex = 0;
+
+	for(int i=0; i<m_NaviMesh.size(); i++) {
+		Vector3 kDiff = m_NaviMesh[i].m_kCenter - kPos;
+		float fDist = kDiff.Length();
+
+		if(fDist < fClosest) {
+			iIndex = i;
+			fClosest = fDist;
+			}
+		}
+
+	m_pkSelected = &m_NaviMesh[iIndex];
+	return &m_NaviMesh[iIndex];
+}
+
+
 
 vector<PropertyValues> P_PfMesh::GetPropertyValues()
 {

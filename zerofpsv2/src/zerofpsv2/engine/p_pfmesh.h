@@ -31,7 +31,9 @@ public:
 	Vector3			m_kVertex[3];		// Vertex the made up the cell.
 	Vector3			m_kCenter;			// Center of the Cell.
 	NaviMeshCell*	m_apkLinks[3];		// Links to cells on each side. NULL if none.
+
 	
+
 	bool	IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB);
 };
 
@@ -41,6 +43,7 @@ class ENGINE_API P_PfMesh : public Property
 	private:
 		vector<NaviMeshCell>		m_NaviMesh;
 		P_Mad*						m_pkMad;
+		NaviMeshCell*				m_pkSelected;
 
 	public:
 		P_PfMesh();
@@ -60,7 +63,8 @@ class ENGINE_API P_PfMesh : public Property
 		void LinkCells();
 		void LinkToConnectedCells(NaviMeshCell* pkNavCell);
 
-
+		NaviMeshCell* GetCell(Vector3 kPos);
+		
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();
