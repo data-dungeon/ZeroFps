@@ -122,11 +122,11 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					{
 						m_kMoveSlot.bIsInventoryItem = true;
 						m_kMoveSlot.m_iIndex = i;
-					}
 
-					m_vkInventoryItemList[i].pkWnd->Show();
-					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					m_pkInventoryWnd->SortChilds(); 
+						m_vkInventoryItemList[i].pkWnd->Show();
+						m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+						m_pkInventoryWnd->SortChilds(); 
+					}					
 					break;
 				}
 

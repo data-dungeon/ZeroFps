@@ -443,12 +443,8 @@ void MistClient::Input()
 		{
 			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 			{						
-				if(!m_pkActionDlg->IsOpen())
-				{
-					cout<<"action menu"<<endl;
-					m_pkActionDlg->SetEntity(m_iPickedEntityID);							
-					m_pkActionDlg->Open();				
-				}				
+				m_pkActionDlg->SetEntity(m_iPickedEntityID);							
+				m_pkActionDlg->Open();
 			}
 		}
 	}
