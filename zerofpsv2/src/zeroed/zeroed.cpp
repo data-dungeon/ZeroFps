@@ -1344,6 +1344,38 @@ void ZeroEd::DrawZoneMarker(Vector3 kPos)
 
 	Vector3 bla = m_kZoneSize / 2;
 	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
+
+	if(m_iAutoSnapZoneCorner != -1)
+	{
+		switch(m_iAutoSnapZoneCorner)
+		{
+		case Top:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(0,0,16));
+			break;
+		case Bottom:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(0,0,-16));
+			break;
+		case Left:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,0));
+			break;
+		case Right:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,0));
+			break;
+		case TopLeft:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,16));
+			break;
+		case TopRight:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,16));
+			break;
+		case BottomLeft:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(16,0,-16));
+			break;
+		case BottomRight:
+			m_pkRender->Line(m_kZoneMarkerPos, m_kZoneMarkerPos+Vector3(-16,0,-16));
+			break;
+		}
+
+	}
 }
 
 
