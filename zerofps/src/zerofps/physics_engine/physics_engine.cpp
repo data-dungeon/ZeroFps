@@ -68,9 +68,6 @@ bool Physics_Engine::AddBody(Body* pkBody)
 	if(ExistBody(pkBody))
 		return false;
 
-//	if(BodyCollides(pkBody))
-//		return false;
-
 	m_kBodys.push_back(pkBody);
 	
 	cout<<"Body Added to physics engine"<<endl;
@@ -158,7 +155,10 @@ void Physics_Engine::TestWithPlanes(float fATime)
 		for(list<Body*>::iterator bodyit = m_kBodys.begin(); bodyit != m_kBodys.end(); bodyit++) 
 		{
 			if(!(*bodyit)->m_bResting)
-				TestSphereVSPlane(*bodyit,*planeit,fATime);
+				if((*bodyit)->m_bPolygonCheck)
+					TestMeshVSPlane(*bodyit,*planeit,fATime);
+				else
+					TestSphereVSPlane(*bodyit,*planeit,fATime);
 		}
 	}
 }
@@ -220,7 +220,7 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		
 			didpen = true;			
 			retry = true;
-			atime /=2;
+			atime /=1.5;
 			
 			continue;
 		}
@@ -259,6 +259,78 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 	
 		m_kCollissions.push_back(tempcol);	
 	
+		return true;
+	}
+	
+	return false;
+}
+
+bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
+{
+	float atime = fATime;	
+	float dtime = atime;
+	bool retry = true;
+	bool didpen = false;
+	bool collission = false;
+	int nroftests = 0;
+	
+	
+	while(retry && nroftests < m_iMaxTests)
+	{
+		retry = false;
+		nroftests++;
+		
+		memcpy(&m_kBodyCopy1,pkBody,sizeof(Body));		
+		UpdateBodyVelNPos(&m_kBodyCopy1,atime);
+	
+		int check = CollideMeshVSPlane(&m_kBodyCopy1,pkPlane);			
+		
+		if(check == PENETRATING || check == COLLISSION)
+		{
+			didpen = true;			
+			retry = true;
+			atime /=2;
+			
+			continue;
+		}
+		
+		if(check == NOT && didpen)
+		{
+			break;
+		}
+		
+		if(check == NOT && didpen == false)
+			return false;
+		
+		//if time is infinit short set it to 0	
+		if(atime < 0.0001)
+		{	
+			atime =0;
+			break;
+		}	
+
+	}
+	
+		
+	if(didpen)
+	{	
+		//add all temp collissions
+		for(int i=0;i<m_kCollissionPoints.size();i++)
+		{
+			Collission tempcol;
+
+			tempcol.pkBody1 = pkBody;
+			tempcol.pkBody2 = NULL;
+		
+			tempcol.kPos = m_kBodyCopy1.TransRot(m_kBodyCopy1.m_kVertex[m_kCollissionPoints[i]]);
+			tempcol.kNormal = pkPlane->m_kNormal;	
+			tempcol.kRelVelocity = m_kBodyCopy1.m_kVelocity;
+			tempcol.kRelAcceleration = m_kBodyCopy1.m_kAcceleration;
+			tempcol.fAtime =	atime;	
+			tempcol.kCollissionTangent = (tempcol.kNormal.Cross(tempcol.kRelVelocity.Unit())).Cross(tempcol.kNormal);
+	
+			m_kCollissions.push_back(tempcol);	
+		}
 		return true;
 	}
 	
@@ -338,7 +410,7 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 			
 			didpen = true;			
 			retry = true;
-			atime /=2;
+			atime /=1.5;
 		
 			continue;
 		}
@@ -401,8 +473,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 	if(pkCol->pkBody2 != NULL)
 	{
 		//body awake from your slumber =)	
-		pkCol->pkBody1->Awaken();
-		pkCol->pkBody2->Awaken();
+//		pkCol->pkBody1->Awaken();
+//		pkCol->pkBody2->Awaken();
 		
 		float bounce = pkCol->pkBody1->m_fBounce*pkCol->pkBody2->m_fBounce;
 		float j = (-(1+bounce) * (pkCol->kRelVelocity * pkCol->kNormal)) /
@@ -424,8 +496,8 @@ void Physics_Engine::HandleCollission(Collission* pkCol)
 		pkCol->pkBody2->m_kVelocity += (pkCol->kCollissionTangent * (j*0.2)) / pkCol->pkBody2->m_fMass;
 
 		//chevk if anybody wants to rest
-		UpdateResting(pkCol->pkBody1);				
-		UpdateResting(pkCol->pkBody2);				
+//		UpdateResting(pkCol->pkBody1);				
+//		UpdateResting(pkCol->pkBody2);				
 	
 	}	
 	else //body vs plane collission
@@ -506,8 +578,36 @@ bool Physics_Engine::BodyCollides(Body* pkBody)
 	return false;
 }
 
-
-
+int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
+{
+	bool clear=false;
+	
+		
+	for(int i=0;i<2;i++)	
+	{
+		Vector3 point = pkBody->TransRot(pkBody->m_kVertex[i]);
+		
+	
+		if(!pkPlane->PointInside(point))
+		{
+			//clear temp collissions if a collission occurs
+			if(!clear)
+			{	
+				m_kCollissionPoints.clear();
+				clear=true;
+			}
+			
+			m_kCollissionPoints.push_back(i);
+		}
+	}
+	
+	if(clear == true)
+	{	
+		return PENETRATING;
+	}
+	else
+		return NOT;
+}
 
 
 

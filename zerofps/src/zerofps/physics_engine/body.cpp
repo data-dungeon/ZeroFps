@@ -10,7 +10,7 @@ Body::Body()
 void Body::Reset()
 {
 	m_pkMad =				NULL;
-	m_bPolygonCheck =		false;
+	m_bPolygonCheck =		true;
 	m_bSolid	=				true;
 	m_bGravity =			true;
 	m_bResting =			false;
@@ -39,6 +39,9 @@ void Body::Reset()
 	
 	m_fRadius =				0.5;
 	
+
+	m_kVertex[0].Set(-1,0,0);
+	m_kVertex[1].Set(1,-1,0);	
 }
 
 
@@ -71,6 +74,11 @@ void Body::Awaken()
 
 }
 
+Vector3 Body::TransRot(Vector3 kVert)
+{
+	return kVert + m_kPosition;
+
+}
 
 
 

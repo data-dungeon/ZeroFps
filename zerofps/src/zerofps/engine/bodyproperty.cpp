@@ -38,8 +38,8 @@ void BodyProperty::Update()
 		m_bHaveSetBody=true;
 		SetBodyToObject();
 	}
-
 	
+
 	if(m_pkZeroFps->m_bRunWorldSim)
 		SetObjectToBody();
 	else

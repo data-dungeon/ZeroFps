@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 class PHYSICSENGINE_API Body
 {
 	private:
@@ -36,6 +37,8 @@ class PHYSICSENGINE_API Body
 			
 			
 	public:
+		Vector3		m_kVertex[2];		
+		
 		bool			m_bPolygonCheck;		//shuld we do a per polygon check in body
 		bool			m_bGravity;				//is object affeceted of gravity
 		bool			m_bSolid;				//is this a solid body?				
@@ -53,6 +56,7 @@ class PHYSICSENGINE_API Body
 		Vector3 GetPos();								
 		void Rest(Body* pkBody);				//set object to rest against pkBody
 		void Awaken();
+		Vector3 TransRot(Vector3 kVert);
 		
 		friend class Physics_Engine;
 };
