@@ -717,7 +717,10 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
-				m_pkZeroFps->HandleNetworkPacket(&NetP);
+				// We only pass messages from clients to zerofps.
+				if(iClientID != ZF_NET_NOCLIENT) {
+					m_pkZeroFps->HandleNetworkPacket(&NetP);
+					}
 				break;
 
 			default:

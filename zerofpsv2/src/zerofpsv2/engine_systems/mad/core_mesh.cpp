@@ -666,6 +666,10 @@ void Mad_CoreMesh::ShowInfo(void)
 
 void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 {
+/*	for(int i=0; i<m_kLodMesh.size(); i++) {
+		m_kLodMesh[i].Save(pkZFile);
+		}*/
+	
 	m_kLodMesh[0].Save(pkZFile);
 
 /*	kHead.iNumOfAnimation = akAnimation.size();
