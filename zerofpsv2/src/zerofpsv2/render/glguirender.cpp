@@ -63,8 +63,8 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 //
 bool GLGuiRender::StartRender()
 {
-	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040508 - lade till GL_COLOR_BUFFER_BIT
+	glPushAttrib(/*GL_COLOR_BUFFER_BIT | */GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
+		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040508 - tog bort GL_COLOR_BUFFER_BIT :) (eftersom den fuckade up skuggorna!!!?)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
