@@ -188,8 +188,8 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 					return false;
 				}
 				
+				pkItem->SetUseZones(false);				
 				pkItem->SetParent(pkOwner);				
-				pkItem->SetUseZones(false);
 				
 				if(m_bDisableItems)				
 				{

@@ -342,6 +342,10 @@ void Entity::SetParent(Entity* pkEntity)
 	
 	m_pkParent = pkEntity;
 	m_pkParent->AddChild(this);
+	
+	//reset current zone if this is not a zone entity and its not suppose to use zones
+	if(!m_bZone && !m_bUseZones)
+		m_iCurrentZone = -1;
 }
 
 /**	\brief	Returns true if Entity is our child of this.
