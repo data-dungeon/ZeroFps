@@ -1381,31 +1381,31 @@ void ZeroEd::UpdateZoneMarkerPos()
 
 				switch(m_iAutoSnapZoneCorner)
 				{
-				case Top:
+				case eTop:
 					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
 					break;
-				case TopRight:
+				case eTopRight:
 					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
 					break;
-				case Bottom:
+				case eBottom:
 					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
 					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
 					break;
-				case BottomRight:
+				case eBottomRight:
 					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
 					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
 					break;
-				case BottomLeft:
+				case eBottomLeft:
 					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
 					break;
-				case Left:
+				case eLeft:
 					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
 					break;
-				case Right:
+				case eRight:
 					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
 					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
 					break;
-				case None:
+				case eNone:
 					m_kZoneMarkerPos = m_kLastZonePos;
 					break;
 				}

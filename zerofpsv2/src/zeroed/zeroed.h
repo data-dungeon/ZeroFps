@@ -101,15 +101,15 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		enum ZoneCorners
 		{ 
-			None=0, 
-			TopLeft, 
-			Top, 
-			TopRight, 
-			Right, 
-			BottomRight, 
-			Bottom, 
-			BottomLeft, 
-			Left 
+			eNone=0, 
+			eTopLeft, 
+			eTop, 
+			eTopRight, 
+			eRight, 
+			eBottomRight, 
+			eBottom, 
+			eBottomLeft, 
+			eLeft 
 		};
 
 		//wierd stuff
