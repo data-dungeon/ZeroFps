@@ -392,6 +392,21 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	
 	if(newobj)
 	{      
+		//check if its a static object, in that case check if the zone is in consturction mode else delete the object 
+		if(newobj->GetObjectType() == OBJECT_TYPE_STATIC)
+		{
+			ZoneData* zd = GetZoneData(id);
+			if(zd)
+			{
+				if(!zd->m_bUnderContruction)
+				{
+					Delete(newobj);
+					cout<<"ERROR: You cant add a static entity to a zone that is not underconstruction"<<endl;
+					return NULL;		
+				}
+			}
+		}
+	
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
 		if(newobj->m_iCurrentZone == -1)
