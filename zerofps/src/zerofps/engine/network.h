@@ -9,8 +9,8 @@
 #define MAX_PACKET_SIZE	1024
 #define MAX_NETWORKNAME	16
 
-#define ZF_NETTYPE_CONTROL	1
-#define ZF_NETTYPE_UNREL	2
+#define ZF_NETTYPE_CONTROL			1
+#define ZF_NETTYPE_UNREL			2
 
 
 #define ZF_NETCONTROL_LIST			1
@@ -34,10 +34,22 @@ public:
 	RemoteNode() {};
 	~RemoteNode() {};
 
-	IPaddress					m_kAddress;
-	ClientConnectStatus		m_eConnectStatus;
+	IPaddress					m_kAddress;				// Address of node.
+	ClientConnectStatus		m_eConnectStatus;		// Status of this nodes connection.
 
-	void SetAddress(IPaddress* pkAddress);
+	void SetAddress(IPaddress* pkAddress);			// Sets address of node.
+
+	// Stats
+	int				m_iNumOfPacketsSent;
+	int				m_iNumOfPacketsRecv;
+	unsigned int	m_iNumOfBytesSent;
+	unsigned int	m_iNumOfBytesRecv;
+	
+	float				m_fLastMessageTime;				// Time (Engine) of last message. Use to find time outs.
+	float				m_fPing;								// Ping 
+
+	int				m_iOutOfOrderRecv;
+	int				m_iPacketLossRecv;
 };
 
 class ENGINE_API NetPacket
@@ -90,55 +102,56 @@ class ENGINE_API NetWork : public ZFObject
 private:
 //	UDPsocket	m_pkServerSocket;
 //	UDPsocket	m_pkClientSocket;
-	UDPsocket	m_pkSocket;
-
-	char		szServerName[MAX_NETWORKNAME];
-	bool		bAcceptClientConnections;
-	Console*	m_pkConsole;
-	ZeroFps*	m_pkZeroFps;
-
-	vector<RemoteNode>	RemoteNodes;
-
-	IPaddress	m_kServerAddress;
-
 //	bool		m_bIsConnectedToServer;
 //	bool		m_bIsServer;
-	
-	char		m_szAddressBuffer[256];		// Used to convert/print address.
+
+	UDPsocket				m_pkSocket;								// Socket we use for all our messages.
+
+	char						szServerName[MAX_NETWORKNAME];	// Well ... VIM... ***
+	bool						bAcceptClientConnections;			// If false all connect attemts are ignored.
+	Console*					m_pkConsole;							// Ptr to console.
+	ZeroFps*					m_pkZeroFps;							// Ptr to zerofps engine.
+
+	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
+	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
+
+	vector<RemoteNode>	RemoteNodes;							// Data About all our remote connections.
+	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
+	char						m_szAddressBuffer[256];				// Used to convert/print address.
+
+	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
+
+	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
 
 public:
-	NetWork();
-	~NetWork();
-
-	NetWorkStatus	m_eNetStatus;
-
-	int GetNumOfClients(void);
+	NetWorkStatus			m_eNetStatus;
+	vector<RemoteNode>	m_akClients;
 
 	bool Init();
 	bool Close();
 
+	NetWork();
+	~NetWork();
+
+	int GetNumOfClients(void);
+	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
+
+	void StartSocket(bool bStartServer);
+	void CloseSocket();
+	void ServerStart(void);
+	void ServerEnd(void);
+	void ClientStart(const char* szIp);
+	void ClientEnd(void);
+
+	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
 	void Run(); 
 
 	bool Send(NetPacket* pkNetPacket);
-	bool Recv(NetPacket* pkNetPacket);
+	void SendToAllClients(NetPacket* pkNetPacket);
 
 	bool CmpNetworkAddress();
 	bool StrToAddress();
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
-
-	vector<RemoteNode>	m_akClients;
-
-	void StartSocket(bool bStartServer);
-	void CloseSocket();
-
-	void ServerStart(void);
-	void ServerEnd(void);
-
-	void ClientStart(const char* szIp);
-	void ClientEnd(void);
-	void HandleControlMessage(NetPacket* pkNetPacket);
-
-	void SendToAllClients(NetPacket* pkNetPacket);
 
 	void ServerList(void);
 };

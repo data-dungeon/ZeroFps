@@ -85,6 +85,8 @@ void NetPacket::Read(void* ptr, int iSize)
 
 NetWork::NetWork()
 : ZFObject("NetWork"){
+	g_ZFObjSys.Log_Create("net");
+	g_ZFObjSys.Log("net", "NetWork SubSystem Startup:\n");
 
 	int iInitRes = SDLNet_Init();
 	cout << "SDLNet_Init(): " << iInitRes<< endl;
@@ -97,18 +99,13 @@ NetWork::NetWork()
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));;
 
 	m_eNetStatus = NET_NONE;
-
-	g_ZFObjSys.Log_Create("net");
-	g_ZFObjSys.Log("net", "NetWork SubSystem Startup:\n");
-
 }
 
 NetWork::~NetWork()
 {
+	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
 	CloseSocket();
 	SDLNet_Quit();
-	cout << "SDLNet_Quit()" << endl;
-	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
 }
 
 int NetWork::GetNumOfClients(void)
@@ -152,6 +149,35 @@ void NetWork::ServerEnd(void)
 	CloseSocket();
 	m_eNetStatus = NET_NONE;
 }
+
+void NetWork::ClientStart(const char* szIp)
+{
+	if(m_eNetStatus == NET_SERVER)
+		return;
+
+	StartSocket(false);
+	m_eNetStatus = NET_CLIENT;
+
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.SetTarget(szIp);
+	NetP.Write((char) ZF_NETTYPE_CONTROL);
+	NetP.Write((char) ZF_NETCONTROL_JOIN);
+	Send(&NetP);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 bool NetWork::Recv(NetPacket* pkNetPacket)
@@ -311,22 +337,6 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 	cout << endl;
 }
 
-void NetWork::ClientStart(const char* szIp)
-{
-	if(m_eNetStatus == NET_SERVER)
-		return;
-
-	StartSocket(false);
-	m_eNetStatus = NET_CLIENT;
-
-	NetPacket NetP;
-
-	NetP.Clear();
-	NetP.SetTarget(szIp);
-	NetP.Write((char) ZF_NETTYPE_CONTROL);
-	NetP.Write((char) ZF_NETCONTROL_JOIN);
-	Send(&NetP);
-}
 
 void NetWork::ServerList(void)
 {
