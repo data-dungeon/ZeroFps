@@ -176,14 +176,23 @@ void Render::Dot(float x,float y,float z) {
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	SetFont("file:../data/textures/text/console.tga");
 
-	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.64,1.98,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp",0));
+	glEnable(GL_BLEND);	
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);	
+		
+	Quad(Vector3(0,0,-.5),Vector3(0,0,0),Vector3(1.2,.9,1),m_pkTexMan->Load("file:../data/textures/background.tga",0));
 	
-	Print(Vector3(-1.1,-0.82,-1),Vector3(0,0,0),Vector3(.06,.06,.06),m_aCommand);		
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
 	
-	for(int i=0;i<21;i++) {
+	
+	
+	Print(Vector3(-.65,-.5,-.6),Vector3(0,0,0),Vector3(.04,.04,.04),m_aCommand);		
+	
+	for(int i=0;i<23;i++) {
 		if((*m_kText)[i]!=NULL){
 			//Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
-			Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(0.04,0.04,0.04),(*m_kText)[i]);		
+			Print(Vector3(-.65,-.40+i/(float)25,-.6),Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);		
 		
 		}
 	}

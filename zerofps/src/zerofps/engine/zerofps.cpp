@@ -153,6 +153,11 @@ void ZeroFps::MainLoop(void) {
 		
 		if(m_bClientMode)
 		{
+			if(m_bConsoleMode)
+				m_pkInput->SetInputEnabled(false);
+			else
+				m_pkInput->SetInputEnabled(true);
+			
 			//run application main loop
 			m_pkApp->OnIdle();				
 			
@@ -160,7 +165,6 @@ void ZeroFps::MainLoop(void) {
 			if(m_pkInput->Pressed(TAB))
 			{			
 				m_bConsoleMode=true;		
-				m_bClientMode=false;				
 				m_pkInput->Reset();
 			}
 			
@@ -216,9 +220,9 @@ void ZeroFps::MainLoop(void) {
 		}
 		
 		if(m_bConsoleMode)
-		{
+		{		
 			SetCamera(m_pkCamera);			
-			m_pkCamera->ClearViewPort();
+//			m_pkCamera->ClearViewPort();
 			
 			m_pkConsole->Update();
 

@@ -80,9 +80,9 @@ enum Buttons {
 class ENGINE_API Input : public ZFObject {
 	private:
 		bool m_akButtonList[400];
+		bool m_bInputEnabled;
 		SDL_Event m_kEvent;
-		unsigned int m_iGrabtime;
-			
+		unsigned int m_iGrabtime;			
 		int m_iMouseX,m_iMouseY;
 		
 		queue<int> m_aPressedKeys;
@@ -102,7 +102,7 @@ class ENGINE_API Input : public ZFObject {
 		Input();
 		
 		void Update(void);
-		inline bool Pressed(int iButton){return m_akButtonList[iButton];};
+		bool Pressed(int iButton);
 		int GetQueuedKey();
 		int SizeOfQueue();
 		void MouseXY(int &iX,int &iY);
@@ -110,7 +110,8 @@ class ENGINE_API Input : public ZFObject {
 		void ToggleGrab(void);
 		void ToggleGrab(bool bGrab);		
 		void Reset(void);
-		
+		void SetInputEnabled(bool bInputEnabled) { m_bInputEnabled=bInputEnabled ;};
+		bool GetInputEnabled() { return m_bInputEnabled;};
 //		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 };
 

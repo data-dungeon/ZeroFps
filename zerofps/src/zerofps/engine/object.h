@@ -23,6 +23,16 @@ enum UPDATE_STATUS{
 	UPDATE_PLAYERS
 };
 
+
+class ENGINE_API ObjectDescription{
+	private:
+	
+	public:
+
+
+};
+
+
 class ENGINE_API Object {
 	protected:
 		Vector3 m_kPos;

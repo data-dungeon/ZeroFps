@@ -40,7 +40,6 @@ void Console::Update(void) {
 		if(iKey == TAB) {
 			glPopAttrib();
 			
-			m_pkEngine->m_bClientMode=true;
 			m_pkEngine->m_bConsoleMode=false;
 			m_pkInput->Reset();
 				

@@ -18,6 +18,7 @@ Input::Input()
 	
 	m_fMouseSensitivity=1;	
 	m_iGrabtime=SDL_GetTicks();
+	m_bInputEnabled=true;
 
 	g_ZFObjSys.Register_Cmd("togglegrab",FID_TOGGLEGRAB,this);
 	
@@ -75,17 +76,26 @@ void Input::Update(void) {
 }
 
 void Input::MouseXY(int &iX,int &iY) {		
-	SDL_GetMouseState(&iX, &iY);
-	iX=int(float(iX)*m_fMouseSensitivity);	
-	iY=int(float(iY)*m_fMouseSensitivity);		
+	if(m_bInputEnabled) {
+		SDL_GetMouseState(&iX, &iY);
+		iX=int(float(iX)*m_fMouseSensitivity);	
+		iY=int(float(iY)*m_fMouseSensitivity);		
+	} else {
+		iX=0;	
+		iY=0;			
+	}
 }
 
 void Input::RelMouseXY(int &iX,int &iY) {		
-	if(m_iMouseX==-1)
-		SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);
-		
-	iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
-	iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
+	if(m_bInputEnabled) {
+		if(m_iMouseX==-1)
+			SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);		
+		iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
+		iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
+	} else {
+		iX=0;	
+		iY=0;				
+	}
 }
 
 void Input::ToggleGrab(void) {	
@@ -164,3 +174,14 @@ int Input::SizeOfQueue()
 {
 	return m_aPressedKeys.size();
 }
+
+bool Input::Pressed(int iButton){
+	if(m_bInputEnabled) {	
+		return m_akButtonList[iButton];
+	} else {
+		return false;
+	}
+	
+}
+
+
