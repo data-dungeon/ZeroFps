@@ -300,6 +300,15 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	pkRenderer->RenderQuad(m_kArea);
 	pkRenderer->RenderBorder(m_kArea);
 
+	if(m_pkCamera && IsVisible()) 
+		{
+			pkRenderer->EndRender(); 
+
+			m_pkCamera->RenderView(); 
+
+			pkRenderer->StartRender(false);
+		}
+
 	// Render childrens back to front
 	for( WINrit w = m_kChildList.rbegin(); w != m_kChildList.rend(); w++)
 			if( (*w)->m_bVisible == true)
@@ -311,6 +320,22 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 				}
 
 				(*w)->Render( pkRenderer );
+
+
+
+
+
+		if((*w)->m_pkCamera && (*w)->IsVisible()) 
+		{
+			pkRenderer->EndRender(); 
+
+			(*w)->m_pkCamera->RenderView(); 
+
+			pkRenderer->StartRender(false);
+		}
+
+
+
 
 				if((*w)->m_bUseClipper)
 					pkRenderer->EnableClipper(false);

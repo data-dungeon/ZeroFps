@@ -333,14 +333,14 @@ bool ZGui::Render(int fps)
 		if(pkWnd->m_bUseClipper)
 			 m_pkRenderer->EnableClipper(false);		
 
-		if(pkWnd->m_pkCamera && pkWnd->IsVisible()) 
-		{
-			m_pkRenderer->EndRender(); 
+		//if(pkWnd->m_pkCamera && pkWnd->IsVisible()) 
+		//{
+		//	m_pkRenderer->EndRender(); 
 
-			pkWnd->m_pkCamera->RenderView(); 
+		//	pkWnd->m_pkCamera->RenderView(); 
 
-			m_pkRenderer->StartRender(false);
-		}
+		//	m_pkRenderer->StartRender(false);
+		//}
 	 }
 
 	//// Draw points
