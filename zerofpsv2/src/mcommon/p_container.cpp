@@ -254,46 +254,48 @@ bool P_Container::AddItem(int iID,int iX,int iY)
 			return false;
 		}
 		
-	if(Entity* pkOwner = GetEntity())
+	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 	{
-		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
+		if(pkItem == GetEntity())
 		{
-			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+			cout<<"Tried to add self to self"<<endl;
+			return false;
+		}
+		
+		
+		if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+		{
+			if(!ItemTypeOK(pkPItem->m_iType))
 			{
-				if(!ItemTypeOK(pkPItem->m_iType))
-				{
-					cout<<"Item type not allowed in this container"<<endl;
-					return false;
-				}
-
-				if(!SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
-				{
-					cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
-					return false;
-				}
-				
-				pkItem->SetUseZones(false);				
-				pkItem->SetParent(pkOwner);				
-				
-				pkItem->SetUpdateStatus(UPDATE_NONE);									
-				//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
-				m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
-
-				
-				//set item's owned by setting
-				pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
-				//Print();
-				
-				return true;
+				cout<<"Item type not allowed in this container"<<endl;
+				return false;
 			}
-			else
-				cout<<"WARNING: trying to add item that does not have any P_DMItem property"<<endl;
+
+			if(!SetItem(pkPItem,iX,iY,pkPItem->m_iSizeX,pkPItem->m_iSizeY))		
+			{
+				cout<<"no space in container for an item of size: "<<pkPItem->m_iSizeX<<"x"<<pkPItem->m_iSizeY<<endl;
+				return false;
+			}
+			
+			pkItem->SetUseZones(false);				
+			pkItem->SetParent(GetEntity());				
+			
+			pkItem->SetUpdateStatus(UPDATE_NONE);									
+			//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
+			m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
+
+			
+			//set item's owned by setting
+			pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
+			//Print();
+			
+			return true;
 		}
 		else
-			cout<<"WARNING: trying to add item that does not exist"<<endl;			
+			cout<<"WARNING: trying to add item that does not have any P_DMItem property"<<endl;
 	}
 	else
-		cout<<"WARNING: could not find owner entity"<<endl;
+		cout<<"WARNING: trying to add item that does not exist"<<endl;			
 
 	
 	return false;
