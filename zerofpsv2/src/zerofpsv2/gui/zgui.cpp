@@ -26,6 +26,10 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_iHighestZWndValue = 10;
 
 	m_bActive = false;
+}
+
+bool ZGui::StartUp()	
+{ 
 	m_pkRenderer = static_cast<ZGuiRender*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkResManager = static_cast<ZGuiResourceManager*>(
@@ -47,8 +51,16 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 		pkDefaultFont)); 
 
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
+
+	return true; 
 }
 
+bool ZGui::ShutDown() 
+{ 
+	return true; 
+}
+
+bool ZGui::IsValid()	{ return true; }
 
 ZGui::~ZGui()
 {
@@ -1023,16 +1035,18 @@ void ZGui::OnKeyPress(int iKey)
 //
 bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 {
-	ZFIni *pkINI = static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
+	//ZFIni *pkINI = static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
+	
+	ZFIni kINI;
 	TextureManager* pkTexMan = static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));
 
 	// Load ini file
-	pkINI->Open(szResourceFile, false);
+	kINI.Open(szResourceFile, false);
 
 	// Get sections from ini file.
 	vector<string> vkSections;
-	pkINI->GetSectionNames(vkSections);
+	kINI.GetSectionNames(vkSections);
 
 	unsigned int i=0; 
 
@@ -1043,7 +1057,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 	{
 		tSkinInf kNewSkinInfo;
 
-		char* szWindowName = pkINI->GetValue(
+		char* szWindowName = kINI.GetValue(
 			(char*)vkSections[i].c_str(),"window_name");
 
 		// We have found the last skin. 
@@ -1052,20 +1066,20 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 
 		kNewSkinInfo.first.first=szWindowName;
 		kNewSkinInfo.first.second=
-			pkINI->GetValue((char*)vkSections[i].c_str(),"wnd_desc");
+			kINI.GetValue((char*)vkSections[i].c_str(),"wnd_desc");
 		
 		ZGuiSkin* pkSkin = new ZGuiSkin;
 
 		char* tex[8] =
 		{
-			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "bk_a_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "horz_bd_a_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "vert_bd_a_tex"),
-			pkINI->GetValue((char*)vkSections[i].c_str(), "corner_bd_a_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "bk_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "horz_bd_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "vert_bd_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "corner_bd_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "bk_a_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "horz_bd_a_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "vert_bd_a_tex"),
+			kINI.GetValue((char*)vkSections[i].c_str(), "corner_bd_a_tex"),
 		};
 
 		pkSkin->m_iBkTexID = strcmp(tex[0],"(null)")==0 ? - 1 : 
@@ -1085,15 +1099,15 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 		pkSkin->m_iBorderCornerTexAlphaID = strcmp(tex[7],"(null)")==0 ? - 1 : 
 			pkTexMan->Load(tex[7],0);
 
-		int bk_r  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_r"));
-		int bk_g  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_g"));
-		int bk_b  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bk_b"));
-		int bd_r  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_r"));
-		int bd_g  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_g"));
-		int bd_b  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_b"));
-		int bd_sz = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "bd_size"));
-		int tile  = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "tile_skin"));
-		int trans = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "transparent"));
+		int bk_r  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bk_r"));
+		int bk_g  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bk_g"));
+		int bk_b  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bk_b"));
+		int bd_r  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bd_r"));
+		int bd_g  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bd_g"));
+		int bd_b  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bd_b"));
+		int bd_sz = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "bd_size"));
+		int tile  = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "tile_skin"));
+		int trans = atoi(kINI.GetValue((char*)vkSections[i].c_str(), "transparent"));
 
 		pkSkin->m_afBkColor[0] = (1.0f/255)*bk_r;
 		pkSkin->m_afBkColor[1] = (1.0f/255)*bk_g;
@@ -1116,8 +1130,8 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 	int iStartSection = -1;
 	for( i=0; i<vkSections.size(); i++)
 	{
-		char *szType = pkINI->GetValue(vkSections[i].c_str(), "type");
-		char *szName = pkINI->GetValue(vkSections[i].c_str(), "name");
+		char *szType = kINI.GetValue(vkSections[i].c_str(), "type");
+		char *szName = kINI.GetValue(vkSections[i].c_str(), "name");
 
 		if(szType != NULL && szName != NULL)
 		{
@@ -1158,7 +1172,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 
 	for( i=iStartSection; i<vkSections.size(); i++)
 	{
-		char* szType = pkINI->GetValue((char*)vkSections[i].c_str(), "type");
+		char* szType = kINI.GetValue((char*)vkSections[i].c_str(), "type");
 		
 		// Find correct window type.
 		WndType eWndType;
@@ -1192,27 +1206,27 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			continue;
 
 		// Get properties.
-		int wnd_id = atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"id"));
-		char* name = pkINI->GetValue((char*)vkSections[i].c_str(), "name");
-		int parentwnd_id = atoi(pkINI->GetValue(
+		int wnd_id = atoi(kINI.GetValue((char*)vkSections[i].c_str(),"id"));
+		char* name = kINI.GetValue((char*)vkSections[i].c_str(), "name");
+		int parentwnd_id = atoi(kINI.GetValue(
 			(char*)vkSections[i].c_str(), "parent_id"));
-		char* parent_name = pkINI->GetValue((char*)vkSections[i].c_str(),
+		char* parent_name = kINI.GetValue((char*)vkSections[i].c_str(),
 			"parent_name");
-		bool bVisible = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
+		bool bVisible = atoi(kINI.GetValue((char*)vkSections[i].c_str(), 
 			"visible")) == 0 ? false : true;
-		bool bEnabled = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
+		bool bEnabled = atoi(kINI.GetValue((char*)vkSections[i].c_str(), 
 			"enabled")) == 0 ? false : true;
-		Rect rc( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),
+		Rect rc( atoi(kINI.GetValue((char*)vkSections[i].c_str(),
 			"area_left")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_top")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_right")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_bottom")));
-		Rect rc_m( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"move_area_left")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_top")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_right")),
-			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_bottom")));
-		int iTabOrder=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"tab_order"));
-		char* text = pkINI->GetValue((char*)vkSections[i].c_str(), "text");
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "area_top")),
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "area_right")),
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "area_bottom")));
+		Rect rc_m( atoi(kINI.GetValue((char*)vkSections[i].c_str(),"move_area_left")),
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "move_area_top")),
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "move_area_right")),
+			atoi(kINI.GetValue((char*)vkSections[i].c_str(), "move_area_bottom")));
+		int iTabOrder=atoi(kINI.GetValue((char*)vkSections[i].c_str(),"tab_order"));
+		char* text = kINI.GetValue((char*)vkSections[i].c_str(), "text");
 
 		//ZGuiWnd* pkParent = NULL;
 		ZGuiWnd* pkNewWnd = NULL;
@@ -1230,7 +1244,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			kNewMainWnd.second = string(name);
 			kMainWindows.push_back(kNewMainWnd);
 
-			int main_wnd_id = atoi(pkINI->GetValue(vkSections[i].c_str(),"mainwnd_id"));
+			int main_wnd_id = atoi(kINI.GetValue(vkSections[i].c_str(),"mainwnd_id"));
 			AddMainWindow(main_wnd_id, pkNewWnd, name, cb, false);
 		}
 		else
@@ -1244,7 +1258,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			case TEXTBOX:
 				{
 					bool bMultiLine = false;
-					char* szMultiLine = pkINI->GetValue(vkSections[i].c_str(), 
+					char* szMultiLine = kINI.GetValue(vkSections[i].c_str(), 
 						"multiline");
 
 					if(szMultiLine != NULL)
@@ -1266,9 +1280,9 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 				break;
 			case RADIOBUTTON:
 				{
-					int radio_group = atoi(pkINI->GetValue(vkSections[i].c_str(),
+					int radio_group = atoi(kINI.GetValue(vkSections[i].c_str(),
 						"radio_group"));
-					char* radio_group_name = pkINI->GetValue(vkSections[i].c_str(),
+					char* radio_group_name = kINI.GetValue(vkSections[i].c_str(),
 						"radio_group_name");
 					pkNewWnd = new ZGuiRadiobutton(rc,pkParent,wnd_id,radio_group,
 						radio_group_name,pkPrevRadiobutton,bVisible);
@@ -1304,7 +1318,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 					((ZGuiCombobox*)pkNewWnd)->SetScrollbarSkin(
 						new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
 					
-					char* szRows = pkINI->GetValue(vkSections[i].c_str(),
+					char* szRows = kINI.GetValue(vkSections[i].c_str(),
 						"num_visible_rows");
 
 					if(szRows)
@@ -1315,7 +1329,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 					}
 
 					int iIsMenu;
-					iIsMenu = atoi(pkINI->GetValue(vkSections[i].c_str(),
+					iIsMenu = atoi(kINI.GetValue(vkSections[i].c_str(),
 						"is_menu"));
 					((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu == 1); 
 				}
@@ -1492,9 +1506,6 @@ void ZGui::DrawRect(int x, int y, int w, int h,
 	kElement.second = color;
 	m_kRectsToDraw.push_back(kElement);
 }
-bool ZGui::StartUp()	{ return true; }
-bool ZGui::ShutDown() { return true; }
-bool ZGui::IsValid()	{ return true; }
 
 void ZGui::SetRes(int iResX, int iResY)
 {

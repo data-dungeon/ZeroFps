@@ -4,6 +4,27 @@
 #include "network.h"
 #include "../basic/zfobjectmanger.h"
 
+PropertyFactory::PropertyFactory() :
+ ZFSubSystem("PropertyFactory") 
+{
+	
+}
+
+bool PropertyFactory::StartUp()	
+{ 
+	m_pkNetWork = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));		
+
+	return true;
+}
+
+bool PropertyFactory::ShutDown()	
+{ 
+	
+	return true;	
+}
+
+bool PropertyFactory::IsValid()	{ return true;	}
+
 Property* PropertyFactory::CreateProperty(const char* szName)
 {
 	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
@@ -30,8 +51,7 @@ void PropertyFactory::Register(char* szName, Property*	(*Create)())
 	
 	cout<<"Property added "<<szName<<endl;
 	
-	NetWork* pkNet = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));		
-	pkNet->NetString_Add(szName);
+	m_pkNetWork->NetString_Add(szName);
 	
 }
 

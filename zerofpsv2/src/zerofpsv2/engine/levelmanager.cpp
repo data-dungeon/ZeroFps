@@ -12,17 +12,6 @@
 
 LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 {
-	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkObjectMan=static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));
-	m_pkBasicFS=static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));
-	m_pkConsole=static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
-	m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-//	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
-	m_pkIni=static_cast<ZFIni*>(GetSystem().GetObjectPtr("ZFIni"));
-	m_pkLight = static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
-	
-	m_pkMap=new HeightMap();
-	
 	m_bVisibleZones		=	true;
 	m_iShowDecorations	=	1;
 	m_iDecorationStep		=	1;
@@ -40,7 +29,21 @@ LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 //	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
 //	m_pkCmd->Add(&m_iDecorationStep,"l_decorationstep",type_int);			
+}
+
+
+bool LevelManager::StartUp()	
+{
+	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkObjectMan=static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));
+	m_pkBasicFS=static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));
+	m_pkConsole=static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
+	m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+//	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
+//	m_pkIni=static_cast<ZFIni*>(GetSystem().GetObjectPtr("ZFIni"));
+	m_pkLight = static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
 	
+	m_pkMap=new HeightMap();
 
 	//default light
 	m_bSun=new LightSource;	
@@ -69,7 +72,21 @@ LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 	
 	m_pkLight->Add(m_bSun);
 	m_pkLight->Add(m_bMoon);
+
+	return true; 
 }
+
+bool LevelManager::ShutDown() 
+{ 
+	return true; 
+}
+
+bool LevelManager::IsValid()	{ return true; }
+
+
+
+
+
 
 void LevelManager::CreateEmptyLevel(int iSize)
 {
@@ -225,8 +242,8 @@ bool LevelManager::LoadLevel(const char* acFile)
 	Clear();
 	
 	//execute preconfig.ini
-	if(!m_pkIni->ExecuteCommands(kpreinifile.c_str()))
-		m_pkConsole->Printf("No preconfig.ini found");
+	/*if(!m_pkIni->ExecuteCommands(kpreinifile.c_str()))
+		m_pkConsole->Printf("No preconfig.ini found");*/
 	
 	//load heightmap
 	if(!m_pkMap->Load(kHmfile.c_str())){
@@ -259,8 +276,8 @@ bool LevelManager::LoadLevel(const char* acFile)
 	SetupWorld();	
 
 	//execute suconfig.ini
-	if(!m_pkIni->ExecuteCommands(ksuinifile.c_str()))
-		m_pkConsole->Printf("No suconfig.ini found");
+	/*if(!m_pkIni->ExecuteCommands(ksuinifile.c_str()))
+		m_pkConsole->Printf("No suconfig.ini found");*/
 
 	m_kCurrentMapDir = kBase;
 
@@ -680,13 +697,6 @@ void LevelManager::ChangeLandscapeFillMode(PolygonMode eMode)
 	HMRP2* hp= static_cast<HMRP2*>(m_pkHeightMapObject->GetProperty("HMRP2"));
 	hp->SetPolyMode(eMode);
 }
-
-
-bool LevelManager::StartUp()	{ return true; }
-bool LevelManager::ShutDown() { return true; }
-bool LevelManager::IsValid()	{ return true; }
-
-
 
 
 

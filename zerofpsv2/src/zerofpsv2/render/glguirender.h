@@ -19,6 +19,10 @@ public:
 	GLGuiRender();
 	virtual ~GLGuiRender();
 
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
+
 	bool EndRender();
 	bool StartRender();
 	bool RenderQuad(Rect kScreenRect);

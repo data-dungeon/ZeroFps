@@ -14,21 +14,33 @@ HeightMap::HeightMap()
  : ZFSubSystem("HeightMap") {
  
 // 	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
-	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
-	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-	
 	m_iError	=	4;
 	verts		=	NULL;
 	iNumOfHMVertex = 0;
-
-	Create(16);
 }
+
+bool HeightMap::StartUp()	
+{ 
+	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+	Create(16);
+	return true; 
+}
+
+bool HeightMap::ShutDown() 
+{
+	return true; 
+}
+
+bool HeightMap::IsValid()	{ return true; }
 
 HeightMap::~HeightMap() 
 {
 	if(verts)
 		delete[] verts;
 }
+
+
 
 bool HeightMap::AllocHMMemory(int iSize)
 {
@@ -1109,9 +1121,6 @@ Vector3 HeightMap::GetPosFromSqr(Point square)
 	return Vector3(x,y,z);
 }
 
-bool HeightMap::StartUp()	{ return true; }
-bool HeightMap::ShutDown() { return true; }
-bool HeightMap::IsValid()	{ return true; }
 
 
 

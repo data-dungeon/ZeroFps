@@ -19,9 +19,21 @@ GLGuiRender::GLGuiRender()
 	m_pkSkin = NULL;
 	m_iScreenWidth = 1024;
 	m_iScreenHeight = 768;
+}
+
+bool GLGuiRender::StartUp()	
+{ 
 	m_pkTextureManger=static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));	
+	return true; 
 }
+
+bool GLGuiRender::ShutDown() 
+{ 
+	return true; 
+}
+
+bool GLGuiRender::IsValid()	{ return true; }
 
 GLGuiRender::~GLGuiRender()
 {

@@ -9,13 +9,17 @@ using namespace std;
 Console::Console()
   : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
+
+	GetSystem().Log_Create("console");
+}
+
+bool Console::StartUp()	
+{ 
 	m_pkEngine	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	m_pkInput	= static_cast<Input*>(GetSystem().GetObjectPtr("Input"));	
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 
-	GetSystem().Log_Create("console");
-	
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
 	m_bShift=false;
@@ -33,8 +37,15 @@ Console::Console()
 	m_fToggleTime = 0;
 	m_bActive = false;
 
-
+	return true; 
 }
+
+bool Console::ShutDown() 
+{ 
+	return true; 
+}
+
+bool Console::IsValid()	{ return true; }
 
 /*void Console::Update(void) {
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
@@ -443,7 +454,4 @@ void Console::Toggle()
 	m_fToggleTime = fTime += 0.2;
 }
 
-bool Console::StartUp()	{ return true; }
-bool Console::ShutDown() { return true; }
-bool Console::IsValid()	{ return true; }
 

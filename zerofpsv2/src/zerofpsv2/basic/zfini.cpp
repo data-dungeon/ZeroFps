@@ -14,7 +14,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZFIni::ZFIni() : ZFSubSystem("ZFIni")
+ZFIni::ZFIni() /*: ZFSubSystem("ZFIni")*/
 {
 	m_iLines				= 0;
 	m_iNumSections		= 0;
@@ -25,7 +25,7 @@ ZFIni::ZFIni() : ZFSubSystem("ZFIni")
 	m_pstrLines			= NULL;
 	m_pkCommandData	= NULL;	
 
-	Register_Cmd("exec",FID_EXECUTECOMMANDS);
+//	Register_Cmd("exec",FID_EXECUTECOMMANDS);
 
 	//m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 }
@@ -374,6 +374,7 @@ void ZFIni::GetCommandStrings(vector<string>* pkCommands)
 		pkCommands->push_back( string(m_pkCommandData->strCommand[i]) );
 }
 
+/*
 void ZFIni::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) 
@@ -393,6 +394,7 @@ void ZFIni::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	}
 }
+*/
 
 bool ZFIni::ExecuteCommands(const char* strName)
 {
@@ -401,7 +403,7 @@ bool ZFIni::ExecuteCommands(const char* strName)
 		if(m_pkCommandData)
 		{
 			for(int i=0; i<m_pkCommandData->iNumCommands; i++)
-				GetSystem().RunCommand(m_pkCommandData->strCommand[i]);
+				g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i]);
 		}
 
 		return true;
@@ -410,9 +412,11 @@ bool ZFIni::ExecuteCommands(const char* strName)
 	return false;
 }
 
+/*
 bool ZFIni::StartUp()	{ return true; }
 bool ZFIni::ShutDown() { return true; }
 bool ZFIni::IsValid()	{ return true; }
+*/
 
 void ZFIni::GetSectionNames(vector<string>& kSectionList)
 {

@@ -175,7 +175,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 		Application*			m_pkApp;						///< Application object.
 		ZShader*					m_pkZShader;				///< zerofps shader system
-
+		OggMusic*				m_pkMusic;
+		
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS
 		float		m_fAvrageFps;

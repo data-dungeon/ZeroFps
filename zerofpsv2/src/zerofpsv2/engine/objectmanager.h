@@ -12,6 +12,7 @@ class PropertyDescriptor;
 class ObjectDescriptor;
 class ZeroFps;
 class GameMessage;
+class NetWork;
 
 class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
@@ -54,6 +55,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
+		NetWork*				m_pkNetWork;
 
 	public:
 		int	m_iForceNetUpdate;					

@@ -19,7 +19,7 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		Console* 			m_pkConsole;
 		Render* 				m_pkRender;
 //		CmdSystem* 			m_pkCmd;
-		ZFIni* 				m_pkIni;
+//		ZFIni* 				m_pkIni;
 		Light*				m_pkLight;
 		
 		HeightMap* 			m_pkMap;

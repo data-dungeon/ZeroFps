@@ -21,6 +21,7 @@ static char Devformat_text[4096];	//
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
 	// Create Engine SubSystems
+/*	
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkTexMan					= new TextureManager;
@@ -34,6 +35,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkObjectMan				= new ObjectManager;
 	m_pkSBM						= new SoundBufferManager;	
 	m_pkOpenAlSystem			= new OpenAlSystem;
+	m_pkMusic					= new OggMusic(24,4096);
+
 	m_pkNetWork					= new NetWork;
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkGuiMan					= new ZGuiResourceManager;
@@ -44,6 +47,35 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkZShader					= new ZShader;
+	*/
+
+	m_pkZShader					= new ZShader;
+	m_pkPhysics_Engine		= new Physics_Engine;
+	m_pkResourceDB				= new ZFResourceDB;
+	m_pkPhysEngine				= new PhysicsEngine;
+	m_pkLevelMan				= new LevelManager;
+	m_pkIni						= new ZFIni;
+	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
+	m_pkGuiMan					= new ZGuiResourceManager;
+	m_pkGuiRenderer			= new GLGuiRender;
+	m_pkNetWork					= new NetWork;
+	m_pkMusic					= new OggMusic(24,4096);
+	m_pkOpenAlSystem			= new OpenAlSystem;
+	m_pkSBM						= new SoundBufferManager;	
+	m_pkObjectMan				= new ObjectManager;
+	m_pkCmd						= new CmdSystem;
+	m_pkConsole					= new Console;
+	m_pkRender					= new Render;
+	m_pkLight					= new Light;	
+	m_pkFrustum					= new Frustum;	
+	m_pkPropertyFactory		= new PropertyFactory;
+	m_pkInput					= new Input;		
+	m_pkTexMan					= new TextureManager;
+	m_pkZFVFileSystem			= new ZFVFileSystem;
+	m_pkBasicFS					= new ZFBasicFS;
+
+	
+
 
 	// Set Default values
 	m_iFullScreen				= 0;

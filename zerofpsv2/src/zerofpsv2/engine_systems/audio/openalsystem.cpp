@@ -36,7 +36,8 @@ OpenAlSystem::~OpenAlSystem()
 
 bool OpenAlSystem::StartUp()	
 { 
-	sbm= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
+	sbm			= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
+	m_pkMusic	= static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
 
 	Init();
 	GenerateSources(10);
@@ -75,7 +76,6 @@ void OpenAlSystem::Init()
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,0,1),Vector3(0,1,0));
 	//Gubb was here
-	m_pkMusic = new OggMusic(24,4096);
 }
 
 

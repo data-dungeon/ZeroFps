@@ -15,7 +15,7 @@ using namespace std;
 #include "basic_x.h"
 
 /// Reads text based INI files (Basic Config Sys of ZeroFps).
-class BASIC_API ZFIni : public ZFSubSystem
+class BASIC_API ZFIni /*: public ZFSubSystem*/
 {
 public:
 	void Close();
@@ -24,7 +24,7 @@ public:
 		FID_EXECUTECOMMANDS, // Run Commands from Ini file
 	};
 
-	void RunCommand(int cmdid, const CmdArgument* kCommand);
+//	void RunCommand(int cmdid, const CmdArgument* kCommand);
 	void GetCommandStrings(vector<string>* pkCommands);
 	bool ExecuteCommands(const char* strName);
 	
@@ -71,9 +71,9 @@ private:
 	SectionData* m_pkSectionData;
 	CommandData* m_pkCommandData;
 
-		bool StartUp();
+/*		bool StartUp();
 		bool ShutDown();
-		bool IsValid();
+		bool IsValid();*/
 
 };
 

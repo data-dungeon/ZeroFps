@@ -10,6 +10,8 @@
 
 using namespace std;
 
+class NetWork;
+
 /// Links property name to a create function.
 class ProperyCreateLink
 {
@@ -32,11 +34,12 @@ class ENGINE_API PropertyFactory : public ZFSubSystem
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
-
 	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
+	NetWork*			m_pkNetWork;
+
 public:
-	PropertyFactory() : ZFSubSystem("PropertyFactory") { }
+	PropertyFactory();
 	~PropertyFactory() { }
 
 	Property*	CreateProperty(const char* szName);
@@ -46,9 +49,9 @@ public:
 
 	void GetAllProperties(vector<string>& vkList);
 
-	bool StartUp()	{ return true;	}
-	bool ShutDown()	{ return true;	}
-	bool IsValid()	{ return true;	}
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();
 
 };
 

@@ -20,7 +20,8 @@ ObjectManager::ObjectManager()
 
 bool ObjectManager::StartUp()	
 {
-	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -543,8 +544,7 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 
 void ObjectManager::PackToClients()
 {
-	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	if(net->GetNumOfClients() == 0)
+	if(m_pkNetWork->GetNumOfClients() == 0)
 		return;
 
 	Logf("net", " *** ObjectManager::PackToClients() *** \n");
@@ -583,7 +583,7 @@ void ObjectManager::PackToClients()
 		if(NP.m_iPos >= 512) {
 			NP.Write(iEndOfObject);
 			NP.Write(ZFGP_ENDOFPACKET);
-			net->SendToAllClients(&NP);
+			m_pkNetWork->SendToAllClients(&NP);
 
 			NP.Clear();
 			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
@@ -595,7 +595,7 @@ void ObjectManager::PackToClients()
 
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
-	net->SendToAllClients(&NP);
+	m_pkNetWork->SendToAllClients(&NP);
 
 	if(m_aiNetDeleteList.size() == 0)
 		return;
@@ -611,7 +611,7 @@ void ObjectManager::PackToClients()
 	
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
-	net->SendToAllClients(&NP);
+	m_pkNetWork->SendToAllClients(&NP);
 
 	m_aiNetDeleteList.clear();
 }

@@ -41,9 +41,6 @@ public:
 		unsigned char r,unsigned char g,unsigned char b,
 		float width=1.0f) = 0;
 
-	bool StartUp();
-	bool ShutDown();
-	bool IsValid();
 };
 
 #endif 

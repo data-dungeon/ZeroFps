@@ -24,36 +24,8 @@ OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) :
 	m_uiNrOfBuffers(uiNrOfBuffers),
 	m_bLooping(true),
 	ZFSubSystem("OggMusic")
-
 {
 	
-	m_pcTempBuffer = new char[uiBufferSize]; 
-    m_pALuiBuffers = new ALuint[uiNrOfBuffers];
-	alGenBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
-	if (alGetError()!=AL_NO_ERROR)
-	{
-		cout<< "error generating buffers!" <<endl;
-	}
-	alGenSources(1, &m_ALuiSource);
-	
-	
-	
-	Vector3 pos(0,0,0);
-	alSourcefv(m_ALuiSource, AL_POSITION,&pos[0]);		
-	alSourcefv(m_ALuiSource,  AL_VELOCITY,&pos[0]);	
-	
-	if (alGetError()!=AL_NO_ERROR)
-	{
-		cout<<"error generating sources!" <<endl;
-	}
-
-//	if((SDL_Init(SDL_INIT_TIMER)==-1))  
-//       cout<<"Could not initialize SDL:"<< SDL_GetError();
-   m_pkZeroFpsObject	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	if(m_pkZeroFpsObject==NULL) 
-	{
-		cout<<"OggMusic ERROR : could not retrive ZeroFps object" <<endl;
-	}
 	
     	
 }
@@ -77,6 +49,34 @@ OggMusic::~OggMusic()
 
 bool OggMusic::StartUp()	
 { 
+	m_pcTempBuffer = new char[ m_uiBufferSize ]; 
+   m_pALuiBuffers = new ALuint[ m_uiNrOfBuffers ];
+	alGenBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
+	if (alGetError()!=AL_NO_ERROR)
+	{
+		cout<< "error generating buffers!" <<endl;
+	}
+	alGenSources(1, &m_ALuiSource);
+	
+	
+	
+	Vector3 pos(0,0,0);
+	alSourcefv(m_ALuiSource, AL_POSITION,&pos[0]);		
+	alSourcefv(m_ALuiSource,  AL_VELOCITY,&pos[0]);	
+
+	if (alGetError()!=AL_NO_ERROR)
+	{
+		cout<<"error generating sources!" <<endl;
+	}
+
+//	if((SDL_Init(SDL_INIT_TIMER)==-1))  
+//       cout<<"Could not initialize SDL:"<< SDL_GetError();
+   m_pkZeroFpsObject	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	if(m_pkZeroFpsObject==NULL) 
+	{
+		cout<<"OggMusic ERROR : could not retrive ZeroFps object" <<endl;
+	}
+	
 	return true; 
 }
 
