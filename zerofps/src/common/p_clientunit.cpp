@@ -1,7 +1,7 @@
 #include "p_clientunit.h"
 #include "p_renderselection.h"
 
-P_ClientUnit::P_ClientUnit()
+P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 {
 	strcpy(m_acName,"P_ClientUnit");
 	
@@ -9,7 +9,8 @@ P_ClientUnit::P_ClientUnit()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	
+	//m_pkClientInput =static_cast<P_ClientInput*>(m_pkObject->GetProperty("P_ClientInput"));
+
 	bNetwork = true;
 
 	m_kInfo.m_cTeam =			0;
@@ -23,7 +24,7 @@ P_ClientUnit::P_ClientUnit()
 	m_bSelected =	false;
 	
 	m_bCurrentSelectionRenderState = false;/**/
-
+	
 }
 
 
@@ -39,12 +40,27 @@ void P_ClientUnit::Update()
 		if(!m_bSelected && m_bCurrentSelectionRenderState)
 			DisableSelectionRender();
 	}
-
-
+	
+	/*if(!m_pkObject->m_kGameMessages.empty())
+	{
+		for(int i =0; i<m_pkObject->m_kGameMessages.size; i++)
+			if m_pkObject->m_kGameMessages[i]->mName = string("apa")
+				TestCommand();
+	}*/
 	//if(m_bSelected)
 		//cout<<"Helth:"<<(int)m_kInfo.m_cHealth<<endl;
 }
 
+void P_ClientUnit::HandleGameMessage(GameMessage& Msg)
+{
+	cout <<"3wrw34523523" <<endl;
+	if(Msg.m_Name == "apa")
+	{
+		TestCommand();
+		cout<<"unit is a APA" <<endl;
+	}
+		
+}
 
 void P_ClientUnit::EnableSelectionRender()
 {
@@ -96,12 +112,77 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
 	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
 	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
+
+	
+	int iCommandsToSend = -1; 
+	if(m_bCommandsUpdated)
+	{
+		iCommandsToSend = m_kUnitCommands.size();
+		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
+		m_bCommandsUpdated = false;
+		
+		vector<UnitCommandInfo>::iterator kItor = m_kUnitCommands.begin();
+			while (kItor != m_kUnitCommands.end())
+			{
+				pkNetPacket->Write(&(*kItor), sizeof(UnitCommandInfo));
+				kItor++;
+			}
+	} 
+	else 
+		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
+	
+	iCommandsToSend = -1; 
+	if(!m_kCommandsToDo.empty())
+	{
+		iCommandsToSend=m_kCommandsToDo.size();
+		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
+		while(!m_kCommandsToDo.empty())
+		{
+			pkNetPacket->Write(&m_kCommandsToDo.front(), sizeof(UnitCommand));
+			m_kCommandsToDo.pop();
+		}
+	}
+	else 
+		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
+	
 	g_ZFObjSys.Logf("net", "PackCliUnit End\n");
 }
+
  
 void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 {
 	pkNetPacket->Read(&m_kInfo, sizeof(m_kInfo));
+	
+	int iCommandsToRecive;
+	pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
+	if(iCommandsToRecive > 0)
+	{
+		m_kUnitCommands.clear();
+		UnitCommandInfo kTempUCInfo;
+		for(int i =0; i<iCommandsToRecive; i++)
+		{
+			pkNetPacket->Read(&kTempUCInfo, sizeof(UnitCommandInfo));
+			m_kUnitCommands.push_back(kTempUCInfo);
+		}
+	}
+	pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
+	if(iCommandsToRecive > 0)
+	{
+		UnitCommand TempCommand;
+		for(int i =0; i<iCommandsToRecive; i++)
+		{
+			pkNetPacket->Read(&TempCommand, sizeof(UnitCommand));
+			m_kCommandsPending.push(TempCommand);
+		}
+	}	
+		
+}
+
+void P_ClientUnit::TestCommand()
+{
+	UnitCommand Temp;
+	strcpy(Temp.m_acCommandName,"Move");
+	m_kCommandsToDo.push(Temp);
 }
 
 

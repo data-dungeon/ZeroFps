@@ -1,6 +1,6 @@
 #include "p_serverunit.h"
 
-P_ServerUnit::P_ServerUnit()
+P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 {
 	strcpy(m_acName,"P_ServerUnit");
 	
@@ -18,6 +18,7 @@ P_ServerUnit::P_ServerUnit()
 	m_pkClientUnit = NULL;
 	m_bHaveSetRadius = false;
 
+	
 }
 
 
@@ -25,9 +26,21 @@ void P_ServerUnit::Update()
 {
 	if(!m_bHaveSetRadius)
 		SetRadius();
-
+	
+	if(m_pkCurrentAIState)
+		m_pkCurrentAIState=m_pkCurrentAIState->UpdateAI();
+			
+	
 	GetClientUnitP();
-	UpdateClient();	
+	UpdateClient();
+	if(!m_pkClientUnit->m_kCommandsPending.empty())
+	{
+		while(!m_pkClientUnit->m_kCommandsPending.empty())
+		{
+			RunExternalCommand(&m_pkClientUnit->m_kCommandsPending.front());
+			m_pkClientUnit->m_kCommandsPending.pop();
+		}
+	}
 }
 
 
@@ -59,6 +72,21 @@ void P_ServerUnit::UpdateClient()
 	if(m_pkClientUnit != NULL)
 	{
 		m_pkClientUnit->m_kInfo = m_kInfo;
+		//Update the clients avalible commands
+		if(m_bUpdateCommands)
+		{
+			m_pkClientUnit->m_kUnitCommands.clear();
+			map<string, ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
+			while (kItor != m_kExternalCommands.end())
+			{
+				if(kItor->second !=NULL)
+					m_pkClientUnit->m_kUnitCommands.push_back((*kItor->second).m_kUnitCommandInfo);		
+				
+				kItor++;
+				
+			}
+			m_pkClientUnit->m_bCommandsUpdated = true;
+		}
 	}
 }
 
@@ -104,3 +132,43 @@ COMMON_API Property* Create_P_ServerUnit()
 	return new P_ServerUnit();
 
 }
+
+bool P_ServerUnit::RegisterExternalCommand(ExternalCommand* kCommand)
+{
+	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(string(kCommand->m_kUnitCommandInfo.m_acCommandName));
+	if(kIt!= m_kExternalCommands.end())
+	{
+		m_kExternalCommands[string(kCommand->m_kUnitCommandInfo.m_acCommandName)] = kCommand;
+		m_bUpdateCommands = true;
+		return true;
+	}
+	else 
+		return false;
+
+};
+
+bool P_ServerUnit::RemoveExternalCommand(string kCommandName)
+{
+	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(kCommandName);
+	if(kIt!= m_kExternalCommands.end())
+	{
+		m_kExternalCommands.erase(kCommandName);
+		m_bUpdateCommands = true;
+		return true;
+	}
+	else 
+		return false;
+}
+			
+bool P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
+{
+	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(string(kCommand->m_acCommandName));
+	if(kIt!= m_kExternalCommands.end())
+	{
+		
+		m_pkCurrentAIState = kIt->second->RunUnitCommand(kCommand->m_iXDestinaton, kCommand->m_iYDestinaton, kCommand->m_iTarget);
+		return true;
+	}	
+	else 
+		return false;
+};

@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy             $(ProjDir)\release\*.lib             ..\..\bin\ 
+PostBuild_Cmds=copy              $(ProjDir)\release\*.lib              ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                         $(ProjDir)\debug\*.lib                         ..\..\bin\ 
+PostBuild_Cmds=copy                          $(ProjDir)\debug\*.lib                          ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -173,6 +173,10 @@ SOURCE=.\doorproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\externalcommand.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\fh.cpp
 # End Source File
 # Begin Source File
@@ -221,6 +225,10 @@ SOURCE=.\p_serverunit.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_unitmoveai.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\pathfindproperty.cpp
 # End Source File
 # Begin Source File
@@ -243,6 +251,14 @@ SOURCE=.\teleportproperty.cpp
 
 SOURCE=.\treeidleproperty.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\unitcommand.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\unitcommandinfo.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -250,6 +266,10 @@ SOURCE=.\treeidleproperty.cpp
 # Begin Source File
 
 SOURCE=.\adaptorsniper.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\aibase.h
 # End Source File
 # Begin Source File
 
@@ -286,6 +306,10 @@ SOURCE=.\dialogbox.h
 # Begin Source File
 
 SOURCE=.\doorproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\externalcommand.h
 # End Source File
 # Begin Source File
 
@@ -341,6 +365,10 @@ SOURCE=.\p_serverunit.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_unitmoveai.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\pathfindproperty.h
 # End Source File
 # Begin Source File
@@ -362,6 +390,14 @@ SOURCE=.\teleportproperty.h
 # Begin Source File
 
 SOURCE=.\treeidleproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\unitcommand.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\unitcommandinfo.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -12,23 +12,29 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
+#include <vector>
+#include <queue>
 #include "common_x.h"
 #include "p_serverunit.h"
+#include "unitcommandinfo.h"
+#include "p_clientinput.h"
 
 using namespace std;
 
 
 class COMMON_API P_ClientUnit: public Property {
 	private:
-		ZeroFps*				m_pkFps;
+		ZeroFps*				 m_pkFps;
+		queue<UnitCommand> m_kCommandsToDo;
 		
-		bool					m_bCurrentSelectionRenderState;
-	
+		bool					 m_bCurrentSelectionRenderState;
+		//P_ClientInput*     m_pkClientInput;
 	
 	public:
 		UnitInfo				m_kInfo;	
 		bool					m_bSelected;
-	
+		bool					m_bCommandsUpdated;
+		vector<UnitCommandInfo> m_kUnitCommands;
 	
 		P_ClientUnit();
 		void CloneOf(Property* pkProperty) { }
@@ -42,6 +48,10 @@ class COMMON_API P_ClientUnit: public Property {
 
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
+		
+		void TestCommand();
+		void HandleGameMessage(GameMessage& Msg);
+		queue<UnitCommand> m_kCommandsPending;
 };
 
 COMMON_API Property* Create_P_ClientUnit();

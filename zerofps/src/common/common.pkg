@@ -28,6 +28,7 @@
 #include "p_serverinfo.h"
 #include "p_renderselection.h"
 #include "p_fogrender.h"
+#include "p_unitmoveai.h"
 
 
 

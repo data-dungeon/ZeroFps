@@ -11,8 +11,12 @@
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
+#include <map>
 #include <iostream>
+#include <string>
 #include "common_x.h"
+#include "externalcommand.h"
+#include "UnitCommand.h"
 
 
 using namespace std;
@@ -28,6 +32,7 @@ struct COMMON_API UnitInfo
 	char					m_cName[64];	
 };
 
+
 #include "p_clientunit.h"
 
 class P_ClientUnit;
@@ -36,9 +41,11 @@ class COMMON_API P_ServerUnit: public Property {
 	private:
 		P_ClientUnit*		m_pkClientUnit;	
 		bool					m_bHaveSetRadius;
-	
+		bool					m_bUpdateCommands;
+		map<string, ExternalCommand*> m_kExternalCommands;
 		vector<PropertyValues> GetPropertyValues();		
-	
+		AIBase* m_pkCurrentAIState;
+		
 	public:
 		UnitInfo				m_kInfo;
 
@@ -53,7 +60,10 @@ class COMMON_API P_ServerUnit: public Property {
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
-
+		
+		bool RegisterExternalCommand(ExternalCommand* kCommand);
+		bool RemoveExternalCommand(string kCommandName);
+		bool RunExternalCommand(UnitCommand* kCommand);
 };
 
 COMMON_API Property* Create_P_ServerUnit();

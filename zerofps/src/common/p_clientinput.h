@@ -14,6 +14,10 @@ public:
 	P_ClientInput();
 	void CloneOf(Property* pkProperty) { }
 	void Update();
+	
+	//bool DispatchCommand
+	//void PackTo(NetPacket* pkNetPacket);
+	//void PackFrom(NetPacket* pkNetPacket);
 
 	void Save(ZFMemPackage* pkPackage) { }
 	void Load(ZFMemPackage* pkPackage) { }
