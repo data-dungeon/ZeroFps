@@ -17,23 +17,31 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 
 bool ZShadow::StartUp()
 {
-	m_iNrOfShadows = 1;
- 	m_fExtrudeDistance = 1000;
+	m_iNrOfShadows = 3;
+ 	m_fExtrudeDistance = 10000;
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
+
+	EnableShadowGroup(0);
+	EnableShadowGroup(1);
+	EnableShadowGroup(2);
 
 	return true;
 }
 
 void ZShadow::Update()
 {
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	//get all render propertys
 	vector<Property*>	kRenderPropertys;
 	m_pkEntityMan->GetWorldObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
 
+	//clear stencil buffert
 	glClear(GL_STENCIL_BUFFER_BIT);
 
-	int	m_iRenderedShadows = 0;
+	int iNrOfShadows = 0;
 
 	for(int i = 0;i<kRenderPropertys.size();i++)
 	{
@@ -41,8 +49,8 @@ void ZShadow::Update()
 		{
 			P_Mad* pkMad = (P_Mad*)kRenderPropertys[i];
 
-			//no shadows if group is -1
-			if(pkMad->GetShadowGroup() == -1)
+			//is this shadow group enabled
+			if(!m_kShadowGroups[pkMad->GetShadowGroup()])
 				continue;
 
 			if(SetupMesh(pkMad))
@@ -54,14 +62,20 @@ void ZShadow::Update()
 				{
 					if(kLights[i]->iType == POINT_LIGHT)
 					{
+						//this light is to faint
+						if(kLights[i]->fIntensity < 0.5)
+							continue;
+
 						MakeStencilShadow(kLights[i]->kPos);
-						m_iRenderedShadows++;
+
+						iNrOfShadows++;
 					}
 
 					if(kLights[i]->iType == DIRECTIONAL_LIGHT)
 					{
 						MakeStencilShadow(kLights[i]->kRot * 10000);
-						m_iRenderedShadows++;
+						iNrOfShadows++;
+
 					}
 				}
 			}
@@ -72,9 +86,12 @@ void ZShadow::Update()
 		}
 	}
 
-	//finaly draw the shadow
-	if(m_iRenderedShadows != 0)
-		DrawShadow();
+	//draw shadow
+	if(iNrOfShadows != 0)
+		DrawShadow(0.5);
+
+	glPopAttrib();
+
 }
 
 bool ZShadow::SetupMesh(P_Mad* pkMad)
@@ -205,14 +222,11 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
 		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
 
-		glBegin(GL_TRIANGLES);
+		glBegin(GL_QUADS);
 			glVertex3f(v[0].x,v[0].y,v[0].z);
 			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
-			glVertex3f(v[1].x,v[1].y,v[1].z);
-
-			glVertex3f(v[1].x,v[1].y,v[1].z);
-			glVertex3f(ev[0].x,ev[0].y,ev[0].z);
 			glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+			glVertex3f(v[1].x,v[1].y,v[1].z);
 		glEnd();
 	}
 }
@@ -246,8 +260,9 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 
 }
 
-void ZShadow::DrawShadow()
+void ZShadow::DrawShadow(float fItensity)
 {
+
 	//draw shadow
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDepthFunc(GL_EQUAL);
@@ -276,7 +291,7 @@ void ZShadow::DrawShadow()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 
-	glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
 	glBegin(GL_QUADS);
 				glVertex2i(0, 0);
 				glVertex2i(0, 1);
@@ -292,4 +307,5 @@ void ZShadow::DrawShadow()
 
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_BLEND);
+
 }

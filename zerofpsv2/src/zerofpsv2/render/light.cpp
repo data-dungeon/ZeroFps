@@ -272,7 +272,7 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 		{
 			float fDistance = kPos.DistanceTo((*it)->kPos);
 
-			(*it)->fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+			(*it)->fIntensity = 1.0 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
 
 			//cout<< "INT:"<<(*it)->fIntensity<<endl;
 

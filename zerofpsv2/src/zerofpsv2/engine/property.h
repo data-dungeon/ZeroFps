@@ -22,10 +22,11 @@ class GameMessage;
 /*	When property should be updated. 
 */enum PROPERTY_TYPES
 {
-	PROPERTY_TYPE_NORMAL	= 1,		// Run at normal update.
-	PROPERTY_TYPE_RENDER	= 2,		// Run at render update.
-	PROPERTY_TYPE_PHYSIC	= 4,		// Run at physics update.
-	PROPERTY_TYPE_ALL		= 7,		// Run on all.
+	PROPERTY_TYPE_NORMAL				= 1,		// Run at normal update.
+	PROPERTY_TYPE_RENDER				= 2,		// Run at render update.
+	PROPERTY_TYPE_PHYSIC				= 4,		// Run at physics update.
+	PROPERTY_TYPE_RENDER_NOSHADOW = 8,
+	PROPERTY_TYPE_ALL					= 15,		// Run on all.
 };
 
 /* On wich side the propertys should update. */
@@ -132,7 +133,7 @@ private:
 
   A Property is the things that make the objects in the world diffrent. 
 */
-class ENGINE_API Property 
+class ENGINE_API Property
 {
 	private:
 		vector<bool>	m_kNetUpdateFlags;

@@ -1,4 +1,4 @@
-#include "render.h" 
+#include "render.h"
    
 #include "../engine_systems/common/heightmap.h" 
 #include "../engine_systems/common/heightmap2.h"
@@ -85,32 +85,6 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[2].x);		
 	glEnd();
 
-
-	/*	
-
-	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_LEFT]);	
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
-		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
-		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
-		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
-	glEnd();
-
-	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_UP]);	
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
-		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
-		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
-		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
-	glEnd();
-
-	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_DOWN]);	
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
-		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
-		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
-		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
-	glEnd();*/
 
 	glEnable(GL_CULL_FACE);
 	glDepthMask(GL_TRUE);		

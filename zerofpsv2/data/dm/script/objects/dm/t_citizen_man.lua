@@ -4,7 +4,7 @@ function Create()
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/citizen_man.mad");			
 			InitParameter("m_fScale","1");
-			InitParameter("m_iShadowGroup","1");
+			InitParameter("m_iShadowGroup","2");
 
 		InitProperty("P_PfPath");
 		InitProperty("P_Sound");

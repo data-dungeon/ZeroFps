@@ -1,6 +1,6 @@
 #include "p_skyboxrender.h"
 
-P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop) 
+P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop)
 {
 	strcpy(m_acName,"P_SkyBoxRender");		
 //	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
@@ -8,7 +8,7 @@ P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop)
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 
-	m_iType=PROPERTY_TYPE_RENDER;
+	m_iType=PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_iSortPlace=-100;
@@ -62,7 +62,7 @@ void P_SkyBoxRender::SetRotate(Vector3 kRotate)
 }
 
 
-void P_SkyBoxRender::Update() 
+void P_SkyBoxRender::Update()
 {	
 	// Dvoid
 	m_kHead = m_kHead + m_kRotateSpd * m_pkZeroFps->GetFrameTime();

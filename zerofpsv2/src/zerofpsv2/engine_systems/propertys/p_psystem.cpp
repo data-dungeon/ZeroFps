@@ -17,7 +17,7 @@ void P_PSystem::Update()
       // returns true if the PSystem is finished
 		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), kMat ) )
 		{
- 		   if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
+ 		   if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
  		   {
 	 		   m_pkPSystem->Draw();
 			}
@@ -59,7 +59,7 @@ P_PSystem::P_PSystem()
 {
    bNetwork = true;
 
-	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
 
@@ -74,7 +74,7 @@ P_PSystem::P_PSystem( string kPSType )
 {
    bNetwork = true;
 
-   m_iType = PROPERTY_TYPE_RENDER;
+   m_iType = PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
 
@@ -148,7 +148,7 @@ void P_PSystem::Load(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
+void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 {
    pkNetPacket->Write_Str( m_kPSType.c_str() );
    

@@ -260,7 +260,7 @@ Vector3 Vector3::operator*(const Matrix4 &f) const
 
 double Vector3::DistanceTo (const Vector3& to)
 {
-	float fX = x - to.x;
+/*	float fX = x - to.x;
 	float fY = y - to.y;
 	float fZ = z - to.z;
 
@@ -276,14 +276,14 @@ double Vector3::DistanceTo (const Vector3& to)
 		SWAP(iX, iY, iSwapValue);
 	if(iZ < iY)
 		SWAP(iY, iZ, iSwapValue);
-	if(iY < iX) 
+	if(iY < iX)
 		SWAP(iX, iY, iSwapValue);
 
 	iDistance = (iZ + 11 * (iY >> 5) + (iX >> 2));
-	
-	return((double)(iDistance >> 10));
 
-  // return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+	return((double)(iDistance >> 10));
+*/
+   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
 }
 
 double Vector3::DistanceXZTo (const Vector3& to)

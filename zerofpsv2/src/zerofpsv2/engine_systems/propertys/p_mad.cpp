@@ -20,7 +20,7 @@ P_Mad::P_Mad()
 	
 	SetVisible(true);
 	m_bCanBeInvisible = false;
-	m_iShadowGroup = -1;
+	m_iShadowGroup = 0;
 
 	m_fScale	 = 1.0;
 }
@@ -159,6 +159,7 @@ void P_Mad::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)temp,128,1);
 	pkPackage->Write((void*)&m_fScale,4,1);
 	pkPackage->Write((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+	pkPackage->Write((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
 }
 
 void P_Mad::Load(ZFIoInterface* pkPackage)
@@ -171,7 +172,8 @@ void P_Mad::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&scale,4,1);
 	SetScale(scale);
 	
-	pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);	
+	pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+	pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
 	
 	//update object radius
 	m_pkObject->SetRadius(GetRadius());

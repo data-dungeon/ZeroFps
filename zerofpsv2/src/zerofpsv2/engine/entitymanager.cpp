@@ -2554,7 +2554,10 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 		mp = (P_Mad*)zd->m_pkZone->AddProperty("P_Mad");
 		
 	if(mp)
+	{
 		mp->SetBase(szName);
+		mp->SetShadowGroup(1);
+	}
 
 	//setup pathfinding
 	P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");

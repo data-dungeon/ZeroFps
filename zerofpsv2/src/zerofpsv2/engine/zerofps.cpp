@@ -595,11 +595,15 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 		m_pkRender->Draw_AxisIcon(5);
 	if(m_bRenderOn == 1)
 	{
-		//update all render propertys
+		//update all render propertys that shuld be shadowed
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 
 		//update shadow map
 		m_pkZShadow->Update();
+
+		//update all render propertys that shuld NOT be shadowed
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true);
+
 	}
 
 	m_pkObjectMan->Test_DrawZones();

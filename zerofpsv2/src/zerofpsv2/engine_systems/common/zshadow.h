@@ -31,13 +31,15 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		vector<pair<int,int> >	m_kTowardsEdges;
 
 
-		int	m_iNrOfShadows;		//number of shadows calculated per model
-		float m_fExtrudeDistance;
+		int			m_iNrOfShadows;		//number of shadows calculated per model
+		float 		m_fExtrudeDistance;
+		bitset<8>	m_kShadowGroups;
+
 
 		void FindSiluetEdges(Vector3 kSourcePos);
 		void ExtrudeSiluet(Vector3 kSourcePos);
 		void MakeStencilShadow(Vector3 kSourcePos);
-		void DrawShadow();
+		void DrawShadow(float fItensity);
 
 		bool SetupMesh(P_Mad* pkMad);
 
@@ -45,6 +47,10 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 
 		ZShadow();
 		void Update();
+
+		void EnableShadowGroup(int i) {m_kShadowGroups[i] = true;};
+		void DisableShadowGroup(int i) {m_kShadowGroups[i] = false;};
+
 
 		bool StartUp();
 		bool ShutDown();
