@@ -21,21 +21,25 @@ int SoundBufferManager::Load(char* acFile)
 	   return -1;
    }
    
-	ALsizei size, freq, bits;
+	ALsizei size=0;
+	ALsizei freq, bits;
    ALenum format;
    ALvoid *data;
-   ALboolean err;
+//   ALboolean err;
+	ALboolean loop;   //we dont use this
+	
+//   err = alutLoadWAV(io->File(acFile), &data, &format, &size, &bits, &freq);
 
-   err = alutLoadWAV(io->File(acFile), &data, &format, &size, &bits, &freq);
-   if(err == AL_FALSE) {
-//	   fprintf(stderr, "Could not load %s\n", filename);
-	   cout<<"cold not load file"<<endl;
-	   delete temp;
-	   return -1;
+   alutLoadWAVFile((ALbyte*)io->File(acFile),&format,&data, &size, &freq,&loop);
+   
+//   if(err == AL_FALSE) {
+	if(size==0){
+	   cout<<"cold not load file "<<acFile<<", Loading Dummy"<<endl;		
+		char DummyFile[]="file:../data/sound/dummy.wav";
+	   alutLoadWAVFile((ALbyte*)io->File(DummyFile),&format,&data, &size, &freq,&loop);
    }
 
    alBufferData(temp->m_iIndex, format, data, size, freq);
-  
    
    cout<<"Loaded "<< acFile<<endl;
    
@@ -52,12 +56,7 @@ int SoundBufferManager::LoadSound(char* acFile)
 	if( i != -1 ){
 		return i;
 	} else {			
-		int j=Load(acFile);
-		if(j==-1){
-			cout<<"Fuck!! Ass!!! something went wrong,when i tryed to load a sound"<<endl;			
-			exit(1);
-		};
-		return j;		
+		return Load(acFile);;		
 	}
 }
 

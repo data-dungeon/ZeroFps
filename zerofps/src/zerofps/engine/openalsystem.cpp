@@ -50,18 +50,21 @@ void OpenAlSystem::Init()
    alDopplerFactor(1.0); // don't exaggerate doppler shift
    alDopplerVelocity(343); // using meters/second
 
-	SetListnerPosition(Vector3(0,0,0),Vector3(0,0,0));
+	SetListnerPosition(Vector3(0,0,0),Vector3(0,0,1),Vector3(0,1,0));
 
 }
 
 
-void OpenAlSystem::SetListnerPosition(Vector3 kPos,Vector3 kAngel) 
+void OpenAlSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 
 {
 	m_kPos=kPos;
-	m_kAngel=kAngel;
+	m_kHead=kHead;
+	m_kUp=kUp;
+	
+	float orientation[]={kHead.x,kHead.y,kHead.z, kUp.x,kUp.y,kUp.z};
 
 	alListenerfv(AL_POSITION, &kPos[0]);
-	alListenerfv(AL_ORIENTATION, &kAngel[0]);
+	alListenerfv(AL_ORIENTATION, orientation);
 }
 
 
@@ -193,14 +196,21 @@ ALint OpenAlSystem::GetState(Sound* pkSound)
 void OpenAlSystem::PlaySound(Sound* pkSound,int iSource) 
 {
 	char fil[256];	
+	int sound;
 	
 	m_kSources[iSource]->m_bUsed=true;	
 	pkSound->m_iSource=iSource;
 
 	strcpy(fil,pkSound->m_acFile.c_str());
+	sound=sbm->LoadSound(fil);
+	if(sound==-1) {
+		cout<<"somethings went wrong when trying to load this sound"<<endl;
+		RemoveSound(pkSound);
+		return;	
+	};
 	
-  	alSourcei(m_kSources[iSource]->m_iSource, AL_BUFFER, sbm->LoadSound(fil));	
-   alSourcef(m_kSources[iSource]->m_iSource, AL_REFERENCE_DISTANCE, 10);
+  	alSourcei(m_kSources[iSource]->m_iSource, AL_BUFFER, sound);	
+   alSourcef(m_kSources[iSource]->m_iSource, AL_REFERENCE_DISTANCE, 2);
 	alSourcefv(m_kSources[iSource]->m_iSource, AL_POSITION,&pkSound->m_kPos[0]);	
 	alSourcefv(m_kSources[iSource]->m_iSource, AL_VELOCITY,&pkSound->m_kVel[0]);	
    
@@ -211,7 +221,7 @@ void OpenAlSystem::PlaySound(Sound* pkSound,int iSource)
 
 	
 	alSourcePlay(m_kSources[iSource]->m_iSource);
-	cout<<"Staring to play"<<endl;
+	cout<<"Starting to play"<<endl;
 }
 
 

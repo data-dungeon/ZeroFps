@@ -32,7 +32,8 @@ class ENGINE_API OpenAlSystem : public ZFObject {
 		};
 		
 		Vector3 m_kPos;
-		Vector3 m_kAngel;
+		Vector3 m_kHead;
+		Vector4 m_kUp;
 		
 		list<Sound*> m_akSounds;		
 		vector<SourceAlloc*> m_kSources;
@@ -50,7 +51,7 @@ class ENGINE_API OpenAlSystem : public ZFObject {
 		~OpenAlSystem();
 		
 		void Init();
-		void SetListnerPosition(Vector3 kPos,Vector3 kAngel);
+		void SetListnerPosition(Vector3 kPos,Vector3 kAngel,Vector3 kUp);
 		
 		void AddSound(Sound* pkSound);
 		void RemoveSound(Sound* pkSound);
