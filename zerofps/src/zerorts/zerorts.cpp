@@ -402,6 +402,12 @@ void ZeroRTS::Input()
 			{
 				pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
 			
+				for(int i=0;i<4;i++)				
+					pkConsole->Printf("Player %d has color %d",i,si->m_kSInfo.m_acColor[i]);			
+			
+				for(int i=0;i<4;i++)				
+					pkConsole->Printf("Player %d has %d resources",i,si->m_kSInfo.m_aiPlayerResourses[i]);
+			
 			}
 		}
 		else		
