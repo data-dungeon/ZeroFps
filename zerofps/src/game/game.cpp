@@ -60,7 +60,7 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 
 	case ZGM_LBUTTONUP:
 		if(g_kGame.DragAndDropItem(((int*)parms)[0],((int*)parms)[1],
-			g_kGame.m_pkPlayerInventoryBox->m_pkMoveItem,
+			&g_kGame.m_pkPlayerInventoryBox->m_pkMoveItem,
 			g_kGame.m_pkPlayerInventoryBox,g_kGame.m_pkContainerBox))
 			return true;
 		break;
@@ -85,14 +85,14 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 		}
 		break;
 
-/*	case ZGM_LBUTTONUP:
+	case ZGM_LBUTTONUP:
 		mx = ((int*)parms)[0];
 		my = ((int*)parms)[1];
 		if(g_kGame.DragAndDropItem(mx,my,
-			g_kGame.m_pkContainerBox->m_pkMoveItem,
+			&g_kGame.m_pkContainerBox->m_pkMoveItem,
 			g_kGame.m_pkContainerBox,g_kGame.m_pkPlayerInventoryBox))
 			return true;
-		break;*/
+		break;
 	}
 
 	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); 
@@ -587,13 +587,13 @@ void Game::OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x, int
 	}
 }
 
-bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* pkMoveItem, 
+bool Game::DragAndDropItem(int mx, int my, ItemBox::slot** ppkMoveItem, 
 			ItemBox* pkItemBoxFrom, ItemBox* pkItemBoxTo)
 {
 	Container* pkFrom = pkItemBoxFrom->GetContainer();
 	Container* pkTo = pkItemBoxTo->GetContainer();
 
-	if(pkMoveItem == NULL || pkFrom == NULL || pkTo == NULL)
+	if(*ppkMoveItem == NULL || pkFrom == NULL || pkTo == NULL)
 		return false;
 
 	ZGuiWnd* pkMainWindowUnderCursor = pkGui->GetMainWindowFromPoint(mx,my);
@@ -602,8 +602,8 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* pkMoveItem,
 	{
 		if(pkItemBoxTo->GetWnd() == pkMainWindowUnderCursor)
 		{
-			int cell_from_x = pkMoveItem->second.first;
-			int cell_from_y = pkMoveItem->second.second;
+			int cell_from_x = (*ppkMoveItem)->second.first;
+			int cell_from_y = (*ppkMoveItem)->second.second;
 
 			ItemBox::slot_pos kCell_to = pkItemBoxTo->GetSlot(mx, my);
 
@@ -620,7 +620,7 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* pkMoveItem,
 				// Remove object from source container.
 				pkFrom->RemoveItem(pkObjectToMove);
 				
-				//pkMoveItem = NULL;
+				*ppkMoveItem = NULL;
 				printf("moving item to a new container, from slot(%i,%i), to slot(%i,%i)\n",
 					cell_from_x, cell_from_y, kCell_to.first, kCell_to.second);
 
