@@ -22,7 +22,7 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 
    glBegin(GL_QUADS);			
 	glColor4f(1.0,1.0,1.0,1.0);  	  
-  	glNormal3f(0,1,0);
+  	glNormal3f(1,0,0);
    glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
    glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
  	glTexCoord2f(1.0,1.0);glVertex3f(.5,0.5,0);    
