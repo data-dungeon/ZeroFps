@@ -1703,7 +1703,7 @@ void ZeroEd::OnClientConnected()
 	m_bRemoteEditing = true;
 	cout<<"connected"<<endl;
 	
-	SendZoneListRequest();
+	//SendZoneListRequest();
 }
 
 int ZeroEd::GetZoneID(const Vector3& kPos)
