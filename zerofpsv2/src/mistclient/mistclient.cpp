@@ -152,7 +152,7 @@ void MistClient::Init()
 	InitGui(m_pkScript, 
 		"data/textures/text/paternoster8.bmp", 
 		"data/script/gui/gui_create_client.lua",
-		NULL);
+		NULL, true);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -210,7 +210,7 @@ void MistClient::OnIdle()
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 		
-	if(pkGui->m_bHaveInputFocus == false)
+	if(pkGui->m_bHandledMouse == false)
 	{
 		Input();
 	}
