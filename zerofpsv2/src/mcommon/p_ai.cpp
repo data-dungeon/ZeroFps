@@ -46,7 +46,11 @@ void P_AI::Update()
       {
          Order* pkMoveOrder = new Order;
          pkMoveOrder->m_kOrderType = "MoveTo";
-         pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV();
+         
+         //dvoids fulhack deluxe
+         Vector3 kSlot = Vector3(sin(DegToRad(rand()%360))*1.5,0,sin(DegToRad(rand()%360))*1.5);
+         
+         pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV() + kSlot;
 
          m_kDynamicOrders.push_front ( pkMoveOrder );
          m_pkCurrentOrder = m_kDynamicOrders.front();         

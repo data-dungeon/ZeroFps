@@ -663,6 +663,17 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 												Vector3(0,-0.5,0.5),
 												Vector3(0,-0.5,-0.5)};
 
+/*	static Vector3 normaldata[8] = { Vector3(0,1,0),
+												Vector3(0,1,0),
+												Vector3(0,1,0),
+												Vector3(0,1,0),
+												
+												Vector3(0,1,0),
+												Vector3(0,1,0),
+												Vector3(0,1,0),
+												Vector3(0,1,0),};
+*/
+
 	static Vector2 texdata[8] = { Vector2(0,1),
 											Vector2(0,0),
 											Vector2(1,0),
@@ -688,31 +699,33 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 
 	m_pkTexMan->BindTexture(iTexture1);  	
 	
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+/*	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,texdata);						
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,pointdata);					
 	
-	glBegin(GL_QUADS);
-		glNormal3f(0,1,0);
-	glEnd();	
+//	glEnableClientState(GL_NORMAL_ARRAY);
+//	glVertexPointer(3,GL_FLOAT,0,normaldata);						
+	
+	
+	glNormal3f(0,1,0);
 	
 	glDrawArrays(GL_QUADS,0,8);
-	
-/*	glBegin(GL_QUADS);
+*/	
+	glBegin(GL_QUADS);
 		glNormal3f(0,1,0);
-		glTexCoord2f(0,1);glVertex3f(-0.5,0.5,0); 
-		glTexCoord2f(0,0);glVertex3f(-0.5,-0.5,0); 
-		glTexCoord2f(1,0);glVertex3f(0.5,-0.5,0); 
-		glTexCoord2f(1,1);glVertex3f(0.5,0.5,0); 
+		glTexCoord2f(0,1);glVertex3f(-0.5,1,0); 
+		glTexCoord2f(0,0);glVertex3f(-0.5,0,0); 
+		glTexCoord2f(1,0);glVertex3f(0.5,0,0); 
+		glTexCoord2f(1,1);glVertex3f(0.5,1,0); 
 		
-		glTexCoord2f(1,1);glVertex3f(0,0.5,-0.5); 
-		glTexCoord2f(0,1);glVertex3f(0,0.5,0.5); 
-		glTexCoord2f(0,0);glVertex3f(0,-0.5,0.5); 
-		glTexCoord2f(1,0);glVertex3f(0,-0.5,-0.5); 
+		glTexCoord2f(1,1);glVertex3f(0,1,-0.5); 
+		glTexCoord2f(0,1);glVertex3f(0,1,0.5); 
+		glTexCoord2f(0,0);glVertex3f(0,0,0.5); 
+		glTexCoord2f(1,0);glVertex3f(0,0,-0.5); 
 	glEnd();
-*/		
+		
 	
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_CULL_FACE);

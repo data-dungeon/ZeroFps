@@ -19,7 +19,7 @@ P_Vegitation::P_Vegitation()
 	Clear();
 	
 	SetTexture("data/textures/grassp.tga");	
-	SetScale(Vector3(1.5,1,1.5));
+	SetScale(Vector3(1,0.7,1));
 	m_fWind = 10;	
 	
 	
@@ -99,8 +99,9 @@ void P_Vegitation::Update()
 	for(unsigned int i=0;i<m_akPositions.size();i++)
 	{
 		Vector3 rot = m_akPositions[i].kRot;  
-		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
+//		rot.x = float(sin(t + m_akPositions[i].fWindStart) * m_fWind);
 		Vector3 kPos = m_akPositions[i].kPos + ObjectPos;
+		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
 		m_pkRender->DrawCross(kPos,rot,m_kScale,iTexture);			
 	}
 }
