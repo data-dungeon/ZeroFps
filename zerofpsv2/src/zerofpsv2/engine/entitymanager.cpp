@@ -1131,10 +1131,15 @@ void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 }
 
 // Message System.
-void EntityManager::SendMsg()
+void EntityManager::SendMsg(string strName, int iFrom, int iTo)
 {
-
+	GameMessage Msg;
+	Msg.m_FromObject	= iFrom;
+	Msg.m_ToObject		= iTo;
+	Msg.m_Name			= strName;
+	RouteMessage(Msg);
 }
+
 
 void EntityManager::RouteMessage(GameMessage& Msg)
 {
@@ -1145,7 +1150,8 @@ void EntityManager::RouteMessage(GameMessage& Msg)
 		return;
 		}
 
-	pkObject->AddGameMessage(Msg);
+//			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
+	pkObject->RouteMessage(Msg);
 }
 
 
@@ -1256,6 +1262,8 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 
 void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
 { 
+	string strName;
+	int iTo;
 
 	switch(cmdid) {
 		case FID_LOGOHTREE:
@@ -1267,6 +1275,9 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_SENDMESSAGE:
+			strName = kCommand->m_kSplitCommand[1].c_str();
+			iTo = atoi(kCommand->m_kSplitCommand[2].c_str());
+			SendMsg(strName, -1, iTo);
 /*			gm.m_FromObject = -1;
 			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
 			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();*/

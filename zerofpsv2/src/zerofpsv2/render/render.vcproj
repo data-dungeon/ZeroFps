@@ -167,6 +167,9 @@
 				RelativePath=".\texturemanager.cpp">
 			</File>
 			<File
+				RelativePath=".\zfprogram.cpp">
+			</File>
+			<File
 				RelativePath=".\zguirenderer.cpp">
 			</File>
 			<File
@@ -199,6 +202,9 @@
 			</File>
 			<File
 				RelativePath=".\texturemanager.h">
+			</File>
+			<File
+				RelativePath=".\zfprogram.h">
 			</File>
 			<File
 				RelativePath=".\zguirenderer.h">

@@ -229,7 +229,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
 
 		// Message System.
-		void SendMsg();
+		void SendMsg(string strName, int iFrom, int iTo);
 		void RouteMessage(GameMessage& Msg);
 
 		// Get Strings.
