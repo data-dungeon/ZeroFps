@@ -12,6 +12,7 @@
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_charactercontrol.h"
+#include "../mcommon/mlcontainer.h"
 
 class OptionsDlg;
 class ActionMenu;
@@ -70,7 +71,8 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestKillMe();
 
 		void SendAction(int iEntityID,const string& strAction);
-		void SendRequestIventory();	
+		void SendRequestIventory();
+		void SendMoveItem(int iItemID,int iTarget,int iContainerType,int iPosX,int iPosY);	
 			
 		// gui stuff
 		bool NameIPFromServerList(string& strName, string& strIP);

@@ -643,22 +643,6 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
-/*		case MLNM_SC_SETVIEW:
-			int iEntityID;
-			PkNetMessage->Read(iEntityID);
-
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID( iEntityID ))
-			{
-				if(P_Camera* pkCam = (P_Camera*)pkEnt->AddProperty("P_Camera"))
-				{
-					//pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
-					pkCam->SetCamera(m_pkCamera);
-					cout<<"attached camera to client property"<<endl;
-				}
-			}
-
-			break;*/
-
 		case MLNM_SC_CHARACTERID:
 		{
 			cout<<"got character entityID from server"<<endl;
@@ -710,6 +694,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			cout<<"got container"<<endl;
 		
+			int iOwnerID;
 			int iContainerType;
 			char cSizeX;
 			char cSizeY;
@@ -717,7 +702,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 			vector<MLContainerInfo> kItemList;			
 			
-			
+			pkNetMessage->Read(iOwnerID);
 			pkNetMessage->Read(iContainerType);
 			pkNetMessage->Read(cSizeX);
 			pkNetMessage->Read(cSizeY);
@@ -1043,8 +1028,15 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 
 void MistClient::SendAction(int iEntityID,const string& strAction)
 {
+	//dvoid hacks
+	if(strAction == "Pickup")
+	{
+		SendMoveItem(iEntityID,-1,-1,-1,-1);
+		return;
+	}
+	
 	NetPacket kNp;			
-	kNp.Write((char) MLNM_CS_USE);
+	kNp.Write((char) MLNM_CS_ACTION);
 	
 	kNp.Write(iEntityID);
 	kNp.Write_Str(strAction);
@@ -1061,3 +1053,21 @@ void MistClient::SendRequestIventory()
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
 }
+
+void MistClient::SendMoveItem(int iItemID,int iTarget,int iContainerType,int iPosX,int iPosY)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_MOVE_ITEM);
+	
+	kNp.Write(iItemID);
+	kNp.Write(iTarget);
+	kNp.Write(iContainerType);
+	kNp.Write(iPosX);
+	kNp.Write(iPosY);
+	
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);			
+}
+
+

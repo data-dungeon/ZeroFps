@@ -4,6 +4,8 @@
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
 #include <vector>
+#include "p_container.h"
+#include "p_item.h"
 
 using namespace std;
 
@@ -14,10 +16,27 @@ using namespace std;
 class MCOMMON_API P_Container: public Property 
 {
 	private:
-
+		EntityManager*		m_pkEntityMan;
+	
+		int 	m_iSizeX;
+		int 	m_iSizeY;
+		bool	m_bFirstUpdate;
+	
+		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( string kValueName ,string kValue );
+		void SetSize();
+		
 	public:
-		P_Container();
-
+		MLContainer*	m_pkContainer;
+		
+		P_Container();		
+		~P_Container();
+		
+		void Init();			
+		void Update();
+		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);			
 
 };
 

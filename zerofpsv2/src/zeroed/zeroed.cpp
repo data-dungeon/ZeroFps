@@ -34,6 +34,7 @@
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
 #include "../mcommon/p_fogplane.h"
+#include "../mcommon/p_container.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
@@ -453,6 +454,8 @@ void ZeroEd::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
+	
+	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 
 }
 
@@ -1127,12 +1130,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_TEST_JIDDRA:
-			kNp.Clear();
-			kNp.Write((char) MLNM_CS_JIDDRA);
-			kNp.Write_Str("This is my voice on TV");
-			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);
-
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
 			m_pkConsole->Printf("\n");
@@ -1695,11 +1692,6 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
-		case MLNM_SC_MADDRAW:
-			int iDrawMode;
-			PkNetMessage->Read(iDrawMode);
-			GetSystem().RunCommand("r_maddraw 5",CSYS_SRC_SUBSYS);
-			break;
 
 		case ZPGP_ZED_ZONELIST:
 		{

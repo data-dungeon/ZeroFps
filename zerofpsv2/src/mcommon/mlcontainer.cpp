@@ -2,13 +2,12 @@
 #include "mlcontainer.h"
 #include <iomanip>
 
-MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bool bDisable,int iContainerID )
+MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bool bDisable)
 {
 	m_pkEntMan				= pkEntMan;
 	m_iOwnerID 				= iOwnerID;
 	m_bDisableItems 		= true;
 	m_iMaxItems 			= 0;
-	m_iContainerID			= iContainerID;
 	m_iContainerType		= eNormal;
 	m_kItemTypes.clear();
 	
@@ -200,10 +199,9 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 
 				
 				//set item's owned by setting
-				pkPItem->m_iInContainerID = m_iContainerID;
 				pkPItem->m_iInContainerPosX = iX;
 				pkPItem->m_iInContainerPosY = iY;
-				
+				pkPItem->m_iInContainerID = m_iOwnerID;
 				//Print();
 				
 				return true;
@@ -292,7 +290,7 @@ bool MLContainer::RemoveItem(int iX,int iY)
 	return false;
 }
 
-bool MLContainer::DropItem(int iID)
+bool MLContainer::DropItem(int iID,const Vector3& kPos)
 {
 	if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID))
 	{
@@ -316,14 +314,14 @@ bool MLContainer::DropItem(int iID)
 					cout<<"enabling item"<<endl;
 					pkItem->SetUpdateStatus(UPDATE_ALL);				
 					pkItem->SetUseZones(true);
-					pkItem->SetParent(pkOwner->GetParent());				
-					
+					//pkItem->SetParent(pkOwner->GetParent());				
+					pkPItem->m_iInContainerID = -1;
 	
 					pkItem->SetWorldPosV( Vector3( pkOwner->GetWorldPosV().x + ((rand()%200)-100)/100.f,
 													pkOwner->GetWorldPosV().y,
 													pkOwner->GetWorldPosV().z + ((rand()%200)-100)/100.f) );
 					
-					pkPItem->m_iInContainerID = -1;
+
 													
 					return true;
 				}
@@ -334,7 +332,7 @@ bool MLContainer::DropItem(int iID)
 	return false;
 }
 
-void MLContainer::DropAll()
+void MLContainer::DropAll(const Vector3& kPos)
 {
 	for( int iY = 0;iY<m_iSizeY;iY++)
 	{
@@ -344,7 +342,7 @@ void MLContainer::DropAll()
 		
 			if(*i != -1)
 			{
-				DropItem(*i);
+				DropItem(*i,kPos);
 			}
 		}
 	}
@@ -491,8 +489,7 @@ void MLContainer::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
 	
-	pkPackage->Write(m_iContainerID);
-	
+	pkPackage->Write(m_iContainerType);
 	
 /*	
 	//save slots
@@ -521,7 +518,7 @@ void MLContainer::Load(ZFIoInterface* pkPackage)
 
 	SetSize(m_iSizeX,m_iSizeY);
 
-	pkPackage->Read(m_iContainerID);
+	pkPackage->Read(m_iContainerType);
 		
 /*	
 	//load slots
@@ -560,14 +557,11 @@ void MLContainer::FindMyItems()
 			{
 				//cout<<"found item"<<endl;
 				
-				if(pkItem->m_iInContainerID == m_iContainerID)
+				//cout<<"its mine =D"<<endl;
+				if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
 				{
-					//cout<<"its mine =D"<<endl;
-					if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
-					{
-						cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
-						AddItem(kEntitys[i]->GetEntityID());
-					}
+					cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
+					AddItem(kEntitys[i]->GetEntityID());
 				}
 				//else
 				//	cout<<"its not mine :("<<endl;

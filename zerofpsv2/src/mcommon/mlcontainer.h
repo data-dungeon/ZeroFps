@@ -12,6 +12,10 @@ enum MCOMMON_API ContainerTypes
 {
 	eNormal,
 	eInventory,
+	eLeftHand,
+	eRightHand,
+	eHead,
+	eBody,
 };
 
 
@@ -41,15 +45,12 @@ class MCOMMON_API MLContainer
 		int	m_iSizeY;						//height
 		int	m_iOwnerID;						//owner entity ID, (owner is gona be the parent for all item entitys)
 
-		int	m_iContainerID;				//this shuld be a uniq id for each container within an entity,used to identify wich items belongs to wich container when loading
-		
 		bool				m_bDisableItems;
 		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
 		int				m_iMaxItems;
 		
 		int				m_iContainerType;
 
-		void SetSize(int iX,int iY);
 		bool SetItem(int iID,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
@@ -60,9 +61,12 @@ class MCOMMON_API MLContainer
 		
 	public:
 
-		MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true,int iContainerID = 0);		
+		MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true);		
 		
-		
+		void SetSize(int iX,int iY);
+
+		int GetOwner()									{return m_iOwnerID;};
+						
 		void SetDisableItems(bool bDisable) 	{m_bDisableItems = bDisable;};
 		bool GetDisableItems() 						{return m_bDisableItems;};
 		
@@ -83,8 +87,8 @@ class MCOMMON_API MLContainer
 		
 		bool AddItem(int iID,int iX,int iY);
 		bool AddItem(int iID);
-		bool DropItem(int iID);
-		void DropAll();		
+		bool DropItem(int iID,const Vector3& kPos);
+		void DropAll(const Vector3& kPos);		
 		
 		int HaveItem(const string strItemName);		
 		

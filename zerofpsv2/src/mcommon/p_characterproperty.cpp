@@ -1,5 +1,6 @@
 #include "p_characterproperty.h"
 #include "p_charactercontrol.h"
+#include "p_container.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
@@ -24,6 +25,9 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bIsPlayerCharacter =	false;
 	m_bOverHeadText		=	true;	
 	m_bFirstUpdate			=	true;
+	
+	m_pkInventory			=	NULL;
+	
 		
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
@@ -72,6 +76,98 @@ P_CharacterProperty::P_CharacterProperty()
 
 void P_CharacterProperty::Init()
 {
+
+}
+
+void P_CharacterProperty::SetupContainers()
+{
+	vector<Entity*>	kEntitys;
+	m_pkEntity->GetChilds(&kEntitys);
+	
+	cout<<"seting up character containers"<<endl;
+	for(int i = 0;i<kEntitys.size();i++)
+	{
+		if(P_Container* pkContainer = (P_Container*)kEntitys[i]->GetProperty("P_Container"))
+		{
+			switch(pkContainer->m_pkContainer->GetContainerType())
+			{
+				case eInventory:
+					cout<<"found inventory"<<endl;
+					m_pkInventory = pkContainer->m_pkContainer;
+					break;
+				case eBody:
+					cout<<"found body"<<endl;
+					m_pkBody = pkContainer->m_pkContainer;
+					break;
+				case eHead:
+					cout<<"found head"<<endl;
+					m_pkHead = pkContainer->m_pkContainer;
+					break;
+				case eLeftHand:
+					cout<<"found left hand"<<endl;
+					m_pkLeftHand = pkContainer->m_pkContainer;
+					break;
+				case eRightHand:
+					cout<<"found right hand"<<endl;
+					m_pkRightHand = pkContainer->m_pkContainer;
+					break;
+			
+			}
+		}
+	}
+
+	if(!m_pkInventory)
+	{
+		P_Container* pkCon;
+		Entity* pkContainer;
+		
+		cout<<"no containers found, creating new ones"<<endl;
+		
+		//inventory
+		pkContainer = m_pkEntityMan->CreateEntity();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
+				m_pkInventory = pkCon->m_pkContainer;
+				m_pkInventory->SetSize(6,12);
+				m_pkInventory->SetContainerType(eInventory);
+		
+		//body	
+		pkContainer = m_pkEntityMan->CreateEntity();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
+				m_pkBody = pkCon->m_pkContainer;
+				m_pkBody->SetSize(4,4);
+				m_pkBody->SetContainerType(eBody);
+
+		//head
+		pkContainer = m_pkEntityMan->CreateEntity();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
+				m_pkHead = pkCon->m_pkContainer;
+				m_pkHead->SetSize(4,4);
+				m_pkHead->SetContainerType(eHead);
+
+		//left hand
+		pkContainer = m_pkEntityMan->CreateEntity();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
+				m_pkLeftHand = pkCon->m_pkContainer;
+				m_pkLeftHand->SetSize(2,8);
+				m_pkLeftHand->SetContainerType(eLeftHand);
+
+		//right hand
+		pkContainer = m_pkEntityMan->CreateEntity();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
+				m_pkRightHand = pkCon->m_pkContainer;
+				m_pkRightHand->SetSize(2,8);
+				m_pkRightHand->SetContainerType(eRightHand);
+				
+																		
+		cout<<"done"<<endl;
+	}
+		
+	/*
 	//containers
 	m_pkInventory		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),6,12,true,0);
 	m_pkHead				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,2,true,1);
@@ -85,7 +181,8 @@ void P_CharacterProperty::Init()
 	m_pkBody->SetMaxItems(1);
 	m_pkLeftHand->SetMaxItems(1);
 	m_pkRightHand->SetMaxItems(1);
-	
+	*/
+
 }
 
 
@@ -99,12 +196,13 @@ P_CharacterProperty::~P_CharacterProperty()
 	delete m_pkTextMaterial;
 	delete m_pkFont;
 	
-	//delete containers
+/*	//delete containers
 	delete m_pkInventory;
 	delete m_pkHead;
 	delete m_pkBody;
 	delete m_pkLeftHand;
 	delete m_pkRightHand;
+*/	
 }
 
 
@@ -118,11 +216,7 @@ void P_CharacterProperty::Update()
 			if(m_bFirstUpdate)
 			{
 				m_bFirstUpdate = false;
-				m_pkInventory->FindMyItems();	
-				m_pkHead->FindMyItems();	
-				m_pkBody->FindMyItems();	
-				m_pkLeftHand->FindMyItems();	
-				m_pkRightHand->FindMyItems();	
+				SetupContainers();
 			}
 		
 			UpdateAnimation();
@@ -332,12 +426,13 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
 		
-	//save container settings
+/*	//save container settings
 	m_pkInventory->Save(pkPackage);
 	m_pkHead->Save(pkPackage);
 	m_pkBody->Save(pkPackage);
 	m_pkLeftHand->Save(pkPackage);
 	m_pkRightHand->Save(pkPackage);
+*/	
 }
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -346,12 +441,13 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read_Str(m_strOwnedByPlayer);	
 	pkPackage->Read(m_bIsPlayerCharacter); 
 	
-	//load container settings
+/*	//load container settings
 	m_pkInventory->Load(pkPackage);
 	m_pkHead->Load(pkPackage);
 	m_pkBody->Load(pkPackage);
 	m_pkLeftHand->Load(pkPackage);
 	m_pkRightHand->Load(pkPackage);
+*/	
 }
 
 void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

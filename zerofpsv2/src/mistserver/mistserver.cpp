@@ -525,11 +525,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			kStartPos = Vector3(0,0.5,0);
 			pkEntity->SetWorldPosV(kStartPos);*/
 
-			kNp.Clear();
-			kNp.Write((char) MLNM_SC_SETVIEW);
-			kNp.Write((int) pkEntTestArc->GetEntityID());
-			kNp.TargetSetClient(0);
-			SendAppMessage(&kNp);			
 
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
@@ -839,12 +834,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
-		case MLNM_CS_JIDDRA:
-			char szMsg[256];
-			PkNetMessage->Read_Str(szMsg);
-			m_pkConsole->Printf(szMsg);
-			break;
-
 		case MLNM_CS_REQ_CHARACTERID:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
@@ -948,7 +937,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
-		case MLNM_CS_USE:
+		case MLNM_CS_ACTION:
 		{
 			int iEntity;
 			string strAction;
@@ -991,6 +980,94 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_CS_MOVE_ITEM:
+		{
+			int iItemID;
+			int iTarget;
+			int iContainerType;
+			int iPosX;
+			int iPosY;
+			
+			PkNetMessage->Read(iItemID);
+			PkNetMessage->Read(iTarget);
+			PkNetMessage->Read(iContainerType);
+			PkNetMessage->Read(iPosX);
+			PkNetMessage->Read(iPosY);			
+		
+			
+			//get player data
+			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				//get players character entity
+				if(Entity* pkChar = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID))
+				{
+					// get player character property
+					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkChar->GetProperty("P_CharacterProperty"))
+					{
+						//get item entity
+						if(Entity* pkItem = m_pkEntityManager->GetEntityByID(iItemID))
+						{
+							//get item property
+							if(P_Item* pkItemProp = (P_Item*)pkItem->GetProperty("P_Item"))
+							{
+							
+								//item is in world, asume pickup
+								if(pkItemProp->GetInContainerID() == -1)
+								{									
+									cout<<"trying to pickup entity"<<endl;
+								
+									//first do a distance check
+									if(pkItem->GetWorldPosV().DistanceTo(pkChar->GetWorldPosV()) > 2.0)
+									{
+										SayToClients("You are to far away",PkNetMessage->m_iClientID);
+										break;
+									}
+									
+									//no target position given assuming free position
+									if(iPosX == -1)
+									{
+										//try adding item on a free position in character inventory
+										if(!pkCharProp->m_pkInventory->AddItem(iItemID))											
+											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+										
+										break;
+									}
+									else
+									{
+										//try adding item on target position in character inventory
+										if(!pkCharProp->m_pkInventory->AddItem(iItemID,iPosX,iPosY))											
+											SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+										
+										break;																	
+									}															
+								}
+								else
+								{
+									//moving within container
+									
+									//no target container, assuming inventory
+									if(iTarget == -1 && iPosX != -1)
+									{
+										cout<<"trying to move item to"<<iPosX<<" "<<iPosY<<endl;
+									
+										if(!pkCharProp->m_pkInventory->MoveItem(iItemID,iPosX,iPosY))
+											SayToClients("Could no move item",PkNetMessage->m_iClientID);
+
+										break;										
+									}			
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			cout<<"WARNING: bad item movement"<<endl;
+			SayToClients("Bad item movement",PkNetMessage->m_iClientID);
+			
+			break;	
+		}		
+		
 		case MLNM_CS_REQ_INVENTORY:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
@@ -1008,29 +1085,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
-
-		case MLNM_CS_LOOK:
-		{
-			int iEntity;
-			PkNetMessage->Read(iEntity);
-			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntity))
-			{
-				// Read Str from 
-				string strLook = pkObj->GetVarString("szLook");
-				if(strLook.empty())
-					strLook = "nothing";
-
-				// Write to client
-				m_pkConsole->Printf("Msg> You see %s", strLook.c_str());
-
-				NetPacket kNp;			
-				kNp.Write((char) MLNM_SC_SAY);
-				kNp.Write_Str(string("You see ") + strLook);
-				kNp.TargetSetClient( PkNetMessage->m_iClientID);
-				SendAppMessage(&kNp);	
-			}
-			break;
-		}
 
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
@@ -1074,6 +1128,7 @@ void MistServer::SendContainer(MLContainer* pkContainer,int iClientID)
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_SC_CONTAINER);
 	
+	kNp.Write(pkContainer->GetOwnerID());
 	kNp.Write(pkContainer->GetContainerType());
 	kNp.Write(pkContainer->GetSizeX());
 	kNp.Write(pkContainer->GetSizeY());
