@@ -53,7 +53,7 @@ ZFResourceHandle::~ZFResourceHandle()
 bool ZFResourceHandle::SetRes(string strName)
 {
 	FreeRes();
-	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::SetRes %d to  %s\n", m_iHandleID, strName.c_str());
+//	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::SetRes %d to  %s\n", m_iHandleID, strName.c_str());
 //	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
 
 	m_strName = strName;
@@ -71,7 +71,7 @@ void ZFResourceHandle::FreeRes()
 	if(m_iID == -1)
 		return;
 
-	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::FreeRes %d %s\n", m_iHandleID, m_strName.c_str());
+//	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::FreeRes %d %s\n", m_iHandleID, m_strName.c_str());
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	pkResDB->FreeResource(*this);
@@ -168,14 +168,15 @@ bool ZFResourceDB::ShutDown()
 	printf("\n");
 
 	
-	if(m_kResources.size()) {
-		Logf("resdb", "ZFResourceDB::ShutDown: There are res left\n");
+	if(m_kResources.size()) 
+	{
+		//Logf("resdb", "ZFResourceDB::ShutDown: There are res left\n");
 		
 		list<ZFResourceInfo*>::iterator it;
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
 			Logf("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
-		}
+	}
 
 	return true; 
 }
@@ -215,8 +216,8 @@ bool ZFResourceDB::Refresh()
 		else {
 			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) {
 				// Time to die.
-				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-//				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+				// g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
+				//	cout << "Expires: '" << (*it)->m_strName << "'" << endl;
 				
 				m_kResourceFactory[(*it)->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete (*it);
@@ -287,7 +288,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 		return;
 		}
 
-	g_ZFObjSys.Logf("resdb", "Resource %s loaded\n", strResName.c_str());
+	//g_ZFObjSys.Logf("resdb", "Resource %s loaded\n", strResName.c_str());
 
 	ZFResourceInfo* kResInfo = new ZFResourceInfo;			// LEAK - MistServer, Nothing loaded.
 	kResInfo->m_iID			= m_iNextID++;
@@ -311,7 +312,7 @@ void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 		}
 
 	pkRes->m_iNumOfUsers --;
-	g_ZFObjSys.Logf("resdb", "Res '%s' - %d.\n", pkRes->m_strName.c_str(), pkRes->m_iNumOfUsers);
+	//g_ZFObjSys.Logf("resdb", "Res '%s' - %d.\n", pkRes->m_strName.c_str(), pkRes->m_iNumOfUsers);
 
 	//if(pkRes->m_iNumOfUsers < 0)
 	//	assert(0);

@@ -277,7 +277,7 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
 
-	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", szFileName);
+//	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", szFileName);
 
 	texture *pkTex = GetFreeTexture();
 	pkTex->file	=	szFileName;

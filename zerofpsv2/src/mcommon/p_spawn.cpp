@@ -113,8 +113,9 @@ void P_Spawn::RemoveEntity(Entity* pkEnt)
 void P_Spawn::SpawnEntity(Vector3 kPos)
 {
 	Entity* ent = m_pkObjectMan->CreateObjectFromScriptInZone(m_strTemplate.c_str(),kPos,-1);
+	m_iEntityCounter++;
 
-	if(ent)
+/*	if(ent)
 	{
 		P_Ml* pkMl = (P_Ml*)ent->GetProperty("P_Ml");
 		
@@ -130,7 +131,7 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 			cout<<"Does not contain an P_Ml"<<endl;
 			m_pkObjectMan->Delete(ent);			
 		}
-	}
+	}*/
 }
 
 vector<PropertyValues> P_Spawn::GetPropertyValues()

@@ -322,6 +322,7 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMCharacter",		Create_P_DMCharacter);
 	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
 	m_pkPropertyFactory->Register("P_DMClickMe",			Create_P_DMClickMe);	
+	m_pkPropertyFactory->Register("P_Spawn",				Create_P_Spawn);	
 }
 
 void DarkMetropolis::MoveCamera(Vector3 pos)
