@@ -158,7 +158,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
                if(!strLogin.empty() && !strPassword.empty() && !strServerIP.empty())
                {
-                  g_kMistClient.m_pkFps->StartClient(strLogin, strPassword, strServerIP);
+                  g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
                
                   g_kMistClient.ShowWnd("MLStartWnd", false);
                   g_kMistClient.ShowWnd("ConnectWnd", false);
@@ -169,6 +169,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
                }
                else
                   printf("Input error, failed to connect.");
+            }
          }
          else
          if(strController == "LoginCancel")
