@@ -39,9 +39,9 @@ int main( int argc, char* argv[] )
 				<<"  UpperBound: " << Nisse.GetUpperBound(hej[select])
 				<<"  LowerBound: " << Nisse.GetLowerBound(hej[select]) <<endl
 				<<"Value(s) "; 
-			int temp=Nisse.GetNumberOfValues(hej[select]);
 			
-			if(temp<0)
+			
+			if(!Nisse.CheckIfVector(hej[select]))
 			{
 				cout << " : " <<Nisse.GetValue(hej[select]);
 				cout << endl
@@ -60,26 +60,35 @@ int main( int argc, char* argv[] )
 			}	
 			else 
 			{
+				int temp=Nisse.GetNumberOfValues(hej[select]);
 				for(int ind=0; ind<temp; ind++)
 					cout<< endl << ind <<". " <<Nisse.GetValue(hej[select],ind);
 				
-				if (Nisse.CheckIfResize(hej[select])) cout<<endl <<"ReSize!";
 				
+				if (Nisse.CheckIfResize(hej[select])) 
+						cout<<endl << temp <<" . ReSize!";
 				
 				cout<< endl 
 					<<"select value to change" <<endl
 					<< ":>"; 
 				cin>>select2;
 				cout <<endl;
-				string str;
-				cout<<"New Value: ";
-				cin >> str;
 				
-				if(select2<Nisse.GetNumberOfValues(hej[select])||Nisse.CheckIfResize(hej[select])) 
+				
+				if(select2<temp) 
 				{
-					
+					string str;
+					cout<<"New Value: ";
+					cin >> str;
 					Nisse.SetValue(hej[select], select2, str);
 					cout<< "Value Set to:" <<Nisse.GetValue(hej[select], select2) <<endl <<endl; 
+				} 
+				else if ((Nisse.CheckIfResize(hej[select])&&(select2==temp)))
+				{
+					int newsize;
+					cout <<"new size: " ;
+					cin >>newsize;
+					Nisse.Resize(hej[select], newsize);
 				}
 			}
 			

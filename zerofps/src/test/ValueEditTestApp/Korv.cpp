@@ -30,7 +30,6 @@ Korv::~Korv()
 vector<Mat::PropertyValues> Korv::GetPropertyValues()
 {
 
-	cout<< "stinky" <<endl;
 	vector<Mat::PropertyValues> kReturn(4);
 
 kReturn[0].kValueName="Storlek";
@@ -55,6 +54,7 @@ kReturn[3].kValueName="TestVek";
 kReturn[3].iValueType=VALUETYPE_INT;
 kReturn[3].pkValue=(void*)&TestVek;
 //out <<"TestVek.size:" <<TestVek.size() <<endl; 
+kReturn[3].bResize=true;
 kReturn[3].iNumberOfValues=TestVek.size();
 kReturn[3].fUpperBound=5.0;
 

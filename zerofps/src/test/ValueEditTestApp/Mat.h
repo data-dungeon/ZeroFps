@@ -33,6 +33,8 @@ public:
 	vector<string> GetValueNames();
 	float GetUpperBound(string kValueName);
 	float GetLowerBound(string kValueName);
+	bool Resize(string kValueName, unsigned int uiNewSize);
+	bool CheckIfVector(string kValueName);
 	Mat();
 	virtual ~Mat();
 
@@ -44,9 +46,15 @@ protected:
 		int iValueType;
 		float fUpperBound;
 		float fLowerBound;
-		PropertyValues();
 		int iNumberOfValues;
 		bool bResize;
+		bool bVector;
+		inline PropertyValues() : 
+			fLowerBound(FLT_MIN),
+			fUpperBound(FLT_MAX),
+			iNumberOfValues(1),
+			bResize(false),
+			bVector(true) {} 
 	};	
 	
 	enum ValueTypes
