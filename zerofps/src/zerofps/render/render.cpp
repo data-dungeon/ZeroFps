@@ -527,6 +527,8 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 
 void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 {
+	cout << "Sizeof tgahead_t " << sizeof(tgahead_t)<< endl;
+
 	Image kScreen;
 	kScreen.create_empty(m_iWidth, m_iHeight);
 

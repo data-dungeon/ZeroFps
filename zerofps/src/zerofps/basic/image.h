@@ -7,10 +7,7 @@ Image class for OpenGl (mostly).
 #include <cstdio>
 #include "basic_x.h"
 
-#ifdef WIN32
-	#pragma pack( push )
-	#pragma pack( 1 )
-#endif
+#pragma pack( 1 )
 
 struct color_rgb {
 	unsigned char r,g,b;
@@ -61,9 +58,7 @@ struct pcx_header_s
 	char	filler[58];
 } ;
 
-#ifdef WIN32
-	#pragma pack( pop )
-#endif
+#pragma pack(  )
 
 
 /// Class to load images in diffrent file formats.

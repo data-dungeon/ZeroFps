@@ -86,6 +86,8 @@ public:
 	
 	vector<Vector3>* GetVertexPointer() {return &akVertex;};
 	vector<Vector3>* GetNormalPointer() {return &akNormal;};
+	Vector3* GetVertexPointer2() {return &akVertex[0];};
+	Vector3* GetNormalPointer2() {return &akNormal[0];};
 
 	friend class Mad_CoreMesh;
 	friend class Mad_Core;
@@ -137,13 +139,13 @@ struct ENGINE_API Mad_CoreSubMesh
 class ENGINE_API Mad_CoreMesh
 { 
 private:
-	vector<Mad_CoreTexture>			akTextures;			///< Texturers used in mesh.			
-	vector<Mad_TextureCoo>			akTextureCoo;		///< Texture Coo for mesh.
-	vector<Mad_Face>				akFaces;			///< Faces in mesh.
-	vector<Mad_CoreVertexFrame>		akFrames;			///< Vertex frames for mesh.
-	vector<Mad_CoreSubMesh>			akSubMeshes;		///< Submeshes.
-	vector<Mad_CoreMeshAnimation>	akAnimation;		///< Animations.
-	vector<int>						akBoneConnections;	///< Vertex -> Bone index.
+	vector<Mad_CoreTexture>			akTextures;				///< Texturers used in mesh.			
+	vector<Mad_TextureCoo>			akTextureCoo;			///< Texture Coo for mesh.
+	vector<Mad_Face>					akFaces;					///< Faces in mesh.
+	vector<Mad_CoreVertexFrame>	akFrames;				///< Vertex frames for mesh.
+	vector<Mad_CoreSubMesh>			akSubMeshes;			///< Submeshes.
+	vector<Mad_CoreMeshAnimation>	akAnimation;			///< Animations.
+	vector<int>							akBoneConnections;	///< Vertex -> Bone index.
 
 	int								iTextureID[256];	///< Texture ID's Assigned by rendering sys.
 
@@ -176,6 +178,12 @@ public:
 	int SizeSubMesh();
 	int SizeAnimations();
 	int SizeBoneConnections();
+
+	Mad_CoreSubMesh*		GetSubMeshPointer()	{	return &akSubMeshes[0];		};
+	Mad_Face*				GetFacesPointer2()	{	return &akFaces[0];			};
+	Mad_CoreVertexFrame*	GetFramesPointer2()	{	return &akFrames[0];			};
+	Mad_TextureCoo*		GetTexCooPointer2()	{	return &akTextureCoo[0];			};
+
 
 	int NumOfVertexPerFrame();
 

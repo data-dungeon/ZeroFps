@@ -9,7 +9,7 @@
 #include <stdarg.h>
 
 #include "madexport.h"
-//#include "mdl.h"
+#include "mdl.h"
 //#include "3ds.h"
 #include "xxx.h"
 //#include "halflife.h"
@@ -101,12 +101,13 @@ IMadImport* MadMake::GetImportObject(string FileName)
 
 	string strExt = GetFileExt(ucaInFile);
 	
-/*	if( strExt == ".mdl" )
+	if( strExt == ".md2" )
+		pkImport = new ModellMD2;
+
+	/*	if( strExt == ".mdl" )
 		pkImport = new ModellMD1;
 		//pkImport = new ModellHalfLife;
 
-	if( strExt == ".md2" )
-		pkImport = new ModellMD2;
 
 	if( strExt == ".3ds" )
 		pkImport = new Modell3DS;*/
