@@ -61,7 +61,7 @@ void MassDriverProjectile::Touch(Collision* pkCol)
 }
 
 
-Property* Create_MassDriverProjectile()
+COMMON_API Property* Create_MassDriverProjectile()
 {
 	return new MassDriverProjectile;
 

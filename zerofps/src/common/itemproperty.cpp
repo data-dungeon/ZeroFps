@@ -86,7 +86,7 @@ void ItemProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-Property* Create_ItemProperty()
+COMMON_API Property* Create_ItemProperty()
 {
 	return new ItemProperty();
 

@@ -62,7 +62,7 @@ void MachineGunProjectile::Touch(Collision* pkCol)
 }
 
 
-Property* Create_MachineGunProjectile()
+COMMON_API Property* Create_MachineGunProjectile()
 {
 	return new MachineGunProjectile;
 

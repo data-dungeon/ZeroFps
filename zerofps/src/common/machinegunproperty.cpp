@@ -113,7 +113,7 @@ void MachineGunProperty::Use()
 
 }
 
-Property* Create_MachineGunProperty()
+COMMON_API Property* Create_MachineGunProperty()
 {
 	return new MachineGunProperty;
 

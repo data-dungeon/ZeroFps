@@ -218,7 +218,7 @@ void AdaptorSniper::Load(ZFMemPackage* pkPackage)
 }
 
 
-Property* Create_AdaptorSniper()
+COMMON_API Property* Create_AdaptorSniper()
 {
 	return new AdaptorSniper;
 

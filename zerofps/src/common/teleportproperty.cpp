@@ -99,7 +99,7 @@ void TeleportProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-Property* Create_TeleportProperty()
+COMMON_API Property* Create_TeleportProperty()
 {
 	
 	return new TeleportProperty;

@@ -46,7 +46,7 @@ void TreeIdleProperty::Load(ZFMemPackage* pkPackage)
 
 }
 
-Property* Create_TreeIdleProperty()
+COMMON_API Property* Create_TreeIdleProperty()
 {
 	return new TreeIdleProperty;
 

@@ -32,7 +32,7 @@ void StatusProperty::Damage(float fDamage)
 }
 
 
-Property* Create_StatusProperty()
+COMMON_API Property* Create_StatusProperty()
 {
 	return new StatusProperty;
 }

@@ -113,7 +113,7 @@ void MassDriverProperty::Use()
 
 }
 
-Property* Create_MassDriverProperty()
+COMMON_API Property* Create_MassDriverProperty()
 {
 	return new MassDriverProperty;
 
