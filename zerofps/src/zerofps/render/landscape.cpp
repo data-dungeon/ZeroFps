@@ -2,9 +2,10 @@
 
 void Render::DrawSkyBox(Vector3 CamPos) {
 	glPushMatrix();
+	glDepthMask(GL_FALSE);
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
 	
-	int iSize=801;
+	int iSize=101;
 	
 	glDisable(GL_LIGHTING);
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
@@ -14,19 +15,21 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
 	glEnable(GL_LIGHTING);
+	glDepthMask(GL_TRUE);	
 	glPopMatrix();
 }
 
 
-void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize) {
+void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep) {
 	glPushMatrix();
 	
 	glDisable(GL_CULL_FACE);
 	
+	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glRotatef(kHead.x, 1, 0, 0);
 	glRotatef(kHead.y, 0, 1, 0);	
 	glRotatef(kHead.z, 0, 0, 1);
-	glTranslatef(kPosition.x-kSize/2,kPosition.y,kPosition.z-kSize/2);
+	glTranslatef(-iSize/2,0,-iSize/2);
 	
 	glDisable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
@@ -35,21 +38,22 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize
 	glDepthMask(GL_FALSE);
 	
 	m_pkTexMan->BindTexture("file:../data/textures/water.bmp");
-	int step=30;
+	float freq=400.0;
+	float amp=1.0;
 	
-	for(int z=0;z<kSize;z+=step){
+	for(int z=0;z<iSize;z+=iStep){
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);		
 		glColor4f(.7,.7,.7,.9);
-		for(int x=0;x<kSize;x+=step) {
-			float y=sin((SDL_GetTicks()+x*300)/1000.0);
+		for(int x=0;x<iSize;x+=iStep) {
+			float y=sin((SDL_GetTicks()/1000.0)+(x/iStep)*freq)*amp;
 			
 			glNormal3f(1.0,0,0);
-			glTexCoord2f(x/step+SDL_GetTicks()/60000.0,1);
+			glTexCoord2f(x/iStep+SDL_GetTicks()/60000.0,1);
 			glVertex3f(x,y,z);
 			
-			glTexCoord2f(x/step+SDL_GetTicks()/60000.0,0);			
-			glVertex3f(x,y,z+step);
+			glTexCoord2f(x/iStep+SDL_GetTicks()/60000.0,0);			
+			glVertex3f(x,y,z+iStep);
 
 
 		}

@@ -25,13 +25,15 @@ void Test::OnInit(void) {
 	test->GenerateNormals();
 	test->GenerateTextures();
 
-	test->SetPosition(Vector3(-50,-10,-50));
+	test->SetPosition(Vector3(0,-4,0));
+	
+//	pkFps->CamPos()=Vector3(100,5,100);
 
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	white_light = Vector4(1.5,1.5,1.5,1);
+	white_light = Vector4(1.2,1.2,1.2,1.2);
 	lmodel_ambient = Vector4(0.5,0.5,0.5,1);
 
   
@@ -56,13 +58,12 @@ void Test::OnIdle(void) {
 	
 	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
-//	glutSolidSphere(5,20,20);
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 
 
-//	pkRender->DrawHM(test);		
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(-300,-6,300),Vector3(0,90,0),800);
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(250,0,250),Vector3(0,90,0),600,30);
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
 	cout<<pkFps->m_iFps<<endl;
 }
 
