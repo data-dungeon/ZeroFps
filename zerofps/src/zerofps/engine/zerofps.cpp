@@ -39,7 +39,7 @@ ZeroFps::ZeroFps(void)
 	m_iFullScreen=			0;
 	m_fFrameTime=			0;
 	m_fLastFrameTime=		0;
-	m_fSystemUpdateFps=	25;
+	m_fSystemUpdateFps=	30;
 	m_fSystemUpdateTime= 0;
 	m_bServerMode = 		true;
 	m_bClientMode = 		true;
@@ -51,19 +51,20 @@ ZeroFps::ZeroFps(void)
 	g_iMadLODLock = 		0;
 	m_pkCamera = 			NULL;
 
-	g_ZFObjSys.RegisterVariable("m_Sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
-	g_ZFObjSys.RegisterVariable("r_LandLod", &m_pkRender->m_iDetail,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_ViewDistance", &m_pkRender->m_iViewDistance,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_AutoLod", &m_pkRender->m_iAutoLod,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_FpsLock", &m_pkRender->m_iFpsLock,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_MaxLights", &m_pkLight->m_iNrOfLights,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_Width", &m_iWidth,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_Height", &m_iHeight,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_Depth", &m_iDepth,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_FullScreen", &m_iFullScreen,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
+	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_width", &m_iWidth,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_height", &m_iHeight,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_depth", &m_iDepth,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
+	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -238,9 +239,10 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();							
-	
+		
+
 	//update zones
-	m_pkLevelMan->UpdateZones();			
+	m_pkLevelMan->UpdateZones();	
 
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();	
@@ -263,6 +265,7 @@ void ZeroFps::Update_System()
 	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 
+
 	if(iLoops<=0)
 		return;
 
@@ -278,6 +281,7 @@ void ZeroFps::Update_System()
 
 		//update physicsengine
 		m_pkPhysEngine->Update();	
+
 
 		m_fSystemUpdateTime = GetTicks();
 	}

@@ -16,6 +16,7 @@ CameraProperty::CameraProperty()
 
 	m_fFov = 90;
 	m_kDynamicIso.Set(0,0,0);
+	
 }
 
 
@@ -23,9 +24,6 @@ void CameraProperty::Update()
 {
 	if(!m_pkCamera)
 		return;
-
-
-	float t,at,i;
 
 	Vector3		kYawVector;
 	string		strCamName;

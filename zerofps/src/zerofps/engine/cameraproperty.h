@@ -32,7 +32,7 @@ class ENGINE_API CameraProperty:public Property
 
 		float		m_fFov;
 		Vector3		m_kDynamicIso;
-
+		
 
 	public:
 		CameraProperty();
