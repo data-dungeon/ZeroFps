@@ -110,22 +110,21 @@ ZFResource* Create__WavSound()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// ZFActiveSound
+// SoundInfo
 ///////////////////////////////////////////////////////////////////////////////
 
-ZFActiveSound::ZFActiveSound()
+ SoundInfo::SoundInfo()
 {
 	m_bLoop = false;
 	m_kPos = Vector3(0,0,0);
 	m_kDir = Vector3(0,0,1);
-	m_szFileName = NULL;
 	m_uiSourceBufferName = 0;
 	m_pkResource = NULL;
 }
 
-ZFActiveSound::~ZFActiveSound()
+SoundInfo::~SoundInfo()
 {
-
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -226,12 +225,12 @@ void ZFAudioSystem2::Update()
 	// Spela upp ogg music.
 	m_pkMusic->Update();
 
-	vector<ZFActiveSound*> kRemove;
+	vector<SoundInfo*> kRemove;
 
-	list<ZFActiveSound*>::iterator itSound = m_kActiveSounds.begin();
+	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
 	for( ; itSound != m_kActiveSounds.end(); itSound++)  
 	{
-		ZFActiveSound* pkSound = (*itSound);
+		SoundInfo* pkSound = (*itSound);
 
 		// Kolla vilken status har ljudet.
 		ALint iSourceState;
@@ -322,7 +321,7 @@ void ZFAudioSystem2::Update()
 
 	for(unsigned int i=0; i<kRemove.size(); i++)
 	{
-		ZFActiveSound* pkSound = kRemove[i];
+		SoundInfo* pkSound = kRemove[i];
 
 		for(int j=0; j<SOURCE_POOL_SIZE; j++)
 		{
@@ -351,25 +350,27 @@ void ZFAudioSystem2::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 
-bool ZFAudioSystem2::ActivateSound(ZFActiveSound kSound)
+// Det är OK att skapa ett lokalt SoundInfo objekt och skicka in till funktionen.
+// Funktioner skapar alltid en egen kopia på objektet som den tar hand om själv.
+bool ZFAudioSystem2::ActivateSound(SoundInfo kSound)
 {
-	ZFActiveSound *pkSound = new ZFActiveSound;
-	memcpy(pkSound, &kSound, sizeof(ZFActiveSound));
+	SoundInfo *pkSound = new SoundInfo;
+	memcpy(pkSound, &kSound, sizeof(SoundInfo));
 
-	if(pkSound == NULL || pkSound->m_szFileName == NULL)
+	if(pkSound == NULL || pkSound->m_szFile == NULL)
 	{
 		printf("ZFAudioSystem2::ActivateSound: Bad argument.\n");
 		return false;
 	}
 
 	// Hämta ett resurshantag.
-	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFileName));
+	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFile));
 
 	// Är resursen ej inladdad?
 	if(pkResHandle->IsValid() == false)
 	{
 		// Försök ladda in ljudet från disk via resurs systemet.
-		if(pkResHandle->SetRes(pkSound->m_szFileName) == false)
+		if(pkResHandle->SetRes(pkSound->m_szFile) == false)
 		{
 			printf("ZFAudioSystem2::ActivateSound: SetRes failed!\n");
 			return false;
@@ -403,7 +404,7 @@ bool ZFAudioSystem2::ActivateSound(ZFActiveSound kSound)
 	return true;
 }
 
-bool ZFAudioSystem2::StopSound(ZFActiveSound kSound)
+bool ZFAudioSystem2::StopSound(SoundInfo kSound)
 {
 	return true;
 }
@@ -428,7 +429,7 @@ ZFResourceHandle* ZFAudioSystem2::GetResHandle(string strFileName)
 	return pkNewRes;
 }
 
-bool ZFAudioSystem2::Hearable(ZFActiveSound* pkSound)
+bool ZFAudioSystem2::Hearable(SoundInfo* pkSound)
 {
 	if( (pkSound->m_kPos-m_kPos).Length() < 100 ) 
 		return true;

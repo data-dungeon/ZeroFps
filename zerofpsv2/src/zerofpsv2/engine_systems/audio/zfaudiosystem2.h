@@ -41,31 +41,30 @@ class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
 
 ENGINE_SYSTEMS_API ZFResource* Create__WavSound();
 
-class ENGINE_SYSTEMS_API ZFActiveSound
+class ENGINE_SYSTEMS_API SoundInfo
 {
 	public:
-		ZFActiveSound();
-		~ZFActiveSound();
+		SoundInfo();
+		~SoundInfo();
 
 		bool m_bLoop;
 		Vector3 m_kPos;
 		Vector3 m_kDir;
-		char* m_szFileName;
+		char m_szFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
 			
 	private:
 		ZFSoundRes* m_pkResource;
 		ALuint m_uiSourceBufferName;
 
 		friend ZFAudioSystem2;
-
 };
 
 class ENGINE_SYSTEMS_API ZFAudioSystem2  : public ZFSubSystem 
 {
 public:
 	unsigned int GetNumActiveSounds();
-	bool StopSound(ZFActiveSound kSound);
-	bool ActivateSound(ZFActiveSound kSound);
+	bool StopSound(SoundInfo kSound);
+	bool ActivateSound(SoundInfo kSound);
 
 	ZFAudioSystem2();
 	virtual ~ZFAudioSystem2();
@@ -109,12 +108,12 @@ private:
 
 	map<string, ZFResourceHandle*> m_mkResHandles;
 
-	list<ZFActiveSound*> m_kActiveSounds;
+	list<SoundInfo*> m_kActiveSounds;
 
 	// Common
 	bool GenerateSourcePool();
 	ZFResourceHandle* GetResHandle(string strFileName);
-	bool Hearable(ZFActiveSound* pkSound);
+	bool Hearable(SoundInfo* pkSound);
 
 };
 

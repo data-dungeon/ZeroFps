@@ -269,18 +269,17 @@ void MistClient::Input()
 		{
 			static int COUNTER = 0;
 
-			ZFActiveSound kSound;
+			SoundInfo kSound;
 			kSound.m_bLoop = false;
 			kSound.m_kDir = Vector3(0,0,1);
 			kSound.m_kPos = Vector3(0,0,0);
-			kSound.m_szFileName = new char[100];
-
+			
 			if(COUNTER==0)
 			{
-				strcpy(kSound.m_szFileName, "data/sound/test.wav");
-				COUNTER++;
+				strcpy(kSound.m_szFile, "data/sound/test.wav");
+			//	COUNTER++;
 			}
-			else
+/*			else
 			if(COUNTER==1)
 			{
 				strcpy(kSound.m_szFileName, "data/sound/dummy.wav");
@@ -291,7 +290,7 @@ void MistClient::Input()
 			{
 				strcpy(kSound.m_szFileName, "data/sound/walk.wav");
 				COUNTER = 0;
-			}
+			}*/
 			
 			pkAudioSys->ActivateSound(kSound);
 			
