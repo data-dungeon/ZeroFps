@@ -1,6 +1,28 @@
 #include "zfassert.h"
 #include "plane.h"
 
+// Constructors
+Plane::Plane(const Plane& kPlane)
+{
+	m_kNormal	= kPlane.m_kNormal;
+	m_fD		= kPlane.m_fD;
+}
+
+Plane::Plane(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2)
+{
+	Set(kPoint0,kPoint1,kPoint2);
+}
+
+
+// Operators
+Plane& Plane::operator=( const Plane& kIn )
+{
+	m_kNormal	= kIn.m_kNormal;
+	m_fD		= kIn.m_fD;
+	return (*this);
+}
+
+// Methods
 
 void Plane::Set(Vector3 kNormal, Vector3 kPos)
 {

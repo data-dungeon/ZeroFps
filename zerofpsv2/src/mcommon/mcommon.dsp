@@ -134,6 +134,10 @@ SOURCE=.\p_serverinfo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_spawn.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_spell.cpp
 # End Source File
 # Begin Source File
@@ -179,6 +183,10 @@ SOURCE=.\p_ml.h
 # Begin Source File
 
 SOURCE=.\p_serverinfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_spawn.h
 # End Source File
 # Begin Source File
 
