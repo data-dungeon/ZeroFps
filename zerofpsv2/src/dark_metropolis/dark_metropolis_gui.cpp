@@ -462,7 +462,7 @@ void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 	if(pkWnd)
 	{
 		strMainWnd = pkWnd->GetName();	
-		//printf("pkWnd = %s\n", pkWnd->GetName());
+		printf("pkWnd = %s\n", pkWnd->GetName());
 	}
 	else
 		return;
@@ -481,6 +481,12 @@ void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 	{
 		if(GetWnd("HQWnd")->IsVisible())
 			m_pkHQDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "MapWnd" || strMainWnd == "wind_map")
+	{
+		if(GetWnd("MapWnd")->IsVisible())
+			GetWnd("MapWnd")->Hide();
 	}
 	else
 	if(strMainWnd == "MissionWnd")

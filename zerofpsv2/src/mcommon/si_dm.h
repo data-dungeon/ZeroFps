@@ -3,6 +3,7 @@
 
 class ZFScriptSystem;
 class PSystemProperty;
+class ZGuiResourceManager;
 
 #include "mcommon_x.h"
 #include "../zerofpsv2/script/zfscript.h"
@@ -15,8 +16,9 @@ using namespace std;
 
 namespace DMLua
 {
-	extern ZFScriptSystem* 		g_pkScript;
-	extern EntityManager*		g_pkObjMan;
+	extern ZFScriptSystem* 			g_pkScript;
+	extern EntityManager*			g_pkObjMan;
+	extern ZGuiResourceManager*	g_pkGuiResMan;
 
 	struct PATROL_POINTS
 	{
@@ -27,7 +29,8 @@ namespace DMLua
 	extern vector<int> m_kCallsForHelp;
 	extern map<int, PATROL_POINTS> m_kPatrolPoints;
 
-	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
+	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript,
+		ZGuiResourceManager* pkGuiResMan);
 	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
 	int MCOMMON_API SetDMCharacterNameLua(lua_State* pkLua);
 	int MCOMMON_API GetDMCharacterClosestLua(lua_State* pkLua);
@@ -134,6 +137,9 @@ namespace DMLua
 	// stuff 2
 	int MCOMMON_API GetCharsByFractionLua(lua_State* pkLua);
 	int MCOMMON_API GetDMObjectLua(lua_State* pkLua);
+
+	// special gui stuff
+	int HideAllMapIconsLua(lua_State* pkLua);
 	
 
 };

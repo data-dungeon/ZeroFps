@@ -9,19 +9,23 @@
 #include "p_dmshop.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 ZFScriptSystem*						DMLua::g_pkScript;
 EntityManager*							DMLua::g_pkObjMan;
+ZGuiResourceManager*					DMLua::g_pkGuiResMan;
 vector<int>								DMLua::m_kCallsForHelp;
 map<int, DMLua::PATROL_POINTS>	DMLua::m_kPatrolPoints;
 
 
 // ------------------------------------------------------------------------------------------------
 
-void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
+void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript, 
+					  ZGuiResourceManager* pkGuiResMan)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
+	g_pkGuiResMan = pkGuiResMan;
 	
 	// dm common
 	pkScript->ExposeFunction("GetDMObject", DMLua::GetDMObjectLua);
@@ -123,6 +127,10 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 	// police functions
 	pkScript->ExposeFunction("GetClosestCaller", DMLua::GetClosestCallerLua);
+
+	// special gui stuff for dm
+	pkScript->ExposeFunction("HideAllMapIcons", DMLua::HideAllMapIconsLua);
+	
 	
 	cout << "DM LUA Scripts Loaded" << endl;
 
@@ -1503,4 +1511,29 @@ int DMLua::GetItemByNameLua(lua_State* pkLua)
 	g_pkScript->AddReturnValue( pkLua, dItem );
 
 	return 1;
+}
+
+int DMLua::HideAllMapIconsLua(lua_State* pkLua)
+{
+	ZGuiWnd* pkMain = g_pkGuiResMan->Wnd("MapWnd");
+
+	if(pkMain)
+	{
+		list<ZGuiWnd*> childs;
+		pkMain->GetChildrens(childs);
+
+		list<ZGuiWnd*>::iterator it = childs.begin();
+		for( ; it != childs.end(); it++)
+		{
+			string strName = (*it)->GetName();
+
+			if(strName.find("AgentMapIcon") == string::npos) // låt bli agentikonerna
+			{	
+				(*it)->Hide();
+				printf("Hiding mapicon named: %s\n", (*it)->GetName());
+			}
+		}
+	}
+
+	return 0;
 }

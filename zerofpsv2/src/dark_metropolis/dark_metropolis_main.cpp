@@ -84,7 +84,7 @@ void DarkMetropolis::OnInit()
 //	LoadResourcesOnStartup();
 
 	//init dm script interface (register script functions for gameplay)
-	DMLua::Init(m_pkObjectMan,m_pkScript);
+	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
 
 	//register propertys
 	RegisterPropertys();

@@ -22,7 +22,7 @@ MissionText =
 }
 
 
-Skin1 = { tex1="dm/map_icons/hq.bmp", tex2="0", tex3="0", tex4="0", tex1a="0",
+Skin1 = { tex1="dm/map_icons/hospital.bmp", tex2="0", tex3="0", tex4="0", tex1a="0",
  tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
  }
 
@@ -62,6 +62,14 @@ function OnMissionStart()
 
 	Print("Hospital object = ", HospitalObject)
 	Print("Num civilian = ", NumCivilians)
+
+	-----------------------------------------------------------------------
+	-- Rensa alla gamla mapiconer och lägg till en ny som visar
+	-- vart polistationen finns.
+	-----------------------------------------------------------------------
+	HideAllMapIcons()
+	CreateWnd(4,"HosptialMapLabel","MapWnd","",420,179,16,16,0)
+	ChangeSkin("HosptialMapLabel","Skin1","Label")
 
 end
 
