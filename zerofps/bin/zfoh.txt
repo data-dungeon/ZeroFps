@@ -2,8 +2,9 @@ class object
 	class ZeroRTSPlayer
 		parent object
 		set ModelProperty Radius	1
-			
-			
+		
+		add P_ClientInput
+		
 
 	class physics
 		parent object
