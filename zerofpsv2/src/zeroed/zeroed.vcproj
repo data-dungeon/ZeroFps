@@ -125,6 +125,12 @@
 			<File
 				RelativePath=".\zeroed.cpp">
 			</File>
+			<File
+				RelativePath=".\zeroed_gui.cpp">
+			</File>
+			<File
+				RelativePath=".\zeroed_input.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

@@ -227,10 +227,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		float	m_fDelayTime;
 		bool	DelayCommand();
 
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
-
+		bool StartUp()	{ return true; }
+		bool ShutDown()	{ return true; }
+		bool IsValid()	{ return true; }
 };
 
 
