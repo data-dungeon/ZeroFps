@@ -306,7 +306,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	{
 		if ( pkP_Gun->HasAmmo() && pkP_Gun->ReadyToFire() )
 		{
-			pkMad->SetAnimation ("shoot", 0);
+			pkMad->SetAnimation ((char*)pkP_Gun->m_strShootAnim.c_str(), 0);
 			pkMad->SetNextAnimation ("idle");
 
 			// clear p_path, can't move and shoot at the same time

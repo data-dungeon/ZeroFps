@@ -81,6 +81,7 @@ namespace DMLua
 	int MCOMMON_API SetGunRandomLua(lua_State* pkLua);
 	int MCOMMON_API SetGunBulletsPerAmmoLua(lua_State* pkLua);
 	int MCOMMON_API SetGunSoundLua(lua_State* pkLua);
+	int MCOMMON_API SetGunShootAnimLua(lua_State* pkLua);
 
 	// SI for items with bonuses (+ AV and such)
 	int MCOMMON_API SetItemArmourLua(lua_State* pkLua);
@@ -106,6 +107,7 @@ namespace DMLua
 	// common
 	int MCOMMON_API SetVarLua(lua_State* pkLua);
 	int MCOMMON_API GetVarLua(lua_State* pkLua);
+	int MCOMMON_API AddToVarLua(lua_State* pkLua);
 
 	// entity
 	int MCOMMON_API SetEntityVarLua(lua_State* pkLua);

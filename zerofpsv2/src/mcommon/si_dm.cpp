@@ -85,9 +85,11 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetGunRandom", DMLua::SetGunRandomLua);				
 	pkScript->ExposeFunction("SetGunBulletsPerAmmo", DMLua::SetGunBulletsPerAmmoLua);	
 	pkScript->ExposeFunction("SetGunSound", DMLua::SetGunSoundLua);	
+	pkScript->ExposeFunction("SetGunShootAnim", DMLua::SetGunShootAnimLua);	
 
 	// common
 	pkScript->ExposeFunction("SetVar", DMLua::SetVarLua);
+	pkScript->ExposeFunction("AddToVar", DMLua::AddToVarLua);
 	pkScript->ExposeFunction("GetVar", DMLua::GetVarLua);
 
 	// lua lua scripts
@@ -379,6 +381,31 @@ int DMLua::SetGunSoundLua (lua_State* pkLua)
 
 // ------------------------------------------------------------------------------------------------
 
+int DMLua::SetGunShootAnimLua (lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+
+	// get P_DMGun
+	P_DMGun* pkGunP = (P_DMGun*)pkEntity->GetProperty("P_DMGun");
+
+	if ( pkGunP == 0 )
+	{
+		cout << "Warning! DMLua::SetShootAnimLua: Must use on an object with P_DMGun!" << endl;
+		return 0;
+	}
+
+	char sound[256];
+	g_pkScript->GetArgString(pkLua, 1, sound);
+	pkGunP->m_strShootAnim = sound;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
 int DMLua::RunScriptLua (lua_State* pkLua)
 {
  	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1)
@@ -550,11 +577,17 @@ int DMLua::SetVarLua (lua_State* pkLua)
 
 	char cKey[255];
 	double dValue;
-
+    
 	g_pkScript->GetArgString(pkLua, 0, cKey);
 	g_pkScript->GetArgNumber(pkLua, 1, &dValue);
 
-	m_kVars[cKey] = dValue;
+	Entity* pkHQ = GetHQEntity();
+
+	if ( pkHQ != 0 )
+		pkHQ->SetVarDouble(string(cKey), dValue);
+	else
+		cout << "Warning! DMLua::SetVarLua: No HQ object found." << endl;
+
 
 	return 0;
 
@@ -582,14 +615,55 @@ int DMLua::GetVarLua (lua_State* pkLua)
 		m_kVars[cKey] = 0;
 	}
 
-	double dValue;
+	double dValue = 0;
 
-	dValue = m_kVars[cKey];
+	Entity* pkHQ = GetHQEntity();
+
+	if ( pkHQ != 0 )
+	{
+		EntityVariable* pkEV = pkHQ->GetVar(string(cKey));
+		dValue = pkEV->m_fValue;
+	}
+	else
+		cout << "Warning! DMLua::GetVarLua: No HQ object found." << endl;
 
 	g_pkScript->AddReturnValue(pkLua, dValue);
 
 	return 1;
+}
 
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::AddToVarLua (lua_State* pkLua)
+{
+	if ( g_pkScript->GetNumArgs(pkLua) != 2 )
+	{
+		cout << "Warning! DMLua::AddToVarLua: Wrong number of arguments! Takes key(string), value." << endl;
+		return 0;
+	}
+
+	char cKey[255];
+	double dValue;
+
+	g_pkScript->GetArgString(pkLua, 0, cKey);
+	g_pkScript->GetArgNumber(pkLua, 1, &dValue);
+
+	map<string, double>::iterator kIte = m_kVars.find(cKey);
+
+	if ( kIte == m_kVars.end() )
+	{
+		cout << "Warning! DMLua::GetVarLua: Coulnd't find key:" << cKey << ". Setting value to 0." << endl;
+		m_kVars[cKey] = 0;
+	}
+
+	Entity* pkHQ = GetHQEntity();
+
+	if ( pkHQ != 0 )
+		pkHQ->SetVarDouble(string(cKey), pkHQ->GetVar(string(cKey))->m_fValue + dValue);
+	else
+		cout << "Warning! DMLua::AddToVarLua: No HQ object found." << endl;
+
+	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -52,6 +52,8 @@ class MCOMMON_API P_DMGun: public Property {
 
 	public:
 
+		string m_strShootAnim;
+
 		int m_iTeam;
 		
 		P_DMGun();
