@@ -85,7 +85,7 @@ class BASIC_API Matrix4 {
 			return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
 		}
 
-		void SetPos(Vector3& kPos)
+		void SetPos(Vector3 kPos)
 		{
 			RowCol[3][0] = kPos.x;
 			RowCol[3][1] = kPos.y;

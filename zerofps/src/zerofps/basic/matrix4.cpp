@@ -480,3 +480,6 @@ Matrix4 Matrix4::Invert2( )
 
 	return inverse;
 }
+
+
+

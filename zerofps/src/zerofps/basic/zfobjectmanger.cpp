@@ -51,7 +51,7 @@ void CmdArgument::Set(const char* szCmdArgs)
 
 	for(unsigned int i=0; i<strlen(szCmdArgs); i++) {
 
-		while(unsigned int(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
+		while((unsigned int)(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
 			kNewArg.append(1,szCmdArgs[i]);						//add to argument nr args
 			i++;
 		}
