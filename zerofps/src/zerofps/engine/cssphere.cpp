@@ -1,5 +1,10 @@
 #include "cssphere.h"
 
+CSSphere::CSSphere(float fRadius)
+{
+	m_fRadius=fRadius;
+}
+
 CollisionData* CSSphere::Test(CollisionShape* kOther,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
