@@ -1,0 +1,310 @@
+; -------------------------------------
+; | 				      |
+; |           - MistLands -           |
+; |            Menu items             |
+; |				      |
+; -------------------------------------
+
+; ------------- FILE MENU -------------
+
+[Menu_File]
+Title=File
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_Loadmap]
+Title=Load
+Parent=Menu_File
+Cmd=fileopendlg load map
+
+[Menu_Savemap]
+Title=Save
+Parent=Menu_File
+Cmd=fileopendlg save map
+
+[Menu_Exit]
+Title=Exit
+Parent=Menu_File
+Cmd=quit
+
+;------------- EDIT MENU -------------
+
+[Menu_Edit]
+Title=Edit
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_EditCopy]
+Title=Copy
+Parent=Menu_Edit
+Cmd=copy
+
+[Menu_EditPaste]
+Title=Paste
+Parent=Menu_Edit
+Cmd=paste
+
+[Menu_EditDuplicate]
+Title=Duplicate
+Parent=Menu_Edit
+Cmd=duplicate
+
+[Menu_EditDelete]
+Title=Delete
+Parent=Menu_Edit
+Cmd=delete
+
+[Menu_EditSNone]
+Title=Select - None
+Parent=Menu_Edit
+Cmd=selnone
+
+; ------------- VIEW MENU -------------
+[Menu_View]
+Title=View
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_ViewLightOn]
+Title=Light On
+Parent=Menu_View
+Cmd=lightmode 0
+
+[Menu_ViewLightOff]
+Title=Light Off
+Parent=Menu_View
+OpenSubMenu=0
+Cmd=lightmode 1
+
+[Menu_ViewLightMat]
+Title=Light Mat
+Parent=Menu_View
+Cmd=lightmode 2
+
+[Menu_ViewCamPersp]
+Title=Cam - Persp
+Parent=Menu_View
+Cmd=setcam persp
+
+[Menu_ViewCamTop]
+Title=Cam - Top
+Parent=Menu_View
+Cmd=setcam top
+
+[Menu_ViewCamFront]
+Title=Cam - Front
+Parent=Menu_View
+Cmd=setcam front
+
+[Menu_ViewCamLeft]
+Title=Cam - Left
+Parent=Menu_View
+Cmd=setcam left
+
+[Menu_ViewCamBot]
+Title=Cam - Bot
+Parent=Menu_View
+Cmd=setcam bot
+
+[Menu_ViewCamBack]
+Title=Cam - Back
+Parent=Menu_View
+Cmd=setcam back
+
+[Menu_ViewCamRight]
+Title=Cam - Right
+Parent=Menu_View
+Cmd=setcam right
+
+[Menu_ViewLink]
+Title=Cam - Link (T)
+Parent=Menu_View
+Cmd=camlink
+
+[Menu_ViewSolo]
+Title=Cam - Solo (T)
+Parent=Menu_View
+Cmd=camsolo
+
+
+; ------------- ORTHO GRID MENU -------------
+[Menu_Grid]
+Title=Grid
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_GridShow]
+Title=Show (T)
+Parent=Menu_Grid
+Cmd=camgrid
+
+[Menu_GridSnap]
+Title=Snap (T)
+Parent=Menu_Grid
+Cmd=gridsnap
+
+[Menu_GridSize01]
+Title=Size 0.1
+Parent=Menu_Grid
+Cmd=gridsize 0.1
+
+[Menu_GridSize025]
+Title=Size 0.25
+Parent=Menu_Grid
+Cmd=gridsize 0.25
+
+[Menu_GridSize05]
+Title=Size 0.5
+Parent=Menu_Grid
+Cmd=gridsize 0.5
+
+[Menu_GridSize1]
+Title=Size 1
+Parent=Menu_Grid
+Cmd=gridsize 1
+
+[Menu_GridSize2]
+Title=Size 2
+Parent=Menu_Grid
+Cmd=gridsize 2
+
+[Menu_GridSize5]
+Title=Size 5
+Parent=Menu_Grid
+Cmd=gridsize 5
+
+[Menu_GridSize10]
+Title=Size 10
+Parent=Menu_Grid
+Cmd=gridsize 10
+
+[Menu_GridSize100]
+Title=Size 100
+Parent=Menu_Grid
+Cmd=gridsize 100
+
+; ------------- SYSTEM MENU -------------
+
+[Menu_Sys]
+Title=System
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_SysRender]
+Title=Render (T)
+Parent=Menu_Sys
+Cmd=set r_render toggle
+
+[Menu_SysLockFps]
+Title=Lock Fps (T)
+Parent=Menu_Sys
+Cmd=set e_lockfps toggle
+
+[Menu_SysSimToggle]
+Title=Sim (T)
+Parent=Menu_Sys
+Cmd=set e_runsim toggle
+
+; ------------- DEBUG MENU -------------
+
+[Menu_Debug]
+Title=Debug
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_DebugShowZones]
+Title=Visible Zones (T)
+Parent=Menu_Debug
+Cmd=set l_showzones toggle
+
+[Menu_DebugShowZoneConn]
+Title=Visible Zone Conn (T)
+Parent=Menu_Debug
+Cmd=set l_showconn toggle
+
+[Menu_DebugLogRP]
+Title=Log RenderP
+Parent=Menu_Debug
+Cmd=set r_logrp 1
+
+[Menu_Marker]
+Title=Marker (T)
+Parent=Menu_Debug
+Cmd=set s_marker toggle
+
+[Menu_EditSun]
+Title=EditSun (T)
+Parent=Menu_Debug
+Cmd=editsun
+
+; ------------- DEVPAGE MENU -------------
+
+[Menu_Page]
+Title=DevPage
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_PageCommon]
+Title=Common (T)
+Parent=Menu_Page
+Cmd=devtog common
+
+[Menu_PageConn]
+Title=Conn (T)
+Parent=Menu_Page
+Cmd=devtog conn
+
+[Menu_PageOm]
+Title=Om (T)
+Parent=Menu_Page
+Cmd=devtog om
+
+[Menu_PageServer]
+Title=Server (T)
+Parent=Menu_Page
+Cmd=devtog server
+
+[Menu_PageTime]
+Title=Time (T)
+Parent=Menu_Page
+Cmd=devtog time
+
+[Menu_PageEditor]
+Title=Editor (T)
+Parent=Menu_Page
+Cmd=devtog editor
+
+; ------------- AI MENU -------------
+[Menu_Ai]
+Title=Ai
+Parent=NULL
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_AiSubmenu]
+Title=Sub Menu
+Parent=Menu_Ai
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_AiTest]
+Title=Test
+Parent=Menu_AiSubmenu
+Cmd=devtog common
+
+[Menu_AiNavMesh]
+Title=Show NavMesh (T)
+Parent=Menu_Ai
+Cmd=set ai_shownavmesh toggle
+
+[Menu_AiShowPath]
+Title=Show Paths (T)
+Parent=Menu_Ai
+Cmd=set ai_showpath toggle
