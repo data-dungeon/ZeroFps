@@ -772,11 +772,14 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	
 	//Draw default texture	
+/*	
+	RES:
 	ZFResourceHandle m_kConsoleText;
 	m_kConsoleText.SetRes(kMap->m_kSets[0].m_acTexture);		
 	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 	
-	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
+	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);*/
+
 	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
 	
 //	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
@@ -1188,16 +1191,17 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 
 void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 {
-	if(!pkMap->Loaded())
-		return;
+//	if(!pkMap->Loaded())
+//		return;
 		
 				
-	pkMap->UpdateRecLodLevel(kCamPos); 
+//	pkMap->UpdateRecLodLevel(kCamPos); 
 
 	glPushMatrix();
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);  
 
-	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
+//	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
+	Vector3 kPos(0,0,0);
 	glTranslatef(kPos.x,kPos.y,kPos.z);
 
 

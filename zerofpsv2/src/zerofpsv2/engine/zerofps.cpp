@@ -202,6 +202,11 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	
 	atexit(SDL_Quit);
 
+/*#ifdef _WIN32
+	RenderDLL_InitExtGL();
+	extgl_Initialize();
+#endif*/
+
 	if(!g_ZFObjSys.StartUp())
 		return false;
 	

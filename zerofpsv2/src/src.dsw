@@ -1,0 +1,149 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "basic"=.\zerofpsv2\basic\basic.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "engine"=.\zerofpsv2\engine\engine.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name physics_engine
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name render
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name script
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gui"=.\zerofpsv2\gui\gui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name render
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "physics_engine"=.\zerofpsv2\physics_engine\physics_engine.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "render"=.\zerofpsv2\render\render.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "script"=.\zerofpsv2\script\script.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "src"=.\src.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name zerotank
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "zerotank"=.\zerotank\zerotank.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name engine
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

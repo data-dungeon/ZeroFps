@@ -1,7 +1,8 @@
 #include "camera.h"
+#include "../ogl/zfpsgl.h"
 
-#include "GL/gl.h"
-#include "GL/glu.h"
+/*#include "GL/gl.h"
+#include "GL/glu.h"*/
 
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {

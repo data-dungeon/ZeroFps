@@ -2,7 +2,6 @@
 #define _BASIC_MADCORE_H
 
 
-using namespace std;
 
 #include <vector>
 #include "../engine_systems_x.h"
@@ -10,6 +9,8 @@ using namespace std;
 #include "../../engine/fh.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/zfvfs.h"
+
+using namespace std;
 
 #define MAD_MAX_ANIMATIONNAME	256		 
 #define MAD_MAX_NAME			64		

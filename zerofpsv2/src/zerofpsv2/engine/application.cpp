@@ -2,7 +2,7 @@
 #include "zerofps.h"
 
 Application* Application::pkApp;
-
+ 
 Application::Application(char* pName,int iWidth,int iHeight,int iDepth) 
 	: ZFObject("Application") 
 {

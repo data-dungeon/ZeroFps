@@ -5,8 +5,8 @@
 #include "glguirender.h"
 #include "../basic/zguiskin.h"
 #include "texturemanager.h"
-#include "../engine/fh.h"
-#include "../engine/zfresource.h"
+//#include "../engine/fh.h"
+//#include "../engine/zfresource.h"
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 ///////////////////////////////////////////////////////////////////////////////
@@ -317,12 +317,18 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		return; // false;
 
 	bool bDrawMasked = true;
-		
-	ZFResourceHandle m_kConsoleText;
-	m_kConsoleText.SetRes(m_pkFont->m_szFileName.c_str());	
+
+	/*
+	RES
+//	ZFResourceHandle m_kConsoleText;
+//	m_kConsoleText.SetRes(m_pkFont->m_szFileName.c_str());	
 	
-	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-	int fontTexture = pkTexture->m_iTextureID;//m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
+//	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+//	int fontTexture = pkTexture->m_iTextureID;//m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
+
+	*/
+
+	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
 
 //	if(!fontTexture)
 //		return; // false;

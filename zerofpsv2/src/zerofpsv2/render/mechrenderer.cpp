@@ -1,6 +1,5 @@
 #include "mechrenderer.h"
-#include "GL/gl.h"
-#include "GL/glut.h"
+#include "../ogl/zfpsgl.h"
 
 MechRenderer::MechRenderer(): ZFObject("MechRenderer")
 {

@@ -855,7 +855,7 @@ int	Mad_Core::GetMeshIDByName(char* szName)
 
 
 
-ENGINE_API ZFResource* Create__Mad_Core()
+ENGINE_SYSTEMS_API ZFResource* Create__Mad_Core()
 {
 	return new Mad_Core;
 }

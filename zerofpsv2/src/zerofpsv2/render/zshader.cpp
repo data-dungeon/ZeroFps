@@ -11,7 +11,7 @@ bool ZShader::StartUp()
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
  	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 		
  	
-	Reset();
+//	Reset();
 			
 	return true;
 } 

@@ -7,7 +7,7 @@
 #include "../basic/zfobjectmanger.h"
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
-#include <GL/gl.h>
+#include "../ogl/zfpsgl.h"
 #include "texturemanager.h"
 #include "frustum.h"
 #include "light.h"

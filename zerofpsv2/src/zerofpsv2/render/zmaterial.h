@@ -4,7 +4,7 @@
 #include <iostream>
 #include "render_x.h"
 #include <vector>
-#include <GL/gl.h>
+#include "../ogl/zfpsgl.h"
 
 
 using namespace std;

@@ -1,7 +1,5 @@
 #include "render.h"
-
-
-#include "GL/glut.h"
+#include "../ogl/zfpsgl.h"
 
 Render::Render()  
 :	ZFObject("Render") , m_eLandscapePolygonMode(FILL) {
@@ -67,7 +65,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 	
 	glPushMatrix();
 		glTranslatef(kPos.x,kPos.y,kPos.z);
-		glutSolidSphere(fRadius, iRes, iRes);
+//		glutSolidSphere(fRadius, iRes, iRes);
 	glPopMatrix();
 	
 
@@ -115,8 +113,8 @@ void Render::PrintChar(char cChar) {
 	glEnable(GL_ALPHA_TEST);
  	
  	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
-	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+//	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
 	
 
 	glPushMatrix();
@@ -147,8 +145,8 @@ void Render::PrintChar2(char cChar)
 	float x	=	float(pos%texwidth)*glu;//+width/2;
 
 // 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
-	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+// RES	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
 
 
 	int iFontSize = 8;
@@ -220,7 +218,7 @@ void Render::Print2(Vector3 kPos,char* aText) {
 
 void Render::SetFont(char* aFont) {
 //	strcpy(aCurentFont,aFont);
-	m_kConsoleText.SetRes(aFont);
+// RES	m_kConsoleText.SetRes(aFont);
 }
 
 void Render::Line(Vector3 kPos1,Vector3 kPos2)

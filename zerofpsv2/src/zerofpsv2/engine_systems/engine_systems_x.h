@@ -9,7 +9,7 @@
 // defined with this macro as being exported.
 #if defined(WIN32) 
 
-#ifdef ENGINE_SYSTEMS_API
+#ifdef ENGINE_SYSTEMS_EXPORTS
 #define ENGINE_SYSTEMS_API __declspec(dllexport)
 #else
 #define ENGINE_SYSTEMS_API __declspec(dllimport)

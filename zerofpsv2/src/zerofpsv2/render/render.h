@@ -14,8 +14,8 @@
 #include "render_x.h"
 #include "texturemanager.h"
 #include "light.h"
-#include "../engine/fh.h"
-#include "../engine/zfresource.h"
+//#include "../engine/fh.h"
+//#include "../engine/zfresource.h"
 #include "zshader.h"
 
 class HeightMap;
@@ -60,7 +60,7 @@ class RENDER_API Render : public ZFObject {
 
 		int			m_iScreenShootNum;
 		
-		ZFResourceHandle	m_kConsoleText;
+//		ZFResourceHandle	m_kConsoleText;
 		
 		ZMaterial	m_kHeightmapMaterial;
 		
