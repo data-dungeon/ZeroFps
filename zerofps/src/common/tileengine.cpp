@@ -24,7 +24,7 @@ void TileEngine::CreateMap()
 	m_iSizeX = m_pkMap->m_iHmSize -1;
 	m_iSizeY = m_pkMap->m_iHmSize -1;	
 	
-	cout<<"Creating a tile map of "<<m_iSizeX-1<<" x "<<m_iSizeY-1<<" tiles"<<endl;
+	cout<<"Creating a tile map of "<<m_iSizeX<<" x "<<m_iSizeY<<" tiles"<<endl;
 
 	m_kTiles.reserve(m_iSizeX * m_iSizeY);
 	
