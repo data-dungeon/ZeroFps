@@ -1627,7 +1627,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 			if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
 				continue;
 			
-			float dis = m_kZones[iZ].m_kPos.DistanceTo(kMyPos);
+			float dis = float(m_kZones[iZ].m_kPos.DistanceTo(kMyPos));
 		
 			if(dis < d)
 			{

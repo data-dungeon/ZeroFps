@@ -927,7 +927,7 @@ void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
 {
-	for(int i=0; i<kSelected.size(); i++) {
+	for(unsigned int i=0; i<kSelected.size(); i++) {
 		kmap->verts[kSelected[i].m_iIndex].height = 3 * kSelected[i].m_fValue;
 		}
 }
@@ -957,7 +957,7 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 )
 {
 	int iTestX = kMap->m_iVertexSide;
-	int iVertexIndex = z*iTestX +x;
+	int iVertexIndex = int(z*iTestX+x);
 	kPos.x = float(x * kMap->m_fTileSize);
 	kPos.y = kMap->verts[iVertexIndex].height*kMap->m_fTileSize;
 	kPos.z = float(z * kMap->m_fTileSize);
@@ -1029,19 +1029,19 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 			iTileIndex = z * kMap->m_iTilesSide + x;
 			if(kMap->m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE2) 
 			{
-				GetData(kMap,x,z,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x),float(z),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
 					glVertex3f(kPos.x, kPos.y, kPos.z);					
 				
-				GetData(kMap,x,z+1,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x),float(z+1),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
 					glVertex3f(kPos.x, kPos.y, kPos.z);					
 
-				GetData(kMap,x+1,z,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x+1),float(z),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
@@ -1051,19 +1051,19 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 			// Triangle 2
 			if(kMap->m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE1) 
 			{
-				GetData(kMap,x+1,z,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x+1),float(z),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
 					glVertex3f(kPos.x, kPos.y, kPos.z);					
 
-				GetData(kMap,x,z+1,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x),float(z+1),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
 					glVertex3f(kPos.x, kPos.y, kPos.z);					
 
-				GetData(kMap,x+1,z+1,kPos,kNormal, kTex1,kTex2);
+				GetData(kMap,float(x+1),float(z+1),kPos,kNormal, kTex1,kTex2);
 					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
 					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
 					glNormal3fv((float*)&kNormal);			
