@@ -74,6 +74,8 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_bFloat,4);	
 	pkPackage->Write((void*)&m_bSolid,4);		
 	pkPackage->Write((void*)&m_bGlide,4);			
+	pkPackage->Write((void*)&m_bStride,4);				
+	pkPackage->Write((void*)&m_bStrideHeight,4);
 	pkPackage->Write((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);	
 
 
@@ -123,6 +125,8 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_bFloat,4);
 	pkPackage->Read((void*)&m_bSolid,4);	
 	pkPackage->Read((void*)&m_bGlide,4);		
+	pkPackage->Read((void*)&m_bStride,4);				
+	pkPackage->Read((void*)&m_bStrideHeight,4);	
 	pkPackage->Read((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);		
 
 
