@@ -1875,6 +1875,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "DisableFreeZoneBuildBn")
 			{
 				m_bDisableFreeZonePlacement = IsButtonChecked((char*)strWndClicked.c_str());
+				RebuildZonePosArray();
 			}
 		}
 		else
