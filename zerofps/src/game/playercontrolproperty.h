@@ -18,7 +18,11 @@ class PlayerControlProperty: public Property {
 		
 		ObjectManager *m_pkObjectMan;
 		CollisionManager *m_pkCollisionMan;
-		
+		int m_iActionForward;
+		int m_iActionStrafeRight;
+		int m_iActionStrafeLeft;
+		int m_iActionBack;
+
 		float walk;
 		bool walking;
 				

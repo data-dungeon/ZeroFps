@@ -14,6 +14,11 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 
 	walk=0;
 	walking=false;
+	m_iActionForward=m_pkInput->RegisterAction("forward");
+	m_iActionStrafeRight=m_pkInput->RegisterAction("strafe_right");
+	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
+	m_iActionBack=m_pkInput->RegisterAction("backward");
+
 };
 
 /*
@@ -40,22 +45,22 @@ void PlayerControlProperty::Update() {
 		speed*=0.5;
 	}
 	
-	if(m_pkInput->Pressed(KEY_D)){
+	if(m_pkInput->Action(m_iActionStrafeRight)){
 		walking=true;		
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
-	if(m_pkInput->Pressed(KEY_A)){
+	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
-	if(m_pkInput->Pressed(KEY_W)){
+	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
-	if(m_pkInput->Pressed(KEY_S)){
+	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
