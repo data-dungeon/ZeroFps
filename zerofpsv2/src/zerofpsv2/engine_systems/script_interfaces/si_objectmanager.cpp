@@ -279,19 +279,29 @@ int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
 {
 	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
 
-/*	if(iNrArgs != 2)
+	if(iNrArgs != 2)
 	{
 		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
 		return 0;
-	}*/
+	}
 
-	vector<TABLE_DATA> vkData;
+	double dID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
 
-	
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
 
-	g_pkScript->GetArgTable(pkLua, 2, vkData); 
+	if(pkObject)
+	{
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
 
-	printf("vkData size = %i\n", vkData.size());
+		pkObject->SetWorldPosV( Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)) );
+
+		g_pkScript->DeleteTable(vkData);
+	}
 
 	return 1;
 }

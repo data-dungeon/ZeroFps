@@ -3,6 +3,7 @@
 
 #include "../basic/basicconsole.h"
 #include "../basic/zfsubsystem.h"
+#include "../basic/rect.h"
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>

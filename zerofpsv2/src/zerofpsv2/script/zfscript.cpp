@@ -368,51 +368,34 @@ bool ZFScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
 
 bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
 {
-	lua_settop(state, -1);
-
-	int iLuaIndex = /*2; //*/iIndex + 1;
-
-//	for(int i=0; i<10; i++) // fulhack!!
-	{
-		if(lua_istable(state, iLuaIndex))
-		{
+    // table is in the stack at index `t'
+    lua_pushnil(state);  // first key
+    while (lua_next(state, iIndex) != 0) 
+	 {
 			TABLE_DATA table_data;
 
-			int c=0;
-
-			while(1)
+			if(lua_isnumber(state, -1))
 			{
-				lua_rawgeti(state, iLuaIndex, 1+c);
-
-				if(lua_isnumber(state, 2+c))
-				{
-					table_data.bNumber = true;
-					table_data.pData = new double;
-					(*(double*) table_data.pData) = lua_tonumber(state, 2+c);
-				}
-				else
-				if(lua_isstring(state, 2+c))
-				{
-					const char* text = lua_tostring(state, 2+c);
-					table_data.bNumber = false;
-					table_data.pData = new char[strlen(text)+1];
-					strcpy( (char*) table_data.pData, text);
-				}
-				else
-					break;
-
-				c++;
-
-				vkData.push_back(table_data);
+				double nr = lua_tonumber(state, -1);
+				table_data.bNumber = true;
+				table_data.pData = new double;
+				(*(double*) table_data.pData) = nr;
+			}
+			else
+			if(lua_isstring(state, -1))
+			{
+				const char* str = lua_tostring(state, -1);
+				table_data.bNumber = false;
+				table_data.pData = new char[strlen(str)+1];
+				strcpy( (char*) table_data.pData, str);
 			}
 
-			return true;
-		}
+			vkData.push_back(table_data);
 
-		iLuaIndex++;
-	}
+			lua_pop(state, 1);  // removes `value'; keeps `key' for next iteration
+    }
 
-	return false;
+	 return true;
 }
 
 // returnerar en tabel med data till lua
