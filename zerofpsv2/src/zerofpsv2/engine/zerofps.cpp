@@ -795,6 +795,7 @@ void ZeroFps::DrawDevStrings()
 	m_pkZShaderSystem->BindMaterial(m_pkDevPageMaterial);
 
 	//loop all pages and print em
+	static float fSize = 0.022;
 	string strPageName;
 	float fYOffset = 0.75;
 	for(page = 0; page <m_DevStringPage.size(); page++ ) 
@@ -802,13 +803,13 @@ void ZeroFps::DrawDevStrings()
 		if(m_DevStringPage[page].m_bVisible == true) 
 		{
 			strPageName = "[" + m_DevStringPage[page].m_kName + "]";
-			m_pkRender->Print(Vector3(-1.1,fYOffset,-1),strPageName.c_str(),0.02);
-			fYOffset -= 0.02;
+			m_pkRender->Print(Vector3(-1.1,fYOffset,-1),strPageName.c_str(),fSize);
+			fYOffset -= fSize;
 
 			for(unsigned int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
 			{
-				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),0.02);
-				fYOffset -= 0.02;
+				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),fSize);
+				fYOffset -= fSize;
 			}		
 		}
 		m_DevStringPage[page].m_akDevString.clear();
