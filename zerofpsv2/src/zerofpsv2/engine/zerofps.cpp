@@ -20,6 +20,7 @@ static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
+
 	// Create Engine SubSystems
 /*	
 	m_pkBasicFS					= new ZFBasicFS;
@@ -74,7 +75,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
 
-	
+	cout<<"200"<<endl;	
 
 
 	// Set Default values
@@ -137,6 +138,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 
+	cout<<"300"<<endl;
 }
 
 ZeroFps::~ZeroFps()
@@ -171,6 +173,8 @@ ZeroFps::~ZeroFps()
 
 bool ZeroFps::StartUp()	
 {
+	cout<<"400"<<endl;
+	
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
 	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
@@ -282,6 +286,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 
 	m_pkApp->OnInit();										// call the applications oninit funktion
+	
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
 
@@ -1051,7 +1056,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core		);
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
-	m_pkResourceDB->RegisterResource( string(".shd"), Create__Material	);	
+	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);	
 }
 
 void ZeroFps::RegisterPropertys()

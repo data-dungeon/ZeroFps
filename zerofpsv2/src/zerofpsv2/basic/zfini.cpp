@@ -9,6 +9,7 @@
 #include "zfini.h"
 #include "zfobjectmanger.h"
 #include "zfbasicfs.h"
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

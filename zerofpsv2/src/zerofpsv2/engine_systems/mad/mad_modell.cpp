@@ -466,10 +466,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->Reset();
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
-		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());				
-		
-		m_kDefaultMat.LoadShader("modelshader.shd");
-		
+		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());
 		
@@ -487,7 +484,6 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 			if(iDrawFlags & MAD_DRAW_MESH) {
 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
-				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 
@@ -499,27 +495,19 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
 					}
 				
-				ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
-				//m_pkTex->BindTexture( pkTexture->m_iTextureID );				
-				//m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
-				//m_pkTex->BindTexture("../data/textures/c_red.tga",0);
+				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());				
+				m_pkShader->SetMaterial(pkMaterial);				
+				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
+				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
 				
+				m_pkShader->Draw();
+
 /*				if(pkTexInfo->bIsAlphaTest) {
 					glEnable(GL_ALPHA_TEST);
 					glAlphaFunc(GL_GEQUAL, 0.5);
 					}*/
 				
-				m_kDefaultMat.GetPass(0)->m_bAlphaTest = pkTexInfo->bIsAlphaTest;				
-				m_kDefaultMat.GetPass(0)->m_bCullFace= !pkTexInfo->bIsAlphaTest;				
-					
-				m_pkShader->SetMaterial(&m_kDefaultMat);
-				
-				m_kDefaultMat.GetPass(0)->m_kTUs[0].SetRes(pkTexture->strTextureName.c_str());// =  pkTexture->m_iTextureID;
-//				m_kDefaultMat.GetPass(0)->m_iTUs[0] =  pkTexture->m_iTextureID;
-				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
-				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
-				
-				m_pkShader->Draw();
+
 /*
 				glDrawElements(GL_TRIANGLES,
 					iNumOfFaces * 3,

@@ -46,7 +46,7 @@ bool ZFResourceHandle::SetRes(string strName)
 
 	if(m_iID == -1)
 		return false;
-
+		
 	return true;
 }
 
@@ -183,6 +183,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 	// Failed to create resource.
 	if(!pkRes) {
 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
+		cout<<"Error: failed to create resource "<<strResName<<endl;
 		return;
 		}
 

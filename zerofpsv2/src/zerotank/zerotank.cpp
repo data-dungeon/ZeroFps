@@ -5,13 +5,14 @@
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
  
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{ 
+{ 	
 	return true;
 }
 
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), GuiApp(GUIPROC)
 { 
+
 	m_iSelfObjectID				= -1;
 	m_HaveFoundHMapObject		= false;
 	m_iGameType						= 1;
@@ -36,7 +37,7 @@ void ZeroTank::OnInit()
 //	m_pkTestMod.SetBasePtr("data/mad/rts/unit/tankl.mad");
 	
 	
-	
+
 	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
 	if(pk0) {
 		pk0->SetPos(Vector3(0,0,0));
@@ -51,8 +52,8 @@ void ZeroTank::OnInit()
 /*
 	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
 	pk2->SetPos(Vector3(60,0,0));
-	pk2->AttachToClosestZone();
-*/
+	pk2->AttachToClosestZone();*/
+
 }
 
 void ZeroTank::Init()

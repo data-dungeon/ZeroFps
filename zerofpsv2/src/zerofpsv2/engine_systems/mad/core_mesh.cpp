@@ -555,6 +555,11 @@ int Mad_CoreMesh::GetTextureID(int iTextureIndex)
 
 void Mad_CoreMesh::SetTextureHandle(int iTextureIndex, string strName)
 {
+
+	//hack deluxe av dvoid
+	strName.resize(strName.size() -3);
+	strName = "../"+strName+"zmt";
+	
 	akTexturesHandles[iTextureIndex].SetRes(strName);
 }
 

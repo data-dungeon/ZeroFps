@@ -29,8 +29,6 @@ private:
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
-	ZMaterial			m_kDefaultMat;
-
 	int						m_aiReplaceTextures[256];
 	ZFResourceHandle		m_akReplaceTexturesHandles[256];
 

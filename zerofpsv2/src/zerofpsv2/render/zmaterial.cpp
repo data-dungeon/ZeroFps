@@ -69,6 +69,8 @@ void ZMaterial::Clear()
 
 bool ZMaterial::LoadShader(const char* acFile)
 {
+
+	cout<<"trying to load"<<acFile<<endl;
 	if(m_kIni.Open(acFile,0))
 	{
 		Clear();

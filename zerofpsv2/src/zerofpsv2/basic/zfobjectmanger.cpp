@@ -131,6 +131,7 @@ ZFObjectManger* ZFObjectManger::GetInstance()
 
 void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent)
 {
+
 #ifdef _DEBUG
 	g_Logf("Register '%s'", acName);
 #endif
@@ -580,6 +581,7 @@ void ZFObjectManger::PrintCommands()
 
 bool ZFObjectManger::StartUp()
 {
+	cout<<"hora"<<endl;
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
 	int iSize = kObjectNames.size();
@@ -680,4 +682,5 @@ void ZFObjectManger::Config_Load(string strFileName)
 				}
 			}
 		}
+		
 }

@@ -1,9 +1,0 @@
-[global]
-copydata=false
-randommovements=false
-waves=false
-
-[pass-0]
-polygonmodefront=0
-tutexcords1=6
-tu1=env.tga
