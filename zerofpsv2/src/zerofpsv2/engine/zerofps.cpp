@@ -33,7 +33,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 {
 	// StartUp SDL
 //	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0)
-	if(SDL_Init(SDL_OPENGL)<0)
+	if(SDL_Init(SDL_INIT_VIDEO)<0)
 	{
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	

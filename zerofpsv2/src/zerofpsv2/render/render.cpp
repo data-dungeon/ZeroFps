@@ -49,10 +49,10 @@ Render::Render()
 	// Register Our Own commands.
 	Register_Cmd("r_glinfo",	FID_GLINFO);	
 	Register_Cmd("r_gldump",	FID_GLDUMP);	
-	Register_Cmd("ccolor",		FID_CONSOLECOLOR);	
-	Register_Cmd("shot",			FID_SHOT);	
+	Register_Cmd("ccolor",		FID_CONSOLECOLOR);
+	Register_Cmd("shot",			FID_SHOT);
 
-	
+
 	SetFont("data/textures/text/devstr.bmp");
 
 	Setup_EditColors();
@@ -62,17 +62,17 @@ bool Render::StartUp()
 {
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 	
- 	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
- 	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console")); 	 	
+ 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+ 	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader"));
+ 	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 
 	InitDisplay(m_iWidth,m_iHeight,m_iDepth);
 //	SetDisplay();
-	
+
 	return true;
 }
 
-void Render::InitDisplay(int iWidth,int iHeight,int iDepth) 
+void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 {
 	// Anything sent from app overrides default and ini files.
 	if(iWidth || iHeight || iDepth) {
@@ -81,12 +81,16 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 		m_iDepth	= iDepth;
 		}
 
+	//setup sdl_gl_attributes, this has to be done before creating the sdl opengl window
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
 	SetDisplay();
 
-	// Set w and h for appliction
-	//m_pkApp->m_iWidth = m_iWidth;
-	//m_pkApp->m_iHeight = m_iHeight;
 
 #ifdef _WIN32
 	RenderDLL_InitExtGL();
@@ -97,27 +101,17 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);	
+	glEnable(GL_NORMALIZE);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_SCISSOR_TEST);
 
 	glShadeModel(GL_SMOOTH);
 	SetClearColor(Vector4(0,0,0,0));
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glMatrixMode(GL_MODELVIEW);
-  
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	
-	//m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);
-	//m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
-  
+
 	glMatrixMode(GL_MODELVIEW);
 
-	
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -142,22 +136,26 @@ void Render::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
 
-	//turn of opengl 
-	SDL_QuitSubSystem(SDL_OPENGL);
+	//reinitialize opengl
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
 
-	
+	/*
+	//turn of opengl
+	SDL_QuitSubSystem(SDL_OPENGL);
 	//reinit opengl with the new configuration
 	SDL_InitSubSystem(SDL_OPENGL);
+	*/
 
-//	m_pkScreen= SDL_SetVideoMode(800,600,16,SDL_OPENGL);
+
 	m_iSDLVideoModeFlags = 0;
 
 	if(m_iFullScreen > 0)
-		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;	
+		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;
 
-	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags);	
+	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags);
 
 	glViewport(0, 0,m_iWidth,m_iHeight);
 

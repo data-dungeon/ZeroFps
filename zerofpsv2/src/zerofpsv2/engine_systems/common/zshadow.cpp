@@ -354,7 +354,6 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 
 void ZShadow::SetupStencilBuffer()
 {
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	glGetIntegerv(GL_STENCIL_BITS, &m_iStencilBits);
 
 	if(m_iStencilBits == 0)
