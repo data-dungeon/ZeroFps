@@ -1,4 +1,4 @@
-#define HM_SIZE 100
+//#define HM_SIZE 200
 
 #ifndef _HEIGHTMAP_H_
 #define _HEIGHTMAP_H_
@@ -16,7 +16,8 @@ struct BASIC_API HM_vert {
 
 class BASIC_API HeightMap {
 	public:
-		HM_vert verts[HM_SIZE*HM_SIZE];		
+		HM_vert* verts;		
+		int m_iHmSize;
 		
 		HeightMap();		
 		void Zero();

@@ -2,11 +2,14 @@
 
 
 HeightMap::HeightMap() {
+	m_iHmSize=100;	
+	verts=new HM_vert[m_iHmSize*m_iHmSize];
 	Zero();
+
 }
 
 void HeightMap::Zero() {
-	for(int i=0;i<HM_SIZE*HM_SIZE;i++){
+	for(int i=0;i<m_iHmSize*m_iHmSize;i++){
 		verts[i].height=0;
 		verts[i].texture=0;
 	}
@@ -33,26 +36,26 @@ void HeightMap::Random() {
 		
 	int x,y;
 	for(int i=0;i<peaks;i++) {
-		x=rand()%(HM_SIZE-3)+2;	
-		y=rand()%(HM_SIZE-3)+2;	
-		verts[y*HM_SIZE+x].height=(rand()%height)/10.0;
+		x=rand()%(m_iHmSize-3)+2;	
+		y=rand()%(m_iHmSize-3)+2;	
+		verts[y*m_iHmSize+x].height=(rand()%height)/10.0;
 	}
 	
 	float med;
 	for(int l=0;l<smooth;l++) {
-		for(int y=1;y<HM_SIZE-1;y++) {
-			for(int x=1;x<HM_SIZE-1;x++) {
+		for(int y=1;y<m_iHmSize-1;y++) {
+			for(int x=1;x<m_iHmSize-1;x++) {
 				med=0;
 				for(int q=0;q<3;q++)
 					for(int w=0;w<3;w++){
 						if(q!=0 && w!=0) {
-							med+=verts[(y+q)*HM_SIZE+(x+w)].height;
+							med+=verts[(y+q)*m_iHmSize+(x+w)].height;
 
 						}
 					}
 				med=med/8;
 				
-				verts[y*HM_SIZE+x].height=med;
+				verts[y*m_iHmSize+x].height=med;
 			}
 		}
 	}

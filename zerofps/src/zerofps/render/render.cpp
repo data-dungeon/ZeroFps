@@ -191,9 +191,35 @@ void Render::DrawHM(HeightMap *kmap) {
 //	glScalef(0.5,.5,.5);
 	
 	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
-//	m_pkTexMan->BindTexture(0);
 	
+	int x;
 	
+	glFrontFace(GL_CW);
+	for(int z=0;z<kmap->m_iHmSize-1;z++){
+			
+//		int z=0;
+		glBegin(GL_TRIANGLE_STRIP);
+		x=0;
+		p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,-z);				
+		p2=Vector3(x,kmap->verts[(z+1)*kmap->m_iHmSize+x].height,-z-1);			
+
+		
+ 		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);		 		
+ 		glTexCoord2f(0.0,1.0);glVertex3fv((float*)&p2);		 				
+		for(x=1;x<kmap->m_iHmSize-1;x++) {
+			p3=Vector3(x+1,kmap->verts[z*kmap->m_iHmSize+x+1].height,-z);					
+			p4=Vector3(x+1,kmap->verts[(z+1)*kmap->m_iHmSize+x+1].height,-z-1);
+		
+		
+  		glTexCoord2f(x,0.0);glVertex3fv((float*)&p3);    			
+  		glTexCoord2f(x,1.0);glVertex3fv((float*)&p4);    				
+	
+		}
+		glEnd();
+	}
+		glFrontFace(GL_CCW);
+		
+	/*
 	for(int z=0;z<HM_SIZE-1;z++){
 		for(int x=0;x<HM_SIZE-1;x++) {
 			p1=Vector3(x,kmap->verts[z*HM_SIZE+x].height,-z);
@@ -208,9 +234,9 @@ void Render::DrawHM(HeightMap *kmap) {
 	   		glTexCoord2f(1.0,0.0);glVertex3fv((float*)&p2);		
  			  glTexCoord2f(1.0,1.0);glVertex3fv((float*)&p4);    
 	  		glTexCoord2f(0.0,1.0);glVertex3fv((float*)&p3);    
-			glEnd();				
+			glEnd();						
 		}		
-	}	
+	}	*/
 	glPopMatrix();
 }
 
