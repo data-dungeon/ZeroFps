@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "vector4.h"
-
+using namespace std;
 
 class Matrix4 {
 	private:	

@@ -2,11 +2,10 @@
 #define _Vector4_H_
 
 #include <iostream>
-//#include "Matrix4.h"
-
-class Matrix4;
 
 using namespace std;
+
+class Matrix4;
 
 class Vector4 {
 	public:

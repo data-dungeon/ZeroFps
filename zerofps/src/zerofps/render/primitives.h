@@ -9,6 +9,7 @@
 #include "texturemanager.h"
 #include "../engine/engine.pkg"
 
+using namespace std;
 
 class Primitives {
 	private:

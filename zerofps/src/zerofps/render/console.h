@@ -6,6 +6,7 @@
 #include "../base/base.pkg"
 #include "render.pkg"
 
+using namespace std;
 
 class ZeroFps;
 

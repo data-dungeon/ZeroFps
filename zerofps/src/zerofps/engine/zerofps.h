@@ -10,6 +10,7 @@
 #include "../base/base.pkg"
 #include "../render/render.pkg"
 
+using namespace std;
 
 class Application;
 
