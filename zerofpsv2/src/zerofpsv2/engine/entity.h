@@ -78,7 +78,7 @@ public:
 	string	m_strValue;
 };
 		// Assign
-
+/*
 class ENGINE_API PropertyArcheType
 {
 public:
@@ -113,7 +113,7 @@ public:
 
 	ObjectArcheType(const ObjectArcheType &Other);
 	ObjectArcheType& operator=(const ObjectArcheType &Other);
-};
+};*/
 
 // Net Flags for Network updates
 #define OBJ_NETFLAG_POS		1

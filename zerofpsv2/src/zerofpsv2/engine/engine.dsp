@@ -207,10 +207,6 @@ SOURCE=.\network.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\objectarchetype.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\objectmanager.cpp
 # End Source File
 # Begin Source File

@@ -81,9 +81,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
 		
-		// Object ArcheTypes
-		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
-
 		list<Entity*>				m_akObjects;									///< List of all objects.
 		
 		// DELETE
@@ -109,9 +106,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 		void TESTVIM_LoadArcheTypes(char* szFileName);
-		ObjectArcheType* GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
-		void AddArchPropertys(Entity* pkObj, string strName);
-
 
 	public:
 		int		m_iForceNetUpdate;					
@@ -134,9 +128,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		// Create 
 		Entity* CreateObject();												///< Create a empty object.
-//		Object* CreateObject(const char* acName);						///< Create object from template.
 		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
-		Entity* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Entity* CreateObjectFromScript(const char* acName);
 		Entity* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
@@ -153,7 +145,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 
 		// Arch types
-		bool IsA(Entity* pkObj, string strStringType);
+//		bool IsA(Entity* pkObj, string strStringType);
 
 		// Gets
 		Entity* GetWorldObject()	{	return m_pkWorldObject;				};

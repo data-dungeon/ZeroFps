@@ -81,10 +81,11 @@ Entity::~Entity()
 	delete(m_pScriptFileHandle);
 }
 
+/*
 bool Entity::IsA(string strStringType)
 {
 	return m_pkObjectMan->IsA(this, strStringType);
-}
+}*/
 
 /**	\brief	Adds a property to the Entity.
 */

@@ -1,10 +1,8 @@
 #include "objectmanager.h"
 #include "network.h"
 #include "zerofps.h"
-//#include "netslaveobject.h"
 #include "../basic/zfsystem.h"
 #include "../basic/simplescript.h"
-//#include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/p_primitives3d.h"
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/propertys/p_mad.h"
@@ -100,8 +98,6 @@ bool ObjectManager::StartUp()
 
 	//create all base objects
 	Clear();
-
-	TESTVIM_LoadArcheTypes("zfoh.txt");
 
 	//setup script interface
 	ObjectManagerLua::Init(this,m_pkScript);
@@ -220,29 +216,6 @@ Entity* ObjectManager::CreateObject()
 {
 	Entity* pkObj = new Entity;
 	//cout << "CreateObject :" << pkObj->iNetWorkID << endl;
-	return pkObj;
-}
-
-/**	\brief	Creates a object from the zfoh.txt file.
-
-	Creates a object as described in the zfoh.txt file (poor man script). If a object is
-	not found with the choosen name no object will be created.
-*/
-Entity* ObjectManager::CreateObjectByArchType(const char* acName)
-{
-	ObjectArcheType* pkAt = GetArcheType(string(acName));
-	if(!pkAt)
-		return false;
-
-	Entity* pkObj	=	CreateObject();
-	pkObj->m_eRemoteRole	= NETROLE_PROXY;
-	pkObj->m_eRole			= NETROLE_AUTHORITY;
-
-	AddArchPropertys(pkObj, string(acName));
-
-	pkObj->m_strType	= acName;
-	pkObj->m_strName	= string("A ") + pkObj->m_strType;
-
 	return pkObj;
 }
 
@@ -471,6 +444,7 @@ Entity* ObjectManager::CreateObjectFromScript(const char* acName)
 	return pkReturnObj;
 }
 
+/*
 bool ObjectManager::IsA(Entity* pkObj, string strStringType)
 {
 	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
@@ -493,7 +467,7 @@ bool ObjectManager::IsA(Entity* pkObj, string strStringType)
 		}
 
 	return false;
-}
+}*/
 
 // Gets
 void ObjectManager::GetAllObjects(vector<Entity*> *pakObjects)
@@ -1016,132 +990,6 @@ char* ObjectManager::GetPropertySideName(int iSide)
 
 
 }
-
-
-// Object ArcheTypes
-
-ObjectArcheType*	ObjectManager::GetArcheType(string strName)
-{
-	for(list<ObjectArcheType*>::iterator it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
-		if((*it)->m_strName == strName)
-			return (*it);
-		}
-
-	return NULL;
-	
-}
-
-void ObjectManager::AddArchPropertys(Entity* pkObj, string strName)
-{
-	ObjectArcheType* pkAt = GetArcheType(strName);
-	if(!pkAt)
-		return;
-
-	Property* pkProperty;
-
-	AddArchPropertys(pkObj, pkAt->m_strParentName);
-	for(unsigned int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
-		pkProperty = pkObj->AddProxyProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
-
-		for(unsigned int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
-			pkProperty = pkObj->GetProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
-	
-			pkProperty->SetValue(pkAt->m_kArchPropertys[i].m_kVariables[j].m_strVariable.c_str(),
-				pkAt->m_kArchPropertys[i].m_kVariables[j].m_strValue.c_str());
-			}
-		}
-	
-}
-
-void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
-{
-	SimpleScriptFile kMMScipt;
-
-	if(kMMScipt.LoadScript(szFileName) == false) {
-		cout << "Failed to load script " << szFileName << endl;
-		return;
-		}
-
-
-	char* ucpToken;
-	ucpToken = kMMScipt.GetToken();
-	ObjectArcheType* pkAt = NULL;
-	
-	string strPropName, strPropVar, strPropValue;
-
-	while(ucpToken)
-	{
-		if (!strcmp (ucpToken, "parent")) {
-			if(pkAt) {
-				ucpToken = kMMScipt.GetToken();
-				pkAt->m_strParentName = ucpToken;
-				}
-		}
-
-		if (!strcmp (ucpToken, "class")) {
-			if(pkAt) {
-				m_akArcheTypes.push_back(pkAt);
-				pkAt = NULL;
-				}
-
-			pkAt = new ObjectArcheType;
-			ucpToken = kMMScipt.GetToken();
-			pkAt->m_strName = ucpToken;
-			//cout << "Creating class: " << ucpToken << endl;
-			}
-
-		
-		if (!strcmp (ucpToken, "set")) {
-			if(pkAt) {
-				ucpToken = kMMScipt.GetToken();
-				strPropName = ucpToken;
-
-				ucpToken = kMMScipt.GetToken();
-				strPropVar = ucpToken;
-
-				ucpToken = kMMScipt.GetToken();
-				strPropValue = ucpToken;
-	
-				pkAt->SetValue(strPropName, strPropVar, strPropValue);
-				//cout << "Set:  " << strPropName << "." <<  strPropVar << "=" << strPropValue << endl;
-				}
-			}
-
-		if (!strcmp (ucpToken, "add")) {
-			if(pkAt) {
-				ucpToken = kMMScipt.GetToken();
-				strPropName = ucpToken;
-				pkAt->GetAddArchProperty(string (strPropName) );
-				//cout << "Add:  " << strPropName << endl;
-				}
-			}
-
-		ucpToken = kMMScipt.GetToken();
-	}
-
-	if(pkAt) {
-		m_akArcheTypes.push_back(pkAt);
-		pkAt = NULL;
-		}
-}
-
-void ObjectManager::GetArchObjects(vector<string>* pkFiles, string strParentName)
-{
-	list<ObjectArcheType*>::iterator it;
-
-	if(strParentName == "") {
-		for(it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
-			pkFiles->push_back((*it)->m_strName);
-			}
-		}
-	else {
-		for(it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
-			if((*it)->m_strParentName == strParentName)
-				pkFiles->push_back((*it)->m_strName);
-			}
-		}
-}
-
 
 void ObjectManager::GetPropertys(int iType,int iSide)
 {

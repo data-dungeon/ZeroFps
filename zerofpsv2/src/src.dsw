@@ -165,9 +165,6 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name zerotank
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mistclient
     End Project Dependency
     Begin Project Dependency
