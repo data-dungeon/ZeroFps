@@ -16,7 +16,7 @@ UserPanel::UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc)
 {
 	m_pkZeroRts = pkZeroRts;
 	m_pkGuiBuilder = pkZeroRts->m_pkGuiBuilder;
-	m_szLastCmd = NULL;
+	m_pkLastCmd = NULL;
 }
 
 UserPanel::~UserPanel()
@@ -81,7 +81,7 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						 int iNumberOfParams,void *pkParams )
 {
 	int x, y;
-	unsigned int i;
+	//unsigned int i;
 	ZGuiWnd* pkClickWnd = NULL;
 
 	switch(uiMessage)
@@ -92,7 +92,7 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		x = ((int*)pkParams)[0];
 		y = ((int*)pkParams)[1];
 
-		if(pkWnd == m_pkGuiBuilder->Get("MiniMapWnd"))
+/*		if(pkWnd == m_pkGuiBuilder->Get("MiniMapWnd"))
 		{
 			OnClickMinimap(x,y);
 		}
@@ -112,7 +112,7 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						(char*)r->second.c_str());
 				break;
 			}
-		}
+		}*/
 
 		if(pkWnd == m_pkGuiBuilder->Get("MinMapWnd"))
 		{
@@ -203,6 +203,8 @@ void UserPanel::UpdateCmdButtons()
 
 	HideAllCmdButtons();
 
+	m_kClickInfoMap.clear();
+
 	for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin();
 		it != m_pkZeroRts->m_kSelectedObjects.end();it++)		
 	{
@@ -218,7 +220,11 @@ void UserPanel::UpdateCmdButtons()
 				set<int>::iterator r = kSetMap.find(iIconIndex);
 				if(r == kSetMap.end())
 				{
-					SetCmdButtonIcon(iIndex, iIconIndex, true);
+					ZGuiButton* pkButton = SetCmdButtonIcon(iIndex, iIconIndex, true);
+					
+					m_kClickInfoMap.insert(map<ZGuiButton*, UnitCommandInfo*>::value_type(
+						pkButton, &pkClientUnit->m_kUnitCommands[i]));
+					
 					kSetMap.insert(set<int>::value_type(iIconIndex));
 					iIndex++;
 				}
@@ -227,12 +233,12 @@ void UserPanel::UpdateCmdButtons()
 	}
 }
 
-void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
+ZGuiButton* UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 {
 	if(iButtonIndex < 0 || iButtonIndex > MAX_NUM_CMD_BNS)
 	{
 		printf("SetCmdButtonIcon = ERROR\n");
-		return;
+		return NULL;
 	}
 
 	ZGuiButton* pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
@@ -241,7 +247,7 @@ void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 	if(pkButton == NULL)
 	{
 		printf("SetCmdButtonIcon = ERROR\n");
-		return;
+		return NULL;
 	}
 
 	int iNumVisibleButtons = GetNumVisibleCmdButtons();
@@ -285,12 +291,14 @@ void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 		case 2: pkButton->SetButtonHighLightSkin(pkSkin); break;
 		}
 	}
+
+	return pkButton;
 }
 
 void UserPanel::OnClickCmdButton(int iCtrlID)
 {
-	if(iCtrlID >= ID_CMD_BUTTONS_START && iCtrlID < 
-		ID_CMD_BUTTONS_START+MAX_NUM_CMD_BNS)
+	if(!(iCtrlID >= ID_CMD_BUTTONS_START && iCtrlID < 
+		ID_CMD_BUTTONS_START+MAX_NUM_CMD_BNS))
 		return;
 
 	ZGuiButton* pkButton = (ZGuiButton*) 
@@ -299,11 +307,12 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 	if(pkButton == NULL)
 		return;
 
-	if(m_szLastCmd)
-		delete[] m_szLastCmd;
-
-	m_szLastCmd = new char[25];
-	strcpy(m_szLastCmd, "Move");
+	map<ZGuiButton*,UnitCommandInfo*>::iterator r;
+	r = m_kClickInfoMap.find(pkButton);
+	if(r != m_kClickInfoMap.end())	
+	{
+		m_pkLastCmd = r->second;
+	}
 }
 
 int UserPanel::GetNumVisibleCmdButtons()
@@ -336,11 +345,10 @@ void UserPanel::HideAllCmdButtons()
 
 bool UserPanel::PopLastButtonCommand(char* szCommand)
 {
-	if(m_szLastCmd != NULL)
+	if(m_pkLastCmd != NULL)
 	{
-		strcpy(szCommand, m_szLastCmd);
-		delete[] m_szLastCmd;
-		m_szLastCmd = NULL;
+		strcpy(szCommand, m_pkLastCmd->m_acCommandName);
+		m_pkLastCmd = NULL;
 		return true;
 	}
 

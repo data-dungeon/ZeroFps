@@ -75,9 +75,9 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	case UNIT_MOVE:
 		{
 			
-		/*Vector3 Vec3;
-		Vec3= m_pkObject->GetPos();
-		Vec3.z+=20;
+			/*Vector3 Vec3;
+			Vec3= m_pkObject->GetPos();
+			Vec3.z+=20;
 			m_pkObject->SetPos(Vec3);*/
 			
 			m_kEndPoint = Point(iXDestinaton,iYDestinaton);
@@ -150,11 +150,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				fZ -= HEIGHTMAP_SCALE/2;	// of square.*/
 
 				float fY = m_pkMap->Height(fX,fZ);
-
 				m_pkObject->SetPos(Vector3(fX,fY,fZ));
-				m_pkObject->SetPos(Vector3(fX,fY,fZ));				
-				
-				TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
+							
+				TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
+					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
 				
 				return this;
 			}

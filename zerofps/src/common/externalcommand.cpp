@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////
 
 ExternalCommand::ExternalCommand(AIBase* pkAIOwner, int iCommandID) : 
-m_pkOwner(pkAIOwner), m_iCommandID(iCommandID) 
+	m_pkOwner(pkAIOwner), m_iCommandID(iCommandID) 
 {
 
 }

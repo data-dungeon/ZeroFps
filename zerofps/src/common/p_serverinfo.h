@@ -24,7 +24,7 @@ class COMMON_API P_ServerInfo: public Property {
 		struct ServerInfo
 		{
 			char m_acServerName[64];
-			
+			unsigned char abyColor[3];
 			
 		
 		} m_kSInfo; 

@@ -28,6 +28,3 @@ COMMON_API Property* Create_P_RenderSelection()
 {
 	return new P_RenderSelection();
 }
-
-
-

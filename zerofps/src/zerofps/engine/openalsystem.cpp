@@ -87,6 +87,7 @@ int OpenAlSystem::GetUnusedSource()
 			return i;
 		}
 	}
+
 	return -1;
 }
 

@@ -62,8 +62,6 @@ void ZeroRTS::Init()
 	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
 	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
 
-	
-
 	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
 	
@@ -170,7 +168,7 @@ void ZeroRTS::OnIdle()
 	}
 
 	if(m_pkMiniMap)
-		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); 
+		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkFps->GetGameTime()); 
 
 	// Draw selection rectangle
 	if(m_kClickPos != NO_SELECTION)
@@ -483,8 +481,11 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;			
 			}
 
-			m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
-			m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
+			if(m_pkMiniMap == NULL)
+			{
+				m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);	
+				m_pkMiniMap->Create(pkLevelMan, pkObjectMan); 
+			}
 			
 			pkConsole->Printf("Level loaded");
 
@@ -858,8 +859,11 @@ void ZeroRTS::ClientInit()
 	m_pkFogRender->SetScale(mapwidth);
 	
 	//setup minimap
-	m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
-	m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
+	if(m_pkMiniMap == NULL)
+	{
+		m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
+		m_pkMiniMap->Create(pkLevelMan, pkObjectMan);
+	}
 		
 	cout<<"Join Complete"<<endl;
 }
@@ -1115,6 +1119,4 @@ void ZeroRTS::SetupGUI()
 
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
-
-
 }

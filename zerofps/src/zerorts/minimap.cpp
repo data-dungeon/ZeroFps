@@ -6,6 +6,7 @@
 #include "../zerofps/render/texturemanager.h"
 #include "../zerofps/engine/levelmanager.h"
 #include "../zerofps/gui/zgui.h"
+//#include "../common/p_clientunit.h"
 #include "guibuilder.h"
 #include "minimap.h"
 
@@ -27,8 +28,8 @@ MiniMap::~MiniMap()
 
 }	
 
-void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender,
-				   Render* pkRender)
+void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender, 
+				   float fCurrTime)
 {
 	// minimap dimension
 	int mmSize = m_iSize; 
@@ -61,47 +62,7 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender,
 	pkGui->DrawLine(Point(fvLeft+fvWidth, fvTop), Point(fvLeft+fvWidth, fvTop+fvHeight)); // right
 	pkGui->DrawLine(Point(fvLeft, fvTop+fvHeight), Point(fvLeft+fvWidth, fvTop+fvHeight)); 
 
-
-	static bool init = false;
-	static Point array[800];
-
-	if(!init)
-	{
-		Point p;
-		
-		int k=0;
-
-		int s[] = { 25,25,  mmSize-20-25,15,  mmSize-30,mmSize-30,  11,mmSize-40 };
-
-		for(int i=0; i<4; i++)
-		{
-			p = Point(mmLeft+s[i*2], mmTop+s[i*2+1]);
-
-			for(int j=0; j<200; j++)
-				array[k++] = Point(p.x+rand()%30, p.y+rand()%30);
-		}
-
-		init = true;
-	}
-
-	int i;
-	for(i=0; i<10; i++)
-	{
-		Point p = array[i];
-		pkGui->DrawPoint(p, 255, 128, 0); p.x += 1;
-		pkGui->DrawPoint(p, 255, 128, 0); p.y += 1;
-		pkGui->DrawPoint(p, 255, 128, 0); p.x -= 1;
-		pkGui->DrawPoint(p, 255, 128, 0); 
-	}
-
-	for( i=200; i<400; i++)
-		pkGui->DrawPoint(array[i], 0, 0, 128);
-
-	for( i=400; i<600; i++)
-		pkGui->DrawPoint(array[i], 0, 44, 128);
-
-	for( i=600; i<800; i++)
-		pkGui->DrawPoint(array[i], 243, 213, 2);
+	DrawUnits(fCurrTime, pkGui, mmLeft, mmTop, mmSize);
 
 	int x, y;
 
@@ -134,11 +95,12 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui, P_FogRender* pkFogRender,
 		//pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load("../data/textures/fog_a.bmp",0);
 		m_pkGuiBuilder->Get("MiniMapWnd")->SetSkin(pkSkin);
 	}*/
-
 }
 
-void MiniMap::Create(LevelManager *pkLevelMan)
+void MiniMap::Create(LevelManager *pkLevelMan, ObjectManager* pkObjMan)
 {
+	m_pkObjectMan = pkObjMan;
+
 	const int TEXTURE_SIZE = 128; // not same as minimap window size...
 
 	m_pkTexMan->BindTexture("../data/textures/minimap.bmp", T_NOMIPMAPPING);
@@ -237,4 +199,90 @@ void MiniMap::Show(bool bVisible)
 		m_pkGuiBuilder->Get("MiniMapWnd")->Show();
 	else
 		m_pkGuiBuilder->Get("MiniMapWnd")->Hide();
+}
+
+void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, float wnd_sz)
+{
+	static float s_fPrevTime = -1;
+
+/*	// Är det dags att uppdatera grafiken?
+	if(fTime - s_fPrevTime < 1.00f)
+		return;*/
+
+	vector<Object*> akAllObjs;
+	m_pkObjectMan->GetAllObjects(&akAllObjs);
+
+	float map_size  = 256;
+	float map_size_d2 = map_size*2;
+
+	const int antal = akAllObjs.size();
+	for(int i=0; i<antal; i++)
+	{
+		if(akAllObjs[i]->GetProperty("P_ClientUnit"))
+		{
+			Vector3 kObjPos = akAllObjs[i]->GetPos();
+
+			Point p;
+			float procent_av_bredd = (float) (kObjPos.x + map_size) / map_size_d2;
+			float procent_av_hojd = (float) (kObjPos.z + map_size) / map_size_d2;
+
+			p.x = wnd_x  + procent_av_bredd*wnd_sz;
+			p.y = wnd_y  + procent_av_hojd*wnd_sz;
+
+			pkGui->DrawPoint(p, 255, 128, 0); p.x += 1;
+			pkGui->DrawPoint(p, 255, 128, 0); p.y += 1;
+			pkGui->DrawPoint(p, 255, 128, 0); p.x -= 1;
+			pkGui->DrawPoint(p, 255, 128, 0); 
+		}
+	}
+
+
+	s_fPrevTime = fTime;
+
+/*	static bool init = false;
+	static Point array[800];
+
+	if(!init)
+	{
+		Point p;
+		
+		int k=0;
+
+		int s[] = { 25,25,  wnd_sz-20-25,15,  wnd_sz-30,wnd_sz-30,  11,wnd_sz-40 };
+
+		for(int i=0; i<4; i++)
+		{
+			p = Point(wnd_x+s[i*2], wnd_y+s[i*2+1]);
+
+			for(int j=0; j<200; j++)
+				array[k++] = Point(p.x+rand()%30, p.y+rand()%30);
+		}
+
+		init = true;
+	}
+
+	int i;
+	for(i=0; i<10; i++)
+	{
+		Point p = array[i];
+		pkGui->DrawPoint(p, 255, 128, 0); p.x += 1;
+		pkGui->DrawPoint(p, 255, 128, 0); p.y += 1;
+		pkGui->DrawPoint(p, 255, 128, 0); p.x -= 1;
+		pkGui->DrawPoint(p, 255, 128, 0); 
+	}
+
+	for( i=200; i<400; i++)
+	{
+		Point p = array[i];
+		pkGui->DrawPoint(p, 0, 0, 128); p.x += 1;
+		pkGui->DrawPoint(p, 0, 0, 128); p.y += 1;
+		pkGui->DrawPoint(p, 0, 0, 128); p.x -= 1;
+		pkGui->DrawPoint(p, 0, 0, 128); 
+	}
+
+	for( i=400; i<600; i++)
+		pkGui->DrawPoint(array[i], 0, 44, 128);
+
+	for( i=600; i<800; i++)
+		pkGui->DrawPoint(array[i], 243, 213, 2);*/
 }

@@ -12,13 +12,16 @@
 class MiniMap  
 {
 public:
+	
 	void Show(bool bVisible);
-	void Create(/*TextureManager* pkTexMan,*/ LevelManager* pkLevelMan);
-	void Draw(Camera* pkCamera, ZGui* pkGui, P_FogRender* pkFogRender, Render* pkRender);
+	void Create(LevelManager* pkLevelMan, ObjectManager* pkObjMan);
+	void Draw(Camera* pkCamera, ZGui* pkGui, P_FogRender* pkFogRender, float fCurrTime);
 	MiniMap(GuiBuilder* pkGuiBuilder, TextureManager *pkTexMan);
 	virtual ~MiniMap();
 
 private:
+
+	void DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, float wnd_sz);
 	
 	const int m_iDisclosuredCellRow;
 	Point m_kScreenPos;
@@ -31,6 +34,7 @@ private:
 
 	GuiBuilder* m_pkGuiBuilder;
 	TextureManager *m_pkTexMan;
+	ObjectManager  *m_pkObjectMan;
 };
 
 #endif // !defined(AFX_MINIMAP_H__07AFEE97_DF3C_4279_A1BE_E29D50380DB4__INCLUDED_)
