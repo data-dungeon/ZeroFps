@@ -3,8 +3,8 @@
 
 BallObject::BallObject(HeightMap *pkMap) {
 //	AddProperty(new ModelProperty());
-//	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
-	AddProperty(new CollisionProperty(&m_kPos));
+	AddProperty(new CollisionProperty(&m_kPos,new float(3)));
+//	AddProperty(new CollisionProperty(&m_kPos));
 }
 
 void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){

@@ -5,6 +5,7 @@ Object::Object() {
 	m_pkObjectMan=NULL;
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
+	m_kVel=Vector3(0,0,0);
 }
 
 
@@ -51,6 +52,9 @@ bool Object::RemoveProperty(char* acName) {
 }
 
 void Object::Update(){
+	//apply the velocity vector to the position vector
+	m_kPos+=m_kVel;
+
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		(*it)->Update();
 	}

@@ -87,12 +87,12 @@ void ZeroFps::MainLoop(void) {
 
 				//handle input
 				m_pkInput->Update();
-				
-				//update all objects
-				m_pkObjectMan->Update();
-				
+						
 				//update all collisions
 				m_pkCollisionMan->Update();				
+
+				//update all objects
+				m_pkObjectMan->Update();
 
 				//run application Head On Display 
 				SetCamera(m_pkConsoleCamera);

@@ -96,7 +96,7 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-
+/*
 
 	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test);
@@ -109,7 +109,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-
+*/
 
 	glEnable(GL_LIGHTING );
 	
@@ -117,12 +117,12 @@ void Test::OnInit(void) {
 	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);
 //	cam1->SetViewPort(0,.4,.6,.6);
 	
-	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
-//	kul->AddProperty(new CameraProperty(cam2));
-	kul->AddProperty(new MadProperty(&akCoreModells[0]));	
-	kul->GetPos()=Vector3(5,5,5);		
-	pkObjectMan->Add(kul);
-	pkCollisionMan->Add(kul);
+	PlayerObject *player=new PlayerObject(test,pkInput,pkFps);
+	player->AddProperty(new CameraProperty(cam1));
+//	player->AddProperty(new MadProperty(&akCoreModells[0]));	
+	player->GetPos()=Vector3(5,5,5);		
+	pkObjectMan->Add(player);
+	pkCollisionMan->Add(player);
 	
 	
 	//add a collisionproperty for our heightmap

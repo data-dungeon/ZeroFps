@@ -5,6 +5,7 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
+#include "playerobject.h"
 
 using namespace std;
 
@@ -13,10 +14,10 @@ class PlayerControlProperty: public Property {
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;
-		
-		float ner;
-		
+				
 	public:
+		float ner;		
+		
 		PlayerControlProperty(Input *pkInput,ZeroFps *pkFps,HeightMap *pkMap);
 
 		void Update();
