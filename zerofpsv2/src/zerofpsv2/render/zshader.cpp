@@ -60,7 +60,7 @@ void ZShader::SetPointer(int iType,void* pkPointer)
 			m_pkTexturePointer3 = (Vector2*)pkPointer;
 			break;		
 		case INDEX_POINTER:
-			m_pkIndexPointer = (int*)pkPointer;
+			m_pkIndexPointer = (unsigned int*)pkPointer;
 			break;
 		case COLOR_POINTER:
 			m_pkColorPointer = (Vector4*)pkPointer;
@@ -327,7 +327,7 @@ void ZShader::CopyVertexData()
 		CopyData((void**)&m_pkTexturePointer3,sizeof(Vector2)*m_iNrOfVertexs);
 	
 	if(m_pkIndexPointer)
-		CopyData((void**)&m_pkIndexPointer,sizeof(int)*m_iNrOfVertexs);
+		CopyData((void**)&m_pkIndexPointer,sizeof(unsigned int)*m_iNrOfVertexs);
 	
 	if(m_pkColorPointer)
 		CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
@@ -379,12 +379,12 @@ void ZShader::Draw()
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
 	{
-		ZMaterialSettings* pkSettings = m_pkCurentMaterial->GetPass(i);
-	
-		SetupRenderStates(pkSettings);
+		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
 		
-		glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
-	
+		if(m_pkIndexPointer)
+			glDrawElements(m_iDrawMode,m_iNrOfVertexs,GL_UNSIGNED_INT,m_pkIndexPointer);
+		else
+			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);	
 	}
 	
 	if(m_bCopyedData)

@@ -12,7 +12,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	g_ZFObjSys.Log_Create("zerorts");
 
-}
+} 
 
 void ZeroTank::OnInit() 
 {

@@ -74,14 +74,14 @@ class RENDER_API ZShader : public ZFObject
 		ZMaterial*	m_pkCurentMaterial;	
 		
 		//pointer to geometry data
-		Vector3*		m_pkVertexPointer;
-		Vector3*		m_pkNormalPointer;	
-		Vector2*		m_pkTexturePointer0;
-		Vector2*		m_pkTexturePointer1;		
-		Vector2*		m_pkTexturePointer2;		
-		Vector2*		m_pkTexturePointer3;		
-		int*			m_pkIndexPointer;
-		Vector4*		m_pkColorPointer;
+		Vector3*			m_pkVertexPointer;
+		Vector3*			m_pkNormalPointer;	
+		Vector2*			m_pkTexturePointer0;
+		Vector2*			m_pkTexturePointer1;		
+		Vector2*			m_pkTexturePointer2;		
+		Vector2*			m_pkTexturePointer3;		
+		unsigned int*	m_pkIndexPointer;
+		Vector4*			m_pkColorPointer;
 		
 		//nr of vertexs
 		int			m_iNrOfVertexs;				
