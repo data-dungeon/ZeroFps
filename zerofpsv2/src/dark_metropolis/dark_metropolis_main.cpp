@@ -179,6 +179,11 @@ void DarkMetropolis::OnSystem()
 		m_iCurrentPickedEntity = pkEnt->GetEntityID();
 	else
 		m_iCurrentPickedEntity = -1;
+		
+		
+	//make sure all selected characters are valid
+	ValidateSelection();
+	ValidateAgentsOnField();
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -219,12 +224,15 @@ void DarkMetropolis::OnServerStart()
 		}
 	}
 			
+	//m_kAgentsOnField.clear();			
 	m_kSelectedEntitys.clear();
 	m_bSelectSquare = 		false;
 	m_iCurrentFormation =	FORMATION_CIRCLE;
 	m_bActionPressed =		false;
 	m_iHQID =					-1;
 	m_iActiveHQ = 				-1;
+	
+	UpdateAgentsOnField();
 }
 
 void DarkMetropolis::OnClientStart()
@@ -329,6 +337,14 @@ void DarkMetropolis::Input()
 	if(m_pkInputHandle->Pressed(KEY_H))
 		m_pkHQDlg->OpenDlg(); // Open the HQ dialog
 
+	if(m_pkInputHandle->Pressed(KEY_F))
+	{
+		cout<<"Agents on field"<<endl;
+		for(int i = 0;i<m_kAgentsOnField.size();i++)
+		{
+			cout<<"agent:"<<m_kAgentsOnField[i]<<endl;
+		}
+	}
 
 	//check for camera movment	
 	if(m_pkCameraEntity)
@@ -607,7 +623,7 @@ void DarkMetropolis::Input()
 							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
 							{
 								cout<<"entering hq"<<endl;
-								SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
+								//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 
 								DMOrder kOrder;
 								kOrder.m_iOrderType = eEnterHQ;
@@ -618,7 +634,7 @@ void DarkMetropolis::Input()
 							}
 							else
 							{
-								SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
+								//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 								
 								pkCh->ClearOrders();
 								
@@ -1083,3 +1099,73 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 
 	}
 }
+
+void DarkMetropolis::ValidateSelection()
+{
+	for(int i = 0;i < m_kSelectedEntitys.size();i++)
+	{
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+		{
+			if(!pkEnt->GetParent()->IsZone())		
+			{	
+				SelectAgent(m_kSelectedEntitys[i], true, false,false);
+				//((CGamePlayDlg*)m_pkGamePlayDlg)->InitDlg();
+				i = 0;
+			}		
+		}	
+	}
+}
+
+void DarkMetropolis::ValidateAgentsOnField()
+{
+	for( vector<int>::iterator it = m_kAgentsOnField.begin(); it!=m_kAgentsOnField.end(); it++)
+	{
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(*it))
+		{
+			//character was found but not in a zone, remove it
+			if(!pkEnt->GetParent()->IsZone())
+			{		
+				m_kAgentsOnField.erase(it); 
+				it = m_kAgentsOnField.begin();
+			}
+			else
+			{
+				if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+				{	
+					//agent is in a zone but has wrong team
+					if(pkCh->m_iTeam != 0)
+					{			
+						m_kAgentsOnField.erase(it); 
+						it = m_kAgentsOnField.begin();						
+					}
+				}
+			}
+		}
+		//character was not found att all, remove it
+		else		
+		{			
+			m_kAgentsOnField.erase(it); 
+			it = m_kAgentsOnField.begin();
+		}
+	}	
+}
+
+void DarkMetropolis::UpdateAgentsOnField()
+{
+	m_kAgentsOnField.clear();
+
+	vector<Entity*> m_kEntitys;
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&m_kEntitys);
+	
+	for(int i = 0;i<m_kEntitys.size();i++)
+	{
+		if(P_DMCharacter* pkCh = (P_DMCharacter*)m_kEntitys[i]->GetProperty("P_DMCharacter"))
+		{	
+			if(pkCh->m_iTeam == 0)
+			{
+				m_kAgentsOnField.push_back(m_kEntitys[i]->GetEntityID());
+			}
+		}
+	}
+}
+

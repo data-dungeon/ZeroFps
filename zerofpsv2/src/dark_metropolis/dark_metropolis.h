@@ -81,6 +81,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		int			m_iCurrentPickedEntity;
 		
+		vector<int> m_kAgentsOnField;						//list of agents active in the field
 		vector<int> m_kSelectedEntitys;					//list of selected entitys		
 		int			m_iCurrentFormation;					//what formation to use when moving characters
 		
@@ -91,12 +92,12 @@ class DarkMetropolis : public Application, public ZGuiApp
 		Vector3		m_kSelectSquareStop;					//stop/current pos of selection square
 		bool			m_bSelectSquare;						//are we currently drawing a selection square
 		
-		Vector3	m_kPickPos;									//exact possition of last cursor pick operation
-		string	m_strSaveDirectory;						//directory in wich savegames are stored
+		Vector3		m_kPickPos;									//exact possition of last cursor pick operation
+		string		m_strSaveDirectory;						//directory in wich savegames are stored
 
-		int 		m_iEnableMusic; 									//if the music should be played or not
-		float		m_fBulletTime;
-		
+		int 			m_iEnableMusic; 									//if the music should be played or not
+		float			m_fBulletTime;
+			
 		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
 		
 		//picking
@@ -110,6 +111,9 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool SaveGame(string strsavegame);
 
 		int FindActiveHQ();
+		void ValidateSelection();
+		void ValidateAgentsOnField();
+		void UpdateAgentsOnField();
 	
 	public:
 

@@ -349,12 +349,13 @@ class ENGINE_API Entity
 		void			SetInterpolate(bool bInterpolate);
 		
 		// Inlines & get/set functions
+		inline bool IsZone() 								{	return m_bZone;			};
 		inline int GetEntityID()							{	return m_iEntityID;		};
 		inline int GetUpdateStatus()						{	return m_iUpdateStatus;	};
 		inline bool& GetSave()								{	return m_bSave;			};
 		inline string GetName()								{	return m_strName;			};
 		inline string GetType()								{	return m_strType;			};
-		inline ZFResourceHandle* GetEntityScript()   { return m_pScriptFileHandle;};
+		inline ZFResourceHandle* GetEntityScript()   {	return m_pScriptFileHandle;};
 		
 		inline Vector3 GetVel()								{	return m_kVel;				};		
 		inline Vector3 GetAcc()								{	return m_kAcc;				};
@@ -362,10 +363,10 @@ class ENGINE_API Entity
 		inline Vector3* GetVelPointer()					{	return &m_kVel;			};		
 		inline Vector3* GetAccPointer()					{	return &m_kAcc;			};
 		inline float* GetRadiusPointer()					{	return &m_fRadius;		};		
-		inline int GetCurrentZone()  						{ return m_iCurrentZone;	};
+		inline int GetCurrentZone()  						{	return m_iCurrentZone;	};
 
-		bool GetUseZones() {return m_bUseZones;};
-		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
+		bool GetUseZones() 									{	return m_bUseZones;		};
+		void SetUseZones(bool bUz) 						{	m_bUseZones = bUz;		};		
       void SetUpdateStatus(int iUpdateStatus);
 		
 

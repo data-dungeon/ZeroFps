@@ -1447,7 +1447,8 @@ int DMLua::ExplosionLua(lua_State* pkLua)
 		if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
 		{
 			// check distance
-			double dDist = kObj[i]->GetWorldPosV().DistanceTo(pkExpl->GetWorldPosV());
+			Vector3 kBla = pkExpl->GetWorldPosV();
+			double dDist = kObj[i]->GetWorldPosV().DistanceTo(kBla);
 
 			if ( dDist <= dRadie )
 			{
