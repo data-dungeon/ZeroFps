@@ -236,9 +236,6 @@ void ZShader::Waves()
 		float bla = sin(SDL_GetTicks()/500.0 + offset)*0.1;
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
-
-//		m_pkTexturePointer0[i].x += sin(SDL_GetTicks()/500.0 + i*0.1);
-//		m_pkTexturePointer0[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);		
 	}
 }
 

@@ -44,7 +44,6 @@ MadProperty::MadProperty(string strResName)
 
 void MadProperty::Update() 
 {
-
 /*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
 	
 	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
@@ -68,7 +67,6 @@ void MadProperty::Update()
 
 //	if(!m_pkFrustum->SphereInFrustum(sphere))
 //		return;
-
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
@@ -76,10 +74,9 @@ void MadProperty::Update()
 	UpdateAnimation(m_pkZeroFps->GetFrameTime());
 	if(!m_bIsVisible)
 		return;
-
+	
 	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
 		return;
-
 
 	// Set Object LOD.
 	if(g_iMadLODLock == 0) {

@@ -470,7 +470,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 //		m_kDefaultMat.m_bCopyData = true;
 //		m_kDefaultMat.m_bWaves = true;		
 		
-//		m_kDefaultMat.GetPass(0)->m_iPolygonModeFront = GL_FILL;
+		m_kDefaultMat.GetPass(0)->m_iPolygonModeFront = GL_FILL;
 //		m_kDefaultMat.GetPass(0)->m_iPolygonModeBack = GL_FILL;		
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());

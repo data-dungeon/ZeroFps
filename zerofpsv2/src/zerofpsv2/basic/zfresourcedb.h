@@ -4,7 +4,6 @@
 #include "zfresource.h"
 #include "basic_x.h"
 #include "zfobject.h"
-
 #include <list>
 
 using namespace std;

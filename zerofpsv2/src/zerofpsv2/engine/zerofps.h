@@ -23,6 +23,8 @@
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../render/zshader.h"
 #include "i_zerofps.h"
+#include "../engine_systems/mad/mad_core.h"
+#include "res_texture.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -226,6 +228,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 		
 		void RegisterPropertys();
+		void RegisterResources();
+		
 		void QuitEngine();
 
 		// Statistik Data

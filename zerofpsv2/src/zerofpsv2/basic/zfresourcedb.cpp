@@ -83,8 +83,8 @@ ZFResourceDB::ZFResourceDB()
 {
 	m_iNextID = 0;
 
-/*
-	RegisterResource( string(".mad"), Create__Mad_Core		);
+
+/*	RegisterResource( string(".mad"), Create__Mad_Core		);
 	RegisterResource( string(".tga"), Create__ResTexture	);
 	RegisterResource( string(".bmp"), Create__ResTexture	);
 */

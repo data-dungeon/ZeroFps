@@ -477,6 +477,9 @@ public:
 	friend class Body;
 };
 
+ENGINE_SYSTEMS_API ZFResource* Create__Mad_Core();
+
+
 #endif
 
 

@@ -116,6 +116,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
 
 	RegisterPropertys();
+	RegisterResources();
 
 	m_kClient.resize( 4 );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
 	for(int i=0; i<4; i++)
@@ -1007,6 +1008,13 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 		}
 
 
+}
+
+void ZeroFps::RegisterResources()
+{
+	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core		);
+	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
+	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
 }
 
 void ZeroFps::RegisterPropertys()

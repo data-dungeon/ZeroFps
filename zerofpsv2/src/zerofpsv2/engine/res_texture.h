@@ -19,6 +19,7 @@ public:
 	bool Create(string strName);
 };
 
+ENGINE_SYSTEMS_API ZFResource* Create__ResTexture();
 
 #endif
 

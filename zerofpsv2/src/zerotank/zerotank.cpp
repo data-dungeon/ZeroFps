@@ -35,10 +35,10 @@ void ZeroTank::OnInit()
 	pk0->SetPos(Vector3(0,0,0));
 	pk0->AttachToClosestZone();
 
-/*	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
 	pk1->SetPos(Vector3(30,0,0));
 	pk1->AttachToClosestZone();
-
+/*
 	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
 	pk2->SetPos(Vector3(60,0,0));
 	pk2->AttachToClosestZone();
@@ -121,7 +121,7 @@ void ZeroTank::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	m_pkMap2->SetPos(Vector3(0,0,0));
-	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 //	m_pkTestMod.PlayAnimation(0,0);
 //	m_pkTestMod.Draw_All();

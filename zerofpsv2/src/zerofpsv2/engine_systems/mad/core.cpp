@@ -19,7 +19,7 @@ Mad_CoreMesh* g_pkSelectedMesh;
 Mad_Core::Mad_Core()
 {
 	iActiveFrame		= 0;
-	iActiveKeyFrame		= 0;
+	iActiveKeyFrame	= 0;
 	m_bDrawNormals		= false;
 	iActiveAnimation	= 0;
 	iBoneFrame			= 0;
@@ -855,7 +855,7 @@ int	Mad_Core::GetMeshIDByName(char* szName)
 
 
 
-ENGINE_SYSTEMS_API ZFResource* Create__Mad_Core()
+ZFResource* Create__Mad_Core()
 {
 	return new Mad_Core;
 }

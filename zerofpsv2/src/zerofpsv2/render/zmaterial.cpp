@@ -80,7 +80,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 		}
 	
 	
-		cout<<"shader loaded: found "<<iPass<<endl;
+		cout<<"shader loaded: found "<<iPass<<" passes"<<endl;
 		return true;
 	}
 	else
@@ -130,11 +130,11 @@ bool ZMaterial::LoadPass(int iPass)
 	IntToChar(&nr,iPass);			
 	passname+=nr;
 	
-	cout<<"loading pass "<<passname<<endl;
+	//cout<<"loading pass "<<passname<<endl;
 	
 	if(!m_kIni.SectionExist(passname.c_str()))
 	{
-		cout<<passname.c_str()<<" section is missing"<<endl;
+		//cout<<passname.c_str()<<" section is missing"<<endl;
 		return false;
 	}
 	
