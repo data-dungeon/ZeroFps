@@ -107,6 +107,10 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	
 	m_bVBO=					false;
 	
+	Register_Cmd("enableshadowgroup",FID_ENABLESHADOWGROUP);
+	Register_Cmd("disableshadowgroup",FID_DISABLESHADOWGROUP);
+	Register_Cmd("listshadowgroups",FID_LISTSHADOWGROUPS);
+	
 	RegisterVariable("r_shadowvbo",			&m_bVBO,CSYS_BOOL);
 	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
@@ -762,7 +766,61 @@ void ZShadow::GenerateShadowMesh(ShadowMesh* pkShadowMesh)
 	}
 }
 
+void ZShadow::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	
+	switch(cmdid) 
+	{
+		case FID_ENABLESHADOWGROUP:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1) 
+				return;
+				
+			int iGroup = atoi(kCommand->m_kSplitCommand[1].c_str());				
+			EnableShadowGroup(iGroup);					
+			break;
+		}	
+		
+		case FID_DISABLESHADOWGROUP:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1) 
+				return;
+				
+			int iGroup = atoi(kCommand->m_kSplitCommand[1].c_str());				
+			DisableShadowGroup(iGroup);					
+			break;
+		}	
+				
+		case FID_LISTSHADOWGROUPS:
+		{
+			m_pkZeroFps->m_pkConsole->Printf("Shadow groups:");
+		
+			for(int i = 0;i<8;i++)
+			{
+				if(m_kShadowGroups[i])				
+					m_pkZeroFps->m_pkConsole->Printf("Group: %d enabled",i);
+				else
+					m_pkZeroFps->m_pkConsole->Printf("Group: %d disabled",i);
+			}
+		}	
+	}
+}
 
+void ZShadow::EnableShadowGroup(int i) 
+{
+	if(i < 0 || i >= 8)
+		return;
+	
+	m_kShadowGroups[i] = true;				
+}
+
+void ZShadow::DisableShadowGroup(int i) 
+{
+	if(i < 0 || i >= 8)
+		return;
+	
+	m_kShadowGroups[i] = false;				
+}
 
 
 /*

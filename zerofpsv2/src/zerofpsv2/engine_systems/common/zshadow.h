@@ -47,6 +47,13 @@ class ENGINE_SYSTEMS_API ShadowMesh
 class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 {
 	private:
+		enum FuncId_e
+		{
+			FID_ENABLESHADOWGROUP,
+			FID_DISABLESHADOWGROUP,
+			FID_LISTSHADOWGROUPS,
+		};
+	
 		Light*			m_pkLight;
 		ZeroFps*			m_pkZeroFps;
 		Render*			m_pkRender;
@@ -106,6 +113,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource);		
 		void SetupStencilBuffer();
 
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 		//void SetupGL();
 		//void FindCapings(Vector3 kSourcePos);
@@ -117,8 +125,8 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		ZShadow();
 		void Update();
 
-		void EnableShadowGroup(int i) {	m_kShadowGroups[i] = true;				}
-		void DisableShadowGroup(int i){	m_kShadowGroups[i] = false;			}
+		void EnableShadowGroup(int i) ;
+		void DisableShadowGroup(int i);
 
 		int GetCurrentActiveShadows() {	return m_iCurrentActiveShadows;		}
 		int GetCurrentShadows() 		{	return m_iCurrentShadows;				}
