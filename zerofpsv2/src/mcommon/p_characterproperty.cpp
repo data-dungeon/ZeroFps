@@ -290,16 +290,23 @@ void P_CharacterProperty::UpdateStats()
 		m_kCharacterStats.ChangeStat("Stamina",m_kCharacterStats.GetTotal("StaminaRegen"));
 		if(m_kCharacterStats.GetTotal("Stamina") > m_kCharacterStats.GetTotal("StaminaMax"))
 			m_kCharacterStats.SetStat("Stamina",m_kCharacterStats.GetTotal("StaminaMax"));
-		
+		if(m_kCharacterStats.GetTotal("Stamina") < 0)
+			m_kCharacterStats.SetStat("Stamina",0);
+			
+			
 		//life
 		m_kCharacterStats.ChangeStat("Life",m_kCharacterStats.GetTotal("LifeRegen"));
 		if(m_kCharacterStats.GetTotal("Life") > m_kCharacterStats.GetTotal("LifeMax"))
 			m_kCharacterStats.SetStat("Life",m_kCharacterStats.GetTotal("LifeMax"));
+		if(m_kCharacterStats.GetTotal("Life") < 0)
+			m_kCharacterStats.SetStat("Life",0);
 
 		//mana
 		m_kCharacterStats.ChangeStat("Mana",m_kCharacterStats.GetTotal("ManaRegen"));
 		if(m_kCharacterStats.GetTotal("Mana") > m_kCharacterStats.GetTotal("ManaMax"))
 			m_kCharacterStats.SetStat("Mana",m_kCharacterStats.GetTotal("ManaMax"));
+		if(m_kCharacterStats.GetTotal("Mana") < 0)
+			m_kCharacterStats.SetStat("Mana",0);
 				
 			
 		SendStats();
