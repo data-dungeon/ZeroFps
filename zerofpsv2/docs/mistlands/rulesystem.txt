@@ -1,0 +1,197 @@
+Grund Egenskaper:
+	Strength			str
+	Constitution	con
+	Dexterity		dex
+	Inteligence		int
+	Wisdom			wis
+
+Grund Skills:
+	Weapons
+		Close Weapons
+			Long sword
+				Dvoids Longsword of ultimate destruktion
+			Short Sword
+			Knife
+			Hammer
+				Eriks hammer of hidden carpentry
+			Hand Axe
+			Great Axe
+			Pike
+			Staff
+			
+		Ranged Weapons
+			Shortbo
+			Longbow
+			Crossbow
+			Dart
+			Sphere
+			
+	
+	Magic
+		Elemental
+		Etherial
+		Summon
+		Necromantic
+		
+	Prayers
+		Lipton	(heliga te guden)
+		CC			(CocaCola company guden)
+		C++		(den heliga c++ guden)
+			Syntax error prayer
+			Compile prayer
+					
+	Mischelous
+		Wood cutter
+		Miner
+		Fisher
+		Comercial
+		Smithing
+			
+
+Närstrids vapen:
+	
+	Factorer på vapen.
+		-Weeld modifiers
+			str
+			const
+			int
+			dex
+			wis
+		
+		-modfiers för TOHIT i % totalt 100%
+			str
+			const
+			int
+			dex
+			wis
+		
+		-modfiers för DAMAGE i % totalt 100%
+			str
+			const
+			int
+			dex
+			wis
+		
+		-Styrke krav för enhands/tvåhands användnings av vapnet
+		
+		-Bas vapen
+		-Bas damage:
+			Fysisk
+				Slashing
+				Crushing
+			
+			Poison
+				Length
+				Damage / time
+			
+			Magisk
+				Ice
+				Fire
+				Etherial
+		
+		-vikt (i kg)
+		-storlek X,Y (antal rutor i inventory)
+		-lista med extra egenskaper, sparas i form av en index lista
+		-modell
+		-icon
+		-description
+
+	Factorer på armor.
+		-Modifiers:
+			str
+			const
+			int
+			dex
+			wis
+		
+		
+		
+		-Bas Resistance
+			Fysisk
+				Slashing
+				Crushing
+			
+			Poison
+				Length
+				Damage / time
+			
+			Magisk
+				Ice
+				Fire
+				Etherial
+		
+		-vikt (i kg)
+		-storlek X,Y (antal rutor i inventory)
+		-lista med extra egenskaper, sparas i form av en index lista
+		-modell
+		-icon
+		-description
+
+vapen:
+
+
+Attack:
+	Hits/round
+		grund slag är 1 slag på runda
+		för meele vapen beräknas slag hastighet med vapnets vikt / bärarens styrka
+		även för pilbågar och armborst.
+		
+		darts baseras helt och hållet på spelarens DEX,
+		
+	
+		changs att träffa för meele 
+			grund slag 1-500
+			
+			+DEX
+			-enemy DEX
+			
+			om över 250 träff
+				250 fummel
+				500+ kritiskt
+				
+	
+ANVÄNDING AV UTRUSTNING
+
+	varje föremål i spelet som spelaren kan bära med sig modifierar spelarens grund egenskaper medans spelaren bär på föremålet. 
+	ett förempål som stoppas i inventoryt (ryggsäck) modifierar spelaren enbart genom 1/10 av föremålets STR mod, ett föremål som stoppas i inventory modifierar inga andra 
+	grundegenskaper. 
+	
+	EXEMPEL: 
+		en spelare har följade grund egenskaper:
+			STR: 20
+			DEX: 10
+			CON: 15
+			INT: 5
+			WIZ: 4
+		
+		detta är spelarens utförande utan några modifiers, dock kommer dessa ändras temporärt om spelaren t.ex tar på sig en rustning med följande modifiers:
+			STR: -3
+			DEX: -1
+			CON: none
+			INT: none
+			WIZ: none
+			
+			dessa egenskaper kan tolkas som att rustningen väger 3 kg och minskar spelarens smidighet med 1 pga att den är lite stel.
+			
+		Spelaren kan nu se följande i sitt caracter sheet
+		
+			STR: 20	17		-3	
+			DEX: 10	9		-1
+			CON: 15	15
+			INT: 5	5
+			WIZ: 4	4
+			
+			
+		spelaren har fortfarande 17 i styrka kvar och kan därför bära en hel del utrutning och vapen.	
+		den kvarvarande styrkan efter att diverse modifiers dragits av är den som används för att beräkna bla slagkraft.
+		
+		hadde spelaren stoppat rustning i sin ryggsäck så hadde han sett följande i sitt caracter sheet
+		
+			STR: 20	19.7		-0.3	
+			DEX: 10	10		
+			CON: 15	15
+			INT: 5	5
+			WIZ: 4	4
+		
+		
+		
