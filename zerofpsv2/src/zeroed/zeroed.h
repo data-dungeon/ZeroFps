@@ -290,6 +290,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendDeleteSelected();			// Removes selected entitys.
 		void	SendAddZone(Vector3 kPos, Vector3 kSize, Vector3 kModelRot, string strName);		
 		void	SendRotateEntity(int iEntityID,const Vector3& kRot);
+		void	SendAction(int iEntityID,const string& strAction);
 		
 		vector<HMSelectVertex> GetAllSelectedHMVertex();
 

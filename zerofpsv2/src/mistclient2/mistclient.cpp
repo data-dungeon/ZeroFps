@@ -415,7 +415,7 @@ void MistClient::Input()
 		}
 	}
 
-	//perform the forst action in the action list
+	//perform the first action in the action list
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
 		if(!DelayCommand())
