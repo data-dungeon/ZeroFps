@@ -93,6 +93,7 @@ TrackProperty::TrackProperty()
 	m_fNextMove			= m_pkFps->GetGameTime() + 1.0;
 	m_iZoneNum			= 0;
 	m_iLastZoneIndex	= 0;
+	m_bClosestZone		= false;
 }
 
 TrackProperty::~TrackProperty() 
@@ -100,11 +101,12 @@ TrackProperty::~TrackProperty()
 	m_pkOBjM->RemoveTracker(m_pkObject);
 }
 
-/*
-TrackProperty::Init() 
+
+void TrackProperty::Init() 
 {
 	cout << "Trackerproperty Init" << endl;
-}*/
+	m_pkOBjM->AddTracker(m_pkObject);
+}
 
 
 

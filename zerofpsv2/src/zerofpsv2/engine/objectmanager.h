@@ -27,14 +27,15 @@ public:
 	ZoneData& operator=(const ZoneData &kOther);
 	bool IsInside(Vector3 kPoint);
 
+
+	bool					m_bUsed;
 	ZoneObject*			m_pkZone;
 	int					m_iZoneID;
 	Vector3				m_kPos;
 	Vector3				m_kMin;
 	Vector3				m_kMax;
-	int					m_iNumOfLinks;
+//	int					m_iNumOfLinks;
 	vector<int>			m_iZoneLinks;
-	vector<ZoneData*>	m_pkZoneLinks;
 
 	float		m_fInactiveTime;
 	bool		m_bActive;
@@ -54,6 +55,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			FID_SENDMESSAGE,
 			FID_LOADZONES,
 			FID_SAVEZONE,
+			FID_NEWWORLD,
 		};
 
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
@@ -201,7 +203,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void Test_DrawZones();
 		void UpdateZones();
 		ZoneData* GetZone(Object* PkObject);
-		int GetZoneIndex(Object* PkObject);
+		int GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone);
 
 		ZoneData* GetZone(Vector3 kPos);
 		void AutoConnectZones();
@@ -224,7 +226,13 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void UnLoadZone(int iId);
 		void LinkZones(int iFromId, int iToId);
 		ZoneData*	GetZoneData(int iID);
-
+	
+		int CreateZone();
+		void DeleteZone(int iId);
+		int GetUnusedZoneID();
+		
+		void NewWorld();
+		
 		void Zones_Refresh();
 };
 

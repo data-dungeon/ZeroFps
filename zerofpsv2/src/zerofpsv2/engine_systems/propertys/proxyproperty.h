@@ -55,11 +55,14 @@ class ENGINE_SYSTEMS_API TrackProperty: public Property {
 		float					m_fNextMove;
 		
 	public:
+		bool					m_bClosestZone;
 		int					m_iZoneNum;
 		int					m_iLastZoneIndex;	// Index of last zone we was close to.
 		set<int>				m_iActiveZones;
 
 		void Update();
+		void Init();
+		
 		TrackProperty();
 		~TrackProperty();
 		void CloneOf(Property* pkProperty) { }
