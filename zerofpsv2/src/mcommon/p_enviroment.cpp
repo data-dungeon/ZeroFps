@@ -159,8 +159,8 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 
 	m_StrCurrentEnviroment = csEnviroment;
 
+	//reset everything
 	ResetEnviroment();
-
 
 	ZFResourceHandle* pkTempenv = new ZFResourceHandle;	
 	
@@ -171,6 +171,8 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 		delete pkTempenv;
 		return;
 	}
+
+
 
 	//get enviroment pointer
 	EnvSetting* es = (EnvSetting*)pkTempenv->GetResourcePtr();
