@@ -160,10 +160,10 @@ void ZGResEdit::OnIdle()
 		ZGuiWnd* pkParent = m_pkFocusWnd->GetParent();
 		ZGuiTabCtrl* pkTabCtrl = NULL;
 
-		if(pkParent && GetType(pkParent) == TabControl)
+		if(pkParent && GetWndType(pkParent) == TabControl)
 			pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkParent);
 		else
-		if(GetType(m_pkFocusWnd) == TabControl)
+		if(GetWndType(m_pkFocusWnd) == TabControl)
 			pkTabCtrl = static_cast<ZGuiTabCtrl*>(m_pkFocusWnd);
 
 		if(pkTabCtrl)
@@ -595,7 +595,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(eWndType == Wnd)
 				strcpy(szParent,"");
 
-			if( m_pkFocusWnd && GetType(m_pkFocusWnd) == TabControl && eWndType != Wnd)
+			if( m_pkFocusWnd && GetWndType(m_pkFocusWnd) == TabControl && eWndType != Wnd)
 			{
 				ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*) m_pkFocusWnd;
 
@@ -610,7 +610,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				dwFlag = iCurrPage;
 			}
 
-			if( m_pkFocusWnd && GetType(m_pkFocusWnd) == TabControl)
+			if( m_pkFocusWnd && GetWndType(m_pkFocusWnd) == TabControl)
 			{
 				if(eWndType == Wnd)
 				{
@@ -621,7 +621,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				if(m_pkFocusWnd)
 				{
-					if(GetType(m_pkFocusWnd) == eWndType)
+					if(GetWndType(m_pkFocusWnd) == eWndType)
 					{
 						Rect rc = m_pkFocusWnd->GetScreenRect();
 						m_iWidth = rc.Width();
@@ -924,7 +924,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 
 			if(pkParent)
 			{
-				GuiType parent_type = GetType(pkParent);
+				GuiType parent_type = GetWndType(pkParent);
 				if(parent_type == TabControl)
 				{
 					bLegalMoveWnd = false;
@@ -943,7 +943,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 		{
 			if(!m_pkScene->IsSceneWnd(pkWnd))
 			{
-				if(GetType(pkWnd) == Wnd)
+				if(GetWndType(pkWnd) == Wnd)
 				{
 					m_pkMainWnd = pkWnd;
 					if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
@@ -962,7 +962,7 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 
 				if(pkParent)
 				{
-					GuiType parent_type = GetType(pkParent);
+					GuiType parent_type = GetWndType(pkParent);
 					if(parent_type == TabControl)
 					{
 						bLegalResizeWnd = false;
@@ -1064,7 +1064,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
 	for( ; it != kWindows.end(); it++)
 	{
-		if(GetType((*it).second) == Wnd )
+		if(GetWndType((*it).second) == Wnd )
 		{
 			if(ClickInsideWnd((*it).second, x,y))
 				kTargets.push_back( pair<ZGuiWnd*, int>((*it).second,0) );
@@ -1101,7 +1101,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	ZGuiWnd* pkChild = kTargets.front().first; // best child
 
 	// Hantera tabuleringsboxar på ett speciellt sätt
-	if(GetType(pkChild) == TabControl )
+	if(GetWndType(pkChild) == TabControl )
 	{
 		ZGuiTabCtrl* pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkChild);
 
@@ -1154,7 +1154,7 @@ void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 
 	if(pkParent)
 	{
-		GuiType parent_type = GetType(pkParent);
+		GuiType parent_type = GetWndType(pkParent);
 		if(parent_type == TabControl)
 		{
 			bLegalMoveWnd = false;
@@ -1214,7 +1214,7 @@ void ZGResEdit::Resize(ZGuiWnd *pkWnd, int w, int h)
 
 	if(pkParent)
 	{
-		GuiType parent_type = GetType(pkParent);
+		GuiType parent_type = GetWndType(pkParent);
 		if(parent_type == TabControl)
 		{
 			bLegalResizeWnd = false;
@@ -1399,7 +1399,7 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 				if(bFound == false)
 				{
-					GuiType eWndType = GetType(m_pkFocusWnd);
+					GuiType eWndType = GetWndType(m_pkFocusWnd);
 
 					// Byt ut textur på noderna i en trädbox
 					if(eWndType == Treebox)
@@ -1863,7 +1863,7 @@ void ZGResEdit::UpdateViewWnd()
 	for( it = kWindows.begin(); it != kWindows.end(); it++)
 	{		
 		ZGuiWnd* pkWnd = (*it).second;
-		if( GetType(pkWnd) == Wnd && !m_pkScene->IsSceneWnd(pkWnd) )
+		if( GetWndType(pkWnd) == Wnd && !m_pkScene->IsSceneWnd(pkWnd) )
 		{
 			const char* szAlias = m_pkScene->GetAlias(pkWnd);
 			if(szAlias == NULL)
@@ -1907,7 +1907,7 @@ void ZGResEdit::OnClickPropertyOK()
 
 		// obs! anropet till settext måste ske efter anropet till resize eftersom
 		// settext kan ändra bredden på fönstret igen.
-		bool bResize = GetType(m_pkFocusWnd) == Radiobutton;
+		bool bResize = GetWndType(m_pkFocusWnd) == Radiobutton;
 		m_pkFocusWnd->SetText( GetText("WndTitleTextbox"), bResize );
 
 		// Försök byta namn på fönstret
@@ -1987,7 +1987,7 @@ void ZGResEdit::UpdateSkinList(ZGuiWnd *pkFocusWnd)
 		}
 	}
 
-	if(GetType(pkFocusWnd) == Treebox)
+	if(GetWndType(pkFocusWnd) == Treebox)
 	{
 		pkCBox->AddItem("child node", vkSkinDesc.size(),0);	
 		pkCBox->AddItem("closed node", vkSkinDesc.size()+1,0);
@@ -2092,7 +2092,7 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 			m_pkGui->SetFocus(m_pkFocusWnd);
 			m_pkMainWnd = m_pkFocusWnd;*/
 
-			if(GetType(pkWnd->GetParent()) == TabControl)
+			if(GetWndType(pkWnd->GetParent()) == TabControl)
 			{
 				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
 

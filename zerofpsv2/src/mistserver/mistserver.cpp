@@ -1613,7 +1613,7 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = NULL;
 
-	if(GetType(pkMainWnd) == Menu)
+	if(GetWndType(pkMainWnd) == Menu)
 	{
 		list<ZGuiWnd*> kChilds;
 		pkMainWnd->GetChildrens(kChilds); 

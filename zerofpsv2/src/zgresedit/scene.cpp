@@ -544,7 +544,7 @@ void Scene::ScaleWndToTexSize(ZGuiWnd *pkWnd, char *szSelSkinType)
 
 			RemoveAlias(pkWnd);
 
-			if(m_pkApp->GetType(pkWnd->GetParent()) == TabControl)
+			if(m_pkApp->GetWndType(pkWnd->GetParent()) == TabControl)
 			{
 				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
 
@@ -576,7 +576,7 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 {
 	ZGuiWnd* pkNewWnd = NULL;
 
-	GuiType eWndType = m_pkApp->GetType(pkWnd);
+	GuiType eWndType = m_pkApp->GetWndType(pkWnd);
 	char szParent[100] = "";
 	char szLabel[100];
 	char szName[100];
@@ -662,7 +662,7 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 
 void Scene::AddStandardElements(ZGuiWnd *pkWnd)
 {
-	GuiType eWndType = m_pkApp->GetType(pkWnd);
+	GuiType eWndType = m_pkApp->GetWndType(pkWnd);
 
 	char* szName = (char*) pkWnd->GetName();
 

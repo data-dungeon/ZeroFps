@@ -400,15 +400,15 @@ bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
 	Rect rc;
 	ZGuiWnd* pkParent = pkWnd->GetParent();
 	
-	iType = (int) m_pkScene->GetApp()->GetType(pkWnd);
+	iType = (int) m_pkScene->GetApp()->GetWndType(pkWnd);
 	szName = m_pkScene->GetAlias(pkWnd);
 	if(szName == NULL) szName = pkWnd->GetName();
 
 	if(pkParent && !WndHaveBeenSaved(pkParent))
 		return false;
 
-	GuiType eType = m_pkScene->GetApp()->GetType(pkWnd);
-	GuiType eParentType = pkParent != NULL ? m_pkScene->GetApp()->GetType(pkParent) : GuiType_Error;
+	GuiType eType = m_pkScene->GetApp()->GetWndType(pkWnd);
+	GuiType eParentType = pkParent != NULL ? m_pkScene->GetApp()->GetWndType(pkParent) : GuiType_Error;
 
 	if( eParentType == TabControl ) // Är föräldern en tabuleringsbox?
 	{

@@ -86,7 +86,7 @@ public:
 	ZGuiWnd* GetWnd(int iID);
 	ZGuiWnd* GetWnd(string strName);
 	ZGuiSkin* GetSkin(string strName);
-	GuiType GetType(ZGuiWnd* pkWnd);
+	GuiType GetWndType(ZGuiWnd* pkWnd);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 

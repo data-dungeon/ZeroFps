@@ -105,7 +105,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	// Om parent fönstret är en TabControl så är uiFlags = sidnummret och parent fönstret
 	// måste då tas fram på nytt.
-	if( GetType(pkParent) == TabControl)
+	if( GetWndType(pkParent) == TabControl)
 	{
 		AddTabPage((char*)pkParent->GetName(), szResourceName, szText);
 		return ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
@@ -541,7 +541,7 @@ bool ZGuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 {
 	ZGuiWnd* pkWnd = GetWnd(iListboxID);
 
-	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
 
 	if(bCombobox == false)
 	{
@@ -560,7 +560,7 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szListboxResName);
 
-	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
 
 	if(bCombobox == false)
 	{
@@ -603,7 +603,7 @@ ZGuiWnd* ZGuiApp::GetTabPage(char* szTabBox, int iPage)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(string(szTabBox));
 
-	bool bIsTabCtrl = (GetType(pkWnd) == TabControl);
+	bool bIsTabCtrl = (GetWndType(pkWnd) == TabControl);
 
 	ZFAssert(pkWnd, "ZGuiApp::GetTabPage: Window is not a tab control!");
 
@@ -653,7 +653,7 @@ char* ZGuiApp::GetSelItem(char* szWnd)
 	ZGuiWnd* pkWnd;
 	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
-		if(GetType(pkWnd) == Listbox)
+		if(GetWndType(pkWnd) == Listbox)
 		{
 			ZGuiListitem* pkItem = ((ZGuiListbox*) pkWnd)->GetSelItem();
 
@@ -661,7 +661,7 @@ char* ZGuiApp::GetSelItem(char* szWnd)
 				return pkItem->GetText();
 		}
 		else
-		if(GetType(pkWnd) == Combobox)
+		if(GetWndType(pkWnd) == Combobox)
 		{
 			ZGuiListitem* pkItem = ((ZGuiCombobox*) pkWnd)->GetListbox()->GetSelItem();
 
@@ -678,12 +678,12 @@ bool ZGuiApp::SelListItem(char* szWnd, char* szItem)
 	ZGuiWnd* pkWnd;
 	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
-		if(GetType(pkWnd) == Listbox)
+		if(GetWndType(pkWnd) == Listbox)
 		{
 			return ((ZGuiListbox*)pkWnd)->SelItem(szItem);
 		}
 		else
-		if(GetType(pkWnd) == Combobox)
+		if(GetWndType(pkWnd) == Combobox)
 		{
 			ZGuiListbox* pkListbox = ((ZGuiCombobox*) pkWnd)->GetListbox();
 			bool bSuccess = pkListbox->SelItem(szItem);
@@ -746,12 +746,12 @@ bool ZGuiApp::IsButtonChecked(char* szWnd)
 	ZGuiWnd* pkWnd;
 	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
-		if(GetType(pkWnd) == Radiobutton)
+		if(GetWndType(pkWnd) == Radiobutton)
 		{
 			return ((ZGuiRadiobutton*)pkWnd)->GetButton()->IsChecked();
 		}
 		else
-		if(GetType(pkWnd) == Checkbox)
+		if(GetWndType(pkWnd) == Checkbox)
 		{
 			return ((ZGuiCheckbox*)pkWnd)->IsChecked();
 		}
@@ -760,7 +760,7 @@ bool ZGuiApp::IsButtonChecked(char* szWnd)
 	return false;
 }
 
-GuiType ZGuiApp::GetType(ZGuiWnd *pkWnd)
+GuiType ZGuiApp::GetWndType(ZGuiWnd *pkWnd)
 {
 	if(pkWnd == NULL)
 		return GuiType_Error;
@@ -859,7 +859,7 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript,
 	if(!bSkinChanged)
 		printf("Failed to change skin to %s on window %s!\n", szSkinName, szID);
 
-	GuiType eType = GetType(pkWnd);
+	GuiType eType = GetWndType(pkWnd);
 
 	if( eType == Button || eType == Checkbox )
 	{
@@ -910,7 +910,7 @@ void ZGuiApp::ClearListbox(char *szResName)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
 
-	bool bCombobox = GetType(pkWnd) == Combobox ? true : false;
+	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
 
 	if(bCombobox == false)
 	{
