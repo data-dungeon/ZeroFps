@@ -670,10 +670,15 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
 							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode)  ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 						{
+							ZGuiWnd* pkMainWnd = m_pkActiveMainWin->pkWnd;
+
+							// Menyalternativ har sitt egen förälderfönster.
+							if(pkParent && typeid(*pkParent)==typeid(ZGuiMenu))
+								pkMainWnd = pkParent;
+
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
-							m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
-								ZGM_COMMAND,2,pkParams);
+							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);
 
 							//m_bHaveInputFocus = true;
 						}

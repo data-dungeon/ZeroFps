@@ -1535,7 +1535,27 @@ void MistServer::UpdateObjectMakerPos()
 
 void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
-	ZGuiWnd* pkWndClicked = GetWnd(iID);
+	ZGuiWnd* pkWndClicked = NULL;
+
+	if(GetType(pkMainWnd) == Menu)
+	{
+		list<ZGuiWnd*> kChilds;
+		pkMainWnd->GetChildrens(kChilds); 
+
+		list<ZGuiWnd*>::iterator it = kChilds.begin();
+		for( ; it!=kChilds.end(); it++)
+		{
+			if((*it)->GetID() == iID)
+			{
+				pkWndClicked = (*it);
+				break;
+			}
+		}
+	}
+	else
+	{
+		pkWndClicked = GetWnd(iID);
+	}
 
 	if(pkWndClicked)
 	{
@@ -1607,6 +1627,31 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 		}
+		else
+		if(strMainWnd == "MainMenu")
+		{
+			if(!m_pkIni->Open("data/script/gui/menu.txt", false))
+			{
+				cout << "Failed to load ini file for menu!\n" << endl;
+				return;
+			}
+
+			vector<string> akSections;
+			m_pkIni->GetSectionNames(akSections);
+
+			// Run Menu command
+			for(unsigned int i=0; i<akSections.size(); i++)
+			{
+				if(strWndClicked == string(akSections[i].c_str()))
+				{
+					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
+					m_pkFps->m_pkConsole->Execute(cmd);
+					break;
+				}
+			}
+
+			m_pkIni->Close();
+		}
 	}
 }
 
@@ -1650,44 +1695,6 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 				SetZoneEnviroment( szFull.c_str()  );  
 			}
 		}
-	}
-	
-
-	ZGuiWnd* pkParent = pkMain->GetParent(); 
-
-	if(pkParent)
-	{
-		string strParentName = pkParent->GetName();
-		
-		if(strParentName == "MainMenu")
-		{
-			char *szItem = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
-
-			if(!m_pkIni->Open("data/script/gui/menu.txt", false))
-			{
-				cout << "Failed to load ini file for menu!\n" << endl;
-				return;
-			}
-
-			vector<string> akSections;
-			m_pkIni->GetSectionNames(akSections);
-
-			// Run Menu command
-			for(unsigned int i=0; i<akSections.size(); i++)
-			{
-				char* title = m_pkIni->GetValue(akSections[i].c_str(), "Title");
-
-				if(strcmp(title, szItem) == 0)
-				{
-					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					m_pkFps->m_pkConsole->Execute(cmd);
-					break;
-				}
-			}
-
-			m_pkIni->Close();
-		}
-
 	}
 }
 

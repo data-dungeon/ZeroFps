@@ -165,6 +165,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	case TabControl:
 		pkWnd = new ZGuiTabCtrl( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
+	case Menu:
+		pkWnd = new ZGuiMenu( Rect(x,y,x+w,y+h), pkParent, true, iID);
+		break;
 	}
 	
 	switch(eType)
@@ -253,25 +256,25 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		break;
 	}
 
-			// Skapa nya texturer och kopiera de gamla mot nya unika...
-			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
-			pkWnd->GetWndSkinsDesc(vkSkinDesc);
-			for(unsigned int i=0; i<vkSkinDesc.size(); i++)
-			{
-				ZGuiSkin* pkPrevSkin = *vkSkinDesc[i].first; 
+	// Skapa nya texturer och kopiera de gamla mot nya unika...
+	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+	pkWnd->GetWndSkinsDesc(vkSkinDesc);
+	for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+	{
+		ZGuiSkin* pkPrevSkin = *vkSkinDesc[i].first; 
 
-				if(pkPrevSkin)
-				{
-//WARNING!!!!!!!!!!   VALGRIND KLAGAR PÅ ATT DENNA INTE AVALOKERAS!!!					
-					ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);		
-					*vkSkinDesc[i].first = pkNewSkin;
-				}
-				else
-				{
-					*vkSkinDesc[i].first = new ZGuiSkin; 
-					(*vkSkinDesc[i].first)->m_bTransparent = true;
-				}
-			}
+		if(pkPrevSkin)
+		{
+				//WARNING!!!!!!!!!!   VALGRIND KLAGAR PÅ ATT DENNA INTE AVALOKERAS!!!					
+			ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);		
+			*vkSkinDesc[i].first = pkNewSkin;
+		}
+		else
+		{
+			*vkSkinDesc[i].first = new ZGuiSkin; 
+			(*vkSkinDesc[i].first)->m_bTransparent = true;
+		}
+	}
 
 	if(eType == Wnd) 
 	{
@@ -299,9 +302,6 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	pkWnd->SetGUI(m_pkGui);
 	pkWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
 
-	//
-	// Change position and size on the window according to resolution.
-	//
 
 //	pkWnd->Rescale(800,600, GetWidth(),GetHeight());
 
@@ -802,6 +802,9 @@ GuiType ZGuiApp::GetType(ZGuiWnd *pkWnd)
 	else
 	if(t==typeid(ZGuiSlider))
 		return Slider;	
+	else
+	if(t==typeid(ZGuiMenu))
+		return Menu;	
 
 	return GuiType_Error;
 }
@@ -961,7 +964,7 @@ bool ZGuiApp::LoadGuiFromScript(ZFScriptSystem* pkScript, char* szFileName)
 	return true;
 }
 
-
+/*
 bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 {
 	ZGuiFont* pkFont = m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
@@ -1085,6 +1088,71 @@ bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 		strcpy(m_pkMenuInfo[i].szCommando, kTempVector[i].szCommando);
 		delete[] kTempVector[i].szCommando;
 	}
+
+	return true;
+}*/
+
+bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
+{
+	// Skapa själva menyn
+	ZGuiMenu* pkMenu = (ZGuiMenu*) CreateWnd(Menu, "MainMenu", "GuiMainWnd", "", 
+		0,0, 800, 20, 0);
+
+	// Öppna INI filen
+	ZFIni kINI;
+	if(!kINI.Open(szFileName, false))
+	{
+		cout << "Failed to load ini file for menu!\n" << endl;
+		return false;
+	}
+
+	// Hämta sektionsnamnen och spara ner i en vektor.
+	vector<string> akSections;
+	kINI.GetSectionNames(akSections);
+	unsigned int uiNumSections = akSections.size(), i=0;
+	
+	// No items in file.
+	if(uiNumSections < 1)
+		return true;
+
+	// Skapa alla huvudmenyer
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* opensubmenu = kINI.GetValue(akSections[i].c_str(), "OpenSubMenu");
+		if(opensubmenu != NULL && strcmp(opensubmenu, "1") == 0)
+		{
+			char szTitle[50];
+			sprintf(szTitle, "%s", kINI.GetValue(akSections[i].c_str(), "Title"));
+
+			char* szParent = kINI.GetValue(akSections[i].c_str(), "Parent");
+			if(strcmp(szParent, "NULL")==0)
+				szParent = NULL;
+
+			pkMenu->AddItem(szTitle, (char*)akSections[i].c_str(), szParent, true);
+		}
+	}
+
+	// Skapa alla menyalternativ
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* parent = kINI.GetValue(akSections[i].c_str(), "OpenSubMenu");
+		if(parent != NULL && strcmp(parent, "1") == 0) 
+			continue;
+
+		if(parent == NULL || strcmp(parent, "0") == 0)
+		{
+			char szTitle[50];
+			sprintf(szTitle, "%s", kINI.GetValue(akSections[i].c_str(), "Title"));
+
+			char* szParent = kINI.GetValue(akSections[i].c_str(), "Parent");
+			if(strcmp(szParent, "NULL")==0)
+				szParent = NULL;
+
+			pkMenu->AddItem(szTitle, (char*)akSections[i].c_str(), szParent);
+		}
+	}
+
+	pkMenu->ResizeMenu(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 
 	return true;
 }

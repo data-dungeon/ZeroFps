@@ -12,6 +12,7 @@
 //////////// //////////////////////////////////////////////////////////
 
 int ZGuiMenu::s_iMenuIDCounter = 0;
+const int MENU_ITEM_HEIGHT = 20;
 
 ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
@@ -49,9 +50,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				if(m_vkItems[i]->bOpenSubMenu)
 				{
 					if(m_vkItems[i]->pkParent == NULL)
-					{
 						HideAll();
-					}
 
 					ZGuiMenuItem* pkSubMenu = m_vkItems[i];
 
@@ -70,6 +69,9 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 			}
 		}
 	}
+
+	if(m_pkParent)
+		m_pkParent->Notify(this, iCode);
 
 	return false;
 }
@@ -111,34 +113,43 @@ void ZGuiMenu::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiMenu::CreateInternalControls()
 {
+	const int Ru = 153;
+	const int Gu = 134;
+	const int Bu = 117;
+
+	const int Rf = 199;
+	const int Gf = 178;
+	const int Bf = 153;
+
+	const int Rdf = 19;
+	const int Gdf = 17;
+	const int Bdf = 15;
+
 	Rect rc = GetWndRect();
 	rc.Left = 0;
 	rc.Top = 0;
 	rc.Right = rc.Width();
-	rc.Bottom = 20;
+	rc.Bottom = MENU_ITEM_HEIGHT;
 	
 	m_pkLabel = new ZGuiLabel(rc, this, true);
 
 	ZGuiSkin* pkSkin = new ZGuiSkin();
 	
-	pkSkin->m_afBkColor[0] = pkSkin->m_afBkColor[1] = pkSkin->m_afBkColor[2] = 0.55;
+	pkSkin->m_afBkColor[0] = (1.0f / 255) * Ru;
+	pkSkin->m_afBkColor[1] = (1.0f / 255) * Gu ;
+	pkSkin->m_afBkColor[2] = (1.0f / 255) * Bu ;
+
+	pkSkin->m_afBorderColor[0] = (1.0f / 255) * Rdf ;
+	pkSkin->m_afBorderColor[1] = (1.0f / 255) * Gdf ;
+	pkSkin->m_afBorderColor[2] = (1.0f / 255) * Bdf ;
+
+	pkSkin->m_unBorderSize = 1;
+
 	m_pkLabel->SetSkin(pkSkin);
 
 	m_pkItemSkinUp = new ZGuiSkin();
 	m_pkItemSkinFocus = new ZGuiSkin();
 	m_pkSkinDown = new ZGuiSkin();
-
-	int Ru = 153;
-	int Gu = 134;
-	int Bu = 117;
-
-	int Rf = 199;
-	int Gf = 178;
-	int Bf = 153;
-
-	int Rdf = 19;
-	int Gdf = 17;
-	int Bdf = 15;
 
 	m_pkItemSkinUp->m_afBkColor[0] = (1.0f / 255) * Ru;
 	m_pkItemSkinUp->m_afBkColor[1] = (1.0f / 255) * Gu ;
@@ -158,25 +169,11 @@ void ZGuiMenu::CreateInternalControls()
 	m_pkSkinDown->m_afBkColor[1] = (1.0f / 255) * Gf ;
 	m_pkSkinDown->m_afBkColor[2] = (1.0f / 255) * Bf ;
 
-	AddItem("File", "Menu_File", NULL, true);
-	
-	AddItem("New", "Menu_File_New", "Menu_File");
-	AddItem("Open ->", "Menu_File_Open", "Menu_File", true);
-	AddItem("Close", "Menu_File_Close", "Menu_File");
-	AddItem("Add New Item", "Menu_File_Add_New_Item", "Menu_File");
+	m_pkSkinDown->m_afBorderColor[0] = (1.0f / 255) * Rdf ;
+	m_pkSkinDown->m_afBorderColor[1] = (1.0f / 255) * Gdf ;
+	m_pkSkinDown->m_afBorderColor[2] = (1.0f / 255) * Bdf ;
 
-	AddItem("Project", "Menu_File_Open_Project", "Menu_File_Open", true);
-	AddItem("File", "Menu_File_Open_File", "Menu_File_Open");
-
-	AddItem("Edit", "Menu_Edit", NULL, true);
-	AddItem("Undo", "Menu_Edit_Undo", "Menu_Edit");
-	AddItem("Cut", "Menu_Edit_Cut", "Menu_Edit");
-
-	AddItem("C++ Project", "Menu_File_Open_C++_Project", "Menu_File_Open_Project");
-	AddItem("Visual Basic Project", "Menu_File_Open_Visual_Basic_Project", "Menu_File_Open_Project");
-	AddItem("Java Project", "Menu_File_Open_Java_Project", "Menu_File_Open_Project");
-
-	OpenSubMenu(GetItem("Menu_File_Open_Java_Project"), true);
+	m_pkSkinDown->m_unBorderSize = 1;
 }
 
 bool ZGuiMenu::AddItem(const char* szText, const char* szNameID, 
@@ -189,16 +186,17 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 
 	new_item->pkParent = GetItem(szParentID);	
 
-	if(szParentID != NULL && new_item->pkParent == NULL)
+	if(szNameID == NULL || (szParentID != NULL && new_item->pkParent == NULL) )
 	{
 		delete new_item;
+		printf("Failed to add menu item. Bad arguments\n");
 		return false;
 	}
 
 	int x = 0;
 	int y = 0;
 	int w = 100;
-	int h = 20;
+	int h = MENU_ITEM_HEIGHT;
 
 	ZGuiMenuItem* pkParent = GetItem(szParentID);
 
@@ -217,7 +215,7 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 			y = pkParent->pkButton->GetWndRect().Bottom;
 		}
 
-		y += GetNumChilds((char*)szParentID) * 20;
+		y += GetNumChilds((char*)szParentID) * MENU_ITEM_HEIGHT;
 	}
 	else
 	{
@@ -240,6 +238,8 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 	new_item->bOpenSubMenu = bOpenSubMenu;
 
 	m_vkItems.push_back(new_item); 
+
+	GetGUI()->RegisterWindow( new_item->pkButton, (char*) szNameID);
 
 	if(new_item->bOpenSubMenu)
 	{
@@ -389,6 +389,8 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 	if(pkFont == NULL)
 		return;
 
+	const int SPACE_BETWEEN_SUB_MENUS = 8;
+
 	// Börja med att skala om alla utan parent till sin rätta storlek.
 	int iPrevIndex;
 
@@ -400,11 +402,11 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 			pkButton->SetFont(pkFont); 
 
 			int width = pkFont->GetLength( pkButton->GetText() ); 
-			pkButton->Resize(width, 20);
+			pkButton->Resize(width, MENU_ITEM_HEIGHT);
 
 			if( j > 0 )
 			{
-				int x = m_vkItems[iPrevIndex]->pkButton->GetWndRect().Right + 4; 
+				int x = m_vkItems[iPrevIndex]->pkButton->GetWndRect().Right + SPACE_BETWEEN_SUB_MENUS; 
 				int y = pkButton->GetWndRect().Top; 
 				
 				pkButton->SetPos(x, y, false, true);
@@ -422,7 +424,7 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 		{
 			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
 			int width = pkFont->GetLength( pkButton->GetText() ); 
-			pkButton->Resize(width+4, 20);
+			pkButton->Resize(width+SPACE_BETWEEN_SUB_MENUS, MENU_ITEM_HEIGHT);
 		}
 	}
 
@@ -465,7 +467,7 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 			if(m_vkItems[j]->pkParent == it->first)
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
-				pkButton->Resize(kMaxWidths[iIndex], 20);
+				pkButton->Resize(kMaxWidths[iIndex], MENU_ITEM_HEIGHT);
 			}
 		}
 
@@ -491,7 +493,7 @@ void ZGuiMenu::ResizeMenu(ZGuiFont* pkFont)
 
 				int y = pkButton->GetWndRect().Top; 
 
-				pkButton->SetPos(x, y, false, true);
+				pkButton->SetPos(2+x, 2+y, false, true);
 			}
 		}
 	}

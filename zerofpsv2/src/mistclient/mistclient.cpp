@@ -762,8 +762,6 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
-	
-
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked == NULL)

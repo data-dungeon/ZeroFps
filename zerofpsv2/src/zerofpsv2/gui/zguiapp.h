@@ -34,6 +34,7 @@ enum GuiType
 	TabControl,		// 9
 	Textbox,			// 10
 	Treebox,			// 11
+	Menu,				// 12
 	GuiType_Error
 };
 

@@ -10,6 +10,7 @@
 [Menu_File]
 Title=File
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_Loadmap]
@@ -32,6 +33,7 @@ Cmd=quit
 [Menu_Edit]
 Title=Edit
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_EditCopy]
@@ -63,6 +65,7 @@ Cmd=selnone
 [Menu_View]
 Title=View
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_ViewLightOn]
@@ -73,6 +76,7 @@ Cmd=lightmode 0
 [Menu_ViewLightOff]
 Title=Light Off
 Parent=Menu_View
+OpenSubMenu=0
 Cmd=lightmode 1
 
 [Menu_ViewLightMat]
@@ -135,6 +139,7 @@ Cmd=camsolo
 [Menu_Grid]
 Title=Grid
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_GridShow]
@@ -192,6 +197,7 @@ Cmd=gridsize 100
 [Menu_Sys]
 Title=System
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_SysRender]
@@ -239,6 +245,7 @@ Cmd=set e_simspeed 8
 [Menu_Debug]
 Title=Debug
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_DebugShowZones]
@@ -271,6 +278,7 @@ Cmd=editsun
 [Menu_Page]
 Title=DevPage
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
 
 [Menu_PageCommon]
@@ -307,7 +315,19 @@ Cmd=devtog editor
 [Menu_Ai]
 Title=Ai
 Parent=NULL
+OpenSubMenu=1
 Cmd=NULL
+
+[Menu_AiSubmenu]
+Title=Sub Menu
+Parent=Menu_Ai
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_AiTest]
+Title=Test
+Parent=Menu_AiSubmenu
+Cmd=devtog common
 
 [Menu_AiNavMesh]
 Title=Show NavMesh (T)
