@@ -99,7 +99,7 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(.9,.9,.9,1);	//Dag
+		sol->kDiffuse=Vector4(.7,.7,.7,1);	//Dag
 //		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
