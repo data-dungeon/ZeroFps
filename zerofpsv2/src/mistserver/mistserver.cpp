@@ -805,6 +805,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	
 	if(pkObject)
 	{	
+		/*
 		Vector3 kStartPos = Vector3(0,3,0);
 					
 		//make sure position is valid and zone is loaded
@@ -814,16 +815,14 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
 			kStartPos = Vector3(0,1,0);
 			zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);						
-		}		
-		
+		}				
 		
 		//force loading of zone
 		m_pkObjectMan->LoadZone(zid);
+		*/
 		
 		//finaly set objects position
-		pkObject->SetWorldPosV(kStartPos);
-		
-		cout<<"setting char pos:"<<kStartPos.x<<" "<<kStartPos.y<<" "<<kStartPos.z<<endl;
+		pkObject->SetWorldPosV(GetPlayerStartPos());
 		
 		//setup tracker to correct tracker id
 		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
@@ -1323,7 +1322,18 @@ void MistServer::SayToClients(const string& strMsg)
 	SendAppMessage(&kNp);	
 }
 
-
+Vector3 MistServer::GetPlayerStartPos()
+{
+	if(Entity* pkEnt = m_pkObjectMan->GetEntityByType("hosstartpos.lua"))
+	{
+		return pkEnt->GetWorldPosV();	
+	}
+	else
+	{
+		cout<<"missing hosstartpos.lua object, starting at <0 1 0>"<<endl;
+		return Vector3(0,3,0);			
+	}
+}
 
 
 

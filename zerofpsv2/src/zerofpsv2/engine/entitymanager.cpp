@@ -157,6 +157,21 @@ void EntityManager::UpdateSimTime()
 }
 
 
+Entity* EntityManager::GetEntityByType(const char* czType)
+{
+	vector<Entity*> kObjects;		
+	GetAllObjects(&kObjects);
+	
+	for(vector<Entity*>::iterator it=kObjects.begin();it!=kObjects.end();it++) 
+	{
+		if((*it)->GetType() == czType)
+		{
+			return (*it);
+		}
+	}		
+	return NULL;
+}
+
 
 /**	\brief	Link this to the Object manager
 

@@ -99,9 +99,10 @@ class MistServer :public Application , public ZGuiApp
 		void SetupGuiEnviroment();
 
 		void Input_Camera(float fMouseX, float fMouseY);
-		void DeletePlayerCharacter(int iConID);
-		
+		void DeletePlayerCharacter(int iConID);		
 		void SayToClients(const string& strMsg);
+		
+		Vector3 GetPlayerStartPos();
 		
 	public:
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);

@@ -216,6 +216,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		
 		void 		GetAllObjects(vector<Entity*> *pakObjects);
+		Entity*	GetEntityByType(const char* czType);
 		Entity* 	GetObject(const char* acName);							///< Get a ptr to object by name
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 
