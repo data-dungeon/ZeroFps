@@ -61,6 +61,7 @@ end
 function HeartBeat()
 
 
+
 	-----------------------------------------------------------------------
 	-- Vänta på att alla objekt skall ha skapats så att vi kan 
 	-- skapa en lista över alla civila.

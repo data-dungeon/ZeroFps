@@ -21,11 +21,11 @@ end
 
 
 function HeartBeat()
-	if GetEntityVar("activated") == 1
+	if GetEntityVar(SIGetSelfID(), "activated") == 1 then
 		PlaySound (SIGetSelfID(), "tick.wav");
-		AddToEntityVarLua ("timer", -1);
+		AddToEntityVarLua (SIGetSelfID(), "timer", -1);
 
-		if GetEntityVar("timer") < 1 then
+		if GetEntityVar(SIGetSelfID(), "timer") < 1 then
 			Delete ( SIGetSelfID() );
 		end
 	end

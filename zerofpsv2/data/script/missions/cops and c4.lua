@@ -21,6 +21,7 @@ BombEntID = -1
 BombTicks = -1
 PoliceStationID = -1
 HQPos = {}
+PoliceForce = {}
 
 function OnMissionStart()
 
@@ -40,17 +41,69 @@ function OnMissionStart()
 	HQPos = GetEntityPos(hq)
 
 	-----------------------------------------------------------------------
-	-- Skapa lite poliser
+	-- Skapa 3 arga poliser
 	-----------------------------------------------------------------------
-	
-	for i=0, 6, 1
-	do
-		local police = RunScript("data/script/objects/dm/t_police.lua")
-		local pos = GetObjectPos(PoliceStationID)
-		pos[1] = pos[1] + Random(3)
-		pos[3] = pos[3] + Random(3)
-		SetObjectPos(police, pos)
-	end
+
+	pos1 = { 32.5738,1.40289,26.3275 }
+	pos2 = { 31.9065,1.22861,18.5373 }
+	pos3 = { 23.8532,1.60644,17.2107 }
+	pos4 = { 12.4345,1.42537,16.631 }
+	pos5 = { 7.31069,1.32392,20.3325 }
+	pos6 = { 7.3235,1.29891,26.9971 }
+	pos7 = { 8.69011,1.34066,42.1484 }
+	pos8 = { 15.3835,1.48972,42.964 }
+	pos9 = { 26.4581,1.42928,42.9286 }
+	pos10 = { 32.2395,1.40035,40.4068 }
+
+
+
+	-- Skapa polis 2
+	local police1 = RunScript("data/script/objects/dm/t_police.lua", -1, pos1)
+	PoliceForce[1] = police1
+	ClearPatrolPath(police1)
+	AddPatrolPoint(police1, pos1)
+	AddPatrolPoint(police1, pos2)
+	AddPatrolPoint(police1, pos3)
+	AddPatrolPoint(police1, pos4)
+	AddPatrolPoint(police1, pos5)
+	AddPatrolPoint(police1, pos6)
+	AddPatrolPoint(police1, pos7)
+	AddPatrolPoint(police1, pos8)
+	AddPatrolPoint(police1, pos9)
+	AddPatrolPoint(police1, pos10)
+
+	-- Skapa polis 2
+	local police2 = RunScript("data/script/objects/dm/t_police.lua", -1, pos2)
+	PoliceForce[2] = police2
+	ClearPatrolPath(police2)
+	AddPatrolPoint(police2, pos2)
+	AddPatrolPoint(police2, pos3)
+	AddPatrolPoint(police2, pos4)
+	AddPatrolPoint(police2, pos5)
+	AddPatrolPoint(police2, pos6)
+	AddPatrolPoint(police2, pos7)
+	AddPatrolPoint(police2, pos8)
+	AddPatrolPoint(police2, pos9)
+	AddPatrolPoint(police2, pos10)
+	AddPatrolPoint(police2, pos1)
+
+	-- Skapa polis 3
+	local police3 = RunScript("data/script/objects/dm/t_police.lua", -1, pos3)
+	PoliceForce[3] = police3
+	ClearPatrolPath(police3)
+	AddPatrolPoint(police3, pos3)
+	AddPatrolPoint(police3, pos4)
+	AddPatrolPoint(police3, pos5)
+	AddPatrolPoint(police3, pos6)
+	AddPatrolPoint(police3, pos7)
+	AddPatrolPoint(police3, pos8)
+	AddPatrolPoint(police3, pos9)
+	AddPatrolPoint(police3, pos10)
+	AddPatrolPoint(police3, pos1)
+	AddPatrolPoint(police3, pos2)
+
+	ch = GetDMCharacterClosest(hq)	
+	SetObjectPos(ch, pos1)
 
 end
 
@@ -82,15 +135,22 @@ end
 
 function BlowupPoliceStation()
 
-
 	for i=1, 50, 1
 	do
 		Print("BOOOOOM")
 	end
 
-	RunScript("data/script/objects/dm/t_explosion.lua",BombEntID);
+	RunScript("data/script/objects/dm/t_bigexposion.lua",BombEntID);
 	Delete(BombEntID)
 	Delete(PoliceStationID)
+
+	----------------------------------------------------
+	-- Nu går poliserna till attack
+	----------------------------------------------------
+
+	SetState(PoliceForce[1],4) -- Get Aggro
+	SetState(PoliceForce[2],4) -- Get Aggro
+	SetState(PoliceForce[3],4) -- Get Aggro
 
 end
 
@@ -103,6 +163,8 @@ function IsMissionDone()
 	if PoliceStationID < 0 or BombEntID < 0 then
 
 		Print( "Mission Cops and c4 are mission some objects" )
+
+		PoliceStationID = GetDMObject(2)
 		return
 	end
 
