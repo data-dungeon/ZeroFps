@@ -96,6 +96,26 @@ void MistClient::OnInit()
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
 
+		
+		
+		
+	//test
+	m_pkEntityManager->SetWorldDir("clienttemp");
+	if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
+	{
+		m_pkEntityManager->SetTrackerLos(50);
+		
+		Entity* pkEnt = m_pkEntityManager->CreateEntity();
+		pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
+		
+		pkEnt->AddProperty("P_Track");
+		P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
+		pkEnv->LoadEnviroment("data/enviroments/cloudy.env");
+		pkEnv->SetEnable(true);	
+	}
+	else
+		cout<<"WARNING: could not find menulevel"<<endl;	
+
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)

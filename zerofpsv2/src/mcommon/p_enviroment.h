@@ -69,6 +69,8 @@ class MCOMMON_API P_Enviroment: public Property {
 
 		void SetEnable(bool bNew);
 		
+		void LoadEnviroment(const char* czEnv);
+		
 		friend class ZSSEnviroment;
 };
 

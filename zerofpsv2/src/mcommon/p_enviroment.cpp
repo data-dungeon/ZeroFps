@@ -10,8 +10,10 @@ Property* Create_P_Enviroment()
 P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
+	
 	m_iType=			PROPERTY_TYPE_RENDER;
 	m_iSide=			PROPERTY_SIDE_CLIENT;
+		
 	m_iSortPlace=	-10;	
 	bNetwork =		true;
 	
@@ -76,7 +78,7 @@ void P_Enviroment::Update()
 		DrawSky();
 		UpdateEnviroment();
 	
-	
+
 	}
 }
 
@@ -325,6 +327,11 @@ void P_Enviroment::SetEnable(bool bNew)
 
 	m_bEnabled = bNew;
 
+}
+
+void P_Enviroment::LoadEnviroment(const char* czEnv)
+{
+	m_kCurrentEnvSetting.LoadEnviroment(czEnv);
 }
 
 

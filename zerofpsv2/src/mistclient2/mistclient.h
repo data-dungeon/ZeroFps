@@ -30,6 +30,7 @@ class MistClient :public Application, public ZGuiApp {
 			FID_KILLME,
 		};
 
+		
 		//delay
 		float	m_fDelayTime;
 
