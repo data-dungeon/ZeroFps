@@ -35,13 +35,11 @@ class Test :public Application {
 	
 	PlayerObject *m_pkPlayer;
 
-	//Core		CoreTest;
-	//MadInstans	kBitch;
-
-	vector<Core>		akCoreModells;
-	vector<MadInstans>	akModells;
-
-	int		iCoreFrame;
+	//Core					CoreTest;
+	//MadInstans			kBitch;
+	//vector<Core>			akCoreModells;
+	//vector<MadInstans>	akModells;
+	//int		iCoreFrame;
 	int		TestUpdateSpeedFulHack;
 
 	Object*	TestObject;
@@ -53,10 +51,11 @@ class Test :public Application {
 
 		void input();
 
+/*
 		void FH_SkapaObject(void);
 		void FH_UpdateraObject(void);
 		void FH_RitaObject(void);
-
+*/
 
 };
 

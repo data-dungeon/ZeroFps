@@ -48,7 +48,7 @@ void Test::OnInit(void) {
   
 	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 
-	FH_SkapaObject();
+//	FH_SkapaObject();
 
 
 	
@@ -98,7 +98,9 @@ void Test::OnInit(void) {
 	
 	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test,pkFps);
-		ball->AddProperty(new MadProperty(&akCoreModells[0]));
+	
+		//ball->AddProperty(new MadProperty(&akCoreModells[0]));
+		ball->AddProperty(new MadProperty(pkFps->GetMADPtr("cube.mad")));
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+10,y);
@@ -226,10 +228,11 @@ void Test::input() {
 	pkFps->GetCam()->GetRot().y+=x/5.0;
 }
 
+/*
 char *MdlNames[] =
 {
 	"bitch.mad",
-/*	"band.mad",
+	"band.mad",
 	"berserk.mad",
 	"bitch.mad",
 	"body.mad",
@@ -281,10 +284,11 @@ char *MdlNames[] =
 	"soldier.mad",
 	"spinner.mad",
 	"stim.mad",
-	"target.mad",*/
-};
+	"target.mad",
+};*/
 
 
+/*
 
 
 
@@ -351,6 +355,6 @@ void Test::FH_RitaObject(void)
 	}
 }
 
-
+*/
 
 

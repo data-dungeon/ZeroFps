@@ -116,7 +116,7 @@ void Core::SetFrame_InSeconds(float fSeconds)
 
 char* Core::GetName(void)
 {
-	return NULL;
+	return Name;
 }
 
 void Core::draw()

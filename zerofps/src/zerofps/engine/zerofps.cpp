@@ -15,6 +15,9 @@ ZeroFps::ZeroFps(void) {
 	m_fFrameTime=0;
 	m_iFullScreen=0;
 
+	akCoreModells.reserve(25);
+
+
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
 //	m_pkCmd->Add(&m_iFps,"G_Fps",type_int);
@@ -255,4 +258,45 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 
 
 
+
+int ZeroFps::LoadMAD(char* filename)
+{
+	int iMadId = GetMADIndex(filename);
+
+	if(iMadId != -1)
+		return iMadId;
+
+	Core CoreAdd;
+	akCoreModells.push_back(CoreAdd);
+	Core* pCoreMdl = &akCoreModells.back();
+	pCoreMdl->Load(filename);
+	pCoreMdl->SetTextureManger(m_pkTexMan);
+	return (akCoreModells.size() - 1);
+}
+
+void ZeroFps::ClearMAD(void)
+{
+	akCoreModells.clear();
+}
+
+int ZeroFps::GetMADIndex(char* filename)
+{
+	for(int i=0; i < akCoreModells.size(); i++)
+	{
+		if(strcmp(akCoreModells[i].GetName(),filename) == 0)
+			return i;
+	}
+
+	return -1;
+}
+
+Core* ZeroFps::GetMADPtr(char* filename)
+{
+	int iMadId = LoadMAD(filename);
+
+	if(iMadId != -1)
+		return &akCoreModells[iMadId];
+
+	return NULL;
+}
 

@@ -51,7 +51,14 @@ class ENGINE_API ZeroFps {
 		Light* m_pkLight;
 		ObjectManager* m_pkObjectMan;
 		CollisionManager*  m_pkCollisionMan;
-	
+
+		vector<Core>		akCoreModells;
+		
+		int LoadMAD(char* filename);
+		void ClearMAD(void);
+		int GetMADIndex(char* filename);
+		Core* GetMADPtr(char* filename);
+
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
