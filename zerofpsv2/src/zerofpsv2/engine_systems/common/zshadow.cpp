@@ -34,6 +34,8 @@ bool ZShadow::StartUp()
 
 void ZShadow::Update()
 {
+	return; // ZZZZZZZZZZZZZZZzzzzzeeeeeeeeeero FPS!!!!
+
 	//do a quick return if no shadows shuld be rendered
 	if(m_iNrOfShadows == 0)
 		return;
