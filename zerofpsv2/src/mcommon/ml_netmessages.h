@@ -25,5 +25,18 @@ enum MLNM_ServerToClient
 	MLNM_SC_PLAYERLIST,
 };
 
+//mistlands chatmessages ID's
+enum MLCM_ChatMessages
+{
+	MLCM_TALK,
+	MLCM_WISPER,
+	MLCM_SHOUT,
+	MLCM_OOC_TALK,
+	MLCM_OOC_MESSAGE,
+	MLCM_OOC_GROUP,
+	MLCM_OOC_GUILD,
+	MLCM_OOC_ALL,
+};
+
 
 #endif

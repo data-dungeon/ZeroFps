@@ -116,12 +116,27 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void MistClient::Say(string strMsg)
 {
+	if(strMsg.size() == 0)
+		return;
+
+	if(strMsg[0] == '/')
+	{
+		//handle different chat channels
+	}
+	else
+	{
+		//default to normal talk
+		SendMessage(strMsg,MLCM_TALK,""); 	
+	}									
+}
+
+void MistClient::SendMessage(string strMsg,int iChannel,string strToWho)
+{
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_SAY);
 	kNp.Write_Str(strMsg);
 	kNp.TargetSetClient(0);
-	SendAppMessage(&kNp);
-									
+	SendAppMessage(&kNp);	
 }
 
 void MistClient::RegisterResources()

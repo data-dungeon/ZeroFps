@@ -46,6 +46,7 @@ class MistClient :public Application, public ZGuiApp {
 		void Input();
 		
 		void Say(string strMsg);
+		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void RequestPlayerList();
 
 		bool NameIPFromServerList(string& strName, string& strIP);

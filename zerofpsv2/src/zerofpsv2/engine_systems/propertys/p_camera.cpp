@@ -78,32 +78,42 @@ void P_Camera::Update()
 				kRot.Rotate(m_f3PPAngle,m_f3PYAngle,0);
 				kRot.Transponse();
 				
-				Vector3 kOffset(0,0,-1);				
-				kOffset = kRot.VectorTransform(kOffset);
-				kOffset *= m_f3pCurrentDistance;									
-	 			kOffset += m_kOffset;
+				Vector3 kOffset;				
+				kOffset = kRot.VectorTransform(Vector3(0,0,-1));
+				kOffset *= m_f3PDistance;									
+//	 			kOffset += m_kOffset;
 				
 				//check camera against enviroment so nothing is betwean camera and player				
-				float fD = LineTest(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset);				
+				float fD = LineTest(m_pkEntity->GetIWorldPosV() +m_kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset+kOffset);				
 				static float fZS = 0.2;
-				if(fD < m_f3pCurrentDistance)
+				if(fD < m_f3PDistance)
 				{
-					m_f3pCurrentDistance -= fZS;
+/*					m_f3pCurrentDistance -= fZS;
 					
 					kOffset.Set(0,0,-1);				
 					kOffset = kRot.VectorTransform(kOffset);
 					kOffset *= m_f3pCurrentDistance;									
 		 			kOffset += m_kOffset;
+*/					
+					float fDist = fD - 0.5;
+					if(fDist <= 0.1)
+						fDist = 0.1;
+					
+					kOffset = kRot.VectorTransform(Vector3(0,0,-1));
+					kOffset *= fDist;	
+		 			//kOffset += m_kOffset;				
 				}
-				else
+/*				else
 					if(m_f3pCurrentDistance < m_f3PDistance - fZS)
 						m_f3pCurrentDistance += fZS;
 					else
 						if(m_f3pCurrentDistance > m_f3PDistance + fZS)
 							m_f3pCurrentDistance -= fZS;
-
+*/
+				
+										
 												
-				LookAt(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
+				LookAt(m_pkEntity->GetIWorldPosV() +m_kOffset+ kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
 				
 				
 
@@ -221,6 +231,9 @@ void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
    if ( kLookDir == kLookDir.ZERO )
       return;
 
+	if(kLookDir.NearlyZero(0.001))
+		return;
+		
 	kCamera.LookDir(kLookDir,kCamUp);
 
 	m_pkCamera->SetRotM(kCamera);
@@ -289,8 +302,7 @@ float P_Camera::LineTest(const Vector3& kStart,const Vector3& kStop)
 					pkClosest = kObjects[i];
 				}				
 			}
-		}		
-		
+		}				
 	}
 	
 	return closest;
