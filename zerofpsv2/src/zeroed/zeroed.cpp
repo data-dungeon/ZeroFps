@@ -447,6 +447,8 @@ void ZeroEd::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
+
+	Register_MadProperty(m_pkZeroFps);
 }
 
 

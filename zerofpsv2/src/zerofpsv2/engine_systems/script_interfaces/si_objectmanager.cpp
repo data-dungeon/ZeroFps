@@ -65,7 +65,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	// mad handling
 	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
-	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
+//	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
 	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
 
 	// entity Variables
@@ -518,6 +518,7 @@ int PlayAnim(lua_State* pkLua)
 	Sets the next animation to play on a object. Stops to looping of the currently playing animation
 	(if any) and then play the one given as a parameter. That animation will the loop. 
 */
+/*
 int SetNextAnim(lua_State* pkLua)
 {
 	double dTemp;
@@ -533,6 +534,7 @@ int SetNextAnim(lua_State* pkLua)
 	mp->SetNextAnimation(acName);
 	return 1;
 }
+*/
 
 int AddMesh(lua_State* pkLua)
 {

@@ -95,8 +95,15 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		//bool operator<(Property& kOther);
 };
 
-Property* Create_MadProperty();
+namespace SI_PMad
+{
+	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
+	
+}
 
+
+Property* Create_MadProperty();
+void ENGINE_SYSTEMS_API Register_MadProperty(ZeroFps* pkZeroFps);
 
 #endif
 

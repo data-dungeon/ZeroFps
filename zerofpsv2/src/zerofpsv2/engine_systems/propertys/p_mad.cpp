@@ -2,7 +2,11 @@
 #include "../../engine/entity.h"
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
- 
+#include "../script_interfaces/si_objectmanager.h" 
+
+using namespace ObjectManagerLua;
+
+
 extern int		g_iMadLODLock;
 extern float	g_fMadLODScale;
  
@@ -665,6 +669,36 @@ Property* Create_MadProperty()
 
 
 
+namespace SI_PMad
+{
 
+/**	\fn SetNextAnim(ObjectID, AnimName)
+ 	\relates MistLandScript
+   \brief Sets the next animation for a object to play.
+
+	Sets the next animation to play on a object. Stops to looping of the currently playing animation
+	(if any) and then play the one given as a parameter. That animation will the loop. 
+*/
+int SetNextAnim(lua_State* pkLua)
+{
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+//	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+	mp->SetNextAnimation(acName);
+	return 1;
+}
+}
+
+void Register_MadProperty(ZeroFps* pkZeroFps)
+{
+	g_pkScript->ExposeFunction("SetNextAnim", SI_PMad::SetNextAnim);
+}
 
 
