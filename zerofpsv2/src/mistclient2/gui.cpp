@@ -59,7 +59,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 			if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())			
 				itCallback->second(strMainWnd, "", ZGM_MOUSEMOVE, numparms, params);
 		}
-		
+			
 		return true;
 	}
 

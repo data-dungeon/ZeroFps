@@ -54,6 +54,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("ap_quickstartadress", &m_strQuickStartAddress,	CSYS_STRING);
 
 	m_bGuiCapture = false;
+
+	m_iPickedUpItem = -1;
 } 
  
 void MistClient::OnInit() 
@@ -462,8 +464,13 @@ void MistClient::Input()
 			{				
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-				{
+				{					
 					SendMoveItem(m_iPickedEntityID,-1,-1,-1);
+
+					if(m_pkInventoryDlg->IsVisible()) 
+						m_iPickedUpItem = m_iPickedEntityID;	
+					else
+						m_iPickedUpItem = -1;
 				}
 				else 
 				// if not an item do first action
@@ -480,6 +487,14 @@ void MistClient::Input()
 			}
 		}	
 	}	
+
+	if(!m_pkInputHandle->VKIsDown("use"))
+	{
+		if(m_iPickedUpItem)
+		{			
+			m_iPickedUpItem = -1;
+		}
+	}
 			
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");

@@ -78,6 +78,8 @@ class MistClient :public Application, public ZGuiApp {
 				iTraget : target container entity ID , om -1 så antas i spelarens inventory
 				iPosX   : position i containern som föremålet skall flyttas till, om -1 så sätts föremålet på en ledig plats
 			*/
+
+		int m_iPickedUpItem;
 		
 		
 			

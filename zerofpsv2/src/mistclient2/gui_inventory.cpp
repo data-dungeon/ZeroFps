@@ -123,6 +123,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			if(m_vkInventoryItemList[i].iItemID == g_kMistClient.m_iPickedUpItem)
 			{
 				m_iMoveSlot = i;
+				m_vkInventoryItemList[i].pkWnd->Show();
 				break;
 			}
 		}
@@ -207,6 +208,11 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
 			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
+
+		if(g_kMistClient.m_iPickedUpItem != vkItemList[i].m_iItemID)
+			pkNewSlot->Show();
+		else
+			pkNewSlot->Hide();
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
