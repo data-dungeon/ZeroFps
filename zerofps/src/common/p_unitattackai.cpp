@@ -10,8 +10,8 @@
 //////////////////////////////////////////////////////////////////////
 
 P_UnitAttackAI::P_UnitAttackAI()
-	:m_pkAttackCommand(NULL),m_pkUnit(NULL),m_pkTargetObject(NULL),
-	m_fRange(20),m_pkAi(NULL), m_pkUnitSystem(NULL)
+:m_pkAttackCommand(NULL),m_pkUnit(NULL),m_pkTargetObject(NULL),
+m_fRange(20),m_pkAi(NULL), m_pkUnitSystem(NULL), m_iTargetID(-1)
 {
 	strcpy(m_acName,"P_UnitAttackAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -32,12 +32,12 @@ void P_UnitAttackAI::Init()
 
 bool P_UnitAttackAI::RegisterExternalCommands()
 {
-m_pkUnit=static_cast<P_ServerUnit*>(m_pkObject->GetProperty("P_ServerUnit"));
+	m_pkUnit=static_cast<P_ServerUnit*>(m_pkObject->GetProperty("P_ServerUnit"));
 	if(m_pkUnit)
 	{
 		
 		m_pkAttackCommand = new ExternalCommand(this, UNIT_ATTACK);
-	//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedDestination = false;
+		//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedDestination = false;
 		m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 		strcpy(m_pkAttackCommand->m_kUnitCommandInfo.m_acCommandName, "Attack");
 		strcpy(m_pkAttackCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
@@ -57,6 +57,7 @@ AIBase* P_UnitAttackAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYD
 		{
 			if(iTarget>=0)
 			{
+				m_iTargetID = iTarget;
 				m_pkTargetObject = NULL;
 				m_pkTargetObject= m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(iTarget);
 				if(m_pkTargetObject)
@@ -69,10 +70,14 @@ AIBase* P_UnitAttackAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYD
 				else
 				{
 					cout<< "P_UnitAttackAI:didnt find target! :(" <<endl;
-					return NULL;
+					
+					UnitCommand TempCommand;
+					strcpy(TempCommand.m_acCommandName, "Stop");
+					//TempCommand.m_iTarget = m_pkObject->iNetWorkID;
+					return m_pkUnit->RunExternalCommand(&TempCommand);
 				}
 				
-			
+				
 			}
 		}
 	}
@@ -85,9 +90,19 @@ AIBase* P_UnitAttackAI::UpdateAI()
 	{
 	case UNIT_ATTACK:
 		{
-			//cout<<"hehjehejejhe" <<endl;
-			if(m_pkTargetObject)
+			if(m_iTargetID >= 0)//cout<<"hehjehejejhe" <<endl;
+				m_pkTargetObject= m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(m_iTargetID);
+			if(!m_pkTargetObject)
 			{
+				m_iTargetID = -1;
+				UnitCommand TempCommand;
+				strcpy(TempCommand.m_acCommandName, "Stop");
+				return m_pkUnit->RunExternalCommand(&TempCommand);
+			}
+				
+			else
+			{
+			
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
 				float TempDist = (kDistVec.x * kDistVec.x) + (kDistVec.y * kDistVec.y) + (kDistVec.z * kDistVec.z);
 				if(TempDist<m_fRange)
@@ -156,10 +171,10 @@ AIBase* P_UnitAttackAI::UpdateAI()
 				}
 			}
 		}     
+		
+	}
 	
-}
-
-return NULL;
+	return NULL;
 }
 
 COMMON_API Property* Create_P_UnitAttackAI()

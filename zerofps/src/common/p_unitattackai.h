@@ -42,6 +42,7 @@ private:
 	ExternalCommand* m_pkAttackCommand;
 	int m_iCurrentState;
 	Object* m_pkTargetObject;
+	int m_iTargetID;
 	float m_fRange;
 	float m_fDistance;
 	AIBase* m_pkAi;
