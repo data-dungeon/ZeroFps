@@ -396,8 +396,9 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 	if(bNoBounce)
 		fBounce = 0.1;
 	
-	//friction
-	float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
+	//friction , we use the maximum friction coefficient
+	//float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
+	float fFriction = Max(pkCol->pkBody1->m_fFriction,pkCol->pkBody2->m_fFriction);
 	
 	//setup vels	
 	Vector3 kLinearRelVel = pkCol->pkBody1->m_kLinearVelocity - pkCol->pkBody2->m_kLinearVelocity;
@@ -450,7 +451,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 		
 			// APPLY IMPULSES					
 			if( (!pkCol->pkBody1->m_bStatic) && (!pkCol->pkBody1->m_bTempStatic) )
-			{
+			{		
 				if(bNoAngular)
 				{
 					pkCol->pkBody1->ApplyImpulsForce(pkCol->kNormals[i] * j );							
@@ -2324,6 +2325,8 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 	static Vector3 Normal2;
 	static int i1,i2;
 
+	static bool bT1,bT2,bT3;
+	
 	for(unsigned int f=0;f<pkBody1->m_pkFaces->size();f++)
 	{
 		verts1[0] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[0]]);
@@ -2367,9 +2370,15 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 
 			if(!TestPolygonAABB(verts1,verts2))
 				continue;
-				
-				
-				
+			
+			//test if all vertises are on one side of the other polygon plane	
+			bT1 = P1.PointInside(verts2[0]);
+			bT2 = P1.PointInside(verts2[1]);
+			bT3 = P1.PointInside(verts2[2]);
+			if( (bT1&&bT2&&bT3) || (!bT1&&!bT2&&!bT3) )
+				continue;
+
+								
 			if(m_iDebugGraph == 2)
 			{
 				//debug stuff

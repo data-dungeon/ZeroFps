@@ -45,7 +45,7 @@ P_Tcs::P_Tcs()
 	m_bOnGround=			false;
 	m_bActiveMoment =		true;
 	m_fBounce =				1;
-	m_fFriction = 			0.2;
+	m_fFriction = 			0.5;
 	m_bSleeping = 			false;
 	m_bCantSleep = 		false;
 	m_bDisableOnSleep =	false;
@@ -719,7 +719,7 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 {
 	if(m_bStatic ||  m_bTempStatic)
 		return;
-
+	
 	Wakeup();
 
 	//add linear force
