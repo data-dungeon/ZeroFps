@@ -227,6 +227,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnClientStart();
 
 		void AddPropertyVal();
+		void AddProperty(int iEntityID,const string& strProperty);
 		void RemoveSelProperty();
       bool SaveCurrentToScript();
 	
@@ -247,9 +248,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		float	m_fDelayTime;
 		bool	DelayCommand();
 
-		bool StartUp()	{ return true; }
+		bool StartUp()		{ return true; }
 		bool ShutDown()	{ return true; }
-		bool IsValid()	{ return true; }
+		bool IsValid()		{ return true; }
 
 		//void SendAppMessage(NetPacket* pkNet);
 };

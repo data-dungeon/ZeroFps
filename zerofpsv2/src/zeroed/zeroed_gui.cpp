@@ -214,9 +214,13 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "AddPropertyBn")
 			{
 				if((item = GetSelItem("AllPropertyList")))
-					if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
-						if(pkEnt->AddProperty(item))
-							UpdatePropertyList(pkEnt->GetEntityID());
+				{
+					AddProperty(m_iCurrentObject,item);
+				
+				}
+				//	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
+				//		if(pkEnt->AddProperty(item))
+				//			UpdatePropertyList(pkEnt->GetEntityID());
 			}
 		}
 		else

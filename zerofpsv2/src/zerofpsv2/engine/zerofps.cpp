@@ -1182,6 +1182,95 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 				m_pkEntityManager->Delete(pkEntity->GetEntityID());	
 		}
 	}
+	
+	if( szCmd == string("create_zone") )
+	{
+		string 	strZoneName;
+		Vector3	kZoneMarkerPos;
+		Vector3	kZoneSize;
+		
+		pkNetPacket->Read_Str(strZoneName);
+		pkNetPacket->Read(kZoneMarkerPos);		
+		pkNetPacket->Read(kZoneSize);
+	
+		//cout<<"creating zone:"<<strZoneName<< " size:"<<kZoneSize.x<<" "<<kZoneSize.y<<" "<<kZoneSize.z<< "  position:"<<kZoneMarkerPos.x<<" "<<kZoneMarkerPos.y<<" "<<kZoneMarkerPos.z<<endl;
+	
+		//check if colliding with any other zone
+		if(m_pkEntityManager->IsInsideZone(kZoneMarkerPos, kZoneSize))
+			return;		
+	
+		//create zone
+		int id = m_pkEntityManager->CreateZone(kZoneMarkerPos, kZoneSize);
+		
+		//force loading of this zone
+		m_pkEntityManager->LoadZone(id);
+		
+		if(id != -1)
+		{
+			if(strZoneName.length() != 0)
+				m_pkEntityManager->SetZoneModel(strZoneName.c_str(),id);
+			//pkObjectMan->SetUnderConstruction(id);
+		}						
+	}
+	
+	if( szCmd == string("setvariable") )	
+	{
+		int iCurrentObject;
+		string strItem;
+		string strValue;
+		string strRes;
+	
+		pkNetPacket->Read(iCurrentObject);
+		pkNetPacket->Read_Str(strItem);
+		pkNetPacket->Read_Str(strValue);
+		pkNetPacket->Read_Str(strRes);		
+		
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iCurrentObject))
+		{
+			if(string("Variables") == string(strItem))
+			{
+				pkEnt->SetVarString(strValue, strRes);				
+			}			
+			else
+			{
+				if(Property* pkProp = pkEnt->GetProperty(strItem.c_str()))
+				{
+					pkProp->SetValue(strValue, strRes);
+					pkProp->ResetAllNetUpdateFlags();
+				}							
+			}			
+		}
+	}
+	
+	if( szCmd == string("addproperty") )	
+	{	
+		int 		iEntityID;
+		string 	strPropertyName;
+		
+		pkNetPacket->Read(iEntityID);
+		pkNetPacket->Read_Str(strPropertyName);
+			
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iEntityID))
+		{
+			if(!pkEnt->GetProperty(strPropertyName.c_str()))
+				pkEnt->AddProperty(strPropertyName.c_str());			
+		}
+	}
+	
+	if( szCmd == string("removeproperty") )	
+	{	
+		int 		iEntityID;
+		string 	strPropertyName;
+		
+		pkNetPacket->Read(iEntityID);
+		pkNetPacket->Read_Str(strPropertyName);
+			
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iEntityID))
+		{
+			if(Property* pkProp = pkEnt->GetProperty(strPropertyName.c_str()))
+				pkEnt->RemoveProperty(pkProp);							
+		}
+	}	
 }
 
 

@@ -153,10 +153,6 @@ class ENGINE_API Property
 	
 		//netflags
 		void	SetNrOfConnections(int iConNR);
-		void	SetNetUpdateFlag(int iConID,bool bValue);
-		void	SetNetUpdateFlag(bool bValue);
-		bool	GetNetUpdateFlag(int iConID);
-		void	ResetAllNetUpdateFlags();
 
 
 		virtual vector<PropertyValues> GetPropertyValues();
@@ -223,6 +219,13 @@ class ENGINE_API Property
 		//string GetValue(string kValueName);
 		//vector<string> GetValueNames();
 		/////////////////////////////////////////////////////////7
+
+		//handle netupdate flags		
+		void	SetNetUpdateFlag(int iConID,bool bValue);
+		void	SetNetUpdateFlag(bool bValue);
+		bool	GetNetUpdateFlag(int iConID);
+		void	ResetAllNetUpdateFlags();
+		
 		
 		// Game Messages
 		virtual void OnEvent(GameMessage& Msg);

@@ -51,14 +51,14 @@ class P_CharacterProperty: public Property
 
 		void Update();
 		
-		void SetName(const string& strName)						{	m_strName = strName;						SetNetUpdateFlag(true);}
-		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		SetNetUpdateFlag(true);}
-		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	SetNetUpdateFlag(true);}
+		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
+		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
+		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
 		
-		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				SetNetUpdateFlag(true);}
-		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				SetNetUpdateFlag(true);}
-		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				SetNetUpdateFlag(true);}
-		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				SetNetUpdateFlag(true);}
+		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				ResetAllNetUpdateFlags();}
+		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
+		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
+		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
 		
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}

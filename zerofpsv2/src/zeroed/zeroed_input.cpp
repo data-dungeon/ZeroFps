@@ -55,40 +55,38 @@ void ZeroEd::Input_EditZone()
 {
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
+		//AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);
+		NetPacket kNp;
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("create_zone");
+		kNp.Write_Str(m_strActiveZoneName);
+		kNp.Write(m_kZoneMarkerPos);
+		kNp.Write(m_kZoneSize);
+		
+		m_pkZeroFps->RouteEditCommand(&kNp);					
 	}
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
 	{
-		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
+		NetPacket kNp;
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("create_zone");
+		kNp.Write_Str(string(""));
+		kNp.Write(m_kZoneMarkerPos);
+		kNp.Write(m_kZoneSize);
+		
+		m_pkZeroFps->RouteEditCommand(&kNp);						
+		//AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
 	}	
 	
 	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
-		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		
-		/*
-		ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(zd)
-			if(zd->m_bUnderContruction)*/
+		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);		
 		RotateActive();
 	}
 	
-	/*
-	if(m_pkInputHandle->VKIsDown("buildmodeon") && !DelayCommand())
-	{
-		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkEntityManager->SetUnderConstruction(m_iCurrentMarkedZone);
-	}
-	
-	if(m_pkInputHandle->VKIsDown("buildmodeoff") && !DelayCommand())
-	{
-		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkEntityManager->CommitZone(m_iCurrentMarkedZone);
-	}	
-	*/
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
 		m_iCurrentMarkedZone =  m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
@@ -179,9 +177,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(pkObj->GetParent()->GetName() == "StaticEntity")
 		return;
 		
-		
-	//hack for collisions test
-	if(m_pkInputHandle->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
 
 	// Move Selected Entity
 	Vector3 kMove(0,0,0);

@@ -128,6 +128,18 @@ void ZeroEd::FillPropertyValList()
 			}
 		}
 }
+void ZeroEd::AddProperty(int iEntityID,const string& strProperty)
+{
+	NetPacket kNp;
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("addproperty");
+	kNp.Write(iEntityID);
+	kNp.Write_Str(strProperty);
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);	
+	
+	UpdatePropertyList(m_iCurrentObject);
+}
 
 void ZeroEd::AddPropertyVal()
 {
@@ -135,25 +147,21 @@ void ZeroEd::AddPropertyVal()
 	Entity* pkEnt;
 	Property* pkProp;
 
-	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
-		if((item = GetSelItem("PropertyList")))
-		{
-			char* val = GetSelItem("PropertyValList");
-			char* res = GetText("PropertyValEb");
+	if(item = GetSelItem("PropertyList"))
+	{
+		char* val = GetSelItem("PropertyValList");
+		char* res = GetText("PropertyValEb");
 
-			if(string("Variables") == string(item))
-			{
-				if(val != NULL && res != NULL)
-					pkEnt->SetVarString(string(val), string(res));
-				
-			}
-
-			if((pkProp = pkEnt->GetProperty(item)))
-			{
-				if(val != NULL && res != NULL)
-					pkProp->SetValue(val, res);
-			}
-		}
+		
+		NetPacket kNp;
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("setvariable");
+		kNp.Write(m_iCurrentObject);
+		kNp.Write_Str(string(item));
+		kNp.Write_Str(string(val));
+		kNp.Write_Str(string(res));			
+		m_pkZeroFps->RouteEditCommand(&kNp);								
+	}
 
 	m_pkGui->SetFocus(GetWnd("EditPropertyWnd"));
 }
@@ -164,13 +172,17 @@ void ZeroEd::RemoveSelProperty()
 	Entity* pkEnt;
 	Property* pkProp;
 
-	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
-		if((item = GetSelItem("PropertyList")))
-			if((pkProp = pkEnt->GetProperty(item)))
-			{
-				pkEnt->RemoveProperty(pkProp);
-				UpdatePropertyList(m_iCurrentObject);
-			}
+	item = GetSelItem("PropertyList");
+	
+	NetPacket kNp;
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("removeproperty");
+	kNp.Write(m_iCurrentObject);
+	kNp.Write_Str(string(item));
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);	
+	
+	UpdatePropertyList(m_iCurrentObject);
 }
 
 bool ZeroEd::SaveCurrentToScript()
