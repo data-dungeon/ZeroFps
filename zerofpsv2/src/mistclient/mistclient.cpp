@@ -650,7 +650,7 @@ Object* MistClient::GetTargetObject()
 	
 	float closest = 9999999999;
 	Object* pkClosest = NULL;	
-	for(int i=0;i<kObjects.size();i++)
+	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i]->iNetWorkID <100000)
 			continue;
@@ -857,7 +857,8 @@ void MistClient::CreateGuiInterface()
 		string("curse upon our line that were nightly told and magnified by the simple tenantry as they conversed in ") +
 		string("hushed accents in the glow of their cottage hearths. ");
 
-	GetWnd("InfoBox")->SetText((char*)szText.c_str());
+	PrintInfoBox(szText.c_str());
+
 	GetWnd("InfoBox")->GetSkin()->m_bTileBkSkin = true; 
 
 	ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);
@@ -886,17 +887,14 @@ void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
 	}
 }
 
-void MistClient::PrintInfoBox(char *szText)
+void MistClient::PrintInfoBox(const char *c_szText)
 {
-	if(!szText)
+	if(!c_szText)
 		return;
-
-//	char* szFormat = new char(strlen(szText)+10);
 	
 	ZGuiTextbox* pkInfoBoxWnd = static_cast<ZGuiTextbox*>(GetWnd("InfoBox"));
 
 	string strText = pkInfoBoxWnd->GetText();
-
 	int rows = pkInfoBoxWnd->GetRowCount();
 
 	if(rows > 20)
@@ -909,13 +907,9 @@ void MistClient::PrintInfoBox(char *szText)
 		strText.erase( 0, offset_to_first_linebreak);
 	}
 	
-	strText.append(szText);
-
+	strText.append(c_szText);
 	strText.append("\n");
 
 	pkInfoBoxWnd->SetText((char*)strText.c_str());
-
 	pkInfoBoxWnd->ScrollRowIntoView(rows-3);
-
-//	delete[] szFormat;
 }

@@ -87,7 +87,7 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 
 	public:
-		void PrintInfoBox(char* strText);
+		void PrintInfoBox(const char* strText);
 		void PickUp();
 		void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 		void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd* pkWnd);

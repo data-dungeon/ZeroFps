@@ -713,14 +713,14 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 
 	if( strPath.empty() )
 	{
-		sprintf(szError, "Failed to run scrip: \"%s\"! Bad path.\n", strPath.c_str());
+		sprintf(szError, "Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
 		printf(szError);
 		ZFAssert(0, szError);
 	}
 
 	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
 	{
-		sprintf(szError, "Failed to run scrip! \"%s\" does not exist.\n", strPath.c_str());
+		sprintf(szError, "Failed to run script! \"%s\" does not exist.\n", strPath.c_str());
 		printf(szError);
 		ZFAssert(0, szError);	
 	}
