@@ -63,6 +63,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bRemoveOnSleep;
 		bool		m_bNoColRespons;
 		
+		int		m_iTrigging;
 
 		Vector3	m_kExternalLinearForce;
 		Vector3	m_kExternalRotForce;
@@ -162,15 +163,15 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		//sets 
       void SetRotVel (Vector3 kRotVel)			{Wakeup();m_kRotVelocity = kRotVel; }		
 		void SetLinVel (Vector3 kLinVel)			{Wakeup();m_kLinearVelocity = kLinVel; }				
-		void SetTestType(int iTest)				{m_iTestType = iTest;};
-		void SetRadius(float t) 					{m_fRadius = t;};
-		void SetLegLength(float fLeg)				{m_fLegLength = fLeg;};
-		void SetStatic(bool bStatic) 				{m_bStatic = bStatic;};		
+		void SetTestType(int iTest)				{m_iTestType = iTest;	};
+		void SetRadius(float t) 					{m_fRadius = t;			};
+		void SetLegLength(float fLeg)				{m_fLegLength = fLeg;	};
+		void SetStatic(bool bStatic) 				{m_bStatic = bStatic;	};		
 		void SetRefetchPolygonData() 				{m_bHavePolygonData = false;};
-		void SetGravity(bool t) 					{m_bGravity = t;};
-		void SetGroup(int iGroup) 					{m_iGroup = iGroup;};		
+		void SetGravity(bool t) 					{m_bGravity = t;			};
+		void SetGroup(int iGroup) 					{m_iGroup = iGroup;		};		
 		void SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals , float fRadius);
-		void SetHmap(HeightMap* pkMap) 			{ m_pkHmap = pkMap; }
+		void SetHmap(HeightMap* pkMap) 			{m_pkHmap = pkMap; 		};
 		
 		//gets		
 		bool  InActive()		{ return ( m_bStatic || m_bSleeping || m_bTempStatic || !m_bActive);	}
@@ -178,20 +179,22 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float GetRadius()		{ return m_fRadius;					};
 		Vector3 GetLinVel()	{ return m_kLinearVelocity;		};
 		float GetLegLength()	{ return m_fLegLength;				};
-				
+		int	GetTrigger()	{ return m_iTrigging;				};		
+		
 		//tests
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
 
 		void Draw();
-		Matrix4		m_kModelMatrix;
-		void GenerateModelMatrix();
+// 		void GenerateModelMatrix();
 		const Matrix4& GetModelMatrix() const;
 
 		int		m_iColFace;
 		Vector3	m_kColPos;
+		
 		friend class Tcs;
+		friend class P_TcsTrigger;
 };
 
 

@@ -1,5 +1,6 @@
 #include "p_charactercontrol.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
 
 P_CharacterControl::P_CharacterControl()
 {
@@ -21,6 +22,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fSpeed = 				40.0;
 	m_fJumpForce = 		5.0; 	
 	m_bHaveJumped = 		false;	
+	m_bInWater=				false;
 	m_iDirection = 		eMOVE_NONE;
 		
 	m_kCharacterStates.reset();
@@ -97,15 +99,37 @@ void P_CharacterControl::Update()
 
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
+	
 		//reset character states
 		SetCharacterState(eJUMPING,false);
 		SetCharacterState(eSWIMMING,false);
 			
 		if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 		{
-			Vector3 kVel(0,0,0);	
-				
+			//water check
+			m_bInWater = false;
+			if(pkTcs->GetTrigger() != -1)
+			{
+				//check for trigger
+				if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID(pkTcs->GetTrigger(),"P_TcsTrigger"))
+				{
+					if(pkTrigger->GetTriggerID() == 10)
+					{
+						m_bInWater = true;
+					}
+				}
+			}		
+		
 			
+			//disable gravity if in water
+			if(m_bInWater)
+				pkTcs->SetGravity(false);
+			else
+				pkTcs->SetGravity(true);
+						
+			Vector3 kVel(0,0,0);					
+
+						
 			if(m_kControls[eUP]) 	kVel.z +=  1;
 			if(m_kControls[eDOWN])	kVel.z += -1;
 			if(m_kControls[eLEFT])	kVel.x +=  1; 
@@ -139,6 +163,7 @@ void P_CharacterControl::Update()
 			if(!pkTcs->GetOnGround())
 				kVel *= 0.25;
 							
+				
 			//apply movement force					
 			if(!kVel.IsZero())
 			{
@@ -169,29 +194,42 @@ void P_CharacterControl::Update()
 			
 			
 			//jump
-			if(pkTcs->GetOnGround())
-			{
-				if(m_bHaveJumped)
-					m_bHaveJumped = false;
-				else
+			if(!m_bInWater)
+			{			
+				if(pkTcs->GetOnGround())
 				{
-					if(m_kControls[eJUMP])
+					if(m_bHaveJumped)
+						m_bHaveJumped = false;
+					else
 					{
-						if(pkTcs->GetOnGround())
+						if(m_kControls[eJUMP])
 						{
-							m_bHaveJumped = true;
-							
-							pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
+							if(pkTcs->GetOnGround())
+							{
+								m_bHaveJumped = true;
+								
+								pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
+							}
 						}
 					}
 				}
 			}
-				
+			else
+			{
+				m_bHaveJumped = false;
+			
+				if(m_kControls[eJUMP])
+				{			
+					pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,3,0));			
+				}	
+			}
+			
+			
+							
 			if(m_bHaveJumped)
 			{
 				SetCharacterState(eJUMPING,true);
-			}
-			
+			}			
 		}
 	
 		//rotate character

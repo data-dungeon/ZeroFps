@@ -2,6 +2,7 @@
 #define _TCS_H_
 
 #include "../propertys/p_tcs.h"
+#include "../propertys/p_tcstrigger.h"
 #include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"
 
@@ -36,7 +37,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		EntityManager*		m_pkEntityMan;
 		Render*				m_pkRender;
 	
-		vector<P_Tcs*>		m_kBodys;		
+		vector<P_Tcs*>				m_kBodys;	
+		vector<P_TcsTrigger*>	m_kTriggers;	
 		vector<Tcs_collission*>	m_kCollissions;		
 		
 		
@@ -94,6 +96,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		void PushVelPos();
 		void PopVelPos();
+		
+		//triggers
+		void UpdateTriggers();
 		
 		//chock test
 		void Shock();
@@ -164,6 +169,10 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void AddBody(P_Tcs* pkPTcs);
 		void RemoveBody(P_Tcs* pkPTcs);		
 
+		void AddTrigger(P_TcsTrigger* pkPTcsTrigger);
+		void RemoveTrigger(P_TcsTrigger* pkPTcsTrigger);		
+		
+		
 		
 		void SetGravity(float fGravity)	{ m_fGravity=fGravity				;};
 		void SetColIt(int iColIt)			{ m_iCollisionIterations = iColIt;};

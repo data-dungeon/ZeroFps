@@ -56,6 +56,7 @@ P_Tcs::P_Tcs()
 	m_bRemoveOnSleep =	false;
 	m_bNoColRespons =		false;
 	m_bActive = 			false;
+	m_iTrigging	=			-1;
 	
 	m_fMoveDistance = 	0;
 	
@@ -730,22 +731,23 @@ void P_Tcs::Draw()
 	*/
 }
 
-void P_Tcs::GenerateModelMatrix() 
-{
-//	m_kModelMatrix.Identity();
-//	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-//	m_kModelMatrix *= GetObject()->GetWorldOriM();
-
-
-	m_kModelMatrix.Identity();
-	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-	
-	Matrix4 kMat;
-	kMat = m_pkEntity->GetWorldRotM();
-	m_kModelMatrix *= kMat;	
-	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
-
-}
+// void P_Tcs::GenerateModelMatrix() 
+// {
+// 	static kModelMatrix;
+// //	m_kModelMatrix.Identity();
+// //	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+// //	m_kModelMatrix *= GetObject()->GetWorldOriM();
+// 
+// 
+// 	m_kModelMatrix.Identity();
+// 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+// 	
+// 	Matrix4 kMat;
+// 	kMat = m_pkEntity->GetWorldRotM();
+// 	m_kModelMatrix *= kMat;	
+// 	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
+// 
+// }
 
 const Matrix4& P_Tcs::GetModelMatrix() const
 {

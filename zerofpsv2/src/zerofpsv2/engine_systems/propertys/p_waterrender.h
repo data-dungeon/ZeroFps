@@ -13,14 +13,21 @@
 using namespace std;
 
 /// Property to render a watersurface.
-class ENGINE_SYSTEMS_API P_WaterRender : public Property {
-		TextureManager* m_pkTexMan;
-		ZeroFps* m_pkZeroFps;
-		Render*	m_pkRender;	
-	
+class ENGINE_SYSTEMS_API P_WaterRender : public Property 
+{
+		TextureManager* 	m_pkTexMan;
+		ZeroFps* 			m_pkZeroFps;
+		Render*				m_pkRender;	
+		ZShaderSystem*		m_pkZShaderSystem;
+		Light*				m_pkLight;
+		
+		ZFResourceHandle* m_pkMaterial; 
+		string				m_strMaterial;	
+		LightProfile		m_kLightProfile;
+		
 		int		m_iTexture;		
 		string	m_sTexture;
-		int		m_iSize;
+		Vector3	m_kSize;
 		int		m_iStep;
 
 		float		m_fBlendValue;
@@ -33,8 +40,8 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property {
 		P_WaterRender();
 		
 
-		void SetProperty(int iSize,int iStep,const char* acTexture);
-		void SetTexture(const char* acTexture);
+		void SetMaterial(const string& strMaterial);
+		
 		void Update();
 
 		void Save(ZFIoInterface* pkPackage);

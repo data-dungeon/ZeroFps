@@ -1274,26 +1274,50 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 }
 void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax)
 {
-	Vector3 kCubeNeg = kMin; 
-	Vector3 kCubePos = kMax; 
-
 	m_pkZShaderSystem->ClearGeometry();
 	
 
 	//botom
+	m_pkZShaderSystem->AddQuadN(Vector3(0,-1,0),Vector3(0,-1,0),Vector3(0,-1,0),Vector3(0,-1,0));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
 	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMax.x,kMin.y,kMin.z),
 										 Vector3(kMax.x,kMin.y,kMax.z),Vector3(kMin.x,kMin.y,kMax.z));
 	//top
+	m_pkZShaderSystem->AddQuadN(Vector3(0,1,0),Vector3(0,1,0),Vector3(0,1,0),Vector3(0,1,0));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
 	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMax.x,kMax.y,kMin.z),
 										 Vector3(kMin.x,kMax.y,kMin.z),Vector3(kMin.x,kMax.y,kMax.z));
 
 	//front
+	m_pkZShaderSystem->AddQuadN(Vector3(0,0,-1),Vector3(0,0,-1),Vector3(0,0,-1),Vector3(0,0,-1));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
 	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMin.x,kMax.y,kMin.z),
 										 Vector3(kMax.x,kMax.y,kMin.z),Vector3(kMax.x,kMin.y,kMin.z));
 	
 	//back									 										 
+	m_pkZShaderSystem->AddQuadN(Vector3(0,0,1),Vector3(0,0,1),Vector3(0,0,1),Vector3(0,0,1));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
 	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMin.x,kMax.y,kMax.z),
 										 Vector3(kMin.x,kMin.y,kMax.z),Vector3(kMax.x,kMin.y,kMax.z));
+										 
+										 
+	//left
+	m_pkZShaderSystem->AddQuadN(Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,0));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
+	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMax.x,kMin.y,kMax.z),
+										 Vector3(kMax.x,kMin.y,kMin.z),Vector3(kMax.x,kMax.y,kMin.z));
+
+	//right
+	m_pkZShaderSystem->AddQuadN(Vector3(-1,0,0),Vector3(-1,0,0),Vector3(-1,0,0),Vector3(-1,0,0));
+	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
+	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMin.x,kMin.y,kMax.z),
+										Vector3(kMin.x,kMax.y,kMax.z),Vector3(kMin.x,kMax.y,kMin.z));
+	
+/*	Vector3(kMin.x,kMax.y,kMin.z),
+										 Vector3(kMin.x,kMax.y,kMax.z),Vector3(kMin.x,kMin.y,kMax.z));*/
+										 
+										 										 
+										 
 										 										 
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
@@ -1319,9 +1343,6 @@ void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& k
 	m_pkZShaderSystem->BindMaterial(pkLine,true);
 	
 	
-	Vector3 kCubeNeg = kMin; 
-	Vector3 kCubePos = kMax; 
-
 	m_pkZShaderSystem->ClearGeometry();
 	
 
@@ -1339,6 +1360,7 @@ void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& k
 	//back									 										 
 	m_pkZShaderSystem->AddQuadV(kMax,Vector3(kMin.x,kMax.y,kMax.z),
 										 Vector3(kMin.x,kMin.y,kMax.z),Vector3(kMax.x,kMin.y,kMax.z));
+
 										 										 
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }

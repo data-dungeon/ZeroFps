@@ -1723,19 +1723,15 @@ void ZeroFps::RegisterPropertys()
 	//normal propertys
 	m_pkPropertyFactory->Register("P_Track",				Create_TrackProperty);							
 	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);
-	//m_pkPropertyFactory->Register("P_Sound",				Create_SoundProperty);		
 	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
-	//m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
-	//m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
-	//m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
-
 	m_pkPropertyFactory->Register("P_EditIcon",			Create_EditIcon);						
 	
 	Register_P_Sound(this);
 	Register_MadProperty(this);
 	Register_PTcs(this);
+	Register_PTcsTrigger(this);
 	Register_PController(this);
 	Register_PScriptInterface(this);
 	Register_PPSystem(this);

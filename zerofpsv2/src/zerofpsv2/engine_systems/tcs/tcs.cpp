@@ -103,7 +103,33 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 	}
 }
 
+void Tcs::AddTrigger(P_TcsTrigger* pkPTcsTrigger)
+{
+	cout<<"adding trigger"<<endl;
 
+ 	//check so its not added twice
+	for(unsigned int i=0;i<m_kTriggers.size();i++)
+	{
+		if(m_kTriggers[i] == pkPTcsTrigger)
+			return;
+	
+	}
+	
+	m_kTriggers.push_back(pkPTcsTrigger);
+}
+void Tcs::RemoveTrigger(P_TcsTrigger* pkPTcsTrigger)
+{
+	for(unsigned int i=0;i<m_kTriggers.size();i++)
+	{
+		if(m_kTriggers[i] == pkPTcsTrigger)
+		{	
+			m_kTriggers[i]=m_kTriggers.back();			//change place whit bak elment 
+			m_kTriggers.pop_back();
+			
+			return;
+		}
+	}
+}
 
 void Tcs::Update(float fAlphaTime)
 {
@@ -213,7 +239,8 @@ void Tcs::Update(float fAlphaTime)
 	//update all character ground line tests	
 	UpdateLineTests(fStepSize);
 
-
+	//check triggers
+	UpdateTriggers();
 	
 	//check for resting bodys
  	static float fLastRestFind = 0;	
@@ -231,6 +258,67 @@ void Tcs::Update(float fAlphaTime)
 	
 	
 	StopProfileTimer("s__tcs");			
+}
+
+
+void Tcs::UpdateTriggers()
+{
+	static P_Tcs* pkBody;
+	static P_TcsTrigger* pkTrigger;
+	static int iBodys;
+	static int iTriggers;
+	static Vector3 kPos;
+	static bool bTrigged;
+	
+	iTriggers = m_kTriggers.size();
+	iBodys = m_kBodys.size();
+
+	if(iTriggers == 0)
+		return;
+	
+	//loop all bodys
+	for(unsigned int i=0;i<iBodys;i++)
+	{	
+		bTrigged = false;
+		pkBody  = m_kBodys[i];
+					
+		if(pkBody->m_bStatic)
+			continue;
+
+		//for each body loop all triggers
+		for(unsigned int i=0;i<iTriggers;i++)
+		{	
+			pkTrigger = m_kTriggers[i];			
+			
+			kPos = pkTrigger->GetEntity()->GetWorldPosV();		
+			
+						
+			switch(pkTrigger->m_iTriggerType)
+			{
+				case eSPHERE:
+					if(pkBody->m_kNewPos.DistanceTo(kPos) < pkTrigger->m_fRadius)
+					{
+						pkTrigger->Trigger(pkBody);
+						bTrigged = true;
+					}
+					break;
+
+				case eBOX:
+					if(pkBody->m_kNewPos.x > kPos.x-pkTrigger->m_kBoxSize.x && pkBody->m_kNewPos.x < kPos.x+pkTrigger->m_kBoxSize.x &&
+						pkBody->m_kNewPos.y > kPos.y-pkTrigger->m_kBoxSize.y && pkBody->m_kNewPos.y < kPos.y+pkTrigger->m_kBoxSize.y &&
+						pkBody->m_kNewPos.z > kPos.z-pkTrigger->m_kBoxSize.z && pkBody->m_kNewPos.z < kPos.z+pkTrigger->m_kBoxSize.z)
+					{
+						pkTrigger->Trigger(pkBody);
+						bTrigged = true;
+					}	
+					break;								
+			}					
+		}
+		
+		//notting trigged, reset trigged id
+		if(!bTrigged)
+			pkBody->m_iTrigging = -1;
+	}
 }
 
 void Tcs::PushVelPos()

@@ -1071,6 +1071,8 @@ void P_CharacterProperty::Update()
 			
 				//update skills
 				UpdateSkills();
+				
+
 			}
 		}
 			

@@ -57,6 +57,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fPAngle;
 		
 		bool			m_bHaveJumped;
+		bool			m_bInWater;
 		
 		float			m_fSoundWalkDelay;
 		float			m_fSoundRunDelay;
