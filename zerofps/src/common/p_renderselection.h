@@ -20,6 +20,8 @@ using namespace std;
 class COMMON_API P_RenderSelection: public Property {
 	private:
 		Render*	m_pkRender;
+		TextureManager* m_pkTexMan;
+		HeightMap* m_pkHeightMap;
 	
 	public:
 		bool					m_bEnabled;

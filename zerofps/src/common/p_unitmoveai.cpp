@@ -155,7 +155,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return this;
 				}
 						
-				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);
+				m_fSpeedMod = 1.0f - ((float)m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
@@ -190,7 +190,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			
 			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2)
 			{
-				//cout<<"trying again " <<m_iRetries<<endl;				
+				cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
 				
 				m_fWaitTime = m_pkFps->GetGameFrameTime();
