@@ -41,13 +41,8 @@ void P_AmbientSound::Update()
 		{
 			if(pkObject && m_szFileName != NULL)
 			{
-				printf("%f, %f, %f\n", 
-					pkObject->GetWorldRotV().x,
-					pkObject->GetWorldRotV().y,
-					pkObject->GetWorldRotV().z);
-
 				if(m_pkAudioSystem->StartSound(m_szFileName, pkObject->GetWorldPosV(),
-					pkObject->GetWorldRotV(), m_bLoop))
+					pkObject->GetVel(), m_bLoop))
 				{
 					m_bStarted = true;
 				}

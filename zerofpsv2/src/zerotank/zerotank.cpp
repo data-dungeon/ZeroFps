@@ -645,7 +645,7 @@ void ZeroTank::OnServerStart(void)
 	m_pkGoblinLord->AddProperty("P_Primitives3D");
 
 	P_AmbientSound* pkSound = (P_AmbientSound*) m_pkGoblinLord->AddProperty("P_AmbientSound");
-	pkSound->SetSound("data/sound/walk.wav");
+	pkSound->SetSound("data/sound/walk.wav", true, 2);
 
 	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );
@@ -666,10 +666,8 @@ void ZeroTank::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
 	if(iID == 5)
 		pkScript->Call(m_pkScriptResHandle , "OnClickBackpack", 0, 0); 
-		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 	if(iID == 6)
 		pkScript->Call(m_pkScriptResHandle , "OnClickStats", 0, 0);
-		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
 	if(iID == 4)
 		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 }
