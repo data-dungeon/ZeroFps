@@ -40,8 +40,11 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		float		m_f3PPAngle;
 		float		m_f3PDistance;				//wanted distance
 		float		m_f3pCurrentDistance;	//
-		Vector3	m_kOffset;
+		Vector3	m_kOffset;					//camera offset
 
+		bool		m_bAttachToMadBone;		//shuld we attatch to a mad bone
+		string	m_strBone;					//bone name
+		
 		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
 		void Look(Vector3 kCamPosision,Vector3 kLookDir,Vector3 kCamUp);
 		
@@ -58,6 +61,9 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		float Get3PYAngle()							{	return m_f3PYAngle; 		}
 		float Get3PPAngle()							{	return m_f3PPAngle; 		}
 		float Get3PDistance()						{	return m_f3PDistance;	}
+		
+		void SetAttachToBone(bool bAttach)		{	m_bAttachToMadBone = bAttach;}
+		void SetBone(const string& strBone)		{	m_strBone = strBone;		}
 		
 		void Set3PYAngle(float fA) 				{	m_f3PYAngle =  fA;		}
 		void Set3PPAngle(float fP) 				{	m_f3PPAngle =  fP;		}

@@ -81,6 +81,9 @@ void P_Mad::Update()
 		g_fMadLODScale = m_fLod;
 		*/
 
+		//always update bones
+		UpdateBones();
+		
 		if(m_bIsVisible)
 		{		
 			m_pkZShaderSystem->MatrixPush();
@@ -562,23 +565,14 @@ void P_Mad::SetVisible(bool bVisible)
 }
 
 
-Vector3 P_Mad::GetJointPosition(char* szJointName)
+Vector3 P_Mad::GetJointPosition(const char* szJointName)
 {
 	Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr();
 	
 	if(pkMc)
 	{
-	 	//animate object
-	 	//cout<<"bla:"<<iActiveAnimation<<" "<<fCurrentTime<<" "<<m_bLoop<<endl;
-	 	
-	 	//pkMc->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
-		//pkMc->SetupBonePose();
-
-	
-	
 		if( pkMc->GetJointID(szJointName) == -1)
 			cout<<"Joint "<<szJointName<<" not found"<<endl;
-		
 		
 		Matrix4 kMat;
 		Vector3 kPos;
@@ -588,11 +582,11 @@ Vector3 P_Mad::GetJointPosition(char* szJointName)
 				
 		//kPos = -pkMc->GetJointPosition(szJointName);
 		
-		return kPos;	
+		return kPos + m_kOffset;	
 	}
 	cout<<"Error: No Model loaded when trying to get joint position"<<endl;
 	
-	return Vector3(0,0,0);
+	return m_kOffset;
 }
 /*
 bool P_Mad::operator<(Property& kOther)

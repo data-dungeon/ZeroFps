@@ -24,6 +24,9 @@ P_Camera::P_Camera()
 	m_f3pCurrentDistance = 	3;
 	m_kOffset =					Vector3(0,2.5,0);
 
+	
+	m_bAttachToMadBone =		false;
+	m_strBone			=		"eye";
 } 
 
 
@@ -71,7 +74,18 @@ void P_Camera::Update()
 					m_f3PPAngle = 45;
 				if(m_f3PPAngle < -45)
 					m_f3PPAngle = -45;
- 	
+
+				
+				Vector3 kCamPos;				
+				if(m_bAttachToMadBone)
+				{				
+					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset;			
+				}
+				else					
+					kCamPos = m_pkEntity->GetIWorldPosV() + m_kOffset;					
+				
+					 	
 				Matrix4 kRot;
 				kRot.Identity();
 				
@@ -81,41 +95,22 @@ void P_Camera::Update()
 				Vector3 kOffset;				
 				kOffset = kRot.VectorTransform(Vector3(0,0,-1));
 				kOffset *= m_f3PDistance;									
-//	 			kOffset += m_kOffset;
 				
 				//check camera against enviroment so nothing is betwean camera and player				
-				float fD = LineTest(m_pkEntity->GetIWorldPosV() +m_kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset+kOffset);				
+				float fD = LineTest(kCamPos,kCamPos+kOffset);				
 				static float fZS = 0.2;
+				
 				if(fD < m_f3PDistance)
 				{
-/*					m_f3pCurrentDistance -= fZS;
-					
-					kOffset.Set(0,0,-1);				
-					kOffset = kRot.VectorTransform(kOffset);
-					kOffset *= m_f3pCurrentDistance;									
-		 			kOffset += m_kOffset;
-*/					
 					float fDist = fD - 0.5;
 					if(fDist <= 0.1)
 						fDist = 0.1;
 					
 					kOffset = kRot.VectorTransform(Vector3(0,0,-1));
 					kOffset *= fDist;	
-		 			//kOffset += m_kOffset;				
 				}
-/*				else
-					if(m_f3pCurrentDistance < m_f3PDistance - fZS)
-						m_f3pCurrentDistance += fZS;
-					else
-						if(m_f3pCurrentDistance > m_f3PDistance + fZS)
-							m_f3pCurrentDistance -= fZS;
-*/
 				
-										
-												
-				LookAt(m_pkEntity->GetIWorldPosV() +m_kOffset+ kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
-				
-				
+				LookAt(kCamPos + kOffset,kCamPos,Vector3(0,1,0));
 
 				strCamName = " 3P ";
 				break;
@@ -127,7 +122,15 @@ void P_Camera::Update()
 				if(m_f3PPAngle < -90)
 					m_f3PPAngle = -90;
 				
-				m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + m_kOffset );			
+				if(m_bAttachToMadBone)
+				{
+					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+						m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset );			
+				}
+				else					
+					m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + m_kOffset );			
+					
+					
 				Matrix4 kRot;											
 				kRot.Identity();
 				kRot.Rotate(0,180,0);				

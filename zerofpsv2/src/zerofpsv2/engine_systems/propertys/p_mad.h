@@ -73,7 +73,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int GetShadowGroup() 					{return m_iShadowGroup;};	
 
 		//get joint position
-		Vector3 GetJointPosition(char* szJointName);
+		Vector3 GetJointPosition(const char* szJointName);
 
 		//line test
 		bool TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly = false,bool bIgnoreY = false);

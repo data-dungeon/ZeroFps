@@ -78,7 +78,7 @@ EntityManager::EntityManager()
 	m_fSimTime					= 0;			
 	m_fSimTimeScale			= 1.0;	
 
-	m_iSendType					= ZF_NETTYPE_REL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
+	m_iSendType					= ZF_NETTYPE_UNREL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
 
 	// Register Variables
 	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);

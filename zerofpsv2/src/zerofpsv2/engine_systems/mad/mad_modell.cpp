@@ -395,45 +395,33 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 	}
 }
 
-void Mad_Modell::Draw_All(int iDrawFlags)
+void Mad_Modell::UpdateBones()
 {
-	if(iDrawFlags == 0)
-		return;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
-
-	/*	
-	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
-	if(iListID != -1) {
-		glCallList(iListID);
-		g_iNumOfMadSurfaces += pkCore->GetMeshByID(0)->kHead.iNumOfFaces;
-		//cout << "Rendering display list " << iListID << endl;
-		return;
-		}*/
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 	pkCore->SetupBonePose();
+}
+
+void Mad_Modell::Draw_All(int iDrawFlags)
+{
+	if(iDrawFlags == 0)
+		return;
+	
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
 
-//	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-
-//	glColor3f(1,1,1);
-/*	if(iDrawFlags & MAD_DRAW_NOLIGHT)
-		glDisable(GL_LIGHTING);		
-	glEnable(GL_TEXTURE_2D );
-*/
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 
-/*	if(iDrawFlags &	MAD_DRAW_LINES)
-		glPolygonMode(GL_FRONT, GL_LINE);
-*/
+	
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
-
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
+		
 		m_pkShader->ResetPointers();
 			
 		//setup all texture pointers
@@ -482,13 +470,9 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		}
 	}
 
-//	glDisable(GL_ALPHA_TEST);
+	
 	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
-//	if(iDrawFlags &	MAD_DRAW_LINES)
-//	glPolygonMode(GL_FRONT, GL_FILL );
-
-//	glPopAttrib();
 }
 
 

@@ -192,7 +192,7 @@ void MistClient::Input()
 		{			
 			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
 			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
-			pkCam->SetOffset(Vector3(0,0.9,0)); 
+			pkCam->SetOffset(Vector3(0,0,0)); 
 
 			float fDistance = pkCam->Get3PDistance();
 			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
@@ -248,7 +248,6 @@ void MistClient::SendControlInfo()
 {
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
-		//if theres no camera property, create one and set it up
 		if(P_Camera* pkCam = (P_Camera*)pkEnt->GetProperty("P_Camera"))
 		{
 			//request character entityID
@@ -279,7 +278,10 @@ void MistClient::UpdateCharacter()
 				pkCam->SetType(CAM_TYPE3PERSON);
 				pkCam->Set3PPAngle(.30);					
 				pkCam->Set3PYAngle(0);
-				pkCam->Set3PDistance(4);									
+				pkCam->Set3PDistance(4);			
+				
+				pkCam->SetAttachToBone(true);
+				pkCam->SetBone("maNus_c_head_0");
 			}
 			
 			if(!pkEnt->GetInterpolate())

@@ -104,6 +104,7 @@ public:
 	void SetReplaceTexture(char* szName);
 	void	SetReplaceTexture(char* szOrgName, char* szNew);
 
+	void UpdateBones();
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
 	
 	float GetRadius();
