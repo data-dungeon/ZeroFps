@@ -72,7 +72,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkClientControlP		= NULL;
 	m_pkServerInfo				= NULL;
 	m_pkActiveCharacter		= NULL;
-	m_szInputText			   = NULL;
 	
 	m_fMaxCamDistance			= 8;
 	m_fMinCamDistance			= 2;
@@ -617,7 +616,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");
 			pkInputWnd->Hide();
 			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
-			m_szInputText = pkInputWnd->GetText(); 
+			
+			OnClientInputSend(pkInputWnd->GetText());
 		}
 	}
 	else
@@ -1081,4 +1081,7 @@ bool MistClient::PickZones()
 	//cout<<"nr of zones picked:"<<iNrOfZones<<endl;
 }
 
+void MistClient::OnClientInputSend(char *szText)
+{
 
+}

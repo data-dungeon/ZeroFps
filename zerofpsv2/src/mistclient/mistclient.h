@@ -33,6 +33,7 @@
 
 class MistClient :public Application, public ZGuiApp {
 	private:
+		
 		// actions
 		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
@@ -95,9 +96,8 @@ class MistClient :public Application, public ZGuiApp {
 
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 
-		char* m_szInputText;
-
 	public:
+		void OnClientInputSend(char* szText);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd* pkWnd);
 		void PrintInfoBox(const char* strText);
 		void PickUp();
