@@ -30,36 +30,6 @@ MistServer g_kMistServer("MistServer", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
-	switch(msg)
-	{
-	case ZGM_COMMAND:
-		g_kMistServer.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
-		break;
-
-	case ZGM_SELECTLISTITEM:
-		g_kMistServer.OnClickListbox(
-			//g_kMistServer.GetWnd(((int*)params)[0]), 
-			((int*)params)[0],
-			((int*)params)[1],win);
-		break;
-
-	case ZGM_SELECTTREEITEM:
-		char** pszParams; pszParams = (char**) params;
-		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
-			pszParams[2], pszParams[3][0] == '1' ? true : false);		
-		break;
-
-	case ZGM_TCN_SELCHANGE:
-		int* data; data = (int*) params; 
-		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
-		break;
-
-/*	case ZGM_SETFOCUS:
-		g_kMistServer.SetViewPort(win->GetName());
-		cout << "Set Focus to window: "  << win->GetName() << endl;
-		break;*/
-
-	}
 	return true;
 }
 
@@ -72,134 +42,26 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	// Set Default values
 	m_AcceptNewLogins = true;
-	m_bEditSun			= false;
-	m_bSoloMode       = false;
 
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
 
 	// Register Commands
-	Register_Cmd("new",FID_NEW);		
-	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("save",FID_SAVE);
-	Register_Cmd("saveas",FID_SAVEAS);
-	Register_Cmd("users",FID_USERS);		
-	Register_Cmd("lo",FID_LOCALORDER);		
-	Register_Cmd("lightmode", FID_LIGHTMODE);		
-	Register_Cmd("editsun", FID_EDITSUN);		
-	Register_Cmd("setcam", FID_SETCAM);		
-	Register_Cmd("camlink", FID_CAMLINK);
-	Register_Cmd("camsolo", FID_CAMSOLO);
-	Register_Cmd("camgrid", FID_CAMGRID);
-	Register_Cmd("selnone", FID_SELNONE);
-	Register_Cmd("gridsize", FID_GRIDSIZE);
-	Register_Cmd("gridsnap", FID_GRIDSNAP);
-	Register_Cmd("camfollow", FID_CAMFOLLOW);
-	Register_Cmd("camnofollow", FID_CAMNOFOLLOW);
-	Register_Cmd("delsel", FID_DELETE);
-	Register_Cmd("clone",	FID_CLONE);
-	Register_Cmd("cut",		FID_CUT);
-	Register_Cmd("copy",		FID_COPY);
-	Register_Cmd("paste",	FID_PASTE);
-	Register_Cmd("jiddra",	FID_TEST_JIDDRA);
+	Register_Cmd("new",			FID_NEW);		
+	Register_Cmd("load",		FID_LOAD);		
+	Register_Cmd("save",		FID_SAVE);
+	Register_Cmd("saveas",		FID_SAVEAS);
+	Register_Cmd("users",		FID_USERS);		
+	Register_Cmd("lo",			FID_LOCALORDER);		
+	Register_Cmd("lightmode",	FID_LIGHTMODE);		
+	Register_Cmd("jiddra",		FID_TEST_JIDDRA);
 
-	Register_Cmd("snapsave",	FID_SNAPSAVE);
-	Register_Cmd("snapload",	FID_SNAPLOAD);
-
-	m_kDrawPos.Set(0,0,0);
-
-	m_fHMInRadius  = 1;
-	m_fHMOutRadius = 2;
-	m_iEditLayer	= 1;
-	m_fDelayTime   = 0.0;
 	m_strWorldDir  = "";
    
-	m_pkActiveCameraObject	= NULL;
+	m_pkActiveCameraObject		= NULL;
 	m_pkActiveCamera			= NULL;
-
-	m_strActiveViewPort = "none";
 } 
 
-
-int MistServer::GetView(float x, float y)
-{
-	Vector3 kMin, kMax;
-
-	for(int i=0; i<4; i++) 
-	{
-		kMin = m_pkCamera[i]->GetViewPortCorner();
-		kMax = m_pkCamera[i]->GetViewPortCorner() + m_pkCamera[i]->GetViewPortSize();
-		if(x < kMin.x)	continue;
-		if(y < kMin.y)	continue;
-		if(x > kMax.x)	continue;
-		if(y > kMax.y)	continue;
-		return i;
-	}
-
-	return -1;
-}
-
-bool MistServer::SetCamera(int iNum)
-{
-
-	switch(iNum) 
-	{
-		case 0:	return SetViewPort("vp1");	break;
-		case 1:	return SetViewPort("vp2");	break;
-		case 2:	return SetViewPort("vp3");	break;
-		case 3:	return SetViewPort("vp4");	break;
-		default:
-			return false;
-	}
-
-	return false;
-
-/*	if(iNum == -1)	return false;
-	if(m_pkActiveCamera == m_pkCamera[iNum])	return false;
-
-	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
-	m_pkActiveCameraObject	= m_pkCameraObject[iNum];
-	m_pkActiveCamera			= m_pkCamera[iNum];
-	m_pkActiveCamera->m_bSelected = true;
-
-	if(m_bSoloMode) 
-	{
-		m_pkCamera[0]->SetViewPort(0,0,0,0);	m_pkCamera[0]->m_bRender = false;
-		m_pkCamera[1]->SetViewPort(0,0,0,0);	m_pkCamera[1]->m_bRender = false;
-		m_pkCamera[2]->SetViewPort(0,0,0,0);	m_pkCamera[2]->m_bRender = false;
-		m_pkCamera[3]->SetViewPort(0,0,0,0);	m_pkCamera[3]->m_bRender = false;
-		m_pkActiveCamera->SetViewPort(0,0,1,1);
-		m_pkActiveCamera->m_bRender = true;
-	}
-
-	return true;*/
-}
-
-
-bool MistServer::SetViewPort(const char* szVpName)
-{
-	ZGuiWnd* pkWnd = GetWnd(szVpName);	
-	if(!pkWnd)
-		return false;
-	if(!pkWnd->IsVisible())
-		return false;
-
-	Camera* pkCam = pkWnd->GetRenderTarget();
-	if(!pkCam)
-		return false;
-
-
-	if(m_pkActiveCamera == pkCam)	return false;
-
-	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
-	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->m_iEntity );
-	m_pkActiveCamera			= pkCam;
-	m_pkActiveCamera->SetSelected(true);
-
-	m_strActiveViewPort  = szVpName;
-
-	return true;
-}
 
 void MistServer::CreateEditCameras()
 {
@@ -208,42 +70,18 @@ void MistServer::CreateEditCameras()
 	{
 		m_pkActiveCameraObject->SetParent( m_pkObjectMan->GetWorldObject() );
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera[0]);
+		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkActiveCameraObject->GetSave() = false;
 	}
 
-	GetWnd("vp1")->SetRenderTarget(m_pkCamera[0]);
+	GetWnd("vp1")->SetRenderTarget(m_pkCamera);
 	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
-	SetViewPort("vp1");
-	SoloToggleView();
-/*		
-	for(int i=0; i<4; i++) 
-	{
-		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-		if(m_pkCameraObject[i]) 
-		{
-			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );
-			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
-			m_pkCamProp->SetCamera(m_pkCamera[i]);
-			m_pkCameraObject[i]->GetSave() = false;
-		}
-	}
 
-	m_pkActiveCameraObject	= NULL;
-	m_pkActiveCamera			= NULL;
+	m_pkActiveCamera = m_pkCamera;
+	m_pkActiveCamera->SetSelected(true);
 
-	GetWnd("vp1")->SetRenderTarget(m_pkCamera[0]);
-	GetWnd("vp2")->SetRenderTarget(m_pkCamera[1]);
-	GetWnd("vp3")->SetRenderTarget(m_pkCamera[2]);
-	GetWnd("vp4")->SetRenderTarget(m_pkCamera[3]);
-
-	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp2")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp3")->SetMoveArea(Rect(0,0,800,600), false);
-	GetWnd("vp4")->SetMoveArea(Rect(0,0,800,600), false);
-
-	SetViewPort("vp1");
-*/
+	m_pkFps->SetRenderTarget(m_pkCamera);
+	m_pkCamera->m_bForceFullScreen = true;
 }
 
 
@@ -271,19 +109,6 @@ void MistServer::Init()
 	//create player database
 	m_pkPlayerDB = new PlayerDatabase();
 
-	//default edit mode 
-	m_iEditMode = EDIT_ZONES;
-
-	//object defaults
-	m_iCurrentObject = -1;
-	
-	//zone defaults
-	m_kZoneSize.Set(8,8,8);
-	m_iCurrentMarkedZone = -1;
-//	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
-	m_strActiveZoneName = "";
-	m_strActiveEnviroment = "data/enviroments/sun.env";
-
 	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
@@ -296,22 +121,8 @@ void MistServer::Init()
 	RegisterResources();
 
 	//initiate our camera
-	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
-	m_pkCamera[0]->SetName("persp");
-
-	/*
-	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
-	m_pkCamera[1]->SetName("top");
-	m_pkCamera[1]->SetViewMode("top");
-	
-	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
-	m_pkCamera[2]->SetName("front");
-	m_pkCamera[2]->SetViewMode("front");
-
-	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
-	m_pkCamera[3]->SetName("right");
-	m_pkCamera[3]->SetViewMode("right");
-	*/
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera->SetName("persp");
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -339,16 +150,6 @@ void MistServer::Init()
 
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
-
-	// Setup the Edit Sun that are used for simple lightning in the editor.
-	m_kSun.kRot = Vector3(1,2,1);
-	m_kSun.kDiffuse=Vector4(1,1,1,0);
-	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
-	m_kSun.iType=DIRECTIONAL_LIGHT;			
-	m_kSun.iPriority=10;
-	m_kSun.fConst_Atten=1;
-	m_kSun.fLinear_Atten=0;
-	m_kSun.fQuadratic_Atten=0;
 }
 
 
@@ -356,24 +157,9 @@ void MistServer::SetupGuiEnviroment()
 {
 	// Create from script.
 	LoadGuiFromScript("data/script/gui/server.lua");
-	GetWnd("worktab")->Hide();
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
-	
-	// Fill zone- and object treebox.
-	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
-	BuildFileTree("ObjectTree", "data/script/objects", ".lua");
-
-	// Fill enviroment listbox.
-	vector<string> vkFileNames;
-	m_pkZFVFileSystem->ListDir(&vkFileNames, "/data/enviroments", false);
-	for(unsigned int i=0; i<vkFileNames.size(); i++)
-		AddListItem("EnviromentPresetList", (char*) vkFileNames[i].c_str());
-
-	m_pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleLight"),"Light");
-	m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
-	m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
 }
 
 
@@ -400,7 +186,6 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-//	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
 	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);
@@ -409,127 +194,8 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
 }
 
-
-void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius )
-{
-	if(pkHmap == NULL)	return;
-
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
-		m_pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
-
-	Vector3				kVertex;
-	vector<Vector3>	kVertexList;
-
-	kCenterPos.y = 0;
-	Vector3 kPos;
-
-	for(int i=0; i<360; i+=(int)12.25) 
-	{
-		kVertex.x = float( cos(DegToRad( float(i) )) * fInRadius );
-		kVertex.z = float( sin(DegToRad( float(i) )) * fInRadius );
-		kVertex.y = float( pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
-		kVertex += kCenterPos;
-		kVertexList.push_back(kVertex);
-	}
-
-	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
-
-	kVertexList.clear();
-	for(int i=0; i<360; i+=(int)12.25) 
-	{
-		kVertex.x = float( cos(DegToRad( float(i) )) * fOutRadius );
-		kVertex.z = float( sin(DegToRad( float(i) )) * fOutRadius );
-		kVertex.y = float(pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
-		kVertex += kCenterPos;
-		kVertexList.push_back(kVertex);
-	}
-
-	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
-}
-
-
-void MistServer::DrawSelectedEntity()
-{
-	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
-	
-		if(pkEnt) 
-		{
-			float fRadius = pkEnt->GetRadius();
-			if(fRadius < 0.1)
-				fRadius = 0.1;
-
-			Vector3 kMin = pkEnt->GetWorldPosV() - fRadius;
-			Vector3 kMax = pkEnt->GetWorldPosV() + fRadius;
-
-			if(m_iCurrentObject == (*itEntity))
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
-			else
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
-		}
-	}
-}
-
-
-void MistServer::Select_Toggle(int iId, bool bMultiSelect)
-{
-	if(!bMultiSelect && m_iCurrentObject != iId)		Select_None();
-	
-	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end())
-	{
-		Select_Add(iId);
-		m_iCurrentObject = iId;
-	}
-	else 
-	{
-		Select_Remove(iId);
-		if(iId == m_iCurrentObject)
-		{
-			if(m_SelectedEntitys.size())
-				m_iCurrentObject = (*m_SelectedEntitys.begin());
-			else
-				m_iCurrentObject = -1;
-		}
-	}
-}
-
-
-void MistServer::DeleteSelected()
-{
-	if(m_SelectedEntitys.size() == 0)	return;
-
-	NetPacket kNp;
-	kNp.Clear();
-	kNp.Write((char) ZFGP_EDIT);
-	kNp.Write_Str("del");
-	kNp.Write((int) m_SelectedEntitys.size());
-
-	cout << "Delete Selected: ID, Type, Name" << endl;
-	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-	{
-		int iId = (*itEntity);
-		kNp.Write((int)iId);
-	}
-
-	m_pkFps->RouteEditCommand(&kNp);
-
-	m_SelectedEntitys.clear();
-	m_iCurrentObject = -1;
-
-			//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
-		/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
-			{
-				cout<<"zone is not under construction "<<endl;
-				return;
-			}
-		*/	
-}
-
-
 void MistServer::OnIdle()
 {	
-	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
 	if(m_pkGui->m_bHandledMouse == false)
@@ -539,46 +205,16 @@ void MistServer::OnIdle()
 
  	m_pkFps->UpdateCamera(); 		
 
-	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
-	//	pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
-   
 	if(m_pkServerInfoP)
 	{
 		m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
 		m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	}
-	
-	if(m_iEditMode == EDIT_HMAP) {
-		HeightMap* pkMap = SetPointer();
-		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
-		}
-
-	if(m_iEditMode == EDIT_ZONES)
-	{
-		UpdateZoneMarkerPos();		
-		//DrawZoneMarker(m_kZoneMarkerPos);		
-	}
-	
-	if(m_iEditMode == EDIT_OBJECTS)
-	{	
-		UpdateObjectMakerPos();
-		//DrawCrossMarker(m_kObjectMarkerPos);		
-	}
-
-	//PathTest();
 }
 
 
 void MistServer::RenderInterface(void)
 {
-	DrawSelectedEntity();
-	if(m_iEditMode == EDIT_HMAP) {
-		HeightMap* pkMap = SetPointer();
-		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
-		}
-
-	if(m_iEditMode == EDIT_ZONES)		DrawZoneMarker(m_kZoneMarkerPos);
-	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 }
 
 
@@ -587,316 +223,9 @@ void MistServer::OnSystem()
 	HandleOrders();
 }
 
-
-HeightMap* MistServer::SetPointer()
-{
-	m_kDrawPos.Set(0,0,0);
-
-	Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
-	if(!pkEntity)	return NULL;
-	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-	if(!hmrp)		return NULL;
-
-	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
-	Vector3 dir		= Get3DMouseDir(true);
-
-/*	Vector3 start	= m_pkFps->GetCam()->GetPos();
-	Vector3 dir		= Get3DMouseDir(true);*/
-	Vector3 end    = start + dir * 1000;
-
-	if(dir.y >= 0) return NULL;
-
-	// Find Level 0 for the selected zone in u.
-	//float fLevelZero = kZData->m_pkZone->GetWorldPosV().y;
-	//float fDiff = start.y - fLevelZero;
-	//m_kDrawPos = start + dir * (fDiff);
-	Plane kP;
-	kP.m_kNormal.Set(0,1,0);
-	kP.m_fD = - pkEntity->GetWorldPosV().y;
-
-	Vector3 kIsect;
-
-	if(kP.LineTest(start,end, &kIsect))
-	{
-		m_kDrawPos = kIsect;
-		m_kDrawPos.y = hmrp->m_pkHeightMap->Height(m_kDrawPos.x,m_kDrawPos.z);
-	}
-
-	return hmrp->m_pkHeightMap;
-
-
-	//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-	//cout << "Local pos: " << kLocalOffset.x << ", " << kLocalOffset.y << ", " << kLocalOffset.z << endl;
-}
-
-
-void MistServer::HMModifyCommand(float fSize)
-{
-	float fTime = m_pkFps->m_pkObjectMan->GetSimDelta();
-
-	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-	{
-		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
-		if(!pkEntity)			continue;
-		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-		if(hmrp == NULL)		continue;
-
-		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-
-		m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
-		if(m_kSelectedHMVertex.size() > 0) {
-			if(fSize == 0.0)
-				hmrp->m_pkHeightMap->Smooth(m_kSelectedHMVertex);
-			else
-				hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
-			m_kSelectedHMVertex.clear();
-			}
-		}
-}
-
-
-// Handles input for EditMode Terrain.
-void MistServer::Input_EditTerrain()
-{
-	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
-	if(m_fHMInRadius > m_fHMOutRadius)
-		m_fHMInRadius = m_fHMOutRadius;
-
-	if(m_pkInputHandle->VKIsDown("hmraise"))		HMModifyCommand(5); 
-	if(m_pkInputHandle->VKIsDown("hmlower"))		HMModifyCommand(-5);
-	if(m_pkInputHandle->VKIsDown("hmsm") ) 		HMModifyCommand(0.0); 
-
-	if(m_pkInputHandle->VKIsDown("hmpaint")) 
-	{
-		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-		{
-			Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
-			if(!pkEntity)			continue;
-			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-			if(hmrp == NULL)		continue;
-			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-/*			if(m_iEditLayer == 1)
-				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
-			else
-				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);*/
-			}
-		}
-
-	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
-	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
-	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;			
-
-	if(m_pkInputHandle->Pressed(KEY_4))
-	{
-		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-		if(pkEntity)
-		{
-			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-			if(hmrp)
-            hmrp->m_pkHeightMap->Invert();			
-		}
-	}
-}
-
-
-// Handles input for EditMode Zones.
-void MistServer::Input_EditZone()
-{
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
-	{
-		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
-	}
-	
-	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
-	{
-		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
-	}	
-	
-	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
-		
-	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
-	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		
-		/*
-		ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(zd)
-			if(zd->m_bUnderContruction)*/
-		RotateActiveZoneObject();
-	}
-	
-	/*
-	if(m_pkInputHandle->VKIsDown("buildmodeon") && !DelayCommand())
-	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
-	}
-	
-	if(m_pkInputHandle->VKIsDown("buildmodeoff") && !DelayCommand())
-	{
-		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
-	}	
-	*/
-	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
-	{	
-		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData && pkData->m_pkZone)
-			Select_Toggle(pkData->m_pkZone->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
-	}
-
-	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
-	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
-}
-
-
-// Handles input for EditMode Object.
-void MistServer::Input_EditObject(float fMouseX, float fMouseY)
-{
-	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
-	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
-
-	NetPacket kNp;
-
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
-	{
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("spawn");
-		kNp.Write_Str(m_strActiveObjectName.c_str());
-		kNp.Write(m_kObjectMarkerPos);
-		m_pkFps->RouteEditCommand(&kNp);
-	}
-	
-	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
-	{		
-		Entity* pkObj =  GetTargetObject();
-		if(pkObj)
-			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
-	}
-	
-	//remove			
-	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
-
-	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
-	if(!pkObj)
-		return;		
-
-	//return if its a static object
-	if(pkObj->GetParent()->GetName() == "StaticEntity")
-		return;
-		
-		
-	//hack for collisions test
-	if(m_pkInputHandle->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
-
-	// Move Selected Entity
-	Vector3 kMove(0,0,0);
-	Vector3 kClick(0,0,0);
-
-
-	if(m_pkInputHandle->VKIsDown("reposent")) 
-	{
-		kMove = pkObj->GetLocalPosV();
-		kMove = m_pkActiveCamera->GetPos() + Get3DMousePos(true) * 2;
-		
-		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) {
-			// In Ortho mode we keep the old coo for the axis that go into the screen.
-			Vector3 kAxisX, kAxisY, kAxisZ;
-			kAxisX = m_pkActiveCamera->GetOrthoAxisX();
-			kAxisY = m_pkActiveCamera->GetOrthoAxisY();
-			kAxisZ = m_pkActiveCamera->GetOrthoAxisZ();
-			kAxisX.Abs();
-			kAxisY.Abs();
-			kAxisZ.Abs();
-
-			kMove = kMove.PEP(kAxisX) + 
-				kMove.PEP(kAxisY) + 
-				pkObj->GetLocalPosV().PEP(kAxisZ);
-			}
-
-		kMove = m_pkActiveCamera->SnapToGrid(kMove);
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("setpos");
-		kNp.Write(m_iCurrentObject);
-		kNp.Write(kMove);
-		m_pkFps->RouteEditCommand(&kNp);
-		//pkObj->SetLocalPosV( m_pkActiveCamera->SnapToGrid(kMove) );
-	}
-	else 
-	{
-		kMove.Set(0,0,0);
-		if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
-		if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
-
-		if(m_pkInputHandle->VKIsDown("moveent")) 
-		{
-			kMove += m_pkActiveCamera->GetOrthoMove( Vector3(fMouseX, fMouseY,0) );
-		}
-
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("move");
-		kNp.Write(m_iCurrentObject);
-		kNp.Write(kMove);
-		m_pkFps->RouteEditCommand(&kNp);
-		//pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
-	}
-
-/*	if(m_pkInputHandle->VKIsDown("rotent")) 
-	{
-		pkObj->RotateLocalRotV( Vector3(0, fMouseX,0));
-	}*/
-
-	// Rotate Selected Entity
-	kMove.Set(0,0,0);
-	if(m_pkInputHandle->VKIsDown("rotx+"))			kMove.x = 100*m_pkFps->GetFrameTime();		
-	if(m_pkInputHandle->VKIsDown("rotx-"))			kMove.x = -100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty+"))			kMove.y = 100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("roty-"))			kMove.y = -100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz+"))			kMove.z = 100*m_pkFps->GetFrameTime();			
-	if(m_pkInputHandle->VKIsDown("rotz-"))			kMove.z = -100*m_pkFps->GetFrameTime();			
-
-	kNp.Clear();
-	kNp.Write((char) ZFGP_EDIT);
-	kNp.Write_Str("rot");
-	kNp.Write(m_iCurrentObject);
-	kNp.Write(kMove);
-	m_pkFps->RouteEditCommand(&kNp);
-}
-
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
-//	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
-//	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
-//	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(0);
-//	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(1);
-
-	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
-	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");
-	if(m_pkInputHandle->Pressed(KEY_C))		SetViewPort("vp3");
-	if(m_pkInputHandle->Pressed(KEY_V))		SetViewPort("vp4");
-
-
-
-	if(m_pkInputHandle->VKIsDown("slow")){
-		m_CamMoveSpeed *= 0.25;
-	}
-
-	float fSpeedScale = m_pkFps->GetFrameTime()*m_CamMoveSpeed;
+	float fSpeedScale = m_pkFps->GetFrameTime()*20;
 
 	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 	{
@@ -973,7 +302,7 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		}
 
 
-		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
+		/*if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
 		{
 			// If Cameras are linked.
 			kMove = m_pkActiveCamera->GetOrthoMove(kMove);
@@ -986,7 +315,7 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 			P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
 			if(pkCam)
 				pkCam->OrthoMove(kMove);
-		}
+		}*/
 	}
 }
 
@@ -1002,83 +331,20 @@ void MistServer::Input()
 		break;
 	}
 
-	//set speed depending on edit mode
-	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
-	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;
-	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
-	
-	
 	int x = 0;
 	int z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
-	// First see if we clicked to change view port.
-	if(m_pkInputHandle->Pressed(MOUSELEFT) || m_pkInputHandle->Pressed(KEY_0))
-	{
-		int mx,my;
-		m_pkInputHandle->SDLMouseXY(mx,my);
-		my = m_iHeight - my; 
-		int iClickedViewPort = GetView(float(mx), float(my));
-		if(SetCamera(iClickedViewPort))
-			m_fDelayTime = m_pkFps->GetEngineTime() + float(0.5);
-	}
-
-	if(m_pkInputHandle->VKIsDown("makeland")) {
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
-		if(!pkObj)
-			return;		
-		//int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* z = m_pkObjectMan->GetZoneData(id);
-		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
-		m_pkFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
-	}  
-
-	if(m_pkInputHandle->Pressed(KEY_F6)) 
-	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-
-		//m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		//if(pkData && pkData->m_pkZone) 
-		//{
-			pkEnt->AddProperty("P_PfMesh");
-			P_PfMesh* pkMesh = (P_PfMesh*)pkEnt->GetProperty("P_PfMesh");
-			pkMesh->AutoMakeNaviMesh();
-			//P_HMRP2* pkHmap = (P_HMRP2*)pkEnt->GetProperty("P_HMRP2");
-			//if(pkHmap)
-			//	pkMesh->SetHmap(pkHmap);
-		//}
-	}
-
 	Vector3 kMove(0,0,0);
-//	Vector3 kRotate(0,0,0);
-
-	if(m_pkInputHandle->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
 
 	if(m_pkInputHandle->Pressed(KEY_8))	assert(0);
 	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
 
+	Input_Camera(float(x),float(z));
 
-	if(m_pkCameraObject)	
-	{	
-		Input_Camera(float(x),float(z));
-
-		
-		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
-		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
-		if(m_pkInputHandle->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
-
-		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
-	
-		if(m_iEditMode == EDIT_HMAP)						Input_EditTerrain();
-		if(m_iEditMode == EDIT_ZONES)						Input_EditZone();
-		if(m_iEditMode == EDIT_OBJECTS)						Input_EditObject(float(x),float(z));
-
-		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
-		
-	}
+	if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
+	if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
+	if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 };
 
 void MistServer::OnHud(void)
@@ -1091,9 +357,6 @@ void MistServer::OnHud(void)
 		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
-		/*m_pkRender->DrawAABB(m_pkActiveCamera->GetViewPortCorner(),
-			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
-			Vector3(1,1,1),1);*/
 		}
 
 	m_pkFps->m_bGuiMode = false;
@@ -1101,57 +364,6 @@ void MistServer::OnHud(void)
 
 
 }
-
-bool MistServer::DelayCommand()
-{
-	if(m_pkFps->GetEngineTime() < m_fDelayTime)
-		return true;
-
-	m_fDelayTime = m_pkFps->GetEngineTime() + float(0.3);
-	return false;
-}
-
-void MistServer::EditRunCommand(FuncId_e eEditCmd)
-{
-	Entity* pkActiveEntity = m_pkObjectMan->GetObjectByNetWorkID( m_iCurrentObject );
-	if(pkActiveEntity == NULL)
-		return;
-
-	if(eEditCmd == FID_CLONE)
-	{
-		m_pkObjectMan->CloneObject(m_iCurrentObject);	// Select_Toggle
-	}
-
-	ZFVFile kFile;
-
-	if(eEditCmd == FID_CUT)
-	{
-		kFile.Open("copybuffer.dat",0,true);
-		pkActiveEntity->Save(&kFile);
-		kFile.Close();
-	}
-
-	if(eEditCmd == FID_COPY)
-	{
-		kFile.Open("copybuffer.dat",0,true);
-		pkActiveEntity->Save(&kFile);
-		kFile.Close();
-	}
-	
-	if(eEditCmd == FID_PASTE)
-	{
-		if( kFile.Open("copybuffer.dat",0,false) ) 
-		{
-			Entity* pkObjNew = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/basic.lua", m_kObjectMarkerPos);
-
-			Vector3 kPos = pkObjNew->GetLocalPosV();
-			pkObjNew->Load(&kFile,false);
-			kFile.Close();
-			pkObjNew->SetLocalPosV(kPos);
-		}
-	}
-}
-
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
@@ -1179,9 +391,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			if(m_bSoloMode)
-				SoloToggleView();
-
 			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
@@ -1271,49 +480,12 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */			
 			break;
 
-		case FID_SNAPSAVE:
-			m_pkObjectMan->SaveWorld("snapshot",true);
-			break;
-
-		case FID_SNAPLOAD:
-			if(m_bSoloMode)
-				SoloToggleView();
-			GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
-			m_pkObjectMan->LoadWorld("snapshot");
-			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkFps->StartServer(true,true);
-			break;
-
 		case FID_USERS:
 			kUsers = m_pkPlayerDB->GetUsers();
 			for(i=0; i<kUsers.size(); i++) {
 				cout << "User: " << kUsers[i] << endl;
 				}
 			break;		
-
-		case FID_EDITSUN:
-			m_bEditSun = !m_bEditSun;
-
-			if(m_bEditSun)
-				m_pkLight->Add(&m_kSun);
-			else
-				m_pkLight->Remove(&m_kSun);
-
-			break;
-
-		case FID_SETCAM:
-			if(kCommand->m_kSplitCommand.size() <= 1)
-				break;
-			m_pkActiveCamera->SetViewMode(kCommand->m_kSplitCommand[1]);
-			break;
-	
-		case FID_GRIDSIZE:
-			if(kCommand->m_kSplitCommand.size() <= 1)
-				break;
-			
-			fTest = float( atof( kCommand->m_kSplitCommand[1].c_str()) );
-			Camera::m_fGridSpace = fTest;
-			break;
 
 		case FID_TEST_JIDDRA:
 			m_pkConsole->Printf("Long Text: ");
@@ -1328,44 +500,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("Mult rows with newline at the end.");
 			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
 			break;
-
-		case FID_CAMLINK:
-				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) {
-					// Unlink
-					cout << "Unlink" << endl;
-					m_pkCameraObject[1]->SetParent( m_pkObjectMan->GetWorldObject() );
-					m_pkCameraObject[1]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[2]->SetParent( m_pkObjectMan->GetWorldObject() );
-					m_pkCameraObject[2]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					m_pkCameraObject[3]->SetParent( m_pkObjectMan->GetWorldObject() );
-					m_pkCameraObject[3]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					}
-				else {
-					// Link
-					cout << "Link" << endl;
-					m_pkCameraObject[1]->SetParent( m_pkCameraObject[0] );
-					m_pkCameraObject[1]->SetLocalPosV(Vector3::ZERO);
-					m_pkCameraObject[2]->SetParent( m_pkCameraObject[0] );
-					m_pkCameraObject[2]->SetLocalPosV(Vector3::ZERO);
-					m_pkCameraObject[3]->SetParent( m_pkCameraObject[0] );
-					m_pkCameraObject[3]->SetLocalPosV(Vector3::ZERO);
-				}
-
-				break;
-
-		case FID_CAMSOLO:			SoloToggleView();		break;
-		case FID_CAMFOLLOW:		CamFollow(true);		break;
-		case FID_CAMNOFOLLOW:	CamFollow(false);		break;
-			
-		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
-		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
-		case FID_SELNONE:		Select_None();		break;
-		case FID_DELETE:		DeleteSelected();	break;
-
-		case FID_CLONE:		EditRunCommand(FID_CLONE);		break;
-		case FID_CUT:			EditRunCommand(FID_CUT);		break;
-		case FID_COPY:			EditRunCommand(FID_COPY);		break;
-		case FID_PASTE:		EditRunCommand(FID_PASTE);		break;
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1402,79 +536,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 
 }
-
-void MistServer::SoloToggleView()
-{
-	if(DelayCommand())	return;
-	
-	Camera* pkCam = GetWnd(m_strActiveViewPort)->GetRenderTarget();
-
-	if(m_bSoloMode) 
-	{
-		m_pkFps->RemoveRenderTarget(NULL);
-		pkCam->m_bForceFullScreen = false;
-		m_bSoloMode = false;
-		GetWnd("vp1")->Show();	GetWnd("vp1")->SetPos(400,0,true,true);		GetWnd("vp1")->Resize(400,300,false);
-		GetWnd("vp2")->Show();	GetWnd("vp2")->SetPos(0,0,true,true);			GetWnd("vp2")->Resize(400,300,false);
-		GetWnd("vp3")->Show();	GetWnd("vp3")->SetPos(0,300,true,true);		GetWnd("vp3")->Resize(400,300,false);
-		GetWnd("vp4")->Show();	GetWnd("vp4")->SetPos(400,300,true,true);		GetWnd("vp4")->Resize(400,300,false);
-	}
-	else
-	{
-		m_bSoloMode = true;
-		GetWnd("vp1")->Hide();
-		GetWnd("vp2")->Hide();
-		GetWnd("vp3")->Hide();
-		GetWnd("vp4")->Hide();
-
-		// Add Active as ZeroFps Fullscreen Render Target.
-		if(pkCam) 
-		{
-			m_pkFps->SetRenderTarget(pkCam);
-			pkCam->m_bForceFullScreen = true;
-		}
-	}
-}
-
-void MistServer::CamFollow(bool bFollowMode)
-{
-	if(bFollowMode)
-	{
-		// Start Follow mode.
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-		if(!pkObj)
-			return;
-
-		P_Camera* m_pkCamProp;
-
-		// Remov old
-		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(NULL);
-
-		// Add new.
-		pkObj->AddProperty("P_Camera");
-		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkActiveCamera);
-	}
-	else
-	{
-		// End Follow Mode
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID( m_pkActiveCamera->m_iEntity );		
-		if(!pkObj)
-			return;	// Hey we are not following anyone.
-
-		// Remov old
-		P_Camera* m_pkCamProp;
-		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(NULL);
-
-		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkActiveCamera);
-		
-		m_pkActiveCameraObject->SetWorldPosV(pkObj->GetWorldPosV());
-	}
-}
-
 
 void MistServer::ClientInit()
 {
@@ -1606,11 +667,6 @@ void MistServer::OnServerStart(void)
 {		
 	CreateEditCameras();
 
-	// Create and setup the Env on the server.
-	/*P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
-	pe->SetEnable(true);		
-	pe->SetEnviroment("data/enviroments/server.env");*/
-
 	//create server info object
 	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
 	if(m_pkServerInfo)
@@ -1624,14 +680,6 @@ void MistServer::OnServerStart(void)
 		else
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
-
-	//SoloToggleView();
-	m_fDelayTime = m_pkFps->GetEngineTime();
-	//SoloToggleView();
-	/*GetWnd("vp1")->SetZValue(0);
-	GetWnd("vp2")->SetZValue(0);
-	GetWnd("vp3")->SetZValue(0);
-	GetWnd("vp4")->SetZValue(0);*/
 }
 
 void MistServer::OnClientStart(void)
@@ -1648,527 +696,6 @@ bool MistServer::StartUp()
 
 bool MistServer::ShutDown()	{ return true; }
 bool MistServer::IsValid()	{ return true; }
-
-/*	Return 3D postion of mouse in world. */
-Vector3 MistServer::Get3DMouseDir(bool bMouse)
-{
-	Vector3 dir;
-	float x,y;		
-	
-	//screen propotions
-	float xp=4;
-	float yp=3;
-
-	Vector3 kViewSize, kViewCorner;
-	kViewSize = m_pkActiveCamera->GetViewPortSize();
-	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
-	
-	if(bMouse)
-	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInputHandle->UnitMouseXY(x,y);
-		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		int mx;		
-		int my;
-		
-		m_pkInputHandle->SDLMouseXY(mx,my);
-		
-		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-
-		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
-		{
-			dir.Set(x*xp,y*yp,-1.5);
-			dir.Normalize();
-		}
-		else
-		{
-			dir.Set(0,0,-1);
-			//dir.Normalize();
-			//return dir;
-		}
-	}
-	else
-	{
-		dir.Set(0,0,-1.5);
-		dir.Normalize();	
-	}
-	
-	Matrix4 rm = m_pkActiveCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-	
-	return dir;
-}
-
-/*	Returns 3D dir of mouse click in world. */
-Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
-{
-	Vector3 dir;
-	float x,y;		
-	
-	//screen propotions
-	float xp=4;
-	float yp=3;
-
-	Vector3 kViewSize, kViewCorner;
-	kViewSize = m_pkActiveCamera->GetViewPortSize();
-	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
-
-	if(m_bMouse)
-	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInputHandle->UnitMouseXY(x,y);
-		/*
-			x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-			y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		*/
-		int mx;		
-		int my;
-		
-		m_pkInputHandle->SDLMouseXY(mx,my);		
-		
-		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-		
-		//cout << "ViewCorner: " << kViewCorner.x << ", " << kViewCorner.y << endl;
-		//cout << "kViewSize: " << kViewSize.x << ", " << kViewSize.y << endl;
-
-		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
-		{
-			dir.Set(x*xp,y*yp,-1.5);
-			dir.Normalize();
-		}
-		else 
-		{
-			dir.x = x* m_pkActiveCamera->GetOrthoSize().x;
-			dir.y = y* m_pkActiveCamera->GetOrthoSize().y;
-			dir.z = -1.5; 
-//			cout << "Cam XY: " << dir.x << "," << dir.y << endl;
-		}
-	}
-	else
-	{
-		dir.Set(0,0,-1.5);
-		dir.Normalize();	
-	}
-	
-	Matrix4 rm = m_pkActiveCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-	
-	return dir;
-}
-
-Entity* MistServer::GetTargetObject()
-{
-	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
-	Vector3 dir		= Get3DMouseDir(true);
-//	dir.Set(0,1,0);
-
-	start.Print();
-	//cout << " - "; 
-	dir.Print();
-	//cout << endl; 
-
-	vector<Entity*> kObjects;
-	kObjects.clear();
-	
-	m_pkObjectMan->TestLine(&kObjects,start,dir);
-	
-	
-	float closest = 999999999;
-	Entity* pkClosest = NULL;	
-	for(unsigned int i=0;i<kObjects.size();i++)
-	{
-		//cout << "Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
-
-		if(kObjects[i] == m_pkCameraObject[0])	continue;
-		if(kObjects[i] == m_pkCameraObject[1])	continue;
-		if(kObjects[i] == m_pkCameraObject[2])	continue;
-		if(kObjects[i] == m_pkCameraObject[3])	continue;
-		
-		if(kObjects[i]->GetEntityID() <100000)
-			continue;
-		
-		if(kObjects[i]->GetName() == "ZoneObject")
-			continue;
-		
-		if(kObjects[i]->GetName() == "StaticEntity")
-			continue;
-		
-		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
-			continue;
-		
-		
-		float d = (start - kObjects[i]->GetWorldPosV()).Length();
-	
-		if(d < closest)
-		{
-			closest = d;
-			pkClosest = kObjects[i];
-		}
-	}
-	
-	return pkClosest;
-}
-
-
-void MistServer::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
-{
-	if(m_pkObjectMan->IsInsideZone(kPos, kSize))
-		return;
-		
-	int id = m_pkObjectMan->CreateZone(kPos, kSize);
-
-	//force loading of this zone
-	m_pkObjectMan->LoadZone(id);
-
-	//set to active
-	m_iCurrentMarkedZone = id;
-
-	if(id != -1)
-	{
-		if(!bEmpty)
-			m_pkObjectMan->SetZoneModel(strName.c_str(),id);
-		//pkObjectMan->SetUnderConstruction(id);
-	}	
-
-	
-	
-	
-	SetZoneEnviroment(m_strActiveEnviroment.c_str());
-}
-
-
-void MistServer::DrawZoneMarker(Vector3 kPos)
-{
-	Vector3 bla = m_kZoneSize / 2;
-	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
-}
-
-
-void MistServer::DrawCrossMarker(Vector3 kPos)
-{
-	// Set Color here.
-	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
-	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
-	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	
-}
-
-
-void MistServer::UpdateZoneMarkerPos()
-{
-	Vector3 temp = m_pkFps->GetCam()->GetPos() + Get3DMousePos(false)*15;
-
-	float fStep = 2.0;
-
-	m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
-	m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
-	m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
-
-
-	m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
-	m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
-	m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
-	
-/*	if(m_kZoneSize.x != 4) m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
-		else  m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep + 2;						
-
-	if(m_kZoneSize.y != 4) m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
-		else  m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep + 2;						
-
-	if(m_kZoneSize.z != 4) m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
-		else  m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep + 2;						
-*/
-//	m_kZoneMarkerPos.y = round2(temp.y/4.0) * 4.0;
-//	m_kZoneMarkerPos.z = round2(temp.z/4.0) * 4.0;
-
-}
-
-
-void MistServer::UpdateObjectMakerPos()
-{
-	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
-}
-
-
-void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
-{
-	ZGuiWnd* pkWndClicked = NULL;
-
-	if(GetWndType(pkMainWnd) == Menu)
-	{
-		list<ZGuiWnd*> kChilds;
-		pkMainWnd->GetChildrens(kChilds); 
-
-		list<ZGuiWnd*>::iterator it = kChilds.begin();
-		for( ; it!=kChilds.end(); it++)
-		{
-			if((*it)->GetID() == iID)
-			{
-				pkWndClicked = (*it);
-				break;
-			}
-		}
-	}
-	else
-	{
-		pkWndClicked = GetWnd(iID);
-	}
-
-	if(pkWndClicked)
-	{
-		string strMainWnd = pkMainWnd->GetName();
-
-		string strWndClicked = pkWndClicked->GetName();
-
-		string strParent = "null";
-
-		if(pkWndClicked->GetParent())
-			strParent = pkWndClicked->GetParent()->GetName();
-
-		if(strMainWnd == "GuiMainWnd")
-		{
-			if(strWndClicked == "OpenWorkTabButton")
-			{
-				if( IsWndVisible("worktab") )
-				{
-					m_pkAudioSys->StartSound("/data/sound/close_window.wav",m_pkAudioSys->GetListnerPos());
-					GetWnd("worktab")->Hide(); 
-				}
-				else 
-				{
-					m_pkAudioSys->StartSound("/data/sound/open_window.wav",m_pkAudioSys->GetListnerPos());
-					GetWnd("worktab")->Show(); 
-				}
-			}
-			else
-			if(strWndClicked == "ToggleLight")
-			{
-				ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
-			}
-		}
-		else
-		if(strMainWnd == "ZonePage")
-		{
-			if(strWndClicked == "RotateZoneModellButton")
-			{
-				RotateActiveZoneObject();
-			}
-			else
-			if(strWndClicked == "DeleteZoneButton")
-			{
-				int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-				m_pkObjectMan->DeleteZone(id);
-			}
-		}
-		else
-		if(strMainWnd == "ObjectPage")
-		{
-			if(strWndClicked == "DeleteObjectButton")
-			{		
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-				if(pkObj) 
-				{
-					m_pkObjectMan->Delete(pkObj);
-					m_iCurrentObject = -1;
-				}
-			}
-			else
-			if(strWndClicked == "PlaceongroundButton")
-			{
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-				if(pkObj) 
-				{
-					Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
-					pkObj->SetLocalPosV(pos); 
-					m_iCurrentObject = -1;
-				}
-			}
-		}
-		else
-		if(strMainWnd == "MainMenu")
-		{
-			if(!m_pkIni->Open("data/script/gui/menu.txt", false))
-			{
-				cout << "Failed to load ini file for menu!\n" << endl;
-				return;
-			}
-
-			vector<string> akSections;
-			m_pkIni->GetSectionNames(akSections);
-
-			// Run Menu command
-			for(unsigned int i=0; i<akSections.size(); i++)
-			{
-				if(strWndClicked == string(akSections[i].c_str()))
-				{
-					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					m_pkFps->m_pkConsole->Execute(cmd);
-					break;
-				}
-			}
-
-			m_pkIni->Close();
-		}
-	}
-}
-
-void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
-{
-	if(pkMain == NULL)
-		return;
-
-	string strMainWndName, strListBox;
-
-	ZGuiWnd* pkListBox = NULL;
-
-	list<ZGuiWnd*> kChilds;
-	pkMain->GetChildrens(kChilds); 
-
-	list<ZGuiWnd*>::iterator it = kChilds.begin();
-	for( ; it != kChilds.end(); it++)
-	{
-		if((*it)->GetID() == (unsigned int) iListBoxID)
-		{
-			pkListBox = (*it);
-			break;
-		}	 
-	}
-
-	strMainWndName = pkMain->GetName();
-
-	if(pkListBox != NULL)
-		strListBox = pkListBox->GetName();
-
-	if(strMainWndName == "EnviromentPage")
-	{
-		if(strListBox == "EnviromentPresetList")
-		{
-			char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
-
-			if(szPreset)
-			{
-				string szFull = "data/enviroments/" + string(szPreset);
-				printf("setting enviroment %s\n", szFull.c_str());
-				SetZoneEnviroment( szFull.c_str()  );  
-			}
-		}
-	}
-}
-
-void MistServer::AutoSetZoneSize(string strName)
-{
-	int iPos = strName.find_last_of('-');
-	if( iPos == string::npos )
-		return;
-
-	int x,y,z;
-	char szString[256];
-	strcpy(szString, &strName.c_str()[iPos + 1]);
-	sscanf(szString,"%dx%dx%d", &x,&y,&z);
-	m_kZoneSize.Set(float(x),float(y),float(z));
-	//cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
-}
-
-
-void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
-											char *szClickNodeText, bool bHaveChilds)
-{
-	if(strcmp(szTreeBox, "ZoneModelTree") == 0)
-	{
-		if(szClickNodeText && bHaveChilds == false)
-		{
-			string strFullpath = string("data/mad/zones/");
-
-			if(szParentNodeText)
-				strFullpath += string(szParentNodeText);
-
-			if(szClickNodeText)
-				strFullpath += string(szClickNodeText);
-
-			m_strActiveZoneName = strFullpath;
-
-			m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			// Setting new zone modell
-			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
-			{
-				//pkObjectMan->LoadZone(m_iCurrentMarkedZone);
-				m_pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
-				printf("Setting new zone modell to %s\n", strFullpath.c_str());
-			}
-
-			AutoSetZoneSize(m_strActiveZoneName);
-		}
-	}
-	else
-	if(strcmp(szTreeBox, "ObjectTree") == 0)
-	{
-		if(szClickNodeText && bHaveChilds == false)
-		{
-			string strFullpath = string("data/script/objects/");
-
-			if(szParentNodeText)
-				strFullpath += string(szParentNodeText);
-
-			if(szClickNodeText)
-				strFullpath += string(szClickNodeText);
-
-			m_strActiveObjectName = strFullpath;
-		}
-	}
-}
-
-void MistServer::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
-{
-	string strTabCtrlName = pkTabCtrl->GetName();
-
-	if(strTabCtrlName == "WorkTabWnd")
-	{
-		switch(iNewPage)
-		{
-		case 0:
-			m_iEditMode = EDIT_ZONES;
-			break;
-		case 1:
-			m_iEditMode = EDIT_OBJECTS;
-			break;
-		}
-	}
-}
-
-void MistServer::RotateActiveZoneObject()
-{
-	if(m_iCurrentMarkedZone != -1)
-	{
-		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData) 
-		{
-			if(pkData->m_pkZone)
-			{
-				pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
-		
-				// Update PFind Mesh
-				P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
-				if(pkMesh)
-					pkMesh->CalcNaviMesh();
-			}		
-		}
-		
-	}
-}
-
-void MistServer::ToogleLight(bool bEnabled)
-{
-	if(bEnabled)
-		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
-	else
-		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-}
 
 void MistServer::UpdateStartLocatons()
 {
@@ -2287,69 +814,6 @@ void MistServer::DeletePlayer(int iConID)
 	}
 }
 
-/*
-void MistServer::PathTest() 
-{
-	return;
-
-	int iNumOfZones = m_pkObjectMan->GetNumOfZones();
-	if(iNumOfZones < 10)
-		return; 
-
-	int iRuns = 10;
-
-	for(int i=0; i<iRuns; i++) {
-
-		int iStartZone  = 10;
-		int iEndZone	= 1;
-
-		kPathStart = m_pkObjectMan->GetZoneCenter(iStartZone);
-		kPathEnd   = m_pkObjectMan->GetZoneCenter(iEndZone);
-
-//		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
-		}
-}*/
-
-void MistServer::HSO_Edit(ClientOrder* pkOrder)
-{
-	CmdArgument kcmdargs;
-	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
-
-	char szCmdNone[256];
-	char szCmd1[256];
-	char szCmd2[256];
-	Vector3 kPos;
-	Vector3 kSize;
-
-	if ( kcmdargs.m_kSplitCommand[1] == string("addzone") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to addzone." << endl;
-		cout << "m_sOrderName: " << pkOrder->m_sOrderName << endl;
-		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %f %f %f %f %f %f", szCmd1,szCmd2, &kPos.x,&kPos.y,&kPos.z,
-			&kSize.x,&kSize.y,&kSize.z) == 8) {
-
-			AddZone(kPos, kSize, m_strActiveZoneName);	
-			}
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("delzone") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to remove a zone." << endl;
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("spawn") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to create something" << endl;
-		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %s", szCmdNone,szCmdNone, szCmd1) == 3) {
-			string strObjName = string("data/script/objects/") + string(szCmd1);
-			m_pkObjectMan->CreateObjectFromScriptInZone( strObjName.c_str(), m_kObjectMarkerPos);
-			}
-
-	}
-
-	// ROTATE:	Rotera en zon.
-	// DELETE:	Radera en zon.	By Index, By Pos, By NetWorkID
-	// Spawn:   Skapa ett object
-}
-
 void MistServer::HSO_Character(ClientOrder* pkOrder)
 {
 	CmdArgument kcmdargs;
@@ -2404,12 +868,8 @@ void MistServer::HandleOrders()
 		// Edit Order
 		cout << order->m_sOrderName.c_str() << endl;
 
-		if(strncmp(order->m_sOrderName.c_str(),"ED",2) == 0) {
-			HSO_Edit(order);
-			}
-		
 		// Character Command
-		else if(strncmp(order->m_sOrderName.c_str(),"CC",2) == 0) {
+		if(strncmp(order->m_sOrderName.c_str(),"CC",2) == 0) {
 			HSO_Character(order);
 			}
 		
@@ -2700,47 +1160,3 @@ void MistServer::SendTextToMistClientInfoBox(char *szText)
 {
 	  
 }
-
-
-void MistServer::SetZoneEnviroment(const char* csEnviroment)
-{
-	//set default enviroment
-	m_strActiveEnviroment=csEnviroment;
-	
-	m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-	ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		
-	if(z)
-	{
-		//cout<<"Setting enviroment to :"<<csEnviroment<<endl;
-		z->m_strEnviroment = csEnviroment;
-	}	
-}
-
-string MistServer::GetZoneEnviroment()
-{
-	string env;
-	
-	m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-	ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		
-	if(z)
-		env = z->m_strEnviroment;
-
-	return env;
-}
-
-char* MistServer::GetSelEnviromentString()
-{
-	ZGuiListbox* pkEnviromentList = static_cast<ZGuiListbox*>(GetWnd("EnviromentPresetList"));
-	if(pkEnviromentList)
-	{
-		ZGuiListitem* pkSel = pkEnviromentList->GetSelItem(); 
-		if(pkSel)
-			return pkSel->GetText();
-	}
-
-	return NULL;
-}
-
-
