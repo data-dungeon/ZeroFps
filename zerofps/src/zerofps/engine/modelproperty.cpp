@@ -56,20 +56,20 @@ void ModelProperty::PackFrom( NetPacket* pkNetPacket ) {
 
 void ModelProperty::Save(ZFMemPackage* pkPackage)
 {	
-	pkPackage->Write( m_iType );		
-	pkPackage->Write( m_fRadius );		
-	pkPackage->Write( m_iSlices );		
-	pkPackage->Write( m_iStacks );		
-	pkPackage->Write( m_kColor );	
+	pkPackage->Write((void*)&m_iType,4 );		
+	pkPackage->Write((void*)&m_fRadius,4 );		
+	pkPackage->Write((void*)&m_iSlices,4 );		
+	pkPackage->Write((void*)&m_iStacks,4 );		
+	pkPackage->Write((void*)&m_kColor,12 );	
 }
 
 void ModelProperty::Load(ZFMemPackage* pkPackage)
 {
-	pkPackage->Read( m_iType );		
-	pkPackage->Read( m_fRadius );		
-	pkPackage->Read( m_iSlices );		
-	pkPackage->Read( m_iStacks );		
-	pkPackage->Read( m_kColor );	
+	pkPackage->Read((void*)&m_iType	,4 );		
+	pkPackage->Read((void*)&m_fRadius,4 );		
+	pkPackage->Read((void*)&m_iSlices,4 );		
+	pkPackage->Read((void*)&m_iStacks,4 );		
+	pkPackage->Read((void*)&m_kColor	,12 );	
 }
 
 
