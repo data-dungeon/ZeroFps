@@ -1004,3 +1004,14 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 
 	return true;
 }
+
+
+ContainerDlg::ContainerDlg()
+{
+
+}
+
+ContainerDlg::~ContainerDlg()
+{
+
+}

@@ -128,4 +128,15 @@ private:
 	Point m_kClickOffset;
 };
 
+class ContainerDlg
+{
+public:
+
+	ContainerDlg();
+	~ContainerDlg();
+
+private:
+	ZGuiWnd* m_pkDlgWnd;
+};
+
 #endif // !defined(AFX_INVENTORYDLG_H__E2EC300C_10CF_4D5C_B948_2FD7FCAB2686__INCLUDED_)
