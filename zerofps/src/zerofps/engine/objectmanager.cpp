@@ -86,27 +86,42 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 
 void ObjectManager::PackToClients()
 {
- 	NetPacket NP;
+	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	if(net->m_eNetStatus != NET_SERVER)	return;
+
+	NetPacket NP;
 	NP.Clear();
 	NP.Write((char) ZF_NETTYPE_UNREL);
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
 	int iNumOfObjects = m_akObjects.size();
+	int iPacketSize = 0;
+	int iEndOfObject = -1;
+
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->NeedToPack()) {
 			NP.Write((*it)->iNetWorkID);
 			(*it)->PackTo(&NP);
 			}
+
+		iPacketSize++;
+
+		if(iPacketSize >= 10) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			net->SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.Write((char) ZF_NETTYPE_UNREL);
+			NP.Write((char) ZFGP_OBJECTSTATE);
+
+			iPacketSize = 0;
+			}
 	}
 
-	int iEndOfObject = -1;
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
-	
-
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
-	if(net->m_eNetStatus != NET_SERVER)	return;
 	net->SendToAllClients(&NP);
 }
 
